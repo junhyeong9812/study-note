@@ -35,13 +35,64 @@
 구별 기준은 한 줄: **새 타입을 추가했을 때 분기 개수가 늘어나는가.**
 
 - 나쁜 instanceof — 구체 클래스 검사. 타입 수만큼 분기 증가, 호출부마다 복제, 빠트리면 런타임 예외.
+
+```java
+// 나쁨: 구체 클래스를 캐묻는다 — 타입이 늘 때마다 줄이 는다 (2-summary에서 발췌)
+void process(Transaction tx) {
+    if (tx instanceof SettledTransaction) return;
+    if (tx instanceof RefundedTransaction) return;   // 나중에 또 하나 발견
+    tx.cancel();
+}
+```
+
 - 좋은 instanceof — 능력(capability) 인터페이스 검사(`instanceof Cancellable`). 분기 1개 고정, 데이터가 들어오는 **경계에서 한 번만** 좁히고 안쪽엔 없다.
 
-근본 해법은 검사가 아니라 **행동을 타입 안으로**(`shape.area()`) 또는 **능력 타입으로 받기**(`cancel(Cancellable tx)` — 잘못 넘기면 컴파일 에러). 주입(DI)은 이 문제의 해법이 아니다 — 그건 5번의 주제.
+```java
+// 좋음: 경계에서 능력으로 한 번만 좁힌다 — 거래 타입이 20개로 늘어도 분기는 하나 (2-summary에서 발췌)
+Transaction tx = repository.find(id);
+if (tx instanceof Cancellable c) {
+    cancelService.cancel(c);   // 이 안쪽에는 instanceof가 없다
+} else {
+    return Result.reject("정산 완료 거래는 취소할 수 없습니다");
+}
+```
+
+근본 해법은 검사가 아니라 **행동을 타입 안으로**(`shape.area()`) 또는 **능력 타입으로 받기** — 잘못 넘기면 컴파일 에러가 되게 한다. 주입(DI)은 이 문제의 해법이 아니다 — 그건 5번의 주제.
+
+```java
+// 검사 자체를 없앤 형태: 못 취소하는 걸 넘기면 컴파일 에러 (2-summary에서 발췌)
+void cancel(Cancellable tx) {
+    tx.cancel();
+}
+```
 
 **7. LogManager replay의 분리는 어떤 원칙인가**
 
 일차로 **SRP**: "저장 포맷·순회"의 변경 이유(파일 형식, 인코딩)와 "복구 정책"의 변경 이유(커밋 판단, 반영 규칙)는 액터가 다르다. 동시에 **DIP의 사례**이기도 하다 — handler(함수 타입 = 추상)를 통해 "무엇을 반영할까"라는 정책을 호출자가 소유하고, LogManager는 그 추상만 안다.
+
+실제 호출자 쪽 코드에서 그 분리가 이렇게 보인다:
+
+```kotlin
+// db-engine-lab impl/08-01 §5.4 Recovery.kt 에서 발췌
+logManager.replay { rec ->                       // LogManager: 순서대로 읽어 넘겨주기만
+    when (rec) {
+        is LogRecord.BeginTx -> perTxInserts[rec.txId] = mutableListOf()
+        is LogRecord.InsertRow ->
+            perTxInserts.getOrPut(rec.txId) { mutableListOf() }
+                .add(rec.tableName to rec.tupleBytes)
+        is LogRecord.CommitTx -> committed.add(rec.txId)
+        is LogRecord.AbortTx -> aborted.add(rec.txId)
+        is LogRecord.Checkpoint -> { /* legacy Recovery ignores checkpoints */ }
+    }
+}
+
+for ((txId, inserts) in perTxInserts) {
+    if (txId !in committed || txId in aborted) continue   // ← 커밋 판단은 Recovery의 소유
+    // ... heapLookup으로 테이블을 찾아 재반영 ...
+}
+```
+
+"어떤 레코드를 믿고 반영할까"라는 지식이 전부 Recovery 쪽 자료구조(committed/aborted 집합)에 있고, LogManager에는 흔적도 없다는 점이 핵심이다.
 
 LogManager가 커밋 판단까지 하면:
 
