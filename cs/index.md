@@ -22,3 +22,16 @@
 | multi-tenancy | `jun-bank/docs/study/09-multi-tenancy/` |
 | failure-at-scale / failure-modes | `jun-bank/docs/study/10-failure-at-scale/`, `11-failure-modes/` |
 | tech (data-access·infra·languages·security) | `jun-bank/docs/study/tech/` — 직접 작성 예정 |
+
+## 후보 (db-engine-lab에서 공부한 개념 — 이관 대기, 폴더·3파일 스켈레톤 생성 2026-08-20)
+
+원본은 `db-engine-lab/docs/study/`의 날짜 분리 노트가 아닌 개념 정리 문서들. 카프카 외에도 BookKeeper·NAND·LSM 등이 섞여 있어 카프카 폴더로 묶지 않고 개념 단위로 둔다(이후 카프카 문서가 늘면 `kafka-` 접두어로 모인다).
+
+| 주제 | 내용 | 원본 위치 |
+|------|------|-----------|
+| [kafka-why-fast](kafka-why-fast/) | Kafka가 빠른 이유 (브로커·프로듀서·컨슈머·ISR·순차쓰기·I/O 패턴·IOPS) | `/home/jun/project/db-engine-lab/docs/study/kafka.md` |
+| [lsm-tree](lsm-tree/) | LSM-Tree와 RUM Conjecture | `/home/jun/project/db-engine-lab/docs/study/LSM-Tree.md` |
+| [nand-flash](nand-flash/) | NAND 플래시 동작 원리 | `/home/jun/project/db-engine-lab/docs/study/NAND.md` |
+| [striping](striping/) | Striping — ledger를 여러 Bookie에 나눠 담기 (BookKeeper) | `/home/jun/project/db-engine-lab/docs/study/Striping.md` |
+| [straggler](straggler/) | Straggler 문제와 대응 | `/home/jun/project/db-engine-lab/docs/study/Straggler.md` |
+| [partitioning-vs-sharding](partitioning-vs-sharding/) | Partitioning vs Sharding | `/home/jun/project/db-engine-lab/docs/study/Partitioning.md`, `/home/jun/project/db-engine-lab/docs/study/Sharding.md` (둘을 한 주제로 합침) |
