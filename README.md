@@ -71,3 +71,10 @@ study-note/
 |------|------|------|
 | [db-engine-lab](db-engine-lab/) | `/home/jun/project/db-engine-lab` (impl/ 01~21) | [index](db-engine-lab/index.md) |
 | [cs](cs/) | 프로젝트 무관 CS·설계 지식 (기준 문서는 주제마다 지정) | [index](cs/index.md) |
+| [algorithm](algorithm/) | `/home/jun/project/myway/algorithm` (01~30) | [index](algorithm/index.md) |
+| [data-structure](data-structure/) | `/home/jun/project/myway/data-structure` (01~35) | [index](data-structure/index.md) |
+| [domain-modeling-basic](domain-modeling-basic/) | `/home/jun/project/myway/domain-modeling-basic` (01~30) | [index](domain-modeling-basic/index.md) |
+| [domain-modeling-advanced](domain-modeling-advanced/) | `/home/jun/project/myway/domain-modeling-advanced` (01~30) | [index](domain-modeling-advanced/index.md) |
+| [ops-patterns](ops-patterns/) | `/home/jun/project/myway/ops-patterns` (01~19) | [index](ops-patterns/index.md) |
+| [api-design](api-design/) | `/home/jun/project/myway/api-design` (01~06, 확정 체크리스트 훈련) | [index](api-design/index.md) |
+| [programmers](programmers/) | 프로그래머스 고득점 Kit (유형 10 · 문제 47) — problem.md / analyze.md | — |
