@@ -29,7 +29,7 @@
 
 | 주제 | 내용 | 원본 위치 |
 |------|------|-----------|
-| [kafka-why-fast](kafka-why-fast/) | Kafka가 빠른 이유 (브로커·프로듀서·컨슈머·ISR·순차쓰기·I/O 패턴·IOPS) | `/home/jun/project/db-engine-lab/docs/study/kafka.md` |
+| [kafka-why-fast](kafka-why-fast/) | **서머리 완료(2026-08-20)** — 왜 빠른가 서사 + zero-copy 경로 + 용어 + 대안. SSD 내부(FTL·GC·WAF) 절은 nand-flash로 분리 예정 | `/home/jun/project/db-engine-lab/docs/study/kafka.md` |
 | [lsm-tree](lsm-tree/) | LSM-Tree와 RUM Conjecture | `/home/jun/project/db-engine-lab/docs/study/LSM-Tree.md` |
 | [nand-flash](nand-flash/) | NAND 플래시 동작 원리 | `/home/jun/project/db-engine-lab/docs/study/NAND.md` |
 | [striping](striping/) | Striping — ledger를 여러 Bookie에 나눠 담기 (BookKeeper) | `/home/jun/project/db-engine-lab/docs/study/Striping.md` |
