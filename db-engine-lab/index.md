@@ -18,7 +18,7 @@
 | 06-03-constraint-validator | | 백필 대상 |
 | 06-04-indexed-table-heap | | 백필 대상 |
 | 07-01-workunit | | 백필 대상 |
-| [08-01-wal-recovery](08-01-wal-recovery/) | 공부 완료 | 서머리 작성 차례 (뼈대 생성됨) |
+| [08-01-wal-recovery](08-01-wal-recovery/) | 복습중 | 서머리·질문·정답 완료 (2026-08-20) — 질문 1~4는 impl §7 과제, 5는 tx 워크플로우 |
 | 08-02-lsn-checkpoint | | |
 | 08-03-crash-simulation | | |
 | 09-01-lock-manager | | |
