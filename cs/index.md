@@ -23,15 +23,15 @@
 | failure-at-scale / failure-modes | `jun-bank/docs/study/10-failure-at-scale/`, `11-failure-modes/` |
 | tech (data-access·infra·languages·security) | `jun-bank/docs/study/tech/` — 직접 작성 예정 |
 
-## 후보 (db-engine-lab에서 공부한 개념 — 이관 대기, 폴더·3파일 스켈레톤 생성 2026-08-20)
+## db-engine-lab에서 공부한 개념 — 3파일 작성 완료, 질문·정답은 Claude 초안이라 본인 검토 후 확정 (2026-08-20)
 
 원본은 `db-engine-lab/docs/study/`의 날짜 분리 노트가 아닌 개념 정리 문서들. 카프카 외에도 BookKeeper·NAND·LSM 등이 섞여 있어 카프카 폴더로 묶지 않고 개념 단위로 둔다(이후 카프카 문서가 늘면 `kafka-` 접두어로 모인다).
 
 | 주제 | 내용 | 원본 위치 |
 |------|------|-----------|
-| [kafka-why-fast](kafka-why-fast/) | **서머리 완료(2026-08-20)** — 왜 빠른가 서사 + zero-copy 경로 + 용어 + 대안. SSD 내부(FTL·GC·WAF) 절은 nand-flash로 분리 예정 | `/home/jun/project/db-engine-lab/docs/study/kafka.md` |
-| [lsm-tree](lsm-tree/) | LSM-Tree와 RUM Conjecture | `/home/jun/project/db-engine-lab/docs/study/LSM-Tree.md` |
-| [nand-flash](nand-flash/) | NAND 플래시 동작 원리 | `/home/jun/project/db-engine-lab/docs/study/NAND.md` |
-| [striping](striping/) | Striping — ledger를 여러 Bookie에 나눠 담기 (BookKeeper) | `/home/jun/project/db-engine-lab/docs/study/Striping.md` |
-| [straggler](straggler/) | Straggler 문제와 대응 | `/home/jun/project/db-engine-lab/docs/study/Straggler.md` |
-| [partitioning-vs-sharding](partitioning-vs-sharding/) | Partitioning vs Sharding | `/home/jun/project/db-engine-lab/docs/study/Partitioning.md`, `/home/jun/project/db-engine-lab/docs/study/Sharding.md` (둘을 한 주제로 합침) |
+| [kafka-why-fast](kafka-why-fast/) | **검토 대기(2026-08-20)** — 서머리·질문 7·정답(초안) — 왜 빠른가 서사 + zero-copy 경로 + 용어 + 대안 | `/home/jun/project/db-engine-lab/docs/study/kafka.md` |
+| [lsm-tree](lsm-tree/) | **검토 대기(2026-08-20)** — 서머리·질문 6·정답(초안) | `/home/jun/project/db-engine-lab/docs/study/LSM-Tree.md` |
+| [nand-flash](nand-flash/) | **검토 대기(2026-08-20)** — 서머리·질문 7·정답(초안) — NAND.md + kafka.md SSD 내부 절(FTL·매핑·RMW·GC·WAF) 합침 | `/home/jun/project/db-engine-lab/docs/study/NAND.md` |
+| [striping](striping/) | **검토 대기(2026-08-20)** — 서머리·질문 6·정답(초안) | `/home/jun/project/db-engine-lab/docs/study/Striping.md` |
+| [straggler](straggler/) | **검토 대기(2026-08-20)** — 서머리·질문 6·정답(초안) | `/home/jun/project/db-engine-lab/docs/study/Straggler.md` |
+| [partitioning-vs-sharding](partitioning-vs-sharding/) | **검토 대기(2026-08-20)** — 서머리·질문 6·정답(초안) — Partitioning.md + Sharding.md 합침 | `/home/jun/project/db-engine-lab/docs/study/Partitioning.md`, `/home/jun/project/db-engine-lab/docs/study/Sharding.md` (둘을 한 주제로 합침) |
