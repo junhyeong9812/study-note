@@ -19,6 +19,7 @@ study-note/
 ├── README.md                  ← 이 파일 (색인 + 규칙)
 ├── templates/                 ← 1-question / 2-summary / 3-answer 포맷 템플릿
 ├── reference/                 ← 작성 지침 (organize-guide.md · writing/ — README 색인 + evidence 원재료 10개)
+├── 세미나/                     ← 컨퍼런스·세미나 후기 (예: nerdcon/nerdcon-5.md)
 └── <주제>/                     ← 예: db-engine-lab/, cs/
     ├── README.md              ← 그 주제의 공부 규칙
     ├── index.md               ← 챕터/주제 목록과 진행 상태 (상태 변경 시마다 갱신)
@@ -78,3 +79,4 @@ study-note/
 | [ops-patterns](ops-patterns/) | `/home/jun/project/myway/ops-patterns` (01~19) | [index](ops-patterns/index.md) |
 | [api-design](api-design/) | `/home/jun/project/myway/api-design` (01~06, 확정 체크리스트 훈련) | [index](api-design/index.md) |
 | [programmers](programmers/) | 프로그래머스 고득점 Kit (유형 10 · 문제 47) — problem.md / analyze.md | — |
+| [세미나](세미나/) | 컨퍼런스·세미나 후기 — nerdcon-5 (2026-08-22, AI 시대 개발자 성장 방향) | — |
