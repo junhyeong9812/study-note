@@ -8,6 +8,8 @@
 | 주제 | 상태 | 원본(따라 친 노트) 위치 |
 |------|------|------------------------|
 | [solid-principles](solid-principles/) | 서머리 이관 + 질문 7개 작성 완료, 정답 미작성 | `jun-bank/docs/study/organize/SOLID.md` |
+| [thrashing](thrashing/) | **검토 대기(2026-08-23)** — 서머리(직접 작성, 소제목 정리)·질문 5·정답(초안) — 동적 배열 resize 반복과 히스테리시스 | 직접 작성(원본 노트 = 2-summary) |
+| [Hysteresis](Hysteresis/) | **검토 대기(2026-08-23)** — 서머리(직접 작성, 소제목 정리)·질문 5·정답(초안) — 방향별 임계값 분리, hysteresis band, thrashing과의 구분 | 직접 작성(원본 노트 = 2-summary) |
 
 ## 후보 (jun-bank에서 공부한 주제 — 이관 대기)
 
@@ -26,6 +28,8 @@
 ## db-engine-lab에서 공부한 개념 — 3파일 작성 완료, 질문·정답은 Claude 초안이라 본인 검토 후 확정 (2026-08-20)
 
 원본은 `db-engine-lab/docs/study/`의 날짜 분리 노트가 아닌 개념 정리 문서들. 카프카 외에도 BookKeeper·NAND·LSM 등이 섞여 있어 카프카 폴더로 묶지 않고 개념 단위로 둔다(이후 카프카 문서가 늘면 `kafka-` 접두어로 모인다).
+
+2026-08-23: 6주제 서머리를 공통 구조로 통일 — 본문은 원고 그대로, 원고에 없던 문장은 `*(Claude 보강)*` 표시, 원고 외 지식은 맨 아래 `[Claude 추가] 더 알면 좋은 것` 절로 분리(partitioning-vs-sharding의 「한 표로」「Kafka 연결」, kafka-why-fast의 §2 데이터 경로 다이어그램은 Claude 작성분으로 표시/이동).
 
 | 주제 | 내용 | 원본 위치 |
 |------|------|-----------|
