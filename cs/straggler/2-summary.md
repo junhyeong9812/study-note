@@ -1,7 +1,8 @@
 # cs/straggler — Straggler와 Tail Latency — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다.
-> 원고는 내가 직접 쓴 `Straggler.md`를 골격만 다듬은 것이다(2026-08-20).
+> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
+> 원고는 내가 직접 쓴 `db-engine-lab/docs/study/Straggler.md`(2026-08-20). 1~5절은 원고 그대로(골격·오탈자만 교정).
+> 「전체 흐름」「핵심 문장」은 원고를 압축한 것이고, 맨 아래 「[Claude 추가]」 절만 원고에 없던 내용이다.
 
 ## 전체 흐름
 
@@ -14,6 +15,8 @@
 ```
 
 ## 1. 정의 — 전체 응답 시간 = 가장 느린 한 대
+
+낙오자, 뒤처진 사람이라는 뜻으로, 분산 시스템에서는 여러 대에 일을 나눠줬을 때 유독 느리게 끝나는 한 대를 가리킨다. 문제는:
 
 ```text
 작업을 10대에 분산, 응답을 전부 기다려야 함
@@ -103,6 +106,8 @@ SSD GC로 그 디스크만 잠깐 느려짐 / JVM Full GC로 그 브로커만 �
 - **BookKeeper** — Qa 정족수로 회피, 디스크 분리로 읽기-쓰기 간섭도 예방.
 - **Redpanda** — JVM 자체를 제거하고 thread-per-core로 스케줄링 지터를 예방.
 
+즉 평균을 좋게 만드는 것과 꼬리를 짧게 만드는 것은 다른 문제이며, 분산 시스템 설계에서는 후자가 훨씬 어렵다.
+
 ## 핵심 문장
 
 - 전부 기다리는 설계에서 전체 응답 시간은 가장 느린 한 대다.
@@ -114,5 +119,38 @@ SSD GC로 그 디스크만 잠깐 느려짐 / JVM Full GC로 그 브로커만 �
 ## 관련 자료
 
 - 따라 친 원본 노트(직접 작성): `/home/jun/project/db-engine-lab/docs/study/Straggler.md`
-- Jeff Dean, Luiz André Barroso, "The Tail at Scale", CACM 2013
+- Jeff Dean, Luiz André Barroso, "The Tail at Scale", CACM 2013 *(공저자·게재지는 Claude 보강)*
 - 연결: [striping](../striping/) (Qa) · [nand-flash](../nand-flash/) (SSD GC 스파이크) · [kafka-why-fast](../kafka-why-fast/) (페이지 캐시, acks=all)
+
+---
+
+## [Claude 추가] 더 알면 좋은 것
+
+> 아래는 원고에 없던 내용이다. 복습 대상은 1~5절이고, 이 절은 확장 읽을거리다.
+
+### A. hedged request의 비용 제어 — 왜 "p95 이후"인가
+
+- 모든 요청을 즉시 두 번 보내면 부하가 2배가 된다. p95 지연이 지난 뒤에만 재전송하면 전체 요청의 5%만 두 번 가므로 추가 부하 상한이 ~5%로 묶인다 — 원고의 "5%"는 이 설계에서 나온 숫자다.
+- 그래도 시스템 전체가 과부하라 *모두* 느려지는 상황에서는 hedging이 부하를 더 키워 악순환이 된다. 그래서 hedge 비율에 상한(예: 동시 hedge 수 제한, 토큰 버킷)을 두는 구현이 많다. "The Tail at Scale"은 hedge 요청을 하위 우선순위로 처리하거나, tied request로 중복 실행 자체를 줄이는 방법을 제안한다.
+
+### B. retry storm과 hedging의 차이 — idempotency
+
+- 재시도(retry)는 *실패 후* 다시 보내고, hedging은 *실패 전* 미리 보낸다. 둘 다 같은 요청이 두 번 실행될 수 있으므로 **멱등(idempotent)한 요청에만** 안전하다 — 읽기는 대개 괜찮지만, 쓰기는 요청 ID로 dedup하거나 hedging 대상에서 빼야 한다.
+- 장애 시 모든 클라이언트가 동시에 재시도하면 부하가 증폭되어 회복을 막는다(retry storm). 지수 백오프 + jitter, retry budget(예: 최근 요청 대비 재시도 비율 상한)이 표준 방어다. hedging에도 같은 상한 개념이 필요하다.
+
+### C. 퍼센타일 측정 함정
+
+- **평균의 평균·퍼센타일의 평균은 무의미하다.** 노드별 p99를 평균 내면 전체 p99가 아니다. 퍼센타일을 합치려면 원 샘플 또는 히스토그램(버킷 카운트)을 합쳐야 한다 — Prometheus histogram, HdrHistogram이 그런 용도다.
+- **coordinated omission**: 클라이언트가 응답을 기다린 뒤 다음 요청을 보내는 closed-loop 부하 테스트는, 서버가 멈춘 동안 요청을 안 보내므로 그 구간의 느린 샘플이 측정에서 빠진다. 꼬리가 실제보다 좋게 나온다. 고정 간격으로 요청을 발사하는 open-loop 측정(wrk2 류)이 이를 교정한다.
+- 분산 요청에서는 §3의 산식대로 "구성 노드의 p99"가 "전체 요청의 p99"와 전혀 다르다 — 사용자 관점 지표는 fan-out 이후의 end-to-end로 잡아야 한다.
+
+### D. 꼬리 지연 SLO 설계
+
+- SLO는 평균이 아니라 "요청의 99%가 X ms 이내" 같은 꼬리 목표로 잡는다. 목표 대비 허용 실패분이 에러 버짓이고, 버짓이 남아 있으면 배포·실험을, 소진되면 안정화를 우선한다(Google SRE 관행).
+- fan-out이 N인 서비스의 p99를 지키려면 하위 서비스에는 그보다 훨씬 엄격한 꼬리(p999 수준)가 필요하다 — §3의 1 - 0.99^N이 SLO 분배에 그대로 적용된다.
+
+### E. 내장 기능으로 있는 것들
+
+- **gRPC**: 서비스 설정(service config)에 hedging policy(`hedgingDelay`, `maxAttempts`)와 retry policy를 선언할 수 있다. 멱등성은 사용자가 보장해야 한다.
+- **Envoy**: request hedging(`hedge_on_per_try_timeout`)과 outlier detection — 연속 5xx·지연 이상치를 보이는 호스트를 일시적으로 로드밸런싱 풀에서 빼낸다. straggler를 "기다리지 않기"가 아니라 "안 보내기"로 다루는 방식.
+- **Hadoop MapReduce / Spark speculative execution**: 같은 스테이지의 다른 태스크들 진행률 중앙값과 비교해 일정 비율 이상 느린 태스크(Spark 기본 `spark.speculation.multiplier` 1.5배, 최소 실행 시간 조건 포함 — 세부 기본값은 확인 필요)를 다른 노드에서 복제 실행하고 먼저 끝난 결과를 채택, 나머지는 kill한다. 출력이 멱등(원자적 커밋)이어야 하므로 태스크 출력은 임시 경로에 쓰고 성공 시 rename하는 커밋 프로토콜을 쓴다.
