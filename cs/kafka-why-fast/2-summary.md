@@ -1,7 +1,7 @@
 # cs/kafka-why-fast — Kafka가 빠른 이유 — 정리 (힌트)
 
 > 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> 원고는 내가 직접 쓴 `db-engine-lab/docs/study/kafka.md`에 zero-copy 데이터 경로 배경을 더해 한 골격으로 편집한 것이다(2026-08-20).
+> 원고는 내가 직접 쓴 `db-engine-lab/docs/study/kafka.md`(2026-08-20)다. 본문 1~5절은 원고 문장을 순서만 재배치한 것이고(오탈자만 교정), 「전체 흐름」「핵심 문장」은 원고 압축이다. 원고에 없던 문장은 끝에 *(Claude 보강)* 을 달았고, 맨 아래 「[Claude 추가]」 절만 원고에 없던 독립 내용이다.
 > SSD 내부 동작(FTL·매핑·RMW·GC·WAF) 부분은 [nand-flash](../nand-flash/)로 분리한다. 여기서는 결론만 연결한다.
 
 ## 전체 흐름
@@ -17,7 +17,7 @@
          ④ 배치 + 압축 → 네트워크 왕복과 write 횟수를 줄여 "한 번의 큰 순차 write"로 만든다
 뼈대     이 네 가지를 가능하게 하는 것은 트릭이 아니라 데이터 모델이다.
          파티션 = 로그 파일, offset = 컨슈머가 관리하는 파일 위치, 수정 API 없음.
-대가     fsync 안 함(복제로 대체), lag 크면 캐시 미스로 급락, TLS 켜면 zero-copy 불가, NVMe 시대엔 전제가 약해짐.
+대가     fsync 안 함(복제로 대체), lag 크면 캐시 미스로 급락, TLS 켜면 zero-copy 불가(← Claude 보강), NVMe 시대엔 전제가 약해짐.
 ```
 
 ## 1. 전제 — 디스크가 느리다는 건 어느 기준인가
@@ -38,10 +38,12 @@ HDD random access  ~10 ms    (100,000배)
 
 ## 2. 데이터 경로 — 일반 애플리케이션 vs Kafka
 
+*(이 절의 세 다이어그램(일반 방식·Kafka 방식·fetch 경로)과 복사 횟수·컨텍스트 스위치 설명은 2026-08-20 대화에서 Claude가 그린 것이다. 원고에는 `일반: disk -> kernel -> user -> kernel -> socket / sendfile(): disk -> kernel -> socket / 4번의 복사가 2회로 줄고 cpu·메모리 대역폭 절감` 세 줄만 있다 — Claude 보강)*
+
 ### 먼저 알아야 할 것
 
 - `write(fd, buf, len)`은 시스템 콜이다. 자바 객체가 아니라 바이트 주소와 길이를 커널에 넘긴다. 커널은 페이지 캐시에 복사하고 즉시 리턴하며, 디스크 flush는 나중에 flusher 스레드가 비동기로 한다.
-- 커널 공간과 사용자 공간 사이의 복사(`copy_to_user` / `copy_from_user`)는 CPU가 한다. 디스크↔메모리, 메모리↔NIC 사이의 복사는 DMA가 하므로 CPU를 거의 안 쓴다.
+- 커널 공간과 사용자 공간 사이의 복사(`copy_to_user` / `copy_from_user`)는 CPU가 한다. 디스크↔메모리, 메모리↔NIC 사이의 복사는 DMA가 하므로 CPU를 거의 안 쓴다. *(Claude 보강)*
 - JVM 입장에서 힙에 올라온 바이트는 GC 대상이다. 데이터가 힙을 지나가면 GC 부담과 객체 오버헤드(대략 2배)가 따라온다.
 
 ### 일반 방식 — 파일을 읽어 소켓으로 보내면
@@ -68,7 +70,7 @@ Kafka log file
    NIC ──→ Network ──→ Consumer
 ```
 
-복사 4회(DMA 2 + CPU 2), 커널↔사용자 컨텍스트 스위치 4회. 일반 애플리케이션의 흐름이 `DB → Java Object → Deserialize → Business Logic → Serialize → HTTP Response`인 이상 이 두 번의 CPU 복사는 피할 수 없다. 데이터가 "객체"가 되는 순간 JVM을 지나야 하기 때문이다.
+복사 4회(DMA 2 + CPU 2), 커널↔사용자 컨텍스트 스위치 4회. 일반 애플리케이션의 흐름이 `DB → Java Object → Deserialize → Business Logic → Serialize → HTTP Response`인 이상 이 두 번의 CPU 복사는 피할 수 없다. 데이터가 "객체"가 되는 순간 JVM을 지나야 하기 때문이다. *(Claude 보강)*
 
 ### Kafka 방식 — 페이지 캐시를 소켓에 바로 연결
 
@@ -92,7 +94,7 @@ Kafka Log File
    NIC ──→ Network ──→ Consumer
 ```
 
-CPU 복사 0회(NIC가 scatter/gather DMA를 지원할 때), DMA 2회, 컨텍스트 스위치 2회. **JVM은 데이터 경로에서 빠진다.** Kafka가 이렇게 할 수 있는 이유는 브로커가 메시지를 "해석"하지 않기 때문이다. 프로듀서가 보낸 바이트를 그대로 로그에 붙이고, 컨슈머에게 그대로 내보낸다. 압축도 프로듀서가 배치 단위로 하고 브로커는 풀지 않는다.
+CPU 복사 0회(NIC가 scatter/gather DMA를 지원할 때), DMA 2회, 컨텍스트 스위치 2회. **JVM은 데이터 경로에서 빠진다.** *(Claude 보강)* Kafka가 이렇게 할 수 있는 이유는 브로커가 메시지를 "해석"하지 않기 때문이다. 프로듀서가 보낸 바이트를 그대로 로그에 붙이고, 컨슈머에게 그대로 내보낸다. 압축도 프로듀서가 배치 단위로 하고 브로커는 풀지 않는다. *(Claude 보강)*
 
 ### fetch 한 번의 실제 경로
 
@@ -148,7 +150,7 @@ t=2  (한참 뒤) flusher가 디스크에 write
 
 ### ③ Zero-copy (sendfile)
 
-2절 그대로. 조건이 하나 있다 — **TLS를 켜면 쓸 수 없다.** 암호화는 사용자 공간(JVM)에서 해야 하므로 데이터가 다시 JVM을 지난다. 보안과 zero-copy는 맞바꿈 관계다.
+2절 그대로. 조건이 하나 있다 — **TLS를 켜면 쓸 수 없다.** 암호화는 사용자 공간(JVM)에서 해야 하므로 데이터가 다시 JVM을 지난다. 보안과 zero-copy는 맞바꿈 관계다. *(Claude 보강 — 원고는 "세번째는 zero-copy 전송이다" 한 줄)*
 
 ### ④ 배치 + 압축
 
@@ -294,11 +296,42 @@ Chronicle Queue       mmap 기반, syscall 자체를 제거. 나노초 단위 �
 - 일반 앱은 Page Cache → JVM → Socket Buffer로 CPU 복사 2회를 치르고, Kafka는 sendfile로 페이지 캐시를 소켓에 연결해 JVM을 데이터 경로에서 뺀다. 브로커가 메시지를 해석하지 않기 때문에 가능하다.
 - 컨슈머가 따라붙으면 읽기는 페이지 캐시 히트라 디스크를 안 탄다. lag이 커지면 이 전제가 깨진다.
 - 빠름의 비결은 트릭이 아니라 데이터 모델이다 — 파티션 = 로그 파일, offset = 컨슈머 소유의 파일 위치, 수정 API 없음.
-- 내구성은 fsync가 아니라 복제(ISR, acks=all)로 산다. zero-copy는 TLS와 맞바꿈이다.
+- 내구성은 fsync가 아니라 복제(ISR, acks=all)로 산다. zero-copy는 TLS와 맞바꿈이다(후자는 Claude 보강).
 - 저장 매체가 바뀌면 최적 패턴도 바뀐다. 원칙은 같고 답이 다르다.
 
 ## 관련 자료
 
 - 따라 친 원본 노트(직접 작성): `/home/jun/project/db-engine-lab/docs/study/kafka.md`
-- zero-copy 경로 다이어그램: 2026-08-20 대화에서 추가한 원고
+- zero-copy 경로 다이어그램(2절): 2026-08-20 대화에서 Claude가 추가한 것 — 원고 아님
 - 분리한 내용: SSD 내부(FTL·매핑 granularity·RMW·GC·WAF) → [nand-flash](../nand-flash/) · BookKeeper striping → [striping](../striping/) · LSM → [lsm-tree](../lsm-tree/)
+
+---
+
+## [Claude 추가] 더 알면 좋은 것
+
+> 아래는 원고에 없던 내용이다. 복습 대상은 1~5절이고, 이 절은 확장 읽을거리다.
+
+### A. sendfile vs mmap — 같은 "zero-copy"인데 무엇이 다른가
+
+- `sendfile()`(Java `FileChannel.transferTo()`)은 파일→소켓 한 방향 전송 전용이다. 사용자 공간이 데이터를 볼 수 없는 대신 CPU 복사가 0회(NIC가 scatter/gather DMA를 지원할 때)다. Kafka의 **읽기(fetch 응답)** 경로가 이것이다.
+- `mmap()`은 파일 페이지를 프로세스 주소 공간에 매핑해 read/write syscall을 없앤다. 데이터를 사용자 공간에서 "보고 고칠 수" 있지만, 소켓으로 보내려면 결국 `write()`가 필요해 CPU 복사 1회는 남는다. Kafka는 메시지 본문이 아니라 **인덱스 파일(`.index`, `.timeindex`)** 을 mmap으로 다룬다 — 작고 랜덤 접근이 잦은 것에 맞는 선택이다.
+- 즉 "Kafka = zero-copy"는 정확히는 "로그 본문 읽기 = sendfile, 인덱스 = mmap, 쓰기 = 일반 write()"다. 쓰기 경로는 zero-copy가 아니다 — 네트워크에서 받은 바이트가 JVM(off-heap 버퍼)을 한 번 지나 `write()`로 페이지 캐시에 들어간다(본문 2절 "정정 하나"와 연결).
+
+### B. TLS와 zero-copy — 왜 못 쓰고, 어떤 우회가 있나
+
+- `sendfile()`은 커널이 페이지 캐시의 바이트를 그대로 NIC로 보내는 것이므로, 그 바이트를 **암호화해서** 보내야 하는 TLS와 원리적으로 충돌한다. Kafka 브로커에서 `security.protocol=SSL`이면 fetch 응답은 JVM의 SSLEngine을 거쳐 암호화되고, 결국 일반 방식(페이지 캐시 → JVM → 소켓 버퍼)으로 돌아간다. 이 때문에 TLS를 켜면 브로커 CPU 사용량이 눈에 띄게 늘어난다.
+- 커널 쪽 해법이 kTLS(Kernel TLS)다. 핸드셰이크는 사용자 공간에서 하고 대칭키를 커널 소켓에 심어 두면, 커널이 sendfile 경로에서 암호화까지 하므로 zero-copy가 다시 가능해진다(NIC 오프로드를 붙이면 CPU 부담도 줄인다). Linux 4.13+ 에 들어갔고 OpenSSL 3.x가 지원하지만, **JDK의 SSLEngine은 kTLS를 쓰지 않아 Kafka 브로커에 바로 적용되지는 않는다**(정확한 현황은 확인 필요).
+- 실무 절충: 브로커 간 복제 트래픽이나 같은 VPC 안의 클라이언트는 PLAINTEXT로 두고 경계에서만 TLS를 종단(terminate)하거나, 네트워크 계층 암호화(IPsec·WireGuard)로 대체하는 식으로 zero-copy를 지키는 구성이 흔하다.
+
+### C. 페이지 캐시에 맡긴 대가 — flush, JVM heap, lag의 상호작용
+
+- **flush 정책**: Kafka는 `log.flush.interval.messages`·`log.flush.interval.ms`를 기본 무제한(= fsync 안 함)으로 둔다. 디스크 내려쓰기는 커널 flusher(`vm.dirty_background_ratio`, `vm.dirty_ratio`, `vm.dirty_expire_centisecs`)가 결정한다. dirty 페이지가 `dirty_ratio`를 넘으면 **쓰기 프로세스가 동기적으로 막혀** 쓰기 지연이 튄다 — "fsync를 안 해서 빠르다"의 이면에는 커널 flush 파라미터가 브로커 p99를 좌우한다는 사실이 있다.
+- **JVM heap과의 경쟁**: 페이지 캐시는 "남는 RAM"에 산다. 브로커 heap을 크게 잡으면 그만큼 캐시가 줄어 read가 디스크로 간다. Kafka 운영 가이드가 heap을 작게(수 GB) 두고 나머지를 OS에 넘기라고 하는 이유다. 같은 박스에서 다른 JVM/프로세스가 메모리를 많이 쓰면 Kafka는 건드린 게 없어도 느려진다.
+- **lag → 캐시 miss → 쓰기까지 느려짐**: 뒤처진 컨슈머가 오래된 세그먼트를 읽으면 디스크 read가 생기고, 그 페이지들이 캐시에 올라오면서 **최신 페이지를 밀어낸다**(LRU 류 교체). 결과적으로 따라붙고 있던 다른 컨슈머들까지 miss를 맞고, 디스크 read가 같은 스핀들/NVMe 큐를 점유해 쓰기 처리량도 떨어진다. 원고 5절의 "BookKeeper는 journal/ledger 디스크를 분리해 이 간섭을 피한다"가 정확히 이 문제를 겨냥한다. 모니터링 지표로는 consumer lag 외에 브로커의 read I/O wait, 페이지 캐시 hit ratio(`cachestat`/`vmtouch`)를 함께 본다.
+
+### D. 이후의 변화 — KRaft, Tiered Storage, 그리고 "디스크를 버린" 설계
+
+- **KRaft**(ZooKeeper 제거): 메타데이터를 Raft 로그(내부 `__cluster_metadata` 토픽)로 관리한다. Kafka 3.3에서 production-ready, 4.0에서 ZooKeeper 모드가 제거됐다. 성능보다 운영 단순화와 컨트롤러 failover 속도(수십만 파티션 규모)가 동기다.
+- **Tiered Storage**(KIP-405): 세그먼트가 로컬에서 닫히면 S3 같은 원격 저장소로 올리고, 로컬에는 최근 것만 남긴다. 오래된 데이터 읽기는 원격에서 가져오므로 **lag 큰 컨슈머가 로컬 페이지 캐시를 오염시키지 않는다**는 부수 효과가 있다. 3.6에서 early access, 3.9에서 GA(정확 버전은 확인 필요).
+- **Diskless 계열**(WarpStream, AutoMQ, KIP-1150 "Diskless Topics" 제안): 브로커가 로컬 디스크 없이 오브젝트 스토리지에 직접 쓴다. 이 경우 sendfile·페이지 캐시라는 원고의 트릭 ②③이 사라지고, 대신 배치(④)를 극대화해 S3 PUT 횟수를 줄이는 쪽으로 최적화 축이 옮겨간다. "가진 저장소가 잘하는 패턴"이 S3에서는 '큰 객체 적게 쓰기'이므로, 원고 5절의 결론이 그대로 적용되는 사례다.
+
