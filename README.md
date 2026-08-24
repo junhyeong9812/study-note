@@ -79,4 +79,5 @@ study-note/
 | [ops-patterns](ops-patterns/) | `/home/jun/project/myway/ops-patterns` (01~19) | [index](ops-patterns/index.md) |
 | [api-design](api-design/) | `/home/jun/project/myway/api-design` (01~06, 확정 체크리스트 훈련) | [index](api-design/index.md) |
 | [programmers](programmers/) | 프로그래머스 고득점 Kit (유형 10 · 문제 47) — 1-question.md / 3-answer.md (2-summary 없음) | — |
+| [study-note-deploy-system](study-note-deploy-system/) | 이 저장소를 배포하는 시스템의 이슈별 구현 기록 (backend·front·llm — 골격: templates/project-issue.md) | — |
 | [세미나](세미나/) | 컨퍼런스·세미나 후기 — nerdcon-5 (2026-08-22, AI 시대 개발자 성장 방향) | — |
