@@ -10,6 +10,7 @@
 | [solid-principles](solid-principles/) | 서머리 이관 + 질문 7개 작성 완료, 정답 미작성 | `jun-bank/docs/study/organize/SOLID.md` |
 | [thrashing](thrashing/) | **검토 대기(2026-08-23)** — 서머리(직접 작성, 소제목 정리)·질문 5·정답(초안) — 동적 배열 resize 반복과 히스테리시스 | 직접 작성(원본 노트 = 2-summary) |
 | [Hysteresis](Hysteresis/) | **검토 대기(2026-08-23)** — 서머리(직접 작성, 소제목 정리)·질문 5·정답(초안) — 방향별 임계값 분리, hysteresis band, thrashing과의 구분 | 직접 작성(원본 노트 = 2-summary) |
+| [development-standards](development-standards/) | 스켈레톤(2026-08-23) — 품질(ISO 25010)·보안(OWASP Top10/ASVS·NIST SSDF)·운영(ISO 20000-1·Google SRE)·법률(개인정보보호법+관련 법령) 4축, 하위 [index](development-standards/index.md) | 원고 작성 예정(기준 문서는 각 서머리 관련 자료) |
 
 ## 후보 (jun-bank에서 공부한 주제 — 이관 대기)
 
