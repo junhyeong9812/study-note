@@ -78,5 +78,5 @@ study-note/
 | [domain-modeling-advanced](domain-modeling-advanced/) | `/home/jun/project/myway/domain-modeling-advanced` (01~30) | [index](domain-modeling-advanced/index.md) |
 | [ops-patterns](ops-patterns/) | `/home/jun/project/myway/ops-patterns` (01~19) | [index](ops-patterns/index.md) |
 | [api-design](api-design/) | `/home/jun/project/myway/api-design` (01~06, 확정 체크리스트 훈련) | [index](api-design/index.md) |
-| [programmers](programmers/) | 프로그래머스 고득점 Kit (유형 10 · 문제 47) — problem.md / analyze.md | — |
+| [programmers](programmers/) | 프로그래머스 고득점 Kit (유형 10 · 문제 47) — 1-question.md / 3-answer.md (2-summary 없음) | — |
 | [세미나](세미나/) | 컨퍼런스·세미나 후기 — nerdcon-5 (2026-08-22, AI 시대 개발자 성장 방향) | — |
