@@ -20,7 +20,11 @@ study-note/
 ├── templates/                 ← 1-question / 2-summary / 3-answer 포맷 템플릿
 ├── reference/                 ← 작성 지침 (organize-guide.md · writing/ — README 색인 + evidence 원재료 10개)
 ├── 세미나/                     ← 컨퍼런스·세미나 후기 (예: nerdcon/nerdcon-5.md)
-└── <주제>/                     ← 예: db-engine-lab/, cs/
+├── cs/                        ← 개념 지식(1/2/3 챕터): systems·engineering·algorithm·data-structure·domain-modeling·ops-patterns·api-design
+├── practice/                  ← 훈련(문제→풀이): programmers
+├── project/                   ← 만든 것의 기록: db-engine·study-note-deploy-system
+├── lab/  portfolio/           ← 실험 기록 · 대외용 정리
+└── <주제>/                     ← 예: cs/systems/lsm-tree/
     ├── README.md              ← 그 주제의 공부 규칙
     ├── index.md               ← 챕터/주제 목록과 진행 상태 (상태 변경 시마다 갱신)
     └── <챕터>/                 ← 예: 08-01-wal-recovery/, solid-principles/
@@ -70,14 +74,15 @@ study-note/
 
 | 주제 | 원본 | 진행 |
 |------|------|------|
-| [db-engine-lab](db-engine-lab/) | `/home/jun/project/db-engine-lab` (impl/ 01~21) | [index](db-engine-lab/index.md) |
-| [cs](cs/) | 프로젝트 무관 CS·설계 지식 (기준 문서는 주제마다 지정) | [index](cs/index.md) |
-| [algorithm](algorithm/) | `/home/jun/project/myway/algorithm` (01~30) | [index](algorithm/index.md) |
-| [data-structure](data-structure/) | `/home/jun/project/myway/data-structure` (01~35) | [index](data-structure/index.md) |
-| [domain-modeling-basic](domain-modeling-basic/) | `/home/jun/project/myway/domain-modeling-basic` (01~30) | [index](domain-modeling-basic/index.md) |
-| [domain-modeling-advanced](domain-modeling-advanced/) | `/home/jun/project/myway/domain-modeling-advanced` (01~30) | [index](domain-modeling-advanced/index.md) |
-| [ops-patterns](ops-patterns/) | `/home/jun/project/myway/ops-patterns` (01~19) | [index](ops-patterns/index.md) |
-| [api-design](api-design/) | `/home/jun/project/myway/api-design` (01~06, 확정 체크리스트 훈련) | [index](api-design/index.md) |
-| [programmers](programmers/) | 프로그래머스 고득점 Kit (유형 10 · 문제 47) — 1-question.md / 3-answer.md (2-summary 없음) | — |
-| [study-note-deploy-system](study-note-deploy-system/) | 이 저장소를 배포하는 시스템의 이슈별 구현 기록 (backend·front·llm — 골격: templates/project-issue.md) | — |
+| [project/db-engine](project/db-engine/) | `/home/jun/project/db-engine` (impl/ 01~21) | [index](project/db-engine/index.md) |
+| [cs](cs/) | 개념 지식 전반 — systems·engineering·algorithm·data-structure·domain-modeling·ops-patterns·api-design | [index](cs/index.md) |
+| [cs/algorithm](cs/algorithm/) | `/home/jun/project/myway/algorithm` (01~30) | [index](cs/algorithm/index.md) |
+| [cs/data-structure](cs/data-structure/) | `/home/jun/project/myway/data-structure` (01~35) | [index](cs/data-structure/index.md) |
+| [cs/domain-modeling/basic](cs/domain-modeling/basic/) | `/home/jun/project/myway/domain-modeling-basic` (01~30) | [index](cs/domain-modeling/basic/index.md) |
+| [cs/domain-modeling/advanced](cs/domain-modeling/advanced/) | `/home/jun/project/myway/domain-modeling-advanced` (01~30) | [index](cs/domain-modeling/advanced/index.md) |
+| [cs/ops-patterns](cs/ops-patterns/) | `/home/jun/project/myway/ops-patterns` (01~19) | [index](cs/ops-patterns/index.md) |
+| [cs/api-design](cs/api-design/) | `/home/jun/project/myway/api-design` (01~06, 확정 체크리스트 훈련) | [index](cs/api-design/index.md) |
+| [practice/programmers](practice/programmers/) | 프로그래머스 고득점 Kit (유형 10 · 문제 47) — 1-question.md / 3-answer.md (2-summary 없음) | — |
+| [project/study-note-deploy-system](project/study-note-deploy-system/) | 이 저장소를 배포하는 시스템의 이슈별 구현 기록 (backend·front·llm — 골격: templates/project-issue.md) | — |
+| [lab](lab/) · [portfolio](portfolio/) | 실험 기록 · 대외용 정리 (자리 확보) | — |
 | [세미나](세미나/) | 컨퍼런스·세미나 후기 — nerdcon-5 (2026-08-22, AI 시대 개발자 성장 방향) | — |

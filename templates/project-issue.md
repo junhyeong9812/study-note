@@ -1,7 +1,7 @@
 # 템플릿 — 프로젝트 이슈 정리
 
 > 프로젝트에서 이슈 하나(이슈 → 구현 → PR)가 끝나면, 그 전체 맥락을 이 골격으로
-> `study-note-deploy-system/<서버>/issueN/README.md` 한 파일에 정리한다.
+> `project/study-note-deploy-system/<서버>/issueN/README.md` 한 파일에 정리한다.
 
 ## 작성 규칙
 
