@@ -82,6 +82,8 @@ study-note/
 | [cs/domain-modeling/advanced](cs/domain-modeling/advanced/) | `/home/jun/project/myway/domain-modeling-advanced` (01~30) | [index](cs/domain-modeling/advanced/index.md) |
 | [cs/ops-patterns](cs/ops-patterns/) | `/home/jun/project/myway/ops-patterns` (01~19) | [index](cs/ops-patterns/index.md) |
 | [cs/api-design](cs/api-design/) | `/home/jun/project/myway/api-design` (01~06, 확정 체크리스트 훈련) | [index](cs/api-design/index.md) |
+| [portfolio/k-brand-guard](portfolio/k-brand-guard/) | `/home/jun/project/resume` 경력기술서 - K-브랜드 지킴이 사례 5건 | [index](portfolio/k-brand-guard/index.md) |
+| [portfolio/markview](portfolio/markview/) | `/home/jun/project/resume` 경력기술서 - MarkView 사례 3건 | [index](portfolio/markview/index.md) |
 | [practice/programmers](practice/programmers/) | 프로그래머스 고득점 Kit (유형 10 · 문제 47) — 1-question.md / 3-answer.md (2-summary 없음) | — |
 | [project/study-note-deploy-system](project/study-note-deploy-system/) | 이 저장소를 배포하는 시스템의 이슈별 구현 기록 (backend·front·llm — 골격: templates/project-issue.md) | — |
 | [lab](lab/) · [portfolio](portfolio/) | 실험 기록 · 대외용 정리 (자리 확보) | — |
