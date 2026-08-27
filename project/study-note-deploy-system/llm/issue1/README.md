@@ -127,16 +127,51 @@ async with sem:           # 입장. 예외가 나도 자동 퇴장(자리 반납
 
 ### 문제 3 — qwen3 thinking 폭주 → 전 요청 타임아웃 (실기동에서만 발견)
 
-- **문제**: GPU도 모델도 멀쩡한데 /rewrite가 매번 정확히 5초에서 죽음.
-- **원인**: 프롬프트에 넣은 `/no_think`(Qwen 문법의 생각-끄기 스위치)를 Ollama의
-  qwen3 템플릿이 그냥 텍스트로 취급 → 모델이 속생각(thinking)을 끝없이 생성,
-  31,000+ 토큰 폭주. 게다가 클라이언트가 5초에 연결을 끊어도 **Ollama는 서버쪽
-  생성을 멈추지 않아** GPU가 계속 잡혀 있었다.
-- **수정**: API 필드 `think: false`(공식 방법) + `num_predict: 512`(생성 토큰 상한).
-- **이유/배경**: 모델 카드의 프롬프트 문법이 서빙 런타임에서도 통한다고 가정하면
-  안 된다. 그리고 클라이언트 타임아웃은 서버 자원을 보호하지 못하므로 서버측
-  상한이 반드시 따로 필요하다. 수정 후: 웜 1.33초. 이건 mock 테스트로는 절대
-  못 잡는 유형 — 실기동 스모크를 머지 조건에 넣은 게 유효했다.
+**증상**: 모델 pull 완료·GPU 로드 확인 후에도 /rewrite가 매번 **정확히 5초**에서 죽음:
+
+```
+$ time curl -X POST .../rewrite -d '{"request_id":"smoke-2","query":"낙관적 락이랑 비관적 락 차이"}'
+{"error":"upstream_timeout"}
+real    0m5.006s        ← 총예산 5s가 정확히 발동 (계약은 동작, 추론이 문제)
+```
+
+**진단**: ① `ollama ps` — 모델은 100% GPU 로드 정상. ② 같은 요청을 Ollama에 **직접**
+쳐봄 → 8분 넘게 안 끝남. ③ GPU와 Ollama 서버 로그:
+
+```
+$ nvidia-smi ...
+98 %, 5470 MiB, 8192 MiB                        ← GPU는 풀가동 중
+
+$ docker logs llm-ollama | tail
+slot print_timing: id 0 | task 834 | n_gen = 31325, tg = 63.94 t/s
+slot   operator(): id 0 | task 834 | slot context shift, n_keep = 4, n_left = 4091, n_discard = 2045
+```
+
+초당 64토큰으로 **멀쩡히** 생성 중인데 이미 **31,000+ 토큰** — 답이 안 끝나는 게 아니라
+**끝낼 생각이 없는** 상태다(4096 컨텍스트를 넘겨 context shift까지 발생). 프롬프트에 넣은
+`/no_think`(Qwen 문법의 생각-끄기 스위치)를 Ollama의 qwen3 챗 템플릿이 특별 취급하지
+않고 일반 텍스트로 넘긴 것 — thinking이 켜진 채 JSON 스키마 강제(format)와 얽혀 종결
+조건에 도달하지 못했다. 그리고 wrapper가 5초에 연결을 끊어도 **Ollama는 서버쪽 생성을
+계속했다**(task 834가 계속 돎) — 그래서 후속 요청까지 GPU를 못 잡고 연쇄 타임아웃.
+
+**수정** (usecase/rewrite.py):
+
+```diff
+             "stream": False,
++            "think": False,            # 근본 원인 제거 — ollama의 공식 생각-끄기는 API 필드
+             "format": schema,
+-            "options": {"temperature": 0},
++            "options": {"temperature": 0, "num_predict": 512},
++                                       # 폭주 가드레일 — 클라이언트 절단이 서버를 못 지키므로
+```
+프롬프트의 `/no_think` 문자열은 삭제(효과 없는 주술).
+
+**결과**: 콜드 3.56s → 웜 **1.33s**, 출력 정상.
+
+**배경**: ① 모델 카드의 프롬프트 문법이 서빙 런타임에서도 통한다고 가정하지 말 것 —
+모델 제어는 그 런타임의 공식 API로. ② **클라이언트 타임아웃은 서버 자원을 보호하지
+않는다** — 서버측 생성 상한(num_predict)이 유일한 방어선(31k 토큰이 그 증거).
+③ 이건 mock 테스트로는 절대 못 잡는 유형 — 실기동 스모크를 머지 조건에 넣은 게 유효했다.
 
 ## 6. 결론
 

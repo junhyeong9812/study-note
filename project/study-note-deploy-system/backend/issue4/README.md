@@ -126,17 +126,54 @@ scores[key] = hit to (기존 + 1.0 / (60 + 등수))
 
 ## 5. 구현 중 마주친 문제
 
-### 문제 — llm이 제안한 필터를 믿었더니 검색이 망가짐 (리뷰 반영 후 실측)
-- **증상**: "세마포어가 뭐야"를 치면 결과가 전부 `1-question.md`(질문 목록). 정리·정답이
-  하나도 안 나온다.
-- **원인**: rewrite가 `filters.doc_kind = "question"`을 제안("질문이니까 question 문서겠지")
-  → 이걸 하드 필터로 적용 → summary·answer가 전부 걸러짐. 의도와 정반대.
-- **수정**: rewrite 제안(topic·doc_kind)은 **필터로 쓰지 않는다**. 검색어 확장에만 쓰고
-  제안값은 로그로 남겨 나중에 판단 재료로 축적. 하드 필터는 사용자가 명시한 파라미터만.
-- **배경**: 약한 모델의 "구조화" 출력은 참고 자료지 결정권자가 아니다. local-llm 때의
-  교훈("약한 모델 + 좋은 검색")을 필터에서도 지켜야 했다. 리뷰어 둘이 "제안 필터를 안
-  쓴다"고 지적했는데 막상 적용해보니 해롭다는 게 실측으로 드러난 사례 — **리뷰 지적도
-  실측으로 검증**한다.
+### llm이 제안한 필터를 믿었더니 검색이 반대로 갔다 (리뷰 반영 직후 실측)
+
+**맥락**: 듀얼 리뷰가 "rewrite의 `filters.doc_kind`를 파싱만 하고 안 쓴다(사문 필드)"고
+지적했고, 우선순위 `명시 파라미터 > rewrite 제안 > 기본값`으로 배선해서 반영했다.
+그리고 재배포 스모크에서:
+
+**증상**:
+
+```
+$ curl --get .../api/search --data-urlencode "q=세마포어가 뭐야"
+rewrite: True dense: True
+0.0318 cs/lsm-tree/1-question.md#1        | 질문
+0.0315 cs/solid-principles/1-question.md#1 | 질문
+0.0313 cs/striping/1-question.md#1         | 질문
+0.0313 cs/straggler/1-question.md#1        | 질문
+```
+
+결과가 **전부 1-question.md** — 답이 없는 질문 목록만 나온다. 기본 필터는 분명
+question을 제외하는데.
+
+**진단**: rewrite 로그를 보니 모델이 `filters.doc_kind = "question"`을 제안했다.
+"뭐야"로 끝나는 질문형 검색어니까 "question 문서를 찾는 거겠지"라고 추론한 것 —
+사람 의도(질문에 대한 **답**을 찾는다)와 정반대다. 방금 배선한 우선순위 때문에 이 제안이
+기본값을 밀어내고 하드 필터로 적용돼 summary·answer·post가 전부 걸러졌다.
+연달아 `doc_kind=question`을 **명시**한 두 번째 스모크도 0건 — 이쪽은 rewrite가 제안한
+topic 필터까지 겹쳐 교집합이 비어버린 것.
+
+**수정** (SearchService):
+
+```diff
+-        val filterTopic = topic ?: rewrite.topic.takeIf { rewrite.used }
+-        val filterKinds = docKinds ?: rewrite.docKind?.let { listOf(it) } ?: defaultKinds
++        // 하드 필터는 명시 파라미터만. rewrite 제안은 필터로 쓰지 않는다 —
++        // 실측: "세마포어가 뭐야"에 doc_kind=question 제안 → 정리·정답 전멸.
++        val filterTopic = topic
++        val filterKinds = docKinds?.takeIf { it.isNotEmpty() } ?: defaultKinds
++        if (rewrite.used && (rewrite.topic != null || rewrite.docKind != null)) {
++            requestLog.log(requestId, "rewrite hint (미적용): topic=... doc_kind=...")
++        }
+```
+
+제안값은 버리지 않고 **로그로 축적** — 나중에 "제안이 얼마나 맞았나"를 실데이터로 판단할
+재료([구현 검증] #7).
+
+**배경**: 두 겹의 교훈. ① 약한 모델의 구조화 출력은 참고 자료지 결정권자가 아니다 —
+local-llm의 "약한 모델 + 좋은 검색" 원칙은 필터에도 적용된다. ② **리뷰 지적을 반영한
+코드도 실측으로 재검증해야 한다** — 리뷰어 둘 다 "배선하라"고 했지만, 배선해보니 해로운
+기능이었다. 리뷰는 "설계와 코드의 불일치"를 잡지, "설계 자체의 유해함"은 실측만 잡는다.
 
 ## 6. 결론
 

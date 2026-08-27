@@ -64,15 +64,42 @@ RUN bin/elasticsearch-plugin install --batch analysis-nori
 
 ## 5. 구현 중 마주친 문제
 
-### 문제 — embedding 컨테이너가 계속 unhealthy
+### embedding 컨테이너가 영원히 unhealthy — 배포가 멈춤
 
-- **원인**: healthcheck에 `curl`을 썼는데 **그 이미지엔 curl이 없다**(`curl: not found`).
-  게다가 처음엔 얕은 `/health`(모델 객체 존재만 확인)를 봤다.
-- **수정**: local-llm 원본 방식으로 회귀 — `python -c "urllib.request.urlopen(...)"` +
-  `/health/deep`(GPU에서 실제 추론 1건). `start_period 300s`로 모델 로딩 여유.
-- **배경**: `/health/deep`을 쓰는 이유는 실측 사고 기록 때문이다 — 2026-07-31 재부팅 후
-  컨테이너가 GPU를 잃었는데 얕은 헬스체크가 "정상"을 6일간 반환했다. **헬스체크는
-  "프로세스가 떠 있나"가 아니라 "계약(추론 가능)을 지키나"를 검증해야 한다.**
+**증상**: `depends_on: embedding: service_healthy`를 걸어둔 상태에서 배포하자:
+
+```
+dependency failed to start: container backend-embedding is unhealthy
+```
+
+**진단**: 헬스체크가 왜 실패하는지 실제 실행 기록을 열었다:
+
+```
+$ docker inspect backend-embedding --format '{{json .State.Health}}'
+Status: unhealthy
+ExitCode 1: /bin/sh: 1: curl: not found
+ExitCode 1: /bin/sh: 1: curl: not found
+ExitCode 1: /bin/sh: 1: curl: not found
+```
+
+서버가 아픈 게 아니라 **검사 도구가 없었다** — 우리가 쓴 healthcheck 명령이 `curl`인데,
+BGE-M3 이미지(python slim 계열)엔 curl이 안 들어 있다. local-llm 시절 원본 compose를
+확인하니 이미 같은 문제를 겪고 python으로 우회해놨었다:
+
+```yaml
+# local-llm/servers/embedding/docker-compose.yml (원본)
+test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8080/health/deep', timeout=20)\" || exit 1"]
+start_period: 300s     # 첫 기동 시 모델 다운로드+로딩 여유
+```
+
+**수정**: 원본 방식 그대로 계승(python urllib + `/health/deep` + start_period 300s).
+처음에 얕은 `/health`를 봤던 것도 이때 `/health/deep`으로 교정.
+
+**배경**: `/health/deep`이어야 하는 이유는 원본 코드 주석에 실측 사고로 남아 있다 —
+"2026-07-31 재부팅 후 컨테이너가 GPU를 잃었는데 /health가 loaded:true를 계속 반환,
+docker는 6일 내내 healthy로 표시했고 그 사이 임베딩이 전부 죽어 있었다." 헬스체크는
+"프로세스 생존"이 아니라 **계약(추론 가능)**을 검증해야 한다. 그리고 남이 만든 이미지에
+healthcheck를 붙일 땐 그 이미지에 검사 도구가 있는지부터.
 
 ## 6. 결론
 

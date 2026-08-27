@@ -44,13 +44,43 @@ infra/    Git·ES·Embedding·Llm·RequestLog (바깥 세상)
 
 ## 4. 구현 중 마주친 문제
 
-### 문제 — 배포하자 앱이 무한 재시작: "bean 이름 충돌"
-- **원인**: 배포 rsync에 `--delete`가 없어서 서버에 **옛 패키지 파일이 그대로 남았고**,
-  Docker 빌드가 옛/새 GlobalErrorHandler를 둘 다 컴파일 → Spring이 같은 이름의 빈
-  두 개를 발견하고 기동 거부.
-- **수정**: rsync에 `--delete`(대상에서 사라진 파일 제거) 표준화.
-- **배경**: "복사"만 하는 배포는 삭제를 전달하지 못한다 — 파일 이동이 큰 리팩토링일수록
-  잔재가 유령처럼 남는다. 앱이 크게 터져줘서(기동 거부) 오히려 다행인 사례.
+### 배포하자 앱이 무한 재시작 — "같은 이름의 빈이 두 개"
+
+**증상**: 배포 후 스모크가 전부 연결 실패(exit code 000). 컨테이너 상태와 로그:
+
+```
+$ docker ps -a | grep backend-app
+backend-app    Restarting (1) 38 seconds ago
+
+$ docker logs backend-app | grep Caused
+Caused by: org.springframework.context.annotation.ConflictingBeanDefinitionException:
+  Annotation-specified bean name 'globalErrorHandler'
+  for bean class [xyz.junproject.backend.common.GlobalErrorHandler]
+  conflicts with existing, non-compatible bean definition of same name and class
+  [xyz.junproject.backend.api.GlobalErrorHandler]
+```
+
+**진단**: `common.GlobalErrorHandler`와 `api.GlobalErrorHandler`가 **동시에** 존재한다는
+얘기인데, 로컬엔 `common/`이 없다(git mv로 옮겼으니). 서버의 소스 디렉토리를 의심 —
+배포는 `rsync -a`(복사)였고 **`--delete`가 없었다.** rsync는 "로컬에 있는 걸 복사"만
+하지 "로컬에서 사라진 걸 서버에서 지우기"는 `--delete`를 줘야 한다. 서버엔 옛
+`common/ sync/ indexing/ search/` 패키지가 유령처럼 남았고, Docker 빌드(`COPY src`)가
+옛/새 파일을 전부 컴파일 → Spring이 같은 빈 이름 두 개를 보고 기동 거부.
+
+**수정** (배포 명령):
+
+```diff
+-rsync -a -e "ssh -i $K" --exclude .git ... ./ jun@<host>:~/backend/
++rsync -a --delete -e "ssh -i $K" --exclude .git --exclude .env ... ./ jun@<host>:~/backend/
++#        ^^^^^^^^ 로컬에서 사라진 파일을 서버에서도 제거   ^^^^^^^^^^^^ 서버의 배포 설정은 보호
+```
+
+`--delete`를 켜면 서버에만 있어야 하는 파일(.env — 시크릿)이 같이 지워질 수 있어서
+`--exclude .env`를 함께 추가했다.
+
+**배경**: "복사"만 하는 배포는 **삭제를 전달하지 못한다**. 파일 이동이 큰 리팩토링일수록
+잔재가 남는다. 이번엔 Spring이 기동을 거부해줘서(시끄러운 실패) 즉시 잡았지만, 만약
+충돌 없는 잔재였다면 옛 코드가 조용히 섞여 돌았을 것 — 시끄러운 실패가 고마운 경우.
 
 ## 5. 결론
 

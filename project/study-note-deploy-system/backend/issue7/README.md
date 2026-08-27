@@ -33,12 +33,41 @@ TreeBuilder는 domain의 **순수 함수**(경로 목록 → 트리) — git도 
 
 ## 3. 구현 중 마주친 문제
 
-### 문제 — 트리 JSON만 camelCase(docKind)로 나감
-- **원인**: 다른 API는 응답을 손으로 조립(snake_case)했는데 트리는 Kotlin data class를
-  그대로 직렬화 — 필드명이 코드 관례(camelCase)로 나갔다.
-- **수정**: `@JsonProperty("doc_kind")`·`("is_subject")`로 계약 통일.
-- **배경**: "자동 직렬화"는 편하지만 계약을 코드 내부 관례에 결합시킨다. 봉투 규약처럼
-  **외부 계약은 명시적으로** 선언해야 리팩토링(필드명 변경)이 계약을 못 깨뜨린다.
+### 트리 JSON만 camelCase로 나감 — 스모크 스크립트의 KeyError가 잡아줌
+
+**증상**: 스모크에서 트리를 파싱하다가:
+
+```
+$ curl .../api/tree | python3 -c "... doc[\"doc_kind\"] ..."
+KeyError: 'doc_kind'
+```
+
+실제 응답을 열어보니 필드가 `"docKind"`, `"isSubject"`로 나가고 있었다. 우리 API 계약은
+전부 snake_case(`doc_kind`·`chunk_no` — /api/docs·/api/search가 그렇게 준다)인데
+트리만 달랐다.
+
+**진단**: 다른 API는 응답을 `mapOf("doc_kind" to ...)`처럼 **손으로** 조립해서 필드명을
+직접 정했는데, 트리는 Kotlin data class(`DocRef(val docKind: ...)`)를 Jackson에 그대로
+직렬화 — 필드명이 코드 내부 관례(camelCase)로 새어 나갔다.
+
+**수정** (TreeBuilder):
+
+```diff
+-    data class DocRef(val path: String, val docKind: String, val form: String)
++    data class DocRef(
++        val path: String,
++        @get:JsonProperty("doc_kind") val docKind: String,   // API 계약은 snake_case 통일
++        val form: String,
++    )
+...
++        @get:JsonProperty("is_subject")
+         val isSubject: Boolean get() = docs.isNotEmpty() && children.isEmpty()
+```
+
+**배경**: 자동 직렬화는 편하지만 **외부 계약을 코드 내부 관례에 결합**시킨다. 계약이 되는
+필드는 명시적으로 선언해야, 나중에 코드 필드명을 리팩토링해도 계약이 안 깨진다. 그리고
+스모크 스크립트가 기대 필드명을 하드코딩한 덕에 계약 불일치가 즉시 드러났다 — 스모크는
+"200 떴나"만 보지 말고 **몸통을 실제로 파싱**해야 한다.
 
 ## 4. 결론
 

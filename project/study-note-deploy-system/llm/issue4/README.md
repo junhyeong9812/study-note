@@ -86,11 +86,38 @@ async def validation_envelope(request, error):
 
 ### 문제 — "입력 검증 실패"만 봉투 밖으로 새는 구멍
 
-- **원인**: pydantic 검증 실패(필수 필드 누락 등)는 내 코드에 안 닿고 FastAPI가
-  자기 기본 모양 `{"detail": [...]}`으로 먼저 응답해버린다.
-- **수정**: 전역 예외 핸들러로 가로채 `invalid_request` 봉투로 변환.
-- **배경**: 정규화의 값어치는 "예외 없이 전부"에서 나온다 — 한 경로라도 다른
-  모양이 남으면 backend는 결국 두 모양을 다 처리해야 해서 도입 의미가 반감된다.
+**증상**: 봉투를 다 씌웠다고 생각하고 필수 필드를 빼먹은 요청을 던져보니:
+
+```
+$ curl -X POST .../rewrite -d '{"query": "no id"}'          # request_id 누락
+{"detail":[{"type":"missing","loc":["body","request_id"],"msg":"Field required",...}]}
+```
+
+`success` 필드가 없는 **FastAPI 기본 모양**이 나온다. 봉투 규약을 아는 backend가 이걸
+받으면 `body["success"]`에서 KeyError.
+
+**원인**: pydantic 검증 실패는 라우터 함수에 **진입하기 전에** FastAPI가 가로채 자기
+형식(`RequestValidationError` → `{"detail": [...]}`)으로 응답한다. 내 핸들러 코드는
+한 줄도 실행되지 않는다.
+
+**수정** (app.py — 전역 예외 핸들러로 그 경로를 다시 가로챔):
+
+```python
+@app.exception_handler(RequestValidationError)
+async def validation_envelope(request, error):
+    return JSONResponse(fail("invalid_request", detail=str(error.errors()[:3])[:300]),
+                        status_code=422)
+```
+
+수정 후:
+
+```
+{"success":false,"error":{"code":"invalid_request","detail":"[{'type': 'missing', 'loc': ('body', 'request_id'), ...}]"}}
+```
+
+**배경**: 정규화의 값어치는 "예외 없이 전부"에서 나온다 — 한 경로라도 다른 모양이 남으면
+소비자는 결국 두 모양을 다 처리해야 해서 도입 의미가 반감된다. 프레임워크가 **내 코드
+바깥에서** 만들어주는 응답(검증 실패·404·500 기본 페이지)이 늘 그 구멍이다.
 
 ## 6. 결론
 
