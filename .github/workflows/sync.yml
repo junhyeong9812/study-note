@@ -1,0 +1,16 @@
+name: sync-wiki
+# main push → 위키/검색 색인 갱신 요청 (front가 backend로 중계)
+on:
+  push:
+    branches: [main]
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: call sync endpoint
+        run: |
+          curl -sS -X POST "https://www.junproject.xyz/api/sync" \
+            -H "X-Sync-Secret: ${{ secrets.SYNC_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"commit_sha\": \"${{ github.sha }}\", \"request_id\": \"gh-${GITHUB_RUN_ID}\"}" \
+            -w "\nhttp:%{http_code}\n"
