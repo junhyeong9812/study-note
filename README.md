@@ -12,13 +12,15 @@
 
 > 한 줄 요약: **출력의 비중을 최대로, 출력의 시점을 점점 늦게.**
 
+이 루프가 남들이 정리한 방법론과 어디서 겹치는지, 왜 이렇게 하는지는 [reference/learning/](reference/learning/README.md)에 적는다 (출처 1: 박문호 「빅퀘스천」 — 대칭화·모듈화·순서화, 맥락 기억).
+
 ## 폴더 구조
 
 ```
 study-note/
 ├── README.md                  ← 이 파일 (색인 + 규칙)
 ├── templates/                 ← 1-question / 2-summary / 3-answer 포맷 템플릿
-├── reference/                 ← 작성 지침 (organize-guide.md · writing/ — README 색인 + evidence 원재료 10개)
+├── reference/                 ← 작성 지침 (organize-guide.md · writing/ — 문서 작성 근거 · learning/ — 내 공부 방법론과 출처)
 ├── 세미나/                     ← 컨퍼런스·세미나 후기 (예: nerdcon/nerdcon-5.md)
 ├── cs/                        ← 개념 지식(1/2/3 챕터): systems·engineering·algorithm·data-structure·domain-modeling·ops-patterns·api-design
 ├── practice/                  ← 훈련(문제→풀이): programmers
