@@ -5,7 +5,7 @@
 
 | 챕터 | 상태 | 비고 |
 |------|------|------|
-| [01-dynamic-array](01-dynamic-array/) | | |
+| [01-dynamic-array](01-dynamic-array/) | 서머리 틀+질문/정답 초안(2026-08-28) — 문제 1 완료, summary 본인 작성 대기 | ArrayProblems 2~5 미해결 |
 | [02-linked-list](02-linked-list/) | | |
 | [03-stack](03-stack/) | | |
 | [04-queue-deque](04-queue-deque/) | | |
