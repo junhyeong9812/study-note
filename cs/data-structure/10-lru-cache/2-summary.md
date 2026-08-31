@@ -27,6 +27,105 @@
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
+### 구조
+
+```
+LRUCache — "어디 있나"(해시맵)와 "언제 썼나"(이중 연결 리스트)를 붙여 만든다
++---------------------------------------------------------------+
+| capacity = 3                                                  |
+| index      Map<K, Node>  — 값이 아니라 "노드 자체"를 담는다      |
+| head, tail 꼬리표(sentinel) 노드. key / value 가 없다           |
+| hits, misses, evictions                                       |
++---------------------------------------------------------------+
+
+    index (HashMap)                     리스트   오래된 쪽 <---------> 최근 쪽
+    +-----+-----------+
+    | "A" | -> 노드 A |     +------+    +------+    +------+    +------+    +------+
+    | "B" | -> 노드 B |     | head |<-->| "A"  |<-->| "B"  |<-->| "C"  |<-->| tail |
+    | "C" | -> 노드 C |     |(더미)|    | 1    |    | 2    |    | 3    |    |(더미)|
+    +-----+-----------+     +------+    +------+    +------+    +------+    +------+
+                                            ^                       ^
+                                        head.next               tail.prev
+                                  = 가장 오래 안 쓴 것       = 가장 최근에 쓴 것
+                                    (다음에 축출될 것)
+
+    왜 둘을 붙이나 — 각자 못 하는 것이 있다
+        해시맵만 쓰면 : "어디 있나"는 O(1) 인데 "누가 제일 오래됐나"를 모른다 -> 전부 훑어 O(n)
+        리스트만 쓰면 : 순서는 아는데 "그 키가 어느 노드인가"를 모른다 -> 찾는 데 O(n)
+        index 가 키를 노드로 바꿔 주고, 노드를 손에 쥐면 unlink 가 O(1) 이다.
+        02 장에서 "노드를 이미 알면 삭제가 O(1)" 이라고 했던 그 성질을 여기서 쓴다.
+        05 장 LinkedHashMap 과 같은 조합인데, 순서 기준이 삽입 순서가 아니라 최근 사용 순서다
+
+    head / tail 은 값이 없는 꼬리표(sentinel) 노드다
+        덕분에 unlink 와 linkLast 안에 "비었나 / 끝인가" 분기가 하나도 없다.
+        어떤 실제 노드든 prev 와 next 가 절대 null 이 아니기 때문이다
+        (02 장 DoublyLinkedList 는 더미가 없어서 매번 null 검사 분기가 있었다)
+```
+
+### 동작 — 조회
+
+```
+get(key)
+    index.get(key) == null   ->  misses++, null 반환. 리스트는 건드리지 않는다
+    있으면                    ->  hits++, unlink(node) 하고 linkLast(node), value 반환
+
+    get("A") — "A" 를 맨 뒤(가장 최근)로 옮긴다
+    before  | head |<-->| "A" |<-->| "B" |<-->| "C" |<-->| tail |
+                            ^ 가장 오래된 것
+
+    (1) unlink("A")   앞뒤를 서로 직접 잇고 A 의 손을 놓는다
+            | head |<-->| "B" |<-->| "C" |<-->| tail |          ( "A" 는 떨어져 나온 상태 )
+
+    (2) linkLast("A")  tail 바로 앞에 끼워 넣는다
+            | head |<-->| "B" |<-->| "C" |<-->| "A" |<-->| tail |
+                                                  ^ 이제 가장 최근
+
+    unlink 네 줄                         linkLast 네 줄
+        node.prev.next = node.next;          node.prev = tail.prev;
+        node.next.prev = node.prev;          node.next = tail;
+        node.prev = null;                    tail.prev.next = node;
+        node.next = null;                    tail.prev = node;
+
+    앞 두 줄이 이웃끼리 직접 잇고, 뒤 두 줄이 떼어낸 노드의 손을 놓는다.
+    linkLast 는 tail.prev 를 먼저 읽어 새 노드에 담은 뒤에 tail.prev 를 갈아끼운다 —
+    순서를 뒤집으면 원래 마지막 노드로 가는 길을 잃는다 (02 장의 add 와 같은 함정)
+
+    조회인데 자료구조가 바뀐다 — LRU 캐시의 특이한 점이 이것이다.
+    이 get 은 이름만 읽기이고 실제로는 쓰기다
+    containsKey 는 다르다 — 순서도 통계도 건드리지 않는다 (봤다고 "썼다"고 치지 않는다)
+```
+
+### 동작 — 추가와 축출
+
+```
+put(key, value) 세 갈래
+    [1] 이미 있는 키    : 값을 갈아끼우고 맨 뒤로 옮긴다. 축출도 통계 변화도 없다
+    [2] 새 키, 자리 있음 : 새 노드를 linkLast 하고 index 에 등록
+    [3] 새 키, 꽉 참    : 먼저 버리고 나서 넣는다
+
+    put("D", 4) — capacity 3, 이미 A B C 가 들어 있다
+    before  | head |<-->| "A" |<-->| "B" |<-->| "C" |<-->| tail |
+                            ^ head.next = 가장 오래 안 쓴 것
+
+    (1) oldest = head.next                  -> "A"
+    (2) index.remove("A")                   <- 맵에서도 지운다.
+                                               리스트만 끊으면 맵에 유령 항목이 남는다
+    (3) unlink(oldest);  evictions++;
+            | head |<-->| "B" |<-->| "C" |<-->| tail |
+    (4) 새 노드 D 를 linkLast 하고 index.put("D", 노드D)
+    after   | head |<-->| "B" |<-->| "C" |<-->| "D" |<-->| tail |
+
+    버리기를 넣기 "전에" 한다 — 넣고 나서 버리면 순간적으로 capacity + 1 개가 된다
+
+remove(key) : 사용자가 직접 지운 것이므로 evictions 에 잡히지 않는다 (축출과 삭제는 다른 사건)
+
+keysInOrder() : head.next 부터 tail 직전까지 훑는다 -> 오래된 것 먼저, 최근 것 마지막
+    [ "B", "C", "D" ]        앞에서부터 곧 "버려질 순서"다
+
+clear() : index.clear() 하고 head.next = tail, tail.prev = head 로 되돌린다.
+          hits / misses / evictions 는 리셋하지 않는다 (통계는 캐시의 일생 기록이다)
+```
+
 ### `필드`
 
 - `static final class Node<K, V> { K key; V value; Node<K, V> prev; Node<K, V> next; }` — 역할:
@@ -130,6 +229,39 @@
 
 ## 구현 — LinkedHashMapLRU (`src/main/java/com/datastructure/cache/LinkedHashMapLRU.java`)
 
+### 구조 — 같은 일을 표준 라이브러리에 시킨다
+
+```
+LinkedHashMapLRU — 리스트를 직접 만들지 않고 java.util.LinkedHashMap 에 맡긴다
+
+    new LinkedHashMap<>(16, 0.75f, true)
+                                   ^ accessOrder = true
+        get 할 때마다 그 항목을 내부 순서 리스트의 맨 뒤로 옮긴다
+        <- LRUCache 의 unlink + linkLast 와 정확히 같은 일
+
+    removeEldestEntry(eldest) { return size() > capacity; }
+        put 이 끝날 때마다 라이브러리가 이 물음을 던지고, true 면 가장 오래된 항목을 알아서 버린다
+        <- LRUCache 의 head.next 축출과 정확히 같은 일
+
+    직접 구현                        LinkedHashMap 에 위임
+    ---------------------------------------------------------
+    index (HashMap)             ->   내부 해시 테이블
+    head / tail 이중 연결 리스트  ->   내부 before / after 링크
+    get 의 unlink + linkLast     ->   accessOrder = true
+    put 의 head.next 축출        ->   removeEldestEntry
+
+    남는 일은 통계뿐이다
+        hits / misses : get 의 반환값이 null 인지로 직접 센다
+        evictions     : "새 키였고, 넣기 전 size 가 capacity 였다" 로 판정해 직접 센다
+                        라이브러리가 축출했다는 사실을 따로 알려주지 않기 때문이다
+
+    keysInOrder() = new ArrayList<>(map.keySet())
+        accessOrder 라 오래된 것부터 나온다 -> LRUCache 와 같은 순서 계약을 만족한다
+
+    두 구현이 같은 Cache 계약을 만족하므로 테스트를 그대로 돌려 볼 수 있다.
+    직접 만들어 본 뒤에야 라이브러리의 세 인자(초기 용량, 부하율, accessOrder)가 무슨 뜻인지 보인다
+```
+
 ### `필드`
 
 - `private final int capacity` — 역할:
@@ -217,6 +349,34 @@
 - 비용(왜):
 
 ## 구현 — ThreadSafeLRUCache (`src/main/java/com/datastructure/cache/ThreadSafeLRUCache.java`)
+
+### 구조 — 감싸기만 하는 데코레이터
+
+```
+ThreadSafeLRUCache — 캐시를 새로 만들지 않는다. 다른 Cache 를 감싸고 락만 두른다
+    +---------------------------------+
+    | delegate ----> LRUCache (또는   |
+    |                다른 Cache 구현) |
+    | lock      ReentrantLock         |
+    +---------------------------------+
+
+    모든 메서드가 같은 모양이다
+        lock.lock();
+        try { delegate.xxx(...) }
+        finally { lock.unlock(); }
+
+    예외는 딱 하나 — capacity() 는 락 없이 바로 위임한다 (생성 후 변하지 않는 값이므로)
+
+    왜 읽기/쓰기 락(ReadWriteLock)으로 나누지 않았나
+        get 은 이름만 읽기다. 안에서 unlink + linkLast 로 링크 네 개를 고쳐 쓴다.
+        읽기 락으로 여러 스레드가 get 을 동시에 통과하게 두면
+            스레드 A 가 노드를 떼어내는 중에 스레드 B 가 같은 이웃 링크를 갈아끼운다
+            -> 리스트가 찢어지고 index 와 리스트의 내용이 어긋난다
+        "읽기처럼 보이는 쓰기"를 알아보는 것이 이 클래스의 요점이다.
+        같은 이유로 hits / misses 증가도 잠금 안에서 일어나야 한다
+
+    감싸는 대상을 생성자로 받으므로 LRUCache 든 LinkedHashMapLRU 든 그대로 끼울 수 있다
+```
 
 ### `필드`
 
