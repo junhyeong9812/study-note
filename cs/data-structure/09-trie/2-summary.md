@@ -24,6 +24,134 @@
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
+### 구조
+
+```
+MapTrie — 글자 하나가 간선이고, 뿌리에서 여기까지 온 "경로"가 곧 문자열이다
++---------------------------+
+| root ---+                 |
++---------|-----------------+
+          v
+    (root)                    end=false   wordsBelow=4
+      |
+      +--'c'--> [c]           end=false   wordsBelow=3
+      |           |
+      |           +--'a'--> [ca]          end=false   wordsBelow=3
+      |                       |
+      |                       +--'t'--> [cat]    end=TRUE   wordsBelow=1
+      |                       |
+      |                       +--'r'--> [car]    end=TRUE   wordsBelow=2
+      |                                    |
+      |                                    +--'d'--> [card]  end=TRUE  wordsBelow=1
+      |
+      +--'d'--> [d]           end=false   wordsBelow=1
+                  |
+                  +--'o'--> [do]          end=false   wordsBelow=1
+                              |
+                              +--'g'--> [dog]   end=TRUE   wordsBelow=1
+
+    담긴 단어 : cat, car, card, dog  (4개)
+
+    Node 의 필드는 셋뿐이다
+        children     TreeMap<Character, Node> — 글자별로 갈라지는 간선
+        end          "여기서 끝나는 단어가 있다" 표시.
+                     노드가 있다고 단어인 것은 아니다 — [ca] 는 노드는 있지만 end=false
+        wordsBelow   이 노드를 지나는 단어 수 (= 이 경로를 접두사로 갖는 단어 수)
+                     root 를 포함해 경로 위의 모든 노드에서 +1 된다
+
+    노드 안에 키를 저장하지 않는다는 점이 해시맵/BST 와 결정적으로 다르다.
+    "cat" 이라는 문자열은 어디에도 통째로 저장되어 있지 않고, c-a-t 세 간선으로만 존재한다.
+    그래서 공통 접두사 "ca" 는 한 번만 만들어지고 cat, car, card 가 그 길을 나눠 쓴다
+
+    size() 도 별도 필드가 아니라 root.wordsBelow 다
+```
+
+### 동작 — 추가
+
+```
+insert(word) : 글자마다 내려가며 없으면 만들고, 지나는 노드마다 wordsBelow 를 올린다
+    insert("card")  — cat, car 가 이미 있는 상태
+
+    (0) contains("card") 면 아무것도 하지 않고 끝낸다
+        (중복 삽입을 막지 않으면 같은 단어로 wordsBelow 가 두 번 올라 카운트가 망가진다)
+    (1) root.wordsBelow++                         2 -> 3
+    (2) 'c' : 있다 -> 내려가며 [c].wordsBelow++      2 -> 3
+        'a' : 있다 -> 내려가며 [ca].wordsBelow++     2 -> 3
+        'r' : 있다 -> 내려가며 [car].wordsBelow++    1 -> 2
+        'd' : 없다 -> 새 노드를 만들고 [card].wordsBelow++   0 -> 1
+    (3) [card].end = true
+
+    before                              after
+    (root)      wb=2                    (root)      wb=3
+      'c' [c]   wb=2                      'c' [c]   wb=3
+        'a' [ca]  wb=2                      'a' [ca]  wb=3
+          't' [cat]  end wb=1                 't' [cat]  end wb=1
+          'r' [car]  end wb=1                 'r' [car]  end wb=2
+                                                'd' [card] end wb=1   <- 새 노드는 하나뿐
+
+    비용은 O(L) — 단어 길이에만 비례한다. 이미 담긴 단어 수 n 과 무관하다.
+    해시맵은 키 전체를 해싱해야 하고 BST 는 비교를 log n 번 해야 하지만,
+    트라이는 글자를 하나씩 따라가기만 한다
+```
+
+### 동작 — 탐색
+
+```
+findNode(s) : root 에서 글자마다 children 을 따라 내려간다. 중간에 길이 없으면 null
+
+    contains("car")     -> 노드 도달 + end == true      -> 참
+    contains("ca")      -> 노드 도달 + end == false     -> 거짓  (노드는 있지만 단어가 아니다)
+    contains("cab")     -> 'b' 에서 길이 끊김 -> null   -> 거짓
+
+    startsWith("ca")    -> 노드가 있고 wordsBelow > 0   -> 참
+        노드 존재만으로 판정하지 않는 이유: 빈 트라이의 root 도 노드이기 때문이다
+
+    countWithPrefix("ca") = findNode("ca").wordsBelow = 3        -> O(L)
+        "ca" 로 시작하는 단어를 세면서 그 단어들을 한 번도 방문하지 않는다.
+        삽입/삭제 때마다 미리 갱신해 둔 wordsBelow 를 그냥 읽는 것이다.
+        (세어 보는 대신 세어 둔다 — 이 챕터의 핵심 아이디어)
+
+    keysWithPrefix("ca") : findNode("ca") 부터 아래를 훑어 end 인 노드마다 경로를 담는다
+        [ca] --'r'--> [car] end          =>  "car"
+              |          |
+              |          +--'d'--> [card] end   =>  "card"
+              +--'t'--> [cat] end        =>  "cat"
+        children 이 TreeMap 이라 순회 순서가 곧 사전순이다 -> 결과가 정렬되어 나온다
+        경로 문자열은 StringBuilder 하나를 돌려 쓴다
+            내려갈 때 append(글자),  돌아 나올 때 마지막 글자 삭제 (백트래킹)
+        비용은 O(접두사 길이 + 결과 글자 수) — 전체를 훑고 거르는 것이 아니다
+```
+
+### 동작 — 삭제
+
+```
+remove(word) : 지나는 노드마다 wordsBelow 를 내리고, 0 이 되는 첫 노드에서 가지를 끊는다
+
+[1] 나 혼자 쓰던 길이 있는 경우 — remove("card") (cat, car, card 가 있는 상태)
+        root         wb 3 -> 2
+        'c' [c]      wb 3 -> 2    0 아님 -> 계속
+        'a' [ca]     wb 3 -> 2    0 아님 -> 계속
+        'r' [car]    wb 2 -> 1    0 아님 -> 계속
+        'd' [card]   wb 1 -> 0    0 이다 -> [car].children.remove('d') 하고 즉시 종료
+
+    after   (root)      wb=2
+              'c' [c]   wb=2
+                'a' [ca]  wb=2
+                  't' [cat] end wb=1
+                  'r' [car] end wb=1        <- 'd' 로 가던 간선이 끊겼다
+    참조 하나를 끊으면 그 아래 서브트리 전체가 한 번에 버려진다
+
+[2] 남들과 나눠 쓰는 길만 지나는 경우 — remove("car") (cat, car, card 가 있는 상태)
+        root         wb 3 -> 2
+        'c' [c]      wb 3 -> 2    0 아님
+        'a' [ca]     wb 3 -> 2    0 아님
+        'r' [car]    wb 2 -> 1    0 아님 -> 루프가 끝까지 돈다
+        루프를 다 돌았다 = 끊을 곳이 없었다 -> 마지막 노드의 end 만 끈다
+        [car].end : true -> false        노드는 남는다 ("card" 가 이 길을 지나가야 하므로)
+
+    정리 : 공유하는 단어가 사라지는 첫 지점에서 링크를 끊고, 그 위쪽은 카운트만 깎는다
+```
+
 ### `필드`
 
 - `static final class Node` — 역할:
@@ -99,6 +227,44 @@
 - 비용(왜):
 
 ## 구현 — ArrayTrie (`src/main/java/com/datastructure/trie/ArrayTrie.java`)
+
+### 구조 — children 이 맵에서 배열로
+
+```
+ArrayTrie — Node 의 필드 이름도 규약(end, wordsBelow)도 MapTrie 와 같다.
+            달라지는 것은 자식을 어디에 담느냐 하나다
+    Node { Node[] children = new Node[ALPHABET];  boolean end;  int wordsBelow; }   ALPHABET = 26
+
+    [ca] 노드 하나를 들여다보면 (자식은 'r' 과 't' 둘뿐)
+
+        MapTrie                          ArrayTrie
+        TreeMap<Character, Node>         idx   0    1   ...  17   ...  19   ...  25
+        {  'r' -> [car],                     +----+----+     +----+    +----+    +----+
+           't' -> [cat]  }                   |null|null| ... |  * | .. |  * | .. |null|
+                                             +----+----+     +----+    +----+    +----+
+        자식 2개만큼만 메모리                    a    b          r         t         z
+                                             자식이 2개여도 26칸을 늘 잡는다
+
+    글자에서 칸 번호로
+        indexOf(c) = c - 'a'          'a' -> 0,  'b' -> 1,  ...  'z' -> 25
+        범위를 벗어나면 -1 을 돌려준다 (양쪽 경계를 모두 검사한다)
+
+    맞바꿈 표
+                    MapTrie                          ArrayTrie
+        자식 찾기   children.get(c)  트리 조회        children[i]  배열 인덱스 O(1)
+        메모리      실제 자식 수만큼                  노드마다 26칸 고정
+        사전순      TreeMap 순회가 곧 사전순          i = 0..25 로 도는 것이 곧 사전순
+        자식 생성   computeIfAbsent                  if (children[i] == null) children[i] = new Node()
+        가지치기    children.remove(c)               children[i] = null
+                                                      (배열은 여전히 26칸 — 노드가 통째로
+                                                       버려져야 그 26칸이 회수된다)
+        범위 밖 문자
+            insert / remove : 예외를 던진다 ("ArrayTrie 는 a~z 만 담는다")
+            findNode 경유    : idx < 0 이면 null -> contains 는 false, countWithPrefix 는 0
+
+    자식이 빽빽하면(영어 단어 뭉치처럼) 배열이 빠르고, 성기면 맵이 메모리를 아낀다.
+    "26칸 중 대부분이 null" 이라는 낭비를 줄이는 것이 20 장 래딕스 트라이의 출발점이다
+```
 
 ### `필드`
 
@@ -183,6 +349,44 @@
 | ArrayTrie | | | |
 
 ## 구현 — WordDictionary (`src/main/java/com/datastructure/trie/WordDictionary.java`)
+
+### 동작 — 와일드카드 탐색
+
+```
+WordDictionary — 트라이를 새로 만들지 않는다. MapTrie 하나를 감싸고 search 만 더한다
+    addWord(w) = trie.insert(w),   size() = trie.size()
+
+search(pattern) : '.' 은 아무 글자 하나와 맞는다. 갈림길에서 전부 시도한다
+    담긴 단어 : cat, car, card, dog
+
+    search("ca.")
+        (root) --'c'--> [c] --'a'--> [ca]      여기까지는 글자가 정해져 있어 길이 하나뿐
+                                       |
+                        '.' 이므로 children 의 값 전부를 시도한다
+                                       |
+                      +----------------+----------------+
+                      |                                 |
+                   'r' -> [car]                      't' -> [cat]
+                   i == 길이 -> end 확인               i == 길이 -> end 확인
+                   end = true -> 참 (여기서 끝)        (앞에서 이미 참이 나왔으면 오지 않는다)
+
+    search("ca.e")
+                      +----------------+----------------+
+                      |                                 |
+                   'r' -> [car]                      't' -> [cat]
+                   다음 글자 'e' -> children.get('e') = null
+                   -> 재귀가 null 을 받고 false        -> 마찬가지로 false
+                                    => 전체 false
+
+    재귀 세 줄이 전부다
+        node == null            -> false          (막힌 길)
+        i == pattern.length()   -> node.end       (자식이 있느냐가 아니라 end 냐를 본다)
+        c == '.'                -> children.values() 를 전부 시도, 하나라도 참이면 참
+        그 밖                   -> children.get(c) 로 한 갈래만 재귀
+
+    되돌리기 코드가 따로 없다 — false 를 반환하고 호출자로 돌아가는 것이 곧 백트래킹이다
+    '.' 하나마다 갈래가 자식 수만큼 늘어난다. 앞쪽에 '.' 이 많을수록 훑는 가지가 많아진다
+```
 
 ### `필드`
 
