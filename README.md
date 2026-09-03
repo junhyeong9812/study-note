@@ -22,6 +22,7 @@ study-note/
 ├── templates/                 ← 1-question / 2-summary / 3-answer 포맷 템플릿
 ├── reference/                 ← 작성 지침 (organize-guide.md · writing/ — 문서 작성 근거 · learning/ — 내 공부 방법론과 출처)
 ├── 세미나/                     ← 컨퍼런스·세미나 후기 (예: nerdcon/nerdcon-5.md)
+├── 독후감/                     ← 책 후기 — 책=폴더, 챕터별 기록 (규칙: 독후감/README.md)
 ├── cs/                        ← 개념 지식(1/2/3 챕터): systems·engineering·algorithm·data-structure·domain-modeling·ops-patterns·api-design
 ├── practice/                  ← 훈련(문제→풀이): programmers
 ├── project/                   ← 만든 것의 기록: db-engine·study-note-deploy-system
@@ -90,3 +91,4 @@ study-note/
 | [project/study-note-deploy-system](project/study-note-deploy-system/) | 이 저장소를 배포하는 시스템의 이슈별 구현 기록 (backend·front·llm — 골격: templates/project-issue.md) | — |
 | [lab](lab/) · [portfolio](portfolio/) | 실험 기록 · 대외용 정리 (자리 확보) | — |
 | [세미나](세미나/) | 컨퍼런스·세미나 후기 — nerdcon-5 (2026-08-22, AI 시대 개발자 성장 방향) | — |
+| [독후감](독후감/) | 책 후기 — 아키텍트-첫걸음 (읽는 중) | [index](독후감/index.md) |
