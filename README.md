@@ -26,7 +26,8 @@ study-note/
 ├── cs/                        ← 개념 지식(1/2/3 챕터): systems·engineering·algorithm·data-structure·domain-modeling·ops-patterns·api-design
 ├── practice/                  ← 훈련(문제→풀이): programmers
 ├── project/                   ← 만든 것의 기록: db-engine·study-note-deploy-system
-├── lab/  portfolio/           ← 실험 기록 · 대외용 정리
+├── lab/                       ← 실험 프로젝트 포트폴리오 (프로젝트=폴더+README, 규칙: lab/README.md)
+├── portfolio/                 ← 대외용 정리
 └── <주제>/                     ← 예: cs/systems/lsm-tree/
     ├── README.md              ← 그 주제의 공부 규칙
     ├── index.md               ← 챕터/주제 목록과 진행 상태 (상태 변경 시마다 갱신)
@@ -89,6 +90,7 @@ study-note/
 | [portfolio/markview](portfolio/markview/) | `/home/jun/project/resume` 경력기술서 - MarkView 사례 3건 | [index](portfolio/markview/index.md) |
 | [practice/programmers](practice/programmers/) | 프로그래머스 고득점 Kit (유형 10 · 문제 47) — 1-question.md / 3-answer.md (2-summary 없음) | — |
 | [project/study-note-deploy-system](project/study-note-deploy-system/) | 이 저장소를 배포하는 시스템의 이슈별 구현 기록 (backend·front·llm — 골격: templates/project-issue.md) | — |
-| [lab](lab/) · [portfolio](portfolio/) | 실험 기록 · 대외용 정리 (자리 확보) | — |
+| [lab](lab/) | 실험 프로젝트 포트폴리오 — 캐시·동시성·프로토콜·분산 로그 등 8종 | [index](lab/index.md) |
+| [portfolio](portfolio/) | 대외용 정리 (자리 확보) | — |
 | [세미나](세미나/) | 컨퍼런스·세미나 후기 — nerdcon-5 (2026-08-22, AI 시대 개발자 성장 방향) | — |
 | [독후감](독후감/) | 책 후기 — 아키텍트-첫걸음 (읽는 중) | [index](독후감/index.md) |
