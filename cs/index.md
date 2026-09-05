@@ -11,6 +11,7 @@
 | [thrashing](systems/thrashing/) | **검토 대기(2026-08-23)** — 서머리(직접 작성, 소제목 정리)·질문 5·정답(초안) — 동적 배열 resize 반복과 히스테리시스 | 직접 작성(원본 노트 = 2-summary) |
 | [Hysteresis](systems/Hysteresis/) | **검토 대기(2026-08-23)** — 서머리(직접 작성, 소제목 정리)·질문 5·정답(초안) — 방향별 임계값 분리, hysteresis band, thrashing과의 구분 | 직접 작성(원본 노트 = 2-summary) |
 | [development-standards](engineering/development-standards/) | 상세 문서+질문/정답 초안(2026-08-24) — 품질(ISO 25010)·보안(OWASP Top10/ASVS·NIST SSDF)·운영(ISO 20000-1·Google SRE)·법률(개인정보보호법+관련 법령) 4축, 하위 [index](engineering/development-standards/index.md) | 원고 작성 예정(기준 문서는 각 서머리 관련 자료) |
+| [foundations/*](foundations/) | 이관 완료(2026-09-05) — 컴퓨터사이언스 부트캠프 10주제(변수·데이터 표현·OOP·하드웨어·메모리·프로세스/스레드·컴파일러·자료구조·알고리즘·파이썬), 하위 [index](foundations/index.md) | `computer_science` repo (책 따라 친 노트) |
 
 ## 후보 (jun-bank에서 공부한 주제 — 이관 대기)
 
