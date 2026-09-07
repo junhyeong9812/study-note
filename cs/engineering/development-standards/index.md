@@ -1,10 +1,16 @@
 # development-standards 인덱스
 
-상태: `스켈레톤` → `원고 작성중` → `서머리` → `질문/정답` → `복습중`.
+상태: `스켈레톤` → `본문 채움` → `서머리(본인 문장화)` → `질문/정답` → `복습중`.
+
+2026-08-24: 4주제 본문을 Claude가 기준 문서 요약으로 작성(각 파일에 명시) 후, 주제별 웹 근거 검증 워커로 사실 대조 완료 — 수정: ASVS L1~L3 정의(5.0 원문 기준)·17챕터 확정, 20000-1 조항 8 그룹핑(변경·릴리즈는 8.5)·9.4 서비스 보고, 접속기록 2년 요건 OR 조건·파기 5일 근거(표준지침 제10조)·열람 10일 확정 등.
+
+2026-08-24(3차): codex 독립 리뷰(문서 4종+부록 packet) — finding 26건(사실 오류·과잉 단정) 전부 수정, codex 타깃 재점검으로 해소 확인(부분 해소 4건은 메인이 직접 마감). 주요 정정: SCC는 국외이전 독립 근거 아님·유출 신고 예외 단서·고시 제7조 '이용자' 구분·rolling window 회복 시점·ASVS V11 원문 취지·25010 하위 특성 계보.
+
+2026-08-24(2차): 공부용 상세 문서로 확장 — 특성/항목별 정의+체크포인트+예시, legal은 조문 원문 인용(부록 provisions.md, law.go.kr Open API·casenote 수집, 유출 신고 조번 제39조→제40조 정정), 4주제 질문·정답 초안 작성.
 
 | 주제 | 상태 | 기준 문서 |
 |------|------|-----------|
-| [quality-standards](quality-standards/) | 스켈레톤(2026-08-23) | ISO/IEC 25010:2023 |
-| [security-standards](security-standards/) | 스켈레톤(2026-08-23) | OWASP Top 10 · OWASP ASVS · NIST SP 800-218 (SSDF) |
-| [operational-standards](operational-standards/) | 스켈레톤(2026-08-23) | ISO/IEC 20000-1:2018 · Google SRE Book/Workbook |
-| [legal-standards](legal-standards/) | 스켈레톤(2026-08-23) | 개인정보보호법·시행령·안전성 확보조치 기준 + 정보통신망법·신용정보법·위치정보법 등 |
+| [quality-standards](quality-standards/) | 상세 문서+질문/정답 초안(2026-08-24) — 본인 검토·문장화 대기 | ISO/IEC 25010:2023 |
+| [security-standards](security-standards/) | 상세 문서+질문/정답 초안(2026-08-24) — 본인 검토·문장화 대기 | OWASP Top 10 · OWASP ASVS · NIST SP 800-218 (SSDF) |
+| [operational-standards](operational-standards/) | 상세 문서+질문/정답 초안(2026-08-24) — 본인 검토·문장화 대기 | ISO/IEC 20000-1:2018 · Google SRE Book/Workbook |
+| [legal-standards](legal-standards/) | 상세 문서+질문/정답 초안(2026-08-24) — 본인 검토·문장화 대기 | 개인정보보호법·시행령·안전성 확보조치 기준 + 정보통신망법·신용정보법·위치정보법 등 |
