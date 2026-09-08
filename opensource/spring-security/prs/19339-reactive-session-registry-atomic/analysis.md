@@ -1,0 +1,202 @@
+# PR #19339 - 착수 분석: 비원자 save/remove와 세션 유실
+
+> 원본: fork repo의 `analyze-docs/plans/2026-06-14/spring-security-core-bug-hunt/`
+> `C-06-reactivesessionregistry-race/`(task.md·해설.md·changelog.md·review-log.md·codex-output.md).
+> 학습 문서로 옮기면서 작업 진행용 절을 덜어내고 실측 근거와 리뷰 대응을 절로 승격했다.
+> 결론은 PR #19339로 반영됐다(커밋 `fc4964f8d5`, 후속 `72feea0d33`).
+>
+> **좌표 주의**: 본문의 file:line은 **수정 전** 파일 기준이다. 문제와 수정 요약은
+> [README.md](README.md), 실구조는 [structure.md](structure.md), 테스트는 [tests.md](tests.md).
+
+## 0. 결론 먼저
+
+`InMemoryReactiveSessionRegistry`의 두 갱신 메서드가 모두 원자 단위 밖에서 집합을 만졌다.
+저장은 `computeIfAbsent`의 람다 **밖**에서 `.add()`를 하고(`:62-63`), 제거는
+`get` -> `remove` -> `isEmpty` -> `map.remove`라는 check-then-act를 했다(`:76-82`).
+
+```java
+this.sessionIdsByPrincipal.computeIfAbsent(information.getPrincipal(), (key) -> new CopyOnWriteArraySet<>())
+	.add(information.getSessionId());                                       // :62-63
+```
+
+두 연산이 같은 principal에 동시에 걸리면, 제거 스레드가 "집합이 비었다"를 확인한 뒤 키를
+지우기 직전에 저장 스레드가 같은 집합에 새 세션을 넣을 수 있다. 그러면 조건 없는
+`map.remove(principal)`(`:80`)이 **그 세션째 키를 지운다.** 블로킹 형제
+`SessionRegistryImpl`은 같은 자료구조에서 이미 `compute`/`computeIfPresent`로 이 인터리빙을
+막고 있다. 수정은 그 패턴을 그대로 옮겨 오는 것이다.
+
+## 1. 발견 경로 - 어떻게 찾았나
+
+이 결함은 **정적 인터리빙 추적**으로 나왔다. spring-security core의 `core.session` 패키지를
+훑던 에이전트가 "리액티브 레지스트리의 갱신이 비원자다"를 보고했고(후보 ID C-06), 메인이
+인터리빙을 손으로 재구성한 뒤 스트레스 테스트로 실측 재현했다.
+
+앞의 두 후보(C-05·C-10)와 결정적으로 다른 점이 여기 있다. 그 둘은 재현 테스트를 쓰면
+곧바로 red가 났지만, **레이스는 결정론적 red가 없다.** 그래서 착수 판정 자체가 "인터리빙을
+글로 확정할 수 있는가" + "그 동시성이 실재한다고 볼 근거가 있는가" 두 질문에 걸렸고, 둘째
+질문의 답이 블로킹 형제였다.
+
+## 2. 무대 - 객체와 역할
+
+결함은 맵 하나의 값이 컬렉션이라는 사실에서 나온다.
+
+```
+ 호출자 (WebFlux 동시 세션 관리)
+   |  로그인       -> saveSessionInformation
+   |  로그아웃/만료 -> removeSessionInformation
+   |  한도 계산     -> getAllSessions(principal)
+   v
+ InMemoryReactiveSessionRegistry   core/.../core/session/InMemoryReactiveSessionRegistry.java
+   |  ConcurrentMap<Object, Set<String>> sessionIdsByPrincipal        :37   <- 무대
+   |    값 = CopyOnWriteArraySet - 그 자체는 스레드 안전
+   |  Map<String, ReactiveSessionInformation> sessionById             :39
+   |  생성자: 기본(둘 다 CHM) :41-44 / 맵 주입 :46-50
+   |  save   computeIfAbsent(...).add(...)                            :62-63 <- 결함
+   |  remove get -> remove -> isEmpty -> map.remove                   :76-82 <- 결함
+   v
+ 형제: SessionRegistryImpl (블로킹)   core/.../core/session/SessionRegistryImpl.java
+      principals.compute(...)                                        :138-145
+      principals.computeIfPresent(...)                               :159-171
+      -> 같은 필드 모양·같은 생성자·원자적 갱신
+```
+
+## 3. 핵심 이름표
+
+이 결함을 읽을 때 헷갈리는 것은 "스레드 안전한 컬렉션"과 "원자적 갱신"이 다른 말이라는
+점이다. 아래 표는 각 이름표가 어느 층의 안전을 보장하는지 명시한다.
+
+| 이름 | 역할 | 결함과의 관계 |
+|---|---|---|
+| `ConcurrentMap<Object, Set<String>> sessionIdsByPrincipal` :37 | principal -> sessionId 집합 색인 | 맵 연산 각각은 안전하지만 연산 **사이**는 열려 있다 |
+| `CopyOnWriteArraySet<String>` :62 | 값 집합. add/remove가 각각 스레드 안전 | 집합이 안전한 것과 "그 집합이 맵에 붙어 있는 동안 아무도 키를 안 지우는 것"은 다른 문제다 |
+| `computeIfAbsent(k, f)` :62 | 원자적으로 "없으면 넣는다"까지 | 반환된 집합에 대한 `.add()`는 **원자 밖**이다 |
+| `map.remove(principal)` :80 | 조건 없는 키 제거 | "조금 전에 비었다"를 근거로 지운다 - 그 사이에 다시 찼을 수 있다 |
+| `compute` / `computeIfPresent` | CHM에서 재매핑 함수 호출 **전체**가 원자적 | 수정이 쓰는 도구. 원자 경계를 람다 안으로 옮긴다 |
+| 재매핑 함수의 `return null` | CHM에서 그 키를 제거 | "비었으면 제거"를 조건부로 만든다 |
+| `SessionRegistryImpl` :138-145, :159-171 | 블로킹 형제 | 이 PR의 1순위 논거이자 codex·리뷰어 대응의 기준선 |
+| `getAllSessions(principal)` :54-57 | `sessionIdsByPrincipal`을 거쳐 조회 | 고아가 된 세션을 드러내는 유일한 관측 창 |
+| `getSessionInformation(id)` :67-70 | `sessionById`만 조회 | 결함 상태에서도 값이 나온다 - 이쪽으로 관측하면 red가 안 난다 |
+
+## 4. 결함 경로 - 유실 인터리빙
+
+principal P가 세션 S1 하나를 가진 상태가 전제다. 두 스레드의 실행 순서를 시간순으로
+편다.
+
+| 시각 | 스레드 A (remove S1) | 스레드 B (save S2) | `sessionIdsByPrincipal` |
+|---|---|---|---|
+| 1 | `get(P)` -> set | | `{P -> {S1}}` |
+| 2 | `set.remove(S1)` | | `{P -> {}}` |
+| 3 | `isEmpty()` -> true | | `{P -> {}}` |
+| 4 | | `computeIfAbsent(P)` - 키가 있어 같은 set 반환 | `{P -> {}}` |
+| 5 | | `set.add(S2)` | `{P -> {S2}}` |
+| 6 | `map.remove(P)` | | `{}` - **S2 유실** |
+
+3과 6 사이에 4~5가 끼어드는 것이 전부다. 창은 좁지만 WebFlux는 여러 event-loop 스레드에서
+요청을 처리하므로 원리적으로 열려 있다.
+
+**결과는 데이터 손상이 아니라 계산 오류다.** S2의 세션 정보는 `sessionById`에 남아 있고 그
+세션으로 요청을 계속 처리할 수도 있다. 다만 `getAllSessions(P)`가 비어 있으므로 동시 세션
+한도 계산이나 "다른 세션을 만료시킨다" 같은 정책이 잘못된 답을 받는다. 예외도 로그도 남지
+않는다.
+
+현실 시나리오는 한 문장이다 - **사용자가 한 기기에서 로그아웃하는 순간 다른 기기에서
+로그인하면, 새 세션이 레지스트리에서 사라진다.**
+
+## 5. 수정안과 대안 비교
+
+채택안은 두 갱신을 재매핑 함수 안으로 옮기는 것이다.
+
+| 대안 | 채택 | 사유 |
+|---|---|---|
+| `compute` / `computeIfPresent` (블로킹 형제 미러) | 채택 | 최소·일관. 새 자료구조도 새 잠금도 없고, 형제와의 동등성이 곧 리뷰 논거가 된다 |
+| 재매핑 함수가 새 집합을 만들어 반환 | 기각 | 임의 `ConcurrentMap` 주입까지 견고해지지만 자료구조·성능이 형제와 갈린다. 형제도 안 하는 방식이라 동등성 논거가 깨진다 - 5.1절 |
+| 결정론적 인터리빙 테스트(블로킹 맵 래퍼 주입) | 기각(기록만) | 더 우아하나 테스트 복잡도가 크게 오른다. 스트레스 테스트가 이미 red를 실측 재현했다 |
+| 두 맵을 걸치는 원자성까지 확보 | 범위 밖 | 보고한 결함과 별개이며 형제도 갖고 있지 않다. 범위를 넓히면 동시성 모델 재설계가 된다 |
+
+### 5.1 codex 교차검증 - 조건부 승인
+
+판정은 **조건부 승인**이었다. "기본 `ConcurrentHashMap`에서는 정확하고, 임의
+`ConcurrentMap` 주입을 계약으로 지원한다면 의문"이라는 것이다. 지적 여섯 중 다섯은
+확인·수용이었고 넷째가 핵심이었다.
+
+- 확인: CHM의 `compute`/`computeIfPresent`는 키 단위로 원자적이므로 보고한 레이스가 닫힌다.
+  다만 두 맵을 걸치는 원자성은 없고, 같은 sessionId의 동시 제거·재저장은 별개 문제다.
+- 확인: 중첩 잠금(CHM bin + `CopyOnWriteArraySet` 복사)에 데드락 경로가 없다. 재매핑
+  함수가 맵으로 재진입하지 않기 때문이다.
+- 확인: `computeIfPresent`의 `null` 반환에 의한 키 제거는 정상이다. 동시 reader가 낡거나
+  빈 상태를 볼 수 있지만 이는 CHM의 약한 일관성 읽기이고 갱신 유실이 아니다.
+- **핵심 지적**: 2인자 생성자로 비-CHM `ConcurrentMap`을 주입하면
+  `ConcurrentMap`의 default `compute`/`computeIfPresent`가 `get`/`replace`/`remove` 재시도
+  루프라 비원자다. 같은 집합을 제자리에서 고치고 참조 동일성으로 CAS하므로 고아 집합이 다시
+  생길 수 있다.
+  -> **답변으로 종결(코드 변경 없음).** 블로킹 `SessionRegistryImpl`도 동일한 주입
+  생성자(`:66-70`)와 동일한 compute 패턴을 쓰며 이미 출시돼 있다. 이 가정은 프레임워크
+  공통이고, 이 수정은 형제와의 동등성 회복이지 새 한계 도입이 아니다. PR 본문에 "블로킹
+  형제와의 정합"을 1순위 논거로 명시해 선제 대응했다.
+- 부분 채택: 스트레스 테스트는 유용하나 확률적이므로 결정론적 대안을 제안. -> 스트레스
+  테스트가 실제로 red를 재현했으므로 현행 유지, 제안은 기록.
+- 수용: 옛 `computeIfAbsent(...).add()`에는 성능 이점이 있었다(키가 있으면 재매핑 회피).
+  새 `compute`는 원자성을 위해 약간의 경합을 교환한다. 의도한 트레이드오프이고 형제와
+  동일하다.
+
+## 6. 검증 계획과 실측
+
+레이스 결함에서 "결정론적 테스트가 불가능하다"가 검증 생략의 근거가 되지 않도록, 착수 전에
+재현 절차를 먼저 정했다.
+
+- **red 재현 기법**: 1000회 반복 + 래치 동기 스트레스 테스트를 쓰고, **소스 수정만
+  `git stash`로 되돌려** 원본 코드에 같은 테스트를 돌렸다. 결과
+  `saveAndRemoveConcurrentlyThenAddedSessionNotLost` **FAILED** - 세션 유실 재현. 수정
+  복원 시 green. 이 실측이 "이론상 가능한 인터리빙"을 "재현된 결함"으로 바꿨고, 동시에
+  테스트가 회귀를 실제로 막는다는 것도 증명했다.
+- **green**: `InMemoryReactiveSessionRegistryTests` 5건 통과, `core.session` 패키지 회귀 0.
+- **스타일**: `checkstyle`/`checkFormat`(core main + web test) 통과.
+- **중복 리서치**: 비원자 save/remove 레이스를 보고한 이슈·PR은 없었다. 신규 확인.
+- **stakes 판정**: 중간. 동시성·세션 무결성 문제이고 동시 세션 제어 계산이 어긋날 수
+  있지만 데이터 손상은 아니다.
+- **테스트 위치**: 프로덕션 클래스는 core에 있으나 이 클래스의 기존 테스트가 web 모듈에
+  있어(이관 흔적) 새 테스트도 같은 자리에 뒀다.
+
+## 7. 리뷰 대응 - 결정과 번복
+
+메인테이너 리뷰 전에 외부 기여자 `ronodhirSoumik`이 인라인 코멘트 3건을 남겼다. 모두
+스타일·모듈화 제안이고 원자성 결함 지적은 없었다. 대응 전에 codex로 2차 교차검증(수용
+논거와 거부 논거를 양쪽 다 요청)을 돌렸고, 1차 판정은 3건 모두 유지였다.
+
+| # | 앵커 | 제안 | 1차(06-16) | 최종 |
+|---|---|---|---|---|
+| 1 | 프로덕션 `computeIfPresent` 블록 | `addSessionToSet`/`removeSessionFromSet` 헬퍼 추출 | 유지 | 유지 |
+| 2 | 프로덕션 람다 파라미터 | `sessionsUsedByPrincipal` -> `sessions` | 유지 | 유지 |
+| 3 | 테스트 1000회 루프 본문 | 함수로 추출 | 유지 | **반영(번복)** |
+
+1번 유지 근거는 넷이다 - 명확성 개선이 크지 않고, 제안된 `addSessionToSet(String principal, ...)`에
+쓰이지 않는 파라미터가 있으며, 몸체를 밖으로 빼면 "반드시 compute 블록 안에서 돌아야
+한다"는 의도가 덜 보이고(원자성이 깨지지는 않으나 나중에 오용하기 쉬워진다), 무엇보다
+블로킹 형제가 같은 변경을 인라인으로 수행한다.
+
+2번은 순수 취향이라 양보 여지를 열어 두되 유지했다. 그 이름이 블로킹 형제의 compute
+파라미터명과 같기 때문이다. 이 코멘트에서 배운 것이 하나 더 있다 - **앵커가
+`side=LEFT`(삭제된 줄)였다.** 리뷰어가 지목한 줄은 이 PR이 제거한 옛 지역 변수 선언이었고,
+실제 의도는 살아 있는 람다 파라미터의 이름이었다. 첫 답글이 그 불일치를 앞세워
+현학적으로 읽혀 내용을 다시 써서 교체했다.
+
+3번은 리뷰어가 재답글로 "유지보수가 아니라 가독성 때문에 제안한 것"이라고 의도를 명확히
+하면서 **번복**했다. 재판정의 결정적 차이는 이것이다 - 1·2번은 "블로킹 형제 인라인
+미러링"이라는 객관적 정합 논거가 있지만, **테스트는 신규 코드라 미러링 대상이 없다.**
+정합 논거가 없는 자리에서는 남는 판단 기준이 순수 가독성이고, 그 기준에서는 루프가 "이
+레이스를 1000번 돌린다"로 읽히는 편이 낫다. 단언을 헬퍼 안에 남기면 실패 추적성도 잃지
+않으므로, 1차 거부의 반대 논거도 함께 해소된다.
+
+### 부수 사고 - DCO
+
+후속 커밋에서 sign-off가 빠져 DCO 체크가 실패했다. 배운 것 셋을 기록해 둔다.
+
+1. **DCO는 PR의 모든 커밋을 검사한다.** 원 커밋에 sign-off가 있어도 추가 커밋에 없으면
+   실패하고, **새 커밋을 얹어서는 고칠 수 없다** - 기존 커밋 객체 자체가 검사 대상이므로
+   `git commit --amend -s` + `--force-with-lease`가 필요하다.
+2. **amend는 SHA를 바꾼다.** `ed74f650` -> `72feea0d`가 되면서, 리뷰 답글에 적어 둔 짧은
+   SHA가 가리키는 커밋이 없어졌다. force-push 후 그 SHA를 인용한 코멘트도 갱신해야 한다.
+3. **리뷰 크레딧**: 코멘트 반영만으로는 리뷰어가 커밋 author가 아니므로 기여 그래프에
+   잡히지 않는다. 등록하려면 `Co-authored-by:`(코드 공동 작성 관례)나 `Reviewed-by:`가
+   필요한데, Spring은 메인테이너가 머지 시 커밋 메시지를 재작성하므로 작성자가 굳이 넣지
+   않아도 된다.
