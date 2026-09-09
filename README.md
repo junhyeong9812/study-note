@@ -23,11 +23,12 @@ study-note/
 ├── reference/                 ← 작성 지침 (organize-guide.md · writing/ — 문서 작성 근거 · learning/ — 내 공부 방법론과 출처)
 ├── 세미나/                     ← 컨퍼런스·세미나 후기 (예: nerdcon/nerdcon-5.md)
 ├── 독후감/                     ← 책 후기 — 책=폴더, 챕터별 기록 (규칙: 독후감/README.md)
-├── cs/                        ← 개념 지식(1/2/3 챕터): systems·engineering·algorithm·data-structure·domain-modeling·ops-patterns·api-design
+├── cs/                        ← 개념 지식(1/2/3 챕터): systems·engineering·foundations·algorithm·data-structure·domain-modeling·ops-patterns·api-design
 ├── practice/                  ← 훈련(문제→풀이): programmers
 ├── project/                   ← 만든 것의 기록: db-engine·study-note-deploy-system
 ├── lab/                       ← 실험 프로젝트 포트폴리오 (프로젝트=폴더+README, 규칙: lab/README.md)
-├── portfolio/                 ← 대외용 정리
+├── opensource/                ← 오픈소스 기여 아카이브: spring-framework·spring-security·elasticsearch
+├── portfolio/                 ← 대외용 정리 — project·lab에서 추려 산문으로 (k-brand-guard·markview)
 └── <주제>/                     ← 예: cs/systems/lsm-tree/
     ├── README.md              ← 그 주제의 공부 규칙
     ├── index.md               ← 챕터/주제 목록과 진행 상태 (상태 변경 시마다 갱신)
@@ -79,7 +80,10 @@ study-note/
 | 주제 | 원본 | 진행 |
 |------|------|------|
 | [project/db-engine](project/db-engine/) | `/home/jun/project/db-engine` (impl/ 01~21) | [index](project/db-engine/index.md) |
-| [cs](cs/) | 개념 지식 전반 — systems·engineering·algorithm·data-structure·domain-modeling·ops-patterns·api-design | [index](cs/index.md) |
+| [cs](cs/) | 개념 지식 전반 — systems·engineering·foundations·algorithm·data-structure·domain-modeling·ops-patterns·api-design | [index](cs/index.md) |
+| [cs/systems](cs/systems/) | 시스템 개념 8주제 — kafka-why-fast·lsm-tree·nand-flash·striping·straggler·partitioning-vs-sharding·thrashing·Hysteresis | [index](cs/index.md) |
+| [cs/engineering](cs/engineering/) | 설계·기준 — solid-principles·development-standards(품질·보안·운영·법률) | [index](cs/engineering/development-standards/index.md) |
+| [cs/foundations](cs/foundations/) | CS 기초 10주제 — 컴퓨터사이언스 부트캠프 원고 이관(변수·데이터 표현·OOP·하드웨어·메모리·프로세스/스레드·컴파일러 등) | [index](cs/foundations/index.md) |
 | [cs/algorithm](cs/algorithm/) | `/home/jun/project/myway/algorithm` (01~30) | [index](cs/algorithm/index.md) |
 | [cs/data-structure](cs/data-structure/) | `/home/jun/project/myway/data-structure` (01~35) | [index](cs/data-structure/index.md) |
 | [cs/domain-modeling/basic](cs/domain-modeling/basic/) | `/home/jun/project/myway/domain-modeling-basic` (01~30) | [index](cs/domain-modeling/basic/index.md) |
@@ -91,6 +95,6 @@ study-note/
 | [practice/programmers](practice/programmers/) | 프로그래머스 고득점 Kit (유형 10 · 문제 47) — 1-question.md / 3-answer.md (2-summary 없음) | — |
 | [project/study-note-deploy-system](project/study-note-deploy-system/) | 이 저장소를 배포하는 시스템의 이슈별 구현 기록 (backend·front·llm — 골격: templates/project-issue.md) | — |
 | [lab](lab/) | 실험 프로젝트 포트폴리오 — 캐시·동시성·프로토콜·분산 로그 등 8종 | [index](lab/index.md) |
-| [portfolio](portfolio/) | 대외용 정리 (자리 확보) | — |
+| [opensource](opensource/) | 오픈소스 기여 아카이브 — spring-framework(머지 17건~)·spring-security·elasticsearch | [index](opensource/index.md) |
 | [세미나](세미나/) | 컨퍼런스·세미나 후기 — nerdcon-5 (2026-08-22, AI 시대 개발자 성장 방향) | — |
 | [독후감](독후감/) | 책 후기 — 아키텍트-첫걸음 (읽는 중) | [index](독후감/index.md) |

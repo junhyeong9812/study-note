@@ -3,6 +3,20 @@
 프로젝트 무관 CS·설계 지식의 주제 목록.
 상태: `서머리` → `질문/정답` → `복습중`. 기준 문서 위치는 주제마다 사용자가 지정한다.
 
+## 폴더 구조
+
+```text
+cs/
+├── systems/           ← 시스템 개념 8주제 (kafka-why-fast·lsm-tree·nand-flash·striping·straggler·partitioning-vs-sharding·thrashing·Hysteresis)
+├── engineering/       ← 설계·기준 (solid-principles · development-standards — 품질·보안·운영·법률)
+├── foundations/       ← CS 기초 10주제 — 책 원고 이관본 (foundations/index.md)
+├── algorithm/         ← 01~30 (myway/algorithm)
+├── data-structure/    ← 01~35 (myway/data-structure)
+├── domain-modeling/   ← basic 01~30 · advanced 01~30
+├── ops-patterns/      ← 01~19
+└── api-design/        ← 01~06
+```
+
 ## 진행 중
 
 | 주제 | 상태 | 원본(따라 친 노트) 위치 |
