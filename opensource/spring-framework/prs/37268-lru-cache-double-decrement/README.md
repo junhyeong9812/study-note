@@ -1,0 +1,354 @@
+# PR #37268 - Prevent double size decrement in ConcurrentLruCache
+
+## 0. 정향
+
+이 문서는 `spring-core`의 `ConcurrentLruCache`가 **같은 노드의 크기 카운터를 두 번
+깎아 capacity를 영구히 초과하게 되는** 결함의 해설이다. 결함은 "빠진 검사 하나"이고
+수정은 세 줄이지만, 그 세 줄이 없을 때 캐시가 겪는 일은 일시적 오차가 아니라
+**되돌아오지 않는 고착**이다 - 카운터가 한 번 어긋나면 그 뒤로는 축출이 덜 일어나고,
+덜 일어난 축출은 다시 카운터를 되돌려 놓지 못한다. 다 읽으면 "왜 감산이 두 번
+일어나는가", "왜 그 어긋남이 스스로 회복되지 않는가", "왜 이 결함을 테스트로 잡는
+일이 그 자체로 어려운 문제였는가"를 설명할 수 있어야 한다.
+
+상태: **리뷰 대기**(2026-09-11 제출, 커밋 `ee7ed0093d6`).
+
+같은 폴더: [테스트 해설](tests.md) - [실구조](structure.md) - [착수 분석](analysis.md) -
+[이해 게이트 기록](gates.md).
+관련 개념 문서:
+[동시성 버그 테스트의 경합 보장](../../concepts/race-condition-test-guarantees/race-condition-test-guarantees.md) -
+이 PR의 리뷰 지적 U1-R1에서 파생된 문서다.
+
+## 1. 배경 - 버퍼에 쌓았다가 락 아래에서 드레인하는 캐시
+
+`ConcurrentLruCache`는 LRU 순서를 유지하면서도 매 접근마다 락을 잡지 않기 위해,
+읽기와 쓰기를 각각 버퍼에 기록해 두었다가 나중에 한 스레드가 몰아서 처리하는 구조를
+쓴다. 클래스 서두가 그 설계를 한 줄로 밝혀 둔다 - "Read and write operations are
+internally recorded in dedicated buffers, then drained at chosen times to avoid
+contention"(ConcurrentLruCache.java:40-41). 이 구조에서 캐시의 "현재 크기"는 두 군데에
+따로 존재한다.
+
+| 이름 | 무엇인가 | 누가 읽나 |
+|---|---|---|
+| `this.cache` (`ConcurrentHashMap`) | 실제로 들어 있는 엔트리들. `size()`가 이것을 반환한다(:177-179) | 사용자 |
+| `this.currentSize` (`AtomicInteger`) | 캐시가 **믿는** 크기(:54) | 축출 판단 `evictEntries()`(:281-290) |
+
+두 값은 같은 사실을 두 방식으로 적은 것이고, 정상이라면 드레인이 끝난 시점에 일치해야
+한다. 그런데 **일치하는지 검사하는 장치는 어디에도 없다.** map은 스스로를 세지만
+`currentSize`는 각 작업이 `+1` / `-1`을 성실히 적어 줄 것이라는 신뢰 위에 올라가 있고,
+축출은 map이 아니라 그 신뢰의 결과물을 보고 결정된다.
+
+```java
+private void evictEntries() {
+	while (currentSize.get() > capacity) {   // 기준은 map이 아니라 카운터다
+		Node<K, V> node = evictionQueue.poll();
+		if (node == null) {
+			return;
+		}
+		cache.remove(node.key, node);
+		markAsRemoved(node);
+	}
+}
+```
+(ConcurrentLruCache.java:281-290)
+
+**카운터가 거짓말을 하면 축출이 거짓말을 믿는다** - 이 한 줄이 이 결함의 전체 구조다.
+
+## 2. 수정 전 동작 - 가드를 가진 형제와 갖지 못한 쪽
+
+노드는 세 상태를 가지는 작은 상태 기계다: `ACTIVE` -> `PENDING_REMOVAL` -> `REMOVED`
+(`CacheEntryState`, :357-360). 이 기계의 전이를 담당하는 메서드가 정확히 둘인데, 수정
+전에는 그 둘이 서로 다른 규율을 따르고 있었다. 고정 축으로 나란히 놓으면 비대칭이 한
+눈에 보인다.
+
+| | `markForRemoval` (:247-258) | `markAsRemoved` (수정 전 :203-212) |
+|---|---|---|
+| 전이 | ACTIVE -> PENDING_REMOVAL | 무엇이든 -> REMOVED |
+| 진입 시 상태 검사 | `if (!current.isActive()) return;` | **없음** |
+| javadoc | "if the transition is valid" | "Transition ... and decrement" |
+| 부작용 | 없음 | **`currentSize` 감산** |
+| 두 번 불리면 | 두 번째는 아무 일도 안 함 | **두 번 감산** |
+
+부작용이 없는 쪽에는 가드가 있고, 부작용이 있는 쪽에는 없다. 순서가 반대다.
+`markForRemoval`을 두 번 불러 봐야 손해가 없지만 `markAsRemoved`를 두 번 부르면
+카운터가 하나 어긋나는데, 정작 가드는 손해 없는 쪽에만 붙어 있었다.
+
+```java
+private void markAsRemoved(Node<K, V> node) {
+	for (; ; ) {
+		CacheEntry<V> current = node.get();     // current가 이미 REMOVED여도 그냥 통과
+		CacheEntry<V> removed = new CacheEntry<>(current.value, CacheEntryState.REMOVED);
+		if (node.compareAndSet(current, removed)) {
+			this.currentSize.lazySet(this.currentSize.get() - 1);
+			return;
+		}
+	}
+}
+```
+(수정 전 ConcurrentLruCache.java:203-212)
+
+`REMOVED`를 `REMOVED`로 바꾸는 CAS는 **성공한다.** 값이 같은 새 `CacheEntry` 레코드를
+만들어 갈아 끼우는 것이므로 CAS 입장에서는 정상적인 전이이고, 그 성공을 근거로 감산이
+한 번 더 일어난다.
+
+## 3. 문제 - 수지가 0이 되어 얼어붙는 캐시
+
+### 결함 경로 - 한 드레인 안에서 같은 노드를 두 번 처리한다
+
+`markAsRemoved`를 부르는 자리는 셋이다: 축출(`AddTask.evictEntries`, :288), 명시적
+제거(`RemovalTask.run`, :308), 전체 비우기(`clear`, :190). 이 중 앞의 둘이 같은 노드를
+차례로 만나는 것이 발화 조건이다. capacity=2, 캐시에 노드 A와 B가 있고, 어떤 스레드가
+드레인 중이라 `evictionLock`이 잡혀 있는 상황에서 단계를 따라가면 이렇다.
+
+| 단계 | 동작 | `currentSize` | map |
+|---|---|---|---|
+| 1 | `get("C")` miss -> map에 C 투입, `AddTask(C)`를 쓰기 큐에 적재(락 경합으로 아직 드레인 못 함) | 2 | 3 |
+| 2 | 다른 스레드가 `remove("A")` -> map에서 A 제거, A를 PENDING_REMOVAL로, `RemovalTask(A)` 적재 | 2 | 2 |
+| 3 | 드레인: `AddTask(C)` 실행 -> 카운터 3, `evictEntries`가 3 > 2를 보고 큐에서 A를 poll -> `cache.remove(A, A)`는 무효(이미 없음) -> **`markAsRemoved(A)` 1차 감산** | 2 | 2 |
+| 4 | 같은 드레인에서 `RemovalTask(A)` 실행 -> `evictionQueue.remove(A)` 무효 -> **`markAsRemoved(A)` 2차 감산** | **1** | 2 |
+
+**두 감산은 동시에 일어나는 것이 아니라 차례로 일어난다.** 이 점이 중요한데, 리뷰
+과정에서 우리가 처음 갖고 있던 모델이 바로 이 지점에서 틀렸고 교정됐다(6절 F5).
+`markAsRemoved`의 호출자 셋은 전부 `evictionLock` 아래에서 실행되므로 - `clear()`는
+직접 락을 잡고, `AddTask`와 `RemovalTask`는 `drainOperations()`의 `tryLock` 안에서
+`writeOperations.drain()`을 통해 실행된다 - 두 호출이 시간상 겹치는 일 자체가 없다.
+같은 드레인이 큐에서 `[AddTask(C), RemovalTask(A)]`를 순서대로 꺼내 돌리는 것이고,
+가드가 막는 것은 **순차 이중 처리**다.
+
+### 수지 계산 - 왜 스스로 회복되지 않나
+
+어긋남이 한 번 생기고 나면 왜 영영 복구되지 않는지는 산수 한 줄로 확정된다. 카운터가
+map보다 k만큼 작게 어긋난 상태, 즉 `map = capacity + k`이고 `currentSize = capacity`인
+상태에서 새 키 하나를 넣어 보면 이렇다.
+
+```
+[수정 전]  get(새 키) 1회
+  map    +1  (put)              -> capacity + k + 1
+  카운터 +1  (AddTask, :274)    -> capacity + 1
+  evictEntries: capacity+1 > capacity 이므로 딱 1회 실행
+  map    -1  (cache.remove)     -> capacity + k
+  카운터 -1  (markAsRemoved)    -> capacity
+  ---------------------------------------------
+  map 순변화 = 0                -> 초과분 k는 그대로
+
+[수정 후]  get(새 키) 1회 (카운터 == map == capacity + k)
+  map    +1 / 카운터 +1         -> capacity + k + 1
+  evictEntries: capacity+k+1 > capacity 이므로 k+1회 실행
+  map    -(k+1) / 카운터 -(k+1) -> capacity
+  ---------------------------------------------
+  한 번의 호출로 수렴
+```
+
+**수정 전의 순변화는 -1이 아니라 0이다.** 새로 들어온 하나만큼 정확히 하나가 나가므로
+map 크기가 `capacity + k`에 **동결**된다. 캐시는 매번 성실하게 축출을 한 번씩 수행하고
+있고, 카운터는 매번 `capacity + 1`에서 `capacity`로 되돌아가며, 그러는 동안 초과분 k는
+단 하나도 줄지 않는다. 이것이 "영구 초과"의 정체다 - 캐시가 일을 안 하는 것이 아니라,
+일을 하면서 제자리를 돈다.
+
+반대로 드리프트는 경합이 날 때마다 1씩 **누적**된다. 그래서 장수 프로세스에서 remove와
+축출이 겹치는 워크로드라면 시간이 갈수록 캐시가 부푼다. 실측 하네스에서 20,000회
+작업만으로 capacity 2인 캐시가 size 30~39까지 자랐다.
+
+무엇보다 이 실패는 **무음**이다. 예외도, 로그도, 단언 실패도 없다. `size()`는 정직하게
+큰 숫자를 반환하지만 아무도 그것을 capacity와 비교하지 않는다. 관측되는 유일한 형태는
+"메모리를 예상보다 많이 쓴다" 정도이고, 그것을 LRU 캐시의 감산 회수로 되짚는 사람은
+없다.
+
+### 왜 아무도 못 봤나
+
+두 겹의 조건이 이 결함을 덮고 있었다.
+
+1. **프레임워크 자신은 `remove(K)`를 부르지 않는다.** 저장소 전체에서 이 캐시를 쓰는
+   자리는 아홉 곳인데(`MimeTypeUtils`, `NamedParameterJdbcTemplate`, SpEL 패턴 캐시,
+   `ExceptionHandlerMethodResolver` 등), 그 아홉 곳 중 `remove(K)`를 호출하는 프로덕션
+   코드는 **하나도 없다**. 유일한 정리 호출은 `spring-test`의
+   `TestContextAnnotationUtils:413`의 `clear()` 한 줄이다. 즉 결함 경로를 실제로 밟으려면
+   이 공개 클래스를 직접 쓰는 외부 코드가 `remove(K)`를 축출과 겹치게 불러야 한다.
+2. **기존 테스트가 단일 스레드다.** `ConcurrentLruCacheTests`의 네 건은 전부 한
+   스레드에서 `get`/`remove`/`clear`를 순서대로 부르며, 그 경우 쓰기 큐가 매번 즉시
+   드레인돼 `[AddTask, RemovalTask]`가 나란히 쌓이는 상황이 만들어지지 않는다.
+
+기원도 확인했다. 이 클래스는 ben-manes의 `ConcurrentLinkedHashMap`을 단순화해 포팅한
+것인데(클래스 javadoc :36-38), 원본은 dead 엔트리의 weight를 0으로 만들어 두 번째
+`makeDead`가 크기에 영향을 주지 못하게 자기방어한다. 포팅 과정에서 그 불변식이 소실됐다.
+
+## 4. 수정 해설 - 종단 상태를 읽는 세 줄
+
+수정은 형제의 관용구를 그대로 가져오는 것이다.
+
+```java
+/*
+ * Transition the node to the {@code removed} state and decrement the
+ * current size of the cache, unless the node has already been removed.
+ */
+private void markAsRemoved(Node<K, V> node) {
+	for (; ; ) {
+		CacheEntry<V> current = node.get();
+		if (current.state == CacheEntryState.REMOVED) {
+			return;
+		}
+		CacheEntry<V> removed = new CacheEntry<>(current.value, CacheEntryState.REMOVED);
+		if (node.compareAndSet(current, removed)) {
+			this.currentSize.lazySet(this.currentSize.get() - 1);
+			return;
+		}
+	}
+}
+```
+(ConcurrentLruCache.java:200-216)
+
+이 세 줄이 불변식을 만드는 논리는 **REMOVED가 종단 상태라는 사실** 하나에 걸려 있다.
+`REMOVED`에서 나가는 전이는 존재하지 않는다 - 유일하게 다른 전이를 만드는
+`markForRemoval`이 `!current.isActive()`에서 즉시 반환하므로 `REMOVED -> PENDING_REMOVAL`도,
+`REMOVED -> ACTIVE`도 만들어지지 않는다. 따라서 노드가 한 번 `REMOVED`가 되면 그 뒤의
+모든 방문은 가드에 걸린다. **노드당 감산은 정확히 1회.** 반대편에서 증분은 `AddTask`가
+노드당 한 번만 큐잉되므로(`put`의 `putIfAbsent` 결과가 `null`일 때만, :119-122) 역시
+정확히 1회다. 증분과 감산이 노드당 1:1로 짝을 이루면 `currentSize`는 "계수된 노드 수"와
+정확히 같아진다.
+
+가드가 CAS와 **같은 `current` 스냅샷**을 읽는다는 점도 계약의 일부다. 검사와 갱신
+사이에 상태가 바뀌면 CAS가 실패하고, 실패한 호출은 루프 위로 돌아가 `node.get()`을
+다시 읽는다. 이때 이미 `REMOVED`가 돼 있으면 가드가 감산 없이 내보낸다. 즉
+check-then-act 원자성이 CAS 루프 자체로 성립하며, 별도 락이 필요 없다.
+
+### 왜 `== REMOVED`이고 `!= ACTIVE`가 아닌가
+
+형제 `markForRemoval`의 가드는 `!current.isActive()`인데 이쪽은 `== REMOVED`다. 이
+차이는 실수가 아니라 필수다. `markAsRemoved`는 **PENDING_REMOVAL 노드를 정상적으로
+처리해야 하는** 메서드이기 때문이다 - `remove(K)`가 ACTIVE를 PENDING_REMOVAL로 바꾸고
+큐잉한 노드를 나중에 `RemovalTask`가 확정 제거하는 것이 정규 흐름이고, 그 흐름에서
+감산은 반드시 일어나야 한다. 가드를 `!isActive()`로 썼다면 PENDING_REMOVAL 노드가
+전부 감산 없이 빠져나가 이번엔 카운터가 **커지는** 방향으로 어긋난다. 막아야 하는
+것은 "활성이 아닌 노드"가 아니라 "이미 셈이 끝난 노드"다.
+
+### 이 가드가 함께 덮는 것
+
+`clear()`도 같은 모양의 이중 처리 경로를 갖고 있었다(:184-198). `clear()`는
+`evictionQueue`에서 노드를 하나씩 뽑아 `markAsRemoved`한 뒤 `writeOperations.drainAll()`로
+남은 쓰기 작업을 전부 실행하는데, 그 남은 작업 중에 방금 처리한 노드의 `RemovalTask`가
+있으면 두 번째 감산이 일어난다. 게다가 `clear()`는 `currentSize`를 0으로 리셋하지 않고
+이 산술에 의존하므로 어긋남이 그대로 남는다. 같은 가드가 이 경로도 함께 닫는다 -
+별도 수정 없이.
+
+## 5. 검증
+
+테스트를 먼저 쓰고 red를 확인한 뒤 fix했다. `ConcurrentLruCacheTests`에 경합 스트레스
+1건(`removeRacingWithEvictionDoesNotExceedCapacity`)을 추가했고, 기존 4건이 무회귀
+가드를 맡는다. 실측 요약은 이렇다.
+
+| 항목 | 수정 전 | 수정 후 |
+|---|---|---|
+| 새 테스트(JUnit) | red - `size=38 > capacity=2`, 수렴 예산 소진 | green |
+| 독립 하네스 20회(최종 판별식) | **20/20 red** | **0/20** |
+| 결정론 스모크(리플렉션으로 락 선점) | `size=3, currentSize=2`로 고착, 방금 넣은 C가 오축출 | `size=2, currentSize=2`, D/E 정상 축출 |
+| `spring-core` 전체 | - | **5,188 tests, 0 failures** |
+| checkstyle | - | EXIT=0 |
+
+**"수렴 판별식"이라는 말이 이 검증의 핵심 개념이다.** 이 캐시는 드레인 전에는
+일시적으로 capacity를 넘을 수 있는 것이 정상이므로, 아무 시점에나 `size() <= capacity()`를
+단언하면 정상 동작도 red가 된다. 그래서 최종 테스트는 "유계 예산 안에서 쓰기를 계속
+유발했을 때 capacity로 **돌아오는가**"를 묻는다. 수정 전에는 3절의 수지 계산 때문에
+영원히 돌아오지 못하고, 수정 후에는 한두 번의 쓰기로 돌아온다. 이 판별식에 도달하기까지
+잘못된 quiesce 때문에 **2차 결함을 오인했던 조사 과정**이 있었고, 그 서사는
+[structure.md](structure.md) 4절에 있다. 테스트 자체의 해설은 [tests.md](tests.md).
+
+stakes는 **중간**으로 판정했다(변경은 세 줄이지만 대상이 동시성 코드다). 그래서 리뷰는
+**듀얼 1패스**였다 - Opus 워커와 codex를 병렬로 돌리고, 종합 후 감사, 그리고 수정분에
+대한 post-fix 재점검 1회.
+
+## 6. 리뷰 지적에서 수정까지 - 순차 타임라인
+
+리뷰가 프로덕션 코드를 바꾸지 않았다는 점을 먼저 적어 둔다. **양쪽 리뷰어 모두 가드
+세 줄은 승인했고, 일곱 건의 지적은 전부 그 주변 - 테스트, 주석, 그리고 우리가 이
+결함을 설명하던 문장 - 을 겨눴다.** 그런데 그 주변이 실제로 중요했다. 특히 다섯째
+지적은 우리가 갖고 있던 결함 모델 자체를 뒤집었다.
+
+**(1) 발주.** spec 원문 + 누적 diff + 조사 서사 + 문맥(L100-320)을 담은 packet을 만들어
+Opus 워커와 codex를 병렬 실행했다. 특별 검토 지시 넷을 명시했다 - record 필드 직접
+접근이 이 파일 관례에 맞는지, 50k 스트레스가 CI에서 flaky하지 않은지, "가드 단독
+채택, 낭비 축출 미수정" 결정이 spec과 정합하는지, `lazySet(get()-1)`이라는 기존 패턴과
+가드가 상호작용하지 않는지.
+
+**(2) codex - U1-R1(테스트 경합 미보장).** codex는 구현을 승인하면서 테스트 하나만
+문제 삼았다. remover 스레드를 `start()`한 직후 동기화 없이 메인이 50,000회를 돌기
+때문에, remover가 한 번도 실행되지 않았어도 최종 단언은 당연히 통과한다는 것이다.
+"핵심 회귀를 검출한다는 보장이 없는 확률적 테스트"라는 표현을 썼고, 덧붙여 `join()`에
+제한이 없어 실패 시 영원히 매달릴 수 있다는 점과, spec §5가 요구한 "pre-fix 20회 반복
+전부 red" 증거가 packet에는 15회로만 있다는 점을 짚었다.
+
+**(3) Opus - F1부터 F5까지.** Opus는 구현을 "증분과 감산이 노드당 정확히 1회로 짝을
+이룬다"는 논거로 승인하고 다섯을 지적했다.
+
+- **F1(주석)**: 코드는 멱등이 됐는데 주석은 여전히 "무조건 감산"으로 읽힌다. 형제
+  `markForRemoval`은 같은 자리에 "if the transition is valid"로 가드를 문서화해 두었으니,
+  코드는 대칭을 맞추고 주석은 비대칭을 남긴 셈이다.
+- **F2(테스트)**: codex의 U1-R1과 같은 지적에 도달했다. 위장 green과 스레드 누수를
+  양방향으로 짚고, `AtomicReference<Throwable>` 캡처와 `try/finally`, 그리고 "remover가
+  실제로 일했다"를 세는 단언을 권했다.
+- **F3(서술)**: "deterministic"이라 부르지 말 것. 20k 파라미터에서 baseline이 28/30이었던
+  실측이 있으므로 확률적이라는 뜻이고, 리스크의 방향은 "CI가 빨갛게 깜빡인다"가 아니라
+  "언젠가 조용히 회귀를 놓친다" 쪽 단방향이다.
+- **F4(검증 누락)**: spec §5의 네 항목 중 "fix 후 결정론 스모크 재실행"의 결과가
+  기록에 없다. 그 스모크는 리플렉션으로 락을 선점하는 유일한 결정론적 증거라 빠지면
+  명세 미충족이다.
+- **F5(논증 교정)**: spec §2와 analysis §5가 "동시 진입 시 승자만 감산"이라고 적어
+  두었는데 **그것은 사실이 아니다**. `markAsRemoved`의 호출자 셋이 전부 `evictionLock`
+  아래이므로 두 호출이 동시에 도는 일이 없다. 진짜 논증은 "REMOVED는 종단 상태이므로
+  순차 이중 처리가 차단된다"이고, 이쪽이 훨씬 강하다.
+
+**(4) 반영.** 종합해 보니 F2와 U1-R1이 같은 것이었고, 나머지는 겹치지 않았다. 각 지적이
+바꾼 것을 하나씩 적으면 이렇다.
+
+| 지적 | 무엇을 바꿨나 |
+|---|---|
+| F2 = U1-R1 | 테스트에 `AtomicReference<Throwable> failure` 캡처, `try/finally`로 `stop`+`join` 보장, `join()` -> `join(5000)`, 그리고 `remove(0)`의 반환값을 세어 `removals > 0`을 단언 |
+| F1 | 주석에 "unless the node has already been removed" 추가 (구현 로직 무변경) |
+| F4 | 결정론 스모크 재실행 - `size=2`, `currentSize=2`, D/E 정상 축출을 log에 기록 |
+| F5 | spec §2와 PR 본문의 "동시 진입 승자" 서술을 "REMOVED 종단 상태로 순차 이중 처리 차단"으로 교체 |
+| F3 | 커밋 메시지와 PR에서 "deterministic"을 빼고 "the accumulated drift makes the assertion reliable"로 |
+| 20회 증거 | 최종형 판별식으로 재실측 - **baseline 20/20 red, fix 0/20** |
+
+여기서 가장 값이 큰 것은 **F5**다. 코드는 한 글자도 바뀌지 않았지만, 틀린 모델로 PR을
+썼다면 리뷰어가 "그 두 경로가 정말 동시에 도는가"를 확인하다 시간을 쓰고 결국 우리
+설명이 틀렸음을 발견했을 것이다. 교정 후의 논증은 오히려 짧고 강하다 - 종단 상태
+하나로 노드당 1회가 증명되기 때문이다.
+
+**(5) post-fix 재점검 - N1, N2.** 수정분만 다시 codex에 넣었더니 F1/F4/F5/20회는
+해소, F2는 **부분 해소** 판정이 나오며 신규 지적 둘이 붙었다.
+
+- **N1(종료 보장)**: `join(5000)`으로 바꾼 대가로 새 구멍이 생겼다. `Thread.join(millis)`는
+  타임아웃돼도 예외 없이 조용히 반환하므로, remover가 행에 걸려 스핀 중이어도 테스트는
+  통과한다. **채택** - `assertThat(remover.isAlive()).isFalse()`를 추가했다. 무제한
+  `join()`을 유계로 바꾼 F2와 그 구멍을 메운 N1은 한 쌍이다.
+- **N2(경합 관측)**: `removals > 0`은 "제거가 성공했다"만 증명하지 실제로 같은 노드에서
+  제거와 축출이 겹쳤다는 증명은 아니다. **부분 수용** - 공개 API만으로는 특정 인터리빙을
+  강제할 수 없으므로 불변식 단언과 20/20 실측으로 갈음하고, 그 한계를 PR 본문에 직접
+  적었다("a single interleaving cannot be forced through the public API").
+
+이 마지막 처리가 이 작업에서 가장 정직한 대목이라고 생각한다. 요구를 못 채웠으면
+채운 척하지 말고, 못 채웠다는 사실과 그 이유를 PR에 적는 편이 리뷰어에게 더 쓸모가
+있다. 그리고 이 질문 - "경합을 보장한다는 게 정확히 무엇을 보장한다는 뜻인가" - 이
+그대로 개념 문서 한 편이 됐다.
+
+## 7. 교훈
+
+이 세 줄짜리 결함이 남긴 것은 부작용과 가드의 짝, 순변화 0이라는 고착의 형태, 하네스도
+검증 대상이라는 사실, 그리고 틀린 모델로도 맞는 코드를 쓸 수 있다는 경고 넷이다.
+
+1. **부작용이 있는 전이에 가드가 없고 없는 전이에 가드가 있으면 그 자체가 신호다.**
+   이 결함의 탐지법은 논리 추적이 아니라 형제 대조였다. 한 파일 안에서 같은 일을 하는
+   두 메서드를 나란히 놓고 "상태 검사가 있나"라는 한 축으로 줄 세우자 비대칭이 즉시
+   보였다. #37259의 어댑터 열세 개 대조, #37235의 setter 열 개 대조와 같은 방법이고,
+   이번이 세 번째다.
+2. **"영구 초과"의 정체는 캐시가 멈춘 것이 아니라 제자리를 도는 것이다.** 수지 계산을
+   해 보기 전에는 "축출이 안 일어난다"고 막연히 생각했는데, 실제로는 매번 정확히 한
+   번씩 축출이 일어나고 있었다. 순변화가 0이라 초과분이 줄지 않을 뿐이다. **불변식이
+   깨지는 방식을 부호와 개수로 적어 보는 것**이 이 차이를 드러냈고, 그 계산이 그대로
+   테스트 판별식(수렴 여부)의 설계 근거가 됐다.
+3. **테스트 하네스도 검증 대상이다.** 가드를 넣고도 하네스에서 red가 남아 "2차 결함이
+   있다"고 판단해 실험 패치까지 만들었는데, 계측해 보니 원인은 하네스의 quiesce가
+   불완전한 것이었다 - 읽기 히트는 쓰기 드레인을 보장하지 않는다. 측정 도구를 의심하지
+   않으면 없는 결함을 고치게 된다.
+4. **틀린 모델로도 맞는 코드가 나올 수 있다.** 가드 세 줄은 처음부터 옳았지만, 그것이
+   왜 옳은지에 대한 우리 설명("동시 진입 시 승자만 감산")은 틀려 있었다. 코드가
+   동작한다는 사실은 설명이 맞다는 증거가 아니다. 리뷰어에게 논증을 제출해야 하는
+   상황이 그 어긋남을 드러냈다.

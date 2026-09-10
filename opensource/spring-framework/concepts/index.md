@@ -19,3 +19,4 @@
 | [stored-procedure](stored-procedure/) | 저장 프로시저 — 이름 있는 OUT의 세계 |
 | [stored-function](stored-function/) | 저장 함수 — 이름 없는 반환 슬롯 |
 | [uni-vs-mono-reactive-types](uni-vs-mono-reactive-types/) | Uni/Mono의 빈 값 표기 차이와 ReactiveAdapter 다리 |
+| [race-condition-test-guarantees](race-condition-test-guarantees/) | 동시성 테스트의 경합 보장 — false green 방지 기법 스펙트럼 |
