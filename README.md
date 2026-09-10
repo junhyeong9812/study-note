@@ -18,7 +18,8 @@
 
 ```
 study-note/
-├── README.md                  ← 이 파일 (색인 + 규칙)
+├── README.md                  ← 이 파일 (공부 루프 + 규칙)
+├── index.md                   ← 전체 색인 (최상위 지도, 구조 변경 시 갱신)
 ├── templates/                 ← 1-question / 2-summary / 3-answer 포맷 템플릿
 ├── reference/                 ← 작성 지침 (organize-guide.md · writing/ — 문서 작성 근거 · learning/ — 내 공부 방법론과 출처)
 ├── 세미나/                     ← 컨퍼런스·세미나 후기 (예: nerdcon/nerdcon-5.md)
