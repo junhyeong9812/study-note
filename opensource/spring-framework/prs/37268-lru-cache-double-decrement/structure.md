@@ -234,7 +234,7 @@ internal use in Spring Framework"라고 못 박은, **프레임워크 내부의 
 무한히 쌓이지는 않게 하는 자리에 쓰인다.
 
 ```
-[프레임워크 안에서 이 캐시를 쓰는 아홉 곳]
+[프레임워크 안에서 이 캐시를 쓰는 여덟 곳]
 
 spring-core       MimeTypeUtils                    cachedMimeTypes (64)      :166
 spring-context    ReloadableResourceBundleMessageSource  customLocaleProperties (64)  :128
@@ -269,11 +269,11 @@ spring-web        ExceptionHandlerMethodResolver   lookupCache (24)          :84
 
 ## 6. 관련 개념
 
-이 무대의 배경 중 하나는 별도 문서로 정리돼 있으므로 링크로 연결한다.
-
-- [동시성 버그 테스트의 경합 보장](../../concepts/race-condition-test-guarantees/race-condition-test-guarantees.md) -
-  "경합을 보장한다"는 말이 실제로 보장해야 하는 것(결함 검출력), false green과 false
-  red의 비용 비대칭, 보장 기법의 스펙트럼(반복 스트레스 + 누적 판별식 -> 진입 보장
-  latch/barrier -> 종료 안전 join(timeout) + try/finally -> 창 확장 -> 결정론 주입 ->
-  jcstress). 이 PR의 리뷰 지적 U1-R1에서 파생된 문서이고, 이 테스트의 before/after가
-  그 안의 사례로 들어가 있다.
+이 무대의 배경 하나는 별도 문서로 정리돼 있다.
+[동시성 버그 테스트의 경합 보장](../../concepts/race-condition-test-guarantees/race-condition-test-guarantees.md)은
+"경합을 보장한다"는 말이 실제로 보장해야 하는 것이 무엇인지(경합의 발생이 아니라 결함
+검출력이다), false green과 false red의 비용이 왜 비대칭인지, 그리고 보장 기법이 어떤
+스펙트럼을 이루는지를 다룬다. 스펙트럼은 대상 내부에 전혀 결합하지 않는 반복 스트레스와
+누적 판별식에서 출발해, 진입 보장(latch·barrier)과 종료 안전(join 타임아웃·try/finally)을
+거치고, 창 확장과 결정론 주입을 지나 jcstress에서 끝난다. 이 PR의 리뷰 지적 U1-R1에서
+파생된 문서이고, 이 테스트의 리뷰 전후 형태가 그 안의 사례로 들어가 있다.

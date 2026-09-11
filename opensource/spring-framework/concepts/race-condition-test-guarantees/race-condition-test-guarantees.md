@@ -132,10 +132,12 @@ write 큐 드레인을 유발하지 않아 미드레인 AddTask 백로그가 남
 `size() <= capacity()`가 될 때까지 쓰기를 유발하는 "수렴 quiesce"로 바꾸고 나서야
 pre-fix(예산 소진, size 38)와 post-fix(수렴)가 결정론적으로 갈렸다.
 
-## U1 사례 종합 — 현재 테스트의 약점과 보강안
+## U1 사례 종합 — 리뷰가 메운 구멍과 메우지 않은 구멍
 
-현재 워킹트리 테스트는 스트레스 + 수렴 quiesce 골격은 갖췄지만 진입 보장과 종료 안전이 빠져
-있다(`ConcurrentLruCacheTests.java:113-136`).
+U1 테스트는 이 절의 기법 중 **종료 안전과 경합 관측을 리뷰 단계에서 얻었고, 진입 보장은
+의도적으로 넣지 않았다.** 그 갈림이 기법 선택의 실제 사례가 되므로 리뷰 전후를 나란히
+둔다. 리뷰 반영 전의 형태는 스트레스 + 수렴 quiesce 골격은 갖췄지만 종료 안전과 경합
+관측이 빠져 있었다.
 
 ```java
 	@Test
@@ -164,10 +166,22 @@ pre-fix(예산 소진, size 38)와 post-fix(수렴)가 결정론적으로 갈렸
 	}
 ```
 
-약점은 셋이다. (1) `remover.start()` 직후 동기화 없이 본 루프 진입 — remover가 한 번도 안 돌아도
+약점은 셋이었다. (1) `remover.start()` 직후 동기화 없이 본 루프 진입 — remover가 한 번도 안 돌아도
 green. (2) `remover.join()`이 무제한 대기. (3) 본 루프에서 예외가 나면 `stop.set(true)`/`join()`이
-실행되지 않아 스레드가 샌다. 보강안은 골격(스트레스 + 수렴 quiesce + 불변식 단언)을 그대로 두고
-세 구멍만 막는다.
+실행되지 않아 스레드가 샌다.
+
+리뷰(지적 U1-R1과 그 post-fix 후속 N1)가 (2)와 (3)을 메웠다. 커밋된 최종형은 본 루프를 `try`로
+감싸고 `stop.set(true)`와 `join(5000)`을 `finally`로 옮겼으며, 워커 예외를
+`AtomicReference<Throwable>`로 캡처하고, `assertThat(remover.isAlive()).isFalse()`로 join이
+타임아웃이 아니라 실제 종료로 반환했음을 확인한다. 경합 관측으로는 `remove(0)`의 반환값을 세어
+`removals > 0`을 단언한다. 전문과 단언별 해설은
+[tests.md](../../prs/37268-lru-cache-double-decrement/tests.md)에 있다
+(`ConcurrentLruCacheTests.java:115-154`).
+
+남은 (1) 진입 보장은 **채택하지 않았다.** latch가 보장하는 것은 출발선뿐인데 이 결함이 요구하는
+것은 특정 인터리빙(축출이 poll한 노드가 하필 방금 remove된 그 노드)이므로 검출력이 오르는 축이
+아니라고 판단했고, 그 자리를 사후 관측 단언(`removals > 0`)이 대신한다. 참고로 진입 보장과 사이클
+관측까지 넣으면 형태는 이렇게 된다(미채택안).
 
 ```java
 	@Test
@@ -214,10 +228,13 @@ green. (2) `remover.join()`이 무제한 대기. (3) 본 루프에서 예외가 
 
 `cyclesBefore`/`cyclesAfter`의 차를 보는 이유는 latch만으로는 출발선밖에 보장되지 않기 때문이다.
 본 루프 시작 직전과 직후의 사이클 수 차이가 크다는 것은 두 스레드가 그 구간 동안 실제로 시간상
-겹쳐 돌았다는 사후 증거다. 추가 import는 `java.util.concurrent.CountDownLatch`,
-`java.util.concurrent.TimeUnit`, `java.util.concurrent.atomic.AtomicLong` 셋이다.
+겹쳐 돌았다는 사후 증거다. 이 형태를 쓰려면 `java.util.concurrent.CountDownLatch`,
+`java.util.concurrent.TimeUnit`, `java.util.concurrent.atomic.AtomicLong` 셋을 추가로 import해야
+한다. U1에서는 커밋하지 않았다.
 
 ## 요약
+
+이 문서의 결론을 다섯 줄로 줄이면 이렇다.
 
 - 결정론이 불가능해도 검출력은 설계할 수 있다 — 누적형 결함이면 스트레스 + 최종 불변식으로 충분하다.
 - 동시성 테스트는 반드시 pre-fix red를 실측하고 그 비율을 기록한다. 실측 없는 red는 검출력 미지수다.

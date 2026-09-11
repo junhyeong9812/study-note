@@ -15,7 +15,7 @@
 | 단일 스레드 | T2 `getAndSize`(축출) / T3 `removeAndSize`(명시적 제거) / T4 `clearAndSize` - 가드 | (구조적으로 불가) |
 | 두 스레드 | - | **T5 `removeRacingWithEvictionDoesNotExceedCapacity` - red** |
 
-오른쪽 아래 칸이 비어 있었던 것이 이 결함이 5년 가까이 살아남은 이유다. 기존 넷은
+오른쪽 아래 칸이 비어 있었던 것이 이 결함이 4년 넘게 살아남은 이유다. 기존 넷은
 전부 왼쪽 열에 있고, 왼쪽 열에서는 쓰기 큐가 매 호출마다 즉시 드레인되므로
 `[AddTask, RemovalTask]`가 나란히 쌓이는 상황 자체가 만들어지지 않는다.
 
@@ -66,6 +66,8 @@ void removeRacingWithEvictionDoesNotExceedCapacity() throws Exception {
 }
 ```
 (ConcurrentLruCacheTests.java:115-154)
+
+이 테스트가 주장하는 것과 수정 전에 red가 되는 이유를 먼저 두 줄로 적어 둔다.
 
 - **주장**: 명시적 제거와 축출이 겹쳐 돌아간 뒤, 남은 쓰기 작업을 전부 드레인하면
   캐시는 capacity로 돌아온다.
@@ -123,6 +125,8 @@ while (cache.size() > cache.capacity() && budget-- > 0) {
 	cache.get(key++);
 }
 ```
+
+이 네 줄에 든 선택 셋이 각각 다른 실패를 막는다.
 
 - **`key++`로 매번 새 키를 쓰는 이유**: 이미 있는 키를 `get`하면 그것은 **읽기**이고,
   읽기는 읽기 버퍼에만 기록될 뿐 쓰기 큐의 드레인을 보장하지 않는다(`processRead`,

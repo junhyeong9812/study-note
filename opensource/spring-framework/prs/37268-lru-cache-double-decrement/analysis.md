@@ -56,9 +56,9 @@ contention"(L40-41). 노드가 캐시에서 빠지는 길은 셋이다.
 | `this.cache` (`ConcurrentHashMap`, L56) | 실제로 들어 있는 엔트리. `size()`가 반환하는 값 | 피해가 드러나는 표면. 부푸는 쪽 |
 | `markAsRemoved` (L203) | 노드를 REMOVED로 전이 + `currentSize` 감산 | **현재 상태를 검사하지 않음** - 이미 REMOVED여도 CAS가 성공하고 또 감산 |
 | `markForRemoval` (L243) | ACTIVE -> PENDING_REMOVAL 전이 | `!current.isActive()`면 조기 반환. **가드가 "있는" 형제** |
-| `CacheEntryState` (L357) | ACTIVE / PENDING_REMOVAL / REMOVED 3상태 | REMOVED -> REMOVED 재전이가 막혀 있지 않은 것이 본질 |
-| `CacheEntry` (L363) | `record(value, state)` - 노드가 들고 있는 불변 스냅샷 | 상태의 단일 진리원. map이 아니다 |
-| `Node` (L488) | `AtomicReference<CacheEntry<V>>`를 상속 | CAS 대상. 노드 자신이 원자 참조다 |
+| `CacheEntryState` (L353) | ACTIVE / PENDING_REMOVAL / REMOVED 3상태 | REMOVED -> REMOVED 재전이가 막혀 있지 않은 것이 본질 |
+| `CacheEntry` (L359) | `record(value, state)` - 노드가 들고 있는 불변 스냅샷 | 상태의 단일 진리원. map이 아니다 |
+| `Node` (L484) | `AtomicReference<CacheEntry<V>>`를 상속 | CAS 대상. 노드 자신이 원자 참조다 |
 | `AddTask.evictEntries` (L277) | 초과분 축출 - poll한 노드를 `markAsRemoved` | PENDING_REMOVAL 노드도 poll될 수 있음(1차 감산) |
 | `RemovalTask.run` (L293) | 큐에서 노드 제거 + `markAsRemoved` | 같은 노드에 2차 감산 |
 | `evictionLock` (L64) | 드레인 직렬화 | 이 락이 경합 중일 때 쓰기 큐에 `[AddTask, RemovalTask]`가 쌓이는 것이 발화 조건 |
@@ -145,10 +145,10 @@ capacity**"라고 선언한다(L33-34). 그런데 `size()`가 map의 실크기�
 착수 시점에는 "동시성 코드라 안 보였다"고만 적었는데, 문서화 단계에서 저장소를 전수로
 훑어 더 정확한 답을 얻었다. **프레임워크 자신은 `remove(K)`를 부르지 않는다.**
 
-`ConcurrentLruCache`를 쓰는 프로덕션 코드는 아홉 곳이고(`MimeTypeUtils`,
+`ConcurrentLruCache`를 쓰는 프로덕션 코드는 여덟 곳이고(`MimeTypeUtils`,
 `NamedParameterJdbcTemplate`, SpEL 패턴 캐시 둘, `NamedParameterExpander`,
 `ReloadableResourceBundleMessageSource`, `TestContextAnnotationUtils`,
-`ExceptionHandlerMethodResolver`), 그 아홉 곳은 전부 `get(K)`만 호출한다. `remove(K)`
+`ExceptionHandlerMethodResolver`), 그 여덟 곳은 전부 `get(K)`만 호출한다. `remove(K)`
 호출은 0곳이고, `clear()` 호출은 `spring-test`의 한 줄뿐이다
 (`TestContextAnnotationUtils:413`). 스프링 내부 사용만으로는 결함 경로에 닿지 않는다.
 
@@ -246,7 +246,7 @@ A안 전체가 서 있는 전제였고, 따라서 착수 직후에 실증하기�
 
 **가정 2 - `CacheEntry.state`가 테스트 없이 접근 가능한 형태인가.** 수정 코드가 그
 필드를 직접 읽으므로 record인지 확인이 필요했다. `private record CacheEntry<V>(V value,
-CacheEntryState state)`(L363)로 확인됐고, 바로 아래 줄의 기존 코드가 이미 `current.value`를
+CacheEntryState state)`(L359)로 확인됐고, 바로 아래 줄의 기존 코드가 이미 `current.value`를
 직접 읽고 있어 파일 관례와도 일치했다(리뷰가 이 점을 별도로 확인해 줬다).
 
 ## 9. 범위 밖

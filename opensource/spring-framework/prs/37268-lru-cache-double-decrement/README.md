@@ -158,8 +158,8 @@ map 크기가 `capacity + k`에 **동결**된다. 캐시는 매번 성실하게 
 두 겹의 조건이 이 결함을 덮고 있었다.
 
 1. **프레임워크 자신은 `remove(K)`를 부르지 않는다.** 저장소 전체에서 이 캐시를 쓰는
-   자리는 아홉 곳인데(`MimeTypeUtils`, `NamedParameterJdbcTemplate`, SpEL 패턴 캐시,
-   `ExceptionHandlerMethodResolver` 등), 그 아홉 곳 중 `remove(K)`를 호출하는 프로덕션
+   자리는 여덟 곳인데(`MimeTypeUtils`, `NamedParameterJdbcTemplate`, SpEL 패턴 캐시,
+   `ExceptionHandlerMethodResolver` 등), 그 여덟 곳 중 `remove(K)`를 호출하는 프로덕션
    코드는 **하나도 없다**. 유일한 정리 호출은 `spring-test`의
    `TestContextAnnotationUtils:413`의 `clear()` 한 줄이다. 즉 결함 경로를 실제로 밟으려면
    이 공개 클래스를 직접 쓰는 외부 코드가 `remove(K)`를 축출과 겹치게 불러야 한다.
