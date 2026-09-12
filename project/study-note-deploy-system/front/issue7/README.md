@@ -22,7 +22,7 @@
 
 **무엇을 고민했나:** 이 요청 형태는 issue4·issue5에서 sync 중계로 이미 다뤄봤다. 비밀
 패스스루, 4KB 본문 상한, requestId 전파 — 그때 리뷰로 배운 것들을 그대로 옮기면 된다.
-새로 발명할 게 없다.
+새로 만들게 없다.
 
 **그래서 이렇게:** sync에서 확립한 원칙 그대로 옮겼다. app 라우트는 위임만 하고, 실제
 로직은 feature의 `relay.ts`에 뒀다. 파일 경로 `src/features/deploy/lib/relay.ts`:
