@@ -32,16 +32,17 @@
 3. **만료 검사, 코드 비교, 시도 횟수 증가, 소비를 키 단위 단일 원자 구간으로 묶었습니다**. 이렇게 하지 않으면 병렬 검증 요청이 시도 상한을 우회하거나, 정답이 동시에 두 번 들어와 토큰이 두 개 발급됩니다. 코드 비교는 **상수시간 비교**로 타이밍 차이를 줄였습니다.
 4. 인증 토큰은 용도를 둘로 나눠 **등록 겸 조회 토큰이 조회 전용 토큰의 권한을 포함하게 계층화**하고, 엔드포인트마다 요구 용도를 명시했습니다. 재발송은 이메일별 슬라이딩 윈도로 **60초 1회, 시간당 5회로 제한**했습니다.
 
-### 근거 (코드) - 원자 구간의 구현
+### 근거 - 원자 구간의 구현 (식별자는 예시 형태)
 
-저장소는 `InMemoryOtpStore`이고 키는 `이메일|용도`, 값은 코드, 만료 시각, 시도 횟수(AtomicInteger), 최대 시도 횟수입니다.\
-검증은 `ConcurrentHashMap.compute` 안에서 만료 검사, 상수시간 비교, 시도 증가, 소비를 한 번에 처리해 같은 키의 요청을 직렬화합니다. 잠금이나 DB 행 잠금 없이 맵의 키 단위 원자 연산만 씁니다.
+OTP 저장소는 인메모리 맵이고 키는 이메일과 용도의 조합, 값은 코드, 만료 시각, 시도 횟수(AtomicInteger), 최대 시도 횟수입니다.\
+검증은 동시성 맵의 키 단위 원자 연산(compute) 안에서 만료 검사, 상수시간 비교, 시도 증가, 소비를 한 번에 처리해 같은 키의 요청을 직렬화합니다. 잠금이나 DB 행 잠금 없이 맵의 키 단위 원자 연산만 씁니다.
 
 ```java
-store.compute(key(email, purpose), (k, e) -> {
+// 예시 형태 - 실제 식별자는 다름
+otpMap.compute(key, (k, e) -> {
     if (e == null) { outcome[0] = EXPIRED; return null; }
     if (Instant.now().isAfter(e.expiresAt())) { outcome[0] = EXPIRED; return null; }   // 만료 소비
-    if (!constantTimeEquals(e.code(), code)) {
+    if (!constantTimeEquals(e.code(), input)) {
         int attempts = e.attempts().incrementAndGet();
         if (attempts >= e.maxAttempts()) { outcome[0] = ATTEMPTS_EXCEEDED; return null; } // 상한 도달 소비
         outcome[0] = MISMATCH; return e;                                                  // 유지(재시도 허용)
@@ -50,9 +51,9 @@ store.compute(key(email, purpose), (k, e) -> {
 });
 ```
 
-- 상수시간 비교는 `MessageDigest.isEqual`로 길이와 내용을 비교합니다.
+- 상수시간 비교는 JDK가 제공하는 상수시간 바이트 비교 함수로 길이와 내용을 비교합니다.
 - 발급 이력이 없는 경우도 EXPIRED로 통합해 코드 존재 여부를 노출하지 않습니다.
-- 값은 `EmailAuthProperties`와 application.yml에 있습니다. 코드 6자리, OTP 유효 3분, 시도 5회, 인증 토큰 1시간, 재발송 쿨다운 60초, 시간당 5회.
-- 재발송 제한은 `OtpSendRateLimiter`가 이메일별 발송 시각 Deque를 슬라이딩 윈도로 관리합니다(1시간 지난 기록 제거 후 쿨다운과 시간당 상한 판정, synchronized).
+- 값은 설정 클래스 기본값과 설정 파일에 있습니다. 코드 6자리, OTP 유효 3분, 시도 5회, 인증 토큰 1시간, 재발송 쿨다운 60초, 시간당 5회.
+- 재발송 제한은 별도 제한기가 이메일별 발송 시각 Deque를 슬라이딩 윈도로 관리합니다(1시간 지난 기록 제거 후 쿨다운과 시간당 상한 판정, synchronized).
 - 발급 순서는 서비스 코드에 "발송 성공 후 활성화"로 주석과 함께 고정돼 있습니다. 발송이 실패하면 직전 OTP를 덮어쓰지 않습니다.
-- 저장소는 in-memory 구현 하나뿐이고(session.store=in-memory), 다중 인스턴스용 Redis 구현은 없습니다. 결과 절의 단일 인스턴스 트레이드오프가 이 지점입니다.
+- 저장소 구현은 인메모리 하나뿐이고 다중 인스턴스용 외부 저장소 구현은 없습니다. 결과 절의 단일 인스턴스 트레이드오프가 이 지점입니다.
