@@ -7,7 +7,7 @@
 
 ```text
 cs/
-├── systems/           ← 시스템 개념 8주제 (kafka-why-fast·lsm-tree·nand-flash·striping·straggler·partitioning-vs-sharding·thrashing·Hysteresis)
+├── systems/           ← 시스템 개념 9주제 (kafka-why-fast·lsm-tree·nand-flash·storage-media-workload·striping·straggler·partitioning-vs-sharding·thrashing·Hysteresis)
 ├── engineering/       ← 설계·기준 (solid-principles · development-standards — 품질·보안·운영·법률)
 ├── foundations/       ← CS 기초 10주제 — 책 원고 이관본 (foundations/index.md)
 ├── algorithm/         ← 01~30 (myway/algorithm)
@@ -52,6 +52,7 @@ cs/
 | [kafka-why-fast](systems/kafka-why-fast/) | **검토 대기(2026-08-20)** — 서머리·질문 7·정답(초안) — 왜 빠른가 서사 + zero-copy 경로 + 용어 + 대안 | `/home/jun/project/db-engine-lab/docs/study/kafka.md` |
 | [lsm-tree](systems/lsm-tree/) | **검토 대기(2026-08-20)** — 서머리·질문 6·정답(초안) | `/home/jun/project/db-engine-lab/docs/study/LSM-Tree.md` |
 | [nand-flash](systems/nand-flash/) | **검토 대기(2026-08-20)** — 서머리·질문 7·정답(초안) — NAND.md + kafka.md SSD 내부 절(FTL·매핑·RMW·GC·WAF) 합침 | `/home/jun/project/db-engine-lab/docs/study/NAND.md` |
+| [storage-media-workload](systems/storage-media-workload/) | **초안(Claude 작성, 2026-09-14)** — 서머리만. HDD/SSD 동작 방식, 최신 변화(SMR·HAMR·QLC·NVMe), 접근 패턴별 매체 선택 기준. 원고 없이 포트폴리오 사례를 일반화해 작성 — 본인 검토·교체 후 질문/정답 작성 | 없음(포트폴리오 k-brand-guard 01 문제 상황 3에서 링크) |
 | [striping](systems/striping/) | **검토 대기(2026-08-20)** — 서머리·질문 6·정답(초안) | `/home/jun/project/db-engine-lab/docs/study/Striping.md` |
 | [straggler](systems/straggler/) | **검토 대기(2026-08-20)** — 서머리·질문 6·정답(초안) | `/home/jun/project/db-engine-lab/docs/study/Straggler.md` |
 | [partitioning-vs-sharding](systems/partitioning-vs-sharding/) | **검토 대기(2026-08-20)** — 서머리·질문 6·정답(초안) — Partitioning.md + Sharding.md 합침 | `/home/jun/project/db-engine-lab/docs/study/Partitioning.md`, `/home/jun/project/db-engine-lab/docs/study/Sharding.md` (둘을 한 주제로 합침) |
