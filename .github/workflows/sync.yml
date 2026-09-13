@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: call sync endpoint
         run: |
-          curl -sS -X POST "https://www.junproject.xyz/api/sync" \
+          curl -sS --http1.1 -A "study-note-sync/1.0" -X POST "https://www.junproject.xyz/api/sync" \
             -H "X-Sync-Secret: ${{ secrets.SYNC_SECRET }}" \
             -H "Content-Type: application/json" \
             -d "{\"commit_sha\": \"${{ github.sha }}\", \"request_id\": \"gh-${GITHUB_RUN_ID}\"}" \
