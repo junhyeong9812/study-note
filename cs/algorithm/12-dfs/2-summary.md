@@ -27,6 +27,22 @@
 
 다섯 가지를 다룬다: 재귀 순서(`recursiveOrder`), 스택 순서(`iterativeOrder`), 진입·종료 시각(`times`), 사이클 탐지(`CycleDetector`), 연결 요소(`Components`).
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README는 이 박스를 "**\"재귀를 명시적 스택으로 바꾸면 안전해진다\"가 반쯤만 맞다는 것**을 재는 박스"라고 소개한다.
+DFS 다섯 함수를 직접 구현하되, 스택 판이 재귀 판과 **정확히 같은 순서**를 내는 것이 첫 계약이고, 계측기(`CountedGraph`의 간선 조회 수, `CountedStack`의 스택 최대 크기)로 재귀 대 스택의 진짜 차이(시간이 아니라 공간)를 숫자로 확인하는 것이 과제다.
+
+과제 목록 — `src/main/java/com/algo/dfs/`의 TODO 1~9:
+
+- `Dfs.recursiveOrder` — TODO 1: 방문 표시 + 순서 기록 후 안 본 이웃마다 내려간다
+- `Dfs.iterativeOrder` — TODO 2(이웃을 어느 순서로 push하나) · TODO 3(방문 표시를 넣을 때 하나 꺼낼 때 하나)
+- `Dfs.times` — TODO 4: 시계 하나로 진입·종료 시각을 찍는다
+- `CycleDetector.hasDirectedCycle` — TODO 5(왜 "이미 방문"으로는 안 되나 — 색 셋) · TODO 6(시작점 하나로 충분한가)
+- `CycleDetector.hasUndirectedCycle` — TODO 7: 색 둘 + 부모 제외
+- `Components.labels` — TODO 8(라벨 없는 정점에서만 DFS) · `count` — TODO 9(labels로 세기, 빈 그래프는 몇 개인가)
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

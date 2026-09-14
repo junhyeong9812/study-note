@@ -31,6 +31,21 @@
 
 세 가지를 다룬다: 순열(`permutations`), 조합(`combinations`), N퀸(`NQueens` — 가지치기 판과 걸러내기 판을 나란히).
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README는 이 박스를 "**언제 자르느냐**가 전부인 박스다. 답은 같고 만드는 노드 수만 다르다"라고 소개한다.
+순열·조합 생성기와 N퀸 두 판(놓기 **전에** 검사하는 가지치기 판, 다 놓은 **뒤에** 검사하는 걸러내기 판)을 직접 구현하고, 계측기(`CountedBoard`의 놓기·되돌리기·충돌 검사 횟수 — 백트래킹의 비용은 만들었다 되돌려서 자료구조에 안 남으므로 이렇게 센다)로 "답은 같은데 비용이 다른" 두 판의 차이를 숫자로 확인하는 것이 과제다.
+
+과제 목록 — `src/main/java/com/algo/backtrack/`의 TODO 1~6:
+
+- `NQueens.countWithPruning` — TODO 1: 행마다 열을 고르되 놓기 전에 검사한다
+- `NQueens.countByFiltering` — TODO 2: 열 순열을 전부 만들고 마지막에 `isFullySafe`로 확인한다
+- `NQueens.solutions` — TODO 3: 세는 대신 모은다 — `snapshot()` 사본
+- `Generate.permutations` — TODO 4: 자리마다 안 쓴 값을 고른다 — 되돌리기 위치, `current` 사본, n=0
+- `Generate.combinations` — TODO 5(다음 후보를 "마지막에 고른 것보다 뒤"로 제한) · TODO 6(못 채울 가지 미리 자르기, k > n 처리)
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

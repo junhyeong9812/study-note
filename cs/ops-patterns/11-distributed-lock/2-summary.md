@@ -22,6 +22,21 @@
 
 실무 예: Redis의 `SET key value NX PX ttl`, DB의 조건부 UPDATE 한 문장, ZooKeeper/etcd 락.
 
+## 문제 — 이 챕터가 시키는 것
+
+10번 스케줄러를 두 대에 띄우면 같은 작업이 두 번 돈다 — 정산이 두 번 돌면 돈이 두 번 나간다. 서로를 모르는 두 프로세스가 "한 대만"을 합의하려면 **만료·소유자·토큰 셋이 있는 분산 락(LeaseLock)과, 락이 못 막는 것을 막는 저장소(FencedStore)를 구현하라**는 챕터다.
+
+과제(원본 README "하는 방법"):
+
+1. `DistributedLockTest.java` 를 따라친다.
+2. `NaiveLock` 의 **TODO 1~2** — 기준선. **만료도 소유자 검사도 넣으면 안 된다**("셋이 없으면 무슨 일이 벌어지는가"를 보여주는 클래스다).
+3. `LeaseLock` 의 **TODO 3**(잡기 — 한 연산으로) · **TODO 4**(release — 소유자+토큰 검사, 남의 것이면 false) · **TODO 5**(renew — 만료된 것은 안 되살리고, 토큰은 안 올린다) · **TODO 6**(currentHolder — 만료를 본다).
+4. `FencedStore` 의 **TODO 7** — 다섯 줄이 락이 못 막는 것을 막는다(작은 토큰 거절, 같은 토큰 통과, 거절 기록).
+
+시작점: `cd ~/project/myway/ops-patterns && ./run.sh 11` — 19개 중 18개가 실패하는 상태에서 출발한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

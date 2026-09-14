@@ -25,6 +25,22 @@ CronTrigger            1    (지나간 시각은 애초에 후보가 아니다)
 
 실무 예: Spring `@Scheduled(fixedRate/fixedDelay/cron)`, 리눅스 cron — 그 옵션들이 정확히 이 방아쇠들이다.
 
+## 문제 — 이 챕터가 시키는 것
+
+"1분마다 도는 작업"이 넷인데 평소에는 결과가 똑같다 — 서버가 10분 멈췄다 살아날 때만 10회/1회로 갈린다. **밀렸을 때 어떻게 할지(몰아서/버리고/다시 세고/벽시계만)를 정의하는 방아쇠 4종과, 그것을 돌리는 스케줄러를 구현하라**는 챕터다.
+
+과제(원본 README "하는 방법"):
+
+1. `SchedulerTest.java` 와 `CronTest.java` 를 따라친다.
+2. `FixedRateTrigger`·`FixedDelayTrigger` 의 **TODO 1~2** — 각각 한 줄. 인자 셋 중 하나씩만 쓴다(어느 것을 쓰느냐가 정의 전부).
+3. `SkippingRateTrigger` 의 **TODO 3** — now 를 넘는 첫 슬롯. 한 칸씩 말고 나눗셈 한 번으로, 건너뛴 수를 센다.
+4. `CronTrigger` 의 **TODO 4**(`*/n` 간격 표기를 값 집합으로 — max 넘으면 멈춘다) · **TODO 5**(지금 **이후**의 첫 일치 시각 — 같은 분 금지, 상한 필수).
+5. `Scheduler` 의 **TODO 6**(runDue — 지금까지 예정된 것 전부, 상한) · **TODO 7**(fire — 예정 시각 기록, 던져도 다음 예약).
+
+시작점: `cd ~/project/myway/ops-patterns && ./run.sh 10` — 27개 중 22개가 실패하는 상태에서 출발한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

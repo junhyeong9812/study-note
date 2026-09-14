@@ -20,6 +20,20 @@
 
 실무 예: Kubernetes 컨트롤러의 leader election, Kafka 컨트롤러, Raft의 term.
 
+## 문제 — 이 챕터가 시키는 것
+
+11번 분산 락은 **한 번의 작업**을 한 놈만 하게 했다(잡고, 하고, 놓는다). 리더 선출은 **계속 그 역할**이다(뽑히고, 유지하고, 잃는다) — 그래서 락에는 없던 임기 번호·심장 박동·물러나기가 필요하다. **그 셋을 갖춘 선출(LeaseElection)을 구현하라**는 챕터다.
+
+과제(원본 README "하는 방법"):
+
+1. `ElectionTest.java` 를 따라친다.
+2. `NaiveElection` 의 **TODO 1** — 기준선. **임기 번호를 세면 안 된다**("번호가 없으면 옛 리더와 새 리더를 구별할 수 없다"를 보여주는 클래스다).
+3. `LeaseElection` 의 **TODO 2**(campaign — 넷을 지켜라: 자기 자신이면 같은 임기, 선출마다 번호 증가, 밀려난 옛 리더는 물러나는 중 목록에, 교체 횟수 세기) · **TODO 3**(heartbeat — 임기까지 보고, 끊긴 지 오래면 거절) · **TODO 4**(resign — 번호 안 되돌림) · **TODO 5**(currentLeader — 만료를 본다) · **TODO 6**(roleOf — 셋 중 하나) · **TODO 7**(isStale — 부등호 하나).
+
+시작점: `cd ~/project/myway/ops-patterns && ./run.sh 12` — 20개 중 19개가 실패하는 상태에서 출발한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

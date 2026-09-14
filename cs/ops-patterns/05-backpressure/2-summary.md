@@ -22,6 +22,20 @@
 
 실무 예: `new LinkedBlockingQueue<>()`(인자 없으면 정원이 Integer.MAX_VALUE — 위 사고 그대로), Kafka 컨슈머 랙, Reactive Streams의 request(n), TCP 흐름 제어.
 
+## 문제 — 이 챕터가 시키는 것
+
+생산자가 초당 1000개를 넣고 소비자가 초당 100개를 처리하는데 큐에 제한이 없다. 30초면 큐가 27,000이고 최대 대기가 28초인데 **버린 것 0개, 에러 0건, 성공률 100%** — 지표가 전부 초록인 채로 죽는다. **제한 없는 큐가 어떻게 자라는지 기준선으로 재보고, 정원과 네 가지 오버플로 정책을 가진 채널을 구현해 "정원을 두면 무엇을 잃는가"를 숫자로 확인하라**는 챕터다.
+
+과제(원본 README "하는 방법"):
+
+1. `ChannelContractTest.java` 를 따라친다.
+2. `UnboundedChannel` 의 **TODO 1~2** — 기준선. 그냥 넣고(판단하지 않는다) 꺼낼 때 대기 시간을 기록한다. 요점은 **항목마다 들어온 시각을 담는 것**이다(`Stamped(item, enqueuedAt)`).
+3. `BoundedChannel` 의 **TODO 3~4** — 본체. `offer` 는 자리가 있으면 넣고 없으면 정책대로(DROP_NEWEST는 false, DROP_OLDEST는 머리를 버리고 true, FAIL은 `ChannelFullException`, BLOCK은 `while` + `wait`), `poll` 은 꺼내고 대기 시간을 기록하고 **자리가 났다고 알린다**(`notifyAll`).
+
+시작점: `cd ~/project/myway/ops-patterns && ./run.sh 05` — 84개 중 73개가 실패하는 상태에서 출발한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

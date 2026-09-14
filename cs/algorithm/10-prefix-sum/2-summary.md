@@ -22,6 +22,22 @@
                   = 누계[5] - 누계[2] = 14 - 4 = 10   (4+1+5)
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+**서로의 역연산인 두 기법**(누적 합·차분 배열)을 네 클래스로 구현하라는 챕터다.
+누적 합은 질의를 싸게, 차분 배열은 갱신을 싸게 한다 — 둘 다 미리 내는 비용과 나중에 아끼는 비용을 맞바꾸므로, "이 기법이 빠른가"가 아니라 "질의가 몇 번인가"를 묻게 만든다.
+계약 테스트(PrefixTest)가 모든 구간·직사각형을 직접 더한 값과 대조하고, MeasurementTest가 손익분기를 숫자로 확인한다.
+
+**과제 목록** (`src/main/java/com/algo/prefix/`의 TODO 1~10):
+
+- `PrefixSum.java` — TODO 1 누적 합 만들기(길이 n 대 n+1) / TODO 2 `rangeSum`(뺄셈 하나 + 잘못된 구간 막기)
+- `PrefixSum2D.java` — TODO 3 2차원 누적 합 만들기(포함 배제) / TODO 4 `rangeSum`(4항 공식)
+- `DifferenceArray.java` — TODO 5 배열 길이 / TODO 6 `rangeAdd`(두 자리만) / TODO 7 `materialize`(펼치기)
+- `SubarrayCount.java` — TODO 8 누적 합으로 문제 바꾸기 / TODO 9 미리 넣어둘 것 / TODO 10 세기와 넣기의 순서
+- 응용 문제집(*Problems.java)은 이 챕터에 없다. `SubarrayCount`가 응용 문제(09번이 못 풀던 것) 역할이다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

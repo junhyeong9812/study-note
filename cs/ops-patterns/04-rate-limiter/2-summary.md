@@ -24,6 +24,23 @@
 
 실무 예: API의 429 Too Many Requests, nginx limit_req, 요금제별 쿼터.
 
+## 문제 — 이 챕터가 시키는 것
+
+용량은 유한한데 한 사용자가 초당 1만 번 부르면 나머지 전부가 느려진다. **"단위 시간당 N개까지"를 세는 다섯 가지 방법을 직접 구현하고, 각 방법이 무엇을 팔고 무엇을 사는지(정확도·메모리·몰림 허용)를 숫자로 확인하라**는 챕터다. 계약은 하나(`tryAcquire`)이고 다섯 구현이 `doTryAcquire`만 다르게 채운다.
+
+과제(원본 README "하는 방법"):
+
+1. `AbstractRateLimiter` 의 **TODO 1** — `now()`: 뒤로 가지 않는 지금(시계 되감김 방어 + `clockRewinds` 계측). 이 상자에서 제일 짧고 제일 많은 것을 막는 코드다.
+2. `FixedWindowLimiter` **2개** — `rollTo`(창 번호 `floorDiv`, 바뀌면 계수기 0) · `doTryAcquire`(`count + permits > limit` 이면 거절).
+3. `SlidingLogLimiter` **2개** — `prune`(창 밖 시각 앞에서부터 버리기, 경계 `>=`) · `doTryAcquire`(통과 시 permits 개의 시각을 담고, **거절한 요청은 담지 않는다**).
+4. `SlidingWindowCounterLimiter` **3개** — `roll`(바로 다음 창 / 더 건너뛴 창 구분) · `estimate`(가중 추정치, **곱하기가 먼저**) · `doTryAcquire`.
+5. `TokenBucketLimiter` **2개** — `refill`(상한 넘지 않게 충전, 곱하기 전에 넘칠지 검사) · `doTryAcquire`(부분 소비 없음).
+6. `LeakyBucketLimiter` **2개** — `leak`(0 아래로 안 내려가게) · `doTryAcquire`(자리 있으면 세우고 **나가는 시각**을 줄 뒤로 민다).
+
+시작점: `cd ~/project/myway/ops-patterns && ./run.sh 04` — 129개 중 110개가 실패하는 상태에서 출발한다(통과하는 19개는 미리 채워둔 생성자 검사·설정 접근자·`permits <= 0` 거절만 보는 테스트다).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

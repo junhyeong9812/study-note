@@ -20,6 +20,18 @@
 그 차이가 선형과 지수를 가른다. 대신 그리디는 "맞다는 증명" 이 필요하다.
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+그리디가 "되는 문제"와 "안 되는 문제"를 직접 구현으로 겪는 챕터다. `src/main/java/com/algo/greedy/` 의 뼈대 코드에 TODO 1~10이 뚫려 있고, 그것을 채워 테스트(`GreedyTest`, `MeasurementTest`)를 통과시키는 것이 과제다. 그럴듯한 기준이 여러 개인데 맞는 것은 하나뿐 — 맞는 기준을 고르는 것만이 아니라, 틀리는 판(selectByStart)과 반례 탐색(smallestCounterexample)까지 만들어 "왜 증명이 필요한가"를 확인한다. 선택 횟수 계측기(`CountedChoices`)는 완성 제공된다.
+
+채울 것:
+
+- `ActivitySelection.java` — TODO 1(정렬 기준 고르기 + 교환 논증) · TODO 2(안 겹치는 것만 고르기) · TODO 3(시작 기준 판 — 틀리는 반례용)
+- `CoinChange.java` — TODO 4(큰 것부터 그리디) · TODO 5(DP 로 진짜 최소 개수) · TODO 6(그리디가 틀리는 가장 작은 금액 찾기)
+- `Huffman.java` — TODO 7(트리 없이 비트 수 합계) · TODO 8(글자 0·1 종류 경계) · TODO 9(왜 가장 적은 둘을 합치나 — 증명) · TODO 10(고정 길이 부호 비트 수)
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

@@ -2,14 +2,172 @@
 
 > 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
 > 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다.
+> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/ops-patterns/07-outbox/impl/`).
+
+⚠️ 정답은 Claude 초안(2026-09-14) — 원본 impl 코드·README 기준. 본인 검토 후 이 줄 삭제
 
 ## 정답
 
-<!-- 1-question.md 의 번호와 대응시켜 작성 -->
+<!-- 1-question.md 의 번호·문구와 1:1 대응. -->
 
-1.
-2.
-3.
-4.
-5.
+### A. 문제 (DirectPublisher · OutboxPublisher · OutboxRelay 의 TODO)
+
+#### 1. TODO 1 — DirectPublisher.placeOrder
+
+정답 코드 (impl/DirectPublisher.java):
+
+```java
+Event event = new Event("evt-" + orderId, "OrderPlaced", orderId + ":" + amount);
+
+db.inTransaction(tx -> {
+    tx.saveOrder(orderId, amount);
+    if (crashAt == CrashPoint.DURING_COMMIT) {
+        // 트랜잭션 안에서 죽는다. 롤백되므로 주문도 안 남는다.
+        throw new CrashException(CrashPoint.DURING_COMMIT);
+    }
+});
+
+if (crashAt == CrashPoint.AFTER_COMMIT_BEFORE_PUBLISH) {
+    // 여기다. 주문은 커밋됐고 이벤트는 아직 아무 데도 없다.
+    throw new CrashException(CrashPoint.AFTER_COMMIT_BEFORE_PUBLISH);
+}
+
+broker.publish(event);
+sequence++;
+
+if (crashAt == CrashPoint.AFTER_PUBLISH_BEFORE_MARK) {
+    // 이 방식에는 표시할 것이 없다. 그래서 이 지점이 무해하다.
+    throw new CrashException(CrashPoint.AFTER_PUBLISH_BEFORE_MARK);
+}
+```
+
+- 유실 지점: **AFTER_COMMIT_BEFORE_PUBLISH**(커밋 후·발행 전) 하나다. DURING_COMMIT 은 **롤백**되어 주문도 이벤트도 없다("아무 일도 안 일어난 것과 같다"), AFTER_PUBLISH 는 이미 발행이 끝난 뒤라 잃을 것이 없다.
+- 조용한 이유: **DB 만 보면 정상인 주문**이다. 배송도 알림도 안 나가는데 데이터는 멀쩡하니 아무도 이상하다고 신고하지 않는다 — 고객이 전화할 때까지 모른다.
+- 순서를 바꾸면: **이벤트는 나갔는데 주문이 없다**(유령 이벤트). 받는 쪽이 없는 주문을 배송하려 한다 — 더 나쁘다.
+- 재시도로 못 고치는 이유: **프로세스가 죽으면 재시도할 코드도 같이 죽는다.** 재시도(01번)는 살아 있는 동안의 실패만 고친다.
+- AFTER_PUBLISH 가 무해한 이유: 이 방식에는 **표시할 것이 없다.** "잃을 것이 없는 것이 아니라 이미 다 잃었거나 다 끝났거나 둘 중 하나"(impl 주석).
+
+#### 2. TODO 2 — OutboxPublisher.placeOrder
+
+정답 코드 (impl/OutboxPublisher.java):
+
+```java
+Event event = new Event("evt-" + orderId, "OrderPlaced", orderId + ":" + amount);
+
+db.inTransaction(tx -> {
+    tx.saveOrder(orderId, amount);
+    // 브로커를 안 부른다. 같은 트랜잭션 안의 테이블에 쓴다.
+    // 이 한 줄이 유실 창을 없앤다.
+    tx.appendOutbox(event);
+    if (crashAt == CrashPoint.DURING_COMMIT) {
+        throw new CrashException(CrashPoint.DURING_COMMIT);
+    }
+});
+
+if (crashAt == CrashPoint.AFTER_COMMIT_BEFORE_PUBLISH) {
+    // 직접 발행이 이벤트를 잃던 지점이다. 여기서는 아무것도 안 잃는다.
+    throw new CrashException(CrashPoint.AFTER_COMMIT_BEFORE_PUBLISH);
+}
+```
+
+- 브로커를 모르는 것이 요점인 이유: 브로커를 부르지 않으면 **두 저장소에 걸친 쓰기 자체가 없다.** 원자성을 얻은 게 아니라 **필요 없게 만든 것**이다 — 저장소가 하나뿐이니까.
+- 어디서 죽어도 안 잃는 이유: **커밋 전에 죽으면 주문도 이벤트도 없고**(아무 일도 안 일어난 것과 같다), **커밋 후에 죽으면 둘 다 DB 에 있다**(릴레이가 나중에 발행한다). 커밋이 원자적이라 둘 다 있거나 둘 다 없다 — **잃을 수 있는 창이 없다.**
+- 트랜잭션을 두 번 쓰면: 그 **사이에 다시 창이 생긴다** — 주문만 커밋되고 아웃박스가 안 써진 상태. 아무것도 안 고친 것이다.
+- 결과로 안 보이는 이유: 정상 경로도, 앞에서 죽어도, 뒤에서 죽어도 **결과가 같다.** 드러나는 것은 두 커밋 **사이**에서 죽었을 때뿐인데 **그 지점은 주입할 수도 없다.** 그래서 테스트는 **커밋 횟수**를 센다 — 주문 하나에 커밋 하나.
+- 비용: **발행이 늦는다**(릴레이가 돌 때까지 안 나간다 — 직접 발행은 즉시였다). 그 지연을 줄이려고 릴레이를 자주 돌리면 그건 **DB 조회 부하**다. 여기서도 무언가를 판다.
+
+#### 3. TODO 3 — OutboxRelay.runOnce
+
+정답 코드 (impl/OutboxRelay.java):
+
+```java
+runs++;
+List<OutboxEntry> pending = db.unpublished();   // 전체가 아니라 미발행만
+int done = 0;
+for (OutboxEntry entry : pending) {
+    broker.publish(entry.event());              // 1. 발행이 먼저
+    publishAttempts++;
+    done++;
+
+    if (crashAt == CrashPoint.AFTER_PUBLISH_BEFORE_MARK && done >= crashAfter) {
+        // 발행은 됐다. 표시를 못 했다. 다음 바퀴에 이 행이 또 나온다.
+        throw new CrashException(CrashPoint.AFTER_PUBLISH_BEFORE_MARK);
+    }
+
+    db.markPublished(entry.sequence());         // 2. 표시는 나중 (지우지 않는다)
+    marked++;
+}
+return done;
+```
+
+- 전체를 읽으면: **돌 때마다 전부 다시 발행한다** — 중복이 행 수 × 바퀴 수로 폭발한다.
+- 사이에서 죽으면: 표시가 안 됐으니 다음 바퀴에 **같은 행이 또 나와 또 발행된다** = **중복**. 순서를 뒤집으면(표시 → 발행) 사이에서 죽었을 때 **발행 안 했는데 발행함으로 남는다** = **유실**.
+- 이 순서를 고르는 근거: 둘 다 나쁘지만 **중복만 받는 쪽이 흡수할 수 있다**(이벤트 id 로 거르기 — 06번). 유실은 흡수할 방법이 없다. 고친 것이 아니라 **덜 나쁜 것을 고른 것**이다.
+- 발행이 던졌는데 표시하면: ① **브로커가 못 받은 것을 받은 것으로 친다** ② **그 행은 영영 안 나간다**(다시는 미발행으로 안 잡히니까). 그래서 브로커가 죽어 있으면 던지고 표시하지 않는다 — 그래야 다음 바퀴에 다시 시도한다.
+- 지우지 않고 표시하는 이유: 지우면 **무엇을 발행했는지 나중에 확인할 방법이 사라진다**(README 생각해볼 것 4). 감사 흔적이 남는다.
+
+#### 4. TODO 4 — OutboxRelay.drain
+
+정답 코드:
+
+```java
+int total = 0;
+int done = runOnce();
+while (done > 0) {
+    total += done;
+    done = runOnce();
+}
+return total;
+```
+
+- 예외를 잡아 다시 돌면: **무한 루프**가 된다 — 늘 같은 자리에서 죽는 행이 있으면 그 행에서 계속 죽고 되돌아오기를 반복한다.
+- 이름: **독이 든 메시지(poison message)**. 아웃박스는 **유실은 없앴지만 진행이 막히는 것은 못 막는다** — 유실을 막는 장치(표시 안 된 행은 다시 나온다)가 그대로 이 상황의 원인이 된다.
+- 종료 조건: `runOnce()` 가 **0을 돌려줄 때**(= 미발행이 없을 때). 죽으면 잡지 않고 그대로 던진다.
+
+### B. 개념
+
+#### 5. 두 저장소에 걸친 원자성
+
+- 뜻: DB 커밋과 브로커 발행을 **함께 묶어줄 트랜잭션이 없다** — 한쪽만 성공한 순간이 반드시 존재한다.
+- 두 방향: `1 성공, 2 못 함` = **주문은 있는데 아무도 모른다**(배송이 안 나간다). `2 먼저, 1 실패` = **이벤트는 나갔는데 주문이 없다**(유령 이벤트). 순서는 사고의 방향만 바꾼다.
+- 푼 게 아니라 없앤 것: 이벤트를 **브로커가 아니라 같은 DB 의 아웃박스 테이블**에 쓴다 → 쓰기가 한 저장소 안으로 들어와 트랜잭션이 커버한다. **저장소를 하나로 만들어 문제 조건 자체를 지운 것**이다.
+- 실험 설정: **주문 100건 중 33건에서 커밋 직후 죽임** → 직접 발행은 발행 67·유실 33, 아웃박스는 발행 100·유실 0.
+
+#### 6. 유실과 중복의 교환
+
+- 두 줄 그림(README 원문):
+  ```
+  발행 -> 표시   표시 전에 죽으면 중복. 받는 쪽이 흡수할 수 있다
+  표시 -> 발행   발행 전에 죽으면 유실. 흡수할 방법이 없다
+  ```
+- 흡수 가능/불가의 이유: 중복은 **받는 쪽이 이벤트 id 를 보고 두 번째를 버리면** 없던 일이 된다. 유실은 받는 쪽에 **아무것도 도착하지 않으므로** 받는 쪽이 할 수 있는 일이 없다.
+- 발행 실패 후 표시하면: **그 행은 영영 안 나간다** — 브로커가 못 받은 것을 받은 것으로 쳤기 때문이다.
+- 측정: 2개마다 죽임 = 시도 199·중복 99 / 3개마다 = 149·49 / 10개마다 = 111·11. **서로 다른 이벤트 수는 늘 100.**
+- 변하지 않는 수의 의미: **유실이 0**이라는 뜻 — 아웃박스가 없앤 것은 유실이고, 늘어난 중복은 그 대가다. 유실을 중복으로 **바꿨다**(at-least-once).
+
+#### 7. 안 보이는 결함
+
+- 살아남은 변종: **"트랜잭션을 나눠 쓴다"**(주문 저장과 아웃박스 쓰기를 트랜잭션 두 번으로). 하필 그것인 이유는 **이 패턴이 존재하는 이유 그 자체**이기 때문이다 — 가장 중요한 결함이 가장 안 보인다.
+- 결과로 검사 못 하는 이유: 정상 경로·앞에서 죽음·뒤에서 죽음의 **결과가 전부 같고**, 다른 결과가 나오는 지점은 **두 커밋 사이**인데 그 지점은 주입할 수 없다(트랜잭션 경계 바깥에서 죽는 것을 흉내낼 훅이 없다).
+- 커밋 횟수로 검사 = 계약을 **관찰 가능한 구조**로 옮긴 것. "무엇이 남았나"(결과)가 아니라 "어떻게 했나"(주문 하나에 커밋 하나)를 계약으로 삼는다.
+
+#### 8. 한계와 얻은 것
+
+- 독이 든 메시지: **50바퀴를 돌려도 같은 이벤트만 50번 나가고 나머지 넷은 영영 못 나간다.**
+- 없앤 것 = **유실**, 못 없앤 것 = **중복**(+ **진행 정지**).
+- 순서 보장: **아웃박스에 넣은 순서까지**, 그것도 **릴레이가 하나일 때만**.
+- 릴레이 여럿: **처리량을 얻고 순서를 잃는다.**
+- 브로커가 죽으면: 직접 발행은 **주문을 못 받는다**(브로커의 가용성이 곧 주문 받기의 가용성). 아웃박스는 **주문을 계속 받는다** — 이벤트는 DB 에 쌓이고 브로커가 살아나면 릴레이가 내보낸다.
+
+#### 9. 연결
+
+- 06번을 필요하게 만드는 이유: 이 패턴의 최선이 **at-least-once** 라서 중복이 반드시 나온다 — 그 중복을 **받는 쪽이 이벤트 id 로 걸러야** 시스템이 성립한다. 06번 멱등성 키가 그 일을 한다.
+- 01번이 다루지 않은 실패: **프로세스가 죽는 것.** 재시도는 살아 있는 동안의 일시적 실패만 고친다.
+- 08번이 없애는 전제: 여기서는 **저장소가 하나여서 트랜잭션이 있었다.** 여러 서비스에 걸친 작업에는 그것조차 없다 — 되돌리기(보상)로 풀어야 한다.
+- CDC: 릴레이가 아웃박스 테이블을 폴링하는 대신 **DB 의 변경 로그(binlog/WAL)를 읽어 브로커로 흘리는 방식** — 릴레이 자리를 대체한다. DB 조회 부하 없이 지연을 줄이지만 발행-표시 사이 창(중복)은 여전히 남는다. (원본에 근거 없음 — 내 추론. 원본은 릴레이 폴링 방식만 다룬다)
+
+## 근거
+
+- 기준 소스: `/home/jun/project/myway/ops-patterns/07-outbox/impl/DirectPublisher.java`, `impl/OutboxPublisher.java`, `impl/OutboxRelay.java`
+- 계약·조각: `src/main/java/com/ops/outbox/OrderService.java`, `Database.java`, `MessageBroker.java`, `OutboxEntry.java`, `Event.java`, `CrashPoint.java`, `CrashException.java`
+- 문제 원문: `src/main/java/com/ops/outbox/` 의 TODO 1~4, `README.md` "특히 생각해볼 것" 1~8

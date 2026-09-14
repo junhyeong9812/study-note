@@ -2,14 +2,171 @@
 
 > 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
 > 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다.
+> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/ops-patterns/10-scheduler/impl/`).
+
+⚠️ 정답은 Claude 초안(2026-09-14) — 원본 impl 코드·README 기준. 본인 검토 후 이 줄 삭제
 
 ## 정답
 
-<!-- 1-question.md 의 번호와 대응시켜 작성 -->
+<!-- 1-question.md 의 번호·문구와 1:1 대응. -->
 
-1.
-2.
-3.
-4.
-5.
+### A. 문제 (Trigger 4종 + Scheduler 의 TODO)
+
+#### 1. TODO 1·2 — FixedRateTrigger / FixedDelayTrigger
+
+정답 코드 (impl — 각각 정말 한 줄):
+
+```java
+// FixedRateTrigger
+// now 를 안 본다. 그래서 지나간 시각을 그대로 준다. 그게 몰아서 하는 것이다.
+return lastScheduled + periodMillis;
+
+// FixedDelayTrigger
+// 예정 시각을 안 본다. 그래서 드리프트가 쌓인다. 그게 이 방아쇠의 성질이다.
+return lastFinished + delayMillis;
+```
+
+- 쓰는 인자: 고정 주기 = **lastScheduled**(예정 시각), 고정 지연 = **lastFinished**(끝난 시각). 어느 것을 쓰느냐가 정의 전부다.
+- now 를 보면: "지나간 슬롯을 버리는" 판단이 들어가 **SkippingRateTrigger** 가 된다.
+- 몰아서 하기가 되는 이유: 10분 밀렸으면 `lastScheduled + period` 는 이미 지나간 시각인데 그걸 그대로 준다 → 스케줄러의 runDue 가 "지금까지 예정된 것"으로 보고 즉시 돌린다 → 또 다음도 지나가 있다 → **밀린 슬롯 수만큼 연달아 돈다.**
+- 고정 지연이 예정 시각을 쓰면: 드리프트가 안 쌓여서 고정 주기와 같은 물건이 된다 — "끝나고 나서 일정 시간 쉰다"는 성질(그리고 겹침 없음 보장)이 사라진다.
+
+#### 2. TODO 3 — SkippingRateTrigger
+
+정답 코드 (impl/SkippingRateTrigger.java):
+
+```java
+long next = lastScheduled + periodMillis;
+if (next > now) {
+    return next;       // 안 밀렸다. 평소 경로
+}
+// 밀렸다. now 를 넘는 첫 슬롯으로 건너뛴다.
+long behind = now - next;
+long skips = behind / periodMillis + 1;
+skipped += skips;
+return next + skips * periodMillis;
+```
+
+- 한 칸씩 더하며 찾으면: 찾는 과정 자체는 값만 늦게 나올 뿐이지만, 원본 주석의 지적은 **"한 칸씩 주면"**(매 호출마다 다음 한 슬롯만 주면) 10분 밀렸을 때 열 번 돌게 되어 **고정 주기와 같은 동작**이 된다는 것이다. now 를 넘는 첫 슬롯으로 **한 번에 건너뛰어야** 한다.
+- 식: `skips = (now - next) / period + 1`, 다음 시각 = `next + skips * period`. 나눗셈 한 번이다.
+- now 에 주기를 더하면: **시작 시각의 정렬**이 깨진다 — 0분에 시작했으면 밀렸다 살아나도 정각에 돌아야 하는데, 살아난 시각 기준으로 어긋난다. 그건 고정 지연의 동작이다.
+- 안 세면: 실행이 **예외도 로그도 없이 사라진다** — 건너뛰기를 쓰고 있다는 사실 자체가 안 보이는 조용한 사고. 그래서 `skipped()` 가 있다("이 값이 0이 아니면 무언가를 안 한 것이다").
+
+#### 3. TODO 4·5 — CronTrigger
+
+정답 코드 (impl/CronTrigger.java):
+
+```java
+// TODO 4: 간격 표기
+int step = parseInt(field.substring(2), field);
+if (step < 1) throw new IllegalArgumentException("간격은 1 이상이다: " + field);
+// min 부터 step 씩. max 를 넘으면 멈춘다. 여기서 한 바퀴 돌지 않는다는 것이
+// 시 경계에서 간격이 짧아지는 이유다.
+for (int i = min; i <= max; i += step) {
+    out.add(i);
+}
+
+// TODO 5: 다음 일치 시각
+long minute = now / MINUTE + 1;            // 분 단위 올림 — 같은 분은 후보에서 제외
+for (int i = 0; i < 60 * 24 * 2; i++) {   // 상한: 이틀
+    long at = (minute + i) * MINUTE;
+    if (matches(at)) return at;
+}
+throw new IllegalStateException("이틀 안에 일치하는 시각이 없다: " + expression);
+```
+
+- `*/7` 의 분 집합: 0, 7, 14, 21, 28, 35, 42, 49, 56 — 매 시 이 집합이 반복된다. 56 다음이 63이 아니라 **다음 시의 0분**이라 그 간격만 4분이다.
+- 한 바퀴 돌게 만들면: `*/7` 이 진짜 "7분마다"(56→63분)가 되는데, 크론의 정의는 "**몇 분에**"다 — 시 경계에서 간격이 짧아지는 것이 크론이고, 그걸 없애면 크론이 아니다.
+- 벽시계만 보는 성질: 지나간 시각은 애초에 후보가 아니므로 **밀린 것을 몰아서 하지 않는다 — 구조적으로 건너뛰기**다.
+- 같은 분을 주면: runDue 가 "지금까지 예정된 것"으로 보고 돌리고, 다음 시각도 또 같은 분 → **그 자리에서 무한히 돈다.** 그래서 `now / MINUTE + 1` 로 다음 분부터 본다.
+- 상한이 필요한 이유: 잘못된(도달 불가능한) 식이면 일치 시각이 영영 없다 — 상한 없이 돌면 **영원히 돈다.** impl 은 이틀(60×24×2 분)을 보고 못 찾으면 던진다.
+
+#### 4. TODO 6·7 — Scheduler.runDue / fire
+
+정답 코드 (impl/Scheduler.java):
+
+```java
+public int runDue() {
+    int ran = 0;
+    boolean progressed = true;
+    while (progressed) {                       // 한 바퀴가 아니라 진행이 없을 때까지
+        progressed = false;
+        long now = ticker.nowMillis();
+        for (Job job : new ArrayList<>(jobs.values())) {
+            if (job.cancelled || job.nextAt > now) continue;
+            fire(job, now);
+            ran++;
+            progressed = true;
+            if (ran > 100_000) throw new IllegalStateException(
+                    "한 번에 10만 번을 넘겼다. 작업이 주기를 계속 초과해 따라잡지 못한다");
+        }
+    }
+    return ran;
+}
+
+private void fire(Job job, long now) {
+    job.lastScheduled = job.nextAt;
+    job.runs++;
+    log.add(job.name + "@" + job.nextAt);      // 기록은 예정 시각
+    try {
+        job.task.run();
+    } catch (RuntimeException e) {
+        job.failures++;                        // 이 작업만 실패로 센다. 안 던진다
+    }
+    long finished = ticker.nowMillis();
+    job.nextAt = job.trigger.nextFireTime(job.lastScheduled, finished, finished);
+}
+```
+
+- 한 바퀴만 돌면: 같은 작업이 한 호출 안에서 **여러 번 도는 현상(몰아서 하기)** 이 안 나타난다 — 고정 주기가 10분 밀렸을 때 10번 도는 그 동작을 보여줄 수 없다.
+- 상한이 없으면: 고정 주기 + 주기보다 긴 작업 = 예정 시각은 1분씩, 실제 시각은 3분씩 가서 영원히 못 따라잡는다. 그 상태가 밖에서는 **"스케줄러가 멈췄다"로만 보인다** — 상한(10만)을 넘겨 던지면 원인이 말로 보인다.
+- 예정 시각을 기록하는 이유: **"정각에 도는가"를 확인**할 수 있어야 한다. 실제 시각을 남기면 드리프트·몰아서 하기가 기록에서 구별되지 않는다.
+- 다음 예약을 안 하면: **일시적인 실패가 영구적인 정지**가 된다.
+- 예외를 밖으로 던지면: 같은 회차의 **다른 작업이 안 돈다** — 하나의 실패가 이웃을 죽이는, **03번 벌크헤드**가 막으려던 사고다.
+- 실제 시각을 lastScheduled 로 넘기면: 고정 주기의 `lastScheduled + period` 가 "실제 돈 시각 + 주기"가 되어 **고정 지연과 같은 계산**이 된다 — 드리프트가 쌓이고 몰아서 하기도 사라진다.
+
+### B. 개념
+
+#### 5. 밀렸다 살아날 때
+
+- 실행 횟수: FixedRate **10** / SkippingRate 1 / FixedDelay 1 / Cron 1.
+- 되먹임: 서버가 멈춘 이유는 대개 부하다 → 살아난 직후(제일 약한 순간)에 밀린 10개가 들어온다 → 다시 죽으면 밀린 것이 20개 → **회복할수록 부하가 커진다.**
+- 몰아서 해야 하는 예: "하루에 정확히 1440번 집계"처럼 **횟수가 계약**인 작업. 기준은 작업의 계약이지 방아쇠의 좋고 나쁨이 아니다 — 나쁜 건 **고르지 않고 쓰는 것**.
+- 조용히 버리는 문제의 보완: 예외도 로그도 없으므로 **건너뛴 수를 센다**(`skipped()`).
+
+#### 6. 작업이 주기보다 오래 걸리면
+
+- 고정 주기: 예정 시각은 1분씩 앞으로 가는데 실제 시각은 3분씩 간다 — 격차가 매회 2분씩 벌어져 **영원히 못 따라잡는다.** 버그가 아니라 정의된 동작이다.
+- 고정 지연: 1분 시작 → 4분 종료 → (끝나고 1분 뒤) 5분 시작 — "1분마다"가 아니라 **4분마다**가 된다. 대신 절대 안 겹치고 안 밀린다.
+- 실제 스케줄러: 상한이 없으니 **예외도 안 난다.** CPU 100%인데 코드에는 "1분마다 도는 작업"이라고 적혀 있다.
+
+#### 7. 드리프트
+
+- 고정 지연, 작업 5초: 실행 시각 60, 125, 190, 255, 320초 — **매회 5초씩** 밀린다.
+- 하루 1440회 × 5초 = 7200초 = **2시간** — "매일 자정 작업"이 어느새 새벽 2시에 돈다.
+- 고정 주기가 안 쌓이는 이유: 다음 시각을 실제 끝난 시각이 아니라 **예정 시각 기준**(`lastScheduled + period`)으로 계산하므로 실행이 늦어도 다음 예정은 정각 그대로다.
+
+#### 8. 크론의 시 경계
+
+- 56분 다음: **다음 시의 0분**(4분 뒤). `*/7` 은 "0~59에서 7의 배수 분"이라는 **집합**이지 "7분 간격"이 아니기 때문이다.
+- 깨지는 곳: 시 경계에서 간격이 7분→4분으로 줄어 순간 호출 밀도가 계산보다 높아진다 — "7분마다니까 한도 안"이라는 산수가 그 지점에서 어긋난다.
+- 재현이 어려운 이유: 그 순간이 **한 시간에 한 번**뿐이다.
+- 5·10·15·20·30: **60을 나누는 수**라 시 경계에서도 간격이 똑같다. 7·8·9·11은 전부 안 나눠서 전부 그렇다.
+
+#### 9. 조용한 실패들
+
+- 같은 이름 덮어쓰기: 앞의 작업이 **소리 없이 사라진다** — 아무도 모른다. 이 구현은 `schedule` 에서 `jobs.containsKey(name)` 이면 `"이미 예약된 이름이다"` 를 **던진다.**
+- 크론의 집계 구멍: 5시간 멈추면 크론은 지나간 시각을 후보로 안 보니 그 시간대 집계가 **통째로 없다.** 예외도 로그도 없다.
+- 발견 시점: "왜 그 시간대 지표가 비어 있지?"를 **한참 뒤에** — 대개 그 데이터를 쓰려는 순간에야 발견한다.
+
+#### 10. 연결
+
+- 스레드 없이 시계를 감는 이유: "10분 멈췄다 살아남"이 FakeTicker 로 **두 줄**이 된다 — 스레드로 만들면 그 상황을 재현할 수 없다. 이 상자의 주제는 잠들었다 깨는 루프가 아니라 **다음에 언제 돌지(Trigger)** 다.
+- 한 작업의 예외가 이웃을 막는 사고: **03-bulkhead** 가 막으려던 격리 실패와 같은 모양.
+- 09번과의 관계: 09의 "읽는 김에 갱신"이 흉내낸 것을 여기서 **진짜 백그라운드 작업**으로 한다.
+- 두 대에 띄우면: 같은 작업이 **두 번** 돈다 — 그걸 막는 것이 **11-distributed-lock** 이다.
+
+## 근거
+
+- 기준 소스: `/home/jun/project/myway/ops-patterns/10-scheduler/impl/FixedRateTrigger.java`, `FixedDelayTrigger.java`, `SkippingRateTrigger.java`, `CronTrigger.java`, `Scheduler.java`
+- 문제 원문: `src/main/java/com/ops/scheduler/` 의 TODO 1~7, `README.md` "특히 생각해볼 것" 1~8

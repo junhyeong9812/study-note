@@ -25,6 +25,20 @@
 
 실무 예: `Arrays.binarySearch`, DB 인덱스 탐색, git bisect(버그가 처음 생긴 커밋 찾기 — 이것도 "경계 찾기"다).
 
+## 문제 — 이 챕터가 시키는 것
+
+같은 이진 탐색을 **두 가지 판**(반열린 구간 `[lo, hi)` / 닫힌 구간 `[lo, hi]`)으로 각각 구현하라는 챕터다.
+네 가지 연산 — `lowerBound`(key 이상인 첫 자리) · `upperBound`(key 초과인 첫 자리) · `find`(값 찾기) · `firstTrue`(술어가 참이 되는 첫 인덱스, 배열을 안 받는다) — 을 판마다 채운다.
+계약 테스트가 길이 0~40, 키 -1~40을 전부 대조하므로 경계 하나만 어긋나도 걸린다.
+
+**과제 목록** (`src/main/java/com/algo/bsearch/`의 TODO 1~8):
+
+- `HalfOpenSearch.java` — TODO 1 `lowerBound` / TODO 2 `upperBound` / TODO 3 `find`(lowerBound로 파생) / TODO 4 `firstTrue`(넘침 주의)
+- `ClosedIntervalSearch.java` — TODO 5 `lowerBound`(답 후보 기억) / TODO 6 `upperBound` / TODO 7 `find`(직접 찾기 — 비교 3갈래) / TODO 8 `firstTrue`
+- 응용 문제집(*Problems.java)은 이 챕터에 없다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

@@ -23,6 +23,21 @@
 
 세 가지 모양: **고정 폭**(양끝이 붙어 같이 감) / **가변 폭**(오른쪽은 매 칸, 왼쪽은 필요할 때만) / **단조 덱**(창 + 최댓값 후보 목록).
 
+## 문제 — 이 챕터가 시키는 것
+
+**"안쪽 루프가 있는데도 O(n)이다"라는 주장을 숫자로 확인하는 챕터다.**
+세 가지 모양의 창 — 고정 폭(폭 k 구간의 최대 합) · 가변 폭(합이 target 이상인 최소 길이, 중복 없는 최장 구간) · 단조 덱(각 창의 최댓값) — 을 직접 구현한다.
+계측기 둘(`CountedArray`는 읽기 횟수, `CountedDeque`는 넣고 뺀 횟수)은 TODO 없이 주어지고, 덱은 전체 횟수를 세기 위해 테스트가 밖에서 주입한다.
+
+**과제 목록** (`src/main/java/com/algo/window/`의 TODO 1~9):
+
+- `FixedWindow.java` — TODO 1 `maxSum` 계약 검사(잘못된 k) / TODO 2 첫 창의 합 / TODO 3 밀어내기(나간 것·들어온 것만) / TODO 4 `sums`(구간마다의 합 전부)
+- `VariableWindow.java` — TODO 5 `shortestAtLeast`(합이 target 이상인 최소 길이) / TODO 6 `longestDistinct`(중복 없는 최장 구간)
+- `SlidingMax.java` — TODO 7 뒤에서 버리기 / TODO 8 앞에서 버리기(창 밖) / TODO 9 기록 시점 — 셋이 합쳐 `maxOfEachWindow`
+- 응용 문제집(*Problems.java)은 이 챕터에 없다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

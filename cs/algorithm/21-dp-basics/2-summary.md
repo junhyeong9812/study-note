@@ -26,6 +26,18 @@ fib(3) fib(2) ...   <- 또또 나옴     fib(3)  (공책에서 봄)
 
 실무에서도 같은 구조다: 경로 찾기, 자원 배분, 문자열 비교(diff), 요금 최적화 — "작은 답을 조합해 큰 답을 만드는" 문제 전반에 쓰인다.
 
+## 문제 — 이 챕터가 시키는 것
+
+세 가지 DP 문제를 직접 구현하는 챕터다. `src/main/java/com/algo/dp/` 의 뼈대 코드에 TODO 1~9가 뚫려 있고, 그것을 채워 테스트(`DpTest`, `MeasurementTest`)를 통과시키는 것이 과제다. 표(`CountedTable`)는 쓰기·읽기·적중을 세는 계측기라서 완성본이 제공된다 — "같은 것을 두 번 계산하지 않는다"는 DP의 주장을 결과가 아니라 횟수로 확인하는 것이 이 챕터의 목적이다.
+
+채울 것:
+
+- `Fibonacci.java` — TODO 1(표 없는 재귀 naive) · TODO 2(메모이제이션) · TODO 3(타뷸레이션)
+- `Knapsack.java` — TODO 4(전부 시도 naive) · TODO 5(메모이제이션 — 상태 잡기) · TODO 6(타뷸레이션 — 채우는 방향)
+- `LongestIncreasing.java` — TODO 7(O(n²) 표) · TODO 8(O(n log n) tails) · TODO 9(실제 수열 복원)
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

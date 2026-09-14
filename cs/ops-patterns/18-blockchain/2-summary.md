@@ -24,6 +24,14 @@
 
 실무 예: 비트코인·이더리움, git의 커밋 해시 사슬(부모 해시를 담는다), 변조 감지가 필요한 감사 로그.
 
+## 문제 — 이 챕터가 시키는 것
+
+- "지우지 않고 붙인다"를 규칙(16번)이 아니라 **구조**로 강제하는 사슬을 만들라는 챕터다 — 각 칸이 앞 칸의 해시를 담아 고치면 티가 나게 하고, 작업 증명으로 다시 만드는 비용을 키운다.
+- 과제(README 「하는 방법」): ① `BlockchainTest.java` 를 따라 친다 ② `HashChain` 의 TODO 1~4(append/createBlock/verify/rebuildFrom) — **verify 가 본체다** ③ `ProofOfWorkChain` 의 TODO 5~6(createBlock/meetsDifficulty). `./run.sh 18` 로 시작하면 17개 중 14개가 실패한다.
+- 별도 응용 문제(*Problems.java)는 없다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

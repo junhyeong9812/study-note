@@ -27,6 +27,23 @@
 
 - *O(n log n)*: n개를 log n층에 걸쳐 층마다 n번씩 처리하는 비용. 100만 개면 층이 약 20개.
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 챕터는 뼈대(`src/main/java/com/algo/merge/`)의 **TODO 1~10을 직접 채워** 병합 정렬 네 판(하향식·상향식·매번할당·손본것)을 완성하라고 시킨다.
+넷은 결과는 물론 **비교 횟수까지 같은 쌍이 있어서**, 01번 계측기에 할당 계수기(`allocate`·`allocations`)를 더해 "보조 배열을 몇 번 만드는가"까지 숫자로 본다.
+**TODO 3(`TopDownMergeSort.merge`)을 먼저 채워야 한다** — 상향식과 손본것이 이 병합을 그대로 호출한다.
+
+과제 목록 (원본 README 「채울 것」 기준):
+
+- `TopDownMergeSort` — TODO 1~3: 보조 배열 1회 할당 / 재귀 분할(중간 지점 오버플로 주의) / 병합(공유 부품)
+- `NaiveMergeSort` — TODO 4~5: 같은 분할 / 병합마다 구간 길이만큼 할당(인덱스 어긋남 주의)
+- `BottomUpMergeSort` — TODO 6~7: 폭 1,2,4,…로 반복 병합 / 마지막 짧은 조각 처리(n이 2의 거듭제곱이 아닐 때)
+- `TunedMergeSort` — TODO 8~10: CUTOFF 이하 삽입 정렬 / 병합 생략 검사(왼끝 vs 오른시작) / 구간 삽입 정렬(`lo`부터)
+- `Sorter`·`CountedArray`는 완성본 제공. 별도 응용 문제(*Problems.java)는 없는 챕터다.
+- 검증: `SorterContractTest`(길이 0~64 전부 도는 계약 테스트) + `MeasurementTest`(비교·쓰기·할당 횟수 고정) + 판별 테스트.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

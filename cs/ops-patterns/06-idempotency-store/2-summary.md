@@ -24,6 +24,23 @@
 
 실무 예: 스트라이프의 `Idempotency-Key` 헤더, 토스페이먼츠, GoCardless, AWS의 client token — 전부 이 모양이다. 우연이 아니라 그것 말고 맞는 조합이 없다.
 
+## 문제 — 이 챕터가 시키는 것
+
+01번에서 배운 재시도에는 말하지 않은 전제가 있었다 — **응답을 못 받았다고 실행이 안 된 것이 아니다.** 포인트는 깎였는데 응답만 유실됐으면 재시도가 두 번 깎는다(`AtLeastOnceTest`의 잔액이 9000이 아니라 8000). 네트워크가 줄 수 있는 것은 at-least-once 까지이므로 **exactly-once 를 수신자 쪽 기록으로 만드는 저장소와 실행기를 구현하라**는 챕터다. 그리고 일부러 틀린 나이브 버전을 **직접 써서** 그것이 몇 %로 깨지는지 본다.
+
+과제(원본 README "하는 방법" — TODO 5개를 **번호 순서대로**, 1번 직후 `StoreAtomicityTest` 실행):
+
+1. `NonAtomicStore` 의 **TODO 1** `tryBegin` — 일부러 두 단계(get 후 put)로 쓴다. **고치지 마라** — 깨지는 것을 보는 용도다.
+2. `InMemoryIdempotencyStore` 의 **TODO 2** `tryBegin` — 이 문제의 전부. `compute` 로 판정과 쓰기를 한 연산에 넣고, 이겼는지는 **람다 안의 플래그**(`boolean[1]`)로 판정한다.
+3. **TODO 3** `find` — 만료된 것은 없는 것으로 본다(지우지는 않는다).
+4. **TODO 4** `purgeExpired` — 만료 기록을 지우되 `remove(key, value)` 로 "내가 본 그 기록일 때만" 지운다.
+5. `IdempotentExecutor` 의 **TODO 5** `execute` — 네 갈래 판정(선점 성공 → 실행 / 지문 불일치 → `KeyReuseException` / COMPLETED → 응답 재생 / IN_PROGRESS → `ConflictException` / FAILED·빈 기록 → 한 바퀴 더).
+
+먼저 읽을 것: `AtLeastOnceTest` — 이 문제가 왜 있는지가 거기 있다.
+시작점: `cd ~/project/myway/ops-patterns && ./run.sh 06` — 81개 중 71개가 실패하는 상태에서 출발한다(통과하는 10개는 미리 채운 생성자·인자 검증·`IdempotencyKey` 테스트다).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

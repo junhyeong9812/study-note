@@ -25,6 +25,14 @@
 
 실무 예: Prometheus·InfluxDB의 다운샘플링/보존 정책, 모니터링 대시보드의 "최근 1시간은 초 단위, 지난주는 시간 단위" 그래프.
 
+## 문제 — 이 챕터가 시키는 것
+
+- 초당 1000개씩 오는 값을 다 들고 있을 수 없으니, 최근 것은 가는 버킷으로 자세히·오래된 것은 굵은 버킷으로 접어 들고 있는 시계열 저장소를 만들라는 챕터다 — 접기는 되돌릴 수 없고, 경계 처리가 전부다.
+- 과제(README 「하는 방법」): ① `TimeSeriesTest.java` 를 따라 친다 ② `RawSeries` 의 TODO 1~2(summarize/quantile) — **기준선. 정확한데 비싸다** ③ `RollingSeries` 의 TODO 3~6(record/rollUp/summarize/bucketStart) — **경계가 전부다**. `./run.sh 17` 로 시작하면 18개 중 15개가 실패한다.
+- 별도 응용 문제(*Problems.java)는 없다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

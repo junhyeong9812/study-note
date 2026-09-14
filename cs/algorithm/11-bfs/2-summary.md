@@ -29,6 +29,20 @@
 
 이 박스는 BFS 네 가지를 다룬다: 최단 거리(`distances`), 여러 시작점 동시 출발(`multiSource`), 거리별로 묶기(`levels`), 가중치가 0 또는 1일 때(`ZeroOneBfs`).
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README는 이 박스를 "**결과가 같은데 비용만 다른 실수**를 다루는 박스"라고 소개한다.
+가중치 없는 그래프의 BFS 네 함수를 직접 구현하고, 계측기(`CountedGraph`의 간선 조회 수, `CountedDeque`의 큐 최대 크기)로 "답은 맞는데 비용이 다른" 구현들의 차이를 숫자로 확인하는 것이 과제다.
+
+과제 목록 — `src/main/java/com/algo/bfs/`의 TODO 1~8:
+
+- `Bfs.distances` — TODO 1: multiSource로 넘긴다(시작점 하나 = 여러 개의 특수한 경우)
+- `Bfs.multiSource` — TODO 2(시작점 전부 검사 후 큐에 넣기) · TODO 3(큐 루프 — 방문 표시를 언제 하나)
+- `Bfs.levels` — TODO 4: 안쪽 루프를 돌기 전에 층 크기를 재둔다
+- `ZeroOneBfs.distances` — TODO 5(거리 초기값) · TODO 6("더 짧아졌나" 판정) · TODO 7(가중치 0이면 덱 앞) · TODO 8(못 간 곳 UNREACHABLE 치환)
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

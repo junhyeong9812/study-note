@@ -22,6 +22,21 @@
 
 실무 예: Resilience4j Bulkhead, 서비스별 스레드 풀·커넥션 풀 분리, 컨테이너별 CPU/메모리 쿼터.
 
+## 문제 — 이 챕터가 시키는 것
+
+자원 격리(벌크헤드)를 세 방식으로 직접 만드는 챕터다. `BulkheadContractTest`를 따라친 뒤
+`src/main/java/com/ops/bulkhead/` 의 TODO 10개를 채워 82개 테스트를 전부 통과시킨다
+(`./run.sh 03` — 시작 시점엔 73개가 실패하는 게 정상이다). 계약 테스트 71개는 세 구현이
+전부 통과해야 한다 — 갈리는 것은 한 이름이 자리를 물고 안 놓을 때다.
+
+채울 TODO (권장 순서대로):
+
+- `SharedPool` (TODO 1~4) — 기준선(칸 없음). tryAcquire 둘 + release + call(try/finally가 여기서 나온다).
+- `FixedBulkhead` (TODO 5~7) — 이름마다 자기 칸. tryAcquire + release(초과 반납 검사) + semaphoreOf(모르는 이름은 던진다).
+- `ElasticBulkhead` (TODO 8~10) — 보장 + 공용. 내 칸 먼저 쓰고 공용에서 빌리기, **빌리고 갚는 규칙이 본체다.**
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

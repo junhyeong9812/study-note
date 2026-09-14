@@ -23,6 +23,18 @@
 어떤 순서로 왔는지가 앞으로의 비용에 영향을 안 주니까 합칠 수 있다.
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+상태 모양이 다른 세 가지 DP 문제를 직접 구현하는 챕터다. `src/main/java/com/algo/dpadv/` 의 뼈대 코드에 TODO 1~12가 뚫려 있고, 그것을 채워 테스트(`DpAdvancedTest`, `MeasurementTest`)를 통과시키는 것이 과제다. 21번이 "표를 쓰면 빨라진다"를 쟀다면 여기서는 "상태를 어떻게 잡느냐"를 잰다 — 상태를 잘못 잡으면 표를 써도 지수를 못 벗어난다.
+
+채울 것:
+
+- `MatrixChain.java` — TODO 1(상태 잡기) · TODO 2(채우는 순서) · TODO 3(자르는 자리 k 전부 시도) · TODO 4(왼쪽부터 곱한 비용, 비교 대상)
+- `TravelingSalesman.java` — TODO 5(순서 전부 시도 naive) · TODO 6(상태 잡기) · TODO 7(표 크기·누르기) · TODO 8(비트 판정·방문 표시)
+- `TreeDp.java` — TODO 9(상태 잡기·답의 위치) · TODO 10(아래에서 위로, 부모 거르기) · TODO 11(왜 트리에서만 되나) · TODO 12(전부 시도 naive)
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

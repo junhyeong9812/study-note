@@ -21,6 +21,20 @@
 
 이 도구들이 **똑같은 구조로** 암호(RSA의 모듈러 거듭제곱·역원), 해시의 법 선택, 조합 계산(nCr mod p)에 쓰인다.
 
+## 문제 — 이 챕터가 시키는 것
+
+에라토스테네스의 체부터 이진 거듭제곱까지, 정수론의 기본 도구 일곱 개를 **직접 구현**하라는 챕터다.
+시행 나눗셈·순진한 거듭제곱 같은 대조용 구현은 주어져 있고, 측정 테스트가 두 방식의 연산 수 차이(체 32배·이진 거듭제곱 37,000배 등)를 실측으로 보여준다.
+
+**과제 목록** (`src/main/java/com/algo/numtheory/`의 TODO 1~7):
+
+- TODO 1~3 — `Sieve`: `primesUpTo`(체) / `smallestPrimeFactor`(최소 소인수 표) / `factorize`(표 타고 소인수분해)
+- TODO 4~6 — `Euclid`: `gcd`(호제법) / `extendedGcd`(확장 유클리드) / `modInverse`(역원)
+- TODO 7 — `ModPow.power`: 이진 거듭제곱 (페르마 역원 `inverseByFermat`은 그 위에 주어짐)
+- 응용 문제집(*Problems.java)은 이 챕터에 없다. 계측기 `CountedArith`는 제공된다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

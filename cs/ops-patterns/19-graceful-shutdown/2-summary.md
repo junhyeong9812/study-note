@@ -24,6 +24,20 @@ stop() -> 그 자리에서 STOPPED          shutdown() -> DRAINING(새것 거절
 
 실무 예: 쿠버네티스 롤링 배포(SIGTERM → 유예 시간 → SIGKILL), 로드밸런서의 헬스체크로 트래픽 빼기(드레이닝).
 
+## 문제 — 이 챕터가 시키는 것
+
+프로세스를 끄는 순간 처리 중이던 요청 10건이 **예외도 로그도 없이 사라진다** — 앞의 열여덟 상자가 만든 재시도·아웃박스·사가가 전부 무의미해지는 지점이다. "종료한다"를 한 단계로 하면 새 요청 막기와 하던 일 끝내기가 섞여 둘 중 하나를 반드시 잘못하니, **RUNNING → DRAINING → STOPPED 세 단계와 기한을 가진 종료(GracefulServer)를 구현하라**는 챕터다.
+
+과제(원본 README "하는 방법"):
+
+1. `ShutdownTest.java` 를 따라친다.
+2. `AbruptServer` 의 **TODO 1** — 기준선. **기다리면 안 된다**(즉시 STOPPED). 다만 **몇 개를 버렸는지는 센다.**
+3. `GracefulServer` 의 **TODO 2**(accept — RUNNING 일 때만 받는다. DRAINING 에서도 거절) · **TODO 3**(shutdown — 본체. 먼저 막고 → 0이 될 때까지 기다리고 → 기한(이상)이면 세어서 보고) · **TODO 4**(isHealthy — 배수 중이면 false).
+
+시작점: `cd ~/project/myway/ops-patterns && ./run.sh 19` — 15개 중 13개가 실패하는 상태에서 출발한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

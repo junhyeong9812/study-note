@@ -23,6 +23,21 @@
 
 실무 예: "서버 몇 대면 이 트래픽을 버티나"(부하 테스트는 할 수 있음), "이 속도로 하면 마감 안에 끝나나" — 정답 공식은 없지만 판정은 되는 문제들.
 
+## 문제 — 이 챕터가 시키는 것
+
+답을 직접 계산하는 공식 없이 "이 답이 가능한가" 판정만으로 최적값을 찾는 **매개변수 탐색**을 구현하라는 챕터다.
+공통 엔진(`firstTrue`/`lastTrue`)을 먼저 만들고, 그 위에 응용 문제 셋 — 나무 자르기·공유기 설치·배열 분할 — 을 얹는다.
+세 문제 모두 무작위 대조 테스트(느린 완전 탐색과 답 대조)가 있어 경계 하나만 어긋나도 걸린다.
+
+**과제 목록** (`src/main/java/com/algo/parametric/`의 TODO 1~8):
+
+- `ParametricSearch.java` — TODO 1 `firstTrue`(후보가 long — 넘침 주의) / TODO 2 `lastTrue`(새 루프 금지 — firstTrue로 표현)
+- `WoodCutter.java` — TODO 3 `harvest`(합이 int를 넘긴다) / TODO 4 `maxHeight`(판정 방향·후보 범위·need ≤ 0 처리)
+- `RouterPlacement.java` — TODO 5 `countInstalled`(그리디) / TODO 6 `maxMinGap`(정렬은 복사본에·lastTrue의 lo-1 처리)
+- `ArraySplit.java` — TODO 7 `groupsNeeded`(불가능 표시가 급소) / TODO 8 `minMaxSum`(방향이 앞의 둘과 반대)
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

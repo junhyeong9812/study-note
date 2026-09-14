@@ -22,6 +22,22 @@
 
 실무 예: AWS SDK의 exponential backoff with jitter, gRPC retry throttling, 브라우저 재접속 로직.
 
+## 문제 — 이 챕터가 시키는 것
+
+재시도 라이브러리를 직접 만드는 챕터다. `RetryPolicyContractTest`(계약 테스트)를 따라친 뒤,
+`src/main/java/com/ops/retry/` 의 TODO 껍데기 5개를 채워 61개 테스트를 전부 통과시킨다
+(`./run.sh 01` — 시작 시점엔 41개가 실패하는 게 정상이다).
+
+채울 TODO:
+
+- `FixedDelayRetry` (TODO 1) — 늘 같은 간격. 한 줄.
+- `ExponentialBackoffRetry` (TODO 1) — base × 2^(attempt-1), 상한까지. 오버플로를 곱하기 전에 막는다.
+- `JitteredBackoffRetry` (TODO 1) — 감싼 정책의 백오프를 FULL/EQUAL 로 흔든다.
+- `Retryer` (TODO 1) — 실행 루프. 멈추는 경우가 넷이라 제일 길다.
+- `RetryBudget` (TODO 2) — onRequest(토큰 채우기) + tryRetry(먼저 확인, 나중에 빼기).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

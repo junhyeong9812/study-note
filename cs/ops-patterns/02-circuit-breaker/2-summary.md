@@ -21,6 +21,20 @@
 
 실무 예: Resilience4j·Hystrix의 CircuitBreaker, MSA에서 결제·외부 API 호출 보호.
 
+## 문제 — 이 챕터가 시키는 것
+
+서킷 브레이커를 직접 만드는 챕터다. `src/main/java/com/ops/breaker/` 의 TODO 껍데기를
+채워 71개 테스트를 전부 통과시킨다(`./run.sh 02` — 시작 시점엔 58개가 실패하는 게 정상이다).
+설정(CircuitBreakerConfig)·인터페이스(SlidingWindow·ResilienceStrategy)·예외는 주어진다.
+
+채울 TODO (권장 순서대로):
+
+- `CountBasedWindow` (TODO 1) — 최근 N개 링 버퍼. 덮어쓰기 전에 나가는 값을 먼저 뺀다.
+- `TimeBasedWindow` (TODO 2) — 시간 버킷. expire(창 밖 비우기) + record(floorMod 로 칸 찾기).
+- `CircuitBreaker` (TODO 5, 본체) — currentState / acquirePermission / onSuccess / onError / evaluate.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

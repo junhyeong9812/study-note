@@ -24,6 +24,20 @@
 
 이 방식이 **똑같은 구조로** 파일 중복 검사, 표절 탐지, 대용량 로그에서 패턴 찾기에 쓰인다.
 
+## 문제 — 이 챕터가 시키는 것
+
+롤링 해시(창 O(1) 이동) → 라빈 카프(해시로 거르고 실제 비교로 확인) → 가장 긴 중복 부분 문자열(이분 탐색 + 굴리기)까지, "틀릴 수 있는 판정을 싸게 만들고 틀린 것만 걸러내는" 문자열 해싱을 **직접 구현**하라는 챕터다.
+계약 테스트가 충돌 케이스(확인 생략 시 오답)를, 측정 테스트가 "굴리기의 글자 연산 횟수" 를 검사한다.
+
+**과제 목록** (`src/main/java/com/algo/strhash/`의 TODO 1~6):
+
+- TODO 1~3 — `RollingHash`: `hash`(호너 방식 전체 해시) / `basePower`(B^power mod m) / `roll`(빼고·곱하고·더하기, 음수 함정)
+- TODO 4 — `RabinKarp.findAll`: 해시 비교 → 같으면 실제 비교로 확인 (확인 생략판 `findAllWithoutVerification`은 반례로 주어짐)
+- TODO 5~6 — `DuplicateSubstring`: `longest`(길이 이분 탐색) / `duplicateOfLength`(해시맵 버킷 + `regionMatches` 확인)
+- 응용 문제집(*Problems.java)은 이 챕터에 없다. 계측기 `CountedHasher`는 제공된다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text
