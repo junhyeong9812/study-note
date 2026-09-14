@@ -37,3 +37,11 @@ portfolio/<프로젝트>/NN_사례명/
 |------|------|--------|
 | [k-brand-guard](k-brand-guard/) | 한국지식재산보호원 K-브랜드 지킴이 (경력 1, 사례 5건) | [index](k-brand-guard/index.md) |
 | [markview](markview/) | MarkView 서비스 개발 및 고도화 (경력 2, 사례 3건) | [index](markview/index.md) |
+
+## TODO
+
+최종 목표는 사례를 사람이 읽기 쉬운 문서 형태로 아카이브하는 것이다. 지금은 사이트 기능 때문에 미뤄 둔 것이 둘 있다.
+
+- **도식 이미지 표시**: PNG 42장을 [img/](img/README.md)에 미리 옮겨 두었다. 사이트가 이미지를 제공하게 되면(deploy-study-note front TODO) 단계/문제 항목 페이지의 ASCII 코드블록을 이미지로 바꾸거나 둘 다 둔다. ASCII는 LLM 검색 입력으로 남길 가치가 있다.
+- **코드블록 접기**: ASCII 도식을 접힌 상태로 두고 필요할 때 펼치는 형식. 사이트가 raw HTML을 렌더링하지 않아 `<details>`가 안 되므로 접기 문법 지원 뒤에 적용한다.
+- **경력기술서 PDF**: 2026-09-14부터 이 위키의 사례 페이지(README.md 8건)에서 생성한다(resume 저장소 `내정보/tools/경력기술서_링크판.py`). 사례 페이지를 고치면 PDF를 다시 만든다.
