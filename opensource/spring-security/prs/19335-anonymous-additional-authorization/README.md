@@ -3,29 +3,31 @@
 ## 0. 정향
 
 이 문서는 `spring-security-core`의 `DefaultAuthorizationManagerFactory.anonymous()`가
-**자기 javadoc이 "영향 없다"고 명시한 부가 인가를 실제로는 적용하던** 결함의 해설이다.
-결함의 실체는 메서드 하나가 형제들과 같은 헬퍼를 탄 것뿐이지만, 그것이 만든 상황은
-읽기 까다롭다 - 문서와 코드가 정면으로 어긋나 있고, 그 어긋남을 잡아야 할 기존 테스트는
-**버그가 있는 상태에서도 통과**하고 있었으며, 수정은 인가 결정을 deny에서 grant로
-뒤집으므로 "버그 수정"이자 "동작 변경"이다. 다 읽으면 "왜 permitAll은 멀쩡한데
-anonymous만 깨졌나", "왜 그 테스트가 버그를 못 잡았나", "왜 이 수정이 문서화된 방향의
-완화인가"를 설명할 수 있어야 한다.
+**자기 javadoc이 "영향 없다"고 명시한 부가 인가를 실제로는 적용하던** 결함의 해설이다.\
+결함의 실체는 메서드 하나가 형제들과 같은 헬퍼를 탄 것뿐이지만, 그것이 만든 상황은 읽기 까다롭다.\
+문서와 코드가 정면으로 어긋나 있고, 그 어긋남을 잡아야 할 기존 테스트는 **버그가 있는 상태에서도 통과**하고 있었으며, 수정은 인가 결정을 deny에서 grant로 뒤집으므로 "버그 수정"이자 "동작 변경"이다.\
+다 읽으면 "왜 permitAll은 멀쩡한데 anonymous만 깨졌나", "왜 그 테스트가 버그를 못 잡았나", "왜 이 수정이 문서화된 방향의 완화인가"를 설명할 수 있어야 한다.
 
-상태: **리뷰 대기**(2026-06-14 제출, 커밋 `d73fa8d905`, 라벨 `status: waiting-for-triage`).
-연결 이슈 gh-19334. 제출 후 2026-09-08까지 리뷰 코멘트는 없다.
+> **javadoc** — 자바 소스에 주석으로 붙여 두는 공식 API 설명서.\
+> 예: `setAdditionalAuthorization` 위의 주석이 "anonymous에는 영향 없다"고 적어 두면, 그 한 줄이 이 메서드의 계약이 된다.
 
-같은 폴더: [테스트 해설](tests.md) - [실구조](structure.md) - [착수 분석](analysis.md).
-**이 PR은 4종 구성**이다. spring-framework 아카이브의 다섯째 문서(`gates.md`, 이해 게이트
-기록)는 이 작업에 해당하는 원자료가 없어 만들지 않았다.
+상태: **리뷰 대기**(2026-06-14 제출, 커밋 `d73fa8d905`, 라벨 `status: waiting-for-triage`).\
+연결 이슈 gh-19334.\
+제출 후 2026-09-08까지 리뷰 코멘트는 없다.
+
+같은 폴더: [테스트 해설](tests.md) - [실구조](structure.md) - [착수 분석](analysis.md).\
+**이 PR은 4종 구성**이다.\
+spring-framework 아카이브의 다섯째 문서(`gates.md`, 이해 게이트 기록)는 이 작업에 해당하는 원자료가 없어 만들지 않았다.
 
 ## 1. 배경 - 팩토리, 부가 인가, 그리고 세 개의 예외
 
-`AuthorizationManagerFactory`는 인가 규칙을 찍어 내는 공장이다. `hasRole("ADMIN")`,
-`authenticated()`, `permitAll()` 같은 메서드가 각각 `AuthorizationManager` 하나를
-돌려주고, 그 매니저가 요청마다 grant(true) / deny(false) / abstain(null)을 판정한다.
+`AuthorizationManagerFactory`는 인가 규칙을 찍어 내는 공장이다.\
+`hasRole("ADMIN")`, `authenticated()`, `permitAll()` 같은 메서드가 각각 `AuthorizationManager` 하나를 돌려주고, 그 매니저가 요청마다 grant(true) / deny(false) / abstain(null)을 판정한다.
 
-`DefaultAuthorizationManagerFactory`는 여기에 **공통 조건을 한 번에 끼워 넣는 장치**를
-얹는다.
+> **grant / deny / abstain** — 인가 매니저가 요청 하나에 내리는 세 가지 답.\
+> 예: "이 사용자는 통과"(grant), "이 사용자는 차단"(deny), "나는 판단하지 않겠다"(abstain).
+
+`DefaultAuthorizationManagerFactory`는 여기에 **공통 조건을 한 번에 끼워 넣는 장치**를 얹는다.
 
 ```java
 public void setAdditionalAuthorization(@Nullable AuthorizationManager<T> additionalAuthorization) {
@@ -34,12 +36,16 @@ public void setAdditionalAuthorization(@Nullable AuthorizationManager<T> additio
 ```
 (DefaultAuthorizationManagerFactory.java:98-100)
 
-이것이 있으면 "이 애플리케이션의 모든 인가 규칙은 MFA를 통과한 사용자에게만"처럼 횡단
-조건을 한 곳에서 걸 수 있다. 실제 사용 경로가
-`AuthorizationManagerFactories.multiFactor().requireFactors(...)`다.
+> **부가 인가(additionalAuthorization)** — 팩토리가 찍어 내는 모든 규칙에 공통으로 AND로 끼워 넣는 조건.\
+> 예: "MFA를 통과한 사용자에게만"을 한 곳에 설정하면 `hasRole`도 `authenticated`도 그 조건을 함께 요구하게 된다.
 
-중요한 것은 이 setter의 javadoc이 **적용 대상을 목록으로 열거하고, 적용되지 않는 것도
-명시한다**는 점이다.
+이것이 있으면 "이 애플리케이션의 모든 인가 규칙은 MFA를 통과한 사용자에게만"처럼 횡단 조건을 한 곳에서 걸 수 있다.\
+실제 사용 경로가 `AuthorizationManagerFactories.multiFactor().requireFactors(...)`다.
+
+> **MFA(multi-factor authentication, 다중 요소 인증)** — 비밀번호 하나가 아니라 여러 개의 인증 요소(factor)를 요구하는 방식.\
+> 예: 비밀번호를 맞힌 뒤 OTP까지 입력해야 "factor 둘을 통과한 사용자"가 된다.
+
+중요한 것은 이 setter의 javadoc이 **적용 대상을 목록으로 열거하고, 적용되지 않는 것도 명시한다**는 점이다.
 
 ```java
 /**
@@ -61,7 +67,8 @@ public void setAdditionalAuthorization(@Nullable AuthorizationManager<T> additio
 ```
 (DefaultAuthorizationManagerFactory.java:76-97, 발췌)
 
-목록에 아홉 개가 있고 마지막 문단이 셋을 제외한다. **`anonymous`는 제외 목록에 있다.**
+목록에 아홉 개가 있고 마지막 문단이 셋을 제외한다.\
+**`anonymous`는 제외 목록에 있다.**\
 이것이 이 PR이 근거로 삼은 계약이다.
 
 부가 인가를 실제로 씌우는 곳은 헬퍼 하나다.
@@ -76,10 +83,12 @@ private AuthorizationManager<T> withAdditionalAuthorization(AuthorizationManager
 ```
 (DefaultAuthorizationManagerFactory.java:167-172)
 
-`allOf`는 **하나라도 deny면 즉시 deny**이고, 전부 abstain이면 첫 인자의 기본 결정(여기서는
-`false` = 거부)을 돌려준다(AuthorizationManagers.java:108-127). 즉 이 래핑은 "원래 규칙
-AND 부가 조건"을 만든다. 설정하지 않으면(`null`) 매니저를 그대로 돌려주므로, **부가 인가를
-설정하지 않은 애플리케이션에는 이 결함이 존재하지 않는다.**
+`allOf`는 **하나라도 deny면 즉시 deny**이고, 전부 abstain이면 첫 인자의 기본 결정(여기서는 `false` = 거부)을 돌려준다(AuthorizationManagers.java:108-127).\
+즉 이 래핑은 "원래 규칙 AND 부가 조건"을 만든다.\
+설정하지 않으면(`null`) 매니저를 그대로 돌려주므로, **부가 인가를 설정하지 않은 애플리케이션에는 이 결함이 존재하지 않는다.**
+
+> **allOf** — 매니저 여러 개를 모아 "전부 통과해야 통과"로 합치는 결합자.\
+> 예: `allOf(deny기본, factors매니저, 익명매니저)`는 factors매니저가 하나라도 거부하면 뒤는 보지도 않고 거부한다.
 
 ## 2. 수정 전 동작 - 제외 목록의 셋 중 둘만 실제로 제외됐다
 
@@ -102,28 +111,58 @@ private AuthorizationManager<T> createManager(AuthenticatedAuthorizationManager<
 ```
 (수정 전 DefaultAuthorizationManagerFactory.java)
 
-`permitAll()`과 `denyAll()`은 이 클래스에 **아예 없다.** 둘은 `AuthorizationManagerFactory`
-인터페이스의 default 메서드이고(AuthorizationManagerFactory.java:34-44)
-`DefaultAuthorizationManagerFactory`가 오버라이드하지 않으므로 `createManager`를 지나가지
-않는다. 그래서 계약을 **우연히** 지킨다.
+호출 경로를 세로로 내려 그리면 어디서 갈라지는지가 한눈에 보인다.
 
-`anonymous()`는 다르다. 이 클래스가 오버라이드했고, 그 몸체가 `authenticated()`,
-`fullyAuthenticated()`, `rememberMe()`와 **같은 `createManager` 오버로드**를 부른다. 셋은
-계약상 부가 인가 적용 대상이고 `anonymous()`는 비대상인데, 넷이 같은 문으로 들어간다.
+```text
+factory.setAdditionalAuthorization(factors매니저)     :98-100
+            |
+            v
+   +--------+--------+-----------------+
+   |                 |                 |
+   v                 v                 v
+permitAll()      denyAll()        anonymous()          authenticated()
+denyAll()                         :147-150             :132-135
+(오버라이드 없음)                     |                     |
+   |                                  +---------+-----------+
+   |                                            |
+   |                                            v
+   |                            createManager(AuthenticatedAuthorizationManager)
+   |                                      :162-165
+   |                              setTrustResolver(this.trustResolver)
+   |                                            |
+   |                                            v
+   |                            withAdditionalAuthorization(manager)   :167-172
+   |                              allOf(deny기본, factors매니저, manager)
+   v                                            v
+반환: 맨 매니저 (계약 지킴)              반환: allOf 래핑
+                                       anonymous 는 계약 위반
+                                       authenticated 는 정상(적용 대상)
+```
+
+같은 출구(`createManager`)로 들어간 넷 중 `anonymous()` 하나만 계약상 비대상이라는 것이 갈림의 전부다.
+
+`permitAll()`과 `denyAll()`은 이 클래스에 **아예 없다.**\
+둘은 `AuthorizationManagerFactory` 인터페이스의 default 메서드이고(AuthorizationManagerFactory.java:34-44) `DefaultAuthorizationManagerFactory`가 오버라이드하지 않으므로 `createManager`를 지나가지 않는다.\
+그래서 계약을 **우연히** 지킨다.
+
+> **default 메서드(default method)** — 인터페이스가 직접 들고 있는 기본 구현.\
+> 예: 구현 클래스가 오버라이드하지 않으면 인터페이스에 적힌 그 몸체가 그대로 실행되고, 구현 클래스의 필드는 쳐다보지도 않는다.
+
+`anonymous()`는 다르다.\
+이 클래스가 오버라이드했고, 그 몸체가 `authenticated()`, `fullyAuthenticated()`, `rememberMe()`와 **같은 `createManager` 오버로드**를 부른다.\
+셋은 계약상 부가 인가 적용 대상이고 `anonymous()`는 비대상인데, 넷이 같은 문으로 들어간다.\
 결과적으로 `anonymous()`만 계약을 깬다.
 
-여기서 눈여겨볼 점은 `createManager(AuthenticatedAuthorizationManager)`가 두 가지 일을
-한다는 것이다 - `setTrustResolver` 주입과 부가 인가 래핑. `anonymous()`에게 앞의 것은
-필요하고 뒤의 것은 필요 없다. 두 관심사가 한 헬퍼에 묶여 있어서 "하나만 빼기"가 불가능했던
-것이 구조적 원인이다.
+여기서 눈여겨볼 점은 `createManager(AuthenticatedAuthorizationManager)`가 두 가지 일을 한다는 것이다 - `setTrustResolver` 주입과 부가 인가 래핑.\
+`anonymous()`에게 앞의 것은 필요하고 뒤의 것은 필요 없다.\
+두 관심사가 한 헬퍼에 묶여 있어서 "하나만 빼기"가 불가능했던 것이 구조적 원인이다.
 
 ## 3. 문제 - 익명 전용 엔드포인트가 조용히 닫힌다
 
-발동 조건은 둘의 결합이다: **부가 인가를 설정했고, 그 부가 인가가 익명 사용자에게 deny를
-내는 경우.** MFA 구성이 정확히 그 형태다 - 익명 사용자는 어떤 factor 권한도 갖지 않으므로
-factor 요구 매니저는 반드시 deny한다.
+발동 조건은 둘의 결합이다: **부가 인가를 설정했고, 그 부가 인가가 익명 사용자에게 deny를 내는 경우.**\
+MFA 구성이 정확히 그 형태다 - 익명 사용자는 어떤 factor 권한도 갖지 않으므로 factor 요구 매니저는 반드시 deny한다.
 
-```
+```text
 factory.setAdditionalAuthorization(factors 요구 매니저)
 AuthorizationManager am = factory.anonymous();
    실제 모습: allOf(deny-by-default, factors매니저, anonymous매니저)
@@ -135,10 +174,12 @@ AuthorizationManager am = factory.anonymous();
    기대(문서)      -> GRANT
 ```
 
-즉 **로그인 페이지나 공개 진입점처럼 "익명만 허용"으로 보호한 엔드포인트가, MFA를 켜는
-순간 아무도 못 들어가는 상태**가 된다. 익명 사용자는 factor가 없어서 막히고 인증
-사용자는 `anonymous()` 자체가 막으므로 양쪽이 다 닫힌다. 방향이 fail-closed(과잉 차단)라
-권한 상승은 아니지만, 설정한 사람 입장에서는 문서를 읽고 기대한 것과 정반대다.
+즉 **로그인 페이지나 공개 진입점처럼 "익명만 허용"으로 보호한 엔드포인트가, MFA를 켜는 순간 아무도 못 들어가는 상태**가 된다.\
+익명 사용자는 factor가 없어서 막히고 인증 사용자는 `anonymous()` 자체가 막으므로 양쪽이 다 닫힌다.\
+방향이 fail-closed(과잉 차단)라 권한 상승은 아니지만, 설정한 사람 입장에서는 문서를 읽고 기대한 것과 정반대다.
+
+> **fail-closed** — 무언가 어긋났을 때 열어 두는 대신 잠가 버리는 실패 방향.\
+> 예: 판정이 헷갈리면 "일단 거부"로 떨어지는 것이 fail-closed이고, "일단 통과"로 떨어지는 fail-open보다 보안상 덜 위험하다.
 
 ### 왜 기존 테스트가 못 잡았나
 
@@ -158,15 +199,35 @@ public void anonymousWhenAdditionalAuthorizationThenNotInvoked() {
 ```
 (수정 전 AuthorizationManagerFactoryTests.java:125-134)
 
-이름은 "익명일 때 부가 인가가 호출되지 않는다"이고 주장도 맞다. 그런데 **`authorize`를 한
-번도 부르지 않는다.** `factory.anonymous()`는 매니저를 조립할 뿐이고, `allOf`가 돌려주는
-것은 판정 시점에야 하위 매니저를 부르는 **지연 평가 람다**다(AuthorizationManagers.java:110-127).
-조립 시점에는 버그가 있든 없든 `additional`이 호출되지 않으므로 `verifyNoInteractions`가
-통과한다.
+> **verifyNoInteractions** — 목(mock) 객체가 한 번도 호출되지 않았음을 확인하는 단언.\
+> 예: `verifyNoInteractions(additional)`은 "테스트가 끝날 때까지 `additional`의 어떤 메서드도 불리지 않았다"를 검사한다.
 
-**이것이 이 결함의 진짜 은폐물이다.** 테스트가 없어서 못 잡은 것이 아니라, 이름과 의도가
-정확한 테스트가 **관측 시점을 잘못 골라서** 통과하고 있었다. 지연 래핑을 검사할 때
-"호출되지 않았다"를 조립 시점에서 보면 언제나 참이다.
+이름은 "익명일 때 부가 인가가 호출되지 않는다"이고 주장도 맞다.\
+그런데 **`authorize`를 한 번도 부르지 않는다.**\
+`factory.anonymous()`는 매니저를 조립할 뿐이고, `allOf`가 돌려주는 것은 판정 시점에야 하위 매니저를 부르는 **지연 평가 람다**다(AuthorizationManagers.java:110-127).\
+조립 시점에는 버그가 있든 없든 `additional`이 호출되지 않으므로 `verifyNoInteractions`가 통과한다.
+
+> **지연 평가(lazy evaluation)** — 값을 만들어 두는 시점이 아니라 실제로 쓰는 시점에야 계산하는 방식.\
+> 예: `allOf(...)`는 부를 때 하위 매니저를 곧장 호출하지 않고, 나중에 `authorize`가 불릴 때 비로소 순회한다.
+
+조립 시점과 판정 시점에서 각각 무엇이 보이는지를 나란히 놓으면 이렇다.
+
+```text
+[조립 시점] factory.anonymous()          [판정 시점] am.authorize(익명)
++-----------------------------+         +-----------------------------+
+| allOf 람다를 만들어 반환만    |         | 람다 진입 -> factors 호출    |
+| factors 는 아직 호출 안 됨    |         | factors -> deny             |
+| additional 호출 0회          |         | additional 호출 1회          |
++-----------------------------+         +-----------------------------+
+  verifyNoInteractions -> 통과            verifyNoInteractions -> 실패
+  (버그가 있어도 통과)                     isGranted() -> false (기대 true)
+```
+
+버그를 잡으려면 오른쪽 칸에서 봐야 하는데, 기존 테스트는 왼쪽 칸에서 보고 있었다.
+
+**이것이 이 결함의 진짜 은폐물이다.**\
+테스트가 없어서 못 잡은 것이 아니라, 이름과 의도가 정확한 테스트가 **관측 시점을 잘못 골라서** 통과하고 있었다.\
+지연 래핑을 검사할 때 "호출되지 않았다"를 조립 시점에서 보면 언제나 참이다.
 
 ## 4. 수정 해설 - permitAll이 이미 있는 자리로 옮기기
 
@@ -185,48 +246,72 @@ public AuthorizationManager<T> anonymous() {
 ```
 (DefaultAuthorizationManagerFactory.java:147-155)
 
-두 가지를 나눠 보는 것이 요점이다. **`setTrustResolver`는 유지하고 `withAdditionalAuthorization`만
-건너뛴다.** trustResolver는 "이 인증이 익명인가"를 판정하는 부품이므로 팩토리 설정값을
-계속 넘겨야 하고, 부가 인가는 계약상 비대상이다. 헬퍼가 묶어 놓았던 두 관심사를 호출
-지점에서 푼 셈이다.
+같은 입력(MFA를 켠 팩토리 + 익명 요청)에 수정 전후의 결과가 이렇게 갈린다.
 
-`roleHierarchy`는 넘기지 않는다. `AuthenticatedAuthorizationManager`에는 그것을 받는
-setter가 없고, 원래 `createManager` 오버로드도 이 타입에는 trustResolver만 주입했다
-(`:162-165`). 권한 계층은 `AuthorityAuthorizationManager` 계열의 관심사다.
+```text
+수정 전                                  수정 후
++--------------------------------+      +--------------------------------+
+| anonymous()                    |      | anonymous()                    |
+|   createManager(...)           |      |   AuthenticatedAuthz.anonymous()|
+|   setTrustResolver             |      |   setTrustResolver             |
+|   withAdditionalAuthorization  |      |   (래핑 없음)                   |
+| 반환 allOf(false, factors, 익명)|      | 반환 익명매니저                 |
++--------------------------------+      +--------------------------------+
+  authorize(익명사용자)                    authorize(익명사용자)
+    factors -> deny                        trustResolver.isAnonymous -> true
+    익명매니저는 호출조차 안 됨               factors 는 애초에 없다
+    -> DENY                                -> GRANT
+```
 
-수정 후 `anonymous()`가 인터페이스의 default 구현
-(`AuthorizationManagerFactory.java:142-143`, 그냥 `AuthenticatedAuthorizationManager.anonymous()`를
-돌려준다)과 다른 점은 trustResolver 주입 하나뿐이다.
+문서가 약속한 값은 오른쪽 GRANT이고, 수정 전 코드는 왼쪽 DENY를 내고 있었다.
+
+두 가지를 나눠 보는 것이 요점이다.\
+**`setTrustResolver`는 유지하고 `withAdditionalAuthorization`만 건너뛴다.**\
+trustResolver는 "이 인증이 익명인가"를 판정하는 부품이므로 팩토리 설정값을 계속 넘겨야 하고, 부가 인가는 계약상 비대상이다.\
+헬퍼가 묶어 놓았던 두 관심사를 호출 지점에서 푼 셈이다.
+
+> **AuthenticationTrustResolver(trustResolver)** — 주어진 인증이 익명인지 remember-me인지를 판정해 주는 부품.\
+> 예: 애플리케이션이 커스텀 trustResolver를 끼우면 "무엇을 익명으로 볼 것인가"의 기준 자체가 바뀐다.
+
+`roleHierarchy`는 넘기지 않는다.\
+`AuthenticatedAuthorizationManager`에는 그것을 받는 setter가 없고, 원래 `createManager` 오버로드도 이 타입에는 trustResolver만 주입했다(`:162-165`).\
+권한 계층은 `AuthorityAuthorizationManager` 계열의 관심사다.
+
+> **roleHierarchy(권한 계층)** — "ROLE_ADMIN이면 ROLE_USER도 가진 것으로 친다" 같은 권한 포함 관계 표.\
+> 예: 관리자에게 일반 사용자 권한을 일일이 붙이지 않아도 되게 해 주는 장치이고, 익명 여부 판정과는 무관하다.
+
+수정 후 `anonymous()`가 인터페이스의 default 구현(`AuthorizationManagerFactory.java:142-143`, 그냥 `AuthenticatedAuthorizationManager.anonymous()`를 돌려준다)과 다른 점은 trustResolver 주입 하나뿐이다.
 
 ### 검토했으나 기각한 대안
 
-`withAdditionalAuthorization` 안에서 인자가 익명 매니저인지 식별해 제외하는 안을
-검토했다가 기각했다. 헬퍼가 임의의 `AuthorizationManager`에서 **의미론적 의도를
-추론**하게 되므로 타입 식별이 취약하고 결합도가 올라간다. 무엇보다 `permitAll`/`denyAll`은
-애초에 이 헬퍼를 거치지 않는데 `anonymous`만 헬퍼 안에서 특별 취급하면 같은 계약의 셋이
-서로 다른 방식으로 구현된다. 메서드별 우회가 셋을 같은 범주에 놓는다.
+`withAdditionalAuthorization` 안에서 인자가 익명 매니저인지 식별해 제외하는 안을 검토했다가 기각했다.\
+헬퍼가 임의의 `AuthorizationManager`에서 **의미론적 의도를 추론**하게 되므로 타입 식별이 취약하고 결합도가 올라간다.\
+무엇보다 `permitAll`/`denyAll`은 애초에 이 헬퍼를 거치지 않는데 `anonymous`만 헬퍼 안에서 특별 취급하면 같은 계약의 셋이 서로 다른 방식으로 구현된다.\
+메서드별 우회가 셋을 같은 범주에 놓는다.
 
 ### 호환성 - 이 PR이 본문에 먼저 밝힌 것
 
-**이 수정은 문서화된 방향의 동작 변경이다.** 지금까지 deny되던 요청이 grant된다.
+**이 수정은 문서화된 방향의 동작 변경이다.**\
+지금까지 deny되던 요청이 grant된다.
 
-`anonymous()`만으로 보호한 엔드포인트는, 부가 인가(MFA / IP 허용 목록 / 테넌트 상태 /
-점검 모드 등)가 실패해도 이제 익명 사용자를 통과시킨다. 부가 인가를 넓은 요청 게이트로
-쓰면서 익명 경로에도 걸리기를 기대했던 설정이 있다면 그 설정은 이제 다르게 동작한다.
+`anonymous()`만으로 보호한 엔드포인트는, 부가 인가(MFA / IP 허용 목록 / 테넌트 상태 / 점검 모드 등)가 실패해도 이제 익명 사용자를 통과시킨다.\
+부가 인가를 넓은 요청 게이트로 쓰면서 익명 경로에도 걸리기를 기대했던 설정이 있다면 그 설정은 이제 다르게 동작한다.
 
-세 가지를 근거로 이 변화를 감수했다. 첫째, javadoc이 "anonymous에는 영향 없음"을 명시하므로
-기대의 근거가 문서에 있다. 둘째, 둘 다 필요하면 `allOf(factory.anonymous(), extraCondition)`으로
-명시 조합할 수 있다. 셋째, `anonymous()`는 **여전히 인증 사용자를 거부**하므로 익명 전용
-엔드포인트가 로그인 사용자에게 열리는 일은 없다.
+세 가지를 근거로 이 변화를 감수했다.\
+첫째, javadoc이 "anonymous에는 영향 없음"을 명시하므로 기대의 근거가 문서에 있다.\
+둘째, 둘 다 필요하면 `allOf(factory.anonymous(), extraCondition)`으로 명시 조합할 수 있다.\
+셋째, `anonymous()`는 **여전히 인증 사용자를 거부**하므로 익명 전용 엔드포인트가 로그인 사용자에게 열리는 일은 없다.
 
-이 항목은 codex 교차검증이 지적한 것이기도 하고, 리뷰어가 스스로 발견하기 전에 PR 본문
-"Note on impact" 절로 선공개했다. 계약 해석이 걸린 변경에서는 영향 범위를 숨기지 않는 쪽이
-리뷰를 빠르게 만든다는 판단이었다.
+이 항목은 codex 교차검증이 지적한 것이기도 하고, 리뷰어가 스스로 발견하기 전에 PR 본문 "Note on impact" 절로 선공개했다.\
+계약 해석이 걸린 변경에서는 영향 범위를 숨기지 않는 쪽이 리뷰를 빠르게 만든다는 판단이었다.
 
 ## 5. 검증
 
-기존 무효 테스트를 **강화**하는 방식을 택했다. 새 테스트를 추가하면 무효 테스트가 그대로
-남아 다음 사람을 또 속이기 때문이다.
+기존 무효 테스트를 **강화**하는 방식을 택했다.\
+새 테스트를 추가하면 무효 테스트가 그대로 남아 다음 사람을 또 속이기 때문이다.
+
+> **무효 테스트** — 이름과 의도는 맞는데 실제로는 아무것도 보장하지 못하는 테스트.\
+> 예: 지연 평가를 쓰는 코드에서 "호출되지 않았다"를 조립 시점에 검사하면 버그가 있어도 늘 통과한다.
 
 ```java
 -		factory.anonymous();
@@ -237,37 +322,34 @@ setter가 없고, 원래 `createManager` 오버로드도 이 타입에는 trustR
 ```
 (AuthorizationManagerFactoryTests.java:125-136)
 
-`authorize`를 실제로 부르는 순간 지연 래핑이 펼쳐지므로, 버그 상태에서는 **단언과
-`verifyNoInteractions`가 함께** 깨진다. fix 전 실패 메시지는
-`Expecting value to be true but was false`였다. fix 후 `AuthorizationManagerFactoryTests`
-31건 green(`--rerun-tasks`), `authorization` 패키지 회귀 0,
-`checkstyleMain/Test` + `checkFormatMain/Test` 통과. 상세는 [tests.md](tests.md).
+`authorize`를 실제로 부르는 순간 지연 래핑이 펼쳐지므로, 버그 상태에서는 **단언과 `verifyNoInteractions`가 함께** 깨진다.\
+fix 전 실패 메시지는 `Expecting value to be true but was false`였다.\
+fix 후 `AuthorizationManagerFactoryTests` 31건 green(`--rerun-tasks`), `authorization` 패키지 회귀 0, `checkstyleMain/Test` + `checkFormatMain/Test` 통과.\
+상세는 [tests.md](tests.md).
 
-미변경 메서드가 여전히 부가 인가를 적용한다는 보증은 기존 테스트들이 이미 맡고 있다
-(`hasRoleWhenAdditionalAuthorizationThenInvoked` :158-171 외 형제 다수). codex가 그
-테스트를 추가하라고 권고했으나 diff만 보아 기존 커버리지를 몰랐던 것이라, 추가 없이
-기각했다.
+미변경 메서드가 여전히 부가 인가를 적용한다는 보증은 기존 테스트들이 이미 맡고 있다(`hasRoleWhenAdditionalAuthorizationThenInvoked` :158-171 외 형제 다수).\
+codex가 그 테스트를 추가하라고 권고했으나 diff만 보아 기존 커버리지를 몰랐던 것이라, 추가 없이 기각했다.
 
-stakes는 **중간**으로 판정했다(프레임워크 인가 계약 위반이고 MFA 구성에서 익명 접근이
-막히지만, 방향이 fail-closed라 권한 상승이 아니다). 그래서 codex 교차검증 1회를 돌렸고
-판정은 승인이었다.
+stakes는 **중간**으로 판정했다(프레임워크 인가 계약 위반이고 MFA 구성에서 익명 접근이 막히지만, 방향이 fail-closed라 권한 상승이 아니다).\
+그래서 codex 교차검증 1회를 돌렸고 판정은 승인이었다.
 
 ## 6. 상태와 교훈
 
-제출 후 석 달 가까이 `status: waiting-for-triage` 상태다. 같은 날 낸 세 건 중 순수 결함
-수정인 #19337은 두 달 만에 머지됐지만, **이 PR은 문서화된 계약의 해석과 동작 변경을
-포함**하므로 트리아지에 사람의 판단이 더 필요하다고 보는 것이 자연스럽다. 그 성격 때문에
-착수 시점부터 이슈를 먼저 등록하고(gh-19334) PR 본문에 영향 노트를 실었다.
+제출 후 석 달 가까이 `status: waiting-for-triage` 상태다.\
+같은 날 낸 세 건 중 순수 결함 수정인 #19337은 두 달 만에 머지됐지만, **이 PR은 문서화된 계약의 해석과 동작 변경을 포함**하므로 트리아지에 사람의 판단이 더 필요하다고 보는 것이 자연스럽다.\
+그 성격 때문에 착수 시점부터 이슈를 먼저 등록하고(gh-19334) PR 본문에 영향 노트를 실었다.
+
+> **트리아지(triage)** — 들어온 이슈·PR을 살펴 우선순위와 담당을 가르는 분류 단계.\
+> 예: `status: waiting-for-triage` 라벨은 "아직 메인테이너가 분류하지 않았다"는 뜻이다.
 
 교훈은 셋이다.
 
-1. **javadoc이 계약이면 그 계약도 회귀 대상이다.** 이 결함은 코드 안에서만 보면 모순이
-   없다 - `anonymous()`가 다른 셋과 같은 헬퍼를 부를 뿐이다. 위반은 문서와 코드를 나란히
-   놓아야 보인다.
-2. **지연 평가 앞에서는 "호출되지 않았다"를 조립 시점에 검사하면 안 된다.** 무효 테스트가
-   버그를 통과시킨 이유가 이것이고, 이름과 의도가 정확한 테스트일수록 다음 사람이 "이미
-   커버됨"으로 믿기 때문에 더 위험하다. 강화가 아니라 추가를 택했다면 무효 테스트가 남아
-   같은 함정을 다시 놓았을 것이다.
-3. **헬퍼가 두 관심사를 묶으면 "하나만 빼기"가 불가능해진다.** `createManager`가
-   trustResolver 주입과 부가 인가 래핑을 함께 하는 한, `anonymous()`는 둘 다 받거나 둘 다
-   포기해야 했다. 수정이 호출 지점에서 둘을 푸는 형태가 된 것은 그 구조의 결과다.
+1. **javadoc이 계약이면 그 계약도 회귀 대상이다.**\
+   이 결함은 코드 안에서만 보면 모순이 없다 - `anonymous()`가 다른 셋과 같은 헬퍼를 부를 뿐이다.\
+   위반은 문서와 코드를 나란히 놓아야 보인다.
+2. **지연 평가 앞에서는 "호출되지 않았다"를 조립 시점에 검사하면 안 된다.**\
+   무효 테스트가 버그를 통과시킨 이유가 이것이고, 이름과 의도가 정확한 테스트일수록 다음 사람이 "이미 커버됨"으로 믿기 때문에 더 위험하다.\
+   강화가 아니라 추가를 택했다면 무효 테스트가 남아 같은 함정을 다시 놓았을 것이다.
+3. **헬퍼가 두 관심사를 묶으면 "하나만 빼기"가 불가능해진다.**\
+   `createManager`가 trustResolver 주입과 부가 인가 래핑을 함께 하는 한, `anonymous()`는 둘 다 받거나 둘 다 포기해야 했다.\
+   수정이 호출 지점에서 둘을 푸는 형태가 된 것은 그 구조의 결과다.

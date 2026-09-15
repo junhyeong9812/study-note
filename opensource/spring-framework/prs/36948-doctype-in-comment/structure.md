@@ -12,7 +12,7 @@
 
 **검출기는 상수 네 개, 토큰 세 개, 상태 필드 하나, 그리고 그 위에 얹힌 메서드 일곱 개로 이루어진 단일 클래스다.** 외부와의 접점은 `detectValidationMode(InputStream)` 하나뿐이고, 나머지는 전부 private이다.
 
-```
+```text
   org.springframework.util.xml
   ┌────────────────────────────────────────────────────────────────────────┐
   │ public class XmlValidationModeDetector    XmlValidationModeDetector.java:37 │
@@ -85,7 +85,7 @@
 
 **검출기는 파일을 한 줄씩 읽어 "주석을 걷어낸 나머지"만 판정에 넘기고, `DOCTYPE`을 만나거나 여는 태그를 만나면 즉시 멈춘다.** 진입점의 루프 구조가 그 계약을 그대로 보여 준다.
 
-```
+```text
  detectValidationMode(inputStream)                                     (:92)
    │
    ├─ this.inComment = false;                                          (:93)  ◀ 상태 리셋
@@ -119,7 +119,7 @@
 
 아래는 PR이 추가한 픽스처 `spring-core/src/test/resources/org/springframework/util/xml/xsdWithDoctypeInMultiLineCommentBody.xml`을 **수정 전** 코드로 돌렸을 때의 줄별 추적이다.
 
-```
+```text
  입력 파일
    1: <?xml version="1.0" encoding="UTF-8"?>
    2: <!--
@@ -166,7 +166,7 @@
 
 두 번째 시나리오로 재귀가 실제로 도는 경우를 보자. 기존 픽스처 `xsdWithDoctypeInOpenCommentWithAdditionalCommentOnSameLine.xml`의 3행은 한 줄 안에서 상태가 두 번 뒤집힌다. 이 경로는 수정 전후로 동일하다.
 
-```
+```text
  입력 3행 (진입 시 inComment = true, 2행의 "<!--" 때문)
    <!DOCTYPE beans PUBLIC "..."> -->    <!-- additional comment on same line -->
    └──────── 주석 본문 ─────────┘└┬┘    └────── 두 번째 주석 ──────────────┘
@@ -204,7 +204,7 @@
 
 **상태는 `inComment` 하나로 `OUT`(주석 밖)과 `IN`(주석 안) 두 개뿐이고, 전이를 일으키는 사건은 토큰 발견 두 가지뿐이다.** 아래가 그 전이도이며, `[BUG]`로 표시한 자기 루프가 결함이 살던 전이다.
 
-```
+```text
                          ┌──────────────────────────┐
                          │  detectValidationMode    │
                          │  진입 (:93) inComment=false│
@@ -253,7 +253,7 @@
 
 이제 같은 것을 코드 경로 분기도로 펼치면, 조기 반환이 상태 기계의 어느 자리에 있는지 정확히 보인다.
 
-```
+```text
  루프 1회 (한 줄 처리)                        XmlValidationModeDetector.java:99
  │
  ├── consumeCommentTokens(line)                                      (:151)
@@ -321,7 +321,7 @@
 
 **이 검출기는 `spring-beans`의 XML 설정 로딩 파이프라인에서, 실제 파싱을 시작하기 전에 파일을 한 번 미리 훑는 사전 단계다.** grep으로 확인한 프로덕션 참조는 `XmlBeanDefinitionReader`와 `DefaultDocumentLoader` 두 클래스뿐이며, 실제로 `detectValidationMode`를 호출하는 곳은 `XmlBeanDefinitionReader.java:499` 한 자리다.
 
-```
+```text
  [진입 경로]
 
   loadBeanDefinitions(Resource)              XmlBeanDefinitionReader.java:317

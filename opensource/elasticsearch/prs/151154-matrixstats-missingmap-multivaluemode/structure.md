@@ -1,18 +1,22 @@
 # PR #151154 - 무대의 실구조
 
 > `matrix_stats` 빌더가 놓인 계층과, 그 계층을 타고 흐르는 세 경로(동등성 위임·wire·
-> XContent 왕복). 문제와 수정은 [README.md](README.md), 착수 분석은
-> README 8절 부록, 테스트는 [tests.md](tests.md).
+> XContent 왕복).\
+> 문제와 수정은 [README.md](README.md), 착수 분석은 README 8절 부록, 테스트는 [tests.md](tests.md).
 >
-> 기준: upstream `main`(2026-09-08). 이 시점의 파일에는 이미 수정이 반영돼 있으므로
-> 아래 file:line은 "수정 후" 좌표다.
+> 기준: upstream `main`(2026-09-08).\
+> 이 시점의 파일에는 이미 수정이 반영돼 있으므로 아래 file:line은 "수정 후" 좌표다.
 
 ## 1. 계층 - 왜 두 층인가
 
-`matrix_stats`는 필드 하나가 아니라 **필드 목록**을 받는 집계다. 그래서 보통의
-`ValuesSourceAggregationBuilder` 계열이 아니라 별도의 배열 값 소스 계열에 속한다.
+`matrix_stats`는 필드 하나가 아니라 **필드 목록**을 받는 집계다.\
+그래서 보통의 `ValuesSourceAggregationBuilder` 계열이 아니라 별도의 배열 값 소스 계열에 속한다.
 
-```
+> **값 소스(ValuesSource)** — 집계가 실제로 숫자를 꺼내 오는 출처. 보통은 인덱스의 필드 하나다.\
+> 예: `avg` 집계는 값 소스가 하나("price" 필드)지만, `matrix_stats`는 여러 필드를 동시에 읽어야
+> 상관계수를 낼 수 있다.
+
+```text
 +---------------------------------------------------------------------------+
 | AbstractAggregationBuilder                server search/aggregations/      |
 |   상태: name, metadata, factoriesBuilder                                    |
@@ -44,19 +48,27 @@
 +---------------------------------------------------------------------------+
 ```
 
+> **LeafOnly** — 하위 집계를 달 수 없는 집계 빌더를 표시하는 중간 클래스.\
+> 예: `matrix_stats`는 잎(leaf)이라 그 아래에 다시 `terms` 같은 집계를 중첩할 수 없다.
+
 그림에서 읽어야 할 것은 **각 층이 자기 필드만 책임지고 나머지는 위임한다**는 규칙이
-직렬화·XContent·동등성 셋에 똑같이 적용된다는 점이다. `doWriteTo`가 자기 넷을 쓰고
-`innerWriteTo`로 내려가듯, `equals`도 `super.equals`로 올라간 뒤 자기 필드를 본다.
-그러므로 **한 층이 자기 몫을 안 하면 그 층의 필드만 정확히 빠진다.** 수정 전
-`MatrixStatsAggregationBuilder`가 `equals`를 오버라이드하지 않았다는 것은 이 규칙의
+직렬화·XContent·동등성 셋에 똑같이 적용된다는 점이다.\
+`doWriteTo`가 자기 넷을 쓰고 `innerWriteTo`로 내려가듯, `equals`도 `super.equals`로 올라간 뒤
+자기 필드를 본다.\
+그러므로 **한 층이 자기 몫을 안 하면 그 층의 필드만 정확히 빠진다.**\
+수정 전 `MatrixStatsAggregationBuilder`가 `equals`를 오버라이드하지 않았다는 것은 이 규칙의
 한 칸이 비어 있었다는 뜻이다.
+
+> **오버라이드(override, 재정의)** — 부모가 만들어 둔 메서드를 자식이 자기 방식으로 다시 쓰는 것.\
+> 예: 자식이 `equals`를 재정의하지 않으면 부모의 `equals`가 그대로 호출되고, 자식만 아는 필드는
+> 비교 대상에서 빠진다.
 
 ## 2. 동등성 위임 체인 - getClass가 어디에서 평가되나
 
-자식 `equals`에는 null 검사도 `getClass` 검사도 없는데 캐스팅이 안전하다. 그 이유가
-이 절의 전부다.
+자식 `equals`에는 null 검사도 `getClass` 검사도 없는데 캐스팅이 안전하다.\
+그 이유가 이 절의 전부다.
 
-```
+```text
 matrixStatsA.equals(obj)
   |
   +- if (this == obj) return true;                       MatrixStats:95
@@ -81,29 +93,33 @@ matrixStatsA.equals(obj)
   +- return multiValueMode == other.multiValueMode;      MatrixStats:98
 ```
 
-핵심은 `getClass()`가 **정적 타입이 아니라 런타임 `this`의 클래스**를 반환한다는
-자바의 규칙이다. 부모 메서드 안에서 실행돼도 `this`가 자식 인스턴스면
-`getClass()`는 자식 클래스를 돌려준다. 그래서 자식이 같은 검사를 한 번 더 하는 것은
-순수 중복이고, 리뷰어의 (a) 지적이 옳았다.
+핵심은 `getClass()`가 **정적 타입이 아니라 런타임 `this`의 클래스**를 반환한다는 자바의 규칙이다.\
+부모 메서드 안에서 실행돼도 `this`가 자식 인스턴스면 `getClass()`는 자식 클래스를 돌려준다.\
+그래서 자식이 같은 검사를 한 번 더 하는 것은 순수 중복이고, 리뷰어의 (a) 지적이 옳았다.
+
+> **정적 타입과 런타임 타입** — 정적 타입은 코드에 적힌 선언상의 타입, 런타임 타입은 그 자리에
+> 실제로 들어 있는 객체의 진짜 타입.\
+> 예: 부모 클래스 코드 안의 `this`는 선언상 부모지만, 실제 객체가 자식이면 `getClass()`는
+> 자식 클래스를 돌려준다.
 
 hashCode도 같은 모양으로 합성된다.
 
-```
+```text
 MatrixStats.hashCode()  = Objects.hash(super.hashCode(), multiValueMode)      :103
 ArrayValuesSource.hashCode() = Objects.hash(super.hashCode(), fields, format,
                                             missingMap, userValueTypeHint)     :244
 Abstract.hashCode()     = Objects.hash(name, metadata, factoriesBuilder)
 ```
 
-**equals에 참여하는 필드 집합과 hashCode에 참여하는 필드 집합이 층마다 일치**해야
-계약이 유지된다. 이 PR이 두 메서드를 항상 짝으로 고친 이유다.
+**equals에 참여하는 필드 집합과 hashCode에 참여하는 필드 집합이 층마다 일치**해야 계약이 유지된다.\
+이 PR이 두 메서드를 항상 짝으로 고친 이유다.
 
 ## 3. missing 값의 세 경로 - 수정 전후
 
-"필드별 missing 대체값"이라는 한 가지 데이터가 wire·XContent·동등성 셋으로 각각
-복제된다. 수정 전에는 그 셋이 서로 다른 필드를 보고 있었다.
+"필드별 missing 대체값"이라는 한 가지 데이터가 wire·XContent·동등성 셋으로 각각 복제된다.\
+수정 전에는 그 셋이 서로 다른 필드를 보고 있었다.
 
-```
+```text
                      [수정 전]                          [수정 후]
 
 파서 (JSON "missing": {f: v})
@@ -125,15 +141,20 @@ Abstract.hashCode()     = Objects.hash(name, metadata, factoriesBuilder)
                               = 항상 참                   (:226-228)       (:255)
 ```
 
-수정 전 그림에서 `missing`(유령)은 어느 통로로도 값을 받지 못하는데 XContent와
-동등성 둘이 그것을 보고 있었다. 그 결과가 **출력 누락 하나와 무의미한 비교 하나**다.
+수정 전 그림에서 `missing`(유령)은 어느 통로로도 값을 받지 못하는데 XContent와 동등성 둘이
+그것을 보고 있었다.\
+그 결과가 **출력 누락 하나와 무의미한 비교 하나**다.\
 수정 후에는 세 경로가 모두 `missingMap` 하나를 본다.
 
 ## 4. XContent 왕복 - 쓴 것을 파서가 되읽는가
 
 XContent 출력을 바꿨으므로 반대편(파서)과 형태가 맞는지 확인해야 한다.
 
-```
+> **왕복(round-trip)** — 쓴 것을 다시 읽었을 때 원래 값이 그대로 돌아오는 성질.\
+> 예: 빌더가 `"missing": {"fieldA": 1}`을 출력하고, 그 JSON을 파서에 다시 넣었을 때 같은
+> `missingMap`이 복원되면 왕복이 성립한다.
+
+```text
 [쓰기]  internalXContent                        ArrayValuesSource:220-238
           if (missingMap.isEmpty() == false)                      :226
               builder.field("missing", missingMap)                :227
@@ -147,29 +168,45 @@ XContent 출력을 바꿨으므로 반대편(파서)과 형태가 맞는지 확�
           마지막에 factory.missingMap(missingMap)                     :167-169
 ```
 
-형태(중첩 객체)가 양쪽에서 일치하므로 왕복이 성립한다. 값 타입에는 경계가 있는데
-(`objectText()`가 JSON 스칼라만 원형 복원한다) 그것은 이 데이터 모델의 선재 제약이고
-이번 변경이 들여온 것이 아니다 - README 8.4절.
+> **START_OBJECT / END_OBJECT** — JSON을 앞에서부터 훑어 읽을 때 나오는 토큰으로, 각각 `{`와 `}`를
+> 만났다는 신호다.\
+> 예: 파서는 `missing` 다음 토큰이 `START_OBJECT`인 것을 보고 "여기부터 맵이구나" 하고 `}`가
+> 나올 때까지 항목을 모은다.
 
-빈 맵일 때 키를 생략하는 `isEmpty()` 가드도 왕복을 위한 것이다. 빈 객체를 출력하면
-파서가 빈 맵을 만들어 넣게 되는데, 애초에 아무것도 설정하지 않은 빌더의 기본값도
-빈 맵이므로 의미는 같다 - 다만 출력이 커지고 "설정하지 않음"과 "빈 맵으로 설정함"의
-구분이 흐려진다. 이전 `!= null` 가드가 갖던 "없으면 안 쓴다"는 의미를 그대로 옮긴 것이다.
+형태(중첩 객체)가 양쪽에서 일치하므로 왕복이 성립한다.\
+값 타입에는 경계가 있는데(`objectText()`가 JSON 스칼라만 원형 복원한다) 그것은 이 데이터 모델의
+선재 제약이고 이번 변경이 들여온 것이 아니다 - README 8.4절.
+
+> **스칼라(scalar)** — 더 쪼갤 수 없는 단일 값. 문자열·숫자·불리언이 여기 속하고, 객체나 배열은
+> 아니다.\
+> 예: `{"fieldA": 1}`의 `1`은 스칼라지만 `{"fieldA": {"x": 1}}`의 값은 중첩 구조라 스칼라가 아니다.
+
+빈 맵일 때 키를 생략하는 `isEmpty()` 가드도 왕복을 위한 것이다.\
+빈 객체를 출력하면 파서가 빈 맵을 만들어 넣게 되는데, 애초에 아무것도 설정하지 않은 빌더의
+기본값도 빈 맵이므로 의미는 같다 - 다만 출력이 커지고 "설정하지 않음"과 "빈 맵으로 설정함"의
+구분이 흐려진다.\
+이전 `!= null` 가드가 갖던 "없으면 안 쓴다"는 의미를 그대로 옮긴 것이다.
 
 ## 5. 이 무대의 자리 - matrix_stats는 왜 별도 계열인가
 
 `ArrayValuesSourceAggregationBuilder`는 `modules/aggregations` 안에만 있고, 서브클래스도
-`MatrixStatsAggregationBuilder` 하나다. 서버 코어의 `ValuesSourceAggregationBuilder`와
-이름이 비슷하지만 다른 계열이고, 차이는 "값 소스가 하나인가 여럿인가"다.
+`MatrixStatsAggregationBuilder` 하나다.\
+서버 코어의 `ValuesSourceAggregationBuilder`와 이름이 비슷하지만 다른 계열이고, 차이는
+"값 소스가 하나인가 여럿인가"다.
 
-```
+```text
 ValuesSourceAggregationBuilder (server)        ArrayValuesSourceAggregationBuilder (module)
   field 하나 + missing 하나(스칼라)              fields 목록 + missingMap(필드별)
   대부분의 집계                                   matrix_stats 하나
 ```
 
-이 대비가 결함의 배경이기도 하다. 배열 계열이 서버 계열의 형태를 물려받으며 스칼라
-`missing` 필드를 함께 들여왔는데, 실제로 쓰는 것은 맵 쪽이고 스칼라 쪽은 이름만 남았다.
-클래스 주석이 `userValueTypeHint`에 대해 "파서는 지원하지 않지만 BWC 때문에 남긴다"고
-적어 둔 것(:71-74)을 보면, 이 클래스에는 그런 잔재가 하나 더 있었던 셈이다. 차이는
-`userValueTypeHint`는 여전히 직렬화되므로 상태이고 `missing`은 아니었다는 점이다.
+이 대비가 결함의 배경이기도 하다.\
+배열 계열이 서버 계열의 형태를 물려받으며 스칼라 `missing` 필드를 함께 들여왔는데, 실제로 쓰는
+것은 맵 쪽이고 스칼라 쪽은 이름만 남았다.\
+클래스 주석이 `userValueTypeHint`에 대해 "파서는 지원하지 않지만 BWC 때문에 남긴다"고 적어 둔
+것(:71-74)을 보면, 이 클래스에는 그런 잔재가 하나 더 있었던 셈이다.\
+차이는 `userValueTypeHint`는 여전히 직렬화되므로 상태이고 `missing`은 아니었다는 점이다.
+
+> **BWC(backward compatibility, 하위 호환)** — 새 버전이 옛 버전과 계속 맞물려 돌아가는 성질.\
+> 예: 옛 노드가 보낸 바이트에 그 필드가 들어 있으므로, 파서가 더는 안 읽더라도 직렬화 목록에서는
+> 뺄 수 없다.

@@ -7,15 +7,27 @@
 
 `ThrowawayClassLoader.loadClass(name, resolve)`가 폴백 결과를 그대로 반환해(`catch { return loadClassFromResource(name); }`) **null을 밖으로 내보낼 수 있었다** — `java.lang.ClassLoader.loadClass`의 계약은 non-null `Class` 반환 또는 `ClassNotFoundException`이며, "찾지 못함"을 null로 표현하는 선택지는 그 계약에 없다.
 
-수정은 폴백이 null이면 **2단계에서 이미 손에 들고 있던 원본 `ClassNotFoundException`(`ex`)을 재전파**하는 것이다. 새 예외를 만들지 않는 이유는 원본이 클래스명과 JDK 로더가 붙인 cause를 이미 담고 있고, 폴백 실패는 "정의할 바이트도 없었다"는 확인일 뿐 새 정보를 더하지 않기 때문이다.
+수정은 폴백이 null이면 **2단계에서 이미 손에 들고 있던 원본 `ClassNotFoundException`(`ex`)을 재전파**하는 것이다.\
+새 예외를 만들지 않는 이유는 원본이 클래스명과 JDK 로더가 붙인 cause를 이미 담고 있고, 폴백 실패는 "정의할 바이트도 없었다"는 확인일 뿐 새 정보를 더하지 않기 때문이다.
 
-상태: 머지됨. `upstream/main`의 커밋 `233e7b91f9b`("Throw ClassNotFoundException for missing class resource in ThrowawayClassLoader", `Closes gh-36938`) + 메인테이너 폴리시 `7b31e0c2dcd`. 이 PR은 크래시 수정이 아니라 **계약 준수와 진단 품질** 수정이다(4장·5장 참조).
+> **재전파(rethrow)** — 잡아 둔 예외 객체를 가공하지 않고 그대로 다시 던지는 것.\
+> 예: `throw ex;`는 2단계 위임 실패가 담고 있던 클래스명과 cause를 그대로 위로 올려보낸다.
+
+상태: 머지됨.\
+`upstream/main`의 커밋 `233e7b91f9b`("Throw ClassNotFoundException for missing class resource in ThrowawayClassLoader", `Closes gh-36938`) + 메인테이너 폴리시 `7b31e0c2dcd`.\
+이 PR은 크래시 수정이 아니라 **계약 준수와 진단 품질** 수정이다(4장·5장 참조).
 
 ## 1. 무대
 
-무대와 소비자는 #36933과 같다 — `spring-core`의 `org.springframework.aot.nativex.feature` 패키지, 패키지 프라이빗 `ThrowawayClassLoader`와 유일 소비자 `PreComputeFieldFeature`. 공개 진입 API는 없고, GraalVM `native-image` 빌드가 `Feature` SPI로 `PreComputeFieldFeature`를 깨울 때만 돈다.
+무대와 소비자는 #36933과 같다 — `spring-core`의 `org.springframework.aot.nativex.feature` 패키지, 패키지 프라이빗 `ThrowawayClassLoader`와 유일 소비자 `PreComputeFieldFeature`.\
+공개 진입 API는 없고, GraalVM `native-image` 빌드가 `Feature` SPI로 `PreComputeFieldFeature`를 깨울 때만 돈다.
 
-다른 점은 **어느 표면을 보느냐**다. #36933은 `loadClassFromResource` 내부의 자원 수명이 무대였다면, 이 PR의 무대는 `loadClass`와 `loadClassFromResource` **사이의 경계**다. 두 메서드의 반환 계약이 서로 다르다는 것이 출발점이다.
+> **SPI(Service Provider Interface)** — 프레임워크가 정해 둔 확장 인터페이스를 외부 구현체가 채우면 프레임워크가 알아서 찾아 불러 주는 구조.\
+> 예: GraalVM `native-image`는 `--features=`로 등록된 `Feature` 구현을 빌드 단계마다 호출한다.
+
+다른 점은 **어느 표면을 보느냐**다.\
+#36933은 `loadClassFromResource` 내부의 자원 수명이 무대였다면, 이 PR의 무대는 `loadClass`와 `loadClassFromResource` **사이의 경계**다.\
+두 메서드의 반환 계약이 서로 다르다는 것이 출발점이다.
 
 | 메서드 | 가시성 | 반환 계약 | null의 의미 |
 |---|---|---|---|

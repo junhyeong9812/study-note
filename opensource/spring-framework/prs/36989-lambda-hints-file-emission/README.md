@@ -2,13 +2,70 @@
 
 ## 0. 정향
 
-이 PR은 `NativeConfigurationWriter.hasAnyHint()`에 한 줄을 추가해, lambda 힌트만 등록된 `RuntimeHints`에서도 `reachability-metadata.json`이 생성되도록 고친다. 고치기 전에는 직렬화기가 lambda 힌트를 출력할 준비를 이미 마쳤는데도, 파일을 만들지 말지 결정하는 앞단 조건이 lambda 힌트를 세지 않아 파일 자체가 만들어지지 않았다. 결과는 조용한 메타데이터 유실이었고, JVM 테스트로는 드러나지 않고 네이티브 이미지 런타임에서만 표면화된다. 업스트림에 커밋 `d1470bbb259`로 반영되었으며, `main`과 `7.0.x` 양쪽에 들어 있다.
+이 PR은 `NativeConfigurationWriter.hasAnyHint()`에 한 줄을 추가해, lambda 힌트만 등록된 `RuntimeHints`에서도 `reachability-metadata.json`이 생성되도록 고친다.\
+고치기 전에는 직렬화기가 lambda 힌트를 출력할 준비를 이미 마쳤는데도, 파일을 만들지 말지 결정하는 앞단 조건이 lambda 힌트를 세지 않아 파일 자체가 만들어지지 않았다.\
+결과는 조용한 메타데이터 유실이었고, JVM 테스트로는 드러나지 않고 네이티브 이미지 런타임에서만 표면화된다.\
+업스트림에 커밋 `d1470bbb259`로 반영되었으며, `main`과 `7.0.x` 양쪽에 들어 있다.
+
+> **AOT(Ahead-Of-Time) 처리** — 애플리케이션을 실행하기 전, 빌드 시점에 미리 끝내 둘 수 있는 일을 끝내 두는 단계.\
+> 예: 스프링은 빌드 때 빈 등록 코드를 생성하면서 "런타임에 리플렉션으로 건드릴 것들"을 `RuntimeHints`에 함께 적어 둔다.
+
+> **방출(emission)** — 메모리에 모아 둔 모델을 파일·문자열 같은 바깥 형식으로 실제로 찍어 내는 일.\
+> 예: 여기서는 `RuntimeHints` 객체를 `reachability-metadata.json` 파일로 찍어 내는 것이 방출이고, 이 PR의 결함은 그 방출이 아예 시작되지 않은 것이다.
 
 ## 1. 배경 — RuntimeHints와 네이티브 설정 직렬화
 
-GraalVM `native-image`는 닫힌 세계 가정 위에서 동작한다. 빌드 시점에 도달 가능하다고 판단되지 않은 클래스와 멤버는 이미지에서 제거되므로, 리플렉션·프록시·리소스처럼 정적 분석이 볼 수 없는 접근은 별도 메타데이터로 알려야 한다. Spring은 이 메타데이터를 자바 객체 모델로 모으는 API를 `org.springframework.aot.hint` 패키지에 두었고, 그 최상위가 `RuntimeHints`다. 그 아래로 `reflection()`, `proxies()`, `resources()`, `jni()`, `serialization()` 같은 하위 힌트 묶음이 갈라진다.
+GraalVM `native-image`는 닫힌 세계 가정 위에서 동작한다.\
+빌드 시점에 도달 가능하다고 판단되지 않은 클래스와 멤버는 이미지에서 제거되므로, 리플렉션·프록시·리소스처럼 정적 분석이 볼 수 없는 접근은 별도 메타데이터로 알려야 한다.
 
-`ReflectionHints`는 두 종류의 상태를 나란히 들고 있다. 하나는 타입별 리플렉션 힌트이고, 다른 하나는 lambda 힌트다. 실코드에서 이 둘은 서로 다른 필드로 분리되어 있다.
+> **닫힌 세계 가정(closed-world assumption)** — "빌드 때 눈에 보이지 않는 코드는 실행될 일도 없다"고 못박고 시작하는 전제.\
+> 예: `Class.forName("com.example.Foo")`처럼 문자열로만 등장하는 클래스는 정적 분석에 안 잡히므로, 메타데이터로 따로 알려 주지 않으면 네이티브 이미지에서 통째로 사라진다.
+
+> **네이티브 이미지 설정 파일** — 그 "따로 알려 주는" 내용을 담은 JSON 파일.\
+> 예: 최신 GraalVM에서는 여러 파일로 나뉘어 있던 설정이 `reachability-metadata.json` 하나로 통합되었고, 스프링은 이 이름을 그대로 쓴다.
+
+Spring은 이 메타데이터를 자바 객체 모델로 모으는 API를 `org.springframework.aot.hint` 패키지에 두었고, 그 최상위가 `RuntimeHints`다.\
+그 아래로 `reflection()`, `proxies()`, `resources()`, `jni()`, `serialization()` 같은 하위 힌트 묶음이 갈라진다.
+
+> **RuntimeHints** — 종류별 힌트 묶음을 전부 소유하는 최상위 수집 객체.\
+> 예: `hints.reflection().registerType(String.class, ...)`처럼 하위 묶음을 꺼내 힌트를 쌓아 두고, 빌드 끝에 그 전체를 JSON으로 내보낸다.
+
+힌트를 등록하는 쪽에서 파일이 나오기까지의 길을 세로로 펴면 이렇다.
+
+```text
+빌드 타임 AOT 처리 (빈 등록 코드 생성 등)
+        |
+        v
+RuntimeHints                         종류별 묶음을 소유한다
+        |
+        +-- reflection() -> ReflectionHints
+        |                     types       : Map<TypeReference, TypeHint.Builder>
+        |                     lambdaHints : Set<LambdaHint>
+        +-- proxies()    -> ProxyHints          jdkProxies
+        +-- resources()  -> ResourceHints       resourcePatternHints / resourceBundleHints
+        +-- jni()        -> ReflectionHints     reflection 과 같은 타입, 다른 인스턴스
+        +-- serialization() -> SerializationHints   @Deprecated(7.0.6)
+        |
+        v
+NativeConfigurationWriter.write(hints)    파일을 만들지 말지 여기서 정한다
+        |
+        v
+RuntimeHintsWriter                        문서 골격 (comment / reflection / jni / resources)
+ReflectionHintsAttributes                 각 힌트를 맵 속성으로 펼친다
+BasicJsonWriter                           실제 문자열을 찍는다
+        |
+        v
+META-INF/native-image/reachability-metadata.json
+```
+
+수집(`aot.hint`)과 출력(`aot.nativex`)이 두 패키지로 갈라져 있고, 그 사이에 문 하나가 있다는 것이 이 PR의 무대다.
+
+`ReflectionHints`는 두 종류의 상태를 나란히 들고 있다.\
+하나는 타입별 리플렉션 힌트이고, 다른 하나는 lambda 힌트다.\
+실코드에서 이 둘은 서로 다른 필드로 분리되어 있다.
+
+> **리플렉션 힌트(reflection hint)** — "이 타입의 이 멤버를 런타임에 리플렉션으로 건드릴 테니 남겨 두라"는 지시.\
+> 예: `registerType(String.class, ...)`을 부르면 `types` 맵에 `java.lang.String` 항목이 생기고, 그것이 JSON의 `reflection` 배열 한 칸이 된다.
 
 ```java
 public class ReflectionHints {
@@ -36,7 +93,14 @@ public class ReflectionHints {
 	}
 ```
 
-lambda 힌트가 왜 따로 필요한지가 이 PR의 배경이다. 자바 lambda는 컴파일 시점에 이름 있는 클래스가 아니라 `invokedynamic` 호출 지점으로 남고, 실제 클래스는 런타임에 `LambdaMetafactory`가 만들어 낸다. 네이티브 이미지는 그 생성 과정을 빌드 시점으로 당겨와야 하므로, "어느 클래스의 어느 메서드 안에서 어떤 함수형 인터페이스를 구현하는 lambda가 만들어지는가"를 별도 형식으로 기술한다. `LambdaHint`가 담는 정보가 정확히 그 세 가지다 — `declaringClass`, `declaringMethod`, `interfaces`. 이 지원은 gh-36339(커밋 `3bc55c77ec8`)에서 7.0.6에 추가되었다.
+lambda 힌트가 왜 따로 필요한지가 이 PR의 배경이다.\
+자바 lambda는 컴파일 시점에 이름 있는 클래스가 아니라 `invokedynamic` 호출 지점으로 남고, 실제 클래스는 런타임에 `LambdaMetafactory`가 만들어 낸다.\
+네이티브 이미지는 그 생성 과정을 빌드 시점으로 당겨와야 하므로, "어느 클래스의 어느 메서드 안에서 어떤 함수형 인터페이스를 구현하는 lambda가 만들어지는가"를 별도 형식으로 기술한다.\
+`LambdaHint`가 담는 정보가 정확히 그 세 가지다 — `declaringClass`, `declaringMethod`, `interfaces`.\
+이 지원은 gh-36339(커밋 `3bc55c77ec8`)에서 7.0.6에 추가되었다.
+
+> **invokedynamic / LambdaMetafactory** — lambda를 "미리 만들어 둔 클래스"가 아니라 "처음 실행될 때 만들어 붙이는 호출 지점"으로 남기는 JVM 장치.\
+> 예: `builder -> builder.withInterfaces(Supplier.class)` 같은 lambda는 `.class` 파일에 이름이 남지 않고, 첫 실행 때 `LambdaMetafactory`가 `Supplier` 구현 클래스를 만들어 끼운다 — 그래서 빌드 시점 분석만으로는 보이지 않는다.
 
 등록 API는 `ReflectionHints.registerLambda(...)`이고, 빌더 소비자를 받아 `LambdaHint`를 만들어 집합에 넣는다.
 
@@ -49,7 +113,12 @@ lambda 힌트가 왜 따로 필요한지가 이 PR의 배경이다. 자바 lambd
 	}
 ```
 
-모아 둔 힌트를 JSON으로 바꾸는 쪽은 `org.springframework.aot.nativex` 패키지다. 파이프라인은 세 단계로 나뉜다. `RuntimeHintsWriter`가 문서 최상위 골격(`reflection`, `jni`, `resources` 키)을 만들고, `ReflectionHintsAttributes`가 각 힌트를 맵 속성으로 펼치며, `BasicJsonWriter`가 실제 문자열을 찍는다. `ReflectionHintsAttributes`는 처음부터 lambda 힌트를 알고 있었다. 타입 힌트 스트림 뒤에 lambda 힌트 스트림을 정렬해 이어 붙인다.
+모아 둔 힌트를 JSON으로 바꾸는 쪽은 `org.springframework.aot.nativex` 패키지다.\
+파이프라인은 세 단계로 나뉜다.\
+`RuntimeHintsWriter`가 문서 최상위 골격(`reflection`, `jni`, `resources` 키)을 만들고, `ReflectionHintsAttributes`가 각 힌트를 맵 속성으로 펼치며, `BasicJsonWriter`가 실제 문자열을 찍는다.
+
+`ReflectionHintsAttributes`는 처음부터 lambda 힌트를 알고 있었다.\
+타입 힌트 스트림 뒤에 lambda 힌트 스트림을 정렬해 이어 붙인다.
 
 ```java
 		return Stream.concat(
@@ -78,11 +147,14 @@ lambda 힌트가 왜 따로 필요한지가 이 PR의 배경이다. 자바 lambd
 	}
 ```
 
-마지막으로 이 JSON을 어디에 쓸지를 정하는 계층이 `NativeConfigurationWriter`(추상)와 그 구현 `FileNativeConfigurationWriter`(파일시스템)다. 파일 구현은 `META-INF/native-image/` 아래에, groupId·artifactId가 주어지면 그 하위 네임스페이스에 파일을 만든다. 실제 호출자는 `AbstractAotProcessor.writeHints(RuntimeHints)`이며, AOT 처리 결과물의 리소스 출력 디렉터리에 이 작성기를 붙인다.
+마지막으로 이 JSON을 어디에 쓸지를 정하는 계층이 `NativeConfigurationWriter`(추상)와 그 구현 `FileNativeConfigurationWriter`(파일시스템)다.\
+파일 구현은 `META-INF/native-image/` 아래에, groupId·artifactId가 주어지면 그 하위 네임스페이스에 파일을 만든다.\
+실제 호출자는 `AbstractAotProcessor.writeHints(RuntimeHints)`이며, AOT 처리 결과물의 리소스 출력 디렉터리에 이 작성기를 붙인다.
 
 ## 2. 수정 전 동작 방식 — 파일 생성 여부를 결정하는 게이트
 
-핵심은 `NativeConfigurationWriter.write(RuntimeHints)`가 무조건 파일을 쓰지 않는다는 점이다. 힌트가 하나도 없는 애플리케이션에까지 빈 JSON을 흩뿌리지 않으려고, 앞단에 게이트를 하나 두었다.
+핵심은 `NativeConfigurationWriter.write(RuntimeHints)`가 무조건 파일을 쓰지 않는다는 점이다.\
+힌트가 하나도 없는 애플리케이션에까지 빈 JSON을 흩뿌리지 않으려고, 앞단에 게이트를 하나 두었다.
 
 ```java
 	public void write(RuntimeHints hints) {
@@ -106,11 +178,49 @@ lambda 힌트가 왜 따로 필요한지가 이 PR의 배경이다. 자바 lambd
 	}
 ```
 
-여기서 구조적 사실 하나가 드러난다. 이 메서드는 "힌트가 있는가"를 힌트 모델에게 묻지 않고, 알고 있는 종류를 손으로 나열해 묻는다. 다시 말해 게이트는 힌트 종류의 열거를 통째로 복제한 코드이며, 새 힌트 종류가 생길 때마다 함께 갱신되어야만 정확성이 유지된다. `RuntimeHints`에는 "비어 있는가"를 스스로 답하는 메서드가 없으므로, 이 복제는 컴파일러가 지켜 주지 않는다.
+> **`findAny().isPresent()`** — "적어도 하나 있나"만 확인하고 즉시 끝내는 존재 검사.\
+> 예: `typeHints()` 스트림에서 첫 원소 하나를 꺼내 보고 있으면 `true`로 끝내므로, 힌트가 1개든 1000개든 비용이 같다.
+
+이 게이트가 힌트 종류를 어떻게 훑는지를 세로로 펴면 이렇다.\
+수정 전 목록 기준이다.
+
+```text
+write(hints)                                모든 방출이 이 문을 지난다
+        |
+        v
+hasAnyHint(hints)                           "아는 종류"를 손으로 나열해 묻는다
+        |
+        +-- proxies().jdkProxyHints()            있으면 true, 즉시 종료
+        +-- reflection().typeHints()             있으면 true, 즉시 종료
+        +-- resources().resourcePatternHints()   있으면 true, 즉시 종료
+        +-- resources().resourceBundleHints()    있으면 true, 즉시 종료
+        +-- jni().typeHints()                    있으면 true, 즉시 종료
+        +-- hasAnyDeprecatedHint(hints)          있으면 true, 즉시 종료
+        |
+        |   reflection().lambdaHints()           목록에 없다 - 묻지 않는다
+        |
+  +-----+-----------------------------+
+  | 하나라도 true                     | 전부 false
+  v                                   v
+writeTo("reachability-metadata.json") 아무것도 하지 않는다
+파일 생성 + JSON 직렬화               예외 없음 / 로그 없음 / 파일 없음
+```
+
+여섯 종류는 묻고 lambda 한 종류만 묻지 않는다 — 결함은 이 목록의 길이에 있다.
+
+여기서 구조적 사실 하나가 드러난다.\
+이 메서드는 "힌트가 있는가"를 힌트 모델에게 묻지 않고, 알고 있는 종류를 손으로 나열해 묻는다.\
+다시 말해 게이트는 힌트 종류의 열거를 통째로 복제한 코드이며, 새 힌트 종류가 생길 때마다 함께 갱신되어야만 정확성이 유지된다.\
+`RuntimeHints`에는 "비어 있는가"를 스스로 답하는 메서드가 없으므로, 이 복제는 컴파일러가 지켜 주지 않는다.
+
+> **목록 복제** — 어떤 목록(여기서는 "힌트 종류")을 원본 정의와 별개로 또 한 번 코드에 적어 두는 것.\
+> 예: `RuntimeHints`의 필드 목록이 원본이고 `hasAnyHint`의 `||` 사슬이 복제본인데, 한쪽에 `lambdaHints`가 늘어나도 다른 쪽은 그대로여도 컴파일이 통과한다.
 
 ## 3. 무엇이 문제였나 — lambda 힌트만 있을 때 파일이 조용히 빠진다
 
-`ReflectionHints.lambdaHints()`가 위 목록에 없다. 그래서 lambda 힌트만 등록한 `RuntimeHints`는 게이트에서 "힌트 없음"으로 판정된다. 재현은 세 줄이면 충분하다.
+`ReflectionHints.lambdaHints()`가 위 목록에 없다.\
+그래서 lambda 힌트만 등록한 `RuntimeHints`는 게이트에서 "힌트 없음"으로 판정된다.\
+재현은 세 줄이면 충분하다.
 
 ```java
 		FileNativeConfigurationWriter generator = new FileNativeConfigurationWriter(tempDir);
@@ -121,20 +231,61 @@ lambda 힌트가 왜 따로 필요한지가 이 PR의 배경이다. 자바 lambd
 		generator.write(hints);
 ```
 
-`write()`는 예외를 던지지 않고, 경고도 남기지 않고, 그냥 아무것도 하지 않는다. `hasAnyHint()`가 `false`이므로 `writeTo(...)`에 도달하지 않고, `reachability-metadata.json`은 생성되지 않는다. 실행은 정상 종료하고 빌드는 초록색이다.
+`write()`는 예외를 던지지 않고, 경고도 남기지 않고, 그냥 아무것도 하지 않는다.\
+`hasAnyHint()`가 `false`이므로 `writeTo(...)`에 도달하지 않고, `reachability-metadata.json`은 생성되지 않는다.\
+실행은 정상 종료하고 빌드는 초록색이다.
 
-문제의 성격은 "직렬화가 틀렸다"가 아니라 "직렬화가 아예 호출되지 않는다"에 가깝다. 아래 표는 lambda 힌트를 다루는 두 계층의 준비 상태가 어긋나 있었음을 값으로만 비교한 것이다.
+> **무음 실패(silent failure)** — 잘못된 결과가 예외·로그 없이 정상처럼 흘러가는 실패.\
+> 예: 여기서는 `write()`가 조용히 반환하고 빌드가 초록색이어서, "메타데이터 파일이 없다"는 사실 자체를 아무도 보고받지 못한다.
+
+문제의 성격은 "직렬화가 틀렸다"가 아니라 "직렬화가 아예 호출되지 않는다"에 가깝다.\
+흐름이 어디서 끊기는지를 세로로 그리면 이렇다.
+
+```text
+registerLambda(Integer.class, "getCell", Supplier)
+        |
+        v
+상태: types = {} ,  lambdaHints = { LambdaHint(Integer, getCell, Supplier) }
+        |
+        v
+write(hints)
+        |
+        v
+hasAnyHint(hints) -> false                lambdaHints 를 묻지 않으므로 "힌트 없음"
+        |
+        X   여기서 흐름이 끊긴다
+        |
+        |   아래 계층은 한 번도 실행되지 않는다
+        v
+RuntimeHintsWriter.write(...)             lambda 를 처리할 준비 완료
+ReflectionHintsAttributes                 lambdaHints() 를 이미 concat 하고 있다
+  toAttributes(LambdaHint)                {"type": {"lambda": {...}}} 생성 가능
+        |
+        v
+reachability-metadata.json                생성되지 않는다
+```
+
+준비된 코드가 문 뒤에서 대기만 하다 끝난다 — 아래 표는 두 계층의 준비 상태가 어긋나 있었음을 값으로만 비교한 것이다.
 
 | 계층 | lambda 힌트 인지 | 수정 전 결과 |
 |------|------------------|--------------|
 | `ReflectionHintsAttributes.reflectionHints()` | 인지함(`lambdaHints()` 스트림 연결) | lambda JSON 생성 가능 |
 | `NativeConfigurationWriter.hasAnyHint()` | 인지하지 않음 | 파일 미생성 |
 
-직렬화기 쪽이 이미 정상임은 `RuntimeHintsWriterTests`의 `oneLambda` 테스트가 증명한다. 그 테스트는 `RuntimeHintsWriter`를 직접 호출해 lambda JSON을 검증하므로 게이트를 통과하지 않는다. 게이트를 지나는 경로는 `FileNativeConfigurationWriter`를 쓰는 테스트뿐인데, 수정 전 그 테스트 클래스에는 lambda 케이스가 없었다. 두 테스트 사이의 틈이 정확히 이 버그가 숨어 있던 자리다.
+직렬화기 쪽이 이미 정상임은 `RuntimeHintsWriterTests`의 `oneLambda` 테스트가 증명한다.\
+그 테스트는 `RuntimeHintsWriter`를 직접 호출해 lambda JSON을 검증하므로 게이트를 통과하지 않는다.\
+게이트를 지나는 경로는 `FileNativeConfigurationWriter`를 쓰는 테스트뿐인데, 수정 전 그 테스트 클래스에는 lambda 케이스가 없었다.\
+두 테스트 사이의 틈이 정확히 이 버그가 숨어 있던 자리다.
 
-파장은 여기서 끝나지 않는다. 실전에서 `RuntimeHints`가 lambda 힌트만 담는 경우는 라이브러리나 모듈 단위 AOT 처리에서 충분히 발생하며, 이때 산출물에 메타데이터 파일이 통째로 빠진다. JVM에서는 lambda가 평소대로 동작하니 아무 증상이 없고, 네이티브 이미지로 빌드한 뒤 해당 lambda 경로를 밟을 때에야 런타임 실패로 나타난다. 즉 결함의 발견 지점이 발생 지점에서 멀다.
+파장은 여기서 끝나지 않는다.\
+실전에서 `RuntimeHints`가 lambda 힌트만 담는 경우는 라이브러리나 모듈 단위 AOT 처리에서 충분히 발생하며, 이때 산출물에 메타데이터 파일이 통째로 빠진다.\
+JVM에서는 lambda가 평소대로 동작하니 아무 증상이 없고, 네이티브 이미지로 빌드한 뒤 해당 lambda 경로를 밟을 때에야 런타임 실패로 나타난다.\
+즉 결함의 발견 지점이 발생 지점에서 멀다.
 
-원인은 기능 추가의 불완전한 확장이다. gh-36339은 `LambdaHint`, `ReflectionHints`, `ReflectionHintsAttributes`, `RuntimeHints` javadoc과 테스트를 건드렸지만 `NativeConfigurationWriter`는 건드리지 않았다. 등록 경로와 직렬화 경로는 확장되었는데 게이트만 옛 목록에 머문 것이다. sbrannen도 리뷰에서 "7.0.6에서 lambda 힌트 지원이 추가될 때 유입된 버그"라고 확인했다.
+원인은 기능 추가의 불완전한 확장이다.\
+gh-36339은 `LambdaHint`, `ReflectionHints`, `ReflectionHintsAttributes`, `RuntimeHints` javadoc과 테스트를 건드렸지만 `NativeConfigurationWriter`는 건드리지 않았다.\
+등록 경로와 직렬화 경로는 확장되었는데 게이트만 옛 목록에 머문 것이다.\
+sbrannen도 리뷰에서 "7.0.6에서 lambda 힌트 지원이 추가될 때 유입된 버그"라고 확인했다.
 
 ## 4. 수정 해설 — 게이트를 힌트 모델과 다시 맞춘다
 
@@ -152,9 +303,36 @@ lambda 힌트가 왜 따로 필요한지가 이 PR의 배경이다. 자바 lambd
 	}
 ```
 
-위치를 `typeHints()` 바로 다음으로 잡은 데에는 이유가 있다. 두 검사는 같은 `hints.reflection()` 묶음에서 나오므로 나란히 두는 편이 목록을 읽을 때 종류별로 묶여 보인다. 단락 평가 순서상 성능 차이는 없고, `findAny()`는 요소 하나만 확인하고 끝난다.
+같은 입력 한 건을 넣었을 때 결과 파일이 어떻게 갈리는지를 나란히 놓으면 이렇다.
 
-게이트 자체를 없애고 항상 파일을 쓰는 선택지도 있지만 택하지 않았다. 힌트가 전혀 없을 때 파일을 만들지 않는 것은 기존 계약이고, `emptyConfig` 테스트가 그것을 명시적으로 고정하고 있기 때문이다.
+```text
+입력: registerLambda(Integer.class, "getCell", Supplier) 한 건만
+
+수정 전                                 수정 후
++-------------------------------+      +-------------------------------+
+| types       = {}              |      | types       = {}              |
+| lambdaHints = { Integer, ... }|      | lambdaHints = { Integer, ... }|
+| hasAnyHint  = false           |      | hasAnyHint  = true            |
+| writeTo(...) 호출 안 됨       |      | writeTo(...) 호출됨           |
+| 생성 파일   = 없음            |      | 생성 파일                     |
+|                               |      |   reachability-metadata.json  |
+|                               |      |   "reflection": [ { "type":   |
+|                               |      |     { "lambda": { ... } } } ] |
++-------------------------------+      +-------------------------------+
+  -> 빌드는 초록색, 메타데이터만 사라진다   -> lambda JSON 이 파일로 나온다
+```
+
+바뀐 것은 문이 열리느냐뿐이고, 문 뒤의 JSON 모양은 수정 전후가 같다.
+
+위치를 `typeHints()` 바로 다음으로 잡은 데에는 이유가 있다.\
+두 검사는 같은 `hints.reflection()` 묶음에서 나오므로 나란히 두는 편이 목록을 읽을 때 종류별로 묶여 보인다.\
+단락 평가 순서상 성능 차이는 없고, `findAny()`는 요소 하나만 확인하고 끝난다.
+
+> **단락 평가(short-circuit evaluation)** — `||` 사슬에서 앞쪽이 참이 되면 뒤쪽은 계산조차 하지 않는 규칙.\
+> 예: 타입 힌트가 하나라도 있으면 `typeHints()` 항에서 `true`가 나오고, 그 뒤의 `resources()`·`jni()` 스트림은 만들어지지도 않는다.
+
+게이트 자체를 없애고 항상 파일을 쓰는 선택지도 있지만 택하지 않았다.\
+힌트가 전혀 없을 때 파일을 만들지 않는 것은 기존 계약이고, `emptyConfig` 테스트가 그것을 명시적으로 고정하고 있기 때문이다.
 
 ```java
 	@Test
@@ -166,11 +344,18 @@ lambda 힌트가 왜 따로 필요한지가 이 PR의 배경이다. 자바 lambd
 	}
 ```
 
-더 근본적인 대안은 `RuntimeHints`에 "비어 있는가"를 스스로 답하는 API를 추가해 게이트의 목록 복제를 없애는 것이다. 그러나 그것은 public API 확장이며 버그 수정의 범위를 넘는다. 기여 PR로서는 결함을 최소 diff로 닫고, 구조 개선은 메인테이너의 판단에 남기는 편이 채택 가능성이 높다. 실제로 이 PR은 프로덕션 코드 1줄과 테스트 29줄로 병합되었다.
+더 근본적인 대안은 `RuntimeHints`에 "비어 있는가"를 스스로 답하는 API를 추가해 게이트의 목록 복제를 없애는 것이다.\
+그러나 그것은 public API 확장이며 버그 수정의 범위를 넘는다.\
+기여 PR로서는 결함을 최소 diff로 닫고, 구조 개선은 메인테이너의 판단에 남기는 편이 채택 가능성이 높다.\
+실제로 이 PR은 프로덕션 코드 1줄과 테스트 29줄로 병합되었다.
+
+> **public API 확장** — 외부 사용자가 부를 수 있는 표면에 새 메서드를 더하는 것.\
+> 예: `RuntimeHints.isEmpty()`를 추가하면 한 번 공개한 뒤에는 되돌리기 어렵고, 스프링이 그 시그니처를 계속 지켜야 하므로 버그 수정 PR이 임의로 결정할 일이 아니다.
 
 ## 5. 검증 — 테스트가 무엇을 고정하나
 
-추가된 테스트는 `FileNativeConfigurationWriterTests.lambdaConfig()`다. lambda 힌트 하나만 등록하고 `write()`를 호출한 뒤, 생성된 파일 내용을 기대 JSON과 비교한다.
+추가된 테스트는 `FileNativeConfigurationWriterTests.lambdaConfig()`다.\
+lambda 힌트 하나만 등록하고 `write()`를 호출한 뒤, 생성된 파일 내용을 기대 JSON과 비교한다.
 
 ```java
 	@Test  // gh-36989
@@ -202,7 +387,8 @@ lambda 힌트가 왜 따로 필요한지가 이 PR의 배경이다. 자바 lambd
 	}
 ```
 
-이 테스트가 결함을 실제로 재현한다는 근거는 헬퍼에 있다. `assertEquals(String)`는 기대 문자열을 비교하기 전에 파일을 먼저 읽는다.
+이 테스트가 결함을 실제로 재현한다는 근거는 헬퍼에 있다.\
+`assertEquals(String)`는 기대 문자열을 비교하기 전에 파일을 먼저 읽는다.
 
 ```java
 	private static void assertEquals(String expectedString) throws Exception {
@@ -212,19 +398,40 @@ lambda 힌트가 왜 따로 필요한지가 이 PR의 배경이다. 자바 lambd
 	}
 ```
 
-수정이 없으면 파일이 존재하지 않으므로 `Files.readString`이 `NoSuchFileException`을 던지며 실패한다. 즉 이 테스트는 JSON 형식이 아니라 "파일이 생성되는가"를 1차로 고정하고, 형식은 2차로 고정한다. 버그의 본질이 미생성이었으므로 실패 모드와 재현이 정확히 일치한다.
+수정이 없으면 파일이 존재하지 않으므로 `Files.readString`이 `NoSuchFileException`을 던지며 실패한다.\
+즉 이 테스트는 JSON 형식이 아니라 "파일이 생성되는가"를 1차로 고정하고, 형식은 2차로 고정한다.\
+버그의 본질이 미생성이었으므로 실패 모드와 재현이 정확히 일치한다.
+
+> **`JSONCompareMode.NON_EXTENSIBLE`** — 기대 JSON에 없는 필드가 실제 JSON에 하나라도 있으면 실패로 보는 비교 모드.\
+> 예: `type.lambda` 외에 예상치 못한 키가 함께 직렬화되면 통과하지 못하므로, "무엇이 나오는가"뿐 아니라 "그 밖의 것은 안 나오는가"까지 고정된다.
 
 현재 코드 기준으로 `./gradlew :spring-core:test --tests "*FileNativeConfigurationWriterTests*"`를 실행하면 9개 테스트가 모두 통과한다.
 
-고정되는 계약은 세 겹이다. 첫째, lambda 힌트만 있어도 `reachability-metadata.json`이 나온다. 둘째, 그 내용은 `type.lambda` 구조로 `declaringClass`·`declaringMethod`·`interfaces`를 담는다. 셋째, `JSONCompareMode.NON_EXTENSIBLE` 덕분에 기대하지 않은 추가 필드가 끼어들면 실패한다. 반대 방향은 기존 `emptyConfig`가 계속 지킨다 — 힌트가 하나도 없으면 여전히 파일을 만들지 않는다. 두 테스트가 게이트의 양쪽 경계를 함께 붙잡는 셈이다.
+고정되는 계약은 세 겹이다.\
+첫째, lambda 힌트만 있어도 `reachability-metadata.json`이 나온다.\
+둘째, 그 내용은 `type.lambda` 구조로 `declaringClass`·`declaringMethod`·`interfaces`를 담는다.\
+셋째, `JSONCompareMode.NON_EXTENSIBLE` 덕분에 기대하지 않은 추가 필드가 끼어들면 실패한다.
+
+반대 방향은 기존 `emptyConfig`가 계속 지킨다 — 힌트가 하나도 없으면 여전히 파일을 만들지 않는다.\
+두 테스트가 게이트의 양쪽 경계를 함께 붙잡는 셈이다.
 
 ## 6. 상태와 교훈
 
-PR은 채택되었다. 업스트림에는 GitHub의 merge 버튼이 아니라 메인테이너가 직접 적용하는 방식으로 들어갔고, 그래서 PR 페이지 상태는 `CLOSED`로 보이지만 실제 커밋은 `d1470bbb259` "Register native configuration file when only lambda hints are present"로 남아 있다. 커밋 author는 기여자 본인이며 메시지에 `Closes gh-36989`가 붙어 있고, `upstream/main`과 `upstream/7.0.x` 양쪽에 포함되어 있다. 리뷰에서 sbrannen은 "Good catch"와 함께 7.0.6의 lambda 힌트 지원에서 유입된 버그라고 확인했다.
+PR은 채택되었다.\
+업스트림에는 GitHub의 merge 버튼이 아니라 메인테이너가 직접 적용하는 방식으로 들어갔고, 그래서 PR 페이지 상태는 `CLOSED`로 보이지만 실제 커밋은 `d1470bbb259` "Register native configuration file when only lambda hints are present"로 남아 있다.\
+커밋 author는 기여자 본인이며 메시지에 `Closes gh-36989`가 붙어 있고, `upstream/main`과 `upstream/7.0.x` 양쪽에 포함되어 있다.\
+리뷰에서 sbrannen은 "Good catch"와 함께 7.0.6의 lambda 힌트 지원에서 유입된 버그라고 확인했다.
 
-첫 번째 교훈은 결함을 찾는 위치에 관한 것이다. 이 버그는 데이터를 만드는 코드에도, 데이터를 형식화하는 코드에도 없었다. 둘 사이에서 "일을 할지 말지"를 정하는 조건절에 있었다. 새 종류를 다루는 기능을 추가할 때는 그 종류를 소비하는 코드뿐 아니라, 종류 목록을 손으로 열거하는 모든 지점을 함께 찾아야 한다. 이런 열거는 컴파일러가 누락을 잡아 주지 않으므로 `findAny().isPresent()` 같은 존재 검사 목록은 확장 지점의 상습 사각지대다.
+첫 번째 교훈은 결함을 찾는 위치에 관한 것이다.\
+이 버그는 데이터를 만드는 코드에도, 데이터를 형식화하는 코드에도 없었다.\
+둘 사이에서 "일을 할지 말지"를 정하는 조건절에 있었다.\
+새 종류를 다루는 기능을 추가할 때는 그 종류를 소비하는 코드뿐 아니라, 종류 목록을 손으로 열거하는 모든 지점을 함께 찾아야 한다.\
+이런 열거는 컴파일러가 누락을 잡아 주지 않으므로 `findAny().isPresent()` 같은 존재 검사 목록은 확장 지점의 상습 사각지대다.
 
-두 번째 교훈은 테스트 층위의 틈에 관한 것이다. `RuntimeHintsWriterTests`는 직렬화기를 단위로 검증했고 `FileNativeConfigurationWriterTests`는 파일 생성을 통합적으로 검증했는데, lambda라는 신규 개념은 앞쪽에만 추가되었다. 하위 계층에 새 케이스를 넣을 때 상위 계층에도 같은 케이스가 필요한지 되묻는 습관이, 조용한 유실을 가장 싸게 잡는 방법이다. 특히 이번처럼 실패가 JVM에서는 보이지 않고 네이티브 런타임에서만 드러나는 경우, 자동화된 검증이 없으면 발견이 사용자에게 미뤄진다.
+두 번째 교훈은 테스트 층위의 틈에 관한 것이다.\
+`RuntimeHintsWriterTests`는 직렬화기를 단위로 검증했고 `FileNativeConfigurationWriterTests`는 파일 생성을 통합적으로 검증했는데, lambda라는 신규 개념은 앞쪽에만 추가되었다.\
+하위 계층에 새 케이스를 넣을 때 상위 계층에도 같은 케이스가 필요한지 되묻는 습관이, 조용한 유실을 가장 싸게 잡는 방법이다.\
+특히 이번처럼 실패가 JVM에서는 보이지 않고 네이티브 런타임에서만 드러나는 경우, 자동화된 검증이 없으면 발견이 사용자에게 미뤄진다.
 
 ---
 

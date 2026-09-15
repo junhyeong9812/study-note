@@ -7,12 +7,17 @@
 
 ## 1. 무대 — 실구조
 
-이 PR의 무대는 StAX 어댑터 계층이다. `XMLEventReader`(객체형 API)를
-`XMLStreamReader`(커서형 API)처럼 보이게 감싸는 어댑터가 있고, 그 어댑터의 추상 상위
-클래스가 "최소 접근자만으로 계산되는 파생 메서드"를 채워 넣는다. 결함은 그 파생 메서드
-하나에 있었다.
+이 PR의 무대는 StAX 어댑터 계층이다.\
+`XMLEventReader`(객체형 API)를 `XMLStreamReader`(커서형 API)처럼 보이게 감싸는 어댑터가 있고, 그 어댑터의 추상 상위 클래스가 "최소 접근자만으로 계산되는 파생 메서드"를 채워 넣는다.\
+결함은 그 파생 메서드 하나에 있었다.
 
-```
+> **파생 메서드 (derived method)** — 자기 상태를 따로 갖지 않고, 서브클래스가 구현한 최소 접근자를 불러 그 결과로 값을 계산해 내는 상위 클래스의 기본 구현.\
+> 예: `getLocalName()`은 `getName().getLocalPart()`, `getTextCharacters()`는 `getText().toCharArray()`로 계산된다.
+
+> **package-private** — 접근 제어자를 아무것도 붙이지 않았을 때의 가시성. 같은 패키지 안에서만 클래스 이름을 쓸 수 있다.\
+> 예: `AbstractXMLStreamReader`·`XMLEventStreamReader`는 둘 다 package-private이라 바깥에서는 이름조차 볼 수 없다.
+
+```text
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ javax.xml.stream.XMLStreamReader  (JDK 인터페이스)                           │
 │   getEventType() / next() / getText() / getName() / getLocation() …          │
@@ -70,9 +75,9 @@
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-`AbstractXMLStreamReader`가 **상태를 하나도 갖지 않는다**는 점이 이 구조의 성격을 정한다.
-파생 메서드는 매 호출마다 서브클래스의 접근자를 다시 부르고, 그 결과로 계산한다. 캐시가
-없으므로 `getTextCharacters()`는 부를 때마다 새 배열을 만든다.
+`AbstractXMLStreamReader`가 **상태를 하나도 갖지 않는다**는 점이 이 구조의 성격을 정한다.\
+파생 메서드는 매 호출마다 서브클래스의 접근자를 다시 부르고, 그 결과로 계산한다.\
+캐시가 없으므로 `getTextCharacters()`는 부를 때마다 새 배열을 만든다.
 
 ```java
 // AbstractXMLStreamReader.java:185-196  (수정 전 원본 그대로)
@@ -90,25 +95,41 @@ public int getTextCharacters(int sourceStart, char[] target, int targetStart, in
 }
 ```
 
-세 줄 안에 계약이 세 개 들어 있다. `sourceStart`는 **원본 안의 시작 인덱스**,
-`targetStart`는 대상 버퍼의 시작 인덱스, 반환값은 **실제 복사한 문자 수**다. 가운데
-`Math.min` 한 줄이 이 셋 중 첫 번째와 세 번째를 동시에 어긴다.
+세 줄 안에 계약이 세 개 들어 있다.\
+`sourceStart`는 **원본 안의 시작 인덱스**, `targetStart`는 대상 버퍼의 시작 인덱스, 반환값은 **실제 복사한 문자 수**다.\
+가운데 `Math.min` 한 줄이 이 셋 중 첫 번째와 세 번째를 동시에 어긴다.
 
-같은 파일 안에 대조군이 있다. `getTextLength()`는 텍스트 길이를 그대로 돌려주고
-(`:199-201`), `XMLEventStreamReader.getTextStart()`는 항상 0을 돌려준다(`:146-149`).
-즉 이 어댑터는 "텍스트는 언제나 인덱스 0에서 시작하고 전체가 한 덩어리"라는 세계관 위에
-서 있고, 그 세계관이 `getTextCharacters(int, …)`의 상한 계산에도 그대로 스며들었다.
+세 계약이 각각 어느 배열의 어느 칸을 가리키는지는 그림으로 놓으면 분명하다.
+
+```text
+source (원본, "content" 길이 7)          target (대상 버퍼, 길이 4)
+ 0   1   2   3   4   5   6                0   1   2   3
++---+---+---+---+---+---+---+            +---+---+---+---+
+| c | o | n | t | e | n | t |            |   |   |   |   |
++---+---+---+---+---+---+---+            +---+---+---+---+
+              ^                            ^
+              sourceStart = 4              targetStart = 0
+              (원본 세계의 인덱스)         (대상 세계의 인덱스)
+
+              |------- 복사 --------|
+              반환값 = 실제로 옮긴 문자 수 (요청 length 이하)
+```
+
+같은 파일 안에 대조군이 있다.\
+`getTextLength()`는 텍스트 길이를 그대로 돌려주고(`:199-201`), `XMLEventStreamReader.getTextStart()`는 항상 0을 돌려준다(`:146-149`).\
+즉 이 어댑터는 "텍스트는 언제나 인덱스 0에서 시작하고 전체가 한 덩어리"라는 세계관 위에 서 있고, 그 세계관이 `getTextCharacters(int, …)`의 상한 계산에도 그대로 스며들었다.
 
 ## 2. 수정 전 동작 워크플로우
 
-BLUF: 텍스트 노드를 조각내어 읽는 정상 사용 패턴에서, 두 번째 호출부터
-`System.arraycopy`가 원본 배열 끝을 넘겨 읽으려 하고 `ArrayIndexOutOfBoundsException`이
-난다.
+BLUF: 텍스트 노드를 조각내어 읽는 정상 사용 패턴에서, 두 번째 호출부터 `System.arraycopy`가 원본 배열 끝을 넘겨 읽으려 하고 `ArrayIndexOutOfBoundsException`이 난다.
 
-시나리오는 `XMLEventReader`를 커서형으로 바꿔 쓰는 외부 호출자다. 텍스트 노드가
-`"content"`(7자)이고, 호출자는 StAX javadoc이 예제로 실어 둔 조각 읽기 루프를 돈다.
+> **BLUF (Bottom Line Up Front)** — 결론을 맨 앞에 먼저 쓰는 서술 방식.\
+> 예: 이 절의 첫 줄이 "두 번째 호출부터 예외가 난다"는 결론을 근거보다 앞세운 것이다.
 
-```
+시나리오는 `XMLEventReader`를 커서형으로 바꿔 쓰는 외부 호출자다.\
+텍스트 노드가 `"content"`(7자)이고, 호출자는 StAX javadoc이 예제로 실어 둔 조각 읽기 루프를 돈다.
+
+```text
 XMLInputFactory.createXMLEventReader(new StringReader(XML))
         │
         ▼
@@ -173,7 +194,7 @@ throw ArrayIndexOutOfBoundsException
 
 값 세 개만 비교하면 어긋남이 한눈에 보인다.
 
-```
+```text
 텍스트 "content" (길이 7), 요청 length = 4
 
            │ sourceStart = 0 │ sourceStart = 4
@@ -184,17 +205,15 @@ throw ArrayIndexOutOfBoundsException
 arraycopy  │  index 0..3 OK  │  index 4..7 → AIOOBE
 ```
 
-`sourceStart == 0`일 때 두 계산식이 같은 값을 낸다는 것이 결함이 오래 숨은 이유다.
-javadoc도 "Usually, one requests text starting at a sourceStart of 0"이라고 적어 두었고,
-저장소 안에서 이 오버로드를 부르는 코드는 하나도 없다(4절 참조).
+`sourceStart == 0`일 때 두 계산식이 같은 값을 낸다는 것이 결함이 오래 숨은 이유다.\
+javadoc도 "Usually, one requests text starting at a sourceStart of 0"이라고 적어 두었고, 저장소 안에서 이 오버로드를 부르는 코드는 하나도 없다(4절 참조).
 
 ## 3. 분기 처리 워크플로우
 
-BLUF: 이 메서드에는 명시적 `if`가 하나도 없다. 분기는 전부 `Math.min`과
-`System.arraycopy`의 내부 경계 검사에 숨어 있고, 그래서 잘못된 상한이 예외라는 형태로만
-드러난다.
+BLUF: 이 메서드에는 명시적 `if`가 하나도 없다.\
+분기는 전부 `Math.min`과 `System.arraycopy`의 내부 경계 검사에 숨어 있고, 그래서 잘못된 상한이 예외라는 형태로만 드러난다.
 
-```
+```text
 getTextCharacters(sourceStart, target, targetStart, length)   AbstractXMLStreamReader.java:191
    │
    ▼
@@ -239,10 +258,10 @@ return length                                                                 :1
         ★ 수정 전에는 상한이 축소되지 않으므로 이 신호가 나올 수 없다
 ```
 
-수정 후 상한 계산이 어떻게 갈리는지 경계별로 정리하면 다음과 같다.
+수정 후 상한 계산이 어떻게 갈리는지 경계별로 정리하면 다음과 같다.\
 `length = Math.min(length, source.length - sourceStart)` 한 줄이 만드는 결과다.
 
-```
+```text
 source.length = 7 인 경우
 
 sourceStart │ 남은 = 7 - sourceStart │ 수정 후 상한(요청 10) │ 결과
@@ -259,19 +278,20 @@ sourceStart │ 남은 = 7 - sourceStart │ 수정 후 상한(요청 10) │ �
             │                        │                       │  예외가 정답)
 ```
 
-즉 수정은 **유효 입력에서 예외를 없애되 무효 입력을 조용히 삼키지 않는다.** 상한을
-`Math.max(0, …)`로 한 번 더 조였다면 `sourceStart = 8`도 0을 반환하며 통과했을 텐데, 그것은
-계약 위반 입력을 감추는 셈이 되므로 하지 않았다.
+즉 수정은 **유효 입력에서 예외를 없애되 무효 입력을 조용히 삼키지 않는다.**\
+상한을 `Math.max(0, …)`로 한 번 더 조였다면 `sourceStart = 8`도 0을 반환하며 통과했을 텐데, 그것은 계약 위반 입력을 감추는 셈이 되므로 하지 않았다.
 
 ## 4. 스프링 전역에서의 자리
 
-BLUF: 이 어댑터는 **OXM(Object/XML 매핑)의 `StAXSource` 언마셜링 경로**에서 불린다. 다만
-문제의 오버로드를 부르는 코드는 저장소 안에 없고, 계약을 소비하는 것은 외부 라이브러리
-(XStream)와 외부 호출자다.
+BLUF: 이 어댑터는 **OXM(Object/XML 매핑)의 `StAXSource` 언마셜링 경로**에서 불린다.\
+다만 문제의 오버로드를 부르는 코드는 저장소 안에 없고, 계약을 소비하는 것은 외부 라이브러리(XStream)와 외부 호출자다.
+
+> **언마셜링 (unmarshalling)** — XML 같은 직렬화 형식을 읽어 자바 객체로 되돌리는 과정. 반대 방향은 마셜링이다.\
+> 예: `marshaller.unmarshal(new StAXSource(eventReader))`가 StAX 리더에서 읽은 XML을 객체로 복원한다.
 
 먼저 어댑터가 만들어지는 실제 사슬이다.
 
-```
+```text
 $ grep -rn "createEventStreamReader" --include=*.java . | grep -v /test/
 
 spring-oxm/…/oxm/xstream/XStreamMarshaller.java:786
@@ -279,7 +299,7 @@ spring-core/…/util/xml/StaxUtils.java:303        (선언 자체)
 spring-core/…/util/xml/XMLEventStreamReader.java:43   (javadoc @see)
 ```
 
-```
+```text
 (사용자 코드) marshaller.unmarshal(new StAXSource(eventReader))
         │
         ▼
@@ -314,7 +334,7 @@ AbstractMarshaller.unmarshal(Source source)          AbstractMarshaller.java:389
 
 이제 문제의 오버로드를 실제로 부르는 곳을 확인한다.
 
-```
+```text
 $ grep -rn "getTextCharacters" --include=*.java . | grep -v /test/
 
 spring-core/…/util/xml/StaxStreamXMLReader.java:214   ← 인자 없는 쪽
@@ -324,8 +344,7 @@ spring-core/…/util/xml/AbstractXMLStreamReader.java:191   (문제의 오버로
 spring-core/…/util/xml/AbstractXMLStreamReader.java:192   (그 안에서 위를 호출)
 ```
 
-`StaxStreamXMLReader`는 StAX 커서형 리더를 SAX로 다시 넘기는 어댑터인데, 텍스트를 넘길 때
-**전체 배열 + `getTextStart()` + `getTextLength()`** 조합을 쓴다.
+`StaxStreamXMLReader`는 StAX 커서형 리더를 SAX로 다시 넘기는 어댑터인데, 텍스트를 넘길 때 **전체 배열 + `getTextStart()` + `getTextLength()`** 조합을 쓴다.
 
 ```java
 // StaxStreamXMLReader.java:213-217 (handleCharacters 안쪽)
@@ -335,10 +354,10 @@ if (getContentHandler() != null) {
 }
 ```
 
-즉 in-tree 소비자는 조각 읽기를 쓰지 않는다. 그렇다면 이 결함이 왜 실피해인가 — 답은
-**공개 API 표면**에 있다.
+즉 in-tree 소비자는 조각 읽기를 쓰지 않는다.\
+그렇다면 이 결함이 왜 실피해인가 — 답은 **공개 API 표면**에 있다.
 
-```
+```text
 StaxUtils.createEventStreamReader(XMLEventReader)     StaxUtils.java:303
    │  public static, 반환 타입 = javax.xml.stream.XMLStreamReader
    │
@@ -354,46 +373,45 @@ StaxUtils.createEventStreamReader(XMLEventReader)     StaxUtils.java:303
          ★ 계약이 권장한 사용 패턴이 곧 크래시 재현 절차
 ```
 
-여기에 더해 XStream 같은 외부 라이브러리가 이 어댑터를 커서형 리더로 소비한다
-(`XStreamMarshaller.java:787` -> `StaxReader`). 라이브러리 구현이 텍스트를 조각으로 읽는
-전략을 쓰면 스프링 코드 한 줄 바꾸지 않고도 이 경로에 도달한다. 즉 in-tree 호출처가 없다는
-사실은 "안전하다"가 아니라 "저장소 안 테스트로는 드러나지 않는다"를 뜻한다.
+여기에 더해 XStream 같은 외부 라이브러리가 이 어댑터를 커서형 리더로 소비한다(`XStreamMarshaller.java:787` -> `StaxReader`).\
+라이브러리 구현이 텍스트를 조각으로 읽는 전략을 쓰면 스프링 코드 한 줄 바꾸지 않고도 이 경로에 도달한다.\
+즉 in-tree 호출처가 없다는 사실은 "안전하다"가 아니라 "저장소 안 테스트로는 드러나지 않는다"를 뜻한다.
 
 마지막으로 이 상위 클래스를 상속하는 구체 클래스가 몇 개인지도 확인해 둔다.
 
-```
+```text
 $ grep -rn "extends AbstractXMLStreamReader" --include=*.java .
 
 spring-core/…/util/xml/XMLEventStreamReader.java:45
 ```
 
-하나뿐이다. 따라서 이 수정의 blast radius는 `StaxUtils.createEventStreamReader`가
-돌려주는 객체 하나로 닫혀 있다.
+하나뿐이다.\
+따라서 이 수정의 blast radius는 `StaxUtils.createEventStreamReader`가 돌려주는 객체 하나로 닫혀 있다.
+
+> **blast radius (영향 반경)** — 어떤 변경이 잘못됐을 때 피해가 미칠 수 있는 범위.\
+> 예: 여기서는 서브클래스가 `XMLEventStreamReader` 하나뿐이라, 영향 범위가 그 팩터리가 돌려주는 객체 하나로 닫힌다.
 
 ## 5. 관련 개념
 
 이 구조를 이해하는 데 필요한 개념 셋을 여기서 설명한다(해당 개념의 별도 문서는 아직 없다).
 
-**StAX의 두 API — 커서형과 객체형.** StAX는 XML을 스트리밍으로 읽는 두 가지 API를 준다.
-`XMLStreamReader`는 **커서형**이다: 하나의 커서가 문서를 훑고, 현재 이벤트의 값은
-`getEventType()`·`getText()`·`getName()` 같은 접근자로 뽑아 쓴다. 객체를 만들지 않으므로
-빠르지만, 커서가 이동하면 이전 값은 사라진다. `XMLEventReader`는 **객체형**이다: 이벤트마다
-`XMLEvent` 객체를 하나씩 돌려주므로 보관·재사용이 가능한 대신 할당 비용이 있다. JDK의
-`XMLInputFactory`는 스트림 리더에서 이벤트 리더를 만들어 주지만 그 반대는 만들어 주지
-않는데, `XMLEventStreamReader`가 그 빈자리를 메운다 — 클래스 javadoc이 그 동기를 그대로
-적어 두었다(`XMLEventStreamReader.java:37-39`).
+**StAX의 두 API — 커서형과 객체형.**\
+StAX는 XML을 스트리밍으로 읽는 두 가지 API를 준다.\
+`XMLStreamReader`는 **커서형**이다: 하나의 커서가 문서를 훑고, 현재 이벤트의 값은 `getEventType()`·`getText()`·`getName()` 같은 접근자로 뽑아 쓴다.\
+객체를 만들지 않으므로 빠르지만, 커서가 이동하면 이전 값은 사라진다.\
+`XMLEventReader`는 **객체형**이다: 이벤트마다 `XMLEvent` 객체를 하나씩 돌려주므로 보관·재사용이 가능한 대신 할당 비용이 있다.\
+JDK의 `XMLInputFactory`는 스트림 리더에서 이벤트 리더를 만들어 주지만 그 반대는 만들어 주지 않는데, `XMLEventStreamReader`가 그 빈자리를 메운다 — 클래스 javadoc이 그 동기를 그대로 적어 두었다(`XMLEventStreamReader.java:37-39`).
 
-**`sourceStart`가 무엇의 인덱스인가.** `getTextCharacters(int sourceStart, char[] target,
-int targetStart, int length)`에는 인덱스가 둘 들어간다. `sourceStart`는 **원본 텍스트**
-안의 시작 위치이고, `targetStart`는 **대상 버퍼** 안의 시작 위치다. 둘을 혼동하면 이 PR의
-결함과 정확히 같은 모양이 나온다 — 상한은 "0부터 세는 전체 길이"로 계산하면서 복사는
-offset부터 시작하게 된다. 파라미터 이름이 `source`/`target` 접두사로 갈라져 있다는 사실
-자체가 두 세계를 구분하라는 신호인데, 상한 계산 한 줄이 그 구분을 놓쳤다.
+**`sourceStart`가 무엇의 인덱스인가.**\
+`getTextCharacters(int sourceStart, char[] target, int targetStart, int length)`에는 인덱스가 둘 들어간다.\
+`sourceStart`는 **원본 텍스트** 안의 시작 위치이고, `targetStart`는 **대상 버퍼** 안의 시작 위치다.\
+둘을 혼동하면 이 PR의 결함과 정확히 같은 모양이 나온다 — 상한은 "0부터 세는 전체 길이"로 계산하면서 복사는 offset부터 시작하게 된다.\
+파라미터 이름이 `source`/`target` 접두사로 갈라져 있다는 사실 자체가 두 세계를 구분하라는 신호인데, 상한 계산 한 줄이 그 구분을 놓쳤다.
 
-**"최대 length"와 "실제 복사량"의 계약.** 이 메서드에서 `length`는 요청 상한이고 반환값은
-실제 복사량이다. 둘이 다를 수 있다는 것이 API 설계의 전부다. 호출자는 그 차이를 종료
-신호로 삼아 `sourceStart += 복사량`으로 전진하는 루프를 돈다. 그래서 "요청보다 적게
-복사하고 그 수를 반환한다"는 동작은 예외적 처리가 아니라 **정상 종료 경로**다. 수정 전
-코드는 그 경로를 만들어 낼 수 없었다 — 상한이 `sourceStart`와 무관하므로 마지막 조각에서
-축소가 일어나지 않고, 대신 예외가 났다. 인덱스와 길이를 함께 받는 API를 구현할 때
-"이 상한이 어느 지점을 기준으로 한 값인가"를 한 번 확인해야 하는 이유다.
+**"최대 length"와 "실제 복사량"의 계약.**\
+이 메서드에서 `length`는 요청 상한이고 반환값은 실제 복사량이다.\
+둘이 다를 수 있다는 것이 API 설계의 전부다.\
+호출자는 그 차이를 종료 신호로 삼아 `sourceStart += 복사량`으로 전진하는 루프를 돈다.\
+그래서 "요청보다 적게 복사하고 그 수를 반환한다"는 동작은 예외적 처리가 아니라 **정상 종료 경로**다.\
+수정 전 코드는 그 경로를 만들어 낼 수 없었다 — 상한이 `sourceStart`와 무관하므로 마지막 조각에서 축소가 일어나지 않고, 대신 예외가 났다.\
+인덱스와 길이를 함께 받는 API를 구현할 때 "이 상한이 어느 지점을 기준으로 한 값인가"를 한 번 확인해야 하는 이유다.

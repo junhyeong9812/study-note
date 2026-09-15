@@ -2,10 +2,15 @@
 
 > PR #36917 테스트 해설. 형식·개념은 ../37153/tests.md, ../37153/guard-tests.md 참조.
 
-이 PR은 `spring-core/src/test/java24/`에 테스트 클래스 하나를 새로 만들고 그 안에 두 건을
-넣었다. 한 건은 결함을 재현하는 red이고, 다른 한 건은 결함이 눈에 띄지 않던 이유를
-고정하는 가드다. 이 문서는 그 둘을 각각 해설하고, 마지막에 이 PR이 거절된 사실과
-테스트의 관계를 정리한다.
+이 PR은 `spring-core/src/test/java24/`에 테스트 클래스 하나를 새로 만들고 그 안에 두 건을 넣었다.\
+한 건은 결함을 재현하는 red이고, 다른 한 건은 결함이 눈에 띄지 않던 이유를 고정하는 가드다.\
+이 문서는 그 둘을 각각 해설하고, 마지막에 이 PR이 거절된 사실과 테스트의 관계를 정리한다.
+
+> **red 테스트** — 수정 전 코드에서 반드시 실패하고, 수정 후에 통과하는 테스트. 결함이 실재함과 수정이 그 결함을 고쳤음을 동시에 증명한다.\
+> 예: `byteValue`를 `byte[]`로 기대하는 단언은 수정 전에 `IllegalStateException`으로 멈춘다.
+
+> **가드 테스트(guard test)** — 수정 전후 모두 통과하며, 이번 변경이 기존 동작을 깨지 않았음을 지키는 테스트.\
+> 예: 빈 배열 처리는 이 PR이 손대지 않았으므로, 그대로인지를 확인만 한다.
 
 ## 1. 비어 있지 않은 원시 배열 어트리뷰트 — red
 
@@ -26,28 +31,41 @@ void parsesNonEmptyPrimitiveArrayAttributes() throws Exception {
 }
 ```
 
-- **주장**: 여덟 가지 원시 배열 어트리뷰트를 ClassFile 리더로 읽으면 전부 **선언된
-  원시 배열 타입 그대로** 값이 나온다. 즉 `byte[] byteValue()`는 `byte[]`로 나와야 하고
-  `Byte[]`로 나오면 안 된다.
-- **fix 전 결과와 이유**: red다. 판별 근거는 diff의 프로덕션 쪽이다. 수정 전
-  `parseArrayValue()`는 `OfInt`/`OfLong`/`OfDouble` 세 분기만 갖고 나머지를 `default`로
-  떨어뜨렸고, 그 분기는 `toArray(...)`를 `Object[]`로 캐스팅하므로 결과가 반드시 참조 배열이
-  된다. 그러면 `MergedAnnotation.getValue(...)`가 값을 꺼낼 때
-  `TypeMappedAnnotation`의 `adaptForAttribute()` 마지막 관문
-  (`if (!attributeType.isInstance(value))`)에 걸려 `IllegalStateException`이 던져진다.
-  단언이 어긋나서 실패하는 것이 아니라 **첫 `byteValue` 줄에서 예외로 중단**되는 형태의
-  red다. PR 본문도 같은 예외 문구를 인용하며 "현재 코드에서 실패하고 수정 후 통과한다"고
-  적고 있다.
-- **여덟 줄 중 어디가 red인가**: 여덟 줄이 모두 red는 아니다. `intValue`, `longValue`,
-  `doubleValue`는 수정 전에도 원시 배열로 나왔으므로 그 세 줄만 따로 떼면 가드다. 같은
-  메서드 안에 red 다섯 줄과 가드 세 줄이 섞여 있는 배치이며, 그 섞임 자체가 "일부 원시
-  타입만 특별 취급되고 나머지는 빠졌다"는 비대칭을 한 화면에 보여 주는 장치다. 다만
-  단언이 순차 실행이므로 첫 red 줄에서 멈춘다.
-- **fix 후**: `OfByte`/`OfShort`/`OfChar`/`OfBoolean`/`OfFloat` 다섯 `case`가 각각 원시
-  배열을 직접 채워 반환하므로 여덟 줄이 모두 통과한다.
-- **형식 디테일**: 단언에 `contains(...)`를 쓴 것은 `MergedAnnotation.getValue(String)`의
-  반환 타입이 `Optional<Object>`이기 때문이다. AssertJ의 `OptionalAssert.contains`는 값
-  비교에 배열을 인지하는 표준 비교 전략을 쓰므로, 원시 배열끼리의 내용 비교가 성립한다.
+여덟 줄이 수정 전 코드에서 어떻게 갈리는지 나란히 놓으면, 한 메서드 안에 red와 가드가 섞여 있는 모양이 보인다.
+
+```text
+수정 전 결과                              수정 후 결과
++--------------------------------+       +--------------------------------+
+| intValue    -> int[]{3}    통과 |       | intValue    -> int[]{3}    통과 |
+| longValue   -> long[]{4}   통과 |       | longValue   -> long[]{4}   통과 |
+| doubleValue -> double[]{5} 통과 |       | doubleValue -> double[]{5} 통과 |
+| byteValue   -> Byte[]{1}   예외 |       | byteValue   -> byte[]{1}   통과 |
+| shortValue  -> Short[]     예외 |       | shortValue  -> short[]     통과 |
+| charValue   -> Character[] 예외 |       | charValue   -> char[]      통과 |
+| booleanValue-> Boolean[]   예외 |       | booleanValue-> boolean[]   통과 |
+| floatValue  -> Float[]     예외 |       | floatValue  -> float[]     통과 |
++--------------------------------+       +--------------------------------+
+   -> 단언은 순차 실행이므로 실제로는 첫 red 줄(byteValue)에서 멈춘다
+```
+
+- **주장**: 여덟 가지 원시 배열 어트리뷰트를 ClassFile 리더로 읽으면 전부 **선언된 원시 배열 타입 그대로** 값이 나온다.\
+  즉 `byte[] byteValue()`는 `byte[]`로 나와야 하고 `Byte[]`로 나오면 안 된다.
+- **fix 전 결과와 이유**: red다.\
+  판별 근거는 diff의 프로덕션 쪽이다.\
+  수정 전 `parseArrayValue()`는 `OfInt`/`OfLong`/`OfDouble` 세 분기만 갖고 나머지를 `default`로 떨어뜨렸고, 그 분기는 `toArray(...)`를 `Object[]`로 캐스팅하므로 결과가 반드시 참조 배열이 된다.\
+  그러면 `MergedAnnotation.getValue(...)`가 값을 꺼낼 때 `TypeMappedAnnotation`의 `adaptForAttribute()` 마지막 관문(`if (!attributeType.isInstance(value))`)에 걸려 `IllegalStateException`이 던져진다.\
+  단언이 어긋나서 실패하는 것이 아니라 **첫 `byteValue` 줄에서 예외로 중단**되는 형태의 red다.\
+  PR 본문도 같은 예외 문구를 인용하며 "현재 코드에서 실패하고 수정 후 통과한다"고 적고 있다.
+- **여덟 줄 중 어디가 red인가**: 여덟 줄이 모두 red는 아니다.\
+  `intValue`, `longValue`, `doubleValue`는 수정 전에도 원시 배열로 나왔으므로 그 세 줄만 따로 떼면 가드다.\
+  같은 메서드 안에 red 다섯 줄과 가드 세 줄이 섞여 있는 배치이며, 그 섞임 자체가 "일부 원시 타입만 특별 취급되고 나머지는 빠졌다"는 비대칭을 한 화면에 보여 주는 장치다.\
+  다만 단언이 순차 실행이므로 첫 red 줄에서 멈춘다.
+- **fix 후**: `OfByte`/`OfShort`/`OfChar`/`OfBoolean`/`OfFloat` 다섯 `case`가 각각 원시 배열을 직접 채워 반환하므로 여덟 줄이 모두 통과한다.
+- **형식 디테일**: 단언에 `contains(...)`를 쓴 것은 `MergedAnnotation.getValue(String)`의 반환 타입이 `Optional<Object>`이기 때문이다.\
+  AssertJ의 `OptionalAssert.contains`는 값 비교에 배열을 인지하는 표준 비교 전략을 쓰므로, 원시 배열끼리의 내용 비교가 성립한다.
+
+> **AssertJ** — 자바 테스트에서 `assertThat(값).조건(...)` 형태로 단언을 이어 쓰는 라이브러리.\
+> 예: `assertThat(optional).contains(new byte[]{1})`은 "값이 있고, 그 값이 `byte[]{1}`과 같다"를 한 줄로 주장한다.
 
 ## 2. 빈 원시 배열 어트리뷰트 — 항상 green (가드)
 
@@ -63,20 +81,18 @@ void parsesEmptyPrimitiveArrayAttributes() throws Exception {
 ```
 
 - **주장**: 원소가 하나도 없는 원시 배열 어트리뷰트도 선언 타입의 빈 배열로 나온다.
-- **fix 전 green인 이유**: 수정 전 `parseArrayValue()`는 맨 앞에
-  `if (arrayValue.values().isEmpty()) return new Object[0];`라는 조기 반환을 갖고 있었고,
-  `TypeMappedAnnotation`이 그 `Object[0]`을 가로채
-  `if (attributeType.isArray() && isEmptyObjectArray(value)) return emptyArray(...)`로
-  선언 타입의 빈 배열로 바꿔 준다. 즉 값이 하나라도 있어야 결함 경로에 진입한다.
-- **fix 후에도 같은 경로**: 이 PR의 다섯 `case`는 조기 반환 뒤에 놓이므로 빈 배열은 새
-  분기를 아예 타지 않는다. 이 테스트는 수정 전후로 **한 글자도 다르지 않은 경로**를
-  지나며, 그래서 순수한 가드다.
-- **역할**: 두 가지다. 하나는 새 분기가 빈 배열 처리를 건드리지 않았다는 보존 증명이고,
-  다른 하나는 문서적 역할 — "빈 배열만 시험하면 이 결함은 보이지 않는다"는 함정을 테스트
-  코드로 못 박는다. 이 함정을 모른 채 재현을 시도하면 결함이 없다고 오판하기 쉽다.
-- **범위 한정**: 여덟 타입 전부가 아니라 `byteValue`와 `floatValue` 두 개만 확인한다.
-  빈 경우는 타입별 분기를 타지 않고 공통 조기 반환 하나로 처리되므로, 대표 두 개로
-  경로 커버리지가 채워진다는 판단이다.
+- **fix 전 green인 이유**: 수정 전 `parseArrayValue()`는 맨 앞에 `if (arrayValue.values().isEmpty()) return new Object[0];`라는 조기 반환을 갖고 있었고, `TypeMappedAnnotation`이 그 `Object[0]`을 가로채 `if (attributeType.isArray() && isEmptyObjectArray(value)) return emptyArray(...)`로 선언 타입의 빈 배열로 바꿔 준다.\
+  즉 값이 하나라도 있어야 결함 경로에 진입한다.
+- **fix 후에도 같은 경로**: 이 PR의 다섯 `case`는 조기 반환 뒤에 놓이므로 빈 배열은 새 분기를 아예 타지 않는다.\
+  이 테스트는 수정 전후로 **한 글자도 다르지 않은 경로**를 지나며, 그래서 순수한 가드다.
+- **역할**: 두 가지다.\
+  하나는 새 분기가 빈 배열 처리를 건드리지 않았다는 보존 증명이고, 다른 하나는 문서적 역할 — "빈 배열만 시험하면 이 결함은 보이지 않는다"는 함정을 테스트 코드로 못 박는다.\
+  이 함정을 모른 채 재현을 시도하면 결함이 없다고 오판하기 쉽다.
+- **범위 한정**: 여덟 타입 전부가 아니라 `byteValue`와 `floatValue` 두 개만 확인한다.\
+  빈 경우는 타입별 분기를 타지 않고 공통 조기 반환 하나로 처리되므로, 대표 두 개로 경로 커버리지가 채워진다는 판단이다.
+
+> **경로 커버리지(path coverage)** — 코드가 지나갈 수 있는 갈래를 시험이 몇 개나 실제로 밟았는지를 재는 관점.\
+> 예: 빈 배열은 여덟 타입 모두 같은 한 줄(조기 반환)을 지나므로, 두 타입만 시험해도 그 갈래는 다 밟은 셈이다.
 
 ## 3. 픽스처와 헬퍼
 
@@ -90,11 +106,13 @@ private static MergedAnnotation<?> readAnnotation(Class<?> type) throws Exceptio
 }
 ```
 
-이 테스트에는 Mockito 목이 하나도 없다. 흉내 내는 대상을 목이 아니라 **실제 파이프라인
-전체**로 대신하기 때문이다. `ClassFileMetadataReaderFactory`와 `DefaultResourceLoader`는
-프로덕션에서 컴포넌트 스캐닝이 쓰는 바로 그 조합이고, 입력은 테스트 소스가 컴파일되며
-생긴 진짜 `.class` 파일이다. 즉 "클래스를 로딩하지 않고 바이트코드만 읽어 어노테이션
-메타데이터를 뽑는" 상황을 시뮬레이션하는 것이 아니라 그대로 실행한다.
+이 테스트에는 Mockito 목이 하나도 없다.\
+흉내 내는 대상을 목이 아니라 **실제 파이프라인 전체**로 대신하기 때문이다.\
+`ClassFileMetadataReaderFactory`와 `DefaultResourceLoader`는 프로덕션에서 컴포넌트 스캐닝이 쓰는 바로 그 조합이고, 입력은 테스트 소스가 컴파일되며 생긴 진짜 `.class` 파일이다.\
+즉 "클래스를 로딩하지 않고 바이트코드만 읽어 어노테이션 메타데이터를 뽑는" 상황을 시뮬레이션하는 것이 아니라 그대로 실행한다.
+
+> **목(mock)** — 실제 협력 객체 대신 껍데기를 세워, 정해진 값만 돌려주게 만든 테스트용 대역.\
+> 예: `MetadataReader`를 목으로 세우면 "바이트코드를 실제로 파싱했는가"는 아무것도 검증되지 않는다.
 
 ```java
 @ArrayTypesAnnotation(byteValue = 1, shortValue = 2, intValue = 3, longValue = 4,
@@ -128,27 +146,26 @@ static class WithEmptyArrays {
 }
 ```
 
-`WithArrays`와 `WithEmptyArrays`가 흉내 내는 실제 상황은 "사용자 코드의 어노테이션 붙은
-클래스"다. 스캐너가 만나는 것은 이런 클래스의 클래스 파일이고, 어노테이션 어트리뷰트는
-클래스 파일의 `RuntimeVisibleAnnotationsAttribute`에 기록된다. 값을 하나짜리 배열
-축약 문법(`byteValue = 1`)으로 쓴 것은 원소가 반드시 하나 이상이어야 결함 경로에
-진입하기 때문이며, 각 타입에 서로 다른 값(1, 2, 3, ...)을 준 것은 어트리뷰트가 뒤섞여
-읽히는 실수를 함께 잡기 위한 배치다.
+`WithArrays`와 `WithEmptyArrays`가 흉내 내는 실제 상황은 "사용자 코드의 어노테이션 붙은 클래스"다.\
+스캐너가 만나는 것은 이런 클래스의 클래스 파일이고, 어노테이션 어트리뷰트는 클래스 파일의 `RuntimeVisibleAnnotationsAttribute`에 기록된다.\
+값을 하나짜리 배열 축약 문법(`byteValue = 1`)으로 쓴 것은 원소가 반드시 하나 이상이어야 결함 경로에 진입하기 때문이며, 각 타입에 서로 다른 값(1, 2, 3, ...)을 준 것은 어트리뷰트가 뒤섞여 읽히는 실수를 함께 잡기 위한 배치다.
 
-`@Retention(RetentionPolicy.RUNTIME)`이 필수인 이유는 이 리더가 읽는 대상이
-`RuntimeVisibleAnnotationsAttribute`이기 때문이다. `CLASS` 보존 정책이면 어노테이션이
-`RuntimeInvisible` 쪽에 기록되어 조회 자체가 비게 된다.
+`@Retention(RetentionPolicy.RUNTIME)`이 필수인 이유는 이 리더가 읽는 대상이 `RuntimeVisibleAnnotationsAttribute`이기 때문이다.\
+`CLASS` 보존 정책이면 어노테이션이 `RuntimeInvisible` 쪽에 기록되어 조회 자체가 비게 된다.
+
+> **보존 정책(`@Retention`)** — 어노테이션이 소스까지만 남는지, 클래스 파일까지 남는지, 런타임에도 보이는지를 정하는 설정.\
+> 예: `RUNTIME`이면 `RuntimeVisibleAnnotationsAttribute`에, `CLASS`면 `RuntimeInvisibleAnnotationsAttribute`에 기록된다.
 
 ## 4. 거절 사유와 테스트의 관계
 
-이 PR은 `status: declined` 라벨로 닫혔지만, 테스트가 "의도된 동작을 깨뜨리려 했기 때문"이
-아니다. 닫힌 이유는 중복이다. 메인테이너 bclozel이 남긴 유일한 코멘트는 같은 결함이
-커밋 7de2b24에서 이미 해결되었다는 안내였다.
+이 PR은 `status: declined` 라벨로 닫혔지만, 테스트가 "의도된 동작을 깨뜨리려 했기 때문"이 아니다.\
+닫힌 이유는 중복이다.\
+메인테이너 bclozel이 남긴 유일한 코멘트는 같은 결함이 커밋 7de2b24에서 이미 해결되었다는 안내였다.
 
-테스트의 주장 자체는 옳았다. 근거는 같은 계약의 다른 구현이다. ASM 기반 리더는 동일한
-어노테이션을 진짜 원시 배열로 돌려주므로, 두 리더가 `AnnotationMetadata`라는 하나의
-계약을 구현하는 이상 둘 중 하나는 반드시 틀린 것이다. 이 테스트가 고정하는 명제는
-"ClassFile 리더도 ASM 리더와 같은 값을 낸다"이며, 클래스 Javadoc이 그 의도를 명시한다.
+테스트의 주장 자체는 옳았다.\
+근거는 같은 계약의 다른 구현이다.\
+ASM 기반 리더는 동일한 어노테이션을 진짜 원시 배열로 돌려주므로, 두 리더가 `AnnotationMetadata`라는 하나의 계약을 구현하는 이상 둘 중 하나는 반드시 틀린 것이다.\
+이 테스트가 고정하는 명제는 "ClassFile 리더도 ASM 리더와 같은 값을 낸다"이며, 클래스 Javadoc이 그 의도를 명시한다.
 
 ```java
 /**
@@ -158,28 +175,38 @@ static class WithEmptyArrays {
  */
 ```
 
-실제로 이 두 테스트는 메인테이너의 수정에 대고 돌려도 통과한다. 그쪽 수정은
-`resolveArrayElementType()`이 `byte.class` 같은 원시 클래스 리터럴을 돌려주게 만들어
-`Array.newInstance(byte.class, n)`이 진짜 `byte[]`를 만들도록 바꿨기 때문이다. 즉 이
-테스트는 폐기된 주장이 아니라 다른 패치로 충족된 주장이다.
+실제로 이 두 테스트는 메인테이너의 수정에 대고 돌려도 통과한다.\
+그쪽 수정은 `resolveArrayElementType()`이 `byte.class` 같은 원시 클래스 리터럴을 돌려주게 만들어 `Array.newInstance(byte.class, n)`이 진짜 `byte[]`를 만들도록 바꿨기 때문이다.\
+즉 이 테스트는 폐기된 주장이 아니라 다른 패치로 충족된 주장이다.
 
-거절과 직결된 문제는 주장이 아니라 **배치**였다. 문제를 "구현 간 불일치"로 진단해
-놓고 테스트는 JDK 24 전용 소스셋에 새 클래스로 한쪽 구현에만 붙였다. 메인테이너는 대신
-`AbstractAnnotationMetadataTests`의 `ComplexAttributes`에 `bytes`, `floats`, `shorts`,
-`chars`, `booleans` 어트리뷰트를 추가했고, 그 추상 클래스를 리플렉션·ASM·ClassFile 세
-구현이 함께 상속하므로 한 곳의 수정으로 세 구현이 동시에 같은 계약으로 검증된다.
-불일치를 근거로 삼았다면 테스트도 불일치를 잴 수 있는 자리에 놓았어야 했다는 것이
-이 PR 테스트가 남긴 교훈이다.
+거절과 직결된 문제는 주장이 아니라 **배치**였다.\
+문제를 "구현 간 불일치"로 진단해 놓고 테스트는 JDK 24 전용 소스셋에 새 클래스로 한쪽 구현에만 붙였다.\
+메인테이너는 대신 `AbstractAnnotationMetadataTests`의 `ComplexAttributes`에 `bytes`, `floats`, `shorts`, `chars`, `booleans` 어트리뷰트를 추가했고, 그 추상 클래스를 리플렉션·ASM·ClassFile 세 구현이 함께 상속하므로 한 곳의 수정으로 세 구현이 동시에 같은 계약으로 검증된다.\
+불일치를 근거로 삼았다면 테스트도 불일치를 잴 수 있는 자리에 놓았어야 했다는 것이 이 PR 테스트가 남긴 교훈이다.
+
+테스트를 어디에 두느냐가 무엇을 재는지를 바꾼다는 것을 나란히 놓으면 이렇다.
+
+```text
+이 PR의 배치                             메인테이너의 배치
++-------------------------------+       +-------------------------------+
+| src/test/java24/ 새 클래스    |       | AbstractAnnotationMetadataTests|
+| 검증 대상: ClassFile 리더 1개 |       | 검증 대상: 리플렉션+ASM+ClassFile|
+| JDK 24 미만에서는 실행 안 됨  |       | 세 구현이 같은 픽스처를 공유    |
+| 재는 것: "이 구현이 맞나"     |       | 재는 것: "세 구현이 같은가"     |
++-------------------------------+       +-------------------------------+
+   -> 진단은 "구현 간 불일치"였는데 테스트는 한 구현만 쟀다
+```
 
 ## 실측과 역할 요약
 
 이 PR의 테스트에서 확인된 사실과 확인되지 않은 사실을 나눠 적는다.
 
-- 실측 기록: PR 본문에 "현재 코드에서 위 `IllegalStateException`으로 실패하고 수정 후
-  통과한다"는 한 문장이 있다. 그 이상의 수치(총 테스트 수, 실패 건수)는 PR 본문과
-  diff에 남아 있지 않으므로 판별 근거 부족으로 남긴다.
-- 역할 분담: 1번이 결함 재현과 수정 인과를 담당하고, 2번이 보존 증명과 함정 문서화를
-  담당한다. 두 건 모두 JDK 24 이상에서만 컴파일·실행되는 `java24Test` 태스크에 속한다.
-- 없는 것: 과확장을 막는 음성 가드가 없다. 예컨대 `String[]`이나 `Class[]` 같은 참조
-  배열이 여전히 참조 배열로 나오는지를 확인하는 단언이 이 클래스에는 없고, 그 보증은
-  전적으로 기존 회귀 스위트에 맡겨져 있다.
+- 실측 기록: PR 본문에 "현재 코드에서 위 `IllegalStateException`으로 실패하고 수정 후 통과한다"는 한 문장이 있다.\
+  그 이상의 수치(총 테스트 수, 실패 건수)는 PR 본문과 diff에 남아 있지 않으므로 판별 근거 부족으로 남긴다.
+- 역할 분담: 1번이 결함 재현과 수정 인과를 담당하고, 2번이 보존 증명과 함정 문서화를 담당한다.\
+  두 건 모두 JDK 24 이상에서만 컴파일·실행되는 `java24Test` 태스크에 속한다.
+- 없는 것: 과확장을 막는 음성 가드가 없다.\
+  예컨대 `String[]`이나 `Class[]` 같은 참조 배열이 여전히 참조 배열로 나오는지를 확인하는 단언이 이 클래스에는 없고, 그 보증은 전적으로 기존 회귀 스위트에 맡겨져 있다.
+
+> **음성 가드(negative guard)** — "이건 바뀌면 안 된다"를 확인하는 단언. 수정이 의도보다 넓게 퍼지지 않았음을 지킨다.\
+> 예: 원시 배열을 고치는 김에 `String[]`까지 원시로 바꾸려다 깨지는 일이 없는지 확인하는 단언.

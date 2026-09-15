@@ -1,7 +1,11 @@
 # PR #36932 분석 — ExponentialBackOff 지터의 0 나눗셈
 
-> 기준: PR base = upstream `0c60266986`(수정 전) / 머지 커밋 = `924849f55b7`(수정) / 폴리시 = `0d706f8da60`. base와 머지 커밋은 한 줄만 다르므로 아래 줄번호는 두 커밋에서 동일하다. 현재 upstream/main은 후속 gh-36943 이후라 같은 코드가 :320에 있다(§6).
-> 중복 회피: 2층 구조와 스프링 전역 배치는 `structure.md` §1·§4, 서사형 설명과 머지 후 이력은 `README.md`, 테스트 해설은 `tests.md`. 이 문서는 이름표 사전(§2.5)과 단계별 값 추적(§3), 대안 기각 근거(§5)를 맡는다.
+> 기준: PR base = upstream `0c60266986`(수정 전) / 머지 커밋 = `924849f55b7`(수정) / 폴리시 = `0d706f8da60`.\
+> base와 머지 커밋은 한 줄만 다르므로 아래 줄번호는 두 커밋에서 동일하다.\
+> 현재 upstream/main은 후속 gh-36943 이후라 같은 코드가 :320에 있다(§6).
+>
+> 중복 회피: 2층 구조와 스프링 전역 배치는 `structure.md` §1·§4, 서사형 설명과 머지 후 이력은 `README.md`, 테스트 해설은 `tests.md`.\
+> 이 문서는 이름표 사전(§2.5)과 단계별 값 추적(§3), 대안 기각 근거(§5)를 맡는다.
 
 ## 0. 결론
 
@@ -9,7 +13,12 @@
 
 **수정**: 나눗셈 앞에 분모를 확인하고 분모가 0이면 배율을 확대 이전의 기본값 1로 둔다 — 프로덕션 한 줄(`jitter * (initialInterval > 0 ? (interval / initialInterval) : 1)`)과 회귀 테스트 한 건.
 
-**상태**: 반영 완료. GitHub PR 상태는 CLOSED지만 거절이 아니라 스프링 팀 관행이다 — 메인테이너가 기여 커밋을 직접 브랜치에 얹으면서 메시지에 `Closes gh-36932`를 넣으면 merge 버튼을 거치지 않아 PR이 CLOSED로 남는다. 실제 반영은 `924849f55b7`("Avoid divide-by-zero in ExponentialBackOff jitter", 작성자 보존)로 7.0.x와 main 양쪽에 들어갔고, sbrannen이 `0d706f8da60`("Polish contribution")으로 주석을 다듬었다.
+**상태**: 반영 완료.\
+GitHub PR 상태는 CLOSED지만 거절이 아니라 스프링 팀 관행이다 — 메인테이너가 기여 커밋을 직접 브랜치에 얹으면서 메시지에 `Closes gh-36932`를 넣으면 merge 버튼을 거치지 않아 PR이 CLOSED로 남는다.\
+실제 반영은 `924849f55b7`("Avoid divide-by-zero in ExponentialBackOff jitter", 작성자 보존)로 7.0.x와 main 양쪽에 들어갔고, sbrannen이 `0d706f8da60`("Polish contribution")으로 주석을 다듬었다.
+
+> **배율(scale factor)** — 설정된 `jitter` 폭을 몇 배로 확대할지 정하는 수.\
+> 예: 간격이 초기값 2000에서 4500으로 자랐다면 배율은 `4500 / 2000`이고, 이 배율이 곧 결함의 나눗셈이다.
 
 ## 1. 무대
 
@@ -18,7 +27,10 @@
 - 모듈: `spring-core`, 패키지 `org.springframework.util.backoff`
 - 변경 파일: `spring-core/src/main/java/org/springframework/util/backoff/ExponentialBackOff.java` (1줄) + `spring-core/src/test/java/org/springframework/util/ExponentialBackOffTests.java` (1건 추가)
 
-무대는 2층이다. 위층 `ExponentialBackOff`(:63)는 설정 6개만 들고 자신은 상태가 없고, `start()`(:258)를 부를 때마다 아래층 `private class ExponentialBackOffExecution`(:275)이 새로 찍혀 나온다. 가변 상태(현재 간격, 누적 시간, 시도 횟수)는 전부 아래층에 산다. 결함은 아래층의 가장 안쪽 메서드 `applyJitter`(:310)에 있었다.
+무대는 2층이다.\
+위층 `ExponentialBackOff`(:63)는 설정 6개만 들고 자신은 상태가 없고, `start()`(:258)를 부를 때마다 아래층 `private class ExponentialBackOffExecution`(:275)이 새로 찍혀 나온다.\
+가변 상태(현재 간격, 누적 시간, 시도 횟수)는 전부 아래층에 산다.\
+결함은 아래층의 가장 안쪽 메서드 `applyJitter`(:310)에 있었다.
 
 공개 진입 API는 `BackOff` 인터페이스가 정의한다.
 
@@ -29,13 +41,21 @@
 | `BackOff.start()` | :258 | 실행 객체 생성 | 계산 시작 |
 | `BackOffExecution.nextBackOff()` | :284 | 다음 대기 밀리초 또는 `STOP`(-1) | **예외가 터지는 지점** |
 
-부르는 쪽은 세 갈래다. (1) `@Retryable(delay=..., jitter=...)` -> `MethodRetrySpec` -> `RetryPolicy.Builder#build()`가 `setInitialInterval(delay)`·`setJitter(jitter)`를 그대로 흘려보낸다 -> `RetryTemplate`이 `nextBackOff()`를 돌린다. (2) `RetryPolicy.builder()`를 직접 조립하는 경우. (3) `spring-jms`의 `DefaultMessageListenerContainer`가 사용자 주입 `BackOff`를 복구 루프에서 돌리는 경우. 세 경로의 공통점은 **`nextBackOff()`가 이미 무언가 실패한 뒤의 복구 경로에서 불린다**는 것이고, 그래서 여기서 던져지는 예외는 원래 실패 원인을 가린다(경로별 줄번호는 `structure.md` §4).
+부르는 쪽은 세 갈래다.\
+(1) `@Retryable(delay=..., jitter=...)` -> `MethodRetrySpec` -> `RetryPolicy.Builder#build()`가 `setInitialInterval(delay)`·`setJitter(jitter)`를 그대로 흘려보낸다 -> `RetryTemplate`이 `nextBackOff()`를 돌린다.\
+(2) `RetryPolicy.builder()`를 직접 조립하는 경우.\
+(3) `spring-jms`의 `DefaultMessageListenerContainer`가 사용자 주입 `BackOff`를 복구 루프에서 돌리는 경우.
+
+세 경로의 공통점은 **`nextBackOff()`가 이미 무언가 실패한 뒤의 복구 경로에서 불린다**는 것이고, 그래서 여기서 던져지는 예외는 원래 실패 원인을 가린다(경로별 줄번호는 `structure.md` §4).
+
+> **복구 경로(recovery path)** — 정상 흐름이 이미 실패해서 들어오는, 되살리기 위한 코드 경로.\
+> 예: `RetryTemplate`의 catch 블록 안에서 `nextBackOff()`가 불리므로, 여기서 새 예외가 나면 원래 실패 원인이 가려진다.
 
 ## 2. 전체 메서드 그래프
 
 아래 그래프는 설정 세터에서 시작해 한 번의 `nextBackOff()`가 지나는 세 단을 편 것이고, `<==` 표시가 결함이 사는 줄이다.
 
-```
+```text
  [설정 단계 — 검증이 필드마다 다르다]
    setInitialInterval(0)      :139-141   검증 없음  ------+
    setJitter(100)             :160-163   jitter >= 0 만 검증(:161)  --+
@@ -81,11 +101,32 @@
         +-- return nextInterval                                                     :291
 ```
 
-데이터 흐름의 핵심은 :306이다. `currentInterval`에 저장되는 것은 **지터를 적용하기 전** 값이므로 무작위성이 다음 회차의 배수 계산으로 누적되지 않는다. 지터는 매 회차 마지막에 덧씌워지는 표면 장식이고, 그래서 `initialInterval = 0`이면 `nextInterval`은 첫 회차에 0이 되고 이후 `0 * multiplier`(:304)로 영원히 0에 머문다 — 이 사실이 §5의 "배율 기본값 1" 선택의 근거가 된다.
+데이터 흐름의 핵심은 :306이다.\
+`currentInterval`에 저장되는 것은 **지터를 적용하기 전** 값이므로 무작위성이 다음 회차의 배수 계산으로 누적되지 않는다.\
+지터는 매 회차 마지막에 덧씌워지는 표면 장식이고, 그래서 `initialInterval = 0`이면 `nextInterval`은 첫 회차에 0이 되고 이후 `0 * multiplier`(:304)로 영원히 0에 머문다 — 이 사실이 §5의 "배율 기본값 1" 선택의 근거가 된다.
 
 ## 2.5 핵심 이름표 사전
 
-이 무대에서 헷갈리는 것은 "간격"과 "지터 폭"이 서로 다른 두 축이고, 둘을 잇는 것이 **배율 하나**라는 점이다. 아래 세 표는 각 이름표가 그 세 축(간격 / 배율 / 지터 폭) 중 어디에 속하는지를 명시한다.
+이 무대에서 헷갈리는 것은 "간격"과 "지터 폭"이 서로 다른 두 축이고, 둘을 잇는 것이 **배율 하나**라는 점이다.\
+아래 세 표는 각 이름표가 그 세 축(간격 / 배율 / 지터 폭) 중 어디에 속하는지를 명시한다.
+
+세 축이 어떻게 맞물리는지를 기본 설정 3회차(`interval = 4500`)로 그리면 이렇다.
+
+```text
+ 간격 축                배율                지터 폭 축
+ initialInterval 2000
+        |
+        | * multiplier 1.5 를 두 번
+        v
+ interval        4500  ---->  4500 / 2000  ---->  jitter 100 * 2 = 200
+                                  = 2                    (applicableJitter)
+                              (정수 나눗셈)                    |
+                                                              v
+                                          [4500-200, 4500+200] 안의 난수
+                                          = 4300 ~ 4699
+```
+
+분모가 `initialInterval`이라는 점이 결함의 자리다 — 간격 축의 출발값 하나가 배율의 분모를 겸한다.
 
 ### 2.5.1 설정 필드와 상수 (위층 — 상태 없음)
 

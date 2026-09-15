@@ -7,14 +7,13 @@
 
 ## 1. 무대 — 실구조
 
-이 PR의 무대는 AOT 코드 생성기가 "생성될 메서드의 이름"을 발급하는 작은 상태 기계다.
-중심은 `GeneratedClass`가 들고 있는 카운터 맵 하나와, 그 맵을 읽고 쓰는 함수 하나다
-(`spring-core/src/main/java/org/springframework/aot/generate/GeneratedClass.java:51`,
-`:90`).
+이 PR의 무대는 AOT 코드 생성기가 "생성될 메서드의 이름"을 발급하는 작은 상태 기계다.\
+중심은 `GeneratedClass`가 들고 있는 카운터 맵 하나와, 그 맵을 읽고 쓰는 함수 하나다 (`spring-core/src/main/java/org/springframework/aot/generate/GeneratedClass.java:51`, `:90`).
 
-아래는 AOT 생성 객체들의 소유 관계다. 화살표는 "가지고 있다" 또는 "만든다"를 뜻한다.
+아래는 AOT 생성 객체들의 소유 관계다.\
+화살표는 "가지고 있다" 또는 "만든다"를 뜻한다.
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ GeneratedClasses                        GeneratedClasses.java:43         │
 │   classNameGenerator : ClassNameGenerator                 :45            │
@@ -76,8 +75,11 @@
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-핵심은 두 가지다. 첫째, `methodNameSequenceGenerator`의 키가 `MethodName`이고
-`MethodName`의 동일성은 **합성된 문자열 값** 하나로 정해진다(`MethodName.java:95-102`).
+> **패키지 프라이빗(package-private)** — 접근 제어자를 붙이지 않아 같은 패키지 안에서만 보이는 클래스·멤버. 외부 코드의 API 표면이 아니다.\
+> 예: `MethodName`은 `org.springframework.aot.generate` 패키지 밖에서는 아예 보이지 않는다.
+
+핵심은 두 가지다.\
+첫째, `methodNameSequenceGenerator`의 키가 `MethodName`이고 `MethodName`의 동일성은 **합성된 문자열 값** 하나로 정해진다(`MethodName.java:95-102`).\
 둘째, 이름을 발급하는 함수가 조회가 아니라 **소비**다.
 
 ```java
@@ -89,9 +91,12 @@ private String generateSequencedMethodName(MethodName name) {
 }
 ```
 
-`getAndIncrement()`가 부작용이다. 부르는 순간 그 이름의 카운터가 하나 올라가므로, 같은
-이름에 대한 다음 호출은 `apply1`을 받는다. "예약"이라는 개념은 별도 자료구조 없이 **이
-부작용을 한 번 미리 소비하는 것**으로만 구현돼 있다.
+`getAndIncrement()`가 부작용이다.\
+부르는 순간 그 이름의 카운터가 하나 올라가므로, 같은 이름에 대한 다음 호출은 `apply1`을 받는다.\
+"예약"이라는 개념은 별도 자료구조 없이 **이 부작용을 한 번 미리 소비하는 것**으로만 구현돼 있다.
+
+> **부작용(side effect)** — 함수가 값을 돌려주는 것 말고도 바깥 상태를 바꾸는 일. 같은 함수를 두 번 부르면 결과가 달라진다.\
+> 예: `generateSequencedMethodName("apply")`는 첫 호출에 `apply`, 두 번째 호출에 `apply1`을 돌려준다 — 카운터를 올리기 때문이다.
 
 그리고 `MethodName.of`는 varargs 조각들을 하나의 camel-case 이름으로 **합친다**.
 
@@ -103,19 +108,23 @@ private static String join(String[] parts) {
 }
 ```
 
-여러 조각을 넘기면 여러 이름이 아니라 하나의 이름이 나온다. 이 성질과 위 부작용이
-만나는 자리가 `reserveMethodNames`다.
+> **camel-case 합성** — 조각마다 첫 글자를 대문자로 올려 이어 붙인 뒤, 전체의 첫 글자만 다시 소문자로 내리는 이름 만들기 규칙.\
+> 예: `["apply","test"]` -> `"Apply" + "Test"` -> `applyTest`.
+
+여러 조각을 넘기면 여러 이름이 아니라 하나의 이름이 나온다.\
+이 성질과 위 부작용이 만나는 자리가 `reserveMethodNames`다.
 
 ## 2. 수정 전 동작 워크플로우
 
-BLUF: 예약은 "발급을 한 번 헛되이 소비해 다음 발급이 번호를 달게 만드는" 절차이고, 수정 전
-코드는 그 소비를 **잘못된 이름**으로 해서 예약을 놓쳤다.
+BLUF: 예약은 "발급을 한 번 헛되이 소비해 다음 발급이 번호를 달게 만드는" 절차이고, 수정 전 코드는 그 소비를 **잘못된 이름**으로 해서 예약을 놓쳤다.
 
-먼저 정상적으로 굴러가는 in-tree 시나리오(이름 하나 예약)다. AOT 처리는 애플리케이션
-컨텍스트를 빌드 시점에 자바 소스로 써 내는데, 그 진입 클래스가 `ApplicationContextInitializer`를
-구현하므로 `initialize`라는 손코드 메서드 이름을 미리 잡아 둔다.
+> **BLUF(Bottom Line Up Front)** — 결론을 맨 앞에 한 줄로 먼저 적는 서술 방식. 뒤따르는 내용은 그 결론의 근거다.\
+> 예: 이 절의 첫 줄이 "예약은 소비이고, 소비를 잘못된 이름으로 했다"는 결론을 먼저 말한다.
 
-```
+먼저 정상적으로 굴러가는 in-tree 시나리오(이름 하나 예약)다.\
+AOT 처리는 애플리케이션 컨텍스트를 빌드 시점에 자바 소스로 써 내는데, 그 진입 클래스가 `ApplicationContextInitializer`를 구현하므로 `initialize`라는 손코드 메서드 이름을 미리 잡아 둔다.
+
+```text
 ApplicationContextAotGenerator.processAheadOfTime(ctx, generationContext)
         ApplicationContextAotGenerator.java:51
         │
@@ -159,10 +168,10 @@ GeneratedMethods.add(suggestedName, method)              GeneratedMethods.java:8
                     카운터 1 → 2, 반환 "initialize1"      ← 충돌 회피 성공
 ```
 
-문제가 드러나는 시나리오는 이름을 둘 이상 넘기는 경우다. in-tree 호출처가 없어 한 번도
-실행된 적 없는 경로다.
+문제가 드러나는 시나리오는 이름을 둘 이상 넘기는 경우다.\
+in-tree 호출처가 없어 한 번도 실행된 적 없는 경로다.
 
-```
+```text
 generatedClass.reserveMethodNames("apply", "test")
         │
         ▼
@@ -190,16 +199,25 @@ for (String reservedMethodName : reservedMethodNames)          GeneratedClass.ja
    "apply", "test" 는 예약되지 않았다.
 ```
 
-수정 후에는 `MethodName.of(reservedMethodName)`(단수)이 되어 회전마다 자기 이름으로
-카운터를 소비하고, 맵 상태가 `{ apply -> 1, test -> 1 }`이 된다.
+수정 후에는 `MethodName.of(reservedMethodName)`(단수)이 되어 회전마다 자기 이름으로 카운터를 소비하고, 맵 상태가 `{ apply -> 1, test -> 1 }`이 된다.\
+같은 호출이 남기는 맵 상태를 나란히 놓으면 이렇다.
+
+```text
+수정 전 map 상태                          수정 후 map 상태
++------------------------------+         +------------------------------+
+| { applyTest -> 1 }           |         | { apply -> 1, test -> 1 }    |
+| apply   : 키 없음 (seq 0)    |         | apply   : seq 1              |
+| test    : 키 없음 (seq 0)    |         | test    : seq 1              |
++------------------------------+         +------------------------------+
+  -> add("apply") 는 "apply" 를 받는다      -> add("apply") 는 "apply1" 을 받는다
+```
 
 ## 3. 분기 처리 워크플로우
 
-BLUF: 이 코드에는 조건 분기가 셋뿐이다 — 발급 함수의 시퀀스 판정, 예약의 검증문, 그리고
-이름 합성 시 접두사 처리. 결함은 분기 자체가 아니라 **분기에 들어가는 값**에 있었으므로,
-분기도는 "어떤 값이 어느 갈래로 흘러가는가"를 보는 용도다.
+BLUF: 이 코드에는 조건 분기가 셋뿐이다 — 발급 함수의 시퀀스 판정, 예약의 검증문, 그리고 이름 합성 시 접두사 처리.\
+결함은 분기 자체가 아니라 **분기에 들어가는 값**에 있었으므로, 분기도는 "어떤 값이 어느 갈래로 흘러가는가"를 보는 용도다.
 
-```
+```text
 reserveMethodNames(String... names)                       GeneratedClass.java:82
    │
    ├─ names.length == 0 ? ──▶ 루프 0회전, 아무 일도 없음 (예외 없음)
@@ -234,13 +252,14 @@ reserveMethodNames(String... names)                       GeneratedClass.java:82
                                             이 고정하는 정상 동작
 ```
 
-여기서 주의할 점은 **같은 예외가 두 가지 다른 사유로 난다**는 것이다. 수정 전 다중 이름
-경로의 예외는 "이름이 이미 사용됐다"가 아니라 "합성 결과가 요청과 다르다"인데, 메시지가
-같아 구분되지 않는다. 검증문이 상태 충돌과 인자 오류를 한 갈래로 모아 버린 셈이다.
+여기서 주의할 점은 **같은 예외가 두 가지 다른 사유로 난다**는 것이다.\
+수정 전 다중 이름 경로의 예외는 "이름이 이미 사용됐다"가 아니라 "합성 결과가 요청과 다르다"인데, 메시지가 같아 구분되지 않는다.\
+검증문이 상태 충돌과 인자 오류를 한 갈래로 모아 버린 셈이다.
 
-이름 합성 쪽 분기도 함께 둔다. `GeneratedMethods.add`가 프리픽스를 붙일 때 타는 경로다.
+이름 합성 쪽 분기도 함께 둔다.\
+`GeneratedMethods.add`가 프리픽스를 붙일 때 타는 경로다.
 
-```
+```text
 MethodName.and(String... parts)                              MethodName.java:76
    │
    ├─ joined = join(parts)
@@ -259,18 +278,17 @@ MethodName.and(String... parts)                              MethodName.java:76
                 예: prefix="myBean", parts=["instance"] → "myBeanInstance"
 ```
 
-이 분기가 `MethodName.of`의 varargs 합성 성질을 정상적으로 활용하는 자리다. 즉
-`MethodName.of(String...)`가 여러 조각을 합치는 것 자체는 설계 의도이고, 결함은 그 API를
-"여러 이름을 각각 처리하는" 루프 안에서 쓴 데 있다.
+이 분기가 `MethodName.of`의 varargs 합성 성질을 정상적으로 활용하는 자리다.\
+즉 `MethodName.of(String...)`가 여러 조각을 합치는 것 자체는 설계 의도이고, 결함은 그 API를 "여러 이름을 각각 처리하는" 루프 안에서 쓴 데 있다.
 
 ## 4. 스프링 전역에서의 자리
 
-BLUF: 이 코드는 **AOT 빌드 시점**에만 실행된다. 런타임 요청 경로에는 없고, `mvn`/`gradle`의
-AOT 처리 태스크가 애플리케이션 컨텍스트를 소스 코드로 써 내는 동안 한 번 돌아간다.
+BLUF: 이 코드는 **AOT 빌드 시점**에만 실행된다.\
+런타임 요청 경로에는 없고, `mvn`/`gradle`의 AOT 처리 태스크가 애플리케이션 컨텍스트를 소스 코드로 써 내는 동안 한 번 돌아간다.
 
 실제 호출처는 grep으로 확인하면 프로덕션 코드에 단 하나다.
 
-```
+```text
 $ grep -rn "reserveMethodNames" --include=*.java . | grep -v /test/
 
 spring-context/…/context/aot/ApplicationContextInitializationCodeGenerator.java:75
@@ -279,7 +297,7 @@ spring-core/…/aot/generate/GeneratedClass.java:82        (선언 자체)
 
 그 하나로 이어지는 진입 사슬은 다음과 같다.
 
-```
+```text
 빌드 도구의 AOT 태스크 (Spring Boot AOT plugin 등)
         │
         ▼
@@ -317,38 +335,32 @@ generationContext.writeGeneratedContent()                ContextAotProcessor.jav
                     └─ methods.doWithMethodSpecs(type::addMethod)  GeneratedMethods.java:135
 ```
 
-예약이 없으면 무슨 일이 나는지는 생성 결과물의 모양이 설명한다.
-`ApplicationContextInitializationCodeGenerator.generateInitializeMethod()`
-(`:89-96`)가 `MethodSpec.methodBuilder("initialize")`로 손코드 메서드를 직접 써 넣는데,
-`GeneratedMethods`가 발급한 자동 생성 메서드가 우연히 같은 이름을 받으면 같은 클래스 안에
-같은 시그니처의 메서드가 둘이 되어 **생성된 소스가 컴파일되지 않는다.** 즉 이 예약은
-런타임 정합성이 아니라 **생성물의 컴파일 가능성**을 지키는 장치다.
+예약이 없으면 무슨 일이 나는지는 생성 결과물의 모양이 설명한다.\
+`ApplicationContextInitializationCodeGenerator.generateInitializeMethod()` (`:89-96`)가 `MethodSpec.methodBuilder("initialize")`로 손코드 메서드를 직접 써 넣는데, `GeneratedMethods`가 발급한 자동 생성 메서드가 우연히 같은 이름을 받으면 같은 클래스 안에 같은 시그니처의 메서드가 둘이 되어 **생성된 소스가 컴파일되지 않는다.**\
+즉 이 예약은 런타임 정합성이 아니라 **생성물의 컴파일 가능성**을 지키는 장치다.
 
-수정 전 결함이 오래 숨은 이유도 이 지도에서 읽힌다. 유일한 호출처가 이름을 **하나만**
-넘기고, 한 원소 배열은 `MethodName.of(배열)`과 `MethodName.of(원소)`가 같은 값을 만든다.
-`reserveMethodNames`가 public varargs API인데도 "2개 이상" 경로를 실행하는 코드가 트리
-안에 없었으므로, 잘못된 인자가 결과에 나타날 기회가 없었다.
+수정 전 결함이 오래 숨은 이유도 이 지도에서 읽힌다.\
+유일한 호출처가 이름을 **하나만** 넘기고, 한 원소 배열은 `MethodName.of(배열)`과 `MethodName.of(원소)`가 같은 값을 만든다.\
+`reserveMethodNames`가 public varargs API인데도 "2개 이상" 경로를 실행하는 코드가 트리 안에 없었으므로, 잘못된 인자가 결과에 나타날 기회가 없었다.
 
 ## 5. 관련 개념
 
 이 구조를 이해하는 데 필요한 개념 세 가지를 본문 밖에서 정리한다.
 
-**AOT 코드 생성과 "생성될 이름"의 소유권.** Spring AOT는 런타임 리플렉션으로 하던 일을
-빌드 시점에 자바 소스로 옮긴다. 생성기는 메서드 이름을 직접 짓지 않고 제안
-(`suggestedName`)만 하며, 실제 이름은 `GeneratedClass`가 결정한다
-(`GeneratedMethods.java:87-115`). 여러 기여자가 독립적으로 코드를 보태는 구조라서, 이름
-충돌 해소를 한 곳에 모아 둔 설계다. 예약은 그 중앙 결정권자에게 "이 이름은 이미 임자가
-있다"고 미리 알리는 유일한 수단이다.
+**AOT 코드 생성과 "생성될 이름"의 소유권.**\
+Spring AOT는 런타임 리플렉션으로 하던 일을 빌드 시점에 자바 소스로 옮긴다.\
+생성기는 메서드 이름을 직접 짓지 않고 제안(`suggestedName`)만 하며, 실제 이름은 `GeneratedClass`가 결정한다 (`GeneratedMethods.java:87-115`).\
+여러 기여자가 독립적으로 코드를 보태는 구조라서, 이름 충돌 해소를 한 곳에 모아 둔 설계다.\
+예약은 그 중앙 결정권자에게 "이 이름은 이미 임자가 있다"고 미리 알리는 유일한 수단이다.
 
-**부작용으로 구현된 예약.** 예약된 이름의 집합을 따로 들고 있는 자료구조는 없다. 예약
-여부는 `methodNameSequenceGenerator` 맵의 카운터 값에만 존재하고, 밖에서 조회할 공개 API도
-없다. 그래서 tests.md가 설명하듯 테스트도 내부 맵을 들여다보는 대신 "다음 발급 이름"이라는
-관측 가능한 계약으로 예약 사실을 확인한다. 상태를 값으로 노출하지 않는 설계에서는 **관측
-가능한 후속 동작**이 사실상의 계약 표면이 된다.
+**부작용으로 구현된 예약.**\
+예약된 이름의 집합을 따로 들고 있는 자료구조는 없다.\
+예약 여부는 `methodNameSequenceGenerator` 맵의 카운터 값에만 존재하고, 밖에서 조회할 공개 API도 없다.\
+그래서 tests.md가 설명하듯 테스트도 내부 맵을 들여다보는 대신 "다음 발급 이름"이라는 관측 가능한 계약으로 예약 사실을 확인한다.\
+상태를 값으로 노출하지 않는 설계에서는 **관측 가능한 후속 동작**이 사실상의 계약 표면이 된다.
 
-**varargs 파라미터와 루프 변수의 이름 충돌.** `String... reservedMethodNames`와 루프 변수
-`reservedMethodName`은 `s` 한 글자만 다르다. 그리고 `MethodName.of`도 `String...`을 받으므로
-배열을 넘겨도 타입이 맞아 컴파일러가 막지 못한다. 타입 검사가 무력한 자리에서는 이름이
-유일한 방어선인데, 그 이름조차 단수/복수로만 갈리면 방어선이 사실상 없다. 같은 이유로
-`MethodName.of(String...)`처럼 "여러 인자를 하나로 합치는" API는 컬렉션 순회 안에서
-특히 오용되기 쉽다.
+**varargs 파라미터와 루프 변수의 이름 충돌.**\
+`String... reservedMethodNames`와 루프 변수 `reservedMethodName`은 `s` 한 글자만 다르다.\
+그리고 `MethodName.of`도 `String...`을 받으므로 배열을 넘겨도 타입이 맞아 컴파일러가 막지 못한다.\
+타입 검사가 무력한 자리에서는 이름이 유일한 방어선인데, 그 이름조차 단수/복수로만 갈리면 방어선이 사실상 없다.\
+같은 이유로 `MethodName.of(String...)`처럼 "여러 인자를 하나로 합치는" API는 컬렉션 순회 안에서 특히 오용되기 쉽다.

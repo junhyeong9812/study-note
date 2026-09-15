@@ -10,7 +10,15 @@
 
 **수정**: `TaskTrackingRunnable`에 `boolean releaseThrottle`을 실어 "내 몫의 permit이 있는가"를 추측 대신 데이터로 전달하고, 동시에 `checkCancelled()`를 포함한 `run()` 본문 전체를 `try` 안으로 넣어 `finally`가 어떤 경로에서도 실행되게 만든다(프로덕션 2개소 + 래퍼 1개소, +76/-11).
 
-**상태**: OPEN. 2026-06-13 생성, base `main`, head `fix/simpleasync-immediate-throttle`, 라벨 `status: waiting-for-triage` 단 하나, 리뷰어 미배정. 즉 아직 트리아지 대기이며 upstream 반영 여부는 미확정이다.
+**상태**: OPEN.\
+2026-06-13 생성, base `main`, head `fix/simpleasync-immediate-throttle`, 라벨 `status: waiting-for-triage` 단 하나, 리뷰어 미배정.\
+즉 아직 트리아지 대기이며 upstream 반영 여부는 미확정이다.
+
+> **permit(퍼밋)** — "한 자리를 점유할 권리" 한 장.\
+> 예: `beforeAccess()`가 `concurrencyCount`를 1 올려 한 장을 집어가고, `afterAccess()`가 1 내려 돌려놓는다.
+
+> **트리아지(triage)** — 들어온 이슈·PR을 분류해 담당과 우선순위를 정하는 초기 단계.\
+> 예: 라벨 `status: waiting-for-triage`는 아직 메인테이너가 이 PR을 분류하지 않았다는 표시다.
 
 ## 1. 무대
 
@@ -21,7 +29,8 @@
 - 협력 파일: `spring-core/src/main/java/org/springframework/util/ConcurrencyThrottleSupport.java` (변경 없음 — 이 PR의 금지영역)
 - 테스트 파일: `spring-core/src/test/java/org/springframework/core/task/SimpleAsyncTaskExecutorTests.java`
 
-클래스는 넷이다. 바깥 클래스 `SimpleAsyncTaskExecutor`(:66)와 그 안의 `private class ConcurrencyThrottleAdapter`(:437), `private class TaskTrackingRunnable`(:468), 그리고 어댑터의 상위 클래스인 범용 지원 클래스 `ConcurrencyThrottleSupport`(:50)다.
+클래스는 넷이다.\
+바깥 클래스 `SimpleAsyncTaskExecutor`(:66)와 그 안의 `private class ConcurrencyThrottleAdapter`(:437), `private class TaskTrackingRunnable`(:468), 그리고 어댑터의 상위 클래스인 범용 지원 클래스 `ConcurrencyThrottleSupport`(:50)다.
 
 공개 진입 API는 넷인데 전부 한 메서드로 모인다.
 
@@ -32,13 +41,15 @@
 | `submit(Callable<T>)` | :348 | `TIMEOUT_INDEFINITE` | 결함 B만 |
 | `execute(Runnable, long)` `@Deprecated(since="5.3.16")` | :311 | 호출자가 지정 | 결함 A(0을 줄 때) + 결함 B |
 
-부르는 쪽은 이 executor를 기본값으로 꽂아 쓰는 프레임워크 코드(`@Async` 최종 폴백, `WebAsyncManager`, `JdkClientHttpRequestFactory`, JMS·websocket)와 상속해 쓰는 쪽(`SimpleAsyncTaskScheduler`, MVC의 `MvcSimpleAsyncTaskExecutor`)으로 갈린다. 다만 전자는 대개 `setConcurrencyLimit`을 부르지 않아 `isThrottleActive()`가 거짓이고, 그러면 분기 1 자체가 성립하지 않는다. 노출면은 "한도를 명시적으로 건 사용자"로 좁다(목록 전체는 `structure.md` §4).
+부르는 쪽은 이 executor를 기본값으로 꽂아 쓰는 프레임워크 코드(`@Async` 최종 폴백, `WebAsyncManager`, `JdkClientHttpRequestFactory`, JMS·websocket)와 상속해 쓰는 쪽(`SimpleAsyncTaskScheduler`, MVC의 `MvcSimpleAsyncTaskExecutor`)으로 갈린다.\
+다만 전자는 대개 `setConcurrencyLimit`을 부르지 않아 `isThrottleActive()`가 거짓이고, 그러면 분기 1 자체가 성립하지 않는다.\
+노출면은 "한도를 명시적으로 건 사용자"로 좁다(목록 전체는 `structure.md` §4).
 
 ## 2. 전체 메서드 그래프 — 진입점에서 결함 지점까지
 
 아래 그래프는 제출 스레드가 permit을 얻는 지점부터 워커 스레드가 그것을 반납하는 지점까지를 한 장에 편 것이며, 스레드 경계가 그 둘을 가르는 자리를 표시했다.
 
-```
+```text
 [제출 스레드]
  submit(Runnable) :340 / submit(Callable) :348 / execute(Runnable) :296
         |  전부 TIMEOUT_INDEFINITE 로 위임
@@ -91,11 +102,32 @@
  close() :390 -> cancelled = true (:396 또는 :411) -> threads.forEach(Thread::interrupt)
 ```
 
-데이터 흐름으로 보면 결함은 한 문장이다. **`execute`가 아는 사실("나는 beforeAccess를 불렀다")이 `run()`으로 전달되지 않고, `run()`이 그것을 `activeThreads != null`이라는 무관한 조건으로 추측한다.** 그리고 `checkCancelled`가 `try` 밖에 있어 `finally`가 그 추측을 실행할 기회조차 잃는 경로가 따로 존재한다.
+데이터 흐름으로 보면 결함은 한 문장이다.\
+**`execute`가 아는 사실("나는 beforeAccess를 불렀다")이 `run()`으로 전달되지 않고, `run()`이 그것을 `activeThreads != null`이라는 무관한 조건으로 추측한다.**\
+그리고 `checkCancelled`가 `try` 밖에 있어 `finally`가 그 추측을 실행할 기회조차 잃는 경로가 따로 존재한다.
+
+그 "전달되지 않는 한 비트"를 수정 전/후로 나란히 놓으면 이렇다.
+
+```text
+수정 전 — 추측                        수정 후 — 기록
++----------------------------+        +----------------------------+
+| execute: beforeAccess() 함 |        | execute: beforeAccess() 함 |
+|   (이 사실은 여기서 소멸)  |        |   -> new TaskTracking      |
+| new TaskTrackingRunnable   |        |      Runnable(.., true)    |
+|      (task, future)        |        |      (task, future, true)  |
+|          |                 |        |          |                 |
+|          v                 |        |          v                 |
+| run(): activeThreads !=null|        | run(): releaseThrottle 읽음|
+|   -> 무조건 afterAccess()  |        |   -> true 일 때만 반납     |
++----------------------------+        +----------------------------+
+  -> 분기 2 의 태스크도 반납한다        -> 획득한 태스크만 반납한다
+```
 
 ## 2.5 핵심 이름표 사전
 
-이 무대에서 헷갈리는 지점은 "스위치가 두 개인데 서로 독립"이라는 것이다. throttle 스위치(`concurrencyLimit`)와 추적 스위치(`activeThreads`)가 각각 켜지고, 래퍼는 추적 스위치로 씌워지는데 반납은 throttle 스위치의 일이다. 아래 세 표는 그 두 스위치가 각각 어느 이름표에 살고 어디서 교차하는지를 나눠 적는다.
+이 무대에서 헷갈리는 지점은 "스위치가 두 개인데 서로 독립"이라는 것이다.\
+throttle 스위치(`concurrencyLimit`)와 추적 스위치(`activeThreads`)가 각각 켜지고, 래퍼는 추적 스위치로 씌워지는데 반납은 throttle 스위치의 일이다.\
+아래 세 표는 그 두 스위치가 각각 어느 이름표에 살고 어디서 교차하는지를 나눠 적는다.
 
 ### 2.5.1 상태 필드
 
@@ -155,7 +187,8 @@
 
 설정: `setConcurrencyLimit(2)` + `setTaskTerminationTimeout(10_000)`, 호출 `execute(task, TIMEOUT_IMMEDIATE)`.
 
-"정상 케이스"는 같은 설정에서 `TIMEOUT_INDEFINITE`로 부른 경우다. 두 줄기를 같은 단계에 놓고 값을 비교한다.
+"정상 케이스"는 같은 설정에서 `TIMEOUT_INDEFINITE`로 부른 경우다.\
+두 줄기를 같은 단계에 놓고 값을 비교한다.
 
 | 단계 | 정상 (`TIMEOUT_INDEFINITE`) | 결함 A (`TIMEOUT_IMMEDIATE`) |
 |---|---|---|
@@ -167,7 +200,13 @@
 | :505 `afterAccess()` | 호출. count 1 -> 0 | **호출됨.** count 0 -> **-1** |
 | 이후 제출자 3명 | count 0,1,2 -> 4번째가 대기. 동시 2개 | count -1,0,1 -> 4번째가 통과. **동시 3개** |
 
-피해의 성격은 조용한 완화다. `getConcurrencyLimit()`은 여전히 2를 돌려주고, 예외도 로그도 없다. immediate 태스크를 던질 때마다 count가 더 내려가므로 설정값과 실제 동시성의 괴리가 누적된다. 다만 입구가 deprecated 오버로드 + `TIMEOUT_IMMEDIATE`뿐이라 노출면은 좁다.
+피해의 성격은 조용한 완화다.\
+`getConcurrencyLimit()`은 여전히 2를 돌려주고, 예외도 로그도 없다.\
+immediate 태스크를 던질 때마다 count가 더 내려가므로 설정값과 실제 동시성의 괴리가 누적된다.\
+다만 입구가 deprecated 오버로드 + `TIMEOUT_IMMEDIATE`뿐이라 노출면은 좁다.
+
+> **무음 실패(silent failure)** — 잘못된 동작이 예외·로그 없이 정상처럼 흘러가는 실패.\
+> 예: 한도 2가 실제로 3을 통과시키는데도 `getConcurrencyLimit()`은 여전히 2를 돌려주므로, 관측 지표만 보면 아무 이상이 없다.
 
 ### 3.2 결함 B — 반납 없는 획득
 
@@ -184,11 +223,19 @@
 | :505 `afterAccess()` | count 1 -> 0 | **미호출.** count **1로 고정** |
 | 다음 제출자 | `beforeAccess` 통과 | `count(1) >= limit(1)` -> `onLimitReached()`(CTS:145) -> `await()`(CTS:157)에서 **영구 대기** (reject 모드면 전건 `TaskRejectedException`) |
 
-피해의 성격은 정지다. 깨워 줄 `signal()`(CTS:195)을 호출할 주체가 사라졌으므로 한도가 1이면 executor가 사실상 죽는다. 그리고 이 경로는 `submit`·`execute(Runnable)` 같은 통상 API로 도달한다 — 필요한 것은 throttle 활성 + 추적 활성 + 종료 시점 경합뿐이고, 마지막 항목은 애플리케이션 셧다운마다 벌어지는 상황이다.
+피해의 성격은 정지다.\
+깨워 줄 `signal()`(CTS:195)을 호출할 주체가 사라졌으므로 한도가 1이면 executor가 사실상 죽는다.\
+그리고 이 경로는 `submit`·`execute(Runnable)` 같은 통상 API로 도달한다 — 필요한 것은 throttle 활성 + 추적 활성 + 종료 시점 경합뿐이고, 마지막 항목은 애플리케이션 셧다운마다 벌어지는 상황이다.
+
+> **경합 조건(race condition)** — 두 사건의 도착 순서에 따라 결과가 달라지는 상황.\
+> 예: 워커가 `run()`에 닿는 시점과 `close()`가 `cancelled`를 세우는 시점 중 무엇이 먼저냐로 permit이 새는지가 갈린다.
 
 ### 3.3 이미 막혀 있던 세 번째 경로
 
-같은 계열의 구멍 하나는 이 PR 이전에 이미 닫혀 있다. `doExecute`가 스레드 생성에 실패하면 워커가 없어 아무도 반납할 수 없으므로, 제출 스레드가 catch에서 직접 반납한다(:324-328). 이 동작은 기존 테스트 `executeFailsToStartThreadReleasesConcurrencyPermit`이 지키고 있다. 세 구멍 중 둘이 이 PR의 대상이다.
+같은 계열의 구멍 하나는 이 PR 이전에 이미 닫혀 있다.\
+`doExecute`가 스레드 생성에 실패하면 워커가 없어 아무도 반납할 수 없으므로, 제출 스레드가 catch에서 직접 반납한다(:324-328).\
+이 동작은 기존 테스트 `executeFailsToStartThreadReleasesConcurrencyPermit`이 지키고 있다.\
+세 구멍 중 둘이 이 PR의 대상이다.
 
 ## 4. 계약과 위반
 
@@ -207,7 +254,8 @@
 
 ### 5.1 before / after
 
-**(a) 획득 사실을 래퍼에 싣는다.** before는 base `0c60266986`의 :474-478, after는 head `322ab59bb88`의 :474-481이다.
+**(a) 획득 사실을 래퍼에 싣는다.**\
+before는 base `0c60266986`의 :474-478, after는 head `322ab59bb88`의 :474-481이다.
 
 ```java
 // before  SimpleAsyncTaskExecutor.java:474-478
@@ -307,7 +355,12 @@
 - `releaseThrottle` 플래그는 **결함 A만** 막는다. 획득 여부를 아는 유일한 코드가 `execute`이므로 정보의 출처가 거기여야 하고, 그것을 소비하는 코드가 `run()`이므로 운반 수단은 스레드 경계를 넘는 유일한 객체인 래퍼여야 한다. 다른 자리(예: executor 필드)에 두면 태스크마다 다른 값을 가질 수 없다.
 - `try` 범위 확장은 **결함 B만** 막는다. 워커 스레드 입장에서 permit은 `run()` 첫 줄부터 이미 들고 있는 리소스이므로, 정리 코드를 보증하려면 `try`가 첫 줄부터 시작해야 한다.
 
-범위를 넓힐 때 걸리는 지점은 하나뿐이고 코드가 그것을 피해 간다. `finally`의 `threads.remove(thread)`가 `checkCancelled` 실패 시에도 실행되는데, `thread` 대입(:489)이 `synchronized` 블록보다 앞에 있으므로 그 시점에 `thread`는 이미 non-null이다. 아직 집합에 넣지 않은 스레드를 지우는 것이라 무해한 no-op이다.
+범위를 넓힐 때 걸리는 지점은 하나뿐이고 코드가 그것을 피해 간다.\
+`finally`의 `threads.remove(thread)`가 `checkCancelled` 실패 시에도 실행되는데, `thread` 대입(:489)이 `synchronized` 블록보다 앞에 있으므로 그 시점에 `thread`는 이미 non-null이다.\
+아직 집합에 넣지 않은 스레드를 지우는 것이라 무해한 no-op이다.
+
+> **no-op** — 실행은 되지만 상태를 바꾸지 않는 동작.\
+> 예: 집합에 들어간 적 없는 스레드에 대한 `threads.remove(thread)`는 아무것도 지우지 못하고 그냥 끝난다.
 
 ### 5.3 검토된 대안과 기각 이유
 
@@ -323,11 +376,13 @@
 
 ### 5.4 검증이 고정하는 값
 
-테스트 두 건이 리플렉션으로 `concurrencyCount`를 직접 읽어 간접 증상이 아니라 숫자 자체를 단언한다 — `immediateTaskDoesNotReleaseThrottlePermit`은 fix 전 -1 / 기대 0, `cancelledThrottledTaskReleasesPermit`은 fix 전 1 / 기대 0(상세는 `tests.md`). 두 red가 서로 반대 방향의 오수정을 막으므로 별도 가드 테스트가 없다.
+테스트 두 건이 리플렉션으로 `concurrencyCount`를 직접 읽어 간접 증상이 아니라 숫자 자체를 단언한다 — `immediateTaskDoesNotReleaseThrottlePermit`은 fix 전 -1 / 기대 0, `cancelledThrottledTaskReleasesPermit`은 fix 전 1 / 기대 0(상세는 `tests.md`).\
+두 red가 서로 반대 방향의 오수정을 막으므로 별도 가드 테스트가 없다.
 
 ## 6. 범위 밖과 인접 영향
 
-**같은 지원 클래스를 쓰는 다른 두 곳은 이 결함 패턴이 없다.** grep으로 확인한 `beforeAccess`/`afterAccess` 호출처는 셋인데, 나머지 둘은 획득과 반납이 **같은 메서드의 같은 스코프**에 있다.
+**같은 지원 클래스를 쓰는 다른 두 곳은 이 결함 패턴이 없다.**\
+grep으로 확인한 `beforeAccess`/`afterAccess` 호출처는 셋인데, 나머지 둘은 획득과 반납이 **같은 메서드의 같은 스코프**에 있다.
 
 ```java
 // spring-aop/.../interceptor/ConcurrencyThrottleInterceptor.java:67-73
@@ -340,8 +395,34 @@
 		}
 ```
 
-`SyncTaskExecutor.execute(Runnable)`(:78-85)와 `execute(TaskCallback)`(:108-116)도 같은 형태다. 스레드 경계도 조건 불일치도 없으므로 언어가 짝을 강제한다. 결함이 `SimpleAsyncTaskExecutor`에만 있는 이유가 여기서 드러난다 — **비동기 실행기만 획득과 반납이 서로 다른 스레드에 산다.**
+`SyncTaskExecutor.execute(Runnable)`(:78-85)와 `execute(TaskCallback)`(:108-116)도 같은 형태다.\
+스레드 경계도 조건 불일치도 없으므로 언어가 짝을 강제한다.\
+결함이 `SimpleAsyncTaskExecutor`에만 있는 이유가 여기서 드러난다 — **비동기 실행기만 획득과 반납이 서로 다른 스레드에 산다.**
 
-**하위호환.** 바뀐 생성자 `TaskTrackingRunnable(Runnable, Future, boolean)`는 `private` 내부 클래스의 것이라 공개 API 표면이 아니다. `execute`·`submit`·`doExecute`의 시그니처는 그대로다. 동작 변화는 두 가지로 한정된다. (1) immediate 태스크가 더 이상 `concurrencyCount`를 내리지 않는다 — 이는 javadoc이 이미 약속한 "우회"의 완성이다. (2) 취소로 이탈한 throttled 태스크가 permit을 돌려준다 — 이전에는 누수였으므로 이 변화에 의존하던 정상 사용자는 존재할 수 없다.
+같은 지원 클래스를 쓰는데 왜 한쪽만 깨지는지를 나란히 놓으면 이렇다.
 
-**인접하지만 건드리지 않는 것.** `activeThreads`(:93)는 살아 있는 워커 집합을 실제로 들고 있지만 용도가 종료 대기와 인터럽트뿐이라 throttle 회계와 대조되지 않는다 — 정합성 검증 재료가 옆에 있는데도 쓰이지 않는다. `cancelled`의 비-volatile 모니터 규약(:101)도 그대로 둔다(결함 B는 가시성이 아니라 `try` 범위 문제였다). `execute(Runnable, long)`의 deprecation도 유지한다 — 결함 A의 입구가 deprecated API인데도 수정을 생략하지 않은 근거는, 같은 `run()` 코드가 결함 B에서 현행 API로 도달한다는 점이다.
+```text
+ConcurrencyThrottleInterceptor          SimpleAsyncTaskExecutor
++----------------------------+        +----------------------------+
+| beforeAccess()             |        | execute:  beforeAccess()   |
+| try {                      |        |   ==== 스레드 경계 ====    |
+|   proceed()                |        | run(): checkCancelled()    |
+| }                          |        |   try { task.run() }       |
+| finally {                  |        |   finally {                |
+|   afterAccess()            |        |     afterAccess()          |
+| }                          |        |   }                        |
++----------------------------+        +----------------------------+
+  -> 같은 스코프, 언어가 짝 강제         -> 스코프가 갈려 짝이 안 보장된다
+```
+
+**하위호환.**\
+바뀐 생성자 `TaskTrackingRunnable(Runnable, Future, boolean)`는 `private` 내부 클래스의 것이라 공개 API 표면이 아니다.\
+`execute`·`submit`·`doExecute`의 시그니처는 그대로다.\
+동작 변화는 두 가지로 한정된다.\
+(1) immediate 태스크가 더 이상 `concurrencyCount`를 내리지 않는다 — 이는 javadoc이 이미 약속한 "우회"의 완성이다.\
+(2) 취소로 이탈한 throttled 태스크가 permit을 돌려준다 — 이전에는 누수였으므로 이 변화에 의존하던 정상 사용자는 존재할 수 없다.
+
+**인접하지만 건드리지 않는 것.**\
+`activeThreads`(:93)는 살아 있는 워커 집합을 실제로 들고 있지만 용도가 종료 대기와 인터럽트뿐이라 throttle 회계와 대조되지 않는다 — 정합성 검증 재료가 옆에 있는데도 쓰이지 않는다.\
+`cancelled`의 비-volatile 모니터 규약(:101)도 그대로 둔다(결함 B는 가시성이 아니라 `try` 범위 문제였다).\
+`execute(Runnable, long)`의 deprecation도 유지한다 — 결함 A의 입구가 deprecated API인데도 수정을 생략하지 않은 근거는, 같은 `run()` 코드가 결함 B에서 현행 API로 도달한다는 점이다.

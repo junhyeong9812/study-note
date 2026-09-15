@@ -7,14 +7,16 @@
 
 ## 1. 무대 — 실구조
 
-이 PR의 무대는 클래스 세 개와 인터페이스 두 개가 만드는 얇은 어댑터 층이다. 결론부터
-말하면, **`XMLEventStreamReader`가 JDK의 이벤트형 리더를 커서형 리더로 둔갑시키고,
-`AbstractXMLStreamReader`가 그 둔갑에 필요한 파생 메서드를 전부 대신 계산한다.**
+이 PR의 무대는 클래스 세 개와 인터페이스 두 개가 만드는 얇은 어댑터 층이다.\
+결론부터 말하면, **`XMLEventStreamReader`가 JDK의 이벤트형 리더를 커서형 리더로 둔갑시키고, `AbstractXMLStreamReader`가 그 둔갑에 필요한 파생 메서드를 전부 대신 계산한다.**\
 `require()`는 그 파생 메서드 층에 속한다.
+
+> **파생 메서드 (derived method)** — 새 상태를 갖지 않고, 이미 있는 원시 접근자를 조합해 값을 계산해 주는 메서드.\
+> 예: `getLocalName()`은 자기 필드가 없고 `getName().getLocalPart()`를 계산해 돌려줄 뿐이다.
 
 먼저 소유·상속 관계다.
 
-```
+```text
 javax.xml.stream.XMLStreamReader              (JDK 표준 인터페이스, 커서형)
         ▲ implements
         │
@@ -61,29 +63,31 @@ javax.xml.stream.XMLStreamReader              (JDK 표준 인터페이스, 커�
 
 여기서 두 가지가 이 PR을 설명한다.
 
-첫째, **`AbstractXMLStreamReader`는 상태가 없다.** 필드가 하나도 없고, 모든 메서드가
-서브클래스의 `getEventType()`·`getName()`을 다시 불러 계산한다. 그래서 `require()`가
-이름과 네임스페이스를 검증하려면 새 자료를 끌어올 필요가 없다 — 같은 클래스의
-`getLocalName()`(:180)과 `getNamespaceURI()`(:81)를 부르면 끝이다. 재료는 이미 손 안에
-있었고, 수정 전 `require()`는 그것을 쓰지 않았을 뿐이다.
+첫째, **`AbstractXMLStreamReader`는 상태가 없다.**\
+필드가 하나도 없고, 모든 메서드가 서브클래스의 `getEventType()`·`getName()`을 다시 불러 계산한다.\
+그래서 `require()`가 이름과 네임스페이스를 검증하려면 새 자료를 끌어올 필요가 없다 — 같은 클래스의 `getLocalName()`(:180)과 `getNamespaceURI()`(:81)를 부르면 끝이다.\
+재료는 이미 손 안에 있었고, 수정 전 `require()`는 그것을 쓰지 않았을 뿐이다.
 
-둘째, **이름을 노출할 수 있는 이벤트는 두 종류뿐이다.** `getName()`은 시작·끝 요소가
-아니면 `IllegalStateException`을 던진다.
+둘째, **이름을 노출할 수 있는 이벤트는 두 종류뿐이다.**\
+`getName()`은 시작·끝 요소가 아니면 `IllegalStateException`을 던진다.
 
-```
+```text
 XMLEventStreamReader.getName()            (XMLEventStreamReader.java:58-69)
    ├─ event.isStartElement() → asStartElement().getName()   QName
    ├─ event.isEndElement()   → asEndElement().getName()     QName
    └─ 그 외                   → throw new IllegalStateException()   ← 가드 없는 호출은 여기로
 ```
 
-`getLocalName()`도 `getNamespaceURI()`도 결국 이 메서드를 지나간다. 즉 "이름을 비교하는
-코드"는 어느 것이든 이벤트 타입 가드를 먼저 통과해야 안전하다. 이것이 3절 분기도에서
-핵심이 되는 구조적 제약이다.
+`getLocalName()`도 `getNamespaceURI()`도 결국 이 메서드를 지나간다.\
+즉 "이름을 비교하는 코드"는 어느 것이든 이벤트 타입 가드를 먼저 통과해야 안전하다.\
+이것이 3절 분기도에서 핵심이 되는 구조적 제약이다.
+
+> **가드 (guard)** — 위험한 코드에 들어가기 전에 조건을 먼저 확인하고, 아니면 그 자리에서 돌려보내는 선행 분기.\
+> 예: 수정 후 `require()`의 둘째 if 블록은 `getLocalName()`을 부르기 전에 이벤트가 START/END_ELEMENT인지부터 확인한다.
 
 세 번째 등장인물은 검증 대상이 아니라 데이터 소스다.
 
-```
+```text
 javax.xml.stream.XMLEventReader   (JDK, 이벤트형)
         │  nextEvent() 호출마다 XMLEvent 객체 하나
         ▼
@@ -93,20 +97,21 @@ javax.xml.stream.XMLEventReader   (JDK, 이벤트형)
         └─ StartElement.getName() → QName{namespaceURI, localPart, prefix}
 ```
 
-`QName`은 네임스페이스 URI와 로컬 이름을 함께 담는 JDK 타입이다. `require()`의 두
-파라미터는 정확히 이 `QName`의 두 구성 요소와 대응한다.
+`QName`은 네임스페이스 URI와 로컬 이름을 함께 담는 JDK 타입이다.\
+`require()`의 두 파라미터는 정확히 이 `QName`의 두 구성 요소와 대응한다.
 
 ## 2. 수정 전 동작 워크플로우
 
-무대에 오르는 시나리오를 둘로 나눈다. 하나는 어댑터가 만들어져 문서를 훑는 정상
-흐름이고, 다른 하나는 그 도중 호출자가 `require()`로 위치를 확인하는 흐름이다.
+무대에 오르는 시나리오를 둘로 나눈다.\
+하나는 어댑터가 만들어져 문서를 훑는 정상 흐름이고, 다른 하나는 그 도중 호출자가 `require()`로 위치를 확인하는 흐름이다.\
 **전자는 수정 전후가 같고, 후자만 이 PR이 바꾼다.**
 
 ### 2.1 어댑터 생성과 문서 순회
 
-`XMLEventReader`를 커서형으로 바꿔 쓰는 전체 경로다. 실제 호출자는 4절에서 다룬다.
+`XMLEventReader`를 커서형으로 바꿔 쓰는 전체 경로다.\
+실제 호출자는 4절에서 다룬다.
 
-```
+```text
 호출자
   │
   │ StaxUtils.createEventStreamReader(eventReader)          StaxUtils.java:303
@@ -130,7 +135,7 @@ while (reader.hasNext()) {                    AbstractXMLStreamReader.java:176
 
 테스트 픽스처 문서로 커서 위치를 구체화하면 이렇다.
 
-```
+```text
 XML: <?pi content?><root xmlns='namespace'>
                      <prefix:child xmlns:prefix='namespace2'>content</prefix:child></root>
 
@@ -144,16 +149,14 @@ next()  ⑥     event = END_ELEMENT root         getName() → {namespace}root
 next()  ⑦     event = END_DOCUMENT             hasNext() → false
 ```
 
-위 표에서 별표를 붙인 `START_ELEMENT root` 줄이 tests.md의
-`advanceToStartElement("root")`가 멈추는 자리이고, 아래 2.2의 출발점이다.
+위 표에서 별표를 붙인 `START_ELEMENT root` 줄이 tests.md의 `advanceToStartElement("root")`가 멈추는 자리이고, 아래 2.2의 출발점이다.
 
 ### 2.2 수정 전 `require()` 호출
 
-호출자가 "커서가 지금 `{namespace}root`의 시작 태그여야 한다"를 못 박으려고
-`require()`를 부르는 흐름이다. 수정 전 본문(`AbstractXMLStreamReader.java:155-161`)은
-파라미터 세 개 중 하나만 읽는다.
+호출자가 "커서가 지금 `{namespace}root`의 시작 태그여야 한다"를 못 박으려고 `require()`를 부르는 흐름이다.\
+수정 전 본문(`AbstractXMLStreamReader.java:155-161`)은 파라미터 세 개 중 하나만 읽는다.
 
-```
+```text
 호출자: reader.require(START_ELEMENT, "wrong-namespace", "wrong")
   │
   ▼
@@ -173,7 +176,7 @@ AbstractXMLStreamReader.require(expectedType, namespaceURI, localName)   :155
 
 수정 전 본문을 데이터 흐름으로 그리면 두 인자가 그대로 버려지는 것이 한눈에 보인다.
 
-```
+```text
    expectedType ─────────────┐
                              ▼
    getEventType() ────────► [ != 비교 ] ──► 불일치면 XMLStreamException
@@ -183,22 +186,38 @@ AbstractXMLStreamReader.require(expectedType, namespaceURI, localName)   :155
    localName     ──► (소비처 없음)
 ```
 
-컴파일러는 사용되지 않은 파라미터를 오류로 보지 않는다. 그래서 이 반쪽 구현이
-구조적으로 조용히 유지되었다. 대비를 위해 같은 클래스의 다른 메서드는 두 인자를
-모두 소비한다는 점을 붙여 둘 만하다. `getAttributeValue(namespaceURI, localName)`
-(:163-173)은 `localName`을 `equals`로 대조하고 `namespaceURI`가 null이면 건너뛰는,
-바로 그 "null = 와일드카드" 규칙을 이미 구현하고 있다.
+같은 데이터 흐름을 수정 후와 나란히 놓으면, 이 PR이 세우는 것이 "새 자료"가 아니라 "소비처"임이 드러난다.
+
+```text
+수정 전 인자 소비처                    수정 후 인자 소비처
++----------------------------+        +----------------------------+
+| expectedType -> :158 비교   |        | expectedType -> :160 비교   |
+| namespaceURI -> 없음        |        | namespaceURI -> :165 가드   |
+|                            |        |                 :172 대조   |
+| localName    -> 없음        |        | localName    -> :165 가드   |
+|                            |        |                 :169 대조   |
++----------------------------+        +----------------------------+
+  -> 세 인자 중 하나만 읽힌다             -> 세 인자가 전부 읽힌다
+```
+
+컴파일러는 사용되지 않은 파라미터를 오류로 보지 않는다.\
+그래서 이 반쪽 구현이 구조적으로 조용히 유지되었다.\
+대비를 위해 같은 클래스의 다른 메서드는 두 인자를 모두 소비한다는 점을 붙여 둘 만하다.\
+`getAttributeValue(namespaceURI, localName)`(:163-173)은 `localName`을 `equals`로 대조하고 `namespaceURI`가 null이면 건너뛰는, 바로 그 "null = 와일드카드" 규칙을 이미 구현하고 있다.
+
+> **와일드카드 인자 (null = 검사하지 않음)** — 인자가 null이면 "그 축은 비교하지 말라"는 지시로 해석하는 계약 규칙.\
+> 예: `require(START_ELEMENT, "namespace", null)`은 네임스페이스만 대조하고 로컬 이름은 무엇이든 통과시킨다.
 
 ## 3. 분기 처리 워크플로우
 
-`require()`의 분기 구조를 수정 전후로 나란히 놓으면 이 PR이 정확히 무엇을 채우는지가
-드러난다. **수정 전 분기도에는 잎이 두 개뿐이고, 그중 하나가 잘못된 통과를 흡수한다.**
+`require()`의 분기 구조를 수정 전후로 나란히 놓으면 이 PR이 정확히 무엇을 채우는지가 드러난다.\
+**수정 전 분기도에는 잎이 두 개뿐이고, 그중 하나가 잘못된 통과를 흡수한다.**
 
 ### 3.1 수정 전 (버그가 살던 분기)
 
 수정 전 분기도는 질문 하나에 잎 둘로 끝난다.
 
-```
+```text
 require(expectedType, namespaceURI, localName)
         │
         ▼
@@ -214,16 +233,16 @@ XMLStreamException                 return (정상 종료)      ◀◀ 버그가 
                                      └─ 둘 다 null 이어도 여기로 (이것만 정상)
 ```
 
-버그의 성격은 "틀린 분기로 간다"가 아니라 **"분기 자체가 없다"**이다. 검증 실패를
-표현할 잎이 존재하지 않으므로, 세 가지 서로 다른 상황이 모두 같은 잎(정상 반환)으로
-수렴한다. 호출자 입장에서는 성공과 미검증이 구분되지 않는다.
+버그의 성격은 "틀린 분기로 간다"가 아니라 **"분기 자체가 없다"**이다.\
+검증 실패를 표현할 잎이 존재하지 않으므로, 세 가지 서로 다른 상황이 모두 같은 잎(정상 반환)으로 수렴한다.\
+호출자 입장에서는 성공과 미검증이 구분되지 않는다.
 
 ### 3.2 수정 후 (PR이 만드는 분기)
 
-PR은 잎을 셋 더 만든다. 순서가 중요하다 — **이름을 읽기 전에 이름을 읽어도 되는
-이벤트인지부터 판정한다.**
+PR은 잎을 셋 더 만든다.\
+순서가 중요하다 — **이름을 읽기 전에 이름을 읽어도 되는 이벤트인지부터 판정한다.**
 
-```
+```text
 require(expectedType, namespaceURI, localName)
         │
         ▼
@@ -255,10 +274,33 @@ require(expectedType, namespaceURI, localName)
                                   [x] but read [y]"
 ```
 
-두 번째 분기, 곧 이벤트 타입 가드가 이 수정의 설계 판단이다. 근거는 1절에서 본 구조적
-제약이다.
+같은 분기도를 구체적인 호출 하나로 세로 추적하면 어느 잎에서 멈추는지가 분명하다.\
+커서는 `{namespace}root`의 START_ELEMENT에 있고, 호출은 `require(START_ELEMENT, "wrong-namespace", "root")`이다.
 
+```text
+[1] eventType != expectedType ?                 1 != 1 -> 거짓, 아래로
+        |
+        v
+[2] ("wrong-namespace" != null || "root" != null)
+    && eventType 이 START/END_ELEMENT 가 아님 ?  앞은 참이나 뒤가 거짓, 아래로
+        |
+        v
+[3] "root" != null
+    && !"root".equals(getLocalName()) ?          "root".equals("root") -> 거짓, 아래로
+        |
+        v
+[4] "wrong-namespace" != null
+    && !"wrong-namespace".equals("namespace") ?  참 -> 여기서 멈춘다
+        |
+        v
+XMLStreamException                              "Expected namespace [wrong-namespace]
+                                                 but read [namespace]"
 ```
+
+두 번째 분기, 곧 이벤트 타입 가드가 이 수정의 설계 판단이다.\
+근거는 1절에서 본 구조적 제약이다.
+
+```text
 ③·④ 가 부르는 것         실제로 도달하는 곳                이벤트가 요소가 아니면
 ────────────────────    ──────────────────────────    ──────────────────────
 getLocalName()      →   getName().getLocalPart()      IllegalStateException
@@ -269,22 +311,19 @@ getNamespaceURI()   →   요소 확인 후 getName()          IllegalStateExcep
                                                           END_ELEMENT state")
 ```
 
-즉 이 가드가 없으면 `require(COMMENT, null, "x")` 같은 호출이 메서드 시그니처가 약속한
-`XMLStreamException`(checked) 대신 `IllegalStateException`(unchecked)으로 빠져나간다.
-가드를 앞세워, 이름을 노출할 수 없는 이벤트에서의 비-null 요구를 "불일치"로 판정하고
-계약이 정한 예외 타입으로 보고한다.
+즉 이 가드가 없으면 `require(COMMENT, null, "x")` 같은 호출이 메서드 시그니처가 약속한 `XMLStreamException`(checked) 대신 `IllegalStateException`(unchecked)으로 빠져나간다.\
+가드를 앞세워, 이름을 노출할 수 없는 이벤트에서의 비-null 요구를 "불일치"로 판정하고 계약이 정한 예외 타입으로 보고한다.
 
-한편 null 인자의 처리는 로컬명 비교와 네임스페이스 비교 각각의 첫 조건이 담당한다.
-null이면 비교를 건너뛴다 —
-JDK javadoc이 정한 와일드카드 규칙이다. 그래서 `require(START_ELEMENT, null, null)`은
-수정 후에도 타입만 보고 통과하며, 이 부분은 수정 전과 동작이 같다.
+한편 null 인자의 처리는 로컬명 비교와 네임스페이스 비교 각각의 첫 조건이 담당한다.\
+null이면 비교를 건너뛴다 — JDK javadoc이 정한 와일드카드 규칙이다.\
+그래서 `require(START_ELEMENT, null, null)`은 수정 후에도 타입만 보고 통과하며, 이 부분은 수정 전과 동작이 같다.
 
 ## 4. 스프링 전역에서의 자리
 
-이 어댑터는 프레임워크 안에서 **딱 한 곳**에서만 만들어진다. 저장소 전체를 grep한
-결과, `StaxUtils.createEventStreamReader`의 실제 호출처는 하나다.
+이 어댑터는 프레임워크 안에서 **딱 한 곳**에서만 만들어진다.\
+저장소 전체를 grep한 결과, `StaxUtils.createEventStreamReader`의 실제 호출처는 하나다.
 
-```
+```text
 AbstractMarshaller.unmarshal(Source)                 AbstractMarshaller.java:389
    │  Source 타입 판별
    ├─ DOMSource            → unmarshalDomSource(...)
@@ -313,24 +352,19 @@ AbstractMarshaller.unmarshal(Source)                 AbstractMarshaller.java:389
 
 여기서 두 가지를 확인해 둘 필요가 있다.
 
-**첫째, 프레임워크 내부에는 `require()` 호출자가 없다.** 저장소 전체에서 `.require(`를
-grep하면 이 메서드를 부르는 코드가 나오지 않는다. 위 경로에서 실제로 리더를 소비하는
-쪽은 XStream 라이브러리의 `StaxReader`이고, 그것이 `require()`를 쓰는지는 Spring이
-통제하지 않는다. 즉 `require()`는 **내부 소비자가 없는 공개 계약 표면**이다. 결함이
-오래 살아남은 구조적 이유가 여기 있다 — 내부 테스트가 결코 밟지 않는 코드였다.
+**첫째, 프레임워크 내부에는 `require()` 호출자가 없다.**\
+저장소 전체에서 `.require(`를 grep하면 이 메서드를 부르는 코드가 나오지 않는다.\
+위 경로에서 실제로 리더를 소비하는 쪽은 XStream 라이브러리의 `StaxReader`이고, 그것이 `require()`를 쓰는지는 Spring이 통제하지 않는다.\
+즉 `require()`는 **내부 소비자가 없는 공개 계약 표면**이다.\
+결함이 오래 살아남은 구조적 이유가 여기 있다 — 내부 테스트가 결코 밟지 않는 코드였다.
 
-**둘째, 공개 표면인 것은 분명하다.** 진입점 `StaxUtils.createEventStreamReader`는
-`public static`이고(`StaxUtils.java:303`) 반환 타입이 JDK 표준 `XMLStreamReader`다.
-구현 클래스 `XMLEventStreamReader`가 package-private이어도, 반환된 객체를 받은 외부
-코드는 표준 인터페이스의 모든 메서드를 계약대로 쓸 권리가 있다. `require()`도 그중
-하나다.
+**둘째, 공개 표면인 것은 분명하다.**\
+진입점 `StaxUtils.createEventStreamReader`는 `public static`이고(`StaxUtils.java:303`) 반환 타입이 JDK 표준 `XMLStreamReader`다.\
+구현 클래스 `XMLEventStreamReader`가 package-private이어도, 반환된 객체를 받은 외부 코드는 표준 인터페이스의 모든 메서드를 계약대로 쓸 권리가 있다.\
+`require()`도 그중 하나다.
 
-참고로 같은 `spring-core`의 StAX 유틸리티 층은 `spring-oxm`·`spring-web`의 여러
-지점에서 쓰인다(`AbstractMarshaller`, `Jaxb2Marshaller`, `XmlEventDecoder`,
-`Jaxb2XmlDecoder`, `JacksonXmlDecoder`, `Jaxb2CollectionHttpMessageConverter` 등).
-다만 그것들이 쓰는 것은 `StaxUtils`의 다른 팩터리(`createXMLReader`,
-`createStaxSource`, `getXMLStreamReader` 등)이고, 이번 무대인 이벤트->스트림 어댑터로
-들어오는 경로는 위의 XStream 하나뿐이다.
+참고로 같은 `spring-core`의 StAX 유틸리티 층은 `spring-oxm`·`spring-web`의 여러 지점에서 쓰인다(`AbstractMarshaller`, `Jaxb2Marshaller`, `XmlEventDecoder`, `Jaxb2XmlDecoder`, `JacksonXmlDecoder`, `Jaxb2CollectionHttpMessageConverter` 등).\
+다만 그것들이 쓰는 것은 `StaxUtils`의 다른 팩터리(`createXMLReader`, `createStaxSource`, `getXMLStreamReader` 등)이고, 이번 무대인 이벤트->스트림 어댑터로 들어오는 경로는 위의 XStream 하나뿐이다.
 
 ## 5. 관련 개념
 
@@ -338,10 +372,9 @@ grep하면 이 메서드를 부르는 코드가 나오지 않는다. 위 경로�
 
 ### 5.1 StAX의 두 API — 커서형과 이벤트형
 
-StAX는 XML을 앞에서 뒤로 한 번만 훑는 pull 방식 파서이고, 같은 일을 하는 API가 두 벌
-있다.
+StAX는 XML을 앞에서 뒤로 한 번만 훑는 pull 방식 파서이고, 같은 일을 하는 API가 두 벌 있다.
 
-```
+```text
 커서형  XMLStreamReader          이벤트형  XMLEventReader
 ─────────────────────────      ────────────────────────────
 리더 객체 하나가 "현재 위치"    nextEvent() 호출마다 XMLEvent
@@ -355,21 +388,22 @@ StAX는 XML을 앞에서 뒤로 한 번만 훑는 pull 방식 파서이고, 같�
 현재 위치를 벗어나면 정보 소실   지나간 이벤트도 그대로 남는다
 ```
 
-JDK의 `XMLInputFactory`는 `createXMLEventReader(XMLStreamReader)`, 즉 **커서형에서
-이벤트형으로 가는 방향만** 제공한다. Spring이 그 반대 방향을 직접 구현한 것이
-`XMLEventStreamReader`이고, 클래스 javadoc(`XMLEventStreamReader.java:37-43`)이 그
-사실을 존재 이유로 적어 두었다.
+> **pull 방식 파서 (pull parser)** — 파서가 콜백을 호출해 주는 것이 아니라, 소비자가 필요할 때마다 다음 조각을 꺼내 가는 파싱 방식.\
+> 예: 소비자가 `reader.next()`를 부를 때만 커서가 다음 이벤트로 전진한다.
 
-방향이 왜 한쪽만 표준에 있는지는 정보량으로 설명된다. 이벤트형은 커서형보다 정보가
-많다(이벤트 객체가 자기 값을 다 들고 있다). 많은 쪽에서 적은 쪽을 만드는 것은
-자연스럽지만, 반대는 "현재 이벤트 하나만 붙들고 커서인 척"해야 한다. 이 어댑터가
-필드로 `XMLEvent event` 하나만 들고 있는 것(`:47`)이 정확히 그 "인 척"의 구현이다.
+JDK의 `XMLInputFactory`는 `createXMLEventReader(XMLStreamReader)`, 즉 **커서형에서 이벤트형으로 가는 방향만** 제공한다.\
+Spring이 그 반대 방향을 직접 구현한 것이 `XMLEventStreamReader`이고, 클래스 javadoc(`XMLEventStreamReader.java:37-43`)이 그 사실을 존재 이유로 적어 두었다.
+
+방향이 왜 한쪽만 표준에 있는지는 정보량으로 설명된다.\
+이벤트형은 커서형보다 정보가 많다(이벤트 객체가 자기 값을 다 들고 있다).\
+많은 쪽에서 적은 쪽을 만드는 것은 자연스럽지만, 반대는 "현재 이벤트 하나만 붙들고 커서인 척"해야 한다.\
+이 어댑터가 필드로 `XMLEvent event` 하나만 들고 있는 것(`:47`)이 정확히 그 "인 척"의 구현이다.
 
 ### 5.2 QName — 네임스페이스와 로컬 이름
 
 XML의 요소 이름은 문자열 하나가 아니라 두 조각이다.
 
-```
+```text
 <prefix:child xmlns:prefix='namespace2'>
 
   prefix     → 접두사. 문서 안에서만 의미 있는 별명
@@ -379,24 +413,20 @@ XML의 요소 이름은 문자열 하나가 아니라 두 조각이다.
 QName = { namespaceURI: "namespace2", localPart: "child", prefix: "prefix" }
 ```
 
-접두사는 문서마다 자유롭게 바뀔 수 있으므로 비교 대상이 되지 못한다. 그래서
-`require()`가 받는 두 인자는 접두사가 아니라 **네임스페이스 URI와 로컬 이름**이고,
-`AbstractXMLStreamReader`도 그 둘을 각각 `getNamespaceURI()`(:81)와
-`getLocalName()`(:180)으로 노출한다. 두 값을 함께 대조해야 비로소 "이 요소가 맞다"고
-말할 수 있다.
+접두사는 문서마다 자유롭게 바뀔 수 있으므로 비교 대상이 되지 못한다.\
+그래서 `require()`가 받는 두 인자는 접두사가 아니라 **네임스페이스 URI와 로컬 이름**이고, `AbstractXMLStreamReader`도 그 둘을 각각 `getNamespaceURI()`(:81)와 `getLocalName()`(:180)으로 노출한다.\
+두 값을 함께 대조해야 비로소 "이 요소가 맞다"고 말할 수 있다.
 
-기본 네임스페이스(`xmlns='namespace'`)를 선언하면 접두사 없는 요소도 그 URI를 갖는다.
-tests.md의 픽스처가 `root`에 기본 네임스페이스를 붙여 둔 이유가 이것이다 — 네임스페이스가
-없는 문서였다면 `getNamespaceURI()`가 빈 문자열을 돌려주어 네임스페이스 검증을 시험할
-수 없다.
+기본 네임스페이스(`xmlns='namespace'`)를 선언하면 접두사 없는 요소도 그 URI를 갖는다.\
+tests.md의 픽스처가 `root`에 기본 네임스페이스를 붙여 둔 이유가 이것이다 — 네임스페이스가 없는 문서였다면 `getNamespaceURI()`가 빈 문자열을 돌려주어 네임스페이스 검증을 시험할 수 없다.
 
 ### 5.3 어댑터 + 템플릿 메서드 — 파생 메서드를 상위로 올리는 이유
 
-`XMLStreamReader`는 메서드가 수십 개인 넓은 인터페이스다. 그중 상당수는 "현재 이벤트
-타입과 현재 이름만 알면 계산할 수 있는" 파생값이다. Spring은 그 파생 계산을 추상
-상위 클래스에 모으고, 서브클래스에는 진짜 원시 접근자만 남겼다.
+`XMLStreamReader`는 메서드가 수십 개인 넓은 인터페이스다.\
+그중 상당수는 "현재 이벤트 타입과 현재 이름만 알면 계산할 수 있는" 파생값이다.\
+Spring은 그 파생 계산을 추상 상위 클래스에 모으고, 서브클래스에는 진짜 원시 접근자만 남겼다.
 
-```
+```text
 서브클래스가 제공해야 하는 것 (원시)      상위 클래스가 계산해 주는 것 (파생)
 ────────────────────────────────      ──────────────────────────────────
 getEventType()                    →   isStartElement() / isEndElement()
@@ -412,17 +442,17 @@ getAttributeValue(i)                   getAttributeNamespace(i)
                                        getAttributeValue(ns, localName)
 ```
 
-이 배치의 장점은 새 어댑터를 붙일 때 구현할 메서드가 확 줄어든다는 것이다. 대가는
-**파생 메서드의 결함이 모든 서브클래스에 동시에 상속된다**는 점이다. `require()`가
-바로 그 자리에 있다. 현재 서브클래스는 `XMLEventStreamReader` 하나뿐이지만
-(grep 확인), 구조상 이 층에 붙는 결함은 어댑터 개수만큼 곱해진다.
+이 배치의 장점은 새 어댑터를 붙일 때 구현할 메서드가 확 줄어든다는 것이다.\
+대가는 **파생 메서드의 결함이 모든 서브클래스에 동시에 상속된다**는 점이다.\
+`require()`가 바로 그 자리에 있다.\
+현재 서브클래스는 `XMLEventStreamReader` 하나뿐이지만(grep 확인), 구조상 이 층에 붙는 결함은 어댑터 개수만큼 곱해진다.
 
 ### 5.4 조용한 통과 — 어서션이 사라지는 실패 모드
 
-`require()`가 하는 일은 계산이 아니라 어서션이다. 어서션의 실패 모드는 일반 로직과
-다르다.
+`require()`가 하는 일은 계산이 아니라 어서션이다.\
+어서션의 실패 모드는 일반 로직과 다르다.
 
-```
+```text
 일반 메서드가 고장나면        어서션이 고장나면
 ──────────────────────      ──────────────────────────────
 틀린 값이 흘러나온다          아무 값도 흘러나오지 않는다
@@ -430,12 +460,10 @@ getAttributeValue(i)                   getAttributeNamespace(i)
 스택트레이스가 남는다         아무 흔적도 남지 않는다
 ```
 
-이 차이 때문에 어서션의 무력화는 발견이 늦다. 게다가 어서션이 지켜 주던 조건이
-깨진 채로 진행되므로, 실제 실패는 훨씬 뒤 엉뚱한 자리에서 훨씬 이해하기 어려운
-형태로 나타난다. 3.1의 분기도에서 "정상 반환" 잎이 세 가지 상황을 한꺼번에 흡수하는
-그림이 이 실패 모드의 구조적 원인이다.
+이 차이 때문에 어서션의 무력화는 발견이 늦다.\
+게다가 어서션이 지켜 주던 조건이 깨진 채로 진행되므로, 실제 실패는 훨씬 뒤 엉뚱한 자리에서 훨씬 이해하기 어려운 형태로 나타난다.\
+3.1의 분기도에서 "정상 반환" 잎이 세 가지 상황을 한꺼번에 흡수하는 그림이 이 실패 모드의 구조적 원인이다.
 
-관련해서 `../../concepts/`에는 이 주제를 다루는 문서가 아직 없다. 인접 개념으로
-계약과 구현의 어긋남을 다루는 [`../../concepts/annotation-all-or-nothing-contract/annotation-all-or-nothing-contract.md`]
-(../../concepts/annotation-all-or-nothing-contract/annotation-all-or-nothing-contract.md)가 있으나, 대상 도메인이 달라
-직접 연결되지는 않는다.
+관련해서 `../../concepts/`에는 이 주제를 다루는 문서가 아직 없다.\
+인접 개념으로 계약과 구현의 어긋남을 다루는 [`../../concepts/annotation-all-or-nothing-contract/annotation-all-or-nothing-contract.md`]
+(../../concepts/annotation-all-or-nothing-contract/annotation-all-or-nothing-contract.md)가 있으나, 대상 도메인이 달라 직접 연결되지는 않는다.

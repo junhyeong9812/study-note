@@ -33,7 +33,7 @@
 
 컨텍스트 기동에서 스캐너 내부의 조기 반환까지, 한 줄이 판정에 이르는 경로 전체를 두 덩어리로 나눠 그린다.
 
-```
+```text
 [진입 경로 — spring-beans]
  ClassPathXmlApplicationContext 등 XML 기반 컨텍스트 기동
    -> XmlBeanDefinitionReader.loadBeanDefinitions(Resource ...)
@@ -121,7 +121,7 @@
 
 픽스처 `xsdWithDoctypeInMultiLineCommentBody.xml`을 줄 단위로 따라간다. 정상 케이스(수정 후)와 결함 케이스(수정 전)를 같은 표에 놓는다.
 
-```
+```text
 1: <?xml version="1.0" encoding="UTF-8"?>
 2: <!--
 3: \tSee the DOCTYPE notes for legacy configs

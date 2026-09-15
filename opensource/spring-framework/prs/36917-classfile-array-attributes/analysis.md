@@ -9,18 +9,19 @@
 
 ## 0. 결론
 
-**결함**: JDK 24 전용 소스셋의 `ClassFileAnnotationDelegate#parseArrayValue`가 원시 배열 어트리뷰트를
-`int`/`double`/`long` 세 종류만 전용 분기로 처리하고, 나머지 다섯(`byte`/`short`/`char`/`boolean`/`float`)은
-`default` 분기로 흘려보내 **박싱된 참조 배열**(`Byte[]`, `Short[]`, `Character[]`, `Boolean[]`, `Float[]`)로
-만들어 돌려준다. 파싱은 조용히 끝나고, 값을 꺼내는 시점에 `TypeMappedAnnotation.adaptForAttribute`가
-`byte[].class.isInstance(new Byte[]{...})`를 거짓으로 판정해 `IllegalStateException`을 던진다.
+**결함**: JDK 24 전용 소스셋의 `ClassFileAnnotationDelegate#parseArrayValue`가 원시 배열 어트리뷰트를 `int`/`double`/`long` 세 종류만 전용 분기로 처리하고, 나머지 다섯(`byte`/`short`/`char`/`boolean`/`float`)은 `default` 분기로 흘려보내 **박싱된 참조 배열**(`Byte[]`, `Short[]`, `Character[]`, `Boolean[]`, `Float[]`)로 만들어 돌려준다.\
+파싱은 조용히 끝나고, 값을 꺼내는 시점에 `TypeMappedAnnotation.adaptForAttribute`가 `byte[].class.isInstance(new Byte[]{...})`를 거짓으로 판정해 `IllegalStateException`을 던진다.
+
+> **박싱(boxing)** — 원시 값을 그에 대응하는 래퍼 객체로 감싸는 것. `byte` → `Byte`.\
+> 예: `Object o = (byte) 1;`의 `o.getClass()`는 `byte.class`가 아니라 `Byte.class`다.
 
 **제안했던 수정**: 빠진 다섯 타입에 대해 전용 `case`를 다섯 개 추가한다(각 분기가 직접 원시 배열을 채운다).
 
-**상태**: CLOSED / `status: declined`. 2026-06-13 개설, 2026-08-05 라벨과 함께 닫힘. 리뷰는 한 건도 없었다.
-거절 사유는 기술적 반박이 아니라 **중복**이다 — 같은 결함이 2026-07-22 메인테이너 커밋 `7de2b24d81c`
-(gh-37083)에서 먼저, 그리고 더 근본적으로 고쳐졌다. 진단은 옳았고 사후적으로 증명되었으나,
-**수정의 층위**와 **가시성** 두 축에서 밀렸다(5.2절, 6.3절).
+**상태**: CLOSED / `status: declined`.\
+2026-06-13 개설, 2026-08-05 라벨과 함께 닫힘.\
+리뷰는 한 건도 없었다.\
+거절 사유는 기술적 반박이 아니라 **중복**이다 — 같은 결함이 2026-07-22 메인테이너 커밋 `7de2b24d81c`(gh-37083)에서 먼저, 그리고 더 근본적으로 고쳐졌다.\
+진단은 옳았고 사후적으로 증명되었으나, **수정의 층위**와 **가시성** 두 축에서 밀렸다(5.2절, 6.3절).
 
 ## 1. 무대
 
@@ -34,21 +35,23 @@
 | 예외가 터지는 곳 | `TypeMappedAnnotation#adaptForAttribute` `:520-525` (HEAD 기준) |
 | 공개 진입 API | `MetadataReaderFactory.create(...)` -> `getMetadataReader(...)` -> `AnnotationMetadata` |
 
-Spring은 클래스를 로딩하지 않고 바이트코드만 읽어 어노테이션 메타데이터를 뽑는다. 컴포넌트 스캔,
-`@Configuration` 처리, `@Autowired` 메타데이터 회수, AOT 생성 코드가 모두 이 층에 의존한다.
-JDK 24부터 Spring 7은 구현을 둘 갖는다 — JDK 24 미만은 ASM 기반 `SimpleMetadataReader`,
-JDK 24 이상은 JDK 표준 `java.lang.classfile` 기반 `ClassFileMetadataReader`. 선택 주체는
-`MetadataReaderFactoryDelegate`이고, 후자의 어노테이션 값 파싱을 `ClassFileAnnotationDelegate`가 맡는다.
+Spring은 클래스를 로딩하지 않고 바이트코드만 읽어 어노테이션 메타데이터를 뽑는다.\
+컴포넌트 스캔, `@Configuration` 처리, `@Autowired` 메타데이터 회수, AOT 생성 코드가 모두 이 층에 의존한다.\
+JDK 24부터 Spring 7은 구현을 둘 갖는다 — JDK 24 미만은 ASM 기반 `SimpleMetadataReader`, JDK 24 이상은 JDK 표준 `java.lang.classfile` 기반 `ClassFileMetadataReader`.\
+선택 주체는 `MetadataReaderFactoryDelegate`이고, 후자의 어노테이션 값 파싱을 `ClassFileAnnotationDelegate`가 맡는다.
 
-**이 배치가 이 PR을 규정한다.** 파싱 구현은 둘인데 소비 측(`TypeMappedAnnotation`)은 하나이고,
-소비 측은 어느 리더가 값을 만들었는지 모른다. 따라서 두 리더의 결과가 다르면 설계 의도를 추측할 필요 없이
-한쪽이 반드시 틀린 것이다 — 이것이 "의도인가 버그인가" 판별의 결정적 근거였다(4절).
+> **AOT(ahead-of-time) 생성 코드** — 실행 전에 미리 계산해 자바 소스로 굳혀 둔 빈 등록·설정 코드.\
+> 예: `ConfigurationClassPostProcessor`가 생성 코드 안에 `getMetadataReader(...)` 호출을 그대로 심는다.
+
+**이 배치가 이 PR을 규정한다.**\
+파싱 구현은 둘인데 소비 측(`TypeMappedAnnotation`)은 하나이고, 소비 측은 어느 리더가 값을 만들었는지 모른다.\
+따라서 두 리더의 결과가 다르면 설계 의도를 추측할 필요 없이 한쪽이 반드시 틀린 것이다 — 이것이 "의도인가 버그인가" 판별의 결정적 근거였다(4절).
 
 ## 2. 전체 메서드 그래프
 
 아래 그래프는 리더 선택에서 파싱을 거쳐 값 소비까지를 세 구간으로 나눠 편 것이고, `[!]` 표시가 결함이 심어지거나 드러나는 지점이다.
 
-```
+```text
   [ 진입 — 어느 리더를 쓸지 결정 ]
 
   MetadataReaderFactory.create(resourceLoader | classLoader)   MetadataReaderFactory.java:69,:79
@@ -135,9 +138,27 @@ JDK 24 이상은 JDK 표준 `java.lang.classfile` 기반 `ClassFileMetadataReade
 
 ## 2.5 핵심 이름표 사전
 
-이 무대에서 헷갈리는 것은 "타입"이 세 층에 각각 다른 모습으로 존재한다는 점이다.
-클래스 파일의 **태그**(1바이트), 파싱 중간값의 **박싱된 자바 객체**, 그리고 어노테이션 선언의 **원시 배열 타입**.
+이 무대에서 헷갈리는 것은 "타입"이 세 층에 각각 다른 모습으로 존재한다는 점이다.\
+클래스 파일의 **태그**(1바이트), 파싱 중간값의 **박싱된 자바 객체**, 그리고 어노테이션 선언의 **원시 배열 타입**.\
 아래 항목은 각각이 어느 층의 타입을 들고 있는지를 밝힌다.
+
+같은 값 `1`이 세 층에서 어떤 모습인지 세로로 내려 보면 이렇다.
+
+```text
+클래스 파일         태그 'B' + 상수 풀 인덱스        원시 타입 정보가 여기까지만 있다
+      |
+      v
+java.lang.classfile  AnnotationValue.OfByte           태그가 sealed 하위 타입이 된다
+      |
+      v
+파싱 중간값          Byte.valueOf((byte) 1)           resolvedValue() 가 Object 라 박싱된다
+      |
+      v
+담을 배열            Byte[] (수정 전) / byte[] (수정 후)   여기가 갈라지는 지점
+      |
+      v
+어노테이션 선언      byte[] byteValue()               소비 측이 기대하는 타입
+```
 
 ### 2.5.1 파싱 층 (`ClassFileAnnotationDelegate.java`, base 기준)
 
