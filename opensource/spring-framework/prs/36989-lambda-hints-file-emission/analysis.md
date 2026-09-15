@@ -1,19 +1,31 @@
 # PR #36989 분석 — lambda 힌트만 있을 때 네이티브 설정 파일이 생성되지 않는 문제
 
-> 기준 상태. **수정 전** = `d1470bbb259^`, **수정 커밋** = `d1470bbb259`, **현재** = `upstream/main`(`7daf1013aa8`). 파일:줄 인용마다 어느 상태 기준인지 밝힌다.
+> 기준 상태.\
+> **수정 전** = `d1470bbb259^`, **수정 커밋** = `d1470bbb259`, **현재** = `upstream/main`(`7daf1013aa8`).\
+> 파일:줄 인용마다 어느 상태 기준인지 밝힌다.\
 > 이 문서의 자리: README(서사)·structure(두 패키지의 대칭 구조도)·tests(테스트 해설)·gates(이해 게이트 기록)와 겹치지 않게, **게이트와 방출기가 각각 아는 "힌트 종류 목록"을 전수 대조**하고 이름표·단계 단위로 고정한다.
 
 ## 0. 결론
 
-`NativeConfigurationWriter.write(RuntimeHints)`는 `hasAnyHint(hints)`가 참일 때만 `reachability-metadata.json`을 쓰는데, 그 `hasAnyHint`가 힌트 종류를 손으로 나열한 OR 사슬이면서 **`ReflectionHints.lambdaHints()`를 목록에 빠뜨렸다**. 그 결과 lambda 힌트만 담긴 `RuntimeHints`는 "힌트 없음"으로 판정되어 파일이 아예 만들어지지 않고, 직렬화 계층이 이미 지원하던 lambda 메타데이터가 조용히 사라졌다.
+`NativeConfigurationWriter.write(RuntimeHints)`는 `hasAnyHint(hints)`가 참일 때만 `reachability-metadata.json`을 쓰는데, 그 `hasAnyHint`가 힌트 종류를 손으로 나열한 OR 사슬이면서 **`ReflectionHints.lambdaHints()`를 목록에 빠뜨렸다**.\
+그 결과 lambda 힌트만 담긴 `RuntimeHints`는 "힌트 없음"으로 판정되어 파일이 아예 만들어지지 않고, 직렬화 계층이 이미 지원하던 lambda 메타데이터가 조용히 사라졌다.
+
+> **게이트(gate)와 방출기(emitter)** — 게이트는 "쓸 내용이 있는가"를 앞에서 판정하는 관문이고, 방출기는 그 뒤에서 실제로 JSON을 만들어 내는 코드다.\
+> 예: 게이트가 `hasAnyHint`, 방출기가 `RuntimeHintsWriter`와 `ReflectionHintsAttributes`다.
 
 수정은 OR 사슬에 `hints.reflection().lambdaHints().findAny().isPresent() ||` 한 줄을 넣어 게이트의 목록을 방출기의 목록과 일치시킨 것이다.
 
-상태: 머지됨. `upstream/main`의 커밋 `d1470bbb259`("Register native configuration file when only lambda hints are present", `Closes gh-36989`). 실패는 예외도 로그도 남기지 않고 JVM 테스트로도 드러나지 않으며, **네이티브 이미지 런타임에 가서야** 누락된 힌트에 의존하던 동작이 깨지는 형태로 나타난다.
+상태: 머지됨.\
+`upstream/main`의 커밋 `d1470bbb259`("Register native configuration file when only lambda hints are present", `Closes gh-36989`).\
+실패는 예외도 로그도 남기지 않고 JVM 테스트로도 드러나지 않으며, **네이티브 이미지 런타임에 가서야** 누락된 힌트에 의존하던 동작이 깨지는 형태로 나타난다.
+
+> **조용한 실패(silent failure)** — 잘못됐는데도 예외·로그·경고가 하나도 안 나와서 알아챌 신호가 없는 실패.\
+> 예: 여기서는 파일이 안 생겼는데 빌드가 끝까지 초록색이다.
 
 ## 1. 무대
 
-결함은 힌트를 모으는 패키지와 그것을 JSON으로 옮기는 패키지 사이의 관문에 있다. 그 좌표를 여섯 항목으로 고정한다.
+결함은 힌트를 모으는 패키지와 그것을 JSON으로 옮기는 패키지 사이의 관문에 있다.\
+그 좌표를 여섯 항목으로 고정한다.
 
 | 항목 | 값 |
 |---|---|
@@ -24,15 +36,22 @@
 | 유일한 구현 | `FileNativeConfigurationWriter` (파일 출력) |
 | 반대편 패키지 | `org.springframework.aot.hint` — 힌트를 자바 객체로 모으는 쪽 |
 
-무대의 형태는 **두 패키지가 같은 목록을 각자 알고 있어야 하는 구조**다. `aot.hint`가 힌트 종류를 정의하고, `aot.nativex`가 그 종류를 JSON으로 옮긴다. `aot.nativex` 안에서도 책임이 둘로 갈린다 — **방출기**(`RuntimeHintsWriter` + `ReflectionHintsAttributes` + `ResourceHintsAttributes`)는 "어떻게 직렬화할지"를 알고, **게이트**(`hasAnyHint`)는 "쓸 만한 내용이 있는지"를 판정한다. 결함은 이 둘의 목록이 어긋난 데서 나왔다.
+무대의 형태는 **두 패키지가 같은 목록을 각자 알고 있어야 하는 구조**다.\
+`aot.hint`가 힌트 종류를 정의하고, `aot.nativex`가 그 종류를 JSON으로 옮긴다.\
+`aot.nativex` 안에서도 책임이 둘로 갈린다 — **방출기**(`RuntimeHintsWriter` + `ReflectionHintsAttributes` + `ResourceHintsAttributes`)는 "어떻게 직렬화할지"를 알고, **게이트**(`hasAnyHint`)는 "쓸 만한 내용이 있는지"를 판정한다.\
+결함은 이 둘의 목록이 어긋난 데서 나왔다.
 
-호출 시점은 #36972와 같다 — 빌드 타임 AOT 처리의 마지막 단계인 `AbstractAotProcessor.writeHints(RuntimeHints)`(`spring-context/.../AbstractAotProcessor.java:124-128`)가 writer를 만들어 `write(hints)`를 부른다. 빌드 한 번에 한 번이다.
+호출 시점은 #36972와 같다 — 빌드 타임 AOT 처리의 마지막 단계인 `AbstractAotProcessor.writeHints(RuntimeHints)`(`spring-context/.../AbstractAotProcessor.java:124-128`)가 writer를 만들어 `write(hints)`를 부른다.\
+빌드 한 번에 한 번이다.
+
+> **AOT(ahead-of-time) 처리** — 실행 전 빌드 시점에 빈 등록 코드와 네이티브 이미지 메타데이터를 미리 확정해 두는 Spring의 단계.\
+> 예: 이 단계의 마지막에 `writeHints`가 한 번 불리고, 그때 이 게이트가 판정한다.
 
 ## 2. 전체 메서드 그래프
 
 현재(`upstream/main`) 줄번호이며, 수정 전 형태가 필요한 곳은 표시했다.
 
-```
+```text
  빌드 타임 (Gradle/Maven AOT 플러그인)
    |
    v
@@ -85,11 +104,15 @@
                  [!] lambda 전용 hints가 수정 전에 떨어지던 자리
 ```
 
-이 그래프의 핵심은 **`writeTo` 아래의 모든 코드가 lambda를 이미 알고 있었다**는 것이다(`:93-95`, `:118-133`). 결함은 직렬화 능력의 부재가 아니라 그 능력에 도달하지 못하게 막는 문 하나였고, 그래서 수정이 한 줄로 끝난다.
+이 그래프의 핵심은 **`writeTo` 아래의 모든 코드가 lambda를 이미 알고 있었다**는 것이다(`:93-95`, `:118-133`).\
+결함은 직렬화 능력의 부재가 아니라 그 능력에 도달하지 못하게 막는 문 하나였고, 그래서 수정이 한 줄로 끝난다.
 
 ## 2.5 핵심 이름표 사전
 
-이 무대에서 헷갈리는 지점은 셋이다. (1) `RuntimeHints.reflection()`과 `RuntimeHints.jni()`가 **같은 타입의 다른 인스턴스**라는 것, (2) `lambdaHints`가 `ReflectionHints` 안에 `types`와 나란히 사는 **두 번째 컬렉션**이라는 것, (3) 게이트와 방출기가 각자 목록을 들고 있다는 것.
+이 무대에서 헷갈리는 지점은 셋이다.\
+(1) `RuntimeHints.reflection()`과 `RuntimeHints.jni()`가 **같은 타입의 다른 인스턴스**라는 것,\
+(2) `lambdaHints`가 `ReflectionHints` 안에 `types`와 나란히 사는 **두 번째 컬렉션**이라는 것,\
+(3) 게이트와 방출기가 각자 목록을 들고 있다는 것.
 
 | 이름표 | 무엇인가 | 입력 -> 출력 | 누가 언제 부르나 | 이 결함과의 관계 |
 |---|---|---|---|---|
@@ -118,7 +141,44 @@
 
 ## 3. 결함 경로 단계 추적
 
-lambda 힌트를 **하나만** 등록한 경우와, lambda + 타입 힌트를 함께 등록한 경우를 나란히 보면 결함이 왜 오래 숨어 있었는지가 드러난다. 후자는 수정 전에도 정상 동작한다.
+lambda 힌트를 **하나만** 등록한 경우와, lambda + 타입 힌트를 함께 등록한 경우를 나란히 보면 결함이 왜 오래 숨어 있었는지가 드러난다.\
+후자는 수정 전에도 정상 동작한다.
+
+같은 입력(lambda 힌트 하나)에 대해 수정 전과 수정 후의 최종 상태를 같은 칸 폭으로 놓으면 이렇다.
+
+```text
+  같은 입력: registerLambda(Integer.class, ...) 한 번
+            types = {} , lambdaHints = { LambdaHint(Integer, getCell, Supplier) }
+
+  수정 전 (d1470bbb259^)              수정 후 (d1470bbb259)
+  +------------------------------+    +------------------------------+
+  | :47 jdkProxy        false    |    | :47 jdkProxy        false    |
+  | :48 typeHints       false    |    | :48 typeHints       false    |
+  | (lambda 항 자체가 없음)      |    | :49 lambdaHints     true     |
+  | :50 resourcePattern false    |    | (단락 평가로 뒤는 평가 안 함)|
+  | :51 resourceBundle  false    |    |                              |
+  | :52 jni().typeHints false    |    |                              |
+  | :53 deprecated      false    |    |                              |
+  | hasAnyHint       -> false    |    | hasAnyHint       -> true     |
+  +------------------------------+    +------------------------------+
+  | writeTo          호출 안 됨  |    | writeTo          호출됨      |
+  | 방출기           도달 안 함  |    | 방출기           도달        |
+  +------------------------------+    +------------------------------+
+  | 디스크: 파일 없음            |    | 디스크: reachability-        |
+  |                              |    |   metadata.json              |
+  |                              |    |   "reflection":[{"type":     |
+  |                              |    |     {"lambda":{...}}}]       |
+  +------------------------------+    +------------------------------+
+  | 관측 신호: 없음              |    | 관측 신호: 파일이 있다       |
+  |  예외 없음 / 로그 없음       |    |                              |
+  |  빌드 초록                   |    |                              |
+  +------------------------------+    +------------------------------+
+  | 최종: 네이티브 런타임에서    |    | 최종: 정상                   |
+  |   그 lambda 동작 실패        |    |                              |
+  +------------------------------+    +------------------------------+
+
+  같은 입력인데 갈리는 칸은 게이트 한 줄뿐이고, 그 아래는 전부 그 결과다.
+```
 
 | 단계 | 케이스 A: lambda 힌트만 (수정 전) | 케이스 B: lambda + 타입 힌트 (수정 전) | 케이스 A (수정 후) |
 |---|---|---|---|
@@ -135,13 +195,23 @@ lambda 힌트를 **하나만** 등록한 경우와, lambda + 타입 힌트를 �
 | 관측되는 신호 | **없음**(예외·로그·경고 전무, 빌드 초록) | - | - |
 | 최종 결과 | 네이티브 이미지 런타임에서 해당 lambda 관련 동작 실패 | 정상 | 정상 |
 
-케이스 B의 행 "게이트 `:48`"이 은폐의 메커니즘이다. 실제 애플리케이션의 `RuntimeHints`에는 거의 항상 타입 힌트가 섞여 있으므로 게이트는 다른 항에서 참이 되고, lambda는 그 뒤에 얹혀 정상적으로 직렬화된다. 결함이 드러나려면 **lambda 힌트만 단독으로** 존재해야 하고, 그래서 회귀 테스트도 lambda 하나만 등록하는 형태여야 한다 — 다른 힌트를 섞으면 게이트가 다른 항으로 열려 버그가 가려진다.
+케이스 B의 행 "게이트 `:48`"이 은폐의 메커니즘이다.\
+실제 애플리케이션의 `RuntimeHints`에는 거의 항상 타입 힌트가 섞여 있으므로 게이트는 다른 항에서 참이 되고, lambda는 그 뒤에 얹혀 정상적으로 직렬화된다.\
+결함이 드러나려면 **lambda 힌트만 단독으로** 존재해야 하고, 그래서 회귀 테스트도 lambda 하나만 등록하는 형태여야 한다 — 다른 힌트를 섞으면 게이트가 다른 항으로 열려 버그가 가려진다.
 
-수정 전 상태에서 그 테스트를 돌리면 실패 신호는 단언 실패가 아니라 `NoSuchFileException`이다. `assertEquals` 헬퍼(`FileNativeConfigurationWriterTests.java:234-238`)가 `Files.readString(jsonFile)`로 파일을 먼저 읽기 때문이다. 즉 "내용이 다르다"가 아니라 "파일이 없다"로 떨어진다.
+> **은폐(masking)** — 다른 조건이 먼저 참이 되는 바람에 결함이 있는 조건이 아예 평가되지 않아 증상이 안 보이는 현상.\
+> 예: 타입 힌트가 하나만 섞여 있어도 `:48`에서 참이 나와 lambda 누락이 드러나지 않는다.
+
+수정 전 상태에서 그 테스트를 돌리면 실패 신호는 단언 실패가 아니라 `NoSuchFileException`이다.\
+`assertEquals` 헬퍼(`FileNativeConfigurationWriterTests.java:234-238`)가 `Files.readString(jsonFile)`로 파일을 먼저 읽기 때문이다.\
+즉 "내용이 다르다"가 아니라 "파일이 없다"로 떨어진다.
 
 ## 4. 계약
 
 이 결함을 둘러싼 계약은 다섯 개이고, 그중 명시된 문서가 없는 첫 번째 암묵 불변식만 깨진다.
+
+> **암묵 불변식(implicit invariant)** — 어디에도 적혀 있지 않지만 코드가 옳게 돌려면 항상 참이어야 하는 규칙.\
+> 예: "방출기가 내보낼 수 있는 종류는 게이트도 알아야 한다"는 문서에 없지만 반드시 지켜져야 한다.
 
 | 계약 | 출처 | 결함이 어기는가 |
 |---|---|---|
@@ -151,7 +221,27 @@ lambda 힌트를 **하나만** 등록한 경우와, lambda + 타입 힌트를 �
 | 문서에는 항상 `"comment"`가 들어간다 | `RuntimeHintsWriter.java:39-41` | 결함이 아니라 **게이트의 존재 이유**. 방출기에게 "비었으면 아무것도 쓰지 마라"를 맡길 수 없다 |
 | OR 사슬에 항을 추가해도 기존 판정은 뒤집히지 않는다 | 논리합의 성질 | 수정이 이 성질에 **의존**한다 — 다른 다섯 종류와 `emptyConfig`의 무회귀 근거 |
 
-기존 테스트가 고정하지 **않던** 것: "특정 종류의 힌트만 있을 때 파일이 생기는가". `FileNativeConfigurationWriterTests`의 기존 테스트들(`serializationConfig`·`proxyConfig`·`reflectionConfig`·`jniConfig`·`resourceConfig`)은 각자 한 종류만 등록해 사실상 이 성질을 종류별로 검증하고 있었는데, **lambda만 그 목록에 없었다.** 결함과 테스트 공백이 정확히 같은 모양이다.
+기존 테스트가 고정하지 **않던** 것: "특정 종류의 힌트만 있을 때 파일이 생기는가".\
+`FileNativeConfigurationWriterTests`의 기존 테스트들(`serializationConfig`·`proxyConfig`·`reflectionConfig`·`jniConfig`·`resourceConfig`)은 각자 한 종류만 등록해 사실상 이 성질을 종류별로 검증하고 있었는데, **lambda만 그 목록에 없었다.**\
+결함과 테스트 공백이 정확히 같은 모양이다.
+
+그 두 목록을 겹쳐 놓으면 빠진 칸이 같은 자리에 하나씩 뚫려 있다.
+
+```text
+  "이 종류만 있을 때 파일이 생기는가"
+
+  힌트 종류              게이트가 검사(수정 전)   그 종류만 보는 기존 테스트
+  --------------------  ----------------------  --------------------------
+  proxies                        O                proxyConfig
+  reflection types               O                reflectionConfig
+  reflection lambda              X  <-- 빠짐      없음  <-- 같은 자리가 빠짐
+  serialization                  O                serializationConfig
+  resources                      O                resourceConfig
+  jni types                      O                jniConfig
+
+  이 PR 이 한 일: X 두 칸을 같이 메웠다.
+    코드 쪽은 :49 한 줄, 테스트 쪽은 lambdaConfig 한 건.
+```
 
 ## 5. 수정안
 
@@ -184,7 +274,10 @@ after (`upstream/main` 기준 `NativeConfigurationWriter.java:46-54`):
 	}
 ```
 
-**왜 그 위치인가.** 두 층위의 "위치"가 있다. 메서드 층위에서는, 결함이 "직렬화가 안 된다"가 아니라 "직렬화에 도달하지 못한다"이므로 고칠 곳은 방출기가 아니라 게이트다 — 방출기 쪽 `:95`·`:118-133`은 이미 옳다. 줄 층위에서는, 새 항을 같은 `reflection()` 소속인 `typeHints` 바로 뒤(`:49`)에 넣었다. 사슬이 "소유자별로 묶여 읽히는" 배치(proxies / reflection / resources / jni / deprecated)를 유지하기 위해서다.
+**왜 그 위치인가.** 두 층위의 "위치"가 있다.\
+메서드 층위에서는, 결함이 "직렬화가 안 된다"가 아니라 "직렬화에 도달하지 못한다"이므로 고칠 곳은 방출기가 아니라 게이트다 — 방출기 쪽 `:95`·`:118-133`은 이미 옳다.\
+줄 층위에서는, 새 항을 같은 `reflection()` 소속인 `typeHints` 바로 뒤(`:49`)에 넣었다.\
+사슬이 "소유자별로 묶여 읽히는" 배치(proxies / reflection / resources / jni / deprecated)를 유지하기 위해서다.
 
 검토된 대안과 기각 사유는 다음과 같다.
 
@@ -195,11 +288,17 @@ after (`upstream/main` 기준 `NativeConfigurationWriter.java:46-54`):
 | 방출기 쪽에서 빈 문서를 감지해 파일을 지우기 | 게이트를 없애고 사후 판정 | `"comment"`가 항상 들어가므로(`RuntimeHintsWriter.java:39-41`) "빈 문서" 판정 자체가 별도 규칙을 요구한다. 파일을 만들었다 지우는 것도 부작용이 크다 |
 | 파일 존재만 단언하는 가벼운 테스트 | `namespace` 테스트 스타일 | 파일 생성은 잡지만 lambda JSON이 실제로 흘러가는지를 검증하지 못한다. 기존 `assertEquals` 헬퍼로 전체 JSON을 대조하는 편이 계약을 더 넓게 고정 |
 
-**수정이 기존 동작을 깨지 않는 이유**는 논리합의 성질 하나로 끝난다. OR 사슬에 항(disjunct)을 추가하면 결과가 false에서 true로 바뀌는 입력만 늘고, true였던 입력이 false가 되는 경우는 없다. 따라서 다른 다섯 종류의 판정과 `emptyConfig`(전 항 false -> 여전히 false)는 그대로다.
+**수정이 기존 동작을 깨지 않는 이유**는 논리합의 성질 하나로 끝난다.\
+OR 사슬에 항(disjunct)을 추가하면 결과가 false에서 true로 바뀌는 입력만 늘고, true였던 입력이 false가 되는 경우는 없다.\
+따라서 다른 다섯 종류의 판정과 `emptyConfig`(전 항 false -> 여전히 false)는 그대로다.
+
+> **항(disjunct)** — `||`로 이어진 판정식에서 낱개 조건 하나.\
+> 예: `hints.jni().typeHints().findAny().isPresent()`가 사슬의 한 항이다.
 
 ## 6. 범위 밖과 인접 영향
 
-**게이트와 방출기의 목록을 전수 대조했다.** 수정 후 기준으로 두 목록은 다음과 같이 일치한다.
+**게이트와 방출기의 목록을 전수 대조했다.**\
+수정 후 기준으로 두 목록은 다음과 같이 일치한다.
 
 | 힌트 종류 | 방출기가 직렬화하는가 | 게이트가 검사하는가 (수정 후) |
 |---|---|---|
@@ -212,10 +311,28 @@ after (`upstream/main` 기준 `NativeConfigurationWriter.java:46-54`):
 | `jni().typeHints()` | 예 — `ReflectionHintsAttributes.java:98-104` | 예 — `:52` |
 | `jni().lambdaHints()` | **아니오** — `jni(RuntimeHints)`(`:98-104`)는 `typeHints()`만 읽는다 | 아니오 |
 
-마지막 행이 이번 조사에서 확인한 중요한 판정이다. `RuntimeHints.jni`는 `reflection`과 **같은 `ReflectionHints` 타입**(`RuntimeHints.java:45`)이므로 `jni().lambdaHints()`도 문법적으로는 호출할 수 있고, 게이트에 그 항이 없는 것이 얼핏 두 번째 누락처럼 보인다. 그러나 방출기가 jni 쪽 lambda를 직렬화하지 않으므로 게이트가 그것을 참으로 판정하면 오히려 **내용 없는 파일**이 생긴다. 즉 여기서는 게이트가 방출기와 일치하는 것이 맞고, 이 PR의 범위 밖일 뿐 아니라 고치면 안 되는 자리다. (jni lambda 힌트를 등록할 수 있는데 직렬화되지 않는 것이 그 자체로 결함인지는 별개 문제이며 이번에 판정하지 않았다 — 미확인.)
+마지막 행이 이번 조사에서 확인한 중요한 판정이다.\
+`RuntimeHints.jni`는 `reflection`과 **같은 `ReflectionHints` 타입**(`RuntimeHints.java:45`)이므로 `jni().lambdaHints()`도 문법적으로는 호출할 수 있고, 게이트에 그 항이 없는 것이 얼핏 두 번째 누락처럼 보인다.\
+그러나 방출기가 jni 쪽 lambda를 직렬화하지 않으므로 게이트가 그것을 참으로 판정하면 오히려 **내용 없는 파일**이 생긴다.\
+즉 여기서는 게이트가 방출기와 일치하는 것이 맞고, 이 PR의 범위 밖일 뿐 아니라 고치면 안 되는 자리다.\
+(jni lambda 힌트를 등록할 수 있는데 직렬화되지 않는 것이 그 자체로 결함인지는 별개 문제이며 이번에 판정하지 않았다 — 미확인.)
 
-하위호환 영향은 없다고 본다. `hasAnyHint`는 private이고, 변경은 판정이 참이 되는 입력 집합을 넓히기만 한다. 이전에 파일이 만들어지던 모든 입력에서 여전히 만들어지고 내용도 같다.
+하위호환 영향은 없다고 본다.\
+`hasAnyHint`는 private이고, 변경은 판정이 참이 되는 입력 집합을 넓히기만 한다.\
+이전에 파일이 만들어지던 모든 입력에서 여전히 만들어지고 내용도 같다.
 
-구조적 교훈이 하나 남는다. 이 게이트는 "힌트가 있는가"를 힌트 모델에게 묻지 않고 **자기가 아는 종류를 손으로 나열해** 묻는다. `RuntimeHints`에 `isEmpty()`가 없으므로(`RuntimeHints.java:34-91`) 이 열거는 모델의 종류 목록을 복제한 코드이고, 새 종류가 추가될 때 함께 갱신되지 않으면 조용히 틀린다. 컴파일러는 이 커플링을 강제하지 못한다 — 양쪽 다 정상적으로 컴파일된다. 실제로 lambda 힌트는 `@since 7.0.6`으로 나중에 들어왔고(`ReflectionHints.java:66`, `:265`), 방출기에는 반영되었으나 게이트에는 반영되지 않았다. 회귀 방지는 "그 종류만 가진 hints가 파일로 써지는가" 형태의 테스트로만 담보되며, 기존 테스트들이 종류별로 정확히 그 형태였다는 점(4장)이 이 방식의 유효성을 보여 준다.
+> **하위호환(backward compatibility)** — 바뀐 코드가 예전 사용 방식을 그대로 받아 주는 성질.\
+> 예: private 메서드라 바깥에서 부르는 곳이 없고, 판정이 참이 되는 입력만 늘어서 깨질 사용처가 없다.
 
-인접 PR과의 관계: 같은 파일 계층의 한 층 아래, `FileNativeConfigurationWriter.writeTo`의 출력 인코딩 결함이 #36972로 먼저 처리되었다. 이 PR이 "쓸 것인가 말 것인가"라면 #36972는 "쓸 때 어떻게 쓰는가"이며, 두 결함은 같은 `write` 호출 사슬 위의 서로 다른 관문에 있었다.
+구조적 교훈이 하나 남는다.\
+이 게이트는 "힌트가 있는가"를 힌트 모델에게 묻지 않고 **자기가 아는 종류를 손으로 나열해** 묻는다.\
+`RuntimeHints`에 `isEmpty()`가 없으므로(`RuntimeHints.java:34-91`) 이 열거는 모델의 종류 목록을 복제한 코드이고, 새 종류가 추가될 때 함께 갱신되지 않으면 조용히 틀린다.\
+컴파일러는 이 커플링을 강제하지 못한다 — 양쪽 다 정상적으로 컴파일된다.\
+실제로 lambda 힌트는 `@since 7.0.6`으로 나중에 들어왔고(`ReflectionHints.java:66`, `:265`), 방출기에는 반영되었으나 게이트에는 반영되지 않았다.\
+회귀 방지는 "그 종류만 가진 hints가 파일로 써지는가" 형태의 테스트로만 담보되며, 기존 테스트들이 종류별로 정확히 그 형태였다는 점(4장)이 이 방식의 유효성을 보여 준다.
+
+> **커플링(coupling)** — 한쪽을 고치면 다른 쪽도 같이 고쳐야 하는 두 코드 사이의 묶임.\
+> 예: 여기서는 힌트 종류 목록이 게이트와 방출기 두 곳에 있어 한쪽만 고치면 어긋난다.
+
+인접 PR과의 관계: 같은 파일 계층의 한 층 아래, `FileNativeConfigurationWriter.writeTo`의 출력 인코딩 결함이 #36972로 먼저 처리되었다.\
+이 PR이 "쓸 것인가 말 것인가"라면 #36972는 "쓸 때 어떻게 쓰는가"이며, 두 결함은 같은 `write` 호출 사슬 위의 서로 다른 관문에 있었다.

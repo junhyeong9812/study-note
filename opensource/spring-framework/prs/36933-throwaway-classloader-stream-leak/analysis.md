@@ -1,15 +1,37 @@
 # PR #36933 분석 — ThrowawayClassLoader의 클래스 리소스 스트림 미해제
 
-> 기준 상태 세 가지를 구분해 쓴다. **수정 전** = `03d80feed0f^`, **수정 커밋** = `03d80feed0f`, **현재** = `upstream/main`(`7daf1013aa8`, #36938까지 반영된 상태). 파일:줄 인용마다 어느 상태 기준인지 밝힌다.
-> 이 문서의 자리: README(왜 이런 물건인가의 서사)·structure(클래스 구조도)·tests(테스트 해설)와 겹치지 않도록, 호출 그래프 위에 놓인 **이름표 하나하나의 역할**과 **결함 경로의 단계별 상태**를 고정하는 데 집중한다.
+> 기준 상태 세 가지를 구분해 쓴다.\
+> **수정 전** = `03d80feed0f^`, **수정 커밋** = `03d80feed0f`, **현재** = `upstream/main`(`7daf1013aa8`, #36938까지 반영된 상태).\
+> 파일:줄 인용마다 어느 상태 기준인지 밝힌다.
+>
+> 이 문서의 자리: README(왜 이런 물건인가의 서사)·structure(클래스 구조도)·tests(테스트 해설)와 겹치지 않게 잡았다.\
+> 호출 그래프 위에 놓인 **이름표 하나하나의 역할**과 **결함 경로의 단계별 상태**를 고정하는 데 집중한다.
 
 ## 0. 결론
 
-`ThrowawayClassLoader.loadClassFromResource`가 `getResourceAsStream(...)`으로 연 `InputStream`을 성공 출구(`defineClass` 반환)와 예외 출구(`IOException` -> `ClassNotFoundException`) 어디에서도 닫지 않아, native-image 빌드 한 번 동안 이 경로가 도는 횟수만큼 OS 자원(파일 디스크립터 또는 jar zip 엔트리와 네이티브 inflater 버퍼)이 GC 시점까지 붙들린다.
+`ThrowawayClassLoader.loadClassFromResource`가 `getResourceAsStream(...)`으로 연 `InputStream`을 어느 출구에서도 닫지 않는다.\
+성공 출구(`defineClass` 반환)도, 예외 출구(`IOException` -> `ClassNotFoundException`)도 마찬가지다.\
+그 결과 native-image 빌드 한 번 동안 이 경로가 도는 횟수만큼 OS 자원이 GC 시점까지 붙들린다.\
+붙들리는 것은 파일 디스크립터이거나, jar 클래스패스라면 열린 zip 엔트리와 네이티브 inflater 버퍼다.
 
-수정은 이미 실질적 final인 지역변수 `inputStream`을 try-with-resources의 **자원으로 채택**(`try (inputStream)`)해, 로딩 로직을 한 글자도 건드리지 않고 모든 출구에 닫기를 붙인 것이다.
+> **파일 디스크립터(file descriptor)** — OS가 열린 파일 하나에 붙여 주는 번호표. 프로세스당 개수 한도가 있다.\
+> 예: 한도가 1024인 CI 컨테이너에서 1025번째로 열려는 순간 `Too many open files`로 실패한다.
 
-상태: 머지됨. `upstream/main`의 커밋 `03d80feed0f`("Close class resource InputStream in ThrowawayClassLoader", `Closes gh-36933`). GitHub PR 상태값은 `CLOSED`이고 `mergeCommit`은 비어 있는데, 이는 스프링이 기여 커밋을 직접 적용한 뒤 PR을 닫는 운영 방식 때문이다.
+> **inflater 버퍼** — jar(zip) 안의 압축된 바이트를 풀기 위해 JVM이 네이티브 메모리에 잡아 두는 작업 공간.\
+> 예: jar 안의 `.class` 하나를 열면 그 엔트리를 푸는 동안 이 버퍼가 잡히고, 스트림을 닫아야 반환된다.
+
+수정은 이미 실질적 final인 지역변수 `inputStream`을 try-with-resources의 **자원으로 채택**(`try (inputStream)`)한 것이다.\
+로딩 로직을 한 글자도 건드리지 않고 모든 출구에 닫기가 붙는다.
+
+> **try-with-resources** — `try` 괄호 안에 적어 둔 자원을 블록을 빠져나갈 때 자동으로 `close()`해 주는 자바 문법.\
+> 예: `try (inputStream) { ... }`이면 정상 반환이든 예외든 블록을 나가는 순간 `inputStream.close()`가 불린다.
+
+> **실질적 final(effectively final)** — `final` 키워드는 없지만 한 번 대입된 뒤 다시 대입되지 않는 지역변수.\
+> 예: `inputStream`은 `:64`에서 한 번만 대입되므로, 자바 9부터는 이름만 적어 자원으로 채택할 수 있다.
+
+상태: 머지됨.\
+`upstream/main`의 커밋 `03d80feed0f`("Close class resource InputStream in ThrowawayClassLoader", `Closes gh-36933`).\
+GitHub PR 상태값은 `CLOSED`이고 `mergeCommit`은 비어 있는데, 이는 스프링이 기여 커밋을 직접 적용한 뒤 PR을 닫는 운영 방식 때문이다.
 
 ## 1. 무대
 
@@ -24,13 +46,24 @@
 | 결함 메서드 | `loadClassFromResource(String)` (private) |
 | 유일한 소비자 | `PreComputeFieldFeature` (같은 패키지, GraalVM `Feature` 구현) |
 
-공개 진입 API는 없다. 이 클래스는 사용자가 직접 부르는 물건이 아니라, GraalVM `native-image` 컴파일러가 빌드 도중 `Feature` SPI로 `PreComputeFieldFeature`를 깨우면 그 안에서 간접적으로 도는 내부 부품이다. 따라서 "누가 부르나"의 답은 사람이 아니라 **네이티브 이미지 빌드 파이프라인**이며, 실행 횟수는 "도달 가능한 모든 타입 x 패턴에 걸리는 static final boolean 필드 수"에 비례한다.
+공개 진입 API는 없다.\
+이 클래스는 사용자가 직접 부르는 물건이 아니다.\
+GraalVM `native-image` 컴파일러가 빌드 도중 `Feature` SPI로 `PreComputeFieldFeature`를 깨우면, 그 안에서 간접적으로 도는 내부 부품이다.\
+따라서 "누가 부르나"의 답은 사람이 아니라 **네이티브 이미지 빌드 파이프라인**이다.\
+실행 횟수는 "도달 가능한 모든 타입 x 패턴에 걸리는 static final boolean 필드 수"에 비례한다.
+
+> **네이티브 이미지(native image)** — 자바 애플리케이션을 JVM 없이 바로 실행되는 단일 실행 파일로 미리 컴파일한 것.\
+> 예: GraalVM `native-image` 명령이 빌드 시점에 도달 가능한 클래스를 전부 훑어 하나의 바이너리로 굽는다.
+
+> **Feature SPI** — 그 굽는 과정에 끼어들어 "이 필드 값은 미리 이렇게 정해 둬라"라고 말할 수 있게 열어 둔 확장 지점.\
+> 예: `PreComputeFieldFeature`가 `NativeDetector#inNativeImage` 같은 필드 값을 빌드 시점에 확정해 넣는다.
 
 ## 2. 전체 메서드 그래프
 
-수정 전(`03d80feed0f^`) 기준 줄번호다. 화살표는 호출 방향, 괄호 안은 그 지점을 통과하는 값이다.
+수정 전(`03d80feed0f^`) 기준 줄번호다.\
+화살표는 호출 방향, 괄호 안은 그 지점을 통과하는 값이다.
 
-```
+```text
  GraalVM native-image 빌드 (Feature SPI)
    |
    v
@@ -76,11 +109,19 @@
    |  디렉터리 클래스패스면: 파일 디스크립터
 ```
 
-데이터 흐름의 요점은 `inputStream`이 `:64`에서 태어나 `:70`에서 소비되고, 그 뒤 **어느 출구에서도 참조되지 않는다**는 것이다. 참조가 끊기므로 자바 객체로서는 GC 대상이 되지만, 그 아래에 매달린 OS 핸들은 GC가 언제 수거하느냐에 운명이 달린다.
+데이터 흐름의 요점은 `inputStream`의 수명이다.\
+`:64`에서 태어나 `:70`에서 소비되고, 그 뒤 **어느 출구에서도 참조되지 않는다**.\
+참조가 끊기므로 자바 객체로서는 GC 대상이 되지만, 그 아래에 매달린 OS 핸들은 GC가 언제 수거하느냐에 운명이 달린다.
+
+> **폴백(fallback)** — 먼저 시도한 정규 경로가 실패했을 때 대신 타는 예비 경로.\
+> 예: `super.loadClass`가 CNFE로 실패하면 `loadClassFromResource`로 넘어가 리소스에서 직접 바이트를 읽는다.
 
 ## 2.5 핵심 이름표 사전
 
-이 무대에서 헷갈리는 지점은 "클래스로더가 세 개(조부모, resourceLoader, ThrowawayClassLoader 자신)"라는 것과, "스트림이 두 겹(원본과 그것을 감싼 테스트용 추적기)"이라는 것이다. 아래는 결함 경로에 등장하는 모든 이름을 그 관점에서 정리한 것이다.
+이 무대에서 헷갈리는 지점이 둘 있다.\
+하나는 클래스로더가 세 개(조부모, `resourceLoader`, `ThrowawayClassLoader` 자신)라는 것이고,\
+다른 하나는 스트림이 두 겹(원본과 그것을 감싼 테스트용 추적기)이라는 것이다.\
+아래는 결함 경로에 등장하는 모든 이름을 그 관점에서 정리한 것이다.
 
 | 이름표 | 무엇인가 | 입력 -> 출력 | 누가 언제 부르나 | 이 결함과의 관계 |
 |---|---|---|---|---|
@@ -110,7 +151,34 @@
 
 ## 3. 결함 경로 단계 추적
 
-누수는 "값이 틀린다"가 아니라 "정리가 빠진다"이므로, 관찰 대상은 반환값이 아니라 `inputStream`의 열림 상태다. 아래 표는 정상 클래스 하나(`org.springframework.core.NativeDetector`)가 지나갈 때 수정 전후가 각 단계에서 무엇이 다른지를 나란히 놓은 것이다.
+누수는 "값이 틀린다"가 아니라 "정리가 빠진다"이다.\
+그래서 관찰 대상은 반환값이 아니라 `inputStream`의 열림 상태다.\
+아래는 정상 클래스 하나(`org.springframework.core.NativeDetector`)가 지나갈 때 수정 전후가 각 단계에서 무엇이 다른지를 나란히 놓은 것이다.
+
+먼저 그림으로 본다.\
+같은 클래스 하나를 로딩하고 메서드를 빠져나온 **직후의 최종 상태**를 같은 칸 폭으로 맞춰 놓았다.
+
+```text
+ 수정 전  try { ... }                     수정 후  try (inputStream) { ... }
+ +-----------------------------+         +-----------------------------+
+ | 반환값  : Class NativeDetector|         | 반환값  : Class NativeDetector|
+ | 예외    : 없음                |         | 예외    : 없음                |
+ | inputStream : 열림 [!]        |         | inputStream : 닫힘           |
+ | zip 엔트리  : 점유            |         | zip 엔트리  : 반환           |
+ | inflater 버퍼: 점유           |         | inflater 버퍼: 반환          |
+ +-----------------------------+         +-----------------------------+
+   -> 관측 가능한 결과는 동일하다. 다른 것은 "보이지 않는 칸" 세 줄뿐이다.
+
+ 다음 클래스로 넘어가 같은 경로를 1000번 반복하면
+
+ +-----------------------------+         +-----------------------------+
+ | 열린 스트림 1000개 누적       |         | 열린 스트림 0개              |
+ | -> Too many open files 위험  |         | -> 반복해도 상태가 평평하다   |
+ +-----------------------------+         +-----------------------------+
+```
+
+한 번만 보면 두 그림은 같아 보인다.\
+반복 횟수를 넣는 순간에만 차이가 드러나는 것이 이 결함이 오래 남은 이유다.
 
 | 단계 | 수행 내용 | 수정 전 `inputStream` 상태 | 수정 후 `inputStream` 상태 |
 |---|---|---|---|
@@ -125,11 +193,27 @@
 | 7-C. ClassFormatError 출구 | Error 전파 | **열린 채 이탈** | `close()` 후 Error 전파 |
 | 8. 반복 | 다음 필드/다음 클래스 | 4번으로 돌아가 **누적** | 누적 없음 |
 
-행 8이 이 결함의 성격을 규정한다. 한 번의 누수는 무해하지만, `registerSubtypeReachabilityHandler(..., Object.class)`(`PreComputeFieldFeature.java:57`)가 도달 가능한 전 타입을 훑기 때문에 4-7 사이클이 빌드 한 번에 반복해서 돈다. 그래서 증상은 "항상 터지는 버그"가 아니라 "빌드 규모가 커질수록 확률이 오르는 비결정적 고갈"의 형태를 띤다. 디스크립터 한도가 낮은 CI 컨테이너의 `Too many open files`, 윈도우에서 jar 파일이 잠겨 후속 단계의 삭제/교체가 막히는 현상, inflater 버퍼 누적에 의한 빌드 프로세스 메모리 증가가 그 세 방향이다. 다만 실제 빌드에서 이 세 증상 중 어느 것이 관측되었다는 보고는 이번 조사에서 확인하지 못했다(미확인) — PR은 "재현된 장애"가 아니라 "정적으로 확정된 자원 위생 결함"으로 제출되었다.
+행 8이 이 결함의 성격을 규정한다.\
+한 번의 누수는 무해하다.\
+그러나 `registerSubtypeReachabilityHandler(..., Object.class)`(`PreComputeFieldFeature.java:57`)가 도달 가능한 전 타입을 훑기 때문에, 4-7 사이클이 빌드 한 번에 반복해서 돈다.\
+그래서 증상은 "항상 터지는 버그"가 아니라 "빌드 규모가 커질수록 확률이 오르는 비결정적 고갈"의 형태를 띤다.
+
+> **비결정적 고갈** — 같은 코드를 돌려도 어떤 날은 통과하고 어떤 날은 자원이 바닥나 실패하는 형태의 결함.\
+> 예: 클래스가 300개인 앱에서는 문제없다가, 1200개인 앱의 CI에서만 `Too many open files`가 난다.
+
+가능한 방향은 셋이다.\
+디스크립터 한도가 낮은 CI 컨테이너의 `Too many open files`,\
+윈도우에서 jar 파일이 잠겨 후속 단계의 삭제/교체가 막히는 현상,\
+inflater 버퍼 누적에 의한 빌드 프로세스 메모리 증가.\
+다만 실제 빌드에서 이 세 증상 중 어느 것이 관측되었다는 보고는 이번 조사에서 확인하지 못했다(미확인).\
+PR은 "재현된 장애"가 아니라 "정적으로 확정된 자원 위생 결함"으로 제출되었다.
 
 ## 4. 계약
 
 이 코드가 지켜야 하는 것들과, 결함이 어긴 것을 구분해 둔다.
+
+> **계약(contract)** — 그 코드가 호출자에게 지키기로 약속한 것. 문서·시그니처·관례로 정해진다.\
+> 예: `ClassLoader.loadClass`는 "클래스를 돌려주거나 `ClassNotFoundException`을 던진다"이지 "null을 돌려준다"가 아니다.
 
 | 계약 | 출처 | 결함이 어기는가 |
 |---|---|---|
@@ -139,7 +223,11 @@
 | try-with-resources의 `close()`는 같은 `try` 문의 `catch`보다 먼저 실행된다 | JLS 14.20.3 | 수정이 이 규칙에 **의존**한다 — 닫기 중 발생한 `IOException`도 기존 `catch (IOException)`이 CNFE로 번역 |
 | 이 패키지의 코드는 공개 API가 아니며 null 검사 대상도 아니다 | `package-info.java:1-5` (`@NullUnmarked`) | 결함과 무관하나, **정적 도구가 이 패키지를 검사하지 않는다**는 사실이 결함이 오래 남은 배경 |
 
-기존 테스트가 고정하던 것은 아무것도 없었다. 이 클래스에는 테스트 파일 자체가 없었고, PR이 `ThrowawayClassLoaderTests`를 신규로 만들었다.
+> **suppressed 예외** — 본문에서 이미 예외가 날아가는 중에 `close()`도 실패했을 때, 나중 예외를 먼저 것에 첨부해 함께 보고하는 장치.\
+> 예: `transferTo`가 `IOException`을 던졌고 닫기도 실패하면, 뒤쪽 실패가 앞쪽 예외의 suppressed 목록에 붙는다.
+
+기존 테스트가 고정하던 것은 아무것도 없었다.\
+이 클래스에는 테스트 파일 자체가 없었고, PR이 `ThrowawayClassLoaderTests`를 신규로 만들었다.
 
 ## 5. 수정안
 
@@ -168,7 +256,29 @@ after (`upstream/main` 기준 `ThrowawayClassLoader.java:72-77`):
 		}
 ```
 
-**왜 그 위치인가.** 자원의 수명은 획득 지점(`:64`)에서 시작하지만, 정리를 붙일 수 있는 최소 침습 지점은 이미 존재하는 `try` 블록이다. 자바 9부터 실질적 final인 기존 변수를 이름만 적어 자원으로 채택할 수 있으므로(`try (inputStream)`), `:65-67`의 null 검사와 조기 반환을 그대로 둔 채 닫기만 추가된다. 즉 "구조 변경 0, 불변식 +1"이다.
+**왜 그 위치인가.**\
+자원의 수명은 획득 지점(`:64`)에서 시작한다.\
+그러나 정리를 붙일 수 있는 최소 침습 지점은 이미 존재하는 `try` 블록이다.\
+자바 9부터 실질적 final인 기존 변수를 이름만 적어 자원으로 채택할 수 있으므로(`try (inputStream)`), `:65-67`의 null 검사와 조기 반환을 그대로 둔 채 닫기만 추가된다.\
+즉 "구조 변경 0, 불변식 +1"이다.
+
+세 출구가 각각 어떻게 달라지는지를 같은 칸 폭으로 놓으면 이렇다.
+
+```text
+ 출구            수정 전                        수정 후
+ ------------    ---------------------------    ---------------------------
+ A 성공          return defineClass(...)        close() -> return defineClass(...)
+                 스트림 열린 채 이탈             스트림 닫고 이탈
+
+ B IOException   throw new CNFE(...)            close() -> catch -> throw CNFE
+                 스트림 열린 채 예외 전파         닫은 뒤 예외 전파
+                                                (close 실패도 같은 catch가 CNFE로 번역)
+
+ C ClassFormat   Error 그대로 전파               close() -> Error 그대로 전파
+   Error         스트림 열린 채 이탈             스트림 닫고 이탈
+```
+
+세 출구 모두 반환값과 예외 종류는 그대로이고, 바뀐 것은 "닫혔는가" 한 칸뿐이다.
 
 검토된 대안과 기각 사유는 다음과 같다.
 
@@ -181,13 +291,27 @@ after (`upstream/main` 기준 `ThrowawayClassLoader.java:72-77`):
 
 ## 6. 범위 밖과 인접 영향
 
-**같은 패턴을 저장소 전체에서 확인한 결과, 이 클래스가 예외적인 쪽이었다.** `getResourceAsStream`으로 클래스 바이트를 읽는 다른 지점들은 모두 닫고 있었다.
+**같은 패턴을 저장소 전체에서 확인한 결과, 이 클래스가 예외적인 쪽이었다.**\
+`getResourceAsStream`으로 클래스 바이트를 읽는 다른 지점들은 모두 닫고 있었다.
 
-- `OverridingClassLoader.loadBytesForClass`(`upstream/main:139-153`)는 구조가 거의 동일하다 — `openStreamForClass`(`:162-165`)가 `getParent().getResourceAsStream(...)`을 돌려주고, null이면 조기 반환하고, 아니면 읽어서 바이트를 만든다. 차이는 읽기를 `FileCopyUtils.copyToByteArray(is)`(`:146`)에 맡긴다는 것뿐이고, 그 유틸이 `try (in)`으로 닫는다(`FileCopyUtils.java:145`). 즉 **직접 `transferTo`를 손으로 쓰면서 닫기를 잃어버린 것**이 이 결함의 형태다.
-- 재패키징된 cglib 사본도 닫는다. `DuplicatesPredicate`(`:91-99`)는 `try { ... } finally { is.close(); }`를 쓴다.
+- `OverridingClassLoader.loadBytesForClass`(`upstream/main:139-153`)는 구조가 거의 동일하다.\
+  `openStreamForClass`(`:162-165`)가 `getParent().getResourceAsStream(...)`을 돌려주고, null이면 조기 반환하고, 아니면 읽어서 바이트를 만든다.\
+  차이는 읽기를 `FileCopyUtils.copyToByteArray(is)`(`:146`)에 맡긴다는 것뿐이고, 그 유틸이 `try (in)`으로 닫는다(`FileCopyUtils.java:145`).\
+  즉 **직접 `transferTo`를 손으로 쓰면서 닫기를 잃어버린 것**이 이 결함의 형태다.
+- 재패키징된 cglib 사본도 닫는다.\
+  `DuplicatesPredicate`(`:91-99`)는 `try { ... } finally { is.close(); }`를 쓴다.
 
-하위호환 영향은 없다고 본다. 클래스는 패키지 프라이빗이고 패키지 자체가 공개 API가 아니라고 선언되어 있으며(`package-info.java:2`), 관측 가능한 동작(반환 클래스, 던지는 예외의 종류)은 그대로다. 유일하게 새로 가능해진 것은 닫기 실패가 `IOException`으로 나타나 CNFE로 번역되는 경로인데, 이는 이전에는 "조용히 누수"였던 상황이 "정상적으로 보고"로 바뀐 것이다.
+하위호환 영향은 없다고 본다.\
+클래스는 패키지 프라이빗이고 패키지 자체가 공개 API가 아니라고 선언되어 있다(`package-info.java:2`).\
+관측 가능한 동작(반환 클래스, 던지는 예외의 종류)도 그대로다.\
+유일하게 새로 가능해진 것은 닫기 실패가 `IOException`으로 나타나 CNFE로 번역되는 경로다.\
+이는 이전에는 "조용히 누수"였던 상황이 "정상적으로 보고"로 바뀐 것이다.
 
-인접 결함 하나가 이 조사에서 함께 드러났고 별도 PR로 갈라졌다. 같은 메서드의 `:65-67`(`if (inputStream == null) return null;`)이 만드는 null이 `loadClass`를 통해 밖으로 새는 문제 — `ClassLoader.loadClass` 반환 계약 위반이다. 두 변경은 같은 메서드를 무대로 삼지만 닿는 줄이 다르고, 실제로 텍스트 충돌 없이 순차 머지되었다(#36938, `233e7b91f9b`). 테스트 파일만 양쪽이 각각 신규 생성해 결합이 필요했고, 현재 `ThrowawayClassLoaderTests`에는 두 테스트가 나란히 들어 있다.
+인접 결함 하나가 이 조사에서 함께 드러났고 별도 PR로 갈라졌다.\
+같은 메서드의 `:65-67`(`if (inputStream == null) return null;`)이 만드는 null이 `loadClass`를 통해 밖으로 새는 문제 — `ClassLoader.loadClass` 반환 계약 위반이다.\
+두 변경은 같은 메서드를 무대로 삼지만 닿는 줄이 달라, 실제로 텍스트 충돌 없이 순차 머지되었다(#36938, `233e7b91f9b`).\
+테스트 파일만 양쪽이 각각 신규 생성해 결합이 필요했고, 현재 `ThrowawayClassLoaderTests`에는 두 테스트가 나란히 들어 있다.
 
-이 PR에서 손대지 않은, 확인은 되었으나 별건인 것들: `loadClass(name, resolve)`가 `resolve` 인자를 무시하고 항상 `super.loadClass(name, true)`를 부르며 폴백으로 정의한 클래스에는 `resolveClass`를 걸지 않는 점(기존 동작), `loadClassFromResource`에 `@Nullable` 표기가 없는 점(패키지가 `@NullUnmarked`라 표기해도 검사되지 않는다).
+이 PR에서 손대지 않은, 확인은 되었으나 별건인 것들은 둘이다.\
+`loadClass(name, resolve)`가 `resolve` 인자를 무시하고 항상 `super.loadClass(name, true)`를 부르며, 폴백으로 정의한 클래스에는 `resolveClass`를 걸지 않는 점(기존 동작).\
+그리고 `loadClassFromResource`에 `@Nullable` 표기가 없는 점(패키지가 `@NullUnmarked`라 표기해도 검사되지 않는다).

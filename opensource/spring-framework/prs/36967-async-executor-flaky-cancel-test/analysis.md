@@ -5,13 +5,27 @@
 
 ## 0. 결론
 
-**결함**: `taskTerminationTimeoutWithImmediateCancel` 테스트는 `cancelled` 플래그의 **쓰기**(테스트 스레드의 `close()`)와 **읽기**(워커 스레드의 `checkCancelled`) 사이 순서를 강제하는 장치 없이 "쓰기가 먼저 이긴다"고 가정했고, 그 가정이 뒤집히면 태스크가 정상 완료되어 `future.get()`이 예외 대신 `null`을 돌려주면서 간헐 실패했다(로컬 타이트 루프 5만 회 중 2~4회, 부하 걸린 CI에서 더 잦음).
+**결함**: `taskTerminationTimeoutWithImmediateCancel` 테스트는 `cancelled` 플래그의 **쓰기**(테스트 스레드의 `close()`)와 **읽기**(워커 스레드의 `checkCancelled`) 사이 순서를 강제하는 장치 없이 "쓰기가 먼저 이긴다"고 가정했다.\
+그 가정이 뒤집히면 태스크가 정상 완료되어 `future.get()`이 예외 대신 `null`을 돌려주면서 간헐 실패했다(로컬 타이트 루프 5만 회 중 2~4회, 부하 걸린 CI에서 더 잦음).
+
+> **flaky 테스트(flaky test)** — 코드를 바꾸지 않았는데도 돌릴 때마다 통과와 실패를 오가는 테스트.\
+> 예: 이 테스트는 5만 회 중 몇 회만 실패하므로 로컬에서 한 번 돌려서는 정상으로 보인다.
 
 **수정**: `doExecute`를 오버라이드해 워커 스레드를 아예 띄우지 않고 `TaskTrackingRunnable` 래퍼를 캡처한 뒤, `close()`가 플래그를 세운 **다음** 테스트 스레드에서 그 래퍼를 직접 `run()`한다 — 경합의 한쪽 참가자를 없애 순서를 언어가 보장하는 프로그램 순서로 만든다(테스트 전용, +10/-8).
 
-**상태**: MERGED. 2026-07-12 `bclozel` 머지, 7.0.x `d01e490b524` -> main `bbfe6a04738`. 프로덕션 동작 불변이라 릴리스 노트 대상은 아니다.
+> **프로그램 순서(program order)** — 한 스레드 안에서 코드가 적힌 차례대로 실행된다는, 언어가 보장하는 순서.\
+> 예: 같은 스레드에서 `close()`를 부른 뒤 `run()`을 부르면 그 순서가 뒤집히는 일은 없다.
 
-**주의 — 이 PR의 결함은 프로덕션이 아니라 테스트에 있다.** `SimpleAsyncTaskExecutor`의 취소 로직은 두 인터리빙 모두에서 자기 계약대로 동작한다. 무너진 것은 "빨간불이면 내 변경이 잘못됐다"는 테스트 스위트의 신호 신뢰성이다.
+**상태**: MERGED.\
+2026-07-12 `bclozel` 머지, 7.0.x `d01e490b524` -> main `bbfe6a04738`.\
+프로덕션 동작 불변이라 릴리스 노트 대상은 아니다.
+
+**주의 — 이 PR의 결함은 프로덕션이 아니라 테스트에 있다.**\
+`SimpleAsyncTaskExecutor`의 취소 로직은 두 인터리빙 모두에서 자기 계약대로 동작한다.\
+무너진 것은 "빨간불이면 내 변경이 잘못됐다"는 테스트 스위트의 신호 신뢰성이다.
+
+> **인터리빙(interleaving)** — 여러 스레드의 문장들이 실제로 실행될 때 섞이는 한 가지 배열.\
+> 예: 여기서는 "close가 먼저" 배열과 "워커가 먼저" 배열 두 가지가 가능하고, 결과가 서로 다르다.
 
 ## 1. 무대
 
@@ -21,17 +35,28 @@
 - 변경 파일(유일): `spring-core/src/test/java/org/springframework/core/task/SimpleAsyncTaskExecutorTests.java`
 - 검증 대상 프로덕션: `spring-core/src/main/java/org/springframework/core/task/SimpleAsyncTaskExecutor.java` (무변경)
 
-테스트가 밟는 공개 진입 API는 `submit(Runnable)`(:340)과 `AutoCloseable.close()`(:390) 둘이다. `submit`은 `FutureTask`를 만들어 `execute(future, TIMEOUT_INDEFINITE)`(:342)로 위임하고, `close()`는 try-with-resources 블록 종료로 자동 호출된다. 실제 검증 대상은 그 둘 사이에 낀 내부 클래스 `TaskTrackingRunnable.run()`(:481)의 취소 게이트다.
+테스트가 밟는 공개 진입 API는 `submit(Runnable)`(:340)과 `AutoCloseable.close()`(:390) 둘이다.\
+`submit`은 `FutureTask`를 만들어 `execute(future, TIMEOUT_INDEFINITE)`(:342)로 위임하고, `close()`는 try-with-resources 블록 종료로 자동 호출된다.\
+실제 검증 대상은 그 둘 사이에 낀 내부 클래스 `TaskTrackingRunnable.run()`(:481)의 취소 게이트다.
 
-이 테스트와 취소 프로덕션 코드는 둘 다 메인테이너 Juergen Hoeller가 도입한 것이다 — 프로덕션은 `cff48fff2d6`(2026-02-24), 테스트는 `b6833ff31f6`(2026-02-28, gh-36362 "Cancel late-executing tasks within revised closed handling"). 즉 이 PR은 남의 코드를 고치는 것이 아니라 그 커밋이 함께 넣은 테스트의 타이밍 가정을 보완한다.
+> **`FutureTask`** — 아직 끝나지 않은 작업의 결과를 나중에 꺼낼 수 있게 해 주는 핸들이자, 그 작업 자체를 담은 `Runnable`.\
+> 예: `submit`이 돌려준 `Future`에 `get()`을 부르면 결과를 받거나, 취소된 경우 `CancellationException`을 받는다.
 
-동작 조건은 `setTaskTerminationTimeout(100)` 한 줄이 결정한다. 이 값이 0보다 크면 `trackActiveThreadsIfNecessary()`(:283)가 `activeThreads` 집합을 만들고, 그래야 `execute`가 분기 2(:330)를 타서 사용자 람다 대신 `TaskTrackingRunnable` 래퍼를 `doExecute`에 넘긴다. 캡처할 가치가 있는 객체가 래퍼라는 사실이 수정의 성립 조건이다 — 분기 3이었다면 잡히는 것은 취소 검사가 없는 맨 람다일 뿐이다.
+이 테스트와 취소 프로덕션 코드는 둘 다 메인테이너 Juergen Hoeller가 도입한 것이다 — 프로덕션은 `cff48fff2d6`(2026-02-24), 테스트는 `b6833ff31f6`(2026-02-28, gh-36362 "Cancel late-executing tasks within revised closed handling").\
+즉 이 PR은 남의 코드를 고치는 것이 아니라 그 커밋이 함께 넣은 테스트의 타이밍 가정을 보완한다.
+
+동작 조건은 `setTaskTerminationTimeout(100)` 한 줄이 결정한다.\
+이 값이 0보다 크면 `trackActiveThreadsIfNecessary()`(:283)가 `activeThreads` 집합을 만들고, 그래야 `execute`가 분기 2(:330)를 타서 사용자 람다 대신 `TaskTrackingRunnable` 래퍼를 `doExecute`에 넘긴다.\
+캡처할 가치가 있는 객체가 래퍼라는 사실이 수정의 성립 조건이다 — 분기 3이었다면 잡히는 것은 취소 검사가 없는 맨 람다일 뿐이다.
+
+> **래퍼(wrapper) / 데코레이터(decorator)** — 원본 객체를 같은 인터페이스의 다른 객체로 감싸, 앞뒤에 할 일을 덧붙인 것.\
+> 예: `TaskTrackingRunnable`은 사용자 `Runnable`을 감싸 실행 전에 취소 검사를 덧붙인다.
 
 ## 2. 전체 메서드 그래프
 
 테스트 스레드와 워커 스레드가 각각 어떤 메서드를 밟는지를 두 줄기로 나란히 놓으면, 경합이 일어나는 두 문장이 어디인지 보인다.
 
-```
+```text
 [테스트 스레드]                                        [워커 스레드 — 수정 후에는 없음]
 
  setTaskTerminationTimeout(100)                :193
@@ -79,15 +104,28 @@
         .isThrownBy(future::get)               테스트:169
 ```
 
-수정 전에는 오른쪽 줄기가 실제 스레드였고, `close()`의 `cancelled = true`(:411)와 `checkCancelled`의 읽기(:423)가 **서로 다른 스레드의 두 문장**이라 순서가 스케줄러 소관이었다. 수정 후에는 오른쪽 줄기가 사라지고 두 문장이 같은 스레드의 연속된 코드가 된다.
+수정 전에는 오른쪽 줄기가 실제 스레드였고, `close()`의 `cancelled = true`(:411)와 `checkCancelled`의 읽기(:423)가 **서로 다른 스레드의 두 문장**이라 순서가 스케줄러 소관이었다.\
+수정 후에는 오른쪽 줄기가 사라지고 두 문장이 같은 스레드의 연속된 코드가 된다.
 
 ## 2.5 핵심 이름표 사전
 
-이 무대의 함정은 "가시성은 이미 보장되어 있다"는 점이다. `cancelled`의 쓰기와 읽기는 둘 다 `synchronized (threads)` 안에 있으므로 `volatile`이 없어도 값은 반드시 보인다. 보장되지 않는 것은 **누가 먼저 모니터를 잡는가**다. 아래 표는 각 이름표가 순서 문제의 어느 쪽에 서 있는지를 명시한다.
+이 무대의 함정은 "가시성은 이미 보장되어 있다"는 점이다.\
+`cancelled`의 쓰기와 읽기는 둘 다 `synchronized (threads)` 안에 있으므로 `volatile`이 없어도 값은 반드시 보인다.\
+보장되지 않는 것은 **누가 먼저 모니터를 잡는가**다.\
+아래 표는 각 이름표가 순서 문제의 어느 쪽에 서 있는지를 명시한다.
+
+> **모니터(monitor)** — 자바에서 객체 하나에 딸려 있는 자물쇠. `synchronized (obj)` 블록은 그 객체의 모니터를 잡아야 들어갈 수 있다.\
+> 예: 여기서는 `activeThreads` 집합 객체가 자물쇠이고, `cancelled`를 읽고 쓰는 두 코드가 모두 그 자물쇠를 잡는다.
+
+> **가시성(visibility)과 순서(ordering)** — 가시성은 "쓴 값이 보이는가", 순서는 "두 동작 중 무엇이 먼저 일어나는가"다.\
+> 예: 여기서는 값이 보이는 것은 보장되지만, `close()`와 `run()` 중 누가 먼저 모니터를 잡는지는 보장되지 않는다.
 
 ### 2.5.1 프로덕션 쪽 이름표 (테스트가 실행하는 대상)
 
 먼저 테스트가 실행하는 프로덕션 쪽 이름표 아홉 개다.
+
+> **비-static 내부 클래스(inner class)** — 바깥 클래스의 인스턴스에 매달려 만들어지는 내부 클래스. 바깥 인스턴스의 필드를 이름만으로 쓸 수 있다.\
+> 예: `TaskTrackingRunnable`이 그래서, 나중에 실행해도 자신을 만든 executor의 `cancelled`를 읽는다.
 
 | 이름표 | 역할 | 언제 값이 정해지나 | 누가 읽나 | 이 flaky와의 관계 |
 |---|---|---|---|---|
@@ -117,7 +155,9 @@
 
 ## 3. flaky 메커니즘 단계 추적
 
-핵심은 하나다. `submit` 호출과 try 블록 종료 사이에 문장이 하나도 없어서 두 스레드가 사실상 동시에 출발한다. 테스트가 원하는 것은 두 가능한 배열 중 하나뿐이다.
+핵심은 하나다.\
+`submit` 호출과 try 블록 종료 사이에 문장이 하나도 없어서 두 스레드가 사실상 동시에 출발한다.\
+테스트가 원하는 것은 두 가능한 배열 중 하나뿐이다.
 
 ### 3.1 두 인터리빙
 
@@ -135,7 +175,9 @@
 | 뒤늦은 `close()` | 이미 끝남 | `cancelled = true`를 세우지만 무효. `FutureTask.cancel(false)`는 완료된 태스크에 `false` 반환 |
 | `future.get()` | `CancellationException` -> **단언 통과** | `null` 반환, 예외 없음 -> **단언 실패** |
 
-워커가 이기기 쉬운 이유는 태스크가 너무 가볍다는 것이다 — 본문이 `AtomicBoolean` 한 번 읽기라 실행에 들어가기만 하면 마이크로초 안에 끝난다. 반대편 `close()`는 try-with-resources 종료를 거쳐 모니터를 잡아야 한다. 부하 걸린 CI 러너에서는 테스트 스레드가 CPU를 빼앗기는 폭이 커져 실패 확률이 올라간다.
+워커가 이기기 쉬운 이유는 태스크가 너무 가볍다는 것이다 — 본문이 `AtomicBoolean` 한 번 읽기라 실행에 들어가기만 하면 마이크로초 안에 끝난다.\
+반대편 `close()`는 try-with-resources 종료를 거쳐 모니터를 잡아야 한다.\
+부하 걸린 CI 러너에서는 테스트 스레드가 CPU를 빼앗기는 폭이 커져 실패 확률이 올라간다.
 
 ### 3.2 실측
 
@@ -146,11 +188,14 @@ gradle 반복은 JVM 워밍업이 섞여 부적합하다고 보고, gradle 없�
 | 수정 전 코드 그대로 | 4 (약 0.008%) |
 | 수정 후 코드 | 0 (5만/5만 통과) |
 
-이 수치가 문제의 성격을 규정한다. 로컬에서 한 번 돌려서는 절대 재현되지 않는데, 하루 수십 번 도는 CI에서는 주기적으로 빨간불을 만든다. 실제로 이 PR의 계기는 무관한 PR #36965의 CI가 이 테스트 때문에 빨개진 것이었다.
+이 수치가 문제의 성격을 규정한다.\
+로컬에서 한 번 돌려서는 절대 재현되지 않는데, 하루 수십 번 도는 CI에서는 주기적으로 빨간불을 만든다.\
+실제로 이 PR의 계기는 무관한 PR #36965의 CI가 이 테스트 때문에 빨개진 것이었다.
 
 ### 3.3 수정 후의 단계
 
-수정 후에는 위 표의 "순서" 행이 사라진다. 스레드가 하나뿐이므로 프로그램 순서가 곧 실행 순서다.
+수정 후에는 위 표의 "순서" 행이 사라진다.\
+스레드가 하나뿐이므로 프로그램 순서가 곧 실행 순서다.
 
 | 단계 | 값·상태 |
 |---|---|
@@ -159,11 +204,41 @@ gradle 반복은 JVM 워밍업이 섞여 부적합하다고 보고, gradle 없�
 | `captured.get().run()` (테스트 :168) | `checkCancelled`가 `true` 관측 -> `future.cancel(false)` -> `CancellationException` |
 | `future.get()` (테스트 :169) | `FutureTask`가 CANCELLED -> `CancellationException` |
 
-부수 효과로 테스트가 빨라졌다. 래퍼를 한 번도 시작하지 않으므로 `activeThreads`가 계속 비어 있고, `close()`의 `if (!threads.isEmpty())`(:404)가 `threads.wait(100)`(:405)을 건너뛴다. 스레드 생성 비용도 사라진다.
+부수 효과로 테스트가 빨라졌다.\
+래퍼를 한 번도 시작하지 않으므로 `activeThreads`가 계속 비어 있고, `close()`의 `if (!threads.isEmpty())`(:404)가 `threads.wait(100)`(:405)을 건너뛴다.\
+스레드 생성 비용도 사라진다.
+
+같은 테스트·같은 입력에 대해 수정 전후의 최종 상태를 같은 칸 폭으로 놓으면 이렇다.
+
+```text
+ 수정 전                                수정 후
+ +-----------------------------------+ +-----------------------------------+
+ | 스레드   테스트 + 워커 (2개)        | | 스레드   테스트 (1개)              |
+ | 순서     스케줄러가 정한다           | | 순서     프로그램 순서가 정한다      |
+ |                                   | |                                   |
+ | 결과 A  close 가 먼저               | | 결과    항상 cancelled = true 관측  |
+ |   checkCancelled -> true          | |   checkCancelled -> true          |
+ |   FutureTask CANCELLED            | |   FutureTask CANCELLED            |
+ |   future.get() -> 예외 (단언 통과)  | |   future.get() -> 예외 (단언 통과)  |
+ |                                   | |                                   |
+ | 결과 B  워커가 먼저                 | | 결과 B  일어나지 않는다             |
+ |   checkCancelled -> false         | |                                   |
+ |   task.run() -> NORMAL            | |                                   |
+ |   future.get() -> null (단언 실패)  | |                                   |
+ |                                   | |                                   |
+ | 5만 회 중 실패   4                  | | 5만 회 중 실패   0                 |
+ | 단언       1개 (결과만)             | | 단언       2개 (원인 + 결과)        |
+ | close() 의 wait(100)  경우에 따라   | | close() 의 wait(100)  항상 생략     |
+ +-----------------------------------+ +-----------------------------------+
+   같은 입력에 두 결과가 나온다            한 결과로 고정된다
+```
 
 ## 4. 계약
 
 이 flaky를 둘러싼 계약은 다섯 개이고, 그중 실제로 깨진 것은 마지막 하나뿐이다.
+
+> **템플릿 메서드(template method)** — 전체 절차는 상위 클래스가 고정해 두고, 그중 한 단계만 하위 클래스가 갈아 끼우도록 열어 둔 메서드.\
+> 예: `execute`가 정하는 "래퍼를 씌워 넘긴다"는 절차는 그대로 두고, `doExecute`의 "새 스레드로 실행한다"만 바꿔 끼울 수 있다.
 
 | 계약 | 출처 | 이 flaky가 어기는가 |
 |---|---|---|
@@ -220,11 +295,37 @@ gradle 반복은 JVM 워밍업이 섞여 부적합하다고 보고, gradle 없�
 
 ### 5.2 왜 그 위치인가
 
-경계를 정확히 그은 것이 이 수정의 전부다. **제거한 것은 `Thread.start()` 한 번**이고, **남긴 것은 검증 대상 전부**다. `checkCancelled`가 `future.cancel(false)`를 부르고 `CancellationException`을 던지는 취소 체인은 실물 그대로 실행되며 우회도 목킹도 없다. 달라진 것은 그 체인이 도는 스레드뿐이고, 스레드 정체는 이 테스트가 검증하려던 대상이 아니었다.
+경계를 정확히 그은 것이 이 수정의 전부다.\
+**제거한 것은 `Thread.start()` 한 번**이고, **남긴 것은 검증 대상 전부**다.\
+`checkCancelled`가 `future.cancel(false)`를 부르고 `CancellationException`을 던지는 취소 체인은 실물 그대로 실행되며 우회도 목킹도 없다.\
+달라진 것은 그 체인이 도는 스레드뿐이고, 스레드 정체는 이 테스트가 검증하려던 대상이 아니었다.
 
-가로채는 지점이 `doExecute`여야 하는 이유도 하나뿐이다. 여기가 **래퍼가 완성된 뒤 스레드가 생기기 직전**의 유일한 확장점이다. 더 위(`execute`)를 오버라이드하면 래퍼 생성 로직 자체를 다시 써야 하고, 더 아래(`newThread`)를 오버라이드하면 스레드 객체를 받긴 하지만 `start()`를 호출하지 않는 것이 `newThread`의 계약과 어긋난다.
+> **목킹(mocking)** — 검증 대상의 실제 구현 대신 가짜 객체를 끼워 넣어 동작을 흉내 내는 것.\
+> 예: 여기서는 취소 로직 자체를 가짜로 바꾸지 않았으므로 목킹이 아니다 — 실행 스레드만 바뀌었다.
 
-단언이 하나에서 둘로 늘어난 것도 의도적이다. 수정 전에는 워커 스레드가 삼킨 `CancellationException`을 테스트가 볼 수 없어 **결과만** 간접 확인할 수 있었다. 수정 후에는 원인(단언 1)과 결과(단언 2)를 각각 직접 관측한다.
+가로채는 지점이 `doExecute`여야 하는 이유도 하나뿐이다.\
+여기가 **래퍼가 완성된 뒤 스레드가 생기기 직전**의 유일한 확장점이다.\
+더 위(`execute`)를 오버라이드하면 래퍼 생성 로직 자체를 다시 써야 하고, 더 아래(`newThread`)를 오버라이드하면 스레드 객체를 받긴 하지만 `start()`를 호출하지 않는 것이 `newThread`의 계약과 어긋난다.
+
+세 후보를 호출 순서대로 세로로 놓으면 가운데 하나만 남는다.
+
+```text
+execute(task, startTimeout)                          :311
+   |    래퍼를 만드는 로직이 이 안에 있다
+   |    -> 오버라이드하면 래퍼 생성 로직을 다시 써야 한다      (기각)
+   v
+doExecute(Runnable task)                             :361
+   |    래퍼는 완성됐고 스레드는 아직 없다
+   |    -> captured.set(task) 로 잡아 둔다                  (채택)
+   v
+newThread(Runnable task)                             :374
+        스레드 객체를 만들어 돌려주는 자리
+        -> start() 를 부르지 않는 것이 이 메서드의 계약과 어긋난다 (기각)
+```
+
+단언이 하나에서 둘로 늘어난 것도 의도적이다.\
+수정 전에는 워커 스레드가 삼킨 `CancellationException`을 테스트가 볼 수 없어 **결과만** 간접 확인할 수 있었다.\
+수정 후에는 원인(단언 1)과 결과(단언 2)를 각각 직접 관측한다.
 
 ### 5.3 검토된 대안과 기각 이유
 
@@ -241,16 +342,29 @@ gradle 반복은 JVM 워밍업이 섞여 부적합하다고 보고, gradle 없�
 
 ### 5.4 잃은 커버리지와 그 보전
 
-이 테스트는 더 이상 실제 스레드 위에서 취소를 실행하지 않는다. 그 몫은 같은 클래스의 다른 테스트가 맡는다 — `taskTerminationTimeoutWithLateInterrupt`(머지 후 :172-191)와 `taskTerminationTimeoutWithEarlyInterrupt`(그 아래)는 실제 워커와 인터럽트 경로를 다루며, 태스크 본문이 `Thread.sleep(500)`/`sleep(200)`이고 close 쪽 마진이 100ms/설정 타임아웃이라 이번 같은 마진 0 경합이 없다. 즉 `Thread.start()` 이후의 실동시성 커버리지는 유지된다.
+이 테스트는 더 이상 실제 스레드 위에서 취소를 실행하지 않는다.\
+그 몫은 같은 클래스의 다른 테스트가 맡는다 — `taskTerminationTimeoutWithLateInterrupt`(머지 후 :172-191)와 `taskTerminationTimeoutWithEarlyInterrupt`(그 아래)는 실제 워커와 인터럽트 경로를 다루며, 태스크 본문이 `Thread.sleep(500)`/`sleep(200)`이고 close 쪽 마진이 100ms/설정 타임아웃이라 이번 같은 마진 0 경합이 없다.\
+즉 `Thread.start()` 이후의 실동시성 커버리지는 유지된다.
 
 ## 6. 범위 밖과 인접 영향
 
-**같은 캡처 기법을 먼저 쓴 곳.** `doExecute`를 오버라이드해 래퍼를 잡아 두는 패턴은 저자의 다른 작업 #36916의 `cancelledThrottledTaskReleasesPermit`에서 먼저 등장했고, 거기 주석이 의도를 명시한다 — `// capture the wrapper without running it, to control the cancellation timing`. #36916은 이 글 작성 시점에 아직 OPEN이므로, 기법 자체가 upstream에 먼저 들어온 것은 이 PR 쪽이다.
+**같은 캡처 기법을 먼저 쓴 곳.**\
+`doExecute`를 오버라이드해 래퍼를 잡아 두는 패턴은 저자의 다른 작업 #36916의 `cancelledThrottledTaskReleasesPermit`에서 먼저 등장했고, 거기 주석이 의도를 명시한다 — `// capture the wrapper without running it, to control the cancellation timing`.\
+#36916은 이 글 작성 시점에 아직 OPEN이므로, 기법 자체가 upstream에 먼저 들어온 것은 이 PR 쪽이다.
 
-**프로덕션 불변.** 이 PR은 `SimpleAsyncTaskExecutor.java`를 한 줄도 바꾸지 않았다. 따라서 하위호환 논점이 없고, 백포트도 테스트 파일만 따라간다(7.0.x -> main).
+**프로덕션 불변.**\
+이 PR은 `SimpleAsyncTaskExecutor.java`를 한 줄도 바꾸지 않았다.\
+따라서 하위호환 논점이 없고, 백포트도 테스트 파일만 따라간다(7.0.x -> main).
+
+> **백포트(backport)** — 최신 브랜치에 들어간 변경을 아직 유지보수 중인 옛 버전 브랜치에도 같이 넣는 것.\
+> 예: 이 PR은 7.0.x 브랜치에 먼저 커밋(`d01e490b524`)된 뒤 main으로 이어졌다(`bbfe6a04738`).
 
 **남는 관찰(이 PR이 다루지 않음).**
 
-- 캡처 기법은 "태스크가 실행 **전에** 취소되는" 시나리오에만 결정론을 준다. 실행 **중** 인터럽트되는 시나리오는 워커 스레드가 실제로 필요하므로 같은 도구가 통하지 않는다.
-- `captured.get()`이 `null`이면 NPE가 나겠지만, `submit -> execute -> doExecute` 경로가 항상 래퍼를 넘기므로(분기 2 성립) 실제로는 불가능하다. 다만 이 안전성은 `setTaskTerminationTimeout(100)`이 앞에 있다는 사실에 의존하므로, 그 줄을 지우면 분기 3으로 빠져 캡처되는 것이 맨 람다가 되고 단언 1이 조용히 무의미해진다 — 테스트 설정 두 줄이 서로 결합되어 있다는 점은 기록해 둘 만하다.
-- 이 테스트가 검증하는 프로덕션 코드에는 별개의 결함(취소 시 throttle permit 누수)이 남아 있다. `checkCancelled`가 `try` 바깥에서 던지기 때문인데, 이 테스트는 throttle을 켜지 않으므로(`setConcurrencyLimit` 미호출) 그 경로에 닿지 않는다. 해당 결함은 #36916의 대상이다.
+- 캡처 기법은 "태스크가 실행 **전에** 취소되는" 시나리오에만 결정론을 준다.\
+  실행 **중** 인터럽트되는 시나리오는 워커 스레드가 실제로 필요하므로 같은 도구가 통하지 않는다.
+- `captured.get()`이 `null`이면 NPE가 나겠지만, `submit -> execute -> doExecute` 경로가 항상 래퍼를 넘기므로(분기 2 성립) 실제로는 불가능하다.\
+  다만 이 안전성은 `setTaskTerminationTimeout(100)`이 앞에 있다는 사실에 의존하므로, 그 줄을 지우면 분기 3으로 빠져 캡처되는 것이 맨 람다가 되고 단언 1이 조용히 무의미해진다 — 테스트 설정 두 줄이 서로 결합되어 있다는 점은 기록해 둘 만하다.
+- 이 테스트가 검증하는 프로덕션 코드에는 별개의 결함(취소 시 throttle permit 누수)이 남아 있다.\
+  `checkCancelled`가 `try` 바깥에서 던지기 때문인데, 이 테스트는 throttle을 켜지 않으므로(`setConcurrencyLimit` 미호출) 그 경로에 닿지 않는다.\
+  해당 결함은 #36916의 대상이다.

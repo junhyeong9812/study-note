@@ -4,13 +4,22 @@
 >
 > 기준: upstream main 526c706d1c3. 이 문서의 `파일:줄` 인용은 모두 이 커밋 기준이며, PR 시점의 base 코드와 다른 곳은 본문에서 명시한다.
 
-이 문서가 다루는 것은 `XmlValidationModeDetector`가 XML 앞부분을 한 줄씩 훑으며 굴리는 **작은 상태 기계**의 실구조다. 상태는 `inComment` 필드 하나뿐이고, 전이를 일으키는 사건은 `<!--`와 `-->` 두 토큰뿐이다. PR이 바꾼 줄은 한 줄이지만, 그 줄은 상태 기계의 한 전이 경로가 상태를 읽지 않고 있던 사각지대를 메운다.
+이 문서가 다루는 것은 `XmlValidationModeDetector`가 XML 앞부분을 한 줄씩 훑으며 굴리는 **작은 상태 기계**의 실구조다.\
+상태는 `inComment` 필드 하나뿐이고, 전이를 일으키는 사건은 `<!--`와 `-->` 두 토큰뿐이다.\
+PR이 바꾼 줄은 한 줄이지만, 그 줄은 상태 기계의 한 전이 경로가 상태를 읽지 않고 있던 사각지대를 메운다.
+
+> **상태 기계(state machine)** — 정해진 몇 개의 상태 중 하나에 머물다가, 특정 사건이 오면 다른 상태로 옮겨 가는 구조.\
+> 예: 여기서는 상태가 "주석 밖"·"주석 안" 둘이고, 사건은 `<!--` 발견과 `-->` 발견 둘이다.
+
+> **토큰(token)** — 파싱할 때 의미 단위로 잘라 내는 문자열 조각.\
+> 예: 이 검출기가 아는 토큰은 `DOCTYPE`·`<!--`·`-->` 셋뿐이다.
 
 ---
 
 ## 1. 무대 — 실구조
 
-**검출기는 상수 네 개, 토큰 세 개, 상태 필드 하나, 그리고 그 위에 얹힌 메서드 일곱 개로 이루어진 단일 클래스다.** 외부와의 접점은 `detectValidationMode(InputStream)` 하나뿐이고, 나머지는 전부 private이다.
+**검출기는 상수 네 개, 토큰 세 개, 상태 필드 하나, 그리고 그 위에 얹힌 메서드 일곱 개로 이루어진 단일 클래스다.**\
+외부와의 접점은 `detectValidationMode(InputStream)` 하나뿐이고, 나머지는 전부 private이다.
 
 ```text
   org.springframework.util.xml
@@ -73,17 +82,31 @@
 
 구조에서 세 가지를 짚어 둔다.
 
-첫째, **상태를 바꾸는 곳은 `commentToken`의 `:206` 한 줄뿐이다.** `startComment`(`:186`)가 `inCommentIfPresent = true`로, `endComment`(`:194`)가 `false`로 호출하므로, 토큰을 실제로 찾았을 때만 상태가 뒤집힌다. 상태 변경 지점이 하나라는 점이 이 클래스를 상태 기계로 읽을 수 있게 만든다.
+첫째, **상태를 바꾸는 곳은 `commentToken`의 `:206` 한 줄뿐이다.**\
+`startComment`(`:186`)가 `inCommentIfPresent = true`로, `endComment`(`:194`)가 `false`로 호출하므로, 토큰을 실제로 찾았을 때만 상태가 뒤집힌다.\
+상태 변경 지점이 하나라는 점이 이 클래스를 상태 기계로 읽을 수 있게 만든다.
 
-둘째, **`consumeCommentTokens`는 자기 자신을 재귀 호출한다**(`:167`). 한 줄 안에 주석이 여러 개 있거나, 주석이 줄 중간에서 시작해 줄 끝을 넘어가는 경우를 이 재귀가 흡수한다. 재귀의 종료 조건은 두 가지다. `consume`이 `null`을 돌려줄 때(`:166`의 조건이 거짓)와 조기 반환에 걸릴 때(`:153~157`)다.
+둘째, **`consumeCommentTokens`는 자기 자신을 재귀 호출한다**(`:167`).\
+한 줄 안에 주석이 여러 개 있거나, 주석이 줄 중간에서 시작해 줄 끝을 넘어가는 경우를 이 재귀가 흡수한다.\
+재귀의 종료 조건은 두 가지다.\
+`consume`이 `null`을 돌려줄 때(`:166`의 조건이 거짓)와 조기 반환에 걸릴 때(`:153~157`)다.
 
-셋째, **인스턴스 필드로 상태를 들고 있으므로 검출기는 재진입 불가(non-reentrant)다.** 대신 `detectValidationMode`가 진입 즉시 `this.inComment = false`로 리셋하므로(`:93`), 같은 인스턴스를 순차적으로 재사용하는 것은 안전하다. `XmlBeanDefinitionReader`가 검출기를 `final` 필드 하나로 들고 재사용하는 배치(`XmlBeanDefinitionReader.java:136`)가 이 리셋에 기대고 있다.
+> **조기 반환(early return)** — 함수 본체를 다 돌기 전에 특정 조건에서 곧장 값을 돌려주고 빠져나가는 단축 경로.\
+> 예: 여기서는 "주석 마커가 한 개도 없는 줄"이 본체를 건너뛰고 바로 반환된다.
+
+셋째, **인스턴스 필드로 상태를 들고 있으므로 검출기는 재진입 불가(non-reentrant)다.**\
+대신 `detectValidationMode`가 진입 즉시 `this.inComment = false`로 리셋하므로(`:93`), 같은 인스턴스를 순차적으로 재사용하는 것은 안전하다.\
+`XmlBeanDefinitionReader`가 검출기를 `final` 필드 하나로 들고 재사용하는 배치(`XmlBeanDefinitionReader.java:136`)가 이 리셋에 기대고 있다.
+
+> **재진입 불가(non-reentrant)** — 한 실행이 끝나기 전에 같은 객체로 다시 들어오면 서로의 상태를 망가뜨리는 성질.\
+> 예: 두 스레드가 같은 검출기의 `detectValidationMode`를 동시에 부르면 `inComment` 하나를 서로 덮어쓴다.
 
 ---
 
 ## 2. 수정 전 동작 워크플로우
 
-**검출기는 파일을 한 줄씩 읽어 "주석을 걷어낸 나머지"만 판정에 넘기고, `DOCTYPE`을 만나거나 여는 태그를 만나면 즉시 멈춘다.** 진입점의 루프 구조가 그 계약을 그대로 보여 준다.
+**검출기는 파일을 한 줄씩 읽어 "주석을 걷어낸 나머지"만 판정에 넘기고, `DOCTYPE`을 만나거나 여는 태그를 만나면 즉시 멈춘다.**\
+진입점의 루프 구조가 그 계약을 그대로 보여 준다.
 
 ```text
  detectValidationMode(inputStream)                                     (:92)
@@ -115,7 +138,10 @@
           return VALIDATION_AUTO;                                     (:118)  ◀ 인코딩 문제는 판단 보류
 ```
 
-`:100`과 `:101`의 조합이 이 설계의 계약이다. `consumeCommentTokens`가 "주석이 아닌 내용"만 돌려주고, 그 결과가 공백이면 루프가 그냥 넘어간다. 즉 **주석 본문을 걸러 내는 유일한 장치가 "빈 문자열을 돌려주는 것"**이다. 이 사실이 수정 방향을 결정한다.
+`:100`과 `:101`의 조합이 이 설계의 계약이다.\
+`consumeCommentTokens`가 "주석이 아닌 내용"만 돌려주고, 그 결과가 공백이면 루프가 그냥 넘어간다.\
+즉 **주석 본문을 걸러 내는 유일한 장치가 "빈 문자열을 돌려주는 것"**이다.\
+이 사실이 수정 방향을 결정한다.
 
 아래는 PR이 추가한 픽스처 `spring-core/src/test/resources/org/springframework/util/xml/xsdWithDoctypeInMultiLineCommentBody.xml`을 **수정 전** 코드로 돌렸을 때의 줄별 추적이다.
 
@@ -162,9 +188,12 @@
  수정 후 결과: 5행에서 break → isDtdValidated = false → VALIDATION_XSD  (정답)
 ```
 
-수정 전 코드에서는 4행과 5행이 아예 읽히지 않는다는 점을 눈여겨볼 만하다. 3행의 `break`(`:106`)가 루프를 끝내므로, 실제 문서가 XSD 설정이라는 증거(`<beans xmlns=... xsi:schemaLocation=...>`)는 판정에 참여하지 못한다.
+수정 전 코드에서는 4행과 5행이 아예 읽히지 않는다는 점을 눈여겨볼 만하다.\
+3행의 `break`(`:106`)가 루프를 끝내므로, 실제 문서가 XSD 설정이라는 증거(`<beans xmlns=... xsi:schemaLocation=...>`)는 판정에 참여하지 못한다.
 
-두 번째 시나리오로 재귀가 실제로 도는 경우를 보자. 기존 픽스처 `xsdWithDoctypeInOpenCommentWithAdditionalCommentOnSameLine.xml`의 3행은 한 줄 안에서 상태가 두 번 뒤집힌다. 이 경로는 수정 전후로 동일하다.
+두 번째 시나리오로 재귀가 실제로 도는 경우를 보자.\
+기존 픽스처 `xsdWithDoctypeInOpenCommentWithAdditionalCommentOnSameLine.xml`의 3행은 한 줄 안에서 상태가 두 번 뒤집힌다.\
+이 경로는 수정 전후로 동일하다.
 
 ```text
  입력 3행 (진입 시 inComment = true, 2행의 "<!--" 때문)
@@ -196,13 +225,22 @@
    ▼ 루프: hasText("    ") 거짓 → continue                            (:101)
 ```
 
-이 추적이 보여 주는 것은 **주석 마커가 하나라도 있는 줄은 조기 반환을 지나쳐 본체의 재귀로 들어간다**는 사실이다. 본체는 `inComment`를 성실히 확인한다(`:161`, `:177`). 그래서 gh-27915가 추가한 기존 픽스처들은 전부 정상 동작했고, **마커가 전혀 없는 순수 본문 줄만이 잔여 사례로 남았다.**
+이 추적이 보여 주는 것은 **주석 마커가 하나라도 있는 줄은 조기 반환을 지나쳐 본체의 재귀로 들어간다**는 사실이다.\
+본체는 `inComment`를 성실히 확인한다(`:161`, `:177`).\
+그래서 gh-27915가 추가한 기존 픽스처들은 전부 정상 동작했고, **마커가 전혀 없는 순수 본문 줄만이 잔여 사례로 남았다.**
+
+> **잔여 사례(residual case)** — 예전 수정이 문제의 일부만 덮어서, 아직 고쳐지지 않은 채 남아 있는 나머지 경우.\
+> 예: gh-27915는 마커가 같은 줄에 있는 경우만 덮었고, 마커가 전혀 없는 본문 줄이 남았다.
 
 ---
 
 ## 3. 분기 처리 워크플로우 — 상태 전이도
 
-**상태는 `inComment` 하나로 `OUT`(주석 밖)과 `IN`(주석 안) 두 개뿐이고, 전이를 일으키는 사건은 토큰 발견 두 가지뿐이다.** 아래가 그 전이도이며, `[BUG]`로 표시한 자기 루프가 결함이 살던 전이다.
+**상태는 `inComment` 하나로 `OUT`(주석 밖)과 `IN`(주석 안) 두 개뿐이고, 전이를 일으키는 사건은 토큰 발견 두 가지뿐이다.**\
+아래가 그 전이도이며, `[BUG]`로 표시한 자기 루프가 결함이 살던 전이다.
+
+> **자기 루프(self-loop)** — 상태 전이도에서 사건을 처리한 뒤에도 같은 상태에 그대로 머무는 전이.\
+> 예: 주석 안에서 마커 없는 줄을 만나면 여전히 주석 안이므로, `IN`에서 `IN`으로 돌아오는 화살표가 된다.
 
 ```text
                          ┌──────────────────────────┐
@@ -311,15 +349,25 @@
      ──────────────────────────────────────▶ break ("의미 있는 데이터 끝")
 ```
 
-분기 5와 분기 6의 비대칭이 이 결함의 표지판이었다. 같은 층위의 두 판정 메서드가 같은 위험(주석 안의 텍스트가 내용으로 넘어옴)에 대해 한쪽만 방어하고 있었다. `hasOpeningTag`의 Javadoc(`:132~135`)은 그 가드를 "sanity check"라 부르며 "원칙적으로는 주석이 이미 다 걷혔어야 하지만"이라는 단서를 단다. 그 단서가 참이 아닌 경우가 정확히 분기 1의 `[BUG]` 갈래였다.
+분기 5와 분기 6의 비대칭이 이 결함의 표지판이었다.\
+같은 층위의 두 판정 메서드가 같은 위험(주석 안의 텍스트가 내용으로 넘어옴)에 대해 한쪽만 방어하고 있었다.\
+`hasOpeningTag`의 Javadoc(`:132~135`)은 그 가드를 "sanity check"라 부르며 "원칙적으로는 주석이 이미 다 걷혔어야 하지만"이라는 단서를 단다.\
+그 단서가 참이 아닌 경우가 정확히 분기 1의 `[BUG]` 갈래였다.
 
-`consumeCommentTokens`의 Javadoc(`:146~150`)도 이 PR의 근거로 읽힌다. "Consume all comments in the given String and return the remaining content, **which may be empty since the supplied content might be all comment data**"와 "This method **takes the current 'in comment' parsing state into account**"라는 두 문장이 이미 선언돼 있었다. 여러 줄 주석의 본문 줄이야말로 "all comment data"의 교과서적 사례이고, 조기 반환만이 그 선언을 지키지 않았다. 수정은 새 규칙을 도입한 것이 아니라 선언된 규칙을 코드가 지키게 한 것이다.
+> **sanity check(온전성 검사)** — "여기까지 왔으면 당연히 참이어야 하는 조건"을 혹시 몰라 한 번 더 확인해 두는 방어 코드.\
+> 예: `hasOpeningTag`의 `if (this.inComment) return false;`(`:138`)가 그것이다.
+
+`consumeCommentTokens`의 Javadoc(`:146~150`)도 이 PR의 근거로 읽힌다.\
+"Consume all comments in the given String and return the remaining content, **which may be empty since the supplied content might be all comment data**"와 "This method **takes the current 'in comment' parsing state into account**"라는 두 문장이 이미 선언돼 있었다.\
+여러 줄 주석의 본문 줄이야말로 "all comment data"의 교과서적 사례이고, 조기 반환만이 그 선언을 지키지 않았다.\
+수정은 새 규칙을 도입한 것이 아니라 선언된 규칙을 코드가 지키게 한 것이다.
 
 ---
 
 ## 4. 스프링 전역에서의 자리
 
-**이 검출기는 `spring-beans`의 XML 설정 로딩 파이프라인에서, 실제 파싱을 시작하기 전에 파일을 한 번 미리 훑는 사전 단계다.** grep으로 확인한 프로덕션 참조는 `XmlBeanDefinitionReader`와 `DefaultDocumentLoader` 두 클래스뿐이며, 실제로 `detectValidationMode`를 호출하는 곳은 `XmlBeanDefinitionReader.java:499` 한 자리다.
+**이 검출기는 `spring-beans`의 XML 설정 로딩 파이프라인에서, 실제 파싱을 시작하기 전에 파일을 한 번 미리 훑는 사전 단계다.**\
+grep으로 확인한 프로덕션 참조는 `XmlBeanDefinitionReader`와 `DefaultDocumentLoader` 두 클래스뿐이며, 실제로 `detectValidationMode`를 호출하는 곳은 `XmlBeanDefinitionReader.java:499` 한 자리다.
 
 ```text
  [진입 경로]
@@ -374,11 +422,23 @@
         └─ builder.parse(inputSource)            DefaultDocumentLoader.java:77
 ```
 
-(*) 표시한 `XmlBeanDefinitionReader.java:499`가 이 클래스로 들어오는 유일한 프로덕션 진입점이다. 검출기 인스턴스는 리더의 `final` 필드 하나로 재사용되며(`XmlBeanDefinitionReader.java:136`), 리더는 검출기의 상수들을 자기 이름으로 다시 노출한다(`XmlBeanDefinitionReader.java:86~101`).
+(*) 표시한 `XmlBeanDefinitionReader.java:499`가 이 클래스로 들어오는 유일한 프로덕션 진입점이다.\
+검출기 인스턴스는 리더의 `final` 필드 하나로 재사용되며(`XmlBeanDefinitionReader.java:136`), 리더는 검출기의 상수들을 자기 이름으로 다시 노출한다(`XmlBeanDefinitionReader.java:86~101`).
 
-**오판의 대가는 조용한 성능 저하가 아니라 기동 실패다.** XSD 문서를 DTD 모드로 파싱하면 `DefaultDocumentLoader.java:98`이 `setValidating(true)`만 켠 채 파서를 만들고, 파서는 DTD 문법을 기대하는데 문서에 `DOCTYPE`이 없으므로 검증 오류를 보고한다. 그 오류는 `XmlBeanDefinitionReader`의 오류 처리기를 거쳐 `doLoadBeanDefinitions`의 `catch (SAXParseException ex)`(`XmlBeanDefinitionReader.java:412`)에 잡히고, `XmlBeanDefinitionStoreException`으로 감싸져 컨텍스트 기동을 중단시킨다.
+**오판의 대가는 조용한 성능 저하가 아니라 기동 실패다.**\
+XSD 문서를 DTD 모드로 파싱하면 `DefaultDocumentLoader.java:98`이 `setValidating(true)`만 켠 채 파서를 만들고, 파서는 DTD 문법을 기대하는데 문서에 `DOCTYPE`이 없으므로 검증 오류를 보고한다.\
+그 오류는 `XmlBeanDefinitionReader`의 오류 처리기를 거쳐 `doLoadBeanDefinitions`의 `catch (SAXParseException ex)`(`XmlBeanDefinitionReader.java:412`)에 잡히고, `XmlBeanDefinitionStoreException`으로 감싸져 컨텍스트 기동을 중단시킨다.
 
-XXE(XML External Entity) 맥락은 정확히 선을 그어야 한다. **이 검출기는 XXE 방어 장치가 아니다.** `DOCTYPE`을 찾는 목적은 외부 엔티티 차단이 아니라 검증 문법 선택이다. `DefaultDocumentLoader`의 소스 주석이 그 판단을 명시해 두고 있다(`DefaultDocumentLoader.java:91~93`).
+> **SAXParseException** — XML 파서가 문서를 읽다가 문법·검증 오류를 만났을 때 던지는 예외.\
+> 예: DTD 모드로 켠 파서가 `DOCTYPE` 없는 문서를 만나면 검증 오류로 이 예외가 나온다.
+
+XXE(XML External Entity) 맥락은 정확히 선을 그어야 한다.\
+**이 검출기는 XXE 방어 장치가 아니다.**\
+`DOCTYPE`을 찾는 목적은 외부 엔티티 차단이 아니라 검증 문법 선택이다.\
+`DefaultDocumentLoader`의 소스 주석이 그 판단을 명시해 두고 있다(`DefaultDocumentLoader.java:91~93`).
+
+> **XXE(XML External Entity)** — XML 문서의 `DOCTYPE` 선언으로 외부 파일이나 URL을 끌어오게 만들어 정보를 빼내는 공격 기법.\
+> 예: 공격자가 설정 파일에 외부 엔티티 선언을 심어 서버의 로컬 파일을 읽어 가게 만드는 것.
 
 ```java
 // This document loader is used for loading application configuration files.
@@ -386,7 +446,8 @@ XXE(XML External Entity) 맥락은 정확히 선을 그어야 한다. **이 검�
 // to leverage XXE attacks. This does not qualify as privilege escalation.
 ```
 
-다만 `DOCTYPE` 문자열의 존재 여부가 파서 구성 방식을 바꾸는 것은 사실이므로, 검출 판정의 신뢰성 요구는 그대로다. 이 PR이 고치는 것이 그 신뢰성이다.
+다만 `DOCTYPE` 문자열의 존재 여부가 파서 구성 방식을 바꾸는 것은 사실이므로, 검출 판정의 신뢰성 요구는 그대로다.\
+이 PR이 고치는 것이 그 신뢰성이다.
 
 ---
 
@@ -396,17 +457,64 @@ XXE(XML External Entity) 맥락은 정확히 선을 그어야 한다. **이 검�
 
 ### 5.1 DTD와 XSD — 왜 미리 알려 줘야 하는가
 
-XML에는 두 가지 스키마 체계가 공존한다. 문서 상단의 `<!DOCTYPE ...>` 선언으로 DTD를 가리키는 옛 방식과, 루트 태그의 `xsi:schemaLocation` 속성으로 XSD를 가리키는 현대 방식이다. JAXP의 `DocumentBuilderFactory`는 이 둘을 자동으로 구분해 주지 않는다. 검증을 켜려면 어느 쪽인지 **파서를 만들기 전에** 알려 줘야 한다.
+XML에는 두 가지 스키마 체계가 공존한다.\
+문서 상단의 `<!DOCTYPE ...>` 선언으로 DTD를 가리키는 옛 방식과, 루트 태그의 `xsi:schemaLocation` 속성으로 XSD를 가리키는 현대 방식이다.\
+JAXP의 `DocumentBuilderFactory`는 이 둘을 자동으로 구분해 주지 않는다.\
+검증을 켜려면 어느 쪽인지 **파서를 만들기 전에** 알려 줘야 한다.
 
-그래서 Spring은 같은 파일을 두 번 읽는다. 첫 번째 읽기가 이 검출기이고(`XmlBeanDefinitionReader.java:499`), 그 결론으로 파서를 구성한 뒤(`DefaultDocumentLoader.java:88`) 두 번째 읽기에서 실제 DOM을 만든다(`DefaultDocumentLoader.java:77`). 검출기가 완전한 XML 파서가 아니라 문자열 스캐너인 이유가 여기 있다. 파서를 만들기 위한 정보를 얻는 단계이므로 파서를 쓸 수 없다.
+> **DTD(Document Type Definition)** — XML 문서의 구조 규칙을 적어 두는 옛 방식의 스키마.\
+> 예: `<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" ...>` 선언이 그 스키마를 가리킨다.
+
+> **XSD(XML Schema Definition)** — XML 자체 문법으로 쓰인 현대식 스키마.\
+> 예: 루트 태그의 `xsi:schemaLocation="... spring-beans.xsd"`가 그 스키마 위치를 가리킨다.
+
+> **JAXP** — 자바 표준 XML 처리 API 묶음.\
+> 예: `DocumentBuilderFactory`로 파서를 만들고 `builder.parse(...)`로 DOM을 얻는 것이 그 API다.
+
+그래서 Spring은 같은 파일을 두 번 읽는다.\
+첫 번째 읽기가 이 검출기이고(`XmlBeanDefinitionReader.java:499`), 그 결론으로 파서를 구성한 뒤(`DefaultDocumentLoader.java:88`) 두 번째 읽기에서 실제 DOM을 만든다(`DefaultDocumentLoader.java:77`).\
+검출기가 완전한 XML 파서가 아니라 문자열 스캐너인 이유가 여기 있다.\
+파서를 만들기 위한 정보를 얻는 단계이므로 파서를 쓸 수 없다.
+
+```text
+ 같은 파일을 두 번 읽는다
+
+ 1차 읽기 - 문자열 스캐너                  2차 읽기 - 진짜 XML 파서
+ +-------------------------------+       +---------------------------------+
+ | XmlValidationModeDetector     |       | DocumentBuilder                 |
+ |   detectValidationMode(...)   |       |   builder.parse(inputSource)    |
+ |   호출: XmlBeanDefinition     |       |   DefaultDocumentLoader.java:77 |
+ |         Reader.java:499       |       |                                 |
+ +-------------------------------+       +---------------------------------+
+        |                                           ^
+        | 결과: VALIDATION_DTD(2)                   | 입력: 1차 결론대로
+        |       또는 VALIDATION_XSD(3)              |       구성된 파서
+        v                                           |
+   createDocumentBuilderFactory(mode, nsAware) -----+
+   DefaultDocumentLoader.java:88
+     mode != NONE -> setValidating(true)          :98
+     mode == XSD  -> setNamespaceAware(true)      :101
+                     setAttribute(SCHEMA_...)     :103
+
+ 1차가 파서를 못 쓰는 이유: 파서를 만들려면 1차의 결론이 먼저 있어야 한다
+```
 
 ### 5.2 조기 반환이 상태 기계의 사각지대가 되는 이유
 
-`consumeCommentTokens`의 본체(`:159~169`)는 `inComment`를 두 곳에서 확인한다. 앞부분을 분리할지 정할 때(`:161`)와 어떤 토큰을 찾을지 정할 때(`:177`)다. 반면 앞에 붙은 조기 반환(`:152~157`)은 상태를 전혀 보지 않았다.
+`consumeCommentTokens`의 본체(`:159~169`)는 `inComment`를 두 곳에서 확인한다.\
+앞부분을 분리할지 정할 때(`:161`)와 어떤 토큰을 찾을지 정할 때(`:177`)다.\
+반면 앞에 붙은 조기 반환(`:152~157`)은 상태를 전혀 보지 않았다.
 
-조기 반환의 조건 `indexOf("<!--") == -1 && !contains("-->")`가 암묵적으로 가정한 것은 "마커가 없으면 주석 밖"이다. 이 가정은 대부분 맞지만, 정확히 한 값에서 틀린다. 여러 줄 주석의 본문 줄이 그것이다. **상태를 들고 다니는 메서드에 짧은 단축 경로를 낼 때는 그 경로가 상태의 모든 값에 대해 옳은지 따져야 한다**는 것이 이 결함의 일반형이다.
+조기 반환의 조건 `indexOf("<!--") == -1 && !contains("-->")`가 암묵적으로 가정한 것은 "마커가 없으면 주석 밖"이다.\
+이 가정은 대부분 맞지만, 정확히 한 값에서 틀린다.\
+여러 줄 주석의 본문 줄이 그것이다.\
+**상태를 들고 다니는 메서드에 짧은 단축 경로를 낼 때는 그 경로가 상태의 모든 값에 대해 옳은지 따져야 한다**는 것이 이 결함의 일반형이다.
 
-수정이 새 분기를 만들지 않고 삼항식 하나로 끝난 것도 구조 덕분이다. 루프에 이미 빈 내용 필터(`:101`)가 있으므로, 주석 본문 줄을 `""`로 만들기만 하면 기존 필터가 나머지를 처리한다.
+수정이 새 분기를 만들지 않고 삼항식 하나로 끝난 것도 구조 덕분이다.\
+루프에 이미 빈 내용 필터(`:101`)가 있으므로, 주석 본문 줄을 `""`로 만들기만 하면 기존 필터가 나머지를 처리한다.
+
+> **삼항식(ternary expression)** — `조건 ? A : B` 형태로 조건에 따라 두 값 중 하나를 고르는 짧은 식.\
+> 예: `return (this.inComment ? "" : line);`이 그것이다.
 
 ### 5.3 이 구멍이 생긴 이력
 
@@ -417,14 +525,46 @@ XML에는 두 가지 스키마 체계가 공존한다. 문서 상단의 `<!DOCTY
 +				if (!StringUtils.hasText(content)) {
 ```
 
-그 전까지는 루프(`:101` 자리)가 `this.inComment`를 직접 확인해 주석 안이면 무조건 건너뛰었다. 새 알고리즘은 그 책임을 `consumeCommentTokens`로 옮겼는데, 조기 반환 경로만 상태 확인 없이 남으면서 방어선이 한 겹 사라졌다. 즉 이 결함은 **책임 이전이 완결되지 않은 자리**에 생긴 것이며, 기존 수정이 있는 자리를 다시 고칠 때 그 수정이 무엇을 옮기고 무엇을 지웠는지 확인하는 것이 잔여 사례를 찾는 지름길이라는 사례가 된다.
+그 전까지는 루프(`:101` 자리)가 `this.inComment`를 직접 확인해 주석 안이면 무조건 건너뛰었다.\
+새 알고리즘은 그 책임을 `consumeCommentTokens`로 옮겼는데, 조기 반환 경로만 상태 확인 없이 남으면서 방어선이 한 겹 사라졌다.\
+즉 이 결함은 **책임 이전이 완결되지 않은 자리**에 생긴 것이며, 기존 수정이 있는 자리를 다시 고칠 때 그 수정이 무엇을 옮기고 무엇을 지웠는지 확인하는 것이 잔여 사례를 찾는 지름길이라는 사례가 된다.
+
+같은 입력(마커 없는 주석 본문 줄)을 두 시기에 각각 넣어 보면 방어선이 어디서 사라졌는지가 보인다.
+
+```text
+ gh-27915 이전                             gh-27915 이후 (이 PR 직전)
+ +-----------------------------------+    +-----------------------------------+
+ | 루프 :101                         |    | 루프 :101                         |
+ |   if (this.inComment ||           |    |   if (!hasText(content))          |
+ |       !hasText(content))          |    |     continue;                     |
+ |     continue;                     |    |                                   |
+ |   -> 주석 안이면 무조건 건너뛴다   |    |   -> inComment 를 보지 않는다      |
+ +-----------------------------------+    +-----------------------------------+
+ | 주석 제거 책임: 루프가 함께 짐     |    | 주석 제거 책임:                   |
+ |                                   |    |   consumeCommentTokens 로 이전    |
+ |                                   |    |     본체    : inComment 확인 O    |
+ |                                   |    |     조기반환: inComment 확인 X    |
+ |                                   |    |                        <- 구멍    |
+ +-----------------------------------+    +-----------------------------------+
+   결과: 줄이 판정에 도달하지 않는다        결과: 줄 전체가 내용으로 흘러나와
+                                                 hasDoctype 이 참이 된다
+```
 
 ### 5.4 `hasDoctype`이 부분 문자열 매칭인 것의 의미
 
-`hasDoctype`은 `content.contains(DOCTYPE)`(`:127`)일 뿐이다. `<!DOCTYPE` 형태의 진짜 선언을 파싱하지 않으므로, 산문 속 단어 하나로도 참이 된다. PR이 추가한 픽스처의 "See the DOCTYPE notes for legacy configs"가 정확히 그런 경우이며, XSD로 이관하면서 옛 설정에 대한 안내를 주석으로 남기는, 충분히 있을 법한 문장이다.
+`hasDoctype`은 `content.contains(DOCTYPE)`(`:127`)일 뿐이다.\
+`<!DOCTYPE` 형태의 진짜 선언을 파싱하지 않으므로, 산문 속 단어 하나로도 참이 된다.\
+PR이 추가한 픽스처의 "See the DOCTYPE notes for legacy configs"가 정확히 그런 경우이며, XSD로 이관하면서 옛 설정에 대한 안내를 주석으로 남기는, 충분히 있을 법한 문장이다.
 
-이 느슨함 자체를 조이는 대안(`<!DOCTYPE` 전체를 요구하도록 바꾸기)도 상상할 수 있지만 그 방향은 채택되지 않았다. 검출기는 완전한 파서가 아니라 휴리스틱 스캐너이고, 판정 기준을 조이면 공백이나 개행이 낀 변형 선언을 놓칠 위험이 생긴다. 대신 `hasOpeningTag`와 대칭이 되도록 `hasDoctype`에도 `if (this.inComment) return false;` 가드를 추가하는 안이 PR 본문에서 제안되었으나, 근본 원인은 조기 반환의 상태 무시이고 가드 추가는 증상 차단이라는 판단으로 적용되지 않았다.
+이 느슨함 자체를 조이는 대안(`<!DOCTYPE` 전체를 요구하도록 바꾸기)도 상상할 수 있지만 그 방향은 채택되지 않았다.\
+검출기는 완전한 파서가 아니라 휴리스틱 스캐너이고, 판정 기준을 조이면 공백이나 개행이 낀 변형 선언을 놓칠 위험이 생긴다.\
+대신 `hasOpeningTag`와 대칭이 되도록 `hasDoctype`에도 `if (this.inComment) return false;` 가드를 추가하는 안이 PR 본문에서 제안되었으나, 근본 원인은 조기 반환의 상태 무시이고 가드 추가는 증상 차단이라는 판단으로 적용되지 않았다.
+
+> **휴리스틱 스캐너(heuristic scanner)** — 정확한 문법 해석 대신 몇 가지 어림 규칙만으로 필요한 정보를 뽑아내는 간이 읽기 장치.\
+> 예: 이 검출기는 `DOCTYPE`·`<!--`·`-->` 세 문자열만 보고 판정한다.
 
 ### 5.5 상태 필드와 인스턴스 재사용
 
-`inComment`(`:81`)는 인스턴스 필드이므로 검출기는 동시 호출에 안전하지 않다. 그러나 `detectValidationMode`가 진입 즉시 `false`로 리셋하므로(`:93`) 순차 재사용은 안전하다. `XmlBeanDefinitionReader`가 검출기를 `final` 필드로 하나만 들고 모든 리소스에 재사용하는 배치(`XmlBeanDefinitionReader.java:136`)가 이 리셋에 기대고 있고, 테스트가 파라미터화 케이스들 사이에서 같은 인스턴스를 공유해도 오염되지 않는 이유도 같다.
+`inComment`(`:81`)는 인스턴스 필드이므로 검출기는 동시 호출에 안전하지 않다.\
+그러나 `detectValidationMode`가 진입 즉시 `false`로 리셋하므로(`:93`) 순차 재사용은 안전하다.\
+`XmlBeanDefinitionReader`가 검출기를 `final` 필드로 하나만 들고 모든 리소스에 재사용하는 배치(`XmlBeanDefinitionReader.java:136`)가 이 리셋에 기대고 있고, 테스트가 파라미터화 케이스들 사이에서 같은 인스턴스를 공유해도 오염되지 않는 이유도 같다.

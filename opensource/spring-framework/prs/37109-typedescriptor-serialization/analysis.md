@@ -3,6 +3,9 @@
 > 기준 커밋: 결함 상태 = `e8729d04388`(PR 베이스, upstream main), 수정 상태 = `f92313cc3e1`(PR head). 아래 file:line 은 별도 표기가 없으면 **결함 상태(베이스)** 좌표이고, 5절의 after 스니펫만 PR head 좌표다.
 > 이 문서의 역할: [README.md](README.md)가 서사를, [structure.md](structure.md)가 무대의 지도를, [tests.md](tests.md)가 테스트를 맡는다. 여기서는 **호출 그래프 위의 데이터 흐름**과 **이름표 하나하나의 정체**, 그리고 정상/결함 케이스의 **단계별 변수 값**만 다룬다.
 
+> **호출 그래프(call graph)** — 어느 메서드가 어느 메서드를 부르는지를 이어 놓은 지도.\
+> 예: 생성자 → 람다 생성 → `getAnnotatedElement()` → `supplier.get()`이 이 무대의 한 갈래다.
+
 ## 0. 결론
 
 **결함**: `TypeDescriptor`의 `annotatedElementSupplier` 필드가 `transient`가 아니라서, 기본 직렬화가 그 자리에 담긴 람다를 `SerializedLambda`로 바꾸며 **람다가 캡처한 `Field`/`MethodParameter`/`Property`까지 스트림에 쓰려 하고**, 셋 다 비직렬화라 `NotSerializableException`으로 끝난다(`TypeDescriptor.java:76`, 캡처는 `:87`·`:99`·`:111`).
@@ -11,21 +14,31 @@
 
 **상태**: OPEN, `status: waiting-for-triage` + `in: core`, 2026-08-04 제출, 리뷰어 미배정(2026-08-27 확인).
 
+> **비직렬화(non-serializable)** — `Serializable`을 구현하지 않아 스트림에 쓸 수 없는 타입.\
+> 예: `java.lang.reflect.Field`는 JDK가 직렬화를 지원하지 않으므로 쓰려는 순간 예외가 난다.
+
 ## 1. 무대 — 어디의 무엇인가
 
 무대는 한 클래스와 그 협력자 둘이며, 결함이 실제로 드러나는 통로는 변환 예외 하나다.
 
 - 모듈·파일: `spring-core` / `spring-core/src/main/java/org/springframework/core/convert/TypeDescriptor.java`
 - 협력 클래스: `org.springframework.core.annotation.AnnotatedElementAdapter`(같은 모듈, 7.0 신설), `org.springframework.core.ResolvableType`(제네릭 담당, 이미 직렬화 가능)
-- 공개 진입 API: 생성자 넷 — `TypeDescriptor(MethodParameter)`:87 / `TypeDescriptor(Field)`:99 / `TypeDescriptor(Property)`:111 / `TypeDescriptor(ResolvableType, Class, Annotation[])`:128. 그리고 애너테이션 표면 셋 — `getAnnotations()`:269 / `hasAnnotation(Class)`:280 / `getAnnotation(Class)`:296.
+- 공개 진입 API: 생성자 넷 — `TypeDescriptor(MethodParameter)`:87 / `TypeDescriptor(Field)`:99 / `TypeDescriptor(Property)`:111 / `TypeDescriptor(ResolvableType, Class, Annotation[])`:128.\
+  그리고 애너테이션 표면 셋 — `getAnnotations()`:269 / `hasAnnotation(Class)`:280 / `getAnnotation(Class)`:296.
 - 누가 부르나: 빈 프로퍼티 바인딩(`BeanWrapperImpl`), DI(`DependencyDescriptor`), SpEL(`ReflectivePropertyAccessor`), 웹·메시징 인자 변환 등 — 전역 호출 지도는 [structure.md](structure.md) 4절이 정본이다.
-- 언제 직렬화되나: 이 클래스를 **직접** 스트림에 쓰는 프레임워크 코드는 없다. 실제 통로는 `ConversionFailedException`(:33/:35)·`ConverterNotFoundException`(:32/:34)이 `TypeDescriptor`를 비-transient 필드로 들고 프로세스 경계를 넘는 경우다. 즉 결함은 "변환 실패 예외를 원격으로 던지거나 세션에 복제할 때" 처음 드러난다.
+- 언제 직렬화되나: 이 클래스를 **직접** 스트림에 쓰는 프레임워크 코드는 없다.\
+  실제 통로는 `ConversionFailedException`(:33/:35)·`ConverterNotFoundException`(:32/:34)이 `TypeDescriptor`를 비-transient 필드로 들고 프로세스 경계를 넘는 경우다.\
+  즉 결함은 "변환 실패 예외를 원격으로 던지거나 세션에 복제할 때" 처음 드러난다.
+
+> **프로세스 경계(process boundary)** — 한 JVM 안에서 끝나지 않고 다른 프로세스·다른 장비로 객체가 넘어가는 지점.\
+> 예: 원격 호출로 예외를 던지거나, 세션을 옆 서버로 복제할 때 그 경계를 지난다.
 
 ## 2. 전체 메서드 그래프 — 진입점부터 결함 지점까지
 
-두 갈래를 하나의 그림으로 놓으면 결함이 "두 필드가 서로를 보완하지 않는다"는 한 문장으로 보인다. 왼쪽은 애너테이션을 읽는 정상 경로, 오른쪽이 직렬화 경로다.
+두 갈래를 하나의 그림으로 놓으면 결함이 "두 필드가 서로를 보완하지 않는다"는 한 문장으로 보인다.\
+왼쪽은 애너테이션을 읽는 정상 경로, 오른쪽이 직렬화 경로다.
 
-```
+```text
 [생성]
  new TypeDescriptor(field)                               TypeDescriptor.java:99
    |-- resolvableType = ResolvableType.forField(field)          :100
@@ -59,11 +72,32 @@
                                                                    (3·4번 필드는 도달조차 못 함)
 ```
 
-데이터 흐름으로 요약하면, 애너테이션이라는 하나의 값이 **두 개의 자리**(공급자 람다와 지연 캐시)에 나뉘어 살고 있는데 직렬화는 그 둘을 각각 독립적으로 다룬다. 캐시가 채워져 있어도 공급자는 그대로 쓰이고(그래서 미리 조회해도 실패는 같다), 공급자를 빼면 캐시가 `null`인 채 나간다(그래서 애너테이션이 조용히 사라진다). 수정은 이 대칭을 깬다 — 공급자를 빼되, 빼기 직전에 캐시를 채운다.
+데이터 흐름으로 요약하면, 애너테이션이라는 하나의 값이 **두 개의 자리**(공급자 람다와 지연 캐시)에 나뉘어 살고 있는데 직렬화는 그 둘을 각각 독립적으로 다룬다.\
+캐시가 채워져 있어도 공급자는 그대로 쓰이고(그래서 미리 조회해도 실패는 같다), 공급자를 빼면 캐시가 `null`인 채 나간다(그래서 애너테이션이 조용히 사라진다).\
+수정은 이 대칭을 깬다 — 공급자를 빼되, 빼기 직전에 캐시를 채운다.
+
+같은 값이 두 자리에 나뉘어 산다는 사실을, 수정 전과 후로 나란히 놓으면 이렇게 보인다.
+
+```text
+수정 전 — 두 자리가 따로 논다              수정 후 — 한 자리로 합류한다
++----------------------------------+      +----------------------------------+
+| annotatedElement  = null         |      | annotatedElement  = 어댑터        |
+|   (물어본 적 없으면 비어 있다)    |      |   (writeObject 가 채워 놓는다)    |
+|                                  |      |                                  |
+| annotatedElementSupplier         |      | annotatedElementSupplier          |
+|   = 람다[capture: Field]         |      |   = transient (스트림 밖)         |
+|   -> 스트림에 실린다              |      |                                  |
++----------------------------------+      +----------------------------------+
+  스트림에 나가는 애너테이션 = 없음          스트림에 나가는 애너테이션 = 어댑터 1개
+  스트림에 나가는 리플렉션 객체 = Field      스트림에 나가는 리플렉션 객체 = 없음
+```
+
+그림이 말하는 것 하나 — 수정은 자리를 늘리지 않고, 실어 나르는 주체를 람다에서 어댑터로 옮긴다.
 
 ## 2.5 핵심 이름표 사전
 
-이 무대에서 헷갈리는 것은 "애너테이션을 들고 있는 것"이 이름만 넷이라는 점이다: 람다(`annotatedElementSupplier`), 어댑터(`annotatedElement`), 어댑터 내부 배열(`annotations`), 그리고 어댑터가 밖으로 내주는 복사본. 아래 표는 각각이 무엇을 들고, 누가 언제 만지며, 이 결함과 어떤 관계인지를 한 줄씩 붙인다.
+이 무대에서 헷갈리는 것은 "애너테이션을 들고 있는 것"이 이름만 넷이라는 점이다: 람다(`annotatedElementSupplier`), 어댑터(`annotatedElement`), 어댑터 내부 배열(`annotations`), 그리고 어댑터가 밖으로 내주는 복사본.\
+아래 표는 각각이 무엇을 들고, 누가 언제 만지며, 이 결함과 어떤 관계인지를 한 줄씩 붙인다.
 
 | 이름표 | 무엇인가 / 입력·출력 | 누가 언제 만지나 | 이 결함과의 관계 |
 |---|---|---|---|
@@ -89,14 +123,16 @@
 
 ## 3. 결함 경로 단계 추적
 
-같은 프로그램을 두 상태에서 돌린다. 대상은 애너테이션이 붙은 필드로 만든 디스크립터이고, 애너테이션을 **미리 조회하지 않은 채** 바로 직렬화한다(PR 테스트 헬퍼가 택한 것과 같은 조건).
+같은 프로그램을 두 상태에서 돌린다.\
+대상은 애너테이션이 붙은 필드로 만든 디스크립터이고, 애너테이션을 **미리 조회하지 않은 채** 바로 직렬화한다(PR 테스트 헬퍼가 택한 것과 같은 조건).
 
 ```java
 TypeDescriptor td = new TypeDescriptor(getClass().getField("fieldAnnotated"));
 new ObjectOutputStream(out).writeObject(td);
 ```
 
-아래 표는 왼쪽이 결함 상태(베이스), 오른쪽이 수정 상태다. 각 단계의 값은 코드 규칙에서 유도한 것이다.
+아래 표는 왼쪽이 결함 상태(베이스), 오른쪽이 수정 상태다.\
+각 단계의 값은 코드 규칙에서 유도한 것이다.
 
 | 단계 | 결함 상태(베이스 `e8729d04388`) | 수정 상태(head `f92313cc3e1`) |
 |---|---|---|
@@ -111,13 +147,40 @@ new ObjectOutputStream(out).writeObject(td);
 | S9 공급자 재장전 | 해당 없음 | `annotatedElementSupplier = () -> annotatedElement`(지역변수 캡처) -> 재직렬화도 안전 |
 | S10 최종 관측 | 예외 | `readObject.getAnnotations()`가 원본과 동등, `equals()` 성립, 조회 횟수는 정확히 1 |
 
-정상 케이스(넷째 생성자, 예: `TypeDescriptor.forObject("")` -> `valueOf(String.class)`:575 -> `new TypeDescriptor(RT, null, null)`:128)를 같은 표에 대면 대비가 분명하다. S5에서 `capturedArgs[0]`이 `null`(애너테이션 배열)이라 직렬화가 통과하고, 그래서 **기존 테스트 `serializable()`은 수정 전에도 green**이었다. 회귀가 릴리스를 여럿 건너 살아남은 원인이 이 한 칸에 있다.
+정상 케이스(넷째 생성자, 예: `TypeDescriptor.forObject("")` -> `valueOf(String.class)`:575 -> `new TypeDescriptor(RT, null, null)`:128)를 같은 표에 대면 대비가 분명하다.\
+S5에서 `capturedArgs[0]`이 `null`(애너테이션 배열)이라 직렬화가 통과하고, 그래서 **기존 테스트 `serializable()`은 수정 전에도 green**이었다.\
+회귀가 릴리스를 여럿 건너 살아남은 원인이 이 한 칸에 있다.
 
-두 상태의 차이를 관측 가능한 축으로 두 개만 뽑으면 이렇다. 하나는 "예외가 나는가", 다른 하나는 "지연 조회가 살아 있는가"다. 후자는 `MethodParameter`를 익명 서브클래스로 감싸 `getParameterAnnotations()` 호출 횟수를 세면 보인다 — 생성 직후 0, 직렬화 후 정확히 1. 0->1이 아니라 0->0이면 애너테이션이 소실된 것이고, 1->1이면 gh-33948의 성능 개선이 되돌아간 것이다. 두 단언이 함께 있어야 수정의 경계가 고정된다(테스트 상세는 [tests.md](tests.md) 7절).
+S5 한 칸에서 두 케이스가 어떻게 갈리는지만 떼어 보면 이렇다.
+
+```text
+결함 케이스: new TypeDescriptor(field)     정상 케이스: forObject("")
+        |                                          |
+        v                                          v
+ supplier = 람다[capture: Field]            supplier = 람다[capture: null]
+        |                                          |
+        v                                          v
+ SerializedLambda.capturedArgs[0]           SerializedLambda.capturedArgs[0]
+        = java.lang.reflect.Field                  = null
+        |                                          |
+        v                                          v
+ NotSerializableException                   통과 -> 기존 테스트가 green
+```
+
+그림이 말하는 것 하나 — 두 케이스의 차이는 `capturedArgs[0]` 한 칸뿐이고, 기존 테스트는 오른쪽만 밟았다.
+
+두 상태의 차이를 관측 가능한 축으로 두 개만 뽑으면 이렇다.\
+하나는 "예외가 나는가", 다른 하나는 "지연 조회가 살아 있는가"다.\
+후자는 `MethodParameter`를 익명 서브클래스로 감싸 `getParameterAnnotations()` 호출 횟수를 세면 보인다 — 생성 직후 0, 직렬화 후 정확히 1.\
+0->1이 아니라 0->0이면 애너테이션이 소실된 것이고, 1->1이면 gh-33948의 성능 개선이 되돌아간 것이다.\
+두 단언이 함께 있어야 수정의 경계가 고정된다(테스트 상세는 [tests.md](tests.md) 7절).
 
 ## 4. 계약 — 무엇이 고정돼 있고 결함이 무엇을 어기나
 
 이 클래스가 지키기로 되어 있던 계약 여덟 가지와, 결함 또는 수정이 그중 무엇을 건드리는지를 나란히 놓는다.
+
+> **계약(contract)** — 코드가 바깥에 약속한 성질. 시그니처만이 아니라 javadoc·클래스 선언·기존 동작이 다 계약이 된다.\
+> 예: `implements Serializable`이라는 선언 한 줄이 "이 객체는 스트림에 쓸 수 있다"는 계약이다.
 
 | 계약 | 출처 | 결함이 어기는가 |
 |---|---|---|
@@ -136,6 +199,9 @@ new ObjectOutputStream(out).writeObject(td);
 
 수정의 본체는 공급자 필드의 수식어를 바꾸는 한 줄이다.
 
+> **수식어(modifier)** — 필드·메서드 선언 앞에 붙어 성질을 정하는 키워드(`private`·`final`·`transient`·`volatile` 등).\
+> 예: `final`은 "한 번 대입하면 못 바꾼다", `transient`는 "직렬화에서 제외한다"를 뜻한다.
+
 ```java
 // before  TypeDescriptor.java:76 (e8729d04388)
 	private final AnnotatedElementSupplier annotatedElementSupplier;
@@ -144,7 +210,8 @@ new ObjectOutputStream(out).writeObject(td);
 	private transient AnnotatedElementSupplier annotatedElementSupplier;
 ```
 
-`final`이 빠진 것은 목적이 아니라 결과다. `readObject`에서 재대입해야 하므로 `final`을 유지할 수 없다.
+`final`이 빠진 것은 목적이 아니라 결과다.\
+`readObject`에서 재대입해야 하므로 `final`을 유지할 수 없다.
 
 ### 5.2 직렬화 훅 두 개 (신설)
 
@@ -168,29 +235,63 @@ new ObjectOutputStream(out).writeObject(td);
 	}
 ```
 
-**왜 이 위치인가.** 세 조각이 각각 다른 문제를 막고, 하나라도 빠지면 다른 것이 깨진다.
+**왜 이 위치인가.**\
+세 조각이 각각 다른 문제를 막고, 하나라도 빠지면 다른 것이 깨진다.
 
-1. `transient` (필드) — 캡처된 리플렉션 객체를 스트림에서 제거. 결함의 직접 원인 제거.
-2. `writeObject`의 `getAnnotatedElement()` — 공급자가 빠진 자리를 캐시가 메우게 한다. 이 한 줄이 없으면 애너테이션이 **조용히** 사라진다(예외 없이 값만 잃는 최악의 실패 모드).
-3. `readObject`의 `from(...)` 재호출 — 역직렬화가 생성자와 정적 팩토리를 우회하므로 `EMPTY` 동일성이 깨진 채 복원된다. 이 줄이 없으면 왕복 후 `isEmpty()` 지름길 셋이 조용히 죽는다.
+1. `transient` (필드) — 캡처된 리플렉션 객체를 스트림에서 제거.\
+   결함의 직접 원인 제거.
+2. `writeObject`의 `getAnnotatedElement()` — 공급자가 빠진 자리를 캐시가 메우게 한다.\
+   이 한 줄이 없으면 애너테이션이 **조용히** 사라진다(예외 없이 값만 잃는 최악의 실패 모드).
+3. `readObject`의 `from(...)` 재호출 — 역직렬화가 생성자와 정적 팩토리를 우회하므로 `EMPTY` 동일성이 깨진 채 복원된다.\
+   이 줄이 없으면 왕복 후 `isEmpty()` 지름길 셋이 조용히 죽는다.
 
-비용 위치도 이 배치의 근거다. 조회 강제가 `writeObject` 안에 있으므로 **직렬화하지 않는 모든 경로의 성능은 그대로**다 — gh-33948이 얻은 이득이 유지되고, 추가 조회는 실제로 스트림에 쓰는 순간에만 한 번 발생한다.
+> **정적 팩토리(static factory)** — 생성자 대신 객체를 만들어 주는 static 메서드. 캐싱이나 싱글턴 재사용 같은 판단을 안에 넣을 수 있다.\
+> 예: `AnnotatedElementAdapter.from(null)`은 새 객체를 만들지 않고 `EMPTY`를 돌려준다.
+
+세 조각 중 하나씩 빼 보면 어떤 실패가 되돌아오는지가 갈린다.
+
+```text
+transient   writeObject   readObject          결과
+  있음        있음          있음        ->  성공, 애너테이션 보존, 지름길 유지
+  없음         -             -         ->  NotSerializableException (원래 결함)
+  있음        없음          있음        ->  예외는 없지만 애너테이션이 조용히 소실
+  있음        있음          없음        ->  값은 맞지만 isEmpty() 지름길 셋이 죽는다
+```
+
+그림이 말하는 것 하나 — 셋 중 하나만 빠져도 실패 모드가 "시끄러운 예외"에서 "조용한 손실"로 바뀐다.
+
+비용 위치도 이 배치의 근거다.\
+조회 강제가 `writeObject` 안에 있으므로 **직렬화하지 않는 모든 경로의 성능은 그대로**다 — gh-33948이 얻은 이득이 유지되고, 추가 조회는 실제로 스트림에 쓰는 순간에만 한 번 발생한다.
 
 ### 5.3 검토된 대안과 기각 이유
 
 같은 회귀를 없애는 다섯 가지 접근을 검토했고, 각각 다음 이유로 밀렸다.
 
-- **생성자에서 즉시 조회로 되돌린다**: 결함은 사라지지만 gh-33948의 성능 회귀가 그대로 복귀한다. 계약(4절 3행)에 정면 위배 -> 기각.
-- **공급자 필드만 `transient`로 바꾸고 훅은 두지 않는다**: 쓰기는 성공하지만 캐시가 `null`인 채 나가 애너테이션이 소실되고, 복원 후 `supplier.get()`이 NPE를 낸다 -> 기각. 이 반쪽 수정을 red로 붙잡는 것이 테스트 설계의 한 축이다.
-- **`readObject`에서 어댑터를 그대로 대입**: `EMPTY` 동일성이 복구되지 않아 `isEmpty()` 지름길이 죽는다. 관측 가능한 계약 위반 -> 기각.
-- **`AnnotatedElementAdapter`에 `readResolve()`를 추가**: 어댑터 쪽에서 EMPTY를 접는 더 일반적인 해법이지만, 이 PR의 범위(회귀 복원)를 넘어 공개 클래스의 직렬화 형식을 바꾼다. 소유자 쪽 `from()` 재호출로 같은 효과를 얻을 수 있으므로 채택하지 않았다 — 다만 어댑터를 직접 직렬화하는 다른 사용처가 생기면 재검토 대상이다.
-- **이전 `serialVersionUID`를 고정**: 옛 스트림의 공급자 필드는 읽혀서 버려지고, 옛 코드는 조회를 강제하지 않았으므로 `annotatedElement`가 `null`로 도착한다 — 결과는 **애너테이션의 조용한 소실**. 게다가 문제의 세 생성자로 만든 옛 스트림은 애초에 존재할 수 없다(그것을 쓰는 일이 지금 실패하는 동작이다). 시끄러운 실패를 택해 기각.
+- **생성자에서 즉시 조회로 되돌린다**: 결함은 사라지지만 gh-33948의 성능 회귀가 그대로 복귀한다.\
+  계약(4절 3행)에 정면 위배 -> 기각.
+- **공급자 필드만 `transient`로 바꾸고 훅은 두지 않는다**: 쓰기는 성공하지만 캐시가 `null`인 채 나가 애너테이션이 소실되고, 복원 후 `supplier.get()`이 NPE를 낸다 -> 기각.\
+  이 반쪽 수정을 red로 붙잡는 것이 테스트 설계의 한 축이다.
+- **`readObject`에서 어댑터를 그대로 대입**: `EMPTY` 동일성이 복구되지 않아 `isEmpty()` 지름길이 죽는다.\
+  관측 가능한 계약 위반 -> 기각.
+- **`AnnotatedElementAdapter`에 `readResolve()`를 추가**: 어댑터 쪽에서 EMPTY를 접는 더 일반적인 해법이지만, 이 PR의 범위(회귀 복원)를 넘어 공개 클래스의 직렬화 형식을 바꾼다.\
+  소유자 쪽 `from()` 재호출로 같은 효과를 얻을 수 있으므로 채택하지 않았다 — 다만 어댑터를 직접 직렬화하는 다른 사용처가 생기면 재검토 대상이다.
+- **이전 `serialVersionUID`를 고정**: 옛 스트림의 공급자 필드는 읽혀서 버려지고, 옛 코드는 조회를 강제하지 않았으므로 `annotatedElement`가 `null`로 도착한다 — 결과는 **애너테이션의 조용한 소실**.\
+  게다가 문제의 세 생성자로 만든 옛 스트림은 애초에 존재할 수 없다(그것을 쓰는 일이 지금 실패하는 동작이다).\
+  시끄러운 실패를 택해 기각.
 
 ## 6. 범위 밖과 인접 영향
 
 이 PR이 손대지 않은 인접 실패와, 수정이 남기는 영향은 다음 네 갈래로 정리된다.
 
-- **`getElementTypeDescriptor()` 등 파생 경로의 `NotSerializableException: TypeVariableImpl`**: 원인이 애너테이션 공급자가 아니라 `resolvableType` 쪽이라 이 PR 전후가 동일하다. 그중 계약이 살아 있던 `forClassWithGenerics` 갈래가 [PR #37186](../37186-resolvabletype-generics-serialization/README.md)로 분리됐고, `as()` 상위 타입 워크 갈래는 SPR-17070이 문서로 계약을 축소해 둔 영역이라 손대지 않았다.
-- **같은 패턴의 다른 위치**: `Serializable` 함수형 인터페이스로 지연 조회를 만드는 코드가 있으면 같은 함정에 빠진다. `spring-core` 안의 선례이자 정답은 `SerializableTypeWrapper`의 provider 3종(`FieldTypeProvider`:229/:235/:253, `MethodParameterTypeProvider`:269/:279/:299, `MethodInvokeTypeProvider`:322/:332/:361)으로, 리플렉션 객체를 `transient`로 빼고 "다시 찾을 좌표"를 실어 `readObject`에서 복원한다. 이번 수정은 같은 패턴이되 싣는 재료가 좌표가 아니라 **이미 조회해 둔 결과**라는 점만 다르다.
-- **하위호환**: 런타임 동작·API 시그니처는 불변. 바뀌는 것은 (1) 자동 계산되는 `serialVersionUID` (2) 애너테이션 클래스가 클래스패스에 없을 때의 예외 종류 — 이전에는 `NotSerializableException`, 이후에는 `writeObject`에서 올라오는 `TypeNotPresentException`. 둘 다 실패이고 후자가 원인 정보를 더 담는다.
+- **`getElementTypeDescriptor()` 등 파생 경로의 `NotSerializableException: TypeVariableImpl`**: 원인이 애너테이션 공급자가 아니라 `resolvableType` 쪽이라 이 PR 전후가 동일하다.\
+  그중 계약이 살아 있던 `forClassWithGenerics` 갈래가 [PR #37186](../37186-resolvabletype-generics-serialization/README.md)로 분리됐고, `as()` 상위 타입 워크 갈래는 SPR-17070이 문서로 계약을 축소해 둔 영역이라 손대지 않았다.
+- **같은 패턴의 다른 위치**: `Serializable` 함수형 인터페이스로 지연 조회를 만드는 코드가 있으면 같은 함정에 빠진다.\
+  `spring-core` 안의 선례이자 정답은 `SerializableTypeWrapper`의 provider 3종(`FieldTypeProvider`:229/:235/:253, `MethodParameterTypeProvider`:269/:279/:299, `MethodInvokeTypeProvider`:322/:332/:361)으로, 리플렉션 객체를 `transient`로 빼고 "다시 찾을 좌표"를 실어 `readObject`에서 복원한다.\
+  이번 수정은 같은 패턴이되 싣는 재료가 좌표가 아니라 **이미 조회해 둔 결과**라는 점만 다르다.
+- **하위호환**: 런타임 동작·API 시그니처는 불변.\
+  바뀌는 것은 (1) 자동 계산되는 `serialVersionUID` (2) 애너테이션 클래스가 클래스패스에 없을 때의 예외 종류 — 이전에는 `NotSerializableException`, 이후에는 `writeObject`에서 올라오는 `TypeNotPresentException`.\
+  둘 다 실패이고 후자가 원인 정보를 더 담는다.
 - **미확인**: 이 PR이 7.0.x 백포트 대상인지, 회귀가 들어간 정확한 릴리스 구간(6.2.1~6.2.13 사이로 추정)의 하한은 PR 본문 기준으로만 확인했고 각 릴리스 태그에서 재현하지는 않았다.
+
+> **백포트(backport)** — 최신 브랜치에 들어간 수정을 이전 버전 브랜치에도 옮겨 싣는 것.\
+> 예: 7.0 main에 머지된 이 수정을 6.2.x 유지보수 브랜치에도 반영할지는 아직 확인되지 않았다.

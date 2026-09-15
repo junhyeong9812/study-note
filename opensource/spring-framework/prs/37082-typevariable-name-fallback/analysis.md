@@ -6,7 +6,11 @@
 
 ## 0. 결론 먼저
 
-`ResolvableType.resolveVariable()`의 마지막 폴백은 타입 변수를 **이름 문자열만으로** 매칭한다(base L966-971). 주석 스스로 "independent of generic declaration context"라고 밝히듯 선언 문맥을 보지 않으므로, 상속 관계가 전혀 없는 형제 인터페이스의 동명 변수나 클래스 변수를 가린 메서드 레벨 변수까지 매칭해 **틀린 타입**을 돌려준다.
+`ResolvableType.resolveVariable()`의 마지막 폴백은 타입 변수를 **이름 문자열만으로** 매칭한다(base L966-971).\
+주석 스스로 "independent of generic declaration context"라고 밝히듯 선언 문맥을 보지 않으므로, 상속 관계가 전혀 없는 형제 인터페이스의 동명 변수나 클래스 변수를 가린 메서드 레벨 변수까지 매칭해 **틀린 타입**을 돌려준다.
+
+> **선언 문맥(generic declaration context)** — 그 타입 변수가 어느 클래스·메서드의 선언에서 나왔는지를 가리키는 정보.\
+> 예: `TopSearch<I,O>`의 `I`와 `TopCreate<I,O>`의 `I`는 이름이 같아도 선언 문맥이 달라 서로 다른 변수다.
 
 수정은 폴백을 제거하지 않고 정당한 유일한 조건 — "찾는 변수를 선언한 것이 클래스이고, 지금 보고 있는 파라미터화 타입이 그 선언 클래스의 상위 타입일 때" — 를 걸어 subtype narrowing에만 허용하는 것이다(head L969-976, 2개 술어).
 
@@ -14,13 +18,40 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-22 제출, 라벨 `status: waiting-fo
 
 ## 1. 무대 — 모듈·파일·클래스와 진입 API
 
-무대는 `spring-core`의 `org.springframework.core` 패키지, 두 파일이다. 결함 본체는 `ResolvableType.java`의 `private` 메서드 `resolveVariable(TypeVariable)`(base L945-983)이고, 그 결과를 소비해 계층 전체를 훑는 상위 진입점이 `GenericTypeResolver.java`의 `resolveType(Type, Class)`(L154)와 그 도우미 `resolveVariable(TypeVariable, ResolvableType)`(L210)이다.
+무대는 `spring-core`의 `org.springframework.core` 패키지, 두 파일이다.\
+결함 본체는 `ResolvableType.java`의 `private` 메서드 `resolveVariable(TypeVariable)`(base L945-983)이고, 그 결과를 소비해 계층 전체를 훑는 상위 진입점이 `GenericTypeResolver.java`의 `resolveType(Type, Class)`(L154)와 그 도우미 `resolveVariable(TypeVariable, ResolvableType)`(L210)이다.
 
-공개 진입 API는 `GenericTypeResolver.resolveType(genericType, contextClass)`다. "이 제네릭 타입을 이 문맥 클래스에 대고 최대한 치환해 달라"는 요청이며, 자바 리플렉션이 `TypeVariable`(값 없는 이름)만 돌려주는 자리를 실제 타입으로 바꾸는 것이 목적이다.
+두 파일이 맡은 몫을 한 장에 겹치면 결함이 어디 있는지가 바로 보인다.
 
-누가 어떤 상황에서 부르나. 이슈 gh-36890이 보고한 실사용 경로는 `AbstractJackson2HttpMessageConverter#getJavaType(Type, Class)`다. Spring MVC가 `@RequestBody` 파라미터를 어떤 타입으로 역직렬화할지 정할 때 이 메서드를 거치므로, 해석이 틀리면 컨트롤러가 JSON 본문을 엉뚱한 타입으로 읽는다. 그 밖에도 `ResolvableType`은 `BeanFactory` 타입 매칭, 이벤트 리스너 제네릭 판별, 컨버터 선택 등 프레임워크 전역에서 쓰이지만, 이번 결함이 도달하는 폴백은 뒤에서 볼 조건 때문에 **최상위 선언 + owner 없음** 조합에서만 실행된다.
+```text
+  GenericTypeResolver.java          "후보를 고른다"
+     resolveType(Type, Class)       :154   공개 진입 API
+     resolveVariable(v, context)    :210   자기 자신 -> superType -> 인터페이스
+              |
+              v
+  ResolvableType.java               "후보 하나 안에서 짝을 맞춘다"
+     resolveVariable(TypeVariable)  :945
+        2a 동일성 비교              :957   정확하다
+        2b owner 재귀               :962   있으면 즉시 return
+        2c 이름만 비교              :966   <- 결함이 사는 여섯 줄
+```
 
-이 폴백 자체는 결함이 아니라 앞선 수정의 산물이다. gh-36890 수정(커밋 `9130ded96f4`, Juergen Hoeller, 2026-06-22)이 첫 번째 루프를 이름 비교에서 **변수 동일성 비교**로 승격시키면서, 그것만으로는 깨지는 케이스(`ResolvableTypeTests.narrow()`)를 살리려고 이름 비교를 뒤쪽 폴백으로 밀어 둔 것이다. 이 PR은 그 후속으로 폴백의 적용 범위를 좁힌다.
+결함은 아래 파일의 여섯 줄이지만, 그 여섯 줄이 오답을 내면 위 파일의 후보 탐색이 거기서 멈춘다.
+
+공개 진입 API는 `GenericTypeResolver.resolveType(genericType, contextClass)`다.\
+"이 제네릭 타입을 이 문맥 클래스에 대고 최대한 치환해 달라"는 요청이며, 자바 리플렉션이 `TypeVariable`(값 없는 이름)만 돌려주는 자리를 실제 타입으로 바꾸는 것이 목적이다.
+
+> **치환(substitution)** — 값이 정해지지 않은 자리에 실제 값을 대신 끼워 넣는 것.\
+> 예: `Create<I,O>`의 `I`를 `Controller implements Create<Long,Long>` 문맥에 대고 `Long`으로 바꿔 넣는 일이다.
+
+누가 어떤 상황에서 부르나.\
+이슈 gh-36890이 보고한 실사용 경로는 `AbstractJackson2HttpMessageConverter#getJavaType(Type, Class)`다.\
+Spring MVC가 `@RequestBody` 파라미터를 어떤 타입으로 역직렬화할지 정할 때 이 메서드를 거치므로, 해석이 틀리면 컨트롤러가 JSON 본문을 엉뚱한 타입으로 읽는다.\
+그 밖에도 `ResolvableType`은 `BeanFactory` 타입 매칭, 이벤트 리스너 제네릭 판별, 컨버터 선택 등 프레임워크 전역에서 쓰이지만, 이번 결함이 도달하는 폴백은 뒤에서 볼 조건 때문에 **최상위 선언 + owner 없음** 조합에서만 실행된다.
+
+이 폴백 자체는 결함이 아니라 앞선 수정의 산물이다.\
+gh-36890 수정(커밋 `9130ded96f4`, Juergen Hoeller, 2026-06-22)이 첫 번째 루프를 이름 비교에서 **변수 동일성 비교**로 승격시키면서, 그것만으로는 깨지는 케이스(`ResolvableTypeTests.narrow()`)를 살리려고 이름 비교를 뒤쪽 폴백으로 밀어 둔 것이다.\
+이 PR은 그 후속으로 폴백의 적용 범위를 좁힌다.
 
 ## 2. 전체 메서드 그래프
 
@@ -28,7 +59,7 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-22 제출, 라벨 `status: waiting-fo
 
 공개 진입점에서 결함이 사는 private 메서드까지는 어댑터 하나를 사이에 둔 네 단계다.
 
-```
+```text
  GenericTypeResolver.resolveType(genericType, contextClass)          GenericTypeResolver.java:154
    |-- genericType 이 TypeVariable 이면                                :156
    |     |-- resolveVariable(typeVariable, ResolvableType.forClass(contextClass))   :157
@@ -41,7 +72,7 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-22 제출, 라벨 `status: waiting-fo
    |-- contextType.hasGenerics() 이면 asVariableResolver() 로 직접 질의   :212-224
    |     +-- 결과가 TypeVariable 이면 resolveType() 으로 계속 푼다        :219-221
    |-- contextType.getSuperType() 으로 재귀 (NONE 아니면 채택)            :226-232
-   |-- contextType.getInterfaces() 를 **선언 순서대로** 재귀              :233-238
+   |-- contextType.getInterfaces() 를 선언 순서대로 재귀                    :233-238
    +-- 전부 실패하면 ResolvableType.NONE                                 :239
          |
          v  (asVariableResolver -> DefaultVariableResolver -> source.resolveVariable)
@@ -55,9 +86,9 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-22 제출, 라벨 `status: waiting-fo
    |        |-- resolved = resolve()  (null 이면 즉시 null)              :951-954
    |        |-- variables     = resolved.getTypeParameters()             :955
    |        |-- typeArguments = parameterizedType.getActualTypeArguments()  :956
-   |        |-- 2a. 변수 **동일성** 비교 -> typeArguments[i]              :957-961
-   |        |-- 2b. ownerType != null 이면 owner 로 재귀하고 **즉시 return**  :962-965
-   |        +-- 2c. 변수 **이름만** 비교 -> typeArguments[i]              :966-971   <<< 결함
+   |        |-- 2a. 변수 동일성 비교 -> typeArguments[i]                      :957-961
+   |        |-- 2b. ownerType != null 이면 owner 로 재귀하고 즉시 return      :962-965
+   |        +-- 2c. 변수 이름만 비교 -> typeArguments[i]                      :966-971   <<< 결함
    |-- (3) this.type 이 WildcardType -> 한 단계 풀고 재시도               :973-978
    |-- (4) this.variableResolver 에게 위임                               :979-981
    +-- (5) null                                                         :982
@@ -67,7 +98,7 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-22 제출, 라벨 `status: waiting-fo
 
 매칭은 선언된 변수 배열과 실인자 배열을 같은 인덱스로 짝짓는 작업이고, 판정 기준만 단계마다 다르다.
 
-```
+```text
  resolved (Class)  ---getTypeParameters()--->  variables[]     "선언된 변수들"
  parameterizedType ---getActualTypeArguments()->  typeArguments[]  "그 자리에 채워진 실인자들"
                                                      |
@@ -77,15 +108,38 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-22 제출, 라벨 `status: waiting-fo
                              forType(typeArguments[i], this.variableResolver)  = 답
 ```
 
-일치 판정이 2a에서는 `variables[i].equals(variableToCompare)`(이름 + `getGenericDeclaration()`), 2c에서는 `variables[i].getName().equals(variableToCompare.getName())`(이름만)이다. **같은 배열, 같은 인덱스, 다른 판정 기준** — 2c가 느슨해서 무관한 자리를 고른다.
+일치 판정이 2a에서는 `variables[i].equals(variableToCompare)`(이름 + `getGenericDeclaration()`), 2c에서는 `variables[i].getName().equals(variableToCompare.getName())`(이름만)이다.\
+**같은 배열, 같은 인덱스, 다른 판정 기준** — 2c가 느슨해서 무관한 자리를 고른다.
+
+케이스 A의 실제 값으로 두 판정을 나란히 놓으면 차이가 한눈에 보인다.
+
+```text
+  2a 동일성 판정                         2c 이름 판정
+  +---------------------------------+   +---------------------------------+
+  | 찾는 것 : TopCreate 의 I        |   | 찾는 것 : "I"                   |
+  | 후보    : TopSearch 의 I        |   | 후보    : "I"                   |
+  | 선언    : TopCreate vs TopSearch|   | 선언    : 보지 않는다           |
+  +---------------------------------+   +---------------------------------+
+    -> 불일치, 다음 단계로               -> 일치, typeArguments[0]=String
+```
+
+같은 두 변수를 두고 한쪽은 "다르다"고 하고 다른 쪽은 "같다"고 하므로, 둘 사이를 가르는 조건이 없으면 느슨한 쪽이 최종 답이 된다.
 
 ### 2.3 결함이 전파되는 길
 
-2c가 답을 만들어 내면 `DefaultVariableResolver`가 non-null을 돌려주고, `GenericTypeResolver.resolveVariable`은 그것을 성공으로 보아 **즉시 반환**한다(L218-223). 인터페이스 루프(L233-238)는 뒤 후보를 시도조차 하지 못한다. 즉 결함의 실질적 피해는 "틀린 답"이 아니라 "**틀린 답이 정답 탐색을 조기 종료시킨다**"는 것이다. 반대로 2c가 null을 돌려주면 루프가 다음 후보로 넘어가 동일성 매칭으로 정답을 찾는다 — 수정이 "답을 고치는" 대신 "모름을 반환하게 하는" 형태인 이유다.
+2c가 답을 만들어 내면 `DefaultVariableResolver`가 non-null을 돌려주고, `GenericTypeResolver.resolveVariable`은 그것을 성공으로 보아 **즉시 반환**한다(L218-223).\
+인터페이스 루프(L233-238)는 뒤 후보를 시도조차 하지 못한다.\
+즉 결함의 실질적 피해는 "틀린 답"이 아니라 "**틀린 답이 정답 탐색을 조기 종료시킨다**"는 것이다.\
+반대로 2c가 null을 돌려주면 루프가 다음 후보로 넘어가 동일성 매칭으로 정답을 찾는다 — 수정이 "답을 고치는" 대신 "모름을 반환하게 하는" 형태인 이유다.
+
+> **조기 종료(short-circuit)** — 뒤에 남은 후보가 있어도 첫 성공에서 곧바로 멈추고 답을 내는 것.\
+> 예: `TopSearch`가 `String`을 내놓는 순간 루프가 끝나 `TopCreate`는 시도조차 되지 않는다.
 
 ## 2.5 핵심 이름표 사전
 
-이 흐름에서 헷갈리는 것은 "변수"가 세 얼굴로 등장한다는 점이다: 찾고 있는 변수, 지금 보고 있는 타입이 선언한 변수들, 그리고 그 자리에 채워진 실인자들. 아래 표는 각 이름이 그중 무엇인지를 명시한다. (예시 값은 결함 케이스 A = `TopCreate`의 `I`를 `TopSearch<String, Long>`에 대고 물을 때 / 정상 케이스 D = `Box`의 `E`를 `Container<String>`에 대고 물을 때)
+이 흐름에서 헷갈리는 것은 "변수"가 세 얼굴로 등장한다는 점이다: 찾고 있는 변수, 지금 보고 있는 타입이 선언한 변수들, 그리고 그 자리에 채워진 실인자들.\
+아래 표는 각 이름이 그중 무엇인지를 명시한다.\
+(예시 값은 결함 케이스 A = `TopCreate`의 `I`를 `TopSearch<String, Long>`에 대고 물을 때 / 정상 케이스 D = `Box`의 `E`를 `Container<String>`에 대고 물을 때)
 
 | 이름표 | 무엇인가 / 역할 | 입력 -> 출력 | 누가 언제 부르나 | 이 결함과의 관계 |
 |---|---|---|---|---|
@@ -117,13 +171,22 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-22 제출, 라벨 `status: waiting-fo
 | `getGenerics()` (`:783`) / `getGeneric(int...)` (`:754`) | 제네릭 인자들. raw `Class`면 타입 파라미터를 자기 자신을 resolver로 감싸 돌려준다(:794) | -> `ResolvableType[]` | 정상 케이스 D의 진입점 | `narrow()`가 폴백에 닿는 경로 |
 | `NONE` (`:95`) | "값 없음"을 null 대신 표현하는 싱글턴 | | 전역 | `GenericTypeResolver`는 `NONE`, `ResolvableType`은 `null`로 실패를 표현한다 — 두 층의 표현이 다르다 |
 
-이 표에서 결함이 한 줄로 보인다. **2a는 `variables[i]` 전체를 비교하고 2c는 `getName()`만 비교하는데, 그 사이에 있는 유일한 방벽이 `ownerType != null`이라는 우연한 조건뿐이다.** 수정은 2c에 자기 자신의 정당성 조건을 붙여 그 우연 의존을 없앤다.
+이 표에서 결함이 한 줄로 보인다.\
+**2a는 `variables[i]` 전체를 비교하고 2c는 `getName()`만 비교하는데, 그 사이에 있는 유일한 방벽이 `ownerType != null`이라는 우연한 조건뿐이다.**\
+수정은 2c에 자기 자신의 정당성 조건을 붙여 그 우연 의존을 없앤다.
 
 ## 3. 결함 경로 단계 추적
 
-네 케이스를 같은 형식으로 따라간다. A와 B는 결함, C는 결함이 **드러나지 않았던** 대조군, D는 폴백이 정당한 정상 케이스다. 픽스처는 실제 테스트가 쓰는 것과 같다.
+네 케이스를 같은 형식으로 따라간다.\
+A와 B는 결함, C는 결함이 **드러나지 않았던** 대조군, D는 폴백이 정당한 정상 케이스다.\
+픽스처는 실제 테스트가 쓰는 것과 같다.
 
-케이스 A — 최상위 형제 인터페이스. `interface TopSearch<I, O> {}`, `interface TopCreate<I, O> { default O create(I body) { return null; } }`, `class TopController implements TopSearch<String, Long>, TopCreate<Long, Long> {}`에서 `TopCreate#create`의 파라미터 타입 `I`를 `TopController` 문맥으로 해석한다. 기대값은 `Long`이다.
+> **대조군(control case)** — 같은 조건에서 결함이 나타나지 않는 경우를 일부러 옆에 놓아, 무엇이 차이를 만드는지 가려내는 사례.\
+> 예: 케이스 C는 A와 구조가 같고 선언 위치만 중첩이라 오답이 나지 않는다 — 그러므로 owner 유무가 원인이다.
+
+케이스 A — 최상위 형제 인터페이스.\
+`interface TopSearch<I, O> {}`, `interface TopCreate<I, O> { default O create(I body) { return null; } }`, `class TopController implements TopSearch<String, Long>, TopCreate<Long, Long> {}`에서 `TopCreate#create`의 파라미터 타입 `I`를 `TopController` 문맥으로 해석한다.\
+기대값은 `Long`이다.
 
 | 단계 | 위치 | 수정 전 | 수정 후 |
 |---|---|---|---|
@@ -138,7 +201,21 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-22 제출, 라벨 `status: waiting-fo
 | 인터페이스 후보 2 | `:233` | **도달 못 함** | `ifc = TopCreate<Long, Long>` -> 2a 동일성 성공 -> `Long` |
 | 최종 | | `String` | `Long` |
 
-케이스 B — 메서드 레벨 변수 shadowing. `class TopRepo<T> { <T> T convert(Object o) {...} }`, `class TopStringRepo extends TopRepo<String> {}`에서 `convert`의 반환 타입(메서드 `T`)을 `TopStringRepo` 문맥으로 해석한다. 메서드 `T`는 호출 시점에야 정해지므로 클래스 문맥만으로는 해석될 수 없다.
+네 케이스가 2c에 도달하는지, 도달했다면 그 답이 옳은지를 한 장에 모으면 이렇다.
+
+```text
+             선언 위치   2b owner   2c 실행   수정 전 답      옳은가
+  A 형제 IF   최상위      null       예       String          틀렸다
+  B shadow    최상위      null       예       String          틀렸다
+  C 대조군    중첩        있음      아니오    Long            옳다
+  D narrow    최상위      null       예       String          옳다
+```
+
+2c를 실행한 셋 중 둘만 오답이므로, 2c를 지우면 D가 깨지고 그대로 두면 A·B가 남는다.
+
+케이스 B — 메서드 레벨 변수 shadowing.\
+`class TopRepo<T> { <T> T convert(Object o) {...} }`, `class TopStringRepo extends TopRepo<String> {}`에서 `convert`의 반환 타입(메서드 `T`)을 `TopStringRepo` 문맥으로 해석한다.\
+메서드 `T`는 호출 시점에야 정해지므로 클래스 문맥만으로는 해석될 수 없다.
 
 | 단계 | 위치 | 수정 전 | 수정 후 |
 |---|---|---|---|
@@ -150,9 +227,13 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-22 제출, 라벨 `status: waiting-fo
 | bound 폴백 | `GenericTypeResolver:160` | 도달 안 함 | `forVariableBounds` -> bounds `[Object]`(실측) -> `resolveBounds`가 null -> `NONE` |
 | 최종 | `:207` | `String` (클래스 인자가 메서드 변수로 새어 들어감) | `genericType` 그대로 = `TypeVariable` (미해석) |
 
-케이스 C — 대조군. 같은 구조를 **중첩 타입**으로 선언하면(`GenericTypeResolverTests` 안의 `Search`/`Create`/`Controller`) `getOwnerType()`이 `GenericTypeResolverTests.class`로 non-null이다(실측: `NEST Probe$Nested$Search ownerType=class Probe$Nested`). 2b에서 owner로 재귀한 뒤 **즉시 return** 하므로 2c에 도달하지 않고, owner 재귀는 null을 돌려주어 인터페이스 루프가 다음 후보로 넘어가 정답을 찾는다. 기존 회귀 테스트 `resolveTypeAgainstSameNamedVariables()`(base `GenericTypeResolverTests.java:263-267`)가 이 배치였기 때문에, gh-36890 수정 이후에도 초록이었지만 **문제의 코드 경로를 실행조차 하지 않았다.**
+케이스 C — 대조군.\
+같은 구조를 **중첩 타입**으로 선언하면(`GenericTypeResolverTests` 안의 `Search`/`Create`/`Controller`) `getOwnerType()`이 `GenericTypeResolverTests.class`로 non-null이다(실측: `NEST Probe$Nested$Search ownerType=class Probe$Nested`).\
+2b에서 owner로 재귀한 뒤 **즉시 return** 하므로 2c에 도달하지 않고, owner 재귀는 null을 돌려주어 인터페이스 루프가 다음 후보로 넘어가 정답을 찾는다.\
+기존 회귀 테스트 `resolveTypeAgainstSameNamedVariables()`(base `GenericTypeResolverTests.java:263-267`)가 이 배치였기 때문에, gh-36890 수정 이후에도 초록이었지만 **문제의 코드 경로를 실행조차 하지 않았다.**
 
-케이스 D — 정당한 subtype narrowing. `ResolvableTypeTests.narrow()`(base `ResolvableTypeTests.java:1413-1417`)가 그것이다.
+케이스 D — 정당한 subtype narrowing.\
+`ResolvableTypeTests.narrow()`(base `ResolvableTypeTests.java:1413-1417`)가 그것이다.
 
 ```java
 		ResolvableType type = ResolvableType.forField(Fields.class.getField("stringList"));
@@ -160,11 +241,20 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-22 제출, 라벨 `status: waiting-fo
 		assertThat(narrow.getGeneric().resolve()).isEqualTo(String.class);
 ```
 
-`ArrayList`의 `E`를 `List<String>`에 대고 묻는다. 2a는 실패한다 — `ArrayList.E`와 `List.E`는 선언이 달라 서로 다른 `TypeVariable`이다(실측 `ArrayList E decl=class java.util.ArrayList`). `java.util.List`는 최상위라 owner도 null이다. 그러므로 이 케이스는 **오직 2c로만 답을 얻는다.** 수정 후에도 `declaringClass=ArrayList`이고 `List.isAssignableFrom(ArrayList)=true`(실측)이므로 폴백이 허용되어 `String`이 그대로 나온다. PR이 추가한 긍정 테스트 `resolveTypeVariableByNameWhenNarrowingParameterizedSupertype()`은 같은 성질을 최소 픽스처(`Container<E>` / `Box<E>`, 실측 `Container.isAssignableFrom(Box)=true`)로 다시 고정한다. 그 픽스처가 `forClassWithGenerics`로 만들어지는 점도 의도적이다 — `SyntheticParameterizedType.getOwnerType()`이 항상 null이라(`ResolvableType.java:1665-1667`) 반드시 2c에 도달하기 때문이다.
+`ArrayList`의 `E`를 `List<String>`에 대고 묻는다.\
+2a는 실패한다 — `ArrayList.E`와 `List.E`는 선언이 달라 서로 다른 `TypeVariable`이다(실측 `ArrayList E decl=class java.util.ArrayList`).\
+`java.util.List`는 최상위라 owner도 null이다.\
+그러므로 이 케이스는 **오직 2c로만 답을 얻는다.**\
+수정 후에도 `declaringClass=ArrayList`이고 `List.isAssignableFrom(ArrayList)=true`(실측)이므로 폴백이 허용되어 `String`이 그대로 나온다.\
+PR이 추가한 긍정 테스트 `resolveTypeVariableByNameWhenNarrowingParameterizedSupertype()`은 같은 성질을 최소 픽스처(`Container<E>` / `Box<E>`, 실측 `Container.isAssignableFrom(Box)=true`)로 다시 고정한다.\
+그 픽스처가 `forClassWithGenerics`로 만들어지는 점도 의도적이다 — `SyntheticParameterizedType.getOwnerType()`이 항상 null이라(`ResolvableType.java:1665-1667`) 반드시 2c에 도달하기 때문이다.
 
 ## 4. 계약과 그 위반
 
 이 무대의 계약 여덟 가지 중 결함이 어기는 것은 앞의 셋이고, 나머지는 수정이 기대거나 지켜야 할 제약이다.
+
+> **계약(contract)** — 코드가 명시적으로든 암묵적으로든 "이건 항상 이렇다"고 약속하고 있는 성질.\
+> 예: "이름이 같아도 선언 주체가 다르면 다른 타입 변수다"는 JDK가 `TypeVariable`에 대해 약속한 계약이다.
 
 | 계약 | 출처 | 위반 여부 |
 |---|---|---|
@@ -208,27 +298,74 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-22 제출, 라벨 `status: waiting-fo
 			}
 ```
 
-**왜 이 위치인가.** 조건을 루프 밖에 두면 폴백 전체가 하나의 술어로 켜지고 꺼진다 — "이 폴백이 정당한가"는 자리 `i`마다가 아니라 **찾는 변수와 지금 타입의 관계**에서 한 번에 결정되는 성질이기 때문이다. 루프 안에 넣으면 같은 판정이 반복되고, 상위 계층(`GenericTypeResolver`)에 넣으면 `resolveVariable`을 직접 부르는 다른 경로(재귀 `:948`, `:964`, `:974`와 `DefaultVariableResolver`)가 보호를 받지 못한다.
+**왜 이 위치인가.**\
+조건을 루프 밖에 두면 폴백 전체가 하나의 술어로 켜지고 꺼진다 — "이 폴백이 정당한가"는 자리 `i`마다가 아니라 **찾는 변수와 지금 타입의 관계**에서 한 번에 결정되는 성질이기 때문이다.\
+루프 안에 넣으면 같은 판정이 반복되고, 상위 계층(`GenericTypeResolver`)에 넣으면 `resolveVariable`을 직접 부르는 다른 경로(재귀 `:948`, `:964`, `:974`와 `DefaultVariableResolver`)가 보호를 받지 못한다.
 
-**두 술어가 각각 하나씩 막는다.** `getGenericDeclaration() instanceof Class<?>`는 케이스 B(메서드 레벨 선언은 `Method`를 돌려준다)를 막고, `resolved.isAssignableFrom(declaringClass)`는 케이스 A(형제 인터페이스는 상속 관계가 없다)를 막는다. 케이스 D는 두 술어를 모두 통과한다.
+게이트를 어디에 세우느냐에 따라 보호 범위가 이렇게 달라진다.
 
-**폴백이 꺼지면 무슨 일이 일어나나.** 2c를 건너뛰면 `resolveVariable`은 (3)(4)를 지나 결국 null로 끝나고, `GenericTypeResolver`가 그것을 `NONE`으로 받아 다음 후보를 시도한다. 즉 수정은 답을 바로잡는 것이 아니라 **"모름"을 정직하게 반환해 상위 탐색이 정답에 닿도록 길을 비켜 주는 것**이다.
+```text
+  루프 안                 루프 밖 (채택)          GenericTypeResolver
+  +-----------------+     +-----------------+     +-----------------+
+  | 자리마다 재판정 |     | 진입 시 1 회    |     | 진입 시 1 회    |
+  | 결과는 동일     |     | 결과는 동일     |     | 재귀 경로 누락  |
+  +-----------------+     +-----------------+     +-----------------+
+    같은 판정을 반복        폴백을 통째로 껐다 켠다   :948/:964/:974 미보호
+```
+
+세 위치가 같은 술어를 쓰더라도, 폴백을 한 번에 켜고 끄면서 모든 재귀 경로를 덮는 것은 가운데뿐이다.
+
+**두 술어가 각각 하나씩 막는다.**\
+`getGenericDeclaration() instanceof Class<?>`는 케이스 B(메서드 레벨 선언은 `Method`를 돌려준다)를 막고, `resolved.isAssignableFrom(declaringClass)`는 케이스 A(형제 인터페이스는 상속 관계가 없다)를 막는다.\
+케이스 D는 두 술어를 모두 통과한다.
+
+**폴백이 꺼지면 무슨 일이 일어나나.**\
+2c를 건너뛰면 `resolveVariable`은 (3)(4)를 지나 결국 null로 끝나고, `GenericTypeResolver`가 그것을 `NONE`으로 받아 다음 후보를 시도한다.\
+즉 수정은 답을 바로잡는 것이 아니라 **"모름"을 정직하게 반환해 상위 탐색이 정답에 닿도록 길을 비켜 주는 것**이다.
 
 ### 5.2 검토된 대안과 기각 이유
 
 같은 증상을 겨냥한 다른 네 접근을 검토했고, 각각 다음 이유로 밀렸다.
 
-- **이름 폴백 전체 삭제.** 가장 단순하지만 `ResolvableTypeTests.narrow()`가 깨진다. 케이스 D는 2a도 2b도 답을 줄 수 없고 오직 2c로만 해석되므로, 삭제는 결함 수정이 아니라 기능 제거다. 이 오답을 막기 위해 PR이 긍정 테스트를 별도로 추가했다.
-- **2b의 `return`을 폴백 통과로 완화.** owner 재귀가 null이면 2c를 시도하게 하는 안이다. 케이스 A는 고치지 못하고(A는 애초에 owner가 null이다) 오히려 케이스 C가 결함 경로에 새로 들어오므로, 결함 범위를 넓힌다.
-- **`GenericTypeResolver` 쪽에서 후보 순서를 바꾸거나 전 후보를 시도해 유일 해를 요구.** 증상 하나(A)는 완화되지만 원인(느슨한 판정)은 그대로이고, 인터페이스 선언 순서에 의존하던 기존 동작 전반을 흔든다. 결함이 사는 곳이 아닌 곳을 고치는 안이다.
-- **술어를 `declaringClass.isAssignableFrom(resolved)`로 뒤집기.** 방향이 반대다. narrowing은 `resolved`(`List`)가 넓고 `declaringClass`(`ArrayList`)가 좁은 관계이므로 `resolved.isAssignableFrom(declaringClass)`가 맞다. 뒤집으면 케이스 D가 깨진다.
+- **이름 폴백 전체 삭제.**\
+  가장 단순하지만 `ResolvableTypeTests.narrow()`가 깨진다.\
+  케이스 D는 2a도 2b도 답을 줄 수 없고 오직 2c로만 해석되므로, 삭제는 결함 수정이 아니라 기능 제거다.\
+  이 오답을 막기 위해 PR이 긍정 테스트를 별도로 추가했다.
+- **2b의 `return`을 폴백 통과로 완화.**\
+  owner 재귀가 null이면 2c를 시도하게 하는 안이다.\
+  케이스 A는 고치지 못하고(A는 애초에 owner가 null이다) 오히려 케이스 C가 결함 경로에 새로 들어오므로, 결함 범위를 넓힌다.
+- **`GenericTypeResolver` 쪽에서 후보 순서를 바꾸거나 전 후보를 시도해 유일 해를 요구.**\
+  증상 하나(A)는 완화되지만 원인(느슨한 판정)은 그대로이고, 인터페이스 선언 순서에 의존하던 기존 동작 전반을 흔든다.\
+  결함이 사는 곳이 아닌 곳을 고치는 안이다.
+- **술어를 `declaringClass.isAssignableFrom(resolved)`로 뒤집기.**\
+  방향이 반대다.\
+  narrowing은 `resolved`(`List`)가 넓고 `declaringClass`(`ArrayList`)가 좁은 관계이므로 `resolved.isAssignableFrom(declaringClass)`가 맞다.\
+  뒤집으면 케이스 D가 깨진다.
 
 ## 6. 범위 밖과 인접 영향
 
 이 PR이 손대지 않은 인접 코드와, 수정이 남기는 영향은 다음 다섯 갈래로 정리된다.
 
-- **같은 패턴의 다른 위치는 없다.** 이름 기반 변수 매칭은 이 클래스에서 2c 한 곳뿐이다. `TypeVariablesVariableResolver`(:1623-1631)는 동일성만 쓰고, `GenericTypeResolver.getTypeVariableMap`(:261)이 만드는 맵도 `TypeVariable` 자체를 키로 쓴다. 수정은 클래스 내부의 다수 관례에 맞추는 방향이다.
-- **`SerializableTypeWrapper.unwrap`은 건드리지 않았다.** 래퍼를 벗기는 일(:946)과 벗긴 뒤 무엇으로 비교하느냐는 별개 축이며, 전자는 gh-36890 수정에서 이미 정리됐다.
-- **하위호환.** 동작이 달라지는 것은 (1) 무관한 선언과 이름만 같은 변수, (2) 메서드 레벨 변수 두 경우뿐이고, 둘 다 수정 전 값이 **틀린 값**이었다. 정당한 narrowing과 동일성 매칭은 그대로다. 공개 API 시그니처 변화 없음. 다만 (2)의 반환 형태가 "구체 클래스"에서 "`TypeVariable` 그대로"로 바뀌므로, 그 우연한 해석에 의존해 `resolve()` 결과가 non-null임을 전제하던 호출자가 있다면 영향을 받는다 — 그런 호출자가 실제로 있는지는 **미확인**이며, 원래 값이 틀렸다는 점에서 의존이 정당화되지는 않는다.
-- **검증.** `GenericTypeResolverTests`에 세 건이 추가됐다. A 재현(최상위 픽스처 — 테스트 픽스처의 배치 자체가 검증 조건이다), B 재현(단언이 "값이 틀렸다"가 아니라 "`TypeVariable`로 남아 있다"), D 긍정 가드(폴백 삭제라는 오답을 막는다). 기존 자산으로는 `narrow()`, gh-34386, gh-36890 테스트가 그대로 통과한다. 상세는 [tests.md](tests.md).
-- **인접 리포트.** gh-36890 이슈 자체는 선행 커밋 `9130ded96f4`로 이미 닫혔다. 이 PR은 같은 이슈 번호를 참조하는 후속이며, 새 이슈를 열지 않고 "그 수정이 최상위 선언에서는 도달하지 못했다"는 범위 보완으로 제출됐다.
+- **같은 패턴의 다른 위치는 없다.**\
+  이름 기반 변수 매칭은 이 클래스에서 2c 한 곳뿐이다.\
+  `TypeVariablesVariableResolver`(:1623-1631)는 동일성만 쓰고, `GenericTypeResolver.getTypeVariableMap`(:261)이 만드는 맵도 `TypeVariable` 자체를 키로 쓴다.\
+  수정은 클래스 내부의 다수 관례에 맞추는 방향이다.
+- **`SerializableTypeWrapper.unwrap`은 건드리지 않았다.**\
+  래퍼를 벗기는 일(:946)과 벗긴 뒤 무엇으로 비교하느냐는 별개 축이며, 전자는 gh-36890 수정에서 이미 정리됐다.
+- **하위호환.**\
+  동작이 달라지는 것은 (1) 무관한 선언과 이름만 같은 변수, (2) 메서드 레벨 변수 두 경우뿐이고, 둘 다 수정 전 값이 **틀린 값**이었다.\
+  정당한 narrowing과 동일성 매칭은 그대로다.\
+  공개 API 시그니처 변화 없음.\
+  다만 (2)의 반환 형태가 "구체 클래스"에서 "`TypeVariable` 그대로"로 바뀌므로, 그 우연한 해석에 의존해 `resolve()` 결과가 non-null임을 전제하던 호출자가 있다면 영향을 받는다 — 그런 호출자가 실제로 있는지는 **미확인**이며, 원래 값이 틀렸다는 점에서 의존이 정당화되지는 않는다.
+
+> **하위호환(backward compatibility)** — 새 버전으로 올려도 기존에 돌아가던 코드가 그대로 돌아가는 성질.\
+> 예: 여기서 동작이 달라지는 두 경우는 원래 틀린 값을 주던 자리라, 깨뜨릴 "옳던 동작"이 없다.
+
+- **검증.**\
+  `GenericTypeResolverTests`에 세 건이 추가됐다.\
+  A 재현(최상위 픽스처 — 테스트 픽스처의 배치 자체가 검증 조건이다), B 재현(단언이 "값이 틀렸다"가 아니라 "`TypeVariable`로 남아 있다"), D 긍정 가드(폴백 삭제라는 오답을 막는다).\
+  기존 자산으로는 `narrow()`, gh-34386, gh-36890 테스트가 그대로 통과한다.\
+  상세는 [tests.md](tests.md).
+- **인접 리포트.**\
+  gh-36890 이슈 자체는 선행 커밋 `9130ded96f4`로 이미 닫혔다.\
+  이 PR은 같은 이슈 번호를 참조하는 후속이며, 새 이슈를 열지 않고 "그 수정이 최상위 선언에서는 도달하지 못했다"는 범위 보완으로 제출됐다.

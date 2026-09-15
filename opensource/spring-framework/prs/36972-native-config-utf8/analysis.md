@@ -1,19 +1,31 @@
 # PR #36972 분석 — 네이티브 설정 파일의 인코딩이 플랫폼 기본값에 맡겨진 문제
 
-> 기준 상태. **수정 전** = `872b1addeb1^`, **수정 커밋** = `872b1addeb1`, **메인테이너 폴리시** = `78dcdab3fc8`, **현재** = `upstream/main`(`7daf1013aa8`). 파일:줄 인용마다 어느 상태 기준인지 밝힌다.
+> 기준 상태. **수정 전** = `872b1addeb1^`, **수정 커밋** = `872b1addeb1`, **메인테이너 폴리시** = `78dcdab3fc8`, **현재** = `upstream/main`(`7daf1013aa8`).\
+> 파일:줄 인용마다 어느 상태 기준인지 밝힌다.\
 > 이 문서의 자리: README(서사)·structure(5층 스택 구조도)·tests(테스트 해설)와 겹치지 않게, **"문자가 바이트가 되는 단 한 지점"에 이르는 호출 사슬의 이름표**와 **바이트 수준의 단계 추적**을 고정한다.
 
 ## 0. 결론
 
-`FileNativeConfigurationWriter.writeTo`가 `new FileWriter(file)`를 써서 GraalVM 네이티브 이미지 설정 파일(`reachability-metadata.json`)을 **JVM 플랫폼 기본 charset**으로 기록했다. 소비자인 GraalVM은 이 파일을 UTF-8로 읽으므로, 기본 charset이 UTF-8이 아닌 JVM(JDK 18의 JEP 400 이전 윈도우, 또는 `-Dfile.encoding`이 명시 지정된 환경)에서 비ASCII 문자가 든 리소스 패턴·번들 이름을 등록하면 디스크 바이트가 어긋난다.
+`FileNativeConfigurationWriter.writeTo`가 `new FileWriter(file)`를 써서 GraalVM 네이티브 이미지 설정 파일(`reachability-metadata.json`)을 **JVM 플랫폼 기본 charset**으로 기록했다.\
+소비자인 GraalVM은 이 파일을 UTF-8로 읽는다.\
+그래서 기본 charset이 UTF-8이 아닌 JVM(JDK 18의 JEP 400 이전 윈도우, 또는 `-Dfile.encoding`이 명시 지정된 환경)에서 비ASCII 문자가 든 리소스 패턴·번들 이름을 등록하면 디스크 바이트가 어긋난다.
+
+> **플랫폼 기본 charset(platform default charset)** — 프로그램이 인코딩을 명시하지 않았을 때 JVM이 대신 골라 주는 문자-바이트 변환 규칙.\
+> 예: 같은 코드가 리눅스에서는 UTF-8로, JEP 400 이전 한국어 Windows에서는 MS949로 파일을 쓰게 된다.
 
 수정은 `new FileWriter(file, StandardCharsets.UTF_8)` 한 줄로 charset을 명시해 인코딩을 실행 환경에서 떼어 낸 것이다.
 
-상태: 머지됨(7.0.x + main). 커밋 `872b1addeb1`("Write native configuration files as UTF-8", `Closes gh-36972`) + 메인테이너 폴리시 `78dcdab3fc8`. 성격은 자주 터지는 버그의 수정이 아니라, 발동 조건이 좁은 **hardening 겸 계약 명시화**다 — PR 본문도 그렇게 프레이밍했다.
+상태: 머지됨(7.0.x + main).\
+커밋 `872b1addeb1`("Write native configuration files as UTF-8", `Closes gh-36972`) + 메인테이너 폴리시 `78dcdab3fc8`.\
+성격은 자주 터지는 버그의 수정이 아니라, 발동 조건이 좁은 **hardening 겸 계약 명시화**다 — PR 본문도 그렇게 프레이밍했다.
+
+> **hardening(경화)** — 지금 당장 터지지는 않지만 조건이 맞으면 터질 수 있는 여지를 미리 닫아 두는 수정.\
+> 예: 여기서는 "환경이 UTF-8이면 우연히 맞는" 상태를 "환경과 무관하게 맞는" 상태로 바꾼 것이 그 여지 닫기다.
 
 ## 1. 무대
 
-결함이 사는 자리는 AOT 산출물을 디스크에 쓰는 단 한 클래스다. 모듈부터 소비자까지 여섯 항목으로 고정한다.
+결함이 사는 자리는 AOT 산출물을 디스크에 쓰는 단 한 클래스다.\
+모듈부터 소비자까지 여섯 항목으로 고정한다.
 
 | 항목 | 값 |
 |---|---|
@@ -24,13 +36,20 @@
 | 산출물 | `META-INF/native-image/[groupId/artifactId/]reachability-metadata.json` |
 | 소비자 | GraalVM `native-image` 컴파일러 (스프링 런타임은 이 파일을 되읽지 않는다) |
 
-이 클래스는 앞의 두 PR과 달리 **공개 API**다. 공개 진입 API는 상위 추상 클래스의 `NativeConfigurationWriter.write(RuntimeHints)`(`:39`)이고, 실제로 부르는 곳은 저장소 안에 하나 확인된다 — `AbstractAotProcessor.writeHints(RuntimeHints)`(`spring-context/src/main/java/org/springframework/context/aot/AbstractAotProcessor.java:124-128`)가 Gradle/Maven AOT 플러그인이 구동하는 빌드 타임 처리 끝에서 이 writer를 만들어 호출한다. 즉 "누가 언제 부르나"의 답은 **빌드 타임 AOT 처리 1회**다.
+이 클래스는 앞의 두 PR과 달리 **공개 API**다.\
+공개 진입 API는 상위 추상 클래스의 `NativeConfigurationWriter.write(RuntimeHints)`(`:39`)이다.\
+실제로 부르는 곳은 저장소 안에 하나 확인된다 — `AbstractAotProcessor.writeHints(RuntimeHints)`(`spring-context/src/main/java/org/springframework/context/aot/AbstractAotProcessor.java:124-128`)가 Gradle/Maven AOT 플러그인이 구동하는 빌드 타임 처리 끝에서 이 writer를 만들어 호출한다.\
+즉 "누가 언제 부르나"의 답은 **빌드 타임 AOT 처리 1회**다.
+
+> **AOT(ahead-of-time)** — 애플리케이션을 실행하기 전 빌드 시점에 빈 정의·메타데이터를 미리 확정해 두는 Spring의 처리 방식.\
+> 예: 이 결함 경로는 런타임에 반복해 도는 코드가 아니라 빌드 한 번에 한 번만 지나간다.
 
 ## 2. 전체 메서드 그래프
 
-현재(`upstream/main`) 줄번호이며, 수정 전 형태가 필요한 곳은 표시했다. 화살표 옆 괄호는 그 구간을 흐르는 **데이터의 타입**이다 — 이 그래프의 요점이 타입 전환 지점이기 때문이다.
+현재(`upstream/main`) 줄번호이며, 수정 전 형태가 필요한 곳은 표시했다.\
+화살표 옆 괄호는 그 구간을 흐르는 **데이터의 타입**이다 — 이 그래프의 요점이 타입 전환 지점이기 때문이다.
 
-```
+```text
  빌드 타임 (Gradle/Maven AOT 플러그인)
    |
    v
@@ -82,11 +101,41 @@
  디스크: reachability-metadata.json  ->  GraalVM native-image가 UTF-8로 읽음
 ```
 
-이 그래프에서 읽어야 할 사실은 두 가지다. 첫째, `String`에서 `char[]`를 거쳐 `byte[]`가 되는 사슬에서 **인코딩 결정권을 가진 객체는 `FileWriter` 하나뿐**이다. `BasicJsonWriter`는 `String`만 다루고 `IndentingWriter`는 `char[]`를 그대로 위임한다. 둘째, 그 하나뿐인 결정권자에게 아무도 charset을 알려 주지 않으면 결정은 **JVM 기본값**, 즉 실행 환경에 넘어간다.
+이 그래프에서 읽어야 할 사실은 두 가지다.\
+첫째, `String`에서 `char[]`를 거쳐 `byte[]`가 되는 사슬에서 **인코딩 결정권을 가진 객체는 `FileWriter` 하나뿐**이다.\
+`BasicJsonWriter`는 `String`만 다루고 `IndentingWriter`는 `char[]`를 그대로 위임한다.\
+둘째, 그 하나뿐인 결정권자에게 아무도 charset을 알려 주지 않으면 결정은 **JVM 기본값**, 즉 실행 환경에 넘어간다.
 
 ## 2.5 핵심 이름표 사전
 
-이 무대에서 헷갈리는 지점은 "Writer가 세 겹(FileWriter / IndentingWriter / BasicJsonWriter)"이라는 것과, "charset이라는 단어가 나오지 않는 코드 대부분이 사실은 charset에 의존하고 있다"는 것이다. 아래 표는 각 이름이 어떤 타입 층에 서 있는지를 함께 적었다.
+이 무대에서 헷갈리는 지점은 "Writer가 세 겹(FileWriter / IndentingWriter / BasicJsonWriter)"이라는 것과, "charset이라는 단어가 나오지 않는 코드 대부분이 사실은 charset에 의존하고 있다"는 것이다.
+
+세 겹이 어떻게 포개져 있고 누가 charset을 아는지를 먼저 그림으로 고정한다.
+
+```text
+ +--------------------------------------------------+
+ | BasicJsonWriter            :34                   |
+ |   다루는 것: String  (quote / escape 로 조립)     |
+ |   charset 을 아는가:  모른다                      |
+ |   +----------------------------------------------+
+ |   | IndentingWriter        :179                  |
+ |   |   다루는 것: char[]  (들여쓰기만 앞에 붙임)    |
+ |   |   charset 을 아는가:  모른다                   |
+ |   |   +------------------------------------------+
+ |   |   | FileWriter                               |
+ |   |   |   다루는 것: char[] -> byte[]             |
+ |   |   |   charset 을 아는가:  여기서만 안다        |
+ |   |   |     수정 전: 아무도 안 알려 줌 -> JVM 기본값|
+ |   |   |     수정 후: StandardCharsets.UTF_8       |
+ |   |   +------------------------------------------+
+ |   +----------------------------------------------+
+ +--------------------------------------------------+
+            |
+            v
+      디스크 byte[]
+```
+
+아래 표는 각 이름이 어떤 타입 층에 서 있는지를 함께 적었다.
 
 | 이름표 | 무엇인가 | 입력 -> 출력 | 누가 언제 부르나 | 이 결함과의 관계 |
 |---|---|---|---|---|
@@ -113,7 +162,9 @@
 
 ## 3. 결함 경로 단계 추적
 
-인코딩 결함은 예외를 남기지 않으므로 관찰 대상은 반환값이 아니라 **디스크에 박히는 바이트**다. 아래 표는 `hints.resources().registerPattern("com/example/café/**")`가 등록된 상태에서, 기본 charset이 windows-1252인 JVM과 UTF-8인 JVM, 그리고 수정 후를 나란히 추적한 것이다. 추적 대상 문자는 `é`(U+00E9) 하나다.
+인코딩 결함은 예외를 남기지 않으므로 관찰 대상은 반환값이 아니라 **디스크에 박히는 바이트**다.\
+아래 표는 `hints.resources().registerPattern("com/example/café/**")`가 등록된 상태에서, 기본 charset이 windows-1252인 JVM과 UTF-8인 JVM, 그리고 수정 후를 나란히 추적한 것이다.\
+추적 대상 문자는 `é`(U+00E9) 하나다.
 
 | 단계 | 값 / 상태 | 수정 전 (기본 charset = windows-1252) | 수정 전 (기본 charset = UTF-8) | 수정 후 (모든 환경) |
 |---|---|---|---|---|
@@ -127,13 +178,49 @@
 | 8. 결과 | 리소스 매칭 | 패턴이 어긋나 해당 리소스가 이미지에 **미포함** | 정상 | 정상 |
 | 9. 실패가 드러나는 시점 | - | 빌드가 아니라 **네이티브 이미지 런타임**의 리소스 누락 | - | - |
 
-행 5가 유일한 분기점이고, 행 9가 이 결함이 진단하기 어려운 이유다. 빌드는 성공하고, JSON은 문법적으로 유효하며, 예외도 로그도 없다. 원인(쓰기 시점 charset)과 증상(런타임 리소스 누락)이 시공간적으로 멀다.
+같은 입력(`"com/example/café/**"`)에 대해 수정 전 비UTF-8 환경과 수정 후가 각각 어떤 최종 상태로 끝나는지를 같은 칸 폭으로 놓으면 이렇다.
 
-발동 조건이 **두 개의 AND**라는 점도 표에서 읽힌다. (a) 기본 charset이 UTF-8이 아닐 것, (b) 힌트 내용에 비ASCII가 있을 것. 어느 하나만 빠져도 증상이 없다. 그래서 회귀 테스트가 정직한 red/green을 만들지 못한다 — 기본 charset이 UTF-8인 CI에서는 수정 전에도 통과한다(4장·5장).
+```text
+ [수정 전 · 기본 charset = windows-1252]   [수정 후 · 모든 환경]
+ +-----------------------------------+   +-----------------------------------+
+ | new FileWriter(file)              |   | new FileWriter(file, UTF_8)       |
+ +-----------------------------------+   +-----------------------------------+
+ | 디스크 바이트                      |   | 디스크 바이트                      |
+ |   ... 63 61 66 E9 2F ...          |   |   ... 63 61 66 C3 A9 2F ...       |
+ +-----------------------------------+   +-----------------------------------+
+ | GraalVM 이 UTF-8 로 디코딩         |   | GraalVM 이 UTF-8 로 디코딩         |
+ |   0xE9 뒤에 연속 바이트 없음       |   |   0xC3 0xA9 -> é                  |
+ |   -> 디코딩 실패 또는 대체 문자    |   |   -> 패턴 그대로 복원              |
+ +-----------------------------------+   +-----------------------------------+
+ | 리소스 매칭                        |   | 리소스 매칭                        |
+ |   패턴이 어긋나 이미지에 미포함    |   |   정상 포함                        |
+ +-----------------------------------+   +-----------------------------------+
+ | 드러나는 시점                      |   | 드러나는 시점                      |
+ |   빌드는 초록색, 네이티브 런타임   |   |   문제 없음                        |
+ |   에서 리소스 누락으로 뒤늦게      |   |                                   |
+ +-----------------------------------+   +-----------------------------------+
+
+ 같은 소스 · 같은 힌트인데 남는 바이트가 다르다 — 그 차이를 만드는 것은 생성자 인자 하나뿐이다.
+```
+
+행 5가 유일한 분기점이고, 행 9가 이 결함이 진단하기 어려운 이유다.\
+빌드는 성공하고, JSON은 문법적으로 유효하며, 예외도 로그도 없다.\
+원인(쓰기 시점 charset)과 증상(런타임 리소스 누락)이 시공간적으로 멀다.
+
+> **조용한 실패(silent failure)** — 잘못된 결과가 나왔는데도 예외·로그·빨간불 같은 신호가 전혀 없는 상태.\
+> 예: 여기서는 빌드가 성공하고 JSON도 유효하므로, 어긋난 바이트를 알려 주는 것이 아무것도 없다.
+
+발동 조건이 **두 개의 AND**라는 점도 표에서 읽힌다.\
+(a) 기본 charset이 UTF-8이 아닐 것, (b) 힌트 내용에 비ASCII가 있을 것.\
+어느 하나만 빠져도 증상이 없다.\
+그래서 회귀 테스트가 정직한 red/green을 만들지 못한다 — 기본 charset이 UTF-8인 CI에서는 수정 전에도 통과한다(4장·5장).
 
 ## 4. 계약
 
 이 결함이 걸쳐 있는 계약은 다섯 개이고, 그중 셋을 어기며 나머지 둘은 수정이 기대는 전제다.
+
+> **계약(contract)** — 코드가 "이건 이렇게 동작한다"고 약속한 내용. 문서·스펙·호출 관계에 흩어져 있다.\
+> 예: "`FileWriter(File, Charset)`는 주어진 charset으로 인코딩한다"는 JDK가 문서로 건 약속이고, 이 PR의 수정은 그 약속에 기댄다.
 
 | 계약 | 출처 | 결함이 어기는가 |
 |---|---|---|
@@ -143,7 +230,9 @@
 | `escape`는 JSON 문법상 필요한 문자만 이스케이프한다 | `BasicJsonWriter.java:153-176` | 결함이 아니라 **전제**. JSON 스펙상 유효한 선택이지만, 이 선택 때문에 인코딩 책임이 한 층 아래로 내려간다. `escape`가 모든 비ASCII를 `\uXXXX`로 바꿨다면 charset이 무엇이든 결과가 같았을 것이다 |
 | 모듈 내 파일 입출력은 charset을 명시한다 | 같은 `aot` 트리의 선례 — `InMemoryGeneratedFiles.java:71`, `AppendableConsumerInputStreamSource.java:45` | **어긴다** — 일관성 결함이기도 하다 |
 
-기존 테스트가 고정하던 것: `FileNativeConfigurationWriterTests`의 기존 테스트들은 `Files.readString`으로 파일을 읽어 `JSONAssert`로 비교한다. `Files.readString`은 **읽기 charset을 UTF-8로 가정**하므로 읽기와 쓰기가 짝을 이뤄 상쇄되고, 쓰기 시점 인코딩 결함을 구조적으로 잡을 수 없다. 그래서 신규 테스트는 `Files.readAllBytes`로 raw 바이트를 읽는다.
+기존 테스트가 고정하던 것: `FileNativeConfigurationWriterTests`의 기존 테스트들은 `Files.readString`으로 파일을 읽어 `JSONAssert`로 비교한다.\
+`Files.readString`은 **읽기 charset을 UTF-8로 가정**하므로 읽기와 쓰기가 짝을 이뤄 상쇄되고, 쓰기 시점 인코딩 결함을 구조적으로 잡을 수 없다.\
+그래서 신규 테스트는 `Files.readAllBytes`로 raw 바이트를 읽는다.
 
 ## 5. 수정안
 
@@ -161,7 +250,9 @@ after (`upstream/main` 기준 `FileNativeConfigurationWriter.java:63`, import `j
 			try (FileWriter out = new FileWriter(file, StandardCharsets.UTF_8)) {
 ```
 
-**왜 그 위치인가.** 2장 그래프가 답을 준다 — 문자가 바이트가 되는 지점이 이 코드베이스에 **정확히 한 곳**이고, 그곳이 `FileWriter` 생성 지점이다. 상류(`BasicJsonWriter`·`IndentingWriter`·`RuntimeHintsWriter`)는 모두 문자 층에서 일하므로 어디를 고쳐도 바이트를 바꿀 수 없고, 하류(디스크)는 이미 바이트다. 인코딩 결정은 결정이 실제로 일어나는 곳에서 해야 한다.
+**왜 그 위치인가.** 2장 그래프가 답을 준다 — 문자가 바이트가 되는 지점이 이 코드베이스에 **정확히 한 곳**이고, 그곳이 `FileWriter` 생성 지점이다.\
+상류(`BasicJsonWriter`·`IndentingWriter`·`RuntimeHintsWriter`)는 모두 문자 층에서 일하므로 어디를 고쳐도 바이트를 바꿀 수 없고, 하류(디스크)는 이미 바이트다.\
+인코딩 결정은 결정이 실제로 일어나는 곳에서 해야 한다.
 
 검토된 대안과 기각 사유는 다음과 같다.
 
@@ -187,16 +278,33 @@ after (`upstream/main` 기준 `FileNativeConfigurationWriter.java:63`, import `j
 ```
 (`upstream/main` 기준 `FileNativeConfigurationWriterTests.java:208-217`)
 
-`Files.readString` 대신 `readAllBytes`를 쓰는 이유가 핵심이다 — 읽기 charset을 가정하는 순간 쓰기 결함이 상쇄되어 보이지 않게 된다. 다만 이 테스트는 **기본 charset이 이미 UTF-8인 CI에서는 수정 전에도 통과한다.** 즉 결정론적 red/green 회귀 테스트가 아니라, 비UTF-8 플랫폼에서만 실효가 있는 조건부 가드이자 의도를 문서화하는 장치다. 수정의 정확성 근거는 테스트가 아니라 `FileWriter(File, Charset)`의 JDK 계약이며, PR 본문도 이 한계를 명시했다. JVM을 포크해 비UTF-8 로케일로 돌리는 방식은 빌드 침습이 커 기각되었다.
+`Files.readString` 대신 `readAllBytes`를 쓰는 이유가 핵심이다 — 읽기 charset을 가정하는 순간 쓰기 결함이 상쇄되어 보이지 않게 된다.\
+다만 이 테스트는 **기본 charset이 이미 UTF-8인 CI에서는 수정 전에도 통과한다.**\
+즉 결정론적 red/green 회귀 테스트가 아니라, 비UTF-8 플랫폼에서만 실효가 있는 조건부 가드이자 의도를 문서화하는 장치다.\
+수정의 정확성 근거는 테스트가 아니라 `FileWriter(File, Charset)`의 JDK 계약이며, PR 본문도 이 한계를 명시했다.\
+JVM을 포크해 비UTF-8 로케일로 돌리는 방식은 빌드 침습이 커 기각되었다.
 
-**메인테이너 폴리시(`78dcdab3fc8`)가 무엇을 바꿨는가.** 이 커밋은 이 PR이 추가한 테스트뿐 아니라 파일 전체를 정리했다. `throws IOException, JSONException`을 `throws Exception`으로 통일하고 `org.json.JSONException` import를 제거했으며, 신규 테스트에 `// gh-36972` 주석을 붙이고, `assertEquals` 헬퍼를 `private static`으로 바꿨다. 프로덕션 코드에는 손대지 않았다.
+> **결정론적(deterministic) 테스트** — 실행 환경이나 타이밍과 무관하게 항상 같은 경로를 타고 같은 결과를 내는 테스트.\
+> 예: 이 테스트는 실행 JVM의 기본 charset에 따라 수정 전 결과가 갈리므로 결정론적이지 않다.
+
+**메인테이너 폴리시(`78dcdab3fc8`)가 무엇을 바꿨는가.** 이 커밋은 이 PR이 추가한 테스트뿐 아니라 파일 전체를 정리했다.\
+`throws IOException, JSONException`을 `throws Exception`으로 통일하고 `org.json.JSONException` import를 제거했다.\
+신규 테스트에 `// gh-36972` 주석을 붙이고, `assertEquals` 헬퍼를 `private static`으로 바꿨다.\
+프로덕션 코드에는 손대지 않았다.
 
 ## 6. 범위 밖과 인접 영향
 
-**같은 형태가 저장소에 남아 있는지 확인했다.** `upstream/main`에서 `new FileWriter(` 를 훑으면 세 곳이 나오는데, 하나는 이 PR이 고친 곳이고 나머지 둘은 `buildSrc`의 테스트 코드(`MultiReleaseJarPluginTests.java:159`, `:165`)다. 즉 **스프링 프로덕션 코드에서 charset 미지정 `FileWriter`는 이제 남아 있지 않다.**
+**같은 형태가 저장소에 남아 있는지 확인했다.** `upstream/main`에서 `new FileWriter(` 를 훑으면 세 곳이 나오는데, 하나는 이 PR이 고친 곳이고 나머지 둘은 `buildSrc`의 테스트 코드(`MultiReleaseJarPluginTests.java:159`, `:165`)다.\
+즉 **스프링 프로덕션 코드에서 charset 미지정 `FileWriter`는 이제 남아 있지 않다.**
 
-읽기 쪽으로 범위를 넓히면 charset 미지정 `InputStreamReader`가 두 곳 보인다 — `EncodedResource.java:162`(charset도 encoding도 지정되지 않았을 때의 문서화된 기본 동작이므로 의도된 것)와 `XmlValidationModeDetector.java:96`이다. 후자가 실제 결함인지는 이번 조사에서 판정하지 않았다(미확인) — 쓰기가 아니라 읽기 경로이고, 그 검출기가 찾는 토큰이 ASCII라는 점에서 성격이 다르다. cglib 재패키징 사본의 `DebuggingClassWriter.java:99`도 charset 미지정이지만 디버그 전용 경로다.
+읽기 쪽으로 범위를 넓히면 charset 미지정 `InputStreamReader`가 두 곳 보인다 — `EncodedResource.java:162`(charset도 encoding도 지정되지 않았을 때의 문서화된 기본 동작이므로 의도된 것)와 `XmlValidationModeDetector.java:96`이다.\
+후자가 실제 결함인지는 이번 조사에서 판정하지 않았다(미확인) — 쓰기가 아니라 읽기 경로이고, 그 검출기가 찾는 토큰이 ASCII라는 점에서 성격이 다르다.\
+cglib 재패키징 사본의 `DebuggingClassWriter.java:99`도 charset 미지정이지만 디버그 전용 경로다.
 
-하위호환 영향은 사실상 없다. 산출 파일의 소비자는 GraalVM 하나이고 UTF-8을 기대하므로, 바뀐 바이트는 "원래 기대되던 바이트"다. 스프링 런타임은 이 파일을 되읽지 않으므로 read 경로 단절도 없다. 유일하게 관측 가능한 변화는 비UTF-8 기본 charset 환경에서 산출 바이트가 달라지는 것인데, 그 환경의 이전 산출물이 곧 결함이었다.
+하위호환 영향은 사실상 없다.\
+산출 파일의 소비자는 GraalVM 하나이고 UTF-8을 기대하므로, 바뀐 바이트는 "원래 기대되던 바이트"다.\
+스프링 런타임은 이 파일을 되읽지 않으므로 read 경로 단절도 없다.\
+유일하게 관측 가능한 변화는 비UTF-8 기본 charset 환경에서 산출 바이트가 달라지는 것인데, 그 환경의 이전 산출물이 곧 결함이었다.
 
-인접 PR과의 관계: 같은 클래스 계층에서 **출력 여부를 결정하는 게이트**(`NativeConfigurationWriter.hasAnyHint`, `:46`)의 결함이 이후 #36989로 별도 처리되었다. 이 PR이 "쓸 때 어떻게 쓰는가"라면 #36989는 "쓸 것인가 말 것인가"이며, 무대는 같은 파일 계층이지만 층과 줄이 다르다.
+인접 PR과의 관계: 같은 클래스 계층에서 **출력 여부를 결정하는 게이트**(`NativeConfigurationWriter.hasAnyHint`, `:46`)의 결함이 이후 #36989로 별도 처리되었다.\
+이 PR이 "쓸 때 어떻게 쓰는가"라면 #36989는 "쓸 것인가 말 것인가"이며, 무대는 같은 파일 계층이지만 층과 줄이 다르다.

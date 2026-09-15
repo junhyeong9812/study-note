@@ -6,11 +6,17 @@
 
 ## 1. 무대 — 실구조
 
-이 PR의 무대는 `DataBufferUtils` 안쪽에 숨어 있는 **구분자 매처 계층**과, 그것을 소비하는 **문자열 디코더**다. 매처 계층은 공개 인터페이스 하나(`Matcher`)와 그 뒤의 비공개 구현 네 개(`CompositeMatcher`·`SingleByteMatcher`·`TwoByteMatcher`·`KnuthMorrisPrattMatcher`)로 되어 있고, 구현 선택은 팩토리 메서드가 구분자 길이만 보고 결정한다. 버그는 네 구현 중 하나가 형제들이 모두 갖고 있던 되감기 처리를 갖지 않은 데서 나왔다.
+이 PR의 무대는 `DataBufferUtils` 안쪽에 숨어 있는 **구분자 매처 계층**과, 그것을 소비하는 **문자열 디코더**다.\
+매처 계층은 공개 인터페이스 하나(`Matcher`)와 그 뒤의 비공개 구현 네 개(`CompositeMatcher`·`SingleByteMatcher`·`TwoByteMatcher`·`KnuthMorrisPrattMatcher`)로 되어 있고, 구현 선택은 팩토리 메서드가 구분자 길이만 보고 결정한다.\
+버그는 네 구현 중 하나가 형제들이 모두 갖고 있던 되감기 처리를 갖지 않은 데서 나왔다.
 
-먼저 타입 계층이다. 상속선과 각 구현이 들고 있는 상태를 함께 표시했다.
+> **팩토리 메서드(factory method)** — `new`를 직접 쓰는 대신, 어떤 구현체를 만들지 안에서 골라 돌려주는 생성용 메서드.\
+> 예: `createMatcher(byte[])`는 구분자 길이가 2면 호출자 모르게 `TwoByteMatcher`를 만들어 돌려준다.
 
-```
+먼저 타입 계층이다.\
+상속선과 각 구현이 들고 있는 상태를 함께 표시했다.
+
+```text
  public interface DataBufferUtils.Matcher                      DataBufferUtils.java:725
    ├─ int match(DataBuffer)   구분자 마지막 바이트의 인덱스, 없으면 -1     :731
    ├─ byte[] delimiter()      직전 match 에서 맞은 구분자                 :736
@@ -55,9 +61,10 @@
                                              후 super.match(b)
 ```
 
-구현 선택은 팩토리 한 곳에서 구분자 **길이만 보고** 이뤄진다. 이 분기가 이 무대의 지형을 결정한다.
+구현 선택은 팩토리 한 곳에서 구분자 **길이만 보고** 이뤄진다.\
+이 분기가 이 무대의 지형을 결정한다.
 
-```
+```text
  matcher(byte[] delimiter)                                     DataBufferUtils.java:690
    └→ createMatcher(delimiter)
  matcher(byte[]... delimiters)                                              :701
@@ -72,9 +79,10 @@
      default→ new KnuthMorrisPrattMatcher(delimiter)                        :713
 ```
 
-소비자 쪽 구조는 문자열 디코더 하나로 요약된다. 매처는 디코더 인스턴스가 아니라 **디코드 호출 하나**에 종속된 상태 객체다.
+소비자 쪽 구조는 문자열 디코더 하나로 요약된다.\
+매처는 디코더 인스턴스가 아니라 **디코드 호출 하나**에 종속된 상태 객체다.
 
-```
+```text
  AbstractCharSequenceDecoder<T extends CharSequence>     AbstractCharSequenceDecoder.java:50
    extends AbstractDataBufferDecoder<T>
    ├─ static final Charset DEFAULT_CHARSET = UTF_8                    :53
@@ -93,9 +101,10 @@
      textPlainOnly() :66 / allMimeTypes() :83   textPlainOnly() :67 / allMimeTypes() :84
 ```
 
-`DEFAULT_DELIMITERS`가 `\r\n`과 `\n` 둘이라는 사실이 결정적이다. 구분자가 둘이므로 `matcher(byte[]...)`가 `CompositeMatcher`를 만들고, 그 안에 `\r\n`용 `TwoByteMatcher`와 `\n`용 `SingleByteMatcher`(정확히는 공유 상수 `NEWLINE_MATCHER`)가 나란히 들어간다.
+`DEFAULT_DELIMITERS`가 `\r\n`과 `\n` 둘이라는 사실이 결정적이다.\
+구분자가 둘이므로 `matcher(byte[]...)`가 `CompositeMatcher`를 만들고, 그 안에 `\r\n`용 `TwoByteMatcher`와 `\n`용 `SingleByteMatcher`(정확히는 공유 상수 `NEWLINE_MATCHER`)가 나란히 들어간다.
 
-```
+```text
  StringDecoder(기본 설정) 의 매처 구성
 
   DataBufferUtils.matcher(new byte[][]{ {13,10}, {10} })          :701
@@ -107,13 +116,19 @@
 
 ## 2. 수정 전 동작 워크플로우
 
-디코딩은 "버퍼 하나 도착 -> 매처로 구분자 위치 찾기 -> 그 자리에서 자르기 -> 구분자 길이만큼 뒤에서 떼기"를 반복한다. 매처는 버퍼 사이에 걸친 구분자를 잡기 위해 상태를 호출 사이에 유지한다. 정상 시나리오와 결함 시나리오를 차례로 본다.
+디코딩은 "버퍼 하나 도착 -> 매처로 구분자 위치 찾기 -> 그 자리에서 자르기 -> 구분자 길이만큼 뒤에서 떼기"를 반복한다.\
+매처는 버퍼 사이에 걸친 구분자를 잡기 위해 상태를 호출 사이에 유지한다.\
+정상 시나리오와 결함 시나리오를 차례로 본다.
 
 ### 시나리오 A — 정상 입력 `"a\r\nb\n"`
 
-바깥 골격부터다. `decode`는 스트림 전체에 대해 매처와 미완성 조각 목록(`chunks`)을 **한 벌만** 만들고, 도착하는 버퍼마다 `processDataBuffer`를 돌린다.
+바깥 골격부터다.\
+`decode`는 스트림 전체에 대해 매처와 미완성 조각 목록(`chunks`)을 **한 벌만** 만들고, 도착하는 버퍼마다 `processDataBuffer`를 돌린다.
 
-```
+> **LimitedDataBufferList** — 아직 구분자를 만나지 못한 버퍼 조각들을 모아 두되, 총량이 상한을 넘으면 예외를 던지는 목록.\
+> 예: 구분자가 영영 안 오는 스트림에서 메모리가 무한히 불어나는 것을 `maxInMemorySize`로 막는다.
+
+```text
  decode(input, elementType, mimeType, hints)         AbstractCharSequenceDecoder.java:97
    ├─ delimiterBytes = getDelimiterBytes(mimeType)                 :100  (문자셋별 캐시 :121)
    ├─ chunks  = new LimitedDataBufferList(maxInMemorySize)         :102  ← 아직 구분자를 못 만난 조각들
@@ -125,9 +140,10 @@
    └─ .map(buffer -> decode(buffer, ...)) → decodeInternal 로 문자열화  :117 → :180
 ```
 
-안쪽 자르기 루프는 다음과 같다. 인덱스 셈을 그림으로 붙여 두면 `split`과 `writePosition` 조정이 무엇을 하는지 분명해진다.
+안쪽 자르기 루프는 다음과 같다.\
+인덱스 셈을 그림으로 붙여 두면 `split`과 `writePosition` 조정이 무엇을 하는지 분명해진다.
 
-```
+```text
  processDataBuffer(buffer="a\r\nb\n", matcher, chunks)   :130
   do {                                                    :136
     endIndex = matcher.match(buffer)                      :137
@@ -148,11 +164,13 @@
   return result = ["a", "b"]
 ```
 
-구분자가 버퍼 경계에 걸린 경우가 매처의 존재 이유다. 첫 버퍼가 `"a\r"`로 끝나면 `match`는 `-1`을 돌려주고 버퍼 전체가 `chunks`로 들어가지만, 매처 내부의 `matches`는 1로 남아 다음 버퍼의 첫 바이트가 `\n`이면 즉시 매치가 완성된다. **바로 이 "호출을 넘어 유지되는 부분 일치 상태"가 결함의 재료다.**
+구분자가 버퍼 경계에 걸린 경우가 매처의 존재 이유다.\
+첫 버퍼가 `"a\r"`로 끝나면 `match`는 `-1`을 돌려주고 버퍼 전체가 `chunks`로 들어가지만, 매처 내부의 `matches`는 1로 남아 다음 버퍼의 첫 바이트가 `\n`이면 즉시 매치가 완성된다.\
+**바로 이 "호출을 넘어 유지되는 부분 일치 상태"가 결함의 재료다.**
 
 `CompositeMatcher.match`는 위치 하나마다 모든 자식에게 같은 바이트를 먹이고, 맞은 것 중 가장 긴 구분자를 고른다.
 
-```
+```text
  CompositeMatcher.match(dataBuffer)                    DataBufferUtils.java:770
    longestDelimiter = NO_DELIMITER                                   :771
    for (pos = readPosition; pos < writePosition; pos++)              :773
@@ -165,13 +183,16 @@
    return -1                                                          :787
 ```
 
-"가장 긴 것 우선"은 정상 입력에서 필수다. `\r\n` 자리에서는 `\n` 매처도 함께 맞으므로, 더 긴 `\r\n`을 골라야 `\r`이 본문에 남지 않는다. 다만 이 규칙은 **잘못된 매치도 똑같이 우선**한다.
+"가장 긴 것 우선"은 정상 입력에서 필수다.\
+`\r\n` 자리에서는 `\n` 매처도 함께 맞으므로, 더 긴 `\r\n`을 골라야 `\r`이 본문에 남지 않는다.\
+다만 이 규칙은 **잘못된 매치도 똑같이 우선**한다.
 
 ### 시나리오 B — 수정 전, `"a\rXY\nb"`
 
-`TwoByteMatcher`가 `match(byte)`를 오버라이드하지 않던 상태에서는 `AbstractNestedMatcher.match(byte)`(`DataBufferUtils.java:891-897`)가 그대로 쓰였다. 그 구현은 기대한 바이트가 오면 카운터를 올리고, 아니면 `false`만 돌려줄 뿐 **카운터를 되돌리지 않는다**.
+`TwoByteMatcher`가 `match(byte)`를 오버라이드하지 않던 상태에서는 `AbstractNestedMatcher.match(byte)`(`DataBufferUtils.java:891-897`)가 그대로 쓰였다.\
+그 구현은 기대한 바이트가 오면 카운터를 올리고, 아니면 `false`만 돌려줄 뿐 **카운터를 되돌리지 않는다**.
 
-```
+```text
  입력 바이트   'a'   '\r'   'X'    'Y'    '\n'   'b'
  위치           0     1      2      3      4      5
 
@@ -195,13 +216,30 @@
    결과: "a\rX" (기대 "a\rXY") — 예외도 로그도 없는 조용한 한 글자 손실
 ```
 
-상태가 버퍼 호출을 넘어 유지되므로 `"a\r"` + `"Xb\n"` 두 버퍼로 나눠 넣어도 결과는 같다. 첫 버퍼에서 `matches = 1`이 남고, 둘째 버퍼의 `X`가 그것을 풀지 못한 채 `\n`에서 거짓 매치가 성립한다.
+상태가 버퍼 호출을 넘어 유지되므로 `"a\r"` + `"Xb\n"` 두 버퍼로 나눠 넣어도 결과는 같다.\
+첫 버퍼에서 `matches = 1`이 남고, 둘째 버퍼의 `X`가 그것을 풀지 못한 채 `\n`에서 거짓 매치가 성립한다.
+
+버퍼가 하나일 때와 둘로 쪼개졌을 때를 나란히 놓으면, 상태가 호출을 넘는다는 성질이 결과를 같게 만든다는 점이 보인다.
+
+```text
+한 버퍼로 도착                          두 버퍼로 쪼개져 도착
++------------------------------+      +------------------------------+
+| match("a\rXb\n") 한 번        |      | match("a\r")   -> -1          |
+|                              |      |   내부 matches = 1 로 잔류     |
+|   matches 0 -> 1 -> 1 -> 1   |      | match("Xb\n")                 |
+|   -> \n 에서 2 -> 거짓 매치   |      |   X, b 가 상태를 못 푼다       |
+|                              |      |   -> \n 에서 2 -> 거짓 매치    |
++------------------------------+      +------------------------------+
+  -> "a\rX"  (수정 전)                   -> "a\rX"  (수정 전, 동일)
+```
+
+두 그림의 결론이 같다는 것이 곧 "부분 일치 상태는 `match(DataBuffer)` 호출 경계를 넘어 살아 있다"의 증거다.
 
 ### 수정 후
 
 `TwoByteMatcher`가 `KnuthMorrisPrattMatcher`와 같은 형태의 되감기를 갖는다(`DataBufferUtils.java:922-928`).
 
-```
+```text
    'X'  : getMatches()==1 > 0 이고 b != delimiter()[1] → setMatches(0)   :924-926
           그 뒤 super.match(b): b == delimiter[0] ? 아니오 → false, matches = 0
    '\n' : matches == 0 이므로 delimiter[0]('\r') 과 비교 → 불일치 → false
@@ -212,13 +250,14 @@
 
 ## 3. 분기 처리 워크플로우
 
-이 무대의 분기는 매처 선택, 위치별 매치 판정, 그리고 자르기 세 층이다. 버그는 둘째 층의 한 구현에 있었다.
+이 무대의 분기는 매처 선택, 위치별 매치 판정, 그리고 자르기 세 층이다.\
+버그는 둘째 층의 한 구현에 있었다.
 
 ### 3-1. 매처 선택 분기
 
 구현 선택은 구분자 개수와 길이만 보는 두 단계 스위치로 끝난다.
 
-```
+```text
  matcher(byte[]... delimiters)                          DataBufferUtils.java:701
    ├─ delimiters.length == 0 ──→ Assert 실패 "Delimiters must not be empty"   :702
    ├─ delimiters.length == 1 ──→ createMatcher(delimiters[0])
@@ -234,13 +273,17 @@
    └─ length >= 3 ──→ new KnuthMorrisPrattMatcher(delimiter)                    :713
 ```
 
-여기서 실무적으로 중요한 사실 하나. 길이 2 갈래를 실제로 타는 소비자는 사실상 문자 디코더의 `\r\n` 하나다. 멀티파트 파서가 쓰는 구분자는 `--boundary`, `CRLF--boundary`, `CRLFCRLF`로 모두 3바이트 이상이라 KMP 갈래로 간다(4절 참조). 결함이 오래 남은 배경이다.
+여기서 실무적으로 중요한 사실 하나.\
+길이 2 갈래를 실제로 타는 소비자는 사실상 문자 디코더의 `\r\n` 하나다.\
+멀티파트 파서가 쓰는 구분자는 `--boundary`, `CRLF--boundary`, `CRLFCRLF`로 모두 3바이트 이상이라 KMP 갈래로 간다(4절 참조).\
+결함이 오래 남은 배경이다.
 
 ### 3-2. 바이트 단위 매치 판정 분기 — 네 구현 비교
 
-같은 `boolean match(byte b)` 계약을 네 구현이 서로 다르게 채운다. 되감기 처리의 유무가 한눈에 드러나도록 나란히 놓는다.
+같은 `boolean match(byte b)` 계약을 네 구현이 서로 다르게 채운다.\
+되감기 처리의 유무가 한눈에 드러나도록 나란히 놓는다.
 
-```
+```text
  SingleByteMatcher.match(byte b)                        :842
    └─ return delimiter[0] == b          ← 상태 자체가 없으므로 되감기 문제가 성립하지 않음
 
@@ -269,9 +312,13 @@
    수정 전: 이 오버라이드 자체가 없었다 → 기본 구현이 그대로 쓰여 되감기 부재
 ```
 
-`super.match(b)`에 위임하는 **순서**가 계약의 일부다. 카운터를 0으로 되돌린 직후 기본 구현이 같은 바이트를 `delimiter[0]`과 다시 비교하므로, 되감은 그 바이트가 새 구분자의 시작인 경우를 놓치지 않는다.
+> **접미사-접두사 테이블(longest suffix-prefix table)** — 구분자의 각 위치까지 봤을 때 "앞부분이자 동시에 뒷부분인 가장 긴 조각"의 길이를 적어 둔 배열.\
+> 예: `aab`의 표는 `[0, 1, 0]`이고, 되감을 때 이 값으로 점프한다.
 
-```
+`super.match(b)`에 위임하는 **순서**가 계약의 일부다.\
+카운터를 0으로 되돌린 직후 기본 구현이 같은 바이트를 `delimiter[0]`과 다시 비교하므로, 되감은 그 바이트가 새 구분자의 시작인 경우를 놓치지 않는다.
+
+```text
  입력 "a\r\rX\nb" 에서의 되감기 후 재평가 (수정 후)
    '\r'(1) : matches 0 → 1
    '\r'(2) : matches>0 이고 b != '\n' → setMatches(0)
@@ -286,7 +333,10 @@
 
 복합 매처와 단일 매처는 상태 초기화 시점이 다르고, 그 차이가 부분 일치 상태의 수명을 결정한다.
 
-```
+> **forEachByte** — 버퍼의 바이트를 앞에서부터 하나씩 함수에 먹이다가, 함수가 `false`를 내면 멈추고 그 위치를 돌려주는 순회 메서드.\
+> 예: `b -> !this.match(b)`를 주면 `match`가 `true`를 낸 첫 위치에서 멈춰 그 인덱스를 돌려준다.
+
+```text
  CompositeMatcher.match(dataBuffer)                     :770
    위치 pos 마다
      ├─ 모든 자식에게 같은 바이트 b 를 먹인다                         :776
@@ -305,13 +355,14 @@
         (찾았으면 다음 탐색을 위해 상태를 비우고, 못 찾았으면 부분 일치를 유지한다 ★)
 ```
 
-마지막 줄이 이 무대의 핵심 성질이다. **못 찾았을 때 상태를 유지하는 것이 정상 동작**이고, 그래서 되감기를 하위 클래스가 정확히 구현해 주지 않으면 그 상태가 그대로 오염된다.
+마지막 줄이 이 무대의 핵심 성질이다.\
+**못 찾았을 때 상태를 유지하는 것이 정상 동작**이고, 그래서 되감기를 하위 클래스가 정확히 구현해 주지 않으면 그 상태가 그대로 오염된다.
 
 ### 3-4. 자르기 분기
 
 디코더는 매처가 보고한 구분자 길이를 그대로 믿고 본문 뒤에서 그만큼을 떼어낸다.
 
-```
+```text
  processDataBuffer(buffer, matcher, chunks)      AbstractCharSequenceDecoder.java:130
    do {
      endIndex = matcher.match(buffer)                                     :137
@@ -335,9 +386,16 @@
 
 ## 4. 스프링 전역에서의 자리
 
-이 매처는 **바이트 스트림을 논리적 조각으로 쪼개는** 모든 리액티브 경로의 바닥에 있다. grep으로 확인한 실제 소비자는 두 갈래다.
+이 매처는 **바이트 스트림을 논리적 조각으로 쪼개는** 모든 리액티브 경로의 바닥에 있다.\
+grep으로 확인한 실제 소비자는 두 갈래다.
 
-```
+> **SSE(Server-Sent Events)** — 서버가 한 연결로 텍스트 이벤트를 줄 단위로 계속 밀어 보내는 방식.\
+> 예: `ServerSentEventHttpMessageReader`가 `StringDecoder.textPlainOnly()`로 그 줄들을 잘라 읽는다.
+
+> **RSocket** — 요청·스트리밍·발행을 한 프로토콜로 다루는 바이너리 통신 규약. Spring이 코덱을 붙여 페이로드를 객체로 바꾼다.\
+> 예: `DefaultRSocketStrategies`가 `StringDecoder.allMimeTypes()`를 등록해 페이로드를 문자열로 읽는다.
+
+```text
 [ 갈래 1 — 문자 디코딩 (spring-core → WebFlux) ]
   AbstractCharSequenceDecoder.decode(...)             AbstractCharSequenceDecoder.java:97
     └→ DataBufferUtils.matcher(delimiterBytes)                              :103
@@ -369,26 +427,49 @@
       KMP 는 되감기를 갖고 있었으므로 이 갈래는 결함의 영향을 받지 않았다.
 ```
 
-정리하면, `TwoByteMatcher`를 실제로 태우는 상용 경로는 **문자 디코더의 `\r\n` 하나**였다. 그래서 결함의 노출면은 "WebFlux에서 텍스트/String 본문 또는 SSE를 디코딩할 때, 본문에 홀로 있는 `\r`이 나타나는 경우"로 좁혀지고, 동시에 그 경로가 웹 스택의 가장 흔한 길목이라 실제 피해는 작지 않다. 변경 파일은 `spring-core`인데 피해자는 웹 스택이라는 비대칭이 여기서 나온다.
+정리하면, `TwoByteMatcher`를 실제로 태우는 상용 경로는 **문자 디코더의 `\r\n` 하나**였다.\
+그래서 결함의 노출면은 "WebFlux에서 텍스트/String 본문 또는 SSE를 디코딩할 때, 본문에 홀로 있는 `\r`이 나타나는 경우"로 좁혀지고, 동시에 그 경로가 웹 스택의 가장 흔한 길목이라 실제 피해는 작지 않다.\
+변경 파일은 `spring-core`인데 피해자는 웹 스택이라는 비대칭이 여기서 나온다.
 
 ## 5. 관련 개념
 
 ### 5-1. 스트리밍 구분자 탐색과 부분 일치 상태
 
-리액티브 스트림에서 데이터는 임의 크기의 `DataBuffer`로 쪼개져 도착한다. 구분자가 버퍼 경계에 걸치는 것은 예외가 아니라 일상이다. 그래서 매처는 "지금까지 구분자의 앞 k바이트를 맞췄다"는 상태를 호출 사이에 들고 있어야 하고, 그 상태를 언제 되감을지가 알고리즘의 본체가 된다.
+리액티브 스트림에서 데이터는 임의 크기의 `DataBuffer`로 쪼개져 도착한다.\
+구분자가 버퍼 경계에 걸치는 것은 예외가 아니라 일상이다.\
+그래서 매처는 "지금까지 구분자의 앞 k바이트를 맞췄다"는 상태를 호출 사이에 들고 있어야 하고, 그 상태를 언제 되감을지가 알고리즘의 본체가 된다.
 
-```
+> **리액티브 스트림(reactive stream)** — 데이터를 한 덩어리로 받지 않고, 도착하는 대로 흘려보내며 처리하는 비동기 파이프라인.\
+> 예: `Flux<DataBuffer>`는 네트워크에서 도착한 버퍼를 하나씩 디코더에 넘긴다.
+
+```text
  버퍼 1: "hello\r"        match → -1, 내부 matches = 1 로 유지  ← 여기서 상태를 버리면 구분자를 놓친다
  버퍼 2: "\nworld"        첫 바이트에서 matches = 2 → 매치 성립, pos = 0 반환
 ```
 
-되감기를 하지 않아도 "구분자가 반드시 연속으로 온다"는 가정 아래서는 대부분 우연히 맞는다. 틀리는 경우는 첫 바이트만 나타나고 뒤가 이어지지 않을 때인데, `\r\n`에서 그것은 정확히 "홀로 있는 `\r`"이다.
+되감기를 하지 않아도 "구분자가 반드시 연속으로 온다"는 가정 아래서는 대부분 우연히 맞는다.\
+틀리는 경우는 첫 바이트만 나타나고 뒤가 이어지지 않을 때인데, `\r\n`에서 그것은 정확히 "홀로 있는 `\r`"이다.
+
+그 두 경우를 나란히 놓으면 되감기가 없어도 되는 입력과 반드시 필요한 입력이 갈린다.
+
+```text
+가정이 맞는 입력 "hello\r\n"          가정이 깨지는 입력 "a\rXY\n"
++------------------------------+      +------------------------------+
+| \r 다음에 곧바로 \n 이 온다  |      | \r 다음에 X 가 온다          |
+| matches 1 -> 2 (연속)        |      | matches 1 -> 1 (잔류)        |
+| 되감을 기회 자체가 없다      |      | 여기서 0 으로 풀어야 했다    |
++------------------------------+      +------------------------------+
+  -> 되감기가 없어도 결과가 맞다        -> 되감기가 없으면 거짓 매치가 된다
+```
+
+되감기 코드가 없어도 왼쪽 입력에서는 아무 증상이 없다는 점이, 이 결함이 오래 숨어 있던 이유다.
 
 ### 5-2. Knuth-Morris-Pratt 되감기와 그 특수 케이스
 
-KMP는 부분 일치가 깨졌을 때 처음으로 돌아가는 대신, 이미 읽은 접두사 중 **접미사이기도 한 가장 긴 것**의 길이로 점프한다. 그 표가 `longestSuffixPrefixTable`(`DataBufferUtils.java:945-959`)이다.
+KMP는 부분 일치가 깨졌을 때 처음으로 돌아가는 대신, 이미 읽은 접두사 중 **접미사이기도 한 가장 긴 것**의 길이로 점프한다.\
+그 표가 `longestSuffixPrefixTable`(`DataBufferUtils.java:945-959`)이다.
 
-```
+```text
  delimiter = "aab" 의 표
    i=0 : result[0] = 0
    i=1 : delimiter[1]=='a' == delimiter[0] → result[1] = 1
@@ -399,13 +480,21 @@ KMP는 부분 일치가 깨졌을 때 처음으로 돌아가는 대신, 이미 �
    return super.match(b);
 ```
 
-길이 2 구분자에서는 부분 일치 상태가 `matches == 1` 하나뿐이고, 그때 참조하는 값은 언제나 `table[0]`이며 `longestSuffixPrefixTable`은 `result[0] = 0`으로 시작한다(`DataBufferUtils.java:947`). 따라서 되감기는 반드시 한 번에 0으로 끝난다. `while`이 `if`로, 테이블 조회가 상수 `0`으로 줄어든 `TwoByteMatcher`의 수정은 축약이 아니라 **이 경우에 접힌 등가 구현**이다.
+길이 2 구분자에서는 부분 일치 상태가 `matches == 1` 하나뿐이고, 그때 참조하는 값은 언제나 `table[0]`이며 `longestSuffixPrefixTable`은 `result[0] = 0`으로 시작한다(`DataBufferUtils.java:947`).\
+따라서 되감기는 반드시 한 번에 0으로 끝난다.\
+`while`이 `if`로, 테이블 조회가 상수 `0`으로 줄어든 `TwoByteMatcher`의 수정은 축약이 아니라 **이 경우에 접힌 등가 구현**이다.
 
 ### 5-3. DataBuffer의 split과 writePosition 조정
 
-`DataBuffer.split(index)`는 버퍼를 둘로 가른다. 앞쪽 `index` 바이트가 새 버퍼로 반환되고, 원본에는 뒤쪽이 남는다. 메모리는 공유하되 영역이 겹치지 않는다(`DataBuffer.java:363-379`). 구분자를 떼어내는 일은 별도 복사 없이 `writePosition`을 뒤로 당기는 것으로 처리한다.
+`DataBuffer.split(index)`는 버퍼를 둘로 가른다.\
+앞쪽 `index` 바이트가 새 버퍼로 반환되고, 원본에는 뒤쪽이 남는다.\
+메모리는 공유하되 영역이 겹치지 않는다(`DataBuffer.java:363-379`).\
+구분자를 떼어내는 일은 별도 복사 없이 `writePosition`을 뒤로 당기는 것으로 처리한다.
 
-```
+> **writePosition(쓰기 위치)** — 버퍼에서 "여기까지가 유효한 내용"임을 표시하는 경계.\
+> 예: 이 값을 5에서 3으로 당기면 복사 없이 뒤 2바이트가 안 읽히게 된다.
+
+```text
  buffer = "a\r\nb\n"        (readPosition 0, writePosition 5)
  endIndex = 2               ← 구분자 "\r\n" 의 마지막 바이트 인덱스
  split = buffer.split(3)
@@ -415,14 +504,24 @@ KMP는 부분 일치가 깨졌을 때 처음으로 돌아가는 대신, 이미 �
    delimiterLength = 2 → writePosition = 1 → 읽히는 내용은 "a"
 ```
 
-여기서 알 수 있듯 잘라내는 양은 오직 `matcher.delimiter().length`가 결정한다. 매처가 실제보다 긴 구분자를 보고하면 그만큼 본문이 잘리고, 아무 검증도 그것을 막지 않는다.
+여기서 알 수 있듯 잘라내는 양은 오직 `matcher.delimiter().length`가 결정한다.\
+매처가 실제보다 긴 구분자를 보고하면 그만큼 본문이 잘리고, 아무 검증도 그것을 막지 않는다.
 
 ### 5-4. 매처 생명주기 — 어디까지 공유되는가
 
-매처는 `decode` 호출 하나마다 새로 만들어진다(`AbstractCharSequenceDecoder.java:103`). 즉 요청 하나의 본문 스트림에 하나씩 대응하고, 요청 사이에 상태가 새지 않는다. 예외는 `SingleByteMatcher.NEWLINE_MATCHER`인데(`DataBufferUtils.java:825`), 이 인스턴스는 필드가 `final byte[] delimiter` 하나뿐이고 `match(byte)`가 순수 비교라 공유해도 안전하다. 상태가 없다는 것이 공유의 전제조건이라는 점을 이 상수가 보여 준다.
+매처는 `decode` 호출 하나마다 새로 만들어진다(`AbstractCharSequenceDecoder.java:103`).\
+즉 요청 하나의 본문 스트림에 하나씩 대응하고, 요청 사이에 상태가 새지 않는다.\
+예외는 `SingleByteMatcher.NEWLINE_MATCHER`인데(`DataBufferUtils.java:825`), 이 인스턴스는 필드가 `final byte[] delimiter` 하나뿐이고 `match(byte)`가 순수 비교라 공유해도 안전하다.\
+상태가 없다는 것이 공유의 전제조건이라는 점을 이 상수가 보여 준다.
 
-한편 `AbstractNestedMatcher.match(DataBuffer)`가 `this.match(b)`를 람다 안에서 호출하는 것은 **가상 디스패치**다(`DataBufferUtils.java:883`). 그래서 `TwoByteMatcher`가 `match(byte)`를 오버라이드하기만 하면 버퍼 단위 진입 경로와 `CompositeMatcher` 경로 모두에서 자동으로 적용된다. 수정이 8줄로 끝나고 배선 작업이 필요 없었던 이유다.
+한편 `AbstractNestedMatcher.match(DataBuffer)`가 `this.match(b)`를 람다 안에서 호출하는 것은 **가상 디스패치**다(`DataBufferUtils.java:883`).\
+그래서 `TwoByteMatcher`가 `match(byte)`를 오버라이드하기만 하면 버퍼 단위 진입 경로와 `CompositeMatcher` 경로 모두에서 자동으로 적용된다.\
+수정이 8줄로 끝나고 배선 작업이 필요 없었던 이유다.
+
+> **가상 디스패치(virtual dispatch)** — 어느 메서드를 실행할지 선언 타입이 아니라 실행 시점의 실제 객체 타입으로 정하는 것.\
+> 예: 부모 클래스의 람다 안에 있는 `this.match(b)`가 실제로는 `TwoByteMatcher`의 오버라이드를 부른다.
 
 ### 5-5. 참고 — 이미 있는 개념 문서
 
-이 무대와 직접 겹치는 개념 문서는 아직 `../../concepts/`에 없다. 매처 계층과 스트리밍 상태 유지는 이 문서 안에서 자기완결로 다뤘다.
+이 무대와 직접 겹치는 개념 문서는 아직 `../../concepts/`에 없다.\
+매처 계층과 스트리밍 상태 유지는 이 문서 안에서 자기완결로 다뤘다.

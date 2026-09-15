@@ -6,17 +6,58 @@
 
 ## 0. 결론 먼저
 
-`TableMetaDataContext.reconcileColumnsToUse()`는 사용자가 `usingColumns(...)`로 컬럼을 명시한 경우 그 목록을 **아무 필터 없이 그대로 반환**하고(L208-210), generated key 제외는 바로 아래 메타데이터 자동탐색 분기(L211-221)에만 존재한다. 그 결과 `usingColumns`와 `usingGeneratedKeyColumns`에 같은 컬럼이 겹치면 `tableColumns`에 key가 남고, SQL의 물음표 개수(키 제외)와 값·타입 배열 길이(키 포함)가 갈라져 JDBC 드라이버 단계에서 실패하거나 값이 한 칸씩 밀린다.
+`TableMetaDataContext.reconcileColumnsToUse()`는 사용자가 `usingColumns(...)`로 컬럼을 명시한 경우 그 목록을 **아무 필터 없이 그대로 반환**하고(L208-210), generated key 제외는 바로 아래 메타데이터 자동탐색 분기(L211-221)에만 존재한다.\
+그 결과 `usingColumns`와 `usingGeneratedKeyColumns`에 같은 컬럼이 겹치면 `tableColumns`에 key가 남고, SQL의 물음표 개수(키 제외)와 값·타입 배열 길이(키 포함)가 갈라져 JDBC 드라이버 단계에서 실패하거나 값이 한 칸씩 밀린다.
+
+> **generated key(생성 키)** — DB가 INSERT 시점에 값을 스스로 만들어 주는 컬럼.\
+> 예: auto-increment 기본키 `id`는 애플리케이션이 값을 보내지 않아야 DB가 자기 값을 채울 수 있다.
+
+> **`usingColumns` / `usingGeneratedKeyColumns`** — 전자는 "INSERT 문이 쓸 컬럼은 이것들"이라는 선언, 후자는 "이 컬럼은 DB가 채우고 값을 돌려 달라"는 선언.\
+> 예: `usingColumns("id","name").usingGeneratedKeyColumns("id")`는 `id`를 두 목록 모두에 넣은 겹침 상태다.
 
 수정은 `keys` 집합 계산을 두 분기 위로 끌어올리고 선언 분기도 같은 필터를 통과시키는 것이다 — 아래 자동탐색 분기가 이미 쓰던 규칙(`toUpperCase(Locale.ROOT)` 정규화 후 `Set` 대조)을 그대로 재사용하므로 새 규칙이 추가되지 않는다.
+
+같은 입력이 수정 전과 수정 후에 어떤 최종 상태로 끝나는지를 같은 칸 폭으로 놓으면 이렇다.\
+입력은 둘 다 `customers(id INTEGER, name VARCHAR)` 테이블에 `usingColumns("id","name")` + `usingGeneratedKeyColumns("id")`, 값은 `id=1`·`name="Sven"`이다.
+
+```text
+ 수정 전                              수정 후
+ +--------------------------------+  +--------------------------------+
+ | tableColumns  ["id","name"]    |  | tableColumns  ["name"]         |
+ |                                |  |                                |
+ | SQL   INSERT INTO customers    |  | SQL   INSERT INTO customers    |
+ |         (name) VALUES(?)       |  |         (name) VALUES(?)       |
+ |       물음표 1 개               |  |       물음표 1 개               |
+ |                                |  |                                |
+ | 타입  [INTEGER, VARCHAR]  2 개  |  | 타입  [VARCHAR]           1 개  |
+ | 값    [1, "Sven"]         2 개  |  | 값    ["Sven"]            1 개  |
+ +--------------------------------+  +--------------------------------+
+   1 대 2 대 2                          1 대 1 대 1
+   -> 위치 2 를 세팅할 때                 -> 그대로 실행되고
+      드라이버가 인덱스 범위 오류             id 는 DB 가 채운 뒤 돌려준다
+   -> 검증이 느슨한 드라이버에서는
+      name 자리에 id 값 1 이 들어간다
+```
+
+SQL 한 줄은 수정 전후가 글자 그대로 같다.\
+달라지는 것은 그 아래 두 줄의 개수뿐이며, 그 둘을 맞추는 것이 이 PR의 전부다.
 
 PR 상태: **OPEN, 리뷰 대기**(2026-07-07 제출, 라벨 `status: waiting-for-triage` / `in: data`, 코멘트·리뷰 없음, 2026-08-27 확인).
 
 ## 1. 무대 — 모듈·파일·클래스와 진입 API
 
-무대는 `spring-jdbc`의 `org.springframework.jdbc.core.metadata` 패키지, 그중 `TableMetaDataContext` 한 클래스다. 이 클래스는 저장소 전체에서 `AbstractJdbcInsert`가 필드로 하나 보유하고(`AbstractJdbcInsert.java:73`) `TableMetaDataProviderFactory`가 인자로 받는 것(`TableMetaDataProviderFactory.java:50`)이 전부다. blast radius가 JDBC INSERT 경로 하나로 닫혀 있다.
+무대는 `spring-jdbc`의 `org.springframework.jdbc.core.metadata` 패키지, 그중 `TableMetaDataContext` 한 클래스다.\
+이 클래스는 저장소 전체에서 `AbstractJdbcInsert`가 필드로 하나 보유하고(`AbstractJdbcInsert.java:73`) `TableMetaDataProviderFactory`가 인자로 받는 것(`TableMetaDataProviderFactory.java:50`)이 전부다.\
+blast radius가 JDBC INSERT 경로 하나로 닫혀 있다.
 
-공개 진입 API는 `SimpleJdbcInsert`의 fluent 설정 메서드 둘이다. 둘 다 얇은 위임이고, 채우는 상태는 `AbstractJdbcInsert`의 서로 **다른 필드 두 개**다 — 이 분리가 이번 결함의 무대다.
+> **blast radius(영향 반경)** — 어떤 변경이나 결함이 잘못됐을 때 피해가 번질 수 있는 최대 범위.\
+> 예: 여기서는 `SimpleJdbcInsert`로 INSERT를 실행하는 코드만 해당하고, `JdbcTemplate`으로 SQL을 직접 쓰는 코드는 무관하다.
+
+공개 진입 API는 `SimpleJdbcInsert`의 fluent 설정 메서드 둘이다.\
+둘 다 얇은 위임이고, 채우는 상태는 `AbstractJdbcInsert`의 서로 **다른 필드 두 개**다 — 이 분리가 이번 결함의 무대다.
+
+> **fluent API(플루언트 API)** — 설정 메서드가 자기 자신을 돌려줘 점으로 계속 이어 쓸 수 있게 만든 인터페이스.\
+> 예: `withTableName("customers").usingColumns("id","name").usingGeneratedKeyColumns("id")`처럼 한 줄로 이어진다.
 
 ```java
 	@Override                                                        // SimpleJdbcInsert.java:93
@@ -32,9 +73,20 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-07 제출, 라벨 `status: waiting-fo
 	}
 ```
 
-누가 어떤 상황에서 부르나. `usingColumns`는 (1) 메타데이터가 부실한 드라이버를 만나 컬럼을 직접 나열할 때, (2) `withoutTableColumnMetaDataAccess()`로 메타데이터 조회를 껐을 때, (3) `usingQuotedIdentifiers()`를 쓸 때 부른다. 세 번째는 선택이 아니라 **강제**다 — `compile()`이 따옴표 식별자에 명시 컬럼을 요구한다(`AbstractJdbcInsert.java:276-279`). 즉 사용자가 자발적으로 위험 조합에 들어가는 것이 아니라, API가 명시 컬럼을 요구하는 경로가 따로 있고 거기서 테이블 컬럼을 그대로 적으면 PK가 딸려 들어온다.
+누가 어떤 상황에서 부르나.\
+`usingColumns`는 (1) 메타데이터가 부실한 드라이버를 만나 컬럼을 직접 나열할 때, (2) `withoutTableColumnMetaDataAccess()`로 메타데이터 조회를 껐을 때, (3) `usingQuotedIdentifiers()`를 쓸 때 부른다.\
+세 번째는 선택이 아니라 **강제**다 — `compile()`이 따옴표 식별자에 명시 컬럼을 요구한다(`AbstractJdbcInsert.java:276-279`).\
+즉 사용자가 자발적으로 위험 조합에 들어가는 것이 아니라, API가 명시 컬럼을 요구하는 경로가 따로 있고 거기서 테이블 컬럼을 그대로 적으면 PK가 딸려 들어온다.
 
-**자매 구조 — #37206과의 대응.** 이 결함은 같은 패키지의 `CallMetaDataContext.reconcileParameters()` 결함(PR #37206, 저장 함수 반환 파라미터 조회 정규화 누락)과 한 계열이다. 두 클래스 모두 이름이 `*MetaDataContext`이고, 둘 다 "사용자 선언 목록"과 "DB 메타데이터 목록"을 대조해 최종 목록 한 개를 만드는 `reconcile*` 메서드를 가지며, 그 목록이 하류의 SQL 문자열·바인딩·타입을 **전부** 파생시킨다. 결함의 모양까지 같다 — 한 분기만 다른 규칙을 쓴다. #37014는 INSERT 경로에서 **필터를 건너뛰는 분기**, #37206은 CALL 경로에서 **정규화를 건너뛰는 분기**다. 라운드5 findings가 J5를 "라운드4 J3과 같은 declared vs 메타데이터 reconcile 계열 — INSERT 경로에 이어 CALL 경로"로 기록한 것이 이 대응이다.
+> **따옴표 식별자(quoted identifiers)** — 컬럼·테이블 이름을 DB의 인용 부호로 감싸 대소문자나 예약어를 그대로 쓰게 하는 옵션.\
+> 예: `usingQuotedIdentifiers()`를 켜면 컬럼 이름 표기가 보존되는 대신 `usingColumns`로 컬럼을 직접 나열해야 한다.
+
+**자매 구조 — #37206과의 대응.**\
+이 결함은 같은 패키지의 `CallMetaDataContext.reconcileParameters()` 결함(PR #37206, 저장 함수 반환 파라미터 조회 정규화 누락)과 한 계열이다.\
+두 클래스 모두 이름이 `*MetaDataContext`이고, 둘 다 "사용자 선언 목록"과 "DB 메타데이터 목록"을 대조해 최종 목록 한 개를 만드는 `reconcile*` 메서드를 가지며, 그 목록이 하류의 SQL 문자열·바인딩·타입을 **전부** 파생시킨다.\
+결함의 모양까지 같다 — 한 분기만 다른 규칙을 쓴다.\
+#37014는 INSERT 경로에서 **필터를 건너뛰는 분기**, #37206은 CALL 경로에서 **정규화를 건너뛰는 분기**다.\
+라운드5 findings가 J5를 "라운드4 J3과 같은 declared vs 메타데이터 reconcile 계열 — INSERT 경로에 이어 CALL 경로"로 기록한 것이 이 대응이다.
 
 ## 2. 전체 메서드 그래프
 
@@ -42,7 +94,10 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-07 제출, 라벨 `status: waiting-fo
 
 사용자의 fluent 설정이 컬럼 목록을 거쳐 SQL·타입 배열로 굳는 경로는 다음 한 줄기다.
 
-```
+> **compile(컴파일)** — 설정을 읽어 SQL 문자열·타입 배열·컬럼 목록을 한 번 계산해 두고 이후 실행에서 재사용하는 단계.\
+> 예: `execute(...)`를 백 번 불러도 아래 경로는 첫 호출 때 한 번만 돈다.
+
+```text
  SimpleJdbcInsert.withTableName("customers")                        SimpleJdbcInsert.java:76
    .usingColumns("id","name")     -> setColumnNames(...)            :94  -> AbstractJdbcInsert:171
    .usingGeneratedKeyColumns("id")-> setGeneratedKeyNames(...)      :100 -> AbstractJdbcInsert:195
@@ -67,7 +122,10 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-07 제출, 라벨 `status: waiting-fo
 
 실행 시점에는 같은 컬럼 목록에서 값 목록이 만들어져 SQL·타입 배열과 함께 드라이버로 내려간다.
 
-```
+> **바인딩 파라미터(bind parameter)** — SQL에 값을 문자열로 끼워 넣지 않고 물음표 자리를 뚫어 두었다가 위치 번호로 값을 채우는 방식.\
+> 예: `VALUES(?)`의 1번 자리에 `"Sven"`을 넣으면 `name` 컬럼에 그 값이 들어간다.
+
+```text
  doExecute(args)                                                    AbstractJdbcInsert.java:359
    +-- matchInParameterValuesWithInsertColumns(args)                :647 -> TableMetaDataContext:267
    |         for column in this.tableColumns:  values.add(찾은 값 또는 null)     :269-283
@@ -80,11 +138,50 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-07 제출, 라벨 `status: waiting-fo
                                           <<< 물음표가 모자라면 여기서 드라이버가 거부
 ```
 
-**전파 구조.** `tableColumns`가 이 클래스의 단일 진실 원천이고, 세 소비자가 모두 거기서 파생된다. 그런데 셋 중 `createInsertString`만 자기 자리에서 키를 한 번 더 걸러낸다(`:322`). 그래서 `tableColumns`가 오염되면 **셋이 함께 틀리는 것이 아니라 하나만 옳고 둘이 틀린다** — 개수 불일치가 이 비대칭에서 나온다.
+**전파 구조.**\
+`tableColumns`가 이 클래스의 단일 진실 원천이고, 세 소비자가 모두 거기서 파생된다.\
+그런데 셋 중 `createInsertString`만 자기 자리에서 키를 한 번 더 걸러낸다(`:322`).\
+그래서 `tableColumns`가 오염되면 **셋이 함께 틀리는 것이 아니라 하나만 옳고 둘이 틀린다** — 개수 불일치가 이 비대칭에서 나온다.
+
+> **단일 진실 원천(single source of truth)** — 같은 사실을 여러 곳이 각자 들고 있지 않고 한 곳에서만 계산해 나머지가 그것을 참조하는 구조.\
+> 예: 컬럼 목록은 `tableColumns` 한 곳에서만 정해지고, SQL·타입·값 셋이 모두 그것을 읽는다.
+
+이 비대칭을 그림으로 놓으면 "하나만 옳은" 상태가 왜 검증을 통과하는지가 보인다.\
+아래는 수정 전 `tableColumns = ["id","name"]`이 세 소비자로 갈라지는 모습이다.
+
+```text
+                 tableColumns  ["id", "name"]   (키 id 가 남아 있다)
+                          |
+        +-----------------+-----------------+
+        |                 |                 |
+        v                 v                 v
+ createInsertString  createInsertTypes  matchInParameterValues
+ 키를 한 번 더 제외   전체를 그대로 순회   전체를 그대로 순회
+        |                 |                 |
+        v                 v                 v
+   물음표 1 개        [INTEGER, VARCHAR]  [1, "Sven"]
+                       2 개                2 개
+        |                 |                 |
+        |                 +-------+---------+
+        |                         |
+        |                         v
+        |            ArgumentTypePreparedStatementSetter 생성자
+        |            args.length(2) == argTypes.length(2)  -> 통과
+        |                         |
+        +-------------------------+
+                                  v
+                       setValues : 위치 1, 위치 2 순으로 세팅
+                       그런데 SQL 에 물음표는 1 개뿐
+                       -> 드라이버가 여기서 거부한다
+
+ 검증이 보는 것은 오른쪽 둘뿐이다 — 셋 중 둘이 같으므로 검증은 항상 통과한다
+```
 
 ## 2.5 핵심 이름표 사전
 
-이 흐름에서 "컬럼 목록"이 네 가지 얼굴로 돌아다닌다: 사용자가 선언한 목록, DB 메타데이터가 준 목록, 둘을 조정한 최종 목록, 그리고 SQL 문자열을 만들 때 한 번 더 걸러진 임시 목록. 아래 표는 각 이름이 그중 무엇을 들고 있는지를 명시한다. (예시 값은 `customers(id INTEGER, name VARCHAR)` 테이블 + `usingColumns("id","name")` + `usingGeneratedKeyColumns("id")` 조합)
+이 흐름에서 "컬럼 목록"이 네 가지 얼굴로 돌아다닌다: 사용자가 선언한 목록, DB 메타데이터가 준 목록, 둘을 조정한 최종 목록, 그리고 SQL 문자열을 만들 때 한 번 더 걸러진 임시 목록.\
+아래 표는 각 이름이 그중 무엇을 들고 있는지를 명시한다.\
+(예시 값은 `customers(id INTEGER, name VARCHAR)` 테이블 + `usingColumns("id","name")` + `usingGeneratedKeyColumns("id")` 조합)
 
 | 이름표 | 무엇인가 / 역할 | 입력 -> 출력 | 누가 언제 부르나 | 이 결함과의 관계 |
 |---|---|---|---|---|
@@ -112,11 +209,18 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-07 제출, 라벨 `status: waiting-fo
 | `quoteIdentifiers` (`TableMetaDataContext.java:71`) | 식별자 따옴표 여부 | `boolean` | `compile()`(:276)이 명시 컬럼을 강제 | 사용자를 선언 경로로 밀어넣는 경로 |
 | `accessTableColumnMetaData` (`:65`) | 메타데이터 조회 사용 여부 | `boolean` | `TableMetaDataProviderFactory` | 끄면 자동탐색 분기가 빈 목록을 주므로 명시 컬럼이 필수 |
 
-이 표에서 결함이 한 줄로 보인다. **`keys`는 `reconcileColumnsToUse` 안에서 조기 반환 아래에 있었고, 선언 분기는 그 아래로 내려가지 않는다.** 같은 규칙이 `createInsertString`에도 복제되어 있었던 탓에 SQL만 옳은 부분 정합 상태가 만들어졌다.
+이 표에서 결함이 한 줄로 보인다.\
+**`keys`는 `reconcileColumnsToUse` 안에서 조기 반환 아래에 있었고, 선언 분기는 그 아래로 내려가지 않는다.**\
+같은 규칙이 `createInsertString`에도 복제되어 있었던 탓에 SQL만 옳은 부분 정합 상태가 만들어졌다.
+
+> **조기 반환(early return)** — 메서드 중간에서 조건이 맞으면 나머지 코드를 실행하지 않고 바로 값을 돌려주는 것.\
+> 예: `if (!declaredColumns.isEmpty()) return ...;` 한 줄이 그 아래 키 제외 루프를 통째로 건너뛰게 만든다.
 
 ## 3. 결함 경로 단계 추적
 
-두 경로를 같은 입력(`customers(id, name)`, key = `id`)으로 나란히 따라간다. 정상 케이스는 사용자가 `usingColumns`를 쓰지 않은 자동탐색 경로이고, 결함 케이스는 `usingColumns("id","name")`을 쓴 선언 경로다. 각 단계의 변수 값을 함께 적는다.
+두 경로를 같은 입력(`customers(id, name)`, key = `id`)으로 나란히 따라간다.\
+정상 케이스는 사용자가 `usingColumns`를 쓰지 않은 자동탐색 경로이고, 결함 케이스는 `usingColumns("id","name")`을 쓴 선언 경로다.\
+각 단계의 변수 값을 함께 적는다.
 
 | 단계 | 정상 (자동탐색: `usingColumns` 미사용) | 결함 (선언: `usingColumns("id","name")`) |
 |---|---|---|
@@ -134,13 +238,23 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-07 제출, 라벨 `status: waiting-fo
 | `setValues` L58-83 | 위치 1에 `"Sven"` -> 정상 | 위치 1에 `1`(id 값, INTEGER), 위치 2 세팅 시도 -> **물음표가 1개뿐** |
 | 최종 결과 | INSERT 성공 | 드라이버가 파라미터 인덱스 범위 오류. 개수 검증이 느슨한 드라이버에서는 예외 대신 `name` 자리에 `id` 값이 들어가는 **정렬 어긋남** |
 
-전체 겹침(`usingColumns("id")` + key `["id"]`)은 같은 구조의 극단값이다. 정상 경로는 `tableColumns=[]`, `columnCount=0`, 값 0개로 `INSERT INTO customers () VALUES()`가 나오고 `generatedKeyColumnsUsed` 덕에 예외가 아니다. 결함 경로는 `tableColumns=["id"]`이라 SQL은 물음표 0개인데 값과 타입은 1개가 되어, 어긋남의 방향이 같고 크기만 다르다.
+전체 겹침(`usingColumns("id")` + key `["id"]`)은 같은 구조의 극단값이다.\
+정상 경로는 `tableColumns=[]`, `columnCount=0`, 값 0개로 `INSERT INTO customers () VALUES()`가 나오고 `generatedKeyColumnsUsed` 덕에 예외가 아니다.\
+결함 경로는 `tableColumns=["id"]`이라 SQL은 물음표 0개인데 값과 타입은 1개가 되어, 어긋남의 방향이 같고 크기만 다르다.
 
-대소문자가 다른 겹침(`usingColumns("ID","name")` + key `["id"]`)도 결함 경로에서는 필터 자체가 실행되지 않으므로 동일하게 어긋난다. 정상 경로는 `keys={"ID"}`와 `meta.getParameterName().toUpperCase()`를 대조하므로 표기 차이를 흡수한다.
+대소문자가 다른 겹침(`usingColumns("ID","name")` + key `["id"]`)도 결함 경로에서는 필터 자체가 실행되지 않으므로 동일하게 어긋난다.\
+정상 경로는 `keys={"ID"}`와 `meta.getParameterName().toUpperCase()`를 대조하므로 표기 차이를 흡수한다.
+
+> **대소문자 정규화(`toUpperCase(Locale.ROOT)`)** — 이름을 비교하기 전에 전부 대문자로 접어 표기 차이를 없애는 것.\
+> 예: 선언한 `"ID"`와 키 이름 `"id"`를 둘 다 `"ID"`로 만든 뒤 대조하면 같은 컬럼으로 잡힌다.
 
 ## 4. 계약과 그 위반
 
-계약은 javadoc보다 코드의 사용 방식에 더 많이 적혀 있다. 무엇이 고정되어 있고 결함이 어느 것을 어기는지 정리한다.
+계약은 javadoc보다 코드의 사용 방식에 더 많이 적혀 있다.\
+무엇이 고정되어 있고 결함이 어느 것을 어기는지 정리한다.
+
+> **계약(contract)** — 코드가 명시적으로든 암묵적으로든 "이 값은 항상 이러하다"고 약속하는 규칙.\
+> 예: "`tableColumns`에는 generated key가 이미 빠져 있다"는 어디에도 적혀 있지 않지만, 세 소비자가 그것을 전제로 짜여 있다.
 
 | 계약 | 출처 | 위반 여부 |
 |---|---|---|
@@ -199,24 +313,51 @@ PR 상태: **OPEN, 리뷰 대기**(2026-07-07 제출, 라벨 `status: waiting-fo
 		...
 ```
 
-**왜 이 위치인가.** `tableColumns`의 소비자가 셋이므로 규칙을 소비자에 두면 같은 코드가 넷으로 흩어진다. 생산자 한 곳에서 걸러 두면 모든 소비자가 자동으로 일관되고, 이미 `createInsertString`에 복제되어 있던 필터는 아무것도 걸러내지 않는 무해한 중복으로 되돌아간다. 비교 방식을 새로 정하지 않고 바로 아래 자동탐색 루프의 `toUpperCase(Locale.ROOT)` + `Set` 관용구를 그대로 재사용한 것도 같은 이유다 — 새 규칙을 발명하면 그것이 또 하나의 단일 출처 후보가 된다.
+**왜 이 위치인가.**\
+`tableColumns`의 소비자가 셋이므로 규칙을 소비자에 두면 같은 코드가 넷으로 흩어진다.\
+생산자 한 곳에서 걸러 두면 모든 소비자가 자동으로 일관되고, 이미 `createInsertString`에 복제되어 있던 필터는 아무것도 걸러내지 않는 무해한 중복으로 되돌아간다.\
+비교 방식을 새로 정하지 않고 바로 아래 자동탐색 루프의 `toUpperCase(Locale.ROOT)` + `Set` 관용구를 그대로 재사용한 것도 같은 이유다 — 새 규칙을 발명하면 그것이 또 하나의 단일 출처 후보가 된다.
 
-**동작이 달라지는 대상.** `generatedKeyNames`가 비면 `keys`도 비고 필터는 전부 통과시키므로, key를 쓰지 않는 기존 사용자에게는 결과가 문자 그대로 동일하다. 달라지는 것은 두 목록이 겹치는 조합뿐이고, 그 조합은 수정 전에 실행이 실패했으므로 의존하는 정상 코드가 존재할 수 없다.
+> **호이스팅(hoisting)** — 여러 분기가 공통으로 쓰는 계산을 분기 위로 끌어올려 한 번만 수행하게 하는 것.\
+> 예: `keys` 집합 계산을 `if` 위로 올리면 선언 분기와 자동탐색 분기가 같은 집합을 쓰게 된다.
+
+**동작이 달라지는 대상.**\
+`generatedKeyNames`가 비면 `keys`도 비고 필터는 전부 통과시키므로, key를 쓰지 않는 기존 사용자에게는 결과가 문자 그대로 동일하다.\
+달라지는 것은 두 목록이 겹치는 조합뿐이고, 그 조합은 수정 전에 실행이 실패했으므로 의존하는 정상 코드가 존재할 수 없다.
 
 ### 5.2 기각한 대안 — 겹침을 명시적 예외로 거부
 
-`usingColumns`와 `usingGeneratedKeyColumns`에 같은 컬럼이 들어오면 `compile()` 시점에 `InvalidDataAccessApiUsageException`을 던지는 안이다. 기각 사유는 셋이다. (1) 새 예외 상황을 계약에 추가하는 것이라 조용한 제외보다 파급이 크다. (2) 바로 아래 자동탐색 분기가 이미 "겹치면 조용히 제외"로 동작하므로 두 분기가 서로 다른 정책을 갖게 된다 — 지금 고치려는 비대칭을 방향만 바꿔 재생산한다. (3) 사용자 경험이 열위다. 테이블 컬럼을 그대로 적은 자연스러운 코드가 예외로 막히는 대신, 자동탐색 경로와 같은 결과를 내는 편이 놀라움이 적다.
+`usingColumns`와 `usingGeneratedKeyColumns`에 같은 컬럼이 들어오면 `compile()` 시점에 `InvalidDataAccessApiUsageException`을 던지는 안이다.\
+기각 사유는 셋이다.\
+(1) 새 예외 상황을 계약에 추가하는 것이라 조용한 제외보다 파급이 크다.\
+(2) 바로 아래 자동탐색 분기가 이미 "겹치면 조용히 제외"로 동작하므로 두 분기가 서로 다른 정책을 갖게 된다 — 지금 고치려는 비대칭을 방향만 바꿔 재생산한다.\
+(3) 사용자 경험이 열위다.\
+테이블 컬럼을 그대로 적은 자연스러운 코드가 예외로 막히는 대신, 자동탐색 경로와 같은 결과를 내는 편이 놀라움이 적다.
 
 ### 5.3 하위 클래스 표면
 
-`reconcileColumnsToUse`가 `protected`이므로 하위 클래스가 오버라이드해 선언 목록을 그대로 쓰는 구현이 있을 수 있다. 그런 구현은 이 수정의 영향을 받지 않지만(오버라이드가 이기므로) 여전히 결함 동작을 유지한다. PR 본문은 이 점을 "Note on impact"로 분리해 밝히고 5.2의 대안도 함께 제시했다 — 변경 자체보다 변경이 건드리는 표면을 먼저 알리는 방식이다.
+`reconcileColumnsToUse`가 `protected`이므로 하위 클래스가 오버라이드해 선언 목록을 그대로 쓰는 구현이 있을 수 있다.\
+그런 구현은 이 수정의 영향을 받지 않지만(오버라이드가 이기므로) 여전히 결함 동작을 유지한다.\
+PR 본문은 이 점을 "Note on impact"로 분리해 밝히고 5.2의 대안도 함께 제시했다 — 변경 자체보다 변경이 건드리는 표면을 먼저 알리는 방식이다.
+
+> **`protected` 확장점** — 하위 클래스가 상속해서 덮어쓸 수 있도록 열어 둔 메서드.\
+> 예: 외부 프로젝트가 `reconcileColumnsToUse`를 이미 오버라이드했다면 이 수정이 그쪽에는 닿지 않는다.
 
 ## 6. 범위 밖과 인접 영향
 
 이 PR이 일부러 손대지 않은 인접 코드와, 수정이 남기는 표면은 다음 다섯 갈래로 정리된다.
 
-- **`createInsertString`의 중복 필터**(:292-295, :322)는 이번에 제거하지 않았다. 수정 후에는 아무것도 걸러내지 않지만, 제거하면 `reconcileColumnsToUse`를 오버라이드한 하위 클래스가 즉시 깨질 수 있다. 중복을 남기는 쪽이 안전하다.
-- **`matchInParameterValuesWithInsertColumns(Map)`의 대소문자 폴백**(:270-280)은 컬럼 이름을 값 소스의 키와 맞추는 별개 축이다. 이번 필터와 규칙이 비슷해 보이지만 대상이 다르다(값 소스 키 vs generated key 이름) — 건드리지 않았다.
-- **같은 패턴의 다른 위치**는 `CallMetaDataContext.reconcileParameters()`다(PR #37206). "한 분기만 다른 규칙을 쓴다"는 형태가 같으므로 §1의 대응 관계가 그대로 적용되지만, 그쪽은 필터 누락이 아니라 이름 정규화 누락이고 증상도 다르다(조용한 오답 + 스퓨리어스 예외). 두 PR을 하나로 묶지 않은 이유는 파일·증상·테스트가 모두 다르기 때문이다.
-- **하위호환**: 겹치지 않는 조합은 결과가 완전히 동일하고, 겹치는 조합은 수정 전에 실행이 실패했다. 공개 API 시그니처·DB 스키마·이벤트 계약 변화 없음. 유일한 표면은 5.3의 `protected` 확장점이다.
-- **검증**: `TableMetaDataContextTests`에 부분 겹침·전체 겹침·대소문자 겹침 세 건이 추가됐다. 세 건 모두 수정 전 red이며, 각 테스트 안의 `insertString` 단언은 전후 모두 green이라 SQL 생성 쪽을 건드리지 않았음을 함께 고정한다. 상세는 [tests.md](tests.md).
+- **`createInsertString`의 중복 필터**(:292-295, :322)는 이번에 제거하지 않았다.\
+  수정 후에는 아무것도 걸러내지 않지만, 제거하면 `reconcileColumnsToUse`를 오버라이드한 하위 클래스가 즉시 깨질 수 있다.\
+  중복을 남기는 쪽이 안전하다.
+- **`matchInParameterValuesWithInsertColumns(Map)`의 대소문자 폴백**(:270-280)은 컬럼 이름을 값 소스의 키와 맞추는 별개 축이다.\
+  이번 필터와 규칙이 비슷해 보이지만 대상이 다르다(값 소스 키 vs generated key 이름) — 건드리지 않았다.
+- **같은 패턴의 다른 위치**는 `CallMetaDataContext.reconcileParameters()`다(PR #37206).\
+  "한 분기만 다른 규칙을 쓴다"는 형태가 같으므로 §1의 대응 관계가 그대로 적용되지만, 그쪽은 필터 누락이 아니라 이름 정규화 누락이고 증상도 다르다(조용한 오답 + 스퓨리어스 예외).\
+  두 PR을 하나로 묶지 않은 이유는 파일·증상·테스트가 모두 다르기 때문이다.
+- **하위호환**: 겹치지 않는 조합은 결과가 완전히 동일하고, 겹치는 조합은 수정 전에 실행이 실패했다.\
+  공개 API 시그니처·DB 스키마·이벤트 계약 변화 없음.\
+  유일한 표면은 5.3의 `protected` 확장점이다.
+- **검증**: `TableMetaDataContextTests`에 부분 겹침·전체 겹침·대소문자 겹침 세 건이 추가됐다.\
+  세 건 모두 수정 전 red이며, 각 테스트 안의 `insertString` 단언은 전후 모두 green이라 SQL 생성 쪽을 건드리지 않았음을 함께 고정한다.\
+  상세는 [tests.md](tests.md).

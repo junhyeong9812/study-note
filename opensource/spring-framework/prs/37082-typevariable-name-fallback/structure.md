@@ -6,11 +6,35 @@
 
 ## 1. 무대 — 실구조
 
-이 PR의 무대는 자바 리플렉션의 `Type` 계층을 스프링이 감싼 `ResolvableType`, 그중에서도 **타입 변수를 실인자로 바꾸는 해석 경로**다. 무대에 서는 배우는 셋이다. 값 객체이자 해석 엔진인 `ResolvableType`, 그 객체가 "내가 모르는 변수는 이 사람에게 물어봐"라고 위임하는 `VariableResolver` 체인, 그리고 클래스 계층 전체를 훑으며 후보를 순서대로 시도하는 상위 진입점 `GenericTypeResolver`다. 버그는 가장 안쪽 `resolveVariable`의 마지막 폴백 하나에 있었다.
+이 PR의 무대는 자바 리플렉션의 `Type` 계층을 스프링이 감싼 `ResolvableType`, 그중에서도 **타입 변수를 실인자로 바꾸는 해석 경로**다.\
+무대에 서는 배우는 셋이다.\
+값 객체이자 해석 엔진인 `ResolvableType`, 그 객체가 "내가 모르는 변수는 이 사람에게 물어봐"라고 위임하는 `VariableResolver` 체인, 그리고 클래스 계층 전체를 훑으며 후보를 순서대로 시도하는 상위 진입점 `GenericTypeResolver`다.\
+버그는 가장 안쪽 `resolveVariable`의 마지막 폴백 하나에 있었다.
 
-먼저 `ResolvableType`의 실제 모양이다. 필드가 무엇을 들고 있는지가 해석 알고리즘의 절반을 설명한다.
+> **실인자(actual type argument)** — 제네릭 자리에 실제로 채워 넣은 타입.\
+> 예: `TopSearch<String, Long>`에서 변수 `[I, O]`에 대응하는 실인자는 `[String, Long]`이다.
 
+세 배우의 역할을 한 줄씩 겹쳐 보면 책임이 이렇게 나뉜다.
+
+```text
++---------------------------+-----------------------------------------------+
+| GenericTypeResolver       | 후보를 고른다                                 |
+|                           | 자기 자신 -> superType -> 인터페이스 선언 순서 |
++---------------------------+-----------------------------------------------+
+| VariableResolver 체인     | 후보 하나에게 질문을 전달한다                 |
+|                           | DefaultVariableResolver / TypeVariables...    |
++---------------------------+-----------------------------------------------+
+| ResolvableType            | 후보 하나 안에서 짝을 맞춘다                  |
+|   .resolveVariable        | 동일성 -> owner -> 이름  (버그는 여기)        |
++---------------------------+-----------------------------------------------+
 ```
+
+후보를 고르는 층과 짝을 맞추는 층이 나뉘어 있어서, 안쪽 층이 틀린 답을 내면 바깥 층의 탐색이 거기서 멈춘다.
+
+먼저 `ResolvableType`의 실제 모양이다.\
+필드가 무엇을 들고 있는지가 해석 알고리즘의 절반을 설명한다.
+
+```text
  ResolvableType implements Serializable                      ResolvableType.java:89
    ├─ static final ResolvableType NONE                                    :95
    │     "값 없음" 을 null 대신 표현하는 싱글턴 (EmptyType.INSTANCE 기반)
@@ -36,9 +60,13 @@
    └─ static resolveBounds(Type[])  bounds[0]==Object.class 면 null           :1467
 ```
 
-변수 해석의 위임 구조는 인터페이스 하나와 구현 둘로 되어 있다. 둘의 차이가 "누구에게 물어보는가"를 가른다.
+> **싱글턴(singleton)** — 프로그램 전체에서 인스턴스가 딱 하나만 존재하도록 만든 객체.\
+> 예: `ResolvableType.NONE`은 "값 없음"을 나타내는 유일한 인스턴스라, `null` 대신 돌려줘도 메서드를 계속 이어 부를 수 있다.
 
-```
+변수 해석의 위임 구조는 인터페이스 하나와 구현 둘로 되어 있다.\
+둘의 차이가 "누구에게 물어보는가"를 가른다.
+
+```text
  interface ResolvableType.VariableResolver extends Serializable      :1573
    ├─ Object getSource()                                             :1578
    └─ @Nullable ResolvableType resolveVariable(TypeVariable<?>)      :1585
@@ -61,9 +89,13 @@
         ↳ forClassWithGenerics 로 만든 타입은 owner 가 없다 = 이름 폴백에 도달한다
 ```
 
-상위 진입점은 `GenericTypeResolver`다. 이쪽은 클래스 계층을 넓이 방향으로 훑으며 `ResolvableType`에게 반복해서 묻는 역할만 한다.
+> **어댑터(adapter)** — 인터페이스가 맞지 않는 두 쪽을 이어 주려고, 한쪽을 다른 쪽 모양으로 감싸는 얇은 객체.\
+> 예: `DefaultVariableResolver`는 `ResolvableType` 하나를 `VariableResolver`처럼 보이게 감싸 되묻기만 한다.
 
-```
+상위 진입점은 `GenericTypeResolver`다.\
+이쪽은 클래스 계층을 넓이 방향으로 훑으며 `ResolvableType`에게 반복해서 묻는 역할만 한다.
+
+```text
  GenericTypeResolver (abstract utility)                    GenericTypeResolver.java
    ├─ public static Type resolveType(Type genericType, @Nullable Class<?> contextClass)   :154
    │     ├─ genericType 이 TypeVariable 이면 ─→ resolveVariable(...) 후 bounds 폴백   :156-172
@@ -75,9 +107,10 @@
          └─ 못 찾으면 ResolvableType.NONE                                      :239
 ```
 
-세 배우를 하나로 겹치면 이런 그림이 된다. 화살표는 "묻는 방향"이다.
+세 배우를 하나로 겹치면 이런 그림이 된다.\
+화살표는 "묻는 방향"이다.
 
-```
+```text
   GenericTypeResolver.resolveType(genericType, contextClass)      :154
         │  후보를 순서대로 시도 (자기 자신 → superType → interfaces)
         ▼
@@ -97,13 +130,15 @@
 
 ## 2. 수정 전 동작 워크플로우
 
-타입 변수 해석은 "묻는 대상을 계층 위로 옮겨 가며 후보를 시도하고, 첫 성공을 답으로 삼는" 구조다. 성공/실패의 판정이 안쪽 `resolveVariable` 한 곳에 있으므로, 그 한 곳이 틀린 답을 내면 상위 탐색이 조기에 멈춘다. 시나리오 세 개로 따라간다.
+타입 변수 해석은 "묻는 대상을 계층 위로 옮겨 가며 후보를 시도하고, 첫 성공을 답으로 삼는" 구조다.\
+성공/실패의 판정이 안쪽 `resolveVariable` 한 곳에 있으므로, 그 한 곳이 틀린 답을 내면 상위 탐색이 조기에 멈춘다.\
+시나리오 세 개로 따라간다.
 
 ### 시나리오 A — 정상 해석 (중첩 선언, `Create<I,O>` @ `Controller`)
 
 `GenericTypeResolverTests` 안에 중첩으로 선언된 기존 픽스처의 경로다.
 
-```
+```text
  resolveType(Create#create 의 파라미터 타입 I, Controller.class)      GenericTypeResolver.java:154
    genericType 은 TypeVariable "I" (선언: interface Create)
    └→ resolveVariable(I, ResolvableType.forClass(Controller))         :157-158 → :210
@@ -131,13 +166,15 @@
         → Long
 ```
 
-여기서 핵심은 2)의 `return`이다. **owner가 있으면 그 결과가 무엇이든 즉시 반환**되므로 이름 폴백은 실행되지 않는다. 중첩 선언 픽스처가 "우연히" 옳은 답을 낸 이유가 이것이다.
+여기서 핵심은 2)의 `return`이다.\
+**owner가 있으면 그 결과가 무엇이든 즉시 반환**되므로 이름 폴백은 실행되지 않는다.\
+중첩 선언 픽스처가 "우연히" 옳은 답을 낸 이유가 이것이다.
 
 ### 시나리오 B — 수정 전 오답 (최상위 선언, `TopCreate<I,O>` @ `TopController`)
 
 같은 구조를 파일 최상위에 선언하면 owner가 사라지고 3)에 도달한다.
 
-```
+```text
  interface TopSearch<I, O> {}
  interface TopCreate<I, O> { default O create(I body) {...} }
  class TopController implements TopSearch<String, Long>, TopCreate<Long, Long> {}
@@ -159,9 +196,10 @@
  결과 String   (기대: Long)
 ```
 
-owner 유무 하나로 같은 구조가 다른 답을 내는 것이 이 결함의 성질이다. JDK 리플렉션이 실제로 그렇게 동작한다.
+owner 유무 하나로 같은 구조가 다른 답을 내는 것이 이 결함의 성질이다.\
+JDK 리플렉션이 실제로 그렇게 동작한다.
 
-```
+```text
   TOP  TopSearch      ownerType = null            → 3) 이름 폴백에 도달
   TOP  TopCreate      ownerType = null
   NEST Probe$Search   ownerType = class Probe     → 2) 에서 즉시 반환, 3) 미도달
@@ -172,7 +210,7 @@ owner 유무 하나로 같은 구조가 다른 답을 내는 것이 이 결함�
 
 메서드가 선언한 변수는 클래스 변수와 별개인데, 이름 폴백이 그 경계를 무시하고 클래스 인자를 가져온다.
 
-```
+```text
  class TopRepo<T> { <T> T convert(Object o) { return null; } }
  class TopStringRepo extends TopRepo<String> {}
 
@@ -192,9 +230,10 @@ owner 유무 하나로 같은 구조가 다른 답을 내는 것이 이 결함�
 
 ### 시나리오 D — 폴백이 정당한 경우 (subtype narrowing)
 
-이름 폴백을 삭제하면 안 되는 이유가 이 경로다. `ResolvableTypeTests.narrow()`가 고정하고 있다.
+이름 폴백을 삭제하면 안 되는 이유가 이 경로다.\
+`ResolvableTypeTests.narrow()`가 고정하고 있다.
 
-```
+```text
  ResolvableType type   = forField(Fields#stringList)      → List<String>
  ResolvableType narrow = ResolvableType.forType(ArrayList.class, type)        :1494
      forType(Type, owner) 은 owner.asVariableResolver() 를 붙인다              :1496-1499
@@ -220,17 +259,32 @@ owner 유무 하나로 같은 구조가 다른 답을 내는 것이 이 결함�
  결과 String
 ```
 
-즉 3)은 실수로 들어간 코드가 아니라 **"하위 타입이 상위 타입의 인자를 이름으로 물려받는" 경우를 건지는 장치**였다. 문제는 그 장치에 조건이 없어 시나리오 B·C까지 함께 통과시켰다는 것뿐이다.
+네 시나리오가 3)에 도달하는지, 그리고 그 결과가 옳은지를 한 장에 모으면 이렇다.
+
+```text
+          2) owner     3) 이름 폴백    수정 전 결과      옳은가
+  A 중첩    있음         미도달         Long              옳다
+  B 최상위  null         실행됨         String            틀렸다
+  C 최상위  null         실행됨         String            틀렸다
+  D 최상위  null         실행됨         String            옳다
+```
+
+3)이 실행된 세 줄 중 둘은 오답이고 하나는 정답이므로, 3)을 지우는 것도 남기는 것도 답이 아니다.
+
+즉 3)은 실수로 들어간 코드가 아니라 **"하위 타입이 상위 타입의 인자를 이름으로 물려받는" 경우를 건지는 장치**였다.\
+문제는 그 장치에 조건이 없어 시나리오 B·C까지 함께 통과시켰다는 것뿐이다.
 
 ## 3. 분기 처리 워크플로우
 
-이 무대의 분기는 두 층이다. 바깥층은 `GenericTypeResolver`가 후보를 고르는 순서이고, 안층은 `ResolvableType.resolveVariable`이 매칭 방식을 고르는 순서다. 브리핑에서 요구한 대로 안층 분기도를 먼저 완전히 펼친다.
+이 무대의 분기는 두 층이다.\
+바깥층은 `GenericTypeResolver`가 후보를 고르는 순서이고, 안층은 `ResolvableType.resolveVariable`이 매칭 방식을 고르는 순서다.\
+브리핑에서 요구한 대로 안층 분기도를 먼저 완전히 펼친다.
 
 ### 3-1. `ResolvableType.resolveVariable` 분기도 (수정 전)
 
 이 메서드는 다섯 갈래를 순서대로 시도하고, 결함은 그중 셋째에 있다.
 
-```
+```text
  resolveVariable(TypeVariable<?> variable)                   ResolvableType.java:945
    │
    ├─ variableToCompare = SerializableTypeWrapper.unwrap(variable)          :946
@@ -278,9 +332,10 @@ owner 유무 하나로 같은 구조가 다른 답을 내는 것이 이 결함�
              "여기서는 못 찾았다" = 상위 탐색이 다음 후보로 넘어가라는 신호
 ```
 
-PR이 바꾸는 것은 [B3] 하나다. 루프를 없애는 대신 **게이트를 앞에 세운다**.
+PR이 바꾸는 것은 [B3] 하나다.\
+루프를 없애는 대신 **게이트를 앞에 세운다**.
 
-```
+```text
  [B3] 수정 후
    ├─ variableToCompare.getGenericDeclaration() instanceof Class<?> declaringClass ?
    │     ├─ 아니오 (Method / Constructor 선언) ──→ 폴백 건너뜀   ← 시나리오 C 차단
@@ -294,13 +349,16 @@ PR이 바꾸는 것은 [B3] 하나다. 루프를 없애는 대신 **게이트를
         = 틀린 답 대신 "모름" 을 돌려주고 상위 탐색에 길을 비켜 준다
 ```
 
-`getGenericDeclaration()`이 돌려줄 수 있는 값은 자바 명세상 `Class`·`Method`·`Constructor` 셋뿐이므로, 첫 조건은 "클래스나 인터페이스가 선언한 변수만"이라는 뜻이 된다. 둘째 조건의 방향에 주의해야 한다. `resolved`(지금 보고 있는 파라미터화 타입의 raw 클래스)가 **상위**, `declaringClass`(찾는 변수를 선언한 클래스)가 **하위**여야 한다. 이것이 "subtype narrowing"의 정확한 의미다.
+`getGenericDeclaration()`이 돌려줄 수 있는 값은 자바 명세상 `Class`·`Method`·`Constructor` 셋뿐이므로, 첫 조건은 "클래스나 인터페이스가 선언한 변수만"이라는 뜻이 된다.\
+둘째 조건의 방향에 주의해야 한다.\
+`resolved`(지금 보고 있는 파라미터화 타입의 raw 클래스)가 **상위**, `declaringClass`(찾는 변수를 선언한 클래스)가 **하위**여야 한다.\
+이것이 "subtype narrowing"의 정확한 의미다.
 
 ### 3-2. 상위 탐색 분기 — 후보 순서가 답을 바꾼다
 
 바깥층은 문맥 클래스 자신, 상위 클래스, 인터페이스 선언 순서로 후보를 시도하고 첫 성공을 답으로 삼는다.
 
-```
+```text
  GenericTypeResolver.resolveVariable(typeVariable, contextType)   GenericTypeResolver.java:210
    │
    ├─ contextType.hasGenerics() ?                                          :212
@@ -336,13 +394,15 @@ PR이 바꾸는 것은 [B3] 하나다. 루프를 없애는 대신 **게이트를
          → forClassWithGenerics(rawClass, generics).getType()                :202
 ```
 
-시나리오 C가 수정 후 "미해석"으로 끝나는 경로가 여기서 확인된다. 어떤 후보도 답을 주지 못해 `NONE`이 되고, 메서드 `T`의 bound는 `Object`뿐이라 `resolveBounds`가 `null`을 돌려주므로(`ResolvableType.java:1468-1469`) bound 폴백도 `NONE`이며, 결국 `return genericType`(`GenericTypeResolver.java:207`)이 실행돼 `TypeVariable`이 그대로 나온다.
+시나리오 C가 수정 후 "미해석"으로 끝나는 경로가 여기서 확인된다.\
+어떤 후보도 답을 주지 못해 `NONE`이 되고, 메서드 `T`의 bound는 `Object`뿐이라 `resolveBounds`가 `null`을 돌려주므로(`ResolvableType.java:1468-1469`) bound 폴백도 `NONE`이며, 결국 `return genericType`(`GenericTypeResolver.java:207`)이 실행돼 `TypeVariable`이 그대로 나온다.
 
 ### 3-3. 두 가지 VariableResolver의 분기 차이
 
-같은 인터페이스를 구현하지만 매칭 규칙이 다르다. 이 차이가 "어떤 경로가 이름 폴백에 노출되는가"를 결정한다.
+같은 인터페이스를 구현하지만 매칭 규칙이 다르다.\
+이 차이가 "어떤 경로가 이름 폴백에 노출되는가"를 결정한다.
 
-```
+```text
  DefaultVariableResolver.resolveVariable(v)                :1599
    └─ source.resolveVariable(v)  → 위 3-1 의 5단계 전부를 그대로 탄다 (이름 폴백 포함)
 
@@ -357,9 +417,10 @@ PR이 바꾸는 것은 [B3] 하나다. 루프를 없애는 대신 **게이트를
 
 ## 4. 스프링 전역에서의 자리
 
-`ResolvableType`은 스프링 전역의 제네릭 처리 기반이지만, 이 PR이 건드리는 `resolveVariable`의 이름 폴백에 실제로 도달하는 경로는 `GenericTypeResolver.resolveType(Type, Class)`를 통과하는 계열이다. grep으로 확인한 그 진입점은 다음과 같고, 공통점은 전부 **메시지 본문을 어떤 타입으로 역/직렬화할지 정하는 자리**라는 것이다.
+`ResolvableType`은 스프링 전역의 제네릭 처리 기반이지만, 이 PR이 건드리는 `resolveVariable`의 이름 폴백에 실제로 도달하는 경로는 `GenericTypeResolver.resolveType(Type, Class)`를 통과하는 계열이다.\
+grep으로 확인한 그 진입점은 다음과 같고, 공통점은 전부 **메시지 본문을 어떤 타입으로 역/직렬화할지 정하는 자리**라는 것이다.
 
-```
+```text
 [ HTTP 메시지 컨버터 — 본문 역직렬화 타입 결정 ]
   AbstractJacksonHttpMessageConverter#getJavaType                  AbstractJacksonHttpMessageConverter.java:491
     → defaultMapper.constructType(GenericTypeResolver.resolveType(type, contextClass))
@@ -385,64 +446,87 @@ PR이 바꾸는 것은 [B3] 하나다. 루프를 없애는 대신 **게이트를
     → GenericTypeResolver.resolveType(getGenericType(returnType), returnType.getContainingClass())
 ```
 
-즉 `@RequestBody`/`@ResponseBody` 처리, WebFlux 본문 디코딩, `@HttpExchange` 인터페이스 클라이언트, 메시징 컨버터가 전부 이 한 함수의 판정에 의존한다. 시나리오 B 같은 오답은 "컨트롤러가 JSON 본문을 엉뚱한 타입으로 읽어 400을 낸다" 형태로 사용자에게 도달한다.
+즉 `@RequestBody`/`@ResponseBody` 처리, WebFlux 본문 디코딩, `@HttpExchange` 인터페이스 클라이언트, 메시징 컨버터가 전부 이 한 함수의 판정에 의존한다.\
+시나리오 B 같은 오답은 "컨트롤러가 JSON 본문을 엉뚱한 타입으로 읽어 400을 낸다" 형태로 사용자에게 도달한다.
 
-한편 이름 폴백에 **도달하지 않는** 경로도 명확히 해 두는 편이 낫다. `forClassWithGenerics`로 만든 타입은 `TypeVariablesVariableResolver`(동일성 비교 전용, `ResolvableType.java:1623`)를 쓰고, `forField`/`forMethodParameter` 계열은 `owner.asVariableResolver()`로 `DefaultVariableResolver`를 붙이므로(`ResolvableType.java:1239-1240`, `:1408-1410`) 3-1의 전체 사슬을 탄다. 빈 팩토리의 제네릭 매칭처럼 `ResolvableType`을 직접 쓰는 자리들은 대부분 동일성 비교 단계([B1])에서 답이 나오므로 이 결함과 무관하다.
+한편 이름 폴백에 **도달하지 않는** 경로도 명확히 해 두는 편이 낫다.\
+`forClassWithGenerics`로 만든 타입은 `TypeVariablesVariableResolver`(동일성 비교 전용, `ResolvableType.java:1623`)를 쓰고, `forField`/`forMethodParameter` 계열은 `owner.asVariableResolver()`로 `DefaultVariableResolver`를 붙이므로(`ResolvableType.java:1239-1240`, `:1408-1410`) 3-1의 전체 사슬을 탄다.\
+빈 팩토리의 제네릭 매칭처럼 `ResolvableType`을 직접 쓰는 자리들은 대부분 동일성 비교 단계([B1])에서 답이 나오므로 이 결함과 무관하다.
 
 ## 5. 관련 개념
 
 ### 5-1. TypeVariable의 동일성 — 이름만으로는 부족하다
 
-자바 리플렉션에서 `TypeVariable`의 `equals`는 **이름과 `getGenericDeclaration()`을 함께** 본다. 그래서 다음 셋은 이름이 모두 같아도 서로 다른 객체다.
+자바 리플렉션에서 `TypeVariable`의 `equals`는 **이름과 `getGenericDeclaration()`을 함께** 본다.\
+그래서 다음 셋은 이름이 모두 같아도 서로 다른 객체다.
 
-```
+```text
   List<E>       의 E   → getGenericDeclaration() = interface java.util.List
   ArrayList<E>  의 E   → getGenericDeclaration() = class java.util.ArrayList
   TopRepo<T>    의 T   → getGenericDeclaration() = class TopRepo
   <T> T convert 의 T   → getGenericDeclaration() = public TopRepo.convert(Object)
 ```
 
-`getGenericDeclaration()`이 돌려주는 것은 `GenericDeclaration` 인터페이스이고, 그 구현은 `Class`·`Method`·`Constructor` 셋뿐이다. PR의 첫 조건 `instanceof Class<?>`가 "클래스/인터페이스 선언 변수만"을 정확히 표현하는 이유이며, 메서드 레벨 shadowing이 그 검사에 걸리는 이유다.
+`getGenericDeclaration()`이 돌려주는 것은 `GenericDeclaration` 인터페이스이고, 그 구현은 `Class`·`Method`·`Constructor` 셋뿐이다.\
+PR의 첫 조건 `instanceof Class<?>`가 "클래스/인터페이스 선언 변수만"을 정확히 표현하는 이유이며, 메서드 레벨 shadowing이 그 검사에 걸리는 이유다.
 
-`resolveVariable`이 맨 처음 `SerializableTypeWrapper.unwrap`을 호출하는 것도(`ResolvableType.java:946`) 이 동일성 때문이다. 스프링은 `Type`을 직렬화 가능하게 만들려고 프록시로 감싸는데, 감싼 채로 `equals`를 하면 원본과 맞지 않으므로 비교 전에 벗겨 낸다.
+`resolveVariable`이 맨 처음 `SerializableTypeWrapper.unwrap`을 호출하는 것도(`ResolvableType.java:946`) 이 동일성 때문이다.\
+스프링은 `Type`을 직렬화 가능하게 만들려고 프록시로 감싸는데, 감싼 채로 `equals`를 하면 원본과 맞지 않으므로 비교 전에 벗겨 낸다.
+
+> **프록시(proxy)** — 원본 객체인 척 대신 서 있으면서 호출을 전달하는 대리 객체.\
+> 예: `SerializableTypeWrapper`는 직렬화가 안 되는 JDK `Type`을 직렬화 가능한 대리로 감싸므로, 비교 전에 `unwrap`으로 벗겨야 한다.
 
 ### 5-2. owner type — 중첩 선언이 만드는 추가 문맥
 
 `ParameterizedType.getOwnerType()`은 그 타입이 **다른 타입 안에 중첩 선언**돼 있을 때 바깥 타입을 돌려주고, 최상위 선언이면 `null`이다.
 
-```
+```text
   interface TopSearch<I,O> {}                     → getOwnerType() = null
   class Tests { interface Search<I,O> {} }        → getOwnerType() = class Tests
 ```
 
-중첩 클래스는 바깥 클래스의 타입 변수를 쓸 수 있으므로, 변수를 못 찾았을 때 바깥으로 한 단계 올라가 다시 묻는 것이 타당하다. 그것이 `resolveVariable`의 [B2] 분기다(`ResolvableType.java:962-965`). 다만 이 분기가 `return`이라 **owner가 있기만 하면 뒤의 이름 폴백은 실행되지 않는다**. 같은 구조가 중첩이냐 최상위냐에 따라 다른 답을 내는 비대칭이 여기서 생기고, gh-36890의 회귀 테스트가 중첩 픽스처로 쓰인 탓에 대상 경로를 밟지 못한 것도 이 때문이다.
+중첩 클래스는 바깥 클래스의 타입 변수를 쓸 수 있으므로, 변수를 못 찾았을 때 바깥으로 한 단계 올라가 다시 묻는 것이 타당하다.\
+그것이 `resolveVariable`의 [B2] 분기다(`ResolvableType.java:962-965`).\
+다만 이 분기가 `return`이라 **owner가 있기만 하면 뒤의 이름 폴백은 실행되지 않는다**.\
+같은 구조가 중첩이냐 최상위냐에 따라 다른 답을 내는 비대칭이 여기서 생기고, gh-36890의 회귀 테스트가 중첩 픽스처로 쓰인 탓에 대상 경로를 밟지 못한 것도 이 때문이다.
 
-참고로 `SyntheticParameterizedType.getOwnerType()`은 언제나 `null`이므로(`ResolvableType.java:1665-1667`), `forClassWithGenerics`로 만든 타입은 항상 [B3]까지 흘러간다. PR의 긍정 테스트가 `forClassWithGenerics(Container.class, String.class)`로 픽스처를 만드는 것은 그 경로를 확실히 밟기 위해서다.
+참고로 `SyntheticParameterizedType.getOwnerType()`은 언제나 `null`이므로(`ResolvableType.java:1665-1667`), `forClassWithGenerics`로 만든 타입은 항상 [B3]까지 흘러간다.\
+PR의 긍정 테스트가 `forClassWithGenerics(Container.class, String.class)`로 픽스처를 만드는 것은 그 경로를 확실히 밟기 위해서다.
 
 ### 5-3. NONE과 null — 두 가지 "없음"
 
 이 무대에는 "값 없음"을 표현하는 두 관용구가 공존한다.
 
-```
+```text
   ResolvableType.NONE   :95   공개 API 수준의 "없음". 메서드 체이닝이 NPE 없이 이어지도록 하는 싱글턴
                               GenericTypeResolver 의 탐색 루프는 NONE 여부로 다음 후보를 판단  :229, :235
   null                        내부 resolveVariable 의 "여기서는 못 찾았다" 신호               :982
                               DefaultVariableResolver 를 지나 GenericTypeResolver 에서 NONE 으로 번역  :217-218
 ```
 
-PR의 수정이 "틀린 답 대신 모름을 반환한다"는 말은 정확히 [B3]을 건너뛰어 `null`(-> `NONE`)로 흘려보낸다는 뜻이고, 그 결과 상위 루프가 다음 인터페이스 후보를 시도하게 된다. 오답을 조기 반환하는 대신 탐색을 계속하게 만드는 것이 수정의 작동 원리다.
+PR의 수정이 "틀린 답 대신 모름을 반환한다"는 말은 정확히 [B3]을 건너뛰어 `null`(-> `NONE`)로 흘려보낸다는 뜻이고, 그 결과 상위 루프가 다음 인터페이스 후보를 시도하게 된다.\
+오답을 조기 반환하는 대신 탐색을 계속하게 만드는 것이 수정의 작동 원리다.
 
 ### 5-4. bound 폴백 — 해석 실패 시의 마지막 그물
 
-변수를 끝내 해석하지 못하면 `GenericTypeResolver`는 그 변수의 상한(bound)을 답으로 쓰려 시도한다(`GenericTypeResolver.java:160`, `:184`). `forVariableBounds`는 `resolveBounds`에 위임하는데, 이 함수는 `bounds[0]`이 `Object.class`면 `null`을 돌려준다(`ResolvableType.java:1467-1472`).
+변수를 끝내 해석하지 못하면 `GenericTypeResolver`는 그 변수의 상한(bound)을 답으로 쓰려 시도한다(`GenericTypeResolver.java:160`, `:184`).\
+`forVariableBounds`는 `resolveBounds`에 위임하는데, 이 함수는 `bounds[0]`이 `Object.class`면 `null`을 돌려준다(`ResolvableType.java:1467-1472`).
 
-```
+```text
   <T extends Number> 의 T  → bounds[0] = Number  → forVariableBounds = Number
   <T> 의 T                 → bounds[0] = Object  → null → NONE → 원본 TypeVariable 그대로
 ```
 
-`Object`를 답으로 주지 않는 이유는 그것이 정보가 아니기 때문이다. "아무거나"라고 답하느니 "모른다"고 답하는 편이 호출자에게 더 유용하다. 시나리오 C의 기대값이 `Object.class`가 아니라 `TypeVariable`인 근거가 여기 있다.
+`Object`를 답으로 주지 않는 이유는 그것이 정보가 아니기 때문이다.\
+"아무거나"라고 답하느니 "모른다"고 답하는 편이 호출자에게 더 유용하다.\
+시나리오 C의 기대값이 `Object.class`가 아니라 `TypeVariable`인 근거가 여기 있다.
 
 ### 5-5. 컴파일 타임과 런타임의 제네릭 정보
 
-타입 변수 해석이 필요한 이유 자체는 "제네릭 정보가 어디까지 살아남는가"의 문제다. 이 주제는 이미 개념 문서가 있으므로 링크로 대신한다: [`../../concepts/compile-runtime-layers/compile-runtime-layers.md`](../../concepts/compile-runtime-layers/compile-runtime-layers.md). 요지만 적으면, 필드·메서드 시그니처에 쓰인 제네릭은 클래스 파일의 시그니처 속성으로 남아 리플렉션이 `ParameterizedType`·`TypeVariable`로 되돌려 주지만, 인스턴스에 담긴 값의 제네릭 인자는 남지 않는다. `ResolvableType`이 다루는 것은 전자이며, `resolveVariable`은 그 남아 있는 정보끼리 짝을 맞추는 작업이다.
+타입 변수 해석이 필요한 이유 자체는 "제네릭 정보가 어디까지 살아남는가"의 문제다.\
+이 주제는 이미 개념 문서가 있으므로 링크로 대신한다: [`../../concepts/compile-runtime-layers/compile-runtime-layers.md`](../../concepts/compile-runtime-layers/compile-runtime-layers.md).\
+요지만 적으면, 필드·메서드 시그니처에 쓰인 제네릭은 클래스 파일의 시그니처 속성으로 남아 리플렉션이 `ParameterizedType`·`TypeVariable`로 되돌려 주지만, 인스턴스에 담긴 값의 제네릭 인자는 남지 않는다.\
+`ResolvableType`이 다루는 것은 전자이며, `resolveVariable`은 그 남아 있는 정보끼리 짝을 맞추는 작업이다.
+
+> **타입 소거(type erasure)** — 컴파일이 끝나면 인스턴스가 들고 있던 제네릭 인자 정보가 사라지는 자바의 성질.\
+> 예: `new ArrayList<String>()`이 담긴 변수에서 런타임에 `String`을 꺼낼 수는 없지만, 필드 선언 `List<String> stringList`의 제네릭은 시그니처 속성으로 남아 읽을 수 있다.

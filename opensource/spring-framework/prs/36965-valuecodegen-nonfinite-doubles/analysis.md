@@ -7,25 +7,35 @@
 
 ## 0. 결론
 
-`ValueCodeGeneratorDelegates.PrimitiveDelegate`의 `Float`·`Double` 분기는 JavaPoet의
-`$L`(리터럴) 플레이스홀더로 값의 `toString()`을 그대로 소스에 찍는다. 그런데 IEEE 754의
-비유한 값 세 종류는 `toString()`이 `"NaN"`·`"Infinity"`·`"-Infinity"`이고, Java 언어에는
-이 셋을 표현하는 리터럴 문법이 없다. 결과적으로 AOT가 `NaNF`나 `(double) Infinity` 같은
-**컴파일되지 않는 소스**를 조용히 생성한다.
+`ValueCodeGeneratorDelegates.PrimitiveDelegate`의 `Float`·`Double` 분기는 JavaPoet의 `$L`(리터럴) 플레이스홀더로 값의 `toString()`을 그대로 소스에 찍는다.\
+그런데 IEEE 754의 비유한 값 세 종류는 `toString()`이 `"NaN"`·`"Infinity"`·`"-Infinity"`이고, Java 언어에는 이 셋을 표현하는 리터럴 문법이 없다.\
+결과적으로 AOT가 `NaNF`나 `(double) Infinity` 같은 **컴파일되지 않는 소스**를 조용히 생성한다.
 
-수정은 두 분기 안에서 세 특수값을 먼저 판별해 `$T.NaN`·`$T.POSITIVE_INFINITY`·
-`$T.NEGATIVE_INFINITY`라는 JDK 상수 필드 참조로 내보내고, 유한한 값만 기존 리터럴
-경로로 떨어뜨리는 것이다.
+> **AOT(ahead-of-time, 사전 처리)** — 애플리케이션을 실행하기 전 빌드 시점에 컨텍스트 조립을 Java 소스로 미리 써내는 Spring의 처리 방식.\
+> 예: 빈 프로퍼티 값 `0.2`가 빌드 중에 `(double) 0.2`라는 소스 텍스트로 옮겨 적힌다.
 
-PR 상태는 2026-08-25 확인 기준 OPEN이며 라벨은 `status: waiting-for-triage`와
-`in: core`, 생성일은 2026-06-24이다. 달린 코멘트 4건은 전부 이 변경과 무관한 flaky CI
-실패(`SimpleAsyncTaskExecutorTests.taskTerminationTimeoutWithImmediateCancel`)에 관한
-대화이며, 메인테이너 요청으로 그 flaky 테스트는 별도 PR #36967이 되었다. 이 PR 자체에
-대한 리뷰는 아직 없다.
+> **비유한 값(non-finite value)** — 부동소수점이 표현하는, 유한한 수가 아닌 세 값 — NaN, 양의 무한대, 음의 무한대.\
+> 예: `0.0 / 0.0`은 예외를 던지지 않고 `Double.NaN`이라는 값을 낸다.
+
+> **리터럴(literal)** — 소스 코드에 값을 직접 적어 넣는 표기법.\
+> 예: `42`·`0.1F`는 리터럴이지만 `Float.NaN`은 리터럴이 아니라 상수 필드를 이름으로 참조하는 식이다.
+
+수정은 두 분기 안에서 세 특수값을 먼저 판별해 `$T.NaN`·`$T.POSITIVE_INFINITY`·`$T.NEGATIVE_INFINITY`라는 JDK 상수 필드 참조로 내보내고, 유한한 값만 기존 리터럴 경로로 떨어뜨리는 것이다.
+
+PR 상태는 2026-08-25 확인 기준 OPEN이며 라벨은 `status: waiting-for-triage`와 `in: core`, 생성일은 2026-06-24이다.\
+달린 코멘트 4건은 전부 이 변경과 무관한 flaky CI 실패(`SimpleAsyncTaskExecutorTests.taskTerminationTimeoutWithImmediateCancel`)에 관한 대화이며, 메인테이너 요청으로 그 flaky 테스트는 별도 PR #36967이 되었다.\
+이 PR 자체에 대한 리뷰는 아직 없다.
+
+> **flaky 테스트(flaky test)** — 코드를 바꾸지 않았는데도 돌릴 때마다 통과와 실패를 오가는 테스트.\
+> 예: 여기서는 무관한 테스트 하나가 이 PR의 CI를 빨갛게 만들어 코멘트 4건이 달렸다.
 
 ## 1. 무대
 
-결함은 AOT 코드 생성기의 값 변환 체인 맨 앞에 있는 위임자 하나에 산다. 그 좌표를 모듈부터 위임자 목록까지 네 항목으로 고정한다.
+결함은 AOT 코드 생성기의 값 변환 체인 맨 앞에 있는 위임자 하나에 산다.\
+그 좌표를 모듈부터 위임자 목록까지 네 항목으로 고정한다.
+
+> **위임자(Delegate)** — "이 값을 내가 처리할 수 있으면 결과를 내고, 못 하면 `null`을 돌려준다"는 계약을 가진 타입별 번역 규칙 하나.\
+> 예: `PrimitiveDelegate`는 박싱 원시 타입만 맡고, `List`가 오면 `null`을 돌려 다음 위임자에게 넘긴다.
 
 - 모듈: `spring-core`, 패키지 `org.springframework.aot.generate`.
 - 결함 클래스: `spring-core/src/main/java/org/springframework/aot/generate/ValueCodeGeneratorDelegates.java`
@@ -37,24 +47,25 @@ PR 상태는 2026-08-25 확인 기준 OPEN이며 라벨은 `status: waiting-for-
 - 위임자 목록: `ValueCodeGeneratorDelegates.INSTANCES`(`:68`) — `PrimitiveDelegate`가
   0번, 그 뒤로 String/Charset/Enum/Class/ResolvableType/Array/List/Set/Map이 온다.
 
-누가 언제 부르는가. 전부 **AOT 빌드 시점**이며 런타임 요청 경로에는 없다. 확인된
-소비처는 네 부류다. (1) 빈 정의 경로 — `spring-beans`의
-`BeanDefinitionPropertiesCodeGenerator`가 생성자 인자·프로퍼티 값·qualifier 값마다
-`generateValue(name, value)`를 거쳐 호출한다. (2) 빈 타입 경로 —
-`DefaultBeanRegistrationCodeFragments`가 `withDefaults()`로 `Class`·`ResolvableType`을
-옮긴다. (3) 모듈 확장 — `spring-web`의 `GroupsMetadataValueDelegate`. (4) 테스트
-컨텍스트 — `TestAotProcessor` 경로.
+누가 언제 부르는가.\
+전부 **AOT 빌드 시점**이며 런타임 요청 경로에는 없다.\
+확인된 소비처는 네 부류다.\
+(1) 빈 정의 경로 — `spring-beans`의 `BeanDefinitionPropertiesCodeGenerator`가 생성자 인자·프로퍼티 값·qualifier 값마다 `generateValue(name, value)`를 거쳐 호출한다.\
+(2) 빈 타입 경로 — `DefaultBeanRegistrationCodeFragments`가 `withDefaults()`로 `Class`·`ResolvableType`을 옮긴다.\
+(3) 모듈 확장 — `spring-web`의 `GroupsMetadataValueDelegate`.\
+(4) 테스트 컨텍스트 — `TestAotProcessor` 경로.
 
-빈 정의 경로는 확장 목록을 쓰므로 `PrimitiveDelegate`가 0번이 아니라 코어 블록의 첫
-자리로 밀린다. 다만 앞선 위임자들(`ManagedList`·`BeanReference`·`TypedStringValue` 등)이
-박싱 원시 타입을 매칭하지 않으므로, 실제로 `Float`·`Double`을 받는 것은 여전히
-`PrimitiveDelegate`다.
+빈 정의 경로는 확장 목록을 쓰므로 `PrimitiveDelegate`가 0번이 아니라 코어 블록의 첫 자리로 밀린다.\
+다만 앞선 위임자들(`ManagedList`·`BeanReference`·`TypedStringValue` 등)이 박싱 원시 타입을 매칭하지 않으므로, 실제로 `Float`·`Double`을 받는 것은 여전히 `PrimitiveDelegate`다.
+
+> **박싱 원시 타입(boxed primitive)** — `int`·`double` 같은 원시 타입을 객체로 감싼 `Integer`·`Double` 등의 래퍼 타입.\
+> 예: 빈 프로퍼티 값은 `Object`로 오가므로, 숫자 `0.2`는 여기에 `Double` 객체로 도착한다.
 
 ## 2. 전체 메서드 그래프
 
 빌드 태스크 진입부터 결함 지점, 그리고 잘못된 문자열이 실패로 드러나는 지점까지다.
 
-```
+```text
 [AOT 빌드 태스크]
   -> ContextAotProcessor.doProcess() -> performAotProcessing(applicationContext)
   -> ApplicationContextAotGenerator.processAheadOfTime(ctx, generationContext)
@@ -91,16 +102,20 @@ PR 상태는 2026-08-25 확인 기준 OPEN이며 라벨은 `status: waiting-for-
                           사용자가 작성하지 않은 생성 파일에서 실패한다
 ```
 
-중첩 값도 같은 지점을 지난다. `List.of(1.0F, Float.NaN)` 같은 값이 오면
-`ListDelegate`가 원소마다 `codeGenerator.generateCode(...)`를 재귀 호출하고, 재귀는
-위임자 목록을 처음부터 다시 훑으므로 원소 하나하나가 `PrimitiveDelegate`를 통과한다.
+중첩 값도 같은 지점을 지난다.\
+`List.of(1.0F, Float.NaN)` 같은 값이 오면 `ListDelegate`가 원소마다 `codeGenerator.generateCode(...)`를 재귀 호출하고, 재귀는 위임자 목록을 처음부터 다시 훑으므로 원소 하나하나가 `PrimitiveDelegate`를 통과한다.\
 즉 컬렉션·배열·맵 어디에 묻혀 있든 원시 값은 결국 이 분기로 수렴한다.
+
+> **재귀(recursion)** — 어떤 함수가 처리 도중 자기 자신을 다시 부르는 것.\
+> 예: `List.of(1.0F, Float.NaN)`을 번역하던 생성기가 원소 `1.0F`를 번역하려고 자기 자신을 다시 부른다.
 
 ## 2.5 핵심 이름표 사전
 
-이 무대에서 헷갈리는 지점은 "값"이 세 형태로 오간다는 것이다: 실행 중인 JVM의 박싱된
-객체, JavaPoet의 포맷 인자, 그리고 최종 소스 텍스트. 아래는 등장하는 식별자 전부에
-대한 역할과 이 결함과의 관계다.
+이 무대에서 헷갈리는 지점은 "값"이 세 형태로 오간다는 것이다: 실행 중인 JVM의 박싱된 객체, JavaPoet의 포맷 인자, 그리고 최종 소스 텍스트.\
+아래는 등장하는 식별자 전부에 대한 역할과 이 결함과의 관계다.
+
+> **JavaPoet** — Java 소스 코드를 문자열 조립 대신 API로 만들어 내기 위한 라이브러리. Spring은 이것을 `org.springframework.javapoet`로 재패키징해 쓴다.\
+> 예: `CodeBlock.of("(double) $L", 0.2)`가 소스 텍스트 `(double) 0.2`를 담은 조각을 만든다.
 
 | 이름표 | 역할 | 입력 -> 출력 | 누가 언제 부르나 | 이 결함과의 관계 |
 |---|---|---|---|---|
@@ -152,45 +167,92 @@ PR 상태는 2026-08-25 확인 기준 OPEN이며 라벨은 `status: waiting-for-
 | `Double.POSITIVE_INFINITY` | `(double) Infinity` | 불가 | `java.lang.Double.POSITIVE_INFINITY` |
 | `Double.NEGATIVE_INFINITY` | `(double) -Infinity` | 불가 | `java.lang.Double.NEGATIVE_INFINITY` |
 
-이 실패가 다루기 나쁜 이유는 **실패 시점이 늦고 위치가 엉뚱하기 때문**이다. 코드 생성은
-끝까지 조용히 성공한다. `PrimitiveDelegate`가 "이 타입을 지원한다"고 응답했으므로
-`UnsupportedTypeValueCodeGenerationException`도 나지 않는다. 사용자가 보는 것은 자기가
-쓰지 않은 `*__BeanDefinitions.java`의 심벌 오류이고, 원인인 "어떤 빈의 어떤 프로퍼티가
-무한대였다"는 사실은 그 메시지 어디에도 없다. 게다가 실패 범위는 그 빈 하나가 아니라
-생성 소스 집합 전체의 컴파일이다.
+같은 입력 하나를 골라 수정 전후의 최종 상태를 같은 칸 폭으로 놓으면 무엇이 달라지는지가 한눈에 보인다.
 
-재현 조건 자체는 평범하다. 임계값을 "제한 없음" 의미로 `Double.POSITIVE_INFINITY`로
-두거나, 초기화되지 않은 통계 필드를 `Double.NaN`으로 두는 빈 설정이면 충분하다.
+```text
+입력: 빈 프로퍼티 threshold = Double.POSITIVE_INFINITY
+
+ 수정 전                                수정 후
+ +-----------------------------------+  +-----------------------------------+
+ | 분기      Double :226              |  | 분기      Double :226 안의        |
+ |           "(double) $L"           |  |           특수값 판별 후 분기      |
+ |                                   |  |                                   |
+ | CodeBlock                         |  | CodeBlock                         |
+ |   "(double) Infinity"             |  |   "java.lang.Double               |
+ |                                   |  |        .POSITIVE_INFINITY"        |
+ |                                   |  |                                   |
+ | 코드 생성  성공 (예외 없음)         |  | 코드 생성  성공                    |
+ |                                   |  |                                   |
+ | 생성 파일에 남는 문장:              |  | 생성 파일에 남는 문장:             |
+ |  ...addPropertyValue("threshold", |  |  ...addPropertyValue("threshold", |
+ |     (double) Infinity);           |  |     java.lang.Double              |
+ |                                   |  |       .POSITIVE_INFINITY);        |
+ |                                   |  |                                   |
+ | javac      실패                    |  | javac      통과                    |
+ |   Infinity 가 식별자로 파싱된다     |  |   유효한 상수 필드 참조            |
+ +-----------------------------------+  +-----------------------------------+
+   실패가 코드 생성이 아니라               바뀐 것은 실패에서 성공으로의
+   javac 단계에서 처음 보인다              이동 하나뿐이다
+```
+
+이 실패가 다루기 나쁜 이유는 **실패 시점이 늦고 위치가 엉뚱하기 때문**이다.\
+코드 생성은 끝까지 조용히 성공한다.\
+`PrimitiveDelegate`가 "이 타입을 지원한다"고 응답했으므로 `UnsupportedTypeValueCodeGenerationException`도 나지 않는다.\
+사용자가 보는 것은 자기가 쓰지 않은 `*__BeanDefinitions.java`의 심벌 오류이고, 원인인 "어떤 빈의 어떤 프로퍼티가 무한대였다"는 사실은 그 메시지 어디에도 없다.\
+게다가 실패 범위는 그 빈 하나가 아니라 생성 소스 집합 전체의 컴파일이다.
+
+> **무음 실패(silent failure)** — 잘못됐는데도 그 자리에서는 아무 신호가 나지 않고, 한참 뒤 다른 곳에서야 증상이 보이는 실패.\
+> 예: 여기서는 코드 생성이 예외 없이 끝나고 javac 단계에서야 처음 빨간불이 난다.
+
+재현 조건 자체는 평범하다.\
+임계값을 "제한 없음" 의미로 `Double.POSITIVE_INFINITY`로 두거나, 초기화되지 않은 통계 필드를 `Double.NaN`으로 두는 빈 설정이면 충분하다.
 
 ## 4. 계약
 
-**Delegate의 명시 계약.** `ValueCodeGenerator.Delegate#generateCode`의 javadoc은
-지원하지 않는 값에 대해 예외가 아니라 `null`을 돌려주라고 규정한다. 덕분에 진입점은
-"첫 성공을 채택하고 나머지는 무시"라는 루프 하나로 임의 개수의 위임자를 조합할 수 있다.
-`PrimitiveDelegate`는 이 계약을 어기지 않는다 — `Float`를 지원한다고 응답한 것 자체는
-맞다.
+**Delegate의 명시 계약.**\
+`ValueCodeGenerator.Delegate#generateCode`의 javadoc은 지원하지 않는 값에 대해 예외가 아니라 `null`을 돌려주라고 규정한다.\
+덕분에 진입점은 "첫 성공을 채택하고 나머지는 무시"라는 루프 하나로 임의 개수의 위임자를 조합할 수 있다.\
+`PrimitiveDelegate`는 이 계약을 어기지 않는다 — `Float`를 지원한다고 응답한 것 자체는 맞다.
 
-**암묵 계약 — 반환한 조각은 유효한 Java 식이어야 한다.** 이것이 결함이 어기는 계약이다.
-`ValueCodeGenerator`에는 채택된 `CodeBlock`이 문법적으로 유효한지 확인하는 단계가 없고
-(`:112-116`), 유일한 검사인 `:118`은 "아무도 이 타입을 모른다"만 잡는다. 즉 이 계약은
-코드로 강제되지 않고 각 `Delegate`가 스스로 지켜야 하는 것이며, 각 분기는 "이 타입의
-`toString()`은 유효한 Java 숫자 리터럴이다"라는 가정 위에 서 있다. `Boolean`·`Integer`·
-`Byte`·`Short`·`Long`에서는 그 가정이 참이고, `Float`·`Double`에서만 비유한 값 세
-종류에서 깨진다.
+**암묵 계약 — 반환한 조각은 유효한 Java 식이어야 한다.**\
+이것이 결함이 어기는 계약이다.\
+`ValueCodeGenerator`에는 채택된 `CodeBlock`이 문법적으로 유효한지 확인하는 단계가 없고(`:112-116`), 유일한 검사인 `:118`은 "아무도 이 타입을 모른다"만 잡는다.\
+즉 이 계약은 코드로 강제되지 않고 각 `Delegate`가 스스로 지켜야 하는 것이며, 각 분기는 "이 타입의 `toString()`은 유효한 Java 숫자 리터럴이다"라는 가정 위에 서 있다.\
+`Boolean`·`Integer`·`Byte`·`Short`·`Long`에서는 그 가정이 참이고, `Float`·`Double`에서만 비유한 값 세 종류에서 깨진다.
 
-**같은 클래스가 이미 인정한 선례.** `Character` 분기(`:229-231`)는 `toString()`을
-그대로 쓰지 않고 `escape(char)`(`:253-260`)를 거친다. 이스케이프가 필요한 문자와 ISO
-제어 문자는 `toString()`이 유효한 문자 리터럴 본문이 아니기 때문이다. 즉 "toString이 곧
-리터럴은 아니다"라는 인식은 이 클래스 안에 이미 있었고, 부동소수점 분기만 그 검사를
-갖지 않았다.
+> **암묵 계약(implicit contract)** — 코드가 강제하지 않지만 모두가 지킬 것으로 전제하는 약속.\
+> 예: "반환한 `CodeBlock`은 유효한 Java 식이다"는 어디에도 검사가 없고, 어겨도 그 자리에서는 아무 일도 일어나지 않는다.
 
-**`$T`를 쓰는 관례.** 값을 이름 있는 상수로 가리키는 표현 수단은 같은 파일에 이미
-있다. `EnumDelegate`가 `"$T.$L"`로 열거 상수를, `ClassDelegate`가 `"$T.class"`를,
-`CharsetDelegate`가 `"$T.forName($S)"`를 만든다. 수정이 새 개념을 도입하지 않는다는
-근거다.
+**같은 클래스가 이미 인정한 선례.**\
+`Character` 분기(`:229-231`)는 `toString()`을 그대로 쓰지 않고 `escape(char)`(`:253-260`)를 거친다.\
+이스케이프가 필요한 문자와 ISO 제어 문자는 `toString()`이 유효한 문자 리터럴 본문이 아니기 때문이다.\
+즉 "toString이 곧 리터럴은 아니다"라는 인식은 이 클래스 안에 이미 있었고, 부동소수점 분기만 그 검사를 갖지 않았다.
 
-**기존 테스트가 고정하는 유한 경로.** `ValueCodeGeneratorTests.PrimitiveTests`의
-`generateWhenFloat`가 `0.1F`를, `generateWhenDouble`이 `(double) 0.2`를 고정한다.
+같은 클래스 안에서 그 한 겹이 있는 분기와 없는 분기를 나란히 놓으면 이렇다.
+
+```text
+ Character 분기 :229-231               Float / Double 분기 :223-228
+ +--------------------------------+    +--------------------------------+
+ | value -> escape(char) :253-260 |    | value -> (검사 없음)            |
+ |          |                     |    |          |                     |
+ |          v                     |    |          v                     |
+ | CodeBlock.of("'$L'", 이스케이프)|    | CodeBlock.of("$LF", value)     |
+ |                                |    | CodeBlock.of("(double) $L",    |
+ |                                |    |              value)            |
+ |                                |    |                                |
+ | 전제: toString 이 곧 리터럴은   |    | 전제: toString 이 곧 리터럴이다  |
+ |       아니다 -> 한 겹 둔다      |    |       -> 그대로 찍는다          |
+ +--------------------------------+    +--------------------------------+
+   제어 문자에서 깨질 것을 알고 있다      비유한 값 세 종류에서 깨진다
+```
+
+**`$T`를 쓰는 관례.**\
+값을 이름 있는 상수로 가리키는 표현 수단은 같은 파일에 이미 있다.\
+`EnumDelegate`가 `"$T.$L"`로 열거 상수를, `ClassDelegate`가 `"$T.class"`를, `CharsetDelegate`가 `"$T.forName($S)"`를 만든다.\
+수정이 새 개념을 도입하지 않는다는 근거다.
+
+**기존 테스트가 고정하는 유한 경로.**\
+`ValueCodeGeneratorTests.PrimitiveTests`의 `generateWhenFloat`가 `0.1F`를, `generateWhenDouble`이 `(double) 0.2`를 고정한다.\
 수정이 유한 값 경로를 건드리지 않았다는 주장은 이 두 건으로 실증된다.
 
 ## 5. 수정안
@@ -227,58 +289,75 @@ after (`refs/pr/36965` `:223-246`, `Float` 쪽만 인용):
 
 `Double` 분기(`:235-246`)도 같은 형태이며 폴백만 `"(double) $L"`이다.
 
-왜 이 위치인가. 세 가지 이유다. 첫째, 결함은 타입 판별이 아니라 **같은 타입 안의 값
-분류**에서 오므로 판별은 그 타입 분기 안에 있어야 한다. 둘째, 특수값 검사는 반드시
-폴백 `return`보다 **위**에 와야 한다 — `if` 분기는 첫 매치에서 반환하므로, 폴백이 위에
-있으면 NaN도 거기 먼저 걸려 특수값 분기에 도달조차 못 한다. 셋째, 위임자 바깥(진입점)에
-검증을 두는 방식은 "생성된 코드가 유효한가"를 문자열로 판정해야 해서 실현 수단이 없다.
+분기 구조가 어떻게 달라졌는지만 떼어 놓으면 이렇다.
 
-세부 선택 넷. (1) NaN만 `isNaN()`이고 무한대는 `==`인 것은 IEEE 754 명세의 직접적
-귀결이다 — NaN은 자기 자신과도 같지 않아 `==`로 절대 걸리지 않고, 무한대는 자기 자신과
-같아 `==`로 부호까지 분기할 수 있다. (2) `instanceof Float floatValue` 패턴 변수는 값을
-세 번 검사해야 해서 필요하다(`value`의 정적 타입이 `Object`). 같은 메서드의
-`instanceof Character character`(`:229`)가 이미 쓰던 관용구다. (3) `$L`로 `"Float.NaN"`
-문자열을 직접 찍는 대신 `$T`를 쓴 것은 import 안전 때문이다. (4) 유한 값 폴백은 손대지
-않았다.
+```text
+ 수정 전 Float 분기                      수정 후 Float 분기
+ +-----------------------------+        +-----------------------------+
+ | if (value instanceof Float) |        | if (value instanceof Float  |
+ |                             |        |              floatValue)    |
+ |   return "$LF"              |        |   if isNaN        -> $T.NaN |
+ |   (값 종류를 나누지 않는다)   |        |   if == +INFINITY -> $T.POS |
+ |                             |        |   if == -INFINITY -> $T.NEG |
+ |                             |        |   return "$LF"   (폴백)     |
+ +-----------------------------+        +-----------------------------+
+   갈래 1개                               갈래 4개 — 폴백은 맨 아래
+```
 
-검토된 대안과 기각 이유는 셋이다. **(A) `$L`로 `"Float.NaN"` 리터럴 문자열 방출** —
-테스트 기대값이 짧아지고 기존 `$L` 관례와 일관되지만, 생성 파일에 같은 단순 이름의 다른
-타입이 있을 때 충돌한다. import 관리는 `$T`의 존재 이유이므로 기각. **(B)
-`floatLiteral`/`doubleLiteral` private 헬퍼 추출** — `Float`와 `Double` 두 블록의 구조가
-같아 중복이 보이지만, 타입별 상수와 판별 함수가 달라 제네릭으로 합쳐지지 않고 분기
-수도 줄지 않는다. diff만 커져 기각. **(C) 특수값에서 예외를 던져 조기 실패시키기** —
-값 자체는 정당한 `float`이고 소스로 표현할 수단(상수 필드 참조)이 실제로 존재하므로,
-표현 가능한 값을 거부하는 것은 후퇴다. 기각.
+왜 이 위치인가.\
+세 가지 이유다.\
+첫째, 결함은 타입 판별이 아니라 **같은 타입 안의 값 분류**에서 오므로 판별은 그 타입 분기 안에 있어야 한다.\
+둘째, 특수값 검사는 반드시 폴백 `return`보다 **위**에 와야 한다 — `if` 분기는 첫 매치에서 반환하므로, 폴백이 위에 있으면 NaN도 거기 먼저 걸려 특수값 분기에 도달조차 못 한다.\
+셋째, 위임자 바깥(진입점)에 검증을 두는 방식은 "생성된 코드가 유효한가"를 문자열로 판정해야 해서 실현 수단이 없다.
 
-테스트는 `ValueCodeGeneratorTests.PrimitiveTests`에 여섯 건이 추가되었다. `Float`와
-`Double` 각각의 NaN·양의 무한대·음의 무한대를 덮는 곱집합이며, 부호가 다른 두 무한대를
-따로 두는 이유는 한쪽 분기만 넣거나 부호를 뒤바꾸는 회귀가 실제로 가능하기 때문이다.
-기대값이 단순 이름이 아니라 `java.lang.Float.NaN`인 것은, `CodeBlock`을 `JavaFile`에
-배치하지 않고 직접 문자열화하면 `$T`가 정규화 이름으로 나오기 때문이다. 즉 이 여섯
-테스트가 고정하는 것은 "어떤 타입의 어떤 상수를 참조하는가"이지 "짧은 이름으로 찍히는가"가
-아니다.
+세부 선택 넷.\
+(1) NaN만 `isNaN()`이고 무한대는 `==`인 것은 IEEE 754 명세의 직접적 귀결이다 — NaN은 자기 자신과도 같지 않아 `==`로 절대 걸리지 않고, 무한대는 자기 자신과 같아 `==`로 부호까지 분기할 수 있다.\
+(2) `instanceof Float floatValue` 패턴 변수는 값을 세 번 검사해야 해서 필요하다(`value`의 정적 타입이 `Object`).\
+같은 메서드의 `instanceof Character character`(`:229`)가 이미 쓰던 관용구다.\
+(3) `$L`로 `"Float.NaN"` 문자열을 직접 찍는 대신 `$T`를 쓴 것은 import 안전 때문이다.\
+(4) 유한 값 폴백은 손대지 않았다.
+
+> **패턴 변수(pattern variable)** — `instanceof` 검사에 성공했을 때 그 타입으로 바로 쓸 수 있게 이름을 붙여 주는 Java 16+ 문법.\
+> 예: `value instanceof Float floatValue`라고 쓰면 캐스팅 없이 `floatValue`를 `float`처럼 다룰 수 있다.
+
+검토된 대안과 기각 이유는 셋이다.\
+**(A) `$L`로 `"Float.NaN"` 리터럴 문자열 방출** — 테스트 기대값이 짧아지고 기존 `$L` 관례와 일관되지만, 생성 파일에 같은 단순 이름의 다른 타입이 있을 때 충돌한다.\
+import 관리는 `$T`의 존재 이유이므로 기각.\
+**(B) `floatLiteral`/`doubleLiteral` private 헬퍼 추출** — `Float`와 `Double` 두 블록의 구조가 같아 중복이 보이지만, 타입별 상수와 판별 함수가 달라 제네릭으로 합쳐지지 않고 분기 수도 줄지 않는다.\
+diff만 커져 기각.\
+**(C) 특수값에서 예외를 던져 조기 실패시키기** — 값 자체는 정당한 `float`이고 소스로 표현할 수단(상수 필드 참조)이 실제로 존재하므로, 표현 가능한 값을 거부하는 것은 후퇴다.\
+기각.
+
+테스트는 `ValueCodeGeneratorTests.PrimitiveTests`에 여섯 건이 추가되었다.\
+`Float`와 `Double` 각각의 NaN·양의 무한대·음의 무한대를 덮는 곱집합이며, 부호가 다른 두 무한대를 따로 두는 이유는 한쪽 분기만 넣거나 부호를 뒤바꾸는 회귀가 실제로 가능하기 때문이다.\
+기대값이 단순 이름이 아니라 `java.lang.Float.NaN`인 것은, `CodeBlock`을 `JavaFile`에 배치하지 않고 직접 문자열화하면 `$T`가 정규화 이름으로 나오기 때문이다.\
+즉 이 여섯 테스트가 고정하는 것은 "어떤 타입의 어떤 상수를 참조하는가"이지 "짧은 이름으로 찍히는가"가 아니다.
+
+> **곱집합(cartesian product)** — 두 축의 값을 모든 조합으로 교차시켜 만든 경우의 집합.\
+> 예: 타입 2종(`Float`·`Double`) × 특수값 3종(NaN·+∞·-∞) = 테스트 6건.
 
 ## 6. 범위 밖과 인접 영향
 
-**같은 패턴의 다른 위치.** `$L`로 숫자를 찍는 자리를 트리 전체에서 찾으면
-`ValueCodeGeneratorDelegates.java`의 `:212`(`"$L"`, Boolean/Integer), `:215`(byte),
-`:218`(short), `:221`(`"$LL"`, Long), 그리고 이번에 고친 두 곳뿐이다. 앞의 네 개는
-정수 타입이라 `toString()`이 언제나 유효한 리터럴이며 특수값이 없다. `Boolean`도
-`"true"`/`"false"`로 안전하다. 즉 같은 결함 클래스는 부동소수점 두 분기에만 존재한다.
+**같은 패턴의 다른 위치.**\
+`$L`로 숫자를 찍는 자리를 트리 전체에서 찾으면 `ValueCodeGeneratorDelegates.java`의 `:212`(`"$L"`, Boolean/Integer), `:215`(byte), `:218`(short), `:221`(`"$LL"`, Long), 그리고 이번에 고친 두 곳뿐이다.\
+앞의 네 개는 정수 타입이라 `toString()`이 언제나 유효한 리터럴이며 특수값이 없다.\
+`Boolean`도 `"true"`/`"false"`로 안전하다.\
+즉 같은 결함 클래스는 부동소수점 두 분기에만 존재한다.
 
-**하위 호환.** 유한한 값의 출력은 문자 하나 달라지지 않는다. `-0.0`처럼 특이해 보이는
-값도 `toString()`이 `"-0.0"`이라 기존 경로에서 이미 유효하고, 지수 표기(`1.4E-45`)도
-마찬가지다. 비유한 값 경로는 수정 전에 **컴파일 가능한 출력을 낸 적이 없으므로**
-바뀌는 것은 실패에서 성공으로의 이동뿐이다. 계약 표면(공개 API 시그니처, `Delegate`
-인터페이스)에는 변화가 없다.
+**하위 호환.**\
+유한한 값의 출력은 문자 하나 달라지지 않는다.\
+`-0.0`처럼 특이해 보이는 값도 `toString()`이 `"-0.0"`이라 기존 경로에서 이미 유효하고, 지수 표기(`1.4E-45`)도 마찬가지다.\
+비유한 값 경로는 수정 전에 **컴파일 가능한 출력을 낸 적이 없으므로** 바뀌는 것은 실패에서 성공으로의 이동뿐이다.\
+계약 표면(공개 API 시그니처, `Delegate` 인터페이스)에는 변화가 없다.
 
-**검증의 한계.** 추가된 여섯 테스트는 생성된 문자열을 비교할 뿐 javac를 돌려 컴파일
-가능성을 확인하지는 않는다. `java.lang.Float.NaN`이 유효한 상수 참조라는 것은 언어 명세
-수준에서 자명하고 기존 `PrimitiveTests`도 전부 문자열 비교 방식이지만, "생성물이
-컴파일된다"는 최종 주장 자체를 테스트가 직접 재현하지는 않는다.
+> **계약 표면(contract surface)** — 바깥 코드가 의존하는 공개 약속의 범위. 공개 API 시그니처·인터페이스·이벤트 형식 등.\
+> 예: 이 수정은 메서드 안의 분기만 늘렸고 시그니처는 하나도 건드리지 않았으므로 계약 표면이 그대로다.
 
-**인접하지만 이번에 건드리지 않은 것.** (1) `BigDecimal`·`BigInteger` 등은 어느
-위임자도 지원하지 않아 `UnsupportedTypeValueCodeGenerationException`으로 떨어진다 —
-시끄러운 실패이므로 이 결함과 성격이 다르다. (2) 채택된 `CodeBlock`이 유효한 Java 식인지
-진입점이 확인하지 않는다는 구조적 공백 — 이 PR은 한 위임자의 출력을 고칠 뿐 그 공백은
-남긴다. 다른 위임자에도 같은 질문을 던져 볼 수 있으나 범위 밖이다.
+**검증의 한계.**\
+추가된 여섯 테스트는 생성된 문자열을 비교할 뿐 javac를 돌려 컴파일 가능성을 확인하지는 않는다.\
+`java.lang.Float.NaN`이 유효한 상수 참조라는 것은 언어 명세 수준에서 자명하고 기존 `PrimitiveTests`도 전부 문자열 비교 방식이지만, "생성물이 컴파일된다"는 최종 주장 자체를 테스트가 직접 재현하지는 않는다.
+
+**인접하지만 이번에 건드리지 않은 것.**\
+(1) `BigDecimal`·`BigInteger` 등은 어느 위임자도 지원하지 않아 `UnsupportedTypeValueCodeGenerationException`으로 떨어진다 — 시끄러운 실패이므로 이 결함과 성격이 다르다.\
+(2) 채택된 `CodeBlock`이 유효한 Java 식인지 진입점이 확인하지 않는다는 구조적 공백 — 이 PR은 한 위임자의 출력을 고칠 뿐 그 공백은 남긴다.\
+다른 위임자에도 같은 질문을 던져 볼 수 있으나 범위 밖이다.
