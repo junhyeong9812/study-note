@@ -32,6 +32,47 @@
 
 실무 예: 티켓 예매 좌석 홀드, 쇼핑몰 장바구니 재고 점유, 호텔 예약 가결제.
 
+## 문제 — 이 챕터가 시키는 것
+
+주어진 요구사항은 딱 한 줄이다(원본 README 그대로).
+
+```text
+  "결제 전까지 10 분 잡아둔다"
+
+    잡아둔 것을 빼나        빼면 덜 팔리고, 안 빼면 초과 판매가 난다
+    만료를 언제 반영하나    조회할 때인가 배치가 돌 때인가
+    만료 시각 그 순간은     살아 있나 죽었나
+```
+
+**"셋 다 그 한 줄에 안 들어 있다."**
+
+그래서 이 박스는 셋 중 하나를 고르지 않는다.\
+셋을 각각 enum 스위치로 올려 두 판을 다 돌려보고, **답이 몇 건이나 갈리는지 센다.**
+
+> **enum 스위치** — 정답이 도메인마다 다른 선택을, 코드 안에 숨기지 않고 이름 붙은 선택지로 꺼내둔 것.\
+> 예: `AvailabilityRule.SUBTRACT_HELD` / `PHYSICAL_ONLY` 두 값을 두면 같은 코드로 두 해석을 다 돌려볼 수 있다.
+
+과제(원본 README "채울 것"): `src/main/java/com/domain/stock/InventoryLedger.java` 의 **TODO 1~5**. `Reservation` 은 계약이라 다 주어져 있다.
+
+| TODO | 함수 | 시키는 것 |
+|---|---|---|
+| 1 | `expired(reservation, at, boundary)` | 그 시각에 만료됐나. HELD 가 아니면 만료를 안 따진다 |
+| 2 | `holding(reservation, at, check, boundary)` | 그 시각에 재고를 잡고 있나. SWEEP 이면 만료돼도 잡고 있는 것으로 센다 |
+| 3 | `available(sku, at, rule, check, boundary)` | 그 시각의 가용 재고. **확정은 항상 빼고**, 잡은 것은 규칙에 따라 뺀다. **품목 필터 필수** |
+| 4 | `confirm(id, at, boundary)` | 확정. 만료됐으면 false, 재고를 넘기면 `oversold` 에 기록 |
+| 5 | `sweep(at, boundary)` | 배치. **만료된 HELD 만** RELEASED 로 바꾸고 푼 개수를 돌려준다 |
+
+테스트가 못 박은 계약(`InventoryLedgerTest`):
+
+- 재고 10·예약 7건 → 잡은 것 빼면 **3**, 물리만 보면 **10**.
+- 확정은 두 규칙 모두에서 빠진다 → 4개 확정 후 둘 다 **6**.
+- B 5개를 잡아둬도 A 의 가용은 **10** 그대로(품목 격리).
+- 만료 정각: `EXPIRED_AT_DEADLINE` 이면 가용 **1**, `ALIVE_AT_DEADLINE` 이면 가용 **0**.
+- 재고 10에 20명이 물리 재고만 보고 예약·확정 → 초과 판매 **10**, 가용 **-10**.
+- TTL 0 → 만드는 순간 만료(`EXPIRED_AT_DEADLINE` 에서 확정 불가).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

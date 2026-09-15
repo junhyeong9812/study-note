@@ -23,6 +23,55 @@
 
 실무 예: 아이돌 앨범 포토카드, 게임 랜덤박스(가챠), 편의점 캐릭터 굿즈 — "몇 개 사면 전 종류 보장" 이벤트 전부.
 
+## 문제 — 이 챕터가 시키는 것
+
+주어진 말은 한 줄이다(원본 `Distributor` javadoc 그대로).
+
+```text
+  "N 종 랜덤, 여러 장 사면 세트 보장"
+```
+
+이 한 줄에 **정해지지 않은 것이 셋**이다(원문 그대로).
+
+```text
+  세트를 어떻게 보장하나   먼저 한 장씩 깔고 나머지 랜덤인가 랜덤 뒤에 바꾸나
+  한 사람이 같은 종류를    두 장 받아도 되나
+  나머지는 어떻게 고르나   무작위인가 재고 많은 것부터인가
+```
+
+그리고 README가 먼저 못 박는 한 문장이 있다.
+
+```text
+  5 종, 종류마다 1 장(총 5 장). 다섯 장씩 사는 사람 둘.
+
+    첫 사람   A B C D E   세트 완성
+    둘째 사람 0 장        아무것도 못 받는다
+```
+
+**"보장은 앞사람 것이다. 그리고 그 뒤에 오는 사람에게는 어느 규칙도 아무 소용이 없다."**
+
+과제(원본 README "채울 것"): `src/main/java/com/domain/photocard/Distributor.java` 의 **TODO 1~4**. `Stock` 은 계약이라 다 주어져 있다.
+
+| TODO | 함수 | 시키는 것 |
+|---|---|---|
+| 1 | `choices(stock, already, within)` | 그 사람에게 줄 수 있는 종류들. 중복 금지면 이미 받은 종류를 뺀다 |
+| 2 | `giveOne(stock, already, within, fillRule, random)` | 한 장 준다. 못 주면 `null`. **재고가 같으면 종류 이름으로 가른다** |
+| 3 | `distribute(orders, stock, guarantee, within, fillRule, seed)` | 주문 순서대로 배분. 보장 방식 셋을 여기서 갈라 쓴다 |
+| 4 | `completeSets(distribution, orders, kindCount)` | 세트를 채운 사람 수(보장률의 분자) |
+
+테스트가 못 박은 계약(`DistributorTest`):
+
+- 재고가 딱 맞으면(5종×1장, 5장씩 둘) **첫 사람 5장·둘째 사람 0장·shortage 5** — 보장은 앞사람 것.
+- 재고가 A만 5장인데 `SWAP_AFTER` 면 **AAAAA**(distinctKinds 1, duplicateCards 4) — 바꿀 재고가 없으면 보장이 안 지켜진다.
+- 5종인데 8장 산 사람: 중복 허용이면 8장, **중복 금지면 5장·shortage 3**(재고는 90장 넘게 남아 있는데도).
+- 5장 사고 중복 금지면 **보장 설정 셋 전부가 같은 결과**(distinctKinds 5, 중복 0) — 보장 설정이 아무 일도 안 한다.
+- 줄 수 있는 종류가 없으면 `giveOne` 은 **`null`**.
+- `MOST_STOCK` 동률은 **종류 이름 사전순**(넣은 순서가 C,A,B 여도 A).
+- 같은 seed 면 **글자 그대로 같은 배분**.
+- 종류 없음·음수 재고·수량 0·빈 buyerId 는 전부 `IllegalArgumentException`.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text
