@@ -25,6 +25,37 @@
 - 그리고 "공통 친구가 많은 순"의 나머지 — **동점일 때** 누가 위인가 — 는 명세에 아예 안 적히는데, 실제로는 후보의 80%가 동점이다.
 - 실무 예: 페이스북 "알 수도 있는 사람", 링크드인 "함께 아는 1촌", 인스타그램 추천 팔로우.
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README가 시키는 것은 이 한 줄이다.
+
+> 친구의 친구 중 공통 친구가 많은 순.
+> 나 자신 — 당연히 뺀다. 이미 친구 — 당연히 뺀다. 내가 차단한 사람 — 당연히 뺀다.
+> **나를 차단한 사람 — …  추천에서 지운 사람 — …**
+> **위의 셋은 아무도 안 빠뜨린다. 아래의 둘이 갈린다.**
+
+**채울 것**: `FriendSuggestion.java`의 TODO 1~5. (`Social`은 계약이라 다 주어져 있다.)
+
+| TODO | 메서드 | 시키는 일 |
+|---|---|---|
+| 1 | `candidates(me)` | 친구의 친구 전부 + 공통 친구 수 세기. **자기 자신만** 뺀다 |
+| 2 | `suggest(me, limit, blockRule, tieRule)` | 제외 → 정렬(공통 수 내림차순 → 동점 규칙 → 항상 식별자) → limit 자르기 |
+| 3 | `tieKey(personId, rule)` | 동점일 때 비교할 값 — 가입순/역가입순/식별자 |
+| 4 | `excluded(me, candidate, blockRule)` | 이미 친구 / 내가 차단 / (규칙이면) 나를 차단 / 거절 |
+| 5 | `excludedCounts(me, blockRule)` | 왜 빠졌나 집계 — **한 사람은 먼저 걸린 한 이유로만** 센다 |
+
+**테스트가 못 박은 계약**(`FriendSuggestionTest`, 9명 관계망 / 차단 me→d·e→me / 거절 me→g):
+- 후보는 **두 단까지만** — `candidateIds("me") == {a,b,c,d,e,g,h}`. f(세 단)는 안 들어간다.
+- `c`는 a와 b 둘을 통해 닿으므로 공통 친구 2, 나머지는 1.
+- 차단 방향 하나로 목록이 갈린다: `I_BLOCKED → [c,e,h]`, `EITHER_BLOCKED → [c,h]`.
+- 제외 집계: `I_BLOCKED → Excluded(2,1,1)`, `EITHER_BLOCKED → Excluded(2,2,1)`.
+- 친구이면서 차단·거절에도 걸린 사람은 **친구 하나로만** 센다 — `Excluded(2,0,0)`.
+- 동점 규칙: `EARLIEST_JOIN → [c,e,h]`, `LATEST_JOIN → [c,h,e]`, `BY_ID → [c,e,h]`.
+- 가입 순서가 같으면 **식별자**로 가린다 — 두 규칙 모두 `[y,z]`.
+- 없는 사람·`limit ≤ 0`은 `IllegalArgumentException`.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text

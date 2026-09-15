@@ -22,6 +22,26 @@
 
 실무 예: 쿠폰/기프트카드 코드, 항공권 예약번호(헷갈리는 글자 제외), 카드번호의 Luhn 검산.
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README가 시키는 것은 이 말 몇 줄이 전부다.
+
+> 손님은 코드를 **손으로 친다.** 그래서 이런 것들이 들어온다.
+> `promo-1234`(소문자, 하이픈) — 정규화로 살릴 수 있다 / `PROMO 1234`(공백) — 살릴 수 있다 / `PR0MO1234`(0과 O를 헷갈림) — 못 살린다.
+> 앞의 둘은 정규화로 해결한다. 뒤의 것은 **애초에 헷갈리는 글자를 안 쓰는 것**이 해결이다.
+
+과제 목록:
+
+- `src/main/java/com/domain/promo/PromoCode.java` 의 **TODO 1~3** 을 채운다.
+  - TODO 1 `normalize(raw)` — "대문자로 올리고 하이픈과 공백을 뺀다. 저장할 때 한 번, 조회할 때 한 번 해야 한다."
+  - TODO 2 `checksum(body, alphabet)` — "자리마다 다른 가중치를 준다. 안 주면 자리가 바뀐 오타를 못 잡는다."
+  - TODO 3 `isValid(raw, alphabet, length, useChecksum)` — "**순서가 계약이다.** 정규화를 먼저 하고 길이와 문자와 체크섬을 본다."
+- `Alphabet` (FULL 36글자 / UNAMBIGUOUS 31글자)은 **계약이라 전부 주어져 있다** — 고치지 않는다.
+- `issue(body, alphabet)` 도 주어져 있다(`body + checksum`).
+- 테스트가 못 박은 계약: `normalize(null) == ""`(예외 아님) · `checksum("AAAAAAA", UNAMBIGUOUS) == '9'` · 집합 밖 글자면 `IllegalArgumentException` · **issue로 만든 코드는 항상 isValid를 통과**(두 알파벳 × 500회) · 소문자·하이픈 입력도 통과 · `useChecksum=false`면 `"ABCDEFGH"` 같은 아무 8글자나 통과.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 원본은 정적 메서드 4개 + 문자 집합 enum 하나다.

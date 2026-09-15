@@ -22,6 +22,44 @@
   화살표 9개 / 가능한 칸 64개 = 14%.  나머지 86%는 전부 "거부"다.
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README가 준 것은 그림 한 장과 한 문장이다.
+
+```text
+  결제완료 -> 준비중 -> 배송중 -> 배송완료 -> 반품요청 -> 환불됨
+     |         |
+     +---------+---> 취소됨
+```
+
+> **그림으로 그리면 화살표가 9개라 다 그린 것 같다.**
+> 표로 그리면 8×8 = 64칸이고, **55칸이 비어 있다.**
+> 그 빈칸이 "안 된다"인지 "아직 안 그렸다"인지가 이 박스의 주제다.
+
+세 결과를 구별하라는 것도 문제가 못 박은 계약이다.
+
+```text
+  APPLIED   상태가 바뀌었다        changed=true   isError=false
+  IGNORED   이미 그 상태다         changed=false  isError=false
+  REJECTED  허용되지 않는 전이다    changed=false  isError=true
+```
+
+**불리언 하나로는 이 셋을 표현할 수 없다.** IGNORED를 APPLIED로 뭉개면 중복 이벤트가 후처리를 두 번 돌리고, REJECTED로 뭉개면 재시도가 실패로 보고되어 경보가 울린다.
+
+채울 것: `src/main/java/com/domain/order/OrderStateMachine.java` 의 TODO 1~4.
+`OrderState`(8개 상태 enum)와 `TransitionResult`(결과 레코드)는 계약이라 다 주어져 있다.
+
+| TODO | 메서드 | 시키는 일 |
+|---|---|---|
+| 1 | `standard(sameStateIsIdempotent)` | 흔한 쇼핑몰 규칙의 전이 표를 만든다. 배송 시작 후엔 취소 불가 |
+| 2 | `apply(from, to)` | 전이 시도. **순서가 계약** — 같은 상태인지를 **표보다 먼저** 본다 |
+| 3 | `applyAll(start, events)` | 이벤트를 순서대로. 거부해도 **멈추지 않고**, 결과는 **조건 없이 대입** |
+| 4 | `reachableFrom(start)` | 닿을 수 있는 상태들 — 11번 BFS를 그대로. 표가 곧 그래프다 |
+
+테스트가 못 박은 계약(`OrderStateTest`): 정상 경로는 한 칸씩 APPLIED / PREPARING에서는 취소 가능, SHIPPED·DELIVERED에서는 불가 / CANCELLED·REFUNDED는 terminal(표가 정한다) / 되돌아가기(PAID→PLACED)는 REJECTED / 멱등 켜면 중복이 IGNORED(changed·isError 둘 다 false), 끄면 REJECTED / 자기 전이가 있는 표에서 멱등 켜면 IGNORED·끄면 APPLIED / PLACED에서 [SHIPPED, PAID] → 첫째 REJECTED이면서 state는 PLACED, 둘째 APPLIED / 표준 표에서 PLACED는 8개 전부에 닿고, 끊긴 표에서는 6개만 닿는다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 ```text
