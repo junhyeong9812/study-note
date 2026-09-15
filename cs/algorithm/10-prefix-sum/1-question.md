@@ -138,9 +138,11 @@ public static long countWithSum(CountedArray a, long k);
 
 #### 5. 생각해볼 것 (원본 README 이관)
 
-- 값이 바뀌면서 구간 합도 물어야 하면? 누적 합은 못 쓴다(`data-structure/17-fenwick-tree`).
+- 값이 바뀌면서 구간 합도 물어야 하면?\
+  누적 합은 못 쓴다(`data-structure/17-fenwick-tree`).
 - 2차원 차분 배열은 어떻게 만드나 — 한 사각형에 더하려면 몇 자리를 표시해야 하나?
-- 합이 아니라 최솟값을 O(1)로 물으려면? 왜 같은 방법이 안 되나?
+- 합이 아니라 최솟값을 O(1)로 물으려면?\
+  왜 같은 방법이 안 되나?
 - `SubarrayCount` 에서 개수가 아니라 **가장 긴 구간**을 찾으려면 무엇을 기억해야 하나?
 
 #### 6. 파생 질문 (서머리 기반)
