@@ -26,6 +26,26 @@
 옆칸으로 한 칸씩(선형) / 점점 멀리 건너뛰기(이차) / 차마다 다른 보폭(이중 해싱) / 멀리서 온 차에게 자리 양보(로빈후드) / 자리 둘만 정해 두고 뺏기(쿠쿠).
 실무의 해시맵이 바로 이것이다 — 파이썬 dict 와 러스트 HashMap(로빈후드 계열)이 오픈 어드레싱을 쓴다.
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README는 05번에서 잰 **체이닝 120ms 대 선형 탐사 75초**의 원인인 **일차 군집화**("덩어리가 덩어리를 키운다")를, 이번에는 시간이 아니라 **탐사 횟수**로 다시 재는 상자라고 소개한다.\
+연속된 정수 키 4000개를 담고 그 덩어리 한가운데로 떨어지는 **없는 키 4000번**을 조회하면 선형 8,006,000 · 이차 242,520 · 이중 13,784 · 로빈후드 8,000 · 쿠쿠 8,000 으로 갈리는데, **있는 키 4000번은 다섯이 전부 4,000** 이다 — 마지막 열이 함정이다.\
+과제는 다섯 규칙을 직접 구현해 "무엇을 얻고 무엇을 내주는가"를 손으로 겪는 것이다 — 이차의 **갈 수 없는 칸**, 이중 해싱의 **보폭 두 조건**, 로빈후드의 **삭제가 멈출 자리**, 쿠쿠의 **손에 든 항목**.\
+무한 루프 후보가 셋(보폭 0 · 이차 순환 · 쿠쿠 고리)이라 전부 상한을 두어 예외로 드러나게 한다.
+
+과제 목록 — `src/main/java/com/datastructure/openaddr/`의 TODO 11개:
+
+- `ProbeSequenceMap`(세 구현이 공유하는 뼈대) — TODO 1(`indexOf` — 수열을 걸으며 찾고 `lastProbes` 기록) · TODO 2(`put` — 같은 수열로 자리 잡기, tombstone 재사용)
+- `LinearProbeMap` — TODO 3(`probe` — `+1`) · `QuadraticProbeMap` — TODO 4(`probe` — 두 수열 중 선택) · `DoubleHashMap` — TODO 5(`stepFor` — 두 번째 해시로 보폭)
+- `RobinHoodMap` — TODO 6(`indexOf` — 거리 비교로 조기 종료) · TODO 7(`put` — 뺏기) · TODO 8(`remove` — backward shift)
+- `CuckooHashMap` — TODO 9(`indexOf` — 두 칸만) · TODO 10(`put`) · TODO 11(`tryInsert` — 뺏기 연쇄)
+
+순서: `ProbeMapContractTest.java`를 따라 친 뒤 `ProbeSequenceMap`(2) → `LinearProbeMap`(1) → `QuadraticProbeMap`(1) → `DoubleHashMap`(1) → `RobinHoodMap`(3) → `CuckooHashMap`(3).\
+테스트가 `keys`·`values`·`states`·`hashes` 를 직접 읽는다 — **필드 이름이 계약이다.**\
+실행: `cd ~/project/myway/data-structure && ./run.sh 29` — README 기준 **152개 중 146개가 실패**한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

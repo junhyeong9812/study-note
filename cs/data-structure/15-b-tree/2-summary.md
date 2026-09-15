@@ -19,6 +19,29 @@ B-트리는 이 안내판과 똑같은 구조다 — 노드 하나에 키를 여
 
 실제 데이터베이스(MySQL InnoDB 등)와 파일시스템의 인덱스가 바로 이 구조다 — 특히 값은 잎에만 두고 잎끼리 사슬로 이은 변형(B+트리)을 쓴다.
 
+## 문제 — 이 챕터가 시키는 것
+
+`SearchTreeContractTest.java` 를 따라 친 뒤, 같은 `SearchTree` 계약을 두 가지 구조로 채운다.\
+하나는 값이 모든 노드에 있는 **B-트리**, 다른 하나는 값이 잎에만 있고 잎끼리 사슬로 이어진 **B+트리**다.\
+시작 상태는 48개 테스트 중 42개 실패이고(`./run.sh 15`), TODO 11개를 채우면 전부 통과한다.\
+`removeFrom` 을 마지막에 한다 — 이 문제집에서 경우가 가장 많은 메서드다.
+
+- `BTree.splitChild` — 꽉 찬 자식을 반으로 쪼개고 가운데 키를 부모로 올린다
+- `BTree.insertNonFull` — 내려가면서 꽉 찬 노드를 미리 쪼개고 잎에 끼워 넣는다
+- `BTree.removeFrom` — 잎 / 내부 노드 / 선행자 / 후속자 / 병합의 네 경우를 가른다
+- `BTree.fill` — 부족한 자식을 빌리기나 병합으로 채우고 **내려갈 인덱스를 돌려준다**
+- `BTree.mergeChildren` — 자식 둘과 부모 키 하나를 한 노드로 합친다
+- `BPlusTree.childIndex` — 구분키와 같은 키는 오른쪽으로 보낸다(`lowerBound` 와 부등호가 다르다)
+- `BPlusTree.splitLeaf` — 가운데 키를 **복사해서** 올리고 `next` 사슬을 이어 붙인다
+- `BPlusTree.splitInternal` — 가운데 키를 **빼내서** 올린다
+- `BPlusTree.keysInRange` — 시작 잎을 한 번 찾고 잎 사슬을 옆으로 걷는다
+- `BPlusTree.fix` — 부족한 자식을 빌리기나 병합으로 채운다
+- `BPlusTree.merge` — 잎 병합과 내부 병합을 나누고, 잎 쪽에서는 `next` 를 이어준다
+
+`BTreeStructureTest.assertInvariants` 가 넣는 내내·지우는 내내 키 개수, 자식 개수, 정렬, 그리고 모든 잎이 같은 깊이인지를 검사한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

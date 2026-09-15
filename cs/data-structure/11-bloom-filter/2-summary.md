@@ -39,6 +39,24 @@
 예: DB 앞에 블룸 필터를 두고, "확실히 없다"가 나오면 디스크를 아예 읽지 않는다(카산드라·RocksDB 등이 실제로 이렇게 쓴다).\
 "아마 있다"가 나오면 그때만 진짜 저장소를 확인하면 된다.
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README는 이 박스를 "**정확성을 일부러 파는**" 박스라고 소개한다.\
+01~10에서 만든 것들은 전부 정확했는데, 여기서는 그 정확성을 팔아 메모리를 수십 배 줄인다 — 100만 개를 `HashSet`은 수십 MB에, 블룸 필터는 **1.2MB**(1% 오탐)에 담는다.\
+비트 수 `m = -n ln(p) / (ln2)^2` 와 해시 개수 `k = (m/n) ln2` 를 직접 구현해 **크기를 감이 아니라 공식으로** 정하고, 64비트 해시 하나를 반으로 갈라 쓰는 이중 해싱의 함정 셋을 겪는 것이 과제다.\
+그 위에 삭제가 되는 `CountingBloomFilter`와 용량을 모를 때 쓰는 `ScalableBloomFilter`를 만들어, 각각이 무엇을 더 내고 무엇을 잃는지 확인한다.
+
+과제 목록 — `src/main/java/com/datastructure/bloom/`의 TODO:
+
+- `BloomFilter` — TODO 1(`optimalBits` — 올림) · TODO 2(`optimalHashCount` — 반올림, 최소 1) · TODO 3(`indexes` — 이중 해싱) · TODO 4(`add`) · TODO 5(`mightContain` — **전부** 켜져 있어야)
+- `CountingBloomFilter` — TODO 1(`add` — 계수기 올리기·포화) · TODO 2(`remove`) · TODO 3(`mightContain` — 전부 0보다 크면)
+- `ScalableBloomFilter` — TODO 1(`grow` — 용량 2배·오탐률 절반) · TODO 2(`add`) · TODO 3(`mightContain` — 하나라도 true면) · TODO 4(`expectedFalsePositiveRate` — 더하지 말고 곱으로)
+
+순서: `ProbabilisticSetContractTest.java`를 먼저 따라 친다 → `BloomFilter` 5개 → `CountingBloomFilter` 3개 → `ScalableBloomFilter` 4개.\
+실행: `cd ~/project/myway/data-structure && ./run.sh 11` — README 기준 **64개 중 61개가 실패**한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

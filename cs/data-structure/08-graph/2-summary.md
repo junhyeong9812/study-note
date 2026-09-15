@@ -37,6 +37,27 @@
     v4                               v4: [v3]
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README는 이 박스를 "**담는 것이 아니라 잇는 것**"을 다루는 첫 박스라고 소개한다.\
+01~07은 전부 "원소를 어떻게 담을까"였는데, 여기서는 원소 사이의 관계 자체가 자료구조다.\
+같은 `Graph` 계약을 **인접 리스트**와 **인접 행렬** 두 가지로 구현해서, 결과는 똑같은데 메모리와 비용만 달라지는 것을 숫자로 확인하는 것이 과제다.\
+그 위에 BFS·DFS·위상 정렬·다익스트라 네 알고리즘을 얹어, 앞 챕터에서 만든 큐(04)·스택(03)·힙(07)을 **도구로 쓰는** 첫 경험을 한다.
+
+과제 목록 — `src/main/java/com/datastructure/graph/`의 TODO 01~12:
+
+- `AdjacencyListGraph` — TODO 01(`addEdge` — 덮어쓰기·무방향 양쪽 저장·self loop) · TODO 02(`hasEdge`) · TODO 03(`weight`) · TODO 04(`neighbors` — 복사본)
+- `AdjacencyMatrixGraph` — TODO 05(`addEdge` — 두 칸 채우기) · TODO 06(`hasEdge` — O(1)) · TODO 07(`weight`) · TODO 08(`neighbors` — V칸 훑기)
+- `GraphProblems.bfsDistances` — TODO 09: 문제 1(최단 거리 — 방문 표시를 넣을 때)
+- `GraphProblems.dfsOrder` — TODO 10: 문제 2(깊이 우선 — **반복**으로, 테스트에 깊은 그래프가 있다)
+- `GraphProblems.topologicalSort` — TODO 11: 문제 3(위상 정렬 — Kahn, 순환 탐지가 끝나는 방식에서 나온다)
+- `GraphProblems.shortestPaths` — TODO 12: 문제 4(다익스트라 — 낡은 항목 거르기)
+
+순서: `GraphContractTest.java`를 먼저 따라 친다(계약이 거기 있다) → 리스트 4개 → 행렬 4개 → 문제 4개.\
+실행: `cd ~/project/myway/data-structure && ./run.sh 08` — README 기준 **62개가 전부 실패**한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

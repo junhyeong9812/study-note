@@ -26,6 +26,28 @@ get(2)를 하면 2가 뿌리로 올라온다
        찾기만 했는데 나무 모양이 바뀐다 = "읽기가 곧 쓰기"
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+06번 이진 탐색 트리가 정렬 입력에서 무너진 뒤로 균형을 잡는 방법을 셋 봤다 — 12번은 확률로, 15번은 위로 자라기로, 16번은 회전으로 보장했다.
+스플레이 트리는 균형을 아예 목표로 삼지 않고, 접근한 노드를 뿌리로 끌어올리기만 한다(splay).
+색 비트도 높이 필드도 없이 상환(amortized) O(log n) 이 나오는 구조를 직접 구현하고, zig-zig 의 회전 순서를 일부러 틀린 대조군과 회전 수로 비교해 보는 것이 이 챕터의 과제다.
+
+**과제**
+
+1. `SplayTree` (TODO 4개) — `splay` 가 본체다. 나머지는 `put` · `remove` · `floorKey`.
+2. `MoveToRootTree` (TODO 1개) — `moveToRoot`. `SplayTree.splay` 와 **한 곳만** 다르게 짠 대조군이다.
+3. `SplayTreeSet` (TODO 2개) — `add` · `remove`. 별도 조회 없이 맵의 반환값으로 판별한다.
+
+`SplayTreeMapTest.java` 를 따라친 뒤 `SplayTree` → `MoveToRootTree` → `SplayTreeSet` 순서로 채운다.
+
+```bash
+cd ~/project/myway/data-structure && ./run.sh 23      # 34개 중 31개가 실패한다
+```
+
+통과하는 3개는 미리 채워둔 코드만 본다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

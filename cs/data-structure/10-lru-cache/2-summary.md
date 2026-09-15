@@ -33,6 +33,24 @@
       ^ 새 책이 오면 A부터 치운다
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README는 이 박스를 "**넣으면 남아 있다**는 전제가 처음 깨지는 박스"라고 소개한다.\
+용량이 자료구조의 일부이고, **무엇을 버릴지가 곧 이 자료구조의 정책**이다 — LRU는 "가장 오래 안 쓴 것을 버린다"를 고르며, 그것은 시간 지역성이라는 **가정이지 정리가 아니다**.\
+05번 해시맵(어디 있나 O(1))과 02번 이중 연결 리스트(가장 오래된 것 O(1))를 겹쳐 서로의 약점을 메우는 구조를 직접 엮고, 같은 동작을 표준 라이브러리(`LinkedHashMap`)로도 만들어 비교한 뒤, `get`이 실은 쓰기라서 생기는 동시성 문제까지 다루는 것이 과제다.
+
+과제 목록 — `src/main/java/com/datastructure/cache/`의 TODO:
+
+- `LRUCache` — TODO 1(`unlink`) · TODO 2(`linkLast`) · TODO 3(`get` — 순서 갱신) · TODO 4(`put` — 경우가 셋) · TODO 5(`remove` — 맵과 줄 양쪽) · TODO 6(`keysInOrder`)
+- `LinkedHashMapLRU` — TODO 1(`accessOrder=true` + `removeEldestEntry`) · TODO 2(`get` + 통계) · TODO 3(`put` + 축출 세기)
+- `ThreadSafeLRUCache` — TODO 1(`get` 잠금 — `try/finally`) · TODO 2(`put` 잠금)
+- `LRUCacheProblems` — TODO 1: 문제 1(`hitRatio`) · TODO 2: 문제 2(`optimalHitRatio` — Belady) · TODO 3: 문제 3(`deduplicateStream`)
+
+순서: `CacheContractTest.java`를 먼저 따라 친다(계약이 거기 있다) → `LRUCache` 6개 → `LinkedHashMapLRU` 3개 → `ThreadSafeLRUCache` 2개 → 문제 3개.\
+실행: `cd ~/project/myway/data-structure && ./run.sh 10` — README 기준 **108개 중 101개가 실패**한다(통과하는 7개는 미리 채워둔 생성자·null 검사 테스트).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

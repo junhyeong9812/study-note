@@ -26,6 +26,24 @@
 
 실제 텍스트 에디터가 **똑같은 구조다**: 수만 줄짜리 파일에서 키 한 번 누를 때마다 파일 전체를 복사할 수는 없으니, VS Code 같은 에디터는 문서를 조각 트리로 들고 조각만 재연결한다.
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README는 01번 동적 배열에서 **맨 앞에 넣는 것이 O(n)** 이었던 자리를, 자바 `String`·`StringBuilder` 까지 끌고 와 다시 묻는 상자라고 소개한다.\
+10MB 문서 **가운데에 한 글자**를 넣으면 `String` 은 10MB 를, `StringBuilder` 는 뒤쪽 5MB 를 옮긴다 — **타자 한 번마다** 그렇다.\
+로프는 문자열을 이진 트리의 **잎에 조각으로** 나눠 담고 내부 노드는 왼쪽 부분트리의 길이(weight)만 안다 — 이어붙이기 O(1), 가운데 삽입·삭제 O(log n) 을 사고 **임의 접근 O(1) 을 O(log n) 에 내주는 것**이 이 장의 거래다.\
+그리고 이 상자도 시간이 아니라 **옮긴 글자 수**를 센다 — `charsCopiedByLastOp` / `charsCopiedTotal` 이 그 계기다.
+
+과제 목록 — `src/main/java/com/datastructure/rope/`의 TODO 12개:
+
+- `StringBuilderStore`(기준선) — TODO 1(`concat`) · TODO 2(`insert`) · TODO 3(`delete`) — "왜 한 글자에 문서 전체를 옮기는가"를 손으로 보는 자리
+- `Rope` — TODO 4(`concatNodes`) · TODO 5(`charAt`) · **TODO 6(`splitNode` — 본체, 네 경우)** · TODO 7(`insert` = split 1 + concat 2) · TODO 8(`delete` = split 2) · TODO 9(`appendRange`) · TODO 10(`rebalance`)
+- `RopeProblems` — TODO 11(`applyEdits`) · TODO 12(`longestCommonPrefix` — 공유한 부분트리는 참조 비교로 건너뛰기)
+
+순서: `StringBuilderStore` 3개로 기준선을 먼저 만들고 → `Rope` 7개(`splitNode` 가 본체, 나머지는 그 위에 얹힌다) → `RopeProblems` 2개.\
+실행: `cd ~/project/myway/data-structure && ./run.sh 28` — README 기준 **110개 중 82개가 실패**한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

@@ -26,6 +26,25 @@
 머클 트리가 **똑같은 구조다**: 블록(데이터 조각)마다 해시를 뜨고, 둘씩 묶어 위로 올려 루트 해시 하나를 만든다.
 실무에서 git 의 커밋, 비트코인 블록, rsync 의 파일 동기화, 인증서 투명성(CT) 로그가 전부 이 구조로 "전체를 안 보고 일부만 보고 믿는" 일을 한다.
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README는 01~26번이 전부 **"무엇이 들어 있나"**에 답했다면 27번은 **"이게 그대로인가"**에 답하는 상자라고 소개한다.\
+해시 하나로 요약하면 같은지는 알지만 **다를 때 어디가 다른지를 모른다** — 머클 트리는 잎에 블록 해시를 두고 둘씩 합쳐 올려, 뿌리 하나로 전체를 요약하고 다르면 **O(log n)** 만에 어느 블록인지 찾는다.\
+더 중요한 것은 포함 증명이다 — "3번 블록이 이 파일에 들어 있다"를 증명하는 데 파일이 필요 없고 경로의 형제 해시 log n 개면 된다(100만 블록이면 해시 20개).\
+그리고 이 상자는 **걸음 수를 세는 것**이 과제의 절반이다 — 건너뛰기를 빼도 답은 똑같이 맞기 때문에 정답과 오답이 답으로는 안 갈린다.
+
+과제 목록 — `src/main/java/com/datastructure/merkle/`의 TODO 9개:
+
+- `PrefixedHashing` — TODO 1(`leafHash` — 0x00 을 앞에 붙여 해시) · TODO 2(`nodeHash` — 0x01 + 자식 둘 이어붙여 해시)
+- `MerkleTree` — TODO 3(`build` — 잎 층을 만들고 하나 남을 때까지 위로 접기, 짝 없는 노드는 **승격**) · TODO 4(`proofFor` — 잎에서 뿌리까지 올라가며 형제와 방향을 줍기) · TODO 5(`findFirstDifference` — 뿌리부터 한 갈래로 내려가기) · TODO 6(`withLeafReplaced` — 층 배열 얕은 복사 + 경로만 재계산)
+- `MerkleProof` — TODO 7(`verify` — 걸음을 방향대로 합쳐 올라가 뿌리와 견주기)
+- `MerkleProblems` — TODO 8(`diffBlocks` — 같은 부분트리는 통째로 건너뛰기) · TODO 9(`verifyBatch` — 하나라도 틀리면 false)
+
+순서: `MerkleTreeTest.java`를 먼저 따라 친다 → `PrefixedHashing` 2개 → `MerkleTree` 4개 → `MerkleProof` 1개 → `MerkleProblems` 2개.\
+실행: `cd ~/project/myway/data-structure && ./run.sh 27` — README 기준 **79개 중 75개가 실패**한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

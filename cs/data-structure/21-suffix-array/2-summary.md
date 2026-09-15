@@ -28,6 +28,22 @@ text = "banana"
   nana    <- 2번 자리부터
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+09번 마지막 문제(서로 다른 부분 문자열 수)를 접미사 트라이로 풀면 답은 맞지만 노드가 O(n^2) 다 — 길이 1000 이면 50만 개, 길이 10만이면 50억 개라 아예 못 만든다.
+09번 문서가 "접미사 배열과 접미사 오토마타가 존재하는 이유"라고 적고 넘어간 그 약속을 여기서 갚는다.
+접미사를 **저장하지 않고 시작 위치 숫자만** 사전순으로 정렬해 남기고(O(n) 공간), 거기에 LCP 배열을 얹어 같은 문제를 뺄셈 한 번으로 푼다.
+`SuffixArrayContractTest.java` 를 따라친 뒤 TODO 를 채운다(처음에는 90개 중 83개가 실패한다).
+
+- `NaiveSuffixArray` 의 TODO 1개 — `compareSuffixes`(다섯 줄이면 되고 답도 맞다. 한계를 재는 상대다)
+- `SuffixArray` 의 TODO 7개 — `initialRanks` · `comparePair` · `reRank` · 배가법 본체 · `lowerBound` · `upperBound` · `find`
+- `LcpArray` 의 TODO 2개 — `inverse` · `kasai`
+- `SuffixArrayProblems` 의 TODO 3개 — `countDistinctSubstrings` · `longestRepeatedSubstring` · `longestCommonSubstring`
+- 덩어리는 넷이다 — 나이브로 정답의 모양을 잡고 → 배가법으로 만드는 비용을 줄이고 → Kasai 로 LCP 를 얹고 → 그 둘로 문제 셋을 푼다.
+- 응용으로 따져볼 것: 배가법이 재활용하는 것은 "순위"다(k 글자를 이미 요약하고 있어 비교가 상수) · `reRank` 가 같은 쌍을 같은 순위로 묶지 않으면 다음 라운드가 통째로 틀어진다 · 범위 밖을 **-1** 로 봐야 `a` 가 `ab` 보다 앞이다 · Kasai 가 O(n) 인 이유는 **원문 순서**로 훑는 데 있다 · 검색은 이진 탐색 **두 번**이고 결과는 위치 오름차순으로 정렬해 준다 · 문제 3 의 구분자를 빼면 답이 조용히 틀린다 · 테스트가 구별하지 못하는 코드가 셋 있다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

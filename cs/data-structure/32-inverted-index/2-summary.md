@@ -25,6 +25,25 @@
 
 이 "찾아보기 페이지"와 **똑같은 구조**가 실무의 검색 엔진이다 — 구글 검색, Elasticsearch, 데이터베이스의 전문(full-text) 검색이 전부 역색인 위에서 돈다. 단어 = 항(term), 페이지 목록 = 포스팅 리스트.
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README(`myway/data-structure/32-inverted-index/README.md`)의 요구사항은 이렇다.
+
+- 문서 2,000개에서 특정 항이 든 문서를 찾는다 — 전수 조사는 2,000개를 다 열고, 역색인은 2개만 연다.\
+  그 차이를 만드는 것이 **"항 → 그 항이 든 문서 목록"** 이고, 포스팅 리스트를 **문서 번호 오름차순으로 유지**하는 것이 값의 근원이다.
+- 교집합 병합은 부등호 하나만 틀려도 "봐야 하는 문서를 안 본다"가 되고 **예외가 안 난다**.\
+  그래서 **답이 맞는 구현을 둘 만들어 대조한다** — `LinearScanEngine`(기준선, 쉬워서 맞다)과 `InvertedIndexEngine`(본체, 빨라서 의심스럽다).
+
+과제(TODO 12개 + 구현 대상):
+
+- TODO 1~4 — 부품: `SimpleTokenizer`(자르기), `StandardAnalyzer`(자르기 → 소문자화 → 불용어 제거), `TfIdfScorer`(`tf × log(N/df)`), `SearchResult.compareTo`(점수 내림차순 · 동점은 문서 번호 오름차순).
+- TODO 5~6 — `LinearScanEngine`: 전수 조사 기준선. 대조가 여기 걸려 있으므로 먼저 만든다.
+- TODO 7~12 — `InvertedIndexEngine`: 색인 넣기(`insertSorted`), AND 교집합 병합(`intersect`), 구문 검색(`searchPhrase` / `containsPhrase`), 통계(`postingCount` / `positionCount`).
+- 응용으로 생각할 것 — 병합 순서(짧은 것부터 231 대 질의 순서 683), 분석기 불일치가 만드는 조용한 0건, 위치를 담는 대가(포스팅 37,348 대 위치 40,158), 모든 문서에 있는 항을 물으면 색인이 지는 것, `df == N` 일 때 점수가 0 인 것.
+- 검증: `SearchEngineContractTest` 계약 + `CrossCheckTest` 무작위 대조(문서 2,000 · 질의 250) + `MeasurementTest` 수치 + `AnalyzerMismatchTest` + `PhraseTest` + `ScoringTest` (96개 중 86개가 처음에 실패한다).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

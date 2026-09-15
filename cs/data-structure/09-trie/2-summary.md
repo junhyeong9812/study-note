@@ -37,6 +37,24 @@
                     +--r   <- 여기서 "car" 끝
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README는 이 박스를 "**05번 해시맵도 06번 BST도 못 하는 질문**을 다루는 박스"라고 소개한다.\
+해시맵은 car와 card를 아예 다른 버킷에 넣어 "car로 시작하는 것 전부"가 불가능하고, BST는 범위로 흉내내지만 비교마다 문자열 전체를 훑는다.\
+키를 통째로 저장하지 않고 **한 글자를 간선 하나로 삼아 경로가 곧 키가 되는** 구조를 직접 만들고, 같은 계약을 맵 자식(`MapTrie`)과 26칸 배열 자식(`ArrayTrie`) 두 가지로 구현해 메모리·순서의 거래를 숫자로 확인하는 것이 과제다.
+
+과제 목록 — `src/main/java/com/datastructure/trie/`의 TODO:
+
+- `MapTrie` — TODO 1(`insert`) · TODO 2(`remove` — 어디까지 끊어도 되는가) · TODO 3(`findNode`) · TODO 4(`collect` — 붙였다 떼기) · TODO 5(`countWithPrefix`)
+- `ArrayTrie` — TODO 1(`indexOf` — 위아래 범위 밖 전부 -1) · TODO 2(`remove`) · TODO 3(`collect` — 자식 도는 방법만 다르다). 나머지는 이미 채워져 있다
+- `WordDictionary` — TODO 1(`addWord`) · TODO 2(`search` — `.` 와일드카드, 되돌아오기)
+- `TrieProblems` — TODO 1: 문제 1(`longestCommonPrefix`) · TODO 2: 문제 2(`autocomplete` — k개 차면 멈추기) · TODO 3: 문제 3(`countDistinctSubstrings`)
+
+순서: `TrieContractTest.java`를 먼저 따라 친다(계약이 거기 있다) → `MapTrie` 5개 → `ArrayTrie` 3개 → `WordDictionary` 2개 → `TrieProblems` 3개.\
+실행: `cd ~/project/myway/data-structure && ./run.sh 09` — README 기준 **130개 중 128개가 실패**한다(통과하는 2개는 미리 채워둔 null 검사 테스트).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

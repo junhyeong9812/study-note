@@ -25,6 +25,23 @@
   답 = 정확                            답 = 오차 몇 % 의 어림값
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+11번 블룸 필터는 "있나 없나" 하나만 답했다. 여기서 두 걸음 더 간다 — "몇 번 나왔나"(Count-Min 스케치)와 "서로 다른 것이 몇 개인가"(HyperLogLog)다.
+둘 다 정확히 답하려면 **원소 종류 수에 비례하는 메모리**가 드는데, 스트림의 대다수 원소는 한두 번 나오고 끝난다. 궁금한 것은 많이 나온 소수인데 메모리는 안 궁금한 다수가 먹는다.
+그래서 칸 수를 미리 고정하고, 11번의 비대칭("한 방향으로만 틀린다")을 `추정치 >= 실제` 라는 모양으로 다시 가져온다.
+`FrequencyEstimatorContractTest.java` 를 따라친 뒤 TODO 를 채운다(처음에는 96개 중 90개가 실패한다).
+
+- `ExactCounter` 의 TODO 1개 — `add(int, long)` (기준선)
+- `ExactCardinality` 의 TODO 1개 — `add(int)` (기준선)
+- `CountMinSketch` 의 TODO 5개 — `widthFor` · `depthFor` · `indexes` · `add(int, long)` · `estimateCount`
+- `HyperLogLog` 의 TODO 4개 — `add` · `rawEstimate` · `estimate` · `merge`
+- `SketchProblems` 의 TODO 2개 — `heavyHitters` · `distinctAcrossShards`
+- 덩어리는 넷이다 — 기준선(정확 구현 2개) → 공식·이중 해싱·최소(CMS) → 랭크·조화평균·보정·merge(HLL) → 문제 2개
+- 응용으로 따져볼 것: 왜 행별 **최소**인가 · 행(d)을 늘려도 오차 크기는 안 줄고 "한계를 넘을 확률"만 준다는 것 · 오차 `epsilon x 전체개수` 가 **절대량**이라 heavy hitter 에만 쓸모가 있다는 것 · HLL 이 작은 카디널리티에서 무너지고 linear counting 이 그것을 대신한다는 것 · `merge` 가 max 한 줄인데 결과가 바이트 단위로 같은 이유 · 합집합은 되고 **교집합은 안 되는** 이유 · 무작위(seed)를 주입받게 만든 덕에 11번에서 못 잡았던 `h2 == 0` 방어선을 여기서 잡는다는 것
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

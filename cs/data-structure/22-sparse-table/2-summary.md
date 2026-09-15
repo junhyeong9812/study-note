@@ -24,6 +24,25 @@
 답 = min(묶음A의 답, 묶음B의 답)   <- 딱 2칸 조회
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+13번 세그먼트 트리는 조회도 갱신도 O(log n) 이었고, 17번 펜윅 트리는 역연산이 있는 연산만 하는 대신 메모리가 4n 에서 n+1 이 되고 코드가 열 줄이 됐다.
+여기서는 **갱신을 아예 포기하고** 그 대가로 조회를 **O(1)** 로 만드는 구조를 짓는다.
+길이가 2의 거듭제곱인 구간의 답을 전부 미리 계산해 두면 아무 구간이나 딱 두 조각으로 덮이는데, 그 두 조각이 **겹치기** 때문에 연산에 **멱등성**(`f(x, x) = x`)이라는 세 번째 대수적 조건이 붙는다.
+겹치지 않게 덮는 변형(`DisjointSparseTable`)까지 만들어 그 조건을 없애 보는 것이 이 챕터의 끝이다.
+
+**과제**
+
+1. `SparseTable` (TODO 3개, 본체) — `buildLogTable`, `build`, `query`
+2. `MinSparseTable` / `MaxSparseTable` / `GcdSparseTable` (각 TODO 2개) — `combine` 과 `identity`
+3. `DisjointSparseTable` (TODO 2개, 제일 어렵다) — 층마다 가운데를 기준으로 좌우 누적하는 `build` 와, 겹치지 않는 두 조각을 합치는 `query`
+4. `SparseTableProblems` (TODO 2개) — 슬라이딩 윈도우 최솟값, 구간 gcd 질의
+
+`cd ~/project/myway/data-structure && ./run.sh 22` 을 돌리면 **90개 중 89개가 실패한다.**
+통과하는 1개는 TODO 위에 미리 채워둔 인자 검증만 본다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

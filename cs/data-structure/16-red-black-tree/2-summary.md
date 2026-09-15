@@ -31,6 +31,20 @@
   찾기 = 최대 4번 이동              찾기 = 최대 3번 이동 (n이 커질수록 차이 급증)
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+06번 이진 탐색 트리가 정렬 입력에서 무너지는 문제에, 12번(확률)·15번(뚱뚱한 노드)에 이은 네 번째 답을 직접 구현한다.
+메모리 안에서 노드 크기를 키우지 않고, 회전과 색 뒤집기만으로 높이 `2*log2(n+1)` 이하를 **보장**하는 좌편향 레드블랙 트리(LLRB)를 만드는 과제다.
+`RedBlackTreeMapTest.java` 를 따라친 뒤 TODO 를 채운다(처음에는 26개 중 25개가 실패한다).
+
+- `RedBlackTree` 의 TODO 9개 — `rotateLeft` · `rotateRight` · `flipColors` · `balance` · `put(내부)` · `moveRedLeft` · `deleteMin` · `delete` · `floorKey`
+- `RedBlackTreeSet` 의 TODO 2개 — `add` · `remove`
+- TODO 1~5(회전·색뒤집기·balance·put)가 한 덩어리이고, 거기까지 하면 넣기가 전부 된다. 지우기는 그다음이다.
+- 불변식 넷(뿌리는 검다 · 빨강은 왼쪽만 · 빨강 연속 금지 · 검은 높이 동일)을 `RedBlackTreeInvariantTest` 가 넣는 내내·지우는 내내 직접 검사한다.
+- 응용으로 따져볼 것: 회전이 색까지 옮겨야 하는 이유 · `balance` 세 검사의 순서와 `else if` 금지 · `flipColors` 가 반전이어야 하는 이유 · `delete` 의 key 비교 두 번.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

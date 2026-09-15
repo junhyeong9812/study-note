@@ -27,6 +27,26 @@
 
 이 "광장의 가게 찾기"와 **똑같은 구조**가 실무의 분산 캐시다 — Redis Cluster, CDN, 분산 데이터베이스가 "이 데이터는 어느 서버에 있나"를 정할 때 바로 이 원(링)을 쓴다. 가게 = 캐시 서버, 손님 = 키, 가게 폐업 = 서버 장애.
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README는 05번의 `hash(key) % N` 을 **서버 목록**에 그대로 쓰면 서버 한 대가 죽는 순간 거의 전부가 자리를 옮긴다는 데서 출발한다 — 키 10만·서버 10대에서 모듈로 **89,905개(89.9%)** 대 일관된 해싱 **12,044개(12.0%)** 다.\
+차이는 **N 이 식 안에 있느냐**다 — 일관된 해싱은 노드와 키를 같은 원에 올리고 키가 시계 방향 첫 노드를 만나게 하므로 배정 규칙에 N 이 없고 **자리들의 배치만** 있다.\
+"다음에 오는 자리를 찾는다"는 06번 BST 의 `ceilingKey` 그대로이고, **원이라는 것은 마지막에서 처음으로 돌아온다는 규칙 한 줄**뿐이다.\
+과제는 네 구현(`ModuloSharding` · `ConsistentHashRing` · `WeightedConsistentHashRing` · `JumpConsistentHash`)을 만들어 **자리 메모리 / 한 대 죽을 때 이동량 / 가중치 / 가운데 제거 가능** 네 축으로 나란히 재는 것이고, 재는 것은 속도가 아니라 **이동량**이다.
+
+과제 목록 — `src/main/java/com/datastructure/conshash/`의 TODO 8개:
+
+- `ModuloSharding`(기준선) — TODO 1(`getNode` — `bucketHash(key) % nodes.size()`)
+- `ConsistentHashRing`(본체) — TODO 2(`addSlots` — 가상 이름으로 count 곳에 올리기) · TODO 3(`removeNode` — 그 노드의 자리만 지우기) · TODO 4(`getNode` — `ceilingEntry` + 되감기 한 줄)
+- `WeightedConsistentHashRing` — TODO 5(`addNode(node, weight)` — 자리를 weight 배로)
+- `JumpConsistentHash` — TODO 6(`jumpHash` — 논문 의사코드) · TODO 7(`removeNode` — 맨 뒤만, 아니면 `UnsupportedOperationException`) · TODO 8(`getNode`)
+
+순서: `HashRingContractTest.java`를 따라 친 뒤 `ModuloSharding` → `ConsistentHashRing` → `WeightedConsistentHashRing` → `JumpConsistentHash`.\
+실행: `cd ~/project/myway/data-structure && ./run.sh 31` — README 기준 **84개 중 69개가 실패**한다.\
+(참고: README 의 "TODO 2개/6개/2개/6개"는 `TODO` **문자열** 등장 수이고, 실제 과제 항목은 위 8개다 — 항목마다 주석 1회 + `throw` 1회로 두 번씩 나온다.)
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

@@ -35,6 +35,31 @@
 > **데크(deque, double-ended queue)** — 양쪽 끝에서 모두 넣고 뺄 수 있는 구조.\
 > 예: 한쪽으로만 쓰면 스택이 되고, 한쪽으로 넣어 반대쪽으로 빼면 큐가 된다.
 
+## 문제 — 이 챕터가 시키는 것
+
+03번 스택(LIFO)과 정확히 반대인 선입선출(FIFO)을 직접 만든다.\
+스택은 한쪽 끝만 건드리므로 배열과 잘 맞았지만, 큐는 넣는 쪽과 빼는 쪽이 반대라 배열 구현에서 문제가 생긴다.\
+**그 문제를 일부러 만든 다음에 고치는 것이 이 과제의 본체다** — 1번을 건너뛰고 2번부터 하면 원형 배열은 그냥 복잡하기만 하다.
+
+**과제**
+
+- 순서대로 네 구현을 채운다(TODO 25개, 테스트 114개가 전부 실패인 상태에서 시작한다).\
+  `ArrayQueue`(가장 먼저 떠오르는 방식 — 동작은 맞는데 한계가 있다) → `CircularQueue`(그 한계를 되감기로 고침) → `ArrayDeque`(원형을 양쪽 끝으로 확장) → `LinkedDeque`(노드 — 되감기도 확장도 용량도 없다).
+- `Deque extends Queue` 라서 연결 기반 큐는 따로 만들지 않는다 — `LinkedDeque` 가 겸한다(누락이 아니라 중복 제거).
+- 응용 문제 4개 (`QueueProblems`)\
+  `isPalindrome(String, Deque<Character>)` — 양 끝에서 하나씩 빼며 회문 판정.\
+  `slidingWindowMax(int[], int, Deque<Integer>)` — 창마다 최댓값. 이 문제집의 함정이다.\
+  `firstUniqueStream(String, Queue<Character>)` — 스트림에서 처음으로 한 번만 나온 문자.\
+  `rotate(Deque<E>, int)` — k 칸 오른쪽 회전. 01번(세 번 뒤집기)·02번(링크 재연결)에 이은 세 번째 방법.
+- `RecentCounter.ping(int t)` — 최근 3000ms 안의 요청 수. 창이 양끝 포함이라 조건이 `< t - 3000` 이다(`<=` 로 쓰면 off-by-one).
+- 성능·계약 제약\
+  `slidingWindowMax` 는 100만 x k=5만을 5초 안에 — 창마다 k 개를 훑는 O(n·k) 구현은 통과하지 못한다(README 의 임계값 메모: 4.75e10 회).\
+  `RecentCounter` 는 10만 번 호출을 5초 안에, 끝나고 3,001개만 남아야 한다.\
+  `ArrayQueueTest.wastesSpace` 와 `CircularQueueTest.reusesSpace` 는 같은 시나리오인데 용량이 갈린다 — 그 대비가 2번을 만드는 이유다.\
+  계약 테스트가 내부 필드를 직접 본다 — `elements`, `head`(배열판), `first`/`last`/`Node`(연결판) 이름이 사실상 계약의 일부다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

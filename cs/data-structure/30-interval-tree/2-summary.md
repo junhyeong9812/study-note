@@ -30,6 +30,27 @@
 
 달력 앱의 "겹치는 일정 표시", 회의실 배정, 게놈 분석(유전자 구간 겹침 조회)이 **똑같은 구조다** — 구간 수십만 개에서 "이 범위와 겹치는 것만" 빨리 골라내야 할 때 인터벌 트리를 쓴다.
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README는 13번 세그먼트 트리가 **배열의 값**을, 25번이 **점**을 다뤘다면 여기서는 **구간 자체가 자료**이고 묻는 것이 **겹침**이라고 소개한다.\
+06번 BST(시작점 정렬)에 `maxEnd`(그 부분트리 구간들의 끝점 최댓값) **한 필드**를 달면 가지치기 두 줄이 생긴다 — "왼쪽의 maxEnd 가 질의 시작 이하면 왼쪽은 안 본다", "지금 노드의 시작이 질의 끝 이상이면 오른쪽도 안 본다".\
+구간 4000개·질의 200번에서 `findAll` 이 전수 800,000 대 트리 5,229, `findAny` 가 182,017 대 2,688 인데, **가지치기 한 줄만 지워도 답은 그대로이고 방문만 41만 번대로 뛴다** — 그래서 시간이 아니라 걸음 수를 센다.\
+그리고 반개구간 `[start, end)` 결정 하나가 `overlaps`·스위핑 이벤트 순서·`merge` 의 합치기 조건을 전부 정하는데 **셋의 부등호가 서로 다르다**.
+
+과제 목록 — `src/main/java/com/datastructure/interval/`의 TODO 10개:
+
+- `Interval` — TODO 1(`overlaps` — 이 한 줄이 이 박스의 절반) · TODO 2(`contains` — 한쪽에만 등호)
+- `NaiveIntervalStore`(기준선) — TODO 3(`findAll` — 하나 볼 때마다 `visitedNodes` 증가)
+- `IntervalTree` — TODO 4(`insertInto` — 돌아오는 길에 `maxEnd` 갱신) · TODO 5(`findAny` — 한 갈래) · TODO 6(`collectFrom` — 가지치기 두 줄) · TODO 7(`removeFrom`)
+- `CoordinateCompressor` — TODO 8(등장한 좌표만 정렬·중복 제거해 번호 매기기)
+- `IntervalProblems` — TODO 9(`merge`) · TODO 10(`maxConcurrent` — 좌표가 같을 때 끝을 먼저)
+
+순서: `Interval`(2) → `NaiveIntervalStore`(1) → `IntervalTree`(4, `insert` → `findAny` → `findAll` → `remove`) → `CoordinateCompressor`(1) → `IntervalProblems`(2).\
+테스트가 `root`·`size` 와 노드의 `interval/maxEnd/left/right` 를 직접 읽는다 — **필드 이름이 계약이다.**\
+실행: `cd ~/project/myway/data-structure && ./run.sh 30` — README 기준 **94개 중 78개가 실패**한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

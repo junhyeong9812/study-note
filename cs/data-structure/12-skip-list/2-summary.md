@@ -34,6 +34,24 @@
 > **해시맵(hash map)** — 키를 해시로 흩어 담아 평균 O(1)에 찾는 구조.\
 > 예: 찾기는 더 빠르지만 순서를 안 지켜서 "20 이하 중 가장 큰 키" 같은 질문에는 답하지 못한다.
 
+## 문제 — 이 챕터가 시키는 것
+
+06번 이진 탐색 트리가 정렬된 입력에서 높이 n으로 무너지는 문제를, **회전이 아니라 동전 던지기**로 고치는 구조를 직접 만든다.\
+`OrderedMapContractTest.java` 를 따라 친 뒤 `SkipList` 의 TODO 9개를 채우는 것이 본체이고, `SkipListSet` 의 TODO 2개는 두 줄짜리다.\
+`./run.sh 12` 로 시작하면 36개 중 35개가 실패한 상태에서 출발한다.
+
+- `SkipList` — `randomLevel()`: 앞면(확률 P)이 나오는 동안 층을 올리되 `MAX_LEVEL` 을 넘지 않기
+- `SkipList` — `findPredecessors(key)`: 층마다 "key보다 작은 마지막 노드"를 모으기 (한 층 내려갈 때 `head` 로 되돌리지 않기)
+- `SkipList` — `get(key)`: 위층부터 내려오며 전진하고 레벨 0의 다음 노드를 확인하기
+- `SkipList` — `put(key, value)`: 기존 키면 값만 갈기, 새 키면 레벨을 뽑고 새로 생긴 층의 앞 노드를 `head` 로 채운 뒤 링크 잇기
+- `SkipList` — `remove(key)`: 층마다 앞 노드를 목표의 다음으로 잇되 목표가 없는 층에서 멈추기, 빈 층은 레벨 내리기(1 아래로는 금지)
+- `SkipList` — `floorKey(key)` / `ceilingKey(key)`: 전진 조건 `<= 0` 과 `< 0` 의 차이로 이웃 찾기
+- `SkipList` — `keysInRange(from, to)`: 시작점으로 O(log n) 에 내려간 뒤 레벨 0을 `to` 까지만 걷기
+- `SkipList` — `lastKey()`: 위층부터 갈 데까지 가서 O(log n) 으로 마지막 키 찾기
+- `SkipListSet` — `add(key)` / `remove(key)`: 맵의 반환값으로 "새로 들어갔는지 / 있었는지" 판정하기
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

@@ -23,6 +23,22 @@
 
 실무·대회에서 "값이 계속 바뀌는 배열에 구간 질문이 쏟아지는" 상황이 이 구조의 자리다 — 주식 구간 최고가, 게임 리더보드 구간 합, 알고리즘 대회의 구간 문제 대부분.
 
+## 문제 — 이 챕터가 시키는 것
+
+비워 둔 TODO 를 채워 세그먼트 트리 다섯 가지를 완성하는 과제다.
+뼈대(`SegmentTree`)의 `build`·`update`·`query` 가 본체이고, 나머지 넷은 그 뼈대에 "무엇을 어떻게 접을 것인가"만 바꿔 끼운다.
+시작 상태는 테스트 37개 중 35개 실패이며, `cd ~/project/myway/data-structure && ./run.sh 13` 으로 확인한다.
+
+- `SegmentTree` — `build`, `update`, `query` 3개 (재귀 본체. 나머지 구현이 전부 여기에 의존한다)
+- `SumSegmentTree` / `MinSegmentTree` — 각각 `combine`, `identity` 2개씩 (뼈대는 하나, 결합 함수와 항등원만 다르다)
+- `MinMaxSegmentTree` — `merge`, `query` 2개 (접어 넣는 값이 스칼라일 필요가 없다는 것을 보여준다)
+- `GenericSegmentTree` — `query` 1개 (같은 추상화를 상속 대신 생성자 인자로 받는다)
+- `LazySegmentTree` — `push`, `apply`, `rangeAdd`, `rangeSum` 4개 (구간 전체 갱신을 O(log n)으로. 제일 어렵다)
+
+README 가 특히 생각해 보라고 짚은 것 — `query` 세 경우의 분기, `update` 가 돌아오는 길에 할 일, 최소 트리의 항등원이 0 이면 안 되는 이유, 평균처럼 결합법칙이 없는 연산에 무엇을 같이 들고 다닐지, 상속이냐 인자냐, 미루기의 쪽지를 언제 누구에게 넘길지.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

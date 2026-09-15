@@ -41,6 +41,26 @@
        [ 7 ] [ 5 ]         규칙: 부모 <= 자식 (이것뿐)
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+원본 README는 이 박스를 "**덜 지키니까 더 싼** 거래를 다루는 박스"라고 소개한다.\
+06번 BST는 전부 정렬 상태를 유지해 순서에 관한 무엇이든 물을 수 있었지만, 실무의 작업 큐·다익스트라·이벤트 스케줄러는 "지금 가장 급한 것 하나"만 알면 된다.\
+그래서 부모가 자식보다 앞선다는 **부분 순서**만 지키는 구조를 직접 만들고, 정렬 삽입 방식(`SortedListHeap`)과 배열 트리 방식(`BinaryHeap`)의 비용 차이를 계수기(`moves`)로 숫자로 확인하는 것이 과제다.\
+README는 순서를 못박는다 — `SortedListHeap` → `BinaryHeap` → `MinHeap`/`MaxHeap`, 1번을 건너뛰지 말 것.
+
+과제 목록 — `src/main/java/com/datastructure/heap/`의 TODO 01~12:
+
+- `SortedListHeap` — TODO 01(정렬을 유지하며 끼워 넣기 + `moves` 세기) · TODO 02(`peek`) · TODO 03(`poll` — 시프트가 필요한가)
+- `BinaryHeap` — TODO 04(`siftUp`) · TODO 05(`siftDown` — 어느 자식과 바꾸는가) · TODO 06(`insert`) · TODO 07(`peek`) · TODO 08(`poll` — 구멍을 무엇으로 메우는가)
+- `MinHeap` / `MaxHeap` — TODO 없음(비교자만 끼우면 `BinaryHeap`이 그대로 동작한다)
+- `HeapProblems.heapSort` — TODO 09: 문제 1(전부 넣었다 하나씩 꺼내기)
+- `KthLargest.add` — TODO 10: 문제 2(k 번째로 큰 값 — 최소 힙을 쓴다)
+- `MedianFinder` — TODO 11(`add` — 두 힙의 균형·순서) · TODO 12(`median` — 정수 나눗셈 함정)
+
+실행: `cd ~/project/myway/data-structure && ./run.sh 07` — README 기준 **48개 중 47개가 실패**한다(통과하는 1개는 미리 채워둔 인덱스 계산 테스트).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

@@ -44,6 +44,31 @@
     비교 1번 = 후보 절반 삭제
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+05번 해시맵은 평균 O(1)을 얻는 대가로 **순서를 버렸다** — 키를 일부러 흩뿌리기 때문이다.\
+여기서는 반대 거래를 한다: "왼쪽은 작고 오른쪽은 크다"를 구조에 새겨서, 조회를 O(log n)으로 내주는 대신 최소·최대·이웃·범위·정렬 순회를 전부 싸게 만든다.\
+키 순서를 유지하는 맵 `SortedMap`을 이진 탐색 트리로 구현하고, 그 위에서 "가장 가까운 것"을 묻는 응용 문제 셋을 푼다.
+
+**과제**
+
+- `SortedMapContractTest.java`를 따라 친다(계약이 거기 있다) → `BinarySearchTree`의 **TODO 9개** → `BSTProblems`의 **TODO 3개**.\
+  순서는 `findNode` → `put` → `firstKey`/`lastKey` → `keys` 를 권하고, `remove`는 마지막에 한다.
+- 구현 대상 — `BinarySearchTree<K extends Comparable<K>, V> implements SortedMap<K, V>`: `findNode`, `put`, `remove`, `firstKey`, `lastKey`, `floorKey`, `ceilingKey`, `keys`, `keysInRange`.
+- 응용 문제 3개(`BSTProblems`)
+  - `closestKey(map, target)` — `target`과 차이가 가장 작은 키. 차이가 같으면 작은 쪽, 비었으면 `NoSuchElementException`.
+  - `rangeSum(map, from, to)` — `from` 이상 `to` 이하인 키들의 값 합(`long`).
+  - `kthSmallest(map, k)` — k 번째로 작은 키(1부터). 범위를 벗어나면 `IndexOutOfBoundsException`.
+- 성능·계약 제약
+  - `closestKey`는 O(log n)이어야 한다 — 10만 개 트리에 10만 질의 5초 제한(`mustBeLogarithmic`). 전부 훑어 최소 차이를 찾으면 막힌다.
+  - `keysInRange`는 가지치기로 O(log n + k)여야 한다. 전부 훑고 거르면 O(n)이다.
+  - `SortedMap` 인터페이스에는 TODO가 없다 — **계약은 주어지는 것**이고 12·15·16번이 그대로 물려받는다.
+  - 계약 테스트는 "정렬된 결과가 나오는가"만 보므로, `BinarySearchTreeTest`가 **`root`·`size`와 `Node`의 `key`·`value`·`left`·`right` 필드를 직접 들여다보며** 탐색 성질을 재귀로 검사한다.
+  - 편향은 고치지 않는다 — 1000개를 정렬 순서로 넣으면 높이 1000이 되는 것을 `sortedInsertDegenerates`로 **확인만** 한다(고치는 것은 16번 레드-블랙 트리).
+- 시작 상태: `./run.sh 06` 을 돌리면 테스트 31개가 전부 실패한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

@@ -36,6 +36,27 @@ Java의 `HashMap`, Python의 `dict`가 이렇게 동작한다.
 > **충돌(collision)** — 서로 다른 키가 같은 칸 번호를 받는 일.\
 > 예: 피할 수 없는 일이라, 같은 칸에 줄줄이 매달지(체이닝) 옆 칸으로 밀지(오픈 어드레싱)가 구현을 가른다.
 
+## 문제 — 이 챕터가 시키는 것
+
+01~04 는 전부 **순서**가 있는 구조였고 "어디에 있는지"로 찾았다.\
+여기서는 **값 자체로부터 위치를 계산**하는 구조를 직접 만든다 — 넣기/찾기/지우기가 전부 평균 O(1) 이 되는 대신, 순서가 없고 최악은 O(n) 이며 공간을 여유 있게 잡아야 한다는 세 가지 대가를 치른다.\
+같은 `Map` 계약을 충돌 처리 방식이 다른 세 가지로 구현해 보고, 그 선택이 삭제·메모리·캐시·최악 성능에서 무엇을 바꾸는지 몸으로 확인하는 것이 이 챕터의 목적이다.
+
+**과제**
+
+- `MapContractTest.java` 를 따라친다 — 세 구현이 공유하는 계약이 여기 있다.
+- `ChainingHashMap` TODO 5개 — 버킷 배열 + 같은 자리에 매다는 사슬. `DEFAULT_CAPACITY = 8`, `LOAD_FACTOR = 0.75`.
+- `LinearProbingHashMap` TODO 5개 — 옆 칸으로 밀어 넣는 개방 주소법. `LOAD_FACTOR = 0.5`, 그리고 이 챕터의 함정인 tombstone 이 여기 있다.
+- `LinkedHashMap` TODO 4개 — `ChainingHashMap` 을 상속해 `afterPut`/`afterRemove`/`afterClear` 훅만 재정의한다(template method).
+- `MapProblems` TODO 3개 — `countFrequencies`(빈도 세기) / `twoSum`(더해서 target 이 되는 두 인덱스) / `firstUniqueChar`(처음으로 한 번만 나온 문자의 인덱스).
+- 성능·계약 제약 — `twoSum` 은 20만 건을 5초 안에 끝내야 한다(모든 쌍을 보는 O(n²)은 통과 못 한다).\
+  값으로 `null` 을 담을 수 있어야 하고(키 없음과 구분되어야 하므로 `containsKey` 가 따로 있다), 키로 `null` 은 거부해야 한다.\
+  음수 해시(`Integer.MIN_VALUE`, `-1`)도 정상 처리해야 한다.\
+  테스트가 내부 필드를 직접 들여다본다 — 체이닝은 `buckets`/`size`, 선형 탐사는 `keys`/`values`/`states` 라는 이름과 구조를 그대로 지켜야 한다.
+- 전체 83개 테스트가 처음에는 전부 실패한다(`./run.sh 05`).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

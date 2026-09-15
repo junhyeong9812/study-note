@@ -23,6 +23,21 @@
                 (갈림길 없는 외길이 팻말 하나로 접혔다)
 ```
 
+## 문제 — 이 챕터가 시키는 것
+
+09번 트라이는 한 글자에 노드 하나라 `internationalization` 을 넣으면 노드가 20개인데 그중 갈림길이 하나도 없다.
+자식이 하나뿐인 노드가 말해주는 다음 글자는 문자열에 이미 있으므로, 그 사슬을 간선 하나에 문자열 조각으로 눌러 담는 것이 압축 트라이다.
+규칙 하나("뿌리가 아닌 노드는 키이거나 갈림길이다")가 구조 전부를 결정하고, 그 대가로 삽입이 간선을 쪼개고 삭제가 다시 합쳐야 한다.
+`RadixTrieTest.java` 를 따라친 뒤 TODO 를 채운다(처음에는 94개 중 92개가 실패한다).
+
+- `RadixTrie` 의 TODO 8개 — `commonPrefixLength` · `put`(제일 크다) · `findNode` · `prefixRoot` · `collect` · `remove` · `compress` · `longestPrefixOf`
+- `RoutingTable` 의 TODO 3개 — `add` · `lookup` · `toBits`
+- `RadixTrieProblems` 의 TODO 2개 — `longestCommonPrefix` · `autocomplete`
+- 순서는 `RadixTrie` → `RoutingTable` → `RadixTrieProblems`. 통과하는 2개는 미리 채워둔 null 검사만 보는 테스트다.
+- 응용으로 따져볼 것: 간선 쪼개기의 세 경우와 "자른 자리에 값을 둘지"(94개 중 18개가 갈린다) · 삭제 후 병합을 계약 테스트가 못 잡는다는 발견 · 접두사가 간선 중간에서 끝나는 경우의 경로 관리 · 문제 1이 09번과의 대비(읽는 자리가 바뀐 것이지 공짜가 아니다) · 문제 2의 전부 모으고 자르기 함정 · 앞자리 0 을 거부하는 이유
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

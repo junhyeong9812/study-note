@@ -38,6 +38,26 @@ push(C)                pop() -> C
 > **top** — 맨 위의 위치를 가리키는 표지.\
 > 예: ArrayStack 에서는 "다음에 쓸 배열 인덱스"(숫자)이고, LinkedStack 에서는 "맨 위 노드 그 자체"(참조)다 — 이름은 같은데 뜻이 다르다.
 
+## 문제 — 이 챕터가 시키는 것
+
+여기서부터 구조가 하나 늘어난다 — **같은 계약(`Stack` 인터페이스)을 두 방식으로 구현**한다.\
+`ArrayStack`은 배열에 쌓아 01번 동적 배열의 성질을, `LinkedStack`은 노드를 이어 02번 연결 리스트의 성질을 그대로 물려받는다.\
+둘은 겉으로 **완전히 같게** 동작해야 하고, 다른 것은 "언제 느려지는가"와 "메모리를 어떻게 쓰는가"뿐이다.\
+그래서 계약 테스트도 한 번만 쓰고 두 구현에 함께 물린다.
+
+**과제**
+
+- README "하는 방법" 5단계 — ① `StackContractTest.java` 따라치기(계약이 여기 있다) → ② `ArrayStack.java` TODO 5개 → ③ `LinkedStack.java` TODO 4개 → ④ `StackProblemsTest.java` 따라치기 → ⑤ `StackProblems.java` 채우기.
+- 구현 대상은 `Stack`(인터페이스, TODO 없음 — 계약은 주어지는 것) + `ArrayStack` + `LinkedStack` + `StackProblems`.
+- 응용 문제 — `isBalanced` 괄호 짝 맞추기 / `evaluatePostfix` 후위 표기식 계산 / `nextGreater` 오른쪽의 첫 번째 더 큰 값 / `sortAscending` 보조 스택 하나로 스택 정렬 / `infixToPostfix` 중위 → 후위 변환(shunting yard).\
+  (README 본문은 "TODO 4개 / 네 메서드"라고 적지만 실제 `StackProblems`에는 위 다섯 개가 있다.)
+- 성능 제약 — `nextGreater`는 20만 건을 5초 안에 끝내야 한다(`mustBeLinear`). 각 원소마다 오른쪽을 훑는 O(n²)은 통과하지 못한다.
+- 계약 제약 — `StackProblems`의 메서드는 전부 `Stack` 인터페이스와 **작업용 스택**을 인자로 받는다. 안에서 `new ArrayStack<>()`이라고 쓰면 두 구현으로 돌릴 자유를 잃는다.
+- 구현 고유 제약 — `ArrayStackTest`·`LinkedStackTest`가 내부 필드(`elements`, `top`, `Node.next`)를 직접 들여다본다. `pop`한 자리를 `null`로 비우고 떼어낸 노드의 링크를 끊어야 통과한다.
+- `sortAscending`은 배열·리스트로 옮기지 말고 보조 스택 하나만 써야 한다 — 그래서 O(n²)이고, 그게 맞는 답이다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->

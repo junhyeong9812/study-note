@@ -34,6 +34,28 @@ Java의 `LinkedList`가 이렇게 동작한다.
 > **head / tail** — 첫 칸과 마지막 칸을 가리키는 표지.\
 > 예: 이 둘만 알면 리스트 전체에 들어갈 수 있다 — head 에서 걸어 나가고, tail 뒤에 바로 붙인다.
 
+## 문제 — 이 챕터가 시키는 것
+
+01번 동적 배열과 **같은 일을 하는데 저장 방식이 정반대인** 리스트를 직접 만든다.\
+같은 `List` 계약을 단일 연결과 이중 연결 **두 가지**로 구현해서, "참조 하나를 더 두는 것"이 무엇을 바꾸는지 비교하는 것이 이 챕터의 본체다.\
+`tail` 을 들고 있는데 왜 `removeLast` 가 O(n) 인지에 답할 수 있으면 단일 연결 리스트를 이해한 것이다.
+
+**과제**
+
+- `ListContractTest.java` 를 따라친다 → `SinglyLinkedList` 의 **TODO 15개** → `DoublyLinkedList` 의 **TODO 2개**(나머지는 채워져 있다) → `ListIterationContractTest.java`(reverse·iterator) 따라치기 → `ListProblems` 의 **TODO 3개** 순서.\
+  단일을 먼저 한다 — 링크가 하나뿐이라 단순하고, 그 뒤에 이중을 하면 차이가 선명해진다.
+- 응용 문제 3개 — `removeAllIf`(조건에 맞는 원소를 모두 제거, O(n)) / `findMiddle`(가운데 값, `size()` 금지 + 한 번만 훑기) / `mergeSorted`(정렬된 두 리스트 병합, O(n+m)).\
+  셋 다 인덱스를 한 번도 쓰지 않고 `Iterator` 로 푼다.
+- 성능·계약 제약 — `removeAllIf` 에 **10만 건 시간 제한**이 걸려 있다(테스트 `mustBeLinear`, 5초).\
+  01번에서는 `remove` 의 **시프트** 때문에 O(n²)이었고, 여기서는 **탐색** 때문이다 — 증상은 같은데 원인이 다르다.
+- 계약 테스트가 **내부를 본다** — `head`, `tail` 과 `Node` 필드가 패키지 공개라 이 이름들이 계약의 일부다.\
+  `DoublyLinkedListTest.assertSound` 는 앞으로 훑은 결과와 뒤로 훑은 결과가 서로의 역순인지 검사한다(이게 없으면 `prev` 를 아예 안 잇는 구현도 대부분 통과한다).\
+  `SinglyLinkedListTest` 쪽은 `tail` 이 정말 마지막 노드를 가리키는지를 본다.
+- `Iterator` 는 이 문제집에서 여기에만 있다.\
+  `get(i)` 를 반복하면 전체가 O(n²)이 되므로, 여기서 `Iterator` 는 문법 설탕이 아니라 **복잡도를 바꾸는 장치**다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
 ## 전체 흐름
 
 <!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
