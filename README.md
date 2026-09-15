@@ -14,6 +14,9 @@
 
 이 루프가 남들이 정리한 방법론과 어디서 겹치는지, 왜 이렇게 하는지는 [reference/learning/](reference/learning/README.md)에 적는다 (출처 1: 박문호 「빅퀘스천」 — 대칭화·모듈화·순서화, 맥락 기억).
 
+> **기록을 남기기 전에** — study-note에 무엇을 어떤 골격으로 쓰는지는 [reference/study-note-guide.md](reference/study-note-guide.md)에 모여 있다.\
+> 다른 프로젝트에서 내용을 이관할 때(사람이든 에이전트든) 그 문서 하나만 읽으면 된다.
+
 ## 폴더 구조
 
 ```
@@ -21,7 +24,7 @@ study-note/
 ├── README.md                  ← 이 파일 (공부 루프 + 규칙)
 ├── index.md                   ← 전체 색인 (최상위 지도, 구조 변경 시 갱신)
 ├── templates/                 ← 1-question / 2-summary / 3-answer 포맷 템플릿
-├── reference/                 ← 작성 지침 (organize-guide.md · writing/ — 문서 작성 근거 · learning/ — 내 공부 방법론과 출처)
+├── reference/                 ← 작성 지침 (★ study-note-guide.md — 작성법 정본 · organize-guide.md · writing/ — 문서 작성 근거 · learning/ — 공부 방법론)
 ├── 세미나/                     ← 컨퍼런스·세미나 후기 (예: nerdcon/nerdcon-5.md)
 ├── 독후감/                     ← 책 후기 — 책=폴더, 챕터별 기록 (규칙: 독후감/README.md)
 ├── cs/                        ← 개념 지식(1/2/3 챕터): systems·engineering·foundations·algorithm·data-structure·domain-modeling·ops-patterns·api-design
