@@ -1,18 +1,23 @@
 # PR #37206 — 착수 분석: reconcileParameters의 함수 반환값 조회 결함
 
-> 원본: `docs/plans/2026-08-27/j5-callmetadata-return-reconcile/analysis.md`(착수 전
-> 작성). 학습 문서로 옮기면서 작업 진행용 절(인터뷰 항목)을 덜어내고, 수정이 적용된
-> 현재 시점에 맞춰 시제를 정리했다. 결론은 PR #37206으로 반영됐다(커밋 `8f9027a995f`).
+> 원본: `docs/plans/2026-08-27/j5-callmetadata-return-reconcile/analysis.md`(착수 전 작성).\
+> 학습 문서로 옮기면서 작업 진행용 절(인터뷰 항목)을 덜어내고, 수정이 적용된 현재 시점에 맞춰 시제를 정리했다.\
+> 결론은 PR #37206으로 반영됐다(커밋 `8f9027a995f`).
 >
-> **좌표 주의**: 본문의 `L3xx`는 **수정 전** 파일(upstream main `b28569119fe`) 기준이다.
-> 수정 후 좌표와 분기도는 [structure.md](structure.md)를 본다. 문제·수정 요약은
-> [README.md](README.md), 테스트는 [tests.md](tests.md).
+> **좌표 주의**: 본문의 `L3xx`는 **수정 전** 파일(upstream main `b28569119fe`) 기준이다.\
+> 수정 후 좌표와 분기도는 [structure.md](structure.md)를 본다.\
+> 문제·수정 요약은 [README.md](README.md), 테스트는 [tests.md](tests.md).
 
 ## 0. 결론 먼저
 
-`reconcileParameters()`는 선언 파라미터를 **정규화된 키**(`lowerCase(provider.parameterNameToUse(name))`)로
-맵에 넣어 두고 메타데이터 파라미터와 대조한다. 그런데 **함수 반환값 행**을 처리하는
-분기(L377-379)만 그 정규화를 건너뛰었다.
+`reconcileParameters()`는 선언 파라미터를 **정규화된 키**(`lowerCase(provider.parameterNameToUse(name))`)로 맵에 넣어 두고 메타데이터 파라미터와 대조한다.\
+그런데 **함수 반환값 행**을 처리하는 분기(L377-379)만 그 정규화를 건너뛰었다.
+
+> **정규화(normalization)** — 표기가 제각각인 이름을 하나의 정해진 모양으로 바꾸는 것.\
+> 예: `@OUT_TOTAL`에서 `@`를 떼고 소문자로 접어 `out_total`로 만든다.
+
+> **reconcile(대조·합의)** — 두 목록(사용자 선언과 DB 메타데이터)을 맞춰 하나의 최종 목록으로 만드는 일.\
+> 예: 선언한 `RESULT`와 DB가 보고한 반환 행을 짝지어 호출 파라미터 목록에 넣는다.
 
 ```java
 param = declaredParams.get(getFunctionReturnName());                                      // L377 raw 이름
@@ -21,18 +26,21 @@ if (param == null && !getOutParameterNames().isEmpty()) {
 }
 ```
 
-결과는 두 갈래다. **(A) Oracle류 함수 + 추가 OUT 파라미터를 반환값보다 먼저 선언** ->
-첫 OUT이 반환 슬롯을 점유해 선언한 반환 파라미터가 조용히 소실되고 `executeFunction()`이
-OUT 값을 돌려준다(무예외). **(B) SQL Server/Sybase 프로시저 `withReturnValue()` +
-`@`접두 OUT을 먼저 선언** -> 올바른 선언인데 `InvalidDataAccessApiUsageException`.
-둘 다 **선언 순서에 의존**하며, 그 순서 의존은 어디에도 문서화되어 있지 않다. 수정은
-반환 분기의 조회를 맵과 **같은 정규화**로 맞추는 것 — 구조 변경 없이 세 줄이다.
+결과는 두 갈래다.\
+**(A) Oracle류 함수 + 추가 OUT 파라미터를 반환값보다 먼저 선언** -> 첫 OUT이 반환 슬롯을 점유해 선언한 반환 파라미터가 조용히 소실되고 `executeFunction()`이 OUT 값을 돌려준다(무예외).\
+**(B) SQL Server/Sybase 프로시저 `withReturnValue()` + `@`접두 OUT을 먼저 선언** -> 올바른 선언인데 `InvalidDataAccessApiUsageException`.\
+둘 다 **선언 순서에 의존**하며, 그 순서 의존은 어디에도 문서화되어 있지 않다.\
+수정은 반환 분기의 조회를 맵과 **같은 정규화**로 맞추는 것 — 구조 변경 없이 세 줄이다.
 
 ## 1. 무대 — 객체와 역할
 
-결함은 빌더에서 드라이버까지 이어지는 네 층 가운데 셋째 층에 산다. 각 층이 무엇을 맡는지부터 편다.
+결함은 빌더에서 드라이버까지 이어지는 네 층 가운데 셋째 층에 산다.\
+각 층이 무엇을 맡는지부터 편다.
 
-```
+> **빌더(builder)** — 메서드를 체인으로 이어 붙여 객체를 조립하게 해 주는 API 모양.\
+> 예: `new SimpleJdbcCall(ds).withFunctionName("get_total").declareParameters(...)`.
+
+```text
  SimpleJdbcCall (public API, 빌더)                            spring-jdbc/core/simple/SimpleJdbcCall.java
    │  withFunctionName() → setFunction(true)                  :94-96
    │  withReturnValue()  → setReturnValueRequired(true)       :113-114
@@ -70,7 +78,7 @@ OUT 값을 돌려준다(무예외). **(B) SQL Server/Sybase 프로시저 `withRe
 
 선언한 파라미터가 실제 호출문으로 굳는 경로는 다음과 같고, 결함은 그 한복판의 reconcile에 있다.
 
-```
+```text
 SimpleJdbcCall.withFunctionName("get_total")                 setFunction(true)
   .declareParameters(p1, p2, ...)                            declaredParameters += p
   .executeFunction(...)  ──► doExecute() ──► checkCompiled() ──► compile()
@@ -90,7 +98,7 @@ SimpleJdbcCall.withFunctionName("get_total")                 setFunction(true)
 
 확정된 목록이 실행 시 어떻게 소비되는지를 보면 잘못된 목록의 여파가 어디까지 가는지 드러난다.
 
-```
+```text
 doExecute(args) ──► matchInParameterValuesWithCallParameters(args)   (callParameters 기준으로 IN 값 매칭)
                 ──► executeCallInternal(params) ──► JdbcTemplate.call(csc, callParameters)
                                                        └─ extractOutputParameters(cs, callParameters)
@@ -99,18 +107,18 @@ doExecute(args) ──► matchInParameterValuesWithCallParameters(args)   (call
                 ──► .get(getScalarOutParameterName())        isFunction ? getFunctionReturnName() : outParameterNames[0]
 ```
 
-그래프에서 결함이 전파되는 길: **reconcileParameters가 잘못된 SqlParameter 목록을
-`callParameters`에 넣으면** -> createCallString의 슬롯 수·순서, extractOutputParameters의
-이름 키, getScalarOutParameterName의 키가 **전부 그 목록에서 파생**되므로 하류 셋이
-동시에 어긋난다. 반대로 말하면 reconcile 한 곳만 맞추면 하류는 자동으로 정합해진다.
+그래프에서 결함이 전파되는 길: **reconcileParameters가 잘못된 SqlParameter 목록을 `callParameters`에 넣으면** -> createCallString의 슬롯 수·순서, extractOutputParameters의 이름 키, getScalarOutParameterName의 키가 **전부 그 목록에서 파생**되므로 하류 셋이 동시에 어긋난다.\
+반대로 말하면 reconcile 한 곳만 맞추면 하류는 자동으로 정합해진다.
 
 ## 2.5 핵심 이름표 사전 — 이 흐름에 등장하는 변수·메서드의 역할
 
-reconcile을 읽을 때 헷갈리는 것은 "이름"이 네 가지 표기로 돌아다닌다는 점이다:
-사용자가 선언한 원본 표기, provider가 DB 규칙으로 바꾼 표기, 맵 키용 소문자 표기,
-메타데이터가 준 표기. 아래 표의 각 항목은 그중 무엇을 들고 있는지를 명시한다.
-(예시 값은 변형 A = Oracle 함수 `get_total`, 선언 `out_status`·`RESULT` / 변형 B =
-SQL Server 프로시저, 선언 `@out_total`·`RETURN_VALUE`. 값은 **수정 전** 동작 기준이다.)
+reconcile을 읽을 때 헷갈리는 것은 "이름"이 네 가지 표기로 돌아다닌다는 점이다.\
+사용자가 선언한 원본 표기, provider가 DB 규칙으로 바꾼 표기, 맵 키용 소문자 표기, 메타데이터가 준 표기.\
+아래 표의 각 항목은 그중 무엇을 들고 있는지를 명시한다.\
+(예시 값은 변형 A = Oracle 함수 `get_total`, 선언 `out_status`·`RESULT` / 변형 B = SQL Server 프로시저, 선언 `@out_total`·`RETURN_VALUE`. 값은 **수정 전** 동작 기준이다.)
+
+> **표기(notation)** — 같은 이름을 적는 여러 방식. 원본 그대로, DB 규칙 적용, 소문자 변환 등.\
+> 예: `@RETURN_VALUE`는 메타 표기, `RETURN_VALUE`는 provider 표기, `return_value`는 맵 키 표기다.
 
 | 이름표 | 무엇인가 | 언제 정해지나 | 변형 A에서의 값 | 변형 B에서의 값 |
 |---|---|---|---|---|
@@ -128,53 +136,56 @@ SQL Server 프로시저, 선언 `@out_total`·`RETURN_VALUE`. 값은 **수정 �
 | `workParams` -> `callParameters` | 최종 호출 파라미터 목록. **메타데이터 순서**로 쌓이며 이 목록이 SQL 슬롯·바인딩·결과 키를 전부 결정 | 3단계 누적 | 버그 시 `[P1(out_status), AMOUNT, P1(out_status)]` | 버그 시 예외로 도달 못 함 |
 | `getScalarOutParameterName()` | `executeFunction()`이 결과 맵에서 값을 꺼낼 키 = 함수면 `getFunctionReturnName()` | 실행 시 | 버그 시 `"out_status"` | — |
 
-이 표에서 결함이 한 줄로 보인다: **L377은 `getFunctionReturnName()`(원본 표기 `"RESULT"`)로
-`declaredParams`(키 `"result"`)를 조회한다** — 같은 이름의 두 표기를 섞은 것이고,
-L379는 `outParamNames`(원본 표기, 0번째가 반환이라는 보장 없음)에 `toLowerCase`만
-적용해 `parameterNameToUse`(`@` 제거)를 건너뛴다. 수정안 6.1은 세 조회 모두를 표의
-`declaredParams` 키 규칙으로 통일한 것이다.
+이 표에서 결함이 한 줄로 보인다.\
+**L377은 `getFunctionReturnName()`(원본 표기 `"RESULT"`)로 `declaredParams`(키 `"result"`)를 조회한다** — 같은 이름의 두 표기를 섞은 것이고, L379는 `outParamNames`(원본 표기, 0번째가 반환이라는 보장 없음)에 `toLowerCase`만 적용해 `parameterNameToUse`(`@` 제거)를 건너뛴다.\
+수정안 6.1은 세 조회 모두를 표의 `declaredParams` 키 규칙으로 통일한 것이다.
 
 ## 2.6 "행"이 세 종류라는 것 — 메타데이터 행 vs OUT 값 vs 결과셋
 
-reconcile이 다루는 "행"은 쿼리 결과가 아니라 **`DatabaseMetaData.getProcedureColumns()`가
-돌려주는 시그니처 설명서**다(파라미터당 1행: 이름·방향(`COLUMN_TYPE`)·타입). 실행
-결과의 OUT 값은 `CallableStatement.getObject(index)`로 **위치 기반**으로만 오고,
-이름은 Spring이 `callParameters`의 이름으로 붙여준다 — 그래서 목록의 이름 정확성이
-결과 맵의 정확성이다. 결과셋(SELECT)은 별개.
+reconcile이 다루는 "행"은 쿼리 결과가 아니라 **`DatabaseMetaData.getProcedureColumns()`가 돌려주는 시그니처 설명서**다(파라미터당 1행: 이름·방향(`COLUMN_TYPE`)·타입).\
+실행 결과의 OUT 값은 `CallableStatement.getObject(index)`로 **위치 기반**으로만 오고, 이름은 Spring이 `callParameters`의 이름으로 붙여준다 — 그래서 목록의 이름 정확성이 결과 맵의 정확성이다.\
+결과셋(SELECT)은 별개.
 
-함수 반환값은 시그니처 문법상 이름이 없다(`... RETURN NUMBER`). Oracle 드라이버는
-이를 `COLUMN_TYPE=5, COLUMN_NAME=null` 행으로 보고하고(기존 테스트
-`initializeAddInvoiceWithMetaData`의 `willReturn(null, "amount", "custid")`가 그
-모델링), SQL Server는 상태 코드 RETURN을 `@RETURN_VALUE`라는 이름 있는 의사
-파라미터로 노출한다. 수정안 (1)/(2)의 갈림(메타 이름 매치 vs 선언 이름 조회)은 이
-DB별 차이에서 온다 — (2)는 예외 케이스가 아니라 **Oracle 함수의 기본 경로**다.
+> **시그니처(signature)** — 루틴이 받는 파라미터의 개수·순서·이름·방향·타입을 모아 놓은 선언 정보.\
+> 예: `get_total(amount IN NUMBER, out_status OUT NUMBER) RETURN NUMBER`가 시그니처다.
+
+> **위치 기반 접근** — 이름이 아니라 몇 번째 자리인지로 값을 꺼내는 방식.\
+> 예: `cs.getObject(1)`은 첫 번째 슬롯(여기서는 반환 슬롯)의 값을 가져온다.
+
+함수 반환값은 시그니처 문법상 이름이 없다(`... RETURN NUMBER`).\
+Oracle 드라이버는 이를 `COLUMN_TYPE=5, COLUMN_NAME=null` 행으로 보고하고(기존 테스트 `initializeAddInvoiceWithMetaData`의 `willReturn(null, "amount", "custid")`가 그 모델링), SQL Server는 상태 코드 RETURN을 `@RETURN_VALUE`라는 이름 있는 의사 파라미터로 노출한다.\
+수정안 (1)/(2)의 갈림(메타 이름 매치 vs 선언 이름 조회)은 이 DB별 차이에서 온다 — (2)는 예외 케이스가 아니라 **Oracle 함수의 기본 경로**다.
+
+> **의사 파라미터(pseudo parameter)** — 실제 선언에는 없지만 드라이버가 편의상 파라미터 행처럼 보고하는 자리.\
+> 예: SQL Server의 `@RETURN_VALUE`는 프로시저 선언에 없지만 상태 코드 슬롯으로 보고된다.
 
 ## 2.7 배경 — "반환값"은 SELECT/CUD의 문제가 아니라 함수 vs 프로시저의 문제
 
-혼동하기 쉬운 지점이라 명시한다. 여기서 "반환값"은 쿼리(SELECT/CUD)의 결과가 아니라
-**저장 함수(stored function)의 RETURN 슬롯**이다.
+혼동하기 쉬운 지점이라 명시한다.\
+여기서 "반환값"은 쿼리(SELECT/CUD)의 결과가 아니라 **저장 함수(stored function)의 RETURN 슬롯**이다.
 
-- **프로시저**(`CREATE PROCEDURE ... (a IN, b OUT)`) — 반환 슬롯이 없다. 결과는 전부
-  이름 있는 OUT 파라미터로 나온다. `isReturnParameter()` 행이 아예 없으므로 이 결함
-  경로에 들어오지 않는다.
-- **함수**(`CREATE FUNCTION ... RETURN NUMBER`) — 반환 슬롯이 있고 시그니처상 이름이
-  없다. Oracle 드라이버는 `COLUMN_TYPE=5, COLUMN_NAME=null` 행으로 보고한다.
+- **프로시저**(`CREATE PROCEDURE ... (a IN, b OUT)`) — 반환 슬롯이 없다.\
+  결과는 전부 이름 있는 OUT 파라미터로 나온다.\
+  `isReturnParameter()` 행이 아예 없으므로 이 결함 경로에 들어오지 않는다.
+- **함수**(`CREATE FUNCTION ... RETURN NUMBER`) — 반환 슬롯이 있고 시그니처상 이름이 없다.\
+  Oracle 드라이버는 `COLUMN_TYPE=5, COLUMN_NAME=null` 행으로 보고한다.\
   `SimpleJdbcCall.withFunctionName()` 경로.
-- **SQL Server 프로시저의 RETURN 상태코드** — 프로시저지만 정수 상태값 슬롯이 있고,
-  드라이버가 `@RETURN_VALUE`라는 **이름 있는** 행으로 보고한다.
+- **SQL Server 프로시저의 RETURN 상태코드** — 프로시저지만 정수 상태값 슬롯이 있고, 드라이버가 `@RETURN_VALUE`라는 **이름 있는** 행으로 보고한다.\
   `withProcedureName().withReturnValue()` 경로.
 
-그리고 "항상 문제"가 아니었다. 반환 행이 오면 수정 전 코드는 (1) `getFunctionReturnName()`
-정확 키 조회 -> (2) 첫 번째 OUT 이름 소문자 조회로 폴백하는데, (2)가 **사용자가 반환
-파라미터를 OUT 목록의 첫 번째로 선언했을 때만** 우연히 맞았다. 즉 결함 발동 조건 =
-함수(또는 withReturnValue) **+ 반환 파라미터보다 앞에 다른 OUT 파라미터를 선언**.
+그리고 "항상 문제"가 아니었다.\
+반환 행이 오면 수정 전 코드는 (1) `getFunctionReturnName()` 정확 키 조회 -> (2) 첫 번째 OUT 이름 소문자 조회로 폴백하는데, (2)가 **사용자가 반환 파라미터를 OUT 목록의 첫 번째로 선언했을 때만** 우연히 맞았다.\
+즉 결함 발동 조건 = 함수(또는 withReturnValue) **+ 반환 파라미터보다 앞에 다른 OUT 파라미터를 선언**.\
 그 밖의 경우는 (2)의 우연으로 수정 전에도 동작했다(§4 변형 A/B가 정확히 그 조건).
 
 ## 3. reconcileParameters 내부 흐름 (수정 전 L312-466)
 
 메서드 본문을 네 구간으로 쪼개 의사코드로 옮기면 결함이 어느 구간의 어느 줄인지가 보인다.
 
-```
+> **의사코드(pseudocode)** — 실제 문법 대신 뜻만 보이게 간추려 적은 코드.\
+> 예: 조건문과 대입만 남기고 예외 처리·타입 선언은 생략한다.
+
+```text
 [0] metaDataParamNames ← 메타데이터 중 비-반환 파라미터 이름을 lowerCase로            :321-325
 
 [1] 선언 파라미터 순회 (사용자가 declareParameters로 넘긴 순서)                    :328-351
@@ -207,7 +218,7 @@ DB별 차이에서 온다 — (2)는 예외 케이스가 아니라 **Oracle 함�
 
 같은 흐름을 반환 행 처리만 떼어 분기도로 그리면 두 변형이 어느 갈래에서 갈리는지가 드러난다.
 
-```
+```text
                  meta.isReturnParameter() 행에 도달
                             │
         ┌───────────────────┴────────────────────┐
@@ -232,8 +243,7 @@ DB별 차이에서 온다 — (2)는 예외 케이스가 아니라 **Oracle 함�
 
 ### 변형 A — Oracle 함수 + 추가 OUT (조용한 오답)
 
-설정: 메타데이터 = [반환(type 5, 이름 null), IN `AMOUNT`, OUT `OUT_STATUS`], Oracle은
-`storesUpperCaseIdentifiers` -> `parameterNameToUse`가 대문자화, 맵 키는 다시 lowerCase.
+설정: 메타데이터 = [반환(type 5, 이름 null), IN `AMOUNT`, OUT `OUT_STATUS`], Oracle은 `storesUpperCaseIdentifiers` -> `parameterNameToUse`가 대문자화, 맵 키는 다시 lowerCase.
 
 ```java
 new SimpleJdbcCall(ds).withFunctionName("get_total").declareParameters(
@@ -252,17 +262,16 @@ new SimpleJdbcCall(ds).withFunctionName("get_total").declareParameters(
 | [3] IN `AMOUNT` | 선언 없음 -> 기본 IN 생성 | [out_status, AMOUNT] |
 | [3] OUT `OUT_STATUS` | containsKey("out_status") -> **같은 인스턴스 재추가** | [out_status, AMOUNT, out_status] |
 
-하류: `createCallString` = `{? = call GET_TOTAL(?, ?)}`(슬롯 수는 맞아 SQL은 성공).
-`extractOutputParameters`가 `results.put("out_status", 위치1)` 뒤
-`results.put("out_status", 위치3)` -> **위치 3(OUT)이 위치 1(반환)을 덮음**.
-`getScalarOutParameterName()` = `"out_status"` -> `executeFunction()`이 **OUT 값을
-반환**. 선언한 `RESULT`(NUMERIC 타입 포함)는 어디에도 없다. 예외·경고 없음.
+하류: `createCallString` = `{? = call GET_TOTAL(?, ?)}`(슬롯 수는 맞아 SQL은 성공).\
+`extractOutputParameters`가 `results.put("out_status", 위치1)` 뒤 `results.put("out_status", 위치3)` -> **위치 3(OUT)이 위치 1(반환)을 덮음**.\
+`getScalarOutParameterName()` = `"out_status"` -> `executeFunction()`이 **OUT 값을 반환**.\
+선언한 `RESULT`(NUMERIC 타입 포함)는 어디에도 없다.\
+예외·경고 없음.\
 `RESULT`를 먼저 선언하면 L379의 outParamNames[0]이 `RESULT`라 우연히 정상.
 
 ### 변형 B — SQL Server 프로시저 + 반환값 (스퓨리어스 예외)
 
-설정: 메타데이터 = [`@RETURN_VALUE`(type 5), IN `@amount`, OUT `@out_total`], provider가
-`@` 스트립(SqlServer:45-53), `isFunction()=false`(프로시저), `withReturnValue()`.
+설정: 메타데이터 = [`@RETURN_VALUE`(type 5), IN `@amount`, OUT `@out_total`], provider가 `@` 스트립(SqlServer:45-53), `isFunction()=false`(프로시저), `withReturnValue()`.
 
 ```java
 new SimpleJdbcCall(ds).withProcedureName("my_proc").withReturnValue().declareParameters(
@@ -281,12 +290,44 @@ new SimpleJdbcCall(ds).withProcedureName("my_proc").withReturnValue().declarePar
 | | L379 `get("@out_total".toLowerCase())` = `get("@out_total")` -> 키는 `"out_total"` -> **miss** | |
 | | -> **`InvalidDataAccessApiUsageException: Unable to locate declared parameter for function return value`** | |
 
-즉 L374에서 `paramNameToCheck`로 **이미 찾아놓은 매치를 L377이 버리고** raw 조회를
-다시 한다. `RETURN_VALUE`를 먼저 선언하면 L379가 `"return_value"`를 조회해 우연히 통과.
+즉 L374에서 `paramNameToCheck`로 **이미 찾아놓은 매치를 L377이 버리고** raw 조회를 다시 한다.\
+`RETURN_VALUE`를 먼저 선언하면 L379가 `"return_value"`를 조회해 우연히 통과.
+
+두 변형이 수정 전후에 어떤 최종 상태로 끝나는지를 같은 축으로 나란히 놓으면 이렇다.
+
+```text
+  변형 A — Oracle 함수, 선언 out_status -> RESULT
+  수정 전                                  수정 후
+  +-------------------------------+        +-------------------------------+
+  | 1차 조회 : "RESULT"   miss    |        | 1차 조회 : null       miss    |
+  | 2차 조회 : "out_status" hit   |        | 2차 조회 : "result"   hit     |
+  | 반환 슬롯 : out_status        |        | 반환 슬롯 : RESULT            |
+  | 목록 : [out_status, AMOUNT,   |        | 목록 : [RESULT, AMOUNT,       |
+  |         out_status]           |        |         out_status]           |
+  | 결과 맵 키 : out_status 하나  |        | 결과 맵 키 : 서로 다른 둘     |
+  | executeFunction : 7 (OUT 값)  |        | executeFunction : 42 (반환값) |
+  +-------------------------------+        +-------------------------------+
+
+  변형 B — SQL Server 프로시저, 선언 @out_total -> RETURN_VALUE
+  수정 전                                  수정 후
+  +-------------------------------+        +-------------------------------+
+  | 진입 조건 : 이미 매치됨       |        | 진입 조건 : 이미 매치됨       |
+  | 1차 조회 : "return"   miss    |        | 1차 조회 : "return_value" hit |
+  | 2차 조회 : "@out_total" miss  |        | 2차 조회 : 도달 안 함         |
+  | 결과 : 예외                   |        | 목록 : [RETURN_VALUE,         |
+  |                               |        |         amount, @out_total]   |
+  |                               |        | callString : {? = call ...}   |
+  +-------------------------------+        +-------------------------------+
+```
+
+두 변형 모두 바뀐 것은 **조회에 쓰는 키 한 개**뿐이고, 그 아래 줄은 전부 그 결과다.
 
 ## 5. 관련 계약 정리
 
 이 무대가 지키기로 한 약속을 여섯 줄로 세우고 수정 전 코드가 그중 무엇을 어겼는지 대조한다.
+
+> **캡슐화(encapsulation)** — 세부 규칙을 한 곳에 가둬 두고 밖에서는 그 창구만 쓰게 하는 설계.\
+> 예: DB별 이름 규칙은 `parameterNameToUse` 하나에만 들어 있어야 하는데, 결함 코드는 `toLowerCase`를 직접 불러 그 창구를 우회했다.
 
 | 계약 | 출처 | 수정 전 위반 여부 |
 |---|---|---|
@@ -327,56 +368,55 @@ if (meta.isReturnParameter()) {
     ...
 ```
 
-변형별 효과: **A** — 1)은 null(이름 없는 반환 행), 2)가 `"RESULT"`->`"result"`로 hit ->
-올바른 반환 파라미터, `out_status`는 자기 OUT 슬롯에만 들어감 ->
-`[RESULT, AMOUNT, out_status]`. **B** — 1)이 `"return_value"`로 즉시 hit -> 예외 소멸.
-두 변형 모두 **선언 순서 무관**해진다. 기존 테스트(`SimpleJdbcCallTests`의 `"return"`
-소문자 선언)는 2)에서 그대로 hit — 무회귀.
+변형별 효과: **A** — 1)은 null(이름 없는 반환 행), 2)가 `"RESULT"`->`"result"`로 hit -> 올바른 반환 파라미터, `out_status`는 자기 OUT 슬롯에만 들어감 -> `[RESULT, AMOUNT, out_status]`.\
+**B** — 1)이 `"return_value"`로 즉시 hit -> 예외 소멸.\
+두 변형 모두 **선언 순서 무관**해진다.\
+기존 테스트(`SimpleJdbcCallTests`의 `"return"` 소문자 선언)는 2)에서 그대로 hit — 무회귀.
 
-(최종 커밋의 주석은 위 세 줄 대신 한 자리에 두 줄로 축약됐다 — Spring 관례상 조회마다
-주석을 다는 것이 과하다는 리뷰 판단. 최종 형태는 [README.md](README.md) §4.)
+(최종 커밋의 주석은 위 세 줄 대신 한 자리에 두 줄로 축약됐다 — Spring 관례상 조회마다 주석을 다는 것이 과하다는 리뷰 판단. 최종 형태는 [README.md](README.md) §4.)
 
 ### 6.2 검토했으나 채택하지 않은 대안 — 폴백 휴리스틱 강화
 
-3)의 "첫 OUT" 폴백은 여전히 순서 휴리스틱이다. 더 정확한 규칙은 [1]단계가 함수에 이미
-쓰는 것과 같은 **"메타데이터에 없는 선언 OUT"**을 고르는 것(프로시저 `withReturnValue()`에도
-적용). 다만 이는 동작 확장이라 최소 수정과 분리해 판단할 항목이었고, 이 PR은 6.1만
-반영했다.
+3)의 "첫 OUT" 폴백은 여전히 순서 휴리스틱이다.\
+더 정확한 규칙은 [1]단계가 함수에 이미 쓰는 것과 같은 **"메타데이터에 없는 선언 OUT"**을 고르는 것(프로시저 `withReturnValue()`에도 적용).\
+다만 이는 동작 확장이라 최소 수정과 분리해 판단할 항목이었고, 이 PR은 6.1만 반영했다.
+
+> **최소 수정(minimal fix)** — 결함만 정확히 제거하고 그 이상은 건드리지 않는 변경.\
+> 예: 조회 키만 규칙에 맞추고, 폴백 휴리스틱 자체를 더 똑똑하게 바꾸는 일은 다음으로 미룬다.
 
 ### 6.3 영향 범위와 검증 계획
 
 변경 범위는 파일 둘이고, 검증은 test-first로 두 변형의 재현과 순서 역전 가드를 함께 세운다.
 
 - 변경 파일: `CallMetaDataContext.java` 반환 분기 + `SimpleJdbcCallTests.java` 테스트.
-- 테스트(test-first): 변형 A 재현(callParameters 구성·`executeFunction` 반환값이 함수
-  반환 슬롯인지) / 변형 B 재현(예외 소멸·callString `{? = call my_proc(?, ?)}`) /
-  순서 역전 양성 가드(반환 먼저 선언 — 전후 green) / 기존 `add_invoice` 함수 테스트
-  무회귀. 목 셋업은 `initializeAddInvoiceWithMetaData`(COLUMN_TYPE 5/1/4 스텁)를 미러.
-- 실물 스모크는 목 기반(실DB 없음). 실제 결과는 [tests.md](tests.md)의 실측 요약.
+- 테스트(test-first): 변형 A 재현(callParameters 구성·`executeFunction` 반환값이 함수 반환 슬롯인지) / 변형 B 재현(예외 소멸·callString `{? = call my_proc(?, ?)}`) / 순서 역전 양성 가드(반환 먼저 선언 — 전후 green) / 기존 `add_invoice` 함수 테스트 무회귀.\
+  목 셋업은 `initializeAddInvoiceWithMetaData`(COLUMN_TYPE 5/1/4 스텁)를 미러.
+- 실물 스모크는 목 기반(실DB 없음).\
+  실제 결과는 [tests.md](tests.md)의 실측 요약.
+
+> **test-first(red/green)** — 고치기 전에 먼저 테스트를 넣어 실패(red)를 눈으로 본 뒤 고쳐서 통과(green)시키는 순서.\
+> 예: fix 없이 돌려 두 건이 실패하는 것을 확인했기에 그 두 건이 진짜로 이 결함을 잡고 있다는 근거가 된다.
 
 ### 6.4 fix 후 세 번째 조회(첫 OUT 폴백)의 도달 가능성 — 불가
 
-L374 진입 조건은 `declaredParams.containsKey(paramNameToCheck) ||
-(meta.isReturnParameter() && returnDeclared)` 두 갈래다. 전자로 들어오면 step 1이 같은
-키로 조회하므로 반드시 맞고, 후자로 들어오면 `returnDeclared`를 세운 L343-350이 그
-직전 L339에서 같은 규칙의 키로 맵에 넣은 파라미터의 원본 이름을
-`actualFunctionReturnName`에 저장했으므로 step 2의 정규화 키가 반드시 맞는다. 따라서
-**정규화된 step 1·2 아래에서 step 3은 도달 불가**다. 수정 전에는 step 1이 원본 케이스
-키로 항상 빗나가서 step 3이 실제 일을 했고(그래서 변형 A가 `out_status`를 골랐다),
-수정 후에는 방어적 잔재가 된다. 실측: step 3만 구 코드로 되돌려도 22/22 green.
+L374 진입 조건은 `declaredParams.containsKey(paramNameToCheck) || (meta.isReturnParameter() && returnDeclared)` 두 갈래다.\
+전자로 들어오면 step 1이 같은 키로 조회하므로 반드시 맞고, 후자로 들어오면 `returnDeclared`를 세운 L343-350이 그 직전 L339에서 같은 규칙의 키로 맵에 넣은 파라미터의 원본 이름을 `actualFunctionReturnName`에 저장했으므로 step 2의 정규화 키가 반드시 맞는다.\
+따라서 **정규화된 step 1·2 아래에서 step 3은 도달 불가**다.\
+수정 전에는 step 1이 원본 케이스 키로 항상 빗나가서 step 3이 실제 일을 했고(그래서 변형 A가 `out_status`를 골랐다), 수정 후에는 방어적 잔재가 된다.\
+실측: step 3만 구 코드로 되돌려도 22/22 green.
 
-가드 테스트로 커버할 수 없는 줄이므로 유지·삭제는 리뷰 비용과 gh-25707 계열의 계약
-축소 여부로 판단했고, **유지(정규화)**를 선택했다. 판단 근거는 [README.md](README.md) §4.
+가드 테스트로 커버할 수 없는 줄이므로 유지·삭제는 리뷰 비용과 gh-25707 계열의 계약 축소 여부로 판단했고, **유지(정규화)**를 선택했다.\
+판단 근거는 [README.md](README.md) §4.
+
+> **방어적 잔재(defensive leftover)** — 지금은 실행되지 않지만 만약을 대비해 남겨 두는 코드.\
+> 예: 앞의 두 조회가 반드시 성공하더라도, 미래에 조건이 바뀔 경우를 대비해 세 번째 조회를 남겨 둔다.
 
 ## 7. 범위 밖 (같은 계열이지만 이번에 안 건드린 것)
 
 같은 클래스·같은 계열이지만 이번 PR이 손대지 않은 항목과, 이 영역 수정이 수용된 선례를 남긴다.
 
 - **J12** `matchInParameterValuesWithCallParameters(Object[])`의 raw AIOOBE(:594-604) — 별건.
-- **#33514**(OPEN, 2024-09) Informix 함수 + `withoutProcedureColumnMetaDataAccess`
-  파라미터 수 오류 — `createCallString`의 `parameterCount=-1` 슬롯 건너뛰기가 메타데이터
-  미사용 경로에서 사용자 IN을 삼키는 가설. 원인 지점이 다르고 실드라이버 확인 불가 ->
-  PR 본문에 "인접 리포트"로만 언급 가능, 동일 결함 주장 금지.
+- **#33514**(OPEN, 2024-09) Informix 함수 + `withoutProcedureColumnMetaDataAccess` 파라미터 수 오류 — `createCallString`의 `parameterCount=-1` 슬롯 건너뛰기가 메타데이터 미사용 경로에서 사용자 IN을 삼키는 가설.\
+  원인 지점이 다르고 실드라이버 확인 불가 -> PR 본문에 "인접 리포트"로만 언급 가능, 동일 결함 주장 금지.
 - **J13** SQL Server named binding의 `@` 소실 — 실드라이버 필요, 보류.
-- 선례: 같은 메서드의 반환 이름 처리를 손본 커밋 "Restore original 4.x behavior for
-  initialization of function return name"(2020, gh-25707 계열) — 이 영역 수정이 수용된 이력.
+- 선례: 같은 메서드의 반환 이름 처리를 손본 커밋 "Restore original 4.x behavior for initialization of function return name"(2020, gh-25707 계열) — 이 영역 수정이 수용된 이력.
