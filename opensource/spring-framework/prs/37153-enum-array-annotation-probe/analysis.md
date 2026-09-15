@@ -202,7 +202,7 @@
   | 4. probe 게이트: 차단          |        | 4. probe 게이트: 통과          |
   | 5. 실호출    : 0 회            |        | 5. 실호출    : 1 회            |
   | 6. 예외 관측 : 없음            |        | 6. 예외 관측 : 포착            |
-  | 7. 보고      : return true    |        | 7. 보고      : warn + false   |
+  | 7. 보고      : return true     |        | 7. 보고      : warn 후 false   |
   | 8. 스캐너    : 배열에 그대로   |        | 8. 스캐너    : 자리를 null 로  |
   | 9. isPresent : true            |        | 9. isPresent : false           |
   |10. asMap     : {value=예외}    |        |10. asMap     : {}              |

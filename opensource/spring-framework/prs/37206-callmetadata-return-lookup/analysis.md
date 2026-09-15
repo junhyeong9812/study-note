@@ -69,7 +69,7 @@ if (param == null && !getOutParameterNames().isEmpty()) {
    └─ CallParameterMetaData.isReturnParameter(): function이면 functionReturn, 아니면 procedureColumnReturn/Result  :91-95
    ▼
  JdbcTemplate.extractOutputParameters(cs, params)                       spring-jdbc/core/JdbcTemplate.java
-      SqlOutParameter마다 results.put(outParam.getName(), cs.getObject(sqlColIndex)) — **이름이 키** (같은 이름이면 뒤가 덮음)
+      SqlOutParameter마다 results.put(outParam.getName(), cs.getObject(sqlColIndex)) — 이름이 키 (같은 이름이면 뒤가 덮음)
 ```
 
 ## 2. 전체 메서드 그래프
