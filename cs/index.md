@@ -7,52 +7,86 @@
 
 ```text
 cs/
-├── systems/           ← 시스템 개념 9주제 (kafka-why-fast·lsm-tree·nand-flash·storage-media-workload·striping·straggler·partitioning-vs-sharding·thrashing·Hysteresis)
-├── engineering/       ← 설계·기준 (solid-principles · development-standards — 품질·보안·운영·법률)
-├── foundations/       ← CS 기초 10주제 — 책 원고 이관본 (foundations/index.md)
+├── systems/           ← 시스템 개념 — db-engine 9주제 + jun-bank 이관(architecture-styles·orchestration·event-sourcing·multi-tenancy·clickhouse·postgres-rls·timeseries·kafka-consumer·outbox·server-design 컬렉션)
+├── engineering/       ← 설계·실천 — solid-principles·clean-code·design-patterns-gof·agile-and-squad·engineering-axes·data-access·failure-point-checklist·development-standards
+├── foundations/       ← CS 기초 10주제 + languages·security 컬렉션·three-virtues
 ├── algorithm/         ← 01~30 (myway/algorithm)
-├── data-structure/    ← 01~35 (myway/data-structure)
-├── domain-modeling/   ← basic 01~30 · advanced 01~30
-├── ops-patterns/      ← 01~19
+├── data-structure/    ← 01~35 (myway) + lsm-merge-model
+├── domain-modeling/   ← basic/advanced + domain-vs-application-logic·pojo
+├── ops-patterns/      ← 01~19 + failure-at-scale·failure-modes
 └── api-design/        ← 01~06
 ```
 
-## 진행 중
+## 진행 중 (검토·정답 대기)
 
 | 주제 | 상태 | 원본(따라 친 노트) 위치 |
 |------|------|------------------------|
 | [solid-principles](engineering/solid-principles/) | 서머리 이관 + 질문 7개 작성 완료, 정답 미작성 | `jun-bank/docs/study/organize/SOLID.md` |
-| [thrashing](systems/thrashing/) | **검토 대기(2026-08-23)** — 서머리(직접 작성, 소제목 정리)·질문 5·정답(초안) — 동적 배열 resize 반복과 히스테리시스 | 직접 작성(원본 노트 = 2-summary) |
-| [Hysteresis](systems/Hysteresis/) | **검토 대기(2026-08-23)** — 서머리(직접 작성, 소제목 정리)·질문 5·정답(초안) — 방향별 임계값 분리, hysteresis band, thrashing과의 구분 | 직접 작성(원본 노트 = 2-summary) |
-| [development-standards](engineering/development-standards/) | 상세 문서+질문/정답 초안(2026-08-24) — 품질(ISO 25010)·보안(OWASP Top10/ASVS·NIST SSDF)·운영(ISO 20000-1·Google SRE)·법률(개인정보보호법+관련 법령) 4축, 하위 [index](engineering/development-standards/index.md) | 원고 작성 예정(기준 문서는 각 서머리 관련 자료) |
-| [foundations/*](foundations/) | 이관 완료(2026-09-05) — 컴퓨터사이언스 부트캠프 10주제(변수·데이터 표현·OOP·하드웨어·메모리·프로세스/스레드·컴파일러·자료구조·알고리즘·파이썬), 하위 [index](foundations/index.md) | `computer_science` repo (책 따라 친 노트) |
+| [thrashing](systems/thrashing/) | **검토 대기(2026-08-23)** — 서머리·질문 5·정답(초안) — 동적 배열 resize 반복과 히스테리시스 | 직접 작성(원본 노트 = 2-summary) |
+| [Hysteresis](systems/Hysteresis/) | **검토 대기(2026-08-23)** — 서머리·질문 5·정답(초안) — 방향별 임계값 분리, hysteresis band | 직접 작성(원본 노트 = 2-summary) |
+| [development-standards](engineering/development-standards/) | 상세 문서+질문/정답 초안(2026-08-24) — 품질·보안·운영·법률 4축, 하위 [index](engineering/development-standards/index.md) | 원고 작성 예정 |
+| [foundations/*](foundations/) | 이관 완료(2026-09-05) — 부트캠프 10주제, 하위 [index](foundations/index.md) | `computer_science` repo |
 
-## 후보 (jun-bank에서 공부한 주제 — 이관 대기)
+## jun-bank에서 공부한 주제 — 이관 완료 (2026-09-16)
 
-| 주제 | 원본 위치 |
-|------|-----------|
-| clean-code | `jun-bank/docs/study/organize/CLEAN_CODE.md` |
-| domain-vs-application-logic | `jun-bank/docs/study/03-domain-vs-application-logic/` |
-| design-patterns-gof | `jun-bank/docs/study/04-design-patterns-gof/` |
-| architecture-styles | `jun-bank/docs/study/05-architecture-styles/` |
-| orchestration-vs-choreography | `jun-bank/docs/study/06-orchestration-vs-choreography/` |
-| event-sourcing | `jun-bank/docs/study/08-event-sourcing/` |
-| multi-tenancy | `jun-bank/docs/study/09-multi-tenancy/` |
-| failure-at-scale / failure-modes | `jun-bank/docs/study/10-failure-at-scale/`, `11-failure-modes/` |
-| tech (data-access·infra·languages·security) | `jun-bank/docs/study/tech/` — 직접 작성 예정 |
+jun-bank `docs/study/`의 학습 노트를 cs 골격으로 재작성해 이관했다.\
+전부 **원고 문체 유지·프로젝트 고유명사 일반화**했고, 서머리(+질문)까지 작성했으며 **정답(3-answer)은 본인 검토 후 확정**한다(solid-principles와 같은 상태). 원본 백업 = `jun-bank/docs-backup-2026-09-15/study/`.
 
-## db-engine-lab에서 공부한 개념 — 3파일 작성 완료, 질문·정답은 Claude 초안이라 본인 검토 후 확정 (2026-08-20)
+### 설계·개념 주제 (study/01~11)
 
-원본은 `db-engine-lab/docs/study/`의 날짜 분리 노트가 아닌 개념 정리 문서들. 카프카 외에도 BookKeeper·NAND·LSM 등이 섞여 있어 카프카 폴더로 묶지 않고 개념 단위로 둔다(이후 카프카 문서가 늘면 `kafka-` 접두어로 모인다).
+| 주제 | cs 위치 | 상태 |
+|------|---------|------|
+| clean-code | [engineering/clean-code](engineering/clean-code/) | 서머리+질문, 정답 미작성 |
+| design-patterns-gof | [engineering/design-patterns-gof](engineering/design-patterns-gof/) | 〃 |
+| agile-and-squad | [engineering/agile-and-squad](engineering/agile-and-squad/) | 〃 |
+| domain-vs-application-logic | [domain-modeling/domain-vs-application-logic](domain-modeling/domain-vs-application-logic/) | 〃 |
+| architecture-styles | [systems/architecture-styles](systems/architecture-styles/) | 〃 |
+| orchestration-vs-choreography | [systems/orchestration-choreography](systems/orchestration-choreography/) | 〃 |
+| event-sourcing | [systems/event-sourcing](systems/event-sourcing/) | 〃 |
+| multi-tenancy | [systems/multi-tenancy](systems/multi-tenancy/) | 〃 |
+| failure-at-scale | [ops-patterns/failure-at-scale](ops-patterns/failure-at-scale/) | 〃 |
+| failure-modes | [ops-patterns/failure-modes](ops-patterns/failure-modes/) | 〃 (F-01~25·실사건 보존) |
 
-2026-08-23: 6주제 서머리를 공통 구조로 통일 — 본문은 원고 그대로, 원고에 없던 문장은 `*(Claude 보강)*` 표시, 원고 외 지식은 맨 아래 `[Claude 추가] 더 알면 좋은 것` 절로 분리(partitioning-vs-sharding의 「한 표로」「Kafka 연결」, kafka-why-fast의 §2 데이터 경로 다이어그램은 Claude 작성분으로 표시/이동).
+(solid-principles는 위 「진행 중」에 등재 — 먼저 이관됨.)
+
+### notes 이관 (study/notes)
+
+| 주제 | cs 위치 | 비고 |
+|------|---------|------|
+| engineering-axes | [engineering/engineering-axes](engineering/engineering-axes/) | 컬렉션(README+7축) — notes 00·08·axes 통합 |
+| server-design | [systems/server-design](systems/server-design/) | 컬렉션(README+11) |
+| lsm-merge-model | [data-structure/lsm-merge-model](data-structure/lsm-merge-model/) | 서머리+질문 |
+| clickhouse-mergetree | [systems/clickhouse-mergetree](systems/clickhouse-mergetree/) | 〃 |
+| postgres-rls | [systems/postgres-rls](systems/postgres-rls/) | 〃 |
+| timeseries-resolution-tiers | [systems/timeseries-resolution-tiers](systems/timeseries-resolution-tiers/) | 〃 |
+| kafka-consumer-failure | [systems/kafka-consumer-failure](systems/kafka-consumer-failure/) | 〃 |
+| outbox-vs-dispatch-log | [systems/outbox-vs-dispatch-log](systems/outbox-vs-dispatch-log/) | 〃 |
+| failure-point-checklist | [engineering/failure-point-checklist](engineering/failure-point-checklist/) | 절차/판단형 |
+| pojo | [domain-modeling/pojo](domain-modeling/pojo/) | 서머리+질문 |
+| three-virtues | [foundations/three-virtues](foundations/three-virtues/) | Larry Wall 원전 |
+
+### tech 이관 (study/tech — 컬렉션)
+
+| 주제 | cs 위치 | 비고 |
+|------|---------|------|
+| data-access | [engineering/data-access](engineering/data-access/) | JPA·Data JDBC·비교 3편 |
+| languages | [foundations/languages](foundations/languages/) | C계열·Go·JVM·Kotlin·Rust 5편 |
+| security | [foundations/security](foundations/security/) | HMAC·SHA256·OIDC·JWKS·식별자·audit-rollout 6편 |
+
+> infra 코드 결착 노트(infra-journey·go-syntax-in-our-code·gate1-auth-pattern)와 워크플로우 양식은 cs가 아니라 **`project/jun-bank/`**(infra-journey·infra-notes·workflow)로 이관했다 — 프로젝트 결착이라 일반 CS 지식이 아니다.
+
+## db-engine-lab에서 공부한 개념 — 3파일 작성 완료, 정답은 본인 검토 후 확정 (2026-08-20)
+
+원본은 `db-engine-lab/docs/study/`의 개념 정리 문서들. 카프카 외 BookKeeper·NAND·LSM 등이 섞여 개념 단위로 둔다.
+
+2026-08-23: 6주제 서머리를 공통 구조로 통일 — 본문은 원고 그대로, 보강은 `*(Claude 보강)*`, 원고 외 지식은 `[Claude 추가]`로 분리.
 
 | 주제 | 내용 | 원본 위치 |
 |------|------|-----------|
-| [kafka-why-fast](systems/kafka-why-fast/) | **검토 대기(2026-08-20)** — 서머리·질문 7·정답(초안) — 왜 빠른가 서사 + zero-copy 경로 + 용어 + 대안 | `/home/jun/project/db-engine-lab/docs/study/kafka.md` |
-| [lsm-tree](systems/lsm-tree/) | **검토 대기(2026-08-20)** — 서머리·질문 6·정답(초안) | `/home/jun/project/db-engine-lab/docs/study/LSM-Tree.md` |
-| [nand-flash](systems/nand-flash/) | **검토 대기(2026-08-20)** — 서머리·질문 7·정답(초안) — NAND.md + kafka.md SSD 내부 절(FTL·매핑·RMW·GC·WAF) 합침 | `/home/jun/project/db-engine-lab/docs/study/NAND.md` |
-| [storage-media-workload](systems/storage-media-workload/) | **초안(Claude 작성, 2026-09-14)** — 서머리만. HDD/SSD 동작 방식, 최신 변화(SMR·HAMR·QLC·NVMe), 접근 패턴별 매체 선택 기준. 원고 없이 포트폴리오 사례를 일반화해 작성 — 본인 검토·교체 후 질문/정답 작성 | 없음(포트폴리오 k-brand-guard 01 문제 상황 3에서 링크) |
-| [striping](systems/striping/) | **검토 대기(2026-08-20)** — 서머리·질문 6·정답(초안) | `/home/jun/project/db-engine-lab/docs/study/Striping.md` |
-| [straggler](systems/straggler/) | **검토 대기(2026-08-20)** — 서머리·질문 6·정답(초안) | `/home/jun/project/db-engine-lab/docs/study/Straggler.md` |
-| [partitioning-vs-sharding](systems/partitioning-vs-sharding/) | **검토 대기(2026-08-20)** — 서머리·질문 6·정답(초안) — Partitioning.md + Sharding.md 합침 | `/home/jun/project/db-engine-lab/docs/study/Partitioning.md`, `/home/jun/project/db-engine-lab/docs/study/Sharding.md` (둘을 한 주제로 합침) |
+| [kafka-why-fast](systems/kafka-why-fast/) | 검토 대기(2026-08-20) — 서머리·질문 7·정답(초안) | `db-engine-lab/docs/study/kafka.md` |
+| [lsm-tree](systems/lsm-tree/) | 검토 대기(2026-08-20) — 서머리·질문 6·정답(초안) | `db-engine-lab/docs/study/LSM-Tree.md` |
+| [nand-flash](systems/nand-flash/) | 검토 대기(2026-08-20) — 서머리·질문 7·정답(초안) | `db-engine-lab/docs/study/NAND.md` |
+| [storage-media-workload](systems/storage-media-workload/) | 초안(Claude, 2026-09-14) — 서머리만 | 없음(k-brand-guard 사례) |
+| [striping](systems/striping/) | 검토 대기(2026-08-20) — 서머리·질문 6·정답(초안) | `db-engine-lab/docs/study/Striping.md` |
+| [straggler](systems/straggler/) | 검토 대기(2026-08-20) — 서머리·질문 6·정답(초안) | `db-engine-lab/docs/study/Straggler.md` |
+| [partitioning-vs-sharding](systems/partitioning-vs-sharding/) | 검토 대기(2026-08-20) — 서머리·질문 6·정답(초안) | `db-engine-lab` Partitioning.md + Sharding.md |
