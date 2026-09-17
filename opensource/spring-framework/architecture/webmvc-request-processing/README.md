@@ -53,7 +53,7 @@ HTTP 요청 하나가 `DispatcherServlet`에 들어와 응답이 나가기까지
 
 ## 기동할 때 준비되는 것
 
-요청을 받기 전, 컨텍스트가 뜰 때 `initStrategies`가 SPI 구현 목록을 채운다. 호출 시점은 [컨테이너 기동](../container-refresh/README.md)의 마지막 단계가 발행하는 `ContextRefreshedEvent`를 `FrameworkServlet`이 받는 순간이다. 각 `init*`는 컨텍스트에서 빈을 찾고, 하나도 없을 때만 아래 기본값 파일을 쓴다.
+요청을 받기 전, 컨텍스트가 뜰 때 `initStrategies`가 SPI 구현 목록을 채운다. 각 `init*`는 컨텍스트에서 빈을 찾고, 하나도 없을 때만 아래 기본값 파일을 쓴다.
 
 `spring-webmvc` / `org.springframework.web.servlet` / `DispatcherServlet.java` L441-L450 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-webmvc/src/main/java/org/springframework/web/servlet/DispatcherServlet.java#L441-L450))
 
