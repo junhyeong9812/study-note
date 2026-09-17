@@ -30,13 +30,13 @@ cs/
 ## jun-bank에서 공부한 주제 — 이관 완료 (2026-09-16)
 
 jun-bank `docs/study/`의 학습 노트를 cs 골격으로 재작성해 이관했다.\
-전부 **원고 문체 유지·프로젝트 고유명사 일반화**했고, 서머리(+질문)까지 작성했으며 **정답(3-answer)은 본인 검토 후 확정**한다(solid-principles와 같은 상태). 원본 백업 = `jun-bank/docs-backup-2026-09-15/study/`.
+전부 **원고 문체 유지·프로젝트 고유명사 일반화**했고, 서머리·질문에 더해 **정답(3-answer) 초안까지 작성**했다(2026-09-17, 18개 주제). 정답은 Claude 초안 — **본인 검토 후 확정**한다(기존 db-engine·algorithm 3-answer와 같은 상태). 원본 백업 = `jun-bank/docs-backup-2026-09-15/study/`.
 
 ### 설계·개념 주제 (study/01~11)
 
 | 주제 | cs 위치 | 상태 |
 |------|---------|------|
-| clean-code | [engineering/clean-code](engineering/clean-code/) | 서머리+질문, 정답 미작성 |
+| clean-code | [engineering/clean-code](engineering/clean-code/) | 서머리+질문+정답(초안) |
 | design-patterns-gof | [engineering/design-patterns-gof](engineering/design-patterns-gof/) | 〃 |
 | agile-and-squad | [engineering/agile-and-squad](engineering/agile-and-squad/) | 〃 |
 | domain-vs-application-logic | [domain-modeling/domain-vs-application-logic](domain-modeling/domain-vs-application-logic/) | 〃 |
@@ -55,15 +55,15 @@ jun-bank `docs/study/`의 학습 노트를 cs 골격으로 재작성해 이관�
 |------|---------|------|
 | engineering-axes | [engineering/engineering-axes](engineering/engineering-axes/) | 컬렉션(README+7축) — notes 00·08·axes 통합 |
 | server-design | [systems/server-design](systems/server-design/) | 컬렉션(README+11) |
-| lsm-merge-model | [data-structure/lsm-merge-model](data-structure/lsm-merge-model/) | 서머리+질문 |
+| lsm-merge-model | [data-structure/lsm-merge-model](data-structure/lsm-merge-model/) | 서머리+질문+정답(초안) |
 | clickhouse-mergetree | [systems/clickhouse-mergetree](systems/clickhouse-mergetree/) | 〃 |
 | postgres-rls | [systems/postgres-rls](systems/postgres-rls/) | 〃 |
 | timeseries-resolution-tiers | [systems/timeseries-resolution-tiers](systems/timeseries-resolution-tiers/) | 〃 |
 | kafka-consumer-failure | [systems/kafka-consumer-failure](systems/kafka-consumer-failure/) | 〃 |
 | outbox-vs-dispatch-log | [systems/outbox-vs-dispatch-log](systems/outbox-vs-dispatch-log/) | 〃 |
 | failure-point-checklist | [engineering/failure-point-checklist](engineering/failure-point-checklist/) | 절차/판단형 |
-| pojo | [domain-modeling/pojo](domain-modeling/pojo/) | 서머리+질문 |
-| three-virtues | [foundations/three-virtues](foundations/three-virtues/) | Larry Wall 원전 |
+| pojo | [domain-modeling/pojo](domain-modeling/pojo/) | 서머리+질문+정답(초안) |
+| three-virtues | [foundations/three-virtues](foundations/three-virtues/) | Larry Wall 원전 · 서머리+질문+정답(초안) |
 
 ### tech 이관 (study/tech — 컬렉션)
 
