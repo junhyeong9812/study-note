@@ -148,6 +148,7 @@ protected void invokeInitMethods(String beanName, Object bean, @Nullable RootBea
 
 - [1]의 인터페이스는 [Aware](../../../../spi/Aware/README.md), [3]의 인터페이스는 [InitializingBean](../../../../spi/InitializingBean/README.md)에 정리했다.
 - 프록시 생성 시점인 [4]는 [BeanPostProcessor](../../../../../container-refresh/spi/BeanPostProcessor/README.md)의 마지막 확장 지점이다.
+- [4]에서 프록시가 만들어지는 과정은 [AOP 프록시](../../../../../aop-proxy/README.md) 흐름으로 이어진다.
 
 ## 결과가 쓰이는 곳
 
