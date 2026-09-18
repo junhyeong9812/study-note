@@ -179,7 +179,7 @@ public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
 
 ## 다루지 않는 것
 
-`getBean` 안쪽(인스턴스 생성, 의존성 주입, 초기화 콜백, AOP 프록시 적용)은 다음 흐름인 "빈 생성"에서 다룬다. XML 설정(`AbstractRefreshableApplicationContext`)은 [obtainFreshBeanFactory](01_AbstractApplicationContext.refresh/02_AbstractApplicationContext.obtainFreshBeanFactory/README.md)에서 갈림길만 표시했다.
+`getBean` 안쪽(인스턴스 생성, 의존성 주입, 초기화 콜백, AOP 프록시 적용)은 [빈 생성](../bean-creation/README.md) 흐름에서 다룬다. XML 설정(`AbstractRefreshableApplicationContext`)은 [obtainFreshBeanFactory](01_AbstractApplicationContext.refresh/02_AbstractApplicationContext.obtainFreshBeanFactory/README.md)에서 갈림길만 표시했다.
 
 ## 하위 메서드
 
