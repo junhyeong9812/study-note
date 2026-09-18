@@ -24,3 +24,13 @@
 | [17-timeseries](17-timeseries/) | | |
 | [18-blockchain](18-blockchain/) | | |
 | [19-graceful-shutdown](19-graceful-shutdown/) | | |
+
+## 원본 챕터가 없는 주제
+
+`myway/ops-patterns` 에 대응 챕터가 없어 번호를 받지 않은 주제들이다. 폴더명이 곧 주제다.
+
+| 주제 | 출처 | 상태 | 비고 |
+|------|------|------|------|
+| [failure-modes](failure-modes/) | `jun-bank/docs/study/11-failure-modes/` 원고를 일반화 | 서머리 | 실패 유형 카탈로그 |
+| [failure-at-scale](failure-at-scale/) | 〃 | 서머리 | 규모에서 드러나는 실패 |
+| [deadline-propagation](deadline-propagation/) | 원고 없음 — 개념 정리(2026-09-18) | 질문/정답 | 클라이언트 타임아웃과 서버 데드라인. 위 19챕터가 데드라인과 만나 어긋나는 자리를 §8에 모았다 |
