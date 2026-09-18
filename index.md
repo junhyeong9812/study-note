@@ -1,4 +1,4 @@
-# study-note 전체 색인 (2026-09-10 기준)
+# study-note 전체 색인 (2026-09-18 기준)
 
 이 저장소의 최상위 지도다. 폴더마다 성격이 다르므로, 무엇을 찾을 때 어디로 가는지를 이 표 하나로 정한다. 각 폴더의 진행 상태와 세부 목록은 그 폴더의 index가 정본이고, 이 문서는 구조와 입구만 담는다.
 
@@ -10,6 +10,7 @@
 | [project](project/) | 만든 것의 기록 — 이슈 단위 해설 | db-engine · study-note-deploy-system | [project/index.md](project/index.md) |
 | [lab](lab/) | 실험 프로젝트 — 가설과 측정 | 8건 (cache-lab, redis-atomicity-lab 등) | [lab/index.md](lab/index.md) |
 | [portfolio](portfolio/) | 대외용 산문 정리 — project·lab에서 추림 | markview · k-brand-guard | [portfolio/index.md](portfolio/index.md) |
+| [history](history/) | 기술 변천사 — 왜 지금 모양이 되었나(읽는 문서) | 3주제 18편 (database·web·network) | [history/README.md](history/README.md) |
 | [독후감](독후감/) | 책 후기 — 책=폴더, 챕터별 | 아키텍트-첫걸음 | [독후감/index.md](독후감/index.md) |
 | [세미나](세미나/) | 컨퍼런스·세미나 후기 | nerdcon | [세미나/index.md](세미나/index.md) |
 | [reference](reference/) | 작성·공부 방법의 근거 문서 | organize-guide · writing(문서 방법론) · learning | [reference/index.md](reference/index.md) |
