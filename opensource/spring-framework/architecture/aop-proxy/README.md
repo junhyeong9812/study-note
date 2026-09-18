@@ -66,7 +66,7 @@
 
 ## 다루지 않는 것
 
-AspectJ 포인트컷 식을 파싱하고 매칭하는 내부(`AspectJExpressionPointcut`)와, `@Transactional` 어드바이스가 트랜잭션을 여닫는 내부는 각각 별도 주제다. 후자는 "트랜잭션" 흐름에서 다룬다.
+AspectJ 포인트컷 식을 파싱하고 매칭하는 내부(`AspectJExpressionPointcut`)와, `@Transactional` 어드바이스가 트랜잭션을 여닫는 내부는 각각 별도 주제다. 후자는 [트랜잭션](../transaction/README.md) 흐름에서 다룬다.
 
 ## 하위 메서드
 
