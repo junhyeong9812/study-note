@@ -10,5 +10,6 @@ Spring Framework의 동작을 호출 흐름 단위로 위에서 아래로 따라
 | [transaction](transaction/README.md) | `TransactionInterceptor.invoke` | @Transactional 메서드에서 트랜잭션이 열리고 커밋/롤백되기까지, 메서드 폴더 8개와 SPI 5종 |
 | [event-publishing](event-publishing/README.md) | `AbstractApplicationContext.publishEvent` | 이벤트가 발행되어 리스너와 @EventListener 메서드로 전달되기까지, 메서드 폴더 4개와 SPI 4종 |
 | [webmvc-request-processing](webmvc-request-processing/README.md) | `FrameworkServlet.processRequest` | HTTP 요청 하나가 `DispatcherServlet`을 거쳐 응답이 되기까지, 메서드 폴더 19개와 SPI 8종 |
+| [webflux-request-processing](webflux-request-processing/README.md) | `HttpWebHandlerAdapter.handle` | 리액티브 스택에서 요청이 Mono 파이프라인으로 조립되어 응답이 되기까지, 메서드 폴더 5개와 SPI 5종 |
 
-읽는 순서는 위에서 아래다. 컨테이너 기동이 싱글톤을 만들 때 빈 생성 흐름으로 들어가고, 빈 생성의 마지막에서 AOP 프록시 흐름이 갈라지고, 그 인터셉터 체인 위에서 트랜잭션 흐름이 돈다. 기동이 끝나며 발행하는 `ContextRefreshedEvent`가 MVC 요청 처리의 전략 목록을 채운다. 다음 후보는 WebFlux 요청 처리, RestClient/WebClient, 캐시, 스케줄링과 비동기 순이다.
+읽는 순서는 위에서 아래다. 컨테이너 기동이 싱글톤을 만들 때 빈 생성 흐름으로 들어가고, 빈 생성의 마지막에서 AOP 프록시 흐름이 갈라지고, 그 인터셉터 체인 위에서 트랜잭션 흐름이 돈다. 기동이 끝나며 발행하는 `ContextRefreshedEvent`가 MVC 요청 처리의 전략 목록을 채운다. 다음 후보는 RestClient/WebClient, 캐시, 스케줄링과 비동기, JDBC 순이다.
