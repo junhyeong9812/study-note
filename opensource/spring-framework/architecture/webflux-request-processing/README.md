@@ -69,7 +69,7 @@ MVC와 대응시키면 다음과 같다.
 
 ## 다루지 않는 것
 
-함수형 엔드포인트(`RouterFunction`, `HandlerFunction`)와 WebSocket 경로는 같은 `DispatcherHandler` 골격을 쓰지만 이 지도에서는 애노테이션 컨트롤러 경로만 따라간다.
+함수형 엔드포인트(`RouterFunction`, `HandlerFunction`)와 WebSocket 경로는 같은 `DispatcherHandler` 골격을 쓰지만 이 지도에서는 애노테이션 컨트롤러 경로만 따라간다. 나가는 요청(`WebClient`)은 [HTTP 클라이언트](../http-client/README.md) 흐름에 있다.
 
 ## 하위 메서드
 
