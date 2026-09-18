@@ -61,4 +61,4 @@ protected void initApplicationEventMulticaster() {
       --> 멀티캐스터가 없으므로 prepareRefresh 가 만든 버퍼에 쌓여 있음
 ```
 
-리스너가 이벤트를 받는 쪽의 자세한 흐름(`@EventListener` 포함)은 "이벤트 발행" 흐름에서 다룬다.
+리스너가 이벤트를 받는 쪽의 자세한 흐름(`@EventListener` 포함)은 [이벤트 발행](../../../event-publishing/README.md) 흐름에서 다룬다.
