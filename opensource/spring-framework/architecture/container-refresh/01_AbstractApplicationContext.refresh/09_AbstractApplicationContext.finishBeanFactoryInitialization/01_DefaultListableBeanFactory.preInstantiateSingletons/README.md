@@ -164,6 +164,8 @@ private void instantiateSingleton(String beanName) {
          afterSingletonsInstantiated()
 ```
 
+getBean 안쪽은 [빈 생성](../../../../bean-creation/README.md) 흐름에서 이어진다.
+
 ## 결과가 쓰이는 곳
 
 ```text
