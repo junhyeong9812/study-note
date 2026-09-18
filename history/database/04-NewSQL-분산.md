@@ -37,7 +37,9 @@
 > **결과적 일관성(eventual consistency)** — 지금은 노드마다 값이 다를 수 있지만, 시간이 지나면 결국 같아진다는 약한 보장.\
 > 예: 입금 직후 다른 지점에서 조회하면 옛 잔액이 나올 수 있고, 몇 초 뒤엔 맞는 값이 된다.
 
-## 시대 배경 — 그전에는 어땠나
+## 시대적 배경
+
+*(이 편의 「시대 배경」에 해당한다)*
 
 2000년대 후반 NoSQL(Dynamo·BigTable·Cassandra·MongoDB)은 웹 스케일의 쓰기 부하를 감당하려고 관계형 모델과 ACID 트랜잭션을 과감히 버렸다.\
 수평 확장(샤딩)과 고가용성을 얻는 대신 SQL의 표현력, 조인, 외래키, 그리고 무엇보다 **강한 일관성**을 포기한 것이다.
@@ -74,7 +76,9 @@
 NoSQL 수준의 확장성을 제공하면서도 SQL과 ACID를 유지하는 관계형 DBMS라는 뜻이다.\
 2012년 Google이 발표한 Spanner 논문이 이 질문에 "가능하다"고 답한 결정적 사건이었다.
 
-## 무엇이 바뀌었나
+## 주요 시스템과 기능
+
+*(이 편의 「무엇이 바뀌었나」에 해당한다)*
 
 ### Google Spanner (2012) — 분산 SQL의 원형
 
@@ -267,7 +271,9 @@ PD (Placement Driver) — 메타데이터·스케줄러
 Google의 Borg에서 시작한 태생 덕분에 Go와 Kubernetes를 일찍 받아들여, 클라우드 네이티브 환경의 MySQL 확장 표준이 됐다(Slack·Square·JD.com 등 채택).\
 PlanetScale의 기반이기도 하다.
 
-### 떠받치는 기술 ① 합의 알고리즘 (Paxos · Raft)
+## 분산 SQL을 떠받치는 핵심 기술
+
+### 합의 알고리즘 (Paxos · Raft)
 
 **언제 나오나** — 여러 복제본이 "같은 순서로 같은 쓰기를 적용한다"를 보장해야 할 때.
 
@@ -299,7 +305,7 @@ PlanetScale의 기반이기도 하다.
 > **합의(consensus)** — 메시지가 늦거나 유실되고 노드가 죽을 수 있는 환경에서, 여러 노드가 하나의 값·하나의 순서에 동의하는 것.\
 > 예: 복제본 3개 중 2개가 "이 쓰기가 5번째다"에 동의하면 그것이 확정된 순서가 된다.
 
-### 떠받치는 기술 ② 분산 트랜잭션 (2PC + MVCC + 논리 시계)
+### 분산 트랜잭션 (2PC + MVCC + 논리 시계)
 
 **언제 나오나** — 한 트랜잭션이 여러 range/노드에 걸칠 때.
 
@@ -316,7 +322,7 @@ PlanetScale의 기반이기도 하다.
 - **HLC(CockroachDB·YugabyteDB)**: 물리 시계 + 논리 카운터를 결합한 하이브리드 논리 시계.\
   특수 하드웨어 없이 인과 순서를 보존하며, TrueTime의 외부 일관성에는 약간 못 미치지만 범용 하드웨어에서 직렬성을 제공한다.
 
-### 떠받치는 기술 ③ HTAP
+### HTAP (Hybrid Transactional/Analytical Processing)
 
 **언제 나오나** — "방금 들어온 거래"를 곧바로 분석해야 할 때.
 
@@ -373,7 +379,9 @@ TiDB가 행 엔진(TiKV)과 열 엔진(TiFlash)을 Raft로 일관 복제해 두 
 VoltDB 계열은 아예 다른 축을 골랐다.\
 "글로벌 분산 + 강한 일관성"이 아니라 "단일 데이터센터 초고속 OLTP"라는 축에서, 잠금 자체를 없애 극한의 처리량을 얻는 길이다.
 
-## 남긴 것 — 오늘 우리가 쓰는 것
+## 영향과 의의
+
+*(이 편의 「남긴 것」에 해당한다)*
 
 NewSQL·분산 SQL이 바꾼 것은 **"확장하려면 일관성을 포기해야 한다"는 2000년대의 통념**이다.\
 Spanner는 그것이 공학적으로 가능함을 증명했고, CockroachDB·TiDB·YugabyteDB는 그 능력을 특수 하드웨어 없는 오픈소스로 민주화했다.\
@@ -420,7 +428,7 @@ NewSQL은 또한 데이터베이스 역사가 **순환**한다는 점을 보여�
 - **멱등(idempotent)** — 같은 요청이 여러 번 와도 결과가 한 번과 같게 만드는 성질.
 - **투명 샤딩 미들웨어** — 앱은 단일 DB로 보게 하고 뒤에서 샤드로 라우팅하는 계층(Vitess).
 
-## 원본 출처
+## 참고 출처
 
 - [Spanner: Google's Globally-Distributed Database (OSDI 2012, PDF)](https://research.google.com/archive/spanner-osdi2012.pdf)
 - [Spanner: Google's Globally-Distributed Database (Google Research)](https://research.google/pubs/spanner-googles-globally-distributed-database-2/)

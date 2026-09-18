@@ -86,7 +86,9 @@
 2021-2023   WebRTC 1.0 권고 · WebGPU(Chrome 113)
 ```
 
-## 시대 배경 — 문서에서 애플리케이션으로
+## 시대적 배경 — 문서에서 애플리케이션으로
+
+*(이 편의 「시대 배경」에 해당한다)*
 
 초기 웹(1991~)은 **하이퍼텍스트 문서**를 위한 것이었다.\
 HTML은 마크업, HTTP는 문서 전송, 브라우저는 렌더러.\
@@ -132,6 +134,8 @@ Netscape 쪽                        IE 쪽
 ## 무엇이 바뀌었나
 
 ### 1. DOM 표준화 — 스크립트가 문서를 조작하는 공통 인터페이스
+
+#### 무엇이며 왜 들어왔나
 
 **무엇** — DOM(Document Object Model)은 HTML/XML 문서를 **객체 트리**로 표현해 스크립트가 내용·구조·스타일을 동적으로 읽고 바꾸게 하는, 언어 중립·플랫폼 중립 인터페이스다.
 
@@ -753,7 +757,9 @@ IE6 시절                            오늘
 
 WebAssembly의 "4개 브라우저 동시 합의"(2017)나 WebGPU의 6년 합의 설계(2017→2023)가 그 성숙의 상징이다.
 
-## 남긴 것 — 오늘 우리가 쓰는 것
+## 영향과 의의
+
+*(이 편의 「남긴 것」에 해당한다)*
 
 웹 플랫폼 API의 25년은 **"문서 뷰어 → 애플리케이션 플랫폼 → 범용 런타임"**으로의 단계적 이동이다.\
 각 API는 독립적으로 보이지만, 큰 그림에선 **플러그인이 하던 일(미디어=Flash, 3D·게임=Java/Flash, 화상=Skype, 네이티브 연산=ActiveX)을 표준·오픈·크로스플랫폼 API로 흡수·대체**하는 하나의 전략이었다.
@@ -816,7 +822,7 @@ GPU                            WebGPU
 - **보안 컨텍스트(secure context)** — HTTPS 등 안전한 연결에서만 기능을 여는 조건.
 - **WHATWG / W3C / Khronos / IETF** — 오늘날 웹 표준을 분담하는 네 조직.
 
-## 원본 출처
+## 참고 출처
 
 - [Document Object Model (DOM) Level 1 Specification — W3C Recommendation, 1998-10-01](https://www.w3.org/TR/1998/REC-DOM-Level-1-19981001/)
 - [W3C Press Release: DOM Level 1 as a W3C Recommendation (1998)](https://www.w3.org/Press/1998/DOM-REC)
