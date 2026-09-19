@@ -27,11 +27,10 @@ public String resolveRequiredPlaceholders(String text) throws IllegalArgumentExc
 }
 ```
 
-`spring-core` / `org.springframework.core.env` / `AbstractPropertyResolver.java` L271-L278 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-core/src/main/java/org/springframework/core/env/AbstractPropertyResolver.java#L271-L278))
+`spring-core` / `org.springframework.core.env` / `AbstractPropertyResolver.java` L272-L278 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-core/src/main/java/org/springframework/core/env/AbstractPropertyResolver.java#L272-L278))
 
 ```java
-// AbstractPropertyResolver.java L271-L278
- */
+// AbstractPropertyResolver.java L272-L278
 protected String resolveNestedPlaceholders(String value) {
     if (value.isEmpty()) {
         return value;
