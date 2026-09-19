@@ -138,7 +138,7 @@ protected @Nullable ModelAndView invokeHandlerMethod(HttpServletRequest request,
  |
  | L910  invocableMethod = createInvocableHandlerMethod(handlerMethod)
  |         = ServletInvocableHandlerMethod
- |         + argumentResolvers    (@RequestParam, @RequestBody ... 기본 29개, L648)
+ |         + argumentResolvers    (@RequestParam, @RequestBody ... 기본 28개, Kotlin 이 있으면 29개, L648)
  |         + returnValueHandlers  (@ResponseBody, 뷰 이름, ResponseEntity ... 기본 15개, L734)
  |         + binderFactory, parameterNameDiscoverer, methodValidator
  |
