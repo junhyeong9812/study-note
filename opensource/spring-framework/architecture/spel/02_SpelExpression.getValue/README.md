@@ -39,11 +39,10 @@ public @Nullable Object getValue(EvaluationContext context) throws EvaluationExc
 }
 ```
 
-`spring-expression` / `org.springframework.expression.spel.standard` / `SpelExpression.java` L478-L498 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-expression/src/main/java/org/springframework/expression/spel/standard/SpelExpression.java#L478-L498))
+`spring-expression` / `org.springframework.expression.spel.standard` / `SpelExpression.java` L479-L498 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-expression/src/main/java/org/springframework/expression/spel/standard/SpelExpression.java#L479-L498))
 
 ```java
-// SpelExpression.java L478-L498
- */
+// SpelExpression.java L479-L498
 private void checkCompile(ExpressionState expressionState) {
     this.interpretedCount.incrementAndGet();
     if (!expressionState.getEvaluationContext().isCompilationSupported()) {
@@ -83,7 +82,7 @@ private void checkCompile(ExpressionState expressionState) {
         interpretedCount 증가
         컴파일러 모드가 OFF 가 아니고 임계치를 넘으면 compileExpression
           IMMEDIATE  --> 2회부터
-          MIXED      --> 100회(INTERPRETED_COUNT_THRESHOLD)부터
+          MIXED      --> 100회를 넘으면(101회째, INTERPRETED_COUNT_THRESHOLD=100)
 ```
 
 노드 평가는 모두 같은 형태다.
