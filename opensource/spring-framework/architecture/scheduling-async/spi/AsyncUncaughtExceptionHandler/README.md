@@ -20,7 +20,7 @@ public interface AsyncUncaughtExceptionHandler {
 ## 흐름에서 불리는 자리
 
 ```text
- AsyncExecutionAspectSupport.handleError (L306)
+ AsyncExecutionAspectSupport.handleError (L307)
    반환 타입이 Future --> 예외를 다시 던져 Future 에 담는다
    void               --> exceptionHandler.handleUncaughtException(ex, method, params)
 ```
