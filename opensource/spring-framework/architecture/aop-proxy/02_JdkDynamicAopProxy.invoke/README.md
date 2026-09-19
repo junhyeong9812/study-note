@@ -109,7 +109,7 @@ public @Nullable Object invoke(Object proxy, Method method, Object[] args) throw
  invoke(proxy, method, args)
  |
  | [1] 특수 메서드                                          L174-L190
- |       equals / hashCode 를 타깃이 직접 구현하지 않았으면 프록시가 처리
+ |       equals / hashCode 가 프록시 대상 인터페이스에 선언돼 있지 않으면 프록시가 처리
  |       DecoratingProxy.getDecoratedClass --> 타깃 클래스
  |       Advised 계열 인터페이스 호출      --> 프록시 설정 객체로 위임
  |
