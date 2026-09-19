@@ -65,7 +65,8 @@ private void checkExpressionLength(String string) {
  |
  | L144 eatExpression()
  |        재귀 하강 파서. 우선순위가 낮은 규칙부터 내려간다
- |        삼항 --> 논리합 --> 논리곱 --> 관계 --> 덧셈 --> 곱셈 --> 단항 --> 주요항
+ |        대입/Elvis/삼항 --> 논리합 --> 논리곱 --> 관계 --> 덧셈 --> 곱셈
+ |          --> 거듭제곱/증감 --> 단항 --> 주요항
  |        주요항에서 프로퍼티 참조, 메서드 호출, 인덱서, 투영/선택, 빈 참조 등을 만든다
  |        --> SpelNodeImpl 트리
  |
@@ -91,7 +92,8 @@ private void checkExpressionLength(String string) {
 ```text
  SpelExpression
       --> getValue / setValue 의 진입점
-      --> AST 는 불변이므로 여러 스레드가 같은 식을 평가해도 안전하다
+      --> AST 노드는 접근자와 타입 기술자를 volatile 필드에 캐시하지만
+          갱신이 멱등이라 여러 스레드가 같은 식을 평가해도 안전하다
 
  파싱 오류
       --> SpelParseException (위치 정보 포함)
