@@ -146,7 +146,8 @@ private void instantiateSingleton(String beanName) {
  |       |
  |       +-- backgroundInit + bootstrapExecutor 있음
  |       |     depends-on 빈과 factoryBean 은 메인 스레드에서 먼저 getBean
- |       |     CompletableFuture.runAsync(instantiateSingleton)   병렬 생성
+ |       |     CompletableFuture.runAsync(instantiateSingletonInBackgroundThread)
+ |       |                                           병렬 생성 (스레드를 BACKGROUND 로 표시)
  |       |     싱글톤 팩토리로 "future 가 끝나면" 을 등록 (다른 빈이 먼저 요청하면 기다림)
  |       |     lazy 가 아니면 future 반환
  |       |
