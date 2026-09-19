@@ -38,7 +38,8 @@ public interface HandlerMethodReturnValueHandler {
  기본 15개 (RequestMappingHandlerAdapter L734)
    본문을 쓰는 쪽 (requestHandled = true)
      RequestResponseBodyMethodProcessor   @ResponseBody
-     HttpEntityMethodProcessor            ResponseEntity, HttpEntity
+     ResponseEntityReturnValueHandler     ResponseEntity, HttpEntity
+                                          (안에서 HttpEntityMethodProcessor 로 위임)
      HttpHeadersReturnValueHandler        HttpHeaders
    비동기
      DeferredResultMethodReturnValueHandler, CallableMethodReturnValueHandler,
