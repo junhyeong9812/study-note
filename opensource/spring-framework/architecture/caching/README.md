@@ -27,7 +27,7 @@
         이 메서드에 붙은 캐시 연산 목록(@Cacheable/@CachePut/@CacheEvict)을 모아 컨텍스트 구성
         연산이 없으면 그냥 타깃 실행
         |
-        +-- sync = true 인 @Cacheable --> executeSynchronized (캐시가 락을 잡고 한 번만 계산)
+        +-- sync = true 인 @Cacheable --> executeSynchronized (Cache.get(key, Callable) 에 맡긴다)
         |
         +-- 일반 경로
               1) beforeInvocation = true 인 @CacheEvict 먼저 수행
