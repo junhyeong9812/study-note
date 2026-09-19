@@ -12,6 +12,7 @@ Spring Framework의 동작을 호출 흐름 단위로 위에서 아래로 따라
 | [caching](caching/README.md) | `CacheInterceptor.invoke` | @Cacheable 메서드에서 캐시 조회, 실행, 저장, 제거가 일어나는 순서. 메서드 폴더 3개와 SPI 5종 |
 | [scheduling-async](scheduling-async/README.md) | `@Scheduled` 후처리기 / `AsyncExecutionInterceptor` | 주기 작업 등록과 비동기 호출 전환을 함께. 메서드 폴더 3개와 SPI 5종 |
 | [jdbc](jdbc/README.md) | `JdbcTemplate.execute` | 커넥션 획득, SQL 실행, 결과 매핑, 예외 변환까지. 메서드 폴더 3개와 SPI 4종 |
+| [r2dbc](r2dbc/README.md) | `DatabaseClient` / `R2dbcTransactionManager` | 논블로킹 드라이버로 쿼리를 조립하고 구독 시점에 실행하기까지, 커넥션은 구독 컨텍스트에 묶인다. 메서드 폴더 6개와 SPI 6종 |
 | [orm-jpa](orm-jpa/README.md) | `LocalContainerEntityManagerFactoryBean` / `JpaTransactionManager` | EntityManagerFactory 생성, @PersistenceContext 공유 프록시, 트랜잭션 바인딩과 예외 변환. 메서드 폴더 9개와 SPI 5종 |
 | [event-publishing](event-publishing/README.md) | `AbstractApplicationContext.publishEvent` | 이벤트가 발행되어 리스너와 @EventListener 메서드로 전달되기까지, 메서드 폴더 4개와 SPI 4종 |
 | [webmvc-request-processing](webmvc-request-processing/README.md) | `FrameworkServlet.processRequest` | HTTP 요청 하나가 `DispatcherServlet`을 거쳐 응답이 되기까지, 메서드 폴더 19개와 SPI 8종 |
@@ -23,4 +24,4 @@ Spring Framework의 동작을 호출 흐름 단위로 위에서 아래로 따라
 | [messaging-jms](messaging-jms/README.md) | `JmsTemplate` / 리스너 컨테이너 | 메시지 송신과 @JmsListener 수신, 커밋과 롤백 규칙. 메서드 폴더 4개와 SPI 4종 |
 | [validation-binding](validation-binding/README.md) | `DataBinder` | 요청 값이 객체 필드로 들어가고 @Valid 검증 오류가 모이기까지. 메서드 폴더 2개와 SPI 4종 |
 
-읽는 순서는 위에서 아래다. 컨테이너 기동이 싱글톤을 만들 때 빈 생성 흐름으로 들어가고, 빈 생성의 마지막에서 AOP 프록시 흐름이 갈라지고, 그 인터셉터 체인 위에서 트랜잭션 흐름이 돈다. 기동이 끝나며 발행하는 `ContextRefreshedEvent`가 MVC 요청 처리의 전략 목록을 채운다. 함수형 엔드포인트는 그 MVC와 WebFlux의 뼈대에 다른 구현을 끼운 갈래라 두 흐름 다음에 읽으면 된다. JPA 연동은 빈 생성과 트랜잭션 골격 위에 얹히므로 그 둘을 읽은 뒤에 보면 된다. 지금까지 18개 흐름을 그렸고, 남은 후보는 WebSocket/STOMP, R2DBC처럼 역시 같은 뼈대를 공유하는 갈래들이다.
+읽는 순서는 위에서 아래다. 컨테이너 기동이 싱글톤을 만들 때 빈 생성 흐름으로 들어가고, 빈 생성의 마지막에서 AOP 프록시 흐름이 갈라지고, 그 인터셉터 체인 위에서 트랜잭션 흐름이 돈다. 기동이 끝나며 발행하는 `ContextRefreshedEvent`가 MVC 요청 처리의 전략 목록을 채운다. 함수형 엔드포인트는 그 MVC와 WebFlux의 뼈대에 다른 구현을 끼운 갈래라 두 흐름 다음에 읽으면 된다. JPA 연동은 빈 생성과 트랜잭션 골격 위에 얹히므로 그 둘을 읽은 뒤에 보면 된다. R2DBC 는 JDBC 흐름과 짝을 이루므로 그 뒤에 나란히 읽으면 차이가 잘 보인다. 지금까지 19개 흐름을 그렸고, 남은 후보는 WebSocket/STOMP다.
