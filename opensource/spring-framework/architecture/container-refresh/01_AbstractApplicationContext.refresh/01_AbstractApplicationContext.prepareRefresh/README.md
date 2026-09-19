@@ -102,3 +102,5 @@ else if (this.applicationEventMulticaster != null) {
 ```
 
 [registerListeners](../08_AbstractApplicationContext.registerListeners/README.md)가 이 버퍼를 비운다.
+
+필수 프로퍼티 검증이 기대는 Environment 의 동작은 [리소스와 환경](../../../resource-environment/README.md) 흐름에 있다.
