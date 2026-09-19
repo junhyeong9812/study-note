@@ -81,7 +81,7 @@ protected @Nullable Object invokeJoinpoint() throws Throwable {
    반환
 ```
 
-트랜잭션 인터셉터가 하는 일은 [트랜잭션](../../../transaction/README.md) 흐름에서 이어진다.
+트랜잭션 인터셉터가 하는 일은 [트랜잭션](../../../transaction/README.md) 흐름에서 이어진다. 같은 자리에 붙는 캐시 인터셉터는 [캐시](../../../caching/README.md) 흐름에 있다.
 
 호출 스택이 중첩되므로, 인터셉터는 타깃 호출 **앞**과 **뒤** 모두에서 일할 수 있다. `@Around` 어드바이스가 `proceed()`를 부르지 않으면 타깃은 실행되지 않는다.
 
