@@ -44,11 +44,10 @@ public @Nullable Object invoke(final MethodInvocation invocation) throws Throwab
 
 실행기를 고르는 부분이다.
 
-`spring-aop` / `org.springframework.aop.interceptor` / `AsyncExecutionAspectSupport.java` L167-L190 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-aop/src/main/java/org/springframework/aop/interceptor/AsyncExecutionAspectSupport.java#L167-L190))
+`spring-aop` / `org.springframework.aop.interceptor` / `AsyncExecutionAspectSupport.java` L168-L190 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-aop/src/main/java/org/springframework/aop/interceptor/AsyncExecutionAspectSupport.java#L168-L190))
 
 ```java
-// AsyncExecutionAspectSupport.java L167-L190
- */
+// AsyncExecutionAspectSupport.java L168-L190
 protected @Nullable AsyncTaskExecutor determineAsyncExecutor(Method method) {
     AsyncTaskExecutor executor = this.executors.get(method);
     if (executor == null) {
@@ -76,11 +75,10 @@ protected @Nullable AsyncTaskExecutor determineAsyncExecutor(Method method) {
 
 제출과 오류 처리다.
 
-`spring-aop` / `org.springframework.aop.interceptor` / `AsyncExecutionAspectSupport.java` L277-L293 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-aop/src/main/java/org/springframework/aop/interceptor/AsyncExecutionAspectSupport.java#L277-L293))
+`spring-aop` / `org.springframework.aop.interceptor` / `AsyncExecutionAspectSupport.java` L278-L293 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-aop/src/main/java/org/springframework/aop/interceptor/AsyncExecutionAspectSupport.java#L278-L293))
 
 ```java
-// AsyncExecutionAspectSupport.java L277-L293
- */
+// AsyncExecutionAspectSupport.java L278-L293
 protected @Nullable Object doSubmit(Callable<Object> task, AsyncTaskExecutor executor, Class<?> returnType) {
     if (CompletableFuture.class.isAssignableFrom(returnType)) {
         return executor.submitCompletable(task);
@@ -99,11 +97,10 @@ protected @Nullable Object doSubmit(Callable<Object> task, AsyncTaskExecutor exe
 }
 ```
 
-`spring-aop` / `org.springframework.aop.interceptor` / `AsyncExecutionAspectSupport.java` L306-L321 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-aop/src/main/java/org/springframework/aop/interceptor/AsyncExecutionAspectSupport.java#L306-L321))
+`spring-aop` / `org.springframework.aop.interceptor` / `AsyncExecutionAspectSupport.java` L307-L321 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-aop/src/main/java/org/springframework/aop/interceptor/AsyncExecutionAspectSupport.java#L307-L321))
 
 ```java
-// AsyncExecutionAspectSupport.java L306-L321
- */
+// AsyncExecutionAspectSupport.java L307-L321
 protected void handleError(Throwable ex, Method method, @Nullable Object... params) throws Exception {
     if (Future.class.isAssignableFrom(method.getReturnType())) {
         ReflectionUtils.rethrowException(ex);
@@ -130,10 +127,16 @@ protected void handleError(Throwable ex, Method method, @Nullable Object... para
  |
  | L104 determineAsyncExecutor(userMethod)
  |        메서드별 캐시 조회
- |        @Async("qualifier") 가 있으면 그 이름의 Executor 빈
- |        없으면 기본 실행기 (AsyncConfigurer 또는 taskExecutor 빈)
+ |        @Async("qualifier") 의 이름은 하위 클래스 AnnotationAsyncExecutionInterceptor
+ |          가 읽는다. @EnableAsync 가 심는 것도 그 하위 클래스이고,
+ |          이 클래스의 getExecutorQualifier 는 항상 null 이다 (L142)
+ |        이름이 없으면 기본 실행기를 순서대로 찾는다
+ |          1) AsyncConfigurer.getAsyncExecutor()
+ |          2) TaskExecutor 타입 빈이 유일하면 그것        (AEAS L238)
+ |          3) 이름이 "taskExecutor" 인 Executor 빈        (AEAS L244, L258)
+ |          4) 그래도 없으면 SimpleAsyncTaskExecutor 폴백  (L155)
  |        Executor 이지만 AsyncTaskExecutor 가 아니면 어댑터로 감싼다
- |        아무것도 없으면 IllegalStateException
+ |        L105 의 IllegalStateException 은 폴백이 있어 닿지 않는 방어 코드
  |
  | L110 Callable 로 감싼다
  |        invocation.proceed()  = 타깃 메서드 실행 (다른 스레드에서)
