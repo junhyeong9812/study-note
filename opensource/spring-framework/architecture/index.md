@@ -14,7 +14,7 @@ Spring Framework의 동작을 호출 흐름 단위로 위에서 아래로 따라
 | [jdbc](jdbc/README.md) | `JdbcTemplate.execute` | 커넥션 획득, SQL 실행, 결과 매핑, 예외 변환까지. 메서드 폴더 3개와 SPI 4종 |
 | [event-publishing](event-publishing/README.md) | `AbstractApplicationContext.publishEvent` | 이벤트가 발행되어 리스너와 @EventListener 메서드로 전달되기까지, 메서드 폴더 4개와 SPI 4종 |
 | [webmvc-request-processing](webmvc-request-processing/README.md) | `FrameworkServlet.processRequest` | HTTP 요청 하나가 `DispatcherServlet`을 거쳐 응답이 되기까지, 메서드 폴더 19개와 SPI 8종 |
-| [webflux-request-processing](webflux-request-processing/README.md) | `HttpWebHandlerAdapter.handle` | 리액티브 스택에서 요청이 Mono 파이프라인으로 조립되어 응답이 되기까지, 메서드 폴더 5개와 SPI 5종 |
+| [webflux-request-processing](webflux-request-processing/README.md) | `HttpWebHandlerAdapter.handle` | 리액티브 스택에서 요청이 Mono 파이프라인으로 조립되어 응답이 되기까지, 메서드 폴더 4개와 SPI 5종 |
 | [http-client](http-client/README.md) | `RestClient` / `WebClient` | 클라이언트가 요청을 보내고 응답을 객체로 바꾸기까지, 동기와 리액티브를 나란히. 메서드 폴더 4개와 SPI 4종 |
 | [test-context](test-context/README.md) | `TestContextManager` / `MockMvc` | 테스트 컨텍스트가 캐시되고 주입되는 과정과 MockMvc 호출 경로. 메서드 폴더 3개와 SPI 5종 |
 | [spel](spel/README.md) | `ExpressionParser` / `SpelExpression` | 식 문자열이 구문 트리로 파싱되고 평가 문맥 위에서 값이 되기까지. 메서드 폴더 4개와 SPI 5종 |
