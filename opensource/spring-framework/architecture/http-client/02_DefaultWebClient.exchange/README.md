@@ -99,13 +99,13 @@ private ClientRequest.Builder initRequestBuilder() {
        L450 관측 필터를 필터 체인 뒤에 붙인다
        L456 ClientRequest 생성 (여기서 불변 객체로 확정)
        |
-       L462 finalFilterFunction.apply(exchangeFunction).exchange(request)
+       L462-L463 Mono.defer(() -> finalFilterFunction.apply(exchangeFunction).exchange(request))
        |      필터들이 ExchangeFunction 을 감싼 형태
        |      = 요청/응답을 가로채 헤더 추가, 인증, 재시도 등을 넣는 자리
        |
        L464 checkpoint(...)                  리액터 스택 트레이스에 이름 남기기
        L467 응답이 비어 있으면 오류
-       L469 관측 종료 처리 (취소면 aborted 표시)
+       L472 doFinally 에서 관측 종료 (취소면 L475 aborted 표시, L477 stop)
 ```
 
 1. 실제 전송은 [ExchangeFunctions.exchange](01_ExchangeFunctions.exchange/README.md)가 커넥터에 위임한다.
