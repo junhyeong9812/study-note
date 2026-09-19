@@ -30,8 +30,9 @@
 ```text
  @RequestBody @Valid UserDto dto
    RequestResponseBodyMethodProcessor
-     HttpMessageConverter 로 본문을 객체로 (여기서는 DataBinder 를 쓰지 않는다)
-     그 뒤 같은 validateIfApplicable 로 검증
+     HttpMessageConverter 로 본문을 객체로 (여기서는 DataBinder.bind 를 쓰지 않는다)
+     그 뒤 WebDataBinder 를 만들어 validateIfApplicable 로 검증
+       (ModelAttribute 쪽이 아니라 AbstractMessageConverterMethodArgumentResolver 의 동명 메서드)
      오류면 MethodArgumentNotValidException
 ```
 
