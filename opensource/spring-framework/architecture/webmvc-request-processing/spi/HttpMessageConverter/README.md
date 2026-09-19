@@ -55,7 +55,8 @@ public interface HttpMessageConverter<T> {
    +-- ByteArrayHttpMessageConverter      byte[]
    +-- StringHttpMessageConverter         String, text/*
    +-- ResourceHttpMessageConverter       Resource
-   +-- AllEncompassingFormHttpMessageConverter   폼, multipart
+   +-- MultipartHttpMessageConverter             폼, multipart
+   |                                             (AllEncompassingFormHttpMessageConverter 는 7.1 deprecated)
    +-- GenericHttpMessageConverter        제네릭 타입 인지 (List<User>)
    +-- SmartHttpMessageConverter          ResolvableType + 힌트
          +-- JacksonJsonHttpMessageConverter    JSON (Jackson 3)
