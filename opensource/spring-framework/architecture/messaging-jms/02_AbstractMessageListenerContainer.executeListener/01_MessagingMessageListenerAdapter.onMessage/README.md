@@ -62,8 +62,10 @@ protected Message<?> toMessagingMessage(jakarta.jms.Message jmsMessage) {
  |
  +-- L84 반환값이 있으면 handleResult(result, jmsMessage, session)
         응답 대상 결정
-          @SendTo 가 있으면 그 목적지
-          없으면 요청 메시지의 JMSReplyTo
+          반환값이 JmsResponse 면 그 목적지
+          아니면 요청 메시지의 JMSReplyTo
+          그것도 없으면 @SendTo 로 정한 기본 목적지
+          셋 다 없으면 InvalidDestinationException
         MessageConverter 로 응답 메시지를 만들어 전송
         correlationId 를 이어 붙여 요청-응답을 연결한다
 ```
