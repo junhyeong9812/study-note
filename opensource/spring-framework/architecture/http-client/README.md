@@ -17,7 +17,7 @@
         body.writeTo(request)          HttpMessageConverter 로 요청 본문 쓰기
         request.execute()              <-- 여기서 실제 네트워크 호출 (블로킹)
         exchangeFunction.exchange(...) 응답을 원하는 형태로 변환
-        finally 응답 close, 관측 종료
+        finally 관측 종료, 응답 close
         |
         +-- [01-01] readBody --> 상태 코드 판정 --> HttpMessageConverter 로 본문 읽기
                4xx/5xx 이면 StatusHandler 가 예외를 던진다
