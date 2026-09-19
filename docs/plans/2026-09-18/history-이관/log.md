@@ -72,8 +72,25 @@
 | `~/project/java-history/spring/framework-6.x.md` ↔ `framework-7.x.md` | 6.x L23·L143 / 7.x L151·L157 | 6.x 는 「Servlet, JPA, …, Annotations 등 **모든 표준 API import 가 바뀐다**」·「`jakarta.*` 로 **전면 교체**」라 적는데, 7.x 는 「**6.x 가 남겨둔 잔여 `javax.*`**」(`javax.annotation`·`javax.inject`)를 7.0 이 마저 정리한다고 적는다 |
 | `~/project/java-history/spring/framework-3.x.md` | 「Spring MVC의 REST 지원」 흐름 서술·mermaid `alt`/`else` 라벨 | MVC 흐름 예제가 `@RestController` 를 쓰는데 `framework-4.x.md` 는 이를 **4.0 도입**으로 적는다. 3.x 편만 읽는 독자가 3.x 기능으로 오인할 수 있다 |
 | `~/project/java-history/spring/framework-7.x.md` | L10 ↔ L154 | 「Hibernate ORM **7.1+**」(「릴리스 정보」의 권장 런타임) vs 「Hibernate ORM **7+**」(「마이그레이션 관점」) |
+| `~/project/java-history/java/java-17.md` | 「sealed 클래스 정식화 (JEP 409)」·「switch 패턴 매칭 (JEP 406)」 절 | 같은 절 안에서 `Shape` 의 `permits` 목록이 넷 다 다르다 — 코드블록은 `permits Circle, Rectangle`, 바로 아래 mermaid classDiagram 은 `Circle`·`Square`·`Triangle`, switch 코드블록은 `case Circle c`/`case Rectangle r`, 그 아래 mermaid flowchart 는 `case Circle c`/`case Square s`/`case Triangle t` 다. 각각 다른 예로 든 것으로 보이나 같은 타입 이름이라 초보자에게 모순으로 읽힌다 |
+
+| `~/project/java-history/java/jdk-1.2.md` | L48 코드 주석 | 「제네릭·diamond·for-each·오토박싱은 모두 J2SE 5.0부터다」 중 `diamond` 만 어긋난다 — `java-7.md` 가 「다이아몬드 연산자 (Diamond Operator, `<>`)」를 자기 절로 두고 `README` 표도 diamond 를 Java SE 7 행에 적는다. 나머지 셋(제네릭·for-each·오토박싱)은 `java-5.md` 와 맞는다 |
+| `~/project/java-history/java/jdk-1.4.md` | L10 | 「참고: JСР(Java Community Process)…」의 `С`·`Р` 가 라틴 문자가 아니라 키릴 문자다(U+0421·U+0420). 같은 괄호가 "Java Community Process"로 풀어 적으므로 `JCP` 의 표기 오류로 보인다 — 겉모습이 같아 눈으로는 안 보이고 grep 에서만 어긋난다 |
+| `~/project/java-history/java/java-5.md` ↔ `java-8.md` | java-5 L11 ↔ java-8 L10 | LTS 도입 기준점이 다르게 적힌다 — java-5 는 「LTS는 Java 8 이후 도입」, java-8 은 「현대적 LTS 모델(**Java 11부터 시작**) 이전 버전」, `README` 는 LTS 목록에 Java 8 을 포함한다. 소급 지정 vs 모델 시작으로 기준점을 나누면 설명되나 한 문장씩만 읽으면 충돌로 읽힌다(저강도 — 재서술본에는 교차 주로만 달았다) |
+| `~/project/java-history/java/java-9.md` ↔ `java-11.md` | 9편 HTTP/2 클라이언트 절 코드 ↔ 11편 표준 HTTP 클라이언트 절 코드 | 같은 자리의 API 이름이 다르다 — 9편 `HttpResponse.BodyHandler.asString()` vs 11편 `HttpResponse.BodyHandlers.ofString()`. 인큐베이터 → 정식화 과정의 이름 변경으로 보이나 두 편 모두 그 사실을 적지 않아, 한 편만 읽으면 오타로 읽힌다 |
+| `~/project/java-history/java/java-12.md` | 「switch 표현식 (JEP 325)」 절 | 12편은 1차 preview 와 "이후 Java 13의 2차 preview에서 `yield`로 대체된다"까지만 적고 **정식화 시점(Java 14, JEP 361)** 은 적지 않는다. 13편은 "(Java 14에서 정식화)", 14편은 "12·13의 두 차례 preview를 거쳐 정식 기능으로 확정됐다"라 적는다 |
+| `~/project/java-history/java/java-14.md` ↔ `java-9.md`·`java-10.md` | 14편 「시대적 배경」 첫 문장 ↔ 9편·10편 「시대적 배경」 | 14편은 "Java는 9 버전부터 6개월 주기 릴리스 모델로 전환했고"라 적는데, 9편은 "Java 9는 옛 모델의 **마지막** 메이저 릴리스가 되었고, 6개월 뒤 Java 10(2018년 3월)이 새 모델의 **첫** 릴리스로 나왔다", 10편은 "Java 10이 그 첫 결과물"이라 적는다 (발견: java-7~13 워커. 14편은 다른 워커 담당) |
+| `~/project/java-history/java/java-25.md` | L35 | Scoped Values 절이 경로를 「**22~24의** 여러 프리뷰를 거쳐」로 적어 `java-21.md` 의 1차 프리뷰(JEP 446)를 빠뜨린다. `java-21.md` L237 이 그 절을 「Scoped Values (JEP 446, Preview/1차 프리뷰)」로 적고 `java-24.md` 는 JEP 487 을 「4차 프리뷰」로 세므로, 1차부터 세면 21~24 다 (발견: java-21~26 워커) |
+| `~/project/java-history/java/java-18.md` | lead(L3) ↔ L16·L18 | lead 가 「동시에 **Loom**/Panama/Amber 프로젝트의 프리뷰·인큐베이터 기능들이 다음 단계로 진행되었다」인데, L16 은 「Project Loom … 18에서는 **아직 직접적인 기능이 들어오지 않았지만**」, L18 은 「이 중 **Amber와 Panama**의 진행」이라 적는다 — lead 가 Loom 을 과포함한다. 본문이 바로 바로잡고 있어 재서술본에는 주를 달지 않았다 |
+
 
 원본을 고치면 재서술본의 「재서술자 주:」 블록도 함께 정리한다.
+
+검토했으나 **모순이 아니라고 판단해 위 표에 올리지 않은 것** 2건(감사용 메모 — 상류에 고칠 것이 없다).
+
+- **LTS 표기** — `README` 「전체 타임라인」의 `✅` 가 11·17·21·25 넷에만 붙고 Java 8 행은 비어 있으나, 표 아래 주석이 LTS 를 「8, 11, 17, 21, 25」 다섯으로 적는다. `java-8.md` 가 스스로를 「현대적 LTS 모델(Java 11부터 시작) 이전 … 사실상 … "장기 지원"」이라 적고 `java-11.md` 가 자기를 「6개월 케이던스 도입 이후 첫 LTS」라 적으므로 **기준이 둘(소급 지정 vs 모델 시작)인 것이지 값이 어긋난 것이 아니다.** 재서술본 README 에는 두 기준을 나란히 적는 세 줄을 보충으로 달았다.
+- **릴리스 모델 전환 시점** — 「6개월 모델의 첫 릴리스」를 9편·10편은 Java 10 으로, 14편은 「9 버전부터 전환」으로 적는다. 이는 **전환을 결정·발표한 시점(9)과 그 모델로 나온 첫 결과물(10)의 차이**이고, 이미 위 표 java-14 행으로 등재돼 있어 중복 등재하지 않는다.
+
 
 ## 후속 작업 — 「그 뒤」 문서 (사용자 요청 2026-09-20)
 
