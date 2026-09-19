@@ -201,7 +201,8 @@ private TransactionStatus startTransaction(TransactionDefinition definition, Obj
  |      +-- NESTED         --> 세이브포인트 생성 (JDBC) 또는 중첩 begin
  |      +-- REQUIRED / SUPPORTS / MANDATORY
  |             --> 기존 트랜잭션에 참여 (새 트랜잭션 아님)
- |                 격리 수준/읽기 전용이 다르면 검증 후 경고 또는 예외
+ |                 validateExistingTransaction = true 일 때만 (기본 false)
+ |                 격리 수준/읽기 전용이 어긋나면 IllegalTransactionStateException
  |
  +-- 트랜잭션 없음
         +-- MANDATORY  --> IllegalTransactionStateException  (반드시 있어야 하는데 없음)
