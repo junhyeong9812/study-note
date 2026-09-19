@@ -127,7 +127,8 @@ private Mono<HandlerResult> handleException(
 
  handleException(exchange, ex, handlerMethod, bindingContext)
  |
- | L291 성공 응답용 producible 타입 속성 제거, 응답 헤더 비우기
+ | L291 성공 응답용 producible 타입 속성 제거
+ | L292 Content-* 응답 헤더만 제거 (clearContentHeaders)
  | L294 예외에 맞는 @ExceptionHandler 메서드 조회 (컨트롤러 -> @ControllerAdvice)
  +-- L321 찾았으면 예외와 원인들을 인자로 넘겨 호출
           없으면 오류를 그대로 전파 --> 위쪽 WebExceptionHandler 가 처리
