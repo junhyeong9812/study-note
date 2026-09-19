@@ -6,11 +6,10 @@
 
 ## 실제 코드
 
-`spring-jms` / `org.springframework.jms.core` / `JmsTemplate.java` L631-L652 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-jms/src/main/java/org/springframework/jms/core/JmsTemplate.java#L631-L652))
+`spring-jms` / `org.springframework.jms.core` / `JmsTemplate.java` L632-L652 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-jms/src/main/java/org/springframework/jms/core/JmsTemplate.java#L632-L652))
 
 ```java
-// JmsTemplate.java L631-L652
- */
+// JmsTemplate.java L632-L652
 protected void doSend(Session session, Destination destination, MessageCreator messageCreator)
         throws JMSException {
 
@@ -48,7 +47,9 @@ protected void doSend(Session session, Destination destination, MessageCreator m
  |        MessagePostProcessor 가 지정됐으면 헤더를 더 붙일 수 있다
  |
  | L642 doSend(producer, message)
- |        deliveryMode, priority, timeToLive 설정이 있으면 적용해 send
+ |        explicitQosEnabled(기본 false)가 켜져 있을 때만
+ |          deliveryMode, priority, timeToLive 를 붙여 send
+ |        아니면 producer.send(message)
  |
  | L644 세션이 트랜잭션이고 이 템플릿이 만든 세션이면 commit
  |        외부(JTA) 트랜잭션이면 여기서 커밋하지 않는다
@@ -69,5 +70,5 @@ protected void doSend(Session session, Destination destination, MessageCreator m
 
  변환기 선택
       --> 기본 SimpleMessageConverter 는 String/byte[]/Map/Serializable 을 다룬다
-      --> JSON 으로 주고받으려면 MappingJackson2MessageConverter 등을 등록한다
+      --> JSON 으로 주고받으려면 JacksonJsonMessageConverter 등을 등록한다
 ```
