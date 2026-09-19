@@ -73,8 +73,10 @@ public interface BindingResult extends Errors {
  Errors
    +-- BindingResult                       대상 객체 + 프로퍼티 접근
          +-- AbstractBindingResult
-               +-- BeanPropertyBindingResult   기본 (프로퍼티 접근)
-               +-- DirectFieldBindingResult    필드 직접 접근
+               +-- MapBindingResult              맵 대상
+               +-- AbstractPropertyBindingResult
+                     +-- BeanPropertyBindingResult   기본 (프로퍼티 접근)
+                     +-- DirectFieldBindingResult    필드 직접 접근
 
  오류 종류
    ObjectError    객체 전체에 대한 오류 (reject)
