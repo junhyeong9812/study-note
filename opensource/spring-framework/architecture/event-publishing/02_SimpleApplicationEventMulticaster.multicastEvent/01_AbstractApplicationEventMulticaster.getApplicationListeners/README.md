@@ -6,11 +6,10 @@
 
 ## 실제 코드
 
-`spring-context` / `org.springframework.context.event` / `AbstractApplicationEventMulticaster.java` L187-L223 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/context/event/AbstractApplicationEventMulticaster.java#L187-L223))
+`spring-context` / `org.springframework.context.event` / `AbstractApplicationEventMulticaster.java` L188-L223 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/context/event/AbstractApplicationEventMulticaster.java#L188-L223))
 
 ```java
-// AbstractApplicationEventMulticaster.java L187-L223
- */
+// AbstractApplicationEventMulticaster.java L188-L223
 protected Collection<ApplicationListener<?>> getApplicationListeners(
         ApplicationEvent event, ResolvableType eventType) {
 
