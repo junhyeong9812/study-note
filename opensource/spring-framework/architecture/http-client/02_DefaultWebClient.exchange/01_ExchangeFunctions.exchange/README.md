@@ -49,7 +49,7 @@ public Mono<ClientResponse> exchange(ClientRequest clientRequest) {
  |
  | L110 연결 계열 오류는 WebClientRequestException 으로 감싼다
  |
- +-- L111 DefaultClientResponse 로 감싸 반환
+ +-- L111 map --> L114 DefaultClientResponse 로 감싸 반환
         응답 헤더/상태는 이미 있고, 본문은 아직 흐르지 않았다
         strategies(코덱)를 함께 담아 나중에 디코딩할 수 있게 한다
 ```
@@ -57,7 +57,8 @@ public Mono<ClientResponse> exchange(ClientRequest clientRequest) {
 ```text
  RestClient 와의 대비
 
- RestClient   request.execute()          응답 전체를 기다리는 블로킹 호출
+ RestClient   request.execute()          상태와 헤더까지 기다리는 블로킹 호출
+                                          (본문은 InputStream 으로 남아 읽을 때 흘러온다)
  WebClient    connector.connect(...)     헤더까지만 받고 본문은 스트림으로 남긴다
                                           --> 본문은 bodyToMono 구독 시 흘러온다
 ```
