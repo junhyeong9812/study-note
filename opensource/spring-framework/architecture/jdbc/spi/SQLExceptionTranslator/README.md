@@ -20,7 +20,7 @@ public interface SQLExceptionTranslator {
 ## 흐름에서 불리는 자리
 
 ```text
- JdbcTemplate.translateException (L1547)
+ JdbcTemplate.translateException (L1548)
    getExceptionTranslator().translate(task, sql, ex)
      null 이면 UncategorizedSQLException 으로 감싼다
 ```
@@ -37,7 +37,9 @@ public interface SQLExceptionTranslator {
    |     +-- SQLExceptionSubclassTranslator      JDBC 4 표준 예외 타입
    +-- (사용자 구현)
 
- 기본 선택
-   데이터 소스의 제품명을 보고 SQLErrorCodeSQLExceptionTranslator 를 고른다
-   제품을 모르면 SQLState 기반으로 떨어진다
+ 기본 선택 (JdbcAccessor.getExceptionTranslator L114-L132)
+   SQLExceptionSubclassTranslator      JDBC 4 표준 예외 하위 타입으로 판정 (6.0 이후 기본)
+     못 정하면 SQLStateSQLExceptionTranslator 로 폴백
+   클래스패스 루트에 사용자가 sql-error-codes.xml 을 둔 경우에만
+     SQLErrorCodeSQLExceptionTranslator 로 바뀐다
 ```
