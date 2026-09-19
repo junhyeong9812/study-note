@@ -2,7 +2,7 @@
 
 상위: [DispatcherServlet.doDispatch](../README.md)
 
-핸들러 하나와 그 앞뒤에 도는 [HandlerInterceptor](../../spi/HandlerInterceptor/README.md) 목록의 묶음이다. 세 메서드가 필드 `interceptorIndex` 하나를 공유하기 때문에 한 폴더에서 같이 본다. 이 필드가 "`preHandle`을 어디까지 성공했나"를 기억한다.
+핸들러 하나와 그 앞뒤에 도는 [HandlerInterceptor](../../spi/HandlerInterceptor/README.md) 목록의 묶음이다. `applyPreHandle`이 기록하고 `triggerAfterCompletion`이 읽는 필드 `interceptorIndex`로 두 메서드가 엮여 있어 한 폴더에서 같이 본다. 이 필드가 "`preHandle`을 어디까지 성공했나"를 기억한다. `applyPostHandle`은 이 필드를 쓰지 않고 항상 목록 끝에서부터 역순으로 돈다.
 
 ## 실제 코드
 
