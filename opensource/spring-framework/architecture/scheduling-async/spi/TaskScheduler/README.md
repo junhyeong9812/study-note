@@ -6,7 +6,7 @@
 
 ## 실제 코드
 
-`spring-context` / `org.springframework.context....scheduling` / `TaskScheduler.java` L51-L247 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/context/../scheduling/TaskScheduler.java#L51-L247))
+`spring-context` / `org.springframework.scheduling` / `TaskScheduler.java` L51-L247 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/scheduling/TaskScheduler.java#L51-L247))
 
 ```java
 // TaskScheduler.java L51-L247
