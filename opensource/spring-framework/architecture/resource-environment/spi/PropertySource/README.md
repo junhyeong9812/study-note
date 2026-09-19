@@ -66,11 +66,11 @@ public abstract class PropertySource<T> {
  PropertySource<T>
    +-- EnumerablePropertySource         키 목록을 알 수 있다
    |     +-- MapPropertySource
-   |     |     +-- PropertiesPropertySource
-   |     |     +-- SystemEnvironmentPropertySource   대소문자/구분자 관대 매칭
-   |     +-- ResourcePropertySource                  파일에서 로드
+   |           +-- PropertiesPropertySource
+   |           |     +-- ResourcePropertySource      파일에서 로드 (core.io.support)
+   |           +-- SystemEnvironmentPropertySource   대소문자/구분자 관대 매칭
    +-- StubPropertySource                            자리만 잡아 두는 소스
-   +-- ComparisonPropertySource
+         +-- ComparisonPropertySource                비교 전용 (package-private)
 
  순서 조작
    MutablePropertySources.addFirst / addLast / addBefore / addAfter
