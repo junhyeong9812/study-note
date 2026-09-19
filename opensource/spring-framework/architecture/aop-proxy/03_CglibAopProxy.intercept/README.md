@@ -91,10 +91,13 @@ JDK 경로와의 차이는 다음과 같다.
       --> processReturnType 을 거쳐 호출자에게
 
  가로채지 못하는 메서드
-      final / private / static --> 어드바이스 없이 타깃 구현이 그대로 실행
-      = @Transactional 을 final 메서드에 붙이면 조용히 동작하지 않는다
+      final / private / static --> 어드바이스가 붙지 않는다
+      호출은 타깃이 아니라 프록시 인스턴스에서 실행되고, 그 필드는 초기화돼 있지 않아
+      NPE 가 나기 쉽다 (CglibAopProxy L309-L311 의 DEBUG 로그가 그대로 경고한다)
+      = @Transactional 을 final 메서드에 붙이면 동작하지 않는다
+        public final 메서드라면 WARN 로그가 남는다 (L304)
 
  타깃 인스턴스
       --> 프록시와 타깃은 서로 다른 객체다
-          프록시의 필드는 초기화되지 않은 상태이고, 모든 호출은 타깃으로 위임된다
+          프록시의 필드는 초기화되지 않은 상태이고, 가로챈 호출은 타깃으로 위임된다
 ```
