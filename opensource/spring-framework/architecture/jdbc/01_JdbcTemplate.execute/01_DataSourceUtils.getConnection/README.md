@@ -6,11 +6,10 @@
 
 ## 실제 코드
 
-`spring-jdbc` / `org.springframework.jdbc.datasource` / `DataSourceUtils.java` L78-L89 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-jdbc/src/main/java/org/springframework/jdbc/datasource/DataSourceUtils.java#L78-L89))
+`spring-jdbc` / `org.springframework.jdbc.datasource` / `DataSourceUtils.java` L79-L89 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-jdbc/src/main/java/org/springframework/jdbc/datasource/DataSourceUtils.java#L79-L89))
 
 ```java
-// DataSourceUtils.java L78-L89
- */
+// DataSourceUtils.java L79-L89
 public static Connection getConnection(DataSource dataSource) throws CannotGetJdbcConnectionException {
     try {
         return doGetConnection(dataSource);
@@ -110,15 +109,16 @@ public static void doReleaseConnection(@Nullable Connection con, @Nullable DataS
  |      필요하면 실제 커넥션을 지금 가져온다 (지연 획득)
  |      --> 그 커넥션 반환                 = 트랜잭션에 참여
  |
- +-- L117 없으면 fetchConnection(dataSource)     풀에서 새 커넥션
+ +-- L118 없으면 fetchConnection(dataSource)     풀에서 새 커넥션
  |
- +-- L120 동기화만 활성인 경우 (트랜잭션은 없지만 동기화는 켜짐)
+ +-- L120 이 DataSource 로 바인딩된 홀더가 없고 동기화는 활성인 경우
+ |        (JTA 트랜잭션이 진행 중일 때도 이 갈래를 탄다)
         ConnectionHolder 를 만들어 바인딩하고
         ConnectionSynchronization 을 등록해 종료 시 정리되게 한다
 
  doReleaseConnection(con, dataSource)
  |
- +-- L412 바인딩된 홀더의 커넥션과 같은 객체인가?
+ +-- L413 바인딩된 홀더의 커넥션과 같은 커넥션인가? (프록시를 풀어 비교)
  |      같다 --> released()  참조 카운트만 줄이고 닫지 않는다
  |               (트랜잭션이 끝날 때 트랜잭션 매니저가 닫는다)
  |
