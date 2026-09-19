@@ -63,8 +63,46 @@
 | `~/project/python-history/03-현대-Python.md` | 표 | 코드 스팬 안의 파이프(`` `X \| Y` ``)가 GFM 표 칸을 잘라 3.9·3.10 행 렌더링이 깨진다 |
 | `~/project/python-history/05-데이터-ML-생태계.md` | L3·L220·L222 | 「20여 년」 / 「30년 전 NumPy」 / 「30년」이 서로 어긋난다(같은 문서가 NumPy 1.0을 2006년이라 적는다) |
 | `~/project/python-history/06-핵심-개념-진화.md` | L199 | 「PEP 342, Python 2.5 / **2005**」 — 2005는 PEP 작성 연도다. 같은 절 다른 행은 전부 릴리스 연도라 2006이 규칙에 맞다 |
+| `~/project/java-history/spring/boot-2.x.md` | 「릴리스 정보」 2.3 / 「마이너 버전별 변화」 2.3 / 「그 외」 | 같은 2.3 기능의 빌드 도구 한정어가 셋 다 다르다 — 「릴리스 정보」는 「**그레이들 기반** OCI 이미지 빌드(Buildpacks)」, 「마이너 버전별 변화」는 「Buildpacks 이미지 빌드」, 「그 외」가 드는 명령은 메이븐 `mvn spring-boot:build-image` 다 |
+| `~/project/java-history/spring/kotlin-and-spring.md` | 「플러그인 역할」 목록 | 표제는 「**플러그인** 역할」인데 셋째 항목 `jackson-module-kotlin` 은 `plugins` 가 아니라 `dependencies` 블록이고, 같은 블록의 `kotlin-reflect` 는 목록에 없다 |
+| `~/project/java-history/spring/boot-2.x.md` | L115 코드 주석 | 「Boot 가 제공하는 Kotlin **확장 함수**」(`runApplication`) — 확장 함수가 아니라 **최상위 reified 함수**로 보인다. 같은 repo 의 `kotlin-and-spring.md` 가 확장 함수를 정확히 정의·예시하므로 문서 간 불일치다 |
+| `~/project/java-history/spring/README.md` ↔ `boot-3.x.md` | 「전체 타임라인」 2022~ 행 | README 는 Boot 를 「3.0 / 3.1~3.4」까지 적는데 `boot-3.x.md` 는 **3.5(2025-05)** 까지 다룬다 |
+| `~/project/java-history/spring/framework-4.x.md` | 「릴리스 정보」 ↔ 「시대적 배경」 | 「릴리스 정보」는 4.0 을 **2013-12**로 적는데 「시대적 배경」은 「**2014년 3월** Java 8 이 출시되며 … Spring 4.0 은 이 변화에 맞춰 … 정비」라 적어, 4.0 이 Java 8 보다 석 달 앞선다. 원문 참고 출처의 *Spring Framework 4.0.3 released - Java 8 support production-ready*(2014-03)로 보아 4.0 에서 시작해 4.0.x 에서 완성된 지원을 한 문단으로 묶은 것으로 보인다 |
+| `~/project/java-history/spring/framework-7.x.md` | L124 ↔ L136 (API 버저닝 절) | 같은 절의 코드블록 사이에서 경로가 다르다 — 서버 `@GetMapping(path = "/account/{id}", version = "1.1")` vs 클라이언트 `.uri("/accounts/1")` |
+| `~/project/java-history/spring/framework-6.x.md` ↔ `framework-7.x.md` | 6.x L23·L143 / 7.x L151·L157 | 6.x 는 「Servlet, JPA, …, Annotations 등 **모든 표준 API import 가 바뀐다**」·「`jakarta.*` 로 **전면 교체**」라 적는데, 7.x 는 「**6.x 가 남겨둔 잔여 `javax.*`**」(`javax.annotation`·`javax.inject`)를 7.0 이 마저 정리한다고 적는다 |
+| `~/project/java-history/spring/framework-3.x.md` | 「Spring MVC의 REST 지원」 흐름 서술·mermaid `alt`/`else` 라벨 | MVC 흐름 예제가 `@RestController` 를 쓰는데 `framework-4.x.md` 는 이를 **4.0 도입**으로 적는다. 3.x 편만 읽는 독자가 3.x 기능으로 오인할 수 있다 |
+| `~/project/java-history/spring/framework-7.x.md` | L10 ↔ L154 | 「Hibernate ORM **7.1+**」(「릴리스 정보」의 권장 런타임) vs 「Hibernate ORM **7+**」(「마이그레이션 관점」) |
 
 원본을 고치면 재서술본의 「재서술자 주:」 블록도 함께 정리한다.
+
+## 후속 작업 — 「그 뒤」 문서 (사용자 요청 2026-09-20)
+
+8주제 이관이 끝나면 **원본 이후의 변화를 오늘자 기준으로 조사해 추가**한다.
+
+원본 repo 의 시점 실측(연도 언급 분포):
+
+| 원본 | 2024 | 2025 | 2026 |
+|---|---|---|---|
+| database | 5 | 8 | 10 |
+| js | 4 | 4 | 4 |
+| rust | 34 | 12 | 2 |
+| network | — | — | 3 |
+| python | 14 | 5 | — |
+| web | 1 | — | — |
+| spring | 2025 까지 | | |
+| java | 2026 까지 | | |
+
+간격은 몇 년이 아니라 **몇 달**이고, 주제별 편차가 크다(web 2024 ~ database 2026).
+
+**설계 결정(권고) — 재서술본에 섞지 말고 주제마다 별도 파일로 둔다.**
+- 이 파이프라인이 인용 층 오류를 여섯 주제 연속 0건으로 낸 것은 **모든 문장이 원문으로 추적되는 구조** 덕분이다. 재서술본에 원문 밖 사실을 섞으면 그 구조가 깨진다.
+- 원본 repo 가 계속 정본으로 남고, 나중에 원본이 갱신돼도 병합이 쉽다.
+- 검증 방식이 다르다 — 대조할 원문이 없으므로 `cs/ops-patterns/deadline-propagation` 과 같이 **공식 문서·릴리스 노트로 확인하고 출처 링크를 단다.** 확인 못 한 것은 적지 않거나 `(확인 필요)`.
+- 각 편에서 「그 뒤는 <파일>에」 한 줄로 연결한다.
+
+대안(각 편 안에 `## [Claude 추가]`)은 13편 이상에서 원문 경계가 흐려지고 병합이 어려워 권하지 않는다.
+
+**착수 전 확정할 것**: 파일명 규약 · 조사 범위(주제별 마지막 언급 시점 ~ 오늘) · 출처 표기 형식.
 
 ## 남은 일
 
