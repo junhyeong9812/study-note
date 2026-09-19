@@ -13,7 +13,8 @@
         |
         | ApplicationEvent 가 아니면 PayloadApplicationEvent 로 감싼다
         |
-        +-- 기동 중이라 멀티캐스터가 아직 없음 --> earlyApplicationEvents 버퍼에 적재
+        +-- 기동 중이라 리스너 등록 전 (earlyApplicationEvents 버퍼가 살아 있음)
+        |      --> 버퍼에 적재하고 멀티캐스트는 건너뛴다
         |                                         (registerListeners 에서 한꺼번에 발행)
         |
         +-- [02] SimpleApplicationEventMulticaster.multicastEvent
