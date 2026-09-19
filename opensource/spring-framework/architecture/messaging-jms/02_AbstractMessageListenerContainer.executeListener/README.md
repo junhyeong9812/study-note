@@ -6,11 +6,10 @@
 
 ## 실제 코드
 
-`spring-jms` / `org.springframework.jms.listener` / `AbstractMessageListenerContainer.java` L685-L693 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-jms/src/main/java/org/springframework/jms/listener/AbstractMessageListenerContainer.java#L685-L693))
+`spring-jms` / `org.springframework.jms.listener` / `AbstractMessageListenerContainer.java` L686-L693 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-jms/src/main/java/org/springframework/jms/listener/AbstractMessageListenerContainer.java#L686-L693))
 
 ```java
-// AbstractMessageListenerContainer.java L685-L693
- */
+// AbstractMessageListenerContainer.java L686-L693
 protected void executeListener(Session session, Message message) {
     try {
         doExecuteListener(session, message);
@@ -21,11 +20,10 @@ protected void executeListener(Session session, Message message) {
 }
 ```
 
-`spring-jms` / `org.springframework.jms.listener` / `AbstractMessageListenerContainer.java` L721-L740 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-jms/src/main/java/org/springframework/jms/listener/AbstractMessageListenerContainer.java#L721-L740))
+`spring-jms` / `org.springframework.jms.listener` / `AbstractMessageListenerContainer.java` L722-L740 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-jms/src/main/java/org/springframework/jms/listener/AbstractMessageListenerContainer.java#L722-L740))
 
 ```java
-// AbstractMessageListenerContainer.java L721-L740
- */
+// AbstractMessageListenerContainer.java L722-L740
 protected void doExecuteListener(Session session, Message message) throws JMSException {
     if (!isAcceptMessagesWhileStopping() && !isRunning()) {
         if (logger.isWarnEnabled()) {
