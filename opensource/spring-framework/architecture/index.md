@@ -18,5 +18,6 @@ Spring Framework의 동작을 호출 흐름 단위로 위에서 아래로 따라
 | [test-context](test-context/README.md) | `TestContextManager` / `MockMvc` | 테스트 컨텍스트가 캐시되고 주입되는 과정과 MockMvc 호출 경로. 메서드 폴더 3개와 SPI 5종 |
 | [spel](spel/README.md) | `ExpressionParser` / `SpelExpression` | 식 문자열이 구문 트리로 파싱되고 평가 문맥 위에서 값이 되기까지. 메서드 폴더 4개와 SPI 5종 |
 | [messaging-jms](messaging-jms/README.md) | `JmsTemplate` / 리스너 컨테이너 | 메시지 송신과 @JmsListener 수신, 커밋과 롤백 규칙. 메서드 폴더 4개와 SPI 4종 |
+| [validation-binding](validation-binding/README.md) | `DataBinder` | 요청 값이 객체 필드로 들어가고 @Valid 검증 오류가 모이기까지. 메서드 폴더 2개와 SPI 4종 |
 
-읽는 순서는 위에서 아래다. 컨테이너 기동이 싱글톤을 만들 때 빈 생성 흐름으로 들어가고, 빈 생성의 마지막에서 AOP 프록시 흐름이 갈라지고, 그 인터셉터 체인 위에서 트랜잭션 흐름이 돈다. 기동이 끝나며 발행하는 `ContextRefreshedEvent`가 MVC 요청 처리의 전략 목록을 채운다. 다음 후보는 검증과 바인딩, 리소스와 환경 순이다.
+읽는 순서는 위에서 아래다. 컨테이너 기동이 싱글톤을 만들 때 빈 생성 흐름으로 들어가고, 빈 생성의 마지막에서 AOP 프록시 흐름이 갈라지고, 그 인터셉터 체인 위에서 트랜잭션 흐름이 돈다. 기동이 끝나며 발행하는 `ContextRefreshedEvent`가 MVC 요청 처리의 전략 목록을 채운다. 다음 후보는 리소스와 환경이다.
