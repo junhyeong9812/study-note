@@ -6,11 +6,10 @@
 
 ## 실제 코드
 
-`spring-jdbc` / `org.springframework.jdbc.core` / `JdbcTemplate.java` L1547-L1551 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-jdbc/src/main/java/org/springframework/jdbc/core/JdbcTemplate.java#L1547-L1551))
+`spring-jdbc` / `org.springframework.jdbc.core` / `JdbcTemplate.java` L1548-L1551 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-jdbc/src/main/java/org/springframework/jdbc/core/JdbcTemplate.java#L1548-L1551))
 
 ```java
-// JdbcTemplate.java L1547-L1551
- */
+// JdbcTemplate.java L1548-L1551
 protected DataAccessException translateException(String task, @Nullable String sql, SQLException ex) {
     DataAccessException dae = getExceptionTranslator().translate(task, sql, ex);
     return (dae != null ? dae : new UncategorizedSQLException(task, sql, ex));
@@ -19,11 +18,10 @@ protected DataAccessException translateException(String task, @Nullable String s
 
 변환기는 여러 단계를 순서대로 시도한다.
 
-`spring-jdbc` / `org.springframework.jdbc.support` / `AbstractFallbackSQLExceptionTranslator.java` L88-L115 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-jdbc/src/main/java/org/springframework/jdbc/support/AbstractFallbackSQLExceptionTranslator.java#L88-L115))
+`spring-jdbc` / `org.springframework.jdbc.support` / `AbstractFallbackSQLExceptionTranslator.java` L89-L115 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-jdbc/src/main/java/org/springframework/jdbc/support/AbstractFallbackSQLExceptionTranslator.java#L89-L115))
 
 ```java
-// AbstractFallbackSQLExceptionTranslator.java L88-L115
- */
+// AbstractFallbackSQLExceptionTranslator.java L89-L115
 @Override
 public @Nullable DataAccessException translate(String task, @Nullable String sql, SQLException ex) {
     Assert.notNull(ex, "Cannot translate a null SQLException");
@@ -62,10 +60,11 @@ public @Nullable DataAccessException translate(String task, @Nullable String sql
  |     |
  |     | [1] 사용자 지정 변환기가 있으면 먼저 시도
  |     |
- |     | [2] doTranslate       구현별 판정
+ |     | [2] doTranslate       구현별 판정 (아래는 실행 순서가 아니라 구현 목록)
+ |     |       SQLExceptionSubclassTranslator      JDBC 4 표준 예외 하위 타입으로 판정 (기본)
+ |     |       SQLStateSQLExceptionTranslator      SQLState 앞 두 자리로 판정 (기본값의 fallback)
  |     |       SQLErrorCodeSQLExceptionTranslator  DB 벤더의 오류 코드 표로 판정
- |     |       SQLStateSQLExceptionTranslator      SQLState 앞 두 자리로 판정
- |     |       SQLExceptionSubclassTranslator      JDBC 4 표준 예외 하위 타입으로 판정
+ |     |                                           (sql-error-codes.xml 을 둘 때만 선택)
  |     |
  |     +-- [3] 못 정하면 fallback 변환기로 위임
  |
@@ -81,12 +80,12 @@ public @Nullable DataAccessException translate(String task, @Nullable String sql
    |     |     +-- DuplicateKeyException          유니크 제약 위반
    |     +-- BadSqlGrammarException               SQL 문법 오류
    |     +-- DataAccessResourceFailureException   연결 실패 등
+   |     +-- UncategorizedDataAccessException
+   |           +-- UncategorizedSQLException      분류 실패
    +-- TransientDataAccessException          재시도할 만함
-   |     +-- QueryTimeoutException
-   |     +-- ConcurrencyFailureException
-   |           +-- CannotAcquireLockException
-   +-- UncategorizedDataAccessException
-         +-- UncategorizedSQLException            분류 실패
+         +-- QueryTimeoutException
+         +-- ConcurrencyFailureException
+               +-- CannotAcquireLockException
 ```
 
 ## 결과가 쓰이는 곳
@@ -98,10 +97,12 @@ public @Nullable DataAccessException translate(String task, @Nullable String sql
       --> @Transactional 의 기본 롤백 규칙(언체크 예외)에 그대로 걸린다
 
  UncategorizedSQLException 이 보인다면
-      --> 변환기가 그 오류 코드를 모르는 상태
-      --> sql-error-codes.xml 또는 커스텀 변환기로 보완할 수 있다
+      --> 변환기가 그 예외를 어떤 범주로도 정하지 못한 상태
+      --> 커스텀 변환기로 보완할 수 있다
 
  벤더 판정
       --> SQLErrorCodeSQLExceptionTranslator 는 DatabaseMetaData 의 제품명으로
           어떤 코드 표를 쓸지 정한다 (데이터 소스에 한 번 접근한다)
+      --> 다만 기본 구성에서는 선택되지 않는다. 클래스패스 루트에
+          sql-error-codes.xml 을 둘 때만 이 변환기가 쓰인다
 ```
