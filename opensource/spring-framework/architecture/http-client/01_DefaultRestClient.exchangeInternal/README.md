@@ -124,7 +124,8 @@ private ClientHttpRequest createRequest(URI uri) throws IOException {
  |        버퍼링 조건이 있으면 BufferingClientHttpRequestFactory
  |        그 밖에는 설정된 ClientHttpRequestFactory 그대로
  |
- | L564 관측(Observation) 시작
+ | L564 관측(Observation) 컨텍스트 생성
+ | L566 관측 시작, L568 스코프 개방
  |
  | L569 body 가 있으면 body.writeTo(clientRequest)
  |        HttpMessageConverter 가 객체를 바이트로 쓴다
