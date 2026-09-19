@@ -55,7 +55,8 @@ protected void applyPropertyValues(MutablePropertyValues mpvs) {
  bind(pvs)
  |
  | L1220 선언적 바인딩 모드인데 허용 필드가 없으면 아무것도 하지 않는다
- |         (6.1의 안전 기본값: 명시한 필드만 바인딩)
+ |         (6.1에 추가된 opt-in 옵션. 기본은 꺼져 있고 setDeclarativeBinding(true) 로 켜면
+ |          setAllowedFields 로 명시한 필드만 바인딩한다)
  |
  +-- doBind(mpvs)
        |
@@ -91,5 +92,6 @@ protected void applyPropertyValues(MutablePropertyValues mpvs) {
 
  ignoreUnknownFields (기본 true)
       --> 대상에 없는 파라미터는 조용히 무시
-      --> false 로 두면 알 수 없는 필드도 오류가 된다
+      --> false 로 두면 대상에 없는 필드에서 NotWritablePropertyException 이 그대로 던져진다
+          (FieldError 로 쌓이는 변환 실패와 달리 바인딩 자체가 중단된다)
 ```
