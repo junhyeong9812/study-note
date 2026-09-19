@@ -35,7 +35,8 @@ public interface MessageConverter {
 ```text
  MessageConverter
    +-- SimpleMessageConverter        String/byte[]/Map/Serializable (기본)
-   +-- MappingJackson2MessageConverter   JSON TextMessage
+   +-- JacksonJsonMessageConverter       JSON TextMessage (7.0 신설)
+   +-- MappingJackson2MessageConverter   JSON TextMessage (7.0 deprecated)
    +-- MarshallingMessageConverter   XML (OXM)
    +-- MessagingMessageConverter     spring-messaging Message 와 상호 변환
 
