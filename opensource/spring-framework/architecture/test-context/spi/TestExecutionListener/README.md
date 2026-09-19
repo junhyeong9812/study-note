@@ -50,7 +50,7 @@ public interface TestExecutionListener {
 ## 구현 계층
 
 ```text
- 기본 등록 리스너 (spring.factories, @Order 순)
+ 기본 등록 리스너 (spring.factories, Ordered.getOrder() 순)
    ServletTestExecutionListener            목 서블릿 문맥 설정
    DirtiesContextBeforeModesTestExecutionListener
    ApplicationEventsTestExecutionListener  @RecordApplicationEvents
@@ -58,9 +58,11 @@ public interface TestExecutionListener {
    DependencyInjectionTestExecutionListener  테스트 인스턴스 주입
    MicrometerObservationRegistryTestExecutionListener
    DirtiesContextTestExecutionListener     컨텍스트 폐기
+   CommonCachesTestExecutionListener       공용 캐시 정리
    TransactionalTestExecutionListener      테스트 트랜잭션 시작/롤백
    SqlScriptsTestExecutionListener         @Sql
    EventPublishingTestExecutionListener    테스트 생애 이벤트 발행
+   MockitoResetTestExecutionListener       목 초기화 (맨 마지막)
 
  사용자 정의
    @TestExecutionListeners 로 추가/교체
