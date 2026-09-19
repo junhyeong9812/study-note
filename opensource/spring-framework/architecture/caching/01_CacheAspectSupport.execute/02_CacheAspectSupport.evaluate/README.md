@@ -121,7 +121,8 @@ private void collectPutRequests(Collection<CacheOperationContext> contexts,
  |
  | [2] L580 캐시 미스였으면 @Cacheable 저장 요청 수집
  | [3] L585 @CachePut 저장 요청 수집
- |        수집 시점에 condition 을 결과값과 함께 재평가
+ |        이때 condition 을 평가한다 (한 번 평가하면 메모이즈된다, L900)
+ |        결과값으로 거르는 것은 condition 이 아니라 unless 다
  |
  | [4] L588 수집한 요청을 순서대로 적용
  |        CachePutRequest.apply (L1022)
