@@ -6,7 +6,7 @@
 
 ## 실제 코드
 
-`spring-context` / `org.springframework.context....scheduling.annotation` / `ScheduledAnnotationBeanPostProcessor.java` L235-L244 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/context/../scheduling/annotation/ScheduledAnnotationBeanPostProcessor.java#L235-L244))
+`spring-context` / `org.springframework.scheduling.annotation` / `ScheduledAnnotationBeanPostProcessor.java` L235-L244 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/scheduling/annotation/ScheduledAnnotationBeanPostProcessor.java#L235-L244))
 
 ```java
 // ScheduledAnnotationBeanPostProcessor.java L235-L244
@@ -22,7 +22,7 @@ public void afterSingletonsInstantiated() {
 }
 ```
 
-`spring-context` / `org.springframework.context....scheduling.annotation` / `ScheduledAnnotationBeanPostProcessor.java` L246-L267 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/context/../scheduling/annotation/ScheduledAnnotationBeanPostProcessor.java#L246-L267))
+`spring-context` / `org.springframework.scheduling.annotation` / `ScheduledAnnotationBeanPostProcessor.java` L246-L267 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/scheduling/annotation/ScheduledAnnotationBeanPostProcessor.java#L246-L267))
 
 ```java
 // ScheduledAnnotationBeanPostProcessor.java L246-L267
@@ -52,7 +52,7 @@ private void finishRegistration() {
 
 등록기가 실제로 스케줄하는 지점이다.
 
-`spring-context` / `org.springframework.context....scheduling.config` / `ScheduledTaskRegistrar.java` L427-L430 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/context/../scheduling/config/ScheduledTaskRegistrar.java#L427-L430))
+`spring-context` / `org.springframework.scheduling.config` / `ScheduledTaskRegistrar.java` L427-L430 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/scheduling/config/ScheduledTaskRegistrar.java#L427-L430))
 
 ```java
 // ScheduledTaskRegistrar.java L427-L430
@@ -62,7 +62,7 @@ public void afterPropertiesSet() {
 }
 ```
 
-`spring-context` / `org.springframework.context....scheduling.config` / `ScheduledTaskRegistrar.java` L436-L481 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/context/../scheduling/config/ScheduledTaskRegistrar.java#L436-L481))
+`spring-context` / `org.springframework.scheduling.config` / `ScheduledTaskRegistrar.java` L436-L481 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/scheduling/config/ScheduledTaskRegistrar.java#L436-L481))
 
 ```java
 // ScheduledTaskRegistrar.java L436-L481
