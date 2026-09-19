@@ -122,3 +122,5 @@ private @Nullable Object findInCaches(CacheOperationContext context, Object key,
       --> 조회도 저장도 하지 않는다
       --> unless 와 다르다. unless 는 결과를 보고 "저장만" 막는다
 ```
+
+condition 과 key 식이 평가되는 경로는 [SpEL](../../../spel/README.md) 흐름에 있다.
