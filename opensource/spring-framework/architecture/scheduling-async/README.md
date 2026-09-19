@@ -29,7 +29,7 @@
  +-- 프록시.메서드() --> ReflectiveMethodInvocation.proceed
         |
         +-- [03] AsyncExecutionInterceptor.invoke
-               실행기 결정 (@Async("qualifier") 또는 기본)
+               실행기 결정 (@Async("qualifier") 는 AnnotationAsyncExecutionInterceptor 가 읽는다)
                invocation.proceed() 를 Callable 로 감싸 executor 에 제출
                반환 타입에 따라 Future / CompletableFuture / void
 ```
