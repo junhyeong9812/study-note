@@ -123,7 +123,7 @@ public void handleReturnValue(@Nullable Object returnValue, MethodParameter retu
       |     view, model, status 복사   --> getModelAndView --> render
       +-- RequestResponseBodyMethodProcessor (@ResponseBody)
       |     requestHandled = true      --> getModelAndView가 null --> 렌더링 없음
-      +-- HttpEntityMethodProcessor (ResponseEntity)
+      +-- ResponseEntityReturnValueHandler (ResponseEntity)
             requestHandled = true      --> 위와 같음
 
  selectHandler 결과의 캐시
