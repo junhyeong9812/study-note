@@ -35,7 +35,8 @@ public interface ClientHttpRequestInterceptor {
 ## 흐름에서 불리는 자리
 
 ```text
- createRequest 시점에 InterceptingClientHttpRequestFactory 가 체인을 만든다
+ createRequest 는 인터셉터 목록을 실은 요청을 만들고,
+ execute() 때 InterceptingClientHttpRequest.getExecution() 이 andThen 으로 체인을 조립한다 (L71-L81)
  execute() 호출이 체인을 타고 내려간다
    인터셉터 1 --> 인터셉터 2 --> 실제 전송
  응답은 역순으로 돌아 나온다
