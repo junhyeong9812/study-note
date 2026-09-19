@@ -16,5 +16,6 @@ Spring Framework의 동작을 호출 흐름 단위로 위에서 아래로 따라
 | [webflux-request-processing](webflux-request-processing/README.md) | `HttpWebHandlerAdapter.handle` | 리액티브 스택에서 요청이 Mono 파이프라인으로 조립되어 응답이 되기까지, 메서드 폴더 5개와 SPI 5종 |
 | [http-client](http-client/README.md) | `RestClient` / `WebClient` | 클라이언트가 요청을 보내고 응답을 객체로 바꾸기까지, 동기와 리액티브를 나란히. 메서드 폴더 4개와 SPI 4종 |
 | [test-context](test-context/README.md) | `TestContextManager` / `MockMvc` | 테스트 컨텍스트가 캐시되고 주입되는 과정과 MockMvc 호출 경로. 메서드 폴더 3개와 SPI 5종 |
+| [spel](spel/README.md) | `ExpressionParser` / `SpelExpression` | 식 문자열이 구문 트리로 파싱되고 평가 문맥 위에서 값이 되기까지. 메서드 폴더 4개와 SPI 5종 |
 
-읽는 순서는 위에서 아래다. 컨테이너 기동이 싱글톤을 만들 때 빈 생성 흐름으로 들어가고, 빈 생성의 마지막에서 AOP 프록시 흐름이 갈라지고, 그 인터셉터 체인 위에서 트랜잭션 흐름이 돈다. 기동이 끝나며 발행하는 `ContextRefreshedEvent`가 MVC 요청 처리의 전략 목록을 채운다. 다음 후보는 SpEL, 메시징, 검증과 바인딩, 리소스/환경 순이다.
+읽는 순서는 위에서 아래다. 컨테이너 기동이 싱글톤을 만들 때 빈 생성 흐름으로 들어가고, 빈 생성의 마지막에서 AOP 프록시 흐름이 갈라지고, 그 인터셉터 체인 위에서 트랜잭션 흐름이 돈다. 기동이 끝나며 발행하는 `ContextRefreshedEvent`가 MVC 요청 처리의 전략 목록을 채운다. 다음 후보는 메시징, 검증과 바인딩, 리소스와 환경 순이다.
