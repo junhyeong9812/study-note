@@ -34,13 +34,18 @@ public interface ClientHttpRequestFactory {
 
 ```text
  ClientHttpRequestFactory
-   +-- JdkClientHttpRequestFactory          java.net.http.HttpClient (기본 후보)
+   +-- JdkClientHttpRequestFactory          java.net.http.HttpClient
    +-- HttpComponentsClientHttpRequestFactory   Apache HttpClient 5
    +-- JettyClientHttpRequestFactory
    +-- ReactorClientHttpRequestFactory      Reactor Netty (동기 API 로 감싸 사용)
    +-- SimpleClientHttpRequestFactory       HttpURLConnection
    +-- InterceptingClientHttpRequestFactory 인터셉터 체인 래퍼
    +-- BufferingClientHttpRequestFactory    본문을 메모리에 버퍼링 (여러 번 읽기)
+
+ 기본 선택 순서 (DefaultRestClientBuilder.initRequestFactory L448-L468)
+   Apache HttpClient 5 --> Jetty --> Reactor Netty --> JDK HttpClient
+   넷 다 없으면 SimpleClientHttpRequestFactory
+   (WebClient 쪽 ClientHttpConnector 의 순서는 Reactor Netty 가 먼저다)
 
  설정
    RestClient.builder().requestFactory(...)
