@@ -115,7 +115,8 @@ public void enhanceConfigurationClasses(ConfigurableListableBeanFactory beanFact
  postProcessBeanFactory(beanFactory)             (Registry 처리기 1부 [e] 에서 호출)
  |
  | 같은 팩토리에 두 번 호출 --> IllegalStateException
- | Registry 콜백을 받은 적 없음 (Registry 가 아닌 팩토리) --> 여기서 processConfigBeanDefinitions
+ | Registry 훅(postProcessBeanDefinitionRegistry)을 거치지 않고 BFPP 로만 불린 경우
+ |   --> 여기서 processConfigBeanDefinitions (팩토리를 BeanDefinitionRegistry 로 캐스팅)
  |
  +-- enhanceConfigurationClasses(beanFactory)
  +-- addBeanPostProcessor(ImportAwareBeanPostProcessor)   ImportAware 주입 + 강화 클래스에 BeanFactory 주입
