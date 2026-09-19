@@ -123,9 +123,9 @@ public List<Object> getInterceptorsAndDynamicInterceptionAdvice(
          +-- 그 밖 --> 인터셉터 추가
 
        어드바이스 -> MethodInterceptor 변환은 AdvisorAdapterRegistry 가 한다
-         @Before  --> MethodBeforeAdviceInterceptor
-         @After   --> AfterReturningAdviceInterceptor 등
-         @Around  --> 이미 MethodInterceptor
+         @Before         --> MethodBeforeAdviceInterceptor
+         @AfterReturning --> AfterReturningAdviceInterceptor
+         @After / @AfterThrowing / @Around --> 이미 MethodInterceptor (변환 없음)
 ```
 
 ## 결과가 쓰이는 곳
