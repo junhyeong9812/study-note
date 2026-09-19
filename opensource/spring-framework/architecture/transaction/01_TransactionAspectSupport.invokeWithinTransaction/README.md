@@ -197,9 +197,9 @@ protected @Nullable Object invokeWithinTransaction(Method method, @Nullable Clas
  invokeWithinTransaction(method, targetClass, invocation)
  |
  | L338 txAttr = TransactionAttributeSource.getTransactionAttribute(method, targetClass)
- |        @Transactional 을 찾는다. 클래스 -> 메서드 순으로 병합, 없으면 null
+ |        @Transactional 을 찾는다. 메서드 -> 클래스 순으로 처음 찾은 것을 쓴다(병합 아님), 없으면 null
  |        null 이면 아래에서 트랜잭션 없이 그냥 통과한다
- | L339 tm = determineTransactionManager(txAttr)
+ | L339 tm = determineTransactionManager(txAttr, targetClass)
  |        @Transactional(transactionManager = "이름") 또는 유일한 매니저 빈
  |
  +-- L341 리액티브 매니저 + 리액티브 반환 타입
@@ -211,7 +211,7 @@ protected @Nullable Object invokeWithinTransaction(Method method, @Nullable Clas
        | try  L371 retVal = invocation.proceedWithInvocation()
        |                     = 체인의 다음 인터셉터 또는 타깃 메서드
        |
-       | catch L375 completeTransactionAfterThrowing(txInfo, ex) --> 예외 다시 던짐
+       | catch L375 completeTransactionAfterThrowing(txInfo, invocation, ex) --> 예외 다시 던짐
        |
        | finally L379 cleanupTransactionInfo(txInfo)
        |
