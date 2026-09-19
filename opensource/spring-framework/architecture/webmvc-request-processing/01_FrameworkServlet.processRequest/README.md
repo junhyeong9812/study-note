@@ -31,7 +31,7 @@ protected void service(HttpServletRequest request, HttpServletResponse response)
               --> processRequest (바로)
 ```
 
-`doGet`, `doPost`는 모두 한 줄짜리로 `processRequest`만 부른다. 어느 길로 오든 도착점은 같다.
+`doGet`, `doPost`, `doPut`, `doDelete`, `doPatch`는 모두 한 줄짜리로 `processRequest`만 부른다. `doOptions`와 `doTrace`는 다르다. `dispatchOptionsRequest`, `dispatchTraceRequest`(둘 다 기본 false)가 켜져 있거나 CORS preflight 요청일 때만 `processRequest`로 가고, 그 밖에는 서블릿 기본 구현이 처리한다.
 
 ## 실제 코드
 
