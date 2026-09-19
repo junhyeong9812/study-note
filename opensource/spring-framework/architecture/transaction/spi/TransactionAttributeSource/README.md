@@ -43,7 +43,9 @@ public interface TransactionAttributeSource {
  TransactionAttributeSource
    +-- AbstractFallbackTransactionAttributeSource      탐색 순서 + 캐시
    |     +-- AnnotationTransactionAttributeSource      @Transactional (Spring, JTA, EJB)
-   |     +-- NameMatchTransactionAttributeSource       메서드 이름 패턴
+   +-- NameMatchTransactionAttributeSource             메서드 이름 패턴 (fallback 탐색 없음)
+   +-- MethodMapTransactionAttributeSource
+   +-- MatchAlwaysTransactionAttributeSource
    +-- CompositeTransactionAttributeSource
 
  AbstractFallbackTransactionAttributeSource 의 탐색 순서
