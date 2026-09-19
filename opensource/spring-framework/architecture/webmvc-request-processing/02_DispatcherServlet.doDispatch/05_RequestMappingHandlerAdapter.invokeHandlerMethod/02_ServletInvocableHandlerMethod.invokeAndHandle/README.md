@@ -110,7 +110,7 @@ public @Nullable Object invokeForRequest(NativeWebRequest request, @Nullable Mod
       +-- 그 밖 --> handleReturnValue
               String "home"         --> ViewNameMethodReturnValueHandler --> mavContainer.viewName
               @ResponseBody 객체     --> RequestResponseBodyMethodProcessor --> 본문 쓰기 + requestHandled
-              ResponseEntity        --> HttpEntityMethodProcessor --> 헤더, 상태, 본문 쓰기 + requestHandled
+              ResponseEntity        --> ResponseEntityReturnValueHandler --> 헤더, 상태, 본문 쓰기 + requestHandled
               Callable / DeferredResult --> 비동기 처리기 --> 비동기 시작
 
  providedArgs (호출자가 미리 준 인자)
