@@ -49,14 +49,15 @@ public interface Resource extends InputStreamSource {
 ```text
  Resource
    +-- AbstractResource
-         +-- ClassPathResource         클래스패스 (classpath:)
-         +-- FileSystemResource        파일 시스템
-         +-- UrlResource               URL (http:, jar: ...)
-         |     +-- FileUrlResource     file: URL
-         +-- ByteArrayResource         메모리
-         +-- InputStreamResource       이미 열린 스트림 (한 번만 읽을 수 있다)
-         +-- ServletContextResource    웹 애플리케이션 루트 기준
-         +-- (Path 기반 FileSystemResource 변형 등)
+         +-- AbstractFileResolvingResource       URL 을 파일로 풀어 볼 수 있는 계열
+         |     +-- ClassPathResource             클래스패스 (classpath:)
+         |     +-- UrlResource                   URL (http:, jar: ...)
+         |     |     +-- FileUrlResource         file: URL
+         |     +-- ServletContextResource        웹 애플리케이션 루트 기준
+         +-- FileSystemResource                  파일 시스템
+         +-- PathResource                        java.nio.file.Path 기반
+         +-- ByteArrayResource                   메모리
+         +-- InputStreamResource                 이미 열린 스트림 (한 번만 읽을 수 있다)
 
  주의
    getFile() 은 jar 안의 항목에서 실패한다 --> getInputStream() 을 쓴다
