@@ -15,10 +15,11 @@ Spring Framework의 동작을 호출 흐름 단위로 위에서 아래로 따라
 | [event-publishing](event-publishing/README.md) | `AbstractApplicationContext.publishEvent` | 이벤트가 발행되어 리스너와 @EventListener 메서드로 전달되기까지, 메서드 폴더 4개와 SPI 4종 |
 | [webmvc-request-processing](webmvc-request-processing/README.md) | `FrameworkServlet.processRequest` | HTTP 요청 하나가 `DispatcherServlet`을 거쳐 응답이 되기까지, 메서드 폴더 19개와 SPI 8종 |
 | [webflux-request-processing](webflux-request-processing/README.md) | `HttpWebHandlerAdapter.handle` | 리액티브 스택에서 요청이 Mono 파이프라인으로 조립되어 응답이 되기까지, 메서드 폴더 4개와 SPI 5종 |
+| [functional-endpoints](functional-endpoints/README.md) | `RouterFunction` / `HandlerFunction` | 람다로 쓴 엔드포인트가 라우팅되고 응답을 쓰기까지, 서블릿과 리액티브를 나란히. 메서드 폴더 7개와 SPI 6종 |
 | [http-client](http-client/README.md) | `RestClient` / `WebClient` | 클라이언트가 요청을 보내고 응답을 객체로 바꾸기까지, 동기와 리액티브를 나란히. 메서드 폴더 4개와 SPI 4종 |
 | [test-context](test-context/README.md) | `TestContextManager` / `MockMvc` | 테스트 컨텍스트가 캐시되고 주입되는 과정과 MockMvc 호출 경로. 메서드 폴더 3개와 SPI 5종 |
 | [spel](spel/README.md) | `ExpressionParser` / `SpelExpression` | 식 문자열이 구문 트리로 파싱되고 평가 문맥 위에서 값이 되기까지. 메서드 폴더 4개와 SPI 5종 |
 | [messaging-jms](messaging-jms/README.md) | `JmsTemplate` / 리스너 컨테이너 | 메시지 송신과 @JmsListener 수신, 커밋과 롤백 규칙. 메서드 폴더 4개와 SPI 4종 |
 | [validation-binding](validation-binding/README.md) | `DataBinder` | 요청 값이 객체 필드로 들어가고 @Valid 검증 오류가 모이기까지. 메서드 폴더 2개와 SPI 4종 |
 
-읽는 순서는 위에서 아래다. 컨테이너 기동이 싱글톤을 만들 때 빈 생성 흐름으로 들어가고, 빈 생성의 마지막에서 AOP 프록시 흐름이 갈라지고, 그 인터셉터 체인 위에서 트랜잭션 흐름이 돈다. 기동이 끝나며 발행하는 `ContextRefreshedEvent`가 MVC 요청 처리의 전략 목록을 채운다. 처음 계획한 21개 흐름 가운데 주요 16개를 그렸다. 남은 후보는 함수형 엔드포인트, WebSocket/STOMP, R2DBC, ORM 연동처럼 같은 뼈대 위의 갈래들이다.
+읽는 순서는 위에서 아래다. 컨테이너 기동이 싱글톤을 만들 때 빈 생성 흐름으로 들어가고, 빈 생성의 마지막에서 AOP 프록시 흐름이 갈라지고, 그 인터셉터 체인 위에서 트랜잭션 흐름이 돈다. 기동이 끝나며 발행하는 `ContextRefreshedEvent`가 MVC 요청 처리의 전략 목록을 채운다. 함수형 엔드포인트는 그 MVC와 WebFlux의 뼈대에 다른 구현을 끼운 갈래라 두 흐름 다음에 읽으면 된다. 지금까지 17개 흐름을 그렸고, 남은 후보는 WebSocket/STOMP, R2DBC, ORM 연동처럼 역시 같은 뼈대를 공유하는 갈래들이다.
