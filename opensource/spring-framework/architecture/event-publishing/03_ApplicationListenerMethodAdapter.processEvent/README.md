@@ -89,7 +89,11 @@ public boolean supportsEventType(ResolvableType eventType) {
  onApplicationEvent(event)
  |
  | L199 defaultExecution 이 true 일 때만 바로 processEvent      (기본값)
- |        @TransactionalEventListener 는 이 속성을 false 로 덮어쓴다
+ |        @TransactionalEventListener 는 이 분기를 타지 않는다.
+ |        TransactionalApplicationListenerMethodAdapter 가 onApplicationEvent 자체를
+ |        오버라이드해 트랜잭션 동기화에 등록한다 (L84-L86)
+ |        fallbackExecution 은 EventListener.defaultExecution 의 별칭(기본 false)이고,
+ |        트랜잭션이 없을 때 그래도 실행할지만 정한다
  |        --> 발행 즉시가 아니라, 트랜잭션 동기화 콜백(커밋 등)에서 processEvent 가 불린다
  |        --> 트랜잭션이 없으면 fallbackExecution=true 가 아닌 한 실행되지 않는다
  |
