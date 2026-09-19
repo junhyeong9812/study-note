@@ -66,4 +66,4 @@ public final @Nullable ModelAndView handle(HttpServletRequest request, HttpServl
               SimpleControllerHandlerAdapter --> Controller가 돌려준 값 그대로
 ```
 
-어댑터가 따로 있는 덕분에 핸들러 타입이 늘어나도 `doDispatch`는 바뀌지 않는다. 함수형 엔드포인트(5.2)는 `HandlerFunctionAdapter`와 `RouterFunctionMapping`을 추가하는 것만으로 이 흐름에 들어왔다.
+어댑터가 따로 있는 덕분에 핸들러 타입이 늘어나도 `doDispatch`는 바뀌지 않는다. [함수형 엔드포인트](../../../functional-endpoints/README.md)(5.2)는 `HandlerFunctionAdapter`와 `RouterFunctionMapping`을 추가하는 것만으로 이 흐름에 들어왔다.
