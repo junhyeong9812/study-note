@@ -36,7 +36,8 @@ public interface HandlerMethodArgumentResolver {
 ## 구현 계층
 
 ```text
- 기본 29개 (RequestMappingHandlerAdapter L648), 순서가 우선순위
+ 기본 28개 (RequestMappingHandlerAdapter L648), 순서가 우선순위
+ Kotlin 이 클래스패스에 있으면 ContinuationHandlerMethodArgumentResolver 가 더해져 29개
    어노테이션 기반  @RequestParam @PathVariable @MatrixVariable @ModelAttribute(명시)
                     @RequestBody @RequestPart @RequestHeader @CookieValue @Value
                     @SessionAttribute @RequestAttribute
