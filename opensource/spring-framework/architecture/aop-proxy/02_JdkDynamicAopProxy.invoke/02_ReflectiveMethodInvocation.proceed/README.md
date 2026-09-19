@@ -94,7 +94,8 @@ protected @Nullable Object invokeJoinpoint() throws Throwable {
 
  currentInterceptorIndex
       --> 이 객체는 한 번의 호출 전용. 재사용하지 않는다
-      --> 비동기 어드바이스가 invocation 을 다른 스레드로 넘길 때는 복제(invocableClone)를 쓴다
+      --> 체인을 두 번 이상 돌려야 할 때 복제(invocableClone)를 쓴다
+          @Around 의 ProceedingJoinPoint.proceed(), 재시도 인터셉터가 그 경우다
 
  예외
       --> 타깃이 던진 예외가 체인을 거꾸로 타고 올라간다
