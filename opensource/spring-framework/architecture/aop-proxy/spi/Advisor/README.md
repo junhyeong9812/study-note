@@ -91,7 +91,7 @@ public interface MethodMatcher {
    |     +-- AbstractBeanFactoryPointcutAdvisor
    |     |     +-- BeanFactoryTransactionAttributeSourceAdvisor   @Transactional
    |     +-- AsyncAnnotationAdvisor            @Async
-   |     +-- AbstractAspectJAdvisorFactory 가 만드는 InstantiationModelAwarePointcutAdvisor  @Aspect 메서드
+   |     +-- ReflectiveAspectJAdvisorFactory 가 만드는 InstantiationModelAwarePointcutAdvisorImpl  @Aspect 메서드
    +-- IntroductionAdvisor                    타입 자체를 추가 (믹스인)
 
  Pointcut
