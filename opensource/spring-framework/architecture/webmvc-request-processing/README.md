@@ -117,7 +117,7 @@ org.springframework.web.servlet.FlashMapManager=org.springframework.web.servlet.
 
 ## 다루지 않는 것
 
-비동기 처리(`Callable`, `DeferredResult`)와 함수형 엔드포인트(`RouterFunction`)는 같은 뼈대 위의 갈래라 이 트리에서 뺐다. 같은 요청 처리를 리액티브 스택에서 하는 흐름은 [WebFlux 요청 처리](../webflux-request-processing/README.md)에 있다. 코드에 분기가 보이는 자리에는 "비동기면 여기서 빠진다" 정도만 표시했다.
+비동기 처리(`Callable`, `DeferredResult`)와 함수형 엔드포인트(`RouterFunction`)는 같은 뼈대 위의 갈래라 이 트리에서 뺐다. 같은 요청 처리를 리액티브 스택에서 하는 흐름은 [WebFlux 요청 처리](../webflux-request-processing/README.md)에 있다. 서버 없이 이 흐름을 그대로 타는 테스트 도구는 [테스트 컨텍스트](../test-context/03_MockMvc.perform/README.md)에 있다. 코드에 분기가 보이는 자리에는 "비동기면 여기서 빠진다" 정도만 표시했다.
 
 ## 하위 메서드
 
