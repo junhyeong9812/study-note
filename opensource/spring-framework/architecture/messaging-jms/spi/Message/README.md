@@ -64,7 +64,7 @@ public interface MessageHandler {
 ```text
  Message<T>
    +-- GenericMessage<T>        불변 구현
-   +-- ErrorMessage             예외를 담은 메시지
+         +-- ErrorMessage       예외를 담은 메시지
 
  MessageChannel                 메시지를 보내는 파이프
    +-- SubscribableChannel      구독자에게 전달
