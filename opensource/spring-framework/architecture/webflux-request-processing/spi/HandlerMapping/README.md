@@ -47,7 +47,8 @@ public interface HandlerMapping {
 
 ```text
  HandlerMapping
-   +-- AbstractHandlerMapping                CORS 처리 공통 (getHandler 는 final)
+   +-- AbstractHandlerMapping                CORS/버전 처리 공통
+   |                                         (getHandler 가 템플릿, 하위는 getHandlerInternal 구현)
          +-- AbstractHandlerMethodMapping<T>
          |     +-- RequestMappingInfoHandlerMapping
          |           +-- RequestMappingHandlerMapping    @RequestMapping
