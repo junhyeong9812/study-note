@@ -121,9 +121,12 @@ private void processRollback(DefaultTransactionStatus status, boolean unexpected
  |            --> doSetRollbackOnly(status)    글로벌 rollback-only 표시
  |          아니면 아무 일도 안 함 (바깥이 결정)
  |
- | unexpected 였으면 --> UnexpectedRollbackException
+ | L930 triggerAfterCompletion(ROLLED_BACK)
+ |        롤백 도중 예외였다면 STATUS_UNKNOWN 으로 먼저 부르고 다시 던진다 (L923)
  |
- +-- finally  triggerAfterCompletion(ROLLED_BACK), 리소스 정리, 중단 트랜잭션 resume
+ | L936 unexpected 였으면 --> UnexpectedRollbackException
+ |
+ +-- finally  L942 cleanupAfterCompletion   리소스 정리, 중단 트랜잭션 resume
 ```
 
 ## 결과가 쓰이는 곳
