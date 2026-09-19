@@ -37,7 +37,10 @@ protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFa
       --> finishBeanFactoryInitialization 에서 만들어지는 일반 빈 전부에 적용
 
  이 단계 전에 만들어진 빈 (BeanFactoryPostProcessor 등)
-      --> 체인이 없던 시점이라 적용을 받지 못함
+      --> 체인이 비어 있진 않다. prepareBeanFactory 가 ApplicationContextAwareProcessor(L737)
+          와 ApplicationListenerDetector(L754) 를 이미 넣어 두었다
+      --> 다만 @Autowired 를 처리할 AutowiredAnnotationBeanPostProcessor 등
+          이 단계에서 등록되는 처리기가 없어 주입과 AOP 프록시 적용을 받지 못한다
 ```
 
 ## 하위 메서드
