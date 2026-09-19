@@ -42,12 +42,13 @@ public interface CacheManager {
 
 ```text
  CacheManager
-   +-- AbstractCacheManager             이름->Cache 맵 관리
-   |     +-- ConcurrentMapCacheManager  기본 (테스트/소규모)
-   |     +-- CaffeineCacheManager
-   |     +-- JCacheCacheManager
-   +-- CompositeCacheManager            여러 매니저를 순서대로
-   +-- NoOpCacheManager                 캐시를 끄는 용도 (항상 미스)
+   +-- AbstractCacheManager                          이름->Cache 맵 관리
+   |     +-- AbstractTransactionSupportingCacheManager
+   |           +-- JCacheCacheManager                (spring-context-support)
+   +-- ConcurrentMapCacheManager                     맵 기반 (테스트/소규모)
+   +-- CaffeineCacheManager                          (spring-context-support)
+   +-- CompositeCacheManager                         여러 매니저를 순서대로
+   +-- NoOpCacheManager                              캐시를 끄는 용도 (항상 미스)
 
  설정
    @EnableCaching + CacheManager 빈 하나
