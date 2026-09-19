@@ -46,7 +46,7 @@ public interface BeanResolver {
 ```text
  MethodResolver
    +-- ReflectiveMethodResolver        리플렉션 (기본)
-   +-- DataBindingMethodResolver       데이터 바인딩용 제한 버전
+         +-- DataBindingMethodResolver  데이터 바인딩용 제한 버전
 
  BeanResolver
    +-- BeanFactoryResolver             ApplicationContext 조회
