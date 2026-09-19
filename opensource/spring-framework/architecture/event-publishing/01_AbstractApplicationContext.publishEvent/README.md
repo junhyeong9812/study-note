@@ -67,13 +67,14 @@ protected void publishEvent(Object event, @Nullable ResolvableType typeHint) {
  | [1] 이벤트 정규화                                       L421-L434
  |       ApplicationEvent 면 그대로
  |       임의 객체면 PayloadApplicationEvent<T> 로 감싼다
- |         --> 타입 힌트가 있으면 페이로드 제네릭 타입으로 사용
+ |         --> 타입 힌트가 ApplicationEvent 타입이면 이벤트 타입으로 쓰고,
+ |             그 밖이면 페이로드 제네릭 타입으로 쓴다 (L427-L431)
  |
  | [2] L437 이벤트 타입 확정 (ResolvableType)
  |       리스너 선별에서 제네릭까지 비교하기 위한 값
  |
  +-- [3] L445 earlyApplicationEvents 가 아직 살아 있음 (기동 중)
- |       --> 버퍼에 적재하고 끝
+ |       --> 버퍼에 적재하고 멀티캐스트만 건너뛴다 (부모 전파는 이어진다)
  |           registerListeners 가 리스너를 붙인 뒤 한꺼번에 발행한다
  |
  +-- [4] L448 멀티캐스터가 있음
