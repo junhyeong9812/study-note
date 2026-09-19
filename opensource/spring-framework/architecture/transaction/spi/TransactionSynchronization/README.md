@@ -76,7 +76,8 @@ public interface TransactionSynchronization extends Ordered, Flushable {
    (동기화가 활성화된 트랜잭션 안에서만 가능)
 
  대표 사용처
-   ApplicationListenerMethodTransactionalAdapter   @TransactionalEventListener
+   TransactionalApplicationListenerSynchronization  @TransactionalEventListener
+     (리스너 쪽은 TransactionalApplicationListenerMethodAdapter)
    DataSourceUtils / EntityManagerFactoryUtils     커넥션 반납, 세션 정리
    사용자 코드                                     커밋 후 외부 시스템 호출
 
