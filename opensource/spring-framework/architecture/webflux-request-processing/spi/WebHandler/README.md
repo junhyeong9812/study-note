@@ -63,6 +63,6 @@ public interface WebExceptionHandler {
 
  WebFilter            MVC 의 서블릿 Filter 에 대응 (chain.filter(exchange) 로 이어간다)
  WebExceptionHandler  체인 어디서든 난 오류의 최종 처리
-   +-- ResponseStatusExceptionHandler   ResponseStatusException -> 상태 코드
-   +-- WebFluxResponseStatusExceptionHandler
+   +-- ResponseStatusExceptionHandler   ResponseStatusException -> 상태 코드 (spring-web)
+         +-- WebFluxResponseStatusExceptionHandler   (spring-webflux)
 ```
