@@ -49,6 +49,7 @@ public interface BeanPostProcessor {
    +-- DestructionAwareBeanPostProcessor           파괴 직전
    |     +-- InitDestroyAnnotationBeanPostProcessor   @PostConstruct @PreDestroy
    |           +-- CommonAnnotationBeanPostProcessor  + @Resource
+   |     +-- ApplicationListenerDetector           리스너 빈 등록
+   |                                                (MergedBeanDefinitionPostProcessor 도 겸한다)
    +-- ApplicationContextAwareProcessor             *Aware 콜백
-   +-- ApplicationListenerDetector                  리스너 빈 등록
 ```
