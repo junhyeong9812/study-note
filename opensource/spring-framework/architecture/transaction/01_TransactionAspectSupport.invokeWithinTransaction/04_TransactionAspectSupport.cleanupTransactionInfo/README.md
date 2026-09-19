@@ -48,7 +48,8 @@ protected void cleanupTransactionInfo(@Nullable TransactionInfo txInfo) {
  복원된 ThreadLocal
       --> TransactionAspectSupport.currentTransactionStatus() 가 항상 "지금 실행 중인"
           트랜잭션을 가리키게 한다
-      --> 커밋/롤백보다 뒤에 불리므로, 커밋 도중에도 상태 조회가 가능하다
+      --> 롤백은 catch 안(L375)이라 정리보다 앞이므로 롤백 도중에는 조회할 수 있지만
+          커밋(L408)은 정리(L379) 뒤라 커밋 도중에는 조회할 수 없다
 
  트랜잭션 리소스(커넥션) 정리와는 별개
       --> 커넥션 해제는 매니저의 cleanupAfterCompletion 이 담당
