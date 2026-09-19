@@ -70,8 +70,9 @@ private Expression parseTemplate(String expressionString, ParserContext context)
       --> 스레드 안전하므로 캐시해 두고 재사용하는 것이 표준 사용법
 
  템플릿 모드의 쓰임
-      --> @Value("#{...}") 는 템플릿 모드가 아니라 BeanExpressionResolver 가
-          #{} 를 벗겨 내고 식만 파싱한다
+      --> @Value("#{...}") 도 템플릿 모드로 파싱된다. StandardBeanExpressionResolver 가
+          isTemplate()=true 인 ParserContext(접두 "#{", 접미 "}")를 넘기고,
+          #{} 를 잘라 내는 일은 parseExpressions 가 한다
       --> 템플릿 모드는 문자열 안에 여러 식이 섞인 경우에 쓴다
 
  ParserContext
