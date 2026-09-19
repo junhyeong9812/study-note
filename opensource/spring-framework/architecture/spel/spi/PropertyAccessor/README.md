@@ -40,8 +40,9 @@ public interface PropertyAccessor extends TargetedAccessor {
 ```text
  PropertyAccessor
    +-- ReflectivePropertyAccessor          getter/필드 (기본)
-   |     +-- (CompilablePropertyAccessor 를 구현해 컴파일 지원)
-   +-- MapAccessor                         Map 을 프로퍼티처럼
+   |     읽기 때 내부적으로 OptimalPropertyAccessor(CompilablePropertyAccessor)를
+   |     만들어 돌려준다 (createOptimalAccessor)
+   +-- MapAccessor                         Map 을 프로퍼티처럼 (CompilablePropertyAccessor)
    +-- BeanFactoryAccessor / BeanExpressionContextAccessor
    +-- EnvironmentAccessor
    +-- (Spring Data, Security 등이 자체 접근자를 등록)
