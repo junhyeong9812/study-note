@@ -28,7 +28,8 @@ protected @Nullable HandlerExecutionChain getHandler(HttpServletRequest request)
 ```text
  getHandler(request)
  |
- +-- for mapping in handlerMappings          (기동 시 @Order 순으로 정렬된 목록)
+ +-- for mapping in handlerMappings          (빈이 있으면 @Order 순, 없으면
+ |                                              DispatcherServlet.properties 순)
  |      |
  |      +-- BeanNameUrlHandlerMapping.getHandler      빈 이름이 "/..."인 핸들러
  |      |      null --> 다음
