@@ -143,3 +143,5 @@ public @Nullable HandlerMethodArgumentResolver getArgumentResolver(MethodParamet
       HttpMessageNotReadableException          --> 400   (JSON 파싱 실패)
       --> doDispatch의 dispatchException --> HandlerExceptionResolver
 ```
+
+바인딩과 @Valid 검증이 실제로 일어나는 경로는 [검증과 바인딩](../../../../../validation-binding/README.md) 흐름에 있다.
