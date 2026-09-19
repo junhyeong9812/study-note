@@ -36,7 +36,8 @@ public interface EventListenerFactory {
 
 ```text
  EventListenerFactory
-   +-- DefaultEventListenerFactory              order 가 가장 낮음(마지막 후보)
+   +-- DefaultEventListenerFactory              order = LOWEST_PRECEDENCE
+   |                                            우선순위가 가장 낮다(마지막 후보)
    |     --> ApplicationListenerMethodAdapter
    +-- TransactionalEventListenerFactory        @TransactionalEventListener 전용, 우선순위 앞
          --> TransactionalApplicationListenerMethodAdapter
