@@ -6,7 +6,7 @@
 
 ## 실제 코드
 
-`spring-context` / `org.springframework.context....scheduling.annotation` / `ScheduledAnnotationBeanPostProcessor.java` L279-L320 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/context/../scheduling/annotation/ScheduledAnnotationBeanPostProcessor.java#L279-L320))
+`spring-context` / `org.springframework.scheduling.annotation` / `ScheduledAnnotationBeanPostProcessor.java` L279-L320 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/scheduling/annotation/ScheduledAnnotationBeanPostProcessor.java#L279-L320))
 
 ```java
 // ScheduledAnnotationBeanPostProcessor.java L279-L320
@@ -56,7 +56,7 @@ public Object postProcessAfterInitialization(Object bean, String beanName) {
 
 작업을 만드는 부분이다.
 
-`spring-context` / `org.springframework.context....scheduling.annotation` / `ScheduledAnnotationBeanPostProcessor.java` L328-L360 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/context/../scheduling/annotation/ScheduledAnnotationBeanPostProcessor.java#L328-L360))
+`spring-context` / `org.springframework.scheduling.annotation` / `ScheduledAnnotationBeanPostProcessor.java` L328-L360 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/scheduling/annotation/ScheduledAnnotationBeanPostProcessor.java#L328-L360))
 
 ```java
 // ScheduledAnnotationBeanPostProcessor.java L328-L360
@@ -95,7 +95,7 @@ private void processScheduledSync(Scheduled scheduled, Method method, Object bea
     processScheduledTask(scheduled, task, method, key);
 ```
 
-`spring-context` / `org.springframework.context....scheduling.annotation` / `ScheduledAnnotationBeanPostProcessor.java` L405-L465 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/context/../scheduling/annotation/ScheduledAnnotationBeanPostProcessor.java#L405-L465))
+`spring-context` / `org.springframework.scheduling.annotation` / `ScheduledAnnotationBeanPostProcessor.java` L405-L465 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-context/src/main/java/org/springframework/scheduling/annotation/ScheduledAnnotationBeanPostProcessor.java#L405-L465))
 
 ```java
 // ScheduledAnnotationBeanPostProcessor.java L405-L465
@@ -176,7 +176,7 @@ String fixedDelayString = scheduled.fixedDelayString();
  |
  +-- L304 메서드마다 processScheduled(scheduled, method, bean)
         |
-        | L353 createRunnable(bean, method)      리플렉션 호출을 감싼 Runnable
+        | L353 createRunnable(bean, method, scheduled.scheduler())   리플렉션 호출을 감싼 Runnable
         | L411 initialDelay 해석 (숫자 또는 문자열 + 플레이스홀더)
         |
         +-- L430 cron 이 있으면
@@ -187,7 +187,10 @@ String fixedDelayString = scheduled.fixedDelayString();
         +-- L458 fixedDelay --> FixedDelayTask
         +--      fixedRate  --> FixedRateTask
         |      문자열 버전(fixedDelayString 등)도 플레이스홀더 해석 후 같은 경로
-        |      세 가지 중 정확히 하나만 지정해야 한다 (아니면 예외)
+        |      둘 이상 지정하면 예외
+        |
+        +-- L513 셋 다 없으면 --> initialDelay 로 OneTimeTask (1회 실행)
+        |      initialDelay 도 없으면 예외
         |
         +-- 만들어진 ScheduledTask 를 빈별 목록에 보관 (나중에 취소하기 위해)
 ```
