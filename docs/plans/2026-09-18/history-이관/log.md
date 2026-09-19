@@ -57,6 +57,12 @@
 | `~/project/rust-history/06-핵심-개념-진화.md` | §4 | 「`Result`에는 `#[must_use]`가 붙어, **까지 않고** 버리면」 — 「꺼내 보지 않고」의 오기로 보인다 |
 | `~/project/rust-history/02-에디션.md` | — | 「1.39에서 **모든 에디션에 동시에**」·mermaid 「(전 에디션)」 과, 같은 문서 2015 절의 「`let async = 1;` 합법 / 아직 키워드가 아니어서」가 모순이다. `async`/`await` **문법**은 1.39부터 전 에디션이지만 `async` **키워드 예약**은 2018 에디션부터다 |
 | `~/project/rust-history/01-탄생-1.0.md` | 3)절 | 절 제목 「자체 호스팅 컴파일러와 첫 공개 릴리스 **(2010 ~ 2012)**」 vs 같은 절 본문 「**2009년부터 2012년 사이**」 — 제목의 범위가 절 전체의 대략 구간일 수 있어 단정은 보류 |
+| `~/project/python-history/03-현대-Python.md` | 3.6~3.7 | 같은 `x: int` 줄을 코드 주석은 「**인스턴스 속성** 어노테이션」, 바로 아래 3.7 본문은 「**클래스 변수** 어노테이션」이라 부른다 |
+| `~/project/python-history/03-현대-Python.md` | — | 「주된 기법은 **두 가지**다」라 적고 불릿은 **셋**이다 |
+| `~/project/python-history/03-현대-Python.md` | f-string 절 | 산문의 세 가지(`%`·`str.format()`·`string.Template`)와 코드의 세 가지(`%`·`.format()`·`.format(n=…)`)가 **구성원이 다르다** |
+| `~/project/python-history/03-현대-Python.md` | 표 | 코드 스팬 안의 파이프(`` `X \| Y` ``)가 GFM 표 칸을 잘라 3.9·3.10 행 렌더링이 깨진다 |
+| `~/project/python-history/05-데이터-ML-생태계.md` | L3·L220·L222 | 「20여 년」 / 「30년 전 NumPy」 / 「30년」이 서로 어긋난다(같은 문서가 NumPy 1.0을 2006년이라 적는다) |
+| `~/project/python-history/06-핵심-개념-진화.md` | L199 | 「PEP 342, Python 2.5 / **2005**」 — 2005는 PEP 작성 연도다. 같은 절 다른 행은 전부 릴리스 연도라 2006이 규칙에 맞다 |
 
 원본을 고치면 재서술본의 「재서술자 주:」 블록도 함께 정리한다.
 
