@@ -34,7 +34,7 @@ public interface KeyGenerator {
  KeyGenerator
    +-- SimpleKeyGenerator        기본
    |     인자 0개 --> SimpleKey.EMPTY
-   |     인자 1개 --> 그 값 자체
+   |     인자 1개이고 null 도 배열도 아니면 --> 그 값 자체
    |     여러 개  --> SimpleKey(인자들)
    +-- (사용자 구현: CachingConfigurer.keyGenerator 로 등록)
 
