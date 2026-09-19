@@ -190,5 +190,9 @@ protected Mono<Void> writeBody(@Nullable Object body, MethodParameter bodyParame
 
  선택된 미디어 타입
       --> 응답 Content-Type 헤더
-      --> 쓸 수 있는 writer 가 없으면 NotAcceptableStatusException (406)
+      --> 쓸 수 있는 writer 가 없을 때는 세 갈래다
+            Content-Type 이 이미 정해졌거나 producible 속성이 있으면
+              HttpMessageNotWritableException
+            후보 미디어 타입이 아예 없으면 IllegalStateException
+            그 밖에는 NotAcceptableStatusException (406)
 ```
