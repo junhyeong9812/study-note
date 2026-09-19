@@ -18,10 +18,10 @@
         |
         +-- 각 콜백이 등록된 TestExecutionListener 들을 순서대로 호출
               DependencyInjectionTestExecutionListener   주입
-              TransactionalTestExecutionListener         @Transactional 테스트
               DirtiesContextTestExecutionListener        컨텍스트 폐기 표시
+              TransactionalTestExecutionListener         @Transactional 테스트
               SqlScriptsTestExecutionListener            @Sql 실행
-              MockitoTestExecutionListener 등            @MockitoBean
+              BeanOverrideTestExecutionListener 등       @MockitoBean
  |
  +-- [02] TestContext.getApplicationContext
         |
@@ -52,7 +52,9 @@
  캐시된 ApplicationContext
       --> 같은 MergedContextConfiguration 을 가진 모든 테스트가 공유
       --> 테스트 스위트 전체 실행 시간을 좌우하는 요소
-      --> @DirtiesContext 나 @MockitoBean 이 키를 바꾸면 컨텍스트가 하나 더 생긴다
+      --> @MockitoBean 은 contextCustomizers 를 통해 키를 바꾸므로 컨텍스트가 하나 더 생긴다
+      --> @DirtiesContext 는 키를 바꾸지 않는다. 같은 키의 컨텍스트를 캐시에서 제거하고
+          닫을 뿐이어서, 다음 요청 때 같은 키로 다시 만들어진다
 
  주입된 테스트 인스턴스
       --> 필드의 @Autowired, @Value 가 채워진 상태로 테스트 메서드 실행
