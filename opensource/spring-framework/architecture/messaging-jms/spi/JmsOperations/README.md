@@ -59,7 +59,7 @@ public interface MessageCreator {
  JmsOperations
    +-- JmsTemplate           기본 구현
  그 위의 API
-   +-- JmsClient             fluent API (Spring 6.2+)
+   +-- JmsClient             fluent API (Spring 7.0+)
    +-- JmsMessagingTemplate  spring-messaging 의 Message 로 다룬다
 
  MessageCreator
