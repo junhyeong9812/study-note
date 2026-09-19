@@ -245,3 +245,5 @@ JDBC 구현의 `doBegin`이 실제로 하는 일이다.
       --> 안쪽에서 롤백하면 rollback-only 표시만 남고
           실제 롤백은 가장 바깥에서 일어난다
 ```
+
+JdbcTemplate 쪽에서 이 커넥션을 찾아 쓰는 규칙은 [JDBC](../../../../jdbc/01_JdbcTemplate.execute/01_DataSourceUtils.getConnection/README.md)에 있다.
