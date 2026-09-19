@@ -67,11 +67,15 @@ public interface SmartContextLoader extends ContextLoader {
 ```text
  ContextLoader
    +-- SmartContextLoader                     MergedContextConfiguration 기반
-         +-- AbstractGenericContextLoader
-         |     +-- AnnotationConfigContextLoader     @ContextConfiguration(classes = ...)
-         |     +-- GenericXmlContextLoader           XML 위치
-         +-- AbstractGenericWebContextLoader
-               +-- WebDelegatingSmartContextLoader 등 웹 컨텍스트
+         +-- AbstractContextLoader            prepareContext / customizeContext 공통
+         |     +-- AbstractGenericContextLoader
+         |     |     +-- AnnotationConfigContextLoader   @ContextConfiguration(classes = ...)
+         |     |     +-- GenericXmlContextLoader         XML 위치
+         |     +-- AbstractGenericWebContextLoader
+         |           +-- AnnotationConfigWebContextLoader  웹 컨텍스트
+         +-- AbstractDelegatingSmartContextLoader   XML/애노테이션 중 하나를 위임 선택
+               +-- DelegatingSmartContextLoader
+               +-- WebDelegatingSmartContextLoader
 
  Spring Boot 는 SpringBootContextLoader 로 대체한다
 ```
