@@ -1,5 +1,7 @@
 # 트랜스포트 액션
 
+상위: [Elasticsearch 아키텍처 지도](../../README.md)
+
 액션 하나가 **실제로 실행되기까지 거치는 공통 골격**이다. 검증하고, 참조 수를 올리고, 필터 체인을 태우고, 필요하면 스레드를 갈아타고 나서야 `doExecute` 가 불린다. [REST 디스패치](../rest-dispatch/README.md)의 `action.accept` 뒤가 여기다. 폴더 하나가 메서드 하나이고, 설명 안의 메서드 이름을 누르면 그 메서드의 폴더로 들어간다. [spi](spi/README.md)는 필터와 체인 계약이다.
 
 기준 커밋: elasticsearch `main` [`60bb239edb`](https://github.com/elastic/elasticsearch/tree/60bb239edb99f0e002eb620e4e82a6f2b15a49b0) (2026-09-19). 모든 줄 번호는 이 커밋 기준이다.
