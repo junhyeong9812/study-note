@@ -64,7 +64,8 @@ private @Nullable ModelAndView getModelAndView(ModelAndViewContainer mavContaine
 ```text
  null
       --> ha.handle 반환 --> doDispatch의 mv == null
-          --> applyDefaultViewName 건너뜀 (mv가 null이라)
+          --> applyDefaultViewName은 불리지만 안에서 걸러진다
+              (L969에서 무조건 호출, 메서드 안 L1009의 mv != null 검사에 걸림)
           --> processDispatchResult에서 render 건너뜀 ("No view rendering")
 
  ModelAndView(viewName = "home", model)
