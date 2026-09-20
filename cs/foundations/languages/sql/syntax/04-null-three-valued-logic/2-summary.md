@@ -1,7 +1,7 @@
 # sql/04-NULL 의 3값 논리 — 정리 (힌트)
 
 > 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-C](../../../../../../reference/study-note-guide.md)).
+> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../../../reference/study-note-guide.md)).
 >
 > **기준 소스** — [PostgreSQL 18 · Comparison Functions and Operators](https://www.postgresql.org/docs/18/functions-comparison.html) · [MySQL 8.4 · Working with NULL Values](https://dev.mysql.com/doc/refman/8.4/en/working-with-null.html)\
 > **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
