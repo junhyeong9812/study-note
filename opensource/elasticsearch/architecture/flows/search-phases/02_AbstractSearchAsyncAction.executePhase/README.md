@@ -104,4 +104,4 @@
 
 ## 다루지 않는 것
 
-각 `SearchPhase` 구현의 `run()` 내부, `onPhaseFailure` 와 `raisePhaseFailure` 의 응답 조립, `context.execute` 가 쓰는 SEARCH_COORDINATION 스레드풀, `SearchPhase` 의 `doCheckNoMissingShards` 는 같은 뼈대의 곁가지라 요약만 했다.
+각 `SearchPhase` 구현의 `run()` 내부, `onPhaseFailure` 와 `raisePhaseFailure` 의 응답 조립, `context.execute` 가 쓰는 스레드풀(`TransportSearchAction.asyncSearchExecutor` 가 고른다. 기본은 SEARCH), `SearchPhase` 의 `doCheckNoMissingShards` 는 같은 뼈대의 곁가지라 요약만 했다.
