@@ -106,7 +106,7 @@
 `server` / `org.elasticsearch.action.support.replication` / `ReplicationOperation.java` L265-L277 ([GitHub](https://github.com/elastic/elasticsearch/blob/60bb239edb99f0e002eb620e4e82a6f2b15a49b0/server/src/main/java/org/elasticsearch/action/support/replication/ReplicationOperation.java#L265-L277))
 
 ```java
-// ReplicationOperation.java L265-L277
+// ReplicationOperation.java L265-L276
         for (final ShardRouting shard : replicationGroup.getReplicationTargets()) {
             if (shard.isSameAllocation(primaryRouting) == false) {
                 performOnReplica(
@@ -119,7 +119,6 @@
                 );
             }
         }
-    }
 ```
 
 ## 어디에서 쓰이는가
