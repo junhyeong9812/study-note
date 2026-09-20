@@ -2,7 +2,9 @@
 
 상위: [AbstractApplicationContext.refresh](../README.md)
 
-멀티캐스터에 리스너를 연결하고, 그동안 버퍼에 모아 둔 초기 이벤트를 발행한다. 빈 리스너는 **이름만** 등록하고 아직 만들지 않는다. 빈을 여기서 만들면 그 빈이 뒤에 등록될 후처리기의 적용을 받지 못하기 때문이다.
+멀티캐스터에 리스너를 연결하고, 그동안 버퍼에 모아 둔 초기 이벤트를 발행한다. 빈 리스너는 **이름만** 등록하고 아직 만들지 않는다. 후처리기는 05 단계에서 이미 다 등록돼 있다(`refresh` 안에서 `registerBeanPostProcessors` L606 이 `registerListeners` L619 보다 앞이다). 여기서 안 만드는 이유는 조회를 `allowEagerInit=false` 로 하기 때문이고, 소스 주석이 그것을 말한다(L921-922).
+
+> Do not initialize FactoryBeans here: We need to leave all regular beans uninitialized to let post-processors apply to them!
 
 ## 실제 코드
 
