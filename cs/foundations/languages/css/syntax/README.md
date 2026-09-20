@@ -1,8 +1,10 @@
 # CSS — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 아래 주제들의 3파일(질문·서머리·정답)은 **아직 없다**.
+> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **쓰인 주제는 제목에 폴더 링크**가 걸려 있고, 나머지는 아직 없다.
+> 현재 쓰인 것: **01 · 02 · 24 · 52**(4/60).
 > 기준 소스: [CSSWG 에디터 초안 색인](https://drafts.csswg.org/) (모듈별 최신 초안) · [CSS Snapshot 2026](https://drafts.csswg.org/css-2026/) (안정 집합) · [W3C TR CSS 목록](https://www.w3.org/TR/?filter-tr-name=css) (권고 단계) · [MDN CSS 레퍼런스](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference) (표면 확인용) · 지원 상태는 [Web Platform Status(`webstatus.dev`)](https://webstatus.dev/) 의 Baseline 데이터를 API 로 조회해 확인했다.
-> 실행 검증: **가능**. 이 머신에 **Google Chrome 151.0.7922.173** 과 **Mozilla Firefox 155.0.1** 이 설치돼 있다. `google-chrome --headless --dump-dom` 으로 DOM 을, `--screenshot` 으로 렌더 결과 PNG 를 뽑는 것을 실제로 돌려 확인했다(`:has()`·`@container`·`grid` 를 쓴 최소 문서로 스모크 통과). 계산값 확인은 headless 의 `getComputedStyle` 로, 눈으로 볼 것은 스크린샷으로 남긴다. **엔진은 Blink 와 Gecko 둘뿐이고 WebKit(Safari)은 이 머신에 없다** — Safari 전용 차이는 명세와 Baseline 데이터로만 접지하고 「미실행」으로 표기한다.
+> 실행 검증: **가능**. 이 머신에 **Google Chrome 151.0.7922.173** 과 **Mozilla Firefox 155.0.1** 이 설치돼 있다. `google-chrome --headless --dump-dom` 으로 DOM 을, `--screenshot` 으로 렌더 결과 PNG 를 뽑는 것을 실제로 돌려 확인했다(`:has()`·`@container`·`grid` 를 쓴 최소 문서로 스모크 통과). 계산값 확인은 headless 의 `getComputedStyle` 로, 눈으로 볼 것은 스크린샷으로 남긴다. **엔진은 Blink 와 Gecko 둘뿐이고 WebKit(Safari)은 이 머신에 없다** — Safari 전용 차이는 명세와 Baseline 데이터로만 접지하고 「미실행」으로 표기한다.\
+> ⚠️ **2026-09-21 정정 — 렌더 검증은 Chrome 단일 엔진이다.** Firefox 155.0.1 은 설치돼 있으나 이 환경에서 **headless 스크린샷이 산출되지 않는다** (전용 프로파일로도 `exit 0` 으로 끝나며 파일을 만들지 않는 **조용한 실패**). 따라서 크로스 브라우저 차이를 주장할 때는 Baseline 데이터로만 접지하고, 「두 엔진에서 확인했다」고 적지 않는다.
 > 기준일 2026-09-21.
 
 ## 이 언어에서 무엇을 자르는 축
@@ -21,8 +23,8 @@ CSS 는 문법 언어가 아니다. 문법 표면은 「선택자 { 속성: 값 
 
 | # | 주제 | 분류 | 무엇을 인출하게 되나 | 선행 | 기존 주제 | 렌더 | 우선 |
 |---|------|------|----------------------|------|-----------|------|------|
-| 01 | 캐스케이드와 우선순위 계산 — 출처·`!important`·레이어·명시도·순서 | 계산 모델 | 같은 요소에 걸린 선언 여러 개 중 어느 것이 이기는지 네 층을 순서대로 적용해 판정할 수 있다 | — | — | 도움 | A |
-| 02 | 명시도 계산 — (ID, 클래스, 타입) 세 자리와 무엇이 어디에 기여하나 | 계산 모델 | 임의의 선택자 두 개를 받아 어느 쪽이 이기는지 세 자리 숫자로 계산해 설명할 수 있다 | 01 | — | 도움 | A |
+| 01 | [캐스케이드와 우선순위 계산 — 출처·`!important`·레이어·명시도·순서](01-cascade-and-priority/) | 계산 모델 | 같은 요소에 걸린 선언 여러 개 중 어느 것이 이기는지 네 층을 순서대로 적용해 판정할 수 있다 | — | — | 도움 | A |
+| 02 | [명시도 계산 — (ID, 클래스, 타입) 세 자리와 무엇이 어디에 기여하나](02-specificity/) | 계산 모델 | 임의의 선택자 두 개를 받아 어느 쪽이 이기는지 세 자리 숫자로 계산해 설명할 수 있다 | 01 | — | 도움 | A |
 | 03 | 상속 — 상속되는 속성과 `inherit`/`initial`/`unset`/`revert`/`revert-layer` | 계산 모델 | 어떤 속성이 자식에게 내려가고 다섯 전역 키워드가 각각 무엇으로 되돌리는지 예측할 수 있다 | 01 | — | 도움 | A |
 | 04 | 값 처리 단계 — 지정값·계산값·사용값·실제값 | 계산 모델 | `em`·`%`·`auto` 가 어느 단계에서 픽셀이 되는지, `getComputedStyle` 이 무엇을 돌려주는지 설명할 수 있다 | 03 | — | 도움 | B |
 | 05 | `@layer` 캐스케이드 레이어 — 선언 순서와 레이어 밖의 위치 | 계산 모델 | 레이어를 쓰면 명시도가 왜 덜 중요해지는지, `!important` 에서 레이어 순서가 왜 뒤집히는지 설명할 수 있다 | 01 | — | 도움 | B |
@@ -44,7 +46,7 @@ CSS 는 문법 언어가 아니다. 문법 표면은 「선택자 { 속성: 값 
 | 21 | `position` 다섯 값과 포함 블록 | 박스·레이아웃 | `absolute` 가 어느 조상을 기준으로 잡는지, `fixed` 가 `transform` 조상 때문에 기준이 바뀌는 것을 예측할 수 있다 | 17 | — | 필수 | A |
 | 22 | 쌓임 맥락과 `z-index` | 박스·레이아웃 | `z-index: 9999` 가 왜 안 먹는지 쌓임 맥락을 만드는 선언 목록(`opacity`·`transform`·`filter`·`isolation`)으로 설명할 수 있다 | 21 | — | 필수 | A |
 | 23 | 오버플로·스크롤 컨테이너·스크롤 스냅 | 박스·레이아웃 | `overflow` 값이 스크롤 컨테이너와 BFC 를 동시에 만드는 것, `overscroll-behavior`·스냅 축을 설계할 수 있다 | 17 | — | 필수 | A |
-| 24 | Flexbox — 주축·교차축과 정렬(`justify-*`/`align-*`) | 박스·레이아웃 | `flex-direction` 을 바꿨을 때 `justify-content` 가 가리키는 방향이 뒤집히는 것을 예측할 수 있다 | 16 | [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (1차원 레이아웃의 등장) | 필수 | A |
+| 24 | [Flexbox — 주축·교차축과 정렬(`justify-*`/`align-*`)](24-flexbox-axes/) | 박스·레이아웃 | `flex-direction` 을 바꿨을 때 `justify-content` 가 가리키는 방향이 뒤집히는 것을 예측할 수 있다 | 16 | [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (1차원 레이아웃의 등장) | 필수 | A |
 | 25 | `flex` 단축의 세 값 — `grow`/`shrink`/`basis` 와 크기 해결 | 박스·레이아웃 | `flex: 1` 이 무엇으로 펼쳐지는지, `min-width: auto` 때문에 아이템이 안 줄어드는 사고를 설명할 수 있다 | 24 | — | 필수 | A |
 | 26 | flex 줄바꿈·`gap`·`order` | 박스·레이아웃 | `flex-wrap` 이 켜졌을 때 `align-content` 가 새로 의미를 갖는 것과 `order` 가 접근성에서 만드는 문제를 판단할 수 있다 | 25 | — | 필수 | A |
 | 27 | Grid 트랙 정의 — `fr`·`minmax()`·`repeat()`·`auto-fill`/`auto-fit` | 박스·레이아웃 | `fr` 이 나누는 것이 「남는 공간」임을 설명하고 `auto-fill` 과 `auto-fit` 이 빈 트랙에서 갈리는 것을 예측할 수 있다 | 16 | [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (2차원 레이아웃의 등장) | 필수 | A |
@@ -72,7 +74,7 @@ CSS 는 문법 언어가 아니다. 문법 표면은 「선택자 { 속성: 값 
 | 49 | `clip-path` 와 `mask` | 시각 효과 | 잘라내기와 마스킹이 갈리는 지점, 도형 함수·참조 마스크로 모양을 만드는 형태를 설계할 수 있다 | 47 | — | 필수 | C |
 | 50 | 글꼴과 웹폰트 — `font` 단축·`@font-face`·`font-display`·가변 폰트 | 시각 효과 | FOIT 와 FOUT 를 `font-display` 값으로 골라 바꾸는 것과 폰트 폴백이 글자마다 따로 일어나는 것을 설명할 수 있다 | 19 | — | 필수 | A |
 | 51 | 텍스트 줄바꿈·서식·장식 — `text-wrap`·`white-space`·`overflow-wrap`/`word-break`·`hyphens`·`text-decoration` | 시각 효과 | 긴 URL 이 상자를 뚫는 문제를 어떤 속성으로 막는지 고르고 `text-wrap: balance` 가 적용되는 조건을 판단할 수 있다 | 19 | — | 필수 | A |
-| 52 | `transition` — 전환 가능한 속성·타이밍 함수·지연·`transition-behavior` | 애니메이션 | 어떤 속성이 보간 가능한지(`auto` 로는 왜 안 되는지) 판정하고 `cubic-bezier`/`steps`/`linear()` 를 골라 쓸 수 있다 | 04 | — | 필수 | A |
+| 52 | [`transition` — 전환 가능한 속성·타이밍 함수·지연·`transition-behavior`](52-transition/) | 애니메이션 | 어떤 속성이 보간 가능한지(`auto` 로는 왜 안 되는지) 판정하고 `cubic-bezier`/`steps`/`linear()` 를 골라 쓸 수 있다 | 04 | — | 필수 | A |
 | 53 | `@keyframes` 와 `animation` — 단축·`fill-mode`·`direction`·`iteration`·`play-state` | 애니메이션 | 끝난 뒤 원래 값으로 돌아가는 현상을 `fill-mode` 로 설명하고 여러 애니메이션이 같은 속성을 건드릴 때의 우선을 예측할 수 있다 | 52 | — | 필수 | A |
 | 54 | `transform` 2D·`transform-origin`·개별 변환 속성(`translate`/`rotate`/`scale`) | 애니메이션 | 변환 함수의 곱 순서가 결과를 바꾸는 것과 개별 속성이 그 순서를 고정하는 것을 설명할 수 있다 | 21 | — | 필수 | A |
 | 55 | 3D 변환 — `perspective`·`transform-style`·`backface-visibility` | 애니메이션 | 원근을 부모에 주는 것과 자식에 주는 것이 갈리는 이유, 평탄화가 3D 를 무너뜨리는 자리를 예측할 수 있다 | 54 | — | 필수 | B |

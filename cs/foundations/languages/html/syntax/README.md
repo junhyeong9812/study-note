@@ -2,7 +2,8 @@
 
 > 1단계 리스트업이다. 아래 주제들의 3파일(질문·서머리·정답)은 **아직 없다**.
 > 기준 소스: [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) (단일 기준 — 「HTML5」라는 버전은 더 이상 기준이 아니다) · [콘텐츠 카테고리 절](https://html.spec.whatwg.org/multipage/dom.html#kinds-of-content) · [WHATWG DOM Standard](https://dom.spec.whatwg.org/) (접근성·트리 규칙의 뿌리) · [WAI-ARIA 1.2](https://www.w3.org/TR/wai-aria-1.2/)·[ARIA in HTML](https://www.w3.org/TR/html-aria/) (접근성 갈래) · [MDN HTML 레퍼런스](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference) (표면 확인용) · 지원 상태는 [Web Platform Status(`webstatus.dev`)](https://webstatus.dev/) 의 Baseline 데이터를 API 로 조회해 확인했다.
-> 실행 검증: **가능**. 이 머신에 **Google Chrome 151.0.7922.173** 과 **Mozilla Firefox 155.0.1** 이 설치돼 있다. `google-chrome --headless --dump-dom` 으로 **파서가 만든 실제 DOM 트리**를, `--screenshot` 으로 렌더 결과를 뽑는 것을 실제로 돌려 확인했다. 파싱·오류 복구(`03`)와 콘텐츠 모델(`05`)은 `--dump-dom` 으로 눈에 보이게 검증할 수 있다. **막히는 것**: 스크린리더(NVDA·VoiceOver)가 없어 **접근성 트리가 실제로 어떻게 읽히는지는 실행 확인이 불가**하다 — Chrome 의 접근성 트리 덤프까지만 쓰고, 「스크린리더가 이렇게 읽는다」는 서술은 명세·ARIA 문서로만 접지하고 「미실행」으로 표기한다. WebKit(Safari)도 없다.
+> 실행 검증: **가능**. 이 머신에 **Google Chrome 151.0.7922.173** 과 **Mozilla Firefox 155.0.1** 이 설치돼 있다. `google-chrome --headless --dump-dom` 으로 **파서가 만든 실제 DOM 트리**를, `--screenshot` 으로 렌더 결과를 뽑는 것을 실제로 돌려 확인했다. 파싱·오류 복구(`03`)와 콘텐츠 모델(`05`)은 `--dump-dom` 으로 눈에 보이게 검증할 수 있다. **막히는 것**: 스크린리더(NVDA·VoiceOver)가 없어 **접근성 트리가 실제로 어떻게 읽히는지는 실행 확인이 불가**하다 — Chrome 의 접근성 트리 덤프까지만 쓰고, 「스크린리더가 이렇게 읽는다」는 서술은 명세·ARIA 문서로만 접지하고 「미실행」으로 표기한다. WebKit(Safari)도 없다.\
+> ⚠️ **2026-09-21 정정 — 렌더 검증은 Chrome 단일 엔진이다.** Firefox 155.0.1 은 설치돼 있으나 이 환경에서 **headless 스크린샷이 산출되지 않는다** (전용 프로파일로도 `exit 0` 으로 끝나며 파일을 만들지 않는 **조용한 실패**). 따라서 크로스 브라우저 차이를 주장할 때는 Baseline 데이터로만 접지하고, 「두 엔진에서 확인했다」고 적지 않는다.
 > 기준일 2026-09-21.
 
 ## 이 언어에서 무엇을 자르는 축
