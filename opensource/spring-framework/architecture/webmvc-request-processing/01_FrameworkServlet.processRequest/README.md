@@ -31,7 +31,7 @@ protected void service(HttpServletRequest request, HttpServletResponse response)
               --> processRequest (바로)
 ```
 
-`doGet`, `doPost`, `doPut`, `doDelete`, `doPatch`는 모두 한 줄짜리로 `processRequest`만 부른다. `doOptions`와 `doTrace`는 다르다. `dispatchOptionsRequest`, `dispatchTraceRequest`(둘 다 기본 false)가 켜져 있거나 CORS preflight 요청일 때만 `processRequest`로 가고, 그 밖에는 서블릿 기본 구현이 처리한다.
+`doGet`, `doPost`, `doPut`, `doDelete`, `doPatch`는 모두 한 줄짜리로 `processRequest`만 부른다. `doOptions`와 `doTrace`는 다르다. `dispatchOptionsRequest`, `dispatchTraceRequest`(둘 다 기본 false)가 켜져 있거나 CORS preflight 요청이면 `processRequest`로 간다. 그런데 **양자택일이 아니다** — `processRequest`가 돌고 나서도 핸들러가 `Allow` 헤더를 안 세웠으면 `super.doOptions`가 이어서 돈다(`FrameworkServlet` L948-956, 주석 `// Proper OPTIONS response coming from a handler - we're done.`). `doTrace`도 같은 모양으로, 응답이 `message/http`가 아니면 `super.doTrace`가 이어진다.
 
 ## 실제 코드
 
