@@ -1,5 +1,7 @@
 # 페치 페이즈
 
+상위: [Elasticsearch 아키텍처 지도](../../README.md)
+
 쿼리 페이즈가 **어느 문서인지**만 정하고 끝나면, 그 문서를 실제로 가져오는 것이 이 페이즈다. 사용자가 받는 `_source` 가 여기서 온다. [검색 페이즈](../search-phases/README.md) 체인의 한 칸이고, 폴더 하나가 메서드 하나다. [spi](spi/README.md)는 샤드 세기와 검색 컨텍스트 생명주기다.
 
 기준 커밋: elasticsearch `main` [`60bb239edb`](https://github.com/elastic/elasticsearch/tree/60bb239edb99f0e002eb620e4e82a6f2b15a49b0) (2026-09-19). 모든 줄 번호는 이 커밋 기준이다.
