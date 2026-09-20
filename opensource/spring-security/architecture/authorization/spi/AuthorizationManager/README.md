@@ -80,3 +80,4 @@ public interface AuthorizationManager<T extends @Nullable Object> {
  Supplier 로 받는 Authentication
       --> 필요할 때만 꺼내라는 뜻이다
       --> permitAll 은 아예 꺼내지 않아 컨텍스트를 읽지 않는다
+```
