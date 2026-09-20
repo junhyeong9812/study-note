@@ -101,7 +101,7 @@
  [커밋]         finishConcurrentRender 뒤의 일이다
 ```
 
-[beginWork](../begin-work/README.md)는 따로 지도가 있다.
+[beginWork](../begin-work/README.md)와 [completeWork](../complete-work/README.md)는 따로 지도가 있다.
 
 ## 단계
 
@@ -133,7 +133,7 @@
 
 ## 다루지 않는 것
 
-`completeWork` 가 호스트 인스턴스를 만드는 과정, `finishConcurrentRender` 이후의 커밋 경로, `prepareFreshStack` 의 스택 초기화, `throwAndUnwindWorkLoop` 와 `unwindUnitOfWork` 의 되감기, `recoverFromConcurrentError` 의 에러 복구, lane 계산과 `shouldYield` 의 구현은 같은 뼈대의 곁가지라 요약만 했다. 서스펜션 상태와 종료 상태는 [spi](spi/README.md)에 모았다.
+`completeWork` 가 호스트 인스턴스를 만드는 과정([completeWork 흐름](../complete-work/README.md)에 따로 있다), `finishConcurrentRender` 이후의 커밋 경로, `prepareFreshStack` 의 스택 초기화, `throwAndUnwindWorkLoop` 와 `unwindUnitOfWork` 의 되감기, `recoverFromConcurrentError` 의 에러 복구, lane 계산과 `shouldYield` 의 구현은 같은 뼈대의 곁가지라 요약만 했다. 서스펜션 상태와 종료 상태는 [spi](spi/README.md)에 모았다.
 
 ## 하위 메서드
 
