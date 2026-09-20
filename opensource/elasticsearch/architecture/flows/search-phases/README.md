@@ -1,5 +1,7 @@
 # 검색 페이즈
 
+상위: [Elasticsearch 아키텍처 지도](../../README.md)
+
 검색 요청 하나가 **여러 페이즈를 차례로 거쳐** 응답이 되기까지다. 페이즈마다 샤드에 흩어졌다 모이고, 모인 결과로 다음 페이즈가 정해진다. 폴더 하나가 메서드 하나이고, 설명 안의 메서드 이름을 누르면 그 메서드의 폴더로 들어간다. [spi](spi/README.md)는 페이즈 계약과 전이 표다.
 
 기준 커밋: elasticsearch `main` [`60bb239edb`](https://github.com/elastic/elasticsearch/tree/60bb239edb99f0e002eb620e4e82a6f2b15a49b0) (2026-09-19). 모든 줄 번호는 이 커밋 기준이다.
