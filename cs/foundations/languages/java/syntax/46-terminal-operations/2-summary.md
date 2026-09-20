@@ -557,7 +557,7 @@ JDK 21.0.5                                          JDK 25.0.1
 - [`../49-parallel-streams/`](../49-parallel-streams/) — 병렬에서 이 문서의 규칙이 어디까지 유지되나. 그쪽은 **분할·스레드·측정**까지, 여기는 **순차 기준의 평가 시점**까지
 - [`../README.md`](../README.md) — Java 문법·API 주제 목록(이 주제는 46번)
 - [`../../../../../algorithm/`](../../../../../algorithm/) — 탐색·집계 **알고리즘은 거기**가 정본. 그쪽은 **어떤 절차로 찾나**까지, 여기는 **그 절차가 언제 도나**부터
-- 목록의 **38번 주제**(`Optional`) — `findFirst`·`min`·`max` 가 돌려주는 그 타입의 정본
+- [**38번 주제**](../38-optional/)(`Optional`) — `findFirst`·`min`·`max` 가 돌려주는 그 타입의 정본
 - [`../../../../../../history/java/java-8.md`](../../../../../../history/java/java-8.md) — 스트림이 **왜 Java 8 에 들어왔나**. 도입 맥락은 거기
 - [**26번 주제**](../26-try-with-resources/)(`try`-with-resources) — 「어디서 틀리나」 7번의 `Files.lines`
 - 목록의 **43번 주제**(fail-fast) — 소비 중 소스를 고쳤을 때

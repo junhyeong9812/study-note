@@ -601,7 +601,7 @@ put(null) : java.lang.UnsupportedOperationException
 - [`../README.md`](../README.md) — Java 문법·API 주제 목록(이 주제는 48번)
 - 목록의 **41번 주제**(`Map` API) — `getOrDefault`·`merge`. 「어디서 틀리나」 1번의 방어
 - 목록의 **39번 주제**(컬렉션 지도) — `TreeMap`·`LinkedHashMap` 을 언제 고르나
-- 목록의 **28번 주제**(`Comparator`) — `maxBy`/`minBy`/`TreeMap` 에 넘기는 비교자
+- [**28번 주제**](../28-comparable-comparator/)(`Comparator`) — `maxBy`/`minBy`/`TreeMap` 에 넘기는 비교자
 
 ## 용어 풀이
 

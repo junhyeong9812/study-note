@@ -46,7 +46,7 @@ PostgreSQL                          MySQL
 > **유니크 제약(unique constraint)** — 어떤 열(들)의 값이 표 안에서 중복될 수 없다는 규칙. 기본키도 그중 하나다.\
 > 예: `dept.id` 는 기본키, `dept.name` 은 `UNIQUE` — 이 표에는 유니크 제약이 **둘** 있다.
 
-## 예시 테이블 — SQL 네 주제가 같이 쓰는 데이터
+## 예시 데이터 — 이 묶음이 공유하는 것
 
 ```text
 emp (사원)                          dept (부서)

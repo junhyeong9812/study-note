@@ -372,7 +372,7 @@ Safe (접근자만 복사) : r.equals(copy) = false
 
 - **역직렬화** — javadoc 이 적은 대로 `record` 의 역직렬화는 **표준 생성자를 거친다.**\
   "읽어서 다시 만든 것이 원본과 같다"가 이 불변식에 기댄다.
-- **`record` 패턴 분해** — `case Buf(String n, int[] d)` 로 꺼내 다시 조립한 것이 같지 않게 된다(목록의 **24번 주제**).
+- **`record` 패턴 분해** — `case Buf(String n, int[] d)` 로 꺼내 다시 조립한 것이 같지 않게 된다([**24번 주제**](../24-record-patterns/)).
 - **`Map` 키** — 꺼내서 다시 만든 키로 조회가 안 된다.
 
 ### 7. `record` 가 대신 지켜 주는 계약을 세어 보라
@@ -627,8 +627,8 @@ record  -> RecPoint[x=5]
 
 **`record` 를 분해하는 문법**
 
-- `if (o instanceof Point(int x, int y))` 같은 **record 패턴**은 목록의 **24번 주제**(Java 21, JEP 440).
-- 그 앞 단계인 `instanceof` 타입 패턴은 목록의 **22번 주제**.
+- `if (o instanceof Point(int x, int y))` 같은 **record 패턴**은 [**24번 주제**](../24-record-patterns/)(Java 21, JEP 440).
+- 그 앞 단계인 `instanceof` 타입 패턴은 [**22번 주제**](../22-instanceof-type-patterns/).
 - 이 주제는 **만드는 쪽**만 다룬다.
 
 **패턴 매칭의 완결성을 만드는 짝**

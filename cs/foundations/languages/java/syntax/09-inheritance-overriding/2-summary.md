@@ -510,7 +510,7 @@ $ javac --release 8 Ex.java
 - [`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/) — **`equals` 계약은 거기**, 여기는 **그 사고가 오버로딩이라는 것**까지
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — **가상 호출의 JIT 최적화(인라인 캐시·단형화)는 거기.** 여기는 **언어 규칙**까지만
 - [**11번 주제**](../11-interfaces-default-methods/)(인터페이스) — `default` 메서드가 이 규칙에 끼어들면 무엇이 달라지나
-- 목록의 **19번 주제**(타입 소거) — 브리지 메서드가 제네릭에서도 생긴다
+- [**19번 주제**](../19-type-erasure/)(타입 소거) — 브리지 메서드가 제네릭에서도 생긴다
 
 ## 용어 풀이
 

@@ -128,7 +128,7 @@ Integer::compareTo(3,1) -> 1
 
 - **같았다.** 둘 다 `[가, 나, 다]` 였다.
 - `Comparator.naturalOrder()` 는 내부적으로 `Comparable.compareTo` 를 쓰므로 같은 순서가 나온다.
-- 비교자의 계약 자체는 목록의 **28번 주제**가 정본이다.
+- 비교자의 계약 자체는 [**28번 주제**](../28-comparable-comparator/)가 정본이다.
 
 ### 4. 배열 생성자 참조
 
@@ -303,7 +303,7 @@ Ex.java:5: error: generic array creation
 
 - **타입 소거** 때문이다. 런타임에 `T` 가 무엇인지 모르므로 그 배열을 만들 수 없다.
 - 그래서 라이브러리가 `toArray(IntFunction<T[]>)` 처럼 **밖에서 받아 오는** 형태를 쓴다.
-- 정본은 목록의 **19번 주제**다.
+- 정본은 [**19번 주제**](../19-type-erasure/)다.
 
 **(E)와 달리 컴파일되는 경우** (`Ex.java (30-e2)` 대 `(30-e6)`)
 

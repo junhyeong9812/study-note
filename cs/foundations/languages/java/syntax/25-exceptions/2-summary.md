@@ -749,9 +749,9 @@ Ex.java:10: error: exception FileNotFoundException has already been caught
 - [`../26-try-with-resources/`](../26-try-with-resources/) — 이 주제의 `finally` 함정 셋째(예외가 예외를 덮는 것)를 언어가 자동으로 막아 주는 장치
 - [`../03-variables-and-assignment/`](../03-variables-and-assignment/) — 다중 `catch` 변수가 암묵적 `final` 인 것, `finally` 가 값은 못 바꾸고 객체 내용은 바꾸는 이유
 - [`../06-initialization-order/`](../06-initialization-order/) — `static` 초기화 중 예외가 `ExceptionInInitializerError` 로 감싸지는 것
-- 목록의 **38번 주제**(`Optional`) — "값이 없음"을 예외 대신 표현하는 수단. 예외를 흐름 제어에 쓰지 않기 위한 도구
+- [**38번 주제**](../38-optional/)(`Optional`) — "값이 없음"을 예외 대신 표현하는 수단. 예외를 흐름 제어에 쓰지 않기 위한 도구
 - 목록의 **54번 주제**(`java.util.concurrent`) — `Future.get` 이 던지는 `ExecutionException` 의 원인 사슬. 다른 스레드의 예외가 어떻게 넘어오는가
-- 목록의 **60번 주제**(`null` 다루기) — `Objects.requireNonNull` 로 계약 위반을 일찍 `NullPointerException` 으로 만드는 법
+- [**60번 주제**](../60-null-handling/)(`null` 다루기) — `Objects.requireNonNull` 로 계약 위반을 일찍 `NullPointerException` 으로 만드는 법
 
 ## 용어 풀이
 

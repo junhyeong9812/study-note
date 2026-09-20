@@ -1,7 +1,7 @@
 # Java — 문법·API 주제 목록
 
 > 1단계 리스트업이다. 3파일(질문·서머리·정답)이 있는 주제는 **주제 이름에 폴더 링크**가 걸려 있다.
-> **진행 — 29 / 60** (2026-09-21: [01](01-primitives-and-wrappers/) · [02](02-numeric-operations/) · [03](03-variables-and-assignment/) · [05](05-arrays/) · [06](06-initialization-order/) · [07](07-constructors/) · [08](08-method-declaration-overloading/) · [09](09-inheritance-overriding/) · [10](10-access-modifiers/) · [11](11-interfaces-default-methods/) · [12](12-nested-classes/) · [13](13-enum-classes/) · [14](14-records/) · [15](15-sealed-classes/) · [25](25-exceptions/) · [26](26-try-with-resources/) · [27](27-equals-hashcode-contract/) · [29](29-lambda-expressions/) · [30](30-method-references/) · [31](31-functional-interfaces/) · [35](35-string/) · [36](36-stringbuilder-and-concat/) · [44](44-stream-creation/) · [45](45-intermediate-operations/) · [46](46-terminal-operations/) · [47](47-collectors-basics/) · [48](48-collectors-grouping/) · [49](49-parallel-streams/) · [53](53-bigdecimal/)). 나머지는 아직 없다.
+> **진행 — 42 / 60** (2026-09-21: [01](01-primitives-and-wrappers/) · [02](02-numeric-operations/) · [03](03-variables-and-assignment/) · [04](04-var-type-inference/) · [05](05-arrays/) · [06](06-initialization-order/) · [07](07-constructors/) · [08](08-method-declaration-overloading/) · [09](09-inheritance-overriding/) · [10](10-access-modifiers/) · [11](11-interfaces-default-methods/) · [12](12-nested-classes/) · [13](13-enum-classes/) · [14](14-records/) · [15](15-sealed-classes/) · [16](16-annotations/) · [17](17-generic-declarations/) · [18](18-wildcards-pecs/) · [19](19-type-erasure/) · [20](20-control-flow-statements/) · [21](21-switch-statement-and-expression/) · [22](22-instanceof-type-patterns/) · [23](23-switch-pattern-matching/) · [24](24-record-patterns/) · [25](25-exceptions/) · [26](26-try-with-resources/) · [27](27-equals-hashcode-contract/) · [28](28-comparable-comparator/) · [29](29-lambda-expressions/) · [30](30-method-references/) · [31](31-functional-interfaces/) · [35](35-string/) · [36](36-stringbuilder-and-concat/) · [38](38-optional/) · [44](44-stream-creation/) · [45](45-intermediate-operations/) · [46](46-terminal-operations/) · [47](47-collectors-basics/) · [48](48-collectors-grouping/) · [49](49-parallel-streams/) · [53](53-bigdecimal/) · [60](60-null-handling/)). 나머지는 아직 없다.
 > 기준 소스: [Java Language Specification SE 21](https://docs.oracle.com/javase/specs/jls/se21/html/index.html) · [Java SE 21 API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/index.html) · [JEP 색인](https://openjdk.org/jeps/0) (JDK [21](https://openjdk.org/projects/jdk/21/) · [24](https://openjdk.org/projects/jdk/24/) · [25](https://openjdk.org/projects/jdk/25/) 릴리스 페이지로 기능의 확정 버전 확인)
 > 실행 검증: **가능**. 이 머신에 sdkman JDK 17.0.13 · 21.0.5 · 25.0.1(Temurin)과 `javac`가 있다. 시스템 기본 `java`는 1.8이므로 **JDK 경로를 명시해 실행**한다(`~/.sdkman/candidates/java/21.0.5-tem/bin/`). 21에서 돌린 것·25에서만 도는 것을 나눠 적는다.
 > 기준일 2026-09-20.
@@ -21,7 +21,7 @@ JLS 자신의 목차는 **타입(4장) → 클래스·인터페이스(8·9장) �
 | 01 | [기본형과 래퍼 — 값 의미론·오토박싱·`Integer` 캐시](01-primitives-and-wrappers/) | 문법 | `==` 가 언제 참조를 비교하고 언제 값을 비교하는지 예측할 수 있다 | — | [`../../../data-representation/`](../../../data-representation/) | A |
 | 02 | [수치 연산 — 이항 승격·정수 오버플로·`Math.*Exact`](02-numeric-operations/) | 문법 | `int` 곱셈이 조용히 음수가 되는 자리를 예측하고 방어 선택을 판단할 수 있다 | 01 | [`../../../data-representation/`](../../../data-representation/) | A |
 | 03 | 변수와 대입 — 전부 값 전달·`final`·effectively final | 문법 | 메서드에 객체를 넘겼을 때 무엇이 바뀌고 무엇이 안 바뀌는지 설명할 수 있다 | 01 | [`../../../variables-and-memory/`](../../../variables-and-memory/) | A |
-| 04 | `var` 지역 변수 타입 추론 (10+) | 문법 | `var` 가 추론하는 타입과 쓸 수 없는 자리를 판단할 수 있다 | 03 | [`../../../../../history/java/java-10.md`](../../../../../history/java/java-10.md) | B |
+| 04 | [`var` 지역 변수 타입 추론 (10+)](04-var-type-inference/) | 문법 | `var` 가 추론하는 타입과 쓸 수 없는 자리를 판단할 수 있다 | 03 | [`../../../../../history/java/java-10.md`](../../../../../history/java/java-10.md) | B |
 | 05 | 배열 — 생성·기본값·공변성·`Arrays` 유틸 | 문법 | 배열 공변성이 런타임 `ArrayStoreException` 으로 나오는 경로를 예측할 수 있다 | 01 | [`../../../../data-structure/01-dynamic-array/`](../../../../data-structure/01-dynamic-array/) | A |
 | 06 | [클래스 멤버와 초기화 순서 — static/인스턴스 초기화 블록](06-initialization-order/) | 문법 | 필드·초기화 블록·생성자가 어느 순서로 도는지 설명할 수 있다 | — | — | A |
 | 07 | [생성자 — `this()`/`super()`·(25) 유연한 생성자 본문](07-constructors/) | 문법 | `super()` 앞에서 무엇을 할 수 있는지 21과 25로 나눠 판단할 수 있다 | 06 | [`../../../../../history/java/java-25.md`](../../../../../history/java/java-25.md) | A |
@@ -33,19 +33,19 @@ JLS 자신의 목차는 **타입(4장) → 클래스·인터페이스(8·9장) �
 | 13 | `enum` 클래스 — 상수별 본문·`EnumSet`/`EnumMap` | 문법 | enum 을 분기 대신 다형성으로 쓰는 자리와 `EnumMap` 이 빠른 이유를 판단할 수 있다 | 06 | — | A |
 | 14 | `record` (16+) — 컴팩트 생성자·불변 계약·못 하는 것 | 문법 | record 로 바꿔도 되는 클래스와 안 되는 클래스를 판단할 수 있다 | 06 | [`../../../../../history/java/java-16.md`](../../../../../history/java/java-16.md) | A |
 | 15 | `sealed` (17+) — `permits`·허용 계층의 조건 | 문법 | 하위 타입을 늘렸을 때 어디가 컴파일 에러로 터지는지 예측할 수 있다 | 11, 14 | [`../../../../../history/java/java-17.md`](../../../../../history/java/java-17.md) | A |
-| 16 | 애너테이션 — 선언·`@Retention`·`@Target`·메타 애너테이션 | 문법 | 런타임에 읽히는 애너테이션과 컴파일에서 사라지는 애너테이션을 구분·판단할 수 있다 | — | — | B |
-| 17 | 제네릭 선언 — 타입 파라미터·바운드·제네릭 메서드 | 문법 | 타입 파라미터를 클래스에 둘지 메서드에 둘지 판단할 수 있다 | 09 | — | A |
-| 18 | 와일드카드와 PECS — `? extends`/`? super` | 문법 | 어느 쪽 와일드카드가 읽기·쓰기를 막는지 예측할 수 있다 | 17 | — | A |
-| 19 | 타입 소거 — 런타임에 없는 것·제네릭 배열 금지·브리지 메서드 | 문법 | 제네릭 때문에 못 쓰는 문법(`new T[]`·`instanceof List<String>`)의 이유를 설명할 수 있다 | 17 | [`../../../../../history/java/java-5.md`](../../../../../history/java/java-5.md) | B |
-| 20 | 제어문 — 향상된 `for`·레이블 `break`/`continue` | 문법 | 중첩 루프를 레이블로 빠져나오는 형태와 그 대안을 판단할 수 있다 | — | — | A |
-| 21 | `switch` 문과 `switch` 식 (14+) — 화살표·`yield`·fallthrough | 문법 | 문과 식의 완결성 요구 차이를 설명하고 fallthrough 버그를 예측할 수 있다 | 20 | [`../../../../../history/java/java-14.md`](../../../../../history/java/java-14.md) | A |
-| 22 | `instanceof` 타입 패턴 (16+) | 문법 | 패턴 변수의 스코프가 어디까지인지 `&&`/`!` 조합에서 예측할 수 있다 | 09 | [`../../../../../history/java/java-16.md`](../../../../../history/java/java-16.md) | A |
-| 23 | `switch` 패턴 매칭 (21) — 완결성·`null`·`when` 가드 | 문법 | sealed 타입 분기에서 `default` 를 안 쓰는 것이 왜 이득인지 판단할 수 있다 | 15, 21, 22 | [`../../../../../history/java/java-21.md`](../../../../../history/java/java-21.md) | A |
-| 24 | `record` 패턴 (21) — 중첩 해체 | 문법 | 중첩 record 를 한 줄로 분해하는 형태와 그 한계를 설명할 수 있다 | 14, 23 | [`../../../../../history/java/java-21.md`](../../../../../history/java/java-21.md) | B |
+| 16 | [애너테이션 — 선언·`@Retention`·`@Target`·메타 애너테이션](16-annotations/) | 문법 | 런타임에 읽히는 애너테이션과 컴파일에서 사라지는 애너테이션을 구분·판단할 수 있다 | — | — | B |
+| 17 | [제네릭 선언 — 타입 파라미터·바운드·제네릭 메서드](17-generic-declarations/) | 문법 | 타입 파라미터를 클래스에 둘지 메서드에 둘지 판단할 수 있다 | 09 | — | A |
+| 18 | [와일드카드와 PECS — `? extends`/`? super`](18-wildcards-pecs/) | 문법 | 어느 쪽 와일드카드가 읽기·쓰기를 막는지 예측할 수 있다 | 17 | — | A |
+| 19 | [타입 소거 — 런타임에 없는 것·제네릭 배열 금지·브리지 메서드](19-type-erasure/) | 문법 | 제네릭 때문에 못 쓰는 문법(`new T[]`·`instanceof List<String>`)의 이유를 설명할 수 있다 | 17 | [`../../../../../history/java/java-5.md`](../../../../../history/java/java-5.md) | B |
+| 20 | [제어문 — 향상된 `for`·레이블 `break`/`continue`](20-control-flow-statements/) | 문법 | 중첩 루프를 레이블로 빠져나오는 형태와 그 대안을 판단할 수 있다 | — | — | A |
+| 21 | [`switch` 문과 `switch` 식 (14+) — 화살표·`yield`·fallthrough](21-switch-statement-and-expression/) | 문법 | 문과 식의 완결성 요구 차이를 설명하고 fallthrough 버그를 예측할 수 있다 | 20 | [`../../../../../history/java/java-14.md`](../../../../../history/java/java-14.md) | A |
+| 22 | [`instanceof` 타입 패턴 (16+)](22-instanceof-type-patterns/) | 문법 | 패턴 변수의 스코프가 어디까지인지 `&&`/`!` 조합에서 예측할 수 있다 | 09 | [`../../../../../history/java/java-16.md`](../../../../../history/java/java-16.md) | A |
+| 23 | [`switch` 패턴 매칭 (21) — 완결성·`null`·`when` 가드](23-switch-pattern-matching/) | 문법 | sealed 타입 분기에서 `default` 를 안 쓰는 것이 왜 이득인지 판단할 수 있다 | 15, 21, 22 | [`../../../../../history/java/java-21.md`](../../../../../history/java/java-21.md) | A |
+| 24 | [`record` 패턴 (21) — 중첩 해체](24-record-patterns/) | 문법 | 중첩 record 를 한 줄로 분해하는 형태와 그 한계를 설명할 수 있다 | 14, 23 | [`../../../../../history/java/java-21.md`](../../../../../history/java/java-21.md) | B |
 | 25 | 예외 — checked/unchecked·전파·다중 `catch`·재던지기 | 문법 | 어떤 예외를 검사 예외로 둘지, 삼키면 무엇이 사라지는지 판단할 수 있다 | — | [`../../../../ops-patterns/failure-modes/`](../../../../ops-patterns/failure-modes/) | A |
 | 26 | `try`-with-resources — `AutoCloseable`·suppressed·`finally` 순서 | 문법 | 본문과 `close()` 가 함께 던질 때 어느 예외가 남는지 예측할 수 있다 | 25 | — | A |
 | 27 | [`equals`/`hashCode`/`toString` 계약](27-equals-hashcode-contract/) | 문법 | 계약을 깬 객체가 `HashMap` 에서 어떻게 사라지는지 예측할 수 있다 | 09 | [`../../../../data-structure/05-hashmap/`](../../../../data-structure/05-hashmap/) | A |
-| 28 | `Comparable`/`Comparator` — 전순서 계약과 위반의 결과 | 문법 | 비일관 비교자가 정렬에서 예외로 터지는 조건을 설명할 수 있다 | 27 | [`../../../../algorithm/01-elementary-sort/`](../../../../algorithm/01-elementary-sort/) | A |
+| 28 | [`Comparable`/`Comparator` — 전순서 계약과 위반의 결과](28-comparable-comparator/) | 문법 | 비일관 비교자가 정렬에서 예외로 터지는 조건을 설명할 수 있다 | 27 | [`../../../../algorithm/01-elementary-sort/`](../../../../algorithm/01-elementary-sort/) | A |
 | 29 | 람다 — 문법·변수 캡처·`this` 의 의미 (8+) | 문법 | 람다의 `this` 가 익명 클래스와 왜 다른지 설명할 수 있다 | 11 | [`../../../../../history/java/java-8.md`](../../../../../history/java/java-8.md) | A |
 | 30 | 메서드 참조 네 형태 | 문법 | 어떤 람다가 어떤 메서드 참조로 바뀌는지, 안 바뀌는 경우를 판단할 수 있다 | 29 | — | B |
 | 31 | 함수형 인터페이스 — `java.util.function` 지도·`@FunctionalInterface` | 문법 | 필요한 시그니처에 맞는 표준 인터페이스를 고르고 없으면 직접 만들 수 있다 | 29 | — | A |
@@ -55,7 +55,7 @@ JLS 자신의 목차는 **타입(4장) → 클래스·인터페이스(8·9장) �
 | 35 | [`String` — 불변성·상수 풀·자주 쓰는 메서드](35-string/) | 표준 API | 같은 리터럴이 같은 객체인지, `new String` 이 무엇을 바꾸는지 예측할 수 있다 | 01 | — | A |
 | 36 | [`StringBuilder` 와 문자열 연결이 컴파일되는 모습](36-stringbuilder-and-concat/) | 표준 API | 루프 안 `+=` 가 왜 느린지 바이트코드 수준으로 설명할 수 있다 | 35 | — | A |
 | 37 | 정규식 — `Pattern`/`Matcher`·`String` 의 정규식 메서드 | 표준 API | `matches`/`find`/`split` 이 각각 무엇을 요구하는지 판단할 수 있다 | 35 | [`../../../../algorithm/25-string-matching/`](../../../../algorithm/25-string-matching/) | B |
-| 38 | `Optional` — 생성·소비·안티패턴 | 표준 API | 필드·파라미터에 `Optional` 을 두면 안 되는 이유를 설명할 수 있다 | 25 | — | A |
+| 38 | [`Optional` — 생성·소비·안티패턴](38-optional/) | 표준 API | 필드·파라미터에 `Optional` 을 두면 안 되는 이유를 설명할 수 있다 | 25 | — | A |
 | 39 | 컬렉션 프레임워크 지도 — 인터페이스 계층과 구현체 선택 | 표준 API | 요구(순서·중복·정렬·동시성)에서 구현체를 역으로 고를 수 있다 | 17 | [`../../../../data-structure/`](../../../../data-structure/) | A |
 | 40 | `List`·`Set` API 와 불변 팩토리 — `List.of`·`copyOf`·`unmodifiable*` | 표준 API | "불변"과 "수정 불가 뷰"의 차이를 예측할 수 있다 | 39 | [`../../../../data-structure/01-dynamic-array/`](../../../../data-structure/01-dynamic-array/) | A |
 | 41 | `Map` API — `merge`/`compute*`/`getOrDefault`/`putIfAbsent` | 표준 API | 카운팅·누적 코드를 한 호출로 줄이고 `null` 값의 의미를 판단할 수 있다 | 39 | [`../../../../data-structure/05-hashmap/`](../../../../data-structure/05-hashmap/) | A |
@@ -77,7 +77,7 @@ JLS 자신의 목차는 **타입(4장) → 클래스·인터페이스(8·9장) �
 | 57 | `Files`·`Path` — NIO.2 파일 API | 표준 API | 파일을 줄 단위로 읽고 안전하게 쓰는 형태를 고를 수 있다 | 26, 44 | [`../../../../data-structure/33-filesystem/`](../../../../data-structure/33-filesystem/) | B |
 | 58 | 리플렉션 — `Class`·`getDeclared*`·접근 제어 우회의 경계 | 표준 API | 프레임워크가 어떻게 필드를 채우는지, 무엇이 막히는지 설명할 수 있다 | 16, 19 | [`../언어-특성/README.md`](../언어-특성/README.md) §3 | C |
 | 59 | 불변 객체 만들기 — 방어적 복사·`record` 와의 조합 | 관용구 | "불변으로 만들었다"가 깨지는 경로(컬렉션 필드·배열 필드)를 찾아낼 수 있다 | 14, 40 | — | A |
-| 60 | `null` 다루기 — `Objects.requireNonNull`·`Optional` 의 경계 | 관용구 | 어디서 막고 어디서 통과시킬지 계층별로 판단할 수 있다 | 38 | — | A |
+| 60 | [`null` 다루기 — `Objects.requireNonNull`·`Optional` 의 경계](60-null-handling/) | 관용구 | 어디서 막고 어디서 통과시킬지 계층별로 판단할 수 있다 | 38 | — | A |
 
 **60주제** (문법 34 · 표준 API 24 · 관용구 2 / 우선 A 42 · B 14 · C 4)
 

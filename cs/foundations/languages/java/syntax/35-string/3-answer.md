@@ -526,7 +526,7 @@ switch(null)                   -> Cannot invoke "String.hashCode()" because "<lo
 - 해시가 충돌해도 안전한 이유는 **2단계에서 `equals` 로 확인**하기 때문이다.
 - 그래서 `switch(String)` 은 `if-else` 사슬보다 빠르다 — 해시 한 번으로 후보를 O(1)에 좁힌다.
 - 대신 `null` 은 1단계에서 죽는다.\
-  (Java 21의 `switch` 패턴 매칭에서는 `case null` 을 쓸 수 있다 — 목록의 **23번 주제**. *안 돌려 봤다.*)
+  (Java 21의 `switch` 패턴 매칭에서는 `case null` 을 쓸 수 있다 — [**23번 주제**](../23-switch-pattern-matching/). *안 돌려 봤다.*)
 
 **`new String("A")` 를 넣으면**
 

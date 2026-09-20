@@ -748,7 +748,7 @@ enum Level implements Described {
 - **`values()` / `valueOf(String)` 은 내가 쓰지 않아도 생긴다**(§8.9.3). 같은 시그니처의 메서드를 직접 선언하면 충돌로 컴파일 에러다.
 - **`switch` 의 `case` 에는 상수 이름을 그대로** 쓴다(§14.11.1). 21 이전에는 **한정 이름을 쓰면 에러**였다 — 「어디서 틀리나」 6번.
 - **모든 상수를 `case` 로 덮으면 `default` 가 필요 없다**(§14.11.1.1 —\
-  "A `default` label is permitted, but not required, in the case where the names of all the enum constants appear as case constants"). 단 이것은 **`switch` 식**에서 의미가 있다 — 목록의 **21번 주제**·**23번 주제**가 정본이다.
+  "A `default` label is permitted, but not required, in the case where the names of all the enum constants appear as case constants"). 단 이것은 **`switch` 식**에서 의미가 있다 — [**21번 주제**](../21-switch-statement-and-expression/)·**23번 주제**가 정본이다.
 
 ## 어디서 틀리나
 
@@ -883,7 +883,7 @@ Exception in thread "main" java.lang.NullPointerException: Cannot invoke "Ex$Day
 
 - **`default:` 가 있어도 안 잡힌다.** 예외 메시지를 보라 — `ordinal()` 을 부르다 터졌다.\
   동작 방식 (5)에서 본 그 `invokevirtual ordinal()` 이다. 분기를 고르기도 전에 NPE 다.
-- 21 부터는 `case null` 을 쓸 수 있다(§14.11.1 의 `SwitchLabel: case null [, default]`). 정본은 목록의 **23번 주제**.
+- 21 부터는 `case null` 을 쓸 수 있다(§14.11.1 의 `SwitchLabel: case null [, default]`). 정본은 [**23번 주제**](../23-switch-pattern-matching/).
 - 방어: 21 미만이면 `switch` 앞에서 `null` 을 걸러 낸다.
 
 ### 6. `case Day.SAT:` — 한정 이름은 버전에 따라 갈린다
@@ -1028,7 +1028,7 @@ valueOf(name())    = PLUS
 - [`../../../../../../history/java/java-5.md`](../../../../../../history/java/java-5.md) — **언제·왜 들어왔나**(Java 5, JSR 201). **여기는 어떻게 쓰고 무엇을 못 하나**
 - [`../../../../../../history/java/java-21.md`](../../../../../../history/java/java-21.md) — JEP 441 의 연혁. **여기는 그 변화가 `case` 라벨에서 실제로 무엇을 바꿨나**(한정 이름)만
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — 클래스로더·GC·메모리 모델. **거기는 JVM 층**, 여기는 문법과 API 층이다 — 재서술하지 않는다
-- 목록의 **21번 주제**(`switch` 문과 식 — 화살표·`yield`·완결성)와 **23번 주제**(`switch` 패턴 매칭 — `case null`·`when` 가드)가 `switch` 쪽 정본이다
+- [**21번 주제**](../21-switch-statement-and-expression/)(`switch` 문과 식 — 화살표·`yield`·완결성)와 **23번 주제**(`switch` 패턴 매칭 — `case null`·`when` 가드)가 `switch` 쪽 정본이다
 
 ## 용어 풀이
 
@@ -1053,5 +1053,5 @@ valueOf(name())    = PLUS
   그래야 상수 개수에 따라 `RegularEnumSet`/`JumboEnumSet` 을 바꿔 끼울 수 있다 — "생성자 대신 정적 팩토리"의 교과서적 사례다.
 - **`Enum.compareTo` 는 ordinal 의 차이**다. `src.zip` 의 본문이 `return self.ordinal - other.ordinal;` 한 줄이고, 다른 enum 타입끼리면 `ClassCastException` 을 던진다.\
   실행으로도 확인했다 (`Ex.java (13-h)`) — `MON.compareTo(SUN)` 이 `-6`, `SUN.compareTo(MON)` 이 `6`.\
-  즉 **`TreeSet<Day>` 의 정렬 순서도 선언 순서**다. 정렬 계약 쪽은 목록의 **28번 주제**가 정본이다.
+  즉 **`TreeSet<Day>` 의 정렬 순서도 선언 순서**다. 정렬 계약 쪽은 [**28번 주제**](../28-comparable-comparator/)가 정본이다.
 - **`enum` 은 제네릭이 될 수 없다** — `EnumDeclaration` 문법에 `TypeParameters` 자리가 아예 없다(JLS §8.9). 상수마다 다른 타입을 다뤄야 하면 `sealed` 계층을 쓴다.

@@ -430,7 +430,7 @@ switch(null)                   -> Cannot invoke "String.hashCode()" because "<lo
 
 - `switch(String)` 은 **`hashCode` 로 후보를 좁히고 `equals` 로 확인**하는 두 단계로 컴파일된다.
 - 그래서 `null` 은 첫 단계에서 터진다.\
-  (Java 21의 `switch` 패턴 매칭에서는 `case null` 을 쓸 수 있다 — 목록의 **23번 주제**.)
+  (Java 21의 `switch` 패턴 매칭에서는 `case null` 을 쓸 수 있다 — [**23번 주제**](../23-switch-pattern-matching/).)
 - 습관: **리터럴을 왼쪽에** 두거나 `Objects.equals(a, b)` 를 쓴다.
 
 ### 3. `substring` 의 인덱스를 뒤집는다 — **예외 메시지가 버전마다 다르다**

@@ -413,7 +413,7 @@ NPE: Cannot invoke "java.lang.Integer.intValue()"
 
 ---
 
-## [Claude 추가] 더 알면 좋은 것
+## 더 들어가면
 
 - `IntegerCache` 배열은 **CDS(Class Data Sharing) 아카이브에 저장**되어 JVM 기동 시 복원된다.\
   JDK 21 소스의 주석이 이를 명시하고 `CDS.initializeFromArchive(IntegerCache.class)` 를 호출한다.

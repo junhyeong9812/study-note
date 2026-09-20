@@ -619,7 +619,7 @@ Ex.java:6: error: incompatible types: Function<String,String> cannot be converte
 - 셋 다 **8 이전부터 있던 타입**이라 `java.util.function` 에 들어가지 않았다.
 - `Runnable` 은 「받는 것도 내놓는 것도 없음」 자리를 메운다.
 - `Callable` 은 `Supplier` 와 모양이 같은데 **`throws` 가 있다**(9번).
-- `Comparator` 는 `equals(Object)` 를 선언하고도 함수형 인터페이스인 표준 예다(7번). 정본은 목록의 **28번 주제**.
+- `Comparator` 는 `equals(Object)` 를 선언하고도 함수형 인터페이스인 표준 예다(7번). 정본은 [**28번 주제**](../28-comparable-comparator/).
 
 ---
 

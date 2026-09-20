@@ -495,7 +495,7 @@ MM3.java:5: error: incompatible types: bad return type in lambda expression
 
 ---
 
-## [Claude 추가] 더 알면 좋은 것
+## 더 들어가면
 
 - **`flatMap` 은 내부 스트림을 닫아 준다.** javadoc 원문(`Stream.java`, `flatMapToInt` 등)이 이렇게 쓴다.
 

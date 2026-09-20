@@ -46,7 +46,7 @@ Stream.of 의 시그니처:  static <T> Stream<T> of(T... values)
 ```
 
 - 가변 인자는 "배열을 그대로 쓸지, 한 원소로 감쌀지"를 **타입으로 결정**한다.
-- `T` 는 참조 타입만 될 수 있어서(목록의 **19번 주제** — 타입 소거) `int` 를 받을 수 없다.
+- `T` 는 참조 타입만 될 수 있어서([**19번 주제**](../19-type-erasure/) — 타입 소거) `int` 를 받을 수 없다.
 - 그래서 컴파일러가 **`int[]` 하나를 원소로 감싸는 쪽**을 고른다.
 - `Arrays.stream` 은 `int[]`·`long[]`·`double[]` 전용 오버로드를 따로 갖고 있어 이 문제가 없다.
 
@@ -248,7 +248,7 @@ boxed.stream().reduce(0, Integer::sum);             // 또는 reduce 로 직접
 - **항등원이 있으면 그 값을, 없으면 `Optional`.**\
   `count()` 가 `0` 을 주는 것도 같은 이유다.
 - 그래서 `max().getAsInt()` 를 바로 부르면 빈 입력에서 `NoSuchElementException` 이 난다.\
-  `orElse(...)` 나 `ifPresent(...)` 를 거친다(목록의 **38번 주제** `Optional`).
+  `orElse(...)` 나 `ifPresent(...)` 를 거친다([**38번 주제**](../38-optional/) `Optional`).
 
 **`boxed()` 는 무엇을 부르는가**
 

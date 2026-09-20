@@ -470,7 +470,7 @@ err4/Ex.java:5: error: an enum switch case label must be the unqualified name of
 - 실무 규칙: 라이브러리처럼 **낮은 버전도 지원해야 하는 코드에서는 한정 이름을 쓰지 않는다.**\
   IDE 가 자동으로 한정 이름을 붙여 주는 경우가 있으니 주의한다.
 - 참고 — 21 부터는 모든 상수를 `case` 로 덮으면 `default` 를 안 써도 된다(§14.11.1.1:\
-  "A `default` label is permitted, but not required, in the case where the names of all the enum constants appear as case constants"). 그쪽 정본은 목록의 **21번 주제**·**23번 주제**다.
+  "A `default` label is permitted, but not required, in the case where the names of all the enum constants appear as case constants"). 그쪽 정본은 [**21번 주제**](../21-switch-statement-and-expression/)·**23번 주제**다.
 
 ### 10. `switch` 문에 `null` 을 넣으면
 
@@ -490,7 +490,7 @@ Exception in thread "main" java.lang.NullPointerException: Cannot invoke "Ex$Day
 **21 부터**
 
 - `case null` 을 쓸 수 있다. JLS SE 21 §14.11.1 의 `SwitchLabel` 문법에 `case null [, default]` 가 들어 있다.
-- 정본은 목록의 **23번 주제**(`switch` 패턴 매칭)다.
+- 정본은 [**23번 주제**](../23-switch-pattern-matching/)(`switch` 패턴 매칭)다.
 - 21 미만이면 방어는 하나뿐 — **`switch` 앞에서 `null` 을 걸러 낸다.**
 
 ### 11. `toString()` 을 바꿔 놓고 `valueOf()` 로 되읽으면

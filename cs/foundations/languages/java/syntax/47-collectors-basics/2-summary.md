@@ -613,7 +613,7 @@ summingLong 으로   : 2147483648
 - 목록의 **41번 주제**(`Map` API) — `merge`/`compute*` 의 계약. (4)의 "`null` 이면 제거"가 정본으로 다뤄지는 곳
 - 목록의 **40번 주제**(불변 팩토리) — `List.of`·`copyOf`·`unmodifiable*` 의 차이
 - [**02번 주제**](../02-numeric-operations/)(정수 오버플로) — `summingInt` 가 조용히 음수가 되는 것
-- 목록의 **38번 주제**(`Optional`) — `minBy`/`maxBy` 가 돌려주는 그 타입
+- [**38번 주제**](../38-optional/)(`Optional`) — `minBy`/`maxBy` 가 돌려주는 그 타입
 - [**36번 주제**](../36-stringbuilder-and-concat/)(`StringBuilder`) — `joining` 이 내부에서 쓰는 것
 
 ## 용어 풀이

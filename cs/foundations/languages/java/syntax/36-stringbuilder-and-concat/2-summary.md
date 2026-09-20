@@ -404,7 +404,7 @@ sb.append((String) null)      = [null] length=4
 - 예외가 안 나므로 로그·CSV·SQL에 `null` 이라는 **문자열**이 들어간다.
 - 유일한 예외가 `String.valueOf((char[]) null)` 이다 — 이건 NPE를 던진다.\
   오버로드가 `char[]` 로 뽑혀 배열 내용을 읽으려 하기 때문이다.
-- 방어: `Objects.toString(x, "")` 또는 조립 전에 `null` 을 막는다(목록의 **60번 주제**).
+- 방어: `Objects.toString(x, "")` 또는 조립 전에 `null` 을 막는다([**60번 주제**](../60-null-handling/)).
 
 ### 반복과 서식
 
@@ -591,7 +591,7 @@ length 287 에서 capacity 286 -> 574
 - [`../../../../../data-structure/01-dynamic-array/`](../../../../../data-structure/01-dynamic-array/) — **경계: "왜 2배씩 늘리나"라는 상환 분석 원리는 거기,
   "`StringBuilder` 가 실제로 몇 배로 늘리나"는 여기.**
 - 목록의 **37번 주제**(정규식) — `String.format` 이 아니라 `replaceAll` 쪽 조립
-- 목록의 **60번 주제**(`null` 다루기) — `"null"` 이 섞이기 전에 막는 자리
+- [**60번 주제**](../60-null-handling/)(`null` 다루기) — `"null"` 이 섞이기 전에 막는 자리
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — JIT·escape analysis. **왜 워밍업이 필요한지는 거기**
 
 ## 용어 풀이

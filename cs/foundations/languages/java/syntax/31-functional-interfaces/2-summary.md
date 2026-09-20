@@ -809,7 +809,7 @@ Ex.java:10: error: reference to run is ambiguous
   실행 결과에서 `Files::readString` 람다가 `Supplier` 에는 못 들어가고 `Callable` 에는 들어갔다.\
   **모양이 같아도 `throws` 하나로 갈린다.**
 - **`Comparator` 도 함수형 인터페이스다.** `java.util` 에 있고 SAM 은 `compare(T,T)` 다.\
-  `equals(Object)` 를 선언하고도 함수형인 것이 (6)의 규칙을 보여 주는 표준 예다 — 정본은 목록의 **28번 주제**.
+  `equals(Object)` 를 선언하고도 함수형인 것이 (6)의 규칙을 보여 주는 표준 예다 — 정본은 [**28번 주제**](../28-comparable-comparator/).
 - **`java.util.function` 은 Java 8 이후 거의 안 바뀌었다.** 17 · 21 · 25 세 `src.zip` 에서 파일 수가 전부 44개였고,\
   모든 `@since` 가 `1.8` 이었다. 메서드 단위로 추가된 것은 `Predicate.not`(11) 하나다.
 - **JDK 자신의 `default` 메서드도 람다로 쓰여 있다.** 리플렉션 출력에 `lambda$andThen$0` 같은 것이 섞여 나온다.\

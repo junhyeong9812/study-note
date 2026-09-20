@@ -460,7 +460,7 @@ OverrideCatch.java:4: error: method does not override or implement a method from
 - [`../06-initialization-order/`](../06-initialization-order/) — 「어디서 틀리나」 4번의 `@Override` 가 계약 위반을 컴파일 에러로 바꾸는 또 다른 사례
 - [**09번 주제**](../09-inheritance-overriding/)(상속과 오버라이딩) — 오버로딩 해소와 동적 디스패치가 정본
 - [**14번 주제**](../14-records/)(`record`) — 셋을 자동 생성하는 조건과 못 하는 것
-- 목록의 **28번 주제**(`Comparable`/`Comparator`) — **`equals` 와 `compareTo` 가 어긋날 때** 무엇이 깨지나. `TreeMap` 은 `equals` 가 아니라 `compareTo` 로 같음을 판정한다
+- [**28번 주제**](../28-comparable-comparator/)(`Comparable`/`Comparator`) — **`equals` 와 `compareTo` 가 어긋날 때** 무엇이 깨지나. `TreeMap` 은 `equals` 가 아니라 `compareTo` 로 같음을 판정한다
 
 ## 용어 풀이
 
@@ -478,7 +478,7 @@ OverrideCatch.java:4: error: method does not override or implement a method from
 
 ---
 
-## [Claude 추가] 더 알면 좋은 것
+## 더 들어가면
 
 - **`Objects.hash(...)` 는 배열을 하나 만든다.**\
   가변 인자라 호출마다 `Object[]` 가 생기고 기본형은 박싱된다. 뜨거운 경로에서는 `31 * x + y` 를 손으로 쓰는 게 낫다.\

@@ -311,7 +311,7 @@ Exception in thread "main" java.lang.ArrayStoreException: java.lang.Integer
 
 - 두 코드가 **하려는 일은 똑같다.** 다른 것은 **언제 막히느냐**뿐이다.
 - 제네릭은 **불공변**(invariant)이라 `List<String>` 을 `List<Object>` 에 못 넣는다.
-- 그 대신 제네릭에는 **와일드카드**가 있다 — `List<? extends Object>` 로 받으면 읽기는 되고 쓰기가 막힌다(목록의 **18번 주제**).
+- 그 대신 제네릭에는 **와일드카드**가 있다 — `List<? extends Object>` 로 받으면 읽기는 되고 쓰기가 막힌다([**18번 주제**](../18-wildcards-pecs/)).
 - 왜 배열만 공변으로 만들었나: **제네릭이 없던 Java 1.0 에서 `Arrays.sort(Object[])` 같은 범용 메서드를 쓰려면** 공변성이 필요했다.\
   제네릭이 들어온 뒤에도 배열의 규칙은 호환성 때문에 그대로다.
 
@@ -325,7 +325,7 @@ Ex.java:5: error: generic array creation
 ```
 
 - 이유는 타입 소거다 — 배열은 런타임에 원소 타입을 알아야 하는데 제네릭은 그때 그 정보가 없다.\
-  타입 소거 자체는 목록의 **19번 주제**가 정본이다.
+  타입 소거 자체는 [**19번 주제**](../19-type-erasure/)가 정본이다.
 
 비용 — 없다. 설계 판단이다.
 
@@ -734,8 +734,8 @@ java -XX:-ShowCodeDetailsInExceptionMessages
 - [`../01-primitives-and-wrappers/`](../01-primitives-and-wrappers/) — `int[]` 과 `Integer[]` 의 차이. `asList(int[])` 함정의 뿌리가 "기본형은 타입 인자가 못 된다"는 규칙이다
 - [`../03-variables-and-assignment/`](../03-variables-and-assignment/) — 배열이 객체라 **원소 변경은 호출자에게 보이고 재대입은 안 보인다.** `final` 배열 상수가 왜 안전하지 않은지도 그쪽
 - [`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/) — 배열을 `HashMap` 키로 쓰면 안 되는 이유(계약을 재정의하지 않았다)
-- 목록의 **17번 주제**(제네릭 선언)·**18번 주제**(와일드카드와 PECS) — **불공변과 와일드카드의 정본.** 여기서는 배열과의 대비까지만
-- 목록의 **19번 주제**(타입 소거) — `new List<String>[3]` 이 왜 금지인가의 정본
+- [**17번 주제**](../17-generic-declarations/)(제네릭 선언)·**18번 주제**(와일드카드와 PECS) — **불공변과 와일드카드의 정본.** 여기서는 배열과의 대비까지만
+- [**19번 주제**](../19-type-erasure/)(타입 소거) — `new List<String>[3]` 이 왜 금지인가의 정본
 - 목록의 **40번 주제**(`List.of`·`copyOf`·`unmodifiable*`) — `asList` 의 대안과 "불변 대 수정 불가 뷰"의 정본
 - 목록의 **43번 주제**(`Iterator`·fail-fast) — 리스트 순회 중 수정. 배열에는 이 개념이 없다
 - [`../44-stream-creation/`](../44-stream-creation/) — `Arrays.stream(int[])` 과 `Stream.of(T...)` 가 갈리는 자리

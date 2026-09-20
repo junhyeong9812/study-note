@@ -478,7 +478,7 @@ TreeSet size       : 1 [1.0]
 - 그래서 `equals` 와 `compareTo` 가 어긋나면 **같은 두 객체가 `HashSet` 에서는 둘, `TreeSet` 에서는 하나**가 된다.
 - `1.5` 가 **조용히 사라졌다.** 예외도 경고도 없다.
 - `SortedSet` javadoc 이 이 상황을 "consistent with equals" 라는 용어로 다룬다.\
-  자세한 것은 목록의 **28번 주제**(`Comparable`/`Comparator`).
+  자세한 것은 [**28번 주제**](../28-comparable-comparator/)(`Comparable`/`Comparator`).
 
 **`hashCode` 를 `return 1;` 로 쓰면**
 

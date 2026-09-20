@@ -467,7 +467,7 @@ record Fail(int code)   implements Result { }
 
 - `sealed` 가 **선택지를 닫고**, `record` 가 **각 선택지의 필드를 고정**한다.
 - 그래서 `switch (r) { case Ok o -> ...; case Fail f -> ...; }` 가 `default` 없이 성립한다.
-- 여기서 한 걸음 더 나간 `case Ok(String body)` 형태(record 패턴)는 목록의 **24번 주제**가 정본이다.
+- 여기서 한 걸음 더 나간 `case Ok(String body)` 형태(record 패턴)는 [**24번 주제**](../24-record-patterns/)가 정본이다.
 
 ## 어디서 틀리나
 
@@ -640,7 +640,7 @@ e4/Ex.java:7: error: the switch expression does not cover all possible input val
 
 - 앞의 일곱과 달리 이것은 **원하던 동작**이다. 이 에러를 받기 위해 `sealed` 를 쓴다.
 - `default` 를 넣어 이 에러를 끄는 순간 `sealed` 의 값어치가 대부분 사라진다.
-- 값이 아니라 타입을 `switch` 할 때만 그렇다 — 패턴 `switch` 문법 자체는 목록의 **23번 주제**가 정본이다.
+- 값이 아니라 타입을 `switch` 할 때만 그렇다 — 패턴 `switch` 문법 자체는 [**23번 주제**](../23-switch-pattern-matching/)가 정본이다.
 
 ### 9. `non-sealed` 갈래에서 완결성이 끊긴다
 
@@ -875,10 +875,10 @@ String.getPermittedSubclasses() = null
 - [`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/) — 합타입의 `equals` 는 `record` 가 만들어 준다. **계약은 거기**
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — GC·JIT·클래스로더·메모리 모델. **이 주제와 겹치지 않는다** — 재서술하지 않는다
 - [`../../../../../engineering/design-patterns-gof/`](../../../../../engineering/design-patterns-gof/) — Visitor 등 패턴. 여기는 **`sealed` 가 Visitor 를 대체하는 자리**까지만
-- 목록의 **21번 주제**(`switch` 식) — `->` 와 `yield`, 식과 문의 차이가 정본
-- 목록의 **22번 주제**(`instanceof` 패턴) — 타입 패턴의 기본형이 정본
-- 목록의 **23번 주제**(`switch` 패턴 매칭, 21) — **패턴 `switch` 문법 자체가 정본.** 여기는 완결성만 다룬다
-- 목록의 **24번 주제**(record 패턴) — `case Ok(String body)` 형태의 분해가 정본
+- [**21번 주제**](../21-switch-statement-and-expression/)(`switch` 식) — `->` 와 `yield`, 식과 문의 차이가 정본
+- [**22번 주제**](../22-instanceof-type-patterns/)(`instanceof` 패턴) — 타입 패턴의 기본형이 정본
+- [**23번 주제**](../23-switch-pattern-matching/)(`switch` 패턴 매칭, 21) — **패턴 `switch` 문법 자체가 정본.** 여기는 완결성만 다룬다
+- [**24번 주제**](../24-record-patterns/)(record 패턴) — `case Ok(String body)` 형태의 분해가 정본
 - [**31번 주제**](../31-functional-interfaces/)(함수형 인터페이스) — `sealed` 가 왜 함수형 인터페이스가 못 되는지의 반대편
 
 ## 용어 풀이

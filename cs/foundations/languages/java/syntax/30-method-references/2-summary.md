@@ -573,7 +573,7 @@ Ex.java:5: error: generic array creation
 - `T[]::new` 는 **안 된다.** 타입 소거 때문에 런타임에 `T` 를 모른다.
 - 그래서 라이브러리가 `toArray(IntFunction<T[]>)` 처럼 **배열 생성자 참조를 받아** 우회한다.\
   호출하는 쪽에서 `String[]::new` 라고 구체 타입을 적어 주는 것이다.
-- 이 제약의 정본은 목록의 **19번 주제**(타입 소거)다.
+- 이 제약의 정본은 [**19번 주제**](../19-type-erasure/)(타입 소거)다.
 
 ### 6. ★ `obj::m` 으로 써서 `null` 로 터진다
 
@@ -669,8 +669,8 @@ Ex.java:10: error: reference to run is ambiguous
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — JIT·메서드 핸들 실행의 **JVM 내부는 거기**. 여기는 `javap` 로 보이는 **바이트코드 표면까지**
 - [**08번 주제**](../08-method-declaration-overloading/)(메서드 선언 — 오버로딩 해소) — 「어디서 틀리나」 1·2·7번이 기대는 해소 규칙의 정본
 - [**09번 주제**](../09-inheritance-overriding/)(상속과 오버라이딩) — `super::m` 이 디스패치를 건너뛰는 것의 배경
-- 목록의 **19번 주제**(타입 소거) — 제네릭 배열 생성자 참조가 막히는 이유의 정본
-- 목록의 **28번 주제**(`Comparator`) — `Integer::compare` 와 `Integer::compareTo` 가 둘 다 비교자가 되는 자리
+- [**19번 주제**](../19-type-erasure/)(타입 소거) — 제네릭 배열 생성자 참조가 막히는 이유의 정본
+- [**28번 주제**](../28-comparable-comparator/)(`Comparator`) — `Integer::compare` 와 `Integer::compareTo` 가 둘 다 비교자가 되는 자리
 
 ## 용어 풀이
 

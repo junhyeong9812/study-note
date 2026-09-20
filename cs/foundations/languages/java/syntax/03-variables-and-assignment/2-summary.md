@@ -6,7 +6,7 @@
 > 값 전달 실험(`Ex.java (03-a)`)과 `final` 실험(`03-b`)은 **17.0.13 · 21.0.5 · 25.0.1** 세 곳에서 돌려 **출력이 같았다**.\
 > 컴파일 에러 문구(`03-c2`·`03-c3`)도 세 JDK 에서 같았다. 다만 **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS 인용으로만 적었다.
 > **버전** — 값 전달 규칙과 `final` 은 **Java 1.0**부터. **effectively final** 은 **Java 8**(람다 도입)에 생긴 개념이다.\
-> `var` 지역 변수는 10부터이고 이 주제 밖이다(목록의 **04번 주제**).
+> `var` 지역 변수는 10부터이고 이 주제 밖이다([**04번 주제**](../04-var-type-inference/)).
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 JLS 로, 출력은 실행으로 접지했다.
 
 ## 한눈에 — 쉽게 말하면
@@ -641,7 +641,7 @@ Ex.java:4: error: cannot assign a value to final variable field
 - [`../01-primitives-and-wrappers/`](../01-primitives-and-wrappers/) — `Integer` 가 참조 타입인데도 값처럼만 쓰이는 이유(불변이라 창고를 고칠 수단이 없다)
 - [`../05-arrays/`](../05-arrays/) — 배열도 객체다. `final` 배열 상수가 왜 위험한지의 정본
 - [`../06-initialization-order/`](../06-initialization-order/) — `final` 필드가 언제 채워지는가. 초기화 순서는 그쪽이 정본
-- 목록의 **04번 주제**(`var` 지역 변수 타입 추론) — `var` 와 `final` 을 함께 쓰는 형태(`final var`)
+- [**04번 주제**](../04-var-type-inference/)(`var` 지역 변수 타입 추론) — `var` 와 `final` 을 함께 쓰는 형태(`final var`)
 - [`../29-lambda-expressions/`](../29-lambda-expressions/) — **캡처의 정본.** 여기서는 "왜 effectively final 이 필요한가"까지만 다룬다
 - 목록의 **59번 주제**(불변 객체 만들기) — `final` 로 부족한 자리를 방어적 복사로 메우는 법
 - [`../25-exceptions/`](../25-exceptions/) — 다중 `catch` 의 변수가 암묵적 `final` 인 이유
