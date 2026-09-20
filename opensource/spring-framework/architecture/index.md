@@ -20,11 +20,13 @@ Spring Framework의 동작을 호출 흐름 단위로 위에서 아래로 따라
 | [functional-endpoints](functional-endpoints/README.md) | `RouterFunction` / `HandlerFunction` | 람다로 쓴 엔드포인트가 라우팅되고 응답을 쓰기까지, 서블릿과 리액티브를 나란히. 메서드 폴더 7개와 SPI 6종 |
 | [websocket-stomp](websocket-stomp/README.md) | `WebSocketHttpRequestHandler` / `StompSubProtocolHandler` | 핸드셰이크로 연결이 승격되고 STOMP 프레임이 채널을 거쳐 브로커와 @MessageMapping 에 닿기까지. 메서드 폴더 8개와 SPI 6종 |
 | [sockjs](sockjs/README.md) | `SockJsHttpRequestHandler` / `TransportHandlingSockJsService` | WebSocket 을 못 쓸 때 HTTP 요청 여러 개를 세션 하나로 엮는 폴백. 메서드 폴더 5개와 SPI 5종 |
+| [stomp-broker-relay](stomp-broker-relay/README.md) | `StompBrokerRelayMessageHandler` | 내장 브로커 대신 외부 브로커에 TCP 로 중계. 시스템 세션과 세션별 연결의 수명. 메서드 폴더 4개와 SPI 4종 |
 | [rsocket](rsocket/README.md) | `RSocketRequester` / `MessagingRSocket` | 프레임 타입이 곧 상호작용이 되는 경로. 요청자 인코딩부터 라우팅과 응답 반환까지. 메서드 폴더 5개와 SPI 5종 |
 | [http-client](http-client/README.md) | `RestClient` / `WebClient` | 클라이언트가 요청을 보내고 응답을 객체로 바꾸기까지, 동기와 리액티브를 나란히. 메서드 폴더 4개와 SPI 4종 |
 | [test-context](test-context/README.md) | `TestContextManager` / `MockMvc` | 테스트 컨텍스트가 캐시되고 주입되는 과정과 MockMvc 호출 경로. 메서드 폴더 3개와 SPI 5종 |
 | [spel](spel/README.md) | `ExpressionParser` / `SpelExpression` | 식 문자열이 구문 트리로 파싱되고 평가 문맥 위에서 값이 되기까지. 메서드 폴더 4개와 SPI 5종 |
 | [messaging-jms](messaging-jms/README.md) | `JmsTemplate` / 리스너 컨테이너 | 메시지 송신과 @JmsListener 수신, 커밋과 롤백 규칙. 메서드 폴더 4개와 SPI 4종 |
 | [validation-binding](validation-binding/README.md) | `DataBinder` | 요청 값이 객체 필드로 들어가고 @Valid 검증 오류가 모이기까지. 메서드 폴더 2개와 SPI 4종 |
+| [aot](aot/README.md) | `ContextAotProcessor` (빌드 시점) | 빌드 때 빈 정의를 확정해 자바 코드와 네이티브 힌트를 생성하는 파이프라인. 유일하게 런타임 흐름이 아니다. 메서드 폴더 5개와 SPI 5종 |
 
-읽는 순서는 위에서 아래다. 컨테이너 기동이 싱글톤을 만들 때 빈 생성 흐름으로 들어가고, 빈 생성의 마지막에서 AOP 프록시 흐름이 갈라지고, 그 인터셉터 체인 위에서 트랜잭션 흐름이 돈다. 기동이 끝나며 발행하는 `ContextRefreshedEvent`가 MVC 요청 처리의 전략 목록을 채운다. 함수형 엔드포인트는 그 MVC와 WebFlux의 뼈대에 다른 구현을 끼운 갈래라 두 흐름 다음에 읽으면 된다. JPA 연동은 빈 생성과 트랜잭션 골격 위에 얹히므로 그 둘을 읽은 뒤에 보면 된다. R2DBC 는 JDBC 흐름과 짝을 이루므로 그 뒤에 나란히 읽으면 차이가 잘 보인다. WebSocket/STOMP 는 요청-응답이 아니라 양방향 메시지라 MVC 흐름을 읽은 뒤에 보면 대비가 분명하다. RSocket 은 STOMP 와 같은 메시징 골격을 쓰되 프레임 타입이 상호작용을 정하므로 WebSocket/STOMP 다음에 읽으면 대비가 분명하다. SockJS 는 WebSocket/STOMP 의 앞단이라 그 흐름을 읽은 뒤에 보면 된다. 지금까지 22개 흐름을 그렸다. 남은 후보는 외부 브로커 릴레이와 AOT/네이티브다.
+읽는 순서는 위에서 아래다. 컨테이너 기동이 싱글톤을 만들 때 빈 생성 흐름으로 들어가고, 빈 생성의 마지막에서 AOP 프록시 흐름이 갈라지고, 그 인터셉터 체인 위에서 트랜잭션 흐름이 돈다. 기동이 끝나며 발행하는 `ContextRefreshedEvent`가 MVC 요청 처리의 전략 목록을 채운다. 함수형 엔드포인트는 그 MVC와 WebFlux의 뼈대에 다른 구현을 끼운 갈래라 두 흐름 다음에 읽으면 된다. JPA 연동은 빈 생성과 트랜잭션 골격 위에 얹히므로 그 둘을 읽은 뒤에 보면 된다. R2DBC 는 JDBC 흐름과 짝을 이루므로 그 뒤에 나란히 읽으면 차이가 잘 보인다. WebSocket/STOMP 는 요청-응답이 아니라 양방향 메시지라 MVC 흐름을 읽은 뒤에 보면 대비가 분명하다. RSocket 은 STOMP 와 같은 메시징 골격을 쓰되 프레임 타입이 상호작용을 정하므로 WebSocket/STOMP 다음에 읽으면 대비가 분명하다. SockJS 는 WebSocket/STOMP 의 앞단이고, 브로커 릴레이는 그 흐름의 브로커 자리에 외부 브로커를 끼운 갈래라 둘 다 그 뒤에 읽으면 된다. AOT 는 런타임 호출 경로가 아니라 빌드 시점 파이프라인이라 맨 뒤에 두었다. 컨테이너 기동과 나란히 보면 무엇이 빌드 시점으로 옮겨졌는지가 드러난다. 지금까지 24개 흐름을 그렸다.
