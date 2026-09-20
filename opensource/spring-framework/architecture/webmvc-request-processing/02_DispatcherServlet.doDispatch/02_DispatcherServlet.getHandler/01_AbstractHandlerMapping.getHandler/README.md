@@ -131,7 +131,13 @@ protected HandlerExecutionChain getHandlerExecutionChain(Object handler, HttpSer
 
 ```text
  chain.interceptorList
-      = [CorsInterceptor(있으면 0번), 전역 인터셉터..., 경로가 맞은 MappedInterceptor...]
+      = [CorsInterceptor(있으면 0번), adaptedInterceptors를 등록 순서대로 훑은 결과]
+      --> 두 그룹으로 나뉘는 게 아니다. 루프가 하나다 (L686-695)
+          MappedInterceptor면 matches(request)일 때만 넣고
+          아니면 무조건 넣는다. 그래서 전역과 Mapped가 섞여 들어간다
+      --> 마지막에 조건부로 하나 더 붙는다 (L697-704)
+          versionStrategy가 있고 요청에 버전이 있으면
+          ApiVersionDeprecationHandlerInterceptor를 맨 뒤에 추가
       --> applyPreHandle에서 이 순서 그대로 실행
           CorsInterceptor가 0번이라 CORS 거부는 다른 인터셉터보다 먼저 판정된다
 
