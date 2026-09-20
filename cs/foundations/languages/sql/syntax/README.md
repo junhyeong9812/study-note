@@ -1,9 +1,10 @@
 # SQL — 문법·함수 주제 목록
 
-> 1단계 리스트업이다. 아래 주제들의 3파일(질문·서머리·정답)은 **아직 없다**.
+> 1단계 리스트업이다. 아래 주제들의 3파일(질문·서머리·정답)은 **대부분 아직 없다** — 작성된 주제는 「주제」 칸에 폴더 링크가 달려 있다(2026-09-21 현재 **4개**: 01 · 04 · 16 · 52).
+> **2단계 실행 검증이 시작됐다** — PostgreSQL 18.6(도커 `postgres:18`)·MySQL 8.4.10(도커 `mysql:8.4`) 두 서버에 실제로 질의를 던져 확인한다. 작성된 4주제의 본문 출력은 전부 실행 결과다.
 > 기준 소스: [PostgreSQL 18 공식 문서](https://www.postgresql.org/docs/current/) · [MySQL 8.4 Reference Manual](https://dev.mysql.com/doc/refman/8.4/en/) — 두 문서의 목차와 명령·함수 분류를 대조해 축을 잡았다. 표준 SQL(ISO/IEC 9075)은 공개 요약 수준에서만 참조했고 **조항 번호는 확인하지 못했으므로 적지 않는다.**
-> 실행 검증: **이번 산출물에는 없다.** 이 머신에 `psql`·`mysql`·`sqlite3`·`duckdb` 가 전부 없어 한 줄도 돌려보지 못했다. 아래 방언 칸은 **문서 대조로만** 채운 것이다. → 2단계에는 **PostgreSQL 과 MySQL 둘 다** 필요하다(도커 컨테이너면 충분). `sqlite3` 는 설치가 가장 쉽지만 **이 목록의 방언 차이를 확인하는 데는 부적합**하다 — 세 번째 방언이라 PG·MySQL 어느 쪽도 대신하지 못한다. 설치는 하지 않았고 제안만 적는다.
-> 기준일 2026-09-20.
+> 실행 검증(1단계 당시 기록, 2026-09-20): **이 목록 자체에는 없다.** 이 머신에 `psql`·`mysql`·`sqlite3`·`duckdb` 가 전부 없어 한 줄도 돌려보지 못했다. 아래 방언 칸은 **문서 대조로만** 채운 것이다. → 2단계에는 **PostgreSQL 과 MySQL 둘 다** 필요하다(도커 컨테이너면 충분). `sqlite3` 는 설치가 가장 쉽지만 **이 목록의 방언 차이를 확인하는 데는 부적합**하다 — 세 번째 방언이라 PG·MySQL 어느 쪽도 대신하지 못한다. 설치는 하지 않았고 제안만 적는다. → **2026-09-21 에 두 컨테이너가 떴고 검증이 시작됐다**(위 둘째 줄).
+> 기준일 2026-09-20(목록) · 2026-09-21(실행 검증 시작).
 
 ## 이 언어에서 무엇을 자르는 축
 
@@ -26,10 +27,10 @@ DML(`INSERT`·`UPDATE`·`DELETE`·upsert·`MERGE`)은 전용 칸이 없어 **`�
 
 | # | 주제 | 분류 | 무엇을 인출하게 되나 | 선행 | 기존 주제 | 방언 | 우선 |
 |---|------|------|----------------------|------|-----------|------|------|
-| 01 | 논리적 질의 처리 순서 | 질의 | `FROM → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT` 로 각 절이 무엇을 입력받는지 설명하고, 조건 하나를 다른 절로 옮겼을 때 결과가 어떻게 달라지는지 예측할 수 있다 | — | — | 표준 | A |
+| 01 | [논리적 질의 처리 순서](01-logical-query-processing-order/) | 질의 | `FROM → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT` 로 각 절이 무엇을 입력받는지 설명하고, 조건 하나를 다른 절로 옮겼을 때 결과가 어떻게 달라지는지 예측할 수 있다 | — | — | 표준 | A |
 | 02 | SELECT 목록과 열 별칭의 유효 범위 | 질의 | 별칭을 `WHERE` 에서는 못 쓰고 `ORDER BY` 에서는 쓰는 이유를 처리 순서로 설명할 수 있다 | 01 | — | 차이 | B |
 | 03 | WHERE 와 HAVING 의 차이 | 질의 | 같은 조건을 `WHERE` 에 둘 때와 `HAVING` 에 둘 때 결과·비용이 어떻게 갈리는지 판단할 수 있다 | 01 | — | 표준 | A |
-| 04 | NULL 의 3값 논리 | 함수 | `TRUE`/`FALSE`/`UNKNOWN` 으로 `AND`·`OR`·`NOT` 을 계산하고, `WHERE` 가 UNKNOWN 행을 버린다는 사실로 "사라진 행"을 설명할 수 있다 | 01 | — | 표준 | A |
+| 04 | [NULL 의 3값 논리](04-null-three-valued-logic/) | 함수 | `TRUE`/`FALSE`/`UNKNOWN` 으로 `AND`·`OR`·`NOT` 을 계산하고, `WHERE` 가 UNKNOWN 행을 버린다는 사실로 "사라진 행"을 설명할 수 있다 | 01 | — | 표준 | A |
 | 05 | NULL 비교 — IS NULL·IS DISTINCT FROM·NULL 안전 등호 | 함수 | `= NULL` 이 아무것도 못 맞추는 이유를 설명하고, NULL 을 같은 값으로 보고 비교해야 할 때 무엇을 쓸지 고를 수 있다 | 04 | — | 차이 | A |
 | 06 | 조건 식 — CASE·COALESCE·NULLIF·GREATEST/LEAST | 함수 | 단순 CASE 와 검색 CASE 를 구분하고, NULL 대체와 0 나눗셈 회피를 식 수준에서 처리할 수 있다 | 04 | — | 차이 | B |
 | 07 | DISTINCT 와 중복 제거 | 질의 | `DISTINCT` 가 어느 단계에서 무엇을 기준으로 지우는지 설명하고, `GROUP BY`·`DISTINCT ON` 과 언제 갈리는지 판단할 수 있다 | 01, 04 | — | 차이 | B |
@@ -41,7 +42,7 @@ DML(`INSERT`·`UPDATE`·`DELETE`·upsert·`MERGE`)은 전용 칸이 없어 **`�
 | 13 | INNER JOIN | 질의 | `ON` 조건에 맞는 짝만 남는 규칙과, 한쪽에 짝이 여럿일 때 행이 불어나는 것을 예측할 수 있다 | 12 | — | 표준 | A |
 | 14 | LEFT·RIGHT OUTER JOIN | 질의 | 짝 없는 행이 NULL 로 채워져 남는 규칙을 설명하고, LEFT 와 RIGHT 를 서로 뒤집어 쓸 수 있다 | 13 | — | 표준 | A |
 | 15 | OUTER JOIN 에서 ON 과 WHERE 의 차이 | 질의 | 같은 조건을 `ON` 에 둘 때와 `WHERE` 에 둘 때 외부 조인이 내부 조인으로 무너지는 현상을 예측할 수 있다 | 03, 14 | — | 표준 | A |
-| 16 | FULL OUTER JOIN | 질의 | 양쪽의 짝 없는 행이 모두 남는 결과를 예측하고, 지원하지 않는 엔진에서 무엇으로 대신할지 판단할 수 있다 | 14 | — | 차이 | B |
+| 16 | [FULL OUTER JOIN](16-full-outer-join/) | 질의 | 양쪽의 짝 없는 행이 모두 남는 결과를 예측하고, 지원하지 않는 엔진에서 무엇으로 대신할지 판단할 수 있다 | 14 | — | 차이 | B |
 | 17 | SELF JOIN | 질의 | 한 테이블에 두 별칭을 붙여 같은 테이블의 행끼리 비교하는 질의를 설계할 수 있다 | 13 | — | 표준 | C |
 | 18 | USING 과 NATURAL JOIN | 질의 | `USING` 이 공통 열을 하나로 합치는 것과, `NATURAL` 이 이름만으로 붙어 스키마 변경에 조용히 깨지는 위험을 판단할 수 있다 | 13 | — | 표준 | C |
 | 19 | SEMI·ANTI 조인 — EXISTS·IN·NOT IN·NOT EXISTS | 질의 | "있는지만 보는" 조인을 `EXISTS`/`IN` 으로 쓰고, `NOT IN` 대상에 NULL 이 섞이면 결과가 통째로 비는 이유를 설명할 수 있다 | 05, 11, 13 | — | 표준 | A |
@@ -77,7 +78,7 @@ DML(`INSERT`·`UPDATE`·`DELETE`·upsert·`MERGE`)은 전용 칸이 없어 **`�
 | 49 | INSERT — 다중 행·INSERT SELECT·기본값 | 질의 | 한 문으로 여러 행을 넣는 형태와 질의 결과를 그대로 적재하는 형태를 쓰고, 기본값·생성 열이 어떻게 채워지는지 설명할 수 있다 | 45 | — | 차이 | B |
 | 50 | UPDATE — 조인·서브쿼리를 쓰는 갱신 | 질의 | 다른 테이블의 값으로 갱신하는 문을 방언에 맞게 쓰고, `WHERE` 를 빠뜨린 갱신의 범위를 예측할 수 있다 | 11, 49 | — | 차이 | B |
 | 51 | DELETE 와 TRUNCATE | 질의 | 두 문의 롤백 가능성·트리거·자동 증가 초기화 차이를 설명하고, 대량 삭제를 나눠 도는 이유를 판단할 수 있다 | 50 | — | 차이 | B |
-| 52 | UPSERT — ON CONFLICT 와 ON DUPLICATE KEY UPDATE | 질의 | 충돌 대상이 되는 제약이 무엇인지 지목하고, "있으면 갱신 없으면 삽입"을 경쟁 조건 없이 한 문으로 쓸 수 있다 | 43, 49 | [`06-idempotency-store`](../../../../ops-patterns/06-idempotency-store/) — 멱등 처리 패턴은 거기, 여기선 문법과 충돌 대상 지정 | 차이 | A |
+| 52 | [UPSERT — ON CONFLICT 와 ON DUPLICATE KEY UPDATE](52-upsert/) | 질의 | 충돌 대상이 되는 제약이 무엇인지 지목하고, "있으면 갱신 없으면 삽입"을 경쟁 조건 없이 한 문으로 쓸 수 있다 | 43, 49 | [`06-idempotency-store`](../../../../ops-patterns/06-idempotency-store/) — 멱등 처리 패턴은 거기, 여기선 문법과 충돌 대상 지정 | 차이 | A |
 | 53 | MERGE | 질의 | 원본과 대상을 맞춰 삽입·갱신·삭제를 한 문으로 기술하고, upsert 로 대신할 수 있는 경계를 판단할 수 있다 | 52 | — | 차이 | B |
 | 54 | RETURNING 과 변경문을 품은 CTE | 질의 | 변경한 행을 곧바로 회수하는 문을 쓰고, 한 문 안에서 여러 테이블을 바꿀 때의 가시성을 설명할 수 있다 | 32, 49 | — | PG | C |
 | 55 | 트랜잭션 경계 — COMMIT·ROLLBACK·SAVEPOINT | 트랜잭션·동시성 | 원자성이 지켜지는 범위를 문 단위로 설명하고, 자동 커밋과 명시적 트랜잭션·부분 롤백을 구분해 쓸 수 있다 | 49 | [`07-outbox`](../../../../ops-patterns/07-outbox/) — 메시지 발행 패턴은 거기, 여기선 트랜잭션 문법 | 차이 | A |
@@ -92,6 +93,11 @@ DML(`INSERT`·`UPDATE`·`DELETE`·upsert·`MERGE`)은 전용 칸이 없어 **`�
 MySQL 전용 주제가 0인 것은 의도한 결과다 — MySQL 고유 문법(`REPLACE`·`INSERT IGNORE`·`STRAIGHT_JOIN`)은 독립 주제가 될 만큼 크지 않아 해당 주제 안의 방언 메모로 들어간다.
 
 > ⚠️ 방언 칸의 확신도는 균일하지 않다. 아래 「방언 차이가 큰 자리」에 적은 항목은 **공식 문서에서 문장을 확인한 것**이고, 그 밖의 `차이` 표시는 두 문서의 문법 요약·목차 수준에서 다르다고 본 것이라 **3파일을 쓸 때 해당 페이지로 재확인**한다.
+>
+> ✅ **2026-09-21 실행 검증분** — 두 서버에 같은 질의를 던져 확인했고, 두 엔진의 출력을 해당 주제 본문에 나란히 실었다.
+> `upsert`(52) · `FULL OUTER JOIN`(16) · `별칭 유효 범위`(02) · `ORDER BY 의 NULL`(08) · `GROUP BY 비집계 열`(22) ·
+> `문자열 연결`(37) · `정수 나눗셈`(36) · `NULL 안전 등호`(05).
+> 이 중 **정정된 것은 `FULL OUTER JOIN` 의 우회 방법 한 건**이다(아래 표 참조) — 나머지는 표기대로였다.
 
 ## 기존 주제와 겹치는 것
 
@@ -140,7 +146,7 @@ MySQL 전용 주제가 0인 것은 의도한 결과다 — MySQL 고유 문법(`
 | 행 제한 | `LIMIT`/`OFFSET` + 표준형 `FETCH {FIRST\|NEXT} n ROWS {ONLY \| WITH TIES}` | `LIMIT` 만. **`FETCH FIRST` 문법이 없다** | 09 |
 | ORDER BY 의 NULL | `NULLS FIRST\|LAST` 지정 가능. 기본은 ASC=LAST / DESC=FIRST (NULL 을 **큰 값**으로 취급) | 지정 문법이 **없다**. ASC 에서 NULL 이 앞 (NULL 을 **작은 값**으로 취급) | 08 |
 | 집합 연산 | `UNION`/`INTERSECT`/`EXCEPT` 모두 오래전부터 | `INTERSECT`/`EXCEPT` 는 **8.0.31 부터** 추가됐다 | 34 |
-| FULL OUTER JOIN | 있다 | **없다.** `LEFT` ∪ `RIGHT` 를 `UNION` 하는 우회가 필요하다 | 16 |
+| FULL OUTER JOIN | 있다 | **없다.** `FULL OUTER JOIN`·`FULL JOIN` 둘 다 `ERROR 1064` 문법 오류다(2026-09-21 8.4.10 실행 확인). 우회는 **`UNION` 이 아니라 `UNION ALL` + 반조인**이다 — 단순 `UNION` 은 값이 같은 행을 접어 결과가 줄어든다(실행 확인) | 16 |
 | 소계·총계 | `GROUPING SETS`·`ROLLUP`·`CUBE` 셋 다 | **`WITH ROLLUP` / `ROLLUP(...)` 만 문서화**되어 있다(`GROUPING()` 은 있다). ※ 매뉴얼에 "CUBE 미지원"이라고 **명시된 문장은 찾지 못했다** — 문서 부재로 판단한 것 | 23 |
 | 조건부 집계 | `agg(...) FILTER (WHERE …)` | FILTER 절이 **집계 함수 문법에 없다** → `CASE` 로 쓴다 | 24 |
 | 중복 제거 | `SELECT DISTINCT ON (expr)` (맨 앞 ORDER BY 와 일치해야) | **없다** | 07 |
