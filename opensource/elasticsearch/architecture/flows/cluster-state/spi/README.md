@@ -2,7 +2,7 @@
 
 상위: [클러스터 상태 갱신](../README.md)
 
-이 흐름의 계약은 둘이다 — 실행기가 지켜야 하는 것(`ClusterStateTaskExecutor`)과 태스크가 기대할 수 있는 것(`ClusterStateTaskListener`). 그리고 후자에 **구멍이 여섯** 있다. 인용은 주석 원문이고, 그 아래 설명은 원문이 이유를 말하지 않을 때 내가 붙인 것이다.
+이 흐름의 계약은 둘이다 — 실행기가 지켜야 하는 것(`ClusterStateTaskExecutor`)과 태스크가 기대할 수 있는 것(`ClusterStateTaskListener`). 그리고 후자에 **구멍이 있다** — 태스크가 아무 소식도 못 받는 갈래가 아래 표에만 여섯이고, `AssertionError` 경로까지 세면 더 많다. 인용은 주석 원문이고, 그 아래 설명은 원문이 이유를 말하지 않을 때 내가 붙인 것이다.
 
 기준 커밋: elasticsearch `main` [`60bb239edb`](https://github.com/elastic/elasticsearch/tree/60bb239edb99f0e002eb620e4e82a6f2b15a49b0) (2026-09-19). 줄 번호는 별도 표기가 없으면 `MasterService.java` 기준이다.
 
@@ -13,8 +13,9 @@
 
  1. 버전을 건드리지 말 것            L1246-1253
       versionNumbersPreserved 가 검사한다
-      어기면 IllegalStateException - 다만 같은 try 의 catch 가 흡수해
+      어기면 IllegalStateException - 같은 try 의 catch 가 흡수해
       모든 태스크를 실패시키고 상태를 그대로 돌려준다
+      다만 -ea 면 L1252 의 assert 가 먼저 터져 AssertionError 가 밖으로 나간다
       면제: 마스터 선출 (L677-679)
 
  2. 태스크를 하나도 남기지 말 것      L1208 -> L1212-1223
@@ -63,7 +64,7 @@
 | **발행 호출이 동기로 던짐** | **L407-411** | **없음** |
 
 ```text
- 통지가 없는 여섯 갈래의 공통점
+ 통지가 없는 갈래의 공통점
 
  전부 "마스터 서비스 자신이 무너지는 중" 이거나
  "일어나면 안 되는 일" 이다
@@ -76,7 +77,9 @@
  L578-586   assert publicationMayFail() - 운영에서는 오면 안 되는 자리다
  L407-411   같은 assert 가 붙어 있다
 
- 즉 정상 운영에서는 L565-577 만 실제로 일어날 수 있는 갈래다
+ 이 중 L341-345 와 L565-577 은 둘 다 **종료 중 경쟁**으로 실제로 일어날 수 있다
+ L578-586 은 publicationMayFail() 이 false 를 돌려주는 한 안 오지만
+ 그 메서드는 protected 라 하위 클래스가 바꿀 수 있다 (L610-612)
  (주석은 L577 하나뿐이다. 나머지는 assert 의 위치를 보고 내가 판단한 것이다)
 ```
 
@@ -144,7 +147,8 @@
    LANGuage + Unique ID 가 아니라고 적어 두었다
 
  그래도 마스터 서비스는 LANGUID 용 큐를 만들고 매번 순회한다
- 언제나 비어 있을 뿐이다
+ 다만 그것은 Priority 의 계약이지 MasterService 가 코드로 막는 것이 아니다
+ createTaskQueue 는 LANGUID 를 거부하지 않는다 (L1724-1735)
 ```
 
 ```text
@@ -166,7 +170,9 @@
 
  태스크 통지
       --> 제출자가 결과를 아는 유일한 길이다
-      --> 여섯 갈래에서는 아무 소식도 못 받는다
+      --> 표의 여섯 갈래에서는 아무 소식도 못 받는다
+      --> assert 가 터지는 자리(L1252, L1208, L1273)도 마찬가지다
+          AssertionError 는 Error 라 catch (Exception) 을 통과한다
 
  우선순위
       --> 큐를 고르는 순서를 정한다
