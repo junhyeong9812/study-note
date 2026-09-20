@@ -101,7 +101,7 @@
  [커밋]         finishConcurrentRender 뒤의 일이다
 ```
 
-[beginWork](../begin-work/README.md)와 [completeWork](../complete-work/README.md)는 따로 지도가 있다.
+[beginWork](../begin-work/README.md), [completeWork](../complete-work/README.md), [커밋](../commit/README.md)은 따로 지도가 있다.
 
 ## 단계
 
