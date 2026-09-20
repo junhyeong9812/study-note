@@ -1,5 +1,7 @@
 # 커밋
 
+상위: [React 아키텍처 지도](../../README.md)
+
 [렌더 루프](../render-loop/README.md)가 만든 작업 중 트리를 **실제 DOM 에 반영한다.** [completeWork](../complete-work/README.md)가 세운 flags 를 읽어 무엇을 할지 정한다.
 
 이 흐름의 핵심은 셋이다. **단계가 함수로 쪼개져 상태 기계로 이어지고**, **트리를 바꿔 다는 한 줄이 언마운트와 마운트 사이에 있으며**, **props diff 가 렌더가 아니라 여기서 일어난다.**

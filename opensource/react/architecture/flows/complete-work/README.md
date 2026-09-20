@@ -1,5 +1,7 @@
 # completeWork
 
+상위: [React 아키텍처 지도](../../README.md)
+
 [렌더 루프](../render-loop/README.md)의 `completeUnitOfWork` 가 부르는 **올라오는 쪽**이다. [beginWork](../begin-work/README.md)가 내려가며 밀어 둔 것을 꺼내고, 호스트 인스턴스를 만들고, 자식들의 정보를 부모로 올린다.
 
 이 흐름의 핵심은 셋이다. **push 의 짝이 여기 있고**, **자식 정보를 부모로 올리며**, **올라오는 길인데 되돌려 보내는 자리가 다섯 있다.**

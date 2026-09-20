@@ -1,5 +1,7 @@
 # beginWork
 
+상위: [React 아키텍처 지도](../../README.md)
+
 [렌더 루프](../render-loop/README.md)의 `performUnitOfWork` 가 부르는 **내려가는 쪽**이다. fiber 하나를 받아 **자식을 돌려주거나, `null` 을 돌려준다.**
 
 이 흐름의 핵심은 셋이다. **같은 `tag` 에 대한 `switch` 가 둘이고**, **`null` 의 뜻이 둘이며**, **플래그가 꺼진 `case` 가 세 곳에서 서로 다르게 끝난다.**
