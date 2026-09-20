@@ -1,5 +1,7 @@
 # 엔진 쓰기
 
+상위: [Elasticsearch 아키텍처 지도](../../README.md)
+
 문서 하나가 **Lucene 과 translog 에 실제로 닿는** 자리다. [문서 색인](../index-document/README.md)의 `applyIndexOperationOnPrimary` 안쪽이 여기다. 이 흐름은 처음부터 끝까지 **한 스레드로 간다** — 콜백 경계가 하나도 없다. 폴더 하나가 메서드 하나이고, 설명 안의 메서드 이름을 누르면 그 메서드의 폴더로 들어간다. [spi](spi/README.md)는 전략 객체와 origin 이다.
 
 기준 커밋: elasticsearch `main` [`60bb239edb`](https://github.com/elastic/elasticsearch/tree/60bb239edb99f0e002eb620e4e82a6f2b15a49b0) (2026-09-19). 모든 줄 번호는 이 커밋 기준이다.
