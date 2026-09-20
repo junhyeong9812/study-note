@@ -39,7 +39,7 @@ protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory b
           (prepareBeanFactory 의 같은 검사는 정의가 파싱되기 전이라 놓칠 수 있다)
 ```
 
-1. [PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors](01_PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors/README.md)가 처리기를 우선순위별로 찾아 실행한다. 가장 먼저 실행되는 것이 `@Configuration`을 처리하는 `ConfigurationClassPostProcessor`다.
+1. [PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors](01_PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors/README.md)가 처리기를 우선순위별로 찾아 실행한다. `@Configuration`을 처리하는 `ConfigurationClassPostProcessor`도 그중 하나인데, **가장 먼저는 아니다** — 코드로 직접 넣은 Registry 처리기가 그보다 앞이고, 같은 PriorityOrdered 그룹 안에서도 `getOrder()`가 `LOWEST_PRECEDENCE`라 뒤쪽이다(`ConfigurationClassPostProcessor` L210-212, 주석 `// within PriorityOrdered`). 다른 처리기가 없는 기본 구성에서만 결과적으로 첫 번째가 된다.
 
 ## 결과가 쓰이는 곳
 
