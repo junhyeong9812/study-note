@@ -67,3 +67,4 @@ public interface AuthenticationTrustResolver {
  판정이 갈림길을 정하는 점
       --> 앞의 둘이면 인증을 다시 요구한다 (더 하면 풀릴 수 있다)
       --> 완전 인증이면 403 이다 (더 해도 달라지지 않는다)
+```
