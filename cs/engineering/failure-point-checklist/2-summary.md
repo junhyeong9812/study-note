@@ -1,7 +1,7 @@
 # engineering/failure-point-checklist — 정리 (힌트)
 
 > 복습은 [1-question.md](1-question.md)에서 시작하고, 막힐 때만 이 파일을 힌트로 연다.\
-> 원고 출처: `jun-bank/docs/study/notes/07-failure-point-checklist.md` (원본 절차 노트) · 이관일 2026-09-16.\
+> 원고 출처: `jun-bank/docs-backup-2026-09-15/study/notes/07-failure-point-checklist.md` (원본 절차 노트) · 이관일 2026-09-16.\
 > 이 문서는 지식이 아니라 **절차** 문서다. 본문은 **원고**를 고쳐 쓴 것이며(문체·순서 유지), 특정 회고는 「현장에서 만나는 상황」으로 옮겼다.\
 > 「한눈에」의 비유는 **Claude가 원고 이해를 돕기 위해 새로 그린 것**이고, 원고에 없던 지식은 맨 끝 `[Claude 추가]`에만 둔다.
 
@@ -63,7 +63,7 @@
 
 ## 되짚기 습관 — 답하기 전 한 문장
 
-> 출처: `jun-bank/docs/study/notes/07-failure-point-checklist.md` — 2절
+> 출처: `jun-bank/docs-backup-2026-09-15/study/notes/07-failure-point-checklist.md` — 2절
 
 **언제 쓰나** — 파이프라인·신뢰성·성능처럼 "구간이 여럿인" 질문을 받았을 때, 답을 시작하기 전에.
 
@@ -87,7 +87,7 @@
 
 ## 5칸 체크리스트 — 메시지 파이프라인의 실패 지점
 
-> 출처: `jun-bank/docs/study/notes/07-failure-point-checklist.md` — 3절
+> 출처: `jun-bank/docs-backup-2026-09-15/study/notes/07-failure-point-checklist.md` — 3절
 
 **언제 쓰나** — 전 구간을 묻는 질문이거나, 시스템을 스스로 점검할 때. 다섯 칸을 순서대로 훑는다.
 
@@ -118,7 +118,7 @@
 
 ## 같은 절차의 다른 적용 (일반화)
 
-> 출처: `jun-bank/docs/study/notes/07-failure-point-checklist.md` — 4절
+> 출처: `jun-bank/docs-backup-2026-09-15/study/notes/07-failure-point-checklist.md` — 4절
 
 이 습관은 특정 브로커 전용이 아니다. **"어느 지점을 묻는지 먼저 확정한다"**는 절차 자체가 자산이다.
 
@@ -136,7 +136,7 @@
 
 ## 연습 방법
 
-> 출처: `jun-bank/docs/study/notes/07-failure-point-checklist.md` — 5절
+> 출처: `jun-bank/docs-backup-2026-09-15/study/notes/07-failure-point-checklist.md` — 5절
 
 1. 지금까지의 시스템 하나를 골라 **5칸 표를 직접 채워본다.** 빈칸이 곧 취약점이자, 나올 질문이다.
 2. 빈칸이 있으면 **"거기는 이런 이유로 열어뒀습니다"**를 준비한다. 모든 칸을 닫은 시스템은 없다. **닫지 않은 칸을 인지하고 있느냐**가 실력의 지표다.
