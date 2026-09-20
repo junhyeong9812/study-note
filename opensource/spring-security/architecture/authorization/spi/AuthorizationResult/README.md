@@ -53,3 +53,4 @@ public interface AuthorizationResult extends Serializable {
       --> AuthorityAuthorizationDecision 은 요구했던 권한 목록을 들고 있다
       --> 거부 예외에 실려 올라가므로 핸들러가 응답에 쓸 수 있다
       --> 다만 그 정보를 그대로 노출하면 규칙을 알려 주는 셈이 된다
+```
