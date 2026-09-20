@@ -820,7 +820,7 @@ Map<String,String> m = new HashMap<>() {{ put("a", "1"); }};
 
 - (4)의 `local variables referenced from an inner class must be final or effectively final` 이 그대로 나온다.
 - 흔한 오해: **"캡처한 변수를 바꾸려면 `final` 을 떼면 된다."** 반대다 — 안 바꿔야 통과한다.
-- 자주 쓰는 우회 `int[] box = {0};` 은 **배열 참조가 안 바뀌는 것**이라 통과한다. 다만 그 배열은 **여러 스레드에서 안전하지 않다**(목록의 **33번 주제**).
+- 자주 쓰는 우회 `int[] box = {0};` 은 **배열 참조가 안 바뀌는 것**이라 통과한다. 다만 그 배열은 **여러 스레드에서 안전하지 않다**([**33번 주제**](../33-synchronized-and-volatile/)).
 
 ## 구현 세부사항 대 언어 보장
 
@@ -883,7 +883,7 @@ Map<String,String> m = new HashMap<>() {{ put("a", "1"); }};
 - [`../14-records/`](../14-records/) — `record` 는 **암묵적 `static`** 이라 inner 가 될 수 없고, 그 때문에 SE 16의 inner-`static` 완화가 필요했다
 - [`../15-sealed-classes/`](../15-sealed-classes/) — **그쪽은** `permits` 와 허용 계층. 같은 파일에 하위 타입을 모으는 관용구가 중첩 클래스 위에 선다
 - [`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/) — **그쪽은** 계약 다섯 조항. **여기와 겹치는 것**은 익명 클래스로 만든 객체가 타입 이름이 없어 `equals` 대상 판정이 어려워진다는 점 하나
-- [**29번 주제**](../29-lambda-expressions/)(람다) — **람다는 그쪽이 정본이다.** 여기의 (5)·(6)은 **중첩 클래스와 대비되는 부분**만 · [**03번 주제**](../03-variables-and-assignment/)(effectively final 의 정의) · 목록의 **33번 주제**(`int[] box` 우회의 스레드 안전성)
+- [**29번 주제**](../29-lambda-expressions/)(람다) — **람다는 그쪽이 정본이다.** 여기의 (5)·(6)은 **중첩 클래스와 대비되는 부분**만 · [**03번 주제**](../03-variables-and-assignment/)(effectively final 의 정의) · [**33번 주제**](../33-synchronized-and-volatile/)(`int[] box` 우회의 스레드 안전성)
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — **그쪽은** GC·JIT·클래스로더·메모리 모델. **여기는** GC 알고리즘을 쓰지 않는다 — "어떤 문법이 어떤 참조를 만드나"와 **도달 가능성**까지만
 - [`../../../../oop-basics/`](../../../../oop-basics/) — **그쪽은** 캡슐화·합성 개념(파이썬 기반). **여기는** 자바 문법이 그것을 **어떻게 강제하나** — "안쪽이 바깥을 안다"를 `this$0` 이라는 실제 필드로 강제한다
 - [`../../../../../engineering/design-patterns-gof/`](../../../../../engineering/design-patterns-gof/) — **패턴 자체는 그쪽.** 여기는 이터레이터·빌더·상태 패턴의 **구현 수단**으로 중첩 클래스가 어떻게 쓰이나
@@ -911,6 +911,6 @@ Map<String,String> m = new HashMap<>() {{ put("a", "1"); }};
 
 - **인터페이스 안의 중첩 클래스는 언제나 암묵적 `static`** 이다(인터페이스에는 인스턴스가 없다). `enum`·`record`·중첩 `interface` 도 마찬가지로 암묵적 `static` 이다.
 - **`Map.Entry` 가 `static` nested 의 표준 예**다. 엔트리 하나가 맵 전체를 붙잡으면 곤란하기 때문이다.\
-  반대로 **`ArrayList` 의 이터레이터는 inner** 다 — 리스트의 `modCount` 를 실시간으로 봐야 하기 때문이다(목록의 **43번 주제**).
+  반대로 **`ArrayList` 의 이터레이터는 inner** 다 — 리스트의 `modCount` 를 실시간으로 봐야 하기 때문이다([**43번 주제**](../43-iterator-and-fail-fast/)).
 - **`this$0` 은 리플렉션에 그대로 보인다**((5)의 실행 출력이 그것이다). 프레임워크가 중첩 클래스를 인스턴스화하려다 실패하는 사고가 여기서 난다 — 인자 없어 보이는 생성자가 **실제로는 인자를 받기** 때문이다.
 - **지역 클래스 이름의 숫자**(`Ex$1Local`)는 같은 이름의 지역 클래스가 여러 메서드에 있을 수 있어 붙는다 — 12-st 의 `Ex$1L`·`Ex$2L` 이 소스에서는 둘 다 `class L` 이다.

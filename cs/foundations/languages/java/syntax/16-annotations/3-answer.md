@@ -604,7 +604,7 @@ Ex.java:6: error: annotation interface Generic cannot be generic
 ```
 
 - 둘 다 **"javac 가 클래스 파일에 무엇을 적었나"**로 답이 나온다. 확인 도구도 같은 `javap -v` 다.
-- 그리고 **둘 다 리플렉션에서 만난다** — 목록의 **58번 주제**(리플렉션)가 그 합류 지점이다.
+- 그리고 **둘 다 리플렉션에서 만난다** — [**58번 주제**](../58-reflection/)(리플렉션)가 그 합류 지점이다.
 
 **`ElementType.RECORD_COMPONENT` 가 16에서 생긴 이유**
 

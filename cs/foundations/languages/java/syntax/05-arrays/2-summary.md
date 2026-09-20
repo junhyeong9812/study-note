@@ -497,7 +497,7 @@ List<String> view = Arrays.asList(backing);
 - **뷰**다. 복사가 아니다. 방어적 복사로 착각해 쓰면 그대로 새어 나간다.
 
 셋 다 피하려면 **`List.of(...)`** 를 쓴다 — 크기 고정 + 수정 전면 금지 + 원본과 분리.\
-단 `List.of` 는 `null` 원소를 허용하지 않는다. 둘의 차이는 목록의 **40번 주제**가 정본이다.
+단 `List.of` 는 `null` 원소를 허용하지 않는다. 둘의 차이는 [**40번 주제**](../40-list-set-and-immutable-factories/)가 정본이다.
 
 비용 — `asList` 는 배열을 감싸기만 하므로 O(1). `List.of` 는 원소를 복사하므로 O(n).
 
@@ -736,8 +736,8 @@ java -XX:-ShowCodeDetailsInExceptionMessages
 - [`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/) — 배열을 `HashMap` 키로 쓰면 안 되는 이유(계약을 재정의하지 않았다)
 - [**17번 주제**](../17-generic-declarations/)(제네릭 선언)·**18번 주제**(와일드카드와 PECS) — **불공변과 와일드카드의 정본.** 여기서는 배열과의 대비까지만
 - [**19번 주제**](../19-type-erasure/)(타입 소거) — `new List<String>[3]` 이 왜 금지인가의 정본
-- 목록의 **40번 주제**(`List.of`·`copyOf`·`unmodifiable*`) — `asList` 의 대안과 "불변 대 수정 불가 뷰"의 정본
-- 목록의 **43번 주제**(`Iterator`·fail-fast) — 리스트 순회 중 수정. 배열에는 이 개념이 없다
+- [**40번 주제**](../40-list-set-and-immutable-factories/)(`List.of`·`copyOf`·`unmodifiable*`) — `asList` 의 대안과 "불변 대 수정 불가 뷰"의 정본
+- [**43번 주제**](../43-iterator-and-fail-fast/)(`Iterator`·fail-fast) — 리스트 순회 중 수정. 배열에는 이 개념이 없다
 - [`../44-stream-creation/`](../44-stream-creation/) — `Arrays.stream(int[])` 과 `Stream.of(T...)` 가 갈리는 자리
 
 ## 용어 풀이

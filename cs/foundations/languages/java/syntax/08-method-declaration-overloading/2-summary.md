@@ -427,7 +427,7 @@ Ex.java:3: error: cannot declare both f(int...) and f(int[]) in Ex
   ★ 오버로딩은 그 문서가 말하는 다형성이 **아니다** — 이름만 같은 별개 메서드다. 그 대비가 여기의 값어치다
 - [**09번 주제**](../09-inheritance-overriding/)(상속과 오버라이딩) — **오버로딩(컴파일 타임) 대 오버라이딩(런타임)**의 대비가 그쪽에서 완성된다
 - [**17번 주제**](../17-generic-declarations/)(제네릭 선언) — 제네릭 메서드가 후보에 끼면 해소가 한 겹 더 복잡해진다
-- 목록의 **40번 주제**(`List`·`Set` API) — `remove(int)`/`remove(Object)` 함정의 API 쪽 정본
+- [**40번 주제**](../40-list-set-and-immutable-factories/)(`List`·`Set` API) — `remove(int)`/`remove(Object)` 함정의 API 쪽 정본
 
 ## 용어 풀이
 

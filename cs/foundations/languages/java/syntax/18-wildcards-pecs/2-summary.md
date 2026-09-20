@@ -799,7 +799,7 @@ Ex.java:5: error: no suitable method found for add(int)
 - [`../46-terminal-operations/`](../46-terminal-operations/) — `forEach(Consumer<? super T>)`·`reduce` 의 와일드카드
 - [`../47-collectors-basics/`](../47-collectors-basics/) — `Collector<? super T, A, R>` 의 형태
 - [`../28-comparable-comparator/`](../28-comparable-comparator/) — `Comparator<? super E>` 로 정렬이 넓어지는 자리
-- 목록의 **40번 주제**(`List.of`·`copyOf`) — `copyOf(Collection<? extends E>)` 가 PECS 를 쓰는 예
+- [**40번 주제**](../40-list-set-and-immutable-factories/)(`List.of`·`copyOf`) — `copyOf(Collection<? extends E>)` 가 PECS 를 쓰는 예
 - [`../../../../../../history/java/java-5.md`](../../../../../../history/java/java-5.md) — 와일드카드가 **언제·왜 들어왔나**가 정본. 여기는 **어떻게 쓰고 무엇을 못 하나**
 
 ## 용어 풀이
@@ -842,7 +842,7 @@ remove("a")   = true -> [b]
 ```
  이것은 제네릭 이전과의 호환성 때문에 남은 설계이고,\
   그래서 `list.remove(1)` 과 `list.remove(Integer.valueOf(1))` 이 다르게 동작하는 유명한 함정이 생긴다\
-  (그 정본은 목록의 **40번 주제**다).
+  (그 정본은 [**40번 주제**](../40-list-set-and-immutable-factories/)다).
 - **배열과 제네릭을 섞으면 컴파일러가 아예 막는다.** `new List<String>[3]` 은 `generic array creation` 에러다.\
   공변성(배열)과 소거(제네릭)를 합치면 **검사가 아무것도 못 잡는 배열**이 생기기 때문이다.\
   정본은 [`../19-type-erasure/`](../19-type-erasure/) 다.

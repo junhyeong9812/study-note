@@ -608,7 +608,7 @@ OK
 > However, when using facilities such as `java.util.stream.Stream` that support both I/O-based and non-I/O-based forms, `try`-with-resources blocks are in general unnecessary when using non-I/O-based forms.
 
 - `Files.lines`·`Files.walk`·`Files.list` 는 I/O 기반이므로 **반드시 닫는다.** 안 닫으면 파일 디스크립터가 샌다.\
-  자세한 것은 목록의 **57번 주제**.
+  자세한 것은 [**57번 주제**](../57-files-and-path/).
 
 **`ReentrantLock` 에 못 쓰는 이유**
 
@@ -671,7 +671,7 @@ try (var ex = Executors.newFixedThreadPool(4)) {
 }   // close() 가 shutdown 후 종료를 기다린다
 ```
 
-- **닫으면 종료를 기다린다**는 점이 중요하다 — 그 의미와 주의점은 목록의 **54번 주제**가 정본이다.
+- **닫으면 종료를 기다린다**는 점이 중요하다 — 그 의미와 주의점은 [**54번 주제**](../54-executorservice-and-future/)가 정본이다.
 
 ---
 

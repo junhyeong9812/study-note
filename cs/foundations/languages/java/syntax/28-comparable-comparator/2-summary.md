@@ -670,7 +670,7 @@ a.equals(null)    -> false
 - [`../46-terminal-operations/`](../46-terminal-operations/) — `min`/`max`/`sorted` 가 비교자를 받는 자리
 - [`../48-collectors-grouping/`](../48-collectors-grouping/) — "가까우면 같다"를 비교자 대신 그룹핑으로 푸는 법
 - [`../49-parallel-streams/`](../49-parallel-streams/) — `Arrays.parallelSort` 도 같은 예외를 던진다는 것
-- 목록의 **39번 주제**(컬렉션 지도) — `TreeSet`/`TreeMap` 을 언제 고르나
+- [**39번 주제**](../39-collections-framework-map/)(컬렉션 지도) — `TreeSet`/`TreeMap` 을 언제 고르나
 - [**60번 주제**](../60-null-handling/)(`null` 다루기) — `compareTo(null)` 을 `Objects.requireNonNull` 로 명시적으로 막는 법
 
 ## 용어 풀이

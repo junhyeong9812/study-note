@@ -362,7 +362,7 @@ st.toList();                           // (3) 소비 -> [a, b, c]
 - **스트림을 만든 시점이 아니라 소비 시점의 내용**이 흘러간다.
 - 스트림은 원소를 **복사해 두지 않는다.** 소스를 가리킬 뿐이다.
 - 반대로 **소비가 시작된 뒤에** 소스를 고치면 `ConcurrentModificationException` 이 날 수 있다.\
-  그 규칙(fail-fast)은 목록의 **43번 주제**가 정본이다.
+  그 규칙(fail-fast)은 [**43번 주제**](../43-iterator-and-fail-fast/)가 정본이다.
 - 방어: 스트림을 변수에 담아 들고 다니지 않는다. **만든 자리에서 바로 소비**한다.
 
 ## 언제 쓰고 언제 안 쓰나
@@ -400,8 +400,8 @@ st.toList();                           // (3) 소비 -> [a, b, c]
 - [`../../../../../../history/java/java-8.md`](../../../../../../history/java/java-8.md) — 스트림이 **왜 Java 8 에 들어왔나**. 도입 맥락은 거기
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — JIT·GC. 박싱 비용이 실제로 얼마인가는 거기
 - [**31번 주제**](../31-functional-interfaces/)(함수형 인터페이스) — `Stream.generate(Supplier)` 의 그 `Supplier`
-- 목록의 **39번 주제**(컬렉션 프레임워크 지도) — `Collection.stream()` 이 어디에 붙어 있나
-- 목록의 **43번 주제**(fail-fast) — 소비 중 소스를 고쳤을 때
+- [**39번 주제**](../39-collections-framework-map/)(컬렉션 프레임워크 지도) — `Collection.stream()` 이 어디에 붙어 있나
+- [**43번 주제**](../43-iterator-and-fail-fast/)(fail-fast) — 소비 중 소스를 고쳤을 때
 - [**46번 주제**](../46-terminal-operations/)(최종 연산과 지연 평가) — 이 문서의 「스위치」가 정본으로 다뤄지는 곳
 - [**49번 주제**](../49-parallel-streams/)(병렬 스트림) — `parallelStream()` 이 값을 내는 조건
 

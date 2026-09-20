@@ -785,7 +785,7 @@ Ex.java:5: error: for-each not applicable to expression type
 
 - ★ 메시지의 `required: array or java.lang.Iterable` 이 **향상된 `for` 의 조건 전부**다.
 - `Map` 은 `Iterable` 이 아니다. `m.entrySet()` · `m.keySet()` · `m.values()` 가 `Iterable` 이다.
-- `Map` API 자체는 목록의 **41번 주제**가 정본이다.
+- `Map` API 자체는 [**41번 주제**](../41-map-api-merge-compute/)가 정본이다.
 
 ### 10. 직접 만든 타입을 순회하려 했다
 
@@ -891,7 +891,7 @@ for (int i = 0; i < names.length; i++) System.out.print(i + ":" + names[i] + " "
 ```
 
 - 그래서 **"컬렉션을 순회 중에 고치면 CME 가 난다"는 말은 틀렸다.** 나는 구현이 있을 뿐이다.
-- 동시 컬렉션의 순회 계약은 목록의 **55번 주제**가 정본이다. 여기서는 "CME 가 안 나는 구현이 있다"까지만.
+- 동시 컬렉션의 순회 계약은 [**55번 주제**](../55-atomics-and-concurrent-collections/)가 정본이다. 여기서는 "CME 가 안 나는 구현이 있다"까지만.
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -952,10 +952,10 @@ for (int i = 0; i < names.length; i++) System.out.print(i + ":" + names[i] + " "
 - [`../../../../../data-structure/01-dynamic-array/`](../../../../../data-structure/01-dynamic-array/) — 동적 배열의 **자료구조**(증폭·상환 분석).\
   **왜 `ArrayList` 가 배열을 들고 있나는 거기**, 여기는 **그것을 순회할 때의 규칙**만
 - [`../../../../../data-structure/`](../../../../../data-structure/) — 컬렉션 내부 구조 전반. **여기서는 내부를 설명하지 않는다**
-- 목록의 **43번 주제**(`Iterator`·`ListIterator`·fail-fast) — **`Iterator` API 와 fail-fast 의 정본.**\
+- [**43번 주제**](../43-iterator-and-fail-fast/)(`Iterator`·`ListIterator`·fail-fast) — **`Iterator` API 와 fail-fast 의 정본.**\
   여기서는 **향상된 `for` 를 설명하는 데 필요한 만큼만** 다뤘다(`hasNext`/`next`/`remove` 셋)
-- 목록의 **41번 주제**(`Map` API) — `entrySet()`·`keySet()` 이 왜 필요한지의 정본
-- 목록의 **55번 주제**(원자 변수와 동시 컬렉션) — CME 를 던지지 않는 컬렉션들.\
+- [**41번 주제**](../41-map-api-merge-compute/)(`Map` API) — `entrySet()`·`keySet()` 이 왜 필요한지의 정본
+- [**55번 주제**](../55-atomics-and-concurrent-collections/)(원자 변수와 동시 컬렉션) — CME 를 던지지 않는 컬렉션들.\
   **여기는 "안 던지는 구현이 있다"까지**, 그 계약은 거기
 - [`../46-terminal-operations/`](../46-terminal-operations/) — `findFirst` 같은 단락 평가.\
   **레이블 `break` 의 대안으로 언급만** 한다. 스트림 규칙은 거기
@@ -1019,4 +1019,4 @@ for (int i = 0; i < names.length; i++) System.out.print(i + ":" + names[i] + " "
   원본을 꼭 바꿔야 하는 게 아니라면 이쪽이 가장 안전하다. 스트림 규칙은 [**46번 주제**](../46-terminal-operations/).
 - **`CopyOnWriteArrayList` 는 순회 중 수정이 예외가 아니다** — 이터레이터가 **스냅샷**을 들고 돌기 때문이다.\
   대신 순회 중에 추가한 원소는 **그 순회에서 보이지 않는다.** 예외 대신 **낡은 뷰**를 받는 거래다.\
-  계약은 목록의 **55번 주제**가 정본이다 — 여기서는 "fail-fast 가 의무가 아니다"의 예로만 든다.
+  계약은 [**55번 주제**](../55-atomics-and-concurrent-collections/)가 정본이다 — 여기서는 "fail-fast 가 의무가 아니다"의 예로만 든다.

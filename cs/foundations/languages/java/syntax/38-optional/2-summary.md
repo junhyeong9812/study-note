@@ -755,7 +755,7 @@ IntStream.of(1, 2, 3).average();      // OptionalDouble  — Optional<Double> �
 - [`../03-variables-and-assignment/`](../03-variables-and-assignment/) — `orElse` 인자가 왜 항상 평가되는지(자바의 인자 평가 규칙)
 - [`../31-functional-interfaces/`](../31-functional-interfaces/) — `orElseGet`·`or`·`orElseThrow` 가 받는 `Supplier`
 - [`../14-records/`](../14-records/) — `Optional` 필드 대신 `record` 로 "없음"을 표현하는 다른 방법(`sealed` + 결과 타입)
-- 목록의 **41번 주제**(`Map` API) — `Map` 이 이미 "없음"을 표현한다는 것(`getOrDefault`·`containsKey`)
+- [**41번 주제**](../41-map-api-merge-compute/)(`Map` API) — `Map` 이 이미 "없음"을 표현한다는 것(`getOrDefault`·`containsKey`)
 
 ## 용어 풀이
 

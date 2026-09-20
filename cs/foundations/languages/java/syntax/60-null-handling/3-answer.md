@@ -402,7 +402,7 @@ TreeSet 에 null                 -> java.lang.NullPointerException: null
 
 - `get` 으로는 **구분 안 된다.** "키가 없다"도 `null`, "값이 `null` 이다"도 `null` 이다.
 - **`containsKey(k)`** 를 봐야 한다 — 실측에서 `true` / `false` 로 갈렸다.
-- 아니면 **`getOrDefault(k, 기본값)`** 로 둘을 한 답으로 합친다(목록의 **41번 주제**).
+- 아니면 **`getOrDefault(k, 기본값)`** 로 둘을 한 답으로 합친다([**41번 주제**](../41-map-api-merge-compute/)).
 
 **`TreeSet` 이 거부하는 이유**
 

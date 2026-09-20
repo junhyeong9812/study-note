@@ -533,7 +533,7 @@ Ex.java:5: error: auto-closeable resource r may not be assigned
   1. `List.of(...)` — 진짜 불변 리스트. 수정 시도는 `UnsupportedOperationException`.
   2. `Collections.unmodifiableList(inner)` — **뷰**다. 원본 `inner` 를 고치면 뷰에도 보인다.
   3. 접근자에서 방어적 복사본을 돌려준다.
-- 1과 2의 차이("불변" 대 "수정 불가 뷰")는 목록의 **40번 주제**, 방어적 복사는 목록의 **59번 주제**가 정본이다.
+- 1과 2의 차이("불변" 대 "수정 불가 뷰")는 [**40번 주제**](../40-list-set-and-immutable-factories/), 방어적 복사는 [**59번 주제**](../59-immutable-objects/)가 정본이다.
 
 ---
 

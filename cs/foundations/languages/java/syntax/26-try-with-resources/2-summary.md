@@ -641,8 +641,8 @@ Ex.java:6: error: variable r used as a try-with-resources resource neither final
 - [`../03-variables-and-assignment/`](../03-variables-and-assignment/) — 자원 변수의 암묵적 `final` 과 9+ 형태가 요구하는 effectively final 의 정본
 - [`../../../../../ops-patterns/19-graceful-shutdown/`](../../../../../ops-patterns/19-graceful-shutdown/) — 프로세스 수준의 자원 정리. **이 문법은 한 블록 안의 정리까지**이고, 종료 시 커넥션 풀·스레드 풀을 어떻게 비우나는 그쪽이다
 - [**46번 주제**](../46-terminal-operations/)(최종 연산과 지연 평가) — `Stream` 이 `AutoCloseable` 인데도 대개 안 닫는 이유
-- 목록의 **57번 주제**(`Files`·`Path`) — `Files.lines`·`Files.walk` 처럼 **반드시 닫아야 하는 스트림**
-- 목록의 **54번 주제**(`java.util.concurrent`) — `ExecutorService` 의 종료. 21부터 `AutoCloseable` 이 됐다
+- [**57번 주제**](../57-files-and-path/)(`Files`·`Path`) — `Files.lines`·`Files.walk` 처럼 **반드시 닫아야 하는 스트림**
+- [**54번 주제**](../54-executorservice-and-future/)(`java.util.concurrent`) — `ExecutorService` 의 종료. 21부터 `AutoCloseable` 이 됐다
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — GC 는 자원을 안 닫아 준다. 왜 finalizer 가 대안이 못 되는지의 배경
 
 ## 용어 풀이
@@ -691,4 +691,4 @@ java.lang.RuntimeException: 주 예외
   `addSuppressed` javadoc 이 그렇게 적는다 — "When suppression is disabled, this method does nothing other than to validate its argument."
 - **`ExecutorService` 가 21에서 `AutoCloseable` 이 됐다.** 위 리플렉션 출력이 17과 21의 차이를 그대로 보여 준다.\
   그래서 `try (var ex = Executors.newFixedThreadPool(4)) { ... }` 형태를 21부터 쓸 수 있다.\
-  닫으면 `shutdown()` 후 **종료를 기다린다** — 그 의미와 주의점은 목록의 **54번 주제**가 정본이다.
+  닫으면 `shutdown()` 후 **종료를 기다린다** — 그 의미와 주의점은 [**54번 주제**](../54-executorservice-and-future/)가 정본이다.

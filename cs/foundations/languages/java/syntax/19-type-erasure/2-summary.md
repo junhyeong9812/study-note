@@ -888,7 +888,7 @@ error: name clash: print(List<Integer>) and print(List<String>) have the same er
 - [`../16-annotations/`](../16-annotations/) — **구조가 같다** — "클래스 파일에 무엇이 남나"를 `javap -v` 로 확인하는 주제. 그쪽은 `Runtime*Annotations` 속성, 여기는 `Signature` 속성
 - [`../09-inheritance-overriding/`](../09-inheritance-overriding/) — 브리지 메서드가 **재정의 관계를 잇기 위해** 생긴다. 동적 디스패치의 규칙은 그쪽이 정본
 - [`../08-method-declaration-overloading/`](../08-method-declaration-overloading/) — 소거 후 충돌이 왜 오버로드로 성립하지 않는가. 오버로딩 해소 규칙은 그쪽
-- 목록의 **58번 주제**(리플렉션) — **`getGenericType()` 으로 읽은 다음 무엇을 하나가 그쪽이다.** 여기는 **읽히느냐 마느냐**까지
+- [**58번 주제**](../58-reflection/)(리플렉션) — **`getGenericType()` 으로 읽은 다음 무엇을 하나가 그쪽이다.** 여기는 **읽히느냐 마느냐**까지
 - [`../../../../../../history/java/java-5.md`](../../../../../../history/java/java-5.md) — 제네릭과 소거가 **언제·왜 이 방식으로 들어왔나**가 정본(하위 호환을 위한 선택). 여기는 **그래서 무엇을 못 하나**
 
 ## 용어 풀이

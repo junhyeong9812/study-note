@@ -771,13 +771,13 @@ JDK 21.0.5 · 25.0.1
 - [`../README.md`](../README.md) — Java 문법·API 주제 목록(이 주제는 16번)
 - [`../19-type-erasure/`](../19-type-erasure/) — **그쪽은 제네릭 타입 인자가 지워지고 `Signature` 속성에 남는 비대칭까지, 여기는 애너테이션이 `Runtime*Annotations` 속성에 남는지부터.**\
   둘 다 "클래스 파일에 무엇이 남나"를 묻지만, 대상이 타입 인자냐 애너테이션이냐로 갈린다
-- 목록의 **58번 주제**(리플렉션) — **`getAnnotation` 으로 읽은 다음 무엇을 하나가 그쪽이다.** 여기는 **읽히느냐 마느냐**까지
+- [**58번 주제**](../58-reflection/)(리플렉션) — **`getAnnotation` 으로 읽은 다음 무엇을 하나가 그쪽이다.** 여기는 **읽히느냐 마느냐**까지
 - [`../11-interfaces-default-methods/`](../11-interfaces-default-methods/) — 애너테이션 타입이 **인터페이스**라는 것. 다만 `default` 메서드도 상속도 못 한다
 - [`../13-enum-classes/`](../13-enum-classes/) — 애너테이션 원소로 쓸 수 있는 유일한 "직접 만든 타입"이 enum 이다
 - [`../14-records/`](../14-records/) — `ElementType.RECORD_COMPONENT`(16) 가 생긴 이유. record 컴포넌트에 붙인 애너테이션이 필드·접근자·생성자 파라미터로 전파되는 규칙은 그쪽
 - [`../17-generic-declarations/`](../17-generic-declarations/) — 애너테이션이 **제네릭이 될 수 없다**는 제약의 뿌리
 - [`../../../../../../history/java/java-5.md`](../../../../../../history/java/java-5.md) — 애너테이션이 **언제·왜 들어왔나**가 정본. 여기는 **어떻게 쓰고 무엇을 못 하나**
-- 목록의 **34번 주제**(`import`·모듈) — `ElementType.MODULE`(9)·`PACKAGE` 가 붙는 자리(`module-info.java`·`package-info.java`)
+- [**34번 주제**](../34-imports/)(`import`·모듈) — `ElementType.MODULE`(9)·`PACKAGE` 가 붙는 자리(`module-info.java`·`package-info.java`)
 
 ## 용어 풀이
 

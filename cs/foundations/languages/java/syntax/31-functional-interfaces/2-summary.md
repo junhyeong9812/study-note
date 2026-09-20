@@ -666,7 +666,7 @@ static <T, R> Function<T, R> unchecked(ThrowingFunction<T, R> f) {
 - **대가**: 검사 예외가 비검사가 되어 **컴파일러의 강제가 사라진다.** 원인은 `getCause()` 로 남는다.
 - 표준에도 `throws` 를 선언한 함수형 인터페이스가 있다 — **`java.util.concurrent.Callable`** 이다.\
   `Supplier` 와 모양이 같은데 `call() throws Exception` 이라 같은 람다가 들어간다.\
-  다만 `Callable` 은 `java.util.function` 밖에 있고 `ExecutorService` 가 받는 타입이다(목록의 **54번 주제**).
+  다만 `Callable` 은 `java.util.function` 밖에 있고 `ExecutorService` 가 받는 타입이다([**54번 주제**](../54-executorservice-and-future/)).
 - `IOException` 전용이면 `UncheckedIOException` 이 표준으로 있다.
 
 ### 4. 오버로드가 둘 다 함수형 인터페이스를 받는다
@@ -786,7 +786,7 @@ Ex.java:10: error: reference to run is ambiguous
 - [`../25-exceptions/`](../25-exceptions/) — 예외(checked/unchecked). 「어디서 틀리나」 3번의 상위 개념
 - [**46번 주제**](../46-terminal-operations/)(최종 연산)·**47·48번 주제**(`Collectors`) — `Supplier`·`BiConsumer`·`BinaryOperator` 가 한꺼번에 나오는 자리
 - [**49번 주제**](../49-parallel-streams/)(병렬 스트림) — 기본형 특화와 박싱이 비용으로 드러나는 자리
-- 목록의 **54번 주제**(`java.util.concurrent`) — `Callable` 이 받는 쪽의 정본
+- [**54번 주제**](../54-executorservice-and-future/)(`java.util.concurrent`) — `Callable` 이 받는 쪽의 정본
 
 ## 용어 풀이
 

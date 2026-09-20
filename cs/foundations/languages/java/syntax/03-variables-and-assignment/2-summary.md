@@ -259,7 +259,7 @@ final StringBuilder SB     = ab
 
 - `final` 이 거는 제약은 **"이 쪽지에 값을 한 번만 적을 수 있다"** 뿐이다.
 - 쪽지에 적힌 주소를 따라가 **창고 안에서 무슨 짓을 하든 `final` 은 관여하지 않는다.**
-- 그래서 `final` 은 **불변(immutable)을 만들지 않는다.** 불변을 만들려면 창고 자체를 고칠 수 없게 설계해야 한다(목록의 **59번 주제**).
+- 그래서 `final` 은 **불변(immutable)을 만들지 않는다.** 불변을 만들려면 창고 자체를 고칠 수 없게 설계해야 한다([**59번 주제**](../59-immutable-objects/)).
 
 비용 — 런타임 비용 0. 지역 변수의 `final` 은 **바이트코드에 흔적도 안 남는다**(아래 (7)).
 
@@ -516,7 +516,7 @@ private static final List<String> WHITELIST = new ArrayList<>(List.of("a", "b"))
 - 다른 클래스가 `WHITELIST.add("해커")` 를 부르면 **그냥 된다.**
 - `final` 은 `WHITELIST = ...` 만 막는다.
 - 진짜로 막으려면 `List.of(...)` 또는 `Collections.unmodifiableList(...)` 를 써야 한다.\
-  둘의 차이("불변" 대 "수정 불가 뷰")는 목록의 **40번 주제**가 정본이다.
+  둘의 차이("불변" 대 "수정 불가 뷰")는 [**40번 주제**](../40-list-set-and-immutable-factories/)가 정본이다.
 
 같은 함정이 **배열 상수**에서 더 위험하다 — 배열에는 "수정 불가 뷰"가 아예 없다.
 
@@ -643,7 +643,7 @@ Ex.java:4: error: cannot assign a value to final variable field
 - [`../06-initialization-order/`](../06-initialization-order/) — `final` 필드가 언제 채워지는가. 초기화 순서는 그쪽이 정본
 - [**04번 주제**](../04-var-type-inference/)(`var` 지역 변수 타입 추론) — `var` 와 `final` 을 함께 쓰는 형태(`final var`)
 - [`../29-lambda-expressions/`](../29-lambda-expressions/) — **캡처의 정본.** 여기서는 "왜 effectively final 이 필요한가"까지만 다룬다
-- 목록의 **59번 주제**(불변 객체 만들기) — `final` 로 부족한 자리를 방어적 복사로 메우는 법
+- [**59번 주제**](../59-immutable-objects/)(불변 객체 만들기) — `final` 로 부족한 자리를 방어적 복사로 메우는 법
 - [`../25-exceptions/`](../25-exceptions/) — 다중 `catch` 의 변수가 암묵적 `final` 인 이유
 - [`../26-try-with-resources/`](../26-try-with-resources/) — 자원 변수가 암묵적 `final` 이고, 9부터 effectively final 변수를 쓸 수 있게 된 것
 

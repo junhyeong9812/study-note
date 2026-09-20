@@ -590,7 +590,7 @@ length 287 에서 capacity 286 -> 574
   `+` 가 문자열 연결로 갈리는 자리부터가 여기다.**
 - [`../../../../../data-structure/01-dynamic-array/`](../../../../../data-structure/01-dynamic-array/) — **경계: "왜 2배씩 늘리나"라는 상환 분석 원리는 거기,
   "`StringBuilder` 가 실제로 몇 배로 늘리나"는 여기.**
-- 목록의 **37번 주제**(정규식) — `String.format` 이 아니라 `replaceAll` 쪽 조립
+- [**37번 주제**](../37-regex/)(정규식) — `String.format` 이 아니라 `replaceAll` 쪽 조립
 - [**60번 주제**](../60-null-handling/)(`null` 다루기) — `"null"` 이 섞이기 전에 막는 자리
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — JIT·escape analysis. **왜 워밍업이 필요한지는 거기**
 

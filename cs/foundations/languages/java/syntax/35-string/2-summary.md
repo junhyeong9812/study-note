@@ -356,7 +356,7 @@ String g = new StringBuilder("hel").append("lo").toString();  // 복사본
 - `"".split(",")` 의 길이가 **0이 아니라 1**이다. 빈 문자열 하나가 든 배열이 나온다.
 - `split(".")` 은 **정규식의 `.`**(아무 문자)라 전부 쪼개지고 결과가 빈 배열이다.\
   문자 그대로 쓰려면 `split("\\.")`.\
-  정규식 자체는 목록의 **37번 주제**가 정본이다.
+  정규식 자체는 [**37번 주제**](../37-regex/)가 정본이다.
 
 ### 비교하는 메서드
 
@@ -605,7 +605,7 @@ private int hash; // Default to 0
 - [`../../../../data-representation/`](../../../../data-representation/) — ASCII·유니코드·문자 인코딩.\
   **경계: 그쪽은 「문자가 숫자로 어떻게 표현되나」까지, 여기는 「자바 `String` 이 그 표현 위에서 무엇을 세나」부터다.**
 - [`../02-numeric-operations/`](../02-numeric-operations/) — `'A' + 'B'` 가 `131` 인 이유(이항 수치 승격)
-- 목록의 **37번 주제**(정규식) — `split`·`replaceAll` 의 정규식 자체가 다뤄지는 곳
+- [**37번 주제**](../37-regex/)(정규식) — `split`·`replaceAll` 의 정규식 자체가 다뤄지는 곳
 - [**27번 주제**](../27-equals-hashcode-contract/)([`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/)) — `equals`/`hashCode` 계약 일반
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — GC·메모리. **문자열이 힙을 얼마나 먹는지는 거기**
 

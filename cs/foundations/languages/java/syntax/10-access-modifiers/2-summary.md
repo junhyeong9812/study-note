@@ -440,7 +440,7 @@ farm/Use.java:6: error: Secret.value is defined in an inaccessible class or inte
 ★ 중요한 구분: **접근 제어는 컴파일 타임 검사이고, JVM 의 검증도 별도로 한다.**\
 그러나 **리플렉션은 그 검사를 우회할 수 있다**(`setAccessible(true)`).\
 그래서 `private` 은 **안전 장치가 아니라 설계 도구**다 — 보안 경계가 아니다.\
-리플렉션의 경계는 목록의 **58번 주제**가 정본이다.
+리플렉션의 경계는 [**58번 주제**](../58-reflection/)가 정본이다.
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -477,7 +477,7 @@ farm/Use.java:6: error: Secret.value is defined in an inaccessible class or inte
 - [**11번 주제**](../11-interfaces-default-methods/)(인터페이스) — 인터페이스 멤버의 암묵적 `public` 과 `private` 메서드(9+)
 - [**12번 주제**](../12-nested-classes/)(중첩 클래스) — nest 의 구성원이 어떻게 정해지나
 - [**15번 주제**](../15-sealed-classes/)(`sealed`) — "하위 클래스를 내가 정한 것만" 이라는, 접근 제어로는 안 되는 제약
-- 목록의 **58번 주제**(리플렉션) — **`setAccessible` 이 이 경계를 어디까지 뚫나**가 그쪽 정본
+- [**58번 주제**](../58-reflection/)(리플렉션) — **`setAccessible` 이 이 경계를 어디까지 뚫나**가 그쪽 정본
 
 ## 용어 풀이
 

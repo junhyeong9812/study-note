@@ -757,7 +757,7 @@ INT#1 extends Object,Serializable,Comparable<? extends INT#2>,Constable,Constant
 - [`../31-functional-interfaces/`](../31-functional-interfaces/) — `Function<T,R>`·`Predicate<T>` 가 전부 제네릭 인터페이스다. 실사용 예
 - [`../16-annotations/`](../16-annotations/) — 애너테이션이 **제네릭이 될 수 없다**는 제약
 - [`../28-comparable-comparator/`](../28-comparable-comparator/) — **재귀 바운드가 필요한 이유의 반대편.** 여기는 바운드를 **어떻게 적나**까지, 그쪽은 **전순서 계약과 위반의 결과**
-- 목록의 **39번 주제**(컬렉션 지도) — `List<E>`·`Map<K,V>` 의 타입 파라미터가 무엇을 뜻하는지
+- [**39번 주제**](../39-collections-framework-map/)(컬렉션 지도) — `List<E>`·`Map<K,V>` 의 타입 파라미터가 무엇을 뜻하는지
 - [`../../../../../../history/java/java-5.md`](../../../../../../history/java/java-5.md) — 제네릭이 **언제·왜 들어왔나**가 정본. 여기는 **어떻게 쓰고 무엇을 못 하나**
 
 ## 용어 풀이

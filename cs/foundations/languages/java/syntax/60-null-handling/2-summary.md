@@ -683,8 +683,8 @@ JDK 25.0.1  : 메서드 파라미터의 애너테이션 : [@Ex.NonNull()]
 - [`../31-functional-interfaces/`](../31-functional-interfaces/) — `requireNonNullElseGet`·`requireNonNull(obj, Supplier)` 가 받는 `Supplier`
 - [`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/) — `Objects.equals`/`Objects.hashCode` 가 `null` 안전한 이유
 - [**16번 주제**](../16-annotations/)(애너테이션) — `@Retention`·`@Target` 과 "런타임에 읽히는 것과 사라지는 것"의 정본
-- 목록의 **41번 주제**(`Map` API) — `getOrDefault`·`containsKey` 로 "없음"과 "`null` 값"을 가르는 법
-- 목록의 **59번 주제**(불변 객체 만들기) — 생성자 검증과 방어적 복사가 한 자리에서 만나는 곳
+- [**41번 주제**](../41-map-api-merge-compute/)(`Map` API) — `getOrDefault`·`containsKey` 로 "없음"과 "`null` 값"을 가르는 법
+- [**59번 주제**](../59-immutable-objects/)(불변 객체 만들기) — 생성자 검증과 방어적 복사가 한 자리에서 만나는 곳
 
 ## 용어 풀이
 

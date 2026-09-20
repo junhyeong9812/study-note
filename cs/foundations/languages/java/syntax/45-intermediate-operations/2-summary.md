@@ -480,7 +480,7 @@ MM3.java:5: error: incompatible types: bad return type in lambda expression
 - [`../../../../../../history/java/java-8.md`](../../../../../../history/java/java-8.md) — 스트림·람다가 **왜 들어왔나**
 - [**46번 주제**](../46-terminal-operations/)(최종 연산과 지연 평가) — 이 문서의 「멈춤」이 정본으로 다뤄지는 곳
 - [**49번 주제**](../49-parallel-streams/)(병렬 스트림) — 부작용이 순서까지 잃는 곳
-- 목록의 **50번 주제**(Gatherers, 24+) — 윈도·스캔처럼 기존 중간 연산으로 안 되는 것
+- [**50번 주제**](../50-stream-gatherers/)(Gatherers, 24+) — 윈도·스캔처럼 기존 중간 연산으로 안 되는 것
 
 ## 용어 풀이
 

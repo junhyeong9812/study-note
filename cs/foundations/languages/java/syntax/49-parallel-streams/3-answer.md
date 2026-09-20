@@ -258,7 +258,7 @@ mine.shutdown();
 
 - **아니다.** javadoc 어디에도 "`ForkJoinPool.submit` 안에서 돌린 병렬 스트림은 그 풀을 쓴다"는 계약이 없다.
 - 구현에 기댄 관용구다. 널리 쓰이지만 **보장에 기대지 않는 편이 낫다.**
-- 서버라면 애초에 `ExecutorService` 로 작업을 나누는 쪽을 고른다(목록의 **54번 주제**).
+- 서버라면 애초에 `ExecutorService` 로 작업을 나누는 쪽을 고른다([**54번 주제**](../54-executorservice-and-future/)).
 
 ### 5. `ArrayList` 에 `forEach` 로 `add` 하면
 
@@ -780,7 +780,7 @@ list.stream().collect(Collectors.toMap(...));   // 순차로 바꿔 다시 돌�
 
 - **절대 안 붙인다.**
 - **블로킹 I/O 다.** 공용 풀 워커 전체가 소켓을 기다리며 막힌다((4)).
-- 이 일에는 `ExecutorService`(목록의 **54번 주제**)나 가상 스레드(**56번 주제**)를 쓴다.\
+- 이 일에는 `ExecutorService`([**54번 주제**](../54-executorservice-and-future/))나 가상 스레드(**56번 주제**)를 쓴다.\
   병렬 스트림은 **CPU 바운드 작업을 코어 수만큼 나누는 도구**다.
 
 ---

@@ -822,7 +822,7 @@ Ex.java:9: error: generic array creation
     항상 둘 다 (descriptor+Signature)     @Retention 이 갈림길
 ```
 
-- 그리고 **둘 다 리플렉션에서 만난다** — 목록의 **58번 주제**(리플렉션)가 합류 지점이다.
+- 그리고 **둘 다 리플렉션에서 만난다** — [**58번 주제**](../58-reflection/)(리플렉션)가 합류 지점이다.
 
 **소거를 택한 이유**
 

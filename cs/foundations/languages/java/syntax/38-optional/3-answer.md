@@ -313,7 +313,7 @@ m.get("없는키") : null   (키 자체가 없다)
 - **2·3 만 `Optional`** 이고, **1은 여전히 `null`** 이다.
 - 즉 `Optional` 을 값에 씌워도 **`null` 검사는 사라지지 않는다.** 오히려 검사할 것이 하나 늘었다.
 - `Map` 은 이미 "없음"을 표현할 수 있다 — `containsKey`·`getOrDefault`.\
-  `Map` API 의 정본은 목록의 **41번 주제**.
+  `Map` API 의 정본은 [**41번 주제**](../41-map-api-merge-compute/).
 
 ```java
 // 봉투를 씌우지 않는다

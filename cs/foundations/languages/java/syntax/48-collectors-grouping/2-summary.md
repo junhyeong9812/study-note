@@ -599,8 +599,8 @@ put(null) : java.lang.UnsupportedOperationException
 - [`../../../../../data-structure/06-binary-search-tree/`](../../../../../data-structure/06-binary-search-tree/) — `TreeMap` 이 정렬 순서를 유지하는 원리
 - [`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/) — 분류 함수가 돌려주는 키가 지켜야 하는 계약
 - [`../README.md`](../README.md) — Java 문법·API 주제 목록(이 주제는 48번)
-- 목록의 **41번 주제**(`Map` API) — `getOrDefault`·`merge`. 「어디서 틀리나」 1번의 방어
-- 목록의 **39번 주제**(컬렉션 지도) — `TreeMap`·`LinkedHashMap` 을 언제 고르나
+- [**41번 주제**](../41-map-api-merge-compute/)(`Map` API) — `getOrDefault`·`merge`. 「어디서 틀리나」 1번의 방어
+- [**39번 주제**](../39-collections-framework-map/)(컬렉션 지도) — `TreeMap`·`LinkedHashMap` 을 언제 고르나
 - [**28번 주제**](../28-comparable-comparator/)(`Comparator`) — `maxBy`/`minBy`/`TreeMap` 에 넘기는 비교자
 
 ## 용어 풀이

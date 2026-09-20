@@ -184,7 +184,7 @@ List 를 돌려주는 메서드                      Stream 을 돌려주는 메
 
 - **`ConcurrentModificationException`** 이 날 수 있다.
 - "날 수 있다"이지 "난다"가 아니다 — fail-fast 는 최선 노력 보장이다.
-- 그 규칙은 목록의 **43번 주제**(`Iterator`·fail-fast)가 정본이다.
+- 그 규칙은 [**43번 주제**](../43-iterator-and-fail-fast/)(`Iterator`·fail-fast)가 정본이다.
 - 방어: **스트림을 변수에 담지 않고 만든 자리에서 바로 소비한다.**\
   `mut.stream().filter(...).toList()` 처럼 한 문장이면 사이에 끼어들 자리가 없다.
 

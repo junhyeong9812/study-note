@@ -571,7 +571,7 @@ mine.shutdown();
 - (3)에서 본 대로 **공용 풀을 전 애플리케이션이 공유**한다.
 - 요청 하나의 `.parallel()` 이 다른 요청을 느리게 만들고, 장애 원인이 내 코드에서 안 보인다.
 - **블로킹 I/O(DB·HTTP)를 병렬 스트림 안에서 하면 풀이 통째로 막힌다.**
-- 방어: 서버에서는 **`ExecutorService` 를 명시적으로 쓴다**(목록의 **54번 주제**).\
+- 방어: 서버에서는 **`ExecutorService` 를 명시적으로 쓴다**([**54번 주제**](../54-executorservice-and-future/)).\
   병렬 스트림은 **배치·CLI·계산 작업**에 맞는 도구다.
 
 ### 3. `forEach` 로 공유 컬렉션에 담는다
@@ -703,9 +703,9 @@ list.stream().reduce("", (a, b) -> a + b.charAt(0)); // 타입이 달라 컴파�
 - [`../../../../../data-structure/01-dynamic-array/`](../../../../../data-structure/01-dynamic-array/) — `ArrayList` 가 배열이라 반으로 갈리는 이유
 - [`../../../../../data-structure/02-linked-list/`](../../../../../data-structure/02-linked-list/) — `LinkedList` 가 안 갈리는 이유
 - [`../README.md`](../README.md) — Java 문법·API 주제 목록(이 주제는 49번)
-- 목록의 **54번 주제**(`ExecutorService`) — 서버에서 병렬 스트림 대신 쓸 것
-- 목록의 **55번 주제**(원자 변수·동시 컬렉션) — `LongAdder`·`ConcurrentHashMap`
-- 목록의 **33번 주제**(`synchronized`·`volatile`) — 공유 상태의 가시성
+- [**54번 주제**](../54-executorservice-and-future/)(`ExecutorService`) — 서버에서 병렬 스트림 대신 쓸 것
+- [**55번 주제**](../55-atomics-and-concurrent-collections/)(원자 변수·동시 컬렉션) — `LongAdder`·`ConcurrentHashMap`
+- [**33번 주제**](../33-synchronized-and-volatile/)(`synchronized`·`volatile`) — 공유 상태의 가시성
 - [**01번 주제**](../01-primitives-and-wrappers/)(기본형과 래퍼) — 박싱이 병렬 이득을 깎는 이유
 
 ## 용어 풀이
@@ -746,4 +746,4 @@ list.stream().reduce("", (a, b) -> a + b.charAt(0)); // 타입이 달라 컴파�
   (그 `+=` 는 **답도 틀린다** — 원자적이지 않다.)
 - **가상 스레드(21+)는 이 문제를 풀지 않는다.**\
   병렬 스트림은 CPU 바운드 작업을 코어 수만큼 나누는 도구이고, 가상 스레드는 블로킹 I/O 를 싸게 기다리는 도구다.\
-  목적이 다르다 — 목록의 **56번 주제**.
+  목적이 다르다 — [**56번 주제**](../56-virtual-threads/).
