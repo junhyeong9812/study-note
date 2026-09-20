@@ -239,7 +239,7 @@ record hashCode  : 33 / 33
 
 - 모든 컴포넌트를 쓰는 `equals`·`hashCode`·`toString` 이 자동 생성된다.
 - 컴포넌트를 추가해도 **셋이 함께 갱신된다** — 손으로 쓸 때의 가장 흔한 사고가 원천적으로 막힌다.
-- `record` 로 못 바꾸는 경우(상속이 필요하다, 가변이어야 한다)는 목록의 **14번 주제**가 정본이다.
+- `record` 로 못 바꾸는 경우(상속이 필요하다, 가변이어야 한다)는 [**14번 주제**](../14-records/)가 정본이다.
 
 ### `Objects` 유틸
 
@@ -458,8 +458,8 @@ OverrideCatch.java:4: error: method does not override or implement a method from
 - [`../../../../../data-structure/29-open-addressing/`](../../../../../data-structure/29-open-addressing/) — 개방 주소법. 충돌 처리의 다른 갈래
 - [`../../../../oop-basics/`](../../../../oop-basics/) — 동일성(identity)과 동등성(equality)의 개념 구분
 - [`../06-initialization-order/`](../06-initialization-order/) — 「어디서 틀리나」 4번의 `@Override` 가 계약 위반을 컴파일 에러로 바꾸는 또 다른 사례
-- 목록의 **09번 주제**(상속과 오버라이딩) — 오버로딩 해소와 동적 디스패치가 정본
-- 목록의 **14번 주제**(`record`) — 셋을 자동 생성하는 조건과 못 하는 것
+- [**09번 주제**](../09-inheritance-overriding/)(상속과 오버라이딩) — 오버로딩 해소와 동적 디스패치가 정본
+- [**14번 주제**](../14-records/)(`record`) — 셋을 자동 생성하는 조건과 못 하는 것
 - 목록의 **28번 주제**(`Comparable`/`Comparator`) — **`equals` 와 `compareTo` 가 어긋날 때** 무엇이 깨지나. `TreeMap` 은 `equals` 가 아니라 `compareTo` 로 같음을 판정한다
 
 ## 용어 풀이

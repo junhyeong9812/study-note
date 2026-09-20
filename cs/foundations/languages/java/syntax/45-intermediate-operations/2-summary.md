@@ -407,7 +407,7 @@ list.stream().map(x -> { log.info("처리 {}", x); return convert(x); }).toList(
 
 - 44번 (4)에서 본 것 — **중간 연산의 부작용은 실행이 보장되지 않는다.**\
   최종 연산이 `count()` 면 `map` 이 통째로 생략될 수 있다.
-- 병렬 스트림이면 실행 **순서**도 보장되지 않는다(목록의 **49번 주제**).
+- 병렬 스트림이면 실행 **순서**도 보장되지 않는다([**49번 주제**](../49-parallel-streams/)).
 - 그리고 외부 변수에 쓰려면 `final` 제약 때문에 배열·`AtomicInteger` 같은 우회를 쓰게 되는데, 그 자체가 **스트림을 잘못 쓰고 있다는 신호**다.
 - 규칙: **부작용은 `forEach` 에서.** 세기는 `count()`·`Collectors.counting()` 으로.
 
@@ -478,8 +478,8 @@ MM3.java:5: error: incompatible types: bad return type in lambda expression
 - [`../../../../../data-structure/07-heap/`](../../../../../data-structure/07-heap/) — 「어디서 틀리나」 5번의 대안(우선순위 큐)
 - [`../01-primitives-and-wrappers/`](../01-primitives-and-wrappers/) — `mapToInt`/`boxed` 를 건널 때의 박싱
 - [`../../../../../../history/java/java-8.md`](../../../../../../history/java/java-8.md) — 스트림·람다가 **왜 들어왔나**
-- 목록의 **46번 주제**(최종 연산과 지연 평가) — 이 문서의 「멈춤」이 정본으로 다뤄지는 곳
-- 목록의 **49번 주제**(병렬 스트림) — 부작용이 순서까지 잃는 곳
+- [**46번 주제**](../46-terminal-operations/)(최종 연산과 지연 평가) — 이 문서의 「멈춤」이 정본으로 다뤄지는 곳
+- [**49번 주제**](../49-parallel-streams/)(병렬 스트림) — 부작용이 순서까지 잃는 곳
 - 목록의 **50번 주제**(Gatherers, 24+) — 윈도·스캔처럼 기존 중간 연산으로 안 되는 것
 
 ## 용어 풀이

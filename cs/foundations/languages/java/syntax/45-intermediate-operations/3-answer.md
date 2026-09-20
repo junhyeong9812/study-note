@@ -471,7 +471,7 @@ src.stream().<Result>mapMulti((s, sink) -> {
 
 - **실행 여부**와 **실행 순서** 둘 다 보장되지 않는다.
 - 44번에서 실행으로 확인했다 — `Stream.of("a","b").peek(print).count()` 는 **`peek` 를 0회 실행**했다.
-- 병렬 스트림이면 순서도 잃는다(목록의 **49번 주제**).
+- 병렬 스트림이면 순서도 잃는다([**49번 주제**](../49-parallel-streams/)).
 
 **javadoc 근거**
 
@@ -491,7 +491,7 @@ JDK 21.0.5 `Stream.java` 의 `@apiNote` 원문이다.
 
 **원소 개수를 세려면**
 
-- **`count()`** 최종 연산, 또는 `Collectors.counting()` 다운스트림(목록의 **48번 주제**).
+- **`count()`** 최종 연산, 또는 `Collectors.counting()` 다운스트림([**48번 주제**](../48-collectors-grouping/)).
 - `map` 안에서 `AtomicInteger` 를 올리는 방식은 쓰지 않는다.\
   실행 횟수가 보장되지 않으니 **세는 값 자체가 틀릴 수 있다.**
 
@@ -512,7 +512,7 @@ distinct, hashCode 있음 : [W1]
 
 ---
 
-## 이 주제를 확인한 실행 목록
+## 실행 검증
 
 | 프로그램 | 무엇을 확인했나 | 돌린 JDK |
 |---|---|---|

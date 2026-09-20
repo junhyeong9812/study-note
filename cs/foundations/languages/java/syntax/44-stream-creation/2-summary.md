@@ -399,11 +399,11 @@ st.toList();                           // (3) 소비 -> [a, b, c]
 - [`../../../../../algorithm/`](../../../../../algorithm/) — 순회·필터 **알고리즘은 거기**가 정본. 여기는 API 표면만
 - [`../../../../../../history/java/java-8.md`](../../../../../../history/java/java-8.md) — 스트림이 **왜 Java 8 에 들어왔나**. 도입 맥락은 거기
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — JIT·GC. 박싱 비용이 실제로 얼마인가는 거기
-- 목록의 **31번 주제**(함수형 인터페이스) — `Stream.generate(Supplier)` 의 그 `Supplier`
+- [**31번 주제**](../31-functional-interfaces/)(함수형 인터페이스) — `Stream.generate(Supplier)` 의 그 `Supplier`
 - 목록의 **39번 주제**(컬렉션 프레임워크 지도) — `Collection.stream()` 이 어디에 붙어 있나
 - 목록의 **43번 주제**(fail-fast) — 소비 중 소스를 고쳤을 때
-- 목록의 **46번 주제**(최종 연산과 지연 평가) — 이 문서의 「스위치」가 정본으로 다뤄지는 곳
-- 목록의 **49번 주제**(병렬 스트림) — `parallelStream()` 이 값을 내는 조건
+- [**46번 주제**](../46-terminal-operations/)(최종 연산과 지연 평가) — 이 문서의 「스위치」가 정본으로 다뤄지는 곳
+- [**49번 주제**](../49-parallel-streams/)(병렬 스트림) — `parallelStream()` 이 값을 내는 조건
 
 ## 용어 풀이
 
