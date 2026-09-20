@@ -69,54 +69,53 @@ public @Nullable Object invoke(Object proxy, Method method, @Nullable Object[] a
 `spring-orm` / `org.springframework.orm.jpa` / `SharedEntityManagerCreator.java` L368-L414 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-orm/src/main/java/org/springframework/orm/jpa/SharedEntityManagerCreator.java#L368-L414))
 
 ```java
-// SharedEntityManagerCreator.java L368-L414
-    // Determine current EntityManager: either the transactional one
-    // managed by the factory or a temporary one for the given invocation.
-    EntityManager target = EntityManagerFactoryUtils.doGetTransactionalEntityManager(
-            this.targetFactory, this.properties, this.synchronizedWithTransaction);
+// SharedEntityManagerCreator.java L368-L413
+// Determine current EntityManager: either the transactional one
+// managed by the factory or a temporary one for the given invocation.
+EntityManager target = EntityManagerFactoryUtils.doGetTransactionalEntityManager(
+        this.targetFactory, this.properties, this.synchronizedWithTransaction);
 
-    switch (method.getName()) {
-        case "getTargetEntityManager" -> {
-            // Handle EntityManagerProxy interface.
-            if (target == null) {
-                throw new IllegalStateException("No transactional EntityManager available");
-            }
-            return target;
+switch (method.getName()) {
+    case "getTargetEntityManager" -> {
+        // Handle EntityManagerProxy interface.
+        if (target == null) {
+            throw new IllegalStateException("No transactional EntityManager available");
         }
-        case "unwrap" -> {
-            Class<?> targetClass = (Class<?>) args[0];
-            if (targetClass == null) {
-                return (target != null ? target : proxy);
-            }
-            // We need a transactional target now.
-            if (target == null) {
-                throw new IllegalStateException("No transactional EntityManager available");
-            }
-        }
-        // Still perform unwrap call on target EntityManager.
+        return target;
     }
-
-    if (transactionRequiringMethods.contains(method.getName())) {
-        // We need a transactional target now, according to the JPA spec.
-        // Otherwise, the operation would get accepted but remain unflushed...
-        if (target == null || (!TransactionSynchronizationManager.isActualTransactionActive() &&
-                !target.getTransaction().isActive())) {
-            throw new TransactionRequiredException("No EntityManager with actual transaction available " +
-                    "for current thread - cannot reliably process '" + method.getName() + "' call");
+    case "unwrap" -> {
+        Class<?> targetClass = (Class<?>) args[0];
+        if (targetClass == null) {
+            return (target != null ? target : proxy);
+        }
+        // We need a transactional target now.
+        if (target == null) {
+            throw new IllegalStateException("No transactional EntityManager available");
         }
     }
-
-    // Regular EntityManager operations.
-    boolean newTarget = false;
-    if (target == null) {
-        logger.debug("Creating new EntityManager for shared EntityManager invocation");
-        target = EntityManagerFactoryUtils.createEntityManager(this.targetFactory, this.properties);
-        newTarget = true;
-    }
-
-    // Invoke method on current EntityManager.
-    return invokeMethod(method, args, target, newTarget);
+    // Still perform unwrap call on target EntityManager.
 }
+
+if (transactionRequiringMethods.contains(method.getName())) {
+    // We need a transactional target now, according to the JPA spec.
+    // Otherwise, the operation would get accepted but remain unflushed...
+    if (target == null || (!TransactionSynchronizationManager.isActualTransactionActive() &&
+            !target.getTransaction().isActive())) {
+        throw new TransactionRequiredException("No EntityManager with actual transaction available " +
+                "for current thread - cannot reliably process '" + method.getName() + "' call");
+    }
+}
+
+// Regular EntityManager operations.
+boolean newTarget = false;
+if (target == null) {
+    logger.debug("Creating new EntityManager for shared EntityManager invocation");
+    target = EntityManagerFactoryUtils.createEntityManager(this.targetFactory, this.properties);
+    newTarget = true;
+}
+
+// Invoke method on current EntityManager.
+return invokeMethod(method, args, target, newTarget);
 ```
 
 ## 동작 흐름
