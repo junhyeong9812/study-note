@@ -1,5 +1,7 @@
 # 구조
 
+상위: [Elasticsearch 아키텍처 지도](../README.md)
+
 호출 흐름이 아니라 **구조**를 다루는 문서 묶음이다. 흐름 문서가 "요청 하나가 어떤 메서드를 거치는가"를 따라간다면, 여기는 "그 요청이 닿는 대상이 어떻게 생겼는가"를 그린다. 클러스터가 어떻게 나뉘고, 데이터가 어디에 놓이고, 언제부터 안전한가.
 
 기준 커밋: elasticsearch `main` [`60bb239edb`](https://github.com/elastic/elasticsearch/tree/60bb239edb99f0e002eb620e4e82a6f2b15a49b0) (2026-09-19). 모든 줄 번호는 이 커밋 기준이다.
