@@ -53,7 +53,25 @@ HTTP 요청 하나가 `DispatcherServlet`에 들어와 응답이 나가기까지
 
 ## 기동할 때 준비되는 것
 
-요청을 받기 전, 컨텍스트가 뜰 때 `initStrategies`가 SPI 구현 목록을 채운다. 호출 시점은 [컨테이너 기동](../container-refresh/README.md)의 마지막 단계가 발행하는 `ContextRefreshedEvent`를 `FrameworkServlet`이 받는 순간이다. 각 `init*`는 컨텍스트에서 빈을 찾고, 하나도 없을 때만 아래 기본값 파일을 쓴다.
+요청을 받기 전, 컨텍스트가 뜰 때 `initStrategies`가 SPI 구현 목록을 채운다. 호출 시점은 `FrameworkServlet.onRefresh`가 불리는 순간인데, **그리로 가는 길이 둘**이다.
+
+```text
+ 길 1  서블릿이 컨텍스트를 직접 만든 경우
+       [컨테이너 기동]의 마지막이 ContextRefreshedEvent 를 발행하고
+       FrameworkServlet 이 그것을 받는다          FrameworkServlet L830-833
+
+ 길 2  이미 refresh 된 컨텍스트를 주입받은 경우
+       이벤트를 못 받으므로 서블릿 init 중에 직접 부른다  FrameworkServlet L587-593
+
+       주석이 그 사정을 적어 두었다 (L588-590)
+         "Either the context is not a ConfigurableApplicationContext with refresh
+          support or the context injected at construction time had already been
+          refreshed -> trigger initial onRefresh manually here."
+
+ Spring Boot 배치가 길 2다
+```
+
+각 `init*`는 컨텍스트에서 빈을 찾고, 없으면 아래 기본값 파일을 쓴다. **`initMultipartResolver` 하나만 예외**다 — 빈이 없으면 기본값을 찾지 않고 그냥 `null`로 둔다(`DispatcherServlet` L467-469, 주석 `// Default is no multipart resolver.`). 그래서 기본값 파일에도 `MultipartResolver` 항목이 없다.
 
 `spring-webmvc` / `org.springframework.web.servlet` / `DispatcherServlet.java` L441-L450 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-webmvc/src/main/java/org/springframework/web/servlet/DispatcherServlet.java#L441-L450))
 
