@@ -1,6 +1,7 @@
 # Java — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 아래 주제들의 3파일(질문·서머리·정답)은 **아직 없다**.
+> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 있는 주제는 **주제 이름에 폴더 링크**가 걸려 있다.
+> **진행 — 5 / 60** (2026-09-21 파일럿: [01](01-primitives-and-wrappers/) · [06](06-initialization-order/) · [27](27-equals-hashcode-contract/) · [44](44-stream-creation/) · [45](45-intermediate-operations/)). 나머지는 아직 없다.
 > 기준 소스: [Java Language Specification SE 21](https://docs.oracle.com/javase/specs/jls/se21/html/index.html) · [Java SE 21 API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/index.html) · [JEP 색인](https://openjdk.org/jeps/0) (JDK [21](https://openjdk.org/projects/jdk/21/) · [24](https://openjdk.org/projects/jdk/24/) · [25](https://openjdk.org/projects/jdk/25/) 릴리스 페이지로 기능의 확정 버전 확인)
 > 실행 검증: **가능**. 이 머신에 sdkman JDK 17.0.13 · 21.0.5 · 25.0.1(Temurin)과 `javac`가 있다. 시스템 기본 `java`는 1.8이므로 **JDK 경로를 명시해 실행**한다(`~/.sdkman/candidates/java/21.0.5-tem/bin/`). 21에서 돌린 것·25에서만 도는 것을 나눠 적는다.
 > 기준일 2026-09-20.
@@ -17,12 +18,12 @@ JLS 자신의 목차는 **타입(4장) → 클래스·인터페이스(8·9장) �
 
 | # | 주제 | 분류 | 무엇을 인출하게 되나 | 선행 | 기존 주제 | 우선 |
 |---|------|------|----------------------|------|-----------|------|
-| 01 | 기본형과 래퍼 — 값 의미론·오토박싱·`Integer` 캐시 | 문법 | `==` 가 언제 참조를 비교하고 언제 값을 비교하는지 예측할 수 있다 | — | [`../../../data-representation/`](../../../data-representation/) | A |
+| 01 | [기본형과 래퍼 — 값 의미론·오토박싱·`Integer` 캐시](01-primitives-and-wrappers/) | 문법 | `==` 가 언제 참조를 비교하고 언제 값을 비교하는지 예측할 수 있다 | — | [`../../../data-representation/`](../../../data-representation/) | A |
 | 02 | 수치 연산 — 이항 승격·정수 오버플로·`Math.*Exact` | 문법 | `int` 곱셈이 조용히 음수가 되는 자리를 예측하고 방어 선택을 판단할 수 있다 | 01 | [`../../../data-representation/`](../../../data-representation/) | A |
 | 03 | 변수와 대입 — 전부 값 전달·`final`·effectively final | 문법 | 메서드에 객체를 넘겼을 때 무엇이 바뀌고 무엇이 안 바뀌는지 설명할 수 있다 | 01 | [`../../../variables-and-memory/`](../../../variables-and-memory/) | A |
 | 04 | `var` 지역 변수 타입 추론 (10+) | 문법 | `var` 가 추론하는 타입과 쓸 수 없는 자리를 판단할 수 있다 | 03 | [`../../../../../history/java/java-10.md`](../../../../../history/java/java-10.md) | B |
 | 05 | 배열 — 생성·기본값·공변성·`Arrays` 유틸 | 문법 | 배열 공변성이 런타임 `ArrayStoreException` 으로 나오는 경로를 예측할 수 있다 | 01 | [`../../../../data-structure/01-dynamic-array/`](../../../../data-structure/01-dynamic-array/) | A |
-| 06 | 클래스 멤버와 초기화 순서 — static/인스턴스 초기화 블록 | 문법 | 필드·초기화 블록·생성자가 어느 순서로 도는지 설명할 수 있다 | — | — | A |
+| 06 | [클래스 멤버와 초기화 순서 — static/인스턴스 초기화 블록](06-initialization-order/) | 문법 | 필드·초기화 블록·생성자가 어느 순서로 도는지 설명할 수 있다 | — | — | A |
 | 07 | 생성자 — `this()`/`super()`·(25) 유연한 생성자 본문 | 문법 | `super()` 앞에서 무엇을 할 수 있는지 21과 25로 나눠 판단할 수 있다 | 06 | [`../../../../../history/java/java-25.md`](../../../../../history/java/java-25.md) | A |
 | 08 | 메서드 선언 — 오버로딩 해소·가변 인자 | 문법 | 오버로딩 후보 중 어느 것이 뽑히는지 박싱·가변 인자까지 넣어 예측할 수 있다 | — | — | A |
 | 09 | 상속과 오버라이딩 — 동적 디스패치·공변 반환·필드 숨김 | 문법 | 메서드는 재정의되고 필드는 숨겨지는 차이를 예측할 수 있다 | 08 | [`../../../oop-basics/`](../../../oop-basics/) | A |
@@ -43,7 +44,7 @@ JLS 자신의 목차는 **타입(4장) → 클래스·인터페이스(8·9장) �
 | 24 | `record` 패턴 (21) — 중첩 해체 | 문법 | 중첩 record 를 한 줄로 분해하는 형태와 그 한계를 설명할 수 있다 | 14, 23 | [`../../../../../history/java/java-21.md`](../../../../../history/java/java-21.md) | B |
 | 25 | 예외 — checked/unchecked·전파·다중 `catch`·재던지기 | 문법 | 어떤 예외를 검사 예외로 둘지, 삼키면 무엇이 사라지는지 판단할 수 있다 | — | [`../../../../ops-patterns/failure-modes/`](../../../../ops-patterns/failure-modes/) | A |
 | 26 | `try`-with-resources — `AutoCloseable`·suppressed·`finally` 순서 | 문법 | 본문과 `close()` 가 함께 던질 때 어느 예외가 남는지 예측할 수 있다 | 25 | — | A |
-| 27 | `equals`/`hashCode`/`toString` 계약 | 문법 | 계약을 깬 객체가 `HashMap` 에서 어떻게 사라지는지 예측할 수 있다 | 09 | [`../../../../data-structure/05-hashmap/`](../../../../data-structure/05-hashmap/) | A |
+| 27 | [`equals`/`hashCode`/`toString` 계약](27-equals-hashcode-contract/) | 문법 | 계약을 깬 객체가 `HashMap` 에서 어떻게 사라지는지 예측할 수 있다 | 09 | [`../../../../data-structure/05-hashmap/`](../../../../data-structure/05-hashmap/) | A |
 | 28 | `Comparable`/`Comparator` — 전순서 계약과 위반의 결과 | 문법 | 비일관 비교자가 정렬에서 예외로 터지는 조건을 설명할 수 있다 | 27 | [`../../../../algorithm/01-elementary-sort/`](../../../../algorithm/01-elementary-sort/) | A |
 | 29 | 람다 — 문법·변수 캡처·`this` 의 의미 (8+) | 문법 | 람다의 `this` 가 익명 클래스와 왜 다른지 설명할 수 있다 | 11 | [`../../../../../history/java/java-8.md`](../../../../../history/java/java-8.md) | A |
 | 30 | 메서드 참조 네 형태 | 문법 | 어떤 람다가 어떤 메서드 참조로 바뀌는지, 안 바뀌는 경우를 판단할 수 있다 | 29 | — | B |
@@ -60,8 +61,8 @@ JLS 자신의 목차는 **타입(4장) → 클래스·인터페이스(8·9장) �
 | 41 | `Map` API — `merge`/`compute*`/`getOrDefault`/`putIfAbsent` | 표준 API | 카운팅·누적 코드를 한 호출로 줄이고 `null` 값의 의미를 판단할 수 있다 | 39 | [`../../../../data-structure/05-hashmap/`](../../../../data-structure/05-hashmap/) | A |
 | 42 | `SequencedCollection` (21) — 순서 있는 컬렉션의 공통 API | 표준 API | `getFirst`/`reversed` 가 어느 타입에 생겼고 무엇을 통일했는지 설명할 수 있다 | 39 | [`../../../../../history/java/java-21.md`](../../../../../history/java/java-21.md) | B |
 | 43 | `Iterator`·`ListIterator`·fail-fast 와 `ConcurrentModificationException` | 표준 API | 순회 중 삭제가 언제 터지고 어떻게 안전하게 하는지 예측할 수 있다 | 39 | — | A |
-| 44 | `Stream` 생성 — 소스별·기본형 스트림 | 표준 API | 컬렉션·배열·`Stream.iterate`·`IntStream` 중 무엇을 쓸지 판단할 수 있다 | 31, 39 | [`../../../../../history/java/java-8.md`](../../../../../history/java/java-8.md) | A |
-| 45 | 중간 연산 — `map`/`filter`/`flatMap`/`mapMulti` | 표준 API | `map` 과 `flatMap` 이 갈리는 자리를 타입으로 판단할 수 있다 | 44 | — | A |
+| 44 | [`Stream` 생성 — 소스별·기본형 스트림](44-stream-creation/) | 표준 API | 컬렉션·배열·`Stream.iterate`·`IntStream` 중 무엇을 쓸지 판단할 수 있다 | 31, 39 | [`../../../../../history/java/java-8.md`](../../../../../history/java/java-8.md) | A |
+| 45 | [중간 연산 — `map`/`filter`/`flatMap`/`mapMulti`](45-intermediate-operations/) | 표준 API | `map` 과 `flatMap` 이 갈리는 자리를 타입으로 판단할 수 있다 | 44 | — | A |
 | 46 | 최종 연산과 지연 평가·단락 평가 | 표준 API | 최종 연산이 없으면 아무 일도 안 일어나는 이유와 실행 순서를 설명할 수 있다 | 45 | — | A |
 | 47 | `Collectors` — 기본 수집기와 `toMap` 의 함정 | 표준 API | 키 충돌·`null` 값에서 `toMap` 이 터지는 조건을 예측할 수 있다 | 46 | — | A |
 | 48 | `Collectors` 그룹핑·분할·다운스트림 | 표준 API | 2단 그룹핑과 집계를 다운스트림 조합으로 조립할 수 있다 | 47 | — | A |
