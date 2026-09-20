@@ -80,10 +80,10 @@ Java는 언어 연구가 아니라 제품 문제에서 나왔다. 1995년 백서
 
 **이웃 언어 좌표.** 같은 "메모리 안전"을 GC로 이룬 언어가 Java만은 아니다.
 
-- **Go(같은 GC 진영).** 공통점은 메모리 오류 계급 제거. 차이는 무게와 겨냥 — Go는 런타임을 가볍게 유지해 고루틴 하나가 약 2.6KB, 단일 바이너리로 뜨고 기동이 짧다([`go.md`](go.md)). JVM은 그 대가로 무겁지만 25년치 관측 도구와 JIT 정점 성능을 얹어 준다.
-- **C#(거의 동형).** CLR 위 관리 런타임으로 JIT·GC·바이트코드(IL) 구조가 JVM과 거의 겹친다 — 갈릴 자리가 별로 없어 **생태계와 팀**에서 갈린다([`c-cpp-csharp.md`](c-cpp-csharp.md)).
-- **C·C++(반대 진영 — 안전 대 제어).** 백서가 없앤 결함 계급을 C/C++는 "프로그래머를 신뢰하라"는 원칙 아래 **의도적으로 떠안는다** — 검사 대신 제어와 속도([`c-cpp-csharp.md`](c-cpp-csharp.md)).
-- **Rust(GC 없는 제3의 답).** 같은 안전을 **런타임 없이 컴파일 타임 소유권**으로 이룬다([`rust.md`](rust.md)). Java는 고전 해법(GC)의 대표 격이고, 이 둘의 대비가 "안전의 값을 런타임에 낼 것인가 컴파일러에 낼 것인가"를 가장 선명하게 보여 준다.
+- **Go(같은 GC 진영).** 공통점은 메모리 오류 계급 제거. 차이는 무게와 겨냥 — Go는 런타임을 가볍게 유지해 고루틴 하나가 약 2.6KB, 단일 바이너리로 뜨고 기동이 짧다([`go.md`](../../go/언어-특성/README.md)). JVM은 그 대가로 무겁지만 25년치 관측 도구와 JIT 정점 성능을 얹어 준다.
+- **C#(거의 동형).** CLR 위 관리 런타임으로 JIT·GC·바이트코드(IL) 구조가 JVM과 거의 겹친다 — 갈릴 자리가 별로 없어 **생태계와 팀**에서 갈린다([`c-cpp-csharp.md`](../../c-cpp-csharp.md)).
+- **C·C++(반대 진영 — 안전 대 제어).** 백서가 없앤 결함 계급을 C/C++는 "프로그래머를 신뢰하라"는 원칙 아래 **의도적으로 떠안는다** — 검사 대신 제어와 속도([`c-cpp-csharp.md`](../../c-cpp-csharp.md)).
+- **Rust(GC 없는 제3의 답).** 같은 안전을 **런타임 없이 컴파일 타임 소유권**으로 이룬다([`rust.md`](../../rust/언어-특성/README.md)). Java는 고전 해법(GC)의 대표 격이고, 이 둘의 대비가 "안전의 값을 런타임에 낼 것인가 컴파일러에 낼 것인가"를 가장 선명하게 보여 준다.
 
 ---
 
@@ -267,7 +267,7 @@ JEP 483이 이 청구서를 스스로 요약한다 — "All this dynamism comes 
 
 ## 관련 자료
 
-- 같은 컬렉션: [`c-cpp-csharp.md`](c-cpp-csharp.md)(C#은 IL·JIT·GC가 JVM과 동형) · [`go.md`](go.md)(같은 GC 진영의 가벼운 쪽) · [`rust.md`](rust.md)(GC 없이 컴파일 타임으로 안전을 사는 대비).
+- 같은 컬렉션: [`c-cpp-csharp.md`](../../c-cpp-csharp.md)(C#은 IL·JIT·GC가 JVM과 동형) · [`go.md`](../../go/언어-특성/README.md)(같은 GC 진영의 가벼운 쪽) · [`rust.md`](../../rust/언어-특성/README.md)(GC 없이 컴파일 타임으로 안전을 사는 대비).
 - 스펙 원문: [JVMS SE 21](https://docs.oracle.com/javase/specs/jvms/se21/html/) · [JLS SE 21 §17](https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html)(메모리 모델) · [HotSpot Glossary](https://openjdk.org/groups/hotspot/docs/HotSpotGlossary.html).
 - GC 서사: [JEP 439](https://openjdk.org/jeps/439)(Generational ZGC) · [JEP 333](https://openjdk.org/jeps/333)(ZGC 원안) · [G1 Tuning Guide](https://docs.oracle.com/en/java/javase/21/gctuning/garbage-first-g1-garbage-collector1.html).
 - 동시성 비용 실측: [LMAX Disruptor](https://lmax-exchange.github.io/disruptor/disruptor.html).
@@ -296,4 +296,4 @@ JEP 483이 이 청구서를 스스로 요약한다 — "All this dynamism comes 
 - **타입 소거(Type Erasure).** Java 제네릭은 컴파일 후 타입 인자를 지워 `List<String>`이 런타임에 그냥 `List`가 된다. 후방 호환을 위해 택한 설계이고, C#의 실체화(reified) 제네릭과 갈리는 지점이다 — 같은 관리 런타임이라도 이 결정은 다르다.
 - **JMM이 왜 "판 물건"인가.** 메모리 모델은 하드웨어마다 다른 재배치 규칙을 개발자에게서 감추고 "경합만 없애라"는 단일 계약으로 바꿔 준다. 이것이 없으면 volatile·synchronized의 의미가 CPU마다 달라진다 — 추상 기계를 발명한다는 §2 결정의 동시성 판(版)이다.
 - **Escape Analysis와 스칼라 치환.** JIT는 "이 객체가 메서드 밖으로 새지 않는다"를 판정하면 힙 할당을 없애고 필드를 레지스터/스택으로 흩는다(scalar replacement). 그래서 "할당을 안 하는 방식으로 짓는다"(§12)를 컴파일러가 일부 자동으로 해 주기도 한다.
-- **Project Loom(가상 스레드).** JDK 21의 가상 스레드는 블로킹 I/O를 런타임이 흡수해 thread-per-request 스타일로 스케일하게 한다 — JVM이 "무거운 스레드"라는 오래된 약점을 런타임 쪽에서 지운 최신 흐름이고, [`kotlin.md`](kotlin.md)의 코루틴과 "같은 문제, 반대 해법"으로 대비된다.
+- **Project Loom(가상 스레드).** JDK 21의 가상 스레드는 블로킹 I/O를 런타임이 흡수해 thread-per-request 스타일로 스케일하게 한다 — JVM이 "무거운 스레드"라는 오래된 약점을 런타임 쪽에서 지운 최신 흐름이고, [`kotlin.md`](../../kotlin/언어-특성/README.md)의 코루틴과 "같은 문제, 반대 해법"으로 대비된다.

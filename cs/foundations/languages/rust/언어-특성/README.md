@@ -252,7 +252,7 @@ DB 폴링 → 네트워크 호출 → 상태 전이를 하는 **아웃박스 릴
 
 ## 관련 자료
 
-- 같은 컬렉션: [`c-cpp-csharp.md`](c-cpp-csharp.md)(Rust가 반작용한 C++의 "비안전이 사양") · [`go.md`](go.md)(§8 Discord 사례의 원 언어, 같은 GC 진영) · [`java-jvm.md`](java-jvm.md)(GC라는 고전 해법의 대표 격).
+- 같은 컬렉션: [`c-cpp-csharp.md`](../../c-cpp-csharp.md)(Rust가 반작용한 C++의 "비안전이 사양") · [`go.md`](../../go/언어-특성/README.md)(§8 Discord 사례의 원 언어, 같은 GC 진영) · [`java-jvm.md`](../../java/언어-특성/README.md)(GC라는 고전 해법의 대표 격).
 - 원고 추천 학습 순서: [The Rust Book](https://doc.rust-lang.org/book/) 4장(소유권·차용)·10.3(수명)·16장(동시성) → [Rustonomicon](https://doc.rust-lang.org/nomicon/) "Meet Safe and Unsafe"·"Send and Sync" → [RFC 2094(NLL)](https://github.com/rust-lang/rfcs/blob/master/text/2094-nll.md) → 손으로 부딪히기 [Too Many Linked Lists](https://rust-unofficial.github.io/too-many-lists/).
 - 균형 자료: 비용 쪽 [Compiler performance survey 2025](https://blog.rust-lang.org/2025/09/10/rust-compiler-performance-survey-2025-results/)·[Compilation Model Calamity](https://www.pingcap.com/blog/rust-compilation-model-calamity/), 효용 쪽 [Rust fact vs. fiction](https://opensource.googleblog.com/2023/06/rust-fact-vs-fiction-5-insights-from-googles-rust-journey-2022.html), 학습 난이도 [Bronze GC 대조 시험](https://arxiv.org/abs/2110.01098).
 - 실습: 여러 스레드가 한 카운터를 올리는 코드를 Go(뮤텍스 빼고 `go run -race`)와 Rust(`Arc` 없이 컴파일)로 각각 써 보면 §5·§9가 십 분 만에 몸으로 이해된다 — 한쪽은 실행해야 알고, 다른 쪽은 실행할 수조차 없다.
@@ -278,7 +278,7 @@ DB 폴링 → 네트워크 호출 → 상태 전이를 하는 **아웃박스 릴
 
 > 아래는 원고에 없던 배경 지식이다. 복습 시 본문(원고)과 섞어 인출하지 않는다.
 
-- **RAII와의 관계.** Rust의 `drop`은 C++의 RAII([`c-cpp-csharp.md`](c-cpp-csharp.md) §C++)와 같은 "스코프 끝에서 확정 해제" 아이디어다. 차이는 C++가 "누가 해제하는가"만 자동화한 반면 Rust는 소유권·차용으로 "누가 아직 보고 있는가"(참조 수명)까지 컴파일러가 추적한다는 점 — C++가 못 지운 UAF를 Rust가 지우는 근거다.
+- **RAII와의 관계.** Rust의 `drop`은 C++의 RAII([`c-cpp-csharp.md`](../../c-cpp-csharp.md) §C++)와 같은 "스코프 끝에서 확정 해제" 아이디어다. 차이는 C++가 "누가 해제하는가"만 자동화한 반면 Rust는 소유권·차용으로 "누가 아직 보고 있는가"(참조 수명)까지 컴파일러가 추적한다는 점 — C++가 못 지운 UAF를 Rust가 지우는 근거다.
 - **`Arc`와 `Rc`의 차이가 왜 타입에 드러나나.** `Rc`는 단일 스레드용(참조 카운트 비원자), `Arc`는 멀티 스레드용(원자 카운트)이다. §5에서 `Rc`가 `!Send`인 것은 이 설계의 직접 귀결이고, "필요할 때만 원자 연산 비용을 낸다"는 제로 오버헤드 원칙의 실천이다.
-- **`Pin`과 자기 참조.** 값이 이동하면 자기 자신을 가리키던 포인터가 무효가 되는데, Rust는 "값이 이동했다"를 값에게 알려 주지 않으므로 `Pin`으로 이동을 금지한다. `async fn`의 `Future`가 컴파일러 생성 자기 참조 상태 기계라, 비동기를 쓰면 누구나 간접적으로 이 개념에 닿는다 — [`kotlin.md`](kotlin.md)의 코루틴 상태 기계가 같은 문제를 다른 방식(힙의 Continuation)으로 다룬다.
+- **`Pin`과 자기 참조.** 값이 이동하면 자기 자신을 가리키던 포인터가 무효가 되는데, Rust는 "값이 이동했다"를 값에게 알려 주지 않으므로 `Pin`으로 이동을 금지한다. `async fn`의 `Future`가 컴파일러 생성 자기 참조 상태 기계라, 비동기를 쓰면 누구나 간접적으로 이 개념에 닿는다 — [`kotlin.md`](../../kotlin/언어-특성/README.md)의 코루틴 상태 기계가 같은 문제를 다른 방식(힙의 Continuation)으로 다룬다.
 - **Fearless Concurrency의 정확한 범위.** "두려움 없는"은 데이터 레이스·UAF에 대한 것이지 데드락·논리 버그까지는 아니다. 이 한정을 놓치면 "Rust면 동시성이 안전하다"는 과장이 된다 — §5·§9의 "막지 못하는 것" 줄이 그 경계다.

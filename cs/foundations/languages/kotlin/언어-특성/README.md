@@ -263,8 +263,8 @@ public value class BusinessDate(val value: LocalDate) : Comparable<BusinessDate>
 
 ## 관련 자료
 
-- 같은 컬렉션: [`java-jvm.md`](java-jvm.md)(Kotlin이 얹히는 런타임 — 코루틴 대 가상 스레드의 대비) · [`c-cpp-csharp.md`](c-cpp-csharp.md)(C#도 값 타입·record가 있는 관리 런타임) · [`go.md`](go.md)(sealed·null 안전이 없어 상태 분기를 컴파일러가 못 잡는 대조군).
-- 자매 개념 노트: [`../../engineering/clean-code/`](../../engineering/clean-code/)(불변식·캡슐화가 왜 값 타입·읽기전용 컬렉션과 이어지는지).
+- 같은 컬렉션: [`java-jvm.md`](../../java/언어-특성/README.md)(Kotlin이 얹히는 런타임 — 코루틴 대 가상 스레드의 대비) · [`c-cpp-csharp.md`](../../c-cpp-csharp.md)(C#도 값 타입·record가 있는 관리 런타임) · [`go.md`](../../go/언어-특성/README.md)(sealed·null 안전이 없어 상태 분기를 컴파일러가 못 잡는 대조군).
+- 자매 개념 노트: [`../../engineering/clean-code/`](../../../../engineering/clean-code/)(불변식·캡슐화가 왜 값 타입·읽기전용 컬렉션과 이어지는지).
 - 공식 문서: [Comparison to Java](https://kotlinlang.org/docs/comparison-to-java.html) · [Null safety](https://kotlinlang.org/docs/null-safety.html) · [Sealed classes](https://kotlinlang.org/docs/sealed-classes.html) · [Inline value classes](https://kotlinlang.org/docs/inline-classes.html).
 - 설계 제안(KEEP): [KEEP-0164 Coroutines](https://github.com/Kotlin/KEEP/blob/main/proposals/KEEP-0164-coroutines.md) · [KEEP-0104 Inline classes](https://github.com/Kotlin/KEEP/blob/main/proposals/KEEP-0104-inline-classes.md) · [KEEP-226 Sealed freedom](https://github.com/Kotlin/KEEP/blob/main/proposals/KEEP-0226-sealed-interface-freedom.md).
 
@@ -289,7 +289,7 @@ public value class BusinessDate(val value: LocalDate) : Comparable<BusinessDate>
 
 > 아래는 원고에 없던 배경 지식이다. 복습 시 본문(원고)과 섞어 인출하지 않는다.
 
-- **"불법 상태를 표현 불가능하게(make illegal states unrepresentable)".** sealed + when 완결성, value class, non-null이 함께 겨냥하는 설계 격언이다. Kotlin이 Go와 갈리는 지점([`go.md`](go.md) §8)이 정확히 이 도구의 유무이고, 값 타입·불변식은 [`../../engineering/clean-code/`](../../engineering/clean-code/)의 캡슐화·단정적(Assertive)과 이어진다.
+- **"불법 상태를 표현 불가능하게(make illegal states unrepresentable)".** sealed + when 완결성, value class, non-null이 함께 겨냥하는 설계 격언이다. Kotlin이 Go와 갈리는 지점([`go.md`](../../go/언어-특성/README.md) §8)이 정확히 이 도구의 유무이고, 값 타입·불변식은 [`../../engineering/clean-code/`](../../../../engineering/clean-code/)의 캡슐화·단정적(Assertive)과 이어진다.
 - **왜 `!!`가 위험 신호인가.** `!!`는 타입 방어선을 코드 한 줄로 취소하는 유일한 창구라, 코드베이스에서 `!!` 개수가 곧 "타입이 보장한다는 문장이 취소된 지점 수"다. 그래서 많은 팀이 린트로 개수를 0에 묶는다.
 - **Project Valhalla가 왜 value class에 걸리나.** JVM에 진짜 값 타입이 오면(JEP 401) 다필드 value class도 힙 할당 없이 표현되지만, 그전까지 Kotlin의 `@JvmInline`은 "프로퍼티 하나"로 제한된다 — 언어가 런타임에 얹혀 있어서 런타임이 못 주는 것은 언어도 못 주는 전형이다.
 - **CPS 변환이 스택 트레이스를 흐리는 이유.** 코루틴은 콜스택을 힙의 `Continuation` 체인으로 옮기므로, 예외가 났을 때 "어디서 왔나"의 물리적 콜스택이 존재하지 않는다. 그래서 디버깅 지원이 별도 기능(사후 재봉합)으로 필요하고, 이것이 가상 스레드(콜스택을 그대로 두는 쪽)와의 실무적 차이다.

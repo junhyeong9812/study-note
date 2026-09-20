@@ -261,7 +261,7 @@ Go를 한 문장으로 줄이면 "대규모 팀의 빌드·의존 문제에서 �
 
 ## 관련 자료
 
-- 같은 컬렉션: [`java-jvm.md`](java-jvm.md)(같은 GC 진영의 무거운 쪽) · [`c-cpp-csharp.md`](c-cpp-csharp.md)(Go가 반작용한 C/C++와, 동형인 C#) · [`rust.md`](rust.md)(GC 없는 제3의 답 — Discord의 Go→Rust 전환 사례가 §8 회수 조건).
+- 같은 컬렉션: [`java-jvm.md`](../../java/언어-특성/README.md)(같은 GC 진영의 무거운 쪽) · [`c-cpp-csharp.md`](../../c-cpp-csharp.md)(Go가 반작용한 C/C++와, 동형인 C#) · [`rust.md`](../../rust/언어-특성/README.md)(GC 없는 제3의 답 — Discord의 Go→Rust 전환 사례가 §8 회수 조건).
 - 통독 권장(원고 추천 순서): [Go at Google](https://go.dev/talks/2012/splash.article)(전제) → [Less is exponentially more](https://commandcenter.blogspot.com/2012/06/less-is-exponentially-more.html)(왜 그 기능이 없나) → [Getting to Go](https://go.dev/blog/ismmkeynote)(GC 서사)·[Scalable Go Scheduler Design Doc](https://go.dev/s/go11sched)(G-M-P) → [Go GC Guide](https://go.dev/doc/gc-guide)(운영).
 - 실습: `net`을 import하는 20줄 프로그램을 `CGO_ENABLED=1`/`=0`으로 각각 빌드해 `file`·`ldd`로 비교 — §4 전체가 5분 만에 몸으로 이해된다.
 
