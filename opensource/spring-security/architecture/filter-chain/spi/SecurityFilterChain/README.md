@@ -51,3 +51,4 @@ public interface SecurityFilterChain {
  getFilters
       --> 이 목록의 순서가 곧 보안 처리 순서다
       --> 빈 목록을 돌려주면 그 요청은 보안 없이 통과한다
+```
