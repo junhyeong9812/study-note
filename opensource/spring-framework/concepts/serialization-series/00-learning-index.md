@@ -23,7 +23,7 @@
 | 10 | [오해 체크리스트](10-misconception-checklist.md) | 이번 대화에서 실제로 걸렸던 지점들 — 자가 점검용 Q&A |
 | 11 | [serialVersionUID와 클래스 호환성](11-serialversionuid.md) | 리뷰 finding R2 — 필드 수식어가 wire 호환을 바꾸는 원리 |
 
-> 11번은 듀얼 리뷰에서 나온 지적(R2)을 실측으로 확정하며 추가한 문서다. 작업 기록은 `log.md`의 리뷰 ledger, 서사형 정리는 [해설.md](해설.md).
+> 11번은 듀얼 리뷰에서 나온 지적(R2)을 실측으로 확정하며 추가한 문서다. 작업 기록은 `log.md`의 리뷰 ledger, 서사형 정리는 [PR #37109 해설](../../prs/37109-typedescriptor-serialization/README.md).
 
 ## 이 묶음을 관통하는 한 문장
 
