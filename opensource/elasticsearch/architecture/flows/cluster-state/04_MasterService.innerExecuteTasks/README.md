@@ -119,11 +119,23 @@
 ```
 
 ```text
- L1253 의 throw 는 밖으로 안 나간다
+ L1253 의 throw 는 밖으로 안 나간다 - 다만 assert 가 꺼져 있을 때만이다
 
  L1238 의 try 안에 있고 L1256 의 catch 가 잡는다
  그래서 버전 조작은 "예외로 배치가 터지는 것"이 아니라
  **모든 태스크가 실패하고 상태는 그대로인 것**이 된다
+
+ 그런데 그 위에 assert 가 한 줄 있다 (L1252)
+   assert threadContext.getTransient(TEST_ONLY_...) != null : exception;
+
+ -ea 로 돌고 테스트용 transient 가 없으면 이 줄이 먼저 터진다
+ 그리고 AssertionError 는 Error 라서 L1256 의 catch (Exception) 이 못 잡는다
+
+ 즉 갈래가 둘이다
+   운영 (assert 꺼짐)   L1252 는 no-op, L1253 이 catch 에 잡힌다
+   테스트 (-ea)         L1252 가 AssertionError 를 던지고 밖으로 나간다
+
+ (주석은 없다. assert 의 위치와 catch 의 타입을 맞춰 보고 내가 판단한 것이다)
 
  그리고 L1272 가 previousClusterState 를 돌려주므로
  호출자의 L368 참조 비교가 참이 되어 상태 불변 갈래로 간다
@@ -157,6 +169,7 @@
  실행기를 못 믿는 장치가 셋이다
 
  1. 버전을 건드렸나      L1246-1253   IllegalStateException (catch 에 흡수)
+                                   -ea 면 L1252 의 assert 가 먼저 터진다
  2. 태스크를 다 처리했나  L1208 -> L1212-1223  assert
       executionResults 중 incomplete() 인 것이 있으면 안 된다
  3. 응답 헤더를 흘렸나    L1273-1282  assert (finally)
@@ -164,7 +177,10 @@
       BatchExecutionContext#dropHeadersContext 로 억누르라고
 
  2번과 3번은 assert 라 -ea 일 때만 돈다
- 1번은 assert 가 아니라 실제 코드다
+ 1번의 throw 는 실제 코드지만 그 위의 L1252 는 assert 다
+
+ 그리고 assert 가 터지면 AssertionError 다 - Error 라서
+ catch (Exception) 을 전부 통과해 밖으로 나간다
 ```
 
 ```text
