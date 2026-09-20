@@ -4,6 +4,8 @@
 
 기준 커밋: react `main` [`68631c0453`](https://github.com/facebook/react/tree/68631c0453b08e2c7c96a40910f4c91db1f66d5a). 모든 줄 번호는 이 커밋 기준이고, 대상은 **react-dom 클라이언트 빌드**다.
 
+`useState` 나 `useEffect` 같은 API 이름에서 거꾸로 찾고 싶으면 [API 역인덱스](api-index.md)를 보면 된다.
+
 ## 흐름 열 편
 
 | 흐름 | 진입점 | 문서 |
