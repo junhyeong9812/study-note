@@ -348,7 +348,7 @@ OverrideCatch.java:4: error: method does not override or implement a method from
 
 > **오버로딩 해소(overload resolution)** — 이름이 같은 메서드 여럿 중 어느 것을 부를지 **인자의 정적 타입**으로 고르는 컴파일 타임 절차.\
 > 예: `println(char)` 와 `println(int)` 중 무엇이 불릴지는 인자의 선언 타입으로 정해진다.\
-> 규칙 자체는 목록의 **08번 주제**가 정본이다.
+> 규칙 자체는 [**08번 주제**](../08-method-declaration-overloading/)가 정본이다.
 
 ### 6. `toString` 은 무엇을 보장하는가
 
@@ -517,7 +517,7 @@ TreeSet size       : 1 [1.0]
 
 ---
 
-## 이 주제를 확인한 실행 목록
+## 실행 검증
 
 | 프로그램 | 무엇을 확인했나 | 돌린 JDK |
 |---|---|---|

@@ -393,7 +393,7 @@ NPE: Cannot invoke "java.lang.Integer.intValue()"
 - [`../../../../data-representation/`](../../../../data-representation/) — 2의 보수·IEEE 754. **비트 표현 자체는 거기가 정본**이고, 여기는 Java 가 그 위에 얹은 규칙만 다룬다
 - [`../../../../variables-and-memory/`](../../../../variables-and-memory/) — 스택·힙과 변수가 무엇을 들고 있는가
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — JVM·GC·JIT. **객체 할당 비용이 실제로 얼마인가는 거기**
-- 목록의 **02번 주제**(수치 연산 — 이항 승격·정수 오버플로) — 이 문서의 「이항 승격」이 정본으로 다뤄지는 곳
+- [**02번 주제**](../02-numeric-operations/)(수치 연산 — 이항 승격·정수 오버플로) — 이 문서의 「이항 승격」이 정본으로 다뤄지는 곳
 - 목록의 **03번 주제**(변수와 대입 — 전부 값 전달) — 「무엇이 복사되는가」의 정본
 - [`../44-stream-creation/`](../44-stream-creation/) — `IntStream` 과 `Stream<Integer>` 의 갈림. `IntStream.boxed()` 는 내부에서 `Integer::valueOf` 를 부른다
 
