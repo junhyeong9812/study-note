@@ -101,6 +101,8 @@
  [커밋]         finishConcurrentRender 뒤의 일이다
 ```
 
+[beginWork](../begin-work/README.md)는 따로 지도가 있다.
+
 ## 단계
 
 1. [performWorkOnRoot](01_performWorkOnRoot/README.md)가 루프 모드를 정하고 재시도를 관리한다.
@@ -131,7 +133,7 @@
 
 ## 다루지 않는 것
 
-`beginWork` 가 컴포넌트 타입별로 하는 일, `completeWork` 가 호스트 인스턴스를 만드는 과정, `finishConcurrentRender` 이후의 커밋 경로, `prepareFreshStack` 의 스택 초기화, `throwAndUnwindWorkLoop` 와 `unwindUnitOfWork` 의 되감기, `recoverFromConcurrentError` 의 에러 복구, lane 계산과 `shouldYield` 의 구현은 같은 뼈대의 곁가지라 요약만 했다. 서스펜션 상태와 종료 상태는 [spi](spi/README.md)에 모았다.
+`completeWork` 가 호스트 인스턴스를 만드는 과정, `finishConcurrentRender` 이후의 커밋 경로, `prepareFreshStack` 의 스택 초기화, `throwAndUnwindWorkLoop` 와 `unwindUnitOfWork` 의 되감기, `recoverFromConcurrentError` 의 에러 복구, lane 계산과 `shouldYield` 의 구현은 같은 뼈대의 곁가지라 요약만 했다. 서스펜션 상태와 종료 상태는 [spi](spi/README.md)에 모았다.
 
 ## 하위 메서드
 
