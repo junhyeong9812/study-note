@@ -29,8 +29,20 @@ layout `packages/react-reconciler` / `src` / `ReactFiberWorkLoop.js` L4036-L4133
 props diff 는 mutation 패스에서 일어난다.
 
 ```js
-// ReactFiberCompleteWork.js L2244-L2254
-
+// ReactFiberCommitWork.js L2244-L2256
+        if (flags & Update) {
+          const instance: Instance = finishedWork.stateNode;
+          if (instance != null) {
+            // Commit the work prepared earlier.
+            // For hydration we reuse the update path but we treat the oldProps
+            // as the newProps. The updatePayload will contain the real change in
+            // this case.
+            const newProps = finishedWork.memoizedProps;
+            const oldProps =
+              current !== null ? current.memoizedProps : newProps;
+            commitHostUpdate(finishedWork, newProps, oldProps);
+          }
+        }
 ```
 
 ## 대조표
