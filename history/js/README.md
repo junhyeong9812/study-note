@@ -46,6 +46,7 @@ JavaScript의 역사를 **언어 진화 + 런타임 + 생태계 + 프레임워�
 | 04 | [비동기 진화](04-비동기-진화.md) | 콜백(~2009)~ES2018 | 단 하나의 스레드로 수많은 I/O를 다뤄야 했던 언어가 표현을 바꿔 온 역사 — 콜백지옥→Promise→async/await·이벤트루프·마이크로태스크, 그리고 Web Worker |
 | 05 | [빌드·생태계](05-빌드-생태계.md) | 전역 변수(~2009)~2020년대 | `<script>` 태그 한 줄에서 시작해 Rust로 다시 쓰이기까지의 파편화와 수렴 — 모듈(ESM)·번들러(webpack→Vite)·Babel·TypeScript·npm/pnpm |
 | 06 | [프레임워크 진화](06-프레임워크-진화.md) | 2006~2024 | 매 단계가 직전 시대가 만든 고통에 대한 응답이었던 약 20년 — jQuery→Angular→React/Vue·상태관리·SSR·시그널·RSC |
+| 99 | [그 뒤](99-그-뒤.md) | 2024~2026-09 | **원본이 멈춘 뒤**를 새로 조사해 쓴 편(재서술이 아니다) — ES2024·2025·2026 세 판, Node 26/Deno 2.9/Bun 1.4, Vite 8의 Rolldown, TypeScript 7(Go), React Foundation |
 
 ## 읽는 법
 

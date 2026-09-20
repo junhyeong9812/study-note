@@ -76,6 +76,8 @@
 | Java SE 25 | 2025-09 | — | ✅ | Scoped Values·Module Import·Compact Source Files·Flexible Constructors 정식 | [java-25.md](java-25.md) |
 | Java SE 26 | 2026-03 | — | | HTTP/3 클라이언트, AOT 객체 캐싱(Any GC), final 무결성 준비, Applet API 제거 | [java-26.md](java-26.md) |
 
+*(이 줄은 원문 표에 없는 보충이다.)* 원본이 Java 26 에서 멈춘 뒤의 변화는 [99-그-뒤.md](99-그-뒤.md) 에 따로 적었다 — 재서술이 아니라 **출처를 달아 새로 쓴 편**이다(Java 27 출시·프리뷰 차수 진행·JDK 28 대상 JEP, 2026-09-20 기준).
+
 > LTS(Long-Term Support): Java 8, 11, 17, 21, 25. 6개월 케이던스 시대에는 9월 릴리스 중 Oracle이 지정한 버전(11, 17, 21, 25...)이 LTS이며, "짝수성"으로 정해지는 것이 아니다(11·17·21·25는 홀수). 초기엔 3년 간격이었다가 2023년부터 2년 주기로 단축되었다.
 
 위 표의 `✅`는 다섯 중 넷(11·17·21·25)에만 붙어 있고 Java 8 행은 비어 있는데, 두 자리가 어긋난 것이 아니라 기준이 다르다.\

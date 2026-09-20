@@ -42,6 +42,7 @@
 | 04 | [브라우저 엔진](04-브라우저-엔진.md) | 1994~2020 | 누가 페이지를 그리는가를 놓고 벌어진 두 번의 전쟁 — Netscape/IE·IE6 정체기·Firefox/Chrome·Trident/Gecko/WebKit/Blink 계보·V8과 JIT·Blink 독점 우려 |
 | 05 | [웹 플랫폼 API](05-웹플랫폼-API.md) | 1998~2023 | 문서 뷰어였던 브라우저가 플러그인이 하던 일을 표준 기능으로 흡수해 앱 플랫폼이 된 25년 — DOM·AJAX/fetch·Canvas/WebGL/WebGPU·WebSocket/WebRTC·Service Worker/PWA·Web Components·WebAssembly |
 | 06 | [웹 아키텍처 진화](06-웹아키텍처-진화.md) | 1991~2020s | "HTML을 어디서·언제 만드나"를 두고 왕복한 진자 — 정적 → CGI → 서버사이드(PHP/Rails) → AJAX·SPA → API 분리(REST/GraphQL) → SSR/Jamstack → 엣지·RSC·아일랜드 |
+| 99 | [그 뒤 (2026-09 기준)](99-그-뒤.md) | 2023~2026 | 원본이 멈춘 2023년(WebGPU Chrome 113) 이후의 변화 — Baseline·Interop이라는 상태 표기의 등장, EU DMA로 열린 iOS 대체 엔진, Chrome 매각 불명령 판결, WebGPU의 Firefox·Safari 도달, Wasm 3.0, Privacy Sandbox 정리, RSC 정식화. **원본 repo에 없는 내용을 출처로 접지해 새로 쓴 편이다(재서술 아님).** |
 
 ## 읽는 법
 

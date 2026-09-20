@@ -44,6 +44,7 @@
 | 04 | [네트워크 보안](04-네트워크-보안.md) | 1976~2020 | 신뢰의 위치가 "회선 → 경계 → 신원"으로 옮겨 온 40여 년 — 공개키(DH·RSA)·PKI/X.509·CA·SSL→TLS·IPsec/VPN·방화벽 3세대·NAT·IDS/IPS·DDoS·제로트러스트·mTLS |
 | 05 | [응용 프로토콜](05-응용-프로토콜.md) | 1969~2015 | 새 제약이 생길 때마다 그 문맥에 맞는 한 겹을 더해 온 응용 계층 50여 년 — Telnet/FTP/SMTP/POP·IMAP/NNTP·SSH(1995)·RPC→SOAP→REST→gRPC·WebSocket/SSE/MQTT·XML→JSON→protobuf |
 | 06 | [현대 네트워킹](06-현대-네트워킹.md) | 1998~2021 | 네트워크가 하드웨어의 정적 자산에서 소프트웨어로 정의되는 동적 자원이 된 30년 — CDN(1998)·L4/L7 로드밸런싱·SDN/NFV·VPC와 VXLAN·QUIC·CNI와 서비스 메시(service mesh)·eBPF·엣지 컴퓨팅 |
+| 99 | [그 뒤 (2026-09 기준)](99-그-뒤.md) | 2022~2026 | 원본이 멈춘 2022년 6월(HTTP/3 RFC 9114) 이후의 변화 — TCP 정본 교체(RFC 9293)·QUIC v2·TLS 1.3 정본 교체(RFC 9846)·포스트 양자 하이브리드(RFC 10024)·ECH(RFC 9849)·SVCB/HTTPS 레코드·HTTP/2 Rapid Reset·사이드카리스 메시. **원본 repo에 없는 내용을 출처로 접지해 새로 쓴 편이다(재서술 아님).** |
 
 ## 읽는 법
 
