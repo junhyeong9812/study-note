@@ -69,3 +69,4 @@ public interface AuthenticationEntryPoint {
       --> afterPropertiesSet 도 같은 것을 한 번 더 확인한다 (L113-115)
       --> 진입점을 한 번도 부르지 않는 경로는 있다.
           완전 인증 사용자의 거부는 L210 에서 핸들러로만 끝난다
+```
