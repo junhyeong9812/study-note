@@ -2,7 +2,7 @@
 
 > 원본: `~/project/java-history/spring/boot-2.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
 > 연도·버전·클래스/애너테이션 이름·코드블록 5개·설정 키는 원문 그대로다.\
-> ASCII 도식 3개(그중 2개는 원문의 mermaid 도식을 옮긴 것), 「한눈에」의 대응표, 용어 블록의 「예:」, 「용어 풀이」, 「재서술자 주」 2개는 원문에 없는 보충이다.
+> ASCII 도식 3개(그중 2개는 원문의 mermaid 도식을 옮긴 것), 「한눈에」의 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
 
 ## 한눈에 — 쉽게 말하면
 
@@ -42,7 +42,7 @@
   - 2.0 (2018-03) — Spring Framework 5, WebFlux, Micrometer, Kotlin 1급 지원, HikariCP 기본
   - 2.1 (2018-10)
   - 2.2 (2019-10) — Java 13 지원, RSocket, JUnit 5 기본
-  - 2.3 (2020-05) — 그레이들 기반 OCI 이미지 빌드(Buildpacks), Liveness/Readiness 프로브, Graceful shutdown
+  - 2.3 (2020-05) — 메이븐·그레이들 플러그인 기반 OCI 이미지 빌드(Buildpacks), Liveness/Readiness 프로브, Graceful shutdown
   - 2.4 (2020-11) — `application.yml` 설정 파일 처리 방식 개편(config data API), 도커 이미지/k8s 강화
   - 2.5 (2021-05) — SQL 초기화 개편, 환경변수 prefix
   - 2.6 (2021-11) — Actuator 보강, 순환 참조 기본 금지
@@ -179,7 +179,7 @@ Spring Framework 5의 Kotlin 지원을 Boot 차원에서 흡수했다. **start.s
 class DemoApplication
 
 fun main(args: Array<String>) {
-    runApplication<DemoApplication>(*args)   // Boot가 제공하는 Kotlin 확장 함수
+    runApplication<DemoApplication>(*args)   // Boot가 제공하는 Kotlin 최상위 함수(reified 제네릭)
 }
 
 @RestController
@@ -194,11 +194,8 @@ class HelloController {
 > **1급 지원(first-class support)** — 곁다리로 되는 정도가 아니라, 공식 선택지로 넣고 필요한 설정까지 갖춰 주는 것. 원문이 이 절에서 드는 내용이 그 범위다.\
 > 예: 원문이 든 두 가지가 "start.spring.io의 언어 선택지에 Kotlin이 정식 포함"과 "`kotlin-spring`/`kotlin-jpa` 컴파일러 플러그인과 Kotlin용 스타터 의존성이 자동 구성"이다.
 
-> **확장 함수(extension function)** — 남이 만든 타입에 내가 함수를 덧붙여, 원래 그 타입의 메서드였던 것처럼 쓰는 Kotlin 문법(정의는 같은 시리즈 `kotlin-and-spring.md`를 따랐다).\
-> 예: 같은 시리즈 `kotlin-and-spring.md`가 드는 `context.getBean<MyService>()`가 `ApplicationContext`에 그렇게 덧붙은 함수다(다른 편에서 끌어온 예다).
-
-> **재서술자 주:** 위 코드 주석은 `runApplication<DemoApplication>(*args)`를 "Boot가 제공하는 Kotlin 확장 함수"라 부르지만, 이것은 어떤 타입에 덧붙은 함수가 아니라 최상위(top-level) reified 함수로 보인다.\
-> 같은 repo의 `kotlin-and-spring.md`가 확장 함수를 "기존 API를 건드리지 않고" 덧붙이는 것으로 정의하고 `getBean<...>()` 류를 예로 드는 것과 어긋난다. 원문은 고치지 않고 이 자리에 표기만 해 둔다.
+> **최상위(top-level) 함수** — 클래스 안이 아니라 파일 바로 아래에 선언해, 어떤 타입에도 덧붙지 않고 그대로 부르는 Kotlin 함수.\
+> 예: 위 코드의 `runApplication<DemoApplication>(*args)`가 그렇게 선언된 함수이고, 꺾쇠 안의 타입은 `reified` 제네릭이라 함수 안에서 실제 타입으로 읽힌다.
 
 ### HikariCP 기본 커넥션 풀
 기본 JDBC 커넥션 풀이 Tomcat JDBC Pool에서 **HikariCP**로 교체되었다. 더 빠르고 가벼운 풀이 표준이 되었다.
@@ -233,10 +230,6 @@ public class AppProperties {
 - **Java 8 베이스라인**: 람다/스트림/`java.time` 전제. 이후 마이너에서 9~17까지 지원 확대.
 - **OCI 이미지 빌드(2.3+)**: Dockerfile 없이 Cloud Native Buildpacks로 컨테이너 이미지를 생성(`mvn spring-boot:build-image`).
 - **Graceful shutdown / Liveness·Readiness 프로브(2.3+)**: 쿠버네티스 환경 대응.
-
-> **재서술자 주:** 같은 2.3 기능이 원문 안에서 세 번 나오는데 빌드 도구에 대한 한정어가 서로 다르다.\
-> 「릴리스 정보」는 "**그레이들 기반** OCI 이미지 빌드(Buildpacks)"라고 적고, 「마이너 버전별 변화」의 2.3 항목은 "Buildpacks 이미지 빌드"라고만 적으며, 바로 위 「그 외」 항목이 드는 명령은 메이븐의 `mvn spring-boot:build-image`다.\
-> 「릴리스 정보」의 "그레이들 기반"이라는 한정어가 나머지 둘과 어긋나는 것으로 보인다. 원문은 고치지 않고 이 자리에 표기만 해 둔다.
 
 > **Buildpacks(Cloud Native Buildpacks)** — 소스에서 컨테이너 이미지를 만들어 주는 도구. 원문 표현으로 "Dockerfile 없이".\
 > 예: 원문이 드는 명령이 `mvn spring-boot:build-image`이고, 그 결과물이 OCI 이미지다.
@@ -290,7 +283,7 @@ public class AppProperties {
 - **pull(scrape) / push** — 받는 쪽이 와서 긁어 가는 방식 / 보내는 쪽이 밀어 넣는 방식. 원문 기준 Prometheus가 앞쪽, Datadog·Influx 등이 뒤쪽이다.
 - **opt-in(명시적 노출)** — 기본은 꺼 두고 켜겠다고 적은 것만 켜지는 방식.
 - **1급 지원(first-class support)** — 공식 선택지로 넣고 필요한 설정까지 갖춰 주는 것. Boot 2.0 Kotlin 지원의 범위는 start.spring.io 정식 옵션과 컴파일러 플러그인·스타터 자동 구성이다.
-- **확장 함수(extension function)** — 남이 만든 타입에 함수를 덧붙여, 원래 그 타입의 메서드였던 것처럼 쓰는 Kotlin 문법. 정의와 예(`context.getBean<...>()`)는 같은 시리즈 `kotlin-and-spring.md`를 따랐다.
+- **최상위(top-level) 함수 / `reified` 제네릭** — 클래스 밖, 파일 바로 아래에 선언해 어떤 타입에도 덧붙지 않고 부르는 Kotlin 함수 / 꺾쇠 안 타입 인자를 함수 안에서 실제 타입으로 읽게 해 주는 표시. `runApplication<DemoApplication>(*args)`가 둘을 함께 쓴 자리다.
 - **커넥션 풀(connection pool)** — DB 연결을 미리 만들어 두고 돌려 쓰는 주머니. 2.0에서 기본이 Tomcat JDBC Pool에서 HikariCP로 교체됐다.
 - **바인딩(binding) / relaxed binding** — 설정 값을 객체 필드에 채워 넣는 일 / 이름 표기가 조금 달라도 맞춰 주는 규칙. 2.0이 Binder API를 새로 써서 이 규칙을 정리했다.
 - **`@ConstructorBinding`** — 생성자로만 값을 받아 불변 설정 객체를 만드는 애너테이션. 2.2부터 쓸 수 있다.

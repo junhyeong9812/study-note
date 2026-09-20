@@ -2,7 +2,7 @@
 
 > 원본: `~/project/java-history/java/java-12.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
 > 연도·버전·JEP 번호·클래스/메서드 이름·코드블록 2개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
-> 「한눈에」의 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 교차 주 1개는 원문에 없는 보충이다.\
+> 「한눈에」의 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
 > 원문이 77줄로 짧고 도식이 없어, 새 도식은 그리지 않았다.
 
 ## 한눈에 — 쉽게 말하면
@@ -88,13 +88,11 @@ int numLetters = switch (day) {
     case WEDNESDAY              -> 9;
 };
 ```
-> 참고: 이 시점에는 블록에서 값을 반환할 때 `break <값>;` 문법을 썼다. 이후 Java 13의 2차 preview에서 `yield`로 대체된다.
+> 참고: 이 시점에는 블록에서 값을 반환할 때 `break <값>;` 문법을 썼다. 이후 Java 13의 2차 preview에서 `yield`로 대체되고, Java 14(JEP 361)에서 정식화된다.
 
 위 한 블록 안의 두 코드는 같은 일을 두 방식으로 적은 것이다.\
 앞쪽에서 세 줄에 걸쳐 나란히 놓여 있던 `case MONDAY:` / `case FRIDAY:` / `case SUNDAY:`가 뒤쪽에서는 `case MONDAY, FRIDAY, SUNDAY -> 6;` 한 줄이 되고, `break;`가 사라진다.\
 원문이 두 코드 첫 줄 주석에 붙인 이름이 각각 "기존 switch 문 (fall-through 위험, break 필요)"과 "Java 12 switch 표현식 (preview): 화살표 문법, 값 반환"이다.
-
-> **재서술자 주:** 이 절이 가리키는 "이후"의 끝은 이 편에 없다. 같은 시리즈 `java-13.md`가 2차 preview(JEP 354)에서 `yield`로 바뀐 것을 적고, `java-14.md`가 "12·13의 두 차례 preview를 거쳐 정식 기능으로 확정됐다"(JEP 361)고 적는다.
 
 ### Shenandoah GC (JEP 189)
 - 상태: **실험적(Experimental)** — Red Hat이 주도한 저지연 GC.

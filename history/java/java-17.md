@@ -2,7 +2,7 @@
 
 > 원본: `~/project/java-history/java/java-17.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
 > 연도·버전·JEP 번호·클래스/옵션 이름·코드블록 4개(java 4)·「릴리스 정보」와 「그 외 변경」·「지원 중단(deprecation)·제거」의 목록은 원문 그대로다.\
-> ASCII 도식 2개(원문 mermaid 그림 2개를 글자로 옮긴 것이다)와 「한눈에」의 합류 비유와 대응표, 「이 편에서 미리보기인가 정식인가」 표, 용어 블록의 「예:」, 「용어 풀이」, 「재서술자 주」 1개는 원문에 없는 보충이다.
+> ASCII 도식 2개(원문 mermaid 그림 2개를 글자로 옮긴 것이다)와 「한눈에」의 합류 비유와 대응표, 「이 편에서 미리보기인가 정식인가」 표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
 
 ## 한눈에 — 쉽게 말하면
 
@@ -68,7 +68,7 @@ Spring Framework 6 / Spring Boot 3가 **Java 17을 최소 요구 버전**으로 
 클래스·인터페이스의 상속/구현 대상을 `permits`로 제한해, 타입 계층을 설계자가 닫힌 집합으로 통제할 수 있다.\
 record·패턴 매칭과 결합하면 대수적 데이터 타입(ADT) 스타일을 표현할 수 있다.
 
-상속을 **통째로** 금지하는 장치가 아니다 — **허용 목록 밖만** 막는다(원문이 아래 그림 해설에 적은 그대로다: "허용한 하위 타입(`Circle`·`Square`·`Triangle`)만 구현할 수 있어, 타입 집합이 닫혀 있음을 컴파일러가 보장한다"). 원문이 적은 것은 `permits`로 대상을 **제한**해 "닫힌 집합으로 통제"한다는 것이고, 아래 코드의 `Circle`·`Rectangle`은 실제로 `Shape`를 구현한다.
+상속을 **통째로** 금지하는 장치가 아니다 — **허용 목록 밖만** 막는다(원문이 아래 그림 해설에 적은 그대로다: "허용한 하위 타입(`Circle`·`Rectangle`)만 구현할 수 있어, 타입 집합이 닫혀 있음을 컴파일러가 보장한다"). 원문이 적은 것은 `permits`로 대상을 **제한**해 "닫힌 집합으로 통제"한다는 것이고, 아래 코드의 `Circle`·`Rectangle`은 실제로 `Shape`를 구현한다.
 
 > **sealed / `permits` / 닫힌 집합** — 상속·구현 대상을 제한하겠다는 표시 / 허용 목록을 적는 절 / 그렇게 해서 더 늘지 않게 된 하위 타입의 모임.\
 > 예: 아래 코드의 `permits Circle, Rectangle`이 허용 목록이고, 바로 그 둘이 `implements Shape`로 적혀 있다.
@@ -86,27 +86,23 @@ public record Rectangle(double w, double h)      implements Shape { }
 - `sealed` — 다시 제한된 확장 허용
 - `non-sealed` — 봉인을 풀어 자유 확장 허용
 
-아래 클래스 다이어그램은 봉인 계층을 표현한다. `Shape`는 `permits`로 허용한 하위 타입(`Circle`·`Square`·`Triangle`)만 구현할 수 있어, 타입 집합이 닫혀 있음을 컴파일러가 보장한다.
+아래 클래스 다이어그램은 봉인 계층을 표현한다. `Shape`는 `permits`로 허용한 하위 타입(`Circle`·`Rectangle`)만 구현할 수 있어, 타입 집합이 닫혀 있음을 컴파일러가 보장한다.
 
 ```text
 Shape
   <<sealed interface>>
 
-Shape <|.. Circle    : permits
-Shape <|.. Square    : permits
-Shape <|.. Triangle  : permits
+Shape <|.. Circle     : permits
+Shape <|.. Rectangle  : permits
 
-Circle    +double radius
-Square    +double side
-Triangle  +double base
-Triangle  +double height
+Circle     +double radius
+Rectangle  +double w
+Rectangle  +double h
 ```
 
-- 이 그림은 원문의 mermaid `classDiagram`을 글자로 옮긴 것이다 — 관계 줄 셋으로 원문의 관계 수와 같고, `<|..`도 엣지 라벨 `permits`도 원문이 적은 글자 그대로다(화살촉은 `Shape` 쪽을 향한다).
+- 이 그림은 원문의 mermaid `classDiagram`을 글자로 옮긴 것이다 — 관계 줄 둘로 원문의 관계 수와 같고, `<|..`도 엣지 라벨 `permits`도 원문이 적은 글자 그대로다(화살촉은 `Shape` 쪽을 향한다).
 - `<<sealed interface>>`와 `+double radius` 같은 칸 안의 글자도 원문 노드에 적힌 것 그대로다.
 - 바로 위 문단이 이 그림을 읽는 법이고, 원문의 것이다.
-
-> **재서술자 주:** 이 그림의 `Shape`가 `permits`하는 셋(`Circle`·`Square`·`Triangle`)은 바로 위 코드블록의 `permits Circle, Rectangle`과 다르고, 아래 switch 코드블록(`case Circle c` / `case Rectangle r`)과 그 아래 흐름도(`case Circle c` / `case Square s` / `case Triangle t`)도 서로 다르다. 같은 절 안에서 `Shape`를 각각 다른 예로 든 것으로 보인다.
 
 ### switch 패턴 매칭 (JEP 406, preview)
 
@@ -151,16 +147,14 @@ static String describe(Object obj) {
 ```text
 "입력 객체 (Shape)"  -->  {"타입 패턴 매칭"}
 
-{"타입 패턴 매칭"}  --|"case Circle c"|-->    "원 넓이: PI * r^2"
-{"타입 패턴 매칭"}  --|"case Square s"|-->    "정사각형 넓이: side^2"
-{"타입 패턴 매칭"}  --|"case Triangle t"|-->  "삼각형 넓이: base * height / 2"
+{"타입 패턴 매칭"}  --|"case Circle c"|-->     "원 넓이: PI * r^2"
+{"타입 패턴 매칭"}  --|"case Rectangle r"|-->  "직사각형 넓이: w * h"
 
-"원 넓이: PI * r^2"                -->  "결과 반환"
-"정사각형 넓이: side^2"            -->  "결과 반환"
-"삼각형 넓이: base * height / 2"   -->  "결과 반환"
+"원 넓이: PI * r^2"      -->  "결과 반환"
+"직사각형 넓이: w * h"   -->  "결과 반환"
 ```
 
-- 이 그림은 원문의 mermaid `flowchart TD`를 글자로 옮긴 것이다 — 화살표 일곱으로 원문의 엣지 수와 같고, 방향도 원문과 같다(위에서 아래로).
+- 이 그림은 원문의 mermaid `flowchart TD`를 글자로 옮긴 것이다 — 화살표 다섯으로 원문의 엣지 수와 같고, 방향도 원문과 같다(위에서 아래로).
 - 칸 안의 글자와 화살표 위의 라벨(`"case Circle c"` 등)은 원문이 적은 것 그대로이며, `{ }`로 감싼 칸은 원문이 마름모로 그린 분기점이다.
 - 바로 위 문단이 이 그림을 읽는 법이고, 원문의 것이다 — 마지막 괄호가 이 편의 가드가 `&&`인 이유를 적어 둔 자리다.
 

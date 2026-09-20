@@ -2,7 +2,7 @@
 
 > 원본: `~/project/java-history/spring/framework-7.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
 > 연도·버전·패키지/클래스/애노테이션 이름·수치·코드블록 10개(모두 Java)·「릴리스 정보」와 「마이그레이션 관점 (6.x → 7.0)」의 목록·`maxRetries` 참고 인용구는 원문 그대로다.\
-> ASCII 도식 1개(원문 mermaid 그림을 글자로 옮긴 것이다), 「한눈에」의 사무실 정비 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 「재서술자 주」 1개는 원문에 없는 보충이다.
+> ASCII 도식 1개(원문 mermaid 그림을 글자로 옮긴 것이다), 「한눈에」의 사무실 정비 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
 
 ## 한눈에 — 쉽게 말하면
 
@@ -211,7 +211,7 @@ RestClient client = RestClient.builder()
     .apiVersionInserter(ApiVersionInserter.useHeader("API-Version"))
     .build();
 
-Account account = client.get().uri("/accounts/1")
+Account account = client.get().uri("/account/1")
     .apiVersion(1.1)
     .retrieve()
     .body(Account.class);
@@ -219,8 +219,6 @@ Account account = client.get().uri("/accounts/1")
 
 위 세 블록 가운데 첫·셋째 블록이 같은 헤더 이름(`"API-Version"`)을 쓴다 — 서버가 그 헤더에서 읽겠다고 정하고(첫 블록), 클라이언트가 그 헤더를 넣어 보낸다(셋째 블록, 원문 주석대로 "RestClient가 버전 헤더를 자동 삽입").\
 둘째 블록은 헤더 이름 없이 `version = "1.1"` 속성으로 핸들러의 판 번호를 달아, 셋째 블록의 `.apiVersion(1.1)`과 짝지어진다.
-
-> **재서술자 주:** 위 둘째 블록의 서버 매핑은 `/account/{id}`인데 셋째 블록의 클라이언트 호출은 `/accounts/1`이다. 같은 절의 두 코드가 한 엔드포인트를 가리키려던 것이고 한쪽이 오기인 것으로 보인다.
 
 요청 버전은 `major.minor.patch` 시맨틱 버전으로 파싱되며, `"1.2+"` 같은 baseline 버전(해당 핸들러가 그 이후 버전까지 커버)도 지원한다.
 
@@ -249,7 +247,7 @@ Jackson 3은 패키지가 `tools.jackson`으로 바뀌었다(애노테이션 클
 > 예: 원문이 이 이름을 붙인 장치가 "SpEL 식에 기본 10,000 연산 한도"다.
 
 ## 마이그레이션 관점 (6.x → 7.0)
-- **Jakarta EE 9/10 → 11**: Servlet 6.1·JPA 3.2·Bean Validation 3.1로 상향, Tomcat 11+·Hibernate ORM 7+·Validator 9+ 등 런타임 의존성 대거 상향.
+- **Jakarta EE 9/10 → 11**: Servlet 6.1·JPA 3.2·Bean Validation 3.1로 상향, Tomcat 11+·Hibernate ORM 7.1+·Validator 9+ 등 런타임 의존성 대거 상향.
 - **널 안정성 애노테이션 교체**: `org.springframework.lang.*` → `org.jspecify.annotations.*`.
 - **Jackson 3 전환**: `tools.jackson` 패키지 변경 대응.
 - **잔여 `javax.*` 제거**: `javax.annotation`/`javax.inject` → `jakarta.*`.

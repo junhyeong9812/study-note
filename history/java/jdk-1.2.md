@@ -2,7 +2,7 @@
 
 > 원본: `~/project/java-history/java/jdk-1.2.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
 > 연도·버전·클래스/패키지 이름·코드블록 3개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
-> ASCII 도식 1개와 「한눈에」의 가구 비유·대응표, 용어 블록의 「예:」, 「용어 풀이」, 다른 편을 가리키는 교차 주 2개, 재서술자 주 1개는 원문에 없는 보충이다.
+> ASCII 도식 1개와 「한눈에」의 가구 비유·대응표, 용어 블록의 「예:」, 「용어 풀이」, 다른 편을 가리키는 교차 주 2개는 원문에 없는 보충이다.
 
 ## 한눈에 — 쉽게 말하면
 
@@ -119,7 +119,7 @@ public class Demo {
 ```java
 import java.util.*;
 
-// 제네릭·diamond·for-each·오토박싱은 모두 J2SE 5.0부터다.
+// 제네릭·for-each·오토박싱은 모두 J2SE 5.0부터다(diamond `<>`는 Java SE 7).
 // 1.2 당시 문법은 raw type + 명시적 캐스트 + Iterator.
 List list = new ArrayList();
 list.add("a");
@@ -137,8 +137,6 @@ while (it.hasNext()) {
 
 위 코드가 둘째 주석의 세 가지를 그대로 보여 준다 — `new ArrayList()`에 타입 인자가 없는 것이 raw type, `(Map.Entry) it.next()`가 명시적 캐스트, `while (it.hasNext())`가 `Iterator`다.\
 `new Integer(1)`에 붙은 주석 "오토박싱이 없으므로 명시적 래핑"도 같은 제약을 가리킨다.
-
-> **재서술자 주:** 위 첫 주석이 든 넷 중 `diamond`는 J2SE 5.0이 아니라 Java SE 7의 기능으로 보인다. 같은 시리즈의 `java-7` 편이 「다이아몬드 연산자 (Diamond Operator, `<>`)」를 그 편의 절로 두고 있고, 원문 repo의 `README`(`~/project/java-history/java/README.md`) 표도 diamond를 Java SE 7 행에 적는다. 나머지 셋(제네릭·for-each·오토박싱)은 `java-5` 편의 서술과 맞는다. 원문 코드블록은 고치지 않고 그대로 두었다.
 
 ### JIT 컴파일러 기본 탑재
 

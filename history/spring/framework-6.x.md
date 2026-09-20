@@ -2,7 +2,7 @@
 
 > 원본: `~/project/java-history/spring/framework-6.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
 > 연도·버전·패키지/클래스/어노테이션 이름·RFC 번호·코드블록 6개(모두 Java)·「릴리스 정보」와 「마이너 버전별 변화」의 목록은 원문 그대로다.\
-> ASCII 도식 2개(모두 원문 mermaid 그림을 글자로 옮긴 것이다), 「한눈에」의 주소 개편 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 「재서술자 주」 1개는 원문에 없는 보충이다.
+> ASCII 도식 2개(모두 원문 mermaid 그림을 글자로 옮긴 것이다), 「한눈에」의 주소 개편 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
 
 ## 한눈에 — 쉽게 말하면
 
@@ -19,7 +19,7 @@ AOT·옵저버빌리티·가상 스레드 절은 비유 없이 원문 문장과 
 
 | 비유 | 실체 |
 |---|---|
-| 주소 표기가 통째로 새 체계로 바뀌는 일 | 원문 표현으로 "Servlet, JPA, Bean Validation, JMS, Annotations 등 모든 표준 API import가 바뀐다" |
+| 주소 표기가 통째로 새 체계로 바뀌는 일 | 원문 표현으로 "Servlet, JPA, Bean Validation, JMS, Annotations 등 표준 API import가 통째로 바뀐다" |
 | 내 서류의 주소를 고쳐 적는 일 | `import javax.…`을 `import jakarta.…`으로 바꾸는 것 |
 | 우편물을 받아 주는 곳과 거래처의 장부까지 바꿔야 하는 것 | 원문 표현으로 "서블릿 컨테이너도 Jakarta 지원 버전 필요(Tomcat 10+, Jetty 11+ 등), 모든 서드파티 라이브러리도 jakarta 호환 버전으로 올려야 한다" |
 | 이름이 바뀐 까닭이 길이 막혀서가 아니라 간판 문제였던 것 | 원문 표현으로 "Oracle이 Java EE를 Eclipse 재단에 이관(Jakarta EE)하면서, 상표 문제로 … 강제 변경됐다" |
@@ -65,9 +65,7 @@ AOT·옵저버빌리티·가상 스레드 절은 비유 없이 원문 문장과 
 
 *(「한눈에」의 주소 개편에 해당하는 자리다.)*
 
-Servlet, JPA, Bean Validation, JMS, Annotations 등 모든 표준 API import가 바뀐다.
-
-> **재서술자 주:** 같은 시리즈 `framework-7.x.md`는 7.0이 "6.x가 남겨둔 잔여 `javax.*`"(`javax.annotation`·`javax.inject`)를 마저 정리한다고 적는다. 여기의 "모든"은 앞에 열거된 표준 API를 가리키고, 그 둘의 지원은 6.x에 남아 있었던 것으로 보인다.
+Servlet, JPA, Bean Validation, JMS, Annotations 등 표준 API import가 통째로 바뀐다(다만 `@PostConstruct`·`@Inject` 같은 `javax.annotation`·`javax.inject` 애노테이션은 기존 바이너리 호환을 위해 6.x가 `javax` 쪽도 계속 인식한다 — 완전 제거는 7.0).
 
 ```java
 // Spring 5.x (Java EE / javax)
@@ -238,7 +236,7 @@ Java 21의 가상 스레드(Project Loom)를 지원.\
 
 설정 모델 자체(Java Config + 어노테이션 + Boot 자동 구성 + 함수형 DSL)는 5.x에서 정립된 것을 계승한다.\
 6.x의 변화는 **"무엇을 import 하느냐"와 "어떻게 빌드/실행하느냐"**에 있다.
-- 패키지 네임스페이스가 `jakarta.*`로 전면 교체 — 코드 레벨의 가장 큰 차이.
+- 패키지 네임스페이스가 `jakarta.*`로 교체 — 코드 레벨의 가장 큰 차이(`javax.annotation`·`javax.inject` 애노테이션만 호환을 위해 6.x가 함께 인식한다).
 - **AOT를 전제로 한 설정** — 동적 리플렉션·런타임 빈 등록보다, 빌드 타임에 정적으로 분석 가능한 구성이 권장된다(네이티브 이미지 친화). Kotlin/Java의 함수형 빈 DSL이 이런 면에서 유리.
 
 ## 마이너 버전별 변화

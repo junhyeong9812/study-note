@@ -2,7 +2,7 @@
 
 > 원본: `~/project/java-history/spring/kotlin-and-spring.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
 > 연도·버전·클래스/애너테이션 이름·플러그인 이름·표 2개·코드블록 14개는 원문 그대로다.\
-> ASCII 도식 3개(그중 2개는 원문의 mermaid 도식을 옮긴 것), 「한눈에」의 선로 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 「재서술자 주」 1개는 원문에 없는 보충이다.
+> ASCII 도식 3개(그중 2개는 원문의 mermaid 도식을 옮긴 것), 「한눈에」의 선로 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
 
 ## 한눈에 — 쉽게 말하면
 
@@ -241,14 +241,11 @@ dependencies {
 }
 ```
 
-플러그인 역할:
+플러그인·의존성 역할:
 - **`kotlin-spring` (all-open 래퍼)**: 아래 "final class 문제" 참조.
 - **`kotlin-jpa` (no-arg 래퍼)**: `@Entity`/`@Embeddable`/`@MappedSuperclass`에 합성 기본 생성자를 생성해 JPA의 "인자 없는 생성자" 요구를 충족.
 - **`jackson-module-kotlin`**: data class를 기본 생성자 없이도 JSON 역직렬화.
-
-> **재서술자 주:** 원문은 이 목록의 표제를 "플러그인 역할"이라 적고 셋을 드는데, 셋째 `jackson-module-kotlin`은 위 코드에서 `plugins` 블록이 아니라 `dependencies` 블록에 적힌 라이브러리다.\
-> 또 같은 `dependencies` 블록의 `kotlin-reflect`는 이 목록에 들어 있지 않다.\
-> 표제가 앞 두 항목(`plugin.spring`·`plugin.jpa`)에만 정확히 맞고, 셋째는 "함께 넣는 것"으로 묶인 것으로 보인다. 원문은 고치지 않고 이 자리에 표기만 해 둔다.
+- **`kotlin-reflect`**: Spring의 코틀린 지원이 클래스패스에 요구하는 의존성. 코틀린 주 생성자·파라미터 같은 메타데이터를 런타임 리플렉션으로 읽는 데 쓰인다.
 
 > **컴파일러 플러그인(compiler plugin)** — 컴파일하는 동안 코드에 손을 대는 부가 도구. 소스에는 없는 것을 결과물에 넣어 준다.\
 > 예: 원문이 든 두 개가 `kotlin-spring`(all-open 래퍼)과 `kotlin-jpa`(no-arg 래퍼)이고, 각각 `open` 처리와 기본 생성자 합성을 맡는다.

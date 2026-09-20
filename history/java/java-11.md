@@ -89,7 +89,7 @@ client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
       .thenAccept(System.out::println);
 ```
 
-> **재서술자 주:** 같은 시리즈 `java-9.md`의 인큐베이터 시절 코드는 같은 자리에 `HttpResponse.BodyHandler.asString()`을 쓰는데, 이 편은 `HttpResponse.BodyHandlers.ofString()`이다. 정식화하며 이름이 바뀐 것으로 보이나, 두 편 모두 이름 변경을 직접 적지는 않는다.
+> **재서술자 주:** 같은 시리즈 `java-9.md`의 인큐베이터 시절 코드는 같은 자리에 `HttpResponse.BodyHandler.asString()`을 쓰는데, 이 편은 `HttpResponse.BodyHandlers.ofString()`이다. 정식화하며 이름이 바뀐 것으로, 그 대응(`BodyHandler.asString()` → `BodyHandlers.ofString()`)은 `java-9.md`가 적어 둔다.
 
 아래 시퀀스 다이어그램은 동기 `send()`와 비동기 `sendAsync()`의 차이를 보여준다. 동기 호출은 응답이 올 때까지 호출 스레드가 블로킹되지만, 비동기 호출은 즉시 `CompletableFuture`를 반환하고 논블로킹 I/O 완료 후 콜백(`thenApply`)이 실행된다. 이때 `thenApply` 콜백은 원래 호출 스레드가 아니라 완료를 수행한 스레드에서 실행될 수 있다(호출 스레드 실행을 보장하려면 `thenApplyAsync(fn, executor)`를 쓴다).
 

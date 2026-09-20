@@ -2,7 +2,7 @@
 
 > 원본: `~/project/java-history/java/java-9.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
 > 연도·버전·JSR/JEP 번호·클래스/패키지/도구 이름·코드블록 10개(java 7 · bash 2 · jshell 세션 1)·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
-> ASCII 도식 1개는 원문의 mermaid 그림을 글자로 옮긴 것이고, 「한눈에」의 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 교차 주 2개는 원문에 없는 보충이다.\
+> ASCII 도식 1개는 원문의 mermaid 그림을 글자로 옮긴 것이고, 「한눈에」의 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 교차 주 1개는 원문에 없는 보충이다.\
 > 원문에 없는 도식은 새로 그리지 않았다.
 
 ## 한눈에 — 쉽게 말하면
@@ -224,6 +224,7 @@ interface Logger {
 
 - `HttpURLConnection`의 낡은 한계를 대체하는 새 HTTP 클라이언트. HTTP/2와 WebSocket을 지원하며 동기/비동기 요청을 제공한다.
 - Java 9에서는 **인큐베이터 모듈**(모듈명 `jdk.incubator.httpclient`, 패키지 `jdk.incubator.http`)로 시범 도입되었고, 이후 Java 11(JEP 321)에서 `java.net.http`로 정식 표준화되었다.
+- 정식화 과정에서 패키지뿐 아니라 API 이름도 바뀌었다. 아래 인큐베이터 코드의 `HttpResponse.BodyHandler.asString()`은 Java 11에서 `HttpResponse.BodyHandlers.ofString()`에 해당한다.
 
 **언제 정식이 됐나** — 원문이 둘째 불릿에 적은 그대로다. 이 편에서는 인큐베이터 모듈이고, 정식 표준화는 Java 11(JEP 321)에서 `java.net.http`로 이뤄졌다.
 
@@ -241,8 +242,6 @@ HttpResponse<String> res =
         client.send(req, HttpResponse.BodyHandler.asString());
 System.out.println(res.statusCode());
 ```
-
-> **재서술자 주:** 위 코드는 원문 주석이 밝힌 대로 인큐베이터 시절의 API다. 같은 시리즈 `java-11.md`의 같은 자리 코드는 `HttpResponse.BodyHandlers.ofString()`을 쓰는데, 이 편은 `HttpResponse.BodyHandler.asString()`이다 — 정식화되며 이름이 바뀐 것으로 보이나, 원문은 이름이 어떻게 바뀌었는지는 적지 않는다.
 
 ### 프로세스 API 개선 (JEP 102)
 

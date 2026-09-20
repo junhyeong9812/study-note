@@ -217,7 +217,7 @@ for (String s : list) {
 
 두 블록은 같은 순회를 도입 전후로 적은 것이다 — 위의 `for (Iterator it = list.iterator(); it.hasNext(); )`와 `String s = (String) it.next();` 두 줄이 아래에서는 `for (String s : list)` 한 줄이 된다.
 
-*(교차 주: 위 "도입 전" 쪽 코드는 앞 편들의 코드와 같은 모습이다 — `jdk-1.1` 편과 `jdk-1.2` 편의 코드 주석이 각각 "for-each도 5.0부터", "제네릭·diamond·for-each·오토박싱은 모두 J2SE 5.0부터다"라고 미리 적어 둔 그 제약이다. 다만 뒤 인용 안의 `diamond`는 `jdk-1.2` 편의 재서술자 주를 참고하라 — 그 편이 diamond를 J2SE 5.0이 아니라 Java SE 7의 기능으로 본다고 적어 두었다.)*
+*(교차 주: 위 "도입 전" 쪽 코드는 앞 편들의 코드와 같은 모습이다 — `jdk-1.1` 편과 `jdk-1.2` 편의 코드 주석이 각각 "for-each도 5.0부터", "제네릭·for-each·오토박싱은 모두 J2SE 5.0부터다(diamond `<>`는 Java SE 7)"라고 미리 적어 둔 그 제약이다.)*
 
 ### 오토박싱 / 언박싱 (Autoboxing/Unboxing, JSR 201)
 
