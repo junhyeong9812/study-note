@@ -167,4 +167,4 @@
 
 ## 다루지 않는 것
 
-`resetHooksAfterThrow` 와 훅 상태 정리, `getSuspendedThenable` 이 값을 꺼내는 방식, `throwException` 과 `throwAndUnwindWorkLoop` 의 되감기, `logUncaughtError` 와 `createCapturedValueAtFiber`, `enableSchedulingProfiler` 블록의 마킹 함수들은 같은 뼈대의 곁가지라 요약만 했다. 상태값 전체는 [spi](../spi/README.md)에 있다.
+`resetHooksAfterThrow` 와 훅 상태 정리, `getSuspendedThenable` 이 값을 꺼내는 방식, `throwException` 과 `throwAndUnwindWorkLoop` 의 되감기([에러와 Suspense 흐름](../../throw/README.md)에 따로 있다), `logUncaughtError` 와 `createCapturedValueAtFiber`, `enableSchedulingProfiler` 블록의 마킹 함수들은 같은 뼈대의 곁가지라 요약만 했다. 상태값 전체는 [spi](../spi/README.md)에 있다.
