@@ -181,4 +181,4 @@
 
 ## 다루지 않는 것
 
-`completeWork` 가 호스트 인스턴스를 만들고 효과를 모으는 과정, `unwindUnitOfWork`(L3414)와 `unwindWork` 의 되감기, `workInProgressRootDidSkipSuspendedSiblings` 가 세워지는 자리, `Incomplete` 플래그를 붙이는 쪽, 프로파일러 계측 함수들의 내용은 같은 뼈대의 곁가지라 요약만 했다.
+`completeWork` 가 호스트 인스턴스를 만들고 효과를 모으는 과정([completeWork 흐름](../../complete-work/README.md)에 따로 있다), `unwindUnitOfWork`(L3414)와 `unwindWork` 의 되감기, `workInProgressRootDidSkipSuspendedSiblings` 가 세워지는 자리, `Incomplete` 플래그를 붙이는 쪽, 프로파일러 계측 함수들의 내용은 같은 뼈대의 곁가지라 요약만 했다.
