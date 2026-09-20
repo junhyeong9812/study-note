@@ -1,5 +1,7 @@
 # 노드 기동
 
+상위: [Elasticsearch 아키텍처 지도](../../README.md)
+
 `bin/elasticsearch` 가 JVM 을 띄운 뒤 **노드가 요청을 받을 준비가 되기까지**다. 분기가 거의 없고 **순서가 전부**인 흐름이라, 소스에 `DO NOT MOVE THIS` 가 두 번 대문자로 박혀 있다. 폴더 하나가 메서드 하나이고, [spi](spi/README.md)에 순서 제약 표가 있다.
 
 기준 커밋: elasticsearch `main` [`60bb239edb`](https://github.com/elastic/elasticsearch/tree/60bb239edb99f0e002eb620e4e82a6f2b15a49b0) (2026-09-19). 모든 줄 번호는 이 커밋 기준이다.
