@@ -6,4 +6,4 @@ Spring Framework 업스트림 기여 아카이브의 세 갈래다. 정향과 �
 |------|------|
 | [prs](prs/) | PR별 주제 폴더 29건 — 표준 5종(해설·테스트·실구조·분석·게이트), [index](prs/index.md) |
 | [concepts](concepts/) | 기여 중 배운 개념 문서 16주제, [index](concepts/index.md) |
-| [architecture](architecture/) | 동작 흐름 탑다운 지도 22흐름(리소스/환경, JDBC, R2DBC, 검증/바인딩, 메시징, 테스트 컨텍스트, SpEL, 컨테이너 기동, 빈 생성, AOP 프록시, 트랜잭션, 캐시, 스케줄링/비동기, 이벤트 발행, MVC/WebFlux 요청 처리, 함수형 엔드포인트, WebSocket/STOMP, SockJS, RSocket, JPA 연동, HTTP 클라이언트) — 메서드별 폴더, 실코드와 아스키 워크플로우, [index](architecture/index.md) · [진입점 인덱스](architecture/entry-index.md) |
+| [architecture](architecture/) | 동작 흐름 탑다운 지도 24흐름(리소스/환경, JDBC, R2DBC, 검증/바인딩, 메시징, 테스트 컨텍스트, SpEL, 컨테이너 기동, 빈 생성, AOP 프록시, 트랜잭션, 캐시, 스케줄링/비동기, 이벤트 발행, MVC/WebFlux 요청 처리, 함수형 엔드포인트, WebSocket/STOMP, SockJS, 브로커 릴레이, RSocket, JPA 연동, HTTP 클라이언트, AOT 처리) — 메서드별 폴더, 실코드와 아스키 워크플로우, [index](architecture/index.md) · [진입점 인덱스](architecture/entry-index.md) |
