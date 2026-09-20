@@ -110,7 +110,10 @@ public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, Str
 ```text
  populateBean(beanName, mbd, bw)
  |
- | L1391 인스턴스가 없음(null 반환된 팩토리 메서드) --> 프로퍼티 있으면 오류, 없으면 return
+ | L1391 인스턴스가 없음 --> 프로퍼티 있으면 오류, 없으면 return
+ |       doCreateBean 경로에서는 안 걸리는 방어 코드다
+ |       null 을 돌려준 팩토리 메서드는 NullBean 으로 감싸져 들어온다
+ |       (SimpleInstantiationStrategy L156-158)
  | L1402 record 타입 --> 프로퍼티 주입 건너뜀 (불변)
  |
  +-- L1416 postProcessAfterInstantiation
