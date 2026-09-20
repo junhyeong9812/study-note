@@ -77,8 +77,12 @@
 
  갈래 (가)  할 일이 없거나 멈춰 있다                      L420-439
    nextLanes === NoLanes
-   또는 이 루트가 데이터 대기 중
+   또는 이 루트가 데이터 대기 중 (isWorkLoopSuspendedOnData)
    또는 root.cancelPendingCommit !== null
+
+   ★ 가운데 절은 이 커밋에서 죽은 가지다
+     isWorkLoopSuspendedOnData 가 보는 SuspendedOnData/SuspendedOnAction 을
+     세우는 코드가 없다. 자세한 것은 [렌더 루프]의 spi 에 있다
    => 기존 콜백 취소 / callbackNode = null / callbackPriority = NoLane
    => return NoLane
 
@@ -216,4 +220,4 @@
 
 ## 다루지 않는 것
 
-`getNextLanes` 와 `markStarvedLanesAsExpired` 의 lane 계산, `checkIfRootIsPrerendering` 의 판정, `lanesToEventPriority` 와 `getHighestPriorityLane` 의 lane 매핑, `isWorkLoopSuspendedOnData` 가 보는 상태, `enableYieldingBeforePassive` 갈래의 패시브 이펙트 사정은 같은 뼈대의 곁가지라 요약만 했다. 우선순위 대응표는 [spi](../spi/README.md)에 있다.
+`getNextLanes` 와 `markStarvedLanesAsExpired` 의 lane 계산, `checkIfRootIsPrerendering` 의 판정, `lanesToEventPriority` 와 `getHighestPriorityLane` 의 lane 매핑, `isWorkLoopSuspendedOnData` 가 보는 상태(그것이 왜 언제나 false 인지는 [렌더 루프](../../render-loop/spi/README.md)의 spi 에 있다), `enableYieldingBeforePassive` 갈래의 패시브 이펙트 사정은 같은 뼈대의 곁가지라 요약만 했다. 우선순위 대응표는 [spi](../spi/README.md)에 있다.
