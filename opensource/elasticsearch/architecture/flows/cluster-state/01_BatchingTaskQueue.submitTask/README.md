@@ -81,15 +81,14 @@
    Entry.acquireForExecution   L1923-1929   taskHolder.getAndSet(null)
    TaskTimeoutHandler.completeTask L1803-1809  taskHolder.getAndSet(null)
 
- 둘 다 getAndSet(null) 이라 **정확히 하나만** null 아닌 값을 받는다
+ 둘 다 getAndSet(null) 이라 **최대 하나만** null 아닌 값을 받는다
+ 주석도 "at most one" 이라고 적는다 - 안전성 보장이지 생존성 보장이 아니다
 
  그래서
-   실행이 이기면  타임아웃 핸들러가 null 을 받고 아무것도 안 한다
-                  그리고 acquireForExecution 이 스케줄을 취소한다 (L1925-1927)
+   실행이 이기면  acquireForExecution 이 타임아웃 스케줄을 취소한다 (L1925-1927)
+                  취소가 늦었으면 핸들러가 돌되 null 을 받아 아무것도 안 한다
    타임아웃이 이기면 task.onFailure(ProcessClusterEventTimeoutException)
                   그리고 Processor.run 이 null 을 받아 건너뛴다 (L1971-1972)
-
- 주석 L1772 가 그 규약이다
 ```
 
 ```text
