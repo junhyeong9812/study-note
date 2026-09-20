@@ -175,4 +175,4 @@ function workLoopSync() {
 
 ## 다루지 않는 것
 
-`beginWork` 가 컴포넌트 타입별로 하는 일, `runWithFiberInDEV` 가 감싸는 방식, `startProfilerTimer` 와 `stopProfilerTimerIfRunningAndRecordDuration` 의 계측, `replaySuspendedUnitOfWork`(L3106)가 서스펜드된 fiber 를 다시 돌리는 방식, `shouldYield` 의 구현은 같은 뼈대의 곁가지라 요약만 했다.
+`beginWork` 가 컴포넌트 타입별로 하는 일([beginWork 흐름](../../begin-work/README.md)에 따로 있다), `runWithFiberInDEV` 가 감싸는 방식, `startProfilerTimer` 와 `stopProfilerTimerIfRunningAndRecordDuration` 의 계측, `replaySuspendedUnitOfWork`(L3106)가 서스펜드된 fiber 를 다시 돌리는 방식, `shouldYield` 의 구현은 같은 뼈대의 곁가지라 요약만 했다.
