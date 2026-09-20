@@ -78,44 +78,43 @@ public final void handleRequest(ServerHttpRequest request, ServerHttpResponse re
 `spring-websocket` / `org.springframework.web.socket.sockjs.support` / `AbstractSockJsService.java` L450-L486 ([GitHub](https://github.com/spring-projects/spring-framework/blob/c1d4a76692949bdcdebae4b98b104174e4b951cf/spring-websocket/src/main/java/org/springframework/web/socket/sockjs/support/AbstractSockJsService.java#L450-L486))
 
 ```java
-// AbstractSockJsService.java L450-L486
-    String[] pathSegments = StringUtils.tokenizeToStringArray(sockJsPath.substring(1), "/");
-    if (pathSegments.length != 3) {
-        if (logger.isWarnEnabled()) {
-            logger.warn(LogFormatUtils.formatValue("Invalid SockJS path '" + sockJsPath + "' - " +
-                    "required to have 3 path segments", -1, true));
-        }
-        if (requestInfo != null) {
-            logger.debug("Ignoring transport request: " + requestInfo);
-        }
-        response.setStatusCode(HttpStatus.NOT_FOUND);
-        return;
+// AbstractSockJsService.java L450-L485
+String[] pathSegments = StringUtils.tokenizeToStringArray(sockJsPath.substring(1), "/");
+if (pathSegments.length != 3) {
+    if (logger.isWarnEnabled()) {
+        logger.warn(LogFormatUtils.formatValue("Invalid SockJS path '" + sockJsPath + "' - " +
+                "required to have 3 path segments", -1, true));
     }
-
-    String serverId = pathSegments[0];
-    String sessionId = pathSegments[1];
-    String transport = pathSegments[2];
-
-    if (!isWebSocketEnabled() && transport.equals("websocket")) {
-        if (requestInfo != null) {
-            logger.debug("WebSocket disabled. Ignoring transport request: " + requestInfo);
-        }
-        response.setStatusCode(HttpStatus.NOT_FOUND);
-        return;
-    }
-    else if (!validateRequest(serverId, sessionId, transport) || !validatePath(request)) {
-        if (requestInfo != null) {
-            logger.debug("Ignoring transport request: " + requestInfo);
-        }
-        response.setStatusCode(HttpStatus.NOT_FOUND);
-        return;
-    }
-
     if (requestInfo != null) {
-        logger.debug("Processing transport request: " + requestInfo);
+        logger.debug("Ignoring transport request: " + requestInfo);
     }
-    handleTransportRequest(request, response, wsHandler, sessionId, transport);
+    response.setStatusCode(HttpStatus.NOT_FOUND);
+    return;
 }
+
+String serverId = pathSegments[0];
+String sessionId = pathSegments[1];
+String transport = pathSegments[2];
+
+if (!isWebSocketEnabled() && transport.equals("websocket")) {
+    if (requestInfo != null) {
+        logger.debug("WebSocket disabled. Ignoring transport request: " + requestInfo);
+    }
+    response.setStatusCode(HttpStatus.NOT_FOUND);
+    return;
+}
+else if (!validateRequest(serverId, sessionId, transport) || !validatePath(request)) {
+    if (requestInfo != null) {
+        logger.debug("Ignoring transport request: " + requestInfo);
+    }
+    response.setStatusCode(HttpStatus.NOT_FOUND);
+    return;
+}
+
+if (requestInfo != null) {
+    logger.debug("Processing transport request: " + requestInfo);
+}
+handleTransportRequest(request, response, wsHandler, sessionId, transport);
 ```
 
 ## 동작 흐름
