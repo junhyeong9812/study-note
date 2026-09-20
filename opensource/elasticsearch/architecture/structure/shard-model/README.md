@@ -116,8 +116,7 @@
 `server` / `org.elasticsearch.cluster.routing` / `ShardRoutingState.java` L15-L46 ([GitHub](https://github.com/elastic/elasticsearch/blob/60bb239edb99f0e002eb620e4e82a6f2b15a49b0/server/src/main/java/org/elasticsearch/cluster/routing/ShardRoutingState.java#L15-L46))
 
 ```java
-// ShardRoutingState.java L15-L46 (javadoc 생략)
-public enum ShardRoutingState {
+// ShardRoutingState.java L23-L46 (javadoc 생략)
     UNASSIGNED((byte) 1),
 
     INITIALIZING((byte) 2),
