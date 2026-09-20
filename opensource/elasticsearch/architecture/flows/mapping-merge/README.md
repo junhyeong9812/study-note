@@ -1,5 +1,7 @@
 # 매핑 병합
 
+상위: [Elasticsearch 아키텍처 지도](../../README.md)
+
 매핑을 바꾸는 요청이 들어왔을 때 **`MapperService.mapper` 필드가 새 것으로 갈리기까지**다. 전 구간이 한 스레드에서 동기로 돌고 콜백 경계가 하나도 없다. 대신 갈래를 만드는 것이 **둘**이다 — 누가 부르느냐(마스터냐 데이터 노드냐)와 무엇 때문에 부르느냐(`MergeReason`). 폴더 하나가 메서드 하나이고, [spi](spi/README.md)에 `MergeReason` 계약표가 있다.
 
 기준 커밋: elasticsearch `main` [`60bb239edb`](https://github.com/elastic/elasticsearch/tree/60bb239edb99f0e002eb620e4e82a6f2b15a49b0) (2026-09-19). 모든 줄 번호는 이 커밋 기준이다.
