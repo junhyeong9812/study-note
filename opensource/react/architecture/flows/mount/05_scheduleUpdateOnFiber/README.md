@@ -74,6 +74,12 @@
  L992  멈춰 있는 렌더가 있는가
          workInProgressRoot 가 같고 SuspendedOnData/SuspendedOnAction 이거나
          root.cancelPendingCommit !== null
+
+         ★ 앞 절은 이 커밋에서 죽은 가지다
+           SuspendedOnData 와 SuspendedOnAction 을 세우는 코드가 없다
+           (ReactFiberWorkLoop 의 대입 자리 열여섯 곳에 그 둘이 없다)
+           그래서 실질 조건은 root.cancelPendingCommit !== null 하나다
+           자세한 것은 [렌더 루프]의 spi 에 있다
        예 => prepareFreshStack(L1002) + markRootSuspended(L1004)
             **early return 이 없다. 아래로 그대로 흐른다**
 
@@ -191,4 +197,4 @@
 
 ## 다루지 않는 것
 
-`ensureRootIsScheduled` 이후의 `processRootScheduleInMicrotask` 와 `scheduleTaskForRootDuringMicrotask`(흐름 2), `prepareFreshStack` 과 `markRootSuspended` 의 내용, `requestUpdateLane` 이 lane 을 고르는 네 단계, `throwIfInfiniteUpdateLoopDetected` 의 판정, `warnAboutRenderPhaseUpdatesInDEV` 와 `warnIfUpdatesNotWrappedWithActDEV` 의 본문, `SuspendedOnData` / `SuspendedOnAction` 이 세워지는 자리는 같은 뼈대의 곁가지라 요약만 했다. 빌드 플래그는 [spi](../spi/README.md)에 모았다.
+`ensureRootIsScheduled` 이후의 `processRootScheduleInMicrotask` 와 `scheduleTaskForRootDuringMicrotask`(흐름 2), `prepareFreshStack` 과 `markRootSuspended` 의 내용, `requestUpdateLane` 이 lane 을 고르는 네 단계, `throwIfInfiniteUpdateLoopDetected` 의 판정, `warnAboutRenderPhaseUpdatesInDEV` 와 `warnIfUpdatesNotWrappedWithActDEV` 의 본문, `SuspendedOnData` / `SuspendedOnAction` 이 왜 세워지지 않는지(그쪽은 [렌더 루프](../../render-loop/spi/README.md)의 spi 에 있다)는 같은 뼈대의 곁가지라 요약만 했다. 빌드 플래그는 [spi](../spi/README.md)에 모았다.
