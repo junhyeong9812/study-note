@@ -51,3 +51,4 @@ public interface RequestRejectedHandler {
  거부 사유를 감추는 이유
       --> 상세한 사유를 돌려주면 우회 방법을 알려 주는 셈이 된다
       --> 기본 구현이 상태 코드만 쓰는 배경이다
+```
