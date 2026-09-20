@@ -130,7 +130,7 @@
 
 ## 다루지 않는 것
 
-`Scheduler` 패키지의 태스크 큐와 타임 슬라이싱, `getNextLanes` / `markStarvedLanesAsExpired` / `checkIfRootIsPrerendering` 의 lane 계산, `performWorkOnRoot` 이후의 렌더 루프, `flushPendingEffects` 의 패시브 이펙트 처리, `startIsomorphicDefaultIndicatorIfNeeded` 의 인디케이터 관리, `requestTransitionLane` 의 transition lane 할당은 같은 뼈대의 곁가지라 요약만 했다. 빌드 플래그와 우선순위 대응은 [spi](spi/README.md)에 모았다.
+`Scheduler` 패키지의 태스크 큐와 타임 슬라이싱, `getNextLanes` / `markStarvedLanesAsExpired` / `checkIfRootIsPrerendering` 의 lane 계산([lane 흐름](../lanes/README.md)에 따로 있다), `performWorkOnRoot` 이후의 렌더 루프, `flushPendingEffects` 의 패시브 이펙트 처리, `startIsomorphicDefaultIndicatorIfNeeded` 의 인디케이터 관리, `requestTransitionLane` 의 transition lane 할당은 같은 뼈대의 곁가지라 요약만 했다. 빌드 플래그와 우선순위 대응은 [spi](spi/README.md)에 모았다.
 
 ## 하위 메서드
 
