@@ -66,9 +66,19 @@
 | `useInsertionEffect` | 커밋의 **mutation** 패스. DOM 을 건드리기 전 | [커밋](flows/commit/README.md) |
 | `useLayoutEffect` | cleanup 은 mutation, 콜백은 **layout** 패스 | [커밋](flows/commit/README.md) |
 | `useEffect` | 커밋 **뒤** 별도 태스크. sync lane 이면 같은 태스크 안 | [패시브 이펙트](flows/passive-effects/README.md) |
-| `componentDidMount` | layout 패스. `root.current` 교체 **뒤** | [커밋](flows/commit/README.md) |
-| `componentWillUnmount` | mutation 패스. `root.current` 교체 **앞** | [커밋](flows/commit/README.md) |
-| `getSnapshotBeforeUpdate` | before-mutation 패스 | [커밋](flows/commit/README.md) |
+| `componentDidMount` | layout 패스. `root.current` 교체 **뒤**. `Update \| LayoutStatic` 이 렌더 때 선다 | [커밋](flows/commit/README.md) → [클래스 컴포넌트](flows/class-component/README.md) |
+| `componentWillUnmount` | mutation 패스. `root.current` 교체 **앞**. 부르기 직전 `instance.props`/`state` 를 current 것으로 덮어쓴다 | [커밋](flows/commit/README.md) |
+| `getSnapshotBeforeUpdate` | before-mutation 패스. 있으면 `Snapshot` 플래그가 선다 — 다만 **이어서 마운트하는 길에서는 예약되지 않는다** | [커밋](flows/commit/README.md) → [클래스 컴포넌트](flows/class-component/README.md) |
+| `componentDidUpdate` | layout 패스. `prevProps` 는 커밋이 `current.memoizedProps` 로 따로 만들어 넘긴다 | [커밋](flows/commit/README.md) → [클래스 컴포넌트](flows/class-component/README.md) |
+| `getDerivedStateFromProps` | 렌더 단계. ★ **바이아웃한 렌더에서는 안 불린다** | [클래스 컴포넌트](flows/class-component/README.md) |
+| `shouldComponentUpdate` | 렌더 단계. `forceUpdate()` 면 아예 건너뛴다. `PureComponent` 보다 우선한다 | [클래스 컴포넌트](flows/class-component/README.md) |
+| `componentWillMount` / `UNSAFE_` | 새 API(`getDerivedStateFromProps`·`getSnapshotBeforeUpdate`)가 하나라도 있으면 **안 불린다** | [클래스 컴포넌트](flows/class-component/README.md) |
+| `componentWillReceiveProps` / `UNSAFE_` | 같은 조건으로 꺼진다. props 나 컨텍스트가 바뀐 때만 | [클래스 컴포넌트](flows/class-component/README.md) |
+| `componentWillUpdate` / `UNSAFE_` | 같은 조건으로 꺼진다. 업데이트 경로에만 있다 | [클래스 컴포넌트](flows/class-component/README.md) |
+| `constructor` | `new ctor(props, context)`. StrictMode DEV 는 두 번 만들고 **두 번째를 쓴다** | [클래스 컴포넌트](flows/class-component/README.md) |
+| `render` | `instance.render()`. StrictMode DEV 는 두 번 부르고 **첫 번째를 쓴다** | [클래스 컴포넌트](flows/class-component/README.md) |
+| `this.refs` | 마운트에서만 `{}` 로 초기화된다. 문자열 ref 의 잔재 | [클래스 컴포넌트](flows/class-component/README.md) |
+| `this.replaceState` | 공개 API 가 아니다 — deprecated getter 라 경고하고 `undefined` 를 준다 | [클래스 컴포넌트](flows/class-component/README.md) |
 
 ```text
  ★ 세 이펙트가 도는 순서
