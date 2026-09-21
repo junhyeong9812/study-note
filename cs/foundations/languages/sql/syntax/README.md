@@ -2,6 +2,10 @@
 
 > 1단계 리스트업이다. 아래 주제들의 3파일(질문·서머리·정답)은 **대부분 아직 없다** — 작성된 주제는 「주제」 칸에 폴더 링크가 달려 있다(2026-09-21 현재 **10개**: 01 · 03 · 04 · 10 · 12 · 13 · 14 · 15 · 16 · 52).
 > **2단계 실행 검증이 진행 중이다** — PostgreSQL 18.6(도커 `postgres:18`)·MySQL 8.4.10(도커 `mysql:8.4`) 두 서버에 실제로 질의를 던져 확인한다. 작성된 10주제의 본문 출력은 전부 실행 결과다.
+> **진행 — 32 / 60** (2026-09-21: [01](01-logical-query-processing-order/) · [02](02-select-list-column-aliases/) · [03](03-where-vs-having/) · [04](04-null-three-valued-logic/) · [05](05-null-comparison-is-distinct-from/) · [06](06-conditional-expressions-case-coalesce/) · [07](07-distinct-and-duplicate-removal/) · [08](08-order-by-null-position-stability/) · [09](09-limit-offset-keyset-pagination/) · [10](10-from-clause-aliases-derived-tables/) · [11](11-subquery-scalar-correlated-any-all/) · [12](12-cartesian-product-cross-join/) · [13](13-inner-join/) · [14](14-left-right-outer-join/) · [15](15-on-vs-where-in-outer-join/) · [16](16-full-outer-join/) · [17](17-self-join/) · [18](18-using-and-natural-join/) · [19](19-semi-anti-join/) · [20](20-lateral-join/) · [21](21-aggregate-functions-count-forms/) · [22](22-group-by-nonaggregated-columns/) · [23](23-grouping-sets-rollup-cube/) · [24](24-conditional-aggregation-filter-case/) · [25](25-join-fan-out/) · [35](35-type-system-and-casting/) · [36](36-numeric-types-and-functions/) · [37](37-string-functions-and-concatenation/) · [38](38-pattern-matching-like-regex/) · [39](39-collation/) · [40](40-date-time-types-and-functions/) · [52](52-upsert/)). 나머지는 아직 없다.
+> ⚠️ **MySQL 에러 표기가 두 형태로 섞여 있다.** `mysql -e "..."` 로 던지면 `ERROR 1054 (42S22) **at line 1**: ...` 이고,
+> 대화형에서는 `at line 1` 이 빠진다. 둘 다 실제 출력이며 **호출 방식의 차이**다 — 01·04 편이 후자, 나머지가 전자다.
+> 재현할 때 문자열이 안 맞으면 이 차이를 먼저 의심하라.
 > **조인 묶음(12 → 13 → 14 → 15 → 16)이 이어졌다** — 카티션곱 12행을 거르고(13) 되살리고(14·16), 조건의 자리로 그것이 무너지는 것(15)까지 한 사슬이다. 여섯 주제가 `study` DB 의 **`emp`·`dept`** 두 표를 01·04·16·52 와 공유한다.
 > 기준 소스: [PostgreSQL 18 공식 문서](https://www.postgresql.org/docs/current/) · [MySQL 8.4 Reference Manual](https://dev.mysql.com/doc/refman/8.4/en/) — 두 문서의 목차와 명령·함수 분류를 대조해 축을 잡았다. 표준 SQL(ISO/IEC 9075)은 공개 요약 수준에서만 참조했고 **조항 번호는 확인하지 못했으므로 적지 않는다.**
 > 실행 검증(1단계 당시 기록, 2026-09-20): **이 목록 자체에는 없다.** 이 머신에 `psql`·`mysql`·`sqlite3`·`duckdb` 가 전부 없어 한 줄도 돌려보지 못했다. 아래 방언 칸은 **문서 대조로만** 채운 것이다. → 2단계에는 **PostgreSQL 과 MySQL 둘 다** 필요하다(도커 컨테이너면 충분). `sqlite3` 는 설치가 가장 쉽지만 **이 목록의 방언 차이를 확인하는 데는 부적합**하다 — 세 번째 방언이라 PG·MySQL 어느 쪽도 대신하지 못한다. 설치는 하지 않았고 제안만 적는다. → **2026-09-21 에 두 컨테이너가 떴고 검증이 시작됐다**(위 둘째 줄).
@@ -29,30 +33,30 @@ DML(`INSERT`·`UPDATE`·`DELETE`·upsert·`MERGE`)은 전용 칸이 없어 **`�
 | # | 주제 | 분류 | 무엇을 인출하게 되나 | 선행 | 기존 주제 | 방언 | 우선 |
 |---|------|------|----------------------|------|-----------|------|------|
 | 01 | [논리적 질의 처리 순서](01-logical-query-processing-order/) | 질의 | `FROM → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT` 로 각 절이 무엇을 입력받는지 설명하고, 조건 하나를 다른 절로 옮겼을 때 결과가 어떻게 달라지는지 예측할 수 있다 | — | — | 표준 | A |
-| 02 | SELECT 목록과 열 별칭의 유효 범위 | 질의 | 별칭을 `WHERE` 에서는 못 쓰고 `ORDER BY` 에서는 쓰는 이유를 처리 순서로 설명할 수 있다 | 01 | — | 차이 | B |
+| 02 | [SELECT 목록과 열 별칭의 유효 범위](02-select-list-column-aliases/) | 질의 | 별칭을 `WHERE` 에서는 못 쓰고 `ORDER BY` 에서는 쓰는 이유를 처리 순서로 설명할 수 있다 | 01 | — | 차이 | B |
 | 03 | [WHERE 와 HAVING 의 차이](03-where-vs-having/) | 질의 | 같은 조건을 `WHERE` 에 둘 때와 `HAVING` 에 둘 때 결과·비용이 어떻게 갈리는지 판단할 수 있다 | 01 | — | 차이 | A |
 | 04 | [NULL 의 3값 논리](04-null-three-valued-logic/) | 함수 | `TRUE`/`FALSE`/`UNKNOWN` 으로 `AND`·`OR`·`NOT` 을 계산하고, `WHERE` 가 UNKNOWN 행을 버린다는 사실로 "사라진 행"을 설명할 수 있다 | 01 | — | 표준 | A |
-| 05 | NULL 비교 — IS NULL·IS DISTINCT FROM·NULL 안전 등호 | 함수 | `= NULL` 이 아무것도 못 맞추는 이유를 설명하고, NULL 을 같은 값으로 보고 비교해야 할 때 무엇을 쓸지 고를 수 있다 | 04 | — | 차이 | A |
-| 06 | 조건 식 — CASE·COALESCE·NULLIF·GREATEST/LEAST | 함수 | 단순 CASE 와 검색 CASE 를 구분하고, NULL 대체와 0 나눗셈 회피를 식 수준에서 처리할 수 있다 | 04 | — | 차이 | B |
-| 07 | DISTINCT 와 중복 제거 | 질의 | `DISTINCT` 가 어느 단계에서 무엇을 기준으로 지우는지 설명하고, `GROUP BY`·`DISTINCT ON` 과 언제 갈리는지 판단할 수 있다 | 01, 04 | — | 차이 | B |
-| 08 | ORDER BY — 정렬 키·NULL 위치·동률 | 질의 | 정렬이 불안정할 때 페이지마다 행이 섞이는 이유를 설명하고, NULL 을 앞뒤 어디에 둘지 제어할 수 있다 | 01, 04 | — | 차이 | B |
-| 09 | LIMIT·OFFSET·FETCH FIRST 와 키셋 페이지네이션 | 질의 | 깊은 `OFFSET` 이 느린 이유와 페이지 경계에서 행이 밀리는 현상을 설명하고, 키셋 방식으로 바꿀 수 있다 | 08 | — | 차이 | B |
+| 05 | [NULL 비교 — IS NULL·IS DISTINCT FROM·NULL 안전 등호](05-null-comparison-is-distinct-from/) | 함수 | `= NULL` 이 아무것도 못 맞추는 이유를 설명하고, NULL 을 같은 값으로 보고 비교해야 할 때 무엇을 쓸지 고를 수 있다 | 04 | — | 차이 | A |
+| 06 | [조건 식 — CASE·COALESCE·NULLIF·GREATEST/LEAST](06-conditional-expressions-case-coalesce/) | 함수 | 단순 CASE 와 검색 CASE 를 구분하고, NULL 대체와 0 나눗셈 회피를 식 수준에서 처리할 수 있다 | 04 | — | 차이 | B |
+| 07 | [DISTINCT 와 중복 제거](07-distinct-and-duplicate-removal/) | 질의 | `DISTINCT` 가 어느 단계에서 무엇을 기준으로 지우는지 설명하고, `GROUP BY`·`DISTINCT ON` 과 언제 갈리는지 판단할 수 있다 | 01, 04 | — | 차이 | B |
+| 08 | [ORDER BY — 정렬 키·NULL 위치·동률](08-order-by-null-position-stability/) | 질의 | 정렬이 불안정할 때 페이지마다 행이 섞이는 이유를 설명하고, NULL 을 앞뒤 어디에 둘지 제어할 수 있다 | 01, 04 | — | 차이 | B |
+| 09 | [LIMIT·OFFSET·FETCH FIRST 와 키셋 페이지네이션](09-limit-offset-keyset-pagination/) | 질의 | 깊은 `OFFSET` 이 느린 이유와 페이지 경계에서 행이 밀리는 현상을 설명하고, 키셋 방식으로 바꿀 수 있다 | 08 | — | 차이 | B |
 | 10 | [FROM 절 — 테이블 별칭·파생 테이블·VALUES 리스트](10-from-clause-aliases-derived-tables/) | 질의 | 서브쿼리를 테이블처럼 쓰는 자리와 그 별칭 규칙을 설명하고, 상수 행 목록을 조인 대상으로 만들 수 있다 | 01 | — | 차이 | B |
-| 11 | 서브쿼리 — 스칼라·상관·ANY/ALL | 질의 | 스칼라 서브쿼리가 2행을 돌려주면 왜 에러인지, 상관 서브쿼리가 바깥 행마다 다시 도는 구조인지 설명할 수 있다 | 01, 10 | — | 표준 | A |
+| 11 | [서브쿼리 — 스칼라·상관·ANY/ALL](11-subquery-scalar-correlated-any-all/) | 질의 | 스칼라 서브쿼리가 2행을 돌려주면 왜 에러인지, 상관 서브쿼리가 바깥 행마다 다시 도는 구조인지 설명할 수 있다 | 01, 10 | — | 표준 | A |
 | 12 | [카티션곱과 CROSS JOIN](12-cartesian-product-cross-join/) | 질의 | 조인을 "모든 짝을 만든 뒤 조건으로 거르는 것"으로 설명하고, 조인 조건을 빠뜨렸을 때 행 수를 예측할 수 있다 | 01, 10 | — | 차이 | B |
 | 13 | [INNER JOIN](13-inner-join/) | 질의 | `ON` 조건에 맞는 짝만 남는 규칙과, 한쪽에 짝이 여럿일 때 행이 불어나는 것을 예측할 수 있다 | 12 | — | 차이 | A |
 | 14 | [LEFT·RIGHT OUTER JOIN](14-left-right-outer-join/) | 질의 | 짝 없는 행이 NULL 로 채워져 남는 규칙을 설명하고, LEFT 와 RIGHT 를 서로 뒤집어 쓸 수 있다 | 13 | — | 표준 | A |
 | 15 | [OUTER JOIN 에서 ON 과 WHERE 의 차이](15-on-vs-where-in-outer-join/) | 질의 | 같은 조건을 `ON` 에 둘 때와 `WHERE` 에 둘 때 외부 조인이 내부 조인으로 무너지는 현상을 예측할 수 있다 | 03, 14 | — | 표준 | A |
 | 16 | [FULL OUTER JOIN](16-full-outer-join/) | 질의 | 양쪽의 짝 없는 행이 모두 남는 결과를 예측하고, 지원하지 않는 엔진에서 무엇으로 대신할지 판단할 수 있다 | 14 | — | 차이 | B |
-| 17 | SELF JOIN | 질의 | 한 테이블에 두 별칭을 붙여 같은 테이블의 행끼리 비교하는 질의를 설계할 수 있다 | 13 | — | 표준 | C |
-| 18 | USING 과 NATURAL JOIN | 질의 | `USING` 이 공통 열을 하나로 합치는 것과, `NATURAL` 이 이름만으로 붙어 스키마 변경에 조용히 깨지는 위험을 판단할 수 있다 | 13 | — | 표준 | C |
-| 19 | SEMI·ANTI 조인 — EXISTS·IN·NOT IN·NOT EXISTS | 질의 | "있는지만 보는" 조인을 `EXISTS`/`IN` 으로 쓰고, `NOT IN` 대상에 NULL 이 섞이면 결과가 통째로 비는 이유를 설명할 수 있다 | 05, 11, 13 | — | 표준 | A |
-| 20 | LATERAL 조인 | 질의 | 바깥 행의 값을 참조하는 서브쿼리를 `FROM` 에 놓아 "행마다 상위 N개" 같은 질의를 쓸 수 있다 | 11, 13 | — | 차이 | B |
-| 21 | 집계 함수와 COUNT 의 세 형태 | 함수 | `COUNT(*)`·`COUNT(열)`·`COUNT(DISTINCT 열)` 이 NULL 과 중복을 각각 어떻게 다루는지 설명하고 골라 쓸 수 있다 | 04 | [`19-probabilistic-counting`](../../../../data-structure/19-probabilistic-counting/) — 근사 계수는 거기, 여기선 정확 계수의 문법과 NULL 처리 | 표준 | A |
-| 22 | GROUP BY 와 비집계 열 규칙 | 질의 | 그룹 키가 결과 행을 정의한다는 것을 설명하고, 집계되지 않은 열을 SELECT 에 둘 때 엔진이 왜 거부하는지(또는 왜 조용히 허용하는지) 판단할 수 있다 | 01, 21 | — | 차이 | A |
-| 23 | GROUPING SETS·ROLLUP·CUBE 와 GROUPING() | 질의 | 소계·총계를 한 질의로 뽑고, 결과의 NULL 이 "값 없음"인지 "소계 행"인지 구분할 수 있다 | 22 | [`timeseries-resolution-tiers`](../../../../systems/timeseries-resolution-tiers/) — 사전 집계 저장 전략은 거기, 여기선 질의 문법 | 차이 | B |
-| 24 | 조건부 집계 — FILTER 와 CASE | 함수 | 한 번의 스캔으로 여러 조건의 합계를 나란히 뽑는 질의를 쓰고, `FILTER` 와 `CASE` 중 무엇을 쓸지 방언에 맞춰 고를 수 있다 | 06, 22 | — | 차이 | B |
-| 25 | 조인 팬아웃 — 행 수와 집계가 어긋나는 자리 | 질의 | 1:N 조인 뒤 `SUM` 이 부풀려지는 현상을 예측하고, 선집계·`EXISTS`·`DISTINCT` 중 어느 처방이 맞는지 판단할 수 있다 | 14, 22 | [`data-access/jpa.md`](../../../../engineering/data-access/jpa.md) — ORM 이 SQL 을 만들어내는 비용은 거기, 여기선 SQL 자체의 행 수 계산 | 표준 | A |
+| 17 | [SELF JOIN](17-self-join/) | 질의 | 한 테이블에 두 별칭을 붙여 같은 테이블의 행끼리 비교하는 질의를 설계할 수 있다 | 13 | — | 표준 | C |
+| 18 | [USING 과 NATURAL JOIN](18-using-and-natural-join/) | 질의 | `USING` 이 공통 열을 하나로 합치는 것과, `NATURAL` 이 이름만으로 붙어 스키마 변경에 조용히 깨지는 위험을 판단할 수 있다 | 13 | — | 표준 | C |
+| 19 | [SEMI·ANTI 조인 — EXISTS·IN·NOT IN·NOT EXISTS](19-semi-anti-join/) | 질의 | "있는지만 보는" 조인을 `EXISTS`/`IN` 으로 쓰고, `NOT IN` 대상에 NULL 이 섞이면 결과가 통째로 비는 이유를 설명할 수 있다 | 05, 11, 13 | — | 표준 | A |
+| 20 | [LATERAL 조인](20-lateral-join/) | 질의 | 바깥 행의 값을 참조하는 서브쿼리를 `FROM` 에 놓아 "행마다 상위 N개" 같은 질의를 쓸 수 있다 | 11, 13 | — | 차이 | B |
+| 21 | [집계 함수와 COUNT 의 세 형태](21-aggregate-functions-count-forms/) | 함수 | `COUNT(*)`·`COUNT(열)`·`COUNT(DISTINCT 열)` 이 NULL 과 중복을 각각 어떻게 다루는지 설명하고 골라 쓸 수 있다 | 04 | [`19-probabilistic-counting`](../../../../data-structure/19-probabilistic-counting/) — 근사 계수는 거기, 여기선 정확 계수의 문법과 NULL 처리 | 차이 | A |
+| 22 | [GROUP BY 와 비집계 열 규칙](22-group-by-nonaggregated-columns/) | 질의 | 그룹 키가 결과 행을 정의한다는 것을 설명하고, 집계되지 않은 열을 SELECT 에 둘 때 엔진이 왜 거부하는지(또는 왜 조용히 허용하는지) 판단할 수 있다 | 01, 21 | — | 차이 | A |
+| 23 | [GROUPING SETS·ROLLUP·CUBE 와 GROUPING()](23-grouping-sets-rollup-cube/) | 질의 | 소계·총계를 한 질의로 뽑고, 결과의 NULL 이 "값 없음"인지 "소계 행"인지 구분할 수 있다 | 22 | [`timeseries-resolution-tiers`](../../../../systems/timeseries-resolution-tiers/) — 사전 집계 저장 전략은 거기, 여기선 질의 문법 | 차이 | B |
+| 24 | [조건부 집계 — FILTER 와 CASE](24-conditional-aggregation-filter-case/) | 함수 | 한 번의 스캔으로 여러 조건의 합계를 나란히 뽑는 질의를 쓰고, `FILTER` 와 `CASE` 중 무엇을 쓸지 방언에 맞춰 고를 수 있다 | 06, 22 | — | 차이 | B |
+| 25 | [조인 팬아웃 — 행 수와 집계가 어긋나는 자리](25-join-fan-out/) | 질의 | 1:N 조인 뒤 `SUM` 이 부풀려지는 현상을 예측하고, 선집계·`EXISTS`·`DISTINCT` 중 어느 처방이 맞는지 판단할 수 있다 | 14, 22 | [`data-access/jpa.md`](../../../../engineering/data-access/jpa.md) — ORM 이 SQL 을 만들어내는 비용은 거기, 여기선 SQL 자체의 행 수 계산 | 표준 | A |
 | 26 | 윈도우 함수의 개념 — 집계와 무엇이 다른가 | 함수 | 그룹으로 접지 않고 행마다 값을 붙이는 계산이라는 점을 설명하고, `GROUP BY` 로 풀 수 없는 요구를 윈도우로 옮길 수 있다 | 21, 22 | — | 표준 | A |
 | 27 | PARTITION BY 와 윈도우 ORDER BY | 함수 | 창을 나누는 축과 창 안의 순서가 결과를 어떻게 바꾸는지 예측할 수 있다 | 26 | — | 표준 | B |
 | 28 | 프레임 — ROWS·RANGE·GROUPS 와 기본 프레임 | 함수 | `ORDER BY` 를 쓴 순간 적용되는 기본 프레임을 설명하고, 누적합이 동률 행에서 튀는 이유를 `ROWS`/`RANGE` 차이로 설명할 수 있다 | 27 | — | 차이 | B |
@@ -62,12 +66,12 @@ DML(`INSERT`·`UPDATE`·`DELETE`·upsert·`MERGE`)은 전용 칸이 없어 **`�
 | 32 | CTE(WITH) — 이름 붙인 서브질의와 가시성 | 질의 | CTE 의 범위와 참조 규칙을 설명하고, 중첩 서브쿼리를 CTE 로 펴서 읽히게 만들 수 있다 | 11 | — | 차이 | A |
 | 33 | 재귀 CTE | 질의 | 앵커 항과 재귀 항의 구조·종료 조건을 설명하고, 계층 전개와 사이클로 인한 무한 반복을 판단할 수 있다 | 32 | [`11-bfs`](../../../../algorithm/11-bfs/) · [`12-dfs`](../../../../algorithm/12-dfs/) — 탐색 알고리즘 자체는 거기, 여기선 재귀 CTE 의 문법과 종료 조건 | 차이 | B |
 | 34 | 집합 연산 — UNION·INTERSECT·EXCEPT 와 ALL | 질의 | 열 개수·타입 호환 규칙과 `ALL` 유무의 중복 제거 비용을 설명하고, 조인으로 쓸지 집합 연산으로 쓸지 고를 수 있다 | 01, 07 | — | 차이 | B |
-| 35 | 타입 체계와 캐스팅 — 명시 변환·암시 변환 | 함수 | 비교·연산에서 어느 쪽 타입으로 맞춰지는지 설명하고, 암시 변환이 인덱스를 못 쓰게 만드는 자리를 예측할 수 있다 | 01 | [`data-representation`](../../../data-representation/) — 비트 수준 표현은 거기, 여기선 SQL 의 타입 규칙 | 차이 | A |
-| 36 | 수치 타입과 수치 함수 — 정수 나눗셈·반올림·정밀도 | 함수 | 정수끼리 나눌 때 소수가 사라지는 동작, `DECIMAL` 과 부동소수의 차이, 반올림 함수의 경계 동작을 예측할 수 있다 | 35 | [`data-representation`](../../../data-representation/) — 부동소수 표현은 거기, 여기선 SQL 연산의 결과 | 차이 | B |
-| 37 | 문자열 함수와 연결 연산 | 함수 | 길이·부분문자열·트림·치환·대소문자 변환을 쓰고, 문자열 연결 연산자가 방언마다 다른 것을 판단할 수 있다 | 35 | — | 차이 | B |
-| 38 | 패턴 매칭 — LIKE·ESCAPE·정규식 | 함수 | 와일드카드와 이스케이프 규칙을 설명하고, 앞이 열린 패턴이 인덱스를 못 타는 이유를 예측할 수 있다 | 37 | [`25-string-matching`](../../../../algorithm/25-string-matching/) · [`32-inverted-index`](../../../../data-structure/32-inverted-index/) — 매칭 알고리즘·전문검색 색인은 거기, 여기선 SQL 연산자와 인덱스 사용 여부 | 차이 | B |
-| 39 | collation — 문자열 비교와 정렬의 기준 | 함수 | 같은 데이터가 엔진·설정에 따라 다르게 비교·정렬되는 이유를 설명하고, 대소문자 구분 여부를 의도대로 고정할 수 있다 | 37 | [`data-representation`](../../../data-representation/) — 인코딩은 거기, 여기선 비교·정렬 규칙 | 차이 | B |
-| 40 | 날짜·시간 타입과 함수 | 함수 | 타임존이 붙은 타입과 안 붙은 타입의 차이를 설명하고, 절단·추출·간격 연산과 경계 조건(`>=`/`<`)을 안전하게 쓸 수 있다 | 35 | — | 차이 | A |
+| 35 | [타입 체계와 캐스팅 — 명시 변환·암시 변환](35-type-system-and-casting/) | 함수 | 비교·연산에서 어느 쪽 타입으로 맞춰지는지 설명하고, 암시 변환이 인덱스를 못 쓰게 만드는 자리를 예측할 수 있다 | 01 | [`data-representation`](../../../data-representation/) — 비트 수준 표현은 거기, 여기선 SQL 의 타입 규칙 | 차이 | A |
+| 36 | [수치 타입과 수치 함수 — 정수 나눗셈·반올림·정밀도](36-numeric-types-and-functions/) | 함수 | 정수끼리 나눌 때 소수가 사라지는 동작, `DECIMAL` 과 부동소수의 차이, 반올림 함수의 경계 동작을 예측할 수 있다 | 35 | [`data-representation`](../../../data-representation/) — 부동소수 표현은 거기, 여기선 SQL 연산의 결과 | 차이 | B |
+| 37 | [문자열 함수와 연결 연산](37-string-functions-and-concatenation/) | 함수 | 길이·부분문자열·트림·치환·대소문자 변환을 쓰고, 문자열 연결 연산자가 방언마다 다른 것을 판단할 수 있다 | 35 | — | 차이 | B |
+| 38 | [패턴 매칭 — LIKE·ESCAPE·정규식](38-pattern-matching-like-regex/) | 함수 | 와일드카드와 이스케이프 규칙을 설명하고, 앞이 열린 패턴이 인덱스를 못 타는 이유를 예측할 수 있다 | 37 | [`25-string-matching`](../../../../algorithm/25-string-matching/) · [`32-inverted-index`](../../../../data-structure/32-inverted-index/) — 매칭 알고리즘·전문검색 색인은 거기, 여기선 SQL 연산자와 인덱스 사용 여부 | 차이 | B |
+| 39 | [collation — 문자열 비교와 정렬의 기준](39-collation/) | 함수 | 같은 데이터가 엔진·설정에 따라 다르게 비교·정렬되는 이유를 설명하고, 대소문자 구분 여부를 의도대로 고정할 수 있다 | 37 | [`data-representation`](../../../data-representation/) — 인코딩은 거기, 여기선 비교·정렬 규칙 | 차이 | B |
+| 40 | [날짜·시간 타입과 함수](40-date-time-types-and-functions/) | 함수 | 타임존이 붙은 타입과 안 붙은 타입의 차이를 설명하고, 절단·추출·간격 연산과 경계 조건(`>=`/`<`)을 안전하게 쓸 수 있다 | 35 | — | 차이 | A |
 | 41 | JSON 타입과 함수 | 함수 | 문서를 열로 펴는 연산과 경로 표현을 쓰고, JSON 열에 인덱스를 거는 방법과 한계를 판단할 수 있다 | 35 | — | 차이 | C |
 | 42 | 테이블 정의와 변경 — CREATE·ALTER TABLE | DDL·제약 | 열 타입·NULL 허용·기본값을 정하고, 운영 중 `ALTER` 가 어떤 잠금을 부르는지 판단할 수 있다 | 35 | [`partitioning-vs-sharding`](../../../../systems/partitioning-vs-sharding/) — 분할 전략은 거기, 여기선 테이블 정의 문법 | 차이 | B |
 | 43 | 기본키·UNIQUE 제약과 NULL | DDL·제약 | 기본키와 UNIQUE 의 차이를 설명하고, UNIQUE 열에 NULL 이 여러 개 들어가는 동작을 예측할 수 있다 | 04, 42 | — | 표준 | B |
@@ -90,7 +94,7 @@ DML(`INSERT`·`UPDATE`·`DELETE`·upsert·`MERGE`)은 전용 칸이 없어 **`�
 | 60 | EXPLAIN ANALYZE — 추정과 실측이 어긋나는 자리 | 실행·최적화 | 추정 행 수와 실제 행 수의 격차를 읽어 통계·선택도 문제를 짚고, 느린 질의의 병목 노드를 지목할 수 있다 | 58 | — | 차이 | B |
 
 **60주제** — 분류별로 질의 29 · 함수 18 · DDL·제약 6 · 트랜잭션·동시성 3 · 실행·최적화 4.
-우선순위는 A 21 · B 35 · C 4, 방언은 표준 17 · 차이 42 · PG 1 · MySQL 0 이다(2026-09-21 실행 검증으로 03 · 12 · 13 을 `표준` → `차이` 로 정정했다 — 아래 「방언 차이가 큰 자리」 참조).
+우선순위는 A 21 · B 35 · C 4, 방언은 표준 16 · 차이 43 · PG 1 · MySQL 0 이다(2026-09-21 실행 검증으로 03 · 12 · 13 을 `표준` → `차이` 로 정정했다 — 아래 「방언 차이가 큰 자리」 참조).
 MySQL 전용 주제가 0인 것은 의도한 결과다 — MySQL 고유 문법(`REPLACE`·`INSERT IGNORE`·`STRAIGHT_JOIN`)은 독립 주제가 될 만큼 크지 않아 해당 주제 안의 방언 메모로 들어간다.
 
 > ⚠️ 방언 칸의 확신도는 균일하지 않다. 아래 「방언 차이가 큰 자리」에 적은 항목은 **공식 문서에서 문장을 확인한 것**이고, 그 밖의 `차이` 표시는 두 문서의 문법 요약·목차 수준에서 다르다고 본 것이라 **3파일을 쓸 때 해당 페이지로 재확인**한다.
@@ -146,7 +150,7 @@ MySQL 전용 주제가 0인 것은 의도한 결과다 — MySQL 고유 문법(`
 
 | 자리 | PostgreSQL 18 | MySQL 8.4 | 주제 |
 |---|---|---|---|
-| GROUP BY 비집계 열 | 함수 종속을 **GROUP BY 에 기본키가 포함된 경우에만** 인정 | `ONLY_FULL_GROUP_BY` 가 **기본 sql_mode 에 포함**(기본 ON). 함수 종속을 탐지하고, 탈출구는 `ANY_VALUE()` | 22 |
+| **GROUP BY 비집계 열** | 함수 종속을 **GROUP BY 에 그 표의 기본키가 포함된 경우에만** 인정 — `UNIQUE NOT NULL` 열도, **조인 건너편 열도 거부**한다(2026-09-21 18.6 실행 확인). `ANY_VALUE()` 는 **PG 16+ 에도 있다**(릴리스 노트 확인) | `ONLY_FULL_GROUP_BY` 가 **기본 sql_mode 에 포함**(기본 ON). 종속성 탐지가 **더 넓다** — `UNIQUE NOT NULL` 열과 **조인 건너편**까지 인정(실행 확인). 거부 시 `ERROR 1055`(GROUP BY 있음) / `ERROR 1140`(집계만) | 22 |
 | 문자열 비교·정렬 | 기본 collation 은 **결정적**이라 `=` 가 대소문자·악센트를 가린다. 비구분 비교는 `deterministic = false` ICU collation 필요 | 기본이 `utf8mb4` / **`utf8mb4_0900_ai_ci`** — 악센트·대소문자 **무시** | 39 |
 | upsert | `INSERT … ON CONFLICT <대상> DO NOTHING \| DO UPDATE SET …` — **충돌 대상을 지목**한다 | `INSERT … AS new ON DUPLICATE KEY UPDATE c = new.a` — 대상을 못 고르고 **아무 유니크 키든** 걸린다. 영향 행 수는 삽입 1 / 갱신 2 / 무변화 0 | 52 |
 | MERGE | **PG 15 부터** 지원(`WHEN MATCHED`/`WHEN NOT MATCHED`) | **없다.** 8.4 DML 문 목록에 MERGE 가 없다 | 53 |
@@ -154,13 +158,13 @@ MySQL 전용 주제가 0인 것은 의도한 결과다 — MySQL 고유 문법(`
 | ORDER BY 의 NULL | `NULLS FIRST\|LAST` 지정 가능. 기본은 ASC=LAST / DESC=FIRST (NULL 을 **큰 값**으로 취급) | 지정 문법이 **없다**. ASC 에서 NULL 이 앞 (NULL 을 **작은 값**으로 취급) | 08 |
 | 집합 연산 | `UNION`/`INTERSECT`/`EXCEPT` 모두 오래전부터 | `INTERSECT`/`EXCEPT` 는 **8.0.31 부터** 추가됐다 | 34 |
 | FULL OUTER JOIN | 있다 | **없다.** `FULL OUTER JOIN`·`FULL JOIN` 둘 다 `ERROR 1064` 문법 오류다(2026-09-21 8.4.10 실행 확인). 우회는 **`UNION` 이 아니라 `UNION ALL` + 반조인**이다 — 단순 `UNION` 은 값이 같은 행을 접어 결과가 줄어든다(실행 확인) | 16 |
-| 소계·총계 | `GROUPING SETS`·`ROLLUP`·`CUBE` 셋 다 | **`WITH ROLLUP` / `ROLLUP(...)` 만 문서화**되어 있다(`GROUPING()` 은 있다). ※ 매뉴얼에 "CUBE 미지원"이라고 **명시된 문장은 찾지 못했다** — 문서 부재로 판단한 것 | 23 |
-| 조건부 집계 | `agg(...) FILTER (WHERE …)` | FILTER 절이 **집계 함수 문법에 없다** → `CASE` 로 쓴다 | 24 |
+| **소계·총계** | `GROUPING SETS`·`ROLLUP`·`CUBE` 셋 다. `WITH ROLLUP` 은 **`syntax error at or near "WITH"`** | `WITH ROLLUP` 과 `ROLLUP(...)` 둘 다 된다(`GROUPING()` 도). **`GROUPING SETS` 는 `ERROR 1064`**(문법 없음). ※ **`CUBE` 는 `ERROR 3889` — "Secondary engine operation failed. No secondary engine defined"** 이다(2026-09-21 8.4.10 실행 확인). **파싱은 되고 실행 경로가 없는 것**이라 「문서 부재」 판단을 실측으로 대체했다 | 23 |
+| **조건부 집계** | `agg(...) FILTER (WHERE …)` | FILTER 절이 **집계 함수 문법에 없다** → **`ERROR 1064`**(2026-09-21 8.4.10 실행 확인). `CASE` 로 쓴다 — `FILTER (WHERE c)` ≡ 인자 자리의 `CASE WHEN c THEN … END`(`ELSE` 금지) | 24 |
 | 중복 제거 | `SELECT DISTINCT ON (expr)` (맨 앞 ORDER BY 와 일치해야) | **없다** | 07 |
 | 윈도우 프레임 | `ROWS`/`RANGE`/**`GROUPS`**(PG 11+) + `EXCLUDE` | `ROWS`/`RANGE` 만 | 28 |
 | CTE 부가 문법 | `MATERIALIZED`/`NOT MATERIALIZED`(PG 12+), `SEARCH`/`CYCLE`(PG 14+) | 둘 다 문서에 없다 | 32 · 33 |
 | 문자열 연결 | `\|\|` 가 연결 | **`\|\|` 는 기본이 논리 OR**(비표준 동의어, deprecated). `PIPES_AS_CONCAT` 모드에서만 연결이 되고 그 모드는 기본 sql_mode 에 없다 → `CONCAT()` 을 쓴다 | 37 |
-| 정수 나눗셈 | `/` 는 정수끼리면 **0 방향으로 잘린다**(`5/2 → 2`, `-5/2 → -2`) | `/` 는 **DECIMAL** 을 돌려준다(`3/5 → 0.60`). 정수 나눗셈은 `DIV` | 36 |
+| 정수 나눗셈 | `/` 는 정수끼리면 **0 방향으로 잘린다**(`5/2 → 2`, `-5/2 → -2`) | `/` 는 **DECIMAL** 을 돌려준다(`3/5 → 0.6000` — 자릿수는 `피제수 스케일 + div_precision_increment`, 기본 4. 2026-09-21 8.4.10 실행 확인으로 `0.60` 표기를 정정했다). 정수 나눗셈은 `DIV` | 36 |
 | 별칭 유효 범위 | `ORDER BY`·`GROUP BY` 에서만 쓸 수 있고 **`WHERE`·`HAVING` 은 안 된다** | `GROUP BY`·`ORDER BY`·**`HAVING` 에서 된다**. `WHERE` 만 안 된다 | 02 |
 | 격리 수준 기본값 | **Read Committed** | InnoDB **REPEATABLE READ** (둘 다 `FOR UPDATE` 의 `NOWAIT`·`SKIP LOCKED` 는 지원) | 56 · 57 |
 | CHECK 제약 | 처음부터 강제 | **8.0.16 부터** 실제로 강제된다. 그 전 버전은 **파싱하고 무시**했다. `[NOT] ENFORCED` 옵션이 있다 | 45 |
@@ -169,12 +173,14 @@ MySQL 전용 주제가 0인 것은 의도한 결과다 — MySQL 고유 문법(`
 | RETURNING | INSERT/UPDATE/DELETE/MERGE 에 있다(PG 18 은 `OLD`/`NEW` 별칭까지) | **없다** | 54 |
 | 구체화 뷰 | `CREATE MATERIALIZED VIEW` + `REFRESH MATERIALIZED VIEW` | 뷰 챕터에 **일반 뷰만** 있다. ※ 이것도 "미지원" 문장이 아니라 **문서 부재**로 판단한 것 | 48 |
 | EXPLAIN | `EXPLAIN (ANALYZE, BUFFERS, FORMAT …)` — PG 18 은 ANALYZE 시 BUFFERS 가 **자동 포함** | `EXPLAIN [FORMAT={TRADITIONAL\|JSON\|TREE}]`, `EXPLAIN ANALYZE` 는 **8.0.18 부터**·`FORMAT=TREE` 만 허용 | 58 · 60 |
-| LATERAL | **9.3 부터**, 함수 앞에서는 키워드 생략 가능 | **8.0.14 부터**, `FROM` 안에서 INNER/CROSS/LEFT(및 뒤집은 RIGHT) 에만 | 20 |
+| LATERAL | **9.3 부터**, 함수 앞에서는 키워드 생략 가능. **조인 종류 제약은 PG 도 같다** — `RIGHT JOIN LATERAL` 에서 왼쪽을 참조하면 `DETAIL: The combining JOIN type must be INNER or LEFT for a LATERAL reference.`(2026-09-21 18.6 실행 확인) | **8.0.14 부터**, `FROM` 안에서 INNER/CROSS/LEFT(및 뒤집은 RIGHT) 에만 | 20 |
 | **`HAVING` 의 그룹 키 조건** | 옵티마이저가 **스캔 필터로 내린다** — `WHERE` 버전과 계획이 한 글자도 같다(`EXPLAIN ANALYZE` 확인) | **안 내린다** — `Aggregate using temporary table` 로 그룹을 다 만든 뒤 거른다 | 03 |
 | **파생 테이블 별칭** | 별칭 **없어도 통과**한다(18.6 실행 확인) | **필수** — `ERROR 1248 Every derived table must have its own alias` | 10 |
 | **`VALUES` 행 생성자** | `VALUES (1,'x'),(2,'y')` — `ROW(...)` 는 **구문 오류** | `VALUES ROW(1,'x'),ROW(2,'y')` — 괄호만 쓰면 **`ERROR 1064`**. 서로를 정확히 거부한다 | 10 · 12 |
 | **`CROSS JOIN … ON`** | **구문 오류** — `CROSS` 는 조건을 받지 않는다 | **통과한다** — 내부 조인이 된다(`JOIN`·`INNER JOIN`·`CROSS JOIN` 이 문법적 동의어) | 12 |
 | **`JOIN` 에 `ON` 누락** | **구문 오류** — `ON`/`USING` 이 의무다 | **통과한다** — 카티션곱이 조용히 나온다 | 13 |
+| **`COUNT(DISTINCT 열1, 열2)`** | **`COUNT(DISTINCT (a, b))`** — 괄호로 묶은 행 값 하나. `COUNT(DISTINCT a, b)` 는 `function count(integer, integer) does not exist`. `emp` 에서 **4** | **`COUNT(DISTINCT a, b)`** — 인자 나열. 괄호로 묶으면 `ERROR 1241 Operand should contain 1 column(s)`. **한 칸이라도 NULL 인 행은 안 센다** → `emp` 에서 **2**. 서로의 문법을 정확히 거부하고 **값도 다르다** | 21 |
+| **`ROLLUP` 없는 `GROUPING()`** | **전부 0 을 돌려준다**(접은 열이 없다는 뜻) | **`ERROR 1111 Invalid use of group function`** — 매뉴얼이 `GROUPING()` 을 `WITH ROLLUP` 질의의 함수로 정의한다 | 23 |
 | **`generate_series`** | 있다 — `CROSS JOIN generate_series(1,3)` 으로 수 목록을 만든다 | **없다** — `ERROR 1064`. `UNION ALL` 목록이나 재귀 CTE 로 대신한다 | 12 · 33 |
 
 ## 버전 기준
