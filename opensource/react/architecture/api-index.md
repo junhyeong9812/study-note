@@ -22,7 +22,12 @@
 |---|---|---|
 | `useState` | `mountState` → `dispatchSetState` → `scheduleUpdateOnFiber` | [훅](flows/hooks/README.md) → [스케줄링](flows/scheduling/README.md) |
 | `useReducer` | `useState` 와 같은 길. `useState` 가 reducer 고정판이다 | [훅](flows/hooks/README.md) |
-| `setState` (클래스) | `enqueueUpdate` → `scheduleUpdateOnFiber` | [스케줄링](flows/scheduling/README.md) |
+| `setState` (클래스) | `enqueueUpdate` → `scheduleUpdateOnFiber`. 상태가 되는 것은 렌더 때 `processUpdateQueue` 에서다 | [업데이트 큐](flows/update-queue/README.md) → [스케줄링](flows/scheduling/README.md) |
+| `setState(x, cb)` 의 `cb` | `queue.callbacks` 에 쌓이고 `Callback` 플래그가 선다. 커밋 레이아웃 패스에서 불린다 | [업데이트 큐](flows/update-queue/05_capturedAndCallbacks/README.md) |
+| `replaceState` | tag 가 `ReplaceState`. 병합하지 않고 payload 로 통째로 갈아끼운다 | [업데이트 큐](flows/update-queue/04_getStateFromUpdate/README.md) |
+| `forceUpdate` | tag 가 `ForceUpdate`. 상태를 안 바꾸고 모듈 전역 `hasForceUpdate` 만 세운다 | [업데이트 큐](flows/update-queue/04_getStateFromUpdate/README.md) |
+| `root.render(el, cb)` 의 `cb` | 같은 큐를 쓴다. `commitRootCallbacks` 가 부르고 `this` 는 첫 호스트 자식이다 | [업데이트 큐](flows/update-queue/05_capturedAndCallbacks/README.md) |
+| `useCacheRefresh` | `CacheComponent` 나 `HostRoot` 조상을 찾아 **클래스 큐**에 업데이트를 건다 | [업데이트 큐](flows/update-queue/README.md) |
 | `useOptimistic` | 언제나 동기다. 트랜지션과 얽히지 않는다 | [훅](flows/hooks/README.md) |
 | `useSyncExternalStore` | 스냅샷이 달라지면 `markWorkInProgressReceivedUpdate` | [훅](flows/hooks/README.md) |
 
@@ -108,8 +113,8 @@
 |---|---|---|
 | `use(promise)` 가 대기 중 | `SuspenseException` 을 던진다 | [에러와 Suspense](flows/throw/README.md) |
 | 컴포넌트가 에러를 던짐 | 경계를 찾아 올라간다 | [에러와 Suspense](flows/throw/README.md) |
-| `getDerivedStateFromError` | 에러 업데이트의 **payload** — 렌더 단계 | [에러와 Suspense](flows/throw/README.md) |
-| `componentDidCatch` | 에러 업데이트의 **callback** — 커밋 단계 | [에러와 Suspense](flows/throw/README.md) |
+| `getDerivedStateFromError` | 에러 업데이트의 **payload** — 렌더 단계. `getStateFromUpdate` 가 부른다 | [에러와 Suspense](flows/throw/README.md) → [업데이트 큐](flows/update-queue/04_getStateFromUpdate/README.md) |
+| `componentDidCatch` | 에러 업데이트의 **callback** — 커밋 단계. 로깅도 이 콜백이 한다 | [에러와 Suspense](flows/throw/README.md) → [업데이트 큐](flows/update-queue/05_capturedAndCallbacks/README.md) |
 | 리소스가 준비 안 됨 | `completeWork` 가 `SuspenseyCommitException` 을 던진다 | [completeWork](flows/complete-work/README.md) |
 | `onRecoverableError` | 커밋 끝에서 불린다. `catch` 로 감싸지 않는다 | [커밋](flows/commit/README.md) |
 
