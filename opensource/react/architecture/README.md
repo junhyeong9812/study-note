@@ -1,12 +1,12 @@
 # React 아키텍처 지도
 
-소스를 **직접 읽어서** 그린 탑다운 지도다. 흐름 열한 편, 62개 문서로 되어 있다.
+소스를 **직접 읽어서** 그린 탑다운 지도다. 흐름 열두 편, 66개 문서로 되어 있다.
 
 기준 커밋: react `main` [`68631c0453`](https://github.com/facebook/react/tree/68631c0453b08e2c7c96a40910f4c91db1f66d5a). 모든 줄 번호는 이 커밋 기준이고, 대상은 **react-dom 클라이언트 빌드**다.
 
 `useState` 나 `useEffect` 같은 API 이름에서 거꾸로 찾고 싶으면 [API 역인덱스](api-index.md)를 보면 된다.
 
-## 흐름 열한 편
+## 흐름 열두 편
 
 | 흐름 | 진입점 | 문서 |
 |---|---|---|
@@ -21,6 +21,7 @@
 | [lane 우선순위](flows/lanes/README.md) | `ReactFiberLane.js` — 비트 배치와 선택 규칙 | 5 |
 | [에러와 Suspense](flows/throw/README.md) | `throwException` `ReactFiberThrow.js` L364 | 5 |
 | [자식 조정](flows/reconcile-children/README.md) | `reconcileChildFibers` `ReactChildFiber.js` L2108 | 4 |
+| [컨텍스트 전파](flows/context/README.md) | `propagateParentContextChanges` `ReactFiberNewContext.js` L411 | 4 |
 
 ## 흐름이 이어지는 자리
 
@@ -110,6 +111,9 @@
 
  key 가 왜 필요한지, 리스트를 어떻게 diff 하는지 궁금하면
    [자식 조정]
+
+ useContext 가 값이 바뀐 것을 어떻게 아는지 궁금하면
+   [컨텍스트 전파]
 ```
 
 ## 문서의 생김새
