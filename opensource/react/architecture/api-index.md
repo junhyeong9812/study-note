@@ -63,9 +63,14 @@
 
 | API | 언제 도는가 | 흐름 |
 |---|---|---|
-| `useInsertionEffect` | 커밋의 **mutation** 패스. DOM 을 건드리기 전 | [커밋](flows/commit/README.md) |
-| `useLayoutEffect` | cleanup 은 mutation, 콜백은 **layout** 패스 | [커밋](flows/commit/README.md) |
-| `useEffect` | 커밋 **뒤** 별도 태스크. sync lane 이면 같은 태스크 안 | [패시브 이펙트](flows/passive-effects/README.md) |
+| `useInsertionEffect` | 커밋의 **mutation** 패스. DOM 을 건드리기 전. 이 안에서 setState 하면 DEV 가 경고한다 | [커밋](flows/commit/README.md) → [커밋 이펙트](flows/commit-effects/README.md) |
+| `useLayoutEffect` | cleanup 은 mutation, 콜백은 **layout** 패스 — tag 가 말하는 단계는 **콜백 쪽**이다 | [커밋](flows/commit/README.md) → [커밋 이펙트](flows/commit-effects/README.md) |
+| `useEffect` | 커밋 **뒤** 별도 태스크. sync lane 이면 같은 태스크 안 | [패시브 이펙트](flows/passive-effects/README.md) → [커밋 이펙트](flows/commit-effects/README.md) |
+| 이펙트가 돌려주는 cleanup | `Effect` 가 아니라 한 칸짜리 `EffectInstance` 에 담긴다. 그래서 렌더를 넘어 산다 | [커밋 이펙트](flows/commit-effects/README.md) |
+| 이펙트 안에서 던지면 | 그 fiber 의 **남은 이펙트가 건너뛰어진다**. cleanup 쪽은 이펙트마다 잡아 계속 돈다 | [커밋 이펙트](flows/commit-effects/README.md) |
+| Offscreen 으로 숨겼다 보이면 | deps 가 그대로여도 이펙트가 다시 돈다 (`HookHasEffect` 를 빼고 부른다) | [커밋 이펙트](flows/commit-effects/README.md) |
+| 함수 `ref` 의 반환값 | cleanup 으로 저장된다. 그러면 뗄 때 `ref(null)` 을 안 부른다 | [커밋 이펙트](flows/commit-effects/README.md) |
+| `<Profiler onRender>` | 프로파일링 빌드에서만 돈다. `onPostCommit` 은 `Passive` 플래그가 붙어야 온다 | [커밋 이펙트](flows/commit-effects/README.md) |
 | `componentDidMount` | layout 패스. `root.current` 교체 **뒤**. `Update \| LayoutStatic` 이 렌더 때 선다 | [커밋](flows/commit/README.md) → [클래스 컴포넌트](flows/class-component/README.md) |
 | `componentWillUnmount` | mutation 패스. `root.current` 교체 **앞**. 부르기 직전 `instance.props`/`state` 를 current 것으로 덮어쓴다 | [커밋](flows/commit/README.md) |
 | `getSnapshotBeforeUpdate` | before-mutation 패스. 있으면 `Snapshot` 플래그가 선다 — 다만 **이어서 마운트하는 길에서는 예약되지 않는다** | [커밋](flows/commit/README.md) → [클래스 컴포넌트](flows/class-component/README.md) |
