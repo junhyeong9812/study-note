@@ -1,12 +1,12 @@
 # React 아키텍처 지도
 
-소스를 **직접 읽어서** 그린 탑다운 지도다. 흐름 열세 편, 72개 문서로 되어 있다.
+소스를 **직접 읽어서** 그린 탑다운 지도다. 흐름 열네 편, 78개 문서로 되어 있다.
 
 기준 커밋: react `main` [`68631c0453`](https://github.com/facebook/react/tree/68631c0453b08e2c7c96a40910f4c91db1f66d5a). 모든 줄 번호는 이 커밋 기준이고, 대상은 **react-dom 클라이언트 빌드**다.
 
 `useState` 나 `useEffect` 같은 API 이름에서 거꾸로 찾고 싶으면 [API 역인덱스](api-index.md)를 보면 된다.
 
-## 흐름 열세 편
+## 흐름 열네 편
 
 | 흐름 | 진입점 | 문서 |
 |---|---|---|
@@ -23,6 +23,7 @@
 | [자식 조정](flows/reconcile-children/README.md) | `reconcileChildFibers` `ReactChildFiber.js` L2108 | 4 |
 | [컨텍스트 전파](flows/context/README.md) | `propagateParentContextChanges` `ReactFiberNewContext.js` L411 | 4 |
 | [업데이트 큐](flows/update-queue/README.md) | `processUpdateQueue` `ReactFiberClassUpdateQueue.js` L487 | 6 |
+| [클래스 컴포넌트](flows/class-component/README.md) | `updateClassComponent` `ReactFiberBeginWork.js` L1580 | 6 |
 
 ## 흐름이 이어지는 자리
 
@@ -38,6 +39,8 @@
  [렌더 루프]  work loop 를 돌린다
       |
       +-- performUnitOfWork --> [beginWork]     내려가며 자식을 만든다
+      |                              |  updateClassComponent
+      |                              +--> [클래스 컴포넌트]  생명주기를 부른다
       |                              |  processUpdateQueue
       |                              +--> [업데이트 큐]  쌓인 setState 를 접는다
       |                              |  reconcileChildren
@@ -121,6 +124,9 @@
  setState 가 실제로 언제 상태가 되는지,
  "우선순위가 높으면 먼저 반영되는가" 가 궁금하면
    [업데이트 큐]
+
+ 생명주기가 언제 불리는지, shouldComponentUpdate 가 무엇을 막는지 궁금하면
+   [클래스 컴포넌트]
 ```
 
 ## 문서의 생김새
