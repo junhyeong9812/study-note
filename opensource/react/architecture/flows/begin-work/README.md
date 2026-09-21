@@ -172,7 +172,7 @@
 
 ## 다루지 않는 것
 
-`update*Component` 29종의 본문(`updateFunctionComponent`, `updateClassComponent`, `updateHostComponent`, `updateSuspenseComponent` 등)이 실제로 자식을 만드는 과정, `renderWithHooks` 와 훅 디스패처([훅 흐름](../hooks/README.md)에 따로 있다), `reconcileChildren` 의 자식 조정과 키 매칭([자식 조정 흐름](../reconcile-children/README.md)에 따로 있다), `pushHostContext` / `pushProvider` / `pushCacheProvider` 등 스택 푸시 함수의 구현, `cloneChildFibers`, `lazilyPropagateParentContextChanges` 와 컨텍스트 전파, `remountFiber`(L3830)의 핫 리로드는 같은 뼈대의 곁가지라 요약만 했다. `tag` 별 두 switch 대조표와 죽은 case 는 [spi](spi/README.md)에 모았다.
+`update*Component` 29종의 본문(`updateFunctionComponent`, `updateClassComponent`, `updateHostComponent`, `updateSuspenseComponent` 등)이 실제로 자식을 만드는 과정, `renderWithHooks` 와 훅 디스패처([훅 흐름](../hooks/README.md)에 따로 있다), `reconcileChildren` 의 자식 조정과 키 매칭([자식 조정 흐름](../reconcile-children/README.md)에 따로 있다), `pushHostContext` / `pushProvider` / `pushCacheProvider` 등 스택 푸시 함수의 구현, `cloneChildFibers`, `lazilyPropagateParentContextChanges` 와 컨텍스트 전파([컨텍스트 흐름](../context/README.md)에 따로 있다), `remountFiber`(L3830)의 핫 리로드는 같은 뼈대의 곁가지라 요약만 했다. `tag` 별 두 switch 대조표와 죽은 case 는 [spi](spi/README.md)에 모았다.
 
 ## 하위 메서드
 
