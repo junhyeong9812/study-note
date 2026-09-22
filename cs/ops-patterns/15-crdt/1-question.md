@@ -12,7 +12,7 @@
      문제(A)는 원문 TODO/javadoc 을 코드블록으로 먼저 두고 그 아래에 질문을 단다.
      유형: 왜(why) / 예측(what if) / 경계(어느 계층·모듈의 책임인가) / 연결(다른 주제와의 다리) -->
 
-### A. 문제 (구현 대상: NaiveCounter TODO 1 · GCounter TODO 2~4 · OrSet TODO 5~8)
+### A. 문제 (구현 대상: NaiveCounter TODO 1 · GCounter TODO 2\~4 · OrSet TODO 5\~8)
 
 #### 1. NaiveCounter — merge (TODO 1, 기준선. 고치면 안 된다)
 
@@ -33,7 +33,7 @@ public NaiveCounter merge(NaiveCounter other) {
 - 이 사고는 왜 예외도 안 나고 조용히 일어나는가?
 - 나이브 카운터가 실제로 맞게 동작하는 전제 조건은 무엇이고, 분산에서는 왜 그 전제가 깨지는가?
 
-#### 2. GCounter — increment / value / merge (TODO 2~4)
+#### 2. GCounter — increment / value / merge (TODO 2\~4)
 
 ```java
 // GCounter.java (src/main) — 채울 것
@@ -62,7 +62,7 @@ public GCounter merge(GCounter other) {
 - 같은 칸을 두 번 받아도 값이 안 늘어나는 근거는 무엇인가?
 - 14번 벡터 시계와 자료 모양이 같은데, 다른 것은 무엇인가?
 
-#### 3. OrSet — add / remove / elements / merge (TODO 5~8)
+#### 3. OrSet — add / remove / elements / merge (TODO 5\~8)
 
 ```java
 // OrSet.java (src/main) — 채울 것

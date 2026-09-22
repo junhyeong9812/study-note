@@ -204,7 +204,7 @@ return phase == Phase.RUNNING;
 #### 8. 만들면서 배운 것
 
 - 안 잡힌 변종: `complete` 의 **`notifyAll`** 이다.\
-  이 구현의 대기 루프는 `wait` 가 아니라 **주기적으로 확인하는 방식(폴링)**이라 **부를 사람이 없었다** — 즉 **죽은 코드**였고, 없애도 아무 테스트가 안 깨진다.
+  이 구현의 대기 루프는 `wait` 가 아니라 **주기적으로 확인하는 방식**(폴링)이라 **부를 사람이 없었다** — 즉 **죽은 코드**였고, 없애도 아무 테스트가 안 깨진다.
 
 > **폴링(polling, 주기 확인)** — wait/notify 대신 일정 간격으로 조건을 다시 확인하는 대기 방식.\
 > 예: 이 구현의 대기 루프가 이 방식이라 notifyAll 은 죽은 코드였다.
@@ -226,5 +226,5 @@ return phase == Phase.RUNNING;
 
 - 기준 소스: `/home/jun/project/myway/ops-patterns/19-graceful-shutdown/impl/AbruptServer.java`, `impl/GracefulServer.java`
 - TODO 없는 조각: `src/main/java/com/ops/shutdown/Phase.java`, `ShutdownReport.java`(clean/timedOut), `Ticker.java`
-- 문제 원문: `src/main/java/com/ops/shutdown/` 의 TODO 1~4, `README.md` "특히 생각해볼 것" 1~7
+- 문제 원문: `src/main/java/com/ops/shutdown/` 의 TODO 1\~4, `README.md` "특히 생각해볼 것" 1\~7
 - 테스트: `src/test/java/com/ops/shutdown/ShutdownTest.java`, `FakeTicker.java`, `ScriptedTicker.java`

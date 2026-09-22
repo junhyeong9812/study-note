@@ -12,9 +12,9 @@
      문제(A)는 원문 TODO/javadoc 을 코드블록으로 먼저 두고 그 아래에 질문을 단다.
      유형: 왜(why) / 예측(what if) / 경계(어느 계층·모듈의 책임인가) / 연결(다른 주제와의 다리) -->
 
-### A. 문제 (구현 대상: HashChain TODO 1~4 · ProofOfWorkChain TODO 5~6)
+### A. 문제 (구현 대상: HashChain TODO 1\~4 · ProofOfWorkChain TODO 5\~6)
 
-#### 1. HashChain — append / createBlock (TODO 1~2)
+#### 1. HashChain — append / createBlock (TODO 1\~2)
 
 ```java
 // HashChain.java (src/main) — 채울 것
@@ -38,7 +38,7 @@ protected Block createBlock(int index, String previousHash, List<String> transac
 - 해시를 자체 제작하지 않고 SHA-256 을 가져다 쓰는 이유는? (출처: README 생각해볼 것 4)
 - 05번 해시맵의 해시와 여기 해시는 요구 성질이 어떻게 다른가?
 
-#### 2. HashChain — verify / rebuildFrom (TODO 3~4, verify 가 본체)
+#### 2. HashChain — verify / rebuildFrom (TODO 3\~4, verify 가 본체)
 
 ```java
 // HashChain.java (src/main) — 채울 것
@@ -70,7 +70,7 @@ public int rebuildFrom(int index) {
 - 1000칸 사슬에서 500번부터 위조하는 데 해시 몇 회가 들고, 그것이 보여주는 이 구조의 한계는 무엇인가?
 - "고치면 티가 난다"와 "못 고친다"는 어떻게 다른 말인가?
 
-#### 3. ProofOfWorkChain — createBlock / meetsDifficulty (TODO 5~6)
+#### 3. ProofOfWorkChain — createBlock / meetsDifficulty (TODO 5\~6)
 
 ```java
 // ProofOfWorkChain.java (src/main) — 채울 것

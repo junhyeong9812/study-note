@@ -12,9 +12,9 @@
      문제(A)는 원문 TODO/javadoc 을 코드블록으로 먼저 두고 그 아래에 질문을 단다.
      유형: 왜(why) / 예측(what if) / 경계(어느 계층·모듈의 책임인가) / 연결(다른 주제와의 다리) -->
 
-### A. 문제 (구현 대상: LamportClock TODO 1~3 · VectorClock TODO 4~6)
+### A. 문제 (구현 대상: LamportClock TODO 1\~3 · VectorClock TODO 4\~6)
 
-#### 1. 램포트 시계 — tick / receive / compare (TODO 1~3)
+#### 1. 램포트 시계 — tick / receive / compare (TODO 1\~3)
 
 ```java
 // LamportClock.java (src/main) — 채울 것
@@ -46,7 +46,7 @@ public Ordering compare(Long a, Long b) {
 - 램포트가 보장하는 것은 어느 방향 한 줄인가, 그 역은 왜 성립하지 않는가?
 - "램포트 compare 답의 절반은 근거가 없다"는 말은 무슨 뜻인가?
 
-#### 2. 벡터 시계 — tick / receive / compare (TODO 4~6, compare 가 본체)
+#### 2. 벡터 시계 — tick / receive / compare (TODO 4\~6, compare 가 본체)
 
 ```java
 // VectorClock.java (src/main) — 채울 것

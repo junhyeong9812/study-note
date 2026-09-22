@@ -247,4 +247,4 @@ return total;
 
 - 기준 소스: `/home/jun/project/myway/ops-patterns/07-outbox/impl/DirectPublisher.java`, `impl/OutboxPublisher.java`, `impl/OutboxRelay.java`
 - 계약·조각: `src/main/java/com/ops/outbox/OrderService.java`, `Database.java`, `MessageBroker.java`, `OutboxEntry.java`, `Event.java`, `CrashPoint.java`, `CrashException.java`
-- 문제 원문: `src/main/java/com/ops/outbox/` 의 TODO 1~4, `README.md` "특히 생각해볼 것" 1~8
+- 문제 원문: `src/main/java/com/ops/outbox/` 의 TODO 1\~4, `README.md` "특히 생각해볼 것" 1\~8

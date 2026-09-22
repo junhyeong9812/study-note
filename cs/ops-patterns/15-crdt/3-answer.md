@@ -10,7 +10,7 @@
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
 
-### A. 문제 (구현 대상: NaiveCounter TODO 1 · GCounter TODO 2~4 · OrSet TODO 5~8)
+### A. 문제 (구현 대상: NaiveCounter TODO 1 · GCounter TODO 2\~4 · OrSet TODO 5\~8)
 
 #### 1. NaiveCounter — merge (TODO 1, 기준선)
 
@@ -62,7 +62,7 @@ public NaiveCounter merge(NaiveCounter other) {
   → 메시지가 **순서대로, 정확히 한 번씩만** 오면 실제로 맞다.\
   분산에서는 그 전제가 성립하지 않는다 — 07번에서 본 대로 중복 발행은 없앨 수 없고(at-least-once 가 최선), 그물 전파에서는 같은 상태가 여러 경로로 온다.
 
-#### 2. GCounter — increment / value / merge (TODO 2~4)
+#### 2. GCounter — increment / value / merge (TODO 2\~4)
 
 **정답 코드** (impl/GCounter.java):
 
@@ -131,7 +131,7 @@ public GCounter merge(GCounter other) {
   → 자료 모양(`{노드=수}` + merge는 칸마다 max)은 같고 **읽는 법**만 다르다.\
   벡터 시계는 칸들을 비교해서 순서(BEFORE/AFTER/CONCURRENT)를 말했고, GCounter 는 칸들을 더해서 값을 말한다.
 
-#### 3. OrSet — add / remove / elements / merge (TODO 5~8)
+#### 3. OrSet — add / remove / elements / merge (TODO 5\~8)
 
 **정답 코드** (impl/OrSet.java):
 

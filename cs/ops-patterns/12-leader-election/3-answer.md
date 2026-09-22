@@ -224,4 +224,4 @@ private boolean isStale(long now) {
 
 - 기준 소스: `/home/jun/project/myway/ops-patterns/12-leader-election/impl/NaiveElection.java`, `impl/LeaseElection.java`
 - 계약: `src/main/java/com/ops/leader/Election.java`, `Role.java`
-- 문제 원문: `src/main/java/com/ops/leader/` 의 TODO 1~7, `README.md` "특히 생각해볼 것" 1~8
+- 문제 원문: `src/main/java/com/ops/leader/` 의 TODO 1\~7, `README.md` "특히 생각해볼 것" 1\~8

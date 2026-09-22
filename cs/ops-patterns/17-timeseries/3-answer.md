@@ -10,9 +10,9 @@
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
 
-### A. 문제 (구현 대상: RawSeries TODO 1~2 · RollingSeries TODO 3~6)
+### A. 문제 (구현 대상: RawSeries TODO 1\~2 · RollingSeries TODO 3\~6)
 
-#### 1. RawSeries — summarize / quantile (TODO 1~2)
+#### 1. RawSeries — summarize / quantile (TODO 1\~2)
 
 **정답 코드** (impl/RawSeries.java):
 
@@ -69,7 +69,7 @@ public double quantile(long from, long to, double q) {
   → 뒤늦게 도착하는 값이 실제로 있다(네트워크 지연·재전송).\
   그래서 그냥 리스트에 붙이고 조회 때 시각으로 거른다.
 
-#### 2. RollingSeries — record / rollUp (TODO 3~4)
+#### 2. RollingSeries — record / rollUp (TODO 3\~4)
 
 **정답 코드** (impl/RollingSeries.java):
 
@@ -130,7 +130,7 @@ public int rollUp() {
   → 이 조건은 값이 아니라 설정의 성질이라 객체가 만들어지는 순간 판정할 수 있다.\
   생성자에서 던지면 잘못된 설정이 아예 존재하지 못하고, rollUp 때마다 검사하면 이미 쌓인 데이터가 틀린 뒤에야 드러난다.
 
-#### 3. RollingSeries — summarize / bucketStart (TODO 5~6)
+#### 3. RollingSeries — summarize / bucketStart (TODO 5\~6)
 
 **정답 코드** (impl/RollingSeries.java):
 

@@ -236,4 +236,4 @@ return true;
 
 - 기준 소스: `/home/jun/project/myway/ops-patterns/11-distributed-lock/impl/NaiveLock.java`, `impl/LeaseLock.java`, `impl/FencedStore.java`
 - 계약: `src/main/java/com/ops/dlock/DistributedLock.java`, `Lease.java`
-- 문제 원문: `src/main/java/com/ops/dlock/` 의 TODO 1~7, `README.md` "특히 생각해볼 것" 1~9
+- 문제 원문: `src/main/java/com/ops/dlock/` 의 TODO 1\~7, `README.md` "특히 생각해볼 것" 1\~9

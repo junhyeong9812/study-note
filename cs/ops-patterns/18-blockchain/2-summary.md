@@ -36,7 +36,7 @@
 ## 문제 — 이 챕터가 시키는 것
 
 - "지우지 않고 붙인다"를 규칙(16번)이 아니라 **구조**로 강제하는 사슬을 만들라는 챕터다 — 각 칸이 앞 칸의 해시를 담아 고치면 티가 나게 하고, 작업 증명으로 다시 만드는 비용을 키운다.
-- 과제(README 「하는 방법」): ① `BlockchainTest.java` 를 따라 친다 ② `HashChain` 의 TODO 1~4(append/createBlock/verify/rebuildFrom) — **verify 가 본체다** ③ `ProofOfWorkChain` 의 TODO 5~6(createBlock/meetsDifficulty).\
+- 과제(README 「하는 방법」): ① `BlockchainTest.java` 를 따라 친다 ② `HashChain` 의 TODO 1\~4(append/createBlock/verify/rebuildFrom) — **verify 가 본체다** ③ `ProofOfWorkChain` 의 TODO 5\~6(createBlock/meetsDifficulty).\
   `./run.sh 18` 로 시작하면 17개 중 14개가 실패한다.
 - 별도 응용 문제(*Problems.java)는 없다.
 
@@ -225,7 +225,7 @@ nonce=2 -> 해시 "00c..."  2개 >= 난이도 2 -> 통과! 이 nonce 로 확정
 - 사슬의 칸(TODO 없음): `.../src/main/java/com/ops/chain/Block.java` (payload가 보호 범위를 정한다)
 - 해시(TODO 없음 — 검증된 것을 그대로 쓴다): `.../src/main/java/com/ops/chain/Hashing.java` (SHA-256, leadingZeros)
 - 검사 결과: `.../src/main/java/com/ops/chain/TamperReport.java` ("#k 부터 깨짐"이 핵심)
-- 내 구현(TODO 껍데기): `.../src/main/java/com/ops/chain/HashChain.java`(TODO 1~4 — verify가 본체), `ProofOfWorkChain.java`(TODO 5~6)
+- 내 구현(TODO 껍데기): `.../src/main/java/com/ops/chain/HashChain.java`(TODO 1\~4 — verify가 본체), `ProofOfWorkChain.java`(TODO 5\~6)
 - 정답 기준 소스: `/home/jun/project/myway/ops-patterns/18-blockchain/impl/HashChain.java`, `impl/ProofOfWorkChain.java`
 - 테스트: `.../src/test/java/com/ops/chain/BlockchainTest.java` (해시 성질 / 사슬 / 변조 / 재작성)
 - 이웃 챕터: 16-event-sourcing(붙이기만 — 규칙 vs 구조), 27-merkle-tree(같은 해시 토대), 05-hashmap(다른 요구의 해시), 다음 19-graceful-shutdown

@@ -225,5 +225,5 @@ public int sequenceOf(long id) {
 
 - 기준 소스: `/home/jun/project/myway/ops-patterns/13-snowflake/impl/Snowflake.java`, `impl/RandomIdGenerator.java`
 - 계약: `src/main/java/com/ops/idgen/IdGenerator.java`, `Ticker.java`, `ClockWentBackwardsException.java`
-- 문제 원문: `src/main/java/com/ops/idgen/` 의 TODO 1~5, `README.md` "특히 생각해볼 것" 1~7
+- 문제 원문: `src/main/java/com/ops/idgen/` 의 TODO 1\~5, `README.md` "특히 생각해볼 것" 1\~7
 - 테스트: `src/test/java/com/ops/idgen/SnowflakeTest.java`, `FakeTicker.java`(되감기 가능한 주입 시계)

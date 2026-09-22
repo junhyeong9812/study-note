@@ -10,9 +10,9 @@
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
 
-### A. 문제 (구현 대상: LamportClock TODO 1~3 · VectorClock TODO 4~6)
+### A. 문제 (구현 대상: LamportClock TODO 1\~3 · VectorClock TODO 4\~6)
 
-#### 1. 램포트 시계 — tick / receive / compare (TODO 1~3)
+#### 1. 램포트 시계 — tick / receive / compare (TODO 1\~3)
 
 **정답 코드** (impl/LamportClock.java):
 
@@ -69,7 +69,7 @@ receive 의 세 갈래 : A(값 3)가 B(값 0)에게 보낸다
 - **"답의 절반은 근거가 없다"?**\
   → compare 는 값이 다르면 무조건 BEFORE/AFTER 를 말하는데, 그중 인과가 실제로 있는 쌍만 근거가 있고, 인과 없이 값만 다른 쌍(동시 사건 대부분)에 대한 순서 판정은 지어낸 것이라는 뜻.
 
-#### 2. 벡터 시계 — tick / receive / compare (TODO 4~6, compare 가 본체)
+#### 2. 벡터 시계 — tick / receive / compare (TODO 4\~6, compare 가 본체)
 
 **정답 코드** (impl/VectorClock.java):
 
@@ -167,7 +167,7 @@ receive 순서가 갈리는 곳 : 재기동한 A(빈 벡터 {})가 B 에게서
   NTP 를 잘 맞춰도 수 밀리초는 늘 어긋나 있고, 50ms 오차도 아주 흔하다.\
   오차를 줄일 뿐 0 으로 만들 수 없다.
 
-> **시계 오차/스큐(clock skew)** — 두 서버의 시계가 어긋난 정도. 수 밀리초~수십 밀리초가 흔하다.\
+> **시계 오차/스큐(clock skew)** — 두 서버의 시계가 어긋난 정도. 수 밀리초\~수십 밀리초가 흔하다.\
 > 예: NTP 를 잘 맞춰도 50ms 오차는 아주 흔하다.
 
 - **논리 시계는 무엇을 세는가?**\

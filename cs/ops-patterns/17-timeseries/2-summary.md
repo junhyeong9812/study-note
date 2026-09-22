@@ -41,7 +41,7 @@
 ## 문제 — 이 챕터가 시키는 것
 
 - 초당 1000개씩 오는 값을 다 들고 있을 수 없으니, 최근 것은 가는 버킷으로 자세히·오래된 것은 굵은 버킷으로 접어 들고 있는 시계열 저장소를 만들라는 챕터다 — 접기는 되돌릴 수 없고, 경계 처리가 전부다.
-- 과제(README 「하는 방법」): ① `TimeSeriesTest.java` 를 따라 친다 ② `RawSeries` 의 TODO 1~2(summarize/quantile) — **기준선. 정확한데 비싸다** ③ `RollingSeries` 의 TODO 3~6(record/rollUp/summarize/bucketStart) — **경계가 전부다**.\
+- 과제(README 「하는 방법」): ① `TimeSeriesTest.java` 를 따라 친다 ② `RawSeries` 의 TODO 1\~2(summarize/quantile) — **기준선. 정확한데 비싸다** ③ `RollingSeries` 의 TODO 3\~6(record/rollUp/summarize/bucketStart) — **경계가 전부다**.\
   `./run.sh 17` 로 시작하면 18개 중 15개가 실패한다.
 - 별도 응용 문제(*Problems.java)는 없다.
 
@@ -240,7 +240,7 @@ average():     sum / count. 빈 버킷이면 NaN
 
 - 챕터 안내: `/home/jun/project/myway/ops-patterns/17-timeseries/README.md`
 - 요약 상자(TODO 없음): `.../src/main/java/com/ops/timeseries/Bucket.java` (add/mergeWith — 평균이 아니라 합·개수를 담는 이유)
-- 내 구현(TODO 껍데기): `.../src/main/java/com/ops/timeseries/RawSeries.java`(TODO 1~2, 기준선), `RollingSeries.java`(TODO 3~6, 경계가 전부)
+- 내 구현(TODO 껍데기): `.../src/main/java/com/ops/timeseries/RawSeries.java`(TODO 1\~2, 기준선), `RollingSeries.java`(TODO 3\~6, 경계가 전부)
 - 시계: `.../src/main/java/com/ops/timeseries/Ticker.java` (버킷이 넘어가는 순간을 손으로 감기 위한 추상화)
 - 정답 기준 소스: `/home/jun/project/myway/ops-patterns/17-timeseries/impl/RawSeries.java`, `impl/RollingSeries.java` (`bucketStart = Math.floorDiv(at, width) * width`)
 - 테스트: `.../src/test/java/com/ops/timeseries/TimeSeriesTest.java` (접어도 같은 답 / 무엇을 잃나 / 무엇을 얻나 / 경계와 뒤늦은 값), `FakeTicker.java`

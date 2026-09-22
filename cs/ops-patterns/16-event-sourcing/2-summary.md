@@ -42,7 +42,7 @@
 ## 문제 — 이 챕터가 시키는 것
 
 - 상태(잔액) 대신 사건(입금되었다·출금되었다)을 원본으로 저장하는 계좌 시스템을 만들라는 챕터다 — 붙이기만 하는 저장소, 검증 없이 접는 투영, 검증이 딱 한 번 있는 명령 처리, 그리고 버전으로 잡는 낙관적 잠금까지.
-- 과제(README 「하는 방법」): ① `EventSourcingTest.java` 를 따라 친다 ② `EventStore` 의 TODO 1~2(append/readFrom) ③ `AccountProjection` 의 TODO 3~4(replay/apply) — **검증하면 안 되는 자리다** ④ `AccountService` 의 TODO 5~7(open/deposit/withdraw) — **검증이 있는 유일한 자리다**.\
+- 과제(README 「하는 방법」): ① `EventSourcingTest.java` 를 따라 친다 ② `EventStore` 의 TODO 1\~2(append/readFrom) ③ `AccountProjection` 의 TODO 3\~4(replay/apply) — **검증하면 안 되는 자리다** ④ `AccountService` 의 TODO 5\~7(open/deposit/withdraw) — **검증이 있는 유일한 자리다**.\
   `./run.sh 16` 으로 시작하면 19개 중 17개가 실패한다.
 - 별도 응용 문제(*Problems.java)는 없다.
 
@@ -265,7 +265,7 @@ empty()          -> 없는 계좌
 
 - 챕터 안내: `/home/jun/project/myway/ops-patterns/16-event-sourcing/README.md`
 - 사건 정의(TODO 없음): `.../src/main/java/com/ops/eventsourcing/AccountEvent.java`, `AccountState.java`
-- 내 구현(TODO 껍데기): `.../src/main/java/com/ops/eventsourcing/EventStore.java`(TODO 1~2), `AccountProjection.java`(TODO 3~4), `AccountService.java`(TODO 5~7)
+- 내 구현(TODO 껍데기): `.../src/main/java/com/ops/eventsourcing/EventStore.java`(TODO 1\~2), `AccountProjection.java`(TODO 3\~4), `AccountService.java`(TODO 5\~7)
 - 경계의 두 예외: `.../src/main/java/com/ops/eventsourcing/RejectedException.java`(명령 거절), `ConcurrentModificationException.java`(버전 충돌)
 - 정답 기준 소스: `/home/jun/project/myway/ops-patterns/16-event-sourcing/impl/EventStore.java`, `impl/AccountProjection.java`, `impl/AccountService.java`
 - 테스트: `.../src/test/java/com/ops/eventsourcing/EventSourcingTest.java` (접기 계약 / 명령 vs 사건 / 낙관적 잠금 / 대가)

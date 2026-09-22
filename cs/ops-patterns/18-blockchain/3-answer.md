@@ -10,9 +10,9 @@
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
 
-### A. 문제 (구현 대상: HashChain TODO 1~4 · ProofOfWorkChain TODO 5~6)
+### A. 문제 (구현 대상: HashChain TODO 1\~4 · ProofOfWorkChain TODO 5\~6)
 
-#### 1. HashChain — append / createBlock (TODO 1~2)
+#### 1. HashChain — append / createBlock (TODO 1\~2)
 
 **정답 코드** (impl/HashChain.java):
 
@@ -71,7 +71,7 @@ protected Block createBlock(int index, String previousHash, List<String> transac
 > **암호학적 해시 vs 해시맵 해시** — 해시맵은 "고르게 흩어지면" 충분, 여기는 "충돌을 일부러 못 만들어야" 한다 — 요구가 다르다.\
 > 예: 해시맵은 충돌을 체이닝으로 처리하면 그만이지만 여기서는 충돌이 곧 위조다.
 
-#### 2. HashChain — verify / rebuildFrom (TODO 3~4)
+#### 2. HashChain — verify / rebuildFrom (TODO 3\~4)
 
 **정답 코드** (impl/HashChain.java):
 
@@ -145,7 +145,7 @@ public int rebuildFrom(int index) {
   못 고친다 = 아예 불가능.\
   rebuildFrom 을 돌려보면 해시 사슬은 전자만 준다는 것을 알게 된다 — 검사를 통과하는 위조 사슬을 싸게 다시 만들 수 있다.
 
-#### 3. ProofOfWorkChain — createBlock / meetsDifficulty (TODO 5~6)
+#### 3. ProofOfWorkChain — createBlock / meetsDifficulty (TODO 5\~6)
 
 **정답 코드** (impl/ProofOfWorkChain.java):
 

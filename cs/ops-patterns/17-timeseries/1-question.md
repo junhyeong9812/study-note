@@ -12,9 +12,9 @@
      문제(A)는 원문 TODO/javadoc 을 코드블록으로 먼저 두고 그 아래에 질문을 단다.
      유형: 왜(why) / 예측(what if) / 경계(어느 계층·모듈의 책임인가) / 연결(다른 주제와의 다리) -->
 
-### A. 문제 (구현 대상: RawSeries TODO 1~2 · RollingSeries TODO 3~6)
+### A. 문제 (구현 대상: RawSeries TODO 1\~2 · RollingSeries TODO 3\~6)
 
-#### 1. RawSeries — summarize / quantile (TODO 1~2, 기준선. 정확한데 비싸다)
+#### 1. RawSeries — summarize / quantile (TODO 1\~2, 기준선. 정확한데 비싸다)
 
 ```java
 // RawSeries.java (src/main) — 채울 것
@@ -43,7 +43,7 @@ public double quantile(long from, long to, double q) {
 - 분위수는 왜 RawSeries 에만 있고 RollingSeries 에는 없는가?
 - record 가 시각 순서를 가정하지 않는 이유는 무엇인가?
 
-#### 2. RollingSeries — record / rollUp (TODO 3~4)
+#### 2. RollingSeries — record / rollUp (TODO 3\~4)
 
 ```java
 // RollingSeries.java (src/main) — 채울 것
@@ -71,7 +71,7 @@ public int rollUp() {
 - 굵은 버킷 폭이 가는 버킷 폭의 배수가 아니면 무슨 일이 생기는가? (출처: README 생각해볼 것 6)
 - 생성자에서 그 배수 조건을 검사하는 것과 rollUp 에서 매번 맞추는 것 중 왜 생성자인가?
 
-#### 3. RollingSeries — summarize / bucketStart (TODO 5~6)
+#### 3. RollingSeries — summarize / bucketStart (TODO 5\~6)
 
 ```java
 // RollingSeries.java (src/main) — 채울 것

@@ -10,9 +10,9 @@
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
 
-### A. 문제 (구현 대상: EventStore TODO 1~2 · AccountProjection TODO 3~4 · AccountService TODO 5~7)
+### A. 문제 (구현 대상: EventStore TODO 1\~2 · AccountProjection TODO 3\~4 · AccountService TODO 5\~7)
 
-#### 1. EventStore — append / readFrom (TODO 1~2)
+#### 1. EventStore — append / readFrom (TODO 1\~2)
 
 **정답 코드** (impl/EventStore.java):
 
@@ -86,7 +86,7 @@ public synchronized List<AccountEvent> readFrom(String streamId, int fromVersion
 > **스트림(stream)** — 한 대상(계좌 하나)의 사건 목록. 버전 = 사건 개수.\
 > 예: acc-1 에 Opened·Deposited 둘이 붙어 있으면 versionOf 는 2 다.
 
-#### 2. AccountProjection — replay / apply (TODO 3~4)
+#### 2. AccountProjection — replay / apply (TODO 3\~4)
 
 **정답 코드** (impl/AccountProjection.java):
 
@@ -153,7 +153,7 @@ public AccountState apply(AccountState state, AccountEvent event) {
 > **결정적(deterministic)** — 같은 입력(사건 목록)이면 몇 번을 돌려도 같은 결과가 나오는 성질. 재생의 전제.\
 > 예: 스냅샷 뒤를 이어 접은 결과가 처음부터 접은 결과와 같아진다.
 
-#### 3. AccountService — open / deposit / withdraw (TODO 5~7)
+#### 3. AccountService — open / deposit / withdraw (TODO 5\~7)
 
 **정답 코드** (impl/AccountService.java):
 

@@ -12,9 +12,9 @@
      문제(A)는 원문 TODO/javadoc 을 코드블록으로 먼저 두고 그 아래에 질문을 단다.
      유형: 왜(why) / 예측(what if) / 경계(어느 계층·모듈의 책임인가) / 연결(다른 주제와의 다리) -->
 
-### A. 문제 (구현 대상: EventStore TODO 1~2 · AccountProjection TODO 3~4 · AccountService TODO 5~7)
+### A. 문제 (구현 대상: EventStore TODO 1\~2 · AccountProjection TODO 3\~4 · AccountService TODO 5\~7)
 
-#### 1. EventStore — append / readFrom (TODO 1~2)
+#### 1. EventStore — append / readFrom (TODO 1\~2)
 
 ```java
 // EventStore.java (src/main) — 채울 것
@@ -45,7 +45,7 @@ public synchronized List<AccountEvent> readFrom(String streamId, int fromVersion
 - readFrom 의 경계를 한 칸 틀리면 어떤 사고가 어디서 드러나는가?
 - versionOf 가 "사건 개수"를 버전으로 쓰는 것은 어떤 성질 덕에 성립하는가?
 
-#### 2. AccountProjection — replay / apply (TODO 3~4, 검증하면 안 되는 자리)
+#### 2. AccountProjection — replay / apply (TODO 3\~4, 검증하면 안 되는 자리)
 
 ```java
 // AccountProjection.java (src/main) — 채울 것
@@ -74,7 +74,7 @@ public AccountState apply(AccountState state, AccountEvent event) {
 - 모르는 사건을 만나면 왜 조용히 무시하지 않고 던져야 하는가?
 - replayFrom 은 무엇을 위해 있고, replay 와 결과가 같으려면 무엇이 지켜져야 하는가?
 
-#### 3. AccountService — open / deposit / withdraw (TODO 5~7, 검증이 있는 유일한 자리)
+#### 3. AccountService — open / deposit / withdraw (TODO 5\~7, 검증이 있는 유일한 자리)
 
 ```java
 // AccountService.java (src/main) — 채울 것

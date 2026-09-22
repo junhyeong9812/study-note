@@ -136,7 +136,7 @@ misses.incrementAndGet();
 return loadNow(key);                     // 없거나 만료 — 싱글플라이트 방식으로
 ```
 
-- 구간별 동작: 0~800ms 그냥 준다 / 800~1000ms **주면서** 뒤에서 갱신을 건다(아무도 안 기다린다) / 1000ms 이후 값이 없다 — loadNow 로 하나만 계산하고 나머지는 기다린다.
+- 구간별 동작: 0\~800ms 그냥 준다 / 800\~1000ms **주면서** 뒤에서 갱신을 건다(아무도 안 기다린다) / 1000ms 이후 값이 없다 — loadNow 로 하나만 계산하고 나머지는 기다린다.
 
 > **미리 갱신(refresh-ahead)** — 수명이 다 되기 전에(예: 80% 지점) 옛 값을 주면서 뒤에서 새 값을 받아두는 기법.\
 > 예: 만료 직후의 기다림조차 없앤다.
@@ -226,16 +226,16 @@ try {
 
 - 재고 수량에 안 되는 이유: 낡은 재고 수를 주면 없는 재고를 팔 수 있다 — 낡으면 안 되는 값이다.\
   무엇을 파는지 알고 사야 한다.
-- "읽는 김에"인 이유: 갱신이 **읽기 경로에서만** 걸린다 — 800~1000ms 사이에 아무도 안 읽으면 그냥 만료된다.\
+- "읽는 김에"인 이유: 갱신이 **읽기 경로에서만** 걸린다 — 800\~1000ms 사이에 아무도 안 읽으면 그냥 만료된다.\
   진짜 미리 하려면 **백그라운드 스케줄러**가 필요하고 그게 10번이다.
 
 #### 10. 연결
 
 - 자리 잡기 원자성: **06-idempotency-store 의 NonAtomicStore** 와 정확히 같은 자리(check-then-act).
 - 다음 챕터: **10-scheduler** — "읽는 김에"로 흉내낸 것을 진짜 백그라운드 작업으로 만든다.
-- 문제의 전환: 06~08은 "**한 번만** 실행되게"(중복·실패 처리)였고, 09는 "**여럿이 같은 것을 원할 때** 같은 계산을 동시에 하지 않는" 문제다.
+- 문제의 전환: 06\~08은 "**한 번만** 실행되게"(중복·실패 처리)였고, 09는 "**여럿이 같은 것을 원할 때** 같은 계산을 동시에 하지 않는" 문제다.
 
 ## 근거
 
 - 기준 소스: `/home/jun/project/myway/ops-patterns/09-stampede/impl/NaiveCache.java`, `impl/SingleFlightCache.java`, `impl/RefreshAheadCache.java`
-- 문제 원문: `src/main/java/com/ops/stampede/NaiveCache.java`(TODO 1), `SingleFlightCache.java`(TODO 2), `RefreshAheadCache.java`(TODO 3·4), `README.md` "특히 생각해볼 것" 1~8
+- 문제 원문: `src/main/java/com/ops/stampede/NaiveCache.java`(TODO 1), `SingleFlightCache.java`(TODO 2), `RefreshAheadCache.java`(TODO 3·4), `README.md` "특히 생각해볼 것" 1\~8

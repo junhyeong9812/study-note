@@ -204,7 +204,7 @@ private void fire(Job job, long now) {
 #### 8. 크론의 시 경계
 
 - 56분 다음: **다음 시의 0분**(4분 뒤).\
-  `*/7` 은 "0~59에서 7의 배수 분"이라는 **집합**이지 "7분 간격"이 아니기 때문이다.
+  `*/7` 은 "0\~59에서 7의 배수 분"이라는 **집합**이지 "7분 간격"이 아니기 때문이다.
 - 깨지는 곳: 시 경계에서 간격이 7분→4분으로 줄어 순간 호출 밀도가 계산보다 높아진다 — "7분마다니까 한도 안"이라는 산수가 그 지점에서 어긋난다.
 - 재현이 어려운 이유: 그 순간이 **한 시간에 한 번**뿐이다.
 - 5·10·15·20·30: **60을 나누는 수**라 시 경계에서도 간격이 똑같다.\
@@ -232,4 +232,4 @@ private void fire(Job job, long now) {
 ## 근거
 
 - 기준 소스: `/home/jun/project/myway/ops-patterns/10-scheduler/impl/FixedRateTrigger.java`, `FixedDelayTrigger.java`, `SkippingRateTrigger.java`, `CronTrigger.java`, `Scheduler.java`
-- 문제 원문: `src/main/java/com/ops/scheduler/` 의 TODO 1~7, `README.md` "특히 생각해볼 것" 1~8
+- 문제 원문: `src/main/java/com/ops/scheduler/` 의 TODO 1\~7, `README.md` "특히 생각해볼 것" 1\~8
