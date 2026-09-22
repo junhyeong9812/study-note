@@ -3,7 +3,7 @@
 > 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
 > 근거는 **실행 결과**다 — 아래 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
 > 2026-09-21 에 실제로 던져 받은 것이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
-> 8~10번의 `proj`·`emp_proj` 는 **트랜잭션 안에서 만들고 롤백**했다(MySQL 은 `CREATE` → 질의 → `DROP`). DB 에 남기지 않았다.\
+> 8\~10번의 `proj`·`emp_proj` 는 **트랜잭션 안에서 만들고 롤백**했다(MySQL 은 `CREATE` → 질의 → `DROP`). DB 에 남기지 않았다.\
 > 문서 근거는 [PG 18 Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html).
 
 ## 정답
@@ -316,7 +316,7 @@ MySQL 은 `JOIN`·`INNER JOIN`·`CROSS JOIN` 을 **문법적 동의어**로 다�
 
 **다만 대가가 둘 있다.**
 
-1. **해시 조인을 못 쓴다.** 해시는 등호에만 맞는다. 큰 표에서는 중첩 루프가 되어 느려진다(목록의 **59번 주제**).
+1. **해시 조인을 못 쓴다.** 해시는 등호에만 맞는다. 큰 표에서는 중첩 루프가 되어 느려진다([목록의 **59번 주제**](../59-scan-join-sort-operators/)).
 2. **`FULL OUTER JOIN` 에서는 아예 거부된다** — PG 가 `FULL JOIN is only supported with merge-joinable or hash-joinable join conditions` 로 막는다([16번](../16-full-outer-join/)).
 
 **내부 조인에는 그 제약이 없다.** 위에서 부등호가 그냥 통했다 — **알고리즘 제약이 문법 제약으로 드러나는 것은 `FULL` 뿐이다.**
@@ -428,7 +428,7 @@ MySQL 은 DDL 에 트랜잭션이 안 걸리므로 `CREATE` → 질의 → `DROP
 ```
 
 **이것이 silent failure 다** — 에러도 없고, 타입도 맞고, 값도 그럴듯하다.\
-`COUNT(*)` 로 「사원 수」를 세는 것도 같은 사고다. 조인 뒤의 `COUNT(*)` 은 **행 수**이고, 사원 수는 `COUNT(DISTINCT e.id)` 다(목록의 **21번 주제**).
+`COUNT(*)` 로 「사원 수」를 세는 것도 같은 사고다. 조인 뒤의 `COUNT(*)` 은 **행 수**이고, 사원 수는 `COUNT(DISTINCT e.id)` 다([목록의 **21번 주제**](../21-aggregate-functions-count-forms/)).
 
 ---
 
@@ -488,7 +488,7 @@ MySQL 은 DDL 에 트랜잭션이 안 걸리므로 `CREATE` → 질의 → `DROP
 ★ **`SUM` 은 `DISTINCT` 로 못 고친다.** 같은 급여를 가진 두 사원이 있으면 `SUM(DISTINCT salary)` 가 한 명을 지운다.\
 행이 늘어난 뒤에 고치려 하지 말고 **애초에 안 늘리는 것**이 처방이다.
 
-팬아웃 처방 전체는 목록의 **25번 주제**, `EXISTS`/`IN`/`NOT IN` 은 **19번 주제**가 정본이다.\
+팬아웃 처방 전체는 [목록의 **25번 주제**](../25-join-fan-out/), `EXISTS`/`IN`/`NOT IN` 은 [**19번 주제**](../19-semi-anti-join/)가 정본이다.\
 **경계: 여기는 「조인이 행을 늘린다」는 사실과 처방이 둘 있다는 것까지, 선택 기준의 세부는 25번.**
 
 ---
@@ -546,7 +546,7 @@ MySQL 은 DDL 에 트랜잭션이 안 걸리므로 `CREATE` → 질의 → `DROP
   같은 겹침이 원인인데                    한쪽은 막고 한쪽은 안 막는다
 ```
 
-`USING`·`NATURAL` 의 규칙 전체는 목록의 **18번 주제**가 정본이다.\
+`USING`·`NATURAL` 의 규칙 전체는 [목록의 **18번 주제**](../18-using-and-natural-join/)가 정본이다.\
 **여기서 인출할 것은 하나다 — `NATURAL JOIN` 은 스키마가 바뀌면 조용히 뜻이 바뀐다.**
 
 ## 실행 검증
@@ -565,5 +565,5 @@ MySQL 은 DDL 에 트랜잭션이 안 걸리므로 `CREATE` → 질의 → `DROP
 **구현 의존 항목** — 없다. 이 주제의 모든 결과는 결과의 정의에서 나온다.\
 단 **행 순서는 보장되지 않으므로** 출력에 `ORDER BY` 를 붙였다. 6번만 `ORDER BY` 없이 던졌고, 거기서는 **개수 12** 가 요점이다.
 
-**언어 보장 항목** — 1~5·7~11번. `ON` 의 `TRUE`-만-통과 규칙, 짝 없는 행의 소멸, 팬아웃의 곱셈은 전부 문서가 정한 것이다.\
+**언어 보장 항목** — 1\~5·7\~11번. `ON` 의 `TRUE`-만-통과 규칙, 짝 없는 행의 소멸, 팬아웃의 곱셈은 전부 문서가 정한 것이다.\
 **문법이 갈리는 항목** — 6번(`JOIN` 에 `ON` 누락). 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않았다.**
