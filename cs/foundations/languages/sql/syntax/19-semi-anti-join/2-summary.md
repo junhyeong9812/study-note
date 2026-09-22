@@ -288,7 +288,7 @@ MySQL 은 `text` → `varchar(20)` 만 바꾸면 같다.
   그래서 IN 으로 테스트해 보고 안심한 뒤 NOT IN 을 배포하는 사고가 난다
 ```
 
-**이 계산의 뿌리는 [04번](../04-null-three-valued-logic/)**이고, 거기서 이미 같은 0행을 봤다.\
+**이 계산의 뿌리는 [04번]**(../04-null-three-valued-logic/)이고, 거기서 이미 같은 0행을 봤다.\
 **여기서 새로 인출할 것은 두 가지다** — ① **바깥 값이 `NULL` 이어도 똑같이 무너진다**(다음 절) ② **`NOT EXISTS` 는 왜 안전한가**(그 다음 절).
 
 ---
@@ -297,7 +297,7 @@ MySQL 은 `text` → `varchar(20)` 만 바꾸면 같다.
 
 **언제 쓰나** — "목록에 `NULL` 만 없으면 `NOT IN` 을 써도 된다"고 생각할 때.
 
-방향을 뒤집어 **"부서가 없는 사원"**을 찾아 본다. 이번엔 목록이 `dept.id` 라 **`NULL` 이 없다**(기본키다).
+방향을 뒤집어 "**부서가 없는 사원**"을 찾아 본다. 이번엔 목록이 `dept.id` 라 **`NULL` 이 없다**(기본키다).
 
 ```text
 ### SQL: SELECT e.name FROM emp e WHERE e.dept_id NOT IN (SELECT d.id FROM dept d) ORDER BY e.id;
@@ -366,7 +366,7 @@ MySQL 은 `text` → `varchar(20)` 만 바꾸면 같다.
 ```
 
 ★ **`NULL` 은 서브쿼리 **안**에서 소비된다.** `dan` 의 `NULL` 은 안쪽 `WHERE` 에서 `UNKNOWN` 이 되어 버려지고,\
-바깥은 **「행이 남았나」**만 본다. **`UNKNOWN` 이 바깥으로 새 나갈 통로가 없다.**
+바깥은 「**행이 남았나**」만 본다. **`UNKNOWN` 이 바깥으로 새 나갈 통로가 없다.**
 
 **처방 셋 — 세 번째가 가장 근본적이다.**
 
@@ -763,7 +763,7 @@ FROM 왼쪽 LEFT JOIN 오른쪽 ON …  WHERE 오른쪽.NOT_NULL열 IS NULL
 - [18 USING 과 NATURAL JOIN](../18-using-and-natural-join/) — 외부 조인 + `USING` 이 짝 유무를 덮는 자리.
 - [05 NULL 비교 — IS NULL·IS DISTINCT FROM·NULL 안전 등호](../05-null-comparison-is-distinct-from/) — **경계: 그쪽은 `NULL` 을 비교하는 연산자까지, 여기는 그것이 `NOT IN` 을 어떻게 무너뜨리나부터.**
 - [25 조인 팬아웃 — 행 수와 집계가 어긋나는 자리](../25-join-fan-out/) — **경계: 그쪽은 팬아웃 처방의 선택 기준까지, 여기는 그 처방 중 세미 조인의 의미론부터.**
-- **`EXPLAIN` 읽기**는 목록의 **58번 주제**가 정본이다.
+- **`EXPLAIN` 읽기**는 [목록의 **58번 주제**](../58-explain-plan-tree/)가 정본이다.
 - [SQL 주제 목록](../README.md)
 
 ## 용어 풀이
@@ -794,4 +794,4 @@ FROM 왼쪽 LEFT JOIN 오른쪽 ON …  WHERE 오른쪽.NOT_NULL열 IS NULL
 - **`NOT IN` 을 안전하게 만드는 유일한 근본 처방은 `NOT NULL` 제약**이다. 서브쿼리에 `IS NOT NULL` 을 거는 것은 **목록 쪽만** 막는다 — 바깥 값 쪽은 여전히 뚫려 있다.
 - **`IS DISTINCT FROM`** 은 `NULL` 을 같은 값처럼 비교하는 연산자다. 안티 조인을 값 비교로 쓰고 싶을 때 쓰인다 — [05번](../05-null-comparison-is-distinct-from/).
 - **세미 조인은 `LIMIT 1` 과 의미가 같지 않다.** `EXISTS` 는 "하나라도 있나"를 묻고 멈추지만, 엔진이 실제로 첫 행에서 멈춘다는 보장은 계획에 달렸다.
-- **`NOT EXISTS` 의 상관 조건에 `NULL` 이 들어가도 안전한 이유**는 「안쪽 `WHERE` 가 먼저 `UNKNOWN` 을 버린다」다. 그래서 `NOT EXISTS` 는 사실상 **「짝이 확실히 있는 경우만 제외」**를 뜻한다 — 「짝이 있을지도 모르는 경우」는 제외하지 않는다.
+- **`NOT EXISTS` 의 상관 조건에 `NULL` 이 들어가도 안전한 이유**는 「안쪽 `WHERE` 가 먼저 `UNKNOWN` 을 버린다」다. 그래서 `NOT EXISTS` 는 사실상 「**짝이 확실히 있는 경우만 제외**」를 뜻한다 — 「짝이 있을지도 모르는 경우」는 제외하지 않는다.
