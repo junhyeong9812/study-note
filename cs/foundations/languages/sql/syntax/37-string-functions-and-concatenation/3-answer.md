@@ -277,7 +277,7 @@ PG 에서 무슨 일이 일어났나
 **「길이를 검사했으니 괜찮다」가 여기서 무너진다.** 검사 대상이 원본이 아니기 때문이다.
 
 한글이 왜 UTF-8 에서 3바이트인지는 [`foundations/data-representation`](../../../../data-representation/)이 정본이다.\
-여기서 외울 것은 **「어느 함수가 무엇을 세나」**와 **「무엇을 재고 있나」** 둘이다.
+여기서 외울 것은 「**어느 함수가 무엇을 세나**」와 **「무엇을 재고 있나」** 둘이다.
 
 ---
 
@@ -640,8 +640,8 @@ EXPLAIN (COSTS OFF) SELECT * FROM t35 WHERE substr(code,2)::int = 123;
 | PG, 대소문자 무시가 필요 | 비결정적 ICU collation 을 쓰거나(39번), **표현식 인덱스**를 만든다 |
 | 양쪽 공통 | 정규화한 값을 **열로 저장**한다(`name_normalized`) — 인덱스가 산다 |
 
-`CREATE INDEX ... ON t (upper(name))` 같은 표현식 인덱스는 목록의 **46번 주제**,\
-인덱스를 타고 못 타는 판단 전반은 목록의 **47번 주제**가 정본이다.
+`CREATE INDEX ... ON t (upper(name))` 같은 표현식 인덱스는 [목록의 **46번 주제**](../46-index-definition-composite-partial-expression/),\
+인덱스를 타고 못 타는 판단 전반은 [목록의 **47번 주제**](../47-when-indexes-are-used/)가 정본이다.
 
 ## 실행 검증
 
