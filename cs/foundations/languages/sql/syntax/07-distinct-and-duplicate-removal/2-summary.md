@@ -360,7 +360,7 @@ LINE 1: SELECT DISTINCT dept_id FROM emp ORDER BY dept_id * 1;
 
 ### 6. `DISTINCT` 와 `GROUP BY` — 계획까지 같다
 
-**언제 쓰나** — 둘 중 무엇을 쓸지 고를 때. **결론은 「같은 일이면 아무거나」**다.
+**언제 쓰나** — 둘 중 무엇을 쓸지 고를 때. **결론은 「같은 일이면 아무거나**」다.
 
 ```text
 ### SQL: SELECT DISTINCT dept_id FROM emp;         ### SQL: SELECT dept_id FROM emp GROUP BY dept_id;
@@ -389,7 +389,7 @@ DISTINCT 판                                       GROUP BY 판
 | 읽는 사람에게 주는 신호 | 「중복만 지우려는 것」 | 「그룹 단위로 볼 것」 |
 
 **의도를 드러내는 쪽을 고른다** — 집계가 없으면 `DISTINCT`, 있으면 `GROUP BY`.\
-(계획은 데이터 크기·인덱스·통계에 따라 달라질 수 있다. 계획 읽기의 정본은 목록의 58번 주제다.)
+(계획은 데이터 크기·인덱스·통계에 따라 달라질 수 있다. 계획 읽기의 정본은 [목록의 **58번 주제**](../58-explain-plan-tree/)다.)
 
 ---
 
@@ -454,7 +454,7 @@ ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the ma
 
 두 그림의 결론 — **같은 세 행이 나온다.** 줄 순서만 `NULL` 정렬 차이로 다르다.\
 대가 — 윈도우 함수 판은 한 겹 감싸야 한다(윈도우 결과를 `WHERE` 로 못 거르므로 — [01번](../01-logical-query-processing-order/)). 대신 **양쪽에서 돌고, 「2위까지」 같은 확장이 쉽다.**\
-윈도우 함수 자체의 정본은 목록의 26~29번 주제다.
+윈도우 함수 자체의 정본은 목록의 [**26**](../26-window-functions-vs-aggregates/)~[**29**](../29-ranking-functions/)번 주제다.
 
 ## 문법 — 형태와 규칙
 
@@ -558,7 +558,7 @@ SUM(DISTINCT <열>) · AVG(DISTINCT <열>)
 - [21 집계 함수와 COUNT 의 세 형태](../21-aggregate-functions-count-forms/) — **경계: 그쪽은 세 형태의 `NULL`·중복 처리, 여기는 `DISTINCT` 가 접는 기준.**
 - [22 GROUP BY 와 비집계 열 규칙](../22-group-by-nonaggregated-columns/) — **경계: 그쪽은 그룹 키가 결과 행을 정의하는 규칙, 여기는 같은 계획이 나와도 의도가 다르다는 것.**
 - [25 조인 팬아웃](../25-join-fan-out/) — **경계: 중복이 조인에서 생겼을 때의 처방은 그쪽, 여기는 `DISTINCT` 가 그 증상을 덮는다는 것까지.**
-- **윈도우 함수**는 목록의 **26~29번 주제**, **집합 연산의 `UNION`/`UNION ALL`** 은 **34번 주제**가 정본이다.
+- **윈도우 함수**는 목록의 **26~29번 주제**, **집합 연산의 `UNION`/`UNION ALL`** 은 [**34번 주제**](../34-set-operations-union-intersect-except/)가 정본이다.
 - [SQL 주제 목록](../README.md)
 
 ## 용어 풀이
@@ -585,5 +585,5 @@ SUM(DISTINCT <열>) · AVG(DISTINCT <열>)
 ## 더 들어가면
 
 - **`DISTINCT` 는 「비용이 드는 정정」이다.** 중복이 나오는 자리를 고치는 대신 결과에서 지우는 것이라, 엔진은 **결과 전체를 모아 정렬하거나 해시**해야 한다. 스트리밍으로 흘려보낼 수 없다는 뜻이고, 그래서 큰 결과에서는 여기가 병목이 된다.
-- **`UNION` 이 조용히 `DISTINCT` 를 한다.** `UNION ALL` 과 달리 `UNION` 은 중복을 지운다 — [16번](../16-full-outer-join/)에서 MySQL 의 `FULL OUTER JOIN` 우회를 `UNION` 으로 짜면 값이 같은 행이 접혀 결과가 줄어드는 사고가 그것이다. 집합 연산의 정본은 목록의 34번 주제다.
+- **`UNION` 이 조용히 `DISTINCT` 를 한다.** `UNION ALL` 과 달리 `UNION` 은 중복을 지운다 — [16번](../16-full-outer-join/)에서 MySQL 의 `FULL OUTER JOIN` 우회를 `UNION` 으로 짜면 값이 같은 행이 접혀 결과가 줄어드는 사고가 그것이다. 집합 연산의 정본은 [목록의 **34번 주제**](../34-set-operations-union-intersect-except/)다.
 - **`COUNT(DISTINCT)` 두 판의 답이 2와 4로 갈린 것**은 문법 차이가 아니라 **「`NULL` 이 든 조합을 셀 것인가」라는 설계 판단의 차이**다. 두 엔진 중 어느 쪽이 옳다기보다, 지표를 정의할 때 그 질문에 먼저 답해야 한다는 신호로 읽는 편이 낫다.

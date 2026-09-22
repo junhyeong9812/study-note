@@ -385,7 +385,7 @@ DISTINCT 판                                       GROUP BY 판
 집계가 없으면 `DISTINCT`, 있으면 `GROUP BY` — **의도를 드러내는 쪽**을 고른다.
 
 > ⚠️ **이 계획은 4행짜리 표의 결과다.** 큰 표·인덱스가 있는 열에서는 정렬 기반 `Unique` 나 인덱스 스캔이 뽑힐 수 있다.\
-> 「계획이 같다」는 **이 조건에서의 관찰**이지 보장이 아니다. 계획 읽기의 정본은 목록의 58번 주제다.
+> 「계획이 같다」는 **이 조건에서의 관찰**이지 보장이 아니다. 계획 읽기의 정본은 [목록의 **58번 주제**](../58-explain-plan-tree/)다.
 
 ---
 
@@ -476,7 +476,7 @@ ORDER BY dept_id, salary DESC 로 줄을 세운다 (PG 기준)
 | 「상위 2개」로 확장 | **불가** | `WHERE rn <= 2` 한 글자 |
 | 동률 처리 | 첫 행 하나 | `RANK`/`DENSE_RANK` 로 고를 수 있다 |
 
-윈도우 함수 자체의 정본은 목록의 26~29번 주제다.
+윈도우 함수 자체의 정본은 목록의 [**26**](../26-window-functions-vs-aggregates/)~[**29**](../29-ranking-functions/)번 주제다.
 
 ---
 
@@ -504,7 +504,7 @@ ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the ma
 ```
 
 그래서 **`ORDER BY` 의 맨 앞이 `DISTINCT ON` 의 식과 같아야 한다**는 제약이 붙는다.\
-그 뒤에 오는 항목들이 **「그룹 안에서 누구를 남길지」**를 정한다.
+그 뒤에 오는 항목들이 「**그룹 안에서 누구를 남길지**」를 정한다.
 
 ```sql
 SELECT DISTINCT ON (dept_id) dept_id, id, name, salary
