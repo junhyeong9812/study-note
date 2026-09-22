@@ -147,7 +147,7 @@ FROM ──> WHERE ──> GROUP BY ──> HAVING ──> SELECT ──> ORDER 
 
 (행 순서가 다른 것은 `NULL` 의 정렬 위치 차이다 — PG 는 ASC 에서 뒤, MySQL 은 앞. [목록의 **8번 주제**](../08-order-by-null-position-stability/)다.)
 
-비용 — 그룹을 만들려면 정렬이나 해시가 필요하다. 계획에 뜨는 이름은 목록의 **59번 주제**다.
+비용 — 그룹을 만들려면 정렬이나 해시가 필요하다. 계획에 뜨는 이름은 [목록의 **59번 주제**](../59-scan-join-sort-operators/)다.
 
 ★ **경계: [01번](../01-logical-query-processing-order/)이 여덟 칸 전체의 좌표계까지, [03번](../03-where-vs-having/)이 2번 칸과 4번 칸의 대비까지, 여기는 3번 칸이 입력을 무엇으로 바꾸나부터.**
 
@@ -178,7 +178,7 @@ ERROR 1055 (42000) at line 1: Expression #2 of SELECT list is not in GROUP BY cl
 | | 메시지가 제시하는 탈출구 |
 |---|---|
 | PostgreSQL 18.6 | **둘** — `GROUP BY` 에 넣거나 집계로 감싸라 |
-| MySQL 8.4.10 | **셋** — 그것 둘에 더해 **「함수 종속이 아니다」**와 **`sql_mode=only_full_group_by`** 를 지목한다 |
+| MySQL 8.4.10 | **셋** — 그것 둘에 더해 「**함수 종속이 아니다**」와 **`sql_mode=only_full_group_by`** 를 지목한다 |
 
 ★ **MySQL 의 메시지가 설정 이름을 말해 주는 것**이 이 주제의 분기점이다. 그 설정은 **끌 수 있다**(3번).
 
@@ -285,7 +285,7 @@ SELECT dept_id, name FROM (SELECT * FROM emp WHERE id=2 UNION ALL SELECT * FROM 
 ```
 
 두 그림의 결론 — **같은 두 행, 같은 그룹인데 나오는 값이 다르다.**\
-★ 즉 이 값은 **데이터의 성질이 아니라 「엔진이 먼저 만난 행」**이다. 계획이 바뀌면(인덱스가 생기면·통계가 바뀌면·행이 늘면) 같이 바뀐다.
+★ 즉 이 값은 **데이터의 성질이 아니라 「엔진이 먼저 만난 행**」이다. 계획이 바뀌면(인덱스가 생기면·통계가 바뀌면·행이 늘면) 같이 바뀐다.
 
 ```text
  "10회 돌려서 같았다" 가 말해 주는 것          말해 주지 않는 것
@@ -564,7 +564,7 @@ SELECT dept_id, ANY_VALUE(name), COUNT(*) FROM emp GROUP BY dept_id;
   MySQL 에서 돌던 종속성 질의(`UNIQUE NOT NULL`·조인 건너편)가 **PG 에서 깨진다.**
 - **`ORDER BY` 로 그룹 대표 행을 고르려 한다.**\
   MySQL 문서가 *"cannot be influenced by adding an `ORDER BY` clause"* 라고 적는다. 실행으로도 확인했다.\
-  「그룹별 1위 한 행」이 필요하면 **순위 함수**를 쓴다(목록의 **29번 주제**).
+  「그룹별 1위 한 행」이 필요하면 **순위 함수**를 쓴다([목록의 **29번 주제**](../29-ranking-functions/)).
 - **`GROUP BY` 서수를 쓰고 `SELECT` 목록을 고친다.**\
   조용히 다른 열로 묶인다. 서수는 짧은 임시 질의에만.
 - **`NULL` 그룹이 빠졌다고 생각한다.**\
@@ -594,8 +594,8 @@ SELECT dept_id, ANY_VALUE(name), COUNT(*) FROM emp GROUP BY dept_id;
 
 - **쓴다 — 「무엇별 몇 개」가 필요할 때.** 그룹 키를 먼저 정하고 나머지는 전부 집계로 감싼다.
 - **쓴다 — 중복 제거에.** 집계 없는 `GROUP BY` 는 `DISTINCT` 와 같다. 뒤에 집계를 붙일 계획이면 `GROUP BY` 가 읽기 낫다([목록의 **7번 주제**](../07-distinct-and-duplicate-removal/)).
-- **안 쓴다 — 행마다 값을 붙여야 할 때.** 그룹으로 접으면 원래 행이 사라진다. 그건 **윈도우 함수**다(목록의 **26번 주제**).
-- **안 쓴다 — 「그룹별 상위 N개」.** `GROUP BY` 는 그룹당 한 행이다. 순위 함수를 쓴다(목록의 **29번 주제**).
+- **안 쓴다 — 행마다 값을 붙여야 할 때.** 그룹으로 접으면 원래 행이 사라진다. 그건 **윈도우 함수**다([목록의 **26번 주제**](../26-window-functions-vs-aggregates/)).
+- **안 쓴다 — 「그룹별 상위 N개」.** `GROUP BY` 는 그룹당 한 행이다. 순위 함수를 쓴다([목록의 **29번 주제**](../29-ranking-functions/)).
 - **`ANY_VALUE` 는 의도가 진짜 「아무거나」일 때만.** 「대표값」이 필요하면 `MIN`/`MAX` 로 **무엇인지 적어라.**
 - **`only_full_group_by` 는 끄지 않는다.** 옮기는 중이라면 끈 채로 두지 말고 질의를 고쳐 나간다.
 
@@ -655,7 +655,7 @@ SELECT dept_id, ANY_VALUE(name), COUNT(*) FROM emp GROUP BY dept_id;
   MySQL 이 옛날에 허용했던 것은 표준을 넓힌 게 아니라 **답을 정의하지 않은 채 값을 돌려준 것**이고, 그래서 8.0 부터 기본을 거부로 바꿨다.
 - **「그룹별 대표 행 전체」가 필요하면 `GROUP BY` 가 아니다.**\
   `ANY_VALUE` 를 여러 열에 쓰면 **서로 다른 행에서 온 값이 한 줄에 섞일 수 있다** — 그 조합은 실제로 존재한 적이 없는 행이 된다.\
-  「그룹별 급여 1위의 이름과 급여」가 필요하면 순위 함수(목록의 **29번 주제**)나 `LATERAL`([20번](../20-lateral-join/))이다.
+  「그룹별 급여 1위의 이름과 급여」가 필요하면 순위 함수([목록의 **29번 주제**](../29-ranking-functions/))나 `LATERAL`([20번](../20-lateral-join/))이다.
 - **`GROUP BY` 의 계획은 두 갈래다** — 정렬 후 묶기(sort + group) 와 해시로 묶기(hash aggregate).\
-  둘 중 무엇이 뽑히는지는 목록의 **59번 주제**, 그 판단을 읽는 법은 **58번 주제**다. **여기서는 재지 않았다.**
+  둘 중 무엇이 뽑히는지는 [목록의 **59번 주제**](../59-scan-join-sort-operators/), 그 판단을 읽는 법은 [**58번 주제**](../58-explain-plan-tree/)다. **여기서는 재지 않았다.**
 - **`GROUPING SETS` 를 쓰면 한 질의가 여러 그룹 집합을 동시에 낸다** — 그때 `NULL` 의 의미가 하나 더 생긴다([23번](../23-grouping-sets-rollup-cube/)).
