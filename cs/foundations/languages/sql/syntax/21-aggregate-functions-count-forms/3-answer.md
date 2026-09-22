@@ -121,7 +121,7 @@ COUNT(NULL)  매 행에서 NULL 을 평가한다 -> 전부 NULL 이다 -> 0
 `COUNT(1)` 이 `COUNT(*)` 과 답이 같은 것은 **우연이 아니라 1 이 절대 `NULL` 이 아니기 때문**이다.
 
 **`COUNT(1)` 이 더 빠른가** — **이 주제에서 재지 않았다.** 속설은 적지 않는다.\
-계획을 읽어 비교하는 법은 목록의 **58번 주제**, 스캔·집계 연산자는 **59번 주제**다.
+계획을 읽어 비교하는 법은 [목록의 **58번 주제**](../58-explain-plan-tree/), 스캔·집계 연산자는 [**59번 주제**](../59-scan-join-sort-operators/)다.
 
 ---
 
@@ -496,7 +496,7 @@ PG     COUNT(DISTINCT (dept_id, salary)) -> 4
 ```
 
 MySQL 문서가 그대로 적는다: *"Returns a count of the number of rows with different non-`NULL` expr values."*\
-**「한 칸이라도 `NULL` 이면 그 행은 없는 셈」**이 이 형태의 규칙이다.
+「**한 칸이라도 `NULL` 이면 그 행은 없는 셈**」이 이 형태의 규칙이다.
 
 PG 쪽은 인자가 **하나**다 — `(dept_id, salary)` 라는 합성 값이다. 그래서 `COUNT(DISTINCT 한 값)` 의 규칙이 그대로 적용되고, **행 값은 `NULL` 이 아니므로** 체 1에 안 걸린다.
 
