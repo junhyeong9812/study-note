@@ -425,7 +425,7 @@ MySQL 은 더 나간다.
 
 > **읽을 때 주의** — 위 PG 계획의 `rows=1130` 같은 추정치는 통계가 없어서 나온 기본값이다.\
 > 이 표들은 `ANALYZE` 를 돌린 적이 없다. **여기서 볼 것은 행 수 추정이 아니라 노드 이름**이다.\
-> 계획을 읽는 법은 목록의 **58번 주제**, 추정과 실측의 어긋남은 **60번 주제**가 정본이다.
+> 계획을 읽는 법은 [목록의 **58번 주제**](../58-explain-plan-tree/), 추정과 실측의 어긋남은 [**60번 주제**](../60-explain-analyze-estimates-vs-actuals/)가 정본이다.
 
 ---
 
@@ -597,7 +597,7 @@ WHERE <결과 필터>              -- 2번 칸. 조인이 다 끝난 뒤. 무엇
 - [14 LEFT·RIGHT OUTER JOIN](../14-left-right-outer-join/) — **경계: 그쪽은 보존 측과 `NULL` 채우기까지, 여기는 조건의 자리 규칙부터.**
 - [16 FULL OUTER JOIN](../16-full-outer-join/) — 양쪽이 보존 측이라 양쪽이 무너진다. 5행이 2행이 되는 예가 있다.
 - [04 NULL 의 3값 논리](../04-null-three-valued-logic/) — `WHERE` 가 `UNKNOWN` 행을 버리는 규칙.
-- **`EXISTS`/`NOT EXISTS`** 는 목록의 **19번 주제**, **계획 읽기**는 **58번 주제**가 정본이다.
+- **`EXISTS`/`NOT EXISTS`** 는 [목록의 **19번 주제**](../19-semi-anti-join/), **계획 읽기**는 [**58번 주제**](../58-explain-plan-tree/)가 정본이다.
 - [SQL 주제 목록](../README.md)
 
 ## 용어 풀이
