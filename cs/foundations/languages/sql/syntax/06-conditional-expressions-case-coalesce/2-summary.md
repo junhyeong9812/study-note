@@ -466,7 +466,7 @@ COALESCE(NULL, 'default')  ->  'default'
                                  +-------------------+
 ```
 
-`GREATEST` 에는 **충분히 작은 값**, `LEAST` 에는 **충분히 큰 값**을 기본값으로 준다. 다만 그 「충분히」가 도메인 지식이라 깨지기 쉽다 — **`NOT NULL` 제약으로 막는 편이 낫다**(목록의 45번 주제).
+`GREATEST` 에는 **충분히 작은 값**, `LEAST` 에는 **충분히 큰 값**을 기본값으로 준다. 다만 그 「충분히」가 도메인 지식이라 깨지기 쉽다 — **`NOT NULL` 제약으로 막는 편이 낫다**([목록의 **45번 주제**](../45-check-not-null-default-generated-columns/)).
 
 ---
 
@@ -515,7 +515,7 @@ HINT:  No function matches the given name and argument types. You might need to 
 | `IFNULL(a, b)` | `COALESCE(a, b)` |
 | `IF(c, a, b)` | `CASE WHEN c THEN a ELSE b END` |
 
-그림 해설 — PG 의 에러가 「문법 오류」가 아니라 **「그런 함수 없음」**이다. 함수 이름의 문제일 뿐이라 대체가 쉽다.\
+그림 해설 — PG 의 에러가 「문법 오류」가 아니라 「**그런 함수 없음**」이다. 함수 이름의 문제일 뿐이라 대체가 쉽다.\
 대가 — 없다. **`COALESCE` 와 `CASE` 만 쓰면 이 자리가 통째로 사라진다.**
 
 ## 문법 — 형태와 규칙
@@ -646,7 +646,7 @@ LINE 1: SELECT CASE WHEN TRUE THEN 1 ELSE 'x' END AS r;
 - [01 논리적 질의 처리 순서](../01-logical-query-processing-order/) — 집계가 `SELECT` 보다 먼저라는 것이 4절의 전제다.
 - [35 타입 체계와 캐스팅](../35-type-system-and-casting/) — **경계: 타입 통일·암시 변환은 그쪽, 여기는 그것이 `CASE`·`COALESCE` 에서 어떻게 터지나.**
 - [36 수치 타입과 수치 함수](../36-numeric-types-and-functions/) — **경계: 정수 나눗셈과 `1/0` 의 결과는 그쪽, 여기는 그 결과가 조건 식의 단락 평가 증거가 되는 것까지.**
-- **`NOT NULL` 제약**은 목록의 **45번 주제**가 정본이다.
+- **`NOT NULL` 제약**은 [목록의 **45번 주제**](../45-check-not-null-default-generated-columns/)가 정본이다.
 - [24 조건부 집계 — FILTER 와 CASE](../24-conditional-aggregation-filter-case/) — **경계: 그쪽은 `CASE` 를 집계와 엮는 패턴, 여기는 식 하나의 평가 규칙까지.**
 - [SQL 주제 목록](../README.md)
 
@@ -677,4 +677,4 @@ LINE 1: SELECT CASE WHEN TRUE THEN 1 ELSE 'x' END AS r;
 
 - **`CASE` 로 정렬 순서를 만드는 것**은 이 식이 「값」이라는 성질을 가장 잘 쓰는 자리다. `ORDER BY CASE WHEN salary IS NULL THEN 0 ELSE 1 END, salary DESC` 는 두 엔진에서 **같은 순서**를 낸다 — `NULLS FIRST` 문법이 없는 MySQL 에서도 통한다([08번](../08-order-by-null-position-stability/)).
 - **`COALESCE` 를 어디에 두는가가 설계 결정이다.** 저장할 때 덮으면 원본이 사라지고, 질의 중간에 덮으면 집계가 틀어지고, 출력 직전에 덮으면 둘 다 피한다. **덮는 자리가 뒤로 갈수록 정보가 오래 남는다.**
-- **`GREATEST`/`LEAST` 의 두 철학 중 어느 쪽이 옳은가**는 답이 없다. PG 쪽은 「집계처럼 `NULL` 을 건너뛴다」, MySQL 쪽은 「비교 연산처럼 `NULL` 에 전염된다」로 각자 일관적이다. 외울 것은 어느 쪽이 맞느냐가 아니라 **「이 함수는 엔진마다 다르다」**는 사실 하나다.
+- **`GREATEST`/`LEAST` 의 두 철학 중 어느 쪽이 옳은가**는 답이 없다. PG 쪽은 「집계처럼 `NULL` 을 건너뛴다」, MySQL 쪽은 「비교 연산처럼 `NULL` 에 전염된다」로 각자 일관적이다. 외울 것은 어느 쪽이 맞느냐가 아니라 「**이 함수는 엔진마다 다르다**」는 사실 하나다.
