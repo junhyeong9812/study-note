@@ -92,7 +92,7 @@ LINE 1: SELECT 7 DIV 2 AS a, -5 DIV 2 AS b;
 
 **왜 그런가**
 
-MySQL 은 결과 스케일을 **「피제수의 스케일 + `div_precision_increment`」**로 정한다.
+MySQL 은 결과 스케일을 「**피제수의 스케일 + `div_precision_increment`**」로 정한다.
 
 ```text
 3    / 5   피제수 스케일 0  ->  0 + 4 = 4 자리  ->  0.6000
@@ -623,7 +623,7 @@ SELECT COUNT(*) AS num_eq FROM               SELECT COUNT(*) AS num_eq FROM
 
 ### 11. 어떤 타입을 고르나
 
-**한 줄 기준** — **「마지막 자리가 틀리면 누가 화를 내나」**로 정한다.
+**한 줄 기준** — 「**마지막 자리가 틀리면 누가 화를 내나**」로 정한다.
 
 | 용도 | 타입 | 이유 |
 |---|---|---|

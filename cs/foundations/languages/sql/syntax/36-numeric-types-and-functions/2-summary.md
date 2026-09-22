@@ -140,7 +140,7 @@ LINE 1: SELECT 7 DIV 2 AS a, -5 DIV 2 AS b;
 ```
 
 그림 해설 — **소수 자릿수마저 다르다.** PG 는 `numeric` 나눗셈에 20자리를 붙이고,\
-MySQL 은 **「피제수의 스케일 + `div_precision_increment`(기본 4)」**만큼 붙인다.\
+MySQL 은 「**피제수의 스케일 + `div_precision_increment`(기본 4)**」만큼 붙인다.\
 `3/5` 는 피제수 스케일이 0 이라 `0.6000`, `3.0/5` 는 1 이라 `0.60000` 이다.
 
 ```text
@@ -535,7 +535,7 @@ ERROR 1365 (22012) at line 3: Division by 0
 SELECT total / NULLIF(cnt, 0) AS avg_v FROM ...;
 ```
 
-`NULLIF` 자체는 목록의 **06번 주제**가 정본이다. `NULL` 이 퍼지는 규칙은 [04 NULL 의 3값 논리](../04-null-three-valued-logic/)다.
+`NULLIF` 자체는 [목록의 **06번 주제**](../06-conditional-expressions-case-coalesce/)가 정본이다. `NULL` 이 퍼지는 규칙은 [04 NULL 의 3값 논리](../04-null-three-valued-logic/)다.
 
 ### 6. 갈리지 않는 것들 — 여기까지 외우면 과잉이다
 
@@ -563,7 +563,7 @@ SELECT total / NULLIF(cnt, 0) AS avg_v FROM ...;
 
 ## 문법 — 형태와 규칙
 
-SQL 의 수치 문법은 형태가 단순하다. 외울 것은 **「어느 타입이 나오나」**다.
+SQL 의 수치 문법은 형태가 단순하다. 외울 것은 「**어느 타입이 나오나**」다.
 
 ```sql
 -- 나눗셈
@@ -642,7 +642,7 @@ DOUBLE PRECISION                      -- 양쪽 공통 (MySQL 은 DOUBLE 도 된
 - **하드웨어·표현이 정하는 것** — 부동소수의 자릿수와 짝수 반올림.\
   이것은 두 엔진의 선택이 아니라 **IEEE 754 배정밀도**의 성질이라, 두 엔진이 같은 값을 낸 것이 우연이 아니다.\
   표현 자체는 [`foundations/data-representation`](../../../../data-representation/)이 정본이다.
-- **에러 코드 번호**(1264·1365)는 MySQL 구현의 것이다. 외울 것은 번호가 아니라 **「어디서 막고 어디서 안 막나」**다.
+- **에러 코드 번호**(1264·1365)는 MySQL 구현의 것이다. 외울 것은 번호가 아니라 「**어디서 막고 어디서 안 막나**」다.
 
 ## 언제 쓰고 언제 안 쓰나
 
