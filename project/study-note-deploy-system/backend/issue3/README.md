@@ -145,7 +145,7 @@ $ curl --get .../api/doc --data-urlencode "path=programmers/힙/01-더 맵게/1-
 ```
 
 ③이 결정타였다 — 우리가 rename(`problem.md`→`1-question.md`)하기 **이전 커밋에서도 0바이트**였다.
-즉 시스템 어디에서도 내용을 잃지 않았고, **programmers 94개는 원래부터 안 쓴 빈 자리표(placeholder)**였다.
+즉 시스템 어디에서도 내용을 잃지 않았고, **programmers 94개는 원래부터 안 쓴 빈 자리표**(placeholder)였다.
 
 **어떻게 고쳤나:** 고칠 게 없었다(결함이 아니다). 색인 파이프라인은 빈 파일을 "청크 0개 → 건너뜀"으로
 이미 정상 처리하고 있었다(①에서 확인). API도 있는 그대로 빈 `markdown`을 돌려준 것뿐이다.

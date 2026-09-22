@@ -263,8 +263,8 @@ WARN ... DataRedisReactiveHealthIndicator : Redis health check failed
 
 **진단:** Redis 컨테이너 자체는 `redis-cli ping → PONG` 정상이었다. 원인은 접속 주소였다 —
 이슈②에서 `spring-boot-starter-data-redis` 의존성을 추가하자 Spring이 ① 헬스체크에 Redis 항목을
-자동 편입하고 ② 접속 주소를 안 줬으니 **기본값 `localhost:6379`**로 접속을 시도했다. 컨테이너
-안에서 localhost는 **자기 자신(app 컨테이너)**인데, 거기엔 Redis가 없다. 더 위험한 건, 로그
+자동 편입하고 ② 접속 주소를 안 줬으니 **기본값** `localhost:6379`로 접속을 시도했다. 컨테이너
+안에서 localhost는 **자기 자신**(app 컨테이너)인데, 거기엔 Redis가 없다. 더 위험한 건, 로그
 전송(XADD)도 같은 주소로 조용히 실패 중이었다는 것 — 우리 logger는 "전송 실패는 무해" 설계라
 예외를 삼키니 **아무 티도 안 났다.**
 

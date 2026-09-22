@@ -73,7 +73,7 @@ export default nextConfig;
 
 ### 결정 (2) — 봉투 해제를 페이지마다 하지 않고 헬퍼 하나로 강제했다
 
-**무엇이 문제였나:** backend의 모든 응답은 `{success, data|error}`라는 **봉투(envelope)**로
+**무엇이 문제였나:** backend의 모든 응답은 `{success, data|error}`라는 **봉투**(envelope)로
 싸여 온다. 즉 실제 데이터를 꺼내려면 매번 `success`가 참인지 먼저 검사하고, 참이면 `data`를,
 거짓이면 `error`를 꺼내야 한다. 이걸 페이지마다 되풀이하면 어느 한 페이지에서 검사를
 빠뜨리는 순간, 오류 응답을 정상 데이터인 척 화면에 그리게 된다.

@@ -52,7 +52,7 @@ validate)와 구조가 동형이라, 두 리포를 오가도 머릿속 지도가
 
 ### 고민 2 — 의존 역전(DIP)까지 갈까
 
-**의존 역전(DIP, Dependency Inversion Principle)**은 "도메인이 인터페이스(포트)를 소유하고,
+**의존 역전**(DIP, Dependency Inversion Principle)은 "도메인이 인터페이스(포트)를 소유하고,
 infra가 그 구현이 되는" 구조다. 이러면 usecase가 구체 클래스가 아니라 인터페이스에만 의존해
 인프라를 갈아끼우기 쉬워진다.
 

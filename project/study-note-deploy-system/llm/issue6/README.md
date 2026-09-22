@@ -111,7 +111,7 @@ async def post_chat(body: ChatIn, request: Request):
 ```
 
 입력 계약도 rewrite처럼 엄격하게 잠갔다 — `role`은 system|user|assistant만, messages는
-1~40개, 각 content는 1~20,000자(`ChatMessage`·`ChatIn`의 `extra="forbid"` + `Field` 제약).
+1\~40개, 각 content는 1\~20,000자(`ChatMessage`·`ChatIn`의 `extra="forbid"` + `Field` 제약).
 
 ---
 

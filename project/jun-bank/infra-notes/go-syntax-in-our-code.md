@@ -187,7 +187,7 @@ func (d Deps) rejectUnverified(ctx context.Context, requestID, reason string) {
 
 ## 5. nil의 세 얼굴 — 성공이거나, 미설정이거나, 부재이거나
 
-`nil`은 문맥에 따라 세 가지 다른 것을 뜻한다. 이 절은 그 셋을 나란히 놓아 4절의 `return nil`과 사용자가 지목한 `jtiArg`가 왜 둘 다 `nil`인데 뜻이 다른지를 못박는다. 세 얼굴 모두 뿌리는 하나다 — Go에서 포인터·인터페이스·슬라이스 같은 타입의 **제로값(초기화하지 않았을 때의 기본값)이 `nil`**이다([spec: The zero value](https://go.dev/ref/spec#The_zero_value)).
+`nil`은 문맥에 따라 세 가지 다른 것을 뜻한다. 이 절은 그 셋을 나란히 놓아 4절의 `return nil`과 사용자가 지목한 `jtiArg`가 왜 둘 다 `nil`인데 뜻이 다른지를 못박는다. 세 얼굴 모두 뿌리는 하나다 — Go에서 포인터·인터페이스·슬라이스 같은 타입의 **제로값(초기화하지 않았을 때의 기본값)이** `nil`이다([spec: The zero value](https://go.dev/ref/spec#The_zero_value)).
 
 첫째 얼굴은 4절에서 본 **성공으로서의 nil**이다. `error` 반환 자리의 `nil`은 "실패가 없다"이고, 그래서 `return nil`이 성공을 뜻한다.
 
@@ -197,7 +197,7 @@ func (d Deps) rejectUnverified(ctx context.Context, requestID, reason string) {
 	Skew *time.Duration
 ```
 
-`time.Duration`이 아니라 `*time.Duration`(포인터)으로 둔 데는 이유가 있다. 값 타입이면 "설정 안 함"과 "0으로 설정함"이 둘 다 `0`이라 구분되지 않는다. 포인터로 두면 **`nil`은 "운영자가 값을 안 줬다(미설정)", `nil`이 아닌 값은 "명시적으로 이만큼 주었다"**로 갈린다. 그 판정을 하는 자리가 이렇다.
+`time.Duration`이 아니라 `*time.Duration`(포인터)으로 둔 데는 이유가 있다. 값 타입이면 "설정 안 함"과 "0으로 설정함"이 둘 다 `0`이라 구분되지 않는다. 포인터로 두면 **`nil`은 "운영자가 값을 안 줬다(미설정)", `nil`이 아닌 값은 "명시적으로 이만큼 주었다**"로 갈린다. 그 판정을 하는 자리가 이렇다.
 
 ```go
 	skew := DefaultClockSkew
