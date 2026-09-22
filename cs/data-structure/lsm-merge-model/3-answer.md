@@ -77,7 +77,7 @@ Lucene 세그먼트 기반 엔진    레플리카에 '연산'이 복제되어(�
 
 ---
 
-**10. (연결)** **SSD 내부의 FTL(Flash Translation Layer)**과 같은 패턴이다.\
+**10. (연결)** **SSD 내부의 FTL**(Flash Translation Layer)과 같은 패턴이다.\
 같은 패턴이 반복되는 이유는, **제자리 덮어쓰기(in-place update)가 비싼 매체에서는 append-only + 불변 세그먼트로 순차 쓰기만 하고 정리(GC·compaction)를 나중에 몰아 하는 것이 유리**하기 때문이다 — B-Tree의 read-modify-write(랜덤 쓰기)와 대비된다. (근거: 2-summary의 `[Claude 추가]` "append-only + 불변이라는 발상은 SSD 내부 FTL과 정확히 같다")
 
 ---
