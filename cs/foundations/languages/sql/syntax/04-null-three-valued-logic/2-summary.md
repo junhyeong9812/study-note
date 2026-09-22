@@ -37,6 +37,12 @@ UNKNOWN (모른다)  ---->  버린다   <- 이 줄이 "사라진 행"의 정체�
 > **`UNKNOWN`** — 「판정 불가」를 나타내는 진릿값. `NULL` 이 비교에 끼면 나온다.\
 > 예: `NULL = NULL` 도 `TRUE` 가 아니라 `UNKNOWN` 이다 — 모르는 것 둘이 같은지도 모른다.
 
+## 이 주제가 답하려는 질문
+
+1. **`NULL` 이 낀 비교의 답은 무엇이고, `WHERE` 는 그 답을 어떻게 처분하나?** — 조건을 뒤집어도 **사라진 행이 안 돌아오는** 이유.
+2. **`UNKNOWN` 은 언제 번지고 언제 안 번지나?** — `NOT IN` 의 결과가 **통째로 비는** 사고가 이 규칙 하나에서 나온다.
+3. **집계와 묶기는 `NULL` 을 어떻게 다루나?** — `NULL = NULL` 이 참이 아닌데 `GROUP BY` 는 한 그룹으로 묶는, **반대로 보이는** 자리.
+
 ## 예시 데이터 — 이 묶음이 공유하는 것
 
 ```text
@@ -119,11 +125,11 @@ NOT — 뒤집어도 모르는 건 모른다
 ```
 
 그림 해설 — `FALSE AND UNKNOWN` 이 `FALSE` 인 이유는 **모르는 쪽이 무엇이든 결과가 `FALSE`** 이기 때문이다. 같은 이유로 `TRUE OR UNKNOWN` 은 `TRUE` 다.\
-대가 — 「`UNKNOWN` 은 전염된다」로 외우면 위 두 칸에서 틀린다. **「결과가 아직 안 정해졌을 때만 번진다」**가 맞다.
+대가 — 「`UNKNOWN` 은 전염된다」로 외우면 위 두 칸에서 틀린다. 「**결과가 아직 안 정해졌을 때만 번진다**」가 맞다.
 
 > **표시 차이(방언)** — 같은 값인데 PG 는 `t`/`f`, MySQL 은 `1`/`0` 으로 찍는다.\
 > PG 는 진짜 `boolean` 타입이 있고, MySQL 의 `BOOLEAN` 은 `TINYINT(1)` 의 다른 이름이기 때문이다.\
-> **판정 결과는 같다.** 타입 체계 이야기는 목록의 35번이다.
+> **판정 결과는 같다.** 타입 체계 이야기는 [목록의 **35번 주제**](../35-type-system-and-casting/)이다.
 
 ### 3. `WHERE` 는 `TRUE` 만 통과시킨다
 
@@ -350,7 +356,7 @@ AVG(salary)   -> 400   1200 / 3 이다.  1200 / 4 = 300 이 아니다
 그림 해설 — **`AVG` 의 분모가 `COUNT(*)` 이 아니라 `COUNT(열)` 이다.** 「평균 급여 400」이 「4명의 평균」이 아니라 「급여가 기록된 3명의 평균」이라는 뜻이다.\
 대가 — 이 차이는 **숫자가 그럴듯해서** 리뷰에서 안 잡힌다. `AVG` 를 쓸 때는 `COUNT(*)` 과 `COUNT(열)` 을 같이 뽑아 분모를 눈으로 확인하는 편이 낫다.
 
-(소수 자릿수가 두 엔진에서 다른 것은 `AVG` 의 결과 타입 차이다 — 값은 같다. 수치 타입 이야기는 목록의 36번이다.)
+(소수 자릿수가 두 엔진에서 다른 것은 `AVG` 의 결과 타입 차이다 — 값은 같다. 수치 타입 이야기는 [목록의 **36번 주제**](../36-numeric-types-and-functions/)이다.)
 
 **전부 `NULL` 인 그룹의 `SUM` 은 `0` 이 아니라 `NULL` 이다.**
 
@@ -468,7 +474,7 @@ HINT:  No operator matches the given name and argument types. You might need to 
 | 상대 방언의 문법 | `<=>` 는 **연산자 없음** 에러 | `IS NOT DISTINCT FROM` 은 **문법 오류** |
 
 **양쪽에서 다 도는 표현은 없다.** 이식이 필요하면 `(a = b) OR (a IS NULL AND b IS NULL)` 로 풀어 쓴다.\
-자세한 비교는 목록의 05번 주제다.
+자세한 비교는 [목록의 **05번 주제**](../05-null-comparison-is-distinct-from/)다.
 
 ## 어디서 틀리나
 
@@ -489,6 +495,62 @@ HINT:  No operator matches the given name and argument types. You might need to 
 - **`OUTER JOIN` 이 만든 `NULL` 을 원래 데이터의 `NULL` 과 구분하지 않는다.**\
   짝이 없어서 채워진 `NULL` 인지, 원래 값이 없던 `NULL` 인지는 결과만 봐서는 같다([16번](../16-full-outer-join/)).
 
+## 구현 세부사항 대 언어 보장
+
+이 주제는 **판정은 한 칸도 안 갈리고 표시만 갈린 쪽**이다. 그래서 「양쪽이 같았다」를 보장으로 읽기 가장 쉬운 자리이기도 하다.
+
+| 항목 | 무엇인가 | 누가 보장하나 |
+|---|---|---|
+| `NULL` 이 낀 비교 = `UNKNOWN` | **정의** | 언어 — 두 문서가 같은 말을 한다(아래) |
+| 3값 논리의 진리표(`FALSE AND NULL` = `FALSE`) | **정의** | PG 문서에 표가 그대로 있다(아래). MySQL 쪽은 **출력이 근거**다 |
+| `IS NULL` 이 유일한 판정 수단 | **정의** | 언어 — 두 문서가 같은 말을 한다 |
+| 집계가 `NULL` 을 건너뛰고 `COUNT(*)` 만 예외 | **정의** | 언어 — 두 문서가 같은 말을 한다(아래) |
+| `GROUP BY`·`DISTINCT` 가 `NULL` 을 한 덩어리로 | **정의 — 단 한쪽만 문서** | MySQL 문서는 못 박는다 / ★ **PG 쪽 근거는 본문의 출력뿐**(아래) |
+| 불린 표시 `t`/`f` ↔ `1`/`0` | **타입 체계** | 엔진 — MySQL 문서가 `TINYINT(1)` 이라고 적는다(아래) |
+| `NULL` 안전 등호의 문법 | **방언** | 엔진 — 양쪽에서 다 도는 표현은 없다(문법 절) |
+| ★ **`AVG` 의 소수 자릿수** | **설정** | **보장이 아니다** — MySQL 은 세션 설정 하나로 움직인다(아래) |
+| 본문 4번 `IS TRUE`·`IS NOT TRUE` 계열 | **관찰** | 두 엔진 출력이 같았지만 **MySQL 문서를 열어 보진 않았다** |
+| 빈 결과의 출력 모양(`(0 rows)` ↔ 아무것도 안 찍힘) | 클라이언트 | 서버가 아니라 **`psql`·`mysql` CLI** 가 정한다 |
+| 에러 번호·문구(`1064`) | 구현 세부 | 엔진 — **문자열로 분기하지 마라** |
+
+**두 문서가 같은 말을 하는 자리** — 이 주제 본문의 거의 전부가 여기 있다.
+
+- 비교 — PG *"Ordinary comparison operators yield null (signifying "unknown"), not true or false, when either input is null."* · MySQL *"Because the result of any arithmetic comparison with `NULL` is also `NULL`, you cannot obtain any meaningful results from such comparisons."* + *"To test for `NULL`, use the `IS NULL` and `IS NOT NULL` operators."*
+- 3값 논리 — PG *"SQL uses a three-valued logic system with true, false, and `null`, which represents "unknown"."* 그 페이지의 표에서 `FALSE` × `NULL` 칸이 `FALSE` 다. **본문 2번의 다섯 칸이 그 표와 같다.**
+- 집계 — PG *"All these functions ignore null values in their aggregated input."* + *"`count ( * )` … Computes the number of input rows."* · MySQL *"Unless otherwise stated, aggregate functions ignore `NULL` values."* + *"`COUNT(*)` is somewhat different in that it returns a count of the number of rows retrieved, whether or not they contain `NULL` values."*
+- 표시 — MySQL 문서가 `BOOL`·`BOOLEAN` 을 *"These types are synonyms for `TINYINT(1)`"* 라 적고 *"the values `TRUE` and `FALSE` are merely aliases for `1` and `0`"* 라고 덧붙인다. **`1`/`0` 은 표시가 아니라 타입이다.**
+
+★ **한쪽 문서만 찾은 자리 — 「모른다」로 적는다.**\
+`GROUP BY` 가 `NULL` 을 한 그룹으로 묶는다는 것은 MySQL 매뉴얼이 *"Two `NULL` values are regarded as equal in a `GROUP BY`."* 로 못 박는다.\
+**PG 매뉴얼에서 `GROUP BY`·`DISTINCT` 와 `NULL` 을 함께 못 박은 문장은 찾지 못했다** — 찾은 것은 *"`GROUP BY` will condense into a single row all selected rows that share the same values"* 와, `IS NOT DISTINCT FROM` 쪽 설명(*"these predicates effectively act as though null were a normal data value"*)뿐인데 **뒤엣것은 `GROUP BY` 를 가리키지 않는다.**\
+그러므로 **PG 쪽 근거는 본문 7번의 출력, 즉 관찰이다.**
+
+★ **`AVG` 의 자릿수는 「엔진의 선택」보다 한 칸 더 아래다 — 설정이다.** 같은 서버·같은 데이터에서 세션 설정 하나로 움직였다.
+
+```text
+### SQL: SELECT @@div_precision_increment AS dpi, AVG(salary) AS a_default FROM emp;
+###      SET SESSION div_precision_increment = 6;
+###      SELECT @@div_precision_increment AS dpi, AVG(salary) AS a_changed FROM emp;
+--- MySQL 8.4.10 ---
++------+-----------+
+| dpi  | a_default |
++------+-----------+
+|    4 |  400.0000 |
++------+-----------+
++------+------------+
+| dpi  | a_changed  |
++------+------------+
+|    6 | 400.000000 |
++------+------------+
+```
+
+그러므로 본문 6번의 `400.0000` 은 「MySQL 은 이렇게 찍는다」가 아니라 「**기본값이 4인 이 세션에서 이렇게 찍혔다**」다.\
+PG 쪽 `400.0000000000000000` 의 자릿수가 무엇으로 정해지는지는 **문서에서 확인하지 못했다 — 모른다.** 확실한 것은 **값(400)이 양쪽 같았다**는 것뿐이다.
+
+★ **「양쪽에서 같았다」가 보장인 칸과 아닌 칸.** 이 주제는 두 엔진의 판정이 한 칸도 안 갈렸다 — 그래서 더 위험하다.\
+보장으로 옮겨 적어도 되는 것은 **두 문서가 각각 같은 말을 적어 둔 항목**뿐이고, 나머지는 「이 두 서버에서 그랬다」까지다.\
+본문 6·7번 출력에서 MySQL 쪽 `NULL` 행이 위에 오는 것은 무작위가 아니라 **엔진 문서가 약속한 `ORDER BY` 의 `NULL` 자리**다([목록의 **08번 주제**](../08-order-by-null-position-stability/)).
+
 ## 언제 쓰고 언제 안 쓰나
 
 - **`NULL` 을 허용할지는 스키마 설계 시점의 결정이다.** 「모름」이 도메인상 의미가 있을 때만 허용한다.\
@@ -496,11 +558,11 @@ HINT:  No operator matches the given name and argument types. You might need to 
 - **조인 키에는 되도록 `NOT NULL` 을 건다.** `NOT IN`·`OUTER JOIN`·집계가 전부 조용해진다.
 - **`COALESCE` 로 덮는 것은 마지막 수단이다.** 덮으면 「몰랐다」는 사실 자체가 사라진다.\
   보고서 출력 직전에 덮고, 계산 중간에는 `NULL` 을 그대로 흘려보내는 편이 안전하다.
-- **`WHERE` 에 `NULL` 안전 비교를 남발하지 않는다.** `IS DISTINCT FROM`·`<=>` 는 인덱스를 못 타는 경우가 많다(목록의 47번).
+- **`WHERE` 에 `NULL` 안전 비교를 남발하지 않는다.** `IS DISTINCT FROM`·`<=>` 는 인덱스를 못 타는 경우가 많다([목록의 **47번 주제**](../47-when-indexes-are-used/)).
 
 ## 핵심 문장
 
-- `NULL` 은 **「없음」이 아니라 「모름」**이다. 그래서 진릿값이 셋이 된다.
+- `NULL` 은 「**없음」이 아니라 「모름**」이다. 그래서 진릿값이 셋이 된다.
 - `WHERE` 는 **`TRUE` 만** 통과시킨다. `FALSE` 와 `UNKNOWN` 을 구분하지 않는다.
 - 그래서 **조건을 뒤집어도 사라진 행은 안 돌아온다.**
 - `NOT IN` 의 목록에 `NULL` 이 하나라도 있으면 결과는 **항상 0행**이다. `NOT EXISTS` 로 바꾼다.
