@@ -71,7 +71,7 @@ Kafka        Producer → [Leader] → Follower들이 fetch.   리더 죽음 →
 BookKeeper   Client가 Qw개 Bookie에 직접 병렬 전송. Bookie는 서로를 모름, 조율은 클라이언트가.   Bookie 죽음 → 그 자리만 교체하고 계속
 ```
 
-순서 보장은 리더가 아니라 **entry ID**와 **"하나의 ledger에는 오직 한 명의 writer만 존재한다"**는 규칙으로 이뤄진다.
+순서 보장은 리더가 아니라 **entry ID**와 "**하나의 ledger에는 오직 한 명의 writer만 존재한다**"는 규칙으로 이뤄진다.
 
 Bookie 사망 대응이 특히 가볍다: E=5 중 B3 사망 → 그 시점 이후 entry부터 B6를 대신 투입(ensemble change) → 이미 쓴 데이터는 그대로 두고 백그라운드에서 복제본 수 복구 → 서비스 중단 없음. Kafka는 브로커를 늘리면 파티션 데이터를 통째로 물리적으로 옮겨야 하지만(수 TB), BookKeeper는 새 데이터부터 새 Bookie를 쓰면 된다.
 

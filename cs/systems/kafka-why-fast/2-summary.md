@@ -118,7 +118,7 @@ Producer → Broker → Linux Page Cache ─(zero-copy)→ NIC → Consumer
 
 프로듀서가 쓴 바이트가 페이지 캐시에 올라가고, 컨슈머가 바짝 따라붙어 있으면 그 바이트가 디스크를 거치지 않은 채 NIC로 나간다. 디스크 write는 나중에 flusher가 한다. 읽기 경로에서 디스크를 안 건드리는 것이 핵심이다.
 
-정정 하나: "JVM을 아예 안 지난다"는 아니다. 프로듀서에게서 네트워크로 받은 바이트는 JVM을 거친다. Kafka는 DirectByteBuffer(힙 밖)와 FileChannel로 GC 대상 힙 영역을 최소로 통과시킨다. 정확한 표현은 **"메시지를 힙에 캐싱하지 않는다"**이다.
+정정 하나: "JVM을 아예 안 지난다"는 아니다. 프로듀서에게서 네트워크로 받은 바이트는 JVM을 거친다. Kafka는 DirectByteBuffer(힙 밖)와 FileChannel로 GC 대상 힙 영역을 최소로 통과시킨다. 정확한 표현은 "**메시지를 힙에 캐싱하지 않는다**"이다.
 
 ## 3. 네 가지 트릭 — 각각 왜 필요하고 무엇을 치르는가
 
