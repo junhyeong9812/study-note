@@ -250,7 +250,7 @@ MySQL 에서 쓴 CROSS JOIN ... ON 을 PG 로     PG 에서 쓴 질의를 MySQL 
 ```text
 CROSS JOIN   부서 3 x 분기 2 = 6행짜리 뼈대를 만든다        <- 이 주제
 LEFT JOIN    뼈대를 다 남기고 실적을 붙인다                 <- 14번
-COALESCE     붙지 않은 칸의 NULL 을 0 으로 바꾼다           <- 목록의 06번 주제
+COALESCE     붙지 않은 칸의 NULL 을 0 으로 바꾼다           <- [목록의 **06번 주제**](../06-conditional-expressions-case-coalesce/)
 ```
 
 **뼈대가 없으면 `LEFT JOIN` 도 못 구한다.** 「실적 표에 아예 없는 분기」는 어느 쪽 표에도 행이 없으므로 조인으로는 만들어지지 않는다.\
@@ -296,7 +296,7 @@ ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the ma
 -- (1) UNION ALL 목록 — 양쪽 엔진에서 다 돈다. 짧으면 이게 제일 읽기 쉽다
 SELECT 1 AS q UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
 
--- (2) 재귀 CTE — 길이가 가변이면 이쪽. 목록의 33번 주제가 정본이다
+-- (2) 재귀 CTE — 길이가 가변이면 이쪽. [목록의 **33번 주제**](../33-recursive-cte/)가 정본이다
 ```
 
 `VALUES` 리스트로 만들려 하면 **행 생성자 문법까지 갈린다** — PG 는 `(1),(2)`, MySQL 은 `ROW(1),ROW(2)` 다([10번](../10-from-clause-aliases-derived-tables/)).
@@ -387,12 +387,12 @@ SELECT 1 AS q UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
  (300 + 500 + 400) / 3 = 400        <- 4 로 나누지 않는다
 ```
 
-4로 나눴다면 300 이 나왔을 것이다. 집계가 `NULL` 을 다루는 규칙은 [04번](../04-null-three-valued-logic/)·목록의 **21번 주제**가 정본이다.
+4로 나눴다면 300 이 나왔을 것이다. 집계가 `NULL` 을 다루는 규칙은 [04번](../04-null-three-valued-logic/)·[목록의 **21번 주제**](../21-aggregate-functions-count-forms/)가 정본이다.
 
 > **덤으로 보이는 차이** — 같은 400 인데 PG 는 소수 16자리, MySQL 은 4자리로 찍는다.\
-> 값이 아니라 **표시 타입**의 차이다. 수치 타입·정밀도는 목록의 **36번 주제**다.
+> 값이 아니라 **표시 타입**의 차이다. 수치 타입·정밀도는 [목록의 **36번 주제**](../36-numeric-types-and-functions/)다.
 
-같은 일을 윈도우 함수로도 할 수 있다 — `AVG(salary) OVER ()`(목록의 **26번 주제**).
+같은 일을 윈도우 함수로도 할 수 있다 — `AVG(salary) OVER ()`([목록의 **26번 주제**](../26-window-functions-vs-aggregates/)).
 
 ---
 
@@ -448,7 +448,7 @@ MySQL 도 같은 갈림이고, 계획에 **"(no condition)"** 이라고 적어 �
 
 > **읽을 때 주의** — 위 PG 계획의 `rows=1130`·`rows=1270`·`rows=1435100` 은 **통계가 없어서 나온 기본 추정치**다.\
 > 이 표들은 `ANALYZE` 를 돌린 적이 없어 PG 가 「평균적인 표 크기」를 가정했다. 실제 행 수는 4와 3이다.\
-> **추정과 실측이 어긋나는 자리**를 읽는 법은 목록의 **60번 주제**가 정본이다.
+> **추정과 실측이 어긋나는 자리**를 읽는 법은 [목록의 **60번 주제**](../60-explain-analyze-estimates-vs-actuals/)가 정본이다.
 
 - **결과는 정의가 정한다.** 옵티마이저가 무엇을 하든 답은 「모든 짝을 만든 뒤 걸렀을 때」와 같아야 한다([01번](../01-logical-query-processing-order/)).
 - **비용은 엔진이 정한다.** 위 계획은 이 버전·이 데이터에서 관찰한 것이고 보장이 아니다.
