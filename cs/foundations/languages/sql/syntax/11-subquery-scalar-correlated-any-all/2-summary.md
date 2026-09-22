@@ -718,7 +718,7 @@ FROM   (SELECT ...) AS t
 - [19 세미·안티 조인](../19-semi-anti-join/) — **경계: 여기는 서브쿼리 일반의 계약까지, 거기는 `EXISTS`/`IN`/`NOT IN` 의 선택과 계획부터.**
 - [20 LATERAL 조인](../20-lateral-join/) — **경계: 여기는 값 자리의 상관 참조까지, 거기는 그 상관 참조를 `FROM` 으로 내리는 것부터.**
 - [05 NULL 비교 — IS NULL·IS DISTINCT FROM·NULL 안전 등호](../05-null-comparison-is-distinct-from/) — **경계: 그쪽은 `NULL` 을 비교하는 연산자까지, 여기는 그 `NULL` 이 `ANY`/`ALL` 을 어떻게 무너뜨리나부터.**
-- **CTE(`WITH`)** 는 목록의 **32번 주제**가 정본이다.
+- **CTE(`WITH`)** 는 [목록의 **32번 주제**](../32-cte-with-clause/)가 정본이다.
 - [SQL 주제 목록](../README.md)
 
 ## 용어 풀이
@@ -732,7 +732,7 @@ FROM   (SELECT ...) AS t
 - **비상관 서브쿼리(uncorrelated subquery)** — 바깥을 참조하지 않아 한 번만 돌면 되는 서브쿼리.\
   예: `(SELECT MAX(salary) FROM emp)` — 바깥이 어떤 행이든 답이 같다.
 - **파생 테이블(derived table)** — `FROM` 에 놓인 서브쿼리. 표처럼 쓰이고 **바깥을 못 본다.**\
-  예: `FROM (SELECT id, name FROM emp) AS t`. 목록의 10번 주제.
+  예: `FROM (SELECT id, name FROM emp) AS t`. [목록의 **10번 주제**](../10-from-clause-aliases-derived-tables/).
 - **`ANY` / `SOME`** — 목록 중 **하나라도** 비교가 `TRUE` 면 `TRUE`. 둘은 같은 뜻이다.\
   예: `salary > ANY (300,500)` 은 300 보다 크면 통과한다.
 - **`ALL`** — 목록 **전부**에 대해 비교가 `TRUE` 여야 `TRUE`.\
@@ -752,4 +752,4 @@ FROM   (SELECT ...) AS t
 
 - **`EXISTS` 는 `SELECT` 목록을 아예 계산하지 않는다.** `SELECT 1/0` 을 넣어도 0 으로 나누지 않는다 — 그 증거는 [19번](../19-semi-anti-join/)에 있다.
 - **상관 서브쿼리를 `FROM` 으로 내리면** 여러 열·여러 행을 한 번에 받을 수 있다. 그것이 [`LATERAL`](../20-lateral-join/)이다.
-- **「행마다 상위 N개」는 세 가지로 쓸 수 있다** — 상관 서브쿼리 · `LATERAL` · 윈도우 함수(`ROW_NUMBER`, 목록의 **29번 주제**). 셋의 선택 기준은 29번이 정본이다.
+- **「행마다 상위 N개」는 세 가지로 쓸 수 있다** — 상관 서브쿼리 · `LATERAL` · 윈도우 함수(`ROW_NUMBER`, [목록의 **29번 주제**](../29-ranking-functions/)). 셋의 선택 기준은 29번이 정본이다.
