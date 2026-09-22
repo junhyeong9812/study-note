@@ -12,7 +12,7 @@
 > **이진 탐색(binary search)** — 정렬된 범위에서 가운데를 보고 절반을 버리기를 반복하는 탐색.\
 > 예: `[10, 20, 20, 20, 30, 40, 50]` 에서 20을 찾을 때 가운데부터 본다. O(log n).
 
-- 1~100 사이 숫자를 맞히는 게임에서 아무도 1부터 차례로 안 부른다.\
+- 1\~100 사이 숫자를 맞히는 게임에서 아무도 1부터 차례로 안 부른다.\
   "50!" — "업" — "75!" 처럼 **가운데를 불러서 절반을 통째로 버린다.**
 - 절반씩 버리니까 100개는 7번, 100만 개는 약 20번이면 끝난다.\
   이게 O(log n)이다.
@@ -50,12 +50,12 @@
 > 예: 길이 7인 배열이면 반열린 판은 `hi = 7`(구간 밖)로, 닫힌 판은 `hi = 6`(구간 안)으로 시작한다.
 
 네 가지 연산 — `lowerBound`(key 이상인 첫 자리) · `upperBound`(key 초과인 첫 자리) · `find`(값 찾기) · `firstTrue`(술어가 참이 되는 첫 인덱스, 배열을 안 받는다) — 을 판마다 채운다.\
-계약 테스트가 길이 0~40, 키 -1~40을 전부 대조하므로 경계 하나만 어긋나도 걸린다.
+계약 테스트가 길이 0\~40, 키 -1\~40을 전부 대조하므로 경계 하나만 어긋나도 걸린다.
 
 > **lowerBound / upperBound** — key 이상인 첫 자리 / key 초과인 첫 자리. 둘의 차이가 그 값의 개수.\
 > 예: 위 배열에서 lowerBound(20)=1, upperBound(20)=4 이고 4 - 1 = 3 이 20 의 개수다.
 
-**과제 목록** (`src/main/java/com/algo/bsearch/`의 TODO 1~8):
+**과제 목록** (`src/main/java/com/algo/bsearch/`의 TODO 1\~8):
 
 - `HalfOpenSearch.java` — TODO 1 `lowerBound` / TODO 2 `upperBound` / TODO 3 `find`(lowerBound로 파생) / TODO 4 `firstTrue`(넘침 주의)
 - `ClosedIntervalSearch.java` — TODO 5 `lowerBound`(답 후보 기억) / TODO 6 `upperBound` / TODO 7 `find`(직접 찾기 — 비교 3갈래) / TODO 8 `firstTrue`
@@ -261,7 +261,7 @@ mid = lo + (hi - lo) / 2  ← 차이(10억)는 안전. 이렇게 써야 한다
 - 계약 인터페이스: `.../src/main/java/com/algo/bsearch/Searcher.java`
 - 계측기: `.../src/main/java/com/algo/bsearch/CountedArray.java` (비교 횟수를 센다 — 탐색은 쓰기가 없다)
 - 정답 기준 소스: `/home/jun/project/myway/algorithm/06-binary-search/impl/com/algo/bsearch/HalfOpenSearch.java`, `impl/com/algo/bsearch/ClosedIntervalSearch.java`
-- 테스트: `.../src/test/java/com/algo/bsearch/SearcherContractTest.java`(길이 0~40, 키 -1~40 전수 대조), `HalfOpenSearchTest.java`, `ClosedIntervalSearchTest.java`, `MeasurementTest.java`
+- 테스트: `.../src/test/java/com/algo/bsearch/SearcherContractTest.java`(길이 0\~40, 키 -1\~40 전수 대조), `HalfOpenSearchTest.java`, `ClosedIntervalSearchTest.java`, `MeasurementTest.java`
 - 다음 챕터로의 다리: `07-parametric-search` (firstTrue 위에 선다 — 인덱스 대신 답 후보를 이분)
 
 ## 용어 풀이

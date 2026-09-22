@@ -10,7 +10,7 @@
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
 
-### A. 과제 (AhoCorasick — TODO 1~7)
+### A. 과제 (AhoCorasick — TODO 1\~7)
 
 #### 1. 트라이 만들기 (`build` — TODO 1)
 
@@ -54,8 +54,8 @@ public static CountedAutomaton build(List<String> patterns, CountedAutomaton aut
 > **트라이(trie)** — 글자를 한 자씩 따라 내려가는 나무 모양 사전.\
 > 예: 앞부분(접두사)이 같은 단어들이 길을 공유해서 노드 수가 준다 — `he` 와 `hers` 는 `h → e` 를 함께 쓴다.
 
-- Q: 글자를 0~25 로 바꾼다는 것은 입력에 대해 무엇을 전제하는가?\
-  A: 알파벳이 소문자 `a`~`z` 26 종류뿐이라는 전제다.\
+- Q: 글자를 0\~25 로 바꾼다는 것은 입력에 대해 무엇을 전제하는가?\
+  A: 알파벳이 소문자 `a`\~`z` 26 종류뿐이라는 전제다.\
   `ch - 'a'` 로 글자를 배열 인덱스로 바꿔 노드마다 길이 26 간선 배열을 쓴다.\
   이 전제가 깨지면(유니코드) 배열 방식이 안 된다 — B.4 두 번째 질문이 그 얘기다.
 
@@ -95,7 +95,7 @@ public static CountedAutomaton build(List<String> patterns, CountedAutomaton aut
   글자 하나당 간선 하나를 따라가거나 만들 뿐이다.\
   (실패 링크 걸기까지 포함하면 간선 표를 채우느라 O(m × 26) 이 된다.)
 
-#### 2. 실패 링크 걸기 (`linkFailures` — TODO 3~6)
+#### 2. 실패 링크 걸기 (`linkFailures` — TODO 3\~6)
 
 **impl 정답 코드**
 

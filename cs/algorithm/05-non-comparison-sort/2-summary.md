@@ -9,7 +9,7 @@
 
 **비교 없는 정렬 = 우체국 우편함 분류. 편지끼리 비교하지 않는다 — 번호를 보고 그 번호의 칸에 넣을 뿐.**
 
-- 지금까지의 정렬(01~04)은 전부 "둘 중 누가 크냐"는 비교로 일했다.\
+- 지금까지의 정렬(01\~04)은 전부 "둘 중 누가 크냐"는 비교로 일했다.\
   그런 정렬은 아무리 잘해도 최악에 `log2(n!)`번보다 적게 비교할 수 없다는 수학적 하한이 있다(02번에서 병합 정렬이 그 하한의 2.4% 위까지 붙었다).
 
 > **비교 정렬 / 비교 하한 log2(n!)** — 원소끼리의 대소 비교만으로 정렬하는 방식 / 그런 방식이 최악에 반드시 치러야 하는 최소 비교 횟수.\
@@ -53,17 +53,17 @@
 
 원본 README는 이 박스를 "계수, LSD 기수, MSD 기수. **비교 정렬의 하한 `log2(n!)` 아래로 내려간다**"라고 소개한다.
 
-장치는 계측기에서 `compare`를 **뺀 것** 하나다 — 01~04의 `CountedArray`에는 있던 비교 메서드가 여기엔 없고 `Comparator`도 안 받는다.\
+장치는 계측기에서 `compare`를 **뺀 것** 하나다 — 01\~04의 `CountedArray`에는 있던 비교 메서드가 여기엔 없고 `Comparator`도 안 받는다.\
 대신 키를 정수로 꺼내는 `key(i)`가 있다.\
 즉 비교를 덜 하는 게 아니라 **실수로도 비교할 수 없게 만들어 놓고**, 키를 배열 인덱스로 쓰는 세 정렬을 직접 채우는 것이 과제다.
 
-과제 목록 — `src/main/java/com/algo/radix/`의 TODO 1~13:
+과제 목록 — `src/main/java/com/algo/radix/`의 TODO 1\~13:
 
 - `CountingSort` — TODO 1(키 범위 구하기 — 음수 키 보정) · TODO 2(개수 세기 — `allocateCounts`) · TODO 3(누적합을 "개수"로 만들지 "시작 자리"로 만들지) · TODO 4(출력 버퍼로 옮기고 되돌려 쓰기 — 앞/뒤 중 어느 쪽이 안정인가, 키만 되쓰면?) · TODO 5(`handlesWideRange()` 선언)
 - `LsdRadixSort` — TODO 6(버퍼 하나로 핑퐁, 통과 짝/홀 처리) · TODO 7(한 통과 = 그 자리의 계수 정렬 — 안정성이 전제) · TODO 8(`bucket()` — 8비트 꺼내기 + 마지막 통과의 부호 처리)
 - `MsdRadixSort` — TODO 9(버퍼 잡고 최상위 자리부터 재귀) · TODO 10(멈추는 조건 둘) · TODO 11(한 칸 민 누적합으로 구간 경계 만들기 + 커서 분리) · TODO 12(절대 위치 대 상대 위치) · TODO 13(`bucket()` — 부호 처리는 어느 통과에서)
 
-계약 테스트(`SorterContractTest`)가 세 정렬 모두에 같은 계약을 건다: 빈 배열·길이 0~64 전부·음수·`Integer.MIN_VALUE`·원소 보존(순열)·**안정성**·위성 데이터 보존.\
+계약 테스트(`SorterContractTest`)가 세 정렬 모두에 같은 계약을 건다: 빈 배열·길이 0\~64 전부·음수·`Integer.MIN_VALUE`·원소 보존(순열)·**안정성**·위성 데이터 보존.\
 `handlesWideRange()`가 `false`면 넓은 범위 테스트는 건너뛴다.
 
 아래 서머리는 이 문제(README)를 분석·정리한 것이다.
@@ -148,7 +148,7 @@ out: [ 1 | 2a | 2b | 4 | 5 | 8 | 9 ]     (2a가 2b보다 먼저 훑였으니 먼
 
 사전 지식 3줄: 기수(radix) = 진법.\
 십진수 두 자리로 감을 잡고, 코드는 32비트를 8비트(=256진법 한 자리)씩 네 자리로 본다.\
-한 자리의 값만 보면 범위가 항상 0~255라 세는 배열이 256칸으로 고정된다.
+한 자리의 값만 보면 범위가 항상 0\~255라 세는 배열이 256칸으로 고정된다.
 
 전 상태 — 두 자리 수 예시: `[52, 25, 94, 21, 13, 45, 22]`
 
@@ -242,12 +242,12 @@ out: [ 1 | 2a | 2b | 4 | 5 | 8 | 9 ]     (2a가 2b보다 먼저 훑였으니 먼
 | LSD 기수 | 4 (고정) | 항상 2,024칸 | 상관없다 |
 | MSD 기수 | 갈릴 때까지 | 구간마다 늘어난다 | 상관없다 |
 
-- **계수 정렬의 메모리는 원소 수와 무관**: 1,000개 정렬에 키 범위 0~100이면 1,100칸, 0~100만이면 998,871칸 — 읽기·쓰기는 완전히 같은데 메모리만 908배.\
+- **계수 정렬의 메모리는 원소 수와 무관**: 1,000개 정렬에 키 범위 0\~100이면 1,100칸, 0\~100만이면 998,871칸 — 읽기·쓰기는 완전히 같은데 메모리만 908배.\
   기수는 같은 자리에서 2,024칸 고정.
 - **MSD는 절반만 훑는 대신 메모리 36배**: 32비트에 고루 퍼진 키에서 키 읽기 4,048 vs LSD 8,000, 그러나 할당 283번·73,333칸 vs 5번·2,024칸.
-- **키 범위가 좁으면 MSD는 이득 0**: 범위 0~100이면 상위 두 바이트가 전부 0이라 아무것도 안 갈라진다 — 키 읽기 8,000으로 LSD와 같고 쓰기는 2배(매 구간 버퍼로 갔다가 되돌아옴).\
+- **키 범위가 좁으면 MSD는 이득 0**: 범위 0\~100이면 상위 두 바이트가 전부 0이라 아무것도 안 갈라진다 — 키 읽기 8,000으로 LSD와 같고 쓰기는 2배(매 구간 버퍼로 갔다가 되돌아옴).\
   **키 분포를 모르면 MSD를 고를 근거가 없다** — 알고리즘 선택이 데이터를 알아야 가능한 자리.
-- **범위를 미리 알면 계수가 확실히 싸다**: 범위 0~100인 10,000개에서 키 읽기 30,000 vs LSD 80,000.\
+- **범위를 미리 알면 계수가 확실히 싸다**: 범위 0\~100인 10,000개에서 키 읽기 30,000 vs LSD 80,000.\
   LSD는 범위가 좁아도 4통과를 다 돈다.\
   나이·점수·요일에 기수 정렬은 손해.
 
@@ -264,7 +264,7 @@ out: [ 1 | 2a | 2b | 4 | 5 | 8 | 9 ]     (2a가 2b보다 먼저 훑였으니 먼
 
 - 챕터 안내: `/home/jun/project/myway/algorithm/05-non-comparison-sort/README.md` (측정 수치의 출처)
 - 정답 기준 소스: `/home/jun/project/myway/algorithm/05-non-comparison-sort/impl/com/algo/radix/` — `CountingSort.java`, `LsdRadixSort.java`, `MsdRadixSort.java`
-- 연습용 뼈대(TODO 1~13): `/home/jun/project/myway/algorithm/05-non-comparison-sort/src/main/java/com/algo/radix/` — 같은 3파일 + `Sorter.java`, `CountedArray.java`(compare 없음 — `key`/`allocate`/`allocateCounts`만)
+- 연습용 뼈대(TODO 1\~13): `/home/jun/project/myway/algorithm/05-non-comparison-sort/src/main/java/com/algo/radix/` — 같은 3파일 + `Sorter.java`, `CountedArray.java`(compare 없음 — `key`/`allocate`/`allocateCounts`만)
 - 계약·측정 테스트: `/home/jun/project/myway/algorithm/05-non-comparison-sort/src/test/java/com/algo/radix/` — `SorterContractTest.java`(`Integer.MIN_VALUE`·위성 데이터 검사), `MeasurementTest.java` 외
 
 ## 용어 풀이
