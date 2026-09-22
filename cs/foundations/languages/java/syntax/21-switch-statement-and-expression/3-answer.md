@@ -285,7 +285,7 @@ Ex.java:4: error: the switch statement does not cover all possible input values
 ```
 
 - 메시지가 `the switch **statement**` 라고 말한다. 경계는 「문이냐 식이냐」만이 아니라\
-  **「옛 selector 냐 패턴이냐」**에도 걸려 있다. 그쪽 규칙은 [**23번 주제**](../23-switch-pattern-matching/)가 정본이다.
+  「**옛 selector 냐 패턴이냐**」에도 걸려 있다. 그쪽 규칙은 [**23번 주제**](../23-switch-pattern-matching/)가 정본이다.
 
 ### 6. `yield` 와 블록 가지
 

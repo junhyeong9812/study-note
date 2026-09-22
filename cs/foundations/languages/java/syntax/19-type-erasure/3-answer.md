@@ -57,7 +57,7 @@
   `List` 의 `E` 가 **`Object` 로 소거**됐다.
 - **소스에 없던 명령** — **`checkcast class java/lang/String`** 이다.\
   `get` 직후, 결과를 지역 변수에 넣기(`astore_1`) 직전에 들어간다.
-- 그래서 제네릭은 **"컴파일러가 캐스팅을 대신 써 주는 것"**이라고 요약된다.
+- 그래서 제네릭은 "**컴파일러가 캐스팅을 대신 써 주는 것**"이라고 요약된다.
 
 **`<T extends Comparable<T>> T max(List<T>)` 의 반환**
 
@@ -806,7 +806,7 @@ Ex.java:9: error: generic array creation
 
 **구조가 같은 주제**
 
-- [`../16-annotations/`](../16-annotations/) 다. 둘 다 **"javac 가 클래스 파일에 무엇을 적었나"**를 `javap -v` 로 확인한다.
+- [`../16-annotations/`](../16-annotations/) 다. 둘 다 "**javac 가 클래스 파일에 무엇을 적었나**"를 `javap -v` 로 확인한다.
 
 ```text
 같은 질문, 다른 대상

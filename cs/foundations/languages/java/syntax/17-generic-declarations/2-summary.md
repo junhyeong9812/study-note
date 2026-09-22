@@ -341,7 +341,7 @@ T 를 어떻게 정했나
 그림 해설 (한 단계씩):
 
 - 컴파일러는 인자 둘의 **공통 상위 타입**을 만들어 `T` 로 삼는다. 그것이 **교차 타입**이다.
-- 그래서 에러가 안 난다 — **"타입이 안 맞아서 못 부른다"가 아니라 "이상한 타입으로 불린다"**가 된다.
+- 그래서 에러가 안 난다 — "**타입이 안 맞아서 못 부른다"가 아니라 "이상한 타입으로 불린다**"가 된다.
 - 반환값을 `List<String>` 에 넣으려 하면 그때서야 터진다(`Ex.java (17-f)`).
 
 ```text
@@ -419,7 +419,7 @@ Ex.java:10: error: method maxOf in class Ex cannot be applied to given types;
 
 그림 해설 (한 단계씩):
 
-- 재귀 바운드는 **"T 는 T 와 비교할 수 있어야 한다"**를 타입으로 적은 것이다.
+- 재귀 바운드는 "**T 는 T 와 비교할 수 있어야 한다**"를 타입으로 적은 것이다.
 - 이것이 없으면 `compareTo` 의 인자가 `Object` 라서 **아무 타입이나 넘길 수 있게 된다.**
 - 그래서 정렬·최댓값 API 는 전부 이 형태를 쓴다. `Comparable` 계약 자체는 [`../28-comparable-comparator/`](../28-comparable-comparator/) 가 정본이다.
 
@@ -688,7 +688,7 @@ error: incompatible types: Object cannot be converted to String
 
 ## 구현 세부사항 대 언어 보장
 
-이 절은 **"어디까지 믿어도 되나"**를 가른다.
+이 절은 "**어디까지 믿어도 되나**"를 가른다.
 
 | 항목 | 누가 보장하나 | 근거 |
 |---|---|---|
@@ -710,7 +710,7 @@ INT#1 extends Object,Serializable,Comparable<? extends INT#2>,Constable,Constant
 
 - `Constable`·`ConstantDesc` 는 **Java 12 에서 `Integer`·`String` 에 붙은 인터페이스**다.
 - 즉 이 목록은 **JDK 버전에 따라 달라질 수 있다.** 17·21·25 에서는 같았다(`diff` 로 확인).
-- 외울 것은 목록이 아니라 **"공통 상위 타입을 만들어 통과시킨다"**는 성질이다.
+- 외울 것은 목록이 아니라 "**공통 상위 타입을 만들어 통과시킨다**"는 성질이다.
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -740,8 +740,8 @@ INT#1 extends Object,Serializable,Comparable<? extends INT#2>,Constable,Constant
 - `static` 멤버는 인스턴스와 무관하게 **하나뿐**이라 클래스 타입 파라미터를 쓸 수 없다 — 쓰려면 **자기 타입 파라미터를 새로 선언**한다.
 - 바운드 없는 `<T>` 는 **`<T extends Object>`** 다. `T` 위에서 부를 수 있는 것은 `Object` 의 메서드뿐이다.
 - 다중 바운드는 **`&`** 로 잇고 **클래스는 최대 하나·맨 앞**이다. 어기면 `interface expected here` 다.
-- 추론은 인자들의 **공통 상위 타입(교차 타입)**을 만들어서라도 통과시킨다 — **에러가 안 나는 것이 위험한 자리**다.
-- 재귀 바운드 `<T extends Comparable<T>>` 는 **"T 는 T 와 비교할 수 있다"**를 타입으로 적은 것이고, 상속 계층까지 받으려면 **`Comparable<? super T>`** 여야 한다.
+- 추론은 인자들의 **공통 상위 타입**(교차 타입)을 만들어서라도 통과시킨다 — **에러가 안 나는 것이 위험한 자리**다.
+- 재귀 바운드 `<T extends Comparable<T>>` 는 "**T 는 T 와 비교할 수 있다**"를 타입으로 적은 것이고, 상속 계층까지 받으려면 **`Comparable<? super T>`** 여야 한다.
 
 ## 관련 자료
 

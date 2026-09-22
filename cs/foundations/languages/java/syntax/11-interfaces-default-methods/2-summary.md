@@ -524,7 +524,7 @@ interface I { private void helper() { } private static void s() { } }
 - [`../06-initialization-order/`](../06-initialization-order/) — **인터페이스에도 `<clinit>` 이 있다.** 상수 접기와 초기화 시점은 그쪽이 정본
 - [`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/) — **`equals`/`hashCode` 계약은 거기.** 여기는 **인터페이스로는 줄 수 없다**는 사실까지
 - [`../../../../oop-basics/`](../../../../oop-basics/) — **추상 클래스와 다형성 개념은 거기**(§17 abc).\
-  ★ 그쪽은 「추상 메서드로 구현을 강제한다」까지, 여기는 **「구현을 제공할 수도 있게 된 뒤 생긴 규칙들」**부터다.\
+  ★ 그쪽은 「추상 메서드로 구현을 강제한다」까지, 여기는 「**구현을 제공할 수도 있게 된 뒤 생긴 규칙들**」부터다.\
   다중 상속 충돌·`X.super`·`static` 미상속은 파이썬의 MRO 와 전혀 다른 해법이라 그 문서에 없다
 - [`../../../../../../history/java/java-8.md`](../../../../../../history/java/java-8.md) — **왜 들어왔나는 거기**, 여기는 **무엇을 쓰고 무엇이 막히나**
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — `invokeinterface` 의 JIT 최적화는 그쪽

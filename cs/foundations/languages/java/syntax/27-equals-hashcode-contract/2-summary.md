@@ -7,7 +7,7 @@
 > **버전** — 세 메서드의 계약은 Java 1.0 이래 바뀌지 않았다. `record` 의 자동 구현은 **Java 16**부터.
 > **범위** — 해시 테이블이 **어떻게 동작하는가**(버킷·충돌·리사이즈·트리화)는 이 문서가 다루지 않는다.\
 > 그쪽은 [`../../../../../data-structure/05-hashmap/`](../../../../../data-structure/05-hashmap/) 과 [`29-open-addressing/`](../../../../../data-structure/29-open-addressing/) 이 정본이다.\
-> 여기는 **「계약을 어기면 어디서 조용히 틀리나」**만 다룬다.
+> 여기는 「**계약을 어기면 어디서 조용히 틀리나**」만 다룬다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ## 한눈에 — 쉽게 말하면
@@ -448,13 +448,13 @@ OverrideCatch.java:4: error: method does not override or implement a method from
 - 해시 컬렉션은 **칸을 먼저 고르고 그 칸만 본다.** 칸이 틀리면 `equals` 는 불리지도 않는다.
 - 그래서 계약 위반은 **예외가 아니라 조용한 오답**으로 나타난다 — `size()` 와 `toString` 에는 보이는데 `get` 만 실패한다.
 - **`List` 는 멀쩡하고 `Map`/`Set` 만 틀린다.** 리스트는 해시를 안 쓰기 때문이다. 이 비대칭이 진단을 어렵게 만든다.
-- `toString` 은 계약이 아니라 권고이며, javadoc 이 **"실행 간에 안정적이지 않다"**고 명시했다 — 파싱·저장 금지.
+- `toString` 은 계약이 아니라 권고이며, javadoc 이 "**실행 간에 안정적이지 않다**"고 명시했다 — 파싱·저장 금지.
 
 ## 관련 자료
 
 - [`../README.md`](../README.md) — Java 문법·API 주제 목록(이 주제는 27번)
 - [`../../../../../data-structure/05-hashmap/`](../../../../../data-structure/05-hashmap/) — **해시 테이블의 원리가 정본이다.**\
-  버킷·충돌·체이닝·리사이즈·로드 팩터는 거기서 본다. 이 문서는 그 위에서 **"계약을 어기면 어디가 틀리나"**만 다룬다
+  버킷·충돌·체이닝·리사이즈·로드 팩터는 거기서 본다. 이 문서는 그 위에서 "**계약을 어기면 어디가 틀리나**"만 다룬다
 - [`../../../../../data-structure/29-open-addressing/`](../../../../../data-structure/29-open-addressing/) — 개방 주소법. 충돌 처리의 다른 갈래
 - [`../../../../oop-basics/`](../../../../oop-basics/) — 동일성(identity)과 동등성(equality)의 개념 구분
 - [`../06-initialization-order/`](../06-initialization-order/) — 「어디서 틀리나」 4번의 `@Override` 가 계약 위반을 컴파일 에러로 바꾸는 또 다른 사례

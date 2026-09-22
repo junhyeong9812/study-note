@@ -106,7 +106,7 @@ map = list.stream().collect(Collectors.groupingBy(v -> v / 10));   // 10 단위 
 
 ### 3. ★ 이 비교자로 정렬하면 무슨 일이 일어나는가 — 원소 수별로
 
-**출력** (`Ex.java (28-a2)`, 값 0~999, 씨앗 42, JDK 21.0.5 — 17·25 동일)
+**출력** (`Ex.java (28-a2)`, 값 0\~999, 씨앗 42, JDK 21.0.5 — 17·25 동일)
 
 ```text
 --- A. 비추이 비교자 FUZZY (값 0~999, seed 42) ---
@@ -147,7 +147,7 @@ java.lang.IllegalArgumentException: Comparison method violates its general contr
 }
 ```
 
-구체적으로 8원소 하나를 눈으로 보면 이렇다(같은 프로그램 C절, 값 0~99, 씨앗 7).
+구체적으로 8원소 하나를 눈으로 보면 이렇다(같은 프로그램 C절, 값 0\~99, 씨앗 7).
 
 ```text
   n=8 정렬 전 : [36, 64, 85, 44, 80, 54, 68, 49]
@@ -205,7 +205,7 @@ if (nRemaining < MIN_MERGE) {
    ★ 던질 코드가 없다
 ```
 
-**6만 번 실측** (`Ex.java (28-a4)`, 값 0~99, 씨앗 0~1999, JDK 21.0.5 — 17·25 동일)
+**6만 번 실측** (`Ex.java (28-a4)`, 값 0\~99, 씨앗 0\~1999, JDK 21.0.5 — 17·25 동일)
 
 ```text
 n = 2~31, seed 0~1999 -> 시도 60000회
@@ -218,8 +218,8 @@ n = 32~61, seed 0~1999 -> 시도 60000회
 
 | 구간 | 예외 | 조용한 오답 |
 |---|---|---|
-| 2~31 | **0회** | 54,097회 |
-| 32~61 | 3,012회 (5.0%) | 56,988회 |
+| 2\~31 | **0회** | 54,097회 |
+| 32\~61 | 3,012회 (5.0%) | 56,988회 |
 
 **"예외가 안 났으니 계약을 지켰다"가 틀린 이유**
 
@@ -659,10 +659,10 @@ Comparator<P> ORDER = comparing(P::dept).thenComparing(P::name).thenComparingInt
 | 프로그램 | 무엇을 확인했나 | 돌린 JDK |
 |---|---|---|
 | `Ex.java (28-a)` | `FUZZY` 의 추이성 위반 세 값, 원소 수 10구간별 정렬 결과 | 21 |
-| `Ex.java (28-a2)` | `FUZZY`·`NEVER_ZERO` 를 n=4~10000 에서 — 통과/조용한 오답/예외 세 구간, 8·31·32 원소의 실제 정렬 결과 | 17 · 21 · 25 (출력 동일) |
+| `Ex.java (28-a2)` | `FUZZY`·`NEVER_ZERO` 를 n=4\~10000 에서 — 통과/조용한 오답/예외 세 구간, 8·31·32 원소의 실제 정렬 결과 | 17 · 21 · 25 (출력 동일) |
 | `Ex.java (28-a3)` | 처음 던지는 n(731 · 89), `Arrays.sort`·`Arrays.parallelSort` 도 같은 경계 | 17 · 21 · 25 (출력 동일) |
 | `Ex.java (28-a3)` `-Djava.util.Arrays.useLegacyMergeSort=true` | 옛 병합 정렬에서는 n=3000까지 한 번도 안 던짐(`-1`) | 21 |
-| `Ex.java (28-a4)` | n=2~31 씨앗 0~1999 (6만 회) -> 예외 0회·오답 54,097회 / n=32~61 -> 예외 3,012회·오답 56,988회 | 17 · 21 · 25 (출력 동일) |
+| `Ex.java (28-a4)` | n=2\~31 씨앗 0\~1999 (6만 회) -> 예외 0회·오답 54,097회 / n=32\~61 -> 예외 3,012회·오답 56,988회 | 17 · 21 · 25 (출력 동일) |
 | `Ex.java (28-b)` | `compareTo`/`equals` 불일치의 `HashSet`·`TreeSet`·`TreeMap` 차이, `BigDecimal`, 뺄셈 오버플로, `compareTo(null)` | 17 · 21 · 25 (출력 동일) |
 | `Ex.java (28-c)` | `comparing`·`thenComparing`·`reversed` 위치, `comparingInt`, `nullsFirst`/`nullsLast`, `sort(null)` | 17 · 21 · 25 (출력 동일) |
 | `Ex.java (28-d)` `javac` | `comparing(람다).thenComparing(람다)` -> `cannot find symbol ... variable p of type Object` | 17 · 21 · 25 (문구 동일) |

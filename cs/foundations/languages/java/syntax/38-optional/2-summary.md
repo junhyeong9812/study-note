@@ -327,7 +327,7 @@ Ex.java:5: error: incompatible types: Optional<String> cannot be converted to Se
 1 error
 ```
 
-- `Optional` 은 `final` 이고 `Serializable` 을 구현하지 않는다. 그래서 javac 이 **"그 `instanceof` 는 절대 참이 될 수 없다"**고 컴파일에서 막는다.
+- `Optional` 은 `final` 이고 `Serializable` 을 구현하지 않는다. 그래서 javac 이 "**그 `instanceof` 는 절대 참이 될 수 없다**"고 컴파일에서 막는다.
 - 대안은 **필드는 `null` 허용, 접근자가 봉투를 만드는 것**이다.
 
 ```java
@@ -686,7 +686,7 @@ IntStream.of(1, 2, 3).average();      // OptionalDouble  — Optional<Double> �
 
 ## 구현 세부사항 대 언어 보장
 
-이 절은 **"어디까지 믿어도 되나"**를 가른다.
+이 절은 "**어디까지 믿어도 되나**"를 가른다.
 
 | 항목 | 누가 보장하나 | 근거 |
 |---|---|---|

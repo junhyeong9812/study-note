@@ -470,7 +470,7 @@ farm/Use.java:6: error: Secret.value is defined in an inaccessible class or inte
 
 - [`../README.md`](../README.md) — Java 문법·API 주제 목록(이 주제는 10번)
 - [`../../../../oop-basics/`](../../../../oop-basics/) — **정보 은닉이 왜 필요한가는 거기**(§10 C++ 접근 제어, §11 파이썬 네임 맹글링, §12 프로퍼티).\
-  ★ 그쪽은 「감추는 이유」와 「파이썬은 사실상 못 막는다」까지, 여기는 **「Java 는 네 수준으로 실제로 막고, 그 경계가 정확히 어디인가」**부터다
+  ★ 그쪽은 「감추는 이유」와 「파이썬은 사실상 못 막는다」까지, 여기는 「**Java 는 네 수준으로 실제로 막고, 그 경계가 정확히 어디인가**」부터다
 - [`../09-inheritance-overriding/`](../09-inheritance-overriding/) — **재정의할 때 접근을 좁힐 수 없다**는 규칙이 그쪽에 있다.\
   `protected` 필드가 필드 숨김 사고의 전제 조건이라는 것도
 - [`../06-initialization-order/`](../06-initialization-order/) — package-private 클래스의 기본 생성자도 package-private 이다

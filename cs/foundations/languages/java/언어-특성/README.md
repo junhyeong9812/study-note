@@ -76,7 +76,7 @@ Java는 언어 연구가 아니라 제품 문제에서 나왔다. 1995년 백서
 - **친숙함 위에서 위험만 제거.** "keeping Java looking like C++ … while removing the unnecessary complexities of C++"(§1.2.1).
 - **거대 표준 라이브러리·후방 호환·"지루하지만 안정적".** 이후 30년의 운영에서 굳은 지향이다. **옛 바이트코드가 새 JVM에서 그대로 도는 후방 호환**이 이 생태계의 제1 계율이 됐다. [실무 의견]
 
-**짧은 역사(이정표만).** 1991 Green 프로젝트(언어명 Oak) → 1995 Java 개명·애플릿 공개 → 1996 JDK 1.0 → 2004 J2SE 5.0(제네릭을 **소거(type erasure)**로 구현해 후방 호환 유지) → 2014 Java 8(람다·스트림) → 2017 6개월 릴리스 케이던스([Java version history](https://en.wikipedia.org/wiki/Java_version_history)). 관통하는 규칙은 "안전을 늘리되 기존 것을 안 깬다"이다.
+**짧은 역사(이정표만).** 1991 Green 프로젝트(언어명 Oak) → 1995 Java 개명·애플릿 공개 → 1996 JDK 1.0 → 2004 J2SE 5.0(제네릭을 **소거**(type erasure)로 구현해 후방 호환 유지) → 2014 Java 8(람다·스트림) → 2017 6개월 릴리스 케이던스([Java version history](https://en.wikipedia.org/wiki/Java_version_history)). 관통하는 규칙은 "안전을 늘리되 기존 것을 안 깬다"이다.
 
 **이웃 언어 좌표.** 같은 "메모리 안전"을 GC로 이룬 언어가 Java만은 아니다.
 
@@ -155,7 +155,7 @@ JIT의 이점은 "나중에 컴파일해서"가 아니라 **컴파일할 때 실
 
 GC 전략의 출발점은 관찰 하나다 — "**weak generational hypothesis**: young objects tend to die young, while old objects tend to stick around"([JEP 439](https://openjdk.org/jeps/439)). 이 가설이 참이면 힙 전체를 매번 훑을 이유가 없다.
 
-**기본 컬렉터 G1**은 힙을 동일 크기 **영역(region)**으로 나누고, 회수는 복사(evacuation)로, 그 복사는 **stop-the-world**에서 한다([GC Tuning Guide: G1](https://docs.oracle.com/en/java/javase/21/gctuning/garbage-first-g1-garbage-collector1.html)). G1은 일시정지를 없애는 게 아니라 **예측 가능한 상한 안에 넣는** 컬렉터다 — 목표는 소프트 목표이고 기본값 200ms다. 승인 응답 p99 목표가 3초인 시스템에서 200ms는 예산의 한 자리를 차지하지만 치명적이지 않고, 목표가 수십 ms인 시스템이라면 G1은 처음부터 틀린 선택이다.
+**기본 컬렉터 G1**은 힙을 동일 크기 **영역**(region)으로 나누고, 회수는 복사(evacuation)로, 그 복사는 **stop-the-world**에서 한다([GC Tuning Guide: G1](https://docs.oracle.com/en/java/javase/21/gctuning/garbage-first-g1-garbage-collector1.html)). G1은 일시정지를 없애는 게 아니라 **예측 가능한 상한 안에 넣는** 컬렉터다 — 목표는 소프트 목표이고 기본값 200ms다. 승인 응답 p99 목표가 3초인 시스템에서 200ms는 예산의 한 자리를 차지하지만 치명적이지 않고, 목표가 수십 ms인 시스템이라면 G1은 처음부터 틀린 선택이다.
 
 **ZGC**는 복사 자체를 애플리케이션과 동시에 하는 쪽으로 문제를 옮겼다. 핵심 장치가 **컬러 포인터와 로드 배리어**다 — "the act of loading a reference field … is subject to a load barrier … the object might have been relocated, in which case the load barrier will … take appropriate action"([JEP 333](https://openjdk.org/jeps/333)). 그 결과가 일시정지와 힙 크기의 분리다 — "Stop-the-world phases are limited to root scanning, so GC pause times do not increase with the size of the heap." 대신 청구서는 처리량으로 간다 — 목표가 "No more than 15% application throughput reduction compared to G1"이었다. **일시정지를 산 값은 상시 오버헤드**다. (세대화는 JDK 21 [JEP 439](https://openjdk.org/jeps/439)로 얹혀 지금 `-XX:+UseZGC`는 세대별 ZGC다.)
 
@@ -246,7 +246,7 @@ JEP 483이 이 청구서를 스스로 요약한다 — "All this dynamism comes 
 
 **수렴의 이유는 "빨라서"가 아니다.** 은행 코어의 지배 항은 CPU가 아니라 DB 왕복과 락 대기다. 그러면 언어 선택의 축은 성능이 아니라 **실패 모드**로 옮겨간다 — 은행에서 최악은 크래시가 아니라 **틀린 값으로 조용히 계속 도는 것**인데, 메모리 비안전 언어의 결함이 만드는 것이 정확히 그 계급이다. GC 언어에는 이 계급 자체가 없다.
 
-**둘째 이유는 §10 그대로다** — 터졌을 때 열어볼 수 있는가. 25년치의 JDBC·트랜잭션·커넥션 풀·TLS 스택이 이 도메인에서 두들겨 맞으며 실패 모드가 문서화되어 있다는 것이, 새 런타임의 이론적 우월함보다 실무에서 자주 이긴다. "안정적"의 정직한 번역은 **"터지는 방식이 예측 가능하고 열어볼 도구가 있다"**이다.
+**둘째 이유는 §10 그대로다** — 터졌을 때 열어볼 수 있는가. 25년치의 JDBC·트랜잭션·커넥션 풀·TLS 스택이 이 도메인에서 두들겨 맞으며 실패 모드가 문서화되어 있다는 것이, 새 런타임의 이론적 우월함보다 실무에서 자주 이긴다. "안정적"의 정직한 번역은 "**터지는 방식이 예측 가능하고 열어볼 도구가 있다**"이다.
 
 **셋째, GC 반론이 실제로 소멸했다.** "JVM은 GC 때문에 금융에 못 쓴다"는 반론의 전제(수백 ms 일시정지)를 §8의 수치가 무너뜨린다. 다만 소멸한 것은 **반론**이지 **비용**이 아니다 — 저지연을 진지하게 추구하는 코드는 여전히 GC를 회피하는 설계를 한다(LMAX Disruptor가 링 버퍼를 기동 시 전부 선할당하는 이유). 금융 거래소를 JVM 위에 짓되 **할당을 안 하는 방식으로** 짓는다는 것이 실무의 실제 형태다.
 

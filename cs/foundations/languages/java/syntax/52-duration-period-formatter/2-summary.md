@@ -3,7 +3,7 @@
 > 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
 > **선행** — [`../51-java-time-types/`](../51-java-time-types/). 갭·중복을 모르면 이 문서의 절반이 안 읽힌다.
 > **기준 소스** — Temurin **JDK 21.0.5** 표준 라이브러리 소스 `java.base/java/time/Duration.java`·`Period.java`·`format/DateTimeFormatter.java`·`format/DateTimeFormatterBuilder.java`·`temporal/ChronoUnit.java`(`lib/src.zip`) · [`DateTimeFormatter` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/format/DateTimeFormatter.html) · [`Duration` javadoc](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html) · [`Period` javadoc](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Period.html)
-> **실행 검증** — 이 문서의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 일곱(52-a~52-g)을 **17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
+> **실행 검증** — 이 문서의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 일곱(52-a\~52-g)을 **17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
 > ★ **세 판의 출력이 전부 같지는 않았다.** `DateTimeParseException` 의 메시지에 들어가는 **필드 나열 순서가 세 판에서 전부 달랐다**(아래 「구현 세부사항 대 언어 보장」이 정본).\
 > tzdb 판도 갈린다(17·21 = 2024a, 25 = 2025b). 이 주제의 출력 중 갈린 것은 그 줄에 표시했다.
 > **버전** — `Duration`·`Period`·`DateTimeFormatter` 전부 `src.zip` 의 **`@since 1.8`**.
@@ -204,7 +204,7 @@
 
 - `Duration.between` 은 **실제 흐른 시간**이다 — 23시간.
 - `ChronoUnit.DAYS.between` 은 **1** 이다. 24시간이 안 흘렀는데 1이 나왔다.
-- `ChronoUnit` 은 대상 타입에게 **"몇 단위만큼 떨어져 있나"**를 물어보고, `ZonedDateTime` 은 **달력으로** 답한다.
+- `ChronoUnit` 은 대상 타입에게 "**몇 단위만큼 떨어져 있나**"를 물어보고, `ZonedDateTime` 은 **달력으로** 답한다.
 - `Period.between` 은 아예 `LocalDate` 만 받는다 — 시각을 버린 뒤 세는 것이다.
 
 비용 — 셋이 다 다른 값을 낼 수 있다. **무엇을 세고 싶은지 먼저 정하고 메서드를 고른다.**
@@ -457,7 +457,7 @@ zdt.plus(Period.ofMonths(1)).plus(Duration.ofHours(3));   // 순서가 의미를
   2027-12-31 (FRIDAY) yyyy=2027-12-31 YYYY=2028-12-31
 ```
 
-- 훑은 여섯 해 **전부**에서 12월 말 며칠이 어긋났다. 이 문서가 훑은 범위(2019·2020·2021·2024·2026·2027 의 12월 28~31일과 1월 1~4일)에서는 **1월 쪽에서는 한 건도 안 나왔다.**
+- 훑은 여섯 해 **전부**에서 12월 말 며칠이 어긋났다. 이 문서가 훑은 범위(2019·2020·2021·2024·2026·2027 의 12월 28\~31일과 1월 1\~4일)에서는 **1월 쪽에서는 한 건도 안 나왔다.**
 - 그러니 **"연말에만 틀린다"가 이 실측 범위에서의 관찰**이다. 모든 해·모든 Locale 에 대한 증명은 아니다.
 
 **로그 파일명이 어떻게 되나** (`Ex.java` — 52-f, 기본 `Locale` `ko_KR`, 17·21·25 동일)
@@ -884,7 +884,7 @@ JDK 25.0.1
 - 서머타임이 있는 날 **`plusDays(1)` 과 `plusHours(24)` 가 한 시간 다르다.** 실측에서 봄은 23시간, 가을은 25시간이었다.
 - **전이가 없는 지역에서는 그 차이가 안 보인다** — 서울에서만 테스트하면 통과한다.
 - `ChronoUnit.between` 은 **0 방향으로 버린다.** 29일 5시간 30분이 29다.
-- **`YYYY` 는 연말 나흘을 1년 미래로 보낸다.** 훑은 여섯 해 전부에서 12월 28~31일이 어긋났고, 값은 `Locale` 에 또 달렸다.
+- **`YYYY` 는 연말 나흘을 1년 미래로 보낸다.** 훑은 여섯 해 전부에서 12월 28\~31일이 어긋났고, 값은 `Locale` 에 또 달렸다.
 
 ## 관련 자료
 

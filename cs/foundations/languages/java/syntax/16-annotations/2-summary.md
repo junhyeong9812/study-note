@@ -129,7 +129,7 @@ javac 가 애너테이션 셋을 각각 어디에 적었나
 - `CLASS` 는 **`RuntimeInvisibleAnnotations` 속성**으로 들어간다. 파일에는 있지만 JVM 이 리플렉션에 노출하지 않는다.\
   javadoc — "recorded in the class file by the compiler **but need not be retained by the VM at run time**."
 - `RUNTIME` 만 **`RuntimeVisibleAnnotations`** 로 들어가고, 이것만 `getAnnotation()` 으로 읽힌다.
-- 속성 이름의 `Visible`/`Invisible` 은 **"런타임에 보이나"**를 뜻한다. `javap` 로 바로 구별된다.
+- 속성 이름의 `Visible`/`Invisible` 은 "**런타임에 보이나**"를 뜻한다. `javap` 로 바로 구별된다.
 
 비용 — `RUNTIME` 애너테이션은 클래스 파일을 키우고, 조회할 때마다 리플렉션 비용이 든다.\
 *(구체적인 크기·속도는 이 문서에서 측정하지 않았다.)*
@@ -619,7 +619,7 @@ MinimalUse.equals(FullUse) = false
 
 읽어 볼 것이 셋 있다.
 
-- **`@SuppressWarnings` 에는 `@Target` 이 없다.** `src.zip` 의 선언 바로 위에 이유가 주석으로 적혀 있다 —  `// Implicitly target all declaration contexts by omitting a @Target annotation`.  **"안 적으면 전부"**라는 규칙을 표준 라이브러리가 일부러 쓰고 있는 자리다.
+- **`@SuppressWarnings` 에는 `@Target` 이 없다.** `src.zip` 의 선언 바로 위에 이유가 주석으로 적혀 있다 —  `// Implicitly target all declaration contexts by omitting a @Target annotation`.  "**안 적으면 전부**"라는 규칙을 표준 라이브러리가 일부러 쓰고 있는 자리다.
 - **메타 애너테이션 다섯은 전부 `RUNTIME` 이고 `@Target(ANNOTATION_TYPE)`** 이다. 그래서 위 프로그램처럼 리플렉션으로 읽을 수 있다.
 - **`@Override` 와 `@SuppressWarnings` 만 `SOURCE`** 다 — 컴파일러만 읽으면 되기 때문이다.
 
@@ -703,7 +703,7 @@ JDK 25.0.1
 
 ## 구현 세부사항 대 언어 보장
 
-이 절은 **"어디까지 믿어도 되나"**를 가른다.
+이 절은 "**어디까지 믿어도 되나**"를 가른다.
 
 | 항목 | 누가 보장하나 | 근거 |
 |---|---|---|
@@ -733,7 +733,7 @@ JDK 21.0.5 · 25.0.1
 ```
 
 - **에러 문구를 테스트에 넣지 마라.** 컴파일러 메시지는 계약이 아니다.
-- 외울 것은 문구가 아니라 **"`@Target` 이 자리를 막는다"**는 성질이다.
+- 외울 것은 문구가 아니라 "**`@Target` 이 자리를 막는다**"는 성질이다.
 
 ## 언제 쓰고 언제 안 쓰나
 

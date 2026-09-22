@@ -40,7 +40,7 @@
 ```
 
 - **1 과 3 을 헷갈리는 것이 가장 흔하다.** `final List<String> items` 는\
-  **"items 가 다른 리스트를 가리키지 못한다"**는 뜻이지 **"그 리스트에 `add` 할 수 없다"**는 뜻이 아니다.
+  "**items 가 다른 리스트를 가리키지 못한다**"는 뜻이지 "**그 리스트에 `add` 할 수 없다**"는 뜻이 아니다.
 
 ```text
 final List<String> items = new ArrayList<>();
@@ -229,7 +229,7 @@ Collections.unmodifiableList(origin)        List.copyOf(origin)
 
 - **둘 다 `add` 는 막힌다.** 여기까지만 보면 구별이 안 된다 — **그래서 위험하다.**
 - **원본을 고치면 뷰는 따라 바뀐다.** `clear()` 하면 뷰의 `size()` 가 0 이 된다.
-- 즉 `unmodifiableList` 는 **"내가 못 고친다"**일 뿐 **"아무도 안 고친다"**가 아니다.
+- 즉 `unmodifiableList` 는 "**내가 못 고친다**"일 뿐 "**아무도 안 고친다**"가 아니다.
 
 javadoc 이 각각 그렇게 적어 놓았다(JDK 21.0.5 `src.zip` 원문).
 

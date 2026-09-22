@@ -98,7 +98,7 @@ public int hashCode() {
 
 - "권고이지 의무가 아니다"(though not required)라고 명시돼 있고, 대신 **어기면 문서에 밝히라**고 요구한다.\
   `BigDecimal` 은 그 요구를 지켜 javadoc에 적어 두었다(9번).
-- 그리고 javadoc이 말한 **"sorted set 이 이상하게 동작한다"**가 바로 2번에서 본 `TreeSet` size 1이다.
+- 그리고 javadoc이 말한 "**sorted set 이 이상하게 동작한다**"가 바로 2번에서 본 `TreeSet` size 1이다.
 
 > **계약(contract)** — 클래스가 지키겠다고 javadoc으로 약속한 성질.\
 > 예: "`equals` 가 참이면 해시도 같다"는 계약이고, "`compareTo` 가 0이면 `equals` 도 참"은 권고다.

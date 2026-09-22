@@ -55,7 +55,7 @@
 **똑같은 구조로** Java 가 이렇게 동작한다: 번호표 = 로컬 인덱스 변수, 게시판 = `AbstractList.modCount`,\
 대조 = `ArrayList$Itr.checkForComodification()`, 작업 중단 = `ConcurrentModificationException`.
 
-실무에서 이게 값을 내는 자리는 **"조회하면서 지우는 코드"**다.\
+실무에서 이게 값을 내는 자리는 "**조회하면서 지우는 코드**"다.\
 리스트를 돌면서 조건에 맞는 것을 빼는 코드는 거의 항상 이 주제의 함정 위에 서 있다.
 
 > **fail-fast** — 잘못된 상태를 **발견하는 즉시** 예외로 멈추는 설계.\

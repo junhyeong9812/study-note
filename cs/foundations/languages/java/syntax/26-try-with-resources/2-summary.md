@@ -589,7 +589,7 @@ Ex.java:6: error: variable r used as a try-with-resources resource neither final
 
 ## 구현 세부사항 대 언어 보장
 
-이 절은 **"어디까지 믿어도 되나"**를 가른다.
+이 절은 "**어디까지 믿어도 되나**"를 가른다.
 
 | 항목 | 누가 보장하나 | 근거 |
 |---|---|---|

@@ -44,7 +44,7 @@
 - **`left.size()` 는 4** 다. 1건만 실행 중이었고 나머지 4건이 큐에 있었다.
 - 돌려받은 것의 타입은 **`java.util.concurrent.FutureTask`** 다 — **내가 넣은 람다가 아니다.**\
   `submit` 이 람다를 `FutureTask` 로 감싸기 때문이다. 그래서 돌려받아도 **바로 다시 실행할 수는 있어도 원본 람다를 꺼낼 수는 없다.**
-- **`shutdownNow()` 가 하는 일은 "인터럽트를 보내는 것"**이다. 실행 중 작업의 `isInterrupted` 가 `true` 로 찍혔다.
+- **`shutdownNow()` 가 하는 일은 "인터럽트를 보내는 것**"이다. 실행 중 작업의 `isInterrupted` 가 `true` 로 찍혔다.
 - 인터럽트를 확인하지 않는 루프는 **`awaitTermination(500ms)` 가 `false`** 이고 **1,900 ms 를 더 돌았다.**\
   ★ **`shutdownNow` 는 "멈춘다"가 아니라 "멈춰 달라고 부탁한다"** 이다.
 

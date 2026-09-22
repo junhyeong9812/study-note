@@ -472,7 +472,7 @@ $ javac --release 8 Ex.java
 - **의미는 한 글자도 안 바뀐다.** 둘 다 `Super.privateM` 이 불린다(실행 결과가 같다).
 - 바뀐 것은 **nestmate**(JEP 181, Java 11) 이후 같은 nest 안의 `private` 접근을 `invokevirtual` 로도 할 수 있게 된 것이다.
 - 그러니 **「`private` 은 `invokespecial` 로 컴파일된다」는 외워 두면 틀린다.**\
-  외울 것은 **「`private` 은 디스패치되지 않는다」**이고, 그것은 언어 보장이다.
+  외울 것은 「**`private` 은 디스패치되지 않는다**」이고, 그것은 언어 보장이다.
 - 같은 이유로 중첩 클래스와 바깥 클래스 사이의 `private` 접근도 Java 11+ 에서는 **접근자 메서드 없이** 직접 된다.
 
 ## 언제 쓰고 언제 안 쓰나
@@ -502,7 +502,7 @@ $ javac --release 8 Ex.java
 
 - [`../README.md`](../README.md) — Java 문법·API 주제 목록(이 주제는 09번)
 - [`../../../../oop-basics/`](../../../../oop-basics/) — **다형성·상속·추상 클래스의 개념은 거기**(§14~18, 파이썬 예제).\
-  ★ 그쪽은 「다형성이 무엇이고 왜 쓰나」까지, 여기는 **「Java 가 그것을 어느 문법으로 강제하고 어디서 강제하지 않나」**부터다.\
+  ★ 그쪽은 「다형성이 무엇이고 왜 쓰나」까지, 여기는 「**Java 가 그것을 어느 문법으로 강제하고 어디서 강제하지 않나**」부터다.\
   필드 숨김·브리지 메서드·`@Override` 는 파이썬에 없는 것이라 그 문서에 없다
 - [`../08-method-declaration-overloading/`](../08-method-declaration-overloading/) — **오버로딩(컴파일 타임)과의 대비**가 이 주제의 절반이다
 - [`../06-initialization-order/`](../06-initialization-order/) — 생성자에서 오버라이드 메서드를 부르면 자식 필드가 기본값인 이유

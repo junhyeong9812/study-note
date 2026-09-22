@@ -6,9 +6,9 @@
 > 프로그램 7개를 **17.0.13 · 21.0.5 · 25.0.1** 에서 전부 돌렸다.\
 > **한 군데가 갈렸다** — `Matcher.start()` 를 매치 없이 부를 때의 예외 **메시지**가 17 과 21 에서 다르다(「어디서 틀리나」 4번).
 > **★ 측정 조건**(수치를 싣는 절 — 「동작 방식 (5)」·「(6)」) — **JMH 가 아니다.** 단순 `System.nanoTime()` 반복 측정이다.\
-> 머신: 13th Gen Intel Core i7-13700HX · 24 스레드 · Linux 7.0.0-31-generic. 각 측정은 한 JVM 안에서 3~6 회 반복했다.\
+> 머신: 13th Gen Intel Core i7-13700HX · 24 스레드 · Linux 7.0.0-31-generic. 각 측정은 한 JVM 안에서 3\~6 회 반복했다.\
 > **재현되는 것은 절댓값이 아니라 기울기와 자릿수다** — 파국적 백트래킹은 입력 +2 글자마다 시간이 약 4배가 되는 **모양**이,\
-> `Pattern` 재사용은 **3~4배**라는 자릿수가 재현된다. 웜업 전 1~2 회차는 JIT 때문에 느리므로 표에 함께 싣는다.
+> `Pattern` 재사용은 **3\~4배**라는 자릿수가 재현된다. 웜업 전 1\~2 회차는 JIT 때문에 느리므로 표에 함께 싣는다.
 > **버전** — `Pattern`/`Matcher` 는 **1.4**. `Pattern.quote`·`Matcher.quoteReplacement`·`usePattern` = **5** ·
 > 이름 있는 그룹 `(?<name>...)`·`group(String)` = **7** · `splitAsStream` = **8** ·
 > `Matcher.results()`·`replaceAll(Function)`·`appendReplacement(StringBuilder,...)` = **9** (전부 `src.zip` 의 `@since` 직접 확인).
@@ -108,7 +108,7 @@
 
 그림 해설 (한 단계씩):
 
-- `"123"` 은 셋 다 참이다 — **셋의 차이는 "전체냐 앞이냐 아무 데나냐"**뿐이다.
+- `"123"` 은 셋 다 참이다 — **셋의 차이는 "전체냐 앞이냐 아무 데나냐**"뿐이다.
 - `"123abc"` 에서 `matches` 만 거짓이 된다. **검증 코드가 `find` 를 쓰면 이 입력이 통과한다.**
 - `String.matches(regex)` 는 이름 그대로 **`matches` 쪽**이다 — `"abc123".matches("\\d+")` 는 `false`.
 
@@ -355,7 +355,7 @@ if (!hasGroupRef) {
 **그래서 무엇을 외우나**
 
 - "Java 는 ReDoS 에 안전하다"도, "Java 도 위험하다"도 아니다.\
-  **"그리디 루프 메모이제이션이 있고, 역참조가 있으면 꺼진다"**가 근거 있는 문장이다.
+  "**그리디 루프 메모이제이션이 있고, 역참조가 있으면 꺼진다**"가 근거 있는 문장이다.
 - 방어는 셋이다.
 
 | 방어 | 어떻게 | 근거 |
@@ -377,7 +377,7 @@ if (!hasGroupRef) {
 
 비용 — 지수다. **입력 길이를 두 배로 늘리는 것이 아니라 두 글자 더하는 것**이 위험하다.
 
-### (6) `Pattern` 컴파일 비용 — 재사용하면 3~4배
+### (6) `Pattern` 컴파일 비용 — 재사용하면 3\~4배
 
 **언제 쓰나** — 루프·요청마다 `Pattern.compile` 또는 `String.matches` 를 부르는 코드를 볼 때.
 
@@ -395,11 +395,11 @@ if (!hasGroupRef) {
 
 그림 해설 (한 단계씩):
 
-- **1~2 회차는 웜업**이다(JIT 컴파일 전). 3 회차부터가 안정 구간이다.
-- 안정 구간에서 **매번 compile ≈ 79~88 ms, 미리 compile ≈ 23~26 ms** — **약 3~4배**다.
-- **`String.matches` 는 "매번 compile" 쪽**이다(78~84 ms). 내부에서 `Pattern.matches(regex, this)` 를 부르고,\
+- **1\~2 회차는 웜업**이다(JIT 컴파일 전). 3 회차부터가 안정 구간이다.
+- 안정 구간에서 **매번 compile ≈ 79\~88 ms, 미리 compile ≈ 23\~26 ms** — **약 3\~4배**다.
+- **`String.matches` 는 "매번 compile" 쪽**이다(78\~84 ms). 내부에서 `Pattern.matches(regex, this)` 를 부르고,\
   그것이 매번 `Pattern.compile` 을 한다.
-- 두 번째 실행에서도 같은 자릿수였다(68~72 / 18~21 / 67~80 ms). **재현되는 것은 3~4배라는 자릿수**다.
+- 두 번째 실행에서도 같은 자릿수였다(68\~72 / 18\~21 / 67\~80 ms). **재현되는 것은 3\~4배라는 자릿수**다.
 
 비용 — 정리하면 이렇다.
 
@@ -667,7 +667,7 @@ if (Pattern.compile("[0-9]+").matcher(input).matches()) { ... }
 ## 핵심 문장
 
 - **`matches`(전체) · `lookingAt`(앞) · `find`(아무 데나)는 서로 다른 질문**이다. 검증에는 `matches` 를 쓴다.
-- **`Pattern` 은 재사용하고 `Matcher` 는 재사용하지 않는다** — javadoc 이 명시한 계약이다. 재사용하면 3~4배 빨랐다.
+- **`Pattern` 은 재사용하고 `Matcher` 는 재사용하지 않는다** — javadoc 이 명시한 계약이다. 재사용하면 3\~4배 빨랐다.
 - **`split` 은 뒤쪽 빈 조각을 버린다.** 기본값은 `split(regex, -1)` 로 두는 것이 안전하다.
 - **파국적 백트래킹은 Java 에도 있다.** 엔진의 메모이제이션이 막아 주지만 **역참조가 있으면 꺼진다** — 30글자에 11.8초를 봤다.
 - **`replace` 는 정규식이 아니고 `replaceAll` 은 정규식이다.** 헷갈리면 `Pattern.quote` 로 막는다.
@@ -686,7 +686,7 @@ if (Pattern.compile("[0-9]+").matcher(input).matches()) { ... }
 - [`../36-stringbuilder-and-concat/`](../36-stringbuilder-and-concat/) — `appendReplacement` 가 `StringBuilder` 를 받는 이유
 - [`../25-exceptions/`](../25-exceptions/) — `PatternSyntaxException` 이 **검사 예외가 아닌** 이유
 - [`../44-stream-creation/`](../44-stream-creation/) · [`../46-terminal-operations/`](../46-terminal-operations/) — `splitAsStream`·`results()` 가 만드는 스트림
-- [`../../언어-특성/README.md`](../../언어-특성/README.md) — **경계: JIT 웜업이 왜 1~2 회차를 느리게 만드는지는 거기.**
+- [`../../언어-특성/README.md`](../../언어-특성/README.md) — **경계: JIT 웜업이 왜 1\~2 회차를 느리게 만드는지는 거기.**
 
 ## 용어 풀이
 

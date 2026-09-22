@@ -147,7 +147,7 @@ Ex.java:4: error: the switch statement does not cover all possible input values
 
 - **옛 `enum` `switch` 문과 다르다.** [**21번 주제**](../21-switch-statement-and-expression/)에서 확인했듯,\
   `enum` 상수를 둘만 적은 `switch` **문**은 아무 말 없이 통과하고 조용히 지나갔다.\
-  경계는 「문이냐 식이냐」만이 아니라 **「옛 selector 냐 패턴이냐」**에도 걸려 있다.
+  경계는 「문이냐 식이냐」만이 아니라 「**옛 selector 냐 패턴이냐**」에도 걸려 있다.
 
 ### 3. ★ `null` 을 넣으면
 

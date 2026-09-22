@@ -324,8 +324,8 @@ size·clear·remove(int) 처럼 원소 타입을 안 쓰는 연산은 된다
 
 그림 해설 (한 단계씩):
 
-- `List<Object>` 는 **"Object 를 원소로 하는 리스트"**다. `List<String>` 을 여기 대입할 수 없다(불공변).
-- `List<?>` 는 **"원소 타입을 모르는 리스트"**다. 모든 `List<...>` 를 받는다.
+- `List<Object>` 는 "**Object 를 원소로 하는 리스트**"다. `List<String>` 을 여기 대입할 수 없다(불공변).
+- `List<?>` 는 "**원소 타입을 모르는 리스트**"다. 모든 `List<...>` 를 받는다.
 - 대신 `List<?>` 에는 **아무것도 못 넣는다.** 단 하나 예외가 `null` 이다.
 - 원소 타입을 쓰지 않는 연산(`size()`·`clear()`·`remove(int)`·`isEmpty()`)은 **전부 된다.**
 
@@ -407,7 +407,7 @@ Ex.java:5: error: incompatible types: List<String> cannot be converted to List<O
   유연성      기본으로 제공                  와일드카드로 필요할 때만
 ```
 
-- **와일드카드는 배열 공변성을 "안전하게 다시 만든 것"**이다.\
+- **와일드카드는 배열 공변성을 "안전하게 다시 만든 것**"이다.\
   배열이 "전부 허용하고 사고 나면 터뜨린다"면, 와일드카드는 **"위험한 연산만 골라 막는다."**
 - `List<? extends Object> l = stringList;` 는 `Object[] a = stringArray;` 와 **같은 유연성**을 준다.\
   차이는 그다음 줄이다 — `l.add(42)` 는 **컴파일 에러**이고 `a[0] = 42` 는 **런타임 예외**다.
@@ -586,7 +586,7 @@ Ex.java:3: error: <identifier> expected
 
 그림 해설 (한 단계씩):
 
-- 와일드카드는 **"타입을 쓰는 자리"**에만 온다. **"타입을 선언하는 자리"**에는 못 온다.
+- 와일드카드는 "**타입을 쓰는 자리**"에만 온다. "**타입을 선언하는 자리**"에는 못 온다.
 - `new` 는 **실제 객체를 만드는 것**이라 원소 타입이 확정돼야 한다. "모르는 타입"으로 만들 수는 없다.
 - 그래서 관용구는 `List<?> l = new ArrayList<String>();` 처럼 **만들 때는 확정하고 받을 때만 `?`** 로 둔다.
 - `Map<String, ? extends Number> ok = new HashMap<String, Integer>();` 는 **통과한다** — 왼쪽은 타입 사용 자리다.
@@ -720,7 +720,7 @@ error: unexpected type
 
 ## 구현 세부사항 대 언어 보장
 
-이 절은 **"어디까지 믿어도 되나"**를 가른다.
+이 절은 "**어디까지 믿어도 되나**"를 가른다.
 
 | 항목 | 누가 보장하나 | 근거 |
 |---|---|---|
@@ -751,7 +751,7 @@ Ex.java:5: error: no suitable method found for add(int)
 
 - 기본 출력은 **줄여서** 보여 준다(맨 아래 `Some messages have been simplified` 안내가 붙는다).
 - 어느 쪽이든 **`CAP#1 ... from capture of ?`** 는 그대로 나온다 — 이것이 읽어야 할 부분이다.
-- 외울 것은 문구가 아니라 **"캡처된 타입에는 아무것도 못 넣는다"**는 성질이다.
+- 외울 것은 문구가 아니라 "**캡처된 타입에는 아무것도 못 넣는다**"는 성질이다.
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -782,7 +782,7 @@ Ex.java:5: error: no suitable method found for add(int)
 - `? extends` 는 **꺼내기 전용**이다 — 실체가 `List<Integer>` 인지 `List<Double>` 인지 몰라서 **아무것도 못 넣는다**(`null` 만 예외).
 - `? super` 는 **넣기 전용**이다 — 실체가 무엇이든 `T` 는 받아 주지만, 꺼낼 때 상한이 `Object` 뿐이라 **`Object` 로만 받는다.**
 - **PECS** — 값을 **주는** 파라미터는 `extends`, **받는** 파라미터는 `super`. 둘 다 하면 와일드카드를 쓰지 않는다.
-- `List<Object>` 는 **"Object 를 담는 리스트"**이고 `List<?>` 는 **"무엇을 담는지 모르는 리스트"**다 — 받을 수 있는 실인자가 정반대다.
+- `List<Object>` 는 "**Object 를 담는 리스트**"이고 `List<?>` 는 "**무엇을 담는지 모르는 리스트**"다 — 받을 수 있는 실인자가 정반대다.
 - **배열은 공변이라 런타임에 `ArrayStoreException` 으로 터지고, 제네릭은 불공변이라 컴파일에서 막힌다.** 같은 실수의 검사 시점이 다르다.
 - `?` 는 **쓰일 때마다 새로 캡처**된다. 같은 변수의 두 사용도 서로 다른 타입이라 자리바꿈이 막힌다 — `<T>` 헬퍼로 푼다.
 
@@ -820,7 +820,7 @@ Ex.java:5: error: no suitable method found for add(int)
 ## 더 들어가면
 
 - **`? super` 에서도 `Object` 로는 꺼낼 수 있다.** 출력의 `sup.get(0) 을 Object 로 = 1 (실제 클래스 Integer)` 가 그것이다.\
-  상한이 항상 `Object` 이기 때문이다. 그래서 "`? super` 에서는 못 꺼낸다"는 말은 정확히는 **"`T` 로는 못 꺼낸다"**다.
+  상한이 항상 `Object` 이기 때문이다. 그래서 "`? super` 에서는 못 꺼낸다"는 말은 정확히는 "**`T` 로는 못 꺼낸다**"다.
 - **와일드카드에는 다중 바운드가 없다.** `? extends Comparable & Serializable` 은 **파서에서** 막힌다(`Ex.java (18-k)`).
 
 ```text

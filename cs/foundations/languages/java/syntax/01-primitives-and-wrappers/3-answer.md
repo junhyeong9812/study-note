@@ -40,7 +40,7 @@ c == d  : 둘 다 Integer                    e == f  : Integer 와 int
 +---------------------------+              +---------------------------+
 ```
 
-- 128은 캐시 범위(`-128`~`127`) **밖**이라 `Integer.valueOf(128)` 이 매번 `new Integer(128)` 을 만든다.\
+- 128은 캐시 범위(`-128`\~`127`) **밖**이라 `Integer.valueOf(128)` 이 매번 `new Integer(128)` 을 만든다.\
   그래서 `c` 와 `d` 는 다른 객체다.
 - `c == d` 는 **둘 다 참조 타입**이라 참조 비교가 된다 -> `false`.
 - `e == f` 는 **한쪽이 `int`** 라서 컴파일러가 `e.intValue()` 를 끼워 넣는다.\
@@ -48,7 +48,7 @@ c == d  : 둘 다 Integer                    e == f  : Integer 와 int
 - `equals` 는 애초에 값을 비교하는 메서드이므로 캐시와 무관하게 `true`.
 
 > **캐시 범위(Integer cache)** — `Integer.valueOf` 가 새 객체를 만들지 않고 미리 만들어 둔 배열에서 꺼내 주는 값의 구간.\
-> 예: JDK 21 기본값은 `-128`~`127` 이고, 이 안의 값은 몇 번을 박싱해도 같은 객체다.
+> 예: JDK 21 기본값은 `-128`\~`127` 이고, 이 안의 값은 몇 번을 박싱해도 같은 객체다.
 
 ### 2. 컴파일러가 무엇을 끼워 넣는가
 
@@ -163,7 +163,7 @@ JLS SE 21 §5.1.7 원문:
 > ... a character in the range `'\u0000'` to `'\u007f'` inclusive, or an integer in the range `-128` to `127` inclusive, then let `a` and `b` be the results of any two boxing conversions of `p`. It is always the case that `a` `==` `b`.
 
 - 정수는 **`-128` 이상 `127` 이하**.
-- `char` 는 `'\u0000'`~`'\u007f'`(= 0~127).
+- `char` 는 `'\u0000'`\~`'\u007f'`(= 0\~127).
 - `boolean` 은 `true`·`false` 둘 다.
 
 **값 말고 붙는 조건 하나**
@@ -412,7 +412,7 @@ int v = getOrDefault -> 0
 
 **`Long l1 = 127L, l2 = 127L; l1 == l2`**
 
-- **`true`.** `Long` 도 `-128`~`127` 캐시를 갖는다.
+- **`true`.** `Long` 도 `-128`\~`127` 캐시를 갖는다.
 - `128L` 은 `false` — 경계가 `Integer` 와 같다.
 - 단 `-XX:AutoBoxCacheMax` 는 **`Integer` 전용 옵션**이라 `Long` 의 범위는 못 넓힌다.
 
@@ -455,7 +455,7 @@ public final Stream<Integer> boxed() {
 ```
 
 - **`Integer::valueOf`** 를 부른다 — 이 주제의 그 `valueOf` 다.
-- 그래서 `IntStream.range(0, 200).boxed()` 가 만드는 `Integer` 중 **`-128`~`127` 구간은 캐시에서 나오고 그 위는 새 객체**다.
+- 그래서 `IntStream.range(0, 200).boxed()` 가 만드는 `Integer` 중 **`-128`\~`127` 구간은 캐시에서 나오고 그 위는 새 객체**다.
 - 이어지는 함의: `IntStream` 으로 있을 동안은 객체가 하나도 안 생기고, `boxed()` 를 부르는 순간 원소 수만큼 박싱이 일어난다.\
   자세한 것은 [`../44-stream-creation/`](../44-stream-creation/).
 

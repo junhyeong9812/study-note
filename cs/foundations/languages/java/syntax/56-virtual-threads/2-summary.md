@@ -7,9 +7,9 @@
 > ★ **고정(pinning) 실험은 21 과 25 에서 각각 돌렸고 결과가 갈렸다** — 아래 (5).\
 > 17 에서는 **컴파일부터 안 된다**(`cannot find symbol: method ofVirtual()`) — 그 에러도 실었다.
 > ⚠️ **측정 조건**\
-> 도구: **JMH 가 아니다.** 벽시계(`System.nanoTime`)이고 **워밍업 1~2회 + 측정 3~5회의 중앙값**이다(실험마다 본문에 적었다).\
+> 도구: **JMH 가 아니다.** 벽시계(`System.nanoTime`)이고 **워밍업 1\~2회 + 측정 3\~5회의 중앙값**이다(실험마다 본문에 적었다).\
 > 머신: **CPU 24코어**(`availableProcessors` = 24), Linux x86-64, `ulimit -n` = 1,048,576.\
-> 흔들림: 소켓 실험이 **183~326 ms** 로 1.8배 흔들렸다. 고정 실험은 흔들림이 거의 없었다(1601~1605 ms).\
+> 흔들림: 소켓 실험이 **183\~326 ms** 로 1.8배 흔들렸다. 고정 실험은 흔들림이 거의 없었다(1601\~1605 ms).\
 > 고정 실험은 **캐리어를 1개로 묶어**(`-Djdk.virtualThreadScheduler.parallelism=1 -Djdk.virtualThreadScheduler.maxPoolSize=1`)\
 > **"줄서면 1600ms, 안 줄서면 200ms"** 라는 **두 자리로 갈리게** 설계했다. 그래서 이 실험만은 흔들림이 결론을 안 흔든다.\
 > 힙 사용량은 `System.gc()` 두 번 뒤 `totalMemory - freeMemory` 다 — **정확한 측정이 아니라 자릿수용**이다.
@@ -21,7 +21,7 @@
 > **범위** — OS 스레드·컨텍스트 스위칭·스케줄링은 [`../../../../process-thread/`](../../../../process-thread/) 가 정본이다.\
 > 그쪽은 **스레드가 무엇이고 OS 가 무엇을 하나**까지, 여기는 **이 API 를 어떻게 쓰고 어디서 막히나**부터다.\
 > **JIT·GC·런타임 내부**는 [`../../언어-특성/README.md`](../../언어-특성/README.md) 가 정본이다.\
-> **가상 스레드가 왜 들어왔나(JEP 논쟁·설계 역사)**는 [`../../../../../../history/java/java-21.md`](../../../../../../history/java/java-21.md) 가 정본이다.\
+> **가상 스레드가 왜 들어왔나**(JEP 논쟁·설계 역사)는 [`../../../../../../history/java/java-21.md`](../../../../../../history/java/java-21.md) 가 정본이다.\
 > **공용 ForkJoinPool 경합**은 [`../49-parallel-streams/`](../49-parallel-streams/) 가 정본이다 — 가상 스레드 스케줄러는 **별도의 `ForkJoinPool`** 이다(실측 스레드 이름으로 확인).
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 javadoc·`src.zip`·JEP 로, 출력은 실행으로 접지했다.
 
@@ -262,8 +262,8 @@ a/Ex.java:8: error: cannot find symbol
 - **풀 50 대비 9.7배**지만, **풀 500 과는 거의 차이가 없다**(366 대 315 ms).
 - ★ **`sleep` 실험만큼 극적이지 않다.** 이 실험에서는 **연결 수립과 서버 쪽이 병목**이라\
   클라이언트 스레드 모델을 바꿔도 더 못 줄인다.\
-  **흔들림도 크다** — 183~326 ms(1.8배).
-- **결론** — 가상 스레드의 이득은 **"내 스레드가 병목일 때"**만 나온다.\
+  **흔들림도 크다** — 183\~326 ms(1.8배).
+- **결론** — 가상 스레드의 이득은 "**내 스레드가 병목일 때**"만 나온다.\
   병목이 DB·외부 API·대역폭이면 스레드를 바꿔도 그대로다.
 
 비용 — 블로킹이 아니면 값이 없다. **바꾸기 전에 어디가 병목인지 먼저 본다.**
@@ -350,7 +350,7 @@ JDK 21                                     JDK 25
 - **JDK 25 에서는 200 ms** 다. 같은 코드, 같은 설정인데 **고정이 사라졌다.**\
   [JEP 491](https://openjdk.org/jeps/491)(JDK 24) 이 모니터 고정을 없앴다.
 - **`ReentrantLock` 은 21 에서도 200 ms** 다. **21 에서의 처방이 이것**이었다.
-- **흔들림이 거의 없다**(1601~1605, 200~215). 이 실험만은 **결론이 흔들리지 않는다.**
+- **흔들림이 거의 없다**(1601\~1605, 200\~215). 이 실험만은 **결론이 흔들리지 않는다.**
 
 **21 에서 더 넓게 재 봤다 — 무엇이 고정되나**
 
@@ -660,7 +660,7 @@ try (ExecutorService es = Executors.newVirtualThreadPerTaskExecutor()) {
 | | 플랫폼 스레드 | 가상 스레드 |
 |---|---|---|
 | `isDaemon()` | `false`(기본) | **항상 `true`** — `setDaemon(false)` 는 `IllegalArgumentException` |
-| `getPriority()` | 1~10 | **항상 5** — `setPriority` 가 무시된다 |
+| `getPriority()` | 1\~10 | **항상 5** — `setPriority` 가 무시된다 |
 | `getThreadGroup()` | `main` 등 | **`VirtualThreads`** |
 | 기본 이름 | `Thread-0` | **빈 문자열** |
 | `toString()` | `Thread[#21,Thread-0,5,main]` | `VirtualThread[#31]/runnable@ForkJoinPool-1-worker-1` |
@@ -836,7 +836,7 @@ JDK 25 : java -XX:StartFlightRecording=filename=p.jfr,settings=profile ...
 ## 더 들어가면
 
 - **`jdk.virtualThreadScheduler.parallelism` / `maxPoolSize`** — 캐리어 수를 바꾸는 시스템 속성.\
-  이 문서의 고정 실험이 이것을 1로 묶어 **"줄서면 8배"**가 보이게 만들었다. **운영에서 건드릴 것은 아니다.**
+  이 문서의 고정 실험이 이것을 1로 묶어 "**줄서면 8배**"가 보이게 만들었다. **운영에서 건드릴 것은 아니다.**
 - **`ScopedValue`**(25 확정) — 값을 **범위**에 묶는다. 불변이고, 자식 작업에 자동으로 전달된다.\
   `ThreadLocal` 과 달리 **사본이 스레드마다 생기지 않는다.** 이 문서는 **측정하지 않았다.**
 - **`StructuredTaskScope`**(21·25 프리뷰) — 자식 작업의 수명을 부모 범위에 묶는다.\

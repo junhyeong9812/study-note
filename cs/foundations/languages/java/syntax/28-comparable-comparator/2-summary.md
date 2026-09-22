@@ -10,7 +10,7 @@
 > `comparing`·`thenComparing`·`reversed`·`nullsFirst`·`naturalOrder` 등 조합 메서드는 전부 **Java 8**(`@since 1.8`, src.zip 확인).
 > **범위** — 정렬 **알고리즘**(병합·삽입·TimSort 의 run·gallop)은 이 문서가 다루지 않는다.\
 > 그쪽은 [`../../../../../algorithm/01-elementary-sort/`](../../../../../algorithm/01-elementary-sort/) 와 `cs/algorithm/` 이 정본이다.\
-> 여기는 **「비교자의 계약과 그것을 어겼을 때 관측되는 증상」**만 다룬다.
+> 여기는 「**비교자의 계약과 그것을 어겼을 때 관측되는 증상**」만 다룬다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ## 한눈에 — 쉽게 말하면
@@ -99,7 +99,7 @@ JDK 21.0.5 `java.base/java/lang/Comparable.java` 의 `compareTo` javadoc 원문�
 
 그림 해설 (한 단계씩):
 
-- ★ **①~③ 은 "must ensure"(강제), ④ 는 "strongly recommended … not strictly required"(권고)** 다.\
+- ★ **①\~③ 은 "must ensure"(강제), ④ 는 "strongly recommended … not strictly required"(권고)** 다.\
   이 구분이 이 주제의 절반이다 — ④ 를 어겨도 정렬은 안 터지지만 **`TreeSet`/`TreeMap` 이 달라진다**((5)).
 - 앞의 셋을 만족하면 **전순서**가 된다. javadoc 의 표현으로는 "the natural ordering is a *total order* on C".
 - ①의 괄호가 중요하다 — **예외도 대칭이어야 한다.** `x.compareTo(y)` 가 던지면 `y.compareTo(x)` 도 던져야 한다.
@@ -291,7 +291,7 @@ if (nRemaining < MIN_MERGE) {
    ★ 던질 코드 자체가 없다
 ```
 
-실측으로 확인했다(`Ex.java (28-a4)`, 값 0~99, 씨앗 0~1999).
+실측으로 확인했다(`Ex.java (28-a4)`, 값 0\~99, 씨앗 0\~1999).
 
 **출력** (JDK 21.0.5 — 17·25 동일)
 
@@ -311,7 +311,7 @@ n = 32~61, seed 0~1999 -> 시도 60000회
 - 32개부터 던지기 시작하지만 **던지는 비율은 5%(3,012/60,000)** 다. **대부분은 여전히 조용히 틀린다.**
 - 결론: **`IllegalArgumentException` 은 계약 위반의 "일부"만 잡는 안전망**이지 검사기가 아니다.
 
-구체적으로 8개짜리 하나를 눈으로 보면 이렇다(`Ex.java (28-a2)` C절, 값 0~99, 씨앗 7).
+구체적으로 8개짜리 하나를 눈으로 보면 이렇다(`Ex.java (28-a2)` C절, 값 0\~99, 씨앗 7).
 
 ```text
   n=8 정렬 전 : [36, 64, 85, 44, 80, 54, 68, 49]
@@ -608,7 +608,7 @@ a.equals(null)    -> false
 
 ## 구현 세부사항 대 언어 보장
 
-이 절은 **"어디까지 믿어도 되나"**를 가른다.
+이 절은 "**어디까지 믿어도 되나**"를 가른다.
 
 | 항목 | 누가 보장하나 | 근거 |
 |---|---|---|
@@ -697,13 +697,13 @@ a.equals(null)    -> false
   둘 다 같은 문자열의 `IllegalArgumentException` 을 던지고(`ComparableTimSort.java` 749·871행, `TimSort.java` 782·904행),
   `MIN_MERGE` 도 둘 다 32다. 그래서 `Comparable` 을 잘못 구현해도 증상이 같다.
 - **`List.sort` 는 `Arrays.sort` 를 부른다.**\
-  소스가 세 줄이다 — `Object[] a = this.toArray(); Arrays.sort(a, (Comparator) c); ...`(`List.java` 507~509행).\
+  소스가 세 줄이다 — `Object[] a = this.toArray(); Arrays.sort(a, (Comparator) c); ...`(`List.java` 507\~509행).\
   그래서 이 문서의 결론이 `List.sort`·`Arrays.sort`·`Collections.sort` 에 그대로 적용된다.
 - **`Arrays.sort(int[])` 는 이 예외를 절대 안 던진다.**\
   기본형 배열은 비교자가 없어 `DualPivotQuicksort.sort` 로 간다(소스 100·176행 등). 계약 위반이라는 개념 자체가 없다.\
   이 주제의 함정은 **객체 배열·컬렉션에서만** 나온다.
 - **`-Djava.util.Arrays.useLegacyMergeSort=true` 로 옛 병합 정렬을 켤 수 있다** — 그러면 **아예 안 던진다.**\
-  `Arrays.java` 988~993행의 `LegacyMergeSort.userRequested` 가 이 시스템 속성을 읽는다.\
+  `Arrays.java` 988\~993행의 `LegacyMergeSort.userRequested` 가 이 시스템 속성을 읽는다.\
   같은 프로그램(`Ex.java (28-a3)`)을 이 플래그로 다시 돌리니 n 을 3000까지 올려도 임계값을 못 찾았다(`-1`).
 
 ```text

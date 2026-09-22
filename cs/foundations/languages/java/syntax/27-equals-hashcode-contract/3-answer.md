@@ -458,7 +458,7 @@ record hashCode  : 33 / 33
 
 - [`data-structure/05-hashmap`](../../../../../data-structure/05-hashmap/) — 체이닝, 리사이즈, 로드 팩터.
 - [`data-structure/29-open-addressing`](../../../../../data-structure/29-open-addressing/) — 개방 주소법.
-- 이 주제는 그 위에서 **"계약을 어기면 어디가 틀리나"**만 다룬다.\
+- 이 주제는 그 위에서 "**계약을 어기면 어디가 틀리나**"만 다룬다.\
   이 문서에 나온 `hash(key)` 소스와 칸 번호도 **증상을 그리기 위한 최소한**이고, 왜 그렇게 섞는지는 거기서 본다.
 
 **`TreeMap`/`TreeSet` 은 무엇으로 같음을 판정하는가**

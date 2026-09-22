@@ -556,7 +556,7 @@ Ex.java:1: error: Unexpected @FunctionalInterface annotation
 ```
 
 - 세 에러 다 **애너테이션 줄**을 가리킨다. 문제의 메서드가 아니다.
-- 셋째가 중요하다 — `equals`·`toString`·`hashCode` 를 셋이나 선언했는데 **「추상 메서드를 못 찾았다」**고 한다.
+- 셋째가 중요하다 — `equals`·`toString`·`hashCode` 를 셋이나 선언했는데 「**추상 메서드를 못 찾았다**」고 한다.
 - 즉 `Object` 의 public 메서드는 **세는 대상이 아니다**((6)의 javadoc 인용).
 
 ### 2. `@FunctionalInterface` 를 안 붙이면 괜찮다고 생각한다

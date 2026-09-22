@@ -757,7 +757,7 @@ Ex.java:4: error: the switch statement does not cover all possible input values
 
 - 메시지가 **`the switch statement`** 라고 말한다 — 식이 아니라 문이다.
 - [**21번 주제**](../21-switch-statement-and-expression/)에서 `enum` `switch` **문**은 상수를 빠뜨려도 통과했다.\
-  ★ 경계는 「문이냐 식이냐」만이 아니라 **「옛 selector 냐 패턴이냐」**에도 걸려 있다.
+  ★ 경계는 「문이냐 식이냐」만이 아니라 「**옛 selector 냐 패턴이냐**」에도 걸려 있다.
 
 ### 3. `sealed` 인데 가지를 빠뜨렸다 — 이건 **좋은** 에러다
 

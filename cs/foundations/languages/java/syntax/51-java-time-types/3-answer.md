@@ -218,7 +218,7 @@ ZonedDateTime.ofStrict(input, zone.getRules().getOffset(input), zone);
 **`isFixedOffset()` 과 그 함정**
 
 - **`false`** 다.
-- 함정은 이 메서드가 "지금 고정인가"가 아니라 **"역사 전체에 전이가 하나도 없는가"**를 묻는다는 것이다.
+- 함정은 이 메서드가 "지금 고정인가"가 아니라 "**역사 전체에 전이가 하나도 없는가**"를 묻는다는 것이다.
 - 1988년에 전이가 있었으므로 `Asia/Seoul` 은 영원히 `false` 다. 뉴욕과 **구별되지 않는다.**
 
 **`nextTransition`**
@@ -374,7 +374,7 @@ t.isSupported(ChronoField.INSTANT_SECONDS)  : true
   Instant.get 은 필드 범위를 보고 미리 거부한다 -> 값과 무관하게 던진다
 ```
 
-- **"지금 값이 int 에 들어가느냐"가 아니라 "이 필드의 범위가 int 에 들어가느냐"**로 판단한다.
+- "**지금 값이 int 에 들어가느냐"가 아니라 "이 필드의 범위가 int 에 들어가느냐**"로 판단한다.
 - 그래서 값이 작아도 던진다. `getLong` 을 써야 한다.
 
 **예외 타입·메시지**

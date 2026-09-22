@@ -519,7 +519,7 @@ MinimalUse.equals(FullUse) = false
 public @interface SuppressWarnings {
 ```
 
-2번에서 본 **"`@Target` 을 안 적으면 거의 어디에나 붙는다"**는 규칙을 표준 라이브러리가 일부러 쓰고 있는 자리다.
+2번에서 본 "**`@Target` 을 안 적으면 거의 어디에나 붙는다**"는 규칙을 표준 라이브러리가 일부러 쓰고 있는 자리다.
 
 **메타 애너테이션 다섯** — 전부 `@Retention(RUNTIME)` + `@Target(ANNOTATION_TYPE)` 이다.\
 그래서 애너테이션 타입 선언에만 붙고, 위 프로그램처럼 런타임에 읽을 수 있다.
@@ -603,7 +603,7 @@ Ex.java:6: error: annotation interface Generic cannot be generic
     @Retention 이 갈림길              항상 둘 다 (descriptor + Signature)
 ```
 
-- 둘 다 **"javac 가 클래스 파일에 무엇을 적었나"**로 답이 나온다. 확인 도구도 같은 `javap -v` 다.
+- 둘 다 "**javac 가 클래스 파일에 무엇을 적었나**"로 답이 나온다. 확인 도구도 같은 `javap -v` 다.
 - 그리고 **둘 다 리플렉션에서 만난다** — [**58번 주제**](../58-reflection/)(리플렉션)가 그 합류 지점이다.
 
 **`ElementType.RECORD_COMPONENT` 가 16에서 생긴 이유**
