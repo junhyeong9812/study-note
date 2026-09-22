@@ -470,7 +470,7 @@ print(len(fib.__defaults__[0]))
 - 함께 보는 곳: [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md) — `is None` / `is MISSING` 을 `==` 로 쓰면 안 되는 이유
 - 이어지는 곳: 목록의 **36번** 「`dataclasses`」, **45번** 「`functools`」(폴더 아직 없음)
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/README.md) — 리스트가 가변이라는 것과 `append` 사용법은 그쪽에 있다.\
-  이 주제는 그 위에서 **「그 가변성이 함수 기본값 자리에 오면 무엇이 깨지나」**만 다룬다.
+  이 주제는 그 위에서 「**그 가변성이 함수 기본값 자리에 오면 무엇이 깨지나**」만 다룬다.
 - 공식 문서: [8.8. Function definitions](https://docs.python.org/3.12/reference/compound_stmts.html#function-definitions) · [`dataclasses.field`](https://docs.python.org/3.12/library/dataclasses.html#dataclasses.field)
 
 ## 용어 풀이

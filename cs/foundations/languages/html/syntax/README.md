@@ -33,7 +33,7 @@ HTML 은 태그 목록이 아니다. 명세 자신이 태그를 「종류」로 
 | 09 | 스타일시트·리소스 힌트 연결 — `<link rel>`·`media`·`preload`/`preconnect`/`modulepreload` | 문서 구조 | 스타일시트가 렌더를 막는다는 것과 `media` 로 그 차단을 비껴가는 법, 힌트를 남용했을 때의 역효과를 판단할 수 있다 | 08 | [`../../css/syntax/README.md`](../../css/syntax/README.md) (연결된 뒤의 이야기) | 도움 | B |
 | 10 | `template`·`slot`·선언적 Shadow DOM·커스텀 요소 맛보기 | 문서 구조 | `<template>` 안의 내용이 왜 파싱은 되는데 렌더되지 않는지, 슬롯이 라이트 DOM 을 어디로 투영하는지 설명할 수 있다 | 05 · JS 16 | [`../../../../../history/web/05-웹플랫폼-API.md`](../../../../../history/web/05-웹플랫폼-API.md) §6 (웹 컴포넌트의 등장) | 필수 | C |
 | 11 | 구획 요소와 랜드마크 — `main`/`header`/`footer`/`nav`/`aside`/`section`/`article`/`search` | 시맨틱 | 각 요소의 암묵 랜드마크 역할을 대고, `section` 이 이름 없으면 랜드마크가 아니라는 것을 판단할 수 있다 | 05 | — | 도움 | A |
-| 12 | 제목 레벨과 문서 개요 — `h1`~`h6` 가 실제로 계산되는 방식 | 시맨틱 | 「구획 요소가 제목 레벨을 자동으로 낮춰 준다」가 왜 구현되지 않았는지와 그래서 레벨을 손으로 맞춰야 한다는 것을 설명할 수 있다 | 11 | — | 도움 | A |
+| 12 | 제목 레벨과 문서 개요 — `h1`\~`h6` 가 실제로 계산되는 방식 | 시맨틱 | 「구획 요소가 제목 레벨을 자동으로 낮춰 준다」가 왜 구현되지 않았는지와 그래서 레벨을 손으로 맞춰야 한다는 것을 설명할 수 있다 | 11 | — | 도움 | A |
 | 13 | 구절 시맨틱 — `strong`/`em`/`b`/`i`/`mark`/`small`/`code`/`kbd`/`samp`/`abbr` | 시맨틱 | 같은 굵게·기울임으로 보이는 두 요소 중 어느 쪽을 쓸지 「의미가 있나 없나」로 판정할 수 있다 | 05 | — | 필수 | A |
 | 14 | 인용·편집·시각 — `blockquote`/`q`/`cite`·`ins`/`del`·`time` | 시맨틱 | `cite` 가 저작물 제목이지 사람 이름이 아니라는 것과 `time datetime` 의 기계 판독 형식을 쓸 수 있다 | 13 | — | 도움 | B |
 | 15 | 목록 — `ul`/`ol`(`start`·`reversed`·`value`)/`dl` | 시맨틱 | 세 목록이 각각 무엇을 주장하는지와 `dl` 의 여러 `dt`/`dd` 묶음 규칙을 설명할 수 있다 | 05 | — | 필수 | A |
@@ -81,7 +81,7 @@ HTML 은 태그 목록이 아니다. 명세 자신이 태그를 「종류」로 
 **렌더** 필수 28 · 도움 20 · 불필요 5
 
 - **분류** — `문서 구조` / `시맨틱` / `폼` / `미디어·임베드` / `접근성` / `메타·SEO` 중 하나
-- **무엇을 인출하게 되나** — 한 줄. 「~를 안다」가 아니라 **「~를 설명·예측·판단할 수 있다」**
+- **무엇을 인출하게 되나** — 한 줄. 「\~를 안다」가 아니라 **「\~를 설명·예측·판단할 수 있다」**
 - **선행** — 먼저 봐야 하는 주제 번호(없으면 `—`). HTML 안의 선행은 모두 자기보다 작은 번호라 순환이 없다. `JS NN` 은 [`../../js/syntax/README.md`](../../js/syntax/README.md) 의 주제 번호다
 - **렌더** — 이 주제가 **화면에서 눈으로 봐야 이해되는가**. `필수` / `도움` / `불필요`. HTML 은 CSS 와 달리 **「DOM 트리를 봐야 하는 것」**(03·05)과 **「접근성 트리를 들어야 하는 것」**(46)이 섞여 있어, 렌더 칸이 `도움`·`불필요` 인 주제라도 **덤프 도구는 필요하다**
 - **우선** — `A`(핵심·먼저) / `B`(중요) / `C`(나중에)
@@ -90,13 +90,13 @@ HTML 은 태그 목록이 아니다. 명세 자신이 태그를 「종류」로 
 
 | 겹치는 주제 | 기존에 있는 것 | 새 주제를 어떻게 좁혔나 |
 |---|---|---|
-| 01 문서 뼈대 · 03 파서·오류 복구 | [`history/web/01-웹-탄생-HTML.md`](../../../../../history/web/01-웹-탄생-HTML.md) · [`03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) §1.1~1.6 — 버전 없는 시작, HTML 2.0~4.01, **XHTML 의 엄격함이 좌초한 이유**, WHATWG 의 반란, HTML5 | 「왜 관대한 파서가 됐나」는 거기. 여기는 **그 관대함이 오늘 만드는 구체 결과** — `<p><div>` 가 어떤 트리가 되는지, 어떤 태그가 암묵으로 삽입되는지 |
+| 01 문서 뼈대 · 03 파서·오류 복구 | [`history/web/01-웹-탄생-HTML.md`](../../../../../history/web/01-웹-탄생-HTML.md) · [`03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) §1.1\~1.6 — 버전 없는 시작, HTML 2.0\~4.01, **XHTML 의 엄격함이 좌초한 이유**, WHATWG 의 반란, HTML5 | 「왜 관대한 파서가 됐나」는 거기. 여기는 **그 관대함이 오늘 만드는 구체 결과** — `<p><div>` 가 어떤 트리가 되는지, 어떤 태그가 암묵으로 삽입되는지 |
 | 10 웹 컴포넌트 · 39 SVG·canvas | [`history/web/05-웹플랫폼-API.md`](../../../../../history/web/05-웹플랫폼-API.md) §3·§6 — 멀티미디어와 컴포넌트가 표준이 된 경위 | 도입 맥락은 거기. 여기는 **마크업 표면만** — `<template>` 이 렌더되지 않는 성질, 슬롯 투영, 인라인 SVG 의 스타일링·접근성 대가 |
 | 16 링크 · 21 폼 제출 | [`history/web/02-HTTP-진화.md`](../../../../../history/web/02-HTTP-진화.md) — 메서드·헤더·URL 모델의 진화 | 프로토콜은 거기. 여기는 **마크업이 그 요청을 어떻게 만드느냐** — `method`/`enctype` 이 본문 형식을 바꾸는 것까지 |
 | 03 파서 | [`foundations/compiler-pipeline/`](../../../compiler-pipeline/) — 렉서·파서·AST 일반론 | 파싱 일반론은 거기. 여기는 **에러로 멈추지 않는 파서**라는 HTML 고유 설계와 삽입 모드 |
 | 04 문자 참조 · 20 양방향 텍스트 | [`foundations/data-representation/`](../../../data-representation/) — 유니코드·인코딩 | 인코딩 원리는 거기. 여기는 **`charset` 선언 위치·엔티티 문법·`bdi` 라는 마크업 수단** |
 | 38 `iframe` sandbox · 51 `http-equiv` | [`foundations/security/`](../../../security/) — 보안 일반 | 위협 모델은 거기. 여기는 **마크업 속성이 그 경계를 어디까지 그을 수 있나**(그리고 메타로는 못 하는 것) |
-| 41~49 접근성 | [`cs/engineering/development-standards/quality-standards/`](../../../../engineering/development-standards/quality-standards/) — ISO 25010 의 포용성(inclusivity)·사용자 지원 항목 | 품질 모델의 어휘만 거기 있고 **HTML 의 접근성 표면은 저장소 어디에도 없다**. 이 갈래 9주제가 그 공백을 채운다 |
+| 41\~49 접근성 | [`cs/engineering/development-standards/quality-standards/`](../../../../engineering/development-standards/quality-standards/) — ISO 25010 의 포용성(inclusivity)·사용자 지원 항목 | 품질 모델의 어휘만 거기 있고 **HTML 의 접근성 표면은 저장소 어디에도 없다**. 이 갈래 9주제가 그 공백을 채운다 |
 | 08 스크립트 로딩 | [`../../js/syntax/README.md`](../../js/syntax/README.md) 42·44 — ESM 모듈, 동적 `import`·top-level `await` | 모듈 **의미론**은 거기. 여기는 **`<script>` 속성 조합이 만드는 다운로드·실행 타이밍**만 |
 | 09 스타일시트 연결 · 29 검증 상태 · 34 이미지 크기 · 47 dialog | [`../../css/syntax/README.md`](../../css/syntax/README.md) | 스타일 규칙은 전부 CSS 목록. 여기는 **마크업이 CSS 에 넘겨주는 훅**(유효성 상태·`aspect-ratio` 의 재료·최상위 레이어)까지 |
 
@@ -136,7 +136,7 @@ HTML 은 태그 목록이 아니다. 명세 자신이 태그를 「종류」로 
 HTML 에는 버전이 없다. WHATWG **Living Standard** 단일 기준이고, 「HTML5」는 [`history/web/03`](../../../../../history/web/03-HTML-CSS-진화.md) §1.6 이 다루는 **2014년의 한 시점**이지 오늘의 기준이 아니다. 그래서 버전 대신 **브라우저 Baseline** 으로 기준을 잡는다.
 
 - **기준선**: Baseline **widely available** 인 것을 「그냥 써도 되는 것」으로 본다.
-- **newly available** 인 것은 3파일에 **「Baseline newly, 저변 도달 시점 <날짜>」**를 명시한다.
+- **newly available** 인 것은 3파일에 「**Baseline newly, 저변 도달 시점 <날짜>**」를 명시한다.
 - **limited** 인 것은 목록에서 뺐거나 한 줄 언급으로만 남기고, 그 사실을 적는다.
 
 아래 값은 2026-09-21 에 [`api.webstatus.dev`](https://webstatus.dev/) 의 feature API 를 직접 조회해 받은 것이다. **추측하지 않았다.**

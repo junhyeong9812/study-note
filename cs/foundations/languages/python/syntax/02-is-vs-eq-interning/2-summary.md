@@ -433,8 +433,8 @@ print(0.0 == -0.0, 0.0 is -0.0)   # True False
 - 목록: [python/syntax 주제 목록](../README.md) — 이 주제는 **02번**
 - 선행: 목록의 **01번** 「객체와 이름 바인딩 모델」(폴더 아직 없음)
 - 이어지는 곳: [20-mutable-default-args](../20-mutable-default-args/2-summary.md) — `is None` 센티널이 실제로 쓰이는 자리
-- 기존 노트: [`cs/foundations/variables-and-memory/`](../../../../variables-and-memory/README.md) — 이름/값 객체·참조 카운트·인터닝을 **「이렇게 쓴다」**까지 다룬다.\
-  이 주제는 그 위에서 **「그래서 어디서 틀리나」**만 다룬다.
+- 기존 노트: [`cs/foundations/variables-and-memory/`](../../../../variables-and-memory/README.md) — 이름/값 객체·참조 카운트·인터닝을 「**이렇게 쓴다**」까지 다룬다.\
+  이 주제는 그 위에서 「**그래서 어디서 틀리나**」만 다룬다.
 - 연혁은 여기가 아니다: [`history/python/`](../../../../../../history/python/)
 - 공식 문서: [6.10. Comparisons](https://docs.python.org/3.12/reference/expressions.html#comparisons) · [`id()`](https://docs.python.org/3.12/library/functions.html#id) · [`sys.intern()`](https://docs.python.org/3.12/library/sys.html#sys.intern)
 

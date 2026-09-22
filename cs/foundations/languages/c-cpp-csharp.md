@@ -12,7 +12,7 @@ C·C++·C#은 하나의 축으로 줄 세워지지 않는다.\
 
 ## 한눈에 — 쉽게 말하면
 
-계산기 세 대를 고르는데, 기준이 "얼마나 빨리 더하는가"가 아니라 **"틀렸을 때 어떻게 티가 나는가"**라고 생각하면 된다. *(Claude 보강 — 원고에 없는 비유)*
+계산기 세 대를 고르는데, 기준이 "얼마나 빨리 더하는가"가 아니라 "**틀렸을 때 어떻게 티가 나는가**"라고 생각하면 된다. *(Claude 보강 — 원고에 없는 비유)*
 
 ```text
 세 계산기의 "틀림" 방식
@@ -43,7 +43,7 @@ C# 에게   "기술적으로 충분한데 왜 안 쓰는가?"
 ```
 
 앞의 둘은 실패 모드로 답하고(§C~§C++), 마지막 하나는 실행 모형의 동형성과 생태계로 답한다(§C#).\
-그래서 이 문서의 실질적 주제는 세 언어 자체가 아니라 **"언어를 고를 때 무엇을 보는가"**이고, 그 답이 마지막 절이다.
+그래서 이 문서의 실질적 주제는 세 언어 자체가 아니라 "**언어를 고를 때 무엇을 보는가**"이고, 그 답이 마지막 절이다.
 
 인용한 표준은 C가 ISO C 공개 초안 N1570(C11)과 N3220(C23), C++가 ISO C++ Core Guidelines와 WG21 문서, .NET이 Microsoft 공식 문서와 ECMA 표준 기준이다.
 
@@ -77,7 +77,7 @@ C# 에게   "기술적으로 충분한데 왜 안 쓰는가?"
 
 > 출처: 원고 §2
 
-C는 1972년 무렵 벨 연구소에서 데니스 리치가 Unix를 어셈블리에서 옮겨 쓰기 위해 만든 언어다 — 특정 기계의 어셈블리보다 한 단계 위에 있으면서 기계에는 최대한 가깝게, 그 코드를 다른 기계로 옮길 수 있게 하는 것이 목적이었다([Dennis M. Ritchie, The Development of the C Language, HOPL-II, 1993](https://www.nokia.com/bell-labs/about/dennis-m-ritchie/chist.pdf)). 지향은 그 목적에서 곧장 나온다 — 이식성 있는 저수준 제어, 런타임을 최소로, 그리고 **"프로그래머를 신뢰하라"**는 정신. 검사는 언어가 아니라 프로그래머가 한다는 이 태도가 아래 절 전체의 뿌리다.
+C는 1972년 무렵 벨 연구소에서 데니스 리치가 Unix를 어셈블리에서 옮겨 쓰기 위해 만든 언어다 — 특정 기계의 어셈블리보다 한 단계 위에 있으면서 기계에는 최대한 가깝게, 그 코드를 다른 기계로 옮길 수 있게 하는 것이 목적이었다([Dennis M. Ritchie, The Development of the C Language, HOPL-II, 1993](https://www.nokia.com/bell-labs/about/dennis-m-ritchie/chist.pdf)). 지향은 그 목적에서 곧장 나온다 — 이식성 있는 저수준 제어, 런타임을 최소로, 그리고 "**프로그래머를 신뢰하라**"는 정신. 검사는 언어가 아니라 프로그래머가 한다는 이 태도가 아래 절 전체의 뿌리다.
 
 B 언어에서 갈라져 나온 C(1972)는 1978년 커니핸·리치의 『The C Programming Language』(K&R)로 사실상의 정의를 얻었고, ANSI C89(1989) → ISO C99·C11·C23으로 개정돼 왔다. 개정은 기능을 더했지만 "프로그래머를 믿고 검사를 언어에 넣지 않는다"는 축은 바꾸지 않았다.
 
@@ -99,7 +99,7 @@ void credit(long *balances, int idx, long amount) {
 
 > 출처: 원고 §3
 
-범위를 벗어난 쓰기가 일어났을 때 무슨 일이 벌어지는지를 표준은 규정하지 않는다. ISO C가 정의하는 **미정의 동작(undefined behavior)**은 "이 국제 표준이 아무런 요구사항도 부과하지 않는" 것이고, 뒤따르는 NOTE가 그 범위를 못박는다 — "상황을 완전히 무시하고 예측 불가능한 결과를 내는 것에서부터 … 번역이나 실행을 진단 메시지와 함께 중단하는 것까지 이른다"([ISO/IEC 9899 위원회 초안 N1570](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf) §3.4.3 — C23 초안 [N3220](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf)에서 §3.5.3으로 번호만 바뀌고 정의는 같다). 여기서 실무적으로 중요한 것은 목록에 "중단한다"가 **선택지 중 하나일 뿐**이라는 점이다. 진단도 중단도 없는 실행이 표준을 어기는 것이 아니다.
+범위를 벗어난 쓰기가 일어났을 때 무슨 일이 벌어지는지를 표준은 규정하지 않는다. ISO C가 정의하는 **미정의 동작**(undefined behavior)은 "이 국제 표준이 아무런 요구사항도 부과하지 않는" 것이고, 뒤따르는 NOTE가 그 범위를 못박는다 — "상황을 완전히 무시하고 예측 불가능한 결과를 내는 것에서부터 … 번역이나 실행을 진단 메시지와 함께 중단하는 것까지 이른다"([ISO/IEC 9899 위원회 초안 N1570](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf) §3.4.3 — C23 초안 [N3220](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf)에서 §3.5.3으로 번호만 바뀌고 정의는 같다). 여기서 실무적으로 중요한 것은 목록에 "중단한다"가 **선택지 중 하나일 뿐**이라는 점이다. 진단도 중단도 없는 실행이 표준을 어기는 것이 아니다.
 
 컴파일러는 이 자유를 최적화에 쓴다. LLVM 쪽 해설은 직설적이다 — "C의 미정의 동작은 구현에게 하드디스크를 포맷하는 코드나 완전히 예상 밖의 일을 하는 코드를 생성할 재량을 준다"([Chris Lattner, What Every C Programmer Should Know About Undefined Behavior](https://blog.llvm.org/2011/05/what-every-c-programmer-should-know.html), 2011). 같은 글이 흔한 오해를 정정한다 — 널 포인터 역참조는 "트랩하도록 정의되어 있지 않다". 죽어 주는 것은 운영체제가 마침 그 주소를 매핑하지 않았을 때의 우연이지 언어의 보장이 아니다.
 
@@ -155,7 +155,7 @@ Linux 커널이 실제로 그렇게 빌드된다. 최상위 Makefile은 지금�
 
 > 출처: 원고 §6
 
-1979년 벨 연구소의 비아네 스트롭스트룹이 'C with Classes'로 시작한 것이 뿌리다 — Simula에서 본 추상화(클래스)의 표현력을 C의 성능·제어 위에 얹되, 그 추상화가 **"쓰지 않는 것에는 값을 치르지 않는다(zero-overhead)"**는 규칙을 어기지 않게 하려는 시도였다([Bjarne Stroustrup, A History of C++: 1979–1991](https://www.stroustrup.com/hopl2.pdf); [cppreference — Zero-overhead principle](https://en.cppreference.com/w/cpp/language/Zero-overhead_principle)). §C의 축(네이티브·프로그래머 신뢰)을 그대로 물려받되 그 위에 추상화를 얹은 것이 C++이고, 그 "얹음"이 지우는 실패와 못 지우는 실패를 가르는 것이 주제다. 'C with Classes'(1979)는 1983년 C++로 개명, 1998년 C++98로 표준화됐고 C++11이 스마트 포인터·람다·이동 의미론을 들였다.
+1979년 벨 연구소의 비아네 스트롭스트룹이 'C with Classes'로 시작한 것이 뿌리다 — Simula에서 본 추상화(클래스)의 표현력을 C의 성능·제어 위에 얹되, 그 추상화가 "**쓰지 않는 것에는 값을 치르지 않는다(zero-overhead)**"는 규칙을 어기지 않게 하려는 시도였다([Bjarne Stroustrup, A History of C++: 1979–1991](https://www.stroustrup.com/hopl2.pdf); [cppreference — Zero-overhead principle](https://en.cppreference.com/w/cpp/language/Zero-overhead_principle)). §C의 축(네이티브·프로그래머 신뢰)을 그대로 물려받되 그 위에 추상화를 얹은 것이 C++이고, 그 "얹음"이 지우는 실패와 못 지우는 실패를 가르는 것이 주제다. 'C with Classes'(1979)는 1983년 C++로 개명, 1998년 C++98로 표준화됐고 C++11이 스마트 포인터·람다·이동 의미론을 들였다.
 
 C++의 자원 관리 해법은 소멸자와 스코프에 있다. C++ Core Guidelines가 규칙 R.1로 정식화한다 — "자원 핸들과 **RAII**(Resource Acquisition Is Initialization)로 자원을 자동 관리하라 … 생성자에서 획득하고 소멸자에서 해제하라"([C++ Core Guidelines](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md) R.1). `std::unique_ptr`은 소유권이 하나임을 타입으로 표현하고, `std::shared_ptr`은 참조 계수로 마지막 소유자가 해제하게 한다.
 
@@ -184,7 +184,7 @@ RAII와 스마트 포인터가 그대로 두는 것들은 목록으로 셀 수 �
 
 이 통계를 읽는 방법이 중요하다. 여기 나오는 코드베이스들은 현대 C++ 관용구, 전담 보안팀, 대규모 퍼징, 새니타이저, 엄격한 코드 리뷰를 전부 갖춘 조직들이고, 그런데도 비율이 바뀌지 않는다. **바뀌는 경우가 하나 있는데 그것이 반증으로서 결정적이다** — Android는 새 네이티브 코드를 메모리 안전 언어로 쓰기 시작하면서 메모리 안전성 결함 비율이 **2019년 76%에서 2024년 24%로** 떨어졌다([Eliminating Memory Safety Vulnerabilities at the Source](https://security.googleblog.com/2024/09/eliminating-memory-safety-vulnerabilities-Android.html), 2024, 2024년 값은 추정치). 비율을 움직인 것은 더 나은 리뷰나 더 많은 퍼징이 아니라 **새 코드를 쓰는 언어**였다.
 
-방향은 확정됐지만 도착은 안 했다. Herb Sutter는 "숙련된 C++ 개발자조차 C++가 **조용히 받아들이는** … '나쁜' 코드를 실수로 작성하기 쉽다"고 쓰고 타입·경계·초기화·수명 네 범주를 지목했으며([C++ safety, in context](https://herbsutter.com/2024/03/11/safety-in-context/), 2024), Stroustrup은 "지침은 큰 코드베이스에서 일관되게 따르는 것이 사실상 불가능하다. 따라서 강제가 필수적이다 … 그 집합을 우리는 **'프로파일'**이라 부른다"고 적었다([21st Century C++](https://www.stroustrup.com/21st-Century-C++.pdf), 2025). 그런데 그 제안은 **C++26에 들어가지 못했고** 목표 릴리스가 C++29다([P4186R0](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2026/p4186r0.html), 2026; [P3970R0](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2026/p3970r0.pdf), 2026).
+방향은 확정됐지만 도착은 안 했다. Herb Sutter는 "숙련된 C++ 개발자조차 C++가 **조용히 받아들이는** … '나쁜' 코드를 실수로 작성하기 쉽다"고 쓰고 타입·경계·초기화·수명 네 범주를 지목했으며([C++ safety, in context](https://herbsutter.com/2024/03/11/safety-in-context/), 2024), Stroustrup은 "지침은 큰 코드베이스에서 일관되게 따르는 것이 사실상 불가능하다. 따라서 강제가 필수적이다 … 그 집합을 우리는 '**프로파일**'이라 부른다"고 적었다([21st Century C++](https://www.stroustrup.com/21st-Century-C++.pdf), 2025). 그런데 그 제안은 **C++26에 들어가지 못했고** 목표 릴리스가 C++29다([P4186R0](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2026/p4186r0.html), 2026; [P3970R0](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2026/p3970r0.pdf), 2026).
 
 정리하면 **안전성이 "코딩 규칙과 도구로 보완할 것"에서 "언어가 강제할 것"으로 옮겨 가는 중이며, 그 이동은 빨라야 C++29다.** 새 시스템을 지금 C++로 시작하는 근거는 성능이 아니라 기존 C++ 자산이나 실시간·무런타임 요구 쪽에 가깝다.
 

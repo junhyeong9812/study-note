@@ -152,7 +152,7 @@ public value class BusinessDate(val value: LocalDate) : Comparable<BusinessDate>
 
 컬렉션 쪽 설계는 읽기 전용/가변 인터페이스 분리다. Java에서는 `Arrays.asList()`도 `Collections.unmodifiableList()`도 타입이 전부 `List`라 "**타입만 봐서는 가변인지 알 수 없고**" 실패가 런타임 예외다. Kotlin에서는 `listOf(...)`에 `add`를 부르면 컴파일 오류다([Collections in Java and Kotlin](https://kotlinlang.org/docs/java-to-kotlin-collections-guide.html)) — **실패 시점이 런타임에서 컴파일로 옮겨 온 것.**
 
-**읽기 전용은 불변이 아니다 — 그리고 공식 문서가 이 말을 흐린다.** `List`는 **뷰**다 — 입문 문서는 "you can **create a read-only view of a mutable list**"라고 숨기지 않는데, 코딩 컨벤션은 같은 인터페이스를 "**immutable** collection interfaces"라 부른다([Coding conventions](https://kotlinlang.org/docs/coding-conventions.html)). 뷰는 원본과 같은 객체이므로 원본 참조를 든 쪽은 여전히 고칠 수 있다. **함정의 절반은 용어에 있다.**
+**읽기 전용은 불변이 아니다 — 그리고 공식 문서가 이 말을 흐린다.** `List`는 **뷰**다 — 입문 문서는 "you can **create a read-only view of a mutable list**"라고 숨기지 않는데, 코딩 컨벤션은 같은 인터페이스를 **"immutable** collection interfaces"라 부른다([Coding conventions](https://kotlinlang.org/docs/coding-conventions.html)). 뷰는 원본과 같은 객체이므로 원본 참조를 든 쪽은 여전히 고칠 수 있다. **함정의 절반은 용어에 있다.**
 
 **실측(원고 저자 직접 확인, `kotlin-stdlib` 2.4.10 · JDK 21).**
 
@@ -233,7 +233,7 @@ public value class BusinessDate(val value: LocalDate) : Comparable<BusinessDate>
 - **컴파일 시간.** "Kotlin이 javac보다 느리다"는 인식은 널리 있지만 **JetBrains 발표의 Kotlin 대 Java 비교 수치는 확인하지 못했다.** 공식 수치는 컴파일러 세대 간 비교다 — "K2 compiler brings up to 94% compilation speed gains"(Anki-Android clean build 57.7초 → 29.7초)([K2 migration guide](https://kotlinlang.org/docs/k2-compiler-migration-guide.html)). 주의 둘 — 이것은 **K1 대비**이지 Java 대비가 아니고, clean(29.7초)과 incremental(0.122초)은 자릿수부터 다르다. 증분 컴파일이 기본으로 켜져 있으나 ABI가 바뀌면 파급이 커진다.
 - **어노테이션 처리는 별도 항목이다.** kapt는 "expensive, significantly increases build time"이고 KSP가 대안이다 — **Java 어노테이션 프로세서에 의존하는 스택을 그대로 들고 오면 Kotlin의 빌드 비용이 가장 나빠진다.**
 - **바이너리 크기.** `kotlin-stdlib`를 런타임 의존으로 갖는다. 서버 배포에서 문제가 된 **공식 수치는 확인하지 못했다**(Android 메서드 수 논의가 주 출처라 전제가 다르다). 비용으로 세우되 값은 비워 두는 것이 정직하다.
-- **학습 비용.** "Kotlin에 있고 Java에 없는 것"에 21개 항목이 있다 — 이것이 학습 표면이고, 팀이 하는 일은 그중 **부분집합을 고르고 나머지를 안 쓰기로 합의하는 것**이다. 언어 기능이 많다는 것의 비용은 "배울 게 많다"가 아니라 **"팀마다 다른 Kotlin을 쓰게 된다"**이고, 그 비용은 규약과 린트로만 줄어든다.
+- **학습 비용.** "Kotlin에 있고 Java에 없는 것"에 21개 항목이 있다 — 이것이 학습 표면이고, 팀이 하는 일은 그중 **부분집합을 고르고 나머지를 안 쓰기로 합의하는 것**이다. 언어 기능이 많다는 것의 비용은 "배울 게 많다"가 아니라 "**팀마다 다른 Kotlin을 쓰게 된다**"이고, 그 비용은 규약과 린트로만 줄어든다.
 
 ---
 

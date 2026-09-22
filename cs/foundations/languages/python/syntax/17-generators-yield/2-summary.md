@@ -637,7 +637,7 @@ ValueError: generator already executing
 - 함께 보는 곳: [14-comprehensions](../14-comprehensions/2-summary.md) — 리스트 컴프리헨션과 제너레이터 표현식의 평가 시점 차이
 - 이어지는 곳: 목록의 **44번** 「`itertools`」, **51번** 「`asyncio` 코루틴 기초」(폴더 아직 없음)
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/README.md) — `for`/`while` 로 순회하는 법까지가 그쪽이다.\
-  이 주제는 그 위에서 **「그 `for` 가 안쪽에서 무엇을 하고 있었나」**만 다룬다.
+  이 주제는 그 위에서 「**그 `for` 가 안쪽에서 무엇을 하고 있었나**」만 다룬다.
 - 연혁은 여기가 아니다: [`history/python/06-핵심-개념-진화.md`](../../../../../../history/python/06-핵심-개념-진화.md)
 - 공식 문서: [6.2.9. Yield expressions](https://docs.python.org/3.12/reference/expressions.html#yield-expressions)
 
