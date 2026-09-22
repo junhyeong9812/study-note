@@ -130,7 +130,7 @@ Jansen et al.의 동의: "**general procedures for text writers should be distru
 - Zhu 1999: node당 링크 3–7개 vs 8–12개 → **링크가 적을 때 학습 성과가 더 좋았고** 만족도도 높았음.
 - **van Nimwegen et al. 1999: 계층 구조에 "같은 레벨 간 lateral link"를 추가하자 독자가 목표 정보를 더 느리게 찾았고 최적 경로에서 더 많이 이탈했다.** → 이것이 정확히 "문서 간 과잉 상호참조"의 실험적 대응물이다.
 - semantic link 추가의 효과는 5개 연구 중 4개에서 **일관되게 부정적**.
-- 단, **위계적이고 도메인 구조와 일치하는** 하이퍼텍스트는 사전지식 낮은 독자에게 이득. 즉 **"구조는 위계적으로, 횡단 링크는 절제하라"**가 실증이 지지하는 형태다.
+- 단, **위계적이고 도메인 구조와 일치하는** 하이퍼텍스트는 사전지식 낮은 독자에게 이득. 즉 "**구조는 위계적으로, 횡단 링크는 절제하라**"가 실증이 지지하는 형태다.
 
 **(c) 분할 주의 효과 (split-attention)**
 
@@ -168,7 +168,7 @@ DITA 3타입 정의 (+base topic, learningContent): concept("What is…"), task(
 
 ### 4.2 Mark Baker의 입장 [실무 의견 — 블로그/단행본, 실증 아님]
 
-Baker(*Every Page is Page One*, XML Press 2013; *Structured Writing: Rhetoric and Process*, 2017)의 논지는 "구조화 반대"가 아니라 **"잘못된 축의 구조화 반대"**다.
+Baker(*Every Page is Page One*, XML Press 2013; *Structured Writing: Rhetoric and Process*, 2017)의 논지는 "구조화 반대"가 아니라 "**잘못된 축의 구조화 반대**"다.
 
 - **일반 타입 자체를 부정**: "Saying 'generic' reminds you that you are not giving a topic a real type at all… Calling it a 'concept' makes it sound like you **are** actually giving it a type." / 모든 것을 concept으로 분류하는 것은 "**akin to dividing the animal kingdom into cats, dogs, and everything else**." — [Everything Else is not a Concept](https://everypageispageone.com/2012/08/20/everything-else-is-not-a-concept/)
 - **재사용이 사용성을 이긴다는 관찰**: 저명 DITA 컨설턴트가 카메라 조작 기사 하나를 6개 토픽으로 분해하는 것을 목격 — 독자가 스스로 재조립해야 했다. "No matter what is possible in theory, we know which one actually wins: **reuse**." / "**The standard, in other words, is not reusability, but usability.**" — [A Task is Not a Procedure](https://everypageispageone.com/2012/08/07/a-task-is-not-a-procedure/)

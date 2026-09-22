@@ -348,7 +348,7 @@ Every framework surveyed converges on the same move: **partition by reader-quest
 |---|---|---|---|---|
 | **Orientation / map** | "Where am I? What is this system and what does it touch?" | C4 Context + Container; arc42 §1, §3, §4 | Names, responsibilities one line each, external interfaces, top 3–5 quality goals, solution strategy as **keywords/table** | Smallest layer. arc42 caps quality goals at **max five** (§1); tip 4-1 says strategy "as compact as possible" |
 | **Business rule registry** | "What is always true, everywhere?" | arc42 §8 Crosscutting Concepts; SEI "information that applies to more than one view" | Invariants that span multiple use cases. Exists **specifically to stop repetition** across contracts | arc42 §8: "Pick only the most-needed topics… **DO NOT ATTEMPT to cover all of the topics**" |
-| **Use-case contract** | "What happens in *this* flow?" | arc42 §6 Runtime View; C4 dynamic diagram; Kruchten scenarios | One flow, schematic. **References** registry entries rather than restating them | Tip 6-2 "**only a few**"; tip 6-3 "**schematic** (instead of detailed)" |
+| **Use-case contract** | "What happens in *this* flow?" | arc42 §6 Runtime View; C4 dynamic diagram; Kruchten scenarios | One flow, schematic. **References** registry entries rather than restating them | Tip 6-2 "**only a few"**; tip 6-3 **"schematic** (instead of detailed)" |
 | **ADR** | "Why is it this way, and what did we reject?" | arc42 §9; C4 minimal set item 5; SEI Rule 5 | Context, Decision, Status, Consequences (+ and −), **rejected alternatives** | Tip 9-1's 8-point relevance filter (below). "unless described elsewhere" |
 | **Quality/test strategy** | "How do we know it's true?" | arc42 §10 quality tree + scenarios; Kruchten "+1" | Quality tree (mind-map) → **measurable scenarios** (usage / change / **fault-error**), each with stimulus + measurable response | Tree used "**as a checklist**"; §1.2 holds only the top 3–5, §10 holds the full tree |
 | **Runbook** | "It's 3am and it's broken — what do I do?" | Simon Brown's guidebook §12 "Operation and Support"; arc42 §7 | Procedural, self-contained. This is the **one place SEI's Rule 2 is deliberately relaxed** — see below | Sized by the operator's task, not by system size |
@@ -370,7 +370,7 @@ Assemble it as a five-gate filter. Each gate is a direct quotation, so each is d
 Reinforced by ISO 42010's conformance chain (every concern framed by ≥1 viewpoint — and by implication, no viewpoint without a concern), Kruchten (views are per-audience and droppable), and Ambler ("Agile documents **have a specific customer**"). **Operationalize:** build the stakeholder × concern matrix for the ~50 docs first; documents that populate no cell are candidates for deletion, not rewriting.
 
 **Gate 2 — If the code or tests already say it, don't say it again; say *why* instead.**
-> "**Focus on explanation and rationale, not only facts**" — because "**source code contains facts**." — [arc42 FAQ E-7](https://faq.arc42.org/questions/E-7/)
+> "**Focus on explanation and rationale, not only facts"** — because **"source code contains facts**." — [arc42 FAQ E-7](https://faq.arc42.org/questions/E-7/)
 
 > `if (extensive-explanation-required) then concept else decision` — and a decision can simply **reference source code or unit tests**. — [arc42 tip 8-9](https://docs.arc42.org/tips/8-9/)
 
@@ -395,7 +395,7 @@ Reinforced by ISO 42010's conformance chain (every concern framed by ≥1 viewpo
 
 **Gate 4 — Excessive cross-referencing is an explicitly sanctioned exception to single-sourcing.**
 
-Single-sourcing is the default: "Each kind of information should be recorded in **exactly one place**" (SEI Rule 2); "**Strive to capture information in one place and one place only**" (Ambler). *But* SEI itself carves out the exception:
+Single-sourcing is the default: "Each kind of information should be recorded in **exactly one place"** (SEI Rule 2); **"Strive to capture information in one place and one place only**" (Ambler). *But* SEI itself carves out the exception:
 
 > "if avoiding repetition creates **excessive navigation burden for readers**, **selective repetition across locations is acceptable**." — [SEI Rule 2](https://www.informit.com/articles/article.aspx?p=1641654&seqNum=5)
 
@@ -405,7 +405,7 @@ This is the single most directly applicable finding for the stated diagnosis. Th
 - **Runbooks are the strongest case for repetition** — an operator at 3am must not follow cross-references. Combine SEI Rule 1 (reader's point of view) with the Rule 2 exception: runbooks should be self-contained even at the cost of duplication.
 
 **Gate 5 — Stop when the next sentence costs more than it returns; and prefer late over speculative.**
-> "The point of maximal value is where **the incremental cost of adding more to the artifact exceeds the incremental value being added**"; beyond it, effort "**removes net value**." — [Agile Modeling, JBGE](https://agilemodeling.com/essays/barelygoodenough.htm)
+> "The point of maximal value is where **the incremental cost of adding more to the artifact exceeds the incremental value being added"**; beyond it, effort **"removes net value**." — [Agile Modeling, JBGE](https://agilemodeling.com/essays/barelygoodenough.htm)
 
 > "By waiting to document information **once it has stabilized** you reduce both the cost and the risk." — [Agile Modeling](https://agilemodeling.com/essays/agiledocumentationbestpractices.htm)
 
@@ -418,7 +418,7 @@ With the essential counterweight, so this isn't read as license to defer indefin
 
 Both are sourced, cheap, and directly counter the "optimized for machine verification" diagnosis:
 
-**The reader-comprehension review** (not an author-compliance review). C4's [diagram checklist](https://c4model.com/diagrams/checklist) is phrased entirely as "**Do you understand…**" — every element's type, purpose, technology; every arrow's intent and direction; every colour, shape, icon, line style. SEI Rule 7 generalizes it: "**Only the intended users of a document will be able to tell you whether it contains the right information presented in the right way**" — have target-audience representatives review before release. Combined with SEI Rule 1 ("easy to *use*, not just easy to write") this gives a defensible review protocol: a representative of each identified stakeholder role reads their document cold and reports what they could not answer.
+**The reader-comprehension review** (not an author-compliance review). C4's [diagram checklist](https://c4model.com/diagrams/checklist) is phrased entirely as "**Do you understand…"** — every element's type, purpose, technology; every arrow's intent and direction; every colour, shape, icon, line style. SEI Rule 7 generalizes it: **"Only the intended users of a document will be able to tell you whether it contains the right information presented in the right way**" — have target-audience representatives review before release. Combined with SEI Rule 1 ("easy to *use*, not just easy to write") this gives a defensible review protocol: a representative of each identified stakeholder role reads their document cold and reports what they could not answer.
 
 **The maintenance test as a value proxy.** "If you've chosen to keep your [artifact] up to date… **that is a good sign that these are valuable**" — [Agile Modeling](https://agilemodeling.com/essays/agiledocumentationbestpractices.htm). Run this retrospectively over the ~50 docs: which have actually been updated? Unmaintained documents are evidence of absent demand, and are Gate-1 deletion candidates rather than rewrite candidates. Pair with SEI Rule 6's practical fallback — where a document can't be updated now, **mark the stale sections** so readers retain confidence in the rest.
 

@@ -76,7 +76,7 @@
 
 ## 1.3 Joseph M. Williams, *Style: Toward Clarity and Grace* (1990) `[1차 — 전문 확보]`
 
-> 이 책이 나머지 고전들과 다른 점: 규칙을 "금지 목록"이 아니라 **"독자가 왜 그렇게 느끼는지를 설명하는 진단 원리"**로 제시한다. 우리 문서 방법론의 뼈대로 가장 적합.
+> 이 책이 나머지 고전들과 다른 점: 규칙을 "금지 목록"이 아니라 "**독자가 왜 그렇게 느끼는지를 설명하는 진단 원리**"로 제시한다. 우리 문서 방법론의 뼈대로 가장 적합.
 
 ### (a) 명료성 두 원칙 — Chapter 2 "Clarity"
 
@@ -463,7 +463,7 @@ Travel Nebraska 사이트 5개 버전 비교, 대조군(홍보체) 대비 사용
 - 유시민: "말로 해서 좋아야 잘 쓴 글" — 입으로 읽기 어렵거나 귀로 듣기 좋지 않으면 잘못 쓴 글이다.
 - 이오덕: 입말에 가까운 글을 최고로 평가(권정생 편지).
 - Zinsser: 대화에서 하지 않을 말은 쓰지 마라.
-→ 세 문헌이 서로 독립적으로 **음성 기준(read-aloud test)**에 도달한다.
+→ 세 문헌이 서로 독립적으로 **음성 기준**(read-aloud test)에 도달한다.
 
 ## 5.3 문장 줄이기의 정량 규칙 (문헌별 수치 총괄) `[1차, 출처별]`
 
@@ -483,7 +483,7 @@ Travel Nebraska 사이트 5개 버전 비교, 대조군(홍보체) 대비 사용
 
 ## 5.4 검증(테스트)으로서의 퇴고 `[1차 — FPLG V]`
 
-FPLG는 퇴고 다음에 **테스트 장(V. Test)**을 따로 둔다:
+FPLG는 퇴고 다음에 **테스트 장**(V. Test)을 따로 둔다:
 - **Paraphrase Testing** — 독자에게 자기 말로 바꿔 말하게 해서 이해를 확인
 - **Usability Testing** — 실제 과제 수행
 - **Controlled Comparative Studies** — 통제 비교
@@ -498,15 +498,15 @@ FPLG는 퇴고 다음에 **테스트 장(V. Test)**을 따로 둔다:
 
 | 문헌 | 트레이드오프 처리 방식 |
 |---|---|
-| **Strunk #13** | 규칙 안에 단서를 박아 둔다: 모든 문장을 짧게 쓰라는 뜻이 아니라 **"모든 단어가 일을 하게 하라"**는 뜻. 즉 기준은 길이가 아니라 **기여도**. |
+| **Strunk #13** | 규칙 안에 단서를 박아 둔다: 모든 문장을 짧게 쓰라는 뜻이 아니라 "**모든 단어가 일을 하게 하라**"는 뜻. 즉 기준은 길이가 아니라 **기여도**. |
 | **Williams Ch.7 vs Ch.8** | 챕터를 나눠 정면 배치. 7장은 압축, 8장은 "20단어를 넘지 않는 능력은 대단하지만, **그것만 하면 중간 옥타브만 쓰는 피아니스트**". 결론: 문제는 길이가 아니라 **shape 없는 긴 문장**. |
-| **Williams Ch.9 (Elegance)** | 간결성의 명시적 반례를 제시한다 — E.B. White와 George Kennan의 문장에서 **병렬과 강조적 명사화를 제거하면 "merely silly"**해진다. 즉 7장 규칙을 9장이 제한한다. |
+| **Williams Ch.9 (Elegance)** | 간결성의 명시적 반례를 제시한다 — E.B. White와 George Kennan의 문장에서 **병렬과 강조적 명사화를 제거하면 "merely silly**"해진다. 즉 7장 규칙을 9장이 제한한다. |
 | **FPLG jargon 항** | 전문용어 제거 ≠ 필요한 기술 용어 제거. `brinulator valve control ring`은 남기고 그 주변 언어를 쉽게 만든다. |
 | **FPLG 용어 일관성 항** | 다양성(문학적 미덕)과 명료성이 충돌할 때 **명료성을 택하라**고 명시: "Federal writers are not supposed to be creating great literature." — 즉 **문서 유형에 따라 트레이드오프의 방향이 정해진다**. |
 | **Orwell #6** | "Break any of these rules sooner than say anything outright barbarous." — 규칙 세트가 자기 탈출 조항을 내장. |
 | **Einstein (Williams 제사)** | "as simple as possible, but not simpler" — 단순화의 하한선. |
 
-**정리**: 어떤 문헌도 "간결성 최우선"을 무조건 주장하지 않는다. 모두 **하한선(더 줄이면 틀려지는 지점)**을 명시적으로 둔다. 다른 점은 하한선을 어디에 두느냐뿐이다.
+**정리**: 어떤 문헌도 "간결성 최우선"을 무조건 주장하지 않는다. 모두 **하한선**(더 줄이면 틀려지는 지점)을 명시적으로 둔다. 다른 점은 하한선을 어디에 두느냐뿐이다.
 
 ## 6.2 "규칙"의 지위 자체를 둘러싼 충돌 — Strunk & White vs 언어학
 
@@ -517,7 +517,7 @@ Geoffrey Pullum(에든버러대), "50 Years of Stupid Grammar Advice" (Chronicle
 - Language Log에서는 "the book that ate America's brain"이라 부름
 - Jan Freeman(Boston Globe, 2005): "aging zombie of a book… a hodgepodge, its now-antiquated pet peeves"
 
-**Williams의 해법(§1.3(g))**이 이 충돌의 조정안이다 — 규칙을 Real Rules / Folklore / Optional Rules 3계층으로 나누고,
+**Williams의 해법**(§1.3(g))이 이 충돌의 조정안이다 — 규칙을 Real Rules / Folklore / Optional Rules 3계층으로 나누고,
 > "We must reject as folklore **any rule that is regularly ignored by** [유능한 필자들]"
 
 그리고 Williams는 Strunk/Orwell의 "수동태 금지"를 더 정확한 진단으로 대체한다: **나쁜 느낌의 원인은 수동태가 아니라 추상명사 + 사라진 행위자**다(2장의 나쁜 예문 중 수동태 동사는 0개).
@@ -535,7 +535,7 @@ Geoffrey Pullum(에든버러대), "50 Years of Stupid Grammar Advice" (Chronicle
 
 - 규범 측: Strunk #10, Orwell #4, AR 25-50 §1-38, GOV.UK, Zinsser 모두 능동태.
 - 실증 측(GOV.UK 연구 배경, 원문): "the literature on the effect of active versus passive voice is **mixed**". 확실한 것은 ①수동문이 단어가 더 많고 읽는 데 더 걸린다 ②독자가 수동문을 능동문으로 **재부호화**한다(= 독자에게 일을 떠넘긴다) ③행위자 정보가 빠진다.
-→ **조정안**: "수동태 금지"가 아니라 **"행위자를 지워서는 안 된다"**로 규약을 다시 쓴다(Williams·Waller의 진단과 일치).
+→ **조정안**: "수동태 금지"가 아니라 "**행위자를 지워서는 안 된다**"로 규약을 다시 쓴다(Williams·Waller의 진단과 일치).
 
 ## 6.5 표기 관습에는 실증이 없다 (GOV.UK의 자기 고백)
 
