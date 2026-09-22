@@ -239,7 +239,7 @@ LEFT JOIN 결과 4행에서 NULL 이 있는 자리
 ```
 
 `hr` 의 `COUNT(*)` 은 **1**(조인이 만든 행 하나), `COUNT(e.id)` 는 **0**이다.\
-★ **외부 조인 뒤의 `COUNT(*)` 은 「몇 건인가」의 답이 아니다.** 보존 측 열이 아니라 **상대 측의 `NULL` 아닌 열**을 세야 한다(목록의 **21번 주제**).
+★ **외부 조인 뒤의 `COUNT(*)` 은 「몇 건인가」의 답이 아니다.** 보존 측 열이 아니라 **상대 측의 `NULL` 아닌 열**을 세야 한다([목록의 **21번 주제**](../21-aggregate-functions-count-forms/)).
 
 ---
 
@@ -348,7 +348,7 @@ LEFT JOIN 이 보장하는 것              보장하지 않는 것
 
 그림 해설 — `dept` 3행이 결과 4행이 됐다. **하나도 안 잃었고(3 ≥ 3), 하나는 늘었다.**\
 대가 — [13번](../13-inner-join/)의 팬아웃이 외부 조인에서도 그대로 일어난다. `LEFT` 를 썼다고 `SUM` 이 안전해지지 않는다.\
-그래서 **집계 전에 행 수를 센다**는 습관이 여기서도 유효하다(목록의 **25번 주제**).
+그래서 **집계 전에 행 수를 센다**는 습관이 여기서도 유효하다([목록의 **25번 주제**](../25-join-fan-out/)).
 
 ## 문법 — 어느 절에서 무엇이 보이나
 
@@ -419,7 +419,7 @@ SELECT d.name, COUNT(e.id) FROM dept d LEFT JOIN emp e ON e.dept_id = d.id GROUP
 - **안 쓴다 — 양쪽 다 있는 것만 필요할 때.** 그건 `INNER JOIN` 이다([13번](../13-inner-join/)). 불필요한 `LEFT` 는 옵티마이저에 줄 정보를 가린다.
 - **안 쓴다 — 양쪽의 짝 없는 행을 다 봐야 할 때.** 그건 `FULL OUTER JOIN` 이다([16번](../16-full-outer-join/)).
 - **`RIGHT` 는 거의 안 쓴다.** 표 순서를 바꿔 `LEFT` 로 적는다. 읽는 방향이 일정해진다.
-- **대안을 먼저 본다.** 「짝이 있는지만」 알면 되면 `EXISTS` 가 낫다 — 행이 안 는다(목록의 **19번 주제**).
+- **대안을 먼저 본다.** 「짝이 있는지만」 알면 되면 `EXISTS` 가 낫다 — 행이 안 는다([목록의 **19번 주제**](../19-semi-anti-join/)).
 
 ## 핵심 문장
 
@@ -440,7 +440,7 @@ SELECT d.name, COUNT(e.id) FROM dept d LEFT JOIN emp e ON e.dept_id = d.id GROUP
 - [16 FULL OUTER JOIN](../16-full-outer-join/) — **경계: 여기는 한쪽 보존까지, 양쪽 보존과 MySQL 우회는 거기.**
 - [04 NULL 의 3값 논리](../04-null-three-valued-logic/) — **경계: 그쪽은 `UNKNOWN` 의 계산 규칙까지, 여기는 조인이 만든 `NULL` 이 그 규칙에 어떻게 걸리나부터.**
 - [12 카티션곱과 CROSS JOIN](../12-cartesian-product-cross-join/) — 12행에서 출발하는 전체 그림.
-- **`COUNT` 의 세 형태**는 목록의 **21번 주제**, **`EXISTS`/`NOT EXISTS`** 는 **19번 주제**, **팬아웃 처방**은 **25번 주제**가 정본이다.
+- **`COUNT` 의 세 형태**는 [목록의 **21번 주제**](../21-aggregate-functions-count-forms/), **`EXISTS`/`NOT EXISTS`** 는 [**19번 주제**](../19-semi-anti-join/), **팬아웃 처방**은 [**25번 주제**](../25-join-fan-out/)가 정본이다.
 - [SQL 주제 목록](../README.md)
 
 ## 용어 풀이

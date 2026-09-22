@@ -121,7 +121,7 @@ LEFT JOIN 이 보장하는 것              보장하지 않는 것
 ```
 
 ★ **하나도 안 잃었고(3 ≥ 3), 하나는 늘었다.** `LEFT` 를 썼다고 `SUM` 이나 `COUNT` 가 안전해지지 않는다.\
-[13번](../13-inner-join/)의 팬아웃이 외부 조인에서도 그대로 작동한다 — 집계 전에 **행 수를 센다**(목록의 **25번 주제**).
+[13번](../13-inner-join/)의 팬아웃이 외부 조인에서도 그대로 작동한다 — 집계 전에 **행 수를 센다**([목록의 **25번 주제**](../25-join-fan-out/)).
 
 ---
 
@@ -378,7 +378,7 @@ LEFT JOIN 이 만든 4행이 WHERE d.id <> 10 을 지난다
 ```
 
 ★ **`IS NULL` 은 `= NULL` 과 다르다.** `= NULL` 은 `UNKNOWN` 을 주지만 `IS NULL` 은 `TRUE`/`FALSE` 만 준다.\
-그래서 3값 논리의 구멍을 메우는 유일한 도구다([04번](../04-null-three-valued-logic/)·목록의 **05번 주제**).
+그래서 3값 논리의 구멍을 메우는 유일한 도구다([04번](../04-null-three-valued-logic/)·[목록의 **05번 주제**](../05-null-comparison-is-distinct-from/)).
 
 **다른 두 가지 고치는 법.**
 
@@ -390,7 +390,7 @@ SELECT e.name, d.name FROM emp e LEFT JOIN dept d ON e.dept_id = d.id AND d.id <
 SELECT e.name FROM emp e WHERE e.dept_id IS DISTINCT FROM 10;   -- PG
 ```
 
-(B)의 `IS DISTINCT FROM` 은 방언이 갈리는 연산자라 목록의 **05번 주제**가 정본이다.\
+(B)의 `IS DISTINCT FROM` 은 방언이 갈리는 연산자라 [목록의 **05번 주제**](../05-null-comparison-is-distinct-from/)가 정본이다.\
 **가장 안전한 것은 (A)** — 조건의 뜻이 「붙이는 규칙」인지 「결과 필터」인지를 자리로 말하게 하는 것이다.
 
 ---
@@ -439,7 +439,7 @@ SELECT e.name FROM emp e WHERE e.dept_id IS DISTINCT FROM 10;   -- PG
 `INNER JOIN` 이었다면 `hr` 그룹 자체가 없었을 것이고, `GROUP BY` 는 **행이 없는 그룹을 만들지 않는다**([03번](../03-where-vs-having/)).\
 그래서 **「0건을 표에 남기려면 외부 조인이 필요하다」** — 이것이 `LEFT JOIN` 의 세 번째 실전 형태다.
 
-`COUNT` 의 세 형태는 목록의 **21번 주제**가 정본이다.
+`COUNT` 의 세 형태는 [목록의 **21번 주제**](../21-aggregate-functions-count-forms/)가 정본이다.
 
 ---
 
