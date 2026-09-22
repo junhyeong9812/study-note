@@ -10,7 +10,7 @@
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
 
-### A. 과제 (Scoring.java 의 TODO 1~4)
+### A. 과제 (Scoring.java 의 TODO 1\~4)
 
 #### 0. 한 줄 요구사항 — 안 들어 있는 결정
 
@@ -31,8 +31,8 @@
   가중치 합이 100이면 만점 10,000, 합이 4면 만점 400이다.\
   컷오프 60은 그때마다 다른 뜻이 된다 — 그래서 나누는 것은 취향이 아니라 결정이다.
 
-> **정규화(normalize)** — 계산 결과를 늘 같은 범위(여기서는 0~100)에 들어오게 맞추는 것.\
-> 예: 가중치 합이 100이든 4든 그 합으로 나누면 총점은 언제나 0~100 사이에 있어서, 컷오프 60의 뜻이 안 변한다.
+> **정규화(normalize)** — 계산 결과를 늘 같은 범위(여기서는 0\~100)에 들어오게 맞추는 것.\
+> 예: 가중치 합이 100이든 4든 그 합으로 나누면 총점은 언제나 0\~100 사이에 있어서, 컷오프 60의 뜻이 안 변한다.
 
 > **컷오프(cutoff)** — 승인과 거절을 가르는 기준 점수.\
 > 예: 여기서는 60점이고 "이상"이라서 59점은 거절, 60점은 승인이다.
@@ -272,9 +272,9 @@ return score.get().intValue() >= cutoff ? Decision.APPROVED : Decision.REJECTED;
   (원본 README는 "점수를 60에 맞추도록 상담하기 때문"이라고 경계 집중의 이유를 적어 뒀다.)
 
 > **경계 집중** — 사람들의 값이 기준선 바로 근처에 몰려 쌓이는 현상.\
-> 예: 컷오프를 60으로 두고 거기에 맞춰 상담하면, 점수가 59~61에 두껍게 몰린다(±1점에 11,103명).
+> 예: 컷오프를 60으로 두고 거기에 맞춰 상담하면, 점수가 59\~61에 두껍게 몰린다(±1점에 11,103명).
 
-- 반올림이 사소하지 않은 이유: 0자리 HALF_UP 대신 버림(FLOOR)을 쓰면 59.5~59.9인 사람들이 통째로 거절로 넘어간다 — 규칙 한 줄이 1만 명 규모의 결과를 옮긴다.
+- 반올림이 사소하지 않은 이유: 0자리 HALF_UP 대신 버림(FLOOR)을 쓰면 59.5\~59.9인 사람들이 통째로 거절로 넘어간다 — 규칙 한 줄이 1만 명 규모의 결과를 옮긴다.
 
 #### 9. 생각해볼 것 (원본 README — 답이 적혀 있지 않다. 아래는 내 추론)
 
@@ -295,6 +295,6 @@ return score.get().intValue() >= cutoff ? Decision.APPROVED : Decision.REJECTED;
 ## 근거
 
 - 기준 소스: `/home/jun/project/myway/domain-modeling-basic/21-loan-scoring/impl/com/domain/loan/Scoring.java`
-- 문제 원문: `src/main/java/com/domain/loan/Scoring.java`(TODO 1~4), `Applicant.java`·`Decision.java`(계약), `README.md`
-- 측정 수치: `README.md` "측정이 알려준 것" 하나~다섯, `src/test/java/com/domain/loan/MeasurementTest.java`
+- 문제 원문: `src/main/java/com/domain/loan/Scoring.java`(TODO 1\~4), `Applicant.java`·`Decision.java`(계약), `README.md`
+- 측정 수치: `README.md` "측정이 알려준 것" 하나\~다섯, `src/test/java/com/domain/loan/MeasurementTest.java`
 - 계약 테스트: `src/test/java/com/domain/loan/LoanTest.java`

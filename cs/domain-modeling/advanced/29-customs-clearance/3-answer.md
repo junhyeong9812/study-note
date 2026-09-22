@@ -247,7 +247,7 @@ return List.copyOf(assessments);
   어느 것도 버그가 아니고 전부 "150 달러까지 면세"라는 한 줄을 지킨다.\
   그래서 이 한 줄만 받아서는 **세수 규모를 예측조차 할 수 없다.**
 - 세금을 제일 크게 움직이는 축: **과세 범위(`TaxScope`)** 로 보인다.\
-  같은 다른 두 축에서 전체과세 ÷ 초과분만 = 63.8/9.1 ≈ 7.0배, 144.6/60.4 ≈ 2.4배, 97.1/16.8 ≈ 5.8배, 178.2/79.3 ≈ 2.2배 — 다른 축(CIF 여부 ≈ 1.2~1.9배, 합산 여부 ≈ 1.8~6.7배)보다 배수가 크다.\
+  같은 다른 두 축에서 전체과세 ÷ 초과분만 = 63.8/9.1 ≈ 7.0배, 144.6/60.4 ≈ 2.4배, 97.1/16.8 ≈ 5.8배, 178.2/79.3 ≈ 2.2배 — 다른 축(CIF 여부 ≈ 1.2\~1.9배, 합산 여부 ≈ 1.8\~6.7배)보다 배수가 크다.\
   다만 **과세 건수는 거의 안 바꾼다**(발견 넷) — 즉 금액은 크게, 사람 수는 적게 움직이는 축이다. (배수 계산은 내 추론, 원본 수치 기반)
 
 #### 6. 측정 — 발견 둘: 운임을 안 세면
@@ -388,6 +388,6 @@ return List.copyOf(assessments);
 ## 근거
 
 - 기준 소스: `/home/jun/project/myway/domain-modeling-advanced/29-customs-clearance/impl/com/domain/customs/Customs.java`
-- 문제 원문: `src/main/java/com/domain/customs/Customs.java`(TODO 1~4 javadoc·enum·상수), `src/main/java/com/domain/customs/Parcel.java`(계약·140/15/2 예), `README.md`(함정·측정이 알려준 것·변종 검증에서 고친 것·생각해볼 것)
+- 문제 원문: `src/main/java/com/domain/customs/Customs.java`(TODO 1\~4 javadoc·enum·상수), `src/main/java/com/domain/customs/Parcel.java`(계약·140/15/2 예), `README.md`(함정·측정이 알려준 것·변종 검증에서 고친 것·생각해볼 것)
 - 계약: `src/test/java/com/domain/customs/CustomsTest.java`(140 vs 157 · 150.00/150.01 · 미국 200 · 두 건 합산 · 하루 차이 · 낮은 한도 · 구분자 · 16배 · 62.50/187.50 · `taxOn(100_00)==18_80` · `taxOn(-100_00)==0`)
-- 수치: `src/test/java/com/domain/customs/MeasurementTest.java`(9,065,420~178,179,457 · 19,381/68,678 · 63,829,820 고정 · 75,516,263~146,967,890 · 85,792,932/144,580,697/201,694,874 · 30,562/62,009/96,661 · 60,417,300/61,960 · 0)
+- 수치: `src/test/java/com/domain/customs/MeasurementTest.java`(9,065,420\~178,179,457 · 19,381/68,678 · 63,829,820 고정 · 75,516,263\~146,967,890 · 85,792,932/144,580,697/201,694,874 · 30,562/62,009/96,661 · 60,417,300/61,960 · 0)

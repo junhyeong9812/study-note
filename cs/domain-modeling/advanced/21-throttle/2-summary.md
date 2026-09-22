@@ -9,7 +9,7 @@
 
 **스로틀링 = 놀이기구 줄 관리.** "1시간에 60명까지 태워요"라는 안내문 하나로는 규칙이 안 정해진다.
 
-- 1시간을 **어떻게** 세나 — 정각~정각인가, 지금부터 거슬러 1시간인가, 자리가 조금씩 다시 나는 방식인가.
+- 1시간을 **어떻게** 세나 — 정각\~정각인가, 지금부터 거슬러 1시간인가, 자리가 조금씩 다시 나는 방식인가.
 - **누구를** 세나 — 사람마다 세나, 단체(같은 버스로 온 팀)로 세나.
 - **못 탄 사람도** 세나 — 줄 섰다가 돌아간 사람도 "탄 것"으로 치나.
 - 원본의 한 줄 요약: **"1초에 60번"이라는 한 줄에 세 가지가 안 들어 있다** — 1초를 어떻게 세나, 무엇을 세나, 막힌 요청도 세나. 이 셋을 각각 enum으로 만들어 3×3×2 = 18 조합을 전부 돌려보는 것이 이 챕터다.
@@ -52,7 +52,7 @@
 > **enum으로 올린다** — 코드 안에 조건문으로 숨긴 선택을, 이름 붙인 선택지 목록으로 꺼내는 것.\
 > 예: `if (시계기준) ... else ...` 를 `Algorithm.FIXED_WINDOW / SLIDING_LOG / TOKEN_BUCKET` 으로 빼면, 세 판을 나란히 돌려볼 수 있다.
 
-과제(원본 README "채울 것"): `src/main/java/com/domain/throttle/Throttle.java` 의 **TODO 1~4**. `Request` 와 `Bucket` 은 계약이라 다 주어져 있다.
+과제(원본 README "채울 것"): `src/main/java/com/domain/throttle/Throttle.java` 의 **TODO 1\~4**. `Request` 와 `Bucket` 은 계약이라 다 주어져 있다.
 
 | TODO | 함수 | 시키는 것 |
 |---|---|---|
@@ -204,14 +204,14 @@ IP   로 세면 : 5번만 통과 — 막힌 4번은 전부 맨 뒤에 온 c의 �
 
 - 챕터 안내: `/home/jun/project/myway/domain-modeling-advanced/21-throttle/README.md`
 - 계약(주어짐): `/home/jun/project/myway/domain-modeling-advanced/21-throttle/src/main/java/com/domain/throttle/Request.java`
-- 내 구현(TODO 1~4): `/home/jun/project/myway/domain-modeling-advanced/21-throttle/src/main/java/com/domain/throttle/Throttle.java`
+- 내 구현(TODO 1\~4): `/home/jun/project/myway/domain-modeling-advanced/21-throttle/src/main/java/com/domain/throttle/Throttle.java`
 - 정답 기준 소스: `/home/jun/project/myway/domain-modeling-advanced/21-throttle/impl/com/domain/throttle/Throttle.java`
 - 테스트: `.../src/test/java/com/domain/throttle/ThrottleTest.java`(계약 — 경계·키 충돌·죽은 스위치), `MeasurementTest.java`(18 조합 실측 — 숫자는 전부 돌려보고 적은 것)
 
 ## 용어 풀이
 
 - **스로틀링(throttling) / rate limit**: 일정 시간 안의 요청 수에 한도를 두고 넘치면 막는 것.
-- **고정 창(FIXED_WINDOW, 시계 창)**: 0~1초, 1~2초처럼 시계 기준으로 자른 창. 창이 바뀌면 카운트를 버린다 — 경계에서 2배 통과.
+- **고정 창(FIXED_WINDOW, 시계 창)**: 0\~1초, 1\~2초처럼 시계 기준으로 자른 창. 창이 바뀌면 카운트를 버린다 — 경계에서 2배 통과.
 - **슬라이딩 로그(SLIDING_LOG, 훑는 기록)**: 지금부터 거슬러 창 하나 안의 요청 시각을 전부 기록해 두고 센다. 정확하지만 기록 비용.
 - **토큰 버킷(TOKEN_BUCKET, 채워지는 통)**: 통에 든 토큰을 쓰고, 시간이 지나면 일정 속도로 다시 찬다. 몰아 쓰기(burst) 허용.
 - **버스트(burst, 몰아 쓰기)**: 짧은 순간에 요청이 몰리는 것. 토큰 버킷은 가득 찬 통만큼 한 번에 허용한다.

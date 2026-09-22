@@ -10,7 +10,7 @@
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
 
-### A. 과제 (PointWallet.java 의 TODO 1~4)
+### A. 과제 (PointWallet.java 의 TODO 1\~4)
 
 #### 0. 요구사항 — 한 줄이 안 말해주는 것
 
@@ -280,7 +280,7 @@ public boolean cancelSpend(String spendId, LocalDate date, int extendedDays) {
   허용하면 **포인트가 두 배로 돌아온다** — 500점 쓰고 두 번 취소하면 1,500점이 된다.\
   없는 번호의 취소도 `false`.
 - 합계만 기억하면: **만료일이 뒤바뀐다.**\
-  테스트 `restoresPerLot` — L1(day0~day30) 600 + L2(day1~day90) 400 을 되돌릴 때 덩어리마다 그만큼 넣어야 day(30)에 400 이 남는다.\
+  테스트 `restoresPerLot` — L1(day0\~day30) 600 + L2(day1\~day90) 400 을 되돌릴 때 덩어리마다 그만큼 넣어야 day(30)에 400 이 남는다.\
   합계 1,000을 L2 에만 넣으면 day(30) 잔액이 1,000이 되어 **손님이 600점을 공짜로 더 갖는다.**\
   반대로 L1 에만 넣으면 400점을 잃는다.
 - `spends.remove` 를 쓰면: **꺼내기와 지우기가 한 번에** 끝난다.\
@@ -291,7 +291,7 @@ public boolean cancelSpend(String spendId, LocalDate date, int extendedDays) {
 
 #### 5. 측정이 알려준 것
 
-- 유효기간 30~365일 제각각, 200일 × 500회 (`spendOrderDecidesHowMuchExpires`):
+- 유효기간 30\~365일 제각각, 200일 × 500회 (`spendOrderDecidesHowMuchExpires`):
 
 | | 만료로 사라진 포인트 |
 |---|---|
@@ -391,5 +391,5 @@ public boolean cancelSpend(String spendId, LocalDate date, int extendedDays) {
 
 - 기준 소스: `/home/jun/project/myway/domain-modeling-basic/14-points/impl/com/domain/points/PointWallet.java`
 - 계약(전부 주어짐): `src/main/java/com/domain/points/PointLot.java`(`isUsableOn`·`minus`·`plus`·생성자 검증)
-- 문제 원문: `src/main/java/com/domain/points/PointWallet.java`(TODO 1~4 javadoc), `README.md`(함정 4·측정 5·생각해볼 것 4)
+- 문제 원문: `src/main/java/com/domain/points/PointWallet.java`(TODO 1\~4 javadoc), `README.md`(함정 4·측정 5·생각해볼 것 4)
 - 수치 근거: `src/test/java/com/domain/points/MeasurementTest.java`(493/500 · 1,732,900 vs 25,600 · 정수 67배 · 균일 기간 0회 · 16,730,000 vs 14,992,000 · 33,308 vs 44,117 · −10%·+32% · 1,000 vs 0), `PointTest.java`(만료일 배타 · 미래 적립 · FIFO 500 소멸 vs 임박순 0 · 동점 id · 전부 아니면 전무 · 중복 false 잔액 700 · 만료 덩어리 스킵 · 복원 만료일 day30/day40 · lotCount 1 vs 6 · 두 번 취소 false · 덩어리별 복원 day30 잔액 400)

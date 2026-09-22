@@ -10,7 +10,7 @@
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
 
-### A. 과제 (Leaderboard.java 의 TODO 1~4)
+### A. 과제 (Leaderboard.java 의 TODO 1\~4)
 
 #### 0. 한 줄 요구사항 — 안 들어 있는 결정
 
@@ -59,7 +59,7 @@ return sorted;
 ```
 
 - 기준 셋: **점수 ↓ → 달성 시각 ↑ → 이름 ↑**.
-- 점수만 비교하면: 자바 정렬이 **안정적(stable)**이라 같은 점수끼리는 **넣은 순서가 그대로 남는다.**\
+- 점수만 비교하면: 자바 정렬이 **안정적**(stable)이라 같은 점수끼리는 **넣은 순서가 그대로 남는다.**\
   그래서 같은 데이터라도 입력 순서가 다르면 결과가 다르다.
 
 > **안정 정렬(stable sort)** — 비교 기준으로 같은 값끼리는 원래 입력 순서를 그대로 두는 정렬.\
@@ -207,7 +207,7 @@ return -1;
 > 예: 등수는 1부터 시작하므로 −1 은 어떤 참가자에게도 붙을 수 없고, 그래서 "목록에 없다"는 뜻으로만 읽힌다.
 
 - 규칙에 따라 달라지는 예: 100·90·90·80에서 **C는 표준 경쟁이면 2등, 서수면 3등**이다.
-- 비용 문제: 한 사람의 등수를 알려고 **매번 전체를 정렬(O(n log n))**한다.\
+- 비용 문제: 한 사람의 등수를 알려고 **매번 전체를 정렬**(O(n log n))한다.\
   100만 명이면 한 번의 "내 등수" 조회에 100만 개를 정렬하는 셈이다 — 측정·생각해볼 것의 "내 등수만 알고 싶을 때는"이 이 지점이다.
 
 ### B. 개념
@@ -224,7 +224,7 @@ return -1;
   100,000   │     50 / 1,000  │   2
 ```
 
-- 점수 범위 10·100은 **1,000번 전부** 동점이 생기고, 100,000이면 **50번(5%)**만 생긴다.
+- 점수 범위 10·100은 **1,000번 전부** 동점이 생기고, 100,000이면 **50번**(5%)만 생긴다.
 - 최대 등수차는 **89 / 46 / 14 / 2**.
 
 > **점수 범위(score range)** — 나올 수 있는 점수가 몇 가지인가.\
@@ -308,6 +308,6 @@ return -1;
 ## 근거
 
 - 기준 소스: `/home/jun/project/myway/domain-modeling-basic/24-leaderboard/impl/com/domain/rank/Leaderboard.java`
-- 문제 원문: `src/main/java/com/domain/rank/Leaderboard.java`(TODO 1~4), `Entry.java`·`Ranked.java`(계약), `README.md`
-- 측정 수치: `README.md` "측정이 알려준 것" 하나~다섯 + "변종 검증에서 고친 것" 하나~셋, `src/test/java/com/domain/rank/MeasurementTest.java`
+- 문제 원문: `src/main/java/com/domain/rank/Leaderboard.java`(TODO 1\~4), `Entry.java`·`Ranked.java`(계약), `README.md`
+- 측정 수치: `README.md` "측정이 알려준 것" 하나\~다섯 + "변종 검증에서 고친 것" 하나\~셋, `src/test/java/com/domain/rank/MeasurementTest.java`
 - 계약 테스트: `src/test/java/com/domain/rank/LeaderboardTest.java`

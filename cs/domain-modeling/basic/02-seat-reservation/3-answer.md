@@ -74,7 +74,7 @@ return best;
   `c < cols` 로 두면 블록이 벽 밖으로 삐져나가 범위 예외가 난다.
 
 > **오프바이원(off-by-one)** — 경계를 한 칸 잘못 세서 생기는 흔한 실수.\
-> 예: 6칸짜리 줄에서 3연석을 찾을 때 시작 열을 0~5로 두면 마지막 후보가 벽을 넘어간다. 0~3까지만 봐야 한다.
+> 예: 6칸짜리 줄에서 3연석을 찾을 때 시작 열을 0\~5로 두면 마지막 후보가 벽을 넘어간다. 0\~3까지만 봐야 한다.
 
 - 고르는 방법: 모든 후보를 다 훑으면서 **점수가 제일 작은 것**을 남긴다(완전 탐색 + 최소 점수).
 
@@ -317,5 +317,5 @@ return found;
 ## 근거
 
 - 기준 소스: `/home/jun/project/myway/domain-modeling-basic/02-seat-reservation/impl/com/domain/seat/SeatAllocator.java`
-- 문제 원문: `src/main/java/com/domain/seat/SeatAllocator.java`(TODO 1~4 javadoc), `src/main/java/com/domain/seat/SeatMap.java`(계약), `README.md`(요구사항 한 문장·함정·측정이 알려준 것·생각해볼 것)
+- 문제 원문: `src/main/java/com/domain/seat/SeatAllocator.java`(TODO 1\~4 javadoc), `src/main/java/com/domain/seat/SeatMap.java`(계약), `README.md`(요구사항 한 문장·함정·측정이 알려준 것·생각해볼 것)
 - 계약·수치: `src/test/java/com/domain/seat/SeatTest.java`, `src/test/java/com/domain/seat/MeasurementTest.java`(348/500 · 36팀 · 577 vs 5,903 · 11,533/205 vs 14,389/2,360 · 8,744 vs 9,281 · 389/500 · 357)

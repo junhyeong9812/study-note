@@ -137,7 +137,7 @@ return result;
 > **귀속(attribution)** — 한 덩어리의 값을 "어느 칸의 것으로 볼 것인가"를 정하는 일.\
 > 예: 밤 10시부터 다음날 6시까지 일한 8시간을 전부 출근한 날에 붙일지, 2시간·6시간으로 쪼개 이틀에 나눠 붙일지의 선택이다.
 
-- 3/1 22:00 ~ 3/3 06:00 손계산:
+- 3/1 22:00 \~ 3/3 06:00 손계산:
 
 ```text
  cursor 3/1 22:00 → 자정 3/2 00:00 (< out) → 3/1 에  120 분
@@ -178,7 +178,7 @@ return deducted;
 
 - 공제 전에 끝내야 하는 것: **날짜별 합산.**\
   그날 전체가 모인 뒤에 한 번 빼야 "하루 단위 공제"가 된다.
-- 09~12 + 13~16 손계산:
+- 09\~12 + 13\~16 손계산:
 
 ```text
  근무마다 공제   각각 180 분 < 240 분(기준) → 공제 없음 → 360 분
@@ -208,7 +208,7 @@ return !shift.in().toLocalDate().equals(shift.out().toLocalDate())
 ```
 
 - 조건 둘: ① **출근 날짜와 퇴근 날짜가 다르다** ② **퇴근 시각이 자정이 아니다.**
-- 날짜만 보면: **자정에 딱 끝나는 근무**(3/1 18:00 ~ 3/2 00:00)를 "자정을 넘겼다"고 잘못 센다 — 실제로 다음날 일한 시간은 0분이다.
+- 날짜만 보면: **자정에 딱 끝나는 근무**(3/1 18:00 \~ 3/2 00:00)를 "자정을 넘겼다"고 잘못 센다 — 실제로 다음날 일한 시간은 0분이다.
 
 > **경계에 딱 걸린 값(경계 케이스)** — 규칙이 바뀌는 지점에 정확히 놓여서, 어느 쪽으로 세느냐가 갈리는 입력.\
 > 예: 퇴근 시각이 정확히 자정이면 날짜는 바뀌었지만 다음날 일한 시간은 0분이라, "날짜가 다르다"만 보면 틀린다.
@@ -310,5 +310,5 @@ return !shift.in().toLocalDate().equals(shift.out().toLocalDate())
 ## 근거
 
 - 기준 소스: `/home/jun/project/myway/domain-modeling-basic/05-attendance/impl/com/domain/attendance/Attendance.java`
-- 문제 원문: `src/main/java/com/domain/attendance/Attendance.java`(TODO 1~4 javadoc), `src/main/java/com/domain/attendance/Punch.java`(계약), `README.md`(기록 예시·함정·측정이 알려준 것·변종 검증에서 고친 것·생각해볼 때)
+- 문제 원문: `src/main/java/com/domain/attendance/Attendance.java`(TODO 1\~4 javadoc), `src/main/java/com/domain/attendance/Punch.java`(계약), `README.md`(기록 예시·함정·측정이 알려준 것·변종 검증에서 고친 것·생각해볼 때)
 - 계약·수치: `src/test/java/com/domain/attendance/AttendanceTest.java`, `src/test/java/com/domain/attendance/MeasurementTest.java`(438/500 · 713분 · 500/500 · 9,723줄 중 1,109줄 = 11% · 330 vs 360 · 510 vs 480 · 120/1440/360)

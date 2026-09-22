@@ -45,7 +45,7 @@
 
 과제 목록:
 
-- 채울 것: `src/main/java/com/domain/loan/Scoring.java`의 **TODO 1~4** — `totalWeight()`(가중치 합) / `scoreOf()`(총점, 심사 불가면 빈 값) / `averageOfPresent()`(있는 항목 평균, 하나도 없으면 null) / `decide()`(판정).
+- 채울 것: `src/main/java/com/domain/loan/Scoring.java`의 **TODO 1\~4** — `totalWeight()`(가중치 합) / `scoreOf()`(총점, 심사 불가면 빈 값) / `averageOfPresent()`(있는 항목 평균, 하나도 없으면 null) / `decide()`(판정).
 - 주어진 계약: `Applicant`(점수는 `Optional<Integer>`), `Decision`(4값) — TODO 없이 전부 주어진다.
 
 > **Optional** — "값이 있을 수도, 없을 수도 있다"를 타입으로 적어 두는 자바 도구.\
@@ -71,8 +71,8 @@ decide(신청자) — 순서가 계약이다
 점수 = Σ(항목 점수 x 가중치) ÷ 가중치 합   ← 나눠서 항상 0~100으로 정규화
 ```
 
-> **정규화(normalize)** — 계산 결과를 늘 정해진 범위(여기서는 0~100)에 들어오게 맞추는 것.\
-> 예: 가중치 합이 100이든 4든 그 합으로 나누면 총점은 항상 0~100이라서, 컷오프 60의 뜻이 안 변한다.
+> **정규화(normalize)** — 계산 결과를 늘 정해진 범위(여기서는 0\~100)에 들어오게 맞추는 것.\
+> 예: 가중치 합이 100이든 4든 그 합으로 나누면 총점은 항상 0\~100이라서, 컷오프 60의 뜻이 안 변한다.
 
 ## 요구사항 → 코드 구조: 무엇이 무엇으로 변했나
 
@@ -98,7 +98,7 @@ decide(신청자) — 순서가 계약이다
 
 **왜 나누나**: 안 나누면 총점의 만점이 "가중치 합 x 100"이 되어, 항목을 하나 더할 때마다 컷오프를 손으로 고쳐야 한다.\
 고치는 걸 잊으면 아무도 승인이 안 되거나 전부 승인된다.\
-나누면 가중치 합이 100이 아니어도 점수는 항상 0~100이다:
+나누면 가중치 합이 100이 아니어도 점수는 항상 0\~100이다:
 
 ```text
   가중치 a=3, b=1 (합 4),  a=80점, b=40점
@@ -217,7 +217,7 @@ decide(신청자) — 순서가 계약이다
 > **조용한 실패(silent failure)** — 예외도 에러 메시지도 없이 정상처럼 끝나는데 결과만 틀린 것.\
 > 예: `getOrDefault(k, 0)` 한 줄이면 정책 설정이 무엇이든 전원 AS_ZERO로 심사되는데, 아무 에러도 안 난다.
 
-- **함정: 점수 범위 밖 값** → `Applicant` 생성자가 0~100 밖 점수, 빈 id를 거부.\
+- **함정: 점수 범위 밖 값** → `Applicant` 생성자가 0\~100 밖 점수, 빈 id를 거부.\
   `Factor`는 가중치 ≤ 0을, `Scoring`은 빈 항목 리스트를 거부 — 잘못된 값은 만들 수조차 없다.
 - **함정: 컷오프에 몰린 사람들** → 측정: 자료가 다 있는 94,904명 중 컷오프 ±1점에 11,103명(11.7%), ±3점에 25,749명(27%).\
   **반올림 방식 하나, 가중치 소수점 하나만 달라져도 1만 명 넘는 사람의 결과가 바뀔 수 있다.**\
@@ -235,7 +235,7 @@ decide(신청자) — 순서가 계약이다
 
 - 챕터 안내: `/home/jun/project/myway/domain-modeling-basic/21-loan-scoring/README.md`
 - 계약(전부 주어짐): `/home/jun/project/myway/domain-modeling-basic/21-loan-scoring/src/main/java/com/domain/loan/Applicant.java`, `Decision.java`
-- 내 구현(TODO 1~4): `.../src/main/java/com/domain/loan/Scoring.java`
+- 내 구현(TODO 1\~4): `.../src/main/java/com/domain/loan/Scoring.java`
 - 정답 기준 소스: `/home/jun/project/myway/domain-modeling-basic/21-loan-scoring/impl/com/domain/loan/Scoring.java`
 - 테스트: `.../src/test/java/com/domain/loan/LoanTest.java`(계약), `MeasurementTest.java`(정책별 승인률·컷오프 분포 측정)
 - 같은 판단이 나온 챕터: 15번 쿠폰(못 고치는 사유를 먼저), 09번 주문 상태·10번 결제(값을 줄이면 안내가 틀린다)
@@ -243,8 +243,8 @@ decide(신청자) — 순서가 계약이다
 ## 용어 풀이
 
 - **가중치(weight)**: 항목마다 "얼마나 중요한지"를 정한 숫자. 점수에 곱해서 더한다.
-- **가중 평균(weighted average)**: (점수x가중치의 합) ÷ (가중치의 합). 가중치 합이 얼마든 결과가 0~100에 머문다.
-- **정규화(normalize)**: 값을 정해진 범위(0~100)로 맞추는 것. 여기서는 가중치 합으로 나누는 것.
+- **가중 평균(weighted average)**: (점수x가중치의 합) ÷ (가중치의 합). 가중치 합이 얼마든 결과가 0\~100에 머문다.
+- **정규화(normalize)**: 값을 정해진 범위(0\~100)로 맞추는 것. 여기서는 가중치 합으로 나누는 것.
 - **결측(missing)**: 있어야 할 자료가 없는 것. "0점"이 아니라 "값 자체가 없음".
 - **신파일러(thin filer)**: 신용 이력이 얇은(거의 없는) 사람. 금융 거래 기록이 없어 점수를 매길 자료가 없다.
 - **컷오프(cutoff)**: 승인과 거절을 가르는 기준 점수. 여기서는 60점 "이상" 승인.
