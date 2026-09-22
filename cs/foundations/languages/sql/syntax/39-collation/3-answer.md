@@ -224,7 +224,7 @@ MySQL bin      BANANA Banana   Zebra   _x      apple  apricot
 
 **「사람이 보기 좋은 순서」는 서로 다르고, 「바이트 순서」는 하나다.**
 
-**어디서 물리나** — 키셋 페이지네이션(목록의 09번 주제)은 **정렬이 안정적이어야** 성립한다.\
+**어디서 물리나** — 키셋 페이지네이션([목록의 **09번 주제**](../09-limit-offset-keyset-pagination/))은 **정렬이 안정적이어야** 성립한다.\
 `WHERE (name, id) > ('Banana', 7) ORDER BY name, id` 같은 조건은\
 정렬 규칙이 바뀌면 **다른 행을 가리킨다.** 서버 이전·OS 업그레이드에서 실제로 일어난다(10번).
 
@@ -660,7 +660,7 @@ MySQL 쪽 대응물은 `SHOW COLLATION` 과 `information_schema.COLLATIONS` 다 
 정렬이 바뀌면
   -> 그 순서로 만든 인덱스가 실제 순서와 안 맞는다
   -> 범위 조건이 행을 빠뜨릴 수 있다
-  -> 키셋 페이지네이션이 어긋난다 (목록의 09번 주제)
+  -> 키셋 페이지네이션이 어긋난다 ([목록의 **09번 주제**](../09-limit-offset-keyset-pagination/))
   -> UNIQUE 인덱스가 중복을 못 잡을 수 있다
 ```
 
