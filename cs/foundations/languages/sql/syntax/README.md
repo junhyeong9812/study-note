@@ -1,8 +1,9 @@
 # SQL — 문법·함수 주제 목록
 
-> 1단계 리스트업이다. 아래 주제들의 3파일(질문·서머리·정답)은 **대부분 아직 없다** — 작성된 주제는 「주제」 칸에 폴더 링크가 달려 있다(2026-09-21 현재 **10개**: 01 · 03 · 04 · 10 · 12 · 13 · 14 · 15 · 16 · 52).
-> **2단계 실행 검증이 진행 중이다** — PostgreSQL 18.6(도커 `postgres:18`)·MySQL 8.4.10(도커 `mysql:8.4`) 두 서버에 실제로 질의를 던져 확인한다. 작성된 10주제의 본문 출력은 전부 실행 결과다.
-> **진행 — 32 / 60** (2026-09-21: [01](01-logical-query-processing-order/) · [02](02-select-list-column-aliases/) · [03](03-where-vs-having/) · [04](04-null-three-valued-logic/) · [05](05-null-comparison-is-distinct-from/) · [06](06-conditional-expressions-case-coalesce/) · [07](07-distinct-and-duplicate-removal/) · [08](08-order-by-null-position-stability/) · [09](09-limit-offset-keyset-pagination/) · [10](10-from-clause-aliases-derived-tables/) · [11](11-subquery-scalar-correlated-any-all/) · [12](12-cartesian-product-cross-join/) · [13](13-inner-join/) · [14](14-left-right-outer-join/) · [15](15-on-vs-where-in-outer-join/) · [16](16-full-outer-join/) · [17](17-self-join/) · [18](18-using-and-natural-join/) · [19](19-semi-anti-join/) · [20](20-lateral-join/) · [21](21-aggregate-functions-count-forms/) · [22](22-group-by-nonaggregated-columns/) · [23](23-grouping-sets-rollup-cube/) · [24](24-conditional-aggregation-filter-case/) · [25](25-join-fan-out/) · [35](35-type-system-and-casting/) · [36](36-numeric-types-and-functions/) · [37](37-string-functions-and-concatenation/) · [38](38-pattern-matching-like-regex/) · [39](39-collation/) · [40](40-date-time-types-and-functions/) · [52](52-upsert/)). 나머지는 아직 없다.
+> **60주제 전부 작성됐다(2026-09-21).** 「주제」 칸의 링크가 각 주제의 3파일(질문·서머리·정답) 폴더다.
+> **본문의 모든 출력은 실행 결과다** — PostgreSQL 18.6(도커 `postgres:18`)·MySQL 8.4.10(도커 `mysql:8.4`) 두 서버에 실제로 던져 받은 것이고, **에러와 경고도 출력으로 인용**했다.
+> 「미지원」을 단정하기 전에 던져 본다는 규칙이 여러 번 값을 했다 — MySQL 이 `QUALIFY` 를 **파서에서는 안다**는 것(`ERROR 6037`)이 그렇게 나왔다.
+> **진행 — 60 / 60 (완료)**. 총 **156파일**.
 > ⚠️ **MySQL 에러 표기가 두 형태로 섞여 있다.** `mysql -e "..."` 로 던지면 `ERROR 1054 (42S22) **at line 1**: ...` 이고,
 > 대화형에서는 `at line 1` 이 빠진다. 둘 다 실제 출력이며 **호출 방식의 차이**다 — 01·04 편이 후자, 나머지가 전자다.
 > 재현할 때 문자열이 안 맞으면 이 차이를 먼저 의심하라.
@@ -47,7 +48,7 @@ DML(`INSERT`·`UPDATE`·`DELETE`·upsert·`MERGE`)은 전용 칸이 없어 **`�
 | 13 | [INNER JOIN](13-inner-join/) | 질의 | `ON` 조건에 맞는 짝만 남는 규칙과, 한쪽에 짝이 여럿일 때 행이 불어나는 것을 예측할 수 있다 | 12 | — | 차이 | A |
 | 14 | [LEFT·RIGHT OUTER JOIN](14-left-right-outer-join/) | 질의 | 짝 없는 행이 NULL 로 채워져 남는 규칙을 설명하고, LEFT 와 RIGHT 를 서로 뒤집어 쓸 수 있다 | 13 | — | 표준 | A |
 | 15 | [OUTER JOIN 에서 ON 과 WHERE 의 차이](15-on-vs-where-in-outer-join/) | 질의 | 같은 조건을 `ON` 에 둘 때와 `WHERE` 에 둘 때 외부 조인이 내부 조인으로 무너지는 현상을 예측할 수 있다 | 03, 14 | — | 표준 | A |
-| 16 | [FULL OUTER JOIN](16-full-outer-join/) | 질의 | 양쪽의 짝 없는 행이 모두 남는 결과를 예측하고, 지원하지 않는 엔진에서 무엇으로 대신할지 판단할 수 있다 | 14 | — | 차이 | B |
+| 16 | [FULL OUTER JOIN](16-full-outer-join/) | 질의 | 양쪽의 짝 없는 행이 모두 남는 결과를 예측하고, 지원하지 않는 엔진에서 무엇으로 대신할지 판단할 수 있다 | 01, 04, 14 | — | 차이 | B |
 | 17 | [SELF JOIN](17-self-join/) | 질의 | 한 테이블에 두 별칭을 붙여 같은 테이블의 행끼리 비교하는 질의를 설계할 수 있다 | 13 | — | 표준 | C |
 | 18 | [USING 과 NATURAL JOIN](18-using-and-natural-join/) | 질의 | `USING` 이 공통 열을 하나로 합치는 것과, `NATURAL` 이 이름만으로 붙어 스키마 변경에 조용히 깨지는 위험을 판단할 수 있다 | 13 | — | 표준 | C |
 | 19 | [SEMI·ANTI 조인 — EXISTS·IN·NOT IN·NOT EXISTS](19-semi-anti-join/) | 질의 | "있는지만 보는" 조인을 `EXISTS`/`IN` 으로 쓰고, `NOT IN` 대상에 NULL 이 섞이면 결과가 통째로 비는 이유를 설명할 수 있다 | 05, 11, 13 | — | 표준 | A |
@@ -57,44 +58,53 @@ DML(`INSERT`·`UPDATE`·`DELETE`·upsert·`MERGE`)은 전용 칸이 없어 **`�
 | 23 | [GROUPING SETS·ROLLUP·CUBE 와 GROUPING()](23-grouping-sets-rollup-cube/) | 질의 | 소계·총계를 한 질의로 뽑고, 결과의 NULL 이 "값 없음"인지 "소계 행"인지 구분할 수 있다 | 22 | [`timeseries-resolution-tiers`](../../../../systems/timeseries-resolution-tiers/) — 사전 집계 저장 전략은 거기, 여기선 질의 문법 | 차이 | B |
 | 24 | [조건부 집계 — FILTER 와 CASE](24-conditional-aggregation-filter-case/) | 함수 | 한 번의 스캔으로 여러 조건의 합계를 나란히 뽑는 질의를 쓰고, `FILTER` 와 `CASE` 중 무엇을 쓸지 방언에 맞춰 고를 수 있다 | 06, 22 | — | 차이 | B |
 | 25 | [조인 팬아웃 — 행 수와 집계가 어긋나는 자리](25-join-fan-out/) | 질의 | 1:N 조인 뒤 `SUM` 이 부풀려지는 현상을 예측하고, 선집계·`EXISTS`·`DISTINCT` 중 어느 처방이 맞는지 판단할 수 있다 | 14, 22 | [`data-access/jpa.md`](../../../../engineering/data-access/jpa.md) — ORM 이 SQL 을 만들어내는 비용은 거기, 여기선 SQL 자체의 행 수 계산 | 표준 | A |
-| 26 | 윈도우 함수의 개념 — 집계와 무엇이 다른가 | 함수 | 그룹으로 접지 않고 행마다 값을 붙이는 계산이라는 점을 설명하고, `GROUP BY` 로 풀 수 없는 요구를 윈도우로 옮길 수 있다 | 21, 22 | — | 표준 | A |
-| 27 | PARTITION BY 와 윈도우 ORDER BY | 함수 | 창을 나누는 축과 창 안의 순서가 결과를 어떻게 바꾸는지 예측할 수 있다 | 26 | — | 표준 | B |
-| 28 | 프레임 — ROWS·RANGE·GROUPS 와 기본 프레임 | 함수 | `ORDER BY` 를 쓴 순간 적용되는 기본 프레임을 설명하고, 누적합이 동률 행에서 튀는 이유를 `ROWS`/`RANGE` 차이로 설명할 수 있다 | 27 | — | 차이 | B |
-| 29 | 순위 함수 — ROW_NUMBER·RANK·DENSE_RANK·NTILE | 함수 | 동률을 각각 어떻게 다루는지 구분하고, "그룹별 1위 한 행"을 뽑는 질의를 쓸 수 있다 | 27 | [`basic/24-leaderboard`](../../../../domain-modeling/basic/24-leaderboard/) · [`advanced/19-leaderboard-recount`](../../../../domain-modeling/advanced/19-leaderboard-recount/) — 랭킹 도메인 규칙은 거기, 여기선 함수의 의미 | 표준 | B |
-| 30 | 오프셋·경계 함수 — LAG·LEAD·FIRST_VALUE·NTH_VALUE | 함수 | 이전/다음 행과의 차이를 계산하고, `LAST_VALUE` 가 기대와 다르게 나오는 이유를 프레임으로 설명할 수 있다 | 28 | — | 표준 | B |
-| 31 | 윈도우 함수의 평가 시점과 WINDOW 절 | 함수 | 윈도우 결과를 `WHERE` 에서 못 거르는 이유를 처리 순서로 설명하고, 서브쿼리·CTE 로 한 겹 감싸 해결할 수 있다 | 01, 26 | — | 표준 | B |
-| 32 | CTE(WITH) — 이름 붙인 서브질의와 가시성 | 질의 | CTE 의 범위와 참조 규칙을 설명하고, 중첩 서브쿼리를 CTE 로 펴서 읽히게 만들 수 있다 | 11 | — | 차이 | A |
-| 33 | 재귀 CTE | 질의 | 앵커 항과 재귀 항의 구조·종료 조건을 설명하고, 계층 전개와 사이클로 인한 무한 반복을 판단할 수 있다 | 32 | [`11-bfs`](../../../../algorithm/11-bfs/) · [`12-dfs`](../../../../algorithm/12-dfs/) — 탐색 알고리즘 자체는 거기, 여기선 재귀 CTE 의 문법과 종료 조건 | 차이 | B |
-| 34 | 집합 연산 — UNION·INTERSECT·EXCEPT 와 ALL | 질의 | 열 개수·타입 호환 규칙과 `ALL` 유무의 중복 제거 비용을 설명하고, 조인으로 쓸지 집합 연산으로 쓸지 고를 수 있다 | 01, 07 | — | 차이 | B |
+| 26 | [윈도우 함수의 개념 — 집계와 무엇이 다른가](26-window-functions-vs-aggregates/) | 함수 | 그룹으로 접지 않고 행마다 값을 붙이는 계산이라는 점을 설명하고, `GROUP BY` 로 풀 수 없는 요구를 윈도우로 옮길 수 있다 | 21, 22 | — | 차이 | A |
+| 27 | [PARTITION BY 와 윈도우 ORDER BY](27-partition-by-and-window-order-by/) | 함수 | 창을 나누는 축과 창 안의 순서가 결과를 어떻게 바꾸는지 예측할 수 있다 | 26 | — | 차이 | B |
+| 28 | [프레임 — ROWS·RANGE·GROUPS 와 기본 프레임](28-window-frames-rows-range-groups/) | 함수 | `ORDER BY` 를 쓴 순간 적용되는 기본 프레임을 설명하고, 누적합이 동률 행에서 튀는 이유를 `ROWS`/`RANGE` 차이로 설명할 수 있다 | 27 | — | 차이 | B |
+| 29 | [순위 함수 — ROW_NUMBER·RANK·DENSE_RANK·NTILE](29-ranking-functions/) | 함수 | 동률을 각각 어떻게 다루는지 구분하고, "그룹별 1위 한 행"을 뽑는 질의를 쓸 수 있다 | 27 | [`basic/24-leaderboard`](../../../../domain-modeling/basic/24-leaderboard/) · [`advanced/19-leaderboard-recount`](../../../../domain-modeling/advanced/19-leaderboard-recount/) — 랭킹 도메인 규칙은 거기, 여기선 함수의 의미 | 차이 | B |
+| 30 | [오프셋·경계 함수 — LAG·LEAD·FIRST_VALUE·LAST_VALUE·NTH_VALUE](30-offset-and-boundary-functions/) | 함수 | 이전/다음 행과의 차이를 계산하고, `LAST_VALUE` 가 기대와 다르게 나오는 이유를 프레임으로 설명할 수 있다 | 28 | — | 차이 | B |
+| 31 | [윈도우 함수의 평가 시점과 WINDOW 절](31-window-evaluation-timing/) | 함수 | 윈도우 결과를 `WHERE` 에서 못 거르는 이유를 처리 순서로 설명하고, 서브쿼리·CTE 로 한 겹 감싸 해결할 수 있다 | 01, 26 | — | 표준 | B |
+| 32 | [CTE(WITH) — 이름 붙인 서브질의와 가시성](32-cte-with-clause/) | 질의 | CTE 의 범위와 참조 규칙을 설명하고, 중첩 서브쿼리를 CTE 로 펴서 읽히게 만들 수 있다 | 11 | — | 차이 | A |
+| 33 | [재귀 CTE](33-recursive-cte/) | 질의 | 앵커 항과 재귀 항의 구조·종료 조건을 설명하고, 계층 전개와 사이클로 인한 무한 반복을 판단할 수 있다 | 32 | [`11-bfs`](../../../../algorithm/11-bfs/) · [`12-dfs`](../../../../algorithm/12-dfs/) — 탐색 알고리즘 자체는 거기, 여기선 재귀 CTE 의 문법과 종료 조건 | 차이 | B |
+| 34 | [집합 연산 — UNION·INTERSECT·EXCEPT 와 ALL](34-set-operations-union-intersect-except/) | 질의 | 열 개수·타입 호환 규칙과 `ALL` 유무의 중복 제거 비용을 설명하고, 조인으로 쓸지 집합 연산으로 쓸지 고를 수 있다 | 01, 07 | — | 차이 | B |
 | 35 | [타입 체계와 캐스팅 — 명시 변환·암시 변환](35-type-system-and-casting/) | 함수 | 비교·연산에서 어느 쪽 타입으로 맞춰지는지 설명하고, 암시 변환이 인덱스를 못 쓰게 만드는 자리를 예측할 수 있다 | 01 | [`data-representation`](../../../data-representation/) — 비트 수준 표현은 거기, 여기선 SQL 의 타입 규칙 | 차이 | A |
 | 36 | [수치 타입과 수치 함수 — 정수 나눗셈·반올림·정밀도](36-numeric-types-and-functions/) | 함수 | 정수끼리 나눌 때 소수가 사라지는 동작, `DECIMAL` 과 부동소수의 차이, 반올림 함수의 경계 동작을 예측할 수 있다 | 35 | [`data-representation`](../../../data-representation/) — 부동소수 표현은 거기, 여기선 SQL 연산의 결과 | 차이 | B |
 | 37 | [문자열 함수와 연결 연산](37-string-functions-and-concatenation/) | 함수 | 길이·부분문자열·트림·치환·대소문자 변환을 쓰고, 문자열 연결 연산자가 방언마다 다른 것을 판단할 수 있다 | 35 | — | 차이 | B |
 | 38 | [패턴 매칭 — LIKE·ESCAPE·정규식](38-pattern-matching-like-regex/) | 함수 | 와일드카드와 이스케이프 규칙을 설명하고, 앞이 열린 패턴이 인덱스를 못 타는 이유를 예측할 수 있다 | 37 | [`25-string-matching`](../../../../algorithm/25-string-matching/) · [`32-inverted-index`](../../../../data-structure/32-inverted-index/) — 매칭 알고리즘·전문검색 색인은 거기, 여기선 SQL 연산자와 인덱스 사용 여부 | 차이 | B |
 | 39 | [collation — 문자열 비교와 정렬의 기준](39-collation/) | 함수 | 같은 데이터가 엔진·설정에 따라 다르게 비교·정렬되는 이유를 설명하고, 대소문자 구분 여부를 의도대로 고정할 수 있다 | 37 | [`data-representation`](../../../data-representation/) — 인코딩은 거기, 여기선 비교·정렬 규칙 | 차이 | B |
 | 40 | [날짜·시간 타입과 함수](40-date-time-types-and-functions/) | 함수 | 타임존이 붙은 타입과 안 붙은 타입의 차이를 설명하고, 절단·추출·간격 연산과 경계 조건(`>=`/`<`)을 안전하게 쓸 수 있다 | 35 | — | 차이 | A |
-| 41 | JSON 타입과 함수 | 함수 | 문서를 열로 펴는 연산과 경로 표현을 쓰고, JSON 열에 인덱스를 거는 방법과 한계를 판단할 수 있다 | 35 | — | 차이 | C |
-| 42 | 테이블 정의와 변경 — CREATE·ALTER TABLE | DDL·제약 | 열 타입·NULL 허용·기본값을 정하고, 운영 중 `ALTER` 가 어떤 잠금을 부르는지 판단할 수 있다 | 35 | [`partitioning-vs-sharding`](../../../../systems/partitioning-vs-sharding/) — 분할 전략은 거기, 여기선 테이블 정의 문법 | 차이 | B |
-| 43 | 기본키·UNIQUE 제약과 NULL | DDL·제약 | 기본키와 UNIQUE 의 차이를 설명하고, UNIQUE 열에 NULL 이 여러 개 들어가는 동작을 예측할 수 있다 | 04, 42 | — | 표준 | B |
-| 44 | 외래키와 참조 동작 — ON DELETE·ON UPDATE | DDL·제약 | 참조 무결성이 막아 주는 것과, `CASCADE`·`SET NULL`·`RESTRICT` 가 각각 무엇을 지우는지 예측할 수 있다 | 43 | — | 차이 | B |
-| 45 | CHECK·NOT NULL·DEFAULT·생성 열·자동 증가 | DDL·제약 | 불변식을 애플리케이션이 아니라 엔진에 맡기는 자리를 고르고, 기본값·생성 열·자동 증가 값이 언제 계산되는지 설명할 수 있다 | 42 | — | 차이 | B |
-| 46 | 인덱스 정의 — 복합·부분·표현식·커버링 | DDL·제약 | 복합 인덱스의 열 순서가 왜 중요한지 설명하고, 부분·표현식 인덱스로 좁힌 인덱스를 설계할 수 있다 | 42 | [`15-b-tree`](../../../../data-structure/15-b-tree/) — 자료구조 자체는 거기, 여기선 인덱스 정의 문법 | 차이 | B |
-| 47 | 인덱스를 언제 타고 언제 안 타나 | 실행·최적화 | 선행 열 누락·열에 함수 적용·암시 변환·낮은 선택도에서 인덱스가 버려지는 것을 예측하고, 질의를 고쳐 다시 타게 만들 수 있다 | 35, 46 | [`15-b-tree`](../../../../data-structure/15-b-tree/) — 탐색 구조는 거기, 여기선 "탈지 말지"의 판단 | 표준 | A |
-| 48 | 뷰와 구체화 뷰 | DDL·제약 | 뷰가 저장하는 것이 결과가 아니라 질의라는 점을 설명하고, 구체화 뷰의 갱신 시점과 낡음을 판단할 수 있다 | 32, 42 | [`timeseries-resolution-tiers`](../../../../systems/timeseries-resolution-tiers/) — 사전 집계 운영은 거기, 여기선 객체 정의 | 차이 | B |
-| 49 | INSERT — 다중 행·INSERT SELECT·기본값 | 질의 | 한 문으로 여러 행을 넣는 형태와 질의 결과를 그대로 적재하는 형태를 쓰고, 기본값·생성 열이 어떻게 채워지는지 설명할 수 있다 | 45 | — | 차이 | B |
-| 50 | UPDATE — 조인·서브쿼리를 쓰는 갱신 | 질의 | 다른 테이블의 값으로 갱신하는 문을 방언에 맞게 쓰고, `WHERE` 를 빠뜨린 갱신의 범위를 예측할 수 있다 | 11, 49 | — | 차이 | B |
-| 51 | DELETE 와 TRUNCATE | 질의 | 두 문의 롤백 가능성·트리거·자동 증가 초기화 차이를 설명하고, 대량 삭제를 나눠 도는 이유를 판단할 수 있다 | 50 | — | 차이 | B |
+| 41 | [JSON 타입과 함수](41-json-types-and-functions/) | 함수 | 문서를 열로 펴는 연산과 경로 표현을 쓰고, JSON 열에 인덱스를 거는 방법과 한계를 판단할 수 있다 | 35 | — | 차이 | C |
+| 42 | [테이블 정의와 변경 — CREATE·ALTER TABLE](42-create-alter-drop-table/) | DDL·제약 | 열 타입·NULL 허용·기본값을 정하고, 운영 중 `ALTER` 가 어떤 잠금을 부르는지 판단할 수 있다 | 35 | [`partitioning-vs-sharding`](../../../../systems/partitioning-vs-sharding/) — 분할 전략은 거기, 여기선 테이블 정의 문법 | 차이 | B |
+| 43 | [기본키·UNIQUE 제약과 NULL](43-primary-key-unique-and-null/) | DDL·제약 | 기본키와 UNIQUE 의 차이를 설명하고, UNIQUE 열에 NULL 이 여러 개 들어가는 동작을 예측할 수 있다 | 04, 42 | — | 차이 | B |
+| 44 | [외래키와 참조 동작 — ON DELETE·ON UPDATE](44-foreign-key-referential-actions/) | DDL·제약 | 참조 무결성이 막아 주는 것과, `CASCADE`·`SET NULL`·`RESTRICT` 가 각각 무엇을 지우는지 예측할 수 있다 | 43 | — | 차이 | B |
+| 45 | [CHECK·NOT NULL·DEFAULT·생성 열·자동 증가](45-check-not-null-default-generated-columns/) | DDL·제약 | 불변식을 애플리케이션이 아니라 엔진에 맡기는 자리를 고르고, 기본값·생성 열·자동 증가 값이 언제 계산되는지 설명할 수 있다 | 42 | — | 차이 | B |
+| 46 | [인덱스 정의 — 복합·부분·표현식·커버링](46-index-definition-composite-partial-expression/) | DDL·제약 | 복합 인덱스의 열 순서가 왜 중요한지 설명하고, 부분·표현식 인덱스로 좁힌 인덱스를 설계할 수 있다 | 42 | [`15-b-tree`](../../../../data-structure/15-b-tree/) — 자료구조 자체는 거기, 여기선 인덱스 정의 문법 | 차이 | B |
+| 47 | [인덱스를 언제 타고 언제 안 타나](47-when-indexes-are-used/) | 실행·최적화 | 선행 열 누락·열에 함수 적용·암시 변환·낮은 선택도에서 인덱스가 버려지는 것을 예측하고, 질의를 고쳐 다시 타게 만들 수 있다 | 35, 46 | [`15-b-tree`](../../../../data-structure/15-b-tree/) — 탐색 구조는 거기, 여기선 "탈지 말지"의 판단 | 차이 | A |
+| 48 | [뷰와 구체화 뷰](48-views-and-materialized-views/) | DDL·제약 | 뷰가 저장하는 것이 결과가 아니라 질의라는 점을 설명하고, 구체화 뷰의 갱신 시점과 낡음을 판단할 수 있다 | 32, 42 | [`timeseries-resolution-tiers`](../../../../systems/timeseries-resolution-tiers/) — 사전 집계 운영은 거기, 여기선 객체 정의 | 차이 | B |
+| 49 | [INSERT — 다중 행·INSERT SELECT·기본값](49-insert-multi-row-and-insert-select/) | 질의 | 한 문으로 여러 행을 넣는 형태와 질의 결과를 그대로 적재하는 형태를 쓰고, 기본값·생성 열이 어떻게 채워지는지 설명할 수 있다 | 45 | — | 차이 | B |
+| 50 | [UPDATE — 조인·서브쿼리를 쓰는 갱신](50-update-with-join-and-subquery/) | 질의 | 다른 테이블의 값으로 갱신하는 문을 방언에 맞게 쓰고, `WHERE` 를 빠뜨린 갱신의 범위를 예측할 수 있다 | 11, 49 | — | 차이 | B |
+| 51 | [DELETE 와 TRUNCATE](51-delete-and-truncate/) | 질의 | 두 문의 롤백 가능성·트리거·자동 증가 초기화 차이를 설명하고, 대량 삭제를 나눠 도는 이유를 판단할 수 있다 | 50 | — | 차이 | B |
 | 52 | [UPSERT — ON CONFLICT 와 ON DUPLICATE KEY UPDATE](52-upsert/) | 질의 | 충돌 대상이 되는 제약이 무엇인지 지목하고, "있으면 갱신 없으면 삽입"을 경쟁 조건 없이 한 문으로 쓸 수 있다 | 43, 49 | [`06-idempotency-store`](../../../../ops-patterns/06-idempotency-store/) — 멱등 처리 패턴은 거기, 여기선 문법과 충돌 대상 지정 | 차이 | A |
-| 53 | MERGE | 질의 | 원본과 대상을 맞춰 삽입·갱신·삭제를 한 문으로 기술하고, upsert 로 대신할 수 있는 경계를 판단할 수 있다 | 52 | — | 차이 | B |
-| 54 | RETURNING 과 변경문을 품은 CTE | 질의 | 변경한 행을 곧바로 회수하는 문을 쓰고, 한 문 안에서 여러 테이블을 바꿀 때의 가시성을 설명할 수 있다 | 32, 49 | — | PG | C |
-| 55 | 트랜잭션 경계 — COMMIT·ROLLBACK·SAVEPOINT | 트랜잭션·동시성 | 원자성이 지켜지는 범위를 문 단위로 설명하고, 자동 커밋과 명시적 트랜잭션·부분 롤백을 구분해 쓸 수 있다 | 49 | [`07-outbox`](../../../../ops-patterns/07-outbox/) — 메시지 발행 패턴은 거기, 여기선 트랜잭션 문법 | 차이 | A |
-| 56 | 격리 수준과 읽기 이상 현상·MVCC | 트랜잭션·동시성 | 더티 리드·반복 불가능 읽기·팬텀을 각 수준이 어디까지 막는지 설명하고, 두 엔진의 기본 수준 차이가 코드에 미치는 영향을 판단할 수 있다 | 55 | [`engineering-axes/concurrency.md`](../../../../engineering/engineering-axes/concurrency.md) — 개념·트레이드오프는 거기, 여기선 `SET TRANSACTION` 문법과 엔진별 기본값 | 차이 | A |
-| 57 | 명시적 잠금과 교착 — FOR UPDATE·SKIP LOCKED·NOWAIT | 트랜잭션·동시성 | 읽으면서 잠그는 문을 쓰고, 큐 소비·좌석 선점에서 `SKIP LOCKED` 가 푸는 문제와 교착이 생기는 순서를 설명할 수 있다 | 56 | [`11-distributed-lock`](../../../../ops-patterns/11-distributed-lock/) — 분산 락은 거기, 여기선 한 DB 안의 행 잠금 문법 | 차이 | B |
-| 58 | EXPLAIN 읽기 — 계획 트리의 구조 | 실행·최적화 | 계획을 트리로 읽어 어느 노드가 먼저 돌고 행 수가 어디서 불어나는지 짚을 수 있다 | 01, 13 | — | 차이 | A |
-| 59 | 스캔·조인·정렬 연산자 | 실행·최적화 | 순차 스캔과 인덱스 스캔, 중첩 루프·해시·머지 조인, 정렬·해시 집계가 각각 언제 뽑히는지 설명할 수 있다 | 46, 58 | [`05-hashmap`](../../../../data-structure/05-hashmap/) · [`02-merge-sort`](../../../../algorithm/02-merge-sort/) — 자료구조·알고리즘 자체는 거기, 여기선 계획에 뜨는 연산자의 의미 | 차이 | B |
-| 60 | EXPLAIN ANALYZE — 추정과 실측이 어긋나는 자리 | 실행·최적화 | 추정 행 수와 실제 행 수의 격차를 읽어 통계·선택도 문제를 짚고, 느린 질의의 병목 노드를 지목할 수 있다 | 58 | — | 차이 | B |
+| 53 | [MERGE](53-merge/) | 질의 | 원본과 대상을 맞춰 삽입·갱신·삭제를 한 문으로 기술하고, upsert 로 대신할 수 있는 경계를 판단할 수 있다 | 52 | — | PG | B |
+| 54 | [RETURNING 과 변경문을 품은 CTE](54-returning-and-data-modifying-cte/) | 질의 | 변경한 행을 곧바로 회수하는 문을 쓰고, 한 문 안에서 여러 테이블을 바꿀 때의 가시성을 설명할 수 있다 | 32, 49 | — | PG | C |
+| 55 | [트랜잭션 경계 — COMMIT·ROLLBACK·SAVEPOINT](55-transaction-boundaries-commit-rollback-savepoint/) | 트랜잭션·동시성 | 원자성이 지켜지는 범위를 문 단위로 설명하고, 자동 커밋과 명시적 트랜잭션·부분 롤백을 구분해 쓸 수 있다 | 49 | [`07-outbox`](../../../../ops-patterns/07-outbox/) — 메시지 발행 패턴은 거기, 여기선 트랜잭션 문법 | 차이 | A |
+| 56 | [격리 수준과 읽기 이상 현상·MVCC](56-isolation-levels-read-phenomena-mvcc/) | 트랜잭션·동시성 | 더티 리드·반복 불가능 읽기·팬텀을 각 수준이 어디까지 막는지 설명하고, 두 엔진의 기본 수준 차이가 코드에 미치는 영향을 판단할 수 있다 | 55 | [`engineering-axes/concurrency.md`](../../../../engineering/engineering-axes/concurrency.md) — 개념·트레이드오프는 거기, 여기선 `SET TRANSACTION` 문법과 엔진별 기본값 | 차이 | A |
+| 57 | [명시적 잠금과 교착 — FOR UPDATE·SKIP LOCKED·NOWAIT](57-explicit-locking-and-deadlock/) | 트랜잭션·동시성 | 읽으면서 잠그는 문을 쓰고, 큐 소비·좌석 선점에서 `SKIP LOCKED` 가 푸는 문제와 교착이 생기는 순서를 설명할 수 있다 | 56 | [`11-distributed-lock`](../../../../ops-patterns/11-distributed-lock/) — 분산 락은 거기, 여기선 한 DB 안의 행 잠금 문법 | 차이 | B |
+| 58 | [EXPLAIN 읽기 — 계획 트리의 구조](58-explain-plan-tree/) | 실행·최적화 | 계획을 트리로 읽어 어느 노드가 먼저 돌고 행 수가 어디서 불어나는지 짚을 수 있다 | 01, 13 | — | 차이 | A |
+| 59 | [스캔·조인·정렬 연산자](59-scan-join-sort-operators/) | 실행·최적화 | 순차 스캔과 인덱스 스캔, 중첩 루프·해시·머지 조인, 정렬·해시 집계가 각각 언제 뽑히는지 설명할 수 있다 | 46, 58 | [`05-hashmap`](../../../../data-structure/05-hashmap/) · [`02-merge-sort`](../../../../algorithm/02-merge-sort/) — 자료구조·알고리즘 자체는 거기, 여기선 계획에 뜨는 연산자의 의미 | 차이 | B |
+| 60 | [EXPLAIN ANALYZE — 추정과 실측이 어긋나는 자리](60-explain-analyze-estimates-vs-actuals/) | 실행·최적화 | 추정 행 수와 실제 행 수의 격차를 읽어 통계·선택도 문제를 짚고, 느린 질의의 병목 노드를 지목할 수 있다 | 58 | — | 차이 | B |
 
 **60주제** — 분류별로 질의 29 · 함수 18 · DDL·제약 6 · 트랜잭션·동시성 3 · 실행·최적화 4.
-우선순위는 A 21 · B 35 · C 4, 방언은 표준 16 · 차이 43 · PG 1 · MySQL 0 이다(2026-09-21 실행 검증으로 03 · 12 · 13 을 `표준` → `차이` 로 정정했다 — 아래 「방언 차이가 큰 자리」 참조).
+우선순위는 A 21 · B 35 · C 4, 방언은 표준 10 · 차이 48 · PG 2 · MySQL 0 이다.
+★ **방언 칸은 「그 주제 자신의 축」이 갈리느냐를 묻는다 — 본문에 방언 이야기가 나오느냐가 아니다.**
+01(논리적 처리 순서)과 04(3값 논리)는 본문에 갈림이 나오지만 `표준`으로 둔다.
+`HAVING` 에서 별칭을 쓰는 것이 PG ✗ / MySQL ✓ 로 갈리는 것은 **02·03 이 소유**하고(둘 다 `차이`),
+`IS NOT DISTINCT FROM` ↔ `<=>` 가 서로를 거부하는 것은 **05 가 소유**한다(`차이`).
+축 자체 — 처리 순서와 3값 논리 — 는 두 엔진에서 한 자리도 안 갈린다. **같은 갈림을 두 번 세지 않는다.**
+
+★ **방언 칸은 실행 검증으로 열 번 정정됐다** — 처음 문서 대조만으로 채웠을 때 `표준` 16 이던 것이 **10** 로 줄었다.
+`표준` → `차이` 로 바뀐 것: 03 · 12 · 13 · 26 · 27 · 29 · 30 · 43 · 47. `차이` → `PG`: 53(MySQL 에 `MERGE` 가 **키워드 단계에서** 없다 — 54 `RETURNING` 과 같은 기준).
+**「문서에 둘 다 있더라」가 「같더라」가 아니다**는 것이 이 숫자가 말하는 전부다.
 MySQL 전용 주제가 0인 것은 의도한 결과다 — MySQL 고유 문법(`REPLACE`·`INSERT IGNORE`·`STRAIGHT_JOIN`)은 독립 주제가 될 만큼 크지 않아 해당 주제 안의 방언 메모로 들어간다.
 
 > ⚠️ 방언 칸의 확신도는 균일하지 않다. 아래 「방언 차이가 큰 자리」에 적은 항목은 **공식 문서에서 문장을 확인한 것**이고, 그 밖의 `차이` 표시는 두 문서의 문법 요약·목차 수준에서 다르다고 본 것이라 **3파일을 쓸 때 해당 페이지로 재확인**한다.
@@ -109,6 +119,31 @@ MySQL 전용 주제가 0인 것은 의도한 결과다 — MySQL 고유 문법(`
 > `CROSS JOIN … ON` · `JOIN` 의 `ON` 누락 · `generate_series`). 그중 **세 주제가 「표준」 표기와 어긋나** 03 · 12 · 13 의 방언 칸을 `차이` 로 정정했다
 > (10 은 이미 `차이` 표기였고, 새 항목 둘이 그 근거를 구체화한 것이다).
 > 반대로 **14 · 15 는 표기대로 「표준」이었다** — 결과가 두 엔진에서 한 자리도 안 갈렸고, 갈린 것은 실행 계획뿐이다.
+>
+> ✅ **2026-09-21 실행 검증분 (3차 — 남은 43주제 전부)** — 여섯 묶음을 같은 방식으로 확인해 **60 / 60** 을 채웠다.
+> 방언 칸 **일곱 건을 추가 정정**했다(26 · 27 · 29 · 30 · 43 · 47 을 `표준` → `차이`, 53 을 `차이` → `PG`).
+> 각 주제 본문에 두 엔진 출력이 나란히 실려 있으므로 여기서는 **새로 드러난 사고 유형**만 적는다 — 전부 실행으로 나왔고 문서 대조로는 안 나왔던 것들이다.
+>
+> | 유형 | 실측 | 주제 |
+> |---|---|---|
+> | ★ **선언은 통과하는데 수행되지 않는다** | MySQL 의 열 뒤 `REFERENCES` 가 **제약을 아예 안 만든다**(`foreign_key_checks=1` 인데 고아 행이 들어간다) · `ON DELETE SET DEFAULT` 가 카탈로그에 저장만 된다 · `USING HASH` 가 `BTREE` 가 된다 | 44 · 46 |
+> | ★ **경고 한 줄 없이 값이 바뀐다** | `ADD COLUMN … NOT NULL` 이 `0` 으로 채운다 · `INSERT IGNORE` 가 `NOT NULL` 을 **빈 문자열**로 통과시킨다 · 15자를 10자로 자른다 · `SELECT id … UNION SELECT name …` 이 통째로 문자열이 된다 | 42 · 49 · 34 |
+> | ★ **같은 문이 두 엔진에서 정반대** | `TRUNCATE` 가 PG 는 롤백되고 MySQL 은 암묵 커밋 · 재귀 CTE 의 `LIMIT` 위치 · `SET a=b, b=a` 가 PG 는 교환 MySQL 은 순차(`300,10` 대 `300,300`) · `EXPLAIN ANALYZE` 가 PG 는 변경문을 **실제로 돌린다** | 51 · 33 · 50 · 60 |
+> | ★ **안전장치에 난 구멍** | `sql_safe_updates=1` 이 `DELETE` 는 `ERROR 1175` 로 막는데 **`TRUNCATE` 는 통과시킨다** · `SET FOREIGN_KEY_CHECKS=0` + `TRUNCATE` 가 고아 행을 남기고 `=1` 로 되켜도 재검사하지 않는다 | 50 · 51 |
+> | ★ **통설과 다른 것** | MySQL `REPEATABLE READ` 에서 **같은 트랜잭션 안의 일반 읽기와 잠금 읽기가 다른 답**을 낸다(2 대 3) — 「갭 락이 팬텀까지 막는다」는 **범위를 먼저 잠근 경우**만 말한다 | 56 |
+> | ★ **문법이 없는 것과 실행 경로가 없는 것** | `ERROR 1064` 는 파서가 낱말을 모르는 것, `ERROR 1235 … doesn't yet support` / `ERROR 6037` 은 **파서는 아는데 실행 경로가 없는 것**이다. 뒤엣것은 **다음 버전에서 다시 찍을 자리**라는 뜻 — `GROUPS`·`EXCLUDE`·`IGNORE NULLS`·`QUALIFY` 넷이 그랬다 | 28 · 30 · 31 |
+>
+> ⚠️ **계획(`EXPLAIN`)을 근거로 쓴 주제는 제출 직전에 다시 찍었고, 실제로 움직였다.**
+> 같은 서버·같은 버전·같은 데이터에서 **비용이 비슷한 두 후보가 맞붙는 지점만** 8판 중 4:4 로 갈렸다(`Bitmap Heap Scan` ↔ `Seq Scan`).
+> 그래서 본문은 시간·`cost=`·`rows=` 가 아니라 **`actual rows`·`loops`·연산자 이름·`Index Cond`/`Filter`** 를 근거로 쓴다.
+>
+> ⚠️ **「돌려 봤다」와 「옮겨 적은 게 맞다」는 다른 검사다.** 문서의 실행 블록을 추출해 **다시 던져 대조**했더니
+> 4건이 걸렸고, 넷 다 **손으로 좌우 배치한 블록 또는 그 인접 블록**이었다. 추출기는
+> [`reference/tools/extract-exec-blocks.py`](../../../../../reference/tools/extract-exec-blocks.py) 에 있다.
+> 이 폴더에서 파서가 잡은 실행 블록은 **1,914개**(그중 **625개가 좌우 배치** — 전부 같은 사고의 후보 자리)이고,
+> **배너 없이 실행 흔적만 있는 펜스가 546개 더** 있다. 뒤엣것은 파서가 못 보는 자리라 **사람이 확인해야 한다.**
+> ⚠️ 이 도구의 커버리지 검사는 **두 번 「누락 0」이라는 거짓 합격**을 냈다(인용 블록 안의 펜스 · 배너를 안 쓰는 편).
+> **「누락 0」은 「전부 봤다」가 아니라 「내가 보는 방식으로는 다 봤다」는 뜻**이라는 것이 이 숫자의 교훈이다.
 
 ## 기존 주제와 겹치는 것
 
