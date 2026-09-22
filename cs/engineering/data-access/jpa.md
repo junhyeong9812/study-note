@@ -72,7 +72,7 @@
 Martin Fowler는 이 둘을 "데이터의 서로 꽤 다른 두 표현(two quite different representations of data)"이라 부르며, 메모리 구조가 훨씬 자유롭기 때문에 사람들이 그쪽으로 프로그래밍하고 싶어 한다고 정리한다([OrmHate](https://martinfowler.com/bliki/OrmHate.html)).\
 두 표현 사이를 오가는 층을 따로 두자는 것이 Data Mapper 패턴이다 — "객체와 DB 사이에서 데이터를 옮기되 서로를, 그리고 매퍼 자신을 모르게 유지하는 매퍼들의 층"([P of EAA: Data Mapper](https://martinfowler.com/eaaCatalog/dataMapper.html)).
 
-손으로 매핑하던 시절의 부담은 변환 코드 자체가 아니라 그 주변의 **부기(bookkeeping)**였다.
+손으로 매핑하던 시절의 부담은 변환 코드 자체가 아니라 그 주변의 **부기**(bookkeeping)였다.
 
 > **부기(bookkeeping)** — 무엇을 읽었고 무엇을 바꿨는지 장부처럼 계속 기록·대조하는 뒤치다꺼리.\
 > 예: "이 행은 아까 읽었으니 또 읽지 말자", "이 필드가 바뀌었으니 UPDATE 대상이다"를 사람이 손으로 챙기는 일.
@@ -86,7 +86,7 @@ Martin Fowler는 이 둘을 "데이터의 서로 꽤 다른 두 표현(two quite
 
 > 출처: 원고 §2
 
-그 자리가 **영속성 컨텍스트(persistence context)**이고, 개념적으로는 두 고전 패턴의 결합이다.
+그 자리가 **영속성 컨텍스트**(persistence context)이고, 개념적으로는 두 고전 패턴의 결합이다.
 
 > **영속성 컨텍스트(persistence context)** — 트랜잭션이 사는 동안, 읽고 고친 엔티티를 붙들어 두고 관리하는 메모리 위의 집합.\
 > 예: 한 요청 안에서 계좌 객체를 꺼내 잔액을 고치면, 커밋될 때까지 그 객체는 이 집합 안에서 추적된다.

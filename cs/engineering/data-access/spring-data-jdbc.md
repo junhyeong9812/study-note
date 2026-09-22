@@ -86,7 +86,7 @@ Schauder는 도입 글에서 목적을 한 문장으로 밝힌다: "Spring Data 
 > "엔티티를 로드하면 SQL이 실행된다. 그것이 끝나면 완전히 로드된 엔티티를 갖는다. 지연 로딩도 캐싱도 없다."\
 > "엔티티를 저장하면 저장된다. 저장하지 않으면 저장되지 않는다. 더티 트래킹도 세션도 없다." ([Why Spring Data JDBC?](https://docs.spring.io/spring-data/relational/reference/jdbc/why.html))
 
-**비용** — 편의를 잃는 대신 얻는 것은 **"SQL은 리포지토리 메서드를 호출할 때, 오직 그때만 실행된다"**는 성질이고([Introducing Spring Data JDBC](https://spring.io/blog/2018/09/17/introducing-spring-data-jdbc)), 그래서 코드를 읽는 것과 DB에 무슨 일이 일어나는지 아는 것이 같은 일이 된다.\
+**비용** — 편의를 잃는 대신 얻는 것은 "**SQL은 리포지토리 메서드를 호출할 때, 오직 그때만 실행된다**"는 성질이고([Introducing Spring Data JDBC](https://spring.io/blog/2018/09/17/introducing-spring-data-jdbc)), 그래서 코드를 읽는 것과 DB에 무슨 일이 일어나는지 아는 것이 같은 일이 된다.\
 jpa.md에서 본 세 가지 청구서가 한꺼번에 사라지는 대신, §8의 비용이 생긴다.
 
 ---
