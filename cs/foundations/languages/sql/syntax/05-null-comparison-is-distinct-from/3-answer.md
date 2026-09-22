@@ -210,7 +210,7 @@ cho: salary 는 NULL, 상수는 300
 `SELECT` 에서도 `TRUE`/`FALSE` 만 원하면 한 번 더 누른다 — `((a = b) OR (a IS NULL AND b IS NULL)) IS TRUE`.\
 `IS TRUE` 가 `UNKNOWN` 을 `FALSE` 쪽으로 누르는 술어라는 것은 [04번](../04-null-three-valued-logic/)에서 본 것이다.
 
-더 강한 해법은 **애초에 `NULL` 을 안 만드는 것**이다 — 열에 `NOT NULL` 제약을 건다(목록의 45번 주제).
+더 강한 해법은 **애초에 `NULL` 을 안 만드는 것**이다 — 열에 `NOT NULL` 제약을 건다([목록의 **45번 주제**](../45-check-not-null-default-generated-columns/)).
 
 ---
 
@@ -421,7 +421,7 @@ NOT IN                              NOT EXISTS
 | (C) `NOT NULL` 제약 | **가장 강함** | **엔진이 강제한다.** 데이터가 들어올 수 없으므로 질의를 어떻게 쓰든 안전 |
 
 (C)가 가장 강한 이유는 **방어선이 질의가 아니라 스키마에 있기 때문**이다. 질의는 수백 개지만 제약은 한 줄이다.\
-제약 문법 자체는 목록의 **45번 주제**, 반조인의 형태는 [19 SEMI·ANTI 조인](../19-semi-anti-join/)이 정본이다.
+제약 문법 자체는 [목록의 **45번 주제**](../45-check-not-null-default-generated-columns/), 반조인의 형태는 [19 SEMI·ANTI 조인](../19-semi-anti-join/)이 정본이다.
 
 ---
 
@@ -471,7 +471,7 @@ HINT:  No function matches the given name and argument types. You might need to 
 
 **왜 그런가** — 둘 다 **표준이 아니라 각 엔진의 편의 확장**이다. 이름만 같고 문법 범주가 다르다(연산자 / 함수).
 
-**교훈은 「어느 쪽이 맞나」가 아니라 「둘 다 쓰지 마라」**다.\
+**교훈은 「어느 쪽이 맞나」가 아니라 「둘 다 쓰지 마라**」다.\
 `IS NULL` 은 양쪽에서 문법도 결과도 같고, 인덱스도 탄다(11번). 비표준 별명을 쓸 이유가 없다.
 
 ---
@@ -516,7 +516,7 @@ WHERE NOT (v <=> 5)    ->  type=index  key=v   rows=100649    Using where; Using
 **실무 함의** — PG 에서 큰 표의 `WHERE` 에 `IS NOT DISTINCT FROM` 을 쓰면 그 자체가 장애 원인이 된다.\
 대안은 인덱스가 탈 수 있는 형태로 푸는 것이다 — `(v = 5 OR v IS NULL)`.
 
-**이 항목은 구현 의존이다.** 통계·버전·데이터 분포가 바뀌면 계획도 바뀐다. 계획 읽기의 정본은 목록의 **58번 주제**, 인덱스를 타고 안 타고는 **47번 주제**다.
+**이 항목은 구현 의존이다.** 통계·버전·데이터 분포가 바뀌면 계획도 바뀐다. 계획 읽기의 정본은 [목록의 **58번 주제**](../58-explain-plan-tree/), 인덱스를 타고 안 타고는 [**47번 주제**](../47-when-indexes-are-used/)다.
 
 ---
 

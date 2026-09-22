@@ -17,8 +17,8 @@
 - "이 둘이 같은 카드인가?" — 모른다. **둘 다 모른다고 해서 같다고 할 수 없다.**
 - 그런데 `WHERE` 는 「예」만 통과시킨다. 그래서 `= NULL` 은 **한 행도 못 고른다.**
 - 그래서 SQL 에는 도구가 둘 따로 있다.\
-  **「이 봉투가 안 열린 상태인가?」**를 묻는 `IS NULL` 과,\
-  **「둘 다 안 열렸으면 같다고 치자」**는 `NULL` 안전 등호다.
+  「**이 봉투가 안 열린 상태인가?**」를 묻는 `IS NULL` 과,\
+  「**둘 다 안 열렸으면 같다고 치자**」는 `NULL` 안전 등호다.
 
 | 비유 | 실체 |
 |---|---|
@@ -489,7 +489,7 @@ NOT IN                              NOT EXISTS
 ```
 
 그림 해설 — `30` 이 `t`/`1` 로 바뀌었다. `NULL` 하나를 뺐을 뿐인데 답이 돌아왔다.\
-대가 — **이 처방은 사람이 기억해야 유지된다.** 다음 사람이 `WHERE dept_id IS NOT NULL` 을 「불필요해 보여서」 지우면 다시 무너진다. 그래서 세 번째 처방이 제일 강하다 — **열에 `NOT NULL` 제약을 건다**(목록의 45번 주제).
+대가 — **이 처방은 사람이 기억해야 유지된다.** 다음 사람이 `WHERE dept_id IS NOT NULL` 을 「불필요해 보여서」 지우면 다시 무너진다. 그래서 세 번째 처방이 제일 강하다 — **열에 `NOT NULL` 제약을 건다**([목록의 **45번 주제**](../45-check-not-null-default-generated-columns/)).
 
 ## 문법 — 형태와 규칙
 
@@ -545,7 +545,7 @@ WHERE NOT (v <=> 5)    ->  type=index  key=v      rows=100649  Using where; Usin
 
 그림 해설 — **같은 의미의 연산인데 비용이 다르다.** MySQL 의 `<=>` 는 인덱스 탐색으로 내려가고, PG 의 `IS NOT DISTINCT FROM` 은 전체 스캔 후 필터가 됐다.\
 대가 — PG 에서 `NULL` 안전 등호를 `WHERE` 에 남발하면 인덱스가 죽는다. 대안은 `(v = 5 OR v IS NULL)` 처럼 **인덱스가 탈 수 있는 형태로 푸는 것**이다.\
-(계획은 통계·버전에 따라 달라질 수 있다 — 계획 읽기의 정본은 목록의 58번 주제다.)
+(계획은 통계·버전에 따라 달라질 수 있다 — 계획 읽기의 정본은 [목록의 **58번 주제**](../58-explain-plan-tree/)다.)
 
 ## 어디서 틀리나
 
@@ -609,7 +609,7 @@ WHERE NOT (v <=> 5)    ->  type=index  key=v      rows=100649  Using where; Usin
 - [06 조건 식 — CASE·COALESCE·NULLIF](../06-conditional-expressions-case-coalesce/) — **경계: 여기는 `NULL` 을 「비교」하는 법, 그쪽은 `NULL` 을 「다른 값으로 바꾸는」 법.**
 - [07 DISTINCT 와 중복 제거](../07-distinct-and-duplicate-removal/) — `DISTINCT` 는 `NULL` 끼리를 **같은 값으로 묶는다.** 비교 규칙과 정반대인 자리다.
 - [19 SEMI·ANTI 조인 — EXISTS·IN·NOT IN·NOT EXISTS](../19-semi-anti-join/) — **경계: 그쪽은 `EXISTS`/`IN` 을 조인 형태로 보는 것까지, 여기는 연산자의 진릿값까지.**
-- **`NOT NULL` 제약**은 목록의 **45번 주제**, **인덱스를 타고 안 타고**는 **47번 주제**가 정본이다.
+- **`NOT NULL` 제약**은 [목록의 **45번 주제**](../45-check-not-null-default-generated-columns/), **인덱스를 타고 안 타고**는 [**47번 주제**](../47-when-indexes-are-used/)가 정본이다.
 - [SQL 주제 목록](../README.md)
 
 ## 용어 풀이
@@ -639,4 +639,4 @@ WHERE NOT (v <=> 5)    ->  type=index  key=v      rows=100649  Using where; Usin
 
 - **왜 `NOT IN` 을 이렇게 정의했나.** `a NOT IN (S)` 는 정의상 `NOT (a = s1 OR a = s2 OR ...)` 이다. 이 전개를 알면 규칙을 외울 필요가 없다 — 3값 논리의 `OR` 표 한 장이면 결과가 따라 나온다([04번](../04-null-three-valued-logic/)).
 - **`NULL` 안전 등호를 왜 따로 두었나.** 표준은 「`NULL` 은 값이 아니다」를 일관되게 밀어붙였고, 그 결과 「두 행이 같은가」를 직접 물을 방법이 사라졌다. `IS DISTINCT FROM` 은 그 구멍을 메우려고 나중에 들어온 술어다.
-- **`GROUP BY`·`DISTINCT`·`UNION` 은 이 규칙을 안 따른다.** 그쪽은 「같다」가 아니라 **「구별할 수 없다」**를 기준으로 삼아 `NULL` 끼리를 한 덩어리로 묶는다([07번](../07-distinct-and-duplicate-removal/)). 같은 문서 안에 규칙이 둘 있는 셈이라 헷갈리는데, **비교는 `UNKNOWN`, 묶기는 같은 것 취급**으로 나눠 외우면 된다.
+- **`GROUP BY`·`DISTINCT`·`UNION` 은 이 규칙을 안 따른다.** 그쪽은 「같다」가 아니라 「**구별할 수 없다**」를 기준으로 삼아 `NULL` 끼리를 한 덩어리로 묶는다([07번](../07-distinct-and-duplicate-removal/)). 같은 문서 안에 규칙이 둘 있는 셈이라 헷갈리는데, **비교는 `UNKNOWN`, 묶기는 같은 것 취급**으로 나눠 외우면 된다.
