@@ -161,12 +161,12 @@ cs.convert(Optional.of(42), Optional<Integer>카드, LocalDate카드)           
 | 수정 후 `convert(Optional.of(42), ...)` | `"42"` (실측) | 컨버터 미선택 -> **`ConverterNotFoundException`** (실측) | `ConversionFailedException` (경로 불변) |
 
 세 번째 열을 추가로 두는 이유는 `Optional<? extends Number>`가 어느 갈래로 가는지를 대조하기 위해서다.\
-실측상 `Optional<? extends Number>`의 `getGeneric().resolve()`는 **`Number`**이므로 가드를 통과하지 않고 실제 판별로 간다 — `-> String`은 true, `-> LocalDate`는 false.\
+실측상 `Optional<? extends Number>`의 `getGeneric().resolve()`는 `Number`이므로 가드를 통과하지 않고 실제 판별로 간다 — `-> String`은 true, `-> LocalDate`는 false.\
 반면 `Optional<?>`는 상한이 `Object`라 `resolveBounds`가 null을 돌려주고(:1468-1470) 관대 갈래로 빠진다.\
 **같은 와일드카드인데 갈림이 생기는 근거는 상한이 `Object`냐 아니냐 하나뿐이다.**
 
 여기서 기존 tests.md·structure.md의 서술 하나를 실측으로 정정해 둔다.\
-두 문서는 결함 케이스의 `convert()` 예외 타입이 수정 전후 같아서 예외 단언이 판별력을 갖지 못한다고 적었으나, 실제로는 **수정 전 `ConversionFailedException` / 수정 후 `ConverterNotFoundException`**으로 서로 다르다 (두 클래스는 형제이며 상속 관계가 아니다 — 각각 `ConversionException`을 직접 상속: `ConversionFailedException.java:31`, `ConverterNotFoundException.java:30`).\
+두 문서는 결함 케이스의 `convert()` 예외 타입이 수정 전후 같아서 예외 단언이 판별력을 갖지 못한다고 적었으나, 실제로는 **수정 전 `ConversionFailedException` / 수정 후** `ConverterNotFoundException`으로 서로 다르다 (두 클래스는 형제이며 상속 관계가 아니다 — 각각 `ConversionException`을 직접 상속: `ConversionFailedException.java:31`, `ConverterNotFoundException.java:30`).\
 따라서 테스트의 `assertThatExceptionOfType(ConverterNotFoundException.class)` 단언도 수정 전에는 red다.
 
 ## 4. 계약

@@ -108,7 +108,7 @@ permit을 반납하도록 고치면서 취소 예외를 삼켜 버리는 오수�
 한도가 1인데 permit이 새면 유효 용량이 0이 되어 이후 모든 제출자가 `onLimitReached()`의 `await()`에서 영구 블로킹된다.\
 테스트는 그 데드락을 실제로 일으키지 않고 카운터 값 1로 대신 관측한다 — 데드락을 재현하는 테스트는 타임아웃에 의존해 느리고 불안정해지기 때문이다.
 
-**`setCancelRemainingTasksOnClose(true)`**는 두 가지를 동시에 켠다.\
+`setCancelRemainingTasksOnClose(true)`는 두 가지를 동시에 켠다.\
 `activeThreads` 집합을 만들어 래퍼가 씌워지게 하고, `close()`가 `cancelled` 플래그를 세우게 한다.\
 이 플래그가 `checkCancelled`의 방아쇠다.
 

@@ -206,7 +206,7 @@ private void initializeGetTotalFunctionWithMetaData() throws SQLException {
 
 - 이름·방향 3행이 핵심이다.\
   `COLUMN_NAME`의 첫 값 `null`이 **이름 없는 함수 반환 슬롯**이고, `COLUMN_TYPE` `5, 1, 4`가 각각 반환·IN·OUT이다.\
-  기존 헬퍼 `initializeAddInvoiceWithMetaData`(:362-389)의 함수 분기가 쓰는 `willReturn(null, "amount", "custid")` / `willReturn(5, 1, 1)`을 그대로 답습하되, 세 번째 행을 IN에서 **OUT(4)**으로 바꾼 것이 이 헬퍼의 전부다.\
+  기존 헬퍼 `initializeAddInvoiceWithMetaData`(:362-389)의 함수 분기가 쓰는 `willReturn(null, "amount", "custid")` / `willReturn(5, 1, 1)`을 그대로 답습하되, 세 번째 행을 IN에서 **OUT**(4)으로 바꾼 것이 이 헬퍼의 전부다.\
   그 한 칸이 "함수 반환 슬롯과 별도 OUT이 공존하는" 변형 A의 무대를 만든다.
 - 카탈로그 `""`·스키마 `"ME"`는 Oracle provider의 이름 규칙에서 나온다 — 카탈로그는 패키지 이름 자리라 없으면 빈 문자열, 스키마는 지정이 없으면 현재 사용자(OracleCallMetaDataProvider.java:62-71).\
   프로시저 이름은 대문자로 접혀 `GET_TOTAL`.

@@ -416,7 +416,7 @@ resolveArrayElementType(values, classLoader)                                :135
            ⇒ 같은 종류의 누락이 조용히 재발할 수 없다
 ```
 
-세 분기도를 겹쳐 보면 차이는 "잎을 몇 개 더 만들었나"가 아니라 **"분기점을 몇 개로 줄였나"**다.\
+세 분기도를 겹쳐 보면 차이는 "잎을 몇 개 더 만들었나"가 아니라 "**분기점을 몇 개로 줄였나**"다.\
 base는 결정 지점이 둘(`parseArrayValue`의 switch + `resolveArrayElementType`), PR 제안도 둘, HEAD는 하나다.
 
 ## 4. 스프링 전역에서의 자리

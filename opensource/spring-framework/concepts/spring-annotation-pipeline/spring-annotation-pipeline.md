@@ -288,13 +288,13 @@ ASM 경로도 완전히 "클래스 로딩 없이"는 아니다. **대상 클래�
 
 ## 7. 소비자 쪽에서 본 같은 파이프라인
 
-**`AnnotatedElementUtils`**는 정적 유틸의 얼굴을 하고 있지만 내부는 전부
+`AnnotatedElementUtils`는 정적 유틸의 얼굴을 하고 있지만 내부는 전부
 `MergedAnnotations`다. 이름의 접두어가 곧 전략 선택이다 — `get*` 계열은
 `SearchStrategy.INHERITED_ANNOTATIONS`(`AnnotatedElementUtils.java:772-774`), `find*` 계열은
 `SearchStrategy.TYPE_HIERARCHY`(799-801행)를 쓴다. 두 계열이 다른 답을 주는 이유는 로직이
 달라서가 아니라 **검색 축의 범위만 다르기 때문**이다.
 
-**`RequestMappingHandlerMapping`**은 두 층을 모두 직접 쓴다. 핸들러 클래스 판정은
+`RequestMappingHandlerMapping`은 두 층을 모두 직접 쓴다. 핸들러 클래스 판정은
 `AnnotatedElementUtils.hasAnnotation(beanType, Controller.class)` 한 줄이고
 (`RequestMappingHandlerMapping.java:177-179`), 여기서 `@RestController`가 `@Controller`로
 보이는 것이 4.2절의 매핑 축 덕분이다. 매핑 정보 생성은 `MergedAnnotations`를 직접 열어

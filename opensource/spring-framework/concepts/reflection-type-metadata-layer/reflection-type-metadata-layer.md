@@ -182,7 +182,7 @@ RT_C : type = ParameterizedType  Collection<E_List>    resolver = Default(RT_B)
 `ParameterizedTypeImpl` 같은 JDK 내부 구현체는 그렇지 않다. 스프링이 `ResolvableType`을 담은
 객체(예: 캐시된 `TypeDescriptor`)를 직렬화하려면 이 간극을 메워야 한다.
 
-해법은 **"타입 자체를 저장하는 대신, 타입을 다시 얻는 방법을 저장한다"**이다. 그 방법이
+해법은 "**타입 자체를 저장하는 대신, 타입을 다시 얻는 방법을 저장한다**"이다. 그 방법이
 `TypeProvider`이고(`SerializableTypeWrapper.java:150-164`), 직렬화 가능한 형태로 감싼 것이
 `Type` 인터페이스의 동적 프록시다.
 
@@ -243,7 +243,7 @@ RT_C : type = ParameterizedType  Collection<E_List>    resolver = Default(RT_B)
 
 ## 7. 위에 얹히는 것들 — MethodParameter와 TypeDescriptor
 
-**`MethodParameter`**는 "메서드/생성자의 파라미터(또는 반환값) 한 자리"를 가리키는 좌표
+`MethodParameter`는 "메서드/생성자의 파라미터(또는 반환값) 한 자리"를 가리키는 좌표
 객체다. 보유하는 것은 `Executable`과 `parameterIndex`이며, 파라미터 타입·제네릭 타입·
 annotation 등을 지연 계산해 `volatile` 필드에 캐시한다(`MethodParameter.java:72-99`).
 `nestingLevel`과 `typeIndexesPerLevel`이라는 개념이 있어 `List<Optional<String>>`처럼 중첩된
@@ -263,7 +263,7 @@ return forType(null, new MethodParameterTypeProvider(methodParameter), owner.asV
 때(제네릭 인터페이스를 구현한 빈의 메서드 같은 경우) 파라미터의 타입 변수가 실제 타입으로
 풀리는 것이 바로 첫 줄의 효과다.
 
-**`TypeDescriptor`**는 변환 시스템이 쓰는 카드이며, 필드가 셋뿐이다
+`TypeDescriptor`는 변환 시스템이 쓰는 카드이며, 필드가 셋뿐이다
 (`TypeDescriptor.java:72-76`): `resolvableType`, 해석된 `type`, 그리고 annotation 공급자.
 생성자 셋(`MethodParameter`/`Field`/`Property`)이 하는 일은 동일한 패턴이다
 (87-115행) — 대응하는 `ResolvableType` 팩토리를 부르고, `resolve(...)`에 **폴백을 주어**

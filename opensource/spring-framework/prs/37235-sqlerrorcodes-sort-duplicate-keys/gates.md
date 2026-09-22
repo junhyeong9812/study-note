@@ -34,7 +34,7 @@ null`(기존 7건 green 유지).
 **질문** (원문)
 
 > **diff 01 이해 게이트** - 주관식으로 답해 주세요:
-> 1. 실패 메시지가 "잘못된 예외 타입"이 아니라 **"actual not to be null"**인 이유는? - 코드 90002에 대해 `translate(...)` 내부에서 무슨 일이 일어나 null까지 가는지, SQLState가 `""`인 것과 연결해 설명해 주세요.
+> 1. 실패 메시지가 "잘못된 예외 타입"이 아니라 "**actual not to be null**"인 이유는? - 코드 90002에 대해 `translate(...)` 내부에서 무슨 일이 일어나 null까지 가는지, SQLState가 `""`인 것과 연결해 설명해 주세요.
 > 2. 세 코드 90002 / 1586 / 1062는 fix 전 각각 어떤 케이스(우연 hit / miss)를 대표하고, 왜 "정렬해서 저장"만 하면 셋 다 hit이 되나요?
 
 **시도 1 - 답변** (사용자 원문)
@@ -176,7 +176,7 @@ public void setDuplicateKeyCodes(String... duplicateKeyCodes) {
 아니라 컴파일러)에 도달했다.
 
 정정 1 - **생성 위치**. 배열이 만들어지는 곳은 "생성자/메서드 내부"가 아니라
-**호출 지점(call site)**이다. `errorCodes.setDuplicateKeyCodes("90002", "1586", "1062")`는
+**호출 지점**(call site)이다. `errorCodes.setDuplicateKeyCodes("90002", "1586", "1062")`는
 컴파일 시점에 `setDuplicateKeyCodes(new String[] {"90002", "1586", "1062"})`로 바뀐다.
 메서드 안에서 보이는 `String[] duplicateKeyCodes` 파라미터는 **그 호출만을 위해 갓
 생성된, 호출자 쪽 어느 변수도 참조하지 않는 배열**이다. 그래서 `Arrays.sort`로
@@ -277,7 +277,7 @@ new SQLException("", "", errorCode)
   글자 하나 다르지 않다.
 - 배열은 호출 지점에서 만들어진다: 값 나열 호출은
   `iconst_3 / anewarray / dup+ldc+aastore x3 / invokestatic #30`, 배열 전달 호출은
-  `aload_0 / invokestatic #30`. **같은 `#30`**이므로 오버로드가 둘인 것이 아니라
+  `aload_0 / invokestatic #30`. **같은** `#30`이므로 오버로드가 둘인 것이 아니라
   컴파일러가 한쪽에만 배열 생성 코드를 끼워 넣은 것이다.
 - 호출자 배열 변이 실증: `caller array after call = [1062, 1586, 90002]`,
   `same reference as stored = true`.

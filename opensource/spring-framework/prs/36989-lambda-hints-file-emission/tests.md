@@ -204,7 +204,7 @@ void emptyConfig() {
 
 ## fixture
 
-이 테스트의 fixture는 lambda 힌트 하나이고, 그것은 실물이 아니라 **기술자(descriptor)**다.
+이 테스트의 fixture는 lambda 힌트 하나이고, 그것은 실물이 아니라 **기술자**(descriptor)다.
 
 > **fixture(픽스처)** — 테스트가 검증하려는 상황을 만들어 주려고 미리 준비해 두는 입력이나 보조 객체.\
 > 예: 여기서는 `registerLambda(...)`로 등록한 lambda 힌트 한 건이 전부다.

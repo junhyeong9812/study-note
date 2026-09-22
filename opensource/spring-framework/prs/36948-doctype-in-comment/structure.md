@@ -140,7 +140,7 @@ PR이 바꾼 줄은 한 줄이지만, 그 줄은 상태 기계의 한 전이 경
 
 `:100`과 `:101`의 조합이 이 설계의 계약이다.\
 `consumeCommentTokens`가 "주석이 아닌 내용"만 돌려주고, 그 결과가 공백이면 루프가 그냥 넘어간다.\
-즉 **주석 본문을 걸러 내는 유일한 장치가 "빈 문자열을 돌려주는 것"**이다.\
+즉 **주석 본문을 걸러 내는 유일한 장치가 "빈 문자열을 돌려주는 것**"이다.\
 이 사실이 수정 방향을 결정한다.
 
 아래는 PR이 추가한 픽스처 `spring-core/src/test/resources/org/springframework/util/xml/xsdWithDoctypeInMultiLineCommentBody.xml`을 **수정 전** 코드로 돌렸을 때의 줄별 추적이다.

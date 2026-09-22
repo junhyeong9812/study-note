@@ -28,17 +28,17 @@ Item 90, JDK의 `SerializedLambda`가 대표 사례).
 |---|---|
 | "identity(같은 객체임)를 인코딩해 보낸다" | identity는 스트림에 실을 수 없다 — 각 JVM 내부에서만 성립하는 성질이다 |
 | "메모리 주소를 보낸다" | 주소는 JVM마다·재시작마다 달라 무의미하다 |
-| **좌표를 보낸다** | `Class`는 **정식 이름(FQCN)**으로, 타입 변수는 **"그 클래스의 i번째 파라미터"라는 인덱스**로 — 둘 다 JVM 밖에서도 유효한 기호적 지정 |
+| **좌표를 보낸다** | `Class`는 **정식 이름**(FQCN)으로, 타입 변수는 **"그 클래스의 i번째 파라미터"라는 인덱스**로 — 둘 다 JVM 밖에서도 유효한 기호적 지정 |
 
-역직렬화 쪽은 좌표를 읽고 **재조회(re-lookup)**한다: 이름으로 클래스를 로드하고,
+역직렬화 쪽은 좌표를 읽고 **재조회**(re-lookup)한다: 이름으로 클래스를 로드하고,
 `getTypeParameters()[i]`를 호출해 **받는 쪽 JVM의 정본**을 얻는다
 ([instance-stability](../jdk-generic-info-instance-stability/jdk-generic-info-instance-stability.md)가 이 재조회의 근거).
 "보낸 쪽 객체와 같은 객체"가 되는 게 아니라(불가능), **받는 쪽 세계에서 유일한 그
 객체**가 되는 것이고, 받는 쪽의 모든 비교는 받는 쪽 정본과 이루어지므로 충분하다.
 
 이 구도는 annotation의 enum 값 처리(이름 저장 -> 읽는 순간 로드된 enum에서 조회 —
-`../../prs/37153-enum-array-annotation-probe/enum-annotation-name-resolution.md`)와 동형이다. **"객체를 보내지 말고,
-받는 쪽에서 다시 찾을 수 있는 이름/좌표를 보내라"**는 직렬화 설계의 반복 원칙.
+`../../prs/37153-enum-array-annotation-probe/enum-annotation-name-resolution.md`)와 동형이다. "**객체를 보내지 말고,
+받는 쪽에서 다시 찾을 수 있는 이름/좌표를 보내라**"는 직렬화 설계의 반복 원칙.
 
 ## 3. "같은 classpath면 마커가 왜 필요하지?" — 역할 셋의 분리
 

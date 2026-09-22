@@ -350,7 +350,7 @@ PR이 바꾼 것은 `catch` 블록 4줄이지만, 그 4줄이 결정하는 것�
 
 ### 클래스로더 위임 모델과 loadClass 계약
 
-자바 클래스로더의 기본 규칙은 **부모 위임(parent delegation)**이다.\
+자바 클래스로더의 기본 규칙은 **부모 위임**(parent delegation)이다.\
 표준 `ClassLoader#loadClass` 구현은 (1) `findLoadedClass`로 이미 로드했는지 보고, (2) 부모에게 위임하고, (3) 부모가 실패하면 `findClass`로 자신이 직접 찾는다.\
 이 순서가 `java.lang.Object` 같은 코어 클래스가 항상 부트스트랩 로더 하나에서만 나오도록 보장한다.
 

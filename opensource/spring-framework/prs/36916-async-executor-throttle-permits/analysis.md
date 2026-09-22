@@ -145,7 +145,7 @@ throttle 스위치(`concurrencyLimit`)와 추적 스위치(`activeThreads`)가 �
 | `closed` (:99) | `AtomicBoolean`. 더 이상 제출을 받지 않는다는 표시 | `close()`의 CAS(:391) | `isActive()`(:276), `run()`의 finally(:497) | 직접 관련은 없으나 `execute` 초입에서 제출을 막으므로, 결함 B의 창은 "제출은 통과했고 close가 그 뒤에 온" 구간에 한정된다 |
 | `rejectTasksWhenLimitReached` (:97) | 한도 도달 시 대기 대신 거절할지 | `setRejectTasksWhenLimitReached`(:229) | `ConcurrencyThrottleAdapter.onLimitReached`(:446) | 결함 B의 **증상 형태**만 바꾼다. false면 무한 블로킹, true면 전건 `TaskRejectedException` |
 | `TaskTrackingRunnable.task` / `.future` (:470,:472) | 감쌀 원본 Runnable / 대응 `Future`(있으면) | 생성자(:474-478) | `run()`(:487,:492) | `future`는 `checkCancelled`가 `cancel(false)`를 걸 대상. 결함 B에서 이 취소는 정상 수행되고 permit만 새어나간다 |
-| `TaskTrackingRunnable.releaseThrottle` (수정 후 :474) | **"내가 만들어질 때 permit이 하나 획득되었다"**는 기록 | 생성자 인자(수정 후 :476-481). 분기 1은 `true`, 분기 2는 `false` | `run()`의 finally(수정 후 :510) | **이 PR이 신설한 이름표.** 추측을 데이터로 바꿔 결함 A를 막는다 |
+| `TaskTrackingRunnable.releaseThrottle` (수정 후 :474) | "**내가 만들어질 때 permit이 하나 획득되었다**"는 기록 | 생성자 인자(수정 후 :476-481). 분기 1은 `true`, 분기 2는 `false` | `run()`의 finally(수정 후 :510) | **이 PR이 신설한 이름표.** 추측을 데이터로 바꿔 결함 A를 막는다 |
 
 ### 2.5.2 메서드
 

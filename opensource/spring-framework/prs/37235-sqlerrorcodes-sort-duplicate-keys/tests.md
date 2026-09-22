@@ -94,7 +94,7 @@ void duplicateKeyCodesDeclaredInUnsortedOrder() {
 **단언이 `translate(...)`의 반환값을 보는 이유.**\
 이 결함은 예외를 던지지 않는다.\
 `binarySearch`가 음수를 돌려주면 번역기는 나머지 그룹 배열을 계속 조회하다 `doTranslate`에서 null을 반환하고(SQLErrorCodeSQLExceptionTranslator.java:297), 그 null이 폴백 두 단을 거쳐 최종 null로 나온다.\
-그래서 실패 모습이 "잘못된 예외 타입"이 아니라 **"actual not to be null"**이다.
+그래서 실패 모습이 "잘못된 예외 타입"이 아니라 "**actual not to be null**"이다.
 
 > **단언(assertion)** — 테스트가 "이래야 한다"고 못 박는 검사 한 줄.\
 > 예: `isInstanceOf(DuplicateKeyException.class)`는 번역 결과가 그 타입이어야 한다고 못 박는다.
@@ -104,7 +104,7 @@ void duplicateKeyCodesDeclaredInUnsortedOrder() {
   SQLState가 두 글자도 안 되므로 `SQLStateSQLExceptionTranslator`의 가드 `sqlState.length() >= 2`(:128)에 막혀 클래스 코드 추출조차 못 한다.\
   그 덕에 폴백이 red를 덮어 주지 못한다.
 - 폴백 1단 `SQLExceptionSubclassTranslator`도 무매치다.\
-  테스트가 만든 것이 JDBC 4 서브클래스가 아닌 **순수 `SQLException`**이라 `SQLTransientException` / `SQLNonTransientException` / `SQLRecoverableException` 세 분기 어디에도 걸리지 않는다(:75-123).\
+  테스트가 만든 것이 JDBC 4 서브클래스가 아닌 **순수** `SQLException`이라 `SQLTransientException` / `SQLNonTransientException` / `SQLRecoverableException` 세 분기 어디에도 걸리지 않는다(:75-123).\
   두 폴백이 "설치되지 않아서" null인 것이 아니라 **실행되고도 각자의 사유로** null이라는 점이 중요하다.
 - 프로덕션에서는 이 null을 받은 `JdbcTemplate`이 `UncategorizedSQLException`으로 감싼다(JdbcTemplate.java:1550).\
   테스트는 translator를 직접 호출하므로 그 감싸기 단계가 없어 null이 그대로 드러난다.

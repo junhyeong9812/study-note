@@ -99,8 +99,8 @@
 
 Q1 정답 확정 - **green의 주체 경로.** `ReactiveAdapter.fromPublisher`(L120-122)는
 `fromPublisherFunction`만 호출한다. 이 프로젝트가 쓰는 Mutiny는
-**1.10.0**(framework-platform.gradle:56)이라 `MutinyRegistrar`의 **else 분기(Mutiny 1,
-L399-407)**가 활성이고, 그 람다는
+**1.10.0**(framework-platform.gradle:56)이라 `MutinyRegistrar`의 **else 분기**(Mutiny 1,
+L399-407)가 활성이고, 그 람다는
 
 ```java
 publisher -> io.smallrye.mutiny.Uni.createFrom().publisher(publisher)   // L403

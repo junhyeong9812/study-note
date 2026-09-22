@@ -9,7 +9,7 @@ JLS(Java Language Specification)는 Java 언어의 공식 명세 — 언어의 �
 "컴파일러가 무엇을 허용하고 무엇을 컴파일 에러로 거부해야 하는가"를 정의하는
 문서이므로, JLS가 금지한 구조는 **어떤 Java 코드로도 만들어질 수 없다**. 런타임
 방어 코드를 설계할 때 "이 입력은 올 수 있는가?"의 최종 근거가 된다. 우리가 쓰는
-근거는 annotation 타입 선언을 다루는 **JLS §9.6(Annotation Interfaces)**이다.
+근거는 annotation 타입 선언을 다루는 **JLS §9.6**(Annotation Interfaces)이다.
 
 ## 규칙 1: annotation 멤버가 가질 수 있는 타입은 닫힌 목록이다
 
