@@ -28,7 +28,7 @@ network 1 · rust 3 · python 5 · java-history/spring 8 · java-history/java 4
 | B1 | `network-history/03-주소-DNS-라우팅.md` | 제목 「세 층」 vs 본문 「이 네 층은」 vs 표 4행 |
 | B2 | `rust-history/03-소유권-시스템.md` L13·L136·L142 | lexical 시기 `~2018` / `~2015` / `1.0 ~ 2018` |
 | B3 | `rust-history/02-에디션.md` | `async` 문법(1.39 전 에디션) vs 키워드 예약(2018 에디션) |
-| B4 | `python-history/03-현대-Python.md` 3.6~3.7 | 같은 `x: int` 를 「인스턴스 속성」 / 「클래스 변수」 |
+| B4 | `python-history/03-현대-Python.md` 3.6\~3.7 | 같은 `x: int` 를 「인스턴스 속성」 / 「클래스 변수」 |
 | B5 | `python-history/03-현대-Python.md` | 「두 가지다」인데 불릿 셋 |
 | B6 | `python-history/03-현대-Python.md` f-string | 산문 3가지와 코드 3가지의 구성원이 다름 |
 | B7 | `python-history/05-데이터-ML-생태계.md` L3·L220·L222 | 「20여 년」 / 「30년 전 NumPy」 / 「30년」 |
@@ -36,7 +36,7 @@ network 1 · rust 3 · python 5 · java-history/spring 8 · java-history/java 4
 | B9 | `java-history/spring/boot-2.x.md` | 2.3 OCI 이미지 빌드의 빌드 도구 한정어가 세 곳 다름 |
 | B10 | `java-history/spring/kotlin-and-spring.md` | 「플러그인 역할」 목록에 `dependencies` 항목이 섞이고 `kotlin-reflect` 누락 |
 | B11 | `java-history/spring/boot-2.x.md` L115 | `runApplication` 을 「확장 함수」라 적음 (최상위 reified 함수) |
-| B12 | `java-history/spring/README.md` ↔ `boot-3.x.md` | 타임라인이 3.1~3.4 까지인데 본문은 3.5 |
+| B12 | `java-history/spring/README.md` ↔ `boot-3.x.md` | 타임라인이 3.1\~3.4 까지인데 본문은 3.5 |
 | B13 | `java-history/spring/framework-4.x.md` | 4.0 을 2013-12 로 적고 배경은 2014-03 Java 8 에 맞췄다고 적음 |
 | B14 | `java-history/spring/framework-7.x.md` L124↔L136 | 서버 `/account/{id}` vs 클라이언트 `/accounts/1` |
 | B15 | `java-history/spring/framework-6.x.md` ↔ `7.x` | 「jakarta 전면 교체」 vs 「6.x 가 남긴 잔여 javax」 |
@@ -45,12 +45,12 @@ network 1 · rust 3 · python 5 · java-history/spring 8 · java-history/java 4
 | B18 | `java-history/java/jdk-1.2.md` L48 | `diamond` 를 J2SE 5.0 이라 적음 (Java SE 7) |
 | B19 | `java-history/java/java-9.md` ↔ `java-11.md` | `BodyHandler.asString()` vs `BodyHandlers.ofString()` |
 | B20 | `java-history/java/java-12.md` | switch 표현식 정식화 시점(Java 14, JEP 361) 누락 |
-| B21 | `java-history/java/java-25.md` L35 | Scoped Values 를 「22~24」로 세어 21의 1차 프리뷰 누락 |
+| B21 | `java-history/java/java-25.md` L35 | Scoped Values 를 「22\~24」로 세어 21의 1차 프리뷰 누락 |
 
 ### 손대지 않는 것 (사용자 확정)
 
 - **C · 관점 차이 4건** — java-5↔8 LTS 기준점 · java-14 릴리스 모델 전환 · framework-3.x `@RestController` · java-18 lead 의 Loom 과포함.
-- **D · 보류 1건** — `rust-history/01-탄생-1.0.md` 절 제목 (2010~2012) vs 본문 (2009~2012).
+- **D · 보류 1건** — `rust-history/01-탄생-1.0.md` 절 제목 (2010\~2012) vs 본문 (2009\~2012).
 
 ### 후속 (같은 작업에 포함)
 
@@ -86,7 +86,7 @@ network 1 · rust 3 · python 5 · java-history/spring 8 · java-history/java 4
 3. **diff 전수 리뷰** — 26건 외의 변경이 섞이지 않았는지 `git diff` 를 줄 단위로 훑는다. 의도 외 변경 0 이어야 한다.
 4. **렌더 확인(A5)** — GFM 표가 실제로 4칸으로 갈라지는지 확인한다.
 5. **재서술본 동기화 확인** — 제거한 「재서술자 주」마다 원본이 실제로 고쳐졌는지 대조한다. 안 고친 건(C·D)의 주는 **남아 있어야** 한다.
-6. **검증 패스 분리** — 작성자와 컨텍스트가 분리된 워커가 1~5 를 점검한다.
+6. **검증 패스 분리** — 작성자와 컨텍스트가 분리된 워커가 1\~5 를 점검한다.
 
 ## ⑥ stakes
 

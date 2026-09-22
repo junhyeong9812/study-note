@@ -4,7 +4,7 @@
 
 ## ① 목표·대상
 
-`database·java·js·network·python·rust·web` 7개 history repo의 콘텐츠 md **79편(15,192줄)**을 study-note의 `history/` 섹션으로 이관한다.
+`database·java·js·network·python·rust·web` 7개 history repo의 콘텐츠 md **79편**(15,192줄)을 study-note의 `history/` 섹션으로 이관한다.
 그냥 옮기는 게 아니라 **초보자가 읽을 수 있는 형태로 다시 쓴다** — 도식으로 단순화하고, 전문용어는 쓰되 등장 자리에 설명을 붙인다.
 
 구조(사용자 확정: 8주제):
