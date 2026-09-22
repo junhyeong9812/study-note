@@ -41,6 +41,12 @@
 > **외부 조인(outer join)** — 짝을 못 찾은 행을 버리지 않고 **반대쪽 열을 `NULL` 로 채워** 남기는 조인.\
 > 예: `dan` 은 부서가 없지만 `LEFT JOIN` 결과에 남고 `dept` 쪽 열이 전부 `NULL` 이 된다.
 
+## 이 주제가 답하려는 질문
+
+1. **양쪽의 짝 없는 행을 다 살리면 행이 몇이 되나?** — `LEFT` + `RIGHT` − `INNER` 라는 셈이 왜 맞나.
+2. **결과의 `NULL` 이 조인이 만든 것인가, 원래 있던 것인가?** — 「어느 쪽에만 있는 행인가」는 **어느 열로** 판정하나.
+3. **MySQL 에는 이 문법이 없다 — 우회는 무엇이고 어디서 조용히 틀리나?** — `UNION` 과 `UNION ALL` 이 갈리는 자리.
+
 ## 예시 데이터 — 이 묶음이 공유하는 것
 
 ```text
@@ -355,7 +361,7 @@ ERROR 1064 (42000) ...
 `dan` 의 `d.name` 은 `NULL`, `hr` 행의 `d.name` 은 `'sales'` 가 아니니 둘 다 `WHERE` 에서 잘렸다.\
 대가 — 외부 조인에 `WHERE` 를 붙일 때는 **그 조건이 `NULL` 로 채워진 행도 통과시킬 수 있는지** 매번 확인해야 한다.
 
-조건 위치의 규칙은 이 주제 밖이다 — 목록의 15번이 정본이다.
+조건 위치의 규칙은 이 주제 밖이다 — [목록의 **15번 주제**](../15-on-vs-where-in-outer-join/)이 정본이다.
 
 ### 6. PG 의 제약 — `FULL JOIN` 은 등호 조인만
 
@@ -425,6 +431,41 @@ FROM emp e FULL OUTER JOIN dept d ON e.dept_id = d.id;
   짝 없는 행이 `NULL` 로 들어오므로 `COUNT(열)` 과 `COUNT(*)` 이 어긋난다([04번](../04-null-three-valued-logic/)).
 - **`FULL OUTER` 를 「그냥 둘 다 보고 싶을 때」 남발한다.**\
   대부분의 화면은 한쪽 기준이다. 기준이 있으면 `LEFT` 가 읽기도 쉽고 계획도 낫다.
+
+## 구현 세부사항 대 언어 보장
+
+이 주제는 **한쪽 엔진에 문법이 아예 없는** 주제라 층이 유난히 잘 엉킨다.
+
+| 항목 | 무엇인가 | 누가 보장하나 |
+|---|---|---|
+| `FULL OUTER JOIN` 의 **정의** | **정의** | ★ **PG 문서 한쪽만이 근거다** — MySQL 엔 그 문법이 없어 대응 문장이 없다(아래) |
+| `FULL` 의 행 수 = `LEFT` + `RIGHT` − `INNER` | **정의** | 위 정의에서 따라 나온다. PG 출력(5행)이 그것과 맞았다 |
+| 짝 없는 행의 반대쪽 열이 **전부** `NULL` | **정의** | 위 정의가 *"null values in columns of T2"* 로 적는다 |
+| MySQL 에 `FULL [OUTER] JOIN` 이 **없다** | **방언** | 엔진 — 문서의 외부 조인 문법이 `LEFT`·`RIGHT` 둘뿐 + `ERROR 1064` |
+| `UNION` 이 중복을 지운다 / `UNION ALL` 은 안 지운다 | **정의** | 언어 — 두 문서가 같은 말을 한다(아래) |
+| ★ **PG 가 부등호 `FULL` 을 거부하는 것** | **구현** | **문서에 없다** — 에러 메시지 한 줄이 전부다(아래) |
+| **동률 행의 줄 순서** | **비결정** | **아무도 보장 안 한다** — 본문 1번 `RIGHT` 에서 `ann`·`bob` 이 갈렸다 |
+| 에러 번호·문구(`1064`) | 구현 세부 | 엔진 — **문자열로 분기하지 마라** |
+
+**PG 문서만이 근거인 자리** — `FULL OUTER JOIN` 의 정의는 PG 매뉴얼의 이 문장이다:\
+*"First, an inner join is performed. Then, for each row in T1 that does not satisfy the join condition with any row in T2, a joined row is added with null values in columns of T2. Also, for each row of T2 that does not satisfy the join condition with any row in T1, a joined row with null values in the columns of T1 is added."*\
+**MySQL 문서에는 짝이 되는 문장이 없다 — 문법 자체가 없기 때문**이다. 그래서 이 항목만은 「두 문서가 같은 말을 한다」 형태로 못 적는다.
+
+★ **`UNION` 우회가 조용히 틀리는 것은 방언도 버그도 아니다 — 두 문서가 약속한 대로 동작한 결과다.**\
+PG *"The result of `UNION` does not contain any duplicate rows unless the `ALL` option is specified."* · MySQL *"By default, duplicate rows are removed from results of set operations."*\
+본문 4번에서 `(10, 10)` 두 행이 한 행으로 접힌 것은 **문서대로 일어난 일**이고, 틀린 것은 SQL 이 아니라 **「`FULL OUTER` 를 `UNION` 으로 흉내 낼 수 있다」는 설계**다.\
+★ 그 우회가 **이름 열에서는 5행으로 맞아 보였다**는 것이 이 절이 있는 이유다 — **데이터가 안 갈려서 안 드러났을 뿐**이다. 「돌려 보니 맞더라」를 보장으로 읽으면 운영에서 행이 줄어든다.
+
+★ **PG 의 `FULL JOIN is only supported with merge-joinable or hash-joinable join conditions` 는 문서에 없다.**\
+기준 소스인 [Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) 페이지를 열어 확인했다 — 위 정의는 있지만 **조인 조건에 대한 제약 문장은 없다.**\
+그러므로 이 제약의 근거는 **PG 18.6 서버가 뱉은 에러 메시지 하나**뿐이고, 그것이 말하는 것은 「표준이 금지했다」가 아니라 「**이 판의 PG 가 `FULL` 을 머지/해시로만 구현했다**」다.\
+**다른 엔진엔 해당 없고, 버전이 오르면 조용히 바뀔 수 있다.** 어떤 조건이 merge/hash-joinable 로 분류되는지도 **문서에서 확인 못 했다 — 모른다.**
+
+**「MySQL 에는 없다」와 「PG 가 이 조건으로는 못 한다」는 다른 층이다.** 앞은 문서가 정한 문법의 유무(방언), 뒤는 구현의 현재 모습이다.\
+본문 6번의 두 에러를 같은 「안 된다」로 묶으면 여기서 틀린다.
+
+**동률 행의 순서** — 본문 1번 `RIGHT` 판은 `ORDER BY d.id` 뿐이라 `ann`·`bob` 의 순서를 **질의가 정하지 않았다.**\
+두 엔진이 다르게 찍은 것은 방언이 아니라 **답이 정해지지 않은 자리**이고, 같은 엔진에서 다음 판이 같다는 보장도 없다.
 
 ## 언제 쓰고 언제 안 쓰나
 
