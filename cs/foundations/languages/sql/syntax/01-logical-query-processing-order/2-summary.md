@@ -43,6 +43,12 @@ LIMIT    ...   (마지막으로 적음)    7. ORDER BY  줄을 세운다
 > **별칭(alias)** — `AS` 로 붙이는 새 이름. 열 별칭(`salary * 12 AS annual`)과 테이블 별칭(`FROM emp e`)이 있다.\
 > 예: `annual` 은 5번 창구에서 태어나므로 2번 창구(`WHERE`)에는 없는 이름이다.
 
+## 이 주제가 답하려는 질문
+
+1. **`SELECT` 에 붙인 이름은 언제 태어나나?** — 같은 별칭이 `WHERE` 에서는 없고 `ORDER BY` 에서는 있는 이유.
+2. **같은 조건을 `WHERE` 에 두는 것과 `HAVING` 에 두는 것이 왜 다른 답을 내나?** — 행을 버리는 칸과 그룹을 버리는 칸은 다르다.
+3. **`LIMIT` 을 붙이면 엔진이 일을 덜 하나?** — 이 여덟 칸이 *결과의 정의*이지 *실행 계획*이 아니라는 것.
+
 ## 예시 데이터 — 이 묶음이 공유하는 것
 
 이 폴더의 `01` · `04` · `16` · `52` 는 **같은 두 표**를 쓴다. 표가 같으면 주제 간 비교가 공짜로 된다.
@@ -254,7 +260,7 @@ ERROR 1055 (42000): Expression #2 of SELECT list is not in GROUP BY clause and c
   GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
 ```
 
-MySQL 이 거부하는 근거가 **`sql_mode=only_full_group_by`** 라는 점은 기억해 둘 값어치가 있다 — 그건 *설정*이라 끌 수 있다. 자세한 규칙은 목록의 22번 주제다.
+MySQL 이 거부하는 근거가 **`sql_mode=only_full_group_by`** 라는 점은 기억해 둘 값어치가 있다 — 그건 *설정*이라 끌 수 있다. 자세한 규칙은 [목록의 **22번 주제**](../22-group-by-nonaggregated-columns/)다.
 
 ---
 
@@ -349,7 +355,7 @@ ERROR 1054 (42S22): Unknown column 'annual' in 'where clause'
 
 > **덤으로 보이는 차이** — 같은 `ORDER BY annual` 인데 `NULL` 의 자리가 반대다.\
 > PG 는 `ASC` 에서 `NULL` 을 **맨 뒤**(큰 값 취급), MySQL 은 **맨 앞**(작은 값 취급)에 둔다.\
-> 이건 순서 주제가 아니라 정렬 주제다 — 목록의 08번.
+> 이건 순서 주제가 아니라 정렬 주제다 — [목록의 **08번 주제**](../08-order-by-null-position-stability/).
 
 #### 방언 — `HAVING` 에서 별칭이 되나
 
@@ -497,7 +503,7 @@ ERROR 3065 (HY000): Expression #1 of ORDER BY clause is not in SELECT list, refe
 ```
 
 그림 해설 — `OFFSET 1` 은 **정렬 뒤**에 1행을 건너뛴다. 「건너뛴다」는 건 만들긴 다 만들었다는 뜻이다.\
-대가 — `LIMIT` 은 **일을 줄여 주지 않는다.** 앞 일곱 칸은 다 돌았다. `OFFSET 100000` 이 느린 이유가 이것이다(목록의 09번).
+대가 — `LIMIT` 은 **일을 줄여 주지 않는다.** 앞 일곱 칸은 다 돌았다. `OFFSET 100000` 이 느린 이유가 이것이다([목록의 **09번 주제**](../09-limit-offset-keyset-pagination/)).
 
 > `ORDER BY` 없는 `LIMIT` 은 **어느 행이 올지 정해지지 않는다.** 같은 질의가 같은 답을 준다는 보장이 없다.
 
@@ -577,7 +583,63 @@ ERROR:  window functions are not allowed in WHERE
 ERROR 3593 (HY000): You cannot use the window function 'row_number' in this context.'
 ```
 
-  고치는 법은 한 겹 감싸는 것이다 — 안쪽 질의가 「이전 칸」이 되면 바깥에서는 그냥 열이다(목록의 31번).
+  고치는 법은 한 겹 감싸는 것이다 — 안쪽 질의가 「이전 칸」이 되면 바깥에서는 그냥 열이다([목록의 **31번 주제**](../31-window-evaluation-timing/)).
+
+## 구현 세부사항 대 언어 보장
+
+「순서」라는 말 하나에 **세 층이 겹쳐 있다.** 갈라서 본다.
+
+| 항목 | 무엇인가 | 누가 보장하나 |
+|---|---|---|
+| 여덟 칸의 처리 **순서** | **정의** | PG 문서가 `SELECT` 의 처리를 **번호 붙인 목록**으로 적는다. ★ MySQL 쪽 같은 목록은 **못 찾았다**(아래) |
+| 별칭이 `WHERE` 에 **없다** | **정의** | 언어 — 두 문서가 같은 말을 한다(아래 인용) |
+| 별칭이 `GROUP BY`·`ORDER BY` 에서 되는 것 | **정의** | 언어 — 두 문서가 같은 말을 하고, 두 엔진 출력도 같았다 |
+| **별칭이 `HAVING` 에서 되는가** | **방언** | 엔진 — **양쪽 문서가 각각 적었고 서로 반대다.** MySQL 이 스스로 「확장」이라 밝힌다(아래) |
+| `GROUP BY` 가 같은 값의 행을 한 행으로 접는 것 | **정의** | 언어 — PG 문서의 한 문장이 그대로다(아래) |
+| **`ORDER BY` 의 `NULL` 자리** | **방언** | 엔진 — **둘 다 문서로 약속했는데 정반대다**(아래) |
+| 묶이지 않은 열의 거부(`ERROR 1055`) | **설정** | 엔진이 아니라 **이 서버의 `sql_mode`**(아래) |
+| ★ **`LIMIT` 이 앞 칸의 일을 덜어 주나** | **계획의 선택** | **아무도 보장 안 한다**(아래) |
+| `ORDER BY` 없는 출력의 줄 순서 | **비결정** | **아무도 보장 안 한다** — 본문 `GROUP BY annual` 판의 두 줄 순서가 그 탓이다 |
+| 에러 번호·문구(`1054`·`1055`·`1064`·`1111`·`3065`·`3593`) | 구현 세부 | 엔진 — **문자열로 분기하지 마라** |
+
+**두 문서가 같은 말을 하는 자리** — 이것들은 방언이 아니다.
+
+- 별칭과 `WHERE` — PG *"An output column's name can be used to refer to the column's value in `ORDER BY` and `GROUP BY` clauses, but not in the `WHERE` or `HAVING` clauses"* · MySQL *"Standard SQL disallows references to column aliases in a `WHERE` clause."*
+- 별칭과 `GROUP BY`·`ORDER BY` — MySQL *"You can use the alias in `GROUP BY`, `ORDER BY`, or `HAVING` clauses to refer to the column"* · 위 PG 문장의 앞부분이 같은 말이다(다만 `HAVING` 은 MySQL 쪽에만 해당한다 — 아래).
+- 묶기 — PG *"`GROUP BY` will condense into a single row all selected rows that share the same values for the grouped expressions."*
+
+**엔진이 자기 문서로 약속한 자리 — 그래서 다른 엔진엔 해당 없다.**
+
+- `HAVING` 별칭 — MySQL 매뉴얼이 **확장이라고 스스로 밝힌다**: *"The SQL standard requires that `HAVING` must reference only columns in the `GROUP BY` clause or columns used in aggregate functions. However, MySQL supports an extension to this behavior, and permits `HAVING` to refer to columns in the `SELECT` list"*.\
+  PG 는 위 문장으로 **못 쓴다**고 적었다. **양쪽이 다 문서로 정한 차이라 안 흔들린다** — 이식하면 반드시 깨진다.
+- `ORDER BY` 의 `NULL` — PG *"the default behavior is `NULLS LAST` when `ASC` is specified or implied, and `NULLS FIRST` when `DESC` is specified"* / MySQL *"When doing an `ORDER BY`, `NULL` values are presented first if you do `ORDER BY ... ASC` and last if you do `ORDER BY ... DESC`."*\
+  **같은 자리를 양쪽이 문서로 약속했는데 답이 반대**다 — 「관찰이라 갈렸다」가 아니다.
+
+★ **`LIMIT` — 이 주제에서 가장 잘 섞이는 자리다.** 셋으로 갈라야 한다.
+
+- **언어가 보장하는 것** — *결과의 정의*에서 `LIMIT` 이 **마지막 칸**이라는 것. 앞 칸들의 **의미**는 `LIMIT` 이 있든 없든 안 변한다.
+- **엔진 문서가 말하는 것** — **계획이 `LIMIT` 을 본다**는 것. PG *"The query planner takes `LIMIT` into account when generating a query plan"* · MySQL *"MySQL stops sorting as soon as it has found the first `row_count` rows of the sorted result, rather than sorting the entire result."*
+- **관찰일 뿐인 것** — **이 질의가 실제로 일을 덜 했는지.** 그건 계획을 찍어야 알고, 계획은 통계·데이터·판마다 흔들린다.\
+  이 편에는 `EXPLAIN` 이 한 장도 없으므로 **이 주제 안에 그 근거가 없다** — [목록의 **58번**](../58-explain-plan-tree/)·[**60번 주제**](../60-explain-analyze-estimates-vs-actuals/)의 소재다.
+
+★ **`only_full_group_by` 는 언어도 방언도 아니라 설정이다.** 두 엔진에 직접 물었다.
+
+```text
+### SQL: SELECT @@sql_mode\G
+--- MySQL 8.4.10 ---
+*************************** 1. row ***************************
+@@sql_mode: ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+
+### SQL: SHOW sql_mode;
+--- PG 18.6 ---
+ERROR:  unrecognized configuration parameter "sql_mode"
+```
+
+그러므로 본문의 `ERROR 1055` 는 「MySQL 이 거부한다」가 아니라 「**이 설정이 켜진 MySQL 서버가 거부한다**」로 읽는다. 끄면 답이 달라진다.\
+PG 쪽은 그런 손잡이 자체가 없다 — **「그런 설정이 없다」는 대답도 출력이다.**
+
+★ **모른다** — MySQL 매뉴얼에 PG 같은 **처리 순서 목록**이 있는지는 확인하지 못했다(절별 규칙으로 흩어진 것만 봤다).\
+그러므로 「여덟 칸」이라는 정리는 **PG 문서 한쪽 + 두 엔진의 실제 동작**이 근거이지, 두 문서가 나란히 보장한 것이 아니다.
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -585,7 +647,7 @@ ERROR 3593 (HY000): You cannot use the window function 'row_number' in this cont
 
 - **"왜 이 열이 여기서 안 되지"** 를 만났을 때 — 먼저 이 순서를 떠올린다. 답의 대부분이 "그 칸에서는 아직/이미 없다"다.
 - **결과 행 수가 예상과 다를 때** — 어느 칸에서 행 수가 변했는지 칸마다 잘라 세어 본다(`FROM` → `WHERE` → `GROUP BY` 순으로 `COUNT(*)`).
-- **성능이 문제일 때는 이 순서를 그대로 믿지 않는다.** 이건 *결과의 정의*이지 *실행 계획*이 아니다. 실제로 무엇을 먼저 했는지는 `EXPLAIN` 이 말한다(목록의 58번).
+- **성능이 문제일 때는 이 순서를 그대로 믿지 않는다.** 이건 *결과의 정의*이지 *실행 계획*이 아니다. 실제로 무엇을 먼저 했는지는 `EXPLAIN` 이 말한다([목록의 **58번 주제**](../58-explain-plan-tree/)).
 
 ## 핵심 문장
 
