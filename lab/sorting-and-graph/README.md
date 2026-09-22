@@ -1,6 +1,6 @@
 # sorting-and-graph — 정렬 6종·그래프 탐색 4종을 리소스 제한 컨테이너에서 실측
 
-- 원본: `/home/jun/project/sorting-and-graph` · 기간: 2026-01-17 ~ 2026-01-20 (git 커밋 기준) · 스택: Java 21 + Spring Boot 3.5.0, Gradle 8.x, Docker (리소스 제한 프로필)
+- 원본: `/home/jun/project/sorting-and-graph` · 기간: 2026-01-17 \~ 2026-01-20 (git 커밋 기준) · 스택: Java 21 + Spring Boot 3.5.0, Gradle 8.x, Docker (리소스 제한 프로필)
 - 상태: **완료** (정렬·그래프 벤치마크 문서 + 알고리즘별 개념 문서)
 
 ## 무엇을 알고 싶었나 — 질문·가설
@@ -14,7 +14,7 @@
 
 | 항목 | 값 |
 |------|-----|
-| 실행 형태 | Spring Boot API 서버 2개(sorting :8081~8083, graph :8091~8093)를 Docker로 기동, `GET /api/sort/benchmark`·`GET /api/graph/benchmark` 호출 |
+| 실행 형태 | Spring Boot API 서버 2개(sorting :8081\~8083, graph :8091\~8093)를 Docker로 기동, `GET /api/sort/benchmark`·`GET /api/graph/benchmark` 호출 |
 | 리소스 프로필 | low(1 core/256MB) · medium(2 cores/512MB) · high(4 cores/1GB) |
 | 정렬 입력 | dataSize 10,000 / 50,000 / 100,000 · dataType RANDOM / NEARLY_SORTED / REVERSED |
 | 그래프 입력 | nodeCount 1,000 / 100,000 · RANDOM · SPARSE(간선 수 = 노드 수) |
@@ -70,13 +70,13 @@
 
 출처: `/home/jun/project/sorting-and-graph/docs/graph/BENCHMARK.md`
 
-1,000 노드에서는 전 알고리즘 0.73~0.97ms로 근소 (DFS 재귀가 0.73ms로 1위). 노드 100배 증가에 시간 약 50~60배 증가 — 원본은 "선형에 가까움"으로 평가.
+1,000 노드에서는 전 알고리즘 0.73\~0.97ms로 근소 (DFS 재귀가 0.73ms로 1위). 노드 100배 증가에 시간 약 50\~60배 증가 — 원본은 "선형에 가까움"으로 평가.
 
 ## 종합 결론
 
 - **복잡도 차이는 규모가 커질수록 기하급수로 벌어진다** — 100,000개에서 Quick 7.6ms vs Bubble 14,033ms (1,846배).
 - **Insertion Sort는 거의 정렬된 데이터에서 7.8배 빨라진다** (29.7ms → 3.8ms) — "거의 정렬된 데이터·소규모(<50)"라는 예외 조건의 실증.
-- **Merge Sort는 빠르지만 O(n) 추가 메모리** — 100,000개에서 ~10MB. 메모리 제한 환경에선 in-place인 Heap Sort가 대안.
+- **Merge Sort는 빠르지만 O(n) 추가 메모리** — 100,000개에서 \~10MB. 메모리 제한 환경에선 in-place인 Heap Sort가 대안.
 - **그래프 탐색 4종은 실측에서도 비슷** (모두 O(V+E)) — 선택 기준은 속도보다 성질: 최단 경로는 BFS, 깊은 그래프는 DFS(Iterative, 스택 오버플로우 방지), 두 노드 간 경로는 Bidirectional BFS.
 - 리소스 프로필 비교에서 100,000개 High(1GB/4core)가 Low보다 오히려 느린 케이스 존재 (Quick 7.6→13.1ms) — 원본은 수치만 제시, 원인 분석은 문서에 없음.
 
@@ -85,7 +85,7 @@
 - 반복 측정·편차(신뢰구간) 기록 없음 — 각 셀이 단일 실측값.
 - Low vs High 리소스에서 결과가 역전된 원인(JIT·GC·코어 경합 등) 미분석.
 - 그래프는 SPARSE·RANDOM 조합만 실측 — DENSE 그래프, 가중 그래프(다익스트라 등) 없음.
-- 1,000,000+ 노드 예측치(~500ms)는 외삽이며 실측 아님.
+- 1,000,000+ 노드 예측치(\~500ms)는 외삽이며 실측 아님.
 
 ## 원본 문서 지도
 

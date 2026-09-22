@@ -1,13 +1,13 @@
 # proto-bench — HTTP vs gRPC 성능 역전 포인트를 7개 Phase로 추적
 
-- 원본: `/home/jun/project/proto-bench` · 기간: 2026-01-14 ~ 2026-01-17 (git 커밋 기준) · 스택: Kotlin + Spring Boot 3.x, grpc-kotlin, Gradle(Kotlin DSL), k6
-- 상태: **완료** (Phase 1~7 측정 완료 — GC 가설 검증 등은 별도 프로젝트 제안으로 종료)
+- 원본: `/home/jun/project/proto-bench` · 기간: 2026-01-14 \~ 2026-01-17 (git 커밋 기준) · 스택: Kotlin + Spring Boot 3.x, grpc-kotlin, Gradle(Kotlin DSL), k6
+- 상태: **완료** (Phase 1\~7 측정 완료 — GC 가설 검증 등은 별도 프로젝트 제안으로 종료)
 
 ## 무엇을 알고 싶었나 — 질문·가설
 
 - "gRPC는 HTTP/2 + Protobuf니까 HTTP/JSON보다 빠를 것이다"라는 통념이 실제로 어떤 조건에서 성립하는가.
 - 페이로드 크기·동시 사용자 수·데이터 구조 복잡도 3축에서 **HTTP ↔ gRPC 성능이 역전되는 지점**을 수치로 찾는다.
-- Phase별 가설: ①대용량 1MB에서 gRPC 우위? ②소용량에서 HTTP 헤더 오버헤드로 gRPC 유리? ③고동시성에서 HTTP/2 멀티플렉싱 효과? ④100~500KB 사이 역전? ⑤복잡 구조에서 Protobuf 파싱 유리? ⑥극한 복잡도에서 HTTP 역전? ⑦역전 원인은 CPU 사용량?
+- Phase별 가설: ①대용량 1MB에서 gRPC 우위? ②소용량에서 HTTP 헤더 오버헤드로 gRPC 유리? ③고동시성에서 HTTP/2 멀티플렉싱 효과? ④100\~500KB 사이 역전? ⑤복잡 구조에서 Protobuf 파싱 유리? ⑥극한 복잡도에서 HTTP 역전? ⑦역전 원인은 CPU 사용량?
 
 ## 실험 환경과 방법
 
@@ -38,9 +38,9 @@ HTTP/Binary가 gRPC/Unary의 약 2배 — 직렬화 없는 raw bytes vs Protobuf
 
 출처: `/home/jun/project/proto-bench/README.md` (Phase 2 절) · 상세: `docs/phase/PHASE2_RESULT.md`
 
-1KB에서 HTTP 헤더가 페이로드의 ~40%인 반면 gRPC 프레이밍은 ~5%.
+1KB에서 HTTP 헤더가 페이로드의 \~40%인 반면 gRPC 프레이밍은 \~5%.
 
-### Phase 3: 고동시성 50~500 VU — 역전 포인트 100~200 VU
+### Phase 3: 고동시성 50\~500 VU — 역전 포인트 100\~200 VU
 
 | VU | HTTP/JSON | HTTP/Binary | gRPC/Unary | 승자 |
 |----|-----------|-------------|------------|------|
@@ -53,7 +53,7 @@ HTTP/Binary가 gRPC/Unary의 약 2배 — 직렬화 없는 raw bytes vs Protobuf
 
 gRPC/Unary만 50→500 VU에서 +49% 스케일 — HTTP는 200 VU부터 포화, 500 VU에서 gRPC p95가 HTTP보다 36% 낮음.
 
-### Phase 4: 페이로드 크기 역전 탐색 — 역전 포인트 100~200KB
+### Phase 4: 페이로드 크기 역전 탐색 — 역전 포인트 100\~200KB
 
 | 크기 | HTTP/Binary | gRPC/Unary | 승자 |
 |------|-------------|------------|------|
@@ -67,19 +67,19 @@ gRPC/Unary만 50→500 VU에서 +49% 스케일 — HTTP는 200 VU부터 포화, 
 
 대용량에서 Protobuf 직렬화·`ByteString.copyFrom()` 복사 비용이 지배적.
 
-### Phase 5·6: 데이터 구조 복잡도 — ~150 필드에서 HTTP 역전
+### Phase 5·6: 데이터 구조 복잡도 — \~150 필드에서 HTTP 역전
 
 | 복잡도 (필드 수) | HTTP/JSON | HTTP/Binary | gRPC/Unary | 승자 |
 |-----------------|-----------|-------------|------------|------|
 | Simple (5) | 3,602 | 3,627 | **6,007** | gRPC +67% |
 | Medium (13) | 3,273 | 3,393 | **5,527** | gRPC +69% |
 | Complex (50) | 3,154 | 2,955 | **4,415** | gRPC +40% |
-| Ultra (~150) | **2,074** | 2,154 | 1,847 | HTTP/JSON +12% |
-| Extreme (~500) | **419** | 482 | 407 | HTTP/JSON +3% |
+| Ultra (\~150) | **2,074** | 2,154 | 1,847 | HTTP/JSON +12% |
+| Extreme (\~500) | **419** | 482 | 407 | HTTP/JSON +3% |
 
 출처: `/home/jun/project/proto-bench/README.md` (Phase 5·6 절) · 상세: `docs/phase/PHASE5_RESULT.md`, `PHASE6_RESULT.md`
 
-원본 추정 원인: Protobuf Builder 객체 생성/해제 비용 누적(Extreme은 빌더 호출 ~800회). Complex에서 HTTP/Binary < HTTP/JSON 역전도 관찰.
+원본 추정 원인: Protobuf Builder 객체 생성/해제 비용 누적(Extreme은 빌더 호출 \~800회). Complex에서 HTTP/Binary < HTTP/JSON 역전도 관찰.
 
 ### Phase 7: CPU 사용량 분석 — "CPU 때문" 가설 부분 기각
 
@@ -99,9 +99,9 @@ gRPC가 CPU를 더 쓰는 게 아니라 **HTTP/JSON이 가장 높은 CPU(16.8%)�
 ## 종합 결론
 
 - **"gRPC가 항상 빠르다"는 오해** — gRPC 우위는 ①소용량(≤100KB) ②고동시성(200+ VU) ③중간 복잡도(≤50 필드)에서만.
-- 3축의 역전 포인트: **페이로드 100~200KB · 동시성 100~200 VU · 복잡도 ~150 필드**.
-- 대용량 전송(≥200KB)은 HTTP/Binary가 14~60% 우위 — 직렬화 오버헤드 부재.
-- 극한 복잡도(≥150 필드)에서 HTTP가 12~18% 역전 — 빌더 비용 추정이나, Phase 7에서 CPU 원인은 기각되어 **GC 압박 가설로 이관**.
+- 3축의 역전 포인트: **페이로드 100\~200KB · 동시성 100\~200 VU · 복잡도 \~150 필드**.
+- 대용량 전송(≥200KB)은 HTTP/Binary가 14\~60% 우위 — 직렬화 오버헤드 부재.
+- 극한 복잡도(≥150 필드)에서 HTTP가 12\~18% 역전 — 빌더 비용 추정이나, Phase 7에서 CPU 원인은 기각되어 **GC 압박 가설로 이관**.
 - CPU 효율은 HTTP/Binary가 압도적(188 vs 136 req/s/%) — CPU 제한 환경에선 HTTP/Binary.
 
 ## 한계·남은 질문
@@ -115,9 +115,9 @@ gRPC가 CPU를 더 쓰는 게 아니라 **HTTP/JSON이 가장 높은 CPU(16.8%)�
 
 | 문서 | 내용 |
 |------|------|
-| `README.md` | 전체 요약 — Phase 1~7 결과표·선택 가이드·핵심 인사이트 (최신 정본) |
+| `README.md` | 전체 요약 — Phase 1\~7 결과표·선택 가이드·핵심 인사이트 (최신 정본) |
 | `docs/phase/PHASE1_RESULT.md` | 1MB 대용량 상세 (GC·Heap 수치 포함) |
 | `docs/phase/PHASE2~7_DESIGN.md` | 각 Phase 가설·조건 설계 |
-| `docs/phase/PHASE2~7_RESULT.md` | 각 Phase 상세 결과 (2~4는 1,500~3,800줄 대형 문서) |
+| `docs/phase/PHASE2~7_RESULT.md` | 각 Phase 상세 결과 (2\~4는 1,500\~3,800줄 대형 문서) |
 | `docs/phase/EXPERIMENT_ROADMAP.md` | ⚠️ 낡음 — 인용 금지 |
 | `docs/GRPC_GUIDE.md`, `docs/K6_GUIDE.md` | 도구 가이드 |

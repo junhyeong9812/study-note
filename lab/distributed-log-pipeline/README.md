@@ -1,12 +1,12 @@
 # distributed-log-pipeline — k3s 3노드에서 PostgreSQL vs HDFS+Spark 쓰기·읽기·부하 실측
 
-- 원본: `/home/jun/project/distributed-log-pipeline` · 기간: 2026-01-11 ~ 2026-01-14 (git 커밋 기준) · 스택: k3s v1.34.3(3노드), Kafka 3.7.0, Spark 3.3.0(PySpark 3.5.0), Hadoop 3.2.1, PostgreSQL 15, Spring Boot(수집)·FastAPI(조회), k6, Prometheus+Grafana
-- 상태: **완료** (쓰기 Phase 1~2·1.2억건 적재·Compaction·부하 Phase 6~7까지 측정. 10억건 적재 중 디스크 임계로 클러스터 다운 — 그 자체가 결론의 일부)
+- 원본: `/home/jun/project/distributed-log-pipeline` · 기간: 2026-01-11 \~ 2026-01-14 (git 커밋 기준) · 스택: k3s v1.34.3(3노드), Kafka 3.7.0, Spark 3.3.0(PySpark 3.5.0), Hadoop 3.2.1, PostgreSQL 15, Spring Boot(수집)·FastAPI(조회), k6, Prometheus+Grafana
+- 상태: **완료** (쓰기 Phase 1\~2·1.2억건 적재·Compaction·부하 Phase 6\~7까지 측정. 10억건 적재 중 디스크 임계로 클러스터 다운 — 그 자체가 결론의 일부)
 
 ## 무엇을 알고 싶었나 — 질문·가설
 
 - 핵심 질문: **"대용량 로그 데이터 처리에서 분산 시스템(HDFS+Spark)이 단일 DB(PostgreSQL)보다 효율적인가?"**
-- 가설: 소량에서는 PostgreSQL이 빠르지만, 대용량에서는 Spark/HDFS가 우세할 것 (소량=PostgreSQL 압승 / 10만~100만 교차 / 100만+ Spark 우세 예상).
+- 가설: 소량에서는 PostgreSQL이 빠르지만, 대용량에서는 Spark/HDFS가 우세할 것 (소량=PostgreSQL 압승 / 10만\~100만 교차 / 100만+ Spark 우세 예상).
 - 부수 질문: 쓰기 파이프라인(Kafka→Spark Streaming→HDFS)은 어디까지 버티는가, 동시 사용자 부하는 얼마나 받는가.
 
 ## 실험 환경과 방법
@@ -27,7 +27,7 @@
 |-------|------|------|------|
 | 1 (기본) | 9,000건/분 | 9,000건/분 | 둘 다 안정 |
 | 2 (중간) | 90,000건/분 | 90,000건/분 | 둘 다 안정 |
-| 3 (고부하) | 900,000건/분 | ~200,000건/분 | Backend 병목 (달성률 22%) |
+| 3 (고부하) | 900,000건/분 | \~200,000건/분 | Backend 병목 (달성률 22%) |
 
 출처: `/home/jun/project/distributed-log-pipeline/docs/BENCHMARK_WRITE_RESULT.md`
 
@@ -47,7 +47,7 @@
 
 ## 결과 2 — 읽기 성능 (데이터 규모별)
 
-### ~2만건: PostgreSQL 최대 354배
+### \~2만건: PostgreSQL 최대 354배
 
 | 쿼리 | PostgreSQL | HDFS/Spark | 배수 |
 |------|------------|------------|------|
@@ -57,7 +57,7 @@
 
 출처: `/home/jun/project/distributed-log-pipeline/docs/BENCHMARK_readPerformance.md`
 
-### ~557만건: PostgreSQL 10~90배, 단 안정성은 HDFS
+### \~557만건: PostgreSQL 10\~90배, 단 안정성은 HDFS
 
 | 쿼리 | PostgreSQL | HDFS | 배수 |
 |------|------------|------|------|
@@ -69,7 +69,7 @@
 
 동시 부하에서 PostgreSQL은 timeout 발생·편차 큼, HDFS는 느리지만 timeout 없이 일정 — "500만건은 대용량이 아님"이 원본 결론.
 
-### 1.2억건 (Compaction 전, Parquet 30,803개): PostgreSQL 12~17배
+### 1.2억건 (Compaction 전, Parquet 30,803개): PostgreSQL 12\~17배
 
 | 쿼리 | PostgreSQL | HDFS+Spark | 배수 |
 |------|-----------|------------|------|
@@ -79,14 +79,14 @@
 
 출처: `/home/jun/project/distributed-log-pipeline/docs/BENCHMARK_WRITE_PHASE4_RESULT.md`
 
-원인 진단: **Small File Problem** — Streaming이 60초 배치마다 파일을 만들어 30,803개의 소형 파일(파일당 ~200KB, 권장 100MB~1GB) → 파일당 Task 1개 = 30,000+ Task.
+원인 진단: **Small File Problem** — Streaming이 60초 배치마다 파일을 만들어 30,803개의 소형 파일(파일당 \~200KB, 권장 100MB\~1GB) → 파일당 Task 1개 = 30,000+ Task.
 
 ## 결과 3 — Parquet Compaction (30,803개 → 100개)
 
 | 항목 | Before | After |
 |------|--------|-------|
 | 파일 수 | 30,803개 | 100개 (99.7% 감소) |
-| 파일당 크기 | ~200KB | ~58MB |
+| 파일당 크기 | \~200KB | \~58MB |
 | 레코드 수 | 121,619,878 | 121,619,878 (무결성 확인) |
 
 | 쿼리 | HDFS Before | HDFS After | 개선 | vs PostgreSQL |
@@ -131,7 +131,7 @@ PostgreSQL PVC가 326GB까지 차오르며 노드 DiskPressure → Spark Master 
 ## 종합 결론
 
 - **분산처리 ≠ 만능**: 단순 조회·정렬+LIMIT은 PostgreSQL 압승(부하 테스트 기준 37배) — 인덱스·단일노드 정렬의 힘.
-- **집계는 분산이 이긴다**: Compaction 후 GROUP BY 계열에서 HDFS+Spark가 1.3~2.4배 우위 — 부분 집계 후 병합이라 데이터가 줄어드는 연산.
+- **집계는 분산이 이긴다**: Compaction 후 GROUP BY 계열에서 HDFS+Spark가 1.3\~2.4배 우위 — 부분 집계 후 병합이라 데이터가 줄어드는 연산.
 - **Small File Problem이 HDFS 성능의 제1병목**: 파일 30,803→100개로 최대 27.4배 개선. Streaming 적재에는 정기 Compaction 필수.
 - **병목은 저장소보다 앞단에서 먼저 온다**: JPA IDENTITY 단건 INSERT가 원인 — JDBC Batch로 9배(20만→180만건/분). 극한 쓰기(360만건/분)에선 오히려 HDFS가 먼저 죽고 PostgreSQL이 버팀.
 - **디스크는 유한하다**: 10억건 적재에서 물리적 한계(용량·비용)가 아키텍처 선택(분산 저장 + HDD + Columnar)의 실질 근거임을 체감.
@@ -151,7 +151,7 @@ PostgreSQL PVC가 326GB까지 차오르며 노드 DiskPressure → Spark Master 
 | `README.md` (26KB) | 종합 보고서 — 전체 결과 요약, 10억건 장애 기록, 아키텍처 |
 | `docs/ARCHITECTURE.md` (22KB) | 시스템 아키텍처 상세 (**정본** — 루트 ARCHITECTURE.md 7.6KB보다 상세) |
 | `docs/WHY_HDFS_SPARK.md` (50KB) | PostgreSQL 분산 옵션 한계·HDFS 선택 이유·I/O 패턴 이론 |
-| `docs/BENCHMARK_WRITE_PERFORMANCE.md` / `_RESULT.md` | 쓰기 Phase 1~3 설계·결과 (JPA 병목 발견) |
+| `docs/BENCHMARK_WRITE_PERFORMANCE.md` / `_RESULT.md` | 쓰기 Phase 1\~3 설계·결과 (JPA 병목 발견) |
 | `docs/BENCHMARK_WRITE_PHASE2.md` | JDBC Batch 원리(IDENTITY 함정)+Phase 2 실측 (9배·HDFS 사망) |
 | `docs/BENCHMARK_WRITE_PHASE3.md` | ⚠️ 0바이트 빈 파일 |
 | `docs/BENCHMARK_WRITE_PHASE3_RESULT.md` | 500만건 규모 읽기 벤치마크 |
