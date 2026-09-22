@@ -750,7 +750,7 @@ type Vector = list[float]               # type 문 — 1급 타입 별칭
 
 ### GIL 제거 — Free-Threaded CPython (PEP 703, 실험적)
 
-**GIL(Global Interpreter Lock)**은 "한 번에 한 스레드만 바이트코드를 실행"하게 강제하는 락으로, CPython이 메모리 관리를 단순·안전하게 유지해 온 장치다.\
+**GIL**(Global Interpreter Lock)은 "한 번에 한 스레드만 바이트코드를 실행"하게 강제하는 락으로, CPython이 메모리 관리를 단순·안전하게 유지해 온 장치다.\
 대가로 **CPU 바운드 멀티스레딩에서 멀티코어를 못 살린다**는 게 30년 묵은 약점이었다(그래서 다들 `multiprocessing`으로 우회했다).
 
 3.13은 GIL을 **끌 수 있는** 특수 빌드(`python3.13t`, free-threaded build)를 실험적으로 제공한다.
@@ -809,7 +809,7 @@ GIL 이 켜진 기본 빌드                free-threaded 빌드 (python3.13t)
 
 ### JIT 컴파일러 (PEP 744, 실험적)
 
-자주 실행되는 코드 경로를 런타임에 기계어로 컴파일하는 **JIT(Just-In-Time)**가 처음 들어왔다.\
+자주 실행되는 코드 경로를 런타임에 기계어로 컴파일하는 **JIT**(Just-In-Time)가 처음 들어왔다.\
 **copy-and-patch** 방식의 가벼운 JIT으로, 3.11의 특화 인터프리터가 만든 마이크로옵 추적을 기반으로 한다.
 
 ```python

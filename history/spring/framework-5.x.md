@@ -42,7 +42,7 @@
 
 2017년경 백엔드 화두는 **리액티브/논블로킹**이었다.\
 Node.js의 이벤트 루프 모델, RxJava의 확산, 그리고 Reactive Streams 표준(JDK 9의 `java.util.concurrent.Flow`로 편입) 등이 배경이다.\
-적은 스레드로 높은 동시성을 처리하려는 수요가 커졌고, Spring은 기존 서블릿 기반 `spring-webmvc`와 별개로 **논블로킹 웹 스택 `spring-webflux`**를 새로 만들었다.
+적은 스레드로 높은 동시성을 처리하려는 수요가 커졌고, Spring은 기존 서블릿 기반 `spring-webmvc`와 별개로 **논블로킹 웹 스택** `spring-webflux`를 새로 만들었다.
 
 > **블로킹 / 논블로킹(blocking / non-blocking)** — 결과가 나올 때까지 그 스레드를 그 자리에 붙들어 두는 방식 / 붙들지 않고 스레드를 돌려주는 방식.\
 > 예: 원문 그림에서 MVC 쪽에 적힌 "DB/IO 호출 동안 스레드 블록 (대기)"가 앞쪽이고, WebFlux 쪽에 적힌 "논블로킹 IO 등록 후 스레드 즉시 반환"이 뒤쪽이다.
@@ -52,7 +52,7 @@ Node.js의 이벤트 루프 모델, RxJava의 확산, 그리고 Reactive Streams
 
 또 하나의 큰 흐름은 **Kotlin**이다.\
 2017년 Google이 Android 공식 언어로 Kotlin을 채택하며 JVM 진영에서 폭발적으로 성장했다.\
-Spring 5는 Kotlin을 단순 호환이 아니라 **1급 시민(first-class)**으로 지원하기로 결정했다 — 널 안정성, 확장 함수, 함수형 빈/라우터 DSL까지.\
+Spring 5는 Kotlin을 단순 호환이 아니라 **1급 시민**(first-class)으로 지원하기로 결정했다 — 널 안정성, 확장 함수, 함수형 빈/라우터 DSL까지.\
 코드베이스 baseline도 Java 8로 올려 람다·`CompletableFuture`를 적극 활용했고, 테스트는 JUnit 5(Jupiter)를 지원했다.
 
 > **1급 시민(first-class)** — 곁다리로 얹어 주는 대상이 아니라, 설계할 때부터 본래 대상과 같은 대접을 받는 것.\
@@ -281,7 +281,7 @@ Flow<T> (0..N 스트림)    <-- asFlux / Flux.asFlow -->       Flux<T> (0..N)
 - Java: `RouterFunction`로 라우팅을 함수로 표현.
 - Kotlin: `beans { }` DSL과 `router { }` DSL로, 어노테이션 없이도 컨테이너와 웹 라우팅을 선언적으로 구성. 리플렉션·어노테이션 처리 비용을 줄여 시작 속도에도 유리.
 
-즉 "XML → 어노테이션 → Java Config"의 흐름에 **"함수형 DSL"**이라는 선택지가 추가됐다.
+즉 "XML → 어노테이션 → Java Config"의 흐름에 "**함수형 DSL**"이라는 선택지가 추가됐다.
 
 > **리플렉션(reflection)** — 프로그램이 돌아가는 중에 클래스·메서드 같은 자기 구조를 들여다보고 다루는 기능.\
 > 예: 원문은 Kotlin DSL의 이점으로 "리플렉션·어노테이션 처리 비용을 줄여 시작 속도에도 유리"하다고 적는다.

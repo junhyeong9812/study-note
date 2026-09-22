@@ -93,7 +93,7 @@
 초기 웹(1991~)은 **하이퍼텍스트 문서**를 위한 것이었다.\
 HTML은 마크업, HTTP는 문서 전송, 브라우저는 렌더러.\
 1995년 Netscape가 JavaScript를, Microsoft가 JScript를 내놓으며 페이지에 동작을 넣을 수 있게 됐지만, 두 회사는 서로 다른 객체 모델(`document.layers` vs `document.all`)을 제공했다.\
-같은 코드가 한 브라우저에서만 도는 **브라우저 전쟁(Browser Wars)**의 시대였고, 이는 표준화의 필요를 낳았다.
+같은 코드가 한 브라우저에서만 도는 **브라우저 전쟁**(Browser Wars)의 시대였고, 이는 표준화의 필요를 낳았다.
 
 같은 일을 하려는데 두 갈래로 갈라져 있던 모습을 그리면 이렇다.
 
@@ -210,7 +210,7 @@ Mozilla가 2002년 네이티브 `XMLHttpRequest`로 이식했고, Safari·Opera�
 
 수년간 잘 알려지지 않던 이 기술은 **2004~2005년 Google이 Gmail과 Google Maps**에서 전면 활용하면서 폭발했다.\
 새로고침 없이 지도를 끌고, 메일이 실시간으로 도착하는 경험은 "웹도 데스크톱 앱처럼 될 수 있다"는 증거였다.\
-**2005년 2월 18일 Jesse James Garrett가 "Ajax: A New Approach to Web Applications"**라는 글에서 이 기법 묶음(Asynchronous JavaScript + XML)을 **AJAX**로 명명했다.\
+**2005년 2월 18일 Jesse James Garrett가 "Ajax: A New Approach to Web Applications**"라는 글에서 이 기법 묶음(Asynchronous JavaScript + XML)을 **AJAX**로 명명했다.\
 W3C는 2006년부터 `XMLHttpRequest`를 표준화하기 시작했다.
 
 ```javascript
@@ -317,7 +317,7 @@ HTML5는 **`<video>`·`<audio>` 엘리먼트**를 도입해 플러그인 없이 
 
 #### Canvas: 픽셀을 직접 그리는 2D 표면
 
-**무엇** — **Canvas**는 2004년 **Apple이 Safari(WebKit)**에서 대시보드 위젯용으로 처음 도입했고, WHATWG가 HTML5 표준으로 받아들였다.\
+**무엇** — **Canvas**는 2004년 **Apple이 Safari**(WebKit)에서 대시보드 위젯용으로 처음 도입했고, WHATWG가 HTML5 표준으로 받아들였다.\
 `<canvas>`는 스크립트로 픽셀을 직접 그리는 **즉시 모드(immediate-mode)** 표면으로, 차트·이미지 편집·게임·시각화의 토대가 됐다.
 
 > **즉시 모드(immediate-mode)** — 그린 도형을 기억해 두지 않고, 그리라고 할 때마다 그 자리에서 칠해 버리는 방식.\
@@ -376,7 +376,7 @@ gl.clear(gl.COLOR_BUFFER_BIT);
 
 #### WebGPU: 현대 GPU와 범용 연산(2023)
 
-**무엇** — WebGL은 10년 이상 표준이었지만, 내부적으로 노후한 OpenGL ES 모델에 묶여 있었고 **GPU 범용 연산(GPGPU)**을 일급으로 지원하지 못했다.\
+**무엇** — WebGL은 10년 이상 표준이었지만, 내부적으로 노후한 OpenGL ES 모델에 묶여 있었고 **GPU 범용 연산**(GPGPU)을 일급으로 지원하지 못했다.\
 W3C의 **"GPU for the Web" 그룹**이 2017년부터 Apple·Google·Mozilla·Microsoft·Intel과 함께 차세대 API를 설계했고, **2023년 5월 2일 Chrome 113에 WebGPU가 정식 탑재**됐다.
 
 > **GPGPU(GPU 범용 연산)** — 그래픽이 아닌 일반 계산을 GPU에 시키는 것.\
@@ -385,7 +385,7 @@ W3C의 **"GPU for the Web" 그룹**이 2017년부터 Apple·Google·Mozilla·Mic
 > **컴퓨트 셰이더(compute shader)** — 화면에 그리는 것이 목적이 아니라 계산만 하는 셰이더.\
 > 예: 행렬 곱셈을 GPU에 던져 결과 숫자만 돌려받는 용도.
 
-**왜 이게 나은가** — WebGPU는 Vulkan/Direct3D 12/Metal 같은 현대 그래픽 API에 대응하며, **컴퓨트 셰이더(compute shader)**로 GPU를 그래픽뿐 아니라 머신러닝·물리 시뮬레이션 같은 범용 병렬 계산에 쓰게 한다.\
+**왜 이게 나은가** — WebGPU는 Vulkan/Direct3D 12/Metal 같은 현대 그래픽 API에 대응하며, **컴퓨트 셰이더**(compute shader)로 GPU를 그래픽뿐 아니라 머신러닝·물리 시뮬레이션 같은 범용 병렬 계산에 쓰게 한다.\
 즉 브라우저가 GPU 컴퓨팅 플랫폼이 된 것이다.
 
 원문의 그래픽 계보 도식을 세로로 옮기면 이렇다.
@@ -431,7 +431,7 @@ Chrome 113, 2023
   위 그림에서 6번 중 5번이 헛걸음     연결 1번, 소식 있을 때만 전송
 ```
 
-**언제·왜** — HTTP 핸드셰이크로 시작해 프로토콜을 업그레이드하는 방식이며, 표준화가 W3C/WHATWG에서 **IETF로 이관(2010년 2월)**되어 **2011년 12월 RFC 6455**로 확정됐다.\
+**언제·왜** — HTTP 핸드셰이크로 시작해 프로토콜을 업그레이드하는 방식이며, 표준화가 W3C/WHATWG에서 **IETF로 이관**(2010년 2월)되어 **2011년 12월 RFC 6455**로 확정됐다.\
 브라우저 API는 같은 시기 W3C가 정의했다.
 
 > **핸드셰이크(handshake)** — 본 통신을 시작하기 전에 규칙을 맞추는 짧은 인사 절차.\
@@ -538,7 +538,7 @@ Service Worker 의 fetch 이벤트가 먼저 받는다
         +-- 없으면 -----------> fetch(event.request) 로 네트워크에 나간다
 ```
 
-**언제·왜** — (실패했던 AppCache의 후계로) **2014~2015년 Chrome 40에 탑재(2015년 1월 안정화)**됐다.\
+**언제·왜** — (실패했던 AppCache의 후계로) **2014~2015년 Chrome 40에 탑재**(2015년 1월 안정화)됐다.\
 이 한 조각이 "웹은 항상 온라인이어야 한다"는 전제를 깼다.
 
 ```javascript
@@ -638,7 +638,7 @@ customElements.define("my-card", MyCard); // <my-card>여기 내용</my-card>
 #### WebAssembly: 브라우저에서 거의 네이티브 속도로
 
 **무엇** — JavaScript는 유연하지만, 게임 엔진·영상 인코딩·CAD·암호화처럼 **연산이 무거운** 작업엔 한계가 있었다.\
-**WebAssembly(Wasm)**는 브라우저가 실행하는 **이식 가능한 저수준 바이너리 명령 형식**이다.\
+**WebAssembly**(Wasm)는 브라우저가 실행하는 **이식 가능한 저수준 바이너리 명령 형식**이다.\
 C/C++/Rust 등으로 컴파일한 코드를 거의 네이티브에 가까운 속도로 돌리며, JavaScript와 같은 샌드박스·같은 메모리 모델 안에서 상호 운용한다.
 
 > **바이너리 명령 형식(binary instruction format)** — 사람이 읽는 소스가 아니라 기계가 바로 읽는 압축된 명령 묶음.\
@@ -702,7 +702,7 @@ navigator.geolocation.getCurrentPosition((pos) =>
 );
 ```
 
-**공통 설계 원칙** — 이 API들의 공통 설계 원칙은 **"강력함은 명시적 사용자 동의와 보안 컨텍스트(HTTPS) 뒤에"**다.\
+**공통 설계 원칙** — 이 API들의 공통 설계 원칙은 "**강력함은 명시적 사용자 동의와 보안 컨텍스트(HTTPS) 뒤에**"다.\
 네이티브급 권한을 열되, 출처별 권한·사용자 제스처 요구·보안 출처 제한으로 남용을 막는다.
 
 관문을 세로로 그리면 이렇다.
@@ -742,7 +742,7 @@ HTTPS 인가? ---- 아니오 ----> 거부 (보안 컨텍스트 아님)
 ### 표준을 누가 만드는가 — 단일 벤더에서 다자 모델로
 
 표준화 거버넌스의 변화도 본질적이다.\
-IE6 시절의 사실상 단일 벤더 통제에서, **WHATWG(HTML/DOM Living Standard)·W3C·Khronos(WebGL/WebGPU)·IETF(WebSocket/WebRTC 프로토콜)**가 분담하고 4대 브라우저 엔진이 합의로 출시하는 다자 모델로 옮겨갔다.
+IE6 시절의 사실상 단일 벤더 통제에서, **WHATWG(HTML/DOM Living Standard)·W3C·Khronos(WebGL/WebGPU)·IETF**(WebSocket/WebRTC 프로토콜)가 분담하고 4대 브라우저 엔진이 합의로 출시하는 다자 모델로 옮겨갔다.
 
 ```text
 IE6 시절                            오늘
@@ -761,7 +761,7 @@ WebAssembly의 "4개 브라우저 동시 합의"(2017)나 WebGPU의 6년 합의 
 
 *(이 편의 「남긴 것」에 해당한다)*
 
-웹 플랫폼 API의 25년은 **"문서 뷰어 → 애플리케이션 플랫폼 → 범용 런타임"**으로의 단계적 이동이다.\
+웹 플랫폼 API의 25년은 "**문서 뷰어 → 애플리케이션 플랫폼 → 범용 런타임**"으로의 단계적 이동이다.\
 각 API는 독립적으로 보이지만, 큰 그림에선 **플러그인이 하던 일(미디어=Flash, 3D·게임=Java/Flash, 화상=Skype, 네이티브 연산=ActiveX)을 표준·오픈·크로스플랫폼 API로 흡수·대체**하는 하나의 전략이었다.
 
 오늘날 브라우저는 **운영체제의 많은 부분을 추상화한 가상 플랫폼**이다.\

@@ -167,7 +167,7 @@ fun routes(handler: UserHandler) = router {
 > 예: 위 코드의 `GET("/{id}", handler::byId)`가 `GET /users/{id}` 요청을 `handler`의 `byId`로 보내라고 적은 줄이다(바깥의 `"/users".nest { ... }` 안에 들어 있다).
 
 ### 코루틴 지원 (suspend 함수, Spring 5.2+ / WebFlux 코루틴)
-Spring Framework 5.2부터 컨트롤러/핸들러에서 **`suspend` 함수**와 **`Flow`**를 직접 쓸 수 있다. 내부적으로 Reactor의 `Mono`/`Flux`와 양방향 변환된다. 리액티브의 성능을 명령형처럼 읽히는 코드로 얻는다.
+Spring Framework 5.2부터 컨트롤러/핸들러에서 **`suspend` 함수**와 `Flow`를 직접 쓸 수 있다. 내부적으로 Reactor의 `Mono`/`Flux`와 양방향 변환된다. 리액티브의 성능을 명령형처럼 읽히는 코드로 얻는다.
 
 ```kotlin
 @RestController
@@ -254,7 +254,7 @@ dependencies {
 > 예: 원문이 `jackson-module-kotlin`의 역할로 적은 "data class를 기본 생성자 없이도 JSON 역직렬화"가 그 방향이다.
 
 ### 코틀린에서 Spring 어노테이션 사용 시 주의점 — final class 문제와 all-open
-코틀린은 **클래스와 멤버가 기본적으로 `final`**이다. 그런데 Spring은 `@Configuration`, `@Transactional`, AOP 등에서 **CGLIB 프록시(서브클래싱)**를 만들기 때문에, final 클래스는 프록시를 만들 수 없어 문제가 된다.
+코틀린은 **클래스와 멤버가 기본적으로** `final`이다. 그런데 Spring은 `@Configuration`, `@Transactional`, AOP 등에서 **CGLIB 프록시**(서브클래싱)를 만들기 때문에, final 클래스는 프록시를 만들 수 없어 문제가 된다.
 
 `kotlin-spring`(all-open) 플러그인이 이를 해결한다. Spring 스테레오타입 애너테이션(`@Component`, `@Configuration`, `@Service`, `@Repository`, `@Controller`, `@RestController` 등 `@Component` 메타 애너테이션이 붙은 것)이 달린 클래스와 그 멤버를 **자동으로 `open` 처리**한다. 따라서 개발자가 일일이 `open class`라고 쓰지 않아도 된다.
 

@@ -166,7 +166,7 @@ import org.jspecify.annotations.NullMarked;
 > 예: 원문이 이 표시를 붙인 대상이 Spring 자체의 `org.springframework.lang` 애노테이션이다.
 
 ### Jackson 3 기본화
-**Jackson 3.0이 기본**이 되고, Jackson 2는 `spring-boot-jackson2` 모듈로 deprecated 형태(마이그레이션 유예용)만 제공된다. groupId가 `com.fasterxml.jackson` → **`tools.jackson`**으로 바뀌고, 일부 클래스가 리네임된다(예: `Jackson2ObjectMapperBuilderCustomizer` → `JsonMapperBuilderCustomizer`).
+**Jackson 3.0이 기본**이 되고, Jackson 2는 `spring-boot-jackson2` 모듈로 deprecated 형태(마이그레이션 유예용)만 제공된다. groupId가 `com.fasterxml.jackson` → `tools.jackson`으로 바뀌고, 일부 클래스가 리네임된다(예: `Jackson2ObjectMapperBuilderCustomizer` → `JsonMapperBuilderCustomizer`).
 
 > **groupId** — 메이븐/그레이들 좌표에서 만든 쪽을 가리키는 앞자리.\
 > 예: 원문이 적은 변경이 `com.fasterxml.jackson` → `tools.jackson`이다 — 라이브러리를 적어 넣던 좌표의 앞자리가 바뀐다.

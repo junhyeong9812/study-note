@@ -10,7 +10,7 @@
 
 > Spring Framework 5 기반의 대약진. 리액티브(WebFlux), Micrometer 기반 관측성, 그리고 **Kotlin 1급 지원**으로 "현대 JVM 백엔드"의 표준을 다시 썼다.
 
-이 편을 한 낱말로 잡으면 **"한 지붕 아래"**다 — 원문이 「영향과 의의」에서 직접 쓴 말이다.\
+이 편을 한 낱말로 잡으면 "**한 지붕 아래**"다 — 원문이 「영향과 의의」에서 직접 쓴 말이다.\
 집 하나에 방이 둘 있고, 하는 일의 성격에 따라 어느 방에서 일할지 고른다.\
 **Boot 2.x의 웹 스택도 똑같은 구조다** — 원문 표현으로 "명령형(MVC)과 리액티브(WebFlux)를 한 지붕 아래 두어, 워크로드 특성에 맞는 스택 선택을 표준화했다".
 
@@ -163,7 +163,7 @@ Micrometer가 계측 파사드로 끼어들어 메트릭이 다양한 백엔드�
                                              +--"push"--> Influx / JMX 등
 ```
 
-하나의 계측 코드(Micrometer)가 레지스트리를 거쳐 벤더 중립적으로 여러 모니터링 백엔드로 내보낸다. 단, 전송 방식은 백엔드마다 달라서 Prometheus는 애플리케이션이 노출한 `/actuator/prometheus` 엔드포인트를 Prometheus 서버가 **scrape(pull)**하고, Datadog·Influx 등은 애플리케이션이 **push**한다.
+하나의 계측 코드(Micrometer)가 레지스트리를 거쳐 벤더 중립적으로 여러 모니터링 백엔드로 내보낸다. 단, 전송 방식은 백엔드마다 달라서 Prometheus는 애플리케이션이 노출한 `/actuator/prometheus` 엔드포인트를 Prometheus 서버가 **scrape**(pull)하고, Datadog·Influx 등은 애플리케이션이 **push**한다.
 
 그림 해설 — 다섯 화살표와 그 라벨(`pull: /actuator/prometheus scrape`·`push`·`push`)은 원문 도식의 것 그대로다.\
 위 캡션이 그 라벨 차이를 그대로 풀어 적은 자리다 — Prometheus 쪽 화살표는 실제로는 Prometheus 서버가 와서 긁어 가는 방향이고, 나머지 둘은 애플리케이션이 보내는 방향이다.

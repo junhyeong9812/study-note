@@ -142,7 +142,7 @@ HttpRequest (version=HTTP_3)
 이 편에서 붙는 것은 경고까지다. 원문이 다음 단계로 적은 것은 "향후 릴리스에서는 기본적으로 예외를 던질 예정"이므로, **이 편의 `final`은 아직 막히지 않았다.**
 
 ### Lazy Constants (JEP 526, 2차 프리뷰)
-- Java 25의 **Stable Values(JEP 502, 1차 프리뷰)**가 `Lazy Constants`로 개명·진전했다. `final`의 불변성과 지연 초기화의 유연성을 결합한 "단 한 번만 설정되는" 컨테이너로, 내부적으로 JVM의 `@Stable` 의미론에 저장돼 JIT가 상수처럼 최적화한다.
+- Java 25의 **Stable Values**(JEP 502, 1차 프리뷰)가 `Lazy Constants`로 개명·진전했다. `final`의 불변성과 지연 초기화의 유연성을 결합한 "단 한 번만 설정되는" 컨테이너로, 내부적으로 JVM의 `@Stable` 의미론에 저장돼 JIT가 상수처럼 최적화한다.
 
 ```java
 // 지연 초기화 싱글턴 (Holder 패턴 대체)
