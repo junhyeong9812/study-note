@@ -415,7 +415,7 @@ PG 는 `Nested Loop` 안쪽의 `Filter: (dept_id = d.id)` 로 같은 사실을 �
 `actual rows=0.67` 은 **평균**이다 — 세 번 중 두 번만 1행을 냈다(`hr` 이 0행). 0.67 × 3 = 2행이 최종 결과다.
 
 그림 해설 — **`LATERAL` 은 중첩 루프를 강제하는 성질이 있다.** 왼쪽 행이 정해져야 오른쪽을 만들 수 있기 때문이다.\
-비용 — 왼쪽이 100만 행이면 서브쿼리가 100만 번 돈다. **안쪽이 인덱스를 타는지가 전부다**(목록의 **47번 주제**).
+비용 — 왼쪽이 100만 행이면 서브쿼리가 100만 번 돈다. **안쪽이 인덱스를 타는지가 전부다**([목록의 **47번 주제**](../47-when-indexes-are-used/)).
 
 > **재현 주** — 위 계획의 추정 행 수(`rows=1270`·`rows=6`)는 **통계가 없을 때의 기본값**이다.\
 > **여기서 볼 것은 비용 수치가 아니라 `loops` 와 연산자 이름**이다.\
@@ -495,7 +495,7 @@ FROM 왼쪽 CROSS JOIN generate_series(1, 왼쪽.n) AS g(i) -- PG: 함수 앞에
 - **쓴다 — 왼쪽 값을 인자로 받는 함수/집합 반환 함수를 붙일 때**(PG).
 - **쓴다 — 계산 결과를 이름 붙여 재사용할 때.** `SELECT` 칸에서 같은 식을 세 번 쓰는 대신 `LATERAL` 로 한 번 계산한다.
 - **안 쓴다 — 값 하나면 될 때.** 상관 서브쿼리가 짧다([11번](../11-subquery-scalar-correlated-any-all/)).
-- **안 쓴다 — 「그룹별 상위 N」을 큰 표에서 뽑을 때.** 왼쪽 행마다 도는 비용이 크면 윈도우 함수 `ROW_NUMBER` 가 나을 수 있다(목록의 **29번 주제**).
+- **안 쓴다 — 「그룹별 상위 N」을 큰 표에서 뽑을 때.** 왼쪽 행마다 도는 비용이 크면 윈도우 함수 `ROW_NUMBER` 가 나을 수 있다([목록의 **29번 주제**](../29-ranking-functions/)).
 - **주의 — `CROSS` 와 `LEFT` 의 선택.** 서브쿼리가 0행일 수 있으면 `LEFT … ON true` 다.
 
 ## 핵심 문장
@@ -518,7 +518,7 @@ FROM 왼쪽 CROSS JOIN generate_series(1, 왼쪽.n) AS g(i) -- PG: 함수 앞에
 - [14 LEFT·RIGHT OUTER JOIN](../14-left-right-outer-join/) — `LEFT JOIN LATERAL` 이 `hr` 을 살리는 근거.
 - [15 OUTER JOIN 에서 ON 과 WHERE 의 차이](../15-on-vs-where-in-outer-join/) — `LEFT JOIN LATERAL … ON <조건>` 에서 조건의 자리.
 - [19 세미·안티 조인](../19-semi-anti-join/) — 「있는지만」 볼 때는 `LATERAL` 이 아니라 `EXISTS` 다.
-- **「그룹별 상위 N」의 다른 해법**(`ROW_NUMBER`)은 목록의 **29번 주제**, **`EXPLAIN` 읽기**는 **58번 주제**, **인덱스를 타는지**는 **47번 주제**가 정본이다.
+- **「그룹별 상위 N」의 다른 해법**(`ROW_NUMBER`)은 [목록의 **29번 주제**](../29-ranking-functions/), **`EXPLAIN` 읽기**는 [**58번 주제**](../58-explain-plan-tree/), **인덱스를 타는지**는 [**47번 주제**](../47-when-indexes-are-used/)가 정본이다.
 - [SQL 주제 목록](../README.md)
 
 ## 용어 풀이
@@ -526,7 +526,7 @@ FROM 왼쪽 CROSS JOIN generate_series(1, 왼쪽.n) AS g(i) -- PG: 함수 앞에
 - **`LATERAL`** — `FROM` 의 서브쿼리가 왼쪽 항목의 현재 행을 참조할 수 있게 하는 키워드.\
   예: `FROM dept d CROSS JOIN LATERAL (SELECT … WHERE e.dept_id = d.id LIMIT 1) t`.
 - **파생 테이블(derived table)** — `FROM` 에 놓인 서브쿼리. **`LATERAL` 이 없으면 바깥을 못 본다.**\
-  예: `FROM (SELECT id FROM emp) AS t`. 목록의 10번 주제.
+  예: `FROM (SELECT id FROM emp) AS t`. [목록의 **10번 주제**](../10-from-clause-aliases-derived-tables/).
 - **상관 서브쿼리(correlated subquery)** — 바깥 열을 참조하는 서브쿼리. 값 자리에서는 **1행 1열**만 낼 수 있다.\
   예: `(SELECT d.name FROM dept d WHERE d.id = e.dept_id)`. 11번 주제.
 - **`ON true`** — `LEFT JOIN LATERAL` 에서 쓰는 관용구. 조건이 이미 서브쿼리 안에 있어 `ON` 에 쓸 것이 없을 때.\
@@ -538,7 +538,7 @@ FROM 왼쪽 CROSS JOIN generate_series(1, 왼쪽.n) AS g(i) -- PG: 함수 앞에
 - **`loops`** — `EXPLAIN ANALYZE` 가 찍는, 그 노드가 몇 번 실행됐는지의 수.\
   예: `loops=3`. 옆의 `actual rows` 는 **한 번당 평균**이다.
 - **집합 반환 함수(set-returning function)** — 행 여러 개를 돌려주는 함수.\
-  예: PG 의 `generate_series(1, 3)`. MySQL 에는 없다. 목록의 12번 주제.
+  예: PG 의 `generate_series(1, 3)`. MySQL 에는 없다. [목록의 **12번 주제**](../12-cartesian-product-cross-join/).
 - **`Invalidate materialized tables`** — MySQL 계획에 뜨는, 「왼쪽 행이 바뀌면 만들어 둔 것을 버린다」는 표시.\
   예: `Materialize (invalidate on row from d)` — `LATERAL` 의 동작이 그대로 찍힌 것이다.
 
@@ -565,4 +565,4 @@ ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the ma
   **`d.id / 10` 이 왼쪽 행의 값이다** — `LATERAL` 이라고 적지 않았는데 상관 참조가 통했다. 함수 호출은 자동으로 lateral 하게 취급된다.
 
 - **`RIGHT JOIN LATERAL` 도 왼쪽을 참조하지 않으면 통과한다.** 제약은 문법 형태가 아니라 **실제 참조**에 걸린다 — PG 의 `DETAIL` 이 "for a LATERAL reference" 라고 조건을 단 이유다.
-- **「그룹별 상위 N」은 세 가지로 쓸 수 있다** — 상관 서브쿼리(N=1 만) · `LATERAL` · `ROW_NUMBER`(목록의 **29번 주제**). 큰 표에서 어느 쪽이 빠른지는 **인덱스가 정렬 순서를 만들어 주느냐**에 달렸다.
+- **「그룹별 상위 N」은 세 가지로 쓸 수 있다** — 상관 서브쿼리(N=1 만) · `LATERAL` · `ROW_NUMBER`([목록의 **29번 주제**](../29-ranking-functions/)). 큰 표에서 어느 쪽이 빠른지는 **인덱스가 정렬 순서를 만들어 주느냐**에 달렸다.
