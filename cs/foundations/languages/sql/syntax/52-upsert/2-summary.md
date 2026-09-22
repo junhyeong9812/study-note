@@ -7,7 +7,7 @@
 > **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
 > 아래에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
 > **버전** — MySQL 의 행 별칭 문법(`VALUES (...) AS new`)은 **8.0.19 부터**다([8.0.19 릴리스 노트](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-19.html)). 구식 `VALUES()` 함수는 8.4.10 서버가 직접 deprecated 경고를 낸다(아래 출력).\
-> **선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/)(제약과 `NULL`) · 목록의 43번(기본키·UNIQUE) · 49번(INSERT).
+> **선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/)(제약과 `NULL`) · [목록의 **43번 주제**](../43-primary-key-unique-and-null/)(기본키·UNIQUE) · 49번(INSERT).
 
 ## 한눈에 — 쉽게 말하면
 
@@ -45,6 +45,12 @@ PostgreSQL                          MySQL
 
 > **유니크 제약(unique constraint)** — 어떤 열(들)의 값이 표 안에서 중복될 수 없다는 규칙. 기본키도 그중 하나다.\
 > 예: `dept.id` 는 기본키, `dept.name` 은 `UNIQUE` — 이 표에는 유니크 제약이 **둘** 있다.
+
+## 이 주제가 답하려는 질문
+
+1. **무엇이 「충돌」을 판정하나?** — 충돌 대상을 **지목할 수 있는** 엔진과 **고를 수 없는** 엔진.
+2. **문이 성공했다는 것이 「내가 넣으려던 행이 생겼다」는 뜻인가?** — 영향 행 수 1/2/0 과 `RETURNING`.
+3. **덮어쓰기가 항상 옳지는 않을 때는 어떻게 하나?** — 한 문 안에 같은 키가 둘일 때와, 조건부 갱신.
 
 ## 예시 데이터 — 이 묶음이 공유하는 것
 
@@ -516,7 +522,7 @@ ROLLBACK;
 - **배치 입력에 같은 키가 섞인 채로 던진다.**\
   PG 는 `cannot affect row a second time` 으로 거부하고, MySQL 은 마지막 값을 조용히 채택한다. upsert 전에 입력을 접는다.
 - **upsert 가 잠금을 안 만든다고 생각한다.**\
-  충돌을 잡으려면 행을 잡아야 한다. 같은 키에 경쟁이 몰리면 대기·교착이 생긴다(목록의 57번).
+  충돌을 잡으려면 행을 잡아야 한다. 같은 키에 경쟁이 몰리면 대기·교착이 생긴다([목록의 **57번 주제**](../57-explicit-locking-and-deadlock/)).
 - **`ON CONFLICT` 대상 열에 유니크 제약이 없다.**\
   PG 는 `there is no unique or exclusion constraint matching...` 으로 거부한다.\
   **부분 유니크 인덱스를 대상으로 쓸 때는 인덱스의 `WHERE` 조건까지 문에 적어야** 한다 — 안 적으면 같은 에러가 난다.
@@ -535,6 +541,46 @@ INSERT 0 1
 - **`RETURNING` 을 쓴 코드를 MySQL 로 옮긴다.**\
   `ERROR 1064` 문법 오류다.
 
+## 구현 세부사항 대 언어 보장
+
+upsert 는 **엔진이 자기 문서로 약속한 것이 유난히 많고**, 그만큼 층이 잘 엉킨다.
+
+| 항목 | 무엇인가 | 누가 보장하나 |
+|---|---|---|
+| 충돌 = **유니크 제약·유니크 인덱스** 위반 | **정의** | 언어 — 두 문서가 같은 말을 한다(아래) |
+| PG 의 `DO UPDATE` 는 충돌 대상이 **필수** | **방언** | 엔진 — PG 문서가 *"must be provided"* 로 못 박는다 |
+| PG 가 한 문 안 같은 키를 **거부** | **방언** | 엔진 — PG 문서가 거부를 약속한다(아래). **관찰이 아니다** |
+| MySQL 의 영향 행 수 **1 / 2 / 0** | **방언** | 엔진 — MySQL 문서가 세는 방식을 그대로 적는다(아래). **PG 엔 그 현상 자체가 없다** |
+| MySQL 이 **아무 유니크 키에서든** 잡는 것 | **방언** | 엔진 — 문서가 적고, **매뉴얼이 직접 피하라고 권고**한다(아래) |
+| `RETURNING` 의 유무 | **방언** | 엔진 — PG 문서의 절 / MySQL 은 `ERROR 1064` |
+| ★ **`xmax = 0` 으로 삽입/갱신 가리기** | **구현** | **아무도 보장 안 한다** — 문서화된 계약이 아닌 내부 열(아래) |
+| ★ **2번에서 MySQL 이 어느 제약을 잡았는지** | **관찰(그것도 되짚은 것)** | 서버가 말해 주지 않았다(아래) |
+| 제약 이름 `dept_name_key`·`dept.PRIMARY` | 구현 세부 | 엔진이 붙인 이름 — 스키마가 바뀌면 바뀐다 |
+| 에러·경고 번호(`1062`·`1064`·`1287`) | 구현 세부 | 엔진 — **문자열로 분기하지 마라** |
+
+**두 문서가 같은 말을 하는 자리** — 「무엇이 충돌인가」의 밑바닥 하나뿐이다.\
+MySQL *"a row to be inserted would cause a duplicate value in a `UNIQUE` index or `PRIMARY KEY`"* · PG *"only `NOT DEFERRABLE` constraints and unique indexes are supported as arbiters"*.\
+**그 위의 모든 것 — 대상을 고를 수 있나 · 몇으로 세나 · 무엇을 돌려주나 — 은 엔진이 각자 정했다.**
+
+**엔진이 자기 문서로 약속한 것 — 다른 엔진엔 해당 없다.**
+
+- PG, 충돌 대상 — *"For `ON CONFLICT DO UPDATE`, a `conflict_target` must be provided."* 그리고 유추 규칙 *"All `table_name` unique indexes that, without regard to order, contain exactly the `conflict_target`-specified columns/expressions are inferred (chosen) as arbiter indexes."* → **지목한 인덱스만 중재자가 된다.**
+- PG, 한 문 안 중복 — *"the command will not be allowed to affect any single existing row more than once; a cardinality violation error will be raised when this situation arises."* 본문 5번의 거부는 **문서가 약속한 거부**다.
+- MySQL, 영향 행 수 — *"the affected-rows value per row is 1 if the row is inserted as a new row, 2 if an existing row is updated, and 0 if an existing row is set to its current values."* **1/2/0 은 이 엔진에서 보장이다** — 「이 판에 그랬다」가 아니다. 다만 그 숫자로 **삽입인지 갱신인지**는 알아도 **어느 키에서 잡혔는지**는 못 안다.
+- MySQL, 유니크 키가 여럿일 때 — 매뉴얼이 **스스로 경고한다**: *"If `a=1 OR b=2` matches several rows, only one row is updated. In general, you should try to avoid using an `ON DUPLICATE KEY UPDATE` clause on tables with multiple unique indexes."*\
+  **본문 2번의 `(40, 'hr')` 이 바로 그 자리**다. 그 사고는 우연이 아니라 **문서가 미리 경고해 둔 것**이다.
+
+★ **관찰일 뿐인 것 — 여기가 이 절의 핵심이다.**
+
+- **`xmax = 0`** — 문서화된 계약이 아니라 PG 의 내부 열을 읽은 관용구다. 본문 3번의 `f`/`t` 는 **PG 18.6 이 그렇게 보였다**는 뜻이지 「삽입인지 갱신인지 아는 보장된 방법」이 아니다. 보장된 것은 `RETURNING` 이 **행을 돌려준다**는 데까지다.
+- **MySQL 이 2번에서 `name` 제약을 잡았다는 것** — 서버는 그렇게 말하지 않았다. 출력은 **영향 행 수 `0` 과 안 바뀐 표**뿐이고, 「`id=30` 행의 `name` 을 `'hr'` → `'hr'` 로 갱신했다」는 **거기서 되짚은 해석**이다.\
+  숫자 `0` 자체는 문서가 보장하지만(위), **어느 행·어느 키였는지는 그 출력으로 증명되지 않는다.**\
+  PG 쪽은 반대로 제약 이름(`dept_name_key`)을 **에러가 직접 말해 준다** — 같은 사실을 보는 **근거의 세기가 다르다.**
+- **잠금·교착** — 「upsert 가 경쟁에서 어떻게 되나」는 이 편에서 **안 돌려 봤다.** 「대기·교착이 생긴다」는 성질이고 **누가 죽느냐**는 한 판의 결과다 — [목록의 **57번 주제**](../57-explicit-locking-and-deadlock/)의 소재다.
+
+★ **모른다** — PG 문서에서 **「지목하지 않은 다른 유니크 제약에서 충돌하면 에러가 난다」고 못 박은 문장은 찾지 못했다.**\
+위 유추 규칙에서 따라 나오고 본문 2번의 실행이 그렇게 보여 주지만, **문장으로 확인한 것은 아니다.**
+
 ## 언제 쓰고 언제 안 쓰나
 
 - **쓴다 — 멱등 적재.** 같은 메시지가 두 번 와도 한 행만 남아야 할 때.\
@@ -542,7 +588,7 @@ INSERT 0 1
 - **쓴다 — 집계 캐시 갱신.** 「이 날짜의 집계를 다시 써라」를 한 문으로.
 - **쓴다 — 경쟁 조건 제거.** `SELECT` 후 `INSERT` 의 틈을 없앤다.
 - **안 쓴다 — 삽입·갱신의 의미가 다를 때.** 「신규 가입」과 「정보 수정」은 이력·알림·권한이 다르다. 한 문으로 합치면 그 분기가 사라진다.
-- **안 쓴다 — 삭제까지 필요할 때.** `MERGE` 의 영역이다(PG 15+ 지원, MySQL 8.4 에는 없다 — 목록의 53번).
+- **안 쓴다 — 삭제까지 필요할 때.** `MERGE` 의 영역이다(PG 15+ 지원, MySQL 8.4 에는 없다 — [목록의 **53번 주제**](../53-merge/)).
 - **조심한다 — 대량 upsert.** 행마다 제약 검사와 잠금이 붙는다. 대량이면 임시 표에 적재 후 한 번에 처리하는 편이 낫다.
 
 ## 핵심 문장
@@ -560,7 +606,7 @@ INSERT 0 1
 - [MySQL 8.4 · INSERT ... ON DUPLICATE KEY UPDATE](https://dev.mysql.com/doc/refman/8.4/en/insert-on-duplicate.html)
 - [MySQL 8.0.19 릴리스 노트](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-19.html) — 행 별칭(`AS new`) 도입.
 - [`ops-patterns/06-idempotency-store`](../../../../../ops-patterns/06-idempotency-store/) — 멱등 처리 **패턴**은 거기, 여기는 **문법과 충돌 대상 지정**.
-- [04 NULL 의 3값 논리](../04-null-three-valued-logic/) — `UNIQUE` 열의 `NULL` 은 이 규칙을 따른다(목록의 43번).
+- [04 NULL 의 3값 논리](../04-null-three-valued-logic/) — `UNIQUE` 열의 `NULL` 은 이 규칙을 따른다([목록의 **43번 주제**](../43-primary-key-unique-and-null/)).
 - [SQL 주제 목록](../README.md) — 43(기본키·UNIQUE) · 49(INSERT) · 53(MERGE) · 54(RETURNING) · 57(잠금) 이 이웃이다.
 
 ## 용어 풀이
