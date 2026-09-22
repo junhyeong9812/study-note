@@ -120,7 +120,7 @@ CI 파이프라인(예: GitHub Actions)은 인가를 위임받으려는 게 아�
 
 > 출처: 원고 §3
 
-ID 토큰의 물리적 형식은 **JWT(JSON Web Token)**다 — 점(`.`)으로 이어진 세 부분 `header.payload.signature`.\
+ID 토큰의 물리적 형식은 **JWT**(JSON Web Token)다 — 점(`.`)으로 이어진 세 부분 `header.payload.signature`.\
 각 부분은 base64url로 인코딩된 JSON(서명은 바이트열)이고, 겉보기엔 암호문 같지만 **header와 payload는 암호화가 아니라 인코딩일 뿐이라 누구나 디코딩해 읽을 수 있다.**\
 JWT가 지키는 것은 기밀성이 아니라 **무결성**이다 — 서명이 "이 내용이 발급 후 바뀌지 않았고 그 발급자가 서명했다"를 보장한다.
 
@@ -134,7 +134,7 @@ JWT가 지키는 것은 기밀성이 아니라 **무결성**이다 — 서명이
 ```
 
 여기서 **claim이란 payload 안의 키-값 한 쌍**이다.\
-`iss`(발급자)·`sub`(주체)·`aud`(수신자)·`exp`(만료) 같은 이름은 각각 하나의 claim이고, RFC 7519가 **등록 claim(registered claim)**으로 이름과 의미를 표준화해 둔 것들이다([RFC 7519 §4.1](https://www.rfc-editor.org/rfc/rfc7519#section-4.1)).\
+`iss`(발급자)·`sub`(주체)·`aud`(수신자)·`exp`(만료) 같은 이름은 각각 하나의 claim이고, RFC 7519가 **등록 claim**(registered claim)으로 이름과 의미를 표준화해 둔 것들이다([RFC 7519 §4.1](https://www.rfc-editor.org/rfc/rfc7519#section-4.1)).\
 발급자는 여기에 `repository`·`ref` 같은 자기 도메인의 claim을 더 얹는다(§7).
 
 검증의 출발점은 딱 하나다 — **먼저 서명을 확인한다.**\
@@ -212,11 +212,11 @@ sub = "repo:my-org/my-repo:ref:refs/heads/main"         ← 꼬리가 ref
 
 > 출처: 원고 §6
 
-여기까지의 검증을 다 통과한 토큰도 아직 막지 못한 공격이 하나 있다 — **재전송(replay)**이다.\
+여기까지의 검증을 다 통과한 토큰도 아직 막지 못한 공격이 하나 있다 — **재전송**(replay)이다.\
 유효한 토큰을 중간에서 가로채거나 로그에서 주워, 만료 전에 **그대로 다시** 보내는 것이다.\
 서명도 claim도 전부 진짜이므로 §4·§5의 어떤 칸도 이걸 잡지 못한다 — 진위 검증과 재전송 방어는 다른 축이다.
 
-그 다른 축을 담당하는 claim이 **`jti`(JWT ID)**다.\
+그 다른 축을 담당하는 claim이 **`jti`**(JWT ID)다.\
 RFC 7519는 이를 "JWT의 고유 식별자"로 정의하며, 값은 **다른 토큰에 우연히 같은 값이 배정될 확률이 무시할 만하도록** 발급되어야 하고, 명시적으로 "`jti` claim은 JWT가 재전송되는 것을 막는 데 쓸 수 있다"고 적는다([RFC 7519 §4.1.7](https://www.rfc-editor.org/rfc/rfc7519#section-4.1.7)).
 
 ```text

@@ -160,7 +160,7 @@
 웹 플랫폼 API 에는 버전이 없다. 대부분 **Living Standard** 이고, 기준은 **브라우저 Baseline** 하나다.
 
 - **기준선**: Baseline **widely available**(주요 엔진 전부에서 30개월 이상) 인 것을 「그냥 써도 되는 것」으로 본다.
-- **newly available** 인 것은 주제 이름·3파일에 **「Baseline newly, 저변 도달 시점 <날짜>」**를 명시한다.
+- **newly available** 인 것은 주제 이름·3파일에 「**Baseline newly, 저변 도달 시점 <날짜>**」를 명시한다.
 - **limited** 인 것은 원칙적으로 뺐고(위 표), 남긴 것은 그 사실과 어느 엔진이 없는지를 적는다.
 
 아래 값은 2026-09-21 에 [`api.webstatus.dev`](https://webstatus.dev/) 의 feature API 를 직접 조회해 받은 것이다. **추측하지 않았다.**
