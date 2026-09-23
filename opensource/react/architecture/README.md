@@ -1,12 +1,12 @@
 # React 아키텍처 지도
 
-소스를 **직접 읽어서** 그린 탑다운 지도다. 흐름 열여섯 편, 89개 문서로 되어 있다.
+소스를 **직접 읽어서** 그린 탑다운 지도다. 흐름 열일곱 편, 94개 문서로 되어 있다.
 
 기준 커밋: react `main` [`68631c0453`](https://github.com/facebook/react/tree/68631c0453b08e2c7c96a40910f4c91db1f66d5a). 모든 줄 번호는 이 커밋 기준이고, 대상은 **react-dom 클라이언트 빌드**다.
 
 `useState` 나 `useEffect` 같은 API 이름에서 거꾸로 찾고 싶으면 [API 역인덱스](api-index.md)를 보면 된다.
 
-## 흐름 열여섯 편
+## 흐름 열일곱 편
 
 | 흐름 | 진입점 | 문서 |
 |---|---|---|
@@ -26,6 +26,7 @@
 | [클래스 컴포넌트](flows/class-component/README.md) | `updateClassComponent` `ReactFiberBeginWork.js` L1580 | 6 |
 | [커밋 이펙트](flows/commit-effects/README.md) | `ReactFiberCommitEffects.js` — 사용자 코드를 부르는 자리 | 5 |
 | [DOM 조작](flows/dom-ops/README.md) | `ReactFiberCommitHostEffects.js` → `ReactFiberConfigDOM.js` | 6 |
+| [하이드레이션](flows/hydration/README.md) | `ReactFiberHydrationContext.js` — 커서가 DOM 을 걷는다 | 5 |
 
 ## 흐름이 이어지는 자리
 
@@ -80,14 +81,27 @@
 ```
 
 ```text
- ★ throw 가 제어 흐름이다 - 세 갈래
+ ★ throw 가 제어 흐름이다 - 센티널 다섯 + 되던지기 하나
 
- 컴포넌트가 서스펜드   SuspenseException        [훅]의 use / 렌더 중
- 조정 중 에러          case Throw 가 되던짐      [beginWork] L4465
- 리소스 미준비         SuspenseyCommitException  [completeWork] L1463
+ SuspenseException            Thenable L51   [훅]의 use / 렌더 중
+ SuspenseActionException      Thenable L66   useActionState
+ SuspenseyCommitException     Thenable L61   [completeWork]의 리소스 대기
+ SelectiveHydrationException  BW L313        [하이드레이션] 선택적 수화
+ HydrationMismatchException   HYD L383       [하이드레이션] 어긋남
 
- 셋 다 [렌더 루프]의 handleThrow 가 받아 상태로 바꾸고,
- 되감기에서 [에러와 Suspense]가 경계를 찾는다
+ 그리고 센티널이 아닌 것 하나
+   case Throw 가 되던짐   [beginWork] L4465 — 사용자의 진짜 에러다
+
+ ★ 다섯이 동급은 아니다. [렌더 루프]의 handleThrow 가 이름으로 가르는 것은 **넷**이고
+   (WL L2305 / L2306 / L2321 / L2324),
+   HydrationMismatchException 은 L2335 의 else 로 떨어져
+   L2336 "This is a regular error." 취급을 받는다
+
+ ★★ 왜 예외를 쓰는지 주석이 밝힌다 (BW L1034-1041)
+   "...we could instead modify some internal work loop state. But using an
+    exception means we don't need to check for this case on every iteration
+    of the work loop. So doing it this way moves the check out of the fast path."
+   => work loop 의 매 반복마다 검사하지 않으려는 것이다
 ```
 
 ```text
@@ -140,6 +154,10 @@
  리액트가 실제로 DOM 을 어떻게 만지는지,
  <script> 나 Suspense 로 숨긴 트리가 어떻게 되는지 궁금하면
    [DOM 조작]
+
+ SSR 한 HTML 위에 어떻게 얹는지,
+ "Hydration failed because..." 가 어디서 나오는지 궁금하면
+   [하이드레이션]
 ```
 
 ## 문서의 생김새
