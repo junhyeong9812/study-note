@@ -26,7 +26,7 @@
 목 데이터가 존재하지 않던 최신 키(빈 월)를 만들면, 초기 화면이 실데이터가 없는 그 키로 바뀐다. 수정은 목 보강을 "이미 받은 키에만" 하도록 제한하는 것이다.
 
 5. 옛 `src`의 실패 표시("이미지 없음")가 **새 `src`에도 그대로** 남는다 — 컴포넌트 인스턴스가 재사용되면 로컬 state도 재사용되기 때문이다.\
-일반 원리: 입력(prop)에서 파생된 로컬 state는 입력이 바뀔 때 리셋하지 않으면 이전 값이 남는다. `src`가 바뀔 때 `failed`를 리셋한다.
+일반 원리: 입력(prop)에서 파생된 로컬 state는 입력이 바뀔 때 리셋하지 않으면 이전 값이 남는다. `src`가 바뀔 때 `failed`를 리셋한다 — effect로 리셋하면 커밋 후에야 바뀌어 한 번은 옛 표시로 렌더되므로, 정확히 하려면 `key={src}`로 리마운트하거나 렌더 중에 이전 src와 비교해 리셋한다.
 
 6. **설계**일 수 있다. 선택된 행만 라이브로 조회하고 나머지는 스캔 당시 값을 보여주는 것은 비용과 신선도의 교환이다.\
 유령 참조와 다른 점은 **쓰기 대상이 되지 않고, 어느 값이 스냅샷인지가 규칙으로 정해져 있다**는 것이다. 잘못된 것은 스냅샷 값을 라이브 값처럼 믿고 행동하는 경우다.
@@ -114,7 +114,7 @@ function Img({ src, alt, ...rest }) {
 ```tsx
 function Img({ src, alt, ...rest }) {
   const [failed, setFailed] = useState(false);
-  useEffect(() => setFailed(false), [src]);      // 입력이 바뀌면 파생 상태 리셋
+  useEffect(() => setFailed(false), [src]);      // 입력이 바뀌면 파생 상태 리셋(한 번은 옛 표시 — key={src} 가 더 정확)
   if (!src || failed) return <span>NO IMAGE</span>;
   return <img {...rest} src={src} alt={alt} onError={() => setFailed(true)} />;   // 보호할 prop 은 spread 뒤
 }
