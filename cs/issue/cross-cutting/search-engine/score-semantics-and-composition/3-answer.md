@@ -15,10 +15,10 @@ dis_max(tie_breaker 0)는 최선의 대안 하나만 반영하므로 OR의 의�
    > **dis_max (disjunction max)** — 여러 하위 쿼리 중 최고 점수를 문서 점수로 쓰고, tie_breaker로 나머지를 약간만 반영하는 결합.
 
 2. **상관된 절의 중복 계수 → 그룹별 dis_max.**\
-같은 이름을 여러 분석기(발음·자모·정렬 등)로 표현한 필드는 **같은 정보**다.\
-이를 절 19개로 should에 나열하자 특정 계열 문서들이 여러 표현에서 동시에 매칭돼 교차 점수가 ~48점까지 누적됐고, 목표 문서가 3위 → 12위로 밀리며 무관한 문서가 상위에 들어왔다.\
-교정: "같은 분석기 그룹 안의 필드 = 같은 정보"이므로 **그룹별 dis_max 4개**(tie_breaker 0.1)로 묶고 그룹 간은 should로 합산 → 교차 점수 ~10점. 같은 절이 개별 should와 dis_max 내부에 **중복**으로 들어 있던 것도 제거.\
-잃는 것: 여러 절에서 조금씩 점수를 받던 다단어 문서의 **누적 효과**가 사라져 순위가 55위 → 124위로 밀렸다 — 이를 되살리려 별도 계층 추가·constant_score를 시도했지만 구조적 한계로 적용하지 않았다.
+같은 이름을 여러 분석기(음차·문자 분해·정렬 등)로 표현한 필드는 **같은 정보**다.\
+이를 절 여러 개로 should에 나열하자 특정 계열 문서들이 여러 표현에서 동시에 매칭돼 교차 점수가 크게 누적됐고, 목표 문서가 최상위권에서 10위 밖으로 밀리며 무관한 문서가 상위에 들어왔다.\
+교정: "같은 분석기 그룹 안의 필드 = 같은 정보"이므로 **그룹별 dis_max 4개**(tie_breaker 0.1)로 묶고 그룹 간은 should로 합산 → 교차 점수가 수 분의 1로 감소. 같은 절이 개별 should와 dis_max 내부에 **중복**으로 들어 있던 것도 제거.\
+잃는 것: 여러 절에서 조금씩 점수를 받던 다단어 문서의 **누적 효과**가 사라져 순위가 수십 위에서 백 위권 밖으로 밀렸다 — 이를 되살리려 별도 계층 추가·constant_score를 시도했지만 구조적 한계로 적용하지 않았다.
 
 3. **빈 OR → match_all은 fail-open.**\
 OR 후보가 0개일 때 `match_all()`로 fallback하면 "조건 없음 = 전부 매칭"이 되어 필터가 **열린다** — 빈 집합의 합집합은 공집합이어야 한다.\
@@ -30,22 +30,22 @@ OR 후보가 0개일 때 `match_all()`로 fallback하면 "조건 없음 = 전부
 BM25의 TF 항은 같은 term이 필드에 여러 번 나올수록 커진다(포화되지만 단조 증가).\
 거친 음성 인코더가 토큰마다 같은 코드(`M`)를 내면, 다중값 배열 필드의 원소가 한 필드로 합쳐져 **짧은 반복 토큰 4개짜리 문서**가 TF 합으로 1위가 되고 목표 문서는 10위 밖으로 밀렸다.\
 토큰 중 가장 긴 것 하나만 담는 **단일 문자열 필드**는 TF를 1로 고정하고 필드의 term 수도 줄여 이 편향을 원천 제거한다(토큰 배열 소문자 정규화도 함께).\
-같은 계열: 다국어 발음 서브필드 20여 개에 같은 큰 boost로 match를 걸자 여러 서브필드에 중복 매칭된 문서가 원본 매칭보다 총점이 높아졌다(원인은 기록상 추정 단계라 여기선 구조만 언급).
+같은 계열: 언어별 변환 서브필드 여러 개에 같은 큰 boost로 match를 걸자 여러 서브필드에 중복 매칭된 문서가 원본 매칭보다 총점이 높아졌다(원인은 기록상 추정 단계라 여기선 구조만 언급).
    > **TF (term frequency)** — 문서의 필드에 term이 나온 횟수. BM25에선 k1로 포화되는 증가 함수로 점수에 반영된다.
 
 5. **길이 정규화는 매핑이 결정하는 편향이다.**\
 BM25는 `b`(기본 0.75)로 필드 길이 `dl/avgdl`에 비례해 TF 항을 깎는다 — 같은 매칭이라도 **긴 필드는 불리**하다.\
-거의 같은 이름이 3토큰짜리 필드 안에 있어 단일 토큰 문서보다 한참 아래(127위)로 밀렸다.\
+거의 같은 이름이 3토큰짜리 필드 안에 있어 단일 토큰 문서보다 한참 아래(백 위권 밖)로 밀렸다.\
 게다가 원 필드는 keyword(토큰화 불가)였고, 보조 필드는 공백을 제거해 전체가 **단일 토큰**이라 "개별 단어 단위 유사매칭"이라는 요구 자체를 쿼리로 표현할 수 없었다.\
 시도: 별도 dis_max 계층(누적이 차단돼 단일 토큰만 이득 → 미적용), constant_score(순위 역전 불가·노이즈 증가 → 미적용), 인덱스 `b=0`(재색인·전 쿼리 영향 → 보류).\
-결론: keyword 필드에 **공백 토큰화 + 발음 분석 text 서브필드**를 추가하는 매핑 확장(재색인 필요, 제안 단계) — **검색 가능성은 매핑이 결정**한다.
+결론: keyword 필드에 **공백 토큰화 + 음성(phonetic) 분석 text 서브필드**를 추가하는 매핑 확장(재색인 필요, 제안 단계) — **검색 가능성은 매핑이 결정**한다.
    > **BM25** — TF·IDF·필드 길이 정규화로 관련도를 계산하는 기본 점수 함수. `k1`은 TF 포화, `b`는 길이 정규화 강도.
 
 6. **순위는 점수 차이에서 나온다.**\
-모든 절을 `constant_score`로 바꾸면 IDF(희소성)·TF 신호가 사라져 흔한 토큰의 매칭이 희귀 토큰과 같은 값을 받고, 1만 건이 넘는 **동점 늪**이 생겨 순위가 사실상 무작위가 됐다 → 롤백.\
+모든 절을 `constant_score`로 바꾸면 IDF(희소성)·TF 신호가 사라져 흔한 토큰의 매칭이 희귀 토큰과 같은 값을 받고, 대량의 **동점 늪**이 생겨 순위가 사실상 무작위가 됐다 → 롤백.\
 가중치 1짜리 constant_score 몇 개를 끼워 넣는 것도, 다른 절 점수가 수 점~수만 점 스케일이라 **무력**했다.\
 dis_max도 최댓값만 취하므로 같은 최고 점수를 받는 수십 건 사이의 **차등**을 지운다.\
-대안: 정확 자모 일치(3점) + 유사 자모 일치(1점)의 이중 상수 점수, 자모 **위치 태깅** terms를 should로 걸어 "맞은 개수 = 점수", 토큰 수가 같을 때만 교차 매핑 허용 — 신호를 지우지 않고 **의도한 신호로 교체**했다.
+대안: 정확 문자 분해 일치(3점) + 유사 일치(1점)의 이중 상수 점수, 문자 **위치 태깅** terms를 should로 걸어 "맞은 개수 = 점수", 토큰 수가 같을 때만 교차 매핑 허용 — 신호를 지우지 않고 **의도한 신호로 교체**했다.
 
 7. **상대·근사 점수에 고정 임계 = 조용한 recall 정책 변경.**\
 `_score`는 쿼리 구조·필드 통계·boost에 따라 스케일이 달라지는 **상대값**이라, 고정 `min_score`는 데이터·쿼리가 바뀌면 걸러내는 비율이 달라진다 — 수집 단계에서 적용돼 "더 적게 반환"으로 작동하므로, 이는 튜닝이 아니라 **recall 정책 변경**이다.\
@@ -63,7 +63,7 @@ def or_query(subs):
         return match_all()                                   # 빈 OR = 전부 매칭 (fail-open)
     return bool_(should=subs, minimum_should_match=1)        # 대안 점수 합산
 
-q = bool_(should=[*base, *[match(f, v) for f in SAME_INFO_FIELDS]])   # 같은 정보 19절 합산
+q = bool_(should=[*base, *[match(f, v) for f in SAME_INFO_FIELDS]])   # 같은 정보 여러 절 합산
 ```
 ② 고친 코드
 ```python
@@ -110,14 +110,14 @@ q.should(match("name_longest_one", query, fuzziness="2", max_expansions=500))
 ### 변형 D — 신호 제거(constant_score)의 역효과
 ① 문제 코드
 ```python
-q = bool_(should=[constant_score(match(f, v), boost=1) for f in FIELDS])   # IDF·TF 제거 → 동점 1만+
+q = bool_(should=[constant_score(match(f, v), boost=1) for f in FIELDS])   # IDF·TF 제거 → 대량 동점
 ```
 ② 고친 코드
 ```python
 q = bool_(should=[
-    constant_score(term("jamo_exact", jamo(v)), boost=3),                  # 정확 일치
-    constant_score(terms("jamo_similar", similar_jamo(v)), boost=1),        # 유사 일치
-    *[term("jamo_pos", f"{i}:{j}") for i, j in enumerate(jamo(v))],        # 위치 태깅: 맞은 개수 = 점수
+    constant_score(term("chars_exact", decompose(v)), boost=3),            # 정확 일치
+    constant_score(terms("chars_similar", similar_chars(v)), boost=1),      # 유사 일치
+    *[term("char_pos", f"{i}:{j}") for i, j in enumerate(decompose(v))],   # 위치 태깅: 맞은 개수 = 점수
 ])
 ```
 무엇이 깨졌나: 노이즈를 줄이려고 순위를 만드는 차등 정보까지 지웠다.
@@ -129,7 +129,7 @@ search.minScore(language == KO ? 3.0 : 30.0);     // 상대 점수에 하드코�
 ```
 ② 고친 코드
 ```java
-search.minScore(ScoringPolicy.minScore(language)); // 미정의 언어는 default -> throw (fail-closed)
+search.minScore(ScoreThresholds.of(language));     // 미정의 언어는 default -> throw (fail-closed)
 // 효과 검증 = 배포 후 실데이터(점수 분포·explain) · 후속: 백분위 기반 스코어링
 // 결과 수 고정 시 total/pages 는 반환 수 기준
 ```
