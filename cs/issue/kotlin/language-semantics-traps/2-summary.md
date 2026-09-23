@@ -14,7 +14,7 @@ data class equals = 내용 비교        배열 필드는 참조 비교         
 sealed 케이스 추가 = 조용한 누락     else 없는 when 이 전부 컴파일 오류  컴파일 (안전망 — 의도적으로 이용)
 catch (Exception) = 오류만 잡음      취소도 CancellationException 예외   런타임 (취소가 재시도로 뒤집힘)
 기본값 인자 = 오버로드               JVM 오버로드는 생성 안 됨            런타임 (리플렉션 NoSuchMethod)
-                                     트레일링 람다가 마지막 인자로 재바인딩 컴파일 (호출부 의미 이동)
+                                     트레일링 람다가 마지막 인자로 재바인딩 컴파일(인자 누락) 또는 조용한 의미 이동
 
 교정
   주석에 /* 시퀀스 금지(서술로)     · 식별자는 공백·대시
@@ -26,7 +26,7 @@ catch (Exception) = 오류만 잡음      취소도 CancellationException 예외
 ## 핵심 문장
 
 - Kotlin 블록 주석은 **중첩**된다 — 주석 본문의 `/*`(예: `/admin/**`)가 새 주석을 연다. 문자열 리터럴 안은 안전.
-- backtick 식별자도 **JVM 이름 규칙**을 벗어날 수 없다(`:` `;` `.` `/` `<` `>` 등 금지).
+- backtick 식별자도 **JVM 이름 규칙**(+ Kotlin/JVM 컴파일러의 추가 제약)을 벗어날 수 없다(`:` `;` `.` `/` `<` `>` 등 금지).
 - 배열은 **참조로 비교**된다 — data class의 자동 equals/hashCode는 배열 필드에서 거짓말을 한다.
 - sealed + else 없는 `when` = 케이스 추가를 컴파일 오류로 드러내는 **안전망**. else는 그 망을 끈다.
 - 코루틴 취소는 **예외로 전파**된다 — 광범위 catch 앞에서 `CancellationException`을 재던진다.
