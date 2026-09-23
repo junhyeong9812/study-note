@@ -9,11 +9,11 @@
 
 [규칙]  엣지 nginx 보안 설정
    map $http_user_agent $bad_bot { ~*(python-requests|curl/|wget/|…) 1; }
-   사이트 conf:  if ($bad_bot) { return 444; }   # 444 = 응답 없이 연결 종료
+   사이트 conf:  if ($bad_bot) { return 444; }   # 444 = 응답 없이 연결 종료 (HTTP/2 에선 스트림 리셋으로 보일 수 있음)
 
 [오사]  우리 자동화가 바로 그 curl로 엣지를 호출
    색인 동기화 워크플로 / 각 서비스 배포 워크플로 → curl POST
-   GitHub Actions curl 기본 UA = curl/8.x  → ~*curl/ 에 걸림 → 444
+   GitHub Actions curl 기본 UA = curl/<버전> (당시 8.x)  → ~*curl/ 에 걸림 → 444
    클라 관점:  http: 000 + HTTP/2 PROTOCOL_ERROR (응답 코드 못 받음 = 연결 끊김)
 
 [진단]  UA만 바꿔 대조
@@ -32,5 +32,5 @@
 - 광역 방어(봇 차단·rate limit)의 목적은 "**정체불명** 트래픽 거르기"다 — 우리 자동화는 정체가 분명하니 그 **이름을 대면** 방어를 약화시키지 않고 오사만 없앤다.
 - 방어 규칙을 넣을 때 "내 아군도 이 규칙에 걸리나"를 먼저 본다.
 - 아군은 식별자(고유 UA·허용 IP)로 **명시적으로 통과**시킨다 — allowlist는 denylist(curl 제외)보다 방어를 안 깎는다.
-- `444`는 응답 없이 끊으므로 클라이언트엔 `000`/`PROTOCOL_ERROR`로 보인다(정보 0 = 스캐너에 유리, 아군엔 진단 불편).
+- `444`는 응답 없이 끊으므로 클라이언트엔 `000`/`PROTOCOL_ERROR`로 보인다(스캐너에 주는 정보 0 = 방어엔 유리, 아군엔 진단 불편).
 - "성공 로그가 아니라 산출물" 의 재판 — 초록/빨간불이 아니라 응답코드·UA 대조로만 원인을 좁힌다.
