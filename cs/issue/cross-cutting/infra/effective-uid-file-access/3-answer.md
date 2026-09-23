@@ -66,7 +66,7 @@ mkdir -p ./uploads && sudo chown -R 1000:1000 ./uploads
 ### 변형 B — 존재 ≠ 읽기 가능, 과거만 고치는 chown
 ① 문제 코드
 ```java
-boolean isServable(Path p) {
+boolean canServe(Path p) {
     return Files.exists(p) && Files.isReadable(p);   // uid 1000 기준 → false → 404
 }
 ```
