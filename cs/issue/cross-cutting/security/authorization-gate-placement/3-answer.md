@@ -35,7 +35,7 @@
    허용 목록은 부분 적재를 금지(하나라도 불성립이면 기동 거부)하고, 대조 키는 이름이 아닌 수치 식별자로 한다.
 
 6. **하류는 게이트웨이의 판단을 그대로 믿는 대리인이 된다.** URL이 `/admin/**`이면 ADMIN 헤더를 붙이는 식이면, 권한이 낮은 사용자가 그 URL을 호출하는 순간 하류에는 ADMIN으로 전달된다.\
-   게이트웨이가 넘기는 신원은 요청 경로가 아니라 **인증된 주체(SecurityContext)** 에서 도출해야 한다. 헤더는 추가(add)가 아니라 덮어쓰기(set)로 넣어 중복 값이 생기지 않게 한다.
+   게이트웨이가 넘기는 신원은 요청 경로가 아니라 **인증된 주체(SecurityContext)** 에서 도출해야 한다. 헤더는 추가(add)가 아니라 덮어쓰기(set)로 넣어, 클라이언트가 같은 이름으로 보낸 헤더가 남거나 중복 값이 생기지 않게 한다(하류가 첫 값/마지막 값 중 무엇을 읽는지는 구현마다 다르다).
    > **confused deputy** — 권한을 가진 중개자가 권한 없는 요청자의 요청을 자기 권한으로 대신 수행해 버리는 문제.
 
 7. **필터는 "이 경로가 익명 허용인가"를 모른다.** 인증 필터가 토큰 실패에 곧바로 401을 쓰면, 인가 계층(공개 정책의 유일한 소유자)은 판단할 기회조차 없다.\
@@ -176,7 +176,7 @@ PUT /items/{code}  → PUT /items   로 변경
 ### 방안 3 — 거절 가드보다 앞에서 동일 비용 비교 (존재 오라클 제거)
 ```java
 String saltKey     = (user != null) ? user.id()   : loginId;
-String storedHash = (user != null) ? user.hash() : FAKE_HASH;
+String storedHash = (user != null) ? user.hash() : FAKE_HASH;   // 실제 해시와 같은 알고리즘·비용 파라미터
 boolean ok = hasher.matches(saltKey, raw, storedHash);   // 미존재에서도 같은 비용, 상수시간 비교
 if (user == null || !ok) throw new BadCredentialsException("invalid");   // 단일 실패 사유
 ```
