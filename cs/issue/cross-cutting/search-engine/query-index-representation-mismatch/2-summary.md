@@ -15,7 +15,7 @@
   term(분석 안 함)   "ACME"        vs 색인 "acme"(lowercase)            → 0건
   search_analyzer 없음  검색어도 edge n-gram → "마" 1글자 → 희귀 → IDF 최대 → 무관 문서 상위
                      검색어도 도메인 변환 재통과 → 쓰레기 토큰
-  keyword 정규형     "9" vs "09" · "02.09.25" vs "020925" · "W0123" vs "123"   → 0건 / 집계 버킷 분열
+  keyword 정규형     "9" vs "09" · "A-01" vs "A01" · "K123" vs "123"   → 0건 / 집계 버킷 분열
   keyword 대소문자   .lower() wildcard vs 대문자 원본(normalizer 없음)          → 누락
   필드 부재          .keyword 오부착 · 옛 필드명 · 설계만 있고 매핑엔 없는 서브필드  → 0점 (조용히)
   index:false       저장만, 역색인 없음                                         → 어떤 쿼리로도 불가

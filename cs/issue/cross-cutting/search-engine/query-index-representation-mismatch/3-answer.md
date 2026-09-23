@@ -18,15 +18,15 @@
 
 2. **`search_analyzer`가 없으면 검색어도 n-gram으로 쪼개진다.**\
 edge n-gram 분석기(뒤에서부터: reverse → edge n-gram → reverse)를 색인 전용으로 설계했어도, `search_analyzer`를 지정하지 않으면 **같은 분석기가 검색어에도** 적용된다.\
-5글자 검색어는 뒤쪽 접미 토큰들(`마`, `라마`, `다라마`, ...)로 쪼개지고, 1글자 토큰 `마`는 그 필드에서 **희귀**하면(수백만 문서 중 수백 건) IDF가 최대치 근처라 BM25 점수를 지배한다 — 발음이 무관한 "…마"로 끝나는 문서가 상위 수십 위에 올라왔다.\
+5글자 검색어는 뒤쪽 접미 토큰들(`마`, `라마`, `다라마`, ...)로 쪼개지고, 1글자 토큰 `마`는 그 필드에서 **희귀**하면(수백만 문서 중 수백 건) IDF가 최대치 근처라 BM25 점수를 지배한다 — 의미가 무관한 "…마"로 끝나는 문서가 상위 수십 위에 올라왔다.\
 교정: 매핑에 `search_analyzer`를 추가하는 안은 인덱스 재생성이 필요해 운영 위험이 커서, 쿼리를 `terms`로 바꾸고 분석기 파이프라인을 코드에서 재현해 **토큰을 직접 만들되 1글자 토큰을 제외**했다 — terms는 분석기를 거치지 않고 필터처럼 상수 점수라 IDF 폭등이 원천 차단된다.\
-같은 원인이 도메인 변환 분석기에서도 났다: 색인용 발음 변환 분석기가 쿼리에도 걸려 이미 변환된 입력이 재변환 → 쓰레기 토큰. 원칙: **도메인 분석기 필드엔 `search_analyzer`를 명시**한다.
+같은 원인이 도메인 변환 분석기에서도 났다: 색인용 음차(transliteration) 분석기가 쿼리에도 걸려 이미 변환된 입력이 재변환 → 쓰레기 토큰. 원칙: **도메인 분석기 필드엔 `search_analyzer`를 명시**한다.
    > **IDF (inverse document frequency)** — 토큰이 적은 문서에만 있을수록 커지는 가중치. 희귀 토큰 하나의 매칭이 점수를 크게 올린다.
 
 3. **keyword는 정규형 합의가 전부다.**\
 keyword의 term/terms/prefix는 바이트 비교라 `"9"`와 `"09"`는 다른 값이다 → 필터 0건.\
-같은 유형: 쿼리 쪽이 구분자를 추가(`02.09.25` vs 저장 `020925`), 접두사를 붙임(`W0123` vs `123`), 정수를 보냄(`9` vs `"009"`).\
-쓰기 경로가 `"01"`과 `"001"`을 섞어 저장하면 **같은 값이 두 버킷으로 쪼개져** 집계 합이 어긋난다(한 사례에서 전체 문서 수와 집계 합이 약 140만 건 어긋났는데, 필드가 빈 문서의 집계 제외와 포맷 중복 버킷이 겹친 결과였다).\
+같은 유형: 쿼리 쪽이 구분자를 추가(`A-01` vs 저장 `A01`), 접두사를 붙임(`K123` vs `123`), 정수를 보냄(`9` vs 0 채움 저장값 `"09"`).\
+쓰기 경로가 `"01"`과 `"001"`을 섞어 저장하면 **같은 값이 두 버킷으로 쪼개져** 집계 합이 어긋난다(한 사례에서 전체 문서 수와 집계 합이 크게 어긋났는데, 필드가 빈 문서의 집계 제외와 포맷 중복 버킷이 겹친 결과였다).\
 임시 해결은 읽기 쪽을 인덱스 형식에 맞추는 것(`str(int(c)).zfill(2)`를 모든 validator에 동일 적용, 점 제거 + 자릿수가 다른 코드는 terms 대신 prefix)이지만, **근본은 쓰기 경로(색인 파이프라인)에서 정규형으로 통일**하는 것이다.\
 두 데이터 원천이 다른 표기를 쓰면 필터에 모든 변형을 보내야 하고, 필터를 합칠 땐 교집합/override 의미를 명시해야 한다 — 범주 유래 필터와 사용자 지정 필터를 합집합하면 사용자 필터가 **넓어지는** 의미 파괴가 생겼다.
 
@@ -49,9 +49,9 @@ nested 원소는 **별도 숨은 문서**로 색인되므로 루트 문서 레�
 검색용 최상위 플래그 필드가 따로 있으면 nested 대신 그것을 쓰는 편이 단순하다.
 
 7. **dead 필드와 로컬 등가 복제.**\
-질의측은 `"foo bar"`를 `foobar` 한 덩어리로 만들어 term 질의하는데, 인덱스는 standard로 `foo`·`bar`를 나눈 뒤 **단어별** n-gram만 저장했으므로 `foobar` 토큰은 존재하지 않는다 — 그 필드는 **어떤 쿼리와도 매칭되지 않고 디스크만 차지하는 dead 필드**가 된다(같은 정규화로 만든 `_clean` 필드의 n-gram만 매칭).\
+질의측은 `"foo bar"`를 `foobar` 한 덩어리로 만들어 term 질의하는데, 인덱스는 standard로 `foo`·`bar`를 나눈 뒤 **단어별** n-gram만 저장했으므로 `foobar` 토큰은 존재하지 않는다 — 그 필드는 **어떤 쿼리와도 매칭되지 않고 디스크만 차지하는 dead 필드**가 된다(같은 정규화로 만든 `_norm` 필드의 n-gram만 매칭).\
 게다가 `token_chars: [letter, digit]`의 letter에 한글이 포함돼 한글도 2~10gram으로 잘려 짧은 검색어가 무관한 긴 단어에 걸리는 노이즈가 생겼다.\
-교정은 "n-gram은 이미 정규화된 `_clean` 필드에만"이라는 단일 원칙으로 **매핑과 쿼리 필드 목록을 함께** 정리하는 것이었다(한쪽만 정리하면 조용히 품질 저하, 서브필드 제거는 재색인 때까지 반영 불가).\
+교정은 "n-gram은 이미 정규화된 `_norm` 필드에만"이라는 단일 원칙으로 **매핑과 쿼리 필드 목록을 함께** 정리하는 것이었다(한쪽만 정리하면 조용히 품질 저하, 서브필드 제거는 재색인 때까지 반영 불가).\
 로컬 등가 구현(다른 방안)은 토큰화 규칙(standard가 하이픈·슬래시·`&`는 나누고 `letter'letter`는 한 토큰으로 유지)과 **배열 원소 경계**(phrase는 원소 사이를 넘지 않음)까지 복제하고, 실제 엔진 결과와 표본 대조해야 "등가"라고 말할 수 있다.
 
 ## 문제 구조 (추상화 코드)
@@ -60,12 +60,12 @@ nested 원소는 **별도 숨은 문서**로 색인되므로 루트 문서 레�
 ① 문제 코드
 ```python
 name = raw.replace(" ", "").replace("-", "").replace("_", "")
-q.add_should(term("name_exact", name))         # "ACME" vs 저장 "acme"
+q.should(term("name_exact", name))             # "ACME" vs 저장 "acme"
 ```
 ② 고친 코드
 ```python
 name = raw.replace(" ", "").replace("-", "").replace("_", "").lower()   # 색인측 변환 재현
-q.add_should(term("name_exact", name))
+q.should(term("name_exact", name))
 # 문자 정렬 서브필드: sorted_chars(name) 재현 후 term / 재현 어려운 서브필드는 term 절 제거
 ```
 무엇이 깨졌나: term이 검색어를 분석하지 않는다는 걸 잊고 색인측 변환을 쿼리 쪽에서 재현하지 않았다.
@@ -73,32 +73,32 @@ q.add_should(term("name_exact", name))
 ### 변형 B — `search_analyzer` 미지정
 ① 문제 코드
 ```json
-"name.back": { "type": "text", "analyzer": "edge_back" }     // search_analyzer 없음
+"name.suffix": { "type": "text", "analyzer": "suffix_edge" }  // search_analyzer 없음
 ```
 ```python
-q.add_should(match("name.back", query))   # 검색어도 edge n-gram → 1글자 토큰 → IDF 폭등
+q.should(match("name.suffix", query))     # 검색어도 edge n-gram → 1글자 토큰 → IDF 폭등
 ```
 ② 고친 코드
 ```python
 tokens = back_ngrams(query, min_len=2)            # 분석기 파이프라인을 코드로 재현, 1글자 제외
-q.add_should(terms("name.back", tokens))          # 분석기 우회 + 상수 점수
+q.should(terms("name.suffix", tokens))            # 분석기 우회 + 상수 점수
 ```
 무엇이 깨졌나: 색인용 분석기가 검색어에도 걸린다는 기본 동작을 놓쳤다.\
-같은 구조: 색인용 발음 변환 분석기 필드(`"analyzer": "pron_x"`, search_analyzer 없음)에 이미 변환된 쿼리가 재통과 → 변환을 색인 전 ETL 단계로 옮겨 keyword 필드에 저장, 또는 변환기에 passthrough 가드.
+같은 구조: 색인용 음차 분석기 필드(`"analyzer": "translit_x"`, search_analyzer 없음)에 이미 변환된 쿼리가 재통과 → 변환을 색인 전 ETL 단계로 옮겨 keyword 필드에 저장, 또는 변환기에 passthrough 가드.
 
 ### 변형 C — keyword 정규형 불일치
 ① 문제 코드
 ```python
 codes = [str(int(c)) for c in raw_codes]                 # "09" → "9", 인덱스는 "09"
-q.filter(terms("class_codes", [9]))                      # 정수 전송, 인덱스는 "009"
-q.filter(terms("figure_codes", [add_dots(c)]))           # "02.09.25", 인덱스는 점 없는 8자리 숫자
+q.filter(terms("cat_codes", [9]))                        # 정수 전송, 인덱스는 0 채움 문자열
+q.filter(terms("code_a", [add_dash(c)]))                 # "A-01", 인덱스는 구분자 없는 형식
 ```
 ② 고친 코드
 ```python
 codes = [str(int(c)).zfill(2) for c in raw_codes]        # 모든 validator에 동일 적용
-q.filter(terms("class_codes", [str(int(c)).zfill(3) for c in raw]))
-q.filter(prefix("figure_codes", strip_dots(c)))          # 6자리 입력 → 8자리 저장값 prefix
-q.filter(term("reg_no", raw.lstrip("Ww").lstrip("0")))   # 접두사·선행 0 제거
+q.filter(terms("cat_codes", [str(int(c)).zfill(2) for c in raw]))
+q.filter(prefix("code_a", strip_dash(c)))                # 짧은 입력 → 더 긴 저장값 prefix
+q.filter(term("id_no", raw.lstrip("Kk").lstrip("0")))    # 접두사·선행 0 제거
 # 근본: 색인 파이프라인에서 정규형으로 통일 (읽기 쪽 정규화는 임시)
 ```
 무엇이 깨졌나: 쓰기 경로와 읽기 경로가 서로 다른 정규형을 적용했다.\
@@ -121,16 +121,16 @@ FIELDS = ["part_a.exact", "part_b.exact", "part_a", "part_b"]
 ### 변형 E — 존재하지 않는 필드 · index:false · nested
 ① 문제 코드
 ```python
-q.add_should(term("codes.keyword", code))          # codes는 이미 keyword → .keyword 없음 → 0건
-sort = {"owner_name.keyword": "asc"}               # 없는 서브필드 → 무동작
-q.add_should(match("name.cross_sub", v))           # 설계엔 있고 매핑엔 없음 → 0점
+q.should(term("codes.keyword", code))              # codes는 이미 keyword → .keyword 없음 → 0건
+sort = {"name.keyword": "asc"}                     # 없는 서브필드 → 무동작
+q.should(match("name.cross_sub", v))               # 설계엔 있고 매핑엔 없음 → 0점
 q.filter(range("children.date", gte=d))           # nested → 루트 레벨에서 안 닿음
-q.add_should(match("holder.name", v))              # index:false → 검색 불가
+q.should(match("holder.name", v))                  # index:false → 검색 불가
 ```
 ② 고친 코드
 ```python
-q.add_should(term("codes", code))                  # GET _mapping/field/codes 로 확인 후
-sort = {"owner_name": "asc"}
+q.should(term("codes", code))                      # GET _mapping/field/codes 로 확인 후
+sort = {"name": "asc"}
 # dead 절 제거 (매핑 쪽 변경과 쿼리 쪽 정리를 짝지어)
 q.filter(nested(path="children", query=range("children.date", gte=d)))
 sort = {"children.name": {"order": "asc", "nested": {"path": "children"}}}
@@ -141,15 +141,15 @@ sort = {"children.name": {"order": "asc", "nested": {"path": "children"}}}
 ### 변형 F — 질의 정규화 ≠ 색인 토큰화 (dead n-gram 필드)
 ① 문제 코드
 ```python
-name_clean = "".join(c for c in q.lower() if c.isalnum())    # "foo bar" → "foobar"
-q.add_should(term("name.ngram", name_clean))                 # 인덱스: ["fo","foo","ba","bar"] 단어별 → 영원히 0
+norm_q = "".join(c for c in q.lower() if c.isalnum())        # "foo bar" → "foobar"
+q.should(term("name.ngram", norm_q))                         # 인덱스: ["fo","foo","ba","bar"] 단어별 → 영원히 0
 ```
 ```json
 "ngram_tok": { "type": "ngram", "min_gram": 2, "max_gram": 30, "token_chars": ["letter", "digit"] }   // 한글도 letter
 ```
 ② 고친 코드
 ```python
-q.add_should(term("name_clean.ngram", name_clean))           # 같은 정규화로 만든 필드에만 n-gram
+q.should(term("name_norm.ngram", norm_q))                    # 같은 정규화로 만든 필드에만 n-gram
 # 매핑: base text 필드의 n-gram 서브필드 제거 + 쿼리 필드 목록 동반 정리 (재색인 시 반영)
 # max_gram 30 → 10 (max_ngram_diff 명시)
 ```
