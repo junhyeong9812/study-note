@@ -11,13 +11,14 @@
 1. **두 경로로 오는 조합 텍스트.** 해당 웹뷰 엔진에서 한글은 음절마다 `compositionend`가 따로 발생하고, 그 시점엔 이미 `composing=false`다.\
 그 뒤 터미널 라이브러리가 같은 음절(또는 누적 문자열)을 `onData`로 다시 흘려, 조합 확정 텍스트와 데이터 이벤트가 이중으로 전송됐다.\
 composing 플래그로 onData를 막는 가설은, onData가 도착할 때 플래그가 이미 false라 막을 게 없어 실패했다.\
-해결: 조합 텍스트는 `compositionend.data`로 한 번만 보내고, `onData`에서 비ASCII(멀티바이트) 데이터는 버린다 — 터미널 키 입력 onData는 ASCII·제어문자뿐이기 때문이다.\
+해결: 조합 텍스트는 `compositionend.data`로 한 번만 보내고, `onData`에서 비ASCII(멀티바이트) 데이터는 버린다 — 이 앱에서 IME 밖 키 입력의 onData는 ASCII·제어문자뿐이라는 가정에 기댄 것이다(비ASCII를 직접 내는 자판 배열·dead key 입력이 있는 환경이면 성립하지 않는다).\
 결정타는 추측이 아니라 dev 콘솔로 이벤트 순서를 계측한 것이었다. 남은 한계: 비ASCII 붙여넣기도 함께 버려진다.
    > **IME 조합(composition)** — 입력기가 여러 키 입력을 모아 한 글자를 만드는 과정. 확정 전의 미완성 텍스트를 preedit이라 한다.
 
 2. **조합 중 덮어쓰기.** `input` 이벤트는 compositionstart~end 사이에도 매 키마다 발생한다.\
 그때 value를 잘라 다시 쓰면 입력기의 조합 상태가 파괴되어 글자가 강제 확정되거나 깨진다.\
-조합 중(ref 플래그)에는 카운트만 하고, `compositionEnd`에서 절삭·state 동기화를 한다.
+조합 중(ref 플래그)에는 자르지 않고(카운트만 하고 state에는 원값 그대로 반영 — React controlled 입력은 state를 갱신하지 않으면 DOM 값을 이전 state로 되돌려 역시 조합을 깨뜨린다), `compositionEnd`에서 절삭·동기화를 한다.\
+(compositionend와 마지막 input의 순서는 브라우저마다 다를 수 있으므로 양쪽 경로 모두 "조합 중이 아니면 절삭"으로 수렴시킨다.)
 
 3. **"처리됨" ≠ 전파 차단.** 라이브러리 핸들러의 `return false`는 **라이브러리 내부의** 기본 처리(PTY로 보내기 등)만 막는다 — DOM 이벤트는 그대로 버블된다.\
 `preventDefault()`는 브라우저 기본 동작만, `stopPropagation()`은 상위로의 전파만 막는다 — 서로 대체되지 않는다.\
@@ -30,9 +31,9 @@ composing 플래그로 onData를 막는 가설은, onData가 도착할 때 플�
 공유 스크롤 헬퍼는 onKeyDown의 **마지막 분기**에 두고, 처리하지 않은 키에는 preventDefault를 부르지 않는 계약으로 고정했다.
 
 5. **포커스 소유권.** 키보드 탐색은 "지금 누가 포커스를 쥐는가"라는 단일 사실에 의존한다.\
-자식이 열리면서 포커스를 가져가면 사이드바의 키 입력이 자식으로 가고, 포커스된 요소가 사라지면 포커스는 body로 떨어져 아무 핸들러도 받지 못한다.\
+자식이 열리면서 포커스를 가져가면 사이드바의 키 입력이 자식으로 가고, 포커스된 요소가 사라지면 포커스는 body로 떨어져 컴포넌트에 붙은 키 핸들러는 아무것도 받지 못한다(document·window 수준 리스너만 받는다).\
 교정: 자식 자동 포커스를 없애고 사이드바가 스스로 포커스를 유지, 닫을 때 목록으로 명시적으로 포커스 이양.\
-setState 직후에는 새 DOM이 아직 없어 focus()가 효과가 없으므로 `requestAnimationFrame` 뒤에 한다.
+setState 직후에는 새 DOM이 아직 없어 focus()가 효과가 없으므로 `requestAnimationFrame` 뒤에 했다 — rAF는 흔한 우회일 뿐 커밋 이후를 보장하지는 않으므로, 커밋 뒤 실행되는 `useEffect`·ref 콜백에서 focus하는 쪽이 더 확실하다.
    > **포커스 소유권** — 키보드 이벤트를 받는 요소는 한순간 하나뿐이다. 그 하나를 누가 정하는지가 명확해야 탐색이 끊기지 않는다.
 
 6. **drop 없는 종료.** Esc로 취소, 창 밖에서 놓기, 다른 드롭 대상이 먼저 소비 — 이때 `drop`은 이 요소에 오지 않는다.\
@@ -74,7 +75,10 @@ const composing = useRef(false);
 <textarea value={v}
   onCompositionStart={() => { composing.current = true; }}
   onCompositionEnd={e => { composing.current = false; setV(truncateBytes(e.currentTarget.value, MAX)); }}
-  onInput={e => { if (!composing.current) setV(truncateBytes(e.currentTarget.value, MAX)); /* 조합 중엔 카운트만 */ }} />
+  onInput={e => {
+    const raw = e.currentTarget.value;
+    setV(composing.current ? raw : truncateBytes(raw, MAX));   // 조합 중엔 원값 반영(카운트만) — 미반영 시 React가 DOM 값을 되돌림
+  }} />
 ```
 무엇이 깨졌나: 입력기가 소유한 조합 버퍼를 프로그램이 덮어썼다.
 
@@ -145,6 +149,7 @@ el.addEventListener("dragleave", () => clearHighlight());         // 자식 경�
 useEffect(() => {
   const end = () => clearHighlight();
   window.addEventListener("dragend", end, true);                   // capture 백스톱: Esc·창 밖·타 타깃 소비
+                                                                   // (페이지 안에서 시작한 드래그 한정 — OS에서 들어온 파일 드래그는 dragend가 오지 않음)
   window.addEventListener("drop", end, true);
   return () => { window.removeEventListener("dragend", end, true); window.removeEventListener("drop", end, true); };
 }, []);
