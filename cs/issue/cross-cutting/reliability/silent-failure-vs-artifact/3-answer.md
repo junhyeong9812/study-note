@@ -295,7 +295,7 @@ healthcheck:
 ② 고친 코드
 ```yaml
 healthcheck:
-  test: ["CMD-SHELL", "python -c \"get('/health/deep', timeout=20)\" || exit 1"]    # 실제 추론 1건
+  test: ["CMD-SHELL", "python -c \"r = get('/health/deep', timeout=20); r.raise_for_status(); exit(0 if r.json().get('ok') else 1)\" || exit 1"]    # 실제 추론 1건 — HTTP 오류·실패 본문도 비정상 종료
   interval: 60s
 # 배치와 경합 시 거짓 unhealthy 방지: 처리 중 카운터가 있으면 busy:true 반환
 # 단 busy를 무조건 healthy로 보면 교착·무한 처리도 healthy로 숨는다 →
@@ -332,7 +332,7 @@ pdftotext -bbox out.pdf | check_overlap
 ```
 ② 고친 코드
 ```sh
-pdftotext -bbox-layout out.pdf | check_overlap_and_footer_band   # 줄 요소가 있는 모드 + 괘선 y 계산
+pdftotext -bbox-layout out.pdf - | check_overlap_and_footer_band   # '-' = 표준 출력. 줄 요소 모드 + 괘선 y 계산 (추출 실패·빈 입력 = 검사 실패)
 pdftotext out.pdf - | expect_all_strings sections.txt            # 잘려 사라진 텍스트는 문자열 존재 대조로
 pdftoppm -png out.pdf page && review_rendered_images              # 렌더 이미지 육안 병행
 ```
