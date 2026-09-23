@@ -90,7 +90,7 @@ def sync(source_rows):
         if row.key not in target:           # insert-only: 갱신·상태 전환 미전파
             target.insert(row)
 
-def replace_months(months, produced):       # 산출물에 있는 월만 교체
+def months_to_replace(months, produced):       # 산출물에 있는 월만 교체
     for m in sorted(set(produced) & set(months)):
         target.delete_month(m); target.insert(produced[m])
     # 원천이 전부 비활성인 월 → 산출물 비어 있음 → DELETE 안 돎 → 옛 행 잔존
@@ -104,7 +104,7 @@ def sync(source_rows):                      # 전량 미러: 없으면 insert, �
         elif not cur.same_as(row): target.update(row)
     # 불변식 테스트: 변경 없는 재실행 → updated == 0 (멱등)
 
-def plan_months(months, available):
+def months_to_plan(months, available):
     if months is None:
         return sorted(available), []                       # 전체 모드: 과거 월 무단 삭제 방지
     target = sorted(set(months))
@@ -168,7 +168,7 @@ function persist(tree, legacy) {
 }
 function load() {
   const tree = parse(localStorage.getItem("tree")), legacy = localStorage.getItem("legacy");
-  return tree && agrees(tree, legacy) ? tree : fromLegacy(legacy);   // 사후 화해: 누가 최신인지 추론
+  return tree && agrees(tree, legacy) ? tree : fromOld(legacy);   // 사후 화해: 누가 최신인지 추론
 }
 // 한쪽 쓰기 실패 · 다운그레이드 · "null" 문자열 → 닫은 항목 부활, 변경 유실
 ```
@@ -229,14 +229,14 @@ val state = when {
 
 ① 문제 코드
 ```python
-SERVICE_NAMES = {c: {"search": f"{c}-search"} for c in REGIONS}   # compose 서비스명의 하드코딩 사본
+SERVICES = {c: {"search": f"{c}-search"} for c in REGIONS}   # compose 서비스명의 하드코딩 사본
 def restart(c, svc):
-    run(["docker", "compose", "-f", f"{DIR}/compose.yml", "up", "-d", SERVICE_NAMES[c][svc]])
+    run(["docker", "compose", "-f", f"{DIR}/compose.yml", "up", "-d", SERVICES[c][svc]])
 # compose 가 "<c>-search-v2" 로 바뀐 뒤 → no such service → 자동 재시작이 한 번도 성공 못 함 (운영자는 수동 우회로 모름)
 ```
 ② 고친 방향
 ```python
-SERVICE_NAMES = {c: {"search": f"{c}-search-v2"} ...}   # hotfix
+SERVICES = {c: {"search": f"{c}-search-v2"} ...}   # hotfix
 # 재발 방지 후보: compose 파일에서 서비스명을 파싱(사본 제거)
 # 검증: 배포 후 컨테이너 stop 장애 주입 → 자동 재시작 성공 실측
 ```
