@@ -21,11 +21,11 @@
 호출처가 N개면 "빠뜨릴 자리"도 N개다. 한 곳만 잊어도 그 페이지가 오류를 정상처럼 그린다. 이건 중복 코드 문제가 아니라 **잊을 수 있는 검사를 잊을 수 없게** 만드느냐의 문제다.
 
 ```
-[단일 창구 backendGet — 봉투를 여기서만 연다]
+[단일 창구 apiGet — 봉투를 여기서만 연다]
   page A ─┐
-  page B ─┼─▶ backendGet(path) ─▶ ① 네트워크 실패      → throw BackendError(503)
-  page C ─┘        │              ② 봉투 아님          → throw BackendError(invalid_envelope)
-                   │              ③ success=false      → throw BackendError(code)
+  page B ─┼─▶ apiGet(path) ─▶ ① 네트워크 실패      → throw ApiError(503)
+  page C ─┘        │              ② 봉투 아님          → throw ApiError(invalid_envelope)
+                   │              ③ success=false      → throw ApiError(code)
                    ▼              ④ success=true       → return data (T)
              페이지는 data(T)만 받는다 — 봉투의 존재조차 모른다
 ```
