@@ -301,7 +301,7 @@ B2 (안쪽 카드)  rgb(21, 128, 61)   초록
   CSS.supports('at-rule(@scope)')                                  -> true
 ```
 
-- `@supports at-rule(@scope)` 로 질의한다(목록의 **41번 주제**).
+- `@supports at-rule(@scope)` 로 질의한다([목록의 **41번 주제**](../41-supports-feature-queries/)).
 
 **「무시됐을 때의 화면」을 설계해야 하는 이유**
 

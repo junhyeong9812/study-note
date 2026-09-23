@@ -6,7 +6,7 @@
 > ★ **이 주제는 「붙어 보인다」와 「상쇄됐다」가 다른 이야기다.** 본문의 간격은 전부 `rect.bottom` 과 다음 상자의 `rect.top` 을 빼서 얻은 실측값이다.\
 > ★ **`body` 의 기본 `margin: 8px` 과 doctype 없는 문서의 쿼크 모드가 이 실험을 오염시킨다** — 모든 측정은 `<!doctype html>` 과 `html, body { margin: 0; padding: 0 }` 래퍼 안에서 했다.\
 > **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
-> **여기서 다루지 않는 것** — **BFC 의 생성 조건 전체와 그 밖의 효과**는 [17번](../17-block-formatting-context/2-summary.md)이 정본이다. `display` 값의 구조는 [16번](../16-display-inner-outer/2-summary.md), `margin` 이 `box-sizing` 밖이라는 것은 [15번](../15-box-model-and-box-sizing/2-summary.md), float 자체의 동작은 목록의 **20번 주제**다. **flex 의 배치 규칙은 [24번](../24-flexbox-axes/2-summary.md)이 정본**이고 여기서는 「항목에는 상쇄가 없다」는 결론만 실측으로 받는다.
+> **여기서 다루지 않는 것** — **BFC 의 생성 조건 전체와 그 밖의 효과**는 [17번](../17-block-formatting-context/2-summary.md)이 정본이다. `display` 값의 구조는 [16번](../16-display-inner-outer/2-summary.md), `margin` 이 `box-sizing` 밖이라는 것은 [15번](../15-box-model-and-box-sizing/2-summary.md), float 자체의 동작은 [목록의 **20번 주제**](../20-float-and-clear/)다. **flex 의 배치 규칙은 [24번](../24-flexbox-axes/2-summary.md)이 정본**이고 여기서는 「항목에는 상쇄가 없다」는 결론만 실측으로 받는다.
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 간격은 실행으로 접지했다.
 
 ## 한눈에 — 쉽게 말하면
@@ -358,10 +358,10 @@ flex 항목에는 상쇄가 **없다** — 그래서 20+20 이 **40 으로 커�
 - [16번 주제](../16-display-inner-outer/2-summary.md)(`display` 의 내부/외부 값) — `flow` 와 `flow-root` 가 갈리는 자리. **왜 `flow` 에서 새는가**의 뿌리
 - [15번 주제](../15-box-model-and-box-sizing/2-summary.md)(박스 모델) — **마진이 `box-sizing` 밖**이고 **배경이 칠해지지 않는** 칸이라는 것
 - [24번 주제](../24-flexbox-axes/2-summary.md)(Flexbox) — flex 의 배치 규칙은 거기가 정본. 여기는 **항목에 상쇄가 없다**는 결론만
-- 목록의 **20번 주제**(부동과 해제) — float 된 상자가 **상쇄에 참여하지 않는** 이유
-- 목록의 **21번 주제**(`position` 과 포함 블록) — `absolute` 상자가 상쇄에 참여하지 않는 이유
-- 목록의 **19번 주제**(인라인 서식 문맥) — 줄 상자가 「맞닿음」을 깨는 자리
-- 목록의 **26번 주제**(flex 줄바꿈·`gap`·`order`) — `gap` 이 마진과 무엇이 다른가
+- [목록의 **20번 주제**](../20-float-and-clear/)(부동과 해제) — float 된 상자가 **상쇄에 참여하지 않는** 이유
+- [목록의 **21번 주제**](../21-position-and-containing-block/)(`position` 과 포함 블록) — `absolute` 상자가 상쇄에 참여하지 않는 이유
+- [목록의 **19번 주제**](../19-inline-formatting-context/)(인라인 서식 문맥) — 줄 상자가 「맞닿음」을 깨는 자리
+- [목록의 **26번 주제**](../26-flex-wrap-gap-order/)(flex 줄바꿈·`gap`·`order`) — `gap` 이 마진과 무엇이 다른가
 - [`reference/render-rules.md`](../../../../../../reference/render-rules.md) — 이 문서의 `demo` 블록 규칙
 
 ## 용어 풀이
@@ -386,6 +386,6 @@ flex 항목에는 상쇄가 **없다** — 그래서 20+20 이 **40 으로 커�
 - **`margin: auto` 는 상쇄와 무관하다.** 가로 가운데 정렬에 쓰는 `auto` 는 **남는 공간을 먹는 계산**이고, 상쇄는 세로 마진의 규칙이다.\
   flex 에서 `margin: auto` 가 하는 일은 [24번](../24-flexbox-axes/2-summary.md)에 있다.
 - **논리 속성에서도 상쇄는 「블록 축」의 이야기다.** `writing-mode` 를 바꾸면 상쇄되는 축이 가로로 바뀐다.\
-  「세로 마진만 상쇄된다」는 정확히는 **「블록 축 마진만 상쇄된다」** 이다. 정본은 목록의 **32번 주제**.
+  「세로 마진만 상쇄된다」는 정확히는 **「블록 축 마진만 상쇄된다」** 이다. 정본은 [목록의 **32번 주제**](../32-logical-properties-and-writing-mode/).
 - **왜 이런 규칙이 있나** — 문서의 문단 사이 간격을 위해서다. 모든 `<p>` 에 위아래 마진을 줘도 **문단 사이가 두 배가 되지 않게** 하려는 것이 원래 의도다.\
   오늘처럼 컴포넌트를 조립하는 방식에서는 그 의도가 오히려 방해가 되어, **`gap` 과 `flow-root` 로 상쇄를 피하는** 쪽이 표준 관행이 됐다.

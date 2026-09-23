@@ -472,4 +472,4 @@ li:nth-of-type(2n)         /* li 줄 짝수 — of 는 못 붙인다 */
   *(Chrome 151 headless 실측: `.box` 안의 `.i` 셋에서 `:nth-child(2 of .box .i)` 와 `:nth-child(2 of .i)` 가 **같은 둘째 노드**를 잡았고, 없는 조상을 쓴 `:nth-child(2 of .nope .i)` 는 0개였다.)*
 - **`:nth-of-type` 은 네임스페이스까지 본다**(같은 로컬 이름이어도 네임스페이스가 다르면 다른 타입). HTML 문서만 다루면 만날 일이 없다. *(이 머신에서 미실행.)*
 - 트리 순서가 아니라 **화면에 그려진 순서**로 세고 싶다면 CSS 에는 방법이 없다. `order`(flex)는 **그림 순서만 바꾸고 선택자 번호는 안 바꾼다.**\
-  *(Chrome 151 headless 실측: `display: flex` 안의 셋째 아이템에 `order: -1` 을 줘 **화면에서 맨 왼쪽**으로 보냈는데(x 좌표 8 로 가장 작다), `:nth-child(1)`·`:first-child` 는 여전히 **첫째 아이템**을 잡았다.)* grid 쪽(`grid-auto-flow`)은 미실행이다(목록의 **26번 주제**·**28번 주제**).
+  *(Chrome 151 headless 실측: `display: flex` 안의 셋째 아이템에 `order: -1` 을 줘 **화면에서 맨 왼쪽**으로 보냈는데(x 좌표 8 로 가장 작다), `:nth-child(1)`·`:first-child` 는 여전히 **첫째 아이템**을 잡았다.)* grid 쪽(`grid-auto-flow`)은 미실행이다([목록의 **26번 주제**](../26-flex-wrap-gap-order/)·**28번 주제**).

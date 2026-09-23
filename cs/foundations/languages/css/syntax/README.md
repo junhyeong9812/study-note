@@ -1,11 +1,15 @@
 # CSS — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **쓰인 주제는 제목에 폴더 링크**가 걸려 있고, 나머지는 아직 없다.
-> 현재 쓰인 것: **01 · 02 · 03 · 04 · 05 · 06 · 07 · 08 · 09 · 10 · 11 · 12 · 13 · 14 · 15 · 16 · 17 · 18 · 24 · 52**(20/60).
-> ★ **03\~18 은 2026-09-23 에 썼다.** 이 갈래의 근거는 SQL 과 성질이 다르다 — **CSS 는 에러가 없는 언어**라
-> 무효한 선언·선택자가 조용히 버려진다. 그래서 「진단 3창」으로 잰다:
-> `document.styleSheets[…].cssRules`(규칙이 담겼나) → `querySelectorAll().length`(잡혔나) → `getComputedStyle`(이겼나).
-> **이 셋을 안 가르면 화면상 증상이 전부 같다.**
+> **60주제 전부 작성됐다(2026-09-23).** 「주제」 칸의 링크가 각 주제의 3파일 폴더다.
+> **본문의 모든 수치는 Chrome 151.0.7922.173 headless 실측이다.** CSS 는 SQL 과 근거의 성질이 정반대다 —
+> **에러가 없는 언어**라 무효한 선언·선택자가 조용히 버려진다. 그래서 「진단 3창」으로 잰다:
+> `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나).
+> ★★ **그런데 셋으로 안 끝났다.** 주제마다 네 번째 창이 하나씩 더 필요했다 —
+> **`getAnimations()`**(애니메이션: `@keyframes` 이름 오타가 세 창을 전부 통과한다) ·
+> **`matchMedia`/`conditionText`**(at-rule: 「담겼는데 조건이 거짓」) ·
+> **`cssRules[i].style.getPropertyValue('--x')`**(커스텀 속성: 담긴 값과 계산값이 다르다) ·
+> **`getBoundingClientRect()`**(레이아웃·3D: `transform-style` 계산값이 34벌 전부 `preserve-3d` 인데 실제로 깨진 것이 12벌) ·
+> **스크린샷 픽셀**(색·필터·혼합: 계산값이 같고 픽셀만 다른 자리).
 > 기준 소스: [CSSWG 에디터 초안 색인](https://drafts.csswg.org/) (모듈별 최신 초안) · [CSS Snapshot 2026](https://drafts.csswg.org/css-2026/) (안정 집합) · [W3C TR CSS 목록](https://www.w3.org/TR/?filter-tr-name=css) (권고 단계) · [MDN CSS 레퍼런스](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference) (표면 확인용) · 지원 상태는 [Web Platform Status(`webstatus.dev`)](https://webstatus.dev/) 의 Baseline 데이터를 API 로 조회해 확인했다.
 > 실행 검증: **가능**. 이 머신에 **Google Chrome 151.0.7922.173** 과 **Mozilla Firefox 155.0.1** 이 설치돼 있다. `google-chrome --headless --dump-dom` 으로 DOM 을, `--screenshot` 으로 렌더 결과 PNG 를 뽑는 것을 실제로 돌려 확인했다(`:has()`·`@container`·`grid` 를 쓴 최소 문서로 스모크 통과). 계산값 확인은 headless 의 `getComputedStyle` 로, 눈으로 볼 것은 스크린샷으로 남긴다. **엔진은 Blink 와 Gecko 둘뿐이고 WebKit(Safari)은 이 머신에 없다** — Safari 전용 차이는 명세와 Baseline 데이터로만 접지하고 「미실행」으로 표기한다.\
 > ⚠️ **2026-09-21 정정 — 렌더 검증은 Chrome 단일 엔진이다.** Firefox 155.0.1 은 설치돼 있으나 이 환경에서 **headless 스크린샷이 산출되지 않는다** (전용 프로파일로도 `exit 0` 으로 끝나며 파일을 만들지 않는 **조용한 실패**). 따라서 크로스 브라우저 차이를 주장할 때는 Baseline 데이터로만 접지하고, 「두 엔진에서 확인했다」고 적지 않는다.
@@ -45,48 +49,48 @@ CSS 는 문법 언어가 아니다. 문법 표면은 「선택자 { 속성: 값 
 | 16 | [`display` 의 내부/외부 값 — `block flow`·`inline flow-root`·`flow-root`·`contents`·`none`](16-display-inner-outer/) | 박스·레이아웃 | 한 값이 「바깥에서 어떻게 보이나」와 「안을 어떻게 배치하나」 두 가지를 동시에 정한다는 것을 설명하고 `contents` 의 부작용을 판단할 수 있다 | 15 | — | 필수 | A |
 | 17 | [서식 문맥(BFC) — 생성 조건과 그 안에 갇히는 것](17-block-formatting-context/) | 박스·레이아웃 | 어떤 선언이 BFC 를 만들고, 그것이 마진 상쇄·부동 겹침·높이 붕괴를 어떻게 차단하는지 예측할 수 있다 | 16 | — | 필수 | A |
 | 18 | [마진 상쇄 — 인접·부모-자식·빈 박스 세 경우](18-margin-collapsing/) | 박스·레이아웃 | 「마진을 줬는데 안 벌어진다」·「부모 밖으로 새어 나간다」가 왜 일어나고 무엇으로 막는지 설명할 수 있다 | 17 | — | 필수 | A |
-| 19 | 인라인 서식 문맥 — 행 상자·`line-height`·`vertical-align` | 박스·레이아웃 | 이미지 아래 생기는 정체불명의 빈 공간과 `line-height` 무단위 값이 상속되는 이유를 설명할 수 있다 | 16 | — | 필수 | A |
-| 20 | 부동(float)과 해제(clear) | 박스·레이아웃 | float 이 행 상자를 밀어내는 방식과 부모 높이가 무너지는 경로, 오늘 남은 유일한 용도(텍스트 감싸기)를 판단할 수 있다 | 17 | [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (테이블·float 레이아웃 시대) | 필수 | B |
-| 21 | `position` 다섯 값과 포함 블록 | 박스·레이아웃 | `absolute` 가 어느 조상을 기준으로 잡는지, `fixed` 가 `transform` 조상 때문에 기준이 바뀌는 것을 예측할 수 있다 | 17 | — | 필수 | A |
-| 22 | 쌓임 맥락과 `z-index` | 박스·레이아웃 | `z-index: 9999` 가 왜 안 먹는지 쌓임 맥락을 만드는 선언 목록(`opacity`·`transform`·`filter`·`isolation`)으로 설명할 수 있다 | 21 | — | 필수 | A |
-| 23 | 오버플로·스크롤 컨테이너·스크롤 스냅 | 박스·레이아웃 | `overflow` 값이 스크롤 컨테이너와 BFC 를 동시에 만드는 것, `overscroll-behavior`·스냅 축을 설계할 수 있다 | 17 | — | 필수 | A |
+| 19 | [인라인 서식 문맥 — 행 상자·`line-height`·`vertical-align`](19-inline-formatting-context/) | 박스·레이아웃 | 이미지 아래 생기는 정체불명의 빈 공간과 `line-height` 무단위 값이 상속되는 이유를 설명할 수 있다 | 16 | — | 필수 | A |
+| 20 | [부동(float)과 해제(clear)](20-float-and-clear/) | 박스·레이아웃 | float 이 행 상자를 밀어내는 방식과 부모 높이가 무너지는 경로, 오늘 남은 유일한 용도(텍스트 감싸기)를 판단할 수 있다 | 17 | [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (테이블·float 레이아웃 시대) | 필수 | B |
+| 21 | [`position` 다섯 값과 포함 블록](21-position-and-containing-block/) | 박스·레이아웃 | `absolute` 가 어느 조상을 기준으로 잡는지, `fixed` 가 `transform` 조상 때문에 기준이 바뀌는 것을 예측할 수 있다 | 17 | — | 필수 | A |
+| 22 | [쌓임 맥락과 `z-index`](22-stacking-context-and-z-index/) | 박스·레이아웃 | `z-index: 9999` 가 왜 안 먹는지 쌓임 맥락을 만드는 선언 목록(`opacity`·`transform`·`filter`·`isolation`)으로 설명할 수 있다 | 21 | — | 필수 | A |
+| 23 | [오버플로·스크롤 컨테이너·스크롤 스냅](23-overflow-and-scroll-containers/) | 박스·레이아웃 | `overflow` 값이 스크롤 컨테이너와 BFC 를 동시에 만드는 것, `overscroll-behavior`·스냅 축을 설계할 수 있다 | 17 | — | 필수 | A |
 | 24 | [Flexbox — 주축·교차축과 정렬(`justify-*`/`align-*`)](24-flexbox-axes/) | 박스·레이아웃 | `flex-direction` 을 바꿨을 때 `justify-content` 가 가리키는 방향이 뒤집히는 것을 예측할 수 있다 | 16 | [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (1차원 레이아웃의 등장) | 필수 | A |
-| 25 | `flex` 단축의 세 값 — `grow`/`shrink`/`basis` 와 크기 해결 | 박스·레이아웃 | `flex: 1` 이 무엇으로 펼쳐지는지, `min-width: auto` 때문에 아이템이 안 줄어드는 사고를 설명할 수 있다 | 24 | — | 필수 | A |
-| 26 | flex 줄바꿈·`gap`·`order` | 박스·레이아웃 | `flex-wrap` 이 켜졌을 때 `align-content` 가 새로 의미를 갖는 것과 `order` 가 접근성에서 만드는 문제를 판단할 수 있다 | 25 | — | 필수 | A |
-| 27 | Grid 트랙 정의 — `fr`·`minmax()`·`repeat()`·`auto-fill`/`auto-fit` | 박스·레이아웃 | `fr` 이 나누는 것이 「남는 공간」임을 설명하고 `auto-fill` 과 `auto-fit` 이 빈 트랙에서 갈리는 것을 예측할 수 있다 | 16 | [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (2차원 레이아웃의 등장) | 필수 | A |
-| 28 | Grid 배치 — 라인 번호·`span`·자동 배치 알고리즘·`grid-auto-flow` | 박스·레이아웃 | 명시 배치와 자동 배치가 섞였을 때 커서가 어디로 가는지, `dense` 가 무엇을 바꾸는지 추적할 수 있다 | 27 | — | 필수 | A |
-| 29 | Grid 영역 — `grid-template-areas`·이름 붙은 라인 | 박스·레이아웃 | 영역 이름으로 레이아웃을 그리고 이름 붙은 라인이 자동으로 생기는 `-start`/`-end` 를 활용할 수 있다 | 28 | — | 필수 | A |
-| 30 | `subgrid` — 부모 트랙을 자식이 물려받기 | 박스·레이아웃 | 카드 내부 줄을 카드끼리 맞추는 문제를 subgrid 로 풀고 중첩 grid 로는 왜 안 되는지 설명할 수 있다 | 29 | — | 필수 | C |
-| 31 | 내재적 크기 — `min-content`/`max-content`/`fit-content`·`aspect-ratio` | 박스·레이아웃 | 「내용만큼」의 두 가지 뜻을 구분하고 `aspect-ratio` 가 어느 축을 기준으로 다른 축을 정하는지 판단할 수 있다 | 15 | — | 필수 | A |
-| 32 | 논리 속성과 글쓰기 방향 — `writing-mode`·`direction`·`*-inline-start` | 박스·레이아웃 | `margin-left` 대신 `margin-inline-start` 를 쓰면 RTL·세로쓰기에서 무엇이 자동으로 따라오는지 설명할 수 있다 | 15 | [`../../../data-representation/`](../../../data-representation/) (유니코드·문자 표현) | 필수 | B |
-| 33 | 길이 단위 — `px`·`em`·`rem`·`%`·`ch`·`ex` | 반응형·단위 | `em` 이 무엇을 기준으로 삼는지 속성마다 달라지는 것과 `%` 가 어느 축의 무엇에 대한 비율인지 판정할 수 있다 | 04 | — | 필수 | A |
-| 34 | 뷰포트 단위와 컨테이너 쿼리 단위 — `vw`/`vh`/`svh`/`lvh`/`dvh`·`cqi`/`cqb` | 반응형·단위 | 모바일 주소창이 `vh` 를 깨뜨리는 현상과 `dvh` 가 그 대가로 무엇을 받는지 설명할 수 있다 | 33 | — | 필수 | A |
-| 35 | `calc()`·`clamp()`·`min()`/`max()` | 반응형·단위 | 단위가 섞인 계산에서 어느 단계에 값이 확정되는지, `clamp()` 로 유동 타이포를 짜되 확대 접근성을 안 깨는 형태를 설계할 수 있다 | 33 | — | 도움 | A |
-| 36 | 사용자 정의 속성 — 선언·`var()`·대체값·상속·무효 시 동작 | 반응형·단위 | 변수가 상속을 타고 내려간다는 것과 값이 무효일 때 「상속 무효(IACVT)」로 떨어지는 동작을 예측할 수 있다 | 03 | [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (CSS 변수 도입) | 도움 | A |
-| 37 | `@property` — 타입 등록·초기값·상속 여부와 애니메이션 가능성 | 반응형·단위 | 등록하지 않은 변수는 왜 애니메이션되지 않는지, `syntax` 등록이 무엇을 바꾸는지 설명할 수 있다 | 36 | — | 도움 | C |
-| 38 | 미디어 쿼리 — 문법·범위 구문·논리 결합·미디어 타입 | 반응형·단위 | `(400px <= width <= 800px)` 범위 구문을 쓰고 중단점을 겹치지 않게 설계할 수 있다 | 33 | [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (반응형 웹의 등장) | 필수 | A |
-| 39 | 사용자 선호와 다크 모드 — `prefers-color-scheme`·`color-scheme`·`prefers-contrast` | 반응형·단위 | 선호 질의와 `color-scheme` 이 각각 무엇을(내 스타일 / 브라우저 기본 UI) 바꾸는지 구분할 수 있다 | 38 | — | 필수 | A |
-| 40 | 컨테이너 쿼리와 스타일 쿼리 — `container-type`/`container-name`·`@container` | 반응형·단위 | 컨테이너를 만든 요소 자신은 왜 질의 대상이 아닌지, `size` 컨테인먼트가 요구하는 대가를 판단할 수 있다 | 38 | [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (컨테이너 쿼리) | 필수 | A |
-| 41 | `@supports` 기능 질의 | 반응형·단위 | 속성 지원을 질의해 대체 경로를 만들고, 오류 복구(`07`)만으로 충분한 경우와 구분할 수 있다 | 07 | — | 불필요 | B |
-| 42 | 색 표기와 색 공간 — `rgb`/`hsl`·`oklch`/`lab`·알파 | 시각 효과 | sRGB 밖의 색이 존재한다는 것과 `oklch` 의 세 축이 각각 무엇을 바꾸는지 설명할 수 있다 | — | — | 필수 | A |
-| 43 | `color-mix()` 와 상대 색 구문 | 시각 효과 | 기준색 하나에서 팔레트를 파생시키는 형태를 짜고 보간 색 공간이 결과를 바꾸는 것을 예측할 수 있다 | 42 | — | 필수 | B |
-| 44 | 배경과 대체 요소 맞춤 — 다중 배경·`background-clip`/`origin`/`size`·`object-fit` | 시각 효과 | 배경 레이어가 쌓이는 순서와 `cover`/`contain` 이 자르는 축, `object-fit` 이 `img` 에서 하는 같은 일을 설명할 수 있다 | 15 | — | 필수 | A |
-| 45 | 그라디언트와 보간 색 공간 — linear/radial/conic·`in oklch` | 시각 효과 | 두 색 사이에 회색 띠가 생기는 이유와 보간 공간 지정으로 그것을 없애는 방법을 판단할 수 있다 | 42 | — | 필수 | B |
-| 46 | 테두리·`border-radius`·`outline`·그림자 | 시각 효과 | `outline` 이 레이아웃을 차지하지 않는다는 것, `box-shadow` 와 `filter: drop-shadow` 가 갈리는 지점을 설명할 수 있다 | 15 | — | 필수 | A |
-| 47 | `filter` 와 `backdrop-filter` | 시각 효과 | 필터가 쌓임 맥락과 포함 블록을 만드는 부작용, `backdrop-filter` 가 무엇을 읽어서 흐리는지 예측할 수 있다 | 22 | — | 필수 | B |
-| 48 | 혼합 모드와 `isolation` — `mix-blend-mode`/`background-blend-mode` | 시각 효과 | 혼합이 어느 배경과 섞이는지 추적하고 `isolation` 으로 그 범위를 끊을 수 있다 | 47 | — | 필수 | C |
-| 49 | `clip-path` 와 `mask` | 시각 효과 | 잘라내기와 마스킹이 갈리는 지점, 도형 함수·참조 마스크로 모양을 만드는 형태를 설계할 수 있다 | 47 | — | 필수 | C |
-| 50 | 글꼴과 웹폰트 — `font` 단축·`@font-face`·`font-display`·가변 폰트 | 시각 효과 | FOIT 와 FOUT 를 `font-display` 값으로 골라 바꾸는 것과 폰트 폴백이 글자마다 따로 일어나는 것을 설명할 수 있다 | 19 | — | 필수 | A |
-| 51 | 텍스트 줄바꿈·서식·장식 — `text-wrap`·`white-space`·`overflow-wrap`/`word-break`·`hyphens`·`text-decoration` | 시각 효과 | 긴 URL 이 상자를 뚫는 문제를 어떤 속성으로 막는지 고르고 `text-wrap: balance` 가 적용되는 조건을 판단할 수 있다 | 19 | — | 필수 | A |
+| 25 | [`flex` 단축의 세 값 — `grow`/`shrink`/`basis` 와 크기 해결](25-flex-shorthand-and-sizing/) | 박스·레이아웃 | `flex: 1` 이 무엇으로 펼쳐지는지, `min-width: auto` 때문에 아이템이 안 줄어드는 사고를 설명할 수 있다 | 24 | — | 필수 | A |
+| 26 | [flex 줄바꿈·`gap`·`order`](26-flex-wrap-gap-order/) | 박스·레이아웃 | `flex-wrap` 이 켜졌을 때 `align-content` 가 새로 의미를 갖는 것과 `order` 가 접근성에서 만드는 문제를 판단할 수 있다 | 25 | — | 필수 | A |
+| 27 | [Grid 트랙 정의 — `fr`·`minmax()`·`repeat()`·`auto-fill`/`auto-fit`](27-grid-track-sizing/) | 박스·레이아웃 | `fr` 이 나누는 것이 「남는 공간」임을 설명하고 `auto-fill` 과 `auto-fit` 이 빈 트랙에서 갈리는 것을 예측할 수 있다 | 16 | [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (2차원 레이아웃의 등장) | 필수 | A |
+| 28 | [Grid 배치 — 라인 번호·`span`·자동 배치 알고리즘·`grid-auto-flow`](28-grid-placement/) | 박스·레이아웃 | 명시 배치와 자동 배치가 섞였을 때 커서가 어디로 가는지, `dense` 가 무엇을 바꾸는지 추적할 수 있다 | 27 | — | 필수 | A |
+| 29 | [Grid 영역 — `grid-template-areas`·이름 붙은 라인](29-grid-template-areas/) | 박스·레이아웃 | 영역 이름으로 레이아웃을 그리고 이름 붙은 라인이 자동으로 생기는 `-start`/`-end` 를 활용할 수 있다 | 28 | — | 필수 | A |
+| 30 | [`subgrid` — 부모 트랙을 자식이 물려받기](30-subgrid/) | 박스·레이아웃 | 카드 내부 줄을 카드끼리 맞추는 문제를 subgrid 로 풀고 중첩 grid 로는 왜 안 되는지 설명할 수 있다 | 29 | — | 필수 | C |
+| 31 | [내재적 크기 — `min-content`/`max-content`/`fit-content`·`aspect-ratio`](31-intrinsic-sizing-and-aspect-ratio/) | 박스·레이아웃 | 「내용만큼」의 두 가지 뜻을 구분하고 `aspect-ratio` 가 어느 축을 기준으로 다른 축을 정하는지 판단할 수 있다 | 15 | — | 필수 | A |
+| 32 | [논리 속성과 글쓰기 방향 — `writing-mode`·`direction`·`*-inline-start`](32-logical-properties-and-writing-mode/) | 박스·레이아웃 | `margin-left` 대신 `margin-inline-start` 를 쓰면 RTL·세로쓰기에서 무엇이 자동으로 따라오는지 설명할 수 있다 | 15 | [`../../../data-representation/`](../../../data-representation/) (유니코드·문자 표현) | 필수 | B |
+| 33 | [길이 단위 — `px`·`em`·`rem`·`%`·`ch`·`ex`](33-length-units/) | 반응형·단위 | `em` 이 무엇을 기준으로 삼는지 속성마다 달라지는 것과 `%` 가 어느 축의 무엇에 대한 비율인지 판정할 수 있다 | 04 | — | 필수 | A |
+| 34 | [뷰포트 단위와 컨테이너 쿼리 단위 — `vw`/`vh`/`svh`/`lvh`/`dvh`·`cqi`/`cqb`](34-viewport-and-container-units/) | 반응형·단위 | 모바일 주소창이 `vh` 를 깨뜨리는 현상과 `dvh` 가 그 대가로 무엇을 받는지 설명할 수 있다 | 33 | — | 필수 | A |
+| 35 | [`calc()`·`clamp()`·`min()`/`max()`](35-calc-clamp-min-max/) | 반응형·단위 | 단위가 섞인 계산에서 어느 단계에 값이 확정되는지, `clamp()` 로 유동 타이포를 짜되 확대 접근성을 안 깨는 형태를 설계할 수 있다 | 33 | — | 도움 | A |
+| 36 | [사용자 정의 속성 — 선언·`var()`·대체값·상속·무효 시 동작](36-custom-properties/) | 반응형·단위 | 변수가 상속을 타고 내려간다는 것과 값이 무효일 때 「상속 무효(IACVT)」로 떨어지는 동작을 예측할 수 있다 | 03 | [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (CSS 변수 도입) | 도움 | A |
+| 37 | [`@property` — 타입 등록·초기값·상속 여부와 애니메이션 가능성](37-at-property/) | 반응형·단위 | 등록하지 않은 변수는 왜 애니메이션되지 않는지, `syntax` 등록이 무엇을 바꾸는지 설명할 수 있다 | 36 | — | 도움 | C |
+| 38 | [미디어 쿼리 — 문법·범위 구문·논리 결합·미디어 타입](38-media-queries/) | 반응형·단위 | `(400px <= width <= 800px)` 범위 구문을 쓰고 중단점을 겹치지 않게 설계할 수 있다 | 33 | [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (반응형 웹의 등장) | 필수 | A |
+| 39 | [사용자 선호와 다크 모드 — `prefers-color-scheme`·`color-scheme`·`prefers-contrast`](39-color-scheme-and-preferences/) | 반응형·단위 | 선호 질의와 `color-scheme` 이 각각 무엇을(내 스타일 / 브라우저 기본 UI) 바꾸는지 구분할 수 있다 | 38 | — | 필수 | A |
+| 40 | [컨테이너 쿼리와 스타일 쿼리 — `container-type`/`container-name`·`@container`](40-container-and-style-queries/) | 반응형·단위 | 컨테이너를 만든 요소 자신은 왜 질의 대상이 아닌지, `size` 컨테인먼트가 요구하는 대가를 판단할 수 있다 | 38 | [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (컨테이너 쿼리) | 필수 | A |
+| 41 | [`@supports` 기능 질의](41-supports-feature-queries/) | 반응형·단위 | 속성 지원을 질의해 대체 경로를 만들고, 오류 복구(`07`)만으로 충분한 경우와 구분할 수 있다 | 07 | — | 불필요 | B |
+| 42 | [색 표기와 색 공간 — `rgb`/`hsl`·`oklch`/`lab`·알파](42-color-notation-and-spaces/) | 시각 효과 | sRGB 밖의 색이 존재한다는 것과 `oklch` 의 세 축이 각각 무엇을 바꾸는지 설명할 수 있다 | — | — | 필수 | A |
+| 43 | [`color-mix()` 와 상대 색 구문](43-color-mix-and-relative-color/) | 시각 효과 | 기준색 하나에서 팔레트를 파생시키는 형태를 짜고 보간 색 공간이 결과를 바꾸는 것을 예측할 수 있다 | 42 | — | 필수 | B |
+| 44 | [배경과 대체 요소 맞춤 — 다중 배경·`background-clip`/`origin`/`size`·`object-fit`](44-backgrounds-and-object-fit/) | 시각 효과 | 배경 레이어가 쌓이는 순서와 `cover`/`contain` 이 자르는 축, `object-fit` 이 `img` 에서 하는 같은 일을 설명할 수 있다 | 15 | — | 필수 | A |
+| 45 | [그라디언트와 보간 색 공간 — linear/radial/conic·`in oklch`](45-gradients-and-interpolation/) | 시각 효과 | 두 색 사이에 회색 띠가 생기는 이유와 보간 공간 지정으로 그것을 없애는 방법을 판단할 수 있다 | 42 | — | 필수 | B |
+| 46 | [테두리·`border-radius`·`outline`·그림자](46-borders-radius-outline-shadow/) | 시각 효과 | `outline` 이 레이아웃을 차지하지 않는다는 것, `box-shadow` 와 `filter: drop-shadow` 가 갈리는 지점을 설명할 수 있다 | 15 | — | 필수 | A |
+| 47 | [`filter` 와 `backdrop-filter`](47-filter-and-backdrop-filter/) | 시각 효과 | 필터가 쌓임 맥락과 포함 블록을 만드는 부작용, `backdrop-filter` 가 무엇을 읽어서 흐리는지 예측할 수 있다 | 22 | — | 필수 | B |
+| 48 | [혼합 모드와 `isolation` — `mix-blend-mode`/`background-blend-mode`](48-blend-modes-and-isolation/) | 시각 효과 | 혼합이 어느 배경과 섞이는지 추적하고 `isolation` 으로 그 범위를 끊을 수 있다 | 47 | — | 필수 | C |
+| 49 | [`clip-path` 와 `mask`](49-clip-path-and-mask/) | 시각 효과 | 잘라내기와 마스킹이 갈리는 지점, 도형 함수·참조 마스크로 모양을 만드는 형태를 설계할 수 있다 | 47 | — | 필수 | C |
+| 50 | [글꼴과 웹폰트 — `font` 단축·`@font-face`·`font-display`·가변 폰트](50-fonts-and-webfonts/) | 시각 효과 | FOIT 와 FOUT 를 `font-display` 값으로 골라 바꾸는 것과 폰트 폴백이 글자마다 따로 일어나는 것을 설명할 수 있다 | 19 | — | 필수 | A |
+| 51 | [텍스트 줄바꿈·서식·장식 — `text-wrap`·`white-space`·`overflow-wrap`/`word-break`·`hyphens`·`text-decoration`](51-text-wrapping-and-decoration/) | 시각 효과 | 긴 URL 이 상자를 뚫는 문제를 어떤 속성으로 막는지 고르고 `text-wrap: balance` 가 적용되는 조건을 판단할 수 있다 | 19 | — | 필수 | A |
 | 52 | [`transition` — 전환 가능한 속성·타이밍 함수·지연·`transition-behavior`](52-transition/) | 애니메이션 | 어떤 속성이 보간 가능한지(`auto` 로는 왜 안 되는지) 판정하고 `cubic-bezier`/`steps`/`linear()` 를 골라 쓸 수 있다 | 04 | — | 필수 | A |
-| 53 | `@keyframes` 와 `animation` — 단축·`fill-mode`·`direction`·`iteration`·`play-state` | 애니메이션 | 끝난 뒤 원래 값으로 돌아가는 현상을 `fill-mode` 로 설명하고 여러 애니메이션이 같은 속성을 건드릴 때의 우선을 예측할 수 있다 | 52 | — | 필수 | A |
-| 54 | `transform` 2D·`transform-origin`·개별 변환 속성(`translate`/`rotate`/`scale`) | 애니메이션 | 변환 함수의 곱 순서가 결과를 바꾸는 것과 개별 속성이 그 순서를 고정하는 것을 설명할 수 있다 | 21 | — | 필수 | A |
-| 55 | 3D 변환 — `perspective`·`transform-style`·`backface-visibility` | 애니메이션 | 원근을 부모에 주는 것과 자식에 주는 것이 갈리는 이유, 평탄화가 3D 를 무너뜨리는 자리를 예측할 수 있다 | 54 | — | 필수 | B |
-| 56 | 렌더링 파이프라인과 `will-change` — 무엇이 합성만으로 도는가 (+`contain`·`content-visibility`) | 애니메이션 | 어떤 속성을 애니메이션하면 레이아웃→페인트→합성이 다 돌고 어떤 것은 합성만 도는지 분류하고, `will-change`·`contain` 의 비용을 판단할 수 있다 | 54 | [`../../../../../history/web/04-브라우저-엔진.md`](../../../../../history/web/04-브라우저-엔진.md) (엔진 구조) | 필수 | A |
-| 57 | `@starting-style` 과 진입·퇴장 전환 — `display`/`overlay` 를 전환에 태우기 | 애니메이션 | `display: none` 에서 나타나는 요소가 왜 전환되지 않았는지, 무엇이 그것을 가능하게 했는지 설명할 수 있다 | 52 | — | 필수 | C |
-| 58 | 스크롤 연동 애니메이션 — `animation-timeline`·`scroll()`/`view()`·`timeline-scope` | 애니메이션 | 시간 대신 스크롤 진행을 타임라인으로 삼는 형태를 짜고, 스크롤 이벤트로 하던 방식과 비용이 왜 다른지 판단할 수 있다 | 53 | — | 필수 | B |
-| 59 | 뷰 전환 — `view-transition-name`·의사 요소 트리·`@view-transition` | 애니메이션 | 전환 중 만들어지는 스냅샷 의사 요소 트리를 그리고 이름 충돌이 전환을 죽이는 경우를 예측할 수 있다 | 53 | — | 필수 | C |
-| 60 | `prefers-reduced-motion` 과 모션 접근성 | 애니메이션 | 모션을 「끄는 것」이 아니라 「바꾸는 것」으로 설계하고, 무엇이 전정기관 문제를 일으키는 모션인지 판단할 수 있다 | 39, 53 | [`../../../../engineering/development-standards/quality-standards/`](../../../../engineering/development-standards/quality-standards/) (ISO 25010 의 포용성 항목) | 필수 | A |
+| 53 | [`@keyframes` 와 `animation` — 단축·`fill-mode`·`direction`·`iteration`·`play-state`](53-keyframes-and-animation/) | 애니메이션 | 끝난 뒤 원래 값으로 돌아가는 현상을 `fill-mode` 로 설명하고 여러 애니메이션이 같은 속성을 건드릴 때의 우선을 예측할 수 있다 | 52 | — | 필수 | A |
+| 54 | [`transform` 2D·`transform-origin`·개별 변환 속성(`translate`/`rotate`/`scale`)](54-transform-2d-and-origin/) | 애니메이션 | 변환 함수의 곱 순서가 결과를 바꾸는 것과 개별 속성이 그 순서를 고정하는 것을 설명할 수 있다 | 21 | — | 필수 | A |
+| 55 | [3D 변환 — `perspective`·`transform-style`·`backface-visibility`](55-3d-transforms/) | 애니메이션 | 원근을 부모에 주는 것과 자식에 주는 것이 갈리는 이유, 평탄화가 3D 를 무너뜨리는 자리를 예측할 수 있다 | 54 | — | 필수 | B |
+| 56 | [렌더링 파이프라인과 `will-change` — 무엇이 합성만으로 도는가 (+`contain`·`content-visibility`)](56-rendering-pipeline-and-will-change/) | 애니메이션 | 어떤 속성을 애니메이션하면 레이아웃→페인트→합성이 다 돌고 어떤 것은 합성만 도는지 분류하고, `will-change`·`contain` 의 비용을 판단할 수 있다 | 54 | [`../../../../../history/web/04-브라우저-엔진.md`](../../../../../history/web/04-브라우저-엔진.md) (엔진 구조) | 필수 | A |
+| 57 | [`@starting-style` 과 진입·퇴장 전환 — `display`/`overlay` 를 전환에 태우기](57-starting-style-and-entry-exit-transitions/) | 애니메이션 | `display: none` 에서 나타나는 요소가 왜 전환되지 않았는지, 무엇이 그것을 가능하게 했는지 설명할 수 있다 | 52 | — | 필수 | C |
+| 58 | [스크롤 연동 애니메이션 — `animation-timeline`·`scroll()`/`view()`·`timeline-scope`](58-scroll-driven-animations/) | 애니메이션 | 시간 대신 스크롤 진행을 타임라인으로 삼는 형태를 짜고, 스크롤 이벤트로 하던 방식과 비용이 왜 다른지 판단할 수 있다 | 53 | — | 필수 | B |
+| 59 | [뷰 전환 — `view-transition-name`·의사 요소 트리·`@view-transition`](59-view-transitions/) | 애니메이션 | 전환 중 만들어지는 스냅샷 의사 요소 트리를 그리고 이름 충돌이 전환을 죽이는 경우를 예측할 수 있다 | 53 | — | 필수 | C |
+| 60 | [`prefers-reduced-motion` 과 모션 접근성](60-prefers-reduced-motion/) | 애니메이션 | 모션을 「끄는 것」이 아니라 「바꾸는 것」으로 설계하고, 무엇이 전정기관 문제를 일으키는 모션인지 판단할 수 있다 | 39, 53 | [`../../../../engineering/development-standards/quality-standards/`](../../../../engineering/development-standards/quality-standards/) (ISO 25010 의 포용성 항목) | 필수 | A |
 
 **60주제** (계산 모델 7 · 선택자 7 · 박스·레이아웃 18 · 반응형·단위 9 · 시각 효과 10 · 애니메이션 9)
 **우선** A 41 · B 11 · C 8

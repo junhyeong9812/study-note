@@ -232,7 +232,7 @@ height 선언을 지운 경우
 - `display: none` — 그대로 **0**(원래 상자가 없다).
 - `visibility: hidden` — **21**. 안쪽 글자를 정상으로 레이아웃하기 때문이다.
 - `content-visibility: hidden` — **2**. 안쪽을 **레이아웃조차 하지 않아** 내용 높이가 0 이 되고 테두리만 남는다.
-- 그래서 `content-visibility` 를 쓸 때는 `contain-intrinsic-size` 로 **"대략 이만하다"를 미리 알려 줘야** 스크롤바가 널뛰지 않는다. 성능 쪽 정본은 목록의 **56번 주제**.
+- 그래서 `content-visibility` 를 쓸 때는 `contain-intrinsic-size` 로 **"대략 이만하다"를 미리 알려 줘야** 스크롤바가 널뛰지 않는다. 성능 쪽 정본은 [목록의 **56번 주제**](../56-rendering-pipeline-and-will-change/).
 
 ### 8. 숨기는 세 가지 — 접근성 트리
 
@@ -310,7 +310,7 @@ grid 자식에 display: inline        -> 계산값 block
 
 - `display` 의 값은 **키워드**라 시작값과 끝값 사이에 중간값이 없다 — 보간이 성립하지 않는다(보간 가능성의 정본은 [52번 주제](../52-transition/2-summary.md)).
 - 게다가 `none` 인 동안에는 **상자 자체가 없어** 애니메이션할 대상이 없다.
-- 이 문제를 푸는 `@starting-style` 과 이산 전환은 목록의 **57번 주제**다.
+- 이 문제를 푸는 `@starting-style` 과 이산 전환은 [목록의 **57번 주제**](../57-starting-style-and-entry-exit-transitions/)다.
 
 **flex 컨테이너의 자식에 `display: inline` 을 주면**
 

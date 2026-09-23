@@ -405,7 +405,7 @@ a:link    { color: blue; }
 - [`../11-is-where-not/2-summary.md`](../11-is-where-not/2-summary.md) — 상태 선택자 여럿을 `:is()` 로 묶을 때 명시도가 어떻게 되나
 - [목록의 **12번 주제**](../12-has-relational-selector/)(`:has()`) — `.field:has(:focus)` 처럼 **자손의 상태를 부모로** 끌어올리는 것
 - [목록의 **13번 주제**](../13-pseudo-elements-and-generated-content/)(의사 요소) — `::placeholder` 는 의사 **요소**이고 `:placeholder-shown` 은 의사 **클래스**다
-- 목록의 **60번 주제**(`prefers-reduced-motion`) — 상태 전환에 움직임을 붙일 때의 접근성
+- [목록의 **60번 주제**](../60-prefers-reduced-motion/)(`prefers-reduced-motion`) — 상태 전환에 움직임을 붙일 때의 접근성
 - [`reference/render-rules.md`](../../../../../../reference/render-rules.md) — 이 문서의 `demo` 블록 규칙
 
 ## 용어 풀이

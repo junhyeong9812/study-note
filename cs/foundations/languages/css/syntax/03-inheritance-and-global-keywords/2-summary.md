@@ -444,8 +444,8 @@ CSS 는 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - [`../04-value-processing-stages/2-summary.md`](../04-value-processing-stages/2-summary.md) — 상속되는 것이 **왜 계산값인가**. `em`·`%` 가 언제 픽셀이 되는지는 거기가 정본이다.
 - [`../05-cascade-layers/2-summary.md`](../05-cascade-layers/2-summary.md) — `revert-layer` 가 돌아가는 「앞 레이어」의 정의와 레이어 순서 규칙
 - [`../07-syntax-and-error-recovery/2-summary.md`](../07-syntax-and-error-recovery/2-summary.md) — `margin: 10px inherit` 처럼 무효한 전역 키워드가 **조용히 버려지는** 규칙
-- 목록의 **33번 주제**(길이 단위) — `em` 이 무엇을 기준으로 삼는지
-- 목록의 **36번 주제**(사용자 정의 속성) — 커스텀 속성은 **항상 상속되고** 무효 시 동작이 따로 있다(IACVT)
+- [목록의 **33번 주제**](../33-length-units/)(길이 단위) — `em` 이 무엇을 기준으로 삼는지
+- [목록의 **36번 주제**](../36-custom-properties/)(사용자 정의 속성) — 커스텀 속성은 **항상 상속되고** 무효 시 동작이 따로 있다(IACVT)
 - [`reference/render-rules.md`](../../../../../../reference/render-rules.md) — 이 문서의 `demo` 블록 규칙
 - [`history/web/03-HTML-CSS-진화.md`](../../../../../../history/web/03-HTML-CSS-진화.md) — **언제 이렇게 됐나는 거기.** 여기는 오늘의 규칙만
 
@@ -468,7 +468,7 @@ CSS 는 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 ## 더 들어가면
 
 - **커스텀 속성은 예외적으로 전부 상속된다.** `--brand` 를 `:root` 에 한 줄 쓰면 문서 전체가 읽을 수 있는 것이 그 때문이다.\
-  `@property` 로 등록하면 `inherits: false` 로 끌 수 있다(목록의 **36번 주제**·**37번 주제**).
+  `@property` 로 등록하면 `inherits: false` 로 끌 수 있다([목록의 **36번 주제**](../36-custom-properties/)·**37번 주제**).
 - **상속은 DOM 트리를 타지 플랫 트리를 탄다.** `display: contents` 로 상자를 없앤 요소도 **상속은 그대로 통과시킨다** — 상자가 없어졌다고 상속이 끊기지 않는다([목록의 **16번 주제**](../16-display-inner-outer/)).
 - **`:root` 대 `html` 대 `*`** — 상속의 출발점을 잡을 때 `*` 를 쓰면 상속이 아니라 **모든 요소에 선언을 하나씩 넣는 것**이라 그 아래로 아무것도 안 내려간다. 출발점은 `:root` 나 `body` 에 건다.
 - 전역 키워드가 다섯인데 **`all` 은 여섯 번째가 아니다** — `all` 은 키워드가 아니라 그 다섯만 받는 **속성**이다.

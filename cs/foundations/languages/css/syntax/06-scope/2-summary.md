@@ -319,7 +319,7 @@ CSS 는 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 
 ★ `@scope` 는 2026-09 기준 **newly available**(2026-03-24)이고 **widely 가 아니다.**\
 저변 도달 전이므로 **구형 브라우저에서는 그 블록이 통째로 무시된다** — 무시됐을 때 화면이 어떻게 보이는지를 같이 설계해야 한다.\
-`@supports at-rule(@scope)` 로 질의할 수 있다(목록의 **41번 주제**).
+`@supports at-rule(@scope)` 로 질의할 수 있다([목록의 **41번 주제**](../41-supports-feature-queries/)).
 
 ```text
 실측 (Chrome 151)
@@ -380,7 +380,7 @@ CSS 는 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - [`../03-inheritance-and-global-keywords/2-summary.md`](../03-inheritance-and-global-keywords/2-summary.md) — 스코프 밖 요소에 아무 선언도 없으면 그때는 상속이 값을 채운다
 - [목록의 **11번 주제**](../11-is-where-not/)(`:is()`·`:where()`) — 명시도 쪽에서 같은 문제를 푸는 다른 수단
 - [목록의 **14번 주제**](../14-css-nesting/)(중첩) — `&` 의 의미. `@scope` 안의 `&` 는 **스코프 루트**를 가리킨다
-- 목록의 **41번 주제**(`@supports`) — `at-rule(@scope)` 로 지원을 질의해 대체 경로를 만드는 자리
+- [목록의 **41번 주제**](../41-supports-feature-queries/)(`@supports`) — `at-rule(@scope)` 로 지원을 질의해 대체 경로를 만드는 자리
 - [`../07-syntax-and-error-recovery/2-summary.md`](../07-syntax-and-error-recovery/2-summary.md) — 모르는 at-rule 이 **통째로 버려지는** 규칙. 구형 브라우저에서 `@scope` 블록이 사라지는 근거
 - [`reference/render-rules.md`](../../../../../../reference/render-rules.md) — 이 문서의 `demo` 블록 규칙
 - [`history/web/03-HTML-CSS-진화.md`](../../../../../../history/web/03-HTML-CSS-진화.md) — **왜 이런 기능이 필요해졌나는 거기.** 여기는 오늘의 규칙만

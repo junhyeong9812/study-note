@@ -5,7 +5,7 @@
 > **실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 **두 값 문법을 포함한 `display` 값 40여 가지**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle(el).display` 와 `getBoundingClientRect()` 로 읽었다. 접근성 트리는 같은 Chrome 에 `--force-renderer-accessibility` 를 켜고 CDP 의 `Accessibility.getFullAXTree` 로 덤프해 확인했다.\
 > **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
 > **버전** — `content-visibility` 는 Baseline **newly**(2025-09-15, 아직 widely 아님 — 목록 README 의 지원 표). 나머지는 오래 자리잡은 값이다.
-> **여기서 다루지 않는 것** — 치수가 정해지는 규칙은 [15번](../15-box-model-and-box-sizing/2-summary.md), **`flow-root` 가 만드는 서식 문맥이 무엇을 가두는가**는 [17번](../17-block-formatting-context/2-summary.md), 마진 상쇄는 [18번](../18-margin-collapsing/2-summary.md)이다. **flex 의 축과 정렬은 [24번](../24-flexbox-axes/2-summary.md)이 정본**이고 여기서는 `display` 값으로만 언급한다. Grid 는 목록의 **27\~29번 주제**, 인라인 서식 문맥은 목록의 **19번 주제**다.
+> **여기서 다루지 않는 것** — 치수가 정해지는 규칙은 [15번](../15-box-model-and-box-sizing/2-summary.md), **`flow-root` 가 만드는 서식 문맥이 무엇을 가두는가**는 [17번](../17-block-formatting-context/2-summary.md), 마진 상쇄는 [18번](../18-margin-collapsing/2-summary.md)이다. **flex 의 축과 정렬은 [24번](../24-flexbox-axes/2-summary.md)이 정본**이고 여기서는 `display` 값으로만 언급한다. Grid 는 목록의 [**27**](../27-grid-track-sizing/)~[**29**](../29-grid-template-areas/)번 주제, 인라인 서식 문맥은 [목록의 **19번 주제**](../19-inline-formatting-context/)다.
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 동작은 실행으로 접지했다.
 
 ## 한눈에 — 쉽게 말하면
@@ -165,7 +165,7 @@ CSS 는 무효한 선언을 **조용히 버리는** 언어이므로, 계산값�
 
 - **바깥이 `inline` 이면 `width`/`height` 가 적용되지 않는다** — 단, **안쪽이 `flow` 일 때만** 그렇다.
 - 안쪽이 `flow-root`(= `inline-block`)이면 **인라인으로 줄 안에 있으면서도 치수를 가질 수 있다.** 이것이 `inline-block` 의 존재 이유다.
-- 인라인 상자가 줄 안에서 어떻게 정렬되고 왜 아래에 빈 공간이 생기는지는 목록의 **19번 주제**가 정본이다.
+- 인라인 상자가 줄 안에서 어떻게 정렬되고 왜 아래에 빈 공간이 생기는지는 [목록의 **19번 주제**](../19-inline-formatting-context/)가 정본이다.
 
 ### (4) 안쪽 값이 하는 일 — 자식을 어떤 규칙으로 놓나
 
@@ -187,7 +187,7 @@ CSS 는 무효한 선언을 **조용히 버리는** 언어이므로, 계산값�
 - `flow` 와 `flow-root` 는 **자식 배치가 완전히 같다.** 다른 것은 **흐름이 바깥과 이어져 있나**뿐이다.\
   그 차이가 무엇을 만드는지는 [17번](../17-block-formatting-context/2-summary.md)이 정본이다.
 - `flex` 의 주축·교차축과 정렬은 [24번](../24-flexbox-axes/2-summary.md)이 정본이다. 여기서는 **`flex` 가 `block flex` 의 별명**이라는 것까지다.
-- `grid` 는 목록의 **27\~29번 주제**, `table` 계열은 이 목록에서 **값으로만** 다룬다(README 의 「뺀 것」).
+- `grid` 는 목록의 [**27**](../27-grid-track-sizing/)~[**29**](../29-grid-template-areas/)번 주제, `table` 계열은 이 목록에서 **값으로만** 다룬다(README 의 「뺀 것」).
 
 ### (5) `display: contents` — 상자를 없애고 자식만 남긴다
 
@@ -379,10 +379,10 @@ CSS 는 무효한 선언을 **조용히 버리는** 언어이므로, 계산값�
 - [17번 주제](../17-block-formatting-context/2-summary.md)(서식 문맥) — **`flow-root` 가 연 독립 흐름이 무엇을 가두는가**는 거기. 여기는 **`flow` 와 `flow-root` 가 `display` 의 내부 값으로 갈린다**는 것까지다
 - [18번 주제](../18-margin-collapsing/2-summary.md)(마진 상쇄) — `flow` 안에서 마진이 합쳐지는 규칙은 거기
 - [24번 주제](../24-flexbox-axes/2-summary.md)(Flexbox 축·정렬) — **flex 컨테이너가 어떻게 배치하는가는 거기가 정본**이다. 여기는 `flex` 가 `block flex` 의 별명이라는 것까지
-- 목록의 **19번 주제**(인라인 서식 문맥) — 인라인 상자가 줄 안에서 정렬되는 규칙과 이미지 아래 빈 공간
-- 목록의 **27\~29번 주제**(Grid) — `grid` 의 내부 배치 규칙
+- [목록의 **19번 주제**](../19-inline-formatting-context/)(인라인 서식 문맥) — 인라인 상자가 줄 안에서 정렬되는 규칙과 이미지 아래 빈 공간
+- 목록의 [**27**](../27-grid-track-sizing/)~[**29**](../29-grid-template-areas/)번 주제(Grid) — `grid` 의 내부 배치 규칙
 - [목록의 **07번 주제**](../07-syntax-and-error-recovery/)(오류 복구) — 무효한 `display` 선언이 **조용히 버려지는** 규칙
-- 목록의 **56번 주제**(렌더링 파이프라인·`contain`·`content-visibility`) — `content-visibility` 의 **성능 쪽 정본**
+- [목록의 **56번 주제**](../56-rendering-pipeline-and-will-change/)(렌더링 파이프라인·`contain`·`content-visibility`) — `content-visibility` 의 **성능 쪽 정본**
 - [`reference/render-rules.md`](../../../../../../reference/render-rules.md) — 이 문서의 `demo` 블록 규칙
 
 ## 용어 풀이
@@ -407,7 +407,7 @@ CSS 는 무효한 선언을 **조용히 버리는** 언어이므로, 계산값�
 - **`display: list-item`** 은 세 낱말 값이다(`block flow list-item`). 바깥·안에 더해 **표지자 상자**를 만든다.\
   실측에서 `inline flow list-item` 의 계산값이 `inline list-item`, `block flow-root list-item` 이 `flow-root list-item` 으로 **두 값이 그대로 남았다** — 접을 옛 이름이 없기 때문이다.
 - **`display` 는 전환·애니메이션의 대상으로 오래 쓸 수 없었다.** `none` ↔ `block` 사이에 중간값이 없기 때문이다.\
-  그 문제를 푸는 `@starting-style` 과 `transition-behavior: allow-discrete` 는 목록의 **57번 주제**다.
+  그 문제를 푸는 `@starting-style` 과 `transition-behavior: allow-discrete` 는 [목록의 **57번 주제**](../57-starting-style-and-entry-exit-transitions/)다.
 - **블록화(blockification)** — flex/grid 컨테이너의 자식은 `display: inline` 을 줘도 **자동으로 블록 수준으로 끌어올려진다.**\
   `inline-block` 을 줘도 `block` 이 된다. "flex 안에서는 `display` 가 안 먹는다"로 보이는 증상의 정체다.
 - **`display: contents` 와 표(`table`)** — 표의 행·셀에 `contents` 를 주면 표 구조가 깨진다.\

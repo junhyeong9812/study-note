@@ -5,7 +5,7 @@
 > **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 **BFC 를 만든다고 알려진 선언 13가지**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 재고 스크린샷으로 눈으로 확인했다.\
 > ★ **이 주제에서는 `rect` 와 화면이 서로 다른 것을 말한다.** 어느 쪽이 근거인지 자리마다 밝혔다.\
 > **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
-> **여기서 다루지 않는 것** — ★ **`float` 자체의 동작**(무엇을 밀어내고 어떻게 줄을 감싸며 `clear` 가 무엇을 하는가)은 목록의 **20번 주제**가 정본이다. **여기는 「BFC 가 float 를 감싼다·피한다」는 효과까지다.** 마진 상쇄의 세 경우와 막는 법 전수는 [18번](../18-margin-collapsing/2-summary.md), `overflow` 와 스크롤 컨테이너 설계는 목록의 **23번 주제**, `position` 과 포함 블록은 목록의 **21번 주제**, `display` 값의 구조는 [16번](../16-display-inner-outer/2-summary.md)이다. **flex/grid 의 배치 규칙은 [24번](../24-flexbox-axes/2-summary.md)과 목록의 27\~29번**이고 여기서는 「그 항목이 BFC 를 연다」는 결론만 받아 온다.
+> **여기서 다루지 않는 것** — ★ **`float` 자체의 동작**(무엇을 밀어내고 어떻게 줄을 감싸며 `clear` 가 무엇을 하는가)은 [목록의 **20번 주제**](../20-float-and-clear/)가 정본이다. **여기는 「BFC 가 float 를 감싼다·피한다」는 효과까지다.** 마진 상쇄의 세 경우와 막는 법 전수는 [18번](../18-margin-collapsing/2-summary.md), `overflow` 와 스크롤 컨테이너 설계는 [목록의 **23번 주제**](../23-overflow-and-scroll-containers/), `position` 과 포함 블록은 [목록의 **21번 주제**](../21-position-and-containing-block/), `display` 값의 구조는 [16번](../16-display-inner-outer/2-summary.md)이다. **flex/grid 의 배치 규칙은** [24번](../24-flexbox-axes/2-summary.md)과 목록의 [27](../27-grid-track-sizing/)\~[29](../29-grid-template-areas/)번이고 여기서는 「그 항목이 BFC 를 연다」는 결론만 받아 온다.
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 동작은 실행으로 접지했다.
 
 ## 한눈에 — 쉽게 말하면
@@ -96,7 +96,7 @@
 - ★ **`flex`·`grid` 는 「감쌌다」의 뜻이 다르다.** 그 자식은 flex/grid 항목이 되어 **`float` 선언 자체가 무시**되므로, 애초에 삐져나갈 float 가 없다. 높이가 살아난 것은 같지만 기제가 다르다.
 - `display: flex`·`grid` 컨테이너의 **항목**도 각각 BFC 를 연다 — 그래서 [18번](../18-margin-collapsing/2-summary.md)에서 flex 항목에는 마진 상쇄가 없다. flex 배치 규칙 자체는 [24번](../24-flexbox-axes/2-summary.md)이 정본이다.
 
-비용 — `flow-root` 는 레이아웃 방식을 안 바꾸므로 사실상 공짜다. `overflow` 계열은 **스크롤 컨테이너를 만드는 비용**이 따로 있다(목록의 **23번 주제**).
+비용 — `flow-root` 는 레이아웃 방식을 안 바꾸므로 사실상 공짜다. `overflow` 계열은 **스크롤 컨테이너를 만드는 비용**이 따로 있다([목록의 **23번 주제**](../23-overflow-and-scroll-containers/)).
 
 ### (2) 효과 ① 마진이 밖으로 안 샌다
 
@@ -138,7 +138,7 @@
 
 *(Chrome 151 headless 실측 — `flow-root` 부모: `rect` top=0 bottom=**64**(float 60 + 테두리 4), 다음 형제 top=**64** 로 부모 바로 아래. 보통 부모: `rect.height` **4** — 위아래 테두리뿐이고 안쪽 높이가 0 이다. 부모 bottom=122 이고 다음 형제 top 도 **122** 인데, **float(높이 60)는 y=120\~180 까지 내려와 그 형제 위를 뚫고 지나간다.**)*
 
-- **float 는 부모의 높이 계산에 참여하지 않는다.** 그것이 float 의 정의다(정본은 목록의 **20번 주제**).
+- **float 는 부모의 높이 계산에 참여하지 않는다.** 그것이 float 의 정의다(정본은 [목록의 **20번 주제**](../20-float-and-clear/)).
 - **BFC 루트만은 예외로 자기 안의 float 까지 포함해 높이를 잡는다.** 그것이 여기서 다루는 「감싼다」이다.
 - 옛날 「clearfix」 주문이 하던 일을 **`display: flow-root` 한 줄이 대신한다.**
 
@@ -170,7 +170,7 @@
 - ★ **「밀렸다」의 뜻이 둘에서 다르다.**\
   보통 상자는 **상자는 그대로 깔리고 글줄만** 밀린다. BFC 상자는 **상자 자체**가 밀린다.
 - 이것이 「사이드바(float) 옆에 본문을 놓을 때 본문에 BFC 를 열면 깔끔해지는」 옛 관용구의 근거다.
-- **float 가 왜 글줄을 미는지, `clear` 가 무엇을 하는지는 목록의 20번 주제**가 정본이다.
+- **float 가 왜 글줄을 미는지, `clear` 가 무엇을 하는지는** [목록의 **20번 주제**](../20-float-and-clear/)가 정본이다.
 
 ### (5) `display: flow-root` 대 `overflow: hidden` — 부작용 대조
 
@@ -203,7 +203,7 @@
   - `hidden` — **잘린다.** 드롭다운·툴팁·포커스 링이 사라지는 사고의 원인.
   - `auto` — 넘치면 **스크롤바가 생긴다.**
   - `scroll` — **늘 스크롤바가 자리를 먹는다.** 실측에서 부모 높이가 60 대신 **75** 였다(가로 스크롤바 15px).
-  - 셋 다 **스크롤 컨테이너**가 되어 `position: sticky`·스크롤 앵커링 같은 것에도 영향을 준다(목록의 **23번 주제**).
+  - 셋 다 **스크롤 컨테이너**가 되어 `position: sticky`·스크롤 앵커링 같은 것에도 영향을 준다([목록의 **23번 주제**](../23-overflow-and-scroll-containers/)).
 - `display: flow-root` 는 **잘리지도, 스크롤바가 생기지도, 스크롤 컨테이너가 되지도 않는다.**\
   ★ **「부작용 없이 BFC 만 만드는 유일한 수단」이라는 것이 이 주제의 결론이다.**
 
@@ -227,7 +227,7 @@
 
 - **`clip` 은 스크롤 컨테이너를 만들지 않는다** — 스크롤 자체가 불가능한 값이다. 그래서 안쪽을 독립시킬 이유가 없어 **BFC 도 만들지 않는다.**
 - 외울 것은 「`overflow` 가 `visible` 이 아니면 BFC」가 아니라 **「스크롤 컨테이너가 되는 `overflow` 값이면 BFC」** 다.
-- `overflow` 값들의 정본은 목록의 **23번 주제**다.
+- `overflow` 값들의 정본은 [목록의 **23번 주제**](../23-overflow-and-scroll-containers/)다.
 
 ## 문법 — 형태와 어디서 헷갈리나
 
@@ -293,7 +293,7 @@ rect 를 재야 갈린다.
 
 ### 5. BFC 를 「성능 최적화」로 생각한다
 
-BFC 는 **배치 규칙**이지 격리 최적화가 아니다. 렌더 비용을 줄이는 컨테인먼트(`contain`·`content-visibility`)는 목록의 **56번 주제**다.\
+BFC 는 **배치 규칙**이지 격리 최적화가 아니다. 렌더 비용을 줄이는 컨테인먼트(`contain`·`content-visibility`)는 [목록의 **56번 주제**](../56-rendering-pipeline-and-will-change/)다.\
 다만 `contain: layout` 은 **덤으로 BFC 를 연다**((1) 실측).
 
 ## 언제 쓰고 언제 안 쓰나
@@ -327,11 +327,11 @@ BFC 는 **배치 규칙**이지 격리 최적화가 아니다. 렌더 비용을 
 - [16번 주제](../16-display-inner-outer/2-summary.md)(`display` 의 내부/외부 값) — **`flow` 와 `flow-root` 가 `display` 의 안쪽 값으로 갈린다**는 것은 거기. 여기는 **그 차이가 무엇을 만드는가**다
 - [18번 주제](../18-margin-collapsing/2-summary.md)(마진 상쇄) — **마진이 합쳐지는 규칙 자체와 막는 법 전수**는 거기. 여기는 **BFC 가 그중 하나**라는 것까지다
 - [15번 주제](../15-box-model-and-box-sizing/2-summary.md)(박스 모델) — 상자의 치수가 정해지는 규칙
-- 목록의 **20번 주제**(부동과 해제) — ★ **`float` 자체가 무엇을 하는지, `clear` 가 무엇을 하는지는 거기가 정본**이다. 여기는 **BFC 가 float 를 감싸고 피한다**는 효과까지다
-- 목록의 **23번 주제**(오버플로·스크롤 컨테이너) — `overflow` 값들의 정본. 여기서는 **BFC 를 만드느냐**만 본다
-- 목록의 **21번 주제**(`position` 과 포함 블록) — `absolute` 가 BFC 를 여는 것은 여기 표에 있지만 **기준을 어디로 잡는가**는 거기
+- [목록의 **20번 주제**](../20-float-and-clear/)(부동과 해제) — ★ **`float` 자체가 무엇을 하는지, `clear` 가 무엇을 하는지는 거기가 정본**이다. 여기는 **BFC 가 float 를 감싸고 피한다**는 효과까지다
+- [목록의 **23번 주제**](../23-overflow-and-scroll-containers/)(오버플로·스크롤 컨테이너) — `overflow` 값들의 정본. 여기서는 **BFC 를 만드느냐**만 본다
+- [목록의 **21번 주제**](../21-position-and-containing-block/)(`position` 과 포함 블록) — `absolute` 가 BFC 를 여는 것은 여기 표에 있지만 **기준을 어디로 잡는가**는 거기
 - [24번 주제](../24-flexbox-axes/2-summary.md)(Flexbox) — **flex 항목이 BFC 를 연다**는 결론만 여기서 쓰고, 축·정렬은 거기가 정본이다
-- 목록의 **56번 주제**(렌더링 파이프라인·`contain`) — `contain: layout` 의 본래 목적과 비용
+- [목록의 **56번 주제**](../56-rendering-pipeline-and-will-change/)(렌더링 파이프라인·`contain`) — `contain: layout` 의 본래 목적과 비용
 - [`reference/render-rules.md`](../../../../../../reference/render-rules.md) — 이 문서의 `demo` 블록 규칙
 
 ## 용어 풀이
@@ -351,10 +351,10 @@ BFC 는 **배치 규칙**이지 격리 최적화가 아니다. 렌더 비용을 
 ## 더 들어가면
 
 - **서식 문맥은 BFC 만 있는 것이 아니다.** 인라인 서식 문맥(IFC)·flex 서식 문맥·grid 서식 문맥·표 서식 문맥이 각각 있다.\
-  「`display` 의 안쪽 값이 서식 문맥의 종류를 고른다」고 읽으면 [16번](../16-display-inner-outer/2-summary.md)과 딱 이어진다. IFC 는 목록의 **19번 주제**다.
+  「`display` 의 안쪽 값이 서식 문맥의 종류를 고른다」고 읽으면 [16번](../16-display-inner-outer/2-summary.md)과 딱 이어진다. IFC 는 [목록의 **19번 주제**](../19-inline-formatting-context/)다.
 - **`display: flow-root` 라는 이름의 뜻** — 「이 상자를 **흐름의 뿌리(root)** 로 삼아라」이다.\
   문서 전체의 루트 요소가 하는 일을 이 상자 안에서 다시 하라는 것이라, 이름 자체가 동작의 설명이다.
 - **`position: absolute` 가 BFC 를 여는 것**은 (1)에서 실측했지만, 그 상자는 **흐름에서 빠져** 있어 마진 상쇄 이야기가 애초에 성립하지 않는 경우가 많다.\
-  「BFC 를 열려고 `absolute` 를 쓴다」는 선택은 거의 없다 — 목적이 전혀 다르기 때문이다(목록의 **21번 주제**).
+  「BFC 를 열려고 `absolute` 를 쓴다」는 선택은 거의 없다 — 목적이 전혀 다르기 때문이다([목록의 **21번 주제**](../21-position-and-containing-block/)).
 - **BFC 와 쌓임 맥락(stacking context)은 다른 것이다.** `opacity`·`transform` 은 쌓임 맥락을 만들지만 BFC 와는 무관하다.\
-  둘을 섞으면 「`z-index` 가 안 먹는다」와 「마진이 샌다」를 같은 원인으로 오진하게 된다. 쌓임 맥락은 목록의 **22번 주제**다.
+  둘을 섞으면 「`z-index` 가 안 먹는다」와 「마진이 샌다」를 같은 원인으로 오진하게 된다. 쌓임 맥락은 [목록의 **22번 주제**](../22-stacking-context-and-z-index/)다.

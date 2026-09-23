@@ -5,7 +5,7 @@
 > **실행 검증** — 이 문서의 `demo` 블록 **3개 전부**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 치수를 재고 스크린샷으로 눈으로 확인했다.\
 > 본문의 픽셀 값은 전부 그 실측값이다. **손으로 계산해 적은 수치는 없다.** **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
 > **버전** — `box-sizing` 은 CSS 에 언어 버전이 없으므로 Baseline 으로 읽는다. `border-box` 는 오래전에 자리잡아 목록 README 의 지원 표에 별도 행이 없을 만큼 보편적이다.
-> **여기서 다루지 않는 것** — 이 상자가 **어떤 배치 규칙 안에 놓이는가**는 [16번](../16-display-inner-outer/2-summary.md)·[17번](../17-block-formatting-context/2-summary.md), **마진이 서로 합쳐지는 규칙**은 [18번](../18-margin-collapsing/2-summary.md)이 정본이다. `min-content`/`fit-content`·`aspect-ratio` 같은 내재적 크기는 목록의 **31번 주제**, 단위(`%`·`em`)는 목록의 **33번 주제**다.
+> **여기서 다루지 않는 것** — 이 상자가 **어떤 배치 규칙 안에 놓이는가**는 [16번](../16-display-inner-outer/2-summary.md)·[17번](../17-block-formatting-context/2-summary.md), **마진이 서로 합쳐지는 규칙**은 [18번](../18-margin-collapsing/2-summary.md)이 정본이다. `min-content`/`fit-content`·`aspect-ratio` 같은 내재적 크기는 [목록의 **31번 주제**](../31-intrinsic-sizing-and-aspect-ratio/), 단위(`%`·`em`)는 [목록의 **33번 주제**](../33-length-units/)다.
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 치수는 실행으로 접지했다.
 
 ## 한눈에 — 쉽게 말하면
@@ -258,8 +258,8 @@ CSS 는 문법 표면이 단순하므로 여기서는 **형태보다 헷갈리�
 | `height: 50%` | 부모의 content **높이**의 50% (부모 높이가 `auto` 면 적용되지 않는다) |
 
 - **세로 방향 `padding`·`margin` 의 `%` 가 가로 폭을 기준으로 한다**는 것이 이 표에서 가장 자주 틀리는 칸이다.\
-  `padding-top: 100%` 로 정사각형을 만드는 옛 관용구가 여기서 나왔다(오늘은 `aspect-ratio` 를 쓴다 — 목록의 **31번 주제**).
-- `%` 가 어느 단계에서 픽셀이 되는지는 [목록의 **04번 주제**](../04-value-processing-stages/), 단위 일반은 목록의 **33번 주제**가 정본이다.
+  `padding-top: 100%` 로 정사각형을 만드는 옛 관용구가 여기서 나왔다(오늘은 `aspect-ratio` 를 쓴다 — [목록의 **31번 주제**](../31-intrinsic-sizing-and-aspect-ratio/)).
+- `%` 가 어느 단계에서 픽셀이 되는지는 [목록의 **04번 주제**](../04-value-processing-stages/), 단위 일반은 [목록의 **33번 주제**](../33-length-units/)가 정본이다.
 
 ### 금지에 가까운 형태
 
@@ -352,8 +352,8 @@ CSS 는 문법 표면이 단순하므로 여기서는 **형태보다 헷갈리�
 - [17번 주제](../17-block-formatting-context/2-summary.md)(서식 문맥) — 상자 **안의 일이 밖으로 새는지**는 거기
 - [18번 주제](../18-margin-collapsing/2-summary.md)(마진 상쇄) — **마진 둘이 하나로 합쳐지는 규칙**은 거기. 여기는 **마진이 `box-sizing` 밖이라는 사실**까지다
 - [목록의 **04번 주제**](../04-value-processing-stages/)(값 처리 단계) — `%`·`em` 이 **어느 단계에서 픽셀이 되는가**는 거기
-- 목록의 **31번 주제**(내재적 크기·`aspect-ratio`) — `min-content`/`fit-content` 같은 **"내용만큼"** 의 치수는 거기. 여기는 **고정 숫자를 준 경우**다
-- 목록의 **33번 주제**(길이 단위) — `%` 가 무엇의 비율인지의 정본
+- [목록의 **31번 주제**](../31-intrinsic-sizing-and-aspect-ratio/)(내재적 크기·`aspect-ratio`) — `min-content`/`fit-content` 같은 **"내용만큼"** 의 치수는 거기. 여기는 **고정 숫자를 준 경우**다
+- [목록의 **33번 주제**](../33-length-units/)(길이 단위) — `%` 가 무엇의 비율인지의 정본
 - [목록의 **07번 주제**](../07-syntax-and-error-recovery/)(오류 복구) — 없는 값이 **조용히 버려지는** 규칙
 - [`reference/render-rules.md`](../../../../../../reference/render-rules.md) — 이 문서의 `demo` 블록 규칙
 
@@ -377,6 +377,6 @@ CSS 는 문법 표면이 단순하므로 여기서는 **형태보다 헷갈리�
 - **테이블 셀과 대체 요소**(`<img>`·`<input>`)는 역사적으로 브라우저 기본 스타일시트가 다른 값을 쓴 적이 있다.\
   오늘은 리셋으로 덮는 것이 보통이지만, **폼 컨트롤은 기본 스타일이 엔진마다 달라** 치수를 재서 확인하는 편이 안전하다.
 - **논리 속성**을 쓰면 `width`/`height` 대신 `inline-size`/`block-size` 가 된다.\
-  `box-sizing` 은 그대로 적용되고, 글쓰기 방향이 바뀌면 **어느 축이 `inline-size` 인지**만 따라 돈다. 정본은 목록의 **32번 주제**.
+  `box-sizing` 은 그대로 적용되고, 글쓰기 방향이 바뀌면 **어느 축이 `inline-size` 인지**만 따라 돈다. 정본은 [목록의 **32번 주제**](../32-logical-properties-and-writing-mode/).
 - `outline` 은 **네 겹 어디에도 속하지 않는다** — 레이아웃 공간을 전혀 차지하지 않고 상자 위에 그려진다.\
-  포커스 링을 `border` 로 만들면 상자 치수가 흔들리는 이유가 이것이다. 정본은 목록의 **46번 주제**.
+  포커스 링을 `border` 로 만들면 상자 치수가 흔들리는 이유가 이것이다. 정본은 [목록의 **46번 주제**](../46-borders-radius-outline-shadow/).
