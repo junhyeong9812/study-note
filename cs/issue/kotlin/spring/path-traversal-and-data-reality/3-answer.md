@@ -12,7 +12,7 @@
 1. API가 사용자 경로를 받아 그 파일을 읽어 준다는 것은, 입력이 곧 "무엇을 읽을지"를 결정한다는 뜻이다. `path=../../etc/passwd`처럼 `..`(상위로 이동)를 섞으면 서비스가 의도한 폴더(허용 루트) **밖으로 기어 올라가** 시스템 파일·비밀·다른 사용자 자료를 읽어낼 수 있다. 트래버설이 성립하는 조건은 ① 입력이 파일 경로에 직접 쓰이고 ② 그 경로를 허용 루트로 가두는 검사가 없는 것이다. "밖으로 기어 올라간다"는 건 상대 경로 `..`이 디렉토리 트리를 부모 방향으로 거슬러, 서버가 노출하려던 범위를 벗어난다는 뜻이다.
    > **경로 트래버설(path traversal)** — 경로 입력에 `..` 등을 섞어 허용된 디렉토리 밖의 파일에 접근하는 공격(디렉토리 트래버설).
 
-2. **금지 목록**은 "나쁜 패턴을 나열해 막는다"(`..`·`.git`)이고, **허용 목록**은 "정규화 후 허용 루트의 prefix인지"만 통과시킨다. 이 사례의 `isSafe`는 금지 목록 성격이지만, `.md`로 끝남 + 절대경로(`/`)·홈(`~`) 시작 금지 + 경로 조각 어디에도 `..`·`.git` 없음을 함께 걸어 **트래버설의 핵심 통로(상위 이동·숨은 git 디렉토리·비md 파일)** 를 막는다. 금지 목록의 원리적 약점은 **열거하지 못한 우회**다 — URL 인코딩(`%2e%2e`), 유니코드 정규화, 심볼릭 링크 등 미처 나열 못 한 변형을 놓칠 수 있다. 그래서 방어의 정석은 "경로를 실제 파일시스템 경로로 정규화한 뒤 허용 루트의 하위인지 확인"하는 허용 목록이다.
+2. **금지 목록**은 "나쁜 패턴을 나열해 막는다"(`..`·`.git`)이고, **허용 목록**은 "정규화 후 허용 루트의 prefix인지"만 통과시킨다. 이 사례의 `isSafe`는 금지 목록 성격이지만, `.md`로 끝남 + 절대경로(`/`)·홈(`~`) 시작 금지 + 경로 조각 어디에도 `..`·`.git` 없음을 함께 걸어 **트래버설의 핵심 통로(상위 이동·숨은 git 디렉토리·비md 파일)** 를 막는다. 금지 목록의 원리적 약점은 **열거하지 못한 우회**다 — 인코딩 변형(서블릿이 쿼리 파라미터를 한 번 디코딩하므로 단일 `%2e%2e`는 여기선 `..`로 바뀌어 잡히지만, 뒤에서 한 번 더 디코딩하는 경로의 이중 인코딩), 다른 구분자(Windows `\`), 유니코드 정규화, 루트 안의 심볼릭 링크 등 미처 나열 못 한 변형을 놓칠 수 있다. 그래서 방어의 정석은 "경로를 실제 파일시스템 경로로 정규화(심링크까지 해소)한 뒤 허용 루트의 하위인지 **경로 컴포넌트 단위로** 확인"하는 허용 목록이다(문자열 prefix 비교는 `/data`가 `/data2`의 prefix가 되는 함정이 있다).
 
 3. **미뤄도 되지 않는다.** "지금은 LAN에서만 부른다"는 현재의 호출자를 근거로 삼는 것인데, 입력 검증의 기준은 호출자가 아니라 **신뢰 경계(trust boundary)** 다 — 신뢰할 수 없는 입력이 시스템으로 들어오는 지점. 이 API는 이후 front를 통해 외부 요청을 받으므로, 경계는 "backend의 경로 입력 진입점"에 그어야 한다. 경계를 "네트워크 위치"로 착각하면, 위상이 바뀌는 순간(front 노출, 방화벽 변경) 검증 공백이 그대로 취약점이 된다. 그래서 처음부터 닫는다.
    > **신뢰 경계(trust boundary)** — 신뢰 수준이 다른 두 영역의 경계. 신뢰할 수 없는 입력은 이 경계를 넘는 지점에서 검증해야 한다.
@@ -80,6 +80,7 @@ class LocalFileStorage {
 InputStream load(String storagePath)        { return Files.newInputStream(resolveSafe(storagePath)); }
 InputStream loadPartial(String sp, long f, long t) { return open(resolveSafe(sp), f, t); }
 // 기존에 절대경로로 저장된 데이터는 basePath로 시작하는지만 검증 (저장 형식 마이그레이션 없이)
+// — normalize(또는 toRealPath) 후 Path.startsWith(basePath)로: 문자열 startsWith는 ".."·형제 prefix에 뚫린다
 ```
 무엇이 깨졌나: 검증하지 않은 진입점이 검증한 진입점의 우회로가 됐다.\
 같은 구조: 새 파일 경로 분기를 추가할 때마다 같은 방어(경로 탈출·심링크)를 반복해서 빠뜨림 — 호출 지점마다 복제한 검증은 새 분기에서 누락된다(파일시스템 접근은 단일 검증 함수를 통과하게).
@@ -115,6 +116,8 @@ c.init(DECRYPT_MODE, new SecretKeySpec(key, "AES"), new IvParameterSpec(key));  
 byte[] plain = c.doFinal(Base64.getDecoder().decode(stored));
 // 평문 혼재 폴백은 BadPadding/IllegalBlockSize에만, 키 길이 검증은 생성자로 올려 기동 실패화
 // (틀린 키가 폴백에 흡수돼 조용히 원문을 돌려주던 무음 오답 → fail-fast)
+// 한계: 길이 검증이 막는 건 길이 오류뿐 — 길이만 맞는 틀린 키는 여전히 BadPadding → 평문 폴백으로 흡수될 수 있고,
+//       드물게(약 1/256) 패딩이 우연히 맞아 쓰레기 평문이 나온다. 평문/암호문 구분은 별도 표지가 있어야 확실하다
 ```
 무엇이 깨졌나: 에러 메시지·코드 모양으로 원인을 추측했고, 데이터의 실제 상태·표현을 보지 않았다.
 
@@ -165,6 +168,9 @@ fn remove(path: &str, root: Option<&str>) { if let Some(r) = root { check(r, pat
 // 고친: root 필수(타입으로 무검사 경로 제거) + 단일 출처 함수(중복 5벌 → 1)
 fn contained_prospective(root: &Path, path: &Path) -> Result<()> {
     let root_c = fs::canonicalize(root)?;
+    // 전제: 미존재 꼬리에 ".." 성분이 없어야 한다 — 없으면 "root/없는폴더/../../x"가
+    //       조상 root로 판정돼 통과한 뒤, 디렉터리 생성과 함께 루트 밖을 가리킨다. 먼저 거부:
+    if path.components().any(|c| c == std::path::Component::ParentDir) { return Err(outside()); }
     let mut probe = path.to_path_buf();
     let resolved = loop {                                   // 아직 없는 새 파일 → 존재하는 가장 깊은 조상
         match fs::canonicalize(&probe) {
@@ -225,6 +231,7 @@ fn a_hard_link_into_a_project_is_readable_and_the_docs_say_so() { /* 통과를 �
 // 문제: 업로드된 압축 파일을 서버 파일시스템에 풀어야 함 (경로·크기·링크를 신뢰할 수 없음)
 for (ZipEntry e : entries(zip)) {
     String name = Path.of(e.getName()).getFileName().toString();   // leaf 파일명만 사용 (zip-slip 차단)
+                                                                     // leaf가 ".."인 entry는 아래 확장자 allowlist가 함께 막는다
     if (!ALLOWED_EXT.contains(ext(name))) continue;                  // 확장자 allowlist
     long n = copyWithLimit(in, target.resolve(name), perFileMax);    // 파일당 한도
     if ((total += n) > totalMax) throw new IOException("limit");     // 총량 한도 (압축 폭탄)
