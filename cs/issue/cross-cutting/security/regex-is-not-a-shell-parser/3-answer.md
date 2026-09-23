@@ -13,7 +13,7 @@
    두 방향은 같은 원인(의미 모델 불일치)에서 나오므로, 한쪽을 좁히면 다른 쪽이 넓어지는 식으로 동시에 존재한다.
    > **parser differential** — 같은 입력을 두 파서가 다르게 해석하는 차이. 검사하는 쪽과 실행하는 쪽이 다르면 보안 경계가 새는 전형적 원인.
 
-2. **옵션·경로·래퍼로 같은 동작을 쓴다.** `git -C repo push`(전역 옵션 선행), `git -c k=v push`, `/usr/bin/git push`(절대 경로), `command git push`(래퍼) 등이 모두 `git[[:space:]]+push`를 통과한다. 같은 구조로 CLI 발행 가드도 `-R owner/repo` 같은 전역 옵션이 서브커맨드 앞에 오면 미탐했다.\
+2. **옵션·경로·래퍼로 같은 동작을 쓴다.** `git -C repo push`(전역 옵션 선행), `git -c k=v push`, `/usr/bin/git push`(절대 경로), `command git push`(래퍼) 등이 모두 명령 시작에 고정된 `git[[:space:]]+push`를 통과한다(고정하지 않은 부분 문자열 매칭이면 뒤의 둘은 잡히지만, 그 대신 데이터 속 언급 오탐이 늘어난다 — 6번). 같은 구조로 CLI 발행 가드도 `-R owner/repo` 같은 전역 옵션이 서브커맨드 앞에 오면 미탐했다.\
    또 명령이 **실행 문맥을 바꾸면**(`cd other-repo &&`, `-C path`) 판정 대상도 바뀌어야 하는데, 가드가 자기 cwd에서 스테이징을 조회하면 엉뚱한 저장소를 검사한다.\
    교정은 명령 접두(경로·`command` 래퍼 허용)와 전역 옵션 구간을 패턴에 넣고, `-C` 대상 저장소 기준으로 판정하는 것이었다.
 
@@ -22,7 +22,7 @@
    근본 해법은 자연어 판정 함수를 전부 제거(−224줄)하고, 위험 명령을 감지하면 **네이티브 확인 UI**가 사용자에게 명령 전문을 보여주고 묻게 하는 것이었다 — 승인은 문장 해석이 아니라 구조화된 신호가 됐다.
    > **churn** — 같은 설계를 계속 고쳐도 새 결함이 나오는 상태. 같은 곳 2회면 토대가 틀렸다는 신호로 보고 설계를 되돌린다.
 
-4. **셸 문법을 흉내 낸 휴리스틱이 토큰 경계를 틀린다.** `<<-`(탭 종결자 heredoc), `<<<`(here-string), `$((1<<8))`(산술 시프트)가 모두 heredoc 시작으로 오인되어, 그 뒤의 실제 명령이 "heredoc 본문"으로 지워졌다.\
+4. **셸 문법을 흉내 낸 휴리스틱이 토큰 경계를 틀린다.** `<<-`(본문·종결자 줄의 선행 탭을 제거하는 heredoc)는 태그를 잘못 뽑거나 탭 들여쓴 종결자를 못 찾고, `<<<`(here-string)·`$((1<<8))`(산술 시프트)는 heredoc이 아닌데 시작으로 오인되어, 어느 쪽이든 그 뒤의 실제 명령이 "heredoc 본문"으로 지워졌다.\
    인용 안의 `<<tag`도 유령 heredoc을 만들었다.\
    보안상 위험한 이유: 지워진 부분에 **실제 push가 숨을 수 있다** — 오탐을 줄이려던 전처리가 우회 경로가 된다.\
    교정은 `<<-`·`<<<`·산술 문맥 제외 등으로 실사용 경로를 닫는 데서 멈춘 것이다 — 정규식으로 셸 문법을 재현하는 보정은 완결되지 않으므로 더 쌓지 않았다.
@@ -63,14 +63,14 @@ fi
 ### 변형 B — 같은 동작의 다른 표면형·실행 문맥
 ① 문제 코드
 ```sh
-grep -qE 'git[[:space:]]+push' <<<"$CMD" && guard     # git -C r push · /usr/bin/git push · command git push 미탐
+grep -qE '(^|[;&|][[:space:]]*)git[[:space:]]+push' <<<"$CMD" && guard     # 명령 시작 고정 → git -C r push · /usr/bin/git push · command git push 미탐
 git diff --cached --name-only                         # 훅 cwd 기준 — "cd other && git commit" 이면 다른 저장소
 ```
 ② 고친 코드
 ```sh
 PRE='(^|[^[:alnum:]_./-])(command[[:space:]]+)?([^[:space:]]*/)?git'
 OPTS='([[:space:]]+-[^[:space:]]+([[:space:]]+[^-[:space:]][^[:space:]]*)?)*'   # 전역 옵션 구간
-grep -qE "${PRE}${OPTS}[[:space:]]+push" <<<"$CMD" && guard
+grep -qE "${PRE}${OPTS}[[:space:]]+push" <<<"$CMD" && guard   # 표면형을 줄일 뿐 닫지 못함 — 보조층, 정본은 확인 UI(변형 A)
 git -C "$(target_repo "$CMD")" diff --cached --name-only    # 명령이 가리키는 저장소 기준
 ```
 무엇이 깨졌나: 표면형 하나를 고정했고, 명령이 바꾸는 실행 문맥을 무시했다.\
@@ -81,7 +81,7 @@ git -C "$(target_repo "$CMD")" diff --cached --name-only    # 명령이 가리�
 ```sh
 # "<<TAG" 부터 "TAG" 까지를 본문으로 보고 제거
 strip_heredoc() { awk '/<</{skip=1; tag=...} skip&&$0==tag{skip=0; next} !skip' ; }
-# <<- · <<< · $((1<<8)) 도 heredoc 으로 오인 → 뒤의 실제 명령까지 삭제
+# <<- 의 태그·탭 종결자 오처리, <<< · $((1<<8)) 의 heredoc 오인 → 뒤의 실제 명령까지 삭제
 ```
 ② 고친 코드
 ```sh
