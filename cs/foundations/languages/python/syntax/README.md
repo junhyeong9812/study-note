@@ -1,7 +1,7 @@
 # Python — 문법·API 주제 목록
 
 > 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**
-> (2026-09-24 기준 **16 / 53** — 01\~14 · 17 · 20). 나머지는 아직 없다.
+> (2026-09-24 기준 **20 / 53** — 01\~20). 나머지는 아직 없다.
 > 기준 소스: [Python 3.12 언어 레퍼런스](https://docs.python.org/3.12/reference/index.html) · [표준 라이브러리 3.12](https://docs.python.org/3.12/library/index.html) · [PEP 인덱스](https://peps.python.org/)
 > 실행 검증: **가능**. 이 머신에 `python3` 3.12.3 이 있어 3.12 까지의 예시는 실제로 돌려 출력을 확인한다. 3.13 전용 동작(PEP 696 기본값·`TypeIs`·free-threaded)은 설치본이 없어 문서·PEP 로만 접지하고 「미실행」으로 표기한다.
 > 기준일 2026-09-20.
@@ -32,11 +32,11 @@ JS 와 대비가 값을 내는 자리(동적 타입·컴프리헨션·이터레�
 | 12 | [dict 와 키 요건](12-dict-and-key-requirements/) | 표준 API | 삽입 순서 보장(3.7+)·`get`·`setdefault`·병합 연산자(3.9+)·뷰의 동적 성질을 쓰고, 어떤 객체가 키가 될 수 있는지 판정할 수 있다 | 02 | `cs/foundations/python-basics/` | A |
 | 13 | [set 과 frozenset](13-set-and-frozenset/) | 표준 API | 집합 연산으로 중복 제거·포함 검사를 설계하고, 순서 없음과 해시 요건이 만드는 제약을 설명할 수 있다 | 12 | `cs/foundations/python-basics/` | B |
 | 14 | [컴프리헨션](14-comprehensions/) | 문법 | 조건·중첩·dict/set 컴프리헨션을 읽고 쓰며, 같은 일을 하는 루프와 가독성·성능을 비교 판단할 수 있다 | 09 | `cs/foundations/python-basics/` | A |
-| 15 | 제너레이터 표현식과 지연 평가 | 문법 | 괄호 하나 차이로 메모리 사용이 달라지는 이유를 설명하고, 언제 리스트로 물질화해야 하는지 판단할 수 있다 | 14 | — | A |
-| 16 | 이터레이터 프로토콜 | 문법 | `iter`/`next`/`StopIteration` 으로 `for` 가 하는 일을 재현하고, 소진된 이터레이터를 다시 돌릴 때 빈 결과가 나오는 것을 예측할 수 있다 | 15 | — | A |
+| 15 | [제너레이터 표현식과 지연 평가](15-generator-expressions-lazy-eval/) | 문법 | 괄호 하나 차이로 메모리 사용이 달라지는 이유를 설명하고, 언제 리스트로 물질화해야 하는지 판단할 수 있다 | 14 | — | A |
+| 16 | [이터레이터 프로토콜](16-iterator-protocol/) | 문법 | `iter`/`next`/`StopIteration` 으로 `for` 가 하는 일을 재현하고, 소진된 이터레이터를 다시 돌릴 때 빈 결과가 나오는 것을 예측할 수 있다 | 15 | — | A |
 | 17 | [제너레이터 함수와 `yield`](17-generators-yield/) | 문법 | `yield` 가 실행을 중단·재개하는 흐름을 추적하고 `yield from`·`send`·`close` 의 효과를 설명할 수 있다 | 16 | — | A |
-| 18 | 반복 제어와 `for`/`while`·`else` | 문법 | `break`/`continue`/`else` 흐름과 `enumerate`·`zip`·`range` 의 지연 성질을 설명하고, 순회 중 컨테이너를 바꿀 때의 위험을 판단할 수 있다 | 16 | `cs/foundations/python-basics/` | B |
-| 19 | 함수 인자 규칙 | 문법 | 위치·키워드·기본값·`*args`·`**kwargs`·`/`·`*` 전용 인자를 조합한 시그니처에 대해 어떤 호출이 가능한지 판정할 수 있다 | — | — | A |
+| 18 | [반복 제어와 `for`/`while`·`else`](18-loop-control-and-else/) | 문법 | `break`/`continue`/`else` 흐름과 `enumerate`·`zip`·`range` 의 지연 성질을 설명하고, 순회 중 컨테이너를 바꿀 때의 위험을 판단할 수 있다 | 16 | `cs/foundations/python-basics/` | B |
+| 19 | [함수 인자 규칙](19-function-argument-rules/) | 문법 | 위치·키워드·기본값·`*args`·`**kwargs`·`/`·`*` 전용 인자를 조합한 시그니처에 대해 어떤 호출이 가능한지 판정할 수 있다 | — | — | A |
 | 20 | [가변 기본 인자 함정](20-mutable-default-args/) | 관용구 | `def f(x=[])` 가 호출마다 같은 객체를 쓰는 이유를 설명하고 `None` 센티널로 고칠 수 있다 | 03, 19 | — | A |
 | 21 | 스코프 LEGB 와 `global`·`nonlocal` | 문법 | 이름이 어느 스코프에서 풀리는지 판정하고, 대입 한 줄이 지역 변수를 만들어 `UnboundLocalError` 를 내는 경우를 설명할 수 있다 | 01 | — | A |
 | 22 | 클로저와 늦은 바인딩 | 문법 | 루프에서 만든 함수들이 같은 값을 내놓는 이유를 설명하고 기본 인자·팩토리로 고칠 수 있다 | 21 | — | A |
