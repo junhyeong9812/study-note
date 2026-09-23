@@ -27,7 +27,8 @@
    애플리케이션은 이 예외를 잡아 **409(이미 존재)** 로 바꾼다 — 앱 코드의 사전 조회는 경합을 막지 못하므로 최종 판정은 제약에 맡긴다.
 
 6. **암호문 = 복원·표시·발송, HMAC = 조회·유일키.** 원문이 필요한 곳(메일 발송·관리 화면 표시)은 가역 암호문을 복호화하고, 찾기·중복 판정은 HMAC 컬럼만 쓴다.\
-   결정적 암호화(AES-SIV 류)는 한 컬럼으로 복원과 동등 조회를 모두 하지만, 같은 평문 = 같은 암호문이라는 동등성 정보를 암호문 자체가 드러낸다 — 기록에는 후속 공부 대상으로만 남아 있다.
+   단 blind index도 같은 값은 같은 해시가 되므로 동등성·빈도 정보는 드러난다 — 1번에서 없앤 정보를 조회 기능을 위해 해시 컬럼 하나로 되돌려 준 셈이다. 부분 검색(LIKE)은 해시로도 불가능하다(필요하면 별도 설계).\
+   결정적 암호화(AES-SIV 류)는 한 컬럼으로 복원과 동등 조회를 모두 하고, 동등성 정보가 드러나는 점은 blind index와 같다. 차이는 조회용 키와 복호화 키를 분리할 수 있느냐(blind index는 해시 컬럼이 복원 능력을 주지 않음)다 — 기록에는 후속 공부 대상으로만 남아 있다.
 
 ## 문제 구조 (추상화 코드)
 
@@ -40,13 +41,13 @@ repo.save(new Subscriber(enc));                              // 중복 가입
 ```
 ② 고친 코드
 ```java
-String normalized = email == null ? "" : email.trim().toLowerCase();   // 두 경로 공통 정규화
+String normalized = email == null ? "" : email.trim().toLowerCase(Locale.ROOT);   // 두 경로 공통 정규화 (로캘 비의존)
 String enc  = cipher.encrypt(normalized);                              // 복원·표시·발송용
 String hash = hmacHex(pepper, normalized);                             // 조회·유일키용 (CHAR(64) UNIQUE)
 try {
     repo.save(new Subscriber(enc, hash));
 } catch (DataIntegrityViolationException e) {
-    throw new Conflict();                                              // 동시 가입 경합 → 409
+    throw new Conflict();                                              // 동시 가입 경합 → 409 (다른 제약 위반까지 409로 뭉개지 않게 제약명 확인 권장)
 }
 
 static String hmacHex(byte[] key, String v) {
@@ -56,7 +57,7 @@ static String hmacHex(byte[] key, String v) {
 }
 ```
 무엇이 깨졌나: 패턴 은닉용 비결정 출력을 동등 비교에 쓰려 했다.\
-같은 구조: 부분 검색·중복 판정이 필요한 다른 암호화 컬럼도 설계 단계에서 같은 이유로 결정적 해시 컬럼 분리가 필요하다고 기록됐다.
+같은 구조: 부분 검색·중복 판정이 필요한 다른 암호화 컬럼도 설계 단계에서 같은 이유로 결정적 해시 컬럼 분리가 필요하다고 기록됐다(해시 컬럼이 해결하는 것은 동등 조회·중복 판정뿐 — 부분 검색은 별도 방식이 필요하다).
 
 ## 검증 기록
 - 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
