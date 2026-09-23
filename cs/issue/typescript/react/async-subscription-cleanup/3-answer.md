@@ -20,7 +20,7 @@
    > **StrictMode 이중 실행** — 개발 모드에서 effect의 정리 누락을 드러내려고 mount→unmount→mount를 일부러 한 번 더 돌리는 동작.
 
 3. **disposed 플래그**는 "도착한 핸들을, 이미 정리된 상태면 즉시 부른다"를 보장한다 — 해제 책임이 도착 시점으로 옮겨진다.\
-**promise 해제**(`return () => { p.then(f => f()) }`)는 cleanup이 promise 자체를 잡고 있어 "언젠가 도착하면 그때 해제"를 보장한다. 둘 다 누수를 막지만, 후자는 도착 전까지 콜백이 한두 번 불릴 수 있으므로 콜백 안에서도 disposed를 보는 편이 안전하다.\
+**promise 해제**(`return () => { p.then(f => f()) }`)는 cleanup이 promise 자체를 잡고 있어 "언젠가 도착하면 그때 해제"를 보장한다. 둘 다 누수를 막지만, 두 방식 모두 cleanup 이후 해제 함수가 실제로 불리기 전까지는 리스너가 살아 있어 콜백이 불릴 수 있다 — 콜백 안에서도 disposed를 보는 편이 안전하다.\
 await가 여러 번이면(연결 생성 수 초 → 구독 등록) **각 await 직후** `if (disposed) { 방금 얻은 것 해제; return; }`를 둬야 한다. 첫 await 뒤에서만 검사하면, 두 번째 await 동안 언마운트된 경우 리스너가 이미 폐기된 위젯(수 MB 스크롤백)을 계속 참조한다.
 
 4. 같은 점: 둘 다 "결과가 도착했을 때 그 결과의 주인이 아직 유효한가"를 판정한다.\
@@ -28,14 +28,14 @@ await가 여러 번이면(연결 생성 수 초 → 구독 등록) **각 await �
 닫기·언마운트가 세대를 올리지 않으면, 닫은 뒤 늦게 도착한 attach가 "내가 최신"이라고 판단해 ref를 채우고, 그걸 닫을 코드는 이미 지나가 원격 연결이 세션 종료 때까지 남는다.
    > **세대(generation) 토큰** — 작업 시작 때 발급한 증가 번호. 완료 시점에 현재 번호와 다르면 결과를 버리거나 닫는다.
 
-5. 구독 실패를 처리하지 않으면 unhandled rejection이 나고, 그 뒤 초기화 단계(초기 데이터 적재)에 도달하지 못해 **빈 화면**이 된다.\
+5. 구독 실패를 처리하지 않으면 unhandled rejection이 나고, 이 사례처럼 구독 await 뒤에 초기화 단계(초기 데이터 적재)가 이어지는 구조라면 그 단계에 도달하지 못해 **빈 화면**이 된다(rejection 자체가 화면을 비우는 것이 아니라 이후 코드가 실행되지 않는 것이다).\
 또 구독 전에 선점한 자원(세션 claim·슬롯)이 풀리지 않으면 tombstone처럼 남아 다음 후보를 막는다.\
 그래서 등록은 "성공 / 언마운트 후 성공 / 실패" 세 경로를 다 가져야 하고, 실패 경로는 선점 해제 + 사용자에게 보이는 실패 상태가 된다.
 
 6. 이전 disposable을 해제하지 않고 재설치하면 콜백이 누적된다 — 레이아웃이 한 번 바뀔 때 핸들러가 N번 불리고, 겹친 드래그를 취소해도 **옛 dragend 리스너가 늦게 발화**해 의도하지 않은 동작(팝아웃 생성)을 한다.\
 제스처마다 AbortController 하나를 만들고 모든 리스너를 `{ signal }`로 등록하면, 새 제스처 시작·언마운트 때 `abort()` 한 번으로 그 제스처의 리스너가 전부 떨어진다 — 해제 대상을 하나하나 기억할 필요가 없다.
 
-7. 명령형 인스턴스와 DOM 리스너는 선언형 렌더가 새 DOM을 만들어도 **스스로 사라지지 않는다** — 같은 canvas에 새 차트를 만들면 "이미 사용 중" 오류가 나고, 템플릿을 다시 그릴 때마다 리스너가 중복된다.\
+7. 명령형 인스턴스와 DOM 리스너는 선언형 렌더가 새 DOM을 만들어도 **스스로 사라지지 않는다** — (이 사례의 차트 라이브러리처럼) 같은 canvas에 이전 인스턴스를 파괴하지 않고 새 차트를 만들면 "이미 사용 중" 오류가 나고, 템플릿을 다시 그릴 때마다 리스너가 중복된다.\
 그래서 재생성 전에 `destroy()`하고, 노드에 "바인딩됨" 표시를 남겨 한 번만 바인딩한다 — "수명을 명시적으로 소유한다"는 점에서 이 카드와 같은 원리다.\
 promise를 메모이즈하면 **거부된 promise도** 캐시되어, 이후 호출은 모두 같은 거부를 즉시 돌려받는다. 실패 시 캐시를 비워야 재시도가 가능하다.
 
@@ -57,7 +57,8 @@ useEffect(() => {
   let un: (() => void) | undefined;
   listen("output", onChunk)
     .then((f) => (disposed ? f() : (un = f)))        // 도착 즉시 판정
-    .catch(() => {});
+    .catch((e) => { if (!disposed) reportError(e); });   // 등록 실패를 삼키지 않는다
+  // onChunk 안에서도 disposed 확인 — 해제 함수가 도착·호출되기 전까지는 이벤트가 올 수 있다
   return () => { disposed = true; un?.(); };
 }, []);
 ```
@@ -81,8 +82,8 @@ async function start() {
   const conn = await openConnection();
   if (disposed) { conn.close(); return; }
   let un;
-  try { un = await listen("data", (d) => widget.write(d)); }
-  catch (e) { registry.release(id); reportError(e); return; }   // 등록 실패: 선점 해제 + 실패 표시
+  try { un = await listen("data", (d) => { if (!disposed) widget.write(d); }); }
+  catch (e) { conn.close(); registry.release(id); reportError(e); return; }   // 등록 실패: 연결·선점 해제 + 실패 표시
   if (disposed) { un(); return; }
   unRef = un;
   timer = setTimeout(() => { if (!disposed) setReady(); }, 3000);
@@ -105,6 +106,7 @@ async function attach(sessionId) {
   const my = ++attachSeq.current;
   const term = await remote.attach(sessionId);
   if (my !== attachSeq.current) { term.close(); return; }   // 진 쪽이 자기 것을 닫음
+  termRef.current?.close();                                 // 교체라면 이전 연결 정리(유지·detach 정책이면 그에 맞게)
   termRef.current = term;                                   // ref 를 세우는 순간 동기 갱신(렌더 뒤 effect 아님)
 }
 function close() { attachSeq.current++; termRef.current?.close(); }   // 닫기·언마운트도 세대 올림
@@ -153,7 +155,7 @@ function onDragStart() {
 function openModal(data) {
   container.innerHTML = template(data);                 // canvas 재생성 또는 재사용
   state.chart = new ChartLib(canvas, cfg(data));            // 같은 canvas 에 두 번째 → "이미 사용 중"
-  canvas.addEventListener("wheel", zoom);                // 렌더마다 중복 · passive 라 preventDefault 무시
+  canvas.addEventListener("wheel", zoom);                // 렌더마다 중복 · passive 미명시(대상·브라우저에 따라 passive 취급되면 preventDefault 무시)
 }
 let apiPromise;
 const getStatus = () => (apiPromise ??= fetch(url).then((r) => r.json()));   // 실패도 영구 캐시
@@ -168,7 +170,9 @@ function openModal(data) {
   }
 }
 const getStatus = () =>
-  (apiPromise ??= fetch(url).then((r) => r.json()).catch((e) => { apiPromise = null; throw e; }));
+  (apiPromise ??= fetch(url)
+    .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })   // fetch 는 HTTP 오류로 reject 하지 않는다
+    .catch((e) => { apiPromise = null; throw e; }));
 ```
 같은 구조: 회전 여부를 플래그 두 개에 직접 대입하던 것을 파생값(`!pausedByUser && !modalOpen`)으로 바꿔 모순 상태를 구조적으로 없앰.
 
