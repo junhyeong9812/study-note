@@ -17,7 +17,7 @@
 2. **데이터는 적재됐는데 원장은 영구 실패로 남는다.**\
    FAILED가 종결 상태라서 뒤늦은 SUCCESS 콜백이 "상충"으로 버려진다.\
    이 결함은 원래 무한 대기(lost update)를 고치려고 타임아웃을 넣은 수정이 만든 것이다 — 고친 결함의 정반대 방향.\
-   교정: 비종결 `ACCEPTANCE_UNKNOWN` 상태를 두어 후속 콜백이 원장을 정정할 수 있게 하고, 화면에서도 "실패"와 구분해 폴링 대상에 포함했다.
+   교정: 비종결 `OUTCOME_UNKNOWN` 상태를 두어 후속 콜백이 원장을 정정할 수 있게 하고, 화면에서도 "실패"와 구분해 폴링 대상에 포함했다.
 
 3. **`ConnectException`·`UnknownHostException`·`NoRouteToHostException` = 미도달 확실 → FAILED. `SocketTimeoutException` = 모름.**\
    앞의 셋은 TCP 연결이나 이름 해석 단계에서 실패해 요청 바이트가 나가지 않았음이 확실하다.\
@@ -70,7 +70,7 @@ void onCallback(Job job, Status s) {
             || c instanceof NoRouteToHostException) {
         ledger.mark(job, FAILED);             // 요청 미도달 확실
     } else {
-        ledger.mark(job, ACCEPTANCE_UNKNOWN); // 비종결: 후속 콜백이 정정
+        ledger.mark(job, OUTCOME_UNKNOWN); // 비종결: 후속 콜백이 정정
     }
 }
 ```
