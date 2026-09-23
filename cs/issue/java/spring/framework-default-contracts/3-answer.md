@@ -42,7 +42,7 @@
 ① 문제 코드
 ```java
 @Service
-public class CodeService {
+public class LookupService {
     @Cacheable("codes") public List<Code> getCodes(String groupId) { /* DB */ }
     public String getName(String groupId, String code) {
         return getCodes(groupId).stream()...;              // this 호출 → 프록시 우회 → 캐시 미적용
@@ -54,7 +54,7 @@ public class CodeService {
 @EnableAspectJAutoProxy(exposeProxy = true)                 // 자기 프록시 노출
 // ...
     public String getName(String groupId, String code) {
-        return ((CodeService) AopContext.currentProxy()).getCodes(groupId).stream()...;
+        return ((LookupService) AopContext.currentProxy()).getCodes(groupId).stream()...;
     }
 // 단위 테스트엔 프록시가 없어 IllegalStateException → 이 경로는 전체 컨텍스트 IT로 검증
 ```
@@ -69,7 +69,7 @@ public class CodeService {
     Lexicon(DbClient client) { ... }                // 의존성 null
 }
 @RequiredArgsConstructor class FileUtil {
-    @Qualifier("fileIdGen") private final IdGen idGen;   // Lombok 생성자엔 @Qualifier 미복사 → 모호
+    @Qualifier("fileIdSource") private final IdSource idGen;   // Lombok 생성자엔 @Qualifier 미복사 → 모호
 }
 @TestConfiguration class TestSupport {
     @Bean Helper helper() { ... }
@@ -82,7 +82,7 @@ record ApiProps(String key, String url, int timeout) {
 ② 고친 코드
 ```java
 @Component class Lexicon { Lexicon(DbClient client) { ... } }       // 단일 생성자 + 배선 테스트
-class FileUtil { FileUtil(@Qualifier("fileIdGen") IdGen idGen) { ... } }   // 명시 생성자
+class FileUtil { FileUtil(@Qualifier("fileIdSource") IdSource idGen) { ... } }   // 명시 생성자
 @TestConfiguration class TestSupport { @Bean Helper helper() { ... } static class Helper { ... } }
 record ApiProps(String key, String url, int timeout) {}              // 보조 생성자 제거
 ```
@@ -99,11 +99,11 @@ record ApiProps(String key, String url, int timeout) {}              // 보조 �
 @ConditionalOnBean(DataSource.class)                   // 자동구성보다 먼저 평가 → "없음" → 설정 전체 누락
 class MonitoringConfig { ... }
 
-@Bean DataSource legacyDataSource() { ... }            // 같은 타입 1개 추가 → 기본 DataSource 자동구성 back-off
+@Bean DataSource oldDataSource() { ... }            // 같은 타입 1개 추가 → 기본 DataSource 자동구성 back-off
 @Bean CryptoService secondaryCrypto() { ... }         // 기존 무자격 주입이 모호해짐
 
-@Component class ApiKeyFilter extends OncePerRequestFilter { ... }   // 서블릿 /* 자동 등록
-http.addFilterBefore(apiKeyFilter, UsernamePasswordAuthenticationFilter.class);   // + 체인 → 2회 실행
+@Component class KeyAuthFilter extends OncePerRequestFilter { ... }   // 서블릿 /* 자동 등록
+http.addFilterBefore(keyAuthFilter, UsernamePasswordAuthenticationFilter.class);   // + 체인 → 2회 실행
 ```
 ② 고친 코드
 ```text
@@ -113,11 +113,11 @@ com.example.feature.MonitoringConfig                   # 자동구성 순서에 
 ```java
 @Bean @Primary @ConfigurationProperties("app.datasource")
 DataSource dataSource(...) { ... }                      // 운영 DataSource를 명시 + @Primary
-@Bean @Qualifier("legacy") DataSource legacyDataSource() { ... }
+@Bean @Qualifier("legacy") DataSource oldDataSource() { ... }
 @Bean @Primary CryptoService crypto() { ... }           // 기존 주입 무수정 보존
 @Bean @Qualifier("secondaryCrypto") CryptoService secondaryCrypto() { ... }
 
-@Bean FilterRegistrationBean<ApiKeyFilter> off(ApiKeyFilter f) {
+@Bean FilterRegistrationBean<KeyAuthFilter> off(KeyAuthFilter f) {
     var r = new FilterRegistrationBean<>(f); r.setEnabled(false); return r;   // 체인 등록만 유효
 }
 @Bean @Order(Ordered.LOWEST_PRECEDENCE)
