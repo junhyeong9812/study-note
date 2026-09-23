@@ -10,7 +10,7 @@
 
 1. **역직렬화가 실패한다: `invalid type: string "1", expected u64`.** 직렬화는 `u64` 키를 JSON 객체 키(문자열 `"1"`)로 바꿔 멀쩡히 쓴다. 그러나 읽을 때는 그 문자열 키를 `u64`로 되돌리지 못한다. 실제로 프롬프트가 한 번이라도 있던 세션은 전부 디코딩에 실패했다. 쓰는 쪽(데몬)은 정상으로 보이고 읽는 쪽(클라이언트)만 깨졌다.
 
-2. **internally tagged enum은 태그를 찾기 위해 내용을 먼저 버퍼링하기 때문이다.** `#[serde(tag = "event")]`는 태그가 객체의 어느 위치에 있어도 되게 하려고, 역직렬화 시 객체 전체를 serde의 중간 표현(`Content`)에 먼저 담는다. 그 다음 태그를 보고 알맞은 variant로 **Content에서 다시** 역직렬화한다. 첫 단계에서 JSON 객체 키 `"1"`은 이미 "문자열 값"으로 고정되어 저장되고, 두 번째 단계의 Content 역직렬화기는 그 문자열을 `u64` 키로 파싱해 주지 않는다. 평범한 struct는 이 버퍼링을 거치지 않아 문제가 없다.
+2. **internally tagged enum은 태그를 찾기 위해 내용을 먼저 버퍼링하기 때문이다.** `#[serde(tag = "event")]`는 태그가 객체의 어느 위치에 있어도 되게 하려고, 역직렬화 시 객체 전체를 serde의 중간 표현(`Content`)에 먼저 담는다. 그 다음 태그를 보고 알맞은 variant로 **Content에서 다시** 역직렬화한다. 첫 단계에서 JSON 객체 키 `"1"`은 이미 "문자열 값"으로 고정되어 저장되고, 두 번째 단계의 Content 역직렬화기는 그 문자열을 `u64` 키로 파싱해 주지 않는다. 평범한 struct는 이 버퍼링을 거치지 않아 문제가 없다(오래 알려진 serde 제약이며, untagged·flatten처럼 Content 버퍼를 거치는 다른 표현에도 같은 문제가 있다 — 세부 동작은 serde 버전에 따라 확인).
    > **internally tagged 표현** — enum의 variant 이름을 내용 객체 안의 한 필드(`{"event":"Delta", ...}`)로 넣는 serde 표현 방식. 태그 위치가 고정되지 않아 역직렬화에 버퍼링이 필요하다.
 
 3. **픽스처의 트랜스크립트에 사용자 프롬프트가 없어 `entries`가 늘 빈 맵이었다.** 빈 맵은 키가 없으니 키 타입 변환이 한 번도 일어나지 않았고, 모든 단위 테스트가 통과했다. 실제 에이전트로 돌린 스모크에서 처음으로 키가 채워져 드러났다. "쓰기는 정상"이라는 사실은 발견을 더 늦춘다 — 생산자 쪽 테스트·로그는 모두 성공이라 결함이 **소비자 쪽에서만**, 그것도 데이터가 있을 때만 나타나기 때문이다. 교훈: 직렬화 계약 테스트는 **왕복(round-trip)** 으로, 그리고 **비어 있지 않은** 데이터로 해야 한다.
@@ -50,7 +50,7 @@ mod u64_key_map {
         s.collect_map(m.iter())                              // u64 순회 순서(숫자순) 그대로 방출
     }
     pub fn deserialize<'de, D: Deserializer<'de>, V: Deserialize<'de>>(d: D) -> Result<BTreeMap<u64, V>, D::Error> {
-        BTreeMap::<String, V>::deserialize(d)?
+        BTreeMap::<String, V>::deserialize(d)?             // JSON처럼 맵 키가 문자열로 오는 포맷 전제
             .into_iter()
             .map(|(k, v)| k.parse::<u64>().map(|k| (k, v))
                  .map_err(|_| serde::de::Error::custom("non-numeric key")))
