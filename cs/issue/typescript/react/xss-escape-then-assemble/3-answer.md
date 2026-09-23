@@ -66,8 +66,8 @@ html = template.replace("{{title}}", legacy.getTitle())      // 외부 유래 �
 ```
 ② 고친 코드
 ```java
-html = template.replace("{{title}}", escapeHtml(orDash(legacy.getTitle())))   // 모든 삽입값 이스케이프
-               .replace("{{link}}", escapeHtml(orDash(legacy.getServiceUrl())));
+html = template.replace("{{title}}", escapeHtml(dashIfEmpty(legacy.getTitle())))   // 모든 삽입값 이스케이프
+               .replace("{{link}}", escapeHtml(dashIfEmpty(legacy.getServiceUrl())));
 // 계약 테스트: 실제 템플릿을 렌더해 placeholder 목록 ↔ 치환 키 목록이 1:1인지 확인
 ```
 무엇이 깨졌나: 조립 지점마다 이스케이프를 기억해야 하는 구조에서 일부 삽입값이 빠졌다.
