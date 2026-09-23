@@ -20,7 +20,7 @@
 
 [BFF(서버 측 fetch)]
   브라우저 ──쿠키──▶ BFF ──(쿠키 jar 없음)──▶ 백엔드   ← 명시 전달 필요
-  사용자별 응답 캐시 → 다른 요청에 stale 인증 섞임     ← no-store
+  (fetch 캐시가 있는 프레임워크) 사용자별 응답 캐시 → 다른 요청에 stale 인증 섞임 ← no-store
 
 [교정]
   쿠키 인증 → SameSite=Strict + 부작용은 POST
@@ -31,9 +31,9 @@
 
 ## 핵심 문장
 
-- 쿠키는 브라우저가 **자동 첨부**한다 — 그래서 쿠키 인증은 CSRF 방어(SameSite·Origin 검사)가 필요하고, 헤더 인증은 필요 없다.
-- `SameSite=Lax`는 cross-site **top-level GET**에 쿠키를 보낸다 → 부작용을 GET에 두지 않거나 Strict.
-- `Secure` 쿠키는 **HTTPS에서만** 저장·전송된다. HTTP 배포에서는 에러 없이 버려진다.
+- 쿠키는 브라우저가 **자동 첨부**한다 — 그래서 쿠키 인증은 CSRF 방어(SameSite·Origin 검사)가 필요하고, 스크립트가 직접 싣는 헤더(Bearer) 인증은 CSRF 대상이 아니다(브라우저가 자동 재전송하는 Basic 인증 등은 예외).
+- `SameSite=Lax`는 cross-site **top-level GET**에 쿠키를 보낸다 → 부작용을 GET에 두지 않거나 Strict. SameSite는 **site(등록 도메인)** 단위라 같은 사이트의 다른 서브도메인발 요청은 막지 못한다 → Origin 검사 병행.
+- `Secure` 쿠키는 **HTTPS에서만** 저장·전송된다(최신 주요 브라우저 기준, localhost는 예외 허용이 많음). HTTP 배포에서는 앱 에러 없이 버려진다.
 - 서버→서버 호출에는 **쿠키 jar가 없다** → 명시 전달. 사용자별 인증 응답은 **캐시 금지**.
 - httpOnly의 이점(JS 비노출)은 같은 토큰을 헤더로도 주는 순간 사라진다.
 - credentials 요청에 `*` 오리진은 스펙상 금지 — 자동 첨부 자격을 모든 출처에 여는 것이기 때문이다.
