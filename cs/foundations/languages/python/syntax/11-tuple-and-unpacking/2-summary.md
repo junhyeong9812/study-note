@@ -158,7 +158,7 @@ a, b = None          -> TypeError: cannot unpack non-iterable NoneType object
 
 그림 해설.
 
-- **`ValueError` 는 「개수가 안 맞는다」, `TypeError` 는 「풀 수가 없다」**다. 두 층이 다르다.
+- **`ValueError` 는 「개수가 안 맞는다」, `TypeError` 는 「풀 수가 없다」다**. 두 층이 다르다.
 - ★ **별표가 있으면 `expected at least N`** 으로 바뀐다 — 「최소 몇 개」로 문구가 달라진다.
 - ★ **`a, b = 'xyz'` 가 `TypeError` 가 아니다.** 문자열은 이터러블이라 풀리긴 하고, 개수만 안 맞는다.
 - **`None` 은 `TypeError`** 다 — 「데이터가 없을 때」의 대표 사고가 여기서 난다.
