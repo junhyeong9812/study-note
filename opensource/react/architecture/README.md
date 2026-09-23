@@ -1,12 +1,12 @@
 # React 아키텍처 지도
 
-소스를 **직접 읽어서** 그린 탑다운 지도다. 흐름 열다섯 편, 83개 문서로 되어 있다.
+소스를 **직접 읽어서** 그린 탑다운 지도다. 흐름 열여섯 편, 89개 문서로 되어 있다.
 
 기준 커밋: react `main` [`68631c0453`](https://github.com/facebook/react/tree/68631c0453b08e2c7c96a40910f4c91db1f66d5a). 모든 줄 번호는 이 커밋 기준이고, 대상은 **react-dom 클라이언트 빌드**다.
 
 `useState` 나 `useEffect` 같은 API 이름에서 거꾸로 찾고 싶으면 [API 역인덱스](api-index.md)를 보면 된다.
 
-## 흐름 열다섯 편
+## 흐름 열여섯 편
 
 | 흐름 | 진입점 | 문서 |
 |---|---|---|
@@ -25,6 +25,7 @@
 | [업데이트 큐](flows/update-queue/README.md) | `processUpdateQueue` `ReactFiberClassUpdateQueue.js` L487 | 6 |
 | [클래스 컴포넌트](flows/class-component/README.md) | `updateClassComponent` `ReactFiberBeginWork.js` L1580 | 6 |
 | [커밋 이펙트](flows/commit-effects/README.md) | `ReactFiberCommitEffects.js` — 사용자 코드를 부르는 자리 | 5 |
+| [DOM 조작](flows/dom-ops/README.md) | `ReactFiberCommitHostEffects.js` → `ReactFiberConfigDOM.js` | 6 |
 
 ## 흐름이 이어지는 자리
 
@@ -54,6 +55,7 @@
  [커밋]  DOM 을 바꾸고 root.current 를 교체한다
       |  순회는 CommitWork, 사용자 코드 호출은
       +--> [커밋 이펙트]  useEffect / componentDidMount 가 여기서 불린다
+      +--> [DOM 조작]     appendChild / 속성 갱신이 여기서 일어난다
       |
       +-- scheduleCallback ~~> [패시브 이펙트]   useEffect 가 여기서 돈다
       |
@@ -134,6 +136,10 @@
  useEffect 의 cleanup 이 언제 도는지,
  이펙트가 던지면 어떻게 되는지 궁금하면
    [커밋 이펙트]
+
+ 리액트가 실제로 DOM 을 어떻게 만지는지,
+ <script> 나 Suspense 로 숨긴 트리가 어떻게 되는지 궁금하면
+   [DOM 조작]
 ```
 
 ## 문서의 생김새
