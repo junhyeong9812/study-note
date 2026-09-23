@@ -66,14 +66,14 @@ function Panel() {
 ① 문제 코드
 ```tsx
 return {
-  [Step.AUTH]:    <AuthStep title={t("a")} hint={t("b")} />,   // CONFIRM 이어도 매 렌더 평가
+  [Step.AUTH]:    <LoginStep title={t("a")} hint={t("b")} />,   // CONFIRM 이어도 매 렌더 평가
   [Step.CONFIRM]: <ConfirmStep />,
 }[step];
 ```
 ② 고친 코드
 ```tsx
 const steps = {
-  [Step.AUTH]:    () => <AuthStep title={t("a")} hint={t("b")} />,
+  [Step.AUTH]:    () => <LoginStep title={t("a")} hint={t("b")} />,
   [Step.CONFIRM]: () => <ConfirmStep />,
 };
 return (steps[step] ?? steps[Step.CONFIRM])();
