@@ -48,10 +48,10 @@
 ```ts
 const pushItem = (it: Item) => {
   entries.push({ kind: "item", item: it });
-  for (const [childId, children] of childrenByParent.get(it.id) ?? [])
+  for (const [childId, children] of childMap.get(it.id) ?? [])
     pushChildGroup(childId, children);          // → 다시 pushItem(...)
 };
-// 렌더도 renderItem ↔ renderGroup 상호재귀. 사이클 → 스택 오버플로 → 앱 전체 언마운트
+// 렌더도 renderItem ↔ drawGroup 상호재귀. 사이클 → 스택 오버플로 → 앱 전체 언마운트
 ```
 ② 고친 코드
 ```ts
@@ -59,7 +59,7 @@ const seenItem = new Set<string>();
 const pushItem = (it: Item) => {
   if (seenItem.has(it.id)) return; seenItem.add(it.id);
   entries.push({ kind: "item", item: it });
-  for (const [childId, children] of childrenByParent.get(it.id) ?? [])
+  for (const [childId, children] of childMap.get(it.id) ?? [])
     pushChildGroup(childId, children);          // 그룹 쪽에도 seenGroup 가드
 };
 // 목록 빌더와 렌더 양쪽에 같은 가드
