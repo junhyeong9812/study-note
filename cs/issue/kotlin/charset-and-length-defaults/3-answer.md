@@ -79,7 +79,7 @@ if (bufferBytes > 0 && bufferBytes + paragraphBytes > LIMIT_BYTES) flush()
 bufferBytes += paragraphBytes + 2
 ```
 무엇이 깨졌나: 한글(UTF-8 3바이트/글자)에서 글자 수 기준 통과가 바이트 기준 상한 초과였다.\
-같은 구조: 입력 길이 검사의 바이트 계산이 `escape()` 길이 휴리스틱(한글 2B)에서 UTF-8 인코더(한글 3B)로 바뀌며 같은 `maxByte`에서 허용 글자 수가 조용히 줄었다 — 프론트 계산 인코딩과 저장 쪽 기준 인코딩의 정합 확인이 필요.
+같은 구조: 입력 길이 검사의 바이트 계산이 `escape()` 길이 휴리스틱(한글 2B)에서 UTF-8 인코더(한글 3B)로 바뀌며 같은 `byteLimit`에서 허용 글자 수가 조용히 줄었다 — 프론트 계산 인코딩과 저장 쪽 기준 인코딩의 정합 확인이 필요.
 ```js
 if (escape(ch).length > 4) total += 2;          // Before: 한글 2B
 new TextEncoder().encode(value).length           // After:  한글 3B
