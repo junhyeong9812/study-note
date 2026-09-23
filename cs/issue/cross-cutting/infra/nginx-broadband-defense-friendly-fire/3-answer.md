@@ -59,7 +59,7 @@ class RateLimitMiddleware:
     async def dispatch(self, request, call_next):
         key = client_key(request)
         if not limiter.allow(key, limit=30, per=60):      # 모든 요청에 동일 적용
-            return JSONResponse({"code": "RATE_LIMIT_EXCEEDED"}, status_code=429)
+            return JSONResponse({"code": "TOO_MANY_REQUESTS"}, status_code=429)
         return await call_next(request)
 # 배포 파이프라인: 새 슬롯 포트로 직접 통합 테스트 수백 건 연속 호출 → 약 1/5 이 429
 ```
@@ -96,9 +96,9 @@ fetch(backendUrl, { headers: { "X-API-KEY": key } });
 ```
 ② 고친 코드
 ```java
-Bucket bucketFor(HttpServletRequest r) {
+Bucket keyFor(HttpServletRequest r) {
     boolean read = r.getMethod().equals("GET") || r.getMethod().equals("HEAD");
-    return (read && isImagePath(r)) ? IMAGE /* 600/60s, 면제 아님 */ : API /* 60/60s */;
+    return (read && looksLikeImage(r)) ? IMAGE /* 600/60s, 면제 아님 */ : API /* 60/60s */;
 }
 String key = bucket.name() + "|" + clientIp;   // 캐시 1개 공유, 키 접두로 총량 상한 유지
 // 이미지 200 응답에만 Cache-Control → 재요청 자체를 줄임
@@ -106,7 +106,7 @@ String key = bucket.name() + "|" + clientIp;   // 캐시 1개 공유, 키 접두
 ```ts
 // BFF: 앞단 프록시가 붙인 XFF 에서 클라이언트 IP 를 골라 전달
 const ip = pickTrustedClientIp(req.headers);          // 첫 항목 채택 금지(클라이언트 위조 가능)
-if (isIpLiteral(ip)) headers["X-Forwarded-For"] = ip; // 임의 문자열 = 캐시 키 오염 → 문법·길이 검증
+if (isValidIp(ip)) headers["X-Forwarded-For"] = ip; // 임의 문자열 = 캐시 키 오염 → 문법·길이 검증
 ```
 무엇이 깨졌나: 트래픽 종류(화면당 수십 건 팬아웃하는 이미지 vs 일반 API)가 한 버킷을 쓰고, 키가 클라이언트가 아니라 중간 프록시 하나라 모든 사용자가 한 버킷을 나눠 썼다. 앞단 프록시는 실 IP를 이미 주고 있었고, BFF가 넘기지 않은 것이 결함이었다.
 
