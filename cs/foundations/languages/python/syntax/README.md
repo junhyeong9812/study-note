@@ -1,7 +1,7 @@
 # Python — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 아래 주제들의 3파일(질문·서머리·정답)은 **아직 대부분 없다** —
-> 폴더 링크가 달린 행만 작성돼 있다(2026-09-21 파일럿 4편: **02·14·17·20**).
+> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**
+> (2026-09-24 기준 **16 / 53** — 01\~14 · 17 · 20). 나머지는 아직 없다.
 > 기준 소스: [Python 3.12 언어 레퍼런스](https://docs.python.org/3.12/reference/index.html) · [표준 라이브러리 3.12](https://docs.python.org/3.12/library/index.html) · [PEP 인덱스](https://peps.python.org/)
 > 실행 검증: **가능**. 이 머신에 `python3` 3.12.3 이 있어 3.12 까지의 예시는 실제로 돌려 출력을 확인한다. 3.13 전용 동작(PEP 696 기본값·`TypeIs`·free-threaded)은 설치본이 없어 문서·PEP 로만 접지하고 「미실행」으로 표기한다.
 > 기준일 2026-09-20.
@@ -27,10 +27,10 @@ JS 와 대비가 값을 내는 자리(동적 타입·컴프리헨션·이터레�
 | 07 | [문자열 메서드](07-string-methods/) | 표준 API | `split`·`join`·`strip`·`replace`·`startswith`·`translate` 로 파싱·정규화를 짜고, 정규식을 꺼내야 하는 선을 판단할 수 있다 | 06 | — | B |
 | 08 | [f-string 과 포맷 스펙](08-fstrings-and-format-spec/) | 문법 | 정렬·자릿수·천단위·`!r`·`=` 디버그 표기를 쓰고, 3.12(PEP 701)에서 완화된 중첩 따옴표·백슬래시 제한을 설명할 수 있다 | 06 | — | B |
 | 09 | [시퀀스 공통 연산과 슬라이싱](09-sequence-ops-and-slicing/) | 문법 | 음수 인덱스·step·역순 슬라이스의 결과를 예측하고, 슬라이스 대입과 `del` 이 길이를 바꾸는 방식을 설명할 수 있다 | — | `cs/foundations/python-basics/` | A |
-| 10 | list 메서드와 정렬 키 | 표준 API | `sort` 와 `sorted` 를 구분하고 `key`·`reverse`·안정 정렬을 이용해 다중 기준 정렬을 설계할 수 있다 | 09 | `cs/foundations/python-basics/` | A |
-| 11 | tuple 과 언패킹 | 문법 | 별표 언패킹·중첩 언패킹·스왑을 쓰고, tuple 이 불변인데도 안에 든 리스트는 바뀔 수 있다는 것을 설명할 수 있다 | 09 | `cs/foundations/python-basics/` | A |
-| 12 | dict 와 키 요건 | 표준 API | 삽입 순서 보장(3.7+)·`get`·`setdefault`·병합 연산자(3.9+)·뷰의 동적 성질을 쓰고, 어떤 객체가 키가 될 수 있는지 판정할 수 있다 | 02 | `cs/foundations/python-basics/` | A |
-| 13 | set 과 frozenset | 표준 API | 집합 연산으로 중복 제거·포함 검사를 설계하고, 순서 없음과 해시 요건이 만드는 제약을 설명할 수 있다 | 12 | `cs/foundations/python-basics/` | B |
+| 10 | [list 메서드와 정렬 키](10-list-methods-and-sort-key/) | 표준 API | `sort` 와 `sorted` 를 구분하고 `key`·`reverse`·안정 정렬을 이용해 다중 기준 정렬을 설계할 수 있다 | 09 | `cs/foundations/python-basics/` | A |
+| 11 | [tuple 과 언패킹](11-tuple-and-unpacking/) | 문법 | 별표 언패킹·중첩 언패킹·스왑을 쓰고, tuple 이 불변인데도 안에 든 리스트는 바뀔 수 있다는 것을 설명할 수 있다 | 09 | `cs/foundations/python-basics/` | A |
+| 12 | [dict 와 키 요건](12-dict-and-key-requirements/) | 표준 API | 삽입 순서 보장(3.7+)·`get`·`setdefault`·병합 연산자(3.9+)·뷰의 동적 성질을 쓰고, 어떤 객체가 키가 될 수 있는지 판정할 수 있다 | 02 | `cs/foundations/python-basics/` | A |
+| 13 | [set 과 frozenset](13-set-and-frozenset/) | 표준 API | 집합 연산으로 중복 제거·포함 검사를 설계하고, 순서 없음과 해시 요건이 만드는 제약을 설명할 수 있다 | 12 | `cs/foundations/python-basics/` | B |
 | 14 | [컴프리헨션](14-comprehensions/) | 문법 | 조건·중첩·dict/set 컴프리헨션을 읽고 쓰며, 같은 일을 하는 루프와 가독성·성능을 비교 판단할 수 있다 | 09 | `cs/foundations/python-basics/` | A |
 | 15 | 제너레이터 표현식과 지연 평가 | 문법 | 괄호 하나 차이로 메모리 사용이 달라지는 이유를 설명하고, 언제 리스트로 물질화해야 하는지 판단할 수 있다 | 14 | — | A |
 | 16 | 이터레이터 프로토콜 | 문법 | `iter`/`next`/`StopIteration` 으로 `for` 가 하는 일을 재현하고, 소진된 이터레이터를 다시 돌릴 때 빈 결과가 나오는 것을 예측할 수 있다 | 15 | — | A |
