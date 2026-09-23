@@ -32,10 +32,10 @@ C 는 기능이 적은 언어라 “기능 목록”으로 자르면 30개면 �
 | 02 | [기본 타입·크기·고정폭 정수](02-basic-types-sizes-and-fixed-width-integers/) | 문법 | `int` 의 크기가 왜 고정이 아닌지 설명하고, `<limits.h>`·`<stdint.h>`(`int32_t`·`size_t`) 중 무엇을 언제 쓸지 판단할 수 있다 | 01 | [`data-representation/`](../../../data-representation/) — 2진 표현·2의 보수는 거기, 여기는 **타입 선택** | A |
 | 03 | [정수 승격과 통상 산술 변환](03-integer-promotion-and-usual-arithmetic-conversions/) | 문법 | `unsigned` 와 `int` 를 비교·연산할 때 어느 쪽으로 변환되는지 예측하고, `-1 < sizeof(x)` 가 거짓이 되는 이유를 설명할 수 있다 | 02 | — | A |
 | 04 | [부동소수점 타입과 변환](04-floating-point-types-and-conversions/) | 문법 | `float`/`double` 혼합 연산의 결과 타입을 예측하고, 정수↔부동소수 변환에서 값이 잘리는 자리를 짚을 수 있다 | 02 | [`data-representation/`](../../../data-representation/) — IEEE 754 표현은 거기, 여기는 **C 의 변환 규칙** | B |
-| 05 | 명시 캐스트와 포인터 변환 | 문법 | 캐스트가 “비트를 바꾸는 것”인지 “해석을 바꾸는 것”인지 구분하고, 어떤 캐스트가 경고를 끄기만 하는지 판단할 수 있다 | 03 | — | B |
-| 06 | `typedef` 와 타입 별칭 | 문법 | `typedef` 가 새 타입을 만들지 않는다는 것을 설명하고, 함수 포인터·구조체에서 별칭이 값을 내는 자리를 고를 수 있다 | 01 | — | B |
-| 07 | `enum` 과 열거 상수 | 문법 | 열거 상수의 타입·값 규칙을 설명하고, C23의 고정 기반 타입 지정(`enum E : unsigned char`)이 무엇을 바꾸는지 안다 | 02 | — | B |
-| 08 | `sizeof`·정렬·`offsetof` | 문법 | `sizeof` 가 컴파일 시간에 결정되는 자리와 아닌 자리를 가르고, `_Alignof`/`alignas`(C11)로 정렬을 지정할 수 있다 | 02 | — | B |
+| 05 | [명시 캐스트와 포인터 변환](05-explicit-casts-and-pointer-conversions/) | 문법 | 캐스트가 “비트를 바꾸는 것”인지 “해석을 바꾸는 것”인지 구분하고, 어떤 캐스트가 경고를 끄기만 하는지 판단할 수 있다 | 03 | — | B |
+| 06 | [`typedef` 와 타입 별칭](06-typedef-and-type-aliases/) | 문법 | `typedef` 가 새 타입을 만들지 않는다는 것을 설명하고, 함수 포인터·구조체에서 별칭이 값을 내는 자리를 고를 수 있다 | 01 | — | B |
+| 07 | [`enum` 과 열거 상수](07-enum-and-enumeration-constants/) | 문법 | 열거 상수의 타입·값 규칙을 설명하고, C23의 고정 기반 타입 지정(`enum E : unsigned char`)이 무엇을 바꾸는지 안다 | 02 | — | B |
+| 08 | [`sizeof`·정렬·`offsetof`](08-sizeof-alignment-and-offsetof/) | 문법 | `sizeof` 가 컴파일 시간에 결정되는 자리와 아닌 자리를 가르고, `_Alignof`/`alignas`(C11)로 정렬을 지정할 수 있다 | 02 | — | B |
 | 09 | 연산자 우선순위와 결합성 | 문법 | `*p++`·`a & b == c` 같은 식이 실제로 어떻게 묶이는지 예측하고, 괄호가 필수인 자리를 안다 | — | — | A |
 | 10 | 평가 순서와 시퀀스 포인트 | 문법 | `i = i++ + 1` 류가 왜 미정의인지 설명하고, 함수 인자 평가 순서에 의존하는 코드를 찾아낼 수 있다 | 09 | — | B |
 | 11 | 비트 연산과 시프트 | 문법 | 마스크·플래그를 비트로 표현하고, 시프트량이 타입 폭 이상일 때·부호 있는 값을 시프트할 때 무엇이 미정의인지 판단할 수 있다 | 02, 03 | [`algorithm/29-bit-manipulation/`](../../../../algorithm/29-bit-manipulation/) — 비트 기법 자체는 거기, 여기는 **C 의 타입·UB 규칙** | B |
