@@ -3,6 +3,15 @@
 //   ① 볼드(`**…**`)가 안 닫혀 별표가 그대로 보이는 것
 //   ② 범위 표기의 물결표(`0~1023`)가 GFM 취소선으로 먹혀 **글자가 지워지는 것**
 //   ③ 표의 칸 수가 행마다 다른 것 (셀 안의 `|` 를 이스케이프 안 해서)
+//   ④ 문단 안 `**` 개수가 홀수인 것 — ①이 **못 보는 조용한 쪽**이다
+//
+// ★ ④가 왜 따로 필요한가 — ①은 「렌더 후 본문에 별표가 남았나」만 본다.
+//   깨진 `**` 가 **문단 뒤쪽의 다른 `**` 와 우연히 짝이 맞으면 별표가 안 남는다.**
+//   그때 문서는 통과하지만 **엉뚱한 범위가 조용히 굵어진다.**
+//   실측 — 링크 일괄 전환기가 `**앞말 목록의 10번 주제**` 의 닫는 `**` 를 삼킨 4건 중
+//   한 건은 ①에 잡혔고 나머지는 뒤쪽 `**` 와 짝이 맞아 조용히 통과했다.
+//   코드펜스와 인라인 코드(`int **`·`10**7`)를 빼고 문단 단위로 센다 —
+//   저장소 전수(1,700여 파일)에서 오탐 0이었다. 여러 줄에 걸친 볼드는 문단 안에서 짝이 맞는다.
 //
 // ②가 ①보다 나쁘다 — 별표가 보이는 정도가 아니라 본문이 삭제된 것처럼 보인다.
 // 실측: `well-known은 0~1023, 등록은 1024~49151` -> `0<del>1023, 등록은 1024</del>49151`
@@ -142,4 +151,37 @@ for (const [f, n, ex] of strike) {
   for (const d of ex) console.log('      ' + d.replace(/\s+/g, ' '));
 }
 
-process.exit(total + strikeTotal + tableTotal ? 1 : 0);
+// ④ 문단 안 `**` 홀수 — 짝이 어긋난 볼드(①이 못 보는 조용한 쪽)
+const stripCode = (t) => t.replace(/`[^`]*`/g, '');
+const oddBad = [];
+let oddTotal = 0;
+for (const f of files) {
+  const lines = fs.readFileSync(f, 'utf8').split('\n');
+  let inFence = false, buf = [], start = 0;
+  const hits = [];
+  const flush = () => {
+    if (buf.length) {
+      const t = stripCode(buf.join('\n'));
+      if ((t.match(/\*\*/g) || []).length % 2 === 1) hits.push([start, buf.join(' ')]);
+    }
+    buf = [];
+  };
+  for (let i = 0; i < lines.length; i++) {
+    const st = lines[i].trim();
+    if (st.startsWith('```') || st.startsWith('~~~')) { flush(); inFence = !inFence; continue; }
+    if (inFence) continue;
+    if (!st) { flush(); continue; }
+    if (!buf.length) start = i + 1;
+    buf.push(lines[i]);
+  }
+  flush();
+  if (hits.length) { oddBad.push([f, hits]); oddTotal += hits.length; }
+}
+console.log(`[볼드 짝] 문단 안 ** 개수가 홀수인 곳 ${oddTotal}건 (${oddBad.length}파일)`);
+for (const [f, hits] of oddBad) {
+  console.log('  ' + f + `  (${hits.length}건)`);
+  for (const [ln, txt] of hits.slice(0, 3))
+    console.log(`      :${ln}  ` + txt.replace(/\s+/g, ' ').trim().slice(0, 110));
+}
+
+process.exit(total + strikeTotal + tableTotal + oddTotal ? 1 : 0);
