@@ -9,7 +9,7 @@
 요청이 라우터에 닿기까지 프레임워크가 먼저 처리하는 구간이 있다.
 
 ```
-[요청] POST /rewrite  {"query": "no id"}   ← request_id 누락
+[요청] POST /items  {"query": "no id"}   ← request_id 누락
    │
    ▼
 ┌─────────────────────────────────────────────┐
@@ -21,7 +21,7 @@
 │  3. 검증 통과해야 ↓                             │
 └───────────────────┬─────────────────────────┘
                     ▼
-          내 라우터 함수 post_rewrite()
+          내 라우터 함수 post_item()
             try:  return ok(data)          ← 봉투 O
             except Busy: return fail(...)   ← 봉투 O
             (핸들러 안의 return만 봉투를 통과)
