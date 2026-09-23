@@ -33,7 +33,7 @@
 6. **UI 초기값 `[]`.** 응답 전에 "0건"이 먼저 그려지고, 실패해도 "0건"이 그려진다 — 사용자는 "결과 없음"과 "아직 모름"과 "실패"를 구분할 수 없다.\
    최소 `loading | done | error`(필요하면 만료 등 추가)를 파생 상태로 두고, 건수·요약은 done일 때만 보인다. 조회 실패를 `[]`로 삼키면 "없음"으로 보고 생성(POST)과 수정(PUT)을 오분기하는 곁가지 결함도 생긴다.
 
-7. **NULL과 빈 문자열.** 처리 대상을 `WHERE col IS NULL`로 고르면 빈 문자열 행은 "처리됨"으로 간주돼 **조용히 제외**된다. "없음"의 표현을 하나로 정규화해야 한다.\
+7. **NULL과 빈 문자열.** 처리 대상을 `WHERE col IS NULL`로 고르면 빈 문자열 행은 "처리됨"으로 간주돼 **조용히 제외**된다. "없음"의 표현을 하나로 정규화해야 한다(대부분의 DBMS 기준 — Oracle처럼 `''`를 NULL로 취급하는 DBMS도 있어 동작은 엔진마다 다르다).\
    이 모두가 silent failure인 이유: 어느 경우도 예외가 나지 않는다. 결함이 **정상 도메인 값**(빈 목록, 0, 기본값)의 모습으로 흘러가기 때문이다.
 
 ## 문제 구조 (추상화 코드)
@@ -87,7 +87,7 @@ struct HookEvent { #[serde(default)] key: Option<Key> } // key 없는 구버전 
 ```rust
 // 고침: 필수는 필수로, default 는 생산자가 생략하는 필드에만
 struct Delta { items: Vec<Item> }                      // 누락 = 디코드 오류 → on_decode_error → 커서 미전진
-struct HookEvent { key: Key }
+struct HookEvent { key: Key }                          // Option<Key> 는 #[serde(default)] 를 떼도 누락 시 None — 필수로 만들려면 타입 자체를 바꾼다
 struct Timeline {
     items: Vec<Item>,
     #[serde(default)] answers: Map<u64, String>,       // 생산자가 비면 직렬화 생략
