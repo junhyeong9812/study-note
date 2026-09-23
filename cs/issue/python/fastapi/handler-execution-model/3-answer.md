@@ -158,7 +158,7 @@ class RateLimitMiddleware:                     # 앞에서 실행 → 폴백만 
 # 고친: 순서는 그대로, 가장 먼저 실행되는 층이 채움
 class ContextMiddleware:
     async def dispatch(self, request, call_next):
-        request.state.client_ip = get_client_ip(request)   # XFF 첫 항목 > X-Real-IP > peer
+        request.state.client_ip = client_ip_of(request)   # 신뢰 홉 기준 XFF > peer (network/proxy-passthrough 방안 2)
         return await call_next(request)
 # IP 추출은 공용 함수 하나로 (중복 정의 금지)
 ```
