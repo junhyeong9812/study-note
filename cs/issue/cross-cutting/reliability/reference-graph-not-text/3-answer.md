@@ -113,14 +113,14 @@ String sql = "SELECT " + cols + " FROM " + table + " WHERE key IN (:keys)"
 ### 변형 D — 컴포넌트 이름이 클래스명에서 파생 (개명 = 계약 변경)
 ① 문제 코드
 ```java
-@Component class MigrationServiceImpl implements MigrationPort { }   // 기본 이름 = 클래스명 파생
+@Component class ImportServiceImpl implements ImportPort { }     // 기본 이름 = 클래스명 파생
 // ...
-@Autowired @Qualifier("migrationServiceImpl") MigrationPort port;     // 이름으로 주입
+@Autowired @Qualifier("importServiceImpl") ImportPort port;           // 이름으로 주입
 // → 클래스를 개명하면 이름 조회 실패; 구현이 2개가 되면 타입 단일 주입도 실패
 ```
 ② 고친 코드
 ```java
-@Service("migrationService") class MigrationServiceV2 implements MigrationPort { }   // 계약 있는 곳만 이름 고정
+@Service("importService") class ImportServiceV2 implements ImportPort { }          // 계약 있는 곳만 이름 고정
 
 // 여러 구현은 목록으로 받아 키로 라우팅 (중복 키는 컨텍스트 로드가 검출)
 Map<String, Runner> byRegion = runners.stream()
