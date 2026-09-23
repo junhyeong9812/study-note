@@ -198,7 +198,7 @@ canon=$(realpath -m "$path" 2>/dev/null) \
 ### 방안 4 — 타입드 클라이언트의 스키마 커버리지: raw 요청으로 우회
 ① 문제 코드
 ```java
-indexOps.createWithMapping();   // 타입드 클라이언트가 플러그인 필터 옵션을 모델링 안 함 → 옵션 누락 → 생성 실패
+indexOps.createWithSchema();   // 타입드 클라이언트가 플러그인 필터 옵션을 모델링 안 함 → 옵션 누락 → 생성 실패
 ```
 ② 고친 코드
 ```sh
