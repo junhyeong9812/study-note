@@ -99,11 +99,11 @@ switch { case isBlueGreen(req): dispatchBlueGreen(req)  // 대상을 안 봄 →
          default: runDefault(req) }
 ```
 ```python
-def field_query(field, v):
+def field_clause(field, v):
     if field in NUMBER_FIELDS: ...
     log.warning("unsupported"); return None          # 분기 빈칸
-q = field_query(f, v)
-if q: builder.add_must(q)                            # 조용히 skip → filter 만 = 전체 반환
+q = field_clause(f, v)
+if q: builder.must_clause(q)                            # 조용히 skip → filter 만 = 전체 반환
 ```
 ② 고친 코드
 ```go
@@ -120,7 +120,7 @@ if q is None: raise QueryBuildError(field)           # 조건 소실 = 예외
 # else: raise ValidationError(search_type)           # 모르는 유형은 폴백 대신 거부
 ```
 무엇이 깨졌나: "모르는 값"이 가장 흔한 경로·가장 넓은 권한으로 흘렀다.\
-같은 구조: 파서가 문법 오류를 `parsing_failed=True` 플래그로 바꿨는데 다음 단계가 플래그를 안 봐서 400 대신 200/빈 결과. 보고서 대상 오타에 `else` 없이 `None` → HTTP 200 + null.
+같은 구조: 파서가 문법 오류를 `parse_error=True` 플래그로 바꿨는데 다음 단계가 플래그를 안 봐서 400 대신 200/빈 결과. 보고서 대상 오타에 `else` 없이 `None` → HTTP 200 + null.
 
 ### 변형 D — 보안 검사가 "값이 있을 때만" 실행
 ① 문제 코드
@@ -130,7 +130,7 @@ if (userId != null && jti != null && !registry.isActive(userId, jti)) return una
 if (token == null || token.isBlank()) { chain.doFilter(req, res); return; }   // 빈 토큰 통과
 ```
 ```python
-ENV_MODE: str = Field(default="dev")    # 누락 시 인증 우회 목(mock) 미들웨어 등록
+APP_ENV: str = Field(default="dev")    # 누락 시 인증 우회 목(mock) 미들웨어 등록
 ```
 ② 고친 코드
 ```java
@@ -223,7 +223,7 @@ return canConvertElements(elem, targetType);
 
 ### 방안 5 — 필수 설정·인자는 기본값 없이 fail-fast
 ```yaml
-app.crypto.key: ${CRYPTO_KEY}      # 기본값 없음 → 누락 시 기동 실패(의도)
+app.encryption.key: ${ENCRYPTION_KEY}   # 기본값 없음 → 누락 시 기동 실패(의도)
 # 단, 형식만 맞는 임의 값을 넣으면 복호화가 조용히 깨진다 — 실제 키만 주입
 ```
 ```python
