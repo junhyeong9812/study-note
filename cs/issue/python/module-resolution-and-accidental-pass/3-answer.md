@@ -36,7 +36,7 @@
 project/
   src/
     app/        api.py:  from app.domain.envelope import ok   # 절대 import
-    test/       test_api.py: from app import api
+    test/       test_endpoints.py: from app import api
   conftest.py   (빈 파일 — 존재만으로 경로 계산이 바뀌어 우연히 통과)
 ```
 ```sh
