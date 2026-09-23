@@ -227,7 +227,7 @@ For more information about this error, try `rustc --explain E0308`.
 - ★★ **역참조 강제는 `String` → `str` 한 방향으로만 돈다.** `&String` → `&str` 은 「들고 있는 것을 보여 주는」 것이라 공짜인데,\
   반대는 **없는 `String` 을 새로 만들어야** 하므로 자동으로 해 줄 수 없다.
 - ★ `= note:` 두 줄이 **기대한 타입과 실제 타입을 수명까지 붙여** 찍어 준다 —\
-  `expected reference `&String`` / `found reference `&'static str``.\
+  ``expected reference `&String` `` / ``found reference `&'static str` ``.\
   **리터럴이 `&'static str` 이라는 사실이 여기서 드러난다**([**07번 주제**](../07-const-static-and-const-fn/)).
 - `note: function defined here` 가 **시그니처를 짚어 준다** — 고칠 곳이 호출부가 아니라 **시그니처**임을 암시한다.
 - **호출부가 억지로 맞추려면** `shout(&String::from("hello"))` 를 써야 한다 —\
@@ -470,7 +470,7 @@ error: aborting due to 1 previous error
 For more information about this error, try `rustc --explain E0308`.
 ```
 
-- ★ `expected `&str`` 가 **시그니처를 그대로 말해 준다.**
+- ★ ``expected `&str` `` 가 **시그니처를 그대로 말해 준다.**
 - **`&b`(= `&String`)가 통과하는 것은 5번의 강제**다. 연산자의 피연산자도 강제 지점이다.\
   **`&&b` 도 통과한다** — 전이적이기 때문이다.
 

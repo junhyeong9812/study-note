@@ -255,7 +255,7 @@ For more information about this error, try `rustc --explain E0308`.
 
 - `found` 는 **8**이다. `i` 가 1부터 올라가며 `i * i > 50` 이 처음 참이 되는 값이 8이다(64 > 50, 49는 아니다).
 - 아래쪽 `v` 는 **컴파일되지 않는다**. **E0308**, `expected integer, found &str`.\
-  **첫 `break` 가 기준**이 된다 — `expected because of this `break`` 가 그것을 가리킨다.
+  **첫 `break` 가 기준**이 된다 — ``expected because of this `break` `` 가 그것을 가리킨다.
 
 ```text
    loop {

@@ -326,7 +326,7 @@ For more information about this error, try `rustc --explain E0308`.
 
 - ★★ **E0308.** 리터럴은 `&str` 이고 `&String` 이 아니다 — **강제는 `String` → `str` 방향으로만 돈다.**\
   없는 `String` 을 만들어 줄 수는 없으니 **반대 방향은 애초에 없다.**
-- ★ `= note:` 가 `found reference `&'static str`` 이라고 **수명까지 찍어 준다** —\
+- ★ `= note:` 가 ``found reference `&'static str` `` 이라고 **수명까지 찍어 준다** —\
   리터럴이 `&'static str` 이라는 것이 여기서 드러난다([**07번 주제**](../07-const-static-and-const-fn/)와 잇는다).
 - 호출부가 고칠 방법은 **`&String::from("hello")` 를 만드는 것**뿐이다 — **쓸 일 없는 힙 할당**을 강요하는 시그니처다.
 
@@ -808,7 +808,7 @@ error: aborting due to 1 previous error
 For more information about this error, try `rustc --explain E0308`.
 ```
 
-★ **`expected `&str`` 이 시그니처를 그대로 말해 준다** — `String` 의 `+` 는 오른쪽으로 `&str` 만 받는다.
+★ **``expected `&str` `` 이 시그니처를 그대로 말해 준다** — `String` 의 `+` 는 오른쪽으로 `&str` 만 받는다.
 **오른쪽은 읽기만 하면 되니 소유를 뺏을 이유가 없다.**
 
 **그럼 `&b`(= `&String`)는 왜 통과하나** — (4)의 강제다. 그리고 `format!` 은 아무것도 안 뺏는다.
@@ -1274,7 +1274,7 @@ let y = format!("{}{}", "가", "나");            // 아무것도 안 뺏는다
 | `&str` 이 `Copy` 인 것 | **언어**(불변 참조) | 같은 코드가 통과 |
 | `len()` 이 **바이트 수**인 것 | **std** | `"가나다".len()` = 9 |
 | `+` 가 **왼쪽을 소비**하고 오른쪽이 `&str` 인 것 | **std**(`impl Add<&str> for String`) | E0382 · E0308 `expected &str` |
-| 리터럴이 **`&'static str`** 인 것 | **언어** | E0308 의 `found reference `&'static str`` |
+| 리터럴이 **`&'static str`** 인 것 | **언어** | E0308 의 ``found reference `&'static str` `` |
 | 포인터 폭이 **8바이트**인 것 | **플랫폼**(`x86_64`) | `size_of::<usize>()` = 8 — 32비트에서는 달라진다 |
 | ★ **`capacity` 증가 수열** `0→8→16→32` | **std 구현 세부** | 판이 바뀌면 달라질 수 있다 |
 | ★ **같은 글자 리터럴이 한 자리를 쓰는 것** | **rustc 구현 세부** | 합쳐 준 것이지 보장이 아니다 |
