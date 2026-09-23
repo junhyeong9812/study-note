@@ -3,6 +3,8 @@
 > 복습 시 이 파일은 **최후에만** 연다.
 > ⚠️ 이 정답은 Claude 초안(2026-09-23) — 이슈 README·코드 기준. 복습 전 읽지 말 것.
 
+태그: `fail-closed`
+
 ## 정답
 <!-- 질문 1:1 대응 -->
 
@@ -23,10 +25,133 @@
 
 7. **두 통제의 교차 검증.** backend의 **fail-closed 바인딩(보안)**은 "허가된 LAN 주소로만 연다"를 주장하고, ci-cd의 **배포 후 헬스체크(검증)**는 "정말 응답하나 실제로 찔러본다". 헬스체크가 루프백에서 refused를 만난 순간, 보안 주장("루프백은 막혀 있다")이 **사실임이 실증**됐고, 동시에 헬스체크가 "compose 성공"을 곧이곧대로 안 믿는다는 것도 실증됐다 — 서로가 상대의 정상 동작을 증명했다. 만약 헬스체크가 `compose up` 성공(종료 0)만 믿었다면, "deploy ok"로 넘어가 **루프백 접근이 막힌 사실도, 프로브 주소가 틀린 사실도** 둘 다 놓쳤을 것이다.
 
-## 이번 프로젝트 사례
-- [backend/issue9](../../../../../project/study-note-deploy-system/backend/issue9/) — 첫 자동 배포가 "정상인데 unhealthy": fail-closed 바인딩(LAN IP만)과 agent 헬스체크(127.0.0.1)의 불일치, 헬스 URL을 LAN 주소로 교정.
-- [backend/issue1](../../../../../project/study-note-deploy-system/backend/issue1/) — 컨테이너 헬스체크 `localhost`→`::1` 함정으로 `127.0.0.1` 명시, embedding의 얕은 `/health` GPU 유실 위장 → `/health/deep`.
-- [ci-cd/issue3](../../../../../project/study-note-deploy-system/ci-cd/issue3/) — F7(`compose up` 성공 ≠ 서비스 정상 → 헬스 URL 폴링)과 "두 검증 장치가 서로를 검증"의 전말.
+## 문제 구조 (추상화 코드)
+
+### 변형 A — fail-closed LAN 바인딩 vs 루프백을 두드리는 배포 헬스체크
+① 문제 코드
+```yaml
+# 서비스 compose
+ports:
+  - "${BIND_ADDR:?set-in-env}:8090:8090"      # LAN 주소에만 연다 (값 없으면 기동 거부)
+```
+```go
+// 배포 에이전트 (호스트 네트워크)
+healthURL := "http://127.0.0.1:8090/health"   // 루프백 → connection refused → deploy_unhealthy
+```
+② 고친 코드
+```go
+healthURL := fmt.Sprintf("http://%s:8090/health", svc.BindAddr)   // 서비스가 실제로 여는 주소
+// 바인딩(보안 불변식)은 그대로 둔다
+```
+무엇이 깨졌나: 프로브가 서비스의 실제 청취 주소가 아니라 관성적인 루프백을 봤다.
+
+### 변형 B — 컨테이너 헬스체크의 `localhost`가 IPv6로 풀림
+① 문제 코드
+```yaml
+healthcheck:
+  test: ["CMD-SHELL", "curl -fsS http://localhost:8090/health || exit 1"]   # localhost → ::1
+```
+② 고친 코드
+```yaml
+healthcheck:
+  # localhost 금지 — 컨테이너 안에서 ::1로 풀려 IPv4 바인딩 서버가 unhealthy
+  test: ["CMD-SHELL", "curl -fsS -m 5 http://127.0.0.1:8090/health || exit 1"]
+```
+무엇이 깨졌나: 이름 해석 결과의 주소 계열(IPv6)이 서버의 바인딩 계열(IPv4)과 달랐다.
+
+### 변형 C — "컨테이너 띄움"을 "서비스 정상"으로 판정
+① 문제 코드
+```sh
+docker compose up -d && report "deploy ok"          # 종료 0 = 띄웠음일 뿐
+```
+② 고친 코드
+```sh
+docker compose up -d
+for i in $(seq 1 90); do                             # 최대 90초 폴링
+  [ "$(curl -s -o /dev/null -w '%{http_code}' "$HEALTH_URL")" = 200 ] && { report "deploy ok"; exit 0; }
+  sleep 1
+done
+report "deploy unhealthy"
+# 헬스 엔드포인트도 얕은 /health(프로세스 생존) 대신 /health/deep(실제 작업 1건 수행)
+```
+무엇이 깨졌나: 프로세스 기동과 서비스 응답을, 생존과 실제 작업 가능을 구분하지 않았다.
+
+### 변형 D — 컨테이너 안 서버가 루프백에만 바인딩 (포트 매핑이 무력)
+① 문제 코드
+```python
+server = ToolServer("search")                        # 기본 bind 127.0.0.1
+server.run(transport="sse", host="0.0.0.0")          # run()은 host를 받지 않음 → TypeError
+```
+② 고친 코드
+```python
+server = ToolServer("search", host="0.0.0.0")        # 네트워크 설정은 생성자(또는 환경변수)로만
+server.run(transport="sse")
+```
+무엇이 깨졌나: 포트 매핑 트래픽은 컨테이너의 eth0으로 도착하는데, 서버는 컨테이너 루프백에서만 듣고 있었다.\
+같은 구조: 부수로 클라이언트 설정에 전송 타입(`"type": "sse"`)이 빠져 스키마 검증 실패.
+
+### 변형 E — 컨테이너에서 호스트 DB를 `127.0.0.1`로 호출 + 호스트 DB가 루프백 바인딩
+① 문제 코드
+```properties
+DB_URL=${DB_URL:jdbc:mysql://127.0.0.1:3306/app}    # 컨테이너 안에선 컨테이너 자신
+# 호스트 DB가 bind-address = 127.0.0.1 이면           # 외부(컨테이너) 접속도 거부된다(기록상 요구 조건)
+```
+② 고친 코드
+```properties
+# .env (env_file이 유일한 주입 경로)
+DB_URL=jdbc:mysql://<호스트IP>:<publish포트>/app
+# 호스트 네이티브 DB: bind-address = 0.0.0.0
+```
+무엇이 깨졌나: 목적지(컨테이너 루프백)가 호스트가 아니었다 — 같은 이유로 호스트 네이티브 DB의 바인드도 루프백이면 안 된다(목적지·바인드 양쪽을 맞춰야 한다).
 
 ## 검증 기록
-- 2026-09-23: 이슈 README(backend/issue9 §2, backend/issue1 §3·§4 compose·healthcheck diff, ci-cd/issue3 §2 F7·§3) 대조 작성 (Claude 초안).
+- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+
+## 방안 비교
+
+기본 방안(위 변형 A~E)은 "프로브·목적지 주소를 서비스의 실제 바인드 주소에 맞춘다"이다. 같은 원리(바인드·프로브 주소·도구의 불일치)에 다른 방안이 쓰인 사례:
+
+### 방안 1 — 이미지에 없는 도구 대신 런타임 내장 수단 + start_period
+```yaml
+# 문제: 경량 이미지(JRE·alpine·python slim)에 curl 없음 → 명령 자체 실패 → 항상 unhealthy
+test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/health || exit 1"]
+# 고친 (이미지별 내장 수단)
+test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/8090' || exit 1"]              # JRE: TCP 연결성만
+test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:11000/ || exit 1"]              # alpine: busybox
+test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8080/health/deep', timeout=20)\" || exit 1"]
+start_period: 300s   # 부팅·모델 로딩 시간을 실패로 세지 않음
+```
+진단 순서: `docker inspect --format '{{json .State.Health}}'`로 프로브 실행 로그를 먼저 본다(서비스가 아픈가 vs 검사가 틀렸나).\
+같은 구조: 헬스체크가 다른 모드의 포트를 두드려 정상인데 unhealthy → 모드별 포트 정합.
+
+### 방안 2 — `localhost` ≠ `127.0.0.1` 오리진 (호스트 이름을 서버 기대에 맞춤)
+```text
+dev 서버: 허용 오리진 = localhost (허용 밖 오리진의 dev 리소스 요청 차단)
+문제: 테스트가 http://127.0.0.1:<port> 으로 접속 → JS 로드 차단 → SSR HTML만, 이벤트 안 붙음
+고친: 테스트 URL을 http://localhost:<port> 으로 → 하이드레이션 정상
+```
+주소가 같은 루프백이어도 **오리진 문자열**은 다르다 — 이 경우엔 IP를 명시하는 게 아니라 서버가 허용한 이름을 쓴다.
+
+### 방안 3 — wildcard bind를 기동 시 거절 (fail-closed 검증)
+```rust
+fn open_listener(cfg: &Config) -> Result<Listener> {
+    let addr: IpAddr = cfg.bind.parse().map_err(|_| Error::NotLiteral)?;   // hostname·빈 값 거절
+    if addr.is_unspecified() { return Err(Error::Wildcard); }             // 0.0.0.0 / :: 거절
+    if !is_private_lan(addr) { return Err(Error::NotPrivate); }
+    let l = Listener::bind((addr, cfg.port))?;
+    ensure!(l.local_addr()?.ip() == addr);                                 // 실제 주소 재확인
+    Ok(l)
+}
+// 원격 경로·키가 설정돼 있으면 private literal + 출발지 allowlist가 없을 때 기동 거부
+```
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 기본: 프로브·목적지를 바인드에 맞춤 | 바인드가 의도된 불변식이다 | 설정 수정 | 바인드가 바뀌면 프로브도 따라 바꿔야 함 | 보안 바인딩을 유지해야 할 때 |
+| 1. 런타임 내장 도구 + start_period | 이미지에 도구를 추가하고 싶지 않다 | 이미지별 명령 차이 | TCP 연결성만 보는 방식은 HTTP 레디니스를 증명 못 함 | 남이 만든 경량 이미지 |
+| 2. 서버가 허용한 이름 사용 | 서버가 오리진을 문자열로 비교한다 | 없음 | IP 명시 원칙과 충돌해 보임 | dev 서버·CORS 류 오리진 검사 |
+| 3. wildcard 거절 기동 검증 | 노출 범위를 코드가 보장해야 한다 | 검증 코드·설정 필수화 | 설정 누락 시 기동 실패(의도된 소음) | LAN 전용 가정이 보안 전제인 리스너 |
+
+**결론**: 바인드가 보안 결정이면 바인드는 두고 **관찰 쪽(프로브 주소·도구·이름)을 맞춘다**(기본·1·2).\
+바인드 자체가 틀릴 위험이 크면(설정 오배선으로 wildcard가 될 수 있으면) **기동 시점에 바인드를 검증해 거절**한다(3).\
+헬스체크 명령은 서비스와 함께 이미지·주소·포트까지 검증 대상이다 — 먼저 프로브 로그를 보고 "서비스가 아픈가, 검사가 틀렸나"를 가른다.
