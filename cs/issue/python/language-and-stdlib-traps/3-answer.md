@@ -21,20 +21,20 @@
    > **eager 평가** — 인자 식을 호출 전에 모두 계산하는 규칙. 결과를 쓰지 않을 호출이어도 인자 계산 비용과 부작용은 이미 일어난다.
 
 5. 기본값은 **그 계층을 지날 때만** 적용되고, 모르면 조용히 데이터를 제한한다.
-   - **csv 필드 상한** — `csv` 리더는 셀 하나를 기본 131072바이트로 제한한다. 여러 값을 한 셀에 이어붙이는 wide 포맷이 커지자 **읽기 단계**에서 `field larger than field limit`로 실패했다 → `csv.field_size_limit(sys.maxsize)`(메모리가 허용하는 범위에서).
-   - **정규식 방언** — 표준 `re`는 `\p{Mn}` 같은 유니코드 속성 클래스를 지원하지 않는다. 다른 언어의 정규식을 1:1로 **포팅할 때** 그대로 옮길 수 없다 → `unicodedata.normalize("NFD")` + `category(ch) != "Mn"` 필터. 같은 포팅 함정으로 `split("\\s+")`(정규식 분할)과 Python `split(" ")`은 다르고, 대응하는 것은 인자 없는 `split()`이다.
+   - **csv 필드 상한** — `csv` 리더는 셀 하나를 기본 131072바이트로 제한한다. 여러 값을 한 셀에 이어붙이는 wide 포맷이 커지자 **읽기 단계**에서 `field larger than field limit`로 실패했다 → `csv.field_size_limit(sys.maxsize)`(메모리가 허용하는 범위에서 — C long이 32비트인 플랫폼(Windows)에선 `sys.maxsize`가 OverflowError라 더 작은 값을 준다).
+   - **정규식 방언** — 표준 `re`는 `\p{Mn}` 같은 유니코드 속성 클래스를 지원하지 않는다. 다른 언어의 정규식을 1:1로 **포팅할 때** 그대로 옮길 수 없다 → `unicodedata.normalize("NFD")` + `category(ch) != "Mn"` 필터. 같은 포팅 함정으로 `split("\\s+")`(정규식 분할)과 Python `split(" ")`은 다르고, 가까운 대응은 인자 없는 `split()`이다(선행 공백이 만드는 빈 첫 원소 처리 등 세부는 다르다).
    - **JSON 인코더** — 표준 인코더는 `datetime`을 모른다 → **직렬화 시점**에 `not JSON serializable` → isoformat으로 변환.
-   - **ORM 쪽 default** — `Column(default=0)`은 ORM이 INSERT를 만들 때만 채워진다. `text("INSERT ...")` raw SQL은 **DB 서버의 DEFAULT만** 적용되므로 NOT NULL 위반이 났다 → INSERT에 값을 명시(또는 서버 쪽 default).
+   - **ORM 쪽 default** — `Column(default=0)`(SQLAlchemy의 클라이언트 쪽 default)은 SQLAlchemy가 INSERT 문을 생성할 때(ORM flush·Core `insert()`)만 채워진다. `text("INSERT ...")` raw SQL은 **DB 서버의 DEFAULT만** 적용되므로 NOT NULL 위반이 났다 → INSERT에 값을 명시(또는 서버 쪽 default).
    - **logging 전역 이름** — logger는 이름 기반 전역 싱글톤이라, 파일명(basename)으로 이름을 지으면 같은 파일명의 모듈들이 logger 하나를 공유한다. 재설정 때 핸들러를 close하지 않고 비우면 fd가 샌다. `FileHandler`는 회전하지 않는다. 상대경로 로그 디렉터리는 cwd에 따라 볼륨 밖을 가리킬 수 있다(잠재 이슈로 진단).
 
-6. **공통 원인: 제출하자마자 기다렸다.** 루프 안에서 `f = ex.submit(...)` 직후 `f.result()`로 블로킹하면, 다음 작업을 제출하기 전에 현재 작업의 완료를 기다리므로 풀이 있어도 **순차 실행**이다. 게다가 워커 함수 본문에서 대형 사전·DB 연결을 매 태스크마다 초기화했다. 교정: `ProcessPoolExecutor(initializer=_worker_init)`로 워커 프로세스당 1회만 로드하고(1,072회 → 4회), `max_workers*2` 크기 청크를 한꺼번에 제출한 뒤 `as_completed`로 모았다(예상 7.4일 → 1.8일). 비동기 크롤러도 루프 안에서 `await fetch(u)`를 하나씩 하면 직렬이다 → `asyncio.Semaphore(5)` + `gather`. `multiprocessing.Pool`의 initializer가 예외로 죽으면 워커가 **재생성을 반복**하고(Pool의 일반 동작 — 원문은 "에러 없이 무한 hang"만 기록), 그 오류가 부모로 전달되지 않아 `imap` 호출자는 **에러 없이 영원히 기다린다.** 실제 원인은 로컬 환경에 DB 인증 플러그인용 암호화 패키지가 없던 것이었다(컨테이너 이미지에는 포함).
+6. **공통 원인: 제출하자마자 기다렸다.** 루프 안에서 `f = ex.submit(...)` 직후 `f.result()`로 블로킹하면, 다음 작업을 제출하기 전에 현재 작업의 완료를 기다리므로 풀이 있어도 **순차 실행**이다. 게다가 워커 함수 본문에서 대형 사전·DB 연결을 매 태스크마다 초기화했다. 교정: `ProcessPoolExecutor(initializer=_worker_init)`로 워커 프로세스당 1회만 로드하고(1,072회 → 4회), `max_workers*2` 크기 청크를 한꺼번에 제출한 뒤 `as_completed`로 모았다(예상 7.4일 → 1.8일). 비동기 크롤러도 루프 안에서 `await fetch(u)`를 하나씩 하면 직렬이다 → `asyncio.Semaphore(5)` + `gather`. `multiprocessing.Pool`의 initializer가 예외로 죽으면 워커가 **재생성을 반복**하고(Pool의 일반 동작 — 원문은 "에러 없이 무한 hang"만 기록), 그 오류가 부모로 전달되지 않아 `imap` 호출자는 **에러 없이 영원히 기다린다.** (`concurrent.futures.ProcessPoolExecutor`는 다르다 — Python 3.7+에서 initializer 실패 시 풀이 깨져 대기 중 future가 `BrokenProcessPool`로 실패한다.) 실제 원인은 로컬 환경에 DB 인증 플러그인용 암호화 패키지가 없던 것이었다(컨테이너 이미지에는 포함).
    > **제출-대기 분리** — 작업을 먼저 모두 제출(fan-out)하고 완료를 나중에 모으는(fan-in) 구조. 이 분리가 없으면 풀·이벤트 루프는 병렬성을 쓰지 못한다.
 
 7. 이 부류는 "그 줄이 실행될 때"만 드러나므로 **그 줄을 실행시키는 수단**이 필요하다.
    - **전 경로 실행 테스트** — 동적 타입 결함 묶음은 API 통합 테스트로 분기×검색유형 조합을 전수 호출해서 발견됐다. 발견 수단 자체가 "모든 경로를 한 번씩 실행"이었다.
    - **정적 검사** — 없는 속성·import 오류는 import 전수 검증 스크립트나 mypy/pyflakes 같은 도구로 실행 전에 잡을 수 있다(도입 검토 언급 단계).
    - **경계값 테스트** — `True`를 정수 자리에 넣기(그리고 커널에 적용된 실제 터미널 크기를 조회해 이전 값이 유지됐는지 단언), `null` 점수, 빈 문자열, 대문자 해시처럼 "의미상 이상하지만 타입상 통과하는" 값을 넣는다. 외부 도구 출력(소문자 hex)과 비교할 값은 같은 정규형으로 강제하고, 스키마 검증이 실패하면 롤백을 거부한다(fail-closed).
-   - **실제 자원 계측** — 메모리 함정은 코드 리뷰가 아니라 실측(피크 RSS, weakref 사망 단언, 실기동 동시 로드)으로만 입증됐다. "Python이 해제하면 OS RSS가 돌아온다"는 가정도 실기동에서야 확인됐다.
+   - **실제 자원 계측** — 메모리 함정은 코드 리뷰가 아니라 실측(피크 RSS, weakref 사망 단언, 실기동 동시 로드)으로만 입증됐다. "Python이 해제하면 OS RSS가 돌아온다"는 가정도 실기동에서야 확인됐다(일반론으로는 할당기에 따라 해제가 곧바로 RSS 감소로 이어지지 않을 수 있다 — 대형 네이티브 할당은 보통 반환되지만 작은 객체 풀은 남는다. 그래서 가정이 아니라 계측 대상이다).
 
 ## 문제 구조 (추상화 코드)
 
@@ -59,7 +59,7 @@ years = {d[:4] for d in rec.date} if isinstance(rec.date, list) else {rec.date[:
 무엇이 깨졌나: 값의 "모양"(하위 타입·빈 문자열·str/list)에 따라 같은 연산의 의미가 바뀌는데 검사는 한 가지 모양만 가정했다.\
 같은 구조: 콤마 구분 문자열과 리스트를 `!=`로 비교해 항상 True → 문자열은 split 후 set 비교.\
 같은 구조: 대문자 해시가 truthy 검사만 통과 → 외부 도구 출력(소문자)과 비교 어긋남 → `^[0-9a-f]{40}$` 강제 + `not isinstance(x, bool)`.\
-같은 구조: 값 없는 클래스 본문 애노테이션 `x: int`는 `__annotations__`에만 기록되고 클래스 속성을 만들지 않는다(`hasattr(Cls, "x")`는 False) — 클래스 변수는 `ClassVar[...]`로 표시한다.\
+같은 구조: 값 없는 클래스 본문 애노테이션 `x: int`는 `__annotations__`에만 기록되고 클래스 속성을 만들지 않는다(`hasattr(Cls, "x")`는 False) — 클래스 속성이 필요하면 값을 대입하고, 클래스 변수임은 `x: ClassVar[int] = 0`처럼 표시한다(`ClassVar` 자체는 dataclass·타입 검사기용 표시일 뿐 값 없이는 역시 속성을 만들지 않는다).\
 같은 구조: `if not self.collection:` → `if self.collection is None:` — 라이브러리 버전 변화에서 진리값 판정이 버그가 되어 명시적 None 비교로 교체(원문은 수정 사실만 기록).
 
 ### 변형 B — 참조 수명이 메모리 피크를 만듦
@@ -206,7 +206,7 @@ batch = pending_batches.pop(future, None)
 try:
     result = future.result()
 except BrokenProcessPool:
-    pool_dead = True; continue                  # 성공 배치를 실패로 적지 않음, 이후 submit 금지
+    pool_dead = True; retry.append(batch); continue   # 성공 배치를 실패로 적지 않음 — pop 한 배치는 재시도 목록에 보존, 이후 submit 금지
 except Exception:
     save_failed(batch); continue                  # 해당 배치만 실패
 ```

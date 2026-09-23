@@ -22,11 +22,11 @@
    │  참조 수명 ────────────────────── x = load(new) : 우변 평가 동안 옛 x 생존 → 피크 2배
    │                                   except 안: traceback 이 프레임을 잡음 → del 무효
    │  동시성 도구 ──────────────────── submit 직후 result() → 순차
-   │                                   initializer 예외 → 무한 대기 (오류 미전달)
+   │                                   Pool initializer 예외 → 무한 대기 (오류 미전달; ProcessPoolExecutor 는 BrokenProcessPool)
    ▼
 저장·출력
       stdlib 기본값 ─────────────────── csv 필드 131072B · re 에 \p{..} 없음 · json 이 datetime 모름
-                                        ORM default 는 raw SQL INSERT 에 적용 안 됨
+                                        SQLAlchemy 쪽 default 는 raw SQL INSERT 에 적용 안 됨
 
 [발견 수단] 전 경로 실행 테스트 · 경계값 테스트 · 실제 RSS/weakref 단언 · 정적 검사
 ```
