@@ -1,12 +1,31 @@
-# typescript — 언어·프레임워크가 뿌리인 이슈 패턴
+# typescript — TS/JS·브라우저·React·Next
 
-TypeScript/React/Next 코드가 **프레임워크의 경계·기본값·도구 체계**에 부딪혀 터진 이슈를 패턴으로 추상화한다.
-프레임워크 무관 시스템·네트워크 이슈는 [cross-cutting](../cross-cutting/)에 있고, 여기는 "이 언어/프레임워크를 쓰기에 생기는" 패턴을 모은다.
-프레임워크별로 나눴고, 각 카드는 이번 배포에서 겪은 실제 이슈를 사례로 링크한다.
+TypeScript/JavaScript와 그 위 브라우저·React·Next.js에 뿌리내린 패턴이다.\
+공통 원리: **런타임(브라우저·렌더러·번들러)이 코드를 언제, 어디서, 몇 번 실행하는지가 결과를 정한다** — 평가 시점·렌더 시점·실행 위치(서버/클라이언트)를 의식한다.\
+언어 레벨 카드는 이 폴더에, 환경·프레임워크별 카드는 하위 폴더에 있다.
 
-| 프레임워크 | 무엇 | 패턴 |
-|------------|------|------|
-| [next](next/) | BFF·라우팅·모듈 해석(빌드/테스트 도구 체계) | 봉투 단일창구 · 절대경로 임포트+도구별 리졸버 · 노드종류 단일진실원 라우팅 |
-| [react](react/) | 렌더링·CSS 박스모델·출력 안전(XSS) | 음수마진 overflow · 이스케이프 후 조립(XSS) · 구조 vs 표시 분리 |
+## 공통 원리
 
-> 메타 태그(폴더를 가로지르는 주제): `single-source-of-truth`(봉투창구·라우팅) · `output-escaping`(XSS) · `separation-of-concerns`(구조/표시) · `tooling-config`(도구별 리졸버). 각 카드 본문에서 확인.
+```
+  TS 소스 ──▶ 번들러·테스트 러너 (모듈 해석 기준이 도구마다 다름)
+                 │
+                 ├─ 서버 렌더 (Next) ──▶ HTML ──┐
+                 │                               ├─ 하이드레이션: 첫 렌더 일치해야
+                 └─ 브라우저 (React) ────────────┘
+                        ├─ 렌더·effect 시점  → stale state
+                        └─ 입력 이벤트 모델  → IME·전파·포커스
+```
+
+## 하위 폴더
+
+| 폴더 | 카드 수 | 무엇 |
+|------|---------|------|
+| [browser/](browser/) | 1 | 브라우저 입력 |
+| [next/](next/) | 4 | BFF·라우팅·모듈 해석 |
+| [react/](react/) | 13 | 렌더링·상태·CSS |
+
+## 패턴 카드 (이 폴더 직속)
+
+- [js-language-traps](js-language-traps/) — JS 언어 규칙(TDZ·객체 리터럴 즉시 평가·중복 키 무음 덮어쓰기·try 안 await 없는 return·구조화 에러의 String 변환)이 직관과 달라 조용히 오동작한다.
+
+> 이 폴더의 메타 태그: `silent-failure`(1) · `resource-bounding`(2) · `least-privilege`(1) · `race-condition`(1) · `test-reliability`(1) · `single-source-of-truth`(2) — 태그별 전체 목록은 [cs/issue 태그 역인덱스](../README.md#태그-역인덱스).
