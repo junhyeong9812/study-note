@@ -3,6 +3,8 @@
 > 복습 시 이 파일은 **최후에만** 연다.
 > ⚠️ 이 정답은 Claude 초안(2026-09-23) — 이슈 README·코드 기준. 복습 전 읽지 말 것.
 
+태그: `silent-failure`
+
 ## 정답
 <!-- 질문 1:1 대응 -->
 
@@ -23,9 +25,76 @@
 
 7. **연결 — length-prefix vs delimiter framing.** 이 대립은 HTTP 고유가 아니라 **바이트 스트림 위에 메시지 경계를 어떻게 긋느냐**의 일반 문제다. TCP는 경계 없는 바이트 흐름이라, 그 위에 메시지를 얹으려면 (a) 길이를 앞에 붙이거나(length-prefixed frame, 대부분의 바이너리 프로토콜·gRPC 메시지 프레이밍) (b) 구분자·종료 표식을 쓴다(개행으로 끊는 NDJSON, 0-크기 조각으로 끝내는 chunked). 길이 프리픽스는 미리 길이를 알아야 하고, 구분자 방식은 스트리밍·미지 길이에 강한 대신 파서가 표식을 해석해야 한다 — 정확히 이 이슈의 두 방식이다.
 
-## 이번 프로젝트 사례
-- [backend/issue12](../../../../../project/study-note-deploy-system/backend/issue12/) — RestClient의 `Map` 본문이 chunked로 나가 브리지가 0바이트 파싱(`char 0`) 오류, 본문을 `byte[]`로 바꿔 Content-Length 명시(#28).
-- [ci-cd/issue4](../../../../../project/study-note-deploy-system/ci-cd/issue4/) — 같은 chunked 0바이트 증상을 브리지(파이썬 `http.server`) 관점에서 기록 + 방어로 `Transfer-Encoding` 거부(411)·Content-Length 범위 강제(F7).
+## 문제 구조 (추상화 코드)
+
+### 변형 A — 송신 측이 길이를 모르는 본문을 넘겨 chunked로 전송
+① 문제 코드
+```kotlin
+val response = client.post().uri("/ask")
+    .header("Content-Type", "application/json")
+    .body(mapOf("prompt" to prompt))            // Map → 직렬화 길이 미정 → Transfer-Encoding: chunked
+    .retrieve()
+```
+② 고친 코드
+```kotlin
+// byte[] 본문 = Content-Length 명시 — 수신 측(저수준 서버)은 chunked를 못 읽는다
+val payload = objectMapper.writeValueAsBytes(mapOf("prompt" to prompt))
+val response = client.post().uri("/ask")
+    .header("Content-Type", "application/json; charset=utf-8")
+    .body(payload)
+    .retrieve()
+```
+무엇이 깨졌나: 송신 측 프레이밍(chunked)을 수신 측이 해석하지 못하는데, 송신 방식이 본문 타입에 따라 암묵적으로 정해졌다.
+
+### 변형 B — 수신 측이 chunked를 조용히 0바이트로 삼킴
+① 문제 코드
+```python
+def do_POST(self):
+    length = int(self.headers.get("Content-Length", 0))   # chunked엔 헤더 없음 → 0
+    body = self.rfile.read(length)                          # 0바이트
+    data = json.loads(body)                                 # "line 1 column 1 (char 0)"
+```
+② 고친 코드
+```python
+def do_POST(self):
+    if self.headers.get("Transfer-Encoding"):               # 못 다루는 프레이밍은 명시 거절
+        return self._json(411, {"error": "length_required"})
+    length = int(self.headers.get("Content-Length", 0))
+    if not (1 <= length <= MAX_BODY):                        # 범위 강제
+        return self._json(413, {"error": "bad_length"})
+    data = json.loads(self.rfile.read(length))
+```
+무엇이 깨졌나: 해석할 수 없는 입력을 "빈 본문"으로 처리해, 실패가 엉뚱한 곳(JSON 파서)에서 드러났다.
 
 ## 검증 기록
-- 2026-09-23: 이슈 README(backend/issue12 §4, ci-cd/issue4 §3·§4) + `tools/claude-bridge/server.py`(411/범위 강제 코드) 대조 작성 (Claude 초안).
+- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+
+## 방안 비교
+
+기존 방안은 **송신 측을 Content-Length로 고정**(변형 A)하고 **수신 측은 chunked를 거절**(변형 B)하는 것이다. 같은 원리(송수신의 길이 채널 불일치)에 대해 반대 방향의 방안이 쓰인 사례가 있다.
+
+### 방안 2 — 수신 측이 chunked를 직접 디코드 (저수준 서버)
+```python
+def _read_body(self) -> bytes:
+    if self.headers.get("Transfer-Encoding", "").lower() == "chunked":
+        data = b""
+        while True:
+            size = int(self.rfile.readline().strip() or b"0", 16)   # 크기(16진)\r\n
+            if size == 0:
+                self.rfile.readline()                                # 마지막 \r\n
+                break
+            data += self.rfile.read(size)
+            self.rfile.readline()                                    # 조각 뒤 \r\n
+        return data
+    return self.rfile.read(int(self.headers.get("Content-Length", 0)))   # Content-Length 폴백
+```
+증상은 같았다(같은 클라이언트가 보낸 POST 본문이 비거나 잘려 `json.loads` 실패) — 이번엔 송신 측을 고치지 않고 수신 측이 표준 프레이밍을 받아들였다.
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 송신 측 Content-Length 고정 + 수신 측 거절 | 송신 측을 통제할 수 있다 | 송신 코드 1줄 + 거절 분기 | 다른 송신자가 chunked로 보내면 411(시끄럽게 실패) | 송신자가 소수·내부이고 수신 서버는 최소 구현으로 두고 싶을 때 |
+| 수신 측 chunked 디코드 | 송신자를 모두 통제할 수 없다 | 디코더 직접 구현·유지 | 수제 파서의 경계 오류(trailer·확장 무시 등), 본문 상한 없으면 자원 고갈 | 여러 클라이언트가 붙는 브리지·다양한 HTTP 라이브러리 수용 |
+
+**결론**: 둘 다 "길이 채널을 한쪽이 맞춘다"이다 — 어느 쪽을 맞출지는 **누구를 통제할 수 있는가**로 정한다.\
+송신 측을 통제하면 송신 측을 고정하고 수신 측은 못 다루는 입력을 **명시 거절**하는 편이 표면이 작다.\
+송신자가 다양하면 수신 측이 표준 프레이밍을 디코드하되, 수제 디코더는 **본문 상한**을 함께 둬야 한다(원문의 디코더에는 상한이 기록돼 있지 않다 — 적용 시 확인할 점).
