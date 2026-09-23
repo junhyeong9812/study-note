@@ -8,8 +8,8 @@
 ## 정답
 <!-- 질문 1:1 대응 -->
 
-1. **Error ≠ Exception.** `Throwable` 아래에 `Exception`(복구 가능한 예외)과 `Error`(JVM 수준 심각 오류)가 형제로 있다. `OutOfMemoryError`는 `Error`라 `catch (Exception)`을 그대로 빠져나가고, 스레드는 잡히지 않은 채 종료된다 — `markDone`도 `markFailed`도 실행되지 않아 상태가 `RUNNING`에 고착되고, 스레드 덤프에서는 그 스레드가 사라져 있다.\
-   부수로 OOM이 같은 JVM의 다른 클라이언트 I/O 스레드까지 죽여 "connection closed" 류 에러가 연쇄됐는데, 이 문구는 원인이 아니라 결과였다. 대조군으로 `SQLException`(Exception)으로 실패한 잡은 `markFailed`가 정상 동작해 FAILED로 보였다.\
+1. **Error ≠ Exception.** `Throwable` 아래에 `Exception`(복구 가능한 예외)과 `Error`(JVM 수준 심각 오류)가 형제로 있다. `OutOfMemoryError`는 `Error`라 `catch (Exception)`을 그대로 빠져나가고, 스레드는 잡히지 않은 채 종료된다 — `markDone`도 `setFailed`도 실행되지 않아 상태가 `RUNNING`에 고착되고, 스레드 덤프에서는 그 스레드가 사라져 있다.\
+   부수로 OOM이 같은 JVM의 다른 클라이언트 I/O 스레드까지 죽여 "connection closed" 류 에러가 연쇄됐는데, 이 문구는 원인이 아니라 결과였다. 대조군으로 `SQLException`(Exception)으로 실패한 잡은 `setFailed`가 정상 동작해 FAILED로 보였다.\
    권고는 러너를 `catch (Throwable)`로 감싸 실패 상태로 전이 + heartbeat/오래된 잡 스윕이다. 프로세스 kill은 어떤 catch로도 막을 수 없으므로 **외부 스윕**이 필요하다.
    > **Error** — `Throwable`의 하위로, 애플리케이션이 보통 잡지 않는 JVM 수준 오류(OOM·StackOverflow 등).
 
@@ -46,14 +46,14 @@ void run(Job job) {
         migrate(job);                       // 대량 적재 중 OutOfMemoryError
         job.markDone();
     } catch (Exception e) {                 // Error는 여기로 안 옴
-        job.markFailed(e);
+        job.setFailed(e);
     }                                       // → 스레드 사망, 상태 RUNNING 고착
 }
 ```
 ② 고친 코드
 ```java
     } catch (Throwable t) {                 // (권고) Error까지 잡아 상태 전이
-        job.markFailed(t);
+        job.setFailed(t);
     }
 // + heartbeat 갱신, 오래된 RUNNING 잡을 FAILED로 돌리는 스윕 (프로세스 kill 대비)
 // + OOM 시 자동 힙덤프
@@ -72,7 +72,7 @@ public final class Rules extends Base {
 ```java
 Long parseSiteId(String header) { return Long.valueOf(header); }   // 비숫자면 throw
 // ...
-service.onLoginFailed(parseSiteId(req.getHeader("X-Site")), user); // 인자에서 throw → 본문 미실행
+service.onLoginFailed(parseSiteId(req.getHeader("X-Tenant")), user); // 인자에서 throw → 본문 미실행
 ```
 ② 고친 코드
 ```java
@@ -109,15 +109,15 @@ boolean same = this.parent.getId().equals(parentOpt.get().getId());   // id 비�
 ```java
 f(String.class);                                   // f(Class<?>, Class<?>...) vs f(Class<?>, Type...) → 모호
 verify(repo).find(any(), any());                   // find 오버로드 추가 후 → 모호
-Command toCommand() { return new Command(b, a); }  // (a, b) 같은 타입 — 순서 뒤바뀜, 컴파일 통과
-catch (AuthException e) { reject(req, id); }       // void 헬퍼 — 컴파일러는 항상 던진다는 걸 모름
+Command asCommand() { return new Command(b, a); }  // (a, b) 같은 타입 — 순서 뒤바뀜, 컴파일 통과
+catch (AuthFailure e) { reject(req, id); }       // void 헬퍼 — 컴파일러는 항상 던진다는 걸 모름
 ```
 ② 고친 코드
 ```java
 f(String.class, new Type[0]);                      // 배열 타입 명시
 verify(repo).find(anyList(), any(Long.class));     // 타입 매처
 // 로직 이동은 전/후를 필드 단위로 대조 (green은 필요조건)
-catch (AuthException e) { throw rejected(req, id); }   // 예외를 반환하는 헬퍼
+catch (AuthFailure e) { throw rejected(req, id); }   // 예외를 반환하는 헬퍼
 ```
 무엇이 깨졌나: 호출 해석이 타입 정보만으로 결정되는데, 넘긴 정보가 해석을 결정하기에 부족하거나(모호) 순서를 검사할 수 없었다.
 
