@@ -149,7 +149,7 @@ fn select(tab: &Tab, files: &[Transcript], claimed: &Set, live: &[Tab]) -> Match
 ```python
 MARKER_RE = re.compile(r"session: ([0-9a-fA-F-]{36})")
 m = MARKER_RE.search(text)                      # 문서 어디든, 모양만 흉내 내도 인정
-sid = m.group(1) if m else new_uuid()
+sid = m.group(1) if m else fresh_id()
 ```
 ② 고친 코드
 ```python
