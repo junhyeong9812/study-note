@@ -58,8 +58,8 @@ res.cookies.set("ACCESS", token, { httpOnly: true, secure: process.env.NODE_ENV 
 ```
 ② 고친 코드
 ```ts
-const secure = process.env.AUTH_COOKIE_SECURE != null
-  ? process.env.AUTH_COOKIE_SECURE === "true"         // 명시 우선
+const secure = process.env.COOKIE_SECURE != null
+  ? process.env.COOKIE_SECURE === "true"              // 명시 우선
   : process.env.NODE_ENV === "production";            // 미설정 시 폴백
 res.cookies.set("ACCESS", token, { httpOnly: true, secure, sameSite, path: "/" });
 // HTTP 배포 환경만 false — 평문 전송 트레이드오프를 인지하고 끈다
