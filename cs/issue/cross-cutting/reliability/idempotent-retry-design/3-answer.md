@@ -23,7 +23,7 @@
 
 4. **outbox는 at-least-once다.** 릴레이는 "외부 발송 성공"과 "완료 커밋" 사이에서 죽으면 다음에 다시 보낸다.\
    외부가 발급하는 접수 ID는 **호출 결과로만** 얻으므로 호출 전에 기록할 수 없다 — "접수 ID 선기록으로 중복 방지"는 성립하지 않는다.\
-   올바른 장치: **요청 측 멱등 키를 외부와 공유**(외부가 같은 키를 중복으로 인식) 또는 **접수 결과 사후 대조**. 소비자 쪽에서는 `commandId` 같은 유일 키 불변식으로 재전달·DLQ 재투입의 이중 처리를 막는다.
+   올바른 장치: **요청 측 멱등 키를 외부와 공유**(외부 API가 멱등 키를 지원해 같은 키를 중복으로 인식할 때) 또는 **접수 결과 사후 대조**. 소비자 쪽에서는 `commandId` 같은 유일 키 불변식으로 재전달·DLQ 재투입의 이중 처리를 막는다.
 
 5. **두 의도, 두 축.** 재개 의도를 본문에 넣으면 내용 digest가 바뀌어 충돌(Conflict)로 거절되고, 밖에 두면 "이미 처리한 요청"으로 멱등 보고만 된다 — 어느 쪽도 재실행이 안 돼 **조용히 멈춘다**.\
    교정: 충돌 판정 축 = 내용 digest, 재개 축 = attempt 번호로 분리하고, 완료된 것은 재개 금지, 오래된 attempt는 보고만 한다.\
@@ -118,8 +118,9 @@ if rec, ok := store.Get(key); ok {     // 밖에 두면 → 멱등 Report, 재�
 ② 고친 코드
 ```go
 rec, ok := store.Get(digest(cmd))                  // 충돌 축
+if !ok { rec = store.Create(digest(cmd), req) }    // 첫 요청 = 신규 기록 후 실행
 if ok && rec.State == Completed { return rec.Report() }   // 완료 = 재개 금지
-if ok && req.Attempt <= rec.Attempt { return rec.Report() } // 오래된 attempt
+if ok && req.Attempt <= rec.Attempt { return rec.Report() } // 오래된 attempt (중복 재전송)
 rec.Attempt = req.Attempt                          // 재개 축
 // 마이그레이션: attempt 없는 구 레코드는 정규화 (기본값 0 이 "재개"로 오인되지 않게)
 ```
@@ -180,6 +181,7 @@ writeLastVersion(head)                          // 예외가 나면 여기 못 �
 # 문제: changed_since = today - 1  → 하루 실패 = 그날 변경분 영구 누락
 plan_delta(changed_since=today - timedelta(days=7))   # 키 기준 upsert 라 겹쳐도 안전
 # 단조 증가 ID 기반 소스는 "대상의 max_id 이후"를 추출해 자체 복구 성질을 가짐
+# (단, 동시 트랜잭션에서 ID 할당 순서 ≠ 커밋 순서면 늦게 커밋된 작은 ID 행을 놓칠 수 있다)
 ```
 
 ### 방안 4 — 한 행위의 다중 트리거 제거
