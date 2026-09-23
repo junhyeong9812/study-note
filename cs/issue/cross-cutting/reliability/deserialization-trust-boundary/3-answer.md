@@ -133,7 +133,7 @@ function parseTree(raw: any): Tree {
 ### 방안 1 — 재귀 검증에 깊이·노드 예산 + 파서 전체 예외 경계
 ```ts
 // 문제
-function loadTree() {
+function readTree() {
   let raw; try { raw = JSON.parse(stored) } catch { return emptyTree() }   // parse만 보호
   return parseTree(raw)                     // 12k 깊이·순환 → 검증 재귀가 스택 오버플로 → 시작 크래시
 }
@@ -144,7 +144,7 @@ function isValidTree(n: unknown, depth = 0, budget = { nodes: 0 }, seen = new Se
   if (seen.has(n)) throw new RangeError("cycle"); seen.add(n)
   // ... 자식 재귀
 }
-function loadTree() {
+function readTree() {
   try { return parseTree(JSON.parse(stored)) } catch { return emptyTree() }   // 어떤 throw든 손상 취급
 }
 ```
@@ -168,13 +168,13 @@ class SearchParams(BaseModel):
     filter_flag: Optional[bool] = None                     # 프론트는 ["no_x"] 리스트를 보냄 → 미적용
     checkbox_filter: Optional[List[str]] = Field(default=None, exclude=True)   # 내부 파생용 → 같은 이름 입력 무시
     # 다른 필터는 아예 미선언 → 키가 버려져 None
-report = raw_dict["filtered_ids"]                          # computed_field는 dict에 없음 → 오류
+report = raw_obj["filtered_ids"]                          # computed_field는 dict에 없음 → 오류
 # 고친
 class SearchParams(BaseModel):
     filter_flag: Optional[List[str]] = None                # 실제 송신 형태
     other_filter: Optional[List[str]] = None               # 선언
     _coerce = field_validator("checkbox_filter", mode="before")(to_enum_list)   # 원시 문자열 → enum
-report = ReportRequest(**raw_dict).filtered_ids            # 모델을 거쳐 파생 필드 사용
+report = ReportRequest(**raw_obj).filtered_ids            # 모델을 거쳐 파생 필드 사용
 ALLOWED = set(LABEL_TO_STATUS.keys())                      # 허용 목록은 매핑 키를 동적 참조
 ```
 원문의 대응은 필드 선언·타입 정렬·validator 연결이었다 — 선언 밖 키를 거부하는 설정(`extra='forbid'`)으로 불일치를 조기 검출하는 대안은 기록에 없다.
