@@ -63,7 +63,7 @@ Command::new("git").args(["worktree", "add", "--", &user_path, safe_ref(&branch)
 fn safe_ref(r: &str) -> Result<&str> { if r.is_empty() || r.starts_with('-') { Err(Bad) } else { Ok(r) } }
 let r = match user_ref { Some(r) if !r.is_empty() && !r.starts_with('-') => r, _ => "--all" };
 cmd.push(format!("--model={model}"));                  // 등호형: 한 토큰 (대상 파서가 --opt=value를 지원할 때)
-cmd.extend([&prompt, "--deny-tools", "A", "B"]);      // 위치 인자를 가변 옵션 앞으로
+cmd.extend(["--deny-tools", "A", "B", "--", &prompt]); // 옵션 종결자 뒤에 데이터 (지원 시) — 위치 이동만으론 "--..."로 시작하는 prompt가 옵션으로 읽힐 수 있다. 미지원 CLI면 명시적 prompt 옵션·stdin으로 전달
 // 정렬 옵션 등은 enum 매칭만 허용, 그 외는 고정 기본값 (임의 문자열 플래그 전달 금지)
 ```
 무엇이 깨졌나: 셸은 피했지만 대상 프로그램의 argv 파서가 데이터를 옵션으로 읽었다.\
