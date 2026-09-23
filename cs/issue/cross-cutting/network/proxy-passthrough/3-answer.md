@@ -130,39 +130,37 @@ location /ws/ {
 ### 방안 1 — BFF가 클라이언트 IP를 릴레이 + 신뢰 관문 2중
 ```ts
 // BFF: 엣지가 넘긴 실제 IP를 상류로 릴레이 (안 넘기면 상류는 도커 브리지 게이트웨이 IP만 봄)
-headers["X-Real-IP"] = clientIpFrom(request);
-headers["X-Proxy-Secret"] = PROXY_SECRET;
+headers["X-Client-IP"] = clientIpFrom(request);
+headers["X-Shared-Key"] = SHARED_KEY;
 ```
 ```kotlin
 fun resolve(req: HttpServletRequest): String {
     val remote = req.remoteAddr
     if (!isTrusted(remote)) return remote                         // ① 출발지가 내부 컨테이너 대역인가
     if (!hasValidSecret(req)) return remote                       // ② 공유 비밀 상수시간 비교
-    return sanitize(req.getHeader("X-Real-IP")) ?: sanitize(firstForwardedFor(req)) ?: remote
+    return sanitize(req.getHeader("X-Client-IP")) ?: sanitize(firstForwardedFor(req)) ?: remote
 }
 ```
-잔여 리스크(수용·기록): LAN에서 BFF 포트를 직접 호출하면 위조 헤더가 세탁될 수 있다. 엣지 강화 옵션은 XFF를 이어붙이기 대신 `$remote_addr`로 덮어쓰기.
 
 ### 방안 2 — XFF는 신뢰 홉 수만큼 오른쪽에서
 ```ts
 // 문제: const ip = xff.split(",")[0].trim();   // 왼쪽은 클라이언트가 보낸 값 그대로 → 위조·키 폭증
 const parts = xff.split(",").map(s => s.trim());
-const candidate = parts[Math.max(0, parts.length - TRUSTED_PROXY_HOPS)];
-return candidate && isIpLiteral(candidate) ? candidate : null;   // 형식·길이 검증, 실패 시 추측 없이 미부착
+const candidate = parts[Math.max(0, parts.length - TRUSTED_HOPS)];
+return candidate && isValidIp(candidate) ? candidate : null;   // 형식·길이 검증, 실패 시 추측 없이 미부착
 ```
-같은 구조: 레이트리밋이 XFF가 **없으면 통째로 건너뛰는** 분기 → 프록시를 우회한 직접 접속은 무제한 · 선행 콤마로 빈 키. 계획: 신뢰 프록시 IP에서 온 요청만 XFF(가장 오른쪽 신뢰 홉), 그 외엔 소켓 주소, 스킵 분기 제거 + 직접 접속은 네트워크 레벨 차단.
 
 ### 방안 3 — XFF는 신뢰 프록시 뒤에서만 + 키 상수시간 비교
 ```java
-http.addFilterAfter(rateLimitFilter, ApiKeyFilter.class);        // 키 게이트 뒤에서 레이트리밋
-String ip = props.trustedProxy() ? firstXff(req) : req.getRemoteAddr();
+http.addFilterAfter(rateLimiter, KeyAuthFilter.class);           // 키 게이트 뒤에서 레이트리밋
+String ip = props.behindProxy() ? firstXff(req) : req.getRemoteAddr();
 boolean ok = MessageDigest.isEqual(given.getBytes(UTF_8), expected.getBytes(UTF_8));   // 조기 종료 없음
 ```
 
 ### 방안 4 — 상관 ID는 진입 서버가 발행하고 모든 구간에 헤더로 전파
 ```ts
 // 중계 구간 하나가 빠지면 한 요청의 로그 사슬이 끊긴다
-headers: { "Content-Type": "application/json", "X-Sync-Secret": secret,
+headers: { "Content-Type": "application/json", "X-Shared-Key": secret,
            "X-Request-Id": requestId },                           // 진입 서버 발행 id 전파
 ```
 ```kotlin
@@ -181,7 +179,7 @@ location /svc/ {
 
 | 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
 |------|------|------|-----------|-----------|
-| 1. 릴레이 + 신뢰 관문 2중 | 중간 BFF가 있고 상류가 BFF를 식별할 수 있다 | 공유 비밀 관리·대역 설정 | BFF 포트 직접 호출 시 세탁(잔여 리스크) | 엣지 → BFF → API 다단 구조 |
+| 1. 릴레이 + 신뢰 관문 2중 | 중간 BFF가 있고 상류가 BFF를 식별할 수 있다 | 공유 비밀 관리·대역 설정 | 공유 비밀 유출·대역 오설정 시 위조 허용 | 엣지 → BFF → API 다단 구조 |
 | 2. 오른쪽에서 신뢰 홉 수 | 신뢰 프록시 홉 수가 고정·알려져 있다 | 설정 1개 + IP 검증 | 홉 수가 바뀌면 틀린 IP 채택 | 단일 엣지 뒤 서비스, 레이트리밋 키 |
 | 3. 신뢰 프록시 플래그 + 상수시간 비교 | 배포 환경이 프록시 유무를 안다 | 플래그·필터 순서 | 플래그 오설정 시 위조 허용 | 키 기반 API + 레이트리밋 |
 | 4. 상관 ID 전파 | 모든 구간을 코드로 통제한다 | 구간마다 헤더 1줄 | 구간 하나 누락 = 추적 단절 | 여러 서버를 거치는 요청의 관측 |
