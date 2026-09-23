@@ -9,38 +9,40 @@
 
 <!-- 질문 1:1 대응 -->
 
-1. flex 아이템의 `min-width`/`min-height` 기본값은 `auto` — **내용의 최소 크기**다.\
+1. flex 아이템의 `min-width`/`min-height` 기본값은 `auto` — 아이템이 스크롤 컨테이너가 아니면 **내용 기반 최소 크기**(대체로 min-content, 지정 크기가 있으면 그것과 비교해 작은 쪽)다. 아이템 자신이 `overflow: hidden/auto/scroll`이면 자동 최소는 0이다.\
 그래서 컨테이너가 좁아져도 아이템은 내용 최소폭 아래로 줄지 않고 이웃을 밀어내거나 덮는다. `min-width: 0`을 주면 하한이 0이 되어 flex가 공간을 정상 배분한다.\
-grid의 `1fr`은 `minmax(auto, 1fr)`이라 최소값이 역시 내용 min-content다 — 안쪽 요소의 최소폭(차트 하한 등)이 트랙을 대화상자 밖까지 키운다. `minmax(0, 1fr)`은 하한을 0으로 내려 트랙이 컨테이너를 따른다.\
+grid의 `1fr`은 `minmax(auto, 1fr)`이라 최소값이 (스크롤 컨테이너가 아닌 아이템이면) 역시 내용 기반 최소 크기다 — 안쪽 요소의 최소폭(차트 하한 등)이 트랙을 대화상자 밖까지 키운다. `minmax(0, 1fr)`은 하한을 0으로 내려 트랙이 컨테이너를 따른다.\
 주의: 전역 `* { min-width: 0 }`은 내용 최소폭에 의존하는 요소를 깨므로, **줄어야 하는 성장 자식에만** 준다.
-   > **min-content** — 요소가 줄바꿈 가능한 곳을 모두 꺾었을 때의 최소 폭. flex/grid의 `auto` 최소 크기가 이 값을 쓴다.
+   > **min-content** — 요소가 줄바꿈 가능한 곳을 모두 꺾었을 때의 최소 폭. flex/grid의 `auto` 최소 크기는 대개 이 값을 기준으로 하지만, 아이템이 스크롤 컨테이너이거나 축·트랙 조건에 따라 0이 될 수 있다.
 
-2. 도달할 수 없다. `max-height`로 높이를 묶어도 `overflow: hidden`이면 초과분은 **스크롤 없이 잘린다** — 하단 버튼이 화면에 있지만 닿을 수 없다.\
+2. 휠·터치·스크롤바로는 도달할 수 없다. `max-height`로 높이를 묶어도 `overflow: hidden`이면 초과분은 **사용자 스크롤 UI 없이 잘린다** — 하단 버튼이 DOM에 있지만 마우스 사용자는 닿을 수 없다.\
+hidden 요소도 스크롤 컨테이너라 `scrollTop` 변경·`scrollIntoView`·Tab 포커스 이동으로는 스크롤될 수 있다(브라우저 동작에 의존) — 이것을 해결로 삼으면 안 된다. `overflow: clip`은 스크롤 컨테이너 자체를 만들지 않아 프로그램 스크롤도 안 된다.\
 `overflow: hidden` 다음에 `overflow-y: auto`를 쓰면 축별 덮어쓰기라 **x는 hidden(모서리 클리핑 유지), y는 auto(스크롤)** 가 된다. 상한은 항상 넘침 정책과 짝으로 리뷰한다.
 
-3. `scrollTop`은 `overflow: auto/scroll`이면서 **내용이 실제로 넘치는** 요소에서만 의미가 있다. 내용 크기만큼 늘어나는 요소는 넘칠 것이 없으니 no-op이다 — 부모를 타고 올라가 **첫 스크롤 조상**을 조작해야 한다.\
-스크롤 박스를 중첩하면(안쪽 블록에 max-height + overflow) 키보드 포커스를 가진 바깥 컨테이너는 안쪽 내용을 스크롤하지 못해 갇힌다. 안쪽 상한을 지우고 **스크롤 주체를 하나**로 둔다.\
+3. `scrollTop`은 스크롤 컨테이너(`overflow`가 `auto/scroll/hidden` — visible·clip이 아닌 요소, 또는 문서 스크롤 요소)이면서 **내용이 실제로 넘치는** 요소에서만 효과가 있다(사용자 스크롤까지 원하면 auto/scroll). 내용 크기만큼 늘어나는 요소는 넘칠 것이 없으니 no-op이다 — 부모를 타고 올라가 **첫 스크롤 조상**을 조작해야 한다.\
+스크롤 박스를 중첩하면(안쪽 블록에 max-height + overflow) 키보드 스크롤은 포커스가 있는 곳의 가장 가까운 스크롤 컨테이너에만 적용되므로, 바깥 컨테이너에 포커스가 있으면 안쪽 내용을 키보드로 내리지 못해 갇힐 수 있다(스크롤 박스의 키보드 포커스 가능 여부는 브라우저마다 다르다). 안쪽 상한을 지우고 **스크롤 주체를 하나**로 둔다.\
 같은 계열: 부모 클래스의 `overflow: hidden`(자체 스크롤하는 에디터를 전제)을 그대로 물려받은 새 컨테이너는 스크롤 주체가 없어 스크롤이 죽는다 — 그 컨테이너에서 `overflow-y: auto`로 덮는다.
 
 4. 둘 다 "**어느 조상이 자손의 그리기 영역·좌표 기준을 정하는가**"의 문제다.\
-`overflow: hidden` 조상은 자손을 자기 padding box 밖으로 그리지 못하게 **클리핑**한다 — absolute 드롭다운은 그 안에 갇힌다.\
-`container-type: inline-size`는 layout containment를 뜻하고, layout containment는 fixed 자손의 **containing block과 스택 컨텍스트를 새로 만든다** — 뷰포트 좌표(clientX/Y)로 띄우던 fixed 메뉴가 그 조상 기준으로 배치된다. 그래서 fixed 자손이 있는 조상에는 걸 수 없고, fixed 자손이 없는 행 단위 요소에만 건다.\
-같은 계열: absolute 헤더의 포함 블록은 초기 포함 블록(뷰포트)이라 body의 `min-width` 하한을 받지 않는다. `height: 100%`의 기준도 부모 레이아웃에 따라 달라, 가로 flex를 전제로 쓴 규칙이 세로 스택에서 스택 전체 높이로 해석된다.
-   > **containing block** — 요소의 위치·% 크기를 계산하는 기준 사각형. fixed는 보통 뷰포트지만 containment 등을 가진 조상이 있으면 그 조상이 된다.
+`overflow: hidden` 조상은 자손을 자기 padding box 밖으로 그리지 못하게 **클리핑**한다 — 그 조상이 드롭다운의 포함 블록이거나 포함 블록 체인 안에 있으면 absolute 드롭다운은 그 안에 갇힌다(포함 블록이 그 조상보다 바깥이면 잘리지 않고, fixed 자손은 보통 이 클리핑을 받지 않는다).\
+`container-type: inline-size`는 (이 사례 시점의 스펙·브라우저 구현에서) layout containment를 함께 적용하고, layout containment는 absolute·fixed 자손의 **containing block과 스택 컨텍스트를 새로 만든다** — 뷰포트 좌표(clientX/Y)로 띄우던 fixed 메뉴가 그 조상 기준으로 배치된다. 이 효과는 스펙 논의·브라우저 버전에 따라 달라질 수 있으니 대상 브라우저에서 최소 재현으로 확인하고, fixed 자손이 있는 조상은 피해 fixed 자손이 없는 행 단위 요소에 건다.\
+구분: 클리핑(그리기 영역을 자름 — overflow·paint containment), containing block(위치·% 크기의 기준), 스택 컨텍스트(z-index 비교 범위), 크기 containment(내용이 자기 크기에 영향 못 줌)는 서로 다른 효과다 — layout containment만으로는 자손을 자르지 않는다.\
+같은 계열: positioned 조상이 없는 absolute 헤더의 포함 블록은 초기 포함 블록(뷰포트 크기)이라 body의 `min-width` 하한을 받지 않는다. `height: 100%`의 기준도 부모 레이아웃에 따라 달라, 가로 flex를 전제로 쓴 규칙이 세로 스택에서 스택 전체 높이로 해석된다.
+   > **containing block** — 요소의 위치·% 크기를 계산하는 기준 사각형. fixed는 보통 뷰포트지만 transform·filter·layout/paint containment 등을 가진 조상이 있으면 그 조상이 된다. 클리핑과는 별개 개념이다.
 
 5. 컨테이너 쿼리는 뷰포트가 아니라 **가장 가까운 컨테이너 조상의 폭**에 반응한다.\
 공용 클래스에 걸면 원래 좁게 설계된 인스턴스(240~360px 칼럼)는 창이 아무리 넓어도 임계값 미만이라 항상 "좁은 상태"로 판정된다.\
 적용 대상을 **수식 클래스 + `container-name`** 으로 한정해, 혼잡한 한 곳에서만 규칙이 동작하게 한다.
 
-6. 같은 특이도의 선택자는 **소스 순서**가 승부를 가른다 — 공용 클래스가 앞에 정의된 클래스에는 이기고 뒤에 정의된 클래스에는 진다. 호출처마다 결과가 달라진다.\
-`:where(.cls)`는 특이도를 0으로 만들어, 공용 기본 스타일을 **호출자가 항상 덮어쓸 수 있게** 한다.\
+6. 출처·중요도(`!important`)·캐스케이드 레이어가 같다는 전제에서, 같은 특이도의 선택자는 **소스 순서**가 승부를 가른다 — 공용 클래스가 앞에 정의된 클래스에는 이기고 뒤에 정의된 클래스에는 진다. 호출처마다 결과가 달라진다.\
+`:where(.cls)`는 특이도를 0으로 만들어, 공용 기본 스타일을 **호출자의 일반 선택자가 순서와 무관하게 덮기 쉽게** 한다 — 단 호출자 규칙이 더 낮은 레이어에 있거나 역시 특이도 0이면서 앞에 있으면 여전히 지므로 무조건 보장은 아니다.\
 넓은 후손 선택자(`.area span { min-width }`)는 서드파티가 span으로 렌더한 값까지 잡는다. 직계 선택자(`.a > div > .b`)는 라이브러리가 끼워 넣은 래퍼 div 때문에 매칭을 놓친다. 타입 열거식 리셋(`input[type=text|tel|…]`)은 열거에서 빠진 새 type(email)을 놓쳐 그 입력만 content-box로 넘친다.\
 공통 교훈: 선택자 가정 대신 **렌더된 실제 DOM과 계산값**을 먼저 확인한다. 공용 클래스 규칙을 바꿀 때는 그 클래스를 쓰는 **다른 호출 경로**(다른 창의 툴바 등)를 전수 확인한다.
-   > **특이도(specificity)** — 선택자 충돌 시 우선순위를 정하는 점수. 같으면 나중에 선언된 규칙이 이긴다.
+   > **특이도(specificity)** — 선택자 충돌 시 우선순위를 정하는 점수. 캐스케이드에서 출처·중요도·레이어 비교 다음에 적용되며, 그것들과 특이도가 모두 같으면 나중에 선언된 규칙이 이긴다.
 
-7. `display: none`은 요소를 레이아웃에서 빼 **크기 자체가 없다**. 측정 코드가 `parseInt(computedHeight)`를 쓰면 `"auto"` → NaN이 되어 조기 반환하므로 실제 행·열은 바뀌지 않는다. 다만 다시 보일 때 크기를 새로 계산(refit)해야 하고, 레이어를 토글할 때마다 그리드가 깨졌다가 다시 그려진다.\
+7. `display: none`은 요소를 레이아웃에서 빼 **박스 자체가 없다**. 측정값은 API에 따라 다르다 — 이 사례처럼 `parseInt(getComputedStyle().height)`를 쓰고 높이가 `auto`면 NaN이 되어 위젯이 조기 반환했지만, 높이를 CSS로 명시했다면 그 값이 나오고 `getBoundingClientRect`·`clientHeight`·ResizeObserver는 0을 준다. 그래서 안전성을 NaN에 의존하지 말고, 표시 여부와 측정값의 유효성(양수·최소치)을 검사해 무시하고 다시 보일 때 refit해야 한다. 레이어를 토글할 때마다 그리드가 깨졌다가 다시 그려지는 비용도 있다.\
 겹친 레이어의 `visibility: hidden`은 **크기를 유지**한 채 그리기·포커스·히트테스트만 끈다 — 크기 기반 위젯의 상태가 그대로 보존되고, 숨은 요소는 탭 순서에서도 빠진다.\
-`height: 0`/`flex: 0`은 **0px이라는 유효한 크기**를 준다. 측정 코드는 최소값(2열×1행)을 계산하고 resize 이벤트가 실제 백엔드(PTY)까지 전파되어 화면이 파괴된다 — 이것이 실제 상태를 망가뜨리는 경우다. 백스톱으로 비정상적으로 작은 크기(예: 10열·3행 미만)의 resize를 차단한다.
+`height: 0`은 **0px이라는 유효한 크기**를 준다(`flex: 0`은 `flex: 0 1 0%` — grow 0·basis 0일 뿐 높이 0을 보장하지 않지만, 이 사례 레이아웃에서는 0에 가까운 크기가 됐다). 측정 코드는 최소값(2열×1행)을 계산하고 resize 이벤트가 실제 백엔드(PTY)까지 전파되어 화면이 파괴된다 — 이것이 실제 상태를 망가뜨리는 경우다. 백스톱으로 비정상적으로 작은 크기(예: 10열·3행 미만)의 resize를 차단한다.
 
 ## 문제 구조 (추상화 코드)
 
@@ -165,8 +167,8 @@ input { box-sizing: border-box; }
 ```tsx
 <div className="layer front"><MainLayer /></div>          // 둘 다 absolute inset:0 로 겹침
 <div className="layer back"><DevLayer /></div>            // .back { visibility: hidden } — 크기 유지
-<div style={collapsed ? { display: "none" } : { flex: 1 }}>   // 측정 NaN → 조기 반환
-  <Terminal onResize={(c, r) => { if (c < 10 || r < 3) return; resizeBackend(c, r); }} />
+<div style={collapsed ? { display: "none" } : { flex: 1 }}>   // 측정값은 API에 따라 NaN/0 — 아래 가드가 실제 방어선
+  <Terminal onResize={(c, r) => { if (!(c >= 10 && r >= 3)) return; resizeBackend(c, r); }} />  {/* NaN·0·과소 차단, 재표시 후 refit */}
 </div>
 ```
 무엇이 깨졌나: 컨테이너 크기로 행·열을 계산하는 위젯에 "0이라는 유효한 크기"가 전달됐다.
@@ -195,7 +197,7 @@ function useAnchoredPosition(anchorRef, menuRef, open) {
     const place = () => setPos(computeAnchoredPosition(
       anchorRef.current.getBoundingClientRect(), menuRef.current.getBoundingClientRect(), viewport()));
     place();
-    const ro = new ResizeObserver(place); ro.observe(menuRef.current);   // 목록 크기 변화
+    const ro = new ResizeObserver(place); ro.observe(menuRef.current);   // 목록 크기 변화(크기만 — 위치 이동은 못 봄)
     window.addEventListener("scroll", place, true); window.addEventListener("resize", place);
     return () => { ro.disconnect(); /* ...remove listeners */ };
   }, [open]);
@@ -203,7 +205,7 @@ function useAnchoredPosition(anchorRef, menuRef, open) {
 }
 createPortal(<Menu style={pos ? { position: "fixed", ...pos } : { visibility: "hidden" }} />, document.body);
 ```
-남은 틈: 분할 리사이즈·사이드바 접기처럼 **레이아웃이 앵커를 옮기는** 경우는 scroll/resize 어느 것도 발화하지 않아 메뉴가 앵커에서 떨어진다 — 트리거 요소도 관측 대상에 넣어야 한다(제안 단계).
+남은 틈: 분할 리사이즈·사이드바 접기처럼 **레이아웃이 앵커를 옮기는** 경우는 scroll/resize 어느 것도 발화하지 않아 메뉴가 앵커에서 떨어진다. 트리거 요소를 ResizeObserver에 넣어도 크기 변화 없는 위치 이동은 감지하지 못하므로, 앵커를 옮기는 레이아웃 이벤트(분할·접기 토글)에서 재배치하거나 열려 있는 동안 앵커 rect를 프레임마다 비교하는 식의 추적이 필요하다(제안 단계).
 
 ### 방안 2 — 상하 뒤집기는 "가용 공간이 큰 쪽 + 그 공간으로 maxHeight"
 ```ts
@@ -213,10 +215,13 @@ const openUp = spaceAbove >= menuH;
 function computeAnchoredPosition(a, m, vp) {
   const above = a.top - vp.top, below = vp.bottom - a.bottom;
   const openUp = above > below;
-  const maxHeight = openUp ? above : below;
-  const left = clamp(a.left, vp.left, vp.right - m.width);
-  return openUp ? { bottom: vp.bottom - a.top, left, maxHeight } : { top: a.bottom, left, maxHeight };
+  const maxHeight = Math.max(0, openUp ? above : below);         // 앵커가 화면 밖이면 음수 → 0
+  const maxWidth = vp.right - vp.left;                             // 메뉴가 뷰포트보다 넓은 경우
+  const left = Math.max(vp.left, Math.min(a.left, vp.right - Math.min(m.width, maxWidth)));
+  return openUp ? { bottom: vp.bottom - a.top, left, maxHeight, maxWidth }
+                : { top: a.bottom, left, maxHeight, maxWidth };
 }
+// 전제: 메뉴 자체에 overflow-y: auto — maxHeight 로 잘린 항목은 메뉴 내부 스크롤로 도달
 ```
 
 | 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
@@ -226,4 +231,4 @@ function computeAnchoredPosition(a, m, vp) {
 | 2. 큰 공간 선택 + maxHeight | 방안 1의 배치 규칙 | 순수 함수 하나 | "들어가느냐" 이진 판정은 양쪽 부족 시 트리거를 덮음 | 화면 가장자리 근처 앵커 |
 
 **결론**: 크기·스크롤·쿼리·캐스케이드 문제는 **조상의 정책을 고치는 쪽**이 근본 해결이고 비용도 작다.\
-조상의 클리핑·containment가 그 자체로 필요한 경우(둥근 모서리 클리핑, 표면 격리)에는 팝오버처럼 **밖에 떠야 하는 요소만 포털로 탈출**시키고, 위치는 앵커 rect로 직접 계산하되 뒤집기는 큰 공간 쪽 + maxHeight로 모든 경우를 덮는다.
+조상의 클리핑·containment가 그 자체로 필요한 경우(둥근 모서리 클리핑, 표면 격리)에는 팝오버처럼 **밖에 떠야 하는 요소만 포털로 탈출**시키고, 위치는 앵커 rect로 직접 계산하되 뒤집기는 큰 공간 쪽 + maxHeight(+ 메뉴 내부 스크롤·폭 제한)로 가장자리 사례를 덮는다 — 앵커 위치 이동 추적은 별도로 필요하다.

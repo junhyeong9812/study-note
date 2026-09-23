@@ -10,27 +10,28 @@
           │
           ▼  위로 올라가며 "이 성질을 결정하는 조상"을 찾는다
    ┌───────────────────────────────────────────────────────────────┐
-   │ 크기     flex/grid 아이템 min-size:auto (내용 최소폭)          │  → min-width:0 · minmax(0,1fr)
+   │ 크기     flex/grid 아이템 min-size:auto (보통 내용 최소폭*)    │  → min-width:0 · minmax(0,1fr)
    │          % 높이의 기준 = 부모 레이아웃 방식                     │  → 스코프별 height:auto
    │ 넘침     max-height 는 overflow 정책과 짝                      │  → overflow-y:auto
-   │ 스크롤   scrollTop 은 "overflow:auto + 넘치는" 요소에만 의미    │  → 첫 스크롤 조상을 조작 · 중첩 제거
-   │ 클리핑   overflow:hidden 조상이 자손을 자름                    │  → 조상 정책 수정 or 밖으로 포털
-   │ 위치     containment(container-type)가 fixed 기준을 바꿈        │  → fixed 자손 없는 행에만
+   │ 스크롤   scrollTop 은 "스크롤 컨테이너 + 넘치는" 요소에만 효과  │  → 첫 스크롤 조상을 조작 · 중첩 제거
+   │ 클리핑   overflow:hidden 조상이 (포함 블록 체인 안의) 자손을 자름│  → 조상 정책 수정 or 밖으로 포털
+   │ 위치     containment(container-type)가 fixed 기준을 바꿀 수 있음│  → fixed 자손 없는 행에만
    │ 겹침     z-index 는 같은 스택 컨텍스트 안에서만 비교            │  → 단일 레이어 토큰
    │ 쿼리     @container 는 가장 가까운 컨테이너 폭에 반응          │  → container-name 으로 한정
-   │ 캐스케이드 같은 특이도 = 소스 순서 승부 · 선택자 범위            │  → :where() · 실제 DOM 먼저 확인
+   │ 캐스케이드 (출처·중요도·레이어가 같고) 같은 특이도 = 소스 순서   │  → :where() · 실제 DOM 먼저 확인
    │ 측정     숨김 방식이 위젯이 재는 크기를 바꿈                    │  → 0 크기를 위젯에 보이지 않기
    └───────────────────────────────────────────────────────────────┘
+   * 아이템이 스크롤 컨테이너(overflow hidden/auto/scroll)면 자동 최소 크기는 0
 
 [탈출 방안] 조상 컨텍스트를 고칠 수 없으면 → body 로 포털 + fixed + 앵커 rect 로 직접 배치
 ```
 
 ## 핵심 문장
 
-- flex·grid 아이템은 기본적으로 **내용보다 작아지지 않는다**(`min-*: auto`, `1fr = minmax(auto, 1fr)`) — 줄어야 하는 성장 자식에만 `min-width: 0`.
-- 높이 상한(`max-height`)은 **넘침 정책(`overflow`)과 짝**이다 — hidden이 남으면 초과분이 조용히 잘린다.
-- `scrollTop`은 실제 스크롤 컨테이너에서만 효과가 있다 — 첫 스크롤 조상을 찾아 조작하고 스크롤 박스는 하나로.
-- 잘림·위치 어긋남은 **조상의 클리핑·containing block**이 만든다(`overflow`, `container-type`, 포함 블록).
+- flex·grid 아이템은 기본적으로 **내용보다 작아지지 않는다**(`min-*: auto`, `1fr = minmax(auto, 1fr)`) — 단 아이템이 스크롤 컨테이너면 자동 최소는 0 등 조건이 있다. 줄어야 하는 성장 자식에만 `min-width: 0`.
+- 높이 상한(`max-height`)은 **넘침 정책(`overflow`)과 짝**이다 — hidden이 남으면 초과분이 스크롤 UI 없이 잘린다(프로그램 스크롤·포커스 이동으로는 움직일 수 있어도 사용자가 휠로 내릴 수는 없다).
+- `scrollTop`은 실제로 넘치는 스크롤 컨테이너(overflow가 visible/clip이 아닌 요소)에서만 효과가 있다 — 첫 스크롤 조상을 찾아 조작하고 스크롤 박스는 하나로.
+- 잘림·위치 어긋남은 **조상의 클리핑·containing block**이 만든다(`overflow`, `container-type`, 포함 블록) — 둘은 다른 개념이다: 클리핑은 그리기 영역, 포함 블록은 좌표·% 기준. container-type의 fixed 기준 변경은 layout containment 적용 여부(스펙·브라우저)에 달려 있어 대상 브라우저에서 확인한다.
 - z-index 숫자 경쟁은 단일 스택 스케일(토큰)로 끝낸다. 컨테이너 쿼리는 이름으로 대상 한정.
-- 같은 특이도는 순서가 이긴다 — 덮어쓰일 공용 기본은 `:where()`로 특이도 0. 선택자 가정 대신 **렌더된 실제 DOM**을 먼저 본다.
-- 측정 기반 위젯에 **0 크기를 보이지 마라** — 크기를 유지(`visibility` 레이어)하거나 측정 불능(`display: none` + NaN 가드)으로 둔다.
+- 출처·중요도·캐스케이드 레이어가 같을 때 같은 특이도는 순서가 이긴다 — 덮어쓰일 공용 기본은 `:where()`로 특이도 0(호출자가 덮기 쉬워질 뿐, 레이어·!important 등에선 보장이 아니다). 선택자 가정 대신 **렌더된 실제 DOM**을 먼저 본다.
+- 측정 기반 위젯에 **0 크기를 보이지 마라** — 크기를 유지(`visibility` 레이어)하거나, `display: none`으로 숨기되 측정값이 NaN·0 등 비정상이면 무시하는 가드를 두고 재표시 후 refit한다(`display: none`의 측정값은 API에 따라 NaN·0·명시 CSS 값으로 다르다).
