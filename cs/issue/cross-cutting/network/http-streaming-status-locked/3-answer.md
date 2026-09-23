@@ -3,6 +3,8 @@
 > 복습 시 이 파일은 **최후에만** 연다.
 > ⚠️ 이 정답은 Claude 초안(2026-09-23) — 이슈 README·코드 기준. 복습 전 읽지 말 것.
 
+태그: `silent-failure`
+
 ## 정답
 <!-- 질문 1:1 대응 -->
 
@@ -22,9 +24,103 @@
 
 7. **프록시 패스스루와의 연결 — 같은 뿌리.** 그렇다. 중간 프록시가 상류의 200을 받아 이미 클라이언트로 흘리기 시작했다면, 프록시도 "한 번 나간 헤더는 불변"이라 사후에 상태코드를 못 바꾼다. 그래서 프록시가 봉투를 열어 재포장하며 상태를 뭉개면(422→500) 안 되고 **상태를 원형 보존**해야 한다는 규칙과 이 제약은 같은 뿌리 — *상태코드는 응답의 맨 앞에서 한 번만 결정된다*. (프록시 패스스루는 [proxy-passthrough](../proxy-passthrough/) 참조.)
 
-## 이번 프로젝트 사례
-- [llm/issue6](../../../../../project/study-note-deploy-system/llm/issue6/) — `/chat` 스트리밍에서 "200 헤더 전송 순간 상태코드 확정"을 근거로 오류 계약을 시작 전(503/422 봉투)·시작 후(텍스트 청크+로그)로 시간분할.
-- [backend/issue12](../../../../../project/study-note-deploy-system/backend/issue12/) — 같은 스트림을 `ResponseBodyEmitter`로 front에 중계, 도중 오류 시 `completeWithError`로 종료(누락 시 연결·스레드 누수).
+## 문제 구조 (추상화 코드)
+
+### 변형 A — 스트림 도중 오류를 상태코드로 알리려 함 → 오류 계약의 시간분할
+① 문제 코드
+```python
+@router.post("/chat")
+async def chat(body: ChatIn):
+    async def tokens():
+        async for t in model.stream(body.messages):   # 도중 실패 시 이미 200 전송 후
+            yield t
+    return StreamingResponse(tokens())                 # 포화·입력 오류도 스트림 안에서 터짐
+```
+② 고친 코드
+```python
+@router.post("/chat")
+async def chat(body: ChatIn, request: Request):
+    if request.app.state.sem.locked():                 # 시작 전 → 상태코드 자유
+        return JSONResponse(fail("busy", retry_after=2), status_code=503)
+    # 입력 검증 실패는 스트림 전에 422 봉투
+
+    async def tokens():
+        try:
+            async for t in model.stream(body.messages):
+                yield t                                # 시작 = 200 확정, 텍스트 청크가 곧 계약
+        except Exception as e:                         # 시작 후 → 로그만, 연결 끊김
+            await log(body.request_id, f"stream error: {type(e).__name__}", "error")
+    return StreamingResponse(tokens(), media_type="text/plain; charset=utf-8")
+```
+무엇이 깨졌나: 이미 커밋된 상태코드를 사후에 바꿀 수 있다고 가정했다.
+
+### 변형 B — 스트림을 중계하는 쪽이 도중 오류에서 스트림을 닫지 않음
+① 문제 코드
+```kotlin
+val emitter = ResponseBodyEmitter(TIMEOUT)
+executor.execute {
+    try { upstream.stream(req) { token -> emitter.send(token) }; emitter.complete() }
+    catch (e: Exception) { log.error(e) }             // complete 누락 → 연결·스레드 누수
+}
+return emitter
+```
+② 고친 코드
+```kotlin
+executor.execute {
+    try { upstream.stream(req) { token -> emitter.send(token) }; emitter.complete() }
+    catch (e: Exception) {
+        requestLog.log(requestId, "chat failed: ${e.message?.take(150)}", "error")
+        runCatching { emitter.send("\n[오류] 응답 생성에 실패했습니다.") }   // 본문 채널로 알림
+        emitter.completeWithError(e)                                        // 반드시 닫는다
+    }
+}
+```
+무엇이 깨졌나: 상태코드로 못 알리는 오류를 본문 채널로도 닫지 않아 연결이 새었다.
 
 ## 검증 기록
-- 2026-09-23: 이슈 README(llm/issue6 §2·§3·§4 코드, backend/issue12 §3) 대조 작성 (Claude 초안). trailer/SSE/gRPC 일반 지식은 개념 수준(이 프로젝트가 구현한 것은 텍스트 청크 스트림).
+- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+
+## 방안 비교
+
+기존 방안은 **보내는 쪽**이 상태 잠김을 전제로 오류 계약을 시간으로 나누는 것이다. 같은 원리(커밋 뒤 status는 확정·불변)를 **관측하는 쪽**에서 다룬 방안이 있다 — 최종 상태를 보려면 확정 시점을 감싸는 가장 바깥 계층에서 기록한다.
+
+### 방안 2 — 최종 status 확정 지점(필터 최전방)에서 기록
+① 문제 코드
+```kotlin
+class UsageInterceptor : HandlerInterceptor {          // 보안 필터 체인 뒤 → 401/403은 도달 안 함
+    override fun afterCompletion(req: HttpServletRequest, resp: HttpServletResponse, h: Any, ex: Exception?) {
+        runCatching { usageLog.save(req, resp.status) }  // 예외→/error 디스패치 전이라 500을 200으로
+    }                                                     // 기록 실패는 무음 (SSE 콜백 중복은 필터 이전 1차안에서 재검출)
+}
+```
+② 고친 코드
+```kotlin
+@Order(Ordered.HIGHEST_PRECEDENCE)                     // 보안 필터보다 앞 = 가장 바깥
+class UsageFilter : OncePerRequestFilter() {
+    override fun doFilterInternal(req: HttpServletRequest, resp: HttpServletResponse, chain: FilterChain) {
+        val recorded = AtomicBoolean(false)
+        var failed = false
+        try { chain.doFilter(req, resp) } catch (e: Exception) { failed = true; throw e }
+        finally {
+            // 비동기(SSE)면 완료 리스너에서 같은 record 호출 (경합 IllegalStateException은 catch)
+            record(recorded, req, resp, failed)
+        }
+    }
+    private fun record(recorded: AtomicBoolean, req: HttpServletRequest, resp: HttpServletResponse, failed: Boolean) {
+        if (!recorded.compareAndSet(false, true)) return                 // 한 요청 한 행
+        val status = if (failed && !resp.isCommitted && resp.status < 400) 500 else resp.status   // 커밋된 status는 그대로
+        try { usageLog.save(req, status) } catch (e: Exception) { logger.warn("usage log failed", e) }   // 무음화 제거
+    }
+}
+```
+무엇이 깨졌나: 관측 지점이 최종 status가 확정되기 전·거부 경로 밖에 있어, 기록된 상태가 실제 응답과 달랐다.\
+같은 구조: 컨트롤러 AOP로 레이턴시·상태를 재면 필터 체인·직렬화·예외 처리 시간이 빠지고, 커밋 전 status는 0으로 읽힌다 → 접근 로그 필터를 요청 ID 필터 바로 뒤(`HIGHEST_PRECEDENCE + 1`, MDC에 요청 ID가 있는 상태)에 두어 요청 전체 수명을 감싼다. 비동기 프레임워크에선 미들웨어 등록 순서로 접근 로그를 가장 바깥에 둔다(등록 순서와 바깥/안쪽의 대응은 프레임워크마다 다르므로 실측 확인).
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 1. 오류 계약 시간분할(송신 측) | 오류를 클라이언트에 알려야 한다 | 시작 전 검증 분리·본문 규약 | 시작 후 오류를 본문으로 구분 못 하면 잘린 응답을 완성으로 오인 | 스트리밍 응답을 만드는 서버 |
+| 2. 바깥 계층 기록(관측 측) | 최종 status를 정확히 기록해야 한다 | 필터 순서 설계·중복 방지 | 필터가 보안 체인 뒤에 있으면 거부 요청 누락, 비동기 콜백 중복 | 사용 로그·접근 로그·레이턴시 계측 |
+
+**결론**: 두 방안은 대체가 아니라 짝이다.\
+**보내는 쪽**은 status가 잠기기 전에 판정 가능한 실패를 상태코드로, 이후 실패를 본문 채널로 나눈다(1).\
+**보는 쪽**은 status가 확정되는 지점을 감싸는 **가장 바깥**에서 한 번만 기록하고, 이미 커밋된 status는 덮어쓰지 않는다(2).
