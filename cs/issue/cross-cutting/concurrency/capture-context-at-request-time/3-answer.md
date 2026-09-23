@@ -80,9 +80,9 @@ async function onConfirm() {
 ### 변형 C — 지연 지점이 트리거 시점 메타데이터를 잃음
 ```ts
 // ① 문제
-let lastOrigin: "snapshot" | "live";
-function onItems(items, origin) { lastOrigin = origin; debounceScan(items); }
-function scan(batch) { if (lastOrigin === "live") notifyNew(batch); }   // 대기 중 온 live가 오염
+let prevOrigin: "snapshot" | "live";
+function onItems(items, origin) { prevOrigin = origin; debounceScan(items); }
+function scan(batch) { if (prevOrigin === "live") notifyNew(batch); }   // 대기 중 온 live가 오염
 
 // ② 고침
 function onItems(items, origin) { debounceScan(items.map(i => ({ ...i, origin }))); }
