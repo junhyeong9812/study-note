@@ -1,7 +1,9 @@
 # cs/issue/cross-cutting/reliability/silent-failure-vs-artifact — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-23) — 이슈 README·코드 기준. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-23, 2026-09-24 보강) — 추출 블록·대표 원문 기준. 복습 전 읽지 말 것.
+
+태그: `silent-failure`
 
 ## 정답
 
@@ -25,16 +27,420 @@
 7. 데이터 작업은 "예외가 안 났다"가 "다 들어갔다"를 보장하지 않는다 — bulk 저장이 부분 실패해도 예외 없이 끝날 수 있고, 필터가 조용히 레코드를 스킵하거나 인코딩이 값을 절단해도 프로세스는 성공으로 끝난다. 그래서 record-level 검증이 필요하다: **count**(넣으려던 수 == 저장된 수), **sample**(표본을 되읽어 내용 확인), **orphan 정리**(더 이상 소스에 없는데 저장소에 남은 것 제거). 이것만이 부분 실패·무음 스킵·조용한 절단을 명시적으로 반증한다.
    > **record-level 검증** — 집계 성공 여부가 아니라 개별 레코드 수·내용·정합성을 실제로 세어 확인하는 것. 데이터 사고의 최다 유형인 silent failure를 잡는 최후 방어선.
 
-## 이번 프로젝트 사례
+8. 산출물 대조는 **"산출물이 생겼는지 되물을 수 있다"** 를 전제로 한다. 그 전제가 무너지는 곳에서는 대조가 아니라 **관측 경로 자체를 만드는 것**이 방어다. 요청이 응답을 요구하지 않으면(fire-and-forget) 거절은 원리적으로 도착하지 않으므로 응답을 요구하게 바꾼다. 사후 관측으로 성공을 확인한다면 기준선을 부작용 **전에** 잡고, 관측된 사건을 요청 하나에만 귀속(claim)시켜야 남의 사건을 내 성공으로 오인하지 않는다. 종료 순간에 늦게 도착하는 신호는 수신 자격을 바로 폐기하면 무음 거절되므로 폐기를 유예하고 거절을 기록한다. 산출물을 만들지 말지 정하는 게이트가 산출기보다 좁으면 "파일이 아예 없음"이 생기는데, 이는 부재를 검사하는 테스트로만 잡힌다(자세한 것은 아래 방안 비교).
+   > **관측 가능성(observability) 경로** — 실패가 일어났을 때 그 사실이 누군가에게 도달하는 통로. 이 통로가 없으면 산출물 대조 이전에 실패가 존재하지 않는 것처럼 보인다.
 
-- [backend/issue2](../../../../../project/study-note-deploy-system/backend/issue2/) — bulk 색인 후 `count(path) == 청크 수`를 되물어 "돌았다"가 아니라 "들어갔다"를 검증(코드 `IndexingService.kt`의 `check(count == doc.chunks.size.toLong())`), 그리고 에러 메시지 조립 버그(`$response` 리터럴)가 진짜 UTF-8 에러를 가렸던 사례.
-- [backend/issue10](../../../../../project/study-note-deploy-system/backend/issue10/) — 머지·Actions 초록불인데 운영에 필드가 없던 사건. 배포 `curl`에 `-f`가 없어 401 거절이 성공으로 위장됐고, "초록불" 대신 운영 실값·배포 이력·http 코드로 좁혀 원인을 잡았다.
-- [front/issue3](../../../../../project/study-note-deploy-system/front/issue3/) — 리다이렉션(`> 경로`)이 없는 디렉토리 때문에 실패했는데 Next 빌드는 성공. "빌드 성공 로그"가 아니라 **빌드 라우트 표에 기대 경로가 있나**를 산출물로 확인.
-- [llm/issue1](../../../../../project/study-note-deploy-system/llm/issue1/) — 모델 미설치인데 `/health`가 200(몸통만 model_missing)을 줘 docker healthcheck가 healthy로 판정. 부재를 503으로 바꿔(`api.py` model_missing→503) "정상인 척"을 막았다.
-- [llm/issue3](../../../../../project/study-note-deploy-system/llm/issue3/) — `python -m pytest`로는 통과하고 `pytest`로는 import 에러로 죽던 환경 차이. "누가 맞나 따지지 말고 직접 실행해 재현"으로 초록불 위장을 실측으로 갈랐다.
-- [ci-cd/issue2](../../../../../project/study-note-deploy-system/ci-cd/issue2/) — `compose pull wrapper`가 610ms에 "deploy ok"를 찍었지만 `image:`+`build:` 병존 때문에 실제로는 Skipped. "성공 로그" 대신 `docker inspect`의 실제 이미지·생성 시각(산출물)을 봐야 했다.
-- [ci-cd/issue3](../../../../../project/study-note-deploy-system/ci-cd/issue3/) — F7: `compose up` 종료 0 ≠ 서비스 정상. 배포 후 헬스 URL을 90초 폴링해 200을 받아야 진짜 ok(코드 `agent.go`의 `waitHealthy(healthURL, 90*time.Second)`). F6: master의 202(접수)를 배포됨으로 오해하던 무음 유실을 접수 시점 409로 교정.
+## 문제 구조 (추상화 코드)
+
+> 이 카드의 사건들은 모두 **"성공 신호가 산출물과 떨어진 지점"** 이 어디냐로 나뉜다.\
+> 변형마다 대표 사건만 코드로 보이고, 같은 구조의 나머지는 한 줄씩 적는다.
+
+```text
+  요청 ──▶ [실행] ──▶ [결과 보고] ──▶ [완료 판정] ──▶ [상태 신호] ──▶ [검증기]
+            │            │               │               │               │
+            A 예외 삼킴  B 실패=빈 값    F 중간 흔적으로  G "떴음"만 봄   H 검증기 사각
+            C 데이터 무음 탈락           완료 판정
+            D 설정 누락→빈 정상 대체
+                         E 전송 성공=업무 성공
+```
+
+### 변형 A — 삼켜진 예외·버려진 결과 채널
+
+① 문제 코드 (병렬 워커의 예외가 어디에도 닿지 않음 — 원문은 증상만 기록, 코드는 흔한 원인의 재구성)
+```java
+for (Batch b : batches) {
+    executor.submit(() -> bulkWrite(b));   // 반환된 Future를 버린다
+}
+// ... failed 카운트는 0 그대로 → 실패한 잡이 RUNNING으로 보인다
+```
+② 고친 방향 (원문은 "예외 보고·실패 카운트 필요"로만 기록 — 적용 여부 미확인)
+```java
+List<Future<?>> fs = new ArrayList<>();
+for (Batch b : batches) fs.add(executor.submit(() -> bulkWrite(b)));
+for (Future<?> f : fs) {
+    try { f.get(); }
+    catch (ExecutionException e) { failed++; log.warn("batch failed", e.getCause()); }
+}
+```
+무엇이 깨졌나: 스레드풀에 제출한 작업의 예외는 Future를 조회하지 않으면 전파되지 않는다.
+
+① 문제 코드 (실패를 보고하는 유일한 채널의 수신단을 버림)
+```rust
+let (exec_rx, status_rx) = open_channels(target);
+let _ = status_rx;              // 연결·인증 단계 실패는 이쪽으로만 온다
+relay(exec_rx);                 // exec 이전 실패 = 이벤트 0개 → 빈 검은 화면
+```
+② 고친 코드
+```rust
+relay_status(status_rx);        // Failed/Closed를 기존 종료 경로로 전달
+relay(exec_rx);
+// 두 릴레이가 같은 끝을 볼 수 있으므로 먼저 도착한 사유만 보고 (첫 사유가 진짜 사유)
+```
+무엇이 깨졌나: "이벤트 0개"가 정상과 파국을 동시에 뜻하게 됐다.
+
+같은 구조:
+- 상태 파일 쓰기를 `|| true`로 삼키고 성공 메시지를 출력 → 그 상태에 기대는 보호가 조용히 꺼짐. 교정: 쓰기 실패 = 차단(fail-closed), 원자 교체.
+- 비동기 `create_task`의 반환값을 버림 → 예외 유실·참조 미보존으로 GC·발행 실패 시 메시지 drop. 교정 계획: done 콜백으로 예외 로깅, 참조 집합 보관, 종료 시 대기.
+- bare `except: return 기본값`·부분 실패 `continue` → 결과 수가 줄어든 이유를 호출자가 모름. 교정 계획: 구체 예외만, 실패 수를 응답에 반영.
+- (상태, 에러)를 돌려주는 API에서 에러를 먼저 검사 → "에러와 함께 온 UNKNOWN 상태"가 소실되고 락이 풀림, 이력 기록 오류는 `_ =`로 버림. 교정: 상태 분기 우선, 기록 오류 전파.
+- UNKNOWN 분기가 이른 return으로 오류 객체를 버리고, 영속 이력에 상세 칸 자체가 없음 → 원인이 어디에도 남지 않음. 교정: 상세 필드 추가·응답에 노출.
+- "못 찾음"을 계약(예외) 대신 null로 반환 → 호출자 NPE → 넓은 catch가 삼켜 폴백, 로그엔 엉뚱한 원인. 교정: 원래 예외 재전파.
+- 방어 파서의 malformed 줄 skip·목록 상한 절단·UI 드롭 거절·catch 삼킴 → "성공처럼 보이는 불완전 결과". 교정: skip 수를 산출물에 기록, 절단·거절을 화면에 노출.
+- 출력 전용 원격 실행에 입력 EOF를 보내지 않음 → 원격이 입력을 영원히 대기, 종료 이벤트 미도착. 교정: 수락 즉시 EOF, 모든 종료 경로에서 dead 표시(Drop 가드).
+
+### 변형 B — 실패와 "정상적으로 비어 있음"이 같은 값
+
+① 문제 코드
+```python
+def collect():
+    try:
+        return container_stats()
+    except Exception:
+        return []            # 수집 실패 = "컨테이너 0개(정상)"와 구분 불가
+```
+② 고친 코드
+```python
+def collect():
+    out = {"items": [], "errors": []}
+    try:
+        out["items"] = container_stats()
+    except Exception as e:
+        out["errors"].append(f"stats: {e}")
+    return out
+# 소비자: errors가 비어 있지 않으면 경보 / 폴링 연속 실패 카운터 → "agent unreachable" 경보
+```
+무엇이 깨졌나: "우아한 폴백"이 오류와 정상 빈 결과를 같은 값으로 표현했다.
+
+같은 구조:
+- 서비스 관리자에 존재하지 않는 유닛을 물어도 rc=0·기본 속성(`inactive`) 반환 → 오타 유닛이 "감시 중·정상". 교정: 로드 상태가 `loaded`가 아니면 오류.
+- 공통 액션 래퍼가 실패에도 resolve → 커밋 실패인데 입력창이 지워짐, status 실패가 "변경 없음"으로 보임. 교정: 래퍼가 성공 여부를 반환, 성공일 때만 후속 처리.
+- 조회 예외를 잡아 빈 리스트 반환 → 일부 배치에서 필드가 조용히 누락.
+- 읽을 수 없는 루트·파일인 루트를 빈 목록으로 처리. 교정: 오류로 노출.
+- 스크립트에 `set -e`가 없어 중간 실패에도 마지막 명령의 rc(0)로 종료 → 일일 배치가 수일간 성공으로 기록.
+
+### 변형 C — 데이터가 오류 없이 빠지는 경로 (필터·키 조회·투영·파서·배선)
+
+① 문제 코드 (형식 필터가 새 형식을 무음 탈락)
+```sql
+SELECT ... FROM rows
+WHERE term REGEXP '^[0-9]{6}([0-9]{2})?$'   -- 새로 들어온 ISO 타임스탬프 행은 전량 탈락
+```
+② 고친 코드
+```java
+String year = normalizer.normalize(row.term());   // 정규화를 코드 한 곳(단일 출처)으로
+if (year == null) { droppedByYear++; continue; }
+// ...
+if (droppedByYear > 0) log.warn("집계 제외 행 {}", droppedByYear);   // 탈락을 보이게
+// SQL 쪽 NULL 필터는 제거 — 두 곳에 나누면 카운터가 일부 경로를 못 본다
+```
+무엇이 깨졌나: 통제되지 않는 입력 형식에 필터를 걸어, 새 형식 데이터가 집계에서 오류 없이 사라졌다.
+
+① 문제 코드 (생산자가 필드를 분리했는데 소비자는 옛 키 조회)
+```java
+List<String> desc = (List<String>) row.get("desc_text");   // 더 이상 방출되지 않음 → 항상 null
+```
+② 고친 코드
+```java
+List<String> desc = firstNonEmpty(row.get("desc_" + nativeLang),   // 원어 우선
+                                  row.get("desc_en"),               // 영어 폴백
+                                  List.of());
+```
+무엇이 깨졌나: 스키마 없는 Map 조회는 키가 사라져도 컴파일·런타임 오류 없이 null을 준다.
+
+같은 구조:
+- projection 허용목록에 새 필드를 넣지 않음 → 응답에서 필드가 조용히 빠짐(폴백이 누락을 더 가림).
+- 같은 테이블의 단건/배치 SELECT 컬럼 목록이 어긋남 → 배치 경로 문서만 해당 필드 영구 null. 명시 스키마가 모르는 키를 변환 때 버림.
+- 파싱 실패를 null로 돌려주는 변환 → 파티션 키가 null이 되어 기본 파티션으로 무음 적재. 교정: 생산자가 실제 보내는 형식(Unix 시각)에 맞춤.
+- 언어 코드 정확 일치 필터 → 원천이 비표준 코드로 분류한 언어가 전량 탈락해 헤더만 있는 산출물. 교정: 코드 정규화 매핑을 두 입력 칸 모두에 적용.
+- 계산한 값을 와이어에 싣지 않음 + 수신 측 타입에 칸 없음 → "기능 없음"과 "배선 안 됨"이 화면에서 동일.
+- 요청 파라미터의 존재만 검증하고 작업 함수에 전달하지 않음 → 증분 대신 전량 재처리 시작. 모듈을 만들었지만 호출 경로에 연결 안 함.
+- 비어 있지 않음 검사를 원시 출력에 하고, 이후 분리 변환 결과가 비게 됨 → 빈 산출물 저장. 교정: 최종 산출물 기준 재검사·폴백.
+- 구조화 출력 스키마는 통과했지만 내용이 엉뚱함(식별자 자리에 다른 값) → 식별자·필드 수·완비 여부를 결정론적으로 따로 검사. 퍼지 보정은 원값→보정값을 영속 기록.
+- 인덱싱 시점에 마스터 조인이 빠져 파생 검색 필드가 비었는데 적재는 에러 없이 끝남 → 필드별 존재 건수 전수 조사로만 발견.
+
+### 변형 D — 설정 누락·오타가 "비어 있는 정상"으로 대체
+
+① 문제 코드
+```yaml
+services:
+  app:
+    volumes:
+      - ${DATA_DIR}:/data        # 값에 오타 → 호스트에 root 소유 빈 디렉토리가 자동 생성되어 마운트
+# 로그: "Initialization complete ... ready=[]"  (에러 없음)
+```
+② 고친 코드
+```sh
+DATA_DIR=/srv/data/embeddings_x      # 실제 존재하는 경로로 정정
+# 판별 단서: 빈 디렉토리의 생성 시각 == 컨테이너 기동 시각 → 자동 생성된 빈 마운트
+```
+무엇이 깨졌나: 단축 bind 문법은 없는 호스트 경로를 오류 대신 빈 디렉토리로 만든다.
+
+① 문제 코드
+```yaml
+volumes:
+  data: { ... }                        # 최상위 정의만 있고
+services:
+  db:
+    volumes: ["${DB_DIR}:/var/lib/db"]  # 정의된 볼륨을 참조하지 않음 → 빈 경로로 신규 초기화
+```
+② 고친 코드
+```text
+DB_DIR = 기존 named volume의 실경로로 정정 → 재생성 → 행 수 표본 대조(record-level)
+빈 초기화본은 삭제하지 않고 보존
+```
+무엇이 깨졌나: 최상위 선언은 서비스가 참조해야만 마운트되고, "기존 상태"를 재배포 **후** 컨테이너 기준으로 측정해 비교 기준 자체가 오염됐다.
+
+같은 구조:
+- 배포 매니페스트에 DB 접속 환경변수 누락 → 앱이 DB 없이 조용히 기동(DB 초기화 로그 부재·미저장으로만 드러남). 교정: 파드의 실제 env 확인 후 추가.
+- 운영 서버의 소스 갱신(pull)이 untracked 파일 충돌로 거부된 채 방치 → 옛 빌드 정의로 이미지 생성, 플러그인 미설치. 교정: 갱신 정상화 → 재빌드 단계 실행 여부·이미지 해시 → 플러그인 목록 확인.
+
+### 변형 E — 전송·호출 성공을 업무 성공으로 기록
+
+① 문제 코드
+```python
+resp = http.post(callback_url, body)      # 401/500도 예외가 아니다
+history.add(status="success", duration=resp.elapsed)   # 왕복 시간만 재고 성공 기록
+```
+② 고친 코드
+```python
+resp = post_with_backoff(callback_url, body, retries=3)
+if not (200 <= resp.status < 300):
+    raise DeliveryFailed(resp.status)
+if not resp.json().get("requestId"):       # 2xx여도 필수 응답 필드가 없으면 실패
+    raise DeliveryFailed("no requestId")
+```
+무엇이 깨졌나: 전송 계층 성공(예외 없음·2xx)은 업무 성공의 필요조건일 뿐이다.
+
+① 문제 코드 (fire-and-forget 트리거를 성공으로 기록)
+```python
+prepare(country); sleep(5); start(country)          # start는 필수 파라미터 누락으로 매일 422
+add_history(country, "success", duration=roundtrip)  # relay가 4xx를 success 봉투로 감쌈
+```
+② 고친 코드
+```python
+entry = add_history(country, "in_progress")
+# 완료 이벤트 수신 시 실제 processed/success/failed로 같은 엔트리를 확정
+# watchdog 3시간 / 대상 0건은 "no_data" / HTTP>=400은 failed 명시
+```
+무엇이 깨졌나: 트리거의 왕복을 작업 완료로 간주해, 오류가 봉투 안에서 사라졌다.
+
+같은 구조:
+- 배포 호출에 `curl`의 `-f`가 없어 401 거절이 성공으로 위장 → 운영 실값·배포 이력·http 코드로 원인을 좁힘.
+- 202(접수)를 배포 완료로 오해해 무음 유실 → 접수 시점에 진행 중인 대상은 409로 거절.
+- 원격 명령 캡처가 "빈 stdout"만 실패로 봄 → `{"response":"error"}` 같은 비어 있지 않은 에러 본문이 Ok로 도착. 교정: 응답을 파싱해 에러를 실패로.
+- 원격이 "없음"을 오류 대신 짧은 텍스트 본문으로 돌려줌 → 다운로드는 성공, 확장자만 맞는 쓰레기 파일이 남음.
+- 죽은 세션·미연결 핸들에 대한 호출·쓰기·close가 Ok 반환 → 대상 생존·모드 검사를 먼저, 하위 실패 전파, 종료 시 레지스트리에서 제거.
+- 결과 보고가 실제 결과가 아니라 요청값을 메아리(요청 신호를 실제 전달 신호처럼 보고), 여러 결과를 한 값으로 뭉뚱그림 → (생존 × 기록 존재) 조합별로 분리 보고.
+- 리팩터링이 "등록 완료" 안내를 결과 판정 분기 밖으로 끌어올림 → 실패 경로에서도 성공 안내.
+
+### 변형 F — 완료 판정을 중간 흔적으로 (폴더·마커·처리 로그·워터마크)
+
+① 문제 코드
+```rust
+for s in sessions {
+    if archive_dir_exists(&s) { skip(s); continue; }   // 폴더 = 중간 산출물
+    match extract(&s) { _ => ok += 1 }                  // 추출 실패도 ok로 집계
+}
+```
+② 고친 코드
+```rust
+for s in listing.sessions {
+    if s.summary_path.is_some() { complete.insert(s.id); }   // 최종 산출물 존재 = 완료
+    else { partial.insert(s.id); }                           // 재추출 후보 → 재실행이 자동 복구
+}
+// 결과 4분류 집계(ok / 부분 / skip / fail), 추출 1회 재시도
+```
+무엇이 깨졌나: 멱등 재실행의 skip 조건이 중간 산출물이라, 부분 실패가 영구히 "완료"로 고착됐다.
+
+① 문제 코드 (재시도 대상 = 워커가 append한 실패 로그)
+```python
+retry_ids = read_lines("failed.txt")      # 4건 — 실제 누락은 수백만 건
+process(retry_ids, skip_already_processed=True)   # "처리됨" 필터가 진짜 누락도 가린다
+```
+② 고친 코드
+```python
+missing = []
+for batch in chunks(source_ids, 10_000):
+    try:
+        docs = store.mget(ids=batch, source=False)          # 본문 없이 존재 여부만
+        missing += [d.id for d in docs if not d.found]
+    except Exception:
+        missing += batch                                    # 대조 실패 배치는 전부 누락으로(보수)
+reindex(missing, force_all=True)                            # 처리됨 필터 무시
+```
+무엇이 깨졌나: 처리 흔적 파일은 저장소의 실제 상태와 동기화되지 않는다(bulk 200 ≠ 색인 보장) — 성공의 진실 원천은 최종 저장소다.
+
+같은 구조:
+- 완료를 "산출물 일부 존재"로 판정 → 모든 단계 성공 뒤에만 쓰는 명시 완료 마커로. 의도적 생략도 별도 명시 마커(오류 반환으로 흉내 내면 영구 "부분 실패"로 오분류).
+- 진행 마커 파일을 DB 밖에 둠 → DB만 초기화하자 마커가 남아 전 테이블 SKIP, 로그는 "import all done". 교정: 마커 삭제 후 재적재, DB 카운트 ↔ 원천 행수 이중 대조.
+- bulk API는 문서 단위로 성공/실패 → 배치 단위 성공 판정은 누락을 숨기고, 예외 시 배치 전체를 failed로 적으면 과대 계상. 교정: 실패 목록 대신 저장소 존재 대조로 missing 생성.
+- 저장소 디스크가 가득 차 쓰기 거부(읽기 전용 전환·마스터 상실) → 적재 잡은 DONE, 문서는 대량 누락(원문은 원인 관측만 — 잡이 항목별 실패를 반영하지 못한 것으로 추정).
+- 워터마크·커서가 실패 포함 배치에서도 전진 → 미처리 행 영구 스킵. 결정적 실패 한 행은 "실패 0일 때만 전진"하는 워터마크를 영구히 붙잡음. 멱등 키에 식별 축이 빠져 다른 출처의 같은 id를 중복으로 오인.
+- 재개 로직이 "파일 존재"를 완료로 봄 → 깨진 부분 파일이 성공으로 간주되어 재실행에서 스킵. 교정: 깨진 파일 정리 후 재다운로드.
+- 재빌드 뒤 "현재 객체의 출처 경로"를 갱신하지 않음 → 다음 교체 실패 시 옛 원본이 무음 복원, 개수는 같아 품질만 저하. 교정: 쓰기 성공 시 경로 갱신, 실패 시 None.
+- 대상 목록을 먼저 파일로 떨군 뒤 그 목록으로 적재 → 그 사이 원천에 추가된 행이 제외, 원본 distinct 수와 인덱스 문서 수 대조로 발견.
+- bulk 색인 뒤 `count == 넣으려던 청크 수`를 되물어 "돌았다"가 아니라 "들어갔다"를 검증.
+
+### 변형 G — 상태 신호가 "떴음"만 보고 "무엇이 떴나·일하나"를 안 봄
+
+① 문제 코드
+```yaml
+healthcheck:
+  test: ["CMD", "python", "-c", "d = get('/health'); exit(0 if d['loaded'] else 1)"]   # 객체가 메모리에 있음만
+```
+② 고친 코드
+```yaml
+healthcheck:
+  test: ["CMD-SHELL", "python -c \"get('/health/deep', timeout=20)\" || exit 1"]    # 실제 추론 1건
+  interval: 60s
+# 배치와 경합 시 거짓 unhealthy 방지: 처리 중 카운터가 있으면 busy:true 즉시 반환
+```
+무엇이 깨졌나: 프로세스는 살아 있고 기능은 죽은 상태를 구분하지 못해, 장애가 수일간 healthy로 보였다.
+
+① 문제 코드
+```text
+pull → up → health.Check → COMPLETED        # 헬스는 "무엇이 떴나"(이미지 정체)를 안 본다
+```
+② 고친 코드
+```text
+pull → up → 이미지 digest 검증(대상 서비스만, 전부 일치, 매치 0 = 오류) → 헬스 검사 → COMPLETED
+각 실패 → cleanup(down 성공 = UNEXECUTED / down 실패 = UNKNOWN)
+```
+무엇이 깨졌나: 생존형 헬스는 산출물의 정체·완전성을 보지 않고, 방어선의 전제 설정이 없을 때 "생략"으로 떨어지면 조용히 통과한다.
+
+같은 구조:
+- 컨테이너 기동 명령 종료 0 ≠ 서비스 정상 → 배포 후 헬스 URL을 최대 90초 폴링해 200을 받아야 ok.
+- pull 래퍼가 수백 ms 만에 "deploy ok"를 찍었지만 `image:`+`build:` 병존으로 실제로는 Skipped → 컨테이너의 실제 이미지·생성 시각으로 확인.
+- 모델이 없는데 `/health`가 200(본문만 missing) → 부재를 503으로 바꿔 "정상인 척" 차단. 헬스 스크립트가 `HTTP/` 문자열만 grep해 500도 healthy → 기대 상태 줄을 정확 일치로.
+- 의존성 장애를 503으로 분류하지 않고 `/health`는 늘 200 → liveness와 readiness(의존성 ping)를 분리.
+- 구버전 정지 명령 rc=0 ≠ 컨테이너 사라짐, "배포완료"를 정지 확인 전에 보고 → 실제 부재 관측 후 보고, 잔존 시 경고+실패 이벤트(위장 금지).
+- 프록시 설정 파일은 "의도"일 뿐 → 쓰기→문법 검사→reload→worker 세대교체 확인→연속 3회 새 upstream 응답까지 관측, 중간 실패는 이전 설정으로 원복.
+- 검증 대상을 배포 서비스로 한정하지 않고 "≥1 컨테이너 일치면 통과" → 무관한 컨테이너가 판정을 대신하고 혼합 replica가 완료로 위장. 교정: 서비스 라벨 필터 + 전부 일치.
+
+### 변형 H — 검증기 자신의 사각지대
+
+① 문제 코드
+```sh
+pdftotext -bbox out.pdf | check_overlap
+# 텍스트 좌표만 본다: CSS 괘선은 출력에 없고, overflow:hidden으로 잘린 줄은 렌더 자체가 안 됨 → "겹침 0건"
+```
+② 고친 코드
+```sh
+pdftotext -bbox-layout out.pdf | check_overlap_and_footer_band   # 줄 요소가 있는 모드 + 괘선 y 계산
+pdftotext out.pdf - | expect_all_strings sections.txt            # 잘려 사라진 텍스트는 문자열 존재 대조로
+pdftoppm -png out.pdf page && review_rendered_images              # 렌더 이미지 육안 병행
+```
+무엇이 깨졌나: 검사기가 보는 표현(텍스트 좌표)과 결함이 사는 표현(픽셀·괘선·사라진 텍스트)이 달라, 검사 범위 밖 결함은 원리적으로 "0건"이 된다.
+
+① 문제 코드 (한 번도 참이 되지 않는 가드)
+```sh
+echo "$f" | grep -E 'design\.md$' && check_template "$f"   # 실파일은 DESIGN.md → 도입 이래 0회 매칭
+```
+② 고친 코드
+```sh
+echo "$f" | grep -iE 'design\.md$' && check_template "$f"
+# + 양성 케이스 테스트: 가드가 실제로 발화하는지 확인 / 마커는 헤더 줄 앵커(^#{1,6} )로만 인정
+```
+무엇이 깨졌나: 매칭 조건이 한 번도 참이 되지 않는 검사는 오류 없이 "통과"만 낸다.
+
+같은 구조:
+- 유닛 테스트 전부 통과, 텍스트 존재만 보는 검사도 통과했는데 실물 PDF에서 상속된 음수 `text-indent`로 첫 글자가 잘림 → 스모크의 실물 이미지 확인이 잡음.
+- `curl` 200·JSON 검사는 통과했는데 속성 셀렉터가 조상(body)에 매칭돼 `textContent` 대입으로 페이지 전체가 백지 → 헤드리스 브라우저 렌더로 검증.
+- "드물게 채워지는 필드"의 타입 오류(JSON 컬럼에 평문 바인딩)는 그 필드가 채워지는 드문 경로에서만 행 전체 INSERT 거부 → 정상 경로 테스트는 green. 교정: 유효 JSON으로 인코딩, 실 컬럼에 롤백 트랜잭션 INSERT로 재현.
+- 에러 메시지를 조립하는 템플릿이 틀려 진짜 에러 대신 리터럴이 찍힘 → 실패는 나는데 원인이 가려짐.
+- `python -m pytest`로는 통과, `pytest`로는 import 에러 → 누가 맞는지 따지지 말고 직접 실행해 재현.
+- 없는 라우트를 오류로 안 보는 빌드 → "빌드 성공" 대신 빌드 라우트 표에 기대 경로가 있나 확인.
 
 ## 검증 기록
 
-- 2026-09-23: 이슈 README 7건 + 코드 대조 작성 (Claude 초안). 코드 확인: `backend .../indexing/usecase/IndexingService.kt` L53·L73-74 (vectors/count 검증), `llm .../app/api.py` L111-112 (model_missing→503), `ci-cd .../agent/agent.go` L95-98·L135 (waitHealthy 90s), `ci-cd .../master/master.go` L87-93 (per-service inFlight 409).
+- 2026-09-23: 이슈 README·코드 대조 작성 (Claude 초안) — 근거는 작업 log.
+- 2026-09-24: 추출 블록·대표 원문 대조(Claude 초안) — 근거는 작업 log
+
+## 방안 비교
+
+> 기본 방안(위 변형 A~H)은 **"산출물을 되묻는다"** 이다.\
+> 아래 네 방안은 되물을 산출물이나 관측 경로가 애초에 없는 경우를 다룬다.
+
+### 방안 1 — 결과가 중요한 요청은 응답을 요구한다
+
+① 문제 코드
+```rust
+channel.request_pty(false /* want_reply */, term, cols, rows)?;   // 서버가 거부해도 응답 없음
+// → TTY 없는 셸이 조용히 시작, 화면 기반 프로그램 전부 깨짐
+```
+② 고친 코드
+```rust
+channel.request_pty(true, term, cols, rows)?;
+loop {
+    match channel.wait().await {
+        Some(Msg::Success) => break,
+        Some(Msg::Failure) => return Err("server rejected the PTY request".into()),
+        // ...
+    }
+}
+```
+
+### 방안 2 — 관측 확인의 기준선은 부작용 전에, 사건은 요청 하나에 claim
+
+① 문제 코드
+```ts
+send(body + "\r");
+const before = turns.length;                           // 기준선을 쓰기 후에 캡처
+setTimeout(() => ok = turns.length > before, T);       // 다른 원인의 턴도 성공으로 오귀속
+```
+② 고친 코드
+```ts
+const probe = makeProbe(normalize(body));             // 쓰기 전에 기준선 캡처
+send(body + "\r");                                     // 전송과 확인이 같은 전처리 본문을 쓴다
+// 판정: 기준선 이후 새 턴 중, 본문 앞부분(공백 정규화)이 일치하고 아직 claim되지 않은 것만
+//       패널 단위 공유 장부에 claim(멱등) → 같은 문안 2연속 제출도 턴 하나를 두 번 쓰지 않음
+// 요청별 타이머 — 새 요청이 이전 요청의 판정을 취소하지 않음
+```
+
+### 방안 3 — 종료 직후의 늦은 콜백: 자격 폐기 유예 + 거절 기록
+
+① 문제 코드
+```rust
+child.wait()?;
+hooks.unregister(key);          // 즉시 토큰 폐기 → 종료 순간 발사된 마지막 콜백이 403
+// 수집기는 4xx를 조용히 거절 → 정상 콜백의 경합 유실과 공격이 구별되지 않음
+```
+② 고친 코드
+```rust
+child.wait()?;
+drop_handles();
+sleep(token_grace());           // 기본 수 초 유예 후 폐기
+hooks.unregister(key);          // 키는 재사용될 수 있는 세션 id가 아니라 세션 고유 키로
+// 4xx 거절 → 경고 Notice(토큰 값 없이 사유만) + 스로틀
+```
+
+### 방안 4 — 방출 게이트와 방출기의 카테고리 동기화 + 부재 검사
+
+① 문제 코드
+```java
+void write(Hints hints) {
+    if (hasAnyContent(hints)) {                  // 게이트가 새 카테고리를 모름
+        writeTo("metadata.json", w -> new HintsWriter().write(w, hints));   // 방출기는 안다
+    }
+}
+// 새 카테고리만 등록 → 파일 미작성, 빌드는 green, 런타임에서야 실패
+```
+② 고친 코드
+```java
+boolean hasAnyContent(Hints h) {
+    return /* ...기존 카테고리... */ || h.reflection().newCategoryHints().findAny().isPresent();
+}
+// 테스트: 파일을 읽어 NoSuchFileException이 나는지로 "부재"를 검출 (negative-space 테스트)
+```
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 기본: 산출물 되묻기 | 산출물이 존재하고 조회 가능 | 대조 쿼리·폴링 | 대조 기준 자체가 오염되면(측정 시점 오류) 틀림 | 저장·배포·빌드처럼 흔적이 남는 작업 |
+| 1. 응답 요구 | 프로토콜이 응답 요청을 지원 | 왕복 1회 대기 | 응답 대기 중 다른 메시지 처리 필요 | 결과가 이후 동작을 좌우하는 제어 요청 |
+| 2. 기준선 선캡처 + claim | 성공이 사후 관측으로만 확인됨 | 공유 장부·정규화 로직 | 정규화가 전송 본문과 어긋나면 오경고 | 같은 채널에 여러 요청의 결과가 섞여 도착 |
+| 3. 폐기 유예 + 거절 기록 | 마지막 신호가 해제 시점과 동시에 옴 | 자격이 유예 시간만큼 더 산다 | 유예보다 늦은 신호는 여전히 유실(단 기록됨) | 종료 콜백·마지막 턴처럼 끝에 오는 신호 |
+| 4. 게이트·방출기 동기화 | 두 목록의 결합을 컴파일러가 강제 못 함 | 카테고리 추가 시 두 곳 수정 | 동기화를 또 잊으면 재발 | "비어 있으면 안 만든다" 류 최적화 게이트 |
+
+**결론**: 산출물이 남는 작업이면 기본 방안(산출물 되묻기)이 가장 직접적이다.\
+산출물을 되물을 수 없으면 먼저 **실패가 도달할 통로**를 만든다 — 응답을 요구하거나(1), 관측을 요청에 정확히 귀속하거나(2), 늦게 오는 신호를 받을 시간을 남기고 거절을 기록한다(3).\
+산출물이 "아예 없음"으로 실패하는 경로는 산출물 대조가 볼 대상조차 없으므로, 게이트와 산출기를 함께 바꾸고 부재를 검사하는 테스트로 막는다(4).
