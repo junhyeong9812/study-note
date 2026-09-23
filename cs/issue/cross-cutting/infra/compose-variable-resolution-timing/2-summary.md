@@ -7,10 +7,10 @@
 ```
 compose가 ${VAR}를 만나는 순간은 두 번, 서로 다른 채널이다.
 
-① 파싱 채널 (build-time interpolation)
+① 파싱 채널 (파일 로드 시점 interpolation — 이미지 빌드와 무관)
    compose가 YAML을 "읽어 해석하는" 시점.
    container_name·image·ports 같은 필드의 ${VAR}가 여기서 풀린다.
-   값 출처 = 셸 환경변수 / --env-file / 같은 폴더 .env 자동 로드.
+   값 출처 = 셸 환경변수 / --env-file / 프로젝트 디렉터리 .env 자동 로드.
       ↓ 이 시점엔 컨테이너가 아직 없다.
 
 ② 런타임 채널 (env_file / environment:)
@@ -19,11 +19,11 @@ compose가 ${VAR}를 만나는 순간은 두 번, 서로 다른 채널이다.
 
 핵심 함정: env_file은 ②(컨테이너 안)이라, ①(파일 파싱)에는 존재하지 않는다.
   → container_name: ci-cd-${MODE} 는 env_file의 MODE를 절대 못 본다
-  → "required variable MODE is missing"
+  → 경고 후 빈 값, ${MODE:?}면 "required variable MODE is missing"
 ```
 
 같은 부류: `image:` + `build:` 병존 → compose는 "빌드하는 서비스"로 **해석**하고,
-`image:`를 "받을 주소"가 아니라 "빌드 결과 이름표"로 본다 → `compose pull`이 Skipped.
+`image:`를 "받을 주소"가 아니라 "빌드 결과 이름표"로 본다 → (관측 버전에서) `compose pull`이 Skipped.
 둘 다 "내 의도"가 아니라 **도구의 파싱 규칙**이 동작을 정한다.
 
 ## 핵심 문장

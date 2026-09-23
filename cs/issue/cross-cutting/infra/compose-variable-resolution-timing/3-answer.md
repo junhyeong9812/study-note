@@ -8,16 +8,16 @@
 ## 정답
 <!-- 질문 1:1 대응 -->
 
-1. `${VAR}`는 서로 다른 **두 시점**에 풀린다. **파싱 채널** — compose가 YAML을 읽어 해석하는 build-time에 `container_name`·`image`·`ports` 같은 필드의 치환을 수행한다. **런타임 채널** — `env_file`/`environment:`가 지정한 값은 컨테이너가 뜬 **안**에 주입되어 프로세스가 실행 중 읽는다. `ci-cd-${MODE}`의 `MODE`는 compose(파싱 채널)가, `env_file`의 `MODE`는 컨테이너 프로세스(런타임 채널)가 읽는다 — 읽는 주체도 시점도 다르다.
+1. `${VAR}`는 서로 다른 **두 시점**에 풀린다. **파싱 채널** — compose가 YAML을 읽어 해석하는 파일 로드 시점(이미지 빌드와 무관)에 `container_name`·`image`·`ports` 같은 필드의 치환을 수행한다. **런타임 채널** — `env_file`/`environment:`가 지정한 값은 컨테이너가 뜬 **안**에 주입되어 프로세스가 실행 중 읽는다. `ci-cd-${MODE}`의 `MODE`는 compose(파싱 채널)가, `env_file`의 `MODE`는 컨테이너 프로세스(런타임 채널)가 읽는다 — 읽는 주체도 시점도 다르다.
    > **interpolation(변수 치환)** — compose가 파일을 파싱하며 `${VAR}`를 그 시점의 값으로 바꾸는 것. 컨테이너 생성 전에 일어난다.
 
-2. compose는 `required variable MODE is missing`(services.ci-cd.container_name 보간 실패)을 낸다. `env_file`은 **컨테이너 안**에 넣을 값이라, compose가 파일을 읽어 `container_name`을 정하는 **파싱 시점**엔 아직 존재하지 않기 때문이다. 두 값은 이름만 같을 뿐 다른 채널에 산다.
+2. `${MODE}`라면 compose는 `The "MODE" variable is not set. Defaulting to a blank string.` 경고와 함께 빈 문자열로 풀어 `ci-cd-`가 되고, `${MODE:?}`처럼 필수 표기를 썼다면 `required variable MODE is missing`(container_name 보간 실패)으로 중단한다 — 어느 쪽이든 env_file의 값은 쓰이지 않는다. `env_file`은 **컨테이너 안**에 넣을 값이라, compose가 파일을 읽어 `container_name`을 정하는 **파싱 시점**엔 아직 존재하지 않기 때문이다. 두 값은 이름만 같을 뿐 다른 채널에 산다.
 
-3. 파싱 채널의 출처는 ① compose를 실행한 **셸의 환경변수** ② `--env-file <파일>`로 명시한 파일 ③ compose 파일과 **같은 폴더의 `.env`** 자동 로드, 셋이다. `env_file:` 지시자는 이 셋 중 어디에도 안 낀다 — 그것은 "이 컨테이너 안에 넣어라"라는 별개의 런타임 지시이지, compose 자신이 파싱에 쓰는 변수원이 아니다.
+3. 파싱 채널의 출처는 ① compose를 실행한 **셸의 환경변수** ② `--env-file <파일>`로 명시한 파일 ③ 프로젝트 디렉터리(기본은 compose 파일 위치 — 구버전은 작업 디렉터리)의 **`.env`** 자동 로드, 셋이다(`--env-file`을 주면 기본 `.env` 대신 그 파일을 쓴다). `env_file:` 지시자는 이 셋 중 어디에도 안 낀다 — 그것은 "이 컨테이너 안에 넣어라"라는 별개의 런타임 지시이지, compose 자신이 파싱에 쓰는 변수원이 아니다.
    > **`--env-file` vs `env_file:`** — 앞은 compose 프로세스가 파싱에 쓸 변수 파일(파싱 채널), 뒤는 컨테이너 안에 주입할 변수 파일(런타임 채널). 철자가 비슷해 헷갈리지만 정반대 방향이다.
 
-4. 같은 부류다 — 둘 다 "도구의 해석"이 "내 의도"를 이긴 사례다. `image: ghcr…${TAG}` + `build: ./wrapper`를 병존시켜 "배포는 pull, 로컬은 build"를 노렸지만, compose는 `build:`가 있으면 그 서비스를 **로컬 빌드 대상**으로 분류하고 `image:`를 "받을 주소"가 아니라 "**빌드 결과에 붙일 이름표**"로 해석한다. 그래서 `compose pull wrapper`가 `Skipped - No image to be pulled`가 됐다. 갈린 지점 = 키의 병존이 내겐 "둘 다"였지만 도구에겐 "빌드하는 서비스"라는 단일 의미였다는 것.
-   > **build:와 image:의 병존** — compose에서 이 둘이 함께 있으면 "빌드해서 이 이름표를 붙인다"로 읽힌다. pull 대상이 아니다.
+4. 같은 부류다 — 둘 다 "도구의 해석"이 "내 의도"를 이긴 사례다. `image: ghcr…${TAG}` + `build: ./wrapper`를 병존시켜 "배포는 pull, 로컬은 build"를 노렸지만, compose는 `build:`가 있으면 그 서비스를 **로컬 빌드 대상**으로 분류하고 `image:`를 "받을 주소"가 아니라 "**빌드 결과에 붙일 이름표**"로 해석한다. 그래서 `compose pull wrapper`가 `Skipped - No image to be pulled`가 됐다(관측된 버전 기준 — Compose 버전에 따라 build+image 서비스도 pull을 시도하고 실패 시 빌드로 넘기며, `--ignore-buildable`로 건너뛰게 할 수 있다). 갈린 지점 = 키의 병존이 내겐 "둘 다"였지만 도구에겐 "빌드하는 서비스"라는 단일 의미였다는 것.
+   > **build:와 image:의 병존** — compose에서 이 둘이 함께 있으면 "빌드해서 이 이름표를 붙인다"로 읽힌다. pull 대상으로 다룰지는 버전·옵션(`--ignore-buildable`, `pull_policy`)에 따라 다르다.
 
 5. `env_file: ${ENV_FILE:-.env}`는 **파일명 자체를 파싱 채널 변수로** 만든다 → `ENV_FILE=.env.master docker compose ...`로 파싱 시점에 어떤 env 파일을 쓸지 공급할 수 있다(파일 안에 `ENV_FILE=자기자신`도 넣어 런타임 채널까지 해결). 현재 코드의 `profiles`(`master`/`agent`) + `.env.master`/`.env.agent` 분리 방식은 **변수 분기 자체를 없애** 우회한다 — `container_name`을 리터럴(`ci-cd-master`)로 고정하고 서비스를 둘로 나눠, 파싱 시점에 풀 `${MODE}`가 애초에 없다.
    > **profiles** — compose 서비스에 라벨을 달아 `--profile <name>`으로 선택 기동하는 기능. 마스터 호스트는 `--profile master --profile agent`로 둘 다, 나머지 호스트는 `--profile agent`만 띄운다.
@@ -33,13 +33,14 @@ services:
   app:
     container_name: app-${MODE}     # 파싱 채널: 셸 / --env-file / 같은 폴더 .env
     env_file: .env.master           # 런타임 채널: 컨테이너 안에만 MODE=master
-# → required variable MODE is missing
+# → 경고 후 빈 값(app-) / ${MODE:?}였다면 required variable MODE is missing
 ```
 ② 고친 코드
 ```yaml
 services:
   app:
     env_file: ${ENV_FILE:-.env}     # 파일명 자체를 파싱 채널 변수로
+    # container_name에 ${MODE}를 계속 쓰려면 MODE도 셸/--env-file/.env로 공급해야 한다
 # ENV_FILE=.env.master docker compose up -d
 ```
 진화한 형태(변수 분기 제거):
@@ -97,8 +98,8 @@ services:
 ```
 ② 고친 코드
 ```sh
-# 스키마: 멱등 DDL을 수동 재적용 (IF NOT EXISTS 라 안전)
-docker compose exec db psql -f /docker-entrypoint-initdb.d/init.sql
+# 스키마: init.sql이 IF NOT EXISTS 등으로 멱등일 때만 안전하게 수동 재적용
+docker compose exec db psql -U "$POSTGRES_USER" -f /docker-entrypoint-initdb.d/init.sql   # exec 기본 사용자는 DB 롤이 아님
 # 또는 볼륨 초기화(데이터 폐기 전제) / 비번 로테이션은 별도 절차
 ```
 깨진 것: 공식 엔트리포인트는 데이터 디렉터리가 비었을 때만 초기화 스크립트와 비번 설정을 실행한다.
@@ -134,7 +135,7 @@ environment:
   - JAVA_TOOL_OPTIONS=-Xmx8g -XX:+UseZGC -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp
 mem_limit: 16g
 ```
-깨진 것: `JAVA_OPTS`는 셸 스크립트 관례일 뿐, exec-form에선 아무도 읽지 않는다 — JVM이 스스로 읽는 것은 `JAVA_TOOL_OPTIONS`다.
+깨진 것: `JAVA_OPTS`는 셸 스크립트 관례일 뿐, exec-form에선 아무도 읽지 않는다 — JVM이 스스로 읽는 것은 `JAVA_TOOL_OPTIONS`다(JDK 9+의 `java` 런처는 `JDK_JAVA_OPTIONS`도 읽는다).
 
 ### 방안 4 — 대상 범위: 서비스 미지정 pull/up은 파일 전체가 대상
 ① 문제 코드
