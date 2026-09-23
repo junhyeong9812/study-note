@@ -67,7 +67,7 @@ async function search(cond) {
 무엇이 깨졌나: 늦게 도착한 옛 조건의 결과가 최신 조건 아래 정상처럼 표시됐다.\
 같은 구조: 조기 return(빈 쿼리) 분기가 토큰 증가보다 앞 → 비운 목록에 옛 결과 재등장.\
 같은 구조: 프로젝트 전환 중 이전 대상의 목록·상태 응답이 새 화면을 덮음 → 응답에 대상 키도 바인딩, 전환 effect 진입 즉시 파생 상태 비우기.\
-같은 구조: 저장 중 편집 → `const v = version; await save(); if (v === version) setDirty(false)`.\
+같은 구조: 저장 중 편집 → `const v = version; await save(); if (v === version) markDirty(false)`.\
 같은 구조: 폴링 정리 규칙("연속 두 번 없으면 삭제")이 완료 순서를 셈 → 낡은 응답 둘이 살아 있는 데이터 삭제, 세대로 늦은 답 폐기.\
 같은 구조: 조회 실패를 `.catch(() => [])`로 삼켜 "없음"과 "실패"가 구분 불가 → 중복 생성 요청(늦은 응답 덮어쓰기와 함께 보고됨).
 
@@ -77,7 +77,7 @@ async function search(cond) {
 void onAccepted(Job j) { j.setStatus(RUNNING); }     // 완료 콜백이 먼저 왔으면 FAILED → RUNNING
 
 // ② 고침
-boolean markRunning() {
+boolean setRunning() {
     if (status.isTerminal()) return false;            // 종결 후엔 no-op
     status = RUNNING; return true;
 }
@@ -135,8 +135,8 @@ function reconnect() { if (ws) { ws.onclose = null; ws.close(); } connect(); }  
 function reload() {
   if (loadingRef.current || busyRef.current) return;   // 진행 중·자기 조작 중이면 skip
   loadingRef.current = true;
-  const my = ++reqRef.current;
-  api.status().then(r => { if (my === reqRef.current) setStatus(r); })
+  const my = ++latestReq.current;
+  api.status().then(r => { if (my === latestReq.current) setStatus(r); })
              .finally(() => { loadingRef.current = false; });
 }
 ```
