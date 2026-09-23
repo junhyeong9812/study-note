@@ -10,7 +10,7 @@ IEEE-754 특수값
    ±Infinity  == 비교는 정상 동작
 
 [변형 A] 타입 시스템의 동치 선언
-   struct Record { layout: Option<DynamicValue> }   DynamicValue ⊃ f64
+   struct Record { layout: Option<AnyValue> }   AnyValue ⊃ f64
    derive(Eq)  ──✗ 컴파일 거부 (f64는 반사성을 보장 못 함)
    교정: PartialEq만 유지 → assert_eq!는 동작 · Eq 요구 자리(해시 키)에는 못 씀
 

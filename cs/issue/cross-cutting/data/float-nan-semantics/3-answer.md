@@ -47,7 +47,7 @@
 pub struct Record {
     // ...
     #[serde(default)]
-    pub layout: Option<DynamicValue>,   // DynamicValue는 f64를 담을 수 있다
+    pub layout: Option<AnyValue>,   // AnyValue는 f64를 담을 수 있다
 }
 ```
 ② 고친 코드
@@ -56,7 +56,7 @@ pub struct Record {
 pub struct Record {
     // ...
     #[serde(default)]
-    pub layout: Option<DynamicValue>,
+    pub layout: Option<AnyValue>,
 }
 // 대가: Record는 해시 맵 키 등 Eq 요구 자리에 쓸 수 없다
 ```
