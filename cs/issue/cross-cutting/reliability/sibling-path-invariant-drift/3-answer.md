@@ -201,8 +201,9 @@ for hit in hits:
 for hit in hits:
     try:
         r = normalize(hit)
+        k = key_of(hit) or ""                            # 실패할 수 있는 계산을 전부 먼저
         results.append(r)
-        keys.append(key_of(hit) or "")
+        keys.append(k)                                   # append 는 둘 다 성공한 뒤 연달아 — 사이에 예외 지점이 없다
     except Exception:
         continue
 ```
