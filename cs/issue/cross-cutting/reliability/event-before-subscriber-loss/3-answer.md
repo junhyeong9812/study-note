@@ -154,7 +154,7 @@ await stream.append("stream:search.log", payload, maxlen=100_000, approximate=Tr
 for msg in stream.read_group(GROUP, CONSUMER, only_new=True):
     try:
         handle(msg); stream.ack(GROUP, msg.id)
-    except DataError:                     # 데이터 결함 → 폐기 (poison pill 방지)
+    except RecordError:                     # 데이터 결함 → 폐기 (poison pill 방지)
         stream.ack(GROUP, msg.id)
     except InfraError:                    # 인프라 오류 → pending 유지, 재처리
         raise
