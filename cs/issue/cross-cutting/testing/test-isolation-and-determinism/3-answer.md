@@ -15,8 +15,8 @@
    > **test fixture reuse** — 테스트 인프라(컨테이너 등)를 실행 사이에 살려 두고 다시 쓰는 것. 빠르지만 상태가 누적된다.
 
 2. **전부 에러면 픽스처부터.** 통합 테스트가 한꺼번에 에러라면 코드 결함보다 **재사용 컨테이너의 누적 상태**를 먼저 의심하고, 재사용을 끄거나 컨테이너를 모두 지우고 fresh로 다시 돌려 본다.\
-재사용은 설정 해시 **라벨**로 후보 컨테이너를 찾기 때문에 같은 해시의 **정지된 컨테이너도 후보**가 된다 — 실행 중인 것 하나만 지우면 정지된 것이 되살아나 같은 에러가 계속된다.\
-그 해시 라벨의 컨테이너를 `-a`(정지 포함)로 **전부** 지워야 한다.\
+재사용은 설정 해시 **라벨**로 후보 컨테이너를 찾는다 — 정지된(exited) 컨테이너 하나를 지워도, 같은 해시 라벨로 **살아 있는** 컨테이너가 남아 있으면 그것이 계속 재사용돼 같은 에러가 이어진다(후보 조건의 세부는 라이브러리·버전마다 다를 수 있다).\
+그래서 그 해시 라벨의 컨테이너를 `-a`(실행 중·정지 모두)로 **전부** 지워야 한다.\
 컨테이너 기동 명령(옵션)을 바꾸면 해시가 바뀌어 새 컨테이너가 뜬다는 점도 알아 둔다.
 
 3. **영속 경로 하나의 누수.** 소켓 경로만 분리하고 상태 디렉터리를 공유하면, 두 번째 인스턴스가 **하나뿐인 장부**를 함께 읽고 압축한다(실제 발생).\
@@ -60,8 +60,8 @@ static final DbContainer DB = new DbContainer("db:8").withReuse(true);   // 실�
 ```sh
 # 전부 에러면 먼저: 재사용 끄고 fresh 로 재현
 REUSE_ENABLE=false ./run-it.sh
-# 정지된 컨테이너까지 해시 라벨로 전부 제거
-docker ps -a --filter "label=testcontainers.hash=$HASH" -q | xargs -r docker rm -f
+# 실행 중·정지 컨테이너를 해시 라벨로 전부 제거
+docker ps -a --filter "label=org.testcontainers.hash=$HASH" -q | xargs -r docker rm -f
 # IT 앞에 사전 정리 단계(잔여 데이터 제거)
 ```
 무엇이 깨졌나: 테스트 결과가 코드가 아니라 컨테이너의 이력에 좌우됐다.
@@ -83,7 +83,7 @@ tmp=$(mktemp -d); XDG_STATE_HOME="$tmp/state" SOCKET="$tmp/sock" run_daemon
 ### 변형 C — 스레드 간 순서 미보장 → 테스트 seam으로 직렬화
 ① 문제 코드
 ```java
-executor.submit(task);
+Future<?> future = executor.submit(task);
 executor.close();                                   // 다른 스레드의 cancelled 읽기와 순서 보장 없음
 assertThrows(CancellationException.class, future::get);   // 간헐 실패
 ```
