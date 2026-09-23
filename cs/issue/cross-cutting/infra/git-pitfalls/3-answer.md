@@ -167,7 +167,7 @@ git restore -- <modified>; rm -- <created>      # git clean 금지
 ```
 ```python
 # 커밋 기반 롤백: 되돌아갈 지점을 작업 전에 영속, tracked 만 원복
-persist(prev_sha, prev_branch)
+persist(last_sha, prev_branch)
 code, _ = await git(repo, "checkout", "-B", branch, sha)   # 로컬 변경 있으면 git 이 거부(fail-closed), untracked .env 보존
 if await head(repo) != sha: return error()
 ```
