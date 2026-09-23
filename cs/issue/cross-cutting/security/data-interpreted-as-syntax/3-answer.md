@@ -121,7 +121,7 @@ DELETE FROM items
    AND code NOT IN (/* 유지 대상 */);                -- 2회 적용해 행 단위 결과 동일 확인
 ```
 ```java
-enum SearchKey { NAME("name"), OWNER("ownerName"), CODE("ownerCode"); final String field; /*...*/ }
+enum SearchKey { NAME("name"), AUTHOR("authorName"), CODE("itemCode"); final String field; /*...*/ }
 String field = SearchKey.fromCode(request.code()).field;  // 미인식 = 기본 필드로 폴백
 cb.like(cb.lower(root.get(field)), "%" + kw.toLowerCase() + "%");
 // 매핑표는 파라미터화 테스트로 고정, 페이지 size 상한
@@ -139,8 +139,8 @@ INSERT INTO pages(body) VALUES ('<div>${title}</div>');   -- 정의되지 않은
 ```
 ② 고친 코드
 ```python
-PAGE_SIZES = ("A4", "A3")
-if req.size not in PAGE_SIZES: raise HTTPException(400)   # 외부 값은 허용값으로 닫음
+ALLOWED_SIZES = ("A4", "A3")
+if req.size not in ALLOWED_SIZES: raise HTTPException(400)   # 외부 값은 허용값으로 닫음
 css = "@page { size: %s; margin: 14mm; }\n%s" % (req.size, BASE_CSS)   # 문법 조각 분리 조립
 return HTML_PAGE.format(css=css, body=body)
 ```
