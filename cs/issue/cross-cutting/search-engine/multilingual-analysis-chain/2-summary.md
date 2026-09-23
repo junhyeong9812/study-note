@@ -24,12 +24,12 @@
             교정: 남은 라틴 런 음차 + 구분자 공백 정규화 → 필터 입력 불변식(단일 스크립트) 복원
 
 [경계 없는 문자체계]  substring → 짧은 키워드가 긴 단어 내부에 걸림
-            교정: 사전 분절기(icu_tokenizer) 서브필드 + match_phrase
-                  / 키워드의 스크립트 판정으로 대상 필드 라우팅
+            교정: 사전 분절기(icu_tokenizer) 서브필드 + match_phrase  (단어 경계 보존)
+                  / 1글자 토큰 + match_phrase(연속 부분일치 — 경계는 보장 안 함) + 스크립트 판정 라우팅
 
 [체인 설정]  decompound mixed(그래프) × 다중 단어 동의어 → build 실패 → discard
             BOM·CRLF 파일 → 규칙 문자열 오염 → 빌드 시 인코딩·줄바꿈 정규화
-            편집거리 fuzzy × 음절 단위 한글 → 교정 약함 → edge n-gram, fuzzy는 영문 필드만 또는 1로 제한
+            편집거리 fuzzy × 음절 단위 한글 → 짧은 단어는 AUTO 허용 0 · 허용하면 음절 통째 치환도 거리 1 → edge n-gram, fuzzy는 영문 필드만 또는 1로 제한
 ```
 
 ## 핵심 문장
