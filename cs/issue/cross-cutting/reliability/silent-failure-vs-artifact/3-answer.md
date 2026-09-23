@@ -266,7 +266,7 @@ for batch in chunks(source_ids, 10_000):
         missing += [d.id for d in docs if not d.found]
     except Exception:
         missing += batch                                    # 대조 실패 배치는 전부 누락으로(보수)
-reindex(missing, force_all=True)                            # 처리됨 필터 무시
+reindex(missing, rebuild_all=True)                            # 처리됨 필터 무시
 ```
 무엇이 깨졌나: 처리 흔적 파일은 저장소의 실제 상태와 동기화되지 않는다(bulk 200 ≠ 색인 보장) — 성공의 진실 원천은 최종 저장소다.
 
