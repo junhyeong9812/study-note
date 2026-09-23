@@ -381,7 +381,7 @@ arr.c:4:62: warning: ‘sizeof’ on array function parameter ‘r’ will retur
 
 - **`Row` 라는 이름이 「배열을 통째로 넘긴다」는 인상을 주는데 실제로는 포인터가 넘어간다.**
 - `sizeof r` 이 16이 아니라 8이고, `r[0] = 99` 가 **호출자의 배열을 바꾼다.**
-- gcc 가 `-Wsizeof-array-argument` 로 잡아 준다(`-Wall` 에 포함).
+- gcc 가 `-Wsizeof-array-argument` 로 잡아 준다(**플래그 없이도 켜져 있다**).
 - **별칭이 사실을 가린 사례**다 — (5)와 성질이 같다.
 - 감쇠 규칙 자체의 정본은 목록의 **16번 주제**.
 

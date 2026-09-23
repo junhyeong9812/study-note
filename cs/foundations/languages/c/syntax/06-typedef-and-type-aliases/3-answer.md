@@ -248,7 +248,7 @@ arr.c:3:22: note: declared here
 
 **경고**
 
-- **`-Wsizeof-array-argument`** 이고 **`-Wall`** 에 들어 있다.
+- **`-Wsizeof-array-argument`** 이고 **플래그 없이도 켜져 있다**(gcc 13·clang 18 에서 확인 — `-Wno-` 로만 꺼진다).
 - gcc 가 `declared here` 로 파라미터 선언까지 짚어 준다.
 
 **별칭이 감쇠를 막나**
@@ -566,7 +566,7 @@ re.c:1:13: note: previous declaration of ‘T’ with type ‘T’ {aka ‘int�
 | 여러 개 선언 | `#define` : 8, **1** / `typedef` : 8, 8 · 경고 **0건** | 〃 |
 | 태그 이름 공간 | `struct Node`↔`Node` 대입 OK · `struct A`(4)↔`A`(8) 은 `incompatible types` 에러 | 〃 |
 | 불투명 타입 | `typedef struct S S;` 만으로 헤더 성립(실행 `42`) · `sizeof(S)` 는 `incomplete type` 에러 | 〃 |
-| 배열 별칭 | 밖 16 / 안 8 · 원본이 바뀜(`x[0]=99`) · `-Wsizeof-array-argument`(`-Wall`) | 〃 |
+| 배열 별칭 | 밖 16 / 안 8 · 원본이 바뀜(`x[0]=99`) · `-Wsizeof-array-argument`(플래그 없이) | 〃 |
 | 단위 혼동 | `-Wall -Wextra` **0건** · `+-Wconversion` 도 **0건** · `struct` 래퍼는 **에러** | `-Wall -Wextra` ± `-Wconversion` |
 | 함수 포인터 별칭 | `CharFnPtr ft[3]` == `char *(*raw[3])(int)` (크기 24, 서로 대입) · `qsort` 동작 | `-std=c17 -Wall -Wextra` |
 | 저장 클래스 | `typedef static` 은 `multiple storage classes` 에러 | `-std=c17` |
@@ -580,7 +580,7 @@ re.c:1:13: note: previous declaration of ‘T’ with type ‘T’ {aka ‘int�
 - `sizeof(MyInt)`=4 · `sizeof(char *)`=8 — **바탕 타입의 성질**이지 `typedef` 의 성질이 아니다.
 - 진단 문구의 정확한 낱말(`read-only variable` ↔ `read-only location`) — gcc 의 선택이다.\
   ★ 그런데 이 주제의 답은 문구가 아니라 「**어느 줄인가**」이므로, 컴파일러가 바뀌어도 결론은 같다.
-- `-Wsizeof-array-argument` 가 `-Wall` 에 있는 것 · `-Wincompatible-pointer-types` 가 기본인 것.
+- `-Wsizeof-array-argument` 가 **플래그 없이도 켜지는 것** · `-Wincompatible-pointer-types` 가 기본인 것.
 - `-std=c17` 에서 `typeof` 가 안 되는 것(gcc 의 확장 노출 범위에 달렸다).
 
 **안 돌려 본 것 / 못 잰 것**
