@@ -24,7 +24,7 @@
 3. **스크립트는 매칭 문서 전부에서 돈다.**\
 Painless의 `doc['f'].value`는 그 문서에 값이 없으면 예외를 던진다.\
 정렬 스크립트는 결과 집합의 **모든 문서**에서 실행되므로, 값 없는 문서가 단 하나만 섞여도 `search_phase_execution_exception`으로 요청 전체가 실패한다.\
-결과가 클수록 값 없는 문서가 섞일 확률이 커지므로 "결과 30만 건짜리 검색어에서만" 재현되고 1천여 건짜리는 통과했다 — 0.1%의 데이터가 100%의 요청을 깬다.\
+결과가 클수록 값 없는 문서가 섞일 확률이 커지므로 "결과가 큰 검색어에서만" 재현되고 결과가 작은 검색어는 통과했다 — 0.1%의 데이터가 100%의 요청을 깬다.\
 교정은 모든 스크립트 첫 줄에 `if (doc[f].size() == 0) return 기본값;` 가드를 두는 것이다.
    > **Painless** — 검색엔진 내장 스크립트 언어. `doc[...]`는 doc_values(컬럼형 저장소)를 읽는다.
 
@@ -35,13 +35,13 @@ Painless의 `doc['f'].value`는 그 문서에 값이 없으면 예외를 던진�
 
 5. **nested는 숨은 문서.**\
 nested 타입 필드의 각 원소는 Lucene 수준에서 **별도의 숨은 문서**로 저장된다.\
-`_cat/indices`의 `docs.count`는 이 저수준 문서 수라 부모 + 자식의 합이다(최상위 130만 건이 1,200만으로 보임, 1천 건 표본이 약 3,500으로 보임).\
+`_cat/indices`의 `docs.count`는 이 저수준 문서 수라 부모 + 자식의 합이다(최상위 문서 수가 약 10배로 보이고, 작은 표본도 수 배로 보임).\
 최상위 건수는 `_count`(match_all)나 `size=0` 검색의 total로 본다.\
 진행 중인 색인은 한 시점 스냅샷으로 완료를 판정할 수 없으므로, **기준 원천(원본 DB의 distinct 건수) 대비 비율**과 **시간 간격을 두고 두 번 같은 값(건수 정지)**을 함께 확인해 완료를 확정했다.
 
 6. **같은 `_id`는 last-write-wins.**\
 같은 `_id`로의 색인은 덮어쓰기라 스트림 순서상 **마지막 문서**가 이긴다(배치 경계에 걸리면 순서가 비결정).\
-한 자연키에 연도별 레코드 여러 개와 이름 없는 stub이 있었고, `_id = 접두어:자연키` 충돌에서 stub이 마지막에 와 정상 문서가 통합 인덱스에서 사라졌다(원천별 인덱스 합 대비 약 10만 건 결손).\
+한 자연키에 연도별 레코드 여러 개와 이름 없는 stub이 있었고, `_id = 접두어:자연키` 충돌에서 stub이 마지막에 와 정상 문서가 통합 인덱스에서 사라졌다(원천별 인덱스 합 대비 상당수 결손).\
 `_id` 생성 규칙을 바꾸면 새 규칙의 문서가 추가될 뿐, **옛 규칙의 `_id` 문서는 지워지지 않고** 고아로 남는다.\
 교정: 결손을 "빈 값 + 중복"으로 분해하는 판정식을 먼저 고정 → 읽기 단계에서 자연키로 collapse(필드별 최신 유효값 병합, stub은 최후순위) → `_id`는 자연키(결측 시 대체 키) → 재색인 전 기존 인덱스 삭제 런북.
 
@@ -94,7 +94,7 @@ if (doc['status'].size() == 0) return 99;   // 부재 가드
 String s = doc['status'].value;
 ```
 무엇이 깨졌나: 스크립트가 모든 매칭 문서에 값이 있다고 가정했다.\
-같은 구조: 정렬 스크립트가 `params._source.items.size() > 0`으로 원문을 파싱 → 수백만 건 정렬에서 지연 → 색인에 이미 있던 불리언 플래그 필드로 `sort(field="has_items", missing="_last")` 전환.
+같은 구조: 정렬 스크립트가 `params._source.items.size() > 0`으로 원문을 파싱 → 수백만 건 정렬에서 지연 → 색인에 이미 있던 불리언 플래그 필드로 `sort(field="has_entries", missing="_last")` 전환.
 
 ### 변형 D — nested 숨은 문서가 건수를 부풀림 · 완료 판정
 ① 문제 코드
@@ -122,7 +122,7 @@ bulk(stream.map(d -> index(idOf.apply(d), d)));                          // 마�
 Function<Doc, String> idOf = doc ->
     doc.naturalKey() == null || doc.naturalKey().isBlank() ? doc.fallbackKey() : doc.naturalKey();
 // 읽기 단계: naturalKey keyset으로 묶어 필드별 최신 유효값 병합, stub은 최후순위
-Stream<Doc> merged = collapseByNaturalKey(reader, Doc::isStub);
+Stream<Doc> merged = collapseByNaturalKey(reader, Doc::isPlaceholder);
 // 런북: 재색인 전 기존 인덱스 삭제 (옛 규칙 _id 잔존 방지)
 ```
 무엇이 깨졌나: 같은 키로의 쓰기를 병합이라 여겼고, 키 규칙 변경이 옛 키를 지운다고 여겼다.
