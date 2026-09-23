@@ -8,7 +8,7 @@
 ## 정답
 <!-- 질문 1:1 대응 -->
 
-1. **발행자에게는 둘 다 "성공"이다.** 보관 없는 채널은 발행 순간 연결된 구독자 목록에만 복사해 넘기고 끝난다. 목록이 비어 있으면 넘길 곳이 없을 뿐 오류가 아니다.\
+1. **발행자에게는 둘 다 "성공"이다.** 보관 없는 채널은 발행 순간 연결된 구독자 목록에만 복사해 넘기고 끝난다. 목록이 비어 있으면 넘길 곳이 없을 뿐 오류가 아니다(채널에 따라 수신자 수를 반환하거나 — 예: Redis `PUBLISH`의 반환값 — "수신자 없음" 에러를 내기도 하지만, 호출자가 그 값을 확인하지 않으면 결과는 같다).\
    그래서 "아직 등록 전"이든 "잠시 끊김"이든 그 구간의 사건은 **에러 없이 영구 유실**되고, 발행 측 로그는 정상으로 남는다.
    > **fire-and-forget** — 전달 확인 없이 보내고 잊는 방식. 받는 쪽이 없어도 보내는 쪽은 모른다.
 
@@ -70,7 +70,7 @@ function handOff(id) {
 async function handOff(id) {
   const un = await listen("transfer-result", onAck);   // 등록 완료 보장
   beginTransfer(id); api.getPanel(id)?.close(); endTransfer(id);
-  if (api.getPanel(id)) return;                          // 실제 제거 확인
+  if (api.getPanel(id)) { un(); return; }                // 실제 제거 확인 (실패 시 리스너 해제)
   void emit("transfer", envelope);
 }
 // 새 창 경로: await listen → 창 생성 → 대상의 "ready" ack 후에만 detach
