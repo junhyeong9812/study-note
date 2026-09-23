@@ -98,28 +98,34 @@ function shouldConstruct(Component: Function) {
  --- 문자열인가 ---
  L583  typeof type === 'string' 이면
  L585    [FLAG] supportsResources && supportsSingletons 이면   (react-dom 이 여기다)
- L587      isHostHoistableType(...) 이면
- L588        HostHoistable
- L589      아니면 isHostSingletonType(type) 이면
- L590        HostSingleton
- L591      아니면
- L591        HostComponent
+ L586      hostContext = getHostContext()
+ L587      fiberTag = isHostHoistableType(type, pendingProps, hostContext)
+ L588        ? HostHoistable
+ L589        : isHostSingletonType(type)
+ L590          ? HostSingleton
+ L591          : HostComponent
  L593    (플래그가 하나만 켜진 갈래 둘, 둘 다 꺼진 갈래 하나가 더 있다)
 
  --- 그 밖 ---
  L605  getTag: switch (type)                   ★ **레이블 붙은 switch**
  L607    REACT_ACTIVITY_TYPE
  L610    REACT_FRAGMENT_TYPE
- L613    REACT_STRICT_MODE_TYPE  -> L614 fiberTag = Mode
+ L613    REACT_STRICT_MODE_TYPE
+ L614      fiberTag = Mode
+ L615      mode |= StrictLegacyMode
+ L616      disableLegacyMode 이거나 이미 ConcurrentMode 이면
+ L618        mode |= StrictEffectsMode      ★ 아래로 떨어지는 case 중 유일하게
+                                             mode 를 건드린다
  L622    REACT_PROFILER_TYPE
  L625    REACT_SUSPENSE_TYPE
  L628    REACT_SUSPENSE_LIST_TYPE
- L631    REACT_LEGACY_HIDDEN_TYPE
- L636    REACT_VIEW_TRANSITION_TYPE
- L641    REACT_SCOPE_TYPE
- L646    REACT_TRACING_MARKER_TYPE
+ L631    REACT_LEGACY_HIDDEN_TYPE      [FLAG:enableLegacyHidden=false]
+ L636    REACT_VIEW_TRANSITION_TYPE    [FLAG:enableViewTransition=true]
+ L641    REACT_SCOPE_TYPE              [FLAG:enableScopeAPI=false]
+ L646    REACT_TRACING_MARKER_TYPE     [FLAG:enableTransitionTracing=false]
+          ★ 이 넷은 **fall-through 사슬**이다. 아래에 따로 적는다
  L651    default
- L653      typeof type === 'object' 이고 null 이 아니면
+ L653      typeof type === 'object' 이고 null 이 아니면   (default 레이블은 L651)
  L654        switch (type.$$typeof)
  L656          REACT_CONTEXT_TYPE     -> L657 ContextProvider ; L658 break getTag
  L660          REACT_CONSUMER_TYPE    -> L661 ContextConsumer ; L662 break getTag
@@ -160,6 +166,10 @@ function shouldConstruct(Component: Function) {
 
  => React.Component 를 상속했는지만 본다.
     `isReactComponent` 라는 표식이 프로토타입에 있는지가 전부다
+
+ ★ 다만 판정이 하나 더 있다 - isSimpleFunctionComponent(L312-318)는
+   `!shouldConstruct(type) && type.defaultProps === undefined` 까지 본다
+   (SimpleMemoComponent 를 고를 때 쓴다)
  => 화살표 함수는 prototype 이 없어 자동으로 함수 컴포넌트가 된다
     (마지막 줄은 내 귀결이고 주석에 없다)
 ```
@@ -213,10 +223,59 @@ function shouldConstruct(Component: Function) {
      reconciliation phase. So we'll rethrow here. This might be a Thenable."
    BW L4465  throw workInProgress.pendingProps;
 
- => 최상위 인덱스가 "case Throw 가 되던짐" 이라고만 적었던 것의 정체다.
-    센티널이 아니라 **여기서 담아 둔 진짜 에러**다
+ => 최상위 인덱스가 "case Throw 가 되던짐" 이라고만 적었던 것의 한 갈래다.
+    센티널이 아니라 **담아 둔 진짜 에러**다
+
+ ★ 다만 Throw fiber 를 만드는 곳이 여기뿐은 아니다.
+   createFiberFromThrow(FIBER L971)가 따로 있고
+   [자식 조정](../../reconcile-children/README.md)의 ReactChildFiber L2075 가 그것을 쓴다
  => 렌더 단계까지 미루는 이유는 그 위치에서 컴포넌트 스택을 붙이려는 것으로 보인다
     ※ 마지막 줄은 내 추측이다. 주석에 없다
+```
+
+```text
+ ★★★ 이 switch 는 나란한 목록이 아니라 **fall-through 사슬**이다
+
+ L631  case REACT_LEGACY_HIDDEN_TYPE:
+ L632    if (enableLegacyHidden) { return createFiberFromLegacyHidden(...) }
+ L635  // $FlowFixMe[invalid-compare] -- falls through
+ L636  case REACT_VIEW_TRANSITION_TYPE:
+ L637    if (enableViewTransition) { return createFiberFromViewTransition(...) }
+ L640  // falls through
+ L641  case REACT_SCOPE_TYPE:
+ L642    if (enableScopeAPI) { ... }
+ L645  // falls through
+ L646  case REACT_TRACING_MARKER_TYPE:
+ L647    if (enableTransitionTracing) { ... }
+ L650  // Fall through
+ L651  default: { ... }
+
+ 플래그 실제 값을 넣어 보면 결과가 뜻밖이다
+   enableLegacyHidden      = false   (FLAGS L109)
+   enableViewTransition    = true    (FLAGS L81)
+   enableScopeAPI          = false   (FLAGS L53)
+   enableTransitionTracing = false   (FLAGS L106)
+
+ => `<LegacyHidden>` 은 자기 case 를 통과해 **ViewTransition fiber 가 된다**
+ => `<Scope>` 와 `<TracingMarker>` 는 default 까지 떨어져 **Throw fiber 가 된다**
+    ("Element type is invalid" 를 받는다)
+
+ ★ 플래그가 꺼진 기능을 "없는 것" 으로 만드는 방식인데,
+   떨어지는 곳이 하필 다음 case 라 LegacyHidden 만 엉뚱한 곳에 닿는다
+   ※ 마지막 문장은 내 관찰이다. 주석은 falls through 만 적는다
+```
+
+```text
+ ★ 이 switch 의 case 아홉은 아래까지 안 내려온다
+
+ L608 / L611 / L623 / L626 / L629 / L633 / L638 / L643 / L648 이
+ 각각 createFiberFromX 를 **return** 한다
+
+ => L741-750 의 공통 마무리(elementType / type / lanes 대입)를 안 거친다
+ => 그래서 fiber.elementType 이 언제나 채워지는 것은 아니다
+    createFiberFromFragment(L781-790)와 createFiberFromOffscreen(L859-868)은
+    본문이 세 줄인데 createFiber / lanes / return 뿐이다.
+    elementType 을 **아예 안 세운다** (null 로 남는다)
 ```
 
 ```text
