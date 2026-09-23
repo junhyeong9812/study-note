@@ -189,6 +189,7 @@ export function createWorkInProgress(current: Fiber, pendingProps: any): Fiber {
  L341    elementType / L342 type / L343 stateNode 복사
  L345    [__DEV__]
  L348      _debugOwner / L349 _debugStack / L350 _debugTask / L351 _debugHookTypes
+            ★ 이 넷은 **새로 만드는 갈래에서만** 복사된다
  L354    workInProgress.alternate = current
  L355    current.alternate = workInProgress     ★ **서로 건다**
 
@@ -200,7 +201,7 @@ export function createWorkInProgress(current: Fiber, pendingProps: any): Fiber {
  L363    flags = NoFlags                        ★ 아래에서 덮어써진다
  L366    subtreeFlags = NoFlags
  L367    deletions = null
- L369    [FLAG:enableOptimisticKey]
+ L369    [FLAG:enableOptimisticKey=__EXPERIMENTAL__]  (안정 채널에서는 꺼져 있다)
  L372      key = current.key
  L375    [FLAG:enableProfilerTimer]
  L380      actualDuration = -0
@@ -211,13 +212,17 @@ export function createWorkInProgress(current: Fiber, pendingProps: any): Fiber {
  L388  childLanes / L389 lanes 복사
  L391  child 복사
  L392  memoizedProps / L393 memoizedState / L394 updateQueue 복사
- L399  dependencies 를 **복제** (L399-411)
+ L398  currentDependencies = current.dependencies   (읽기)
+ L399  workInProgress.dependencies = ... 로 **복제** (L399-411)
  L414  sibling / L415 index / L416 ref / L417 refCleanup 복사
         주석 L413 - "These will be overridden during the parent's reconciliation"
  L419  [FLAG:enableProfilerTimer]
  L420    selfBaseDuration / L421 treeBaseDuration 복사
  L424  [__DEV__]
  L425    _debugInfo / L426 _debugNeedsRemount 복사
+          ★ DEV 필드 복사가 **4 + 2 로 갈린다**.
+            앞의 넷은 새로 만들 때만, 이 둘은 두 갈래 공통이다
+            => 재사용 갈래에서는 _debugOwner 등이 current 것으로 갱신되지 않는다
  L427    핫 리로딩용 type 해소 switch (L427-440)
  L443  => return workInProgress
 ```
@@ -281,6 +286,13 @@ export function createWorkInProgress(current: Fiber, pendingProps: any): Fiber {
 
  => 재사용 갈래도 반드시 L387 을 지나므로 L363 의 효과가 남지 않는다
  ※ 내가 두 줄 사이를 전수로 훑어 확인한 것이다. 주석은 없다
+
+ ★ 다만 이 모양이 실수처럼 보이지 않는 이유가 있다.
+   같은 자리의 **다른 함수**에서는 같은 패턴이 의미를 갖는다
+     resetWorkInProgress L461  workInProgress.flags &= StaticMask | Placement
+     주석 L459-460 - "Reset the effect flags but keep any Placement tags,
+       since that's something that child fiber is setting, not the reconciliation."
+   그쪽은 `&=` 이고 Placement 를 살린다. 여기는 `=` 라 앞의 대입이 무의미해진다
 ```
 
 ```text
@@ -346,4 +358,4 @@ export function createWorkInProgress(current: Fiber, pendingProps: any): Fiber {
 
 ## 다루지 않는 것
 
-`StaticMask`(`ReactFiberFlags.js` L137)에 들어 있는 플래그 전체 목록, `createFiberImplClass`(FIBER L226) / `createFiberImplObject`(L236) 두 구현의 차이와 `enableObjectFiber` 실험의 배경, `resetWorkInProgress`(FIBER L447)가 "두 번째 패스" 를 위해 하는 일과 그 호출처, `createHostRootFiber`(FIBER L536)가 `mode` 를 정하는 규칙, `resolveFunctionForHotReloading` / `resolveClassForHotReloading` / `resolveForwardRefForHotReloading`(`ReactFiberHotReloading.js`)의 본문, `enableOptimisticKey` 가 무엇을 위한 것인지, `actualDuration` 의 `-0` 과 `actualStartTime` 의 `-1.1` 이라는 초기값의 사정은 이 문서의 범위 밖이다.
+`StaticMask`(`ReactFiberFlags.js` L137-145)의 구성 — 여덟 항이지만 `RefStatic` 은 `LayoutStatic` 의 별칭이고 `ViewTransitionNamedStatic` 은 그 자체가 `SnapshotStatic | MaySuspendCommit` 인 합성이라 실제 비트 수는 더 적다, `createFiberImplClass`(FIBER L226) / `createFiberImplObject`(L236) 두 구현의 차이와 `enableObjectFiber` 실험의 배경, `resetWorkInProgress`(FIBER L447)가 "두 번째 패스" 를 위해 하는 일과 그 호출처, `createHostRootFiber`(FIBER L536)가 `mode` 를 정하는 규칙, `resolveFunctionForHotReloading` / `resolveClassForHotReloading` / `resolveForwardRefForHotReloading`(`ReactFiberHotReloading.js`)의 본문, `enableOptimisticKey` 가 무엇을 위한 것인지, `actualDuration` 의 `-0` 과 `actualStartTime` 의 `-1.1` 이라는 초기값의 사정은 이 문서의 범위 밖이다.
