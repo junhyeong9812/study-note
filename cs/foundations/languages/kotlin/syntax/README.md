@@ -1,6 +1,6 @@
 # Kotlin — 문법·API 주제 목록
 
-> 진행 — **13 / 58**(01 · 02 · 03 · 04 · 05 · 06 · 07 · 08 · 09 · 10 · 11 · 12 · 13). 「주제」 칸의 링크가 각 주제의 3파일 폴더다.
+> 진행 — **17 / 58**(01 \~ 17). 「주제」 칸의 링크가 각 주제의 3파일 폴더다.
 > 기준 소스: [kotlinlang.org 언어 레퍼런스](https://kotlinlang.org/docs/home.html) · [kotlin-stdlib API](https://kotlinlang.org/api/core/kotlin-stdlib/) · [언어 기능·제안 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html)(기능이 Stable 이 된 버전 확인) · [릴리스 목록](https://kotlinlang.org/docs/releases.html)
 > 실행 검증: **가능**(2026-09-23 에 `sdk install kotlin` 으로 갖췄다). **kotlinc 2.4.20 · JRE 21.0.5.**
 > ★★ **이 갈래의 근거는 `javap` 다** — Kotlin 은 JVM 바이트코드로 컴파일되므로 「무엇으로 컴파일되나」를 지어낼 수 없다.
@@ -35,10 +35,10 @@ Kotlin 공식 레퍼런스는 **타입 → 클래스·객체 → 함수·람다 
 | 11 | [인라인 함수 — `noinline`/`crossinline`·비지역 반환](11-inline-functions/) | 문법 | 인라인이 없앤 비용과 그 대가로 생기는 제약을 판단할 수 있다 | 10 | — | A |
 | 12 | [`reified` 타입 파라미터 — 소거를 뚫는 방법](12-reified-type-parameters/) | 문법 | 왜 `inline` 없이는 `reified` 가 불가능한지 소거로 설명할 수 있다 | 11 | — | B |
 | 13 | [확장 함수·확장 프로퍼티 — 정적 디스패치라는 천장](13-extension-functions-and-properties/) | 문법 | 확장 함수가 오버라이드되지 않는 이유와 멤버와 충돌할 때 누가 이기는지 예측할 수 있다 | 08 | [`../언어-특성/README.md`](../언어-특성/README.md) §7 | A |
-| 14 | scope function 5종 — `let`/`run`/`with`/`apply`/`also` | 문법 | 수신자 형태(`this`/`it`)와 반환값(수신자/람다 결과)으로 다섯을 구분해 고를 수 있다 | 10, 13 | — | A |
-| 15 | 클래스 선언 — 주 생성자·부 생성자·`init` 블록 순서 | 문법 | 프로퍼티 초기화와 `init` 이 어느 순서로 도는지 예측할 수 있다 | 01 | — | A |
-| 16 | 프로퍼티 — backing field·커스텀 접근자·`lateinit`·`const` | 문법 | `field` 키워드가 필요한 자리와 `lateinit` 이 쓸 수 없는 타입을 판단할 수 있다 | 15 | — | A |
-| 17 | 위임 프로퍼티 — `by lazy`·`observable`·`Map` 위임 | 문법 | `by` 가 어떤 연산자 규약(`getValue`/`setValue`)으로 풀리는지 설명할 수 있다 | 16 | — | B |
+| 14 | [scope function 5종 — `let`/`run`/`with`/`apply`/`also`](14-scope-functions/) | 문법 | 수신자 형태(`this`/`it`)와 반환값(수신자/람다 결과)으로 다섯을 구분해 고를 수 있다 | 10, 13 | — | A |
+| 15 | [클래스 선언 — 주 생성자·부 생성자·`init` 블록 순서](15-class-declaration-constructors-and-init/) | 문법 | 프로퍼티 초기화와 `init` 이 어느 순서로 도는지 예측할 수 있다 | 01 | — | A |
+| 16 | [프로퍼티 — backing field·커스텀 접근자·`lateinit`·`const`](16-properties-backing-field-lateinit-const/) | 문법 | `field` 키워드가 필요한 자리와 `lateinit` 이 쓸 수 없는 타입을 판단할 수 있다 | 15 | — | A |
+| 17 | [위임 프로퍼티 — `by lazy`·`observable`·`Map` 위임](17-delegated-properties/) | 문법 | `by` 가 어떤 연산자 규약(`getValue`/`setValue`)으로 풀리는지 설명할 수 있다 | 16 | — | B |
 | 18 | 가시성 수식어 — `internal` 이 Java 에 없는 이유 | 문법 | 모듈 경계가 무엇으로 정의되고 Java 에서 보면 어떻게 보이는지 설명할 수 있다 | 15 | — | B |
 | 19 | 상속 — `open`/`final` 기본값 뒤집기·`override` 강제 | 문법 | 상속을 열려면 무엇을 명시해야 하는지, 그 기본값이 막는 실패를 설명할 수 있다 | 15 | [`../언어-특성/README.md`](../언어-특성/README.md) §11 | A |
 | 20 | 인터페이스 — 기본 구현·프로퍼티 선언·충돌 해소(`super<T>`) | 문법 | 같은 시그니처를 둘에서 상속했을 때 요구되는 형태를 쓸 수 있다 | 19 | — | A |
