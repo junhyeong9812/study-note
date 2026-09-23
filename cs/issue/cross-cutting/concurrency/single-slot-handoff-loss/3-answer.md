@@ -96,7 +96,7 @@ useEffect(() => { if (req) { act(req); clear(); } }, [req]);   // 앞·뒤 레�
 useEffect(() => {
   if (!req || !isFront(layer)) return;          // 게이트 닫힌 소비자는 clear도 하지 않음
   if (req.project !== activeProject) return;    // 올바른 인스턴스만
-  if (!apiRef.current) return;                  // 준비 전이면 유지
+  if (!handleRef.current) return;                  // 준비 전이면 유지
   act(req); clear();
 }, [req, apiReady, layer]);
 ```
