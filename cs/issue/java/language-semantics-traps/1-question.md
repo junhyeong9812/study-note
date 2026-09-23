@@ -7,11 +7,11 @@
 
 ## 질문
 1. 배치 잡 러너가 `catch (Exception e) { setFailed(); }`로 감싸져 있는데, 잡이 `RUNNING` 상태로 영원히 멈췄고 스레드 덤프에 그 스레드가 없다. 무슨 일이 일어났는가 — `Throwable`·`Error`·`Exception`의 계층으로 설명하고, `catch (Throwable)`로도 막을 수 없는 경우는 무엇인가.
-2. 예측: `static final X INSTANCE = new X();`가 `static final List<Rule> RULES = build();`보다 **위에** 선언돼 있고 생성자가 `super(RULES)`를 부른다. 클래스를 처음 쓰는 순간 무슨 예외가 나는가, 왜인가.
+2. 예측: `static final X INSTANCE = new X();`가 `static final List<Rule> RULES = build();`보다 **위에** 선언돼 있고 생성자가 `super(RULES)`를 부르고, `Base` 생성자는 받은 목록을 순회한다. 클래스를 처음 쓰는 순간 무슨 예외가 나는가, 왜인가.
 3. `service.onLoginFailed(parseSiteId(header), user)` — 헤더가 숫자가 아니라서 `parseSiteId`가 던지면 `onLoginFailed` 본문(실패 카운트·잠금·감사 로그)은 어떻게 되는가. 이것이 왜 보안 결함인가.
 4. `List<Sub>`를 `List<Super>`에 대입할 수 없는 이유(불변성)와, `retrieve().body(Paged.class)`로는 `Paged<Item>`의 원소 타입을 받을 수 없는 이유(소거)를 각각 말하라. 소거를 우회하는 "타입 토큰"은 어떻게 동작하는가.
 5. 경계: `Optional<Node>`와 `Node`를 `equals`로 비교하는 코드는 왜 컴파일되며 결과는 무엇인가? 같은 식으로, 타입이 같은 두 인자의 순서가 뒤바뀐 호출은 왜 컴파일러가 잡지 못하는가.
-6. varargs 오버로드 두 개(`f(Class<?>, Class<?>...)`, `f(Class<?>, Type...)`)에 가변 인자 0개로 호출하면 왜 모호성 에러가 나는가. 오버로드를 하나 추가했더니 기존 테스트의 `verify(mock).m(any(), any())`가 컴파일 에러가 되는 이유도 같은 원리로 설명하라.
+6. varargs 오버로드 두 개(`f(Class<?>, Class<?>...)`, `f(Class<?>, TypeDesc...)` — `TypeDesc`는 `Class`와 하위 타입 관계가 없는 타입)에 가변 인자 0개로 호출하면 왜 모호성 에러가 나는가. (가변 인자 타입이 `java.lang.reflect.Type`이었다면 왜 모호하지 않은가?) 오버로드를 하나 추가했더니 기존 테스트의 `verify(mock).m(any(), any())`가 컴파일 에러가 되는 이유도 같은 원리로 설명하라.
 7. 연결: 주석 안의 `created_*/modified_*`가 컴파일을 깨는 이유, record 컴포넌트에 단 `@Target(FIELD)` 어노테이션이 `RecordComponent`에서 안 보이는 이유, 정규식 `\W`가 "특수문자"가 아닌 이유 — 이 셋의 공통점은 무엇인가("사람이 읽는 의미 ≠ 언어가 정의한 의미").
 
 ## 복습 기록
