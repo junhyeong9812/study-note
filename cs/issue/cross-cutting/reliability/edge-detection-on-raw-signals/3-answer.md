@@ -86,15 +86,15 @@ onWorkingResumed() { this.seenInWindow = false; }
 ### 방안 1 — 주기 샘플링 대신 세대 ID 비교
 ```js
 // 문제: 스냅샷 폴링으로 down → up 전이를 잡으려 함 (펄스 < 폴링 주기면 못 봄)
-let wentDown = false;
-poll(() => { if (!s.connected) wentDown = true; if (wentDown && s.connected) done(); });
+let sawDown = false;
+poll(() => { if (!s.connected) sawDown = true; if (sawDown && s.connected) done(); });
 
 // 고친: 재시작 직전 세대 캡처 → 값이 바뀌었는지만 본다
 const before = (await status()).sessionId;
 await redeploy();
 poll(s => {
   if (s.connected && before && s.sessionId && s.sessionId !== before) return done();
-  if (!before) { /* 구버전 fallback: wentDown 방식 */ }
+  if (!before) { /* 구버전 fallback: sawDown 방식 */ }
 });
 ```
 
