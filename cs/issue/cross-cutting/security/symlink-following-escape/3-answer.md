@@ -10,7 +10,8 @@
 
 1. **stat vs lstat.** `stat`류(`metadata`, `exists`, `is_file`)는 링크를 **따라가** 링크가 가리키는 대상의 정보를 돌려준다.\
 `lstat`류(`symlink_metadata`, `is_symlink`)는 링크를 따라가지 않고 **링크 자체**를 본다.\
-디렉터리를 가리키는 링크를 `metadata`로 판정하면 "디렉터리"로 보고되고, 그대로 재귀 삭제하면 **링크가 아니라 링크 너머의 실제 폴더 내용**이 지워진다.\
+디렉터리를 가리키는 링크를 `metadata`로 판정하면 "디렉터리"로 보고되고, 링크를 따라 내려가는 재귀 삭제(직접 짠 순회, 경로 끝에 `/`를 붙인 `rm -rf link/` 등)로 이어지면 **링크가 아니라 링크 너머의 실제 폴더 내용**이 지워진다.\
+(구현마다 다르다 — Rust `remove_dir_all`은 최상위 링크를 따라가지 않고 링크만 지우고, Python `shutil.rmtree`는 링크면 오류를 낸다. 그래도 판정 자체가 틀리면 분기·확인 UI·후속 처리가 링크 너머를 대상으로 삼는다.)\
 그래서 삭제 판정은 `symlink_metadata`로 하고, 링크면 링크만 제거(`remove_file`), 진짜 디렉터리일 때만 재귀 삭제한다.
    > **lstat** — 경로의 마지막 성분이 심볼릭 링크여도 따라가지 않고 링크 자체의 메타데이터를 돌려주는 시스템 호출.
 
@@ -22,27 +23,31 @@
 
 3. **O_EXCL이 더 강한 이유.** "`is_symlink()` 검사 → 생성"은 두 단계라 그 사이에 누군가 링크를 만들면 뚫린다(TOCTOU).\
 `open(path, "x")`는 O_CREAT|O_EXCL로 **"없을 때만 만든다"를 커널이 한 syscall로 원자적으로** 판정하고, 경로가 dangling 링크를 포함해 어떤 형태로든 존재하면 `FileExistsError`를 낸다.\
-그래서 사전 검사는 친절한 오류 메시지용으로 남기고, 실제 방어는 O_EXCL이 맡는다("검사만" 방식은 경쟁 창 잔존으로 선택하지 않은 방법).
+그래서 사전 검사는 친절한 오류 메시지용으로 남기고, 실제 방어는 O_EXCL이 맡는다("검사만" 방식은 경쟁 창 잔존으로 선택하지 않은 방법).\
+단 O_EXCL이 링크를 거절하는 것은 **마지막 성분**뿐이다 — 중간 디렉터리 링크는 여전히 따라가므로 4번의 포함 검사가 따로 필요하다.
    > **TOCTOU** — time-of-check to time-of-use. 검사 시점과 사용 시점 사이에 상태가 바뀌어 검사가 무의미해지는 경쟁 조건.
 
 4. **최종 성분만 검사.** `base/<오늘날짜>/<이름>`에서 `<이름>`만 링크·존재 검사를 하면, 중간의 `<오늘날짜>` 디렉터리가 ROOT 밖을 가리키는 링크일 때 최종 경로는 "링크 아님·없음"으로 멀쩡해 보인다.\
 그러나 `mkdir(parents=True)`는 중간 링크를 따라가 **ROOT 밖에 폴더와 파일을 만든다**.\
 포함 여부는 이름 문자열이 아니라 **실제로 쓰게 될 위치**의 성질이므로, 전체 경로를 `resolve()`해(중간 링크를 모두 풀고) 그 실경로가 ROOT 아래인지 본다.\
-이때도 문자열 `startswith`는 `/root-evil` 같은 형제 경로를 통과시키므로 `root in resolved.parents`처럼 경로 성분 단위로 비교한다.
+이때도 문자열 `startswith`는 `/root-evil` 같은 형제 경로를 통과시키므로 `root in resolved.parents`처럼 경로 성분 단위로 비교한다.\
+resolve 후 사용까지도 검사-사용 간격이 있다 — 공격자가 ROOT 안에 동시에 링크를 만들 수 있는 환경이면 `openat`+`O_NOFOLLOW`로 성분별로 내려가거나 `openat2`의 `RESOLVE_BENEATH`(Linux) 같은 커널 수준 제한이 필요하다(일반론 — 위협 모델에 따라 다름).
 
 5. **분기 패리티.** 생성 분기가 O_EXCL로 링크를 막아도, 갱신 분기의 `is_file()/read_text/write_text`는 링크를 따라간다.\
 검증된 폴더 안에 `doc.md -> /외부/파일`을 두면 폴더 경로 검증은 통과하고, 갱신 분기가 **ROOT 밖 파일을 읽고 내용을 덧붙인다**.\
 경로 검증을 "디렉터리까지만" 하고 그 안의 파일 이름을 따라 열면 파일 자체가 링크인 경우를 놓친다.\
 패리티란 생성·읽기·갱신·이동 **모든 분기가 같은 링크 정책**(여기선 "기존 파일이 링크면 거절")을 갖는 것이다.
 
-6. **move의 두 얼굴.** 같은 파일시스템에서 `move`는 `rename`이라 대상 경로의 디렉터리 엔트리를 원자적으로 교체한다(대상 링크를 따라가지 않음).\
+6. **move의 두 얼굴.** 같은 파일시스템에서 `move`는 `rename`이라 대상 경로의 디렉터리 엔트리를 원자적으로 교체한다(대상이 파일 링크면 링크 자체를 교체 — 따라가지 않음).\
+(단 Python `shutil.move`는 대상이 디렉터리면 그 **안으로** 옮기는데 이 판정이 링크를 따라가므로, 디렉터리를 가리키는 링크가 대상이면 같은 FS에서도 링크 너머로 들어간다.)\
 다른 파일시스템(예: `/tmp`가 tmpfs)에서는 rename이 불가능해 **copy + 삭제로 폴백**하고, copy는 대상이 링크면 **링크를 따라가 대상 위치에 쓴다**.\
 코드는 한 줄 그대로인데 배포 환경의 마운트 구성에 따라 보안 성질이 바뀌므로, 대상에 링크 검사를 따로 두고 덮어쓰기면 기존 대상을 먼저 `unlink`한다.
 
 7. **고정 /tmp 경로 선점.** world-writable 디렉터리의 **예측 가능한 이름**은 공격자가 먼저 같은 이름의 링크를 만들어 둘 수 있다.\
-`create_dir_all`은 이미 있는 경로(링크 포함)를 성공으로 통과하므로, 이후 작업이 공격자가 가리킨 곳에서 일어난다.\
+`create_dir_all`은 이미 디렉터리로 보이는 경로(디렉터리를 가리키는 링크 포함)를 성공으로 통과하므로, 이후 작업이 공격자가 가리킨 곳에서 일어난다.\
+(Linux의 `fs.protected_symlinks` 설정은 sticky world-writable 디렉터리에서 남의 링크 추종을 일부 막지만 배포판·설정마다 다르므로 코드가 의존할 방어는 아니다.)\
 원자적 `create_dir`은 "이미 있으면 실패"로 선점을 드러내고, `symlink_metadata` 재검사는 링크를 거절하며, 소유자 확인은 남이 만든 디렉터리를 거절하고, 0700은 다른 계정의 접근을 막는다(권한 설정 실패도 전파).\
-실행별 임의 이름이 더 강하지만 고정 경로가 기능상 필요한 경우 이 3중 하드닝으로 대신한다.
+실행별 임의 이름(`mkdtemp` 류)이 더 강하지만 고정 경로가 기능상 필요한 경우 이 조합으로 대신한다.
    > **world-writable** — 모든 사용자가 쓸 수 있는 디렉터리(`/tmp` 등). 여기서 만든 이름은 다른 사용자와 경쟁한다.
 
 ## 문제 구조 (추상화 코드)
@@ -74,7 +79,7 @@ except FileExistsError:
 ① 문제 코드
 ```rust
 let md = std::fs::metadata(p)?;          // 링크 추종 → 대상 디렉터리로 판정
-if md.is_dir() { std::fs::remove_dir_all(p)? }   // 링크 너머 실제 폴더를 비움
+if md.is_dir() { std::fs::remove_dir_all(p)? }   // 판정은 링크 너머 폴더 기준 — 링크를 따라가는 삭제 구현이면 실제 폴더를 비움
 ```
 ② 고친 코드
 ```rust
@@ -118,8 +123,8 @@ else:
 doc = folder / "doc.md"
 if doc.is_symlink():
     raise BadRequest()                          # 모든 분기 앞에서 같은 정책
-if doc.exists():
-    doc.write_text(marker + doc.read_text())
+if doc.exists():                                # 검사 후 링크로 바꿔치기되는 경쟁은 남음 —
+    doc.write_text(marker + doc.read_text())    #   폴더에 남이 쓸 수 있으면 O_NOFOLLOW로 열어 fd로 읽고 쓴다
 else:
     with open(doc, "x") as f: f.write(seed)
 # 테스트: 링크 대상(ROOT 밖 파일) 내용이 변하지 않았음을 단언
@@ -138,12 +143,12 @@ with TemporaryDirectory() as td:            # /tmp 가 다른 FS(tmpfs)일 수 �
 if target.is_symlink():
     raise BadRequest()
 with TemporaryDirectory() as td:
-    out = render_to(td)
-    if proc.returncode != 0 or not out.is_file():
+    out, returncode = render_to(td)
+    if returncode != 0 or not out.is_file():
         raise ServerError()                 # 성공 확인 전엔 최종 위치에 아무것도 두지 않음
     if overwrite and target.exists():
         target.unlink()                     # 기존 대상 제거 후 생성
-    shutil.move(out, target)
+    shutil.move(out, target)                # 검사~move 사이 링크 재생성 경쟁은 남음(대상 폴더 쓰기 권한자가 공격자일 때)
 ```
 무엇이 깨졌나: 같은 코드의 링크 추종 여부가 마운트 구성에 따라 조용히 바뀌었다.
 
