@@ -1,12 +1,12 @@
 # React 아키텍처 지도
 
-소스를 **직접 읽어서** 그린 탑다운 지도다. 흐름 열일곱 편, 94개 문서로 되어 있다.
+소스를 **직접 읽어서** 그린 탑다운 지도다. 흐름 열여덟 편, 98개 문서로 되어 있다.
 
 기준 커밋: react `main` [`68631c0453`](https://github.com/facebook/react/tree/68631c0453b08e2c7c96a40910f4c91db1f66d5a). 모든 줄 번호는 이 커밋 기준이고, 대상은 **react-dom 클라이언트 빌드**다.
 
 `useState` 나 `useEffect` 같은 API 이름에서 거꾸로 찾고 싶으면 [API 역인덱스](api-index.md)를 보면 된다.
 
-## 흐름 열일곱 편
+## 흐름 열여덟 편
 
 | 흐름 | 진입점 | 문서 |
 |---|---|---|
@@ -27,6 +27,7 @@
 | [커밋 이펙트](flows/commit-effects/README.md) | `ReactFiberCommitEffects.js` — 사용자 코드를 부르는 자리 | 5 |
 | [DOM 조작](flows/dom-ops/README.md) | `ReactFiberCommitHostEffects.js` → `ReactFiberConfigDOM.js` | 6 |
 | [하이드레이션](flows/hydration/README.md) | `ReactFiberHydrationContext.js` — 커서가 DOM 을 걷는다 | 5 |
+| [Fiber 자료구조](flows/fiber/README.md) | `ReactInternalTypes.js` + `ReactFiber.js` — 칸 서른셋 | 4 |
 
 ## 흐름이 이어지는 자리
 
@@ -91,6 +92,8 @@
 
  그리고 센티널이 아닌 것 하나
    case Throw 가 되던짐   [beginWork] L4465 — 사용자의 진짜 에러다
+     ★ 그 에러는 [Fiber 자료구조]가 Throw fiber 의 pendingProps 에 담아 둔 것이다
+       (FIBER L730-735 — "Element type is invalid" 가 대표적이다)
 
  ★ 다섯이 동급은 아니다. [렌더 루프]의 handleThrow 가 이름으로 가르는 것은 **넷**이고
    (WL L2305 / L2306 / L2321 / L2324),
@@ -158,6 +161,10 @@
  SSR 한 HTML 위에 어떻게 얹는지,
  "Hydration failed because..." 가 어디서 나오는지 궁금하면
    [하이드레이션]
+
+ alternate·flags·memoizedState 가 무엇인지,
+ JSX 에 쓴 것이 어떤 tag 이 되는지 궁금하면
+   [Fiber 자료구조]
 ```
 
 ## 문서의 생김새
