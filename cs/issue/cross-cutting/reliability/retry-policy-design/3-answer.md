@@ -39,7 +39,7 @@
    > **at-least-once** — 메시지를 최소 한 번은 처리함을 보장(중복 가능). 처리 성공 전에 ACK하면 이 보장이 깨진다.
 
 7. **fixedDelay는 "마지막 실행 완료 후 N"이다.** 실패 항목들은 실패 시각이 제각각인데, 폴링은 직전 폴링이 끝난 시각 기준으로 돌므로 "실패 후 N분"이 보장되지 않고 재시도가 한 시점에 몰린다.\
-교정: 실패 항목에 `nextRetryAt = 실패 시각 + 지연(30분, 60분)`을 저장하고, 짧은 주기(1분)로 폴링하며 `now < nextRetryAt`인 항목은 건너뛴다. 최대 횟수(2회)와 멱등 삽입을 함께 둔다.
+교정: 실패 항목에 `retryAt = 실패 시각 + 지연(30분, 60분)`을 저장하고, 짧은 주기(1분)로 폴링하며 `now < retryAt`인 항목은 건너뛴다. 최대 횟수(2회)와 멱등 삽입을 함께 둔다.
 
 ## 문제 구조 (추상화 코드)
 
@@ -150,18 +150,18 @@ void retryFailed() { failedQueue.forEach(this::sync); }
 ```
 ② 고친 코드
 ```java
-record FailedSync(Instant failedAt, int attempts, Instant nextRetryAt, String lastError) {}
-Queue<FailedSync> failed = new ConcurrentLinkedQueue<>();   // 단일 인스턴스 전제의 인메모리 큐
+record SyncFailure(Instant failureTime, int attempts, Instant retryAt, String lastError) {}
+Queue<SyncFailure> failed = new ConcurrentLinkedQueue<>();   // 단일 인스턴스 전제의 인메모리 큐
 
 @Scheduled(fixedDelay = 1 * MINUTES)                 // 짧게 폴링
 void retryFailed() {
     for (var f : failed) {
-        if (now().isBefore(f.nextRetryAt())) continue;      // 실패 기준 백오프
+        if (now().isBefore(f.retryAt())) continue;      // 실패 기준 백오프
         if (f.attempts() >= 2) { failed.remove(f); continue; }
         syncIdempotent(f);                                  // 없는 키만 삽입
     }
 }
-// 실패 시: nextRetryAt = failedAt + (attempts == 0 ? 30m : 60m)
+// 실패 시: retryAt = failureTime + (attempts == 0 ? 30m : 60m)
 ```
 무엇이 깨졌나: 백오프 의미를 폴링 주기에 맡겨 "실패 후 N"이 보장되지 않고 재시도가 몰렸다.
 
