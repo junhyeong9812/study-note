@@ -38,7 +38,7 @@
 
 6. **ps 출력으로 active 판정.**\
    "실행 중 + 출력 줄에 포트 문자열" 조건은 **방금 띄운 standby도 만족**하고, 출력 순서(최신 먼저)에 의존해 standby를 active로 골랐다 → 배포 파이프라인이 active(실은 새 standby)를 stop → 로그는 "배포 완료", 실제로는 새 컨테이너가 사라지고 프록시가 upstream을 못 찾아 재시작 루프.\
-   1차 가드: 판정에서 standby 포트를 제외(`exclude_port`) + `active != standby` 검사.\
+   1차 가드: 판정에서 standby 포트를 제외(`skip_port`) + `active != standby` 검사.\
    근본 수정: ps 휴리스틱 삭제 → **라우팅 설정(프록시 conf)에서 색을 파싱**하는 함수 하나를 유일 진실 소스로(주석 제외, 정확히 한 색일 때만, 아니면 None), 판정 불가면 배포 중단(fail-closed), 모니터 쪽의 깨진 판정도 같은 함수로 교체, 상태 영속화(원자 쓰기 + 파일 락).
 
 7. **교정 3종.**\
@@ -146,7 +146,7 @@ results = list(reverse_index.get(str(query), []))   # 원문 단일 키 조회 (
 
 - 같은 구조: 문맥 없는 키워드 매칭이 다의어(일반 명사)를 구분하지 못해 다른 카테고리 결과가 섞임 → 상위 분류 필터를 AND로 결합해 분류 수준에서 차단.
 ```
-bool.filter: [ terms(categoryClasses), should(keywords) ]
+bool.filter: [ terms(groupCodes), should(keywords) ]
 ```
 
 ## 검증 기록
@@ -158,22 +158,22 @@ bool.filter: [ terms(categoryClasses), should(keywords) ]
 
 ### 방안 1 — 부수 신호 추론 + 가드 (1차 대응)
 ```python
-def find_active_port(exclude_port=None):
+def find_active_port(skip_port=None):
     for line in run("docker ps").splitlines():            # 출력 순서에 의존
         if "service" in line.lower():
-            if str(PORT_BLUE) in line and PORT_BLUE != exclude_port: return PORT_BLUE
-            if str(PORT_GREEN) in line and PORT_GREEN != exclude_port: return PORT_GREEN
+            if str(BLUE_PORT) in line and BLUE_PORT != skip_port: return BLUE_PORT
+            if str(GREEN_PORT) in line and GREEN_PORT != skip_port: return GREEN_PORT
 
 start(standby)
-active = find_active_port(exclude_port=standby_port)
-if active != standby_port: stop(active)
+active = find_active_port(skip_port=idle_port)
+if active != idle_port: stop(active)
 ```
 (1차 수정 시점에는 standby 대기 시간·컨테이너 생성 시각 기반 판별도 함께 쓰였다.)
 
 ### 방안 2 — 영속된 단일 진실 소스 (근본 수정)
 ```python
-def detect_active_color(conf_path) -> Color | None:
-    try: text = read(conf_path)
+def detect_active_color(cfg_path) -> Color | None:
+    try: text = read(cfg_path)
     except UnicodeDecodeError: return None
     colors = {c for c in parse_upstreams(strip_comments(text))}
     return colors.pop() if len(colors) == 1 else None      # 정확히 한 색일 때만
