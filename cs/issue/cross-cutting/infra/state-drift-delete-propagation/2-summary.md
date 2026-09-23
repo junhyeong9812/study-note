@@ -7,13 +7,13 @@
 ```
 문제의 뿌리: "복사"는 더하기만 하고 빼기를 못 한다.
 
-[사건 A — rsync 잔재]  backend/issue6
+[사건 A — rsync 잔재]
   로컬:  common/ 삭제, api/ 신설 (git mv)
   rsync -a (--delete 없음) → 서버에 common/ + api/ 둘 다 존재 (유령 파일)
   Docker COPY src → 옛/새 전부 컴파일 → Spring "같은 빈 이름 둘" → 기동 거부
   fix: rsync -a --delete --exclude .env   (사라진 건 서버에서도 지우되, .env는 보호)
 
-[사건 B — 설정 채널 부재]  ci-cd/issue2 ③
+[사건 B — 설정 채널 부재]
   파이프라인: 코드는 이미지에 담아 나름 → 하지만 compose 파일은 이미지 "밖"
   compose는 컨테이너를 밖에서 띄우는 정의 → 이미지 안에 넣어봐야 아무도 안 읽음
   → 호스트 compose는 옛 rsync 사본 그대로, GitHub 변경과 무관
