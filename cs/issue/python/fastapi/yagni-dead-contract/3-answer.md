@@ -3,7 +3,7 @@
 > 복습 시 이 파일은 **최후에만** 연다.
 > ⚠️ 이 정답은 Claude 초안(2026-09-23) — 이슈 README·코드 기준. 복습 전 읽지 말 것.
 
-> 메타 태그: `yagni` · `speculative-generality` · `feature-surface`
+태그: —
 
 ## 정답
 
@@ -20,23 +20,54 @@
 4. "지우기 쉬웠다"가 증거인 이유: 삭제가 곧 끝이었다는 것은 이 계약을 **의존하는 코드가 하나도 없었다**는 뜻이고, 곧 그것이 아무것도 지탱하지 않는 순수 비용(dead code)이었음을 보여준다. 진짜 쓰이는 것은 지울 때 여러 곳이 깨지지만, 예약석은 아무도 안 써서 조용히 사라진다. 비용이 낮은데도 굳이 지운 이유는 **낮은 비용이 0은 아니고, 틀린 예약석은 없느니만 못하기** 때문이다 — 남겨두면 매번 "이건 뭐지"를 묻게 하고, 정작 필요할 땐 틀린 모양이라 다시 설계해야 한다.
    > **죽은 계약(dead contract)** — 노출돼 있으나 어떤 소비자도 호출하지 않는 API·모델·엔드포인트. 기능은 0, 유지·인지 표면은 계속 차지한다.
 
-5. 모순이 아닌 이유: 지운 것은 **실행되는 계약**(핸들러·도메인 모델 3형·에러 코드·테스트)이고, 남긴 것은 **결정의 근거**(설계 D5의 "왜 없앴나")다. 전자는 유지비를 무는 살아있는 표면이고, 후자는 되풀이를 막는 기록일 뿐 유지비가 거의 없다. 기준: **"이걸 두면 계속 설명·검증·이해해야 하나"** 면 지우고, **"이걸 두면 미래의 누가 같은 실수를 반복하지 않게 하나"** 면 남긴다. 결정의 흔적을 지우면 다음 사람이 똑같이 /digest를 또 예약할 수 있다.
+5. 모순이 아닌 이유: 지운 것은 **실행되는 계약**(핸들러·도메인 모델 3형·에러 코드·테스트)이고, 남긴 것은 **결정의 근거**(설계 문서의 "왜 없앴나")다. 전자는 유지비를 무는 살아있는 표면이고, 후자는 되풀이를 막는 기록일 뿐 유지비가 거의 없다. 기준: **"이걸 두면 계속 설명·검증·이해해야 하나"** 면 지우고, **"이걸 두면 미래의 누가 같은 실수를 반복하지 않게 하나"** 면 남긴다. 결정의 흔적을 지우면 다음 사람이 똑같이 같은 엔드포인트를 또 예약할 수 있다.
 
-6. 지금 고정한 계약이 틀릴 공산이 큰 이유: **입출력의 정확한 모양은 실제 소비자의 실제 요구가 확정돼야 정해지는데, 예약 시점엔 그 요구가 상상뿐이기 때문이다.** 요약을 정말 넣게 되는 날엔 "누가·어떤 맥락에서·어떤 입력 조각을·어떤 길이로" 요약을 원하는지가 그때의 상황으로 결정된다 — 지금 적어 둔 `chunks[≤20]`·`summary`·`source_paths` 같은 모양이 그때도 맞으리란 보장이 없다. 오히려 "예약된 모양이 있다"는 사실이 그때의 설계를 낡은 틀에 끼워 맞추게 만들어 방해가 된다. 그래서 필요해지면 **그때의 요구로 새로 설계**하는 편이 낫다.
+6. 지금 고정한 계약이 틀릴 공산이 큰 이유: **입출력의 정확한 모양은 실제 소비자의 실제 요구가 확정돼야 정해지는데, 예약 시점엔 그 요구가 상상뿐이기 때문이다.** 요약을 정말 넣게 되는 날엔 "누가·어떤 맥락에서·어떤 입력 조각을·어떤 길이로" 요약을 원하는지가 그때의 상황으로 결정된다 — 지금 적어 둔 입력 조각 개수 상한·요약 필드·출처 경로 목록 같은 모양이 그때도 맞으리란 보장이 없다. 오히려 "예약된 모양이 있다"는 사실이 그때의 설계를 낡은 틀에 끼워 맞추게 만들어 방해가 된다. 그래서 필요해지면 **그때의 요구로 새로 설계**하는 편이 낫다.
 
 7. 죽은 계약은 두 표면을 부풀린다. **유지 표면** — 설계 문서·README·테스트·에러 코드 목록이 이 계약을 계속 담고 있어야 해서, 리팩터링·문서 갱신 때마다 이 죽은 항목까지 끌고 간다. **인지 표면** — 코드를 읽는 사람이 "기능 목록"을 파악할 때 501 자리가 끼어들어 "이건 되는 건가 마는 건가"를 매번 판단하게 만든다. 미래의 나에게 물리는 세금은 곧 **"이해의 세금"** — 실제로는 안 쓰는데도 시스템 표면의 일부로 계속 계산에 넣어야 하는 부담이다. 그래서 "기능 표면 = 실제로 쓰는 것만"으로 좁히면 두 표면이 함께 줄어든다.
    > **기능 표면(feature surface)** — 시스템이 외부에 노출·약속하는 기능의 총합. 넓을수록 유지·검증·이해 비용이 커지므로, 실제 사용되는 것만 남기는 게 표면 관리의 기본이다.
 
-## 이번 프로젝트 사례
+## 문제 구조 (추상화 코드)
 
-- [llm/issue5](../../../../../project/study-note-deploy-system/llm/issue5/) — issue1에서 "나중에 켠다"며 남긴 `/digest` 예약 계약(501 스텁)을 제거. 미래 소비자(사람용 검색·MCP) 둘 다 요약을 원하지 않음이 확인돼 명분 소멸 → 핸들러·도메인 모델 3형(`DigestChunk`/`DigestIn`/`DigestResult`)·에러코드 `not_implemented`·테스트 2건 삭제(테스트 27건으로 감소, green). 설계 D5에 제거 사유만 기록으로 남김.
-- [llm/issue4](../../../../../project/study-note-deploy-system/llm/issue4/) — 그 봉투 error code 목록이 곧 소비자 폴백 분기표라는 정규화 설계. `not_implemented`가 이 목록에 있던 유일한 흔적이었고 issue5에서 함께 제거된 배경.
+### 변형 A — "나중에 켠다"며 남긴 예약 엔드포인트(501 스텁)
+① 문제 코드
+```python
+# domain/models.py — 소비자 없는 입출력 모델 3형
+class ChunkIn(BaseModel): ...
+class ReservedIn(BaseModel):
+    chunks: list[ChunkIn]                 # 상한까지 모양을 미리 고정
+class ReservedResult(BaseModel): ...
+
+# domain/envelope.py — 소비자 폴백 분기표에 죽은 코드
+class ErrorBody(BaseModel):
+    code: str   # busy | upstream | upstream_timeout | schema_violation | invalid_request | not_implemented
+
+# api.py
+@router.post("/reserved")
+async def reserved(body: ReservedIn):
+    return JSONResponse(fail("not_implemented", ...), status_code=501)   # 로직 0, 계약만 존재
+
+# tests — "501을 준다"를 검증하는 테스트 2건
+```
+② 고친 코드
+```python
+# 핸들러·모델 3형·error code·테스트 2건 삭제 → 라우터는 실제로 쓰는 경로만 남음
+@router.post("/transform") ...
+@router.post("/chat") ...
+@router.get("/health") ...
+
+class ErrorBody(BaseModel):
+    code: str   # busy | upstream | upstream_timeout | schema_violation | invalid_request
+```
+```text
+설계 문서 결정 항목: "예약 엔드포인트를 제거한 이유"만 남김
+  - 미래 소비자 ① 사람용 검색 — 목적이 인출 학습이라 자동 요약과 충돌
+  - 미래 소비자 ② 도구 경유 상위 모델 — 이미 더 강한 모델이 읽으므로 선요약은 정보만 깎음
+  → 필요해지면 그때의 요구로 새로 설계
+```
+무엇이 깨졌나: 소비자가 없는 계약이 문서·에러 코드 목록·테스트에 계속 유지·검증·설명 비용을 물렸다.\
+삭제가 곧 끝이었다(의존 코드 0, 테스트는 2건 줄어든 채 green) — 아무것도 지탱하지 않던 표면이었다는 증거다.\
+연결: 봉투의 error code 목록은 소비자의 폴백 분기표라서, 쓰이지 않는 code도 분기표를 부풀린다([response-normalization-framework-boundary](../response-normalization-framework-boundary/)).
 
 ## 검증 기록
-
-- 2026-09-23: 이슈 README(llm/issue5·issue4) + 실제 코드로 "제거되었음"을 대조 (Claude 초안).
-- 코드 확인 (`.../study-note-deploy-system-llm/wrapper/`):
-  - `src/app/api.py` — `grep -rn "digest\|not_implemented"` 결과 없음(핸들러 `/digest` 삭제 확인). 현재 라우터는 `/rewrite`·`/chat`·`/health`만.
-  - `src/app/domain/prompt.py` L1-29 — `FilterResult`·`RewriteResult`·`KNOWN_TOPICS`만 존재, `DigestChunk`/`DigestIn`/`DigestResult` 부재(도메인 모델 3형 삭제 확인).
-  - `src/app/domain/envelope.py` L11-14 `ErrorBody` — code 주석 목록에 `not_implemented` 없음(`busy | upstream | upstream_timeout | schema_violation | invalid_request`만).
-  - 제거 커밋 근거: issue5 README §4 `chore 6486b34`.
+- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
