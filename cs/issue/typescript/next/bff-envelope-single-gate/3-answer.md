@@ -36,7 +36,7 @@
 ```ts
 // page A
 const body = await (await fetch(`${API}/tree`)).json();
-if (body.success) render(body.data); else showError(body.error);
+if (body.success) render(body.data); else reportError(body.error);
 // page B — 검사 누락
 const body = await (await fetch(`${API}/docs`)).json();
 render(body.data);                                  // 오류 봉투면 undefined 를 정상처럼 렌더
@@ -74,7 +74,7 @@ function normalize(raw) {
   return list.map(/* ... */);
 }
 async function load() {
-  try { return normalize(await fetchJson(url)); }
+  try { return normalize(await getJson(url)); }
   catch { return []; }                             // 실패도 빈 배열
 }
 // 결과: 뱃지 카운트가 오랫동안 0 고정, 날짜 "-" 고정, 에러 없음
@@ -100,12 +100,12 @@ function normalize(raw) {
 ```python
 # 문제: 헬퍼가 이미 {"sort": [...]} 를 반환하는데 호출부가 또 감쌈
 def build_sort():
-    sort_list = SortConditions.score_sort()     # 이미 {"sort": [...]}
-    return {"sort": sort_list}                  # {"sort": {"sort": [...]}}
+    sort_options = SortSpec.score_sort()     # 이미 {"sort": [...]}
+    return {"sort": sort_options}                  # {"sort": {"sort": [...]}}
 # 소비측은 바깥 키 하나만 벗김 → 리스트 자리에 dict → 검색 엔진 400 (특정 경로에서만)
 # 고친: 래핑은 헬퍼 한 곳 — 호출부는 그대로 반환
 def build_sort():
-    return SortConditions.score_sort()
+    return SortSpec.score_sort()
 ```
 
 ### 방안 2 — 프레젠테이션 계층의 재포장 제거 + 배포 순서 원칙
