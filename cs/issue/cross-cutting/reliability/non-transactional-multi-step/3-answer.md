@@ -48,8 +48,11 @@ try {
   const started = await invoke("start", {...}); newId = started.id;
   await invoke("setMeta", { id: started.id, prev: oldId });   // seed 전, 복구 가능
   remount(); await seed(started.id);
-  await invoke("close", { id: oldId });                       // 파괴는 마지막
-} catch { if (newId != null) invoke("close", { id: newId }); } // 중간 자원 회수
+} catch (e) {
+  if (newId != null) await invoke("close", { id: newId }).catch(() => {});   // 중간 자원 회수
+  throw e;                                                    // 실패는 호출자에게 전파
+}
+await invoke("close", { id: oldId });   // 파괴는 마지막 — try 밖: 이 실패가 new 회수로 번지지 않게
 ```
 무엇이 깨졌나: 되돌릴 수 없는 단계를 앞에 두고, 실패 경로에서 만든 것을 회수하지 않았다.
 
@@ -124,12 +127,15 @@ update_board(...)                     # 실패 → 폴더 잔존 → 다음 재�
 ```
 ② 고친 코드
 ```python
-if target.exists(): raise Conflict(409)
 try:
-    target.mkdir(); write(target / "a.md", ...); write(target / "b.md", ...)
+    target.mkdir()                              # exist_ok=False: 검사와 생성을 한 번에 (존재 검사→mkdir 사이 경쟁 제거)
+except FileExistsError:
+    raise Conflict(409)
+try:
+    write(target / "a.md", ...); write(target / "b.md", ...)
     write(target / "c.md", ...); update_board(...)
 except Exception:
-    shutil.rmtree(target, ignore_errors=True)   # 이번 호출이 만든 폴더만 보상 삭제
+    shutil.rmtree(target, ignore_errors=True)   # mkdir 성공 뒤이므로 이번 호출이 만든 폴더만 보상 삭제
     raise
 ```
 무엇이 깨졌나: 잔해를 남겨 재시도 가능 상태를 깨뜨렸다.
@@ -146,6 +152,7 @@ spawn(["agent", "--session-id", session_id])   # 실패 → 댕글링 마커 →
 ```
 ② 고친 코드
 ```kotlin
+rateLimit.check(user)                 // 한도 '검사'는 발송 전 (소비만 뒤로 미룬다)
 mailer.send(user, newCode)            // 성공 후에만
 codes.activate(user, newCode); rateLimit.consume(user)
 ```
