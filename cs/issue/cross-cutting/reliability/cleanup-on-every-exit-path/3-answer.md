@@ -10,7 +10,8 @@
 
 1. **경로마다 정리는 샌다.** 종료 경로는 코드가 자랄수록 늘어난다(새 에러 분기·`?` 조기 반환·취소·패닉 unwinding). 각 경로에 정리 줄을 복사하면 하나만 빠져도 상태가 거짓이 된다(죽었는데 `is_alive = true`라 쓰기 거부가 안 됨).\
 RAII Drop·`try/finally`·`trap`은 **"스코프를 떠나는 모든 방법"에 정리를 한 번 붙인다** — early return·future drop·예외·패닉까지 포함해 정리가 반드시, 한 번 실행된다.\
-단, 가드를 만들기 **전에** 실패하는 경로(예: 런타임 생성 실패)는 가드가 없으므로 따로 처리해야 한다.
+단, 가드를 만들기 **전에** 실패하는 경로(예: 런타임 생성 실패)는 가드가 없으므로 따로 처리해야 한다.\
+또 이 보장은 "프로세스가 살아서 스코프를 빠져나갈 때"까지다 — `SIGKILL`·전원 차단·`os._exit`/`std::process::exit`·Rust `panic = "abort"`·`mem::forget`처럼 unwinding 없이 끝나면 Drop·finally·trap도 돌지 않는다(그 몫은 기동 시 복구·lease 만료 같은 바깥 장치).
    > **RAII** — 자원 획득을 객체 생성에, 해제를 객체 소멸(스코프 종료)에 묶는 관용구.
 
 2. **permit 회계의 두 방향.** ① **획득 없이 반납**: 즉시 실행 경로가 permit을 안 받고도 `finally`에서 반납 → 카운터가 음수로 내려가 동시성 한도가 사실상 없어진다.\
@@ -35,7 +36,7 @@ RAII Drop·`try/finally`·`trap`은 **"스코프를 떠나는 모든 방법"에 
 6. **정리용 context.** 취소 가능한 요청 context를 정리에 넘기면 **취소 신호가 정리까지 막는다** — 요청이 끊긴 순간 `unlock(ctx)`가 즉시 실패하고, 락은 lease 만료까지 샌다.\
 정리는 요청 context와 분리된 **별도 context(자체 타임아웃)**로 한다.\
 반대로 "수락(내구 기록)까지 끝난 작업의 실행"을 요청 context에 묶으면 클라이언트 단절이 실행을 죽인다 → 수락 뒤에는 **bounded background context**로 떼어 낸다.\
-부가 함정: 취소 전파를 끊은 context(`WithoutCancel`)의 `Done()`은 nil이라 `select`의 그 가지는 영원히 안 걸리는 죽은 코드다.
+부가 함정: 취소 전파를 끊은 context(Go 1.21+ `context.WithoutCancel`)의 `Done()`은 nil이라 `select`의 그 가지는 영원히 안 걸리는 죽은 코드다.
 
 7. **정리 주체 부재와 trap 재진입.** 감시 스레드가 없는 프로세스는 작업 종료를 **누가 조회할 때** 비로소 회수(lazy reap)하므로, 그 전까지 락이 남아 다음 요청이 "사용 중"으로 거부된다.\
 시간 기반 정책(승인 대기 TTL)을 UI 연결이나 첫 API 호출에 매달면, 연결·접근이 없을 때 감시 자체가 존재하지 않아 대기 자원이 무기한 방치된다 → **서버 기동 시점에 복구·무장**한다.\
@@ -85,6 +86,7 @@ try:
     self.proc = subprocess.Popen(cmd, stdin=slave, stdout=slave, stderr=slave, close_fds=True)
 except Exception:
     os.close(master); os.close(slave); raise
+os.close(slave)                       # 부모 쪽 slave도 닫는다 — 안 닫으면 누수 + 자식 종료 후에도 master에 EOF/EIO가 안 옴
 pump = None
 try:
     session.attach(client)
@@ -136,10 +138,13 @@ thread::Builder::new().spawn(move || waiter(child))?;   // 실패 → child 좀�
 ```
 ② 고친 코드
 ```rust
-let mut slot = Some(spawn_process()?);
+// child를 클로저로 move하면 spawn 실패 시 클로저와 함께 drop돼(Child의 drop은 kill·wait 안 함) 회수할 손잡이가 사라진다 → 공유 슬롯에 둔다
+let slot = Arc::new(Mutex::new(Some(spawn_process()?)));
+live_slots.fetch_add(1);
 notify(SessionSpawned);                                  // 상태 역행 방지: 스레드 기동 앞으로
-if let Err(e) = thread::Builder::new().spawn(/* waiter(slot.take()) */) {
-    if let Some(mut c) = slot.take() { let _ = c.kill(); let _ = c.wait(); }   // 직접 회수
+let s2 = Arc::clone(&slot);
+if let Err(e) = thread::Builder::new().spawn(move || { if let Some(c) = s2.lock().unwrap().take() { waiter(c) } }) {
+    if let Some(mut c) = slot.lock().unwrap().take() { let _ = c.kill(); let _ = c.wait(); }   // 직접 회수
     live_slots.fetch_sub(1);
     notify(Notice("spawn failed")); notify(SessionExited);
     return Err(Internal(e));
@@ -235,7 +240,8 @@ async def lifespan(app):
     yield
 def heartbeat_should_cancel():
     return current.phase in ACTIVE_STATES      # heartbeat 취소는 실행 단계만, 대기는 TTL이 담당
-ttl = int(os.environ.get("APPROVAL_TTL_MIN", 60))   # import 시점이 아니라 사용 시점에 읽음
+def approval_ttl_min():                        # import 시점(모듈 최상위)이 아니라 사용 시점에 읽음
+    return int(os.environ.get("APPROVAL_TTL_MIN", 60))
 ```
 
 ### 방안 5 — 셸: trap 재진입 차단 + staging 후 mv
@@ -253,7 +259,8 @@ cleanup_fail() {
 }
 trap cleanup_fail EXIT INT TERM
 mv "$DEST" "$BACKUP"                 # 백업은 mv (부분 파괴 없음)
-mv "$STAGING" "$DEST"                # staging 검증 후 교체
+mv "$STAGING" "$DEST"                # staging 검증 후 교체 (mv가 원자 rename이려면 같은 파일시스템)
+trap - EXIT INT TERM                 # 성공 경로에서 해제 — 안 하면 정상 종료의 EXIT도 원복을 부른다
 # 함수 마지막 문장 `[ -e x ] && cmd` 는 거짓일 때 rc 1 → set -e 즉사 → if 문 + return 0
 ```
 
