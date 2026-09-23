@@ -41,18 +41,23 @@ SOURCE_LANGS = {
 FENCE = re.compile(r'^```([A-Za-z0-9_+-]*)\n(.*?)\n```$', re.S | re.M)
 
 
-def index_sources(root: pathlib.Path) -> dict:
-    idx = {}
-    dupes = set()
+def index_sources(root: pathlib.Path):
+    """파일명 -> 경로. ★ 같은 이름이 둘 이상이면 **고르지 않는다.**
+
+    조용히 첫 번째를 쓰면 블록 58개가 전부 `ex.rs` 인 갈래에서
+    **하나의 파일과 58번 대조**해 대량 오탐이 난다(실측). 어느 것과 대조할지
+    모르는 것은 「불일치」가 아니라 **「판정 불가」**이므로 그렇게 보고한다.
+    """
+    idx, dupes = {}, {}
     for p in root.rglob('*'):
         if p.is_file():
             if p.name in idx:
-                dupes.add(p.name)
-            idx.setdefault(p.name, p)
-    for d in sorted(dupes):
-        print('  ※ 같은 이름의 파일이 둘 이상이다 — 첫 번째를 쓴다: %s' % d,
-              file=sys.stderr)
-    return idx
+                dupes.setdefault(p.name, [idx[p.name]]).append(p)
+            else:
+                idx[p.name] = p
+    for name in dupes:
+        idx.pop(name, None)
+    return idx, dupes
 
 
 def main() -> None:
@@ -64,9 +69,9 @@ def main() -> None:
     del argv[i:i + 2]
     if not argv:
         sys.exit(__doc__.strip().split('사용:')[-1].strip())
-    idx = index_sources(root)
+    idx, dupes = index_sources(root)
 
-    checked = missing = bad = nobanner = nonsource = 0
+    checked = missing = bad = nobanner = nonsource = ambiguous = 0
     for md in argv:
         p = pathlib.Path(md)
         text = p.read_text(encoding='utf-8')
@@ -83,6 +88,12 @@ def main() -> None:
                 print('  배너 없는 소스 펜스 %-12s <- %s' % ('```' + lang, md))
                 continue
             name = bm.group(1) or bm.group(2)
+            if name in dupes:
+                ambiguous += 1
+                print('  ★판정 불가 — `%s` 라는 이름의 파일이 %d개다 (%s)  <- %s'
+                      % (name, len(dupes[name]), md,
+                         ', '.join(str(x) for x in dupes[name][:3])))
+                continue
             f = idx.get(name)
             if f is None:
                 missing += 1
@@ -99,10 +110,10 @@ def main() -> None:
                 for line in list(diff)[:20]:
                     print('   ' + line)
 
-    print('[소스 펜스] 대조 %d개 · 불일치 %d건 · 파일 못 찾음 %d건 · '
+    print('[소스 펜스] 대조 %d개 · 불일치 %d건 · 파일 못 찾음 %d건 · ★판정 불가 %d건 · '
           '★배너 없는 소스 펜스 %d개 · 출력·그림 펜스 %d개(대상 아님)'
-          % (checked, bad, missing, nobanner, nonsource))
-    sys.exit(1 if (bad or missing) else 0)
+          % (checked, bad, missing, ambiguous, nobanner, nonsource))
+    sys.exit(1 if (bad or missing or ambiguous) else 0)
 
 
 if __name__ == '__main__':

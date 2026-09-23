@@ -4,6 +4,12 @@
 //   ② 범위 표기의 물결표(`0~1023`)가 GFM 취소선으로 먹혀 **글자가 지워지는 것**
 //   ③ 표의 칸 수가 행마다 다른 것 (셀 안의 `|` 를 이스케이프 안 해서)
 //   ④ 문단 안 `**` 개수가 홀수인 것 — ①이 **못 보는 조용한 쪽**이다
+//   ⑤ 렌더 후 본문에 백틱이 남은 것 — 코드 스팬이 깨진 자리
+//
+// ★ ⑤가 왜 따로 필요한가 — **홑백틱 스팬 안에 백틱을 넣으면** 스팬이 깨진다.
+//   컴파일러 진단을 인용하는 갈래에서 구조적으로 자주 난다(rustc 문구가 백틱을 쓴다):
+//     `expected reference `&String``   -> 깨짐. 겹백틱이라야 한다: ``expected reference `&String` ``
+//   ①~④ 어디에도 안 걸리고, 실측에서 저장소 전수 9건이 이 검사로만 드러났다(오탐 0).
 //
 // ★ ④가 왜 따로 필요한가 — ①은 「렌더 후 본문에 별표가 남았나」만 본다.
 //   깨진 `**` 가 **문단 뒤쪽의 다른 `**` 와 우연히 짝이 맞으면 별표가 안 남는다.**
@@ -206,4 +212,23 @@ for (const [f, hits] of oddBad) {
     console.log(`      :${ln}  ` + txt.replace(/\s+/g, ' ').trim().slice(0, 110));
 }
 
-process.exit(total + strikeTotal + tableTotal + oddTotal ? 1 : 0);
+// ⑤ 렌더 후 본문에 남은 백틱 — 깨진 코드 스팬
+const btBad = [];
+let btTotal = 0;
+for (const f of files) {
+  const src = fs.readFileSync(f, 'utf8');
+  if (!src.includes('`')) continue;
+  const html = micromark(src, { extensions: [gfm()], htmlExtensions: [gfmHtml()] });
+  // 코드 블록·코드 스팬 안의 백틱은 내용이므로 먼저 버린다
+  const stripped = html.replace(/<pre[\s\S]*?<\/pre>/g, '')
+                       .replace(/<code[\s\S]*?<\/code>/g, '');
+  const hits = stripped.match(/[^\n]{0,60}`[^\n]{0,60}/g) || [];
+  if (hits.length) { btBad.push([f, hits]); btTotal += hits.length; }
+}
+console.log(`[백틱] 렌더 후 본문에 백틱이 남은 파일 ${btBad.length}개 · 총 ${btTotal}건`);
+for (const [f, hits] of btBad) {
+  console.log('  ' + f + `  (${hits.length}건)`);
+  for (const h of hits.slice(0, 3)) console.log('      ' + h.replace(/\s+/g, ' ').trim());
+}
+
+process.exit(total + strikeTotal + tableTotal + oddTotal + btTotal ? 1 : 0);
