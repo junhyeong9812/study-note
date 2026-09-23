@@ -33,7 +33,7 @@ dotenv 형식의 뜻은 "줄마다 key=value"일 뿐이므로 줄 단위로 읽�
 교훈: 패턴 테스트에는 **가장 짧은 경계값**(접두어 0글자)을 넣는다.
 
 6. **heredoc 조기 종료.** heredoc은 본문과 종료 태그를 **줄 문자열 일치**로만 구분한다.\
-본문에 같은 태그 줄(또는 중첩 heredoc의 종료 줄)이 있으면 셸은 거기서 문서를 끝내고, 나머지 본문을 **명령으로 실행**한다.\
+본문에 종료 태그와 정확히 같은 줄(같은 태그를 쓰는 중첩 heredoc의 종료 줄 포함 — 태그가 다르면 본문 속 heredoc은 그냥 글자다)이 있으면 셸은 거기서 문서를 끝내고, 나머지 본문을 **명령으로 실행**한다.\
 본문 뒷부분의 `git push ...` 문자열이 실제로 실행됐다(인자 오류로 무해하게 실패했을 뿐이다).\
 복구는 셸을 거치지 않는 도구(python)로 파일에 덧붙이는 것이었다.
 
@@ -63,7 +63,7 @@ nohup load /data/anim/* &
 ② 고친 코드
 ```sh
 while IFS= read -r line; do
-  case "$line" in ''|'#'*) continue ;; esac
+  case "$line" in ''|'#'*) continue ;; *=*) ;; *) continue ;; esac   # '=' 없는 줄은 건너뜀
   export "${line%%=*}=${line#*=}"   # 첫 '=' 기준 key/value, 값은 셸 해석 없음
 done < ./.env
 ```
@@ -77,8 +77,8 @@ git $AUTH push origin branch        # 3개 인자로 쪼개짐, 값 속 ' 는 �
 ```
 ② 고친 코드
 ```sh
-git -c "credential.helper=!tool auth" push origin branch     # 인자 인라인
-# 또는 args=(-c "credential.helper=!tool auth"); git "${args[@]}" push ...
+git -c 'credential.helper=!tool auth' push origin branch     # 인자 인라인 (대화형 bash는 큰따옴표 안 !도 히스토리 확장하므로 작은따옴표)
+# 또는 args=(-c 'credential.helper=!tool auth'); git "${args[@]}" push ...
 ```
 무엇이 깨졌나: 인용 해석이 확장보다 먼저 끝나므로 값 속 따옴표는 인자 경계를 만들지 못한다.
 
