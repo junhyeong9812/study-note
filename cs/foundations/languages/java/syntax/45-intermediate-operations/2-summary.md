@@ -491,7 +491,7 @@ MM3.java:5: error: incompatible types: bad return type in lambda expression
 - **단락 평가(short-circuiting)** — 답이 정해지면 나머지를 안 보고 멈추는 것.
 - **sink** — `mapMulti` 의 람다가 받는 `Consumer`. 여기에 넣은 값이 아래로 흘러간다.
 - **부작용(side effect)** — 값을 돌려주는 것 말고 바깥 상태를 바꾸는 일(로깅·저장·카운터 증가).
-- **`Function` / `Predicate` / `BiConsumer`** — `map`·`filter`·`mapMulti` 가 각각 받는 함수형 인터페이스. 목록의 31번 주제.
+- **`Function` / `Predicate` / `BiConsumer`** — `map`·`filter`·`mapMulti` 가 각각 받는 함수형 인터페이스. [목록의 **31번 주제**](../31-functional-interfaces/).
 
 ---
 
@@ -512,4 +512,4 @@ MM3.java:5: error: incompatible types: bad return type in lambda expression
 - **`mapMulti` 가 JDK 에 들어온 동기**는 "1:0 또는 1:1 이 대부분인데 `flatMap` 은 매번 스트림을 만든다"였다.\
   그래서 개수가 대체로 0이나 1이면 `mapMulti`, 진짜로 여러 개로 펼칠 일이 많으면 `flatMap` 이 자연스럽다.
 - **Gatherers(24+)** 가 들어오면서 "중간 연산을 직접 만드는" 길이 열렸다.\
-  슬라이딩 윈도·누적 스캔처럼 기존 넷으로 표현할 수 없던 것이 대상이다 — 목록의 50번 주제.
+  슬라이딩 윈도·누적 스캔처럼 기존 넷으로 표현할 수 없던 것이 대상이다 — [목록의 **50번 주제**](../50-stream-gatherers/).

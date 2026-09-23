@@ -386,7 +386,7 @@ ERROR 1054 (42S22) at line 1: Unknown column 'e.dept_id' in 'where clause'
 MySQL 은 그냥 "모르는 열"이라고 한다. 같은 벽인데 한쪽은 문을 알려 주고 한쪽은 안 알려 준다.\
 비용 — 없다. 이 벽은 **의도된 것**이다. 벽이 있어서 `FROM` 항목들을 어떤 순서로든 계산할 수 있다.
 
-**그 벽에 난 문이 `LATERAL` 이고, [목록의 **20번 주제**](../20-lateral-join/)다.** 상관 서브쿼리 일반은 [목록의 **11번 주제**](../11-subquery-scalar-correlated-any-all/)다.\
+**그 벽에 난 문이 `LATERAL` 이고, [목록의 20번 주제](../20-lateral-join/)다.** 상관 서브쿼리 일반은 [목록의 **11번 주제**](../11-subquery-scalar-correlated-any-all/)다.\
 여기서 인출할 것은 **"`FROM` 의 형제끼리는 서로를 모른다"** 한 줄이다.
 
 ---

@@ -486,7 +486,7 @@ OverrideCatch.java:4: error: method does not override or implement a method from
 - **`hashCode` 를 `return 1;` 로 쓰면 계약은 지켜진다.**\
   "다르면 달라야 한다"는 조항이 없기 때문이다. 대신 모든 원소가 한 칸에 몰려 조회가 O(n)이 된다 — **정확성은 살고 성능만 죽는** 위반이다.
 - **`TreeMap`/`TreeSet` 은 `equals` 를 안 쓴다.**\
-  `compareTo`(또는 `Comparator`)의 결과가 `0` 인지로 같음을 판정한다. 그래서 `equals` 와 `compareTo` 가 어긋나면 **같은 객체가 `HashSet` 에서는 하나, `TreeSet` 에서는 둘**이 된다. 목록의 28번 주제.
+  `compareTo`(또는 `Comparator`)의 결과가 `0` 인지로 같음을 판정한다. 그래서 `equals` 와 `compareTo` 가 어긋나면 **같은 객체가 `HashSet` 에서는 하나, `TreeSet` 에서는 둘**이 된다. [목록의 **28번 주제**](../28-comparable-comparator/).
 - **`record` 의 `equals` 도 `instanceof` 로 쓰였지만 대칭성 문제가 없다.**\
   `record` 는 암묵적으로 `final` 이라 하위 타입이 존재할 수 없기 때문이다.
 - **IDE 가 생성한 `equals` 는 보통 `getClass()` 비교를 쓴다.**\

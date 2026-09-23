@@ -672,7 +672,7 @@ list.stream().reduce("", (a, b) -> a + b.charAt(0)); // 타입이 달라 컴파�
 | 파이프라인에 `limit`·`distinct`·`forEachOrdered` | **안 쓴다** — 순서 비용이 이득을 먹는다 |
 | `sorted`·`skip` 이 있음 | 써도 된다 — 실측에서 이득이었다 |
 | 블로킹 I/O (DB·HTTP) | **절대 안 쓴다** — 공용 풀이 막힌다 |
-| 웹 서버의 요청 처리 경로 | **안 쓴다** — `ExecutorService` 를 쓴다(목록의 54번 주제) |
+| 웹 서버의 요청 처리 경로 | **안 쓴다** — `ExecutorService` 를 쓴다([목록의 **54번 주제**](../54-executorservice-and-future/)) |
 | 배치·CLI·일회성 계산 | 후보다. 단 재고 결정한다 |
 | `reduce` 의 연산에 결합 법칙이 없음 | **안 쓴다** — 답이 바뀐다 |
 | 람다가 바깥 상태를 고침 | **안 쓴다** — 고쳐서 `collect` 로 |

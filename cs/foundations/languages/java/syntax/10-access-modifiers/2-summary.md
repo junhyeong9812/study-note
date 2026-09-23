@@ -356,7 +356,7 @@ farm/Bad.java:4: error: pkg is not public in Animal; cannot be accessed from out
 - `protected` 는 **같은 패키지에도 열려 있다.** 이름과 달리 `package-private` 보다 **넓다.**
 - 동작 방식 (1)의 둘째 줄 — `Neighbor` 가 `a.prot` 을 읽는다. 상속 관계가 없는데도.
 - 그래서 "하위 클래스만 보게 하고 싶다"는 **Java 에 없는 수준**이다.\
-  `sealed`(목록의 15번)나 패키지 분리로 우회해야 한다.
+  `sealed`([목록의 **15번**](../15-sealed-classes/))나 패키지 분리로 우회해야 한다.
 
 ### 3. `protected` 멤버로 `equals`·복사를 쓰려 한다
 

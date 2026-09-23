@@ -490,7 +490,7 @@ x.describe() = Old 가 원래 갖고 있던 메서드
 
 **구현 의존 항목**
 
-- 람다가 `invokedynamic` + `lambda$of$0` 로 컴파일되는 것은 **구현 세부**다(목록의 29번 주제).
+- 람다가 `invokedynamic` + `lambda$of$0` 로 컴파일되는 것은 **구현 세부**다([목록의 **29번 주제**](../29-lambda-expressions/)).
 - `javap` 의 오프셋·상수 풀 번호(`#n`)는 컴파일러 버전에 따라 달라질 수 있다.
 - **암묵 제어자**(`public abstract`·`public static final`)와 **충돌 해소 세 규칙**은 언어 보장이라 바뀌지 않는다.
 

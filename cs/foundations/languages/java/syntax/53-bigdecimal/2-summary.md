@@ -576,7 +576,7 @@ return this.inflated().equals(xDec.inflated());
 - [`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/) — **경계: `equals`/`hashCode` 계약 일반은 거기,
   「계약은 지켰는데 `compareTo` 와 어긋나는」 사례는 여기.**
 - [**28번 주제**](../28-comparable-comparator/)(`Comparable`/`Comparator`) — "natural ordering inconsistent with equals" 가 정본으로 다뤄지는 곳
-- 목록의 **51·52번 주제**(`java.time`) — 같은 "값 타입 설계"의 다른 사례
+- 목록의 [**51**](../51-java-time-types/)·[**52**](../52-duration-period-formatter/)번 주제(`java.time`) — 같은 "값 타입 설계"의 다른 사례
 
 ## 용어 풀이
 

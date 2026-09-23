@@ -558,7 +558,7 @@ SUM(DISTINCT <열>) · AVG(DISTINCT <열>)
 - [21 집계 함수와 COUNT 의 세 형태](../21-aggregate-functions-count-forms/) — **경계: 그쪽은 세 형태의 `NULL`·중복 처리, 여기는 `DISTINCT` 가 접는 기준.**
 - [22 GROUP BY 와 비집계 열 규칙](../22-group-by-nonaggregated-columns/) — **경계: 그쪽은 그룹 키가 결과 행을 정의하는 규칙, 여기는 같은 계획이 나와도 의도가 다르다는 것.**
 - [25 조인 팬아웃](../25-join-fan-out/) — **경계: 중복이 조인에서 생겼을 때의 처방은 그쪽, 여기는 `DISTINCT` 가 그 증상을 덮는다는 것까지.**
-- **윈도우 함수**는 목록의 **26~29번 주제**, **집합 연산의 `UNION`/`UNION ALL`** 은 [**34번 주제**](../34-set-operations-union-intersect-except/)가 정본이다.
+- **윈도우 함수**는 목록의 [**26**](../26-window-functions-vs-aggregates/)~[**29**](../29-ranking-functions/)번 주제, **집합 연산의 `UNION`/`UNION ALL`** 은 [**34번 주제**](../34-set-operations-union-intersect-except/)가 정본이다.
 - [SQL 주제 목록](../README.md)
 
 ## 용어 풀이

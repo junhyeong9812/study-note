@@ -666,6 +666,6 @@ substring(6)   -> java.lang.StringIndexOutOfBoundsException: begin 6, end 5, len
 - `s.replace(' ', ' ').strip()` 조합 — U+00A0 를 명시적으로 지우는 법.
 - `java.text.BreakIterator` 로 "사람이 보는 글자" 세기.
 - `-XX:+UseStringDeduplication` 의 실제 동작 — 플래그 기본값만 확인했다.
-- Java 21 `switch` 의 `case null` — 목록의 23번 주제에서 다룬다.
+- Java 21 `switch` 의 `case null` — [목록의 **23번 주제**](../23-switch-pattern-matching/)에서 다룬다.
 - `substring` 이 Java 6까지 배열을 공유했다는 연혁 — 기준 소스로 확인하지 않았다(**확인 필요**).
 - `String.format`·`join`·`repeat` — [`../36-stringbuilder-and-concat/`](../36-stringbuilder-and-concat/) 에서 돌렸다.

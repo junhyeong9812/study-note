@@ -429,7 +429,7 @@ st.toList();                           // (3) 소비 -> [a, b, c]
   스트림 중 파일·소켓을 붙잡는 것은 `AutoCloseable` 이라 `try`-with-resources 가 필요하다.\
   대부분의 스트림은 닫지 않아도 된다 — 컬렉션·배열 소스는 붙잡는 자원이 없다.
 - **`Collection.stream()` 의 기본 구현**은 `StreamSupport.stream(spliterator(), false)` 다.\
-  `Spliterator` 가 "어떻게 쪼갤 수 있나"를 알려 주고, 그 정보로 병렬 성능이 갈린다(목록의 49번 주제).
+  `Spliterator` 가 "어떻게 쪼갤 수 있나"를 알려 주고, 그 정보로 병렬 성능이 갈린다([목록의 **49번 주제**](../49-parallel-streams/)).
 - **`Random.ints()`·`Random.doubles()`** 도 스트림 소스다. 난수 n 개가 필요하면 `new Random().ints(n, 0, 100)`.
 - **`Stream.toList()`(16+)와 `collect(Collectors.toList())` 는 다르다.** 실제로 돌려 확인했다(`Extra.java`).
 

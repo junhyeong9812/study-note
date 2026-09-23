@@ -576,7 +576,7 @@ ORDER BY CASE WHEN salary IS NULL THEN 0 ELSE 1 END, salary DESC
 - [07 DISTINCT 와 중복 제거](../07-distinct-and-duplicate-removal/) — `DISTINCT` 가 있으면 `ORDER BY` 의 자유가 줄어든다. `DISTINCT ON` 의 대표 행도 여기 규칙에 걸린다.
 - [09 LIMIT·OFFSET 와 키셋 페이지네이션](../09-limit-offset-keyset-pagination/) — **경계: 여기는 「순서가 안 정해진다」까지, 그쪽은 그 위에서 페이지를 자를 때 무엇이 깨지나부터.**
 - [39 collation — 문자열 비교와 정렬의 기준](../39-collation/) — **경계: 그쪽이 collation 의 정본이고, 여기는 「정렬 기준이 데이터 밖에 있다」까지.**
-- **정렬과 인덱스**는 목록의 **46·47번 주제**, **계획 읽기**는 [**58번 주제**](../58-explain-plan-tree/)가 정본이다.
+- **정렬과 인덱스**는 목록의 [**46**](../46-index-definition-composite-partial-expression/)·[**47**](../47-when-indexes-are-used/)번 주제, **계획 읽기**는 [**58번 주제**](../58-explain-plan-tree/)가 정본이다.
 - [SQL 주제 목록](../README.md)
 
 ## 용어 풀이

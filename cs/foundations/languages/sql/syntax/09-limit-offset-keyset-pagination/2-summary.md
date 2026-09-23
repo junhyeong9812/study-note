@@ -606,7 +606,7 @@ SELECT ... ORDER BY <결정적 정렬 키> LIMIT <개수> [OFFSET <건너뛸 수
 - [01 논리적 질의 처리 순서](../01-logical-query-processing-order/) — **경계: 그쪽은 `LIMIT` 이 8번 칸이라는 것까지, 여기는 그래서 비용이 어디서 나나부터.**
 - [05 NULL 비교](../05-null-comparison-is-distinct-from/) — 키셋 조건에 `NULL` 이 끼면 `UNKNOWN` 이 되어 행이 사라진다.
 - [07 DISTINCT 와 중복 제거](../07-distinct-and-duplicate-removal/) — `DISTINCT` 는 6번 칸, `LIMIT` 은 8번 칸이라 **접은 뒤에** 자른다.
-- **`EXPLAIN` 읽기**는 목록의 **58·60번 주제**, **인덱스를 언제 타나**는 **46·47번 주제**, **`WITH TIES` 를 대신할 순위 함수**는 [**29번 주제**](../29-ranking-functions/)가 정본이다. 여기서는 계획을 **「몇 행을 만들었나」 한 칸만** 읽는다.
+- **`EXPLAIN` 읽기**는 목록의 [**58**](../58-explain-plan-tree/)·[**60**](../60-explain-analyze-estimates-vs-actuals/)번 주제, **인덱스를 언제 타나**는 **46·47번 주제**, **`WITH TIES` 를 대신할 순위 함수**는 [**29번 주제**](../29-ranking-functions/)가 정본이다. 여기서는 계획을 **「몇 행을 만들었나」 한 칸만** 읽는다.
 - [SQL 주제 목록](../README.md)
 
 ## 용어 풀이
