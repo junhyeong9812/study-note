@@ -231,11 +231,11 @@ defer func() {
 #       → 재시작 후 접근이 없으면, 또는 UI가 끊기면 대기 자원 무기한 방치
 @asynccontextmanager
 async def lifespan(app):
-    startup_recover()          # 기동 즉시 상태 복원 + TTL 재무장 (deadline 없으면 보정)
+    recover_on_boot()          # 기동 즉시 상태 복원 + TTL 재무장 (deadline 없으면 보정)
     yield
 def heartbeat_should_cancel():
-    return current.phase in RUNNING_PHASES      # heartbeat 취소는 실행 단계만, 대기는 TTL이 담당
-ttl = int(os.environ.get("APPROVAL_TTL_MINUTES", 60))   # import 시점이 아니라 사용 시점에 읽음
+    return current.phase in ACTIVE_STATES      # heartbeat 취소는 실행 단계만, 대기는 TTL이 담당
+ttl = int(os.environ.get("APPROVAL_TTL_MIN", 60))   # import 시점이 아니라 사용 시점에 읽음
 ```
 
 ### 방안 5 — 셸: trap 재진입 차단 + staging 후 mv
