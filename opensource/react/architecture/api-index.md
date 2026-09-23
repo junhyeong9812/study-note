@@ -123,6 +123,17 @@
 | `useRef` | 훅 리스트에 객체 하나를 담는다 | [훅](flows/hooks/README.md) |
 | `memo(Component)` | `MemoComponent` / `SimpleMemoComponent` tag | [beginWork](flows/begin-work/README.md) |
 
+## fiber 그 자체
+
+| 궁금한 것 | 답이 있는 자리 | 흐름 |
+|---|---|---|
+| `alternate` 가 무엇인가 | 트리 두 벌을 돌려쓰는 짝. 갱신된 적 없는 fiber 는 짝이 **없다** | [Fiber 자료구조](flows/fiber/README.md) |
+| `return` 이 왜 `parent` 가 아닌가 | 부모가 둘일 수 있어서. 주석이 "스택 프레임의 복귀 주소" 라 부른다 | [Fiber 자료구조](flows/fiber/README.md) |
+| 렌더를 넘어 사는 플래그 | `flags & StaticMask` 한 줄이 가른다 | [Fiber 자료구조](flows/fiber/README.md) |
+| `<div>` 와 `<Foo/>` 가 갈리는 곳 | `createFiberFromTypeAndProps` 의 `getTag:` switch | [Fiber 자료구조](flows/fiber/README.md) |
+| 클래스인지 함수인지 판정 | `prototype.isReactComponent` 가 있는지만 본다 (세 줄) | [Fiber 자료구조](flows/fiber/README.md) |
+| "Element type is invalid" | `Throw` fiber 의 `pendingProps` 에 담겨 렌더 때 되던져진다 | [Fiber 자료구조](flows/fiber/README.md) |
+
 ## 트리 모양을 바꾸는 것
 
 | API | tag | 흐름 |
