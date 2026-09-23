@@ -148,7 +148,7 @@ def set_phase(deploy, phase):
 ```python
 async def advance(deploy, phase):
     async with transition_lock:
-        if current_deploy is not deploy or deploy["phase"] in PREEMPT_PHASES | TERMINAL_PHASES:
+        if current_deploy is not deploy or deploy["phase"] in PREEMPT_PHASES | DONE_STATES:
             raise CancelledError()           # 협조 중단 → 호출자가 정리
         deploy["phase"] = phase
         persist()
@@ -182,13 +182,13 @@ deleteBranch(name, { force })
 # 문제: 쿨다운 만료 후에도 메트릭이 나쁘면 전이 안 함 → 영구 고착
 if cooldown_expired():
     if metrics_healthy(): state.phase = "phase2"; return "allow"
-    return "phase2_cooldown"                          # 머무름 — 메트릭이 곧 복구 대상 증상
+    return "cooldown_stage"                          # 머무름 — 메트릭이 곧 복구 대상 증상
 # 고친: 전이는 시간만으로, 메트릭은 행동 보류로
 if cooldown_expired():
     state.phase = "phase2"; state.attempts = 0        # 단조 전이
 if state.phase == "phase2":
     if state.attempts >= THRESHOLD: state.phase = "open"
-    if not metrics_healthy(): return "phase2_metrics_block"   # 이번 차례만 보류, attempts 미증가
+    if not metrics_healthy(): return "metrics_stage"   # 이번 차례만 보류, attempts 미증가
 ```
 부수 관찰: 상태가 메모리에만 있어 프로세스 재시작이 유일한 탈출구였다.\
 같은 사건에서 복구 경로는 평상시 안 돌아 설정 드리프트(대상 서비스 이름 불일치)도 숨어 있었다 — 복구 경로가 한 번도 성공한 적이 없었다.
