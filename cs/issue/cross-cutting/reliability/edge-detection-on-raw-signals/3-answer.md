@@ -12,8 +12,8 @@
    알림은 사람에게 "새 일이 생겼다"를 전하는 것이므로 edge에 걸어야 한다 — level에 걸면 상태가 유지되는 동안 계속 울리거나, 반대로 이미 알린 상태로 돌아올 때 다시 울린다.
    > **rising edge** — 신호가 거짓에서 참으로 바뀌는 순간. `next && !prev`로 판정한다.
 
-2. **스칼라가 원인을 지운다.** `max(3, 2)`는 blocked가 풀리는 순간 다시 2가 된다 — 스칼라 관점에서는 "2로 상승"과 구별되지 않아 **done 알림이 재발화**한다.\
-   스칼라는 "왜 그 값이 됐나"(새 완료인가, 상위 상태의 해제인가)를 담지 못하므로, 스칼라 위에 어떤 비교를 얹어도 두 경우를 가를 수 없다.\
+2. **스칼라가 원인을 지운다.** `max(3, 2)`는 blocked가 풀리는 순간 다시 2가 된다 — 스칼라 관점에서는 "2(done)로 바뀜"이라 새 완료와 구별되지 않아 **done 알림이 재발화**한다.\
+   스칼라 3은 그 아래의 unseen 여부를 숨기므로, 이전·현재 스칼라 값을 어떻게 비교해도 "왜 그 값이 됐나"(blocked 중에 새로 완료됐나, 원래 있던 완료가 상위 상태 해제로 드러났나)를 가를 수 없다.\
    교정: 기저 신호마다 rising edge를 따로 계산하고 조합 규칙표로 우선순위를 정한다(blocked↑면 blocked, `unseen↑ && !blocked`일 때만 done). 순수 함수로 만들어 조합 5가지를 테스트로 고정했다.
 
 3. **덮어쓰기가 일회성 사건을 지운다.** 홀드 구간 동안 값은 매 tick 현재값으로 덮이므로, 확정 시점에는 "홀드 중 한 번 봤다"는 사실이 남지 않는다 — 이미 본 완료가 unseen(미확인)으로 표시된다.\
@@ -41,7 +41,8 @@
 ```ts
 const level = (s: State) => s.blocked ? 3 : s.unseen ? 2 : 0;
 function edge(prev: State, next: State) {
-  if (level(next) > level(prev)) return kindOf(level(next));   // 3→2 뒤 2→3→2 도 "2로 옴"
+  const a = level(prev), b = level(next);
+  if (b !== a && b > 0) return kindOf(b);   // 2→3→2 의 마지막 3→2 도 "done(2)으로 바뀜" → 재알림
   // ...
 }
 ```
@@ -60,16 +61,17 @@ function edge(prev: State, next: State) {
 ### 변형 B — 지연 확정 구간의 일회성 사건을 현재값으로 덮음
 ① 문제 코드
 ```ts
+onMarkSeen() { this.seen = true; }            // 홀드 중 사용자가 봄
 onTick(now) {
-  this.seen = seenNow();                       // 매 tick 덮어씀
+  this.seen = seenNow();                       // 다음 tick이 덮어씀 → 본 사실 소실
   if (holdExpired(now)) commit({ unseen: !this.seen });
 }
 ```
 ② 고친 코드
 ```ts
+onMarkSeen() { this.seen = true; this.seenInWindow = true; }   // 사건 시점에 래치 (tick에서 래치하면 덮인 뒤라 늦다)
 onTick(now) {
   this.seen = seenNow();
-  this.seenInWindow ||= this.seen;           // 래치
   if (holdExpired(now)) commit({ unseen: !(this.seen || this.seenInWindow) });
 }
 onWorkingResumed() { this.seenInWindow = false; }
@@ -114,7 +116,7 @@ if (n >= props.alertConsecutive) alerter.alertWithBackoff(key, host, metric, val
 |------|------|------|-----------|-----------|
 | 기본: 신호별 edge + 래치 | 기저 신호를 직접 볼 수 있다 | 신호별 이전 값·래치 상태 | 조합 규칙표 누락 시 새 조합에서 오판 | 한 프로세스 안의 상태 머신·알림 |
 | 1. 세대 ID 비교 | 관찰 대상이 인스턴스마다 새 ID를 낼 수 있다 | 프로토콜에 필드 추가 | 순간 재연결도 세대를 바꿔 오인 가능 | 짧은 재시작을 원격에서 확인 |
-| 2. 지속 조건 + 백오프 재알림 | 잡음 스파이크가 실제 이상보다 흔하다 | 감지 지연(N×주기) | 주기보다 짧은 진짜 이상은 못 봄 | 주기 샘플 기반 운영 경보 |
+| 2. 지속 조건 + 백오프 재알림 | 잡음 스파이크가 실제 이상보다 흔하다 | 감지 지연(N×주기) | N×주기보다 짧게 지속된 진짜 이상은 못 봄 | 주기 샘플 기반 운영 경보 |
 
 **결론**: 기저 신호에 접근할 수 있으면 가공 전 edge 판정이 가장 정확하다(기본).\
 관찰자가 원격이고 샘플링밖에 할 수 없으면, 순간을 잡으려 하지 말고 **영구 흔적(세대 ID)**을 비교한다(1).\
