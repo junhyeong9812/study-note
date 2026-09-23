@@ -40,6 +40,12 @@
 > **지연 평가(lazy evaluation)** — 값을 미리 다 만들어 두지 않고 요청받을 때 하나씩 만드는 방식.\
 > 예: 1억 줄짜리 파일을 리스트로 읽으면 메모리가 터지지만, 제너레이터로 읽으면 한 줄씩만 메모리에 올라온다.
 
+## 이 주제가 답하려는 질문
+
+1. **부르면 무엇이 도나** — 제너레이터 함수를 **호출하는 것**과 **실행하는 것**은 왜 다른 일인가.
+2. **「멈춘다」가 정확히 무슨 뜻인가** — 무엇이 남아 있길래 다음 `next()` 가 이어 갈 수 있나.
+3. **멈춘 자리에 무엇을 할 수 있나** — `send`·`close`·`yield from` 이 각각 그 자리에 무엇을 하나.
+
 ## 동작 방식
 
 > 이 절이 본문이다. **멈추고 재개하는 것은 눈에 안 보인다.** 그래서 그림이 본문이고 글은 그림을 읽는다.
@@ -609,6 +615,71 @@ ValueError: generator already executing
 ```
 
 재귀적으로 자기를 소비하는 구조를 짜면 난다. 제너레이터는 **동시에 한 곳에서만** 돈다.
+
+## 구현 세부사항 대 언어 보장
+
+세 층으로 가른다. ★ **이 주제는 「언어 보장」이 두꺼운 편이다** — 중단·재개·상태 전이가 전부 명세에 있다.\
+구현 쪽에 남는 것은 **들여다보는 도구**다.
+
+| 층 | 무엇인가 | 어떻게 확인했나 |
+|---|---|---|
+| **언어 보장** | 언어·라이브러리 레퍼런스가 정한 것 | 공식 문서 문장을 열어서 인용 |
+| **CPython 구현** | 이 구현이 그렇게 하는 것 | 실행 + `gi_frame` 으로 확인 |
+| **이 판의 관찰** | 3.12.3 에서 그랬을 뿐 | 「관찰」로 명기 |
+
+### 언어 보장
+
+| 사실 | 근거 |
+|---|---|
+| 제너레이터 함수를 호출하면 **이터레이터를 돌려주고**, 실행은 **그 메서드가 불릴 때** 시작된다 | 6.2.9 — *"When a generator function is called, it returns an iterator known as a generator... The execution starts when one of the generator's methods is called."* |
+| 「중단됐다」는 **모든 지역 상태가 유지된다**는 뜻이다 — 지역 변수 바인딩·명령 포인터·내부 평가 스택·예외 처리 상태 | 6.2.9 — *"all local state is retained, including the current bindings of local variables, the instruction pointer, the internal evaluation stack, and the state of any exception handling"* |
+| `close()` 는 **제너레이터가 멈춰 있던 그 자리에** `GeneratorExit` 를 던진다 | 6.2.9 — *"Raises a GeneratorExit at the point where the generator function was paused."* |
+| `send()` 로 **시작**시킬 때는 `None` 을 줘야 한다 — 값을 받을 `yield` 식이 아직 없기 때문이다 | 6.2.9 — *"it must be called with None as the argument, because there is no yield expression that could receive the value"* |
+| 하위 이터레이터가 끝나면 그 `StopIteration` 의 `value` 가 **`yield from` 식의 값**이 된다 | 6.2.9 — *"the value attribute of the raised StopIteration instance becomes the value of the yield expression"* |
+| 제너레이터의 네 상태 — `GEN_CREATED`·`GEN_RUNNING`·`GEN_SUSPENDED`·`GEN_CLOSED` | `inspect.getgeneratorstate()` |
+| 3.7 부터 제너레이터 안에서 새어 나온 `StopIteration` 은 `RuntimeError` 로 바뀐다 | PEP 479 — 실행에서 `RuntimeError: generator raised StopIteration` 확인 |
+
+★ **`for` 가 `iter` + 반복 `next` + `StopIteration` 잡기라는 것도 언어 보장이다.** 「소진된 제너레이터가 에러가 아니라 빈 결과를 낸다」는 그 정의에서 따라 나오는 것이지 구현 편의가 아니다.
+
+### CPython 구현 세부사항
+
+| 사실 | 어떻게 확인했나 |
+|---|---|
+| `gi_frame`·`gi_running`·`gi_code`·`gi_yieldfrom` 으로 **안을 들여다볼 수 있다** | `inspect` 문서의 "Types and members" 표에 실려 있다. **다른 구현에 프레임 객체가 이 모양으로 있으리라는 보장은 없다** |
+| `f_lineno` 가 **멈춘 소스 줄 번호**를 준다 | 실행 — 세 번 다 `7`(`yield total` 줄) |
+| `f_locals` 가 **살아 있는 지역 변수**를 dict 로 준다 | 실행 — `{'total': 10, 'i': 10}` → `{'total': 30, 'i': 20}` → `{'total': 60, 'i': 30}` |
+| 끝난 제너레이터의 `gi_frame` 이 `None` 이 된다 | 실행 — `GEN_CLOSED None` |
+| `GeneratorExit` 를 잡고 또 `yield` 하면 `RuntimeError: generator ignored GeneratorExit` | 실행 확인 |
+| `close()` 를 아무도 안 부르면 `finally` 가 **회수 시점까지** 미뤄진다 | 회수 시점은 참조 카운팅의 결과다. **명세가 정한 시점이 아니다** |
+
+★ **`f_lineno` 로 「언제나 `yield` 자리에서 멈춘다」를 눈으로 본 것은 구현 도구로 명세를 확인한 것**이다. 멈추는 자리가 `yield` 인 것은 명세, 그것을 `7` 이라는 숫자로 보여 준 것은 이 구현이다.
+
+### 이 판(3.12.3)의 관찰
+
+| 관찰 | 어디가 흔들리나 |
+|---|---|
+| `<generator object steps at 0x7c6faebd0b80>` 의 주소 숫자 | **실행할 때마다 다르다.** 값 자체는 아무 의미가 없다 |
+| `TypeError: can't send non-None value to a just-started generator` 문구 | 예외 **종류**는 명세지만 **문구**는 아니다 |
+| `ValueError: generator already executing` 문구 | 위와 같다 |
+| `f_locals` 가 `{'total': ..., 'i': ...}` 로 **두 칸만** 보였다 | 컴파일러가 무엇을 지역으로 잡았느냐에 달렸다 |
+| `list(g)` 를 두 번 불러 `[]` 가 나오기까지 **아무 경고도 없었다** | 경고가 없는 것은 설계지만, 「어떤 진단도 안 나온다」는 이 판의 확인일 뿐이다 |
+
+### 그래서 이렇게 적으면 틀린다
+
+- ✗ 「제너레이터를 만들면 첫 값이 미리 계산된다」\
+  → **한 줄도 안 돈다.** 문서가 *"The execution starts when one of the generator's methods is called."* 라고 적는다.
+- ✗ 「소진된 제너레이터를 다시 쓰면 에러가 난다」\
+  → **빈 결과가 나온다.** 이것이 이 주제에서 가장 조용히 틀리는 자리다.
+- ✗ 「`close()` 하면 그냥 버려진다」\
+  → **멈춘 자리에 예외를 던진다.** 그래서 `finally` 가 돈다.
+- ✗ 「`yield from` 은 `for x in inner(): yield x` 의 짧은 표기다」\
+  → `return` 값 회수·`send`·`throw`·`close` 전달이 다르다. **값 전달만 같다.**
+- ✗ 「`gi_frame.f_lineno` 로 확인했으니 어느 파이썬에서나 그렇다」\
+  → **확인 도구가 CPython 것이다.** 확인된 사실(멈추는 자리가 `yield` 다)은 명세지만, 그 도구는 아니다.
+- ✗ 「`finally` 는 제너레이터를 안 닫아도 언젠가 돈다」\
+  → **회수 시점이 명세에 없다.** 닫거나 다 소비하는 쪽이 유일하게 보장된 길이다.
+
+**판정 기준 한 줄**: **「무엇이 일어나나」는 명세에 있고, 「그것을 어떻게 들여다보나」는 이 구현에 있다.** `gi_*` 로 확인한 것은 확인이지 보장이 아니다.
 
 ## 언제 쓰고 언제 안 쓰나
 

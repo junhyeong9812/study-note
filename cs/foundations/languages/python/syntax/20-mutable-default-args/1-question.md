@@ -13,7 +13,7 @@
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
      유형 태그: (왜) / (예측) / (경계) / (연결) -->
 
-### 1. (예측)
+### 1. 세 번 부르면 (예측)
 
 ```python
 def add_item(item, bag=[]):
@@ -27,7 +27,7 @@ print(add_item("감"))
 
 - 세 줄의 출력은 각각 무엇인가?
 
-### 2. (예측)
+### 2. 두 호출이 받는 리스트 (예측)
 
 ```python
 print(add_item.__defaults__)
@@ -39,7 +39,7 @@ print(id(add_item.__defaults__[0]))
 
 - 두 `id` 값은 같은가 다른가, 그리고 그 답이 1번의 출력을 어떻게 설명하는가?
 
-### 3. (예측)
+### 3. `side()` 가 불리는 횟수와 시점 (예측)
 
 ```python
 def side():
@@ -57,7 +57,7 @@ print(g(2))
 
 - `side() 실행됨` 은 몇 번, 어느 줄들 사이에 찍히는가?
 
-### 4. (예측)
+### 4. 나중에 바꾼 값이 보이나 (예측)
 
 ```python
 LIMIT = 10
@@ -70,7 +70,7 @@ print(clamp(50))
 
 - 출력은 무엇이고, 가변 기본값 함정과 무엇이 같고 무엇이 다른가?
 
-### 5. (왜)
+### 5. `None` 센티널이 옮긴 것 (왜)
 
 ```python
 def add_item_fixed(item, bag=None):
@@ -82,7 +82,7 @@ def add_item_fixed(item, bag=None):
 
 - 이 고침이 실제로 무엇을 옮긴 것인가?
 
-### 6. (예측)
+### 6. 두 인스턴스의 상태 (예측)
 
 ```python
 class Logger:
@@ -99,7 +99,7 @@ print(a.lines is b.lines)
 
 - 두 줄의 출력은 각각 무엇인가?
 
-### 7. (경계)
+### 7. `dataclasses` 는 거부한다 (경계)
 
 ```python
 from dataclasses import dataclass
@@ -111,7 +111,7 @@ class Cart:
 
 - 이 코드는 어떻게 되고, `dataclasses` 가 주는 대안은 무엇이며 그것이 `None` 센티널과 같은 해법인 이유는 무엇인가?
 
-### 8. (경계)
+### 8. 전부 언어 보장이다 (경계)
 
 - 이 주제의 동작은 **CPython 구현 세부사항**인가 **언어가 보장하는 것**인가, 그리고 그 판단의 근거는 무엇인가?
 

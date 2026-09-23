@@ -47,6 +47,12 @@
 > **평가 시점(evaluation time)** — 어떤 식이 실제로 계산되는 시점.\
 > 예: 리스트 컴프리헨션은 **그 줄에서** 전부, 제너레이터 표현식은 **꺼낼 때** 하나씩 계산한다.
 
+## 이 주제가 답하려는 질문
+
+1. **언제 계산되나** — 대괄호와 소괄호가 갈라 놓는 것은 「무엇을 만드나」가 아니라 「**언제 만드나**」다.
+2. **이름이 어디까지 보이나** — 타깃은 안 새는데 왈러스는 새고, 클래스 몸통에서는 `NameError` 가 나는 이유.
+3. **예외와 부작용이 어느 줄에서 일어나나** — `try` 를 만드는 줄에 둬야 하나 꺼내는 줄에 둬야 하나.
+
 ## 동작 방식
 
 ### 1. ★ 괄호 하나가 계산 시점을 바꾼다
@@ -411,7 +417,10 @@ NameError: name 'factor' is not defined
 
 - `rows` 는 보이는데 `factor` 는 안 보인다. **`rows` 가 가장 왼쪽 `for` 의 iterable 이라 바깥 스코프(= 클래스 몸통)에서 평가되기 때문이다.**
 - `factor` 는 감춰진 스코프 안에서 찾아야 하는데, **클래스 몸통은 중첩 스코프의 이름 탐색 경로에 들어가지 않는다.**
-- 고치는 법: 값을 직접 쓰거나(`r * 10`), 클래스 밖에서 만들거나, 기본 인자로 넘긴다.
+- 고치는 법: 값을 직접 쓰거나(`r * 10`), 클래스 밖에서 만들어 대입하거나, **가장 왼쪽 `for` 의 iterable 에 실어 보낸다** —\
+  `[r * f for r, f in zip(rows, [factor] * len(rows))]` 는 `[10, 20, 30]` 을 낸다(실행 확인). 그 자리만 클래스 몸통에서 평가되기 때문이다.
+- ✗ **기본 인자로 밀어 넣는 우회는 안 된다** — `[(lambda r, f=factor: r * f)(r) for r in rows]` 도 같은 `NameError` 다(실행 확인).\
+  `lambda` 의 기본값 식 역시 **감춰진 스코프 안에서** 평가되기 때문이다.
 
 ```python
 class TableOK:
@@ -484,7 +493,7 @@ build([1, 0])
 
 ```text
 Traceback (most recent call last):
-  File ".../t14_tb.py", line 4, in <module>
+  File ".../t14_tb.py", line 3, in <module>
     build([1, 0])
   File ".../t14_tb.py", line 2, in build
     return [10 // n for n in data]
@@ -500,7 +509,7 @@ build([1, 0])
 
 ```text
 Traceback (most recent call last):
-  File ".../t14_tb2.py", line 4, in <module>
+  File ".../t14_tb2.py", line 3, in <module>
     build([1, 0])
   File ".../t14_tb2.py", line 2, in build
     return list(10 // n for n in data)
@@ -519,6 +528,85 @@ ZeroDivisionError: integer division or modulo by zero
 
 > **인라인화(inlining)** — 별도의 함수 호출로 처리하던 것을 부르는 쪽 코드에 그대로 펴 넣는 최적화.\
 > 예: 컴프리헨션마다 만들던 프레임을 없애서 호출 비용을 지웠다. PEP 709 가 밝힌 수치는 마이크로벤치마크 **1.96배**, 실제 코드 기반 벤치마크 **11%** 향상이다.
+
+## 구현 세부사항 대 언어 보장
+
+세 층으로 가른다. ★ **이 주제는 「스코프와 평가 시점」이 전부 명세에 있고, 「얼마나 빠른가·스택에 무엇이 남나」가 전부 구현이다.**
+
+| 층 | 무엇인가 | 어떻게 확인했나 |
+|---|---|---|
+| **언어 보장** | 언어·라이브러리 레퍼런스와 PEP 가 정한 것 | 공식 문서 문장을 열어서 인용 |
+| **CPython 구현** | 이 구현이 그렇게 하는 것 | 실행 + 트레이스백·`locals()` 로 확인 |
+| **이 판의 관찰** | 3.12.3·이 머신에서 그랬을 뿐 | 「관찰」로 명기 |
+
+### 언어 보장
+
+| 사실 | 근거 |
+|---|---|
+| 가장 왼쪽 `for` 의 iterable 식을 빼면, 컴프리헨션은 **별도의 감춰진 중첩 스코프**에서 실행된다 | 언어 레퍼런스 6.2.4 — *"aside from the iterable expression in the leftmost for clause, the comprehension is executed in a separate implicitly nested scope"* |
+| 가장 왼쪽 `for` 의 iterable 은 **바깥 스코프에서 직접 평가되어** 그 스코프에 인자로 넘어간다 | 6.2.4 — *"is evaluated directly in the enclosing scope and then passed as an argument to the implicitly nested scope"* |
+| 제너레이터 표현식 안의 변수는 `__next__()` 가 불릴 때 **지연 평가**된다 | 6.2.8 — *"Variables used in the generator expression are evaluated lazily when the `__next__()` method is called"* |
+| 그러나 가장 왼쪽 `for` 의 iterable 은 **즉시 평가**되므로, 거기서 난 에러는 **정의된 자리**에서 나온다 | 6.2.8 — *"immediately evaluated, so that an error produced by it will be emitted at the point where the generator expression is defined"* |
+| 컴프리헨션 안의 대입식(`:=`)은 **감싸는 스코프**에 타깃을 바인딩한다 | PEP 572 — *"binds the target in the containing scope, honoring a nonlocal or global declaration for the target in that scope, if one exists"* |
+| 왈러스 타깃 이름은 같은 컴프리헨션의 `for` 타깃 이름과 **같을 수 없다** | PEP 572 — for 타깃은 *"local to the comprehension in which they appear"* |
+| dict 의 **삽입 순서 보존은 언어 명세의 일부**다(3.7+) | What's New in 3.7 — *"the insertion-order preservation nature of dict objects has been declared to be an official part of the Python language spec"* |
+| `sys.getsizeof` 는 **그 객체에 직접 귀속된 메모리만** 센다 | `sys.getsizeof` — *"Only the memory consumption directly attributed to the object is accounted for, not the memory consumption of objects it refers to"* |
+
+★ 그래서 「타깃은 안 새고 왈러스는 샌다」·「클래스 몸통에서 `NameError` 가 난다」는 **구현 얘기가 아니라 명세의 귀결**이다.
+
+### CPython 구현 세부사항
+
+| 사실 | 어떻게 확인했나 |
+|---|---|
+| 3.12 가 **list·dict·set 컴프리헨션을 인라인**한다. 제너레이터 표현식은 대상이 **아니다** | PEP 709 — *"Generator expressions are currently not inlined in the reference implementation of this PEP."* |
+| 그래서 컴프리헨션이 **스택 트레이스에서 자기 프레임을 갖지 않는다** | PEP 709 — *"a comprehension will no longer have its own dedicated frame in a stack trace"* + 실행한 트레이스백에 `in <listcomp>` 줄이 없고, 제너레이터 쪽에는 `in <genexpr>` 줄이 남아 있다(위 「(6)」) |
+| 컴프리헨션 안에서 `locals()` 를 부르면 **바깥 함수의 지역 변수까지** 보인다 | 실행 확인 — 아래 |
+| `sys.settrace`·`setprofile` 이 보던 호출·반환 이벤트가 사라진다 | PEP 709 가 밝힌 변화다. **이 문서에서는 직접 재지 않았다** |
+| 컴프리헨션이 `for`+`append` 보다 빠른 것 | 바이트코드가 `append` 를 매번 찾아 부르지 않기 때문이다. **속도는 전부 구현 소관**이다 |
+
+```python
+def f():
+    lst = [1, 2]
+    other = "바깥 지역변수"
+    return [sorted(locals().keys()) for x in lst][0]
+
+print(f())
+```
+
+```text
+['lst', 'other', 'x']
+```
+
+- 바깥 함수의 `lst`·`other` 가 **컴프리헨션 안의 `locals()` 에 같이 보인다.** 3.11 이하에서는 안 보이던 것이다.
+- **이름 격리는 그대로다** — 보이는 것과 새는 것은 다른 얘기다. 바깥에서 `x` 를 부르면 여전히 `NameError` 다.
+
+### 이 판(3.12.3)·이 머신의 관찰
+
+| 관찰 | 어디가 흔들리나 |
+|---|---|
+| `getsizeof` 가 10만 원소 리스트에 `800984`, 1000만에 `89095160`, 제너레이터는 둘 다 `192` | 리스트의 성장 전략과 객체 내부 표현에 달렸다. **비례한다/안 한다**가 요점이고 숫자 자체는 아니다 |
+| `timeit` 네 줄의 usec 값 | **머신·부하에 달렸다.** 같은 머신에서 다시 돌리니 리스트 컴프리헨션이 16.9 → 18.5 → 19.7 → 22.2 usec 로 흔들렸다. 볼 것은 **순서**지 값이 아니다 |
+| `{0, 1, 2}` 가 오름차순으로 보인다 | **정렬 보장이 아니다.** 5판을 돌려도 정수 집합은 같았지만, **문자열 집합은 5판이 전부 달랐다**(`PYTHONHASHSEED` 무작위화). 정수 쪽이 안 변해서 더 위험하다 |
+| `<generator object <genexpr> at 0x...>` 의 주소 숫자 | 실행할 때마다 다르다 |
+| `SyntaxError: expected 'else' after 'if' expression` 문구 | 예외 **종류**는 명세지만 **문구**는 아니다 |
+| 트레이스백의 `~~~^^~~` 캐럿 표시 | 3.11 이 넣은 세밀한 위치 표시다. 모양은 판마다 바뀐다 |
+
+### 그래서 이렇게 적으면 틀린다
+
+- ✗ 「3.12 에서 컴프리헨션이 빨라졌으니 제너레이터 표현식도 빨라졌다」\
+  → PEP 709 는 **제너레이터 표현식을 인라인하지 않는다.** 트레이스백에 `in <genexpr>` 줄이 남아 있는 것이 그 확인이다.
+- ✗ 「인라인화됐으니 이름도 새게 됐다」\
+  → **이름 격리는 유지된다.** 바깥에서 타깃을 부르면 여전히 `NameError` 다.
+- ✗ 「set 은 `{0, 1, 2}` 처럼 정렬돼 나온다」\
+  → **정수라서 그렇게 보일 뿐이다.** 문자열 집합은 실행마다 순서가 달랐다.
+- ✗ 「`getsizeof` 로 메모리 차이를 다 쟀다」\
+  → 문서가 *"not the memory consumption of objects it refers to"* 라고 적는다. 안에 든 정수 객체는 안 세어졌다.
+- ✗ 「클래스 몸통 문제는 `lambda` 기본 인자로 우회된다」\
+  → **안 된다.** `lambda` 의 기본값 식도 감춰진 스코프에서 평가된다(실행 확인, 위 「(1)」).
+- ✗ 「컴프리헨션이 `for` 문보다 빠른 것은 언어의 성질이다」\
+  → **이 구현의 바이트코드 얘기다.** 명세는 속도를 말하지 않는다.
+
+**판정 기준 한 줄**: **「언제·어느 스코프에서 평가되나」는 명세에 있고, 「얼마나 빠른가·스택에 무엇이 남나·몇 바이트인가」는 이 구현에 있다.**
 
 ## 언제 쓰고 언제 안 쓰나
 

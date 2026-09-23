@@ -43,6 +43,12 @@ def f(x, bag=[]):  를 실행한 직후
 > **기본 인자(default argument)** — 호출할 때 그 인자를 생략하면 대신 쓰이는 값.\
 > 예: `def f(x, bag=[])` 에서 `[]` 가 기본 인자다.
 
+## 이 주제가 답하려는 질문
+
+1. **`bag=[]` 의 `[]` 는 언제 만들어지나** — 호출할 때인가, `def` 문을 실행할 때인가.
+2. **왜 호출 사이에 값이 쌓이나** — 매번 이어받는 것인가, 애초에 상자가 하나인 것인가.
+3. **고침은 무엇을 옮기는 것인가** — `None` 센티널과 `default_factory` 가 같은 해법인 이유.
+
 ## 동작 방식
 
 > 이 절이 본문이다. 그림을 먼저 두고 그 그림을 문장으로 읽는다.
@@ -426,6 +432,69 @@ print(len(fib.__defaults__[0]))
 그래도 권하지 않는다 — 캐시가 **함수 시그니처에 노출**되고, 크기 제한·초기화 수단이 없고, 읽는 사람이 함정과 구별하지 못한다.\
 같은 일을 `functools.lru_cache`(목록의 45번 주제)가 명시적으로 한다.
 
+## 구현 세부사항 대 언어 보장
+
+세 층으로 가른다. ★ **[02번](../02-is-vs-eq-interning/2-summary.md)과 정확히 반대다 — 여기는 언어 보장이 거의 전부다.**
+
+| 층 | 무엇인가 | 어떻게 확인했나 |
+|---|---|---|
+| **언어 보장** | 언어·라이브러리 레퍼런스가 정한 것 | 공식 문서 문장을 열어서 인용 |
+| **CPython 구현** | 이 구현이 그렇게 하는 것 | 실행으로 확인 |
+| **이 판의 관찰** | 3.12.3 에서 그랬을 뿐 | 「관찰」로 명기 |
+
+### 언어 보장
+
+| 사실 | 근거 |
+|---|---|
+| 기본값 식은 **`def` 문을 실행할 때 왼쪽에서 오른쪽으로** 평가된다 | 언어 레퍼런스 8.8 — *"Default parameter values are evaluated from left to right when the function definition is executed."* |
+| 그 식은 **한 번만** 평가되고, 호출마다 **같은 「미리 계산된」 값**이 쓰인다 | 8.8 — *"the expression is evaluated once, when the function is defined, and that the same pre-computed value is used for each call"* |
+| 기본값이 **가변 객체**면 함수가 그것을 고칠 때 **기본값 자체가 고쳐진다** | 8.8 — *"the default parameter value is in effect modified. This is generally not what was intended."* |
+| 해법은 **`None` 을 기본값으로 두고 몸통에서 명시적으로 검사**하는 것이다 | 8.8 — *"A way around this is to use None as the default, and explicitly test for it in the body of the function"* |
+| 평가된 기본값은 함수 객체의 `__defaults__` / `__kwdefaults__` 에 붙는다 | 데이터 모델 3.2 — callable types |
+| `dataclasses` 는 **해시할 수 없는 기본값**을 `ValueError` 로 거부한다(3.11 부터 기준이 `list`·`dict`·`set` 목록에서 **해시 가능성**으로 바뀌었다) | `dataclasses` — *"will raise a ValueError if it detects an unhashable default parameter. The assumption is that if a value is unhashable, it is mutable."* · *"Unhashability is used to approximate mutability."* |
+| 그 방어는 **부분적**이라고 문서가 스스로 말한다 | `dataclasses` — *"This is a partial solution, but it does protect against many common errors."* |
+
+★ **이 주제는 「파이썬은 이렇다」로 적어도 되는 드문 자리다.** 동작·경고·해법이 전부 명세와 문서에 있고, *"the current implementation"* 같은 한정어가 **한 군데도 없다.**
+
+### CPython 구현 세부사항
+
+가를 것이 거의 없다. 이 주제에서 구현에 속하는 것은 **확인에 쓴 도구와 표시**뿐이다.
+
+| 사실 | 어떻게 확인했나 |
+|---|---|
+| `id()` 가 메모리 주소다 | `id()` 문서의 **"CPython implementation detail"** 표시. **`id` 를 「주소」라고 읽는 것이 구현 세부**이고, 「두 번이 같다」는 정체 판정은 언어 보장이다 |
+| 「해시 가능성으로 가변성을 근사한다」의 **실제 구멍** | 실행 확인 — `__hash__` 가 살아 있는 내 가변 클래스는 `@dataclass` 를 **그냥 통과했다**(위 「(4)」). 문서가 *"a partial solution"* 이라 적은 그 구멍이다 |
+
+★ **`__defaults__` 를 바깥에서 고칠 수 있다는 것도 구현이 아니라 문서**다 — 데이터 모델이 이 속성을 **「특수 쓰기 가능 속성(special writable attributes)」** 절에 싣는다.\
+실측도 그대로였다 — 속성 자체를 **갈아 끼울 수 있고**(`f.__defaults__ = ([9],)`), 튜플 **원소 대입은 `TypeError`** 이고, **안의 리스트는 고쳐진다**(`add_item.__defaults__[0].clear()` 가 실제로 먹는다).
+
+★ **못 잰 것 하나** — 「어떤 파이썬 구현에서도 이렇게 동작한다」는 **명세를 근거로 한 말이지 실측이 아니다.**\
+이 머신에는 CPython 3.12.3 하나뿐이라 PyPy·GraalPy 에서 직접 확인하지 못했다. 재려면 그 구현을 깔아야 한다.
+
+### 이 판(3.12.3)의 관찰
+
+| 관찰 | 어디가 흔들리나 |
+|---|---|
+| `id(add_item.__defaults__[0])` 이 `133723085001280` 이었다 | **실행할 때마다 다르다.** 볼 것은 **두 번이 같다**는 것뿐이다 |
+| `ValueError: mutable default <class 'list'> for field items is not allowed: use default_factory` 문구 | 예외 **종류**는 문서화돼 있지만 **문구**는 아니다 |
+| `fib(30)` 뒤 `len(fib.__defaults__[0])` 이 `31` 이었다 | 재귀가 어떤 `n` 을 밟았는지의 결과다. 알고리즘이 바뀌면 달라진다 |
+| `@dataclass` 가 **클래스 정의 시점**에 터진다 | 데코레이터가 도는 시점이고, 문서와 맞는다. 다만 **터지는 줄 번호**는 판마다 표시가 바뀐다 |
+
+### 그래서 이렇게 적으면 틀린다
+
+- ✗ 「가변 기본 인자 함정은 CPython 구현 세부사항이다」\
+  → **아니다. 언어 보장이다.** 8.8 이 동작·경고·해법까지 평서문으로 적는다. 어느 구현에서도 이렇게 돌아야 한다.
+- ✗ 「기본값은 호출할 때마다 새로 계산된다」\
+  → *"evaluated once, when the function is defined"*. `def` 문은 **선언이 아니라 실행되는 문장**이다.
+- ✗ 「불변 기본값은 공유되지 않는다」\
+  → **공유된다.** 고칠 수 없어서 증상이 없을 뿐이다(위 「(3)」).
+- ✗ 「`dataclasses` 를 쓰면 이 함정이 막힌다」\
+  → **부분적이다.** 문서 자신이 *"a partial solution"* 이라고 적고, `__hash__` 가 살아 있는 가변 클래스는 통과한다.
+- ✗ 「`id` 가 같으니 같은 **주소**다」\
+  → 「같은 **객체**다」가 맞는 말이다. `id` 를 주소로 읽는 것은 CPython 구현 세부사항이다.
+
+**판정 기준 한 줄**: 기본값 자리에 관한 한 **「파이썬은 이렇다」로 적어도 된다.** 02번에서 그렇게 적으면 틀리는 것과 짝을 이루는 것이 이 주제의 인출 거리다.
+
 ## 언제 쓰고 언제 안 쓰나
 
 | 기본값 | 판정 |
@@ -438,23 +507,6 @@ print(len(fib.__defaults__[0]))
 
 한 줄 규칙: **기본값 자리에는 「안 변하고, 지금 계산해도 되는 것」만 둔다.**
 
-## 구현 세부사항 대 언어 보장
-
-02번 주제와 정확히 반대다. **여기는 전부 언어 보장이다.**
-
-| 사실 | 지위 |
-|---|---|
-| 기본값 식은 `def` 실행 시점에 왼쪽→오른쪽으로 평가된다 | **언어 보장** — 언어 레퍼런스 8.8 |
-| 그 값이 호출마다 재사용된다 | **언어 보장** — 같은 절의 명시 |
-| 가변 기본값을 고치면 기본값 자체가 바뀐다 | **언어 보장** — 같은 절이 "generally not what was intended" 라고 경고한다 |
-| `None` 센티널이 권장 해법이다 | **문서가 권하는 관용구** |
-| `dataclasses` 가 가변 기본값을 `ValueError` 로 거부한다 | **문서화된 동작** (3.7+) |
-| `__defaults__` 가 튜플이고 거기에 담긴다 | **언어 보장** — 데이터 모델 |
-
-즉 **「파이썬은 이렇다」라고 적어도 되는 주제**다.\
-「CPython 이 그렇다」가 아니라 **어떤 파이썬 구현에서도 이렇게 동작해야 한다.**\
-이 구분 자체가 02번과 짝을 이루는 인출 거리다 — 어떤 것이 구현이고 어떤 것이 명세인지 구별할 수 있어야 한다.
-
 ## 핵심 문장
 
 - `def` 문은 선언이 아니라 **실행되는 문장**이다. 그 실행 중에 기본값이 계산돼 함수 객체에 붙는다.
@@ -466,7 +518,7 @@ print(len(fib.__defaults__[0]))
 ## 관련 자료
 
 - 목록: [python/syntax 주제 목록](../README.md) — 이 주제는 **20번**
-- 선행: 목록의 **03번** 「가변·불변과 얕은 복사·깊은 복사」, **19번** 「함수 인자 규칙」(폴더 아직 없음)
+- 선행: [목록의 **03번**](../03-mutability-and-copying/) 「가변·불변과 얕은 복사·깊은 복사」, **19번** 「함수 인자 규칙」(폴더 아직 없음)
 - 함께 보는 곳: [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md) — `is None` / `is MISSING` 을 `==` 로 쓰면 안 되는 이유
 - 이어지는 곳: 목록의 **36번** 「`dataclasses`」, **45번** 「`functools`」(폴더 아직 없음)
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/README.md) — 리스트가 가변이라는 것과 `append` 사용법은 그쪽에 있다.\
