@@ -55,10 +55,10 @@ match ctx_window(model) { 0 => hide_gauge(), w => show(min(100, occ * 100 / w)) 
 
 ```sql
 -- 문제: 합계 = Σ 버킷별 DISTINCT
-SELECT hour, COUNT(DISTINCT visitor) FROM visit_log GROUP BY hour;   -- 앱에서 합산
+SELECT hour, COUNT(DISTINCT visitor) FROM page_views GROUP BY hour;   -- 앱에서 합산
 
 -- 고침: 합계는 원 데이터에서 별도 DISTINCT, 기간은 반열린 구간
-SELECT COUNT(DISTINCT visitor) FROM visit_log
+SELECT COUNT(DISTINCT visitor) FROM page_views
  WHERE ts >= :from AND ts < :toExclusive;
 ```
 무엇이 깨졌나: 유니크 방문자 합계 행이 과대집계됐다. 통합 테스트로 "버킷 합 3 ≠ 실제 2"를 고정했다.\
@@ -68,9 +68,9 @@ SELECT COUNT(DISTINCT visitor) FROM visit_log
 
 ```js
 // 문제: "전체" = 마지막 값(최신 연도)
-const total = last(byYear);
+const total = last(perYear);
 // 고침: 차원 의미에 맞게 합
-const total = sum(byYear);
+const total = sum(perYear);
 ```
 무엇이 깨졌나: "전체" 탭이 최신 연도만 합산해 과소 표시됐다.
 
@@ -84,8 +84,8 @@ for line in stream:
 
 # 고침: 누적은 메인이 소유(워커 반환값으로), 포맷 통일, 파서는 지정 라인에서만
 for fut in as_completed(futures):
-    ok, fail = fut.result(); total_ok += ok; total_fail += fail
-    log.info(f"Progress: {done}/{n} ({pct}%) | Success: {total_ok} | Failed: {total_fail} | Rate: {r}")
+    ok, fail = fut.result(); ok_count += ok; fail_count += fail
+    log.info(f"Progress: {done}/{n} ({pct}%) | Success: {ok_count} | Failed: {fail_count} | Rate: {r}")
 # 파서
 if "Progress:" in line: state["success"] = parse_success(line)
 ```
