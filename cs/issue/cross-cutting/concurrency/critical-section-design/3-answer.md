@@ -117,8 +117,8 @@ fn input(&self, bytes: &[u8]) { self.writer.lock().write_all(bytes); }   // 상�
 struct Session { input: SyncSender<Vec<u8>> /* 유계 큐 */ }
 // 세션당 writer 스레드: 아무 락도 없이 블로킹 write
 thread::spawn(move || for chunk in rx { pty.write_all(&chunk)?; });
-fn input(&self, bytes: Vec<u8>) -> Result<(), InputError> {
-    self.input.send_timeout(bytes, INPUT_WAIT).map_err(|_| InputError::Stalled)   // 상한 초과 → 에러로 알림
+fn input(&self, bytes: Vec<u8>) -> Result<(), SendError> {
+    self.input.send_timeout(bytes, INPUT_WAIT).map_err(|_| SendError::Stalled)   // 상한 초과 → 에러로 알림
 }
 // 세션 정리(drop)가 큐를 닫아 writer 스레드 종료
 ```
@@ -196,10 +196,10 @@ n = await store.eval(SCRIPT, 1, key, limit, ttl)
 ```python
 # ① 문제: 프로세스 내부 asyncio.Lock — 락 밖 단계(승인 대기)·다른 프로세스·재시작을 보호 못함
 # ② 고침
-def create(state, terminal_phases):
+def create(state, done_states):
     with file_lock():                          # flock (타임아웃·실패 전파)
         existing = read()                      # 손상 시 "없음" 간주 금지 → 진행 거부(fail-closed)
-        if existing and existing["phase"] not in terminal_phases:
+        if existing and existing["phase"] not in done_states:
             return existing                    # 진행 중 1건 불변식
         write_atomic(state)                    # tmp + rename
         return None
