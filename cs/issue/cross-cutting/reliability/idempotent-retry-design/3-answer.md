@@ -129,15 +129,15 @@ rec.Attempt = req.Attempt                          // 재개 축
 ① 문제 코드
 ```python
 def on_message(msg):
-    save_log(msg)          # 내부에서 commit
-    upsert_stats(msg)      # 실패 → 재전달 → save_log 가 또 저장
+    write_log(msg)          # 내부에서 commit
+    upsert_stats(msg)      # 실패 → 재전달 → write_log 가 또 저장
     db.commit()
 ```
 ② 고친 코드
 ```python
 def on_message(msg):
     with db.transaction():             # 서비스 내부 commit 금지, 핸들러 단일 트랜잭션
-        save_log(msg)                  # 유일 키 + upsert
+        write_log(msg)                  # 유일 키 + upsert
         upsert_stats(msg)
 # 두 저장소: DB 확정 → 캐시 발효 (멱등 가드 있는 쪽을 먼저 쓰지 않는다)
 ```
@@ -157,7 +157,7 @@ if (!r.failures().isEmpty()) log.warn(...);
 
 // 고친
 if (!r.failures().isEmpty()) {
-    status.addFailed(r.failures().size());
+    status.recordFailure(r.failures().size());
     status.setLastError("partial failure: " + r.failures().get(0).reason());
 }
 dispatcher.awaitAll();                          // 비동기 태스크의 집계가 보이도록 happens-before
@@ -177,8 +177,8 @@ writeLastVersion(head)                          // 예외가 나면 여기 못 �
 
 ### 방안 3 — 겹치는 멱등 증분 윈도우
 ```python
-# 문제: updated_after = today - 1  → 하루 실패 = 그날 변경분 영구 누락
-prepare_incremental(updated_after=today - timedelta(days=7))   # 키 기준 upsert 라 겹쳐도 안전
+# 문제: changed_since = today - 1  → 하루 실패 = 그날 변경분 영구 누락
+plan_delta(changed_since=today - timedelta(days=7))   # 키 기준 upsert 라 겹쳐도 안전
 # 단조 증가 ID 기반 소스는 "대상의 max_id 이후"를 추출해 자체 복구 성질을 가짐
 ```
 
