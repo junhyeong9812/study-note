@@ -72,7 +72,7 @@ async function start() {
   const conn = await openConnection();      // 수 초 걸림
   const un = await listen("data", (d) => widget.write(d));
   unRef = un;                               // 언마운트됐어도 등록 → 폐기된 widget 영구 참조
-  setTimeout(() => markReady(), 3000);      // 언마운트 후에도 발화
+  setTimeout(() => setReady(), 3000);      // 언마운트 후에도 발화
 }
 ```
 ② 고친 코드
@@ -82,10 +82,10 @@ async function start() {
   if (disposed) { conn.close(); return; }
   let un;
   try { un = await listen("data", (d) => widget.write(d)); }
-  catch (e) { registry.release(id); showError(e); return; }   // 등록 실패: 선점 해제 + 실패 표시
+  catch (e) { registry.release(id); reportError(e); return; }   // 등록 실패: 선점 해제 + 실패 표시
   if (disposed) { un(); return; }
   unRef = un;
-  timer = setTimeout(() => { if (!disposed) markReady(); }, 3000);
+  timer = setTimeout(() => { if (!disposed) setReady(); }, 3000);
 }
 ```
 무엇이 깨졌나: await 사이의 모든 지점이 언마운트 가능 지점인데 한 곳만 지켰고, 실패 경로는 선점을 풀지 않았다.\
@@ -150,7 +150,7 @@ function onDragStart() {
 ### 방안 1 — 명령형 라이브러리 인스턴스·리스너 수명을 직접 소유
 ```js
 // 문제
-function renderModal(data) {
+function openModal(data) {
   container.innerHTML = template(data);                 // canvas 재생성 또는 재사용
   state.chart = new ChartLib(canvas, cfg(data));            // 같은 canvas 에 두 번째 → "이미 사용 중"
   canvas.addEventListener("wheel", zoom);                // 렌더마다 중복 · passive 라 preventDefault 무시
@@ -159,7 +159,7 @@ let apiPromise;
 const getStatus = () => (apiPromise ??= fetch(url).then((r) => r.json()));   // 실패도 영구 캐시
 
 // 고친
-function renderModal(data) {
+function openModal(data) {
   state.chart?.destroy();                                // 재생성 전 파괴
   state.chart = new ChartLib(canvas, cfg(data));
   if (!canvas.dataset.bound) {                           // 노드당 1회 바인딩
@@ -170,7 +170,7 @@ function renderModal(data) {
 const getStatus = () =>
   (apiPromise ??= fetch(url).then((r) => r.json()).catch((e) => { apiPromise = null; throw e; }));
 ```
-같은 구조: 회전 여부를 플래그 두 개에 직접 대입하던 것을 파생값(`!userPaused && !modalOpen`)으로 바꿔 모순 상태를 구조적으로 없앰.
+같은 구조: 회전 여부를 플래그 두 개에 직접 대입하던 것을 파생값(`!pausedByUser && !modalOpen`)으로 바꿔 모순 상태를 구조적으로 없앰.
 
 | 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
 |------|------|------|-----------|-----------|
