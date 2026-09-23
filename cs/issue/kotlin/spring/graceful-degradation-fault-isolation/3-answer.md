@@ -16,7 +16,7 @@
    > **결함 격리(fault isolation)** — 한 구성요소의 장애가 다른 구성요소로 번지지 않도록 경계를 두는 것.
    > **우아한 성능 저하(graceful degradation)** — 일부 기능이 불가능해져도 시스템 전체가 멈추지 않고 축소된 기능으로 계속 동작하는 것.
 
-3. (a) 원점수 더하기는 스케일이 다른 두 점수(BM25 무한대 스케일 vs 코사인 0~1)를 섞어 **큰 쪽이 작은 쪽을 완전히 지배**한다 — kNN이 사실상 무시된다. (b) 각자 최대값 정규화는 **이상치 하나에 전체가 눌린다** — 어쩌다 BM25 100점짜리가 하나 나오면 나머지가 다 0.x로 깔린다. (c) RRF는 원점수를 버리고 등수만 써서(`새점수 = Σ 1/(k+rank)`, k=60) 스케일과 이상치 문제를 동시에 없앤다. **한쪽이 비어도 성립하는 이유**: 합은 각 랭킹이 기여하는 항의 덧셈인데, 비어 있는 랭킹은 단지 항이 0개일 뿐 수식이 깨지지 않는다. 폴백과 궁합이 좋은 이유가 이것 — "임베딩 죽으면 kNN 랭킹 = 빈 리스트"가 되어도 RRF는 BM25 랭킹만으로 그대로 병합한다. 별도 분기가 필요 없다.
+3. (a) 원점수 더하기는 스케일이 다른 두 점수(BM25는 상한이 고정되지 않고 질의·코퍼스마다 범위가 달라지는 점수, 벡터 쪽은 대개 0~1로 변환된 유사도)를 섞어 **큰 쪽이 작은 쪽을 사실상 지배**한다 — kNN이 거의 무시된다. (b) 각자 최대값 정규화는 **이상치 하나에 전체가 눌린다** — 어쩌다 BM25 100점짜리가 하나 나오면 나머지가 다 0.x로 깔린다. (c) RRF는 원점수를 버리고 등수만 써서(`새점수 = Σ 1/(k+rank)`, k=60) 스케일과 이상치 문제를 동시에 없앤다. **한쪽이 비어도 성립하는 이유**: 합은 각 랭킹이 기여하는 항의 덧셈인데, 비어 있는 랭킹은 단지 항이 0개일 뿐 수식이 깨지지 않는다. 폴백과 궁합이 좋은 이유가 이것 — "임베딩 죽으면 kNN 랭킹 = 빈 리스트"가 되어도 RRF는 BM25 랭킹만으로 그대로 병합한다. 별도 분기가 필요 없다. (단 정규화+가중합이 "틀린" 방법은 아니다 — min-max 등 정규화 후 가중합은 실무 검색 엔진에도 있는 방식이고, 가중치를 데이터로 튜닝할 수 있으면 RRF보다 나을 수도 있다. 튜닝 데이터 없이 이질적 랭킹을 안정적으로 섞고 폴백과 맞물리는 데서 RRF가 유리한 것이다.)
    > **RRF(Reciprocal Rank Fusion, 역순위 융합)** — 여러 랭킹을 각 항목의 등수의 역수 합으로 합치는 방법. 점수 스케일을 안 봐 이질적 랭킹을 안정적으로 섞는다.
 
 4. llm은 "뭐야"로 끝나는 질문형 질의를 보고 `kind=question`을 제안했다 — "question 문서를 찾는 거겠지"라는 추론인데, 사람 의도(질문에 대한 **답**을 찾는다)와 정반대다. 이걸 하드 필터로 적용하니 정리·정답·글 종류가 전부 걸러져 답 문서가 전멸했다. "약한 모델의 출력은 참고 자료지 결정권자가 아니다"란, 부정확할 수 있는 모델 출력에 **되돌릴 수 없는 결정권(하드 필터로 결과를 제거)** 을 주면 그 부정확성이 그대로 결과를 오염시킨다는 것이다. 그래서 제안을 **버리지 않되 로그로만 축적**한다 — 완전히 무시하면 "제안이 실제로 얼마나 맞나"를 측정할 재료가 사라지고, 곧바로 신뢰하면 결과가 오염된다. 로그 축적은 "결정권은 안 주되 데이터는 모은다"는 중간 지점이다.
@@ -101,7 +101,8 @@ if (outcome.used && outcome.suggestedKind != null)
 class StatsInterceptor : HandlerInterceptor {
     override fun afterCompletion(/* ... */) {
         statsRepo.insertView(/* ... */)             // 요청마다 동기 DB 적재 2건
-        statsRepo.insertDaily(/* ... */)            // 통계 DB 장애·지연이 본 응답으로 전파 (DoS 소지)
+        statsRepo.insertDaily(/* ... */)            // 예외는 DispatcherServlet이 로그만 남기고 삼키지만,
+                                                    // 통계 DB 지연·커넥션 고갈은 요청 스레드를 붙잡아 본 서비스로 전파 (DoS 소지)
     }
 }
 ```
@@ -110,8 +111,9 @@ class StatsInterceptor : HandlerInterceptor {
 override fun afterCompletion(/* ... */) {
     events.publish(ViewEvent(/* ... */))            // 비동기 이벤트 또는 버퍼 적재로 분리
 }
-@Async @EventListener
+@Async @EventListener                               // @EnableAsync 가 없으면 @Async 는 무시되어 호출 스레드에서 동기 실행된다
 fun on(e: ViewEvent) = runCatching { statsRepo.insert(e) }.onFailure { log.warn("stats drop", it) }   // 수집 트랜잭션·예외 격리
+// 비동기 실행기의 큐 상한·거절 정책도 정해야 한다 — 무한 큐면 통계 DB 장애 시 메모리로 번진다
 ```
 무엇이 깨졌나: 부가 기능의 장애 도메인이 핵심 요청과 합쳐져 있었다.
 
@@ -147,6 +149,7 @@ management:
     mail.enabled: false          # 선택 기능은 집계에서 제외 — 진단은 별도 관리자 경로로 유지
     db.enabled: false            # 선택적 외부 의존 제외
 # 컨테이너 프로브는 liveness 그룹(/actuator/health/liveness)을 사용
+# (Spring Boot는 쿠버네티스 환경에서만 이 그룹을 자동 활성 — 그 밖에선 management.endpoint.health.probes.enabled=true)
 # (부수: 경량 런타임 이미지에 프로브 도구(curl)가 없어 판별 불가 → 도구 설치)
 ```
 
@@ -164,7 +167,9 @@ with Pool(processes=1, maxtasksperchild=500) as pool:
             for f in files(day):
                 r = pool.apply_async(extract, (f,))
                 try: text = r.get(timeout=30)                # 타임아웃 → 스킵
-                except Exception as e: record_failed(f, e); continue   # 파이썬 예외 스킵, 워커 사망은 풀이 재생성
+                except Exception as e: record_failed(f, e); continue   # 파이썬 예외 스킵
+                # 워커가 세그폴트로 죽으면 Pool은 워커를 새로 띄우지만 그 작업의 결과는 오지 않는다
+                # → get(timeout)이 유일한 탈출구 (timeout 없는 get()은 영원히 대기)
         except Exception as e: failed_days.append(day)
 print_summary(failed_days)
 # 결과(이미지 등)는 bytes로 반환해 메인에서 변환 — IPC 오버헤드는 감수
@@ -175,6 +180,8 @@ print_summary(failed_days)
 # 문제(리뷰 권고안): 보조 유닛이 가리키는 바이너리가 미설치 → 보조 유닛 실패 → 재부팅 시 컨테이너 런타임 전체 기동 실패 위험
 [Unit]
 Requires=gpu-helper.service
+# (Requires= 는 After= 순서 의존과 함께일 때 의존 유닛 기동 실패 시 대상 유닛을 기동하지 않는다 —
+#  After= 없이 병렬 기동이면 기동 자체는 막지 않지만, 의존 유닛이 명시적으로 중지되면 함께 중지된다)
 # 고친: 약한 의존 — 보조 유닛이 실패해도 대상 유닛은 뜬다
 [Unit]
 Wants=gpu-helper.service
