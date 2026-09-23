@@ -28,7 +28,8 @@ base64 디코더가 개행을 건너뛰는 것, YAML의 `"\x24"` 같은 이스�
 검사한 것은 첫 URL 문자열이고, 실제로 통신한 것은 리다이렉트 이후의 hop이다.\
 그래서 리다이렉트 훅에서 **매 hop의 scheme**을 검사한다.\
 1차 수정이 주입받은 클라이언트의 기존 리다이렉트 훅을 **덮어써서** 호출자가 걸어 둔 정책(예: "리다이렉트 전면 금지")을 지워 버렸다 — 새 fail-open이다.\
-훅은 교체가 아니라 **합성**한다: 우리 검사를 먼저 하고, 기존 훅이 있으면 이어서 호출한다.
+훅은 교체가 아니라 **합성**한다: 우리 검사를 먼저 하고, 기존 훅이 있으면 이어서 호출한다.\
+기존 훅이 없던 경우도 "정책 없음"이 아니라 **기본 정책**(Go는 10회 초과 리다이렉트 중단)이었으므로 그것까지 보존하고, 공유 클라이언트 필드를 직접 바꾸면 다른 호출자에게도 번지므로 복사본에 건다.
 
 5. **재검증은 창을 좁힐 뿐.** 파일 **경로**를 다시 여는 한, 마지막 검증과 실제 사용 사이의 변경을 원리적으로 배제할 수 없다 — 재검증 시점을 늦추면 창이 짧아질 뿐이다.\
 해결은 "검증한 그 바이트"를 사용하는 것이다: 검증한 내용을 해시 이름 파일로 **O_EXCL 생성 후 재해시**해 굳히고, 실행(내리기 포함)에는 그 **불변 스냅샷**(격리 디렉터리·0600·fsync·재대조·사용 후 삭제)을 넘긴다.\
@@ -36,7 +37,8 @@ base64 디코더가 개행을 건너뛰는 것, YAML의 `"\x24"` 같은 이스�
    > **TOCTOU** — time-of-check to time-of-use. 검사와 사용 사이에 대상이 바뀌어 검사가 무의미해지는 경쟁.
 
 6. **개행 두 함정 + 삭제식 정규화.** `id=$(printf 'abc\n')`는 후행 개행을 **벗긴 값**을 돌려준다 — 검증을 셸 쪽 값으로 하면 원본(`abc\n`)이 아니라 가공본(`abc`)을 검증한 셈이다.\
-또 `^[A-Za-z0-9-]+$`의 `$`는 많은 정규식 엔진에서 "끝 **또는 마지막 개행 앞**"이라 `abc\n`도 통과한다 — 절대 끝 앵커(`\z`)로 **원본**을 검증해야 한다.\
+또 `^[A-Za-z0-9-]+$`의 `$`는 많은 정규식 엔진(Python `re`·Perl·PCRE 계열 등)에서 "끝 **또는 마지막 개행 앞**"이라 `abc\n`도 통과한다 — 절대 끝 앵커(`\z`, Python은 `\Z` 또는 `fullmatch`)로 **원본**을 검증해야 한다.\
+(엔진마다 다르다 — POSIX ERE(bash `=~` 등)의 `$`는 문자열 끝만, Ruby의 `$`는 모든 줄 끝에 매칭된다. 쓰는 엔진의 앵커 의미를 확인한다.)\
 불량 문자를 지워서 쓰는 정규화(`tr -cd 'A-Za-z0-9_-'`)는 `a.b`와 `ab`처럼 **다른 입력을 같은 이름으로 충돌**시킨다 — 불량 입력은 지우지 말고 거부한다.
 
 7. **한 번 읽기 + 표시=대상.** 파일을 두 번 읽어 한 번은 해시, 한 번은 내용을 만들면 그 사이 변경·개행 처리 차이로 **식별자와 내용이 다른 것**을 가리킬 수 있다 — 한 번 읽은 버퍼에서 둘 다 만들고, 발행 전 "디코드==원본·재해시 일치"를 스스로 단언한다.\
@@ -79,12 +81,15 @@ canonical := method + "\n" + req.URL.Path + "\n" + bodyDigest + "\n" + ts
 ```
 ② 고친 코드
 ```kotlin
-val path = exchange.request.path.pathWithinApplication()   // 라우터와 같은 정규화 출처
+val path = exchange.request.path.pathWithinApplication().value()   // 라우터 매칭과 같은 경로 출처
 if (path.startsWith("/internal/")) verifySignature(request)
+// 라우터가 인코딩·`..`·중복 슬래시를 실제로 어떻게 다루는지는 프레임워크·버전·방화벽 설정마다 다르다 —
+// 가정하지 말고 변형 요청 테스트로 두 계층의 판정이 같은지 확인
 // 테스트: "..", "%2e%2e", 중복 슬래시 변형이 모두 인가를 거치는지
 ```
 ```go
 canonical := method + "\n" + req.URL.EscapedPath() + "\n" + bodyDigest + "\n" + ts  // 원문 경로로 통일
+// EscapedPath 는 RawPath 가 Path 의 유효한 인코딩일 때만 원문을, 아니면 재인코딩 값을 준다 — 양쪽이 같은 함수를 쓰는 것이 핵심
 // 서명자 산출 hex 를 검증자가 통과시키는 고정 벡터(golden vector) 교차 테스트
 ```
 무엇이 깨졌나: 같은 요청을 판정 계층과 사용 계층이 다른 문자열로 봤다(필터-라우터 쪽은 설계 확인 라운드에서 막은 형태 — 실사고 아님).
@@ -100,9 +105,10 @@ if bytes.Contains(raw, []byte("$")) { reject() }       // YAML "\x24" 는 원문
 ② 고친 코드
 ```go
 dec := json.NewDecoder(bytes.NewReader(body))
-dec.DisallowUnknownFields()                  // + 중복 키 검출, null·빈 값·부분 조합 → 422
-raw, err := base64.StdEncoding.Strict().DecodeString(m.Content)
-if err != nil || base64.StdEncoding.EncodeToString(raw) != m.Content { reject() }  // 왕복 동일성
+dec.DisallowUnknownFields()                  // 중복 키 검출은 표준 라이브러리에 없어 별도 구현, null·빈 값·부분 조합 → 422
+if err := dec.Decode(&m); err != nil { reject() }
+raw, err := base64.StdEncoding.Strict().DecodeString(m.Content)   // Strict 도 CR·LF 는 여전히 무시한다
+if err != nil || base64.StdEncoding.EncodeToString(raw) != m.Content { reject() }  // 왕복 동일성이 개행·변형을 잡는다
 var doc yaml.Node
 yaml.Unmarshal(raw, &doc)                    // Node 직접 순회: 문서 1개, 앵커·별칭·병합 키·중복 키 거절
 walkScalars(&doc, func(v string) {           // 디코드 후 값(소비자가 볼 문자열)에서 '$' 금지
@@ -124,7 +130,7 @@ runDown(hostPath)                  // 같은 경로를 다시 열어 사용, 존
 name := "def.sha256-" + fullHex(sha256(validated)) + ".yml"
 writeExcl(dir, name, validated, 0o600)              // O_EXCL 생성 → fsync → 재해시 대조
 snap := snapshotFor(down, validated)                // 격리 tmp·O_EXCL·0600·재대조, 사용 후 삭제
-fi, _ := os.Lstat(snap); if !fi.Mode().IsRegular() { reject() }   // 링크 거절
+fi, err := os.Lstat(snap); if err != nil || !fi.Mode().IsRegular() { reject() }   // 링크 거절(오류도 거절)
 runDown(snap)
 // 폴백은 명시적 opt-in + WARN, 작업 디렉터리 0700·상위 링크 금지
 ```
@@ -158,10 +164,12 @@ resp, _ := client.Get(url)                 // 302 → http:// 도 따라감
 ```
 ② 고친 코드
 ```go
-prev := client.CheckRedirect
-client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+c := *client                                               // 공유 객체를 바꾸지 않도록 복사본에 설정
+prev := c.CheckRedirect
+c.CheckRedirect = func(req *http.Request, via []*http.Request) error {
     if req.URL.Scheme != "https" { return errInsecure }    // 매 hop 검사 먼저
     if prev != nil { return prev(req, via) }               // 기존 정책과 합성
+    if len(via) >= 10 { return errors.New("too many redirects") }  // nil 일 때의 기본 정책(10회 제한)도 보존
     return nil
 }
 ```
