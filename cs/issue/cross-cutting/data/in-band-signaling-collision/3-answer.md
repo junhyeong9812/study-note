@@ -109,17 +109,17 @@ end = f"<<<END-{secrets.token_hex(8)}>>>"               # 요청마다 nonce 경
 ### 변형 D — 센티널을 값 채널로
 ① 문제 코드
 ```python
-def build_status_filter(status_list):
-    return {"terms": {"status": status_list}}             # ["전체"] → 존재하지 않는 값 → 0건
+def status_filter_of(statuses):
+    return {"terms": {"status": statuses}}             # ["전체"] → 존재하지 않는 값 → 0건
 ```
 ② 고친 코드
 ```python
 ALL_VALUES = {"전체", "all"}
 
-def build_status_filter(status_list):
-    if any(s in ALL_VALUES for s in status_list):
+def status_filter_of(statuses):
+    if any(s in ALL_VALUES for s in statuses):
         return None                                       # 센티널 = "필터 없음"이라는 의미
-    return {"terms": {"status": status_list}}
+    return {"terms": {"status": statuses}}
 ```
 무엇이 깨졌나: "필터 없음"을 뜻하는 센티널이 하위 계층에서 리터럴 값으로 매칭됐다.
 
