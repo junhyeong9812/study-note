@@ -97,16 +97,16 @@
 ### 변형 D — 문서 라이브러리 기본값
 ① 문제 코드
 ```python
-cell.paragraphs[0].add_run().add_picture(img, width=cell_width)   # height 자동
+cell.paragraphs[0].add_run().add_picture(img, width=col_width)   # height 자동
 sheet.add_image(Image(path), "B2")                                # offset 0
 ```
 ② 고친 코드
 ```python
-w, h = fit_size(img, max_w=cell_width * 0.9, max_h=cell_height)  # 비율 유지 fit
-set_cell_no_padding(cell)                                         # tcMar = 0
+w, h = fit_size(img, max_w=col_width * 0.9, max_h=cell_height)  # 비율 유지 fit
+zero_cell_padding(cell)                                         # tcMar = 0
 run.add_picture(img, width=w, height=h)
 
-off_x = max(0, (cell_w_px - img_w_px) / 2)
+off_x = max(0, (col_px - img_w_px) / 2)
 anchor = OneCellAnchor(_from=AnchorMarker(col, int(px_to_emu(off_x)), row, int(px_to_emu(off_y))), ext=size)
 sheet.add_image(image, anchor)
 
