@@ -61,7 +61,7 @@ return (
 ```ts
 store.subscribe((s, prev) => {
   for (const id of Object.keys(s.sessions))          // 모든 set 마다 전 세션 비교
-    if (needsAttention(s.sessions[id]) && !needsAttention(prev.sessions[id])) notify(id);
+    if (needsReview(s.sessions[id]) && !needsReview(prev.sessions[id])) notify(id);
 });
 ```
 ② 고친 코드
@@ -70,7 +70,7 @@ store.subscribe((s, prev) => {
 updateSession(id, next) {
   const prev = get().sessions[id];
   set(/* ... */);
-  emitAttention({ id, prev: needsAttention(prev), next: needsAttention(next) });   // O(1)
+  emitAttention({ id, prev: needsReview(prev), next: needsReview(next) });   // O(1)
 }
 function emitAttention(ev) { for (const cb of listeners) { try { cb(ev); } catch (e) { report(e); } } }
 ```
