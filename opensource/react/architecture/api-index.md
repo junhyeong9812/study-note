@@ -145,6 +145,12 @@
 | `componentDidCatch` | 에러 업데이트의 **callback** — 커밋 단계. 로깅도 이 콜백이 한다 | [에러와 Suspense](flows/throw/README.md) → [업데이트 큐](flows/update-queue/05_capturedAndCallbacks/README.md) |
 | 리소스가 준비 안 됨 | `completeWork` 가 `SuspenseyCommitException` 을 던진다 | [completeWork](flows/complete-work/README.md) |
 | `onRecoverableError` | 커밋 끝에서 불린다. `catch` 로 감싸지 않는다 | [커밋](flows/commit/README.md) |
+| `hydrateRoot` | 커서 하나가 서버 DOM 을 걸으며 fiber 마다 노드를 집는다 | [하이드레이션](flows/hydration/README.md) |
+| "Hydration failed because..." | 집기(begin)나 수화(complete) 어느 쪽에서든 날 수 있다. 문구가 text/HTML 로 갈린다 | [하이드레이션](flows/hydration/README.md) |
+| 수화가 어긋났을 때 | 가장 가까운 Suspense 경계부터(없으면 루트 전체를) **클라이언트 렌더로 다시 그린다** | [하이드레이션](flows/hydration/README.md) |
+| 서버 HTML 이 더 많을 때 | 그것도 어긋남이다 — 다만 `<form>` `<button>` `<head>` 안 등은 봐 준다 | [하이드레이션](flows/hydration/README.md) |
+| `suppressHydrationWarning` | 부모 fiber 의 props 를 타고 내려가 DEV 경고만 끈다 | [하이드레이션](flows/hydration/README.md) |
+| `useId` 가 서버와 맞는 이유 | 탈수 경계에 트리 문맥을 담아 두었다가 다시 들어갈 때 복원한다 | [하이드레이션](flows/hydration/README.md) |
 
 ```text
  ★ 에러 경계는 클래스 컴포넌트뿐이다
