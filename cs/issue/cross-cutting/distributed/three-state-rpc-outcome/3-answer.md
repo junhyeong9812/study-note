@@ -16,13 +16,13 @@
 
 2. **데이터는 적재됐는데 원장은 영구 실패로 남는다.**\
    FAILED가 종결 상태라서 뒤늦은 SUCCESS 콜백이 "상충"으로 버려진다.\
-   이 결함은 원래 무한 대기(lost update)를 고치려고 타임아웃을 넣은 수정이 만든 것이다 — 고친 결함의 정반대 방향.\
+   이 결함은 원래 무한 대기(응답 없는 요청이 영원히 진행 중으로 남는 문제)를 고치려고 타임아웃을 넣은 수정이 만든 것이다 — 고친 결함의 정반대 방향.\
    교정: 비종결 `OUTCOME_UNKNOWN` 상태를 두어 후속 콜백이 원장을 정정할 수 있게 하고, 화면에서도 "실패"와 구분해 폴링 대상에 포함했다.
 
 3. **`ConnectException`·`UnknownHostException`·`NoRouteToHostException` = 미도달 확실 → FAILED. `SocketTimeoutException` = 모름.**\
-   앞의 셋은 TCP 연결이나 이름 해석 단계에서 실패해 요청 바이트가 나가지 않았음이 확실하다.\
+   앞의 셋은 TCP 연결이나 이름 해석 단계에서 실패해 요청 바이트가 나가지 않았음이 확실하다 — 단 클라이언트·프록시의 자동 재시도가 없다는 전제에서다(재시도가 있으면 앞선 시도가 이미 전달됐을 수 있다).\
    읽기 타임아웃은 요청이 이미 전달된 뒤다.\
-   연결 타임아웃도 같은 예외 타입으로 올라와 읽기 타임아웃과 구분할 수 없으므로, 안전측인 "모름"으로 보낸다.\
+   (이 클라이언트 스택에서는) 연결 타임아웃도 같은 예외 타입으로 올라와 메시지 문자열 외에는 읽기 타임아웃과 구분할 수 없으므로, 안전측인 "모름"으로 보낸다 — 예외 타입 구성은 HTTP 클라이언트 구현마다 다르다.\
    전부를 "모름"으로 묶으면 서버가 꺼져 있을 때(connection refused)까지 수동 종결 대기로 쌓이므로, 확실한 미도달은 분리한다.
 
 4. **요청 바이트가 나갈 수 있는 첫 순간이 dial 성공이기 때문이다.**\
@@ -42,7 +42,7 @@
    평문 전송에서 "요청만 서명"하면 가짜 완료뿐 아니라 가짜 "미실행"도 만들 수 있어 중복 실행이 통과한다 — 응답도 requestId·body digest·상태를 결박해 서명한다.
 
 7. **호출자가 모르는 사이 두 번째 실행이 생긴다.**\
-   라이브러리가 표준 멱등 헤더를 보고 "재전송해도 안전"이라 판단해 자동 재시도하면, "모름" 상태의 요청이 호출자 모르게 한 번 더 실행될 수 있다.\
+   라이브러리가 표준 멱등 헤더를 보고 "재전송해도 안전"이라 판단해 자동 재시도하면(예: Go `net/http`는 `Idempotency-Key`·`X-Idempotency-Key` 헤더가 있는 요청을 멱등으로 보고, 재사용 연결이 끊긴 경우 재시도할 수 있다), "모름" 상태의 요청이 호출자 모르게 한 번 더 실행될 수 있다.\
    그래서 전용 헤더 이름을 쓰고, 프록시·리다이렉트·keep-alive를 끈 전용 전송 계층으로 요청마다 새 연결을 쓴다.\
    조회 결과 "기록 없음(ABSENT)"도 새 requestId 실행 허가로 쓰지 않는다.
 
@@ -110,14 +110,14 @@ state := parse(resp.Body)                 // 응답 인증 없음
 ```
 ② 고친 코드
 ```go
-var dialed atomic.Bool
+var dialed atomic.Bool                         // 요청마다 새 Transport·새 플래그(공유하면 판정이 섞임)
 tr := &http.Transport{ Proxy: nil, DisableKeepAlives: true,
     DialContext: func(ctx context.Context, n, a string) (net.Conn, error) {
         c, err := dialer.DialContext(ctx, n, a)
         if err == nil { dialed.Store(true) }
         return c, err
     }}
-// 요청 헤더: X-Request-ID (표준 멱등 헤더 이름은 쓰지 않음)
+// 요청 헤더: X-Request-ID (Idempotency-Key·X-Idempotency-Key 이름은 쓰지 않음)
 resp, err := client(tr).Do(req)
 if err != nil {
     if !dialed.Load() { return NotExecuted }  // dial 전만 미실행
