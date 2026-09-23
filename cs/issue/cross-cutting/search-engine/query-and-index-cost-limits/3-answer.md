@@ -16,7 +16,8 @@
 
 2. **OR + filter 컨텍스트면 청크 합집합 = 단일 쿼리.**\
 그 절들은 `should`(minimum_should_match=1) OR이고 **filter 컨텍스트**라 점수에 기여하지 않았다.\
-OR은 분배되므로 `A∪B∪C = (A∪B)∪C`이고, 점수가 절에 의존하지 않으므로 청크별 동일 쿼리(나머지 조건 + 키워드 일부)의 합집합이 단일 쿼리의 결과와 **수학적으로 같다**.\
+합집합은 결합적이므로 `A∪B∪C = (A∪B)∪C`이고, 점수가 이 절들에 의존하지 않으므로 청크별 동일 쿼리(나머지 조건 + 키워드 일부)의 **매칭 문서 집합**의 합집합이 단일 쿼리의 매칭 집합과 같다.\
+반환 결과까지 같으려면 조건이 더 있다: 각 청크는 상위 `size`개만 돌려주므로 **청크마다 최종적으로 필요한 from+size개 이상**을 가져와야 병합 후 상위 K가 단일 쿼리와 일치하고, `total` 건수·집계는 청크 간 중복 때문에 단순 합산할 수 없다(별도 계산 필요).\
 `_msearch` 1회로 청크를 보내고 `_id`로 dedupe한 뒤, 각 청크의 정렬 키와 **같은 키**(점수 → 식별자 → 보조 키)로 재정렬해 결정론적으로 병합한다.\
 청크 하나라도 실패하면 **전체를 예외로** 실패시킨다 — 부분 결과를 돌려주면 "일부 키워드의 매칭이 조용히 빠진 결과"가 정상 응답으로 나가 리콜 손실이 숨는다.\
 청크 수 폭주에는 별도 안전핀(총 키워드 상한 초과 시 명시 거부)을 둔다.\
@@ -29,23 +30,24 @@ OR은 분배되므로 `A∪B∪C = (A∪B)∪C`이고, 점수가 절에 의존�
 색인 비용도 같다: 모든 변형에 무거운 분석기를 돌리면 색인이 변형 수에 비례해 느려지므로(문서당 수십 ms), 원 필드는 keyword로 두고 **상위 몇 개 변형에만** 분석기 서브필드를 걸어 19배 빨라졌다.
 
 4. **circuit breaker는 힙을 지킨다.**\
-엔진은 힙의 일정 비율을 요청 메모리 상한으로 두고, 이를 넘을 요청은 처리 전에 `429 circuit_breaking_exception: Data too large`로 거절한다 — 노드 OOM을 막는 최후 방어선이다.\
+엔진은 힙의 일정 비율을 요청 메모리 상한으로 두고, 추정 사용량이 이를 넘으면 요청을 (대개 처리 전, 경우에 따라 처리 도중) `429 circuit_breaking_exception: Data too large`로 거절한다 — 노드 OOM을 막는 방어선이다(추정치 기반이라 완벽하지는 않다).\
 분석기 서브필드를 늘리자 같은 배치의 색인 메모리가 커져 breaker 상한을 넘었다.\
 세 레버: **힙 증가**는 상한 자체를 올리고, **배치 크기 축소**는 요청 하나의 부피를, **워커 수 축소**는 동시에 떠 있는 요청의 총량을 줄인다(기록에는 세 대응이 나열돼 있고, 최종적으로 메모리 조정 후 전체 이관 실패 0건 완료가 남아 있다).\
 breaker가 없거나 넉넉하면 대신 힙 자체가 넘쳐 노드가 죽고(샤드 일시 RED, bulk 대량 취소), 색인은 대량 부분 실패로 끝난다.
 
 5. **클라이언트 동시성 ≤ 서버 쓰기 큐.**\
-bulk는 서버의 쓰기 스레드 풀 큐에 들어가며, 큐 용량보다 **동시 in-flight 요청**이 많으면 초과분은 429로 거부된다.\
+bulk는 샤드 단위 작업으로 쪼개져 서버의 쓰기 스레드 풀 큐에 들어가며, **동시 in-flight 작업**이 스레드 수 + 큐 용량을 넘으면 초과분은 429(`es_rejected_execution_exception`)로 거부된다 — 최근 버전은 큐와 별개로 진행 중 색인 바이트가 한도(indexing pressure)를 넘어도 429로 거부하므로, 동시성과 배치 부피를 함께 봐야 한다.\
 워커 12 × 배치 500은 0.67%가 거부됐고 워커 8은 0건이었다 — 워커·배치 기본값을 서버 큐에 맞췄다(더 빠르게 하려면 큐 크기를 늘리되 힙을 고려).\
-힙을 32GB 바로 아래로 잡는 것은 JVM의 **compressed oops 임계(32GB) 미만**을 유지하기 위해서다 — 넘으면 객체 포인터가 커져 같은 힙에서 쓸 수 있는 공간이 오히려 줄어든다.\
+힙을 32GB 아래로 잡는 것은 JVM의 **compressed oops 임계 미만**을 유지하기 위해서다 — 넘으면 객체 포인터가 커져 같은 힙에서 쓸 수 있는 공간이 오히려 줄어든다. 실제 임계는 JVM·OS에 따라 32GB보다 조금 낮을 수 있어(대략 30GB 안팎) 기동 로그의 compressed oops 사용 여부로 확인하고, 파일시스템 캐시 몫을 위해 물리 메모리의 절반 이하로 두는 것이 일반 권고다.\
 부수: 엔진 컨테이너를 재생성한 뒤 앱의 커넥션 풀이 죽은 연결을 재사용해 작업이 즉시 실패했다 — 재생성 순서를 "엔진 → green 확인 → 앱"으로 고정했다.
    > **compressed oops** — 64비트 JVM이 힙 32GB 미만일 때 객체 참조를 32비트로 압축해 메모리를 아끼는 최적화.
 
 6. **정확도를 깎는 상한, 비용을 옮기는 구조.**\
-fuzzy는 편집거리 안의 term을 **사전순으로** 확장하되 `max_expansions`개에서 끊는다.\
-같은 접두를 가진 term이 많은 필드나 **알파벳이 큰 문자체계**(한글 음절 1만여 자)에서는 정답이 확장 목록에 들지 못한다 — 200에선 0건, 500에선 3건이 잡혔고, `.keyword`의 기본 50은 늘 모자랐다.\
+fuzzy는 편집거리 안의 후보 term을 모은 뒤 **가까운(거리 작은) 순으로 `max_expansions`개만** 남기고(같은 거리면 term 순서로) 나머지를 버린다.\
+편집거리 안에 드는 후보 term이 많은 필드(term 수가 많은 필드, 음절 하나가 한 문자라 짧은 단어끼리 거리가 가까운 한글 등)에서는 정답이 남는 목록에 들지 못할 수 있다 — 200에선 0건, 500에선 3건이 잡혔고, 기본값 50은 늘 모자랐다.\
 대응: 필드의 term 수를 줄이고(토큰 중 최장 1개만 담는 필드), `fuzziness=2 · prefix_length=1 · max_expansions=500`을 명시했다 — 한글은 fuzzy 대신 색인 시점에 변형 풀을 만드는 편이 본질적이라는 결론.\
-wildcard(특히 앞쪽 `*`)는 용어 사전을 순회해 사실상 전체 term 스캔이 되어 평균 지연이 수십 배로 늘었고, **색인 시점**에 앞·뒤 edge n-gram을 만들어 쿼리를 단순 term 조회로 바꿨다 — 비용을 **쿼리 시점에서 색인 시점(저장 공간)으로** 옮긴 것이다.
+wildcard(특히 앞쪽 `*`)는 용어 사전을 순회해 사실상 전체 term 스캔이 되어 평균 지연이 수십 배로 늘었고, **색인 시점**에 앞·뒤 edge n-gram을 만들어 쿼리를 단순 term 조회로 바꿨다 — 비용을 **쿼리 시점에서 색인 시점(저장 공간)으로** 옮긴 것이다.\
+단 앞·뒤 edge n-gram은 **접두·접미 일치**만 대신한다 — `*x*`의 "중간 포함" 의미까지 유지하려면 일반 n-gram(또는 부분 일치 전용 필드 타입)이 필요하고, 그만큼 저장 비용이 더 든다. 이 교정은 요구를 접두·접미 일치로 좁힌 것이기도 하다.
    > **max_expansions** — fuzzy·prefix 쿼리가 만들 수 있는 확장 term의 최대 개수.
 
 7. **두 경로의 상한.**\
@@ -69,7 +71,7 @@ for (String kw : keywords) {
 if (keywords.size() <= chunkSize) return searchSingle(keywords);
 if (keywords.size() > MAX_TOTAL_KEYWORDS) throw new TooManyKeywords();     // 폭주 안전핀 (명시 거부)
 List<List<String>> chunks = partition(keywords, chunkSize);
-MsearchResponse r = client.msearch(chunks.stream().map(this::sameQueryWith).toList());
+MsearchResponse r = client.msearch(chunks.stream().map(this::sameQueryWith).toList());   // 청크마다 size ≥ from+size
 if (r.responses().stream().anyMatch(Item::isFailure)) throw new ChunkFailed();   // 부분 결과 금지
 return merge(r, byScoreThenIdThenKey());                                      // _id dedupe + 청크와 같은 정렬 키
 ```
@@ -109,7 +111,7 @@ with ThreadPool(8) as pool:                                     # 동시성 ≤ 
 ```
 ```yaml
 environment:
-  - ES_JAVA_OPTS=-Xms${HEAP} -Xmx${HEAP}   # HEAP < 32GB (compressed oops)
+  - ES_JAVA_OPTS=-Xms${HEAP} -Xmx${HEAP}   # HEAP < compressed oops 임계 (32GB보다 약간 낮을 수 있음 — 로그 확인)
 # 재생성 순서: 엔진 → green → 앱 (앱 커넥션 풀의 죽은 연결 방지)
 ```
 무엇이 깨졌나: 클라이언트가 서버의 메모리·큐·처리 시간 한도를 모른 채 부피와 동시성을 정했다.\
@@ -119,7 +121,7 @@ environment:
 ### 변형 D — 상한이 정확도를 깎음 · 쿼리 비용을 색인으로 이전
 ① 문제 코드
 ```python
-q.match("name_tokens", name, fuzziness="AUTO")                    # 5자 입력 → 거리 1만, 확장 50에서 절단
+q.match("name_tokens", name, fuzziness="AUTO")                    # 5자 입력 → 거리 1만, 후보 50개만 유지
 q.wildcard("name.keyword", f"*{part}*")                           # term 사전 전체 순회
 ```
 ② 고친 코드
@@ -128,6 +130,7 @@ q.match("name_longest_token", name, fuzziness="2", prefix_length=1,
         max_expansions=500, fuzzy_transpositions=False)            # term 수 줄인 필드 + 확장 폭 명시
 q.term("name.front_ngram", part)                                  # 색인 시점 edge n-gram (앞)
 q.term("name.back_ngram", part)                                   # reverse → edge n-gram → reverse (뒤)
+# 의미: *x* (중간 포함) → x* 또는 *x (접두·접미) 로 좁혀짐 — 중간 포함이 필요하면 일반 n-gram
 ```
 무엇이 깨졌나: 확장형 쿼리의 비용 상한이 결과 정확도의 상한이기도 하다는 걸 놓쳤고, 부분 매칭 비용을 매 요청에 지불했다.
 
