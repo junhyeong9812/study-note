@@ -103,7 +103,7 @@ docker inspect -f '{{json .Mounts}}' proxy
 
 ① 문제 코드
 ```sh
-echo "MAIL_HOST=..." >> .env
+echo "SMTP_HOST=..." >> .env
 docker compose restart app          # env_file을 다시 읽지 않음 → 옛 env
 ```
 ```properties

@@ -9,7 +9,7 @@
 
 1. (왜) `.env`를 고치고 `docker compose restart`를 했는데 컨테이너는 옛 값으로 돈다. `restart`와 `up -d`(재생성)는 무엇이 다르고, 컨테이너 환경변수는 **언제** 정해지는가?
 
-2. (예측) 모듈 A에 `session = None`이 있고, 앱 기동 때 `init()`이 `A.session = make_session()`으로 바꾼다. 모듈 B는 맨 위에서 `from A import session`을 했다. B의 핸들러가 `session`을 쓰면 무엇이 보이는가? `import A` 후 `A.session`으로 쓰면 왜 달라지는가?
+2. (예측) 모듈 A에 `session = None`이 있고, 앱 기동 때 `init()`이 `A.session = new_session()`으로 바꾼다. 모듈 B는 맨 위에서 `from A import session`을 했다. B의 핸들러가 `session`을 쓰면 무엇이 보이는가? `import A` 후 `A.session`으로 쓰면 왜 달라지는가?
 
 3. (경계) 프론트엔드의 `NEXT_PUBLIC_*` 같은 공개 환경변수는 왜 런타임 컨테이너 env로 바꿔도 반영되지 않는가? 로컬 테스트는 통과하는데 도커 빌드 산출물만 틀린 이유는 무엇인가(빌드 컨텍스트에 무엇이 없었나)?
 
