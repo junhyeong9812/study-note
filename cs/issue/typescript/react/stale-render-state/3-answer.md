@@ -11,7 +11,7 @@
 
 1. 함수 컴포넌트는 렌더마다 다시 호출되고, 그 안에서 만든 콜백은 **그 렌더의 `isLoading` 값**을 클로저로 잡는다.\
 `showLoader()`는 state 갱신을 **예약**할 뿐, 이미 실행 중인 함수의 `isLoading` 변수를 바꾸지 않는다 — 같은 함수 안에서는 끝까지 false다. 그래서 검사가 항상 "로딩이 꺼졌다 = 중단"으로 판정됐다.\
-ref는 렌더마다 새로 만들어지지 않는 **같은 객체**이고 `.current`는 쓰는 즉시 바뀐다. 모든 클로저가 같은 객체를 참조하므로 최신 값을 읽을 수 있다. state와 ref를 함께 갱신하고(`showLoader`/`hideLoader` 안에서), async 내부는 ref를 검사한다.
+ref는 렌더마다 새로 만들어지지 않는 **같은 객체**이고 `.current`는 쓰는 즉시 바뀐다. 모든 클로저가 같은 객체를 참조하므로 최신 값을 읽을 수 있다. state와 ref를 함께 갱신하고(`showLoader`/`hideSpinner` 안에서), async 내부는 ref를 검사한다.
    > **stale closure** — 클로저가 생성 시점의 변수 바인딩을 계속 들고 있어, 이후 바뀐 값을 보지 못하는 현상.
 
 2. 막히지 않는다. 콜백은 마운트 때 한 번 만들어졌으므로 **마운트 시점의 잠금값(false)** 을 영원히 본다.\
@@ -36,7 +36,7 @@ ref는 렌더마다 새로 만들어지지 않는 **같은 객체**이고 `.curr
 ### 변형 A — async 콜백이 렌더 스냅샷 state를 검사
 ① 문제 코드
 ```tsx
-const { isLoading, showLoader } = useLoader();
+const { isLoading, showLoader } = useSpinner();
 const search = useCallback(async () => {
   showLoader();
   const res = await api.search(q);
@@ -47,12 +47,12 @@ const search = useCallback(async () => {
 ② 고친 코드
 ```tsx
 // Provider: state 와 ref 를 함께 갱신
-const showLoader = () => { isLoadingRef.current = true; setIsLoading(true); };
+const showLoader = () => { loadingRef.current = true; setIsLoading(true); };
 // 사용처
 const search = useCallback(async () => {
   showLoader();
   const res = await api.search(q);
-  if (!isLoadingRef.current) throw new Error("stop");   // 최신 값
+  if (!loadingRef.current) throw new Error("stop");   // 최신 값
   render(res);
 }, [q]);
 ```
