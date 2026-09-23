@@ -10,14 +10,15 @@
 
 ① dubious ownership
    컨테이너 root(uid 0)가 호스트 사용자(uid 1000) 소유 repo에 git 실행
-   → git 2.35.2+ 가 "소유자≠실행자"면 거부 (도커가 아니라 git 자신)
+   → git 2.35.2+ (및 같은 시기 보안 백포트 판본) 가 "소유자≠실행자"면 거부 (도커가 아니라 git 자신)
    왜? CVE-2022-24765: 남이 심어둔 악성 설정(core.fsmonitor 등)이 내 권한으로 실행될 위험
    판단: 배포 전용 컨테이너 + 마운트 3개 고정 + 명령 allowlist → 위협 전제 불성립
    fix: Dockerfile  git config --global --add safe.directory '*'
 
 ② 빈 디렉토리 미추적
-   git은 빈 디렉토리를 추적 안 함 → 새 checkout에서 src/app/api 소멸
-   `> src/app/api/search/route.ts` (리다이렉션은 없는 디렉토리를 안 만듦) → 쓰기 실패
+   git은 빈 디렉토리를 추적 안 함 → 새 clone·워크트리에는 src/app/api 가 없음
+   (같은 작업트리에서 브랜치만 바꾸는 checkout은 추적 안 된 빈 디렉토리를 보통 지우지 않음)
+   `> src/app/api/search/route.ts` (리다이렉션은 없는 디렉토리를 안 만듦) → 쓰기 실패 (set -e 없으면 스크립트는 계속)
    Next 빌드는 "없는 라우트"를 오류로 안 봄 → 초록불 (조용한 실패)
    fix: mkdir -p 먼저 + 빌드 라우트 표에서 grep 확인 (.gitkeep로 디렉토리 유지도 가능)
 
@@ -25,6 +26,7 @@
    git ls-files/diff 기본값(core.quotepath=true) → 한글 경로를 "\352\267\270…" 로 이스케이프
    이 "사람용 안전 출력"을 파일 경로로 그대로 쓰면 → No such file or directory
    fix: git -c core.quotepath=off ...  (기계용 입력엔 이스케이프 끔)
+        단 따옴표·역슬래시·제어문자 포함 경로는 여전히 인용됨 → 견고하게는 -z (NUL 구분)
 ```
 
 ## 핵심 문장
@@ -41,10 +43,10 @@ git 명령은 "지정한 인자"보다 많은 것을 입력으로 읽는다.
 
  암묵 입력              직관                          실제 정의                         사고
  ─────────────────────────────────────────────────────────────────────────────────────────────
- 인덱스(INDEX)          "이 파일만 커밋"              commit = 인덱스 전체              잔재 staged 혼입 · 병렬 작업자 혼입
+ 인덱스(INDEX)          "이 파일만 커밋"              commit = 인덱스 전체(pathspec 없을 때) 잔재 staged 혼입 · 병렬 작업자 혼입
                         "브랜치에 속한다"             작업트리에 속함(checkout 상속)
  작업트리 전체          add -A = "내 변경"            무시 안 된 모든 것                 런타임 상태·빌드 산출물 커밋
- 추적 여부              git diff = "모든 변경"        추적 파일만                       리뷰 입력에서 신규 파일 누락
+ 추적 여부              git diff = "모든 변경"        추적 파일만(인자 없으면 작업트리↔인덱스) 리뷰 입력에서 신규 파일 누락
  ref / reflog           백업 ref = "전부 복구"        커밋 객체만                       hard reset 의 미커밋 유실
  시퀀서 상태 파일       HEAD 만 보면 됨               MERGE_HEAD·REVERT_HEAD·rebase dir 진행 중 작업을 흩뜨림·갇힘
  범위 문법              A..B = "A 이후"               ^A B (도달 차집합)                엉뚱한 커밋 replay

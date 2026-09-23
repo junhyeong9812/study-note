@@ -8,16 +8,16 @@
 ## 정답
 <!-- 질문 1:1 대응 -->
 
-1. **git 바이너리 자체의 검사**다(도커가 아니다). git 2.35.2부터, repo 디렉토리의 **소유자와 git을 실행한 사용자가 다르면** 거부한다. 컨테이너 프로세스는 root(uid 0)로 돌고, 마운트된 호스트 디렉토리의 소유자는 호스트 사용자(uid 1000)다. 도커는 기본 설정에서 uid를 격리하지 않으므로(호스트와 같은 숫자 uid를 그대로 씀) 이 소유자≠실행자 비교가 **컨테이너 안에서도 그대로 성립**한다.
+1. **git 바이너리 자체의 검사**다(도커가 아니다). git 2.35.2(및 같은 시기 보안 백포트 판본)부터, repo 디렉토리의 **소유자와 git을 실행한 사용자가 다르면** 거부한다. 컨테이너 프로세스는 root(uid 0)로 돌고, 마운트된 호스트 디렉토리의 소유자는 호스트 사용자(uid 1000)다. 도커는 기본 설정에서 uid를 격리하지 않으므로(호스트와 같은 숫자 uid를 그대로 씀) 이 소유자≠실행자 비교가 **컨테이너 안에서도 그대로 성립**한다.
    > **dubious ownership** — git이 "이 repo는 실행자 소유가 아니다"라고 판단해 작업을 거부하는 안전 검사.
 
-2. 위협은 **공유 머신**에서 남이 만들어둔 repo에 악성 설정(예: `core.fsmonitor`에 임의 명령)을 심어두면, 그 폴더에서 git을 실행한 **다른 사용자의 권한으로** 그 명령이 실행되는 것(CVE-2022-24765). 끌지 판단하는 기준 = "그 위협 모델의 전제(신뢰 불가한 타인의 repo)가 우리 상황에서 성립하는가". 이 컨테이너는 ① 우리가 빌드한 배포 전용이고 ② 접근 가능한 디렉토리가 마운트로 고정된 3개뿐이며 ③ 실행 명령도 allowlist로 고정 — 신뢰 경계가 이미 컨테이너 바깥에서 그어져 있어 전제가 불성립한다. 그래서 `git config --global --add safe.directory '*'`로 끄는 게 정당했다.
+2. 위협은 **공유 머신**에서 남이 만들어둔 repo(상위 공유 디렉토리에 몰래 만든 `.git` 포함)에 악성 설정(예: `core.fsmonitor`에 임의 명령)을 심어두면, 그 폴더에서 git을 실행한 **다른 사용자의 권한으로** 그 명령이 실행되는 것(CVE-2022-24765). 끌지 판단하는 기준 = "그 위협 모델의 전제(신뢰 불가한 타인의 repo)가 우리 상황에서 성립하는가". 이 컨테이너는 ① 우리가 빌드한 배포 전용이고 ② 접근 가능한 디렉토리가 마운트로 고정된 3개뿐이며 ③ 실행 명령도 allowlist로 고정 — 신뢰 경계가 이미 컨테이너 바깥에서 그어져 있어 전제가 불성립한다. 그래서 `git config --global --add safe.directory '*'`로 끄는 게 정당했다.
    > **CVE-2022-24765** — dubious ownership 가드가 생긴 원인이 된 취약점(공유 머신의 악성 repo 설정 실행).
 
-3. git은 빈 디렉토리를 추적하지 않으므로, 브랜치를 새로 checkout하면 빈 `src/app/api`가 **사라진다**. 그 상태에서 `> src/app/api/search/route.ts` 리다이렉션은 없는 디렉토리를 만들어주지 않아 **쓰기 실패**한다(`그런 파일이나 디렉터리가 없습니다`). 그런데 Next 빌드는 "없는 라우트"를 오류로 보지 않아 `✓ Compiled successfully`로 **통과** — 파일이 안 생겼는데 빌드는 초록불이 되는 조용한 실패다. 조합 = (빈 디렉토리 미추적) × (관대한 리다이렉션 실패) × (관대한 빌드).
+3. git은 빈 디렉토리를 추적하지 않으므로(커밋에 담기지 않음), 새 clone·새 워크트리의 checkout에는 빈 `src/app/api`가 **존재하지 않는다**(같은 작업트리에서 브랜치만 바꾸는 checkout은 추적 안 된 빈 디렉토리를 보통 지우지 않는다 — 사라지는 건 "새 체크아웃"에서다). 그 상태에서 `> src/app/api/search/route.ts` 리다이렉션은 없는 디렉토리를 만들어주지 않아 **쓰기 실패**한다(`그런 파일이나 디렉터리가 없습니다` — `set -e`가 없으면 스크립트는 다음 줄로 계속 간다). 그런데 Next 빌드는 "없는 라우트"를 오류로 보지 않아 `✓ Compiled successfully`로 **통과** — 파일이 안 생겼는데 빌드는 초록불이 되는 조용한 실패다. 조합 = (빈 디렉토리 미추적) × (관대한 리다이렉션 실패) × (관대한 빌드).
    > **리다이렉션 `> 경로`** — 셸에서 출력을 파일로 보내는 것. 대상 디렉토리가 없으면 만들지 않고 그냥 실패한다.
 
-4. git 기본값 `core.quotepath=true`는 비ASCII 경로를 사람이 보기 "안전하게" 이스케이프해 출력한다 — 한글이 `\352\267\270…`(8진수)로 바뀌고 경로 전체가 따옴표로 감싸인다. 이 **사람용 출력**을 그대로 **파일 경로**(기계용 입력)로 쓰면, 실제로는 존재하지 않는 이름이 되어 `No such file or directory`가 난다. `git -c core.quotepath=off ...`로 이스케이프를 끄면 원래 UTF-8 경로가 나온다.
+4. git 기본값 `core.quotepath=true`는 비ASCII 경로를 사람이 보기 "안전하게" 이스케이프해 출력한다 — 한글이 `\352\267\270…`(8진수)로 바뀌고 경로 전체가 따옴표로 감싸인다. 이 **사람용 출력**을 그대로 **파일 경로**(기계용 입력)로 쓰면, 실제로는 존재하지 않는 이름이 되어 `No such file or directory`가 난다. `git -c core.quotepath=off ...`로 이스케이프를 끄면 원래 UTF-8 경로가 나온다. 단 quotepath=off여도 따옴표·역슬래시·개행 같은 제어문자가 든 경로는 여전히 인용되므로, 기계가 읽을 입력은 `-z`(NUL 구분·인용 없음)가 더 견고하다.
    > **core.quotepath** — git이 비ASCII 파일명을 8진수로 이스케이프해 출력할지 정하는 설정(기본 켜짐).
 
 5. **git의 기본값은 "사람이 공유 머신에서, 눈으로 보며" 쓰는 것을 안전하게 하도록** 맞춰져 있다 — 소유자 검사(남의 repo 조심), 빈 디렉토리 미추적(내용 없는 폴더는 무의미), 경로 이스케이프(터미널에서 안 깨지게). 배포/CI 자동화는 그 전제(사람·공유·눈)와 정반대다 — 통제된 단독 실행자, 디렉토리 구조가 의미, 출력을 기계가 파싱. 그래서 늘 이 세 지점에서 부딪힌다.
@@ -26,13 +26,13 @@
    > **.gitkeep** — 빈 디렉토리를 git이 추적하게 하려고 넣는 관습적 빈 파일(git 공식 기능은 아님).
 
 7. **인덱스는 작업트리(체크아웃)에 속한다.** \
-   한 작업트리에는 인덱스·HEAD가 하나뿐이다. 작업자 둘이 서로 다른 파일을 고쳐도 `commit -a`/`add -A`/`add .`는 "지금 작업트리의 모든 변경"을 스테이징하므로 상대의 파일까지 담는다. \
-   같은 이유로 새 브랜치를 checkout해도 staged 변경이 따라오고, `commit`은 방금 add한 파일이 아니라 **인덱스 전체**를 기록한다. \
+   한 작업트리에는 인덱스·HEAD가 하나뿐이다. 작업자 둘이 서로 다른 파일을 고쳐도 `commit -a`(추적 파일의 모든 수정)·`add -A`(untracked 포함 전체)·`add .`(현재 디렉토리 이하)는 작업트리의 변경을 넓게 스테이징하므로 상대의 파일까지 담는다. \
+   같은 이유로 새 브랜치를 checkout해도 staged 변경이 따라오고(전환과 충돌하면 git이 거부), pathspec 없는 `commit`은 방금 add한 파일이 아니라 **인덱스 전체**를 기록한다. \
    격리 단위는 파일이 아니라 **공유 도구 상태(작업트리)**다 — 병렬 작업은 작업트리를 나누거나(`git worktree`), 순차로 하거나, 최소한 경로를 지정해 스테이징(`git add <경로>`)한다.
    > **인덱스(staging area)** — 다음 커밋의 스냅샷을 담는 파일. 작업트리마다 하나이며 브랜치를 바꿔도 유지된다.
 
 8. **안 된다 — ref는 커밋 객체만 되살린다.** \
-   백업 ref와 reflog는 커밋을 가리킬 뿐이다. 커밋되지 않은 tracked 변경은 object DB에 없으므로 어떤 ref로도 복구할 수 없고, 대상 커밋의 tracked 경로와 겹치는 untracked 파일은 hard reset이 덮어 지운다. \
+   백업 ref와 reflog는 커밋을 가리킬 뿐이다. 스테이징조차 안 된 tracked 변경은 object DB에 없으므로 어떤 ref로도 복구할 수 없고(staged 내용은 blob으로 남아 `fsck --lost-found`로 파편 복구가 될 수도 있지만 ref 복구는 아니다), 대상 커밋의 tracked 경로와 겹치는 untracked 파일은 hard reset이 덮어 지운다. \
    그래서 hard reset 전에 작업트리가 dirty면 `stash push --include-untracked`로 먼저 객체 DB에 넣고, 안내 문구는 "복구 가능" 대신 "reset 전 HEAD = <백업 ref>, stash 여부"라는 **사실**로 바꾼다. 복구 명령으로 `reset --hard <ref>`를 제시하면 오히려 보존된 변경을 버리게 유도한다.
 
 9. **untracked 신규 파일이 빠졌다.** \
@@ -69,7 +69,7 @@ sudo chown -R <user>:<user> .git/objects <sudo 로 생긴 디렉토리>   # 소�
 
 ① 문제 코드
 ```bash
-git checkout -b feature           # 빈 src/app/api 는 추적되지 않아 사라짐
+git worktree add ../wt feature    # (또는 새 clone) 빈 src/app/api 는 커밋에 없어 새 체크아웃에 존재하지 않음
 cat > src/app/api/search/route.ts <<'X'   # 없는 디렉토리 → 쓰기 실패
 ...
 X
@@ -82,7 +82,7 @@ mkdir -p src/app/api/search && cat > src/app/api/search/route.ts <<'X'
 X
 npm run build | grep -q '/api/search'   # 산출물(라우트 표)로 확인
 ```
-무엇이 깨졌나: 디렉토리 존재를 전제한 스크립트가 새 checkout에서 조용히 실패했고, 관대한 빌드가 그 실패를 초록불로 덮었다.
+무엇이 깨졌나: 디렉토리 존재를 전제한 스크립트가 새 체크아웃(clone·워크트리)에서 조용히 실패했고, 관대한 빌드가 그 실패를 초록불로 덮었다.
 
 ### 변형 C — 사람용 출력을 기계용 입력으로 사용 (quotepath)
 
@@ -93,7 +93,8 @@ paths.forEach { File(it).readText() }          // No such file or directory
 ```
 ② 고친 코드
 ```kotlin
-val paths = run("git", "-c", "core.quotepath=off", "ls-files").lines()   // UTF-8 원래 경로
+val paths = run("git", "-c", "core.quotepath=off", "ls-files").lines()   // UTF-8 원래 경로 (따옴표·제어문자 포함 경로는 여전히 인용)
+// 더 견고: run("git", "ls-files", "-z").split('\u0000').filter { it.isNotEmpty() }   // NUL 구분, 인용 없음
 ```
 무엇이 깨졌나: 터미널 표시용 기본 이스케이프가 켜진 출력을 파일 경로로 그대로 썼다.
 
@@ -144,8 +145,8 @@ run_git(cwd, &["reset", "--hard", target])?;       // 미커밋 변경 · 충돌
 ```
 ```bash
 # 롤백 스크립트
-git restore -- <files>        # "이번 변경분"이 아니라 HEAD 와의 전체 차이 → 작업 전 사용자 미커밋 변경도 삭제
-git diff --quiet && echo ok   # "HEAD 와 같다"만 증명 — 무엇이 사라졌는지는 모름
+git restore -- <files>        # "이번 변경분"이 아니라 인덱스(기본 source — staged 없으면 HEAD 와 같음)와의 전체 차이 → 작업 전 사용자 미커밋 변경도 삭제
+git diff --quiet && echo ok   # "추적 파일의 작업트리 = 인덱스"만 증명 — 무엇이 사라졌는지는 모름
 ```
 ② 고친 코드
 ```rust
@@ -168,11 +169,11 @@ git restore -- <modified>; rm -- <created>      # git clean 금지
 ```python
 # 커밋 기반 롤백: 되돌아갈 지점을 작업 전에 영속, tracked 만 원복
 persist(last_sha, prev_branch)
-code, _ = await git(repo, "checkout", "-B", branch, sha)   # 로컬 변경 있으면 git 이 거부(fail-closed), untracked .env 보존
+code, _ = await git(repo, "checkout", "-B", branch, sha)   # 전환과 충돌하는 로컬 변경만 git 이 거부 — 충돌 없는 변경은 들고 감(사전 status 확인 필요), untracked .env 보존(대상이 .env 를 추적하지 않는 한)
 if await head(repo) != sha: return error()
 ```
 무엇이 깨졌나: ref·복원 명령이 되살리거나 지우는 범위를 과대/과소평가했고, 되돌아갈 지점을 조작 뒤에야(또는 메모리에만) 알았다.\
-같은 구조: 백업 ref가 무한히 쌓여 gc를 막음 → 최근 N개만 best-effort 정리, 타임스탬프 정렬은 시계 역행 시 새 ref를 지울 수 있어 방금 만든 ref는 무조건 보호 · 커밋 전 수정을 확인하려 원본으로 덮어쓴 뒤 `git restore` → HEAD(버그)로 복원돼 수정 소실 — 검증은 수정 커밋 후.
+같은 구조: 백업 ref가 무한히 쌓여 gc가 옛 객체를 회수하지 못함 → 최근 N개만 best-effort 정리, 타임스탬프 정렬은 시계 역행 시 새 ref를 지울 수 있어 방금 만든 ref는 무조건 보호 · 커밋 전 수정을 확인하려 원본으로 덮어쓴 뒤 `git restore` → HEAD(버그)로 복원돼 수정 소실 — 검증은 수정 커밋 후.
 
 ### 방안 C — 워킹트리를 거치지 않는 재생성 + ref CAS (히스토리 재작성)
 
@@ -184,13 +185,15 @@ if await head(repo) != sha: return error()
 ② 고친 코드
 ```bash
 # 가드: 단일 커밋 · 조상 관계 · 범위 안 머지 커밋 없음 · replace refs 없음 · orig_head 스냅샷
+# 주의: commit-tree 는 author·committer 를 현재 사용자·시각으로 채운다 — 원 커밋의 author 를 보존하려면
+#       각 커밋의 GIT_AUTHOR_NAME/EMAIL/DATE 를 환경변수로 넘겨야 한다(아래는 생략)
 new=$(git commit-tree "$target^{tree}" -p "$parent" -F msg.txt)        # 트리 불변, 메시지만 새 객체
 for c in $(git rev-list --reverse "$target..$orig_head"); do
   new=$(git commit-tree "$c^{tree}" -p "$new" -F <(git cat-file commit "$c" | sed '1,/^$/d'))
 done
 git update-ref "refs/heads/$branch" "$new" "$orig_head"   # CAS 한 번: 그 사이 브랜치가 움직였으면 거부
 ```
-무엇이 깨졌나: 메시지만 바꾸면 모든 트리가 같아 패치 재적용이 불필요한데, porcelain 리플레이가 불필요한 경로에서 충돌·부분 실패·경합 창을 만들었다. 커밋은 불변 객체라 "수정" = 새 객체 + ref 이동이다(대가: 서명·hook 미실행, committer 변경).\
+무엇이 깨졌나: 메시지만 바꾸면 모든 트리가 같아 패치 재적용이 불필요한데, porcelain 리플레이가 불필요한 경로에서 충돌·부분 실패·경합 창을 만들었다. 커밋은 불변 객체라 "수정" = 새 객체 + ref 이동이다(대가: 서명·hook 미실행, committer 변경 — author도 명시 전달하지 않으면 바뀐다).\
 같은 구조: 같은 기능의 후속 기록 — 읽기와 ref 갱신 사이 변경(TOCTOU)·비UTF-8 메시지는 원 바이트 그대로 보존.
 
 ### 방안 D — 공유 인덱스를 격리하거나 경로를 지정해 스테이징한다
@@ -279,12 +282,12 @@ base=$(git merge-base develop feature/x)
 git diff --stat "$base"..develop --diff-filter=D     # 그 사이 develop 이 지운 파일 수 → "부활" 착시 판별
 ```
 무엇이 깨졌나: 3-way 머지는 merge-base 대비 양쪽 변경을 보는데, 두 팁만 비교해 삭제된 파일이 부활하는 것처럼 오판했다.\
-같은 구조: rebase는 같은 변경을 새 SHA로 만들어 옛 SHA와 공존 시 중복·충돌 → 필요한 커밋만 최신 main 위로 cherry-pick, 롤백 대상은 "산출물이 빌드된 커밋"만 · 스택 PR을 squash 머지하며 base 브랜치를 지워 하위 PR 자동 종료 → `rebase --onto`로 자기 커밋만 replay · 독립 브랜치가 같은 경로에 새 파일을 각각 만들면 공통 조상이 없어 add/add 충돌 · trailer(sign-off) 추가 amend는 SHA를 바꿔 기존 참조를 갱신해야 함.
+같은 구조: rebase는 같은 변경을 새 SHA로 만들어 옛 SHA와 공존 시 중복·충돌 → 필요한 커밋만 최신 main 위로 cherry-pick, 롤백 대상은 "산출물이 빌드된 커밋"만 · 스택 PR을 squash 머지하며 base 브랜치를 지워 하위 PR 자동 종료 → `rebase --onto`로 자기 커밋만 replay · 독립 브랜치가 같은 경로에 새 파일을 각각 만들면 merge-base에 그 경로가 없어(양쪽 모두 추가) add/add 충돌 · trailer(sign-off) 추가 amend는 SHA를 바꿔 기존 참조를 갱신해야 함.
 
 ### 방안 I — 기본값·순서 의존을 명시 설정·명시 단계로 고정한다
 
 ```bash
-git config pull.rebase false && git pull origin "$(git branch --show-current)"   # 전략 미설정 시 비-ff 거부
+git config pull.rebase false && git pull origin "$(git branch --show-current)"   # 전략 미설정 시 갈라진 브랜치 pull 은 버전에 따라 경고 후 merge 또는 거부
 git stash push ... ; git pull ... ; git stash pop ...                            # 한 줄에 붙이지 말고 단계별 확인
 git -c credential.helper= -c credential.helper='!<cli> auth git-credential' push   # 헬퍼 목록 리셋 후 하나만
 mkdir -p "$(dirname "$dst")" && git mv "$src" "$dst"                              # 대상 디렉토리 선생성
@@ -298,7 +301,7 @@ git diff > keep.patch && git apply keep.patch                                   
 | (기존) 가드 끄기 / 습관 바꾸기 | 가드의 위협 전제가 내 환경에서 불성립함을 논증 가능 | 설정 1줄 · 습관 | 논증 없이 끄면 보호 상실 | 통제된 단독 실행 환경의 자동화 |
 | A 선검사+탈출구 | 도구의 상태 파일·정의를 래퍼가 안다 | 명령마다 가드 | 새 상태(REVERT_HEAD 등) 누락 시 갇힘 | git 위에 UI·자동화를 얹을 때 |
 | B 유실 범위 명시·복구점 선영속 | 파괴적 조작 전에 끼어들 수 있다 | stash·ref·영속 기록·정리 정책 | 정리 정책의 시계 가정 · 과장된 안내 | reset·restore·롤백 |
-| C plumbing 재생성+CAS | 트리가 불변(메시지·메타만 변경) | 서명·hook 미실행, committer 변경 | 가드 누락 시 머지 부모 손실 | 과거 커밋 메타데이터 수정 |
+| C plumbing 재생성+CAS | 트리가 불변(메시지·메타만 변경) | 서명·hook 미실행, committer 변경(author는 명시 전달 필요) | 가드 누락 시 머지 부모 손실 | 과거 커밋 메타데이터 수정 |
 | D 격리·경로 지정 | 작업 단위를 작업트리로 나눌 수 있다 | 작업트리 추가·절대경로 습관 | 한 번의 `add -A`로 무력화 | 병렬 작업자·에이전트 |
 | E untracked 가시화 | 입력을 도구가 조립한다 | 파일별 분기(심링크·바이너리·상한) | 누락 시 리뷰 오탐 | 리뷰·검증 입력 생성 |
 | F ignore 명시 | 규칙 의미(깊이·추적 중 무효)를 안다 | 앵커 1자 · `rm --cached` | 앵커 누락 → 소스 미추적 | 저장소 구조가 깊을 때 |
