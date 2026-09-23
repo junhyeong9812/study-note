@@ -1,7 +1,7 @@
 # Python — 문법·API 주제 목록
 
 > 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**
-> (2026-09-24 기준 **20 / 53** — 01\~20). 나머지는 아직 없다.
+> (2026-09-24 기준 **24 / 53** — 01\~24). 나머지는 아직 없다.
 > 기준 소스: [Python 3.12 언어 레퍼런스](https://docs.python.org/3.12/reference/index.html) · [표준 라이브러리 3.12](https://docs.python.org/3.12/library/index.html) · [PEP 인덱스](https://peps.python.org/)
 > 실행 검증: **가능**. 이 머신에 `python3` 3.12.3 이 있어 3.12 까지의 예시는 실제로 돌려 출력을 확인한다. 3.13 전용 동작(PEP 696 기본값·`TypeIs`·free-threaded)은 설치본이 없어 문서·PEP 로만 접지하고 「미실행」으로 표기한다.
 > 기준일 2026-09-20.
@@ -38,10 +38,10 @@ JS 와 대비가 값을 내는 자리(동적 타입·컴프리헨션·이터레�
 | 18 | [반복 제어와 `for`/`while`·`else`](18-loop-control-and-else/) | 문법 | `break`/`continue`/`else` 흐름과 `enumerate`·`zip`·`range` 의 지연 성질을 설명하고, 순회 중 컨테이너를 바꿀 때의 위험을 판단할 수 있다 | 16 | `cs/foundations/python-basics/` | B |
 | 19 | [함수 인자 규칙](19-function-argument-rules/) | 문법 | 위치·키워드·기본값·`*args`·`**kwargs`·`/`·`*` 전용 인자를 조합한 시그니처에 대해 어떤 호출이 가능한지 판정할 수 있다 | — | — | A |
 | 20 | [가변 기본 인자 함정](20-mutable-default-args/) | 관용구 | `def f(x=[])` 가 호출마다 같은 객체를 쓰는 이유를 설명하고 `None` 센티널로 고칠 수 있다 | 03, 19 | — | A |
-| 21 | 스코프 LEGB 와 `global`·`nonlocal` | 문법 | 이름이 어느 스코프에서 풀리는지 판정하고, 대입 한 줄이 지역 변수를 만들어 `UnboundLocalError` 를 내는 경우를 설명할 수 있다 | 01 | — | A |
-| 22 | 클로저와 늦은 바인딩 | 문법 | 루프에서 만든 함수들이 같은 값을 내놓는 이유를 설명하고 기본 인자·팩토리로 고칠 수 있다 | 21 | — | A |
-| 23 | `lambda` 와 고차 함수 | 문법 | `lambda` 를 쓸 수 있는 자리와 제약을 말하고 `map`·`filter`·정렬 `key` 로 바꿔 쓸 수 있다 | 19 | `cs/foundations/python-basics/` | B |
-| 24 | 데코레이터 | 문법 | 함수를 감싸는 데코레이터와 인자 있는 데코레이터를 직접 쓰고, `functools.wraps` 를 빠뜨리면 무엇이 깨지는지 설명할 수 있다 | 22 | — | A |
+| 21 | [스코프 LEGB 와 `global`·`nonlocal`](21-scope-legb-global-nonlocal/) | 문법 | 이름이 어느 스코프에서 풀리는지 판정하고, 대입 한 줄이 지역 변수를 만들어 `UnboundLocalError` 를 내는 경우를 설명할 수 있다 | 01 | — | A |
+| 22 | [클로저와 늦은 바인딩](22-closures-and-late-binding/) | 문법 | 루프에서 만든 함수들이 같은 값을 내놓는 이유를 설명하고 기본 인자·팩토리로 고칠 수 있다 | 21 | — | A |
+| 23 | [`lambda` 와 고차 함수](23-lambda-and-higher-order-functions/) | 문법 | `lambda` 를 쓸 수 있는 자리와 제약을 말하고 `map`·`filter`·정렬 `key` 로 바꿔 쓸 수 있다 | 19 | `cs/foundations/python-basics/` | B |
+| 24 | [데코레이터](24-decorators/) | 문법 | 함수를 감싸는 데코레이터와 인자 있는 데코레이터를 직접 쓰고, `functools.wraps` 를 빠뜨리면 무엇이 깨지는지 설명할 수 있다 | 22 | — | A |
 | 25 | 예외 처리와 `finally` | 문법 | `try`/`except`/`else`/`finally` 실행 순서, 예외 계층에 따른 포착 범위, `raise ... from` 의 체이닝을 설명할 수 있다 | — | — | A |
 | 26 | EAFP 대 LBYL | 관용구 | 「먼저 검사」와 「일단 하고 예외」 중 어느 쪽이 경쟁 조건·비용 면에서 맞는지 판단할 수 있다 | 25 | — | B |
 | 27 | 예외 그룹과 `except*` | 문법 | 3.11+ `ExceptionGroup` 이 여러 실패를 함께 나르는 방식과 `except*` 의 분배 규칙을 설명할 수 있다 | 25 | — | C |
