@@ -11,7 +11,7 @@
 1. **광고 ≠ 구현.**\
    capability 목록은 "이런 걸 할 수 있다"는 선언일 뿐, 그 메서드가 실제로 구현돼 있다는 보장이 아니다.\
    어댑터가 프로토콜 스키마를 채우느라 필드는 광고하면서 핸들러는 비워 둘 수 있고, 실제 로그인은 프로토콜 밖(out-of-band — 별도 로그인 명령이 남긴 자격 파일 재사용)에서 일어나고 있었다.\
-   그래서 교정은 `authMethods`를 차단 조건으로 쓰지 않고 `authenticate` 호출을 없앤 뒤, 실제로 돌아오는 `auth_required` 에러만 표면화해 "이 명령으로 로그인하라"고 안내하는 것이었다.\
+   그래서 교정은 `authMethods`를 차단 조건으로 쓰지 않고 `authenticate` 호출을 없앤 뒤, 실제로 돌아오는 `requires_auth` 에러만 표면화해 "이 명령으로 로그인하라"고 안내하는 것이었다.\
    상대 구현이 무엇을 하는지는 **소스를 읽고 스모크로 호출해 보는 것**으로만 확정한다 — 계획 단계에서 "로그인 재사용은 계약이 아니라 어댑터 가정"이라고 짚었고, 실측으로 확정했다.
    > **capability 광고** — 프로토콜 협상 때 한쪽이 "지원한다"고 알리는 기능·메서드 목록.
 
@@ -66,7 +66,7 @@ val init = client.initialize()                       // authMethods는 차단 �
 try {
     client.newSession()
 } catch (e: RpcError) {
-    if (e.code == AUTH_REQUIRED) return AuthRequired(command = LOGIN_COMMAND)   // 실제 에러만 표면화
+    if (e.code == AUTH_REQUIRED) return NeedsAuth(command = LOGIN_COMMAND)   // 실제 에러만 표면화
     throw e
 }
 ```
@@ -144,7 +144,7 @@ build && test                        # green이어야 문서가 정본과 일치
 
 ### 방안 2 — 비호환 응답 변경은 배포 순서 계획 + 소비자 폴백
 ```ts
-// 제공자: GET /items   [..]  →  { baseYear, baseMonth, rows: [..] }
+// 제공자: GET /items   [..]  →  { baseYear, anchorMonth, rows: [..] }
 // 소비자(선배포 가능하게)
 const body = await res.json();
 if (!body || !Array.isArray(body.rows)) return renderFallback();   // 구 배열 응답 → 크래시 없이 폴백
