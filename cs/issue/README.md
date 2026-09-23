@@ -192,11 +192,11 @@ cs/issue/  (154)
 - [non-transactional-multi-step](cross-cutting/reliability/non-transactional-multi-step/) — 트랜잭션 없는 다단계 변경은 순서로 실패를 격리한다 — 새것 확보·성공 확인 뒤에 파괴하고, 실패 가능한 쪽을 먼저 하며, 중간 잔해는 보상·회수한다.
 - [process-memory-scope](cross-cutting/reliability/process-memory-scope/) — 프로세스 메모리 상태(세션 저장소·in-flight future·락)는 재시작·다중 워커·스케일아웃 경계를 넘지 못한다 — 수명·공유 범위가 필요한 상태는 영속·공유 저장소에 둔다.
 - [reference-graph-not-text](cross-cutting/reliability/reference-graph-not-text/) — 삭제·이동 범위는 이름·문자열 치환이 아니라 실제 참조 그래프(컴파일러·빈 이름·FQCN·문자열 참조 전수)로 결정한다.
-- [resource-bounding-last-defense](cross-cutting/reliability/resource-bounding-last-defense/) — 클라이언트 타임아웃·취소는 서버측 작업을 멈추지 못하므로, 외부 입력에 비례해 커지는 자원(메모리·큐·연결·시간)은 서버 쪽 상한이 유일한 방어선이다.
+- [resource-bounding-last-defense](cross-cutting/reliability/resource-bounding-last-defense/) — 클라이언트 타임아웃·취소는 서버측 작업을 멈추지 못하므로, 외부 입력에 비례해 커지는 자원(메모리·큐·연결·시간)은 서버 쪽 상한이 최후 방어선이다.
 - [retry-policy-design](cross-cutting/reliability/retry-policy-design/) — 재시도는 실패를 영구/일시로 정확히 분류해야 한다 — 영구 실패·poison 메시지를 재시도하면 무한 루프·아군 차단이 되고, 백오프는 실패 시점 기준이어야 한다.
 - [self-feedback-loop](cross-cutting/reliability/self-feedback-loop/) — 처리기가 자기 입력 공간에 산출물을 남기거나(부산물 재처리), 측정 대상이 측정 결과로 바뀌거나, 브로드캐스트가 보낸 쪽에도 돌아오면 양의 피드백 루프가 생긴다.
 - [shutdown-backstop-independence](cross-cutting/reliability/shutdown-backstop-independence/) — 종료 경로는 정상 정리(unmount·close 이벤트·이벤트 루프)를 보장받지 못한다 — 최후 백스톱은 고장 지점과 독립된 층에 best-effort·비블로킹으로 둔다.
-- [sibling-path-invariant-drift](cross-cutting/reliability/sibling-path-invariant-drift/) — 같은 불변식을 지켜야 하는 형제 경로(분기·setter·오버로드·국가별 복붙·포팅 원본) 중 하나만 가드가 빠지는 비대칭이 결함이 된다 — 형제 전수를 대조한다.
+- [sibling-path-invariant-drift](cross-cutting/reliability/sibling-path-invariant-drift/) — 같은 불변식을 지켜야 하는 형제 경로(분기·setter·오버로드·모듈 N벌 복사본·포팅 원본) 중 하나만 가드가 빠지는 비대칭이 결함이 된다 — 형제 전수를 대조한다.
 - [silent-failure-vs-artifact](cross-cutting/reliability/silent-failure-vs-artifact/) — 성공 로그·exit 0·2xx·"완료" 표시는 산출물이 아니다 — 성공은 실제 산출물(저장소·파일·화면·행 수)로 검증해야 한다.
 - [silent-truncation-marker](cross-cutting/reliability/silent-truncation-marker/) — 상한·예산·링버퍼로 자른 결과를 완전한 결과와 같은 모양으로 반환하면 호출자는 절단을 모른다 — 절단 표식을 동반하고, 절단은 표시 경계에서만 하며, 단계 간 상한을 정렬한다.
 - [value-binding-time](cross-cutting/reliability/value-binding-time/) — 값은 해석·고정되는 시점(빌드·import·컨테이너 생성·프로세스 기동·작업 생성)에 박제된다 — 이후 변경은 그 시점을 다시 거치지 않으면 반영되지 않는다.
