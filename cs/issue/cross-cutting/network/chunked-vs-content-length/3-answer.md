@@ -12,13 +12,13 @@
    > **Content-Length** — 본문 총 바이트 수를 앞에 명시하는 헤더.
    > **chunked transfer-encoding** — 길이 없이 조각 단위로 흘리는 HTTP/1.1 전송 방식.
 
-2. **왜 Map은 chunked, byte[]는 Content-Length인가.** `Map` 본문을 주면 클라이언트가 그것을 JSON으로 직렬화하는데, **직렬화가 끝나기 전에는 최종 바이트 수를 모른다** → 길이를 못 붙이니 chunked로 흘린다. 반면 `byte[]`(또는 `objectMapper.writeValueAsBytes(...)`로 미리 직렬화한 것)는 **이미 길이가 확정된 완성 버퍼**라 클라이언트가 `Content-Length`를 계산해 붙일 수 있다. 즉 차이의 뿌리는 "송신 시점에 길이를 아느냐" 하나다.
+2. **왜 Map은 chunked, byte[]는 Content-Length인가.** `Map` 본문을 주면 클라이언트가 그것을 JSON으로 직렬화하는데, **직렬화가 끝나기 전에는 최종 바이트 수를 모른다** → 길이를 못 붙이니 chunked로 흘린다. 반면 `byte[]`(또는 `objectMapper.writeValueAsBytes(...)`로 미리 직렬화한 것)는 **이미 길이가 확정된 완성 버퍼**라 클라이언트가 `Content-Length`를 계산해 붙일 수 있다. 즉 차이의 뿌리는 "송신 시점에 길이를 아느냐"다. (단 이는 요청 팩토리가 본문을 스트리밍할 때의 동작이다 — 본문을 먼저 메모리에 버퍼링하는 팩토리·설정을 쓰면 `Map`도 직렬화를 마친 뒤 Content-Length를 붙일 수 있어, 같은 코드라도 클라이언트 구현·버전·설정에 따라 전송 방식이 달라진다.)
 
 3. **서버냐 클라이언트냐 — 판별.** 같은 요청을 `curl`로 보내면 성공하고 RestClient로만 실패한다 → **서버는 두 요청에 동일하게 반응하므로 서버가 변수가 아니다. 갈리는 것은 클라이언트뿐** → 원인은 클라이언트가 만든 요청의 차이다. `curl`은 본문 길이를 알고 Content-Length를 붙이고, RestClient는 `Map`을 chunked로 흘린다. "한쪽 도구로는 되고 다른 도구로는 안 된다"는 서버가 아니라 **두 도구가 만든 바이트의 차이**를 보라는 신호다.
 
 4. **왜 0바이트인가.** 파이썬 `http.server`(`BaseHTTPRequestHandler`)의 핸들러는 본문을 읽을 때 보통 `Content-Length` 헤더 값 N을 정수로 파싱해 `rfile.read(N)` 한다. chunked 요청에는 **Content-Length 헤더가 없다** → N이 0(또는 없음)으로 잡힘 → `read(0)` → 빈 바이트. 조각 크기 표식을 해석해 재조립(dechunk)하는 코드가 없으니 소켓에 실제 조각 데이터가 와 있어도 못 읽는다. 그래서 "짧게 잘림"이 아니라 **완전한 0바이트**이고, 빈 문자열을 JSON 파싱하면 첫 글자에서 값이 없어 `line 1 column 1 (char 0)`에서 실패한다.
 
-5. **책임 경계.** 표준(HTTP/1.1)상 chunked는 필수 지원 대상이라 "구현 안 한 수신측"이 규격 미달이다. 하지만 교정은 **제어 가능하고 값싼 쪽**을 고른다 — 낡은 수신 서버(파이썬 기본 `http.server`)를 dechunk까지 하도록 바꾸는 것보다, 송신측 한 줄(`Map`→`byte[]`)로 Content-Length를 강제하는 게 확실하고 위험이 없다. "누구 잘못인가"와 "어디를 고쳐야 값싼가"는 다른 질문이다.
+5. **책임 경계.** 표준(HTTP/1.1)상 chunked는 필수 지원 대상이라 "구현 안 한 수신측"이 규격 미달이다. 하지만 교정은 **제어 가능하고 값싼 쪽**을 고른다 — 낡은 수신 서버(파이썬 기본 `http.server`)를 dechunk까지 하도록 바꾸는 것보다, 송신측 한 줄(`Map`→`byte[]`)로 Content-Length를 강제하는 게 확실하고 위험이 작다(대가는 본문 전체를 메모리에 먼저 올리는 것 — 작은 JSON이면 무시할 만하다). "누구 잘못인가"와 "어디를 고쳐야 값싼가"는 다른 질문이다.
 
 6. **수신측 자기 방어.** 브리지 서버는 이후 `Transfer-Encoding` 헤더가 있으면 **411 `length_required`로 거절**하고 `Content-Length`가 정해진 범위(`1 ≤ N ≤ 상한`) 안인지 강제하도록 강화됐다. 조용히 0바이트로 읽어 "빈 본문"으로 처리하면 원인이 은폐되고 엉뚱한 곳(JSON 파서)에서 터진다. **못 다루는 입력은 명시적으로 거절**하면 실패가 발생 지점에서 이름을 갖고(`length_required`) 드러난다 — silent failure 방지.
    > **411 Length Required** — 서버가 Content-Length 없는 요청을 거부하는 상태코드.
@@ -58,10 +58,15 @@ def do_POST(self):
 ```python
 def do_POST(self):
     if self.headers.get("Transfer-Encoding"):               # 못 다루는 프레이밍은 명시 거절
+        return self._json(411, {"error": "length_required"})   # 본문을 안 읽고 거절 → 이 연결은 닫아야 한다(keep-alive 재사용 금지)
+    try:
+        length = int(self.headers.get("Content-Length", ""))
+    except ValueError:                                       # 헤더 없음·숫자 아님
         return self._json(411, {"error": "length_required"})
-    length = int(self.headers.get("Content-Length", 0))
-    if not (1 <= length <= MAX_BODY):                        # 범위 강제
-        return self._json(413, {"error": "bad_length"})
+    if length < 1:                                           # 범위 강제 — 빈 본문은 잘못된 요청
+        return self._json(400, {"error": "empty_body"})
+    if length > MAX_BODY:                                    # 413은 '너무 큼'에만
+        return self._json(413, {"error": "too_large"})
     data = json.loads(self.rfile.read(length))
 ```
 무엇이 깨졌나: 해석할 수 없는 입력을 "빈 본문"으로 처리해, 실패가 엉뚱한 곳(JSON 파서)에서 드러났다.
@@ -79,9 +84,9 @@ def _read_body(self) -> bytes:
     if self.headers.get("Transfer-Encoding", "").lower() == "chunked":
         data = b""
         while True:
-            size = int(self.rfile.readline().strip() or b"0", 16)   # 크기(16진)\r\n
+            size = int(self.rfile.readline().strip() or b"0", 16)   # 크기(16진)\r\n — 확장(";ext")은 미지원, EOF(빈 줄)도 끝으로 오인
             if size == 0:
-                self.rfile.readline()                                # 마지막 \r\n
+                self.rfile.readline()                                # 마지막 \r\n — trailer 필드가 오면 미지원
                 break
             data += self.rfile.read(size)
             self.rfile.readline()                                    # 조각 뒤 \r\n
