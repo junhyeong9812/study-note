@@ -17,14 +17,14 @@
 
 3. 소비자는 봉투를 믿고 `body["success"]`를 먼저 읽는데, 검증 실패 응답에는 `success` 키가 없으므로 **KeyError로 터진다.** 즉 "정상/실패" 분기를 하기도 전에 파싱 단계에서 죽는다. 그러면 소비자는 결국 "봉투 모양"과 "FastAPI 기본 모양" 두 가지를 다 처리하는 방어 코드를 넣어야 하고, 그 순간 정규화의 목적(소비자가 한 모양만 알면 됨)이 사라진다. **정규화는 예외가 하나라도 있으면 값어치가 반감된다** — 100%가 아니면 소비자는 여전히 여러 모양을 알아야 하기 때문이다.
 
-4. 처방의 일반형은 **"프레임워크가 내 코드 밖에서 응답을 만드는 지점을, 프레임워크가 제공하는 훅(전역 예외 핸들러)으로 되가로채, 내 규약으로 다시 씌운다"** 이다. FastAPI에선 `@app.exception_handler(RequestValidationError)`로 검증 실패를, `@app.exception_handler(404/500)`류로 없는 경로·미처리 예외를 잡아 전부 `fail(code, ...)` 봉투로 통일한다. 핵심은 "내 코드로 커버가 안 되는 경계에는, 그 경계를 관장하는 프레임워크의 확장점으로 개입한다"는 것 — 경계마다 그런 훅이 있다.
+4. 처방의 일반형은 **"프레임워크가 내 코드 밖에서 응답을 만드는 지점을, 프레임워크가 제공하는 훅(전역 예외 핸들러)으로 되가로채, 내 규약으로 다시 씌운다"** 이다. FastAPI에선 `@app.exception_handler(RequestValidationError)`로 검증 실패를, `StarletteHTTPException`(또는 상태코드 404) 핸들러로 없는 경로를, `Exception`(또는 500) 핸들러로 미처리 예외를 잡아 전부 `fail(code, ...)` 봉투로 통일한다. 단 Starlette에서 `Exception`/500 핸들러는 가장 바깥의 `ServerErrorMiddleware`에서 실행되므로 사용자 미들웨어 안쪽이 아니다 — 미들웨어가 그 500 응답을 보고 가공한다고 가정하면 안 된다. 핵심은 "내 코드로 커버가 안 되는 경계에는, 그 경계를 관장하는 프레임워크의 확장점으로 개입한다"는 것 — 경계마다 그런 훅이 있다.
    > **전역 예외 핸들러(exception handler)** — 특정 예외 타입이 올라오면 앱 전역에서 가로채 응답을 대신 만드는 프레임워크 확장점. 라우터 밖에서 생기는 응답까지 규약 아래로 끌어오는 통로다.
 
 5. **읽는 주체가 다르기 때문에 둘 다 남긴다.** HTTP 상태코드(200·503·422·501)는 **인프라 계층**(리버스 프록시·로드밸런서·모니터링·재시도 정책)이 본문을 파싱하지 않고 읽는 신호다. 봉투의 `success`/`error.code`는 **애플리케이션 계층**(backend)이 폴백·재시도를 정밀 분기하려고 읽는다. 상태코드 하나로는 부족한데(예: 503 하나에 "바쁨/모델 죽음/타임아웃"이 겹침) 그렇다고 상태코드를 버리면 인프라가 눈이 먼다. 그래서 상태코드는 굵은 신호로, 봉투는 세밀한 신호로 **역할을 나눠** 병존시킨다.
 
 6. **"규약에서 명시적으로 빼는 것"과 "규약이 조용히 새는 것"은 예측 가능성에서 갈린다.** `/health`는 docker healthcheck라는 인프라 계약이 상태코드만 보므로 봉투가 필요 없고, `/chat`은 스트리밍 청크(text/plain) 자체가 계약이라 JSON 봉투를 씌울 수 없다. 이 둘은 **설계 문서에 "봉투 예외"로 적어** 소비자가 미리 알고 그렇게 다룬다 — 예측 가능한 예외다. 반면 검증 실패가 다른 모양으로 새는 것은 소비자가 몰랐던 모양이라 런타임에 터진다. 전자는 계약의 *일부로 문서화된 예외*, 후자는 *문서에 없는 누출*이다.
 
-7. 일반 원리: **횡단 관심사(cross-cutting concern)를 "내 핸들러 코드"에만 심으면, 요청이 내 핸들러를 거치지 않고 응답되는 모든 경로에서 그 관심사가 빠진다.** 봉투 정규화가 검증 실패에서 새듯이 — 로깅을 라우터 안에서만 하면 프레임워크가 조기 거절한 요청(검증 실패·인증 실패·404)은 로그에 안 남고, 인증을 라우터 데코레이터로만 걸면 에러 응답 경로가 인증을 건너뛰며, 트레이싱을 함수 안에서 시작하면 진입 전 실패한 스팬이 유실된다. 그래서 횡단 관심사는 라우터가 아니라 **프레임워크 경계(미들웨어·예외 핸들러)**에 걸어야 "예외 없이 전부"가 성립한다.
+7. 일반 원리: **횡단 관심사(cross-cutting concern)를 "내 핸들러 코드"에만 심으면, 요청이 내 핸들러를 거치지 않고 응답되는 모든 경로에서 그 관심사가 빠진다.** 봉투 정규화가 검증 실패에서 새듯이 — 로깅을 라우터 안에서만 하면 프레임워크가 조기 거절한 요청(검증 실패·인증 실패·404)은 로그에 안 남고, 인증 검사를 핸들러 본문(데코레이터)에서만 하면 입력 검증 실패 같은 조기 응답이 인증보다 먼저 나가 미인증 요청에도 스키마 오류 세부가 노출되며, 트레이싱을 함수 안에서 시작하면 진입 전 실패한 스팬이 유실된다. 그래서 횡단 관심사는 라우터가 아니라 **프레임워크 경계(미들웨어·예외 핸들러)**에 걸어야 "예외 없이 전부"가 성립한다.
    > **횡단 관심사(cross-cutting concern)** — 개별 기능이 아니라 모든 요청에 공통으로 걸쳐야 하는 관심사(응답 형식·로깅·인증·트레이싱). 핸들러 단위가 아니라 경계 단위로 심어야 새지 않는다.
 
 ## 문제 구조 (추상화 코드)
@@ -84,7 +84,7 @@ _STATUS_BY_TYPE = {DomainValidationError: 400, ...}   # 도메인 예외 계층 
 
 @app.exception_handler(AppError)                 # 서브클래스 전체 매칭 — 매핑을 한 곳에
 async def domain_error_handler(request, exc):
-    status = _STATUS_BY_TYPE[type(exc)]
+    status = next((_STATUS_BY_TYPE[t] for t in type(exc).__mro__ if t in _STATUS_BY_TYPE), 500)   # 미등록 서브클래스도 가장 가까운 부모로 — KeyError 금지
     scope = request.url.path.split("/")[1]          # 핸들러에선 엔드포인트 파라미터 접근 불가
     # ...
 
@@ -125,7 +125,7 @@ MediaType type = MediaType.parseMediaType(stored);  // 업로드 때 검증 안 
 ```
 ② 고친 코드
 ```java
-// RFC 7233 준수로 재작성, 만족 불가 범위는 도메인 예외 → 416 핸들러
+// RFC 7233(현행 RFC 9110) 준수로 재작성, 만족 불가 범위는 도메인 예외 → 416 핸들러
 if (!valid) throw new RangeNotSatisfiableException(size);
 
 MediaType type = safeParse(stored).orElse(MediaType.APPLICATION_OCTET_STREAM);   // 안전 파싱 + 폴백
@@ -150,7 +150,7 @@ try:
     proc = subprocess.run(cmd, capture_output=True, timeout=60)   # 인자는 리스트(shell=False)
 except subprocess.TimeoutExpired:
     raise HTTPException(500, "변환 시간이 초과됐습니다")         # 계약된 detail 로 변환
-if proc.returncode != 0 or not out.is_file():
+if proc.returncode != 0 or not out.is_file():                  # out = 변환 결과 파일 경로(cmd 에 전달한 것)
     raise HTTPException(500, "변환에 실패했습니다")
 ```
 
@@ -161,7 +161,7 @@ class LegacyBusinessException extends RuntimeException {}          // BusinessEx
 @ExceptionHandler(BusinessException.class) ...                      // 못 잡음 → catch-all 500, 메시지 유실
 // 문제 ②: @ControllerAdvice 는 디스패처가 호출한 핸들러의 예외만 처리
 class AuthFilter extends OncePerRequestFilter {
-    void doFilterInternal(...) { cache.get(token); /* I/O 예외 → 컨테이너 기본 HTML 500 */ }
+    void doFilterInternal(...) { cache.get(token); /* I/O 예외 → 컨테이너/부트 기본 오류 응답 500(봉투 아님) */ }
 }
 // 문제 ③: @Transactional + throws Exception, rollbackFor 없음 → 체크 예외에 롤백 안 됨
 
