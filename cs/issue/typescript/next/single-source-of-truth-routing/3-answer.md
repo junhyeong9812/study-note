@@ -67,16 +67,16 @@ function toWebPath(href: string, base: string) {
 ```python
 def extract_final_holders(doc):      # max-rank 로직 사본 1
     # ...
-def extract_registrations(doc):      # max-rank 로직 사본 2 → 한쪽만 마이그레이션 → 화면 A·B 이름이 다름
+def extract_records(doc):      # max-rank 로직 사본 2 → 한쪽만 마이그레이션 → 화면 A·B 이름이 다름
     # ...
-query = build_query(parse_operators(param))       # 질의는 파서 결과로
+query = make_query(parse_operators(param))       # 질의는 파서 결과로
 highlight = keywords_from(param)                  # 하이라이트는 원본 파라미터를 다시 읽음 → "a || b" 원문 노출
 ```
 ② 고친 코드
 ```python
-regs = extract_registrations(doc)
+regs = extract_records(doc)
 holders = extract_final_holders(regs)             # 한 번 순회한 결과를 입력으로 (신규 필드 우선, 구 로직은 폴백)
-query, collected = build_query_with_collection(param)   # 빌드 중 파싱 결과 수집
+query, collected = make_query_with_collection(param)   # 빌드 중 파싱 결과 수집
 highlight = keywords_from(param, collected=collected)   # 같은 파싱 결과 사용 (수집값이 로그 payload에 섞이는 점 주의)
 ```
 무엇이 깨졌나: 같은 의미의 값을 독립적으로 두 번 도출해, 한쪽 변경이 불일치가 됐다.\
@@ -172,9 +172,9 @@ def is_running() -> bool:
 ### 방안 6 — 전역 설정을 탭별 스냅샷에서 분리
 ```tsx
 // 문제: 탭과 무관한 컬럼 순서를 탭 데이터 스냅샷에 같이 저장 → 탭 전환·삭제 시 오래된 기본값이 덮음
-setCurData(item.data);
+setCurrent(item.data);
 // 고친: 복원 시 전역 값은 현재 것을 유지
-setCurData(prev => ({ ...item.data, orders: prev.orders }));
+setCurrent(prev => ({ ...item.data, orders: prev.orders }));
 ```
 
 ### 방안 7 — 같은 URL을 요구하는 두 페이지는 빌드가 조용히 하나만 고른다
