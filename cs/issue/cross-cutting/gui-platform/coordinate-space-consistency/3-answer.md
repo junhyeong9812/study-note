@@ -1,7 +1,7 @@
 # cs/issue/gui-platform/coordinate-space-consistency — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 출처 원문 대조. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 사건 기록 대조·추상화. 복습 전 읽지 말 것.
 
 태그: —
 
@@ -85,4 +85,4 @@ const globe = new Mesh(new SphereGeometry(r /* ... */), new Material({ map: full
 깨진 것: 한 좌표 규약의 부호 반전을 여러 지점이 각자 보상해, 어느 한 곳의 수정도 다른 곳을 깼다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

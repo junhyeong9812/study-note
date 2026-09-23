@@ -93,7 +93,7 @@ class SearchIndexClient : IndexWritePort, IndexQueryPort { /* ... */ }
 무엇이 깨졌나: 깨진 것은 없다 — 보존을 주장이 아니라 green으로 증명한 사례다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
 
 ## 방안 비교
 

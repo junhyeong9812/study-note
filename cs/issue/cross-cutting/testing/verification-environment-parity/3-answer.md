@@ -142,7 +142,7 @@ curl -G "http://host/ask" --data-urlencode "q=한글"   # 브라우저와 같은
 같은 구조: 헤드리스 브라우저는 `(hover:hover)`가 false라 hover 변형이 적용 안 됨 → 빌드 CSS에 규칙 존재 확인 + `focus-within` 쌍으로 대체 검증, 실브라우저 확인은 사람에게.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
 
 ## 방안 비교
 

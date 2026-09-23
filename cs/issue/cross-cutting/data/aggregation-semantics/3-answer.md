@@ -1,7 +1,7 @@
 # cs/issue/data/aggregation-semantics — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 출처 원문 대조. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 사건 기록 대조·추상화. 복습 전 읽지 말 것.
 
 태그: `silent-failure`
 
@@ -93,4 +93,4 @@ if "Progress:" in line: state["success"] = parse_success(line)
 무엇이 깨졌나: 대시보드의 성공 수가 항상 ~1000에 고정되고 값이 깜빡였다. 다른 형식(`N/M batches`)은 퍼센트 정규식과도 맞지 않았다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

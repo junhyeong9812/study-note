@@ -223,4 +223,4 @@ new InputStreamResource(in) {
 같은 구조: `@PostConstruct`는 인프라 준비를 보장하지 않고 cron은 zone이 없으면 JVM 기본 타임존 → 초기 적재는 컨텍스트 기동 완료 후인 `ApplicationReadyEvent`로 옮기고, `@Scheduled(cron = ..., zone = "<서비스 타임존>")`. 단 `ApplicationReadyEvent`도 **외부 인프라(DB·캐시·타 서비스) 준비까지 보장하지는 않으므로** 초기 적재에는 의존성 확인·재시도(또는 실패 시 기동 중단 정책)를 따로 둔다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

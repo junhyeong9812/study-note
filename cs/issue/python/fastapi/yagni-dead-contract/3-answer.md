@@ -70,4 +70,4 @@ class ErrorBody(BaseModel):
 연결: 봉투의 error code 목록은 소비자의 폴백 분기표라서, 쓰이지 않는 code도 분기표를 부풀린다([response-normalization-framework-boundary](../response-normalization-framework-boundary/)).
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

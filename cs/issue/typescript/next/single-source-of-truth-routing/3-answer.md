@@ -102,7 +102,7 @@ highlight = keywords_from(param, collected=collected)   # 같은 파싱 결과 �
 무엇이 깨졌나: 대칭이어야 하는 두 변환이 각자 진화했다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
 
 ## 방안 비교
 

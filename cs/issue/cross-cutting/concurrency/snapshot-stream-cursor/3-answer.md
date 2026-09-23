@@ -1,7 +1,7 @@
 # cs/issue/concurrency/snapshot-stream-cursor — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 출처 원문 대조. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 사건 기록 대조·추상화. 복습 전 읽지 말 것.
 
 태그: `race-condition`
 
@@ -168,4 +168,4 @@ setState(prev => mergeSnapshot(prev, seed));           // 늦은 seed가 새 라
 최종적으로 1회성 종료 이벤트는 없애고 스냅샷 조회(짧은 주기 폴링)로 흡수했다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

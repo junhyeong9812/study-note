@@ -148,4 +148,4 @@ let rt = tokio::runtime::Builder::new_current_thread().enable_all().build()?;
 무엇이 깨졌나: 런타임 빌더의 기본값에 드라이버가 포함된다고 가정했다(`#[tokio::main]`과 달리 Builder는 드라이버가 기본 꺼짐).
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

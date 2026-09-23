@@ -148,4 +148,4 @@ useEffect(() => { void Promise.resolve().then(() => load(1, "")); }, [load]);   
 
 ## 검증 기록
 
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

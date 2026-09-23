@@ -1,7 +1,7 @@
 # cs/issue/python/fastapi/handler-execution-model — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 출처 원문 대조. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 사건 기록 대조·추상화. 복습 전 읽지 말 것.
 
 태그: `resource-bounding`
 
@@ -139,7 +139,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 무엇이 깨졌나: 스택 빌드(구성 시점)와 자원 생성(lifespan)의 시간 순서를 무시하고 생성자로 묶으려 했다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
 
 ## 방안 비교
 

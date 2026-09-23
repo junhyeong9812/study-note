@@ -99,4 +99,4 @@ class SyntheticGenericType implements ParameterizedType, Serializable {
 무엇이 깨졌나: 인터페이스가 선언한 `Serializable` 계약을 구현의 필드 타입이 지키지 못했다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

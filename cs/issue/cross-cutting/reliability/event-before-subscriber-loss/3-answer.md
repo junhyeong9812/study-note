@@ -122,7 +122,7 @@ onConsumerConnected(port => port.postMessage(latest));   // 새 소비자에게 
 무엇이 깨졌나: 페이지 로드 시점 사건을 나중에 연결되는 소비자가 받을 길이 없었다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
 
 ## 방안 비교
 

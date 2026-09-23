@@ -1,7 +1,7 @@
 # cs/issue/security/authorization-freshness-binding — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 출처 원문 대조. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 사건 기록 대조·추상화. 복습 전 읽지 말 것.
 
 태그: `least-privilege`
 
@@ -98,7 +98,7 @@ write_atomic "$SIDECAR" "$TURN $TS $PROMPT" || rm -f "$SIDECAR"   # 실패 = ine
 같은 구조: 대화 로그(비동기 기록)만 보던 시절에는 반대로 방금 한 승인을 못 봐 연속 false-block — 동기 캡처로 신선 소스를 만든 것이 출발점이었다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
 
 ## 방안 비교
 

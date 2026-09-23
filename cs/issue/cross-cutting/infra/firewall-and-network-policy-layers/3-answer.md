@@ -1,7 +1,7 @@
 # cs/issue/infra/firewall-and-network-policy-layers — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 출처 원문 대조. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 사건 기록 대조·추상화. 복습 전 읽지 말 것.
 
 태그: `least-privilege`
 
@@ -115,4 +115,4 @@ Ingress rule:  source CIDR 0.0.0.0/0   source port (all)   dest port 443
 같은 구조: 같은 작업의 인접 함정 — 서버 버전에 따라 `http2` 지시어 문법이 달라(구버전은 `listen ... ssl http2`) 설정 계층에서도 "다른 판본의 규칙"이 적용된다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

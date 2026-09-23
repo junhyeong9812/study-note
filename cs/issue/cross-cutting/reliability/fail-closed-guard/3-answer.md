@@ -155,7 +155,7 @@ ping_queue "$PRODUCER_URL"; ping_queue "$CONSUMER_URL"; stream_len stream:events
 무엇이 깨졌나: 명시 설정이 누락되면 각자 기본값으로 다른 인스턴스에 붙고, 메시지가 안 와도 에러가 없다(잠재 충돌로 기록, 실제 오연결 기록은 없음).
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
 
 ## 방안 비교
 

@@ -133,7 +133,7 @@ MediaType type = safeParse(stored).orElse(MediaType.APPLICATION_OCTET_STREAM);  
 무엇이 깨졌나: 입력 파싱의 런타임 예외가 catch-all 핸들러에서 "서버 오류"로 분류됐고, 저장 시 검증하지 않은 값은 읽을 때마다 폭발했다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
 
 ## 방안 비교
 

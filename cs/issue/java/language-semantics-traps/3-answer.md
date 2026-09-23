@@ -140,4 +140,4 @@ type.getDeclaredField(rc.getName()).getAnnotation(Field.class);   // backing 필
 무엇이 깨졌나: 사람이 읽은 의미(주석·"필드에 달았다"·"특수문자")와 언어가 정의한 의미가 달랐다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

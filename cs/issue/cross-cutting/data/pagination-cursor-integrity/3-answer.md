@@ -123,4 +123,4 @@ const hasMore = countIsConsistent(resp) ? byCount : resp.truncated;   // 플래�
 무엇이 깨졌나: 생산자 플래그("상한만큼 읽음")가 "더 있음"으로 해석돼 가짜 잘림 → 빈 결과 조회.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

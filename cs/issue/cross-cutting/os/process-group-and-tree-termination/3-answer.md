@@ -1,7 +1,7 @@
 # cs/issue/os/process-group-and-tree-termination — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 출처 원문 대조. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 사건 기록 대조·추상화. 복습 전 읽지 말 것.
 
 태그: `resource-bounding`
 
@@ -179,4 +179,4 @@ if still_running(host, cid): raise RuntimeError("remote load not stopped")    # 
 무엇이 깨졌나: 종료 "요청"을 종료 "사실"로 간주했고, 종료 조건이 실제 완료 신호와 무관했다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

@@ -1,7 +1,7 @@
 # cs/issue/data/ad-hoc-parsing-of-structured-text — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 출처 원문 대조. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 사건 기록 대조·추상화. 복습 전 읽지 말 것.
 
 태그: `silent-failure`
 
@@ -170,4 +170,4 @@ parse(page, body_fallback=cfg.body_fallback)
 고친 뒤 0건 → 5,757건, 3건 → 184건. 검증은 소형 덤프 smoke → 전체 실행 → 지표 비교 순.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

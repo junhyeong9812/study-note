@@ -83,7 +83,7 @@ git -c 'credential.helper=!tool auth' push origin branch     # 인자 인라인 
 무엇이 깨졌나: 인용 해석이 확장보다 먼저 끝나므로 값 속 따옴표는 인자 경계를 만들지 못한다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
 
 ## 방안 비교
 

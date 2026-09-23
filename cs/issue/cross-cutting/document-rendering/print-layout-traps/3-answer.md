@@ -1,7 +1,7 @@
 # cs/issue/document-rendering/print-layout-traps — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 출처 원문 대조. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 사건 기록 대조·추상화. 복습 전 읽지 말 것.
 
 태그: `silent-failure`
 
@@ -116,4 +116,4 @@ set_table_grid(table, col_widths)                                 # 열 격자 �
 깨진 것: "셀에 맞춤"을 기본값이 해 줄 거라 가정했지만 기본값은 비율 자동·offset 0·폭 재계산이었다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

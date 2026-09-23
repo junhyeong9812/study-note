@@ -1,7 +1,7 @@
 # cs/issue/os/pty-semantics — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 출처 원문 대조. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 사건 기록 대조·추상화. 복습 전 읽지 말 것.
 
 태그: `silent-failure`
 
@@ -143,4 +143,4 @@ Popen(cmd, stdin=slave, stdout=slave, stderr=slave, preexec_fn=set_controlling_t
 무엇이 깨졌나: 제어 터미널이 없으면 터미널 신호(창 크기 변경)가 TUI에 가지 않는다(예방 설계 — 관찰된 사고가 아니라 설계 근거).
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

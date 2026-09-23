@@ -1,7 +1,7 @@
 # cs/issue/security/authorization-gate-placement — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 출처 원문 대조. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 사건 기록 대조·추상화. 복습 전 읽지 말 것.
 
 태그: `least-privilege`
 
@@ -150,7 +150,7 @@ func withTargetCheck(next Handler) Handler {
 무엇이 깨졌나: 인증 계층이 인가 계층의 공개 정책을 덮어썼다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
 
 ## 방안 비교
 

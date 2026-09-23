@@ -1,7 +1,7 @@
 # cs/issue/rust/tauri/command-boundary-execution-model — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 출처 원문 대조. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 사건 기록 대조·추상화. 복습 전 읽지 말 것.
 
 태그: `resource-bounding`
 
@@ -85,7 +85,7 @@ pub fn session_create(/* ... */) -> Result<Id, AppError> {
 무엇이 깨졌나: 동기 호출자가 통제할 수 없는 async 소비자의 속도에 호출 스레드를 묶었다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
 
 ## 방안 비교
 

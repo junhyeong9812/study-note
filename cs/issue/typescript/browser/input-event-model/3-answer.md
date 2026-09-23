@@ -127,7 +127,7 @@ requestAnimationFrame(() => document.querySelector<HTMLElement>(".peek")?.focus(
 같은 구조: `role="menu"` 포털 메뉴 — 포털이 DOM 순서를 바꿔 Tab이 다음 툴바로 새고, 열 때 첫 항목 포커스·닫을 때 트리거 복원·비활성 항목 건너뛰기를 직접 구현해야 했다(키보드 계약 테스트로 고정).
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
 
 ## 방안 비교
 

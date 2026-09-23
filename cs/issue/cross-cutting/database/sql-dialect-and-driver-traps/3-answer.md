@@ -161,7 +161,7 @@ SELECT a.*, COALESCE(NULLIF(a.writer_name, ''), a.writer_id) AS writer_name FROM
 무엇이 깨졌나: 문자열 SQL 은 컴파일 검증 대상이 아니라 런타임 500 으로만 드러남(검색 조건 의미 변경은 회귀 주의로 기록).
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
 
 ## 방안 비교
 

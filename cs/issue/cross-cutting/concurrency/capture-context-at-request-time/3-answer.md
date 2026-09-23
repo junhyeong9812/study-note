@@ -1,7 +1,7 @@
 # cs/issue/concurrency/capture-context-at-request-time — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 출처 원문 대조. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 사건 기록 대조·추상화. 복습 전 읽지 말 것.
 
 태그: `race-condition`
 
@@ -122,7 +122,7 @@ match event { Update { turn, session_id, .. } => attach_to(turn, session_id, u) 
 같은 구조: 쓰기 요청에 상관 id가 없어 `items.rev().find(|it| it.refers(path))`로 가장 최근 항목에 귀속 — 동일 경로 다중 항목·무매칭 시 귀속 불가라는 한계가 남는다.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
 
 ## 방안 비교
 

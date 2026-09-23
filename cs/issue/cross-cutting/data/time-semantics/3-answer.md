@@ -120,4 +120,4 @@ where(createdAt.goe(from.atStartOfDay()).and(createdAt.lt(toExclusive)));
 무엇이 깨졌나: 경계 시점 행이 인접 두 버킷에 이중 집계.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)

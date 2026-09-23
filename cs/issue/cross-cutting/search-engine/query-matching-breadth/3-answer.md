@@ -1,7 +1,7 @@
 # cs/issue/search-engine/query-matching-breadth — 정답
 
 > 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 출처 원문 대조. 복습 전 읽지 말 것.
+> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 사건 기록 대조·추상화. 복습 전 읽지 말 것.
 
 태그: —
 
@@ -137,4 +137,4 @@ return match_phrase(fallback, "A B", slop=distance)
 같은 구조: 음성 인코더가 짧은 입력을 소수 코드로 붕괴시켜 반복 토큰 문서가 상위 → 인코더 단독 의존 대신 fuzziness 명시(`2`, `max_expansions≥500`)와 색인 시점 변형 생성.
 
 ## 검증 기록
-- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
