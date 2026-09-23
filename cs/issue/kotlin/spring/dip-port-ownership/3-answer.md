@@ -3,6 +3,8 @@
 > 복습 시 이 파일은 **최후에만** 연다.
 > ⚠️ 이 정답은 Claude 초안(2026-09-23) — 이슈 README·코드 기준. 복습 전 읽지 말 것.
 
+태그: —
+
 ## 정답
 
 <!-- 질문 1:1 대응 -->
@@ -10,17 +12,17 @@
 1. 전역 레이어는 응집의 기준을 **"같은 종류의 코드"** 로 잡는다 — 모든 컨트롤러는 api/에, 모든 서비스는 usecase/에. 그런데 사람이 실제로 하는 작업 단위는 "종류"가 아니라 **"기능(도메인)"** 이다. sync를 고치려면 sync의 컨트롤러·서비스·순수 로직·git 클라이언트가 필요한데, 이것들이 종류별로 흩어져 있으니 네 폴더를 왕복한다. 즉 "레이어 응집"은 코드를 이해·수정하는 실제 단위(기능)와 어긋나 있어, 한 기능을 만질 때 관련 없는 파일들 사이를 헤매게 만든다. 파일이 늘수록 이 왕복 비용이 커진다.
    > **응집(cohesion)** — 한 모듈 안의 요소들이 얼마나 한 목적으로 묶여 있는가. 높을수록 "함께 바뀌는 것이 함께 있다".
 
-2. "도메인 안에 레이어"로 뒤집으면 **함께 바뀌는 것이 함께 모인다** — `sync/`를 열면 sync의 api·usecase가 다 있어 한 폴더로 끝난다. 좋아지는 것: 왕복 제거, 도메인 경계가 폴더로 드러남, 다른 저장소와 같은 지도 재사용. 그래도 남는 `shared/`는 **어느 한 도메인의 것이 아닌 공용** — `GitRepository`·`EsClient` 같은 인프라 구현체, `Envelope`·전역 에러 핸들러 같은 공용 api다. 레이어를 없앤 게 아니라 응집의 **1차 기준**만 바꿨다(도메인이 1차, 레이어가 2차). 도메인 안에 여전히 레이어가 있으니 의존 방향은 유지되고, 왕복만 사라진다.
+2. "도메인 안에 레이어"로 뒤집으면 **함께 바뀌는 것이 함께 모인다** — `sync/`를 열면 sync의 api·usecase가 다 있어 한 폴더로 끝난다. 좋아지는 것: 왕복 제거, 도메인 경계가 폴더로 드러남, 다른 저장소와 같은 지도 재사용. 그래도 남는 `shared/`는 **어느 한 도메인의 것이 아닌 공용** — `GitClient`·`SearchIndexClient` 같은 인프라 구현체, 공용 응답 래퍼·전역 에러 핸들러 같은 공용 api다. 레이어를 없앤 게 아니라 응집의 **1차 기준**만 바꿨다(도메인이 1차, 레이어가 2차). 도메인 안에 여전히 레이어가 있으니 의존 방향은 유지되고, 왕복만 사라진다.
 
-3. **포트 소유** = 인터페이스를 정의·보유하는 주체가 그 인터페이스를 **쓰는 쪽(유즈케이스)** 이라는 뜻이다. 유즈케이스가 "나는 이런 능력이 필요하다"를 포트로 선언하고, 구현은 밖(infra)에서 그 포트를 구현한다. 화살표 변화: `[전] SyncService ─▶ GitRepository(구체)` — 유즈케이스가 특정 구현을 알고, 컴파일 의존이 안→밖으로 흐른다. `[후] SyncService ─▶ SourceControlPort ◀─ GitRepository` — 유즈케이스는 자기가 선언한 추상만 알고, 구현이 그 추상에 의존한다. 상위 정책과 하위 세부가 **둘 다 추상에 의존**하게 되어, 의존 화살표가 세부에서 추상 쪽(=안쪽)으로 뒤집힌다.
+3. **포트 소유** = 인터페이스를 정의·보유하는 주체가 그 인터페이스를 **쓰는 쪽(유즈케이스)** 이라는 뜻이다. 유즈케이스가 "나는 이런 능력이 필요하다"를 포트로 선언하고, 구현은 밖(infra)에서 그 포트를 구현한다. 화살표 변화: `[전] SyncService ─▶ GitClient(구체)` — 유즈케이스가 특정 구현을 알고, 컴파일 의존이 안→밖으로 흐른다. `[후] SyncService ─▶ VcsPort ◀─ GitClient` — 유즈케이스는 자기가 선언한 추상만 알고, 구현이 그 추상에 의존한다. 상위 정책과 하위 세부가 **둘 다 추상에 의존**하게 되어, 의존 화살표가 세부에서 추상 쪽(=안쪽)으로 뒤집힌다.
    > **DIP(의존 역전 원칙)** — 상위 정책이 하위 세부에 의존하지 말고, 둘 다 추상에 의존하라. 추상을 상위 정책이 소유하는 것이 핵심.
 
-4. 포트를 능력 단위로 좁게 선언하니, 한 실물 구현체가 여러 좁은 포트를 동시에 만족시키는 것이 자연스럽다 — `GitRepository`는 물리적으로 하나의 git 볼륨 관리자지만, sync에게는 `SourceControlPort`, content에게는 `NoteSourcePort`, indexing에게는 `DocumentReader`로 보인다. 문제가 아닌 이유: 각 유즈케이스는 **자기 포트만** 보므로 서로의 능력을 모르고, 결합이 능력 단위로 끊긴다. 테스트 이득: 예전엔 `mockk<GitRepository>()`로 git 지식 전부를 흉내 내야 했지만, 이제 `mockk<SourceControlPort>()`(메서드 3개)만 세우면 유즈케이스를 격리해 검증한다 — 가짜로 채울 표면이 작아진다.
+4. 포트를 능력 단위로 좁게 선언하니, 한 실물 구현체가 여러 좁은 포트를 동시에 만족시키는 것이 자연스럽다 — `GitClient`는 물리적으로 하나의 git 볼륨 관리자지만, sync에게는 `VcsPort`, content에게는 `ContentSourcePort`, indexing에게는 `DocSourcePort`로 보인다. 문제가 아닌 이유: 각 유즈케이스는 **자기 포트만** 보므로 서로의 능력을 모르고, 결합이 능력 단위로 끊긴다. 테스트 이득: 예전엔 `mockk<GitClient>()`로 git 지식 전부를 흉내 내야 했지만, 이제 `mockk<VcsPort>()`(메서드 3개)만 세우면 유즈케이스를 격리해 검증한다 — 가짜로 채울 표면이 작아진다.
 
 5. "동작을 안 바꿨다"를 증명한 것은 **테스트 스위트 전량 green**이다(24건). 밖에서 관찰 가능한 동작(API 응답)이 안 바뀌었는지는 그 동작을 고정한 테스트가 재편 후에도 통과하는지로 확인된다 — 외부 계약 diff 0. 특성 테스트를 먼저 green으로 세워 두면 안전망이 되는 이유: 리팩토링은 정의상 "동작 보존 구조 변경"이므로, 변경 **전**에 현재 동작을 테스트로 못 박아 두어야 변경 **후** 그 못이 그대로 박혀 있는지로 보존을 판정할 수 있다. 못을 나중에 박으면 이미 바뀐 동작을 "정답"으로 굳혀 버린다. 2회차가 싼 이유: 절차(파일 이동은 흔적 없이, 보존은 green으로 증명)를 재사용했고 안전망이 이미 서 있었다.
    > **특성 테스트(characterization test)** — 코드의 "현재 동작"을 있는 그대로 포착해 고정하는 테스트. 옳은 동작이 아니라 지금 동작을 기록해, 리팩토링의 회귀를 잡는 안전망.
 
-6. **ISP**는 "클라이언트가 안 쓰는 메서드에 의존하지 않게 인터페이스를 잘게 쪼개라"이고, **DIP**는 "그 추상을 상위가 소유하라"이다. 여기서 둘은 함께 작동한다 — 유즈케이스마다 "필요한 능력만" 좁은 포트로 선언(ISP)하고, 그 포트를 유즈케이스가 소유(DIP)한다. 큰 `GitRepository` 하나에 모두 의존하게 두면, content가 sync용 메서드 변경에도 재컴파일·재테스트되는 **부수 결합**이 생긴다. 능력 단위 포트로 쪼개면 결합이 "실제로 쓰는 능력"으로 좁혀져, git 구현이 어떻게 바뀌든 그 능력을 안 쓰는 도메인은 영향받지 않는다.
+6. **ISP**는 "클라이언트가 안 쓰는 메서드에 의존하지 않게 인터페이스를 잘게 쪼개라"이고, **DIP**는 "그 추상을 상위가 소유하라"이다. 여기서 둘은 함께 작동한다 — 유즈케이스마다 "필요한 능력만" 좁은 포트로 선언(ISP)하고, 그 포트를 유즈케이스가 소유(DIP)한다. 큰 `GitClient` 하나에 모두 의존하게 두면, content가 sync용 메서드 변경에도 재컴파일·재테스트되는 **부수 결합**이 생긴다. 능력 단위 포트로 쪼개면 결합이 "실제로 쓰는 능력"으로 좁혀져, git 구현이 어떻게 바뀌든 그 능력을 안 쓰는 도메인은 영향받지 않는다.
    > **ISP(인터페이스 분리 원칙)** — 클라이언트는 자신이 사용하지 않는 메서드에 의존하도록 강요받아선 안 된다. 뚱뚱한 인터페이스를 역할별로 쪼갠다.
 
 ## 발생한 문제 / 해결 (추상 원리)
@@ -29,14 +31,105 @@
 
 **해결:** ① 폴더의 1차 축을 도메인으로 재편(`<도메인>/{api,usecase,domain} + shared`) — 함께 바뀌는 것을 함께 둔다. ② 유즈케이스가 "필요한 능력"을 좁은 포트로 선언·소유(DIP+ISP), 인프라 구현체가 여러 포트를 다중 구현. ③ 이 순수 리팩토링의 동작 보존은 **먼저 세워 둔 특성 테스트 green**으로 증명 — 외부 계약 diff 0.
 
-## 이번 프로젝트 사례
+## 문제 구조 (추상화 코드)
 
-- [backend/issue8](../../../../../project/study-note-deploy-system/backend/issue8/) — 전역 레이어(api/usecase/domain/infra)를 도메인 우선(`sync`·`indexing`·`search`·`content` + `shared`)으로 재편. 유즈케이스가 포트를 소유하도록 DIP 적용(`SyncService`가 구체 `GitRepository` → `SourceControlPort`에 의존), 한 구현체가 여러 포트를 다중 구현. 24건 green이 곧 동작 보존 증명이라 외부 계약 diff 0. 리팩토링 절차·안전망은 [refactoring 계열]과도 통한다.
+### 변형 A — 응집의 1차 축을 레이어에서 도메인으로
+① 문제 코드
+```text
+api/        SyncController  SearchController  ContentController ...
+usecase/    SyncService     SearchService     ContentService    ...
+domain/     TextSplitter         QueryParser       ...
+infra/      GitClient       SearchIndexClient ...
+→ 기능 하나(sync)를 고치려면 네 폴더 왕복
+```
+② 고친 코드
+```text
+sync/       api/  usecase/
+indexing/   usecase/  domain/
+search/     api/  usecase/  domain/
+content/    api/  usecase/
+shared/     infra/(GitClient, SearchIndexClient)  api/(응답 래퍼, 전역 에러 핸들러)
+→ 도메인이 1차, 레이어가 2차 — 의존 방향은 그대로, 왕복만 사라짐
+```
+무엇이 깨졌나: 폴더가 "같은 종류"로 묶여 "함께 바뀌는 것"이 흩어져 있었다.
+
+### 변형 B — 유즈케이스가 포트를 소유하고, 한 구현체가 여러 좁은 포트를 구현
+① 문제 코드
+```kotlin
+class SyncService(private val git: GitClient) { /* ... */ }        // 정책이 구체 인프라를 직접 앎
+// 테스트: mockk<GitClient>() — git 지식 전부를 흉내
+```
+② 고친 코드
+```kotlin
+// sync/usecase — 사용하는 쪽이 필요한 능력만 선언
+interface VcsPort {
+    fun pullLatest(): String
+    fun changedFiles(prev: String, head: String): List<Pair<Char, String>>
+    fun allFiles(): List<String>
+}
+// content/usecase
+interface ContentSourcePort { fun readFile(path: String): String; fun readFileAt(rev: String, path: String): String /* ... */ }
+
+class SyncService(private val git: VcsPort) { /* ... */ }
+
+// shared/infra — 실물 하나가 여러 도메인의 포트를 다중 구현
+class GitClient : VcsPort, ContentSourcePort, DocSourcePort { /* ... */ }
+class SearchIndexClient : IndexWritePort, IndexQueryPort { /* ... */ }
+// 테스트: mockk<VcsPort>() — 메서드 3개만
+```
+무엇이 깨졌나: 의존 화살표가 정책→세부로 흘러 교체·테스트 표면이 구현 전체였다.
+
+### 변형 C — 구조 변경의 동작 보존을 먼저 세운 테스트로 증명
+① 문제 코드
+```text
+패키지 이동·포트 도입 → "잘 된 것 같다" (보존 증거 없음)
+```
+② 고친 코드
+```text
+1. 현재 동작을 고정한 테스트 스위트 green 확인   (baseline)
+2. 파일 이동 · 포트 도입 (동작 무변경)
+3. 같은 스위트 전량 green = 외부 계약 diff 0
+```
+무엇이 깨졌나: 깨진 것은 없다 — 보존을 주장이 아니라 green으로 증명한 사례다.
 
 ## 검증 기록
+- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
 
-- 2026-09-23: 이슈8 README + 코드 대조 작성(Claude 초안). 코드 확인:
-  - 포트 소유(usecase 소속): `.../sync/usecase/SourceControlPort.kt` L4-8, `.../indexing/usecase/ports.kt` L4-18 (`DocumentReader`·`TextEncoder`·`IndexStore`), `.../search/usecase/ports.kt` L6-16 (`QueryRewritePort`·`QueryEncoder`·`SearchIndexPort`), `.../content/usecase/NoteSourcePort.kt` L6-12.
-  - 다중 구현(shared/infra): `.../shared/infra/GitRepository.kt` L18 (`class GitRepository : SourceControlPort, NoteSourcePort, DocumentReader`), `.../shared/infra/EsClient.kt` L14 (`class EsClient : IndexStore, SearchIndexPort`).
-  - 구체→포트 의존 역전: `.../sync/usecase/SyncService.kt` L20-25 (생성자 `private val git: SourceControlPort`).
-  - 동작 보존 증명(24건 green·외부 계약 diff 0): issue8 README §3·§4.
+## 방안 비교
+
+기본 방안(위 변형 A~C)은 "추상(포트)을 사용하는 쪽이 소유해 의존 방향을 안쪽으로 뒤집고, 특성 테스트로 보존을 증명한다"이다. 같은 원리(의존 방향 지키기·안전망 위의 리팩토링)에 다른 방안이 쓰인 사례:
+
+### 방안 1 — 교차 도메인 엔티티 연관(FK 객체 참조)을 ID 참조로 끊기
+```kotlin
+// 문제: 서로 다른 도메인 엔티티가 양방향 1:1 객체 연관 → 모듈 간 컴파일 의존 → 모듈 순환(SCC)
+@Entity class BidA  { @OneToOne var deal: DealA? = null }
+@Entity class DealA { @OneToOne var bid: BidA? = null; @OneToOne var peer: DealB? = null }
+@Entity class DealB { @OneToOne var peer: DealA? = null }
+fun assign(deal: DealA) { this.deal = deal; this.status = MATCHED }       // 부수효과가 연관 설정 메서드에 숨음
+
+// 고친 (단순 참조): 객체 대신 ID, 표시용 정보는 상대 모듈의 요약 API로 enrich
+@Entity class Post { var authorId: Long = 0 }                             // 사용자 엔티티 FK 직접 참조 제거
+fun view(p: Post) = PostView(p, userSummaryApi.summary(p.authorId))
+```
+모듈 경계 검증 도구가 보고한 순환(도메인 간 순환 쌍 → 하나의 강결합 컴포넌트)을 이 패턴을 관계별로 적용해 단계적으로 해소하는 중이다.\
+같은 구조(설계 확정·구현 중): 양쪽 요청 엔티티를 하나로 통합하고 매칭을 전용 모듈로 분리, 양쪽 거래 엔티티는 매칭 ID로만 연결 + 동시성은 CAS/낙관락.
+
+### 방안 2 — 특성 테스트의 기준은 "리팩토링 직전 동작"
+```text
+문제 순서:  원본 기준 특성 테스트 → 결함 수정 → 리팩토링
+            (결함 수정 때 테스트를 고쳐야 함 → 가드레일이 흔들림)
+고친 순서:  ① 결함 수정 + 수정 검증 테스트
+            ② 수정 완료 상태 기준 특성 테스트 (리팩토링 전에도 green 확인)
+            ③ 리팩토링 → 같은 특성 테스트 green
+            커밋도 이 순서
+이빨 확인:  가드레일마다 변이(클래스명·접근성 라벨·요소 태그·문구 삭제)를 넣어 각각 red 확인
+```
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 기본: 사용 측 포트 소유(DIP+ISP) | 의존이 서비스→인프라 방향의 호출이다 | 포트 선언·다중 구현 | 포트가 구현을 닮아 뚱뚱해짐 | 유즈케이스가 외부 능력을 호출 |
+| 1. 엔티티 연관을 ID 참조로 | 의존이 영속 모델의 객체 연관이다 | 조회 시 요약 API enrich·지연 증가 | 연관으로 얻던 일관성(부수효과)을 명시 로직으로 옮기지 않으면 누락 | 도메인 간 엔티티가 서로를 품어 모듈이 순환 |
+| 2. 결함 수정 후 기준 특성 테스트 | 결함 수정과 리팩토링을 한 작업에서 한다 | 순서 강제·중간 스냅샷 | 원본 기준이면 결함 수정이 가드레일을 흔듦 | 알려진 결함이 있는 코드의 리팩토링 |
+
+**결론**: 끊어야 할 의존이 **호출**이면 포트를 사용 측이 소유하고(기본), **영속 모델의 객체 연관**이면 ID 참조로 끊고 요약 조회로 보충한다(1).\
+어느 쪽이든 구조 변경은 안전망 위에서 한다 — 그 안전망은 "보존할 동작"을 고정해야 하므로, 결함 수정이 섞이면 수정이 끝난 상태를 기준으로 세운다(2).
