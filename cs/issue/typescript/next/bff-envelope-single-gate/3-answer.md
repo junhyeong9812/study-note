@@ -12,7 +12,7 @@
 1. 봉투 해제를 호출처마다 하면, 어느 한 페이지에서 `success` 검사를 빠뜨리는 순간 **오류 봉투를 정상 데이터인 척 화면에 그리게 된다.** `{success:false, error:{...}}`가 왔는데 `body.data`(존재하지 않거나 의미 없는 값)를 바로 렌더하면, 사용자에게는 "빈 화면"이나 "이상한 데이터"로 보이고 에러 경로는 아무도 타지 않는다. 실패가 났는데 실패 신호가 나가지 않는 것 — silent failure다.
    > **봉투(envelope)** — 실제 페이로드를 `{success, data|error}`처럼 성공/실패 표시로 감싼 응답 포맷. 데이터를 쓰려면 반드시 성공 여부를 먼저 검사해야 한다.
 
-2. 진짜 위험은 **"빠뜨릴 자리의 개수"** 다. 호출처가 N개면 검사를 잊을 수 있는 지점도 N개고, 새 페이지를 추가할 때마다 하나씩 늘어난다. 사람이 매번 규율로 기억해야 하는 검사는 언젠가 반드시 한 곳에서 빠진다. "N개가 각자 검사"는 방어가 N개의 규율에 분산돼 있어 최약점이 전체를 결정하는 구조고, "한 곳에 강제"는 방어가 코드 경로 하나로 수렴해 **빠뜨릴 자리 자체가 없다.** 중복 제거는 부산물이고, 본질은 신뢰성이다.
+2. 진짜 위험은 **"빠뜨릴 자리의 개수"** 다. 호출처가 N개면 검사를 잊을 수 있는 지점도 N개고, 새 페이지를 추가할 때마다 하나씩 늘어난다. 사람이 매번 규율로 기억해야 하는 검사는 언젠가 반드시 한 곳에서 빠진다. "N개가 각자 검사"는 방어가 N개의 규율에 분산돼 있어 최약점이 전체를 결정하는 구조고, "한 곳에 강제"는 방어가 코드 경로 하나로 수렴해 **빠뜨릴 자리 자체가 없다**(단, 창구를 우회하는 새 호출 경로를 린트·리뷰로 막는다는 전제에서). 중복 제거는 부산물이고, 본질은 신뢰성이다.
 
 3. 세 경우를 **전부** 실패로 정규화해야 한다: (a) `fetch` 자체가 던짐 → `ApiError("backend_unreachable", 503)`, (b) 응답 본문이 봉투 모양이 아님(`success`가 boolean이 아님) → `ApiError("invalid_envelope", status)`, (c) 봉투인데 `success=false` → `ApiError(error.code, status, detail)`. 셋 다 **예외로 던지고**, 성공일 때만 `body.data`를 반환한다. 그러면 호출처의 계약은 "리턴을 받으면 그건 확실히 유효한 `data`, 아니면 예외"로 단순해져, 호출처는 세 실패를 구분할 필요가 없다.
    > **정규화(normalization)** — 여러 모양의 실패(네트워크·형식·논리)를 하나의 표현(여기선 `ApiError` 예외)으로 통일해, 호출처가 경우를 나눠 다루지 않게 만드는 것.
@@ -50,7 +50,7 @@ export async function apiGet<T>(path: string, reqId: string): Promise<T> {
   catch { log("unreachable", path); throw new ApiError("backend_unreachable", 503); }
   const body = await res.json().catch(() => null);
   if (typeof body?.success !== "boolean") throw new ApiError("invalid_envelope", res.status);
-  if (!body.success) throw new ApiError(body.error.code, res.status, body.error);
+  if (!body.success) throw new ApiError(body.error?.code ?? "unknown_error", res.status, body.error);   // error 누락 봉투도 방어
   return body.data as T;                            // 호출처는 data(T)만 안다
 }
 // page
@@ -83,8 +83,10 @@ async function load() {
 ```js
 // 서버 응답을 평탄한 한 형태로: { scope, message, total_hits, results }
 function normalize(raw) {
-  return raw?.results ?? [];
+  if (!Array.isArray(raw?.results)) throw new Error("invalid response shape");   // 형태 불일치는 빈 값이 아니라 실패로
+  return raw.results;                              // 진짜 "결과 없음"만 빈 배열
 }
+// load()의 catch { return [] } 도 제거하거나, 최소한 오류 상태를 따로 표시한다
 // + 누락 필드 매핑 추가, 이름 변경 시 저장된 구 값 표시 호환 유지
 ```
 무엇이 깨졌나: 형태 검증 없이 "없으면 빈 값"으로 수렴해, 계약 불일치가 정상적인 "결과 없음"으로 위장됐다.
