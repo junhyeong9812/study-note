@@ -10,7 +10,7 @@
                                   │
        불일치 원인 ①  첫 렌더가 브라우저 전용 값에 의존
                       typeof window 분기 / lazy initializer 가 window 읽음
-                      서버: 빈 것·0   클라: SiteMap·실제 폭   → mismatch
+                      서버: 빈 것·0   클라: SiteIndex·실제 폭   → mismatch
                       → 첫 렌더는 서버와 같은 값, 브라우저 값은 마운트 후 effect에서
        불일치 원인 ②  서버 HTML 이 파서를 거치며 재구성됨
                       <p><p>..</p></p> → 파서가 앞 <p>를 자동으로 닫음 → DOM ≠ React 트리

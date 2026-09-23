@@ -7,7 +7,7 @@
 
 ## 질문
 1. (왜) 하이드레이션(hydration)이란 무엇이고, 왜 클라이언트의 **첫 렌더**는 서버가 보낸 HTML과 같아야 하는가? 다르면 무엇이 일어나는가?
-2. (예측) `typeof window !== "undefined" ? <SiteMap/> : <></>`를 렌더에 쓰면 서버와 클라이언트 첫 렌더는 각각 무엇을 그리는가?
+2. (예측) `typeof window !== "undefined" ? <SiteIndex/> : <></>`를 렌더에 쓰면 서버와 클라이언트 첫 렌더는 각각 무엇을 그리는가?
 3. (경계) `useState(() => isBrowser ? window.innerWidth : 0)` — lazy initializer는 "클라이언트에서만 window를 읽으니 안전"해 보인다. 데스크톱에서 진입하면 무엇이 일어나는가(깜빡임·불필요 요청 포함)?
 4. (왜) 브라우저 전용 값은 "마운트 후 effect에서" 반영하라고 한다. `useIsMounted`(useState(false) + useEffect로 true) 패턴이 첫 렌더 일치를 어떻게 보장하는가? 대가는 무엇인가?
 5. (왜) JSX에 `<p>` 안에 `<p>`를 넣었더니 하이드레이션 불일치가 났다. React 트리는 그대로인데 무엇이 DOM을 바꿨는가?

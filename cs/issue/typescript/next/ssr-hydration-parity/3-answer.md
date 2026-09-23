@@ -13,7 +13,7 @@ React는 DOM을 새로 만들지 않고 재사용하므로, 첫 렌더 결과가
 다르면 hydration 경고·오류가 나고, 불일치 구간을 다시 그리면서 깜빡임이 생긴다.
    > **하이드레이션(hydration)** — 서버가 보낸 정적 HTML에 클라이언트 React가 상태와 이벤트 핸들러를 연결해 상호작용 가능하게 만드는 단계.
 
-2. **`typeof window` 분기.** 서버에는 `window`가 없으므로 빈 fragment를, 클라이언트 첫 렌더는 `<SiteMap/>`을 그린다 — 첫 렌더부터 불일치다.\
+2. **`typeof window` 분기.** 서버에는 `window`가 없으므로 빈 fragment를, 클라이언트 첫 렌더는 `<SiteIndex/>`을 그린다 — 첫 렌더부터 불일치다.\
 이 패턴이 여러 페이지에 있어 7개 페이지에서 hydration 오류가 났다.
 
 3. **lazy initializer도 첫 렌더.** 서버는 `0`으로 렌더(모바일 UI)하고, 클라이언트는 첫 렌더에서 실제 폭(데스크톱)을 읽는다.\
@@ -45,7 +45,7 @@ React 코드가 아니라 **파서**가 DOM을 바꾼 것이다.
 ① 문제 코드
 ```tsx
 function Nav() {
-  return typeof window !== "undefined" ? <SiteMap /> : <></>;       // 서버: 빈 것, 클라: SiteMap
+  return typeof window !== "undefined" ? <SiteIndex /> : <></>;       // 서버: 빈 것, 클라: SiteIndex
 }
 function useViewport() {
   const [w, setW] = useState(() => (isBrowser ? window.innerWidth : 0));   // 클라 첫 렌더 = 실제 폭
@@ -62,7 +62,7 @@ function useIsMounted() {
 function Nav() {
   const mounted = useIsMounted();
   const w = useViewport();
-  return <>{mounted && (w > BREAKPOINT ? <Menu /> : <SiteMap />)}</>;
+  return <>{mounted && (w > BREAKPOINT ? <Menu /> : <SiteIndex />)}</>;
 }
 function useViewport() {
   const [w, setW] = useState(0);                                     // 서버·클라 첫 렌더 동일
