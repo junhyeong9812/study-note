@@ -41,12 +41,12 @@
 # ① 문제
 async for raw in ws:
     msg = json.loads(raw)
-    await handle_command(msg)            # 10분짜리 명령이 이후 모든 명령을 막음
+    await on_command(msg)            # 10분짜리 명령이 이후 모든 명령을 막음
 
 # ② 고침
 async for raw in ws:
     msg = json.loads(raw)
-    asyncio.create_task(handle_command(ws, msg))   # 루프는 dispatch만
+    asyncio.create_task(on_command(ws, msg))   # 루프는 dispatch만
     # 주의점(기록됨): 작업 참조를 잃으면 GC될 수 있다
 ```
 무엇이 깨졌나: 긴 명령 중계 동안 같은 연결의 다른 명령이 무반응이었다(두 서비스의 수신 루프에서 같은 증상).
