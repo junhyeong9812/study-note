@@ -19,7 +19,7 @@
    빌드 스테이지 : 앱 소스 존재                  → 런타임 스테이지엔 없음 → MODULE_NOT_FOUND
    standalone   : advice·AOP 미로드              → 권한 검증 미커버
    헤드리스      : hover 능력 false · 출력 포맷 다름
-   curl         : 비ASCII 미인코딩               → 400 (서버 결함 아님)
+   curl         : 비ASCII 미인코딩               → (엄격한 서버에서) 400 (서버 결함 아님)
 
    ⇒ 결과가 결함 유무와 "무관"해진다 (거짓 통과 / 거짓 실패)
 
