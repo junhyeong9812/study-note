@@ -79,10 +79,10 @@ export const editorThemeExt = (theme) => (theme === "light" ? [] : darkTheme);  
 ```
 ② 고친 코드
 ```tsx
-function renderNodes(nodes) {                          // 재귀 커스텀 트리
+function drawNodes(nodes) {                          // 재귀 커스텀 트리
   return nodes.map(n => n.isRoot
     ? <div className="root-row" onClick={() => pick(n)}>{n.name}</div>   // 선택 가능
-    : <div className="root-dir">{n.name}{renderNodes(n.children)}</div>); // 구조만
+    : <div className="root-dir">{n.name}{drawNodes(n.children)}</div>); // 구조만
 }
 /* .root-row { background: var(--bg); color: var(--fg); } .root-row:hover { background: var(--bg-hover); } */
 ```
