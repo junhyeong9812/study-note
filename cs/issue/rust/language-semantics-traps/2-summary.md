@@ -12,7 +12,7 @@
    교정: let ids = self.registry().ids();   (문장 끝에서 가드 drop)
          for id in ids { self.kill(id); }
 
-[결정론]   DefaultHasher → 프로세스마다 랜덤 시드 → 영속 키가 실행마다 바뀜 💥
+[결정론]   RandomState → 실행마다 랜덤 시드 / DefaultHasher::new() → 알고리즘 비명세(릴리스 간 변동) → 영속 키가 바뀜 💥
            교정: FNV-1a 같은 결정론 해시 + basename
 
 [산술]     a + b 오버플로 → debug: panic / release: 조용히 wrap 💥
@@ -28,7 +28,7 @@
 ## 핵심 문장
 
 - `for`/`match`의 head(scrutinee)에서 만든 임시값은 **블록 전체가 끝날 때** drop된다 — 락 가드라면 본문 내내 락을 쥔다.
-- 표준 `HashMap` 해셔는 해시 DoS 방어용 **랜덤 시드**다 — 영속 식별자에는 결정론 해시를 쓴다.
+- 표준 `HashMap` 해셔(`RandomState`)는 해시 DoS 방어용 **랜덤 시드**이고, `DefaultHasher` 알고리즘도 릴리스 간 보장이 없다 — 영속 식별자에는 명세된 결정론 해시를 쓴다.
 - 정수 오버플로는 기본 설정에서 **debug에서 panic, release에서 wrap**이다(`overflow-checks`로 바뀜) — 외부 입력 누적은 saturating/checked로 정책을 명시한다.
 - `or`/`unwrap_or`의 인자는 **즉시 평가**된다 — 비용·부작용이 있으면 `or_else`/`unwrap_or_else`.
 - `take` 류 API는 **소유권을 한 번만** 넘긴다 — 여러 소비자에게는 최초 취득 후 공유로 배분한다.
