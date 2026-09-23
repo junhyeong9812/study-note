@@ -16,7 +16,8 @@
    다음 행동은 네 번째 패치가 아니라 **설계를 되돌려** 모델을 바꾸는 것 — 이 사례에서는 "복사" 자체를 버리고 이동 기록 합산으로 재설계했다.
 
 3. **구성적 합.** 이동 기록은 수정되지 않고 쌓이기만 하며 각 기록이 **귀속일**을 갖는다.\
-   `value_at(D) = Σ Δ (귀속일 ≤ D)`에서 덧셈은 교환·결합 법칙이 성립하므로, 기록이 어떤 순서로 도착하든 D 이하 귀속분의 합은 같다. 늦게 온 과거 이벤트는 그냥 한 행 더 쌓일 뿐, 이미 있는 행을 고칠 필요가 없다.
+   `value_at(D) = Σ Δ (귀속일 ≤ D)`에서 덧셈은 교환·결합 법칙이 성립하므로, 기록이 어떤 순서로 도착하든 D 이하 귀속분의 합은 같다. 늦게 온 과거 이벤트는 그냥 한 행 더 쌓일 뿐, 이미 있는 행을 고칠 필요가 없다.\
+   단, **재전송**에까지 무관하려면 각 이동 기록이 고유 id를 갖고 같은 id의 재도착은 무시(멱등 적재, 예: id unique + 충돌 시 무시)돼야 한다 — 그렇지 않으면 합은 순서엔 무관해도 중복 도착만큼 과대가 된다.
    > **append-only** — 기존 행을 수정·삭제하지 않고 새 행 추가만 허용하는 저장 방식. 이력이 그대로 남아 재계산이 가능하다.
 
 4. **반증적 판정.** "중복 = 재처리 버그"라는 가설을 반증할 증거를 찾는다.\
@@ -49,9 +50,11 @@ SELECT SUM(delta) FROM movement WHERE entity_id = ? AND attributed_day <= :D;
 INSERT INTO staging(key, version, ...) SELECT ... FROM batch_file;
 
 -- 소비: 키별 최신 버전만
-SELECT s.* FROM staging s
-  JOIN (SELECT key, MAX(version) v FROM staging GROUP BY key) m
-    ON s.key = m.key AND s.version = m.v;
+-- (전량 재전송이면 같은 (key, version) 행이 여러 배치에 중복되므로 MAX(version) 조인은 한 키에 여러 행을 돌려줄 수 있다 → 키당 1행으로 자른다)
+SELECT * FROM (
+  SELECT s.*, ROW_NUMBER() OVER (PARTITION BY key ORDER BY version DESC, batch_id DESC) rn
+    FROM staging s
+) t WHERE rn = 1;
 
 -- 완료 판정(선고정): index_doc_count ≈ SELECT COUNT(DISTINCT key) FROM staging
 ```
