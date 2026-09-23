@@ -82,7 +82,7 @@ def check_limit(total):
 
 _STATUS_BY_TYPE = {DomainValidationError: 400, ...}   # 도메인 예외 계층 → 상태코드
 
-@app.exception_handler(DomainError)                 # 서브클래스 전체 매칭 — 매핑을 한 곳에
+@app.exception_handler(AppError)                 # 서브클래스 전체 매칭 — 매핑을 한 곳에
 async def domain_error_handler(request, exc):
     status = _STATUS_BY_TYPE[type(exc)]
     scope = request.url.path.split("/")[1]          # 핸들러에선 엔드포인트 파라미터 접근 불가
