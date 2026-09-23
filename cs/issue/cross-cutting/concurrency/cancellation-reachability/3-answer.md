@@ -14,13 +14,14 @@
    > **취소 도달성** — 취소 신호가 작업의 현재 대기 지점까지 실제로 전달될 수 있는가. 대기 지점 하나만 막혀도 0이 된다.
 
 2. **협력적 취소.** 작업이 스스로 취소 신호를 확인하고 정리한 뒤 끝나는 방식이다.\
-   표준 OS 스레드는 외부에서 안전하게 강제 종료하거나 시간 제한 join을 걸 수 없으므로, 스레드가 끝나는 유일한 길은 스레드 코드가 멈춘 대기 지점에서 빠져나오는 것이다.\
+   Rust 표준 스레드처럼 외부 강제 종료 API도, 시간 제한 join도 없는 런타임에서는(다른 런타임은 시간 제한 join·`pthread_cancel` 등을 제공하기도 하지만, 강제 종료는 락·자원을 쥔 채 끊겨 대개 안전하지 않다), 스레드가 끝나는 유일한 길은 스레드 코드가 멈춘 대기 지점에서 빠져나오는 것이다.\
    따라서 책임은 작업 쪽에 있다 — 모든 대기 지점을 취소 가능하게 설계해야 한다.
 
-3. **await별 감싸기 vs future 전체 drop.** async에서 future를 drop하면 그 안의 진행 중 await가 모두 함께 취소된다.\
+3. **await별 감싸기 vs future 전체 drop.** Rust async에서 future를 drop하면 그 안의 진행 중 await가 모두 함께 취소된다(단, 내부에서 `spawn`해 독립 태스크로 떼어 낸 작업과 `spawn_blocking` 작업은 drop으로 멈추지 않는다).\
    그래서 `select!{ run(...), cancel.changed() }`로 작업 전체를 취소와 경주시키면 connect·인증·채널 read/write 등을 각각 감쌀 필요가 없다.\
-   단, await가 아닌 동기 구간(동기 파일 I/O, 키 로드 같은 블로킹 호출)은 실행기가 선점할 수 없어 그 구간이 끝날 때까지는 취소되지 않는다.
-   > **future drop 취소** — async 작업은 폴링되지 않으면 진행하지 않으므로, 소유자가 future를 버리면 그 지점에서 작업이 중단된다.
+   단, await가 아닌 동기 구간(동기 파일 I/O, 키 로드 같은 블로킹 호출)은 실행기가 선점할 수 없어 그 구간이 끝날 때까지는 취소되지 않는다.\
+   또 drop은 임의의 await 지점에서 작업을 끊으므로, 부분 쓰기 같은 중간 상태가 남지 않는지(취소 안전성)는 별도로 따져야 한다.
+   > **future drop 취소** — Rust처럼 future가 폴링돼야만 진행하는(lazy) 모델에서는, 소유자가 future를 버리면 그 지점에서 작업이 중단된다. JS Promise처럼 생성 즉시 실행되는 모델에서는 참조를 버려도 작업이 멈추지 않는다.
 
 4. **전 세션이 멈춘다.** 락을 쥔 채 join하면, join 대상 스레드가 네트워크 write·close에서 멈춰 있는 동안 락이 풀리지 않는다.\
    같은 맵을 쓰는 다른 세션의 모든 조작이 그 락에서 대기하므로 한 세션의 정지가 전체로 번진다.\
@@ -29,7 +30,7 @@
 5. **입력이 올 때까지 끝나지 않는다.** 블로킹 read는 그 fd에 데이터·EOF가 와야 반환하고, 다른 소켓을 닫는 것은 이 스레드를 깨우지 않는다.\
    scoped thread는 scope 끝에서 모든 자식을 join하므로, stdin에 입력이 안 오면 세션이 끝나도 CLI가 반환하지 않았다(원격 터미널이 닫히지 않고 남음).\
    해결은 "기다리지 않기"였다 — 입력 릴레이 스레드를 join하지 않고, 상대 hang-up(POLLHUP)을 감지해 반환한다(수정 후 종료 뒤 수 ms 안에 반환).
-   > **POLLHUP** — poll이 보고하는 "상대가 연결을 끊었다" 이벤트.
+   > **POLLHUP** — poll이 보고하는 hang-up 이벤트(파이프는 반대쪽이 모두 닫힘, 소켓은 보통 양방향이 모두 종료됨). 상대가 쓰기 방향만 닫은 half-close는 Linux에서 `POLLRDHUP`으로 따로 본다.
 
 6. **즉시 EOF 입력은 read를 바로 끝낸다.** 테스트 입력이 메모리 버퍼라 read가 즉시 EOF를 받고 릴레이 스레드가 스스로 끝났으므로, "입력이 영원히 오지 않는 read"라는 실제 상황이 재현되지 않았다.\
    취소 도달성 테스트는 **멈춘 상대**(응답 안 하는 RPC, 연결 거부, 입력 없는 stdin)를 만들고 "취소 후 상한 시간 안에 반환"을 단언해야 한다.
@@ -51,6 +52,7 @@ async fn host_main(mut cmd_rx: Receiver<Cmd>, rpc: Rpc) {
 
 // ② 고침
 async fn await_or_shutdown<T>(fut: impl Future<Output = T>, rx: &mut Receiver<Cmd>) -> Option<T> {
+    tokio::pin!(fut);             // &mut fut 로 반복 폴링하려면 pin 필요
     loop {
         select! {
             v = &mut fut => return Some(v),
@@ -94,7 +96,7 @@ thread::scope(|s| {
 });
 
 // ② 고침
-thread::spawn(move || relay(stdin, sock_w));   // join하지 않음
+thread::spawn(move || relay(stdin, sock_w));   // join하지 않음 — 스레드 자체는 입력·EOF 전까지 남으며, 단명 CLI라 프로세스 종료로 회수된다는 전제
 loop {
     if peer_hung_up(&sock) { return Ok(0); }   // POLLHUP 감지로 반환
     // ... pump
