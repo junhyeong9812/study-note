@@ -25,11 +25,11 @@ Next.js 소스를 위에서 아래로 훑는 지도다. 메서드 하나가 폴�
 
 1. [요청이 들어와서 렌더로 가기까지](flows/request-to-render/README.md) — `base-server.ts` 3195줄. 서버의 척추다.
 2. [응답이 만들어져 나가기까지](flows/response-out/README.md) — 그 척추의 뒷 절반. base-server 가 응답을 거의 만들지 않는다는 것을 확인하는 흐름이다.
+3. [App Router 가 페이지를 만드는 길](flows/app-render/README.md) — `app-render.tsx` 10598줄. `isStaticGeneration` 한 값이 파일을 반으로 가른다.
 
 ## 아직 안 쓴 것
 
 ```text
- A  App Router / RSC        server/app-render/        29,527줄
  B  클라이언트 라우팅·캐시   client/components/        23,345줄
  E  Pages Router            server/render.tsx 외       약 4,000줄
  D  빌드 (webpack 경로)      build/                    62,106줄
