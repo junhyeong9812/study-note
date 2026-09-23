@@ -41,7 +41,7 @@ import { log } from "@/shared/lib/logger";   // 같은 폴더라도 절대 경�
 import { cfg } from "@/shared/lib/config";
 ```
 무엇이 깨졌나: 상대·절대 임포트가 정책 없이 섞여, 파일 이동마다 어떤 임포트가 깨질지 예측할 수 없었다(빌드가 하나씩만 알려 3회 반복).\
-같은 구조: 다른 언어(패키지 상대 임포트 `from ..pkg import x`)에서 모듈을 국가별 하위 패키지로 옮기자 `..`의 대상이 바뀌어 108곳이 깨짐 → 절대 임포트로 일괄 치환한 뒤 ① 옛 경로 grep 0건 ② 파일 내부 상호 참조 ③ 남은 상대 임포트를 확인. 호환용 재수출(shim) 제거도 "참조 grep → 원 경로로 교체 → grep 0건 → 삭제" 순서로.\
+같은 구조: 다른 언어(패키지 상대 임포트 `from ..pkg import x`)에서 모듈을 하위 패키지로 옮기자 `..`의 대상이 바뀌어 100곳 넘게 깨짐 → 절대 임포트로 일괄 치환한 뒤 ① 옛 경로 grep 0건 ② 파일 내부 상호 참조 ③ 남은 상대 임포트를 확인. 호환용 재수출(shim) 제거도 "참조 grep → 원 경로로 교체 → grep 0건 → 삭제" 순서로.\
 같은 구조: 폴더를 통째로 복제(포크)하면 폴더 **안** 상대 임포트는 사본을 따라가지만, 폴더 **밖**을 가리키는 `../other/x.js`는 여전히 원본을 가리켜 격리가 깨짐 → 경계를 넘는 임포트만 grep으로 찾아 치환.\
 같은 구조: 사용처를 한 패턴으로 grep하면 상대 경로·alias·여러 줄에 걸친 import를 놓쳐 과소 집계(17곳 vs 실제 36곳) → 넓은 패턴 검색 + 삭제 후 빌드로 누락 검출.
 
@@ -102,7 +102,7 @@ const dicts = { ko, en };
 ```ts
 // 문제: 배럴이 서버 전용 모듈(요청 헤더 API 사용)까지 재수출 → 클라이언트가 배럴을 import하면 경계 위반
 // features/menu/index.ts
-export * from "./ui"; export * from "./server/getMenuTree";
+export * from "./ui"; export * from "./server/getNavTree";
 // client component
 import { MenuView } from "@/features/menu";          // 서버 전용 모듈이 의존 그래프에 들어옴
 // 고친
