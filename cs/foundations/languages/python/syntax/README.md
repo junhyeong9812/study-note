@@ -23,10 +23,10 @@ JS 와 대비가 값을 내는 자리(동적 타입·컴프리헨션·이터레�
 | 03 | [가변·불변과 얕은 복사·깊은 복사](03-mutability-and-copying/) | 관용구 | 중첩 리스트를 `list()`·`copy.copy`·`copy.deepcopy` 로 복사했을 때 각각 어디까지 공유되는지 예측할 수 있다 | 01 | — | A |
 | 04 | [숫자 타입과 나눗셈 연산자](04-numeric-types-and-division/) | 문법 | `/`·`//`·`%`·`divmod` 가 음수와 실수에서 내는 값을 예측하고 `-7 // 2` 가 왜 `-4` 인지 설명할 수 있다 | — | `cs/foundations/python-basics/` | A |
 | 05 | [진릿값과 단축 평가](05-truthiness-and-short-circuit/) | 문법 | 빈 컨테이너·0·`None` 의 진릿값을 판정하고, `and`/`or` 가 bool 이 아니라 피연산자를 돌려준다는 성질에 기댄 코드의 결과를 예측할 수 있다 | — | `cs/foundations/python-basics/` | A |
-| 06 | 문자열·bytes·유니코드 | 문법 | `str` 과 `bytes` 의 경계, `encode`/`decode` 가 필요한 자리, 인코딩을 틀렸을 때 나는 오류를 설명할 수 있다 | — | `cs/foundations/data-representation/` | A |
-| 07 | 문자열 메서드 | 표준 API | `split`·`join`·`strip`·`replace`·`startswith`·`translate` 로 파싱·정규화를 짜고, 정규식을 꺼내야 하는 선을 판단할 수 있다 | 06 | — | B |
-| 08 | f-string 과 포맷 스펙 | 문법 | 정렬·자릿수·천단위·`!r`·`=` 디버그 표기를 쓰고, 3.12(PEP 701)에서 완화된 중첩 따옴표·백슬래시 제한을 설명할 수 있다 | 06 | — | B |
-| 09 | 시퀀스 공통 연산과 슬라이싱 | 문법 | 음수 인덱스·step·역순 슬라이스의 결과를 예측하고, 슬라이스 대입과 `del` 이 길이를 바꾸는 방식을 설명할 수 있다 | — | `cs/foundations/python-basics/` | A |
+| 06 | [문자열·bytes·유니코드](06-strings-bytes-unicode/) | 문법 | `str` 과 `bytes` 의 경계, `encode`/`decode` 가 필요한 자리, 인코딩을 틀렸을 때 나는 오류를 설명할 수 있다 | — | `cs/foundations/data-representation/` | A |
+| 07 | [문자열 메서드](07-string-methods/) | 표준 API | `split`·`join`·`strip`·`replace`·`startswith`·`translate` 로 파싱·정규화를 짜고, 정규식을 꺼내야 하는 선을 판단할 수 있다 | 06 | — | B |
+| 08 | [f-string 과 포맷 스펙](08-fstrings-and-format-spec/) | 문법 | 정렬·자릿수·천단위·`!r`·`=` 디버그 표기를 쓰고, 3.12(PEP 701)에서 완화된 중첩 따옴표·백슬래시 제한을 설명할 수 있다 | 06 | — | B |
+| 09 | [시퀀스 공통 연산과 슬라이싱](09-sequence-ops-and-slicing/) | 문법 | 음수 인덱스·step·역순 슬라이스의 결과를 예측하고, 슬라이스 대입과 `del` 이 길이를 바꾸는 방식을 설명할 수 있다 | — | `cs/foundations/python-basics/` | A |
 | 10 | list 메서드와 정렬 키 | 표준 API | `sort` 와 `sorted` 를 구분하고 `key`·`reverse`·안정 정렬을 이용해 다중 기준 정렬을 설계할 수 있다 | 09 | `cs/foundations/python-basics/` | A |
 | 11 | tuple 과 언패킹 | 문법 | 별표 언패킹·중첩 언패킹·스왑을 쓰고, tuple 이 불변인데도 안에 든 리스트는 바뀔 수 있다는 것을 설명할 수 있다 | 09 | `cs/foundations/python-basics/` | A |
 | 12 | dict 와 키 요건 | 표준 API | 삽입 순서 보장(3.7+)·`get`·`setdefault`·병합 연산자(3.9+)·뷰의 동적 성질을 쓰고, 어떤 객체가 키가 될 수 있는지 판정할 수 있다 | 02 | `cs/foundations/python-basics/` | A |
