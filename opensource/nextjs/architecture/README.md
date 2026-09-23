@@ -24,6 +24,7 @@ Next.js 소스를 위에서 아래로 훑는 지도다. 메서드 하나가 폴�
 ## 흐름
 
 1. [요청이 들어와서 렌더로 가기까지](flows/request-to-render/README.md) — `base-server.ts` 3195줄. 서버의 척추다.
+2. [응답이 만들어져 나가기까지](flows/response-out/README.md) — 그 척추의 뒷 절반. base-server 가 응답을 거의 만들지 않는다는 것을 확인하는 흐름이다.
 
 ## 아직 안 쓴 것
 
