@@ -9,7 +9,8 @@
 ```
 [사고1 — 전송 문자셋]
 문자열 본문 → Spring StringHttpMessageConverter → 기본 ISO-8859-1로 인코딩
-   한글 "정"(UTF-8 3바이트)이 라틴으로 재인코딩 → 깨진 바이트 (Invalid UTF-8 0xb7)
+   라틴-1에 없는 한글은 '?'로 치환(조용한 손실), 라틴-1에 있는 비ASCII 기호(예: U+00B7 가운뎃점)는
+   1바이트 0xB7로 인코딩 → UTF-8 수신 측이 거부 (Invalid UTF-8 start byte 0xb7)
    해법: body.toByteArray()  (UTF-8 바이트로 직접) + charset=utf-8
 
 [사고2 — 문자 수 vs 바이트]
@@ -35,7 +36,7 @@ git ls-files/diff → core.quotepath=true(기본) → 한글 경로를 "\352\267
 
 ## 핵심 문장
 
-- "문자열 = UTF-8"은 착각 — 전송 계층 기본 문자셋은 프레임워크마다 다르다(Spring 문자열 본문 = ISO-8859-1).
+- "문자열 = UTF-8"은 착각 — 전송 계층 기본 문자셋은 프레임워크마다 다르다(Spring 문자열 본문 = Content-Type에 charset이 없고 JSON 계열이 아니면 ISO-8859-1).
 - 인코딩은 경계에서 못 박는다: 문자열을 맡기지 말고 `toByteArray()`(UTF-8) + `charset=utf-8`.
 - `String.length` = UTF-16 코드유닛 수(≈글자 수) ≠ 바이트 수. 한글은 UTF-8 3바이트/글자.
 - 바이트 길이를 요구하는 자리(청크 상한·RESP `$len`·Content-Length)에선 바이트로 측정한다.
