@@ -172,14 +172,14 @@ client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
 ```bash
 sid=$(jq -r '.session_id' <<<"$input")                 # 후행 개행 제거된 값
 [[ "$sid" =~ ^[A-Za-z0-9_-]+$ ]] || exit 1             # 가공본을 검증
-state_file="$dir/$(printf '%s' "$sid" | tr -cd 'A-Za-z0-9_-')"   # 삭제식 → a.b / ab 충돌
+state_path="$dir/$(printf '%s' "$sid" | tr -cd 'A-Za-z0-9_-')"   # 삭제식 → a.b / ab 충돌
 ```
 ② 고친 코드
 ```bash
 # 원본을 jq 쪽에서 절대 끝 앵커로 검증
 sid=$(jq -r '.session_id | select(test("^[A-Za-z0-9-]+\\z"))' <<<"$input")
 [ -n "$sid" ] || { stateless=1; }                      # 불량 id 는 지우지 않고 거부(상태 없음)
-state_file="$dir/$sid"
+state_path="$dir/$sid"
 ```
 무엇이 깨졌나: 검증한 값(가공본)과 사용한 값이 달랐고, `$`는 개행 앞에서도 끝으로 인정됐으며, 삭제식 정규화는 다른 입력을 같은 키로 만들었다.
 
