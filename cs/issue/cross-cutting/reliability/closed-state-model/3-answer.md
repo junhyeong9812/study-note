@@ -9,7 +9,7 @@
 <!-- 질문 1:1 대응 -->
 
 1. **optional 쌍 vs 판별 유니온.** optional 두 개는 네 조합(둘 다 없음·path만·files만·둘 다 있음)을 허용하는데 도메인은 둘 중 정확히 하나만 원한다 — 나머지 두 조합이 불법 상태로 컴파일을 통과한다.\
-판별 유니온 `{ kind: "path"; path } | { kind: "memory"; files }`는 합법 조합만 표현 가능하게 만들어 소비 쪽 분기도 완전해진다.\
+판별 유니온 `{ kind: "path"; path } | { kind: "memory"; files }`는 합법 조합만 표현 가능하게 만들고, 소비 쪽에 `never` 완전성 검사(모든 kind를 처리했는지 컴파일러가 확인)를 두면 분기 누락도 컴파일 에러가 된다.\
 `kind: string`이면 리터럴 유니온이 사라져 kind 이름을 바꿔도 컴파일러가 모른다 — "삭제" 분기가 조용히 기본 분기("닫기")로 떨어진다.
    > **판별 유니온(discriminated union)** — 공통 태그 필드 값으로 변형을 구분하는 합 타입. 태그를 보면 나머지 필드의 존재가 확정된다.
 
@@ -79,6 +79,7 @@ struct Hook { #[serde(default)] key: Option<SessionKey>, /* ... */ }   // v1(키
 ```rust
 #[derive(Deserialize)]
 struct Hook { key: SessionKey, /* ... */ }                             // 필수 → v1은 파싱 실패
+// 주의: serde는 Option<T> 필드가 입력에 없으면 #[serde(default)] 없이도 None으로 채운다 — default만 지워서는 안 되고 Option 자체를 빼야 한다
 #[test] fn v1_hook_line_is_rejected() { assert!(parse::<Event>(V1_LINE).is_err()); }
 ```
 무엇이 깨졌나: 버전 경계를 긋는 정보가 타입에서 선택 사항이었다.
@@ -184,7 +185,7 @@ if cooldown_expired():
     if metrics_healthy(): state.phase = "phase2"; return "allow"
     return "cooldown_stage"                          # 머무름 — 메트릭이 곧 복구 대상 증상
 # 고친: 전이는 시간만으로, 메트릭은 행동 보류로
-if cooldown_expired():
+if state.phase == "cooldown" and cooldown_expired():   # 선행 상태 확인 — 없으면 매 호출마다 attempts가 0으로 리셋돼 open에 도달 못 함
     state.phase = "phase2"; state.attempts = 0        # 단조 전이
 if state.phase == "phase2":
     if state.attempts >= THRESHOLD: state.phase = "open"
