@@ -68,10 +68,10 @@ for (let i = 0; i < src.length; ) {
 let s = &text[text.find('{')?..=text.rfind('}')?];   // 뒤 산문의 '}' 포함
 
 // 고침: 문자열 추적 포함 균형 스캔
-let (mut depth, mut in_str, mut esc) = (0, false, false);
+let (mut depth, mut inside_quote, mut esc) = (0, false, false);
 for (i, ch) in text[start..].char_indices() {
-    if in_str { if esc { esc = false } else if ch == '\\' { esc = true } else if ch == '"' { in_str = false } continue; }
-    match ch { '"' => in_str = true, '{' => depth += 1, '}' => { depth -= 1; if depth == 0 { return Some(&text[start..=start + i]); } }, _ => {} }
+    if inside_quote { if esc { esc = false } else if ch == '\\' { esc = true } else if ch == '"' { inside_quote = false } continue; }
+    match ch { '"' => inside_quote = true, '{' => depth += 1, '}' => { depth -= 1; if depth == 0 { return Some(&text[start..=start + i]); } }, _ => {} }
 }
 ```
 무엇이 깨졌나: 유효 JSON 뒤 산문에 중괄호가 있으면 파싱이 실패했다.\
@@ -104,7 +104,7 @@ if s[:1] in "\"'" and s[0] == s[-1]: s = s[1:-1]
 if s.startswith("(") and s.endswith(")"): s = s[1:-1]      # "( \"a b\" )" → "\"a b\"" 남음
 
 # 고침: 깊이 추적 + 고정점까지 반복, 모든 추출 경로가 이 함수를 공유
-def clean_value(s):
+def strip_value(s):
     while True:
         prev = s
         if len(s) >= 2 and s[0] == "(" and matching_paren(s, 0) == len(s) - 1:
@@ -124,10 +124,10 @@ while tokens[i] != ")": i += 1          # 닫는 괄호가 없으면 무한 루�
 
 # 고침: 재귀 + EOF 검사 + 불균형이면 원문으로 degrade
 def parse_expr(ts):
-    node = parse_term(ts)
+    node = parse_token(ts)
     while ts.peek() in ("AND", "OR"): ...
     return node
-def parse_term(ts):
+def parse_token(ts):
     if ts.peek() == "(":
         ts.next(); node = parse_expr(ts)
         if ts.at_eof(): raise Unbalanced
@@ -163,7 +163,7 @@ TEMPLATE    = "{{-nonexistent-}}"                          # 존재하지 않는
 # 고침: 실제 원문 샘플로 형식 확인 후 패턴을 좁히고, 암묵 fallback은 명시 옵션으로
 SECTION_END = re.compile(r"^\{\{-[a-z]{2}-\}\}", re.M)    # 트레이드오프(3자 코드 불가)를 문서화
 LIST_BLOCK  = re.compile(r"((?:#:\*[^\n]*\n)+)")
-parse(page, allow_body_fallback=cfg.allow_body_fallback)
+parse(page, body_fallback=cfg.body_fallback)
 ```
 무엇이 깨졌나: 전체 실행이 에러 없이 끝났고, 품질 점검에서 행수만 비정상이었다(0건, 잘림, 수십 개 혼입, 3건뿐).\
 고친 뒤 0건 → 5,757건, 3건 → 184건. 검증은 소형 덤프 smoke → 전체 실행 → 지표 비교 순.
