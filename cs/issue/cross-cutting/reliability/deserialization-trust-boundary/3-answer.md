@@ -20,10 +20,12 @@
    > **관용 파싱(tolerant parsing)** — 모르는·깨진 부분을 오류로 만들지 않고 건너뛰는 파싱. 견고성과 관측성을 맞바꾼다.
 
 3. **스키마 진화의 두 방향.** 과거 방향: 엄격한 역직렬화는 구버전 파일에 없는 새 필드를 "missing field"로 보고 **로드 전체를 실패**시킨다 → 새 필드에 `default`를 선언하고 "구버전 파일 로드" 테스트를 둔다(UI도 새 필드가 비면 옛 필드로 폴백).\
+(serde 기준: `Option<T>` 필드는 입력에 없으면 `default` 없이도 None으로 채워지므로, missing field 실패는 `String`·`Vec` 같은 비-Option 필드에서 난다.)\
 미래 방향: "모양만 맞으면 수용"하면, 미래 버전이 **같은 필드 이름의 의미를 바꿨을 때** 현재 코드가 그것을 옛 의미로 해석해 계약이 조용히 깨진다. 손상 데이터도 모양만 맞으면 통과한다.\
 교정: 버전이 **정확히 일치할 때만** 구조를 채택하고, 상위 버전은 안전하게 뽑을 수 있는 일부만 best-effort로 추출, 나머지는 기본값. 구조 검사에 더해 **의미 불변식**(예: 주 항목 정확히 1개·빈 분할 금지)까지 검증한다.
 
-4. **재귀 검증의 예산.** 재귀 검증은 입력 깊이만큼 스택을 쓴다 — 12k 깊이로 중첩된 **문법상 유효한** JSON(또는 순환 참조)이 스택 오버플로를 일으켜 앱 시작 자체가 크래시한다.\
+4. **재귀 검증의 예산.** 재귀 검증은 입력 깊이만큼 스택을 쓴다 — 12k 깊이로 중첩된 **문법상 유효한** JSON이 스택 오버플로(JS에서는 `RangeError`)를 일으키고, 그 예외를 잡지 못하면 앱 시작 자체가 크래시한다.\
+순환 참조는 `JSON.parse` 결과에서는 생길 수 없다 — 순환 가드는 이미 객체로 받은 입력(메모리 상태·structured clone 등)을 검증할 때의 방어다.\
 예외 경계가 `JSON.parse`만 감싸면 파싱 1단계의 오류만 잡히고, 그 뒤 **검증 단계에서 던진 예외**는 경계 밖으로 샌다.\
 교정: 깊이·노드 수 예산(초과 시 오류 → 손상 취급) + 순환 가드, 그리고 파서 **전체**를 예외 경계로 감싸 어떤 throw든 "손상 → 기본값"으로 수렴시킨다.
    > **깊이 공격** — 과도하게 중첩된 입력으로 재귀 처리기의 스택·시간을 고갈시키는 공격.
@@ -32,8 +34,8 @@
 내부 Debug 표현(`Custom("FOO")`)은 구현 세부이지 외부 계약이 아니다 — 와이어에 쓰면 소비자가 그 형식에 의존하게 되고 라이브러리 버전에 따라 바뀐다 → 표준 이름(TERM·KILL 등)으로 정규화하고, 사용자 정의 값만 원문 그대로 쓴다.
 
 6. **선언적 요청 모델.** 선언적 모델의 계약은 "**선언된 이름·타입만** 채운다"이다.\
-선언 안 된 키는 파싱 단계에서 버려지고 필드는 기본값 `None`이 된다 → 필터가 **에러 없이 미적용**. 내부 파생용으로 `exclude`된 필드와 같은 이름의 키를 보내도 반영되지 않는다.\
-타입이 다르면 두 가지로 갈린다 — 강제 변환 validator(`mode='before'`)가 빠져 원시 문자열이 그대로 하위 코드로 흘러가 **먼 곳에서 속성 오류(500)**로 터지거나, 형태 불일치로 값이 채워지지 않는다.\
+선언 안 된 키는 파싱 단계에서 버려지고(Pydantic 기본 `extra='ignore'`) 필드는 기본값 `None`이 된다 → 필터가 **에러 없이 미적용**. 내부 파생용으로 `exclude`된 필드와 같은 이름의 키를 보내도 반영되지 않는다.\
+타입이 다르면 결과가 갈린다 — 필드 타입이 느슨해(`str`·`Any` 등) 강제 변환 validator(`mode='before'`)가 빠지면 원시 문자열이 그대로 하위 코드로 흘러가 **먼 곳에서 속성 오류(500)**로 터지고, 선언 타입이 엄격하면 Pydantic은 기본적으로 검증 오류(422)로 거부한다(이 경우는 조용하지 않다 — 조용히 꺼지는 것은 키가 선언과 어긋나 무시되거나, 검증을 거치지 않는 경로로 값을 읽을 때다).\
 파생(computed) 필드는 **모델 인스턴스에만** 존재하므로 원본 dict에서 읽으면 없다 → 원본을 모델로 한 번 통과시킨 뒤 읽는다.\
 교정: 모델 타입을 **실제 송신 형태**에 맞추고(`Optional[List[str]]`), 필드를 선언하고, 변환 validator를 연결한다. validator의 허용 목록은 하드코딩하지 말고 매핑 테이블 키를 동적으로 참조해 동기화한다.
 
@@ -103,14 +105,15 @@ fn parse_line(line: &str, stats: &mut ParseStats) -> Option<Record> {
 ### 변형 D — 스키마 진화: 과거는 default, 미래는 버전 게이트
 ① 문제 코드
 ```rust
-#[derive(Deserialize)] struct Snapshot { items: Vec<Item>, title: Option<String> }  // 구버전 파일: missing field
+#[derive(Deserialize)] struct Snapshot { items: Vec<Item>, title: String }  // 구버전 파일: missing field
+// (Option<String>이었다면 serde가 None으로 채워 실패하지 않는다)
 ```
 ```ts
 function parseTree(raw: unknown): Tree { return isWellShaped(raw) ? raw : emptyTree() }   // 모양만 검사
 ```
 ② 고친 코드
 ```rust
-#[derive(Deserialize)] struct Snapshot { items: Vec<Item>, #[serde(default)] title: Option<String> }
+#[derive(Deserialize)] struct Snapshot { items: Vec<Item>, #[serde(default)] title: String }
 #[test] fn loads_legacy() { /* 구버전 JSON 로드 성공 */ }
 ```
 ```ts
@@ -173,7 +176,10 @@ report = raw_obj["filtered_ids"]                          # computed_field는 di
 class SearchParams(BaseModel):
     filter_flag: Optional[List[str]] = None                # 실제 송신 형태
     other_filter: Optional[List[str]] = None               # 선언
-    _coerce = field_validator("checkbox_filter", mode="before")(to_enum_list)   # 원시 문자열 → enum
+    checkbox_filter: Optional[List[Status]] = Field(default=None, exclude=True)
+    @field_validator("checkbox_filter", mode="before")     # 원시 문자열 → enum
+    @classmethod
+    def coerce_checkbox(cls, v): return to_enum_list(v)
 report = ReportRequest(**raw_obj).filtered_ids            # 모델을 거쳐 파생 필드 사용
 ALLOWED = set(LABEL_TO_STATUS.keys())                      # 허용 목록은 매핑 키를 동적 참조
 ```
