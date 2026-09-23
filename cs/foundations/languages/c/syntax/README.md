@@ -1,6 +1,6 @@
 # C — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 아래 주제들의 3파일(질문·서머리·정답)은 **아직 없다**.
+> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**(2026-09-24 기준 **12 / 58**). 나머지는 아직 없다.
 > 기준 소스: [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C17 대응 초안 **N2310**, C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf), 2024-02-22) · [cppreference C 레퍼런스](https://en.cppreference.com/w/c)
 > 실행 검증: **가능** — `gcc 13.3.0`(`-std=c17` 확인, `-std=c2x` 로 C23 일부) · `clang 18.1.3` · `gcc -fsanitize=address,undefined` 동작 확인 · `gdb` 있음. **`valgrind` 없음**(필요 시 설치 제안만 한다).
 > 기준일 2026-09-20.
@@ -36,10 +36,10 @@ C 는 기능이 적은 언어라 “기능 목록”으로 자르면 30개면 �
 | 06 | [`typedef` 와 타입 별칭](06-typedef-and-type-aliases/) | 문법 | `typedef` 가 새 타입을 만들지 않는다는 것을 설명하고, 함수 포인터·구조체에서 별칭이 값을 내는 자리를 고를 수 있다 | 01 | — | B |
 | 07 | [`enum` 과 열거 상수](07-enum-and-enumeration-constants/) | 문법 | 열거 상수의 타입·값 규칙을 설명하고, C23의 고정 기반 타입 지정(`enum E : unsigned char`)이 무엇을 바꾸는지 안다 | 02 | — | B |
 | 08 | [`sizeof`·정렬·`offsetof`](08-sizeof-alignment-and-offsetof/) | 문법 | `sizeof` 가 컴파일 시간에 결정되는 자리와 아닌 자리를 가르고, `_Alignof`/`alignas`(C11)로 정렬을 지정할 수 있다 | 02 | — | B |
-| 09 | 연산자 우선순위와 결합성 | 문법 | `*p++`·`a & b == c` 같은 식이 실제로 어떻게 묶이는지 예측하고, 괄호가 필수인 자리를 안다 | — | — | A |
-| 10 | 평가 순서와 시퀀스 포인트 | 문법 | `i = i++ + 1` 류가 왜 미정의인지 설명하고, 함수 인자 평가 순서에 의존하는 코드를 찾아낼 수 있다 | 09 | — | B |
-| 11 | 비트 연산과 시프트 | 문법 | 마스크·플래그를 비트로 표현하고, 시프트량이 타입 폭 이상일 때·부호 있는 값을 시프트할 때 무엇이 미정의인지 판단할 수 있다 | 02, 03 | [`algorithm/29-bit-manipulation/`](../../../../algorithm/29-bit-manipulation/) — 비트 기법 자체는 거기, 여기는 **C 의 타입·UB 규칙** | B |
-| 12 | 제어문과 `switch` | 문법 | `switch` 의 fallthrough·case 안 선언의 스코프·`default` 위치 자유를 설명하고 의도적 fallthrough를 표시할 수 있다 | — | — | B |
+| 09 | [연산자 우선순위와 결합성](09-operator-precedence-and-associativity/) | 문법 | `*p++`·`a & b == c` 같은 식이 실제로 어떻게 묶이는지 예측하고, 괄호가 필수인 자리를 안다 | — | — | A |
+| 10 | [평가 순서와 시퀀스 포인트](10-evaluation-order-and-sequence-points/) | 문법 | `i = i++ + 1` 류가 왜 미정의인지 설명하고, 함수 인자 평가 순서에 의존하는 코드를 찾아낼 수 있다 | 09 | — | B |
+| 11 | [비트 연산과 시프트](11-bitwise-operations-and-shifts/) | 문법 | 마스크·플래그를 비트로 표현하고, 시프트량이 타입 폭 이상일 때·부호 있는 값을 시프트할 때 무엇이 미정의인지 판단할 수 있다 | 02, 03 | [`algorithm/29-bit-manipulation/`](../../../../algorithm/29-bit-manipulation/) — 비트 기법 자체는 거기, 여기는 **C 의 타입·UB 규칙** | B |
+| 12 | [제어문과 `switch`](12-control-flow-and-switch/) | 문법 | `switch` 의 fallthrough·case 안 선언의 스코프·`default` 위치 자유를 설명하고 의도적 fallthrough를 표시할 수 있다 | — | — | B |
 | 13 | `goto cleanup` 관용구 | 관용구 | 다중 자원 획득 함수에서 실패 경로를 역순 해제로 모으는 구조를 직접 쓰고, 왜 C 에 이 패턴이 남는지 설명할 수 있다 | 12, 37 | — | B |
 | 14 | 포인터 — 주소·역참조·포인터 타입 | 문법 | 포인터 변수의 값과 가리키는 값을 구분해 말하고, 이중 포인터가 필요한 자리(호출자 포인터 수정)를 고를 수 있다 | 01 | [`memory-management/`](../../../memory-management/) — 주소 공간·스택 프레임은 거기, 여기는 **C 문법으로 어떻게 쓰나** | A |
 | 15 | 포인터 산술과 인덱싱 | 문법 | `a[i]` 가 `*(a+i)` 로 정의된다는 것에서 인덱싱의 성질(교환 가능·경계 없음)을 끌어내고, 포인터 차의 타입(`ptrdiff_t`)을 안다 | 14 | — | A |
