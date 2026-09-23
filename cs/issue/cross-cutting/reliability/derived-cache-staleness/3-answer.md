@@ -119,7 +119,7 @@ async def lifespan(app):
         asyncio.gather(open_db(), open_cache(retry_on_timeout=True, health_check_interval=HEALTH_INTERVAL)),
         timeout=STARTUP_DEADLINE)
     yield
-    await close_all(app.state)                # 모든 클라이언트 종료
+    await dispose_all(app.state)                # 모든 클라이언트 종료
 ```
 
 ### 방안 3 — 외부 저장소의 사본은 바꾼 쪽이 명시 갱신
@@ -128,8 +128,8 @@ async def lifespan(app):
 useEffect(() => { setLoggedIn(hasSessionCookie()) }, [])
 await loginRequest(); router.push("/")
 // 고친
-await loginRequest(); authLogin() /* setLoggedIn(true) */; router.push("/")
-const value = useMemo(() => ({ loggedIn, authLogin, authLogout }), [loggedIn])   // 인라인 객체 리렌더 방지
+await loginRequest(); markLoggedIn() /* setLoggedIn(true) */; router.push("/")
+const value = useMemo(() => ({ loggedIn, markLoggedIn, markLoggedOut }), [loggedIn])   // 인라인 객체 리렌더 방지
 ```
 
 ### 방안 4 — 비동기 flush 로그 대신 이벤트 페이로드를 진실 소스로
