@@ -2,6 +2,7 @@
 //
 //   ① 볼드(`**…**`)가 안 닫혀 별표가 그대로 보이는 것
 //   ② 범위 표기의 물결표(`0~1023`)가 GFM 취소선으로 먹혀 **글자가 지워지는 것**
+//   ③ 표의 칸 수가 행마다 다른 것 (셀 안의 `|` 를 이스케이프 안 해서)
 //
 // ②가 ①보다 나쁘다 — 별표가 보이는 정도가 아니라 본문이 삭제된 것처럼 보인다.
 // 실측: `well-known은 0~1023, 등록은 1024~49151` -> `0<del>1023, 등록은 1024</del>49151`
@@ -77,6 +78,48 @@ for (const [f, hits] of bad) {
   for (const h of hits.slice(0, 3)) console.log('      ' + h.replace(/\s+/g, ' ').trim());
 }
 
+// ③ 표의 칸 수가 행마다 다른 것 — 대개 셀 안의 `|` 를 이스케이프하지 않아서다.
+//    ★★ 렌더 결과로는 못 잡는다. GFM 은 **머리글 칸 수에 맞춰 잘라내므로**
+//    `<td>` 개수는 그대로이고 **넘친 칸의 글자가 통째로 사라진다**(실측으로 확인).
+//    그래서 이 검사만 원본에서 센다 — 이스케이프되지 않은 `|` 의 개수를 행마다 비교한다.
+//    코드 스팬 안의 `|` 도 GFM 은 칸 구분자로 본다. 그것이 바로 이 사고의 모양이다.
+function countPipes(line) {
+  let n = 0;
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '\\') { i++; continue; }      // `\|` 는 건너뛴다
+    if (line[i] === '|') n++;
+  }
+  return n;
+}
+
+const tableBad = [];
+let tableTotal = 0;
+for (const f of files) {
+  const lines = fs.readFileSync(f, 'utf8').split('\n');
+  let fence = false, head = null, headLine = 0;
+  lines.forEach((line, idx) => {
+    if (line.trimStart().startsWith('```')) { fence = !fence; return; }
+    if (fence) return;
+    const t = line.trim();
+    const isRow = t.startsWith('|') && t.endsWith('|');
+    if (!isRow) { head = null; return; }
+    if (/^\|[\s:|-]+\|$/.test(t)) return;          // 구분선
+    const n = countPipes(t);
+    if (head === null) { head = n; headLine = idx + 1; return; }
+    if (n !== head) {
+      tableBad.push([f, idx + 1,
+        `${n - 1}칸 (${headLine}행 머리글은 ${head - 1}칸) — 셀 안의 | 를 \\| 로 이스케이프했는지 보라`,
+        t.slice(0, 70)]);
+      tableTotal++;
+    }
+  });
+}
+console.log(`[표] 칸 수가 머리글과 다른 행 ${tableTotal}건`);
+for (const [f, ln, why, txt] of tableBad.slice(0, 12)) {
+  console.log(`  ${f}:${ln}  ${why}`);
+  console.log(`      ${txt}`);
+}
+
 // ② 의도치 않은 취소선 — 소스의 `~~` 쌍 수보다 <del> 이 많으면 범위 표기가 먹힌 것이다
 const strike = [];
 let strikeTotal = 0;
@@ -99,4 +142,4 @@ for (const [f, n, ex] of strike) {
   for (const d of ex) console.log('      ' + d.replace(/\s+/g, ' '));
 }
 
-process.exit(total + strikeTotal ? 1 : 0);
+process.exit(total + strikeTotal + tableTotal ? 1 : 0);
