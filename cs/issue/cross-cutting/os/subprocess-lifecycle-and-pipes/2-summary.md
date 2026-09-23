@@ -7,7 +7,7 @@
 ```
 부모 ──spawn──▶ 자식
   │  stdin  ──▶  (닫아야 EOF)
-  │  stdout ◀──  (드레인)        파이프 버퍼 ≈ 64KB, 차면 자식 write 블록
+  │  stdout ◀──  (드레인)        파이프 버퍼 유한(리눅스 기본 64KiB, OS마다 다름), 차면 자식 write 블록
   │  stderr ◀──  (드레인)
   └─ wait ───▶  회수 (안 하면 좀비)
 
@@ -22,7 +22,7 @@
   ⑧ 파이프 = 블록 버퍼링           → 진행 로그가 끝에 몰려 나옴
 
 교정
-  spawn → 스트림별 드레인(별 스레드) + 상한 → try_wait 폴링 + timeout → kill → wait
+  spawn → stdin 쓰기·스트림별 드레인 동시(별 스레드) + 상한 → try_wait 폴링 + timeout → kill → wait
   드레인 결과는 채널 recv_timeout (join X), 성공 = exit 0 AND 산출물 비어있지 않음
   stdin = null(또는 명시 리다이렉트), 대화형 확인 끄기(--yes), stderr 분리
   보조 작업자 종료 = 대상 자원의 실제 수명(채널 끊김)에 결박

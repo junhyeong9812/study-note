@@ -11,10 +11,11 @@
 1. **wait 없음 = 좀비.** 종료된 자식은 부모가 `wait`로 종료 상태를 회수하기 전까지 프로세스 테이블에 **좀비**로 남는다.\
 `kill`만 보내고 끝내면 좀비가 남고, 회수 전에 "연결 끊김" 이벤트를 내보내 상태 순서도 어긋났다.\
 자식 stdin 쓰기가 실패했을 때 바로 `return`하면 회수도 안 되고, 쓰기 실패(EPIPE)는 대개 자식이 **먼저 죽은 결과**라 진짜 원인은 자식의 stderr·종료 코드에 있는데 그것을 잃는다.\
-쓰기 오류는 저장만 하고 **항상 wait_with_output**한 뒤, 반환 우선순위를 "자식 stderr > 쓰기 오류"로 둔다.
+쓰기 오류는 저장만 하고 **항상 wait_with_output**한 뒤, 반환 우선순위를 "자식 stderr > 쓰기 오류"로 둔다.\
+단 입력을 전부 쓴 **뒤에** 출력을 읽기 시작하면, 입력·출력이 파이프 버퍼보다 클 때 2번과 같은 교착이 생긴다(자식은 stdout이 차서 멈추고 부모는 stdin 쓰기에서 멈춤) — 쓰기는 별도 스레드에서 드레인과 동시에 하고, 다 쓰면 stdin을 닫아 EOF를 준다.
    > **좀비(zombie)** — 실행은 끝났지만 부모가 종료 상태를 회수하지 않아 테이블 항목만 남은 프로세스.
 
-2. **한 스트림만 드레인 → 교착.** 파이프는 유한 버퍼(보통 64KB)다.\
+2. **한 스트림만 드레인 → 교착.** 파이프는 유한 버퍼(리눅스 기본 64KiB — OS·설정마다 다름)다.\
 자식이 stderr에 계속 쓰면 버퍼가 차는 순간 자식의 `write`가 **블록**된다.\
 부모는 stdout의 EOF를 기다리고, 자식은 stderr 버퍼가 비기를 기다린다 — 서로를 기다리는 **교착**이다.\
 타임아웃은 이것을 "부분적으로만" 막는다(멈춘 채 시간을 버림).\
@@ -26,7 +27,7 @@
 근본적으로 손자까지 정리하려면 프로세스 그룹 단위 종료가 필요하다(남은 과제로 기록 — [process-group-and-tree-termination](../process-group-and-tree-termination/)).
 
 4. **stdio 순수성.** stdin/stdout을 프로토콜 전송로로 쓰면 그 채널에는 **프로토콜 메시지만** 흘러야 한다.\
-패키지 러너가 "설치할까요?" 확인 프롬프트를 띄우면 그 프롬프트가 stdin(=프로토콜 채널)에서 응답을 기다리며 **영원히 멈추고**, 부모는 프로토콜 응답을 기다린다.\
+패키지 러너가 "설치할까요?" 확인 프롬프트를 띄우면 그 프롬프트가 stdin(=프로토콜 채널)에서 응답을 기다리며 **영원히 멈추고**, 부모는 프로토콜 응답을 기다린다(러너·버전에 따라 비TTY에서는 자동 승인하기도 하므로, 동작에 기대지 말고 명시 옵션으로 고정한다).\
 확인을 자동 승인 옵션으로 끄고(`--yes`), 로그는 stderr로 분리해 드레인·노출한다. 스모크로 stdout이 순수 프로토콜인지 확인했다.
 
 5. **열린 stdin.** 입력 파일을 주지 않은 필터형 명령(`cat >> f` 류)이나 "추가 입력을 stdin에서 읽는" CLI는 **stdin의 EOF까지** 읽는다.\
@@ -45,7 +46,7 @@
 
 8. **단일 인스턴스 위임.** 어떤 프로그램(예: 브라우저)은 같은 프로필로 두 번째 실행을 하면 **이미 떠 있는 인스턴스에 위임하고 즉시 종료**한다.\
 그러면 "스폰한 프로세스 종료 = 창 닫힘"이라는 wait 전제가 깨져, 런처가 정리 코드를 조기에 실행했다.\
-**전용 프로필 디렉토리**로 별도 인스턴스를 강제하면 스폰한 프로세스가 창 수명 동안 블록되어 wait 전제가 다시 성립한다 — 아래 「방안 비교」.
+**전용 프로필 디렉토리**로 별도 인스턴스를 강제하면 스폰한 프로세스가 창 수명 동안 블록되어 wait 전제가 다시 성립한다 — 단 그 전용 프로필을 쓰는 인스턴스가 이미 떠 있으면 다시 위임되므로, 프로필은 이 런처만 쓰게 한다. 아래 「방안 비교」.
 
 ## 문제 구조 (추상화 코드)
 
@@ -66,8 +67,11 @@ async fn stop(child: &mut Child) { child.start_kill(); child.wait().await; emit(
 
 fn run(input: &[u8]) -> Result<Out> {
     let mut child = spawn_piped()?;
-    let write_err = child.stdin.take().unwrap().write_all(input).err();   // 저장만
-    let out = child.wait_with_output()?;                                    // 항상 회수
+    let mut stdin = child.stdin.take().unwrap();
+    let data = input.to_vec();
+    let writer = thread::spawn(move || stdin.write_all(&data));             // 쓰기와 드레인을 동시에 (큰 입출력 교착 방지), 끝나면 drop = EOF
+    let out = child.wait_with_output()?;                                    // 항상 회수 (stdout·stderr 드레인)
+    let write_err = writer.join().unwrap().err();                           // 쓰기 오류는 저장만
     if !out.status.success() { return Err(stderr_of(&out)); }             // 자식 stderr 우선
     if let Some(e) = write_err { return Err(e.into()); }
     Ok(parse(out.stdout))
@@ -91,7 +95,7 @@ let out = Command::new(cmd).output()?;          // 타임아웃 없음
 ```rust
 let mut child = spawn(stdout=piped, stderr=piped)?;
 let (otx, orx) = channel(); spawn_drain(child.stdout, CAP, otx);   // 스트림별 드레인 + 상한
-spawn_drain_discard(child.stderr);
+spawn_drain_discard(child.stderr);                                 // 교착 방지용 소비 (진단이 필요하면 상한 두고 보관)
 let status = loop {
     match child.try_wait()? {
         Some(st) => break Some(st),
@@ -99,7 +103,7 @@ let status = loop {
         None => sleep(50ms),
     }
 };
-let text = orx.recv_timeout(3s).unwrap_or_default();              // join 대신
+let text = orx.recv_timeout(3s).unwrap_or_default();              // join 대신 (손자가 write-end를 쥐면 드레인 스레드는 남는다 — 그룹 종료로 근본 정리)
 match status { Some(st) if st.success() && !text.is_empty() => Ok(text), _ => Err(/* ... */) }
 ```
 무엇이 깨졌나: 읽지 않은 스트림이 차서 자식이 블록됐고, 상속된 write-end 때문에 EOF가 오지 않았다.\
