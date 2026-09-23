@@ -12,22 +12,22 @@
    고침: `min(length, src.length - start)`.\
    `max(0, …)`로 감싸 무효 입력(`start > src.length`)을 0으로 자르는 것은 선택하지 않았다 — 계약상 그건 **예외가 맞는 입력**이고, 조용히 0을 돌려주면 호출자 버그를 숨기는 또 다른 버그가 된다.
 
-2. **int overflow 페이지네이션.** 32비트 int 곱셈은 경고 없이 2의 보수로 **감긴다**(wrap). 아주 큰 page에서 `(page-1)*size`가 음수가 되고, `min(offset, size)`는 상한만 막으므로 음수를 그대로 통과시켜 **음수 인덱스 접근 → 500**이 된다.\
+2. **int overflow 페이지네이션.** (Java 기준) 32비트 int 곱셈은 경고 없이 2의 보수로 **감긴다**(wrap). 아주 큰 page에서 `(page-1)*size`가 음수가 될 수 있고, `min(offset, size)`는 상한만 막으므로 음수를 그대로 통과시켜 **음수 인덱스 접근 → 500**이 된다.\
    고침: long으로 계산한 뒤 `[0, rows.size()]` **양쪽** clamp.
    > **wrap-around** — 고정폭 정수가 표현 범위를 넘으면 반대쪽 끝으로 돌아가는 것. 예외가 나지 않는다.
 
-3. **합산 overflow → fail-open.** 부호 있는 정수 합이 overflow하면 **음수**가 된다. "lease ≥ 합" 검사에서 합이 음수면 작은 lease도 통과한다 — 가장 위험한 입력이 검사를 우회하는 fail-open.\
+3. **합산 overflow → fail-open.** (Go·Java처럼 wrap되는 언어에서) 양수끼리의 부호 있는 정수 합이 한 번 overflow하면 **음수**가 된다. "lease ≥ 합" 검사에서 합이 음수면 작은 lease도 통과한다 — 가장 위험한 입력이 검사를 우회하는 fail-open.\
    고침: **각 항을 먼저 범위 검증**(개별 상한)하고 나서 합산·비교한다.\
    이 검증 설계는 실제로 작동했다 — 한 단계 사이클(12분)이 lease(6분)보다 길어 기동이 거부됐고, lease를 13분으로 올렸다.
 
 4. **허용 설정 = 분모.** `initial = 0`은 "지연 없이 시작"으로 허용된 설정인데, jitter 계산의 분모로 쓰이면 정수 나눗셈이 **0으로 나누기 예외**를 낸다. `initial = 0, jitter = 0`은 jitter 항이 계산되지 않아 정상이었기 때문에 조합 경계에서만 드러났다.\
    고침: `initial > 0 ? interval / initial : 1`. 허용 범위에 0이 포함된 값이 분모로 가는 곳은 모두 0 분기가 필요하다.
 
-5. **separator와 같은 키.** B+tree에서 separator는 **오른쪽 서브트리의 최소 키**이므로 `key == separator`는 오른쪽으로 가야 한다.\
+5. **separator와 같은 키.** 이 구현의 규약처럼 separator가 **오른쪽 서브트리의 최소 키**라면 `key == separator`는 오른쪽으로 가야 한다(separator를 왼쪽 서브트리의 최대 키로 두는 구현도 있어, 방향은 규약이 정한다 — 핵심은 삽입·분할·조회가 같은 규약을 쓰는 것).\
    `when`의 첫 분기가 `slot == 0 → 가장 왼쪽 자식`이면, 첫 separator와 **같은** 키가 일치 검사에 도달하기 전에 왼쪽으로 보내져 조회가 null을 반환한다(split 이후에만 드러남). 일치 분기를 가장 먼저 두어야 한다.
    > **separator** — B+tree 내부 노드에서 자식 구간을 가르는 키. 보통 오른쪽 자식 구간의 첫 키.
 
-6. **스냅샷 길이 + 가변 버퍼 삭제.** 루프 범위는 스냅샷(불변 문자열)의 길이로 고정돼 있는데, 삭제는 가변 원본에서 하니 삭제할 때마다 원본은 한 칸 줄고 인덱스는 계속 증가한다. **같은 문자가 3개 이상 연속**될 때 두 번 이상 지워져 결국 범위를 넘는다(대량 색인 중 일부 문서만 실패).\
+6. **스냅샷 길이 + 가변 버퍼 삭제.** 루프 범위는 스냅샷(불변 문자열)의 길이로 고정돼 있는데, 삭제는 가변 원본에서 하니 삭제할 때마다 원본은 한 칸 줄고 인덱스는 계속 증가한다. 앞에서 k번 지운 뒤 원본 끝 k칸 안쪽 위치에서 또 지우려 하면 **범위를 넘는다**(예: `aaaa`, `aabbcc`) — 그 전에도 인덱스가 어긋나 엉뚱한 위치를 지운다. 중복이 여러 번 나오는 입력에서만 드러나 대량 색인 중 일부 문서만 실패했다.\
    역방향 순회는 뒤에서 지우므로 **아직 방문하지 않은 앞쪽 인덱스가 밀리지 않는다**. 또는 별도 결과 빌더에 쓰는 방법도 있다.
 
 7. **좌표계 혼용이 숨는 이유.** `"a,b,c"`를 split한 배열의 i와 원 문자열의 i는 다른 좌표다(i=1이면 배열은 `b`, 문자열은 `,`). 짧은 입력에서는 엉뚱한 문자를 읽어도 분기가 대충 맞거나 범위 안이라 **예외 없이** 지나가고, 길이가 길 때만 범위를 넘는다.\
@@ -54,7 +54,7 @@ length = Math.min(length, src.length - start);         // 무효 start 는 계�
 // 문제 1: 곱셈 wrap + 상한만 clamp
 int from = Math.min((page - 1) * size, rows.size());   // 음수 통과 → get(음수)
 // 고침
-long offset = (long) (page - 1) * size;
+long offset = ((long) page - 1) * size;                 // page - 1 도 long 에서 계산(page = Integer.MIN_VALUE 대비)
 int from = (int) Math.min(Math.max(offset, 0), rows.size());
 ```
 
@@ -102,7 +102,7 @@ val child = when {
 // 문제 1: 스냅샷 길이로 순회, 삭제는 원본에서
 String snap = buf.toString();
 for (int j = 0; j < snap.length() - 1; j++)
-    if (snap.charAt(j) == snap.charAt(j + 1)) buf.deleteCharAt(j);   // 3연속 이상에서 범위 초과
+    if (snap.charAt(j) == snap.charAt(j + 1)) buf.deleteCharAt(j);   // 삭제가 누적된 뒤 뒤쪽 삭제에서 범위 초과("aaaa", "aabbcc")
 // 고침: 원본을 역방향으로
 for (int j = buf.length() - 1; j > 0; j--)
     if (buf.charAt(j) == buf.charAt(j - 1)) buf.deleteCharAt(j);
@@ -128,7 +128,7 @@ const ins = pkg ? buildImport(pkg, name) : null;
 
 ```java
 // 문제
-double tokens = 0; for (...) tokens += 0.1;            // 100회 = 9.999999999999998
+double tokens = 0; for (...) tokens += 0.1;            // 100회 = 9.99999999999998 (10.0 아님)
 long deadline = NO_DEADLINE ? Long.MAX_VALUE : now + t;
 if (deadline - System.nanoTime() <= 0) giveUp();       // 단조 시계 원점이 임의 → MAX 와의 산술이 의미를 잃음
 int idx = hash % cap;                                  // 음수 해시 → 음수 인덱스
@@ -138,7 +138,7 @@ long milli = 0; for (...) milli += 100;                // 정수 고정소수점
 if (deadline != NO_DEADLINE && deadline - System.nanoTime() <= 0) giveUp(); // 센티넬은 분기로
 int idx = Math.floorMod(hash, cap);
 ```
-무엇이 깨졌나: 예산 계산이 경계에서 틀어졌고, "데드라인 없음"인데도 시각 값이 크면 포기했으며, 확률 자료구조(블룸 필터)의 `%`가 음수 인덱스를 만들었다.\
+무엇이 깨졌나: 예산 계산이 경계에서 틀어졌고, "데드라인 없음"인데도 `nanoTime()`이 음수일 때(원점이 임의라 가능) `MAX_VALUE − 음수`가 overflow해 음수가 되어 포기했으며, 확률 자료구조(블룸 필터)의 `%`가 음수 인덱스를 만들었다.\
 정정 기록: `abs(MIN_VALUE)`는 음수지만 용량이 2의 거듭제곱이면 나머지가 0이라 "우연히" 사고가 안 난다 — 안전해서가 아니라 운이다.
 
 ## 검증 기록
