@@ -22,7 +22,7 @@
 
 6. **소비자에 따라 갈리는 이유.** 판단 기준은 **"이 응답을 누가, 무엇을 위해 소비하는가"**다. 화면을 그리는 **페이지(SSR)**는 봉투 속 `data`를 꺼내 렌더링해야 하니 **연다**. 반면 **프록시(`/api/*`)**는 브라우저의 JS가 상태코드·본문을 그대로 받아 자기가 분기할 것이므로, 프록시가 미리 열어 가공하면 오히려 정보(상태코드·오류 코드)를 뭉갠다 → **원형 전달**. 같은 backend 응답이라도 "사람이 볼 화면용"과 "기계가 소비할 API용"은 처리가 다르다.
 
-7. **연결 — 같은 뿌리 + allowlist는 다른 층.** 그렇다, 같은 뿌리다. 프록시가 상류 200을 받아 이미 클라이언트로 흘리기 시작했다면, "한 번 나간 헤더/상태는 불변"이라 사후에 못 바꾼다 — 이건 [http-streaming-status-locked](../http-streaming-status-locked/)의 상태 잠김과 정확히 같은 원리(*상태코드는 응답의 맨 앞에서 한 번만 결정된다*)다. 그래서 스트림 상황에선 프록시가 상태를 재구성할 여지조차 없으니 원형 보존이 유일한 선택이 된다. **allowlist는 상충하지 않는다** — 그것은 *응답* 보존이 아니라 *요청* 위생이고, 브라우저가 보낸 쿼리를 상류로 넘기기 전에 정한 키(`q`, `topic`, `size`, 복수 `doc_kind`)만 골라 재조립해 **주입 면적을 줄이는** 것이다. 응답 본문·상태를 뭉개는 것과는 층이 다르다.
+7. **연결 — 겹치는 뿌리 + allowlist는 다른 층.** 스트리밍 중계에선 같은 원리다. 프록시가 상류 200을 받아 이미 클라이언트로 흘리기 시작했다면, "한 번 나간 헤더/상태는 불변"이라 사후에 못 바꾼다 — 이건 [http-streaming-status-locked](../http-streaming-status-locked/)의 상태 잠김과 같은 원리(*상태코드는 응답의 맨 앞에서 한 번만 결정된다*)다. 그래서 흘리기 시작한 뒤에 상류가 실패해도 프록시가 상태를 고칠 수 없고, 상류가 확정한 상태를 첫 바이트 전에 그대로 넘기는 것이 사실상 유일한 선택이 된다. 다만 버퍼링 프록시의 422→500 뭉개기는 "못 바꿔서"가 아니라 "바꾸면 정보가 사라져서" 금지하는 것이라, 원형 보존 규칙의 근거는 불변성 + 정보 보존 두 가지다. **allowlist는 상충하지 않는다** — 그것은 *응답* 보존이 아니라 *요청* 위생이고, 브라우저가 보낸 쿼리를 상류로 넘기기 전에 정한 키(`q`, `topic`, `size`, 복수 `doc_kind`)만 골라 재조립해 **주입 면적을 줄이는** 것이다. 응답 본문·상태를 뭉개는 것과는 층이 다르다.
    > **allowlist** — 허용할 값(여기선 쿼리 키)만 통과시키고 나머지는 버리는 방식.
 
 ## 문제 구조 (추상화 코드)
@@ -49,8 +49,8 @@ export async function POST(request: Request) {
     signal: AbortSignal.timeout(TIMEOUT_MS),
   });
   const headers = new Headers({ "Content-Type": "text/plain; charset=utf-8" });
-  const setCookie = upstream.headers.get("set-cookie");
-  if (setCookie) headers.set("set-cookie", setCookie);              // 상류 → 브라우저
+  for (const c of upstream.headers.getSetCookie()) headers.append("set-cookie", c);   // 상류 → 브라우저
+  // get("set-cookie")는 여러 Set-Cookie를 쉼표로 합쳐 돌려줘(Expires 속성의 쉼표와 뒤섞임) 쿠키가 깨질 수 있다
   return new Response(upstream.body, { status: upstream.status, headers });   // 스트림·status 그대로
 }
 ```
@@ -111,7 +111,8 @@ location /ws/ { proxy_pass http://api; }        # Upgrade 헤더 미전달 → W
 resolver 127.0.0.11 valid=10s;                  # 도커 내장 DNS 주기 재해석 (변수 upstream과 함께)
 location ^~ /app { proxy_pass http://front; }   # ^~ = 정규식 검사 생략, prefix 우선
 location /ws/ {
-    proxy_pass http://api;
+    set $api_upstream http://api-server:8080;   # 변수 proxy_pass여야 resolver가 요청 시 재해석
+    proxy_pass $api_upstream;                   # (upstream 블록 안 server 이름은 기본적으로 기동 시 1회 해석)
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
@@ -153,7 +154,8 @@ return candidate && isValidIp(candidate) ? candidate : null;   // 형식·길이
 ### 방안 3 — XFF는 신뢰 프록시 뒤에서만 + 키 상수시간 비교
 ```java
 http.addFilterAfter(rateLimiter, KeyAuthFilter.class);           // 키 게이트 뒤에서 레이트리밋
-String ip = props.behindProxy() ? firstXff(req) : req.getRemoteAddr();
+String ip = props.behindProxy() ? firstXff(req) : req.getRemoteAddr();   // 맨 왼쪽 XFF는 신뢰 프록시가 헤더를
+                                                                   // 덮어쓸 때만 안전 — 덧붙이는 프록시면 방안 2처럼 오른쪽에서
 boolean ok = MessageDigest.isEqual(given.getBytes(UTF_8), expected.getBytes(UTF_8));   // 조기 종료 없음
 ```
 
