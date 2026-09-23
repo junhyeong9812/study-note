@@ -18,7 +18,7 @@
    → socat 릴레이:  0.0.0.0:<포트> → 127.0.0.1:<원격포트>   (LAN에서 닿게, sudo 없이 컨테이너로)
 
 [최종 사슬]
-   backend → socat(홈랩 LAN:포트) → 역 SSH 터널(PC가 -R로 걺) → PC 브리지 → claude -p
+   backend → socat(홈랩 LAN:포트) → 역 SSH 터널(PC가 -R로 걺) → PC 브리지 → LLM CLI(TOOL -p)
 
 [운영] 상시 서비스 아님 = 세션 프로세스 → PC에서 스크립트 기동. 미설정 시 available=false (우아한 부재)
 
