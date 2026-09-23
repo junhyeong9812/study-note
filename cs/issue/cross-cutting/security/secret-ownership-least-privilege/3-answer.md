@@ -161,7 +161,7 @@ try:
     run(container, env=env, volumes=[run_dir])
 finally:
     if scan_tree(run_dir, needles=all_secret_values(), overlap=True):   # 청크 경계 겹침 스트리밍 스캔
-        write(run_dir / "SECRET-LEAK.txt"); mark_failed()
+        write(run_dir / "SECRET-LEAK.txt"); set_failed()
     errors = mask_text(errors)                                          # 오류 문자열도 마스킹
 ```
 
