@@ -8,20 +8,20 @@
 공통 렌즈: git의 기본값은 "사람이 공유 머신에서 안전하게" 쓰라고 맞춰져 있다.
            배포/CI 자동화는 그 전제(사람·공유·눈으로 봄)와 어긋나 부딪힌다.
 
-① dubious ownership   (ci-cd/issue2 ④)
-   컨테이너 root(uid 0)가 호스트 jun(uid 1000) 소유 repo에 git 실행
+① dubious ownership
+   컨테이너 root(uid 0)가 호스트 사용자(uid 1000) 소유 repo에 git 실행
    → git 2.35.2+ 가 "소유자≠실행자"면 거부 (도커가 아니라 git 자신)
    왜? CVE-2022-24765: 남이 심어둔 악성 설정(core.fsmonitor 등)이 내 권한으로 실행될 위험
    판단: 배포 전용 컨테이너 + 마운트 3개 고정 + 명령 allowlist → 위협 전제 불성립
    fix: Dockerfile  git config --global --add safe.directory '*'
 
-② 빈 디렉토리 미추적   (front/issue3)
+② 빈 디렉토리 미추적
    git은 빈 디렉토리를 추적 안 함 → 새 checkout에서 src/app/api 소멸
    `> src/app/api/search/route.ts` (리다이렉션은 없는 디렉토리를 안 만듦) → 쓰기 실패
    Next 빌드는 "없는 라우트"를 오류로 안 봄 → 초록불 (조용한 실패)
    fix: mkdir -p 먼저 + 빌드 라우트 표에서 grep 확인 (.gitkeep로 디렉토리 유지도 가능)
 
-③ quotepath 8진수     (backend/issue2 시도5)
+③ quotepath 8진수
    git ls-files/diff 기본값(core.quotepath=true) → 한글 경로를 "\352\267\270…" 로 이스케이프
    이 "사람용 안전 출력"을 파일 경로로 그대로 쓰면 → No such file or directory
    fix: git -c core.quotepath=off ...  (기계용 입력엔 이스케이프 끔)
@@ -33,3 +33,30 @@
 - git은 빈 디렉토리를 추적하지 않는다 → 디렉토리 존재를 전제한 스크립트는 새 클론/checkout에서 조용히 깨진다.
 - 도구의 "사람용 출력"을 "기계용 입력"으로 쓸 때가 고전 함정 — 기계가 읽을 거면 출력 이스케이프(quotepath)부터 끈다.
 - "성공 로그"가 아니라 **산출물 목록**(빌드 라우트 표·실제 파일)을 확인 항목으로 삼는다.
+
+## 확장 — git의 암묵 입력 지도 (2026-09-24)
+
+```
+git 명령은 "지정한 인자"보다 많은 것을 입력으로 읽는다.
+
+ 암묵 입력              직관                          실제 정의                         사고
+ ─────────────────────────────────────────────────────────────────────────────────────────────
+ 인덱스(INDEX)          "이 파일만 커밋"              commit = 인덱스 전체              잔재 staged 혼입 · 병렬 작업자 혼입
+                        "브랜치에 속한다"             작업트리에 속함(checkout 상속)
+ 작업트리 전체          add -A = "내 변경"            무시 안 된 모든 것                 런타임 상태·빌드 산출물 커밋
+ 추적 여부              git diff = "모든 변경"        추적 파일만                       리뷰 입력에서 신규 파일 누락
+ ref / reflog           백업 ref = "전부 복구"        커밋 객체만                       hard reset 의 미커밋 유실
+ 시퀀서 상태 파일       HEAD 만 보면 됨               MERGE_HEAD·REVERT_HEAD·rebase dir 진행 중 작업을 흩뜨림·갇힘
+ 범위 문법              A..B = "A 이후"               ^A B (도달 차집합)                엉뚱한 커밋 replay
+ ignore 규칙            docs/ = "루트 docs"           모든 깊이의 docs/ · 추적 중엔 무효 소스 미커밋 → 배포 404
+ 설정 체인              헬퍼 = "지정한 것"            목록 순서대로 먼저 응답한 것       만료 자격증명 선응답
+ 셸 cwd                 "지금 그 repo"                지난 명령의 cd 가 남음             다른 체크아웃에 커밋
+
+대응 방안 계열
+ A 선검사+탈출구   B 복구점 선영속·유실 범위 명시   C plumbing 재생성+CAS
+ D 격리·경로 지정 스테이징   E untracked 가시화   F ignore 규칙 명시
+ G 직독 최적화는 폴백   H 3-way·SHA 의미로 판단   I 기본값을 명시 설정으로 고정
+```
+- 인덱스·HEAD·cwd는 **작업트리(체크아웃)당 하나의 공유 가변 상태**다 — 격리 단위는 파일이 아니라 작업트리다.
+- ref는 **커밋만** 되살린다. 미커밋 변경은 파괴적 조작 전에 stash 등으로 객체 DB에 넣어야 복구 대상이 된다.
+- `git diff`는 추적 파일만 본다 — 리뷰·검증 입력은 untracked를 따로 포함해야 하고, 조회 목적의 명령이 인덱스를 바꿔서는 안 된다.
