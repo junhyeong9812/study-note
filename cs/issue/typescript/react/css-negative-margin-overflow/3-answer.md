@@ -3,6 +3,8 @@
 > 복습 시 이 파일은 **최후에만** 연다.
 > ⚠️ 이 정답은 Claude 초안(2026-09-23) — 이슈 README·코드 기준. 복습 전 읽지 말 것.
 
+태그: —
+
 ## 정답
 
 <!-- 질문 1:1 대응 -->
@@ -24,12 +26,61 @@
 7. 배운 원칙: **CSS 박스모델에서 "폭에 더해지는 것(margin, 그리고 `box-sizing: content-box`의 border·padding)"과 "폭 안에 포함되는 것"을 구분하지 못하면, 전폭을 만들려는 시도가 넘침을 만든다.** 이 버그의 핵심은 margin이 요소 폭에 산입되지 않고 바깥으로 더해진다는 사실이다 — 그래서 음수 마진 2×1rem이 그대로 초과 폭이 됐다. 구현(음수 마진 기법)이 브라우저의 박스모델·overflow 기본 동작과 부딪혀 터진 사례이고, 방어는 "폭 계산을 머릿속으로 하고, 여백 소유권을 자식에 두어 상쇄를 없앤다"이다.
    > **박스모델(box model)** — 요소의 크기를 content·padding·border·margin 층으로 계산하는 규칙. `box-sizing`이 padding·border를 폭에 포함할지 정하지만, **margin은 어떤 경우에도 폭 바깥**이라 음수 마진은 항상 요소를 경계 밖으로 밀 수 있다.
 
-## 이번 프로젝트 사례
+## 문제 구조 (추상화 코드)
 
-- [front/issue8](../../../../../project/study-note-deploy-system/front/issue8/) — 드릴다운 사이드바의 구분선을 좌우 끝까지(풀블리드) 보내려고 `margin: 0 -1rem; padding: 0 1rem`을 썼다가 가로 스크롤이 생김. `aside`의 좌우 패딩을 제거하고 각 행이 자기 패딩을 갖게 재배치해 음수 마진을 없앴고(정직한 전폭), `overflow-x: hidden`을 안전벨트로 추가한 사례(#23).
+### 변형 A — 부모 패딩을 음수 마진으로 되물어 전폭을 만듦
+① 문제 코드
+```css
+.sidebar { padding: 0 1rem; }
+.sidebar-nav { overflow-y: auto; }              /* 세로 스크롤 컨테이너 */
+.sidebar-nav .row { margin: 0 -1rem; padding: 0 1rem; }   /* 폭 = 컨테이너 + 2rem → 가로 스크롤 */
+```
+② 고친 코드
+```css
+.sidebar { /* 좌우 padding 없음 — 여백을 소유하지 않는다 */ }
+.sidebar-nav { overflow-y: auto; overflow-x: hidden; }   /* 안전벨트 */
+.sidebar-nav .row { padding: 0 1rem; }                     /* 각 행이 자기 여백을 소유 */
+```
+무엇이 깨졌나: 여백을 부모가 소유하고 자식이 음수 마진으로 되물어, 자식의 점유 폭이 컨테이너를 넘었다.
+
+### 변형 B — 부모의 max-width를 뷰포트 폭으로 탈출 (`calc(50% - 50vw)`)
+① 문제 코드
+```css
+.wrap { max-width: 920px; margin: 0 auto; }
+.wrap .two-column { /* 부모 폭 제약을 상속 → 2열 레이아웃이 좁음 */ }
+```
+② 고친 코드
+```css
+.wrap .two-column {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);    /* 부모 절반과 뷰포트 절반의 차이만큼 음수 마진 */
+  margin-right: calc(50% - 50vw);
+}
+/* 점검 포인트: 세로 스크롤바가 있으면 100vw 가 스크롤바 폭만큼 넘쳐 가로 스크롤이 생길 수 있다 */
+```
+무엇이 깨졌나: 자식은 부모의 폭 제약을 물려받으므로, 한 자식만 전폭을 쓰려면 경계를 넘는 음수 마진이 필요하고 그 순간 넘침 위험도 함께 온다.
+
+### 변형 C — overflow 클리핑 경계(padding box)와 트랙 gap의 불일치
+① 문제 코드
+```css
+.slider-viewport { overflow: hidden; padding: 0 32px; }   /* 클리핑은 padding box 끝에서 */
+.slider-track { display: flex; gap: 24px; }                /* padding(32) > gap(24) → 8px 띠에 이웃 카드 노출 */
+.slide { flex-basis: /* % 값 */; }
+```
+```js
+track.style.marginLeft = `-${index * 26.675}%`;   // 기준 박스가 다른 % 값들 → 슬라이드마다 오차 누적
+```
+② 고친 코드
+```css
+.slider-track { gap: 36px; }       /* 불변식: gap > viewport padding (주석으로 고정) */
+.slide { flex-basis: calc(/* gap(px) 과 동기화한 식 */); }
+```
+```js
+const step = slide.getBoundingClientRect().width + parseFloat(getComputedStyle(track).gap);   // px 실측
+track.style.transform = `translateX(${-index * step}px)`;
+```
+무엇이 깨졌나: 클리핑 경계와 카드 사이 간격의 소유가 어긋났고, 퍼센트는 속성마다 참조 박스가 달라 누적 이동에 오차가 쌓였다.
 
 ## 검증 기록
 
-- 2026-09-23: front/issue8 README + 실코드 대조 (Claude 초안). 코드 확인:
-  - `study-note-deploy-system-front/src/features/wiki/ui/DrillSidebar.tsx` L14-15 — `nav`에 `overflowY: "auto", overflowX: "hidden"`(안전벨트). L17-19 — 상단 행이 음수 마진 없이 `padding: "0 1rem 0.7rem", marginBottom: "0.9rem"`만 사용(주석 L16 "음수 마진 없이 aside 전폭 사용 — 횡스크롤 원인 제거").
-  - `study-note-deploy-system-front/src/features/wiki/ui/WikiView.tsx` L87-88 — `aside`가 좌우 패딩 없이 `borderRight`·`minHeight`·`background`만 가짐(부모가 패딩을 소유하지 않게 하여 자식이 전폭을 자연히 확보).
+- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
