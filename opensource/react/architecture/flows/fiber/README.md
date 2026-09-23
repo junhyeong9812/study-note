@@ -70,7 +70,10 @@
 
  FiberRoot  TYPES L386-392
    조각 다섯을 **스프레드**로 합친다 (`...BaseFiberRootProperties,` 등)
-   => 같은 제약을 다른 방법으로 피했다
+   주석 L383-384 - "Exported FiberRoot type includes all properties, / To avoid
+     requiring potentially error-prone :any casts throughout the project."
+   ★ 스프레드는 속성의 **합집합**이다. 교집합이 아니다
+     (조각 다섯은 키가 서로 겹치지 않아 교집합이면 빈 타입이 된다)
 
  (두 방식을 나란히 놓은 것은 내 관찰이다)
 ```
