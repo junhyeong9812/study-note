@@ -77,7 +77,7 @@ const i = nav.findIndex((e) => e === selected); // -1 → 처음/끝으로 점�
 ```
 ② 고친 코드
 ```ts
-onCloseClick = () => { closeDetail(); focusList(); };   // Esc 경로와 동일: 선택 유지
+onCloseClick = () => { closePanel(); focusItems(); };   // Esc 경로와 동일: 선택 유지
 for (const g of groups) {
   nav.push({ kind: "group", g });              // 접혀도 헤더는 정지점
   if (collapsed.has(g.id)) continue;
