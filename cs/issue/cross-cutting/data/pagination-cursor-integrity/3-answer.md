@@ -52,7 +52,8 @@ fn page(cursor: Option<Hash>, n: usize) -> Page {
         None       => log(&["--all"], n),           // 전체 refs
         Some(last) => log(&[last.as_str()], n),     // last 의 조상만
     };
-    Page { items, truncated: items.len() == n }
+    let truncated = items.len() == n;
+    Page { items, truncated }
 }
 
 // ② 고친 코드
@@ -77,7 +78,9 @@ fn verify(&self, all: &[Hash]) -> Result<usize> {
 // ② 고친 코드
 struct Cursor { offset: usize, tip: Hash, seam: Hash }
 fn verify(&self, all: &[Hash]) -> Result<usize> {
-    if all[0] != self.tip || all[self.offset - 1] != self.seam {
+    // 목록이 줄어 offset 이 범위를 벗어나도 panic 이 아니라 Changed 로
+    if self.offset == 0 || all.first() != Some(&self.tip)
+        || all.get(self.offset - 1) != Some(&self.seam) {
         return Err(Changed)                          // 명시적 에러
     }
     // 양 끝만 비교, 내부는 보지 않음 → 계약에 "조건부 보장"으로 명시
