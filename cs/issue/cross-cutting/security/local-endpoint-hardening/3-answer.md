@@ -17,10 +17,11 @@
    세션별 토큰을 발급해 "토큰 → 세션 id" 매핑과 요청 본문의 세션 id를 대조하면, 한 세션이 다른 세션을 사칭하는 위조도 403으로 막힌다.
    > **/proc/&lt;pid&gt;/cmdline** — 리눅스에서 프로세스의 명령행 인자를 노출하는 파일. 기본적으로 다른 사용자도 읽을 수 있다.
 
-3. **WebSocket 핸드셰이크에는 CORS가 적용되지 않는다.** CORS는 브라우저가 "응답을 스크립트에 보여줘도 되나"를 서버에 묻는 장치이고, JSON POST는 preflight에서 막힌다 — 그래서 CORS 미들웨어를 "깔지 않은 것"이 오히려 방어가 된다.\
+3. **WebSocket 핸드셰이크에는 CORS가 적용되지 않는다.** CORS는 브라우저가 "응답을 스크립트에 보여줘도 되나"를 서버에 묻는 장치이고, 서버가 `Content-Type: application/json`을 강제한다면 교차 출처 JSON POST는 preflight 대상이라 막힌다(simple request로 보낼 수 있는 `text/plain` 본문까지 받아 주면 preflight 없이 도달하므로, 이 방어는 서버의 Content-Type 강제가 전제다) — 그래서 CORS 미들웨어를 "깔지 않은 것"이 오히려 방어가 된다.\
    WebSocket은 연결이 성립하면 양방향 통신이 바로 가능하므로, 셸 권한을 가진 로컬 WebSocket이면 임의 페이지가 셸에 도달한다.\
    서버가 accept **전에** `Origin` 헤더를 허용목록과 대조하고, 불일치면 즉시 닫는다.\
-   `Origin`이 없는 연결은 브라우저가 아니다(브라우저는 항상 붙인다). 비브라우저 클라이언트는 이미 같은 머신에서 코드를 실행 중인 주체라 이 위협 모델에서는 통과시켜도 된다 — 토큰 인증은 과설계로 판단해 선택하지 않았다.
+   `Origin`이 없는 연결은 브라우저가 아니다(브라우저는 항상 붙인다). **단일 사용자 호스트를 전제하면** 비브라우저 클라이언트는 이미 그 사용자 권한으로 코드를 실행 중인 주체라 이 위협 모델에서는 통과시켜도 된다 — 토큰 인증은 과설계로 판단해 선택하지 않았다.\
+   다중 사용자 호스트라면 다른 사용자의 프로세스도 루프백으로 접속할 수 있으므로 토큰 인증이나 유닉스 소켓 파일 권한(0600) 같은 별도 장치가 필요하다.
    > **Origin 헤더** — 요청을 일으킨 페이지의 스킴·호스트·포트. 브라우저가 붙이며 스크립트가 위조할 수 없다.
 
 4. **워커 하나가 무기한 점유된다.** 블로킹 서버에서 요청 전체를 읽을 때까지 기다리면, 한 바이트씩 천천히 보내는 클라이언트가 그 워커를 계속 붙잡는다(slowloris). 동시 연결 상한이 없으면 이런 연결을 늘려 전체를 세운다.\
@@ -45,15 +46,15 @@
 ① 문제 코드
 ```rust
 let child = Command::new("agent")
-    .args(["--hook-token", &token, "--hook-port", &port.to_string()])   // argv → /proc 노출
+    .args(["--token", &token, "--port", &port.to_string()])             // argv → /proc 노출
     .spawn()?;
 // 수신기: 토큰이 "하나라도 유효"하면 본문의 session_id 를 그대로 믿음
 ```
 ② 고친 코드
 ```rust
-write_file_mode(&hdr_path, format!("X-Token: {token}\n"), 0o600)?;   // 세션별 토큰
-let child = Command::new("agent").env("HOOK_HDR", &hdr_path).env("HOOK_PORT", port.to_string()).spawn()?;
-// 자식 측 호출: curl -s -m 3 -H @"$HOOK_HDR" --data-binary @- http://127.0.0.1:$HOOK_PORT/hook/<event> || true
+write_file_mode(&hdr_path, format!("Authorization: Bearer {token}\n"), 0o600)?;   // 세션별 토큰
+let child = Command::new("agent").env("AGENT_HDR_FILE", &hdr_path).env("AGENT_PORT", port.to_string()).spawn()?;
+// 자식 측 호출: curl -s -m 3 -H @"$AGENT_HDR_FILE" --data-binary @- http://127.0.0.1:$AGENT_PORT/events/<event> || true
 // 수신기:
 if session_for_token(&registry, &token).as_deref() != Some(body.session_id.as_str()) {
     return respond(stream, 403);                                      // 세션 간 위조 차단
@@ -112,7 +113,7 @@ async def terminal(ws):
 ALLOWED_WS_ORIGINS = {"http://127.0.0.1:PORT", "http://localhost:PORT"}
 def origin_ok(ws): 
     o = ws.headers.get("origin")
-    return o is None or o in ALLOWED_WS_ORIGINS     # 없음 = 비브라우저(이미 로컬 코드 실행 주체)
+    return o is None or o in ALLOWED_WS_ORIGINS     # 없음 = 비브라우저(단일 사용자 호스트 전제 — 다중 사용자면 토큰 필요)
 @app.websocket("/ws/terminal")
 async def terminal(ws):
     if not origin_ok(ws):
