@@ -299,7 +299,7 @@ line=$(san "$msg")
 (
   flock -w 1 9 || exit 1                                     # 1초 안에 못 잡으면 실패
   tmp=$(mktemp "$f.XXXXXX") || exit 1                        # 고유 임시 파일, 같은 디렉토리
-  { cat "$f" 2>/dev/null; printf '%s\n' "$line"; } > "$tmp" && mv "$tmp" "$f" || { rm -f "$tmp"; exit 1; }
+  { if [ -e "$f" ]; then cat "$f" || exit 1; fi; printf '%s\n' "$line"; } > "$tmp" && mv "$tmp" "$f" || { rm -f "$tmp"; exit 1; }   # 최초 부재만 허용, 기존 파일 읽기 실패면 교체 중단
 ) 9>"$f.lock" || drop                                         # 실패=드롭(수용한 정책)
 ```
 동시 발화한 프로세스들의 `>>`가 섞여 첫 줄이 손상됐다(실측).\
