@@ -200,7 +200,7 @@ if (updated == 0) throw InsufficientBalance()
 
 ```sql
 UPDATE comment SET deleted = 'Y'
- WHERE id = ? AND board_id = ? AND post_id = ? AND deleted = 'N';
+ WHERE id = ? AND room_id = ? AND post_id = ? AND deleted = 'N';
 -- 반환 int: 1이 아니면 NOT_FOUND
 ```
 검증과 쓰기 사이에 대상이 삭제·이동될 수 있으므로, 검증 조건을 쓰기 문에 다시 넣고 결과 행 수로 판정한다.\
@@ -238,8 +238,8 @@ try { var job = startExternal(id); repo.setJobId(id, job.id()); } catch (...) { 
 ### 방안 7 — 변경 컬럼만 UPDATE vs 같은 행 수정 경로 전부 비관락
 
 ```java
-// 문제: 전체 컬럼 정적 UPDATE — 이름만 고쳐도 sort_seq를 로드 시점 값으로 되돌림
-entity.setName(n);   // commit → UPDATE t SET name=?, sort_seq=<옛값>, ... WHERE id=?
+// 문제: 전체 컬럼 정적 UPDATE — 이름만 고쳐도 position을 로드 시점 값으로 되돌림
+entity.setName(n);   // commit → UPDATE t SET name=?, position=<옛값>, ... WHERE id=?
 // 선택지 1: 변경 컬럼만 UPDATE(@DynamicUpdate)
 // 선택지 2(채택): 같은 행을 수정하는 모든 경로를 그룹 행 비관락으로 직렬화
 repo.lockGroupForUpdate(groupId); entity.setName(n);
