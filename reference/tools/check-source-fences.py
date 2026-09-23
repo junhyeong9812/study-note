@@ -13,8 +13,10 @@ r"""문서에 실린 소스 코드 펜스가 **실제로 돌린 파일과 한 �
     …                  …               …                …
     ```                ```             ```              ```
 
-첫 줄이 배너가 아닌 펜스는 **건너뛰고 개수를 보고**한다(발췌·의사코드가 있으므로).
-건너뛴 수가 많으면 그만큼 「소스가 맞다」가 검증 안 된 것이다.
+★★ **대상은 「소스 언어로 태그된 펜스」뿐이다.** `text`·`console` 같은 출력 블록과 ASCII 그림은
+애초에 대조할 실파일이 없으므로 **대상에서 뺀다** — 그것까지 「배너 없음」으로 세면
+**「배너 없어 건너뜀 0」이 원리상 성립하지 않는 기준**이 된다(실측에서 펜스 421개 중 대조 대상은 178개뿐이었다).
+읽을 수치는 **「배너 없는 소스 펜스」** — 그만큼이 손으로 적혀 검증이 안 된 코드다.
 
 ★ 「돌려 봤다」와 「옮겨 적은 게 맞다」는 다른 검사다 — 이 스크립트는 뒤쪽만 본다.
 
@@ -30,6 +32,12 @@ import difflib
 # 언어별 한 줄 주석 꼴 — `// a.kt` · `# a.py` · `/* a.c */` · `-- a.sql`
 BANNER = re.compile(r'^\s*(?://|\#|--)\s*([\w.\-]+\.\w+)\s*$'
                     r'|^\s*/\*\s*([\w.\-]+\.\w+)\s*\*/\s*$')
+# 실파일과 대조할 수 있는 펜스의 언어 태그. 그 밖(text·console·없음)은 출력·그림이라 대상이 아니다.
+SOURCE_LANGS = {
+    'py', 'python', 'kt', 'kotlin', 'rs', 'rust', 'c', 'h', 'cpp', 'c++', 'cc',
+    'go', 'ts', 'typescript', 'js', 'javascript', 'java', 'cs', 'csharp',
+    'sql', 'sh', 'bash', 'html', 'css',
+}
 FENCE = re.compile(r'^```([A-Za-z0-9_+-]*)\n(.*?)\n```$', re.S | re.M)
 
 
@@ -58,16 +66,21 @@ def main() -> None:
         sys.exit(__doc__.strip().split('사용:')[-1].strip())
     idx = index_sources(root)
 
-    checked = missing = bad = skipped = 0
+    checked = missing = bad = nobanner = nonsource = 0
     for md in argv:
         p = pathlib.Path(md)
         text = p.read_text(encoding='utf-8')
         for m in FENCE.finditer(text):
+            lang = m.group(1).lower()
+            if lang not in SOURCE_LANGS:
+                nonsource += 1            # 출력 블록·그림 — 대조할 실파일이 없다
+                continue
             body = m.group(2)
             first = body.split('\n', 1)[0]
             bm = BANNER.match(first)
             if not bm:
-                skipped += 1
+                nobanner += 1
+                print('  배너 없는 소스 펜스 %-12s <- %s' % ('```' + lang, md))
                 continue
             name = bm.group(1) or bm.group(2)
             f = idx.get(name)
@@ -86,8 +99,9 @@ def main() -> None:
                 for line in list(diff)[:20]:
                     print('   ' + line)
 
-    print('[소스 펜스] 대조 %d개 · 불일치 %d건 · 파일 못 찾음 %d건 · 배너 없어 건너뜀 %d개'
-          % (checked, bad, missing, skipped))
+    print('[소스 펜스] 대조 %d개 · 불일치 %d건 · 파일 못 찾음 %d건 · '
+          '★배너 없는 소스 펜스 %d개 · 출력·그림 펜스 %d개(대상 아님)'
+          % (checked, bad, missing, nobanner, nonsource))
     sys.exit(1 if (bad or missing) else 0)
 
 
