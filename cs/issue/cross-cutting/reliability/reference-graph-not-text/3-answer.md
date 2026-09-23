@@ -13,7 +13,7 @@
 삭제 범위는 "이름이 무엇 같은가"가 아니라 "실제로 누가 참조하는가"로 정한다.
    > **참조 그래프(reference graph)** — 심볼(함수·타입·설정 키)을 노드, "A가 B를 쓴다"를 간선으로 둔 그래프. 삭제 안전성은 이 그래프에서 들어오는 간선이 0인지로 판정한다.
 
-2. **컴파일러 주도 제거.** 먼저 제거 대상 모듈을 의존 목록(워크스페이스 멤버·빌드 의존)에서 빼면, 컴파일러가 그 모듈을 쓰던 **모든 지점**을 오류로 짚는다.\
+2. **컴파일러 주도 제거.** 먼저 제거 대상 모듈을 의존 목록(워크스페이스 멤버·빌드 의존)에서 빼면, 컴파일러가 그 모듈을 쓰던 **모든 정적 참조 지점**을 오류로 짚는다(문자열·설정 속 참조는 제외 — 3번).\
 그 지점만 지우면 "아직 쓰는 곳"은 도구가 판정하고, 공유 모듈은 오류가 안 나므로 자연히 보존된다.\
 라인 단위 일괄 삭제는 사람의 분류(이름·파일 위치)에 의존해 누락·과잉 삭제가 둘 다 난다.
 
@@ -29,8 +29,8 @@
 이 경우는 컴파일러가 잡아 주므로 치환 뒤 clean compile이 안전망이 된다.
 
 5. **파생된 이름은 계약이 된다.** 컴포넌트 기본 이름이 클래스명에서 만들어지면, 어딘가 그 **이름으로** 주입받는 곳이 있는 순간 클래스 개명은 곧 계약 변경이다(이름 조회가 실패해 기동이 멈춘다).\
-타입으로만 주입받는 곳은 이름이 바뀌어도 해석이 같으므로 안전하다 — 단 타입 주입은 **구현이 정확히 하나**일 때만 해석되므로, 인터페이스 구현이 2개가 되면 단일 주입이 모호해져 기동이 실패한다.\
-대응: 이름 계약이 있는 곳만 이름을 명시적으로 고정하고, 여러 구현은 `List<T>`로 받아 키로 라우팅한다(중복 키는 컨텍스트 로드가 검출).
+타입으로만 주입받는 곳은 이름이 바뀌어도 해석이 같으므로 안전하다 — 단 단일 타입 주입은 후보가 하나여야 모호하지 않으므로, 인터페이스 구현이 2개가 되면 우선 후보 지정(`@Primary` 류)이나 주입 지점 이름과 빈 이름의 일치 같은 해소 규칙이 없는 한 모호해져 기동이 실패한다(Spring 기준 — 해소 규칙은 프레임워크마다 다름).\
+대응: 이름 계약이 있는 곳만 이름을 명시적으로 고정하고, 여러 구현은 `List<T>`로 받아 키로 라우팅한다(맵을 빈 생성 시점에 만들면 중복 키 예외가 컨텍스트 로드 실패로 드러난다).
 
 6. **치환 전 범주 분류 + 치환 후 3중 검증.** 치환 전에 참조를 범주로 나눠 전수 grep한다: package/import · 문자열 리터럴(이름 주입·`forName`) · 리소스(yml/properties/xml/json) · 직렬화 타입 정보 · 스캔 범위 설정(`basePackages` 류).\
 import/package 외 범주가 전부 0건이면 "문자열 치환 = 동작 불변"으로 판정할 수 있다.\
@@ -74,7 +74,7 @@ grep -rn '@Qualifier\|@Resource(name=\|ref=\|forName(' src
 grep -rn 'ComponentScan\|basePackages\|execution(\|@Pointcut\|@JsonTypeInfo' src/main
 grep -rn 'app\.shared' src/main/resources
 # 2) 치환 범위를 소스로 한정 (빌드 산출물·문서 제외)
-find src/main/java src/test/java -name '*.java' -exec sed -i 's/app\.shared/app.common/g' {} +
+find src/main/java src/test/java -name '*.java' -exec sed -i 's/\bapp\.shared\b/app.common/g' {} +   # 단어 경계 — app.sharedX 같은 접두 일치 오치환 방지 (GNU sed)
 # 3) 3중 검증
 grep -rn 'app\.shared' src --include=*.java   # 0건
 build clean compile                            # 테스트 소스 포함
@@ -122,7 +122,7 @@ String sql = "SELECT " + cols + " FROM " + table + " WHERE key IN (:keys)"
 ```java
 @Service("importService") class ImportServiceV2 implements ImportPort { }          // 계약 있는 곳만 이름 고정
 
-// 여러 구현은 목록으로 받아 키로 라우팅 (중복 키는 컨텍스트 로드가 검출)
+// 여러 구현은 목록으로 받아 키로 라우팅 (맵을 빈 생성 시점에 만들면 중복 키 예외가 컨텍스트 로드 실패로 드러난다)
 Map<String, Runner> byRegion = runners.stream()
     .collect(toUnmodifiableMap(Runner::region, identity()));
 ```
