@@ -22,7 +22,7 @@
 5. "200만 보는" 스모크였다면 이 사건은 **통과했을 것**이다 — 서버는 정상 200을 주고 몸통만 필드명이 틀렸으니까. 실제로는 스크립트가 `doc["item_type"]`를 파싱하다 `KeyError`로 터져 즉시 드러났다. 계약 검증의 최소 단위가 상태코드가 아니라 **필드명·모양**인 이유가 이것이다 — 상태코드는 "요청이 처리됐다"만 말하고, 클라이언트가 실제로 의존하는 것은 응답의 **구조**다. 스모크는 몸통을 파싱해 기대 필드를 되물어야 한다.
    > **계약(contract)** — API의 요청·응답이 지켜야 하는 약속(필드명·타입·모양). 상태코드는 계약의 일부일 뿐, 몸통 구조가 본체다.
 
-6. 경계는 **"이 필드를 외부가 이름으로 의존하는가"** 다. 클라이언트가 파싱해 쓰는 응답 필드는 계약이니 이름을 명시한다. 내부 로그·디버그 전용 구조, 이름이 안 중요한 값은 자동이어도 된다. "모든 필드에 `@JsonProperty`"와의 차이는 **의도의 표시**다 — 전역 네이밍 전략(`PropertyNamingStrategy.SNAKE_CASE`)으로 일괄 변환할 수도 있지만, 계약 필드에 개별 `@JsonProperty`를 붙이는 것은 "이 이름은 바뀌면 안 되는 계약"이라는 신호를 코드에 남긴다. 핵심은 **"외부 이름을 코드 프로퍼티명이 우연히 결정하게 두지 않는다"** 이지, 데코레이터를 도배하는 것이 아니다.
+6. 경계는 **"이 필드를 외부가 이름으로 의존하는가"** 다. 클라이언트가 파싱해 쓰는 응답 필드는 계약이니 이름을 명시한다. 내부 로그·디버그 전용 구조, 이름이 안 중요한 값은 자동이어도 된다. "모든 필드에 `@JsonProperty`"와의 차이는 **의도의 표시**다 — 전역 네이밍 전략(`PropertyNamingStrategies.SNAKE_CASE` — Jackson 2.12+, 이전엔 `PropertyNamingStrategy.SNAKE_CASE`)으로 일괄 변환할 수도 있지만(단 숫자가 낀 이름은 기대와 다르게 변환될 수 있다 — 변형 D), 계약 필드에 개별 `@JsonProperty`를 붙이는 것은 "이 이름은 바뀌면 안 되는 계약"이라는 신호를 코드에 남긴다. 핵심은 **"외부 이름을 코드 프로퍼티명이 우연히 결정하게 두지 않는다"** 이지, 데코레이터를 도배하는 것이 아니다.
 
 ## 발생한 문제 / 해결 (추상 원리)
 
@@ -38,6 +38,7 @@
 data class ItemRef(val path: String, val itemType: String)          // 자동 직렬화 → "itemType"
 data class Node(val name: String, val docs: List<ItemRef>, val children: List<Node>) {
     val isLeaf: Boolean get() = docs.isNotEmpty() && children.isEmpty()   // → "isLeaf" (게터도 직렬화됨)
+    // (jackson-module-kotlin 기준 — Kotlin 모듈 없이 순수 빈 규칙이면 is 접두사가 빠져 "leaf"가 된다: 이름이 모듈 유무에도 좌우)
 }
 // 다른 API는 손수 조립: mapOf("item_type" to meta.itemType, ...)  → snake_case
 // 이 API만 camelCase — 스모크가 몸통을 파싱하다 KeyError: 'item_type'
@@ -131,6 +132,7 @@ const NEW_KIND = "otherterm";               // 새 종류는 별도 식별자로
 ```text
 클라이언트:  { "limit_n": 3 }            // 이전 구현(snake) 시절 필드명
 서버 DTO:    data class Req(val limitN: Int = 6)   // 기본 camelCase 바인딩 → limit_n 무시 → 항상 기본값 6
+             (Spring Boot 기본 ObjectMapper는 모르는 키를 무시(FAIL_ON_UNKNOWN_PROPERTIES=false) — 순수 Jackson 기본값이면 예외로 드러났을 것)
 교정 후보:   서버 쪽 명시 이름(@JsonProperty("limit_n")) 또는 클라이언트 필드명 정합 — 미해결 TODO로 등재
 ```
 출력 누출과 방향만 반대다 — 모르는 키가 오류 없이 버려져 **기본값으로 조용히 동작**한다.
@@ -170,4 +172,4 @@ assertEquals(oldMap, newRecord);                          // 객체 비교 — �
 
 **결론**: 이름이 **어디에 저장되어 있느냐**가 방안을 고른다.\
 와이어 위에서만 사는 이름이면 경계에서 명시 매핑하고(기본·2·3), 이미 디스크에 저장된 이름이면 바꾸지 않는 게 원칙이다(1).\
-어느 쪽이든 "같다"의 판정은 객체가 아니라 **실제 직렬화 결과**로 한다(4) — 모르는 키를 조용히 버리는 매퍼가 대부분이라 오류가 나지 않기 때문이다.
+어느 쪽이든 "같다"의 판정은 객체가 아니라 **실제 직렬화 결과**로 한다(4) — 모르는 키를 조용히 버리도록 설정된 매퍼가 흔해(예: Spring Boot 기본 ObjectMapper·Gson — 순수 Jackson·kotlinx.serialization은 기본이 오류) 오류가 나지 않는 경우가 많기 때문이다.
