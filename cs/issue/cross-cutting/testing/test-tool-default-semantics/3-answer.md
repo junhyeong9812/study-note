@@ -54,7 +54,7 @@
 ```kotlin
 @Test @Timeout(20)                       // 기본 SAME_THREAD: 끝난 뒤 시간 비교
 fun prefixQuery() { naiveIndex.query(bigInput) }   // O(n²) 변종·x=0 무한 루프 → 영원히 대기
-@Test fun noLimit() { skipList.insertAll(input) } // 레벨 상한 없는 변종 → 제한 자체가 없음
+@Test fun noLimit() { skipped.insertAll(input) } // 레벨 상한 없는 변종 → 제한 자체가 없음
 ```
 ② 고친 코드
 ```kotlin
@@ -99,7 +99,7 @@ with patch("app.deploy.git._run"):                     # 조회되는 곳에 건
     ...
 with patch("app.main.init_status_cache"):              # 새 이름
     ...
-assert cfg_port == app.config.PORT_BLUE                # 설정을 읽는다
+assert cfg_port == app.config.BLUE_PORT                # 설정을 읽는다
 ```
 ```ts
 jest.mock("src/utils/auth");                           // 모듈 분리 후 새 경로 (grep 범위에 테스트 폴더 포함)
@@ -178,7 +178,7 @@ with patch("app.access_log.logger") as log:     # 로거 호출 자체를 검증
 log.info.assert_called_once()
 ```
 ```java
-@DataJpaTest @Import({QueryConfig.class, AuditingConfig.class, IdGenConfig.class}) class RepoTest { }
+@DataJpaTest @Import({QueryConfig.class, AuditingConfig.class, IdSourceConfig.class}) class RepoTest { }
 static DbContainer db = new DbContainer("db:8")
     .withCommand("--character-set-server=utf8mb4", "--max-connections=1000", "--max-allowed-packet=64M");  // 기존 베이스와 동일
 ```
