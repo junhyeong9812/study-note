@@ -69,7 +69,7 @@ docker ps -a --filter "label=testcontainers.hash=$HASH" -q | xargs -r docker rm 
 ### 변형 B — 영속 경로 일부만 격리
 ① 문제 코드
 ```rust
-fn state_dir() -> PathBuf { env_or("XDG_STATE_HOME", default_state()) }   // override 는 이것뿐
+fn state_dir() -> PathBuf { env_or("XDG_STATE_HOME", initial_state()) }   // override 는 이것뿐
 // 테스트: 소켓만 임시 경로로, 상태 디렉터리는 공유 → 이전 인카네이션 장부 인수 → attach 거부
 ```
 ② 고친 코드
