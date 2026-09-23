@@ -17,7 +17,8 @@
 
 2. **UNIQUE 제약이 한쪽을 거부한다 — 두 계층 강제.**\
    저장소가 `INSERT ... SELECT COALESCE(MAX(version),0)+1`을 한 문장으로 계산하면 호출자는 번호를 고를 수 없다.\
-   두 호출이 동시에 같은 `MAX+1`을 계산하면, 뒤에 커밋하는 쪽이 `UNIQUE(target, version)`에 걸려 실패한다.\
+   두 호출이 동시에 같은 `MAX+1`을 계산하면, 뒤따른 쪽이 `UNIQUE(target, version)`에 걸려 실패한다(엔진·격리 수준에 따라 선행 트랜잭션 커밋까지 대기 후 중복 키 오류, 또는 교착 감지로 한쪽 롤백).\
+   실패한 쪽은 호출자가 재시도해야 한다 — 제약은 "틀린 번호의 커밋"을 막을 뿐 요청을 대신 성공시켜 주지 않는다.\
    즉 "번호 계산은 저장소", "동시 충돌은 제약"이 나눠 막는다.\
    (검증과 토글 사이의 TOCTOU는 이것만으로는 닫히지 않아 락·단일 트랜잭션 과제로 남았다.)
 
@@ -28,7 +29,7 @@
 
 4. **명령 측 검증은 "확인 → 실행" 사이 창을 남긴다.**\
    실행자가 락을 재확인한 뒤 실제 write까지 사이에 lease를 잃을 수 있고, 그 write가 최종 상태로 남는다.\
-   자원(sink)이 요청에 실린 token을 자기 최고수위와 비교해 작으면 거절하면, 실행자가 무엇을 믿든 늦은 write는 버려진다.\
+   자원(sink)이 요청에 실린 token을 자기 최고수위와 비교해 작으면 거절하면, 실행자가 무엇을 믿든 늦은 write는 버려진다 — 단 sink 안에서 "비교 → 쓰기"가 원자적(락·단일 트랜잭션)이어야 한다.\
    실행자가 설정 파일을 직접 쓰는 구조는 쓰는 주체가 곧 실행자라 **거부할 지점(sink)이 없다** — 그래서 그 안은 선택하지 않은 방법이 됐다.
    > **fencing token** — 락을 얻을 때마다 증가하는 번호. 자원은 본 적 있는 가장 큰 번호보다 작은 번호의 요청을 거절한다.
 
@@ -62,7 +63,7 @@ VALUES (:target, :mode, :version, :actor);   -- UNIQUE(target, version)
 ```sql
 INSERT INTO mode_history(target, mode, version, actor)
 SELECT :target, :mode, COALESCE(MAX(version), 0) + 1, :actor
-FROM mode_history WHERE target = :target;    -- 동시 충돌은 UNIQUE가 거부
+FROM mode_history WHERE target = :target;    -- 동시 충돌은 UNIQUE가 거부 → 호출자 재시도
 ```
 깨진 것: 유일성 제약만 믿고 단조성을 호출자에게 맡겨, 낮은 version의 성공 쓰기가 "현재"가 되지 못했다.
 
