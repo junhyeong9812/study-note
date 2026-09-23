@@ -22,15 +22,15 @@
    추가 쪽도 "없으면 집합 생성" 뒤의 `add`가 원자 구간 밖이면 같은 창이 생긴다.\
    per-key 원자 갱신으로 바꾼다 — 추가는 `compute` 람다 안에서 add, 제거는 `computeIfPresent` 람다 안에서 remove 후 비었으면 `null`을 반환해 원자적으로 키를 지운다.\
    (주입된 맵 구현의 `compute`가 원자적이라는 가정은 기존 블로킹 구현과 같은 가정으로 유지됐다.)
-   > **per-key 직렬화** — 동시 맵이 같은 키에 대한 람다 실행을 직렬화해, 그 키의 check-then-act를 한 구간에서 끝내게 하는 것.
+   > **per-key 직렬화** — 동시 맵이 같은 키에 대한 람다 실행을 직렬화해, 그 키의 check-then-act를 한 구간에서 끝내게 하는 것. `ConcurrentHashMap`의 `compute` 류는 이를 보장하지만, `ConcurrentMap` 인터페이스의 기본 구현이나 `ConcurrentSkipListMap`처럼 원자 1회 적용을 보장하지 않는 구현도 있으므로 구현 문서를 확인해야 한다. 또 집합을 람다 밖에서 읽는 경로가 있으면 집합 자체도 스레드 안전해야 한다.
 
 4. **락이 전역 직렬화 지점이 된다.** 락 보유 시간 = 가장 느린 I/O 시간이므로, 한 호스트의 30초 원격 호출이 모든 호스트의 폴링·attach·detach를 멈추고, 한 세션의 join 대기가 다른 세션의 write·close를 막는다.\
    "맵은 큐가 아니라 색인"이란, 맵 락은 **항목을 찾는 동안만** 필요하다는 뜻이다.\
    항목을 `Arc`로 보관해 핸들만 복제하거나 맵에서 꺼낸 뒤 락을 풀고, 느린 작업은 락 밖에서 한다.\
    목록 조회도 락 안에서는 필요한 값만 복제하고, 서브프로세스 실행은 락 밖에서 한다.
 
-5. **shutdown은 read만 깨운다.** 상대가 입력을 읽지 않으면 pty로의 `write_all`이 블록되는데, 이 스레드는 공유 Mutex를 쥔 채 멈춘다.\
-   소켓 shutdown은 그 소켓에서 파킹된 read를 깨울 뿐, 다른 fd(pty)에서 블록된 write는 풀지 못한다.\
+5. **shutdown은 그 소켓의 대기만 깨운다.** 상대가 입력을 읽지 않으면 pty로의 `write_all`이 블록되는데, 이 스레드는 공유 Mutex를 쥔 채 멈춘다.\
+   소켓 shutdown은 그 소켓에서 파킹된 read(·write)를 깨울 뿐, 다른 fd(pty)에서 블록된 write는 풀지 못한다.\
    그래서 같은 세션의 다른 뷰어는 `lock()`에서 얼고, 연결 스레드가 반환하지 않아 최대 연결 슬롯(32)이 반납되지 않고, 결국 health·목록 요청까지 거부됐다(사용자에게는 "말없이 사라지는 타이핑").\
    세션당 전용 writer 스레드가 **아무 락도 쥐지 않고** 블로킹 write를 하고, 호출자는 유계 큐(64KiB)에 바이트를 넘긴다.\
    큐가 대기 상한(1초) 안에 비지 않으면 "정체된 터미널" 에러를 알리고 attach를 끝낸다(20초 무응답·통지 0 → 1초 에러 통지).
@@ -119,6 +119,7 @@ struct Session { input: SyncSender<Vec<u8>> /* 유계 큐 */ }
 thread::spawn(move || for chunk in rx { pty.write_all(&chunk)?; });
 fn input(&self, bytes: Vec<u8>) -> Result<(), SendError> {
     self.input.send_timeout(bytes, INPUT_WAIT).map_err(|_| SendError::Stalled)   // 상한 초과 → 에러로 알림
+    // (std SyncSender에는 send_timeout이 없다 — crossbeam 채널 등 시간 제한 send를 지원하는 유계 채널 전제)
 }
 // 세션 정리(drop)가 큐를 닫아 writer 스레드 종료
 ```
@@ -159,7 +160,7 @@ void invoke(addr);                                   // 가드와 무관하게 �
 const key = `${addr}|${JSON.stringify(args)}`;
 if (inflight.has(key)) return inflight.get(key);     // 같은 주소·같은 인자 → 합침
 if (inflightFor(addr)) generation[addr]++;           // 인자가 다르면 교체(나중 요청이 이김)
-inflight.set(key, invoke(addr, args));
+inflight.set(key, invoke(addr, args).finally(() => inflight.delete(key)));   // 완료 시 제거 — 안 하면 이후 같은 요청이 영구히 옛 결과에 합쳐짐
 ```
 ```rust
 // 같은 방안(프로토콜 측): 대상당 한 turn만 in-flight, 나머지는 FIFO
@@ -209,7 +210,7 @@ def create(state, done_states):
 | | 방안 1 in-flight 가드 | 방안 2 single-flight | 방안 3 원자 스크립트 | 방안 4 파일 락 CAS |
 |---|---|---|---|---|
 | 임계구역 | 요청 키(인자 포함)·실제 호출 | 비싼 작업 1회 | 저장소 서버 1회 실행 | 파일 시스템 락 |
-| 전제 | 요청 정체성을 정의할 수 있음 | 결과를 호출자끼리 공유해도 됨 | 저장소가 서버 측 스크립트 지원 | 공유 파일 시스템, 모든 writer가 같은 락 |
+| 전제 | 요청 정체성을 정의할 수 있음 | 결과를 호출자끼리 공유해도 됨 | 저장소가 서버 측 스크립트 지원 | 락 의미가 보장되는 파일 시스템(같은 호스트의 로컬 FS가 안전 — NFS 등 네트워크 FS의 flock은 환경마다 다름), 모든 writer가 같은 락 |
 | 비용 | 키 설계, 세대 관리 | 뒤 호출자 대기 | 스크립트 관리 | 락 대기, 손상 처리 절차 |
 | 실패 모드 | 가드와 호출이 분리되면 무력 | 쿨다운을 "답"에 걸면 사실 아닌 거부 | 장애 시 fail-open 선택의 보안 트레이드오프 | 락 파일 삭제·실패 위장 시 split-lock |
 | 맞는 조건 | 같은 대상에 중복·경쟁 요청 | 비싼 조회에 동시 miss 폭주 | 다중 인스턴스가 공유하는 카운터 | 다중 프로세스·재시작을 넘는 불변식 |

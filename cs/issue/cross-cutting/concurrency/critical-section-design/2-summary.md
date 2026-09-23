@@ -23,7 +23,7 @@
 
 [실패 4: 블로킹 write under lock]
   writer: Mutex<Write>.lock().write_all(200KiB)  ← 상대가 안 읽음 → 락 보유 채 정지
-  shutdown(socket) 은 read만 깨움 → 연결 스레드 미반환 → 연결 슬롯 고갈 → health까지 거부
+  shutdown(socket) 은 그 소켓 대기만 깨움(pty write는 다른 fd) → 연결 스레드 미반환 → 연결 슬롯 고갈 → health까지 거부
   고침: 세션당 writer 스레드(락 없음) + 유계 큐 + 대기 상한 초과 시 에러로 "말함"
 
 [실패 5: poison 전파]
