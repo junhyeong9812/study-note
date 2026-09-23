@@ -205,7 +205,7 @@ login("user", "WrongPassword!@");   // 기대 401 — 비밀번호 패턴(숫자
 ```
 ② 고친 코드
 ```java
-login("user", "WrongPass1234!@");   // 앞 레이어는 통과하는 입력 → 인증 레이어의 거절을 검증
+login("user", "BadPassword1!@");   // 앞 레이어는 통과하는 입력 → 인증 레이어의 거절을 검증
 ```
 무엇이 깨졌나: 요청이 여러 검증 레이어를 순서대로 지나는데, 입력이 목표 레이어에 닿지 못했다.
 
@@ -261,7 +261,7 @@ assert parse_code(raw) == ["01.02.03"]   # 의도적으로 점 제거로 바꾼 
 assert has_intl(raw) is True             # 반환 타입이 목록으로 바뀐 것도 못 따라감
 # 고친: 로직 불변, 기대값만 새 명세로
 assert parse_code(raw) == ["123"]
-assert has_intl(raw) == ["has_international"]
+assert has_intl(raw) == ["has_foreign"]
 ```
 운영에서 문제없이 동작하는 로직의 red는 로직보다 **기대값이 명세를 따라왔는지** 먼저 본다.
 
