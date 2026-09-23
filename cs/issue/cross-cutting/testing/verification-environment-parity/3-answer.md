@@ -47,15 +47,15 @@
 ① 문제 코드
 ```ts
 // jsdom: Tab 기본 포커스 이동 미구현
-const isInsideTrap = dialog.contains(active);          // DOM 포함 ≠ 탭 순서 포함
-if (e.shiftKey && (!isInsideTrap || active === first)) { e.preventDefault(); last.focus(); }
+const withinTrap = dialog.contains(active);          // DOM 포함 ≠ 탭 순서 포함
+if (e.shiftKey && (!withinTrap || active === first)) { e.preventDefault(); last.focus(); }
 // test
 fireEvent.keyDown(document, { key: "Tab", shiftKey: true });
 expect(dialog.contains(document.activeElement)).toBe(true);   // 포커스가 안 움직이니 항상 참
 ```
 ② 고친 코드
 ```ts
-const isInsideTrap = active !== null && focusable.includes(active);   // disabled 된 요소 제외
+const withinTrap = active !== null && focusable.includes(active);   // disabled 된 요소 제외
 // test: 핸들러가 "지정 위치로 옮겼나"를 단언 → 판정을 되돌리면 이 테스트만 실패(뮤테이션 확인)
 expect(document.activeElement).toBe(lastFocusable);
 ```
