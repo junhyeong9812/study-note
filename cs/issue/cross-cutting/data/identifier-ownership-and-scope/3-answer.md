@@ -43,7 +43,7 @@
 
 7. **구조적 충돌 불가.**\
    발급자마다 **키 범위를 분할**(원격 숫자 id는 2^40부터)하거나 **접두**(`<host>/<session>`)를 붙인다 — 두 발급자가 같은 값을 낼 수 없게 된다.\
-   JS로 가는 정수는 **2^53 이하**(안전 정수)여야 한다. 2^40 오프셋은 그 안에 있다.\
+   JS로 가는 정수는 **2^53−1 이하**(`Number.MAX_SAFE_INTEGER`, 안전 정수)여야 한다. 2^40 오프셋은 그 안에 있다.\
    앱 채번기와 마이그레이션 정적 시드도 같다: 채번기의 NEXT_ID가 시드 범위와 겹쳐 PK 충돌 위험 → `NEXT_ID = 400 WHERE NEXT_ID < 400` 조건부 상향(기존 행 무변경). 시드의 멱등 판정은 선점될 수 있는 id가 아니라 **자연 키**(경로 + 사이트)로 — id로 판정하면 선점 환경에서 무음 스킵된다.
 
 ## 문제 구조 (추상화 코드)
@@ -156,7 +156,7 @@ sid = m.group(1) if m else fresh_id()
 MARKER_RE = re.compile(r"^session: ([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$")
 
 def parse_marker(text):
-    m = MARKER_RE.match(text.split("\n", 1)[0])  # 첫 줄 고정
+    m = MARKER_RE.match(text.split("\n", 1)[0].rstrip("\r"))  # 첫 줄 고정 (CRLF 파일 대비)
     if not m: return None
     try: return str(uuid.UUID(m.group(1)))       # 재검증
     except ValueError: return None
@@ -218,7 +218,8 @@ if name.ends_with(&suffix) { fs::remove_dir_all(path)?; }        // 문제: 접�
 if read_meta(&path)?.uuid == full_uuid { replace(path)?; }        // 판별은 메타의 전체 uuid 단독
 ```
 ```python
-user_id = str(fields.get("user_id"))   # 연산 대상이 아닌 식별자는 숫자로 바꾸지 않는다 (정수 폭·정밀도)
+uid = fields.get("user_id")
+user_id = str(uid) if uid is not None else None   # 연산 대상이 아닌 식별자는 숫자로 바꾸지 않는다 (정수 폭·정밀도) — 없음을 "None" 문자열로 만들지 않는다
 ```
 
 | | 방안 1 공간 분할 | 방안 2 소유 단위 키 | 방안 3 용도별 키 |
