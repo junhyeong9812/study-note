@@ -132,7 +132,7 @@ row-reverse 의 좌표계
 
 - **뒤집히지 않는다.** `flex-direction` 은 **시각 배치만** 바꾸고 DOM 순서는 그대로다.
 - 그래서 시각 순서와 읽는 순서가 어긋나고, 키보드 사용자는 오른쪽 끝 → 가운데 → 왼쪽 끝으로 초점이 튀는 것을 보게 된다.
-- 같은 문제가 `order` 에서 더 심하게 나온다 — 정본은 목록의 **26번 주제**.
+- 같은 문제가 `order` 에서 더 심하게 나온다 — 정본은 [목록의 **26번 주제**](../26-flex-wrap-gap-order/).
 
 ### 4. 주축과 교차축은 대칭인가
 
@@ -165,7 +165,7 @@ row-reverse 의 좌표계
 
 - 주축의 남는 공간은 **아이템들이 공유하는 자원**이라, 한 아이템만 따로 배치하면 나머지의 배치가 결정되지 않는다.
 - 교차축은 아이템마다 **자기 줄 안에서 독립적으로** 결정되므로 개별 예외가 성립한다.
-- Grid 에는 `justify-self` 가 있다 — 셀이 미리 나뉘어 있어 **아이템마다 자유 공간이 따로** 있기 때문이다(목록의 28번).
+- Grid 에는 `justify-self` 가 있다 — 셀이 미리 나뉘어 있어 **아이템마다 자유 공간이 따로** 있기 때문이다([목록의 **28번**](../28-grid-placement/)).
 
 ### 5. 어느 축에 어느 값을 쓸 수 있는가
 
@@ -188,7 +188,7 @@ align-items: baseline        -> 계산값 baseline   (정상 값)
 
 - **버려지지 않는다.** 문법상 유효한 값이라 계산값은 `stretch` 로 남는다.
 - **그런데 아무 효과가 없다** — 실측에서 아이템 폭이 그대로였고 위치도 `flex-start` 와 같았다.
-- 이유: flex 아이템의 **주축 크기는 `flex-grow`/`flex-shrink` 가 정한다**(목록의 **25번 주제**). 주축을 늘리는 일이 이미 다른 메커니즘의 몫이라 `justify-content: stretch` 가 할 일이 없다.
+- 이유: flex 아이템의 **주축 크기는 `flex-grow`/`flex-shrink` 가 정한다**([목록의 **25번 주제**](../25-flex-shorthand-and-sizing/)). 주축을 늘리는 일이 이미 다른 메커니즘의 몫이라 `justify-content: stretch` 가 할 일이 없다.
 - **"버려진다"와 "효과가 없다"는 다르다** — 앞은 구문 문제, 뒤는 의미 문제다.
 
 **초기값**
@@ -214,8 +214,9 @@ align-items: baseline        -> 계산값 baseline   (정상 값)
 **`flex-wrap` 없이 `align-content` 를 주면**
 
 - **아무 일도 일어나지 않는다.** 선언은 유효해서 버려지지 않고 계산값도 남는다.
-- `align-content` 는 **줄이 둘 이상일 때** 그 줄들을 교차축에서 배치하는 속성이다. 한 줄이면 배치할 것이 없다.
-- 정본은 목록의 **26번 주제**.
+- ★ **경계는 「줄이 둘 이상이냐」가 아니라 `flex-wrap` 값이다.** 명세가 `flex-wrap: nowrap` 인 컨테이너를 **single-line flex container** 라 부르고 「그때 `align-content` 는 효과가 없다」고 적는다(css-flexbox-1 §6·§8.4).\
+  `wrap` 이면 **줄이 하나뿐이어도 「줄」이 있으므로** 그 줄이 교차축에서 움직인다 — 실측: 200×200 컨테이너·항목 하나에서 `wrap` 은 y = 90, `nowrap` 은 y = 0 이었다(계산값은 두 판 다 `center`).
+- 정본은 [목록의 **26번 주제**](../26-flex-wrap-gap-order/).
 
 **`margin-left: auto` 가 있으면 `justify-content: center` 는**
 
@@ -266,31 +267,31 @@ writing-mode: vertical-rl + row          1: T1     2: T16     (세로로 쌓인�
 
 - **물리 방향이 아니기 때문**이다. `left`·`top` 은 화면의 고정된 방향을 가리키지만, flex 정렬은 **축의 시작·끝**을 가리킨다.
 - 그 위치는 `flex-direction`·`direction`·`writing-mode` 세 가지에 따라 움직인다.
-- 논리 축 어휘 전반의 정본은 목록의 **32번 주제**.
+- 논리 축 어휘 전반의 정본은 [목록의 **32번 주제**](../32-logical-properties-and-writing-mode/).
 
 ### 8. 다른 주제와 잇기
 
 **행과 열을 동시에 맞춰야 하면**
 
-- **Grid**(목록의 27~29번)를 쓴다. 그리고 Grid 에서는 **`justify-self` 를 쓸 수 있다.**
+- **Grid**(목록의 [**27**](../27-grid-track-sizing/)~[**29**](../29-grid-template-areas/)번)를 쓴다. 그리고 Grid 에서는 **`justify-self` 를 쓸 수 있다.**
 - 셀이 미리 나뉘어 있어 아이템마다 자유 공간이 따로 있기 때문이다 — 4번의 비대칭이 Grid 에서는 성립하지 않는다.
 
 **`flex-direction` 을 전환에 태우면 왜 비싼가**
 
 - 레이아웃 속성이라 값이 바뀔 때마다 **레이아웃 → 페인트 → 합성**이 전부 다시 돈다.
 - 게다가 `flex-direction` 은 **보간 가능한 값이 아니다**(키워드끼리는 중간값이 없다) — 전환이 아예 걸리지 않는다. 무엇이 보간되는지는 목록의 [52번 주제](../52-transition/2-summary.md).
-- 어느 속성이 어느 단계를 다시 돌리는지는 목록의 **56번 주제**가 정본이다.
+- 어느 속성이 어느 단계를 다시 돌리는지는 [목록의 **56번 주제**](../56-rendering-pipeline-and-will-change/)가 정본이다.
 
 **`gap` 대신 아이템 `margin` 으로 간격을 주면**
 
 - `margin` 은 **양 끝에도 여백을 만든다** — `gap` 은 아이템 **사이에만** 넣는다.
 - `margin` 은 아이템 크기의 일부로 계산되어 **`justify-content` 가 나눌 자유 공간을 미리 줄인다.**\
   그래서 `space-between` 과 섞으면 의도한 간격이 안 나온다.
-- `gap` 이 flex 에서 늦게(Baseline widely 2023-10-26) 쓸 수 있게 된 탓에 옛 코드가 `margin` 방식을 쓴다. 정본은 목록의 **26번 주제**.
+- `gap` 이 flex 에서 늦게(Baseline widely 2023-10-26) 쓸 수 있게 된 탓에 옛 코드가 `margin` 방식을 쓴다. 정본은 [목록의 **26번 주제**](../26-flex-wrap-gap-order/).
 
 **아이템의 크기가 정해지는 규칙**
 
-- 목록의 **25번 주제**(`flex` 단축 — `grow`/`shrink`/`basis` 와 크기 해결).
+- [목록의 **25번 주제**](../25-flex-shorthand-and-sizing/)(`flex` 단축 — `grow`/`shrink`/`basis` 와 크기 해결).
 - 이 문서는 **크기가 정해진 뒤의 배치**만 다룬다. `flex: 1` 이 무엇으로 펼쳐지는지, `min-width: auto` 때문에 안 줄어드는 사고는 거기다.
 
 ## 용어 풀이
@@ -307,3 +308,31 @@ writing-mode: vertical-rl + row          1: T1     2: T16     (세로로 쌓인�
 - **인라인 축 / 블록 축** — 글자가 흐르는 축 / 문단이 쌓이는 축. `row`/`column` 의 실제 정의.
 - **`margin: auto`** — 남는 공간을 먹어 아이템을 미는 수단. flex 에서 주축의 개별 예외를 만드는 유일한 방법.
 - **보간(interpolation)** — 시작값과 끝값 사이의 중간값을 만드는 것. 키워드 값에는 중간값이 없다(52번).
+
+## 실행 검증
+
+**이 표는 2026-09-23 재검증에서 실제로 던진 것만 적는다.** 이 문서를 처음 쓴 판이 몇 번 돌렸는지는 **기록이 없어 모른다.**
+
+| 무엇을 | 어떻게 | 결과 |
+|---|---|---|
+| demo 4개 | 완성된 `2-summary.md` 에서 `extract-demo-blocks.py --render --shot` 로 다시 뽑아 **창 폭 804 로 3판** | 좌표·치수 **전부 일치** · 3판이 한 글자도 안 달랐다 |
+| ★ 창 폭 의존 | 같은 도구를 기본 창(폭 780)으로도 돌려 대조 | **x 값이 전부 24px 씩 어긋난다.** 804 에서만 문서의 값이 나온다 — 이 파일 머리의 「804×140」이 그 조건이다 |
+| (1) `space-between` + `align-items: center` | 창 804 | `L10 T50` · `L382 T50` · `L753 T50` · 셋 다 `W41 H40`, 컨테이너 `804×140` |
+| (2) `row` 대 `column` | 창 804 | row `L88 T2`·`L120 T2` / col `L2 T88`·`L2 T120` (컨테이너 왼쪽 위 기준, 둘 다 `W32 H32`) |
+| (3) `row-reverse` + `flex-start` | 창 804 | `1: L762  2: L722  3: L683` — 아이템 1 의 오른쪽이 794 |
+| (4) `align-self: flex-end` | 창 804 | `1: L10 T10` · `2(.odd): L50 T98` · `3: L90 T10` |
+| ★ `justify-self: end` | demo (6) 과 같은 판에 `.odd { justify-self: end }` 를 얹고 좌표와 계산값을 같이 읽었다 · 1판 | **`left` 는 50 그대로**인데 **계산값은 `end`** — 세 창이 전부 정상인데 배치만 안 바뀐다 |
+| ★ `align-content` 의 경계 | 200×200 컨테이너에 높이 20 짜리 항목 하나, `align-content: center` 를 `wrap`/`nowrap` 두 판 · 1판 | `wrap` → **y = 90** · `nowrap` → **y = 0** · **계산값은 두 판 다 `center`** |
+| `align-items: space-between` | 계산값 + `cssRules[i].style.cssText` · 1판 | 계산값 `normal` · **`cssText` 에서 선언이 통째로 사라졌다**(버려졌다) |
+| `justify-content: stretch` | 계산값 + 아이템 rect · 1판 | 계산값 `stretch` · 아이템은 `left 0` 으로 `flex-start` 와 같고 **안 늘어났다**(버려지지 않았다) |
+| 초기값 | 아무 정렬도 안 준 `display: flex` 의 계산값 · 1판 | `align-items: normal` · `justify-content: normal` · `align-content: normal` |
+| 기준 소스 | drafts.csswg.org 의 css-flexbox-1 §6·§8.4 와 css-align-3 §5.1.3·§6.1·§6.2 원문 대조 | **「single-line flex container (i.e. one with `flex-wrap: nowrap`) … align-content has no effect」** · **「stretch behaves as flex-start」** · `justify-self` 의 Applies to 에 flex item 이 **없다** |
+| Baseline | api.webstatus.dev 조회 2026-09-23 | `flexbox` widely 2015-09-30 / 2018-03-30 · `flexbox-gap` widely 2021-04-26 / 2023-10-26 — 머리말과 일치 |
+
+**다시 던지지 못한 것** — 본문 (7)·(8)절과 이 파일 4·7번의 **200px 컨테이너 실험 세 건**(`margin-left: auto` 의 `1 → 186` · `direction: rtl` 의 `L186`·`L172` · `writing-mode: vertical-rl` 의 `T1`·`T16`).\
+**그 실험의 마크업이 문서에 없다** — demo 블록이 아니라 문서 밖에서 돌린 것이라 추출기가 볼 수 없고, 아이템 치수를 복원할 수 없어 절댓값을 재현하지 못했다.\
+같은 성질의 최소 판을 새로 만들어 **방향만** 확인했다 — `margin-left: auto` 는 둘째 아이템을 안쪽 오른쪽 경계까지 밀고(내 판: `9 → 193`), `rtl` 은 오른쪽부터 채우며(`193`·`185`), `vertical-rl` 은 `row` 인데 세로로 쌓인다(`T1`·`T9`). **절댓값이 다른 것은 아이템 폭이 다르기 때문이고, 문서가 틀린 것이 아니다.**
+
+**구현 의존 항목** — ① 본문의 **모든 절대 좌표**는 창 폭 804 에서만 재현된다 ② `W41`·`W32` 같은 치수는 `system-ui` 가 이 머신에서 무엇으로 풀리느냐에 달렸다. **둘 다 Chrome 151 의 이 환경에서 관찰한 것**이다.
+
+**엔진은 Chrome 151.0.7922.173 하나다.** Firefox 155 는 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.**

@@ -88,7 +88,7 @@
 - ③이 「어디서 틀리나」의 본체다. **보간할 수 없으면 조용히 순간이동한다.**
 
 비용 — 전환이 걸리는 동안 **매 프레임 그 속성이 속한 단계부터 파이프라인이 다시 돈다.**\
-`transform`·`opacity` 는 합성만, `width`·`height`·`margin` 은 레이아웃부터다(목록의 **56번 주제**).
+`transform`·`opacity` 는 합성만, `width`·`height`·`margin` 은 레이아웃부터다([목록의 **56번 주제**](../56-rendering-pipeline-and-will-change/)).
 
 ### (2) 무엇이 보간되나 — `auto` 는 왜 안 되나
 
@@ -107,7 +107,7 @@
 ```
 
 > **보이는 것** — 아래 상자(`fixed`)는 마우스를 올리면 1초에 걸쳐 24px → 48px 로 **부드럽게 펴지고**, 위 상자(`auto`)는 **전환 없이 즉시** 48px 로 튄다. 마우스를 떼면 `fixed` 는 1초에 걸쳐 접히고 `auto` 는 즉시 접힌다.\
-> **바꿔 볼 것** — `.auto:hover` 의 `height: auto` → `height: 48px` → 두 상자가 똑같이 움직인다 · `transition: height 1s linear` → `grid-template-rows 1s linear` 로 바꾸고 `0fr`↔`1fr` 을 쓰면 → 내용 높이를 모르고도 전환할 수 있다(목록의 27번)
+> **바꿔 볼 것** — `.auto:hover` 의 `height: auto` → `height: 48px` → 두 상자가 똑같이 움직인다 · `transition: height 1s linear` → `grid-template-rows 1s linear` 로 바꾸고 `0fr`↔`1fr` 을 쓰면 → 내용 높이를 모르고도 전환할 수 있다([목록의 **27번**](../27-grid-track-sizing/))
 
 *(Chrome 151 headless 실측 — 마우스를 올린 뒤 시각별 `height`:)*
 
@@ -344,7 +344,7 @@ steps(4) ▁▁▁▁▄▄▄▄▆▆▆▆███████████�
 
 - `allow-discrete` 를 주면 `display` 가 **전환이 끝날 때까지 `block` 으로 버텨 준다.**\
   그래서 `opacity` 가 다 사라진 뒤에 상자가 없어진다.
-- 반대 방향(없던 요소가 나타날 때)은 **`@starting-style`** 이 필요하다 — 시작값이 없으면 전환이 걸리지 않기 때문이다. 정본은 목록의 **57번 주제**.
+- 반대 방향(없던 요소가 나타날 때)은 **`@starting-style`** 이 필요하다 — 시작값이 없으면 전환이 걸리지 않기 때문이다. 정본은 [목록의 **57번 주제**](../57-starting-style-and-entry-exit-transitions/).
 - **둘 다 Baseline newly**(2024-08-06)다 — widely 가 아니므로 쓸 때 대체 경로를 생각한다.
 
 ## 문법 — 형태와 규칙
@@ -418,7 +418,7 @@ transition-property: opacity, transform;      /* 지정한 것만 */
 ### 2. `height: auto` 를 전환하려 한다
 
 (2)의 demo 가 그것이다. **에러 없이 순간이동한다.**\
-대안: 높이를 아는 경우 고정 px, 모르면 `grid-template-rows: 0fr ↔ 1fr`(목록의 27번)이나 `transform: scaleY()`.
+대안: 높이를 아는 경우 고정 px, 모르면 `grid-template-rows: 0fr ↔ 1fr`([목록의 **27번**](../27-grid-track-sizing/))이나 `transform: scaleY()`.
 
 ### 3. `transition-duration` 을 빼먹는다
 
@@ -436,7 +436,7 @@ transition: background-color ease;    /* duration 기본값 0s -> 아무 일도 
 ### 5. 나타나는 요소에 전환이 안 걸린다
 
 `display: none` 이던 요소를 `block` 으로 만들면, **그 요소에는 "바뀌기 전 값"이 없다.**\
-전환이 걸리려면 시작값이 있어야 하므로 `@starting-style` 이 필요하다(목록의 57번). Baseline **newly**.
+전환이 걸리려면 시작값이 있어야 하므로 `@starting-style` 이 필요하다([목록의 **57번**](../57-starting-style-and-entry-exit-transitions/)). Baseline **newly**.
 
 ### 6. 비싼 속성을 전환한다
 
@@ -446,12 +446,34 @@ width · height · margin    -> 레이아웃부터 전부 다시 돈다   (비�
 box-shadow · filter        -> 페인트부터                   (중간)
 ```
 
-"동작은 하는데 끊긴다"의 원인이 대개 이것이다. 어느 속성이 어느 단계를 다시 돌리는지는 목록의 **56번 주제**가 정본이다.
+"동작은 하는데 끊긴다"의 원인이 대개 이것이다. 어느 속성이 어느 단계를 다시 돌리는지는 [목록의 **56번 주제**](../56-rendering-pipeline-and-will-change/)가 정본이다.
 
 ### 7. 모션 접근성을 잊는다
 
 전정기관에 문제가 있는 사용자에게는 큰 움직임이 실제 증상을 일으킨다.\
-`@media (prefers-reduced-motion: reduce)` 에서 **끄는 게 아니라 바꾼다**(이동을 페이드로). 정본은 목록의 **60번 주제**.
+`@media (prefers-reduced-motion: reduce)` 에서 **끄는 게 아니라 바꾼다**(이동을 페이드로). 정본은 [목록의 **60번 주제**](../60-prefers-reduced-motion/).
+
+## 구현 세부사항 대 언어 보장
+
+| 항목 | 누가 보장하나 |
+|---|---|
+| **무엇이 전환되나** — 속성마다의 animation type | **명세**(css-transitions-1 — 「the property values are transitionable if they have an animation type that is neither not animatable nor discrete」. animation type 은 각 속성의 명세가 정한다) |
+| `auto` 가 **전환되지 않는 것** | **명세** — 위 조건의 결과다. 실측(30ms 에 이미 48px)이 그것과 맞았다 |
+| discrete 속성이 기본으로 **안 도는 것** | **명세**(같은 문장). `transition-behavior: allow-discrete` 로 예외를 여는 것도 명세(css-transitions-2) |
+| 단축의 **첫 시간이 `duration`, 둘째가 `delay`** 인 것 | **명세** — 원문은 「the first value that can be parsed as a time is assigned to the transition-duration, and the second … to transition-delay」다. 하나뿐이면 `duration` 인 것도 여기서 따라온다 |
+| **reversing shortening factor** | **명세**(css-transitions-1). 본문이 인용한 정의 문장은 원문 그대로다 |
+| 전환 선언이 캐스케이드 사다리 **맨 위**인 것 | **명세**(css-cascade-5 §6.1 의 출처 목록 첫 줄이 「Transition declarations」다). ★ 다만 **이 문서는 돌려 보지 않았다** — 명세 기술만 옮겼다 |
+| `ease`·`ease-in`·`ease-out`·`ease-in-out` 의 **`cubic-bezier` 대응값** | **명세**(css-easing-1 §2.2 가 네 키워드를 각각 「Equivalent to `cubic-bezier(…)`」로 못박는다). 본문 표의 네 줄이 그 값과 같다 |
+| ★ `linear` = `cubic-bezier(0, 0, 1, 1)` | ★ **명세가 그렇게 적은 것이 아니다.** css-easing-1 §2.1 은 `linear` 를 「출력이 입력과 같은 **항등 이징 함수**」로 정의할 뿐 `cubic-bezier` 로 환산해 주지 않는다. **출력이 같을 뿐**이고, 본문 표의 이 한 줄만 다른 넷과 근거의 종류가 다르다 |
+| ★ **`steps()` 의 계단 경계 시각에서 읽은 값** — 표의 `steps(4, end)` 열 500·1000·1500ms 칸 | ★★ **한 판의 결과이지 성질이 아니다.** 2초를 4칸으로 나누면 경계가 정확히 500·1000·1500ms 라 **그 시각의 샘플이 판마다 뒤집힌다.** 8판 재검증: 500ms 는 `65px` 6판 / `0px` 2판, 1000ms 는 `130px` 6판 / `65px` 2판, 1500ms 는 `195px` 5판 / `130px` 3판. **경계에서 떨어진 시각(50·300·700·1200·1700ms)은 8판 전부 같았다** |
+| ★ 시각별 픽셀·색 값의 **마지막 한두 자리** | ★ **관찰이다.** 화면은 약 16.7ms 간격으로만 갱신되므로 **표본 시각이 한 프레임 밀리면 값이 그만큼 움직인다.** 되돌리기 실측이 재검증에서 정확히 한 프레임(약 1.6px)만큼 낮게 나왔다 |
+| 전환 중의 `getComputedStyle` 이 **중간값을 돌려주는 것** | **CSSOM 의 동작**이다. 이 문서의 모든 실측이 그것에 기대고 있으므로, **그 창이 없으면 이 주제는 화면 말고는 잴 방법이 없다** |
+| `opacity` 가 `0.949953` 처럼 나오는 것 | ★ **직렬화·부동소수의 결과**다. 본문이 `0.95` 로 적은 것은 반올림한 것이다 |
+
+★★ **`--disable-gpu` 의 픽셀은 보장이 아니다** — 다만 **이 문서는 픽셀을 읽지 않았다.** 전부 `getComputedStyle` 의 계산값(길이·색·`display`)이라 합성 단계의 반올림 대상이 아니다.\
+바꿔 말하면 **이 문서가 보장하는 것은 「값이 언제 얼마였나」이지 「화면이 그때 어떻게 보였나」가 아니다.** `transform`·`opacity` 전환처럼 합성 스레드로 넘어가는 것은 계산값과 화면 사이에 한 프레임의 틈이 더 있을 수 있다.
+
+★ **엔진은 Chrome 하나다.** Firefox 155 는 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.** 크로스 브라우저는 Baseline 데이터로만 접지했다(api.webstatus.dev 조회 2026-09-23: `transitions` **widely** 2015-09-30 → 2018-03-30 · `linear-easing` **widely** 2023-12-11 → 2026-06-11 · `transition-behavior`·`starting-style` **newly** 2024-08-06).
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -484,11 +506,11 @@ box-shadow · filter        -> 페인트부터                   (중간)
 - [`../README.md`](../README.md) — CSS 문법·API 주제 목록(이 주제는 52번) · 「버전·지원 기준」의 Baseline 표
 - [`../01-cascade-and-priority/2-summary.md`](../01-cascade-and-priority/2-summary.md) — 전환 선언이 캐스케이드 사다리 맨 위에 있는 이유 · 단축 속성이 하위 속성을 되돌리는 규칙
 - [목록의 **04번 주제**](../04-value-processing-stages/)(값 처리 단계) — 전환이 어느 값(계산값)을 보고 걸리는지의 정본
-- 목록의 **53번 주제**(`@keyframes` 와 `animation`) — 중간 지점이 여럿이거나 반복이 필요할 때
-- 목록의 **54번 주제**(`transform` 2D) — 전환에 태우기 가장 싼 속성
-- 목록의 **56번 주제**(렌더링 파이프라인과 `will-change`) — **어떤 속성이 비싼가의 정본**
-- 목록의 **57번 주제**(`@starting-style`) — 나타나는 요소를 전환에 태우는 법
-- 목록의 **60번 주제**(`prefers-reduced-motion`) — 모션 접근성
+- [목록의 **53번 주제**](../53-keyframes-and-animation/)(`@keyframes` 와 `animation`) — 중간 지점이 여럿이거나 반복이 필요할 때
+- [목록의 **54번 주제**](../54-transform-2d-and-origin/)(`transform` 2D) — 전환에 태우기 가장 싼 속성
+- [목록의 **56번 주제**](../56-rendering-pipeline-and-will-change/)(렌더링 파이프라인과 `will-change`) — **어떤 속성이 비싼가의 정본**
+- [목록의 **57번 주제**](../57-starting-style-and-entry-exit-transitions/)(`@starting-style`) — 나타나는 요소를 전환에 태우는 법
+- [목록의 **60번 주제**](../60-prefers-reduced-motion/)(`prefers-reduced-motion`) — 모션 접근성
 - [`reference/render-rules.md`](../../../../../../reference/render-rules.md) — 이 문서의 `demo` 블록 규칙
 
 ## 용어 풀이
@@ -515,9 +537,9 @@ box-shadow · filter        -> 페인트부터                   (중간)
 - 전환은 **선언적**이라 JS 타이머와 어긋나기 쉽다.\
   끝나는 시점이 필요하면 `transitionend` 이벤트를 듣는다 — 단, 전환이 **시작조차 안 한 경우**에는 이벤트도 안 오므로 타임아웃 대비가 필요하다.
 - `transition: all` 과 CSS 변수(`--x`)를 같이 쓰면 주의할 것이 있다.\
-  `@property` 로 타입을 등록하지 않은 변수는 discrete 로 취급되어 **보간되지 않는다**(목록의 37번).
+  `@property` 로 타입을 등록하지 않은 변수는 discrete 로 취급되어 **보간되지 않는다**([목록의 **37번**](../37-at-property/)).
 - `steps()` 의 둘째 인자는 `jump-start`/`jump-end`/`jump-none`/`jump-both` 로도 쓸 수 있고, `start`/`end` 는 각각 `jump-start`/`jump-end` 의 옛 이름이다.
 - 같은 속성에 전환과 `@keyframes` 애니메이션이 동시에 걸리면 **애니메이션이 이긴다**\
-  (캐스케이드 사다리에서 애니메이션 선언이 작성자 normal 보다 위에 있고, 전환 선언은 그 위에 있다 — 두 선언이 동시에 살아 있는 경우의 우선은 목록의 53번이 정본이다).
+  (캐스케이드 사다리에서 애니메이션 선언이 작성자 normal 보다 위에 있고, 전환 선언은 그 위에 있다 — 두 선언이 동시에 살아 있는 경우의 우선은 [목록의 **53번**](../53-keyframes-and-animation/)이 정본이다).
 - 전환 중인 요소의 값을 JS 로 읽으면 **그 순간의 중간값**이 나온다.\
   이 문서의 모든 실측값이 그렇게 얻은 것이다 — `getComputedStyle` 은 전환의 현재 값을 돌려준다.

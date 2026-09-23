@@ -401,6 +401,28 @@ background-color 바구니              background-image 바구니
 자식에게 걸린 선언이 **하나라도 있으면** 상속은 일어나지 않는다 — 아무리 약한 선언이라도 상속을 이긴다.\
 이 규칙은 [목록의 **03번 주제**](../03-inheritance-and-global-keywords/)가 정본이다.
 
+## 구현 세부사항 대 언어 보장
+
+| 항목 | 누가 보장하나 |
+|---|---|
+| 캐스케이드 정렬 **6단계의 차례** | **명세**(css-cascade-5 §6.1 Cascade Sorting Order — Origin and Importance → Context → Element-Attached Styles → Layers → Specificity → Order of Appearance) |
+| 출처·중요도 **여덟 칸의 순서** | **명세**(같은 절의 목록 그대로 — 전환 → UA important → 사용자 important → 작성자 important → 애니메이션 → 작성자 normal → 사용자 normal → UA normal) |
+| `!important` 구간에서 작성자와 사용자가 **뒤집히는 것** | **명세**(같은 목록의 순서가 그것이다) |
+| 레이어 순서가 important 에서 뒤집히는 것 · 레이어 밖이 normal 에서 가장 센 것 | **명세**(§6.1 Layers · §6.4.3 Layer Ordering). 본문이 인용한 두 문장은 2026-09-23 에 원문과 대조해 **글자까지 같았다** |
+| `!` 와 `important` 사이의 **공백·주석이 허용되고 대소문자를 안 가리는 것** | **명세**(css-syntax-3 §5.5.6 — 마지막 두 비공백 토큰이 `!` 와 「"important" 에 ASCII 대소문자 무시로 일치하는 ident-token」이면 된다. 주석은 토큰이 아니라 사이에 끼어도 된다). 본문의 5행 실측이 그것과 맞았다 |
+| 같은 칸·같은 명시도에서 **나중 선언이 이기는 것** | **명세** — 관찰이 아니다. §6.1 Order of Appearance 가 「The last in document order wins」에 더해 **시트 순서·`@import` 치환 순서·`style=""` 가 모든 시트 뒤라는 것**까지 정해 놓는다 |
+| 단축이 안 적은 하위 속성에 `initial` 후보를 넣는 것 | **명세**(단축 속성의 정의). `background` 실측에서 navy 가 사라지고 이미지만 남은 것이 그 결과다 |
+| **UA 기본 시트의 내용** — `<p>` 의 위아래 20px 마진, `<a>` 의 파랑·밑줄 | ★ **엔진이 정한다.** 명세는 「Conforming user agents must apply a default style sheet」와 「should present … general presentation expectations」까지만 적고 **어떤 값인지는 정하지 않는다.** 이 문서의 demo 에서 문단이 20px 씩 떨어져 보이는 것은 **Chrome 151 의 값**이지 CSS 의 보장이 아니다 |
+| `cssRules[i].style.cssText` 가 넷을 **한 모양으로** 돌려주는 것 | ★ **CSSOM 직렬화다.** `red! important`·`red!IMPORTANT`·`red !/*c*/important`·`red!important` 넷이 전부 `color: red !important;` 로 돌아왔다 — **내가 쓴 표기는 복원되지 않는다.** 이 문서는 CSSOM 명세를 열어 대조하지 않았다 |
+| 색이 `rgb(185, 28, 28)` 형태로 보이는 것 | ★ **CSSOM 직렬화다.** `#b91c1c` 로 되돌려 주지 않는다. 이 문서의 모든 색 값이 그 형식이다 |
+| 개발자 도구가 **진 선언에 줄을 긋는 것** | ★ **도구의 표시**이지 언어가 아니다. 다른 도구는 다르게 보여 줄 수 있다 |
+| 사다리 **1·2·3번 칸**(전환 선언 · UA/사용자 `!important`) | ★ **모른다.** 이 문서도, 2026-09-23 재검증도 돌려 보지 않았다 — 명세 기술만 옮겼다. 2·3번은 headless 에 사용자 시트를 넣을 경로가 없어 **이 환경에서 만들 수 없고**, 1번은 만들 수 있는데 안 만들었다 |
+
+★ **「계산값 이후에서 갈리는」 자리는 이 주제에 없다** — 승패가 전부 계산값에 나타난다.\
+대신 **「왜 졌는지」는 계산값에 남지 않는다.** `getComputedStyle` 은 이긴 값 하나만 주고, 탈락한 후보 목록은 `document.styleSheets[i].cssRules` 와 개발자 도구에만 있다. 그래서 **「안 먹는다」의 진단은 계산값이 아니라 규칙 목록에서 시작해야** 한다.
+
+★ **엔진은 Chrome 하나다.** Firefox 155 는 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.** 크로스 브라우저는 Baseline 데이터로만 접지했다(api.webstatus.dev 조회 2026-09-23: `cascade-layers` **widely** 2022-03-14 → 2024-09-14).
+
 ## 언제 쓰고 언제 안 쓰나
 
 | 상황 | 쓸 것 | 쓰지 말 것 |

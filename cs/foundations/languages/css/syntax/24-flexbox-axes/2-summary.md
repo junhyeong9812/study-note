@@ -5,7 +5,7 @@
 > **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 좌표를 재고 스크린샷으로 눈으로 확인했다.\
 > 본문에 나오는 좌표·픽셀 값은 전부 그 실측값이다. **WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다.
 > **버전** — Flexbox 는 Baseline **widely**(newly 2015-09-30 → widely 2018-03-30). flex `gap` 은 **widely**(newly 2021-04-26 → widely 2023-10-26)로 더 늦다(목록 README 의 지원 표).
-> **여기서 다루지 않는 것** — 「언제 왜 들어왔나」는 [`history/web/03-HTML-CSS-진화.md`](../../../../../../history/web/03-HTML-CSS-진화.md) 의 몫이다. 아이템 크기 해결(`flex` 단축)은 목록의 **25번**, 줄바꿈·`gap`·`order` 는 **26번**이 정본이다.
+> **여기서 다루지 않는 것** — 「언제 왜 들어왔나」는 [`history/web/03-HTML-CSS-진화.md`](../../../../../../history/web/03-HTML-CSS-진화.md) 의 몫이다. 아이템 크기 해결(`flex` 단축)은 [목록의 **25번**](../25-flex-shorthand-and-sizing/), 줄바꿈·`gap`·`order` 는 **26번**이 정본이다.
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 화면은 실행으로 접지했다.
 
 ## 한눈에 — 쉽게 말하면
@@ -146,7 +146,7 @@ flex-direction: row                     flex-direction: column
 | `justify-content` | **주축** | 아이템 **전체 묶음**과 그 사이 간격 |
 | `align-items` | **교차축** | 아이템 **하나하나**를 교차축에서 |
 | `align-self` | **교차축** | 아이템 **하나만** 예외로 |
-| `align-content` | **교차축** | 여러 **줄**을 (줄바꿈이 켜졌을 때만 — 26번) |
+| `align-content` | **교차축** | **줄**들을 (`flex-wrap` 이 `wrap` 일 때만 — 줄이 하나여도 먹는다. 26번) |
 
 - `justify-content` 는 **묶음**을 움직이고 `align-items` 는 **개별 아이템**을 움직인다.\
   이름이 `content`(내용 전체) 대 `items`(각 아이템)로 갈리는 것이 그 차이를 그대로 적은 것이다.
@@ -194,7 +194,7 @@ flex-direction: row                     flex-direction: column
 - 그래서 `column` 으로 바꾸는 미디어 쿼리를 쓸 때는 **`justify-content` 와 `align-items` 도 같이 손봐야 하는지** 매번 확인해야 한다.
 - "가로 정렬은 justify" 라고 외운 사람은 여기서 반드시 틀린다.
 
-비용 — `flex-direction` 변경은 레이아웃 전체 재계산이다. 애니메이션 대상으로는 쓰지 않는다(목록의 **56번 주제**).
+비용 — `flex-direction` 변경은 레이아웃 전체 재계산이다. 애니메이션 대상으로는 쓰지 않는다([목록의 **56번 주제**](../56-rendering-pipeline-and-will-change/)).
 
 ### (5) `row-reverse` — 시작점이 반대쪽으로 옮겨간다
 
@@ -220,7 +220,7 @@ flex-direction: row                     flex-direction: column
 - `*-reverse` 는 아이템을 뒤집는 게 아니라 **main-start 와 main-end 를 맞바꾼다.**
 - 그래서 `flex-start`·`flex-end` 가 가리키는 화면 위치가 통째로 바뀐다.
 - **마크업 순서는 그대로다** — 스크린 리더와 키보드 Tab 순서는 여전히 `1 → 2 → 3` 이다.\
-  시각 순서와 읽는 순서가 어긋나는 문제는 목록의 **26번 주제**(`order`)가 정본이다.
+  시각 순서와 읽는 순서가 어긋나는 문제는 [목록의 **26번 주제**](../26-flex-wrap-gap-order/)(`order`)가 정본이다.
 
 ### (6) 교차축에만 있는 개별 예외 — `align-self`
 
@@ -258,7 +258,7 @@ flex-direction: row                     flex-direction: column
 - **교차축에는 개별 예외(`align-self`)가 있고 주축에는 없다.**
 - 이유는 주축의 자유 공간이 **아이템들끼리 나눠 갖는 자원**이기 때문이다 — 한 아이템만 "끝으로"라고 하면 나머지 배치가 정의되지 않는다.\
   교차축은 아이템마다 자기 줄 안에서 독립적으로 결정되므로 개별 예외가 성립한다.
-- Grid 에는 `justify-self` 가 있다(셀이 미리 나뉘어 있어 자유 공간이 아이템마다 따로 있다). 목록의 **28번 주제**.
+- Grid 에는 `justify-self` 가 있다(셀이 미리 나뉘어 있어 자유 공간이 아이템마다 따로 있다). [목록의 **28번 주제**](../28-grid-placement/).
 
 ### (7) 주축의 개별 예외는 `margin: auto` 로 만든다
 
@@ -300,7 +300,7 @@ direction: ltr + row              direction: rtl + row
 - `writing-mode: vertical-rl` 을 주면 `row` 의 주축이 **세로**가 된다.\
   *(같은 실측: `vertical-rl` 컨테이너에서 `row` 인데 아이템이 세로로 쌓였다 — top 1, 16.)*
 - 즉 `row` 는 "가로"가 아니라 **"인라인 축"** 이고, `column` 은 "세로"가 아니라 **"블록 축"** 이다.
-- 이것이 `left`/`right` 대신 `start`/`end` 어휘를 쓰는 이유다. 논리 축의 정본은 목록의 **32번 주제**.
+- 이것이 `left`/`right` 대신 `start`/`end` 어휘를 쓰는 이유다. 논리 축의 정본은 [목록의 **32번 주제**](../32-logical-properties-and-writing-mode/).
 
 비용 — 없다. 다만 **다국어 사이트에서 `flex-start` 를 "왼쪽"으로 읽고 짠 레이아웃은 RTL 에서 통째로 뒤집힌다.**
 
@@ -341,7 +341,7 @@ direction: ltr + row              direction: rtl + row
 - **`space-*` 는 주축(과 여러 줄) 전용**이다 — 아이템 **사이**를 벌리는 값이라 "묶음"을 다루는 `justify-content`·`align-content` 에만 있다.\
   교차축의 `align-items` 에 쓰면 **값이 유효하지 않아 선언 하나가 버려진다**([목록의 **07번 주제**](../07-syntax-and-error-recovery/), 오류 복구).
 - **`baseline` 은 교차축 전용**이다 — 아이템 하나하나의 기준선을 다루는 값이라 `align-*` 에만 있다.
-- `stretch` 는 `justify-content` 에도 문법적으로 쓸 수 있지만, **flex 아이템의 주축 크기는 `flex-grow` 가 정하므로** 아무 효과가 없다(목록의 **25번 주제**).
+- `stretch` 는 `justify-content` 에도 문법적으로 쓸 수 있지만, **flex 아이템의 주축 크기는 `flex-grow` 가 정하므로** 아무 효과가 없다([목록의 **25번 주제**](../25-flex-shorthand-and-sizing/)).
 - 이 비대칭이 (6)의 `justify-self` 부재와 같은 뿌리다.
 
 ### 대응표 — 헷갈릴 때 보는 자리
@@ -395,13 +395,50 @@ flex 컨테이너의 아이템에서는 **무시된다**(에러도 경고도 없
 
 ### 5. `align-content` 가 안 먹는다
 
-`flex-wrap: wrap` 으로 **줄이 둘 이상 생겼을 때만** 의미가 있다.\
-한 줄짜리 flex 에서는 아무 일도 하지 않는다. 정본은 목록의 **26번 주제**.
+★ **경계는 「줄이 둘 이상이냐」가 아니라 `flex-wrap` 값이다.** 이 절을 그렇게 적었다가 실측으로 고쳤다.
+
+```text
+### 컨테이너 200x200, 항목 하나(높이 20), align-content: center
+--- Chrome 151.0.7922.173 ---
+flex-wrap: wrap    -> 항목 y = 90   (가운데에 놓였다. 줄은 하나뿐인데도)
+flex-wrap: nowrap  -> 항목 y = 0    (계산값은 똑같이 center 인데 아무 일도 안 한다)
+```
+
+`nowrap` 이면 **줄이라는 개념 자체가 없어서** `align-content` 가 볼 것이 없다.
+`wrap` 이면 **줄이 하나여도 「줄」이 있으므로** 그 줄을 교차축에서 옮긴다.
+실무에서는 `wrap` 을 켜 놓고 줄이 하나로 끝나는 경우가 흔하므로 **이 구분이 실제로 갈린다.**
+정본은 [목록의 **26번 주제**](../26-flex-wrap-gap-order/).
 
 ### 6. `height` 를 안 줬는데 세로 가운데가 안 된다
 
 `align-items: center` 는 **교차축에 남는 공간**을 전제한다.\
 컨테이너 높이가 내용에 딱 맞으면 남는 공간이 0 이라 가운데가 곧 위다 — 위 demo 에서 `height: 120px` 를 준 이유다.
+
+## 구현 세부사항 대 언어 보장
+
+| 항목 | 누가 보장하나 |
+|---|---|
+| `flex-direction` 이 주축을, 주축이 교차축을 정하는 것 | **명세**(css-flexbox-1 §5 — 축과 방향) |
+| `justify-*` 가 주축, `align-*` 가 교차축인 것 | **명세**(css-align-3 §5.1.3 Flex Containers — `justify-content` 의 축은 main axis, `align-content` 의 축은 cross axis) |
+| `justify-content`·`align-items` 의 **초기값이 `normal` 인 것** | **명세**(css-align-3 의 속성 표에 Initial: normal). 계산값 실측이 그것과 맞았다 |
+| flex 에서 `align-items: normal` 이 **`stretch` 처럼** 구는 것 | **명세**(§6.2.4 Flex Items — 「normal Behavior: Behaves as stretch」) |
+| flex 에서 `justify-content: stretch` 가 **`flex-start` 처럼** 구는 것 | **명세** — §5.1.3 이 이유까지 적는다: 「since stretching in the main axis is controlled by flex, **stretch behaves as flex-start**」. 관찰이 아니다 |
+| `align-items` 에 `space-between` 이 **버려지는 것** | **명세**(문법). `align-items` 의 값 문법에 `<content-distribution>` 이 없다 — 그래서 무효한 선언 하나가 버려진다 |
+| ★ `align-content` 의 경계가 **`flex-wrap` 값**인 것 | **명세** — css-flexbox-1 §6 이 「A **single-line flex container** (i.e. one with `flex-wrap: nowrap`)」라고 정의하고 §8.4 가 「In a single-line flex container … **align-content has no effect**」라고 적는다. **「줄이 몇 개냐」가 아니라 `flex-wrap` 이 기준**이라는 것이 명세 문구 그대로다 |
+| ★ `justify-self` 가 flex 아이템에 **없는 것** | **명세**(css-align-3 §6.1 의 Applies to — 「block-level boxes, absolutely-positioned boxes, and **grid items**」). `align-self` 쪽은 「absolutely-positioned boxes, **flex items**, and grid items」다. **비대칭이 명세에 적혀 있다** |
+| `row` 가 「가로」가 아니라 **인라인 축**인 것 | **명세** — `direction: rtl`·`writing-mode: vertical-rl` 실측이 그것과 맞았다 |
+| ★ 본문의 **절대 좌표(10·382·753·762·722·683 …)** | ★ **관찰일 뿐이다.** 컨테이너가 폭을 안 정한 demo 라서 **뷰포트 폭이 바뀌면 전부 바뀐다.** 재검증에서 이 값들은 **창 폭 804 에서만** 재현됐다(기본 창 780 에서는 정확히 24px 씩 어긋난다). `3-answer.md` 는 「컨테이너 804×140」으로 조건을 적어 두었지만 **이 문서에는 그 조건이 없다** |
+| ★ 아이템의 `W41`·`W32`·`H40` 같은 치수 | ★ **관찰일 뿐이다.** `system-ui` 가 이 머신에서 어느 글꼴로 풀리느냐에 달렸다 — 글꼴이 다르면 padding 바깥의 글자 폭이 달라진다 |
+| `align-content: center` 의 계산값이 `nowrap` 에서도 `center` 로 남는 것 | **명세**(계산값은 지정한 키워드 그대로). 실측도 그랬다 — **버려진 게 아니라 할 일이 없었던 것** |
+
+★★ **「계산값 단계 이후에서 갈리는」 자리가 이 주제에 둘 있다.** 세 창(`cssRules` · `querySelectorAll` · `getComputedStyle`)이 **전부 정상인데 결과만 다르다.**
+
+- `justify-self: end` 를 flex 아이템에 주면 **계산값은 `end` 로 멀쩡히 남는데** 아이템의 `left` 는 한 픽셀도 안 움직인다(실측: 준 판과 안 준 판이 똑같이 50).
+- `align-content: center` 를 `flex-wrap: nowrap` 컨테이너에 주면 **계산값은 `center` 인데** 아이템 `y` 는 0 이다(`wrap` 으로 바꾸면 같은 계산값으로 90 이 된다).
+
+**둘 다 `getBoundingClientRect()` 로만 보인다.** 계산값은 「무엇을 선언했나」를 말하지 「무엇이 일어나나」를 말하지 않는다.
+
+★ **엔진은 Chrome 하나다.** Firefox 155 는 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.** 크로스 브라우저는 Baseline 데이터로만 접지했다(api.webstatus.dev 조회 2026-09-23: `flexbox` **widely** 2015-09-30 → 2018-03-30 · `flexbox-gap` **widely** 2021-04-26 → 2023-10-26).
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -431,11 +468,11 @@ flex 컨테이너의 아이템에서는 **무시된다**(에러도 경고도 없
 ## 관련 자료
 
 - [`../README.md`](../README.md) — CSS 문법·API 주제 목록(이 주제는 24번) · 「버전·지원 기준」의 Baseline 표
-- 목록의 **25번 주제**(`flex` 단축 — `grow`/`shrink`/`basis`) — **아이템의 크기가 정해지는 규칙**은 거기. 이 문서는 크기가 정해진 뒤의 배치만 다룬다
-- 목록의 **26번 주제**(줄바꿈·`gap`·`order`) — `flex-wrap`·`align-content`·`order` 의 정본
+- [목록의 **25번 주제**](../25-flex-shorthand-and-sizing/)(`flex` 단축 — `grow`/`shrink`/`basis`) — **아이템의 크기가 정해지는 규칙**은 거기. 이 문서는 크기가 정해진 뒤의 배치만 다룬다
+- [목록의 **26번 주제**](../26-flex-wrap-gap-order/)(줄바꿈·`gap`·`order`) — `flex-wrap`·`align-content`·`order` 의 정본
 - [목록의 **16번 주제**](../16-display-inner-outer/)(`display` 의 내부/외부 값) — `flex` 와 `inline-flex` 가 갈리는 자리
-- 목록의 **27~29번 주제**(Grid) — 두 축을 동시에 다뤄야 할 때. `justify-self` 는 거기 있다
-- 목록의 **32번 주제**(논리 속성과 글쓰기 방향) — `row` 가 왜 "가로"가 아닌지의 정본
+- 목록의 [**27**](../27-grid-track-sizing/)~[**29**](../29-grid-template-areas/)번 주제(Grid) — 두 축을 동시에 다뤄야 할 때. `justify-self` 는 거기 있다
+- [목록의 **32번 주제**](../32-logical-properties-and-writing-mode/)(논리 속성과 글쓰기 방향) — `row` 가 왜 "가로"가 아닌지의 정본
 - [`history/web/03-HTML-CSS-진화.md`](../../../../../../history/web/03-HTML-CSS-진화.md) — **1차원 레이아웃이 언제 왜 들어왔나는 거기.** 여기는 오늘의 규칙만
 - [`reference/render-rules.md`](../../../../../../reference/render-rules.md) — 이 문서의 `demo` 블록 규칙
 
@@ -450,7 +487,7 @@ flex 컨테이너의 아이템에서는 **무시된다**(에러도 경고도 없
 - **`justify-content`** — 주축에서 아이템 **묶음**과 그 사이 간격을 정한다.
 - **`align-items`** — 교차축에서 아이템 **하나하나**를 맞춘다.
 - **`align-self`** — 교차축에서 아이템 **하나만** 예외 처리한다. 주축에는 대응물이 없다.
-- **`align-content`** — 교차축에서 **여러 줄**을 다룬다. 줄바꿈이 켜졌을 때만 의미가 있다(26번).
+- **`align-content`** — 교차축에서 **줄**들을 다룬다. `flex-wrap: wrap` 일 때만 의미가 있다(줄 수와 무관 — 26번).
 - **인라인 축(inline axis)** — 글자가 흐르는 방향의 축. 한국어 가로쓰기에서는 가로.
 - **블록 축(block axis)** — 문단이 쌓이는 방향의 축. 한국어 가로쓰기에서는 세로.
 - **자유 공간(free space)** — 컨테이너에서 아이템들이 쓰고 남은 공간. `margin: auto` 가 먼저 먹고 `justify-content` 가 나눈다.
@@ -464,6 +501,6 @@ flex 컨테이너의 아이템에서는 **무시된다**(에러도 경고도 없
 - `gap`(= `row-gap`/`column-gap`)은 flex 에서 늦게 들어와서(Baseline widely 2023-10-26) 오래된 코드는 아직 아이템 `margin` 으로 간격을 준다.\
   `margin` 방식은 양 끝에도 여백이 생기고 `justify-content` 와 간섭한다는 점이 다르다(26번).
 - `flex-direction` 은 **레이아웃 속성**이라 애니메이션에 쓰면 매 프레임 레이아웃이 다시 돈다.\
-  움직임이 필요하면 `transform` 쪽으로 옮긴다 — 어떤 속성이 어느 단계를 다시 돌리는지는 목록의 **56번 주제**.
+  움직임이 필요하면 `transform` 쪽으로 옮긴다 — 어떤 속성이 어느 단계를 다시 돌리는지는 [목록의 **56번 주제**](../56-rendering-pipeline-and-will-change/).
 - `align-items: baseline` 은 글자 크기가 다른 아이템을 나란히 놓을 때 **글자 밑줄을 맞춰** 준다.\
   상자 위아래를 맞추는 `flex-start`·`center` 와 결과가 눈에 띄게 다르고, 라벨과 값을 나란히 놓는 UI 에서 쓸모가 크다.
