@@ -20,7 +20,7 @@
 4. 인증 안 된 아무나 **거대한 본문**을 보내 서버 메모리를 압박(자원 고갈 시도)할 수 있다 — 비밀 검증이 본문을 다 읽은 *뒤에* 일어나므로, 검증에 실패할 요청조차 메모리를 이미 물어버린다. 막으려면 상한 검사를 **본문을 읽기 전**에 놓는다: 헤더에 선언된 `content-length`를 먼저 보고 상한(예: 4KB) 초과면 읽지도 않고 413으로 거절, 그다음 실제로 읽은 크기를 한 번 더 재확인(선언값 위조 대비). 검사를 인증·적재보다 앞으로 당기는 것이 핵심이다.
    > **413 Payload Too Large** — 본문이 서버가 허용한 상한을 넘었다는 HTTP 상태 코드.
 
-5. 각각 실패한다: **클라이언트 타임아웃** — 연결만 끊고 서버 생성을 못 멈춘다(Q1). **프롬프트 소프트 스위치**(`/no_think` 문자열) — 서빙 런타임의 챗 템플릿이 그것을 특별 취급하지 않으면 그냥 일반 텍스트로 흘러 아무 효과가 없다(주술). 모델 제어는 런타임의 공식 API(`think:false`)로 해야 한다. **상위 프레임워크 기본값** — 기본이 무제한이면(타임아웃 없음, `0.0.0.0` 전체 바인딩) 설정을 깜빡하는 순간 그대로 노출된다. 그래서 이런 것들 위가 아니라 **자원 지점의 하드 상한**이 최후 방어선이 된다("num_predict가 유일한 방어선").
+5. 각각 실패한다: **클라이언트 타임아웃** — 연결만 끊고 서버 생성을 못 멈춘다(Q1). **프롬프트 소프트 스위치**(`/no_think` 문자열) — 서빙 런타임의 챗 템플릿이 그것을 특별 취급하지 않으면 그냥 일반 텍스트로 흘러 아무 효과가 없다(주술). 모델 제어는 런타임의 공식 API(`think:false`)로 해야 한다. **상위 프레임워크 기본값** — 기본이 무제한이면(타임아웃 없음, `0.0.0.0` 전체 바인딩) 설정을 깜빡하는 순간 그대로 노출된다. 그래서 이런 것들 위가 아니라 **자원 지점의 하드 상한**이 최후 방어선이 된다("num_predict가 최후 방어선").
 
 6. `complete()`를 빠뜨리면 **열린 연결과 그 연결을 붙들고 있는 스레드**가 샌다 — 응답이 끝났다고 서버에 알리지 못해 자원이 반납되지 않는다. 스트리밍은 "응답을 여러 조각으로 나눠 흘리는" 열린 자원이므로, 정상 종료(`complete()`)든 오류 종료(`completeWithError`)든 **반드시 닫아야** 그 자원이 회수된다. "열었으면 닫는다"는 파일·소켓·락과 같은 계열의 자원 경계다.
    > **자원 누수(resource leak)** — 다 쓴 자원(연결·스레드·메모리)을 반납하지 않아 시간이 갈수록 고갈되는 것.
@@ -45,7 +45,7 @@ async def rewrite(req):
     async with sem:
         payload = {"stream": False, "think": False,          # 제어는 런타임 공식 필드로
                    "format": schema,
-                   "options": {"num_predict": 512}}          # 서버측 생성량 상한 = 유일한 방어선
+                   "options": {"num_predict": 512}}          # 서버측 생성량 상한 = 최후 방어선
         return await http.post(MODEL_URL, json=payload)
 ```
 무엇이 깨졌나: 클라이언트 타임아웃을 상한으로 믿었지만, 연결을 끊는 것은 서버의 생성을 멈추지 않았다.\
@@ -131,7 +131,7 @@ if (!p.waitFor(120, SECONDS)) p.destroyForcibly();           // 대기에 상한
 ① 문제 코드
 ```python
 client = SearchClient()
-result = client.bulk_index(docs)
+result = client.index_batch(docs)
 client.close()                                               # 성공 경로에서만 close → 예외 시 연결 누적
 # (이 사례의 finally 교정은 분석 문서의 계획 — 적용 결과 미기록)
 ```
@@ -142,7 +142,7 @@ emitter.send(chunk);                                         // 스트림을 열
 ```python
 client = SearchClient()
 try:
-    result = client.bulk_index(docs)
+    result = client.index_batch(docs)
 finally:
     client.close()
 ```
@@ -294,7 +294,7 @@ _cache = {}                                                   # 프로세스 전
 def worker(batch):
     global _cache                                             # 사용보다 앞에 선언
     if "transformer" not in _cache:
-        _cache["transformer"] = build_transformer()           # 대형 사전 파싱을 워커당 1회
+        _cache["transformer"] = make_transformer()           # 대형 사전 파싱을 워커당 1회
     t = _cache["transformer"]
     # ...
 # 문제였던 것: 배치마다 재파싱(임시 객체가 결과의 3~5배) × N 워커 동시 피크 → 스왑 → 결과 대기 타임아웃
