@@ -43,7 +43,7 @@
 ### 변형 A — 상태코드와 URL 성질을 보지 않고 immutable 부여
 ① 문제 코드
 ```java
-ResponseEntity<byte[]> proxyImage(String id) {
+ResponseEntity<byte[]> imageProxy(String id) {
     ResponseEntity<byte[]> upstream = client.get("/images/" + id);   // URL에 버전 토큰 없음
     if (upstream.getStatusCode().is2xxSuccessful()) {                 // 204·206에도
         return ResponseEntity.status(upstream.getStatusCode())
@@ -55,13 +55,13 @@ ResponseEntity<byte[]> proxyImage(String id) {
 ```
 ② 고친 코드
 ```java
-static final String IMAGE_CACHE_CONTROL = "max-age=604800, immutable";   // 상수 1곳 — 되돌리기 쉬움
+static final String IMG_CACHE_HEADER = "max-age=604800, immutable";   // 상수 1곳 — 되돌리기 쉬움
 
-ResponseEntity<byte[]> proxyImage(String id) {
+ResponseEntity<byte[]> imageProxy(String id) {
     ResponseEntity<byte[]> upstream = client.get("/images/" + id);
     BodyBuilder b = ResponseEntity.status(upstream.getStatusCode());
     if (upstream.getStatusCode() == HttpStatus.OK) {                   // 정상 전체 응답만
-        b.header(CACHE_CONTROL, IMAGE_CACHE_CONTROL);
+        b.header(CACHE_CONTROL, IMG_CACHE_HEADER);
     }
     return b.body(upstream.getBody());
 }
