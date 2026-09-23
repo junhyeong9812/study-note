@@ -102,6 +102,19 @@
  언마운트는 옛 트리를, 마운트는 새 트리를 봐야 한다
 ```
 
+## DOM 에 닿는 것
+
+| 상황 | 실제로 일어나는 일 | 흐름 |
+|---|---|---|
+| 엘리먼트가 처음 그려질 때 | `createInstance` + `setInitialProperties` 가 **completeWork** 에서 끝난다. 커밋은 붙이기만 한다 | [DOM 조작](flows/dom-ops/README.md) |
+| props 가 바뀔 때 | 가상 DOM 이 아니라 **props 객체 두 개**를 비교한다. 없어진 것 지우고, 바뀐 것 세우는 스무 줄이다 | [DOM 조작](flows/dom-ops/README.md) |
+| `<script>` 를 렌더할 때 | `div.innerHTML` 로 만들어 **실행되지 않게** 한다 | [DOM 조작](flows/dom-ops/README.md) |
+| 리스트에 여러 개를 한 번에 넣을 때 | 넣을 자리를 앞으로 훑어 찾는다. 주석이 스스로 비효율을 인정한다 | [DOM 조작](flows/dom-ops/README.md) |
+| Suspense·Offscreen 이 트리를 숨길 때 | 언마운트가 아니라 `display: none !important` 인라인 스타일 | [DOM 조작](flows/dom-ops/README.md) |
+| `onClick` 같은 핸들러 | 엘리먼트가 아니라 **루트에 한 번** 위임된다. 포털이 두 번째 루트다 | [DOM 조작](flows/dom-ops/README.md) |
+| 커밋 도중의 브라우저 이벤트 | before-mutation 시작부터 mutation 끝까지 **꺼져 있다** | [DOM 조작](flows/dom-ops/README.md) |
+| 포커스가 사라졌다 돌아올 때 | 포커스가 **실제로 옮겨갔을 때만** 선택과 조상 스크롤을 되돌린다 | [DOM 조작](flows/dom-ops/README.md) |
+
 ## 값을 기억하는 것
 
 | API | 어디서 처리되는가 | 흐름 |
