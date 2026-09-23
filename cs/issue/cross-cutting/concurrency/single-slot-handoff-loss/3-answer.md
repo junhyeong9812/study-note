@@ -17,7 +17,7 @@
    (b) 행동 가능해진 뒤에만 소비 — 대상 API가 아직 준비되지 않았으면 요청을 **비우지 않고 남긴다**.\
    (c) 성공 후 clear — 부작용이 성공한 뒤에 비우고, 실패하면 남겨 재시도 근거를 보존한다.\
    (d) 준비 신호를 재실행 조건에 — 준비 상태(`apiReady`)가 effect 의존성에 있어야 준비되는 순간 대기 요청이 처리된다(없으면 준비 전 도착한 요청이 영구 대기).
-   > **정확히 1회(exactly-once) 전달** — 유실도 중복도 없이 한 번만 처리되는 것. 소비·확인·제거의 순서로 만들어진다.
+   > **정확히 1회(exactly-once) 전달** — 유실도 중복도 없이 한 번만 처리되는 것. "성공 후 clear"만으로는 유실이 없는 최소 1회(at-least-once)까지다 — 성공~clear 사이 재실행·재시도가 겹치면 중복이 나므로, 항목 id로 멱등 제거·중복 억제(6번)나 진행 중 표시를 함께 둬야 정확히 1회에 가까워진다.
 
 3. **요청이 사라진다.** 먼저 비우면 부작용이 throw하는 순간 요청은 어디에도 없고, 재시도할 근거가 없다.\
    더 나쁜 경우 요청과 함께 정리할 자원(임시 세션)도 먼저 닫아 복구 자체가 불가능해졌다.\
@@ -81,7 +81,7 @@ closeTempSession();                // ...쓰기 ACK 전에 정리 세션까지 �
 
 // ② 고침
 if (!api) return;                  // 준비 전 — 요청 유지 (apiReady가 deps에 있어 준비되면 재실행)
-await writeTo(target, prompt);     // ACK
+await writeTo(target, prompt);     // ACK — await 동안 effect가 재실행되면 같은 요청을 또 쓸 수 있으므로 진행 중 표시(또는 id 멱등 소비)를 함께 둔다
 requestOpen(null);                 // 성공 후에만 소비
 closeTempSession();
 ```
@@ -98,7 +98,7 @@ useEffect(() => {
   if (req.project !== activeProject) return;    // 올바른 인스턴스만
   if (!handleRef.current) return;                  // 준비 전이면 유지
   act(req); clear();
-}, [req, apiReady, layer]);
+}, [req, apiReady, layer, activeProject]);    // 조건에 쓰는 값은 재실행 조건에도
 ```
 무엇이 깨졌나: 숨겼지만 마운트된 레이어, 또는 `key` 전환 직전의 이전 인스턴스가 요청을 먼저 소비했다.\
 같은 구조: 호출 측이 대상 전환(비동기) 완료를 기다리지 않고 요청 → 이전 인스턴스가 소비, `await` 후 요청으로 보완.
