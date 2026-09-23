@@ -7,8 +7,12 @@ r"""`목록의 **NN번 주제**` 표기를 폴더 링크로 일괄 전환한다.
 
 다루는 형태 — 굵게 있고 없고 · `주제` 붙고 안 붙고 · `·` 나열 · `~`/`\~` 범위.
 
-★★ 실측 함정 — `**목록의 NN번 주제**` 처럼 **여는 `**` 가 「목록의」 앞에 있으면**
-패턴이 뒤의 닫는 `**` 만 삼켜 **짝이 깨진다**(실제로 3건 났다).
+★★ 실측 함정 — `**앞말 목록의 NN번 주제**` 처럼 **여는 `**` 가 「목록의」 앞에 있으면**
+패턴이 뒤의 닫는 `**` 만 삼켜 **짝이 깨진다**(1차 3건 · 2차 4건 — 주석만으로는 못 막았다).
+★ 이제 **코드가 막는다** — 줄 머리부터 매치 시작까지 `**` 개수가 홀수면 볼드 안이므로
+안쪽 굵게를 넣지 않고 삼킨 닫는 `**` 를 링크 뒤에 되돌려 놓는다.
+★★ 이 사고가 무서운 이유 — 깨진 `**` 가 **문단 뒤쪽의 다른 `**` 와 짝이 맞아 버리면**
+본문에 별표가 안 남아 `check-md-rendering.mjs` 도 통과한다. **엉뚱한 범위가 조용히 굵어진다.**
 치환 뒤에는 반드시 `check-md-rendering.mjs` 를 돌리고, **이미 볼드 span 안인 자리에는
 안쪽 `**` 를 넣지 않는다**(중첩 볼드는 CommonMark 에서 안 닫힌다).
 폴더가 없는 번호와 자기 자신을 가리키는 번호는 **그대로 둔다**(아직 걸 곳이 없다).
@@ -49,13 +53,39 @@ def sweep(root, apply=False):
             if any(x not in folders for x in nums) or all(x == own for x in nums):
                 continue                                   # 걸 곳이 없다
             suf = m.group('suf') or ''
+            # ★★ 삼킨 닫는 `**` 를 되돌린다 — 이 도구가 실제로 두 번 낸 사고다.
+            #   `**앞말 목록의 NN번 주제**(…)` 에서 볼드는 「앞말」에서 열렸고 뒤의 `**` 가 그 닫는 짝이다.
+            #   그걸 우리 표기의 일부로 삼키면 볼드가 안 닫히고, 문단 뒤쪽 `**` 와 짝이 맞아
+            #   **글자가 안 남아 검사기도 조용히 넘어간다**(엉뚱한 범위가 굵어질 뿐).
+            #   판정 — 매치 시작 전까지 그 줄의 `**` 개수가 홀수면 우리는 볼드 안에 있다.
+            bol = src.rfind('\n', 0, m.start()) + 1
+            inside_bold = src.count('**', bol, m.start()) % 2 == 1
+            start = m.start()
+            # ★ 볼드가 **정확히 우리 표기만** 감싼 꼴(`**목록의 NN번 주제**`) 인가.
+            #   그러면 여는 `**` 까지 같이 삼켜 링크 텍스트 안으로 옮긴다.
+            #   밖에 두면 `**[…](url)**다` 가 되는데, 닫는 `**` 앞이 `)` 이고 뒤가 한글이라
+            #   CommonMark 가 안 닫는다(§2-1 「닫는 ** 앞이 문장부호」와 같은 사고).
+            wraps_exactly = inside_bold and m.group('b2') and src[start - 2:start] == '**'
+            if wraps_exactly:
+                start -= 2
             # 링크 아닌 대괄호(`[목록의 …]`)는 통째로 바꿔치우므로 닫는 `]` 까지 소비된 상태다
             if len(nums) == 1:
-                rep = '[목록의 **%s번%s**](../%s/)' % (nums[0], suf, folders[nums[0]])
+                if wraps_exactly:
+                    rep = '[**목록의 %s번%s**](../%s/)' % (nums[0], suf, folders[nums[0]])
+                elif inside_bold:
+                    # 볼드가 앞말에서 열렸다 — 안쪽에 `**` 를 또 넣으면 중첩이라 안 닫힌다.
+                    # 링크만 만들고 삼킨 닫는 `**` 를 제자리에 돌려놓는다.
+                    rep = '[목록의 %s번%s](../%s/)%s' % (
+                        nums[0], suf, folders[nums[0]], '**' if m.group('b2') else '')
+                else:
+                    rep = '[목록의 **%s번%s**](../%s/)' % (nums[0], suf, folders[nums[0]])
             else:
-                joined = sep.join('[**%s**](../%s/)' % (x, folders[x]) for x in nums)
-                rep = '목록의 %s번%s' % (joined, suf)
-            out.append(src[last:m.start()]); out.append(rep); last = m.end(); n += 1
+                fmt = '[%s](../%s/)' if inside_bold else '[**%s**](../%s/)'
+                joined = sep.join(fmt % (x, folders[x]) for x in nums)
+                tail = '**' if (inside_bold and m.group('b2') and not wraps_exactly) else ''
+                rep = '%s목록의 %s번%s%s' % ('**' if wraps_exactly else '', joined, suf,
+                                            '**' if wraps_exactly else tail)
+            out.append(src[last:start]); out.append(rep); last = m.end(); n += 1
         if n:
             out.append(src[last:])
             if apply:
