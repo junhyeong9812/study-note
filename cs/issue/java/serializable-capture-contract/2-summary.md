@@ -26,7 +26,7 @@ writeObject(desc)
 [교정 2 — 비직렬화 내부 타입]
    필드가 TypeVariable(JDK 내부, 비직렬화) 보유
    writeReplace → (선언 클래스, 타입 파라미터 인덱스) 마커
-   readResolve  → rawClass.getTypeParameters()[index] 재조회 (같은 인스턴스 → equals 보존)
+   readResolve  → rawClass.getTypeParameters()[index] 재조회 (선언 요소+이름이 같은 타입 변수 → equals 보존)
                   검증 실패 시 InvalidObjectException
 ```
 

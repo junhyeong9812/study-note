@@ -26,7 +26,7 @@
 
 6. **재조회 좌표를 보낸다.** 인터페이스가 `extends Serializable`을 선언했는데 구현 두 곳이 JDK 내부 `TypeVariable` 구현(비직렬화)을 직접 보유해 선언 계약을 어겼다. 교정은 운반자 클래스에 `writeReplace()`/`readResolve()` 직렬화 프록시를 두는 것:
    - `writeReplace`: `TypeVariable` 객체 대신 **(그 타입 변수를 선언한 클래스, 타입 파라미터 인덱스)** 마커를 보낸다.
-   - `readResolve`: 마커로 `declaringClass.getTypeParameters()[index]`를 다시 조회해 **JDK가 관리하는 같은 인스턴스**를 얻는다 → equals/hashCode가 보존된다. 입력 검증에 실패하면 `InvalidObjectException`.\
+   - `readResolve`: 마커로 `declaringClass.getTypeParameters()[index]`를 다시 조회해 **같은 선언의 타입 변수**를 얻는다 → JDK의 타입 변수 equals/hashCode는 선언 요소와 이름으로 판정하므로 보존된다(인스턴스 동일성은 명세상 보장되지 않으므로 `==`에 기대지 않는다). 입력 검증에 실패하면 `InvalidObjectException`. (클래스에 선언된 타입 변수 기준 — 메서드·생성자에 선언된 타입 변수라면 그 실행 요소를 찾을 좌표가 더 필요하다.)\
    enum 직렬화가 상수 객체가 아니라 **이름**을 보내고 복원 시 같은 상수를 찾는 것과 같은 구조다.
    > **직렬화 프록시(writeReplace/readResolve)** — 직렬화 직전 다른 객체로 바꿔 쓰고, 역직렬화 직후 원래 객체로 되돌리는 훅.
 
@@ -92,7 +92,7 @@ class SyntheticGenericType implements ParameterizedType, Serializable {
     private Object readResolve() throws ObjectStreamException {
         TypeVariable<?>[] params = declaringClass.getTypeParameters();
         if (index < 0 || index >= params.length) throw new InvalidObjectException("bad index");
-        return rebuild(params[index]);                      // 같은 JDK 인스턴스 재조회 → equals 보존
+        return rebuild(params[index]);                      // 같은 선언의 타입 변수 재조회 → equals 보존
     }
 // 비직렬화 경로의 비용 0 (생성 시점 래핑 방식은 ~3배 오버헤드로 선택하지 않음)
 ```
