@@ -11,7 +11,7 @@
 1. **적용 시점에 최신인지 확인하지 않았다.** 두 요청은 서로 다른 시간에 끝나며, 네트워크·서버 부하에 따라 먼저 보낸 A가 나중에 도착할 수 있다.\
    응답 핸들러가 무조건 `setResults(r)`를 하면 도착 순서대로 덮어쓰므로 마지막에 도착한 옛 A가 최종 상태가 된다 — 에러 없이 틀린 데이터가 정상처럼 보이는 무음 오류다.\
    게다가 옛 요청의 `finally`가 무조건 로딩을 끄면, 최신 요청이 아직 진행 중이어도 스피너가 사라져 "진행 중"이라는 사실까지 숨긴다.
-   > **lost update** — 동시 갱신 중 한쪽의 결과가 다른 쪽에 의해 덮여 사라지는 것. 여기서는 최신 결과가 옛 결과에 덮인다.
+   > **stale overwrite(늦은 결과 덮어쓰기)** — 늦게 도착한 옛 결과가 최신 결과를 덮는 것. 결과가 사라진다는 점은 lost update와 닮았지만, 고전적 lost update(두 read-modify-write가 같은 값을 읽고 서로 덮음)와 달리 원인은 적용 순서다.
 
 2. **조기 return 경로의 in-flight가 살아남는다.** 쿼리를 비우면 토큰을 올리기 전에 return하므로, 이미 날아간 이전 요청의 토큰이 여전히 "최신"이다.\
    그 응답이 늦게 도착하면 빈 목록에 옛 결과가 다시 나타난다.\
@@ -178,10 +178,14 @@ function isCurrent(token, latest, uuid, curUuid, sig, curSig) {
 // ② 고침
 const base = inFlight ?? acked;                      // 비교 기준 = 상대가 확인해 준 값
 if (!shouldSend(size, base)) return;
-const my = ++seq; inFlight = size;
-const reply = await resize(size);                    // 응답이 실제 적용된 크기를 돌려줌
-if (my !== seq) return;                              // 늦은 답 폐기
-acked = reply.size; inFlight = null;
+const my = ++seq; inFlight = size;                   // 진행 중 값은 중복 전송 억제용일 뿐 — 확정 기준선은 acked
+try {
+  const reply = await resize(size);                  // 응답이 실제 적용된 크기를 돌려줌
+  if (my !== seq) return;                            // 늦은 답 폐기
+  acked = reply.size;
+} finally {
+  if (my === seq) inFlight = null;                   // 실패해도 해제 — 기준선이 acked로 복귀(안 하면 실패값이 다시 봉인됨)
+}
 ```
 
 ### 방안 4 — 인과 순서: 부모 이벤트를 자식 발행 주체 기동 전에
@@ -200,7 +204,7 @@ spawn_waiter(&sess); spawn_tailer(&sess);
 | | 본문(순번+단조) | 방안 1 3중 가드 | 방안 2 다축 CAS | 방안 3 ack 기준선 | 방안 4 인과 순서 |
 |---|---|---|---|---|---|
 | 막는 것 | 늦은 응답·과거 전이 | 다른 writer·축출 후 부활 | 세션 전환·데이터 버전 교체 | 실패 요청의 기준선 오염 | 자식이 부모를 앞지름 |
-| 전제 | 요청 발행자 하나 | 같은 캐시에 쓰는 경로가 여럿 | 전제 축을 식별 가능 | 상대가 적용 결과를 응답 | 발행 순서를 통제 가능 |
+| 전제 | 요청 발행자 하나 | 같은 캐시에 쓰는 경로가 여럿 | 전제 축을 식별 가능 | 상대가 적용 결과를 응답 | 발행 순서를 통제 가능 + 이벤트 채널이 발행 순서를 보존(FIFO) |
 | 비용 | 토큰 1개 | 가드·세대 상태 여러 개 | 축마다 저장·비교 | 응답 형식 확장 | 기동 순서 제약 |
 | 실패 모드 | 축이 더 있으면 새 경로로 stale write | 가드 하나라도 빠지면 부활 | 빠진 축 | 늦은 답 폐기 누락 | 새 발행 주체 추가 시 순서 재검토 |
 
