@@ -8,7 +8,7 @@
 ## 정답
 <!-- 질문 1:1 대응 -->
 
-1. **통과한다.** Python에서 `bool`은 `int`의 하위 타입이라 `isinstance(True, int)`가 참이다. 그래서 JSON의 `true`가 "정수" 검증을 통과해 `1`로 쓰여 터미널 크기가 1×1로 적용되는 결함이었다(리뷰에서 발견). 정수만 받으려면 하위 타입을 거부하는 `type(x) is int`를 쓰거나 `not isinstance(x, bool)`을 명시한다. 같은 함정이 포트·시각 필드 검증에서도 나왔다. `next_v in "ei"`는 **부분문자열 검사**이고 빈 문자열은 모든 문자열의 부분문자열이라, "다음 모음 없음"을 `""`로 표현하면 조건이 **항상 참**이 된다. 단일 문자 멤버십은 튜플 `next_v in ("e", "i")`로 쓴다 — `"" in ("e", "i")`는 거짓이다. 이 패턴은 한 곳을 고친 뒤 같은 패턴 6곳을 전수 수정했다.
+1. **통과한다.** Python에서 `bool`은 `int`의 하위 타입이라 `isinstance(True, int)`가 참이다. 그래서 JSON의 `true`가 "정수" 검증을 통과해 `1`로 쓰여 터미널 크기가 1×1로 적용되는 결함이었다(리뷰에서 발견). 정수만 받으려면 하위 타입을 거부하는 `type(x) is int`를 쓰거나 `not isinstance(x, bool)`을 명시한다. 같은 함정이 포트·시각 필드 검증에서도 나왔다. `nxt in "ei"`는 **부분문자열 검사**이고 빈 문자열은 모든 문자열의 부분문자열이라, "다음 모음 없음"을 `""`로 표현하면 조건이 **항상 참**이 된다. 단일 문자 멤버십은 튜플 `nxt in ("e", "i")`로 쓴다 — `"" in ("e", "i")`는 거짓이다. 이 패턴은 한 곳을 고친 뒤 같은 패턴 6곳을 전수 수정했다.
    > **하위 타입(subtype)** — 상위 타입의 모든 연산을 지원해 `isinstance` 검사를 통과하는 타입. "정수인가?"와 "정확히 int인가?"는 다른 질문이다.
 
 2. **대입문은 우변을 끝까지 평가한 뒤에야 좌변의 옛 참조를 놓는다.** `self.index = read_index(new)`에서 새 인덱스를 다 읽는 동안 `self.index`는 여전히 옛 인덱스를 가리키므로 **둘이 동시에 메모리에 산다.** 교체 전후 크기 비교(`new.ntotal == self.index.ntotal`)도 두 객체를 동시에 요구했다. 그래서 피크가 2배 가까이 올라 호스트 OOM이 났다. 교정은 검증에 필요한 값만 먼저 꺼내고 → 옛 참조를 놓고(`None` 대입·`del`·`gc.collect()`) → 새로 읽는 순서다. 단, 새 파일이 손상됐을 때 **되읽을 원본이 없으면 미리 놓지 않는다**(정확성 우선). 피크는 222GB → 약 148GB(산정)로 줄었고, 실기동 동시 로드 성공으로 확인했다. `except` 블록 안에서는 **처리 중인 예외의 traceback이 발생 지점까지의 프레임과 그 지역변수를 참조**한다. 그래서 거기서 `del obj`를 해도 참조가 하나 남아 객체가 해제되지 않았고, 원본을 되읽으면서 다시 2배가 됐다. 교정은 except에서 플래그만 세우고 정리·복원을 블록 밖으로 옮기는 것이다. 회귀 테스트는 복원 읽기 시점에 캐시 객체의 weakref가 죽어 있음을 단언한다.
@@ -44,7 +44,7 @@
 if not (isinstance(cols, int) and isinstance(rows, int)):   # True 통과 → resize(1, 1)
     return
 if c == "c":
-    return SOFT if next_v in "ei" else HARD                 # next_v == "" → 항상 SOFT
+    return SOFT if nxt in "ei" else HARD                 # nxt == "" → 항상 SOFT
 if rec.date and len(rec.date) >= 4:                         # date 가 list 가 되면 요소 개수 비교
     year = rec.date[:4]                                     #   슬라이스도 리스트 슬라이스
 ```
@@ -53,7 +53,7 @@ if rec.date and len(rec.date) >= 4:                         # date 가 list 가 
 if type(cols) is not int or type(rows) is not int:          # 하위 타입(bool) 거부
     return
 if c == "c":
-    return SOFT if next_v in ("e", "i") else HARD            # 원소 멤버십
+    return SOFT if nxt in ("e", "i") else HARD            # 원소 멤버십
 years = {d[:4] for d in rec.date} if isinstance(rec.date, list) else {rec.date[:4]}
 ```
 무엇이 깨졌나: 값의 "모양"(하위 타입·빈 문자열·str/list)에 따라 같은 연산의 의미가 바뀌는데 검사는 한 가지 모양만 가정했다.\
@@ -82,7 +82,7 @@ except ConfigureError:
 def reload(self):
     current = self.index
     expected = current.ntotal if current is not None else None   # ① 값만 보관
-    if can_restore:                                              # 되읽을 원본이 있을 때만
+    if restorable:                                              # 되읽을 원본이 있을 때만
         self.index = None; del current; gc.collect()             # ② 읽기 전 반납
     loaded = read_index(path)                                    # ③ 로드
 
@@ -183,7 +183,7 @@ def work(batch):
 for url in urls:
     pages.append(await fetch(url))                        # 비동기지만 직렬
 
-with Pool(n, initializer=init_worker) as pool:            # init_worker 가 연결 실패로 예외
+with Pool(n, initializer=worker_init) as pool:            # worker_init 가 연결 실패로 예외
     for r in pool.imap(work, items): ...                  #   → 워커 재생성 반복, 호출자 무한 대기
 ```
 ② 고친 코드
@@ -202,11 +202,11 @@ pages = await asyncio.gather(*(bounded(u) for u in urls))
 무엇이 깨졌나: 병렬 도구를 쓰면서 제출과 대기를 한 걸음에 묶었고, 풀 초기화 실패는 부모에게 전달되지 않는다는 성질을 몰랐다.\
 같은 구조: `result()`·후처리·다음 `submit()`을 한 try로 감싸 풀 붕괴(`BrokenProcessPool`)가 직전 성공 배치의 실패로 오귀속되고, try 안에서 `del`한 키를 except에서 다시 `del`해 `KeyError`로 파이프라인 전체가 죽음 → try를 `result()`만으로 좁히고 `pop(future, None)`, 풀 붕괴는 실패 기록 없이 플래그 → 재시도로 넘김.
 ```python
-batch = futures_to_batch.pop(future, None)
+batch = pending_batches.pop(future, None)
 try:
     result = future.result()
 except BrokenProcessPool:
-    pool_broken = True; continue                  # 성공 배치를 실패로 적지 않음, 이후 submit 금지
+    pool_dead = True; continue                  # 성공 배치를 실패로 적지 않음, 이후 submit 금지
 except Exception:
     save_failed(batch); continue                  # 해당 배치만 실패
 ```
