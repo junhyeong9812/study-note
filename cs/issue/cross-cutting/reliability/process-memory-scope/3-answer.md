@@ -35,7 +35,7 @@
 ### 변형 A — 인메모리 토큰·세션 레지스트리가 재기동에 소실
 ① 문제 코드
 ```java
-class TokenRegistry {
+class TokenStore {
     private final Map<String, String> active = new ConcurrentHashMap<>();
     boolean isActive(String user, String jti) {
         return jti.equals(active.get(user));      // 재시작 후 미존재 → false → 전 토큰 폐기
@@ -50,7 +50,7 @@ boolean isActive(String token) {
                .isPresent();
 }
 String issue(User u) { return repo.save(newToken(u, ttl)); }   // 매 발송 새 토큰(재사용 안 함)
-@Scheduled(1h) void purgeExpired() { repo.deleteByExpiresAtBefore(now()); }   // 1시간 주기 만료 정리
+@Scheduled(1h) void purgeExpired() { repo.deleteByExpiryBefore(now()); }   // 1시간 주기 만료 정리
 // 통합 테스트: em.flush(); em.clear(); 후 검증 = 재기동 시뮬레이션
 ```
 무엇이 깨졌나: 프로세스 수명보다 긴 수명이 필요한 상태를 프로세스 메모리에 뒀다.\
@@ -72,7 +72,7 @@ _job_lock = threading.Lock()      # "동시 1작업" — 다른 프로세스에�
 ### 변형 C — 멀티 워커가 읽기 전용 대용량 데이터를 힙에 복제
 ① 문제 코드
 ```python
-DICT = load_json("synonyms.json")     # 워커마다 사본 → 메모리 × 워커 수
+DICT = read_json("synonyms.json")     # 워커마다 사본 → 메모리 × 워커 수
 ```
 ② 고친 코드
 ```python
