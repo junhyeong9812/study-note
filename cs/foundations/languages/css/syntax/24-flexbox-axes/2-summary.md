@@ -323,7 +323,7 @@ direction: ltr + row              direction: rtl + row
   *(Chrome 151 headless 에서 `getComputedStyle` 로 확인: `align-items` → `normal`, `justify-content` → `normal`.)*\
   flex 컨테이너에서 `normal` 은 각각 `stretch`·`flex-start` **처럼 동작**한다.
 - `display: flex` 는 컨테이너를 블록 상자로, `display: inline-flex` 는 인라인 상자로 만든다.\
-  안쪽 배치(= 아이템을 flex 로 놓는 것)는 둘이 같다. `display` 값의 두 부분 이야기는 목록의 **16번 주제**.
+  안쪽 배치(= 아이템을 flex 로 놓는 것)는 둘이 같다. `display` 값의 두 부분 이야기는 [목록의 **16번 주제**](../16-display-inner-outer/).
 
 ### 값 — 어느 축에 무엇을 쓸 수 있나
 
@@ -339,7 +339,7 @@ direction: ltr + row              direction: rtl + row
 *(Chrome 151 headless 실측: `align-items: space-between` 을 쓴 컨테이너의 계산값은 `normal` — 선언이 버려졌다. `justify-content: stretch` 의 계산값은 `stretch` 로 남지만 아이템은 늘어나지 않고 `flex-start` 처럼 왼쪽에 붙었다.)*
 
 - **`space-*` 는 주축(과 여러 줄) 전용**이다 — 아이템 **사이**를 벌리는 값이라 "묶음"을 다루는 `justify-content`·`align-content` 에만 있다.\
-  교차축의 `align-items` 에 쓰면 **값이 유효하지 않아 선언 하나가 버려진다**(목록의 **07번 주제**, 오류 복구).
+  교차축의 `align-items` 에 쓰면 **값이 유효하지 않아 선언 하나가 버려진다**([목록의 **07번 주제**](../07-syntax-and-error-recovery/), 오류 복구).
 - **`baseline` 은 교차축 전용**이다 — 아이템 하나하나의 기준선을 다루는 값이라 `align-*` 에만 있다.
 - `stretch` 는 `justify-content` 에도 문법적으로 쓸 수 있지만, **flex 아이템의 주축 크기는 `flex-grow` 가 정하므로** 아무 효과가 없다(목록의 **25번 주제**).
 - 이 비대칭이 (6)의 `justify-self` 부재와 같은 뿌리다.
@@ -433,7 +433,7 @@ flex 컨테이너의 아이템에서는 **무시된다**(에러도 경고도 없
 - [`../README.md`](../README.md) — CSS 문법·API 주제 목록(이 주제는 24번) · 「버전·지원 기준」의 Baseline 표
 - 목록의 **25번 주제**(`flex` 단축 — `grow`/`shrink`/`basis`) — **아이템의 크기가 정해지는 규칙**은 거기. 이 문서는 크기가 정해진 뒤의 배치만 다룬다
 - 목록의 **26번 주제**(줄바꿈·`gap`·`order`) — `flex-wrap`·`align-content`·`order` 의 정본
-- 목록의 **16번 주제**(`display` 의 내부/외부 값) — `flex` 와 `inline-flex` 가 갈리는 자리
+- [목록의 **16번 주제**](../16-display-inner-outer/)(`display` 의 내부/외부 값) — `flex` 와 `inline-flex` 가 갈리는 자리
 - 목록의 **27~29번 주제**(Grid) — 두 축을 동시에 다뤄야 할 때. `justify-self` 는 거기 있다
 - 목록의 **32번 주제**(논리 속성과 글쓰기 방향) — `row` 가 왜 "가로"가 아닌지의 정본
 - [`history/web/03-HTML-CSS-진화.md`](../../../../../../history/web/03-HTML-CSS-진화.md) — **1차원 레이아웃이 언제 왜 들어왔나는 거기.** 여기는 오늘의 규칙만

@@ -181,7 +181,7 @@ align-items: baseline        -> 계산값 baseline   (정상 값)
 **`space-between` 을 `align-items` 에 주면**
 
 - **선언 하나가 통째로 버려진다.** `align-items` 의 문법에 없는 값이기 때문이다.
-- 계산값은 초기값 `normal` 로 남는다 — 규칙의 나머지 선언은 살아 있다(오류 복구 규칙, 목록의 **07번 주제**).
+- 계산값은 초기값 `normal` 로 남는다 — 규칙의 나머지 선언은 살아 있다(오류 복구 규칙, [목록의 **07번 주제**](../07-syntax-and-error-recovery/)).
 - 이유: `space-*` 는 **아이템 사이 간격**을 다루는 값이라 "묶음"을 움직이는 속성(`justify-content`·`align-content`)에만 있다. `align-items` 는 아이템 하나하나를 다룬다.
 
 **`stretch` 를 `justify-content` 에 주면**
@@ -209,7 +209,7 @@ align-items: baseline        -> 계산값 baseline   (정상 값)
 
 - **움직이지 않는다.** flex 아이템은 **직계 자식만**이다.
 - `.wrap` 이 아이템이고 `.child` 는 `.wrap` 안의 평범한 블록 상자다.
-- 처방: `.wrap` 을 없애거나, `.wrap` 에도 `display: flex` 를 주거나, `.wrap` 에 `display: contents` 를 준다(그 부작용은 목록의 **16번 주제**).
+- 처방: `.wrap` 을 없애거나, `.wrap` 에도 `display: flex` 를 주거나, `.wrap` 에 `display: contents` 를 준다(그 부작용은 [목록의 **16번 주제**](../16-display-inner-outer/)).
 
 **`flex-wrap` 없이 `align-content` 를 주면**
 
