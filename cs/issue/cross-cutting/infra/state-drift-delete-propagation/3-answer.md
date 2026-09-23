@@ -12,18 +12,18 @@
    > **state drift(상태 표류)** — 정본(로컬/저장소)과 배포 대상(서버)의 상태가 조용히 어긋나 쌓이는 현상.
 
 2. 배포 스크립트가 `rsync -a`(--delete 없음)여서, git mv로 로컬에선 사라진 옛 `common/ sync/ indexing/ search/` 패키지가 **서버 소스 디렉토리에 그대로 남았다**. Docker 빌드의 `COPY src`가 옛 파일과 새 `api/` 파일을 **전부** 컴파일 → Spring이 `common.ErrorHandler`와 `api.ErrorHandler` 두 개의 같은 이름 빈을 보고 `ConflictingBeanDefinitionException`으로 기동을 거부했다.
-   > **빈(bean)** — Spring이 관리하는 객체. 같은 이름·비호환 정의의 빈이 둘이면 어느 것을 쓸지 몰라 기동을 멈춘다.
+   > **빈(bean)** — Spring이 관리하는 객체. 컴포넌트 스캔은 기본 빈 이름을 클래스 단순명에서 만들므로(`errorHandler`), 패키지가 달라도 단순명이 같은 두 클래스가 같은 이름을 다투면 `ConflictingBeanDefinitionException`으로 기동을 멈춘다(타입 주입 후보가 둘인 `NoUniqueBeanDefinitionException`과는 다른 오류).
 
 3. `--delete`는 "로컬에 없으면 서버에서도 지운다"이므로, **서버에만 있어야 하는 파일**(예: `.env` 시크릿)까지 지워버릴 수 있다. 그래서 `rsync -a --delete --exclude .env`로 잔재는 지우되 서버 배포 설정은 보호한다.
 
 4. 우리 파이프라인은 "코드"를 이미지에 담아 날랐지만, **compose 파일은 이미지 밖**이다 — compose는 컨테이너를 "밖에서" 정의·기동하는 설정이라, 컨테이너 "안"에 넣어봐야 아무도 읽지 않는다. 그래서 호스트의 compose는 옛 rsync 사본 그대로 남고, 그 이후 GitHub 변경(예: `build:` 제거)과 아무 관계가 없어 "여전히 Skipped"가 반복됐다. 설정을 나르는 채널이 아예 없었던 것이다.
 
-5. agent가 배포 직전에 `git fetch --depth=50 origin main` → `git reset --hard <commit_sha>`를 돌려, **GitHub을 설정의 정본**으로 삼는다. 호스트 디렉토리가 clone이면 배포 때마다 최신 compose·설정이 따라온다. 순서가 "설정 동기화 → 컨테이너 갱신(`compose up -d --build`)"이라 compose 변경이 **항상 코드보다 먼저 도착**한다. 이로써 이미지 채널을 없애고 전달 채널을 git 하나로 통일 → "배포된 것 = 그 커밋"이 항상 성립.
-   > **단일 정본(single source of truth)** — 상태의 기준이 한 곳(여기선 GitHub main)뿐이라, 대상을 그것으로 재구성하면 drift가 원리적으로 안 생긴다.
+5. agent가 배포 직전에 `git fetch --depth=50 origin main` → `git reset --hard <commit_sha>`를 돌려, **GitHub을 설정의 정본**으로 삼는다. 호스트 디렉토리가 clone이면 배포 때마다 최신 compose·설정이 따라온다(`<commit_sha>`가 얕은 fetch 범위 안에 있어야 reset이 성공한다). 순서가 "설정 동기화 → 컨테이너 갱신(`compose up -d --build`)"이라 compose 변경이 **항상 코드보다 먼저 도착**한다. 이로써 이미지 채널을 없애고 전달 채널을 git 하나로 통일 → **추적 파일에 한해** "배포된 것 = 그 커밋"이 성립한다. `reset --hard`는 미추적 파일을 지우지 않으므로 과거 복사본에서 남은 미추적 잔재는 그대로다(빌드가 디렉토리째 COPY하면 다시 섞일 수 있어 `git clean -n`으로 점검 — `.env` 보호 주의).
+   > **단일 정본(single source of truth)** — 상태의 기준이 한 곳(여기선 GitHub main)뿐이라, 대상을 그것으로 재구성하면 재구성 범위 안에서는 drift가 원리적으로 안 생긴다.
 
 6. `git reset --hard`는 **git이 추적하는 파일만** 되돌린다. `.env`(시크릿)는 git 미추적 파일이라 `reset --hard`에도 살아남는다. 즉 "무엇을 정본이 관리하고 무엇을 관리하지 않는가"의 경계가 곧 "무엇을 덮어쓰고 무엇을 보존하는가"의 경계가 되어, 미추적이 안전장치로 작동한다.
 
-7. **복사**는 원본의 "있는 것"만 대상에 더한다(부재는 못 옮긴다). **동기화/재구성**은 대상을 정본과 **일치**시킨다 — 없어진 것은 지우고, 바뀐 것은 갱신한다(`rsync --delete`·`reset --hard`가 이것). 이번엔 잔재가 Spring 기동 거부라는 **시끄러운 실패**로 즉시 드러나 바로 잡았지만, 충돌 없는 잔재였다면 옛 코드가 **조용히 섞여** 돌며 며칠 뒤에야 발견됐을 것이다 — 그래서 시끄러운 실패가 오히려 고마운 경우다.
+7. **복사**는 원본의 "있는 것"만 대상에 더한다(부재는 못 옮긴다). **동기화/재구성**은 대상을 정본과 **일치**시킨다 — 없어진 것은 지우고, 바뀐 것은 갱신한다(`rsync --delete`가 이것이고, `reset --hard`는 추적 파일 범위에서만 이것 — 미추적 파일은 건드리지 않는다). 이번엔 잔재가 Spring 기동 거부라는 **시끄러운 실패**로 즉시 드러나 바로 잡았지만, 충돌 없는 잔재였다면 옛 코드가 **조용히 섞여** 돌며 며칠 뒤에야 발견됐을 것이다 — 그래서 시끄러운 실패가 오히려 고마운 경우다.
 
 ## 문제 구조 (추상화 코드)
 
@@ -54,7 +54,7 @@ compose: (채널 없음) → 서버에는 과거 복사본 그대로
 ```go
 // 배포 에이전트: 컨테이너 갱신 전에 설정부터 정본에 맞춘다
 run("git", "-C", dir, "fetch", "--depth=50", "origin", "main")
-run("git", "-C", dir, "reset", "--hard", commitSha)   // 추적 파일만 되돌림 → 미추적 .env 보존
+run("git", "-C", dir, "reset", "--hard", commitSha)   // 추적 파일만 되돌림 → 미추적 .env 보존 (미추적 잔재도 남음 · commitSha 는 fetch 범위 안이어야 함)
 run("docker", "compose", "-f", dir+"/compose.yml", "up", "-d", "--build")
 ```
 무엇이 깨졌나: 코드와 설정의 전달 채널이 갈려, 설정 쪽은 정본(저장소)의 변경을 영영 받지 못했다.
@@ -103,6 +103,7 @@ def sync(source_rows):                      # 전량 미러: 없으면 insert, �
         if cur is None: target.insert(row)
         elif not cur.same_as(row): target.update(row)
     # 불변식 테스트: 변경 없는 재실행 → updated == 0 (멱등)
+    # 주의: 원천에서 행 자체가 사라지면 이 루프로는 전파되지 않음 → 필요하면 (target 키 - source 키) 삭제를 별도로
 
 def months_to_plan(months, available):
     if months is None:
@@ -206,12 +207,12 @@ fun switch(target: Slot) { registry.replace(target) }        // 메모리에만 
 val state = runCatching { store.read() }.getOrElse { fromEnv() }   // 손상도 env 로 폴백 (fail-open)
 ```
 ```sql
-SET GLOBAL buffer_pool_size = ...;   -- 런타임 변수만 바뀜 → 재시작 시 원복
+SET GLOBAL innodb_buffer_pool_size = ...;   -- 런타임 변수만 바뀜 → 재시작 시 원복 (MySQL 8.0+ 의 SET PERSIST 는 영속되지만, 설정 파일과 이중 정본이 됨)
 ```
 ② 고친 코드
 ```kotlin
 fun switch(target: Slot, token: Long) {
-    store.write(State(target, token))       // write-ahead: temp + fsync + atomic move
+    store.write(State(target, token))       // write-ahead: temp + fsync + atomic move (+ 디렉토리 fsync 로 rename 영속)
     registry.replace(target)
     if (!refreshAndAwait(target)) rollback()
 }
@@ -249,4 +250,4 @@ SERVICES = {c: {"search": f"{c}-search-v2"} ...}   # hotfix
 | 실패 모드 | 보존 목록 누락 시 서버 전용 파일 삭제 | 새 삭제 경로에서 훅 누락 | 규칙 밖 엣지(파싱 성공한 `"null"` 등) | 감지만 하고 수렴은 사람 몫 | 손상을 폴백으로 삼키면 fail-open | 원본 형식 변경 |
 | 맞는 조건 | 배포·동기화처럼 대상 = 정본의 사본 | UI·인메모리 파생 상태 | 스키마 이행기의 이중 표현 | 복사가 불가피한 설정 스냅샷 | 전환 상태·튜닝 값 | 외부 이름·설정의 하드코딩 |
 
-**결론**: 대상을 정본에서 통째로 다시 만들 수 있으면 재구성이 가장 단순하고 강하다(드리프트가 원리적으로 안 생긴다). 사본을 없앨 수 있으면 없애는 것(방안 5)이 다음이고, 구버전 호환 때문에 사본이 남아야 하면 **읽는 쪽 정본을 하나로 고정하고 사본은 write-only, 삭제는 tombstone**(방안 2)으로 사후 화해를 없앤다. 사본도 재구성도 불가능한 곳에서만 감지(방안 3)로 물러서고, 런타임 상태는 "메모리가 아니라 영속 파일이 정본"(방안 4)이어야 재시작이 과거로 되돌리지 않는다.
+**결론**: 대상을 정본에서 통째로 다시 만들 수 있으면 재구성이 대체로 가장 단순하고 강하다(재구성 범위 안에서는 드리프트가 원리적으로 안 생긴다 — 보존 목록·미추적처럼 범위 밖에 둔 것은 별도 점검). 사본을 없앨 수 있으면 없애는 것(방안 5)이 다음이고, 구버전 호환 때문에 사본이 남아야 하면 **읽는 쪽 정본을 하나로 고정하고 사본은 write-only, 삭제는 tombstone**(방안 2)으로 사후 화해를 없앤다. 사본도 재구성도 불가능한 곳에서만 감지(방안 3)로 물러서고, 런타임 상태는 "메모리가 아니라 영속 파일이 정본"(방안 4)이어야 재시작이 과거로 되돌리지 않는다.
