@@ -28,7 +28,7 @@ multi-field 서브필드도 추가만 되고 제자리 제거는 안 되어, 쿼
 교정: 운영 정본을 JSON 하나로 명문화하고, 앱 문서 클래스도 같은 JSON 파일을 매핑 소스로 참조하며, 인덱스를 지운 뒤엔 앱이 쓰기 전에 **JSON으로 먼저 재생성**한다.
 
 4. **포맷 밖 값 하나가 bulk를 깨고, 동적 매핑은 첫 값으로 정한다.**\
-엄격 타입 매핑은 파싱할 수 없는 값을 문서 단위로 거부한다 — `18701025`가 선언 포맷과 달라 `failed to parse field ... of type [date]` 400이 났고, 첫 bulk부터 전량 거부되어 처리 0건으로 작업이 실패했다.\
+엄격 타입 매핑은 파싱할 수 없는 값을 문서 단위로 거부한다 — 구분자 없는 `20240115`가 선언 포맷과 달라 `failed to parse field ... of type [date]` 400이 났고, 첫 bulk부터 전량 거부되어 처리 0건으로 작업이 실패했다.\
 명시 매핑이 없는 파생 필드는 동적 매핑의 date detection이 **첫 값**을 보고 date로 정해버려, 이후 형식이 다른 값이 거부된다(워커가 예외를 삼키면 조용한 유실 위험).\
 원문 보존이 목적이면 날짜를 keyword(원문 문자열)로 저장하고 `"date_detection": false`로 자동 감지를 끄는 것이 안전하다 — 직렬화 쪽도 날짜 리스트를 문자열 리스트로 바꿔 복합 객체 오색인과 경고 폭주를 없앴다.
    > **동적 매핑(dynamic mapping)** — 매핑에 없는 필드가 들어오면 첫 값의 모양을 보고 타입을 자동으로 정해 매핑에 추가하는 동작.
@@ -93,14 +93,14 @@ class ItemDoc { ... }
 ### 변형 C — 엄격 타입 거부 · 동적 date detection
 ① 문제 코드
 ```json
-{ "properties": { "registered_at": { "type": "date", "format": "yyyy.MM.dd||yyyy-MM-dd" } } }
-// 원천에 "18701025" → 문서 거부 → bulk 전량 400
+{ "properties": { "created_at": { "type": "date", "format": "yyyy.MM.dd||yyyy-MM-dd" } } }
+// 원천에 "20240115" → 문서 거부 → bulk 전량 400
 // 매핑에 없는 파생 날짜 필드 → date detection이 첫 값으로 date 고정 → 이후 값 거부
 ```
 ② 고친 코드
 ```json
 { "date_detection": false,
-  "properties": { "registered_at": { "type": "keyword" } } }   // 원문 문자열 보존
+  "properties": { "created_at": { "type": "keyword" } } }   // 원문 문자열 보존
 ```
 ```java
 List<String> derivedDates;   // 날짜 객체 리스트 대신 원문 문자열 리스트
