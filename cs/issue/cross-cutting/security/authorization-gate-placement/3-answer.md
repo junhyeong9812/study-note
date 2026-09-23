@@ -82,7 +82,7 @@ fn write_file(&self, req: WriteReq) -> Result<()> { fs::write(req.path, req.cont
 }
 ```
 무엇이 깨졌나: 불변식을 UI로만 막았고, 신원을 요청 파라미터에서 가져왔다.\
-같은 구조: 게이트웨이가 하류 권한 헤더를 URL prefix·정적 기본 헤더로 정함 → `headers.set("X-Auth-Type", resolveFrom(securityContext))`로 교정(최고 권한 순 매핑, 익명 principal은 ANONYMOUS).
+같은 구조: 게이트웨이가 하류 권한 헤더를 URL prefix·정적 기본 헤더로 정함 → `headers.set("X-User-Role", resolveFrom(securityContext))`로 교정(최고 권한 순 매핑, 익명 principal은 ANONYMOUS).
 
 ### 변형 C — 같은 결정을 내리는 두 번째 입력 경로
 ① 문제 코드
@@ -175,9 +175,9 @@ PUT /items/{code}  → PUT /items   로 변경
 
 ### 방안 3 — 거절 가드보다 앞에서 동일 비용 비교 (존재 오라클 제거)
 ```java
-String saltId     = (user != null) ? user.id()   : loginId;
-String storedHash = (user != null) ? user.hash() : DUMMY_HASH;
-boolean ok = hasher.matches(saltId, raw, storedHash);   // 미존재에서도 같은 비용, 상수시간 비교
+String saltKey     = (user != null) ? user.id()   : loginId;
+String storedHash = (user != null) ? user.hash() : FAKE_HASH;
+boolean ok = hasher.matches(saltKey, raw, storedHash);   // 미존재에서도 같은 비용, 상수시간 비교
 if (user == null || !ok) throw new BadCredentialsException("invalid");   // 단일 실패 사유
 ```
 미존재 계정만 해시를 건너뛰면 응답 시간이 계정 존재 오라클이 된다. 헬퍼 추출 리팩토링에서 "호출 순서"까지 등가성 대조 대상이다.
