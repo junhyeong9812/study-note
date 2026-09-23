@@ -10,7 +10,7 @@
 
 1. **max-age와 immutable.**\
    `max-age=N`은 "N초 동안은 캐시 사본을 신선하다고 봐도 된다"는 허락이다. 사용자가 새로고침하면 브라우저는 보통 조건부 요청(`If-None-Match` 등)으로 서버에 재검증을 보낸다.\
-   `immutable`은 한 발 더 나가 "이 URL의 바이트는 **절대** 바뀌지 않는다"고 약속한다 — 만료 전에는 새로고침에도 재검증을 생략할 수 있다.\
+   `immutable`은 한 발 더 나가 "이 URL의 바이트는 **절대** 바뀌지 않는다"고 약속한다 — 만료 전에는 (일반) 새로고침에도 재검증을 생략할 수 있다(실제 처리는 브라우저마다 다르고, 캐시를 무시하는 강력 새로고침은 여전히 서버로 간다).\
    즉 immutable은 성능 힌트가 아니라 **URL과 바이트의 영구 대응에 대한 서버의 서약**이다.
    > **immutable** — 캐시된 응답이 유효 기간 동안 바뀌지 않으므로 재검증할 필요가 없다는 Cache-Control 확장.
 
@@ -30,7 +30,7 @@
 
 5. **클라이언트 no-store vs 서버 정책.**\
    `fetch(url, { cache: 'no-store' })`는 **그 호출 하나**가 브라우저 HTTP 캐시를 쓰지 않게 할 뿐이다 — 다른 코드 경로, 다른 클라이언트, 중간 프록시는 여전히 캐시할 수 있다.\
-   서버가 `Cache-Control: no-store`(또는 짧은 max-age + ETag 재검증)를 응답에 실으면 **그 응답을 받는 모든 캐시**가 따른다.\
+   서버가 `Cache-Control: no-store`(또는 짧은 max-age + ETag 재검증)를 응답에 실으면 **그 응답을 받는 (규격을 따르는) 모든 캐시**가 따른다.\
    이 사건은 클라이언트 측 `no-store` + 하드 리프레시 안내로 막았고, 서버(리버스 프록시) 쪽 Cache-Control/ETag 정책은 후속 검토로 남겼다.
 
 6. **리스크를 아는 예외.**\
@@ -60,7 +60,7 @@ static final String IMG_CACHE_HEADER = "max-age=604800, immutable";   // 상수 
 ResponseEntity<byte[]> imageProxy(String id) {
     ResponseEntity<byte[]> upstream = client.get("/images/" + id);
     BodyBuilder b = ResponseEntity.status(upstream.getStatusCode());
-    if (upstream.getStatusCode() == HttpStatus.OK) {                   // 정상 전체 응답만
+    if (upstream.getStatusCode().value() == 200) {                     // 정상 전체 응답만
         b.header(CACHE_CONTROL, IMG_CACHE_HEADER);
     }
     return b.body(upstream.getBody());
@@ -74,14 +74,14 @@ ResponseEntity<byte[]> imageProxy(String id) {
 ① 문제 코드
 ```html
 <script src="/static/deploy.js"></script>          <!-- 배포해도 같은 URL → 구버전 재사용 -->
-<script>
+<script type="module">                          <!-- 최상위 await는 모듈 스크립트에서만 -->
   const s = await (await fetch('/api/agent-status')).json();   // 상태도 캐시될 수 있음
 </script>
 ```
 ② 고친 코드
 ```html
 <script src="/static/deploy.js"></script>          <!-- 당장은 하드 리프레시 안내, 후속: 서버 캐시 정책 -->
-<script>
+<script type="module">
   const s = await (await fetch('/api/agent-status', { cache: 'no-store' })).json();
 </script>
 ```
