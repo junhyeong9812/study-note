@@ -143,7 +143,10 @@ kill -- -"$server_pgid"         # 별세션 자식은 그룹 밖 → 고아
 ```bash
 cleanup() {
   [ "$started" = 1 ] && [ -n "$server_pid" ] || return 0   # 내가 띄운 것만
-  kill -TERM "$server_pid" 2>/dev/null || return 0         # graceful → 종료 훅이 자식 정리 (이미 없음 = 정상)
+  if ! kill -TERM "$server_pid" 2>/dev/null; then          # graceful → 종료 훅이 자식 정리
+    kill -0 "$server_pid" 2>/dev/null || return 0           # 이미 없음 = 정상
+    echo "cleanup: signal failed (not permitted?)" >&2; return 1   # 살아 있는데 못 보냄 = 실패 보고
+  fi
   for _ in $(seq 1 "$GRACE"); do                           # 유예 시간 제한 — 무한 대기 금지
     kill -0 "$server_pid" 2>/dev/null || break; sleep 1
   done
