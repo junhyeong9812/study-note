@@ -22,14 +22,14 @@
 [채택]
   backend (ES highlight)  pre_tags="⟦m⟧"  post_tags="⟦/m⟧"
      → "⟦m⟧정렬⟦/m⟧ 알고리즘 <script>x</script>"   (HTML 아님, 그냥 텍스트)
-  front renderMarked:
+  front renderHighlighted:
      ① 텍스트를 "⟦m⟧"/"⟦/m⟧" 로 split (문자열 쪼개기)
      ② 조각들을 React 요소로 조립: 일반 조각은 텍스트(React가 이스케이프),
         마커 안 조각만 <mark>{marked}</mark>
      → 화면: [정렬](강조) 알고리즘 <script>x</script>  ← <script>가 "글자"로 보임
 ```
 
-핵심은 **React에 문자열을 텍스트로 넣으면 React가 자동 이스케이프**한다는 것. `renderMarked`는 HTML을 만들지 않고 React 요소 배열을 만들 뿐이라, 본문의 `<script>`는 이스케이프돼 실행이 아니라 표시된다. 강조는 우리가 통제하는 `<mark>` 요소로만 들어가므로, "주입 가능한 HTML"이 애초에 존재하지 않는다.
+핵심은 **React에 문자열을 텍스트로 넣으면 React가 자동 이스케이프**한다는 것. `renderHighlighted`는 HTML을 만들지 않고 React 요소 배열을 만들 뿐이라, 본문의 `<script>`는 이스케이프돼 실행이 아니라 표시된다. 강조는 우리가 통제하는 `<mark>` 요소로만 들어가므로, "주입 가능한 HTML"이 애초에 존재하지 않는다.
 
 ### 마커의 조건 · 책임 분담 · 디바운스
 

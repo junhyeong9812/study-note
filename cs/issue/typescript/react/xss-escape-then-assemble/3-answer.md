@@ -3,6 +3,8 @@
 > 복습 시 이 파일은 **최후에만** 연다.
 > ⚠️ 이 정답은 Claude 초안(2026-09-23) — 이슈 README·코드 기준. 복습 전 읽지 말 것.
 
+태그: `least-privilege`
+
 ## 정답
 
 <!-- 질문 1:1 대응 -->
@@ -25,14 +27,122 @@
 7. 디바운스는 XSS(정확성)와 다른 축인 **부하/성능**의 방어다. 자동완성은 사용자가 검색창에 글자를 칠 때마다 호출될 수 있어, 그대로 두면 타자 한 글자마다 요청이 쏟아져 백엔드와 검색엔진에 부담을 주고 화면도 버벅인다. 디바운스는 "입력이 멈추고 200ms 지난 뒤에만 요청"해 요청 수를 줄인다. 두 방어가 한 기능에 함께 필요한 이유는, 자동완성이 **신뢰할 수 없는 사용자 입력을 실시간으로 처리**하는 기능이기 때문이다 — 입력의 내용은 XSS로(이스케이프+조립), 입력의 빈도는 부하로(디바운스) 각각 방어해야 안전하고도 쓸 만해진다.
    > **디바운스(debounce)** — 연속으로 발생하는 이벤트(타자 입력 등)에서 마지막 이벤트 후 일정 시간이 지나야 한 번만 처리하는 기법. 요청 폭주를 막는다.
 
-## 이번 프로젝트 사례
+## 문제 구조 (추상화 코드)
 
-- [front/issue9](../../../../../project/study-note-deploy-system/front/issue9/) — 검색 자동완성에서 강조를 `dangerouslySetInnerHTML`(백엔드 HTML 삽입)로 하지 않고, `⟦m⟧…⟦/m⟧` 마커를 받아 `renderMarked`가 텍스트를 split해 마커 안만 `<mark>` React 요소로 조립. 입력은 200ms 디바운스 후 `/api/suggest`로. "front는 찾지 않고 이스케이프 후 강조만 한다".
-- [backend/issue11](../../../../../project/study-note-deploy-system/backend/issue11/) — 자동완성 마커 프로토콜의 백엔드 측. ES highlight의 `pre_tags`/`post_tags`를 `⟦m⟧`/`⟦/m⟧`로 지정해 강조 위치를 **HTML이 아닌 마커 문자열**로 내보낸다(주입 원천 차단). 저지연을 위해 rewrite·kNN 없이 ES 단독, 문서 도배는 `collapse(path)`로 방지.
+### 변형 A — 백엔드가 만든 강조 HTML을 그대로 삽입
+① 문제 코드 (설계 단계에서 선택하지 않은 방법)
+```ts
+// backend: 검색엔진 highlight 기본 태그
+highlight: { fields: { body: {} }, pre_tags: ["<mark>"], post_tags: ["</mark>"] }
+```
+```tsx
+// front: 본문과 강조가 섞인 HTML 문자열을 날로 삽입
+<span dangerouslySetInnerHTML={{ __html: hit.snippet }} />
+```
+② 고친 코드
+```ts
+// backend: HTML이 아닌, 일반 입력에 안 나올 마커만 표시
+highlight: { fields: { body: {} }, pre_tags: ["⟦m⟧"], post_tags: ["⟦/m⟧"] }
+```
+```tsx
+// front: 텍스트는 React가 이스케이프, 마커 안만 <mark> 요소로 조립
+export function renderHighlighted(text: string) {
+  return text.split("⟦m⟧").flatMap((part, i) => {
+    if (i === 0) return [part];
+    const [marked, rest] = part.split("⟦/m⟧");
+    return [<mark key={i}>{marked}</mark>, rest];
+  });
+}
+// 입력은 200ms 디바운스 후 요청
+useEffect(() => { const t = setTimeout(() => fetchSuggest(q), 200); return () => clearTimeout(t); }, [q]);
+```
+무엇이 깨졌나: 강조(신뢰)와 본문(비신뢰)이 한 HTML 문자열로 합쳐진 뒤 삽입돼, 본문의 마크업까지 실행 대상이 됐다.
+
+### 변형 B — 템플릿 문자열 조립 시 외부 값 미이스케이프 (서버 측 HTML 메일)
+① 문제 코드
+```java
+html = template.replace("{{title}}", legacy.getTitle())      // 외부 유래 텍스트 그대로
+               .replace("{{link}}", legacy.getServiceUrl());
+```
+② 고친 코드
+```java
+html = template.replace("{{title}}", escapeHtml(orDash(legacy.getTitle())))   // 모든 삽입값 이스케이프
+               .replace("{{link}}", escapeHtml(orDash(legacy.getServiceUrl())));
+// 계약 테스트: 실제 템플릿을 렌더해 placeholder 목록 ↔ 치환 키 목록이 1:1인지 확인
+```
+무엇이 깨졌나: 조립 지점마다 이스케이프를 기억해야 하는 구조에서 일부 삽입값이 빠졌다.
+
+### 변형 C — 저장된 값을 innerHTML로 결합 (stored XSS)
+① 문제 코드
+```js
+list.innerHTML = history.map(h => `<li>${h.sha} ${h.branch}</li>`).join("");   // 저장값이 렌더 시 마크업
+```
+② 고친 코드
+```js
+list.innerHTML = "";                         // innerHTML은 비우기에만
+for (const h of history) {
+  const li = document.createElement("li");
+  li.textContent = `${h.sha} ${h.branch}`;   // 데이터는 전부 textContent
+  list.appendChild(li);
+}
+```
+무엇이 깨졌나: 저장 시점의 입력이 렌더 시점에 HTML로 해석됐다.
 
 ## 검증 기록
+- 2026-09-23: 출처 원문 대조(Claude 초안) — 근거는 작업 log
+- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log (B2 전환·신규 멤버 추가)
 
-- 2026-09-23: front/issue9 + backend/issue11 README + 실코드 대조 (Claude 초안). 코드 확인:
-  - `study-note-deploy-system-front/src/features/search/lib/mark.tsx` L4-14 `renderMarked` — `text.split("⟦m⟧")`로 쪼갠 뒤 각 조각을 `split("⟦/m⟧")`, 마커 안만 `<mark key>{marked}</mark>` React 요소로, 나머지는 텍스트(React 자동 이스케이프). 주석 L3 "텍스트는 React가 이스케이프하므로 HTML 주입 원천 차단".
-  - `study-note-deploy-system-front/src/shared/ui/SearchBar.tsx` L15-24 — `useEffect`에서 `setTimeout(..., 200)` 디바운스 후 `fetch("/api/suggest?q=...")`. L79·L86 — 제목·스니펫을 `renderMarked(...)`로 렌더.
-  - `study-note-deploy-system-backend/.../search/usecase/SuggestService.kt` L30-34 — `highlight`의 `pre_tags = ["⟦m⟧"]`, `post_tags = ["⟦/m⟧"]`(HTML 태그가 아닌 마커). L29 `collapse(field=path)`로 문서당 1건. 주석 L8-9 "일치 부분은 ⟦m⟧…⟦/m⟧ 마커(front가 이스케이프 후 강조 렌더 — HTML 주입 원천 차단)".
+## 방안 비교
+
+기본 방안(위 변형 A~C)은 "신뢰 불가 텍스트를 전부 이스케이프(또는 텍스트 노드로 삽입)하고 우리가 통제하는 마커·요소만 조립한다"이다.\
+같은 원리(신뢰 불가 텍스트가 HTML·스크립트 위치에 들어가면 XSS)에 다른 방안이 쓰인 사례:
+
+### 방안 1 — HTML이 필요한 입력(마크다운)은 sanitizer + 원격 리소스 태그 금지
+```tsx
+// 문제: 마크다운 파서는 변환기일 뿐 정화기가 아니다 → raw HTML이 그대로 통과
+setHtml(markdownParse(text));                                   // + dangerouslySetInnerHTML
+// 고친
+setHtml(sanitize(markdownParse(text)));                         // 파싱 후 sanitizer
+setHtml(sanitize(markdownParse(text), { FORBID_TAGS: ["img", "video", "iframe" /* ... */] }));
+// 도구 출력 뷰: 기본 허용 태그라도 원격 리소스 자동 로드(추적·유출)를 막는다
+// 선택지 본문처럼 서식이 필요 없는 곳은 React 텍스트 노드로만 렌더
+```
+남은 확인점: 링크 scheme(`javascript:`) 처리 충분성.
+
+### 방안 2 — 렌더러 통합 시 sanitize 정책을 파라미터로 드러냄
+```tsx
+// 문제: 겉보기 같은 두 렌더러가 다른 정책(원격 미디어 차단 / 허용)을 담고 있었다
+//       → 한쪽으로 "중복 제거"하면 다른 쪽 이미지가 에러 없이 사라진다
+// 고친: 정책을 순수 함수의 인자로
+export function sanitizeMarkdown(text: string, blockMedia: boolean): string {
+  const parsed = markdownParse(text);
+  return blockMedia ? sanitize(parsed, { FORBID_TAGS: MEDIA_TAGS }) : sanitize(parsed);
+}
+<Markdown blockMedia />            // 외부 유래 출력 뷰 = true, 로컬 문서 뷰어 = false
+// fetch·로딩·에러는 호출부에 유지 → 정책 단위 테스트를 DOM 없이
+// 부수: 비마크다운 파일을 마크다운으로 렌더하던 fallback에 경로 가드 추가
+```
+
+### 방안 3 — `<script>` 안에 싣는 데이터는 JSON 데이터 채널 + textContent
+```rust
+// 문제: 신뢰 불가 텍스트가 인라인 <script> 안에 들어가면 "</script>"로 요소를 닫고 탈출
+// 고친: 직렬화 후 '<'를 JSON·JS 양쪽에서 같은 문자로 복원되는 이스케이프로
+let json = to_json(data).unwrap_or_else(|_| "null".into())
+    .replace('<', "\\u003c")
+    .replace('\u{2028}', "\\u2028")      // 구형 JS 엔진에서 문자열 리터럴을 깨는 줄 구분자
+    .replace('\u{2029}', "\\u2029");
+// 내장 렌더러는 createElement + textContent 전용, 유일한 HTML 슬롯(제목)만 html_escape
+// 테스트: 페이로드 부재 검증과 페이로드 실재 검증을 쌍으로
+```
+선택하지 않은 방법: 서버측에서 삽입 위치마다 이스케이프해 조립 — 누락 지점이 많다.
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 기본: 전체 이스케이프 후 마커·요소 조립 | 서식이 필요 없거나, 필요한 구조가 소수(강조)다 | 마커 프로토콜 합의 | 마커 충돌 시 잘못된 강조(실행은 없음) · 조립 지점이 흩어지면 누락 | 검색 강조·목록·템플릿 치환 |
+| 1. sanitizer + 태그 금지 | 입력이 HTML 서식을 가져야 한다(마크다운) | 라이브러리 의존·정책 설정 | 기본 허용 태그의 원격 로드 · 링크 scheme 처리 | 사용자·모델이 쓴 마크다운 렌더 |
+| 2. 정책 파라미터화 | 출처별로 정책이 달라야 한다 | 호출부마다 정책 선택 | 기본값을 잘못 고르면 조용한 동작 변화 | 여러 뷰가 한 렌더러를 공유할 때 |
+| 3. JSON 데이터 채널 + textContent | 데이터를 스크립트와 함께 한 파일에 실어야 한다 | 직렬화 이스케이프·DOM API 렌더러 | `<`·줄 구분자 이스케이프 누락 | 자기완결 HTML·인라인 부트스트랩 데이터 |
+
+**결론**: 서식이 필요 없으면 **텍스트 노드로 넣고 통제된 구조만 조립**하는 기본 방안이 실행 경로 자체를 없애므로 가장 단단하다.\
+HTML 서식이 입력의 일부면(마크다운) sanitizer가 필요하고, 그 정책(원격 리소스 허용 여부)은 출처마다 다르므로 **파라미터로 드러내야** 통합 때 조용히 바뀌지 않는다(1·2).\
+데이터가 `<script>` 안에 들어가야 하면 마크업 위치가 아니라 **이스케이프된 데이터 채널**로 싣고 DOM API로 붙인다(3).
