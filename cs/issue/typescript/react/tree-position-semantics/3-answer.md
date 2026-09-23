@@ -100,7 +100,7 @@ export function SettingsLayer() {                                   // 창 루�
   useEffect(() => {
     if (!open) return;
     const back = triggerEl;
-    wrapRef.current?.focus();
+    containerRef.current?.focus();
     return () => { if (back && back.isConnected) back.focus(); };  // 포커스 복원 가드
   }, [open]);
   // 포털 루트: role="dialog" aria-modal, onKeyDown/onKeyUp → stopPropagation (백스톱, preventDefault 없음)
