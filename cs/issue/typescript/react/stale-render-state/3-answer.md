@@ -17,15 +17,15 @@ ref는 렌더마다 새로 만들어지지 않는 **같은 객체**이고 `.curr
 2. 막히지 않는다. 콜백은 마운트 때 한 번 만들어졌으므로 **마운트 시점의 잠금값(false)** 을 영원히 본다.\
 잠금 조건을 ref에 동기화(`lockedRef.current = busy || draft != null`)하고, 콜백은 `lockedRef.current`를 검사한다.
 
-3. React는 연속 이벤트(`dragover`)에서 발생한 업데이트를 이산 이벤트(`drop`)보다 **낮은 우선순위**로 처리한다. 그래서 drop 핸들러가 실행될 때 렌더된 state는 **마지막 dragover 결과보다 오래됐을 수 있다**.\
+3. React 18+의 동시성 루트(createRoot)는 연속 이벤트(`dragover`)에서 발생한 업데이트를 이산 이벤트(`drop`)보다 **낮은 우선순위**로 처리한다. 그래서 drop 핸들러가 실행될 때 렌더된 state는 **마지막 dragover 결과보다 오래됐을 수 있다**.\
 근본 해법은 두 이벤트 사이에 state로 값을 넘기지 않는 것이다. 미리보기와 결과가 **같은 순수 함수·같은 종류의 입력(좌표)** 을 쓰게 하면, drop은 자기 좌표로 다시 계산해 미리보기와 일치한다. 상태 기계가 사라진다.
    > **이산(discrete) / 연속(continuous) 이벤트** — 클릭·드롭처럼 한 번의 의도인 이벤트와, 마우스 이동·드래그오버처럼 연달아 오는 이벤트. React는 전자를 더 급하게 처리한다.
 
-4. **두 번** 보내진다. `setSending(true)`는 다음 렌더에 반영되므로, 같은 틱의 두 번째 클릭 핸들러도 `sending === false`를 본다.\
+4. 두 호출이 같은 렌더의 핸들러(같은 클로저)로 실행되면 **두 번** 보내진다. `setSending(true)`는 다음 렌더에 반영되므로, 리렌더가 커밋되기 전에 실행된 두 번째 호출도 `sending === false`를 본다. React 18은 클릭 같은 이산 이벤트의 업데이트를 이벤트가 끝날 때 동기로 반영하므로 사람의 두 클릭 사이에는 대개 리렌더가 끼지만, 같은 배치 안의 연속 호출·프로그램 호출·await 이후 재진입 등에서는 막히지 않는다 — state 가드는 보장된 상호 배제가 아니다.\
 "존재 확인 후 생성"도 확인과 생성 사이에 다른 호출이 끼어들 수 있어 같은 문제다 — 두 호출 모두 "없음"을 보고 둘 다 만든다. 파일 이동 후 덮어쓰기 버튼을 중복 클릭해, 이동이 끝난 결과물을 다시 삭제한 심각한 사례가 있었다.\
 해법: **동기 ref로 single-flight**(`if (busyRef.current) return; busyRef.current = true; try { … } finally { busyRef.current = false; }`) + 버튼 disabled. 창 생성처럼 완료가 이벤트로 오는 작업은 생성·오류 이벤트가 올 때까지 가드를 유지한다.
 
-5. 오르지 않을 수 있다. 각 클릭 핸들러가 **렌더 시점에 캡처한 `font`** 에 +1을 하므로, 렌더 전에 온 연타는 같은 값에 +1을 반복한다. 최신 저장값(`getState()`) 기준으로 증감하고, 경계값에서는 버튼을 disabled한다.\
+5. 오르지 않을 수 있다. 각 클릭 핸들러가 **렌더 시점에 캡처한 `font`** 에 +1을 하므로, 리렌더 전에 실행된 연타는 같은 값에 +1을 반복한다(함수형 업데이트 `setX(x => x + 1)`도 같은 문제를 피한다). 최신 저장값(`getState()`) 기준으로 증감하고, 경계값에서는 버튼을 disabled한다.\
 `Number("")`는 NaN이 아니라 **0**이다. 그래서 "빈 입력"이 유효 숫자로 통과해 하한으로 clamp되어 버렸다(사양은 "빈 값이면 이전 값 복원"). 커밋 전에 정수 형식(`/^\d+$/`)을 검사하고 아니면 복원한다.
 
 6. effect가 읽는 props는 **렌더된 값**이다. 외부 라이브러리의 파라미터 갱신이 다음 렌더 props에 언제 반영되는지 보장이 없으면, 세대를 올려 effect를 재실행해도 effect는 옛 props로 옛 세션에 붙는다 — 이어지는 `close(old)`가 방금 붙은 세션을 죽이는 경쟁도 생겼다.\
@@ -72,7 +72,7 @@ setGen((g) => g + 1);                              // effect 재실행 → 아�
 ```ts
 useEffect(() => { lockedRef.current = busy || draft != null; }, [busy, draft]);
 useEffect(() => {
-  const sub = widget.onData((d) => { if (sessionId == null || lockedRef.current) return; send(d); });
+  const sub = widget.onData((d) => { if (sessionIdRef.current == null || lockedRef.current) return; send(d); });   // 콜백이 읽는 값은 모두 ref 로
   return () => sub.dispose();
 }, []);
 pendingAttachRef.current = { id, uuid };           // 새 값을 직접 전달
@@ -98,7 +98,7 @@ onDrop = (e) => place(computeZone(e.clientX, e.clientY, groups));   // 같은 �
 ① 문제 코드
 ```ts
 const onSend = async () => {
-  if (sending) return;                             // 같은 틱 두 번째 클릭도 false
+  if (sending) return;                             // 리렌더 전 두 번째 호출도 false
   setSending(true);
   await send(); setSending(false);
 };
