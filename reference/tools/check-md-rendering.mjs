@@ -152,7 +152,29 @@ for (const [f, n, ex] of strike) {
 }
 
 // ④ 문단 안 `**` 홀수 — 짝이 어긋난 볼드(①이 못 보는 조용한 쪽)
-const stripCode = (t) => t.replace(/`[^`]*`/g, '');
+// ★ 코드 스팬을 통째로 지운다. `int **`·`10**7` 같은 것이 `**` 로 세지면 안 된다.
+//   ★★ 단순한 /`[^`]*`/ 로는 **여러 겹 백틱**(```` ```text ````)을 잘못 토큰화해 오탐이 난다
+//   (실측 1건). CommonMark 대로 **여는 백틱 수와 같은 길이의 닫는 런**을 찾는다.
+function stripCode(t) {
+  let out = '', i = 0;
+  while (i < t.length) {
+    if (t[i] !== '`') { out += t[i++]; continue; }
+    let n = 0;
+    while (t[i + n] === '`') n++;
+    let j = i + n, found = -1;
+    while (j < t.length) {
+      if (t[j] === '`') {
+        let m = 0;
+        while (t[j + m] === '`') m++;
+        if (m === n) { found = j; break; }
+        j += m;
+      } else j++;
+    }
+    if (found >= 0) { i = found + n; continue; }   // 스팬 통째로 버린다
+    out += '`'.repeat(n); i += n;                  // 안 닫힌 백틱은 글자로 둔다
+  }
+  return out;
+}
 const oddBad = [];
 let oddTotal = 0;
 for (const f of files) {
