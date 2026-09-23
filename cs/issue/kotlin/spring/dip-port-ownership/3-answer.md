@@ -36,8 +36,8 @@
 ### 변형 A — 응집의 1차 축을 레이어에서 도메인으로
 ① 문제 코드
 ```text
-api/        SyncController  SearchController  ContentController ...
-usecase/    SyncService     SearchService     ContentService    ...
+api/        SyncController  QueryController  ContentController ...
+usecase/    SyncService     SearchService     ArticleService    ...
 domain/     TextSplitter         QueryParser       ...
 infra/      GitClient       SearchIndexClient ...
 → 기능 하나(sync)를 고치려면 네 폴더 왕복
@@ -109,7 +109,7 @@ fun assign(deal: DealA) { this.deal = deal; this.status = MATCHED }       // 부
 
 // 고친 (단순 참조): 객체 대신 ID, 표시용 정보는 상대 모듈의 요약 API로 enrich
 @Entity class Post { var authorId: Long = 0 }                             // 사용자 엔티티 FK 직접 참조 제거
-fun view(p: Post) = PostView(p, userSummaryApi.summary(p.authorId))
+fun view(p: Post) = ArticleView(p, userSummaryApi.summary(p.authorId))
 ```
 모듈 경계 검증 도구가 보고한 순환(도메인 간 순환 쌍 → 하나의 강결합 컴포넌트)을 이 패턴을 관계별로 적용해 단계적으로 해소하는 중이다.\
 같은 구조(설계 확정·구현 중): 양쪽 요청 엔티티를 하나로 통합하고 매칭을 전용 모듈로 분리, 양쪽 거래 엔티티는 매칭 ID로만 연결 + 동시성은 CAS/낙관락.
