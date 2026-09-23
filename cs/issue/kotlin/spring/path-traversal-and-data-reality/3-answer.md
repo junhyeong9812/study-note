@@ -67,7 +67,7 @@ fn is_safe_id(id: &str) -> bool {
 ① 문제 코드
 ```java
 class LocalFileStorage {
-    String save(InputStream in, String name) { Path p = resolveAndValidate(name); /* ... */ }
+    String save(InputStream in, String name) { Path p = resolveSafe(name); /* ... */ }
     InputStream load(String storagePath) {                             // 절대경로면 그대로 사용
         Path p = Path.of(storagePath).isAbsolute() ? Path.of(storagePath) : basePath.resolve(storagePath);
         return Files.newInputStream(p);
@@ -77,8 +77,8 @@ class LocalFileStorage {
 ```
 ② 고친 코드
 ```java
-InputStream load(String storagePath)        { return Files.newInputStream(resolveAndValidate(storagePath)); }
-InputStream loadPartial(String sp, long f, long t) { return open(resolveAndValidate(sp), f, t); }
+InputStream load(String storagePath)        { return Files.newInputStream(resolveSafe(storagePath)); }
+InputStream loadPartial(String sp, long f, long t) { return open(resolveSafe(sp), f, t); }
 // 기존에 절대경로로 저장된 데이터는 basePath로 시작하는지만 검증 (저장 형식 마이그레이션 없이)
 ```
 무엇이 깨졌나: 검증하지 않은 진입점이 검증한 진입점의 우회로가 됐다.\
@@ -121,14 +121,14 @@ byte[] plain = c.doFinal(Base64.getDecoder().decode(stored));
 ### 변형 D — 스키마가 보장하지 않는 데이터 분포
 ① 문제 코드
 ```sql
-SELECT r.*, m.name FROM record r JOIN master m ON m.code = r.owner_code;   -- 마스터 누락 행은 조용히 빠짐
+SELECT r.*, m.name FROM record r JOIN master m ON m.code = r.ref_code;   -- 마스터 누락 행은 조용히 빠짐
 SELECT ... WHERE term = :term;           -- 문자열 날짜 컬럼에 빈 문자열·ISO 타임스탬프 혼재 → 집계 누락
 SELECT ... WHERE lang = 'vi';            -- 같은 언어가 'vi'·'vn' 두 코드로 혼재 → 한쪽 누락
 ```
 ② 고친 코드
 ```sql
 -- 먼저 분포를 본다: 조인 실패 건수·그룹
-SELECT COUNT(*) FROM record r WHERE NOT EXISTS (SELECT 1 FROM master m WHERE m.code = r.owner_code);
+SELECT COUNT(*) FROM record r WHERE NOT EXISTS (SELECT 1 FROM master m WHERE m.code = r.ref_code);
 -- 실패 그룹별 폴백 우선순위: 원천 테이블의 이름 컬럼 직접 사용 (의미가 다른 필드는 섞지 않고 별도 필드로)
 SELECT ... WHERE term REGEXP '^[0-9]{6}([0-9]{2})?$';       -- 유효 형식만, ISO 형식은 정규화해 흡수
 ```
@@ -151,7 +151,7 @@ Set<String> nativeCodes = Set.of("vi", "vn");               // 혼재 코드 명
 save_summary(req.summary_path, body);
 // 고친
 let path = summaries_dir().join(format!("{}.md", validated(req.prev_id)?));   // 서버가 id에서 도출
-fn safe_name(key: &str) -> String {                                         // 파일명이 되는 키는 치환
+fn sanitized_name(key: &str) -> String {                                         // 파일명이 되는 키는 치환
     key.chars().map(|c| if c.is_ascii_alphanumeric() || c == '-' || c == '_' { c } else { '_' }).collect()
 }
 // 메타에 저장되는 참조 id도 write 시점에 fail-fast 검증 (불안전 값이 저장돼 나중에 체인이 조용히 잘리던 것 방지)
