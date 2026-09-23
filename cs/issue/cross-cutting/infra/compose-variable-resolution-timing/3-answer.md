@@ -3,6 +3,8 @@
 > 복습 시 이 파일은 **최후에만** 연다.
 > ⚠️ 이 정답은 Claude 초안(2026-09-23) — 이슈 README·코드 기준. 복습 전 읽지 말 것.
 
+태그: `environment-drift`
+
 ## 정답
 <!-- 질문 1:1 대응 -->
 
@@ -18,13 +20,149 @@
    > **build:와 image:의 병존** — compose에서 이 둘이 함께 있으면 "빌드해서 이 이름표를 붙인다"로 읽힌다. pull 대상이 아니다.
 
 5. `env_file: ${ENV_FILE:-.env}`는 **파일명 자체를 파싱 채널 변수로** 만든다 → `ENV_FILE=.env.master docker compose ...`로 파싱 시점에 어떤 env 파일을 쓸지 공급할 수 있다(파일 안에 `ENV_FILE=자기자신`도 넣어 런타임 채널까지 해결). 현재 코드의 `profiles`(`master`/`agent`) + `.env.master`/`.env.agent` 분리 방식은 **변수 분기 자체를 없애** 우회한다 — `container_name`을 리터럴(`ci-cd-master`)로 고정하고 서비스를 둘로 나눠, 파싱 시점에 풀 `${MODE}`가 애초에 없다.
-   > **profiles** — compose 서비스에 라벨을 달아 `--profile <name>`으로 선택 기동하는 기능. `.9`는 `--profile master --profile agent`로 둘 다, 나머지 호스트는 `--profile agent`만 띄운다.
+   > **profiles** — compose 서비스에 라벨을 달아 `--profile <name>`으로 선택 기동하는 기능. 마스터 호스트는 `--profile master --profile agent`로 둘 다, 나머지 호스트는 `--profile agent`만 띄운다.
 
 6. "이 `${VAR}`는 파일을 **파싱할 때** 풀리는가, 컨테이너 **안에서** 쓰이는가?" — 이 한 질문이 값을 어느 채널(셸/`--env-file`/`.env` vs `env_file:`/`environment:`)로 공급해야 하는지를 결정한다.
 
-## 이번 프로젝트 사례
-- [ci-cd/issue1](../../../../../project/study-note-deploy-system/ci-cd/issue1/) — `.9`에서 master·agent 동시 기동 시 `container_name: ci-cd-${MODE}`가 `required variable MODE is missing`. `env_file: ${ENV_FILE:-.env}`로 파일명을 변수화해 파싱 채널에 값 공급(현재 코드는 profiles로 진화).
-- [ci-cd/issue2](../../../../../project/study-note-deploy-system/ci-cd/issue2/) — ② `image:`+`build:` 병존 → `compose pull wrapper` Skipped. 같은 "도구의 해석 vs 의도" 함정.
+## 문제 구조 (추상화 코드)
+
+### 변형 A — 런타임 채널 값으로 파싱 시점 필드를 채우려 함
+① 문제 코드
+```yaml
+services:
+  app:
+    container_name: app-${MODE}     # 파싱 채널: 셸 / --env-file / 같은 폴더 .env
+    env_file: .env.master           # 런타임 채널: 컨테이너 안에만 MODE=master
+# → required variable MODE is missing
+```
+② 고친 코드
+```yaml
+services:
+  app:
+    env_file: ${ENV_FILE:-.env}     # 파일명 자체를 파싱 채널 변수로
+# ENV_FILE=.env.master docker compose up -d
+```
+진화한 형태(변수 분기 제거):
+```yaml
+services:
+  app-master:
+    container_name: app-master      # 리터럴
+    profiles: [master]
+    env_file: .env.master
+  app-agent:
+    container_name: app-agent
+    profiles: [agent]
+    env_file: .env.agent
+```
+깨진 것: 이름만 같은 두 채널의 변수를 하나로 여겼다.
+
+### 변형 B — 키 조합을 도구가 다르게 해석
+① 문제 코드
+```yaml
+services:
+  wrapper:
+    image: registry.example/wrapper:${TAG}   # 의도: 배포는 pull
+    build: ./wrapper                         # 의도: 로컬은 build
+# docker compose pull wrapper → Skipped - No image to be pulled
+```
+② 고친 코드
+```yaml
+# 배포용 파일: image만 (pull 대상)
+services:
+  wrapper:
+    image: registry.example/wrapper:${TAG}
+# 로컬 빌드는 별도 override 파일에서 build: 지정
+```
+깨진 것: `build:`가 있으면 `image:`는 "받을 주소"가 아니라 "빌드 결과 이름표"로 해석된다.
 
 ## 검증 기록
-- 2026-09-23: 이슈 README(ci-cd/issue1·2) + 현재 `study-note-deploy-system-ci-cd/docker-compose.yml`(profiles·`.env.master`/`.env.agent`) 대조 작성. 과거 `${MODE}` interpolation·`${ENV_FILE:-.env}` 근거는 README 정본(현재 compose는 profiles로 진화함을 확인). Claude 초안.
+- 2026-09-23: 원 사례 원문 대조 작성 (Claude 초안).
+- 2026-09-24: 출처 표기를 추상화 코드 구조로 전환 + 방안 비교 추가, 출처 원문 대조(Claude 초안) — 근거는 작업 log
+
+## 방안 비교
+
+> 같은 원리("값·설정이 어느 채널로, 언제, 누구에게 도달하는가")에서 나온 다른 해결 방안들이다. 각 방안은 **값이 도달하지 않는 채널이 어디였는가**에 따라 갈린다.
+
+### 방안 1 — 초기화 채널: 빈 볼륨 최초 1회만 적용되는 설정을 별도 절차로 재적용
+① 문제 코드
+```yaml
+services:
+  db:
+    image: postgres
+    environment: [ "POSTGRES_PASSWORD=${DB_PASSWORD}" ]
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - dbdata:/var/lib/postgresql/data     # 이미 데이터가 있으면 init·비번 설정 건너뜀
+# 스키마·비번을 바꾸고 compose up → 반영 안 됨
+```
+② 고친 코드
+```sh
+# 스키마: 멱등 DDL을 수동 재적용 (IF NOT EXISTS 라 안전)
+docker compose exec db psql -f /docker-entrypoint-initdb.d/init.sql
+# 또는 볼륨 초기화(데이터 폐기 전제) / 비번 로테이션은 별도 절차
+```
+깨진 것: 공식 엔트리포인트는 데이터 디렉터리가 비었을 때만 초기화 스크립트와 비번 설정을 실행한다.
+
+### 방안 2 — 명령별 로드 범위: 모든 하위 명령에 env를 대칭 주입(+ placeholder)
+① 문제 코드
+```go
+run("docker", "pull", digest)             // compose 아님 → 영향 없음
+run("compose", "up", "-d")                 // env: IMAGE=digest
+run("compose", "ps", "-q")                 // env 없음 → image: ${IMAGE} 비어 프로젝트 로드 실패
+// 실패 → cleanup → run("compose","down") // env 없음 → 역시 실패 → 결과 UNKNOWN
+```
+② 고친 코드
+```go
+const placeholder = "noncreate.invalid/unused:0"      // pull 불가 값
+envFor := func(cmd string) []string {
+    if cmd == "up" { return []string{"IMAGE=" + digest} }  // 실 digest는 up에만
+    return []string{"IMAGE=" + placeholder}           // ps·down·status도 프로젝트 로드 성립
+}
+```
+깨진 것: compose는 어떤 하위 명령이든 프로젝트를 로드할 때 모든 서비스의 image를 먼저 보간·검증하므로, env를 `up`에만 주면 조회·정리 명령이 성립하지 않았다.\
+선택하지 않은 방법: compose 파일에 `${IMAGE:-기본값}` — 대체 이미지가 파일에 남아 "지정 digest만 실행" 원칙을 흐린다.
+
+### 방안 3 — 소비자 채널: 셸이 없는 실행 형식에서는 프로그램이 직접 읽는 변수를 쓴다
+① 문제 코드
+```dockerfile
+ENTRYPOINT ["java", "-jar", "/app.jar"]      # exec-form: 셸 확장 없음
+# compose: environment: [ "JAVA_OPTS=-Xmx2g -XX:+UseZGC" ] → 아무도 안 읽음 → 기본 힙(cgroup 25%) → OOM
+```
+② 고친 코드
+```yaml
+environment:
+  - JAVA_TOOL_OPTIONS=-Xmx8g -XX:+UseZGC -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp
+mem_limit: 16g
+```
+깨진 것: `JAVA_OPTS`는 셸 스크립트 관례일 뿐, exec-form에선 아무도 읽지 않는다 — JVM이 스스로 읽는 것은 `JAVA_TOOL_OPTIONS`다.
+
+### 방안 4 — 대상 범위: 서비스 미지정 pull/up은 파일 전체가 대상
+① 문제 코드
+```go
+run("compose", "pull")        // 같은 파일의 무관한 대용량 이미지까지 갱신 → 타임아웃(정확히 4:00)
+run("compose", "up", "-d")    // 무관한 서비스까지 재생성될 수 있음
+```
+② 고친 코드
+```go
+pull := []string{"compose", "pull"}
+up := []string{"compose", "up", "-d"}
+if svc != "" {                // 배포 대상 서비스명을 설정으로 받음
+    pull = append(pull, svc)
+    up = append(up, svc)
+}
+```
+깨진 것: 도구의 기본 범위(전체 서비스)가 "배포 단위 = 그 서비스"라는 의도와 달랐다.\
+진단 요령: 실패 시각이 정확히 타임아웃 값이면 "느린 게 아니라 우리가 끊은 것" — pull 로그의 레이어로 대상 이미지를 식별한다.
+
+### 비교 표
+
+| 방안 | 전제 | 비용 | 실패 모드(안 했을 때) | 맞는 조건 |
+|------|------|------|------------------------|-----------|
+| 1 초기화 채널 재적용 | 설정이 "최초 1회" 채널에 있다 | 수동 절차·볼륨 초기화 시 데이터 폐기 | 바꿨는데 조용히 미반영 | 공식 이미지의 init 스크립트·초기 비번 |
+| 2 대칭 주입 + placeholder | 모든 하위 명령이 같은 보간을 거친다 | 명령별 env 표 유지 | 조회·정리 명령 불성립 → 거짓 UNKNOWN | 필수 변수(무기본값)를 쓰는 compose를 프로그램이 구동 |
+| 3 소비자가 읽는 변수 | 실행 형식에 셸이 없다 | 변수 이름을 런타임 규약에 맞춤 | 옵션 무시 → 기본값으로 동작(OOM 등) | exec-form ENTRYPOINT의 JVM 컨테이너 |
+| 4 서비스 명시 | 한 파일에 여러 서비스 | 배포 대상명 설정 추가 | 무관한 서비스 갱신·재생성·타임아웃 | 여러 서비스가 한 compose에 공존 |
+
+**결론**: 우열이 아니라 "값이 끊긴 채널"로 고른다.\
+값이 파싱 시점에 없으면 파싱 채널 공급(변형 A) 또는 모든 명령에 대칭 공급(방안 2), 컨테이너 안 프로세스가 안 읽으면 소비자 규약 변수(방안 3), 최초 1회 채널이면 별도 재적용 절차(방안 1), 적용 범위가 넓으면 대상 명시(방안 4).\
+공통 첫 질문은 정답 6번과 같다 — "이 값은 언제, 누가 읽는가?"
