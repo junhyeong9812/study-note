@@ -27,7 +27,7 @@
 prop을 state로 옮겨 담으면 prop이 바뀐 렌더에서 state는 아직 옛 값이다. `remaining`이 null→3600이 된 렌더에서 `left`가 0이면 `expired = true`가 계산되고, 만료 effect가 오발화해 인증 직후 즉시 로그아웃된다.\
 해법: 남은 초를 state에 두지 않고 **절대 마감시각에서 매 렌더 도출**(stale 창 제거), 탭 복귀(visibility/focus) 때 재계산, interval은 표시값이 바뀔 때만 tick.
 
-5. deps 값이 같으면 memo·effect는 "새 회차"를 알 수 없다. **회차 식별자 `resetKey`**(발송 회차 번호)를 파라미터로 받아 deps에 넣는다. 만료 처리도 `${remaining}-${resetKey}` 같은 회차 키로 "회차당 1회"를 보장한다.
+5. deps 값이 같으면 memo·effect는 "새 회차"를 알 수 없다. **회차 식별자 `resetNonce`**(발송 회차 번호)를 파라미터로 받아 deps에 넣는다. 만료 처리도 `${remaining}-${resetNonce}` 같은 회차 키로 "회차당 1회"를 보장한다.
 
 6. **`ResizeObserver`** 로 내용 요소의 크기 변화 자체를 관찰한다 — 원인이 무엇이든 높이가 바뀌면 발화한다. deps에 값을 더 넣는 방식은 다른 성장 요인을 또 놓치고, DOM 변경 관찰(MutationObserver)은 높이와 무관한 변화에도 발화한다.\
 루프가 없는 조건: 콜백이 `scrollTop`만 바꾸고 관찰 대상의 **border-box 크기는 바꾸지 않는다**. 크기를 바꾸는 쪽으로 반응하면 관찰→변경→관찰의 루프가 된다. 관찰 대상 밖의 요소가 커지는 경우는 여전히 못 본다(범위 한계).
@@ -49,8 +49,8 @@ const deadline = useMemo(() => now() + expiresIn * 1000, [expiresIn]);   // 180 
 const text = useFileText(path, { refreshKey: item.id });      // 엔티티 정체성을 deps 로
 openHistory = (root, commit) => set({ history: { root, commit }, historyFile: null });   // 액션마다 새 객체
 useEffect(() => { openTopFile(history); }, [history]);
-const cd = useCountdown(expiresIn, resetKey);                 // 회차 키
-useExpireOnce(cd.expired, `${expiresIn}-${resetKey}`, onExpire);
+const cd = useTimer(expiresIn, resetNonce);                 // 회차 키
+useFireOnce(cd.expired, `${expiresIn}-${resetNonce}`, onTimeout);
 ```
 무엇이 깨졌나: effect가 값 동등성으로만 판단한다는 사실을 두고, "다시 해야 하는 이유"를 deps에 넣지 않았다.
 
@@ -61,7 +61,7 @@ useEffect(() => {
   if (inflight.has(key)) return;                  // 중복 방지
   let alive = true;
   inflight.add(key);
-  fetchDetail(selectedItem).then((d) => { if (alive) setDetail(d); })   // 실패는 캐시 안 함
+  loadItem(selectedItem).then((d) => { if (alive) setDetail(d); })   // 실패는 캐시 안 함
     .finally(() => inflight.delete(key));
   return () => { alive = false; };                // A→B→A: 결과 폐기 + 재요청 차단 → 영구 로딩
 }, [selectedItem]);                               // 매 emit 새 객체 → 매번 재실행
@@ -72,7 +72,7 @@ const key = `${sessionId}:${itemId}`;             // 안정 키 (세션 간 오�
 useEffect(() => {
   if (cache.has(key) || inflight.has(key)) return;
   inflight.add(key);
-  fetchDetail(key)
+  loadItem(key)
     .then((d) => cache.set(key, d), () => cache.set(key, null))   // 실패도 sentinel 캐시
     .finally(() => { inflight.delete(key); bump(); });            // 결과는 항상 키 스코프로 반영
 }, [key, cache.has(key)]);                        // 축출로 미스가 되면 재요청
@@ -108,7 +108,7 @@ const expired = left <= 0;                                   // 오발화 → �
 ```
 ② 고친 코드
 ```ts
-const deadline = useMemo(() => (remaining == null ? null : Date.now() + remaining * 1000), [remaining, resetKey]);
+const deadline = useMemo(() => (remaining == null ? null : Date.now() + remaining * 1000), [remaining, resetNonce]);
 const [, force] = useReducer((x) => x + 1, 0);
 useEffect(() => { /* 표시값이 바뀔 때만 tick · visibilitychange/focus 에서 force() */ }, [deadline]);
 const left = deadline == null ? null : Math.max(0, Math.ceil((deadline - Date.now()) / 1000));   // 매 렌더 도출

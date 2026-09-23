@@ -18,7 +18,7 @@ effect 재실행 판정 = deps 각 원소의 Object.is 비교
    └ deps 밖 요인 (높이·폰트)          → effect 로는 못 봄 → 관찰자(ResizeObserver)
 
 [교정]
-   의도를 deps 에 명시     refreshKey(엔티티 id) · 액션마다 새 객체 · resetKey(회차)
+   의도를 deps 에 명시     refreshKey(엔티티 id) · 액션마다 새 객체 · resetNonce(회차)
    안정 키                 객체 대신 키 문자열 · 실패도 sentinel 로 캐시
    렌더 파생               저장하지 말고 매 렌더 계산 (deadline → 남은 초)
    렌더 중 조정            prevRef 로 전환 감지 → 렌더 중 setState (페인트 전 재렌더)
