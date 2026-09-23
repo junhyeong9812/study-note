@@ -21,7 +21,7 @@
 3. **수락 후 learn 실패.** 사용자는 "이 호스트를 신뢰했다"고 믿지만 저장소엔 기록이 없다.\
 이번 연결을 진행하면 **믿음과 저장 상태가 어긋난 채** 통신이 이뤄지고, 다음 접속에선 다시 "미지"가 되어 또 묻는다.\
 (일반론 — 원 기록은 "저장 실패 시 신뢰하지 않음, 다음 접속 재프롬프트가 정직"까지) 사용자는 반복되는 질문에 습관적으로 수락하게 되고, 그 사이 키가 바뀌어도 "불일치"가 아니라 "미지"로 보이므로 **MITM 탐지 능력 자체가 사라진다**.\
-그래서 learn이 성공했을 때만 진행하고, 실패하면 이번 연결도 거부한다.
+그래서 learn이 성공했을 때만 진행하고, 실패하면 이번 연결도 거부한다 — 거부가 저장 실패 자체를 고치지는 않지만, 기록 없는 신뢰로 통신하는 일을 막고 저장 실패를 사용자에게 드러내 원인(권한·디스크 등)을 고치게 한다.
 
 4. **판독 실패는 거부 쪽.** known_hosts를 읽지 못했다면 "기록이 없다"를 증명한 것이 아니라 **판정을 못 한 것**이다.\
 이를 미지로 접으면 사용자에게 수락을 받아 진행하게 되고, 실제로는 기록된 키와 불일치였을 수도 있는 호스트를 신뢰하게 된다.\
@@ -41,7 +41,7 @@
 ### 변형 A — 세 상태를 두 분기로 접음 / 영속 실패를 무시
 ① 문제 코드
 ```rust
-fn check_server_key(&self, key: &PublicKey) -> Result<bool> {
+async fn check_server_key(&self, key: &PublicKey) -> Result<bool> {
     match check_known_hosts(&self.host, self.port, key, &self.store) {
         Ok(true) => Ok(true),
         _ => {                                         // 불일치·판독 오류·미지를 한 분기로
@@ -55,7 +55,7 @@ fn check_server_key(&self, key: &PublicKey) -> Result<bool> {
 ```
 ② 고친 코드
 ```rust
-fn check_server_key(&self, key: &PublicKey) -> Result<bool> {
+async fn check_server_key(&self, key: &PublicKey) -> Result<bool> {
     match check_known_hosts(&self.host, self.port, key, &self.app_store) {  // 앱 전용 저장소
         Ok(true)  => Ok(true),                    // 일치
         Err(_)    => Ok(false),                   // 키 변경(불일치)·판독 불가 → 거부
