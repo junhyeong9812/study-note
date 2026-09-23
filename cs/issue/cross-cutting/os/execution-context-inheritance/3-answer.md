@@ -157,7 +157,7 @@ cmd.Env = injected                    // injected가 비면 nil → 부모 env �
 metadata: { name: app-master-svc }   # 설정 접두사와 겹치지 않는 이름 + 설정 명시
 ```
 ```go
-cmd.Env = append([]string{"PATH=" + safePath}, injected...)   // 허용 집합
+cmd.Env = append([]string{"PATH=" + checkedPath}, injected...)   // 허용 집합
 assertNoDotEnv(projectDir)                                     // 기록 전 + 실행 직전 이중 단언
 ```
 무엇이 깨졌나: 내가 넣지 않은 값(플랫폼 주입·암묵 상속·자동 로드)이 실행 문맥에 들어왔다.\
