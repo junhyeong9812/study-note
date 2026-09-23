@@ -10,7 +10,7 @@
 > ★ **이 gcc 에 `-std=c23` 은 없다** — `-std=c2x` 뿐이고 그때 `__STDC_VERSION__` 이 `202000L` 이다.
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
 > **경계** — 「정수 승격·부호 비교」의 정본은 [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/)다.\
-> 여기는 **`enum` 이 그 규칙에 어떻게 걸리나**까지만 쓴다. 「`switch` 문법」은 목록의 **12번 주제**가 정본이다.
+> 여기는 **`enum` 이 그 규칙에 어떻게 걸리나**까지만 쓴다. 「`switch` 문법」은 [목록의 **12번 주제**](../12-control-flow-and-switch/)가 정본이다.
 
 ## 한눈에 — 쉽게 말하면
 
@@ -618,7 +618,7 @@ sizeof(enum Small)=1 Neg=1 Big=4 Huge=4 Tiny=1  (int=4)
 - [`03-integer-promotion-and-usual-arithmetic-conversions/`](../03-integer-promotion-and-usual-arithmetic-conversions/) — **`-1 < 1u` 가 거짓인 그 규칙**이 `enum` 변수에서 그대로 재현된다. 승격·부호 비교의 정본
 - [`05-explicit-casts-and-pointer-conversions/`](../05-explicit-casts-and-pointer-conversions/) — `(int)e` 로 올려서 고치는 자리 · 「플래그 하나로 구현 정의를 뒤집어 보이는」 수법
 - [`06-typedef-and-type-aliases/`](../06-typedef-and-type-aliases/) — `typedef enum { ... } Color;` 의 태그·이름 공간 규칙
-- 목록의 **12번 주제** (제어문과 `switch`) — `switch` 문법의 정본. 여기는 **`-Wswitch` 가 `enum` 에 주는 것**까지만
+- [목록의 **12번 주제**](../12-control-flow-and-switch/) (제어문과 `switch`) — `switch` 문법의 정본. 여기는 **`-Wswitch` 가 `enum` 에 주는 것**까지만
 - 목록의 **24번 주제** (비트필드) — 열거 상수를 비트필드 폭으로 쓰는 자리
 - 목록의 **41번 주제** (전처리기) — `#define` 쪽의 정본. `#if` 에 `enum` 을 못 쓰는 이유가 거기
 - 목록의 **53번 주제** (`assert` 와 `static_assert`) — 열거 상수를 `_Static_assert` 로 못 박는 자리

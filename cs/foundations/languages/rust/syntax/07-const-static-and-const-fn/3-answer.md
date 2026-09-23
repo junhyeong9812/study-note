@@ -145,7 +145,7 @@ warning: borrow of a named constant with interior mutability
 
 - **1번과 같은 이야기인 이유 한 문장** — 1번은 「사본이 몇 개인가」를 **값으로** 보여 주었고, 2번은 같은 것을 **해제 줄 수로** 보여 준다.
 - 그래서 **파일 닫기·플러시·잠금 해제를 `static` 값의 `Drop` 에 기대면 안 된다.**\
-  해제 시점 일반론은 목록의 **09번 주제**, 소유권과 해제의 관계는 [**08번 주제**](../08-ownership-and-move/)가 정본이다.
+  해제 시점 일반론은 [목록의 **09번 주제**](../09-copy-clone-and-drop/), 소유권과 해제의 관계는 [**08번 주제**](../08-ownership-and-move/)가 정본이다.
 
 ### 3. `const` 항목에 대입하면
 
@@ -820,7 +820,7 @@ error[E0597]: `local` does not live long enough
                              ^ 여기서 죽는데 &'static 을 요구했다 -> E0597
 ```
 
-- 수명 표기와 생략 규칙의 정본은 목록의 **12번 주제**, `&'static` 과 `T: 'static` 을 가르는 것은 목록의 **13번 주제**다.
+- 수명 표기와 생략 규칙의 정본은 [목록의 **12번 주제**](../12-lifetime-annotations-and-elision/), `&'static` 과 `T: 'static` 을 가르는 것은 목록의 **13번 주제**다.
 
 ### 12. 다른 주제와 잇기
 
@@ -831,7 +831,7 @@ error[E0597]: `local` does not live long enough
   - ★ `static mut` 은 이 셋이 다 안 될 때의 마지막 수단이다. Edition Guide 의 권고도 같은 순서다.
 - **`static` 이 `Sync` 를 요구하는 이유** — 목록의 **50번 주제**(`Send`/`Sync`).
 - **에디션 변경 전수** — 목록의 **47번 주제**(에디션 2021 대 2024).
-- **해제 시점 일반론** — 목록의 **09번 주제**(`Copy`·`Clone`·`Drop` 시점) · `Drop` 관용구는 목록의 **44번 주제**.\
+- **해제 시점 일반론** — [목록의 **09번 주제**](../09-copy-clone-and-drop/)(`Copy`·`Clone`·`Drop` 시점) · `Drop` 관용구는 목록의 **44번 주제**.\
   「누가 주인이고 언제 사라지나」의 정본은 [**08번 주제**](../08-ownership-and-move/)다.
 - **`rustc` 는 침묵하고 다른 도구만 말하는 자리** — **1번**이다.\
   `const` 에 둔 `AtomicI32` 는 `rustc` 기준으로 에러도 경고도 없고, `clippy` 의\

@@ -614,7 +614,7 @@ inf -nan                       (아무 말 없음)
 - [`../../../c-cpp-csharp.md`](../../../c-cpp-csharp.md) — **그쪽은 「왜 정합성 도메인에서 부동소수를 쓰면 안 되나」라는 논증까지, 여기는 「C 의 변환 규칙이 무엇이냐」부터**
 - [`02-basic-types-sizes-and-fixed-width-integers/`](../02-basic-types-sizes-and-fixed-width-integers/) — `long double` 의 `sizeof` 와 정밀도가 따로 노는 자리
 - [`03-integer-promotion-and-usual-arithmetic-conversions/`](../03-integer-promotion-and-usual-arithmetic-conversions/) — 통상 산술 변환의 ① 단계(부동소수가 정수를 이기는 규칙) · `float-cast-overflow` 가 기본 집합에 없다는 것
-- 목록의 **05번 주제** (명시 캐스트) — `(int)d` 가 「비트를 바꾸는 것」인지 「값을 바꾸는 것」인지
+- [목록의 **05번 주제**](../05-explicit-casts-and-pointer-conversions/) (명시 캐스트) — `(int)d` 가 「비트를 바꾸는 것」인지 「값을 바꾸는 것」인지
 - 목록의 **36번 주제** (`<stdarg.h>`) — 기본 인자 승격의 정본. `va_arg(ap, float)` 이 왜 틀린가
 - 목록의 **47번 주제** (`<stdio.h>` 서식 출력) — `%f`·`%g`·`%.17g` 를 고르는 규칙
 - 목록의 **52번 주제** (`<math.h>` 핵심) — `isnan`/`isinf` 와 부동소수 비교의 정본

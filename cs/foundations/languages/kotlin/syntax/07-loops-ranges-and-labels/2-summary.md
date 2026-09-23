@@ -9,7 +9,7 @@
 > **비지역 `break`/`continue` 는 2.2.0** — 이 환경에서 `-language-version 2.1` 이 **거부하는 것을 실측**했다.\
 > ★ **못 잰 것** — kotlinc 2.4.20 은 `-language-version 1.9` 이하를 거부하므로 **`..<` 의 도입 경계는 이 환경에서 못 쟀다.**\
 > 그 값(1.7.20 도입 / 1.8.0 Stable)은 **공식 릴리스 노트를 열어 확인한 것**이지 실측이 아니다.
-> **경계** — 비지역 `return` 이 **왜 인라인 람다에서만 되는가**의 정본은 목록의 **11번 주제**(인라인 함수)다.\
+> **경계** — 비지역 `return` 이 **왜 인라인 람다에서만 되는가**의 정본은 [목록의 **11번 주제**](../11-inline-functions/)(인라인 함수)다.\
 > 여기서는 **현상까지만** 쓰고 원리는 넘긴다. 컬렉션 연산(`forEach`·`map`)의 계약은 목록의 **40번 주제**부터가 정본이다.\
 > **Java 쪽 정본은 [`../../../java/syntax/20-control-flow-statements/`](../../../java/syntax/20-control-flow-statements/)** 다.
 > 이 본문은 Claude 작성이다(원고 없음).
@@ -624,7 +624,7 @@ bad2.kt:2:47: error: 'return' is prohibited here.
 ```
 
 - ★ **람다를 변수에 담는 순간 비지역 `return` 이 금지된다.** 그 람다는 인라인되지 않기 때문이다.
-- **왜 인라인이면 되고 아니면 안 되는지의 정본은 목록의 11번 주제**(인라인 함수 — `noinline`/`crossinline`·비지역 반환)다.\
+- **왜 인라인이면 되고 아니면 안 되는지의 정본은 [목록의 11번 주제](../11-inline-functions/)**(인라인 함수 — `noinline`/`crossinline`·비지역 반환)다.\
   여기서는 **현상까지만** 적는다.
 
 비용 — 인라인된 람다에서는 `goto`·`areturn` 수준. 객체 없음.
@@ -895,8 +895,8 @@ operator fun iterator(): Iterator<T>
 - [`../../../java/syntax/21-switch-statement-and-expression/`](../../../java/syntax/21-switch-statement-and-expression/) — Java `switch`. `break` 가 루프 말고 **거기서도** 쓰이던 것의 정본
 - [06번 주제](../06-when-expression/) — `if`·`when` 이 **식**인 것의 정본. 이 문서의 (11)과 짝이다. `in` 가지도 거기 있다
 - [03번 주제](../03-null-safe-types/) — 바이트코드에 섞여 보이는 `checkNotNullParameter` 의 정본
-- 목록의 **11번 주제**(인라인 함수 — `noinline`/`crossinline`·비지역 반환) — **비지역 `return` 이 왜 인라인에서만 되는가**의 정본. 이 문서는 현상까지만 적었다
-- 목록의 **10번 주제**(람다와 고차 함수) — 람다 자체의 정본
+- [목록의 **11번 주제**](../11-inline-functions/)(인라인 함수 — `noinline`/`crossinline`·비지역 반환) — **비지역 `return` 이 왜 인라인에서만 되는가**의 정본. 이 문서는 현상까지만 적었다
+- [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/)(람다와 고차 함수) — 람다 자체의 정본
 - 목록의 **14번 주제**(scope function) — `run`·`let` 의 정본. (10)의 `run skip@{ }` 이 그것이다
 - 목록의 **30번 주제**(구조 분해 선언) — `for ((i, v) in …)` 의 정본
 - 목록의 **31번 주제**(연산자 오버로딩·중위 함수·`invoke` 규약) — `iterator()`·`contains` 규약의 정본

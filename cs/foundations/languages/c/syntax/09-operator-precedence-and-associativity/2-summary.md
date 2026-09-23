@@ -735,7 +735,7 @@ C 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다�
 - [`06-typedef-and-type-aliases/`](../06-typedef-and-type-aliases/) — `(X)(Y)` 가 `X` 의 정체로 갈리는 것의 배경
 - [`08-sizeof-alignment-and-offsetof/`](../08-sizeof-alignment-and-offsetof/) — `sizeof` 자체의 정본. 여기는 **그것이 단항이라 어디서 끊기나**까지만
 - [`01-declaration-syntax-and-reading/`](../01-declaration-syntax-and-reading/) — **선언을 읽는 규칙**도 같은 우선순위(후위 > 단항)를 쓴다. `char *(*f[3])(int)` 가 그 결과다
-- 목록의 **12번 주제** (제어문과 `switch`) — `? :` 대 `if` 의 자리
+- [목록의 **12번 주제**](../12-control-flow-and-switch/) (제어문과 `switch`) — `? :` 대 `if` 의 자리
 - 목록의 **42번 주제** (함수형 매크로의 함정) — **괄호를 안 친 매크로**의 정본. 이 주제의 함정이 매크로로 옮겨간 형태다
 - 목록의 **54번 주제** (부호 있는 정수 오버플로) — 잘못 묶인 식이 **UB 까지 가는** 자리
 

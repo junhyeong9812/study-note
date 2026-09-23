@@ -9,7 +9,7 @@
 > ★ **문서와 컴파일러가 어긋나는 자리를 하나 찾았다** — `infix` 의 「기본값 금지」 조항이다((8)).
 > **경계** — 기본 인자·이름 붙인 인자·`@JvmOverloads` 의 정본은 [08번 주제](../08-function-declaration-default-and-named-args/)다.\
 > 연산자 오버로딩 **전체**(`plus`·`get`·`invoke`·`iterator` 등 규약 표)는 목록의 **31번 주제**가 정본이다 —\
-> 여기서는 `infix` 라는 **호출 형태**만 다룬다. 람다·클로저 일반은 목록의 **10번 주제**.\
+> 여기서는 `infix` 라는 **호출 형태**만 다룬다. 람다·클로저 일반은 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/).\
 > **Java 쪽 정본은 [`../../../java/syntax/08-method-declaration-overloading/`](../../../java/syntax/08-method-declaration-overloading/)** 다(가변 인자가 거기 있다).
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -475,7 +475,7 @@ public final class LocalKt {
   `int` 를 그냥 넘기면 **사본**이라 바깥이 안 바뀐다.
 - 바깥 함수도 결과를 **`상자.element` 에서 읽는다**(`getfield … Ref$IntRef.element`).
 - Java 의 람다·익명 클래스가 **`effectively final` 만 잡을 수 있는 것**과 대비되는 자리다 —\
-  Kotlin 은 **상자를 만들어서** 그 제약을 없앴다. 람다 쪽의 정본은 목록의 **10번 주제**.
+  Kotlin 은 **상자를 만들어서** 그 제약을 없앴다. 람다 쪽의 정본은 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/).
 
 **출력** (`ex.kt`)
 
@@ -537,7 +537,7 @@ fun withLambda(n: Int): Int {
 - ★ **람다 쪽은 `Function1` 객체가 생기고 `Int` 가 박싱된다.** `invoke(Object)` 라는 **지워진 시그니처**로 불리기 때문이다.
 - 로컬 함수 쪽은 **`int` 그대로** 정적 호출이다.
 - 이 파일에서는 람다도 **별도 클래스 파일을 만들지 않았다** — `invokedynamic` 으로 처리됐다\
-  (기본 타깃 1.8 에서도 그렇다. 람다 생성 전략의 정본은 목록의 **10번 주제**).
+  (기본 타깃 1.8 에서도 그렇다. 람다 생성 전략의 정본은 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/)).
 - **성능은 재지 않았다.** 관찰된 것은 **박싱과 객체 생성의 유무**까지다.
 
 비용 — 표의 오른쪽 칸 그대로.
@@ -807,10 +807,10 @@ Money(1000) plus Money(500)
   가변 인자와 오버로드 해소가 거기 있다. 여기는 **spread 와 `SpreadBuilder`**
 - [07번 주제](../07-loops-ranges-and-labels/) — `for` 로 `vararg` 배열을 도는 것, `step`·`downTo` 가 **중위 함수**인 것
 - [03번 주제](../03-null-safe-types/) — `checkNotNullParameter` 의 정본
-- 목록의 **10번 주제**(람다와 고차 함수 — `it`·마지막 인자 람다·클로저) — **람다가 바깥 `var` 를 잡는 것**의 정본.\
+- [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/)(람다와 고차 함수 — `it`·마지막 인자 람다·클로저) — **람다가 바깥 `var` 를 잡는 것**의 정본.\
   이 문서의 (6)·(7)은 **로컬 함수 쪽**만 다뤘다
-- 목록의 **11번 주제**(인라인 함수) — 람다의 객체 생성이 사라지는 조건
-- 목록의 **13번 주제**(확장 함수) — `infix` 확장 함수의 수신자 규칙
+- [목록의 **11번 주제**](../11-inline-functions/)(인라인 함수) — 람다의 객체 생성이 사라지는 조건
+- [목록의 **13번 주제**](../13-extension-functions-and-properties/)(확장 함수) — `infix` 확장 함수의 수신자 규칙
 - 목록의 **31번 주제**(연산자 오버로딩·중위 함수·`invoke` 규약) — **규약 표 전체의 정본.**\
   여기는 `infix` 라는 **호출 형태**와 그 우선순위만 다뤘다
 - 목록의 **39번 주제**(Java 상호운용 애너테이션) — `vararg` 가 Java 에서 `T...` 로 보이는 것

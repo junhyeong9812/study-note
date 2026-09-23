@@ -399,7 +399,7 @@ bad2.kt:2:47: error: 'return' is prohibited here.
 - 람다를 변수에 담으면 **`'return' is prohibited here.`** 다.
 - 가르는 성질은 **그 람다가 인라인되느냐**다. `forEach` 는 인라인 함수라 람다 몸통이 호출부에 펴지므로\
   그 `return` 이 바깥 함수의 `return` 이 될 수 있다. 변수에 담은 람다는 **진짜 객체**라 그럴 수가 없다.\
-  **원리의 정본은 목록의 11번 주제**(인라인 함수 — 비지역 반환)다. 여기서는 현상까지다.
+  **원리의 정본은 [목록의 11번 주제](../11-inline-functions/)**(인라인 함수 — 비지역 반환)다. 여기서는 현상까지다.
 
 ### 7. ★ `[B]` 만 된다 — `[A]`·`[C]` 는 에러
 
@@ -560,9 +560,9 @@ fun f() { for (i in 1..3) { i = i + 1; println(i) } }
 
 ### 11. 다른 주제와 잇기
 
-- **비지역 `return` 이 왜 인라인에서만 되는가 → 목록의 11번 주제**(인라인 함수 — `noinline`/`crossinline`·비지역 반환)가 정본이다.\
+- **비지역 `return` 이 왜 인라인에서만 되는가 → [목록의 11번 주제](../11-inline-functions/)**(인라인 함수 — `noinline`/`crossinline`·비지역 반환)가 정본이다.\
   이 문서는 **현상**(`'return' is prohibited here.` 와 `forEach` 의 함수째 반환)까지만 적었다.\
-  람다 자체는 목록의 **10번 주제**.
+  람다 자체는 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/).
 - **구조 분해(`for ((i, v) in xs.withIndex())`) → 목록의 30번 주제**(구조 분해 선언 — `componentN` 과 그 한계)가 정본이다.\
   `Map` 을 `for ((k, v) in m)` 으로 도는 것도 같은 문법이다.
 - **규약 전체 → 목록의 31번 주제**(연산자 오버로딩·중위 함수·`invoke` 규약)가 정본이다.\

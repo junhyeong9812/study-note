@@ -349,7 +349,7 @@ For more information about this error, try `rustc --explain E0382`.
 
 | 길 | 대가 |
 |---|---|
-| ① **빌린다** `fn borrows(s: &String)` | 없음. **이것이 기본값**이다 (목록의 **10번 주제**) |
+| ① **빌린다** `fn borrows(s: &String)` | 없음. **이것이 기본값**이다 ([목록의 **10번 주제**](../10-borrowing-and-aliasing-rules/)) |
 | ② **돌려받는다** `fn f(s: String) -> (String, usize)` | 반환 타입이 부푼다. 인자가 둘이면 튜플이 셋이 된다 |
 | ③ **복제한다** `takes(s.clone())` | 힙 할당 하나. 사본이 따로 살아야 할 때만 |
 
@@ -701,9 +701,9 @@ For more information about this error, try `rustc --explain E0382`.
 
 ### 12. 다른 주제와 잇기
 
-- **불편함을 푸는 장치** — **빌림** `&`/`&mut`. 정본은 목록의 **10번 주제**다.\
+- **불편함을 푸는 장치** — **빌림** `&`/`&mut`. 정본은 [목록의 **10번 주제**](../10-borrowing-and-aliasing-rules/)다.\
   이 주제의 5번(돌려받기의 반환 타입 팽창)이 그 동기다. 컴파일러도 `to borrow instead` 라고 말한다.
-- **`Copy` 판정과 `Drop` 시점의 전수** — 목록의 **09번 주제**(`Copy`와 `Clone`, 그리고 `Drop` 시점).\
+- **`Copy` 판정과 `Drop` 시점의 전수** — [목록의 **09번 주제**](../09-copy-clone-and-drop/)(`Copy`와 `Clone`, 그리고 `Drop` 시점).\
   이 주제에서는 `Drop` 을 **관찰 도구로만** 썼다.
 - **런타임 비용을 내고 한 소유자 규칙을 완화하는 도구** — `Rc`/`Arc`, 목록의 **41번 주제**.\
   `--explain E0382` 도 `outside of workarounds like Rc` 라고 그 존재를 가리킨다.

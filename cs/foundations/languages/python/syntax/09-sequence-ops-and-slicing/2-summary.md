@@ -1182,8 +1182,8 @@ except ValueError as e:
 - 이어지는 곳: [07-string-methods](../07-string-methods/2-summary.md) — `str` 의 `index`/`count` 는 인자도 `str` 이어야 한다.
 - 이어지는 곳: [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md)·[05-truthiness-and-short-circuit](../05-truthiness-and-short-circuit/2-summary.md) — `in` 이 `is` 를 먼저 본다는 규정.
 - 이어지는 곳: [14-comprehensions](../14-comprehensions/2-summary.md) — `[[] for _ in range(3)]` 이 `[[]] * 3` 의 해법인 이유.
-- 이어지는 곳: 목록의 **10번 주제** 「list 메서드와 정렬 키」 — `sort` 대 `sorted`, 그리고 `s[:]` 로 정렬본을 따로 들기.
-- 이어지는 곳: 목록의 **11번 주제** 「tuple 과 언패킹」 — 별표 언패킹이 슬라이스와 겹치는 자리.
+- 이어지는 곳: [목록의 **10번 주제**](../10-list-methods-and-sort-key/) 「list 메서드와 정렬 키」 — `sort` 대 `sorted`, 그리고 `s[:]` 로 정렬본을 따로 들기.
+- 이어지는 곳: [목록의 **11번 주제**](../11-tuple-and-unpacking/) 「tuple 과 언패킹」 — 별표 언패킹이 슬라이스와 겹치는 자리.
 - 이어지는 곳: 목록의 **18번 주제** 「반복 제어」 — 순회 중 컨테이너 변경.
 - 이어지는 곳: 목록의 **32번 주제** 「컨테이너 프로토콜」 — `__getitem__` 에서 `int` 와 `slice` 를 갈라 받는 법.
 - 이어지는 곳: 목록의 **43번 주제** 「`collections`」 — 앞쪽 삽입·삭제가 잦으면 `deque`.

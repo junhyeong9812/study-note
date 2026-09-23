@@ -396,7 +396,7 @@ UINT_MAX + 1 = 0
 
 ### (6) 시프트 — 여기서는 최적화 수준이 값을 바꾼다
 
-**언제 쓰나** — 비트 연산. 정본은 목록의 **11번 주제**이고, 여기서는 **승격과 UB** 만 본다.
+**언제 쓰나** — 비트 연산. 정본은 [목록의 **11번 주제**](../11-bitwise-operations-and-shifts/)이고, 여기서는 **승격과 UB** 만 본다.
 
 ```c
 int over31(int v, int s) { return v << s; }   /* 1 << 31 */
@@ -740,8 +740,8 @@ AddressSanitizer: stack-buffer-overflow ex.c:8 in f6
 - [`../../../../data-representation/`](../../../../data-representation/) — **그쪽은 2의 보수 비트 표현까지, 여기는 그 위에서 C 가 언제 어느 타입으로 바꾸나부터.** `-1` 의 비트가 왜 전부 1인가는 거기
 - [`02-basic-types-sizes-and-fixed-width-integers/`](../02-basic-types-sizes-and-fixed-width-integers/) — `sizeof` 가 `size_t` 인 것 · 16진 리터럴이 `unsigned` 인 것 — **이 주제 사고의 씨앗이 거기서 뿌려진다**
 - [`04-floating-point-types-and-conversions/`](../04-floating-point-types-and-conversions/) — 통상 산술 변환의 ① 단계(부동소수 쪽) · 범위 밖 부동→정수 UB
-- 목록의 **05번 주제** (명시 캐스트) — 「경고를 끄기만 하는 캐스트」를 가리는 곳
-- 목록의 **11번 주제** (비트 연산과 시프트) — 시프트의 정본
+- [목록의 **05번 주제**](../05-explicit-casts-and-pointer-conversions/) (명시 캐스트) — 「경고를 끄기만 하는 캐스트」를 가리는 곳
+- [목록의 **11번 주제**](../11-bitwise-operations-and-shifts/) (비트 연산과 시프트) — 시프트의 정본
 - 목록의 **36번 주제** (`<stdarg.h>`) — 기본 인자 승격은 이 주제의 사촌이다
 - 목록의 **54번 주제** (부호 있는 정수 오버플로) — **오버플로를 일으키기 전에 검사하는 식**의 정본
 - 목록의 **58번 주제** (UB 를 잡는 도구) — 이 문서의 경고·sanitizer 표가 정본으로 다뤄지는 곳

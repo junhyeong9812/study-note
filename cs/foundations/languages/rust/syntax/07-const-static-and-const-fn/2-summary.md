@@ -211,7 +211,7 @@ fn main() {
   > (Reference, Static items)
 
 - 그래서 `static` 에 둔 값의 소멸자는 **프로그램이 끝나도 안 돈다** — 파일 닫기·플러시를 거기 기대면 안 된다.
-- 해제 시점 일반론은 [**08번 주제**](../08-ownership-and-move/) 와 목록의 **09번 주제**가 정본이다.
+- 해제 시점 일반론은 [**08번 주제**](../08-ownership-and-move/) 와 [목록의 **09번 주제**](../09-copy-clone-and-drop/)가 정본이다.
 
 비용 — `const` 쪽은 쓸 때마다 생성·소멸 비용이 든다. 큰 값을 `const` 로 두면 그게 코드에 퍼진다.
 
@@ -674,7 +674,7 @@ error[E0597]: `local` does not live long enough
 
 - `static` 항목은 **프로그램 내내 살아 있으므로** 그 참조가 `&'static` 이다.
 - `const` 는 항목 자체에 자리가 없지만, **승격될 수 있으면** 그 참조도 `&'static` 이 된다(Reference: `A reference to a constant will have 'static lifetime if the constant value is eligible for promotion; otherwise, a temporary will be created.`).
-- 수명 표기와 생략 규칙의 정본은 목록의 **12번 주제**, `&'static` 과 `T: 'static` 을 가르는 것은 목록의 **13번 주제**다.
+- 수명 표기와 생략 규칙의 정본은 [목록의 **12번 주제**](../12-lifetime-annotations-and-elision/), `&'static` 과 `T: 'static` 을 가르는 것은 목록의 **13번 주제**다.
 
 비용 — 없음.
 
@@ -937,8 +937,8 @@ static GLOBAL: D = D("static");    // D 는 Drop 을 구현한다
 - [**08번 주제**](../08-ownership-and-move/)(소유권과 이동) — 「누가 주인이고 언제 사라지나」. `static` 은 **주인이 프로그램**이고 **사라지지 않는다**
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — **그쪽은 「왜 이 언어인가」**(소유권 모델의 논증·청구서)까지,\
   **여기는 「이 문법이 실제로 무엇을 하나」**(어느 키워드가 어떤 메모리·어떤 진단을 만드나)부터다
-- 목록의 **09번 주제**(`Copy`·`Clone`·`Drop` 시점) — 해제 시점 일반론
-- 목록의 **12번 주제**(수명 표기 `'a`) · **13번 주제**(`'static` 의 두 의미) — `&'static` 의 정본
+- [목록의 **09번 주제**](../09-copy-clone-and-drop/)(`Copy`·`Clone`·`Drop` 시점) — 해제 시점 일반론
+- [목록의 **12번 주제**](../12-lifetime-annotations-and-elision/)(수명 표기 `'a`) · **13번 주제**(`'static` 의 두 의미) — `&'static` 의 정본
 - 목록의 **47번 주제**(에디션 2021 대 2024) — `static_mut_refs` 를 포함한 에디션 변경 전수
 - 목록의 **50번 주제**(`Send`/`Sync`) — `static` 이 `Sync` 를 요구하는 이유
 - 목록의 **52번 주제**(`Mutex`/`RwLock`) · **53번 주제**(`atomic`·`OnceLock`/`LazyLock`) — `static mut` 의 대안

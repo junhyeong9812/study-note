@@ -538,8 +538,8 @@ __CHAR_UNSIGNED__ 미정의         __CHAR_UNSIGNED__ 정의됨
 - [`01-declaration-syntax-and-reading/`](../01-declaration-syntax-and-reading/) — 선언자를 다 풀고 나면 남는 것이 이 주제의 기본 타입이다
 - [`03-integer-promotion-and-usual-arithmetic-conversions/`](../03-integer-promotion-and-usual-arithmetic-conversions/) — `sizeof` 가 `size_t` 인 것 · 16진 리터럴이 `unsigned` 인 것이 **사고가 되는 곳**
 - [`04-floating-point-types-and-conversions/`](../04-floating-point-types-and-conversions/) — `float`/`double`/`long double` 쪽
-- 목록의 **07번 주제** (`enum` 과 열거 상수) — 열거 상수의 타입 규칙과 C23 고정 기반 타입
-- 목록의 **08번 주제** (`sizeof`·정렬·`offsetof`) — `sizeof` 가 컴파일 시간인 자리와 아닌 자리
+- [목록의 **07번 주제**](../07-enum-and-enumeration-constants/) (`enum` 과 열거 상수) — 열거 상수의 타입 규칙과 C23 고정 기반 타입
+- [목록의 **08번 주제**](../08-sizeof-alignment-and-offsetof/) (`sizeof`·정렬·`offsetof`) — `sizeof` 가 컴파일 시간인 자리와 아닌 자리
 - 목록의 **47번 주제** (`<stdio.h>` 서식 출력) — `%zu`·`PRId64` 를 고르는 규칙
 - 목록의 **53번 주제** (`assert` 와 `static_assert`) — 이 문서의 `_Static_assert` 덩어리가 정본으로 다뤄지는 곳
 
@@ -600,4 +600,4 @@ sizeof(boom()) = 4  <- 위에 boom 이 안 찍혔으면 sizeof 는 피연산자�
 ```
 
   `boom()` 이 `puts` 를 부르는데 **아무것도 안 찍혔다.** 타입만 보고 크기를 냈다는 뜻이다.\
-  VLA 라는 예외가 있고, 그것은 목록의 **08번 주제**·목록의 **18번 주제**의 몫이다.
+  VLA 라는 예외가 있고, 그것은 [목록의 **08번 주제**](../08-sizeof-alignment-and-offsetof/)·목록의 **18번 주제**의 몫이다.

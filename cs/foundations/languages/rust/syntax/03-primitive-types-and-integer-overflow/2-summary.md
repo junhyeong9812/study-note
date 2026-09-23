@@ -659,7 +659,7 @@ Reference(Behavior not considered `unsafe` — Integer overflow)의 원문:
   **여기는 그 지불이 산술 한 줄에서 어떤 모양으로 나타나는가**다.
 - 목록의 **15번 주제**(슬라이스·UTF-8) — `"한".len() == 3` 의 정본
 - 목록의 **29번 주제**(변환 트레이트) — `From`/`TryFrom` 의 정본. 여기서는 `as` 의 대안으로만 봤다
-- 목록의 **07번 주제**(상수·`const fn`) — 상수 접기와 컴파일 타임 계산
+- [목록의 **07번 주제**](../07-const-static-and-const-fn/)(상수·`const fn`) — 상수 접기와 컴파일 타임 계산
 - 목록의 **23번 주제**(`panic!` 대 `Result`) — 「여기서 끝낼 것인가」의 판단
 
 ## 용어 풀이

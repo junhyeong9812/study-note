@@ -524,7 +524,7 @@ build  deps  examples  incremental  q  q.d  <- 이제 q 가 있다
 **소유권·빌림은 어디인가**
 
 - **모델의 논증과 대가**는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §2\~§4.
-- **코드에서 `&`·`&mut`·`'a` 를 어떻게 쓰는가**는 목록의 **08·10·12번 주제**.
+- **코드에서 `&`·`&mut`·`'a` 를 어떻게 쓰는가**는 목록의 [**08**](../08-ownership-and-move/)·[**10**](../10-borrowing-and-aliasing-rules/)·[**12**](../12-lifetime-annotations-and-elision/)번 주제.
 - 이 주제(01)에는 소유권이 **한 줄도 나오지 않는다.** 파일 배치와 컴파일 단위만 다룬다.
 
 ---

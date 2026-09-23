@@ -9,7 +9,7 @@
 > 그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).
 > **버전** — 기본 인자·이름 붙인 인자·단일 표현식 함수는 1.0. `@JvmOverloads` 도 1.0.
 > **경계** — `vararg`·`spread`·로컬 함수·`infix` 는 [09번 주제](../09-varargs-spread-local-and-infix-functions/)가 정본이다.\
-> 람다와 고차 함수는 목록의 **10번 주제**, `@JvmStatic`/`@JvmName` 등 상호운용 애너테이션 **전체**는 목록의 **39번 주제**가 정본이다 —\
+> 람다와 고차 함수는 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/), `@JvmStatic`/`@JvmName` 등 상호운용 애너테이션 **전체**는 목록의 **39번 주제**가 정본이다 —\
 > 여기서는 `@JvmOverloads` **하나만** 기본 인자의 짝으로 다룬다.\
 > **Java 쪽 정본은 [`../../../java/syntax/08-method-declaration-overloading/`](../../../java/syntax/08-method-declaration-overloading/)** 다.
 > 이 본문은 Claude 작성이다(원고 없음).
@@ -684,9 +684,9 @@ fun hello(name: String, greeting: String = "안녕") = "$greeting, $name"
 - [09번 주제](../09-varargs-spread-local-and-infix-functions/) — **`vararg`·spread·로컬 함수·`infix` 의 정본.** 이 문서의 직접 후속이다
 - [02번 주제](../02-string-templates-and-raw-strings/) — 바이트코드에 보이는 `StringBuilder` 가 왜 거기 있는지의 정본
 - [03번 주제](../03-null-safe-types/) — `checkNotNullParameter` 의 정본
-- 목록의 **10번 주제**(람다와 고차 함수) — 함수 타입 파라미터·마지막 인자 람다의 정본
-- 목록의 **11번 주제**(인라인 함수) — 인라인이 기본 인자와 만나는 자리
-- 목록의 **13번 주제**(확장 함수) — 수신자가 앞에 붙는 또 다른 선언 형태
+- [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/)(람다와 고차 함수) — 함수 타입 파라미터·마지막 인자 람다의 정본
+- [목록의 **11번 주제**](../11-inline-functions/)(인라인 함수) — 인라인이 기본 인자와 만나는 자리
+- [목록의 **13번 주제**](../13-extension-functions-and-properties/)(확장 함수) — 수신자가 앞에 붙는 또 다른 선언 형태
 - 목록의 **15번 주제**(클래스 선언 — 주 생성자) — **생성자에도 같은 `$default` 가 만들어진다**
 - 목록의 **22번 주제**(`data class`) — `copy()` 가 기본 인자로 만들어지는 대표 사례
 - 목록의 **34번 주제**(예외·`Nothing` 타입) — `Unit` 과 `Nothing` 의 구분
