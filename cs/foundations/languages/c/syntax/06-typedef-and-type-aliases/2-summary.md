@@ -383,7 +383,7 @@ arr.c:4:62: warning: ‘sizeof’ on array function parameter ‘r’ will retur
 - `sizeof r` 이 16이 아니라 8이고, `r[0] = 99` 가 **호출자의 배열을 바꾼다.**
 - gcc 가 `-Wsizeof-array-argument` 로 잡아 준다(**플래그 없이도 켜져 있다**).
 - **별칭이 사실을 가린 사례**다 — (5)와 성질이 같다.
-- 감쇠 규칙 자체의 정본은 목록의 **16번 주제**.
+- 감쇠 규칙 자체의 정본은 [목록의 **16번 주제**](../16-array-pointer-decay-and-function-parameters/).
 
 비용 — 없다. **배열 별칭을 파라미터에 안 쓰면 된다.**
 
@@ -575,7 +575,7 @@ re.c:1:13: note: previous declaration of ‘T’ with type ‘T’ {aka ‘int�
 - [`01-declaration-syntax-and-reading/`](../01-declaration-syntax-and-reading/) — **그쪽은 「`char *(*f[3])(int)` 를 안쪽→바깥으로 읽는 법」까지, 여기는 「그것을 `typedef` 로 자르는 법」부터.** 「괄호 두 겹이면 자른다」는 판단 기준이 거기 있다
 - [`02-basic-types-sizes-and-fixed-width-integers/`](../02-basic-types-sizes-and-fixed-width-integers/) — `int32_t`·`size_t` 가 전부 `typedef` 다. **그쪽은 「어느 타입을 고르나」까지, 여기는 「그 별칭이 무엇인가」부터**
 - [`05-explicit-casts-and-pointer-conversions/`](../05-explicit-casts-and-pointer-conversions/) — 별칭이 `const` 를 감추면, 그것을 캐스트로 떼는 코드가 따라온다
-- 목록의 **16번 주제** (배열-포인터 감쇠) — (7)의 감쇠 규칙 정본
+- [목록의 **16번 주제**](../16-array-pointer-decay-and-function-parameters/) (배열-포인터 감쇠) — (7)의 감쇠 규칙 정본
 - 목록의 **21번 주제** (구조체 선언·초기화) — `typedef struct { ... } T;` 의 정본
 - 목록의 **25번 주제** (불완전 타입과 opaque struct) — (4)가 정본으로 다뤄지는 곳
 - 목록의 **31번 주제** (`const` 와 포인터 const 위치) — (5)의 `char * const` ↔ `const char *` 정본

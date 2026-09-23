@@ -6,7 +6,7 @@
 > 선행은 [08번 주제](../08-function-declaration-default-and-named-args/)다.
 > ★ **「정적 디스패치라는 천장」의 *의미* 는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이 정본**이고,
 > 여기는 **선언 문법·해소 순서·멤버 충돌 규칙**을 묻는다.
-> 이 주제는 목록의 **14번 주제**·**31번 주제**·**37번 주제**의 뿌리다.
+> 이 주제는 [목록의 **14번 주제**](../14-scope-functions/)·**31번 주제**·**37번 주제**의 뿌리다.
 > Java 쪽 짝은 [`../../../java/syntax/11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/)다.
 > 문항 11개 중 코드블록이 붙는 예측형은 6개다.
 > 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.

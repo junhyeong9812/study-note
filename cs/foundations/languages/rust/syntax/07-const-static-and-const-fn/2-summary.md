@@ -674,7 +674,7 @@ error[E0597]: `local` does not live long enough
 
 - `static` 항목은 **프로그램 내내 살아 있으므로** 그 참조가 `&'static` 이다.
 - `const` 는 항목 자체에 자리가 없지만, **승격될 수 있으면** 그 참조도 `&'static` 이 된다(Reference: `A reference to a constant will have 'static lifetime if the constant value is eligible for promotion; otherwise, a temporary will be created.`).
-- 수명 표기와 생략 규칙의 정본은 [목록의 **12번 주제**](../12-lifetime-annotations-and-elision/), `&'static` 과 `T: 'static` 을 가르는 것은 목록의 **13번 주제**다.
+- 수명 표기와 생략 규칙의 정본은 [목록의 **12번 주제**](../12-lifetime-annotations-and-elision/), `&'static` 과 `T: 'static` 을 가르는 것은 [목록의 **13번 주제**](../13-struct-references-and-static/)다.
 
 비용 — 없음.
 

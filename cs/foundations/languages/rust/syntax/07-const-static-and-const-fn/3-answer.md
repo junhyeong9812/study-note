@@ -820,7 +820,7 @@ error[E0597]: `local` does not live long enough
                              ^ 여기서 죽는데 &'static 을 요구했다 -> E0597
 ```
 
-- 수명 표기와 생략 규칙의 정본은 [목록의 **12번 주제**](../12-lifetime-annotations-and-elision/), `&'static` 과 `T: 'static` 을 가르는 것은 목록의 **13번 주제**다.
+- 수명 표기와 생략 규칙의 정본은 [목록의 **12번 주제**](../12-lifetime-annotations-and-elision/), `&'static` 과 `T: 'static` 을 가르는 것은 [목록의 **13번 주제**](../13-struct-references-and-static/)다.
 
 ### 12. 다른 주제와 잇기
 

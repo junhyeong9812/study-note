@@ -514,7 +514,7 @@ runAsContinue([1,2,3,4]) = 124
 - ★ **진짜 `continue` 와 다른 점** — `run { }` **뒤에 코드가 더 있으면 그것은 실행된다.**\
   `continue` 는 회차 자체를 끝내지만 `return@skip` 은 **블록 하나만** 끝낸다.
 - `run` 은 **인라인 함수**라 객체가 안 생긴다(6번의 `forEach` 와 같은 성질이다).
-- scope function 의 정본은 목록의 **14번 주제**다.
+- scope function 의 정본은 [목록의 **14번 주제**](../14-scope-functions/)다.
 
 ### 10. 반복은 **문**이다 — `only expressions are allowed here.`
 

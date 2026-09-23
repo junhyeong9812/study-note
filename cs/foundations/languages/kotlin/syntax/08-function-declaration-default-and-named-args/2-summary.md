@@ -687,7 +687,7 @@ fun hello(name: String, greeting: String = "안녕") = "$greeting, $name"
 - [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/)(람다와 고차 함수) — 함수 타입 파라미터·마지막 인자 람다의 정본
 - [목록의 **11번 주제**](../11-inline-functions/)(인라인 함수) — 인라인이 기본 인자와 만나는 자리
 - [목록의 **13번 주제**](../13-extension-functions-and-properties/)(확장 함수) — 수신자가 앞에 붙는 또 다른 선언 형태
-- 목록의 **15번 주제**(클래스 선언 — 주 생성자) — **생성자에도 같은 `$default` 가 만들어진다**
+- [목록의 **15번 주제**](../15-class-declaration-constructors-and-init/)(클래스 선언 — 주 생성자) — **생성자에도 같은 `$default` 가 만들어진다**
 - 목록의 **22번 주제**(`data class`) — `copy()` 가 기본 인자로 만들어지는 대표 사례
 - 목록의 **34번 주제**(예외·`Nothing` 타입) — `Unit` 과 `Nothing` 의 구분
 - 목록의 **39번 주제**(Java 상호운용 애너테이션) — `@JvmOverloads` **전체**의 정본. 여기는 기본 인자의 짝으로만 다뤘다
@@ -734,7 +734,7 @@ public final class C {
 ```
 
   ★ **`$default` 대신 「마스크가 붙은 생성자 오버로드」가 생긴다** — 이름을 못 바꾸니 시그니처로 가른 것이다.\
-  마커 타입도 `Object` 가 아니라 **`DefaultConstructorMarker`** 다. 클래스 선언의 정본은 목록의 **15번 주제**.
+  마커 타입도 `Object` 가 아니라 **`DefaultConstructorMarker`** 다. 클래스 선언의 정본은 [목록의 **15번 주제**](../15-class-declaration-constructors-and-init/).
 - `@JvmOverloads` 가 **오른쪽부터** 떼는 이유는 Java 가 **연속 접미사 생략**만 표현할 수 있기 때문이다.\
   `greet(name, punct)` 같은 건너뛴 조합은 **시그니처가 `(String, String)` 으로 겹쳐** 만들 수가 없다.
 - 마스크가 **`-1`** 로 보이는 것(2번)은 32비트가 전부 1이라서다. `javap` 는 `iconst_m1` 로 표시한다.

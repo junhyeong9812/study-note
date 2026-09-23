@@ -401,7 +401,7 @@ while True:
 
 1. **왜 `StopIteration` 을 볼 일이 없나** — `for` 가 잡아서 `break` 로 바꿔 준다. 사용자 눈에는 "루프가 끝났다"로만 보인다.
 2. **왜 소진된 제너레이터가 빈 결과를 내나**(3번 답) — 첫 `next` 부터 `StopIteration` 이 오면 몸통이 0회 돈다. 그것은 "원소가 0개인 이터러블"과 **구별되지 않는다.**
-3. **왜 `else` 절이 있나** — `for ... else` 의 `else` 는 `break` 없이 정상 종료(= `StopIteration`)했을 때만 돈다. 위 풀이의 `break` 자리를 보면 그 의미가 그대로 보인다(목록의 18번 주제).
+3. **왜 `else` 절이 있나** — `for ... else` 의 `else` 는 `break` 없이 정상 종료(= `StopIteration`)했을 때만 돈다. 위 풀이의 `break` 자리를 보면 그 의미가 그대로 보인다([목록의 **18번 주제**](../18-loop-control-and-else/)).
 
 **`iter()` 가 하는 일**
 

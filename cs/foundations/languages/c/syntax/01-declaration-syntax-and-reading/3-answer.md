@@ -52,7 +52,7 @@ int *p1[10];                          int (*p2)[10];
 
 > **포인터 산술(pointer arithmetic)** — 포인터에 정수를 더하면 **바이트가 아니라 원소 단위**로 움직이는 규칙.\
 > 예: `int *p` 에서 `p + 1` 은 4바이트, `int (*q)[10]` 에서 `q + 1` 은 40바이트 뒤다.\
-> 정본은 목록의 **15번 주제**.
+> 정본은 [목록의 **15번 주제**](../15-pointer-arithmetic-and-indexing/).
 
 ### 2. 이 선언을 말로 옮겨라
 
@@ -479,7 +479,7 @@ ex3.c:2:64: warning: ‘sizeof’ on array function parameter ‘a’ will retur
 - gcc 는 이 자리에 전용 경고 `-Wsizeof-array-argument` 를 준다.\
   이것은 **플래그를 하나도 안 줘도 나온다** — `-Wint-conversion`·`-Wincompatible-pointer-types` 도 마찬가지로 기본이다.\
   (세 경고를 `gcc -std=c17 -c` 만으로 돌려 확인했다.)\
-  정본은 목록의 **16번 주제**.
+  정본은 [목록의 **16번 주제**](../16-array-pointer-decay-and-function-parameters/).
 
 **선언 문법 자체로 UB 가 되는 자리가 있는가**
 

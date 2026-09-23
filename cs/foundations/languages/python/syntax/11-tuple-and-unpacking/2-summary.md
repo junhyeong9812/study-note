@@ -710,7 +710,7 @@ True True True True
 - 이어지는 곳: [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md) — 튜플이 **키가 되는 조건**.
 - 이어지는 곳: [13-set-and-frozenset](../13-set-and-frozenset/2-summary.md) — 「같은 값이면 한 원소」.
 - 이어지는 곳: [10-list-methods-and-sort-key](../10-list-methods-and-sort-key/2-summary.md) — 튜플을 **정렬 키**로 쓰는 법.
-- 이어지는 곳: 목록의 **19번 주제** 「함수 인자 규칙」 — `*`/`**`·`/`·키워드 전용 인자의 정본.
+- 이어지는 곳: [목록의 **19번 주제**](../19-function-argument-rules/) 「함수 인자 규칙」 — `*`/`**`·`/`·키워드 전용 인자의 정본.
 - 이어지는 곳: 목록의 **38번 주제** 「`namedtuple`·`NamedTuple`·`TypedDict`」 — **셋 중 무엇을 고르나**는 그쪽.
 - 이어지는 곳: 목록의 **39번 주제** 「`match` 문」 — 시퀀스 패턴이 언패킹과 닮았지만 **소문자 이름이 캡처**가 되는 것.
 - 이어지는 곳: 목록의 **40번 주제** 「타입 힌트의 런타임 의미」 — `NamedTuple` 의 어노테이션이 강제되지 않는 이유.
@@ -740,5 +740,5 @@ True True True True
 - **`match` 문의 시퀀스 패턴**은 언패킹과 모양이 같지만 **소문자 이름이 비교가 아니라 캡처**다(목록의 **39번 주제**).
 - **`typing.NamedTuple` 과 `dataclasses`** 중 무엇을 고를지는 목록의 **36·38번 주제**.
 - **`operator.itemgetter`** 는 튜플 키를 만들어 준다([10번](../10-list-methods-and-sort-key/2-summary.md)).
-- **`(x for x in ...)`** 은 튜플 컴프리헨션이 아니라 **제너레이터 표현식**이다(목록의 **15번 주제**) —
+- **`(x for x in ...)`** 은 튜플 컴프리헨션이 아니라 **제너레이터 표현식**이다([목록의 **15번 주제**](../15-generator-expressions-lazy-eval/)) —
   튜플이 필요하면 `tuple(x for x in ...)`.

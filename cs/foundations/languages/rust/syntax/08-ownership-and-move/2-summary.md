@@ -907,7 +907,7 @@ cond = true
 - [`../../../../memory-management/`](../../../../memory-management/) — 스택·힙·할당·해제의 **일반론**은 거기, 여기는 Rust 의 이동 규칙
 - [목록의 **09번 주제**](../09-copy-clone-and-drop/)(`Copy`/`Clone`/`Drop`) — `Copy` 판정과 `Drop` 시점의 정본. 여기서는 **관찰 도구로만** 썼다
 - [목록의 **10번 주제**](../10-borrowing-and-aliasing-rules/)(빌림 `&`·`&mut`) — 이 주제의 불편함이 거기로 이어진다
-- 목록의 **14번 주제**(`String` 대 `&str`) · **37번 주제**(`IntoIterator` 세 형태) · **44번 주제**(`mem::take`) · **41번 주제**(`Rc`/`Arc`)
+- [목록의 **14번 주제**](../14-string-vs-str/)(`String` 대 `&str`) · **37번 주제**(`IntoIterator` 세 형태) · **44번 주제**(`mem::take`) · **41번 주제**(`Rc`/`Arc`)
 
 ## 용어 풀이
 

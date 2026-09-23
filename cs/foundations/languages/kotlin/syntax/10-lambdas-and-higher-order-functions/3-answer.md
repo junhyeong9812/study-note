@@ -520,7 +520,7 @@ AH 인자를 안 쓸 때 _    : 99
 - **로컬 함수** — [09번 주제](../09-varargs-spread-local-and-infix-functions/).
   ★ 로컬 함수는 **합성 클래스를 아예 안 만들고** `invokestatic` + `Ref$IntRef` 로 끝난다.
   **같은 「상자」를 쓰는데 이쪽은 `invokedynamic`, 저쪽은 `invokestatic`** 이라는 것이 대비의 핵심이다.
-- **`let`/`run`/`with`/`apply`/`also`** — 전부 **`inline` 고차 함수**이고 정본은 목록의 **14번 주제**다.
+- **`let`/`run`/`with`/`apply`/`also`** — 전부 **`inline` 고차 함수**이고 정본은 [목록의 **14번 주제**](../14-scope-functions/)다.
   그래서 scope function 을 써도 **람다 객체가 안 생긴다**(4번과 같은 이유).
 - **`invoke(Object)Object` 의 모양** — [`../../../java/syntax/19-type-erasure/`](../../../java/syntax/19-type-erasure/)가 정본이고,
   Kotlin 이 그것을 **뚫는 방법**은 [12번 주제](../12-reified-type-parameters/)다.

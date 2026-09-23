@@ -6,7 +6,7 @@
 > 선행은 [08번 주제](../08-function-declaration-default-and-named-args/)이고,
 > [09번 주제](../09-varargs-spread-local-and-infix-functions/)의 **로컬 함수**와 나란히 놓고 보면 대비가 선다.
 > 이 주제는 [11번 주제](../11-inline-functions/)·[12번 주제](../12-reified-type-parameters/)·
-> [13번 주제](../13-extension-functions-and-properties/)와 목록의 **14번 주제**·**36번 주제**의 뿌리다.
+> [13번 주제](../13-extension-functions-and-properties/)와 [목록의 **14번 주제**](../14-scope-functions/)·**36번 주제**의 뿌리다.
 > Java 쪽 짝은 [`../../../java/syntax/29-lambda-expressions/`](../../../java/syntax/29-lambda-expressions/)·
 > [`../../../java/syntax/31-functional-interfaces/`](../../../java/syntax/31-functional-interfaces/)다.
 > 문항 11개 중 코드블록이 붙는 예측형은 6개다.

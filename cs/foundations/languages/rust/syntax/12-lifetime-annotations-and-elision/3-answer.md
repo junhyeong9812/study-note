@@ -927,7 +927,7 @@ For more information about this error, try `rustc --explain E0597`.
   `--explain` 으로 찾아볼 수 없고, `'1`·`'2` 같은 **즉석 이름**으로 설명한다.
 - **「빌림이 마지막 사용까지만 산다」(NLL)** 는 [**10번 주제**](../10-borrowing-and-aliasing-rules/),\
   「**거부되는 전형과 처방**」은 [**11번 주제**](../11-borrow-checker-rejections/)다.
-- **참조를 필드로 담는 타입의 설계**와 `'static` 심화는 목록의 **13번 주제**가 정본이다.\
+- **참조를 필드로 담는 타입의 설계**와 `'static` 심화는 [목록의 **13번 주제**](../13-struct-references-and-static/)가 정본이다.\
   여기는 **표기와 생략 규칙까지**만 다룬다.
 - ★ **에러 메시지가 고친 코드를 그대로 준 자리** — **E0106 의 `help:`** 다.\
   `fn longest<'a>(x: &'a str, y: &'a str) -> &'a str` 를 `++++` 표시와 함께 통째로 준다.\

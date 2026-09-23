@@ -704,7 +704,7 @@ ValueError: generator already executing
 ## 관련 자료
 
 - 목록: [python/syntax 주제 목록](../README.md) — 이 주제는 **17번**
-- 선행: 목록의 **16번** 「이터레이터 프로토콜」, **15번** 「제너레이터 표현식과 지연 평가」(폴더 아직 없음)
+- 선행: [목록의 **16번**](../16-iterator-protocol/) 「이터레이터 프로토콜」, **15번** 「제너레이터 표현식과 지연 평가」(폴더 아직 없음)
 - 함께 보는 곳: [14-comprehensions](../14-comprehensions/2-summary.md) — 리스트 컴프리헨션과 제너레이터 표현식의 평가 시점 차이
 - 이어지는 곳: 목록의 **44번** 「`itertools`」, **51번** 「`asyncio` 코루틴 기초」(폴더 아직 없음)
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/README.md) — `for`/`while` 로 순회하는 법까지가 그쪽이다.\

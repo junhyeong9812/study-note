@@ -714,7 +714,7 @@ runAsContinue([1,2,3,4]) = 124
 ```
 
 - ★ **`continue` 와 완전히 같지는 않다.** `run` 블록 뒤에 코드가 더 있으면 **그건 실행된다.**
-- `run` 은 인라인 함수라 객체가 안 생긴다. scope function 의 정본은 목록의 **14번 주제**다.
+- `run` 은 인라인 함수라 객체가 안 생긴다. scope function 의 정본은 [목록의 **14번 주제**](../14-scope-functions/)다.
 
 비용 — 0(인라인).
 
@@ -897,7 +897,7 @@ operator fun iterator(): Iterator<T>
 - [03번 주제](../03-null-safe-types/) — 바이트코드에 섞여 보이는 `checkNotNullParameter` 의 정본
 - [목록의 **11번 주제**](../11-inline-functions/)(인라인 함수 — `noinline`/`crossinline`·비지역 반환) — **비지역 `return` 이 왜 인라인에서만 되는가**의 정본. 이 문서는 현상까지만 적었다
 - [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/)(람다와 고차 함수) — 람다 자체의 정본
-- 목록의 **14번 주제**(scope function) — `run`·`let` 의 정본. (10)의 `run skip@{ }` 이 그것이다
+- [목록의 **14번 주제**](../14-scope-functions/)(scope function) — `run`·`let` 의 정본. (10)의 `run skip@{ }` 이 그것이다
 - 목록의 **30번 주제**(구조 분해 선언) — `for ((i, v) in …)` 의 정본
 - 목록의 **31번 주제**(연산자 오버로딩·중위 함수·`invoke` 규약) — `iterator()`·`contains` 규약의 정본
 - 목록의 **42번 주제**부터(컬렉션 변환·필터·집계) — "반복의 결과를 값으로" 쪽의 정본

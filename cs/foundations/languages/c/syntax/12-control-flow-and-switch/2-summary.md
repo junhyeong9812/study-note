@@ -1082,7 +1082,7 @@ C 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다�
 - [`09-operator-precedence-and-associativity/`](../09-operator-precedence-and-associativity/) — `? :` 가 **오른쪽 결합**인 것 · `?:` 대 `if` 의 자리
 - [`10-evaluation-order-and-sequence-points/`](../10-evaluation-order-and-sequence-points/) — ★★ **`&&`·`\|\|`·`?:` 가 시퀀스 포인트인 것과 단락 평가의 정본.** 여기는 **그것들이 만드는** 「**흐름**」까지
 - [`11-bitwise-operations-and-shifts/`](../11-bitwise-operations-and-shifts/) — **UB 가 본체인 주제.** 이 주제와 **다섯 층의 두께가 정반대**다 — 거기는 UBSan 이 말하고 여기는 컴파일러가 막는다
-- 목록의 **13번 주제** (함수 정의와 선언) — `return` 과 함수 경계. `goto` 가 **함수를 넘지 못하는** 이유
+- [목록의 **13번 주제**](../13-goto-cleanup-idiom/) (함수 정의와 선언) — `return` 과 함수 경계. `goto` 가 **함수를 넘지 못하는** 이유
 - 목록의 **42번 주제** (함수형 매크로의 함정) — `if (x) MACRO(); else …` 가 깨지는 자리. **`do { } while (0)` 관용구**의 정본
 - 목록의 **58번 주제** (UB 를 잡는 도구) — 이 주제에서 sanitizer 가 할 일이 거의 없는 이유
 

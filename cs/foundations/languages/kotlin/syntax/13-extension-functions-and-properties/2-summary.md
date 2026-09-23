@@ -11,7 +11,7 @@
 > **경계** — ★ **「정적 디스패치라는 천장」이 무엇을 뜻하는지, 왜 그 대가를 치르고도 쓰는지는\
 > [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이 정본이다.** 여기는 **선언 문법 · 해소 순서 · 멤버와 충돌할 때의 규칙**만 다룬다.\
 > 수신자 지정 람다(`A.() -> Unit`)와 DSL 은 목록의 **37번 주제**, `infix` 확장은 [09번 주제](../09-varargs-spread-local-and-infix-functions/),\
-> scope function 은 목록의 **14번 주제**, `operator` 확장은 목록의 **31번 주제**,\
+> scope function 은 [목록의 **14번 주제**](../14-scope-functions/), `operator` 확장은 목록의 **31번 주제**,\
 > `@JvmName` 을 포함한 상호운용 애너테이션 **전체**는 목록의 **39번 주제**가 정본이다 —\
 > 여기서는 `@JvmName` 을 **디스크립터 충돌을 푸는 도구로만** 쓴다.\
 > `Intrinsics.checkNotNullParameter` 의 정본은 [03번 주제](../03-null-safe-types/)다.
@@ -576,7 +576,7 @@ val Cup.cups: Int get() = ml / 200
 ```
 
 - 상태를 붙이고 싶으면 확장으로는 안 되고 **`Map` 같은 바깥 저장소**를 직접 써야 한다.\
-  `field` 키워드와 backing field 의 정본은 목록의 **16번 주제**다.
+  `field` 키워드와 backing field 의 정본은 [목록의 **16번 주제**](../16-properties-backing-field-lateinit-const/)다.
 
 비용 — 매 호출 계산이다. 캐시할 자리가 없다.
 
@@ -1088,8 +1088,8 @@ fun List<String>.describe() = "s"
   (6)의 「검사를 안 심는다」가 거기 위에 서 있다. `String?.orEmpty()` 같은 nullable 수신자 확장도 거기서 먼저 나왔다
 - [04번 주제](../04-smart-casts/) — nullable 수신자 몸통에서 `this == null` 을 검사한 뒤 쓰는 것
 - [09번 주제](../09-varargs-spread-local-and-infix-functions/) — `infix` **확장** 함수의 형태와 우선순위
-- 목록의 **14번 주제**(scope function) — `let`/`run`/`apply`/`also` 가 전부 **확장 함수**다. 이 문법의 대표 사용처
-- 목록의 **16번 주제**(프로퍼티 — backing field·`field`) — (5)에서 「없다」고 한 그것의 정본
+- [목록의 **14번 주제**](../14-scope-functions/)(scope function) — `let`/`run`/`apply`/`also` 가 전부 **확장 함수**다. 이 문법의 대표 사용처
+- [목록의 **16번 주제**](../16-properties-backing-field-lateinit-const/)(프로퍼티 — backing field·`field`) — (5)에서 「없다」고 한 그것의 정본
 - 목록의 **18번 주제**(가시성 수식어) — `internal` 이 확장에서 보이는 범위
 - 목록의 **31번 주제**(연산자 오버로딩·`invoke` 규약) — `operator fun` 확장으로 기호를 만드는 것
 - 목록의 **36번 주제**(함수 타입·`fun interface`·SAM) · 목록의 **37번 주제**(수신자 지정 람다와 DSL) — `A.() -> Unit` 의 정본

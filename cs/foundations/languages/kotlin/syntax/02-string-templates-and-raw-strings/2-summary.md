@@ -560,7 +560,7 @@ const val C = """
               ^^^
 ```
 
-  (`const` 의 정본은 목록의 **16번 주제**가 된다.)
+  (`const` 의 정본은 [목록의 **16번 주제**](../16-properties-backing-field-lateinit-const/)가 된다.)
 - 보간 안에 **람다 자체**를 넣으면 합성 클래스의 기본 `toString` 이 찍힌다. 부르고 싶으면 `${f()}` 로 적는다.
 
 ```text
