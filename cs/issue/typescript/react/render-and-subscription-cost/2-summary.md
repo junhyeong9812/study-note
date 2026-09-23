@@ -11,7 +11,7 @@
 
 [새는 곳]                                     [묶는 법]
  전 행 DOM 렌더              O(행 수)          가상화: 보이는 창 + overscan  → O(뷰포트)
- 셀렉터 없는 subscribe       모든 set × 전수 비교   변경 주체가 직접 통지   → O(변경분)
+ 셀렉터 없는 subscribe       참조 바뀌는 set × 전수 비교   변경 주체가 직접 통지   → O(변경분)
  set(() => ({}))             새 루트 → 전 리스너 wake   변화 없으면 state 자신 반환
  0건 삭제에도 새 객체         파생 이벤트(epoch) 폭주    삭제 0 → 기존 객체 반환
  노드당 includes             O(N·E) × set 마다       배열 identity 메모 Set → O(1)
