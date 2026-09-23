@@ -3,6 +3,8 @@
 > 복습 시 이 파일은 **최후에만** 연다.
 > ⚠️ 이 정답은 Claude 초안(2026-09-23) — 이슈 README·코드 기준. 복습 전 읽지 말 것.
 
+태그: —
+
 ## 정답
 
 <!-- 질문 1:1 대응 -->
@@ -24,12 +26,28 @@
 
 7. "렌더러 버그가 아니라 스타일 부재"라는 진단이 중요한 이유는, **원인을 엉뚱한 책임 경계에서 찾으면 헛되이 판다**는 데 있다. 이걸 렌더러 문제로 오진했다면 remark-gfm 옵션, 플러그인 교체, `<table>` 생성 로직 같은 **구조 층**을 파느라 시간을 버렸을 것이다 — 그런데 구조는 멀쩡했다(`<table>`이 정상 생성됨). 원인을 먼저 "구조의 문제인가, 표시의 문제인가"라는 책임 경계로 나누면, "구조는 있나?"에 "있다"가 나오는 순간 표시 층으로 좁혀진다. 관심사 분리는 코드를 나누는 설계 원칙일 뿐 아니라, **버그의 소재를 좁히는 진단 렌즈**로도 쓰인다.
 
-## 이번 프로젝트 사례
+## 문제 구조 (추상화 코드)
 
-- [front/issue10](../../../../../project/study-note-deploy-system/front/issue10/) — 마크다운 표가 구조는 잡히나 경계선이 없던 문제. 원인을 "렌더러 버그"가 아니라 "표시(CSS) 부재"로 진단하고, 전역 `.markdown table` 규칙(`border-collapse: collapse`, 셀 border, 헤더 배경, 짝수 줄무늬, 넓은 표는 `display:block; overflow-x:auto`)을 `globals.css`에 한 번 추가해 모든 표에 일괄 적용한 사례.
+### 변형 A — 구조 층은 일을 다 했는데 표시 층이 비어 있음
+① 문제 코드
+```tsx
+<div className="markdown">
+  <MarkdownRenderer plugins={[tablePlugin]}>{text}</MarkdownRenderer>   {/* <table><th><td> 까지 생성 */}
+</div>
+```
+```css
+/* .markdown table 에 대한 규칙 없음 → 브라우저 기본값(테두리 없음) 그대로 */
+```
+② 고친 코드
+```css
+.markdown table { border-collapse: collapse; margin: 1rem 0; display: block; overflow-x: auto; }
+.markdown th, .markdown td { border: 1px solid var(--line); /* ... */ }
+.markdown th { background: var(--header-bg); }
+.markdown tr:nth-child(even) td { background: var(--stripe-bg); }
+/* 렌더러·플러그인 설정은 손대지 않음 — 구조 층 무변경 */
+```
+무엇이 깨졌나: 구조(렌더러)와 표시(CSS)로 책임을 나눈 뒤, 표시 쪽 절반을 아무도 채우지 않았다.
 
 ## 검증 기록
 
-- 2026-09-23: front/issue10 README + 실코드 대조 (Claude 초안). 코드 확인:
-  - `study-note-deploy-system-front/src/app/globals.css` L19 — `.markdown table { border-collapse: collapse; margin: 1rem 0; display: block; overflow-x: auto; }`(선 합치기 + 넓은 표 격리 스크롤). L20 `.markdown th, .markdown td { border: 1px solid var(--line); ... }`(모든 셀 분할선). L21 `.markdown th { background: var(--code-bg); ... }`(헤더 구분). L22 `.markdown tr:nth-child(even) td { background: color-mix(...) }`(짝수 줄무늬).
-  - 렌더러가 구조만 만든다는 경계: 표시를 위 CSS(소비자 층)가 전담하고, react-markdown/remark-gfm 설정은 손대지 않았다(구조 층 무변경 = 렌더러 버그 아님의 증거).
+- 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
