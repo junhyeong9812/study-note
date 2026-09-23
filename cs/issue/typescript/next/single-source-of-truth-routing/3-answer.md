@@ -10,7 +10,7 @@
 <!-- 질문 1:1 대응 -->
 
 1. 라우트를 셋으로 나누면 "이 경로가 폴더인가 주제인가 문서인가"라는 판단을 **URL 설계에 한 번, 백엔드 트리 모델에 한 번 — 두 곳에** 유지하게 된다. 그런데 그 판단은 트리의 `isLeafTopic` 값 하나가 이미 준다. 같은 사실을 두 곳에서 관리하면, 트리가 바뀌었는데 URL 라우팅 규칙이 안 따라오거나 그 반대일 때 두 곳이 어긋난다. 판단이 두 번 존재하는 순간 정합성은 사람의 규율에 의존하게 되고, 규율은 언젠가 깨진다.
-   > **단일 진실원(single source of truth)** — 하나의 사실을 저장·판단하는 권위 있는 위치를 한 곳으로 정하는 것. 같은 사실이 두 곳에 있으면 반드시 언젠가 서로 달라진다(drift).
+   > **단일 진실원(single source of truth)** — 하나의 사실을 저장·판단하는 권위 있는 위치를 한 곳으로 정하는 것. 같은 사실이 동기화 장치 없이 두 곳에 있으면 언젠가 서로 달라지기 쉽다(drift).
 
 2. `isLeafTopic`가 단일 진실원이라면, URL 구조(`/folder/...` vs `/subject/...`)에 종류를 또 심는 것은 **중복된 두 번째 진실원**을 만드는 것이다 — 그리고 두 진실원은 동기화 장치가 없으면 어긋난다. 구체적 예: 어떤 폴더가 하위 폴더를 모두 잃어 백엔드가 그것을 `isLeafTopic=true`(주제 리프)로 재판정했는데, URL은 여전히 `/folder/...`로 접근되도록 라우팅돼 있으면, 주제여야 할 노드가 폴더 화면(하위 목록)으로 잘못 렌더된다. 반대 방향도 마찬가지다.
 
@@ -40,11 +40,12 @@ app/doc/[...slug]/page.tsx
 ```tsx
 // app/wiki/[...slug]/page.tsx — 캐치올 라우트 하나
 export default async function Page({ params }) {
-  const path = params.slug.join("/");
+  const path = params.slug.join("/");                                // Next 15+ 는 params 가 Promise — (await params).slug
   const node = lookupNode(tree, path);
   if (node && !node.isLeafTopic) return <FolderPane node={node} />;   // README + 하위 목록
   if (node && node.isLeafTopic)  return <TopicTabs node={node} />;    // 고정 탭
   const doc = await fetchDoc(path + ".md").catch(() => null);         // 트리에 없음 → 문서 폴백
+                                                                      // (엄밀히는 "없음"만 null — 그 외 오류까지 404로 삼키면 장애가 404로 위장된다)
   if (!doc) notFound();
   return <DocView doc={doc} />;
 }
@@ -177,11 +178,13 @@ setCurrent(item.data);
 setCurrent(prev => ({ ...item.data, orders: prev.orders }));
 ```
 
-### 방안 7 — 같은 URL을 요구하는 두 페이지는 빌드가 조용히 하나만 고른다
+### 방안 7 — 같은 URL을 요구하는 두 페이지가 조용히 하나만 활성화됨(사건 환경)
 ```text
 문제: app/[locale]/page.tsx (redirect → /dashboard)
       app/[locale]/(group)/page.tsx (대시보드 본문)  ← route group 은 URL 무영향 → 둘 다 /[locale]/
       빌드는 통과(한쪽만 활성), /[locale]/dashboard 는 존재하지 않아 404
+      (사건 환경 기준 — Next 문서는 같은 URL로 해석되는 그룹 간 페이지를 오류로 규정하며,
+       버전·구성에 따라 빌드 오류로 잡히기도 한다. 잡힌다고 가정하지 말 것)
 고친: app/[locale]/(group)/dashboard/page.tsx 로 이동 — URL 하나에 페이지 하나
 교훈: 빌드 통과 ≠ 라우트 동작 (dev 진입으로 확인)
 ```
