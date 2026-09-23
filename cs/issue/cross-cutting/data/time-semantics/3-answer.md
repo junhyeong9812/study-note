@@ -26,7 +26,7 @@
    교정: UTC 값에는 항상 `Z` 접미사를 붙인다(이후 모든 조회에 강제).
 
 5. **다른 시계 도메인의 LWW + 비원자 커서.** 클라이언트 `updatedAt` 은 오프라인 동안의 **편집 시각**(클라이언트 시계)이고, 서버 `now()` 는 **수신 시각**(서버 시계)이다. 둘을 비교하면, 오래전 오프라인 편집이 늦게 올라올 때 서버 쪽 값이 "더 최신"으로 판정돼 편집이 **조용히 버려진다**.\
-   교정: 같은 도메인(`client_updated_at` 끼리)만 비교하고, 동일 값은 no-op 으로 둔다. 전송~응답 사이 재편집은 revision claim 으로 보호한다.\
+   교정: 같은 도메인(`client_updated_at` 끼리)만 비교하고, 동일 값은 no-op 으로 둔다. 전송~응답 사이 재편집은 revision claim 으로 보호한다. 단 여러 기기가 같은 항목을 편집하면 `client_updated_at` 끼리도 **기기마다 다른 벽시계**라 시계 차이(skew)만큼의 오판 여지가 남는다 — 강한 보장이 필요하면 서버 발급 revision 번호·하이브리드 논리 시계 같은 순서 기준을 쓴다.\
    또 upsert 와 커서 전진이 갈라져 있으면, 일부만 반영된 뒤 커서만 앞으로 가서 **재시도가 남은 항목을 건너뛴다**. upsert 와 커서를 한 트랜잭션에 넣고 커서를 마지막에 쓴다.
    > **LWW(Last-Writer-Wins)** — 충돌 시 타임스탬프가 가장 늦은 쓰기를 채택하는 병합 규칙.
 
@@ -48,7 +48,7 @@ const day = event.timestamp.slice(0, 10);          // UTC ISO 앞 10자 = UTC �
 const today = new Date().toISOString().slice(0, 10);
 
 // ② 고친 코드
-const today = new Date().toLocaleDateString("en-CA");   // 로컬 YYYY-MM-DD
+const today = new Date().toLocaleDateString("en-CA");   // 로컬 YYYY-MM-DD(로캘 데이터 의존 — 연·월·일 필드로 직접 조립하는 편이 더 안전)
 // 기존 기록 매퍼의 UTC 절단은 수용 — 경계가 UTC 임을 기록
 ```
 ```sh
