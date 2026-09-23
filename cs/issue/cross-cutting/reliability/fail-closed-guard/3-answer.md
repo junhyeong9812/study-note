@@ -127,14 +127,14 @@ if q is None: raise QueryBuildError(field)           # 조건 소실 = 예외
 ```java
 if (apiKey != null && !apiKey.equals(header)) return unauthorized();   // 키 미설정 = 무인증
 if (userId != null && jti != null && !registry.isActive(userId, jti)) return unauthorized();
-if (token == null || token.isBlank()) { chain.doFilter(req, res); return; }   // 빈 토큰 통과
+if (token == null || token.isBlank()) { chain.doFilter(req, res); return; }   // 빈 토큰 통과 (뒤 단계 인가가 인증을 요구하지 않는 경로면 무인증 접근)
 ```
 ```python
 APP_ENV: str = Field(default="dev")    # 누락 시 인증 우회 목(mock) 미들웨어 등록
 ```
 ② 고친 코드
 ```java
-if (apiKey == null) throw new IllegalStateException("key required");   // 기동 거부
+if (apiKey == null) throw new IllegalStateException("key required");   // 기동(설정 로드) 시점 검사 → 기동 거부
 if (!apiKey.equals(header)) return unauthorized();
 String jti = UUID.randomUUID().toString();                              // 발급부가 항상 생성
 token = builder.id(jti).build(); registry.register(userId, jti);        // 이전 jti 폐기
@@ -168,7 +168,7 @@ fn names_session(argv) -> Option<Uuid> { flag_value(argv, &["--resume", "-r", "-
 fn spawn(uuid) { if classify(uuid) != Free { return Err(Busy) } /* 직전 재분류 */ ... }
 
 // 과차단 완화: 프로세스는 시작 후에만 쓸 수 있다
-let threshold = match start_time(pid) {            // /proc stat 시작 tick ÷ HZ + 부팅 시각
+let threshold = match start_time(pid) {            // /proc/<pid>/stat 의 starttime(부팅 후 clock tick) ÷ CLK_TCK(USER_HZ) + 부팅 시각
     Some(t) => Threshold::After(t - EPSILON_60S),
     None    => return Some(Threshold::All),        // `?` 로 None 을 흘리면 "차단 없음"으로 뒤집힘
 };
