@@ -146,8 +146,9 @@ results = list(reverse_index.get(str(query), []))   # 원문 단일 키 조회 (
 
 - 같은 구조: 문맥 없는 키워드 매칭이 다의어(일반 명사)를 구분하지 못해 다른 카테고리 결과가 섞임 → 상위 분류 필터를 AND로 결합해 분류 수준에서 차단.
 ```
-bool.filter: [ terms(groupCodes), should(keywords) ]
+bool.filter: [ terms(groupCodes), bool.should(keywords) ]
 ```
+(주의: `should`를 `filter`/`must`와 **같은** bool에 두면 `minimum_should_match` 기본값이 0이 되어 키워드가 필수 조건이 아니게 된다 — 중첩 bool에 두거나 `minimum_should_match`를 명시한다.)
 
 ## 검증 기록
 - 2026-09-24: 출처 원문 대조(Claude 초안) — 근거는 작업 log
@@ -174,7 +175,7 @@ if active != idle_port: stop(active)
 ```python
 def detect_active_color(cfg_path) -> Color | None:
     try: text = read(cfg_path)
-    except UnicodeDecodeError: return None
+    except (OSError, UnicodeDecodeError): return None    # 읽기 실패도 판정 불가
     colors = {c for c in parse_upstreams(strip_comments(text))}
     return colors.pop() if len(colors) == 1 else None      # 정확히 한 색일 때만
 
