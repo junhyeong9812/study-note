@@ -68,12 +68,13 @@ fn snapshot(&self) -> (Vec<u8>, u64) { (self.buf.clone(), self.last_seq) } // �
 
 ```ts
 // 고침 (클라): 구독 먼저 → 스냅샷 → seq > last_seq 만
-let ready = false; const pending = [];
+let ready = false, lastApplied = 0; const pending = [];
+const applyLive = p => { if (p.seq > lastApplied) { apply(p); lastApplied = p.seq; } }; // 라이브도 seq 비교
 await listen("output", p => ready ? applyLive(p) : pending.push(p));
 const { bytes, lastSeq } = await getSnapshot(id);
-render(bytes); let lastApplied = lastSeq;
-for (const p of pending) if (p.seq > lastApplied) { apply(p); lastApplied = p.seq; }
-ready = true;
+render(bytes); lastApplied = lastSeq;
+for (const p of pending) applyLive(p);   // seq > lastSeq 만 적용
+ready = true;                            // 드레인과 전환은 같은 동기 구간 — 그 사이 이벤트가 끼지 않음(단일 스레드 이벤트 루프 전제)
 ```
 무엇이 깨졌나: 탭 복귀 시 출력 보존을 만족할 수 없었다 — 순서 자체가 계약이다.
 
@@ -161,7 +162,7 @@ useEffect(() => { listen("ended", h); }, []);     // 등록 전 발행된 종료
 // 고침: 구독 먼저 → seed → 비교 병합, 구독 실패도 표면화
 const un = await listen("timeline", h).catch(e => setStreamError(e));
 const seed = await invoke("timelines");
-setState(prev => mergeSnapshot(prev, seed));           // 늦은 seed가 새 라이브를 덮지 않음(CAS)
+setState(prev => mergeSnapshot(prev, seed));           // 늦은 seed가 새 라이브를 덮지 않음(버전·seq 비교 병합)
 ```
 무엇이 깨졌나: 탭 이탈 후 복귀하면 타임라인이 사라졌고, 끝난 세션은 영구 빈 화면이었다.\
 최종적으로 1회성 종료 이벤트는 없애고 스냅샷 조회(짧은 주기 폴링)로 흡수했다.
