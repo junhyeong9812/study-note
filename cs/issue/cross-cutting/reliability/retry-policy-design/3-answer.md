@@ -69,11 +69,12 @@ fn permanent_reason(e: &ConnError) -> Option<Reason> {
         _ => None,
     }
 }
-loop {
+for attempt in 1.. {
     match connect(host, &secret(&req)?).await {
         Ok(link) => { backoff.reset(); return Ok(link) }
         Err(e) => match permanent_reason(&e) {
             Some(r) => return Err(Failed(r)),                  // 중단 + 조치 안내
+            None if attempt >= MAX_ATTEMPTS => return Err(GaveUp(e)),   // "일시"로 둔 미분류 실패도 상한에서 멈춘다
             None => sleep(backoff.next()).await,
         },
     }
@@ -100,6 +101,8 @@ match reader.next_line() {
         self.losses_since_snapshot += 1;
         if self.losses_since_snapshot > 3 {
             mark_gap();                                    // 줄 경계 온전 = 잃은 것 정확히 하나 → 건너뛰고 계속
+        } else {
+            resync();                                      // 상한 전까지만 재동기 시도
         }
     }
     Err(Dropped) => return Ended::Fatal,                   // 잃은 길이 미상 → 치명
@@ -131,6 +134,7 @@ async def handle(msg):
         async with db.transaction():                 # 핸들러 단일 트랜잭션 (중간 커밋 제거 → 재처리 중복 방지)
             await process(msg)
         mark_seen(msg.id)                            # 멱등 표식은 DB 커밋 "후"에 (먼저 쓰면 재처리를 막음)
+                                                     # 한계: 커밋과 표식 사이 장애면 중복 처리 가능 — 표식을 같은 트랜잭션 안에 쓰면 원자적
     except (KeyError, TypeError, ValueError, AttributeError) as e:
         logger.error(e)                              # 데이터 결함 → 폐기(ACK)
     except Exception:
@@ -157,11 +161,16 @@ Queue<SyncFailure> failed = new ConcurrentLinkedQueue<>();   // 단일 인스턴
 void retryFailed() {
     for (var f : failed) {
         if (now().isBefore(f.retryAt())) continue;      // 실패 기준 백오프
-        if (f.attempts() >= 2) { failed.remove(f); continue; }
-        syncIdempotent(f);                                  // 없는 키만 삽입
+        failed.remove(f);                                   // 꺼내서 처리 (성공하면 다시 넣지 않음)
+        try { syncIdempotent(f); }                          // 없는 키만 삽입
+        catch (Exception e) {
+            int n = f.attempts() + 1;
+            if (n < 2) failed.add(new SyncFailure(now(), n, now().plus(60m), e.getMessage()));   // 재실패 시점 기준 재스케줄
+            else log.error("give up", e);                   // 최대 횟수 초과 — 무음 폐기 금지
+        }
     }
 }
-// 실패 시: retryAt = failureTime + (attempts == 0 ? 30m : 60m)
+// 최초 실패 시: retryAt = failureTime + 30m (attempts = 0)
 ```
 무엇이 깨졌나: 백오프 의미를 폴링 주기에 맡겨 "실패 후 N"이 보장되지 않고 재시도가 몰렸다.
 
