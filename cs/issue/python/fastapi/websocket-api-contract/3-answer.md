@@ -67,14 +67,14 @@ async def agent(ws: WebSocket):
 ① 문제 코드
 ```python
 @app.websocket("/ws/deploy")
-async def ws_deploy(ws):                     # 힌트 없음 → 주입 불가 → 실제 클라이언트는 403
+async def ws_release(ws):                     # 힌트 없음 → 주입 불가 → 실제 클라이언트는 403
     await ws.accept()
     # ...
 ```
 ② 고친 코드
 ```python
 @app.websocket("/ws/deploy")
-async def ws_deploy(ws: WebSocket):          # 힌트가 곧 주입 계약
+async def ws_release(ws: WebSocket):          # 힌트가 곧 주입 계약
     await ws.accept()
     # ...
 # 보조: 프록시 헤더 처리 미들웨어가 WS scope scheme 을 바꾸면 403 가능 → 비활성화 또는 WS 구현 교체
