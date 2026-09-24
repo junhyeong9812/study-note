@@ -49,7 +49,10 @@ DIAG = re.compile(
     r'|note:|= note:|help:|= help:'
     r'|thread .* panicked'
     r'|panic:|goroutine \d+'           # go
-    r'|\S*\w+\.(rs|c|h|kt|kts|go|cpp|cc|cxx|hpp|java|cs|py):\d+:\d+:'   # gcc·kotlinc·go 위치
+    # ★ 「줄:칸」이 둘인 것과 하나인 것을 갈라야 한다 —
+    #   javac 는 `Intruder.java:2: error:` 처럼 **줄 번호 하나뿐**이라
+    #   `:\d+:\d+:` 만 두면 Java 진단이 통째로 안 보인다(실측: 한 배치에서 진단 6줄이 집계에서 빠졌다).
+    r'|\S*\w+\.(rs|c|h|kt|kts|go|cpp|cc|cxx|hpp|java|cs|py):\d+:(\d+:)?'   # gcc·kotlinc·go·javac 위치
     r'|\S*\w+\.(ts|tsx|js|jsx|cs)\(\d+,\d+\):'                        # tsc·csc 위치
     r'|-->'                            # rustc 위치
     r'|[A-Za-z_]+Error:'               # python
