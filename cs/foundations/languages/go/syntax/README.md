@@ -1,6 +1,6 @@
 # Go — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**(2026-09-24 기준 **8 / 52**). 나머지는 아직 없다.
+> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**(2026-09-24 기준 **12 / 52**). 나머지는 아직 없다.
 > 기준 소스: [Go 명세](https://go.dev/ref/spec) (확인한 판 `go1.27`, 2026-05-26) · [표준 라이브러리](https://pkg.go.dev/std) (`go1.27.1`) · [Effective Go](https://go.dev/doc/effective_go) · 버전 표기는 각 릴리스 노트(`https://go.dev/doc/go1.NN`)
 > 실행 검증: **가능**. 이 머신에 Go 툴체인이 들어왔다 — `go version` 이 `go version go1.27.1 linux/amd64` 라고 답한다(2026-09-24 실측). `gofmt`·`go vet`·`go tool compile`·`go list` 도 같은 판이다.\
 > 3파일의 코드 예시는 **전부 돌려서 출력을 파일로 캡처해 싣는다** — 「실행 검증 안 됨」 표시는 쓰지 않는다.\
@@ -32,10 +32,10 @@ GC 설계·기동 시간·단일 바이너리·"작은 언어"의 찬반은 **�
 | 06 | [`len`/`cap`과 `append`의 재할당](06-len-cap-and-append-reallocation/) | 문법 | `append` 후 원본 배열이 공유되는지 새로 잡혔는지를 `cap`으로 판단하고, 성장 전략이 왜 구현 세부인지 설명할 수 있다 | 05 | [`../../../../data-structure/01-dynamic-array/`](../../../../data-structure/01-dynamic-array/) — 증폭 상각 분석은 거기 | A |
 | 07 | ★ [슬라이스 공유로 조용히 틀리는 자리](07-slice-sharing-silent-bugs/) | 관용구 | 부분 슬라이스에 `append` 했을 때 원본이 덮이는 경우를 코드만 보고 짚어내고, 그 버그가 왜 에러 없이 지나가는지 설명할 수 있다 | 06 | [`../../../../ops-patterns/failure-modes/`](../../../../ops-patterns/failure-modes/) — 조용한 실패 일반론은 거기, 여기는 슬라이스 별칭 한 사례로 좁힘 | A |
 | 08 | [`copy`·3-인덱스 슬라이스·재슬라이싱의 메모리 유지](08-copy-three-index-slicing-and-memory-retention/) | 관용구 | 공유를 끊어야 하는 자리를 골라 `copy`나 `s[a:b:c]`로 막고, 작은 조각이 큰 배열을 살려 두는 누수를 진단할 수 있다 | 07 | — | A |
-| 09 | 맵: 선언·comma-ok·`delete`·순회 순서 | 문법 | 없는 키를 읽으면 왜 제로값이 나오는지, 순회 순서가 무작위화된 이유와 그에 의존한 코드가 어떻게 깨지는지 말할 수 있다 | 02 | [`../../../../data-structure/05-hashmap/`](../../../../data-structure/05-hashmap/) · [`29-open-addressing`](../../../../data-structure/29-open-addressing/) — 해시 테이블 원리는 거기, 여기는 Go 맵의 표면과 보증으로 좁힘 | A |
-| 10 | 문자열·`byte`·`rune`과 UTF-8 순회 | 문법 | 인덱싱이 바이트를 주고 `range`가 코드포인트를 주는 차이를 설명하고, 한글 문자열의 `len`을 예측할 수 있다 | 04 | [`../../../data-representation/`](../../../data-representation/) — 인코딩 일반은 거기 | A |
-| 11 | `strings`·`strconv`·`bytes`·`unicode/utf8` | 표준 API | 문자열 조작을 어느 패키지로 할지 고르고, `Builder`로 이어붙이는 자리와 `+`로 충분한 자리를 판단할 수 있다 | 10 | — | B |
-| 12 | 함수: 다중 반환·명명 반환값·가변 인자 | 문법 | `(T, error)` 관례가 왜 언어 문법에서 나오는지 설명하고, 명명 반환값이 `defer`와 만날 때의 효과를 예측할 수 있다 | 02 | — | A |
+| 09 | [맵: 선언·comma-ok·`delete`·순회 순서](09-maps-declaration-comma-ok-delete-and-iteration-order/) | 문법 | 없는 키를 읽으면 왜 제로값이 나오는지, 순회 순서가 무작위화된 이유와 그에 의존한 코드가 어떻게 깨지는지 말할 수 있다 | 02 | [`../../../../data-structure/05-hashmap/`](../../../../data-structure/05-hashmap/) · [`29-open-addressing`](../../../../data-structure/29-open-addressing/) — 해시 테이블 원리는 거기, 여기는 Go 맵의 표면과 보증으로 좁힘 | A |
+| 10 | [문자열·`byte`·`rune`과 UTF-8 순회](10-strings-bytes-runes-and-utf8-iteration/) | 문법 | 인덱싱이 바이트를 주고 `range`가 코드포인트를 주는 차이를 설명하고, 한글 문자열의 `len`을 예측할 수 있다 | 04 | [`../../../data-representation/`](../../../data-representation/) — 인코딩 일반은 거기 | A |
+| 11 | [`strings`·`strconv`·`bytes`·`unicode/utf8`](11-strings-strconv-bytes-and-unicode-utf8/) | 표준 API | 문자열 조작을 어느 패키지로 할지 고르고, `Builder`로 이어붙이는 자리와 `+`로 충분한 자리를 판단할 수 있다 | 10 | — | B |
+| 12 | [함수: 다중 반환·명명 반환값·가변 인자](12-functions-multiple-returns-named-results-and-variadics/) | 문법 | `(T, error)` 관례가 왜 언어 문법에서 나오는지 설명하고, 명명 반환값이 `defer`와 만날 때의 효과를 예측할 수 있다 | 02 | — | A |
 | 13 | 클로저와 변수 캡처, 루프 변수 의미 변경(1.22) | 문법 | 클로저가 값이 아니라 변수를 잡는다는 사실로 출력 결과를 예측하고, 같은 코드가 1.21과 1.22에서 왜 다른지 말할 수 있다 | 12 | — | A |
 | 14 | `for`의 네 형태 · 정수 range(1.22) · 함수 range(1.23) | 문법 | `range`가 복사를 만드는 자리를 짚고, `for i := range 10`과 반복자 함수 순회가 어느 버전부터인지 말할 수 있다 | 13 | — | A |
 | 15 | `switch`·타입 스위치·`fallthrough`·라벨·`goto` | 문법 | Go의 `switch`가 왜 기본으로 안 흘러내리는지, 라벨 `break`/`continue`가 필요한 중첩 루프를 골라낼 수 있다 | 14 | — | B |
