@@ -38,17 +38,24 @@ Rust·C·Kotlin 처럼 **에러 메시지가 교재**인 갈래에서는 진단 
 import re, sys, pathlib
 
 # 진단으로 읽히는 줄. 언어마다 모양이 달라 넉넉히 잡고, 걸러내는 것은 사람이 한다.
+# ★★ 언어를 하나라도 빠뜨리면 그 갈래는 **진단이 0개로 보이고 「none 0건」이 공허하게 참**이 된다.
+#    실측 — TS 형식(`ex.ts(14,35): error TS2353:`)이 없어서 한 배치 12파일이 「진단 0줄」로 통과했다.
+#    **새 갈래를 열 때 이 목록에 그 언어를 넣었는지 먼저 확인해라.**
 DIAG = re.compile(
     r'^\s*('
     r'error(\[[A-Z]\d+\])?:'          # rustc · kotlinc
-    r'|warning:'
+    r'|error [A-Z]{2}\d+:'             # tsc(TS2353) · csc(CS0029)
+    r'|warning:|warning [A-Z]{2}\d+:'
     r'|note:|= note:|help:|= help:'
     r'|thread .* panicked'
-    r'|\w+\.(rs|c|kt|h):\d+:\d+:'     # gcc · kotlinc 위치
+    r'|panic:|goroutine \d+'           # go
+    r'|\S*\w+\.(rs|c|h|kt|kts|go|cpp|cc|cxx|hpp|java|cs|py):\d+:\d+:'   # gcc·kotlinc·go 위치
+    r'|\S*\w+\.(ts|tsx|js|jsx|cs)\(\d+,\d+\):'                        # tsc·csc 위치
     r'|-->'                            # rustc 위치
     r'|[A-Za-z_]+Error:'               # python
     r'|runtime error:'                 # sanitizer
     r'|AddressSanitizer'
+    r'|exit status \d+'
     r')')
 
 # 「이 진단을 낸 소스가 문서에 있나」를 세 단계로 본다.
@@ -56,8 +63,18 @@ DIAG = re.compile(
 #   partial — 진단이 스스로 끼워 보여 주는 발췌만 있다(`3 | let s2 = s1;`).
 #             메시지 글자는 대조되지만 **줄 번호는 못 맞춘다** — 실측 사고 4건이 전부 이 모양이었다.
 #   none    — 진단만 덩그러니 있다. 사람도 기계도 다시 못 던진다.
-SOURCE_MARK = re.compile(r'^\s*(=====\s*소스|```(rust|c|kotlin|kt|python|java)\b|// ex\.|/\* ex\.)')
+SOURCE_MARK = re.compile(
+    r'^\s*(=====\s*소스'
+    r'|```(rust|rs|c|cpp|c\+\+|kotlin|kt|python|py|java|go|ts|typescript|js|javascript|cs|csharp)\b'
+    r'|// ex\.|/\* ex\.)')
 ECHO = re.compile(r'^\s*\d+\s*\|')      # rustc·gcc 가 끼워 보여 주는 소스 줄
+# 진단·배너가 가리키는 소스 파일 이름. 같은 문서 위쪽에 그 소스가 이미 실렸으면
+# ★ **창 밖이어도 다시 던질 수 있다** — 「N번 답의 프로그램」을 다시 인용하는 자리가 실제로 많다.
+NAMED = re.compile(r'([\w.\-]+\.(?:rs|c|h|kt|kts|go|cpp|cc|cxx|hpp|java|cs|py|ts|tsx|js|jsx))\b')
+# `===== 소스: ex.c =====` · 펜스 첫 줄 `// ex.rs` 꼴에서 「여기 이 소스가 실렸다」를 읽는다
+DECLARED = re.compile(r'^\s*(?:=====\s*소스\s*:\s*([\w.\-]+\.\w+)'
+                      r'|(?://|\#|--)\s*([\w.\-]+\.\w+)\s*$'
+                      r'|/\*\s*([\w.\-]+\.\w+)\s*\*/\s*$)')
 FENCE = re.compile(r'^\s*```')
 
 
@@ -83,9 +100,27 @@ def grade(lines, block):
     body = block['body']
     if any(SOURCE_MARK.match(l) for l in body):
         return 'full'
-    lo = max(0, block['line'] - 41)
-    if any(SOURCE_MARK.match(l) for l in lines[lo:block['line'] - 1]):
+    # ★ 「바로 위에 소스가 있나」를 본다. 고정 40줄 창은 **긴 소스에서 좁다** —
+    #   소스가 40줄을 넘으면 바로 붙여 놔도 partial 로 떨어진다(실측 지적).
+    #   그래서 **직전 코드펜스까지 거슬러 올라가되** 최소 40줄은 본다.
+    above = lines[:block['line'] - 1]
+    fences = [n for n, l in enumerate(above) if FENCE.match(l)]
+    lo = fences[-2] if len(fences) >= 2 else 0          # 직전 펜스의 여는 줄
+    lo = min(lo, max(0, block['line'] - 41))
+    if any(SOURCE_MARK.match(l) for l in above[lo:]):
         return 'full'
+    # ★ 같은 문서 위쪽에 이름이 선언된 소스를 이 블록이 가리키나
+    declared = set()
+    for l in above:
+        m = DECLARED.match(l)
+        if m:
+            declared.add(next(g for g in m.groups() if g))
+    if declared:
+        names = set()
+        for l in [lines[block['line'] - 1]] + body:
+            names.update(NAMED.findall(l))
+        if names & declared:
+            return 'full'
     if any(ECHO.match(l) for l in body):
         return 'partial'
     return 'none'
