@@ -1,6 +1,6 @@
 # C++ — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**(2026-09-24 기준 **3 / 55**). 나머지는 아직 없다.
+> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**(2026-09-24 기준 **7 / 55**). 나머지는 아직 없다.
 > 기준 소스: [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards)(C++20 = ISO/IEC 14882:2020, 대응 초안 **N4849** · C++23 대응 초안 **N4950**) · [cppreference C++ 레퍼런스](https://en.cppreference.com/w/cpp)
 > 실행 검증: **가능** — `g++ 13.3.0`(`-std=c++20` 확인, `-std=c++23` 도 빌드됨 — 기능별 지원은 다름) · `clang++ 18.1.3`(`-std=c++20` 확인) · `cmake 3.28.3`·`make 4.3` · `g++ -fsanitize=address,undefined` 사용 가능 · `gdb` 있음. **`valgrind` 없음**(필요 시 설치 제안만 한다).
 > 기준일 2026-09-20.
@@ -31,10 +31,10 @@ C 목록의 축이 “메모리를 직접 다루는 규칙”이었다면, C++ �
 | 01 | [함수 오버로딩과 오버로드 해석](01-function-overloading-and-overload-resolution/) | 문법 | 같은 이름의 후보 중 어느 것이 뽑히는지 순서(정확 일치 → 승격 → 변환)로 설명하고, 모호 호출을 예측할 수 있다 | `C-34` | — | A |
 | 02 | [`enum class` 와 범위 있는 열거형](02-enum-class-and-scoped-enumerations/) | 문법 | 범위 있는 열거형이 막는 것(암묵 정수 변환·이름 충돌)을 말하고, C 의 `enum` 을 언제 남길지 판단할 수 있다 | `C-07` | — | B |
 | 03 | [캐스트 4종](03-four-cast-operators/) | 문법 | `static_cast`·`const_cast`·`reinterpret_cast`·`dynamic_cast` 를 상황에 맞게 고르고, C 스타일 캐스트가 무엇으로 풀리는지 설명할 수 있다 | `C-05` | — | A |
-| 04 | `{}` 균일 초기화·좁히기·`initializer_list` | 문법 | `()` 와 `{}` 초기화 결과가 갈리는 자리(`vector<int> v(3,0)` vs `{3,0}`)를 설명하고, 좁히기 변환이 왜 거부되는지 안다 | — | — | A |
-| 05 | `auto`·`decltype` 과 타입 추론 | 문법 | `auto` 가 참조·const 를 떨어뜨리는 규칙과 `auto&`/`auto&&`/`decltype(auto)` 의 차이를 예측할 수 있다 | 07 | — | A |
-| 06 | 네임스페이스와 ADL | 문법 | 이름이 어느 네임스페이스에서 찾아지는지(인자 의존 탐색 포함) 설명하고, `using namespace` 를 헤더에 두면 안 되는 이유를 말할 수 있다 | — | — | B |
-| 07 | 참조와 포인터의 차이 | 문법 | 참조가 재결합되지 않는다는 성질에서 설계상 차이를 끌어내고, 어느 쪽을 쓸지(널 가능성·소유권) 판단할 수 있다 | `C-14` | — | A |
+| 04 | [`{}` 균일 초기화·좁히기·`initializer_list`](04-brace-initialization-narrowing-and-initializer-list/) | 문법 | `()` 와 `{}` 초기화 결과가 갈리는 자리(`vector<int> v(3,0)` vs `{3,0}`)를 설명하고, 좁히기 변환이 왜 거부되는지 안다 | — | — | A |
+| 05 | [`auto`·`decltype` 과 타입 추론](05-auto-and-decltype-type-deduction/) | 문법 | `auto` 가 참조·const 를 떨어뜨리는 규칙과 `auto&`/`auto&&`/`decltype(auto)` 의 차이를 예측할 수 있다 | 07 | — | A |
+| 06 | [네임스페이스와 ADL](06-namespaces-and-adl/) | 문법 | 이름이 어느 네임스페이스에서 찾아지는지(인자 의존 탐색 포함) 설명하고, `using namespace` 를 헤더에 두면 안 되는 이유를 말할 수 있다 | — | — | B |
+| 07 | [참조와 포인터의 차이](07-references-vs-pointers/) | 문법 | 참조가 재결합되지 않는다는 성질에서 설계상 차이를 끌어내고, 어느 쪽을 쓸지(널 가능성·소유권) 판단할 수 있다 | `C-14` | — | A |
 | 08 | 값 범주 — lvalue·prvalue·xvalue | 문법 | 어떤 식이 어느 범주인지 판정하고, 그것이 오버로드 선택(`T&` vs `T&&`)을 어떻게 가르는지 설명할 수 있다 | 07 | — | A |
 | 09 | rvalue 참조·`std::move`·`std::forward` | 문법 | `std::move` 가 아무것도 옮기지 않는 캐스트임을 설명하고, 전달 참조에서 `forward` 가 필요한 이유를 말할 수 있다 | 08 | — | A |
 | 10 | `const` 정확성 | 문법 | const 멤버 함수·const 참조 매개변수·const 오버로드를 설계에 쓰고, `mutable` 과 논리적 const 의 경계를 판단할 수 있다 | `C-31`, 07 | — | A |
