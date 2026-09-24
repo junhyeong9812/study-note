@@ -1,7 +1,7 @@
 # Python — 문법·API 주제 목록
 
 > 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**
-> (2026-09-24 기준 **24 / 53** — 01\~24). 나머지는 아직 없다.
+> (2026-09-24 기준 **28 / 53** — 01\~28). 나머지는 아직 없다.
 > 기준 소스: [Python 3.12 언어 레퍼런스](https://docs.python.org/3.12/reference/index.html) · [표준 라이브러리 3.12](https://docs.python.org/3.12/library/index.html) · [PEP 인덱스](https://peps.python.org/)
 > 실행 검증: **가능**. 이 머신에 `python3` 3.12.3 이 있어 3.12 까지의 예시는 실제로 돌려 출력을 확인한다. 3.13 전용 동작(PEP 696 기본값·`TypeIs`·free-threaded)은 설치본이 없어 문서·PEP 로만 접지하고 「미실행」으로 표기한다.
 > 기준일 2026-09-20.
@@ -42,10 +42,10 @@ JS 와 대비가 값을 내는 자리(동적 타입·컴프리헨션·이터레�
 | 22 | [클로저와 늦은 바인딩](22-closures-and-late-binding/) | 문법 | 루프에서 만든 함수들이 같은 값을 내놓는 이유를 설명하고 기본 인자·팩토리로 고칠 수 있다 | 21 | — | A |
 | 23 | [`lambda` 와 고차 함수](23-lambda-and-higher-order-functions/) | 문법 | `lambda` 를 쓸 수 있는 자리와 제약을 말하고 `map`·`filter`·정렬 `key` 로 바꿔 쓸 수 있다 | 19 | `cs/foundations/python-basics/` | B |
 | 24 | [데코레이터](24-decorators/) | 문법 | 함수를 감싸는 데코레이터와 인자 있는 데코레이터를 직접 쓰고, `functools.wraps` 를 빠뜨리면 무엇이 깨지는지 설명할 수 있다 | 22 | — | A |
-| 25 | 예외 처리와 `finally` | 문법 | `try`/`except`/`else`/`finally` 실행 순서, 예외 계층에 따른 포착 범위, `raise ... from` 의 체이닝을 설명할 수 있다 | — | — | A |
-| 26 | EAFP 대 LBYL | 관용구 | 「먼저 검사」와 「일단 하고 예외」 중 어느 쪽이 경쟁 조건·비용 면에서 맞는지 판단할 수 있다 | 25 | — | B |
-| 27 | 예외 그룹과 `except*` | 문법 | 3.11+ `ExceptionGroup` 이 여러 실패를 함께 나르는 방식과 `except*` 의 분배 규칙을 설명할 수 있다 | 25 | — | C |
-| 28 | 컨텍스트 매니저와 `with` | 문법 | `__enter__`/`__exit__` 계약과 예외 억제 여부를 설명하고 `contextlib` 로 컨텍스트를 만들 수 있다. 괄호로 감싼 다중 `with` 는 3.10+ | 25 | — | A |
+| 25 | [예외 처리와 `finally`](25-exceptions-and-finally/) | 문법 | `try`/`except`/`else`/`finally` 실행 순서, 예외 계층에 따른 포착 범위, `raise ... from` 의 체이닝을 설명할 수 있다 | — | — | A |
+| 26 | [EAFP 대 LBYL](26-eafp-vs-lbyl/) | 관용구 | 「먼저 검사」와 「일단 하고 예외」 중 어느 쪽이 경쟁 조건·비용 면에서 맞는지 판단할 수 있다 | 25 | — | B |
+| 27 | [예외 그룹과 `except*`](27-exception-groups-and-except-star/) | 문법 | 3.11+ `ExceptionGroup` 이 여러 실패를 함께 나르는 방식과 `except*` 의 분배 규칙을 설명할 수 있다 | 25 | — | C |
+| 28 | [컨텍스트 매니저와 `with`](28-context-managers-and-with/) | 문법 | `__enter__`/`__exit__` 계약과 예외 억제 여부를 설명하고 `contextlib` 로 컨텍스트를 만들 수 있다. 괄호로 감싼 다중 `with` 는 3.10+ | 25 | — | A |
 | 29 | 클래스와 속성 탐색 | 문법 | 인스턴스·클래스 속성 탐색 순서와 클래스 변수 공유를 설명하고 `__init__` 과 `__new__` 의 역할을 구분할 수 있다 | 01 | `cs/foundations/oop-basics/` | A |
 | 30 | `__repr__`·`__eq__`·`__hash__` 계약 | 문법 | 세 메서드의 계약을 말하고, `__eq__` 만 정의했을 때 해시가 깨지는 이유를 설명하며 집합·dict 키로 쓸 클래스를 설계할 수 있다 | 12, 29 | — | A |
 | 31 | 비교 프로토콜과 정렬 가능성 | 문법 | `__lt__` 하나로 정렬이 되는 이유, `functools.total_ordering`, 비교 불가 타입을 섞었을 때의 `TypeError` 를 설명할 수 있다 | 10, 30 | — | B |
