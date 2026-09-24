@@ -650,7 +650,7 @@ Ex.java:6: error: cannot find symbol
 | `rev.reversed() == src` | **보장 아님** | 최적화다. javadoc 에 없다 |
 | 구체 타입 `ReverseOrderListView$Rand` 등 | **보장 아님** | 내부 클래스 |
 | 빈 컬렉션의 `getFirst()` 가 NSEE | **보장** | `@throws NoSuchElementException if this collection is empty` |
-| 빈 맵의 `firstEntry()` 가 `null` | **보장** | `@return the first key-value mapping, or `null` if the map is empty` |
+| 빈 맵의 `firstEntry()` 가 `null` | **보장** | ``@return the first key-value mapping, or `null` if the map is empty`` |
 | `TreeSet.addFirst` 가 UOE | **보장** | `SortedSet.addFirst` javadoc — "always throws `UnsupportedOperationException`" |
 | `TreeSet.reversed()` 가 `descendingSet()` 과 같음 | **보장 아님** | 구현이 그렇게 돼 있을 뿐 |
 | `putFirst`·`lastEntry` 가 접근 순서를 안 바꿈 | **보장** | `LinkedHashMap` javadoc — "do not generate entry accesses" |

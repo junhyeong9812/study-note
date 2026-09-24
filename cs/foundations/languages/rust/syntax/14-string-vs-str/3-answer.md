@@ -680,7 +680,7 @@ a=가나 b=가나
 **왜 그런가**
 
 - **거부되는 쪽은 `String`**, 번호는 **E0382**. 이유 구절은 에러가 직접 말한다 —\
-  `move occurs because `a` has type `String`, which does not implement the `Copy` trait`.
+  ``move occurs because `a` has type `String`, which does not implement the `Copy` trait``.
 - **`String` 이 `Copy` 가 아닌 것은 힙을 소유하기 때문**이다. 두 이름이 같은 버퍼를 들고 있다가\
   둘 다 해제하면 이중 해제가 된다 — 그래서 언어가 **이름 하나만 남긴다.**
 - **`&str` 은 `Copy`** 다(불변 참조). 두 칸을 베끼면 끝이고 해제할 것이 없다.

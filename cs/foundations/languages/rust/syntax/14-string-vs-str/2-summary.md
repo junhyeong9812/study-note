@@ -913,7 +913,7 @@ a=가나 b=가나
 ```
 
 ★★ **한 글자 차이로 E0382 와 통과가 갈린다.** 에러가 이유를 직접 말한다 —
-`which does not implement the `Copy` trait`. **`&str` 은 불변 참조라 `Copy` 다**(09번의 표).
+``which does not implement the `Copy` trait``. **`&str` 은 불변 참조라 `Copy` 다**(09번의 표).
 
 | | `Copy` 인가 | 대입하면 | 왜 |
 |---|---|---|---|

@@ -5,6 +5,14 @@
 //   ③ 표의 칸 수가 행마다 다른 것 (셀 안의 `|` 를 이스케이프 안 해서)
 //   ④ 문단 안 `**` 개수가 홀수인 것 — ①이 **못 보는 조용한 쪽**이다
 //   ⑤ 렌더 후 본문에 백틱이 남은 것 — 코드 스팬이 깨진 자리
+//   ⑥ 코드 스팬이 둘로 쪼개져 글자가 사이로 샌 것 — ⑤가 **못 보는 더 조용한 쪽**
+//
+// ★ ⑥이 왜 따로 필요한가 — 홑백틱 스팬 안의 백틱이 **짝수**면 별표가 하나도 안 남는다:
+//     `설정 `port` 의 값`  ->  <code>설정 </code>port<code> 의 값</code>
+//   백틱이 안 남으니 ⑤가 통과하는데, 실제로는 스팬이 둘로 쪼개지고 `port` 가 **본문으로 샌다.**
+//   ★ 판정 — `</code>X<code>` 에서 **X 가 공백 없는 순수 식별자**일 때만 잡는다.
+//   `a`·`b` 나 `a`/`b` 같은 정상 나열(X 가 구분 문자)과 `String`:`&str`(X 가 `:`)은 대상이 아니다.
+//   실측 — 저장소 전수에서 이 좁힌 판정이 **진짜 3건**을 찾았고 오탐은 0이었다.
 //
 // ★ ⑤가 왜 따로 필요한가 — **홑백틱 스팬 안에 백틱을 넣으면** 스팬이 깨진다.
 //   컴파일러 진단을 인용하는 갈래에서 구조적으로 자주 난다(rustc 문구가 백틱을 쓴다):
@@ -231,4 +239,26 @@ for (const [f, hits] of btBad) {
   for (const h of hits.slice(0, 3)) console.log('      ' + h.replace(/\s+/g, ' ').trim());
 }
 
-process.exit(total + strikeTotal + tableTotal + oddTotal + btTotal ? 1 : 0);
+// ⑥ 쪼개진 코드 스팬 — </code>식별자<code>
+const SPLIT = /<\/code>([^<\s][^<]{0,40}?)<code>/g;
+const splitBad = [];
+let splitTotal = 0;
+for (const f of files) {
+  const src = fs.readFileSync(f, 'utf8');
+  if (!src.includes('`')) continue;
+  const html = micromark(src, { extensions: [gfm()], htmlExtensions: [gfmHtml()] });
+  const hits = [];
+  let m;
+  SPLIT.lastIndex = 0;
+  while ((m = SPLIT.exec(html))) {
+    if (/^[A-Za-z0-9_.]+$/.test(m[1])) hits.push(m[0]);
+  }
+  if (hits.length) { splitBad.push([f, hits]); splitTotal += hits.length; }
+}
+console.log(`[쪼개진 스팬] 코드 스팬이 둘로 갈라져 글자가 샌 파일 ${splitBad.length}개 · 총 ${splitTotal}건`);
+for (const [f, hits] of splitBad) {
+  console.log('  ' + f + `  (${hits.length}건)`);
+  for (const h of hits.slice(0, 3)) console.log('      ' + h);
+}
+
+process.exit(total + strikeTotal + tableTotal + oddTotal + btTotal + splitTotal ? 1 : 0);
