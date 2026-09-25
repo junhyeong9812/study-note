@@ -621,6 +621,16 @@ study-note의 폴더는 성격이 둘로 갈린다.\
     `case $OUT_DIR in /*) ;; *) OUT_DIR="$PWD/$OUT_DIR" ;; esac` 한 줄이면 된다.
     ★ **「생성 실패가 exit 0 으로 지나간다」는 `pipefail` 사고와 같은 집안**이다 — 템플릿에 못 박는다.
 
+26. ★★ **「도구가 없다」고 적기 전에 `PATH` 를 의심해라.**
+    실측 — 한 배치가 「**`javac` 가 이 머신에 없다**」고 적고 교차 갈래 대비를 형제 문서 인용으로 대체했다.
+    실제로는 **있었다**(`javac 21.0.5`) — SDKMAN 이 `~/.sdkman/bin/sdkman-init.sh` 를 읽어야
+    `PATH` 에 들어오는데 비대화형 셸에서는 안 읽힌다.
+    ★★★ **「못 잰 것」은 제3의 상태로 정당하지만, 그 판정 자체가 틀리면 문서가 근거 없이 빈다.**
+    ★ 처방 — **없다고 적기 전에 `which`·버전 호출을 블록으로 남겨라.** 그 블록이 곧 판정의 근거다.
+    ★ 이 저장소에서 쓰는 도구들의 자리 — `~/.local/bin`(npm 전역·tsc) · `~/.local/opt/go/bin` ·
+    `~/.local/opt/dotnet`(★ `DOTNET_CLI_UI_LANGUAGE=en` 을 안 주면 진단이 한국어로 나온다) ·
+    **SDKMAN 은 `source ~/.sdkman/bin/sdkman-init.sh` 가 있어야 `java`·`javac` 가 보인다.**
+
 
 ### 배치 크기
 
