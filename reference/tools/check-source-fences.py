@@ -30,8 +30,11 @@ import sys
 import difflib
 
 # 언어별 한 줄 주석 꼴 — `// a.kt` · `# a.py` · `/* a.c */` · `-- a.sql`
+# 언어별 한 줄 주석 꼴 — `// a.kt` · `# a.py` · `/* a.c */` · `-- a.sql` · `<!-- a.html -->`
+# ★ HTML·XML 주석 꼴을 빠뜨리면 그 갈래는 **「배너 없는 소스 펜스 0」이 원리상 성립하지 않는다**(실측).
 BANNER = re.compile(r'^\s*(?://|\#|--)\s*([\w.\-]+\.\w+)\s*$'
-                    r'|^\s*/\*\s*([\w.\-]+\.\w+)\s*\*/\s*$')
+                    r'|^\s*/\*\s*([\w.\-]+\.\w+)\s*\*/\s*$'
+                    r'|^\s*<!--\s*([\w.\-]+\.\w+)\s*-->\s*$')
 # 실파일과 대조할 수 있는 펜스의 언어 태그. 그 밖(text·console·없음)은 출력·그림이라 대상이 아니다.
 SOURCE_LANGS = {
     'py', 'python', 'kt', 'kotlin', 'rs', 'rust', 'c', 'h', 'cpp', 'c++', 'cc',
@@ -87,7 +90,7 @@ def main() -> None:
                 nobanner += 1
                 print('  배너 없는 소스 펜스 %-12s <- %s' % ('```' + lang, md))
                 continue
-            name = bm.group(1) or bm.group(2)
+            name = bm.group(1) or bm.group(2) or bm.group(3)
             if name in dupes:
                 ambiguous += 1
                 print('  ★판정 불가 — `%s` 라는 이름의 파일이 %d개다 (%s)  <- %s'
