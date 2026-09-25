@@ -1,6 +1,6 @@
 # Rust — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**(2026-09-24 기준 **24 / 58**). 나머지는 아직 없다.
+> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**(2026-09-25 기준 **28 / 58**). 나머지는 아직 없다.
 > 기준 소스: [The Rust Reference](https://doc.rust-lang.org/reference/) · [std 문서](https://doc.rust-lang.org/std/) · [The Rust Book](https://doc.rust-lang.org/book/) · 에디션 차이는 [Edition Guide](https://doc.rust-lang.org/edition-guide/rust-2024/)
 > 실행 검증: **가능.** 이 머신에 `rustc 1.92.0` + `cargo 1.92.0`가 있다(2026-09-20 확인). 3파일의 코드 예시는 **전부 `cargo` 로 실제 컴파일·실행하고 출력을 옮긴다** — 컴파일 에러를 보여 주는 예시는 **에러 메시지도 실제 출력**을 쓴다(Rust는 "컴파일이 거부한다"가 곧 학습 내용이라 이게 특히 중요하다). 에디션은 `Cargo.toml`의 `edition` 을 바꿔 가며 2021·2024를 둘 다 돌린다.
 > 기준일 2026-09-20.
@@ -48,10 +48,10 @@ Rust의 문법 주제는 **컴파일러가 거부하는 자리를 중심으로**
 | 22 | [`Result`와 `?`·`From` 변환](22-result-question-mark-and-from/) | 문법 | `?`가 조기 반환과 오류 변환을 동시에 한다는 점을 설명하고, `?`가 안 먹는 자리(`main`·`Option`과 섞임)를 고칠 수 있다 | 21 | — | A |
 | 23 | [`panic!` 대 `Result` — 어디서 끝낼 것인가](23-panic-vs-result/) | 관용구 | 호출자가 복구할 수 있는 실패와 프로그램 버그를 갈라, 라이브러리 경계에서 어느 쪽을 낼지 판단할 수 있다 | 22 | [`../../../../ops-patterns/failure-modes/`](../../../../ops-patterns/failure-modes/) — 실패 분류 총론은 거기, 여기는 Rust의 두 경로 선택 | A |
 | 24 | [오류 타입 설계 — 열거형 오류·`Error` 트레이트·`source`·`Box<dyn Error>`](24-error-type-design/) | 관용구 | 애플리케이션 오류와 라이브러리 오류에 서로 다른 표면을 설계하고, 오류 원인 체인을 만들 수 있다 | 23 | [`../../../../ops-patterns/failure-modes/`](../../../../ops-patterns/failure-modes/) — 실패 모드 분류는 거기 | A |
-| 25 | 트레이트 정의·구현·기본 메서드·연관 타입 | 문법 | 트레이트가 인터페이스와 무엇이 다른지 말하고, 제네릭 파라미터 대신 연관 타입을 쓸 자리를 고를 수 있다 | 16 | [`../../../oop-basics/`](../../../oop-basics/) — 인터페이스·다형성 일반은 거기, 여기는 트레이트 문법으로 좁힘 | A |
-| 26 | 고아 규칙과 newtype | 문법 | 남의 타입에 남의 트레이트를 못 구현하는 이유를 설명하고, newtype으로 우회하는 코드를 쓸 수 있다 | 25 | — | B |
-| 27 | `derive` 매크로 — `Debug`·`Clone`·`PartialEq`·`Default`·`Hash` | 문법 | 어떤 `derive`가 어떤 제약을 필드에 요구하는지 예측하고, 파생이 안 될 때의 에러를 해석할 수 있다 | 25 | — | A |
-| 28 | `PartialEq`/`Eq`/`PartialOrd`/`Ord`/`Hash`의 계약 | 표준 API | 부동소수점이 왜 `Eq`가 아닌지 설명하고, `Hash`와 `Eq`의 일관성을 깨면 무엇이 망가지는지 말할 수 있다 | 27 | [`../../../../data-structure/05-hashmap/`](../../../../data-structure/05-hashmap/) — 해시 계약 일반은 거기, 여기는 Rust 트레이트 표면으로 좁힘 | B |
+| 25 | [트레이트 정의·구현·기본 메서드·연관 타입](25-traits-definition-impl-default-methods-and-associated-types/) | 문법 | 트레이트가 인터페이스와 무엇이 다른지 말하고, 제네릭 파라미터 대신 연관 타입을 쓸 자리를 고를 수 있다 | 16 | [`../../../oop-basics/`](../../../oop-basics/) — 인터페이스·다형성 일반은 거기, 여기는 트레이트 문법으로 좁힘 | A |
+| 26 | [고아 규칙과 newtype](26-orphan-rule-and-newtype/) | 문법 | 남의 타입에 남의 트레이트를 못 구현하는 이유를 설명하고, newtype으로 우회하는 코드를 쓸 수 있다 | 25 | — | B |
+| 27 | [`derive` 매크로 — `Debug`·`Clone`·`PartialEq`·`Default`·`Hash`](27-derive-macros-debug-clone-partialeq-default-hash/) | 문법 | 어떤 `derive`가 어떤 제약을 필드에 요구하는지 예측하고, 파생이 안 될 때의 에러를 해석할 수 있다 | 25 | — | A |
+| 28 | [`PartialEq`/`Eq`/`PartialOrd`/`Ord`/`Hash`의 계약](28-partialeq-eq-partialord-ord-and-hash-contracts/) | 표준 API | 부동소수점이 왜 `Eq`가 아닌지 설명하고, `Hash`와 `Eq`의 일관성을 깨면 무엇이 망가지는지 말할 수 있다 | 27 | [`../../../../data-structure/05-hashmap/`](../../../../data-structure/05-hashmap/) — 해시 계약 일반은 거기, 여기는 Rust 트레이트 표면으로 좁힘 | B |
 | 29 | 변환 트레이트 `From`/`Into`/`TryFrom`/`AsRef`/`Borrow` | 표준 API | 어느 방향으로 구현해야 양쪽이 생기는지 알고, API 인자를 `impl Into<String>`로 열 때의 득실을 판단할 수 있다 | 25 | — | B |
 | 30 | 연산자 오버로딩(`std::ops`)·`Index`·`Deref` | 표준 API | `+`를 구현할 때 소유권이 어떻게 움직이는지 설명하고, `Deref`를 남용하면 안 되는 이유를 말할 수 있다 | 29 | — | C |
 | 31 | 제네릭과 트레이트 경계·`where`·단형화 | 문법 | 경계를 읽고 쓸 수 있으며, 단형화가 코드 크기와 성능에 무엇을 하는지 설명할 수 있다 | 25 | [`../../../compiler-pipeline/`](../../../compiler-pipeline/) — 컴파일 단계 일반은 거기 · [`../언어-특성/README.md`](../언어-특성/README.md) §6 — 제로 코스트 논증은 거기 | A |
