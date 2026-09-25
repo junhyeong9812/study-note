@@ -5,3 +5,4 @@
 - `spring-framework/` — Spring Framework 업스트림 기여 (2026-06~, 머지 17건 시점에 이전)
 - `spring-security/` — Spring Security 업스트림 기여 (2026-08~, PR 3건 시점에 이전)
 - `elasticsearch/` — Elasticsearch 업스트림 기여 (2026-06~, PR 4건 시점에 이전)
+- `postgres/`·`mysql/`·`redis/`·`nginx/`·`keycloak/` — 기여가 아닌 동작 구조 분석(소스 기준 아키텍처 지도, 2026-09-24~). 전체 후보와 순서는 `docs/tool-analysis-roadmap.md`
