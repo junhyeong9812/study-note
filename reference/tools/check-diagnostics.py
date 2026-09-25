@@ -34,6 +34,10 @@ Rust·C·Kotlin 처럼 **에러 메시지가 교재**인 갈래에서는 진단 
     error[E0308]: mismatched types
      --> ex.rs:1:26
     ```
+
+★★ 한계 — **파일 단위로 본다.** 소스가 `2-summary.md` 에 있고 `3-answer.md` 가 그 출력을
+   다시 인용하면 뒤쪽은 `none` 으로 나온다. 문서로서는 정상이므로, **그 갈래의 `none` 을 볼 때는
+   「같은 주제 폴더 안에 소스가 있나」를 사람이 한 번 확인**해야 한다. 도구가 파일 경계를 못 넘는다.
 """
 import re, sys, pathlib
 
@@ -54,8 +58,10 @@ DIAG = re.compile(
     #   `:\d+:\d+:` 만 두면 Java 진단이 통째로 안 보인다(실측: 한 배치에서 진단 6줄이 집계에서 빠졌다).
     r'|\S*\w+\.(rs|c|h|kt|kts|go|cpp|cc|cxx|hpp|java|cs|py):\d+:(\d+:)?'   # gcc·kotlinc·go·javac 위치
     r'|\S*\w+\.(ts|tsx|js|jsx|cs)\(\d+,\d+\):'                        # tsc·csc 위치
+    r'|\S*\w+\.(js|mjs|cjs|ts):\d+(:\d+)?'                            # node 위치 (ex.js:3:11)
+    r'|at \S+ \(.*\.(js|mjs|cjs):\d+'                                 # node 스택 프레임
     r'|-->'                            # rustc 위치
-    r'|[A-Za-z_]+Error:'               # python
+    r'|[A-Za-z_]+Error:'               # python·node (줄머리)
     r'|runtime error:'                 # sanitizer
     r'|AddressSanitizer'
     r'|exit status \d+'
@@ -70,6 +76,12 @@ SOURCE_MARK = re.compile(
     r'^\s*(=====\s*소스'
     r'|```(rust|rs|c|cpp|c\+\+|kotlin|kt|python|py|java|go|ts|typescript|js|javascript|cs|csharp)\b'
     r'|// ex\.|/\* ex\.)')
+# ★ 줄머리가 아니라 **줄 안**에 진단이 오는 형식이 있다 —
+#   `  1n + 1  -> TypeError: Cannot mix BigInt` 처럼 표를 겸한 출력이 그렇다.
+#   DIAG 는 `match`(줄머리) 라 이것을 통째로 놓친다(실측: 한 갈래가 「진단 0줄」로 보였다).
+# ★★ 좁히지 않으면 **소스 코드가 걸린다** — `except ValueError:` 가 진단으로 세어졌다(실측).
+#   진단은 **결과 구분자 뒤**에 오고 **메시지가 따라붙는다**: `-> TypeError: Cannot mix …`
+INLINE = re.compile(r'(?:->|=>|=|:)\s*[A-Za-z_]+(?:Error|Exception):\s+\S')
 ECHO = re.compile(r'^\s*\d+\s*\|')      # rustc·gcc 가 끼워 보여 주는 소스 줄
 # 진단·배너가 가리키는 소스 파일 이름. 같은 문서 위쪽에 그 소스가 이미 실렸으면
 # ★ **창 밖이어도 다시 던질 수 있다** — 「N번 답의 프로그램」을 다시 인용하는 자리가 실제로 많다.
@@ -92,7 +104,7 @@ def scan(path):
         while i < len(lines) and not FENCE.match(lines[i]):
             body.append(lines[i]); i += 1
         i += 1
-        diags = [l for l in body if DIAG.match(l)]
+        diags = [l for l in body if DIAG.match(l) or INLINE.search(l)]
         if diags:
             blocks.append(dict(line=start + 1, diags=diags, body=body))
     return blocks
