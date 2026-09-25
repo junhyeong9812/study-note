@@ -1,6 +1,6 @@
 # C# — 문법·API 주제 목록
 
-> 1단계 리스트업이다. **01\~08 은 3파일이 있다**(아래 목록의 제목이 링크면 그 주제는 쓰여 있다). 나머지는 아직 없다.
+> 1단계 리스트업이다. **01\~10 은 3파일이 있다**(아래 목록의 제목이 링크면 그 주제는 쓰여 있다). 나머지는 아직 없다.
 > 기준 소스: [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)
 > **실행 검증: 가능** — .NET SDK 가 깔렸다. `dotnet --version` → **`10.0.401`** · 타겟 **`net10.0`** · 런타임 **`Microsoft.NETCore.App 10.0.12`** · linux-x64 (**2026-09-24 실측**).
 > ★ **2026-09-20 에 적혀 있던 「실행 검증: 불가 — `dotnet`·`mono`·`csc` 가 모두 없다」는 이 날짜로 무효다.** 그 뒤 주제부터는 **돌려 본 것만** 적는다.
@@ -39,7 +39,7 @@
 | 07 | [널 관련 연산자 `?.`·`??`·`??=`](07-null-operators/) | 문법 | 널 조건 연산자의 단락 평가 결과 타입을 예측하고, 널 병합 대입·널 조건 대입(C# 14)을 쓸 수 있다 | 06 | — | A |
 | 08 | [널 허용 값 타입 `Nullable<T>`](08-nullable-value-types/) | 문법 | `int?` 가 구조체이고 `HasValue`/`Value` 로 동작하는 것과, 참조 타입의 `?` 와 의미가 다른 것을 구분할 수 있다 | 01, 06 | — | B |
 | 09 | 배열과 인덱스·범위 연산자(C# 8) | 문법 | `^1`·`1..^1` 로 끝 기준 인덱싱과 슬라이싱을 쓰고, 그것이 어떤 메서드 호출로 풀리는지 설명할 수 있다 | 01 | [`data-structure/01-dynamic-array/`](../../../../data-structure/01-dynamic-array/) — 배열 구조는 거기, 여기는 **C# 문법** | B |
-| 10 | 컬렉션 선택 — `List`·`Dictionary`·`HashSet`·`Queue`/`Stack` | 표준 라이브러리 | 접근 패턴별로 컬렉션을 고르고, `Dictionary` 키에 필요한 것(`GetHashCode`/`Equals`)을 말할 수 있다 | 03 | [`data-structure/01`](../../../../data-structure/01-dynamic-array/)·[`03`](../../../../data-structure/03-stack/)·[`04`](../../../../data-structure/04-queue-deque/)·[`05`](../../../../data-structure/05-hashmap/) — 원리는 거기, 여기는 **BCL 선택 기준** | A |
+| 10 | [컬렉션 선택 — `List`·`Dictionary`·`HashSet`·`Queue`/`Stack`](10-collection-choosing-list-dictionary-hashset-queue-stack/) | 표준 라이브러리 | 접근 패턴별로 컬렉션을 고르고, `Dictionary` 키에 필요한 것(`GetHashCode`/`Equals`)을 말할 수 있다 | 03 | [`data-structure/01`](../../../../data-structure/01-dynamic-array/)·[`03`](../../../../data-structure/03-stack/)·[`04`](../../../../data-structure/04-queue-deque/)·[`05`](../../../../data-structure/05-hashmap/) — 원리는 거기, 여기는 **BCL 선택 기준** | A |
 | 11 | 컬렉션 초기화와 컬렉션 식(C# 12) | 문법 | 객체·컬렉션 초기화 구문과 `[1, 2, ..other]` 스프레드를 쓰고, 어떤 타입이 이것을 받을 수 있는지 안다 | 10 | — | B |
 | 12 | 클래스·필드·생성자·`this`/`base` | 문법 | 생성자 연쇄와 초기화 순서를 설명하고, 기본 생성자(primary constructor, C# 12)가 무엇을 줄이는지 판단할 수 있다 | 01 | [`oop-basics/`](../../../oop-basics/) — 클래스 개념은 거기, 여기는 **C# 문법** | A |
 | 13 | 속성(property)과 `init`·`required`·`field` | 문법 | 자동 구현 속성·계산 속성·`init`(C# 9)·`required`(C# 11)·`field` 키워드(C# 14)를 고르고, 속성이 메서드로 컴파일되는 결과를 설명할 수 있다 `↔Java`(getter/setter 관례와 대비) | 12 | [`oop-basics/`](../../../oop-basics/) §12 — 파이썬 property 는 거기, 여기는 **C# 의 1급 문법** | A |

@@ -1,6 +1,6 @@
 # 웹 플랫폼 API — 주제 목록
 
-> 1단계 리스트업이다. **01\~04 는 3파일(질문·서머리·정답)이 있고**(2026-09-25 첫 배치), 나머지는 아직 없다.
+> 1단계 리스트업이다. **01\~08 은 3파일(질문·서머리·정답)이 있고**(2026-09-25 — 01\~04 첫 배치, 05\~08 이어진 배치), 나머지는 아직 없다.
 > 첫 배치가 이 갈래의 형식을 굳혔다 — **관측 3창**(`--dump-dom` 트리 · `nodeType`/`length` 인벤토리 · **같은 것을 두 번 읽기**)에 주제마다 네 번째 창을 하나씩 더 세운다. 근거 블록은 전부 `capture.sh` → `assemble-blocks.py` 조립기로 넣었고 사람이 옮겨 적지 않는다.
 > **검증은 Chrome 151 단일 엔진**이므로 3파일은 **이식성을 주장하지 않는다**(명세 문장을 근거로 드는 자리만 예외). `--virtual-time-budget` 은 쓰지 않았다.
 > 이 갈래는 언어가 아니라 **플랫폼**이다 — 언어 문법은 [`../languages/`](../languages/) 에 있다.
@@ -41,10 +41,10 @@
 | 02 | [요소 조회](02-element-queries-and-live-collections/) — `querySelector` 계열·`getElementById`/`getElementsBy*` 와 라이브 대 정적 컬렉션 | DOM | 조회 뒤에 노드를 붙였을 때 결과가 따라 변하는 쪽과 아닌 쪽을 판정하고, 라이브 컬렉션을 순회하며 삭제할 때 나는 사고를 예측할 수 있다 | 01 · CSS 08 | — | 도움 | A |
 | 03 | [노드 생성·삽입·이동·제거](03-node-creation-insertion-removal/) — `createElement`·`append`/`prepend`/`before`/`after`·`remove` | DOM | 이미 트리에 있는 노드를 다시 삽입하면 복사가 아니라 **이동**이라는 것과 `append` 와 `appendChild` 가 갈리는 지점을 설명할 수 있다 | 01 | — | 필수 | A |
 | 04 | [`textContent` 대 `innerHTML` 대 `innerText`](04-textcontent-innerhtml-innertext/) — 파싱·비용·XSS | DOM | 세 프로퍼티가 각각 무엇을 읽고 쓰는지 구분하고, `innerHTML` 이 왜 신뢰할 수 없는 문자열에 쓰면 안 되는 표면인지 공격 경로로 설명할 수 있다 | 03 | [`../security/`](../security/) | 필수 | A |
-| 05 | `DocumentFragment` 와 `<template>` 복제 — 일괄 삽입 | DOM | 조각에 모아 한 번에 붙이는 것이 무엇을 줄이는지 설명하고 `template.content` 를 `cloneNode(true)` 로 찍어 쓰는 형태를 설계할 수 있다 | 03 · HTML 10 | — | 도움 | A |
-| 06 | 속성(attribute) 대 성질(property) — `getAttribute`/`setAttribute` 와 IDL 프로퍼티의 반영 | DOM | `input.value` 를 바꿔도 `value` 속성이 그대로인 이유를 설명하고 `checked`·`href`·`class` 처럼 반영 규칙이 제각각인 것을 판정할 수 있다 | 01 · HTML 02 | — | 도움 | A |
-| 07 | `dataset`·`classList`·인라인 `style` — 스크립트가 만지는 세 표면 | DOM | `data-foo-bar` 가 `dataset.fooBar` 가 되는 규칙, `classList.toggle` 의 두 번째 인자, `el.style` 이 인라인만 본다는 것을 설명할 수 있다 | 06 | — | 도움 | A |
-| 08 | `getComputedStyle` — 스크립트에서 계산값을 읽는다는 것 | DOM | `el.style` 로는 안 보이던 값이 왜 여기서는 보이는지, 돌려받는 것이 내가 쓴 문자열이 아니라 계산값이라는 것을 예측할 수 있다 | 07 · CSS 04 | — | 도움 | A |
+| 05 | [`DocumentFragment` 와 `<template>` 복제](05-documentfragment-and-template/) — 일괄 삽입 | DOM | 조각에 모아 한 번에 붙이는 것이 무엇을 줄이는지 설명하고 `template.content` 를 `cloneNode(true)` 로 찍어 쓰는 형태를 설계할 수 있다 | 03 · HTML 10 | — | 도움 | A |
+| 06 | [속성(attribute) 대 성질(property)](06-attribute-vs-property/) — `getAttribute`/`setAttribute` 와 IDL 프로퍼티의 반영 | DOM | `input.value` 를 바꿔도 `value` 속성이 그대로인 이유를 설명하고 `checked`·`href`·`class` 처럼 반영 규칙이 제각각인 것을 판정할 수 있다 | 01 · HTML 02 | — | 도움 | A |
+| 07 | [`dataset`·`classList`·인라인 `style`](07-dataset-classlist-inline-style/) — 스크립트가 만지는 세 표면 | DOM | `data-foo-bar` 가 `dataset.fooBar` 가 되는 규칙, `classList.toggle` 의 두 번째 인자, `el.style` 이 인라인만 본다는 것을 설명할 수 있다 | 06 | — | 도움 | A |
+| 08 | [`getComputedStyle`](08-getcomputedstyle/) — 스크립트에서 계산값을 읽는다는 것 | DOM | `el.style` 로는 안 보이던 값이 왜 여기서는 보이는지, 돌려받는 것이 내가 쓴 문자열이 아니라 계산값이라는 것을 예측할 수 있다 | 07 · CSS 04 | — | 도움 | A |
 | 09 | 요소 기하 — `getBoundingClientRect`·`offset*`/`client*`/`scroll*` 과 좌표계 | DOM | 뷰포트 기준과 문서 기준 좌표를 변환하고, 세 계열이 테두리·스크롤바·`transform` 을 각각 포함하는지 판정할 수 있다 | 01 · CSS 15 | — | 필수 | A |
 | 10 | 레이아웃 스래싱 — 읽기·쓰기 교차로 나는 강제 동기 레이아웃 | DOM | 루프 안에서 기하를 읽고 스타일을 쓰면 왜 프레임이 무너지는지 설명하고, 읽기 묶음과 쓰기 묶음으로 갈라 고치는 형태를 설계할 수 있다 | 08, 09 · CSS 56 | [`../../../history/web/04-브라우저-엔진.md`](../../../history/web/04-브라우저-엔진.md) | 필수 | A |
 | 11 | 스크롤 제어 — `scrollTo`/`scrollBy`/`scrollIntoView`·스크롤 컨테이너 찾기·위치 복원 | DOM | 실제로 스크롤되는 요소가 누구인지 찾아내고, 복원이 이미지 로딩과 경합해 튀는 자리를 예측할 수 있다 | 09 · CSS 23 | — | 필수 | B |

@@ -23,8 +23,8 @@ JS 는 **값의 의미(강제 변환)·함수(스코프·`this`·클로저)·객
 | 03 | [숫자와 `BigInt`](03-numbers-and-bigint/) | 문법 | 배정밀도 부동소수점이 만드는 `0.1 + 0.2`·안전 정수 한계·`NaN` 의 성질을 설명하고 `BigInt` 를 숫자와 섞었을 때의 `TypeError` 를 예측할 수 있다 | 01 | `cs/foundations/data-representation/` | A |
 | 04 | [문자열과 UTF-16](04-strings-and-utf16/) | 문법 | `length` 가 코드 유닛이라는 것과 서로게이트 페어·이모지 처리, `codePointAt`·well-formed 메서드(ES2024)·`Intl.Segmenter` 를 설명할 수 있다 | 01 | `cs/foundations/data-representation/` | A |
 | 05 | `var`·`let`·`const` 와 TDZ | 문법 | 호이스팅과 TDZ 를 구분해 선언 전 참조가 `undefined` 인지 `ReferenceError` 인지 예측하고 `const` 가 무엇을 고정하는지 설명할 수 있다 | — | `history/js/02-ES6-모던.md` (도입 역사) | A |
-| 06 | 스코프와 클로저 | 문법 | 함수가 생성 시점의 환경을 붙들고 있다는 것을 설명하고 루프 변수 캡처가 `var` 와 `let` 에서 갈리는 이유를 예측할 수 있다 | 05 | — | A |
-| 07 | `this` 바인딩 네 규칙 | 문법 | 기본·암시적·명시적·`new` 바인딩과 화살표 함수의 렉시컬 `this` 로 임의의 호출식에서 `this` 가 무엇인지 판정할 수 있다 | 06 | — | A |
+| 06 | [스코프와 클로저](06-scope-and-closures/) | 문법 | 함수가 생성 시점의 환경을 붙들고 있다는 것을 설명하고 루프 변수 캡처가 `var` 와 `let` 에서 갈리는 이유를 예측할 수 있다 | 05 | — | A |
+| 07 | [`this` 바인딩 네 규칙](07-this-binding-four-rules/) | 문법 | 기본·암시적·명시적·`new` 바인딩과 화살표 함수의 렉시컬 `this` 로 임의의 호출식에서 `this` 가 무엇인지 판정할 수 있다 | 06 | — | A |
 | 08 | 함수 정의 형태와 매개변수 | 문법 | 선언·표현식·화살표의 호이스팅·`this`·`arguments` 차이를 설명하고 기본값·나머지 매개변수·`length` 의 규칙을 예측할 수 있다 | 07 | — | A |
 | 09 | `call`·`apply`·`bind` | 표준 API | 세 메서드로 `this` 와 인자를 바꿔 호출하고 `bind` 가 만든 함수의 성질(재바인딩 불가)을 설명할 수 있다 | 07 | — | B |
 | 10 | 구조 분해 할당 | 문법 | 배열·객체·중첩·기본값·이름 바꾸기를 읽고 쓰며, `undefined` 와 `null` 에서 갈리는 실패를 예측할 수 있다 | 01 | — | A |
