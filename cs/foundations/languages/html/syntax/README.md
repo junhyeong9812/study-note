@@ -1,6 +1,7 @@
 # HTML — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 아래 주제들의 3파일(질문·서머리·정답)은 **아직 없다**.
+> 1단계 리스트업이다. 아래 주제들의 3파일(질문·서머리·정답)은 **01\~04 만 있고 나머지는 아직 없다**(2026-09-25 첫 배치 — `01-document-skeleton`·`02-elements-and-attributes`·`03-parser-and-error-recovery`·`04-whitespace-and-character-references`).\
+> ★ 그 네 편이 이 갈래의 **형식을 굳혔다** — 「흔들리는 칸 / 안 흔들리는 칸」 표 · **창 넷**(`--dump-dom` → 노드 프로브 → `innerText` 대 `textContent` → `compatMode`) · 캡처 조립기로 만든 블록. 뒤따르는 주제는 [01번](01-document-skeleton/2-summary.md)의 「이 갈래의 창」 절을 먼저 읽고 그 형식을 잇는다.
 > 기준 소스: [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) (단일 기준 — 「HTML5」라는 버전은 더 이상 기준이 아니다) · [콘텐츠 카테고리 절](https://html.spec.whatwg.org/multipage/dom.html#kinds-of-content) · [WHATWG DOM Standard](https://dom.spec.whatwg.org/) (접근성·트리 규칙의 뿌리) · [WAI-ARIA 1.2](https://www.w3.org/TR/wai-aria-1.2/)·[ARIA in HTML](https://www.w3.org/TR/html-aria/) (접근성 갈래) · [MDN HTML 레퍼런스](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference) (표면 확인용) · 지원 상태는 [Web Platform Status(`webstatus.dev`)](https://webstatus.dev/) 의 Baseline 데이터를 API 로 조회해 확인했다.
 > 실행 검증: **가능**. 이 머신에 **Google Chrome 151.0.7922.173** 과 **Mozilla Firefox 155.0.1** 이 설치돼 있다. `google-chrome --headless --dump-dom` 으로 **파서가 만든 실제 DOM 트리**를, `--screenshot` 으로 렌더 결과를 뽑는 것을 실제로 돌려 확인했다. 파싱·오류 복구(`03`)와 콘텐츠 모델(`05`)은 `--dump-dom` 으로 눈에 보이게 검증할 수 있다. **막히는 것**: 스크린리더(NVDA·VoiceOver)가 없어 **접근성 트리가 실제로 어떻게 읽히는지는 실행 확인이 불가**하다 — Chrome 의 접근성 트리 덤프까지만 쓰고, 「스크린리더가 이렇게 읽는다」는 서술은 명세·ARIA 문서로만 접지하고 「미실행」으로 표기한다. WebKit(Safari)도 없다.\
 > ⚠️ **2026-09-21 정정 — 렌더 검증은 Chrome 단일 엔진이다.** Firefox 155.0.1 은 설치돼 있으나 이 환경에서 **headless 스크린샷이 산출되지 않는다** (전용 프로파일로도 `exit 0` 으로 끝나며 파일을 만들지 않는 **조용한 실패**). 따라서 크로스 브라우저 차이를 주장할 때는 Baseline 데이터로만 접지하고, 「두 엔진에서 확인했다」고 적지 않는다.
@@ -22,10 +23,10 @@ HTML 은 태그 목록이 아니다. 명세 자신이 태그를 「종류」로 
 
 | # | 주제 | 분류 | 무엇을 인출하게 되나 | 선행 | 기존 주제 | 렌더 | 우선 |
 |---|------|------|----------------------|------|-----------|------|------|
-| 01 | HTML 문서의 뼈대 — `<!DOCTYPE html>`·`<html lang>`·`<head>`/`<body>` 의 필수 요소 | 문서 구조 | DOCTYPE 이 오늘 하는 유일한 일(표준 모드 전환)과 `<head>` 에 반드시 있어야 하는 것을 설명할 수 있다 | — | [`../../../../../history/web/01-웹-탄생-HTML.md`](../../../../../history/web/01-웹-탄생-HTML.md) (버전 없는 시작) | 불필요 | A |
-| 02 | 요소와 속성 문법 — 빈 요소·태그 생략·불리언 속성·따옴표 규칙 | 문서 구조 | `<br />` 의 슬래시가 아무 일도 안 한다는 것, `disabled="false"` 가 왜 비활성인지 설명할 수 있다 | 01 | — | 도움 | A |
-| 03 | 파서와 오류 복구 — 태그 수프가 트리가 되는 과정·암묵 태그 삽입 | 문서 구조 | `<p><div>` 나 닫지 않은 `<li>` 가 어떤 DOM 트리가 되는지 예측하고, HTML 파서가 왜 절대 에러로 멈추지 않는지 설명할 수 있다 | 02 | [`../../../compiler-pipeline/`](../../../compiler-pipeline/) (파서 일반론) · [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (XHTML 의 엄격함이 좌초한 이유) | 필수 | B |
-| 04 | 공백·텍스트·문자 참조 — 공백 축약·엔티티·`<pre>` | 문서 구조 | 소스의 줄바꿈·연속 공백이 화면에서 하나로 합쳐지는 규칙과 `&amp;`·`&nbsp;` 를 써야 하는 자리를 판단할 수 있다 | 03 | [`../../../data-representation/`](../../../data-representation/) (유니코드·인코딩) | 필수 | B |
+| 01 | [HTML 문서의 뼈대 — `<!DOCTYPE html>`·`<html lang>`·`<head>`/`<body>` 의 필수 요소](01-document-skeleton/) | 문서 구조 | DOCTYPE 이 오늘 하는 유일한 일(표준 모드 전환)과 `<head>` 에 반드시 있어야 하는 것을 설명할 수 있다 | — | [`../../../../../history/web/01-웹-탄생-HTML.md`](../../../../../history/web/01-웹-탄생-HTML.md) (버전 없는 시작) | 불필요 | A |
+| 02 | [요소와 속성 문법 — 빈 요소·태그 생략·불리언 속성·따옴표 규칙](02-elements-and-attributes/) | 문서 구조 | `<br />` 의 슬래시가 아무 일도 안 한다는 것, `disabled="false"` 가 왜 비활성인지 설명할 수 있다 | 01 | — | 도움 | A |
+| 03 | [파서와 오류 복구 — 태그 수프가 트리가 되는 과정·암묵 태그 삽입](03-parser-and-error-recovery/) | 문서 구조 | `<p><div>` 나 닫지 않은 `<li>` 가 어떤 DOM 트리가 되는지 예측하고, HTML 파서가 왜 절대 에러로 멈추지 않는지 설명할 수 있다 | 02 | [`../../../compiler-pipeline/`](../../../compiler-pipeline/) (파서 일반론) · [`../../../../../history/web/03-HTML-CSS-진화.md`](../../../../../history/web/03-HTML-CSS-진화.md) (XHTML 의 엄격함이 좌초한 이유) | 필수 | B |
+| 04 | [공백·텍스트·문자 참조 — 공백 축약·엔티티·`<pre>`](04-whitespace-and-character-references/) | 문서 구조 | 소스의 줄바꿈·연속 공백이 화면에서 하나로 합쳐지는 규칙과 `&amp;`·`&nbsp;` 를 써야 하는 자리를 판단할 수 있다 | 03 | [`../../../data-representation/`](../../../data-representation/) (유니코드·인코딩) | 필수 | B |
 | 05 | 콘텐츠 카테고리와 콘텐츠 모델 — 어디에 무엇을 넣을 수 있나 | 문서 구조 | 흐름·구절·구획·헤딩·임베드·대화형 카테고리로 임의의 중첩이 유효한지 판정할 수 있다 | 03 | — | 도움 | A |
 | 06 | 전역 속성 — `id`/`class`/`title`/`hidden`/`data-*`/`contenteditable`/`translate` | 문서 구조 | 모든 요소에 붙는 속성이 각각 무엇을 바꾸는지와 `data-*` 가 DOM 에 어떻게 노출되는지 설명할 수 있다 | 02 | — | 도움 | A |
 | 07 | `id` 와 조각 식별자 — 문서 내 링크·`:target`·스크롤 앵커 | 문서 구조 | URL 의 `#fragment` 가 무엇을 찾고 못 찾으면 어떻게 되는지, `id` 중복이 만드는 결과를 예측할 수 있다 | 06 | — | 필수 | B |
