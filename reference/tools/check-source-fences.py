@@ -41,7 +41,10 @@ SOURCE_LANGS = {
     'go', 'ts', 'typescript', 'js', 'javascript', 'java', 'cs', 'csharp',
     'sql', 'sh', 'bash', 'html', 'css',
 }
-FENCE = re.compile(r'^```([A-Za-z0-9_+-]*)\n(.*?)\n```$', re.S | re.M)
+# ★★★ info string 은 언어 하나로 끝나지 않는다 — ```` ```html demo ```` 처럼 뒤가 붙는다.
+#   `\n` 을 바로 요구하면 그 펜스에서 파싱이 어긋나 **뒤따르는 소스 펜스를 통째로 건너뛴다.**
+#   경고도 없이 개수만 줄어드는 **조용한 거짓 합격**이라 실측에서 22개 중 19개만 세고 있었다.
+FENCE = re.compile(r'^```([A-Za-z0-9_+-]*)[^\n]*\n(.*?)\n```$', re.S | re.M)
 
 
 def index_sources(root: pathlib.Path):
