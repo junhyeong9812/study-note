@@ -1,13 +1,13 @@
 # Next.js 아키텍처 지도
 
-소스를 **직접 읽어서** 그린 탑다운 지도다. 지금까지 흐름 스물두 편, 105개 문서다.
+소스를 **직접 읽어서** 그린 탑다운 지도다. 지금까지 흐름 스물다섯 편, 120개 문서다.
 
 기준 태그: `v16.3.6` [`a758ffcf50`](https://github.com/vercel/next.js/tree/a758ffcf501f6f1ddb03175bd1033508424c261e) (2026-09-22). 모든 줄 번호는 이 태그 기준이다.
 
 ## 두 갈래로 읽는다
 
 ```text
- 흐름  무엇이 일어나는가      22편, 105개 문서
+ 흐름  무엇이 일어나는가      25편, 120개 문서
        요청 하나가 지나는 길을 메서드 단위로 따라간다
        폴더 하나 = 메서드 하나
 
@@ -17,7 +17,7 @@
 
 API 이름에서 거꾸로 찾고 싶으면 [API 역인덱스](api-index.md)를 보면 된다. 아직 문서가 없는 것도 전부 적어 두었다 — 그 표가 곧 남은 일의 목록이다.
 
-## 흐름 스물두 편
+## 흐름 스물다섯 편
 
 | 흐름 | 진입점 | 문서 |
 |---|---|---|
@@ -30,6 +30,9 @@ API 이름에서 거꾸로 찾고 싶으면 [API 역인덱스](api-index.md)를 
 | [재검증이 쌓이고 실행되기까지](flows/revalidation/README.md) | `revalidateTag` / `executeRevalidates` | 4 |
 | [클라이언트가 화면을 바꾸기까지](flows/client-router/README.md) | `router-reducer` 의 액션 6종 | 4 |
 | [프리페치가 쌓이고 내비게이션이 그것을 쓰기까지](flows/segment-cache/README.md) | `segment-cache/navigate` L68 | 4 |
+| [세그먼트 캐시 항목이 만들어지고 채워지고 버려지기까지](flows/cache-entries/README.md) | `readOrCreateSegmentCacheEntry` L868 · `getFromCacheMap` (cache-map.ts) L229 | 5 |
+| [프리페치 작업 하나가 태어나서 끝나기까지](flows/prefetch-tasks/README.md) | `schedulePrefetchTask` L317 | 5 |
+| [가져온 적 없는 라우트 트리를 예측하기까지](flows/route-prediction/README.md) | `matchKnownRoute` L726 · `discoverKnownRoute` L220 | 5 |
 | [`'use cache'` 가 값을 돌려주기까지](flows/use-cache/README.md) | `use-cache-wrapper.cache` L1715 | 5 |
 | [무엇이 동적인지 가려내기](flows/dynamic-rendering/README.md) | `markCurrentScopeAsDynamic` L172 외 | 5 |
 | [동적 API 가 값을 내주기까지](flows/request-apis/README.md) | `cookies()` · `headers()` · `connection()` 외 | 5 |
@@ -105,13 +108,10 @@ API 이름에서 거꾸로 찾고 싶으면 [API 역인덱스](api-index.md)를 
 ## 아직 안 쓴 것
 
 ```text
- API 역인덱스의 모든 행에 흐름 문서가 붙었고, instant 검증 · PPR 내비게이션 · 빌드 세부도 썼다.
- 남은 것은 **더 깊은 본문**과 Turbopack 이다
+ API 역인덱스의 모든 행에 흐름 문서가 붙었고, 클라이언트 라우팅은 세그먼트 캐시 항목 ·
+ 프리페치 작업 · 라우트 예측까지 내려갔다. JS/TS 쪽에서 남긴 것은 일부러 뺀 것이다
 
- B  클라이언트 라우팅의 나머지
-      segment-cache 본문 세부  cache.ts 4298 · scheduler.ts 2741 의 항목 수명 · 큐 규칙
-      optimistic-routes.ts 의 라우트 예측 · navigation-testing-lock.ts
- D  빌드의 나머지
+ D  빌드의 나머지 (webpack 을 명시적으로 고른 앱에서만 돈다)
       build/webpack/config/**(buildConfiguration) · 개별 플러그인 · 로더 본문 · @vercel/nft 알고리즘
 
  Turbopack(Rust, crates/ 294,455줄)은 언어도 도구도 달라 **별도 문서 트리**로 간다
