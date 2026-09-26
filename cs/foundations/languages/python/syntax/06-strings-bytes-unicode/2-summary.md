@@ -720,7 +720,7 @@ memoryview 로 바꾼 뒤: bytearray(b'Zbcd')
 대신 **해시가 안 되고, 여러 곳에서 같이 들고 있으면 한쪽 변경이 다른 쪽에 보인다.**
 
 **바이트는 어디서 오나** — 언급만 한다. `open(path, "rb")`·`socket.recv`·`urllib` 의 응답 본문·`hashlib` 의 입력이 전부 `bytes` 다.
-텍스트 모드 `open(path, "r")` 은 **안에서 `decode` 를 해 주는 것**이고, 그때 쓰는 인코딩은 인자로 주지 않으면 **로캘에 달렸다**(목록의 **48번 주제**).
+텍스트 모드 `open(path, "r")` 은 **안에서 `decode` 를 해 주는 것**이고, 그때 쓰는 인코딩은 인자로 주지 않으면 **로캘에 달렸다**([목록의 **48번 주제**](../48-pathlib-and-file-io/)).
 
 ## 문법 — 형태와 규칙
 
@@ -938,9 +938,9 @@ print(len("가".encode("utf-8")), len("가".encode("euc-kr")), len("가".encode(
 - 이어지는 곳: [08-fstrings-and-format-spec](../08-fstrings-and-format-spec/2-summary.md) — 그 문자열을 만들어 내는 문법.
 - 이어지는 곳: [09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md) — `str`·`bytes`·`bytearray` 가 **시퀀스로서** 공유하는 연산.
 - 이어지는 곳: [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md) — `bytearray` 가 해시 안 되는 이유의 정본.
-- 이어지는 곳: 목록의 **46번 주제** 「`re`」 — 정규식이 `str` 패턴과 `bytes` 패턴을 **섞을 수 없는** 것.
-- 이어지는 곳: 목록의 **48번 주제** 「`pathlib` 와 파일 I/O」 — `open` 의 `encoding`·`errors`·`newline` 과 텍스트/바이너리 모드.
-- 이어지는 곳: 목록의 **47번 주제** 「`json`」 — `ensure_ascii` 가 이 절의 `backslashreplace` 와 같은 일을 한다.
+- 이어지는 곳: [목록의 **46번 주제**](../46-re/) 「`re`」 — 정규식이 `str` 패턴과 `bytes` 패턴을 **섞을 수 없는** 것.
+- 이어지는 곳: [목록의 **48번 주제**](../48-pathlib-and-file-io/) 「`pathlib` 와 파일 I/O」 — `open` 의 `encoding`·`errors`·`newline` 과 텍스트/바이너리 모드.
+- 이어지는 곳: [목록의 **47번 주제**](../47-json/) 「`json`」 — `ensure_ascii` 가 이 절의 `backslashreplace` 와 같은 일을 한다.
 - 기존 노트: [`cs/foundations/data-representation/`](../../../../data-representation/) — 문자 인코딩의 **원리**(ASCII·UTF-8 의 비트 배치).\
   **경계**: 그쪽은 「바이트가 어떻게 생겼나」까지, 여기는 「**파이썬에서 그것을 어떤 타입으로 다루나**」부터다.
 - 연혁은 여기가 아니다: [`history/python/`](../../../../../../history/python/) — 파이썬 2 의 `unicode`/`str` 이 3에서 갈라진 이야기.

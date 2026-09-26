@@ -154,13 +154,23 @@
 ```
 
 ```ts
-// base-server.ts L1008-L1013
+// base-server.ts L1008-L1023
     const htmlRequestIdHeader = req.headers[NEXT_HTML_REQUEST_ID_HEADER]
 
     // The request root and route-matching spans start before App Render creates
     // its workStore. Carry their identity in this outer scope; App Render copies
     // it into the workStore so the complete timeline uses one request ID.
     return runWithRequestInsightsIdentity(
+      {
+        requestId,
+        htmlRequestId:
+          typeof htmlRequestIdHeader === 'string'
+            ? htmlRequestIdHeader
+            : requestId,
+        url: req.url,
+      },
+      handleRequest
+    )
 ```
 
 ```text

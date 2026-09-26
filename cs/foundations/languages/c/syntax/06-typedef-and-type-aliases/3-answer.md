@@ -248,7 +248,7 @@ arr.c:3:22: note: declared here
 
 **경고**
 
-- **`-Wsizeof-array-argument`** 이고 **`-Wall`** 에 들어 있다.
+- **`-Wsizeof-array-argument`** 이고 **플래그 없이도 켜져 있다**(gcc 13·clang 18 에서 확인 — `-Wno-` 로만 꺼진다).
 - gcc 가 `declared here` 로 파라미터 선언까지 짚어 준다.
 
 **별칭이 감쇠를 막나**
@@ -264,7 +264,7 @@ arr.c:3:22: note: declared here
 
 - **못 막는다.** 감쇠는 **파라미터 선언의 규칙**이지 타입 이름의 문제가 아니다.
 - 2번의 `const` 와 **성질이 같다** — 별칭이 「무슨 일이 일어나는지」를 가렸다.
-- 정본은 목록의 **16번 주제**.
+- 정본은 [목록의 **16번 주제**](../16-array-pointer-decay-and-function-parameters/).
 
 ### 6. 불투명 타입
 
@@ -303,14 +303,14 @@ opq2.c:2:37: error: invalid application of ‘sizeof’ to incomplete type ‘S�
 ```
 
 - **포인터로만** 다룬다. 값으로 못 넘기고 스택에 못 놓는다.
-- 그래서 `make`/`destroy` 짝이 API 에 따라온다(목록의 **38번 주제**).
+- 그래서 `make`/`destroy` 짝이 API 에 따라온다([목록의 **38번 주제**](../38-expressing-ownership-conventions-in-code/)).
 
 **컴파일 관점의 이득**
 
 - **구현의 `struct S` 를 바꿔도 헤더 사용자가 다시 컴파일하지 않아도 된다.**\
   크기를 모르니 애초에 크기에 의존하는 코드를 못 만들었기 때문이다.
 - 헤더에 `#include` 를 덜 써도 되는 것도 따라온다(멤버 타입의 헤더가 필요 없다).
-- 정본은 목록의 **25번 주제**.
+- 정본은 [목록의 **25번 주제**](../25-incomplete-types-and-opaque-struct/).
 
 ### 7. 같은 함수를 세 이름으로 선언해도 되는 이유
 
@@ -480,7 +480,7 @@ qsort(a, 4, sizeof a[0], c);
 
 - 선언·대입·전달이 **전부 한 낱말**로 읽힌다. 실측 결과 `1 2 5 9`.
 - 콜백 테이블(디스패치 테이블)을 만들 때 **배열 원소 타입으로 쓸 수 있는 것**이 더 큰 이득이다.
-- 정본은 목록의 **35번 주제**.
+- 정본은 [목록의 **35번 주제**](../35-function-pointers-and-callback-tables/).
 
 ### 11. 같은 `typedef` 를 두 번
 
@@ -566,7 +566,7 @@ re.c:1:13: note: previous declaration of ‘T’ with type ‘T’ {aka ‘int�
 | 여러 개 선언 | `#define` : 8, **1** / `typedef` : 8, 8 · 경고 **0건** | 〃 |
 | 태그 이름 공간 | `struct Node`↔`Node` 대입 OK · `struct A`(4)↔`A`(8) 은 `incompatible types` 에러 | 〃 |
 | 불투명 타입 | `typedef struct S S;` 만으로 헤더 성립(실행 `42`) · `sizeof(S)` 는 `incomplete type` 에러 | 〃 |
-| 배열 별칭 | 밖 16 / 안 8 · 원본이 바뀜(`x[0]=99`) · `-Wsizeof-array-argument`(`-Wall`) | 〃 |
+| 배열 별칭 | 밖 16 / 안 8 · 원본이 바뀜(`x[0]=99`) · `-Wsizeof-array-argument`(플래그 없이) | 〃 |
 | 단위 혼동 | `-Wall -Wextra` **0건** · `+-Wconversion` 도 **0건** · `struct` 래퍼는 **에러** | `-Wall -Wextra` ± `-Wconversion` |
 | 함수 포인터 별칭 | `CharFnPtr ft[3]` == `char *(*raw[3])(int)` (크기 24, 서로 대입) · `qsort` 동작 | `-std=c17 -Wall -Wextra` |
 | 저장 클래스 | `typedef static` 은 `multiple storage classes` 에러 | `-std=c17` |
@@ -580,13 +580,13 @@ re.c:1:13: note: previous declaration of ‘T’ with type ‘T’ {aka ‘int�
 - `sizeof(MyInt)`=4 · `sizeof(char *)`=8 — **바탕 타입의 성질**이지 `typedef` 의 성질이 아니다.
 - 진단 문구의 정확한 낱말(`read-only variable` ↔ `read-only location`) — gcc 의 선택이다.\
   ★ 그런데 이 주제의 답은 문구가 아니라 「**어느 줄인가**」이므로, 컴파일러가 바뀌어도 결론은 같다.
-- `-Wsizeof-array-argument` 가 `-Wall` 에 있는 것 · `-Wincompatible-pointer-types` 가 기본인 것.
+- `-Wsizeof-array-argument` 가 **플래그 없이도 켜지는 것** · `-Wincompatible-pointer-types` 가 기본인 것.
 - `-std=c17` 에서 `typeof` 가 안 되는 것(gcc 의 확장 노출 범위에 달렸다).
 
 **안 돌려 본 것 / 못 잰 것**
 
 - **안 돌려 본 것** — `struct` 래퍼의 **런타임 비용**(인라인되어 사라지는지) · `typedef` 와 `_Generic` 을 결합한\
-  타입 제네릭 인터페이스(목록의 **40번 주제**) · C23 의 `typeof_unqual` · `typedef` 가 붙은 VLA(목록의 **18번 주제**).
+  타입 제네릭 인터페이스([목록의 **40번 주제**](../40-generic-selection-c11/)) · C23 의 `typeof_unqual` · `typedef` 가 붙은 VLA([목록의 **18번 주제**](../18-variable-length-arrays-vla/)).
 - **못 잰 것** — 없다. 이 주제는 컴파일만으로 전부 확인된다.
 
 **버전이 올랐을 때 다시 돌려야 하는 것**

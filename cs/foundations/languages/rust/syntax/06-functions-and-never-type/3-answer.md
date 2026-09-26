@@ -618,7 +618,7 @@ For more information about this error, try `rustc --explain E0434`.
   - ① **클로저로 바꾼다** — 「To fix this error, you can replace the function with a closure」.
   - ② **잡을 값을 상수로 올린다** — 「Or replace the captured variable with a constant or a static item」\
     ([**07번 주제**](../07-const-static-and-const-fn/)).
-- 클로저 세 트레이트의 정본은 목록의 **34번 주제**, 클로저 반환은 목록의 **35번 주제**다.
+- 클로저 세 트레이트의 정본은 [목록의 **34번 주제**](../34-closures-fn-fnmut-fnonce-and-move/), 클로저 반환은 [목록의 **35번 주제**](../35-function-pointers-and-returning-closures/)다.
 
 ### 10. 인자 타입과 같은 이름
 
@@ -688,7 +688,7 @@ For more information about this error, try `rustc --explain E0428`.
 - 아래쪽은 **오버로딩이 아니라 중복 정의**다 — **E0428**,\
   `note: add must be defined only once in the value namespace of this module`.
 - 「같은 일을 여러 타입에 대해」 하려면 **제네릭과 트레이트**로 간다 —\
-  목록의 **25번 주제**(트레이트) · **31번 주제**(제네릭·트레이트 경계).
+  [목록의 **25번 주제**](../25-traits-definition-impl-default-methods-and-associated-types/)(트레이트) · **31번 주제**(제네릭·트레이트 경계).
 
 ```text
    fn add(a, b)            -> 파서 에러 (번호 없음)   "문법이 아니다"
@@ -742,9 +742,9 @@ For more information about this error, try `rustc --explain E0428`.
   이 주제는 그것이 **함수 경계에서 어떤 에러 번호가 되는지**(E0308·E0317)만 다룬다.
 - **끝나지 않는 `loop` 가 `!`** 라는 사실 — [**05번 주제**](../05-control-flow-loops-and-labels/)(제어 흐름)에서 나왔다.\
   거기서 `fn forever() -> i32 { loop {} }` 가 컴파일되는 것을 실측했다.
-- **클로저 세 트레이트** — 목록의 **34번 주제**. **클로저 반환** — 목록의 **35번 주제**.\
+- **클로저 세 트레이트** — [목록의 **34번 주제**](../34-closures-fn-fnmut-fnonce-and-move/). **클로저 반환** — [목록의 **35번 주제**](../35-function-pointers-and-returning-closures/).\
   여기서는 **fn 포인터와의 대비까지만** 했다.
-- **`panic!` 대 `Result`** — 목록의 **23번 주제**가 정본이다.\
+- **`panic!` 대 `Result`** — [목록의 **23번 주제**](../23-panic-vs-result/)가 정본이다.\
   이 주제는 「어디서 끝낼 것인가」를 다루지 않는다 — **`panic!` 의 타입이 `!` 라는 사실 하나**만 쓴다.
 - **함수 인자·반환이 값을 이동시킨다** — [**08번 주제**](../08-ownership-and-move/)(소유권과 이동)다.\
   이 주제의 `fn add(a: i32, b: i32)` 가 조용했던 것은 `i32` 가 `Copy` 라서다.

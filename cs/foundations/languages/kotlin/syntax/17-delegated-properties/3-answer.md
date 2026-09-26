@@ -27,7 +27,7 @@ C 다시 읽는다
 **왜 그런가**
 
 - ★★ `Loud` 는 **아무것도 구현하지 않았다.** `operator fun getValue`/`setValue` 의 **이름과 시그니처만** 맞췄다.\
-  Kotlin 은 그것만 본다 — 이것이 연산자 규약이다(전반의 정본은 목록의 **31번 주제**).
+  Kotlin 은 그것만 본다 — 이것이 연산자 규약이다(전반의 정본은 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/)).
 - ★ **`thisRef` 가 `Screen`** 이다. 위임 객체는 **누구의 프로퍼티인지** 알 수 있다.\
   최상위·지역 프로퍼티면 **`null`** 이 온다.
 - ★★ **`property.name` 이 `"title"`** 이다. 위임 객체 하나를 여러 프로퍼티가 공유해도 구분할 수 있고,\
@@ -487,7 +487,7 @@ UnsafeLazyImpl           monitorenter 0 · compareAndSet 0
   예외도 다르다 — `kotlin.UninitializedPropertyAccessException` 대 **`java.lang.IllegalStateException`**(4번).\
   그리고 `lateinit` 은 **위임 객체가 안 생긴다** — 필드에 값이 직접 들어간다([16번 주제](../16-properties-backing-field-lateinit-const/)).
 - ★ **`class A : B by b` 는 다른 주제다** — 그쪽은 **인터페이스 구현을 통째로 넘기는** 문법이고,\
-  정본은 목록의 **21번 주제**다. `by` 라는 낱말만 같다.
+  정본은 [목록의 **21번 주제**](../21-class-delegation-by/)다. `by` 라는 낱말만 같다.
 
 ## 실행 검증
 

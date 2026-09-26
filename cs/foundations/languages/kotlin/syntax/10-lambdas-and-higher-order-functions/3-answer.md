@@ -440,7 +440,7 @@ Kotlin 쪽 바이트코드에 **Java 에 없는 상자가 하나 생긴다**.
   nullable 여부는 디스크립터에 **안 남는다**.
 - ★ **그래서 나는 컴파일 에러** — `(Int) -> String` 과 `Int.() -> String` 으로 오버로드하면
   **`conflicting overloads`** 다. 이름을 다르게 지어야 한다.
-- 제네릭 인자가 `? super Integer` 로 보이는 것은 함수 타입 파라미터가 **반변**이기 때문이다(목록의 **28번 주제**).
+- 제네릭 인자가 `? super Integer` 로 보이는 것은 함수 타입 파라미터가 **반변**이기 때문이다([목록의 **28번 주제**](../28-generics-variance-in-out-star-where/)).
 
 ### 9. ★ SAM 변환은 **포장을 없앤다 — 객체는 그대로 생긴다**
 
@@ -487,7 +487,7 @@ Z SAM class            : SamKt$$Lambda/0x00007c5760001ac0
 - **Kotlin 쪽에서 같은 것을 얻으려면 `fun interface`** 이고 **1.4 부터**다. 바이트코드도 같다(`KInt.apply:(I)I`).
 - ★ 그래서 **박싱을 피하는 길은 둘**이다 — ① 시그니처가 원시 타입인 **SAM·`fun interface`**,
   ② 객체 자체를 안 만드는 **`inline`**([11번 주제](../11-inline-functions/)).
-  **Kotlin 의 함수 타입만 쓰면 두 길 다 안 탄다.** SAM 전체의 정본은 목록의 **36번 주제**다.
+  **Kotlin 의 함수 타입만 쓰면 두 길 다 안 탄다.** SAM 전체의 정본은 [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/)다.
 
 ### 10. `it` 은 하나일 때만, 괄호 밖은 마지막 하나만
 
@@ -520,7 +520,7 @@ AH 인자를 안 쓸 때 _    : 99
 - **로컬 함수** — [09번 주제](../09-varargs-spread-local-and-infix-functions/).
   ★ 로컬 함수는 **합성 클래스를 아예 안 만들고** `invokestatic` + `Ref$IntRef` 로 끝난다.
   **같은 「상자」를 쓰는데 이쪽은 `invokedynamic`, 저쪽은 `invokestatic`** 이라는 것이 대비의 핵심이다.
-- **`let`/`run`/`with`/`apply`/`also`** — 전부 **`inline` 고차 함수**이고 정본은 목록의 **14번 주제**다.
+- **`let`/`run`/`with`/`apply`/`also`** — 전부 **`inline` 고차 함수**이고 정본은 [목록의 **14번 주제**](../14-scope-functions/)다.
   그래서 scope function 을 써도 **람다 객체가 안 생긴다**(4번과 같은 이유).
 - **`invoke(Object)Object` 의 모양** — [`../../../java/syntax/19-type-erasure/`](../../../java/syntax/19-type-erasure/)가 정본이고,
   Kotlin 이 그것을 **뚫는 방법**은 [12번 주제](../12-reified-type-parameters/)다.

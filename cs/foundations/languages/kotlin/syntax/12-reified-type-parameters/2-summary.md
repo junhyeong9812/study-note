@@ -11,8 +11,8 @@
 > **버전** — `inline`·`reified` 는 **1.0**. `typeOf<T>()` 는 **1.6**(1.3 실험).
 > **경계** — ★★ **`inline` 이 왜 이 주제의 전제인지, 인라인이 무엇을 펼치는지는 [11번 주제](../11-inline-functions/)가 정본이다.**\
 > **소거가 무엇을 지우는지의 정본은 [`../../../java/syntax/19-type-erasure/`](../../../java/syntax/19-type-erasure/)** 다 — 여기서는 **그 결론만 받아 쓴다**.\
-> 람다가 객체가 되는 것은 [10번 주제](../10-lambdas-and-higher-order-functions/), `is`/`as` 자체의 문법은 목록의 **33번 주제**,\
-> 변성·star projection 은 목록의 **28번 주제**, `kotlin-reflect` API 전체는 목록의 **35번 주제**가 정본이다.
+> 람다가 객체가 되는 것은 [10번 주제](../10-lambdas-and-higher-order-functions/), `is`/`as` 자체의 문법은 [목록의 **33번 주제**](../33-type-checks-and-casts-is-as/),\
+> 변성·star projection 은 [목록의 **28번 주제**](../28-generics-variance-in-out-star-where/), `kotlin-reflect` API 전체는 [목록의 **35번 주제**](../35-annotations-and-use-site-targets/)가 정본이다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ## 한눈에 — 쉽게 말하면
@@ -938,10 +938,10 @@ inline fun <reified T> f(): String = T::class.javaObjectType.name  // ERROR: 수
 - [03번 주제](../03-null-safe-types/) — `Intrinsics.checkNotNullParameter`·`checkNotNullExpressionValue` 의 정본.\
   이 문서의 역어셈블에 계속 나온다
 - [04번 주제](../04-smart-casts/) — `is` 가 성공한 뒤 타입이 좁혀지는 것
-- 목록의 **28번 주제**(제네릭 — 변성·star projection) — `*` 와 `in`/`out` 의 정본. **여기서는 타입 인자를 안 다뤘다**
-- 목록의 **33번 주제**(`is`/`as`/`as?`) — 타입 검사·캐스트 문법 자체의 정본
-- 목록의 **35번 주제**(애너테이션과 use-site target) — `kotlin-reflect` 를 **프레임워크가 읽는** 자리
-- 목록의 **39번 주제**(Java 상호운용 애너테이션) — Java 에서 볼 이름을 다루는 도구들.\
+- [목록의 **28번 주제**](../28-generics-variance-in-out-star-where/)(제네릭 — 변성·star projection) — `*` 와 `in`/`out` 의 정본. **여기서는 타입 인자를 안 다뤘다**
+- [목록의 **33번 주제**](../33-type-checks-and-casts-is-as/)(`is`/`as`/`as?`) — 타입 검사·캐스트 문법 자체의 정본
+- [목록의 **35번 주제**](../35-annotations-and-use-site-targets/)(애너테이션과 use-site target) — `kotlin-reflect` 를 **프레임워크가 읽는** 자리
+- [목록의 **39번 주제**](../39-java-interop-annotations/)(Java 상호운용 애너테이션) — Java 에서 볼 이름을 다루는 도구들.\
   **`reified` 는 그 도구로도 안 열린다**((4))
 
 ## 용어 풀이

@@ -422,7 +422,7 @@ TypeError: can't send non-None value to a just-started generator
 문서가 규정한다 — "제너레이터를 **시작**시키려고 `send()` 를 부를 때는 `None` 을 인자로 줘야 한다. 그 값을 받을 `yield` 식이 아직 없기 때문이다."
 
 **비용** — 양방향 통신이 된다(코루틴의 뿌리).\
-대신 **프라이밍이라는 암묵 규약**이 생기고, 읽는 사람이 흐름을 따라가기 어려워진다. 요즘은 이 용도를 `async`/`await`(목록의 51번 주제)가 가져갔다.
+대신 **프라이밍이라는 암묵 규약**이 생기고, 읽는 사람이 흐름을 따라가기 어려워진다. 요즘은 이 용도를 `async`/`await`([목록의 **51번 주제**](../51-asyncio-coroutine-basics/))가 가져갔다.
 
 ### 7. `yield from` — 하위 제너레이터에 그대로 이어 붙인다
 
@@ -704,9 +704,9 @@ ValueError: generator already executing
 ## 관련 자료
 
 - 목록: [python/syntax 주제 목록](../README.md) — 이 주제는 **17번**
-- 선행: 목록의 **16번** 「이터레이터 프로토콜」, **15번** 「제너레이터 표현식과 지연 평가」(폴더 아직 없음)
+- 선행: [목록의 **16번**](../16-iterator-protocol/) 「이터레이터 프로토콜」, **15번** 「제너레이터 표현식과 지연 평가」(폴더 아직 없음)
 - 함께 보는 곳: [14-comprehensions](../14-comprehensions/2-summary.md) — 리스트 컴프리헨션과 제너레이터 표현식의 평가 시점 차이
-- 이어지는 곳: 목록의 **44번** 「`itertools`」, **51번** 「`asyncio` 코루틴 기초」(폴더 아직 없음)
+- 이어지는 곳: [목록의 **44번**](../44-itertools/) 「`itertools`」, **51번** 「`asyncio` 코루틴 기초」(폴더 아직 없음)
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/README.md) — `for`/`while` 로 순회하는 법까지가 그쪽이다.\
   이 주제는 그 위에서 「**그 `for` 가 안쪽에서 무엇을 하고 있었나**」만 다룬다.
 - 연혁은 여기가 아니다: [`history/python/06-핵심-개념-진화.md`](../../../../../../history/python/06-핵심-개념-진화.md)

@@ -430,7 +430,7 @@ print(len(fib.__defaults__[0]))
 
 호출 사이에 남는 성질을 **캐시로 쓴** 것이다. 동작한다.\
 그래도 권하지 않는다 — 캐시가 **함수 시그니처에 노출**되고, 크기 제한·초기화 수단이 없고, 읽는 사람이 함정과 구별하지 못한다.\
-같은 일을 `functools.lru_cache`(목록의 45번 주제)가 명시적으로 한다.
+같은 일을 `functools.lru_cache`([목록의 **45번 주제**](../45-functools/))가 명시적으로 한다.
 
 ## 구현 세부사항 대 언어 보장
 
@@ -520,7 +520,7 @@ print(len(fib.__defaults__[0]))
 - 목록: [python/syntax 주제 목록](../README.md) — 이 주제는 **20번**
 - 선행: [목록의 **03번**](../03-mutability-and-copying/) 「가변·불변과 얕은 복사·깊은 복사」, **19번** 「함수 인자 규칙」(폴더 아직 없음)
 - 함께 보는 곳: [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md) — `is None` / `is MISSING` 을 `==` 로 쓰면 안 되는 이유
-- 이어지는 곳: 목록의 **36번** 「`dataclasses`」, **45번** 「`functools`」(폴더 아직 없음)
+- 이어지는 곳: [목록의 **36번**](../36-dataclasses/) 「`dataclasses`」, **45번** 「`functools`」(폴더 아직 없음)
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/README.md) — 리스트가 가변이라는 것과 `append` 사용법은 그쪽에 있다.\
   이 주제는 그 위에서 「**그 가변성이 함수 기본값 자리에 오면 무엇이 깨지나**」만 다룬다.
 - 공식 문서: [8.8. Function definitions](https://docs.python.org/3.12/reference/compound_stmts.html#function-definitions) · [`dataclasses.field`](https://docs.python.org/3.12/library/dataclasses.html#dataclasses.field)

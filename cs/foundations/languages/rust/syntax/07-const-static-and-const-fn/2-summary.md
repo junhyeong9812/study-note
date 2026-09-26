@@ -674,7 +674,7 @@ error[E0597]: `local` does not live long enough
 
 - `static` 항목은 **프로그램 내내 살아 있으므로** 그 참조가 `&'static` 이다.
 - `const` 는 항목 자체에 자리가 없지만, **승격될 수 있으면** 그 참조도 `&'static` 이 된다(Reference: `A reference to a constant will have 'static lifetime if the constant value is eligible for promotion; otherwise, a temporary will be created.`).
-- 수명 표기와 생략 규칙의 정본은 [목록의 **12번 주제**](../12-lifetime-annotations-and-elision/), `&'static` 과 `T: 'static` 을 가르는 것은 목록의 **13번 주제**다.
+- 수명 표기와 생략 규칙의 정본은 [목록의 **12번 주제**](../12-lifetime-annotations-and-elision/), `&'static` 과 `T: 'static` 을 가르는 것은 [목록의 **13번 주제**](../13-struct-references-and-static/)다.
 
 비용 — 없음.
 
@@ -951,7 +951,7 @@ static GLOBAL: D = D("static");    // D 는 Drop 을 구현한다
 - **상수 표현식(constant expression)** — 컴파일 타임에 계산될 수 있는 식.
 - **`const fn`** — 상수 자리에서 부를 수 있게 표시한 함수. 런타임 자리에서는 보통 함수다.
 - **승격(promotion)** — 상수 값에 참조를 만들 때 컴파일러가 읽기 전용 자리에 그 값을 두어 `&'static` 을 만들어 주는 것.
-- **내부 가변성(interior mutability)** — `&` 만 가지고도 속을 고칠 수 있는 성질. `Cell`·`RefCell`·`Atomic*`·`Mutex` 가 그렇다(정본은 목록의 **42번 주제**).
+- **내부 가변성(interior mutability)** — `&` 만 가지고도 속을 고칠 수 있는 성질. `Cell`·`RefCell`·`Atomic*`·`Mutex` 가 그렇다(정본은 [목록의 **42번 주제**](../42-refcell-cell-interior-mutability/)).
 - **`Sync`** — 여러 스레드가 **참조를 나눠 가져도** 안전한 타입임을 나타내는 표시(정본은 목록의 **50번 주제**).
 - **`'static` 수명** — 프로그램이 끝날 때까지 유효한 참조의 수명.
 - **`static_mut_refs`** — `static mut` 에 참조를 만들면 켜지는 린트. 2021 은 경고, 2024 는 에러.

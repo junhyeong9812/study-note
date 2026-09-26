@@ -1,9 +1,11 @@
 # Go — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 아래 주제들의 3파일(질문·서머리·정답)은 **아직 없다**.
+> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**(2026-09-25 기준 **16 / 52**). 나머지는 아직 없다.
 > 기준 소스: [Go 명세](https://go.dev/ref/spec) (확인한 판 `go1.27`, 2026-05-26) · [표준 라이브러리](https://pkg.go.dev/std) (`go1.27.1`) · [Effective Go](https://go.dev/doc/effective_go) · 버전 표기는 각 릴리스 노트(`https://go.dev/doc/go1.NN`)
-> 실행 검증: **불가.** 이 머신에 Go 툴체인이 없다 — `go`·`gofmt` 모두 없음(2026-09-20 확인). 3파일 작성 단계에서 코드 예시는 **「실행 검증 안 됨」으로 표시**하고, 명세·표준 라이브러리 문서로만 접지한다. 설치는 임의로 하지 않고 제안만 한다(제안: `go` 최신 안정판을 두고 `go test`·`go vet`·`-race` 로 예시를 전수 실행하면 이 목록의 절반 이상이 실측으로 바뀐다).
-> 기준일 2026-09-20.
+> 실행 검증: **가능**. 이 머신에 Go 툴체인이 들어왔다 — `go version` 이 `go version go1.27.1 linux/amd64` 라고 답한다(2026-09-24 실측). `gofmt`·`go vet`·`go tool compile`·`go list` 도 같은 판이다.\
+> 3파일의 코드 예시는 **전부 돌려서 출력을 파일로 캡처해 싣는다** — 「실행 검증 안 됨」 표시는 쓰지 않는다.\
+> 명세 인용도 웹이 아니라 이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` (`Language version go1.27 (May 26, 2026)`)에서 직접 뜬다 — 위 기준 소스의 판 표기를 그 파일로 확인했다.
+> 기준일 2026-09-24. (2026-09-20 의 「실행 검증 불가 — 툴체인 없음」 선언은 01\~04 배치에서 실측으로 갈아 끼웠다. 05번 이후 주제도 같은 전제로 쓴다.)
 
 ## 이 언어에서 무엇을 자르는 축
 
@@ -22,22 +24,22 @@ GC 설계·기동 시간·단일 바이너리·"작은 언어"의 찬반은 **�
 
 | # | 주제 | 분류 | 무엇을 인출하게 되나 | 선행 | 기존 주제 | 우선 |
 |---|------|------|----------------------|------|-----------|------|
-| 01 | 패키지 선언·import·`main`과 `init` | 문법 | 한 프로그램이 어떤 순서로 초기화되는지 설명하고, `init` 여러 개와 패키지 의존 순서에서 실행 순서를 예측할 수 있다 | — | — | A |
-| 02 | 변수 선언 세 형태와 제로값 | 문법 | `var`·`:=`·선언 블록을 언제 쓰는지 판단하고, 선언만 한 값이 무엇이 되는지를 타입별로 말할 수 있다 | 01 | [`../../../variables-and-memory/`](../../../variables-and-memory/) — 변수·메모리 일반은 거기, 여기는 Go 제로값 규칙으로 좁힘 | A |
-| 03 | 상수·`iota`·타입 없는 상수 | 문법 | 타입 없는 상수가 대입 지점에서 어떤 타입이 되는지 예측하고, `iota` 블록의 값 전개를 손으로 적을 수 있다 | 02 | — | B |
-| 04 | 수치 타입과 명시 변환·오버플로·정수 나눗셈 | 문법 | 왜 `int`와 `int64`가 섞이지 않는지 설명하고, 오버플로·절삭·부호 변환이 언제 조용히 일어나는지 판단할 수 있다 | 02 | [`../../../data-representation/`](../../../data-representation/) — 2의 보수 표현 자체는 거기, 여기는 Go의 변환 규칙으로 좁힘 | A |
-| 05 | 배열과 슬라이스는 무엇이 다른가 | 문법 | 배열이 값이고 슬라이스가 헤더(포인터·len·cap)라는 사실로부터 대입·함수 인자 전달의 결과를 예측할 수 있다 | 02 | [`../../../../data-structure/01-dynamic-array/`](../../../../data-structure/01-dynamic-array/) — 동적 배열 자료구조는 거기, 여기는 Go 슬라이스 헤더의 표면으로 좁힘 | A |
-| 06 | `len`/`cap`과 `append`의 재할당 | 문법 | `append` 후 원본 배열이 공유되는지 새로 잡혔는지를 `cap`으로 판단하고, 성장 전략이 왜 구현 세부인지 설명할 수 있다 | 05 | [`../../../../data-structure/01-dynamic-array/`](../../../../data-structure/01-dynamic-array/) — 증폭 상각 분석은 거기 | A |
-| 07 | ★ 슬라이스 공유로 조용히 틀리는 자리 | 관용구 | 부분 슬라이스에 `append` 했을 때 원본이 덮이는 경우를 코드만 보고 짚어내고, 그 버그가 왜 에러 없이 지나가는지 설명할 수 있다 | 06 | [`../../../../ops-patterns/failure-modes/`](../../../../ops-patterns/failure-modes/) — 조용한 실패 일반론은 거기, 여기는 슬라이스 별칭 한 사례로 좁힘 | A |
-| 08 | `copy`·3-인덱스 슬라이스·재슬라이싱의 메모리 유지 | 관용구 | 공유를 끊어야 하는 자리를 골라 `copy`나 `s[a:b:c]`로 막고, 작은 조각이 큰 배열을 살려 두는 누수를 진단할 수 있다 | 07 | — | A |
-| 09 | 맵: 선언·comma-ok·`delete`·순회 순서 | 문법 | 없는 키를 읽으면 왜 제로값이 나오는지, 순회 순서가 무작위화된 이유와 그에 의존한 코드가 어떻게 깨지는지 말할 수 있다 | 02 | [`../../../../data-structure/05-hashmap/`](../../../../data-structure/05-hashmap/) · [`29-open-addressing`](../../../../data-structure/29-open-addressing/) — 해시 테이블 원리는 거기, 여기는 Go 맵의 표면과 보증으로 좁힘 | A |
-| 10 | 문자열·`byte`·`rune`과 UTF-8 순회 | 문법 | 인덱싱이 바이트를 주고 `range`가 코드포인트를 주는 차이를 설명하고, 한글 문자열의 `len`을 예측할 수 있다 | 04 | [`../../../data-representation/`](../../../data-representation/) — 인코딩 일반은 거기 | A |
-| 11 | `strings`·`strconv`·`bytes`·`unicode/utf8` | 표준 API | 문자열 조작을 어느 패키지로 할지 고르고, `Builder`로 이어붙이는 자리와 `+`로 충분한 자리를 판단할 수 있다 | 10 | — | B |
-| 12 | 함수: 다중 반환·명명 반환값·가변 인자 | 문법 | `(T, error)` 관례가 왜 언어 문법에서 나오는지 설명하고, 명명 반환값이 `defer`와 만날 때의 효과를 예측할 수 있다 | 02 | — | A |
-| 13 | 클로저와 변수 캡처, 루프 변수 의미 변경(1.22) | 문법 | 클로저가 값이 아니라 변수를 잡는다는 사실로 출력 결과를 예측하고, 같은 코드가 1.21과 1.22에서 왜 다른지 말할 수 있다 | 12 | — | A |
-| 14 | `for`의 네 형태 · 정수 range(1.22) · 함수 range(1.23) | 문법 | `range`가 복사를 만드는 자리를 짚고, `for i := range 10`과 반복자 함수 순회가 어느 버전부터인지 말할 수 있다 | 13 | — | A |
-| 15 | `switch`·타입 스위치·`fallthrough`·라벨·`goto` | 문법 | Go의 `switch`가 왜 기본으로 안 흘러내리는지, 라벨 `break`/`continue`가 필요한 중첩 루프를 골라낼 수 있다 | 14 | — | B |
-| 16 | 포인터와 값 복사 의미론, `new`와 `make` | 문법 | 어떤 대입이 복사이고 어떤 것이 공유인지 판단하고, `new`와 `make`가 갈리는 이유를 타입으로 설명할 수 있다 | 05 | [`../../../variables-and-memory/`](../../../variables-and-memory/) — 포인터 개념 자체는 거기 | A |
+| 01 | [패키지 선언·import·`main`과 `init`](01-packages-imports-main-and-init/) | 문법 | 한 프로그램이 어떤 순서로 초기화되는지 설명하고, `init` 여러 개와 패키지 의존 순서에서 실행 순서를 예측할 수 있다 | — | — | A |
+| 02 | [변수 선언 세 형태와 제로값](02-variable-declarations-and-zero-values/) | 문법 | `var`·`:=`·선언 블록을 언제 쓰는지 판단하고, 선언만 한 값이 무엇이 되는지를 타입별로 말할 수 있다 | 01 | [`../../../variables-and-memory/`](../../../variables-and-memory/) — 변수·메모리 일반은 거기, 여기는 Go 제로값 규칙으로 좁힘 | A |
+| 03 | [상수·`iota`·타입 없는 상수](03-constants-iota-and-untyped-constants/) | 문법 | 타입 없는 상수가 대입 지점에서 어떤 타입이 되는지 예측하고, `iota` 블록의 값 전개를 손으로 적을 수 있다 | 02 | — | B |
+| 04 | [수치 타입과 명시 변환·오버플로·정수 나눗셈](04-numeric-types-conversions-and-integer-division/) | 문법 | 왜 `int`와 `int64`가 섞이지 않는지 설명하고, 오버플로·절삭·부호 변환이 언제 조용히 일어나는지 판단할 수 있다 | 02 | [`../../../data-representation/`](../../../data-representation/) — 2의 보수 표현 자체는 거기, 여기는 Go의 변환 규칙으로 좁힘 | A |
+| 05 | [배열과 슬라이스는 무엇이 다른가](05-arrays-vs-slices-value-and-header/) | 문법 | 배열이 값이고 슬라이스가 헤더(포인터·len·cap)라는 사실로부터 대입·함수 인자 전달의 결과를 예측할 수 있다 | 02 | [`../../../../data-structure/01-dynamic-array/`](../../../../data-structure/01-dynamic-array/) — 동적 배열 자료구조는 거기, 여기는 Go 슬라이스 헤더의 표면으로 좁힘 | A |
+| 06 | [`len`/`cap`과 `append`의 재할당](06-len-cap-and-append-reallocation/) | 문법 | `append` 후 원본 배열이 공유되는지 새로 잡혔는지를 `cap`으로 판단하고, 성장 전략이 왜 구현 세부인지 설명할 수 있다 | 05 | [`../../../../data-structure/01-dynamic-array/`](../../../../data-structure/01-dynamic-array/) — 증폭 상각 분석은 거기 | A |
+| 07 | ★ [슬라이스 공유로 조용히 틀리는 자리](07-slice-sharing-silent-bugs/) | 관용구 | 부분 슬라이스에 `append` 했을 때 원본이 덮이는 경우를 코드만 보고 짚어내고, 그 버그가 왜 에러 없이 지나가는지 설명할 수 있다 | 06 | [`../../../../ops-patterns/failure-modes/`](../../../../ops-patterns/failure-modes/) — 조용한 실패 일반론은 거기, 여기는 슬라이스 별칭 한 사례로 좁힘 | A |
+| 08 | [`copy`·3-인덱스 슬라이스·재슬라이싱의 메모리 유지](08-copy-three-index-slicing-and-memory-retention/) | 관용구 | 공유를 끊어야 하는 자리를 골라 `copy`나 `s[a:b:c]`로 막고, 작은 조각이 큰 배열을 살려 두는 누수를 진단할 수 있다 | 07 | — | A |
+| 09 | [맵: 선언·comma-ok·`delete`·순회 순서](09-maps-declaration-comma-ok-delete-and-iteration-order/) | 문법 | 없는 키를 읽으면 왜 제로값이 나오는지, 순회 순서가 무작위화된 이유와 그에 의존한 코드가 어떻게 깨지는지 말할 수 있다 | 02 | [`../../../../data-structure/05-hashmap/`](../../../../data-structure/05-hashmap/) · [`29-open-addressing`](../../../../data-structure/29-open-addressing/) — 해시 테이블 원리는 거기, 여기는 Go 맵의 표면과 보증으로 좁힘 | A |
+| 10 | [문자열·`byte`·`rune`과 UTF-8 순회](10-strings-bytes-runes-and-utf8-iteration/) | 문법 | 인덱싱이 바이트를 주고 `range`가 코드포인트를 주는 차이를 설명하고, 한글 문자열의 `len`을 예측할 수 있다 | 04 | [`../../../data-representation/`](../../../data-representation/) — 인코딩 일반은 거기 | A |
+| 11 | [`strings`·`strconv`·`bytes`·`unicode/utf8`](11-strings-strconv-bytes-and-unicode-utf8/) | 표준 API | 문자열 조작을 어느 패키지로 할지 고르고, `Builder`로 이어붙이는 자리와 `+`로 충분한 자리를 판단할 수 있다 | 10 | — | B |
+| 12 | [함수: 다중 반환·명명 반환값·가변 인자](12-functions-multiple-returns-named-results-and-variadics/) | 문법 | `(T, error)` 관례가 왜 언어 문법에서 나오는지 설명하고, 명명 반환값이 `defer`와 만날 때의 효과를 예측할 수 있다 | 02 | — | A |
+| 13 | [클로저와 변수 캡처, 루프 변수 의미 변경(1.22)](13-closures-variable-capture-and-loop-variable-change/) | 문법 | 클로저가 값이 아니라 변수를 잡는다는 사실로 출력 결과를 예측하고, 같은 코드가 1.21과 1.22에서 왜 다른지 말할 수 있다 | 12 | — | A |
+| 14 | [`for`의 네 형태 · 정수 range(1.22) · 함수 range(1.23)](14-for-four-forms-range-over-int-and-func/) | 문법 | `range`가 복사를 만드는 자리를 짚고, `for i := range 10`과 반복자 함수 순회가 어느 버전부터인지 말할 수 있다 | 13 | — | A |
+| 15 | [`switch`·타입 스위치·`fallthrough`·라벨·`goto`](15-switch-type-switch-fallthrough-labels-and-goto/) | 문법 | Go의 `switch`가 왜 기본으로 안 흘러내리는지, 라벨 `break`/`continue`가 필요한 중첩 루프를 골라낼 수 있다 | 14 | — | B |
+| 16 | [포인터와 값 복사 의미론, `new`와 `make`](16-pointers-value-copy-semantics-new-and-make/) | 문법 | 어떤 대입이 복사이고 어떤 것이 공유인지 판단하고, `new`와 `make`가 갈리는 이유를 타입으로 설명할 수 있다 | 05 | [`../../../variables-and-memory/`](../../../variables-and-memory/) — 포인터 개념 자체는 거기 | A |
 | 17 | 구조체: 리터럴·비교 가능성·필드 태그·정렬 | 문법 | 구조체가 `==`로 비교되는 조건을 말하고, 필드 순서가 크기에 미치는 영향을 설명할 수 있다 | 16 | [`../../../data-representation/`](../../../data-representation/) — 정렬·패딩 일반은 거기 | A |
 | 18 | 임베딩과 필드·메서드 승격 | 문법 | 임베딩이 상속이 아니라 승격임을 예로 보이고, 이름이 충돌할 때 어느 쪽이 이기는지 예측할 수 있다 | 17 | [`../../../oop-basics/`](../../../oop-basics/) — 상속·합성 논의는 거기, 여기는 Go 승격 규칙으로 좁힘 | A |
 | 19 | ★ 메서드 집합: 값 리시버 대 포인터 리시버 | 문법 | 어떤 타입이 어떤 인터페이스를 만족하는지 메서드 집합 규칙으로 판정하고, 값으로 담았더니 인터페이스 대입이 안 되는 에러를 해석할 수 있다 | 18 | — | A |

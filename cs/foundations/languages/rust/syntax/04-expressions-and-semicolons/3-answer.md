@@ -255,7 +255,7 @@ For more information about this error, try `rustc --explain E0308`.
 
 - `found` 는 **8**이다. `i` 가 1부터 올라가며 `i * i > 50` 이 처음 참이 되는 값이 8이다(64 > 50, 49는 아니다).
 - 아래쪽 `v` 는 **컴파일되지 않는다**. **E0308**, `expected integer, found &str`.\
-  **첫 `break` 가 기준**이 된다 — `expected because of this `break`` 가 그것을 가리킨다.
+  **첫 `break` 가 기준**이 된다 — ``expected because of this `break` `` 가 그것을 가리킨다.
 
 ```text
    loop {
@@ -370,7 +370,7 @@ For more information about this error, try `rustc --explain E0308`.
 - `while`·`for` 는 **식이다.** 다만 **타입이 늘 `()`** 라 값으로 쓸 수 없다.\
   「문이라서 안 된다」가 아니라 **「식인데 값이 `()` 라서」** 안 되는 것이다 — 메시지가 그 차이를 말해 준다.
 - 값을 내는 반복은 **`loop` + `break 값`** 뿐이다(5번). `while`/`for` 에는 `break 값` 문법이 없다.
-- 값을 **모으고** 싶으면 이터레이터로 간다 — `map`/`filter`/`collect`. 정본은 목록의 **36번 주제**다.
+- 값을 **모으고** 싶으면 이터레이터로 간다 — `map`/`filter`/`collect`. 정본은 [목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/)다.
 
 ```text
   while / for          loop
@@ -415,7 +415,7 @@ error: aborting due to 1 previous error; 1 warning emitted
   에러 번호가 없다 — **문법(파서) 단계**의 에러다.
 - `note` 가 말하는 예외 두 곳은 **`if` 의 조건**과 **`while` 의 조건**이다\
   (`only supported directly in conditions of if and while expressions`) — 곧 **`if let`·`while let`** 이다.
-- 그 예외의 정본은 목록의 **20번 주제**(`if let`·`while let`·`let else`·`let` 체인)다.
+- 그 예외의 정본은 [목록의 **20번 주제**](../20-if-let-while-let-let-else-and-let-chains/)(`if let`·`while let`·`let else`·`let` 체인)다.
 
 **타입을 컴파일러에게 물어보는 한 줄짜리 수법**
 
@@ -528,7 +528,7 @@ help: remove `return`
 - **발산 타입 `!`** — [목록의 **06번 주제**](../06-functions-and-never-type/)(함수·반환·발산 타입 `!`).\
   이 주제에서는 `loop {}`·`return`·`break` 가 `!` 라는 **대비까지만** 했다.
 - **`loop`·라벨·`break` 값 전수** — [목록의 **05번 주제**](../05-control-flow-loops-and-labels/)(제어 흐름).
-- **`match` 의 완전성 검사** — 목록의 **18번 주제**. 패턴 문법 전수는 **19번 주제**.
+- **`match` 의 완전성 검사** — [목록의 **18번 주제**](../18-match-and-exhaustiveness/). 패턴 문법 전수는 **19번 주제**.
 - **`size_of::<()>() == 0` 실측 표** — [**03번 주제**](../03-primitive-types-and-integer-overflow/)(기본 타입) 6번에 19종 표가 있다.
 - **에러가 아니라 경고로만 드러나는 자리** — **1번**(`let z = { ... a + 1; };`)이다.\
   기대 타입이 없어서 `z` 가 `()` 로 받아들여지고 `unused_must_use` 경고만 난다.\

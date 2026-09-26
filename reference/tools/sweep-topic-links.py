@@ -52,6 +52,13 @@ def sweep(root, apply=False):
             nums = [x.zfill(2) for x in nums]
             if any(x not in folders for x in nums) or all(x == own for x in nums):
                 continue                                   # 걸 곳이 없다
+            # ★★★ 앞에 「X 갈래」가 붙은 표기는 **다른 갈래의 번호**다 — 같은 갈래 폴더로 이으면
+            #   링크 검사로도 안 걸리는 오전환이 된다(실측: 1,229곳 전환에서 4곳 — 「Java 갈래 목록의 11번」이
+            #   C# 11번 폴더로 걸렸다). 규칙 8 이 표기를 같은 갈래 전용으로 정한 이유 그대로다. 건너뛴다.
+            #   「같은 목록의」처럼 갈래 이름 없이 다른 갈래를 가리킨 자리는 기계로 못 가린다 — 사람이 본다.
+            bol0 = src.rfind('\n', 0, m.start()) + 1
+            if '갈래' in src[max(bol0, m.start() - 40):m.start()]:
+                continue
             suf = m.group('suf') or ''
             # ★★ 삼킨 닫는 `**` 를 되돌린다 — 이 도구가 실제로 두 번 낸 사고다.
             #   `**앞말 목록의 NN번 주제**(…)` 에서 볼드는 「앞말」에서 열렸고 뒤의 `**` 가 그 닫는 짝이다.

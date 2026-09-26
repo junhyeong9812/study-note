@@ -4,7 +4,7 @@
 > 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
 > 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
 > 선행은 [08번 주제](../08-function-declaration-default-and-named-args/)다.
-> 연산자 오버로딩 **전체**는 목록의 **31번 주제**, 람다·클로저 일반은 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/)가 정본이다.
+> 연산자 오버로딩 **전체**는 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/), 람다·클로저 일반은 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/)가 정본이다.
 > Java 쪽 짝은 [`../../../java/syntax/08-method-declaration-overloading/`](../../../java/syntax/08-method-declaration-overloading/)다.
 > 문항 11개 중 코드블록이 붙는 예측형은 6개다.
 > 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.

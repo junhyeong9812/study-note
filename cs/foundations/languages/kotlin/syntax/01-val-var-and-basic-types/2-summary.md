@@ -518,8 +518,8 @@ Boolean (SIZE_BITS 없음)
 - [`../../../../data-representation/`](../../../../data-representation/) — 2의 보수·IEEE 754. 비트 표현 자체는 거기가 정본
 - [02번 주제](../02-string-templates-and-raw-strings/) — 이 타입들이 문자열에 끼워지는 방법
 - [03번 주제](../03-null-safe-types/) — `Int` 와 `Int?` 의 갈림이 **타입 시스템 쪽에서** 무엇을 뜻하는지
-- 목록의 **32번 주제**(동등성 — `==`/`===`) — `===` 의 의미 전체는 거기가 정본이 된다
-- 목록의 **40번 주제**(읽기 전용 컬렉션) — `val` + 가변 컬렉션 문제의 반대쪽 절반
+- [목록의 **32번 주제**](../32-equality-and-equals-contract/)(동등성 — `==`/`===`) — `===` 의 의미 전체는 거기가 정본이 된다
+- [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/)(읽기 전용 컬렉션) — `val` + 가변 컬렉션 문제의 반대쪽 절반
 
 ## 용어 풀이
 
@@ -540,7 +540,7 @@ Boolean (SIZE_BITS 없음)
 ## 더 들어가면
 
 - `UInt` 는 **`value class`** 로 만들어졌다 — JVM 에 부호 없는 정수가 없으므로 `Int` 위에 얹은 것이다.\
-  그래서 Java 쪽에서 보면 그냥 `int` 로 보이고 부호가 안 지켜진다. 목록의 **26번 주제**(`value class`)가 그 기법의 정본이 된다.
+  그래서 Java 쪽에서 보면 그냥 `int` 로 보이고 부호가 안 지켜진다. [목록의 **26번 주제**](../26-value-class-and-boxing/)(`value class`)가 그 기법의 정본이 된다.
 - `Int.MAX_VALUE + 1` 이 감기는 것은 **Java 와 같다.** 감김을 막고 싶으면 `Math.addExact` 를 직접 부른다 — stdlib 에 대응 함수가 없다.
 - `val` 프로퍼티는 `final` 필드가 되지만 **`open val` 은 게터가 오버라이드 가능**해져서 성질이 완전히 달라진다.\
   그 차이가 [04번 주제](../04-smart-casts/)(스마트 캐스트)에서 그대로 실패 모드가 된다 — 「커스텀 getter」 항목이다.

@@ -654,7 +654,7 @@ math.ceil 판: 3
 **한 문장으로**
 
 **정확성이 필요한 곳에는 `float` 을 두지 않는다.** 그 원칙 하나로 네 자리의 선택이 전부 결정된다.\
-더 깊은 금액 설계는 목록의 **50번 주제** 「`decimal`·float 정밀도·`round`」 가 정본이다.
+더 깊은 금액 설계는 [목록의 **50번 주제**](../50-decimal-float-precision-and-round/) 「`decimal`·float 정밀도·`round`」 가 정본이다.
 
 ---
 

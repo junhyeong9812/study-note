@@ -8,7 +8,7 @@
 > **버전** — `vararg`·spread·로컬 함수·`infix` 는 전부 1.0.
 > ★ **문서와 컴파일러가 어긋나는 자리를 하나 찾았다** — `infix` 의 「기본값 금지」 조항이다((8)).
 > **경계** — 기본 인자·이름 붙인 인자·`@JvmOverloads` 의 정본은 [08번 주제](../08-function-declaration-default-and-named-args/)다.\
-> 연산자 오버로딩 **전체**(`plus`·`get`·`invoke`·`iterator` 등 규약 표)는 목록의 **31번 주제**가 정본이다 —\
+> 연산자 오버로딩 **전체**(`plus`·`get`·`invoke`·`iterator` 등 규약 표)는 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/)가 정본이다 —\
 > 여기서는 `infix` 라는 **호출 형태**만 다룬다. 람다·클로저 일반은 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/).\
 > **Java 쪽 정본은 [`../../../java/syntax/08-method-declaration-overloading/`](../../../java/syntax/08-method-declaration-overloading/)** 다(가변 인자가 거기 있다).
 > 이 본문은 Claude 작성이다(원고 없음).
@@ -777,7 +777,7 @@ Money(1000) plus Money(500)
 | 바깥 `var` 를 고쳐야 할 때 | 로컬 함수 | Java 의 `effectively final` 제약이 없다 |
 | 읽기가 **정말** 좋아질 때만 | `infix` | 우선순위가 직관과 어긋나 괄호가 늘어난다 |
 | DSL 을 만들 때 | `infix` | 의도된 용법이다 |
-| 기호 연산자를 만들고 싶을 때 | `operator` | 목록의 **31번 주제**가 정본이다 |
+| 기호 연산자를 만들고 싶을 때 | `operator` | [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/)가 정본이다 |
 
 판단 규칙 두 줄.
 
@@ -811,10 +811,10 @@ Money(1000) plus Money(500)
   이 문서의 (6)·(7)은 **로컬 함수 쪽**만 다뤘다
 - [목록의 **11번 주제**](../11-inline-functions/)(인라인 함수) — 람다의 객체 생성이 사라지는 조건
 - [목록의 **13번 주제**](../13-extension-functions-and-properties/)(확장 함수) — `infix` 확장 함수의 수신자 규칙
-- 목록의 **31번 주제**(연산자 오버로딩·중위 함수·`invoke` 규약) — **규약 표 전체의 정본.**\
+- [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/)(연산자 오버로딩·중위 함수·`invoke` 규약) — **규약 표 전체의 정본.**\
   여기는 `infix` 라는 **호출 형태**와 그 우선순위만 다뤘다
-- 목록의 **39번 주제**(Java 상호운용 애너테이션) — `vararg` 가 Java 에서 `T...` 로 보이는 것
-- 목록의 **41번 주제**(컬렉션 생성) — `listOf(vararg elements: T)` 가 이 문법의 대표 사용처다
+- [목록의 **39번 주제**](../39-java-interop-annotations/)(Java 상호운용 애너테이션) — `vararg` 가 Java 에서 `T...` 로 보이는 것
+- [목록의 **41번 주제**](../41-collection-creation-and-copying/)(컬렉션 생성) — `listOf(vararg elements: T)` 가 이 문법의 대표 사용처다
 
 ## 용어 풀이
 
@@ -853,7 +853,7 @@ Money(1000) plus Money(500)
 
   `bipush 63` = `0b111111` — **파라미터 여섯 개를 전부 생략**했다는 뜻이다([08번 주제](../08-function-declaration-default-and-named-args/)의 (1)).
 - `Array<out String>` 의 `out` 은 **변성**이다. `vararg` 파라미터의 타입도 실제로는 `Array<out T>` 라\
-  `Array<String>` 을 `Array<Any>` 자리에 넘길 수 있다. 변성의 정본은 목록의 **28번 주제**.
+  `Array<String>` 을 `Array<Any>` 자리에 넘길 수 있다. 변성의 정본은 [목록의 **28번 주제**](../28-generics-variance-in-out-star-where/).
 - `IntSpreadBuilder` 말고 참조 타입용 `SpreadBuilder` 도 있다 — 원시 타입마다 따로 있는 구조다\
   (**이 문서에서는 `Int` 판만 찍어 봤다**).
 - **중위 호출은 새 줄로 이어 쓸 수 있다.** `2 x` 다음 줄에 `3` 을 적어도 컴파일된다 — 던져서 확인했다\

@@ -514,7 +514,7 @@ runAsContinue([1,2,3,4]) = 124
 - ★ **진짜 `continue` 와 다른 점** — `run { }` **뒤에 코드가 더 있으면 그것은 실행된다.**\
   `continue` 는 회차 자체를 끝내지만 `return@skip` 은 **블록 하나만** 끝낸다.
 - `run` 은 **인라인 함수**라 객체가 안 생긴다(6번의 `forEach` 와 같은 성질이다).
-- scope function 의 정본은 목록의 **14번 주제**다.
+- scope function 의 정본은 [목록의 **14번 주제**](../14-scope-functions/)다.
 
 ### 10. 반복은 **문**이다 — `only expressions are allowed here.`
 
@@ -554,7 +554,7 @@ fun f() { for (i in 1..3) { i = i + 1; println(i) } }
 
 - 한 문장으로 — **분기는 「어느 값을 고를까」라서 값이 나오고, 반복은 「몇 번 할까」라서 낼 값이 없다.**
 - 반복의 결과를 값으로 얻으려면 **컬렉션 연산**(`map`·`filter`·`fold`)을 쓴다. 그쪽은 식이다 —\
-  정본은 목록의 **42번 주제**부터.
+  정본은 [목록의 **42번 주제**](../42-transformations-map-flatmap-associate-zip/)부터.
 - ★ **`for (i in 1..3) { i = i + 1 }` 도 안 된다.** 루프 변수는 **`val`** 이다.\
   Java 의 `for (int i = …)` 와 다른 점으로, 세는 변수를 바꿔 루프를 조작하는 관용구가 **문법 층에서 막혀 있다.**
 
@@ -563,9 +563,9 @@ fun f() { for (i in 1..3) { i = i + 1; println(i) } }
 - **비지역 `return` 이 왜 인라인에서만 되는가 → [목록의 11번 주제](../11-inline-functions/)**(인라인 함수 — `noinline`/`crossinline`·비지역 반환)가 정본이다.\
   이 문서는 **현상**(`'return' is prohibited here.` 와 `forEach` 의 함수째 반환)까지만 적었다.\
   람다 자체는 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/).
-- **구조 분해(`for ((i, v) in xs.withIndex())`) → 목록의 30번 주제**(구조 분해 선언 — `componentN` 과 그 한계)가 정본이다.\
+- **구조 분해(`for ((i, v) in xs.withIndex())`) → [목록의 30번 주제](../30-destructuring-declarations-and-componentn/)**(구조 분해 선언 — `componentN` 과 그 한계)가 정본이다.\
   `Map` 을 `for ((k, v) in m)` 으로 도는 것도 같은 문법이다.
-- **규약 전체 → 목록의 31번 주제**(연산자 오버로딩·중위 함수·`invoke` 규약)가 정본이다.\
+- **규약 전체 → [목록의 31번 주제](../31-operator-overloading-infix-and-invoke/)**(연산자 오버로딩·중위 함수·`invoke` 규약)가 정본이다.\
   `iterator()`(이 문서 5번)·`contains`(`in`)·`rangeTo`(`..`)·`step`/`downTo`(중위 함수)가 전부 거기 속한다.
 - **Java 레이블 `break`/`continue` → [`../../../java/syntax/20-control-flow-statements/`](../../../java/syntax/20-control-flow-statements/)** 가 정본이다.\
   `switch` 안의 `break` 는 [`../../../java/syntax/21-switch-statement-and-expression/`](../../../java/syntax/21-switch-statement-and-expression/) 쪽이다 —\

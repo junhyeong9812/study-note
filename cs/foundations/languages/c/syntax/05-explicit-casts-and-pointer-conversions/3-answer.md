@@ -775,7 +775,7 @@ pun_memcpy:
 - **못 잰 것** — 32비트(`-m32`)에서 `(int)p` 가 안 잘리는 것. `bits/libc-header-start.h` 가 없어 컴파일이 안 된다.\
   `gcc-multilib` 를 설치하면 잴 수 있다. **설치 제안만 하고 안 했다.**
 - **못 잰 것** — 정렬 위반이 **트랩을 내는** 아키텍처의 동작. 이 머신은 x86-64 하나뿐이다.
-- **안 돌려 본 것** — `union` 을 통한 타입 펀닝(목록의 **23번 주제**) · `-fno-strict-aliasing` 의 **성능 대가** ·\
+- **안 돌려 본 것** — `union` 을 통한 타입 펀닝([목록의 **23번 주제**](../23-union-and-the-boundary-of-type-punning/)) · `-fno-strict-aliasing` 의 **성능 대가** ·\
   `(void)expr` 가 `warn_unused_result` 를 못 끄는지 · `-Wcast-align` 이 x86-64 에서 무엇을 잡는지.
 
 **버전이 올랐을 때 다시 돌려야 하는 것**

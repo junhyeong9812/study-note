@@ -853,7 +853,7 @@ print(u)            # ([1, 3], 'x')   이미 바뀌어 있다
 - 이어지는 곳: [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md) — 「같은 객체인가」를 묻는 법. 이 문서의 `is` 판정이 전부 그쪽 규칙을 쓴다.
 - 이어지는 곳: [목록의 **11번 주제**](../11-tuple-and-unpacking/) 「tuple 과 언패킹」 — 튜플 안의 가변 원소를 튜플 쪽에서 다시 본다.
 - 이어지는 곳: [목록의 **12번 주제**](../12-dict-and-key-requirements/) 「dict 와 키 요건」 · [목록의 **13번 주제**](../13-set-and-frozenset/) 「set 과 frozenset」 — 여기서 본 해시 요건이 그쪽의 본문이다.
-- 이어지는 곳: 목록의 **36번 주제** 「`dataclasses`」 — `frozen=True` 와 `default_factory` 로 이 문제를 설계 단계에서 없애는 법.
+- 이어지는 곳: [목록의 **36번 주제**](../36-dataclasses/) 「`dataclasses`」 — `frozen=True` 와 `default_factory` 로 이 문제를 설계 단계에서 없애는 법.
 - 기존 노트: [`cs/foundations/variables-and-memory/`](../../../../variables-and-memory/README.md) — 「2. 얕은 복사와 깊은 복사」 절이 같은 주제를 다룬다.\
   **경계**: 그쪽은 「무엇이 얕고 무엇이 깊은가」의 소개까지, 여기는 「**네 형태가 같은지 재 보고, 불변 안의 가변과 `+=` 의 세 단계를 `dis` 로 가르는 데**」부터다.
 - 연혁은 여기가 아니다: [`history/python/`](../../../../../../history/python/)
@@ -889,4 +889,4 @@ print(u)            # ([1, 3], 'x')   이미 바뀌어 있다
 
 - **`copy` 는 클래스의 `__slots__`·`__getstate__`/`__setstate__` 도 존중한다.** 직렬화(`pickle`)와 규칙을 공유하기 때문이다.
 - **얕은 복사조차 안 되는 것이 있다.** `threading.Lock` 은 `copy.copy` 에서도 같은 `TypeError` 가 났다 — 훅이 없으면 얕은 복사도 `__reduce_ex__` 로 떨어지기 때문이다.
-- **불변 객체를 만들어 두는 쪽이 복사 문제를 설계 단계에서 없앤다.** `tuple`·`frozenset`·`dataclass(frozen=True)`·`types.MappingProxyType` 이 그 수단이다(목록의 **36번 주제**).
+- **불변 객체를 만들어 두는 쪽이 복사 문제를 설계 단계에서 없앤다.** `tuple`·`frozenset`·`dataclass(frozen=True)`·`types.MappingProxyType` 이 그 수단이다([목록의 **36번 주제**](../36-dataclasses/)).

@@ -740,9 +740,9 @@ iter([1,2])[0]   -> TypeError: 'list_iterator' object is not subscriptable
 - 함께 보는 곳: [18-loop-control-and-else](../18-loop-control-and-else/2-summary.md) — `range` 가 이터레이터가 **아닌** 것, 순회 중 변경이 커서를 어긋내는 것.
 - 함께 보는 곳: [14-comprehensions](../14-comprehensions/2-summary.md) — 컴프리헨션이 이 프로토콜 위에 얹혀 있다.
 - 함께 보는 곳: [19-function-argument-rules](../19-function-argument-rules/2-summary.md) — `f(*it)` 로 풀 때 이터레이터가 소진되는 것.
-- 이어지는 곳: 목록의 **32번 주제** 「컨테이너 프로토콜」 — `__len__`·`__contains__` 까지 묶은 정본.
-- 이어지는 곳: 목록의 **44번 주제** 「`itertools`」 — 이 프로토콜 위에 지어진 도구 모음.
-- 이어지는 곳: 목록의 **51번 주제** 「`asyncio` 코루틴 기초」 — `__aiter__`/`__anext__` 의 비동기 판.
+- 이어지는 곳: [목록의 **32번 주제**](../32-container-protocol/) 「컨테이너 프로토콜」 — `__len__`·`__contains__` 까지 묶은 정본.
+- 이어지는 곳: [목록의 **44번 주제**](../44-itertools/) 「`itertools`」 — 이 프로토콜 위에 지어진 도구 모음.
+- 이어지는 곳: [목록의 **51번 주제**](../51-asyncio-coroutine-basics/) 「`asyncio` 코루틴 기초」 — `__aiter__`/`__anext__` 의 비동기 판.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — `for` 로 순회하는 법까지가 그쪽이다.\
   **경계**: 여기는 **그 `for` 가 안쪽에서 무엇을 부르고 있었나**부터다.
 - 공식 문서: [Iterator Types](https://docs.python.org/3.12/library/stdtypes.html#iterator-types) · [`iter()`](https://docs.python.org/3.12/library/functions.html#iter) · [PEP 479](https://peps.python.org/pep-0479/)
@@ -769,10 +769,10 @@ iter([1,2])[0]   -> TypeError: 'list_iterator' object is not subscriptable
 ## 더 들어가면
 
 - **`itertools.tee`** 는 「한 이터레이터를 둘로 나눠 두 번 돌기」처럼 보이지만 **내부 버퍼에 쌓는다** —
-  한쪽이 멀리 앞서면 리스트를 만드는 것과 비용이 같아진다(목록의 **44번 주제**).
+  한쪽이 멀리 앞서면 리스트를 만드는 것과 비용이 같아진다([목록의 **44번 주제**](../44-itertools/)).
 - **`collections.abc.Iterable`·`Iterator`** 로 `isinstance` 검사를 할 수 있지만,
-  ★ **`Iterable` 검사는 `__getitem__` 만 있는 것을 놓친다**(`__iter__` 만 본다). 문서가 그 한계를 직접 적는다. 목록의 **35번 주제**.
+  ★ **`Iterable` 검사는 `__getitem__` 만 있는 것을 놓친다**(`__iter__` 만 본다). 문서가 그 한계를 직접 적는다. [목록의 **35번 주제**](../35-abc-and-protocol/).
 - **파일 객체가 자기 자신의 이터레이터다** — `iter(f) is f` 가 참이다. 그래서 파일을 두 번 `for` 로 돌면 두 번째가 빈다.
-  `f.seek(0)` 이 되감기다(목록의 **48번 주제**).
+  `f.seek(0)` 이 되감기다([목록의 **48번 주제**](../48-pathlib-and-file-io/)).
 - **언패킹도 이 프로토콜을 쓴다** — `a, b = it` 이 `next` 를 두 번 부르고 세 번째로 끝을 확인한다([11번](../11-tuple-and-unpacking/2-summary.md)).
-- **비동기 판**은 `__aiter__`/`__anext__` 와 `StopAsyncIteration` 이다(PEP 492). 구조가 그대로 대응된다(목록의 **51번 주제**).
+- **비동기 판**은 `__aiter__`/`__anext__` 와 `StopAsyncIteration` 이다(PEP 492). 구조가 그대로 대응된다([목록의 **51번 주제**](../51-asyncio-coroutine-basics/)).

@@ -121,7 +121,14 @@
  L1679    ERR_INVALID_URL / DecodeError / NormalizeError 이면
  L1684      res.statusCode = 400
  L1685      => return this.renderError(null, req, res, '/_error', {})  [출구 13]
- L1688    minimalMode 이거나 dev 이거나 err.bubble 이면 => throw
+ L1688    minimalMode 이거나 dev 이거나 (isBubbledError(err) && err.bubble) 이면 => throw
+          ★★ `isBubbledError` 는 `error instanceof BubbledError` 다 (server/lib/trace/tracer.ts L65).
+            그런데 L1649 가 던지는 것은 **평범한 `new Error()`** 에 L1657 로 `.bubble = true`
+            를 붙인 것이다 — BubbledError 가 아니다
+          => 그 플래그만으로는 이 조건을 **통과하지 못한다.** minimalMode 나 dev 일 때만 던져지고,
+             그 밖에서는 아래로 내려가 logError + 500 이 된다
+          ※ 실제로 그 조합(middlewareInvoke 이면서 minimalMode 도 dev 도 아님)이 밟히는지는
+            확인하지 않았다 → [페이지 아닌 요청] [01]
  L1691    this.logError(getProperError(err))
  L1692    res.statusCode = 500
  L1693    res.body('Internal Server Error').send()
@@ -176,7 +183,8 @@
  => 이 헤더를 믿으면 요청자가 **어느 페이지를 렌더할지 직접 고를 수 있다**.
     그래서 렌더 워커 안에서만 인정한다
  ※ "렌더 워커 안" 을 실제로 판별하는 코드는 이 메서드에 없다.
-    invokePath 메타를 누가 심는지를 따라가야 한다 — 이 문서의 범위 밖이다
+    invokePath 메타를 누가 심는지를 따라가야 한다 — router-server 의 invokeRender 가 심는다
+    (server/lib/router-server.ts L404). [페이지 아닌 요청]에서 다룬다
 ```
 
 ```text

@@ -1,7 +1,7 @@
 # Python — 문법·API 주제 목록
 
 > 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**
-> (2026-09-24 기준 **20 / 53** — 01\~20). 나머지는 아직 없다.
+> (2026-09-24 기준 **28 / 53** — 01\~28). 나머지는 아직 없다.
 > 기준 소스: [Python 3.12 언어 레퍼런스](https://docs.python.org/3.12/reference/index.html) · [표준 라이브러리 3.12](https://docs.python.org/3.12/library/index.html) · [PEP 인덱스](https://peps.python.org/)
 > 실행 검증: **가능**. 이 머신에 `python3` 3.12.3 이 있어 3.12 까지의 예시는 실제로 돌려 출력을 확인한다. 3.13 전용 동작(PEP 696 기본값·`TypeIs`·free-threaded)은 설치본이 없어 문서·PEP 로만 접지하고 「미실행」으로 표기한다.
 > 기준일 2026-09-20.
@@ -38,14 +38,14 @@ JS 와 대비가 값을 내는 자리(동적 타입·컴프리헨션·이터레�
 | 18 | [반복 제어와 `for`/`while`·`else`](18-loop-control-and-else/) | 문법 | `break`/`continue`/`else` 흐름과 `enumerate`·`zip`·`range` 의 지연 성질을 설명하고, 순회 중 컨테이너를 바꿀 때의 위험을 판단할 수 있다 | 16 | `cs/foundations/python-basics/` | B |
 | 19 | [함수 인자 규칙](19-function-argument-rules/) | 문법 | 위치·키워드·기본값·`*args`·`**kwargs`·`/`·`*` 전용 인자를 조합한 시그니처에 대해 어떤 호출이 가능한지 판정할 수 있다 | — | — | A |
 | 20 | [가변 기본 인자 함정](20-mutable-default-args/) | 관용구 | `def f(x=[])` 가 호출마다 같은 객체를 쓰는 이유를 설명하고 `None` 센티널로 고칠 수 있다 | 03, 19 | — | A |
-| 21 | 스코프 LEGB 와 `global`·`nonlocal` | 문법 | 이름이 어느 스코프에서 풀리는지 판정하고, 대입 한 줄이 지역 변수를 만들어 `UnboundLocalError` 를 내는 경우를 설명할 수 있다 | 01 | — | A |
-| 22 | 클로저와 늦은 바인딩 | 문법 | 루프에서 만든 함수들이 같은 값을 내놓는 이유를 설명하고 기본 인자·팩토리로 고칠 수 있다 | 21 | — | A |
-| 23 | `lambda` 와 고차 함수 | 문법 | `lambda` 를 쓸 수 있는 자리와 제약을 말하고 `map`·`filter`·정렬 `key` 로 바꿔 쓸 수 있다 | 19 | `cs/foundations/python-basics/` | B |
-| 24 | 데코레이터 | 문법 | 함수를 감싸는 데코레이터와 인자 있는 데코레이터를 직접 쓰고, `functools.wraps` 를 빠뜨리면 무엇이 깨지는지 설명할 수 있다 | 22 | — | A |
-| 25 | 예외 처리와 `finally` | 문법 | `try`/`except`/`else`/`finally` 실행 순서, 예외 계층에 따른 포착 범위, `raise ... from` 의 체이닝을 설명할 수 있다 | — | — | A |
-| 26 | EAFP 대 LBYL | 관용구 | 「먼저 검사」와 「일단 하고 예외」 중 어느 쪽이 경쟁 조건·비용 면에서 맞는지 판단할 수 있다 | 25 | — | B |
-| 27 | 예외 그룹과 `except*` | 문법 | 3.11+ `ExceptionGroup` 이 여러 실패를 함께 나르는 방식과 `except*` 의 분배 규칙을 설명할 수 있다 | 25 | — | C |
-| 28 | 컨텍스트 매니저와 `with` | 문법 | `__enter__`/`__exit__` 계약과 예외 억제 여부를 설명하고 `contextlib` 로 컨텍스트를 만들 수 있다. 괄호로 감싼 다중 `with` 는 3.10+ | 25 | — | A |
+| 21 | [스코프 LEGB 와 `global`·`nonlocal`](21-scope-legb-global-nonlocal/) | 문법 | 이름이 어느 스코프에서 풀리는지 판정하고, 대입 한 줄이 지역 변수를 만들어 `UnboundLocalError` 를 내는 경우를 설명할 수 있다 | 01 | — | A |
+| 22 | [클로저와 늦은 바인딩](22-closures-and-late-binding/) | 문법 | 루프에서 만든 함수들이 같은 값을 내놓는 이유를 설명하고 기본 인자·팩토리로 고칠 수 있다 | 21 | — | A |
+| 23 | [`lambda` 와 고차 함수](23-lambda-and-higher-order-functions/) | 문법 | `lambda` 를 쓸 수 있는 자리와 제약을 말하고 `map`·`filter`·정렬 `key` 로 바꿔 쓸 수 있다 | 19 | `cs/foundations/python-basics/` | B |
+| 24 | [데코레이터](24-decorators/) | 문법 | 함수를 감싸는 데코레이터와 인자 있는 데코레이터를 직접 쓰고, `functools.wraps` 를 빠뜨리면 무엇이 깨지는지 설명할 수 있다 | 22 | — | A |
+| 25 | [예외 처리와 `finally`](25-exceptions-and-finally/) | 문법 | `try`/`except`/`else`/`finally` 실행 순서, 예외 계층에 따른 포착 범위, `raise ... from` 의 체이닝을 설명할 수 있다 | — | — | A |
+| 26 | [EAFP 대 LBYL](26-eafp-vs-lbyl/) | 관용구 | 「먼저 검사」와 「일단 하고 예외」 중 어느 쪽이 경쟁 조건·비용 면에서 맞는지 판단할 수 있다 | 25 | — | B |
+| 27 | [예외 그룹과 `except*`](27-exception-groups-and-except-star/) | 문법 | 3.11+ `ExceptionGroup` 이 여러 실패를 함께 나르는 방식과 `except*` 의 분배 규칙을 설명할 수 있다 | 25 | — | C |
+| 28 | [컨텍스트 매니저와 `with`](28-context-managers-and-with/) | 문법 | `__enter__`/`__exit__` 계약과 예외 억제 여부를 설명하고 `contextlib` 로 컨텍스트를 만들 수 있다. 괄호로 감싼 다중 `with` 는 3.10+ | 25 | — | A |
 | 29 | 클래스와 속성 탐색 | 문법 | 인스턴스·클래스 속성 탐색 순서와 클래스 변수 공유를 설명하고 `__init__` 과 `__new__` 의 역할을 구분할 수 있다 | 01 | `cs/foundations/oop-basics/` | A |
 | 30 | `__repr__`·`__eq__`·`__hash__` 계약 | 문법 | 세 메서드의 계약을 말하고, `__eq__` 만 정의했을 때 해시가 깨지는 이유를 설명하며 집합·dict 키로 쓸 클래스를 설계할 수 있다 | 12, 29 | — | A |
 | 31 | 비교 프로토콜과 정렬 가능성 | 문법 | `__lt__` 하나로 정렬이 되는 이유, `functools.total_ordering`, 비교 불가 타입을 섞었을 때의 `TypeError` 를 설명할 수 있다 | 10, 30 | — | B |
@@ -56,7 +56,7 @@ JS 와 대비가 값을 내는 자리(동적 타입·컴프리헨션·이터레�
 | 36 | `dataclasses` | 표준 API | `field`·`default_factory`·`frozen`·`order` 가 어떤 메서드를 만들어 내는지 예측하고 가변 기본값 금지 규칙을 설명할 수 있다 | 20, 30 | — | A |
 | 37 | `enum` | 표준 API | `Enum`·`IntEnum`·`StrEnum`(3.11+)·`auto` 의 차이와 비교·직렬화에서의 주의점을 판단할 수 있다 | 29 | — | B |
 | 38 | `namedtuple`·`NamedTuple`·`TypedDict` | 표준 API | 세 구조체의 런타임 정체(튜플인가 dict 인가)와 타입 검사상의 의미를 구분해 고를 수 있다 | 11, 12 | — | B |
-| 39 | `match` 문 | 문법 | 3.10+ 패턴 종류(리터럴·시퀀스·매핑·클래스·캡처·가드)를 읽고, 소문자 이름이 비교가 아니라 캡처가 되는 함정을 설명할 수 있다 | 11 | — | B |
+| 39 | `match` 문 | 문법 | 3.10+ 패턴 종류(리터럴·시퀀스·매핑·클래스·캡처·가드)를 읽고, 점 없는 이름(대소문자 무관)이 비교가 아니라 캡처가 되는 함정을 설명할 수 있다 | 11 | — | B |
 | 40 | 타입 힌트의 런타임 의미 | 문법 | 힌트가 실행을 바꾸지 않는다는 것과 `__annotations__`·문자열 지연 평가·`from __future__ import annotations` 의 효과를 설명할 수 있다 | 19 | — | A |
 | 41 | `typing` 과 제네릭 신문법 | 표준 API | `X \| Y`(03.10+)·`Literal`·`TypeAlias`·PEP 695 `type`/`def f[T]`(03.12)·타입 매개변수 기본값과 `TypeIs`(03.13)의 쓰임을 구분할 수 있다 | 40 | — | B |
 | 42 | 모듈·패키지·import 시스템 | 문법 | 절대·상대 import 해석과 `__init__.py` 의 역할, `if __name__ == "__main__"`, 순환 import 가 깨지는 지점을 설명할 수 있다 | — | — | A |

@@ -8,8 +8,8 @@
 > **버전** — `sizeof`·`offsetof` 는 C89 부터. **`_Alignof`/`_Alignas`/`_Static_assert` 는 C11부터**,\
 > **`alignof`/`alignas`/`static_assert` 철자는 C23부터**(C11\~C17 은 `<stdalign.h>`/`<assert.h>` 가 필요하다).
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「구조체 패딩·정렬」의 정본은 목록의 **22번 주제**다. 여기는 **`sizeof`·`_Alignof`·`offsetof` 라는 도구**로 그것을 재는 쪽이다.\
-> 「배열 감쇠」는 목록의 **16번 주제**, 「VLA」는 목록의 **18번 주제**, 「유연 배열 멤버」는 목록의 **26번 주제**가 정본이다.
+> **경계** — 「구조체 패딩·정렬」의 정본은 [목록의 **22번 주제**](../22-struct-padding-and-alignment/)다. 여기는 **`sizeof`·`_Alignof`·`offsetof` 라는 도구**로 그것을 재는 쪽이다.\
+> 「배열 감쇠」는 [목록의 **16번 주제**](../16-array-pointer-decay-and-function-parameters/), 「VLA」는 [목록의 **18번 주제**](../18-variable-length-arrays-vla/), 「유연 배열 멤버」는 [목록의 **26번 주제**](../26-flexible-array-members/)가 정본이다.
 
 ## 한눈에 — 쉽게 말하면
 
@@ -420,7 +420,7 @@ sizeof(j++) 뒤 j = 0
 
 - `sizeof(int[n()])` 를 한 번 쓰자 **`n()` 호출 수가 0에서 1로 늘었다.**
 - VLA 의 `sizeof` 는 **배열을 만든 시점의 크기**를 기억한다 — `m` 을 100으로 바꿔도 12 그대로다.
-- 정본은 목록의 **18번 주제**.
+- 정본은 [목록의 **18번 주제**](../18-variable-length-arrays-vla/).
 
 **유연 배열 멤버는 `sizeof` 가 그것을 세지 않는다.**
 
@@ -451,9 +451,9 @@ offsetof(struct Buf, a) = 4
 ```
 
 - ASan 으로 돌려도 **통과**했다 — 할당 크기 계산이 맞다는 확인이다.
-- 정본은 목록의 **26번 주제**.
+- 정본은 [목록의 **26번 주제**](../26-flexible-array-members/).
 
-비용 — VLA 는 스택을 쓴다(목록의 **18번 주제**). 유연 배열 멤버는 **할당 한 번**으로 줄여 준다.
+비용 — VLA 는 스택을 쓴다([목록의 **18번 주제**](../18-variable-length-arrays-vla/)). 유연 배열 멤버는 **할당 한 번**으로 줄여 준다.
 
 ## 문법 — 형태와 규칙
 
@@ -571,7 +571,7 @@ sizeof(struct Tail)=8 offsets b=0 a=4  <- 끝 3바이트가 패딩
 ### 3. 함수 안에서 `sizeof(배열)` 로 원소 수를 센다
 
 - 파라미터의 배열은 **포인터로 감쇠**한다 — 밖에서 40, 안에서 **8**.
-- `-Wsizeof-array-argument`(`-Wall`)가 잡아 준다. 정본은 목록의 **16번 주제**.
+- `-Wsizeof-array-argument`(**플래그 없이도 켜져 있다**)가 잡아 준다. 정본은 [목록의 **16번 주제**](../16-array-pointer-decay-and-function-parameters/).
 - 원소 수를 함께 넘기거나, 매크로를 **호출자 쪽에서** 쓴다.
 
 ### 4. `#pragma pack` 을 「크기를 줄이는 옵션」으로 읽는다
@@ -682,12 +682,12 @@ struct Bad   a...bbbbc.......dddddddd   (24 바이트, '.' 이 구멍)
 - [`03-integer-promotion-and-usual-arithmetic-conversions/`](../03-integer-promotion-and-usual-arithmetic-conversions/) — `sizeof` 의 결과가 `size_t`(부호 없음)라서 나는 사고
 - [`05-explicit-casts-and-pointer-conversions/`](../05-explicit-casts-and-pointer-conversions/) — **정렬 위반 역참조가 왜 UB 인가**의 반대편. 거기는 캐스트가 만들고 여기는 `#pragma pack` 이 만든다
 - [`../../../../data-representation/`](../../../../data-representation/) — **그쪽은 비트·바이트·엔디언까지, 여기는 그 바이트들이 구조체 안에서 어디에 놓이나부터**
-- 목록의 **16번 주제** (배열-포인터 감쇠) — 함수 안에서 `sizeof(arr)` 가 달라지는 것의 정본
-- 목록의 **18번 주제** (VLA) — `sizeof` 가 런타임인 유일한 자리
-- 목록의 **21번 주제** (구조체 선언·초기화) · 목록의 **22번 주제** (구조체 패딩·정렬) — **패딩 규칙의 정본은 22번**. 여기는 **그것을 재는 도구** 쪽
-- 목록의 **24번 주제** (비트필드) — `offsetof` 를 못 쓰는 멤버
-- 목록의 **26번 주제** (유연 배열 멤버) — (7)이 정본으로 다뤄지는 곳
-- 목록의 **37번 주제** (`malloc` 계열) — `malloc` 이 `max_align_t` 정렬을 지키는 계약
+- [목록의 **16번 주제**](../16-array-pointer-decay-and-function-parameters/) (배열-포인터 감쇠) — 함수 안에서 `sizeof(arr)` 가 달라지는 것의 정본
+- [목록의 **18번 주제**](../18-variable-length-arrays-vla/) (VLA) — `sizeof` 가 런타임인 유일한 자리
+- [목록의 **21번 주제**](../21-struct-declaration-initialization-and-designated-initializers/) (구조체 선언·초기화) · [목록의 **22번 주제**](../22-struct-padding-and-alignment/) (구조체 패딩·정렬) — **패딩 규칙의 정본은 22번**. 여기는 **그것을 재는 도구** 쪽
+- [목록의 **24번 주제**](../24-bit-fields/) (비트필드) — `offsetof` 를 못 쓰는 멤버
+- [목록의 **26번 주제**](../26-flexible-array-members/) (유연 배열 멤버) — (7)이 정본으로 다뤄지는 곳
+- [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) (`malloc` 계열) — `malloc` 이 `max_align_t` 정렬을 지키는 계약
 - 목록의 **50번 주제** (`<string.h>` 메모리 함수) — `memcmp` 로 구조체를 비교하면 안 되는 것의 정본
 - 목록의 **53번 주제** (`assert` 와 `static_assert`) — `_Static_assert` 의 정본
 

@@ -515,8 +515,8 @@ _asdict / _replace : {'x': 1, 'y': 2} Point(x=9, y=2)
 
 - **둘 다 `tuple` 의 서브클래스**다. 언패킹·인덱싱·슬라이싱이 그대로 된다.
 - **타입은 다르다**(`Point` 와 `TPoint`) 지만 **값은 같다.**
-- **어노테이션은 런타임에 강제되지 않는다** — `TPoint("문자열", None)` 이 그냥 만들어진다(목록의 **40번 주제**).
-- 셋 중 무엇을 고를지는 목록의 **38번 주제**가 정본이다. 여기서는 **「튜플인가」까지**다.
+- **어노테이션은 런타임에 강제되지 않는다** — `TPoint("문자열", None)` 이 그냥 만들어진다([목록의 **40번 주제**](../40-type-hints-at-runtime/)).
+- 셋 중 무엇을 고를지는 [목록의 **38번 주제**](../38-namedtuple-and-typeddict/)가 정본이다. 여기서는 **「튜플인가」까지**다.
 
 ## 문법 — 형태와 규칙
 
@@ -710,10 +710,10 @@ True True True True
 - 이어지는 곳: [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md) — 튜플이 **키가 되는 조건**.
 - 이어지는 곳: [13-set-and-frozenset](../13-set-and-frozenset/2-summary.md) — 「같은 값이면 한 원소」.
 - 이어지는 곳: [10-list-methods-and-sort-key](../10-list-methods-and-sort-key/2-summary.md) — 튜플을 **정렬 키**로 쓰는 법.
-- 이어지는 곳: 목록의 **19번 주제** 「함수 인자 규칙」 — `*`/`**`·`/`·키워드 전용 인자의 정본.
-- 이어지는 곳: 목록의 **38번 주제** 「`namedtuple`·`NamedTuple`·`TypedDict`」 — **셋 중 무엇을 고르나**는 그쪽.
-- 이어지는 곳: 목록의 **39번 주제** 「`match` 문」 — 시퀀스 패턴이 언패킹과 닮았지만 **소문자 이름이 캡처**가 되는 것.
-- 이어지는 곳: 목록의 **40번 주제** 「타입 힌트의 런타임 의미」 — `NamedTuple` 의 어노테이션이 강제되지 않는 이유.
+- 이어지는 곳: [목록의 **19번 주제**](../19-function-argument-rules/) 「함수 인자 규칙」 — `*`/`**`·`/`·키워드 전용 인자의 정본.
+- 이어지는 곳: [목록의 **38번 주제**](../38-namedtuple-and-typeddict/) 「`namedtuple`·`NamedTuple`·`TypedDict`」 — **셋 중 무엇을 고르나**는 그쪽.
+- 이어지는 곳: [목록의 **39번 주제**](../39-match-statement/) 「`match` 문」 — 시퀀스 패턴이 언패킹과 닮았지만 **소문자 이름이 캡처**가 되는 것.
+- 이어지는 곳: [목록의 **40번 주제**](../40-type-hints-at-runtime/) 「타입 힌트의 런타임 의미」 — `NamedTuple` 의 어노테이션이 강제되지 않는 이유.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — 튜플을 「이렇게 쓴다」까지 다룬다.\
   **경계**: 그쪽은 사용 예시까지, 여기는 「**무엇이 튜플을 만들고 언패킹이 어떻게 실패하나**」부터다.
 - 공식 문서: [Parenthesized forms](https://docs.python.org/3.12/reference/expressions.html#parenthesized-forms) · [Expression lists](https://docs.python.org/3.12/reference/expressions.html#expression-lists) · [Assignment statements](https://docs.python.org/3.12/reference/simple_stmts.html#assignment-statements) · [Tuples](https://docs.python.org/3.12/library/stdtypes.html#tuples)
@@ -737,8 +737,8 @@ True True True True
 
 - **`*args` 를 받는 함수에서 `args` 가 튜플인 이유**는 「호출마다 새로 만들어지는 불변 묶음」이 안전하기 때문이다 —
   가변이면 [20번](../20-mutable-default-args/2-summary.md)과 같은 종류의 사고가 난다.
-- **`match` 문의 시퀀스 패턴**은 언패킹과 모양이 같지만 **소문자 이름이 비교가 아니라 캡처**다(목록의 **39번 주제**).
-- **`typing.NamedTuple` 과 `dataclasses`** 중 무엇을 고를지는 목록의 **36·38번 주제**.
+- **`match` 문의 시퀀스 패턴**은 언패킹과 모양이 같지만 **소문자 이름이 비교가 아니라 캡처**다([목록의 **39번 주제**](../39-match-statement/)).
+- **`typing.NamedTuple` 과 `dataclasses`** 중 무엇을 고를지는 목록의 [**36**](../36-dataclasses/)·[**38**](../38-namedtuple-and-typeddict/)번 주제.
 - **`operator.itemgetter`** 는 튜플 키를 만들어 준다([10번](../10-list-methods-and-sort-key/2-summary.md)).
-- **`(x for x in ...)`** 은 튜플 컴프리헨션이 아니라 **제너레이터 표현식**이다(목록의 **15번 주제**) —
+- **`(x for x in ...)`** 은 튜플 컴프리헨션이 아니라 **제너레이터 표현식**이다([목록의 **15번 주제**](../15-generator-expressions-lazy-eval/)) —
   튜플이 필요하면 `tuple(x for x in ...)`.

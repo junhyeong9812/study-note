@@ -103,7 +103,7 @@ sizeof(j++) 뒤 j = 0
 **무엇을 기억하나**
 
 - **배열을 만든 시점의 크기**다. `m` 을 3에서 100으로 바꿔도 `sizeof a` 는 **12 그대로**였다.
-- 정본은 목록의 **18번 주제**.
+- 정본은 [목록의 **18번 주제**](../18-variable-length-arrays-vla/).
 
 ### 3. 멤버 순서만 바꾸면 ★★★
 
@@ -314,7 +314,7 @@ offsetof(struct Buf, a) = 4
 | 지역성 | 헤더와 데이터가 **붙어 있다** | 떨어져 있다 |
 | 통째로 복사 | `memcpy` 한 번 | 깊은 복사가 필요 |
 
-- 정본은 목록의 **26번 주제**.
+- 정본은 [목록의 **26번 주제**](../26-flexible-array-members/).
 
 ### 6. 빈 구조체
 
@@ -469,7 +469,7 @@ alred.c:2:34: error: ‘_Alignas’ specifiers cannot reduce alignment of ‘x�
 - **`max_align_t` 의 정렬**(여기선 16)을 지킨다. 즉 **어떤 타입으로 써도 정렬이 맞는다.**
 - 확인 방법은 `(unsigned long)p % _Alignof(max_align_t)` 를 찍는 것 — **나머지가 0** 이었다.
 - 더 큰 정렬이 필요하면 **`aligned_alloc`**(C11) 이다. `aligned_alloc(64, 128)` 의 주소가 64의 배수였다.
-- 정본은 목록의 **37번 주제**.
+- 정본은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).
 
 **`alignof` 철자**
 
@@ -647,7 +647,7 @@ bf.c:3:46: error: attempt to take address of bit-field structure member ‘f’
 **비트필드에 쓰면**
 
 - **에러**다 — `attempt to take address of bit-field structure member`.
-- 비트필드 멤버는 **주소가 없다**(바이트 경계에 안 맞을 수 있으므로). 정본은 목록의 **24번 주제**.
+- 비트필드 멤버는 **주소가 없다**(바이트 경계에 안 맞을 수 있으므로). 정본은 [목록의 **24번 주제**](../24-bit-fields/).
 
 ### 12. 그래서 무엇을 하나
 
@@ -754,7 +754,7 @@ memcpy(&b, buf + 1, sizeof b);      /* 정렬·패딩·엔디언에 안 걸린�
 
 - **안 돌려 본 것** — `aligned_alloc` 에서 **크기가 정렬의 배수가 아닐 때** 무엇이 나오는지 ·\
   `-Wpadded` 를 큰 프로젝트에 켰을 때의 소음 · 이 머신의 **실제 캐시 라인 크기** ·\
-  `_Alignas` 를 구조체 멤버에 붙이기 · 비트필드의 배치 규칙(목록의 **24번 주제**).
+  `_Alignas` 를 구조체 멤버에 붙이기 · 비트필드의 배치 규칙([목록의 **24번 주제**](../24-bit-fields/)).
 - **못 잰 것** — 다른 ABI(32비트·ARM)의 배치. 이 머신은 x86-64 하나뿐이고 32비트 헤더가 없다\
   ([04번 형제](../04-floating-point-types-and-conversions/)·[05번 형제](../05-explicit-casts-and-pointer-conversions/)가 같은 자리에서 막혔다).
 

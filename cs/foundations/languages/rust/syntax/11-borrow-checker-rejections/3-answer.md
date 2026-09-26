@@ -474,7 +474,7 @@ fn main() {
 > **같은 바이너리를 20번 돌려 12 대 8** 로 갈렸다 — `HashMap` 의 순회 순서는 **실행마다 바뀐다**\
 > (std 가 `RandomState` 로 해시 씨앗을 실행마다 새로 잡는다 — std 문서가 **순회 순서를 보장하지 않는다**고 못 박는다).\
 > 그래서 **키로 직접 읽는 판**으로 바꿨다.\
-> ★ 「세 판 돌려서 같았다」로는 절대 못 잡는다 — 순서가 걸린 출력은 **근거로 쓰지 않는다**(목록의 **39번 주제**).
+> ★ 「세 판 돌려서 같았다」로는 절대 못 잡는다 — 순서가 걸린 출력은 **근거로 쓰지 않는다**([목록의 **39번 주제**](../39-hashmap-vs-btreemap-and-entry-api/)).
 
 ★ **교훈** — 「이 패턴은 안 된다」로 외우면 반은 틀린다. **「빌림이 어디까지 가나」로 기억한다.**\
 반환하는 판의 이야기는 [**12번 주제**](../12-lifetime-annotations-and-elision/)의 (7)이 정본이다.
@@ -919,11 +919,11 @@ For more information about this error, try `rustc --explain E0597`.
 |---|---|
 | 별칭 규칙 자체(E0499·E0502·NLL·재빌림) | [**10번 주제**](../10-borrowing-and-aliasing-rules/) |
 | 수명 표기와 생략 규칙 | [**12번 주제**](../12-lifetime-annotations-and-elision/) |
-| `RefCell` 내부 가변성 | 목록의 **42번 주제** |
-| `mem::replace`/`take`·`Drop` | 목록의 **44번 주제** |
-| `HashMap::entry` | 목록의 **39번 주제** |
-| `Vec::retain`·`drain` | 목록의 **38번 주제** |
-| `iter`/`iter_mut`/`into_iter` | 목록의 **37번 주제** |
+| `RefCell` 내부 가변성 | [목록의 **42번 주제**](../42-refcell-cell-interior-mutability/) |
+| `mem::replace`/`take`·`Drop` | [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/) |
+| `HashMap::entry` | [목록의 **39번 주제**](../39-hashmap-vs-btreemap-and-entry-api/) |
+| `Vec::retain`·`drain` | [목록의 **38번 주제**](../38-vec-api-capacity-retain-and-drain/) |
+| `iter`/`iter_mut`/`into_iter` | [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/) |
 | `unsafe` 와 안전한 표면 | 목록의 **56번 주제** |
 
 **왜 그런가**

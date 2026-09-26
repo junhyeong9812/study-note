@@ -328,7 +328,7 @@ dol.kt:7:25: error: unsupported escape sequence.
   람다 안이면 레벨 검사 뒤에야 평가된다. `kotlin-logging` 류가 이 형태다.
 - 같은 성질을 갖는 다른 자리 — **`require`/`check` 의 메시지**다.\
   `require(ok) { "비싼 메시지 $x" }` 는 람다라 조건이 참이면 안 만들지만,\
-  `require(ok, "비싼 메시지 $x")` 처럼 값으로 넘기면 항상 만든다. 목록의 **51번 주제**가 정본이 된다.
+  `require(ok, "비싼 메시지 $x")` 처럼 값으로 넘기면 항상 만든다. [목록의 **51번 주제**](../51-preconditions-require-check-error-todo/)가 정본이 된다.
 
 ### 9. 이 주제에서 "언어 보장" 과 "구현 세부" 의 경계는 어디인가
 

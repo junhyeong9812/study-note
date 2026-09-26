@@ -10,8 +10,8 @@
 > **버전** — `let`·`run`·`with`·`apply` 는 **1.0**, `also` 만 **1.1** 이다(`@SinceKotlin("1.1")` 이 바이트코드에 남아 있다). 그 뒤로 시그니처가 바뀐 적이 없다.
 > **경계** — 람다 문법·클로저·마지막 인자 람다는 [10번 주제](../10-lambdas-and-higher-order-functions/)가, `inline` 이 무엇을 없애고 무엇을 제약하는지는 [11번 주제](../11-inline-functions/)가,\
 > 다섯이 전부 **확장 함수**라는 사실과 그 디스패치는 [13번 주제](../13-extension-functions-and-properties/)가 정본이다.\
-> 여기는 **다섯을 어떻게 갈라서 고르나**만 다룬다. 수신자 지정 람다로 DSL 을 짜는 것은 목록의 **37번 주제**,\
-> `?.`·`?:` 자체의 의미는 [03번 주제](../03-null-safe-types/), null 처리 관용구 전체는 목록의 **58번 주제**다.
+> 여기는 **다섯을 어떻게 갈라서 고르나**만 다룬다. 수신자 지정 람다로 DSL 을 짜는 것은 [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/),\
+> `?.`·`?:` 자체의 의미는 [03번 주제](../03-null-safe-types/), null 처리 관용구 전체는 [목록의 **58번 주제**](../58-null-handling-idioms-let-requirenotnull-and-elvis-return/)다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ## 한눈에 — 쉽게 말하면
@@ -124,7 +124,7 @@ G also  가 돌려준 것이 그 객체인가 : true
 - ★★ **`A`·`B`·`C` 의 타입이 `String` 이고 `D`·`E` 의 타입이 `Cup` 이다.** 이 한 줄이 두 번째 축 전부다.\
   `${a::class.simpleName}` 로 **런타임 타입을 직접 찍었다** — 컴파일러의 추론을 믿고 적은 것이 아니다.
 - ★ **`F`·`G` 가 `true`** 라는 것은 `apply`/`also` 가 **새 객체를 만들지 않고 받은 그것을 그대로 돌려준다**는 뜻이다.\
-  `===` 가 참조 동일성이라는 것의 정본은 목록의 **32번 주제**다.
+  `===` 가 참조 동일성이라는 것의 정본은 [목록의 **32번 주제**](../32-equality-and-equals-contract/)다.
 - ★ `let`/`also` 안에서는 `it.ml`, `run`/`with`/`apply` 안에서는 그냥 `ml` 로 적었다.\
   **이름을 바꿔 적으면 컴파일이 안 된다** — (7)에서 에러 전문을 본다.
 
@@ -801,9 +801,9 @@ run { R }            // 수신자 없는 여섯 번째 오버로드 — 지역 �
 - [13번 주제 — 확장 함수·확장 프로퍼티](../13-extension-functions-and-properties/) — **그쪽은 확장이 정적 메서드라는 것이 정본, 여기는 다섯이 그 문법 위에 서 있다는 사실만.**
 - [03번 주제 — null 안전 타입](../03-null-safe-types/) — **그쪽은 `?.`·`?:`·`!!` 의 의미가 정본, 여기는 `?.` 와 `let` 의 역할 분담만.**
 - [12번 주제 — `reified` 타입 파라미터](../12-reified-type-parameters/) — (6)에서 본 박싱과 소거의 정본.
-- 목록의 **37번 주제** — 수신자 지정 람다로 DSL 을 짜는 법.
-- 목록의 **58번 주제** — null 처리 관용구를 계층별로 고르는 법.
-- 목록의 **32번 주제** — `===` 와 `==` 의 의미.
+- [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/) — 수신자 지정 람다로 DSL 을 짜는 법.
+- [목록의 **58번 주제**](../58-null-handling-idioms-let-requirenotnull-and-elvis-return/) — null 처리 관용구를 계층별로 고르는 법.
+- [목록의 **32번 주제**](../32-equality-and-equals-contract/) — `===` 와 `==` 의 의미.
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — 왜 이 언어를 고르나(설계 논지).
 
 ## 용어 풀이
@@ -829,4 +829,4 @@ run { R }            // 수신자 없는 여섯 번째 오버로드 — 지역 �
 - ★ **`@ExtensionFunctionType`** 이 (2)에서 말한 「디스크립터가 못 담는 구분」의 실체다.\
   `kotlin.Metadata` 의 문자열 배열에 `Lkotlin/ExtensionFunctionType;` 이 그대로 들어 있다.\
   **이 문서는 그 메타데이터 문자열을 찍어 보지는 않았다** — `javap -v` 의 상수 풀에서 본 것까지다.
-- **코루틴의 `suspend` 람다**도 수신자 지정 람다와 조합된다(`suspend T.() -> R`). 정본은 목록의 **52번 주제**다.
+- **코루틴의 `suspend` 람다**도 수신자 지정 람다와 조합된다(`suspend T.() -> R`). 정본은 [목록의 **52번 주제**](../52-coroutine-basics-suspend-scope-launch-async/)다.

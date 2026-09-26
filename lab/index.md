@@ -12,3 +12,4 @@
 | [sorting-and-graph](sorting-and-graph/) | 정렬·그래프 자원 제한 실측 | 100,000개에서 Quick 7.6ms vs Bubble 14,033ms(1,846배) — 그래프 4종은 모두 O(V+E)라 선택 기준은 속도가 아니라 성질 | 완료 |
 | [thread-comparison](thread-comparison/) | sleep 루프 vs ScheduledExecutor | ScheduledExecutorService 표준편차 0.00ms vs Manual +0.8ms 누적 드리프트 — 주기 작업엔 Scheduled | 완료(1케이스) |
 | [redis-atomicity-lab](redis-atomicity-lab/) | Redis 원자성(Lua/WATCH/Redisson) | 설계·인프라·시나리오 4종 완성, **실험 미실행 — 모든 수치는 예상값** | 설계만 |
+| [backend-labs](backend-labs/) | 정합성·동시성(01~09) · 멀티테넌시·인증(10~17) API 구현 실험 17종 | — | 예정 |

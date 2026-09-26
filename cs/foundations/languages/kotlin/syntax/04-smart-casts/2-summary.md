@@ -8,7 +8,7 @@
 > ★ **K1 과 비교하지 못했다** — 이 컴파일러는 `-language-version 1.9` 를 거부한다(아래 「실행 검증」).
 > **경계** — [03번 주제](../03-null-safe-types/)는 **`?`·`?.`·`?:`·`!!` 라는 문법**이 정본이다.\
 > 여기는 **「그 문법을 안 써도 되게 해 주는 것과, 그것이 안 되는 조건」** 만 다룬다.\
-> `is`/`as`/`as?` 라는 **연산자 자체**의 정본은 목록의 **33번 주제**다.\
+> `is`/`as`/`as?` 라는 **연산자 자체**의 정본은 [목록의 **33번 주제**](../33-type-checks-and-casts-is-as/)다.\
 > Java 의 `instanceof` 패턴은 [`../../../java/syntax/22-instanceof-type-patterns/`](../../../java/syntax/22-instanceof-type-patterns/) 가 정본이다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -404,7 +404,7 @@ x.length                      // ERROR — 밖에서는 다시 Any
 
 - 좁힘의 범위는 「**검사가 참인 것이 보장되는 구간**」이다. `if` 블록 안, `&&` 의 오른쪽, `||` 뒤의 `return` 아래.
 - **`is` 로 좁힌 것과 `!= null` 로 좁힌 것은 같은 메커니즘**이다 — `!= null` 은 `is T` 의 특수한 경우로 읽는다.
-- `require`·`checkNotNull` 이 좁혀 주는 것은 **contract** 덕분이다. 내가 만든 함수도 contract 를 달면 된다(목록의 **51번 주제**).
+- `require`·`checkNotNull` 이 좁혀 주는 것은 **contract** 덕분이다. 내가 만든 함수도 contract 를 달면 된다([목록의 **51번 주제**](../51-preconditions-require-check-error-todo/)).
 - **안 되면 메시지가 이유를 말해 준다** — 세 문구 중 하나다((2)).
 
 ## 어디서 틀리나
@@ -477,9 +477,9 @@ x.length                      // ERROR — 밖에서는 다시 Any
 - [`../../../java/syntax/22-instanceof-type-patterns/`](../../../java/syntax/22-instanceof-type-patterns/) — **Java 의 `instanceof` 패턴 정본.** Java 는 **변수를 새로 선언**해서 같은 문제를 피했다 — Kotlin 은 기존 변수를 좁힌다
 - [`../../../java/syntax/23-switch-pattern-matching/`](../../../java/syntax/23-switch-pattern-matching/) — `when (x) { is … }` 의 Java 쪽 대응
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — 「왜 이 언어인가」. 문법이 아니라 선택 논증
-- 목록의 **33번 주제**(`is`/`as`/`as?`) — 캐스트 연산자 자체의 정본
-- 목록의 **51번 주제**(`require`/`check`) — contract 가 스마트 캐스트를 만드는 방법
-- 목록의 **23번 주제**(`sealed` + `when` 완결성) — `when` 의 가지에서 좁혀지는 것의 다음 단계
+- [목록의 **33번 주제**](../33-type-checks-and-casts-is-as/)(`is`/`as`/`as?`) — 캐스트 연산자 자체의 정본
+- [목록의 **51번 주제**](../51-preconditions-require-check-error-todo/)(`require`/`check`) — contract 가 스마트 캐스트를 만드는 방법
+- [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/)(`sealed` + `when` 완결성) — `when` 의 가지에서 좁혀지는 것의 다음 단계
 
 ## 용어 풀이
 

@@ -4,6 +4,20 @@
 //   ② 범위 표기의 물결표(`0~1023`)가 GFM 취소선으로 먹혀 **글자가 지워지는 것**
 //   ③ 표의 칸 수가 행마다 다른 것 (셀 안의 `|` 를 이스케이프 안 해서)
 //   ④ 문단 안 `**` 개수가 홀수인 것 — ①이 **못 보는 조용한 쪽**이다
+//   ⑤ 렌더 후 본문에 백틱이 남은 것 — 코드 스팬이 깨진 자리
+//   ⑥ 코드 스팬이 둘로 쪼개져 글자가 사이로 샌 것 — ⑤가 **못 보는 더 조용한 쪽**
+//
+// ★ ⑥이 왜 따로 필요한가 — 홑백틱 스팬 안의 백틱이 **짝수**면 별표가 하나도 안 남는다:
+//     `설정 `port` 의 값`  ->  <code>설정 </code>port<code> 의 값</code>
+//   백틱이 안 남으니 ⑤가 통과하는데, 실제로는 스팬이 둘로 쪼개지고 `port` 가 **본문으로 샌다.**
+//   ★ 판정 — `</code>X<code>` 에서 **X 가 공백 없는 순수 식별자**일 때만 잡는다.
+//   `a`·`b` 나 `a`/`b` 같은 정상 나열(X 가 구분 문자)과 `String`:`&str`(X 가 `:`)은 대상이 아니다.
+//   실측 — 저장소 전수에서 이 좁힌 판정이 **진짜 3건**을 찾았고 오탐은 0이었다.
+//
+// ★ ⑤가 왜 따로 필요한가 — **홑백틱 스팬 안에 백틱을 넣으면** 스팬이 깨진다.
+//   컴파일러 진단을 인용하는 갈래에서 구조적으로 자주 난다(rustc 문구가 백틱을 쓴다):
+//     `expected reference `&String``   -> 깨짐. 겹백틱이라야 한다: ``expected reference `&String` ``
+//   ①~④ 어디에도 안 걸리고, 실측에서 저장소 전수 9건이 이 검사로만 드러났다(오탐 0).
 //
 // ★ ④가 왜 따로 필요한가 — ①은 「렌더 후 본문에 별표가 남았나」만 본다.
 //   깨진 `**` 가 **문단 뒤쪽의 다른 `**` 와 우연히 짝이 맞으면 별표가 안 남는다.**
@@ -152,7 +166,29 @@ for (const [f, n, ex] of strike) {
 }
 
 // ④ 문단 안 `**` 홀수 — 짝이 어긋난 볼드(①이 못 보는 조용한 쪽)
-const stripCode = (t) => t.replace(/`[^`]*`/g, '');
+// ★ 코드 스팬을 통째로 지운다. `int **`·`10**7` 같은 것이 `**` 로 세지면 안 된다.
+//   ★★ 단순한 /`[^`]*`/ 로는 **여러 겹 백틱**(```` ```text ````)을 잘못 토큰화해 오탐이 난다
+//   (실측 1건). CommonMark 대로 **여는 백틱 수와 같은 길이의 닫는 런**을 찾는다.
+function stripCode(t) {
+  let out = '', i = 0;
+  while (i < t.length) {
+    if (t[i] !== '`') { out += t[i++]; continue; }
+    let n = 0;
+    while (t[i + n] === '`') n++;
+    let j = i + n, found = -1;
+    while (j < t.length) {
+      if (t[j] === '`') {
+        let m = 0;
+        while (t[j + m] === '`') m++;
+        if (m === n) { found = j; break; }
+        j += m;
+      } else j++;
+    }
+    if (found >= 0) { i = found + n; continue; }   // 스팬 통째로 버린다
+    out += '`'.repeat(n); i += n;                  // 안 닫힌 백틱은 글자로 둔다
+  }
+  return out;
+}
 const oddBad = [];
 let oddTotal = 0;
 for (const f of files) {
@@ -184,4 +220,45 @@ for (const [f, hits] of oddBad) {
     console.log(`      :${ln}  ` + txt.replace(/\s+/g, ' ').trim().slice(0, 110));
 }
 
-process.exit(total + strikeTotal + tableTotal + oddTotal ? 1 : 0);
+// ⑤ 렌더 후 본문에 남은 백틱 — 깨진 코드 스팬
+const btBad = [];
+let btTotal = 0;
+for (const f of files) {
+  const src = fs.readFileSync(f, 'utf8');
+  if (!src.includes('`')) continue;
+  const html = micromark(src, { extensions: [gfm()], htmlExtensions: [gfmHtml()] });
+  // 코드 블록·코드 스팬 안의 백틱은 내용이므로 먼저 버린다
+  const stripped = html.replace(/<pre[\s\S]*?<\/pre>/g, '')
+                       .replace(/<code[\s\S]*?<\/code>/g, '');
+  const hits = stripped.match(/[^\n]{0,60}`[^\n]{0,60}/g) || [];
+  if (hits.length) { btBad.push([f, hits]); btTotal += hits.length; }
+}
+console.log(`[백틱] 렌더 후 본문에 백틱이 남은 파일 ${btBad.length}개 · 총 ${btTotal}건`);
+for (const [f, hits] of btBad) {
+  console.log('  ' + f + `  (${hits.length}건)`);
+  for (const h of hits.slice(0, 3)) console.log('      ' + h.replace(/\s+/g, ' ').trim());
+}
+
+// ⑥ 쪼개진 코드 스팬 — </code>식별자<code>
+const SPLIT = /<\/code>([^<\s][^<]{0,40}?)<code>/g;
+const splitBad = [];
+let splitTotal = 0;
+for (const f of files) {
+  const src = fs.readFileSync(f, 'utf8');
+  if (!src.includes('`')) continue;
+  const html = micromark(src, { extensions: [gfm()], htmlExtensions: [gfmHtml()] });
+  const hits = [];
+  let m;
+  SPLIT.lastIndex = 0;
+  while ((m = SPLIT.exec(html))) {
+    if (/^[A-Za-z0-9_.]+$/.test(m[1])) hits.push(m[0]);
+  }
+  if (hits.length) { splitBad.push([f, hits]); splitTotal += hits.length; }
+}
+console.log(`[쪼개진 스팬] 코드 스팬이 둘로 갈라져 글자가 샌 파일 ${splitBad.length}개 · 총 ${splitTotal}건`);
+for (const [f, hits] of splitBad) {
+  console.log('  ' + f + `  (${hits.length}건)`);
+  for (const h of hits.slice(0, 3)) console.log('      ' + h);
+}
+
+process.exit(total + strikeTotal + tableTotal + oddTotal + btTotal + splitTotal ? 1 : 0);

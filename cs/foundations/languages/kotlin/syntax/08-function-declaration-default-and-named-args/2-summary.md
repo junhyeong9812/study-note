@@ -9,7 +9,7 @@
 > 그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).
 > **버전** — 기본 인자·이름 붙인 인자·단일 표현식 함수는 1.0. `@JvmOverloads` 도 1.0.
 > **경계** — `vararg`·`spread`·로컬 함수·`infix` 는 [09번 주제](../09-varargs-spread-local-and-infix-functions/)가 정본이다.\
-> 람다와 고차 함수는 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/), `@JvmStatic`/`@JvmName` 등 상호운용 애너테이션 **전체**는 목록의 **39번 주제**가 정본이다 —\
+> 람다와 고차 함수는 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/), `@JvmStatic`/`@JvmName` 등 상호운용 애너테이션 **전체**는 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이다 —\
 > 여기서는 `@JvmOverloads` **하나만** 기본 인자의 짝으로 다룬다.\
 > **Java 쪽 정본은 [`../../../java/syntax/08-method-declaration-overloading/`](../../../java/syntax/08-method-declaration-overloading/)** 다.
 > 이 본문은 Claude 작성이다(원고 없음).
@@ -421,7 +421,7 @@ Unit === Unit 인가(싱글턴)? true
 - `val u: Unit = Unit` 처럼 **변수에 담을 수 있다.** 제네릭 자리에도 들어간다(`(Int) -> Unit`).
 - 바이트코드에서는 **반환 타입이 `void` 로 내려가는 경우가 많다** — 하지만 그건 구현이고,\
   **타입 시스템 안에서 `Unit` 은 다른 타입들과 똑같은 타입**이다.
-- 값이 아예 없는 타입은 `Nothing` 이다 — 정본은 목록의 **34번 주제**.
+- 값이 아예 없는 타입은 `Nothing` 이다 — 정본은 [목록의 **34번 주제**](../34-exceptions-nothing-and-try-expression/).
 
 비용 — 0(대개 `void` 로 접힌다).
 
@@ -526,7 +526,7 @@ J2.java:3: error: method greet in class KKt cannot be applied to given types;
 - **마스크가 `bipush 6` 으로 (1)의 `callIt` 과 똑같다.** `@JvmOverloads` 는 **Java 용 얇은 껍데기**를 더한 것이다.
 - ★ **이름 붙인 인자는 Java 에 아예 없다.** `@JvmOverloads` 로도 못 살린다 —\
   Java 쪽은 **오른쪽에서부터 연속으로 생략**하는 것만 된다. `punct` 만 넘기는 호출은 Java 에서 불가능하다.
-- 상호운용 애너테이션 **전체**의 정본은 목록의 **39번 주제**다.
+- 상호운용 애너테이션 **전체**의 정본은 [목록의 **39번 주제**](../39-java-interop-annotations/)다.
 
 비용 — 오버로드 수만큼 메서드가 는다(`n` 개 기본값이면 `n` 개).
 
@@ -613,7 +613,7 @@ fun hello(name: String, greeting: String = "안녕") = "$greeting, $name"
 | `@JvmOverloads` 면 중간 인자도 될 줄 앎 | **오른쪽부터 연속 생략만** 된다 | Java 쪽은 전부 넘기거나 래퍼를 만든다 |
 | 파라미터 이름을 리팩터링 | 이름 붙인 인자로 부르던 **호출자가 깨진다** | 공개 API 의 파라미터 이름도 계약이다 |
 | 파라미터가 33개 넘음 | `$default` 의 마스크가 하나 더 붙는다 | 그 전에 데이터 클래스로 묶는다 |
-| `Unit` 을 `void` 로 생각 | `Unit` 은 **값이 있는 타입**이다. 제네릭에 들어간다 | `Nothing` 과 구분한다(목록의 34번 주제) |
+| `Unit` 을 `void` 로 생각 | `Unit` 은 **값이 있는 타입**이다. 제네릭에 들어간다 | `Nothing` 과 구분한다([목록의 **34번 주제**](../34-exceptions-nothing-and-try-expression/)) |
 
 ## 구현 세부사항 대 언어 보장
 
@@ -687,10 +687,10 @@ fun hello(name: String, greeting: String = "안녕") = "$greeting, $name"
 - [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/)(람다와 고차 함수) — 함수 타입 파라미터·마지막 인자 람다의 정본
 - [목록의 **11번 주제**](../11-inline-functions/)(인라인 함수) — 인라인이 기본 인자와 만나는 자리
 - [목록의 **13번 주제**](../13-extension-functions-and-properties/)(확장 함수) — 수신자가 앞에 붙는 또 다른 선언 형태
-- 목록의 **15번 주제**(클래스 선언 — 주 생성자) — **생성자에도 같은 `$default` 가 만들어진다**
-- 목록의 **22번 주제**(`data class`) — `copy()` 가 기본 인자로 만들어지는 대표 사례
-- 목록의 **34번 주제**(예외·`Nothing` 타입) — `Unit` 과 `Nothing` 의 구분
-- 목록의 **39번 주제**(Java 상호운용 애너테이션) — `@JvmOverloads` **전체**의 정본. 여기는 기본 인자의 짝으로만 다뤘다
+- [목록의 **15번 주제**](../15-class-declaration-constructors-and-init/)(클래스 선언 — 주 생성자) — **생성자에도 같은 `$default` 가 만들어진다**
+- [목록의 **22번 주제**](../22-data-class-generated-members/)(`data class`) — `copy()` 가 기본 인자로 만들어지는 대표 사례
+- [목록의 **34번 주제**](../34-exceptions-nothing-and-try-expression/)(예외·`Nothing` 타입) — `Unit` 과 `Nothing` 의 구분
+- [목록의 **39번 주제**](../39-java-interop-annotations/)(Java 상호운용 애너테이션) — `@JvmOverloads` **전체**의 정본. 여기는 기본 인자의 짝으로만 다뤘다
 
 ## 용어 풀이
 
@@ -734,7 +734,7 @@ public final class C {
 ```
 
   ★ **`$default` 대신 「마스크가 붙은 생성자 오버로드」가 생긴다** — 이름을 못 바꾸니 시그니처로 가른 것이다.\
-  마커 타입도 `Object` 가 아니라 **`DefaultConstructorMarker`** 다. 클래스 선언의 정본은 목록의 **15번 주제**.
+  마커 타입도 `Object` 가 아니라 **`DefaultConstructorMarker`** 다. 클래스 선언의 정본은 [목록의 **15번 주제**](../15-class-declaration-constructors-and-init/).
 - `@JvmOverloads` 가 **오른쪽부터** 떼는 이유는 Java 가 **연속 접미사 생략**만 표현할 수 있기 때문이다.\
   `greet(name, punct)` 같은 건너뛴 조합은 **시그니처가 `(String, String)` 으로 겹쳐** 만들 수가 없다.
 - 마스크가 **`-1`** 로 보이는 것(2번)은 32비트가 전부 1이라서다. `javap` 는 `iconst_m1` 로 표시한다.

@@ -4,7 +4,7 @@
 > 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
 > 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
 > 선행은 [01번 주제](../01-val-var-and-basic-types/)·[03번 주제](../03-null-safe-types/)·[04번 주제](../04-smart-casts/)다.
-> 이 주제는 [07번](../07-loops-ranges-and-labels/)과 목록의 **23번 주제**·**34번 주제**의 뿌리다.
+> 이 주제는 [07번](../07-loops-ranges-and-labels/)과 [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/)·**34번 주제**의 뿌리다.
 > Java 쪽 짝은 [`../../../java/syntax/21-switch-statement-and-expression/`](../../../java/syntax/21-switch-statement-and-expression/)다.
 > 문항 11개 중 코드블록이 붙는 예측형은 6개다.
 > 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다 — 5번만 타깃을 따로 묻는다.

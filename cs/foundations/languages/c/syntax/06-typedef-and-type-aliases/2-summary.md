@@ -8,7 +8,7 @@
 > **버전** — `typedef` 는 C89 부터 같다. **같은 `typedef` 를 두 번 쓰는 것**은 C11 부터 적법하다.
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 결과는 컴파일·실행으로 접지했다.
 > **경계** — 「선언을 안쪽→바깥으로 읽는 법」은 [01번 형제](../01-declaration-syntax-and-reading/)가 정본이다.\
-> 여기는 **그 선언을 `typedef` 로 자르는 쪽**만 쓴다. 「불완전 타입과 opaque struct」의 정본은 목록의 **25번 주제**다.
+> 여기는 **그 선언을 `typedef` 로 자르는 쪽**만 쓴다. 「불완전 타입과 opaque struct」의 정본은 [목록의 **25번 주제**](../25-incomplete-types-and-opaque-struct/)다.
 
 ## 한눈에 — 쉽게 말하면
 
@@ -232,8 +232,8 @@ opq2.c:2:37: error: invalid application of ‘sizeof’ to incomplete type ‘S�
 
 - **`typedef struct S S;` 한 줄이면 헤더가 완성**된다. `struct S` 의 정의는 `.c` 에만 둔다.
 - 대가는 **포인터로만 다뤄야 하는 것**이다 — 크기를 모르니 값으로 못 넘기고 스택에 못 놓는다.
-- 그래서 `make`/`free` 짝이 따라온다(목록의 **38번 주제**).
-- 정본은 목록의 **25번 주제**. 여기서는 **`typedef` 가 그 관용구를 어떻게 가능하게 하나**까지만 본다.
+- 그래서 `make`/`free` 짝이 따라온다([목록의 **38번 주제**](../38-expressing-ownership-conventions-in-code/)).
+- 정본은 [목록의 **25번 주제**](../25-incomplete-types-and-opaque-struct/). 여기서는 **`typedef` 가 그 관용구를 어떻게 가능하게 하나**까지만 본다.
 
 비용 — 할당이 강제된다. 그 대신 **내부를 바꿔도 헤더 사용자가 다시 컴파일하지 않아도 된다.**
 
@@ -344,7 +344,7 @@ qsort: 1 2 5 9
 - **두 배열이 서로 대입된다.** 같은 타입이라는 뜻이다.
 - `qsort` 의 비교자도 `typedef int (*Cmp)(const void *, const void *);` 로 잘라 두면\
   **`qsort(a, 4, sizeof a[0], c)`** 가 그냥 읽힌다.
-- **함수 포인터는 `typedef` 가 가장 값을 내는 자리**다. 정본은 목록의 **35번 주제**.
+- **함수 포인터는 `typedef` 가 가장 값을 내는 자리**다. 정본은 [목록의 **35번 주제**](../35-function-pointers-and-callback-tables/).
 
 비용 — 이름이 하나 늘어난다. **괄호 두 겹 이상이면 그 값이 비용보다 크다.**
 
@@ -381,9 +381,9 @@ arr.c:4:62: warning: ‘sizeof’ on array function parameter ‘r’ will retur
 
 - **`Row` 라는 이름이 「배열을 통째로 넘긴다」는 인상을 주는데 실제로는 포인터가 넘어간다.**
 - `sizeof r` 이 16이 아니라 8이고, `r[0] = 99` 가 **호출자의 배열을 바꾼다.**
-- gcc 가 `-Wsizeof-array-argument` 로 잡아 준다(`-Wall` 에 포함).
+- gcc 가 `-Wsizeof-array-argument` 로 잡아 준다(**플래그 없이도 켜져 있다**).
 - **별칭이 사실을 가린 사례**다 — (5)와 성질이 같다.
-- 감쇠 규칙 자체의 정본은 목록의 **16번 주제**.
+- 감쇠 규칙 자체의 정본은 [목록의 **16번 주제**](../16-array-pointer-decay-and-function-parameters/).
 
 비용 — 없다. **배열 별칭을 파라미터에 안 쓰면 된다.**
 
@@ -575,12 +575,12 @@ re.c:1:13: note: previous declaration of ‘T’ with type ‘T’ {aka ‘int�
 - [`01-declaration-syntax-and-reading/`](../01-declaration-syntax-and-reading/) — **그쪽은 「`char *(*f[3])(int)` 를 안쪽→바깥으로 읽는 법」까지, 여기는 「그것을 `typedef` 로 자르는 법」부터.** 「괄호 두 겹이면 자른다」는 판단 기준이 거기 있다
 - [`02-basic-types-sizes-and-fixed-width-integers/`](../02-basic-types-sizes-and-fixed-width-integers/) — `int32_t`·`size_t` 가 전부 `typedef` 다. **그쪽은 「어느 타입을 고르나」까지, 여기는 「그 별칭이 무엇인가」부터**
 - [`05-explicit-casts-and-pointer-conversions/`](../05-explicit-casts-and-pointer-conversions/) — 별칭이 `const` 를 감추면, 그것을 캐스트로 떼는 코드가 따라온다
-- 목록의 **16번 주제** (배열-포인터 감쇠) — (7)의 감쇠 규칙 정본
-- 목록의 **21번 주제** (구조체 선언·초기화) — `typedef struct { ... } T;` 의 정본
-- 목록의 **25번 주제** (불완전 타입과 opaque struct) — (4)가 정본으로 다뤄지는 곳
-- 목록의 **31번 주제** (`const` 와 포인터 const 위치) — (5)의 `char * const` ↔ `const char *` 정본
-- 목록의 **35번 주제** (함수 포인터와 콜백 테이블) — (6)이 정본으로 다뤄지는 곳
-- 목록의 **40번 주제** (`_Generic`) — 이 문서의 주된 증명 도구
+- [목록의 **16번 주제**](../16-array-pointer-decay-and-function-parameters/) (배열-포인터 감쇠) — (7)의 감쇠 규칙 정본
+- [목록의 **21번 주제**](../21-struct-declaration-initialization-and-designated-initializers/) (구조체 선언·초기화) — `typedef struct { ... } T;` 의 정본
+- [목록의 **25번 주제**](../25-incomplete-types-and-opaque-struct/) (불완전 타입과 opaque struct) — (4)가 정본으로 다뤄지는 곳
+- [목록의 **31번 주제**](../31-const-and-pointer-const-placement/) (`const` 와 포인터 const 위치) — (5)의 `char * const` ↔ `const char *` 정본
+- [목록의 **35번 주제**](../35-function-pointers-and-callback-tables/) (함수 포인터와 콜백 테이블) — (6)이 정본으로 다뤄지는 곳
+- [목록의 **40번 주제**](../40-generic-selection-c11/) (`_Generic`) — 이 문서의 주된 증명 도구
 - 목록의 **42번 주제** (함수형 매크로의 함정) — `#define` 쪽의 정본
 
 ## 용어 풀이

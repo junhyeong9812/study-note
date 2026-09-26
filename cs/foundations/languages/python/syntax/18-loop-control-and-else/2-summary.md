@@ -798,8 +798,8 @@ SyntaxError: 'continue' not properly in loop
 - 함께 보는 곳: [15-generator-expressions-lazy-eval](../15-generator-expressions-lazy-eval/2-summary.md) — `range` 와 제너레이터가 어떻게 다른가.
 - 함께 보는 곳: [17-generators-yield](../17-generators-yield/2-summary.md) — `for` 가 제너레이터를 소비하는 쪽.
 - 함께 보는 곳: [19-function-argument-rules](../19-function-argument-rules/2-summary.md) — `SyntaxError`(정의 시점)와 실행 시점 오류를 가르는 층의 정본.
-- 이어지는 곳: 목록의 **44번 주제** 「`itertools`」 — `zip_longest`·`islice`·`groupby` 의 정본.
-- 이어지는 곳: 목록의 **39번 주제** 「`match` 문」 — 또 하나의 흐름 제어.
+- 이어지는 곳: [목록의 **44번 주제**](../44-itertools/) 「`itertools`」 — `zip_longest`·`islice`·`groupby` 의 정본.
+- 이어지는 곳: [목록의 **39번 주제**](../39-match-statement/) 「`match` 문」 — 또 하나의 흐름 제어.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — `for`·`while` 을 「이렇게 쓴다」까지가 그쪽이다.\
   **경계**: 여기는 「**`else` 가 언제 돌고 순회 중 변경이 무엇을 망가뜨리나**」부터다.
 - 공식 문서: [`for` 문](https://docs.python.org/3.12/reference/compound_stmts.html#the-for-statement) · [`zip`](https://docs.python.org/3.12/library/functions.html#zip) · [Ranges](https://docs.python.org/3.12/library/stdtypes.html#ranges) · [PEP 618](https://peps.python.org/pep-0618/)
@@ -826,9 +826,9 @@ SyntaxError: 'continue' not properly in loop
 
 - **`for ... else` 를 쓰지 말자는 주장**도 오래됐다 — 언어 설계자 본인이 이름 선택을 후회한다고 밝힌 적이 있다.
   **읽는 사람이 `if`/`else` 로 오독하는 비율**이 높기 때문이다. 팀 코드에서는 플래그 변수나 함수 분리(`return` 으로 탈출)가 더 안전하다.
-- **`try`/`finally` 안의 `break`** 는 `finally` 를 반드시 돌린 뒤에 나간다(목록의 **25번 주제**).
-- **`itertools.zip_longest`** 의 `fillvalue` 는 **하나**뿐이다 — 이터러블마다 다른 채움값을 주려면 직접 짜야 한다(목록의 **44번 주제**).
+- **`try`/`finally` 안의 `break`** 는 `finally` 를 반드시 돌린 뒤에 나간다([목록의 **25번 주제**](../25-exceptions-and-finally/)).
+- **`itertools.zip_longest`** 의 `fillvalue` 는 **하나**뿐이다 — 이터러블마다 다른 채움값을 주려면 직접 짜야 한다([목록의 **44번 주제**](../44-itertools/)).
 - **`enumerate` 의 `start` 에 음수·큰 수**도 들어간다 — 세는 수일 뿐이라 제약이 없다.
-- **비동기 판**은 `async for` 이고 `else` 도 붙는다(목록의 **51번 주제**).
+- **비동기 판**은 `async for` 이고 `else` 도 붙는다([목록의 **51번 주제**](../51-asyncio-coroutine-basics/)).
 - **순회 중 변경을 언어가 아예 막는 것이 옳은가**는 설계 논쟁이다 — dict·set 은 **해시 테이블 재배치**로 메모리 안전이 깨질 수 있어 막고,
   리스트는 인덱스 접근이라 **안전하긴 해서** 안 막는다. **「안전하다」와 「옳다」가 다른 자리**다.

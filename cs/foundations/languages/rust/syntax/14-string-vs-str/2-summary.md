@@ -326,7 +326,7 @@ For more information about this error, try `rustc --explain E0308`.
 
 - ★★ **E0308.** 리터럴은 `&str` 이고 `&String` 이 아니다 — **강제는 `String` → `str` 방향으로만 돈다.**\
   없는 `String` 을 만들어 줄 수는 없으니 **반대 방향은 애초에 없다.**
-- ★ `= note:` 가 `found reference `&'static str`` 이라고 **수명까지 찍어 준다** —\
+- ★ `= note:` 가 ``found reference `&'static str` `` 이라고 **수명까지 찍어 준다** —\
   리터럴이 `&'static str` 이라는 것이 여기서 드러난다([**07번 주제**](../07-const-static-and-const-fn/)와 잇는다).
 - 호출부가 고칠 방법은 **`&String::from("hello")` 를 만드는 것**뿐이다 — **쓸 일 없는 힙 할당**을 강요하는 시그니처다.
 
@@ -632,7 +632,7 @@ fn main() {
 ```
 
 ★ `impl AsRef<str>`·`impl Into<String>` 으로 인자를 여는 방법이 따로 있다 — 이름만 적어 둔다.
-**변환 트레이트 설계는 목록의 29번 주제가 정본**이다.
+**변환 트레이트 설계는 [목록의 29번 주제](../29-conversion-traits-from-into-tryfrom-asref-borrow/)가 정본**이다.
 
 ### (5) `&str` → `String` 다섯 가지 — 어느 트레이트에서 오나
 
@@ -808,7 +808,7 @@ error: aborting due to 1 previous error
 For more information about this error, try `rustc --explain E0308`.
 ```
 
-★ **`expected `&str`` 이 시그니처를 그대로 말해 준다** — `String` 의 `+` 는 오른쪽으로 `&str` 만 받는다.
+★ **``expected `&str` `` 이 시그니처를 그대로 말해 준다** — `String` 의 `+` 는 오른쪽으로 `&str` 만 받는다.
 **오른쪽은 읽기만 하면 되니 소유를 뺏을 이유가 없다.**
 
 **그럼 `&b`(= `&String`)는 왜 통과하나** — (4)의 강제다. 그리고 `format!` 은 아무것도 안 뺏는다.
@@ -913,7 +913,7 @@ a=가나 b=가나
 ```
 
 ★★ **한 글자 차이로 E0382 와 통과가 갈린다.** 에러가 이유를 직접 말한다 —
-`which does not implement the `Copy` trait`. **`&str` 은 불변 참조라 `Copy` 다**(09번의 표).
+``which does not implement the `Copy` trait``. **`&str` 은 불변 참조라 `Copy` 다**(09번의 표).
 
 | | `Copy` 인가 | 대입하면 | 왜 |
 |---|---|---|---|
@@ -1274,7 +1274,7 @@ let y = format!("{}{}", "가", "나");            // 아무것도 안 뺏는다
 | `&str` 이 `Copy` 인 것 | **언어**(불변 참조) | 같은 코드가 통과 |
 | `len()` 이 **바이트 수**인 것 | **std** | `"가나다".len()` = 9 |
 | `+` 가 **왼쪽을 소비**하고 오른쪽이 `&str` 인 것 | **std**(`impl Add<&str> for String`) | E0382 · E0308 `expected &str` |
-| 리터럴이 **`&'static str`** 인 것 | **언어** | E0308 의 `found reference `&'static str`` |
+| 리터럴이 **`&'static str`** 인 것 | **언어** | E0308 의 ``found reference `&'static str` `` |
 | 포인터 폭이 **8바이트**인 것 | **플랫폼**(`x86_64`) | `size_of::<usize>()` = 8 — 32비트에서는 달라진다 |
 | ★ **`capacity` 증가 수열** `0→8→16→32` | **std 구현 세부** | 판이 바뀌면 달라질 수 있다 |
 | ★ **같은 글자 리터럴이 한 자리를 쓰는 것** | **rustc 구현 세부** | 합쳐 준 것이지 보장이 아니다 |
@@ -1298,7 +1298,7 @@ let y = format!("{}{}", "가", "나");            // 아무것도 안 뺏는다
 | 컬렉션에 담는다(`Vec<_>`·`HashMap` 키) | **`String`** | 원본보다 오래 살아야 한다 |
 | 만들어 놓고 **안 바꾼다**, 메모리를 아끼고 싶다 | `Box<str>` | `cap` 한 칸을 안 든다(24 → 16) |
 | 두 문자열을 잇는다 | **`format!`** 또는 `push_str` | `+` 는 왼쪽을 먹는다 |
-| 인자를 더 넓게 열고 싶다 | `impl AsRef<str>`·`impl Into<String>` | **목록의 29번 주제**가 정본 |
+| 인자를 더 넓게 열고 싶다 | `impl AsRef<str>`·`impl Into<String>` | [**목록의 29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/)가 정본 |
 | `&Vec<T>` 로 받고 있다 | **`&[T]`** 로 바꾼다 | `&String`→`&str` 과 **같은 논리** — [**15번 주제**](../15-slices-ranges-and-utf8-boundaries/) |
 | `&String` 으로 받고 있다 | ★ **`&str` 로 바꾼다** | 잃는 것이 없고 호출부가 넓어진다 |
 
@@ -1341,11 +1341,11 @@ let y = format!("{}{}", "가", "나");            // 아무것도 안 뺏는다
   **그쪽이 정본인 것** — 범위 문법 `&s[a..b]` 의 규칙 · **UTF-8 경계 패닉** · `chars()`/`bytes()`/`char_indices()` ·\
   `&[T]` 슬라이스 일반. **여기가 정본인 것** — `String`/`&str`/`&String` 세 꼴의 **크기·소유·변환**
 - [**16번 주제**](../16-structs-impl-and-associated-functions/)(구조체·`impl`) — 필드 타입을 고를 때 이 주제의 판단을 쓴다
-- 목록의 **29번 주제**(`From`/`Into`/`AsRef`/`Borrow`) — ★ **`impl AsRef<str>`·`impl Into<String>` 으로 인자를 여는 설계는 거기가 정본**이다.\
+- [목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/)(`From`/`Into`/`AsRef`/`Borrow`) — ★ **`impl AsRef<str>`·`impl Into<String>` 으로 인자를 여는 설계는 거기가 정본**이다.\
   여기서는 **이름만** 언급했다
-- 목록의 **43번 주제**(`Deref` 강제와 스마트 포인터) — **그쪽은** `Deref` 라는 장치 자체,\
+- [목록의 **43번 주제**](../43-deref-coercion-and-smart-pointers/)(`Deref` 강제와 스마트 포인터) — **그쪽은** `Deref` 라는 장치 자체,\
   **여기는** 그 장치가 `String` → `str` 에서 하는 일까지
-- 목록의 **30번 주제**(연산자 오버로딩·`Index`) — `+` 가 왼쪽을 소비하는 **설계 이유**는 거기
+- [목록의 **30번 주제**](../30-operator-overloading-std-ops-index-and-deref/)(연산자 오버로딩·`Index`) — `+` 가 왼쪽을 소비하는 **설계 이유**는 거기
 - 목록의 **48번 주제**(`format!`·`Display`) — 포매팅 기계의 정본
 - [`../../../../../data-structure/01-dynamic-array/`](../../../../../data-structure/01-dynamic-array/) — **그쪽은** 용량 증폭의 **상각 분석**,\
   **여기는** `capacity()` 가 `len()` 과 다르다는 것까지
@@ -1381,7 +1381,7 @@ let y = format!("{}{}", "가", "나");            // 아무것도 안 뺏는다
   길이를 못 바꾸니 `push_str` 은 여전히 없다.
 - ★ **문자열 비교는 바이트 비교다.** `String` 과 `&str` 사이의 `==` 가 되는 것은\
   std 가 **조합마다 `PartialEq` 구현을 따로 써 뒀기** 때문이고, **강제가 해 주는 일이 아니다**((4)의 E0277).\
-  그 계약은 목록의 **28번 주제**다.
+  그 계약은 [목록의 **28번 주제**](../28-partialeq-eq-partialord-ord-and-hash-contracts/)다.
 - ★ **`&str` 인자를 더 열고 싶을 때의 세 단계** — `&str`(기본) → `impl AsRef<str>`(문자열 비슷한 것 전부) →\
   `impl Into<String>`(어차피 소유할 거면). **뒤로 갈수록 호출부가 넓어지고 코드 크기가 늘어난다**(단형화).\
-  판단은 목록의 **29번 주제**·**31번 주제**다.
+  판단은 [목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/)·**31번 주제**다.

@@ -462,7 +462,7 @@ For more information about this error, try `rustc --explain E0509`.
 - 즉 **소멸자가 그 필드를 쓸 수 있으므로** 컴파일러는 `Drop` 타입을 **쪼갤 수 없는 한 덩어리**로 본다.
 - 컴파일러가 제안하는 둘 — **`&g.name` 으로 빌리기**와 **`g.name.clone()` 으로 복제하기**.
 - 정말로 꺼내야 하면 **`mem::take`/`mem::replace`** 를 쓴다 — 빈 값을 넣어 두고 알맹이를 가져오는 관용구다.\
-  정본은 목록의 **44번 주제**다.
+  정본은 [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)다.
 
 ```text
    일반 구조체                        Drop 구현체
@@ -583,7 +583,7 @@ v = [1, 2, 3]
 
 - **배열은 `for x in a` 뒤에도 `a` 를 쓸 수 있다.** `[i32; 3]` 이 **`Copy`** 라서 `for` 가 **사본을 먹었기** 때문이다.\
   ★ **`Copy` 인지는 컨테이너 타입이 정한다** — `Vec<i32>` 는 원소가 `Copy` 여도 `Copy` 가 아니다.
-- 이 셋의 정본은 목록의 **37번 주제**(`IntoIterator` 세 형태)다.
+- 이 셋의 정본은 [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/)(`IntoIterator` 세 형태)다.
 
 ### 10. 실행되지 않는 갈래와 루프
 
@@ -705,7 +705,7 @@ For more information about this error, try `rustc --explain E0382`.
   이 주제의 5번(돌려받기의 반환 타입 팽창)이 그 동기다. 컴파일러도 `to borrow instead` 라고 말한다.
 - **`Copy` 판정과 `Drop` 시점의 전수** — [목록의 **09번 주제**](../09-copy-clone-and-drop/)(`Copy`와 `Clone`, 그리고 `Drop` 시점).\
   이 주제에서는 `Drop` 을 **관찰 도구로만** 썼다.
-- **런타임 비용을 내고 한 소유자 규칙을 완화하는 도구** — `Rc`/`Arc`, 목록의 **41번 주제**.\
+- **런타임 비용을 내고 한 소유자 규칙을 완화하는 도구** — `Rc`/`Arc`, [목록의 **41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/).\
   `--explain E0382` 도 `outside of workarounds like Rc` 라고 그 존재를 가리킨다.
 - **모델 자체의 논증** — [`../../언어-특성/README.md`](../../언어-특성/README.md) §2 가 정본이다.\
   「왜 GC 도 수동도 거부했나」·「청구서가 왜 사람의 시간인가」는 거기고,\

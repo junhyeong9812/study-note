@@ -250,7 +250,7 @@ for c in ("7", "٧", "²", "½", "Ⅳ"):
 | 「ASCII 숫자 글자만인가」 | `s.isdecimal() and s.isascii()` |
 | 「정수로 쓸 수 있나」 | `try: int(s) except ValueError:` |
 | 「실수로 쓸 수 있나」 | `try: float(s)` (또는 `Decimal(s)`) |
-| 「돈 계산에 쓸 값인가」 | `Decimal(s)` 를 `InvalidOperation` 으로 감싼다(목록의 **50번 주제**) |
+| 「돈 계산에 쓸 값인가」 | `Decimal(s)` 를 `InvalidOperation` 으로 감싼다([목록의 **50번 주제**](../50-decimal-float-precision-and-round/)) |
 
 ```text
  세 is* 검사                       int() 로 바꿀 수 있나
@@ -721,7 +721,7 @@ csv 로    : ['a', 'b,c', 'd']
 ```text
  1단계  파서가 있나?          -> 있으면 그것 (csv·json·urllib·email·pathlib)
  2단계  찾는 것이 고정 글자인가? -> 예: 문자열 메서드
- 3단계  모양인가?             -> 예: re  (목록의 46번 주제)
+ 3단계  모양인가?             -> 예: re  ([목록의 **46번 주제**](../46-re/))
 ```
 
 **한 문장으로**

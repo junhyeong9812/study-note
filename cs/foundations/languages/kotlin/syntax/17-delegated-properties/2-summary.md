@@ -11,8 +11,8 @@
 > **버전** — `by`·`lazy`·`Delegates.observable`/`vetoable`/`notNull`·`Map` 위임은 전부 **1.0** 이다.\
 > `LazyThreadSafetyMode` 도 1.0 이고, 그 뒤로 기본값이 바뀐 적이 없다(이 문서는 **2.4.20 에서 직접 확인**했다).
 > **경계** — backing field 와 커스텀 접근자는 [16번 주제](../16-properties-backing-field-lateinit-const/)가, 초기화 시점은 [15번 주제](../15-class-declaration-constructors-and-init/)가,\
-> `inline` 이 무엇을 없애는지는 [11번 주제](../11-inline-functions/)가, 연산자 규약 전반은 목록의 **31번 주제**,\
-> **클래스** 위임(`class A : B by b`)은 목록의 **21번 주제**가 정본이다 — 여기는 **프로퍼티** 위임만 다룬다.
+> `inline` 이 무엇을 없애는지는 [11번 주제](../11-inline-functions/)가, 연산자 규약 전반은 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/),\
+> **클래스** 위임(`class A : B by b`)은 [목록의 **21번 주제**](../21-class-delegation-by/)가 정본이다 — 여기는 **프로퍼티** 위임만 다룬다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ## 한눈에 — 쉽게 말하면
@@ -125,7 +125,7 @@ C 다시 읽는다
 그림 해설:
 
 - ★★ **`ReadWriteProperty` 를 구현하지 않았는데 돌았다.** Kotlin 은 **이름과 시그니처만 본다** —\
-  이것이 「연산자 규약」이다(목록의 **31번 주제**가 규약 전반의 정본).
+  이것이 「연산자 규약」이다([목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/)가 규약 전반의 정본).
 - ★ **`thisRef` 가 `Screen`** 이다 — 위임 객체가 **누구의 프로퍼티인지** 알 수 있다.\
   최상위·지역 프로퍼티면 `null` 이 온다.
 - ★★ **`property.name` 이 `"title"`** 이다. 위임 객체 하나를 여러 프로퍼티가 공유해도 **누가 물었는지 구분**할 수 있다.\
@@ -855,10 +855,10 @@ class Loud(private var stored: String) {
 - [11번 주제 — 인라인 함수](../11-inline-functions/) — **그쪽이 `inline` 의 정본**, 여기는 (7)에서 `lazy` 가 **그것이 아니라는** 대비만.
 - [14번 주제 — scope function](../14-scope-functions/) — **인라인이라 아무것도 안 남는 쪽**과의 대비.
 - [12번 주제 — `reified` 타입 파라미터](../12-reified-type-parameters/) — (2)의 박싱·`checkcast` 가 왜 생기나.
-- 목록의 **31번 주제** — 연산자 규약 전반(`get`/`set`/`invoke`/`plus` …). **`getValue`/`setValue` 는 그중 하나다.**
-- 목록의 **21번 주제** — **클래스** 위임(`class A : B by b`). 이름만 같고 다른 문법이다.
-- 목록의 **35번 주제** — `@delegate:` use-site target(애너테이션을 위임 필드에 붙이기).
-- 목록의 **40번 주제** — 읽기 전용 컬렉션이 뷰라는 것((6)에서 `Map` 을 그대로 쓰는 이유).
+- [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/) — 연산자 규약 전반(`get`/`set`/`invoke`/`plus` …). **`getValue`/`setValue` 는 그중 하나다.**
+- [목록의 **21번 주제**](../21-class-delegation-by/) — **클래스** 위임(`class A : B by b`). 이름만 같고 다른 문법이다.
+- [목록의 **35번 주제**](../35-annotations-and-use-site-targets/) — `@delegate:` use-site target(애너테이션을 위임 필드에 붙이기).
+- [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/) — 읽기 전용 컬렉션이 뷰라는 것((6)에서 `Map` 을 그대로 쓰는 이유).
 
 ## 용어 풀이
 

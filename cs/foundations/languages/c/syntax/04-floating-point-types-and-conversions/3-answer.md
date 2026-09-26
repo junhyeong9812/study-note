@@ -435,7 +435,7 @@ ex2.c:2:57: warning: format ‘%d’ expects argument of type ‘int’, but arg
 
 - **틀린 코드다.** `float` 인자는 이미 `double` 로 승격되어 전달됐으므로 `va_arg(ap, double)` 로 꺼내야 한다.
 - 위 출력이 그 증거다 — `takes_double(2, f, 2.5f)` 에 `float` 두 개를 넘겼는데 `va_arg(ap, double)` 로 **정확히 `1.5`·`2.5`** 가 나왔다.
-- 정본은 목록의 **36번 주제**.
+- 정본은 [목록의 **36번 주제**](../36-variadic-functions-stdarg/).
 
 ### 8. `FLT_EVAL_METHOD` 가 무엇인가
 

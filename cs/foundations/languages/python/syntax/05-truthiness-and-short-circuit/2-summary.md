@@ -864,8 +864,8 @@ print(logged)     # []   <- 로그가 안 남았다
 - 이어지는 곳: [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md) — `in` 이 `is` 를 먼저 본다는 규정과 `True == 1` 의 정본.
 - 이어지는 곳: [17-generators-yield](../17-generators-yield/2-summary.md) — `any`/`all` 에 제너레이터를 넘겼을 때 남은 원소가 만들어지지도 않는 것.
 - 이어지는 곳: [목록의 **03번 주제**](../03-mutability-and-copying/) — 빈 컨테이너가 거짓이라는 성질이 「가변 기본값을 `None` 으로 바꾸는」 관용구와 맞물린다.
-- 이어지는 곳: 목록의 **30번 주제** 「`__repr__`·`__eq__`·`__hash__` 계약」 — 비대칭 `__eq__` 가 `in` 에서 무엇을 만드는지.
-- 이어지는 곳: 목록의 **32번 주제** 「컨테이너 프로토콜」 — `__len__`·`__contains__` 를 직접 구현할 때의 계약.
+- 이어지는 곳: [목록의 **30번 주제**](../30-repr-eq-hash-contracts/) 「`__repr__`·`__eq__`·`__hash__` 계약」 — 비대칭 `__eq__` 가 `in` 에서 무엇을 만드는지.
+- 이어지는 곳: [목록의 **32번 주제**](../32-container-protocol/) 「컨테이너 프로토콜」 — `__len__`·`__contains__` 를 직접 구현할 때의 계약.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — 연산자·제어문 소개.\
   **경계**: 그쪽은 「이렇게 쓴다」까지, 여기는 「**`and`/`or` 가 무엇을 돌려주고 어디서 배신하나**」부터다.
 - 연혁은 여기가 아니다: [`history/python/`](../../../../../../history/python/)
@@ -899,4 +899,4 @@ print(logged)     # []   <- 로그가 안 남았다
 - **`operator.truth(x)`** 가 `bool(x)` 와 같은 일을 한다 — 함수로 넘겨야 할 때 쓴다.
 - **`if x:` 와 `if len(x):` 는 성능이 다를 수 있다.** 앞엣것은 `__bool__`/`__len__` 을 직접 부르고, 뒤엣것은 정수를 만든 뒤 다시 판정한다. 의미도 다르다 — `__bool__` 이 있는 객체에서 갈린다.
 - **`numpy` 배열은 `__bool__` 이 예외를 던진다.** 원소가 여럿인 배열에 `if arr:` 를 쓰면 *"The truth value of an array with more than one element is ambiguous"* 가 난다. 이 갈래의 규칙을 라이브러리가 **일부러 거부한** 사례다(이 문서에서는 실행 검증하지 않았다 — 이 환경에 `numpy` 가 없다).
-- **`match` 문의 패턴은 진릿값 판정을 쓰지 않는다.** 구조 분해와 `==` 로 동작한다(목록의 **39번 주제**).
+- **`match` 문의 패턴은 진릿값 판정을 쓰지 않는다.** 구조 분해와 `==` 로 동작한다([목록의 **39번 주제**](../39-match-statement/)).

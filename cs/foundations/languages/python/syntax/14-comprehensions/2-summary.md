@@ -479,7 +479,7 @@ SyntaxError: expected 'else' after 'if' expression
 ```
 
 키가 겹치면 뒤엣것만 남는다. **개수가 줄어도 경고가 없다.**\
-중복이 의미 있으면 `defaultdict(list)` 로 모은다(목록의 43번 주제).
+중복이 의미 있으면 `defaultdict(list)` 로 모은다([목록의 **43번 주제**](../43-collections/)).
 
 ### (6) 3.12 부터 스택 트레이스 모양이 달라졌다 (PEP 709)
 
@@ -655,7 +655,7 @@ $ python3 -m timeit -s "data=list(range(1000))" "(n*2 for n in data)"
 - 목록: [python/syntax 주제 목록](../README.md) — 이 주제는 **14번**
 - 선행: [목록의 **09번**](../09-sequence-ops-and-slicing/) 「시퀀스 공통 연산과 슬라이싱」(폴더 아직 없음)
 - 이어지는 곳: [17-generators-yield](../17-generators-yield/2-summary.md) — 제너레이터 표현식이 만드는 그 객체가 무엇인지, 어디서 멈추고 재개하는지
-- 목록의 **15번** 「제너레이터 표현식과 지연 평가」, **16번** 「이터레이터 프로토콜」(폴더 아직 없음)
+- [목록의 **15번**](../15-generator-expressions-lazy-eval/) 「제너레이터 표현식과 지연 평가」, **16번** 「이터레이터 프로토콜」(폴더 아직 없음)
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/README.md) 「1. 리스트」 — 컴프리헨션을 **쓰는 법**과 `if` 붙이기.\
   이 주제는 거기서 **평가 시점·스코프·예외 자리**로만 간다.
 - 공식 문서: [6.2.4. Displays](https://docs.python.org/3.12/reference/expressions.html#displays-for-lists-sets-and-dictionaries) · [6.2.8. Generator expressions](https://docs.python.org/3.12/reference/expressions.html#generator-expressions) · [PEP 709](https://peps.python.org/pep-0709/)

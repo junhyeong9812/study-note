@@ -91,7 +91,7 @@ impl Drop for D {
 
 - `Drop` 을 구현한 타입을 하나 만들어 두고 **해제될 때 이름을 찍게** 한다.
 - 그러면 해제 시점이 **출력 순서**로 드러난다. 아래 모든 절이 이 창을 쓴다.
-- 이 창은 `String`·`Vec` 자체에는 못 단다(남의 타입이다 — 고아 규칙, 목록의 **26번 주제**).\
+- 이 창은 `String`·`Vec` 자체에는 못 단다(남의 타입이다 — 고아 규칙, [목록의 **26번 주제**](../26-orphan-rule-and-newtype/)).\
   대신 **같은 자리에 `D` 를 놓아** 규칙이 같다는 것을 본다.
 
 비용 — 없음. 관찰용 `println!` 하나뿐이고, 규칙 자체는 컴파일 타임에 끝난다.
@@ -519,7 +519,7 @@ help: consider cloning the value if the performance cost is acceptable
 - 부분 이동은 **칸 단위**다 — 빠져나간 칸만 죽고 나머지는 산다.
 - 다만 **구조체 전체를 값으로 쓰는 것**(출력·전달·반환)은 구멍 때문에 거부된다.
 - `Drop` 이 붙으면 **소멸자가 그 필드를 쓸 수 있으므로** 아예 못 빼낸다(E0509).
-- 그래서 `Drop` 타입에서 알맹이를 꺼내려면 `mem::take`/`replace` 를 쓴다(목록의 **44번 주제**).
+- 그래서 `Drop` 타입에서 알맹이를 꺼내려면 `mem::take`/`replace` 를 쓴다([목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)).
 
 비용 — 없음. 전부 컴파일 타임 판정이다.
 
@@ -620,7 +620,7 @@ help: consider iterating over a slice of the `Vec<String>`'s content to avoid mo
 - `for x in v` 는 **`v.into_iter()` 를 암묵적으로 부른다** — 그 메서드가 `self` 를 먹는다.
 - 그래서 순회가 끝나면 `v` 라는 이름이 죽는다. 컴파일러가 **`&v` 를 붙이라고** 직접 제안한다.
 - 세 형태의 실측 타입은 각각 `String`·`&String`·`&mut String` 이다\
-  ([**05번 주제**](../05-control-flow-loops-and-labels/)의 실측). 정본은 목록의 **37번 주제**.
+  ([**05번 주제**](../05-control-flow-loops-and-labels/)의 실측). 정본은 [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/).
 
 비용 — 없음. `into_iter` 는 원소를 옮길 뿐 복사하지 않는다.
 
@@ -710,7 +710,7 @@ help: consider cloning the value if the performance cost is acceptable
 ```
 
 - 인덱싱은 **빌림**이라 그 안에서 값을 빼낼 수 없다. `&v[0]` 이나 `.clone()` 을 쓴다.
-- 진짜로 꺼내야 하면 `v.remove(0)`·`v.swap_remove(0)`·`v.into_iter()` 쪽이다(목록의 **38번 주제**).
+- 진짜로 꺼내야 하면 `v.remove(0)`·`v.swap_remove(0)`·`v.into_iter()` 쪽이다([목록의 **38번 주제**](../38-vec-api-capacity-retain-and-drain/)).
 
 ## 어디서 틀리나
 
@@ -872,7 +872,7 @@ cond = true
 | 잠깐 넘겼다가 계속 써야 한다 | 빌린다. 그게 안 되면 **돌려받는다** | 반환 타입이 부푸는 것이 신호다 |
 | 사본이 **따로 살아야** 한다 | `.clone()` | 원본과 남남이 되는 것이 목적일 때만 |
 | 순회한 뒤에도 원본이 필요하다 | `for x in &v` | `for x in v` 는 먹는다 |
-| 구조체에서 알맹이를 꺼낸다 | 필드 이동 — 단 `Drop` 이면 `mem::take` | E0509 를 피하는 관용구(목록의 **44번 주제**) |
+| 구조체에서 알맹이를 꺼낸다 | 필드 이동 — 단 `Drop` 이면 `mem::take` | E0509 를 피하는 관용구([목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)) |
 | 해제를 앞당긴다 | `drop(x)` | 락·파일을 일찍 놓을 때 |
 | 해제를 관찰한다 | `impl Drop` + `println!` | 「언제 사라지나」를 보는 유일한 창 |
 
@@ -907,7 +907,7 @@ cond = true
 - [`../../../../memory-management/`](../../../../memory-management/) — 스택·힙·할당·해제의 **일반론**은 거기, 여기는 Rust 의 이동 규칙
 - [목록의 **09번 주제**](../09-copy-clone-and-drop/)(`Copy`/`Clone`/`Drop`) — `Copy` 판정과 `Drop` 시점의 정본. 여기서는 **관찰 도구로만** 썼다
 - [목록의 **10번 주제**](../10-borrowing-and-aliasing-rules/)(빌림 `&`·`&mut`) — 이 주제의 불편함이 거기로 이어진다
-- 목록의 **14번 주제**(`String` 대 `&str`) · **37번 주제**(`IntoIterator` 세 형태) · **44번 주제**(`mem::take`) · **41번 주제**(`Rc`/`Arc`)
+- [목록의 **14번 주제**](../14-string-vs-str/)(`String` 대 `&str`) · **37번 주제**(`IntoIterator` 세 형태) · **44번 주제**(`mem::take`) · **41번 주제**(`Rc`/`Arc`)
 
 ## 용어 풀이
 
@@ -936,7 +936,7 @@ cond = true
   `drop(m.lock().unwrap());` 뒤에는 같은 스레드의 `try_lock()` 이 **`true`**, `let _guard = m.lock()` 뒤에는 **`false`** 였다(실측).\
   그런데 `let _ = m.lock();` 자체는 **`let_underscore_lock`(deny 기본) 때문에 컴파일 에러**다 — 정답 4번에 전문을 실었다.\
   ★ **린트가 없는 다른 `Drop` 타입에서는 그대로 조용히 사라진다.** 락의 정본은 목록의 **52번 주제**다.
-- **한 소유자 규칙을 런타임 비용으로 푸는 길**이 `Rc`/`Arc` 다(목록의 **41번 주제**).\
+- **한 소유자 규칙을 런타임 비용으로 푸는 길**이 `Rc`/`Arc` 다([목록의 **41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/)).\
   `--explain E0382` 도 같은 말을 한다 — `outside of workarounds like Rc`.
-- **소유권을 안 넘기고 알맹이만 바꾸는 관용구**가 `mem::replace`/`mem::take` 다(목록의 **44번 주제**).\
+- **소유권을 안 넘기고 알맹이만 바꾸는 관용구**가 `mem::replace`/`mem::take` 다([목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)).\
   E0509 로 막힌 자리가 정확히 그 도구의 자리다.

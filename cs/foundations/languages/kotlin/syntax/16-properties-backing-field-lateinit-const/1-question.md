@@ -7,7 +7,7 @@
 > ★ **초기화가 언제 도는지는 [15번 주제](../15-class-declaration-constructors-and-init/)가 정본**이고,
 > 위임(`by lazy`·`observable`)은 [17번 주제](../17-delegated-properties/), 확장 프로퍼티는 [13번 주제](../13-extension-functions-and-properties/)가 정본이다.
 > 여기는 **프로퍼티 하나가 필드와 접근자로 어떻게 쪼개지나**를 묻는다.
-> 이 주제는 [17번 주제](../17-delegated-properties/)·목록의 **35번 주제**·**39번 주제**의 뿌리다.
+> 이 주제는 [17번 주제](../17-delegated-properties/)·[목록의 **35번 주제**](../35-annotations-and-use-site-targets/)·**39번 주제**의 뿌리다.
 > Java 쪽 짝은 [`../../../java/syntax/06-initialization-order/`](../../../java/syntax/06-initialization-order/)의 「컴파일 타임 상수」 절이다.
 > 문항 11개 중 코드블록이 붙는 예측형은 6개다.
 > 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.

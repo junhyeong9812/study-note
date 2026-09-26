@@ -712,7 +712,8 @@ Disassembly of <code object <listcomp> at 0x773d92d1ef50, file "<lc>", line 1>:
 - ✗ 「제너레이터로 바꾸면 메모리가 준다」\
   ○ **중간에 `sorted`·`len`·인덱싱이 하나라도 있으면 그 자리에서 전부 물질화된다.**
 - ✗ 「`[..]` 와 `(..)` 는 바이트코드도 비슷하다」\
-  ○ **3.12 에서 리스트 쪽만 인라인됐다.** 그리고 그것은 **구현이지 보장이 아니다.**
+  ○ **3.12 에서 둘 중 리스트 쪽만 인라인됐다**(PEP 709 는 list·dict·set 을 인라인하고 제너레이터 표현식은 빼 둔다).
+  그리고 그것은 **구현이지 보장이 아니다.**
 - ✗ 「`in` 으로 확인하는 것은 읽기니까 안전하다」\
   ○ **값을 먹는다.** 확인 자체가 상태를 바꾼다.
 
@@ -741,7 +742,8 @@ Disassembly of <code object <listcomp> at 0x773d92d1ef50, file "<lc>", line 1>:
 - **둘째 `for` 의 이름은 `next()` 때 터진다.** 한 식 안에서 평가 시점이 둘로 갈린다.
 - **한 번 돌면 끝이고 두 번째는 예외가 아니다** — `sum` 은 `0`, `list` 는 `[]`, `max` 만 `ValueError`.
 - **`in` 이 값을 먹는다.** 검사가 상태를 바꾸는 드문 자리다.
-- **3.12 에서 리스트 컴프리헨션만 인라인됐다**(PEP 709). 제너레이터 표현식은 여전히 코드 객체 + `CALL` 이다 — **구현이지 보장이 아니다.**
+- **3.12 에서 컴프리헨션이 인라인됐다**(PEP 709 — list·dict·set 셋 다. 이 주제에서는 리스트 쪽을 본다).
+  제너레이터 표현식은 **대상이 아니라** 여전히 코드 객체 + `CALL` 이다 — **구현이지 보장이 아니다.**
 
 ## 관련 자료
 
@@ -754,7 +756,7 @@ Disassembly of <code object <listcomp> at 0x773d92d1ef50, file "<lc>", line 1>:
 - 함께 보는 곳: [16-iterator-protocol](../16-iterator-protocol/2-summary.md) — 「소진되면 빈 것이 나온다」가 왜 규칙인지.
 - 함께 보는 곳: [18-loop-control-and-else](../18-loop-control-and-else/2-summary.md) — `range` 가 제너레이터가 **아닌** 이유(두 번 돈다).
 - 함께 보는 곳: [19-function-argument-rules](../19-function-argument-rules/2-summary.md) — `SyntaxError`(정의 시점)와 `TypeError`(호출 시점)를 가르는 층의 정본.
-- 이어지는 곳: 목록의 **44번 주제** 「`itertools`」 — `islice`·`chain`·`tee` 의 정본.
+- 이어지는 곳: [목록의 **44번 주제**](../44-itertools/) 「`itertools`」 — `islice`·`chain`·`tee` 의 정본.
 - 원리: [`cs/data-structure/`](../../../../../data-structure/) — 동적 배열이 왜 과할당하나.\
   **경계**: 그쪽은 **왜 2배씩 늘리나**까지, 여기는 **그래서 `getsizeof` 가 왜 그 숫자냐**부터다.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — 컴프리헨션을 쓰는 법까지가 그쪽이다.
@@ -782,8 +784,8 @@ Disassembly of <code object <listcomp> at 0x773d92d1ef50, file "<lc>", line 1>:
 ## 더 들어가면
 
 - **`itertools.tee`** 는 「두 번 돌아야 한다」의 유일한 지연 해법처럼 보이지만 **공짜가 아니다** —
-  한쪽이 앞서 나가면 그만큼을 **내부 버퍼에 쌓아 둔다.** 앞뒤 차이가 크면 리스트를 만드는 것과 같아진다(목록의 **44번 주제**).
+  한쪽이 앞서 나가면 그만큼을 **내부 버퍼에 쌓아 둔다.** 앞뒤 차이가 크면 리스트를 만드는 것과 같아진다([목록의 **44번 주제**](../44-itertools/)).
 - **파일 객체가 그 자체로 이터레이터다** — `for line in f:` 가 한 줄씩 읽는다.
-  그래서 `f.read().split("\n")` 대신 `f` 를 그냥 도는 것이 10GB 파일의 정답이다(목록의 **48번 주제**).
-- **비동기 판이 따로 있다** — `(x async for x in agen)` 은 **비동기 제너레이터**를 만든다(3.6+, PEP 530). 목록의 **51번 주제**.
+  그래서 `f.read().split("\n")` 대신 `f` 를 그냥 도는 것이 10GB 파일의 정답이다([목록의 **48번 주제**](../48-pathlib-and-file-io/)).
+- **비동기 판이 따로 있다** — `(x async for x in agen)` 은 **비동기 제너레이터**를 만든다(3.6+, PEP 530). [목록의 **51번 주제**](../51-asyncio-coroutine-basics/).
 - **개수를 세는 관용구**는 `sum(1 for _ in it)` 이다. `len(list(it))` 보다 메모리를 안 쓰지만 **둘 다 소진시킨다.**

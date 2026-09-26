@@ -840,10 +840,10 @@ list(range(17)) : 200
 - 선행: [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md) — `True == 1` 이 되는 이유.
 - 이어지는 곳: [11-tuple-and-unpacking](../11-tuple-and-unpacking/2-summary.md) — 정렬 키로 쓰는 튜플이 무엇인지.
 - 이어지는 곳: [13-set-and-frozenset](../13-set-and-frozenset/2-summary.md) — 집합이 든 리스트의 `sort` 가 정의되지 않는 이유.
-- 이어지는 곳: 목록의 **31번 주제** 「비교 프로토콜과 정렬 가능성」 — `__lt__` 하나로 정렬이 되는 이유·`total_ordering`.
-- 이어지는 곳: 목록의 **23번 주제** 「`lambda` 와 고차 함수」 — 정렬 `key` 로 쓰는 `lambda`.
-- 이어지는 곳: 목록의 **44번 주제** 「`itertools`」 — `groupby` 가 정렬을 전제한다는 것.
-- 이어지는 곳: 목록의 **45번 주제** 「`functools`」 — `cmp_to_key` 의 본거지.
+- 이어지는 곳: [목록의 **31번 주제**](../31-comparison-protocol-and-sortability/) 「비교 프로토콜과 정렬 가능성」 — `__lt__` 하나로 정렬이 되는 이유·`total_ordering`.
+- 이어지는 곳: [목록의 **23번 주제**](../23-lambda-and-higher-order-functions/) 「`lambda` 와 고차 함수」 — 정렬 `key` 로 쓰는 `lambda`.
+- 이어지는 곳: [목록의 **44번 주제**](../44-itertools/) 「`itertools`」 — `groupby` 가 정렬을 전제한다는 것.
+- 이어지는 곳: [목록의 **45번 주제**](../45-functools/) 「`functools`」 — `cmp_to_key` 의 본거지.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — 리스트 메서드를 「이렇게 쓴다」까지 다룬다.\
   **경계**: 그쪽은 사용 예시까지, 여기는 「**무엇이 `None` 을 돌려주고 무엇이 보장인가**」부터다.
 - 자료구조의 원리(동적 배열·정렬 알고리즘의 복잡도)는 여기가 아니다: [`cs/data-structure/`](../../../../../data-structure/) · [`cs/algorithm/`](../../../../../algorithm/)
@@ -867,7 +867,7 @@ list(range(17)) : 200
 ## 더 들어가면
 
 - **`operator.itemgetter(1, 0)`** 은 튜플 키를 만들어 준다 — `lambda r: (r[1], r[0])` 과 같은 일이고 읽기가 낫다.
-- **`functools.total_ordering`** 은 `__lt__`·`__eq__` 만으로 여섯 비교를 채워 준다(목록의 **31번 주제**).
+- **`functools.total_ordering`** 은 `__lt__`·`__eq__` 만으로 여섯 비교를 채워 준다([목록의 **31번 주제**](../31-comparison-protocol-and-sortability/)).
 - **`sorted` 의 `key` 에 `str.casefold`** 를 쓰면 `str.lower` 보다 넓은 대소문자 동일시가 된다([07번](../07-string-methods/2-summary.md)).
 - **`heapq.nsmallest`/`nlargest`** 는 전체 정렬 없이 상위 k 개를 뽑는다 — 비용 비교는 여기서 **재지 않았다.**
 - **`list.sort` 의 알고리즘 이름과 복잡도**는 이 문서의 범위가 아니다: [`cs/algorithm/`](../../../../../algorithm/)

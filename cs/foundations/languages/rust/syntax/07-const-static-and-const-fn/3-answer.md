@@ -88,7 +88,7 @@ warning: borrow of a named constant with interior mutability
 - ★ **판정이 도구에 달린 자리다.** `rustc` 만 돌리면 이 버그는 아무 흔적을 안 남긴다.
 
 > **내부 가변성(interior mutability)** — `&` 만 가지고도 속을 고칠 수 있는 성질.\
-> 예: `AtomicI32`·`Cell`·`RefCell`·`Mutex`. 정본은 목록의 **42번 주제**다.
+> 예: `AtomicI32`·`Cell`·`RefCell`·`Mutex`. 정본은 [목록의 **42번 주제**](../42-refcell-cell-interior-mutability/)다.
 
 ### 2. ★ 같은 항목을 두 번 읽었을 때 나는 해제 줄
 
@@ -820,7 +820,7 @@ error[E0597]: `local` does not live long enough
                              ^ 여기서 죽는데 &'static 을 요구했다 -> E0597
 ```
 
-- 수명 표기와 생략 규칙의 정본은 [목록의 **12번 주제**](../12-lifetime-annotations-and-elision/), `&'static` 과 `T: 'static` 을 가르는 것은 목록의 **13번 주제**다.
+- 수명 표기와 생략 규칙의 정본은 [목록의 **12번 주제**](../12-lifetime-annotations-and-elision/), `&'static` 과 `T: 'static` 을 가르는 것은 [목록의 **13번 주제**](../13-struct-references-and-static/)다.
 
 ### 12. 다른 주제와 잇기
 
@@ -831,7 +831,7 @@ error[E0597]: `local` does not live long enough
   - ★ `static mut` 은 이 셋이 다 안 될 때의 마지막 수단이다. Edition Guide 의 권고도 같은 순서다.
 - **`static` 이 `Sync` 를 요구하는 이유** — 목록의 **50번 주제**(`Send`/`Sync`).
 - **에디션 변경 전수** — 목록의 **47번 주제**(에디션 2021 대 2024).
-- **해제 시점 일반론** — [목록의 **09번 주제**](../09-copy-clone-and-drop/)(`Copy`·`Clone`·`Drop` 시점) · `Drop` 관용구는 목록의 **44번 주제**.\
+- **해제 시점 일반론** — [목록의 **09번 주제**](../09-copy-clone-and-drop/)(`Copy`·`Clone`·`Drop` 시점) · `Drop` 관용구는 [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/).\
   「누가 주인이고 언제 사라지나」의 정본은 [**08번 주제**](../08-ownership-and-move/)다.
 - **`rustc` 는 침묵하고 다른 도구만 말하는 자리** — **1번**이다.\
   `const` 에 둔 `AtomicI32` 는 `rustc` 기준으로 에러도 경고도 없고, `clippy` 의\

@@ -1,8 +1,9 @@
 # JavaScript — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 아래 주제들의 3파일(질문·서머리·정답)은 **아직 없다**.
+> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**
+> (2026-09-25 기준 **4 / 52** — 01\~04). 나머지는 아직 없다.
 > 기준 소스: [ECMA-262 최신 초안](https://tc39.es/ecma262/) (2026-09-20 확인 시점 ES2027 초안) · [ECMA-262 판별 아카이브](https://262.ecma-international.org/) · [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) · 호스트 API 한정으로 [MDN](https://developer.mozilla.org/)
-> 실행 검증: **가능**. 이 머신에 Node `v18.19.1`(기본 PATH)과 `v20.19.6`(nvm)이 있어 두 버전으로 돌려 차이를 확인한다. 다만 **ES2025~ES2027 기능 일부는 Node 18/20 에 없어 실행 검증이 불가**하고, 그런 행은 「미실행 — 명세로만 접지」로 표기한다. 브라우저 전용 API 는 실행하지 않는다.
+> 실행 검증: **가능**(2026-09-25 갱신). 이 머신에 Node `v18.19.1`(기본 PATH)과 `v20.19.6`(nvm), 그리고 Google Chrome `151.0.7922.173` 이 있어 **두 판과 브라우저**로 돌려 차이를 확인한다. 01\~04 의 블록은 전부 캡처 스크립트가 파일로 받아 조립했고(손으로 옮겨 적지 않았다), ★ **두 판이 갈린 자리는 04번의 `isWellFormed`/`toWellFormed`(ES2024) 하나뿐**이었다 — v18 에는 없고 v20·Chrome 151 에는 있다. ★★ 예외는 스택트레이스에 **절대 경로**가 박히므로 `e.constructor.name` 과 `e.message` 만 싣는다. 다만 **ES2025~ES2027 기능 일부는 Node 18/20 에 없어 실행 검증이 불가**하고, 그런 행은 「미실행 — 명세로만 접지」로 표기한다. 브라우저 전용 API 는 실행하지 않는다.
 > 기준일 2026-09-20.
 
 ## 이 언어에서 무엇을 자르는 축
@@ -17,13 +18,13 @@ JS 는 **값의 의미(강제 변환)·함수(스코프·`this`·클로저)·객
 
 | # | 주제 | 분류 | 무엇을 인출하게 되나 | 선행 | 기존 주제 | 우선 |
 |---|------|------|----------------------|------|-----------|------|
-| 01 | 값의 종류와 `typeof` | 문법 | 원시 7종과 객체를 구분하고 `typeof null`·`typeof function` 의 결과, 원시 값에 메서드를 부르면 일어나는 임시 래핑을 설명할 수 있다 | — | — | A |
-| 02 | 강제 변환과 `==` 대 `===` | 문법 | ToPrimitive·ToNumber 규칙으로 헷갈리는 비교식의 결과를 예측하고 `==` 를 써도 되는 좁은 경우를 판단할 수 있다 | 01 | — | A |
-| 03 | 숫자와 `BigInt` | 문법 | 배정밀도 부동소수점이 만드는 `0.1 + 0.2`·안전 정수 한계·`NaN` 의 성질을 설명하고 `BigInt` 를 숫자와 섞었을 때의 `TypeError` 를 예측할 수 있다 | 01 | `cs/foundations/data-representation/` | A |
-| 04 | 문자열과 UTF-16 | 문법 | `length` 가 코드 유닛이라는 것과 서로게이트 페어·이모지 처리, `codePointAt`·well-formed 메서드(ES2024)·`Intl.Segmenter` 를 설명할 수 있다 | 01 | `cs/foundations/data-representation/` | A |
+| 01 | [값의 종류와 `typeof`](01-value-types-and-typeof/) | 문법 | 원시 7종과 객체를 구분하고 `typeof null`·`typeof function` 의 결과, 원시 값에 메서드를 부르면 일어나는 임시 래핑을 설명할 수 있다 | — | — | A |
+| 02 | [강제 변환과 `==` 대 `===`](02-coercion-and-loose-equality/) | 문법 | ToPrimitive·ToNumber 규칙으로 헷갈리는 비교식의 결과를 예측하고 `==` 를 써도 되는 좁은 경우를 판단할 수 있다 | 01 | — | A |
+| 03 | [숫자와 `BigInt`](03-numbers-and-bigint/) | 문법 | 배정밀도 부동소수점이 만드는 `0.1 + 0.2`·안전 정수 한계·`NaN` 의 성질을 설명하고 `BigInt` 를 숫자와 섞었을 때의 `TypeError` 를 예측할 수 있다 | 01 | `cs/foundations/data-representation/` | A |
+| 04 | [문자열과 UTF-16](04-strings-and-utf16/) | 문법 | `length` 가 코드 유닛이라는 것과 서로게이트 페어·이모지 처리, `codePointAt`·well-formed 메서드(ES2024)·`Intl.Segmenter` 를 설명할 수 있다 | 01 | `cs/foundations/data-representation/` | A |
 | 05 | `var`·`let`·`const` 와 TDZ | 문법 | 호이스팅과 TDZ 를 구분해 선언 전 참조가 `undefined` 인지 `ReferenceError` 인지 예측하고 `const` 가 무엇을 고정하는지 설명할 수 있다 | — | `history/js/02-ES6-모던.md` (도입 역사) | A |
-| 06 | 스코프와 클로저 | 문법 | 함수가 생성 시점의 환경을 붙들고 있다는 것을 설명하고 루프 변수 캡처가 `var` 와 `let` 에서 갈리는 이유를 예측할 수 있다 | 05 | — | A |
-| 07 | `this` 바인딩 네 규칙 | 문법 | 기본·암시적·명시적·`new` 바인딩과 화살표 함수의 렉시컬 `this` 로 임의의 호출식에서 `this` 가 무엇인지 판정할 수 있다 | 06 | — | A |
+| 06 | [스코프와 클로저](06-scope-and-closures/) | 문법 | 함수가 생성 시점의 환경을 붙들고 있다는 것을 설명하고 루프 변수 캡처가 `var` 와 `let` 에서 갈리는 이유를 예측할 수 있다 | 05 | — | A |
+| 07 | [`this` 바인딩 네 규칙](07-this-binding-four-rules/) | 문법 | 기본·암시적·명시적·`new` 바인딩과 화살표 함수의 렉시컬 `this` 로 임의의 호출식에서 `this` 가 무엇인지 판정할 수 있다 | 06 | — | A |
 | 08 | 함수 정의 형태와 매개변수 | 문법 | 선언·표현식·화살표의 호이스팅·`this`·`arguments` 차이를 설명하고 기본값·나머지 매개변수·`length` 의 규칙을 예측할 수 있다 | 07 | — | A |
 | 09 | `call`·`apply`·`bind` | 표준 API | 세 메서드로 `this` 와 인자를 바꿔 호출하고 `bind` 가 만든 함수의 성질(재바인딩 불가)을 설명할 수 있다 | 07 | — | B |
 | 10 | 구조 분해 할당 | 문법 | 배열·객체·중첩·기본값·이름 바꾸기를 읽고 쓰며, `undefined` 와 `null` 에서 갈리는 실패를 예측할 수 있다 | 01 | — | A |
@@ -41,7 +42,7 @@ JS 는 **값의 의미(강제 변환)·함수(스코프·`this`·클로저)·객
 | 22 | `Symbol` 과 잘 알려진 심볼 | 문법 | 심볼 키의 성질과 `Symbol.iterator`·`toPrimitive`·`hasInstance` 가 언어 동작 자체를 바꾸는 지점을 설명할 수 있다 | 19 | — | B |
 | 23 | `Map`·`Set` 과 약한 컬렉션 | 표준 API | 객체 키·삽입 순서·SameValueZero 비교를 근거로 `Map` 과 객체를 고르고 `WeakMap` 의 수명 의미를 설명할 수 있다. 집합 연산 메서드는 ES2025, `getOrInsert` 계열(Upsert)은 ES2026 | 22 | `cs/data-structure/05-hashmap/` | A |
 | 24 | 배열 변형 메서드 | 표준 API | `push`·`splice`·`sort`·`reverse`·`fill` 이 원본을 바꾼다는 것과 `sort` 의 기본 문자열 비교·안정 정렬 보장을 설명할 수 있다 | 01 | `cs/foundations/data-structures-basics/` | A |
-| 25 | 배열 비변형·복사 메서드 | 표준 API | `map`·`filter`·`reduce`·`slice`·`concat` 과 ES2024 `toSorted`·`toReversed`·`toSpliced`·`with` 를 구분해 불변 변환을 쓸 수 있다 | 24 | — | A |
+| 25 | 배열 비변형·복사 메서드 | 표준 API | `map`·`filter`·`reduce`·`slice`·`concat` 과 ES2023 `toSorted`·`toReversed`·`toSpliced`·`with` 를 구분해 불변 변환을 쓸 수 있다 | 24 | — | A |
 | 26 | 배열 탐색·평탄화·생성 | 표준 API | `indexOf` 와 `includes` 가 `NaN` 에서 갈리는 것, `find`/`findLast`·`at`·`flat`/`flatMap`·`Array.from`·`fromAsync`(ES2026)를 골라 쓸 수 있다 | 24 | — | B |
 | 27 | `Object` 정적 메서드 | 표준 API | `keys`/`values`/`entries`·`assign`·`fromEntries`·`Object.groupBy`(ES2024)로 객체를 변환하고 `assign` 의 얕은 복사와 getter 호출을 설명할 수 있다 | 13 | — | A |
 | 28 | `String` 메서드와 템플릿 리터럴 | 표준 API | 자주 쓰는 문자열 메서드와 태그 템플릿·`String.raw` 를 쓰고 `replace` 의 `$` 치환 규칙을 설명할 수 있다 | 04 | — | A |
@@ -96,7 +97,8 @@ JS 는 **값의 의미(강제 변환)·함수(스코프·`this`·클로저)·객
 | 판 | 이 목록에서 해당하는 것 |
 |---|---|
 | ES2020~2022 | 옵셔널 체이닝·널 병합(#12), 논리 할당(ES2021, #12), `WeakRef`(ES2021, #47), 프라이빗 필드·`static {}`·`Error.cause`(ES2022, #16·#32) |
-| ES2024 | `toSorted` 계열 변경 없는 배열 메서드(#25), `Object.groupBy`(#27), 정규식 `v` 플래그(#30), `Promise.withResolvers`(#38), well-formed 문자열 메서드(#4) |
+| ES2023 | `toSorted` 계열 변경 없는 배열 메서드(#25), `findLast`(#26), 심볼을 약한 키로(#23) |
+| ES2024 | `Object.groupBy`(#27), 정규식 `v` 플래그(#30), `Promise.withResolvers`(#38), well-formed 문자열 메서드(#4) |
 | ES2025 | 이터레이터 헬퍼(#21), 집합 연산 메서드(#23), `RegExp.escape`(#30), `Promise.try`(#38), import attributes·JSON 모듈(#44) |
 | ES2026 | `Error.isError`(#32), `Array.fromAsync`(#26), Upsert(`getOrInsert` 계열, #23) |
 | ES2027 초안 | Temporal(#49), 명시적 자원 관리 `using`(#51) — **초안 단계이고 Node 18/20 에 없어 실행 검증 불가** |

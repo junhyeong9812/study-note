@@ -389,7 +389,7 @@ need("가") -> 1
 - ★ **`return`·`throw` 의 타입이 `Nothing`** 이라서 이게 성립한다.\
   `Nothing` 은 **모든 타입의 하위 타입**이므로 `?:` 의 오른쪽 어디에나 들어간다.\
   그래서 왼쪽 결과 타입이 `String?` 이어도 **`city` 의 타입은 `String`** 이 된다.
-- `Nothing` 자체의 정본은 목록의 **34번 주제**(예외·`Nothing` 타입)가 된다.
+- `Nothing` 자체의 정본은 [목록의 **34번 주제**](../34-exceptions-nothing-and-try-expression/)(예외·`Nothing` 타입)가 된다.
 - **이 관용구가 `!!` 의 실질적인 대체재다** — 터지는 건 같지만 **메시지를 남길 수 있다.**
 
 비용 — 분기 한 번.
@@ -431,7 +431,7 @@ filterNotNull -> [가, 다]
 orEmpty -> []
 ```
 
-- 확장 함수 자체의 정본은 [목록의 **13번 주제**](../13-extension-functions-and-properties/)이고, 컬렉션 연산은 목록의 **40번 주제**부터가 정본이 된다. 여기서는 **존재만** 짚는다.
+- 확장 함수 자체의 정본은 [목록의 **13번 주제**](../13-extension-functions-and-properties/)이고, 컬렉션 연산은 [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/)부터가 정본이 된다. 여기서는 **존재만** 짚는다.
 
 비용 — 정적 호출 한 번.
 
@@ -561,10 +561,10 @@ let 본문이 돈 횟수 = 1
 - [05번 주제](../05-platform-types/) — **이 보장이 Java 경계에서 사라지는 자리**의 정본. 이 사슬의 정점이다
 - [`../../../java/syntax/60-null-handling/`](../../../java/syntax/60-null-handling/) — **Java 쪽 정본.** `Objects.requireNonNull` 의 메시지 설계, 방어 시점 셋, 컬렉션별 null 정책
 - [`../../../java/syntax/38-optional/`](../../../java/syntax/38-optional/) — Java 가 **런타임 객체**로 푼 쪽. Kotlin 이 **타입**으로 푼 것과의 대비
-- 목록의 **33번 주제**(`is`/`as`/`as?`) — 캐스트 전체의 정본
-- 목록의 **34번 주제**(예외·`Nothing` 타입) — `?: return` 의 근거인 `Nothing`
-- 목록의 **51번 주제**(`require`/`check`/`error`) — `requireNotNull` 의 정본
-- 목록의 **58번 주제**(null 처리 관용구) — 계층별 배치 판단
+- [목록의 **33번 주제**](../33-type-checks-and-casts-is-as/)(`is`/`as`/`as?`) — 캐스트 전체의 정본
+- [목록의 **34번 주제**](../34-exceptions-nothing-and-try-expression/)(예외·`Nothing` 타입) — `?: return` 의 근거인 `Nothing`
+- [목록의 **51번 주제**](../51-preconditions-require-check-error-todo/)(`require`/`check`/`error`) — `requireNotNull` 의 정본
+- [목록의 **58번 주제**](../58-null-handling-idioms-let-requirenotnull-and-elvis-return/)(null 처리 관용구) — 계층별 배치 판단
 
 ## 용어 풀이
 

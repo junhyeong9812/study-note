@@ -10,9 +10,9 @@
 > **버전** — 확장 함수·확장 프로퍼티·`@JvmName` 은 전부 **1.0**. 이 문서에 버전으로 갈리는 항목은 없다.
 > **경계** — ★ **「정적 디스패치라는 천장」이 무엇을 뜻하는지, 왜 그 대가를 치르고도 쓰는지는\
 > [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이 정본이다.** 여기는 **선언 문법 · 해소 순서 · 멤버와 충돌할 때의 규칙**만 다룬다.\
-> 수신자 지정 람다(`A.() -> Unit`)와 DSL 은 목록의 **37번 주제**, `infix` 확장은 [09번 주제](../09-varargs-spread-local-and-infix-functions/),\
-> scope function 은 목록의 **14번 주제**, `operator` 확장은 목록의 **31번 주제**,\
-> `@JvmName` 을 포함한 상호운용 애너테이션 **전체**는 목록의 **39번 주제**가 정본이다 —\
+> 수신자 지정 람다(`A.() -> Unit`)와 DSL 은 [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/), `infix` 확장은 [09번 주제](../09-varargs-spread-local-and-infix-functions/),\
+> scope function 은 [목록의 **14번 주제**](../14-scope-functions/), `operator` 확장은 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/),\
+> `@JvmName` 을 포함한 상호운용 애너테이션 **전체**는 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이다 —\
 > 여기서는 `@JvmName` 을 **디스크립터 충돌을 푸는 도구로만** 쓴다.\
 > `Intrinsics.checkNotNullParameter` 의 정본은 [03번 주제](../03-null-safe-types/)다.
 > 이 본문은 Claude 작성이다(원고 없음).
@@ -534,7 +534,7 @@ public class Printer {
   `open`/`override` 가 **붙고 실제로 가상 디스패치된다** — 단 **확장 수신자 쪽은 여전히 정적**이다.\
   최상위 확장에서 `open`/`override` 를 못 쓰는 이유는 (9)에서 에러로 확인한다.
 
-비용 — 이 형태는 **수신자가 둘**이라 읽기가 급격히 어려워진다. DSL 말고는 잘 쓰지 않는다(목록의 **37번 주제**).
+비용 — 이 형태는 **수신자가 둘**이라 읽기가 급격히 어려워진다. DSL 말고는 잘 쓰지 않는다([목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/)).
 
 ### (5) 확장 프로퍼티에는 **backing field 가 없다** — 그래서 초기화가 안 된다
 
@@ -576,7 +576,7 @@ val Cup.cups: Int get() = ml / 200
 ```
 
 - 상태를 붙이고 싶으면 확장으로는 안 되고 **`Map` 같은 바깥 저장소**를 직접 써야 한다.\
-  `field` 키워드와 backing field 의 정본은 목록의 **16번 주제**다.
+  `field` 키워드와 backing field 의 정본은 [목록의 **16번 주제**](../16-properties-backing-field-lateinit-const/)다.
 
 비용 — 매 호출 계산이다. 캐시할 자리가 없다.
 
@@ -704,7 +704,7 @@ fun Cup.peek(): Int = secret
 
 - ★ **확장은 클래스 바깥에 있으므로 바깥에서 보이는 것만 본다.** (1)의 `static` 이라는 사실의 직접 귀결이다.
 - 그래서 확장은 **캡슐화를 뚫지 못한다** — 남의 타입에 함수를 붙이면서도 안전한 이유다.
-- 대신 **`internal` 은 같은 모듈이면 보인다**(모듈 경계의 정본은 목록의 **18번 주제**).
+- 대신 **`internal` 은 같은 모듈이면 보인다**(모듈 경계의 정본은 [목록의 **18번 주제**](../18-visibility-modifiers/)).
 
 비용 — 없다. **못 하는 것이 값어치인 자리다.**
 
@@ -859,7 +859,7 @@ public final class JnKt {
 
 - ★ **Kotlin 쪽 호출은 `describe()` 그대로다.** 바뀐 것은 **클래스 파일의 이름뿐**이고,\
   고르는 일은 여전히 **컴파일 타임에 선언 타입으로** 한다.
-- `@JvmName` 전체의 정본은 목록의 **39번 주제**다.
+- `@JvmName` 전체의 정본은 [목록의 **39번 주제**](../39-java-interop-annotations/)다.
 
 비용 — 애너테이션 두 줄. Java 에서 볼 이름이 달라진다.
 
@@ -922,7 +922,7 @@ P Java: NulKt.shout("hi")    : hi!
 
 - ★ **Java 에는 점 찍는 문법이 없다.** `NulKt.orNone(s)` 처럼 **파일 클래스의 정적 메서드**로 부른다.\
   (1)에서 본 그대로이고, 이 호출이 **확장이 정적 메서드라는 것의 마지막 확인**이다.
-- 파일 클래스 이름은 `<파일명>Kt` 다. `@JvmName` 으로 바꿀 수 있다(목록의 **39번 주제**).
+- 파일 클래스 이름은 `<파일명>Kt` 다. `@JvmName` 으로 바꿀 수 있다([목록의 **39번 주제**](../39-java-interop-annotations/)).
 
 비용 — Java 쪽에서는 **확장이라는 문법적 편의가 통째로 사라진다.**
 
@@ -1042,7 +1042,7 @@ fun List<String>.describe() = "s"
 | 공개 API 로 내놓을 때 | 멤버를 먼저 고려 | 확장은 **나중에 멤버가 생기면 조용히 진다**((3)) |
 | Java 에서도 많이 쓸 API | 멤버 또는 `@JvmName` 붙인 확장 | Java 에서는 정적 메서드로만 보인다((11)) |
 | 타입 인자만 다른 두 확장이 필요할 때 | `@JvmName` 으로 가른다 | 소거 때문에 충돌한다((9)) |
-| 블록 안에서 `this` 를 바꾸고 싶을 때 | 수신자 지정 람다 | 목록의 **37번 주제**가 정본이다 |
+| 블록 안에서 `this` 를 바꾸고 싶을 때 | 수신자 지정 람다 | [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/)가 정본이다 |
 
 판단 규칙 두 줄.
 
@@ -1088,13 +1088,13 @@ fun List<String>.describe() = "s"
   (6)의 「검사를 안 심는다」가 거기 위에 서 있다. `String?.orEmpty()` 같은 nullable 수신자 확장도 거기서 먼저 나왔다
 - [04번 주제](../04-smart-casts/) — nullable 수신자 몸통에서 `this == null` 을 검사한 뒤 쓰는 것
 - [09번 주제](../09-varargs-spread-local-and-infix-functions/) — `infix` **확장** 함수의 형태와 우선순위
-- 목록의 **14번 주제**(scope function) — `let`/`run`/`apply`/`also` 가 전부 **확장 함수**다. 이 문법의 대표 사용처
-- 목록의 **16번 주제**(프로퍼티 — backing field·`field`) — (5)에서 「없다」고 한 그것의 정본
-- 목록의 **18번 주제**(가시성 수식어) — `internal` 이 확장에서 보이는 범위
-- 목록의 **31번 주제**(연산자 오버로딩·`invoke` 규약) — `operator fun` 확장으로 기호를 만드는 것
-- 목록의 **36번 주제**(함수 타입·`fun interface`·SAM) · 목록의 **37번 주제**(수신자 지정 람다와 DSL) — `A.() -> Unit` 의 정본
-- 목록의 **39번 주제**(Java 상호운용 애너테이션) — `@JvmName` 전체. 여기서는 **충돌 해소 도구로만** 썼다
-- 목록의 **40번 주제**\~**48번 주제**(컬렉션·문자열 stdlib) — 그 API 의 상당수가 **확장 함수**다
+- [목록의 **14번 주제**](../14-scope-functions/)(scope function) — `let`/`run`/`apply`/`also` 가 전부 **확장 함수**다. 이 문법의 대표 사용처
+- [목록의 **16번 주제**](../16-properties-backing-field-lateinit-const/)(프로퍼티 — backing field·`field`) — (5)에서 「없다」고 한 그것의 정본
+- [목록의 **18번 주제**](../18-visibility-modifiers/)(가시성 수식어) — `internal` 이 확장에서 보이는 범위
+- [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/)(연산자 오버로딩·`invoke` 규약) — `operator fun` 확장으로 기호를 만드는 것
+- [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/)(함수 타입·`fun interface`·SAM) · [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/)(수신자 지정 람다와 DSL) — `A.() -> Unit` 의 정본
+- [목록의 **39번 주제**](../39-java-interop-annotations/)(Java 상호운용 애너테이션) — `@JvmName` 전체. 여기서는 **충돌 해소 도구로만** 썼다
+- [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/)\~**48번 주제**(컬렉션·문자열 stdlib) — 그 API 의 상당수가 **확장 함수**다
 
 ## 용어 풀이
 

@@ -1,6 +1,6 @@
 # Kotlin — 문법·API 주제 목록
 
-> 진행 — **17 / 58**(01 \~ 17). 「주제」 칸의 링크가 각 주제의 3파일 폴더다.
+> 진행 — **25 / 58**(01 \~ 25). 「주제」 칸의 링크가 각 주제의 3파일 폴더다.
 > 기준 소스: [kotlinlang.org 언어 레퍼런스](https://kotlinlang.org/docs/home.html) · [kotlin-stdlib API](https://kotlinlang.org/api/core/kotlin-stdlib/) · [언어 기능·제안 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html)(기능이 Stable 이 된 버전 확인) · [릴리스 목록](https://kotlinlang.org/docs/releases.html)
 > 실행 검증: **가능**(2026-09-23 에 `sdk install kotlin` 으로 갖췄다). **kotlinc 2.4.20 · JRE 21.0.5.**
 > ★★ **이 갈래의 근거는 `javap` 다** — Kotlin 은 JVM 바이트코드로 컴파일되므로 「무엇으로 컴파일되나」를 지어낼 수 없다.
@@ -39,14 +39,14 @@ Kotlin 공식 레퍼런스는 **타입 → 클래스·객체 → 함수·람다 
 | 15 | [클래스 선언 — 주 생성자·부 생성자·`init` 블록 순서](15-class-declaration-constructors-and-init/) | 문법 | 프로퍼티 초기화와 `init` 이 어느 순서로 도는지 예측할 수 있다 | 01 | — | A |
 | 16 | [프로퍼티 — backing field·커스텀 접근자·`lateinit`·`const`](16-properties-backing-field-lateinit-const/) | 문법 | `field` 키워드가 필요한 자리와 `lateinit` 이 쓸 수 없는 타입을 판단할 수 있다 | 15 | — | A |
 | 17 | [위임 프로퍼티 — `by lazy`·`observable`·`Map` 위임](17-delegated-properties/) | 문법 | `by` 가 어떤 연산자 규약(`getValue`/`setValue`)으로 풀리는지 설명할 수 있다 | 16 | — | B |
-| 18 | 가시성 수식어 — `internal` 이 Java 에 없는 이유 | 문법 | 모듈 경계가 무엇으로 정의되고 Java 에서 보면 어떻게 보이는지 설명할 수 있다 | 15 | — | B |
-| 19 | 상속 — `open`/`final` 기본값 뒤집기·`override` 강제 | 문법 | 상속을 열려면 무엇을 명시해야 하는지, 그 기본값이 막는 실패를 설명할 수 있다 | 15 | [`../언어-특성/README.md`](../언어-특성/README.md) §11 | A |
-| 20 | 인터페이스 — 기본 구현·프로퍼티 선언·충돌 해소(`super<T>`) | 문법 | 같은 시그니처를 둘에서 상속했을 때 요구되는 형태를 쓸 수 있다 | 19 | — | A |
-| 21 | 클래스 위임 (`by`) — 상속 대신 합성 | 문법 | 위임이 오버라이드한 메서드를 위임 대상이 못 보는 함정을 예측할 수 있다 | 20 | — | B |
-| 22 | `data class` — 무엇이 생성되고 무엇이 안 되나 | 문법 | `copy`/`equals`/`componentN` 이 **주 생성자 프로퍼티만** 본다는 결과를 예측할 수 있다 | 15 | [`../언어-특성/README.md`](../언어-특성/README.md) §4 | A |
-| 23 | `sealed class`/`sealed interface` 와 `when` 완결성 | 문법 | 하위 타입을 늘렸을 때 컴파일이 깨지는 자리와 깨지지 **않는** 자리를 판단할 수 있다 | 06, 20, 22 | [`../언어-특성/README.md`](../언어-특성/README.md) §3 | A |
-| 24 | `enum class` 와 `sealed` 선택 기준 | 문법 | 상태에 데이터가 붙는 순간 enum 이 부족해지는 지점을 판단할 수 있다 | 23 | — | A |
-| 25 | `object` 선언·`companion object`·`object` 식 | 문법 | Kotlin 에 `static` 이 없는데 정적 멤버가 어떻게 만들어지는지 설명할 수 있다 | 15 | — | A |
+| 18 | [가시성 수식어 — `internal` 이 Java 에 없는 이유](18-visibility-modifiers/) | 문법 | 모듈 경계가 무엇으로 정의되고 Java 에서 보면 어떻게 보이는지 설명할 수 있다 | 15 | — | B |
+| 19 | [상속 — `open`/`final` 기본값 뒤집기·`override` 강제](19-inheritance-open-final-override/) | 문법 | 상속을 열려면 무엇을 명시해야 하는지, 그 기본값이 막는 실패를 설명할 수 있다 | 15 | [`../언어-특성/README.md`](../언어-특성/README.md) §11 | A |
+| 20 | [인터페이스 — 기본 구현·프로퍼티 선언·충돌 해소(`super<T>`)](20-interfaces-default-impl-and-super/) | 문법 | 같은 시그니처를 둘에서 상속했을 때 요구되는 형태를 쓸 수 있다 | 19 | — | A |
+| 21 | [클래스 위임 (`by`) — 상속 대신 합성](21-class-delegation-by/) | 문법 | 위임이 오버라이드한 메서드를 위임 대상이 못 보는 함정을 예측할 수 있다 | 20 | — | B |
+| 22 | [`data class` — 무엇이 생성되고 무엇이 안 되나](22-data-class-generated-members/) | 문법 | `copy`/`equals`/`componentN` 이 **주 생성자 프로퍼티만** 본다는 결과를 예측할 수 있다 | 15 | [`../언어-특성/README.md`](../언어-특성/README.md) §4 | A |
+| 23 | [`sealed class`/`sealed interface` 와 `when` 완결성](23-sealed-classes-and-when-exhaustiveness/) | 문법 | 하위 타입을 늘렸을 때 컴파일이 깨지는 자리와 깨지지 **않는** 자리를 판단할 수 있다 | 06, 20, 22 | [`../언어-특성/README.md`](../언어-특성/README.md) §3 | A |
+| 24 | [`enum class` 와 `sealed` 선택 기준](24-enum-class-vs-sealed/) | 문법 | 상태에 데이터가 붙는 순간 enum 이 부족해지는 지점을 판단할 수 있다 | 23 | — | A |
+| 25 | [`object` 선언·`companion object`·`object` 식](25-object-declaration-companion-and-object-expression/) | 문법 | Kotlin 에 `static` 이 없는데 정적 멤버가 어떻게 만들어지는지 설명할 수 있다 | 15 | — | A |
 | 26 | `value class`(인라인 클래스) — 언제 박싱되나 | 문법 | 래핑 비용이 사라지는 경우와 다시 살아나는 경우(제네릭·nullable·인터페이스)를 예측할 수 있다 | 22 | [`../언어-특성/README.md`](../언어-특성/README.md) §4 | A |
 | 27 | 중첩 클래스와 `inner` — 기본값이 뒤집힌 또 한 곳 | 문법 | `inner` 를 안 붙이면 바깥 인스턴스를 못 잡는 이유와 그 기본값의 값어치를 설명할 수 있다 | 15 | — | B |
 | 28 | 제네릭 — 선언 지점 변성 `in`/`out`·star projection·`where` | 문법 | Java 와일드카드를 선언 지점으로 옮기면 무엇이 줄어드는지 설명할 수 있다 | 20 | — | A |

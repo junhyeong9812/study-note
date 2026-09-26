@@ -442,7 +442,7 @@ Exception in thread "main" java.lang.NullPointerException: Cannot invoke "String
   **하위 생성자가 상위 생성자를 부르고, 상위가 하위 메서드를 다시 부른** 모양이다.
 - ★ JVM 의 도움 되는 NPE 메시지가 원인을 지목한다 — `because "this.label" is null`.
 - ★ 막는 법은 **상위 생성자·`init` 에서 `open` 멤버를 부르지 않는 것**이다.\
-  Kotlin 이 클래스·멤버를 기본 `final` 로 둔 것이 이 구멍을 좁히는 장치다(목록의 **19번 주제**).
+  Kotlin 이 클래스·멤버를 기본 `final` 로 둔 것이 이 구멍을 좁히는 장치다([목록의 **19번 주제**](../19-inheritance-open-final-override/)).
 
 ### 7. `variable 'later' must be initialized` — 이쪽은 **컴파일러가 잡는다**
 
@@ -479,7 +479,7 @@ forward.kt:3:17: error: variable 'later' must be initialized.
 - ★ **`val`/`var` 를 붙이는 것이 「필드를 만들라」는 지시**다. 안 붙이면 **생성자 파라미터일 뿐**이다.
 - ★ 그래서 5번의 에러는 「Kotlin 이 금지해서」가 아니라 「**저장한 곳이 없어서**」다.
 - ★★ `data class` 의 `copy`·`equals`·`componentN` 이 **주 생성자 프로퍼티만 보는 것**도 같은 뿌리다 —\
-  주 생성자 칸이 **그 클래스의 「값」을 정의하는 자리**이기 때문이다(정본은 목록의 **22번 주제**).
+  주 생성자 칸이 **그 클래스의 「값」을 정의하는 자리**이기 때문이다(정본은 [목록의 **22번 주제**](../22-data-class-generated-members/)).
 
 ### 9. `= 0` 은 `putfield` 가 **안 나온다** — 최적화지 언어 보장이 아니다
 
@@ -543,7 +543,7 @@ $ javap -c -p osec99/Box.class   # var extra: Int = 99 로만 바꾼 판
 | 생성자 위임 | `this(…)` / `super(…)` · **`super()` 는 암묵 삽입** | 주 생성자가 있으면 **`this(…)` 명시 강제** |
 | 「입구가 하나」라는 개념 | 없다 — 생성자마다 독립 | **주 생성자**가 유일한 입구 |
 | 생성 중 오버라이드 호출 함정 | 있다 | **있다** — 게다가 널 불가 타입이 널을 낸다 |
-| 그 함정을 좁히는 장치 | 없음(관례로 피한다) | **클래스·멤버가 기본 `final`**(목록의 **19번 주제**) |
+| 그 함정을 좁히는 장치 | 없음(관례로 피한다) | **클래스·멤버가 기본 `final`**([목록의 **19번 주제**](../19-inheritance-open-final-override/)) |
 
 - ★ Kotlin 이 더한 것은 **「주 생성자」라는 칸 하나**다. 그 칸이 ① 초기화를 한 군데로 모으고\
   ② `val`/`var` 한 글자로 필드를 만들고 ③ `data class` 의 「값」 범위를 정한다.

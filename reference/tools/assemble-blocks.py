@@ -56,6 +56,14 @@ def assemble(src: pathlib.Path, dst: pathlib.Path, blocks: pathlib.Path) -> list
         body = f.read_text(encoding='utf-8')
         if body.endswith('\n'):
             body = body[:-1]
+        # ★ 캡처가 이미 펜스째 뱉은 블록을 원고가 한 번 더 감싸면 이중 펜스가 된다.
+        #   렌더 검사도 소스 펜스 검사도 못 잡았고 덤프를 세다가 발견됐다(실측) — 조립 때 막는다.
+        # ★ 직전 줄이 펜스여도 그것이 「닫는」 펜스면 이중 펜스가 아니다 — 블록 둘이 붙은 자리의 오탐(실측).
+        #   지금까지 나온 펜스 줄의 홀짝으로 「열린 펜스 안인가」를 가린다.
+        inside = sum(1 for x in '\n'.join(out).split('\n') if x.startswith('```')) % 2 == 1
+        if inside and out[-1].startswith('```') and body.startswith('```'):
+            print('  ★ 이중 펜스 — 원고의 여는 펜스 바로 아래에 펜스째 캡처된 블록이 들어갔다 %s:%d: %s'
+                  % (src.name, n, m.group(1)), file=sys.stderr)
         out.append(body)
         used.append(m.group(1))
     dst.parent.mkdir(parents=True, exist_ok=True)

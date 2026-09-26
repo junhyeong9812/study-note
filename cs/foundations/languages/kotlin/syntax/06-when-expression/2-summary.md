@@ -7,7 +7,7 @@
 > ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** `kotlinc` 의 기본값은 **1.8**(`major version: 52`)이고,\
 > 이 문서의 역어셈블은 **기본값**이 정본이다. **`-jvm-target 21` 에서 `sealed` 쪽 한 자리가 통째로 달라진다** — 그 자리를 (6)에 따로 세웠다.
 > **버전** — `when` 자체는 1.0. **guard 조건(`is T if …`)은 2.2.0** — 이 환경에서 `-language-version 2.1` 로 **거부되는 것을 실측**했다.
-> **경계** — `sealed` 계층을 **어떻게 설계하나**의 정본은 목록의 **23번 주제**(`sealed`+완결성)와 [`../../언어-특성/README.md`](../../언어-특성/README.md) §3 이다.\
+> **경계** — `sealed` 계층을 **어떻게 설계하나**의 정본은 [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/)(`sealed`+완결성)와 [`../../언어-특성/README.md`](../../언어-특성/README.md) §3 이다.\
 > 여기는 **「`when` 이 언제 `else` 를 요구하고 그것이 JVM 에서 무엇으로 내려앉나」** 만 다룬다.\
 > **Java `switch` 쪽 정본은 [`../../../java/syntax/21-switch-statement-and-expression/`](../../../java/syntax/21-switch-statement-and-expression/)** 다.
 > 이 본문은 Claude 작성이다(원고 없음).
@@ -655,7 +655,7 @@ fun name(s: Shape): String = when (s) {
 
 - ★ **이 에러가 `sealed` 의 값어치 그 자체다.** 타입을 늘리면 **고쳐야 할 자리를 컴파일러가 전수로 찾아 준다.**\
   `else` 를 적어 두면 **이 에러가 안 난다** — 그래서 `sealed` 주체에는 `else` 를 안 쓰는 것이 관용이다.
-- 계층 설계 쪽 정본은 목록의 **23번 주제**와 [`../../언어-특성/README.md`](../../언어-특성/README.md) §3 이다.
+- 계층 설계 쪽 정본은 [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/)와 [`../../언어-특성/README.md`](../../언어-특성/README.md) §3 이다.
 
 비용 — 런타임 검사 0(가지에 걸리면 그냥 점프). 안 걸릴 때만 객체 하나와 예외.
 
@@ -934,11 +934,11 @@ val u = when (x) {
 - [03번 주제](../03-null-safe-types/) — 바이트코드에 섞여 보이는 `checkNotNullParameter` 와 `message = null` 예외의 정본
 - [04번 주제](../04-smart-casts/) — `is` 가지 안에서 캐스트 없이 멤버를 쓰는 것의 정본
 - [07번 주제](../07-loops-ranges-and-labels/) — `in 1..9` 가지가 쓰는 range 의 정본. `break`/`continue` 의 정본이기도 하다
-- 목록의 **23번 주제**(`sealed class`/`sealed interface` 와 `when` 완결성) — **계층 설계**가 거기 정본이다. 여기는 그 완결성의 **에러·바이트코드**까지
-- 목록의 **24번 주제**(`enum class` 와 `sealed` 선택 기준) — 어느 쪽을 고르나
-- 목록의 **33번 주제**(`is`/`as`/`as?`) — 타입 검사 연산자의 정본
-- 목록의 **34번 주제**(예외·`Nothing`·`try` 가 식이라는 것) — `when` 가지에 `throw` 를 놓는 관용구의 근거
-- 목록의 **57번 주제**(Java 코드를 Kotlin 답게) — `if`/`when` 을 식으로 쓰는 관용구
+- [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/)(`sealed class`/`sealed interface` 와 `when` 완결성) — **계층 설계**가 거기 정본이다. 여기는 그 완결성의 **에러·바이트코드**까지
+- [목록의 **24번 주제**](../24-enum-class-vs-sealed/)(`enum class` 와 `sealed` 선택 기준) — 어느 쪽을 고르나
+- [목록의 **33번 주제**](../33-type-checks-and-casts-is-as/)(`is`/`as`/`as?`) — 타입 검사 연산자의 정본
+- [목록의 **34번 주제**](../34-exceptions-nothing-and-try-expression/)(예외·`Nothing`·`try` 가 식이라는 것) — `when` 가지에 `throw` 를 놓는 관용구의 근거
+- [목록의 **57번 주제**](../57-kotlin-idioms-for-java-code-if-when-expressions-and-elvis-return/)(Java 코드를 Kotlin 답게) — `if`/`when` 을 식으로 쓰는 관용구
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) §3 — **"상태를 늘리면 컴파일이 깨진다" 는 설계 논지가 거기 정본**이다
 
 ## 용어 풀이
@@ -962,9 +962,9 @@ val u = when (x) {
 ## 더 들어가면
 
 - `when` 의 `in` 가지는 **`contains` 연산자 규약**으로 풀린다. 그래서 `in` 뒤에 올 수 있는 것은 range 만이 아니다 —\
-  `contains` 를 가진 것이면 다 된다(`Set`·`List`·`String`). 규약 자체의 정본은 목록의 **31번 주제**다.
+  `contains` 를 가진 것이면 다 된다(`Set`·`List`·`String`). 규약 자체의 정본은 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/)다.
 - `when` 의 가지 값이 `Nothing`(즉 `throw`·`return`)이면 그 가지는 **타입 추론에 아무 영향을 안 준다.**\
-  `Nothing` 의 정본은 목록의 **34번 주제**다.
+  `Nothing` 의 정본은 [목록의 **34번 주제**](../34-exceptions-nothing-and-try-expression/)다.
 - 타깃 21 의 `typeSwitch` 가 받는 세 번째 인자(`iconst_0`)는 **restart index** 다 —\
   guard 가 실패했을 때 그 다음 후보부터 다시 찾기 위한 자리다. 이 문서의 예제에는 guard 가 없어 0 으로 고정돼 있다.
 - **`-jvm-target` 을 바꾸면 `when` 말고도 갈리는 것이 있다** — [02번 주제](../02-string-templates-and-raw-strings/)의 문자열 보간이\

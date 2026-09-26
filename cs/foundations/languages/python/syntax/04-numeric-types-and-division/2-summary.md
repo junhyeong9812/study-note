@@ -869,7 +869,7 @@ math.fmod(1,0) -> ValueError: math domain error
 
 - 목록: [python/syntax 주제 목록](../README.md) — 이 주제는 **04번**
 - 이어지는 곳: [목록의 **05번 주제**](../05-truthiness-and-short-circuit/) 「진릿값과 단축 평가」 — `bool` 이 `int` 의 하위 클래스라는 사실이 **거기서 진릿값 판정으로 이어진다.**
-- 이어지는 곳: 목록의 **50번 주제** 「`decimal`·float 정밀도·`round`」 — **`Decimal` 의 컨텍스트·반올림 모드·금액 설계는 그쪽이 정본**이다. 여기서는 「연산자가 무슨 값을 내나」까지만 다룬다.
+- 이어지는 곳: [목록의 **50번 주제**](../50-decimal-float-precision-and-round/) 「`decimal`·float 정밀도·`round`」 — **`Decimal` 의 컨텍스트·반올림 모드·금액 설계는 그쪽이 정본**이다. 여기서는 「연산자가 무슨 값을 내나」까지만 다룬다.
 - 이어지는 곳: [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md) — `True == 1` 인데 `True is 1` 이 아닌 것, `nan` 의 어긋남.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — 연산자 사용법 소개.\
   **경계**: 그쪽은 「이렇게 쓴다」까지, 여기는 「**음수와 큰 수에서 무엇이 틀리나**」부터다.
@@ -908,7 +908,7 @@ math.fmod(1,0) -> ValueError: math domain error
 
 ## 더 들어가면
 
-- **`int` 는 `__index__` 를 가진 객체까지 받는다.** 그래서 `numpy` 정수나 `IntEnum` 이 인덱스 자리에 그냥 들어간다(목록의 **37번 주제**).
+- **`int` 는 `__index__` 를 가진 객체까지 받는다.** 그래서 `numpy` 정수나 `IntEnum` 이 인덱스 자리에 그냥 들어간다([목록의 **37번 주제**](../37-enum/)).
 - **`float` 에도 `is_integer()`·`as_integer_ratio()`·`hex()`/`fromhex()` 가 있다.** 저장된 값을 **정확히** 들여다보는 세 창이다.
-- **`decimal` 의 컨텍스트는 스레드별이다.** `getcontext()` 가 돌려주는 것이 현재 스레드의 것이고, `localcontext()` 로 블록 단위 설정이 가능하다 — 정본은 목록의 **50번 주제**.
-- **`complex` 에는 순서 비교가 없다.** 정렬·`min`/`max` 에 넣으면 `TypeError` 가 난다. 정렬 가능성 일반은 목록의 **31번 주제**.
+- **`decimal` 의 컨텍스트는 스레드별이다.** `getcontext()` 가 돌려주는 것이 현재 스레드의 것이고, `localcontext()` 로 블록 단위 설정이 가능하다 — 정본은 [목록의 **50번 주제**](../50-decimal-float-precision-and-round/).
+- **`complex` 에는 순서 비교가 없다.** 정렬·`min`/`max` 에 넣으면 `TypeError` 가 난다. 정렬 가능성 일반은 [목록의 **31번 주제**](../31-comparison-protocol-and-sortability/).

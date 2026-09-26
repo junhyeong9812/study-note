@@ -52,7 +52,7 @@ int *p1[10];                          int (*p2)[10];
 
 > **포인터 산술(pointer arithmetic)** — 포인터에 정수를 더하면 **바이트가 아니라 원소 단위**로 움직이는 규칙.\
 > 예: `int *p` 에서 `p + 1` 은 4바이트, `int (*q)[10]` 에서 `q + 1` 은 40바이트 뒤다.\
-> 정본은 목록의 **15번 주제**.
+> 정본은 [목록의 **15번 주제**](../15-pointer-arithmetic-and-indexing/).
 
 ### 2. 이 선언을 말로 옮겨라
 
@@ -176,7 +176,7 @@ const int *p;          int * const q;
 - **`const char *s`**(앞엣것)다. 「이 함수는 당신이 준 문자열을 안 바꿉니다」라는 **호출자와의 계약**이다.
 - `char * const s`(뒤엣것)는 함수 안의 지역 변수 `s` 를 얼릴 뿐이라 **호출자가 알 필요가 없다.**\
   헤더에 쓰면 계약을 말하는 척하면서 아무 계약도 안 한 것이 된다.
-- `const` 가 최적화 보장이 아니라 **계약**이라는 논점의 정본은 목록의 **31번 주제**.
+- `const` 가 최적화 보장이 아니라 **계약**이라는 논점의 정본은 [목록의 **31번 주제**](../31-const-and-pointer-const-placement/).
 
 ### 5. `f()` 에 인자를 주면
 
@@ -216,7 +216,7 @@ ex.c:5:5: note: declared here
 
 - 실무 결론: **C17 코드에서는 `-Wstrict-prototypes` 를 항상 켠다.**\
   `-Wall -Wextra` 만 믿으면 이 구멍이 그대로 남는다.
-- 정본은 목록의 **34번 주제**.
+- 정본은 [목록의 **34번 주제**](../34-function-declarations-definitions-and-prototypes/).
 
 ### 6. 저장 클래스 지정자는 무엇을 정하는가
 
@@ -255,7 +255,7 @@ ex2.c:1:1: error: address of register variable ‘r’ requested
 - **파일 수준** `static int n;` — 바꾸는 것은 **연결**이다(외부 → 내부).\
   저장 기간은 원래도 정적이고 그대로다. 다른 `.c` 에서 못 본다.
 - 같은 낱말이 **자리에 따라 다른 축을 건드린다** — 이 주제에서 가장 헷갈리는 자리다.\
-  정본은 목록의 **29번 주제**.
+  정본은 [목록의 **29번 주제**](../29-scope-and-linkage-static-extern/).
 
 **아무 지정자도 안 쓰면**
 
@@ -479,7 +479,7 @@ ex3.c:2:64: warning: ‘sizeof’ on array function parameter ‘a’ will retur
 - gcc 는 이 자리에 전용 경고 `-Wsizeof-array-argument` 를 준다.\
   이것은 **플래그를 하나도 안 줘도 나온다** — `-Wint-conversion`·`-Wincompatible-pointer-types` 도 마찬가지로 기본이다.\
   (세 경고를 `gcc -std=c17 -c` 만으로 돌려 확인했다.)\
-  정본은 목록의 **16번 주제**.
+  정본은 [목록의 **16번 주제**](../16-array-pointer-decay-and-function-parameters/).
 
 **선언 문법 자체로 UB 가 되는 자리가 있는가**
 

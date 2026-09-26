@@ -12,7 +12,7 @@
 > **경계** — 초기화가 **언제** 도는지는 [15번 주제](../15-class-declaration-constructors-and-init/)가, 위임(`by lazy`·`observable`)은 [17번 주제](../17-delegated-properties/)가,\
 > 확장 프로퍼티에 backing field 가 **없다**는 사실은 [13번 주제](../13-extension-functions-and-properties/)가,\
 > 널 불가 타입의 보장은 [03번 주제](../03-null-safe-types/)가 정본이다.\
-> `@JvmField`·`@get:`/`@field:` 같은 상호운용·use-site target 은 목록의 **35번 주제**·**39번 주제**다.\
+> `@JvmField`·`@get:`/`@field:` 같은 상호운용·use-site target 은 [목록의 **35번 주제**](../35-annotations-and-use-site-targets/)·**39번 주제**다.\
 > 여기는 **프로퍼티 하나가 필드와 접근자로 어떻게 쪼개지나**만 다룬다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -173,7 +173,7 @@ public final class Person {
 - ★ **`initial` 은 `var` 인데 필드가 없다.** 「`var` 니까 저장한다」도 틀린 전제다.\
   세터가 값을 그냥 버리고 있고 컴파일러는 **아무 말도 안 한다.**
 - ★ 주 생성자의 `val first` 도 **필드 + 게터**로 쪼개진다 — Kotlin 에는 「필드를 직접 노출」하는 문법이 없다\
-  (`@JvmField` 가 그것을 뚫는 도구이고 정본은 목록의 **39번 주제**다).
+  (`@JvmField` 가 그것을 뚫는 도구이고 정본은 [목록의 **39번 주제**](../39-java-interop-annotations/)다).
 
 ### (2) `field` 는 **접근자 안에만 있는 이름**이다
 
@@ -656,7 +656,7 @@ public final class Holder {
   ★ README 판 이력표의 **「16 explicit backing fields — 2.3.0 도입 → Stable 2.4.0」과 어긋나지 않는다.**\
   (이 환경에서 잴 수 있는 것은 「**2.4 부터**」까지다 — 2.4.0 과 2.4.20 중 어느 쪽에서 Stable 이 됐는지는 **못 잰다.**)
 - ★ 필드 타입은 `java.util.List` 이고 **게터도 `List` 를 낸다.** 바깥에서 본 런타임 클래스는 `ArrayList` 다 —\
-  **읽기 전용은 뷰일 뿐**이라는 사실이 여기서도 그대로다(정본은 목록의 **40번 주제**).
+  **읽기 전용은 뷰일 뿐**이라는 사실이 여기서도 그대로다(정본은 [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/)).
 - ★ `add` 는 클래스 **안**이라 `MutableList` 로 보인다. 컴파일러가 두 타입을 자리마다 갈라 쓰는 것이다.
 
 ### (7) 확장 프로퍼티에는 애초에 서랍이 없다
@@ -758,10 +758,10 @@ val items: List<String>        // 2.4+ explicit backing field
 - [13번 주제 — 확장 함수·확장 프로퍼티](../13-extension-functions-and-properties/) — **그쪽이 확장 프로퍼티의 정본**, 여기는 (7)에서 같은 축으로 줄 세우기만.
 - [03번 주제 — null 안전 타입](../03-null-safe-types/) — **그쪽이 널 불가 보장의 정본**, 여기는 `lateinit` 이 그 보장을 **런타임으로 미루는** 도구라는 것만.
 - [01번 주제 — `val`/`var` 와 기본 타입](../01-val-var-and-basic-types/) — 원시 타입과 박싱의 정본. (3)의 「원시 타입」 제약이 거기서 온다.
-- 목록의 **35번 주제** — `@field:`/`@get:` use-site target. 애너테이션이 **필드에 붙나 게터에 붙나**.
-- 목록의 **39번 주제** — `@JvmField`·`@JvmStatic`. 필드를 직접 노출하는 법.
-- 목록의 **40번 주제** — 읽기 전용 컬렉션이 **뷰**라는 것((6)의 `ArrayList`).
-- 목록의 **22번 주제** — `data class` 가 주 생성자 프로퍼티만 보는 것.
+- [목록의 **35번 주제**](../35-annotations-and-use-site-targets/) — `@field:`/`@get:` use-site target. 애너테이션이 **필드에 붙나 게터에 붙나**.
+- [목록의 **39번 주제**](../39-java-interop-annotations/) — `@JvmField`·`@JvmStatic`. 필드를 직접 노출하는 법.
+- [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/) — 읽기 전용 컬렉션이 **뷰**라는 것((6)의 `ArrayList`).
+- [목록의 **22번 주제**](../22-data-class-generated-members/) — `data class` 가 주 생성자 프로퍼티만 보는 것.
 
 ## 용어 풀이
 

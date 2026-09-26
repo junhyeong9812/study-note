@@ -11,7 +11,7 @@
 > **버전** — 람다·고차 함수·`it`·마지막 인자 람다·`::` 참조·SAM 변환은 전부 1.0. `fun interface` 는 **1.4**.
 > **경계** — `vararg`·로컬 함수·`infix` 는 [09번 주제](../09-varargs-spread-local-and-infix-functions/)가, 기본 인자·이름 붙인 인자는 [08번 주제](../08-function-declaration-default-and-named-args/)가 정본이다.\
 > ★★ **비지역 `return` 과 `inline` 의 정본은 [11번 주제](../11-inline-functions/)** 다 — 여기서는 「비인라인 람다에서는 맨 `return` 이 거부된다」까지만 적는다.\
-> `fun interface`·SAM 변환 **전체**는 목록의 **36번 주제**, 확장 함수는 [13번 주제](../13-extension-functions-and-properties/), scope function 은 목록의 **14번 주제**가 정본이다.\
+> `fun interface`·SAM 변환 **전체**는 [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/), 확장 함수는 [13번 주제](../13-extension-functions-and-properties/), scope function 은 [목록의 **14번 주제**](../14-scope-functions/)가 정본이다.\
 > **Java 쪽 짝은 [`../../../java/syntax/29-lambda-expressions/`](../../../java/syntax/29-lambda-expressions/) · [`../../../java/syntax/30-method-references/`](../../../java/syntax/30-method-references/) · [`../../../java/syntax/31-functional-interfaces/`](../../../java/syntax/31-functional-interfaces/)** 다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -125,7 +125,7 @@ public final class FtypesKt {
 - ★★ **`Int.() -> String` 과 `(Int) -> String` 은 디스크립터가 같다.** 수신자는 **첫 파라미터**로 내려간다\
   (확장 함수와 같은 자리 — [13번 주제](../13-extension-functions-and-properties/)).
 - ★ **`((Int) -> String)?` 도 같은 `Function1`** 이다. nullable 여부는 디스크립터에 안 남는다.
-- 제네릭 인자가 `? super Integer` 로 보이는 것은 **함수 타입의 파라미터가 반변**이기 때문이다(목록의 **28번 주제**).
+- 제네릭 인자가 `? super Integer` 로 보이는 것은 **함수 타입의 파라미터가 반변**이기 때문이다([목록의 **28번 주제**](../28-generics-variance-in-out-star-where/)).
 
 비용 — 타입 하나당 인터페이스 하나. 추가 객체는 (2) 에서 생긴다.
 
@@ -704,7 +704,7 @@ Z SAM class            : SamKt$$Lambda/0x00007c5760001ac0
 - ★ **그래서 박싱을 피하는 길은 둘이다** — ① 시그니처가 원시 타입인 **SAM·`fun interface`**,\
   ② 객체 자체를 안 만드는 **`inline`**([11번 주제](../11-inline-functions/)).\
   **Kotlin 의 함수 타입만 쓰면 두 길 다 안 탄다.**
-- SAM 변환·`fun interface` **전체**는 목록의 **36번 주제**가 정본이다. 여기는 **박싱이 갈리는 자리**만 다뤘다.
+- SAM 변환·`fun interface` **전체**는 [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/)가 정본이다. 여기는 **박싱이 갈리는 자리**만 다뤘다.
 
 비용 — 객체 1개(자리당), 포장 0개.
 
@@ -1092,11 +1092,11 @@ fun interface KInt { fun apply(x: Int): Int }
 - [`../../../java/syntax/31-functional-interfaces/`](../../../java/syntax/31-functional-interfaces/) — **박싱 대비의 정본.**\
   Java 는 원시 타입 전용 인터페이스를 43개 만들어 풀었고, Kotlin 은 `FunctionN` 하나로 두고 `inline` 으로 풀었다
 - [`../../../java/syntax/19-type-erasure/`](../../../java/syntax/19-type-erasure/) — `invoke(Object)Object` 가 왜 그 모양인지
-- 목록의 **14번 주제**(scope function) — `let`/`run`/`apply` 가 **전부 `inline` 고차 함수**다
-- 목록의 **36번 주제**(함수 타입·`fun interface`·SAM 변환) — **SAM 전체의 정본.** 여기는 박싱이 갈리는 자리만
-- 목록의 **37번 주제**(리시버 지정 람다와 DSL) — `A.() -> Unit` 의 정본
-- 목록의 **28번 주제**(선언 지점 변성) — `? super Integer` 가 보이는 이유
-- 목록의 **47번 주제**(`Sequence`) — 지연 평가에서 람다가 어떻게 쌓이나
+- [목록의 **14번 주제**](../14-scope-functions/)(scope function) — `let`/`run`/`apply` 가 **전부 `inline` 고차 함수**다
+- [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/)(함수 타입·`fun interface`·SAM 변환) — **SAM 전체의 정본.** 여기는 박싱이 갈리는 자리만
+- [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/)(리시버 지정 람다와 DSL) — `A.() -> Unit` 의 정본
+- [목록의 **28번 주제**](../28-generics-variance-in-out-star-where/)(선언 지점 변성) — `? super Integer` 가 보이는 이유
+- [목록의 **47번 주제**](../47-sequences-lazy-evaluation/)(`Sequence`) — 지연 평가에서 람다가 어떻게 쌓이나
 
 ## 용어 풀이
 

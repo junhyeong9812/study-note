@@ -338,7 +338,7 @@ error: language version 1.9 is no longer supported; use version 2.0 or greater i
   정본은 [`../../../java/syntax/22-instanceof-type-patterns/`](../../../java/syntax/22-instanceof-type-patterns/),\
   `switch` 쪽은 [`../../../java/syntax/23-switch-pattern-matching/`](../../../java/syntax/23-switch-pattern-matching/).
 - **`require(x is String)`** 이 좁혀 주는 근거는 **contract** 다 — stdlib 함수가\
-  "정상 반환하면 이 조건이 참" 을 컴파일러에 선언해 둔 것이다. 정본은 목록의 **51번 주제**(`require`/`check`/`error`).
+  "정상 반환하면 이 조건이 참" 을 컴파일러에 선언해 둔 것이다. 정본은 [목록의 **51번 주제**](../51-preconditions-require-check-error-todo/)(`require`/`check`/`error`).
 - **플랫폼 타입([05번](../05-platform-types/))에는 이 문제가 안 생긴다** —\
   Java 에서 온 값은 애초에 non-null 처럼 쓸 수 있어 **검사도 스마트 캐스트도 필요 없다.**\
   ★ **그래서 더 위험하다.** 이 문서에서 컴파일러가 아홉 자리에서 막아 준 그 방어가,\

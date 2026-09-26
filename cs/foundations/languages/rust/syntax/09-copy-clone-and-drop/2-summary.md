@@ -97,7 +97,7 @@ impl Drop for D {
 }
 ```
 
-- 이 `D` 하나를 문서 끝까지 쓴다. `String`·`Vec` 자체에는 `Drop` 을 못 단다(고아 규칙 — 목록의 **26번 주제**).
+- 이 `D` 하나를 문서 끝까지 쓴다. `String`·`Vec` 자체에는 `Drop` 을 못 단다(고아 규칙 — [목록의 **26번 주제**](../26-orphan-rule-and-newtype/)).
 - ★ **`D` 는 `Copy` 가 될 수 없다.** 아래 (3)이 그 이유다 — 그래서 이 창은 `Copy` 타입에는 못 쓴다.
 
 비용 — 없음. 관찰용 `println!` 하나뿐이다.
@@ -337,7 +337,7 @@ fn main() {
 - **`clone()` 자체는 「깊게 하라」는 뜻이 아니다.** 무엇을 베낄지는 **그 타입의 `Clone` 구현**이 정한다.
 - `Vec`·`String` 은 **버퍼를 새로 할당**한다(주소가 다르다 — 08번 2번 실측과 같은 근거).
 - ★ **`Rc::clone` 은 카운트만 1 올린다**(`1 → 2`, `drop` 하면 `1`). 버퍼는 **그대로 공유**한다.\
-  정본은 목록의 **41번 주제**다. 여기서는 **현상만** 싣는다.
+  정본은 [목록의 **41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/)다. 여기서는 **현상만** 싣는다.
 - (3)이 갈라 보여 준다 — `Rc` 를 벗기고 `(*r1).clone()` 하면 **안쪽 `Vec` 의 깊은 복제**가 된다.\
   같은 `.clone()` 글자인데 **어느 타입에 붙었느냐**로 갈린다.
 
@@ -417,7 +417,7 @@ For more information about this error, try `rustc --explain E0599`.
 - 에러가 그 사실을 직접 말한다 — **`unsatisfied trait bound introduced in this derive macro`**.
 - ★ 그래서 **파생은 편의이지 최선이 아니다.** 제네릭 타입에서 `derive` 가 과하게 조이는 자리가 있다.
 - 손으로 쓴 `impl<T> Clone for Manual<T>` 는 그 경계가 없어 **`NotClone` 에도 통한다.**
-- `derive` 전수는 목록의 **27번 주제**가 정본이다.
+- `derive` 전수는 [목록의 **27번 주제**](../27-derive-macros-debug-clone-partialeq-default-hash/)가 정본이다.
 
 비용 — 없음(컴파일 타임). 대가는 **API 가 불필요하게 좁아지는 것**이다.
 
@@ -804,7 +804,7 @@ impl Drop for D {               // 소멸자 — derive 는 없다. 반드시 �
 | `Drop::drop` 을 직접 못 부른다 | **언어** | **E0040** |
 | `drop(x)` 이 그냥 값을 먹는 함수인 것 | **언어**(std API) | 빈 몸통 함수로 재현됨 |
 | **`Vec::clone` 이 버퍼를 새로 할당하는 것** | **std 계약** | 주소 실측. `Clone` 트레이트 자체는 깊이를 강제하지 않는다 |
-| **`Rc::clone` 이 카운트만 올리는 것** | **std 계약** | `strong_count` 1→2→1 실측. 정본은 목록의 **41번 주제** |
+| **`Rc::clone` 이 카운트만 올리는 것** | **std 계약** | `strong_count` 1→2→1 실측. 정본은 [목록의 **41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/) |
 | **주소 절댓값**(`0x6076...`) | **런타임 ASLR** | 실행마다 바뀐다. 근거는 「같은가/다른가」뿐 |
 | **`String`·`Vec` 의 크기 24바이트** | **플랫폼**(64비트) | `size_of` 실측. 포인터 폭이 다르면 달라진다 |
 | **`D` 의 크기 16바이트** | **구현**(필드 배치) | `&'static str` 이 16바이트라서다. 배치 규칙은 `repr` 의 자유 |
@@ -823,7 +823,7 @@ impl Drop for D {               // 소멸자 — derive 는 없다. 반드시 �
 | 힙을 쥔 타입 | `Clone` 만 | `Copy` 는 애초에 못 붙는다(E0204) |
 | 정리할 자원이 있다 | `impl Drop` — **`Copy` 는 포기** | 둘은 공존 불가(E0184) |
 | 사본이 **따로 살아야** 한다 | `.clone()` | 원본과 남남이 되는 것이 목적일 때 |
-| **같은 데이터를 여럿이 본다** | `Rc::clone`/`Arc::clone` | 카운트만 오른다(목록의 **41번 주제**) |
+| **같은 데이터를 여럿이 본다** | `Rc::clone`/`Arc::clone` | 카운트만 오른다([목록의 **41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/)) |
 | 해제를 앞당긴다 | `drop(x)` — `x.drop()` 아니다 | E0040 |
 | 해제 시점을 **관찰**한다 | `impl Drop` + `println!` | 유일한 창. 단 `Copy` 타입에는 못 단다 |
 | 제네릭 타입에 `Clone` 을 연다 | 손으로 `impl Clone` | `derive` 는 `T: Clone` 을 군더더기로 붙인다 |
@@ -857,10 +857,10 @@ impl Drop for D {               // 소멸자 — derive 는 없다. 반드시 �
 - [**10번 주제**](../10-borrowing-and-aliasing-rules/)(빌림 `&`·`&mut`) — **`&T` 가 `Copy` 이고 `&mut T` 는 아닌 것**의 정본
 - [`../../../../memory-management/`](../../../../memory-management/) — 할당·해제·참조 카운팅의 **일반론**은 거기,\
   **여기는 Rust 가 그 시점을 어느 줄로 정하나**까지
-- 목록의 **27번 주제**(`derive` 매크로) — 어떤 파생이 어떤 제약을 거는지의 정본
-- 목록의 **41번 주제**(`Rc`/`Arc`) — `Rc::clone` 이 카운트만 올리는 것의 정본. 여기서는 **현상만**
-- 목록의 **44번 주제**(`Drop`·`mem::replace`/`take`) — 자원 타입을 직접 설계하는 쪽
-- 목록의 **26번 주제**(고아 규칙) — 남의 타입에 `Drop` 을 못 다는 이유
+- [목록의 **27번 주제**](../27-derive-macros-debug-clone-partialeq-default-hash/)(`derive` 매크로) — 어떤 파생이 어떤 제약을 거는지의 정본
+- [목록의 **41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/)(`Rc`/`Arc`) — `Rc::clone` 이 카운트만 올리는 것의 정본. 여기서는 **현상만**
+- [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)(`Drop`·`mem::replace`/`take`) — 자원 타입을 직접 설계하는 쪽
+- [목록의 **26번 주제**](../26-orphan-rule-and-newtype/)(고아 규칙) — 남의 타입에 `Drop` 을 못 다는 이유
 
 ## 용어 풀이
 
@@ -885,9 +885,9 @@ impl Drop for D {               // 소멸자 — derive 는 없다. 반드시 �
 - ★ **`Clone` 은 `Copy` 타입에도 의미가 있다.** `Copy` 가 `Clone` 을 요구하므로 `i32`·`[i32; 3]` 같은 타입도\
   `clone()` 을 가진다 — 제네릭 코드가 `T: Clone` 만 요구해도 `Copy` 타입이 통과하는 이유다.
 - **`Drop` 은 패닉 중에도 불린다**(unwind 중 정리). 그래서 `drop` 안에서 다시 패닉하면 프로그램이 죽는다.\
-  자세한 것은 목록의 **23번 주제**(`panic!` 대 `Result`) 쪽이다.
+  자세한 것은 [목록의 **23번 주제**](../23-panic-vs-result/)(`panic!` 대 `Result`) 쪽이다.
 - ★ **`mem::forget` 은 해제를 건너뛴다** — 안전한 함수인데도 소멸자를 안 부른다.\
-  「메모리 누수는 Rust 의 안전성 보장 대상이 아니다」는 자리다. 목록의 **44번 주제**.
+  「메모리 누수는 Rust 의 안전성 보장 대상이 아니다」는 자리다. [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/).
 - **필드 해제 순서를 바꾸려면 필드 선언 순서를 바꾼다.** 언어가 따로 지정 문법을 주지 않는다.\
   락 가드 두 개를 순서대로 풀어야 하면 그 순서가 **구조체 정의에 박힌다**.
 - ★ **`Copy` 를 뗐을 때 깨지는 곳이 많다는 것이 곧 설계 신호**다 — 값이 여기저기 복제돼 흩어져 있었다는 뜻이다.

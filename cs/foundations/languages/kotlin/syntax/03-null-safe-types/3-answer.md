@@ -359,7 +359,7 @@ fun label(u: User?): String {
 
 - `!!` 보다 나은 점 — **메시지를 남길 수 있다.** `?: throw IllegalArgumentException("s 가 없다")` 는\
   3번의 `message = null` 과 달리 이유가 적힌다. 그리고 `return` 판은 **아예 예외를 안 쓴다.**
-- `Nothing` 자체의 정본은 목록의 **34번 주제**(예외·`Nothing` 타입).
+- `Nothing` 자체의 정본은 [목록의 **34번 주제**](../34-exceptions-nothing-and-try-expression/)(예외·`Nothing` 타입).
 
 ### 9. `s.toString()` 과 `s?.toString()` 은 어떻게 다른가
 
@@ -436,7 +436,7 @@ ext.kt:6:39: warning: redundant call of conversion method.
 - **Java 쪽 대응 → [`../../../java/syntax/60-null-handling/`](../../../java/syntax/60-null-handling/)** 가 정본.\
   방어 시점 셋(경계·생성자·반환값), `requireNonNull` 의 메시지 설계, 컬렉션별 `null` 정책이 거기 있다.\
   `Optional` 이라는 **런타임 객체**로 푼 쪽은 [`../../../java/syntax/38-optional/`](../../../java/syntax/38-optional/).
-- **`requireNotNull`** — 목록의 **51번 주제**(`require`/`check`/`error`/`TODO`)가 정본이 된다.
+- **`requireNotNull`** — [목록의 **51번 주제**](../51-preconditions-require-check-error-todo/)(`require`/`check`/`error`/`TODO`)가 정본이 된다.
 
 ---
 

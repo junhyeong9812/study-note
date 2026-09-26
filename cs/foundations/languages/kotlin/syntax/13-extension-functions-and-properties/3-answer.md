@@ -429,7 +429,7 @@ fun Cup.peek(): Int = secret
   그러니 **값을 넣어 둘 칸이 남의 클래스에 생기지 않고**(`get()` 으로 계산해야 한다),
   **바깥에서 보이는 것만 본다**(`private` 을 못 본다. `internal` 은 같은 모듈이면 보인다).
 - ★ **`private` 을 못 보는 것은 값어치다** — 남의 타입에 함수를 붙이면서도 **캡슐화를 뚫지 못한다.**
-  backing field 의 정본은 목록의 **16번 주제**, 모듈 경계는 목록의 **18번 주제**다.
+  backing field 의 정본은 [목록의 **16번 주제**](../16-properties-backing-field-lateinit-const/), 모듈 경계는 [목록의 **18번 주제**](../18-visibility-modifiers/)다.
 
 ### 8. `unresolved reference … on receiver of type 'String'` — 그래서 전역이 안 더러워진다
 
@@ -521,7 +521,7 @@ public final class JnKt {
 ```
 
 - ★ **Kotlin 쪽 호출 이름은 안 바뀐다** — `describe()` 그대로다. 바뀐 것은 **클래스 파일의 이름뿐**이고,
-  고르는 일은 여전히 **컴파일 타임에 선언 타입으로** 한다. `@JvmName` 전체의 정본은 목록의 **39번 주제**다.
+  고르는 일은 여전히 **컴파일 타임에 선언 타입으로** 한다. `@JvmName` 전체의 정본은 [목록의 **39번 주제**](../39-java-interop-annotations/)다.
 
 ### 10. `modifier … is not applicable to 'top level function'` — Java 에서는 `NulKt.orNone(s)`
 
@@ -557,7 +557,7 @@ P Java: NulKt.shout("hi")    : hi!
   그래서 5번의 **멤버 확장**은 에러가 안 났던 것이다(그쪽은 최상위 함수가 아니다).
 - **Java 에는 점 찍는 문법이 없다.** `NulKt.orNone(s)` 처럼 **파일 클래스의 정적 메서드**로 부른다 —
   1번에서 본 그대로이고, **이 호출이 「확장은 정적 메서드」의 마지막 확인**이다.
-- **파일 클래스 이름은 `<파일명>Kt`**(`nul.kt` → `NulKt`)이고 **`@JvmName` 으로 바꿀 수 있다**(목록의 **39번 주제**).
+- **파일 클래스 이름은 `<파일명>Kt`**(`nul.kt` → `NulKt`)이고 **`@JvmName` 으로 바꿀 수 있다**([목록의 **39번 주제**](../39-java-interop-annotations/)).
 
 ### 11. Java `default` 메서드와 **정확히 반대**다
 
@@ -574,7 +574,7 @@ P Java: NulKt.shout("hi")    : hi!
 - ★ **확장은 「안 고쳐도 된다」를 사고, 「고를 수 없다」를 판다.** `default` 메서드는 그 반대다.
   정본은 [`../../../java/syntax/11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/)다.
 - **`let`/`run`/`with`/`apply`/`also` 는 전부 확장 함수**다(그리고 전부 `inline` 이다 —
-  [11번 주제](../11-inline-functions/)). 이 문법의 대표 사용처이고 정본은 목록의 **14번 주제**다.
+  [11번 주제](../11-inline-functions/)). 이 문법의 대표 사용처이고 정본은 [목록의 **14번 주제**](../14-scope-functions/)다.
 - **stdlib 이 이 문법 위에 서 있다** — `String.isBlank()`·`List.map()`·`Any?.toString()` 이 전부 확장이라
   `kotlin-stdlib.jar` 에는 `StringsKt`·`CollectionsKt` 같은 **정적 메서드 덩어리**가 들어 있다.
   (★ **이 문서는 그 stdlib 클래스를 직접 찍어 보지는 않았다** — 내가 만든 파일만 `javap` 했다.)

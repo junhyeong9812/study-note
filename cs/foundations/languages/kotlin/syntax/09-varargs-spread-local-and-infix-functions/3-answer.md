@@ -589,7 +589,7 @@ public final class Vd2Kt {
 
 - **기본 인자·이름 붙인 인자·`@JvmOverloads` → [08번 주제](../08-function-declaration-default-and-named-args/)** 가 정본이다.\
   이 문서 9번의 `vararg$default` 와 `bipush 63` 이 거기서 온 기계다.
-- **연산자 규약 표 전체 → 목록의 31번 주제**(연산자 오버로딩·중위 함수·`invoke` 규약)가 정본이다.\
+- **연산자 규약 표 전체 → [목록의 31번 주제](../31-operator-overloading-infix-and-invoke/)**(연산자 오버로딩·중위 함수·`invoke` 규약)가 정본이다.\
   `plus`·`get`·`invoke`·`iterator`·`contains` 가 각각 어떤 기호·문법으로 풀리는지가 거기 있다.\
   여기는 **`infix` 라는 호출 형태와 그 우선순위**만 다뤘다.
 - **람다가 바깥 `var` 를 잡는 것 → [목록의 10번 주제](../10-lambdas-and-higher-order-functions/)**(람다와 고차 함수 — `it`·마지막 인자 람다·클로저)가 정본이다.\
