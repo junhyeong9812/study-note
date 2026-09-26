@@ -630,6 +630,9 @@ study-note의 폴더는 성격이 둘로 갈린다.\
     ★ 이 저장소에서 쓰는 도구들의 자리 — `~/.local/bin`(npm 전역·tsc) · `~/.local/opt/go/bin` ·
     `~/.local/opt/dotnet`(★ `DOTNET_CLI_UI_LANGUAGE=en` 을 안 주면 진단이 한국어로 나온다) ·
     **SDKMAN 은 `source ~/.sdkman/bin/sdkman-init.sh` 가 있어야 `java`·`javac` 가 보인다.**
+    ★ SDKMAN init 은 `set -u` 아래에서 죽는다 — 그 줄만 `set +u` 로 감싸라.
+    ★ 파이썬은 `python3`(3.12)과 **`python3.11`** 이 있다(3.14·3.10 이하는 없다) — 판 경계를 보일 때 쓴다.
+    ★ `-race`(Go)는 `CGO_ENABLED=1` + gcc 로 된다 · C 쪽은 `gcc`(13)·`gcc-12`·`clang`(18) 세 판이 있다.
 
 27. ★★ **진단 문구는 틀릴 수도 있다 — 그때는 종료 코드만 근거로 써라.**
     실측 — C# 의 `InternalsVisibleTo` 실험에서 막힌 쪽 진단 `CS0281` 이 「공개 키가 안 맞는다」고 말했는데,
