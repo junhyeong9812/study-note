@@ -136,7 +136,7 @@ C.toString          -> function     trap log ["C.get(toString)","B.get(toString)
 hasOwn(C,'fromA')   -> false        trap log ["C.gopd(fromA)"]
 hasOwn(C,'fromC')   -> true         trap log ["C.gopd(fromC)"]
 
-[3] writing -- the write does NOT walk to where the value lives
+[3] after writing C.fromA -- reading C, A, and the own keys of C's target
 C.fromA = 'W'       -> done         trap log ["C.set(fromA)","B.set(fromA)","A.set(fromA)","C.gopd(fromA)"]
 after the write:
 C.fromA  (read)     -> W            trap log ["C.get(fromA)"]
@@ -403,7 +403,7 @@ setPrototypeOf(c1, {...}) : c1 instanceof C       false
   c1.shared (own still wins)                      own on c1   own? true
   after delete c1.shared                          a different object entirely
 
-[5] what JS does NOT have -- a per-property hook that beats an own property on READ
+[5] proto has get+set, leaf has an own data property -- reading leaf.v
 proto has get+set, leaf has own data -> leaf.v    own
 is there any flag that flips this?                no -- ordinary [[Get]] returns at the first own hit
 Proxy CAN do it, but that is a different object   PROXY wins

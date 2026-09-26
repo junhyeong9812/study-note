@@ -171,7 +171,7 @@ run("hasOwn(C,'fromA')", () => Object.hasOwn(C, "fromA"));
 run("hasOwn(C,'fromC')", () => Object.hasOwn(C, "fromC"));
 
 console.log("");
-console.log("[3] writing -- the write does NOT walk to where the value lives");
+console.log("[3] after writing C.fromA -- reading C, A, and the own keys of C's target");
 run("C.fromA = 'W'", () => { C.fromA = "W"; return "done"; });
 console.log("after the write:");
 run("C.fromA  (read)", () => C.fromA);
@@ -458,7 +458,7 @@ delete c1.shared;
 line("  after delete c1.shared", c1.shared);
 
 console.log("");
-console.log("[5] what JS does NOT have -- a per-property hook that beats an own property on READ");
+console.log("[5] proto has get+set, leaf has an own data property -- reading leaf.v");
 const probe = { get v() { return "proto accessor"; }, set v(x) { this._x = x; } };
 const leaf = Object.create(probe);
 Object.defineProperty(leaf, "v", { value: "own", writable: true, enumerable: true, configurable: true });
