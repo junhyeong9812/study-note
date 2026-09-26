@@ -54,9 +54,25 @@ export default class NextNodeServer extends BaseServer<
 
  BASE  handleRequest        L910    추적 껍데기   (DEV L607 이 덮어쓴다)
    +-- handleRequestImpl    L1026   정규화 파이프라인 (670줄)
-       +-- run              L1814   추적 껍데기   (DEV L630 이 덮어쓴다)
+       |
+       +-- (보통) useInvokePath 갈래 L1580 → handleCatchallRenderRequest L1634 → return
+       |     ★★★ `next start` · `next dev` 에서는 **이쪽이 정상 경로다.**
+       |       앞단의 router-server 가 일치한 라우트마다 invokeRender 를 부르고
+       |       (server/lib/router-server.ts L691), 그것이 `invokePath` 메타를
+       |       심은 뒤(L404) 렌더 서버를 부른다 → [페이지 아닌 요청]
+       |     => **run 을 거치지 않는다**
+       |     ★ 예외 — invokeStatus 가 있는 호출(404 · 405 · 정적 파일 오류 · 500/400)은
+       |       L1581-1592 에서 handleCatchallRenderRequest 가 아니라 **renderError** 로 간다
+       |
+       +-- (그 밖) run      L1814   추적 껍데기   (DEV L630 이 덮어쓴다)
            +-- runImpl      L1824   본문 한 줄
                +-- handleCatchallRenderRequest
+               router-server 가 **없을 때**의 길이다 — minimalMode 배포에서 `x-matched-path` 가 오면
+                 useMatchedPathHeader 가 되어 여기로 온다 (BASE L1117-1118, NEXTSRV L1088-1093 주석
+                 "router-server is not present"). router-server 는 x-matched-path 를 지운다 (RSRV L251-253)
+               ★ 두 갈래의 차이는 크지 않다 — run 도 runImpl 에서 **같은** handleCatchallRenderRequest 에
+                 닿는다. 다른 것은 트레이스 span · basePath 제거(L1665-1670) · statusCode 200 ·
+                 invokePath 로 pathname·query 를 덮어쓰는지(L1595-1629)다
                    |                            ← 1차 경계
                    NEXTSRV L1078    라우트를 고른다
                      +-- this.render(...)       NEXTSRV L1124 / L1189
@@ -138,7 +154,7 @@ NEXTSRV 에서 BASE 의 메서드 이름으로 되돌아오는 자리를 전수�
 
       DEV 가 덮어쓰는 것
         L910  handleRequest                 <- DEV L607   ★★ [01]의 시작점이다
-        L1814 run                           <- DEV L630   ★★ [04]의 시작점이다
+        L1814 run                           <- DEV L630   ★★ [04]의 시작점이다 (단 router-server 뒤에서는 안 밟힌다)
         L830  getRouteMatchers              <- DEV L268
         L2033 getStaticPaths                <- DEV L815
         L418  getServerComponentsHmrCache       <- DEV L260 만
