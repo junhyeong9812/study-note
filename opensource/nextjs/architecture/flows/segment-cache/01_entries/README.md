@@ -160,8 +160,9 @@ export type NonEmptySegmentCacheEntry = Exclude<
  L448  invalidateSegmentCacheEntries(...)
 
  L493  pingInvalidationListeners(...)  ← 무효화가 아니라 **통지**다
-         주석 L497-500 - Next-Url 이나 base tree 가 바뀔 때,
-           그리고 무효화 **뒤에** 부른다. `router.prefetch(onInvalidate)` 로
+         주석 L497-500 은 "Next-Url 이나 base tree 가 바뀔 때" 도 부른다고 적지만, 실제 호출처는
+           위 무효화 함수 셋(L421 · L438 · L455)뿐이다. nextUrl · tree 가 바뀔 때는
+           app-router.tsx L108 이 pingVisibleLinks 만 부른다. `router.prefetch(onInvalidate)` 로
            등록된 콜백을 깨우는 통로다 (L458 attach · L473 notify 가 짝)
 
  => [클라이언트 라우터] [03]에서 본 대로,
