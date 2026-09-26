@@ -90,6 +90,7 @@
        주석 L418 - 재스케줄된 우선순위가 더 낮아도 **Intent 를 유지한다**
  => `mostRecentlyHoveredLink` 라는 모듈 변수가 그 "하나" 를 가리킨다
  => [README]에서 본 대로, 새 Intent 가 오면 이전 것은 Default 로 내려간다
+    (이전 것이 Background 가 아닐 때만 — L462)
 ```
 
 ```text
