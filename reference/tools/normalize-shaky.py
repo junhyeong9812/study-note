@@ -59,7 +59,8 @@ def main() -> None:
         if '=' not in r:
             sys.exit('--rule 은 정규식=대체 꼴이라야 한다: %s' % r)
         pat, _, rep = r.partition('=')
-        extra.append((re.compile(pat), rep))
+        # ★ `$`·`^` 가 줄 단위로 맞게 MULTILINE — 없으면 블록 전체 끝에만 맞아 조용히 빗나간다(실측).
+        extra.append((re.compile(pat, re.M), rep))
 
     if a.show:
         for p in a.paths:
