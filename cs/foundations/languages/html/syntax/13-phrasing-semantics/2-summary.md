@@ -660,7 +660,7 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - [11번 주제 — 구획 요소와 랜드마크](../11-sectioning-and-landmarks/2-summary.md) — **창 ⑦ 을 연 편**이다. 하네스의 뿌리가 그쪽이다.
 - [12번 주제 — 제목 레벨과 문서 개요](../12-heading-levels-and-outline/2-summary.md) — 「글꼴 크기는 레벨의 증거가 아니다」가 여기의 「굵기는 의미의 증거가 아니다」와 같은 꼴이다.
 - CSS 갈래 목록([`css/syntax/README.md`](../../../css/syntax/README.md))의 **01번**([캐스케이드와 우선순위](../../../css/syntax/01-cascade-and-priority/2-summary.md)) — **UA 스타일시트가 캐스케이드의 어디에 있나**는 그쪽이 정본이다. 여기는 **UA 스타일시트가 두 요소에 같은 값을 준다**는 결과까지.
-- CSS 갈래 [목록의 **04번**](../04-whitespace-and-character-references/)([값 처리 단계](../../../css/syntax/04-value-processing-stages/2-summary.md)) — `bolder`·`smaller` 같은 **상대값이 계산값이 되는 과정**은 그쪽.
+- CSS 갈래 **04번**([값 처리 단계](../../../css/syntax/04-value-processing-stages/2-summary.md)) — `bolder`·`smaller` 같은 **상대값이 계산값이 되는 과정**은 그쪽.
 - 웹 API 갈래 목록([`web-api/README.md`](../../../../web-api/README.md))의 **08번**([`getComputedStyle`](../../../../web-api/08-getcomputedstyle/2-summary.md)) — **창 ② 의 도구 자체**는 그쪽이 정본이다.
 - [14번 주제](../14-quotation-edits-and-time/2-summary.md)(인용·편집·시각) — 같은 구절 시맨틱 묶음의 다음 편. `cite`·`q`·`ins`/`del`·`time`.
 - 목록의 **42번 주제**(ARIA 를 언제 쓰지 말아야 하나) · 목록의 **43번 주제**(접근 가능한 이름 계산) — `role` 로 역할을 덮어쓰는 일과 `title` 이 이름/설명 중 어디로 가나의 **전체 규칙**은 그쪽이 정본이다.

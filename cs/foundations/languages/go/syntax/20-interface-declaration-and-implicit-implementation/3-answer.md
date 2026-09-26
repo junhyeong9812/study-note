@@ -772,7 +772,7 @@ func MultiWriter(writers ...Writer) Writer
 - **IDE 가 구현체 목록을 보여 줄 수 있는 이유**는 소스에 `implements` 가 **적혀 있기 때문**이다.
   Go 에서는 **그 문자열이 없다**(8번의 grep 0줄). 에디터가 보여 준다면 **타입 검사를 전부 돌려** 흉내 낸 것이다.
 - **쓰는 쪽에 인터페이스를 두기 어려운 이유** — Rust 는 **고아 규칙**이 남의 타입에 남의 트레이트를
-  구현하지 못하게 막고(Rust 갈래 [목록의 **26번**](../26-defer-evaluation-lifo-named-results-and-loops/)), 자바는 **기존 클래스를 고쳐야** 한다.
+  구현하지 못하게 막고(Rust 갈래 [**26번**](../../../rust/syntax/26-orphan-rule-and-newtype/)), 자바는 **기존 클래스를 고쳐야** 한다.
   Go 는 둘 다 필요 없다.
 
 ### 11. 다른 주제와 잇기
