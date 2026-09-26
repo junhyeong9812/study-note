@@ -904,9 +904,9 @@ func main() {
   여기는 **예측을 무력화하는 법**부터
 - [목록의 **07번 주제**](../07-slice-sharing-silent-bugs/)(슬라이스 공유로 조용히 틀리는 자리) —
   **그쪽은 버그의 모양까지**, 여기는 **막는 법**부터
-- 목록의 **38번 주제**(`slices`·`maps`·`cmp`) — `slices.Clone`·`Clip`·`Grow` 의 정본(**1.21**)
-- 목록의 **43번 주제**(`io.Reader`/`Writer`) — 버퍼를 `copy` 로 채우는 패턴이 거기 쌓인다
-- 목록의 **50번 주제**(벤치마크·`-benchmem`) — 「`copy` 가 비싼가」를 **재는** 자리
+- [목록의 **38번 주제**](../38-slices-maps-and-cmp/)(`slices`·`maps`·`cmp`) — `slices.Clone`·`Clip`·`Grow` 의 정본(**1.21**)
+- [목록의 **43번 주제**](../43-io-reader-writer-and-composition/)(`io.Reader`/`Writer`) — 버퍼를 `copy` 로 채우는 패턴이 거기 쌓인다
+- [목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)(벤치마크·`-benchmem`) — 「`copy` 가 비싼가」를 **재는** 자리
 - [`../../../../memory-management/`](../../../../memory-management/) —
   **그쪽은 GC 가 어떻게 회수하는지(스택·힙·표시-쓸기)까지**,
   여기는 **무엇이 무엇을 붙잡는지**부터
@@ -935,12 +935,12 @@ func main() {
 
 - `append(dst[:0], src...)` 는 「`dst` 의 배열을 재사용해 `src` 를 담기」다.
   `copy` 와 달리 **모자라면 늘어난다.** 버퍼 재사용 패턴에서 자주 보인다.
-- `slices.Grow(s, n)`(**1.21**)는 반대 방향이다 — **미리 늘려** 재할당을 없앤다. 정본은 목록의 **38번 주제**다.
+- `slices.Grow(s, n)`(**1.21**)는 반대 방향이다 — **미리 늘려** 재할당을 없앤다. 정본은 [목록의 **38번 주제**](../38-slices-maps-and-cmp/)다.
 - (5)절의 함정은 `strings`·`bytes` 에서도 난다. 큰 문자열을 슬라이싱해 조각을 보관하면
   **원본 문자열이 안 없어진다.** `strings.Clone`(**1.18**)이 그것을 끊는다.
   이 문서에서는 **문자열 쪽은 안 던져 봤다.**
 - `runtime.ReadMemStats` 는 **stop-the-world** 를 한다. 측정 도구지 운영 도구가 아니다.
-  제대로 된 메모리 조사는 `pprof` 의 힙 프로파일이다 — 정본은 목록의 **50번 주제**다.
+  제대로 된 메모리 조사는 `pprof` 의 힙 프로파일이다 — 정본은 [목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)다.
 - `clear` 는 맵에도 쓴다(`clear(m)` 은 모든 항목을 지운다). 슬라이스와 **뜻이 다르다** —
   맵은 **비우고**, 슬라이스는 **제로값으로 민다.** 정본은 [목록의 **09번 주제**](../09-maps-declaration-comma-ok-delete-and-iteration-order/)다.
 - 「`copy` 가 `memmove` 로 내려가는가」는 **확인하지 않았다.**

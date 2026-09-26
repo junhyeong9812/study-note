@@ -1061,7 +1061,7 @@ maps.Equal(c, maps.Clone(c)) : true
 | 맵을 베낀다 | `maps.Clone`(**1.21**) | **얕은 복사**임을 알고 쓴다 |
 | 돌면서 지운다 | 그냥 지운다 | 명세가 단정한다 |
 | 돌면서 넣는다 | **키를 모아 루프 밖에서** | 명세가 열어 뒀다 |
-| 여러 고루틴이 만진다 | `sync.Mutex` 또는 `sync.Map` | 맵은 **동시 쓰기에 안전하지 않다**(목록의 **32·33번 주제**) |
+| 여러 고루틴이 만진다 | `sync.Mutex` 또는 `sync.Map` | 맵은 **동시 쓰기에 안전하지 않다**(목록의 [**32**](../32-sync-mutex-rwmutex-waitgroup-once/)·[**33**](../33-sync-atomic-and-sync-map/)번 주제) |
 
 판단 규칙 두 줄.
 
@@ -1110,9 +1110,9 @@ maps.Equal(c, maps.Clone(c)) : true
   **타입으로 고르는 쪽**이다
 - [목록의 **17번 주제**](../17-struct-literals-comparability-field-tags-and-sorting/)(구조체) — 「비교 가능한 타입」의 정본. 키 타입 규칙이 거기에 기댄다
 - [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/)(`sync`) · **33번 주제**(`sync.Map`) — 여러 고루틴이 만질 때. **맵은 동시 쓰기에 안전하지 않다**
-- 목록의 **38번 주제**(`slices`·`maps`·`cmp`) — `maps.Keys`·`maps.Clone`·`slices.Sorted` 의 정본
-- 목록의 **42번 주제**(`fmt`) — `fmt` 가 맵을 정렬해 찍는 것의 정본
-- 목록의 **49번 주제**(`testing`) — 순서 없는 것을 테스트로 고정하는 법
+- [목록의 **38번 주제**](../38-slices-maps-and-cmp/)(`slices`·`maps`·`cmp`) — `maps.Keys`·`maps.Clone`·`slices.Sorted` 의 정본
+- [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)(`fmt`) — `fmt` 가 맵을 정렬해 찍는 것의 정본
+- [목록의 **49번 주제**](../49-testing-table-driven-t-run-cleanup-and-parallel/)(`testing`) — 순서 없는 것을 테스트로 고정하는 법
 
 ## 용어 풀이
 
@@ -1137,7 +1137,7 @@ maps.Equal(c, maps.Clone(c)) : true
 - **그래도 예외가 하나 있다** — `fmt` 다. 표준 라이브러리는 **찍을 때만** 정렬해 준다.
   「디버깅 출력이 흔들리면 못 쓴다」는 현실과 「순서를 약속하면 안 된다」는 원칙을
   **찍는 자리에서만 타협**한 것이다.
-- **`sync.Map` 의 `Range` 도 순서가 없다.** 게다가 **한 시점의 스냅숏도 아니다.** 정본은 목록의 **33번 주제**다.
+- **`sync.Map` 의 `Range` 도 순서가 없다.** 게다가 **한 시점의 스냅숏도 아니다.** 정본은 [목록의 **33번 주제**](../33-sync-atomic-and-sync-map/)다.
 - **여러 고루틴이 같은 맵에 쓰면 런타임이 잡아 준다** — `fatal error: concurrent map writes` 가 뜨고
   **이것은 패닉이 아니라 치명적 오류라 `recover` 로 못 잡는다.**
   다만 **이 문서에서는 안 던져 봤다** — 정본은 [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/)다.

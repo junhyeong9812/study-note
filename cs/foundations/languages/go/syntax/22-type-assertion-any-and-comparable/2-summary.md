@@ -131,7 +131,7 @@ go version go1.27.1 linux/amd64
 3. **같은 실수를 컴파일에서 막을 수 있나** — `any` 의 `==` 와 `comparable` 제약이 어디서 갈리나.
 
 ★ 타입 스위치 **문법**의 정본은 [15번 주제](../15-switch-type-switch-fallthrough-labels-and-goto/)다.
-★ 제네릭 **일반**의 정본은 목록의 **37번 주제**다. 여기는 **`comparable` 한 제약**까지다.
+★ 제네릭 **일반**의 정본은 [목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)다. 여기는 **`comparable` 한 제약**까지다.
 
 ## 동작 방식
 
@@ -1251,7 +1251,7 @@ func eq[T comparable](a, b T) bool { return a == b }
 ### 7. ★★ 「`any` 로 받으면 유연하겠지」
 
 - (5)·(7)절 실측 — `any` 로 받는 순간 **비교 가능성·해시 가능성이 런타임 문제**가 된다.
-- 고치는 법 — **타입 파라미터**를 쓴다(목록의 **37번 주제**).
+- 고치는 법 — **타입 파라미터**를 쓴다([목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)).
   `any` 는 마지막 수단이다.
 
 ### 8. ★ 「불가능한 단언은 컴파일러가 다 잡겠지」
@@ -1282,7 +1282,7 @@ func eq[T comparable](a, b T) bool { return a == b }
 | `-lang` 게이트가 **문장으로 말해 주는 것** | **도구(구현)** | `check go.mod` 라는 안내까지 gc 의 것이다 |
 | `go vet` 의 `ifaceassert` 가 **잡는 것** | **도구(구현)** | 분석기 목록에 있다. 판이 오르면 달라질 수 있다 |
 | 맵 키 실패가 **다른 문장인 것**(`hash of unhashable`) | **런타임(구현)** | 명세는 연산별 문장을 정하지 않는다 |
-| 단언·타입 스위치의 **비용** | ★ **안 쟀다** | 벤치마크가 없다(목록의 **50번 주제**) |
+| 단언·타입 스위치의 **비용** | ★ **안 쟀다** | 벤치마크가 없다([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
 
 ★ 이 주제의 결론은 「**같은 사실을 명세가 두 시점에 걸쳐 놓았고, 어느 쪽에 걸릴지는 타입을 어디까지 적었느냐가 정한다**」이다.
 
@@ -1346,10 +1346,10 @@ func eq[T comparable](a, b T) bool { return a == b }
   「인터페이스로의 단언」이 무엇을 묻는지의 바탕
 - [23번 주제](../23-error-interface-and-errors-as-values/)(`error` 인터페이스) — 단언을 **오류에 쓰는** 자리
 - [24번 주제](../24-error-wrapping-and-errors-is-as-join/)(`%w`·`Is`/`As`) — ★ **`errors.As` 는 단언을 사슬을 따라 반복하는 것**이다
-- 목록의 **37번 주제**(제네릭) — ★★ **타입 파라미터·제약 일반의 정본.**
+- [목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)(제네릭) — ★★ **타입 파라미터·제약 일반의 정본.**
   여기는 **`comparable` 한 제약**까지
-- 목록의 **42번 주제**(`fmt`) — `%T` 가 무엇을 찍는지
-- 목록의 **52번 주제**(도구) — `go vet` 의 분석기 목록
+- [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)(`fmt`) — `%T` 가 무엇을 찍는지
+- [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)(도구) — `go vet` 의 분석기 목록
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **24번**
   ([`../../../rust/syntax/24-error-type-design/`](../../../rust/syntax/24-error-type-design/)) —
   ★ **그쪽의 `downcast_ref` 는 `Option` 을 돌려준다** — comma-ok 만 있고 단항이 없다
@@ -1374,11 +1374,11 @@ func eq[T comparable](a, b T) bool { return a == b }
 ## 더 들어가면
 
 - ★ **제네릭의 나머지**(타입 추론·타입 집합·`~T`·제약 인터페이스)는 **안 다뤘다** —
-  정본은 목록의 **37번 주제**다. 이 문서는 `comparable` **하나**만 던졌다.
+  정본은 [목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)다. 이 문서는 `comparable` **하나**만 던졌다.
 - ★ **`reflect` 로 런타임에 단언하는 것**(`Value.Convert`·`Type.AssignableTo`)은 **안 던졌다.**
-- ★ **단언·타입 스위치의 비용**은 **안 쟀다**(목록의 **50번 주제**).
+- ★ **단언·타입 스위치의 비용**은 **안 쟀다**([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)).
   「타입 스위치가 `if` 사슬보다 빠르다」 같은 말을 이 문서는 하지 않는다.
-- **타입 스위치가 만드는 코드**(`-gcflags=-S` 로 보는 것)는 **안 던졌다** — 목록의 **52번 주제** 쪽이다.
-- ★★ **`comparable` 이 아닌 다른 미리 선언된 제약**(`cmp.Ordered` 등)은 **안 던졌다**(목록의 **38번 주제**).
+- **타입 스위치가 만드는 코드**(`-gcflags=-S` 로 보는 것)는 **안 던졌다** — [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/) 쪽이다.
+- ★★ **`comparable` 이 아닌 다른 미리 선언된 제약**(`cmp.Ordered` 등)은 **안 던졌다**([목록의 **38번 주제**](../38-slices-maps-and-cmp/)).
 - ★ **1.19 이하에서 `any` 를 `comparable` 에 주는 것 말고 다른 판 경계**
   (예: 1.18에서 `comparable` 자체가 없던 것)는 **안 던졌다** — `go.mod` 를 1.17 로 낮추는 판을 안 만들었다.

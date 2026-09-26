@@ -1080,8 +1080,8 @@ func main() {
 - [22번 주제](../22-type-assertion-any-and-comparable/)(타입 단언) — 단언이 맨 위 층만 보는 이유
 - [21번 주제](../21-nil-interface-vs-interface-holding-nil-pointer/)(`nil` 인터페이스) — 커스텀 타입을 돌려줄 때의 함정 · `go vet` 분석기 목록
 - [20번 주제](../20-interface-declaration-and-implicit-implementation/)(암묵 구현) — 동작 인터페이스를 **선언 없이** 묻는 바탕
-- 목록의 **40번 주제**(패키지 가시성) — 대문자 규칙과 `internal` 의 정본
-- 목록의 **43번 주제**(`io.Reader`) — `io.EOF` 를 받는 읽기 루프의 정본
+- [목록의 **40번 주제**](../40-package-visibility-naming-and-internal/)(패키지 가시성) — 대문자 규칙과 `internal` 의 정본
+- [목록의 **43번 주제**](../43-io-reader-writer-and-composition/)(`io.Reader`) — `io.EOF` 를 받는 읽기 루프의 정본
 - [26번 주제](../26-defer-evaluation-lifo-named-results-and-loops/)(`defer`) — `defer` 로 오류에 문맥을 붙이는 관용구
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **24번**
   ([`../../../rust/syntax/24-error-type-design/`](../../../rust/syntax/24-error-type-design/)) — ★ **`enum` 으로 공개하면 `match` 가 빠뜨린 분기를 센다.** Go 엔 그 검사가 없다
@@ -1104,5 +1104,5 @@ func main() {
 - ★ **`errors.ErrUnsupported`**(1.21)가 `syscall.Errno.Is` 의 넷째 `case` 로 들어 있다 — 이 문서는 **그 센티넬로 묻는 실험은 안 던졌다.**
 - ★ **Rust 의 `#[non_exhaustive]`** 처럼 「나중에 늘릴 수 있는 공개 `enum`」에 해당하는 장치가 Go 에는 없다 — 대신 **불투명판**이 그 자리를 맡는다는 것은 **내 추론**이다.
 - ★ **오류 값에 오류 코드(정수)를 싣는 설계**(gRPC `status` 류)는 **안 던졌다** — 표준 라이브러리 밖이다.
-- ★ **`errors.Is` 를 쓰는 테스트**(목록의 **49번 주제**)에서 센티넬 대 타입이 어떻게 갈리는지는 **안 던졌다.**
+- ★ **`errors.Is` 를 쓰는 테스트**([목록의 **49번 주제**](../49-testing-table-driven-t-run-cleanup-and-parallel/))에서 센티넬 대 타입이 어떻게 갈리는지는 **안 던졌다.**
 - ★★ 세 설계의 **비용**은 **안 쟀다.** 「센티넬이 가장 싸다」 같은 말을 이 문서는 하지 않는다.

@@ -939,7 +939,7 @@ t22i.go:11:17: impossible type assertion: no type can implement both ex.Speaker 
   ★ 단 **타입 인자로 인터페이스를 주면** 그 보장이 사라진다((5)번).
 - ★★★ **`any` 를 쓰지 말아야 하는 이유 둘** —
   ① `==` 가 **런타임 패닉**이 된다((4)번) ② 맵 키로 쓰면 **`hash of unhashable type`** 이 된다.
-  둘 다 **타입 파라미터로 받으면 컴파일에서 걸린다**(목록의 **37번 주제**).
+  둘 다 **타입 파라미터로 받으면 컴파일에서 걸린다**([목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)).
 
 ### 9. Rust 는 comma-ok 만, 자바는 둘을 따로
 
@@ -958,14 +958,14 @@ t22i.go:11:17: impossible type assertion: no type can implement both ex.Speaker 
 
 - 타입 스위치 **문법**의 정본 — [15번 주제](../15-switch-type-switch-fallthrough-labels-and-goto/) (3)절.
 - 구조체 **비교 가능성**의 정본 — [17번 주제](../17-struct-literals-comparability-field-tags-and-sorting/) (4)절.
-- **제네릭 일반**의 정본 — 목록의 **37번 주제**. 여기는 `comparable` 하나까지.
+- **제네릭 일반**의 정본 — [목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/). 여기는 `comparable` 하나까지.
 - **`case nil`** 이 무엇을 보는지 —
   [15번 주제](../15-switch-type-switch-fallthrough-labels-and-goto/)가 문법의 정본이고
   [21번 주제](../21-nil-interface-vs-interface-holding-nil-pointer/)가 「그것이 무엇을 못 막나」의 정본이다.
 - **`errors.As`** — [24번 주제](../24-error-wrapping-and-errors-is-as-join/). ★ **사슬을 따라 단언을 반복하는 것**이 그 함수다.
 - 덤 — **인터페이스 선언·암묵 구현**은 [20번 주제](../20-interface-declaration-and-implicit-implementation/),
   **메서드 집합**은 [19번 주제](../19-method-sets-value-vs-pointer-receiver/),
-  **`go vet` 전반**은 목록의 **52번 주제**다.
+  **`go vet` 전반**은 [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)다.
 
 
 ---
@@ -997,11 +997,11 @@ t22i.go:11:17: impossible type assertion: no type can implement both ex.Speaker 
 | 맵 키 실패가 **다른 문장인 것** | **런타임(구현)** — 명세는 연산별 문장을 안 정한다 |
 | `go vet` 의 `ifaceassert` 가 **잡는 범위** | **도구(구현)**. 판이 오르면 달라질 수 있다 |
 | `%T` 가 `interface {}` 로 찍는 것 | **`fmt`·`reflect` 의 계약** |
-| 단언·타입 스위치의 **비용** | ★ **안 쟀다**(목록의 **50번 주제**) |
+| 단언·타입 스위치의 **비용** | ★ **안 쟀다**([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
 | `reflect` 로 런타임 단언하는 것 | ★ **안 던졌다** |
-| 제네릭의 **타입 추론·타입 집합·`~T`** | ★ **안 던졌다**(목록의 **37번 주제**) |
-| `cmp.Ordered` 등 다른 제약 | ★ **안 던졌다**(목록의 **38번 주제**) |
+| 제네릭의 **타입 추론·타입 집합·`~T`** | ★ **안 던졌다**([목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)) |
+| `cmp.Ordered` 등 다른 제약 | ★ **안 던졌다**([목록의 **38번 주제**](../38-slices-maps-and-cmp/)) |
 | `go.mod` 를 1.17 로 낮춘 판(`comparable` 자체가 없던 때) | ★ **안 던졌다** |
-| 타입 스위치가 만드는 **기계어** | ★ **안 던졌다**(목록의 **52번 주제**) |
+| 타입 스위치가 만드는 **기계어** | ★ **안 던졌다**([목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)) |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다.

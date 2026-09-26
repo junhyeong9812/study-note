@@ -938,13 +938,13 @@ t17vet.go:12:7: net.TCPAddr struct literal uses unkeyed fields
   그 갈림이 여기서 **`==` 로 한 번 더** 나온다(3번).
 - **맵 순회 순서가 무작위인 것** — [09번 주제](../09-maps-declaration-comma-ok-delete-and-iteration-order/).
   9번 프로그램이 정렬해서 찍은 이유다.
-- **태그를 실제로 읽는 쪽** — 목록의 **45번 주제**(`encoding/json`).
+- **태그를 실제로 읽는 쪽** — [목록의 **45번 주제**](../45-encoding-json-tags-omitempty-pointers-numbers-and-streaming/)(`encoding/json`).
   여기는 **태그가 무엇이고 어떻게 보이나**까지, 그쪽은 **`omitempty`·포인터·스트리밍**부터다.
 - **「필드 이름을 안 적은 필드」** — [18번 주제](../18-embedding-and-field-method-promotion/).
   **이 주제의 직접 후행**이고, 거기서 `struct{ Base }` 가 무엇을 하는지 본다.
-- 덤 — **정렬 API 의 정본**은 목록의 **38번 주제**,
+- 덤 — **정렬 API 의 정본**은 [목록의 **38번 주제**](../38-slices-maps-and-cmp/),
   **`comparable` 제약**은 [목록의 **22번**](../22-type-assertion-any-and-comparable/)·**37번 주제**,
-  **크기 재는 일 자체의 비용**은 목록의 **50번 주제**다.
+  **크기 재는 일 자체의 비용**은 [목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)다.
 
 ---
 
@@ -979,7 +979,7 @@ t17vet.go:12:7: net.TCPAddr struct literal uses unkeyed fields
 | 패닉 첫 줄의 `pc=0x…` · 스택의 `goroutine N` · `+0x…` | **빌드 산출물·런타임** |
 | 컴파일 에러의 **문구 자체** | **툴체인 판(go1.27.1)** |
 | `go vet` 이 **남의 패키지 것만** 보는 것 | **도구(구현)**. 판이 바뀌면 넓어질 수 있다 |
-| 구조체 대입·맵 해싱·정렬의 **실제 비용** | ★ **안 쟀다.** 벤치마크가 없다(목록의 **50번 주제**) |
+| 구조체 대입·맵 해싱·정렬의 **실제 비용** | ★ **안 쟀다.** 벤치마크가 없다([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
 | 필드를 몰아 두면 **빨라지는가** | ★ **안 쟀다.** 크기가 준 것만 봤다 |
 | `reflect.DeepEqual` 과 `==` 의 차이 | ★ **안 던졌다**(「더 들어가면」) |
 | 빈 식별자 필드(`_ [4]byte`) | ★ **안 던졌다** |

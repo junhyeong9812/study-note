@@ -727,7 +727,7 @@ maps.Keys 는 iter.Seq 다 — 정렬해서 찍는다 : [가 나 다]
 - `slices.Collect` 가 반복자를 슬라이스로 모은다. `maps.Keys` 는 **1.23부터 `iter.Seq` 를 돌려준다.**
   ★ 그래서 `slices.Sorted(maps.Keys(m))` 가 **맵 키를 정렬해 얻는 관용구**가 됐다 —
   09번 주제가 「순서를 쓰려면 정렬하라」고 한 그 자리의 지금 답이다.
-- ★ `iter` 패키지 자체의 정본은 목록의 **39번 주제**다. 여기서는 **`range` 가 그것을 받는다**는 것까지만 본다.
+- ★ `iter` 패키지 자체의 정본은 [목록의 **39번 주제**](../39-iter-and-custom-iterators/)다. 여기서는 **`range` 가 그것을 받는다**는 것까지만 본다.
 
 비용 — `Collect` 는 슬라이스 하나를 새로 만든다.
 
@@ -1030,9 +1030,9 @@ cannot range over seq (value of type func(yield func(int) bool)): requires go1.2
   **맵 순회 순서 무작위화의 정본.** 여기서는 「그래서 정렬해서 찍는다」만
 - [15번 주제](../15-switch-type-switch-fallthrough-labels-and-goto/)(`switch`·라벨·`goto`) — **라벨 `break`/`continue` 의 정본**
 - [목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/)(채널) — 채널 `range` 와 `close` 의 정본
-- 목록의 **39번 주제**(`iter` 와 사용자 정의 반복자) — **`iter.Seq` 설계의 정본.**
+- [목록의 **39번 주제**](../39-iter-and-custom-iterators/)(`iter` 와 사용자 정의 반복자) — **`iter.Seq` 설계의 정본.**
   여기서는 `range` 가 그것을 받는다는 것까지만
-- 목록의 **49번 주제**(`testing`·표 기반 테스트) — 표를 `range` 로 도는 관용구가 거기 있다
+- [목록의 **49번 주제**](../49-testing-table-driven-t-run-cleanup-and-parallel/)(`testing`·표 기반 테스트) — 표를 `range` 로 도는 관용구가 거기 있다
 - [`../../../python/syntax/09-sequence-ops-and-slicing/`](../../../python/syntax/09-sequence-ops-and-slicing/) —
   **파이썬의 `for x in seq` 는 이터레이터 프로토콜**이고, Go 의 `range` 는 **키워드가 꼴마다 다른 일을 한다**
 - [`../../../c/syntax/12-control-flow-and-switch/`](../../../c/syntax/12-control-flow-and-switch/) —
@@ -1062,7 +1062,7 @@ cannot range over seq (value of type func(yield func(int) bool)): requires go1.2
   이 문서는 `:=` 로 선언하는 쪽만 던졌다.
 - 반복자를 **둘 이상 겹쳐 쓰는 것**(필터·맵 체이닝)은 함수가 함수를 감싸는 꼴이 된다.
   `iter` 패키지의 `Pull` 은 그 반대편이다 — **밀어 주는 반복자를 당겨 오는 쪽으로** 뒤집는다.
-  정본은 목록의 **39번 주제**다.
+  정본은 [목록의 **39번 주제**](../39-iter-and-custom-iterators/)다.
 - `range` 가 **타입 파라미터**를 받는 규칙이 따로 있다(제네릭). "all types in its type set must have
   the same underlying type …" — 37번 주제의 영역이다. **여기서는 안 던졌다.**
 - `for` 의 세 절은 **전부 단순문(SimpleStmt)** 이라 `i, j = i+1, j-1` 같은 다중 대입도 들어간다.

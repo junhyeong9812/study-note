@@ -862,7 +862,7 @@ func(main.T) int func(*main.T) 3
 | `reflect` 가 메서드를 **이름 오름차순**으로 주는 것 | **패키지 계약** | `reflect` 문서의 약속이다 |
 | `go doc` 의 **차례와 꼴** | **도구(구현)** | 판이 바뀌면 달라질 수 있다 |
 | `go vet` 이 **`copylocks` 를 잡는 것** | **도구(구현)** | 검사 목록은 도구의 것이다 |
-| 값 리시버 복사의 **실제 비용** | **안 쟀다** | 벤치마크가 없다(목록의 **50번 주제**) |
+| 값 리시버 복사의 **실제 비용** | **안 쟀다** | 벤치마크가 없다([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
 | 인터페이스에 담을 때의 **할당 여부** | **안 쟀다** | 구현(gc)의 영역이고 이 문서는 안 봤다 |
 
 ★★★ 이 주제의 결론은 「**메서드 집합도 인터페이스 만족도 명세가 전부 정한다.
@@ -921,7 +921,7 @@ func(main.T) int func(*main.T) 3
 - [17번 주제](../17-struct-literals-comparability-field-tags-and-sorting/)(구조체) — 메서드를 다는 대상
 - [목록의 **21번 주제**](../21-nil-interface-vs-interface-holding-nil-pointer/)(`nil` 인터페이스) — 담긴 뒤에 생기는 함정
 - [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/)(`sync`) — **복사하면 안 되는 타입**의 정본. (6)절이 그 한 자리다
-- 목록의 **42번 주제**(`fmt`) — `String()` 을 값 리시버로 달지 포인터로 달지가 출력에 보이는 자리
+- [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)(`fmt`) — `String()` 을 값 리시버로 달지 포인터로 달지가 출력에 보이는 자리
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **25번**
   ([`../../../rust/syntax/25-traits-definition-impl-default-methods-and-associated-types/`](../../../rust/syntax/25-traits-definition-impl-default-methods-and-associated-types/)) —
   **그쪽은 `impl Trait for T` 를 적고 `&self`/`&mut self` 를 고른다**,
@@ -953,8 +953,8 @@ func(main.T) int func(*main.T) 3
 - **메서드 이름은 필드 이름과 겹칠 수 없다** — "If the base type is a struct type,
   the non-blank method and field names must be distinct." 이 문서는 **안 던졌다.**
 - 인터페이스에 값을 담을 때 **값이 어디에 놓이나**(힙인가 아닌가)는 **구현**이다.
-  명세에 그 낱말이 없고, 이 문서는 **재지 않았다**(목록의 **52번 주제**).
+  명세에 그 낱말이 없고, 이 문서는 **재지 않았다**([목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)).
 - `reflect.Value` 쪽에도 `CanAddr`·`Addr` 이 있어 (3)절의 판정을 런타임에 물을 수 있다.
   이 문서는 **안 던졌다** — 컴파일 에러가 더 이른 답이기 때문이다.
 - 제네릭의 타입 파라미터에서는 **메서드 집합 규칙이 한 번 더 걸린다** —
-  `[T Speaker]` 에 값 타입을 넘기면 같은 에러가 난다. 정본은 목록의 **37번 주제**다.
+  `[T Speaker]` 에 값 타입을 넘기면 같은 에러가 난다. 정본은 [목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)다.

@@ -1451,7 +1451,7 @@ func main() {
 | `errors/wrap.go` 의 **줄 번호** | **이 툴체인 판** | 〃 |
 | ★★★ **`-lang` 게이트가 이 API 들을 안 막는 것** | **도구(구현)** | (9)절 실측. 언어 기능과 갈리는 자리 |
 | `api/*.txt` 가 **`%w` 를 안 담는 것** | **도구의 성질** | 포맷 동사는 API 목록의 대상이 아니다 |
-| `Is`/`As` 의 **비용** | ★ **안 쟀다** | 벤치마크가 없다(목록의 **50번 주제**) |
+| `Is`/`As` 의 **비용** | ★ **안 쟀다** | 벤치마크가 없다([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
 
 ★ 이 주제의 결론은 「**규칙이 전부 패키지 문서의 약속이고, 어기는 것을 컴파일러가 안 막는다**」이다.
 ★★ 다만 **`errors.As` 의 인자 실수 하나**는 `go vet` 이 막아 준다 — 유일한 예외다.
@@ -1523,9 +1523,9 @@ func main() {
 - [목록의 **25번 주제**](../25-sentinel-errors-vs-custom-error-types/)(센티넬 대 커스텀 타입) — **오류 표면 설계의 정본.**
   여기는 **물어보는 법**까지
 - [목록의 **27번 주제**](../27-panic-recover-and-where-to-use-them/)(`panic`/`recover`) — 이 문서는 `panic` 을 **경계로 안 다뤘다**
-- 목록의 **42번 주제**(`fmt`) — `%w` 를 포함한 동사 규칙의 정본
-- 목록의 **49번 주제**(`testing`) — 테스트에서 오류를 견주는 법
-- 목록의 **52번 주제**(도구) — `go vet` 의 분석기 목록
+- [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)(`fmt`) — `%w` 를 포함한 동사 규칙의 정본
+- [목록의 **49번 주제**](../49-testing-table-driven-t-run-cleanup-and-parallel/)(`testing`) — 테스트에서 오류를 견주는 법
+- [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)(도구) — `go vet` 의 분석기 목록
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **24번**
   ([`../../../rust/syntax/24-error-type-design/`](../../../rust/syntax/24-error-type-design/)) —
   ★★ **`source()` 가 `Unwrap()` 이고 `downcast_ref` 가 `errors.As` 다. 구조가 거의 같다.**
@@ -1555,7 +1555,7 @@ func main() {
 - ★★ **오류에 스택 트레이스를 붙이는 관례**(`pkg/errors` 류 외부 패키지)는 **안 던졌다.**
   표준 `errors` 에는 그 기능이 없고, 이 머신에는 그 패키지가 없다.
 - ★ **`Is`/`As` 가 순환 참조를 만나면** 어떻게 되는지는 **안 던졌다.**
-- ★ **`fmt.Errorf` 에 `%w` 와 다른 동사를 섞을 때의 인자 순서**는 **안 던졌다** — 목록의 **42번 주제**다.
+- ★ **`fmt.Errorf` 에 `%w` 와 다른 동사를 섞을 때의 인자 순서**는 **안 던졌다** — [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)다.
 - ★★ **`Is`/`As` 의 비용**은 **안 쟀다.** 「사슬이 길면 느리다」 같은 말을 이 문서는 하지 않는다.
 - ★★ **`api/go1NN.txt` 가 「동작이 바뀐 판」을 안 담는 것**이 이 창의 한계다 —
   예컨대 `errors.Is` 가 `Unwrap() []error` 를 보게 된 것은 **API 추가가 아니라 동작 변경**이라

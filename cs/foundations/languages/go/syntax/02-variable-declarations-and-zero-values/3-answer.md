@@ -567,7 +567,7 @@ func main() {
   > a slice, map, or function value may be compared to the predeclared identifier `nil`.
 
 - **`== nil` 을 물을 수 있는 타입** — 포인터 · 슬라이스 · 맵 · 채널 · 함수 · 인터페이스. **여섯.**
-- 두 슬라이스가 같은지 보려면 **`slices.Equal`**(1.21부터, 목록의 **38번 주제**)이나
+- 두 슬라이스가 같은지 보려면 **`slices.Equal`**(1.21부터, [목록의 **38번 주제**](../38-slices-maps-and-cmp/))이나
   `reflect.DeepEqual` 을 쓴다. 후자는 2번에서 봤듯 **`nil` 과 빈 것을 다르게** 본다.
 
 ### 9. 같은 것 넷, 다른 것 둘

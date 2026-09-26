@@ -1030,7 +1030,7 @@ Go 에서는 **전부 명세로 메워져 있다.**
 - [목록의 **10번 주제**](../10-strings-bytes-runes-and-utf8-iteration/)(문자열·`byte`·`rune`) — `string(n)` 이 룬 변환인 것의 정본
 - [목록의 **11번 주제**](../11-strings-strconv-bytes-and-unicode-utf8/)(`strconv`) — 숫자↔문자열 변환의 정본
 - [목록의 **17번 주제**](../17-struct-literals-comparability-field-tags-and-sorting/)(구조체 정렬) — `unsafe.Sizeof` 를 제대로 다루는 자리
-- 목록의 **52번 주제**(도구) — `go vet`·`go tool compile -S` 의 정본
+- [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)(도구) — `go vet`·`go tool compile -S` 의 정본
 
 ## 용어 풀이
 

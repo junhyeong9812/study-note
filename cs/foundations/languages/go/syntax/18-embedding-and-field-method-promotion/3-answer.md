@@ -854,14 +854,14 @@ func main() {
   **이 주제의 직접 선행**이고, 리터럴·태그가 거기서 정본이다.
 - **메서드 집합(값 리시버 대 포인터 리시버)** — [19번 주제](../19-method-sets-value-vs-pointer-receiver/).
   **이 주제의 직접 후행**이고, 7번의 격자가 거기서 본론이 된다.
-- **`json` 태그 전체 규칙** — 목록의 **45번 주제**. 6번은 **임베딩이 만드는 네 모양**까지만 본다.
+- **`json` 태그 전체 규칙** — [목록의 **45번 주제**](../45-encoding-json-tags-omitempty-pointers-numbers-and-streaming/). 6번은 **임베딩이 만드는 네 모양**까지만 본다.
 - **`*T` 가 `nil` 일 때 필드를 읽으면 패닉하는 것** —
   [16번 주제](../16-pointers-value-copy-semantics-new-and-make/) (6)절.
 - **「바깥이 안쪽의 인터페이스를 만족하는 것」이 본론이 되는 주제** —
   [20번 주제](../20-interface-declaration-and-implicit-implementation/).
 - 덤 — **타입 스위치로 되꺼내는 법**은 [15번 주제](../15-switch-type-switch-fallthrough-labels-and-goto/),
   **`sync.Mutex` 임베딩의 대가**는 [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/),
-  **임베딩한 `String()` 이 무한 재귀가 되는 자리**는 목록의 **42번 주제**다.
+  **임베딩한 `String()` 이 무한 재귀가 되는 자리**는 [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)다.
 
 ---
 
@@ -893,10 +893,10 @@ func main() {
 | 패닉 첫 줄의 `pc=0x…` · 스택의 `goroutine N` · `+0x…` | **빌드 산출물·런타임** |
 | `reflect` 의 `Index`·`Anonymous` 표현 | **`reflect` 의 계약** |
 | **승격 필드를 리터럴 키로 쓰는 것** | ★ **언어 판(1.27).** `go.mod` 의 `go` 줄이 정한다 |
-| 승격 호출의 **실행 비용** | ★ **안 쟀다.** 벤치마크가 없다(목록의 **50번 주제**) |
+| 승격 호출의 **실행 비용** | ★ **안 쟀다.** 벤치마크가 없다([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
 | `struct{ L; L }` 처럼 **선언에서 막히는 꼴** | ★ **안 던졌다**(명세 인용만) |
 | 다른 패키지의 타입(`P.T`) 임베딩 | ★ **안 던졌다** |
-| 제네릭 타입 임베딩 | ★ **안 던졌다**(목록의 **37번 주제**) |
-| 임베딩한 `String()` 의 무한 재귀 | ★ **안 던졌다**(목록의 **42번 주제**) |
+| 제네릭 타입 임베딩 | ★ **안 던졌다**([목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)) |
+| 임베딩한 `String()` 의 무한 재귀 | ★ **안 던졌다**([목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)) |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다.

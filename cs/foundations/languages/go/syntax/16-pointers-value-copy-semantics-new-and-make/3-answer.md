@@ -727,8 +727,8 @@ new(int) 에 7 을 넣으면 *n = 7
 - **메서드 집합(값 리시버 대 포인터 리시버)** — [목록의 **19번 주제**](../19-method-sets-value-vs-pointer-receiver/).
   여기서는 「고쳐지나」 한 축만 봤고, 그쪽은 「**어떤 인터페이스를 만족하나**」를 본다.
 - **지역 변수가 힙으로 가는지 보는 법** — [13번 주제](../13-closures-variable-capture-and-loop-variable-change/) (7)절,
-  정본은 목록의 **52번 주제**.
-- **「빠진 필드와 `null`」을 `*T` 로 가르는 관용구** — 목록의 **45번 주제**(`encoding/json`).
+  정본은 [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/).
+- **「빠진 필드와 `null`」을 `*T` 로 가르는 관용구** — [목록의 **45번 주제**](../45-encoding-json-tags-omitempty-pointers-numbers-and-streaming/)(`encoding/json`).
 - 덤 — **제로값이 쓸 만한가**는 [02번 주제](../02-variable-declarations-and-zero-values/),
   **구조체의 비교 가능성·정렬**은 [목록의 **17번 주제**](../17-struct-literals-comparability-field-tags-and-sorting/),
   **`recover` 가 `fatal error` 를 못 잡는 것**은 [목록의 **27번 주제**](../27-panic-recover-and-where-to-use-them/)다.
@@ -761,7 +761,7 @@ new(int) 에 7 을 넣으면 *n = 7
 | 패닉·치명 오류의 **메시지 본문** | **런타임(구현)**. 명세는 「패닉한다」까지만 정한다 |
 | **포인터가 8바이트인 것** | **플랫폼(64비트)** — 이 문서는 크기를 안 찍었다 |
 | **지역 변수가 스택에 사나 힙에 사나** | **구현(gc)**. 명세에 그 낱말이 없다 |
-| 값 리시버 복사의 **실제 비용** | ★ **안 쟀다.** 벤치마크가 없다(목록의 **50번 주제**) |
+| 값 리시버 복사의 **실제 비용** | ★ **안 쟀다.** 벤치마크가 없다([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
 | 역참조·복사의 **실행 비용** | ★ **안 쟀다** |
 | `new(123)` 처럼 **식을 인자로 주는 꼴** | **안 던졌다**(명세가 허용한다고만 확인) |
 | **배열 포인터의 인덱싱**(`p[i]`·`len(p)`) | **안 던졌다** |

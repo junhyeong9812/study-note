@@ -755,7 +755,7 @@ Java catch                      1
 - `panic`/`recover` — [목록의 **27번 주제**](../27-panic-recover-and-where-to-use-them/). ★ **이 문서는 `panic` 을 안 던졌다.**
 - 덤 — **암묵 구현**은 [20번 주제](../20-interface-declaration-and-implicit-implementation/),
   **단언으로 오류를 되꺼내는 것**은 [22번 주제](../22-type-assertion-any-and-comparable/),
-  **오류 표면 설계**는 [목록의 **25번 주제**](../25-sentinel-errors-vs-custom-error-types/), **`fmt.Errorf` 의 동사**는 목록의 **42번 주제**다.
+  **오류 표면 설계**는 [목록의 **25번 주제**](../25-sentinel-errors-vs-custom-error-types/), **`fmt.Errorf` 의 동사**는 [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)다.
 
 
 ---

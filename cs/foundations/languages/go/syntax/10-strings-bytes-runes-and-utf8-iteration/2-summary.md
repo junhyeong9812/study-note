@@ -1006,8 +1006,8 @@ func main() {
   ★ **C 는 널 종단**이라 길이를 **세어야** 알고, `\0` 이 없으면 UB 다.
   **Go 는 길이를 들고 다닌다** — `len` 이 `O(1)` 이고 `\0` 이 그냥 한 바이트다
 - [목록의 **14번 주제**](../14-for-four-forms-range-over-int-and-func/)(`for` 의 네 형태) — `range` 문 전체의 정본
-- 목록의 **42번 주제**(`fmt`) — `%q`·`%x`·`%U` 같은 진단 동사의 정본
-- 목록의 **45번 주제**(`encoding/json`) — 바깥에서 온 바이트가 문자열이 되는 실제 경로
+- [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)(`fmt`) — `%q`·`%x`·`%U` 같은 진단 동사의 정본
+- [목록의 **45번 주제**](../45-encoding-json-tags-omitempty-pointers-numbers-and-streaming/)(`encoding/json`) — 바깥에서 온 바이트가 문자열이 되는 실제 경로
 
 ## 용어 풀이
 
@@ -1031,7 +1031,7 @@ func main() {
   뒤의 것은 룬을 훑는다. **바이트 훑기가 필요한 자리도 있다** — ASCII 만 찾을 때가 그렇다(더 빠르다).
 - **`string` 과 `[]byte` 사이 변환이 최적화로 사라지는 경우가 있다.**
   `m[string(b)]` 같은 꼴을 컴파일러가 특별 취급한다고 알려져 있는데,
-  **이 문서는 그것을 던져서 확인하지 않았다.** 정본은 목록의 **52번 주제**(도구·탈출 분석)다.
+  **이 문서는 그것을 던져서 확인하지 않았다.** 정본은 [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)(도구·탈출 분석)다.
 - **정규화(NFC/NFD)는 이 주제 밖이다.** 눈에 같은 두 문자열이 바이트로 다를 수 있고,
   Go 표준에는 정규화가 **없다**(`golang.org/x/text/unicode/norm` 이 필요하다).
   파이썬은 `unicodedata` 가 표준이라 거기가 다르다.

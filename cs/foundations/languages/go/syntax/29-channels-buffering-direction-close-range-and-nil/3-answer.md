@@ -515,7 +515,7 @@ created by main.main in goroutine 1
 ```
 
 - ★★★ **보내는 고루틴**이 둘째 송신에서 **`panic: send on closed channel`**, 그 패닉은 **main 이 못 잡으니** 프로세스 전체가 **exit 2** 다(`main 끝` 없음).
-- ★★ 받는 쪽의 「그만」은 **닫지 말고** 별도의 **`done` 채널이나 `context`** 로(목록의 **34번 주제**). 보내는 쪽은 그것을 보고 **스스로 멈추고 스스로 닫는다.**
+- ★★ 받는 쪽의 「그만」은 **닫지 말고** 별도의 **`done` 채널이나 `context`** 로([목록의 **34번 주제**](../34-context-cancellation-deadlines-and-values/)). 보내는 쪽은 그것을 보고 **스스로 멈추고 스스로 닫는다.**
 - ★ 보내는 쪽이 여럿이면 **`WaitGroup` 으로 전부 끝나길 기다린 뒤 한 곳에서** 닫는다([32번 주제](../32-sync-mutex-rwmutex-waitgroup-once/)).
 
 ### 9. 명세 · 구현 · 메모리 모델

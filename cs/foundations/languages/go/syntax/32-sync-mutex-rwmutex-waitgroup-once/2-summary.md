@@ -18,8 +18,8 @@
 
 ★★★ **이 주제의 경계** — 상호 배제·경쟁 조건의 **원리**(임계 구역·락이 왜 필요한가)는
 [`../../../../process-thread/`](../../../../process-thread/)가 정본이다. **그쪽은 락이 무엇을 막는가까지**, 여기는 **Go `sync` 타입의 계약·복사 금지·함정부터.**
-데이터 경쟁과 `-race` 의 **전모**(무엇을 보장하고 무엇을 못 보나)는 목록의 **35번 주제**다 — 여기서는 **창으로 한 번** 쓴다.
-`sync/atomic`·`sync.Map` 은 목록의 **33번 주제**다 — 경계만.
+데이터 경쟁과 `-race` 의 **전모**(무엇을 보장하고 무엇을 못 보나)는 [목록의 **35번 주제**](../35-data-races-and-the-race-detector/)다 — 여기서는 **창으로 한 번** 쓴다.
+`sync/atomic`·`sync.Map` 은 [목록의 **33번 주제**](../33-sync-atomic-and-sync-map/)다 — 경계만.
 
 ## 이 갈래가 쓰는 세 층
 
@@ -140,7 +140,7 @@ Go 의 열쇠는 **벽에 따로 걸려 있다** — 화장실(데이터)과 **�
 | ★ **20판 참거짓** | 흔들리는 함정(`Add` 위치)의 **성질** | [28번 주제](../28-goroutines-go-statement-cost-and-termination/)의 방식 |
 | ★ **다른 갈래 컴파일러** | Rust `Mutex<T>` · C++ `std::mutex` 복사 · 자바 재진입 | 대비 |
 | **부적용 — 시간·처리량** | ★★★ **안 쟀다.** 「채널은 느리고 뮤텍스는 빠르다」·「`RWMutex` 가 읽기에 유리하다」를 이 문서는 **적지 않는다** | — |
-| **부적용 — `sync/atomic`·`sync.Map`** | 목록의 **33번 주제** | — |
+| **부적용 — `sync/atomic`·`sync.Map`** | [목록의 **33번 주제**](../33-sync-atomic-and-sync-map/) | — |
 
 ### (1) ★★★ `-race` 가 되나 — 판별부터, 그리고 첫 보고
 
@@ -251,7 +251,7 @@ Found 1 data race(s)
 - ★★★ **`Read at … by main goroutine: main.main() ex/t32race.go:14`** · **`Previous write at … by goroutine N: main.main.func1() ex/t32race.go:11`** — **같은 주소**를 main 이 **14행에서 읽고**, 고루틴이 **11행에서 썼다.**
 - ★★★ 둘 사이에 **순서를 세우는 것(동기화)이 없다** — `time.Sleep(50ms)` 는 **동기화가 아니다.** 실제로는 거의 늘 쓰기가 먼저 끝나지만, **메모리 모델은 그것을 약속하지 않는다.**
 - ★★ **`Goroutine N (finished) created at: main.main() ex/t32race.go:10`** — 쓴 고루틴은 **이미 끝났는데도** 잡혔다. 검출기는 **「동시에 일어났나」가 아니라 「순서가 세워졌나」를** 본다.
-- ★ `Found 1 data race(s)` · **exit 66** — 프로그램은 정상으로 끝났는데 **종료 코드가 66** 이다. 검출기가 보고를 남기면 종료 코드를 바꾼다(이 문서는 `GORACE` 설정을 **안 건드렸다** — 그 설정은 목록의 **35번 주제**).
+- ★ `Found 1 data race(s)` · **exit 66** — 프로그램은 정상으로 끝났는데 **종료 코드가 66** 이다. 검출기가 보고를 남기면 종료 코드를 바꾼다(이 문서는 `GORACE` 설정을 **안 건드렸다** — 그 설정은 [목록의 **35번 주제**](../35-data-races-and-the-race-detector/)).
 - ★ 주소·고루틴 id 는 흔들린다 — 머리말의 정규화 칸. **줄 번호와 `Read`/`Previous write` 의 짝은 안 흔들렸다.**
 
 같은 파일에 `vet` 은 —
@@ -279,7 +279,7 @@ vet exit=0
 ```
 
 - ★★★ **`vet exit=0`, 한 줄도 없다.** `vet` 은 **경쟁을 보는 도구가 아니다.** 데이터 경쟁은 **실행해 봐야** 보인다(`-race`).
-  경쟁의 전모 — **`-race` 가 못 보는 것**(실행되지 않은 경로) — 는 목록의 **35번 주제**가 정본이다.
+  경쟁의 전모 — **`-race` 가 못 보는 것**(실행되지 않은 경로) — 는 [목록의 **35번 주제**](../35-data-races-and-the-race-detector/)가 정본이다.
 
 비용 — **안 쟀다.** `-race` 빌드가 느리고 메모리를 더 쓴다는 것은 이 문서가 **재지 않았다.**
 
@@ -1332,7 +1332,7 @@ main.main()
 | 여러 일이 **다 끝날 때까지** | **`WaitGroup`**(1.25+ `wg.Go`) | (4)절 · [28번 주제](../28-goroutines-go-statement-cost-and-termination/) |
 | **한 번만** 초기화 | **`Once`·`OnceValue`** | (5)절 |
 | 여러 채널을 기다리며 시간 상한 | **`select`** | [30번 주제](../30-select-default-and-timeouts/) |
-| 정수 하나를 더하기만 | **`sync/atomic`** | 목록의 **33번 주제**(경계만) |
+| 정수 하나를 더하기만 | **`sync/atomic`** | [목록의 **33번 주제**](../33-sync-atomic-and-sync-map/)(경계만) |
 
 ★★★ **이 표에 「빠르다·느리다」 칸이 없는 것이 의도다** — 이 배치는 **어떤 시간도 재지 않았다.** 고르는 기준은 **문제의 모양**이다.
 ★ 채널이 맞는 문제를 뮤텍스로 풀면 「끝」을 알리는 법이 따로 필요하고, 뮤텍스가 맞는 문제를 채널로 풀면 **상태를 쥔 고루틴 하나**를 만들어야 한다 — 이것은 **구조**의 비용이지 **실행 시간** 주장이 아니다.
@@ -1340,7 +1340,7 @@ main.main()
 ### (10) ★ `sync/atomic` — 경계만
 
 - (3)절 p13 — **`atomic.Int64` 도 복사하면 `vet` 이 잡는다**(`sync/atomic.noCopy`). 같은 「복사 금지」 계약이다.
-- 원자 연산으로 **충분한 경우와 아닌 경우**, `sync.Map` 이 이기는 접근 패턴은 목록의 **33번 주제**가 정본이다 — 여기서는 **블록을 싣지 않았다.**
+- 원자 연산으로 **충분한 경우와 아닌 경우**, `sync.Map` 이 이기는 접근 패턴은 [목록의 **33번 주제**](../33-sync-atomic-and-sync-map/)가 정본이다 — 여기서는 **블록을 싣지 않았다.**
 
 ## 문법 — 형태와 규칙
 
@@ -1507,7 +1507,7 @@ func main() {
 - [28번 주제](../28-goroutines-go-statement-cost-and-termination/)(고루틴) — `WaitGroup.Go`(1.25) 판별의 정본
 - [31번 주제](../31-goroutine-leaks/)(누수) — 띄운 쪽이 기다리기
 - [16번 주제](../16-pointers-value-copy-semantics-new-and-make/)(값 복사) — 구조체 대입이 복사라는 것
-- 목록의 **33번 주제**(`sync/atomic`·`sync.Map`) · **35번 주제**(데이터 레이스와 `-race` — ★ 검출기의 전모) · **36번 주제**(메모리 모델)
+- [목록의 **33번 주제**](../33-sync-atomic-and-sync-map/)(`sync/atomic`·`sync.Map`) · **35번 주제**(데이터 레이스와 `-race` — ★ 검출기의 전모) · **36번 주제**(메모리 모델)
 - [`../../../java/syntax/33-synchronized-and-volatile/`](../../../java/syntax/33-synchronized-and-volatile/) — ★ 자바 모니터는 **재진입** — Go 와 반대
 - [`../../../cpp/syntax/15-raii-resources-as-types/`](../../../cpp/syntax/15-raii-resources-as-types/) — ★ `lock_guard` 가 예외 경로에서 락을 푼다((3)절) — Go 의 `defer` 자리
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **52번**(`Mutex`/`RwLock`) — 락이 데이터를 감싸는 타입
@@ -1529,7 +1529,7 @@ func main() {
 ## 더 들어가면
 
 - ★ **`sync.Cond`** 는 **안 다뤘다.**
-- ★ **`-race` 의 `GORACE` 설정**(`halt_on_error`·`exitcode`)은 **안 바꿨다** — 목록의 **35번 주제**.
+- ★ **`-race` 의 `GORACE` 설정**(`halt_on_error`·`exitcode`)은 **안 바꿨다** — [목록의 **35번 주제**](../35-data-races-and-the-race-detector/).
 - ★ **`Mutex` 의 기아 모드**(오래 기다린 고루틴에게 넘기는 구현)는 **구현**이고 **안 열었다.**
 - ★★ 락·채널의 **시간 비용**은 **안 쟀다.**
 - ★ `vet` 이 `ch <- a` 를 놓친 것이 **의도된 한계인지 버그인지**는 **확인 못 했다** — 분석기 소스를 안 열었다.

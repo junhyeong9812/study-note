@@ -1007,7 +1007,7 @@ func main() {
 | 패닉 스택의 `goroutine N` · `pc=0x…` · `+0x…` | **구현·빌드 산출물** | 다시 빌드하면 달라질 수 있다 |
 | **지역 변수의 주소를 돌려줘도 되는 것** | **명세 보장** | 변수의 수명이 접근 가능성으로 정해진다 |
 | **그 변수가 스택에 사나 힙에 사나** | **구현(gc)** | 명세에 그 낱말이 없다([13번 주제](../13-closures-variable-capture-and-loop-variable-change/) (7)절) |
-| 값 리시버 복사의 **실제 비용** | **안 쟀다** | 벤치마크가 없다(목록의 **50번 주제**) |
+| 값 리시버 복사의 **실제 비용** | **안 쟀다** | 벤치마크가 없다([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
 | 포인터 하나가 **8바이트**인 것 | **구현·플랫폼** | 64비트의 값이다 |
 
 ★ 이 주제의 결론은 「**무엇이 복사되는지는 전부 명세가 정하고,
@@ -1069,7 +1069,7 @@ func main() {
 - [목록의 **19번 주제**](../19-method-sets-value-vs-pointer-receiver/)(메서드 집합) — **값 리시버와 포인터 리시버의 정본.**
   여기서는 「고쳐지나」 한 축만 본다
 - [목록의 **21번 주제**](../21-nil-interface-vs-interface-holding-nil-pointer/)(`nil` 인터페이스) — `nil` 이 또 한 번 함정이 되는 자리
-- 목록의 **45번 주제**(`encoding/json`) — 「빠진 필드와 `null`」을 `*T` 로 가르는 관용구
+- [목록의 **45번 주제**](../45-encoding-json-tags-omitempty-pointers-numbers-and-streaming/)(`encoding/json`) — 「빠진 필드와 `null`」을 `*T` 로 가르는 관용구
 - [`../../../../variables-and-memory/`](../../../../variables-and-memory/) —
   **그쪽은 포인터·메모리 모형 일반까지**, 여기는 **Go 의 표면**(`*T`·`&`·`new`·`make`)부터
 - [`../../../c/syntax/16-array-pointer-decay-and-function-parameters/`](../../../c/syntax/16-array-pointer-decay-and-function-parameters/) —

@@ -959,7 +959,7 @@ golangci-lint : PATH 에 없음
 - 덤 — **메서드 집합**은 [19번 주제](../19-method-sets-value-vs-pointer-receiver/),
   **`nil` 맵·슬라이스가 무엇을 허락하는지**는
   [09번](../09-maps-declaration-comma-ok-delete-and-iteration-order/)·[05번](../05-arrays-vs-slices-value-and-header/)·[06번 주제](../06-len-cap-and-append-reallocation/),
-  **`fmt` 의 동사**는 목록의 **42번 주제**, **`go vet` 전반**은 목록의 **52번 주제**다.
+  **`fmt` 의 동사**는 [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/), **`go vet` 전반**은 [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)다.
 
 ---
 
@@ -993,9 +993,9 @@ golangci-lint : PATH 에 없음
 | `go vet` 이 이 함정을 안 보는 것 | **도구(구현)**. 판이 오르면 달라질 수 있다 |
 | 분석기 목록의 **차례와 개수** | **도구(구현)** |
 | 밖의 린터가 이 함정을 잡는지 | ★ **모른다** — 이 머신에 없다 |
-| 인터페이스 넓힘·`reflect` 호출의 **비용** | ★ **안 쟀다**(목록의 **50번 주제**) |
-| `%+v`·`%#v` 가 `nil` 포인터를 어떻게 찍는지 | ★ **안 던졌다**(목록의 **42번 주제**) |
-| 제네릭에서 `var zero T` 가 인터페이스일 때 | ★ **안 던졌다**(목록의 **37번 주제**) |
+| 인터페이스 넓힘·`reflect` 호출의 **비용** | ★ **안 쟀다**([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
+| `%+v`·`%#v` 가 `nil` 포인터를 어떻게 찍는지 | ★ **안 던졌다**([목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)) |
+| 제네릭에서 `var zero T` 가 인터페이스일 때 | ★ **안 던졌다**([목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)) |
 | `nil` 채널의 송수신이 막히는 것 | ★ **안 던졌다** — (5)절은 성질만 적었다([목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/)) |
 | `nil` 맵에 **쓰기**가 패닉인 것 | ★ **안 던졌다** — 읽기만 던졌다([09번 주제](../09-maps-declaration-comma-ok-delete-and-iteration-order/)) |
 

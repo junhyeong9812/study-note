@@ -1324,7 +1324,7 @@ func main() {
 - [29번 주제](../29-channels-buffering-direction-close-range-and-nil/)(채널) — 닫힌 채널 · `nil` 채널
 - [24번 주제](../24-error-wrapping-and-errors-is-as-join/)(`errors.Is`) — `DeadlineExceeded` 판별
 - [33번 주제](../33-sync-atomic-and-sync-map/) — `sync.Map.Clear`(1.23)
-- 목록의 **51번 주제**(`os/signal` 과 정상 종료) — 신호로 `context` 를 취소하는 배선
+- [목록의 **51번 주제**](../51-os-signal-and-graceful-shutdown/)(`os/signal` 과 정상 종료) — 신호로 `context` 를 취소하는 배선
 
 ## 용어 풀이
 

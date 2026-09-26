@@ -644,7 +644,7 @@ ex/t13i.go:20:29: stays() escapes to heap
   컴파일러 판이 바뀌면 이 출력의 줄 수와 문구가 달라질 수 있다.
 - `-l` 은 **인라인을 끄는** 플래그다. 안 끄면 `inlining call to …` 줄이 잔뜩 섞여
   읽을 줄이 묻힌다. 읽을 것은 줄 번호가 아니라 **`moved to heap` 이라는 낱말**이다.
-- 정본은 목록의 **52번 주제**(도구·탈출 분석 읽기)다.
+- 정본은 [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)(도구·탈출 분석 읽기)다.
 
 ### 10. 파이썬은 아직 상자를 안 가른다 — 고침이 사용자 쪽에 있다
 
@@ -682,11 +682,11 @@ ex/t13i.go:20:29: stays() escapes to heap
   이 주제는 그 규칙이 **루프 변수와 겹치는 자리**만 본다.
 - **`for` 문법 자체(네 형태·`range`·정수 range·함수 range)** — [14번 주제](../14-for-four-forms-range-over-int-and-func/).
   이 주제는 그중 「변수가 몇 개인가」 한 축만 본다.
-- **캡처가 만드는 데이터 레이스** — 목록의 **35번 주제**(`-race`).
+- **캡처가 만드는 데이터 레이스** — [목록의 **35번 주제**](../35-data-races-and-the-race-detector/)(`-race`).
   고루틴 자체는 **28번 주제**다.
 - **루프 안의 `defer` 가 쌓이는 문제** — [목록의 **26번 주제**](../26-defer-evaluation-lifo-named-results-and-loops/).
-- **`-gcflags=-m` 출력 읽기** — 목록의 **52번 주제**.
-- ★ **`go.mod` 가 언어 의미를 바꾸는 사례가 하나 더** 있다 — 목록의 **48번 주제**
+- **`-gcflags=-m` 출력 읽기** — [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/).
+- ★ **`go.mod` 가 언어 의미를 바꾸는 사례가 하나 더** 있다 — [목록의 **48번 주제**](../48-time-monotonic-clock-duration-timer-and-ticker/)
   (`time.Timer`/`Ticker` 의 1.23 변경). 이 주제와 같은 성질의 자리다.
 
 ---

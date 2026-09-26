@@ -921,7 +921,7 @@ gc 는 그것을 **실제로 한다.** 즉 「Go 는 안 쓴 변수를 금지한
   여기서는 **`nil` 맵의 읽기/쓰기 비대칭**까지만 봤다
 - [목록의 **16번 주제**](../16-pointers-value-copy-semantics-new-and-make/)(포인터·`new`/`make`) — `new(T)` 와 `var t T` 의 관계
 - [목록의 **21번 주제**](../21-nil-interface-vs-interface-holding-nil-pointer/)(`nil` 인터페이스) — (7)절 마지막 두 줄의 정본
-- 목록의 **45번 주제**(`encoding/json`) — `null` 과 빈 배열을 가르는 설계의 정본
+- [목록의 **45번 주제**](../45-encoding-json-tags-omitempty-pointers-numbers-and-streaming/)(`encoding/json`) — `null` 과 빈 배열을 가르는 설계의 정본
 
 ## 용어 풀이
 

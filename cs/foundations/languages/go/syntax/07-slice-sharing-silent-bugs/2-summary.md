@@ -823,9 +823,9 @@ func main() {
   여기는 **예측을 안 한 코드가 어떻게 되는지**부터
 - [목록의 **08번 주제**](../08-copy-three-index-slicing-and-memory-retention/)(`copy`·3-인덱스·메모리 유지) — **막는 법의 정본**
 - [목록의 **09번 주제**](../09-maps-declaration-comma-ok-delete-and-iteration-order/)(맵) — (7)절의 맵 인덱스 식과 순회 순서의 정본
-- 목록의 **35번 주제**(데이터 레이스와 `-race`) — **그쪽은 검출기가 무엇을 보는지까지**,
+- [목록의 **35번 주제**](../35-data-races-and-the-race-detector/)(데이터 레이스와 `-race`) — **그쪽은 검출기가 무엇을 보는지까지**,
   여기는 **이 버그가 왜 그 범위 밖인지**만
-- 목록의 **49번 주제**(`testing`) — 「인자가 안 바뀌었나」를 표 기반 테스트로 쓰는 법
+- [목록의 **49번 주제**](../49-testing-table-driven-t-run-cleanup-and-parallel/)(`testing`) — 「인자가 안 바뀌었나」를 표 기반 테스트로 쓰는 법
 - [`../../../../../ops-patterns/failure-modes/`](../../../../../ops-patterns/failure-modes/) —
   **그쪽은 조용한 실패의 총론(분류·관측 설계)까지**, 여기는 **Go 슬라이스 별칭이라는 한 사례**부터
 - [`../../../rust/syntax/10-borrowing-and-aliasing-rules/`](../../../rust/syntax/10-borrowing-and-aliasing-rules/) —
@@ -860,4 +860,4 @@ func main() {
   `append(s[:i], …)` 는 **정상적인 코드에서도 널리 쓰인다.**
   다만 이것은 추정이고, **이 문서는 vet 의 소스를 읽어 확인하지 않았다.**
 - 이 주제의 모든 예제는 **한 고루틴**이다. 고루틴 둘이 같은 배열을 만지면 그때는 **진짜 레이스**이고
-  `-race` 가 잡는다. 정본은 목록의 **35번 주제**다.
+  `-race` 가 잡는다. 정본은 [목록의 **35번 주제**](../35-data-races-and-the-race-detector/)다.

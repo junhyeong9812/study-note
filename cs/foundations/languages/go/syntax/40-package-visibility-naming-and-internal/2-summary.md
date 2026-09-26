@@ -13,9 +13,9 @@
 ★★ 짝이 되는 창은 「**소문자 이름 탐침 13 개가 받은 진단의 꼴**」 — 컴파일러는 소문자 이름을 「**없다**」로도 「**비공개다**」로도 말하고, ★★★ **어느 쪽인지가 다른 함수의 인라인 여부에 달려 있었다**((1)·(3)절).
 
 ★★★ **이 주제의 경계** — 패키지가 **언제 초기화되나**(`init` 순서·import 네 형태)는 [01번 주제](../01-packages-imports-main-and-init/)가 정본이다(그 편이 「이름 규칙은 40번」이라고 넘겼다).
-모듈 경로가 **어느 버전으로 풀리나**(`go.mod`·`replace`·최소 버전 선택)는 목록의 **41번 주제**다 — 여기서는 `replace` 를 **실험 배선**으로만 쓴다.
+모듈 경로가 **어느 버전으로 풀리나**(`go.mod`·`replace`·최소 버전 선택)는 [목록의 **41번 주제**](../41-modules-go-mod-version-selection-and-workspaces/)다 — 여기서는 `replace` 를 **실험 배선**으로만 쓴다.
 오류 값을 **감춰서 설계하는 법**은 [25번 주제](../25-sentinel-errors-vs-custom-error-types/) (3)절 — 그 편이 이미 `undefined: opaque.notFound` 를 찍었다. 여기는 그 「없다」가 **언제 「비공개」로 바뀌나**를 본다.
-필드 태그와 `reflect` 는 [17번 주제](../17-struct-literals-comparability-field-tags-and-sorting/) (6)절, `encoding/json` 전반은 목록의 **45번 주제**다.
+필드 태그와 `reflect` 는 [17번 주제](../17-struct-literals-comparability-field-tags-and-sorting/) (6)절, `encoding/json` 전반은 [목록의 **45번 주제**](../45-encoding-json-tags-omitempty-pointers-numbers-and-streaming/)다.
 
 ## 이 갈래가 쓰는 세 층
 
@@ -819,7 +819,7 @@ func Ärger() {}
 - [01번 주제](../01-packages-imports-main-and-init/)(패키지·import·`init`) — ★ 목록상 선행 · **초기화 순서의 정본** — 이름 규칙은 이쪽으로 넘겼다
 - [25번 주제](../25-sentinel-errors-vs-custom-error-types/)(오류 표면 설계) — `undefined: opaque.notFound` · 공개 API 로서의 오류
 - [17번 주제](../17-struct-literals-comparability-field-tags-and-sorting/)(필드 태그) — 태그는 `reflect` 로만 보인다
-- 목록의 **41번 주제**(모듈·`go.mod`) — `replace`·버전 선택의 정본 · 목록의 **45번 주제**(`encoding/json`) · 목록의 **49번 주제**(`testing`)
+- [목록의 **41번 주제**](../41-modules-go-mod-version-selection-and-workspaces/)(모듈·`go.mod`) — `replace`·버전 선택의 정본 · [목록의 **45번 주제**](../45-encoding-json-tags-omitempty-pointers-numbers-and-streaming/)(`encoding/json`) · [목록의 **49번 주제**](../49-testing-table-driven-t-run-cleanup-and-parallel/)(`testing`)
 - [C# 15번](../../../csharp/syntax/15-access-modifiers-and-assembly-boundary/) — ★★ **`CS1061`(없다) 대 `CS0122`(막힘) · 어셈블리 경계** · [Java 10번](../../../java/syntax/10-access-modifiers/) — package-private · 모듈 `exports`(언급)
 
 ## 용어 풀이

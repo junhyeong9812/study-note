@@ -776,7 +776,7 @@ func main() {
 - [43번 주제](../43-io-reader-writer-and-composition/)(`io.Reader`/`Writer`) — ★ 목록상 선행 · `ResponseWriter` 는 `io.Writer` 이고 `Request.Body` 는 `io.ReadCloser`
 - [20번 주제](../20-interface-declaration-and-implicit-implementation/)(작은 인터페이스) · [18번 주제](../18-embedding-and-field-method-promotion/)(임베드와 승격) · [26번 주제](../26-defer-evaluation-lifo-named-results-and-loops/)(LIFO) · [27번 주제](../27-panic-recover-and-where-to-use-them/)(recover) · [41번 주제](../41-modules-go-mod-version-selection-and-workspaces/)(`go` 줄)
 - [`systems/server-design`](../../../../../systems/server-design/) — ★★ **서버 구조 설계의 정본** · [02 요청 경로 §5 앱 계층](../../../../../systems/server-design/02-request-path.md)(세션·연결 관리·정상 종료) — 여기는 `net/http` 표면으로 좁힘
-- 목록의 **47번 주제**(클라이언트 — 이 서버에 요청을 보내는 쪽)
+- [목록의 **47번 주제**](../47-net-http-client-reuse-timeouts-and-closing-body/)(클라이언트 — 이 서버에 요청을 보내는 쪽)
 
 ## 용어 풀이
 

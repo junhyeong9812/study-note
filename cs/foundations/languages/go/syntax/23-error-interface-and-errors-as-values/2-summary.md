@@ -1105,8 +1105,8 @@ func main() {
 - [목록의 **25번 주제**](../25-sentinel-errors-vs-custom-error-types/)(센티넬 대 커스텀 타입) — **오류 표면 설계의 정본.**
   여기는 **두 가지가 있다는 것**까지
 - [목록의 **27번 주제**](../27-panic-recover-and-where-to-use-them/)(`panic`/`recover`) — **여기는 `panic` 을 안 던졌다.** 그쪽이 정본
-- 목록의 **42번 주제**(`fmt`) — `fmt.Errorf` 의 동사 규칙
-- 목록의 **49번 주제**(`testing`) — 오류를 테스트에서 견주는 법
+- [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)(`fmt`) — `fmt.Errorf` 의 동사 규칙
+- [목록의 **49번 주제**](../49-testing-table-driven-t-run-cleanup-and-parallel/)(`testing`) — 오류를 테스트에서 견주는 법
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **22번**
   ([`../../../rust/syntax/22-result-question-mark-and-from/`](../../../rust/syntax/22-result-question-mark-and-from/)) —
   ★★★ **그쪽은 `?` 한 글자가 조기 반환과 `From` 변환을 같이 한다**,
@@ -1137,7 +1137,7 @@ func main() {
 - ★ **`panic`/`recover` 는 이 문서가 안 던졌다.** 정본은 [목록의 **27번 주제**](../27-panic-recover-and-where-to-use-them/)다.
   경계를 긋는 자리(고루틴 경계·라이브러리 공개 API)는 거기서 다룬다.
 - ★★ **「예외가 느리다」·「`errors.New` 가 힙에 간다」는 이 문서가 안 쟀다.**
-  그런 주장을 하려면 벤치마크가 필요하고, 그것은 목록의 **50번 주제**다.
+  그런 주장을 하려면 벤치마크가 필요하고, 그것은 [목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)다.
 - ★ **`errors.New` 가 매번 새 포인터를 만드는 것**은 관찰했지만
   **그것이 할당인지**는 안 쟀다(상수 문자열이면 컴파일러가 무엇을 하는지도 안 봤다).
 - **오류 메시지 작성 관례**(소문자로 시작·마침표 없음)는 이 문서가 **안 던졌다** — 스타일 문제다.

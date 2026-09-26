@@ -585,7 +585,7 @@ func main() {
   앞은 **타입 없는 상수**라 대입 지점에서 `float64` 가 되고, 뒤는 이미 `int` 타입이 붙은 값이라
   **명시 변환**이 필요하다. 정본은 [04번 주제](../04-numeric-types-conversions-and-integer-division/).
 - **`'w' + 1` 이 `int32`** — 룬 상수와 `rune` 별칭의 배경. 정본은 [목록의 **10번 주제**](../10-strings-bytes-runes-and-utf8-iteration/).
-- **`go tool compile -S` 읽는 법** — 정본은 목록의 **52번 주제**.
+- **`go tool compile -S` 읽는 법** — 정본은 [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/).
   여기서는 「곱셈 명령이 있나 없나」 한 물음에만 썼다.
 - **`iota` 값을 DB 에 저장하면 안 되는 이유** — `iota` 는 **줄 번호**라서
   블록 중간에 한 줄을 넣으면 **그 아래 값이 전부 밀린다.**

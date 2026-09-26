@@ -747,9 +747,9 @@ package ex
 - [목록의 **28번 주제**](../28-goroutines-go-statement-cost-and-termination/)(고루틴) — 「`main` 이 끝나면 다른 고루틴은 어떻게 되나」의 정본.
   여기서는 명세 인용까지만 했다
 - [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/)(`sync`) — `init` 대신 `sync.Once` 로 미루는 방법의 정본
-- 목록의 **40번 주제**(가시성·`internal`) — **그쪽은 대문자 하나가 만드는 공개 계약**,
+- [목록의 **40번 주제**](../40-package-visibility-naming-and-internal/)(가시성·`internal`) — **그쪽은 대문자 하나가 만드는 공개 계약**,
   **여기는 패키지가 언제 켜지는가**다. 이름 규칙은 여기서 다루지 않는다
-- 목록의 **41번 주제**(모듈·`go.mod`) — **그쪽은 import 경로가 어느 버전으로 풀리는가**,
+- [목록의 **41번 주제**](../41-modules-go-mod-version-selection-and-workspaces/)(모듈·`go.mod`) — **그쪽은 import 경로가 어느 버전으로 풀리는가**,
   **여기는 풀린 다음의 초기화 순서**다
 - [`../../../../../ops-patterns/19-graceful-shutdown/`](../../../../../ops-patterns/19-graceful-shutdown/) —
   **그쪽은 끝내는 쪽**, 여기는 **시작하는 쪽**이다

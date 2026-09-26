@@ -765,7 +765,7 @@ strings.NewReader / bytes.NewReader 는 io.Reader 를 공짜로 만든다
 
 - `strings.NewReader`·`bytes.NewReader` 는 **문자열·바이트를 `io.Reader` 로 감싼다** — 복사가 없다.
   테스트에서 파일 대신 넣는 표준 수법이다.
-- ★ 정본은 목록의 **43번 주제**(`io.Reader`/`Writer`)다. 여기서는 **어느 통에 담느냐**만 본다.
+- ★ 정본은 [목록의 **43번 주제**](../43-io-reader-writer-and-composition/)(`io.Reader`/`Writer`)다. 여기서는 **어느 통에 담느냐**만 본다.
 
 비용 — `Builder.String()` 은 **복사가 없고** `Buffer.String()` 은 **복사가 있다.**
 
@@ -1077,9 +1077,9 @@ Go 명세는 표준 라이브러리를 모른다. 그래서 이 주제에서 인
   Rust 는 **`String`/`&str` 두 타입**으로 Go 의 `bytes`/`strings` 분업과 비슷한 일을 타입으로 한다
 - [목록의 **23번 주제**](../23-error-interface-and-errors-as-values/)(`error` 인터페이스) · **24번 주제**(`errors.Is`/`As`) —
   `NumError` 를 `errors.As` 로 꺼내는 것의 정본
-- 목록의 **43번 주제**(`io.Reader`/`Writer`) — `bytes.Buffer`·`strings.NewReader` 가 왜 그 모양인지
-- 목록의 **50번 주제**(벤치마크) — `go test -bench` 와 `-benchmem` 읽는 법의 정본
-- 목록의 **42번 주제**(`fmt`) — `fmt.Sprintf` 와 `Builder` 중 무엇을 고르나
+- [목록의 **43번 주제**](../43-io-reader-writer-and-composition/)(`io.Reader`/`Writer`) — `bytes.Buffer`·`strings.NewReader` 가 왜 그 모양인지
+- [목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)(벤치마크) — `go test -bench` 와 `-benchmem` 읽는 법의 정본
+- [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)(`fmt`) — `fmt.Sprintf` 와 `Builder` 중 무엇을 고르나
 
 ## 용어 풀이
 
@@ -1110,6 +1110,6 @@ Go 명세는 표준 라이브러리를 모른다. 그래서 이 주제에서 인
   다음 쓰기에 덮인다 — 슬라이스 별칭 문제다([목록의 **07번 주제**](../07-slice-sharing-silent-bugs/)).
   **이 문서는 그것을 던져서 확인하지 않았다.**
 - **`strconv` 와 `fmt` 중 무엇을 쓰나** — `fmt.Sprintf("%d", n)` 도 되지만 `strconv.Itoa(n)` 이 싸다.
-  `fmt` 는 리플렉션을 거친다. ★ **수치는 안 쟀다** — 정본은 목록의 **42번 주제**와 **50번 주제**다.
+  `fmt` 는 리플렉션을 거친다. ★ **수치는 안 쟀다** — 정본은 [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)와 **50번 주제**다.
 - **정규식은 이 네 패키지에 없다.** `regexp` 가 따로 있고, **`strings` 로 되는 일에 `regexp` 를 쓰면 느리다.**
   `Contains`·`HasPrefix`·`Cut` 으로 되는지 먼저 본다.

@@ -789,9 +789,9 @@ func main() {
 - [`../../../../data-representation/`](../../../../data-representation/) —
   **그쪽은 2의 보수·IEEE 754 라는 표현 자체**까지, **여기는 Go 가 그 위에 얹은 상수 규칙**부터다
 - [목록의 **10번 주제**](../10-strings-bytes-runes-and-utf8-iteration/)(문자열·`rune`) — `'w' + 1` 이 `int32` 인 것의 배경
-- 목록의 **37번 주제**(제네릭) — 타입 파라미터 자리에 상수를 쓰면
+- [목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)(제네릭) — 타입 파라미터 자리에 상수를 쓰면
   **상수가 아니라 그 타입의 값으로 변환**된다(명세). 여기서는 다루지 않았다
-- 목록의 **52번 주제**(도구) — `go tool compile -S` 를 읽는 법의 정본.
+- [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)(도구) — `go tool compile -S` 를 읽는 법의 정본.
   여기서는 (7)절의 한 물음에만 썼다
 
 ## 용어 풀이

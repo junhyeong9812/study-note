@@ -542,7 +542,7 @@ func main() {
 - **해시 테이블 원리** — [`../../../../../data-structure/05-hashmap/`](../../../../../data-structure/05-hashmap/)와
   [`../../../../../data-structure/29-open-addressing/`](../../../../../data-structure/29-open-addressing/).
   **그쪽은 충돌 처리·적재율까지**, 여기는 **Go 가 내주는 표면과 보증**부터다.
-- **`maps.Keys`·`slices.Sorted`** — 목록의 **38번 주제**(`slices`·`maps`·`cmp`).
+- **`maps.Keys`·`slices.Sorted`** — [목록의 **38번 주제**](../38-slices-maps-and-cmp/)(`slices`·`maps`·`cmp`).
 - **여러 고루틴이 같은 맵을 만질 때** — [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/)(`sync`)와 **33번 주제**(`sync.Map`).
 - **`m[k] = append(m[k], v)`** — [`../07-slice-sharing-silent-bugs/`](../07-slice-sharing-silent-bugs/) (7)절.
   **맵 인덱스 식이 값이라는 사실**은 이 주제 (5)절이 정본이다.

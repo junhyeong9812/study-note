@@ -1019,7 +1019,7 @@ func main() {
 - [40번 주제](../40-package-visibility-naming-and-internal/)(가시성·`internal`) — ★ 목록상 선행 · `internal` 은 **import 경로 접두**로 막는다 — 모듈 경로가 그 접두가 된다. 그쪽은 **누가 import 하나**, 여기는 **어느 판이 오나**
 - [01번 주제](../01-packages-imports-main-and-init/)(패키지·`init`) · [13번 주제](../13-closures-variable-capture-and-loop-variable-change/)(`go` 줄이 루프 변수 의미를 바꾼다 — 여기는 `go` 줄이 **빌드를 막는 것**만)
 - [Rust 01번](../../../rust/syntax/01-cargo-crates-and-modules/)(`Cargo.toml`·`Cargo.lock`) — ★ 잠금 파일의 정본은 그쪽 · [Python 42번](../../../python/syntax/42-modules-packages-and-import/)(`import` 와 패키지 — 판 선택은 **pip 의 몫**이라 그 편에 없다)
-- 목록의 **52번 주제**(도구 — `go vet`·빌드 태그)
+- [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)(도구 — `go vet`·빌드 태그)
 
 ## 용어 풀이
 

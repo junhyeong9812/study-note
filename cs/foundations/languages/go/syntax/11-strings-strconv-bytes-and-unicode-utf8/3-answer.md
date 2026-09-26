@@ -663,8 +663,8 @@ strings.NewReader / bytes.NewReader 는 io.Reader 를 공짜로 만든다
   **그쪽은 언어가 주는 것까지**, 여기는 **그 위에 선 네 패키지**부터다.
 - **`errors.Is`/`As` 로 `NumError` 꺼내기** — [목록의 **24번 주제**](../24-error-wrapping-and-errors-is-as-join/)(오류 래핑).
   센티넬 오류 설계는 [목록의 **25번 주제**](../25-sentinel-errors-vs-custom-error-types/)다.
-- **`bytes.Buffer` 가 `io.Reader` 인 것** — 목록의 **43번 주제**(`io.Reader`/`Writer`).
-- **`go test -bench` 읽는 법** — 목록의 **50번 주제**(벤치마크·프로파일).
+- **`bytes.Buffer` 가 `io.Reader` 인 것** — [목록의 **43번 주제**](../43-io-reader-writer-and-composition/)(`io.Reader`/`Writer`).
+- **`go test -bench` 읽는 법** — [목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)(벤치마크·프로파일).
   `-benchmem` 의 `B/op`·`allocs/op` 가 거기 정본이다.
 - **`Buffer.Bytes()` 가 내부 배열을 내주는 위험** — [`../07-slice-sharing-silent-bugs/`](../07-slice-sharing-silent-bugs/).
   **이 문서는 그것을 던져서 확인하지 않았다.**
@@ -701,7 +701,7 @@ strings.NewReader / bytes.NewReader 는 io.Reader 를 공짜로 만든다
 | `strings.Title` 의 **`Deprecated:` 문장** | **이 판의 패키지 문서**다. 판마다 다시 떠야 한다 |
 | 패닉 스택의 **주소 오프셋**(`+0x246` 등)과 `strings/builder.go` 의 **줄 번호** | 표준 라이브러리 판에 달렸다 |
 | `Atoi` 의 **빠른 경로**가 `ParseInt` 보다 싸다는 것 | ★ **안 쟀다.** 문서 서술만 옮겼다 |
-| `fmt.Sprintf` 대 `strconv.Itoa` 의 비용 | ★ **안 쟀다.** 정본은 목록의 **42·50번 주제**다 |
+| `fmt.Sprintf` 대 `strconv.Itoa` 의 비용 | ★ **안 쟀다.** 정본은 목록의 [**42**](../42-fmt-verbs-stringer-and-errorf/)·[**50**](../50-benchmarks-testing-b-and-reading-profiles/)번 주제다 |
 | `Buffer.Bytes()` 의 별칭 위험 | ★ **안 던져 봤다.** 정본은 07번 주제다 |
 
 ★ **다시 찍는 법** — `capture.sh` 를 그대로 돌리고 `diff -rq` 한다.

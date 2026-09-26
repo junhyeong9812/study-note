@@ -1133,10 +1133,10 @@ func Unwrap(err error) error
 - `go vet` 이 아무것도 안 잡는 대비 —
   [21번 주제](../21-nil-interface-vs-interface-holding-nil-pointer/) (6)절(**8개 중 0개**).
 - 오류 표면 설계의 정본 — [목록의 **25번 주제**](../25-sentinel-errors-vs-custom-error-types/).
-- `%w` 를 포함한 `fmt` 동사의 정본 — 목록의 **42번 주제**.
+- `%w` 를 포함한 `fmt` 동사의 정본 — [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/).
 - 덤 — **암묵 구현**은 [20번 주제](../20-interface-declaration-and-implicit-implementation/)(`Unwrap`·`Is`·`As` 가
   인터페이스 선언 없이 동작하는 바탕), **`panic`/`recover`** 는 [목록의 **27번 주제**](../27-panic-recover-and-where-to-use-them/),
-  **`go vet` 전반**은 목록의 **52번 주제**다.
+  **`go vet` 전반**은 [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)다.
 
 
 ---
@@ -1173,10 +1173,10 @@ func Unwrap(err error) error
 | `api/*.txt` 가 **`%w` 를 안 담는 것** | **그 파일의 성질** — 포맷 동사는 대상이 아니다 |
 | `api/*.txt` 가 **동작 변경을 안 담는 것** | 〃 |
 | `syscall.Errno` 가 `Is` 를 갖고 있는 것 | **표준 라이브러리 계약** |
-| `Is`/`As` 의 **비용** | ★ **안 쟀다**(목록의 **50번 주제**) |
+| `Is`/`As` 의 **비용** | ★ **안 쟀다**([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
 | `errors.ErrUnsupported`(1.21) | ★ **안 던졌다** |
 | 오류에 **스택 트레이스**를 붙이는 외부 패키지 | ★ **안 던졌다** — 이 머신에 없다 |
 | `Is`/`As` 가 **순환 참조**를 만나면 | ★ **안 던졌다** |
-| `%w` 와 다른 동사를 섞을 때의 인자 순서 | ★ **안 던졌다**(목록의 **42번 주제**) |
+| `%w` 와 다른 동사를 섞을 때의 인자 순서 | ★ **안 던졌다**([목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)) |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다.

@@ -134,7 +134,7 @@ go version go1.27.1 linux/amd64
 | ★ **컴파일 에러** | 방향 채널의 금지 | |
 | ★ **`runtime` 소스 인용** | 교착 탐지가 **구현**이고 **타이머가 있으면 안 본다** | `proc.go` `checkdead` |
 | **부적용 — 시간·처리량** | ★★★ **안 쟀다.** 「채널은 느리다」를 이 문서는 적지 않는다 | — |
-| **부적용 — `-race`** | 이 문서의 블록은 **채널이 순서를 세워** 경쟁이 없다. 레이스는 목록의 **35번 주제** | — |
+| **부적용 — `-race`** | 이 문서의 블록은 **채널이 순서를 세워** 경쟁이 없다. 레이스는 [목록의 **35번 주제**](../35-data-races-and-the-race-detector/) | — |
 
 ★★ **제5의 상태 — 「같은 질문을 다른 창으로 물었다」.**
 「버퍼 0 송신이 **얼마나** 막혔나」는 시간이라 흔들린다. 그래서 「**송신이 돌아온 순간 받는 쪽이 이미 받으러 왔나**」로 바꿔 물었다((2)절).
@@ -297,7 +297,7 @@ the corresponding send on that channel.
   ★★★ 「**A receive from an unbuffered channel is synchronized before the completion of the corresponding send on that channel.**」
   깃발은 받기 **전**에 올렸고, 받기는 송신 완료 **전**이다 — 그래서 송신이 돌아온 뒤 읽은 깃발은 **반드시** `true` 다.
   ★ 첫 문장(「A send … is synchronized before the completion of the corresponding receive」)은 **버퍼가 있어도** 성립하는 쪽이다.
-  **버퍼 0 에서만** 거꾸로(수신 → 송신 완료)도 성립한다. 메모리 모델의 정본은 목록의 **36번 주제**다.
+  **버퍼 0 에서만** 거꾸로(수신 → 송신 완료)도 성립한다. 메모리 모델의 정본은 [목록의 **36번 주제**](../36-reading-the-go-memory-model-in-code/)다.
 - ★ `len` 은 **그 순간의 스냅숏**이다 — 다른 고루틴이 동시에 넣고 빼면 읽자마자 틀린 값이 된다. **분기 조건으로 쓰지 마라**(「`len(ch) < cap(ch)` 이면 보낸다」는 경쟁이다).
 
 비용 — 없다.
@@ -645,7 +645,7 @@ created by main.main in goroutine 1
 - ★★ **`goroutine N [running]: main.main.func1()` · `created by main.main in goroutine 1`** — 터진 것은 **보내는 고루틴**이다.
   ★ [27번 주제](../27-panic-recover-and-where-to-use-them/) (4)절대로 **다른 고루틴의 패닉은 main 이 못 잡는다.** 닫은 쪽은 멀쩡하고 **보낸 쪽이 죽는다.**
 - ★★★ 그래서 관례가 「**보내는 쪽이 닫는다**」다. 보내는 쪽은 **언제 더 안 보낼지 아는 유일한 쪽**이다.
-  받는 쪽이 「그만 보내라」를 알려야 하면 **닫지 말고 별도의 취소 신호**(`done` 채널·`context`)를 쓴다 — [31번 주제](../31-goroutine-leaks/)·목록의 **34번 주제**.
+  받는 쪽이 「그만 보내라」를 알려야 하면 **닫지 말고 별도의 취소 신호**(`done` 채널·`context`)를 쓴다 — [31번 주제](../31-goroutine-leaks/)·[목록의 **34번 주제**](../34-context-cancellation-deadlines-and-values/).
 - ★ 보내는 쪽이 **여럿**이면 누구도 혼자 닫을 수 없다 — 전부 끝난 뒤 **한 곳에서** 닫는다(`WaitGroup` 뒤 `close` — [32번 주제](../32-sync-mutex-rwmutex-waitgroup-once/)).
 
 비용 — 없다.
@@ -966,7 +966,7 @@ func main() {
 | 고루틴에서 **결과 하나**를 받는다 | **채널**(부르는 쪽이 반드시 받으면 버퍼 0, 안 받고 떠날 수 있으면 **버퍼 1**) | `go` 는 반환값을 버린다 · 버퍼 1 의 조건은 [31번 주제](../31-goroutine-leaks/) |
 | **값의 흐름**(생산 → 소비) | **채널 + 보내는 쪽 `defer close` + `range`** | (6)절 |
 | 「다 끝났다」 **알림만** | **`chan struct{}` 를 `close`** | 닫힌 채널은 **모든 받는 쪽을 동시에** 깨운다((4)절 `empty`) |
-| 받는 쪽이 「그만」을 알린다 | **별도 취소 신호** — 닫지 마라 | (7)절 · 목록의 **34번 주제** |
+| 받는 쪽이 「그만」을 알린다 | **별도 취소 신호** — 닫지 마라 | (7)절 · [목록의 **34번 주제**](../34-context-cancellation-deadlines-and-values/) |
 | 함수 매개변수 | **방향 채널** | 받기 전용이면 **닫기가 컴파일 에러**((3)절) |
 | **공유 상태**를 여럿이 고친다 | ★ **채널보다 뮤텍스가 맞는 경우가 많다** | [32번 주제](../32-sync-mutex-rwmutex-waitgroup-once/)의 판단표 |
 | 넘칠 때 버릴까 막을까 | — | [`05-backpressure`](../../../../../ops-patterns/05-backpressure/) |
@@ -991,7 +991,7 @@ func main() {
 - [30번 주제](../30-select-default-and-timeouts/)(`select`) — 여러 채널을 기다리기 · `nil` 로 가지 끄기
 - [31번 주제](../31-goroutine-leaks/)(누수) — ★ 막힌 채 남는 고루틴 · 교착 탐지를 가리는 쪽
 - [32번 주제](../32-sync-mutex-rwmutex-waitgroup-once/)(`sync`) — 채널 대 뮤텍스
-- 목록의 **34번 주제**(`context`) · **36번 주제**(메모리 모델)
+- [목록의 **34번 주제**](../34-context-cancellation-deadlines-and-values/)(`context`) · **36번 주제**(메모리 모델)
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **51번**(`mpsc` 채널) — 송신자 드롭이 닫힘, 받는 쪽이 떠나면 `Err`
 
 ## 용어 풀이

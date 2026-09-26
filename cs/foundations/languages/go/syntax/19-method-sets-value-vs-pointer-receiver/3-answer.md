@@ -593,7 +593,7 @@ func (v V) Speak() string
 | 리시버를 **고치는** 메서드 | **포인터 리시버** | [16번 주제](../16-pointers-value-copy-semantics-new-and-make/) (5)절 — 값이면 복사본을 고친다 |
 | `sync.Mutex` 를 품은 타입 | **포인터 리시버** | 6번 — `go vet` 이 `passes lock by value` 로 잡는다 |
 | 값과 포인터를 **섞으면** | 집합이 **둘로 갈린다** | 2번 — `Mixed` 1개, `*Mixed` 2개 |
-| 「크니까 포인터」 | **측정이 더 필요하다** | 이 문서는 안 쟀다(목록의 **50번 주제**) |
+| 「크니까 포인터」 | **측정이 더 필요하다** | 이 문서는 안 쟀다([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
 | 값으로도 인터페이스에 담고 싶다 | **값 리시버** | 1번 — 값 리시버라야 `T` 의 집합에 든다 |
 
 - ★★ 실무의 규칙 한 줄은 **「하나라도 고치는 메서드가 있으면 전부 포인터 리시버로 통일한다」** 이다.
@@ -645,8 +645,8 @@ func (v V) Speak() string
 - **인터페이스에 담긴 뒤의 `nil` 함정** — [목록의 **21번 주제**](../21-nil-interface-vs-interface-holding-nil-pointer/).
   맛보기는 [20번 주제](../20-interface-declaration-and-implicit-implementation/) (3)절에 있다.
 - 덤 — **암묵 구현과 만족 단언**은 [20번 주제](../20-interface-declaration-and-implicit-implementation/),
-  **타입 파라미터에서 같은 에러가 나는 것**은 목록의 **37번 주제**,
-  **`String()` 의 리시버가 출력에 보이는 자리**는 목록의 **42번 주제**다.
+  **타입 파라미터에서 같은 에러가 나는 것**은 [목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/),
+  **`String()` 의 리시버가 출력에 보이는 자리**는 [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)다.
 
 ---
 
@@ -673,7 +673,7 @@ func (v V) Speak() string
 | `go vet` 이 **무엇까지 잡나** | **도구(구현)**. 검사 목록은 판마다 넓어질 수 있다 |
 | `go doc -all .` 의 **차례와 꼴** | **도구(구현)** |
 | `reflect` 가 메서드를 **이름 오름차순**으로 주는 것 | **`reflect` 의 계약** |
-| 값 리시버 복사의 **실제 비용** | ★ **안 쟀다**(목록의 **50번 주제**) |
+| 값 리시버 복사의 **실제 비용** | ★ **안 쟀다**([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
 | 인터페이스에 담을 때 **할당이 생기나** | ★ **안 쟀다** · 구현(gc)의 영역이다 |
 | `C.Inc`(메서드 표현식)의 에러 | ★ **안 던졌다**(명세가 illegal 이라 적는다) |
 | 인터페이스에 메서드를 다는 에러 | ★ **안 던졌다** |

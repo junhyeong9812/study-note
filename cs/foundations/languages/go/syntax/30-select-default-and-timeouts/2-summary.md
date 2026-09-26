@@ -14,7 +14,7 @@
 그래서 **준비 상태 네 가지**를 격자로 놓고 **「가짓수가 2 이상인 칸 N / M」** 을 스크립트가 마지막 줄로 찍게 했다.
 ★ **비율은 안 실었다** — 명세는 「**균등 의사 무작위**」라고만 하고, 비율은 **구현과 한 판의 결과**다.
 
-★★ **이 주제의 경계** — 「기다림을 **밖에서 끊는** 신호」인 `context.Context` 의 `Done()` 은 목록의 **34번 주제**다. 여기서는 **`select` 의 가지 하나**로만 쓴다.
+★★ **이 주제의 경계** — 「기다림을 **밖에서 끊는** 신호」인 `context.Context` 의 `Done()` 은 [목록의 **34번 주제**](../34-context-cancellation-deadlines-and-values/)다. 여기서는 **`select` 의 가지 하나**로만 쓴다.
 `select` 로 기다리다 **떠난 뒤 남는 고루틴**은 [31번 주제](../31-goroutine-leaks/)가 정본이다 — (4)절이 그 입구다.
 
 ## 이 갈래가 쓰는 세 층
@@ -648,7 +648,7 @@ vet exit=0
 
 - `ctx.Done()` 은 **`<-chan struct{}`** 이고, **취소되면 닫힌다.** 그래서 `select` 의 가지 하나로 쓴다 — `case <-ctx.Done(): return`.
   닫힌 채널이 **모든 받는 쪽을 동시에 깨우는** 것([29번 주제](../29-channels-buffering-direction-close-range-and-nil/) (4)절)이 「취소를 여럿에게 한 번에 알린다」의 바탕이다.
-- ★★ 취소가 **호출 트리를 따라 어떻게 번지나**, 데드라인·값은 목록의 **34번 주제**가 정본이다. 이 문서는 **블록을 싣지 않았다** — [31번 주제](../31-goroutine-leaks/) (3)절이 누수를 고치는 데 한 번 쓴다.
+- ★★ 취소가 **호출 트리를 따라 어떻게 번지나**, 데드라인·값은 [목록의 **34번 주제**](../34-context-cancellation-deadlines-and-values/)가 정본이다. 이 문서는 **블록을 싣지 않았다** — [31번 주제](../31-goroutine-leaks/) (3)절이 누수를 고치는 데 한 번 쓴다.
 
 ## 문법 — 형태와 규칙
 
@@ -772,7 +772,7 @@ loop:
 | 루프 안에서 **계속** 기다림 | `default` **없이** 막히는 가지만 | (2)절 |
 | 합친 채널 중 하나가 닫혔다 | **그 변수를 `nil` 로** | (5)절 |
 | 루프를 끝낸다 | **라벨 `break`** 또는 `return` | (6)절 |
-| 밖에서 끊을 수 있어야 | **`case <-ctx.Done():`** | 목록의 **34번 주제** |
+| 밖에서 끊을 수 있어야 | **`case <-ctx.Done():`** | [목록의 **34번 주제**](../34-context-cancellation-deadlines-and-values/) |
 | 우선순위가 있다 | `select` 한 겹으로는 **안 된다** | (1)절 — 무작위 |
 
 ## 핵심 문장
@@ -791,7 +791,7 @@ loop:
 - [31번 주제](../31-goroutine-leaks/)(누수) — ★★ 타임아웃으로 떠난 뒤 남는 고루틴 · `time.After` 의 메모리
 - [15번 주제](../15-switch-type-switch-fallthrough-labels-and-goto/)(라벨·`break`) — 라벨 규칙의 정본
 - [28번 주제](../28-goroutines-go-statement-cost-and-termination/)(고루틴) — `NumGoroutine`
-- 목록의 **34번 주제**(`context`) — ★ `Done()` 의 정본. 여기는 가지 하나로만
+- [목록의 **34번 주제**](../34-context-cancellation-deadlines-and-values/)(`context`) — ★ `Done()` 의 정본. 여기는 가지 하나로만
 - [`../../../../process-thread/`](../../../../process-thread/) — 여러 사건을 기다리는 일반(폴링 대 대기)
 
 ## 용어 풀이

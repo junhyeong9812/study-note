@@ -666,7 +666,7 @@ cap 을 8 로 미리 잡고 8번 append 하면 재할당 횟수 = 0 (len=8 cap=8
 - 이 창이 없으면 「`cap` 이 8이 됐다」만 보이고, 그게 **한 번에 됐는지 두 번에 걸쳐 됐는지** 모른다.
 
 **이 창이 답하는 것** — 「이 코드가 이사를 몇 번 하나」.
-성능 이야기를 하려면 **여기서 시작해서 벤치마크로 넘어가야** 한다(목록의 **50번 주제**).
+성능 이야기를 하려면 **여기서 시작해서 벤치마크로 넘어가야** 한다([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)).
 
 ## 문법 — 형태와 규칙
 
@@ -832,8 +832,8 @@ func main() {
 - [목록의 **07번 주제**](../07-slice-sharing-silent-bugs/)(슬라이스 공유로 조용히 틀리는 자리) —
   (2)절의 **두 번째 약속**(재사용한다)이 버그가 되는 사례들
 - [목록의 **08번 주제**](../08-copy-three-index-slicing-and-memory-retention/)(`copy`·3-인덱스·메모리 유지) — 이사를 **일부러 강제하는** 법
-- 목록의 **38번 주제**(`slices`·`maps`·`cmp`) — `slices.Grow`·`slices.Clip` 의 정본
-- 목록의 **50번 주제**(벤치마크) — 「미리 잡으면 빠른가」를 **재는** 자리
+- [목록의 **38번 주제**](../38-slices-maps-and-cmp/)(`slices`·`maps`·`cmp`) — `slices.Grow`·`slices.Clip` 의 정본
+- [목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)(벤치마크) — 「미리 잡으면 빠른가」를 **재는** 자리
 - [`../../../../../data-structure/01-dynamic-array/`](../../../../../data-structure/01-dynamic-array/) —
   **그쪽은 증폭 상각 분석(왜 상수 시간인가)까지**, 여기는 **Go 의 `cap` 을 관찰하는 법**부터
 - [`../../../rust/syntax/15-slices-ranges-and-utf8-boundaries/`](../../../rust/syntax/15-slices-ranges-and-utf8-boundaries/) —
@@ -857,7 +857,7 @@ func main() {
 ## 더 들어가면
 
 - `slices.Grow(s, n)`(**1.21**)는 「`n` 개를 더 넣을 자리를 확보한 슬라이스」를 돌려준다.
-  `make` 로 다시 잡는 코드를 대신한다. 정본은 목록의 **38번 주제**다.
+  `make` 로 다시 잡는 코드를 대신한다. 정본은 [목록의 **38번 주제**](../38-slices-maps-and-cmp/)다.
 - `cap` 의 수치가 **메모리 크기 단위(size class)에 맞춰 반올림**되는 것이 (4)절 뒤쪽 숫자의 이유로 보인다
   (848·1280·1792 는 배도 1.25배도 아니다). **소스를 읽어 확인하지는 않았다** —
   이 문서는 관찰만 싣는다.

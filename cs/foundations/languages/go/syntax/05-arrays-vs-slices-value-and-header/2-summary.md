@@ -562,7 +562,7 @@ var s []int; s[:0] == nil : true
 
 - 제로값 규칙 자체는 [02번 주제](../02-variable-declarations-and-zero-values/)가 정본이다.
   여기서는 「**`nil` 이냐 아니냐가 동작을 거의 안 바꾼다**」는 것만 본다.
-  (바꾸는 자리가 하나 있다 — JSON 으로 내보낼 때 `null` 과 `[]` 로 갈린다. 목록의 **45번 주제**다.)
+  (바꾸는 자리가 하나 있다 — JSON 으로 내보낼 때 `null` 과 `[]` 로 갈린다. [목록의 **45번 주제**](../45-encoding-json-tags-omitempty-pointers-numbers-and-streaming/)다.)
 
 비용 — `nil` 슬라이스는 **할당이 0**이다. 「빈 슬라이스를 돌려주려고 `[]int{}` 를 만들」 이유가 없다.
 

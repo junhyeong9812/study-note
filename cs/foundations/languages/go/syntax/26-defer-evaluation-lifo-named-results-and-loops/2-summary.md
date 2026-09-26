@@ -821,7 +821,7 @@ func main() {
 - [25번 주제](../25-sentinel-errors-vs-custom-error-types/)(오류 표면) — `defer` 로 붙이는 문맥이 **공개 표면을 늘리지 않는** 쪽
 - [27번 주제](../27-panic-recover-and-where-to-use-them/)(`panic`/`recover`) — ★★ **`defer` 안의 `recover` 는 거기가 정본.** 여기는 「패닉 중에도 돈다」까지
 - [28번 주제](../28-goroutines-go-statement-cost-and-termination/)(고루틴) — `go` 문의 인자도 **같은 규칙으로 즉시 평가**된다
-- 목록의 **44번 주제**(`os`·`bufio`) — `Flush`·`Close` 누락으로 데이터가 사라지는 자리의 정본
+- [목록의 **44번 주제**](../44-os-bufio-and-io-copy/)(`os`·`bufio`) — `Flush`·`Close` 누락으로 데이터가 사라지는 자리의 정본
 - C++ 갈래 [14번](../../../cpp/syntax/14-destructors-and-deterministic-destruction/) — ★★★ **스코프 끝의 소멸자 · 쌓인 역순 · `std::_Exit`**
 - C++ 갈래 [15번](../../../cpp/syntax/15-raii-resources-as-types/) — RAII 가 **블록 단위**로 자원을 덮는 것
 - Rust 갈래 [09번](../../../rust/syntax/09-copy-clone-and-drop/) (6)절 — `Drop` 순서. **Rust 도 스코프 끝이다**

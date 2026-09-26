@@ -505,7 +505,7 @@ a select with only nil channels and no default case blocks forever.
 
 - ★★ [29번 주제](../29-channels-buffering-direction-close-range-and-nil/) (5)절 「`nil` 채널 송수신은 영원히 막힌다」 → 그 가지는 **절대 진행 못 한다.** (4)절 「닫힌 채널은 막히지 않고 영값」 → 끄지 않으면 **늘 뽑힌다.**
 - ★★ 3번의 고루틴은 [31번 주제](../31-goroutine-leaks/)의 **① 받는 쪽이 사라진 송신**이다.
-- ★ `ctx.Done()` 은 **취소되면 닫히는 `<-chan struct{}`** 다 — 닫힌 채널은 **모든 받는 쪽을 동시에** 깨우므로 `select` 의 가지 하나로 「취소」를 받을 수 있다. 정본은 목록의 **34번 주제**.
+- ★ `ctx.Done()` 은 **취소되면 닫히는 `<-chan struct{}`** 다 — 닫힌 채널은 **모든 받는 쪽을 동시에** 깨우므로 `select` 의 가지 하나로 「취소」를 받을 수 있다. 정본은 [목록의 **34번 주제**](../34-context-cancellation-deadlines-and-values/).
 
 ## 실행 검증
 

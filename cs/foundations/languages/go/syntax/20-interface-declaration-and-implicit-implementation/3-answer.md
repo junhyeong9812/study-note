@@ -368,7 +368,7 @@ func main() {
   **amd64 가 아니면 달라질 수 있다.**
 - **1024바이트짜리를 담아도 인터페이스 값이 16** 이라는 것은,
   **그 1024바이트가 인터페이스 값 안에 없다**는 뜻이다. 어디에 있는지는
-  ★ **명세에 없는 낱말**이고 이 문서는 **재지 않았다**(목록의 **52번 주제**).
+  ★ **명세에 없는 낱말**이고 이 문서는 **재지 않았다**([목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)).
 - 마지막 두 줄이 3번을 한 번 더 말한다 —
   `var n1 Speaker` 는 `n1 == nil` 이 **`true`** 이고,
   `Speaker = (*Big)(nil)` 은 **`false`** 에 `%T` 가 `*main.Big` 이다.
@@ -786,14 +786,14 @@ func MultiWriter(writers ...Writer) Writer
 - **타입 스위치** — [15번 주제](../15-switch-type-switch-fallthrough-labels-and-goto/).
   5번은 **comma-ok 한 꼴**까지만 본다.
 - **`nil` 인터페이스 함정** — [목록의 **21번 주제**](../21-nil-interface-vs-interface-holding-nil-pointer/). 3번은 **한 번 던져 보는** 데까지다.
-- **`io.Reader`/`Writer` 조합** — 목록의 **43번 주제**. 6번은 **「작을수록 좋다」를 수로 보이는** 데까지다.
+- **`io.Reader`/`Writer` 조합** — [목록의 **43번 주제**](../43-io-reader-writer-and-composition/). 6번은 **「작을수록 좋다」를 수로 보이는** 데까지다.
 - **인터페이스 필드가 든 구조체의 `==` 가 런타임에 터지는 실측** —
   [17번 주제](../17-struct-literals-comparability-field-tags-and-sorting/) (4)절
   (`comparing uncomparable type []int`).
 - 덤 — **인터페이스 임베딩**은 [18번 주제](../18-embedding-and-field-method-promotion/) (5)절,
   **타입 단언·`comparable`** 은 [목록의 **22번 주제**](../22-type-assertion-any-and-comparable/),
   **오류 값 설계**는 [목록의 **23번**](../23-error-interface-and-errors-as-values/)·**24번 주제**,
-  **제네릭으로 `any` 를 대신하는 자리**는 목록의 **37번 주제**다.
+  **제네릭으로 `any` 를 대신하는 자리**는 [목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)다.
 
 ---
 
@@ -818,16 +818,16 @@ func MultiWriter(writers ...Writer) Writer
 | 항목 | 무엇에 달렸나 |
 |---|---|
 | `unsafe.Sizeof` 의 **16과 8** | **플랫폼(amd64).** 명세에 그 수가 없다 |
-| **담긴 값이 어디에 놓이나**(힙/스택) | **구현(gc)**. 명세에 그 낱말이 없다(목록의 **52번 주제**) |
+| **담긴 값이 어디에 놓이나**(힙/스택) | **구현(gc)**. 명세에 그 낱말이 없다([목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)) |
 | 패닉·컴파일 에러의 **문구 자체** | **툴체인 판(go1.27.1)** |
 | 패닉 첫 줄의 `pc=0x…` · 스택의 `goroutine N` · `+0x…` | **빌드 산출물·런타임** |
 | `go doc` 의 **차례와 꼴** | **도구(구현)** |
 | `go vet` 이 **만족 여부를 안 보는 것** | **도구(구현)**. 판이 오르면 달라질 수 있다 |
 | `%v` 가 `nil` 포인터를 **`<nil>`** 로 찍는 것 | **`fmt` 의 계약** |
 | `io.MultiReader`·`TeeReader`·`LimitReader` 의 동작 | **`io` 패키지의 계약** |
-| 인터페이스 호출·단언의 **실제 비용** | ★ **안 쟀다**(목록의 **50번 주제**) |
+| 인터페이스 호출·단언의 **실제 비용** | ★ **안 쟀다**([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
 | 인터페이스에 담을 때 **할당이 생기나** | ★ **안 쟀다** |
-| 타입 요소(`~int \| ~string`)가 든 인터페이스 | ★ **안 던졌다**(목록의 **37번 주제**) |
+| 타입 요소(`~int \| ~string`)가 든 인터페이스 | ★ **안 던졌다**([목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)) |
 | 시그니처가 다른 메서드를 겹쳐 임베딩한 에러 | ★ **안 던졌다**(명세 인용만) |
 | 인터페이스에서 꺼낸 값이 addressable 이 아닌 에러 | ★ **안 던졌다** |
 | 에디터·언어 서버가 구현체를 보여 주는 것 | ★ **근거로 안 썼다** — 도구의 기능이지 언어의 것이 아니다 |

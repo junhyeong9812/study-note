@@ -1227,7 +1227,7 @@ func main() {
 | **안정 정렬이 입력 순서를 지키는 것** | **패키지 문서의 보장** | 명세가 아니라 `sort`·`slices` 의 계약이다 |
 | `go vet` 이 **남의 패키지 것만** 보는 것 | **도구(구현)** | `composites` 검사의 성질이다. 판이 바뀌면 달라질 수 있다 |
 | 컴파일 에러의 **문구 자체** | **툴체인 판(go1.27.1)** | 규칙은 명세, 문장은 gc 의 것 |
-| 구조체 대입·맵 해싱의 **실제 비용** | **안 쟀다** | 벤치마크가 없다(목록의 **50번 주제**) |
+| 구조체 대입·맵 해싱의 **실제 비용** | **안 쟀다** | 벤치마크가 없다([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)) |
 
 ★ 이 주제의 결론은 「**비교되는지는 전부 명세가 정하고, 몇 바이트인지만 구현이 정한다**」이다.
 
@@ -1283,8 +1283,8 @@ func main() {
 - [02번 주제](../02-variable-declarations-and-zero-values/)(제로값) — `T{}` 와 `var t T` 가 같은 것의 정본
 - [18번 주제](../18-embedding-and-field-method-promotion/)(임베딩) — **이 주제의 직접 후행.**
   **필드 이름을 안 적은 필드**가 무엇을 하는지
-- 목록의 **38번 주제**(`slices`·`maps`·`cmp`) — 정렬 API 의 정본. 여기는 **구조체를 정렬하는 자리**만
-- 목록의 **45번 주제**(`encoding/json`) — **태그를 읽는 쪽의 정본.**
+- [목록의 **38번 주제**](../38-slices-maps-and-cmp/)(`slices`·`maps`·`cmp`) — 정렬 API 의 정본. 여기는 **구조체를 정렬하는 자리**만
+- [목록의 **45번 주제**](../45-encoding-json-tags-omitempty-pointers-numbers-and-streaming/)(`encoding/json`) — **태그를 읽는 쪽의 정본.**
   여기는 **태그가 무엇이고 `reflect` 로 어떻게 보이나**까지
 - [목록의 **22번 주제**](../22-type-assertion-any-and-comparable/)(타입 단언·`comparable`) — 제네릭의 `comparable` 제약이 이 규칙과 만나는 자리
 - [`../../../../data-representation/`](../../../../data-representation/) —
@@ -1324,4 +1324,4 @@ func main() {
 - 구조체의 **필드 순서를 자동으로 재배열하지 않는 것**도 Go 의 성질이다.
   명세는 순서를 비교·정체성의 기준으로 쓰므로 컴파일러가 마음대로 못 바꾼다.
 - 제네릭의 **`comparable` 제약**(1.18)은 이 규칙을 타입 파라미터로 옮긴 것이다.
-  1.20부터 **비교 가능한 인터페이스도 `comparable` 을 만족**하게 바뀌었다 — 정본은 목록의 **37번 주제**다.
+  1.20부터 **비교 가능한 인터페이스도 `comparable` 을 만족**하게 바뀌었다 — 정본은 [목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)다.

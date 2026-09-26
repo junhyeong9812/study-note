@@ -22,7 +22,7 @@ GC 로 **「닿을 수 없는 채널에 막힌 고루틴」** 을 찾아 **`[cha
 ★★★ **이 주제의 경계** — 실패 모드 **총론**(조용한 실패·연쇄 장애·자원 고갈의 분류)은
 [`../../../../../ops-patterns/failure-modes/`](../../../../../ops-patterns/failure-modes/)가 정본이다.
 **그쪽은 실패를 분류하고 읽는 순서까지**, 여기는 **Go 고루틴이 막힌 채 남는 네 모양과 그것을 코드·테스트로 잡는 법부터.**
-취소 신호 `context` 의 **API 전체**(데드라인·값·전파)는 목록의 **34번 주제**다 — 여기서는 **처방 하나**로만 쓴다.
+취소 신호 `context` 의 **API 전체**(데드라인·값·전파)는 [목록의 **34번 주제**](../34-context-cancellation-deadlines-and-values/)다 — 여기서는 **처방 하나**로만 쓴다.
 
 ## 이 갈래가 쓰는 세 층
 
@@ -131,7 +131,7 @@ go version go1.27.1 linux/amd64
 | ★ **`go vet` 의 침묵** | 누수를 **정적 분석이 못 본다** | 규칙 18-A |
 | **못 잰 것 — `goleak`** | ★★ **이 환경에 없다**((4)절 판별 블록). 외부 모듈을 받지 않았다 — 대신 위의 두 표준 창으로 같은 질문을 물었다 | 규칙 26 |
 | **못 잰 것 — `time.After` 판 격자** | ★★ **`asynctimerchan` 이 1.27 에서 제거**돼 1.22 의미를 되살릴 수 없다((7)절 — 런타임이 **그 설정을 거부**한다) | 제3의 상태 |
-| **부적용 — `-race`** | 누수는 **데이터 경쟁이 아니다** — 이 문서의 블록에는 공유 변수 쓰기가 없다 | 목록의 **35번 주제** |
+| **부적용 — `-race`** | 누수는 **데이터 경쟁이 아니다** — 이 문서의 블록에는 공유 변수 쓰기가 없다 | [목록의 **35번 주제**](../35-data-races-and-the-race-detector/) |
 | **부적용 — 메모리 절댓값** | 샌 고루틴이 **몇 바이트**인지는 안 실었다. 스택 크기는 **구현**([28번 주제](../28-goroutines-go-statement-cost-and-termination/) (5)절) | — |
 
 ### (1) ★★★ 누수 네 모양 × `NumGoroutine` × 누수 프로파일
@@ -548,7 +548,7 @@ func main() {
 - ★★★ **`ctxWait`·`ctxTicker` — 100ms 뒤에는 11(아직 기다리는 중), `cancel()` 뒤 1초 안에 1.** `select` 에 **`<-ctx.Done()` 가지**를 준 것이 **끝낼 통로**다.
   ★ 티커는 **`defer t.Stop()`** 도 같이 — 고루틴이 끝나도 멈추지 않은 티커가 남지 않게.
 - ★★★ **`closeRange` — 100ms 뒤 이미 1.** 생산자가 **`defer close(ch)`** 하니 소비자의 `range` 가 끝났다.
-- ★ `context` 의 정본은 목록의 **34번 주제**다 — 여기서는 「**`Done()` 은 취소되면 닫히는 채널**」 하나만 썼다([30번 주제](../30-select-default-and-timeouts/) (7)절).
+- ★ `context` 의 정본은 [목록의 **34번 주제**](../34-context-cancellation-deadlines-and-values/)다 — 여기서는 「**`Done()` 은 취소되면 닫히는 채널**」 하나만 썼다([30번 주제](../30-select-default-and-timeouts/) (7)절).
 
 비용 — 없다.
 
@@ -1217,7 +1217,7 @@ cancel 뒤 NumGoroutine: 1
 | ★★★ **`goroutineleak` 프로파일 — 닿을 수 없는 채널에 막힌 것만 · 표시만 하고 안 치움** | ★ **구현(runtime·pprof) — 이 판** | (2)절 소스 · 실측 |
 | ★★ **`synctest` 의 교착 판정 · 가짜 시계 · `durable` 표시** | **표준 라이브러리(1.25+)** | (5)절 |
 | ★★ **1.23 부터 버려진 타이머를 GC 가 회수 · `asynctimerchan` 은 1.27 에서 제거** | **표준 라이브러리 계약 · 판 의존** | (7)절 문서·실측 |
-| `context` 의 `Done()` 이 취소 시 닫힌다 | **표준 라이브러리 계약** | 목록의 **34번 주제** |
+| `context` 의 `Done()` 이 취소 시 닫힌다 | **표준 라이브러리 계약** | [목록의 **34번 주제**](../34-context-cancellation-deadlines-and-values/) |
 | 샌 고루틴 하나의 **메모리** | **구현 — 안 실었다** | [28번 주제](../28-goroutines-go-statement-cost-and-termination/) (5)절 |
 | 고루틴 id | **구현 — 흔들린다** | 정규화 칸 |
 
@@ -1252,7 +1252,7 @@ cancel 뒤 NumGoroutine: 1
 - [26번 주제](../26-defer-evaluation-lifo-named-results-and-loops/)(`defer`) — 자원이 「늘었나」를 세는 같은 질문(fd)
 - [27번 주제](../27-panic-recover-and-where-to-use-them/)(`panic`) — `[recovered, repanicked]` 표시 · 고루틴 id 정규화
 - [32번 주제](../32-sync-mutex-rwmutex-waitgroup-once/)(`sync`) — 띄운 쪽이 기다리기(`WaitGroup`)
-- 목록의 **34번 주제**(`context`) — ★ 취소의 정본 · **35번 주제**(레이스) · **49번 주제**(테스트 쪽)
+- [목록의 **34번 주제**](../34-context-cancellation-deadlines-and-values/)(`context`) — ★ 취소의 정본 · **35번 주제**(레이스) · **49번 주제**(테스트 쪽)
 
 ## 용어 풀이
 

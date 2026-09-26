@@ -669,7 +669,7 @@ ex/t13i.go:20:29: stays() escapes to heap
   「accessible 한 동안 survive 한다」까지만 약속한다. **어디에 두느냐는 컴파일러의 일이다.**
 - ★ `-l` 을 붙여 인라인을 껐다. 안 끄면 `inlining call to …` 줄이 섞여 **읽을 줄이 묻힌다.**
   읽을 것은 줄 번호가 아니라 **`moved to heap` 이라는 낱말**이다.
-- 탈출 분석 출력 읽기의 정본은 목록의 **52번 주제**다.
+- 탈출 분석 출력 읽기의 정본은 [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)다.
 
 비용 — 힙 할당 하나 + GC 가 나중에 걷는 비용. **이 문서는 그 비용을 재지 않았다.**
 
@@ -847,7 +847,7 @@ func main() {
 ### 8. ★ 「루프 변수를 매 회차 새로 만드니 느려졌다」
 
 - 이 문서는 **재지 않았다.** 캡처가 없으면 컴파일러가 상자를 안 만들지만 그것도 **안 쟀다.**
-- 고치는 법 — 성능 주장을 하려면 벤치마크가 필요하다(목록의 **50번 주제**).
+- 고치는 법 — 성능 주장을 하려면 벤치마크가 필요하다([목록의 **50번 주제**](../50-benchmarks-testing-b-and-reading-profiles/)).
 
 ## 구현 세부사항 대 언어 보장
 
@@ -908,7 +908,7 @@ func main() {
 - [목록의 **26번 주제**](../26-defer-evaluation-lifo-named-results-and-loops/)(`defer` 의 평가 시점·루프 안의 `defer`) — 루프에서 `defer` 가 쌓이는 문제의 정본
 - [목록의 **28번 주제**](../28-goroutines-go-statement-cost-and-termination/)(고루틴) · **35번 주제**(데이터 레이스와 `-race`) —
   **그쪽은 경쟁 자체까지**, 여기는 **캡처가 그 경쟁을 만드는 자리**까지
-- 목록의 **52번 주제**(도구·탈출 분석 읽기) — `-gcflags=-m` 출력 읽기의 정본
+- [목록의 **52번 주제**](../52-tools-gofmt-vet-build-tags-embed-and-escape-analysis/)(도구·탈출 분석 읽기) — `-gcflags=-m` 출력 읽기의 정본
 - [`../../../python/syntax/22-closures-and-late-binding/`](../../../python/syntax/22-closures-and-late-binding/) —
   **그쪽은 셀(cell)을 `is` 로 들여다보며 「상자가 하나」를 증명하고**,
   여기는 **언어가 그 상자를 갈라 준 판과 안 갈라 준 판을 나란히** 던진다.
