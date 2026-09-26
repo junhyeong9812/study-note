@@ -937,7 +937,7 @@ val u = when (x) {
 - [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/)(`sealed class`/`sealed interface` 와 `when` 완결성) — **계층 설계**가 거기 정본이다. 여기는 그 완결성의 **에러·바이트코드**까지
 - [목록의 **24번 주제**](../24-enum-class-vs-sealed/)(`enum class` 와 `sealed` 선택 기준) — 어느 쪽을 고르나
 - [목록의 **33번 주제**](../33-type-checks-and-casts-is-as/)(`is`/`as`/`as?`) — 타입 검사 연산자의 정본
-- 목록의 **34번 주제**(예외·`Nothing`·`try` 가 식이라는 것) — `when` 가지에 `throw` 를 놓는 관용구의 근거
+- [목록의 **34번 주제**](../34-exceptions-nothing-and-try-expression/)(예외·`Nothing`·`try` 가 식이라는 것) — `when` 가지에 `throw` 를 놓는 관용구의 근거
 - 목록의 **57번 주제**(Java 코드를 Kotlin 답게) — `if`/`when` 을 식으로 쓰는 관용구
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) §3 — **"상태를 늘리면 컴파일이 깨진다" 는 설계 논지가 거기 정본**이다
 
@@ -964,7 +964,7 @@ val u = when (x) {
 - `when` 의 `in` 가지는 **`contains` 연산자 규약**으로 풀린다. 그래서 `in` 뒤에 올 수 있는 것은 range 만이 아니다 —\
   `contains` 를 가진 것이면 다 된다(`Set`·`List`·`String`). 규약 자체의 정본은 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/)다.
 - `when` 의 가지 값이 `Nothing`(즉 `throw`·`return`)이면 그 가지는 **타입 추론에 아무 영향을 안 준다.**\
-  `Nothing` 의 정본은 목록의 **34번 주제**다.
+  `Nothing` 의 정본은 [목록의 **34번 주제**](../34-exceptions-nothing-and-try-expression/)다.
 - 타깃 21 의 `typeSwitch` 가 받는 세 번째 인자(`iconst_0`)는 **restart index** 다 —\
   guard 가 실패했을 때 그 다음 후보부터 다시 찾기 위한 자리다. 이 문서의 예제에는 guard 가 없어 0 으로 고정돼 있다.
 - **`-jvm-target` 을 바꾸면 `when` 말고도 갈리는 것이 있다** — [02번 주제](../02-string-templates-and-raw-strings/)의 문자열 보간이\

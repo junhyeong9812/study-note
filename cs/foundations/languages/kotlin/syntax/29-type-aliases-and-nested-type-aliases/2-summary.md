@@ -7,7 +7,7 @@
 > ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
 > **버전** — 최상위 `typealias` 는 **1.1** 부터다. ★★ **중첩 타입 별칭은 2.2.0 도입 · 2.3.0 Stable** 이다([README](../README.md) 버전표) — (5)에서 **이 판의 컴파일러에게 직접 물어** 확인했다.
 > **경계** — 새 타입을 **만드는** 쪽은 [26번 주제](../26-value-class-and-boxing/)(`value class`)가 정본이고, 여기는 **안 만드는** 쪽이다 — ★ **둘이 짝이다**((7)).\
-> 함수 타입 자체는 목록의 **36번 주제**, 제네릭 변성은 [28번 주제](../28-generics-variance-in-out-star-where/)가 정본이다.
+> 함수 타입 자체는 [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/), 제네릭 변성은 [28번 주제](../28-generics-variance-in-out-star-where/)가 정본이다.
 > **대비** — Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **22번**([`22-type-assertion-any-and-comparable/`](../../../go/syntax/22-type-assertion-any-and-comparable/)) — `any` 가 `interface{}` 의 **별칭**이라는 것을 거기서 봤다. Go 는 **`type A = B`(별칭)와 `type A B`(새 타입)가 두 꼴로 갈린다** — 이 문서가 직접 던졌다((8)).\
 > TS 갈래 목록([`ts/syntax/README.md`](../../../ts/syntax/README.md))의 **5번**([`05-structural-typing/`](../../../ts/syntax/05-structural-typing/))·**8번**([`08-interface-vs-type/`](../../../ts/syntax/08-interface-vs-type/)) — TS 의 `type` 도 **새 타입을 안 만든다.** 브랜드 타입은 5번이 정본이다.
 > 이 본문은 Claude 작성이다(원고 없음).
@@ -583,7 +583,7 @@ X [(name, kim)]
 | 상황 | 고르는 것 | 왜 |
 |---|---|---|
 | 길고 반복되는 **제네릭 타입**(`Map<K, List<String>>`) | `typealias` | (4) — 이것이 본래 자리다 |
-| **함수 타입**에 이름(`(String) -> Int`) | `typealias` | (4) — 단, 구현이 필요하면 목록의 **36번 주제** `fun interface` |
+| **함수 타입**에 이름(`(String) -> Int`) | `typealias` | (4) — 단, 구현이 필요하면 [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/) `fun interface` |
 | 한 클래스 안에서만 쓰는 긴 타입 | **중첩** `typealias`(2.3+) | (5) — 이름 공간이 그 클래스다 |
 | **섞이면 안 되는** ID·단위 | ★★★ **`value class`** | (7) — 별칭은 검사가 없다 |
 | 이름 충돌을 피하려는 **import 별명** | `import a.b.C as D` | 별칭 선언이 필요 없다 |
@@ -602,7 +602,7 @@ X [(name, kim)]
 
 - [26번 주제](../26-value-class-and-boxing/) — ★★★ **짝.** 새 타입을 **만드는** 쪽. 이름 뭉개기·박싱 자리·`init` 검사가 거기다.
 - [28번 주제](../28-generics-variance-in-out-star-where/) — 변성. 함수 타입 별칭에 `? super` 가 붙는 이유가 거기다.
-- 목록의 **36번 주제** — 함수 타입·`fun interface`. 함수 타입에 **이름**만 줄지 **인터페이스**를 만들지가 거기다.
+- [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/) — 함수 타입·`fun interface`. 함수 타입에 **이름**만 줄지 **인터페이스**를 만들지가 거기다.
 - [`../../../go/syntax/22-type-assertion-any-and-comparable/`](../../../go/syntax/22-type-assertion-any-and-comparable/) — Go 의 `any` 가 `interface{}` 의 **별칭**이라는 것.
 - [`../../../ts/syntax/05-structural-typing/`](../../../ts/syntax/05-structural-typing/) — 구조적 타입과 **브랜드 타입**의 정본.
 - [`../../../ts/syntax/08-interface-vs-type/`](../../../ts/syntax/08-interface-vs-type/) — TS 의 `type` 별칭과 `interface` 의 차이.

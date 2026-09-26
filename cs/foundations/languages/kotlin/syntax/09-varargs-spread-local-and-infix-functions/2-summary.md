@@ -813,8 +813,8 @@ Money(1000) plus Money(500)
 - [목록의 **13번 주제**](../13-extension-functions-and-properties/)(확장 함수) — `infix` 확장 함수의 수신자 규칙
 - [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/)(연산자 오버로딩·중위 함수·`invoke` 규약) — **규약 표 전체의 정본.**\
   여기는 `infix` 라는 **호출 형태**와 그 우선순위만 다뤘다
-- 목록의 **39번 주제**(Java 상호운용 애너테이션) — `vararg` 가 Java 에서 `T...` 로 보이는 것
-- 목록의 **41번 주제**(컬렉션 생성) — `listOf(vararg elements: T)` 가 이 문법의 대표 사용처다
+- [목록의 **39번 주제**](../39-java-interop-annotations/)(Java 상호운용 애너테이션) — `vararg` 가 Java 에서 `T...` 로 보이는 것
+- [목록의 **41번 주제**](../41-collection-creation-and-copying/)(컬렉션 생성) — `listOf(vararg elements: T)` 가 이 문법의 대표 사용처다
 
 ## 용어 풀이
 

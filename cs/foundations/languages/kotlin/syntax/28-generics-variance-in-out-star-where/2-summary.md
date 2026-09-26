@@ -8,7 +8,7 @@
 > ★ C# 블록의 `csc` 는 [C# 03번](../../../csharp/syntax/03-boxing-and-unboxing/) 머리말의 셸 함수와 같다(`.NET SDK 10.0.401` · `-preferreduilang:en-US`).
 > **버전** — `in`/`out`·`*`·`where`·`@UnsafeVariance` 는 전부 **1.0** 이다. 이 문서에 버전으로 갈리는 항목은 없다.
 > **경계** — `reified` 와 소거는 [12번 주제](../12-reified-type-parameters/)가 정본이다(여기는 **경계만** — 변성은 런타임에 아무것도 아니라는 것까지).\
-> 인터페이스 선언 자체는 [20번 주제](../20-interfaces-default-impl-and-super/), 컬렉션의 읽기 전용 뷰는 목록의 **40번 주제**가 정본이다.
+> 인터페이스 선언 자체는 [20번 주제](../20-interfaces-default-impl-and-super/), 컬렉션의 읽기 전용 뷰는 [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/)가 정본이다.
 > **대비** — ★★★ Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **18번**([`18-wildcards-pecs/`](../../../java/syntax/18-wildcards-pecs/)) — [README](../README.md) 가 짝으로 지정했다. **같은 변성을 쓰는 쪽(Java)과 선언하는 쪽(Kotlin)** 이다.\
 > TS 갈래 목록([`ts/syntax/README.md`](../../../ts/syntax/README.md))의 **17번**([`17-variance-and-parameter-compatibility/`](../../../ts/syntax/17-variance-and-parameter-compatibility/)) — TS 4.7 도 **`in`/`out`** 을 쓴다. C# 는 이 문서가 직접 던졌다((10)).
 > 이 본문은 Claude 작성이다(원고 없음).
@@ -783,7 +783,7 @@ X got pear
 - [12번 주제](../12-reified-type-parameters/) — `reified`·소거. 여기는 **경계까지**다.
 - [20번 주제](../20-interfaces-default-impl-and-super/) — 인터페이스 선언. 변성은 그 위에 얹는 표기다.
 - [26번 주제](../26-value-class-and-boxing/) — `javap -s` 로 서명을 읽는 창. 제네릭 자리가 **박싱 자리**이기도 하다.
-- 목록의 **40번 주제** — 읽기 전용 컬렉션이 **불변이 아니라 뷰**라는 것. `List<out E>` 의 뜻이 거기서 이어진다.
+- [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/) — 읽기 전용 컬렉션이 **불변이 아니라 뷰**라는 것. `List<out E>` 의 뜻이 거기서 이어진다.
 - [`../../../ts/syntax/17-variance-and-parameter-compatibility/`](../../../ts/syntax/17-variance-and-parameter-compatibility/) — TS 4.7 의 `in`/`out` 과 메서드 이변성(bivariance).
 
 ## 용어 풀이

@@ -8,7 +8,7 @@
 > ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
 > **버전** — `public`·`private`·`protected`·`internal` 네 수식어와 이름 뭉개기는 전부 **1.0** 이다. 그 뒤로 바뀐 적이 없다.
 > **경계** — 클래스 선언·생성자는 [15번 주제](../15-class-declaration-constructors-and-init/), 프로퍼티의 backing field 는 [16번 주제](../16-properties-backing-field-lateinit-const/),\
-> `open`/`override` 는 [19번 주제](../19-inheritance-open-final-override/), Java 상호운용 애너테이션 전반은 목록의 **39번 주제**가 정본이다.\
+> `open`/`override` 는 [19번 주제](../19-inheritance-open-final-override/), Java 상호운용 애너테이션 전반은 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이다.\
 > Java 쪽 짝은 [`../../../java/syntax/10-access-modifiers/`](../../../java/syntax/10-access-modifiers/) — 거기는 **네 단계(`public`/`protected`/package-private/`private`)**, 여기는 **그 자리에 `internal` 을 끼운 결과**다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -499,7 +499,7 @@ fun outside(b: Box2) = b.hidden
 - [16번 주제](../16-properties-backing-field-lateinit-const/) — 프로퍼티. **게터·세터에 따로 수식어를 붙이는 것**은 거기, 수식어 자체의 뜻은 여기.
 - [19번 주제](../19-inheritance-open-final-override/) — `open`/`override`. **가시성과 오버라이드의 상호작용**(좁힐 수 있나)은 거기가 정본이다.
 - [`../../../java/syntax/10-access-modifiers/`](../../../java/syntax/10-access-modifiers/) — Java 의 네 단계. **package-private 이 무엇을 하고 있었는지**는 거기.
-- 목록의 **39번 주제** — `@JvmName`·`@JvmStatic` 등 상호운용 애너테이션이 바이트코드에서 무엇을 바꾸나. 여기서는 **뭉개기를 끈다는 사실 하나**만 쓴다.
+- [목록의 **39번 주제**](../39-java-interop-annotations/) — `@JvmName`·`@JvmStatic` 등 상호운용 애너테이션이 바이트코드에서 무엇을 바꾸나. 여기서는 **뭉개기를 끈다는 사실 하나**만 쓴다.
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) §9 — Kotlin/Java 상호운용의 실제 비용.
 
 ## 용어 풀이

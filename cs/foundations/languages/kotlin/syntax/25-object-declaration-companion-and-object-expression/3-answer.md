@@ -457,7 +457,7 @@ BadUse.java:5: error: cannot find symbol
 
 - ★★★ `object` 는 「**있는데 정적이 아니다**」이고, `companion` 은 「**아예 다른 클래스에 있다**」다. 이 두 에러의 차이가 **두 문법의 차이 그 자체**다.
 - 고치는 법 — Kotlin 쪽에 **`@JvmStatic`** 을 붙인다. 그러면 `Single.hello()`·`Svc.plain()` 을 **그대로** 쓸 수 있다.
-- ★ 프로퍼티는 **`@JvmField`** 나 `const` 를 쓴다. 애너테이션 전부를 훑는 것은 목록의 **39번 주제**다.
+- ★ 프로퍼티는 **`@JvmField`** 나 `const` 를 쓴다. 애너테이션 전부를 훑는 것은 [목록의 **39번 주제**](../39-java-interop-annotations/)다.
 
 ### 9. **객체이기 때문에** 인터페이스 구현·확장·변수 담기가 된다
 

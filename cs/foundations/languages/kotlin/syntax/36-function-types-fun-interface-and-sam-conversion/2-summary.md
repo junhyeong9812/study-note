@@ -8,7 +8,7 @@
 > ⚠️ **바이트코드는 기본 `-jvm-target`(1.8)** 이다. ★★★ **람다를 무엇으로 내리나는 클래스 파일 개수로 가르지 않았다** — Kotlin 2.x 는 `invokedynamic` 이 기본이라 개수가 말해 주지 않는다([14번 주제](../14-scope-functions/) (6)). **`javap -c` 의 명령과 그 명령이 만드는 타입**으로 갈랐다.
 > **버전** — 함수 타입·람다·Java 인터페이스 SAM 변환은 1.0. **`fun interface` 는 1.4.** 기본 람다 전략 `indy` 는 **언어 판 2.0+**(`-X` 도움말) — ★ 이 판은 `-language-version 1.9` 이하를 **거부**하므로 그 경계는 **못 잰 것**이다((6)).
 > **경계** — ★★ **`(Int) -> Int` 가 `Function1` 이라는 것 · 22 → `FunctionN` · 람다가 `invokedynamic` 이 되는 것 · SAM 변환이 박싱을 없애는 자리**는 [10번 주제](../10-lambdas-and-higher-order-functions/) (1)(2)(7)이 정본이다 — 여기서는 **다시 재지 않고 인용**한다.\
-> `a(x)` 가 `a.invoke(x)` 로 풀리는 규약은 [31번 주제](../31-operator-overloading-infix-and-invoke/)가, 수신자 있는 함수 타입(`A.() -> Unit`)은 목록의 **37번 주제**가, `suspend` 함수 타입의 의미는 코루틴 주제가 정본이다 — `suspend` 는 **서명 한 줄만** 경계로 본다((7)).\
+> `a(x)` 가 `a.invoke(x)` 로 풀리는 규약은 [31번 주제](../31-operator-overloading-infix-and-invoke/)가, 수신자 있는 함수 타입(`A.() -> Unit`)은 [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/)가, `suspend` 함수 타입의 의미는 코루틴 주제가 정본이다 — `suspend` 는 **서명 한 줄만** 경계로 본다((7)).\
 > **Java 쪽 짝** — [`../../../java/syntax/31-functional-interfaces/`](../../../java/syntax/31-functional-interfaces/)(함수형 인터페이스 지도) · [`../../../java/syntax/29-lambda-expressions/`](../../../java/syntax/29-lambda-expressions/)(Java 람다의 `invokedynamic`).
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -629,7 +629,7 @@ C true
 - [10번 주제](../10-lambdas-and-higher-order-functions/) — ★★ **선행.** `FunctionN` · `invokedynamic` · SAM 변환의 **박싱** 면. 그쪽은 「함수 타입이 무엇이고 람다가 몇 개 생기나」까지, 여기는 「**어느 인터페이스가 람다를 받아 주나**」부터.
 - [31번 주제](../31-operator-overloading-infix-and-invoke/) — `invoke` 규약. (2)의 `C 2 2`.
 - [14번 주제](../14-scope-functions/) — 클래스 파일 개수로 인라인을 가르지 말 것 (6).
-- 목록의 **37번 주제** — 수신자 있는 함수 타입 `A.() -> Unit`. 이 주제의 `Function1` 이 그대로 이어진다.
+- [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/) — 수신자 있는 함수 타입 `A.() -> Unit`. 이 주제의 `Function1` 이 그대로 이어진다.
 - [`../../../java/syntax/31-functional-interfaces/`](../../../java/syntax/31-functional-interfaces/) · [`../../../java/syntax/29-lambda-expressions/`](../../../java/syntax/29-lambda-expressions/) — Java 쪽 짝.
 
 ## 용어 풀이

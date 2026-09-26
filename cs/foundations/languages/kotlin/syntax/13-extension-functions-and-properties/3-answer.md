@@ -521,7 +521,7 @@ public final class JnKt {
 ```
 
 - ★ **Kotlin 쪽 호출 이름은 안 바뀐다** — `describe()` 그대로다. 바뀐 것은 **클래스 파일의 이름뿐**이고,
-  고르는 일은 여전히 **컴파일 타임에 선언 타입으로** 한다. `@JvmName` 전체의 정본은 목록의 **39번 주제**다.
+  고르는 일은 여전히 **컴파일 타임에 선언 타입으로** 한다. `@JvmName` 전체의 정본은 [목록의 **39번 주제**](../39-java-interop-annotations/)다.
 
 ### 10. `modifier … is not applicable to 'top level function'` — Java 에서는 `NulKt.orNone(s)`
 
@@ -557,7 +557,7 @@ P Java: NulKt.shout("hi")    : hi!
   그래서 5번의 **멤버 확장**은 에러가 안 났던 것이다(그쪽은 최상위 함수가 아니다).
 - **Java 에는 점 찍는 문법이 없다.** `NulKt.orNone(s)` 처럼 **파일 클래스의 정적 메서드**로 부른다 —
   1번에서 본 그대로이고, **이 호출이 「확장은 정적 메서드」의 마지막 확인**이다.
-- **파일 클래스 이름은 `<파일명>Kt`**(`nul.kt` → `NulKt`)이고 **`@JvmName` 으로 바꿀 수 있다**(목록의 **39번 주제**).
+- **파일 클래스 이름은 `<파일명>Kt`**(`nul.kt` → `NulKt`)이고 **`@JvmName` 으로 바꿀 수 있다**([목록의 **39번 주제**](../39-java-interop-annotations/)).
 
 ### 11. Java `default` 메서드와 **정확히 반대**다
 

@@ -344,7 +344,7 @@ Unit === Unit 인가(싱글턴)? true
 - 함수 타입 `(Int) -> Unit` 이 성립하는 이유가 여기 있다 —\
   함수 타입은 **반환 타입 자리에 타입을 요구**하는데 `void` 는 타입이 아니고 `Unit` 은 타입이다.\
   **"모든 함수가 값을 반환한다" 를 유지하려고 만든 타입**이다.
-- `Nothing` 의 정본은 목록의 **34번 주제**다.
+- `Nothing` 의 정본은 [목록의 **34번 주제**](../34-exceptions-nothing-and-try-expression/)다.
 
 ### 8. ★★ Java 는 `greet` 를 **세 인자로만** 부를 수 있다
 
@@ -526,7 +526,7 @@ J2.java:3: error: method greet in class KKt cannot be applied to given types;
 
   생성자는 이름을 못 바꾸니 `$default` 대신 **시그니처로 가른** 것이다.\
   클래스 선언의 정본은 [목록의 **15번 주제**](../15-class-declaration-constructors-and-init/).
-- **상호운용 애너테이션 전체 → 목록의 39번 주제**(`@JvmStatic`/`@JvmOverloads`/`@JvmName`/`@JvmField`/`@Throws`)가 정본이다.\
+- **상호운용 애너테이션 전체 → [목록의 39번 주제](../39-java-interop-annotations/)**(`@JvmStatic`/`@JvmOverloads`/`@JvmName`/`@JvmField`/`@Throws`)가 정본이다.\
   여기서는 `@JvmOverloads` 만 기본 인자의 짝으로 다뤘다.
 - **`data class` 의 `copy()`** 가 기본 인자의 대표 사례다 — 모든 파라미터에 **현재 값이 기본값**으로 들어간다.\
   그래서 `copy(name = "새 이름")` 한 줄이 된다. 정본은 [목록의 **22번 주제**](../22-data-class-generated-members/).

@@ -487,7 +487,7 @@ Z SAM class            : SamKt$$Lambda/0x00007c5760001ac0
 - **Kotlin 쪽에서 같은 것을 얻으려면 `fun interface`** 이고 **1.4 부터**다. 바이트코드도 같다(`KInt.apply:(I)I`).
 - ★ 그래서 **박싱을 피하는 길은 둘**이다 — ① 시그니처가 원시 타입인 **SAM·`fun interface`**,
   ② 객체 자체를 안 만드는 **`inline`**([11번 주제](../11-inline-functions/)).
-  **Kotlin 의 함수 타입만 쓰면 두 길 다 안 탄다.** SAM 전체의 정본은 목록의 **36번 주제**다.
+  **Kotlin 의 함수 타입만 쓰면 두 길 다 안 탄다.** SAM 전체의 정본은 [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/)다.
 
 ### 10. `it` 은 하나일 때만, 괄호 밖은 마지막 하나만
 

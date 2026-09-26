@@ -435,7 +435,7 @@ public final class Holder {
   ★ 다만 이 환경에서 **잴 수 있는 것은 「2.4 부터」까지**다 — 2.4.0 과 2.4.20 중 어디서 Stable 이 됐는지는 **못 잰다**\
   (`kotlinc` 가 한 판뿐이고 `-language-version` 은 **언어 버전**만 가른다).
 - ★ 필드 타입은 `java.util.List` 이고 게터도 `List` 를 낸다. 그런데 **`H` 의 런타임 클래스는 `ArrayList`** 다 —\
-  **읽기 전용은 별도 객체가 아니라 뷰**라는 사실이 여기서도 그대로다(정본은 목록의 **40번 주제**).
+  **읽기 전용은 별도 객체가 아니라 뷰**라는 사실이 여기서도 그대로다(정본은 [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/)).
 - 클래스 **안**의 `add` 에서는 `MutableList` 로 보여 `items.add(s)` 가 통과한다.
 - ★ 대체한 예전 관용구는 **private 백킹 프로퍼티 + public 게터** 두 개를 선언하는 것이다 —\
   `private val _items = mutableListOf<String>()` / `val items: List<String> get() = _items`.

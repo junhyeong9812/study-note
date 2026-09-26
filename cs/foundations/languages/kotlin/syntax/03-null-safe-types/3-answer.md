@@ -359,7 +359,7 @@ fun label(u: User?): String {
 
 - `!!` 보다 나은 점 — **메시지를 남길 수 있다.** `?: throw IllegalArgumentException("s 가 없다")` 는\
   3번의 `message = null` 과 달리 이유가 적힌다. 그리고 `return` 판은 **아예 예외를 안 쓴다.**
-- `Nothing` 자체의 정본은 목록의 **34번 주제**(예외·`Nothing` 타입).
+- `Nothing` 자체의 정본은 [목록의 **34번 주제**](../34-exceptions-nothing-and-try-expression/)(예외·`Nothing` 타입).
 
 ### 9. `s.toString()` 과 `s?.toString()` 은 어떻게 다른가
 

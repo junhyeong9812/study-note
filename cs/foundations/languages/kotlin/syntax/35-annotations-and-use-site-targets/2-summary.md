@@ -7,7 +7,7 @@
 > ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 격자의 「갈린 칸 N / M」도 **스크립트가 세어 마지막 줄로 찍었다.**
 > **버전** — ★★★ **이 주제의 답은 언어 판에 매인다.** target 없는 애너테이션의 기본 규칙이 **2.1 이하 `first-only` → 2.2·2.3 `first-only-warn` → 2.4 이상 `param-property`** 로 바뀌었다(`kotlinc -X` 의 문구 · (2)(6)). `@all:` 은 2.2 미리보기 → **2.4 Stable**((5)).
 > **경계** — 프로퍼티가 **필드·게터·매개변수로 쪼개지는 것 자체**는 [16번 주제](../16-properties-backing-field-lateinit-const/)가, 값 클래스의 **이름 뭉개기**는 [26번 주제](../26-value-class-and-boxing/)가, `@delegate:` 가 붙는 위임 필드는 [17번 주제](../17-delegated-properties/)가 정본이다.\
-> `@JvmField`·`@JvmName`·`@Throws` 같은 **상호운용 애너테이션**은 목록의 **39번 주제**다 — 여기는 「어디에 붙나」를 **아무 애너테이션에 대해** 다룬다.\
+> `@JvmField`·`@JvmName`·`@Throws` 같은 **상호운용 애너테이션**은 [목록의 **39번 주제**](../39-java-interop-annotations/)다 — 여기는 「어디에 붙나」를 **아무 애너테이션에 대해** 다룬다.\
 > ★ **대비** — C# 의 특성(attribute) 대상 지정자(`[field:]`·`[property:]`)는 C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **53번**이 정본인데 아직 폴더가 없다 — 이 문서가 **직접 던졌다**((7)).
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -802,7 +802,7 @@ C null
 - [26번 주제](../26-value-class-and-boxing/) — 값 클래스의 이름 뭉개기. (5)의 `getId-DyZRee4`.
 - [17번 주제](../17-delegated-properties/) — `@delegate:` 가 붙는 위임 필드.
 - [15번 주제](../15-class-declaration-constructors-and-init/) — 주 생성자와 `constructor` 낱말.
-- 목록의 **39번 주제** — `@JvmField`·`@JvmName` 같은 상호운용 애너테이션 하나하나.
+- [목록의 **39번 주제**](../39-java-interop-annotations/) — `@JvmField`·`@JvmName` 같은 상호운용 애너테이션 하나하나.
 - C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **53번**(특성) — 아직 폴더가 없다. (7)이 C# 쪽을 직접 던졌다.
 
 ## 용어 풀이

@@ -521,7 +521,7 @@ $$$"""$$name"""         // $ 셋이어야 보간
 - [`../../../java/syntax/35-string/`](../../../java/syntax/35-string/) — `String` 자체의 불변성·상수 풀
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — 「왜 이 언어인가」. 문법이 아니라 선택 논증
 - 목록의 **48번 주제**(문자열 API — `split`/`trim*`/`Regex`) — `trimIndent` 밖의 문자열 함수들
-- 목록의 **37번 주제**(리시버 지정 람다와 DSL) — raw string + 빌더로 SQL/HTML 을 짜는 다음 단계
+- [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/)(리시버 지정 람다와 DSL) — raw string + 빌더로 SQL/HTML 을 짜는 다음 단계
 
 ## 용어 풀이
 

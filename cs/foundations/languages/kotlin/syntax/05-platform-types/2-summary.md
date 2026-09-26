@@ -585,7 +585,7 @@ val name = requireNotNull(row.getString("name")) { "name 컬럼이 비어 있다
 - [`../../../java/syntax/06-initialization-order/`](../../../java/syntax/06-initialization-order/) — (7)의 4번(초기화 중 접근)이 **Java 에서도 같은 문제**라는 것의 정본
 - [목록의 **16번 주제**](../16-properties-backing-field-lateinit-const/)(`lateinit`·`const`·backing field) — `lateinit` 의 정본
 - [목록의 **19번 주제**](../19-inheritance-open-final-override/)(`open`/`final` 기본값) — 초기화 중 가상 호출이 가능한 이유
-- 목록의 **39번 주제**(Java 상호운용 애너테이션) — 반대 방향(Kotlin → Java)의 상호운용
+- [목록의 **39번 주제**](../39-java-interop-annotations/)(Java 상호운용 애너테이션) — 반대 방향(Kotlin → Java)의 상호운용
 
 ## 용어 풀이
 

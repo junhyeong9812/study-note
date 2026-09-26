@@ -519,7 +519,7 @@ Boolean (SIZE_BITS 없음)
 - [02번 주제](../02-string-templates-and-raw-strings/) — 이 타입들이 문자열에 끼워지는 방법
 - [03번 주제](../03-null-safe-types/) — `Int` 와 `Int?` 의 갈림이 **타입 시스템 쪽에서** 무엇을 뜻하는지
 - [목록의 **32번 주제**](../32-equality-and-equals-contract/)(동등성 — `==`/`===`) — `===` 의 의미 전체는 거기가 정본이 된다
-- 목록의 **40번 주제**(읽기 전용 컬렉션) — `val` + 가변 컬렉션 문제의 반대쪽 절반
+- [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/)(읽기 전용 컬렉션) — `val` + 가변 컬렉션 문제의 반대쪽 절반
 
 ## 용어 풀이
 

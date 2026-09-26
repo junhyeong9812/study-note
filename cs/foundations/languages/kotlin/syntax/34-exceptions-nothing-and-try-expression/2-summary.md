@@ -9,7 +9,7 @@
 > **버전** — 검사 예외 없음·`Nothing`·`try` 식·`@Throws` 는 1.0. ★ **「도달 불가 코드」 경고가 기본으로 안 나오는 것**은 이 판(K2 2.4.20)의 관찰이다((5)).
 > **경계** — ★★★ **검사 예외 폐지의 논지**(무엇을 얻고 무엇을 떠넘겼나)는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §8 이 정본이다 — 여기는 **그 결정이 코드에서 어떻게 보이나**(컴파일이 되나·클래스 파일에 무엇이 남나)만 다룬다.\
 > 짝은 Java 갈래 [`../../../java/syntax/25-exceptions/`](../../../java/syntax/25-exceptions/) — **검사 예외 규칙과 전파 문법의 Java 쪽 정본**이다. 거기서 본 `javac` 에러 두 문구를 여기서는 **Kotlin 과 한 쌍으로** 던졌다((1)(2)).\
-> `@Throws`·`@JvmStatic` 등 **Java 상호운용 애너테이션 하나하나의 바이트코드**는 목록의 **39번 주제**가, `?:` 오른쪽의 `throw`·`return` 관용구는 [03번 주제](../03-null-safe-types/) (7)이, `when` 이 식일 때의 완결성은 [06번 주제](../06-when-expression/)가 정본이다.\
+> `@Throws`·`@JvmStatic` 등 **Java 상호운용 애너테이션 하나하나의 바이트코드**는 [목록의 **39번 주제**](../39-java-interop-annotations/)가, `?:` 오른쪽의 `throw`·`return` 관용구는 [03번 주제](../03-null-safe-types/) (7)이, `when` 이 식일 때의 완결성은 [06번 주제](../06-when-expression/)가 정본이다.\
 > ★ **대비** — Rust 의 발산 타입 `!` 은 [`../../../rust/syntax/06-functions-and-never-type/`](../../../rust/syntax/06-functions-and-never-type/), TS 의 `never` 는 [`../../../ts/syntax/04-any-unknown-never-void/`](../../../ts/syntax/04-any-unknown-never-void/), 오류를 **값**으로 다루는 Go 는 [`../../../go/syntax/23-error-interface-and-errors-as-values/`](../../../go/syntax/23-error-interface-and-errors-as-values/), `finally` 격자의 JS 판은 [`../../../js/syntax/32-error-handling-and-error/`](../../../js/syntax/32-error-handling-and-error/)가 정본이다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -231,7 +231,7 @@ B java.io.IOException / instanceof IOException = true
 - ★★ **`b()` — 「`unreported exception IOException`」.** `@Throws` 를 단 `declared()` 는 **Java 에게 진짜 검사 예외 메서드**가 된다 — 이제는 **안 잡으면** 에러다. `@Throws` 는 Java 호출자를 **도와주는 동시에 의무를 지운다.**
 - ★★ **`javap` 의 차이는 한 줄이다** — `declared() throws java.io.IOException` + `Exceptions: throws java.io.IOException`. `plain()` 에는 **아무것도 없다.** 검사 예외는 **JVM 의 강제가 아니라 `javac` 가 이 속성을 읽어 하는 검사**다.
 - ★★ **`B java.io.IOException / instanceof IOException = true`** — `catch (Exception e)` 로는 `plain()` 의 `IOException` 이 **잡힌다.** 우회로는 있지만, **「어떤 검사 예외가 올지」를 Java 쪽이 알 방법은 사라졌다.**
-- ★ `@Throws` 가 **Kotlin 호출자에게는 아무 효과가 없다** — Kotlin 쪽 규칙은 (1) 그대로다. 애너테이션 하나하나의 바이트코드는 목록의 **39번 주제**가 정본이다.
+- ★ `@Throws` 가 **Kotlin 호출자에게는 아무 효과가 없다** — Kotlin 쪽 규칙은 (1) 그대로다. 애너테이션 하나하나의 바이트코드는 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이다.
 
 ### (3) ★★ `Nothing` — 돌아오지 않는 식의 타입
 
@@ -736,7 +736,7 @@ B java.lang.IllegalArgumentException: port missing
 - [06번 주제](../06-when-expression/) — `when` 가지의 `throw`. `NoWhenBranchMatchedException` 의 `athrow` 도 거기.
 - [03번 주제](../03-null-safe-types/) — `?:` 오른쪽의 `return`·`throw` 관용구. (3)(4)가 그 근거를 채운다.
 - [28번 주제](../28-generics-variance-in-out-star-where/) — 공변. (3)의 `E 0`.
-- 목록의 **39번 주제** — `@Throws` 를 포함한 Java 상호운용 애너테이션 하나하나.
+- [목록의 **39번 주제**](../39-java-interop-annotations/) — `@Throws` 를 포함한 Java 상호운용 애너테이션 하나하나.
 - [`../../../rust/syntax/06-functions-and-never-type/`](../../../rust/syntax/06-functions-and-never-type/) · [`../../../ts/syntax/04-any-unknown-never-void/`](../../../ts/syntax/04-any-unknown-never-void/) · [`../../../go/syntax/23-error-interface-and-errors-as-values/`](../../../go/syntax/23-error-interface-and-errors-as-values/) · [`../../../js/syntax/32-error-handling-and-error/`](../../../js/syntax/32-error-handling-and-error/) — 바닥 타입·오류 값·`finally` 격자의 다른 언어 판.
 
 ## 용어 풀이

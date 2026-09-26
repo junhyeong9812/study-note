@@ -738,7 +738,7 @@ forbid20.kt:12:27: error: multiple supertypes available. Specify the intended su
 | 기능을 빌려 오되 계층을 안 만든다 | **위임** | [21번 주제](../21-class-delegation-by/) |
 | 남의 타입에 함수만 더한다 | **확장 함수** | [13번 주제](../13-extension-functions-and-properties/) — 단 정적 디스패치다 |
 | Java 에서 구현할 인터페이스를 낸다 | 인터페이스 + **기본값 `-jvm-default`** | (6) — `disable` 로 내면 Java 쪽이 깨진다 |
-| 람다 하나로 넘길 계약 | **`fun interface`** | 목록의 **36번 주제** |
+| 람다 하나로 넘길 계약 | **`fun interface`** | [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/) |
 
 ## 핵심 문장
 
@@ -757,7 +757,7 @@ forbid20.kt:12:27: error: multiple supertypes available. Specify the intended su
 - [`../../../java/syntax/11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/) — Java 8 의 `default` 메서드. **왜 그것이 생겼나**와 **class wins 규칙**은 거기.
 - [`../../../java/syntax/09-inheritance-overriding/`](../../../java/syntax/09-inheritance-overriding/) — Java 의 상속 규칙.
 - [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/) — `sealed interface` 와 `when` 완결성. **하위 타입을 닫는 것**은 거기.
-- 목록의 **36번 주제** — `fun interface`·SAM 변환.
+- [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/) — `fun interface`·SAM 변환.
 
 ## 용어 풀이
 

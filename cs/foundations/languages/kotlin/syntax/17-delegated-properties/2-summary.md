@@ -857,8 +857,8 @@ class Loud(private var stored: String) {
 - [12번 주제 — `reified` 타입 파라미터](../12-reified-type-parameters/) — (2)의 박싱·`checkcast` 가 왜 생기나.
 - [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/) — 연산자 규약 전반(`get`/`set`/`invoke`/`plus` …). **`getValue`/`setValue` 는 그중 하나다.**
 - [목록의 **21번 주제**](../21-class-delegation-by/) — **클래스** 위임(`class A : B by b`). 이름만 같고 다른 문법이다.
-- 목록의 **35번 주제** — `@delegate:` use-site target(애너테이션을 위임 필드에 붙이기).
-- 목록의 **40번 주제** — 읽기 전용 컬렉션이 뷰라는 것((6)에서 `Map` 을 그대로 쓰는 이유).
+- [목록의 **35번 주제**](../35-annotations-and-use-site-targets/) — `@delegate:` use-site target(애너테이션을 위임 필드에 붙이기).
+- [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/) — 읽기 전용 컬렉션이 뷰라는 것((6)에서 `Map` 을 그대로 쓰는 이유).
 
 ## 용어 풀이
 

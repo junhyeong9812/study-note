@@ -636,7 +636,7 @@ fun breakInMap(xs: List<Int>): List<Int> = xs.map { if (it == 2) break else it }
 - **`sealed` 계층 설계 → [목록의 23번 주제](../23-sealed-classes-and-when-exhaustiveness/)**(`sealed class`/`sealed interface` 와 `when` 완결성)가 정본이다.\
   `enum` 과 `sealed` 중 무엇을 고르나는 [목록의 **24번 주제**](../24-enum-class-vs-sealed/).\
   설계 논증 쪽은 [`../../언어-특성/README.md`](../../언어-특성/README.md) §3.
-- **가지가 `throw` 일 때의 타입 추론 → 목록의 34번 주제**(예외·`Nothing` 타입)가 정본이다.\
+- **가지가 `throw` 일 때의 타입 추론 → [목록의 34번 주제](../34-exceptions-nothing-and-try-expression/)**(예외·`Nothing` 타입)가 정본이다.\
   `Nothing` 은 모든 타입의 하위 타입이라 **그 가지는 결과 타입을 넓히지 않는다.**
 - `in` 가지가 쓰는 `contains` 규약의 정본은 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/), range 자체는 [07번 주제](../07-loops-ranges-and-labels/).
 

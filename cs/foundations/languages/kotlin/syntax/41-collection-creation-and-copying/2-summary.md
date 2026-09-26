@@ -485,7 +485,7 @@ built: [#, apple, pear]
 - [37번 주제](../37-lambdas-with-receiver-and-type-safe-builders/) — `buildList` 가 받는 수신자 람다.
 - [32번 주제](../32-equality-and-equals-contract/) — `==` 와 `===`.
 - [Java 40번](../../../java/syntax/40-list-set-and-immutable-factories/) — `List.copyOf` 는 이미 불변이면 복사하지 않는다(여기 `toList()` 와 대비).
-- 목록의 **42번 주제** — 변환 연산(`map`·`flatMap`·`associate`). 목록의 **43번 주제** — 빈 컬렉션에서의 동작.
+- [목록의 **42번 주제**](../42-transformations-map-flatmap-associate-zip/) — 변환 연산(`map`·`flatMap`·`associate`). [목록의 **43번 주제**](../43-filter-search-and-empty-collections/) — 빈 컬렉션에서의 동작.
 
 ## 용어 풀이
 

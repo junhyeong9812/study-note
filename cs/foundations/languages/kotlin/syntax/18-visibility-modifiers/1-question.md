@@ -5,7 +5,7 @@
 > 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
 > 선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다.
 > ★ **클래스·생성자 선언 형태는 [15번 주제](../15-class-declaration-constructors-and-init/)**, `open`/`override` 는 [19번 주제](../19-inheritance-open-final-override/),
-> `@JvmName` 을 비롯한 상호운용 애너테이션 전반은 목록의 **39번 주제**가 정본이다.
+> `@JvmName` 을 비롯한 상호운용 애너테이션 전반은 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이다.
 > Java 의 네 단계는 [`../../../java/syntax/10-access-modifiers/`](../../../java/syntax/10-access-modifiers/)가 정본이다 — 여기는 **그 자리에 `internal` 을 끼운 결과**만 묻는다.
 > 문항 12개 중 코드블록이 붙는 예측형은 6개다.
 > 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.

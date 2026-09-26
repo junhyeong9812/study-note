@@ -9,7 +9,7 @@
 > **버전** — `object` 선언·`companion object`·`object` 식·`@JvmStatic`·`const` 는 전부 **1.0** 이다. `data object` 만 **1.9** 이고 그것은 [22번 주제](../22-data-class-generated-members/)가 정본이다.
 > **경계** — `const val` 이 **호출부에 박히는 것**은 [16번 주제](../16-properties-backing-field-lateinit-const/)가 정본이라 여기서는 **「어디에 사는가」까지**만 본다.\
 > 클래스 선언·`init` 순서는 [15번 주제](../15-class-declaration-constructors-and-init/), 확장 함수가 `companion` 에 붙는 것은 [13번 주제](../13-extension-functions-and-properties/)가 정본이다.\
-> `@JvmStatic`·`@JvmField`·`@JvmName` 을 **전부 훑는 것**은 목록의 **39번 주제**이고, 여기는 **`object` 를 Java 에서 부르는 데 필요한 만큼**만 본다.
+> `@JvmStatic`·`@JvmField`·`@JvmName` 을 **전부 훑는 것**은 [목록의 **39번 주제**](../39-java-interop-annotations/)이고, 여기는 **`object` 를 Java 에서 부르는 데 필요한 만큼**만 본다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다.
@@ -340,7 +340,7 @@ BadUse.java:5: error: cannot find symbol
   - `Svc.plain()`·`Svc.getTag()` → 「`cannot find symbol`」 — **`Svc` 에는 아예 없다.** `Svc$Companion` 에 있다.
 - ★★ 이 **두 에러의 차이가 `object` 와 `companion object` 의 차이**다. 앞엣것은 **같은 클래스에 있는데 인스턴스 멤버**이고, 뒤엣것은 **다른 클래스에 있다.**
 - ★ 그래서 **`@JvmStatic` 이 바꾸는 것**을 한 줄로 — 「**바깥 클래스에 정적 메서드를 하나 더 만든다**」. 원래 것은 **그대로 남는다**((1)의 `javap` 에 `Service$Companion.boot()` 와 `Service.boot()` 가 **둘 다** 있다).
-- ★ `@JvmStatic`·`@JvmField`·`@JvmName` 을 전부 훑는 것은 목록의 **39번 주제**다.
+- ★ `@JvmStatic`·`@JvmField`·`@JvmName` 을 전부 훑는 것은 [목록의 **39번 주제**](../39-java-interop-annotations/)다.
 
 ### (4) ★★ `object` 식(익명 객체) — **타입이 어디까지 보이나**가 요점이다
 
@@ -644,7 +644,7 @@ X handled by t1 false
 | Java 에서 자주 부를 API | `companion object` + **`@JvmStatic`** | (3) — 안 붙이면 `Companion` 을 거친다 |
 | 컴파일 시점에 정해지는 상수 | `const val` | (2) — 단 호출부에 박힌다([16번 주제](../16-properties-backing-field-lateinit-const/)) |
 | 리스너·콜백 한 번 쓰고 버린다 | `object` 식 | (4) — 단 매번 새 객체다 |
-| 함수형 인터페이스 하나짜리 | **람다**가 낫다 | 목록의 **36번 주제**(SAM 변환) |
+| 함수형 인터페이스 하나짜리 | **람다**가 낫다 | [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/)(SAM 변환) |
 | 상태 없는 헬퍼 함수 모음 | **최상위 함수** | `object` 로 감쌀 이유가 없다 — Kotlin 은 최상위 함수가 된다 |
 | 타입마다 달라지는 싱글턴 | **제네릭 함수**나 클래스 | (5) — `object` 는 타입 파라미터를 못 받는다 |
 | 데이터 없는 `sealed` 변형 | `data object` | [22번 주제](../22-data-class-generated-members/)·[23번 주제](../23-sealed-classes-and-when-exhaustiveness/) |
@@ -665,8 +665,8 @@ X handled by t1 false
 - [16번 주제](../16-properties-backing-field-lateinit-const/) — **`const val` 이 호출부에 박히는 것의 파급**이 거기가 정본이다. 여기는 **어디에 사는가**까지다.
 - [22번 주제](../22-data-class-generated-members/) — `data object`. `object` 에 `toString`/`equals` 를 얹는 문법이 거기다.
 - [24번 주제](../24-enum-class-vs-sealed/) — `enum` 상수도 **`<clinit>` 이 만드는 `static final` 필드**다. 같은 집안이다.
-- 목록의 **36번 주제** — `fun interface`·SAM 변환. **`object` 식 대신 람다를 쓸 수 있는 조건**이 거기다.
-- 목록의 **39번 주제** — Java 상호운용 애너테이션 전부. 여기는 `@JvmStatic`·`const` 만 본다.
+- [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/) — `fun interface`·SAM 변환. **`object` 식 대신 람다를 쓸 수 있는 조건**이 거기다.
+- [목록의 **39번 주제**](../39-java-interop-annotations/) — Java 상호운용 애너테이션 전부. 여기는 `@JvmStatic`·`const` 만 본다.
 - [`../../../java/syntax/12-nested-classes/`](../../../java/syntax/12-nested-classes/) — Java 의 중첩·정적 중첩 클래스. `Outer$Companion` 이 그 구조다.
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) §9 — Java 상호운용의 **실제 비용**.
 

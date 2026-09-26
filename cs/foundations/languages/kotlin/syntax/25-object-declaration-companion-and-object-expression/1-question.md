@@ -4,7 +4,7 @@
 > 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
 > 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
 > 선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다. [13번 주제](../13-extension-functions-and-properties/)·[16번 주제](../16-properties-backing-field-lateinit-const/)도 먼저 보면 좋다.
-> ★ **`const val` 이 호출부에 박히는 것의 파급은 [16번 주제](../16-properties-backing-field-lateinit-const/)**, **상호운용 애너테이션 전부**는 목록의 **39번 주제**가 정본이라 여기서는 **결론만** 묻는다.
+> ★ **`const val` 이 호출부에 박히는 것의 파급은 [16번 주제](../16-properties-backing-field-lateinit-const/)**, **상호운용 애너테이션 전부**는 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이라 여기서는 **결론만** 묻는다.
 > 문항 11개 중 코드블록이 붙는 예측형은 6개다.
 > 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
 > ★★ 이 주제는 **Java 를 섞어 던진다** — `@JvmStatic` 은 Kotlin 쪽에서만 보면 아무것도 안 바뀐 것처럼 보이기 때문이다.

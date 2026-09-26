@@ -10,7 +10,7 @@
 > ★ **못 잰 것** — kotlinc 2.4.20 은 `-language-version 1.9` 이하를 거부하므로 **`..<` 의 도입 경계는 이 환경에서 못 쟀다.**\
 > 그 값(1.7.20 도입 / 1.8.0 Stable)은 **공식 릴리스 노트를 열어 확인한 것**이지 실측이 아니다.
 > **경계** — 비지역 `return` 이 **왜 인라인 람다에서만 되는가**의 정본은 [목록의 **11번 주제**](../11-inline-functions/)(인라인 함수)다.\
-> 여기서는 **현상까지만** 쓰고 원리는 넘긴다. 컬렉션 연산(`forEach`·`map`)의 계약은 목록의 **40번 주제**부터가 정본이다.\
+> 여기서는 **현상까지만** 쓰고 원리는 넘긴다. 컬렉션 연산(`forEach`·`map`)의 계약은 [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/)부터가 정본이다.\
 > **Java 쪽 정본은 [`../../../java/syntax/20-control-flow-statements/`](../../../java/syntax/20-control-flow-statements/)** 다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -757,7 +757,7 @@ bad1.kt:4:13: error: only expressions are allowed here.
 
 - ★ **Kotlin 이 「전부 식」인 언어는 아니다.** 분기는 식이고 **반복은 문**이다.
 - 반복의 결과를 값으로 얻고 싶으면 **컬렉션 연산**(`map`·`filter`·`fold`)을 쓴다 — 그쪽은 식이다.\
-  정본은 목록의 **42번 주제**부터.
+  정본은 [목록의 **42번 주제**](../42-transformations-map-flatmap-associate-zip/)부터.
 - `if`·`when` 이 식인 것은 [06번 주제](../06-when-expression/)가 정본이다.
 
 비용 — 0. 컴파일 타임이다.
@@ -900,8 +900,8 @@ operator fun iterator(): Iterator<T>
 - [목록의 **14번 주제**](../14-scope-functions/)(scope function) — `run`·`let` 의 정본. (10)의 `run skip@{ }` 이 그것이다
 - [목록의 **30번 주제**](../30-destructuring-declarations-and-componentn/)(구조 분해 선언) — `for ((i, v) in …)` 의 정본
 - [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/)(연산자 오버로딩·중위 함수·`invoke` 규약) — `iterator()`·`contains` 규약의 정본
-- 목록의 **42번 주제**부터(컬렉션 변환·필터·집계) — "반복의 결과를 값으로" 쪽의 정본
-- 목록의 **45번 주제**(`take`/`drop`/`chunked`/`windowed`) — `for` 로 쓰던 패턴이 이미 함수로 있는 것
+- [목록의 **42번 주제**](../42-transformations-map-flatmap-associate-zip/)부터(컬렉션 변환·필터·집계) — "반복의 결과를 값으로" 쪽의 정본
+- [목록의 **45번 주제**](../45-sorting-and-partial-operations/)(`take`/`drop`/`chunked`/`windowed`) — `for` 로 쓰던 패턴이 이미 함수로 있는 것
 
 ## 용어 풀이
 
