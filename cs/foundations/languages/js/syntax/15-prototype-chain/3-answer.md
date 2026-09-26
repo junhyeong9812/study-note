@@ -65,14 +65,14 @@ Object.create(null)                 null
 Object.create(Object.create(null))  (anonymous [object Object]) -> null
 Object.create({ a: 1 })             (anonymous [object Object]) -> Object.prototype -> null
 
-[2] the constructors themselves are objects too -- their chain is different
+[2] the chains of the constructors themselves
 A  (the class object)               Function.prototype -> Object.prototype -> null
 B  (extends A)                      A (the class object) -> Function.prototype -> Object.prototype -> null
 Ctor  (function)                    Function.prototype -> Object.prototype -> null
 Object                              Function.prototype -> Object.prototype -> null
 Function                            Function.prototype -> Object.prototype -> null
 
-[3] prototype  vs  [[Prototype]] -- two different slots with confusable names
+[3] prototype  vs  [[Prototype]]
 Ctor.prototype                       [object Object]   own keys ["constructor"]
 Object.getPrototypeOf(Ctor)          Function.prototype
 Ctor.prototype === getPrototypeOf(Ctor)?  false
@@ -124,7 +124,7 @@ does class A have one?               true
 
 ```text
 ===== node20 js12b-15b-proxy.js (exit=0) =====
-[1] reading -- the lookup walks down until it finds the key
+[1] reading through C
 C.fromC             -> c            trap log ["C.get(fromC)"]
 C.fromB             -> b            trap log ["C.get(fromB)","B.get(fromB)"]
 C.fromA             -> a            trap log ["C.get(fromA)","B.get(fromA)","A.get(fromA)"]
@@ -140,7 +140,7 @@ hasOwn(C,'fromC')   -> true         trap log ["C.gopd(fromC)"]
 C.fromA = 'W'       -> done         trap log ["C.set(fromA)","B.set(fromA)","A.set(fromA)","C.gopd(fromA)"]
 after the write:
 C.fromA  (read)     -> W            trap log ["C.get(fromA)"]
-A still holds       -> a
+A.fromA (Reflect)   -> a
 own keys of C's target -> ["fromC","fromA"]
 
 [4] a setter on the chain -- writing leaf.s
@@ -186,35 +186,35 @@ base._v              base   leaf._v written   leaf.s written
 
 ```text
 ===== node20 js12b-15c-shadow.js (exit=0) =====
-[1] read walks the chain; write lands on the receiver
+[1] reading and writing v on a
 a.v  (before)                         from proto   ownProperty? false
 a.v = 'own on a'  -> a.v              own on a   ownProperty? true
 proto.v                               from proto
 b.v  (the sibling)                    from proto   ownProperty? false
 delete a.v  -> a.v                    from proto   ownProperty? false
 
-[2] the trap: a shared MUTABLE value on the prototype
+[2] an array and a number on the prototype, used through x
 x.list.push(...)  -> y.list           ["pushed through x"]
 x.count += 1      -> x.count          1   own? true
                   -> y.count          0   own? false
                   -> shared.count     0
 
-[3] when the prototype's property is NOT writable, the write is blocked (strict: TypeError)
+[3] the prototype's v is writable: false -- writing kid.v
 kid.v = 'try'                         TypeError Cannot assign to read only property 'v' of object '#<Object>'
-own? after the failed write           false
+own? after the write                  false
 defineProperty on kid instead         kid.v = defined   own? true   ro.v = read only
 
-[4] a setter on the prototype takes the write -- and `this` is the receiver
+[4] a setter on the prototype -- writing child.s
 child.s = 'child wrote'               child.s = child wrote
 own keys of child                     ["_store"]
 withSetter._store                     proto store
 did 's' become an own property?       false
 
-[5] getter-only on the prototype -- strict throws, and nothing is shadowed
-c2.s = 'nope'                         TypeError Cannot set property s of #<Object> which has only a getter
+[5] getter-only on the prototype -- writing c2.s
+c2.s = 'try'                          TypeError Cannot set property s of #<Object> which has only a getter
 own keys of c2                        []
 
-[6] four ways to ask 'does it have v?' on a shadowing object
+[6] four ways to ask 'does it have v?' -- before and after o2.v = 2
 'v' in o2                             true
 Object.hasOwn(o2, 'v')                false
 o2.hasOwnProperty('v')                false
@@ -281,7 +281,7 @@ console.log(bare) prints ->
 [Object: null prototype] { k: 1 }
 util.inspect(bare)       -> [Object: null prototype] { k: 1 }
 
-[2] __proto__ is an accessor that LIVES ON Object.prototype -- so a bare object has none
+[2] where __proto__ lives -- and bare.__proto__ = {...}
 descriptor on Object.prototype       get=function set=function e=false c=true
 own.call(Object.prototype,'__proto__')  true
 ({}).__proto__ === Object.prototype    true
@@ -306,12 +306,12 @@ after reassigning Ctor.prototype:
   i2 instanceof Ctor                    true
   i2.constructor.name                   Object
 
-[4] instanceof walks the chain -- and Symbol.hasInstance can replace the walk
+[4] instanceof, Symbol.hasInstance, isPrototypeOf
 q instanceof Q / P / Object             true / true / true
-same answer by hand (walk to null)      Q -> P -> Object
+by hand (walk to null)                  Q -> P -> Object
 bare instanceof Object                  false
-new Never() instanceof Never            false
-'a string' instanceof Always            true
+new K1() instanceof K1                  false
+'a string' instanceof K2                true
 ({}) instanceof {}                      -> TypeError Right-hand side of 'instanceof' is not callable
 ({}) instanceof (() => {})              -> TypeError Function has non-object prototype 'undefined' in instanceof check
 Object.prototype.isPrototypeOf(q)       true
@@ -361,8 +361,8 @@ P.prototype.isPrototypeOf(q)            true
   체인이 없어 **`Object.prototype` 을 만날 수가 없기** 때문이다.
   ★ 그래서 **`instanceof Object` 를 「객체인가」의 검사로 쓰면 안 된다**(정본은 34번).
   ★★ `Symbol.hasInstance` 를 달면 답이 통째로 바뀐다 —
-  `new Never() instanceof Never` 가 **`false`**(자기가 만든 것인데도),
-  `'a string' instanceof Always` 가 **`true`**(원시값인데도)다.
+  `new K1() instanceof K1` 가 **`false`**(자기가 만든 것인데도),
+  `'a string' instanceof K2` 가 **`true`**(원시값인데도)다.
 - ★ **두 `TypeError` 의 차이** —
   `({}) instanceof {}` 는 **`Right-hand side of 'instanceof' is not callable`**(애초에 호출 가능하지 않다),
   `({}) instanceof (() => {})` 는 **`Function has non-object prototype 'undefined' in instanceof check`**
@@ -380,10 +380,10 @@ P.prototype.isPrototypeOf(q)            true
 [1] read -- does an own property beat an accessor on the prototype?
 kid.v  (no own property yet)                      ACCESSOR on prototype
 after defineProperty(kid, 'v')  -> kid.v          OWN data property
-  own? / accessor still on proto?                 true / function
+  own? / accessor on proto?                       true / function
   accProto.v itself                               ACCESSOR on prototype
 
-[2] write -- the accessor on the prototype takes it, so NO own property appears
+[2] write -- kid2.v = ... with the accessor on the prototype
 kid2.v = 'written through'                        kid2.v = ACCESSOR on prototype
   own keys of kid2                                ["_viaSetter"]
   where did the value land?                       kid2._viaSetter = written through · accProto._viaSetter = undefined
@@ -393,19 +393,19 @@ kid3.v  (before)                                  DATA on prototype   own? false
 kid3.v = 'written through'                        written through   own? true
   dataProto.v                                     DATA on prototype
 
-[4] the chain is made of OBJECTS, not classes -- two instances of one class
+[4] two instances of one class
 c1.shared / c2.shared                             on C.prototype / on C.prototype
 getPrototypeOf(c1) === getPrototypeOf(c2)         true
 getPrototypeOf(c1) === C.prototype                true
 getPrototypeOf(c1) === C                          false
 after c1.shared = 'own on c1' : c2.shared         on C.prototype
 setPrototypeOf(c1, {...}) : c1 instanceof C       false
-  c1.shared (own still wins)                      own on c1   own? true
+  c1.shared                                       own on c1   own? true
   after delete c1.shared                          a different object entirely
 
 [5] proto has get+set, leaf has an own data property -- reading leaf.v
 proto has get+set, leaf has own data -> leaf.v    own
-Proxy CAN do it, but that is a different object   PROXY wins
+leaf.v through a Proxy with a get trap            from the trap
 ```
 
 **왜 그런가**
