@@ -853,7 +853,7 @@ ex.25b.ts    5회 md5 가짓수 1
 - [목록의 **27번 주제**](../27-template-literal-types/)(템플릿 리터럴 타입) — 3·4절의 `` `${…}` `` 서식은 그쪽이 정본. 여기는 **`infer` 와 만나는 자리**까지.
 - [목록의 **28번 주제**](../28-utility-types/)(유틸리티 타입) — `Awaited`·`ReturnType`·`Parameters` 의 정본. 여기는 **그것들이 재귀 조건부라는 사실**까지.
 - [목록의 **45번 주제**](../45-type-level-performance/)(타입 수준 성능) — ★★★ **검사 시간은 그쪽이다.** 이 문서는 **재지 않았다.**
-- 목록의 **46번 주제**(가변 튜플 타입) — 6절의 `[...A<R>, H]` 문법이 그쪽이다.
+- [목록의 **46번 주제**](../46-variadic-tuple-types/)(가변 튜플 타입) — 6절의 `[...A<R>, H]` 문법이 그쪽이다.
 - `` Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **18번**([와일드카드와 PECS — `? extends`/`? super`](../../../java/syntax/18-wildcards-pecs/)) `` — 7절의 정본.
 - `` Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **25번**([트레이트 정의·구현·기본 메서드·연관 타입](../../../rust/syntax/25-traits-definition-impl-default-methods-and-associated-types/)) `` — 8절의 정본.
 

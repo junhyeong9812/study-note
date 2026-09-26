@@ -507,7 +507,7 @@ export declare class Counter {
                                           ★ 글자는 판에 매인다(프로퍼티 순서)
 ```
 
-비용 — 뽑은 `.d.ts` 는 **소스가 TS 일 때만** 쓸 수 있다. 1·2절처럼 **소스가 JS 뿐**이면 손으로 쓰거나 `allowJs` + JSDoc 으로 뽑는다(목록의 **48번 주제** — 던지지 않았다).
+비용 — 뽑은 `.d.ts` 는 **소스가 TS 일 때만** 쓸 수 있다. 1·2절처럼 **소스가 JS 뿐**이면 손으로 쓰거나 `allowJs` + JSDoc 으로 뽑는다([목록의 **48번 주제**](../48-js-file-type-checking/) — 던지지 않았다).
 
 ### (6) ★★★ `skipLibCheck` — `.d.ts` 의 오류를 숨긴다
 
@@ -705,6 +705,6 @@ usedup37.ts(1,7): error TS2322: Type 'number' is not assignable to type 'null'.
 
 ## 더 들어가면
 
-- **`.d.ts` 와 JS 의 일치를 검사하는 법** — 이 문서는 「tsc 는 안 한다」까지다. 소스가 JS 면 `allowJs` + `checkJs` + `--declaration` 으로 **JS 에서 뽑는** 길이 있다(목록의 **48번 주제**). **던지지 않았다.**
+- **`.d.ts` 와 JS 의 일치를 검사하는 법** — 이 문서는 「tsc 는 안 한다」까지다. 소스가 JS 면 `allowJs` + `checkJs` + `--declaration` 으로 **JS 에서 뽑는** 길이 있다([목록의 **48번 주제**](../48-js-file-type-checking/)). **던지지 않았다.**
 - **`declare global` 을 모듈 `.d.ts` 안에서** — 모듈 선언 파일이면서 전역을 보강하는 꼴. 33편 4절이 `.ts` 쪽을 쟀다 — `.d.ts` 쪽은 **던지지 않았다.**
 - **`typesVersions`·`exports` 의 `types` 조건으로 패키지에 `.d.ts` 싣기** — 35편 3절의 추적이 `types` 조건을 보였다. 패키지 배포 자체는 **던지지 않았다.**

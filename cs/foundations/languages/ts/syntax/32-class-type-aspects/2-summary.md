@@ -934,7 +934,7 @@ ex.32d.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 - [**07번 주제** — 객체 타입 세부](../07-object-type-details/) — `readonly` 가 런타임을 막지 않는다는 실측의 정본.
 - [**30번 주제** — 타입 단언과 non-null `!`](../30-type-assertions-and-non-null/) — 4절의 `as unknown as` 우회, 5절의 `name!` 은 그쪽의 「선언 쪽 `!`」이다.
 - [**31번 주제** — 열거형의 함정](../31-enum-pitfalls/) — `--erasableSyntaxOnly` 가 enum 과 매개변수 프로퍼티를 **같은 `TS1294`** 로 막는다.
-- 목록의 **47번 주제**(데코레이터) — 클래스 필드 방출과 데코레이터가 만나는 자리는 그쪽.
+- [목록의 **47번 주제**](../47-decorators/)(데코레이터) — 클래스 필드 방출과 데코레이터가 만나는 자리는 그쪽.
 - Kotlin 갈래 [`../../../kotlin/syntax/18-visibility-modifiers/`](../../../kotlin/syntax/18-visibility-modifiers/) — `private` 가 **바이트코드 수준에서** 지켜지는 언어와의 비교 축.
 
 ## 용어 풀이
@@ -965,4 +965,4 @@ ex.32d.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 - **`#x` 의 WeakMap 하향 방출** — 2절 `-t es2021` 방출물의 `__classPrivateFieldGet` 가 **브랜드 검사**(`state.has(receiver)`)를 흉내 낸다. 칸 없는 객체에 쓰면 `TypeError` 가 날 것으로 **읽히지만 던지지 않았다.**
 - **`declare` 필드** — 3.7 릴리스 노트는 `declare resident: Dog;` 가 **출력 코드를 만들지 않는다**고 적는다. 5절 `[2]` 의 `name!` 을 `declare name` 으로 바꾸면 `"base"` 가 남을 것 — **던지지 않았다.**
 - **`protected` 와 구조적 타이핑** — `private`·`protected` 멤버가 있는 클래스는 **모양이 같아도** 다른 클래스와 호환되지 않는다(명목적으로 군다). 05편의 브랜드 타입과 같은 효과다 — **여기서는 안 던졌다.**
-- **`accessor` 키워드·데코레이터** — 목록의 **47번 주제**.
+- **`accessor` 키워드·데코레이터** — [목록의 **47번 주제**](../47-decorators/).

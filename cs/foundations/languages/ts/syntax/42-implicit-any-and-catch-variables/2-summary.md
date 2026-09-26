@@ -691,5 +691,5 @@ echo "켬/끔 × 판 여섯 줄에서 서로 다른 답 $(tr '|' '\n' <<< "$all"
 ## 더 들어가면
 
 - **`Error.isError`(ES2026)** — realm 을 안 타는 판정이다. JS 32편 7절이 쟀다 — **이 편은 던지지 않았다.**
-- **`noImplicitAny` 와 JS 파일** — `checkJs` 에서 JSDoc 없는 매개변수가 어떻게 되는지는 목록의 **48번 주제**(JS 파일 타입 검사)다. **던지지 않았다.**
+- **`noImplicitAny` 와 JS 파일** — `checkJs` 에서 JSDoc 없는 매개변수가 어떻게 되는지는 [목록의 **48번 주제**](../48-js-file-type-checking/)(JS 파일 타입 검사)다. **던지지 않았다.**
 - **`@typescript-eslint/no-unsafe-*`** — 명시적 `any` 가 흐르는 자리를 잡는 린트 규칙. tsc 밖이라 **던지지 않았다.**

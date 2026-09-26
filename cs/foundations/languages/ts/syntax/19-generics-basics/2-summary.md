@@ -679,7 +679,7 @@ ex.19e.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 - Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **17번** — [제네릭 선언](../../../java/syntax/17-generic-declarations/). 타입 파라미터·바운드의 **같은 질문을 Java 로**.
 - Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **19번** — [타입 소거](../../../java/syntax/19-type-erasure/). ★★ 6절의 **직접 대비**다.
 - Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **12번** — [`reified` 타입 파라미터](../../../kotlin/syntax/12-reified-type-parameters/). ★★ **TS 에는 없는 길**이다.
-- [목록의 **22번 주제**](../22-keyof-and-indexed-access-types/)(`keyof` 와 인덱스 접근 타입) · 목록의 **46번 주제**(가변 튜플 타입) — 제네릭이 더 깊어지는 자리.
+- [목록의 **22번 주제**](../22-keyof-and-indexed-access-types/)(`keyof` 와 인덱스 접근 타입) · [목록의 **46번 주제**](../46-variadic-tuple-types/)(가변 튜플 타입) — 제네릭이 더 깊어지는 자리.
 
 ## 용어 풀이
 

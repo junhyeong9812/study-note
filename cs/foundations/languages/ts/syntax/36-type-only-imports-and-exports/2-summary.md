@@ -564,7 +564,7 @@ error TS5102: Option 'importsNotUsedAsValues' has been removed. Please remove it
 - [**31번 주제** — 열거형의 함정](../31-enum-pitfalls/) — 두 플래그가 **`const enum`** 방출을 바꾸는 쪽(4절)과 `erasableSyntaxOnly` 의 enum 판 격자(3절).
 - [**34번 주제** — `namespace` 의 자리](../34-namespace-place/) — `import V = N.v` 의 `TS1294` 와 「방출 줄 ⇔ `TS1294`」 **6 / 6**. 3절이 그 반례다.
 - [JS 갈래 **42번**(ESM — 정적 구조·평가 순서)](../../../js/syntax/42-esm-modules/) — 「빈 import 도 모듈을 평가한다」는 ESM 쪽 규칙이다.
-- 목록의 **48번 주제**(JS 파일 타입 검사) — README 가 이 주제를 선행으로 둔다(JSDoc 의 `@import` 등).
+- [목록의 **48번 주제**](../48-js-file-type-checking/)(JS 파일 타입 검사) — README 가 이 주제를 선행으로 둔다(JSDoc 의 `@import` 등).
 
 ## 용어 풀이
 
