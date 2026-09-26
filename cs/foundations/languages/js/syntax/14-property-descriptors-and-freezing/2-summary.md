@@ -29,7 +29,7 @@
 >
 > **버전** — **세 플래그·`defineProperty`·`getOwnPropertyDescriptor`·`freeze`/`seal`/`preventExtensions`·`isFrozen`/`isSealed`/`isExtensible` 은 전부 ES5** 다.
 > **복수형 `Object.getOwnPropertyDescriptors` 는 ES2017**, **`Reflect.defineProperty`·`Reflect.getOwnPropertyDescriptor` 는 ES2015** 다.
-> ★ 아래 격자에 한 줄 섞여 있는 `Array.prototype.toSorted` 는 **ES2024** 라 **v18 에 없다.**
+> ★ 아래 격자에 한 줄 섞여 있는 `Array.prototype.toSorted` 는 **ES2023** 라 **v18 에 없다.**
 >
 > **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
 >
@@ -879,7 +879,7 @@ identical 18  ·  differs 1  ·  total 19
 ```
 
 ★★ **이 배치 19블록 중 갈린 것은 하나**이고, **그 하나가 이 주제의 것**이다(`js12b-14c-freeze.js`).
-★ 갈린 것은 **디스크립터나 동결의 규칙이 아니라 `Array.prototype.toSorted` 의 존재 여부**다(ES2024).
+★ 갈린 것은 **디스크립터나 동결의 규칙이 아니라 `Array.prototype.toSorted` 의 존재 여부**다(ES2023).
 **동결의 규칙 쪽은 두 판이 한 글자도 안 갈렸다** — 위 목록의 `js12b-14a-dump.js`·`js12b-14b-configurable.js`·`js12b-14s-strict.js` 가 전부 `identical` 이다.
 
 ### (6) ★ 같은 질문을 브라우저에 던지면
@@ -1121,7 +1121,7 @@ document.documentElement.appendChild(document.createElement("pre")).textContent 
 - **객체를 적는 방식**(`#<Object>` · `[object Array]`)도 V8 의 표기다. ★ 앞엣것이 브랜드 태그처럼 보이지만
   **우리가 ③ 창을 연 것이 아니라 엔진이 메시지에 적어 넣은 것**이다 — 근거로 쓰지 않는다.
 - **두 판(18·20)과 Chrome 151 이 이 주제에서 `toSorted` 한 줄 빼고 전부 같았다** — 셋 다 V8 이기 때문이지 보장이 아니다.
-- **`Array.prototype.toSorted` 의 존재 여부** — 이것은 엔진의 사정이 아니라 **판(ES2024)의 문제**다. 25번이 정본이다.
+- **`Array.prototype.toSorted` 의 존재 여부** — 이것은 엔진의 사정이 아니라 **판(ES2023)의 문제**다. 25번이 정본이다.
 
 ### 호스트가 정하는 것 — ECMA-262 밖
 
@@ -1167,7 +1167,7 @@ document.documentElement.appendChild(document.createElement("pre")).textContent 
 - [12 — 옵셔널 체이닝·널 병합·논리 할당](../12-optional-chaining-nullish-and-logical-assignment/2-summary.md) — **그쪽이 「막혔을 때 무엇이 보이나」까지** 갔다. 여기는 **왜 막히나**부터.
 - [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md) — **그쪽이 `{ ...o }` 의 정본**이다. 여기는 **그것이 보는 `enumerable` 의 정본**이다.
 - 목록의 **18번 주제** 「`for...in` 과 열거」 — **그쪽이 열거와 체인 순회의 정본**이다.
-- 목록의 **25번 주제** 「배열 비변형·복사 메서드」 — **그쪽이 `toSorted`(ES2024)의 정본**이다. 여기는 **동결된 배열에서 갈린 한 줄**까지.
+- 목록의 **25번 주제** 「배열 비변형·복사 메서드」 — **그쪽이 `toSorted`(ES2023)의 정본**이다. 여기는 **동결된 배열에서 갈린 한 줄**까지.
 - 목록의 **27번 주제** 「`Object` 정적 메서드」 — **그쪽이 `Object.assign`·`entries` 의 정본**이다. 여기는 **그것들이 이 플래그를 본다는 사실**까지.
 - 목록의 **35번 주제** 「엄격 모드」 — **그쪽이 모드가 바꾸는 규칙 전부의 정본**이다. 여기는 **막힌 쓰기가 갈리는 칸**까지.
 - 목록의 **45번 주제** 「`Proxy`」 · 목록의 **46번 주제** 「`Reflect`」 — **그쪽이 트랩과 불변식의 정본**이다. 여기는 **디스크립터가 그 계약의 언어**라는 사실까지(프록시는 안 던져 봤다).

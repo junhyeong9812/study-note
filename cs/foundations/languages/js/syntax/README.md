@@ -42,7 +42,7 @@ JS 는 **값의 의미(강제 변환)·함수(스코프·`this`·클로저)·객
 | 22 | `Symbol` 과 잘 알려진 심볼 | 문법 | 심볼 키의 성질과 `Symbol.iterator`·`toPrimitive`·`hasInstance` 가 언어 동작 자체를 바꾸는 지점을 설명할 수 있다 | 19 | — | B |
 | 23 | `Map`·`Set` 과 약한 컬렉션 | 표준 API | 객체 키·삽입 순서·SameValueZero 비교를 근거로 `Map` 과 객체를 고르고 `WeakMap` 의 수명 의미를 설명할 수 있다. 집합 연산 메서드는 ES2025, `getOrInsert` 계열(Upsert)은 ES2026 | 22 | `cs/data-structure/05-hashmap/` | A |
 | 24 | 배열 변형 메서드 | 표준 API | `push`·`splice`·`sort`·`reverse`·`fill` 이 원본을 바꾼다는 것과 `sort` 의 기본 문자열 비교·안정 정렬 보장을 설명할 수 있다 | 01 | `cs/foundations/data-structures-basics/` | A |
-| 25 | 배열 비변형·복사 메서드 | 표준 API | `map`·`filter`·`reduce`·`slice`·`concat` 과 ES2024 `toSorted`·`toReversed`·`toSpliced`·`with` 를 구분해 불변 변환을 쓸 수 있다 | 24 | — | A |
+| 25 | 배열 비변형·복사 메서드 | 표준 API | `map`·`filter`·`reduce`·`slice`·`concat` 과 ES2023 `toSorted`·`toReversed`·`toSpliced`·`with` 를 구분해 불변 변환을 쓸 수 있다 | 24 | — | A |
 | 26 | 배열 탐색·평탄화·생성 | 표준 API | `indexOf` 와 `includes` 가 `NaN` 에서 갈리는 것, `find`/`findLast`·`at`·`flat`/`flatMap`·`Array.from`·`fromAsync`(ES2026)를 골라 쓸 수 있다 | 24 | — | B |
 | 27 | `Object` 정적 메서드 | 표준 API | `keys`/`values`/`entries`·`assign`·`fromEntries`·`Object.groupBy`(ES2024)로 객체를 변환하고 `assign` 의 얕은 복사와 getter 호출을 설명할 수 있다 | 13 | — | A |
 | 28 | `String` 메서드와 템플릿 리터럴 | 표준 API | 자주 쓰는 문자열 메서드와 태그 템플릿·`String.raw` 를 쓰고 `replace` 의 `$` 치환 규칙을 설명할 수 있다 | 04 | — | A |
@@ -97,7 +97,8 @@ JS 는 **값의 의미(강제 변환)·함수(스코프·`this`·클로저)·객
 | 판 | 이 목록에서 해당하는 것 |
 |---|---|
 | ES2020~2022 | 옵셔널 체이닝·널 병합(#12), 논리 할당(ES2021, #12), `WeakRef`(ES2021, #47), 프라이빗 필드·`static {}`·`Error.cause`(ES2022, #16·#32) |
-| ES2024 | `toSorted` 계열 변경 없는 배열 메서드(#25), `Object.groupBy`(#27), 정규식 `v` 플래그(#30), `Promise.withResolvers`(#38), well-formed 문자열 메서드(#4) |
+| ES2023 | `toSorted` 계열 변경 없는 배열 메서드(#25), `findLast`(#26), 심볼을 약한 키로(#23) |
+| ES2024 | `Object.groupBy`(#27), 정규식 `v` 플래그(#30), `Promise.withResolvers`(#38), well-formed 문자열 메서드(#4) |
 | ES2025 | 이터레이터 헬퍼(#21), 집합 연산 메서드(#23), `RegExp.escape`(#30), `Promise.try`(#38), import attributes·JSON 모듈(#44) |
 | ES2026 | `Error.isError`(#32), `Array.fromAsync`(#26), Upsert(`getOrInsert` 계열, #23) |
 | ES2027 초안 | Temporal(#49), 명시적 자원 관리 `using`(#51) — **초안 단계이고 Node 18/20 에 없어 실행 검증 불가** |

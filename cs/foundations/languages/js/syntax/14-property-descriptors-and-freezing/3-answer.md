@@ -447,7 +447,7 @@ identical 18  ·  differs 1  ·  total 19
   소스가 **`fa.toSorted && fa.toSorted()`** 이므로 v18 에서는 `fa.toSorted` 가 `undefined` 라
   **`&&` 가 거기서 단축 평가했다.** 돌려받은 값이 `undefined` 라 `returned …` 꼬리가 안 붙은 것이다.
   ★ **12번에서 본 단축 평가가 여기서 되돌아온다** — 「값이 같아 보이는데 부른 것이 다르다」의 또 한 사례다.
-- ★★ **갈린 것은 동결의 규칙이 아니라 `Array.prototype.toSorted` 의 존재 여부**다(ES2024, v18 에 없다).
+- ★★ **갈린 것은 동결의 규칙이 아니라 `Array.prototype.toSorted` 의 존재 여부**다(ES2023, v18 에 없다).
   **동결 쪽은 두 판이 한 글자도 안 갈렸다** — 목록의 `js12b-14a-dump.js`·`js12b-14b-configurable.js`·`js12b-14s-strict.js` 가 전부 `identical` 이다.
 - ★ **근거의 종류가 두 판에서 다르다.**
   **node20 줄**은 「**동결된 배열에서도 비변형 메서드는 통과한다**」의 근거이고,
@@ -546,7 +546,7 @@ identical 18  ·  differs 1  ·  total 19
 
 **판(ES 버전)에 달린 항목 — 엔진 사정과 갈라 적는다**
 
-- ★★★ **`Array.prototype.toSorted` 의 존재 여부**(ES2024). 이것만이 두 판을 가른 줄이다. 정본은 목록의 **25번 주제**.
+- ★★★ **`Array.prototype.toSorted` 의 존재 여부**(ES2023). 이것만이 두 판을 가른 줄이다. 정본은 목록의 **25번 주제**.
 
 **세 플래그의 의미 · 리터럴과 `defineProperty` 의 기본값 · 27칸 격자의 허용과 거부 · `writable` 의 일방통행 · 세 봉인 함수의 계단 · 셋 다 얕다는 것 · 접근자가 `freeze` 로 안 잠기는 것 · 세 술어의 정의(비확장 빈 객체가 `true` 인 것 포함) · 엄격에서 실패한 쓰기가 `TypeError` 인 것 · `defineProperty` · `push` · `Object.assign` 이 모드와 무관하게 던지는 것은 구현 의존이 아니다.**
 어느 엔진에서도 같아야 한다.
