@@ -16,7 +16,7 @@
 > 형제 [`01번`](../01-function-overloading-and-overload-resolution/)이다.\
 > 여기는 그 **앞 단계** — **후보 집합이 어떻게 만들어지나**만 쓴다((1)·(5)).\
 > 「번역 단위·내부 링크·ODR」은 목록의 **55번 주제**가 정본이고, C 쪽 `static` 의 정본은\
-> C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **30번**(`static`/`extern` 과 링크)이다 — 아직 폴더가 없다.\
+> C 갈래 [29번 「스코프와 링크(`static`·`extern`)」](../../../c/syntax/29-scope-and-linkage-static-extern/2-summary.md)이다.\
 > 「`friend` 의 접근 제어 쪽 의미」는 목록의 **12번 주제**, 「연산자 오버로딩을 어디에 두나」는 목록의 **22번 주제**다.
 >
 > ★★ **흔들리는 칸 / 안 흔들리는 칸**
