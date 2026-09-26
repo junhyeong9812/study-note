@@ -9,7 +9,7 @@
 > [15번 형제](../15-pointer-arithmetic-and-indexing)·[16번 형제](../16-array-pointer-decay-and-function-parameters)가 **UB 가 본체**인 것과 정반대다 — 여기는 **「표준」이 본체**다.
 > ★ **그러니 「몇 건이 나고 어느 플래그의 것인가」와 「경고인가 에러인가」를 같이 답해라.**
 > ★★ **「경고 0건」은 종료 코드를 같이 봐야 뜻이 있다** — 이 주제에는 **경고 0건에 `exit=1`** 인 프로그램이 둘 있다.
-> 선행 — [12번 형제](../12-control-flow-and-switch/) · 목록의 **37번 주제**.
+> 선행 — [12번 형제](../12-control-flow-and-switch/) · [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).
 
 ## 질문
 

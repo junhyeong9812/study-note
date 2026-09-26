@@ -830,8 +830,8 @@ bits/move.h 가 전처리 결과에 들어온 횟수: 6
 **안 돌려 본 것 / 못 잰 것**
 
 - **안 돌려 본 것** — **`std::move_if_noexcept`** · **`std::exchange`** ·
-  **`const` 를 돌려주는 함수**(`const Widget f();`) · **가변 인자 팩의 `forward`**(목록의 **34번 주제**) ·
-  **람다 초기화 캡처 `[p = std::move(p)]`**(목록의 **39번 주제**) ·
+  **`const` 를 돌려주는 함수**(`const Widget f();`) · **가변 인자 팩의 `forward`**([목록의 **34번 주제**](../34-variadic-templates-and-pack-expansion/)) ·
+  **람다 초기화 캡처 `[p = std::move(p)]`**([목록의 **39번 주제**](../39-lambdas-and-captures/)) ·
   **`std::forward` 를 잘못 써서 두 번 이동하는 것** ·
   **C++11\~14 판에서의 동작**(여기는 `-std=c++20` 한 판이다) ·
   **libc++ 에서의 이동 후 상태**(★ 4번의 미명시 칸을 가를 수 있는 유일한 실험인데 **이 머신에 libc++ 가 없다**) ·

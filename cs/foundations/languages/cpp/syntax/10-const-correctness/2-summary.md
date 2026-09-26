@@ -23,7 +23,7 @@
 > 「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/), 「값 범주」는 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/),\
 > 「`const` 객체를 `move` 하면 무슨 일이 나나」는 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/),\
 > 「그래서 매개변수를 `const&` 로 받나」는 [목록의 **11번 주제**](../11-choosing-parameter-passing/),\
-> 「`constexpr`·`consteval` 자체」는 목록의 **38번 주제**가 정본이다.
+> 「`constexpr`·`consteval` 자체」는 [목록의 **38번 주제**](../38-constexpr-consteval-and-constinit/)가 정본이다.
 > ★★★ **이 주제는 「금지 목록」이 아니라 「계약」이다** — `const` 가 **무엇을 막고 무엇을 안 막는지**가 값의 전부다.\
 > 안 막는 쪽이 (4)·(6)·(10) 셋이고, **셋 다 진단이 0건**이다.
 >
@@ -566,7 +566,7 @@ a=5 b=5 c=3  sizeof(arr1)=20 sizeof(arr2)=20
   **초기화식이 상수식이었기 때문**이지 `const` 라서가 아니다.
 - ★★ **`const int c = runtime();` 은 컴파일된다.** 같은 자리에 `constexpr` 를 쓰면 에러다((9)의 (5)).\
   **`constexpr` 는 「못 고친다」에 「지금 안다」를 더한 것**이다.
-- ★ `constexpr`·`consteval`·`constinit` 자체의 정본은 목록의 **38번 주제**다 — 여기서는 **한 줄 경계**까지만.
+- ★ `constexpr`·`consteval`·`constinit` 자체의 정본은 [목록의 **38번 주제**](../38-constexpr-consteval-and-constinit/)다 — 여기서는 **한 줄 경계**까지만.
 
 ### (9) `const` 가 막는 일곱
 
@@ -993,7 +993,7 @@ int main() {
 - [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/) — **값 범주**. `const T&` 가 네 범주를 다 받는 격자가 거기다.
 - [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/) — **`const` 객체를 `move` 하면 복사가 되는 것.**
 - [목록의 **11번 주제**](../11-choosing-parameter-passing/) — **그래서 무엇으로 받나**(값·`const&`·`&&`·`string_view`).
-- 목록의 **38번 주제** — `constexpr`·`consteval`·`constinit` 자체.
+- [목록의 **38번 주제**](../38-constexpr-consteval-and-constinit/) — `constexpr`·`consteval`·`constinit` 자체.
 - Rust 대비 — [`rust/syntax/10 — 빌림 `&` 와 `&mut`, 별칭 규칙`](../../../rust/syntax/10-borrowing-and-aliasing-rules/).\
   **축은 「누가 지키나」다** — 아래 「더 들어가면」에 한 문단으로 뒀다.
 

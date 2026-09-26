@@ -19,7 +19,7 @@
 > **버전** — **VLA 는 C99부터**다. ★★ **C99 필수 → C11 선택**(`__STDC_NO_VLA__`) **→ C23 에서 선택 범위 축소.** 그 셋은 **표준 문서 쪽 사실**이고, **이 구현이 실제로 어떤가는 따로 쟀다**((3)).
 > ★★ **경계** — **`goto`·`switch` 가 VLA 스코프로 못 뛰는 것**은 [12번 형제](../12-control-flow-and-switch/)가 정본이다. 여기서는 **결론만 되짚고 두 컴파일러 문구 차이**만 짚는다(관용구는 [13번 형제](../13-goto-cleanup-idiom/)).\
 > **`sizeof` 의 일반 규칙**은 [08번 형제](../08-sizeof-alignment-and-offsetof/)가 정본이고 여기는 「**VLA 면 어디까지 평가되나**」만 본다. **감쇠와 매개변수 재작성**은 [16번 형제](../16-array-pointer-decay-and-function-parameters/).\
-> **다차원 배열의 안쪽 보폭**은 [목록의 **17번 주제**](../17-multidimensional-arrays-and-pointer-types/) — ★ 그쪽은 **컴파일 시점**, 여기는 **실행 시점**이다. 저장 기간 고르기는 [목록의 **28번 주제**](../28-choosing-among-four-storage-durations/), `malloc` 은 목록의 **37번 주제**.
+> **다차원 배열의 안쪽 보폭**은 [목록의 **17번 주제**](../17-multidimensional-arrays-and-pointer-types/) — ★ 그쪽은 **컴파일 시점**, 여기는 **실행 시점**이다. 저장 기간 고르기는 [목록의 **28번 주제**](../28-choosing-among-four-storage-durations/), `malloc` 은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).
 > 선행 — [16번 형제](../16-array-pointer-decay-and-function-parameters/) · [08번 형제](../08-sizeof-alignment-and-offsetof/) · [12번 형제](../12-control-flow-and-switch/).
 
 ## 한눈에 — 쉽게 말하면
@@ -46,7 +46,7 @@ VLA 는 **차가 들어오는 순간 길이를 재서** 그만큼 고깔을 세�
 | 주차장이 얼마나 넓은가 | `ulimit -s` = **8192 KB** | **환경 한계** |
 | 고깔을 세우다 벽에 부딪힘 | 스택 소진 — ★ **진단 없이 `run exit=139`** | ★ **UB** |
 | 길이를 0 이나 음수로 재는 것 | `char vla[0]` · `char vla[-1]` | ★ **UB** |
-| 옆 건물 유료 주차장 | `malloc` — **없으면 「없다」고 말해 준다**(`NULL`) | 목록의 **37번 주제** |
+| 옆 건물 유료 주차장 | `malloc` — **없으면 「없다」고 말해 준다**(`NULL`) | [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) |
 
 ```text
    고정 배열                              VLA
@@ -441,7 +441,7 @@ SUMMARY: AddressSanitizer: stack-overflow /tmp/c17b/18/ex4.c:5 in touch
 - ★★ **`-Wvla` 는 이 사고를 못 막는다.** 「VLA 다」만 말하고 **「이 `n` 이 크다」는 안 본다** — `n` 은 **실행 시점 값**이다.
 
 비용 — **실패를 받을 방법이 없다.** `malloc` 은 **`NULL` 로 「못 준다」고 말하는데** VLA 에는 **그런 반환값이 없다.**\
-★ **그래서 크기를 못 믿으면 VLA 가 아니라 `malloc`** 이다(목록의 **37번 주제**).
+★ **그래서 크기를 못 믿으면 VLA 가 아니라 `malloc`** 이다([목록의 **37번 주제**](../37-malloc-calloc-realloc-free/)).
 
 ### (5) ★ 크기가 0 이거나 음수면 — UBSan 은 말하는데 **프로그램은 「정상 종료」한다**
 
@@ -853,7 +853,7 @@ ex6.c:6:9: note: jump bypasses initialization of variable length array
 ### 6. ★★ 「전역에 VLA 를 하나 두고 재사용하자」
 
 - **에러**다 — 다섯 자리 전부. **저장 기간을 고를 수 없다.**
-- 함수 밖으로 내보내야 하면 **`malloc`**(목록의 **37번 주제**), 구조체에 붙이려면 **유연 배열 멤버**([목록의 **26번 주제**](../26-flexible-array-members/))다.
+- 함수 밖으로 내보내야 하면 **`malloc`**([목록의 **37번 주제**](../37-malloc-calloc-realloc-free/)), 구조체에 붙이려면 **유연 배열 멤버**([목록의 **26번 주제**](../26-flexible-array-members/))다.
 
 ### 7. ★★ 「VLA 매개변수 `int a[n]` 이면 `sizeof a` 가 `n*4` 겠지」
 
@@ -947,7 +947,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [`16-array-pointer-decay-and-function-parameters/`](../16-array-pointer-decay-and-function-parameters/) — ★★ **감쇠와 매개변수 재작성의 정본.** 그쪽의 「조건부 표준」 칸은 **비어 있다** — 층 분포가 정반대다
 - [`15-pointer-arithmetic-and-indexing/`](../15-pointer-arithmetic-and-indexing/) · [`01-declaration-syntax-and-reading/`](../01-declaration-syntax-and-reading/) — 보폭과 선언 읽기의 정본
 - [목록의 **17번 주제**](../17-multidimensional-arrays-and-pointer-types/) (다차원 배열) — ★ **안쪽 보폭이 컴파일 시점인 판.** 여기는 **실행 시점인 판**
-- [목록의 **26번 주제**](../26-flexible-array-members/) (유연 배열 멤버) · [목록의 **28번 주제**](../28-choosing-among-four-storage-durations/) (저장 기간 4종) · 목록의 **37번 주제** (`malloc` 계열)
+- [목록의 **26번 주제**](../26-flexible-array-members/) (유연 배열 멤버) · [목록의 **28번 주제**](../28-choosing-among-four-storage-durations/) (저장 기간 4종) · [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) (`malloc` 계열)
 - 목록의 **56번 주제** (공간 위반) — 잡은 자리를 넘어 접근했을 때
 
 ## 용어 풀이

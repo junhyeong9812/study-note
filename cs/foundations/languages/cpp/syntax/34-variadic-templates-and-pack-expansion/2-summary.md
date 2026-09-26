@@ -13,7 +13,7 @@
 > [09번](../09-rvalue-references-move-and-forward/) (3) — **복사와 이동을 로그로 센다**(`Noisy`) · (6) — **`T&&` 에 lvalue 면 `T = int&`, prvalue·xvalue 면 `T = int`** · **이름이 있는 `x` 는 언제나 lvalue — 그래서 `forward` 를 한 번 더 써야 한다.**\
 > [31번](../31-function-templates-and-argument-deduction/) (2) — **`T&&` 열은 인자마다 `T` 가 참조가 된다** · (5) — **`T` 가 같으면 인스턴스는 하나.**\
 > ★★ **여기서 새로 묻는 것은 넷이다** — **폴드 식 격자(연산자 5 × 꼴 4 × 팩 2 × 컴파일러 2)** · **완벽 전달 팩토리를 `forward` 있고/없고로** · **`...` 을 붙이는 자리** · **팩이 타입을 보존한다는 것(C `stdarg` 대비).**
-> **경계** — 「`std::forward` 가 무엇을 하는 캐스트인가」는 [09번](../09-rvalue-references-move-and-forward/)이, 「C 의 `...`」은 C 갈래 [36번](../../../c/syntax/36-variadic-functions-stdarg/)이, 「팩을 컨셉으로 제약하기」는 목록의 **36번 주제**가 정본이다.
+> **경계** — 「`std::forward` 가 무엇을 하는 캐스트인가」는 [09번](../09-rvalue-references-move-and-forward/)이, 「C 의 `...`」은 C 갈래 [36번](../../../c/syntax/36-variadic-functions-stdarg/)이, 「팩을 컨셉으로 제약하기」는 [목록의 **36번 주제**](../36-concepts-and-requires/)가 정본이다.
 >
 > ★★ **흔들리는 칸 / 안 흔들리는 칸**
 >
@@ -687,7 +687,7 @@ pack02.cpp:12:17: error: pack fold expression is a C++17 extension [-Werror,-Wc+
 - [35번](../35-instantiation-header-placement-and-reading-errors/) — 팩을 받는 템플릿도 **헤더에** 둔다.
 - C 갈래 [36번](../../../c/syntax/36-variadic-functions-stdarg/) — ★★★ **C 의 `...` — 승격 격자와 `va_arg(ap, float)` 의 UB.** 여기는 **타입이 남는 쪽**이다.
 - Go 갈래 [12번](../../../go/syntax/12-functions-multiple-returns-named-results-and-variadics/) (4) — 가변 인자는 **한 타입의 슬라이스**.
-- 목록의 **36번 주제**(컨셉) — 팩의 원소마다 제약 걸기(`std::integral auto... xs`).
+- [목록의 **36번 주제**](../36-concepts-and-requires/)(컨셉) — 팩의 원소마다 제약 걸기(`std::integral auto... xs`).
 
 ## 용어 풀이
 

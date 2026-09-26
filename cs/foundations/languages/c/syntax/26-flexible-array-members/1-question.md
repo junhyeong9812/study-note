@@ -10,7 +10,7 @@
 > ★★★ **이 주제의 가장 위험한 자리는 UB 가 아니다** — **표준 동작인데 기대가 틀린 곳**이라
 > 다섯 층 표로는 안 잡힌다(4번). ★ 그 자리에서는 「**어느 도구가 잡나」가 아니라 「왜 아무도 안 잡나**」를 답해야 한다.
 > ★★ **「경고 몇 건」만 세지 마라** — 이 주제에는 **경고가 났는데 `cc exit=0`** 인 자리가 다섯 군데다.
-> 선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [22번 형제](../22-struct-padding-and-alignment/) · 목록의 **37번 주제**.
+> 선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [22번 형제](../22-struct-padding-and-alignment/) · [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).
 
 ## 이 파일을 푸는 법
 

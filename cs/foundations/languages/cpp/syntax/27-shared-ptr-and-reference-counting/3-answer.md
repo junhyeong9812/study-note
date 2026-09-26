@@ -412,7 +412,7 @@ print("(6) 그 뒤                         살아 있나 =", wp() is not None)
 ### 12. 다른 주제와 잇기
 
 - ★★★ **`unique_ptr` 는 삭제자를 타입(템플릿 인자)에**, **`shared_ptr` 는 제어 블록에** 둔다 — 그래서 `unique_ptr` 는 삭제자에 따라 **8\~40바이트**로 크기가 바뀌고(26번 (3)), `shared_ptr` 는 **16 그대로**이며 삭제자의 타입이 **`shared_ptr<T>` 에 드러나지 않는다**(20번의 타입 소거).
-- ★★ 목록의 **28번 주제** — `weak_ptr` 와 순환 참조.
+- ★★ [목록의 **28번 주제**](../28-weak-ptr-and-reference-cycles/) — `weak_ptr` 와 순환 참조.
 - ★ [`c-cpp-csharp.md`](../../../c-cpp-csharp.md) — 「`shared_ptr` 순환 참조는 해제되지 않는다」.
 
 ## 실행 검증

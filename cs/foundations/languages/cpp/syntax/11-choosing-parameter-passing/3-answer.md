@@ -622,7 +622,7 @@ int main() {
   2번의 `by_rref` 가 move 1 인 것은 **본문에 `std::move` 가 한 번 더** 있기 때문이다.
 - **`std::forward` 와 전달 참조** 의 정본 — [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/).\
   2번에서 `by_fwd` 가 오버로드 쌍과 같은 답을 낸 근거다.
-- **죽은 임시를 가리키는 뷰가 왜 UB 인가** 의 정본 — 목록의 **30번 주제**(수명 연장 규칙).
+- **죽은 임시를 가리키는 뷰가 왜 UB 인가** 의 정본 — [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)(수명 연장 규칙).
 - **`std::string` 과 `string_view` 자체** 의 정본 — 목록의 **46번 주제**.
 - **배열의 포인터 감쇠** — C 갈래 [`16-array-pointer-decay-and-function-parameters/`](../../../c/syntax/16-array-pointer-decay-and-function-parameters/).
 - **`const` 를 어디에 붙이나** — [목록의 **10번 주제**](../10-const-correctness/). ★ 값 매개변수의 `const` 는 **시그니처의 일부가 아니다.**

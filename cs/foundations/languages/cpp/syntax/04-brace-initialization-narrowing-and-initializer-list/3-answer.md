@@ -884,7 +884,7 @@ d = 0,0,0
 - **`auto x = {1}` 이 `initializer_list` 가 되는 규칙**과 `TypeOf<T>` 창은 형제\
   [**05번**](../05-auto-and-decltype-type-deduction/)이 더 판다.
 - **`std::vector<int> v{3, 0}` 의 함정을 타입으로 막는 도구**는 목록의 **47번 주제**(`optional`·`variant`)와\
-  목록의 **32번 주제**(CTAD·추론 가이드) 쪽이다 — 「개수」와 「값」을 **다른 타입**으로 만들면 이 사고가 안 난다.
+  [목록의 **32번 주제**](../32-class-templates-and-ctad/)(CTAD·추론 가이드) 쪽이다 — 「개수」와 「값」을 **다른 타입**으로 만들면 이 사고가 안 난다.
 
 ---
 

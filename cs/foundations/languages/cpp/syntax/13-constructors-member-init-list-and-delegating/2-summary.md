@@ -948,4 +948,4 @@ UB 는 **(3) 하나**뿐이다.
 - **0/3/5의 법칙** — (7)에서 본 「하나를 적으면 나머지도 따져야 한다」를 규칙으로 세운 것. 정본은 [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/).
 - **복사 생략(copy elision)과 보장된 생략** — C++17 부터 prvalue 초기화에서 **복사·이동이 아예 일어나지 않는다.** 형제 [`08번`](../08-value-categories-lvalue-prvalue-xvalue/)이 그 정본이고, (1)의 계수가 그 영향을 받는다.
 - **집합체 초기화(aggregate initialization)** — 생성자를 하나도 안 적으면 `Widget w{1, 2}` 로 멤버를 직접 채울 수 있다. 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/).
-- **`constexpr` 생성자** — 컴파일 시간에 도는 생성자. 정본은 목록의 **38번 주제**.
+- **`constexpr` 생성자** — 컴파일 시간에 도는 생성자. 정본은 [목록의 **38번 주제**](../38-constexpr-consteval-and-constinit/).

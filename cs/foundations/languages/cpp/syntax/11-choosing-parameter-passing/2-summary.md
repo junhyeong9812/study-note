@@ -19,7 +19,7 @@
 > 「`const` 정확성」은 [목록의 **10번 주제**](../10-const-correctness/)다. 여기서는 **그 규칙을 다시 설명하지 않고 결론만 쓴다.**\
 > 「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/), 「오버로드 해석 순서」는 형제 [`01번`](../01-function-overloading-and-overload-resolution/),\
 > 「`std::string` 과 `string_view` 자체」는 목록의 **46번 주제**, 「이동 후 상태」는 [목록의 **17번 주제**](../17-move-constructor-assignment-and-moved-from-state/),\
-> 「댕글링과 수명 연장 규칙」은 목록의 **30번 주제**, 「`noexcept` 와 이동」은 목록의 **53번 주제**가 정본이다.\
+> 「댕글링과 수명 연장 규칙」은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/), 「`noexcept` 와 이동」은 목록의 **53번 주제**가 정본이다.\
 > 배열이 함수 매개변수에서 포인터로 감쇠하는 것은 C 갈래\
 > [`16-array-pointer-decay-and-function-parameters/`](../../../c/syntax/16-array-pointer-decay-and-function-parameters/)가 정본이다.
 > ★★★ **이 문서는 벤치마크를 하지 않았다.** 근거는 **복사·이동 호출 횟수**, **힙 할당 횟수**, **생성된 명령어 열** 셋뿐이다.\
@@ -477,7 +477,7 @@ SUMMARY: AddressSanitizer: heap-use-after-free pass04.cpp:12 in main
   ASan 은 `abort()` 로 죽이는데, 그러면 **표준 출력 버퍼에 남은 줄이 통째로 사라진다**(순서가 밀리는 게 아니라 없어진다).\
   표준 오류는 버퍼링을 안 하므로 **마커 두 줄이 리포트 앞에 그대로 남는다.**
 - ★ **`run exit=1`** 이다 — 컴파일은 성공했고(`cc exit=0`) 실행에서만 걸렸다.
-- ★ 「임시의 수명이 어디까지인가」의 정본은 목록의 **30번 주제**, 「`string_view` 자체」는 목록의 **46번 주제**다.
+- ★ 「임시의 수명이 어디까지인가」의 정본은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/), 「`string_view` 자체」는 목록의 **46번 주제**다.
 
 **비용** — 뷰는 **할당을 없애는 대신 수명 책임을 호출하는 쪽에 넘긴다.** 그 값을 **저장하면** 그 책임이 남는다.
 
@@ -870,7 +870,7 @@ int main() {
 
 - ★★★ **이 파일은 경고 없이 컴파일된다**(g++ 기준). 틀린 것은 **수명**이다((6)).
 - ★ 고치는 법은 둘 — **`std::string sv = make();`** 로 소유하거나,\
-  **`const std::string& sv = make();`** 로 수명을 늘린다(그 규칙의 정본은 목록의 **30번 주제**).
+  **`const std::string& sv = make();`** 로 수명을 늘린다(그 규칙의 정본은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)).
 
 ### 고를 것을 손으로 돌리는 순서
 
@@ -988,7 +988,7 @@ int main() {
 - [목록의 **10번 주제**](../10-const-correctness/)(`const` 정확성) — **그쪽은 「`const` 가 무엇을 막나」까지, 여기는 「`const T&` 를 언제 고르나」부터.**
 - 형제 [`07번`](../07-references-vs-pointers/)(참조와 포인터) — **그쪽은 「참조가 무엇을 못 하나」까지, 여기는 「매개변수로 어느 참조를 쓰나」부터.**
 - 형제 [`01번`](../01-function-overloading-and-overload-resolution/)(오버로드 해석) — **그쪽은 「후보 중 무엇이 뽑히나」까지, 여기는 「후보를 몇 개 둘까」부터.**
-- [목록의 **17번 주제**](../17-move-constructor-assignment-and-moved-from-state/)(이동 후 상태) · 목록의 **46번 주제**(`string`/`string_view`) · 목록의 **30번 주제**(댕글링) · 목록의 **53번 주제**(`noexcept` 와 이동).
+- [목록의 **17번 주제**](../17-move-constructor-assignment-and-moved-from-state/)(이동 후 상태) · 목록의 **46번 주제**(`string`/`string_view`) · [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)(댕글링) · 목록의 **53번 주제**(`noexcept` 와 이동).
 - C 갈래 [`16-array-pointer-decay-and-function-parameters/`](../../../c/syntax/16-array-pointer-decay-and-function-parameters/) — **그쪽은 「배열이 포인터가 된다」까지, 여기는 「그래서 `span` 으로 길이를 되돌린다」부터.**
 
 ## 용어 풀이
@@ -1009,6 +1009,6 @@ int main() {
 - ★ **인자가 여럿일 때의 조합 폭발** — `const T&` / `T&&` 오버로드 쌍은 인자 하나에 후보가 두 배가 된다.\
   인자 셋이면 여덟 개다. **값 전달이나 전달 참조가 그 폭발을 막는 이유**가 거기 있다.\
   ★ 이 문서는 **인자 하나짜리만 던졌다.**
-- ★ **`std::initializer_list` 와 가변 인자 템플릿** — 정본은 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/)과 목록의 **34번 주제**.
+- ★ **`std::initializer_list` 와 가변 인자 템플릿** — 정본은 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/)과 [목록의 **34번 주제**](../34-variadic-templates-and-pack-expansion/).
 - ★ **`std::span` 의 고정 길이 판**(`std::span<const int, 3>`) — 길이를 타입에 넣는다. **이 문서는 동적 길이만 던졌다.**
 - ★ **반환 방식** — 이 문서는 **받는 쪽만** 다뤘다. 돌려주는 쪽(값 반환·NRVO)의 정본은 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)다.

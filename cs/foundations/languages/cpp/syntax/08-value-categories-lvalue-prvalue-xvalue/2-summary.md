@@ -17,7 +17,7 @@
 > 여기서는 **05 의 창(`decltype((식))`)을 빌려 쓰되 그 규칙을 다시 설명하지 않는다.**\
 > 「`std::move`·`std::forward`」는 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/), 「`const` 정확성」은 [목록의 **10번 주제**](../10-const-correctness/),\
 > 「매개변수를 무엇으로 받나」는 [목록의 **11번 주제**](../11-choosing-parameter-passing/), 「오버로드 해석의 전체 순서」는 형제 [`01번`](../01-function-overloading-and-overload-resolution/),\
-> 「임시의 수명 연장과 댕글링」은 목록의 **30번 주제**가 정본이다.
+> 「임시의 수명 연장과 댕글링」은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)가 정본이다.
 > ★★★ **08 → 09 → 11 은 한 사슬이다** — 여기서 **범주**를 정하고, 09 가 **그 범주를 만드는 법**(`std::move`)을 주고,\
 > 11 이 **그래서 무엇으로 받을지**를 고른다. 세 문서는 같은 격자를 다시 쓴다.
 >
@@ -611,7 +611,7 @@ int main() {
 
 - ★★ **[A]와 [B]가 같다** — 수명 연장은 **`const T&` 만의 특권이 아니다.** `T&&` 도 똑같이 늘린다.
 - ★★★ **[D]는 늘린 게 아니다.** `&r == &local` 이 **1** 이다 — **xvalue 는 이미 있는 객체를 가리킬 뿐**이라 늘릴 임시가 없다.
-- ★ 「그래서 무엇이 댕글링되나」의 정본은 목록의 **30번 주제**다. 여기서는 **[C]와 [D]의 차이**까지만 본다.
+- ★ 「그래서 무엇이 댕글링되나」의 정본은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)다. 여기서는 **[C]와 [D]의 차이**까지만 본다.
 - ★ 「`const T&` 가 임시를 받는다」 자체의 정본은 형제 [`07번`](../07-references-vs-pointers/)이다.
 
 **비용** — 수명 연장은 **코드를 한 줄도 더 만들지 않는다.** 소멸자가 불리는 **자리만** 바뀐다.
@@ -939,7 +939,7 @@ vcat10.cpp:8:9: warning: using rvalue as lvalue [-fpermissive]
 | **조건부 표준** | 표준판이 있을 때만 | ★ **xvalue·`T&&` 자체가 C++11부터** · ★★ **prvalue 물질화는 C++17부터** — `-fno-elide-constructors` 가 **C++20 에서는 무력**하고 **C++14 에서는 복사를 되살린다**((6)) | 같은 소스를 `-std=c++20` 과 `-std=c++14` 로 두 번 | ★ **`-std=` 만으로는 안 보인다** — **플래그를 붙여 비교해야** 갈린다 |
 | **구현 정의** | 문서화 의무가 있다 | 진단 문구 · **에러를 몇 개로 세는가** · clang 의 `-Wunevaluated-expression` **2건**(g++ 는 0건) · clang 의 기본 에러 상한 **20** | 두 컴파일러 대조 | — |
 | **미명시** | 몇 가지 중 하나 | ★★ **같은 문자열 리터럴이 한 덩어리로 합쳐지는지**((4) 의 `a == b` 가 1) · 임시 객체를 **어디에 두는지** | 실행 1판 | ★★ **출력이 「1」이라 근거처럼 보인다** — 이 칸은 **미명시라고 적어야** 안 쓰인다 |
-| **UB** | 아무 일이나 | ★ **이 주제에는 없다.** 범주 위반은 **전부 컴파일 에러**였다(30칸 중 30) | — | ★ 수명이 끝난 임시를 읽는 쪽이 UB 이고 **그 정본은 목록의 30번 주제**다 |
+| **UB** | 아무 일이나 | ★ **이 주제에는 없다.** 범주 위반은 **전부 컴파일 에러**였다(30칸 중 30) | — | ★ 수명이 끝난 임시를 읽는 쪽이 UB 이고 **그 정본은 [목록의 30번 주제](../30-dangling-references-and-lifetime-extension/)다** |
 
 **「도구가 못 보는 것」을 층마다 — 전용 표**
 
@@ -1114,7 +1114,7 @@ C++17 부터 **안 난다**((6)의 `[1]`: `ctor` 하나).\
 - 형제 [`04-brace-initialization-narrowing-and-initializer-list/`](../04-brace-initialization-narrowing-and-initializer-list/) — `S{}` 라는 **임시를 만드는 문법**이 거기.
 - [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/) — `std::move`·`std::forward`. **여기서 정한 범주를 만드는 법**이다.
 - [목록의 **11번 주제**](../11-choosing-parameter-passing/) — 그래서 **무엇으로 받나**. 08 → 09 → 11 사슬의 끝.
-- 목록의 **30번 주제** — 수명 연장이 **안 되는** 자리와 댕글링.
+- [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/) — 수명 연장이 **안 되는** 자리와 댕글링.
 - C 갈래 [`20-null-terminated-strings-and-string-literals/`](../../../c/syntax/20-null-terminated-strings-and-string-literals/) — **문자열 리터럴이 배열이라는 것**은 거기가 정본. 여기는 **그것이 lvalue 라는 것**만.
 - 대비 — [`../../../rust/syntax/08-ownership-and-move/`](../../../rust/syntax/08-ownership-and-move/): Rust 는 **이동이 기본**이라 「이 식이 rvalue 인가」를 물을 일이 없다. C++ 는 **기본이 복사**이고 rvalue 는 **식에 붙는 표시**다.
 

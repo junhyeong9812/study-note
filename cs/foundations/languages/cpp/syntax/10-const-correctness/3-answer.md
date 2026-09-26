@@ -432,7 +432,7 @@ a=5 b=5 c=3  sizeof(arr1)=20 sizeof(arr2)=20
   같은 자리에 `constexpr` 를 쓰면 에러다 — 7번의 (5)번 줄이 그것이다.
 - ★ **한 문장으로** — 「**`const` 는 「못 고친다」, `constexpr` 는 「지금 안다」**」다.\
   `constexpr` 는 `const` 를 **포함**한다(변수에 쓸 때).
-- ★ `constexpr`·`consteval`·`constinit` 자체의 정본은 목록의 **38번 주제**다.
+- ★ `constexpr`·`consteval`·`constinit` 자체의 정본은 [목록의 **38번 주제**](../38-constexpr-consteval-and-constinit/)다.
 
 ### 7. ★★ 에러 일곱 — 일곱 가지가 전부 다른 이유다
 

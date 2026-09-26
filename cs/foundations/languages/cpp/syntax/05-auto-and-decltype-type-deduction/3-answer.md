@@ -620,14 +620,14 @@ dedu10.cpp:4:11: warning: use of ‘auto’ in parameter declaration only availa
 
 **왜 그런가**
 
-- **`auto` 의 추론 규칙은 「함수 템플릿 인자 추론」과 거의 같다** — 정본은 목록의 **31번 주제**다.\
+- **`auto` 의 추론 규칙은 「함수 템플릿 인자 추론」과 거의 같다** — 정본은 [목록의 **31번 주제**](../31-function-templates-and-argument-deduction/)다.\
   ★ **갈리는 곳은 한 군데**, 중괄호 목록이다(`auto x = {1,2}` 는 되고 템플릿 추론은 실패한다).\
   ★ 이 문서는 **템플릿 쪽을 안 던졌다.**
 - **`auto&&` 가 전달 참조가 되는 규칙**의 정본은 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)(rvalue 참조·`move`·`forward`)이고,\
   그 밑의 **값 범주**는 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)다.
 - **`auto x = {1}` 이 `initializer_list` 가 되는 것**의 정본은 형제\
   [**04번**](../04-brace-initialization-narrowing-and-initializer-list/)이다.
-- **`decltype(auto)` 로 지역을 돌려주면 생기는 문제**의 정본은 목록의 **30번 주제**(댕글링 참조와 수명)다.
+- **`decltype(auto)` 로 지역을 돌려주면 생기는 문제**의 정본은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)(댕글링 참조와 수명)다.
 - **`vector<bool>` 이 왜 프록시를 돌려주나**의 컨테이너 쪽 정본은 목록의 **41번 주제**(순차 컨테이너 선택)다.
 
 ---
@@ -678,9 +678,9 @@ dedu10.cpp:4:11: warning: use of ‘auto’ in parameter declaration only availa
 **안 돌려 본 것 / 못 잰 것**
 
 - **안 돌려 본 것** — **템플릿 인자 추론 쪽**(`auto` 와 갈리는 유일한 자리인 중괄호 목록을 포함해서 —\
-  정본이 목록의 **31번 주제**라 거기서 던진다) · **후행 반환 타입**(`auto f() -> decltype(...)`) ·\
+  정본이 [목록의 **31번 주제**](../31-function-templates-and-argument-deduction/)라 거기서 던진다) · **후행 반환 타입**(`auto f() -> decltype(...)`) ·\
   **`decltype(auto)` 를 변수에** 쓰기 · **구조적 바인딩의 `auto`**(목록의 **48번 주제**) ·\
-  **컨셉으로 제약한 `auto`**(목록의 **36번 주제**) ·\
+  **컨셉으로 제약한 `auto`**([목록의 **36번 주제**](../36-concepts-and-requires/)) ·\
   **표현식 템플릿 라이브러리의 프록시**(이 문서는 표준 라이브러리 안의 사례 하나만 던졌다).
 - **못 잰 것** — 없다. 이 주제의 결론은 전부 **타입 진단과 실행 출력**으로 잡힌다.
 

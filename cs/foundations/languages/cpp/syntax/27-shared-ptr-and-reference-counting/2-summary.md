@@ -17,7 +17,7 @@
 > ★★★ **앞 편들이 잰 것 — 다시 재지 않고 인용한다.**\
 > [20번](../20-virtual-destructors-and-polymorphic-deletion/) (1) — **`shared_ptr<Base>(new Derived)` 는 가상 소멸자 없이도 `~Derived` 를 부른다**(삭제자가 `Derived*` 를 기억) · `Base* raw` 를 거치면 `~Base` 만 · ASan 스택의 **`std::_Sp_counted_ptr<Base*>`** · ★★ **`sizeof` `shared_ptr` 16 · `unique_ptr` 8**.\
 > [15번](../15-raii-resources-as-types/) (5) — **`sizeof(shared_ptr<int>)` 16**(「제어 블록 포인터가 하나 더」) · 그리고 ★★ **ASan 은 메모리만 본다 — 파일 핸들·락은 못 본다.**
-> **경계** — 「`weak_ptr` 로 순환을 끊는 설계(부모↔자식 그림)」는 목록의 **28번 주제**가 정본이다 — 여기서는 **순환이 새는 것과 `weak_ptr` 로 0 이 되는 것**까지만 잰다.\
+> **경계** — 「`weak_ptr` 로 순환을 끊는 설계(부모↔자식 그림)」는 [목록의 **28번 주제**](../28-weak-ptr-and-reference-cycles/)가 정본이다 — 여기서는 **순환이 새는 것과 `weak_ptr` 로 0 이 되는 것**까지만 잰다.\
 > 「참조 계수 일반론」은 [`memory-management/`](../../../../memory-management/) 쪽, 「RAII 가 못 지우는 것 — `shared_ptr` 순환」의 **논증**은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md)가 정본이다.
 >
 > ★★ **흔들리는 칸 / 안 흔들리는 칸**
@@ -389,7 +389,7 @@ g++ (순환) 누수 종류 :  2 Indirect leak;
 ```
 
 - ★★★ **두 컴파일러 다 누수 0 · `run exit=0`** · `~Parent` → `~Child` 가 돈다. `p.use_count()=1` — 자식의 `weak_ptr` 가 **부모의 강한 계수를 안 올렸다.**
-- ★ 부모가 먼저 죽고(강한 계수 1 → 0), 부모가 든 `child` 가 죽으며 자식이 따라 죽는다. **그림과 설계 규칙은 목록의 28번 주제**다.
+- ★ 부모가 먼저 죽고(강한 계수 1 → 0), 부모가 든 `child` 가 죽으며 자식이 따라 죽는다. **그림과 설계 규칙은 [목록의 28번 주제](../28-weak-ptr-and-reference-cycles/)다**.
 
 ★★★ **그런데 같은 순환 판을 clang + ASan 으로 돌리면 — 판마다 다르다.**
 
@@ -984,7 +984,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - [26번](../26-unique-ptr-and-ownership-transfer/) — ★★★ **이 편과 한 사슬.** 소유자가 하나면 **타입**에, 여럿이면 **제어 블록**에 적힌다. (1)의 `make_unique` 16바이트 · (7)의 `UNIQUE` 판 0개가 그 대비다.
 - [20번](../20-virtual-destructors-and-polymorphic-deletion/) (1) — `shared_ptr<Base>(new Derived)` 의 삭제자 · `_Sp_counted_ptr<Base*>` · `sizeof` 16 대 8.
 - [15번](../15-raii-resources-as-types/) (5) — `sizeof(shared_ptr<int>)` 16 · ASan 은 메모리만 본다.
-- 목록의 **28번 주제** — ★★ **`weak_ptr` 와 순환 참조.** 부모↔자식 그림과 끊는 설계의 정본.
+- [목록의 **28번 주제**](../28-weak-ptr-and-reference-cycles/) — ★★ **`weak_ptr` 와 순환 참조.** 부모↔자식 그림과 끊는 설계의 정본.
 - [`c-cpp-csharp.md`](../../../c-cpp-csharp.md) — **「`shared_ptr` 순환 참조는 해제되지 않는다」** 가 RAII 가 **그대로 두는 것** 목록에 있다. 여기는 그것을 **ASan 으로 재고 `weak_ptr` 로 0 을 본** 쪽이다.
 - [`memory-management/`](../../../../memory-management/) — 참조 계수·추적 GC 일반론.
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **41번**(`Rc`/`Arc`·`Weak`)·**50번**(`Send`/`Sync`) — **폴더가 없다.** (8)이 한 블록을 던졌다.

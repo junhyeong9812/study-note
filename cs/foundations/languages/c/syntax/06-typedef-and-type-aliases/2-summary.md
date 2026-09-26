@@ -232,7 +232,7 @@ opq2.c:2:37: error: invalid application of ‘sizeof’ to incomplete type ‘S�
 
 - **`typedef struct S S;` 한 줄이면 헤더가 완성**된다. `struct S` 의 정의는 `.c` 에만 둔다.
 - 대가는 **포인터로만 다뤄야 하는 것**이다 — 크기를 모르니 값으로 못 넘기고 스택에 못 놓는다.
-- 그래서 `make`/`free` 짝이 따라온다(목록의 **38번 주제**).
+- 그래서 `make`/`free` 짝이 따라온다([목록의 **38번 주제**](../38-expressing-ownership-conventions-in-code/)).
 - 정본은 [목록의 **25번 주제**](../25-incomplete-types-and-opaque-struct/). 여기서는 **`typedef` 가 그 관용구를 어떻게 가능하게 하나**까지만 본다.
 
 비용 — 할당이 강제된다. 그 대신 **내부를 바꿔도 헤더 사용자가 다시 컴파일하지 않아도 된다.**
@@ -580,7 +580,7 @@ re.c:1:13: note: previous declaration of ‘T’ with type ‘T’ {aka ‘int�
 - [목록의 **25번 주제**](../25-incomplete-types-and-opaque-struct/) (불완전 타입과 opaque struct) — (4)가 정본으로 다뤄지는 곳
 - [목록의 **31번 주제**](../31-const-and-pointer-const-placement/) (`const` 와 포인터 const 위치) — (5)의 `char * const` ↔ `const char *` 정본
 - [목록의 **35번 주제**](../35-function-pointers-and-callback-tables/) (함수 포인터와 콜백 테이블) — (6)이 정본으로 다뤄지는 곳
-- 목록의 **40번 주제** (`_Generic`) — 이 문서의 주된 증명 도구
+- [목록의 **40번 주제**](../40-generic-selection-c11/) (`_Generic`) — 이 문서의 주된 증명 도구
 - 목록의 **42번 주제** (함수형 매크로의 함정) — `#define` 쪽의 정본
 
 ## 용어 풀이

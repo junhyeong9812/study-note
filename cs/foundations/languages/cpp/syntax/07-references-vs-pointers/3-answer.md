@@ -384,7 +384,7 @@ ptr06.cpp:6:22: error: taking the address of a temporary object of type 'Noisy' 
   `f(const T& x)` 는 **`f(std::string("hi"))` 를 받을 수 있고**,\
   `f(const T* x)` 는 **호출자가 변수를 따로 만들어야 한다.**
 - ★ **수명 연장에는 구멍이 많다** — 참조를 **반환**하거나 **멤버로 저장**하면 **안 늘어난다.**\
-  이 문서는 **블록 안 판만** 던졌다. 정본은 목록의 **30번 주제**다.
+  이 문서는 **블록 안 판만** 던졌다. 정본은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)다.
 
 ### 6. ★★ 경고 **둘** — 「없다」가 아니라 「없다고 가정한다」
 
@@ -569,7 +569,7 @@ ptr07.cpp:5:27: note: declared here
 - ★★ **`cc exit=0`** 이다. **경고일 뿐 빌드는 된다.**
 - ★★★ **그러므로 「참조가 안전하다」는 틀린 요약**이다.\
   참조가 막는 것은 「**널**」과 「**재결합**」뿐이고, **댕글링은 그대로 난다.**\
-  정본은 목록의 **30번 주제**다.
+  정본은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)다.
 - ★ 형제 [`05번`](../05-auto-and-decltype-type-deduction/)의 `decltype(auto)` 댕글링이 **같은 경고**를 받았다 —\
   거기서는 **`return (x);` 의 괄호 하나**가 이 경고를 불러냈다.
 
@@ -608,7 +608,7 @@ ptr10.cpp:2:20: note: in passing argument 1 of ‘void take_ref(int&)’
   호출자는 `f(*p)` 를 쓰기 전에 **`p` 를 검사해야 한다**는 것을 시그니처만 보고 안다.
 - ★★ **`T*` 보다 나은 도구** —\
   ① **`std::optional<T>`** — 「값이 없을 수 있음」을 **소유와 함께** 말한다(목록의 **47번 주제**) ·\
-  ② **`T*`** 는 「비소유 관찰자 + 없을 수 있음」의 정당한 자리다(목록의 **29번 주제**) ·\
+  ② **`T*`** 는 「비소유 관찰자 + 없을 수 있음」의 정당한 자리다([목록의 **29번 주제**](../29-new-delete-and-where-raw-pointers-remain/)) ·\
   ③ **`std::reference_wrapper<T>`** 는 「참조인데 재결합·저장이 된다」.\
   ★ **이 문서는 ①②③을 던져 보지 않았다** — 정본이 다른 주제다.
 
@@ -648,7 +648,7 @@ ptr10.cpp:2:20: note: in passing argument 1 of ‘void take_ref(int&)’
   ★ `T&` 는 lvalue 에만 묶이고, `const T&` 와 `T&&` 가 임시를 받는다(5번).
 - **`const T&` 매개변수 설계**의 정본은 [목록의 **10번 주제**](../10-const-correctness/)(`const` 정확성)와\
   [목록의 **11번 주제**](../11-choosing-parameter-passing/)(매개변수 전달 방식 고르기)다. ★ 3번의 「참조가 공짜는 아니다」가 거기서 결론난다.
-- **댕글링과 수명 연장**의 정본은 목록의 **30번 주제**다 —\
+- **댕글링과 수명 연장**의 정본은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)다 —\
   ★ **수명 연장이 안 되는 자리**(반환·멤버 저장·범위 for)가 거기 있고, 이 문서는 **블록 안 판만** 던졌다.
 - **포인터 산술·배열 감쇠**는 C 갈래\
   [`15-pointer-arithmetic-and-indexing/`](../../../c/syntax/15-pointer-arithmetic-and-indexing/)·[`16-array-pointer-decay-and-function-parameters/`](../../../c/syntax/16-array-pointer-decay-and-function-parameters/)다.\
@@ -706,7 +706,7 @@ ptr10.cpp:2:20: note: in passing argument 1 of ‘void take_ref(int&)’
 - **안 돌려 본 것** — **rvalue 참조 `T&&`**(정본이 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)다) ·
   **`std::reference_wrapper` 로 재결합 흉내 내기** ·
   **`std::optional`·`std::span` 으로 「없음」을 말하는 것**(정본이 목록의 **47번**·**46번 주제**다) ·
-  **수명 연장이 안 되는 자리**(참조 반환·멤버 저장·범위 for 의 임시 — 목록의 **30번 주제**) ·
+  **수명 연장이 안 되는 자리**(참조 반환·멤버 저장·범위 for 의 임시 — [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)) ·
   **참조 멤버가 있는 타입의 이동 연산**(복사 대입만 던졌다) ·
   **비트필드로의 참조**(프록시가 필요하다 — 형제 [`05번`](../05-auto-and-decltype-type-deduction/)의 `vector<bool>` 과 같은 집안) ·
   **`-O1`·`-O3`·`-Os` 의 기계어**(3번은 `-O0`·`-O2` 두 수준만 던졌다).

@@ -82,7 +82,7 @@ malloc 한 바이트 = sizeof(struct Msg)(4) + 5 = 9
   | 꼬리만 늘리기 | ★ `realloc` 으로 된다 | ★★ **통째로 다시 잡아야 한다** |
   | 복사 | ★ 대입이 포인터를 복사한다(얕은 복사) | ★★★ 대입이 **꼬리를 빠뜨린다**(4번) |
 
-- ★ **`sizeof *m` 을 쓴 이유** — 타입 이름을 두 번 안 적으면 **타입을 바꿔도 이 줄을 안 고친다.** `malloc` 관용구의 표준형이다(목록의 **37번 주제**).
+- ★ **`sizeof *m` 을 쓴 이유** — 타입 이름을 두 번 안 적으면 **타입을 바꿔도 이 줄을 안 고친다.** `malloc` 관용구의 표준형이다([목록의 **37번 주제**](../37-malloc-calloc-realloc-free/)).
 
 ### 3. 다섯 가지 배치를 던져 보면 — **에러 둘 · 확장 셋(전부 `cc exit=0`)** ★★★
 
@@ -459,7 +459,7 @@ m0[1].len = 1684234817   <- 두 번째 칸의 len 이 아니다
 | **`a[i]` 가 `*(a+i)` 이고 걸음이 `sizeof` 인 것** | [15번 형제](../15-pointer-arithmetic-and-indexing/) |
 | **구조체 선언·초기화·지정 초기자** | [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) |
 | **배열이 포인터로 감쇠하는 규칙** | [16번 형제](../16-array-pointer-decay-and-function-parameters/) |
-| **`malloc`/`realloc` 의 계약과 실패 처리** | 목록의 **37번 주제** |
+| **`malloc`/`realloc` 의 계약과 실패 처리** | [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) |
 | **배열 밖 접근이 「성공할 수 있는 것」인 이유** | 목록의 **56번 주제** |
 | **sanitizer 와 경고 플래그** | 목록의 **58번 주제** |
 | **저장 기간을 고르는 법** | [28번 형제](../28-choosing-among-four-storage-durations/) |

@@ -11,7 +11,7 @@
 > ★★★ 그리고 **여기서 갈린 축은 [27번 형제](../27-compound-literals/)와 다르다** — 무엇이었는지가 문항의 절반이다.
 > ★★ **주소 자체는 흔들린다**(ASLR). 근거로 쓸 수 있는 것은 **구역 이름 · 권한 · 주소들 사이의 차 · 같은 객체인가**뿐이다.
 > ★ **「진단이 0건」인 자리가 하나 있다** — 그것이 무엇인지도 답해야 한다(4번).
-> 선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · 목록의 **37번 주제**.
+> 선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).
 
 ## 이 파일을 푸는 법
 

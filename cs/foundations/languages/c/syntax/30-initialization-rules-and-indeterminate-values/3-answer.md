@@ -479,7 +479,7 @@ int=0 string="" pointer=<nil> struct={Port:0 Name: Next:<nil>}
 
 - **저장 기간** — [28번 형제](../28-choosing-among-four-storage-durations/).
 - **지정 초기자** — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · **패딩의 자리** — [22번 형제](../22-struct-padding-and-alignment/).
-- **`malloc`/`calloc` 계약** — 목록의 **37번 주제** · **sanitizer 사용법** — 목록의 **58번 주제**.
+- **`malloc`/`calloc` 계약** — [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) · **sanitizer 사용법** — 목록의 **58번 주제**.
 - ★ 이 주제가 책임지는 것 — ① **무엇이 0 이고 무엇이 불확정인가**(와 `.bss` 증명) ② **도구 여섯의 침묵 지도**(48칸) ③ **불확정 · 미명시 · 비값의 층 구분**.
 
 ## 실행 검증

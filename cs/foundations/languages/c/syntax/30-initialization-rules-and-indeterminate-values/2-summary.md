@@ -10,7 +10,7 @@
 > ★ C23 은 「트랩 표현」이라는 낱말을 「**비값 표현(non-value representation)**」으로 바꿨다. 이 문서는 새 이름을 쓰고 옛 이름을 괄호에 둔다.
 > ★★ **경계** — **저장 기간 자체**와 「정적은 0 · 자동은 불확정」의 **첫 관찰**은 [28번 형제](../28-choosing-among-four-storage-durations/)가 정본이다. 여기는 **그 이유와 경계선**을 판다.\
 > ★ **지정 초기자 문법**은 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/), **패딩이 어디 생기나**는 [22번 형제](../22-struct-padding-and-alignment/)가 정본이다.\
-> ★ **`malloc`/`calloc` 의 API 계약**은 목록의 **37번 주제**, **`memcmp` 의 계약**은 목록의 **50번 주제**, **sanitizer 사용법**은 목록의 **58번 주제**다.
+> ★ **`malloc`/`calloc` 의 API 계약**은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/), **`memcmp` 의 계약**은 목록의 **50번 주제**, **sanitizer 사용법**은 목록의 **58번 주제**다.
 > 선행 — [28번 형제](../28-choosing-among-four-storage-durations/).
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -1117,7 +1117,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [21번 형제 — 구조체 선언·초기화·지정 초기자](../21-struct-declaration-initialization-and-designated-initializers/) — ★★ **지정 초기자 문법**의 정본.
 - [22번 형제 — 구조체 패딩·정렬](../22-struct-padding-and-alignment/) — ★★ **패딩이 어디 생기고 `memcmp` 가 왜 위험한가**의 정본. (5)는 그 위에 **초기화 형태**만 얹었다.
 - [29번 형제 — 스코프와 링크](../29-scope-and-linkage-static-extern/) — ★ `B`/`b`(`.bss`)라는 `nm` 글자를 거기서 먼저 봤다.
-- 목록의 **37번 주제** — `malloc`/`calloc`/`realloc`/`free`. **API 계약과 실패 처리**의 정본.
+- [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) — `malloc`/`calloc`/`realloc`/`free`. **API 계약과 실패 처리**의 정본.
 - 목록의 **50번 주제** — `<string.h>` 메모리 함수. `memset`·`memcmp` 의 계약.
 - 목록의 **57번 주제** — 시간 위반. (6)이 **해제된 포인터를 안 읽은 이유**.
 - 목록의 **58번 주제** — UB 를 잡는 도구. MSan·UBSan·`-fanalyzer` **사용법**의 정본.

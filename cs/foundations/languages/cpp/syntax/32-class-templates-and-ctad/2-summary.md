@@ -12,7 +12,7 @@
 > ★★★ **[31번](../31-function-templates-and-argument-deduction/)에서 온다 — 31편이 잰 것은 다시 재지 않고 인용한다.**\
 > [31번](../31-function-templates-and-argument-deduction/) (2) — **인자 여섯 × 매개변수 꼴 넷 = 24칸의 `T`**(값 매개변수는 감쇠 · 최상위 `const` 제거) · (3) — **`max_of(1, 2.0)` 은 `deduced conflicting types`** · (4) — **명시 지정은 추론을 대신한다** · (5) — **인스턴스는 `nm -C` 로 센다.**\
 > ★★ **여기서 새로 묻는 것은 넷이다** — **생성자 인자로 클래스의 `T` 를 정하는 CTAD 격자(선언 11 × 판 2 × 컴파일러 2)** · **추론 가이드 한 줄이 무엇을 바꾸나** · **CTAD 가 안 되는 두 자리(일부만 적기 · C++17 집합체)** · **멤버 함수는 쓰일 때만 만들어진다.**
-> **경계** — 「함수 템플릿의 추론 규칙 자체」는 [31번](../31-function-templates-and-argument-deduction/)이, 「특수화」는 [33번](../33-template-specialization-and-partial-specialization/)이, 「헤더에 둘까 `.cpp` 에 둘까」는 [35번](../35-instantiation-header-placement-and-reading-errors/)이, 「컨셉 제약」은 목록의 **36번 주제**가 정본이다.
+> **경계** — 「함수 템플릿의 추론 규칙 자체」는 [31번](../31-function-templates-and-argument-deduction/)이, 「특수화」는 [33번](../33-template-specialization-and-partial-specialization/)이, 「헤더에 둘까 `.cpp` 에 둘까」는 [35번](../35-instantiation-header-placement-and-reading-errors/)이, 「컨셉 제약」은 [목록의 **36번 주제**](../36-concepts-and-requires/)가 정본이다.
 >
 > ★★ **흔들리는 칸 / 안 흔들리는 칸**
 >
@@ -706,7 +706,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - [04번](../04-brace-initialization-narrowing-and-initializer-list/) — `{}` 와 `initializer_list` 생성자 — (2)의 `{v2, v2}` 가 감싼 자리.
 - Rust 갈래 [31번](../../../rust/syntax/31-generics-trait-bounds-where-and-monomorphization/) (1)(7) — **제네릭 몸통을 정의 자리에서 검사하는 쪽**(Rust)과 **인스턴스화 때 검사하는 쪽**(C++) — (6)의 대비.
 - Java 갈래 [17번](../../../java/syntax/17-generic-declarations/) (8) — **다이아몬드 `<>` 는 기대 타입(좌변)에서** 추론한다. ★ CTAD 는 **좌변이 비어 있고 인자에서** 추론한다 — 방향이 반대다. [19번](../../../java/syntax/19-type-erasure/) — Java 는 `Box<Integer>` 와 `Box<String>` 이 **한 클래스로 지워지고**, C++ 은 (6)처럼 `Box<int>` 의 기호가 **따로 생긴다.**
-- 목록의 **36번 주제**(컨셉) — 멤버에 `requires` 를 붙여 「이 `T` 에서는 이 멤버가 없다」를 적는 법.
+- [목록의 **36번 주제**](../36-concepts-and-requires/)(컨셉) — 멤버에 `requires` 를 붙여 「이 `T` 에서는 이 멤버가 없다」를 적는 법.
 
 ## 용어 풀이
 

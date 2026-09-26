@@ -683,7 +683,7 @@ ex3.c:15:5: warning: ISO C90 forbids variable length array ‘vla’ [-Wvla]
 - **`goto`·`switch` 의 VLA 스코프 진입 금지** — [12번 형제](../12-control-flow-and-switch/)가 정본이고 여기는 **결론과 문구 차이**까지다(관용구는 [13번 형제](../13-goto-cleanup-idiom/)).
 - **감쇠와 매개변수 재작성** — [16번 형제](../16-array-pointer-decay-and-function-parameters/)가 정본이고 여기는 「**안쪽 한 겹이 실행 시점 값이 되는 자리**」만 더한다.\
   **다차원 배치 자체**는 [목록의 **17번 주제**](../17-multidimensional-arrays-and-pointer-types/)다.
-- ★★ **크기를 못 믿을 때는 `malloc`**(목록의 **37번 주제**)이다. ★ **다른 점은 하나** — **`malloc` 은 실패를 `NULL` 로 말해 주고 VLA 에는 그런 반환값이 없다.**\
+- ★★ **크기를 못 믿을 때는 `malloc`**([목록의 **37번 주제**](../37-malloc-calloc-realloc-free/))이다. ★ **다른 점은 하나** — **`malloc` 은 실패를 `NULL` 로 말해 주고 VLA 에는 그런 반환값이 없다.**\
   구조체에 가변 길이를 붙이려면 **유연 배열 멤버**([목록의 **26번 주제**](../26-flexible-array-members/))다.
 
 ---

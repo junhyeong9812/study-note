@@ -137,7 +137,7 @@ ctr_get = 15
   ★ **`sizeof(Counter)` 는 못 묻는다**(4번이 그 에러다).
 - ★★★ **`sizeof *c` 를 쓰는 곳은 `ctr_new` 한 군데**다. 크기를 아는 곳이 하나면 **그 한 곳만 고쳐 레이아웃을 바꿀 수 있다** — 쓰는 쪽은 **다시 컴파일할 필요조차 없다**(오브젝트 파일에 레이아웃이 없으니까).
 - ★ **`ctr_free` 가 반드시 있어야 하는 이유** — 쓰는 쪽은 내부를 모르므로 **무엇을 해제해야 하는지 판단할 수 없다.**\
-  내부에 또 다른 할당이 있을 수도 있다. **생성 함수를 내놓았으면 짝이 되는 해제 함수도 같이 내놓는다**(목록의 **38번 주제**).
+  내부에 또 다른 할당이 있을 수도 있다. **생성 함수를 내놓았으면 짝이 되는 해제 함수도 같이 내놓는다**([목록의 **38번 주제**](../38-expressing-ownership-conventions-in-code/)).
 - ★ **`struct` 를 안 써도 되는 이유** — 헤더의 `typedef struct Counter Counter;` 덕이다. **별칭은 불완전한 타입에도 붙는다**([6번 형제](../06-typedef-and-type-aliases/)).
 
 ### 4. 쓰는 쪽에서 값으로 품거나 스택에 놓으면 — **네 줄 다 에러 · `cc exit=1`** ★★
@@ -478,8 +478,8 @@ s25i.c:3:21: note: previous declaration of ‘Node’ with type ‘Node’
 | **패딩·정렬** | [22번 형제](../22-struct-padding-and-alignment/) |
 | **무엇을 헤더에 두나 · include guard** | 목록의 **44번 주제** |
 | **`undefined reference`·`multiple definition` 읽기** | 목록의 **45번 주제** |
-| **`malloc`/`free` 의 계약과 실패 처리** | 목록의 **37번 주제** |
-| **`_new`/`_free` 짝을 시그니처로 표현하기** | 목록의 **38번 주제** |
+| **`malloc`/`free` 의 계약과 실패 처리** | [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) |
+| **`_new`/`_free` 짝을 시그니처로 표현하기** | [목록의 **38번 주제**](../38-expressing-ownership-conventions-in-code/) |
 | **`enum` 의 선언·상수 규칙** | [7번 형제](../07-enum-and-enumeration-constants/) |
 
 - ★ **이 주제가 끝까지 책임지는 것 셋**

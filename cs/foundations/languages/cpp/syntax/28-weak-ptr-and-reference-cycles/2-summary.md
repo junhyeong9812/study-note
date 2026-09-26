@@ -16,7 +16,7 @@
 > [27번](../27-shared-ptr-and-reference-counting/) (2)(6) — **`weak_ptr` 는 강한 계수를 안 올린다 · 만료된 `lock()` 은 `nullptr`** · **`make_shared` + `weak_ptr` 면 마지막 `shared_ptr` 가 죽을 때 `~Big` 은 돌지만 해제는 0회, `weak_ptr` 가 죽을 때 1016바이트가 한꺼번에** · (4) **안 맡긴 객체의 `shared_from_this` 는 `bad_weak_ptr`** · (7) **`shared_ptr` 복사 대입에 `lock` 접두 4개**.\
 > ★★ **여기서 새로 묻는 것은 다섯이다** — **`expired()` 와 `lock()` 사이의 틈(TOCTOU)** · **트리에서 어느 방향을 약하게 하나** · **캐시·관찰자가 만료를 알아채는 법** · **`weak_ptr` 의 크기와 무엇에서 만들 수 있나** · **`unique_ptr` 에는 `weak_ptr` 가 없다**.
 > **경계** — 「RAII 가 못 지우는 것 — `shared_ptr` 순환」의 **논증은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md) 의 「C++ — RAII는 해제를 잊는 실패를 지우고, 죽은 것을 가리키는 실패는 못 지운다」 절**이 정본이다. 「참조 계수 일반론」은 [`memory-management/`](../../../../memory-management/) 쪽이다.\
-> 「제어 블록의 모양과 비용」은 [27번](../27-shared-ptr-and-reference-counting/), 「raw 포인터가 관찰자로 남는 자리」는 목록의 **29번 주제**다.
+> 「제어 블록의 모양과 비용」은 [27번](../27-shared-ptr-and-reference-counting/), 「raw 포인터가 관찰자로 남는 자리」는 [목록의 **29번 주제**](../29-new-delete-and-where-raw-pointers-remain/)다.
 >
 > ★★ **흔들리는 칸 / 안 흔들리는 칸**
 >
@@ -860,7 +860,7 @@ rustc 1.92.0 (ded5c06cf 2025-12-08)
 - ★★★ **`weak_ptr` 는 `lock()` 한 번으로 쓴다** — `expired()` 로 확인한 뒤 `lock()` 하는 두 단계에는 **틈이 열린다**((1)).
 - ★★★ **약한 참조는 소유의 반대 방향** — 트리는 **부모 → 자식 소유**, **자식 → 부모 `weak_ptr`**((3)).
 - ★★ **캐시·구독 목록의 만료 칸은 직접 치운다** — `make_shared` 객체면 **치우기 전까지 자리가 남는다**((4) · 27편 (6)).
-- ★★ **`unique_ptr` 를 약하게 보는 길은 없다** — 필요하면 **`shared_ptr` 로 옮기거나 raw 관찰자**(목록의 **29번 주제**)((5)).
+- ★★ **`unique_ptr` 를 약하게 보는 길은 없다** — 필요하면 **`shared_ptr` 로 옮기거나 raw 관찰자**([목록의 **29번 주제**](../29-new-delete-and-where-raw-pointers-remain/))((5)).
 
 ### 금지 사례 — 표로 적는다
 
@@ -928,10 +928,10 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 | 상황 | 고르는 것 | 왜 |
 |---|---|---|
 | 다른 스레드가 놓을 수 있는 객체를 쓴다 | ★★★ **`if (auto p = w.lock())`** | 확인과 사용이 한 번((1)(2)) |
-| 트리 · 부모 포인터 | ★★★ **부모 → 자식 `shared_ptr`(또는 `unique_ptr`), 자식 → 부모 `weak_ptr`** | (3) — `unique_ptr` 판은 목록의 **29번 주제** |
+| 트리 · 부모 포인터 | ★★★ **부모 → 자식 `shared_ptr`(또는 `unique_ptr`), 자식 → 부모 `weak_ptr`** | (3) — `unique_ptr` 판은 [목록의 **29번 주제**](../29-new-delete-and-where-raw-pointers-remain/) |
 | 쓰는 사람이 있을 때만 들고 싶은 캐시 | ★★ **`map<key, weak_ptr>` + 주기적 `erase_if`** | (4) |
 | 이벤트 구독자 | ★★ **`vector<weak_ptr>` + 알릴 때 치우기** | (4) |
-| 소유자가 하나(`unique_ptr`) · 관찰만 | ★★ **raw 포인터·참조**(수명을 구조가 보장할 때) | (5) — 목록의 **29번 주제** |
+| 소유자가 하나(`unique_ptr`) · 관찰만 | ★★ **raw 포인터·참조**(수명을 구조가 보장할 때) | (5) — [목록의 **29번 주제**](../29-new-delete-and-where-raw-pointers-remain/) |
 | 만료를 예외로 알리고 싶다 | ★ **`shared_ptr<T>(w)`** | `bad_weak_ptr`((5)) |
 
 ## 핵심 문장
@@ -947,7 +947,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 
 - [27번](../27-shared-ptr-and-reference-counting/) — ★★★ **이 편의 앞 절반.** 순환 누수(`Indirect leak` 2) · `weak_ptr` 로 0 · clang + ASan 의 판별 흔들림 · `make_shared` 의 늦은 해제 · `lock` 접두 4.
 - [26번](../26-unique-ptr-and-ownership-transfer/) — `unique_ptr` 에 블록이 없다는 것(크기 8)이 (5)의 에러의 뿌리다.
-- 목록의 **29번 주제** — **raw 포인터가 관찰자로 남는 자리.** `unique_ptr` 가 소유한 트리의 부모 포인터가 거기 있다.
+- [목록의 **29번 주제**](../29-new-delete-and-where-raw-pointers-remain/) — **raw 포인터가 관찰자로 남는 자리.** `unique_ptr` 가 소유한 트리의 부모 포인터가 거기 있다.
 - [`c-cpp-csharp.md`](../../../c-cpp-csharp.md) — 「C++ — RAII는 해제를 잊는 실패를 지우고, 죽은 것을 가리키는 실패는 못 지운다」 절의 **「`shared_ptr` 순환 참조는 해제되지 않는다」** 가 **논증의 정본**이다. 여기는 **그것을 끊는 방향과 `lock()` 의 원자성**을 잰 쪽이다.
 - [`memory-management/`](../../../../memory-management/) — 참조 계수·추적 GC 일반론.
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **41번**(`Rc`/`Arc`·`Weak`와 순환) — **폴더가 없다.** (6)이 한 블록을 던졌다.

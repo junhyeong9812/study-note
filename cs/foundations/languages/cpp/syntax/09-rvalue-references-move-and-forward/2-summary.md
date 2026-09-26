@@ -15,7 +15,7 @@
 > **경계** — 「어떤 식이 xvalue 인가」의 정본은 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)다 — 여기서는 **그 범주를 만드는 법**부터 쓴다.\
 > 「이동 생성자를 어떻게 구현하나」와 「이동 후 상태라는 계약」의 정본은 [목록의 **17번 주제**](../17-move-constructor-assignment-and-moved-from-state/),\
 > 「`noexcept` 가 무엇을 계약하나」는 목록의 **53번 주제**, 「그래서 매개변수를 무엇으로 받나」는 [목록의 **11번 주제**](../11-choosing-parameter-passing/),\
-> 「가변 인자 템플릿에서의 완벽 전달」은 목록의 **34번 주제**, 「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/)이 정본이다.\
+> 「가변 인자 템플릿에서의 완벽 전달」은 [목록의 **34번 주제**](../34-variadic-templates-and-pack-expansion/), 「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/)이 정본이다.\
 > 여기는 **`std::move`·`std::forward` 라는 두 함수가 실제로 무엇을 하나**까지다.
 > ★★★ **08 → 09 → 11 은 한 사슬이다** — 08 이 **범주**를 정하고, 여기가 **그 범주를 만드는 법**을 주고,\
 > 11 이 **그래서 무엇으로 받을지**를 고른다.
@@ -989,7 +989,7 @@ bits/move.h 가 전처리 결과에 들어온 횟수: 6
 - [목록의 **17번 주제**](../17-move-constructor-assignment-and-moved-from-state/) — **이동 생성자·이동 대입을 어떻게 구현하나**와 **「유효하되 미지정」이라는 계약**이 거기. 여기는 **부르는 쪽**만.
 - 목록의 **53번 주제** — **`noexcept` 가 무엇을 계약하나**가 거기. 여기는 **(7)의 결과**만.
 - [목록의 **11번 주제**](../11-choosing-parameter-passing/) — 그래서 **매개변수를 무엇으로 받나**. 08 → 09 → 11 사슬의 끝.
-- 목록의 **34번 주제** — 가변 인자 템플릿에서의 **완벽 전달**. 여기는 **인자 하나**짜리까지.
+- [목록의 **34번 주제**](../34-variadic-templates-and-pack-expansion/) — 가변 인자 템플릿에서의 **완벽 전달**. 여기는 **인자 하나**짜리까지.
 - [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/) — `=default`/`=delete` 와 0/3/5의 법칙.
 - 형제 [`07-references-vs-pointers/`](../07-references-vs-pointers/) — **참조가 무엇인가**. 그 문서는 **lvalue 참조만** 다룬다.
 - 형제 [`01-function-overloading-and-overload-resolution/`](../01-function-overloading-and-overload-resolution/) — (5)에서 **왜 복사 생성자가 뽑혔나**의 순서.
@@ -1016,5 +1016,5 @@ bits/move.h 가 전처리 결과에 들어온 횟수: 6
 - ★ **`std::move_if_noexcept`** — (7)에서 `vector` 가 고르는 것을 **손으로 쓰면** 이 함수다. 이 문서는 **던지지 않았다.**
 - ★ **`std::exchange`** — 이동 생성자에서 「가져가고 널로 비우기」를 한 줄로 쓰는 관용구. 안 던졌다.
 - ★ **`const` 를 돌려주는 함수** — `const Widget f();` 는 호출 쪽의 이동을 **전부 복사로** 만든다((5)와 같은 집안). 안 던졌다.
-- ★ **이 문서가 안 던진 것** — 가변 인자 팩의 `forward`(목록의 **34번 주제**) · 람다 초기화 캡처 `[p = std::move(p)]`(목록의 **39번 주제**) ·
+- ★ **이 문서가 안 던진 것** — 가변 인자 팩의 `forward`([목록의 **34번 주제**](../34-variadic-templates-and-pack-expansion/)) · 람다 초기화 캡처 `[p = std::move(p)]`([목록의 **39번 주제**](../39-lambdas-and-captures/)) ·
   `std::forward` 를 잘못 써서 두 번 이동하는 것 · **C++11\~14 판에서의 동작**(여기는 `-std=c++20` 한 판이다).

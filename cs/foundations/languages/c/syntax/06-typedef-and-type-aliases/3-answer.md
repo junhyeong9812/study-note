@@ -303,7 +303,7 @@ opq2.c:2:37: error: invalid application of ‘sizeof’ to incomplete type ‘S�
 ```
 
 - **포인터로만** 다룬다. 값으로 못 넘기고 스택에 못 놓는다.
-- 그래서 `make`/`destroy` 짝이 API 에 따라온다(목록의 **38번 주제**).
+- 그래서 `make`/`destroy` 짝이 API 에 따라온다([목록의 **38번 주제**](../38-expressing-ownership-conventions-in-code/)).
 
 **컴파일 관점의 이득**
 
@@ -586,7 +586,7 @@ re.c:1:13: note: previous declaration of ‘T’ with type ‘T’ {aka ‘int�
 **안 돌려 본 것 / 못 잰 것**
 
 - **안 돌려 본 것** — `struct` 래퍼의 **런타임 비용**(인라인되어 사라지는지) · `typedef` 와 `_Generic` 을 결합한\
-  타입 제네릭 인터페이스(목록의 **40번 주제**) · C23 의 `typeof_unqual` · `typedef` 가 붙은 VLA([목록의 **18번 주제**](../18-variable-length-arrays-vla/)).
+  타입 제네릭 인터페이스([목록의 **40번 주제**](../40-generic-selection-c11/)) · C23 의 `typeof_unqual` · `typedef` 가 붙은 VLA([목록의 **18번 주제**](../18-variable-length-arrays-vla/)).
 - **못 잰 것** — 없다. 이 주제는 컴파일만으로 전부 확인된다.
 
 **버전이 올랐을 때 다시 돌려야 하는 것**

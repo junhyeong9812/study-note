@@ -18,7 +18,7 @@
 > [05번](../05-auto-and-decltype-type-deduction/) (6) — **`decltype(auto)` 의 `return (x);` 댕글링 — 두 컴파일러 경고 · `run exit=139`**.\
 > ★★ **여기서 새로 묻는 것은 셋이다** — **댕글링 일곱 모양 × 도구 여섯, 잡은 칸은 몇인가** · **수명 연장이 되는 것과 안 되는 것의 경계** · **범위 `for` 의 임시가 C++23 판에서 고쳐졌나(이 두 컴파일러에서)**.
 > **경계** — 「**누가 아직 보고 있는가**」의 **논증은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md) 의 「C++ — RAII는 해제를 잊는 실패를 지우고, 죽은 것을 가리키는 실패는 못 지운다」 절**이 정본이다(「지역 객체에 대한 포인터·참조 반환은 여전히 컴파일된다」). 여기는 **코드 패턴과 도구의 칸**이다.\
-> 「람다 캡처」 전반은 목록의 **39번 주제**, 「`string_view`」는 **46번 주제**, 「이터레이터 무효화」는 **43번 주제**가 정본이다.
+> 「람다 캡처」 전반은 [목록의 **39번 주제**](../39-lambdas-and-captures/), 「`string_view`」는 **46번 주제**, 「이터레이터 무효화」는 **43번 주제**가 정본이다.
 >
 > ★★ **흔들리는 칸 / 안 흔들리는 칸**
 >
@@ -650,7 +650,7 @@ For more information about this error, try `rustc --explain E0716`.
 
 - ★★★ **탐침 1(지역 참조 반환) → `E0515` · 탐침 5(지역을 빌린 클로저 반환) → `E0373` · 탐침 4(임시 `String` 의 뷰) → `E0716`** — 셋 다 **`cc exit=1`**.
 - ★★★ **C++ 에서 격자의 칸이 비던 자리가 Rust 에서는 빌드 실패**다 — 빌림 검사기는 **「참조가 가리키는 것보다 오래 살 수 있나」를 타입(수명)으로** 묻는다.
-- ★★ **`E0373` 의 `help:` 가 처방까지 말한다**(`move || x`) — C++ 에서는 `[=]` 가 그 자리다(목록의 **39번 주제**).
+- ★★ **`E0373` 의 `help:` 가 처방까지 말한다**(`move || x`) — C++ 에서는 `[=]` 가 그 자리다([목록의 **39번 주제**](../39-lambdas-and-captures/)).
 - ★ `E0106`(수명 표기 누락)·`E0597`(`does not live long enough`)은 Rust 갈래 [11번](../../../rust/syntax/11-borrow-checker-rejections/)·[12번](../../../rust/syntax/12-lifetime-annotations-and-elision/)이 정본이다. `E0515` 는 [13번](../../../rust/syntax/13-struct-references-and-static/)·[14번](../../../rust/syntax/14-string-vs-str/)에도 나온다.
 
 ### (7) ★★ Go — 지역의 주소를 돌려줘도 된다
@@ -795,7 +795,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 | 임시를 오래 들고 싶다 | ★★ **값으로 받는다** · 참조면 **직접 묶는 모양만** | (4) |
 | 참조 멤버를 가진 타입 | ★★ **생성자로 임시를 받지 않게** 설계 · 집합체면 **중괄호** | 탐침 7 · (f)(g) |
 | `for (x : make().items())` | ★★ **임시에 이름을 붙여 루프보다 오래 살린다** — cppreference 가 C++20 init-statement 판을 싣는다(**이 문서는 던지지 않았다**) | (5) — P2718 판별 전까지 |
-| 람다를 밖으로 돌려준다 | ★★ **`[=]`·초기화 캡처**(이 문서는 던지지 않았다) | 탐침 5 — 목록의 **39번 주제** |
+| 람다를 밖으로 돌려준다 | ★★ **`[=]`·초기화 캡처**(이 문서는 던지지 않았다) | 탐침 5 — [목록의 **39번 주제**](../39-lambdas-and-captures/) |
 | `string_view` | ★★ **가리키는 `string` 이 더 오래 사는지** 확인 | 탐침 4 — 목록의 **46번 주제** |
 
 ## 핵심 문장
@@ -813,11 +813,11 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - [14번](../14-destructors-and-deterministic-destruction/) (4) — 임시는 전체 식 끝에서 죽는다 · `c_str()` 댕글링은 **clang 만 경고**.
 - [08번](../08-value-categories-lvalue-prvalue-xvalue/) (7) — `T&&` 도 늘린다 · xvalue 는 늘 것이 없다.
 - [05번](../05-auto-and-decltype-type-deduction/) (6) — `decltype(auto)` 의 괄호 하나가 만드는 댕글링.
-- 목록의 **29번 주제** — `vector` 원소 포인터의 `heap-use-after-free`(재할당이 만든 댕글링).
+- [목록의 **29번 주제**](../29-new-delete-and-where-raw-pointers-remain/) — `vector` 원소 포인터의 `heap-use-after-free`(재할당이 만든 댕글링).
 - [`c-cpp-csharp.md`](../../../c-cpp-csharp.md) — 「C++ — RAII는 해제를 잊는 실패를 지우고, 죽은 것을 가리키는 실패는 못 지운다」 절 — **「RAII는 누가 해제하는가에 답하지만 누가 아직 보고 있는가에는 답하지 않는다」** 의 논증 정본. 이 편 (1)의 빈 칸 12개가 그 문장의 실측이다.
 - Rust 갈래 [11번](../../../rust/syntax/11-borrow-checker-rejections/)(E0106 · E0597) · [12번](../../../rust/syntax/12-lifetime-annotations-and-elision/)(수명 표기) — (6)의 정본.
 - Go 갈래 [13번](../../../go/syntax/13-closures-variable-capture-and-loop-variable-change/) — 클로저 캡처와 `moved to heap`.
-- 목록의 **39번 주제**(람다와 캡처) · **43번 주제**(이터레이터 무효화) · **46번 주제**(`string`·`string_view`).
+- [목록의 **39번 주제**](../39-lambdas-and-captures/)(람다와 캡처) · **43번 주제**(이터레이터 무효화) · **46번 주제**(`string`·`string_view`).
 
 ## 용어 풀이
 

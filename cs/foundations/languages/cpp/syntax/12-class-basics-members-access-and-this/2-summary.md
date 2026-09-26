@@ -982,7 +982,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 
 ## 더 들어가면
 
-- **`this` 를 명시적으로 적어야 하는 자리** — 템플릿 기반 클래스의 멤버를 쓸 때 `this->base_member` 가 필요하다(의존 이름). 정본은 목록의 **35번 주제**다.
+- **`this` 를 명시적으로 적어야 하는 자리** — 템플릿 기반 클래스의 멤버를 쓸 때 `this->base_member` 가 필요하다(의존 이름). 정본은 [목록의 **35번 주제**](../35-instantiation-header-placement-and-reading-errors/)다.
 - **`friend` 를 클래스 안에 정의하는 관용구**(hidden friend) — `operator<<` 를 클래스 안에 `friend` 로 **정의**하면 ADL 로만 찾아진다. 형제 [`06번`](../06-namespaces-and-adl/)과 [목록의 **22번 주제**](../22-operator-overloading/)가 만난다.
 - **`[[no_unique_address]]`(C++20)** — 비어 있는 **데이터 멤버**에도 빈 기반 최적화와 같은 일을 해 준다. (2)의 `EmptyBase` 가 4인 것과 짝이 되는 기능이다.
 - **명시적 객체 매개변수(C++23)** — `void f(this Self&& self)` 로 `this` 를 **보이는 인자**로 적는다. 이 문서의 기준(C++20)에서는 쓸 수 없다.

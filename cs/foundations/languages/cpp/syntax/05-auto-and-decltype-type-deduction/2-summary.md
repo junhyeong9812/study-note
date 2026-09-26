@@ -12,10 +12,10 @@
 > **버전** — `auto`·`decltype` 은 **C++11부터**. **`decltype(auto)` 와 일반 함수의 반환 타입 추론은 C++14부터**.\
 > **`auto x{1}` 이 `int` 인 것은 C++17부터**. **매개변수 `auto`(축약 템플릿)는 C++20부터**((10)).
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 타입은 컴파일러 진단으로 접지했다.
-> **경계** — 「템플릿 인자 추론」의 정본은 목록의 **31번 주제**다.\
+> **경계** — 「템플릿 인자 추론」의 정본은 [목록의 **31번 주제**](../31-function-templates-and-argument-deduction/)다.\
 > `auto` 의 규칙은 그것과 **거의 같지만 한 곳이 다르고**(중괄호 목록), 여기서는 **`auto` 쪽만** 쓴다((2)).\
 > 「값 범주(lvalue·xvalue·prvalue)」는 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/), 「전달 참조와 `std::forward`」는 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/),\
-> 「댕글링과 수명」은 목록의 **30번 주제**가 정본이다.\
+> 「댕글링과 수명」은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)가 정본이다.\
 > 「배열이 포인터로 감쇠하는 것」은 C 갈래 [`16번`](../../../c/syntax/16-array-pointer-decay-and-function-parameters/)이 정본이다((4)).\
 > 「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/)이다.\
 > 「`auto x{1}` 대 `auto x = {1}`」의 정본은 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/)이고 여기서는 **되짚기만** 한다.
@@ -865,11 +865,11 @@ int main() {
 - [**07번 형제**](../07-references-vs-pointers/) — `auto&`·`auto&&` 의 `&` 가 **무엇인지**가 거기다.
 - [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)(값 범주) — `decltype(식)` 이 `T`/`T&`/`T&&` 중 무엇이 되는지를 **가르는 규칙**.
 - [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)(rvalue 참조·`forward`) — `auto&&` 가 왜 「전달 참조」인지.
-- 목록의 **31번 주제**(함수 템플릿과 인자 추론) — ★ **`auto` 규칙의 본체.**\
+- [목록의 **31번 주제**](../31-function-templates-and-argument-deduction/)(함수 템플릿과 인자 추론) — ★ **`auto` 규칙의 본체.**\
   여기는 「그래서 `auto` 를 어떻게 읽나」까지고, **템플릿 쪽 규칙 전부**는 거기다.
-- 목록의 **30번 주제**(댕글링 참조와 수명) — (6)의 사고를 **수명 쪽에서** 본다.
+- [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)(댕글링 참조와 수명) — (6)의 사고를 **수명 쪽에서** 본다.
 - 목록의 **41번 주제**(순차 컨테이너) — `std::vector<bool>` 이 **왜 특수화인지**는 거기.
-- 목록의 **39번 주제**(람다) — **타입을 이름으로 못 적는** 가장 흔한 자리.
+- [목록의 **39번 주제**](../39-lambdas-and-captures/)(람다) — **타입을 이름으로 못 적는** 가장 흔한 자리.
 - C 갈래 [`16-array-pointer-decay-and-function-parameters/`](../../../c/syntax/16-array-pointer-decay-and-function-parameters/) —\
   (4)의 감쇠 규칙의 정본.
 - C 갈래 [`01-declaration-syntax-and-reading/`](../../../c/syntax/01-declaration-syntax-and-reading/) —\
@@ -900,11 +900,11 @@ int main() {
 
 - **`auto` 와 템플릿 추론이 갈리는 한 곳** — **중괄호 목록**이다.\
   `auto x = {1, 2};` 는 `initializer_list<int>` 가 되지만, `template <class T> void f(T x);` 에\
-  `f({1, 2})` 를 넘기면 **추론이 실패한다.** ★ **이 문서는 템플릿 쪽을 안 던졌다** — 정본은 목록의 **31번 주제**다.
+  `f({1, 2})` 를 넘기면 **추론이 실패한다.** ★ **이 문서는 템플릿 쪽을 안 던졌다** — 정본은 [목록의 **31번 주제**](../31-function-templates-and-argument-deduction/)다.
 - **`decltype(auto)` 를 변수에 쓰기** — `decltype(auto) x = e;` 도 된다. 이 문서는 **반환 타입 쪽만** 던졌다.
 - **후행 반환 타입**(`auto f() -> decltype(...)`) — C++11 에서 `decltype` 이 매개변수를 볼 수 있게 하려고 나온 문법.\
   C++14 의 반환 타입 추론이 대부분을 대신한다. ★ 이 문서는 안 던졌다.
-- **컨셉으로 제약한 `auto`**(`std::integral auto x = ...`) — C++20. 정본은 목록의 **36번 주제**.
+- **컨셉으로 제약한 `auto`**(`std::integral auto x = ...`) — C++20. 정본은 [목록의 **36번 주제**](../36-concepts-and-requires/).
 - **`auto` 와 구조적 바인딩**(`auto [a, b] = pair;`) — 추론 규칙이 한 겹 더 있다. 정본은 목록의 **48번 주제**.
 - **프록시가 `auto` 를 무는 다른 사례** — 표현식 템플릿(Eigen 류)이 같은 모양이다.\
   ★ 이 문서는 **표준 라이브러리 안의 사례 하나만**(`vector<bool>`) 던졌다.

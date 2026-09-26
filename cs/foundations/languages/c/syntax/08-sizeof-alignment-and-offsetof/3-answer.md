@@ -469,7 +469,7 @@ alred.c:2:34: error: ‘_Alignas’ specifiers cannot reduce alignment of ‘x�
 - **`max_align_t` 의 정렬**(여기선 16)을 지킨다. 즉 **어떤 타입으로 써도 정렬이 맞는다.**
 - 확인 방법은 `(unsigned long)p % _Alignof(max_align_t)` 를 찍는 것 — **나머지가 0** 이었다.
 - 더 큰 정렬이 필요하면 **`aligned_alloc`**(C11) 이다. `aligned_alloc(64, 128)` 의 주소가 64의 배수였다.
-- 정본은 목록의 **37번 주제**.
+- 정본은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).
 
 **`alignof` 철자**
 

@@ -14,7 +14,7 @@
 > [09번](../09-rvalue-references-move-and-forward/) (6) — **`T&&` 에 lvalue 를 넘기면 `T = int&`, 축약해 `int&`** · **`probe(42)` 와 `probe(std::move(i))` 는 같은 인스턴스라 에러가 여섯 줄**.\
 > Rust 갈래 [31번](../../../rust/syntax/31-generics-trait-bounds-where-and-monomorphization/) (7)(8) — **C++ 템플릿의 몸통은 인스턴스화할 때 검사된다**(두 컴파일러 `exit 0`) · **단형화를 센다.**\
 > ★★ **여기서 새로 묻는 것은 넷이다** — **추론된 `T` 를 컴파일러가 말하게 하는 탐침** · **인자 여섯 × 매개변수 꼴 넷 = 24칸 격자** · **추론이 멈추는 다섯 자리** · **인스턴스가 몇 개 생기나**.
-> **경계** — 「클래스 템플릿과 CTAD」는 목록의 **32번 주제**, 「가변 인자 템플릿」은 **34번**, 「인스턴스화와 오류 읽기」는 **35번**, 「컨셉」은 **36번** 주제가 정본이다. 「컴파일 단계 일반」은 [`compiler-pipeline/`](../../../../compiler-pipeline/) 쪽이다.
+> **경계** — 「클래스 템플릿과 CTAD」는 [목록의 **32번 주제**](../32-class-templates-and-ctad/), 「가변 인자 템플릿」은 **34번**, 「인스턴스화와 오류 읽기」는 **35번**, 「컨셉」은 **36번** 주제가 정본이다. 「컴파일 단계 일반」은 [`compiler-pipeline/`](../../../../compiler-pipeline/) 쪽이다.
 >
 > ★★ **흔들리는 칸 / 안 흔들리는 칸**
 >
@@ -707,7 +707,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - [01번](../01-function-overloading-and-overload-resolution/) — 오버로드 해석의 변환 순서 — 추론은 **그 앞 단계**라 변환을 모른다((3)).
 - [TS 21번](../../../ts/syntax/21-inference-control-const-and-noinfer/) — `const probe: null` 탐침 — (1)과 같은 원리.
 - Rust 갈래 [31번](../../../rust/syntax/31-generics-trait-bounds-where-and-monomorphization/) — 경계·단형화, C++ 템플릿의 인스턴스화 시점 검사.
-- 목록의 **32번 주제**(클래스 템플릿과 CTAD) · 목록의 **34번 주제**(가변 인자) · 목록의 **35번 주제**(인스턴스화와 오류 읽기) · 목록의 **36번 주제**(컨셉).
+- [목록의 **32번 주제**](../32-class-templates-and-ctad/)(클래스 템플릿과 CTAD) · [목록의 **34번 주제**](../34-variadic-templates-and-pack-expansion/)(가변 인자) · [목록의 **35번 주제**](../35-instantiation-header-placement-and-reading-errors/)(인스턴스화와 오류 읽기) · [목록의 **36번 주제**](../36-concepts-and-requires/)(컨셉).
 
 ## 용어 풀이
 
@@ -736,5 +736,5 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 
 - **부분 순서(partial ordering)** — 여러 함수 템플릿이 다 맞을 때 **더 특수한 것**을 고르는 규칙. 이 문서는 던지지 않았다.
 - **기본 템플릿 인자 · 매개변수 둘(`T`, `U`)** — `max_of` 를 `template <class T, class U>` 로 만들면 (3)의 1. 이 풀린다 — 대신 **반환 타입을 무엇으로 할지**가 새 문제가 된다. 이 문서는 던지지 않았다.
-- **C++17 CTAD** — 클래스 템플릿도 생성자 인자로 추론한다. 목록의 **32번 주제**의 정본.
-- **C++20 컨셉으로 추론 결과를 제약하기** — 목록의 **36번 주제**.
+- **C++17 CTAD** — 클래스 템플릿도 생성자 인자로 추론한다. [목록의 **32번 주제**](../32-class-templates-and-ctad/)의 정본.
+- **C++20 컨셉으로 추론 결과를 제약하기** — [목록의 **36번 주제**](../36-concepts-and-requires/).

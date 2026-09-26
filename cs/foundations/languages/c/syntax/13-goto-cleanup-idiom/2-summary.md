@@ -21,8 +21,8 @@
 > ★ **gcc 13.3.0 에는 `-std=c23` 이 없다**(`-std=c2x` 뿐) — 이 문서도 `-std=c2x` 로 던졌다.
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
 > ★★ **경계** — `goto` 자체의 기본 동작과 VLA 스코프 금지는 [12번 형제](../12-control-flow-and-switch/)가 정본이다.\
-> 여기는 「**그것으로 다중 자원 해제를 어떻게 짜나**」만 본다. `malloc`/`free` 의 계약은 목록의 **37번 주제**가 정본이다.
-> 선행 — [12번 형제](../12-control-flow-and-switch/) · 목록의 **37번 주제**.
+> 여기는 「**그것으로 다중 자원 해제를 어떻게 짜나**」만 본다. `malloc`/`free` 의 계약은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/)가 정본이다.
+> 선행 — [12번 형제](../12-control-flow-and-switch/) · [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).
 
 ## 한눈에 — 쉽게 말하면
 
@@ -959,8 +959,8 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [`12-control-flow-and-switch/`](../12-control-flow-and-switch/) — ★★ **`goto` 자체의 정본.** 그쪽은 「`goto` 가 무엇을 할 수 있나·VLA 스코프 금지」, 여기는 **「그것으로 다중 자원 해제를 어떻게 짜나」**
 - [`14-pointers-address-dereference-and-pointer-types/`](../14-pointers-address-dereference-and-pointer-types/) — 자원 포인터를 `NULL` 로 두는 것 · **이중 포인터로 호출자의 포인터를 바꾸는 것**
 - [`08-sizeof-alignment-and-offsetof/`](../08-sizeof-alignment-and-offsetof/) — `calloc(n, sizeof *t)` 의 `sizeof` 가 컴파일 시간에 정해지는 것
-- 목록의 **37번 주제** (`malloc`/`calloc`/`realloc`/`free`) — ★ **`free(NULL)` 보장과 `realloc` 실패 처리의 정본.** 여기는 **정리 경로의 모양**만
-- 목록의 **38번 주제** (소유권 관례를 코드로 표현하기) — 「누가 해제하는가」를 시그니처로 말하는 법
+- [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) (`malloc`/`calloc`/`realloc`/`free`) — ★ **`free(NULL)` 보장과 `realloc` 실패 처리의 정본.** 여기는 **정리 경로의 모양**만
+- [목록의 **38번 주제**](../38-expressing-ownership-conventions-in-code/) (소유권 관례를 코드로 표현하기) — 「누가 해제하는가」를 시그니처로 말하는 법
 - 목록의 **46번 주제** (`errno` 와 오류 반환 관례) — `rc` 를 어떻게 정하나
 - 목록의 **57번 주제** (해제 후 사용·이중 해제) — 이 패턴이 깨졌을 때 생기는 것
 - 목록의 **58번 주제** (UB 를 잡는 도구) — LeakSanitizer 로 실패 경로를 검산하는 법

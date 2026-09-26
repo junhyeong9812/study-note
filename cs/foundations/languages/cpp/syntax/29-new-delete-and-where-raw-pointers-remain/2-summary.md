@@ -537,7 +537,7 @@ int main(int argc, char** argv) {
 - ★★★ **(c) C API 경계** — `fopen`·`strdup` 의 결과를 **받는 즉시 삭제자 달린 `unique_ptr`** 에 넣었다. **`free` → `fclose` 순**(선언 역순)으로 돌고, 크기는 **8 · 8**(빈 삭제자 — 26편 (3)의 「8 로 남은 셋」과 같은 부류).
 - ★★ **(i) 인덱스** — `push_back` 여덟 번 뒤에도 `v[first].v = 1`. **줄 번호는 이사를 견딘다.**
 - ★★★ **(t) 트리의 부모 포인터** — 부모가 자식을 **`unique_ptr` 로 소유**하고, 자식은 부모를 **`Node*`** 로 가리킨다. 손자에서 뿌리까지 `y -> x -> r`, ASan **침묵**.\
-  ★★ **정당한 이유는 수명이 구조로 보장되기 때문**이다 — 자식은 **부모의 멤버(`kids`)로서 부모보다 먼저 죽는다**(`~Node r` 본체가 돈 **뒤에** `kids` 가 파괴되어 `~Node x`·`~Node y`). 목록의 **28번 주제**의 설계 A 를 **`weak_ptr` 없이** 만든 판이다.
+  ★★ **정당한 이유는 수명이 구조로 보장되기 때문**이다 — 자식은 **부모의 멤버(`kids`)로서 부모보다 먼저 죽는다**(`~Node r` 본체가 돈 **뒤에** `kids` 가 파괴되어 `~Node x`·`~Node y`). [목록의 **28번 주제**](../28-weak-ptr-and-reference-cycles/)의 설계 A 를 **`weak_ptr` 없이** 만든 판이다.
 
 ★★★ **정당하지 않은 자리 — `vector` 원소를 raw 포인터로 들고 `push_back`.**
 
@@ -735,7 +735,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - [20번](../20-virtual-destructors-and-polymorphic-deletion/) (6) — 파생 배열을 기반 포인터로 `delete[]` — g++ SEGV · clang 조용한 쓰레기(**다른 사고**).
 - [15번](../15-raii-resources-as-types/) — ASan 은 메모리만 본다 · RAII 로 세 경로를 덮기.
 - [07번](../07-references-vs-pointers/) — 관찰자를 `T&` 로 받을지 `T*` 로 받을지(널 가능성).
-- 목록의 **28번 주제** — 공유 소유 트리의 부모 포인터는 `weak_ptr`. 이 편의 (t)는 **단독 소유 트리**다.
+- [목록의 **28번 주제**](../28-weak-ptr-and-reference-cycles/) — 공유 소유 트리의 부모 포인터는 `weak_ptr`. 이 편의 (t)는 **단독 소유 트리**다.
 - [`c-cpp-csharp.md`](../../../c-cpp-csharp.md) — 「C++ — RAII는 해제를 잊는 실패를 지우고, 죽은 것을 가리키는 실패는 못 지운다」 절 — **「C API 경계에서는 전부 raw 포인터로 돌아간다」** 의 논증 정본.
 - C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **37번**(`malloc`/`calloc`/`realloc`/`free`) — **폴더가 없다.** · [C 13번 `goto cleanup`](../../../c/syntax/13-goto-cleanup-idiom/) — C 에서 여러 자원을 되감는 법.
 - 목록의 **43번 주제**(이터레이터 범주와 무효화 규칙) · **51번 주제**(예외와 스택 되감기).

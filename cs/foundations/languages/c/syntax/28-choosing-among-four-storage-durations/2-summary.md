@@ -14,9 +14,9 @@
 > ★★ **경계** — **스택 프레임·가상 메모리·힙의 구조**는 [`foundations/memory-management/`](../../../../memory-management/)와 [`foundations/variables-and-memory/`](../../../../variables-and-memory/)가 정본이다.\
 > 여기는 「**C 에서 이 값을 어느 저장 기간에 둘까**」라는 **선택**만 본다 — ★ 구조가 아니라 **고르는 법**이다.\
 > ★ **`static` 이 링크를 바꾸는 것**은 [목록의 **29번 주제**](../29-scope-and-linkage-static-extern/), **초기화 규칙과 불확정 값**은 [목록의 **30번 주제**](../30-initialization-rules-and-indeterminate-values/)가 정본이다.\
-> ★ **`malloc`/`free` 의 계약**은 목록의 **37번 주제**, **해제 후 사용·댕글링**은 목록의 **57번 주제**, **sanitizer** 는 목록의 **58번 주제**다.\
+> ★ **`malloc`/`free` 의 계약**은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/), **해제 후 사용·댕글링**은 목록의 **57번 주제**, **sanitizer** 는 목록의 **58번 주제**다.\
 > ★ **문자열 리터럴**은 [20번 형제](../20-null-terminated-strings-and-string-literals/), **VLA** 는 [18번 형제](../18-variable-length-arrays-vla/), **복합 리터럴**은 [27번 형제](../27-compound-literals/)가 정본이다.
-> 선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · 목록의 **37번 주제**.
+> 선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ## 한눈에 — 쉽게 말하면
@@ -893,7 +893,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
   ★ 이 편의 (1)은 그 구조를 **다시 설명하지 않고** `/proc/self/maps` 에 **대조만** 한다.
 - [목록의 **29번 주제**](../29-scope-and-linkage-static-extern/) — 스코프와 링크(`static`·`extern`). **파일 스코프 `static` 이 링크를 바꾸는 것**은 그쪽이 정본이다.
 - [목록의 **30번 주제**](../30-initialization-rules-and-indeterminate-values/) — 초기화 규칙과 불확정 값. **무엇이 0 이 되고 무엇이 불확정인가**의 정본이다. 여기는 **저장 기간과 묶어서만** 본다.
-- 목록의 **37번 주제** — `malloc`/`calloc`/`realloc`/`free`. **할당 저장 기간의 API 계약**은 그쪽이다.
+- [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) — `malloc`/`calloc`/`realloc`/`free`. **할당 저장 기간의 API 계약**은 그쪽이다.
 - 목록의 **57번 주제** — 시간 위반(해제 후 사용·이중 해제·댕글링). **(5)의 UB 가 왜 최악인가**는 그쪽이다.
 - 목록의 **58번 주제** — UB 를 잡는 도구. (5)의 ASan 과 경고 플래그는 그쪽이 정본이다.
 - [20번 형제 — 널 종단 문자열과 문자열 리터럴](../20-null-terminated-strings-and-string-literals/) — ★★ **문자열 리터럴의 저장 기간·수정 금지**의 정본.\

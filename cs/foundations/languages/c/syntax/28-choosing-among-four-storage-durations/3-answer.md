@@ -416,7 +416,7 @@ thread_local a = 1
 | 함수 안 `static int s;` | ★ **정적** | 이 주제(링크는 [목록의 **29번 주제**](../29-scope-and-linkage-static-extern/)) |
 | 파일 스코프 `int g;` · `static int g;` | ★ **정적** | [목록의 **29번 주제**](../29-scope-and-linkage-static-extern/) |
 | `_Thread_local int t;` | ★ **스레드** | 이 주제 |
-| `malloc`/`calloc`/`realloc` | ★ **할당** | 목록의 **37번 주제** |
+| `malloc`/`calloc`/`realloc` | ★ **할당** | [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) |
 | `"hello"` | ★ **정적**(권한 `r--p`) | [20번 형제](../20-null-terminated-strings-and-string-literals/) |
 | 함수 안 `(struct P){1,2}` | ★ **자동** | [27번 형제](../27-compound-literals/) |
 | 파일 스코프 `(struct P){1,2}` | ★ **정적** | [27번 형제](../27-compound-literals/) |
@@ -448,7 +448,7 @@ thread_local a = 1
   | 호출마다 하나(짧게) | **자동** |
   | 호출마다 하나(길게·크게) | **할당** |
 
-- ★ **함수 밖으로 돌려줄 값은 두 가지 형태**다 — ① **`malloc` 해서 돌려주고 소유권을 넘긴다**(목록의 **38번 주제**) ② **호출자가 준 자리(버퍼 + 길이)에 채운다.**\
+- ★ **함수 밖으로 돌려줄 값은 두 가지 형태**다 — ① **`malloc` 해서 돌려주고 소유권을 넘긴다**([목록의 **38번 주제**](../38-expressing-ownership-conventions-in-code/)) ② **호출자가 준 자리(버퍼 + 길이)에 채운다.**\
   ★ 뒤엣것이 대개 낫다 — **할당을 호출자가 고른다.**
 - ★★ **큰 버퍼를 할당에 두는 이유 두 가지** — ① **스택 한도가 있고 넘치면 그냥 죽는다**(4번) ② **`malloc` 은 실패를 `NULL` 로 알려 줘 검사할 수 있다.**
 - ★★ 함수 안 `static` 의 대가는 「**재진입 불가·스레드 안전하지 않음**」이다.\
@@ -494,8 +494,8 @@ thread_local a = 1
 | **스택 프레임 · 가상 메모리 · 힙의 구조** | [`foundations/memory-management/`](../../../../memory-management/) · [`foundations/variables-and-memory/`](../../../../variables-and-memory/) |
 | **`static` 이 링크를 바꾸는 것 · `extern`** | [목록의 **29번 주제**](../29-scope-and-linkage-static-extern/) |
 | **무엇이 0 이 되고 무엇이 불확정인가** | [목록의 **30번 주제**](../30-initialization-rules-and-indeterminate-values/) |
-| **`malloc`/`calloc`/`realloc`/`free` 의 계약** | 목록의 **37번 주제** |
-| **소유권을 시그니처로 표현하기** | 목록의 **38번 주제** |
+| **`malloc`/`calloc`/`realloc`/`free` 의 계약** | [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) |
+| **소유권을 시그니처로 표현하기** | [목록의 **38번 주제**](../38-expressing-ownership-conventions-in-code/) |
 | **댕글링·해제 후 사용이 왜 최악인가** | 목록의 **57번 주제** |
 | **sanitizer 와 경고 플래그** | 목록의 **58번 주제** |
 | **문자열 리터럴** | [20번 형제](../20-null-terminated-strings-and-string-literals/) |

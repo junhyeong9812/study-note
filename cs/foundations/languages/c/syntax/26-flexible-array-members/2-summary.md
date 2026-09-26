@@ -14,8 +14,8 @@
 > 여기는 「**마지막 멤버의 길이를 비워 두면 무엇이 달라지나**」만 본다 — ★ **꼬리 패딩이 할당 산술에 새어 드는 자리**가 이 편의 값이다.\
 > ★ **`sizeof`·`offsetof` 라는 도구**는 [8번 형제](../08-sizeof-alignment-and-offsetof/), **포인터 산술**은 [15번 형제](../15-pointer-arithmetic-and-indexing/)가 정본이다.\
 > ★ **배열이 포인터로 감쇠하는 규칙**은 [16번 형제](../16-array-pointer-decay-and-function-parameters/), **크기를 모르는 배열**은 [25번 형제](../25-incomplete-types-and-opaque-struct/)다.\
-> ★ **`malloc` 의 계약과 실패 처리**는 목록의 **37번 주제**, **배열 밖 접근**은 목록의 **56번 주제**가 정본이다.
-> 선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [22번 형제](../22-struct-padding-and-alignment/) · 목록의 **37번 주제**.
+> ★ **`malloc` 의 계약과 실패 처리**는 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/), **배열 밖 접근**은 목록의 **56번 주제**가 정본이다.
+> 선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [22번 형제](../22-struct-padding-and-alignment/) · [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ## 한눈에 — 쉽게 말하면
@@ -229,7 +229,7 @@ malloc 한 바이트 = sizeof(struct Msg)(4) + 5 = 9
 - ★★ **바이트 덤프가 `05 00 00 00 68 65 6c 6c 6f`** 다. `len = 5` 가 리틀 엔디언으로 4바이트, 바로 뒤에 `hello` 다섯 바이트다 — **머리와 꼬리가 한 덩어리**임이 보인다.
 - ★★ **`free` 가 한 번**이다. 두 번 할당하는 방식은 **해제 순서**(`m->data` 를 먼저)를 틀릴 수 있는데 여기서는 **틀릴 순서가 없다.**
 - ★ **포인터 8바이트를 아낀다.** `char *data;` 를 쓰면 구조체가 그만큼 커진다.
-- ★ **`sizeof *m` 을 썼지 `sizeof(struct Msg)` 를 안 썼다** — 타입 이름을 두 번 안 적는 관용구다(목록의 **37번 주제**).
+- ★ **`sizeof *m` 을 썼지 `sizeof(struct Msg)` 를 안 썼다** — 타입 이름을 두 번 안 적는 관용구다([목록의 **37번 주제**](../37-malloc-calloc-realloc-free/)).
 
 비용 — **크기를 바꾸려면 통째로 다시 할당**해야 한다. `char *data` 방식은 꼬리만 `realloc` 하면 된다.
 
@@ -1022,7 +1022,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
   그쪽은 **타입 전체가 불완전**하고, 여기는 **구조체는 완전한데 꼬리만 비어 있다.**
 - [28번 형제 — 저장 기간 4종을 고르는 법](../28-choosing-among-four-storage-durations/) — ★ (8) 때문에 FAM 구조체는 **거의 언제나 할당 저장 기간**이다.
 - [23번 형제 — `union` 과 타입 펀닝의 경계](../23-union-and-the-boundary-of-type-punning/) — ★ `union` 의 멤버로 FAM 구조체를 넣는 것도 **(3)의 확장**에 걸린다.
-- 목록의 **37번 주제** — `malloc`/`realloc` 의 계약. **크기를 바꾸려면 통째로 다시 할당**해야 하는 이유는 그쪽이다.
+- [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) — `malloc`/`realloc` 의 계약. **크기를 바꾸려면 통째로 다시 할당**해야 하는 이유는 그쪽이다.
 - 목록의 **56번 주제** — 공간 위반. (5)의 「넘겨 써도 대개 안 터진다」는 그쪽이 정본이다.
 - 목록의 **58번 주제** — sanitizer 와 경고 플래그. (5)·(7)의 도구 이야기는 그쪽이 정본이다.
 - ★ **C++ 갈래와 갈리는 자리** — C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md)).\
@@ -1054,7 +1054,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 ## 더 들어가면
 
 - ★★ **`realloc` 으로 꼬리를 늘리는 것** — FAM 구조체는 통째로 다시 잡아야 하고, **`realloc` 이 주소를 옮기면 그 구조체를 가리키던 포인터가 전부 무효**가 된다.\
-  ★ 이 문서는 **`realloc` 쪽을 던지지 않았다**(목록의 **37번 주제**가 정본).
+  ★ 이 문서는 **`realloc` 쪽을 던지지 않았다**([목록의 **37번 주제**](../37-malloc-calloc-realloc-free/)가 정본).
 - ★★ **FAM 과 정렬** — `char data[]` 대신 `double data[]` 를 쓰면 구조체의 정렬이 올라간다.\
   ★ 이 문서는 **정렬이 올라가는 경우를 던지지 않았다**([8번 형제](../08-sizeof-alignment-and-offsetof/)·[22번 형제](../22-struct-padding-and-alignment/)가 정본).
 - ★ **`union` 안의 FAM 구조체** — (3)의 확장에 걸린다. ★ 이 문서는 **던지지 않았다**.

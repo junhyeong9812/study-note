@@ -1311,7 +1311,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - 형제 [`10번`](../10-const-correctness/) — 래퍼의 `data() const` 같은 인터페이스 설계.
 - [`c-cpp-csharp.md`](../../../c-cpp-csharp.md) — **RAII 가 무엇을 못 지우는가**(UAF·순환). 여기는 **어떻게 만드나**까지.
 - [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/) — 0/3/5의 법칙. (4)의 「소멸자를 적었으면 복사도 결정하라」의 정본.
-- 목록의 **26·27·28번 주제** — `unique_ptr`·`shared_ptr`·`weak_ptr` 의 전모. (5)는 크기만 본 것이다.
+- 목록의 [**26**](../26-unique-ptr-and-ownership-transfer/)·[**27**](../27-shared-ptr-and-reference-counting/)·[**28**](../28-weak-ptr-and-reference-cycles/)번 주제 — `unique_ptr`·`shared_ptr`·`weak_ptr` 의 전모. (5)는 크기만 본 것이다.
 - 목록의 **52번 주제** — 예외 안전 보장 4단계. (1)의 「세 경로가 같다」는 **기본 보장**의 실측이다.
 - ★★★ C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **13번**([`13-goto-cleanup-idiom/`](../../../c/syntax/13-goto-cleanup-idiom/)) — **직접 대비.**\
   그쪽 결론은 「**분기가 아니라 중복을 줄인다**」였고, (7)이 **그 세 번째 칸에 RAII 를 넣은 것**이다.

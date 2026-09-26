@@ -1133,7 +1133,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - 형제 [`11번`](../11-choosing-parameter-passing/) — **로그·계수 방식의 뿌리**(`Probe`).
 - [목록의 **20번 주제**](../20-virtual-destructors-and-polymorphic-deletion/) — 「가상 소멸자를 **언제 붙이나**」의 설계 판. 여기는 **안 붙였을 때 무엇이 일어나나**까지.
 - [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/) — 0/3/5의 법칙. 「소멸자를 적으면 이동이 사라진다」의 정본.
-- 목록의 **30번 주제** — 수명 연장 규칙의 전모. (4)는 그중 **임시 하나**만 본 것이다.
+- [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/) — 수명 연장 규칙의 전모. (4)는 그중 **임시 하나**만 본 것이다.
 - 목록의 **51번 주제** — 예외와 스택 되감기 자체. (2)는 그 결과만 본 것이다.
 - C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **13번**([`13-goto-cleanup-idiom/`](../../../c/syntax/13-goto-cleanup-idiom/)) — **소멸자가 없으면** 같은 일을 라벨로 한다.
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **9번**([`09-copy-clone-and-drop/`](../../../rust/syntax/09-copy-clone-and-drop/)) — `Drop` 도 **결정적**이다.\

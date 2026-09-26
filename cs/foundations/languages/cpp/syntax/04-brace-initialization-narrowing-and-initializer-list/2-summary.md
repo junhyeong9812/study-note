@@ -1202,11 +1202,11 @@ int main() {
 
 - **`initializer_list` 의 수명** — 원소들은 **뒤에 숨은 임시 배열**에 있고, 그 배열의 수명은\
   `initializer_list` 객체와 같다. **멤버로 저장하면 댕글링**이 된다.\
-  ★ **이 문서는 안 던졌다** — 정본은 목록의 **30번 주제**(댕글링 참조와 수명)다.
+  ★ **이 문서는 안 던졌다** — 정본은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)(댕글링 참조와 수명)다.
 - **`initializer_list` 의 원소는 `const`** 라 **옮길 수 없다.** `std::vector<std::unique_ptr<T>>` 를\
   중괄호로 못 채우는 이유가 그것이다. ★ 이 문서는 안 던졌다.
 - **CTAD 와 중괄호** — `std::vector v{1, 2, 3};` 처럼 인자에서 타입을 추론하는 규칙.\
-  정본은 목록의 **32번 주제**다.
+  정본은 [목록의 **32번 주제**](../32-class-templates-and-ctad/)다.
 - **`explicit` 생성자와 복사 목록 초기화** — `T t = {...}` 는 `explicit` 생성자를 쓸 수 없고 `T t{...}` 는 쓸 수 있다.\
   정본은 [목록의 **24번 주제**](../24-explicit-and-converting-constructors/)다.
 - **집합체의 조건이 판마다 바뀌었다** — C++11·14·17·20 에서 「집합체인가」의 기준이 계속 좁아졌다\
