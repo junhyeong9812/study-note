@@ -97,9 +97,15 @@ Next.js 를 쓸 때 실제로 만지는 것에서 소스로 거꾸로 찾는 표
 | `router-reducer` | `client/components/router-reducer/router-reducer.ts` L23 | 액션 6종. 서버에서는 noop 이 된다 | [클라이언트](flows/client-router/01_dispatch/README.md) |
 | `<LayoutRouter>` | `client/components/layout-router.tsx` L706 | 서버는 경계 props 만 준다. 내용은 부모 `CacheNode.slots` 에서 꺼낸다 | [클라이언트 트리](flows/client-components/03_layout-router/README.md) |
 | 세그먼트 캐시 | `client/components/segment-cache/` 11,522줄 | 캐시 둘 · 완성도 6단계 · 프리페치 큐 | [세그먼트 캐시](flows/segment-cache/README.md) |
-| `router.refresh()` (클라이언트) | `router-reducer/reducers/refresh-reducer.ts` L22 | `RefreshAll` 로 내비게이션한다. BFCache 버전을 올리고(`invalidateBfCache`) 겹치는 레이아웃까지 다시 채운다 | [PPR 내비게이션](flows/ppr-navigation/02_fill-segment/README.md) |
+| `router.refresh()` (클라이언트) | `router-reducer/reducers/refresh-reducer.ts` L22 | `RefreshAll` 로 내비게이션한다. 세그먼트 캐시(`invalidateSegmentCacheEntries`, L39)와 BFCache(`invalidateBfCache`) 버전을 모두 올리고 겹치는 레이아웃까지 다시 채운다 | [PPR 내비게이션](flows/ppr-navigation/02_fill-segment/README.md) |
 | `router.back()` / `forward()` | `router-reducer/reducers/restore-reducer.ts` L23 | `HistoryTraversal`. BFCache 를 신선도 검사 없이 읽는다. 버전이 올라갔으면 못 찾는다 | [PPR 내비게이션](flows/ppr-navigation/02_fill-segment/README.md) |
 | `fetchServerResponse` | `router-reducer/fetch-server-response.ts` L149 | 내비게이션의 RSC 요청. 실패는 네 갈래 모두 URL 문자열(MPA)로 돌아온다 | [PPR 내비게이션](flows/ppr-navigation/03_fetch/README.md) |
+| `router.prefetch(href, { onInvalidate })` | `client/components/segment-cache/prefetch.ts` · `cache.ts` L458 | Default 우선순위 작업 하나를 만든다(개발 서버에서는 만들지 않는다). onInvalidate 는 전역 Set 에 모였다가 무효화 때 한 번 불린다 | [프리페치 작업](flows/prefetch-tasks/README.md) · [캐시 항목](flows/cache-entries/04_stale-evict/README.md) |
+| `<Link prefetch>` | `client/components/links.ts` | 뷰포트에 들어오면 Default, hover 하면 Intent. `true` 는 Full 전략 | [프리페치 작업](flows/prefetch-tasks/02_one-pass/README.md) |
+| `experimental.optimisticRouting` | `server/config-shared.ts` L2175 (기본 true) | 라우트 캐시 미스일 때 배운 패턴으로 트리를 예측한다(`matchKnownRoute`). 꺼지면 서버가 staticSiblings 도 안 보낸다 | [라우트 예측](flows/route-prediction/README.md) |
+| `experimental.varyParams` | `server/config-shared.ts` L2174 (기본 true) | 세그먼트 항목을 실제로 읽은 params 기준의 더 일반적인 키로 다시 건다. 서버가 값을 싣는 것은 cacheComponents 렌더뿐 | [캐시 항목](flows/cache-entries/02_fill/README.md) |
+| `staleTimes.static` | `segment-cache/cache.ts` L122 `getStaleTimeMs` | 서버 · 설정의 stale 값에 30초 하한을 씌운다 | [캐시 항목](flows/cache-entries/04_stale-evict/README.md) |
+| Instant Navigation Testing 쿠키 | `segment-cache/navigation-testing-lock.ts` · `build/define-env.ts` L396 | 개발에서는 늘 켜져 있고 프로덕션 번들에서는 `.disabled` 모듈로 바뀐다. 잠긴 동안 서버는 셸만, 클라이언트는 동적 데이터 쓰기를 미룬다 | [라우트 예측](flows/route-prediction/04_testing-lock/README.md) |
 
 ## Pages Router
 
