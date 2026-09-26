@@ -436,7 +436,7 @@ ext.kt:6:39: warning: redundant call of conversion method.
 - **Java 쪽 대응 → [`../../../java/syntax/60-null-handling/`](../../../java/syntax/60-null-handling/)** 가 정본.\
   방어 시점 셋(경계·생성자·반환값), `requireNonNull` 의 메시지 설계, 컬렉션별 `null` 정책이 거기 있다.\
   `Optional` 이라는 **런타임 객체**로 푼 쪽은 [`../../../java/syntax/38-optional/`](../../../java/syntax/38-optional/).
-- **`requireNotNull`** — 목록의 **51번 주제**(`require`/`check`/`error`/`TODO`)가 정본이 된다.
+- **`requireNotNull`** — [목록의 **51번 주제**](../51-preconditions-require-check-error-todo/)(`require`/`check`/`error`/`TODO`)가 정본이 된다.
 
 ---
 

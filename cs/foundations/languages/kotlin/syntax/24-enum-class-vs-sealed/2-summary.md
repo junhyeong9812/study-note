@@ -480,7 +480,7 @@ D DONE
 ```
 
 - `A null` — `entries.find { }` 는 **없으면 `null`** 이다. 예외를 안 쓴다.
-- `B`·`C` — `runCatching` 으로 감싸면 예외를 **값으로** 받는다(목록의 **49번 주제**).
+- `B`·`C` — `runCatching` 으로 감싸면 예외를 **값으로** 받는다([목록의 **49번 주제**](../49-result-and-runcatching/)).
 - ★ stdlib 에는 `enumValueOf<T>()` 의 널 안전판이 **없다.** 그래서 `entries.find` 나 직접 만든 `Map` 이 관용구다.
 - ★★ **`sealed` 쪽에는 이 문제 자체가 없다** — 문자열에서 타입을 만들어 주는 기본 장치가 없으므로, 처음부터 **내가 매핑을 쓴다.** 「공짜로 주는 것이 없어서 함정도 없다」는 자리다.
 
@@ -650,7 +650,7 @@ Y [3층 화재, 20cm 침수, 훈련]
 - [23번 주제](../23-sealed-classes-and-when-exhaustiveness/) — `sealed` 와 완결성. **변형을 늘렸을 때 깨지는 자리**가 거기다.
 - [25번 주제](../25-object-declaration-companion-and-object-expression/) — `object` 가 **`INSTANCE` 정적 필드**가 되는 원리. `enum` 상수와 같은 집안이다.
 - [목록의 **32번 주제**](../32-equality-and-equals-contract/) — `==`/`===`. (4)의 `===` 비교가 왜 `enum` 에서만 안전한지는 거기가 정본이다.
-- 목록의 **49번 주제** — `Result`·`runCatching`. (7)에서 쓴 것이 거기다.
+- [목록의 **49번 주제**](../49-result-and-runcatching/) — `Result`·`runCatching`. (7)에서 쓴 것이 거기다.
 - [`../../../java/syntax/13-enum-classes/`](../../../java/syntax/13-enum-classes/) — Java `enum`. **싱글턴 잠금 넷·`values()` 복사·`EnumSet`/`EnumMap`·`ordinal` 위험**이 전부 거기가 정본이다.
 - [`../../../java/syntax/15-sealed-classes/`](../../../java/syntax/15-sealed-classes/) — Java `sealed`. **명단을 클래스 파일에 남기는 방식**이 거기다.
 

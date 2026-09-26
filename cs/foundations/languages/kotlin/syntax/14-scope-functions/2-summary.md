@@ -11,7 +11,7 @@
 > **경계** — 람다 문법·클로저·마지막 인자 람다는 [10번 주제](../10-lambdas-and-higher-order-functions/)가, `inline` 이 무엇을 없애고 무엇을 제약하는지는 [11번 주제](../11-inline-functions/)가,\
 > 다섯이 전부 **확장 함수**라는 사실과 그 디스패치는 [13번 주제](../13-extension-functions-and-properties/)가 정본이다.\
 > 여기는 **다섯을 어떻게 갈라서 고르나**만 다룬다. 수신자 지정 람다로 DSL 을 짜는 것은 [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/),\
-> `?.`·`?:` 자체의 의미는 [03번 주제](../03-null-safe-types/), null 처리 관용구 전체는 목록의 **58번 주제**다.
+> `?.`·`?:` 자체의 의미는 [03번 주제](../03-null-safe-types/), null 처리 관용구 전체는 [목록의 **58번 주제**](../58-null-handling-idioms-let-requirenotnull-and-elvis-return/)다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ## 한눈에 — 쉽게 말하면
@@ -802,7 +802,7 @@ run { R }            // 수신자 없는 여섯 번째 오버로드 — 지역 �
 - [03번 주제 — null 안전 타입](../03-null-safe-types/) — **그쪽은 `?.`·`?:`·`!!` 의 의미가 정본, 여기는 `?.` 와 `let` 의 역할 분담만.**
 - [12번 주제 — `reified` 타입 파라미터](../12-reified-type-parameters/) — (6)에서 본 박싱과 소거의 정본.
 - [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/) — 수신자 지정 람다로 DSL 을 짜는 법.
-- 목록의 **58번 주제** — null 처리 관용구를 계층별로 고르는 법.
+- [목록의 **58번 주제**](../58-null-handling-idioms-let-requirenotnull-and-elvis-return/) — null 처리 관용구를 계층별로 고르는 법.
 - [목록의 **32번 주제**](../32-equality-and-equals-contract/) — `===` 와 `==` 의 의미.
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — 왜 이 언어를 고르나(설계 논지).
 
@@ -829,4 +829,4 @@ run { R }            // 수신자 없는 여섯 번째 오버로드 — 지역 �
 - ★ **`@ExtensionFunctionType`** 이 (2)에서 말한 「디스크립터가 못 담는 구분」의 실체다.\
   `kotlin.Metadata` 의 문자열 배열에 `Lkotlin/ExtensionFunctionType;` 이 그대로 들어 있다.\
   **이 문서는 그 메타데이터 문자열을 찍어 보지는 않았다** — `javap -v` 의 상수 풀에서 본 것까지다.
-- **코루틴의 `suspend` 람다**도 수신자 지정 람다와 조합된다(`suspend T.() -> R`). 정본은 목록의 **52번 주제**다.
+- **코루틴의 `suspend` 람다**도 수신자 지정 람다와 조합된다(`suspend T.() -> R`). 정본은 [목록의 **52번 주제**](../52-coroutine-basics-suspend-scope-launch-async/)다.

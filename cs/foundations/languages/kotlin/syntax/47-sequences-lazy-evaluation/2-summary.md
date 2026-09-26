@@ -645,7 +645,7 @@ fib     [0, 1, 1, 2, 3, 5, 8, 13]
 - [Java 44번](../../../java/syntax/44-stream-creation/) · [Java 45번](../../../java/syntax/45-intermediate-operations/) · [Java 46번](../../../java/syntax/46-terminal-operations/) — `Stream` 의 같은 지연 평가. Kotlin 은 컬렉션 연산이 **기본 즉시**라 `asSequence()` 로 **명시적으로** 넘어가고, Java 는 `stream()` 이 곧 지연이다.
 - [C# 32번](../../../csharp/syntax/32-yield-return-iterators-and-deferred-execution/) — `yield return` 과 LINQ 의 지연 실행 · 두 번 열거하면 두 번 돈다.
 - [C# 33번](../../../csharp/syntax/33-linq-method-syntax-and-deferred-execution/) — LINQ 메서드 구문의 지연 실행. ★ 같은 시기에 다른 배치가 쓰고 있어 이 문서는 그 내용을 **인용하지 않았다.**
-- 목록의 **55번 주제** — `Flow`(콜드 스트림) — 같은 「끝 연산 전에는 아무 일도 안 한다」의 코루틴 판.
+- [목록의 **55번 주제**](../55-flow-cold-streams-operators-and-collect/) — `Flow`(콜드 스트림) — 같은 「끝 연산 전에는 아무 일도 안 한다」의 코루틴 판.
 
 ## 용어 풀이
 

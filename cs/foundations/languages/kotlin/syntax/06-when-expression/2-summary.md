@@ -938,7 +938,7 @@ val u = when (x) {
 - [목록의 **24번 주제**](../24-enum-class-vs-sealed/)(`enum class` 와 `sealed` 선택 기준) — 어느 쪽을 고르나
 - [목록의 **33번 주제**](../33-type-checks-and-casts-is-as/)(`is`/`as`/`as?`) — 타입 검사 연산자의 정본
 - [목록의 **34번 주제**](../34-exceptions-nothing-and-try-expression/)(예외·`Nothing`·`try` 가 식이라는 것) — `when` 가지에 `throw` 를 놓는 관용구의 근거
-- 목록의 **57번 주제**(Java 코드를 Kotlin 답게) — `if`/`when` 을 식으로 쓰는 관용구
+- [목록의 **57번 주제**](../57-kotlin-idioms-for-java-code-if-when-expressions-and-elvis-return/)(Java 코드를 Kotlin 답게) — `if`/`when` 을 식으로 쓰는 관용구
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) §3 — **"상태를 늘리면 컴파일이 깨진다" 는 설계 논지가 거기 정본**이다
 
 ## 용어 풀이

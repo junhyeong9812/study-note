@@ -404,7 +404,7 @@ x.length                      // ERROR — 밖에서는 다시 Any
 
 - 좁힘의 범위는 「**검사가 참인 것이 보장되는 구간**」이다. `if` 블록 안, `&&` 의 오른쪽, `||` 뒤의 `return` 아래.
 - **`is` 로 좁힌 것과 `!= null` 로 좁힌 것은 같은 메커니즘**이다 — `!= null` 은 `is T` 의 특수한 경우로 읽는다.
-- `require`·`checkNotNull` 이 좁혀 주는 것은 **contract** 덕분이다. 내가 만든 함수도 contract 를 달면 된다(목록의 **51번 주제**).
+- `require`·`checkNotNull` 이 좁혀 주는 것은 **contract** 덕분이다. 내가 만든 함수도 contract 를 달면 된다([목록의 **51번 주제**](../51-preconditions-require-check-error-todo/)).
 - **안 되면 메시지가 이유를 말해 준다** — 세 문구 중 하나다((2)).
 
 ## 어디서 틀리나
@@ -478,7 +478,7 @@ x.length                      // ERROR — 밖에서는 다시 Any
 - [`../../../java/syntax/23-switch-pattern-matching/`](../../../java/syntax/23-switch-pattern-matching/) — `when (x) { is … }` 의 Java 쪽 대응
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — 「왜 이 언어인가」. 문법이 아니라 선택 논증
 - [목록의 **33번 주제**](../33-type-checks-and-casts-is-as/)(`is`/`as`/`as?`) — 캐스트 연산자 자체의 정본
-- 목록의 **51번 주제**(`require`/`check`) — contract 가 스마트 캐스트를 만드는 방법
+- [목록의 **51번 주제**](../51-preconditions-require-check-error-todo/)(`require`/`check`) — contract 가 스마트 캐스트를 만드는 방법
 - [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/)(`sealed` + `when` 완결성) — `when` 의 가지에서 좁혀지는 것의 다음 단계
 
 ## 용어 풀이

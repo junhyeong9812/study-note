@@ -1096,7 +1096,7 @@ fun interface KInt { fun apply(x: Int): Int }
 - [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/)(함수 타입·`fun interface`·SAM 변환) — **SAM 전체의 정본.** 여기는 박싱이 갈리는 자리만
 - [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/)(리시버 지정 람다와 DSL) — `A.() -> Unit` 의 정본
 - [목록의 **28번 주제**](../28-generics-variance-in-out-star-where/)(선언 지점 변성) — `? super Integer` 가 보이는 이유
-- 목록의 **47번 주제**(`Sequence`) — 지연 평가에서 람다가 어떻게 쌓이나
+- [목록의 **47번 주제**](../47-sequences-lazy-evaluation/)(`Sequence`) — 지연 평가에서 람다가 어떻게 쌓이나
 
 ## 용어 풀이
 

@@ -8,7 +8,7 @@
 > ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「막힌 칸 N / M」·「runCatching 만 잡은 행 N / M」은 스크립트·프로그램이 스스로 센 것**이다.
 > **버전** — `Result`·`runCatching`·`map`·`mapCatching`·`recover`·`fold`·`getOrThrow` 는 stdlib 소스에 **`@SinceKotlin("1.3")`**((5)). ★★★ **「`Result` 를 반환 타입으로 못 쓴다」는 제한은 1.5 에서 풀렸다** — 이 판의 컴파일러가 그 기능을 **`LanguageVersion.KOTLIN_1_5`** 로 적어 두었다((2)). 그 전 판에서 막히는 것은 **이 판에서 잴 수 없다** — `-language-version 1.9` 부터 거부한다((1)).
 > **경계** — ★★★ **검사 예외가 없다는 것**(그래서 `Result` 도 컴파일러가 강제하지 않는 관용구라는 것)은 [34번 주제](../34-exceptions-nothing-and-try-expression/)와 [`../../언어-특성/README.md`](../../언어-특성/README.md) §8 이 정본이다. `value class` 의 박싱·이름 뭉개기 규칙은 [26번 주제](../26-value-class-and-boxing/)가 정본이다 — 여기서는 **`Result` 가 그 규칙에서 벗어나는 한 자리**만 본다.\
-> 코루틴의 취소(`CancellationException`)가 **왜** 문제인지는 목록의 **53번 주제**(구조적 동시성)의 몫이다 — 여기서는 **`runCatching` 이 무엇을 잡는가**만 본다. `require`/`check`/`error`/`TODO` 가 던지는 것은 목록의 **51번 주제**다.\
+> 코루틴의 취소(`CancellationException`)가 **왜** 문제인지는 [목록의 **53번 주제**](../53-structured-concurrency-job-cancellation-exceptions/)(구조적 동시성)의 몫이다 — 여기서는 **`runCatching` 이 무엇을 잡는가**만 본다. `require`/`check`/`error`/`TODO` 가 던지는 것은 [목록의 **51번 주제**](../51-preconditions-require-check-error-todo/)다.\
 > ★ **대비** — 오류를 **타입이** 말하는 Rust `Result<T, E>` 는 [Rust 22번](../../../rust/syntax/22-result-question-mark-and-from/), 오류를 **다중 반환 값**으로 돌려주는 Go 는 [Go 23번](../../../go/syntax/23-error-interface-and-errors-as-values/)이 정본이다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -334,7 +334,7 @@ rows held by runCatching but not by catch (e: Exception): 2 / 5
 
 - ★★★ **`runCatching` 은 다섯 다 잡았다 — `catch (e: Exception)` 은 둘을 놓쳤다**(`NotImplementedError`·`AssertionError`). 둘 다 **`Error` 의 자손**이다(`is Exception` 이 `false`).
 - ★★★ `TODO()` 가 던지는 `NotImplementedError` 도 `runCatching` 안에서는 **실패 값**이 된다 — 「아직 안 만든 코드」가 **조용히 `Failure`** 로 흘러갈 수 있다.
-- ★★ **`CancellationException` 은 두 쪽 다 잡는다** — JVM 에서 그것은 **`Exception`** 의 자손이다(`is Exception` 이 `true`). 그러니 「`runCatching` 이 취소를 삼킨다」는 **`catch (e: Exception)` 도 똑같이** 삼킨다. 취소가 삼켜지면 **무엇이 깨지나**는 목록의 **53번 주제**다.
+- ★★ **`CancellationException` 은 두 쪽 다 잡는다** — JVM 에서 그것은 **`Exception`** 의 자손이다(`is Exception` 이 `true`). 그러니 「`runCatching` 이 취소를 삼킨다」는 **`catch (e: Exception)` 도 똑같이** 삼킨다. 취소가 삼켜지면 **무엇이 깨지나**는 [목록의 **53번 주제**](../53-structured-concurrency-job-cancellation-exceptions/)다.
 
 ### (5) ★★ 상자 안에서 다시 터지면 — `map` 대 `mapCatching`
 
@@ -502,7 +502,7 @@ valid  [80, 22]
 |---|---|---|
 | 실패를 값으로 모아 나중에 가른다(여러 입력 검사) | `runCatching` + `fold`/`getOrNull` | (5) · 형태 블록 |
 | 예상한 예외만 잡는다 | ★ `try { } catch (e: 특정예외)` | (4) — `runCatching` 은 `Error` 까지 먹는다 |
-| 코루틴 안 | `runCatching` 을 피하거나 `CancellationException` 을 **다시 던진다** | (4) · 목록의 **53번 주제** |
+| 코루틴 안 | `runCatching` 을 피하거나 `CancellationException` 을 **다시 던진다** | (4) · [목록의 **53번 주제**](../53-structured-concurrency-job-cancellation-exceptions/) |
 | 변환 중 예외도 실패로 | `mapCatching` · `recoverCatching` | (5) |
 | 실패 원인을 **타입으로** 구분해야 한다 | `sealed` 결과 타입을 직접 만든다 | (4) — `Result` 의 실패는 `Throwable` 하나다 |
 | 공개 API 의 반환 타입 | 된다(1.5+) — 다만 Java 호출자는 **`Object`** 를 받는다 | (3) |
@@ -522,7 +522,7 @@ valid  [80, 22]
 - [26번 주제](../26-value-class-and-boxing/) — `value class` 의 이름 뭉개기·박싱. 여기의 (3)은 그 규칙에서 `Result` 가 벗어나는 자리다.
 - [Rust 22번](../../../rust/syntax/22-result-question-mark-and-from/) — `Result<T, E>` — **에러의 타입이 서명에 적히고** `?` 로 전파한다. Kotlin `Result<T>` 에는 `E` 가 없다.
 - [Go 23번](../../../go/syntax/23-error-interface-and-errors-as-values/) — `(값, error)` 다중 반환 — 호출자가 **매번 `if err != nil`** 로 연다. Kotlin 은 상자를 열지 않아도 컴파일된다.
-- 목록의 **51번 주제**(`require`/`check`/`error`/`TODO`) · **53번 주제**(구조적 동시성 — 취소가 삼켜지면).
+- [목록의 **51번 주제**](../51-preconditions-require-check-error-todo/)(`require`/`check`/`error`/`TODO`) · **53번 주제**(구조적 동시성 — 취소가 삼켜지면).
 
 ## 용어 풀이
 

@@ -1003,7 +1003,7 @@ inline fun exposed(x: Int): Int = helper(x)
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — 이 언어를 왜 고르나. **비용을 실제로 잰 곳**은 거기다(이 문서는 안 쟀다)
 - [목록의 **14번 주제**](../14-scope-functions/)(scope function) — `let`/`run`/`with`/`apply`/`also` 가 **전부 인라인 함수**다. 이 주제의 대표 사용처
 - [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/)(함수 타입·`fun interface`·SAM 변환) — 람다를 객체로 받는 **다른 길**
-- 목록의 **47번 주제**(`Sequence`) — 인라인이 **안 되는** 고차 함수 사슬의 대표
+- [목록의 **47번 주제**](../47-sequences-lazy-evaluation/)(`Sequence`) — 인라인이 **안 되는** 고차 함수 사슬의 대표
 
 ## 용어 풀이
 

@@ -8,7 +8,7 @@
 > **경계** — [`../../언어-특성/README.md`](../../언어-특성/README.md) 는 **「왜 이 언어인가」** 를 답한다.\
 > 여기는 **「이 문법이 무엇으로 컴파일되나」** 만 다룬다.\
 > **Java 의 텍스트 블록은 [`../../../java/syntax/32-text-blocks/`](../../../java/syntax/32-text-blocks/) 가 정본**이고, 여기서는 **대비만** 한다(재서술하지 않는다).\
-> 문자열 API(`split`·`Regex` 등)는 목록의 **48번 주제**가 맡는다.
+> 문자열 API(`split`·`Regex` 등)는 [목록의 **48번 주제**](../48-string-api-split-trim-pad-regex/)가 맡는다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ## 한눈에 — 쉽게 말하면
@@ -520,7 +520,7 @@ $$$"""$$name"""         // $ 셋이어야 보간
 - [`../../../java/syntax/36-stringbuilder-and-concat/`](../../../java/syntax/36-stringbuilder-and-concat/) — **`invokedynamic` 문자열 잇기의 정본.** 비용 논의는 거기
 - [`../../../java/syntax/35-string/`](../../../java/syntax/35-string/) — `String` 자체의 불변성·상수 풀
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — 「왜 이 언어인가」. 문법이 아니라 선택 논증
-- 목록의 **48번 주제**(문자열 API — `split`/`trim*`/`Regex`) — `trimIndent` 밖의 문자열 함수들
+- [목록의 **48번 주제**](../48-string-api-split-trim-pad-regex/)(문자열 API — `split`/`trim*`/`Regex`) — `trimIndent` 밖의 문자열 함수들
 - [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/)(리시버 지정 람다와 DSL) — raw string + 빌더로 SQL/HTML 을 짜는 다음 단계
 
 ## 용어 풀이

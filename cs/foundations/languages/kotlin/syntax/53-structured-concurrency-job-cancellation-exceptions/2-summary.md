@@ -99,7 +99,7 @@ Implementation-Version: 1.11.0
 | ★★ **소스 jar 발췌** | KDoc 계약((6)) | — |
 | **인용 — 다시 안 잰다** | `runCatching`·`catch (e: Exception)` 이 `CancellationException` 을 잡는다 · `async` 예외는 `await` 에서 | [49번](../49-result-and-runcatching/) (4) · [52번](../52-coroutine-basics-suspend-scope-launch-async/) (4) |
 | **부적용 — 운영 패턴** | 종료 신호 · 드레인 · 타임아웃 예산 | [`ops-patterns/19`](../../../../../ops-patterns/19-graceful-shutdown/) |
-| **부적용 — 멀티스레드 경쟁** | 여러 스레드에서 누가 먼저 취소를 받나 | 이 문서는 **단일 스레드로만** 돌렸다 — 목록의 **54번 주제**(디스패처) |
+| **부적용 — 멀티스레드 경쟁** | 여러 스레드에서 누가 먼저 취소를 받나 | 이 문서는 **단일 스레드로만** 돌렸다 — [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/)(디스패처) |
 
 ### (1) ★★★ 전파 격자 — 구조 3 × 사건 3 × 빌더 2
 
@@ -764,4 +764,4 @@ after the supervised block
 
 - **여러 자식이 동시에 실패하면** — 첫 예외 외의 것은 `suppressed` 로 붙는다고 알려져 있다. 이 문서는 **확인하지 않았다**(격자는 한 자식만 실패시켰다).
 - **`CoroutineStart.LAZY`·`ATOMIC`** — 시작 전에 취소되면 몸통이 도나. 돌리지 않았다.
-- **멀티스레드 디스패처에서의 격자** — 걸음 수가 흔들릴 것이다. 목록의 **54번 주제**의 몫이다.
+- **멀티스레드 디스패처에서의 격자** — 걸음 수가 흔들릴 것이다. [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/)의 몫이다.

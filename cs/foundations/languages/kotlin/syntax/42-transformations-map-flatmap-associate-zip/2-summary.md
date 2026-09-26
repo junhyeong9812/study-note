@@ -7,7 +7,7 @@
 > ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 칸 N / M」은 스크립트가 스스로 센 것**이다.
 > **버전** — `map`·`flatMap`·`associate`·`associateBy`·`zip` 의 기본형은 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). `flatMap` 에 **`Sequence` 를 돌려주는 람다**를 받는 오버로드는 stdlib 소스에 **`@SinceKotlin("1.4")`**((3)) — ★ 그 전 판에서 어땠는지는 **이 판에서 잴 수 없다**(`-api-version` 은 2.0 미만을 안 받는다 — [43번 주제](../43-filter-search-and-empty-collections/) (4)).
 > **경계** — 결과가 **새 리스트인가**(원본과 `===` 가 아닌가)는 [40번 주제](../40-read-only-collections-and-runtime-types/) (4)가 이미 쟀다 — `map`·`filter` 는 `=== src` 가 `false`. 여기서는 다시 재지 않고 **「어떤 모양(타입)으로 바꾸나」** 만 본다.\
-> 만든 결과가 **복사인가 창인가**는 [41번 주제](../41-collection-creation-and-copying/)가 정본이다. `Sequence` 가 **즉시 평가가 아니라 지연 평가**라는 것과 그 비용은 목록의 **47번 주제**다 — 여기 격자의 `Sequence` 열은 **컴파일러가 붙인 타입**만 말한다.
+> 만든 결과가 **복사인가 창인가**는 [41번 주제](../41-collection-creation-and-copying/)가 정본이다. `Sequence` 가 **즉시 평가가 아니라 지연 평가**라는 것과 그 비용은 [목록의 **47번 주제**](../47-sequences-lazy-evaluation/)다 — 여기 격자의 `Sequence` 열은 **컴파일러가 붙인 타입**만 말한다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ★★★ **본체는 첫째 창이다** — 「**결과 타입 격자 — 연산 × 입력 모양 → 컴파일러가 붙인 반환 타입**」. 타입은 **실행해서 찍으면 지워진다**(`List<Int>` 의 `<Int>` 는 런타임에 없다). 그래서 **일부러 타입이 안 맞는 자리에 넣고 컴파일러가 뭐라고 우기는지** 읽는다.
@@ -496,7 +496,7 @@ labeled  [(1, a), (2, b), (3, c)]
 - [40번 주제](../40-read-only-collections-and-runtime-types/) (4) — `map`·`filter` 결과가 **새 리스트**(`=== src` 가 `false`)다. 여기서 다시 재지 않았다.
 - [28번 주제](../28-generics-variance-in-out-star-where/) — `Map<out K, V>` 의 `out`.
 - [Java 47번](../../../java/syntax/47-collectors-basics/) — `Collectors.toMap` 은 키가 겹치면 **`IllegalStateException`** — 여기 `associateBy` 와 반대다.
-- [44번 주제](../44-aggregation-grouping-fold-reduce/) — `groupBy`(겹치는 키를 전부 남긴다). 목록의 **47번 주제** — `Sequence` 의 지연 평가와 그 비용.
+- [44번 주제](../44-aggregation-grouping-fold-reduce/) — `groupBy`(겹치는 키를 전부 남긴다). [목록의 **47번 주제**](../47-sequences-lazy-evaluation/) — `Sequence` 의 지연 평가와 그 비용.
 
 ## 용어 풀이
 

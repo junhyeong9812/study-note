@@ -7,7 +7,7 @@
 > ★★★ **라이브러리 판 — `kotlinx-coroutines-core-jvm` 1.11.0**(이 머신의 gradle 캐시에 있던 판 중 가장 새 것 · 매니페스트 `Implementation-Version: 1.11.0` · 클래스 메타데이터 `mv=[2,2,0]` 이라 kotlinc 2.4.20 이 **그대로 읽는다** — `-Xskip-metadata-version-check` 불필요). `launch`·`async`·`runBlocking`·`delay`·`yield` 는 **이 라이브러리의 것**이다. 라이브러리 판이 결과를 바꿀 수 있어 **흔들리는 칸 표에 판을 선언**한다.\
 > ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「막힌 탐침 N / M」은 스크립트가 스스로 센 것**이다.
 > **버전** — `COROUTINE_SUSPENDED` 는 stdlib 소스에 **`@SinceKotlin("1.3")`**(코루틴이 Stable 이 된 판)((5)).
-> **경계** — ★★★ 「**코루틴 = 스레드가 아니라 컴파일러 변환**」이라는 **논지**와 가상 스레드와의 대비는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 정본이다. **스레드·프로세스 개념**은 [`cs/foundations/process-thread/`](../../../../process-thread/) 가 정본이다 — 여기는 **`suspend` 함수의 호출 규칙과 JVM 에서의 모양**만 본다. 람다가 JVM 에서 무엇이 되나는 [10번 주제](../10-lambdas-and-higher-order-functions/), `coroutineScope { }` 의 `this` 가 수신자 람다라는 것은 [37번 주제](../37-lambdas-with-receiver-and-type-safe-builders/)가 정본이다. **취소·예외가 형제와 부모로 번지는 규칙**은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/)다. 디스패처와 `withContext` 는 목록의 **54번 주제**다.
+> **경계** — ★★★ 「**코루틴 = 스레드가 아니라 컴파일러 변환**」이라는 **논지**와 가상 스레드와의 대비는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 정본이다. **스레드·프로세스 개념**은 [`cs/foundations/process-thread/`](../../../../process-thread/) 가 정본이다 — 여기는 **`suspend` 함수의 호출 규칙과 JVM 에서의 모양**만 본다. 람다가 JVM 에서 무엇이 되나는 [10번 주제](../10-lambdas-and-higher-order-functions/), `coroutineScope { }` 의 `this` 가 수신자 람다라는 것은 [37번 주제](../37-lambdas-with-receiver-and-type-safe-builders/)가 정본이다. **취소·예외가 형제와 부모로 번지는 규칙**은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/)다. 디스패처와 `withContext` 는 [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/)다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ★★★ **본체는 첫째 창이다** — 「**`javap` — `suspend fun f(x: Int): Int` 가 JVM 에서 `f(int, Continuation): Object` 가 되고 상태 기계 클래스가 생기는 것**」. 둘째 본체는 **호출 규칙 격자**(어디서 부르면 막히나)다. 「스레드가 아니다」는 **스레드 수를 세는** 로그로만 말한다 — 가볍다·빠르다는 재지 않았다.
@@ -466,7 +466,7 @@ fun main() {
 ```
 
 - ★★★ **`runBlocking` 은 부른 스레드를 막는다** — 자식의 `delay(300)` 이 끝날 때까지 `4 after runBlocking` 이 안 나온다. 그동안 **다른 스레드가 본 main 의 상태는 `TIMED_WAITING`** 이다. 그리고 `runBlocking` 안의 코루틴은 **main 스레드 위에서** 돈다(`on main`).
-- ★ 그래서 `runBlocking` 은 **`main` 함수·테스트처럼 「막아도 되는」 경계**에 둔다 — 이미 코루틴 안이라면 막을 이유가 없다(목록의 **54번 주제**에서 디스패처와 함께 본다).
+- ★ 그래서 `runBlocking` 은 **`main` 함수·테스트처럼 「막아도 되는」 경계**에 둔다 — 이미 코루틴 안이라면 막을 이유가 없다([목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/)에서 디스패처와 함께 본다).
 
 ```kotlin
 // await52.kt
@@ -635,7 +635,7 @@ two direct calls took at least 200ms: true
 | 결과 없이 따로 돌린다 | `launch { }` | (4) |
 | `main`·테스트에서 코루틴 세계로 들어간다 | `runBlocking { }` | (4) — 스레드를 막는다 |
 | 이미 코루틴 안 | `runBlocking` 대신 **`suspend` 그대로** | (4) |
-| 블로킹 API(JDBC 등)를 불러야 한다 | 디스패처를 바꾼다 | 목록의 **54번 주제** · [`언어-특성`](../../언어-특성/README.md) §6 |
+| 블로킹 API(JDBC 등)를 불러야 한다 | 디스패처를 바꾼다 | [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/) · [`언어-특성`](../../언어-특성/README.md) §6 |
 
 ## 핵심 문장
 
@@ -654,7 +654,7 @@ two direct calls took at least 200ms: true
 - [37번 주제](../37-lambdas-with-receiver-and-type-safe-builders/) — `coroutineScope { }`·`launch { }` 의 `this` 가 수신자 람다다.
 - [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/) — 자식 하나가 실패·취소되면 형제와 부모가 어떻게 되나.
 - [Python 51번](../../../python/syntax/51-asyncio-coroutine-basics/) — 부르기만 하면 **몸통 0줄**인 코루틴. Kotlin 은 부르는 쪽이 `suspend` 가 아니면 **컴파일이 안 된다.**
-- 목록의 **54번 주제** — `CoroutineContext`·디스패처·`withContext`.
+- [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/) — `CoroutineContext`·디스패처·`withContext`.
 
 ## 용어 풀이
 
