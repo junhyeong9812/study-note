@@ -292,7 +292,7 @@ ex.02a.ts(5,7): error TS2322: Type 'number' is not assignable to type 'string'.
 - `1>` 로 받은 쪽에 진단 한 줄이 들어왔고, `2>` 로 받은 쪽은 **0줄**이다.
 - ★ 이 배치에서 돌린 **`tsc` 실행 전부**(30여 판)에서 stderr 가 **0바이트**였다.
 - ★★ 그래서 `tsc ... 2>&1 | grep error` 는 되지만 `tsc ... 2>log.txt` 는 **빈 파일을 만든다.**
-- ★ 이 성질 덕분에 이 갈래는 [작성 가이드의 규칙 18](../../../../../reference/study-note-guide.md)(stdout·stderr 섞임)에서 자유롭다 — 진단과 `console.log` 가 **다른 프로그램**(`tsc` 와 `node`)에서 나오므로 애초에 섞이지 않는다.
+- ★ 이 성질 덕분에 이 갈래는 [작성 가이드의 규칙 18](../../../../../../reference/study-note-guide.md)(stdout·stderr 섞임)에서 자유롭다 — 진단과 `console.log` 가 **다른 프로그램**(`tsc` 와 `node`)에서 나오므로 애초에 섞이지 않는다.
 
 비용 — 없음. 한 번 확인하면 끝이다.
 

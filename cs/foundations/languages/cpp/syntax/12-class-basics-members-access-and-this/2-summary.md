@@ -16,7 +16,7 @@
 > [13번](../13-constructors-member-init-list-and-delegating/)이 **그 그릇을 채우는 법**을,\
 > [14번](../14-destructors-and-deterministic-destruction/)이 **언제 비워지는가**를,\
 > [15번](../15-raii-resources-as-types/)이 **그 시점을 자원 관리에 쓰는 법**을 답한다.
-> **경계** — 「캡슐화·정보 은닉이 왜 좋은가」는 [`foundations/oop-basics/`](../../../oop-basics/)가 정본이다.\
+> **경계** — 「캡슐화·정보 은닉이 왜 좋은가」는 [`foundations/oop-basics/`](../../../../oop-basics/)가 정본이다.\
 > 여기서는 **C++ 문법이 그것을 어떻게 강제하나**만 쓴다.\
 > 「`const` 멤버 함수를 설계에 쓰는 법」은 형제 [`10번`](../10-const-correctness/), 「참조와 포인터」는 형제 [`07번`](../07-references-vs-pointers/),\
 > 「구조체 레이아웃·패딩」은 C 갈래 [`22-struct-padding-and-alignment/`](../../../c/syntax/22-struct-padding-and-alignment/)가 정본이다.\
@@ -922,7 +922,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 | 그 타입 안에서만 쓰는 보조 타입 | **중첩 클래스** | 이름 공간이 좁아진다 |
 | 객체 상태를 안 쓰는 함수 | **정적 멤버 함수** 또는 **자유 함수** | `this` 가 없으니 계약이 좁아진다 |
 
-- ★ **접근자(`get`/`set`)를 기계적으로 다는 것은 캡슐화가 아니다** — 그 논증의 정본은 [`foundations/oop-basics/`](../../../oop-basics/)다.
+- ★ **접근자(`get`/`set`)를 기계적으로 다는 것은 캡슐화가 아니다** — 그 논증의 정본은 [`foundations/oop-basics/`](../../../../oop-basics/)다.
 - ★★ **`friend` 는 「public 으로 여는 것」보다 좁다.** 둘 중에 고민된다면 **`friend` 쪽이 범위가 작다.**
 
 ## 핵심 문장
@@ -936,7 +936,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 
 ## 관련 자료
 
-- [`foundations/oop-basics/`](../../../oop-basics/) — **캡슐화·정보 은닉이 왜 좋은가**는 거기. 여기는 **C++ 문법이 그것을 어떻게 강제하나**.
+- [`foundations/oop-basics/`](../../../../oop-basics/) — **캡슐화·정보 은닉이 왜 좋은가**는 거기. 여기는 **C++ 문법이 그것을 어떻게 강제하나**.
 - 형제 [`07번`](../07-references-vs-pointers/) — 참조와 포인터의 차이. `this` 가 **포인터인 이유**를 거기서 읽는다.
 - 형제 [`10번`](../10-const-correctness/) — `const` 멤버 함수를 설계에 쓰는 법. 여기는 **`this` 가 `const` 가 된다는 사실**까지.
 - [13번](../13-constructors-member-init-list-and-delegating/) — **멤버를 채우는 법**과 **초기화 순서**. (6)의 `lazy` 가 거기서 풀린다.
