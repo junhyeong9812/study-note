@@ -7,7 +7,7 @@
 > ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「수신자가 누구인가」는 전부 프로그램이 스스로 찍은 로그**다.
 > **버전** — 수신자 있는 함수 타입·type-safe builder 는 1.0, `@DslMarker` 의 **도입 판은 확인하지 않았다**(이 판은 `-language-version 2.0` 미만을 거부해 잴 수도 없다 — [36번 주제](../36-function-types-fun-interface-and-sam-conversion/) (6)). ★ `@DslMarker` 의 진단 문구는 **이 판(K2)의 것**이다((2)).
 > **경계** — ★★ **`T.() -> R` 과 `(T) -> R` 이 JVM 에서 둘 다 `Function1` 이고 디스크립터가 같다**는 것은 [14번 주제](../14-scope-functions/) (2)가 stdlib 의 `run`/`with` 로 이미 보였고, 「수신자가 **첫 파라미터**로 내려간다」는 [10번 주제](../10-lambdas-and-higher-order-functions/) (1)이 `fRecv` 로 보였다 — 여기서는 **다시 재지 않고**, **호출 자리**(`a.block()` 대 `block(a)`)와 **Java 쪽**만 더한다((4)(5)).\
-> 확장 함수의 정적 디스패치는 [13번 주제](../13-extension-functions-and-properties/)가, `apply`/`with` 의 고르는 법은 [14번 주제](../14-scope-functions/)가, 함수 타입과 `Function1` 은 [36번 주제](../36-function-types-fun-interface-and-sam-conversion/)가 정본이다. **DSL 이 왜 Kotlin 의 강점인가**라는 논지는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이다. 암묵 인자를 **타입으로** 넘기는 다음 단계(context parameters)는 목록의 **38번 주제**다.\
+> 확장 함수의 정적 디스패치는 [13번 주제](../13-extension-functions-and-properties/)가, `apply`/`with` 의 고르는 법은 [14번 주제](../14-scope-functions/)가, 함수 타입과 `Function1` 은 [36번 주제](../36-function-types-fun-interface-and-sam-conversion/)가 정본이다. **DSL 이 왜 Kotlin 의 강점인가**라는 논지는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이다. 암묵 인자를 **타입으로** 넘기는 다음 단계(context parameters)는 [**38번 주제**](../38-context-parameters/)다.\
 > ★ **대비** — JS 의 `this` 는 **호출 방식**이 정한다([`../../../js/syntax/07-this-binding-four-rules/`](../../../js/syntax/07-this-binding-four-rules/)) — Kotlin 수신자는 **타입과 호출자가 넘긴 값**이 정한다((4)).
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -525,7 +525,7 @@ fun main() {
 | 객체 하나를 만들고 필드를 채운다 | `apply { }` | [14번 주제](../14-scope-functions/) — 같은 장치의 가장 작은 판 |
 | 바깥 블록의 멤버를 **일부러** 부른다 | `this@라벨.멤버` | (3) — 뜻을 코드에 남긴다 |
 | Java 사용자도 쓸 빌더 | 수신자 람다는 Java 에게 `Function1<A, Unit>` | (5) — Java 쪽은 `Unit.INSTANCE` 반환 |
-| 수신자가 둘 이상 필요하다(`Logger` 와 `Tx` 를 함께) | 목록의 **38번 주제**(context parameters) | 수신자는 하나뿐이다 |
+| 수신자가 둘 이상 필요하다(`Logger` 와 `Tx` 를 함께) | [**38번 주제**](../38-context-parameters/)(context parameters) | 수신자는 하나뿐이다 |
 
 ## 핵심 문장
 
@@ -542,7 +542,7 @@ fun main() {
 - [10번 주제](../10-lambdas-and-higher-order-functions/) (1) — `Int.() -> String` 의 수신자가 첫 파라미터인 것(`fRecv`).
 - [13번 주제](../13-extension-functions-and-properties/) — 확장 함수. 수신자 람다는 「**익명 확장 함수**」다.
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 — DSL 이 되는 이유와 `@DslMarker` 의 논지.
-- 목록의 **38번 주제** — context parameters. 수신자 하나로 부족할 때.
+- [**38번 주제**](../38-context-parameters/) — context parameters. 수신자 하나로 부족할 때.
 - [`../../../js/syntax/07-this-binding-four-rules/`](../../../js/syntax/07-this-binding-four-rules/) — JS `this` 네 규칙. 대비.
 
 ## 용어 풀이
