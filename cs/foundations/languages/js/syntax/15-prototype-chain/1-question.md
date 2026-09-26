@@ -165,7 +165,7 @@ run("C.nope", () => C.nope);
 run("C.toString", () => typeof C.toString);
 
 console.log("");
-console.log("[2] 'in' and hasOwnProperty walk differently");
+console.log("[2] 'in' and hasOwnProperty on C");
 run("'fromA' in C", () => "fromA" in C);
 run("hasOwn(C,'fromA')", () => Object.hasOwn(C, "fromA"));
 run("hasOwn(C,'fromC')", () => Object.hasOwn(C, "fromC"));
@@ -179,7 +179,7 @@ console.log("A still holds       -> " + Reflect.get(A, "fromA"));
 console.log("own keys of C's target -> " + JSON.stringify(Object.getOwnPropertyNames(Ct)));
 
 console.log("");
-console.log("[4] a setter on the chain -- now the write DOES walk");
+console.log("[4] a setter on the chain -- writing leaf.s");
 const log2 = [];
 const base = {
   _v: "base",
@@ -463,7 +463,6 @@ const probe = { get v() { return "proto accessor"; }, set v(x) { this._x = x; } 
 const leaf = Object.create(probe);
 Object.defineProperty(leaf, "v", { value: "own", writable: true, enumerable: true, configurable: true });
 line("proto has get+set, leaf has own data -> leaf.v", leaf.v);
-line("is there any flag that flips this?", "no -- ordinary [[Get]] returns at the first own hit");
 line("Proxy CAN do it, but that is a different object", (() => {
   const px = new Proxy(leaf, { get(t, k, r) { return k === "v" ? "PROXY wins" : Reflect.get(t, k, r); } });
   return px.v;

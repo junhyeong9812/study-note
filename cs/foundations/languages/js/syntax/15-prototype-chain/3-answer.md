@@ -131,7 +131,7 @@ C.fromA             -> a            trap log ["C.get(fromA)","B.get(fromA)","A.g
 C.nope              -> undefined    trap log ["C.get(nope)","B.get(nope)","A.get(nope)"]
 C.toString          -> function     trap log ["C.get(toString)","B.get(toString)","A.get(toString)"]
 
-[2] 'in' and hasOwnProperty walk differently
+[2] 'in' and hasOwnProperty on C
 'fromA' in C        -> true         trap log ["C.has(fromA)","B.has(fromA)","A.has(fromA)"]
 hasOwn(C,'fromA')   -> false        trap log ["C.gopd(fromA)"]
 hasOwn(C,'fromC')   -> true         trap log ["C.gopd(fromC)"]
@@ -143,7 +143,7 @@ C.fromA  (read)     -> W            trap log ["C.get(fromA)"]
 A still holds       -> a
 own keys of C's target -> ["fromC","fromA"]
 
-[4] a setter on the chain -- now the write DOES walk
+[4] a setter on the chain -- writing leaf.s
 leaf.s = 'written'   log ["setter ran, this is the LEAF object"]
 own keys of leaf     ["_v"]
 base._v              base   leaf._v written   leaf.s written
@@ -405,7 +405,6 @@ setPrototypeOf(c1, {...}) : c1 instanceof C       false
 
 [5] proto has get+set, leaf has an own data property -- reading leaf.v
 proto has get+set, leaf has own data -> leaf.v    own
-is there any flag that flips this?                no -- ordinary [[Get]] returns at the first own hit
 Proxy CAN do it, but that is a different object   PROXY wins
 ```
 
@@ -439,8 +438,8 @@ Proxy CAN do it, but that is a different object   PROXY wins
   ★★★ **`Proxy` 가 반례가 못 되는 이유** — 그것은 **원래 객체가 아니라 앞에 세운 다른 객체**이기 때문이다.
   파이썬의 데이터 디스크립터는 **그 객체 자신의 조회 규칙**을 바꾸지만,
   `Proxy` 는 **원래 객체를 들고 있는 코드에는 아무 효과가 없다.**
-  ★ (스크립트가 찍는 `no -- ordinary [[Get]] returns at the first own hit` 는 **라벨 문자열**이다.
-  근거는 그 위의 `leaf.v` 가 `own` 이라는 줄과 `[1]` 의 격자다.)
+  ★ (「뒤집는 플래그가 없다」는 출력 줄이 아니라 이 산문의 결론이다 — 보통의 `[[Get]]` 은 **첫 own 적중에서 돌아온다.**
+  근거는 `leaf.v` 가 `own` 이라는 줄과 `[1]` 의 격자다.)
 
 ### 6. `prototype` 과 `[[Prototype]]` 과 `__proto__` — **셋 다 다른 물건이다** ★★★
 

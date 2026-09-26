@@ -390,7 +390,7 @@ run("C.nope", () => C.nope);
 run("C.toString", () => typeof C.toString);
 
 console.log("");
-console.log("[2] 'in' and hasOwnProperty walk differently");
+console.log("[2] 'in' and hasOwnProperty on C");
 run("'fromA' in C", () => "fromA" in C);
 run("hasOwn(C,'fromA')", () => Object.hasOwn(C, "fromA"));
 run("hasOwn(C,'fromC')", () => Object.hasOwn(C, "fromC"));
@@ -404,7 +404,7 @@ console.log("A still holds       -> " + Reflect.get(A, "fromA"));
 console.log("own keys of C's target -> " + JSON.stringify(Object.getOwnPropertyNames(Ct)));
 
 console.log("");
-console.log("[4] a setter on the chain -- now the write DOES walk");
+console.log("[4] a setter on the chain -- writing leaf.s");
 const log2 = [];
 const base = {
   _v: "base",
@@ -428,7 +428,7 @@ C.fromA             -> a            trap log ["C.get(fromA)","B.get(fromA)","A.g
 C.nope              -> undefined    trap log ["C.get(nope)","B.get(nope)","A.get(nope)"]
 C.toString          -> function     trap log ["C.get(toString)","B.get(toString)","A.get(toString)"]
 
-[2] 'in' and hasOwnProperty walk differently
+[2] 'in' and hasOwnProperty on C
 'fromA' in C        -> true         trap log ["C.has(fromA)","B.has(fromA)","A.has(fromA)"]
 hasOwn(C,'fromA')   -> false        trap log ["C.gopd(fromA)"]
 hasOwn(C,'fromC')   -> true         trap log ["C.gopd(fromC)"]
@@ -440,7 +440,7 @@ C.fromA  (read)     -> W            trap log ["C.get(fromA)"]
 A still holds       -> a
 own keys of C's target -> ["fromC","fromA"]
 
-[4] a setter on the chain -- now the write DOES walk
+[4] a setter on the chain -- writing leaf.s
 leaf.s = 'written'   log ["setter ran, this is the LEAF object"]
 own keys of leaf     ["_v"]
 base._v              base   leaf._v written   leaf.s written
@@ -1091,7 +1091,6 @@ const probe = { get v() { return "proto accessor"; }, set v(x) { this._x = x; } 
 const leaf = Object.create(probe);
 Object.defineProperty(leaf, "v", { value: "own", writable: true, enumerable: true, configurable: true });
 line("proto has get+set, leaf has own data -> leaf.v", leaf.v);
-line("is there any flag that flips this?", "no -- ordinary [[Get]] returns at the first own hit");
 line("Proxy CAN do it, but that is a different object", (() => {
   const px = new Proxy(leaf, { get(t, k, r) { return k === "v" ? "PROXY wins" : Reflect.get(t, k, r); } });
   return px.v;
@@ -1128,7 +1127,6 @@ setPrototypeOf(c1, {...}) : c1 instanceof C       false
 
 [5] proto has get+set, leaf has an own data property -- reading leaf.v
 proto has get+set, leaf has own data -> leaf.v    own
-is there any flag that flips this?                no -- ordinary [[Get]] returns at the first own hit
 Proxy CAN do it, but that is a different object   PROXY wins
 ```
 
@@ -1198,8 +1196,8 @@ Proxy CAN do it, but that is a different object   PROXY wins
   ★★ **`Proxy` 는 반례가 아니다** — 같은 줄에서 `PROXY wins` 가 나오지만 그것은 **다른 객체**다.
   파이썬의 데이터 디스크립터는 **같은 객체**에 다는 훅이고, `Proxy` 는 **객체를 하나 더 만들어 앞에 세우는 것**이다.
   ★ 그래서 **원래 객체를 들고 있는 코드에는 아무 효과가 없다.**
-  (스크립트가 찍는 `no -- ordinary [[Get]] returns at the first own hit` 는 **라벨 문자열**이고,
-  근거는 그 위의 `leaf.v` 가 `own` 이라는 줄과 `[1]` 이다.)
+  (「뒤집는 플래그가 없다」는 출력 줄이 아니라 이 산문의 결론이다 — 보통의 `[[Get]]` 은 **첫 own 적중에서 돌아온다.**
+  근거는 `leaf.v` 가 `own` 이라는 줄과 `[1]` 이다.)
 - ★★ `[3]` 이 **대조군**이다 — 프로토타입 쪽이 **평범한 데이터 프로퍼티**면 쓰기가 own 을 만들고
   `dataProto.v` 는 그대로다. `[2]` 와 나란히 놓으면 **갈리는 것이 「접근자인가」 하나뿐**임이 보인다.
 - ★★ `[4]` **체인은 객체로 되어 있다**를 네 줄로 못 박는다.
