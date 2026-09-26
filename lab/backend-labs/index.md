@@ -21,15 +21,15 @@
 
 ## tenancy — 멀티테넌시·인증/인가 (10~17)
 
-근거자료: [00-sources-tenancy-auth.md](tenancy/00-sources-tenancy-auth.md). 대응 cs 챕터가 아직 거의 없다 — 착수 전 cs/ 신설 여부 판단.
+근거자료: [00-sources-tenancy-auth.md](tenancy/00-sources-tenancy-auth.md). 개념 기반은 `cs/systems/multi-tenancy`(격리·누수·편중·마이그레이션), 인증 기초는 `cs/foundations/security` — 랩에서 새로 알게 된 것도 이 두 곳에 쌓는다.
 
 | # | 주제 | 포트 | 선행 cs | 상태 |
 |---|------|------|---------|------|
-| 10 | [tenant-isolation-lab](tenancy/tenant-isolation-lab/) | 8210 | 없음 | 예정 |
-| 11 | [noisy-neighbor-lab](tenancy/noisy-neighbor-lab/) | 8211 | [ops 03 bulkhead](../../cs/ops-patterns/03-bulkhead/) · [ops 04 rate-limiter](../../cs/ops-patterns/04-rate-limiter/) | 예정 |
-| 12 | [tenant-provisioning-migration-lab](tenancy/tenant-provisioning-migration-lab/) | 8212 | 없음 | 예정 |
-| 13 | [tenant-aware-cache-search-lab](tenancy/tenant-aware-cache-search-lab/) | 8213 | [ops 09 stampede](../../cs/ops-patterns/09-stampede/) | 예정 |
-| 14 | [token-lifecycle-lab](tenancy/token-lifecycle-lab/) | 8214 | 없음 | 예정 |
+| 10 | [tenant-isolation-lab](tenancy/tenant-isolation-lab/) | 8210 | [systems/multi-tenancy](../../cs/systems/multi-tenancy/) 격리 모델 · [systems/postgres-rls](../../cs/systems/postgres-rls/) | 예정 |
+| 11 | [noisy-neighbor-lab](tenancy/noisy-neighbor-lab/) | 8211 | [systems/multi-tenancy](../../cs/systems/multi-tenancy/) 리소스 편중 · [ops 03 bulkhead](../../cs/ops-patterns/03-bulkhead/) · [ops 04 rate-limiter](../../cs/ops-patterns/04-rate-limiter/) | 예정 |
+| 12 | [tenant-provisioning-migration-lab](tenancy/tenant-provisioning-migration-lab/) | 8212 | [systems/multi-tenancy](../../cs/systems/multi-tenancy/) 스키마 마이그레이션 | 예정 |
+| 13 | [tenant-aware-cache-search-lab](tenancy/tenant-aware-cache-search-lab/) | 8213 | [systems/multi-tenancy](../../cs/systems/multi-tenancy/) · [ops 09 stampede](../../cs/ops-patterns/09-stampede/) · [server-design 04 caching](../../cs/systems/server-design/04-caching.md) | 예정 |
+| 14 | [token-lifecycle-lab](tenancy/token-lifecycle-lab/) | 8214 | [security/jwks](../../cs/foundations/security/jwks.md) · [hmac](../../cs/foundations/security/hmac.md) · [identity-and-ids](../../cs/foundations/security/identity-and-ids.md) | 예정 |
 | 15 | [authorization-model-lab](tenancy/authorization-model-lab/) | 8215 | [domain advanced/28](../../cs/domain-modeling/advanced/28-authorization/) | 예정 |
-| 16 | [cross-tenant-authz-lab](tenancy/cross-tenant-authz-lab/) | 8216 | 없음 | 예정 |
-| 17 | [sso-service-auth-lab](tenancy/sso-service-auth-lab/) | 8217 | 없음 | 예정 |
+| 16 | [cross-tenant-authz-lab](tenancy/cross-tenant-authz-lab/) | 8216 | [systems/multi-tenancy](../../cs/systems/multi-tenancy/) 권한 누수(L1~L8) · [security-standards (OWASP)](../../cs/engineering/development-standards/security-standards/) | 예정 |
+| 17 | [sso-service-auth-lab](tenancy/sso-service-auth-lab/) | 8217 | [security/oidc](../../cs/foundations/security/oidc.md) · [jwks](../../cs/foundations/security/jwks.md) | 예정 |
