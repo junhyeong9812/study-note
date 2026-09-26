@@ -887,7 +887,7 @@ requestAnimationFrame(() => { for (const el of 목록) { el.style.top = …; sum
 | 목록의 치수를 재서 반영한다 | 읽기 구간 → 쓰기 구간 | 한 행마다 번갈아 |
 | 여러 요소의 위치를 읽는다 | 한 번에 모아 배열로 | 필요할 때마다 그때그때 |
 | 애니메이션 | `transform`·`opacity` | `top`·`left`·`width` |
-| 「보이나」를 자주 묻는다 | 목록의 **35번 주제**(IntersectionObserver) | 스크롤마다 `rect` 읽기 |
+| 「보이나」를 자주 묻는다 | [목록의 **35번 주제**](../35-intersection-observer/)(IntersectionObserver) | 스크롤마다 `rect` 읽기 |
 | 크기 변화를 따라간다 | 목록의 **36번 주제**(ResizeObserver) | 폴링으로 `offsetWidth` 읽기 |
 | 쓰기를 프레임에 맞춘다 | 목록의 **38번 주제**(`requestAnimationFrame`) | `setTimeout` 으로 어림잡기 |
 | 비용을 주장한다 | 분자·분모가 **둘 다** 자 위에 올라오는 반복 수 | 분해능 한 칸을 분모로 |
@@ -912,7 +912,7 @@ requestAnimationFrame(() => { for (const el of 목록) { el.style.top = …; sum
 - [09번 주제](../09-element-geometry/2-summary.md) — ★ **방아쇠 목록의 절반이 그 주제의 표면**이다. 좌표계·`offsetParent` 는 그쪽이 정본
 - [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md) — `performance.now()` 의 **분해능 100마이크로초** 실측과 **`innerText` 대 `textContent`** 의 정본
 - [11번 주제](../11-scroll-control/2-summary.md) — `scrollTop` 에 **쓰는 것**도 같은 이야기 안에 있다
-- 목록의 **35번 주제**(IntersectionObserver) — 「보이나」를 **레이아웃을 강제하지 않고** 묻는 법
+- [목록의 **35번 주제**](../35-intersection-observer/)(IntersectionObserver) — 「보이나」를 **레이아웃을 강제하지 않고** 묻는 법
 - 목록의 **36번 주제**(ResizeObserver) — 치수 변화를 **폴링 없이** 받는 법
 - 목록의 **38번 주제**(`requestAnimationFrame` 과 프레임 예산) — **읽기·쓰기를 언제 묶나**. 이 문서가 못 잰 자리가 그쪽의 몫이다
 - 목록의 **40번 주제**(마이크로태스크 대 태스크) — **렌더 단계가 그 사이 어디에 끼는가**

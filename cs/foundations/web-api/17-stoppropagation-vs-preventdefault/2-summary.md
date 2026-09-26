@@ -783,7 +783,7 @@ $ python3 wa16b-cdp.py page wa16b-17-more.html | sed -n '6,8p'
 - [19번 주제](../19-passive-and-scroll/2-summary.md) — **`passive` 에서 `preventDefault` 가 무시되는 것의 정본.** 여기는 경계만 긋는다
 - HTML 갈래 [16번 주제](../../languages/html/syntax/16-links/2-summary.md) — 링크의 `rel`·`target` 이 기본 동작에 무엇을 더하나. **그쪽은 링크가 무엇을 하나, 여기는 그것을 어떻게 취소하나**
 - HTML 갈래 목록([`html/syntax/README.md`](../../languages/html/syntax/README.md))의 **21번**(폼 제출 모델) · **24번**(체크박스 등 선택 타입) — `preventDefault` 로 막을 **기본 동작 자체의 정본**
-- 목록의 **21번 주제**(커스텀 이벤트) — 내가 만든 이벤트를 `cancelable` 로 던지고 **`dispatchEvent` 반환값으로 「누가 막았나」를 받는** 형태
+- [목록의 **21번 주제**](../21-custom-events/)(커스텀 이벤트) — 내가 만든 이벤트를 `cancelable` 로 던지고 **`dispatchEvent` 반환값으로 「누가 막았나」를 받는** 형태
 
 ## 용어 풀이
 

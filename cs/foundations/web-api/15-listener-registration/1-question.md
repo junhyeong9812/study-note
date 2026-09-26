@@ -3,7 +3,7 @@
 > 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
 > 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
 > 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 전파 3단계와 `capture` 가 무엇을 하는지는 목록의 **16번 주제**, `stopPropagation` 과 `preventDefault` 는 목록의 **17번 주제**, `passive` 가 왜 생겼나는 목록의 **19번 주제**가 정본이다. 여기는 **리스너를 다는 한 줄과 떼는 한 줄**만 다룬다.
+> ★ **이웃 주제와의 경계** — 전파 3단계와 `capture` 가 무엇을 하는지는 [목록의 **16번 주제**](../16-event-propagation-phases/), `stopPropagation` 과 `preventDefault` 는 [목록의 **17번 주제**](../17-stoppropagation-vs-preventdefault/), `passive` 가 왜 생겼나는 [목록의 **19번 주제**](../19-passive-and-scroll/)가 정본이다. 여기는 **리스너를 다는 한 줄과 떼는 한 줄**만 다룬다.
 > ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
 > ★ **재지 않은 것이 있다** — `passive` 의 성능 이득과 리스너가 붙드는 메모리는 **하나도 재지 않았다.**
 > ★ 선행은 [01번 주제](../01-document-and-node-tree/2-summary.md)(노드 트리)와 JS 갈래 목록([`js/syntax/README.md`](../../languages/js/syntax/README.md))의 **07번**(`this` 네 규칙)이다.

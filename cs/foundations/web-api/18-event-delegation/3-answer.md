@@ -116,7 +116,7 @@ $ python3 wa16b-cdp.py page wa16b-18-shadow.html | sed -n '10,14p'
 - **`closed`** — `[0]` 이 **호스트**, 찾기 **`null`**, 길이 **6** — 안쪽 세 칸(`span`·`button`·`#shadow-root`)이 빠졌다.
 - **합성 `composed:false`** — 위임 리스너가 **아예 안 불렸다.** **`composed:true`** — 진짜와 같은 줄이다.
 - **안에서 위로** — `closest('.지움')` 은 **`button.지움`**, `closest('#열린')`·`closest('#목록')` 은 **`null`** — 그림자 루트에서 멈춘다.
-- ★ **`closed` 에서 바깥의 위임 리스너가 되찾을 방법은 없다** — 컴포넌트가 **`composed: true` 이벤트에 `detail` 을 담아** 알려 주는 것뿐이다(목록의 **21번 주제**).
+- ★ **`closed` 에서 바깥의 위임 리스너가 되찾을 방법은 없다** — 컴포넌트가 **`composed: true` 이벤트에 `detail` 을 담아** 알려 주는 것뿐이다([목록의 **21번 주제**](../21-custom-events/)).
 
 ### 5. bubble 로 단 `focus` 만 안 불린다
 
@@ -235,4 +235,4 @@ python3 wa16b-cdp.py page wa16b-18-more.html
 | `closest(':host')` | `null` | 이 판의 관찰 |
 | `mouseover` 가 같은 항목 안에서 또 나는 것 | 세 번 | 이 판의 관찰 |
 
-**안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② **위임의 이득**(메모리·시간). ③ **슬롯에 배정된 자식의 위임** — [12번 주제](../12-shadow-dom/3-answer.md)가 합성으로 쟀고 여기서 다시 던지지 않았다. ④ **포인터 이벤트 위임** — 목록의 **23번 주제** 몫이다.
+**안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② **위임의 이득**(메모리·시간). ③ **슬롯에 배정된 자식의 위임** — [12번 주제](../12-shadow-dom/3-answer.md)가 합성으로 쟀고 여기서 다시 던지지 않았다. ④ **포인터 이벤트 위임** — [목록의 **23번 주제**](../23-pointer-events/) 몫이다.

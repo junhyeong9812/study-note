@@ -199,7 +199,7 @@ $ python3 wa16b-cdp.py page wa16b-17-key.html
 
 - **16번 주제의 경로에서 `stopPropagation` 은 「다음 자리로 가기」를 끊는다.** capture 단계에서 부르면 **타깃까지 못 간다** — 문항 3의 마지막 줄(대상의 리스너 0개)이 그것이다.
 - **위임이 깨지는 모양** — 자식이 `stopPropagation` 하면 격자의 「조상 리스너가 불렸나」 칸이 「아니오」가 된다. **위임 리스너가 곧 그 조상**이다([18번 주제](../18-event-delegation/3-answer.md)의 A1).
-- **기본 동작 자체의 정본** — 링크는 HTML 갈래 [16번 주제](../../languages/html/syntax/16-links/2-summary.md), 폼 제출은 HTML 갈래 목록([`html/syntax/README.md`](../../languages/html/syntax/README.md))의 **21번**, 체크박스는 같은 목록의 **24번**이다.
+- **기본 동작 자체의 정본** — 링크는 HTML 갈래 [16번 주제](../../languages/html/syntax/16-links/2-summary.md), 폼 제출은 HTML 갈래 목록([`html/syntax/README.md`](../../languages/html/syntax/README.md))의 **21번**, 체크박스는 같은 [목록의 **24번**](../24-document-lifecycle-events/)이다.
 
 ## 실행 검증
 

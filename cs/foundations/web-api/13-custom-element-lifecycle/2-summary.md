@@ -1066,7 +1066,7 @@ customElements.whenDefined('my-el').then(() => { });   // 이것이 맞다
    disconnectedCallback()  { this.ac.abort(); }
 
    옮길 때마다 한 쌍이 나므로 두 줄이 자동으로 맞는다.
-   ★ 한쪽만 쓰면 옮길 때마다 리스너가 쌓인다 — 목록의 20번 주제가 그 정본이다
+   ★ 한쪽만 쓰면 옮길 때마다 리스너가 쌓인다 — [목록의 **20번 주제**](../20-listener-lifetime/)가 그 정본이다
 ```
 
 ### 1. 생성자에서 속성이나 자식을 만든다
@@ -1087,7 +1087,7 @@ customElements.whenDefined('my-el').then(() => { });   // 이것이 맞다
 
 ### 5. `disconnectedCallback` 을 소멸자로 쓴다
 
-**페이지를 떠날 때 안 온다.** 서버에 보낼 것이 있으면 목록의 **34번 주제**(`sendBeacon`)와 목록의 **24번 주제**(`visibilitychange`)를 쓴다.
+**페이지를 떠날 때 안 온다.** 서버에 보낼 것이 있으면 [목록의 **34번 주제**](../34-send-beacon-and-keepalive/)(`sendBeacon`)와 [목록의 **24번 주제**](../24-document-lifecycle-events/)(`visibilitychange`)를 쓴다.
 
 ### 6. 문서 밖 트리가 업그레이드될 줄 안다
 
@@ -1135,7 +1135,7 @@ customElements.whenDefined('my-el').then(() => { });   // 이것이 맞다
 | DOM 을 만든다 | `connectedCallback` | `constructor`(조용히 죽는다) |
 | 속성을 읽어 상태를 세운다 | `attributeChangedCallback` | `constructor`(그 시점에는 속성이 있을 수도 없을 수도 있다) |
 | 리스너를 단다 | `connectedCallback` + `disconnectedCallback` 짝 | 한쪽만 쓰기 |
-| 정리한다(서버 보고 포함) | 목록의 **24번 주제**·목록의 **34번 주제** | `disconnectedCallback`(페이지 이탈에 안 온다) |
+| 정리한다(서버 보고 포함) | [목록의 **24번 주제**](../24-document-lifecycle-events/)·[목록의 **34번 주제**](../34-send-beacon-and-keepalive/) | `disconnectedCallback`(페이지 이탈에 안 온다) |
 | 정의를 기다린다 | `customElements.whenDefined()` | `setTimeout` 으로 짐작하기 |
 | 떼어 놓은 트리를 살린다 | `customElements.upgrade()` | 문서에 붙였다 떼기 |
 | 안 살아난 것을 숨긴다 | `:not(:defined)` CSS | JS 로 폴링하기 |
@@ -1184,9 +1184,9 @@ customElements.whenDefined('my-el').then(() => { });   // 이것이 맞다
 - [03번 주제](../03-node-creation-insertion-removal/2-summary.md) — **삽입이 이동이라는 것**의 정본. `disconnected`/`connected` 가 한 쌍으로 나는 이유가 거기 있다
 - [06번 주제](../06-attribute-vs-property/2-summary.md) — `attributeChangedCallback` 은 **속성(attribute)** 쪽만 본다. 프로퍼티에 써도 안 온다
 - [01번 주제](../01-document-and-node-tree/2-summary.md) — 나무를 보는 창 셋
-- 목록의 **24번 주제**(문서 수명주기 이벤트) · 목록의 **34번 주제**(`sendBeacon`) — **떠날 때** 무엇을 쓰나. `disconnectedCallback` 의 빈자리를 메운다
+- [목록의 **24번 주제**](../24-document-lifecycle-events/)(문서 수명주기 이벤트) · [목록의 **34번 주제**](../34-send-beacon-and-keepalive/)(`sendBeacon`) — **떠날 때** 무엇을 쓰나. `disconnectedCallback` 의 빈자리를 메운다
 - 목록의 **37번 주제**(`MutationObserver`) — 커스텀 요소 없이 「DOM 이 바뀌었다」를 잡는 길
-- 목록의 **21번 주제**(`CustomEvent`) — 컴포넌트가 바깥에 알리는 법
+- [목록의 **21번 주제**](../21-custom-events/)(`CustomEvent`) — 컴포넌트가 바깥에 알리는 법
 - JS 갈래 목록([`js/syntax/README.md`](../../languages/js/syntax/README.md))의 **16번** — `class`·`extends`·`super()` 의 정본. **`super()` 를 안 부르면 나는 `ReferenceError` 는 그쪽 규칙**이다
 
 ## 용어 풀이

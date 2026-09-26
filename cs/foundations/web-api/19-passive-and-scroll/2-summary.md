@@ -806,7 +806,7 @@ $ python3 wa16b-cdp.py page wa16b-19-more.html | sed -n '4,6p'
 - [16번 주제](../16-event-propagation-phases/2-summary.md) — 진짜 입력 하네스 전문
 - [11번 주제](../11-scroll-control/2-summary.md) — 스크립트로 스크롤을 **일으키는** 쪽(`scrollTo` 등)
 - CSS 갈래 [23번 주제](../../languages/css/syntax/23-overflow-and-scroll-containers/2-summary.md) — 스크롤 컨테이너와 `overscroll-behavior`. **`touch-action` 은 CSS 갈래에 편이 없다**
-- 목록의 **23번 주제**(포인터 이벤트) — 터치를 포인터로 받을 때의 `touch-action` 과 `pointercancel`
+- [목록의 **23번 주제**](../23-pointer-events/)(포인터 이벤트) — 터치를 포인터로 받을 때의 `touch-action` 과 `pointercancel`
 - [chromestatus 5093566007214080](https://chromestatus.com/feature/5093566007214080) · [chromestatus 6662647093133312](https://chromestatus.com/feature/6662647093133312) — 개입의 출발점과 Chromium 의 측정 서술
 
 ## 용어 풀이
@@ -824,6 +824,6 @@ $ python3 wa16b-cdp.py page wa16b-19-more.html | sed -n '4,6p'
 ## 더 들어가면
 
 - **성능 이득의 실제 크기**는 **재지 않았다.** 재려면 합성 스레드의 프레임 시간과 입력 지연을 보는 도구(성능 추적)가 필요하다 — 이 하네스 밖이다.
-- **`pointer` 이벤트와 `touch-action` 의 관계**(`pointercancel`)는 목록의 **23번 주제** 몫이다.
+- **`pointer` 이벤트와 `touch-action` 의 관계**(`pointercancel`)는 [목록의 **23번 주제**](../23-pointer-events/) 몫이다.
 - **`overscroll-behavior`**(당겨서 새로고침·스크롤 체이닝 막기)는 리스너 없이 스크롤의 **끝**을 다루는 CSS 다 — CSS 갈래 [23번 주제](../../languages/css/syntax/23-overflow-and-scroll-containers/2-summary.md).
 - **`iframe` 안의 문서 수준 대상**이 같은 규칙인지는 던지지 않았다.

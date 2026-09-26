@@ -1093,7 +1093,7 @@ A   go 를 받고 이미지를 보냈다
 - [HTML 08번 주제](../../languages/html/syntax/08-script-loading/2-summary.md) — **스크립트 실행 시점과 `DOMContentLoaded`·`load` 순서의 정본.** 그쪽은 `defer`/`async`/모듈, 여기는 **떠날 때와 돌아올 때**
 - [16번 주제](../16-event-propagation-phases/2-summary.md) — `load` 가 버블하지 않는 이벤트라는 것
 - [20번 주제](../20-listener-lifetime/2-summary.md) — 리스너가 문서를 붙드는 것(누수). bfcache 의 문서는 **통째로** 남는다
-- 목록의 **34번 주제** — `sendBeacon`(떠날 때 보내기)
+- [목록의 **34번 주제**](../34-send-beacon-and-keepalive/) — `sendBeacon`(떠날 때 보내기)
 - [25번 주제](../25-fetch-request-response/2-summary.md) — 같은 하네스로 네트워크 묶음을 시작한다
 
 ## 용어 풀이

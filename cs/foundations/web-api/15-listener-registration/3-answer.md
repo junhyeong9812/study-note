@@ -165,7 +165,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 
 **왜 그런가**
 
-- **보통 함수** — `this === e.currentTarget` 이 **`true`** 이고 값은 `#겉` 이다. ★ **`target` 이 아니다.** 위임(목록의 **18번 주제**)에서 이 구분이 결정적이다.
+- **보통 함수** — `this === e.currentTarget` 이 **`true`** 이고 값은 `#겉` 이다. ★ **`target` 이 아니다.** 위임([목록의 **18번 주제**](../18-event-delegation/))에서 이 구분이 결정적이다.
 - **화살표 함수** — `this` 가 **바깥의 `this`**(여기서는 `window`)다. `currentTarget` 을 잃으므로 **`e.currentTarget` 으로 받아야** 한다.
 - **`bind` 한 함수** — 묶은 객체가 `this` 다. 대신 (1)대로 **지우기가 어려워진다.**
 - **객체 리스너** — `this` 가 **그 객체**다. `bind` 없이 상태를 들고 다니는 길이고 **지우기도 쉽다.**
@@ -223,7 +223,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 ```text
 $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --dump-dom wa12b-15-life.html 2>/dev/null | sed -n '/^--OUT$/,/^OUT--$/{//!p}' | sed -n '20,21p'
 stopImmediatePropagation 과 견주면
-  같은 요소의 뒤엣것을 막으면 = ["첫째"]  (정본은 목록의 17번 주제다)
+  같은 요소의 뒤엣것을 막으면 = ["첫째"]  (정본은 [목록의 **17번 주제**](../17-stoppropagation-vs-preventdefault/)다)
 (exit 0)
 ```
 
@@ -236,7 +236,7 @@ stopImmediatePropagation 과 견주면
   - **디스패치를 시작할 때 명부를 통째로 복사한다** → 뒤에 더한 줄은 복사본에 없어 **이번 판에 안 보인다.**
   - **복사본의 줄을 부르기 직전에 「아직 명부에 있나」를 다시 본다** → 지워진 줄은 **건너뛴다.**
 - **③ 은 그 둘이 겹친 것**이다 — 복사본의 그 줄은 **이미 명부에 없고**, 명부의 새 줄은 **복사본에 없다.**
-- **`stopImmediatePropagation()` 은 같은 요소의 뒤엣것까지 막아** 겉보기 결과가 `["첫째"]` 로 같다. 하지만 **하는 일이 다르다** — 지우기는 **명부를 바꾸고**, 이쪽은 **이번 디스패치만 멈춘다.** 정본은 목록의 **17번 주제**다.
+- **`stopImmediatePropagation()` 은 같은 요소의 뒤엣것까지 막아** 겉보기 결과가 `["첫째"]` 로 같다. 하지만 **하는 일이 다르다** — 지우기는 **명부를 바꾸고**, 이쪽은 **이번 디스패치만 멈춘다.** 정본은 [목록의 **17번 주제**](../17-stoppropagation-vs-preventdefault/)다.
 
 ### 8. `passive` 는 `preventDefault()` 를 조용히 무효로 만든다
 
@@ -266,7 +266,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --e
 - **경고 한 줄이 콘솔에만 남는다**(`Unable to preventDefault inside passive event listener invocation.`).
 - ★ **`e.cancelable` 은 그대로 `true`** 다. **이벤트가 막을 수 없게 된 것이 아니라 이 리스너가 못 막는 것**이다. 그래서 **`if (e.cancelable) e.preventDefault()` 로 판정하면 틀린다** — `cancelable` 은 **이벤트의 성질**이고 `passive` 는 **리스너의 성질**이라 둘이 서로를 모른다.
 - ★ ★ **콘솔 줄 수를 근거로 쓰면 안 된다.** 이 실행에서 `passive` 리스너 안의 `preventDefault()` 는 **여덟 번** 불렸는데 콘솔에는 **두 줄**만 남았고, 두 줄 다 **같은 소스 줄**(14행 — 명시 `{ passive: true }` 리스너)을 가리킨다. **합친 것이 아니라, 기본 passive + 합성 이벤트 조합은 경고를 내지 않는다**([19번 주제](../19-passive-and-scroll/2-summary.md)의 (6)). **「경고가 안 보인다」는 「안 났다」가 아니다.**
-- ★ **`passive` 가 스크롤을 얼마나 빠르게 하는지는 재지 않았다** — 이 문서는 **규칙만** 주장한다. 이득의 정본은 목록의 **19번 주제**다.
+- ★ **`passive` 가 스크롤을 얼마나 빠르게 하는지는 재지 않았다** — 이 문서는 **규칙만** 주장한다. 이득의 정본은 [목록의 **19번 주제**](../19-passive-and-scroll/)다.
 
 ### 9. 기본값이 대상에 달려 있다 — 코드만 읽어서는 안 보인다
 
@@ -351,7 +351,7 @@ passive 는 동일성 키가 아니므로 지울 때는 안 적어도 된다
 
 **왜 그런가**
 
-- `capture` 의 정본은 목록의 **16번 주제**(전파 3단계)다 — **내려가며 잡나 올라가며 잡나**가 그쪽 이야기다. **이 주제가 맡은 부분은 「그 값이 동일성 키의 셋째 칸이라는 것」** 하나다. 두 편이 같은 낱말을 다른 각도에서 본다.
+- `capture` 의 정본은 [목록의 **16번 주제**](../16-event-propagation-phases/)(전파 3단계)다 — **내려가며 잡나 올라가며 잡나**가 그쪽 이야기다. **이 주제가 맡은 부분은 「그 값이 동일성 키의 셋째 칸이라는 것」** 하나다. 두 편이 같은 낱말을 다른 각도에서 본다.
 - **[12번 주제](../12-shadow-dom/2-summary.md)에서는 리스너를 어디에 다느냐가 `e.target` 을 바꾼다** — 그림자 경계 **밖**에 달면 `target` 이 호스트로 재타기팅되고, **안**에 달면 안쪽 요소 그대로다. **같은 콜백인데 받는 값이 달라진다.** `composedPath()` 는 어느 자리에서나 같다.
 - `signal` 이 [목록의 **13번 주제**](../13-custom-element-lifecycle/)에서 값어치를 내는 이유 — 커스텀 요소는 `connectedCallback` 에서 달고 `disconnectedCallback` 에서 떼야 하는데, 그 짝을 맞추려면 **함수 참조와 `capture` 를 필드에 들고 있어야** 한다. `signal` 하나면 **`connected` 에서 컨트롤러를 만들고 `disconnected` 에서 `abort()`** 하는 두 줄로 끝난다. 그리고 그 요소는 **같은 부모에 다시 붙여도 한 쌍이 난다**([목록의 **13번 주제**](../13-custom-element-lifecycle/) 실측) — **떼는 쪽을 빠뜨리면 그때마다 한 줄씩 쌓인다.**
 - 보통 함수의 `this` 는 JS 갈래 07번의 「**암시적 바인딩**」에 해당한다 — 브라우저가 `콜백.call(currentTarget, 이벤트)` 꼴로 부르기 때문이다. 화살표 함수가 그 규칙에서 빠지는 것도 같은 편이 정본이다.
@@ -415,13 +415,13 @@ const padw = (s, n) => s + ' '.repeat(Math.max(0, n - W(s)));
 | 동일성 키가 셋인 것 | 위 격자 | **명세**가 정한 절차다. 값이 아니라 절차를 외운다 |
 | 디스패치가 목록을 복사하는 것 | 위 출력 | **명세**(inner invoke)가 정한 절차다 |
 
-**안 돌려 본 것** — ① Firefox·Safari 에서의 재현(엔진이 없다). ② **진짜 터치·휠 입력** — 합성 이벤트로만 던졌다. ③ **`passive` 의 성능 이득** — **재지 않았다.** ④ **리스너가 붙드는 메모리와 누수** — 힙을 안 찍었다. ⑤ **`el.onclick` 표면** — 이 문서의 대상이 아니라 던지지 않았다. ⑥ **`AbortSignal.timeout()`·`AbortSignal.any()`** — 던지지 않았다. ⑦ **`capture` 단계에서 `stopPropagation()`** — 목록의 17번 주제 몫이라 던지지 않았다. ⑧ **그림자 경계를 넘는 리스너** — [12번 주제](../12-shadow-dom/2-summary.md)가 정본이라 여기서 다시 던지지 않았다. ⑨ **워커·`document` 밖의 `EventTarget`**(`XMLHttpRequest`·`WebSocket` 등)에서 같은 규칙이 성립하는지 — **확인하지 않았다.**
+**안 돌려 본 것** — ① Firefox·Safari 에서의 재현(엔진이 없다). ② **진짜 터치·휠 입력** — 합성 이벤트로만 던졌다. ③ **`passive` 의 성능 이득** — **재지 않았다.** ④ **리스너가 붙드는 메모리와 누수** — 힙을 안 찍었다. ⑤ **`el.onclick` 표면** — 이 문서의 대상이 아니라 던지지 않았다. ⑥ **`AbortSignal.timeout()`·`AbortSignal.any()`** — 던지지 않았다. ⑦ **`capture` 단계에서 `stopPropagation()`** — [목록의 **17번 주제**](../17-stoppropagation-vs-preventdefault/) 몫이라 던지지 않았다. ⑧ **그림자 경계를 넘는 리스너** — [12번 주제](../12-shadow-dom/2-summary.md)가 정본이라 여기서 다시 던지지 않았다. ⑨ **워커·`document` 밖의 `EventTarget`**(`XMLHttpRequest`·`WebSocket` 등)에서 같은 규칙이 성립하는지 — **확인하지 않았다.**
 
 ## 용어 풀이
 
 - **리스너(event listener)** — 명부의 한 줄. 타입·콜백·`capture` 와 성질(`once`·`passive`·`signal`)로 이루어진다.
 - **동일성 조건** — `removeEventListener` 가 「같은 줄」로 인정하는 조건. **타입 · 콜백(같은 객체) · `capture`** 셋.
-- **`capture`** — 이벤트가 내려갈 때 잡을지 올라갈 때 잡을지. 단계 자체의 정본은 목록의 **16번 주제**.
+- **`capture`** — 이벤트가 내려갈 때 잡을지 올라갈 때 잡을지. 단계 자체의 정본은 [목록의 **16번 주제**](../16-event-propagation-phases/).
 - **`once`** — 한 번 불리고 스스로 빠지는 성질. **부르기 직전에** 빠진다.
 - **`passive`** — 「기본 동작을 막지 않겠다」는 약속. 어기면 `preventDefault()` 가 **조용히 무효**가 된다.
 - **`signal`** — `AbortSignal`. `abort()` 한 번으로 묶인 리스너를 전부 뗀다.

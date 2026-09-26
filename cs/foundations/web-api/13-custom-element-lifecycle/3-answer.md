@@ -335,7 +335,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
   3. **`moveBefore()` 로 옮길 때, `connectedMoveCallback` 을 정의한 요소** — 그쪽이 대신 불린다.
   4. **페이지를 떠날 때**(탭 닫기·다른 주소로 이동) — ★ **이 문서는 그 순간을 관측하지 못했다.** 로그를 뱉을 문서가 이미 없다. **「안 돌려 본 것」이 아니라 「못 잰 것」이다.**
   5. **가비지 컬렉션** — ★ **GC 시점을 이 도구로 몰 수 없어 확인하지 못했다.** 명세가 「콜백이 아니다」로 정해 두었을 뿐이다.
-- ★★ **그래서 「정리」를 이 콜백에만 걸면 탭을 닫는 순간 아무 일도 안 일어난다.** 서버에 보낼 것이 있으면 목록의 **24번 주제**(`visibilitychange`·`pagehide`)와 목록의 **34번 주제**(`sendBeacon`)를 쓴다.
+- ★★ **그래서 「정리」를 이 콜백에만 걸면 탭을 닫는 순간 아무 일도 안 일어난다.** 서버에 보낼 것이 있으면 [목록의 **24번 주제**](../24-document-lifecycle-events/)(`visibilitychange`·`pagehide`)와 [목록의 **34번 주제**](../34-send-beacon-and-keepalive/)(`sendBeacon`)를 쓴다.
 - ★★ **`moveBefore()` 가 이 이야기를 바꾼다** — 「옮기기는 뗐다 붙이기다」라는 오래된 사실에 예외가 생겼다. 다만 **`connectedMoveCallback` 을 정의한 요소에만** 적용되고, 안 정의한 요소에는 **옛 코드를 위해 한 쌍을 그대로 낸다.** 새 표면이라 **다른 엔진에서 던지지 않았다.**
 - **오는 자리** — `remove()` · `innerHTML = ""` · 다른 부모로 옮기기 · **같은 부모에 다시 붙이기**(제자리인데도) · 다른 문서로 옮기기(`adopted` 가 가운데 낀다) · 그림자 호스트를 떼기.
 
@@ -388,7 +388,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 
 **왜 그런가**
 
-- ★★ **`connectedCallback` 에서 리스너를 달면 옮길 때마다 또 달린다.** A8 에서 **같은 부모에 다시 붙여도 한 쌍**이 났다 — DOM 을 재배치하는 코드가 있으면 리스너가 쌓인다. **처방은 `disconnectedCallback` 과 짝을 맞추는 것**이고, 더 나은 처방은 목록의 **20번 주제**의 `AbortController` 다 — `connectedCallback` 에서 컨트롤러를 만들어 `{signal}` 로 전부 달고 `disconnectedCallback` 에서 `abort()` 한 번이면 된다.
+- ★★ **`connectedCallback` 에서 리스너를 달면 옮길 때마다 또 달린다.** A8 에서 **같은 부모에 다시 붙여도 한 쌍**이 났다 — DOM 을 재배치하는 코드가 있으면 리스너가 쌓인다. **처방은 `disconnectedCallback` 과 짝을 맞추는 것**이고, 더 나은 처방은 [목록의 **20번 주제**](../20-listener-lifetime/)의 `AbortController` 다 — `connectedCallback` 에서 컨트롤러를 만들어 `{signal}` 로 전부 달고 `disconnectedCallback` 에서 `abort()` 한 번이면 된다.
 - ★★ **컴포넌트를 `<button>` 으로 만들 수 없는 이유** — [12번 주제](../12-shadow-dom/2-summary.md)에서 **`<button>` 에는 `attachShadow` 가 `NotSupportedError` 로 막힌다.** 해법은 둘이다. ① **커스텀 요소를 만들고 그 안에 `<button>` 을 넣는다**(권장). ② **내장 요소 확장**(`is=`)을 쓴다 — 출력에서 Chrome 은 **된다**. 그런데 **엔진마다 갈리는 표면**이라 이 문서는 이식성을 주장하지 않는다.
 - ★ **같은 모듈이 두 번 읽힐 수 있으면** `customElements.get('my-el')` 로 먼저 보고 이미 있으면 건너뛴다. A7 에서 재등록이 **`NotSupportedError`** 였고 **되돌리는 API 가 없다.**
 - **`is=` 로 만든 것도 `outerHTML` 에 `is="my-btn"` 이 남는다** — 직렬화하고 다시 파싱해도 같은 것이 선다.
@@ -402,7 +402,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 - ★ **[12번 주제](../12-shadow-dom/2-summary.md)와의 경계선** — **그쪽은 「경계가 무엇을 막나」**(공간)이고 **여기는 「언제 무엇이 불리나」**(시간)다. 한 문장으로: **거기는 어디까지 보이나, 여기는 언제 살아나나.** 둘이 만나는 자리가 「`connectedCallback` 에서 `attachShadow` 하기」인데, 그것은 **생성자 규칙 때문에 생성자에 못 쓰는 것이 아니라** 쓸 수 있다 — 그림자 루트는 **자식으로 안 세기** 때문이다(그 확인은 이 문서가 **하지 않았다**).
 - ★★ **[03번 주제](../03-node-creation-insertion-removal/2-summary.md)의 「삽입은 복사가 아니라 이동이다」가 콜백이 한 쌍으로 나는 이유**다. 이미 트리에 있는 노드를 다시 삽입하면 **먼저 떼고 붙이므로** `disconnected` 와 `connected` 가 순서대로 난다. **제자리에 붙여도** 그 절차를 그대로 밟는다.
 - ★ **[06번 주제](../06-attribute-vs-property/2-summary.md)의 구분이 그대로 걸린다** — `attributeChangedCallback` 은 **속성(attribute)** 쪽만 본다. `el.라벨 = 'x'` 처럼 **프로퍼티에 써도 콜백이 안 온다.** 반영(reflect)을 원하면 **내가 getter/setter 를 만들어 `setAttribute` 를 부르게** 해야 한다 — 내장 요소가 하는 일을 손으로 하는 셈이다.
-- ★ **「떠날 때」의 정본은 목록의 24번 주제**(`visibilitychange`·`pagehide`·bfcache)다. `disconnectedCallback` 은 그 자리를 못 메운다(A8).
+- ★ **「떠날 때」의 정본은 [목록의 24번 주제](../24-document-lifecycle-events/)**(`visibilitychange`·`pagehide`·bfcache)다. `disconnectedCallback` 은 그 자리를 못 메운다(A8).
 
 ## 실행 검증
 

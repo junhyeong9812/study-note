@@ -1081,7 +1081,7 @@ $ python3 wa16b-cdp.py page wa16b-16-same.html | sed -n '10,11p'
 - [17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md) — 이 경로를 **어디서 끊나**의 정본
 - [18번 주제](../18-event-delegation/2-summary.md) — 버블을 이용해 **조상 하나로 받는** 형태. (4)의 비버블 격자가 그쪽의 「위임이 깨지는 자리」가 된다
 - [19번 주제](../19-passive-and-scroll/2-summary.md) — `passive` 가 무엇을 무효로 만드나
-- 목록의 **21번 주제**(커스텀 이벤트) — `CustomEvent` 의 `bubbles`/`composed` 를 **내가 정할 때**의 정본
+- [목록의 **21번 주제**](../21-custom-events/)(커스텀 이벤트) — `CustomEvent` 의 `bubbles`/`composed` 를 **내가 정할 때**의 정본
 - JS 갈래 [07번 주제](../../languages/js/syntax/07-this-binding-four-rules/2-summary.md) — `this` 네 규칙. 리스너의 `this` 가 **호스트(DOM)가 정하는 칸**이라는 것
 
 ## 용어 풀이
@@ -1104,4 +1104,4 @@ $ python3 wa16b-cdp.py page wa16b-16-same.html | sed -n '10,11p'
 - **`stopPropagation()` 을 경로의 어디서 부르나**가 곧 「어디까지 가나」다 — [17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md).
 - **`mouseover` 가 자식 사이를 옮길 때마다 또 나는 것**과 그것을 `relatedTarget` 으로 거르는 것은 [18번 주제](../18-event-delegation/2-summary.md)에서 진짜 마우스로 쟀다.
 - **「타깃에서는 등록 순서」가 언제 바뀌었나**는 확인하지 않았다. 이 편은 **지금 명세 본문과 이 판의 결과**만 적는다.
-- **포인터 이벤트(`pointerdown` 등)의 경로와 `setPointerCapture`** 는 목록의 **23번 주제** 몫이라 던지지 않았다.
+- **포인터 이벤트(`pointerdown` 등)의 경로와 `setPointerCapture`** 는 [목록의 **23번 주제**](../23-pointer-events/) 몫이라 던지지 않았다.

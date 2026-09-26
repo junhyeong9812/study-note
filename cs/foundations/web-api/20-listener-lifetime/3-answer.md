@@ -143,7 +143,7 @@ $ python3 wa20b-cdp.py page wa20b-20-signal.html | sed -n '17,24p'
 
 - **`갑.abort()` 뒤 0회 · `합.aborted = true` · `을.signal.aborted = false` · reason 은 같은 객체(`true`).** DOM 이 의존 신호에 **원본의 abort reason 을 그대로** 넣는다.
 - ★ **`timeout(0)` 이 같은 잡에서 `false`** 인 것은 명세가 「ms 뒤 **타이머 태스크 소스에 태스크를 큐에 넣어** abort」로 정하기 때문이다. `abort` 이벤트 뒤에는 `TimeoutError` 이고 리스너는 빠졌다.
-- 이 둘의 **네트워크 쪽 쓰임**은 목록의 **27번 주제**가 정본이다.
+- 이 둘의 **네트워크 쪽 쓰임**은 [목록의 **27번 주제**](../27-abort-and-timeout/)가 정본이다.
 
 ### 6. 뿌리에서 닿는 길이 있나
 

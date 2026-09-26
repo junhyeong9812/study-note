@@ -700,7 +700,7 @@ $ python3 wa20b-cdp.py page wa20b-20-signal.html | sed -n '12,15p'
 
 ### (7) `AbortSignal.any` · `AbortSignal.timeout` — 판별만
 
-**언제 쓰나** — 「사용자가 닫거나 5초가 지나면 둘 다 떼라」일 때. **정본은 목록의 27번 주제**(네트워크 쪽 취소와 타임아웃)이고, 여기는 **리스너 해제에 쓸 수 있나**만 판별한다.
+**언제 쓰나** — 「사용자가 닫거나 5초가 지나면 둘 다 떼라」일 때. **정본은 [목록의 27번 주제](../27-abort-and-timeout/)**(네트워크 쪽 취소와 타임아웃)이고, 여기는 **리스너 해제에 쓸 수 있나**만 판별한다.
 
 ```text
 $ python3 wa20b-cdp.py page wa20b-20-signal.html | sed -n '17,20p'
@@ -833,7 +833,7 @@ $ python3 wa20b-cdp.py page wa20b-20-signal.html | sed -n '22,24p'
 - [18번 주제](../18-event-delegation/2-summary.md) — 위임. 리스너를 **오래 사는 곳 하나에** 두면서 노드를 쥐지 않는 형태
 - [JS 갈래 23번 주제](../../languages/js/syntax/23-map-set-and-weak-collections/2-summary.md) — **`WeakRef`·`FinalizationRegistry`·회수 보장의 정본.** 그쪽은 node 의 `gc()`, 여기는 **브라우저 페이지의 `gc()`**
 - JS 갈래 목록([`js/syntax/README.md`](../../languages/js/syntax/README.md))의 **41번** — `AbortController`/`AbortSignal` 의 언어 쪽 정본(아직 폴더 없음)
-- 목록의 **27번 주제** — `AbortSignal.timeout()`/`any()` 의 네트워크 쪽 정본
+- [목록의 **27번 주제**](../27-abort-and-timeout/) — `AbortSignal.timeout()`/`any()` 의 네트워크 쪽 정본
 - [`../../memory-management/README.md`](../../memory-management/README.md) — 힙·가비지 컬렉션의 원리 노트. 그쪽은 **힙이 무엇인가**, 여기는 **리스너가 무엇을 붙드나**
 
 ## 용어 풀이

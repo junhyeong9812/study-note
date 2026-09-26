@@ -316,7 +316,7 @@ rect.top + scrollY = 665.00   ← 창 스크롤만 되돌린 값이지 offsetTop
 
 - **뷰포트 → 문서** 는 `rect.top + window.scrollY` 다. 되돌리려면 빼면 된다.
 - ★ **그 식은 「창 말고 다른 스크롤러가 없을 때」만 성립한다.** 위 출력의 마지막 줄이 반례다 — 조상 스크롤러를 100 굴린 상태에서 `rect.top + scrollY` 는 **665** 이고 `offsetTop` 은 **250** 이다. **중간 스크롤러의 오프셋은 그 식에 안 들어 있다.** 조상이 여럿이면 `offsetParent` 사슬을 타고 `offsetTop` 을 누적하는 쪽(A9 의 둘째 줄)이 **문서 좌표**다.
-- **「화면에 보이나」를 이 주제의 값으로 판정하면 부족하다** — `offsetWidth > 0` 은 `display: none` 만 잡는다. **뷰포트 밖·`opacity: 0`·조상에 가려진 것**은 못 잡는다. 정본은 목록의 **35번 주제**(IntersectionObserver)이고, 「보이나」 한 번 판정은 `el.checkVisibility()` 다.
+- **「화면에 보이나」를 이 주제의 값으로 판정하면 부족하다** — `offsetWidth > 0` 은 `display: none` 만 잡는다. **뷰포트 밖·`opacity: 0`·조상에 가려진 것**은 못 잡는다. 정본은 [목록의 **35번 주제**](../35-intersection-observer/)(IntersectionObserver)이고, 「보이나」 한 번 판정은 `el.checkVisibility()` 다.
 - **[10번 주제](../10-layout-thrashing/2-summary.md)와의 이음매** — 이 문서의 **모든 읽기가 강제 동기 레이아웃의 방아쇠**다. 실제로 그 주제의 실측표에서 `offsetTop`·`getBoundingClientRect()`·`offsetParent`·`scrollTop` 이 전부 **한 번 읽는 데 100µs 대**로 나왔고, `elementFromPoint` 는 **그보다 세 배 비쌌다.** 여기서 배운 읽기를 **루프 안에서 쓰는 순간** 그 주제가 시작된다.
 
 ## 실행 검증

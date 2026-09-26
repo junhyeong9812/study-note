@@ -739,7 +739,7 @@ el.getBoundingClientRect().width;               // 이것이 화면에 그려진
 
 // 5. 「보이나」를 offsetWidth 로 판정한다 — display:none 만 잡힌다
 if (el.offsetWidth > 0) { }                     // 뷰포트 밖도 opacity:0 도 못 잡는다
-if (el.checkVisibility()) { }                   // 목록의 35번 주제(IntersectionObserver)가 정본
+if (el.checkVisibility()) { }                   // [목록의 **35번 주제**](../35-intersection-observer/)(IntersectionObserver)가 정본
 
 // 6. rect 를 붙들어 두고 나중에 읽는다 — 스냅숏이라 안 따라온다
 const r = el.getBoundingClientRect();
@@ -814,7 +814,7 @@ r.left;                                         // 옛 값이다
 | 스크롤 여유가 얼마나 남았나 | `scrollHeight - clientHeight` | `offsetHeight` |
 | 안쪽에 쓸 수 있는 폭 | `clientWidth` | `offsetWidth`(테두리·스크롤바가 낀다) |
 | 「이 점에 무엇이 있나」 | `elementFromPoint`(뷰포트 좌표) | offset 누적 좌표 |
-| 「화면에 보이나」 | 목록의 **35번 주제**(IntersectionObserver) | `offsetWidth > 0` |
+| 「화면에 보이나」 | [목록의 **35번 주제**](../35-intersection-observer/)(IntersectionObserver) | `offsetWidth > 0` |
 | 값을 나중에 다시 쓸 때 | 그때 다시 읽는다 | `rect` 를 붙들어 두기 |
 | 여러 요소를 잰다 | 읽기를 **한 묶음으로** 모은다 | 쓰기와 번갈아([목록의 **10번 주제**](../10-layout-thrashing/)) |
 
@@ -835,7 +835,7 @@ r.left;                                         // 옛 값이다
 - [10번 주제](../10-layout-thrashing/2-summary.md) — 이 주제의 읽기가 **얼마나 비싼가**. 고치는 법은 그쪽이 정본
 - [11번 주제](../11-scroll-control/2-summary.md) — `scrollTop` 을 **읽는 것**까지가 여기, **굴리는 것**은 그쪽
 - [01번 주제](../01-document-and-node-tree/2-summary.md) — 관측 3창의 정본
-- 목록의 **35번 주제**(IntersectionObserver) — 「보이나」를 **폴링 없이** 묻는 법. 이 주제의 좌표 계산을 대신한다
+- [목록의 **35번 주제**](../35-intersection-observer/)(IntersectionObserver) — 「보이나」를 **폴링 없이** 묻는 법. 이 주제의 좌표 계산을 대신한다
 - 목록의 **36번 주제**(ResizeObserver) — 치수가 **언제 바뀌었나**를 묻는 법
 - [CSS 15번 주제](../../languages/css/syntax/15-box-model-and-box-sizing/2-summary.md) — ★ **이 주제의 정본 이웃.** 네 겹 상자와 `box-sizing`, `rect.width` 가 재는 칸의 정의가 거기다. **여기서 다시 쓰지 않는다**
 - [CSS 21번 주제](../../languages/css/syntax/21-position-and-containing-block/2-summary.md) — `position` 과 포함 블록. **`offsetParent` 와 포함 블록은 닮았지만 다르다**(그쪽은 `%` 와 `top` 의 기준, 여기는 `offsetTop` 의 기준)

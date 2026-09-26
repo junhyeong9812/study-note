@@ -314,7 +314,7 @@ rAF 콜백을 끝없이 이어 걸고 --dump-dom 이 기다리는 끝까지 세�
 - **[08번 주제](../08-getcomputedstyle/2-summary.md)의 마지막 절(비용)이 씨앗**이다. 거기서 **`cs.color` 와 `cs.width` 의 비용이 갈린 것**과 **교차 대 묶음이 갈린 것**을 이미 봤고, **고치는 법은 이 주제가 정본**이라고 넘겼다.
 - **[09번 주제](../09-element-geometry/2-summary.md)의 표면은 거의 전부 방아쇠**다 — `offset*`·`client*`·`scroll*`·`rect`·`getClientRects`·`elementFromPoint` 가 A4 의 첫 칸에 그대로 들어 있다. **방아쇠가 아닌 것은 없었다.**
 - ★ **이 실패는 단위 테스트로 못 잡는다.** **결과가 언제나 옳기 때문**이다. 값이 틀리는 버그가 아니라 **느려지는 버그**라서, 어서션이 걸릴 자리가 없다. 잡으려면 **개발자 도구의 Performance 패널**이나 **프레임 예산 측정**(목록의 **38번 주제**)이 필요하다.
-- **「`rect` 를 읽지 않고 보이는지 알기」의 정본은 목록의 35번 주제**(IntersectionObserver)다. 크기 변화는 **36번 주제**(ResizeObserver)이고, 둘 다 **이 주제의 방아쇠를 안 당기고** 같은 정보를 준다.
+- **「`rect` 를 읽지 않고 보이는지 알기」의 정본은 [목록의 35번 주제](../35-intersection-observer/)**(IntersectionObserver)다. 크기 변화는 **36번 주제**(ResizeObserver)이고, 둘 다 **이 주제의 방아쇠를 안 당기고** 같은 정보를 준다.
 
 ## 실행 검증
 

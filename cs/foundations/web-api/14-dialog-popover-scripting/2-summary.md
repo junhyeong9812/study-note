@@ -1520,9 +1520,9 @@ document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
 - [06번 주제](../06-attribute-vs-property/2-summary.md) — `popover` 의 모르는 값이 **조용히 `manual` 로 떨어지는** 것의 정본
 - [08번 주제](../08-getcomputedstyle/2-summary.md) — 계산값이 「**무엇이 선언됐나**」를 말한다는 것. (5)가 그 위에 선다
 - [12번 주제](../12-shadow-dom/2-summary.md) — 그림자 경계 안의 dialog·popover 도 같은 최상위 레이어를 쓴다(이 문서는 **그 조합을 던지지 않았다**)
-- 목록의 **16번 주제**(전파 3단계) — `cancel`·`close`·`toggle` 이 버블하나
-- 목록의 **17번 주제**(`preventDefault`) — `cancelable` 이 `false` 일 때 `preventDefault()` 가 무엇을 하나의 정본
-- 목록의 **24번 주제**(문서 수명주기 이벤트) — 사용자 활성화가 어디서 또 나오나
+- [목록의 **16번 주제**](../16-event-propagation-phases/)(전파 3단계) — `cancel`·`close`·`toggle` 이 버블하나
+- [목록의 **17번 주제**](../17-stoppropagation-vs-preventdefault/)(`preventDefault`) — `cancelable` 이 `false` 일 때 `preventDefault()` 가 무엇을 하나의 정본
+- [목록의 **24번 주제**](../24-document-lifecycle-events/)(문서 수명주기 이벤트) — 사용자 활성화가 어디서 또 나오나
 
 ## 용어 풀이
 

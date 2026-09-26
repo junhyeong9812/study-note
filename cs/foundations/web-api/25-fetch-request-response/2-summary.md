@@ -5,7 +5,7 @@
 > **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 「ok status」(**200\~299** 범위의 상태) · fetch() 메서드 단계(「**If response is a network error, then reject p with a TypeError**」) · HTTP fetch 의 「response tainting 이 cors 이고 **CORS check 가 실패하면 network error 를 돌려준다**」 · 「forbidden request-header」(`Host` · `Cookie` · `Origin` · `Referer` · `Content-Length` · `Connection` 등, 그리고 `proxy-`·`sec-` 로 시작하는 이름) · 「forbidden response-header name」(`Set-Cookie`·`Set-Cookie2`) · `Response`/`Request` 의 `clone()`(「unusable 이면 TypeError」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
 > **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 페이지는 **서버 A**(`http://127.0.0.1`)에서 열었고, 다른 출처는 **같은 기계의 다른 포트인 서버 B** 다. **바깥 인터넷으로는 한 번도 요청하지 않았다.** 하네스는 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 (1)에 있다.\
 > **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — [JS 39번 주제](../../languages/js/syntax/39-async-await/2-summary.md)(`await`·`try`/`catch` 가 거부를 받는 자리) · [JS 37번 주제](../../languages/js/syntax/37-promise-state-model/2-summary.md)의 (5)(**미처리 거부가 언제 `unhandledrejection` 으로 보고되나** — Chrome 에서도 쟀다) · [JS 32번 주제](../../languages/js/syntax/32-error-handling-and-error/2-summary.md)의 (3)(`TypeError` 가 어느 가족인가). ★ CORS 자체(단순 요청·프리플라이트)는 목록의 **28번 주제**의 몫이다 — 여기서는 **「거부돼도 요청은 갔다」** 한 가지만 본다.\
+> **선행** — [JS 39번 주제](../../languages/js/syntax/39-async-await/2-summary.md)(`await`·`try`/`catch` 가 거부를 받는 자리) · [JS 37번 주제](../../languages/js/syntax/37-promise-state-model/2-summary.md)의 (5)(**미처리 거부가 언제 `unhandledrejection` 으로 보고되나** — Chrome 에서도 쟀다) · [JS 32번 주제](../../languages/js/syntax/32-error-handling-and-error/2-summary.md)의 (3)(`TypeError` 가 어느 가족인가). ★ CORS 자체(단순 요청·프리플라이트)는 [목록의 **28번 주제**](../28-cors-simple-and-preflight/)의 몫이다 — 여기서는 **「거부돼도 요청은 갔다」** 한 가지만 본다.\
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 **이 판의 Chrome**
@@ -419,7 +419,7 @@ A GET /status?code=500  → 500 응답을 끝까지 보냈다
 
 ### 2. CORS 오류가 났으니 서버에서는 아무 일도 없었다고 믿는다
 
-**서버 B 는 주문을 처리했다**((2)). 단순 요청(여기서는 본문이 글자인 `POST`)은 **보내지고 처리된다** — 막히는 것은 응답 읽기다. 되돌릴 수 없는 일을 하는 엔드포인트라면 서버 쪽에서 막아야 한다(목록의 **28번 주제**).
+**서버 B 는 주문을 처리했다**((2)). 단순 요청(여기서는 본문이 글자인 `POST`)은 **보내지고 처리된다** — 막히는 것은 응답 읽기다. 되돌릴 수 없는 일을 하는 엔드포인트라면 서버 쪽에서 막아야 한다([목록의 **28번 주제**](../28-cors-simple-and-preflight/)).
 
 ### 3. `catch` 의 메시지로 CORS 와 연결 실패를 가른다
 
@@ -427,7 +427,7 @@ A GET /status?code=500  → 500 응답을 끝까지 보냈다
 
 ### 4. `fetch(…, { headers: { Cookie: … } })` 로 쿠키를 보낸다
 
-**조용히 지워지고 쿠키 통의 값이 간다**((5)). 쿠키는 `credentials` 와 브라우저 쿠키 통의 몫이다(목록의 **29번 주제**).
+**조용히 지워지고 쿠키 통의 값이 간다**((5)). 쿠키는 `credentials` 와 브라우저 쿠키 통의 몫이다([목록의 **29번 주제**](../29-credentials-and-cookies/)).
 
 ### 5. 한 `Request` 객체로 재시도한다
 
@@ -475,8 +475,8 @@ A GET /status?code=500  → 500 응답을 끝까지 보냈다
 - [JS 39번 주제](../../languages/js/syntax/39-async-await/2-summary.md) — `await`·`try` 로 거부를 받는 문법
 - [JS 32번 주제](../../languages/js/syntax/32-error-handling-and-error/2-summary.md) — `TypeError`·`RangeError` 의 가족
 - [HTML 21번 주제](../../languages/html/syntax/21-form-submission-model/2-summary.md) — 폼 제출이 서버에 싣는 것과 **`curl` 우회**(「서버는 창구를 거쳤는지 모른다」). 여기는 **스크립트의 `fetch`** 가 무엇을 싣고 무엇이 지워지나
-- 목록의 **28번 주제** — **CORS 의 정본**(단순 요청·프리플라이트). 여기는 「요청은 갔다」 한 가지만
-- 목록의 **29번 주제** — 자격 증명과 쿠키
+- [목록의 **28번 주제**](../28-cors-simple-and-preflight/) — **CORS 의 정본**(단순 요청·프리플라이트). 여기는 「요청은 갔다」 한 가지만
+- [목록의 **29번 주제**](../29-credentials-and-cookies/) — 자격 증명과 쿠키
 - [26번 주제](../26-response-body-streaming/2-summary.md) — 응답 **본문**을 읽는 쪽
 - [`../../../../history/web/02-HTTP-진화.md`](../../../../history/web/02-HTTP-진화.md) — HTTP 가 어떻게 바뀌어 왔나(역사는 그쪽)
 

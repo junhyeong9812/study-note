@@ -424,7 +424,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 
 - ★ **HTML 갈래의 10번과의 경계선** — **그쪽은 「파서가 마크업을 보고 무엇을 만드나」**(`<template>` 이 왜 안 사나 · `shadowrootmode` 의 값 · 선언적 Shadow DOM 이 덤프에서 어떻게 보이나)이고, **여기는 「그것을 스크립트로 만들고 들여다보는 API」** 다. 한 문장으로: **거기는 마크업이 만드는 것, 여기는 만들어진 것을 무엇으로 묻나.**
 - ★★ **`e.target` 이 호스트로 오는 현상의 이름은 재타기팅(retargeting)** 이다. 출력에서 그림자 안 세 자리는 `#단추` 를 보고 **호스트부터 바깥 네 자리는 전부 `#host`** 를 본다. `composedPath()` 는 **일곱 줄이 한 글자도 같다.**
-- ★ **정본은 목록의 21번 주제**(`CustomEvent`·`dispatchEvent`·`composed`)다. 전파 자체는 목록의 **16번 주제**, 위임이 깨지는 이야기는 목록의 **18번 주제**. **여기서는 「경계가 무엇을 하는가」까지만** 본다.
+- ★ **정본은 [목록의 21번 주제](../21-custom-events/)**(`CustomEvent`·`dispatchEvent`·`composed`)다. 전파 자체는 [목록의 **16번 주제**](../16-event-propagation-phases/), 위임이 깨지는 이야기는 [목록의 **18번 주제**](../18-event-delegation/). **여기서는 「경계가 무엇을 하는가」까지만** 본다.
 - ★ **슬롯에 배정된 자식은 재타기팅되지 않는다** — 라이트 DOM 에 있기 때문이다. 경로에 `<slot>` 이 끼어 있을 뿐이다. **배정이 경로에는 반영되고 소유에는 반영되지 않는** 것이 한 줄로 보인다.
 - ★★ **[10번 주제](../10-layout-thrashing/2-summary.md)와 견주면 이 주제는 명세 쪽이다.** 그 주제는 **언제 레이아웃이 돌아가는가**라는 **구현의 선택**을 실측으로 재는 주제이고, 여기는 **무엇이 막히는가**라는 **명세가 정한 계약**을 확인하는 주제다. 이 편의 표(「구현 세부사항 대 언어 보장」)에서 구현 쪽으로 분류된 것은 **예외 문구 · 좌표의 소수점 · `:host-context` 의 지원 여부** 정도뿐이다.
 - ★ **[05번 주제](../05-documentfragment-and-template/2-summary.md)의 `DocumentFragment` 와 `ShadowRoot` 의 관계** — **`ShadowRoot` 는 `DocumentFragment` 를 상속한다**(`nodeType === 11` 이고 `instanceof DocumentFragment` 가 `true`). 다른 점은 **호스트를 갖고, 화면에 그려지고, 스타일 경계가 된다**는 셋이다. 「부모가 없는 조각」이라는 성질은 그대로다 — `root.parentNode` 가 `null` 인 것이 그 짝이다.

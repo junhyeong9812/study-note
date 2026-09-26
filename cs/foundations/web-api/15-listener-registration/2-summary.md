@@ -1,7 +1,7 @@
 # web-api/15 — 리스너 등록과 해제: `addEventListener` 옵션 객체·`removeEventListener` 의 동일성 조건·`handleEvent` — 정리 (힌트)
 
 > 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 갈래는 언어가 아니라 플랫폼이다.** 여기서 다루는 것은 「이벤트가 어디로 흐르나」가 아니라 「**리스너를 어떻게 달고 어떻게 떼나**」다. 전파 3단계와 `stopPropagation` 은 목록의 **16번 주제**·**17번 주제**가 정본이고 여기서 다시 쓰지 않는다.\
+> **이 갈래는 언어가 아니라 플랫폼이다.** 여기서 다루는 것은 「이벤트가 어디로 흐르나」가 아니라 「**리스너를 어떻게 달고 어떻게 떼나**」다. 전파 3단계와 `stopPropagation` 은 [목록의 **16번 주제**](../16-event-propagation-phases/)·**17번 주제**가 정본이고 여기서 다시 쓰지 않는다.\
 > **기준 소스** — [WHATWG DOM Standard — Events](https://dom.spec.whatwg.org/#events) 의 「`EventTarget`」·「`AddEventListenerOptions`」·「add an event listener」·「remove an event listener」·「inner invoke」 절. 열어서 확인한 것만 적었다.\
 > **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 블록마다 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다.\
 > ★ **이 주제에는 「못 잰 것」이 많다** — `passive` 가 실제로 스크롤을 얼마나 빠르게 하는지, 리스너가 붙들고 있는 메모리가 얼마인지, 진짜 터치 입력에서 무엇이 달라지는지를 **하나도 재지 않았다**(아래 「도구가 못 보는 것」).\
@@ -494,7 +494,7 @@ this 가 무엇인가
 (exit 0)
 ```
 
-- **보통 함수의 `this` 는 `currentTarget`** 이다 — **`target` 이 아니다.** 위임(목록의 **18번 주제**)에서 이 구분이 결정적이다.
+- **보통 함수의 `this` 는 `currentTarget`** 이다 — **`target` 이 아니다.** 위임([목록의 **18번 주제**](../18-event-delegation/))에서 이 구분이 결정적이다.
 - **화살표 함수는 바깥 `this` 를 그대로 쓴다** — 모듈 최상위가 아닌 곳에서는 `window` 가 된다. `currentTarget` 을 잃으므로 **`e.currentTarget` 으로 받아야** 한다.
 - **`bind` 한 함수는 묶은 것이 `this`** 다 — 대신 (1)에서 본 대로 **지우기가 어려워진다.**
 - **객체 리스너는 `this` 가 그 객체**다 — `bind` 없이 상태를 들고 다니는 길이다.
@@ -524,7 +524,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 (exit 0)
 ```
 
-- **한 객체를 두 요소에 등록하면 두 자리에서 각각 불린다** — `["#속","#겉"]` 순서는 버블 순서다(정본은 목록의 **16번 주제**).
+- **한 객체를 두 요소에 등록하면 두 자리에서 각각 불린다** — `["#속","#겉"]` 순서는 버블 순서다(정본은 [목록의 **16번 주제**](../16-event-propagation-phases/)).
 - ★ **`this` 는 두 번 다 같은 객체**이고 **`currentTarget` 만 갈린다.** 객체 리스너에서 「어디서 불렸나」를 알려면 `this` 가 아니라 `e.currentTarget` 을 본다.
 
 ```text
@@ -632,7 +632,7 @@ const 로그4 = [];
 j.addEventListener('자', e => { 로그4.push('첫째'); e.stopImmediatePropagation(); });
 j.addEventListener('자', () => 로그4.push('둘째'));
 j.dispatchEvent(new Event('자'));
-O.push('  같은 요소의 뒤엣것을 막으면 = ' + JSON.stringify(로그4) + '  (정본은 목록의 17번 주제다)');
+O.push('  같은 요소의 뒤엣것을 막으면 = ' + JSON.stringify(로그4) + '  (정본은 [목록의 **17번 주제**](../17-stoppropagation-vs-preventdefault/)다)');
 document.body.appendChild(Object.assign(document.createElement('script'),
   {type: 'text/plain', textContent: '\n--OUT\n' + O.join('\n') + '\nOUT--\n'}));
 </script>
@@ -765,12 +765,12 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 ```text
 $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --dump-dom wa12b-15-life.html 2>/dev/null | sed -n '/^--OUT$/,/^OUT--$/{//!p}' | sed -n '20,21p'
 stopImmediatePropagation 과 견주면
-  같은 요소의 뒤엣것을 막으면 = ["첫째"]  (정본은 목록의 17번 주제다)
+  같은 요소의 뒤엣것을 막으면 = ["첫째"]  (정본은 [목록의 **17번 주제**](../17-stoppropagation-vs-preventdefault/)다)
 (exit 0)
 ```
 
 - **`stopImmediatePropagation()` 은 같은 요소의 뒤엣것까지 막는다** — 목록을 건드리지 않고도 같은 모양이 나온다.
-- **둘은 다른 일이다** — 지우기는 **명부를 바꾸고**, `stopImmediatePropagation` 은 **이번 디스패치만 멈춘다.** 정본은 목록의 **17번 주제**다.
+- **둘은 다른 일이다** — 지우기는 **명부를 바꾸고**, `stopImmediatePropagation` 은 **이번 디스패치만 멈춘다.** 정본은 [목록의 **17번 주제**](../17-stoppropagation-vs-preventdefault/)다.
 
 ### (9) `passive` — 「막지 않겠다」는 약속을 어기면 조용히 무시된다
 
@@ -1034,7 +1034,7 @@ el.addEventListener('click', { handleevent(e) {} });
 - **`capture` 와 `once`** — 둘 다 옵션 객체의 칸인데 **하나는 열쇠고 하나는 성질**이다.
 - **`this` 와 `e.target`** — 보통 함수의 `this` 는 `currentTarget` 이지 `target` 이 아니다.
 - **`cancelable` 과 `passive`** — 앞엣것은 **이벤트의 성질**, 뒤엣것은 **리스너의 성질**이다.
-- **`removeEventListener` 와 `stopPropagation`** — 앞엣것은 명부를 바꾸고 뒤엣것은 이번 디스패치만 멈춘다(정본은 목록의 **17번 주제**).
+- **`removeEventListener` 와 `stopPropagation`** — 앞엣것은 명부를 바꾸고 뒤엣것은 이번 디스패치만 멈춘다(정본은 [목록의 **17번 주제**](../17-stoppropagation-vs-preventdefault/)).
 
 ## 어디서 틀리나
 
@@ -1096,7 +1096,7 @@ el.addEventListener('click', { handleevent(e) {} });
 | 리스너 안에서 `this` 가 요소여야 한다 | `function` 꼴 · 객체 리스너 | 화살표 함수(`e.currentTarget` 으로 받아라) |
 | 스크롤 중 기본 동작을 막아야 한다 | `{ passive: false }` 를 **명시** | 옵션 없이 `window` 에 달기 |
 | 「지워졌나」를 확인한다 | **던져서 세기**(창 ④) | 트리·계산값 들여다보기 |
-| 전파를 멈춘다 | 목록의 **17번 주제** | `removeEventListener` 로 흉내 내기 |
+| 전파를 멈춘다 | [목록의 **17번 주제**](../17-stoppropagation-vs-preventdefault/) | `removeEventListener` 로 흉내 내기 |
 
 ## 핵심 문장
 
@@ -1116,11 +1116,11 @@ el.addEventListener('click', { handleevent(e) {} });
 - [01번 주제](../01-document-and-node-tree/2-summary.md) — 이 갈래의 창 ①\~③ 을 세운 편. **여기서는 그 셋이 거의 부적용**이다
 - [12번 주제](../12-shadow-dom/2-summary.md) — 그림자 경계를 넘는 이벤트. **리스너를 어디에 다느냐가 `e.target` 을 바꾼다**
 - [목록의 **13번 주제**](../13-custom-element-lifecycle/)(커스텀 요소 수명주기) — `connectedCallback` 에서 달고 `disconnectedCallback` 에서 떼는 짝. **`signal` 이 그 짝을 한 줄로 만든다**
-- 목록의 **16번 주제**(전파 3단계) — ★ **`capture` 가 무엇을 하는지의 정본이 그쪽**이다. 여기는 **그것이 동일성 키라는 것**까지
-- 목록의 **17번 주제**(`stopPropagation` 대 `preventDefault`) — ★ **`stopImmediatePropagation` 과 `preventDefault` 의 정본**
-- 목록의 **18번 주제**(이벤트 위임) — `this` 와 `e.target` 의 구분이 값어치를 내는 자리
-- 목록의 **19번 주제**(`passive` 와 스크롤 성능) — ★ **`passive` 가 왜 생겼나와 실제 이득의 정본이 그쪽**이다. 여기는 **「무엇이 무효가 되나」라는 규칙만**
-- 목록의 **20번 주제**(리스너 수명과 누수) — ★ **리스너가 무엇을 붙들고 있나의 정본.** 여기는 **떼는 방법 셋**까지
+- [목록의 **16번 주제**](../16-event-propagation-phases/)(전파 3단계) — ★ **`capture` 가 무엇을 하는지의 정본이 그쪽**이다. 여기는 **그것이 동일성 키라는 것**까지
+- [목록의 **17번 주제**](../17-stoppropagation-vs-preventdefault/)(`stopPropagation` 대 `preventDefault`) — ★ **`stopImmediatePropagation` 과 `preventDefault` 의 정본**
+- [목록의 **18번 주제**](../18-event-delegation/)(이벤트 위임) — `this` 와 `e.target` 의 구분이 값어치를 내는 자리
+- [목록의 **19번 주제**](../19-passive-and-scroll/)(`passive` 와 스크롤 성능) — ★ **`passive` 가 왜 생겼나와 실제 이득의 정본이 그쪽**이다. 여기는 **「무엇이 무효가 되나」라는 규칙만**
+- [목록의 **20번 주제**](../20-listener-lifetime/)(리스너 수명과 누수) — ★ **리스너가 무엇을 붙들고 있나의 정본.** 여기는 **떼는 방법 셋**까지
 - JS 갈래 목록([`js/syntax/README.md`](../../languages/js/syntax/README.md))의 **07번** — `this` 네 규칙의 정본
 - JS 갈래 목록([`js/syntax/README.md`](../../languages/js/syntax/README.md))의 **09번** — `bind` 가 새 함수를 만든다는 것의 정본
 - JS 갈래 목록([`js/syntax/README.md`](../../languages/js/syntax/README.md))의 **41번** — `AbortController`/`AbortSignal` 이 호스트 API 라는 것
@@ -1131,7 +1131,7 @@ el.addEventListener('click', { handleevent(e) {} });
 - **리스너(event listener)** — 명부의 한 줄. 타입·콜백·`capture` 와 성질(`once`·`passive`·`signal`)로 이루어진다.
 - **콜백(callback)** — 그 줄에 적힌 함수 또는 `handleEvent` 를 가진 객체.
 - **동일성 조건** — `removeEventListener` 가 「같은 줄」로 인정하는 조건. **타입 · 콜백 · `capture` 셋**이다.
-- **`capture`** — 이벤트가 **내려갈 때** 잡을지 **올라갈 때** 잡을지. 단계 자체의 정본은 목록의 **16번 주제**.
+- **`capture`** — 이벤트가 **내려갈 때** 잡을지 **올라갈 때** 잡을지. 단계 자체의 정본은 [목록의 **16번 주제**](../16-event-propagation-phases/).
 - **`once`** — 한 번 불리고 스스로 빠지는 성질. **부르기 직전에** 빠진다.
 - **`passive`** — 「기본 동작을 막지 않겠다」는 약속. 어기면 `preventDefault()` 가 **조용히 무효**가 된다.
 - **`signal`** — `AbortSignal`. `abort()` 한 번으로 그 신호에 묶인 리스너를 전부 뗀다.
@@ -1144,9 +1144,9 @@ el.addEventListener('click', { handleevent(e) {} });
 ## 더 들어가면
 
 - **`el.onclick` 은 다른 표면**이다 — 한 자리에 하나만 들어가고 덮어쓰기가 된다. `addEventListener` 와 **명부가 다르다**. **이 문서는 그 표면을 던져 보지 않았다.**
-- **`capture` 단계에서 `stopPropagation()` 을 부르면 타깃까지 못 간다** — 정본은 목록의 **17번 주제**이고 **여기서 던지지 않았다.**
+- **`capture` 단계에서 `stopPropagation()` 을 부르면 타깃까지 못 간다** — 정본은 [목록의 **17번 주제**](../17-stoppropagation-vs-preventdefault/)이고 **여기서 던지지 않았다.**
 - **그림자 경계를 넘는 리스너**는 [12번 주제](../12-shadow-dom/2-summary.md)가 정본이다. **같은 콜백이 어느 트리에 달렸느냐에 따라 `e.target` 이 달라진다.**
-- **리스너가 만드는 누수**는 「요소를 지웠는데 리스너가 클로저를 붙들고 있는」 모양이다. **이 문서는 메모리를 재지 않았다** — 정본은 목록의 **20번 주제**.
-- **`AbortSignal.timeout()`·`AbortSignal.any()`** 로 신호를 합칠 수 있다. **던져 보지 않았다** — 목록의 **27번 주제** 몫이다.
-- **`{ passive: true }` 가 실제로 얼마나 이득인가**는 **재지 않았다.** 목록의 **19번 주제**가 그 자리다.
+- **리스너가 만드는 누수**는 「요소를 지웠는데 리스너가 클로저를 붙들고 있는」 모양이다. **이 문서는 메모리를 재지 않았다** — 정본은 [목록의 **20번 주제**](../20-listener-lifetime/).
+- **`AbortSignal.timeout()`·`AbortSignal.any()`** 로 신호를 합칠 수 있다. **던져 보지 않았다** — [목록의 **27번 주제**](../27-abort-and-timeout/) 몫이다.
+- **`{ passive: true }` 가 실제로 얼마나 이득인가**는 **재지 않았다.** [목록의 **19번 주제**](../19-passive-and-scroll/)가 그 자리다.
 - **`el.addEventListener` 의 반환값은 `undefined`** 이고 **「등록됐나」를 알려 주지 않는다.** 그래서 창 ④ 가 필요하다.

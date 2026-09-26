@@ -301,7 +301,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 - **[09번 주제](../09-element-geometry/2-summary.md)와의 경계선** — **그쪽은 `scrollTop`·`scrollHeight`·`clientHeight` 를 읽어 「어디에 있나」를 아는 쪽이고, 여기는 그 값을 써서 「옮기는」 쪽**이다. 상한이 `scrollHeight − clientHeight` 라는 것은 **읽기 쪽 지식**이고, 그 상한에서 **잘린다**는 것은 **쓰기 쪽 규칙**이다.
 - **스크롤 핸들러 안에서 좌표를 읽으면 [목록의 10번 주제](../10-layout-thrashing/)가 시작된다** — 그 주제의 실측에서 **`window.scrollY` 도 레이아웃 방아쇠**였다. 스크롤 이벤트는 자주 오므로 **가장 흔한 스래싱 자리**다.
 - ★ **이 주제의 쓰기 가운데 예외를 던지는 것은 하나도 없었다.** 범위 밖·숫자 아님·컨테이너 아님·모드 반대·열거값 오타 — **다섯 가지 실패가 전부 조용하다.** 그 뜻은 **「쓰고 나서 되읽는 것까지가 한 번의 호출」이라는** 것이다. [08번 주제](../08-getcomputedstyle/2-summary.md)의 읽기 전용 위반이 **예외를 던졌던 것과 대조적**이다.
-- **「보이나」를 스크롤 위치로 판정하지 않는 법은 목록의 35번 주제**(IntersectionObserver)다. 좌표를 읽지 않으므로 방아쇠도 안 당긴다.
+- **「보이나」를 스크롤 위치로 판정하지 않는 법은 [목록의 35번 주제](../35-intersection-observer/)**(IntersectionObserver)다. 좌표를 읽지 않으므로 방아쇠도 안 당긴다.
 
 ## 실행 검증
 

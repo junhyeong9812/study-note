@@ -651,7 +651,7 @@ smooth 가 어디까지 갔나 — 부른 직후 0  ·  동기 루프 200ms 뒤 
 - **동기 루프로 200ms 를 태워도 값이 0 그대로**다 — 스크립트가 도는 동안 **애니메이션이 진행하지 않는다**(같은 스레드다).
 - **`--dump-dom` 은 `load` 뒤의 `setTimeout(…, 0)` 을 두 겹까지만 기다린다** — 세 겹을 걸면 **출력이 통째로 사라진다**(직접 확인했다). 그래서 **도착 시각도 중간 값도 못 봤다.**
 - ★ **이것은 「안 돌려 본 것」이 아니라 「못 잰 것」이다.** 「smooth 가 몇 ms 걸린다」를 이 문서는 **주장하지 않는다.** 재려면 CDP 로 프레임을 몰아야 한다.
-- **그래도 실무 결론은 관측한 것만으로 선다** — **`smooth` 뒤에 좌표를 읽으면 옛 값이다.** 도착을 기다리려면 `scrollend` 이벤트(목록의 **16번 주제** 이후의 이벤트 갈래)를 써야 한다. **이 문서는 그 이벤트도 못 관측했다.**
+- **그래도 실무 결론은 관측한 것만으로 선다** — **`smooth` 뒤에 좌표를 읽으면 옛 값이다.** 도착을 기다리려면 `scrollend` 이벤트([목록의 **16번 주제**](../16-event-propagation-phases/) 이후의 이벤트 갈래)를 써야 한다. **이 문서는 그 이벤트도 못 관측했다.**
 
 ### (10) 위치 복원 — `history.scrollRestoration`
 
@@ -846,7 +846,7 @@ el.scrollIntoView();                                // 조상 스크롤러를 �
 | CSS 의 smooth 를 이번만 끈다 | `behavior: 'instant'` | 클래스 토글로 CSS 를 껐다 켜기 |
 | 스크롤러 찾기 | `overflow` 두 조건 + `document.scrollingElement` | `overflow !== 'visible'` 하나 |
 | 위치 복원 | `scrollRestoration = 'manual'` + 내용이 자리 잡은 뒤 복원 | 기본값에 맡기고 내용은 나중에 채우기 |
-| 스크롤 위치를 자주 읽는다 | 목록의 **35번 주제**(IntersectionObserver) | 매 프레임 `scrollY` 읽기([목록의 **10번 주제**](../10-layout-thrashing/)) |
+| 스크롤 위치를 자주 읽는다 | [목록의 **35번 주제**](../35-intersection-observer/)(IntersectionObserver) | 매 프레임 `scrollY` 읽기([목록의 **10번 주제**](../10-layout-thrashing/)) |
 
 ## 핵심 문장
 
@@ -865,7 +865,7 @@ el.scrollIntoView();                                // 조상 스크롤러를 �
 - [09번 주제](../09-element-geometry/2-summary.md) — ★ **`scrollTop`·`scrollHeight`·`clientHeight` 를 읽는 쪽이 그쪽**이다. 여기는 **쓰는 쪽**
 - [10번 주제](../10-layout-thrashing/2-summary.md) — 스크롤 오프셋을 읽는 것도 **레이아웃을 강제한다.** 스크롤 핸들러가 그 주제의 대표 사고 자리다
 - [06번 주제](../06-attribute-vs-property/2-summary.md) — `scrollRestoration` 처럼 **열거값이 조용히 무시되는** 모양의 정본
-- 목록의 **35번 주제**(IntersectionObserver) — 「보이나」를 **스크롤 위치를 읽지 않고** 묻는 법
+- [목록의 **35번 주제**](../35-intersection-observer/)(IntersectionObserver) — 「보이나」를 **스크롤 위치를 읽지 않고** 묻는 법
 - 목록의 **38번 주제**(`requestAnimationFrame`) — 스크롤에 맞춰 무언가를 움직일 때
 - 목록의 **46번 주제**(History API) — `scrollRestoration` 의 이웃. **뒤로 가기에서 무엇이 복원되나**
 - [CSS 23번 주제](../../languages/css/syntax/23-overflow-and-scroll-containers/2-summary.md) — ★ **이 주제의 정본 이웃.** 무엇이 스크롤 컨테이너가 되나, `hidden` 과 `clip` 의 차이, 스크롤바가 먹는 폭이 전부 거기다. **여기서 다시 쓰지 않는다**
