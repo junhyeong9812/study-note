@@ -104,15 +104,20 @@ export type CacheNodeSeedData = [
           (그리고 최종 판단은 클라이언트가 한다)
  [프리페치] [README]    "서버가 알아보는 것은 NEXT_ROUTER_SEGMENT_PREFETCH_HEADER === '/_tree'"
       --> 응답을 만드는 길이 **둘**이다
-          ⓐ PPR 이 켜진 라우트 — [04] CSEG L437 이 빌드 때 미리 만든 버퍼를 캐시에서 준다
-          ⓑ PPR 이 꺼진 동적 라우트 — 요청 시점에 [중간부터 그리기] 가
+          ⓐ 정적 생성된 라우트 — [04] CSEG L437 이 prerender 때 미리 만든 버퍼를 캐시에서 준다
+          ⓑ 정적 생성되지 않은 동적 라우트(PPR 꺼짐) — 요청 시점에 [중간부터 그리기] 가
              createRouteTreePrefetch 로 만든다
- ★★★ 두 길은 **대체 관계가 아니다** — PPR 켜짐/꺼짐으로 **서로 배타적**이다
-         PPR 켜짐   세그먼트 캐시 요청은 캐시에서 주거나(HIT) **404** 다 (app-page-runtime.ts L1763-1810)
-                    주석 L1768-1770 "These should never reach the application layer (lambda).
-                      We should either respond from the cache (HIT) or respond with 404 (MISS)."
-         PPR 꺼짐   빌드 때 `/_tree` 버퍼가 **생기지 않는다.** 동적 라우트면 요청 시점에
-                    walk-tree 의 첫 출구(`!isRoutePPREnabled`)가 createRouteTreePrefetch 로 만든다
+ ★★★ 두 길은 **대체 관계가 아니다** — 캐시 항목에 segmentData 가 있느냐로 **서로 배타적**이다
+         있음   세그먼트 캐시 요청은 캐시에서 주거나(HIT) **404** 다 (app-page-runtime.ts L1763-1810 —
+                조건은 `cachedData?.kind === APP_PAGE && cachedData.segmentData`, PPR 이 아니다)
+                주석 L1768-1770 "These should never reach the application layer (lambda).
+                  We should either respond from the cache (HIT) or respond with 404 (MISS)."
+                segmentData 는 PPR 갈래만이 아니라 **평범한 정적 생성**(prerender-legacy) 갈래에서도
+                만든다 (app-render L9624-9634). PPR(= cacheComponents)이면 모든 라우트가 적어도 fallback
+                항목을 갖는다. RSC 페이로드 `S` 주석 L2200-2203 "With Cache Components, all routes support
+                it. Without it, only fully static pages do"
+         없음   PPR 이 꺼진 동적 라우트다. 요청 시점에 walk-tree 의 첫 출구(`!isRoutePPREnabled`)가
+                createRouteTreePrefetch 로 만든다
          => 응답 형식도 다르다 — 빌드 버퍼는 RootTreePrefetch, 요청 시점 응답은 NavigationFlightResponse
             안의 FlightRouterState 다. 클라이언트가 따로 파싱한다 (segment-cache/cache.ts L2066-2068 · L2127-2141)
           [프리페치]가 든 isRouteTreePrefetchRequest(app-render L474-475)는 ⓑ 의 입력이다
