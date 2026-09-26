@@ -546,8 +546,8 @@ ex.02e.js      생김
 - [**01번 주제** — TS 가 더하는 것과 지우는 것](../01-what-ts-adds-and-erases/) — 「**무엇이 지워지나**」는 그쪽이 정본이다. 여기는 「**그래서 지우는 일과 검사하는 일이 왜 따로 도나**」부터.
 - `cs/foundations/compiler-pipeline/` — 어휘 분석·구문 분석·중간 표현 같은 **컴파일러 일반론**은 그쪽. 여기서는 TS 고유의 **검사 패스와 방출 패스 분리**만 본다.
 - `history/js/05-빌드-생태계.md` — 트랜스파일러·번들러가 왜 생겼나는 그쪽. 여기서는 **현재 플래그의 의미**만 본다.
-- 목록의 **35번 주제**(모듈 해석) · **36번 주제**(타입 전용 import·export) — `moduleResolution`·`verbatimModuleSyntax` 의 전면 비교는 그쪽.
-- 목록의 **39번 주제**(`strict` 묶음) · **43번 주제**(`tsconfig` 의 나머지 선택) — 플래그 지도는 그쪽.
+- [목록의 **35번 주제**](../35-module-resolution/)(모듈 해석) · **36번 주제**(타입 전용 import·export) — `moduleResolution`·`verbatimModuleSyntax` 의 전면 비교는 그쪽.
+- [목록의 **39번 주제**](../39-strict-bundle/)(`strict` 묶음) · **43번 주제**(`tsconfig` 의 나머지 선택) — 플래그 지도는 그쪽.
 
 ## 용어 풀이
 

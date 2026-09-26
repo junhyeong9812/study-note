@@ -846,8 +846,8 @@ ex.15e.ts    exit 1 / exit 1 · ★ 다르다
 
 **안 돌려 본 것**
 
-- **`noUncheckedIndexedAccess` 를 켠 판** — 2절의 인덱스 칸이 달라진다. **안 켰다** — 목록의 **41번 주제**.
+- **`noUncheckedIndexedAccess` 를 켠 판** — 2절의 인덱스 칸이 달라진다. **안 켰다** — [목록의 **41번 주제**](../41-index-and-optional-property-strict-flags/).
 - **`exactOptionalPropertyTypes` 를 켠 판** — 선택 프로퍼티의 모양이 달라진다. **안 켰다.**
 - **제너레이터·`for await...of` 안에서의 좁힘** — **안 던졌다.**
-- **클래스 필드를 `#private` 로 두었을 때** — **안 던졌다.** 목록의 **32번 주제**.
+- **클래스 필드를 `#private` 로 두었을 때** — **안 던졌다.** [목록의 **32번 주제**](../32-class-type-aspects/).
 - **제어 흐름 분석의 검사 시간** — **재지 않았고 수치를 적지 않았다.**

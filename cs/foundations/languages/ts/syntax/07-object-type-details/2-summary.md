@@ -602,9 +602,9 @@ undefined 쪽  : undefined {"host":"b"} true
 - [**03번 주제** — 기본 타입 표기](../03-basic-type-annotations/) — 객체 타입 **표기의 기본형**과 `as const` 는 그쪽.
 - [**04번 주제** — `any`·`unknown`·`never`·`void`](../04-any-unknown-never-void/) — `undefined` 가 타입 격자에서 어디 있는지는 그쪽.
 - [**08번 주제** — `interface` 대 `type`](../08-interface-vs-type/) — **어느 문법으로 적을까**는 그쪽. 여기서는 수정자의 의미만.
-- 목록의 **41번 주제**(인덱스·선택 프로퍼티 엄격 플래그) — 두 플래그의 **도입 순서·마이그레이션 비용**은 그쪽. 여기서는 **결과가 갈리는 두 판**까지.
-- 목록의 **40번 주제**(`strictNullChecks` 의 파급) — `?` 가 `| undefined` 를 만드는 전제는 그쪽.
-- 목록의 **28번 주제**(유틸리티 타입) — `Partial`·`Required`·`Readonly` 로 수정자를 **켜고 끄는** 법은 그쪽.
+- [목록의 **41번 주제**](../41-index-and-optional-property-strict-flags/)(인덱스·선택 프로퍼티 엄격 플래그) — 두 플래그의 **도입 순서·마이그레이션 비용**은 그쪽. 여기서는 **결과가 갈리는 두 판**까지.
+- [목록의 **40번 주제**](../40-strict-null-checks-ripple/)(`strictNullChecks` 의 파급) — `?` 가 `| undefined` 를 만드는 전제는 그쪽.
+- [목록의 **28번 주제**](../28-utility-types/)(유틸리티 타입) — `Partial`·`Required`·`Readonly` 로 수정자를 **켜고 끄는** 법은 그쪽.
 
 ## 용어 풀이
 
@@ -631,7 +631,7 @@ undefined 쪽  : undefined {"host":"b"} true
 
 ## 더 들어가면
 
-- **`Readonly<T>` 와 `readonly` 의 차이** — 유틸리티 타입은 **한 겹만** 붙인다. 중첩 객체는 그대로 쓸 수 있다. 목록의 **28번 주제**.
+- **`Readonly<T>` 와 `readonly` 의 차이** — 유틸리티 타입은 **한 겹만** 붙인다. 중첩 객체는 그대로 쓸 수 있다. [목록의 **28번 주제**](../28-utility-types/).
 - **`Object.freeze` 와의 관계** — `readonly` 는 검사 시각, `freeze` 는 실행 시각이다. 둘을 같이 쓰면 타입과 런타임이 맞는다. 이 판에서 `readonly` 만으로는 값이 바뀐 것을 확인했다.
-- **인덱스 시그니처 대신 `Record`** — `Record<string, number>` 는 매핑 타입으로 같은 것을 만든다. 차이는 **`interface` 안에서 다른 프로퍼티와 같이 쓸 수 있는가**뿐이다. 목록의 **26번 주제**.
+- **인덱스 시그니처 대신 `Record`** — `Record<string, number>` 는 매핑 타입으로 같은 것을 만든다. 차이는 **`interface` 안에서 다른 프로퍼티와 같이 쓸 수 있는가**뿐이다. [목록의 **26번 주제**](../26-mapped-types/).
 - **키가 정해져 있으면 유니온 키를 쓴다** — `Record<"a" \| "b", number>` 처럼 쓰면 없는 키 접근이 `TS2339` 로 잡힌다. 인덱스 시그니처는 그 검사를 **포기하는 대신** 확장성을 얻는 것이다.

@@ -752,8 +752,8 @@ ex.33b.ts    exit 0 = exit 0 · 출력 한 글자도 같다
 - [**31번 주제** — 열거형의 함정](../31-enum-pitfalls/) — enum 의 `Object.keys` 가 이미 넷이다. 3절이 거기에 **다섯째**를 더한다.
 - [**30번 주제** — 타입 단언과 non-null `!`](../30-type-assertions-and-non-null/) — 「타입은 있는데 값은 없다」의 다른 모양(`as`·`!`).
 - [**16번 주제** — 함수 타입과 오버로드](../16-function-types-and-overloads/) — 오버로드가 **위에서부터** 맞춰진다는 일반 규칙. 2절의 병합 순서는 그 목록을 **누가 어떤 순서로 만드나**다.
-- 목록의 **34번 주제**(`namespace` 의 자리) — namespace 자체의 용도는 그쪽.
-- 목록의 **37번 주제**(선언 파일 작성) · **38번 주제**(앰비언트·전역 타입 구성) — `.d.ts`·`declare module "x"`(앰비언트 모듈 선언)·`types`/`typeRoots` 는 그쪽. **여기서는 보강(augmentation)만** 봤다.
+- [목록의 **34번 주제**](../34-namespace-place/)(`namespace` 의 자리) — namespace 자체의 용도는 그쪽.
+- [목록의 **37번 주제**](../37-writing-declaration-files/)(선언 파일 작성) · **38번 주제**(앰비언트·전역 타입 구성) — `.d.ts`·`declare module "x"`(앰비언트 모듈 선언)·`types`/`typeRoots` 는 그쪽. **여기서는 보강(augmentation)만** 봤다.
 
 ## 용어 풀이
 
@@ -785,5 +785,5 @@ ex.33b.ts    exit 0 = exit 0 · 출력 한 글자도 같다
 
 - **2절의 해결 순서가 왜 「뒤 블록 먼저」인가** — 핸드북은 규칙만 적는다(「later … higher precedence」). 표시 순서가 선언 순서인 것은 **이 판의 관찰**이고, 둘이 왜 다른지는 명세 문장으로 확인하지 않았다.
 - **스크립트 파일에서 `interface Array<T> { … }` 만 적으면** — `declare global` 없이도 전역 `Array` 가 보강된다(5절과 같은 기제로 **읽히지만 던지지 않았다**).
-- **보강 파일 안의 `import` 의 역할** — 6절의 `aug33a`·`aug33b` 는 `lib33` 을 **import 한 모듈**이다. import 없이 `declare module "./lib33.mjs"` 만 적으면 보강이 아니라 **앰비언트 모듈 선언**이 될 수 있다 — 목록의 **37번 주제**. **여기서는 안 던졌다.**
+- **보강 파일 안의 `import` 의 역할** — 6절의 `aug33a`·`aug33b` 는 `lib33` 을 **import 한 모듈**이다. import 없이 `declare module "./lib33.mjs"` 만 적으면 보강이 아니라 **앰비언트 모듈 선언**이 될 수 있다 — [목록의 **37번 주제**](../37-writing-declaration-files/). **여기서는 안 던졌다.**
 - **default export 는 보강할 수 없다** — 핸드북의 둘째 제약. **던지지 않았다.**

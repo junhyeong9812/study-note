@@ -160,7 +160,7 @@ declare-module-string-dts    OK               OK               OK
 - ★★★ **`declare-module-id-dts` — `.d.ts` 안이어도 `TS1540`**. `declare` 가 붙어도, 선언 파일이어도 **이름이 식별자면** 막힌다.
 - ★★ **`module-dotted` 는 `TS1540` 이 둘** — `Foo.Bar` 의 **이름 조각마다** 하나씩 난다.
 - ★★ **`namespace-value`·`declare-namespace-dts` 는 세 판 다 `OK`** — 막힌 것은 **뜻이 아니라 낱말**이다. `module` → `namespace` 한 낱말을 바꾸면 끝난다.
-- ★★★ **`declare-module-string-dts`(`declare module "foo"`) 는 세 판 다 `OK`** — 이름이 **따옴표 문자열**이면 namespace 가 아니라 **앰비언트 모듈 선언**이다. 같은 `module` 낱말인데 **다른 물건**이라 안 막힌다(목록의 **37번 주제**).
+- ★★★ **`declare-module-string-dts`(`declare module "foo"`) 는 세 판 다 `OK`** — 이름이 **따옴표 문자열**이면 namespace 가 아니라 **앰비언트 모듈 선언**이다. 같은 `module` 낱말인데 **다른 물건**이라 안 막힌다([목록의 **37번 주제**](../37-writing-declaration-files/)).
 - ★★ 마지막 줄 **7.0.2 에서 진단이 난 탐침 5 / 8 · 7.0.2 와 5.9.3 이 갈린 탐침 5 / 8** — 갈린 다섯이 **정확히 7.0.2 가 막은 다섯**이다.
 - ★ **5.9.3 은 한 줄도 안 낸다** — 릴리스 글이 말하는 「6.0 의 hard deprecation」은 **이 머신에 6.0 이 없어 못 봤다.** 5.9.3 이 명령줄에 **경고조차 안 찍는다**는 것까지가 관찰이다.
 
@@ -375,7 +375,7 @@ useold34.ts(1,7): error TS2322: Type 'number' is not assignable to type 'null'.
 
 - ★★ 그냥 던지면 — **`old34.d.ts(1,16) TS1540`**. 옛 `.d.ts` 의 `declare module Legacy` 가 1절과 같이 막혔다.
 - ★★ `useold34.ts(1,7) TS2322`(「Type 'number' …」) — 탐침이 `Legacy.a` 를 **`number` 로 읽었다.** 막혔어도 **선언 자체는 쓰였다.**
-- ★★★ **`--skipLibCheck` 를 붙이면 `TS1540` 이 사라진다** — 탐침의 `TS2322` 만 남는다. `skipLibCheck` 는 **`.d.ts` 의 진단을 통째로 건너뛴다**(목록의 **37번 주제**가 그 창이다).
+- ★★★ **`--skipLibCheck` 를 붙이면 `TS1540` 이 사라진다** — 탐침의 `TS2322` 만 남는다. `skipLibCheck` 는 **`.d.ts` 의 진단을 통째로 건너뛴다**([목록의 **37번 주제**](../37-writing-declaration-files/)가 그 창이다).
   그래서 `node_modules` 의 옛 선언이 이 표기를 써도 **`skipLibCheck` 프로젝트는 7.0 에서 안 깨진다** — 그리고 **안 깨졌다는 사실 때문에 모른다.**
 
 **남은 용도 정리** — 던진 것과 인용한 것을 갈라 적는다.
@@ -542,8 +542,8 @@ ReferenceError App is not defined
 - [**31번 주제** — 열거형의 함정](../31-enum-pitfalls/) — `--erasableSyntaxOnly` 판 격자(7.0.2·5.9.3 `TS1294`, 4.9.5 `TS5023`)의 정본.
 - [**32번 주제** — 클래스의 타입 측면](../32-class-type-aspects/) — 같은 플래그가 매개변수 프로퍼티를 막는 칸.
 - [**02번 주제** — 타입 검사와 코드 방출의 분리](../02-type-checking-vs-emit/) — `outFile` 의 `TS5102` · 제거된 값의 `TS5108` 은 그쪽 7절.
-- 목록의 **36번 주제**(타입 전용 import·export) — `--erasableSyntaxOnly` 의 import 쪽 칸. 3절의 6 / 6 에 **반례**가 거기 있다.
-- 목록의 **37번 주제**(선언 파일 작성) — `declare module "x"`(앰비언트 모듈 선언) · `skipLibCheck` 의 본체.
+- [목록의 **36번 주제**](../36-type-only-imports-and-exports/)(타입 전용 import·export) — `--erasableSyntaxOnly` 의 import 쪽 칸. 3절의 6 / 6 에 **반례**가 거기 있다.
+- [목록의 **37번 주제**](../37-writing-declaration-files/)(선언 파일 작성) — `declare module "x"`(앰비언트 모듈 선언) · `skipLibCheck` 의 본체.
 
 ## 용어 풀이
 

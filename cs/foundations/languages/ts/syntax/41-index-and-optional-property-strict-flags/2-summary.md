@@ -519,7 +519,7 @@ exactOptionalPropertyTypes   2    22:TS2375 25:TS2412
 - [**39번 주제** — `strict` 묶음](../39-strict-bundle/) — 묶음 **안**의 플래그들과 도움말 문구의 판 격자.
 - [**22번 주제** — `keyof` 와 인덱스 접근 타입](../22-keyof-and-indexed-access-types/) — 인덱스 시그니처가 있을 때의 키 유니온.
 - [**28번 주제** — 유틸리티 타입](../28-utility-types/) — `Record<K, T>` 의 `K` 가 유니온이냐 `string` 이냐.
-- 목록의 **43번 주제**(`tsconfig` 의 나머지 선택) — `noPropertyAccessFromIndexSignature` 처럼 같은 자리의 다른 플래그.
+- [목록의 **43번 주제**](../43-remaining-tsconfig-choices/)(`tsconfig` 의 나머지 선택) — `noPropertyAccessFromIndexSignature` 처럼 같은 자리의 다른 플래그.
 
 ## 용어 풀이
 

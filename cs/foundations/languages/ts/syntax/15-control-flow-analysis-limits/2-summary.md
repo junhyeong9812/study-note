@@ -914,8 +914,8 @@ ex.15e.ts(68,19): error TS2322: Type 'number' is not assignable to type 'null'.
 - [**14번 주제** — 단언 시그니처 `asserts`](../14-assertion-signatures/) — 5절 38행이 「단언도 고치는 법이 아니다」를 보여 준다.
 - [**07번 주제** — 객체 타입 세부](../07-object-type-details/) — `readonly` 가 런타임을 막지 않는다는 것은 그쪽이 정본이다.
 - [**09번 주제** — 유니온 타입](../09-union-types/) — 판별 유니온의 설계는 그쪽.
-- 목록의 **40번 주제**(`strictNullChecks` 의 파급) — 6절이 그쪽의 맛보기다.
-- 목록의 **41번 주제**(인덱스·선택 프로퍼티 엄격 플래그) — `noUncheckedIndexedAccess` 를 켜면 2절의 인덱스 칸이 달라진다. **여기서는 안 켰다.**
+- [목록의 **40번 주제**](../40-strict-null-checks-ripple/)(`strictNullChecks` 의 파급) — 6절이 그쪽의 맛보기다.
+- [목록의 **41번 주제**](../41-index-and-optional-property-strict-flags/)(인덱스·선택 프로퍼티 엄격 플래그) — `noUncheckedIndexedAccess` 를 켜면 2절의 인덱스 칸이 달라진다. **여기서는 안 켰다.**
 - JS 갈래 목록([`js/syntax/README.md`](../../../js/syntax/README.md))의 **06번** — 클로저가 환경을 붙드는 런타임 의미는 그쪽이 정본이다.
 - JS 갈래 목록([`js/syntax/README.md`](../../../js/syntax/README.md))의 **13번** — 게터의 런타임 의미는 그쪽.
 - JS 갈래 목록([`js/syntax/README.md`](../../../js/syntax/README.md))의 **39번** — `await` 가 중단·재개하는 지점은 그쪽.
@@ -938,6 +938,6 @@ ex.15e.ts(68,19): error TS2322: Type 'number' is not assignable to type 'null'.
 
 - **왜 콜백에서 풀리나** — 콜백은 **언제 불릴지 모른다.** `setTimeout` 에 실려 한참 뒤에 불릴 수도, 여러 번 불릴 수도 있다. 그 사이에 프로퍼티가 바뀔 수 있으므로 **프로퍼티 좁힘은 통째로 버린다.** 반대로 변수는 「그 함수 안에서 아무도 대입하지 않았다」를 **컴파일러가 스스로 확인할 수 있어서** 남겨 둔다 — 3절의 격자가 그 확인의 결과다.
 - **왜 함수 호출 뒤에는 안 버리나** — 버리면 **거의 모든 코드가 다시 체크를 요구**하게 된다. `if (x) { log(); x.f() }` 같은 흔한 모양이 전부 에러가 난다. 그래서 TS 는 **의도적으로 unsound 한 선택**을 했다 — 4절이 그 대가를 실물로 보여 준다. 「타입 시스템이 틀렸다」가 아니라 「**여기까지만 책임진다**」는 선언이다.
-- **`noUncheckedIndexedAccess` 를 켜면** — 2절의 인덱스 칸이 전부 `| undefined` 를 달고 나온다. 검사 뒤 좁힘의 모양도 달라진다. **이 배치에서는 안 켰다** — 목록의 **41번 주제**다.
+- **`noUncheckedIndexedAccess` 를 켜면** — 2절의 인덱스 칸이 전부 `| undefined` 를 달고 나온다. 검사 뒤 좁힘의 모양도 달라진다. **이 배치에서는 안 켰다** — [목록의 **41번 주제**](../41-index-and-optional-property-strict-flags/)다.
 - **게터를 안전하게 쓰는 수** — 한 번 읽어 지역 `const` 에 담는다. 4절의 `afterGetter` 가 터진 것은 **같은 표현식을 두 번 읽었기** 때문이다. 5절의 고침이 그대로 적용된다.
 - **판이 오르면** — 3절의 「대입이 없으면 산다」와 1절의 「즉시 실행 함수에서 산다」는 **구현의 경계**다. 넓어질 수도 좁아질 수도 있다 — **외우지 말고 다시 던져라.** 이 문서가 격자를 파일 셋으로 남겨 둔 이유다.

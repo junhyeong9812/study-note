@@ -294,7 +294,7 @@ ex.29c.ts(15,21): error TS2322: Type 'number' is not assignable to type 'string'
 - ★★★ [3] `{ green: 42 }` 은 `green` 이 `string | [number, number, number]` 와 **겹칠 수 없어** `TS2352`
   「neither type sufficiently overlaps with the other」. [4]·[5] 는 **빠지거나 더한 것**일 뿐 겹칠 수 있어 **통과**.
 - ★★ 2번의 `{}` 와 `{ id: 1 }` 은 `User` 의 **부분 모양**이다 — 겹칠 수 있으니 통과. 그리고 런타임에 터졌다.
-- ★ `as unknown as T` 로 이 겹침 검사마저 넘는 법은 목록의 **30번 주제**가 정본이다.
+- ★ `as unknown as T` 로 이 겹침 검사마저 넘는 법은 [목록의 **30번 주제**](../30-type-assertions-and-non-null/)가 정본이다.
 
 ### 7. ★★★ **같은 말이 아니다** — 남는 경우 3번 **7행**, 안 남는 경우 3번 **5행**
 
@@ -357,5 +357,5 @@ ex.29c.ts(15,21): error TS2322: Type 'number' is not assignable to type 'string'
 
 - ★★ **격자를 `--strict false` 로** — 세 소스 파일만 대조했다.
 - ★★ **규격에 없는 키를 나중에 더하는 코드** — 격자 [7] 은 **있는 키의 값 바꾸기**만 던졌다.
-- ★ **`as unknown as T`·`!`** — 목록의 **30번 주제**.
+- ★ **`as unknown as T`·`!`** — [목록의 **30번 주제**](../30-type-assertions-and-non-null/).
 - ★ **규격이 유니온이 아닌 객체로 돌린 격자** — 15 / 21 이 객체에 달렸다는 것은 **추론**이다. 다른 객체로는 안 돌렸다.

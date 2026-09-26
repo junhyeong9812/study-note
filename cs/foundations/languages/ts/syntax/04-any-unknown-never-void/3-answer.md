@@ -499,4 +499,4 @@ ex.04i.ts(15,7): error TS2322: Type 'void' is not assignable to type 'undefined'
 
 **안 돌려 본 것**
 
-- `--strictNullChecks false` 로 던진 16칸 격자 — 이 주제의 결론이 「`strict` 가 켜진 판의 격자」이므로 그 한 가지만 실었다. 끈 판의 격자는 목록의 **40번 주제**에서 던진다. **그래서 이 문서의 어느 줄에도 「끄면 이렇게 된다」를 단정하지 않았다.**
+- `--strictNullChecks false` 로 던진 16칸 격자 — 이 주제의 결론이 「`strict` 가 켜진 판의 격자」이므로 그 한 가지만 실었다. 끈 판의 격자는 [목록의 **40번 주제**](../40-strict-null-checks-ripple/)에서 던진다. **그래서 이 문서의 어느 줄에도 「끄면 이렇게 된다」를 단정하지 않았다.**

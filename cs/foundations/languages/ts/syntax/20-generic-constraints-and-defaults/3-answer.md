@@ -572,5 +572,5 @@ For more information about this error, try `rustc --explain E0277`.
 - **Java 로 같은 것을 던지는 것** — 이 머신에 **`javac` 가 없다.** 형제 문서가 근거다(Java 17·18·19).
 - **와일드카드에 해당하는 관용구 비교** — **안 던졌다.**
 - **브랜드 타입으로 명목 구분 흉내 내기** — **안 던졌다.** [**05번 주제**](../05-structural-typing/).
-- **재귀 제약의 깊이 한계** — **안 쟀다.** [목록의 **25번 주제**](../25-infer-and-recursive-conditional-types/)·목록의 **45번 주제**.
+- **재귀 제약의 깊이 한계** — **안 쟀다.** [목록의 **25번 주제**](../25-infer-and-recursive-conditional-types/)·[목록의 **45번 주제**](../45-type-level-performance/).
 - **제약이 검사 시간에 주는 영향** — **재지 않았고 수치를 적지 않았다.**

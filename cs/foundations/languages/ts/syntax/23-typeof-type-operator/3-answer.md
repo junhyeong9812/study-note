@@ -639,7 +639,7 @@ ex.25b.ts    5회 md5 가짓수 1
 - **제네릭 함수에 `typeof`** — **안 던졌다.**
 - **`typeof this`·`typeof globalThis`** — **안 던졌다.**
 - **`unique symbol` 과 `typeof`** — **안 던졌다.** README 의 「뺀 것」에 있다.
-- **`namespace` 안의 이름에 `typeof`** — **안 던졌다.** 목록의 **34번 주제**.
-- **`import type` 과 `typeof import(…)` 의 방출 차이** — **안 던졌다.** 목록의 **36번 주제**.
-- **`const enum` 의 방출** — **안 던졌다.** 목록의 **31번 주제**.
+- **`namespace` 안의 이름에 `typeof`** — **안 던졌다.** [목록의 **34번 주제**](../34-namespace-place/).
+- **`import type` 과 `typeof import(…)` 의 방출 차이** — **안 던졌다.** [목록의 **36번 주제**](../36-type-only-imports-and-exports/).
+- **`const enum` 의 방출** — **안 던졌다.** [목록의 **31번 주제**](../31-enum-pitfalls/).
 - **`typeof` 가 검사 시간에 주는 영향** — **재지 않았고 수치를 적지 않았다.**

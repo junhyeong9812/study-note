@@ -408,4 +408,4 @@ ex.03h.ts(6,10): error TS2339: Property 'click' does not exist on type '{}'.
 
 **안 돌려 본 것**
 
-- `noUncheckedIndexedAccess`·`exactOptionalPropertyTypes` 를 켠 판 — `tsc --init` 이 그 둘을 권하는 것은 확인했지만(이 판), 이 주제의 블록은 전부 **명령줄로 파일을 직접 준 기본 설정**이다. 그 플래그의 효과는 목록의 **41번 주제**에서 던진다.
+- `noUncheckedIndexedAccess`·`exactOptionalPropertyTypes` 를 켠 판 — `tsc --init` 이 그 둘을 권하는 것은 확인했지만(이 판), 이 주제의 블록은 전부 **명령줄로 파일을 직접 준 기본 설정**이다. 그 플래그의 효과는 [목록의 **41번 주제**](../41-index-and-optional-property-strict-flags/)에서 던진다.

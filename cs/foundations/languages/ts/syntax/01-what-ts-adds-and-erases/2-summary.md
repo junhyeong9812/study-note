@@ -254,7 +254,7 @@ console.log(Color.Red, Color[0], 0 /* Dir.Up */, Config.retry, new Point(1, 2).s
                                                        ↑ 코드가 **늘어난다**
 ```
 
-비용 — `enum` 하나가 방출에서 **4줄**, `namespace` 하나가 **4줄**이다. `const enum` 은 0줄이지만 **파일 경계를 넘으면 인라인이 안 된다**(→ 목록의 **31번 주제**).
+비용 — `enum` 하나가 방출에서 **4줄**, `namespace` 하나가 **4줄**이다. `const enum` 은 0줄이지만 **파일 경계를 넘으면 인라인이 안 된다**(→ [목록의 **31번 주제**](../31-enum-pitfalls/)).
 
 ### (3) ★★★ 컴파일러에게 「지울 수 없는 것」을 세어 달라고 한다
 
@@ -588,7 +588,7 @@ export {};
   네 개의 공통점은 **런타임에 존재해야 뜻이 서는 것**이라는 점이다.
 - `const enum` 은 다섯째 부류다 — **선언은 지워지고 사용처에 값이 박힌다.**
 - `class` 는 **타입 공간과 값 공간에 동시에** 있다. 그래서 `implements` 대상이면서 `instanceof` 대상이다.
-- `abstract`·`implements`·`override`·접근 제어자(`public`/`private`/`protected`)는 **매개변수 프로퍼티가 아닌 한 지워진다**(→ 목록의 **32번 주제**).
+- `abstract`·`implements`·`override`·접근 제어자(`public`/`private`/`protected`)는 **매개변수 프로퍼티가 아닌 한 지워진다**(→ [목록의 **32번 주제**](../32-class-type-aspects/)).
 
 **금지 사례** — 이 주제에서 던져 받은 것 셋이다. 전문은 「동작 방식」의 블록에 있다.
 
@@ -604,7 +604,7 @@ export {};
   경계에서 들어오는 값은 **직접 검사**해야 한다.
 - ★★ **「`interface` 로 `instanceof` 를 쓴다」** — `TS2693`. 타입 공간의 이름은 값 자리에 못 온다.
 - ★★ **「`enum` 도 어차피 지워지겠지」** — 안 지워진다. 방출에 IIFE 4줄이 붙고 역매핑 객체가 런타임에 산다.\
-  ★ 「`const enum` 을 쓰면 되겠네」도 성급하다 — `isolatedModules`·번들러와 엮이면 또 다른 문제가 된다(→ 목록의 **31번 주제**).
+  ★ 「`const enum` 을 쓰면 되겠네」도 성급하다 — `isolatedModules`·번들러와 엮이면 또 다른 문제가 된다(→ [목록의 **31번 주제**](../31-enum-pitfalls/)).
 - ★★ **「`private` 은 런타임에 감춰진다」** — 안 감춰진다. 방출된 필드 이름이 `y` 그대로다.\
   진짜로 감추려면 JS 의 `#` 를 쓴다(→ [**05번 주제**](../05-structural-typing/) 에서 타입 쪽 차이도 본다).
 - ★ **「`as` 를 쓰면 변환이 일어난다」** — 안 일어난다. `as` 는 방출에서 **통째로 사라진다**. 값은 한 비트도 안 바뀐다.
@@ -649,9 +649,9 @@ export {};
 - [**02번 주제** — 타입 검사와 코드 방출의 분리](../02-type-checking-vs-emit/) — 여기는 「**무엇이 지워지나**」까지, 그쪽은 「**지우는 일과 검사하는 일이 왜 따로 도나**」부터.
 - [**05번 주제** — 구조적 타이핑](../05-structural-typing/) — `private` 멤버가 **타입 쪽에서** 무엇을 바꾸는지는 그쪽이 정본이다.
 - `../../js/syntax/README.md` 의 **01번 주제**(값의 종류와 `typeof`) — `typeof null === "object"` 같은 **런타임 의미는 JS 갈래가 정본**이다. 여기서는 그것을 **가드에 쓰는 법**만 다룬다.
-- 목록의 **31번 주제**(열거형의 함정) — `enum`·`const enum` 의 선택은 그쪽이 정본이다. 여기서는 **방출 모양**까지만 본다.
-- 목록의 **32번 주제**(클래스의 타입 측면) — 매개변수 프로퍼티·`private` 대 `#` 의 전면적인 비교는 그쪽.
-- 목록의 **36번 주제**(타입 전용 import·export) — `verbatimModuleSyntax`·`erasableSyntaxOnly` 의 전면 비교는 그쪽.
+- [목록의 **31번 주제**](../31-enum-pitfalls/)(열거형의 함정) — `enum`·`const enum` 의 선택은 그쪽이 정본이다. 여기서는 **방출 모양**까지만 본다.
+- [목록의 **32번 주제**](../32-class-type-aspects/)(클래스의 타입 측면) — 매개변수 프로퍼티·`private` 대 `#` 의 전면적인 비교는 그쪽.
+- [목록의 **36번 주제**](../36-type-only-imports-and-exports/)(타입 전용 import·export) — `verbatimModuleSyntax`·`erasableSyntaxOnly` 의 전면 비교는 그쪽.
 - `cs/foundations/compiler-pipeline/` — 「컴파일러가 단계를 나눠 도는 것」 일반론은 그쪽. 여기서는 TS 고유의 **소거**만 본다.
 
 ## 용어 풀이

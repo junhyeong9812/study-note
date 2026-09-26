@@ -671,6 +671,6 @@ ex.03h.ts(6,10): error TS2339: Property 'click' does not exist on type '{}'.
 ## 더 들어가면
 
 - **`.d.ts` 는 이 갈래 내내 쓰는 도구다.** 뒤 주제에서도 「이게 무슨 타입이지」가 막힐 때마다 `--declaration --emitDeclarationOnly` 한 줄이면 답이 나온다.
-- **`satisfies`(4.9)는 이 주제의 다음 수다** — 표기는 추론을 **덮어쓰지만**, `satisfies` 는 검사만 하고 추론을 **살려 둔다**(목록의 **29번 주제**).
-- **`noUncheckedIndexedAccess`** 를 켜면 `arr[0]` 의 타입이 `number` 가 아니라 `number | undefined` 가 된다. 이 주제의 결과가 통째로 바뀌는 플래그다(목록의 **41번 주제**).
+- **`satisfies`(4.9)는 이 주제의 다음 수다** — 표기는 추론을 **덮어쓰지만**, `satisfies` 는 검사만 하고 추론을 **살려 둔다**([목록의 **29번 주제**](../29-satisfies/)).
+- **`noUncheckedIndexedAccess`** 를 켜면 `arr[0]` 의 타입이 `number` 가 아니라 `number | undefined` 가 된다. 이 주제의 결과가 통째로 바뀌는 플래그다([목록의 **41번 주제**](../41-index-and-optional-property-strict-flags/)).
 - **`tsc --init` 이 권하는 기본값**에 `noUncheckedIndexedAccess` 와 `exactOptionalPropertyTypes` 가 **켜져 있다**(이 판에서 확인). 하지만 **명령줄에서 파일을 직접 주면 그 설정이 안 읽힌다** — 이 문서의 결과는 전부 그 상태다.

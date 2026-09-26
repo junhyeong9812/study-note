@@ -483,7 +483,7 @@ ex.23d.ts(18,7): error TS2322: Type '1 | 2' is not assignable to type 'null'.
 > **`keyof typeof x`** — 값 `x` 의 타입을 가져와 그 키 유니온을 만드는 관용구.\
 > 예: `const setting = {level:3}` 에서 `keyof typeof setting` 은 `"level"` 이다.
 
-비용 — enum 은 **방출물에 객체가 남는다**(목록의 **31번 주제**가 정본). 그 대가가 싫으면 `as const` + 유니온 리터럴을 쓴다.
+비용 — enum 은 **방출물에 객체가 남는다**([목록의 **31번 주제**](../31-enum-pitfalls/)가 정본). 그 대가가 싫으면 `as const` + 유니온 리터럴을 쓴다.
 
 ### (5) ★★★ `typeof import(…)` — 그리고 제5의 상태
 
@@ -868,11 +868,11 @@ ex.23e.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 - [**05번 주제** — 구조적 타이핑](../05-structural-typing/) — `typeof` 로 뽑은 타입이 **이름이 아니라 모양**으로 비교되는 이유.
 - [**24번 주제** — 조건부 타입과 분배](../24-conditional-types-and-distribution/) · [**25번 주제** — `infer` 와 재귀 조건부 타입](../25-infer-and-recursive-conditional-types/) —
   `InstanceType` 의 속이 그쪽 `infer` 다. **같은 배치의 나머지.**
-- 목록의 **31번 주제**(열거형의 함정) — enum 이 **방출물에 남기는 것**과 `const enum` 은 그쪽이 정본.
+- [목록의 **31번 주제**](../31-enum-pitfalls/)(열거형의 함정) — enum 이 **방출물에 남기는 것**과 `const enum` 은 그쪽이 정본.
   ★ 경계 — 여기서는 **enum 이 두 공간에 산다**는 사실까지만.
-- 목록의 **36번 주제**(타입 전용 import·export) — `import type` 이 방출에 주는 영향은 그쪽.
+- [목록의 **36번 주제**](../36-type-only-imports-and-exports/)(타입 전용 import·export) — `import type` 이 방출에 주는 영향은 그쪽.
   ★ 경계 — 여기서는 `typeof import(…)` 가 **어느 공간을 여느냐**까지만.
-- 목록의 **29번 주제**(`satisfies`) — 값을 검사하되 타입을 안 넓히는 도구. `typeof` 로 꺼내기 **전에** 쓰는 자리다.
+- [목록의 **29번 주제**](../29-satisfies/)(`satisfies`) — 값을 검사하되 타입을 안 넓히는 도구. `typeof` 로 꺼내기 **전에** 쓰는 자리다.
 - `` JS 갈래 목록([`js/syntax/README.md`](../../../js/syntax/README.md))의 **01번**([값의 종류와 `typeof`](../../../js/syntax/01-value-types-and-typeof/)) `` —
   **런타임 `typeof` 의 정본.** 돌려주는 문자열 여덟 종과 `typeof null` 의 함정은 그쪽이다.
 - `` Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **19번**([타입 소거 — 런타임에 없는 것·제네릭 배열 금지·브리지 메서드](../../../java/syntax/19-type-erasure/)) `` —
@@ -920,7 +920,7 @@ ex.23e.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 
 - **왜 반대 방향 다리가 없나** — 타입을 값으로 만드는 문법(`valueof` 같은 것)이 있으면 **타입이 런타임에 남아야** 한다.
   그러면 [**01번 주제**](../01-what-ts-adds-and-erases/)의 전제(「지우기만 하면 JS 가 된다」)가 깨지고,
-  목록의 **36번 주제**의 `erasableSyntaxOnly` 같은 방향도 성립하지 않는다.
+  [목록의 **36번 주제**](../36-type-only-imports-and-exports/)의 `erasableSyntaxOnly` 같은 방향도 성립하지 않는다.
   ★ **`class` 와 `enum` 이 양쪽에 사는 것은 예외가 아니라 그 둘이 원래 값을 만들기 때문**이다.
 - **`typeof` 가 `const` 의 넓어짐을 그대로 가져온다는 것** — `const setting = { level: 3 }` 의 `level` 은 `number` 로 넓어져 있고,
   `typeof setting` 은 **그 넓어진 결과**를 가져온다(4절 14행이 `number` 다).
@@ -932,4 +932,4 @@ ex.23e.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 - **`typeof this`·`typeof globalThis`** — **안 던졌다.**
 - **`typeof` 가 `unique symbol` 과 만나는 자리** — `declare const s: unique symbol` 에서 `typeof s` 는 그 심볼 하나만 가리킨다.
   README 의 「뺀 것」에 `unique symbol` 이 있어 **안 던졌다.**
-- **모듈 보강에서 `typeof` 로 전역을 읽는 것** — 목록의 **33번 주제**·목록의 **37번 주제**의 몫이다. **안 던졌다.**
+- **모듈 보강에서 `typeof` 로 전역을 읽는 것** — [목록의 **33번 주제**](../33-declaration-merging/)·[목록의 **37번 주제**](../37-writing-declaration-files/)의 몫이다. **안 던졌다.**

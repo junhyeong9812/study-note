@@ -641,7 +641,7 @@ ping
 - [**01번 주제** — TS 가 더하는 것과 지우는 것](../01-what-ts-adds-and-erases/) — 「방출에 안 남는다」의 근거는 그쪽.
 - [목록의 **09번 주제**](../09-union-types/)(유니온 타입) · **12번 주제**(좁히기) — 판별 유니온과 좁히기의 전면 서술은 그쪽. 여기서는 **완전성 검사 관용구**만.
 - [목록의 **13번 주제**](../13-type-guards-and-predicates/)(타입 가드와 타입 술어) — `v is T` 의 전면 서술은 그쪽.
-- 목록의 **42번 주제**(암시적 `any` 와 catch 변수) — `noImplicitAny`·`useUnknownInCatchVariables` 는 그쪽.
+- [목록의 **42번 주제**](../42-implicit-any-and-catch-variables/)(암시적 `any` 와 catch 변수) — `noImplicitAny`·`useUnknownInCatchVariables` 는 그쪽.
 - `../../js/syntax/README.md` 의 **01번 주제**(값의 종류와 `typeof`) — `undefined` 의 **런타임 의미는 JS 갈래가 정본**이다.
 
 ## 용어 풀이

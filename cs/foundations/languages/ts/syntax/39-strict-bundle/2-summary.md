@@ -395,7 +395,7 @@ pr39i.ts  7.0.2    TS1212         TS1212         TS1212         TS5108
   pr39i  var package = 1  (스크립트)          alwaysStrict                 TS1212
 ```
 
-비용 — 탐침은 **켜졌다**는 것만 말한다. 그 플래그가 **무엇을 더 잡는지**의 전모는 각자의 주제다(40편 `strictNullChecks` · 목록의 **42번 주제** `noImplicitAny`·`useUnknownInCatchVariables` · 17편 `strictFunctionTypes`).
+비용 — 탐침은 **켜졌다**는 것만 말한다. 그 플래그가 **무엇을 더 잡는지**의 전모는 각자의 주제다(40편 `strictNullChecks` · [목록의 **42번 주제**](../42-implicit-any-and-catch-variables/) `noImplicitAny`·`useUnknownInCatchVariables` · 17편 `strictFunctionTypes`).
 
 ### (3) ★★★ 설정 없이 던지면 — 7.0.2 의 기본값
 
@@ -662,7 +662,7 @@ strictNullChecks+useUnknownInCatchVariables 3      3      13:TS2322 14:TS2322 35
 - [**17번 주제** — 변성과 매개변수 양립성](../17-variance-and-parameter-compatibility/) — `strictFunctionTypes` 의 범위.
 - [**40번 주제** — `strictNullChecks` 의 파급](../40-strict-null-checks-ripple/) — 5절의 「축」이 무엇을 바꾸는지.
 - [**41번 주제** — 인덱스·선택 프로퍼티 엄격 플래그](../41-index-and-optional-property-strict-flags/) — **`strict` 에 안 드는** 두 엄격 플래그.
-- 목록의 **42번 주제**(암시적 `any` 와 catch 변수) — `noImplicitAny`·`useUnknownInCatchVariables` 의 전모. **43번 주제**(`tsconfig` 의 나머지 선택).
+- [목록의 **42번 주제**](../42-implicit-any-and-catch-variables/)(암시적 `any` 와 catch 변수) — `noImplicitAny`·`useUnknownInCatchVariables` 의 전모. **43번 주제**(`tsconfig` 의 나머지 선택).
 
 ## 용어 풀이
 

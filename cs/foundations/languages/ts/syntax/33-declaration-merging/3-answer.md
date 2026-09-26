@@ -446,4 +446,4 @@ ex.33b.ts    exit 0 = exit 0 · 출력 한 글자도 같다
 **안 돌려 본 것**
 
 - ★★ **`tsconfig.json` 의 `include` 로 보강 범위를 바꾸는 것** — 명령줄 파일 목록으로만 보였다.
-- ★★ **스크립트 파일의 맨 `interface Array<T>`** · **default export 보강** · **import 없는 `declare module`** — 목록의 37·38번 주제로 넘긴다.
+- ★★ **스크립트 파일의 맨 `interface Array<T>`** · **default export 보강** · **import 없는 `declare module`** — 목록의 [**37**](../37-writing-declaration-files/)·[**38**](../38-ambient-global-types-configuration/)번 주제로 넘긴다.

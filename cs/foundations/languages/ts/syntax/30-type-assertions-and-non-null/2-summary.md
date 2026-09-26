@@ -623,7 +623,7 @@ ex.30c.ts    exit 0 = exit 0 · 출력 한 글자도 같다
 - [**15번 주제** — 제어 흐름 분석의 한계](../15-control-flow-analysis-limits/) — `!` 를 쓰고 싶어지는 자리(좁힘이 풀리는 곳)의 정본.
 - [**32번 주제** — 클래스의 타입 측면](../32-class-type-aspects/) — 3절 `count!` 가 방출물에서 필드 선언으로 남는 것과 이어진다.
 - Kotlin 갈래 [`../../../kotlin/syntax/03-null-safe-types/`](../../../kotlin/syntax/03-null-safe-types/) — `!!` 가 `Intrinsics.checkNotNull` 로 컴파일되는 `javap` 실측. **2절의 대비는 그쪽 출력을 인용한 것**이다.
-- 목록의 **40번 주제**(`strictNullChecks` 의 파급) — `!` 가 할 일이 생기는 **이유** 자체는 그쪽.
+- [목록의 **40번 주제**](../40-strict-null-checks-ripple/)(`strictNullChecks` 의 파급) — `!` 가 할 일이 생기는 **이유** 자체는 그쪽.
 
 ## 용어 풀이
 

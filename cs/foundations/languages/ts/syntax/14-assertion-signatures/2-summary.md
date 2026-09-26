@@ -809,8 +809,8 @@ ex.14e.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 - [**12번 주제** — 좁히기](../12-narrowing/) — `asserts v` 가 주는 결과는 **진릿값 좁히기와 같다.**
 - [**04번 주제** — `any`·`unknown`·`never`·`void`](../04-any-unknown-never-void/) — 반환 타입 `void` 의 뜻과 `unknown` 입구 설계는 그쪽.
 - [**02번 주제** — 타입 검사와 코드 방출의 분리](../02-type-checking-vs-emit/) — 6절의 **종료 코드 1 대 2** 는 그쪽 규칙이다.
-- 목록의 **30번 주제**(타입 단언과 non-null `!`) — 거짓 단언이 `as` 와 **같은 등급의 탈출구**라는 것은 그쪽과 함께 읽는다.
-- 목록의 **38번 주제**(앰비언트·전역 타입 구성) — 6절의 `types` 기본값 `[]` 와 `@types/node` 는 그쪽.
+- [목록의 **30번 주제**](../30-type-assertions-and-non-null/)(타입 단언과 non-null `!`) — 거짓 단언이 `as` 와 **같은 등급의 탈출구**라는 것은 그쪽과 함께 읽는다.
+- [목록의 **38번 주제**](../38-ambient-global-types-configuration/)(앰비언트·전역 타입 구성) — 6절의 `types` 기본값 `[]` 와 `@types/node` 는 그쪽.
 - JS 갈래 목록([`js/syntax/README.md`](../../../js/syntax/README.md))의 **32번** — `throw`/`try`/`catch` 의 런타임 의미는 그쪽이 정본이다.
 
 ## 용어 풀이

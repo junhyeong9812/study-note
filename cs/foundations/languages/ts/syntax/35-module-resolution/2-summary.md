@@ -748,8 +748,8 @@ imp35g.ts(1,27): error TS2307: Cannot find module '@src/util35g.js' or its corre
 - [JS 갈래 **42번**(ESM 모듈)](../../../js/syntax/42-esm-modules/) · [JS 갈래 **43번**(CJS 와 ESM 상호운용)](../../../js/syntax/43-cjs-and-esm-interop/) — ★★★ **README 의 선행(JS 43).** node 쪽 규칙(확장자·`type` 필드·`require` 와 ESM)의 정본이다 — 이 문서는 node 출력을 직접 던져 실었다.
 - [Python 갈래 — 모듈·패키지와 import](../../../python/syntax/42-modules-packages-and-import/) — 대비. 파이썬은 import 해석을 **런타임 하나**가 하고(검사기와 실행기가 따로 없다), 상대 import 의 기준이 **`__package__`** 라 `python3 pkg/mod.py` 와 `-m` 이 갈린다(그쪽 5절). TS 는 **검사기와 실행기가 따로** 풀어서 **둘이 어긋날** 수 있다.
 - [Go 갈래 — 패키지 공개 범위·이름·`internal`](../../../go/syntax/40-package-visibility-naming-and-internal/) — 대비. Go 는 import 경로가 **곧 모듈 경로**(`go.mod` 의 `module` + 디렉토리)이고, 빌드 도구 **하나**가 해석과 실행을 다 맡는다 — 해석 방식을 고를 일이 없다.
-- 목록의 **36번 주제**(타입 전용 import·export) — 사슬의 다음. **풀린 import 가 방출물에 남나**를 묻는다.
-- 목록의 **43번 주제**(`tsconfig` 의 나머지 선택) — `module` 값의 일반론.
+- [목록의 **36번 주제**](../36-type-only-imports-and-exports/)(타입 전용 import·export) — 사슬의 다음. **풀린 import 가 방출물에 남나**를 묻는다.
+- [목록의 **43번 주제**](../43-remaining-tsconfig-choices/)(`tsconfig` 의 나머지 선택) — `module` 값의 일반론.
 
 ## 용어 풀이
 

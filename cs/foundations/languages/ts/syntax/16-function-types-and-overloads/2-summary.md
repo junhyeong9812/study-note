@@ -642,7 +642,7 @@ ex.16e.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 - [**08번 주제** — `interface` 대 `type`](../08-interface-vs-type/) — 호출 시그니처를 `interface` 에 담는 것과 `type` 에 담는 것의 차이는 그쪽.
 - [**02번 주제** — 타입 검사와 코드 방출의 분리](../02-type-checking-vs-emit/) — 6절의 「방출에 안 남는다」는 그쪽 규칙이다.
 - [목록의 **24번 주제**](../24-conditional-types-and-distribution/)(조건부 타입과 분배) — 「인자에 따라 반환이 갈린다」를 오버로드 대신 조건부 타입으로 쓰는 길.
-- 목록의 **37번 주제**(선언 파일 작성) — 4절의 `.d.ts` 를 손으로 쓰는 쪽은 그쪽.
+- [목록의 **37번 주제**](../37-writing-declaration-files/)(선언 파일 작성) — 4절의 `.d.ts` 를 손으로 쓰는 쪽은 그쪽.
 - JS 갈래 목록([`js/syntax/README.md`](../../../js/syntax/README.md))의 **08번** — 함수 정의 형태와 매개변수의 런타임 의미는 그쪽이 정본이다.
 
 ## 용어 풀이

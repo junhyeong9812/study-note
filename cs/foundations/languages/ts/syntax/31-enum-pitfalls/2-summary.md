@@ -777,8 +777,8 @@ ex.31c.ts    exit 0 = exit 0 · 출력 한 글자도 같다
 - [**11번 주제** — 리터럴 타입과 `as const`](../11-literal-types-and-as-const/) — ★★ README 의 선행. 유니온 리터럴·`as const` 의 정본.
 - [**30번 주제** — 타입 단언과 non-null `!`](../30-type-assertions-and-non-null/) — 「TS 문법 대부분은 방출물에서 사라진다」. enum 은 그 **예외**다.
 - [**33번 주제** — 선언 병합](../33-declaration-merging/) — `enum` 에 `namespace` 를 덧붙이면 `Object.keys` 에 **함수 이름까지** 섞인다.
-- 목록의 **36번 주제**(타입 전용 import·export) — `--verbatimModuleSyntax`·`--erasableSyntaxOnly` 가 **import 방출**에 주는 영향은 그쪽. 여기서는 `const enum` 칸만 봤다.
-- 목록의 **43번 주제**(`tsconfig` 의 나머지 선택) — `--isolatedModules` 의 일반론.
+- [목록의 **36번 주제**](../36-type-only-imports-and-exports/)(타입 전용 import·export) — `--verbatimModuleSyntax`·`--erasableSyntaxOnly` 가 **import 방출**에 주는 영향은 그쪽. 여기서는 `const enum` 칸만 봤다.
+- [목록의 **43번 주제**](../43-remaining-tsconfig-choices/)(`tsconfig` 의 나머지 선택) — `--isolatedModules` 의 일반론.
 - 파이썬 갈래 [`../../../python/syntax/37-enum/`](../../../python/syntax/37-enum/) — 파이썬 `Enum` 의 멤버는 **싱글턴 객체**다. TS 숫자 enum 의 멤버는 **그냥 숫자**다.
 - C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **20번**(`enum` 과 `[Flags]`) — 「열거형이 정수 위의 얇은 껍데기」. TS 숫자 enum 의 `number` 구멍과 **같은 집안**이다. 폴더가 아직 없다.
 - Kotlin 갈래 [`../../../kotlin/syntax/24-enum-class-vs-sealed/`](../../../kotlin/syntax/24-enum-class-vs-sealed/) — Kotlin `enum class` 는 **클래스**다. 비교 축은 그쪽.

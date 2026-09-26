@@ -264,7 +264,7 @@ console.log("4) bind 한 뒤         :", bound(10));
   **타입을 벗기면 JS 규칙이 그대로 돌아온다** — `this` 매개변수는 **컴파일 타임에만 있는 것**이다.
 - ★ 예외의 **메시지 본문은 안 실었다** — 판마다 문구가 바뀐다. `constructor.name` 만 찍었다.
 
-비용 — 없다. 대신 **런타임 보호는 0**이다. `as` 하나로 뚫린다(목록의 **30번 주제**).
+비용 — 없다. 대신 **런타임 보호는 0**이다. `as` 하나로 뚫린다([목록의 **30번 주제**](../30-type-assertions-and-non-null/)).
 
 ### (3) ★★ `strictBindCallApply` — 이 주제의 설정 칸
 
@@ -329,7 +329,7 @@ ex.18c.ts(25,25): error TS2322: Type 'string' is not assignable to type 'number'
 
 > **`strictBindCallApply`** — `strict` 에 딸려 켜진다(TS 3.2). 끄면 `call`·`apply`·`bind` 가 **인자를 검사하지 않는다.**
 
-비용 — 켜면 **기존 코드의 `call`·`apply` 자리가 대량으로 빨개진다.** 단계적으로 켜는 순서는 목록의 **39번 주제**.
+비용 — 켜면 **기존 코드의 `call`·`apply` 자리가 대량으로 빨개진다.** 단계적으로 켜는 순서는 [목록의 **39번 주제**](../39-strict-bundle/).
 
 ### (4) ★★ `this: void` 로 금지하고, 화살표에는 못 단다
 
@@ -640,9 +640,9 @@ export const method = {
 - [**17번 주제** — 변성과 매개변수 양립성](../17-variance-and-parameter-compatibility/) — 4절의 「`this` types … incompatible」는 그쪽 규칙이 `this` 칸에 적용된 것이다.
 - [**02번 주제** — 타입 검사와 코드 방출의 분리](../02-type-checking-vs-emit/) — 2절의 「방출에 안 남는다」는 그쪽 규칙이다.
 - [**19번 주제** — 제네릭 기본](../19-generics-basics/) — **같은 배치의 다음 주제.** 「런타임에 없는 것」이라는 축을 그대로 잇는다.
-- 목록의 **30번 주제**(타입 단언과 non-null `!`) — 2절이 `as unknown as` 로 타입을 벗긴 자리.
-- 목록의 **39번 주제**(`strict` 묶음) — `strictBindCallApply` 를 단계적으로 켜는 순서는 그쪽.
-- 목록의 **32번 주제**(클래스의 타입 측면) — 4절의 클래스 메서드 `this: Counter` 는 그쪽에서 더 본다.
+- [목록의 **30번 주제**](../30-type-assertions-and-non-null/)(타입 단언과 non-null `!`) — 2절이 `as unknown as` 로 타입을 벗긴 자리.
+- [목록의 **39번 주제**](../39-strict-bundle/)(`strict` 묶음) — `strictBindCallApply` 를 단계적으로 켜는 순서는 그쪽.
+- [목록의 **32번 주제**](../32-class-type-aspects/)(클래스의 타입 측면) — 4절의 클래스 메서드 `this: Counter` 는 그쪽에서 더 본다.
 
 ## 용어 풀이
 
@@ -666,5 +666,5 @@ export const method = {
 - **왜 첫 칸인가** — 매개변수 목록 안에 두면 **문법을 새로 만들지 않아도 된다.** `this` 는 JS 에서 **매개변수 이름으로 쓸 수 없는 예약어**이므로 첫 칸의 `this: T` 는 기존 JS 와 충돌하지 않는다. 그래서 파서를 안 고치고 타입만 얹을 수 있었다 — TS 설계의 전형이다([**01번 주제**](../01-what-ts-adds-and-erases/)).
 - **왜 대입은 안 막나** — `const f = rect.area;` 자체는 **합법적인 JS** 이고, 그 뒤에 `f.call(rect)` 로 제대로 부를 수도 있다. 대입을 막으면 그런 쓰임이 통째로 죽는다. 그래서 TS 는 **가장 늦은 시점(호출)** 에만 막는다 — 대신 **떼어내 어딘가에 넘기는 코드는 못 잡는다**(넘긴 곳에서 부르면 그때 잡는다).
 - **`this: void` 가 「없음」이 아닌 이유** — 함수 타입의 `this` 칸은 **매개변수처럼 반공변**이다([**17번 주제**](../17-variance-and-parameter-compatibility/)). `this` 를 안 적은 함수는 「아무 `this` 나 받는다」에 가까워서 `void` 자리에 **들어갈 수 있다.** 반대로 `this: Tick` 은 더 좁은 요구라 못 들어간다 — 4절의 연쇄 설명 줄이 그 방향을 그대로 적어 준다.
-- **`this` 타입(`this` type)은 다른 것이다** — 클래스 안에서 반환 타입으로 쓰는 `: this`(다형 `this` 타입)는 **이 주제가 아니다.** 이 배치에서는 **안 던졌다.** 목록의 **32번 주제**에서 볼 자리다.
+- **`this` 타입(`this` type)은 다른 것이다** — 클래스 안에서 반환 타입으로 쓰는 `: this`(다형 `this` 타입)는 **이 주제가 아니다.** 이 배치에서는 **안 던졌다.** [목록의 **32번 주제**](../32-class-type-aspects/)에서 볼 자리다.
 - **오버로드와 `this`** — 오버로드마다 `this` 칸을 다르게 적을 수 있는지, `ThisParameterType` 이 어느 시그니처를 잡는지는 **안 던졌다.** [**16번 주제**](../16-function-types-and-overloads/)와 함께 다시 볼 자리다.

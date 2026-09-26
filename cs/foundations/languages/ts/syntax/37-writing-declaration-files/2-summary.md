@@ -671,8 +671,8 @@ usedup37.ts(1,7): error TS2322: Type 'number' is not assignable to type 'null'.
 - [**34번 주제** — `namespace` 의 자리](../34-namespace-place/) — `declare namespace` 와 `skipLibCheck` 가 `TS1540` 을 숨기는 칸(4절).
 - [**35번 주제** — 모듈 해석](../35-module-resolution/) — `"./lib37.mjs"` 가 `lib37.d.mts` 로 가는 길(`.js` 를 떼고 찾는다) · `exports` 의 `types` 조건.
 - [**26번 주제** — 매핑 타입](../26-mapped-types/) — 「방출기는 계산하지 않는다」(0절). 5절이 그 문장의 **짝**(안 적힌 자리는 추론한다)을 더했다.
-- 목록의 **38번 주제**(앰비언트·전역 타입 구성) — 사슬의 다음. `types`·`typeRoots`·`lib` 가 **어느 전역 `.d.ts` 를 컴파일에 넣나**(6절의 「순서」를 정하는 쪽).
-- 목록의 **44번 주제**(프로젝트 참조와 선언 방출) · **48번 주제**(JS 파일 타입 검사) — `isolatedDeclarations` · JSDoc 에서 `.d.ts` 뽑기.
+- [목록의 **38번 주제**](../38-ambient-global-types-configuration/)(앰비언트·전역 타입 구성) — 사슬의 다음. `types`·`typeRoots`·`lib` 가 **어느 전역 `.d.ts` 를 컴파일에 넣나**(6절의 「순서」를 정하는 쪽).
+- [목록의 **44번 주제**](../44-project-references-and-declaration-emit/)(프로젝트 참조와 선언 방출) · **48번 주제**(JS 파일 타입 검사) — `isolatedDeclarations` · JSDoc 에서 `.d.ts` 뽑기.
 
 ## 용어 풀이
 

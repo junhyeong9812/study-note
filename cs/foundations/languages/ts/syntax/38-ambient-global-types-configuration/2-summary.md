@@ -599,7 +599,7 @@ scrg38.ts(1,9): error TS2669: Augmentations for the global scope can only be dir
 - [**36번 주제** — 타입 전용 import·export](../36-type-only-imports-and-exports/) — 부작용 import 가 방출에 남는 것(1절).
 - [**02번 주제** — 타입 검사와 코드 방출의 분리](../02-type-checking-vs-emit/) — 7.0 의 `target` 기본값 es2025(3절 `(안 줌)` 행의 까닭).
 - [**39번 주제** — `strict` 묶음](../39-strict-bundle/) — 7.0 이 바꾼 또 하나의 기본값.
-- 목록의 **43번 주제**(`tsconfig` 의 나머지 선택) — `target`·`lib`·`skipLibCheck` 의 판단은 그쪽.
+- [목록의 **43번 주제**](../43-remaining-tsconfig-choices/)(`tsconfig` 의 나머지 선택) — `target`·`lib`·`skipLibCheck` 의 판단은 그쪽.
 
 ## 용어 풀이
 
