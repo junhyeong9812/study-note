@@ -625,8 +625,8 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - [01번 주제 — 문서의 뼈대](../01-document-skeleton/2-summary.md) — `<head>` 와 `<body>` 의 경계, 창 넷의 정의.
 - JS 갈래 목록([`js/syntax/README.md`](../../../js/syntax/README.md))의 **42번**·**44번** — **모듈 안의 `import`/`export`·라이브 바인딩·순환 의존·동적 `import` 는 그쪽이 정본이다.** 여기는 **마크업이 그 모듈을 어떻게 켜나**까지.
 - web-api 갈래 목록([`web-api/README.md`](../../../../web-api/README.md))의 **04번** — `innerHTML` 로 넣은 `<script>` 가 왜 안 도는지는 그쪽 표면이다.
-- 목록의 **09번 주제**(스타일시트·리소스 힌트) — **스타일시트가 렌더를 막는 것**과 `preload` 는 그쪽이다. 여기는 **스크립트만**.
-- 목록의 **10번 주제**(`template`) — `<template>` 안의 스크립트는 안 돈다.
+- [목록의 **09번 주제**](../09-stylesheets-and-resource-hints/)(스타일시트·리소스 힌트) — **스타일시트가 렌더를 막는 것**과 `preload` 는 그쪽이다. 여기는 **스크립트만**.
+- [목록의 **10번 주제**](../10-template-slot-shadow-dom/)(`template`) — `<template>` 안의 스크립트는 안 돈다.
 
 ## 용어 풀이
 

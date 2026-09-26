@@ -1147,7 +1147,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - [9번](../09-rvalue-references-move-and-forward/) — **`std::move` 는 캐스트다**의 정본. (1)은 그것을 받는 쪽을 보려고 한 번 못 박은 것이다.
 - [8번](../08-value-categories-lvalue-prvalue-xvalue/) — **값 범주.** (5)의 `const Tr&&` 가 왜 이동에 안 맞는지가 거기다.
 - [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/) — **0/3/5의 법칙.** (9)의 탐침 1번·2번이 그 주제의 격자에서 다시 나온다.
-- 목록의 **26번 주제** — `unique_ptr`. (4)의 「널이 보장되는 유일한 것」의 전모다.
+- [목록의 **26번 주제**](../26-unique-ptr-and-ownership-transfer/) — `unique_ptr`. (4)의 「널이 보장되는 유일한 것」의 전모다.
 - 목록의 **41번 주제** — 순차 컨테이너. (3)의 `vector` 재할당 정책이 거기가 정본이다.
 - 목록의 **52·53번 주제** — 예외 안전 보장과 `noexcept`. (3)의 「왜 던지면 안 되나」가 거기다.
 - ★★★ Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **8번**([`08-ownership-and-move/`](../../../rust/syntax/08-ownership-and-move/)) — **직접 대비.**\

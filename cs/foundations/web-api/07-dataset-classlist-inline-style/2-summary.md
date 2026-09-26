@@ -794,7 +794,7 @@ if (getComputedStyle(el).color === 'rgb(255, 0, 0)') { }   // 08번 주제
 - [06번 주제](../06-attribute-vs-property/2-summary.md) — 「**`data-*` 와 `class` 는 반영이 아니다**」의 정본. 이 주제는 **그럼 무엇이냐**부터다
 - [08번 주제](../08-getcomputedstyle/2-summary.md) — 「**지금 무슨 값인가**」의 창구. `el.style` 이 못 보는 것을 전부 그쪽이 본다
 - [02번 주제](../02-element-queries-and-live-collections/2-summary.md) — **라이브**라는 성질. `classList` 가 그 성질을 갖는다
-- 목록의 **12번 주제**(Shadow DOM) — 그림자 경계 안의 `class` 는 바깥 시트가 못 본다. 표면은 같고 **범위**가 다르다
+- [목록의 **12번 주제**](../12-shadow-dom/)(Shadow DOM) — 그림자 경계 안의 `class` 는 바깥 시트가 못 본다. 표면은 같고 **범위**가 다르다
 - 목록의 **54번 주제**(Web Animations) — 인라인 `style` 보다 **더 강한** 자리에서 값을 쓰는 방법
 - [CSS 07번 주제](../../languages/css/syntax/07-syntax-and-error-recovery/2-summary.md) — **「에러가 없는 언어」와 진단 3창의 정본.** 이 주제의 창 ④ 가 거기서 왔다
 - [CSS 01번 주제](../../languages/css/syntax/01-cascade-and-priority/2-summary.md) — 인라인 `style` 이 캐스케이드에서 **어디에 서나**

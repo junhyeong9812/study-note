@@ -578,7 +578,7 @@ Console.WriteLine("끝");
 - **제네릭에서 `T?` 의 뜻이 타입 인자에 달렸다** — `Box<string>` 이면 `string?`, `Box<int>` 면 **그냥 `int`** 다.\
   ★★ `where T : struct` 를 걸면 `T?` 가 **`Nullable<T>`** 가 된다 — [08번](../08-nullable-value-types/)과 만나는 자리다.
 - **필드는 생성자에서 널 아님으로 채워야 한다** — 안 채우면 경고(`CS8618` 계열)다.\
-  ★ `required`(C# 11)와 함께 쓰면 호출자에게 의무를 넘길 수 있다(목록의 **13번 주제**).
+  ★ `required`(C# 11)와 함께 쓰면 호출자에게 의무를 넘길 수 있다([목록의 **13번 주제**](../13-properties-init-required-field/)).
 
 ## 어디서 틀리나
 
@@ -685,7 +685,7 @@ Console.WriteLine("끝");
   ★ 사슬의 끝이자 **이 주제의 반증**이다.
 - [01번 — 값 타입과 참조 타입](../01-value-types-and-reference-types/) — 왜 참조 타입만 이 문제가 있나의 정본.
 - 목록의 **25번 주제**(제네릭 제약) — `where T : class?` · `notnull` · `T?` 의 해석.
-- 목록의 **13번 주제**(속성과 `required`) — 생성자에서 필드를 채우라는 경고를 푸는 법.
+- [목록의 **13번 주제**](../13-properties-init-required-field/)(속성과 `required`) — 생성자에서 필드를 채우라는 경고를 푸는 법.
 - 목록의 **53번 주제**(특성 정의와 사용) — `NullableAttribute` 가 무엇인지의 정본.
 - **Kotlin 의 [널 안전 타입 편](../../../kotlin/syntax/03-null-safe-types/)** —\
   ★★ **직접 대비**다. Kotlin 은 **타입 시스템**(에러로 막고 검사 코드를 생성), C# 은 **컴파일러 분석**(경고만).
@@ -710,7 +710,7 @@ Console.WriteLine("끝");
 
 ## 더 들어가면
 
-- **`CS8618`**(생성자에서 널 아님 필드 미초기화)과 `required`·`init` 의 관계 — 목록의 **13번 주제**.
+- **`CS8618`**(생성자에서 널 아님 필드 미초기화)과 `required`·`init` 의 관계 — [목록의 **13번 주제**](../13-properties-init-required-field/).
 - **`[MemberNotNull]` / `[MemberNotNullWhen]`** — `Initialize()` 를 부르면 필드가 채워진다는 것을 알리는 특성.\
   ★ **이 문서는 안 던졌다.**
 - **`[NotNullIfNotNull(nameof(input))]`** — 「입력이 널 아니면 출력도 널 아님」을 잇는 특성. **안 던졌다.**

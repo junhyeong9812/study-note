@@ -789,7 +789,7 @@ RootWebArea    이름='14 따옴표를 손으로 또 쓰면'
 - [04번 주제 — 공백·텍스트·문자 참조](../04-whitespace-and-character-references/2-summary.md) — **창 ③ 의 정의**가 그쪽이다. 여기는 **생성 콘텐츠가 창 ③ 을 빠져나간다**는 결과까지.
 - CSS 갈래 목록([`css/syntax/README.md`](../../../css/syntax/README.md))의 **13번**([의사 요소와 생성 콘텐츠](../../../css/syntax/13-pseudo-elements-and-generated-content/2-summary.md)) — **`::before`·`content`·`quotes` 가 상자를 만드는 방식**은 그쪽이 정본이다. 여기는 **`q` 가 그것을 쓴다**까지.
 - 웹 API 갈래 목록([`web-api/README.md`](../../../../web-api/README.md))의 **06번**([속성 대 성질](../../../../web-api/06-attribute-vs-property/2-summary.md)) — **반영(reflect)의 일반 규칙**은 그쪽이 정본이다. 여기는 `cite`(URL 반영)와 `dateTime`(글자 반영) 두 사례.
-- 목록의 **20번 주제**(`lang`·`dir`) — **`lang` 이 글꼴·음성·하이픈에 미치는 영향 전체**는 그쪽. 여기는 따옴표 하나.
+- [목록의 **20번 주제**](../20-lang-dir-and-bidi/)(`lang`·`dir`) — **`lang` 이 글꼴·음성·하이픈에 미치는 영향 전체**는 그쪽. 여기는 따옴표 하나.
 - 목록의 **23번 주제**(`<input>` 숫자·날짜) — **날짜 형식을 브라우저가 실제로 파싱하는 자리**(`input type=date`)는 그쪽이다. `time` 과 대비된다.
 - [01번 주제 — 문서의 뼈대](../01-document-skeleton/2-summary.md) — 「이 환경에 validator 가 없다」의 선언.
 
@@ -808,4 +808,4 @@ RootWebArea    이름='14 따옴표를 손으로 또 쓰면'
 
 - **왜 따옴표를 CSS 로 만들게 했나** — 인용 부호는 **언어마다 다르다.** 마크업에 글자로 박으면 번역·재사용 때마다 고쳐야 한다. 「여기가 인용이다」만 적고 **모양은 언어가 고르게** 한 것이 `<q>` 의 설계다. 대가가 (1) 의 「복사하면 사라진다」다.
 - **왜 브라우저가 `datetime` 을 검사하지 않나** — `time` 은 **보이는 동작이 없는** 요소다. 검사해서 거절할 동작(제출·계산)이 없으니 **검사할 이유도 자리도 없다.** `input type=date` 는 반대다 — 값을 **제출**하므로 파싱한다(목록의 **23번 주제**).
-- **`blockquote` 의 출처 표시** — 명세 — 「인용의 출처 표기는 **`blockquote` 요소 밖에 두어야 한다**(must)」. 뒤따르는 문단이 명세의 예이고, `figure`·`figcaption` 으로 묶는 구조는 목록의 **19번 주제**가 다룬다.
+- **`blockquote` 의 출처 표시** — 명세 — 「인용의 출처 표기는 **`blockquote` 요소 밖에 두어야 한다**(must)」. 뒤따르는 문단이 명세의 예이고, `figure`·`figcaption` 으로 묶는 구조는 [목록의 **19번 주제**](../19-figure-address-hr/)가 다룬다.

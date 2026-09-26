@@ -1361,7 +1361,7 @@ def uninterruptible(일):
 | 정리 코드가 실패할 수 있다 | `finally` 안을 또 `try` 로 감싸거나, **원래 예외를 잃을 각오**를 한다(동작 9) |
 | 검사와 실행 중 무엇을 고르나 | [26번](../26-eafp-vs-lbyl/2-summary.md) — **이 주제 밖이다** |
 | 여러 실패를 **함께** 날라야 한다 | [27번](../27-exception-groups-and-except-star/2-summary.md) — `ExceptionGroup`(3.11+) |
-| 예외 계층을 직접 만든다 | `목록의 **29번 주제**`(클래스) 를 먼저. `Exception` 을 상속하고 **`BaseException` 은 상속하지 않는다** |
+| 예외 계층을 직접 만든다 | `[목록의 **29번 주제**](../29-classes-and-attribute-lookup/)`(클래스) 를 먼저. `Exception` 을 상속하고 **`BaseException` 은 상속하지 않는다** |
 
 ## 핵심 문장
 

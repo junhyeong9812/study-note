@@ -43,7 +43,7 @@
 > [`05-hashmap/`](../../../../../data-structure/05-hashmap/)가 정본이다.\
 > ★ **그쪽은 「왜 그 구조인가」까지, 여기는 「.NET 에서 무엇을 고르고 무엇이 보장인가」부터**다.\
 > **박싱 자체**는 [03번](../03-boxing-and-unboxing/), **배열과 슬라이싱**은 [09번](../09-arrays-index-and-range/)이 정본이다.\
-> **컬렉션 초기화와 컬렉션 식**은 목록의 **11번 주제**, **`Equals`/`GetHashCode` 계약의 설계**는 **19번 주제**,
+> **컬렉션 초기화와 컬렉션 식**은 [목록의 **11번 주제**](../11-collection-initializers-and-collection-expressions/), **`Equals`/`GetHashCode` 계약의 설계**는 **19번 주제**,
 > **`IEnumerable<T>` 와 `foreach` 의 풀림**은 **31번 주제**, **제네릭 자체**는 **24번 주제**가 정본이다.
 > **대비** — Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **9번**([`09-maps-declaration-comma-ok-delete-and-iteration-order/`](../../../go/syntax/09-maps-declaration-comma-ok-delete-and-iteration-order/)) ·
 > Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **12번**([`12-dict-and-key-requirements/`](../../../python/syntax/12-dict-and-key-requirements/)) ·
@@ -1082,7 +1082,7 @@ int y = s[0];                    // CS0021 — 집합에도 없다
   여기는 **컬렉션 고를 때 그것이 어디서 나오나**((8))다. `cs-il.cs` 전문도 거기 있다.
 - [09번 — 배열과 인덱스·범위 연산자](../09-arrays-index-and-range/) — **경계**: 배열과 `Span` 의 슬라이싱은 거기,
   여기는 **배열 위에 얹힌 컬렉션**이다.
-- 목록의 **11번 주제** — 컬렉션 초기화와 컬렉션 식. ★ (2)의 마지막 두 줄이 그리로 이어진다.
+- [목록의 **11번 주제**](../11-collection-initializers-and-collection-expressions/) — 컬렉션 초기화와 컬렉션 식. ★ (2)의 마지막 두 줄이 그리로 이어진다.
 - 목록의 **19번 주제** — `Equals`/`GetHashCode`/`==` 를 **일관되게 구현하는 법**이 거기다.
   여기는 **안 지켰을 때 컬렉션이 무엇을 하나**((6))까지다.
 - 목록의 **31번 주제** — `foreach` 가 어떤 패턴으로 풀리나. (9)의 「순회 중 변경」이 그 위에 선다.

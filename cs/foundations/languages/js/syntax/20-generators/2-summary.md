@@ -29,7 +29,7 @@
 > |---|---|
 > | `function*` · `yield` · `yield*` · `next`/`return`/`throw` | **ES2015** |
 > | 객체·클래스의 제너레이터 메서드(`*m() {}`) | **ES2015** |
-> | 이터레이터 헬퍼(제너레이터 객체에도 붙는 `map`·`take` 등) | **ES2025** — ★ 두 node 판에는 **없다**(아래 판별 블록). 목록의 **21번 주제**가 정본 |
+> | 이터레이터 헬퍼(제너레이터 객체에도 붙는 `map`·`take` 등) | **ES2025** — ★ 두 node 판에는 **없다**(아래 판별 블록). [목록의 **21번 주제**](../21-iterator-helpers/)가 정본 |
 > | `async function*` · `for await...of` | **ES2018** — 이 주제 밖(목록의 **40번 주제**) |
 >
 > **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
@@ -38,7 +38,7 @@
 > |---|---|
 > | ★★★ **① 추상 연산에 로그 심기**(본체) | 본문 안에 「`yield` 식이 무엇으로 평가됐나」를 찍고, 바깥의 `next(값)` 과 **한 줄에 나란히** 찍는다. 첫 `next(값)` 이 **어디에도 안 닿는 것**은 오직 이것으로만 보인다 |
 > | ★★★ **② 전수 격자** | **세 메서드(`next`·`return`·`throw`) × 세 상태(시작 전 · `yield` 에서 멈춤 · 끝남)** 아홉 칸. 칸마다 결과와 본문 로그를 찍고, **본문 코드가 돈 칸 수**를 스크립트가 센다 |
-> | ★★ **③ 브랜드 태그** | `%GeneratorPrototype%.next` 를 평범한 객체에 빌려 부르면 **`incompatible receiver`** 로 막힌다 — 제너레이터인지는 **내부 슬롯**이 가른다. ★ `Object.prototype.toString` 이 `[object Generator]` 라고 답하는 것은 **프로퍼티(`Symbol.toStringTag`) 하나**라 브랜드가 아니다(목록의 **22번 주제**) |
+> | ★★ **③ 브랜드 태그** | `%GeneratorPrototype%.next` 를 평범한 객체에 빌려 부르면 **`incompatible receiver`** 로 막힌다 — 제너레이터인지는 **내부 슬롯**이 가른다. ★ `Object.prototype.toString` 이 `[object Generator]` 라고 답하는 것은 **프로퍼티(`Symbol.toStringTag`) 하나**라 브랜드가 아니다([목록의 **22번 주제**](../22-symbol-and-well-known-symbols/)) |
 > | ★★ **④ 예외의 `constructor.name` + `message`** | `new gen()` · 화살표 제너레이터 · 콜백 안의 `yield` · 실행 중 재진입 · 배열을 `yield*` 하던 중의 `throw()` |
 > | ★★ **⑤ 두 판 대조기** | 두 판이 갈린 줄은 **`SyntaxError` 문구 한 줄**뿐이다(동작 (7)) |
 > | ★ **부적용 — 진단의 `(행,열)`**(18-C) | 이 주제의 `SyntaxError` 는 **값으로 가를 수 없는 문법 성질**을 증명하려는 것이 아니라 「안 된다」를 보이려는 것이다. `new Function` 으로 던져 **문구만** 받았다 — 열을 읽을 질문이 없다 |

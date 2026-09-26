@@ -1132,10 +1132,10 @@ func Unwrap(err error) error
   [22번 주제](../22-type-assertion-any-and-comparable/). `AsType` 의 comma-ok 모양도 거기서 온다.
 - `go vet` 이 아무것도 안 잡는 대비 —
   [21번 주제](../21-nil-interface-vs-interface-holding-nil-pointer/) (6)절(**8개 중 0개**).
-- 오류 표면 설계의 정본 — 목록의 **25번 주제**.
+- 오류 표면 설계의 정본 — [목록의 **25번 주제**](../25-sentinel-errors-vs-custom-error-types/).
 - `%w` 를 포함한 `fmt` 동사의 정본 — 목록의 **42번 주제**.
 - 덤 — **암묵 구현**은 [20번 주제](../20-interface-declaration-and-implicit-implementation/)(`Unwrap`·`Is`·`As` 가
-  인터페이스 선언 없이 동작하는 바탕), **`panic`/`recover`** 는 목록의 **27번 주제**,
+  인터페이스 선언 없이 동작하는 바탕), **`panic`/`recover`** 는 [목록의 **27번 주제**](../27-panic-recover-and-where-to-use-them/),
   **`go vet` 전반**은 목록의 **52번 주제**다.
 
 

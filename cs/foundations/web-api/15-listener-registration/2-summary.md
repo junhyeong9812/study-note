@@ -1115,7 +1115,7 @@ el.addEventListener('click', { handleevent(e) {} });
 - [`../README.md`](../README.md) — 웹 플랫폼 API 주제 목록(이 주제는 15번)
 - [01번 주제](../01-document-and-node-tree/2-summary.md) — 이 갈래의 창 ①\~③ 을 세운 편. **여기서는 그 셋이 거의 부적용**이다
 - [12번 주제](../12-shadow-dom/2-summary.md) — 그림자 경계를 넘는 이벤트. **리스너를 어디에 다느냐가 `e.target` 을 바꾼다**
-- 목록의 **13번 주제**(커스텀 요소 수명주기) — `connectedCallback` 에서 달고 `disconnectedCallback` 에서 떼는 짝. **`signal` 이 그 짝을 한 줄로 만든다**
+- [목록의 **13번 주제**](../13-custom-element-lifecycle/)(커스텀 요소 수명주기) — `connectedCallback` 에서 달고 `disconnectedCallback` 에서 떼는 짝. **`signal` 이 그 짝을 한 줄로 만든다**
 - 목록의 **16번 주제**(전파 3단계) — ★ **`capture` 가 무엇을 하는지의 정본이 그쪽**이다. 여기는 **그것이 동일성 키라는 것**까지
 - 목록의 **17번 주제**(`stopPropagation` 대 `preventDefault`) — ★ **`stopImmediatePropagation` 과 `preventDefault` 의 정본**
 - 목록의 **18번 주제**(이벤트 위임) — `this` 와 `e.target` 의 구분이 값어치를 내는 자리

@@ -546,7 +546,7 @@ identical 18  ·  differs 1  ·  total 19
 
 **판(ES 버전)에 달린 항목 — 엔진 사정과 갈라 적는다**
 
-- ★★★ **`Array.prototype.toSorted` 의 존재 여부**(ES2023). 이것만이 두 판을 가른 줄이다. 정본은 목록의 **25번 주제**.
+- ★★★ **`Array.prototype.toSorted` 의 존재 여부**(ES2023). 이것만이 두 판을 가른 줄이다. 정본은 [목록의 **25번 주제**](../25-array-non-mutating-and-copy-methods/).
 
 **세 플래그의 의미 · 리터럴과 `defineProperty` 의 기본값 · 27칸 격자의 허용과 거부 · `writable` 의 일방통행 · 세 봉인 함수의 계단 · 셋 다 얕다는 것 · 접근자가 `freeze` 로 안 잠기는 것 · 세 술어의 정의(비확장 빈 객체가 `true` 인 것 포함) · 엄격에서 실패한 쓰기가 `TypeError` 인 것 · `defineProperty` · `push` · `Object.assign` 이 모드와 무관하게 던지는 것은 구현 의존이 아니다.**
 어느 엔진에서도 같아야 한다.

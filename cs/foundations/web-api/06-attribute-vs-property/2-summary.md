@@ -820,5 +820,5 @@ getAttribute('data-x')      null                    el.dataset.x = undefined
 - **`Attr` 도 노드다.** `el.attributes[0]` 은 `Attr` 노드이고 `nodeType` 이 2 다. 예전에는 자식 노드를 가질 수 있었지만 오늘 명세에서는 **값이 글자열 하나**로 단순해졌다. `getAttributeNode`·`setAttributeNode` 는 아직 있지만 쓸 일이 거의 없다.
 - **이름공간이 붙은 속성**(`getAttributeNS`)은 SVG·MathML 이 섞인 문서에서만 필요하다. HTML 요소의 속성은 이름공간이 없다.
 - **`toggleAttribute(name, force)`** 는 [07번 주제](../07-dataset-classlist-inline-style/2-summary.md)의 `classList.toggle` 과 **같은 모양의 두 번째 인자**를 갖는다. 불리언 속성을 켜고 끌 때 `setAttribute`/`removeAttribute` 를 갈라 쓰는 것보다 짧다.
-- **커스텀 요소**는 반영을 **직접 구현**한다 — `observedAttributes` + `attributeChangedCallback` 으로 속성 쪽을, getter/setter 로 성질 쪽을 짜고 **두 방향이 무한히 되부르지 않게** 막아야 한다. 그 설계가 목록의 **13번 주제**다.
+- **커스텀 요소**는 반영을 **직접 구현**한다 — `observedAttributes` + `attributeChangedCallback` 으로 속성 쪽을, getter/setter 로 성질 쪽을 짜고 **두 방향이 무한히 되부르지 않게** 막아야 한다. 그 설계가 [목록의 **13번 주제**](../13-custom-element-lifecycle/)다.
 - **`el.attributes` 의 순서**는 「설정된 순서」다. 실측에서 나중에 `setAttribute` 한 것이 **뒤에 붙었다**(위 (6)의 `outerHTML`). 명세가 순서를 보장하지만 **의미 있는 정보로 쓰지는 마라** — 마크업 작성 순서와 스크립트 조작이 섞인다.

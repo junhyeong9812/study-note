@@ -761,7 +761,7 @@ val items: List<String>        // 2.4+ explicit backing field
 - 목록의 **35번 주제** — `@field:`/`@get:` use-site target. 애너테이션이 **필드에 붙나 게터에 붙나**.
 - 목록의 **39번 주제** — `@JvmField`·`@JvmStatic`. 필드를 직접 노출하는 법.
 - 목록의 **40번 주제** — 읽기 전용 컬렉션이 **뷰**라는 것((6)의 `ArrayList`).
-- 목록의 **22번 주제** — `data class` 가 주 생성자 프로퍼티만 보는 것.
+- [목록의 **22번 주제**](../22-data-class-generated-members/) — `data class` 가 주 생성자 프로퍼티만 보는 것.
 
 ## 용어 풀이
 

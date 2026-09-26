@@ -15,7 +15,7 @@
 > [17번](../17-move-constructor-assignment-and-moved-from-state/)이 「이동이 무엇을 훔치나」를 수로 고정했다.\
 > **여기 18 은 「그래서 다섯 중 무엇을 적을 것인가」에 답한다** — 그리고 답은 대개 「**하나도 안 적는다**」다.
 > **경계** — 「복사의 구현」은 [16번](../16-copy-constructor-and-copy-assignment/), 「이동의 구현」은 [17번](../17-move-constructor-assignment-and-moved-from-state/)이 정본이다.\
-> 「RAII 래퍼를 만드는 법」은 [15번](../15-raii-resources-as-types/), 「`unique_ptr` 의 API」는 목록의 **26번**,\
+> 「RAII 래퍼를 만드는 법」은 [15번](../15-raii-resources-as-types/), 「`unique_ptr` 의 API」는 [목록의 **26번**](../26-unique-ptr-and-ownership-transfer/),\
 > 「예외 안전 보장 4단계」는 **52번**, 「`noexcept` 의 전모」는 **53번 주제**가 정본이다.\
 > ★ 여기서는 「**무엇이 자동 생성되고 무엇이 조용히 사라지나**」만 본다.
 > **대비** — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **9번**([`09-copy-clone-and-drop/`](../../../rust/syntax/09-copy-clone-and-drop/)) — 러스트는 **`derive(Clone)` 을 적어야 복사가 생기고**,\
@@ -1052,7 +1052,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - [14번](../14-destructors-and-deterministic-destruction/) — **소멸자.** (2)의 「소멸자를 선언했다」가 무슨 뜻인지가 거기다.
 - [13번](../13-constructors-member-init-list-and-delegating/) — **생성자와 초기화 순서.** (문법)의 형태가 그 규칙 위에 있다.
 - [1번](../01-function-overloading-and-overload-resolution/) — **오버로드 해결.** (4)의 「뽑힌 뒤 거부된다」가 그 절차의 어느 단계인지가 거기다.
-- 목록의 **26번 주제** — `unique_ptr`. (5)의 `Zero` 가 기대는 것이 그것이다.
+- [목록의 **26번 주제**](../26-unique-ptr-and-ownership-transfer/) — `unique_ptr`. (5)의 `Zero` 가 기대는 것이 그것이다.
 - 목록의 **41번 주제** — 순차 컨테이너. (2)의 `vector` 재할당 정책이 거기가 정본이다.
 - 목록의 **52·53번 주제** — 예외 안전 보장과 `noexcept`. (2)의 `nothrow` 칸이 왜 중요한지가 거기다.
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **9번**([`09-copy-clone-and-drop/`](../../../rust/syntax/09-copy-clone-and-drop/)) — 기본값이 「**아무것도 안 준다**」다.\

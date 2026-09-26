@@ -549,7 +549,7 @@ Console.WriteLine("끝");
 
 **안 돌려 본 것 / 못 잰 것**
 
-- **안 돌려 본 것** — **`CS8618`**(생성자에서 널 아님 필드 미초기화)과 `required`·`init` 의 상호작용(목록의 **13번 주제**) ·\
+- **안 돌려 본 것** — **`CS8618`**(생성자에서 널 아님 필드 미초기화)과 `required`·`init` 의 상호작용([목록의 **13번 주제**](../13-properties-init-required-field/)) ·\
   **`[MemberNotNull]`·`[NotNullIfNotNull]`** · **제네릭에서의 `T?` 와 `where T : class?`·`notnull`**(목록의 **25번 주제**) ·\
   **`default!` 관용구** · **생성 코드 파일에서 맥락이 꺼지는 것**(Learn 의 서술로만 안다 — **직접 안 던졌다**) ·\
   **EF Core 가 특성을 읽는 것**(Learn 의 서술로만 안다 — **직접 안 던졌다**) · **`.editorconfig` 의 `generated_code`**.

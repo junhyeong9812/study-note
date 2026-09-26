@@ -17,7 +17,7 @@
 > **캐스트가 「비트를 바꾸는가 해석을 바꾸는가」** 는 [05번 형제](../05-explicit-casts-and-pointer-conversions/)가 정본이다.\
 > **구조체 선언·초기화**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/),\
 > **패딩·정렬**은 [22번 형제](../22-struct-padding-and-alignment/), **비트필드**는 [24번 형제](../24-bit-fields/)다.\
-> **`restrict` 가 컴파일러에게 무엇을 약속하나**는 목록의 **33번 주제**다.
+> **`restrict` 가 컴파일러에게 무엇을 약속하나**는 [목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/)다.
 > 선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [08번 형제](../08-sizeof-alignment-and-offsetof/) · [05번 형제](../05-explicit-casts-and-pointer-conversions/).
 
 ## 한눈에 — 쉽게 말하면
@@ -774,9 +774,9 @@ union 을 거치면 허용이고 포인터 캐스트면 UB** 다. 그 경계가 
 - 목록의 **55번 주제** (엄격한 앨리어싱 규칙) — ★★★ **앨리어싱 규칙 전체의 정본.**\
   여기는 **「union 은 되고 캐스트는 안 된다」는 경계**까지
 - 목록의 **50번 주제** (`<string.h>` 메모리 함수) — `memcpy`·`memcmp` 의 계약
-- 목록의 **33번 주제** (`restrict` 와 앨리어싱 계약) — **「안 겹친다」를 사람이 약속하는 쪽**
+- [목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/) (`restrict` 와 앨리어싱 계약) — **「안 겹친다」를 사람이 약속하는 쪽**
 - 목록의 **58번 주제** (UB 를 잡는 도구) — ★ **이 주제가 「도구로 안 잡히는 UB」의 사례**로 인용되는 자리
-- 목록의 **25번 주제** (불완전 타입과 opaque struct) · 목록의 **26번 주제** (유연 배열 멤버) — 같은 집합체 갈래의 이웃
+- [목록의 **25번 주제**](../25-incomplete-types-and-opaque-struct/) (불완전 타입과 opaque struct) · [목록의 **26번 주제**](../26-flexible-array-members/) (유연 배열 멤버) — 같은 집합체 갈래의 이웃
 
 ## 용어 풀이
 

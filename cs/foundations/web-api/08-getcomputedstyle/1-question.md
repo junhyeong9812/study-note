@@ -168,7 +168,7 @@ for (const d of rows) sink += getComputedStyle(d).width;
 
 - [07번 주제](../07-dataset-classlist-inline-style/2-summary.md)가 이 주제에 넘긴 질문을 한 문장으로 적어라.
 - [CSS 04번 주제](../../languages/css/syntax/04-value-processing-stages/2-summary.md)와 이 주제의 **경계선**을 한 문장으로 그어라.
-- 목록의 **10번 주제**(레이아웃 스래싱)가 이 주제의 어느 절에서 미리 드러났는가?
+- [목록의 **10번 주제**](../10-layout-thrashing/)(레이아웃 스래싱)가 이 주제의 어느 절에서 미리 드러났는가?
 - [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)에서 물려받은 **측정 도구의 한계**는 무엇인가?
 
 ## 복습 기록

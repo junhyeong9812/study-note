@@ -649,7 +649,7 @@ Y [3층 화재, 20cm 침수, 훈련]
 - [22번 주제](../22-data-class-generated-members/) — `data class`·`data object`. **변형을 무엇으로 만드나**가 거기다.
 - [23번 주제](../23-sealed-classes-and-when-exhaustiveness/) — `sealed` 와 완결성. **변형을 늘렸을 때 깨지는 자리**가 거기다.
 - [25번 주제](../25-object-declaration-companion-and-object-expression/) — `object` 가 **`INSTANCE` 정적 필드**가 되는 원리. `enum` 상수와 같은 집안이다.
-- 목록의 **32번 주제** — `==`/`===`. (4)의 `===` 비교가 왜 `enum` 에서만 안전한지는 거기가 정본이다.
+- [목록의 **32번 주제**](../32-equality-and-equals-contract/) — `==`/`===`. (4)의 `===` 비교가 왜 `enum` 에서만 안전한지는 거기가 정본이다.
 - 목록의 **49번 주제** — `Result`·`runCatching`. (7)에서 쓴 것이 거기다.
 - [`../../../java/syntax/13-enum-classes/`](../../../java/syntax/13-enum-classes/) — Java `enum`. **싱글턴 잠금 넷·`values()` 복사·`EnumSet`/`EnumMap`·`ordinal` 위험**이 전부 거기가 정본이다.
 - [`../../../java/syntax/15-sealed-classes/`](../../../java/syntax/15-sealed-classes/) — Java `sealed`. **명단을 클래스 파일에 남기는 방식**이 거기다.

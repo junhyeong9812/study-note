@@ -641,8 +641,8 @@ func (v V) Speak() string
   맵 원소 쪽은 [09번 주제](../09-maps-declaration-comma-ok-delete-and-iteration-order/)다.
 - **임베딩이 메서드 집합을 키우는 것** — [18번 주제](../18-embedding-and-field-method-promotion/) (6)절.
   `ByValue` 1개 대 `ByPtr` 2개가 그 실측이다.
-- **「복사하면 안 되는 타입」** — 목록의 **32번 주제**(`sync`). 6번이 그 한 자리다.
-- **인터페이스에 담긴 뒤의 `nil` 함정** — 목록의 **21번 주제**.
+- **「복사하면 안 되는 타입」** — [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/)(`sync`). 6번이 그 한 자리다.
+- **인터페이스에 담긴 뒤의 `nil` 함정** — [목록의 **21번 주제**](../21-nil-interface-vs-interface-holding-nil-pointer/).
   맛보기는 [20번 주제](../20-interface-declaration-and-implicit-implementation/) (3)절에 있다.
 - 덤 — **암묵 구현과 만족 단언**은 [20번 주제](../20-interface-declaration-and-implicit-implementation/),
   **타입 파라미터에서 같은 에러가 나는 것**은 목록의 **37번 주제**,

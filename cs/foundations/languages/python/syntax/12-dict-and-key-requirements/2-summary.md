@@ -990,7 +990,7 @@ n in dn          : True | float('nan') in dn : False
   `PYTHONHASHSEED` 로 실제로 갈리는 것은 그쪽이다.
 - 이어지는 곳: [14-comprehensions](../14-comprehensions/2-summary.md) — dict 컴프리헨션.
 - 이어지는 곳: [20-mutable-default-args](../20-mutable-default-args/2-summary.md) — `dict.fromkeys(keys, [])` 와 같은 집안의 함정.
-- 이어지는 곳: 목록의 **30번 주제** 「`__repr__`·`__eq__`·`__hash__` 계약」 — **세 메서드 계약의 정본**이다.
+- 이어지는 곳: [목록의 **30번 주제**](../30-repr-eq-hash-contracts/) 「`__repr__`·`__eq__`·`__hash__` 계약」 — **세 메서드 계약의 정본**이다.
   여기서는 「키가 되나 안 되나」까지만 본다.
 - 이어지는 곳: 목록의 **43번 주제** 「`collections`」 — `defaultdict`·`OrderedDict`·`Counter`·`ChainMap` 의 정본.
 - 이어지는 곳: 목록의 **47번 주제** 「`json`」 — **dict 키가 문자열로 바뀌는 것**. `{True: ...}` 가 `"true"` 로 나가는 자리다.
@@ -1019,6 +1019,6 @@ n in dn          : True | float('nan') in dn : False
   공격 입력은 대개 문자열이라 **정수는 대상이 아니다**([13번](../13-set-and-frozenset/2-summary.md)에서 실측한다).
 - **`Counter`·`ChainMap`** 은 목록의 **43번 주제**. `Counter` 는 없는 키에 `0` 을 돌려주는데 **키를 안 만든다** — `defaultdict` 와 다르다.
 - **`TypedDict`** 는 목록의 **38번 주제** — 런타임에는 **그냥 dict** 다.
-- **`__slots__` 와 인스턴스 `__dict__`** 는 목록의 **33번 주제**.
+- **`__slots__` 와 인스턴스 `__dict__`** 는 [목록의 **33번 주제**](../33-property-descriptor-slots/).
 - **키를 정규화하는 실무 패턴** — 들어오는 키를 `str()` 로 한 번 통일하거나, 「숫자 키 금지」를 계약으로 박는다.
   `1`·`True` 혼용은 **테스트가 `==` 로는 못 잡는다.**

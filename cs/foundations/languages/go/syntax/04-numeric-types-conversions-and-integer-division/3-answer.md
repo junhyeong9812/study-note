@@ -855,11 +855,11 @@ int   MaxInt + 1     = -9223372036854775808  (int)
 
 - **`i + 1` 이 통과하는 이유** — `1` 이 **타입 없는 상수**라 대입 지점에서 `int` 가 된다.
   정본은 [03번 주제](../03-constants-iota-and-untyped-constants/).
-- **`string(n)` 대신 `strconv.Itoa(n)`** — 정본은 목록의 **11번 주제**.
-  `string(rune)` 과 `string([]byte)` 의 뜻 차이는 목록의 **10번 주제**.
+- **`string(n)` 대신 `strconv.Itoa(n)`** — 정본은 [목록의 **11번 주제**](../11-strings-strconv-bytes-and-unicode-utf8/).
+  `string(rune)` 과 `string([]byte)` 의 뜻 차이는 [목록의 **10번 주제**](../10-strings-bytes-runes-and-utf8-iteration/).
 - **`rune` 이 `int32` 인 이유** — 유니코드 코드포인트가 21비트라 32비트에 담는다.
-  정본은 목록의 **10번 주제**.
-- **`unsafe.Sizeof` 를 제대로 다루는 주제** — 목록의 **17번 주제**(구조체 정렬·패딩).
+  정본은 [목록의 **10번 주제**](../10-strings-bytes-runes-and-utf8-iteration/).
+- **`unsafe.Sizeof` 를 제대로 다루는 주제** — [목록의 **17번 주제**](../17-struct-literals-comparability-field-tags-and-sorting/)(구조체 정렬·패딩).
   여기서는 「폭이 같다」를 보이는 데만 썼다.
 - **2의 보수 표현 자체** — [`../../../../data-representation/`](../../../../data-representation/).
   그쪽은 **표현**까지, 여기는 **Go 가 그 위에 얹은 변환·오버플로 규칙**부터다.

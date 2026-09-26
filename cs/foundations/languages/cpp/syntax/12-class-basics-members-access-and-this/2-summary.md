@@ -9,7 +9,7 @@
 > ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
 > ★ **소스 펜스의 첫 줄 `/* cls01.cpp */` 도 캡처가 찍은 것**이라 실파일과 한 글자씩 대조된다.
 > **버전** — `class`·`struct`·접근 지정자·`this`·`friend`·정적 멤버는 **C++98부터**다.\
-> **`static inline` 데이터 멤버는 C++17부터**이고, 그 앞에는 클래스 밖 정의가 필수였다(목록의 **25번 주제**).\
+> **`static inline` 데이터 멤버는 C++17부터**이고, 그 앞에는 클래스 밖 정의가 필수였다([목록의 **25번 주제**](../25-static-members-and-inline-variables/)).\
 > 기준은 **C++20**이다.
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
 > ★★★ **12 → 13 → 14 → 15 는 한 사슬이다** — 여기 12 가 **클래스라는 그릇**을 만들고,\
@@ -20,8 +20,8 @@
 > 여기서는 **C++ 문법이 그것을 어떻게 강제하나**만 쓴다.\
 > 「`const` 멤버 함수를 설계에 쓰는 법」은 형제 [`10번`](../10-const-correctness/), 「참조와 포인터」는 형제 [`07번`](../07-references-vs-pointers/),\
 > 「구조체 레이아웃·패딩」은 C 갈래 [`22-struct-padding-and-alignment/`](../../../c/syntax/22-struct-padding-and-alignment/)가 정본이다.\
-> 「상속·가상 함수」는 목록의 **19번 주제**, 「정적 멤버와 `inline` 변수」는 목록의 **25번 주제**,\
-> 「연산자 오버로딩」은 목록의 **22번 주제**가 정본이다.
+> 「상속·가상 함수」는 [목록의 **19번 주제**](../19-inheritance-virtual-functions-override-final/), 「정적 멤버와 `inline` 변수」는 [목록의 **25번 주제**](../25-static-members-and-inline-variables/),\
+> 「연산자 오버로딩」은 [목록의 **22번 주제**](../22-operator-overloading/)가 정본이다.
 > ★★★ **이 문서는 시간을 재지 않았다.** 근거는 **컴파일러 진단 · `sizeof` · 심볼 개수 · `static_assert`** 넷뿐이다.\
 > 「몇 배 빠르다」는 문장은 **한 줄도 없다**.
 >
@@ -157,7 +157,7 @@ cls01.cpp:6:29: note: declared private here
   `struct` 에 `private:` 을 적으면 `class` 와 똑같다(`SPriv`).
 - ★★ **두 컴파일러의 문구가 다르고 뜻은 같다** — g++ 는 `is private within this context`, clang 은 `is a private member of 'C'` 다.\
   ★ clang 은 한 걸음 더 나가 **`implicitly declared private here`** 라고 적는다 — **「기본값이었다」는 것까지 말해 준다.**
-- **상속의 기본 접근도 같은 규칙으로 갈린다**(`class D : B` 는 private 상속, `struct D : B` 는 public 상속) — 그 정본은 목록의 **19번 주제**다.
+- **상속의 기본 접근도 같은 규칙으로 갈린다**(`class D : B` 는 private 상속, `struct D : B` 는 public 상속) — 그 정본은 [목록의 **19번 주제**](../19-inheritance-virtual-functions-override-final/)다.
 
 **비용** — 런타임 비용 0. 접근 지정은 **컴파일이 끝나면 사라진다.**
 
@@ -646,7 +646,7 @@ cls10.cpp:5:43: error: ‘this’ is unavailable for static member functions
 - ★★★ **정적 멤버 함수에는 `this` 가 없다.** 그래서 **비정적 멤버를 이름만으로 못 쓴다** —\
   g++ 가 `invalid use of member ... in static member function` 과 **`'this' is unavailable for static member functions`** 로 두 줄을 갈라 말해 준다.
 - ★★ **정적 데이터 멤버는 선언과 정의가 다르다.** `static int count_;` 는 **선언**이고,\
-  클래스 밖의 `int Pool::count_ = 0;` 이 **정의**다. 정의를 빠뜨리면 **링커 에러**가 난다(목록의 **25번 주제**).
+  클래스 밖의 `int Pool::count_ = 0;` 이 **정의**다. 정의를 빠뜨리면 **링커 에러**가 난다([목록의 **25번 주제**](../25-static-members-and-inline-variables/)).
 - ★★ **C++17 의 `static inline` 은 그 짝을 없앤다** — `static inline int born = 0;` 한 줄로 끝난다.
 - ★ **중첩 클래스는 이름만 안에 있는 것**이다. `Pool::Handle` 은 **바깥 객체를 자동으로 알지 못한다** —\
   `Handle` 이 `Pool` 의 멤버를 보려면 참조를 따로 들고 있어야 한다.
@@ -835,7 +835,7 @@ cls15.cpp:2:15: note: declared private here
 ### 1. ★★ 「멤버 함수를 늘리면 객체가 커진다」
 
 - ★ **틀렸다.** `ThreeFns` 는 멤버 함수를 넷 달고도 `sizeof` 가 **`OneInt` 와 같은 4**다((2)).
-- **커지는 것은 가상 함수를 처음 달 때**다(vptr 한 칸) — 그 정본은 목록의 **21번 주제**다.
+- **커지는 것은 가상 함수를 처음 달 때**다(vptr 한 칸) — 그 정본은 [목록의 **21번 주제**](../21-abstract-classes-pure-virtual-and-vtable-cost/)다.
 
 ### 2. ★★★ 「`struct` 는 데이터, `class` 는 객체」
 
@@ -983,6 +983,6 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 ## 더 들어가면
 
 - **`this` 를 명시적으로 적어야 하는 자리** — 템플릿 기반 클래스의 멤버를 쓸 때 `this->base_member` 가 필요하다(의존 이름). 정본은 목록의 **35번 주제**다.
-- **`friend` 를 클래스 안에 정의하는 관용구**(hidden friend) — `operator<<` 를 클래스 안에 `friend` 로 **정의**하면 ADL 로만 찾아진다. 형제 [`06번`](../06-namespaces-and-adl/)과 목록의 **22번 주제**가 만난다.
+- **`friend` 를 클래스 안에 정의하는 관용구**(hidden friend) — `operator<<` 를 클래스 안에 `friend` 로 **정의**하면 ADL 로만 찾아진다. 형제 [`06번`](../06-namespaces-and-adl/)과 [목록의 **22번 주제**](../22-operator-overloading/)가 만난다.
 - **`[[no_unique_address]]`(C++20)** — 비어 있는 **데이터 멤버**에도 빈 기반 최적화와 같은 일을 해 준다. (2)의 `EmptyBase` 가 4인 것과 짝이 되는 기능이다.
 - **명시적 객체 매개변수(C++23)** — `void f(this Self&& self)` 로 `this` 를 **보이는 인자**로 적는다. 이 문서의 기준(C++20)에서는 쓸 수 없다.

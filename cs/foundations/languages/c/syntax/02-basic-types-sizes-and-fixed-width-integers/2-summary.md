@@ -332,7 +332,7 @@ c17 + stdbool.h    : 1 1
 - C17 에서 `bool` 은 **키워드가 아니다.** `<stdbool.h>` 가 `#define bool _Bool` 을 해 줄 뿐이다.
 - C23(`-std=c2x`)에서는 **헤더 없이 통과**한다. `<stdbool.h>` 는 호환을 위해 남아 있다.
 
-비용 — 1바이트. 구조체에 여럿 넣으면 패딩이 붙는다(목록의 **22번 주제**).
+비용 — 1바이트. 구조체에 여럿 넣으면 패딩이 붙는다([목록의 **22번 주제**](../22-struct-padding-and-alignment/)).
 
 ## 문법 — 형태와 규칙
 
@@ -600,4 +600,4 @@ sizeof(boom()) = 4  <- 위에 boom 이 안 찍혔으면 sizeof 는 피연산자�
 ```
 
   `boom()` 이 `puts` 를 부르는데 **아무것도 안 찍혔다.** 타입만 보고 크기를 냈다는 뜻이다.\
-  VLA 라는 예외가 있고, 그것은 [목록의 **08번 주제**](../08-sizeof-alignment-and-offsetof/)·목록의 **18번 주제**의 몫이다.
+  VLA 라는 예외가 있고, 그것은 [목록의 **08번 주제**](../08-sizeof-alignment-and-offsetof/)·[목록의 **18번 주제**](../18-variable-length-arrays-vla/)의 몫이다.

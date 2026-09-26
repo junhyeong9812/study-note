@@ -682,7 +682,7 @@ u2 의 display       = inline
 | `id` 의 유일성·`#조각`·`:target` | [07번 주제](../07-id-and-fragments/3-answer.md) | 그쪽은 **URL 과 스크롤**, 여기는 **전역 속성으로서의 `id`** |
 | `[hidden]` 을 덮는 캐스케이드·속성 선택자 | CSS 갈래 목록([`css/syntax/README.md`](../../../css/syntax/README.md)) | CSS 가 HTML 을 이기는 자리 |
 
-- **`lang`·`dir` 이 여기 없는 이유** — 둘도 전역 속성이지만 **양방향 텍스트와 언어 태그**가 본체라 분량이 따로 선다. 목록의 **20번 주제**가 그것이다.
+- **`lang`·`dir` 이 여기 없는 이유** — 둘도 전역 속성이지만 **양방향 텍스트와 언어 태그**가 본체라 분량이 따로 선다. [목록의 **20번 주제**](../20-lang-dir-and-bidi/)가 그것이다.
 
 ## 실행 검증
 
@@ -802,7 +802,7 @@ hidden="until-fond" (오타)     .hidden = true     display = none   content-vis
 | `<wat-element>` 의 인터페이스 | `HTMLElement` | 커스텀 요소 이름 규칙에 달렸다 |
 | demo 의 높이 픽셀 | `0` · `12` · `36` | 글꼴·테두리·여백에 달렸다 |
 
-**안 돌려 본 것** — ① **Firefox·Safari 재현**(엔진이 없다). ② **`contenteditable` 의 실제 편집** — 키 입력을 넣지 않았다. `plaintext-only` 가 서식 붙여넣기를 정말 막는지는 안 던졌다. ③ **`hidden="until-found"` 를 「페이지에서 찾기」로 펼치는 것** — headless 에서 찾기 UI 를 부를 수단을 쓰지 않았다. ④ **`lang`·`dir`** — 목록의 20번 주제 몫이다.
+**안 돌려 본 것** — ① **Firefox·Safari 재현**(엔진이 없다). ② **`contenteditable` 의 실제 편집** — 키 입력을 넣지 않았다. `plaintext-only` 가 서식 붙여넣기를 정말 막는지는 안 던졌다. ③ **`hidden="until-found"` 를 「페이지에서 찾기」로 펼치는 것** — headless 에서 찾기 UI 를 부를 수단을 쓰지 않았다. ④ **`lang`·`dir`** — [목록의 **20번 주제**](../20-lang-dir-and-bidi/) 몫이다.
 
 **못 잰 것**(「안 돌려 본 것」과 다르다) — ① **`translate` 가 실제로 하는 일.** 번역 엔진이 없어 측정 수단 자체가 없다. 쪼개서 잰 조각은 **`.translate` 가 답하는 값**뿐이다. ② **`title` 의 말풍선.** headless 에는 뜰 자리가 없다. 조각은 **`.title` 문자열**과 「`innerText` 에 안 섞인다」뿐이다.
 

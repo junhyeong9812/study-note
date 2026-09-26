@@ -653,7 +653,7 @@ main.main()
 | **맵** | 읽기 **된다**(제로값 0) · 쓰기는 패닉 | 읽기만 하면 끝까지 안 터진다 |
 | **슬라이스** | `append` **된다**(`[1]`) · `len`·`range` 도 된다 | ★ **영원히 안 터진다** |
 | **함수** | 부르면 **패닉** | 바로 터진다 |
-| **채널** | 송수신이 **영원히 막힌다** | ★★ 안 터지고 **멈춘다**(목록의 **29번 주제**) |
+| **채널** | 송수신이 **영원히 막힌다** | ★★ 안 터지고 **멈춘다**([목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/)) |
 | **포인터** | 필드를 읽으면 패닉 | 메서드가 리시버를 안 쓰면 안 터진다 |
 
 - 마지막 — `nil` 함수 호출은 **`panic: runtime error: invalid memory address or nil pointer dereference`**,
@@ -953,7 +953,7 @@ golangci-lint : PATH 에 없음
   [20번 주제](../20-interface-declaration-and-implicit-implementation/) (3)절. **여기는 그 뒤부터**다.
 - 「담긴 것을 되꺼내는 법」의 정본 — [22번 주제](../22-type-assertion-any-and-comparable/)(타입 단언·`any`·`comparable`).
 - `case nil` 의 정본 — [15번 주제](../15-switch-type-switch-fallthrough-labels-and-goto/) (3)절.
-- `nil` 채널이 조용히 멈추는 것의 정본 — 목록의 **29번 주제**.
+- `nil` 채널이 조용히 멈추는 것의 정본 — [목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/).
 - `errors.Is`/`As` 의 정본 — [24번 주제](../24-error-wrapping-and-errors-is-as-join/).
   ★ **그쪽은 이 함정을 안 막는다** — 인터페이스가 이미 안 비었기 때문이다((9)번).
 - 덤 — **메서드 집합**은 [19번 주제](../19-method-sets-value-vs-pointer-receiver/),
@@ -996,7 +996,7 @@ golangci-lint : PATH 에 없음
 | 인터페이스 넓힘·`reflect` 호출의 **비용** | ★ **안 쟀다**(목록의 **50번 주제**) |
 | `%+v`·`%#v` 가 `nil` 포인터를 어떻게 찍는지 | ★ **안 던졌다**(목록의 **42번 주제**) |
 | 제네릭에서 `var zero T` 가 인터페이스일 때 | ★ **안 던졌다**(목록의 **37번 주제**) |
-| `nil` 채널의 송수신이 막히는 것 | ★ **안 던졌다** — (5)절은 성질만 적었다(목록의 **29번 주제**) |
+| `nil` 채널의 송수신이 막히는 것 | ★ **안 던졌다** — (5)절은 성질만 적었다([목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/)) |
 | `nil` 맵에 **쓰기**가 패닉인 것 | ★ **안 던졌다** — 읽기만 던졌다([09번 주제](../09-maps-declaration-comma-ok-delete-and-iteration-order/)) |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다.

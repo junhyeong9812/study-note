@@ -188,7 +188,7 @@ recovered()      = 패닉을 오류로 바꿨다: 터짐
   `loadBroken` 은 `(string, error)` 라 `defer` 가 고친 것이 **지역 변수 `err`** 이다.
 - `recovered()` 가 되는 이유 — **패닉으로 나가는 경로에는 `return` 문이 아예 없다.**
   그래서 결과 파라미터에 값을 넣을 기회가 **`defer` 안뿐**이고, 그러려면 **이름이 있어야** 한다.
-  ★ `recover` 자체의 정본은 목록의 **27번 주제**다.
+  ★ `recover` 자체의 정본은 [목록의 **27번 주제**](../27-panic-recover-and-where-to-use-them/)다.
 - ★ `load` 가 값진 이유는 **반환 경로가 여럿이어도 한 곳에서 잡는다**는 것이다.
   `return` 이 열 군데여도 `defer` 는 하나면 된다.
 
@@ -228,11 +228,11 @@ func main() {
   > are evaluated as usual and saved anew but the actual function is not invoked.**
 
 - ②가 **42**인 이유 — 클로저는 **변수 `i` 자체를 잡고** 나중에 읽는다.
-  값이 아니라 변수를 잡는 것이 클로저의 성질이다(목록의 **13번 주제**).
+  값이 아니라 변수를 잡는 것이 클로저의 성질이다([목록의 **13번 주제**](../13-closures-variable-capture-and-loop-variable-change/)).
 - 고르는 기준 한 줄 — ★★ **「지금 값을 찍고 싶은가, 나갈 때 값을 찍고 싶은가」**.
 - `defer file.Close()` 뒤에 `file` 을 바꾸면 — **처음 잡아 둔 파일이 닫힌다.**
   메서드 값의 리시버도 **인자와 같이 지금 평가**되기 때문이다.
-  ★ 이것이 루프 안에서 `defer` 를 쓸 때의 사고와 이어진다(목록의 **26번 주제**).
+  ★ 이것이 루프 안에서 `defer` 를 쓸 때의 사고와 이어진다([목록의 **26번 주제**](../26-defer-evaluation-lifo-named-results-and-loops/)).
 
 ### 4. `nil` 은 **세 번**이다 — 그리고 `s...` 는 **복사가 아니다**
 
@@ -613,13 +613,13 @@ fixed()  = 바깥 err 에 대입했다
 
 **왜 그런가**
 
-- **`defer` 자체** — 목록의 **26번 주제**. **그쪽은 LIFO·루프 안의 `defer`·자원 정리 전체까지**,
+- **`defer` 자체** — [목록의 **26번 주제**](../26-defer-evaluation-lifo-named-results-and-loops/). **그쪽은 LIFO·루프 안의 `defer`·자원 정리 전체까지**,
   여기는 **반환값과 만나는 자리**만이다.
-- **`panic`/`recover`** — 목록의 **27번 주제**. (2)절의 `recovered()` 가 거기 정본이다.
-- **클로저가 변수를 잡는 것** — 목록의 **13번 주제**. 3번 문항의 ②가 그 성질이다.
+- **`panic`/`recover`** — [목록의 **27번 주제**](../27-panic-recover-and-where-to-use-them/). (2)절의 `recovered()` 가 거기 정본이다.
+- **클로저가 변수를 잡는 것** — [목록의 **13번 주제**](../13-closures-variable-capture-and-loop-variable-change/). 3번 문항의 ②가 그 성질이다.
 - **`f(s...)` 로 원본이 바뀌는 것** — [`../07-slice-sharing-silent-bugs/`](../07-slice-sharing-silent-bugs/).
   막는 법은 [`../08-copy-three-index-slicing-and-memory-retention/`](../08-copy-three-index-slicing-and-memory-retention/)이다.
-- **`(T, error)` 관례** — 목록의 **23번 주제**(`error` 인터페이스)와 **24번 주제**(`%w` 래핑).
+- **`(T, error)` 관례** — [목록의 **23번 주제**](../23-error-interface-and-errors-as-values/)(`error` 인터페이스)와 **24번 주제**(`%w` 래핑).
 - **결과 파라미터가 제로값으로 시작하는 것** —
   [`../02-variable-declarations-and-zero-values/`](../02-variable-declarations-and-zero-values/).
   (7)절의 섀도잉도 그 주제의 `:=` 규칙에서 온다.
@@ -656,7 +656,7 @@ fixed()  = 바깥 err 에 대입했다
 | gc 가 **섀도잉된 벌거벗은 `return` 을 거부하지 않는 것** | ★ **명세가 재량을 준 자리**다. 다른 컴파일러는 거부해도 된다 |
 | `go vet` 이 **섀도잉을 안 잡는 것** | `shadow` 분석기가 **기본이 아니다** |
 | 「`defer` 가 1.14 에서 훨씬 싸졌다」 | ★ **비용을 재지 않았다.** 정본은 목록의 **26·50번 주제**다 |
-| 「`recover` 를 한 겹 더 감싸면 안 듣는다」 | ★ **반례를 던지지 않았다.** 정본은 목록의 **27번 주제**다 |
+| 「`recover` 를 한 겹 더 감싸면 안 듣는다」 | ★ **반례를 던지지 않았다.** 정본은 [목록의 **27번 주제**](../27-panic-recover-and-where-to-use-them/)다 |
 | 코틀린 spread 가 **복사한다**는 것 | ★ **형제 문서의 실측을 인용한 것**이고 이 문서가 직접 던지지는 않았다 |
 
 ★ **다시 찍는 법** — `capture.sh` 를 그대로 돌리고 `diff -rq` 한다. 이 주제에는 흔들리는 블록이 없다.

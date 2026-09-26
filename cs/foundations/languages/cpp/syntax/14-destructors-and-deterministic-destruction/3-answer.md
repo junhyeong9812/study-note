@@ -751,9 +751,9 @@ dtor11.cpp:10:5: error: cannot delete expression with pointer-to-'void' type 'vo
 
 - **「선언 순서로 초기화된다」의 정본**은 [13번](../13-constructors-member-init-list-and-delegating/) (2)다.\
   ★ 여기서는 그것이 **한 글자도 어긋나지 않고 뒤집힌다** — 파괴는 **선언 역순**이고, 기반은 **맨 마지막**이다.
-- **「가상 소멸자를 언제 붙이나」의 설계 판**은 목록의 **20번 주제**다.\
+- **「가상 소멸자를 언제 붙이나」의 설계 판**은 [목록의 **20번 주제**](../20-virtual-destructors-and-polymorphic-deletion/)다.\
   여기(14번)는 **안 붙였을 때 실제로 무엇이 일어나는가**까지만 본다.
-- 「**소멸자를 적으면 이동이 사라진다**」의 정본은 목록의 **18번 주제**(0/3/5의 법칙)이고,\
+- 「**소멸자를 적으면 이동이 사라진다**」의 정본은 [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/)(0/3/5의 법칙)이고,\
   그 실측은 [13번](../13-constructors-member-init-list-and-delegating/) (7)에 있다.
 - ★ **소멸자가 없는 언어**는 **라벨과 `goto`** 로 같은 일을 한다 —\
   C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **13번**([`13-goto-cleanup-idiom/`](../../../c/syntax/13-goto-cleanup-idiom/)).\

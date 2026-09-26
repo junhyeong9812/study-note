@@ -1306,7 +1306,7 @@ Java 를 쓰다 온 사람이 「크면 `IllegalArgumentException` 이 나겠지
 ★ **원소에 프로토콜을 안 붙여도 되는 유일한 길**이다((7)⑤).
 
 **`dataclass(order=True)` 를 쓴다** — 필드 선언 순서대로 사전식 비교가 필요할 때.\
-정본은 목록의 **36번 주제**다.
+정본은 [목록의 **36번 주제**](../36-dataclasses/)다.
 
 **안 쓴다** — 순서에 뜻이 없는 값. 억지로 `__lt__` 를 붙이면 **틀린 정렬이 조용히 돌아간다.**\
 정렬이 필요하면 **`key` 로 그때그때 기준을 밝히는 쪽**이 읽기 쉽다.
@@ -1342,7 +1342,7 @@ Java 를 쓰다 온 사람이 「크면 `IllegalArgumentException` 이 나겠지
 - 선행: [04-numeric-types-and-division](../04-numeric-types-and-division/2-summary.md) — `float` 의 성질.
 - 이어지는 곳: [32-container-protocol](../32-container-protocol/2-summary.md) — **같은 「프로토콜이 곧 계약」 주제의 컨테이너 판.**
 - 이어지는 곳: [13-set-and-frozenset](../13-set-and-frozenset/2-summary.md) — 집합이 든 리스트의 정렬이 정의되지 않는 이유.
-- 이어지는 곳: 목록의 **36번 주제** 「`dataclasses`」 — `order=True` 가 순서 넷을 만들어 주는 것.
+- 이어지는 곳: [목록의 **36번 주제**](../36-dataclasses/) 「`dataclasses`」 — `order=True` 가 순서 넷을 만들어 주는 것.
 - 이어지는 곳: 목록의 **45번 주제** 「`functools`」 — `cmp_to_key` 의 본거지.
 - 이어지는 곳: 목록의 **44번 주제** 「`itertools`」 — `groupby` 가 정렬을 전제한다는 것.
 - 이어지는 곳: 목록의 **50번 주제** 「`decimal`·float 정밀도」 — `nan` 이 어디서 생기나.
@@ -1402,7 +1402,7 @@ Java 를 쓰다 온 사람이 「크면 `IllegalArgumentException` 이 나겠지
 - **`functools.cmp_to_key`** — 두 원소를 받아 음수·0·양수를 돌려주는 옛 `cmp` 함수를 `key` 로 감싼다.
   반환된 객체가 `__lt__` 를 구현하고 있어서 **(7)의 이름표 자리에 그대로 들어간다.** 정본은 목록의 **45번 주제**다.
 - **`dataclass(order=True)`** — 필드 선언 순서대로 튜플을 만들어 비교하는 순서 넷을 생성한다.
-  `total_ordering` 과 달리 **`__lt__` 부터 넷을 다 만든다.** 정본은 목록의 **36번 주제**다.
+  `total_ordering` 과 달리 **`__lt__` 부터 넷을 다 만든다.** 정본은 [목록의 **36번 주제**](../36-dataclasses/)다.
 - **`bisect` 와 `heapq`** — 둘 다 `<` 만 쓴다. 그래서 `__lt__` 하나만 있는 객체도 **이진 탐색과 힙에 그대로 들어간다.**
 - **`sorted` 에 `key` 와 `reverse` 를 같이 주면** — 이름표를 만든 뒤 그 이름표 비교를 뒤집는다.
   기준마다 방향이 다르면 **나눠 정렬**이 유일한 일반해이고, 그 세부는 [10번](../10-list-methods-and-sort-key/2-summary.md)이 정본이다.

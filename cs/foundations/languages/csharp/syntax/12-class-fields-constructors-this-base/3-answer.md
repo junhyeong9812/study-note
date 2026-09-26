@@ -641,7 +641,7 @@ public class P4 {
   그 틈을 **`IDisposable`/`using`**(목록의 **37번 주제**)이 메운다.
 - **객체 초기화자가 생성자 뒤에 돈다**는 실측은 [11번](../11-collection-initializers-and-collection-expressions/) (1)이다 —\
   IL 의 `newobj` → `dup` → `set_…` 가 그 증거였다.
-- **상속과 `virtual`/`override` 의 설계 판**은 목록의 **16번 주제**다. 4번의 처방(훅을 두지 않는다·`sealed`)이 거기로 이어진다.
+- **상속과 `virtual`/`override` 의 설계 판**은 [목록의 **16번 주제**](../16-inheritance-virtual-override-abstract-sealed-new/)다. 4번의 처방(훅을 두지 않는다·`sealed`)이 거기로 이어진다.
 - **속성의 전모는 13번**, **`record` 는 18번 주제**다. `record` 의 위치 매개변수는 `init` 프로퍼티가 되어\
   **6번의 `readonly` 문제가 없다.**
 - ★ **`struct` 의 생성자 규칙**은 [02번](../02-struct-vs-class-choosing/)이 정본이다 — 필드 초기자 제약이 다르다.

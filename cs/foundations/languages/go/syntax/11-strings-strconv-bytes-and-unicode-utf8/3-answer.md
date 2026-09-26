@@ -661,8 +661,8 @@ strings.NewReader / bytes.NewReader 는 io.Reader 를 공짜로 만든다
 
 - **`len`·인덱싱·`range`·변환** — [`../10-strings-bytes-runes-and-utf8-iteration/`](../10-strings-bytes-runes-and-utf8-iteration/).
   **그쪽은 언어가 주는 것까지**, 여기는 **그 위에 선 네 패키지**부터다.
-- **`errors.Is`/`As` 로 `NumError` 꺼내기** — 목록의 **24번 주제**(오류 래핑).
-  센티넬 오류 설계는 목록의 **25번 주제**다.
+- **`errors.Is`/`As` 로 `NumError` 꺼내기** — [목록의 **24번 주제**](../24-error-wrapping-and-errors-is-as-join/)(오류 래핑).
+  센티넬 오류 설계는 [목록의 **25번 주제**](../25-sentinel-errors-vs-custom-error-types/)다.
 - **`bytes.Buffer` 가 `io.Reader` 인 것** — 목록의 **43번 주제**(`io.Reader`/`Writer`).
 - **`go test -bench` 읽는 법** — 목록의 **50번 주제**(벤치마크·프로파일).
   `-benchmem` 의 `B/op`·`allocs/op` 가 거기 정본이다.

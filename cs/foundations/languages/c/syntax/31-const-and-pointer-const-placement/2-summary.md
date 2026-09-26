@@ -9,7 +9,7 @@
 > **버전** — `const` 는 **C89 부터**다. 이 편의 규칙은 C89 이후 바뀌지 않았다(`char **` → `const char *const *` 를 C 가 막는 것도 **C23 까지 그대로**다 — `-std=c2x` 로 확인((3))).
 > ★★★ **재지 않은 성능 주장은 하지 않는다.** 「`const` 가 최적화를 돕는다」는 **시간으로 재지 않았다** — 이 편은 **어셈블리의 명령 수**만 센다.
 > ★★ **경계** — **선언을 오른쪽에서 왼쪽으로 읽는 법** 일반은 [01번 형제](../01-declaration-syntax-and-reading/), **포인터 자체**는 [14번 형제](../14-pointers-address-dereference-and-pointer-types/)가 정본이다.\
-> ★ **문자열 리터럴의 저장 기간**은 [20번 형제](../20-null-terminated-strings-and-string-literals/), **`restrict`** 는 목록의 **33번 주제**, **엄격한 앨리어싱**은 목록의 **55번 주제**가 정본이다.\
+> ★ **문자열 리터럴의 저장 기간**은 [20번 형제](../20-null-terminated-strings-and-string-literals/), **`restrict`** 는 [목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/), **엄격한 앨리어싱**은 목록의 **55번 주제**가 정본이다.\
 > ★ **`volatile`**(같은 한정자의 다른 짝)은 [32번 형제](../32-what-volatile-actually-guarantees/)로 이어진다.
 > 선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · [29번 형제](../29-scope-and-linkage-static-extern/)(링크와 `nm`).
 > 이 본문은 Claude 작성이다(원고 없음).
@@ -556,7 +556,7 @@ twice_read(&x, &x) = 7   (p 와 q 가 같은 곳 — const 인데 값이 바뀌�
 
 - ★★★ **`twice_read(&x, &x) = 7`** — `a = 7`, `*q = 0` 이 `x` 를 0 으로 만들고, **`b = 0`**. `p` 는 `const int *` 인데 **`*p` 가 두 번 읽는 사이에 바뀌었다.** 두 번 읽은 것이 **옳았다.**
 - ★ 이것은 **UB 가 아니다** — `const int *` 로 **비-`const` 객체**를 가리키는 것은 합법이고, 다른 경로로 고치는 것도 합법이다. `*p` 를 한 번만 읽는 번역이 있다면 **그것이 틀린 번역**이다.
-- ★ 「두 포인터가 겹치지 않는다」를 약속하는 것은 `const` 가 아니라 **`restrict`** 다(목록의 **33번 주제**).
+- ★ 「두 포인터가 겹치지 않는다」를 약속하는 것은 `const` 가 아니라 **`restrict`** 다([목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/)).
 
 비용 — **`const` 를 붙여서 얻는 것은 「내가 실수로 안 고친다」의 컴파일러 검사**다. 겹침에 대한 약속은 아니다.
 
@@ -967,7 +967,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 | 문자열 리터럴을 가리키기 | ★★ **`const char *s = "abc";`** | ★ `char *s = "abc";` |
 | 헤더에 상수 | ★ **C: `static const` · `enum` · `#define`** / C++: `const` · `constexpr` | ★ **C 헤더의 `const int K = 5;`**(외부 링크) |
 | `const` 를 안 받는 옛 API 에 넘기기 | 그 API 가 **정말 안 고친다는 문서**를 확인하고 캐스트 | ★★ 원래 `const` 객체의 주소를 떼어 넘기기 |
-| 두 포인터가 겹치지 않는다고 알리기 | ★ **`restrict`**(목록의 **33번 주제**) | `const` 로 대신하기 |
+| 두 포인터가 겹치지 않는다고 알리기 | ★ **`restrict`**([목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/)) | `const` 로 대신하기 |
 | 한정자 위반을 빌드에서 막기 | ★★ **`-pedantic-errors`**(또는 `-Werror=incompatible-pointer-types`) | 경고 수만 세기 |
 
 판단 규칙 두 줄.
@@ -993,7 +993,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [28번 형제 — 저장 기간](../28-choosing-among-four-storage-durations/) — ★ 리터럴 구역이 **`r--p`** 라는 실측.
 - [29번 형제 — 스코프와 링크](../29-scope-and-linkage-static-extern/) — ★ `nm` 의 글자와 `_ZL` 의 뜻.
 - [32번 형제 — `volatile`](../32-what-volatile-actually-guarantees/) — ★★ **같은 한정자 집안의 다른 짝.** `const` 가 「안 고친다」라면 `volatile` 은 「**매번 가서 본다**」다.
-- 목록의 **33번 주제** — `restrict` 와 앨리어싱 계약. **겹치지 않는다는 약속**의 정본.
+- [목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/) — `restrict` 와 앨리어싱 계약. **겹치지 않는다는 약속**의 정본.
 - 목록의 **55번 주제** — 엄격한 앨리어싱 규칙. (4)의 「다시 읽는다」는 **같은 타입(`int`)끼리**라서다 — 타입이 다르면 그쪽 규칙이 나온다.
 - ★ **C++ 갈래** — [C++ 10 — `const` 정확성](../../../cpp/syntax/10-const-correctness/)(네임스페이스 스코프 `const` 의 내부 링크 · `const_cast`) · [C++ 03 — 캐스트 4종](../../../cpp/syntax/03-four-cast-operators/).
 
@@ -1019,7 +1019,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 
 ## 더 들어가면
 
-- ★★ **`restrict` 를 붙이면 `twice_read` 가 한 번만 읽나** — ★ **던지지 않았다**(목록의 **33번 주제**).
+- ★★ **`restrict` 를 붙이면 `twice_read` 가 한 번만 읽나** — ★ **던지지 않았다**([목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/)).
 - ★★ **C23 의 `constexpr` 객체** — 「컴파일 시간 상수」를 C 에도 들였다. ★ **던지지 않았다.**
 - ★ **`const` 가 붙은 구조체 멤버**와 구조체 대입 — ★ **던지지 않았다.**
 - ★ **같은 문자열 리터럴 둘이 같은 주소인가**(미명시) — ★ **던지지 않았다.**

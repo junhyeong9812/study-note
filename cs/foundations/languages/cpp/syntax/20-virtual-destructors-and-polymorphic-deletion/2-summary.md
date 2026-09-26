@@ -19,7 +19,7 @@
 > `sizeof` **BaseNV 8 · DerNV 16 · BaseV 16 · DerV 24** · **경고의 스위치는 「기반이 다형적인가」** · vtable 의 **`[complete]`/`[deleting]` 두 칸**.\
 > ★★ **여기서 새로 묻는 것은 둘이다** — 「**무엇이 미정의인가**」의 층 분류와 「**언제 가상으로 둘까**」의 판단 규칙.
 > **경계** — 「소멸자가 언제 도나」는 [14번](../14-destructors-and-deterministic-destruction/)이, 「가상 디스패치 규칙」은 [19번](../19-inheritance-virtual-functions-override-final/)이,\
-> 「이동이 왜 사라지나」는 [18번](../18-rule-of-zero-three-five-default-delete/)이 정본이다. 「`shared_ptr` 의 제어 블록」은 목록의 **27번 주제**, 「추상 클래스와 vtable 비용」은 [21번](../21-abstract-classes-pure-virtual-and-vtable-cost/)이다.
+> 「이동이 왜 사라지나」는 [18번](../18-rule-of-zero-three-five-default-delete/)이 정본이다. 「`shared_ptr` 의 제어 블록」은 [목록의 **27번 주제**](../27-shared-ptr-and-reference-counting/), 「추상 클래스와 vtable 비용」은 [21번](../21-abstract-classes-pure-virtual-and-vtable-cost/)이다.
 >
 > ★★ **흔들리는 칸 / 안 흔들리는 칸**
 >
@@ -1372,7 +1372,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - [18번](../18-rule-of-zero-three-five-default-delete/) — ★★ **(4)의 규칙의 정본.** 격자 형식을 (3)이 그대로 썼다.
 - [15번](../15-raii-resources-as-types/) — (1)의 `sizeof` 대비. **함수 포인터 삭제자를 단 `unique_ptr` 가 16바이트**였다.
 - [21번](../21-abstract-classes-pure-virtual-and-vtable-cost/) — **추상 클래스와 가상 호출 비용.** 순수 가상 함수의 일반 규칙은 거기, 여기는 **순수 가상 소멸자** 하나다.
-- 목록의 **26번 주제**(`unique_ptr`)·**27번 주제**(`shared_ptr`) — **API 사용의 정본.** 여기는 **삭제자가 무엇을 기억하나**까지다.
+- [목록의 **26번 주제**](../26-unique-ptr-and-ownership-transfer/)(`unique_ptr`)·**27번 주제**(`shared_ptr`) — **API 사용의 정본.** 여기는 **삭제자가 무엇을 기억하나**까지다.
 - [`oop-basics/`](../../../../oop-basics/) — 상속·다형성의 개념. 여기는 **C++ 의 소멸 규칙**만 본다.
 
 ## 용어 풀이
@@ -1405,5 +1405,5 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 
 - **`std::destroying_delete_t`(C++20)** — 클래스별 `operator delete` 가 **소멸자 호출까지 직접 맡는** 형태. (7)의 두 칸 이야기를 **사용자 쪽으로** 끌어온 것이다. 이 문서는 던지지 않았다.
 - **가상 상속에서 `D1` 과 `D2` 가 갈린다** — (7)에서 g++ 가 둘을 별칭으로 둔 것은 **가상 기반이 없어서**다. 가상 상속 판은 안 찍었다.
-- **`shared_ptr` 의 별칭 생성자(aliasing constructor)** — 제어 블록과 가리키는 포인터를 **따로 준다.** (1)의 「무엇을 기억하나」가 더 벌어지는 자리다. 목록의 **27번 주제**다.
+- **`shared_ptr` 의 별칭 생성자(aliasing constructor)** — 제어 블록과 가리키는 포인터를 **따로 준다.** (1)의 「무엇을 기억하나」가 더 벌어지는 자리다. [목록의 **27번 주제**](../27-shared-ptr-and-reference-counting/)다.
 - **삭제 소멸자와 `delete this`** — 객체가 스스로 지우는 관용구에서 `D0` 이 불린다. 이 문서는 다루지 않았다.

@@ -430,10 +430,10 @@ func main() {
   > &s[i] is invalid.**
 
 - 불변이라서 가능해지는 것 셋.
-  - ① **맵 키가 된다** — 키가 나중에 바뀌면 해시가 어긋난다(목록의 **09번 주제**).
+  - ① **맵 키가 된다** — 키가 나중에 바뀌면 해시가 어긋난다([목록의 **09번 주제**](../09-maps-declaration-comma-ok-delete-and-iteration-order/)).
   - ② **복사가 싸다** — 헤더 두 칸(포인터 + 길이)만 복사하고 바이트는 공유한다.
   - ③ **공유해도 안전하다** — 여러 고루틴이 같은 문자열을 읽어도 레이스가 없다.
-- 대가 — **이어 붙일 때마다 새 문자열**이 생긴다. 그래서 `strings.Builder` 가 필요하다(목록의 **11번 주제**).
+- 대가 — **이어 붙일 때마다 새 문자열**이 생긴다. 그래서 `strings.Builder` 가 필요하다([목록의 **11번 주제**](../11-strings-strconv-bytes-and-unicode-utf8/)).
 - 고치려면 `[]byte` 나 `[]rune` 으로 **바꿔 고치고 다시 문자열로** 만든다. 복사가 두 번 든다.
 
 ### 8. `n=4` 에서 ①은 **깨진 것**, ②는 **`"한"`** — 되돌리기는 **최대 3번**
@@ -575,7 +575,7 @@ n   ① 그냥           valid  ② 경계로          valid
   **그쪽은 별명과 명시 변환 규칙까지**, 여기는 **그 별명이 문자열 위에서 무엇을 뜻하나**부터다.
 - **UTF-8 인코딩 자체** — [`../../../../data-representation/`](../../../../data-representation/).
   **그쪽은 비트 배치와 왜 그 바이트인가까지**, 여기는 **Go 문법이 그것을 어떻게 내주나**부터다.
-- **`range` 문 전체** — 목록의 **14번 주제**(`for` 의 네 형태). 맵·채널·정수 `range` 가 거기다.
+- **`range` 문 전체** — [목록의 **14번 주제**](../14-for-four-forms-range-over-int-and-func/)(`for` 의 네 형태). 맵·채널·정수 `range` 가 거기다.
 - **`strings.Builder`·`strconv`·`unicode/utf8` 의 API** —
   [`../11-strings-strconv-bytes-and-unicode-utf8/`](../11-strings-strconv-bytes-and-unicode-utf8/).
   **여기는 언어가 주는 것까지**, 그쪽은 **그 위에 선 네 패키지**부터다.

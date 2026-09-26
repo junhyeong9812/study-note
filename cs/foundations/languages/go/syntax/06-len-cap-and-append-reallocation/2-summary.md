@@ -827,11 +827,11 @@ func main() {
 ## 관련 자료
 
 - [`../README.md`](../README.md) — Go 문법·API 주제 목록(이 주제는 06번)
-- 목록의 **05번 주제**(배열과 슬라이스) — **그쪽은 「이사하면 공유가 끊긴다」까지**,
+- [목록의 **05번 주제**](../05-arrays-vs-slices-value-and-header/)(배열과 슬라이스) — **그쪽은 「이사하면 공유가 끊긴다」까지**,
   여기는 「**언제 이사하고 얼마나 크게 잡나**」부터
-- 목록의 **07번 주제**(슬라이스 공유로 조용히 틀리는 자리) —
+- [목록의 **07번 주제**](../07-slice-sharing-silent-bugs/)(슬라이스 공유로 조용히 틀리는 자리) —
   (2)절의 **두 번째 약속**(재사용한다)이 버그가 되는 사례들
-- 목록의 **08번 주제**(`copy`·3-인덱스·메모리 유지) — 이사를 **일부러 강제하는** 법
+- [목록의 **08번 주제**](../08-copy-three-index-slicing-and-memory-retention/)(`copy`·3-인덱스·메모리 유지) — 이사를 **일부러 강제하는** 법
 - 목록의 **38번 주제**(`slices`·`maps`·`cmp`) — `slices.Grow`·`slices.Clip` 의 정본
 - 목록의 **50번 주제**(벤치마크) — 「미리 잡으면 빠른가」를 **재는** 자리
 - [`../../../../../data-structure/01-dynamic-array/`](../../../../../data-structure/01-dynamic-array/) —
@@ -849,7 +849,7 @@ func main() {
 - **재할당(reallocation)** — `append` 가 새 배열을 잡고 옮기는 것.
 - **성장 전략(growth strategy)** — 새 `cap` 을 얼마로 잡을지의 규칙. **구현이 정한다.**
 - **예측식** — `len(s) + 붙일 개수 <= cap(s)`. 참이면 제자리, 거짓이면 이사.
-- **가변 인자(variadic)** — `append(s, x...)` 처럼 개수가 정해지지 않은 인자. 정본은 목록의 **12번 주제**.
+- **가변 인자(variadic)** — `append(s, x...)` 처럼 개수가 정해지지 않은 인자. 정본은 [목록의 **12번 주제**](../12-functions-multiple-returns-named-results-and-variadics/).
 - **상각 분석(amortized analysis)** — 드문 비싼 연산을 전체에 나눠 세는 분석. 정본은 `data-structure/01`.
 
 ---

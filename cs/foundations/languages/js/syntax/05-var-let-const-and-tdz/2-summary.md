@@ -62,7 +62,7 @@ Google Chrome 151.0.7922.173
 >
 > **선행** — [01 — 값의 종류와 `typeof`](../01-value-types-and-typeof/2-summary.md) —
 > ★★ **`typeof` 가 TDZ 에서 터지는 것을 거기서 이미 실측했다.** 이 주제가 그것을 이어받아 넓힌다.
-> **이어지는 곳** — 목록의 **06번 주제** 「스코프와 클로저」 · 목록의 **07번 주제** 「`this` 바인딩 네 규칙」 · 목록의 **35번 주제** 「엄격 모드」
+> **이어지는 곳** — [목록의 **06번 주제**](../06-scope-and-closures/) 「스코프와 클로저」 · [목록의 **07번 주제**](../07-this-binding-four-rules/) 「`this` 바인딩 네 규칙」 · 목록의 **35번 주제** 「엄격 모드」
 >
 > ★★ **경계 — 「언제 들어왔나」는 여기가 아니다.** [`history/js/02-ES6-모던.md`](../../../../../../history/js/02-ES6-모던.md)가 도입 역사의 정본이다.
 > **여기는 「지금 이 규칙이 코드에서 무엇을 만드나」부터다.**
@@ -1002,9 +1002,9 @@ Object.freeze(o);          // 값을 고정하려면 이것 — 얕게만 먹는
 - 목록: [js/syntax 주제 목록](../README.md) — 이 주제는 **05번**
 - 선행: [01 — 값의 종류와 `typeof`](../01-value-types-and-typeof/2-summary.md) —
   **`typeof` 가 TDZ 에서 터지는 것의 첫 실측**이 거기 있다. **그쪽은 「`typeof` 의 특권에 구멍이 있다」까지, 여기는 「그 구멍이 왜 거기 있나」부터다.**
-- 이어지는 곳: 목록의 **06번 주제** 「스코프와 클로저」 — 4번 절의 `[3,3,3]` 대 `[0,1,2]` 를 **「칸이 몇 개냐」로** 바꿔 센다.
-- 이어지는 곳: 목록의 **07번 주제** 「`this` 바인딩 네 규칙」 — **`this` 는 스코프로 안 찾는다.** 그 대비가 07번의 첫 문장이다.
-- 이어지는 곳: 목록의 **08번 주제** 「함수 정의 형태와 매개변수」 — 함수 선언의 호이스팅과 **매개변수 기본값의 TDZ**.
+- 이어지는 곳: [목록의 **06번 주제**](../06-scope-and-closures/) 「스코프와 클로저」 — 4번 절의 `[3,3,3]` 대 `[0,1,2]` 를 **「칸이 몇 개냐」로** 바꿔 센다.
+- 이어지는 곳: [목록의 **07번 주제**](../07-this-binding-four-rules/) 「`this` 바인딩 네 규칙」 — **`this` 는 스코프로 안 찾는다.** 그 대비가 07번의 첫 문장이다.
+- 이어지는 곳: [목록의 **08번 주제**](../08-function-forms-and-parameters/) 「함수 정의 형태와 매개변수」 — 함수 선언의 호이스팅과 **매개변수 기본값의 TDZ**.
 - 이어지는 곳: 목록의 **35번 주제** 「엄격 모드」 — 이 주제에서 모드가 답을 바꾼 칸(중복 매개변수·`freeze` 의 조용한 실패)의 정본.
 - 이어지는 곳: 목록의 **42번 주제** 「ESM 모듈」 — 모듈의 최상위가 무엇이냐, 그리고 **모듈은 언제나 엄격**이라는 것.
 - 경계 — 다른 언어의 같은 자리: [`python/syntax/21-scope-legb-global-nonlocal`](../../../python/syntax/21-scope-legb-global-nonlocal/2-summary.md) —
@@ -1025,7 +1025,7 @@ Object.freeze(o);          // 값을 고정하려면 이것 — 얕게만 먹는
 - **재선언(redeclaration)**: **같은 스코프**에서 같은 이름을 두 번 선언하는 것. `let`/`const` 가 걸리면 `SyntaxError` 다.
 - **`globalThis`**: 어느 호스트에서든 전역 객체를 가리키는 표준 이름(ES2020). 브라우저의 `window`, Node 의 `global` 과 같은 것을 가리킨다.
 - **모듈 래퍼(module wrapper)**: Node 의 CommonJS 가 `.js` 파일을 감싸는 함수. 인자가 `exports`·`require`·`module`·`__filename`·`__dirname` 다섯이다.
-- **디스크립터(property descriptor)**: 프로퍼티의 성질표(`writable`·`enumerable`·`configurable`). 정본은 목록의 **14번 주제**다.
+- **디스크립터(property descriptor)**: 프로퍼티의 성질표(`writable`·`enumerable`·`configurable`). 정본은 [목록의 **14번 주제**](../14-property-descriptors-and-freezing/)다.
 
 ## 더 들어가면
 

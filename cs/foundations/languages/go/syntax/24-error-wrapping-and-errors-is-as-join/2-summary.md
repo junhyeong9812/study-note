@@ -126,7 +126,7 @@ go version go1.27.1 linux/amd64
 > **`%w`** — `fmt.Errorf` 에서 그 인자를 **감싸라**는 동사(1.13). `%v` 와 **메시지가 같다.**
 
 > **센티넬 대 커스텀 타입** — `Is` 로 물을 것과 `As` 로 꺼낼 것.\
-> 설계 논의의 정본은 목록의 **25번 주제**다.
+> 설계 논의의 정본은 [목록의 **25번 주제**](../25-sentinel-errors-vs-custom-error-types/)다.
 
 > **트리(tree)** — `go doc errors` 의 낱말. 「Successive unwrapping of an error creates a **tree**.\
 > The Is and As functions inspect an error's tree … (pre-order, depth-first traversal).」
@@ -148,7 +148,7 @@ go version go1.27.1 linux/amd64
 2. **사슬이 몇 층이고 각 층이 무엇인가** — `Unwrap` 을 돌면 무엇이 나오나.
 3. **`Is` 와 `As` 를 언제 고르나** — 그리고 `Join` 이 만드는 것은 사슬인가 트리인가.
 
-★ **오류 표면 설계**(무엇을 공개할까)의 정본은 목록의 **25번 주제**다.
+★ **오류 표면 설계**(무엇을 공개할까)의 정본은 [목록의 **25번 주제**](../25-sentinel-errors-vs-custom-error-types/)다.
 ★ **`error` 가 값이라는 것 자체**는 [23번 주제](../23-error-interface-and-errors-as-values/)다.
 
 ## 동작 방식
@@ -1470,7 +1470,7 @@ func main() {
 | 다른 타입으로 내준다 | **`As` 메서드** | 내부 타입을 감추면서 꺼내게 한다 |
 | 직접 래퍼 타입을 만든다 | **`Unwrap() error` 를 단다** | 안 달면 사슬이 끊긴다 |
 | 사슬을 손으로 걷는다 | **`Unwrap() []error` 도 같이 단언** | 안 하면 `Join` 에서 멈춘다 |
-| 오류 표면을 설계한다 | 목록의 **25번 주제** | 무엇을 공개할지가 거기 |
+| 오류 표면을 설계한다 | [목록의 **25번 주제**](../25-sentinel-errors-vs-custom-error-types/) | 무엇을 공개할지가 거기 |
 
 판단 규칙 두 줄.
 
@@ -1520,9 +1520,9 @@ func main() {
   ★★ **`go vet` 이 아무것도 안 잡는 쪽**의 대비. 그리고 `errors.Is`/`As` 가 그 함정을 못 막는 이유
 - [20번 주제](../20-interface-declaration-and-implicit-implementation/)(암묵 구현) —
   `Unwrap()`·`Is()`·`As()` 가 **인터페이스 선언 없이** 동작하는 바탕
-- 목록의 **25번 주제**(센티넬 대 커스텀 타입) — **오류 표면 설계의 정본.**
+- [목록의 **25번 주제**](../25-sentinel-errors-vs-custom-error-types/)(센티넬 대 커스텀 타입) — **오류 표면 설계의 정본.**
   여기는 **물어보는 법**까지
-- 목록의 **27번 주제**(`panic`/`recover`) — 이 문서는 `panic` 을 **경계로 안 다뤘다**
+- [목록의 **27번 주제**](../27-panic-recover-and-where-to-use-them/)(`panic`/`recover`) — 이 문서는 `panic` 을 **경계로 안 다뤘다**
 - 목록의 **42번 주제**(`fmt`) — `%w` 를 포함한 동사 규칙의 정본
 - 목록의 **49번 주제**(`testing`) — 테스트에서 오류를 견주는 법
 - 목록의 **52번 주제**(도구) — `go vet` 의 분석기 목록

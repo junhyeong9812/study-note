@@ -952,7 +952,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [`08-sizeof-alignment-and-offsetof/`](../08-sizeof-alignment-and-offsetof/) — `sizeof *p` 가 스케일링의 계수인 것
 - [`11-bitwise-operations-and-shifts/`](../11-bitwise-operations-and-shifts/) — ★ **UB 가 본체인 형제 주제.** 다섯 층의 두께가 이 주제와 같다
 - [`13-goto-cleanup-idiom/`](../13-goto-cleanup-idiom/) — **표준이 본체인 형제.** 층 분포가 정반대다
-- 목록의 **19번 주제** (`void *`·널 포인터) — `void *` 산술이 없는 이유 · `NULL` 의 성질
+- [목록의 **19번 주제**](../19-void-pointer-null-pointer-and-null/) (`void *`·널 포인터) — `void *` 산술이 없는 이유 · `NULL` 의 성질
 - 목록의 **56번 주제** (공간 위반 — 배열 밖 접근) — ★ **경계를 넘는 접근이 「죽지 않을 수 있다」는 것의 정본.** 여기는 **어떤 산술이 그것을 만드나**까지
 - 목록의 **58번 주제** (UB 를 잡는 도구) — gcc 와 clang 의 sanitizer 가 **서로 다른 것을 보는** 이유
 
@@ -977,7 +977,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 ## 더 들어가면
 
 - ★ **`restrict` 와 앨리어싱**은 포인터 산술의 최적화를 바꾼다. `memcpy` 와 `memmove` 의 시그니처 차이가 거기서 온다.\
-  ★ **이 문서에서 던져 보지 않았다.** 목록의 **33번 주제**의 몫이다.
+  ★ **이 문서에서 던져 보지 않았다.** [목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/)의 몫이다.
 
 - **다차원 배열의 산술**(`int a[3][4]` 에서 `a + 1` 이 16바이트)은 [16번 형제](../16-array-pointer-decay-and-function-parameters/)에서 실측했다.\
   ★ **이 문서는 1차원만** 다뤘다.

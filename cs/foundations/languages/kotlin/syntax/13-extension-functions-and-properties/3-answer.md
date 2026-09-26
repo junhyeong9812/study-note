@@ -429,7 +429,7 @@ fun Cup.peek(): Int = secret
   그러니 **값을 넣어 둘 칸이 남의 클래스에 생기지 않고**(`get()` 으로 계산해야 한다),
   **바깥에서 보이는 것만 본다**(`private` 을 못 본다. `internal` 은 같은 모듈이면 보인다).
 - ★ **`private` 을 못 보는 것은 값어치다** — 남의 타입에 함수를 붙이면서도 **캡슐화를 뚫지 못한다.**
-  backing field 의 정본은 [목록의 **16번 주제**](../16-properties-backing-field-lateinit-const/), 모듈 경계는 목록의 **18번 주제**다.
+  backing field 의 정본은 [목록의 **16번 주제**](../16-properties-backing-field-lateinit-const/), 모듈 경계는 [목록의 **18번 주제**](../18-visibility-modifiers/)다.
 
 ### 8. `unresolved reference … on receiver of type 'String'` — 그래서 전역이 안 더러워진다
 

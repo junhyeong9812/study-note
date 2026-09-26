@@ -5,7 +5,7 @@
 > 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
 > 선행은 [19번 주제](../19-inheritance-open-final-override/)다. 이 주제는 [21번 주제](../21-class-delegation-by/)의 뿌리다.
 > ★ **backing field 는 [16번 주제](../16-properties-backing-field-lateinit-const/)**, `open`/`override` 의 기본값은 [19번 주제](../19-inheritance-open-final-override/),
-> `sealed interface` 와 `when` 완결성은 목록의 **23번 주제**, `fun interface` 는 목록의 **36번 주제**가 정본이다.
+> `sealed interface` 와 `when` 완결성은 [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/), `fun interface` 는 목록의 **36번 주제**가 정본이다.
 > 문항 12개 중 코드블록이 붙는 예측형은 6개다.
 > ★★ 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 과 **기본 `-jvm-default`** 기준이다 — 뒤엣것을 안 밝히면 답이 셋으로 갈린다.
 > 이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.

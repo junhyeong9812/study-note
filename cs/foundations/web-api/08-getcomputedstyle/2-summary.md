@@ -91,7 +91,7 @@ Google Chrome 151.0.7922.173
 
 - **왜 창 ④ 가 필요한가** — CSS 갈래에서 `getComputedStyle` 은 **진단 3창의 셋째 창**(이겼나)이었다. 그런데 **이 주제에서는 그 창 자체가 주인공**이므로, **그 창을 검사할 창**이 따로 필요하다.
 - ★ **CSS 갈래가 이미 경고했다** — **셋째 창은 거짓 안심을 준다.** 「값은 담겼는데 레이아웃이 안 쓴 것」·「계산값은 그대로인데 배치만 바뀐 것」이 그쪽 실측에 여럿 있고, 전부 **`getBoundingClientRect()` 로만** 잡혔다(정본: [CSS 07번 주제](../../languages/css/syntax/07-syntax-and-error-recovery/2-summary.md)의 진단 3창과 [CSS 04번 주제](../../languages/css/syntax/04-value-processing-stages/2-summary.md)의 네 단계).
-- **창 ④ 는 목록의 09번 주제(요소 기하)를 미리 빌려 오는 것**이다. 여기서는 **판정 도구**로만 쓰고, 좌표계·`offset*`/`client*`/`scroll*` 의 규칙은 그쪽 몫이다.
+- **창 ④ 는 [목록의 09번 주제](../09-element-geometry/)(요소 기하)를 미리 빌려 오는 것**이다. 여기서는 **판정 도구**로만 쓰고, 좌표계·`offset*`/`client*`/`scroll*` 의 규칙은 그쪽 몫이다.
 
 ## 동작 방식
 
@@ -846,7 +846,7 @@ sink = true   (읽은 값을 버리지 않았다는 확인)
 - ★ **`color` 는 레이아웃이 필요 없고 `width` 는 필요하다.** 「계산값을 읽는다」가 한 가지 일이 아니라는 뜻이다 — **어느 속성이 레이아웃을 거치는지가 비용을 정한다**(그 구분의 정본은 [CSS 04번 주제](../../languages/css/syntax/04-value-processing-stages/2-summary.md)의 ②/③ 경계다).
 - **쓰기 없이 `width` 만 2000번 읽으면 2.50ms** — 레이아웃이 안 더러우면 다시 계산할 것이 없다.
 - ★ **`performance.now()` 의 분해능은 100마이크로초**다. 「쓰기만」 줄의 `0.10`\~`0.20` 은 **분해능 한두 칸**이라 「공짜」가 아니라 「**이 도구로는 못 잰다**」로 읽는다. **그 줄로는 순위를 주장하지 않는다.**
-- **이 절이 목록의 10번 주제(레이아웃 스래싱)의 씨앗**이다. 고치는 법(읽기 묶음과 쓰기 묶음으로 가르기)은 그쪽이 정본이다.
+- **이 절이 [목록의 10번 주제](../10-layout-thrashing/)(레이아웃 스래싱)의 씨앗**이다. 고치는 법(읽기 묶음과 쓰기 묶음으로 가르기)은 그쪽이 정본이다.
 
 비용 — 이 절 자체가 비용이다. **9판·중앙값·최소·최대**를 실었고 **자릿수와 순위만 결론으로** 쓴다.
 
@@ -959,7 +959,7 @@ for (const d of rows) { d.style.paddingLeft = '1px'; sink += getComputedStyle(d)
 
 ### 6. 루프에서 읽기와 쓰기를 번갈아 한다
 
-실측에서 **57.00ms 대 3.00ms** — 같은 횟수인데 순서만 다르다. 고치는 법은 목록의 **10번 주제**가 정본이다.
+실측에서 **57.00ms 대 3.00ms** — 같은 횟수인데 순서만 다르다. 고치는 법은 [목록의 **10번 주제**](../10-layout-thrashing/)가 정본이다.
 
 ### 7. 의사 요소 이름을 틀리게 쓰고도 모른다
 
@@ -995,9 +995,9 @@ for (const d of rows) { d.style.paddingLeft = '1px'; sink += getComputedStyle(d)
 | 값을 바꾼다 | `el.style` · 클래스 토글 | 계산값에 대입(예외다) |
 | 커스텀 속성을 읽는다 | `cs.getPropertyValue('--x')` | `cs['--x']` |
 | 의사 요소의 `content` 확인 | `getComputedStyle(el, '::before')` | 요소 자신 읽기 |
-| 「화면에 어떤 상자가 놓였나」 | `getBoundingClientRect`(목록의 **09번 주제**) | 계산값의 `width` |
+| 「화면에 어떤 상자가 놓였나」 | `getBoundingClientRect`([목록의 **09번 주제**](../09-element-geometry/)) | 계산값의 `width` |
 | 요소가 보이는지 판정 | 상자 크기·`checkVisibility()` | `display` 계산값 하나 |
-| 루프에서 여러 요소의 값을 읽는다 | 읽기를 **한 묶음으로** 모은다 | 쓰기와 번갈아(목록의 **10번 주제**) |
+| 루프에서 여러 요소의 값을 읽는다 | 읽기를 **한 묶음으로** 모은다 | 쓰기와 번갈아([목록의 **10번 주제**](../10-layout-thrashing/)) |
 | 테마 값을 읽는다 | 루트에서 커스텀 속성 한 번 읽고 **캐시** | 매 프레임 다시 읽기 |
 | 아직 안 붙인 요소 | 붙이고 읽는다 | 그냥 읽기(빈 문자열이 온다) |
 
@@ -1017,8 +1017,8 @@ for (const d of rows) { d.style.paddingLeft = '1px'; sink += getComputedStyle(d)
 - [07번 주제](../07-dataset-classlist-inline-style/2-summary.md) — `el.style`. 「내가 쓴 것」 쪽 창구가 거기다. 이 주제는 **그것이 못 보는 것**부터
 - [06번 주제](../06-attribute-vs-property/2-summary.md) — 속성과 성질. `style` 속성이 `el.style` 로 반영되는 자리
 - [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md) — `performance.now()` 의 **분해능 100마이크로초** 실측. 이 주제가 그 한계를 물려받는다
-- 목록의 **09번 주제**(요소 기하) — 창 ④ 로 빌려 쓴 `getBoundingClientRect` 의 **정본**. 좌표계와 `offset*`/`client*`/`scroll*` 는 그쪽
-- 목록의 **10번 주제**(레이아웃 스래싱) — 이 주제의 (11)이 그 씨앗이다. **고치는 법**은 그쪽이 정본
+- [목록의 **09번 주제**](../09-element-geometry/)(요소 기하) — 창 ④ 로 빌려 쓴 `getBoundingClientRect` 의 **정본**. 좌표계와 `offset*`/`client*`/`scroll*` 는 그쪽
+- [목록의 **10번 주제**](../10-layout-thrashing/)(레이아웃 스래싱) — 이 주제의 (11)이 그 씨앗이다. **고치는 법**은 그쪽이 정본
 - 목록의 **38번 주제**(`requestAnimationFrame` 과 프레임 예산) — 읽기·쓰기를 **언제** 묶나
 - [CSS 04번 주제](../../languages/css/syntax/04-value-processing-stages/2-summary.md) — ★ **이 주제의 정본 이웃.** 지정값·계산값·사용값·실제값과 **`getComputedStyle` 이 어느 것을 주나**가 거기다. **여기서 다시 쓰지 않는다**
 - [CSS 03번 주제](../../languages/css/syntax/03-inheritance-and-global-keywords/2-summary.md) — **상속되는 것은 계산값이다.** 이 주제가 「상속된 값도 나온다」로만 쓰는 것의 근거
@@ -1047,5 +1047,5 @@ for (const d of rows) { d.style.paddingLeft = '1px'; sink += getComputedStyle(d)
 - **`el.computedStyleMap()`**(Typed OM)은 계산값을 **문자열이 아니라 타입 붙은 객체**로 준다 — `el.computedStyleMap().get('width').value` 가 숫자 `200` 이다. 문자열을 `parseFloat` 하는 자리를 없앨 수 있지만 **Chromium 계열에만** 있어 이 목록에서는 다루지 않는다.
 - **`el.checkVisibility()`** 는 「보이나」를 한 번에 판정한다 — `display: none` 인 조상, `visibility`, `content-visibility`, 빈 상자까지 본다. **계산값 하나로 판정하려던 자리**를 대신한다. (**이 문서는 던져 보지 않았다** — 표면만 적는다.)
 - **`getComputedStyle` 의 두 번째 인자는 의사 요소만** 받는다. **의사 클래스(`:hover`)는 못 준다** — 상태를 시뮬레이션해 읽는 방법은 표준에 없고 개발자 도구의 기능이다.
-- **스타일 재계산과 레이아웃은 다른 단계**다. (11)에서 `color` 읽기가 7.80ms, `width` 읽기가 242.50ms 로 갈린 것이 그 경계다 — 앞은 스타일 재계산까지, 뒤는 레이아웃까지 간다. 그 파이프라인 전체는 목록의 **10번 주제**와 [CSS 56번 주제](../../languages/css/syntax/56-rendering-pipeline-and-will-change/2-summary.md)가 정본이다.
-- **그림자 경계 안의 요소**도 `getComputedStyle` 로 읽을 수 있다 — 요소 참조만 있으면 된다. 다만 **`closed` 그림자는 참조를 얻을 길이 없다.** 그 경계는 목록의 **12번 주제**다.
+- **스타일 재계산과 레이아웃은 다른 단계**다. (11)에서 `color` 읽기가 7.80ms, `width` 읽기가 242.50ms 로 갈린 것이 그 경계다 — 앞은 스타일 재계산까지, 뒤는 레이아웃까지 간다. 그 파이프라인 전체는 [목록의 **10번 주제**](../10-layout-thrashing/)와 [CSS 56번 주제](../../languages/css/syntax/56-rendering-pipeline-and-will-change/2-summary.md)가 정본이다.
+- **그림자 경계 안의 요소**도 `getComputedStyle` 로 읽을 수 있다 — 요소 참조만 있으면 된다. 다만 **`closed` 그림자는 참조를 얻을 길이 없다.** 그 경계는 [목록의 **12번 주제**](../12-shadow-dom/)다.

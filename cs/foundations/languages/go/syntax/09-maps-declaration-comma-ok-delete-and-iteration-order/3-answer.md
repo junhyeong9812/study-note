@@ -374,7 +374,7 @@ func main() {
 - 슬라이스에서는 **된다** — `&s[0]` 도 `s[0].N = 2` 도 된다.
 - ★ 갈리는 이유는 **자리가 움직이는가**다. 맵은 자라면서 항목을 **옮긴다.**
   주소를 내주면 그 주소가 언제든 낡은 것이 되므로, Go 는 **주소를 잡는 일 자체를 문법으로 막았다.**
-  슬라이스의 원소는 기반 배열에서 **자리가 고정**이다(재할당 전까지는 — 목록의 **06번 주제**).
+  슬라이스의 원소는 기반 배열에서 **자리가 고정**이다(재할당 전까지는 — [목록의 **06번 주제**](../06-len-cap-and-append-reallocation/)).
 - 고치는 법 셋.
   - ① **꺼내 고쳐 다시 넣는다** — `v := m[k]; v.N = 2; m[k] = v`.
   - ② **값을 포인터로** — `map[string]*P` 면 `m[k].N = 2` 가 된다.
@@ -477,7 +477,7 @@ func main() {
 
 - **네 줄 다** `invalid map key type` 이다. 종료 코드 1.
 - `Bad` 는 구조체인데도 거부된다 — **필드에 슬라이스가 있기 때문**이다.
-  구조체의 비교 가능성은 **모든 필드가 비교 가능할 때만** 성립한다(목록의 **17번 주제**).
+  구조체의 비교 가능성은 **모든 필드가 비교 가능할 때만** 성립한다([목록의 **17번 주제**](../17-struct-literals-comparability-field-tags-and-sorting/)).
 - 가르는 낱말은 **비교 가능(comparable)** 이다. 명세가 그렇게 적는다.
 
   > **The comparison operators `==` and `!=` must be fully defined for operands of the key type;
@@ -538,12 +538,12 @@ func main() {
 
 - **「맵의 제로값이 nil 이다」** — [`../02-variable-declarations-and-zero-values/`](../02-variable-declarations-and-zero-values/).
   **그쪽은 타입별 제로값 표까지**, 여기는 **그 nil 로 무엇이 되고 무엇이 안 되는지**부터다.
-- **「비교 가능한 타입」** — 목록의 **17번 주제**(구조체). 키 타입 규칙이 전부 거기에 기댄다.
+- **「비교 가능한 타입」** — [목록의 **17번 주제**](../17-struct-literals-comparability-field-tags-and-sorting/)(구조체). 키 타입 규칙이 전부 거기에 기댄다.
 - **해시 테이블 원리** — [`../../../../../data-structure/05-hashmap/`](../../../../../data-structure/05-hashmap/)와
   [`../../../../../data-structure/29-open-addressing/`](../../../../../data-structure/29-open-addressing/).
   **그쪽은 충돌 처리·적재율까지**, 여기는 **Go 가 내주는 표면과 보증**부터다.
 - **`maps.Keys`·`slices.Sorted`** — 목록의 **38번 주제**(`slices`·`maps`·`cmp`).
-- **여러 고루틴이 같은 맵을 만질 때** — 목록의 **32번 주제**(`sync`)와 **33번 주제**(`sync.Map`).
+- **여러 고루틴이 같은 맵을 만질 때** — [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/)(`sync`)와 **33번 주제**(`sync.Map`).
 - **`m[k] = append(m[k], v)`** — [`../07-slice-sharing-silent-bugs/`](../07-slice-sharing-silent-bugs/) (7)절.
   **맵 인덱스 식이 값이라는 사실**은 이 주제 (5)절이 정본이다.
 
@@ -583,7 +583,7 @@ func main() {
 | 「작은 맵이 한 묶음이라 회전만 나온다」는 **설명** | **관찰에서 세운 추정이다.** 런타임 소스를 읽어 확인하지 않았다 |
 | 패닉 스택의 **주소 오프셋**(`+0xe9` 등) | 빌드마다 바뀔 수 있다 |
 | `fmt` 가 정렬해 찍는 것 | **표준 라이브러리의 계약**(1.12부터). 명세가 아니다 |
-| 동시 쓰기 시 `fatal error: concurrent map writes` | **안 던져 봤다.** 정본은 목록의 **32번 주제**다 |
+| 동시 쓰기 시 `fatal error: concurrent map writes` | **안 던져 봤다.** 정본은 [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/)다 |
 | 인터페이스 키의 **비용** | **안 쟀다.** 구체 타입 키보다 비싸다는 것만 적었다 |
 
 ★ **다시 찍는 법** — `capture.sh` 를 그대로 돌리고 `diff -rq` 한다.

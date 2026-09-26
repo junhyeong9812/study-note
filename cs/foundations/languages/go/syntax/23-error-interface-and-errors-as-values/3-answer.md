@@ -740,7 +740,7 @@ Java catch                      1
 - **오류 타입을 값으로 만들지 포인터로 만들지** → `==` 의 뜻이 바뀐다((3)번).
   ★ 포인터면 **신원 비교**, 값이면 **필드 비교**다.
   ★★ 그리고 `Error()` 의 리시버가 **어느 쪽으로 담기는지**를 정한다((4)번).
-- ★ **이 질문의 정본은 목록의 25번 주제**(센티넬 대 커스텀 오류 타입)다.
+- ★ **이 질문의 정본은 [목록의 25번 주제](../25-sentinel-errors-vs-custom-error-types/)**(센티넬 대 커스텀 오류 타입)다.
   여기는 **두 가지가 있다는 것**까지다.
 
 ### 10. 다른 주제와 잇기
@@ -752,10 +752,10 @@ Java catch                      1
 - 포인터 리시버가 무엇을 막는지 —
   [19번 주제](../19-method-sets-value-vs-pointer-receiver/)가 정본. (4)번이 그 직접 응용이다.
 - `%w`·`errors.Is`/`As` — [24번 주제](../24-error-wrapping-and-errors-is-as-join/). ★ **이 주제의 직접 후속**이다.
-- `panic`/`recover` — 목록의 **27번 주제**. ★ **이 문서는 `panic` 을 안 던졌다.**
+- `panic`/`recover` — [목록의 **27번 주제**](../27-panic-recover-and-where-to-use-them/). ★ **이 문서는 `panic` 을 안 던졌다.**
 - 덤 — **암묵 구현**은 [20번 주제](../20-interface-declaration-and-implicit-implementation/),
   **단언으로 오류를 되꺼내는 것**은 [22번 주제](../22-type-assertion-any-and-comparable/),
-  **오류 표면 설계**는 목록의 **25번 주제**, **`fmt.Errorf` 의 동사**는 목록의 **42번 주제**다.
+  **오류 표면 설계**는 [목록의 **25번 주제**](../25-sentinel-errors-vs-custom-error-types/), **`fmt.Errorf` 의 동사**는 목록의 **42번 주제**다.
 
 
 ---
@@ -790,9 +790,9 @@ Java catch                      1
 | `count.sh` 가 세는 수 | ★ **소스가 바뀌면 바뀐다** — 그래서 세는 법을 블록에 실었다 |
 | `errors.New` 가 **힙에 가나** | ★★ **안 쟀다** |
 | 세 언어의 **실행 시간·할당** | ★★ **안 쟀다** |
-| `panic`/`recover` | ★ **안 던졌다**(목록의 **27번 주제**) |
+| `panic`/`recover` | ★ **안 던졌다**([목록의 **27번 주제**](../27-panic-recover-and-where-to-use-them/)) |
 | 오류 메시지 작성 관례(소문자·마침표) | ★ **안 던졌다** — 스타일 문제다 |
 | `errors.Is`/`As`/`Unwrap`/`Join` 전반 | ★ (2)절에서 `Is` 를 한 번 부르고 넘겼다([24번 주제](../24-error-wrapping-and-errors-is-as-join/)) |
-| 자바의 `finally`·try-with-resources, Rust 의 `Drop` | ★ **안 던졌다**(Go 의 짝은 목록의 **26번 주제**) |
+| 자바의 `finally`·try-with-resources, Rust 의 `Drop` | ★ **안 던졌다**(Go 의 짝은 [목록의 **26번 주제**](../26-defer-evaluation-lifo-named-results-and-loops/)) |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다.

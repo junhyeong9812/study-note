@@ -93,7 +93,7 @@
   | **함수 안** `static int s;` | ★ **저장 기간**(자동 → 정적). 이름의 가시성은 **안 바뀐다**(여전히 그 함수 안에서만 보인다) |
   | **파일 스코프** `static int g;` | ★ **링크**(외부 → 내부). 저장 기간은 **원래 정적**이라 안 바뀐다 |
 
-  ★ 링크 쪽은 목록의 **29번 주제**가 정본이다.
+  ★ 링크 쪽은 [목록의 **29번 주제**](../29-scope-and-linkage-static-extern/)가 정본이다.
 - ★ **`static` 의 초기화는 프로그램이 시작하기 전에 한 번**이다. 「첫 호출 때」가 아니다 — 그래서 초기자는 **상수식**이어야 한다.
 
 ### 3. 초기화를 안 하면 — **정적은 여섯 벌 전부 0 · 자동은 컴파일러로 갈린다** ★★★
@@ -413,8 +413,8 @@ thread_local a = 1
 | 문법 | 저장 기간 | 정본 |
 |---|---|---|
 | 함수 안 `int a;` | ★ **자동** | 이 주제 |
-| 함수 안 `static int s;` | ★ **정적** | 이 주제(링크는 목록의 **29번 주제**) |
-| 파일 스코프 `int g;` · `static int g;` | ★ **정적** | 목록의 **29번 주제** |
+| 함수 안 `static int s;` | ★ **정적** | 이 주제(링크는 [목록의 **29번 주제**](../29-scope-and-linkage-static-extern/)) |
+| 파일 스코프 `int g;` · `static int g;` | ★ **정적** | [목록의 **29번 주제**](../29-scope-and-linkage-static-extern/) |
 | `_Thread_local int t;` | ★ **스레드** | 이 주제 |
 | `malloc`/`calloc`/`realloc` | ★ **할당** | 목록의 **37번 주제** |
 | `"hello"` | ★ **정적**(권한 `r--p`) | [20번 형제](../20-null-terminated-strings-and-string-literals/) |
@@ -492,8 +492,8 @@ thread_local a = 1
 | 무엇 | 정본 |
 |---|---|
 | **스택 프레임 · 가상 메모리 · 힙의 구조** | [`foundations/memory-management/`](../../../../memory-management/) · [`foundations/variables-and-memory/`](../../../../variables-and-memory/) |
-| **`static` 이 링크를 바꾸는 것 · `extern`** | 목록의 **29번 주제** |
-| **무엇이 0 이 되고 무엇이 불확정인가** | 목록의 **30번 주제** |
+| **`static` 이 링크를 바꾸는 것 · `extern`** | [목록의 **29번 주제**](../29-scope-and-linkage-static-extern/) |
+| **무엇이 0 이 되고 무엇이 불확정인가** | [목록의 **30번 주제**](../30-initialization-rules-and-indeterminate-values/) |
 | **`malloc`/`calloc`/`realloc`/`free` 의 계약** | 목록의 **37번 주제** |
 | **소유권을 시그니처로 표현하기** | 목록의 **38번 주제** |
 | **댕글링·해제 후 사용이 왜 최악인가** | 목록의 **57번 주제** |

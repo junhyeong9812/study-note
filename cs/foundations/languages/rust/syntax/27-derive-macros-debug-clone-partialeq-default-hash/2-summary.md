@@ -1073,7 +1073,7 @@ For more information about this error, try `rustc --explain E0277`.
 - [**28번 주제** — `PartialEq`/`Eq`/`PartialOrd`/`Ord`/`Hash` 의 계약](../28-partialeq-eq-partialord-ord-and-hash-contracts/) —
   ★ **경계**: **무엇이 생성되나**는 여기, **그 생성물이 지켜야 하는 계약**은 거기다.
   「`f64` 는 왜 `Eq` 가 아닌가」도 거기다.
-- 목록의 **29번 주제** — `From`/`Into`/`TryFrom`. `Default` 와 함께 **「기본값·변환」 표면**을 이룬다.
+- [목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/) — `From`/`Into`/`TryFrom`. `Default` 와 함께 **「기본값·변환」 표면**을 이룬다.
 - 목록의 **57번 주제** — 매크로. `derive` 가 **절차적 매크로**라는 것의 정본이다.
 - Kotlin 의 `data class` — [`kotlin/syntax/22-data-class-generated-members/`](../../../kotlin/syntax/22-data-class-generated-members/).
   ★ **대비**: 목적이 같은데 **고르는 방식이 반대**다 — Kotlin 은 `data` 한 낱말로 **다섯을 한꺼번에** 주고,
@@ -1082,7 +1082,7 @@ For more information about this error, try `rustc --explain E0277`.
   `equals`/`hashCode` 계약은 [`java/syntax/27-equals-hashcode-contract/`](../../../java/syntax/27-equals-hashcode-contract/).
   ★ **대비**: `record` 도 한 낱말로 묶어 주지만 **불변·final 이 함께 강제**된다.
 - C# 의 `record` — C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **18번**.
-  ★ 동등성 규칙 자체는 같은 목록의 **19번**이다.
+  ★ 동등성 규칙 자체는 같은 [목록의 **19번**](../19-pattern-syntax-guards-bindings-and-match-ergonomics/)이다.
 - Go 에는 `derive` 가 **없다** — Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **20번**.
   ★ **대비**: `%+v` 가 리플렉션으로 **런타임에** 찍고, 비교는 `==` 가 **언어 차원에서** 구조를 훑는다.
   **코드 생성이 아니라 런타임·언어 규칙**으로 같은 자리를 메운다.

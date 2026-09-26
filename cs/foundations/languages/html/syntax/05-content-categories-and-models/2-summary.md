@@ -690,7 +690,7 @@ HTML 파서는 **절대 멈추지 않는다**([03번 주제](../03-parser-and-er
 - [01번 주제 — 문서의 뼈대](../01-document-skeleton/2-summary.md) — 메타데이터 콘텐츠와 `<head>` 의 경계. **창 넷의 정의도 그쪽이 정본이다.**
 - CSS 갈래 목록([`css/syntax/README.md`](../../../css/syntax/README.md)) — **「블록/인라인」은 CSS 의 말이다.** 콘텐츠 모델과 겹쳐 보이지만 다른 축이다.
 - web-api 갈래 목록([`web-api/README.md`](../../../../web-api/README.md))의 **01번** — 노드와 요소, `childNodes` 대 `children`. **DOM API 는 그쪽이 정본이다.**
-- 목록의 **10번 주제**(`template`·`slot`) · **11번 주제**(구획 요소) · **17번 주제**(표 구조) — 카테고리를 실제로 쓰는 자리들.
+- [목록의 **10번 주제**](../10-template-slot-shadow-dom/)(`template`·`slot`) · **11번 주제**(구획 요소) · **17번 주제**(표 구조) — 카테고리를 실제로 쓰는 자리들.
 
 ## 용어 풀이
 

@@ -261,7 +261,7 @@ range 안에서 a 를 0 으로 밀었는데 v = 1 (0 이 아니다)
 - `a == c` 가 **true** 다. 배열은 원소 타입이 비교 가능하면 **비교 가능**하다.
   나중에 볼 슬라이스와 정확히 반대다((금지 사례) 블록).
 - 마지막 두 줄이 덤이다 — `range a` 로 도는 동안 `a[i] = 0` 으로 밀었는데 **`v` 는 옛 값 `1`** 이다.
-  `range` 가 배열을 **한 번 복사해 두고** 돌기 때문이다. 정본은 목록의 **14번 주제**다.
+  `range` 가 배열을 **한 번 복사해 두고** 돌기 때문이다. 정본은 [목록의 **14번 주제**](../14-for-four-forms-range-over-int-and-func/)다.
 
 ```text
    b := a   (배열)                    t := s   (슬라이스)
@@ -971,11 +971,11 @@ func main() {
 - [`../README.md`](../README.md) — Go 문법·API 주제 목록(이 주제는 05번)
 - [02번 주제](../02-variable-declarations-and-zero-values/)(변수 선언·제로값) —
   **그쪽은 `nil` 이 제로값이라는 규칙까지**, 여기는 **`nil` 슬라이스가 실제로 어떻게 구는지**부터
-- 목록의 **06번 주제**(`len`/`cap`과 `append`의 재할당) — **`cap` 의 증가와 재할당 판정의 정본**
-- 목록의 **07번 주제**(슬라이스 공유로 조용히 틀리는 자리) — (4)절의 함정이 **버그가 되는 사례들**
-- 목록의 **08번 주제**(`copy`·3-인덱스·메모리 유지) — (7)절에서 맛만 본 **공유를 끊는 법의 정본**
-- 목록의 **14번 주제**(`for`·`range`) — `range` 가 배열을 복사하는 것의 정본
-- 목록의 **16번 주제**(포인터·`new`와 `make`) — `make` 가 왜 슬라이스·맵·채널 전용인지
+- [목록의 **06번 주제**](../06-len-cap-and-append-reallocation/)(`len`/`cap`과 `append`의 재할당) — **`cap` 의 증가와 재할당 판정의 정본**
+- [목록의 **07번 주제**](../07-slice-sharing-silent-bugs/)(슬라이스 공유로 조용히 틀리는 자리) — (4)절의 함정이 **버그가 되는 사례들**
+- [목록의 **08번 주제**](../08-copy-three-index-slicing-and-memory-retention/)(`copy`·3-인덱스·메모리 유지) — (7)절에서 맛만 본 **공유를 끊는 법의 정본**
+- [목록의 **14번 주제**](../14-for-four-forms-range-over-int-and-func/)(`for`·`range`) — `range` 가 배열을 복사하는 것의 정본
+- [목록의 **16번 주제**](../16-pointers-value-copy-semantics-new-and-make/)(포인터·`new`와 `make`) — `make` 가 왜 슬라이스·맵·채널 전용인지
 - [`../../../../../data-structure/01-dynamic-array/`](../../../../../data-structure/01-dynamic-array/) —
   **그쪽은 동적 배열이라는 자료구조(증폭 상각·성장 전략)까지**, 여기는 **Go 슬라이스 헤더의 표면**부터
 - [`../../../rust/syntax/15-slices-ranges-and-utf8-boundaries/`](../../../rust/syntax/15-slices-ranges-and-utf8-boundaries/) —

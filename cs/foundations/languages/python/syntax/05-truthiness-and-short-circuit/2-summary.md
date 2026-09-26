@@ -864,8 +864,8 @@ print(logged)     # []   <- 로그가 안 남았다
 - 이어지는 곳: [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md) — `in` 이 `is` 를 먼저 본다는 규정과 `True == 1` 의 정본.
 - 이어지는 곳: [17-generators-yield](../17-generators-yield/2-summary.md) — `any`/`all` 에 제너레이터를 넘겼을 때 남은 원소가 만들어지지도 않는 것.
 - 이어지는 곳: [목록의 **03번 주제**](../03-mutability-and-copying/) — 빈 컨테이너가 거짓이라는 성질이 「가변 기본값을 `None` 으로 바꾸는」 관용구와 맞물린다.
-- 이어지는 곳: 목록의 **30번 주제** 「`__repr__`·`__eq__`·`__hash__` 계약」 — 비대칭 `__eq__` 가 `in` 에서 무엇을 만드는지.
-- 이어지는 곳: 목록의 **32번 주제** 「컨테이너 프로토콜」 — `__len__`·`__contains__` 를 직접 구현할 때의 계약.
+- 이어지는 곳: [목록의 **30번 주제**](../30-repr-eq-hash-contracts/) 「`__repr__`·`__eq__`·`__hash__` 계약」 — 비대칭 `__eq__` 가 `in` 에서 무엇을 만드는지.
+- 이어지는 곳: [목록의 **32번 주제**](../32-container-protocol/) 「컨테이너 프로토콜」 — `__len__`·`__contains__` 를 직접 구현할 때의 계약.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — 연산자·제어문 소개.\
   **경계**: 그쪽은 「이렇게 쓴다」까지, 여기는 「**`and`/`or` 가 무엇을 돌려주고 어디서 배신하나**」부터다.
 - 연혁은 여기가 아니다: [`history/python/`](../../../../../../history/python/)

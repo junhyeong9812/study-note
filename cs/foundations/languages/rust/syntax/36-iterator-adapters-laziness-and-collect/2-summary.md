@@ -96,7 +96,7 @@ Python 3.12.3
 
 ★ **선행** — [**34번 주제**](../34-closures-fn-fnmut-fnonce-and-move/)의 **클로저**. 어댑터가 받는 클로저는 **`FnMut`** 이다(여러 번 부르고, 상태를 고칠 수 있게) — 그래서 (4)의 `calls.push(…)` 가 된다.
 [**25번 주제**](../25-traits-definition-impl-default-methods-and-associated-types/)의 **기본 메서드**와 **연관 타입**이 `Iterator` 의 뼈대다((1)).
-★ **정본 경계** — **`IntoIterator` 세 형태와 `for` 의 소유권**은 목록의 **37번 주제**가 정본이다. 여기서는 (6)에서 **타입 셋과 E0382 한 칸**만 찍는다.
+★ **정본 경계** — **`IntoIterator` 세 형태와 `for` 의 소유권**은 [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/)가 정본이다. 여기서는 (6)에서 **타입 셋과 E0382 한 칸**만 찍는다.
 
 ## 동작 방식
 
@@ -630,7 +630,7 @@ For more information about this error, try `rustc --explain E0283`.
 
 ### (6) `iter` / `iter_mut` / `into_iter` — 무엇을 내놓나
 
-**언제 쓰나** — 돌고 나서 **원본을 또 쓸지** 정할 때(정본은 목록의 **37번 주제**).
+**언제 쓰나** — 돌고 나서 **원본을 또 쓸지** 정할 때(정본은 [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/)).
 
 ```rust
 // r36_three.rs
@@ -806,7 +806,7 @@ For more information about this error, try `rustc --explain E0382`.
 - [**25번 주제** — 트레이트·기본 메서드·연관 타입](../25-traits-definition-impl-default-methods-and-associated-types/) — `type Item` 과 기본 메서드 70여 개의 뼈대((1)).
 - [**35번 주제** — 함수 포인터](../35-function-pointers-and-returning-closures/) — `map(add1)` 처럼 **함수 이름**을 어댑터에 넘길 수 있는 이유.
 - [**22번 주제** — `Result` 와 `?`](../22-result-question-mark-and-from/) · [**21번 주제** — `Option` 조합자](../21-option-and-combinators/) — (4)의 `Result`/`Option` 수집이 거기서 본 타입이다.
-- 목록의 **37번 주제** — `IntoIterator` 세 형태. (6)과 「더 들어가면」의 배열 `into_iter` 가 거기서 본체가 된다.
+- [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/) — `IntoIterator` 세 형태. (6)과 「더 들어가면」의 배열 `into_iter` 가 거기서 본체가 된다.
 - 목록의 **42번 주제** — `RefCell`. (2)의 로그 장치가 그것이다.
 
 ## 용어 풀이
@@ -882,7 +882,7 @@ i32
 (exit 0)
 ```
 
-  ★ 같은 소스가 **2018 에서 `&i32`, 2021 에서 `i32`** 다. 2018 경고가 「**this changes meaning in Rust 2021**」라고 적는다. `IntoIterator` 세 형태는 목록의 **37번 주제**, 에디션 이전은 **47번 주제**가 정본이다.
+  ★ 같은 소스가 **2018 에서 `&i32`, 2021 에서 `i32`** 다. 2018 경고가 「**this changes meaning in Rust 2021**」라고 적는다. `IntoIterator` 세 형태는 [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/), 에디션 이전은 **47번 주제**가 정본이다.
 - **`DoubleEndedIterator`·`ExactSizeIterator`** — `rev`·`len` 을 주는 추가 트레이트. 1.66 릴리스 노트가 `impl ExactSizeIterator` 에도 `#[must_use]` 가 먹게 했다고 적는다(이 문서는 던지지 않았다).
 - **`try_fold`·`try_for_each`** — `Result`/`Option` 을 돌려주는 클로저로 **도중에 멈추는** 소비자. (4)의 조기 종료를 직접 쓰는 길이다.
 - **어댑터가 패닉하면** — std 문서 「이터레이터는 **지정되지 않은(하지만 메모리 안전한) 상태**가 된다」. 패닉 뒤의 값에 기대지 마라.

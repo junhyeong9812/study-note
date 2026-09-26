@@ -706,7 +706,7 @@ ex.cpp:8:47: note: ‘std::to_underlying’ is only available from C++23 onwards
 - **`static_cast` 의 정본은 [03번 형제](../03-four-cast-operators/)** 다.\
   여기서는 **담장 ②를 넘는 도구**로만 썼다.
 - **「값까지 담는 열거형」은 목록의 47번 주제**(`variant`)다. 열거형은 **이름만** 담는다.
-- **비트 플래그를 `enum class` 로** 하려면 **목록의 22번 주제**(연산자 오버로딩)가 필요하다 —\
+- **비트 플래그를 `enum class` 로** 하려면 [**목록의 22번 주제**](../22-operator-overloading/)(연산자 오버로딩)가 필요하다 —\
   `operator|`·`operator&` 를 직접 써야 한다.
 - **C 의 `enum` 크기·부호·`-fshort-enums`·중복 값·플래그별 경고 세기**의 정본은\
   C 갈래 [`07-enum-and-enumeration-constants/`](../../../c/syntax/07-enum-and-enumeration-constants/)다.\
@@ -749,7 +749,7 @@ ex.cpp:8:47: note: ‘std::to_underlying’ is only available from C++23 onwards
 
 **안 돌려 본 것 / 못 잰 것**
 
-- **안 돌려 본 것** — `enum class` 에 `operator|` 를 붙인 비트 플래그(목록의 **22번 주제**) ·\
+- **안 돌려 본 것** — `enum class` 에 `operator|` 를 붙인 비트 플래그([목록의 **22번 주제**](../22-operator-overloading/)) ·\
   `clang -fsanitize=enum` 을 **따로** 켜 본 것(기본 집합에 들어 있어서 그냥 잡혔다) ·\
   `enum class` 를 C 헤더와 공유하는 실제 빌드.
 - **못 잰 것** — 「값이 열거자 중 하나인지」를 **타입 수준에서** 검사하는 방법.\

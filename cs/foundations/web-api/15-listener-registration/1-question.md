@@ -205,7 +205,7 @@ i.dispatchEvent(new Event('아'));          // 로그3 은?
 
 - `capture` 가 **무엇을 하는지**의 정본은 어느 주제이고, **이 주제가 맡은 부분**은 무엇인가?
 - [12번 주제](../12-shadow-dom/2-summary.md)에서 리스너를 **어디에 다느냐**가 무엇을 바꾸는가?
-- `signal` 로 떼는 관용구가 목록의 **13번 주제**(커스텀 요소 수명주기)에서 특히 값어치를 내는 이유는?
+- `signal` 로 떼는 관용구가 [목록의 **13번 주제**](../13-custom-element-lifecycle/)(커스텀 요소 수명주기)에서 특히 값어치를 내는 이유는?
 - 보통 함수의 `this` 규칙이 JS 갈래 목록([`js/syntax/README.md`](../../languages/js/syntax/README.md))의 **07번** 중 어느 규칙인가?
 
 ## 복습 기록

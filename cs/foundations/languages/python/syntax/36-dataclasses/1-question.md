@@ -85,7 +85,7 @@ class Point3(Point):
 
 print("   Point3 의 필드 :", [f.name for f in dataclasses.fields(Point3)])
 print("   Point3.__init__ :", inspect.signature(Point3.__init__))
-print("   ★ MRO 를 거꾸로 훑어 모은다 — 정본은 목록의 34번 주제다")
+print("   ★ MRO 를 거꾸로 훑어 모은다 — 정본은 [목록의 **34번 주제**](../34-inheritance-mro-super/)다")
 
 print("⑦ asdict / astuple 은 재귀한다")
 print("   asdict(Point3(1,2,[9],3))  :", dataclasses.asdict(Point3(1, 2, [9], 3)))

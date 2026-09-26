@@ -469,7 +469,7 @@ ctor09.cpp:17:43: note: because ‘HasCopyAsn’ has user-provided ‘HasCopyAsn
   ★★ **「옮겼는데 복사가 돌았다」는 사실은 계수기로만 드러난다.**
 - ★★★ **소멸자 하나를 적으면 이동이 사라지는 이유** — 소멸자를 직접 적었다는 것은\
   **그 타입이 자원을 손수 다룬다는 신호**이고, 그러면 **컴파일러가 만든 멤버별 이동이 옳다는 보장이 없다.**\
-  표준이 **안전한 쪽(복사)으로 떨어뜨린다.** 이것이 **0/3/5의 법칙**(목록의 **18번 주제**)의 근거다.
+  표준이 **안전한 쪽(복사)으로 떨어뜨린다.** 이것이 **0/3/5의 법칙**([목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/))의 근거다.
 - ★ **경고 1건은 `HasCopyAsn`** 에서 났다 — `implicitly-declared 'HasCopyAsn::HasCopyAsn(const HasCopyAsn&)' is deprecated [-Wdeprecated-copy]`.\
   **표준이 그 조합을 비권장으로 표시**해 둔 자리다.
 
@@ -598,7 +598,7 @@ ctor03 clang       경고 2
 - **「이름은 찾아지는데 값이 없다」의 짝** — [12번](../12-class-basics-members-access-and-this/) **(6)** 의 `lazy`.
 - **파괴 순서** — [14번](../14-destructors-and-deterministic-destruction/)이 정본이다. **초기화의 정확한 역순**이다.
 - **`Probe` 계수 방식** — 형제 [`11번`](../11-choosing-parameter-passing/)에서 왔다.
-- **0/3/5의 법칙** — 목록의 **18번 주제**.
+- **0/3/5의 법칙** — [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/).
 - **러스트에 초기화 순서 함정이 없는 이유** — 러스트에는 **생성자가 없고** `Struct { a: 1, b: 2 }` 로\
   **모든 필드를 한 번에** 적어야 한다. **「아직 안 지어진 필드」라는 상태가 원리적으로 없다.**\
   러스트 갈래 [`16-structs-impl-and-associated-functions/`](../../../rust/syntax/16-structs-impl-and-associated-functions/)가 그 자리다.

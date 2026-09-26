@@ -1037,7 +1037,7 @@ fn main() {
    안 돈다 — 함수를 「값으로」 넘기는 자리  map(takes_str)    E0631
 ```
 
-- 인자를 더 넓게 여는 **`impl AsRef<str>`·`impl Into<String>` 의 정본은 목록의 29번 주제**다.\
+- 인자를 더 넓게 여는 **`impl AsRef<str>`·`impl Into<String>` 의 정본은 [목록의 29번 주제](../29-conversion-traits-from-into-tryfrom-asref-borrow/)다**.\
   여기서는 이름만 적는다 — **`&str` 로 받는 것이 기본값**이고, 더 열지 말지는 거기서 판단한다.
 
 ---

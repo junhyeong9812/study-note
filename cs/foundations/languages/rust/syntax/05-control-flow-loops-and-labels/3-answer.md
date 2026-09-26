@@ -152,7 +152,7 @@ For more information about this error, try `rustc --explain E0571`.
 > expression if the `break` statement is executed) in `loop` loops, but not
 > `for`, `while`, or `while let` loops.
 
-- **`while let` 까지 이름으로 적혀 있다.** `while let` 의 정본은 목록의 **20번 주제**다.
+- **`while let` 까지 이름으로 적혀 있다.** `while let` 의 정본은 [목록의 **20번 주제**](../20-if-let-while-let-let-else-and-let-chains/)다.
 
 ### 3. ★ 순회한 뒤에 원본이 남는가
 
@@ -211,7 +211,7 @@ fn main() {
 - 컴파일되는 것은 **(나)** 다. (가)는 **E0382**로 거부된다.
 - 보이지 않는 호출의 이름은 **`.into_iter()`** 다 — 「`v` moved due to this **implicit call to `.into_iter()`**」.\
   `for` 가 `IntoIterator` 규약으로 돈다는 사실이 **에러 메시지에 적혀 나온다.**\
-  규약 전수는 목록의 **37번 주제**가 정본이고, 여기서는 **이 현상까지**다.
+  규약 전수는 [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/)가 정본이고, 여기서는 **이 현상까지**다.
 - `help:` 가 제안하는 수정은 **글자 하나** — `for x in &v` 의 `&` 다.
 - ★ **두 쪽이 갈리는 근거는 `for` 에 있지 않다.**
 
@@ -785,10 +785,10 @@ For more information about this error, try `rustc --explain E0502`.
 
 ### 12. 다른 주제와 잇기
 
-- **`while let`** — 목록의 **20번 주제**(`if let`·`while let`·`let else`·`let` 체인).\
+- **`while let`** — [목록의 **20번 주제**](../20-if-let-while-let-let-else-and-let-chains/)(`if let`·`while let`·`let else`·`let` 체인).\
   이 주제에서는 `rustc --explain E0571` 이 이름을 대는 자리까지만 닿았다.
-- **`iter`/`iter_mut`/`into_iter` 규약 전수** — 목록의 **37번 주제**(`IntoIterator` 세 형태).
-- **순회 결과를 모으는 관용** — 목록의 **36번 주제**(`Iterator` 와 어댑터·`collect`).
+- **`iter`/`iter_mut`/`into_iter` 규약 전수** — [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/)(`IntoIterator` 세 형태).
+- **순회 결과를 모으는 관용** — [목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/)(`Iterator` 와 어댑터·`collect`).
 - **`Copy` 판정** — [목록의 **09번 주제**](../09-copy-clone-and-drop/)(`Copy`와 `Clone`, `Drop` 시점).\
   3번에서 배열과 `Vec` 이 갈린 근거가 그것이다.
 - **에러가 아니라 경고로만 드러나는 자리** — 둘이다.

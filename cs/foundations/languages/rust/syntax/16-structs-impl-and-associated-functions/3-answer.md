@@ -1251,7 +1251,7 @@ Marker / Marker
 - **`{:?}`** 는 한 줄, **`{:#?}`** 는 **여러 줄 + 4칸 들여쓰기 + 꼬리 쉼표**다.
 - ★ **세 형태가 각각 다르게 찍힌다** — 이름 있는 것은 `{ }`, 튜플은 `( )`, 유닛은 **이름만**.
   `{:?}` 출력만 봐도 어느 형태인지 읽을 수 있다.
-- `derive` 자체는 목록의 **27번 주제**, `Display`/`Debug` 직접 구현은 목록의 **48번 주제**가 정본이다.
+- `derive` 자체는 [목록의 **27번 주제**](../27-derive-macros-debug-clone-partialeq-default-hash/), `Display`/`Debug` 직접 구현은 목록의 **48번 주제**가 정본이다.
 
 ### 12. 에러 번호 지도
 
@@ -1286,7 +1286,7 @@ Marker / Marker
 - ★ **객체·캡슐화 일반**은 [`../../../../oop-basics/`](../../../../oop-basics/) 가 정본이다.
   **그쪽은** 클래스·정보 은닉·상속·다형성의 **일반론**, **여기는** Rust 의 **구조체 세 종류와 `impl` 문법**이다.
   ★ Rust 에는 **클래스도 상속도 없다** — 데이터는 `struct`, 동작은 `impl`, 공통 표면은 트레이트로 갈라져 있다.
-- **`impl Trait for Type`**(트레이트 구현)은 목록의 **25번 주제**다.
+- **`impl Trait for Type`**(트레이트 구현)은 [목록의 **25번 주제**](../25-traits-definition-impl-default-methods-and-associated-types/)다.
   이 주제가 다룬 `impl Type { }` 은 **고유 impl**(inherent impl)이라고 부른다.
 - ★ **에러 메시지가 고친 코드를 그대로 준 자리**가 이 주제에 넷 있었다 —
   E0277 의 `2 + #[derive(Debug)]` · E0599 의 `(w.render)()` · E0599 의 `<Counter as Make>::build()` ·

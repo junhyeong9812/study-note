@@ -204,7 +204,7 @@ doctype 을 지우면 — 호환 모드
 - ★ **그래서 옛 코드에 `document.body.scrollTop` 과 `document.documentElement.scrollTop` 을 `||` 로 이어 놓은 관용구**가 있는 것이다. 오늘은 **`document.scrollingElement` 하나**면 된다.
 - **`window.scrollY` 는 두 모드에서 똑같이 동작한다** — 모드에 안 휘둘리는 유일한 읽기다.
 
-비용 — 스크롤 오프셋을 읽는 것은 **레이아웃을 강제한다**(목록의 **10번 주제** 실측에서 `window.scrollY` 도 방아쇠였다).
+비용 — 스크롤 오프셋을 읽는 것은 **레이아웃을 강제한다**([목록의 **10번 주제**](../10-layout-thrashing/) 실측에서 `window.scrollY` 도 방아쇠였다).
 
 ### (2) 같은 일을 시키는 표면이 넷이다
 
@@ -546,7 +546,7 @@ function 스크롤러찾기(el) {
 }
 ```
 
-비용 — 이 함수는 **조상마다 `getComputedStyle` 과 `scrollHeight` 를 읽는다.** 목록의 **10번 주제**의 방아쇠를 **조상 수만큼** 당긴다 — **루프 안에서 부르지 마라.**
+비용 — 이 함수는 **조상마다 `getComputedStyle` 과 `scrollHeight` 를 읽는다.** [목록의 **10번 주제**](../10-layout-thrashing/)의 방아쇠를 **조상 수만큼** 당긴다 — **루프 안에서 부르지 마라.**
 
 ### (9) `behavior: 'smooth'` — 비동기인 것까지만 관측했다
 
@@ -846,7 +846,7 @@ el.scrollIntoView();                                // 조상 스크롤러를 �
 | CSS 의 smooth 를 이번만 끈다 | `behavior: 'instant'` | 클래스 토글로 CSS 를 껐다 켜기 |
 | 스크롤러 찾기 | `overflow` 두 조건 + `document.scrollingElement` | `overflow !== 'visible'` 하나 |
 | 위치 복원 | `scrollRestoration = 'manual'` + 내용이 자리 잡은 뒤 복원 | 기본값에 맡기고 내용은 나중에 채우기 |
-| 스크롤 위치를 자주 읽는다 | 목록의 **35번 주제**(IntersectionObserver) | 매 프레임 `scrollY` 읽기(목록의 **10번 주제**) |
+| 스크롤 위치를 자주 읽는다 | 목록의 **35번 주제**(IntersectionObserver) | 매 프레임 `scrollY` 읽기([목록의 **10번 주제**](../10-layout-thrashing/)) |
 
 ## 핵심 문장
 
@@ -887,7 +887,7 @@ el.scrollIntoView();                                // 조상 스크롤러를 �
 ## 더 들어가면
 
 - **`scrollend` 이벤트**는 「굴리기가 끝났다」를 알려 준다 — `smooth` 의 도착을 기다리는 정답이다. **이 문서는 관측하지 못했다**(프레임을 못 몬다). 이벤트 자체는 이 갈래의 이벤트 묶음 몫이다.
-- **`scroll` 이벤트는 프레임마다 온다** — 그 안에서 `getBoundingClientRect()` 를 읽으면 목록의 **10번 주제**가 곧바로 시작된다. **이 문서는 그 이벤트도 관측하지 못했다.**
+- **`scroll` 이벤트는 프레임마다 온다** — 그 안에서 `getBoundingClientRect()` 를 읽으면 [목록의 **10번 주제**](../10-layout-thrashing/)가 곧바로 시작된다. **이 문서는 그 이벤트도 관측하지 못했다.**
 - **`scroll-snap`** 은 CSS 로 「멈출 자리」를 정한다. 스크립트로 굴려도 스냅이 걸린다 — 정본은 CSS 갈래이고 **여기서 던져 보지 않았다.**
 - **`overscroll-behavior`** 는 끝까지 간 스크롤이 **바깥으로 전달되는 것**을 막는다((5)에서 본 「바깥이 대신 굴러가는」 일의 CSS 쪽 스위치다). **던져 보지 않았다.**
 - **`Element.scrollIntoViewIfNeeded()`** 는 `{block: 'nearest'}` 의 옛 비표준 판이다. **Chromium 한정**이라 이 목록에서는 다루지 않는다.

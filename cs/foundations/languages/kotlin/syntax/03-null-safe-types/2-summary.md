@@ -561,7 +561,7 @@ let 본문이 돈 횟수 = 1
 - [05번 주제](../05-platform-types/) — **이 보장이 Java 경계에서 사라지는 자리**의 정본. 이 사슬의 정점이다
 - [`../../../java/syntax/60-null-handling/`](../../../java/syntax/60-null-handling/) — **Java 쪽 정본.** `Objects.requireNonNull` 의 메시지 설계, 방어 시점 셋, 컬렉션별 null 정책
 - [`../../../java/syntax/38-optional/`](../../../java/syntax/38-optional/) — Java 가 **런타임 객체**로 푼 쪽. Kotlin 이 **타입**으로 푼 것과의 대비
-- 목록의 **33번 주제**(`is`/`as`/`as?`) — 캐스트 전체의 정본
+- [목록의 **33번 주제**](../33-type-checks-and-casts-is-as/)(`is`/`as`/`as?`) — 캐스트 전체의 정본
 - 목록의 **34번 주제**(예외·`Nothing` 타입) — `?: return` 의 근거인 `Nothing`
 - 목록의 **51번 주제**(`require`/`check`/`error`) — `requireNotNull` 의 정본
 - 목록의 **58번 주제**(null 처리 관용구) — 계층별 배치 판단

@@ -724,7 +724,7 @@ sink = true   (읽은 값을 버리지 않았다는 확인)
 ```
 
 - ★★ **결론이 직관과 다르다.** 비싼 것은 **삽입 횟수가 아니라 읽기·쓰기 교차**였다. 아래 두 줄은 **삽입을 400번 한 쪽과 1번 한 쪽**인데 시간이 같다.
-- **그래서 이 문서는 「조각을 쓰면 빨라진다」를 주장하지 않는다.** 주장하는 것은 두 가지다 — **삽입 사건 수가 1/N 이 된다**(위 (2), 안 흔들리는 근거)와 **읽기를 섞지 마라**(목록의 **10번 주제**).
+- **그래서 이 문서는 「조각을 쓰면 빨라진다」를 주장하지 않는다.** 주장하는 것은 두 가지다 — **삽입 사건 수가 1/N 이 된다**(위 (2), 안 흔들리는 근거)와 **읽기를 섞지 마라**([목록의 **10번 주제**](../10-layout-thrashing/)).
 - **`performance.now()` 의 분해능은 100마이크로초**다. 이 표의 어떤 칸도 그 아래로 내려가지 않았으므로 여기서는 분해능이 문제되지 않았다.
 
 비용 — 이 절 자체가 비용이다. **9판·중앙값·최소·최대**를 실었고 **자릿수와 순위만 결론으로** 쓴다.
@@ -884,9 +884,9 @@ tpl.innerHTML = '<li>x</li>';                     // content 에 들어간다 (�
 - [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md) — **비용 측정 방법과 XSS 실행 계수기**의 정본. 그쪽의 창 넷·다섯을 여기서 빌려 썼고, **「조각이 빠르다」가 재현 안 된 사실**도 그쪽에서 이어받았다
 - [02번 주제](../02-element-queries-and-live-collections/2-summary.md) — `querySelector` 가 **어느 범위**를 보는지의 정본. 틀 안이 안 잡히는 것은 그 규칙의 결과다
 - [01번 주제](../01-document-and-node-tree/2-summary.md) — `nodeType`·`ownerDocument`·`isConnected` 의 정본
-- 목록의 **10번 주제**(레이아웃 스래싱) — **읽기·쓰기 교차 비용**의 정본. 여기는 그 비용이 삽입 비용을 덮는다는 사실만 보인다
-- 목록의 **12번 주제**(Shadow DOM) — 선언적 Shadow DOM 이 `<template shadowrootmode>` 로 온다. **경계의 다른 종류**다
-- 목록의 **13번 주제**(커스텀 요소 수명주기) — 틀을 찍어 붙일 때 **업그레이드가 언제 도는가**는 그쪽
+- [목록의 **10번 주제**](../10-layout-thrashing/)(레이아웃 스래싱) — **읽기·쓰기 교차 비용**의 정본. 여기는 그 비용이 삽입 비용을 덮는다는 사실만 보인다
+- [목록의 **12번 주제**](../12-shadow-dom/)(Shadow DOM) — 선언적 Shadow DOM 이 `<template shadowrootmode>` 로 온다. **경계의 다른 종류**다
+- [목록의 **13번 주제**](../13-custom-element-lifecycle/)(커스텀 요소 수명주기) — 틀을 찍어 붙일 때 **업그레이드가 언제 도는가**는 그쪽
 - 목록의 **37번 주제**(`MutationObserver`) — 여기서 근거로 쓴 **레코드 수**의 정본
 - HTML 갈래 목록([`html/syntax/README.md`](../../languages/html/syntax/README.md))의 **10번**(`<template>`·`<slot>` 마크업) — **마크업으로서의 `<template>`** 은 그쪽. 여기는 **스크립트가 그것을 어떻게 다루나**만
 - JS 갈래 목록([`js/syntax/README.md`](../../languages/js/syntax/README.md))의 **01번**(값과 타입) — `null` 과 `undefined` 의 의미 차이는 그쪽
@@ -911,5 +911,5 @@ tpl.innerHTML = '<li>x</li>';                     // content 에 들어간다 (�
 - **`<template>` 이 왜 필요했나** — 그전에는 틀을 `<script type="text/template">` 안에 문자열로 넣었다. 그러면 **파싱이 안 된 문자열**이라 찍을 때마다 `innerHTML` 을 불러야 했고, 그것이 [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)의 파싱 비용과 XSS 면적을 그대로 떠안았다. `<template>` 은 **파싱은 한 번, 실행은 안 함**을 동시에 준다.
 - **`DocumentFragment` 는 생성자로도 만든다** — `new DocumentFragment()` 가 `document.createDocumentFragment()` 와 같다. 후자가 더 오래된 이름이다.
 - **조각의 자식을 비우지 않고 쓰는 법** — `host.append(...frag.children)` 처럼 펼쳐 넘기면 조각은 비지만, `[...frag.children]` 으로 먼저 배열에 담아 두면 참조가 남는다. 다만 **삽입은 여전히 이동**이므로 조각에서는 빠진다([03번 주제](../03-node-creation-insertion-removal/2-summary.md)).
-- **선언적 Shadow DOM** 은 `<template shadowrootmode="open">` 으로 쓴다 — 그때는 파서가 **틀을 그림자 트리로 바꿔 버리므로** `content` 가 남지 않는다. 이 문서는 그 경우를 다루지 않았다(목록의 **12번 주제**).
+- **선언적 Shadow DOM** 은 `<template shadowrootmode="open">` 으로 쓴다 — 그때는 파서가 **틀을 그림자 트리로 바꿔 버리므로** `content` 가 남지 않는다. 이 문서는 그 경우를 다루지 않았다([목록의 **12번 주제**](../12-shadow-dom/)).
 - ★ **(6)의 결과를 일반 규칙으로 읽지 마라.** 이 환경은 headless Chrome 한 대이고 항목이 2000개다. 말할 수 있는 것은 「**이 조건에서 조각의 이득이 잡음 아래였다**」까지다. 반대로 **읽기·쓰기 교차의 한 자릿수 차이**는 세 판 모두 같은 방향이었으므로 그쪽은 결론으로 쓴다.

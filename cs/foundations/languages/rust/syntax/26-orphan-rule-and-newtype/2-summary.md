@@ -714,8 +714,8 @@ rustc 가 거부된 `impl` 을 **그래도 등록해 두기** 때문이다. **�
   ★ **경계**: **역참조 강제**의 정본이 거기다. 여기서는 (5)에서 **그것이 newtype 에 무엇을 하는지**만 봤다.
 - [**27번 주제** — `derive` 매크로](../27-derive-macros-debug-clone-partialeq-default-hash/) —
   `derive` 는 **내 타입에 붙이는 것**이라 고아 규칙에 안 걸린다. 걸리는 것은 **손으로 쓰는 `impl`** 쪽이다.
-- 목록의 **29번 주제** — `From`/`Into`/`TryFrom`/`AsRef`/`Borrow`. **어느 방향으로 구현하나**의 정본이다.
-- 목록의 **30번 주제** — 연산자 오버로딩과 `Deref`. ★ **`Deref` 남용의 정본**이 거기다.
+- [목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/) — `From`/`Into`/`TryFrom`/`AsRef`/`Borrow`. **어느 방향으로 구현하나**의 정본이다.
+- [목록의 **30번 주제**](../30-operator-overloading-std-ops-index-and-deref/) — 연산자 오버로딩과 `Deref`. ★ **`Deref` 남용의 정본**이 거기다.
 - 목록의 **43번 주제** — `Deref` 강제와 스마트 포인터 감각. (5)의 절충안이 거기서 깊어진다.
 - 목록의 **46번 주제** — 크레이트와 워크스페이스. 「크레이트 경계」가 무엇인지의 정본이다.
 - Kotlin 의 확장 함수 — [`kotlin/syntax/13-extension-functions-and-properties/`](../../../kotlin/syntax/13-extension-functions-and-properties/).
@@ -745,6 +745,6 @@ rustc 가 거부된 `impl` 을 **그래도 등록해 두기** 때문이다. **�
 - **포괄 구현(blanket impl)** — `impl<T: Display> MyTrait for T`. 내 트레이트라면 된다.
   단 **남이 같은 타입에 직접 구현하면 충돌**하므로 공개 트레이트에서는 신중해야 한다.
 - **`#[non_exhaustive]` 와 하위 호환** — 고아 규칙과 함께 「**누가 나중에 무엇을 더할 수 있나**」를 정하는 장치들이다.
-- **`Borrow`/`AsRef` 로 위임하기** — `Deref` 대신 쓰는 더 좁은 길. 어느 쪽을 열지 **고를 수 있다**(목록의 **29번 주제**).
+- **`Borrow`/`AsRef` 로 위임하기** — `Deref` 대신 쓰는 더 좁은 길. 어느 쪽을 열지 **고를 수 있다**([목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/)).
 - **`derive_more` 같은 크레이트** — 위임 메서드를 매크로로 만들어 준다. ★ **이 환경에서는 못 쓴다**(외부 크레이트 금지).
 - **RFC 2451(re-rebalancing coherence)** — 지금의 covered type 규칙이 들어온 제안. (2)②가 통과하는 근거다.

@@ -304,7 +304,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --dump-dom ex03e.html | se
 
 **넣기 전까지 안 일어나는 것**
 
-- **렌더·스타일 계산·레이아웃**이 없다. `getComputedStyle` 이나 기하 읽기가 의미를 갖지 않는다(목록의 **08번 주제**와 목록의 **09번 주제**).
+- **렌더·스타일 계산·레이아웃**이 없다. `getComputedStyle` 이나 기하 읽기가 의미를 갖지 않는다([목록의 **08번 주제**](../08-getcomputedstyle/)와 [목록의 **09번 주제**](../09-element-geometry/)).
 
 **`createTextNode('<b>x</b>')`**
 
@@ -312,7 +312,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --dump-dom ex03e.html | se
 
 **트리 밖 조립이 권장되는 이유**
 
-- 트리 밖에서는 **스타일·레이아웃을 건드리지 않으므로** 조립 중간 상태가 화면 계산에 끼어들지 않는다. 다만 **그것이 실제로 얼마나 싼지는 이 문서가 재지 않았다** — 측정은 [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)와 목록의 **05번 주제**·**10번 주제**의 몫이다.
+- 트리 밖에서는 **스타일·레이아웃을 건드리지 않으므로** 조립 중간 상태가 화면 계산에 끼어들지 않는다. 다만 **그것이 실제로 얼마나 싼지는 이 문서가 재지 않았다** — 측정은 [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)와 [목록의 **05번 주제**](../05-documentfragment-and-template/)·**10번 주제**의 몫이다.
 
 ### 7. 왜 복사가 아니라 이동인가
 
@@ -484,7 +484,7 @@ const tree = (n, d) => {
 | 트리 출력기의 들여쓰기 형태 | 이 문서의 코드가 정한다 | 브라우저와 무관하다 |
 | 삽입·복제의 **비용** | 재지 않음 | 이 주제는 성능을 주장하지 않는다 |
 
-**안 돌려 본 것** — ① Firefox·Safari 에서의 재현(엔진이 없다). ② **옮긴 `iframe` 이 다시 로드되는지** — `--dump-dom` 이 그 전에 끊긴다. 「안이 비었다」까지만 적었다. ③ `<template>` 의 `content` 복제(목록의 **05번 주제**의 몫). ④ 삽입 비용 측정 — [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)에서 잰다.
+**안 돌려 본 것** — ① Firefox·Safari 에서의 재현(엔진이 없다). ② **옮긴 `iframe` 이 다시 로드되는지** — `--dump-dom` 이 그 전에 끊긴다. 「안이 비었다」까지만 적었다. ③ `<template>` 의 `content` 복제([목록의 **05번 주제**](../05-documentfragment-and-template/)의 몫). ④ 삽입 비용 측정 — [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)에서 잰다.
 
 ## 용어 풀이
 

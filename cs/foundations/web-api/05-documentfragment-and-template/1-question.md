@@ -121,7 +121,7 @@ for (…) { host.appendChild(만든li()); sink += host.offsetHeight; }
 
 - [03번 주제](../03-node-creation-insertion-removal/2-summary.md)의 「삽입은 이동」이 조각에도 그대로 적용되는 자리를 짚어라.
 - [02번 주제](../02-element-queries-and-live-collections/2-summary.md)의 조회 범위 규칙으로 「틀 안이 안 잡힌다」를 설명하라.
-- 목록의 **10번 주제**(레이아웃 스래싱)가 이 주제의 비용 측정에서 미리 드러난 자리는 어디인가?
+- [목록의 **10번 주제**](../10-layout-thrashing/)(레이아웃 스래싱)가 이 주제의 비용 측정에서 미리 드러난 자리는 어디인가?
 - 목록의 **37번 주제**(`MutationObserver`)를 이 주제가 **근거로** 쓴 이유는 무엇인가?
 
 ## 복습 기록

@@ -5,9 +5,9 @@
 > 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
 > 선행은 [01번 주제](../01-val-var-and-basic-types/)다.
 > ★ **널 불가 타입의 보장 자체는 [03번 주제](../03-null-safe-types/)가 정본**이고,
-> `open`/`final` 기본값은 목록의 **19번 주제**, backing field·`lateinit` 은 [16번 주제](../16-properties-backing-field-lateinit-const/)가 정본이다.
+> `open`/`final` 기본값은 [목록의 **19번 주제**](../19-inheritance-open-final-override/), backing field·`lateinit` 은 [16번 주제](../16-properties-backing-field-lateinit-const/)가 정본이다.
 > 여기는 **한 객체가 만들어질 때 무엇이 어느 순서로 도는가**를 묻는다.
-> 이 주제는 [16번 주제](../16-properties-backing-field-lateinit-const/)·목록의 **18번 주제**·**19번 주제**·**22번 주제**·**25번 주제**·**27번 주제**의 뿌리다.
+> 이 주제는 [16번 주제](../16-properties-backing-field-lateinit-const/)·[목록의 **18번 주제**](../18-visibility-modifiers/)·**19번 주제**·**22번 주제**·**25번 주제**·**27번 주제**의 뿌리다.
 > Java 쪽 짝은 [`../../../java/syntax/06-initialization-order/`](../../../java/syntax/06-initialization-order/)와
 > [`../../../java/syntax/07-constructors/`](../../../java/syntax/07-constructors/)다.
 > 문항 11개 중 코드블록이 붙는 예측형은 6개다.

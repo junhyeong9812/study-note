@@ -911,4 +911,4 @@ math.fmod(1,0) -> ValueError: math domain error
 - **`int` 는 `__index__` 를 가진 객체까지 받는다.** 그래서 `numpy` 정수나 `IntEnum` 이 인덱스 자리에 그냥 들어간다(목록의 **37번 주제**).
 - **`float` 에도 `is_integer()`·`as_integer_ratio()`·`hex()`/`fromhex()` 가 있다.** 저장된 값을 **정확히** 들여다보는 세 창이다.
 - **`decimal` 의 컨텍스트는 스레드별이다.** `getcontext()` 가 돌려주는 것이 현재 스레드의 것이고, `localcontext()` 로 블록 단위 설정이 가능하다 — 정본은 목록의 **50번 주제**.
-- **`complex` 에는 순서 비교가 없다.** 정렬·`min`/`max` 에 넣으면 `TypeError` 가 난다. 정렬 가능성 일반은 목록의 **31번 주제**.
+- **`complex` 에는 순서 비교가 없다.** 정렬·`min`/`max` 에 넣으면 `TypeError` 가 난다. 정렬 가능성 일반은 [목록의 **31번 주제**](../31-comparison-protocol-and-sortability/).

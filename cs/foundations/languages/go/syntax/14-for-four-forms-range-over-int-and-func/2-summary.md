@@ -807,7 +807,7 @@ func main() {
 
 - **문자열 `range` 는 룬을 준다.** 인덱스는 **바이트 오프셋**이라 `0 → 3 → 4` 로 건너뛴다.
   `len(s)` 는 5(바이트)인데 회차는 3번이다. 정본은 [10번 주제](../10-strings-bytes-runes-and-utf8-iteration/)다.
-- **채널 `range` 는 닫힐 때까지** 받는다. 안 닫으면 영원히 막힌다. 정본은 목록의 **29번 주제**다.
+- **채널 `range` 는 닫힐 때까지** 받는다. 안 닫으면 영원히 막힌다. 정본은 [목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/)다.
 - **맵 `range` 는 키와 값 둘**을 준다. 여기서는 **키를 모아 정렬해** 찍었다 — 순서가 보장이 아니기 때문이다.
 - **변수를 몇 개 받을지 고를 수 있다** — 0개·1개·2개.
   ★ 맵에서 1개만 받으면 **키**이고, 슬라이스·배열·문자열에서 1개만 받으면 **인덱스**다.
@@ -951,7 +951,7 @@ cannot range over seq (value of type func(yield func(int) bool)): requires go1.2
 ### 7. ★ 「채널 `range` 는 값이 없으면 끝난다」
 
 - (7)절 실측 — **닫힐 때까지** 돈다. 비었다고 끝나지 않고 **막힌다.**
-- 고치는 법 — 보내는 쪽이 `close` 한다. 정본은 목록의 **29번 주제**다.
+- 고치는 법 — 보내는 쪽이 `close` 한다. 정본은 [목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/)다.
 
 ### 8. ★ 「`for` 에 괄호를 안 써서 헷갈린다」
 
@@ -1029,7 +1029,7 @@ cannot range over seq (value of type func(yield func(int) bool)): requires go1.2
 - [09번 주제](../09-maps-declaration-comma-ok-delete-and-iteration-order/)(맵) —
   **맵 순회 순서 무작위화의 정본.** 여기서는 「그래서 정렬해서 찍는다」만
 - [15번 주제](../15-switch-type-switch-fallthrough-labels-and-goto/)(`switch`·라벨·`goto`) — **라벨 `break`/`continue` 의 정본**
-- 목록의 **29번 주제**(채널) — 채널 `range` 와 `close` 의 정본
+- [목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/)(채널) — 채널 `range` 와 `close` 의 정본
 - 목록의 **39번 주제**(`iter` 와 사용자 정의 반복자) — **`iter.Seq` 설계의 정본.**
   여기서는 `range` 가 그것을 받는다는 것까지만
 - 목록의 **49번 주제**(`testing`·표 기반 테스트) — 표를 `range` 로 도는 관용구가 거기 있다

@@ -404,8 +404,8 @@ identical 18  ·  differs 1  ·  total 19
 ### 11. 경계 — 어디까지가 이 주제인가 ★★
 
 - **세 플래그의 의미** → [14번](../14-property-descriptors-and-freezing/2-summary.md) ·
-  **체인 순회** → [15번](../15-prototype-chain/2-summary.md)과 목록의 **18번 주제** 「`for...in` 과 열거」 ·
-  **심볼의 성질** → 목록의 **22번 주제** 「`Symbol` 과 잘 알려진 심볼」 ·
+  **체인 순회** → [15번](../15-prototype-chain/2-summary.md)과 [목록의 **18번 주제**](../18-for-in-and-enumeration/) 「`for...in` 과 열거」 ·
+  **심볼의 성질** → [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) 「`Symbol` 과 잘 알려진 심볼」 ·
   **`ToPrimitive`** → [02번](../02-coercion-and-loose-equality/2-summary.md).
 - ★★★ 11번이 실측한 것은 「`{ ...o }` 는 **자기 것이고 열거 가능한 것만** 가져간다」였다.
   이 주제가 채워 넣은 정의는 **「열거 가능」이 정확히 무엇을 가르는가**이다 —

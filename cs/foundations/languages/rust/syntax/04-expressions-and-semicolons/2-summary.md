@@ -443,7 +443,7 @@ error: expected expression, found `let` statement
   = note: only supported directly in conditions of `if` and `while` expressions
 ```
 
-- `note` 가 말하는 예외가 **`if let`·`while let`** 이다(정본은 목록의 **20번 주제**).
+- `note` 가 말하는 예외가 **`if let`·`while let`** 이다(정본은 [목록의 **20번 주제**](../20-if-let-while-let-let-else-and-let-chains/)).
 - 그 밖의 자리에서 `let` 은 값이 될 수 없다.
 
 ### 타입을 컴파일러에게 물어보는 수법
@@ -528,7 +528,7 @@ let x: i32 = while i < 3 { i += 1; };   ->  E0308 expected `i32`, found `()`
 ```
 
 - 값을 내는 반복은 **`loop` + `break 값`** 뿐이다.
-- `while`/`for` 로 값을 모으려면 이터레이터 쪽으로 간다(목록의 **36번 주제**).
+- `while`/`for` 로 값을 모으려면 이터레이터 쪽으로 간다([목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/)).
 
 ## 구현 세부사항 대 언어 보장
 
@@ -558,7 +558,7 @@ let x: i32 = while i < 3 { i += 1; };   ->  E0308 expected `i32`, found `()`
 | 상황 | 쓸 것 | 이유 |
 |---|---|---|
 | 조건에 따라 값을 고른다 | `let x = if c { .. } else { .. };` | 삼항 연산자가 없다. 이게 그 자리다 |
-| 갈래가 셋 이상 | `match` | 완전성 검사가 따라온다(목록의 **18번 주제**) |
+| 갈래가 셋 이상 | `match` | 완전성 검사가 따라온다([목록의 **18번 주제**](../18-match-and-exhaustiveness/)) |
 | 몇 줄 계산해 값 하나를 만든다 | 블록 식 `let y = { ... };` | 임시 이름이 밖으로 안 샌다 |
 | 조건이 맞을 때까지 돌며 값을 얻는다 | `loop` + `break 값` | `while`/`for` 로는 값을 못 낸다 |
 | 함수 중간에서 빠져나간다 | `return` | 꼬리에는 안 쓰는 것이 관용이다 |
@@ -590,9 +590,9 @@ let x: i32 = while i < 3 { i += 1; };   ->  E0308 expected `i32`, found `()`
   **여기는 그 언어의 문법이 식 중심이라는 사실과 그 결과**부터다. 소유권은 이 문서에 나오지 않는다.
 - [목록의 **05번 주제**](../05-control-flow-loops-and-labels/)(제어 흐름 — `loop`·라벨·`break` 값) — `loop` 의 정본
 - [목록의 **06번 주제**](../06-functions-and-never-type/)(함수·반환·발산 타입 `!`) — `!` 의 정본. 여기서는 **대비만** 했다
-- 목록의 **18번 주제**(`match` 와 완전성 검사) · **19번 주제**(패턴 문법) — `match` 의 정본
-- 목록의 **20번 주제**(`if let`·`while let`·`let else`) — `let` 이 조건 자리에 오는 예외
-- 목록의 **36번 주제**(`Iterator`) — 반복에서 값을 모으는 관용
+- [목록의 **18번 주제**](../18-match-and-exhaustiveness/)(`match` 와 완전성 검사) · **19번 주제**(패턴 문법) — `match` 의 정본
+- [목록의 **20번 주제**](../20-if-let-while-let-let-else-and-let-chains/)(`if let`·`while let`·`let else`) — `let` 이 조건 자리에 오는 예외
+- [목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/)(`Iterator`) — 반복에서 값을 모으는 관용
 
 ## 용어 풀이
 

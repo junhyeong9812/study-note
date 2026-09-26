@@ -834,7 +834,7 @@ For more information about this error, try `rustc --explain E0038`.
 
 - ★★ **E0038 — the trait `Source` is not dyn compatible** — 「**method `items` references an `impl Trait` type in its return type**」.
   구현마다 **반환 타입이 다르므로**(숨긴 타입이 구현마다 하나씩) vtable 의 한 칸에 **한 시그니처로 못 담는다.**
-  [**25번 주제**](../25-traits-definition-impl-default-methods-and-associated-types/) (5)가 본 dyn 호환 조건에 **이유가 하나 더** 붙은 것이다. 정본은 목록의 **33번 주제**.
+  [**25번 주제**](../25-traits-definition-impl-default-methods-and-associated-types/) (5)가 본 dyn 호환 조건에 **이유가 하나 더** 붙은 것이다. 정본은 [목록의 **33번 주제**](../33-dyn-trait-objects-and-object-safety/).
 - ★ `help:` 가 두 길을 적는다 — 그 메서드를 **다른 트레이트로 옮기거나**, 구현이 하나뿐이면 **그 타입을 직접 쓰라.**
 
 **`dyn` 이 필요하면 — 반환을 `Box<dyn Iterator>` 로.**
@@ -994,8 +994,8 @@ fn main() {
 - [**29번 주제** — 변환 트레이트](../29-conversion-traits-from-into-tryfrom-asref-borrow/) (9) — `impl Into<String>` 인자는 인자 위치 `impl Trait` 의 대표 사례다.
 - [**12번 주제** — 수명 표기와 생략](../12-lifetime-annotations-and-elision/) — `&Vec<i32>` 의 **익명 수명**이 무엇인지. (5)② 가 포착한 것이 그것이다.
 - [**20번 주제** — `let` 체인](../20-if-let-while-let-let-else-and-let-chains/) — 같은 갈래에서 **2024 에디션에서만** 되는 또 하나의 문법.
-- 목록의 **33번 주제** — `dyn Trait` 와 dyn 호환. (8)의 E0038 이 거기서 깊어진다.
-- 목록의 **34번·35번 주제** — 클로저 세 종류와 **클로저를 돌려주기**(`impl Fn` 대 `Box<dyn Fn>`). (4)의 정본이다.
+- [목록의 **33번 주제**](../33-dyn-trait-objects-and-object-safety/) — `dyn Trait` 와 dyn 호환. (8)의 E0038 이 거기서 깊어진다.
+- [목록의 **34번**](../34-closures-fn-fnmut-fnonce-and-move/)·[**35번 주제**](../35-function-pointers-and-returning-closures/) — 클로저 세 종류와 **클로저를 돌려주기**(`impl Fn` 대 `Box<dyn Fn>`). (4)의 정본이다.
 - 목록의 **47번 주제** — 에디션 2021 대 2024, `cargo fix --edition`. (6)의 린트가 거기서 절차로 쓰인다.
 - 목록의 **50번 주제** — `Send`/`Sync`. (3)의 누수가 **스레드 경계**에서 나타나는 자리.
 

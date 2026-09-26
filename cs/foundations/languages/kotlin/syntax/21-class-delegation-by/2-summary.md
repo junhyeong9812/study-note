@@ -640,7 +640,7 @@ class Car(n: NotEngine) : Engine by n
 - [19번 주제](../19-inheritance-open-final-override/) — 상속. **위임이 무엇을 대신하는지**를 알려면 먼저 거기를 읽는다.
 - [13번 주제](../13-extension-functions-and-properties/) — 확장 함수. 「남의 타입에 기능을 더한다」의 또 다른 답이고 **정적 디스패치**라는 천장이 있다.
 - [`../../../java/syntax/11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/) — Java 에는 이 문법이 **없다.** 같은 일을 하려면 포워딩 메서드를 **손으로 전부 적는다.**
-- 목록의 **22번 주제** — `data class` 는 위임과 자주 함께 쓰인다(감싼 값 객체).
+- [목록의 **22번 주제**](../22-data-class-generated-members/) — `data class` 는 위임과 자주 함께 쓰인다(감싼 값 객체).
 
 ## 용어 풀이
 

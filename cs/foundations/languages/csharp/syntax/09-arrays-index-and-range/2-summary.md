@@ -31,7 +31,7 @@
 > **경계** — **동적 배열의 원리**(왜 두 배로 늘리나·상환 O(1))는 [`data-structure/01-dynamic-array/`](../../../../../data-structure/01-dynamic-array/)가 정본이다.\
 > 여기는 **.NET 에서 무엇이 무엇으로 풀리고 무엇이 할당을 내나**만 본다.\
 > **값 타입과 참조 타입**은 [01번](../01-value-types-and-reference-types/), **박싱**은 [03번](../03-boxing-and-unboxing/)이 정본이다.\
-> **컬렉션 선택**은 목록의 **10번 주제**, **컬렉션 식 `[1, 2, ..other]`** 는 **11번 주제**,\
+> **컬렉션 선택**은 [목록의 **10번 주제**](../10-collection-choosing-list-dictionary-hashset-queue-stack/), **컬렉션 식 `[1, 2, ..other]`** 는 **11번 주제**,\
 > **`Span<T>`·`Memory<T>` 자체**는 **46번 주제**, **인덱서 설계**는 **14번 주제**가 정본이다.
 > **대비** — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **15번**([`15-slices-ranges-and-utf8-boundaries/`](../../../rust/syntax/15-slices-ranges-and-utf8-boundaries/)) ·
 > Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **9번**([`09-sequence-ops-and-slicing/`](../../../python/syntax/09-sequence-ops-and-slicing/)) ·
@@ -900,7 +900,7 @@ cs09b-prec.cs(11,13): error CS0019: Operator '-' cannot be applied to operands o
 | 배열 전체 복사 | `a[..]` 또는 `Clone()` | 같은 일을 한다((3)·(1)) |
 | 2차원 격자 · 줄 길이가 **같다** | `int[,]` | ★ 객체 **하나** — 메모리·캐시에 유리((6)) |
 | 줄마다 길이가 **다르다** | `int[][]` | 다차원으로는 표현이 안 된다 |
-| 크기가 계속 변한다 | ★ `List<T>` | **배열은 크기가 고정**이다 — 목록의 **10번 주제** |
+| 크기가 계속 변한다 | ★ `List<T>` | **배열은 크기가 고정**이다 — [목록의 **10번 주제**](../10-collection-choosing-list-dictionary-hashset-queue-stack/) |
 | 문자열 일부를 **읽기만** | `s.AsSpan()[1..^1]` | `s[1..^1]` 은 **새 문자열**이다((3)) |
 
 ## 핵심 문장
@@ -920,9 +920,9 @@ cs09b-prec.cs(11,13): error CS0019: Operator '-' cannot be applied to operands o
 - [01번](../01-value-types-and-reference-types/) — 배열이 **참조 타입**인 것의 정본. 얕은 복사도 거기다.
 - [03번](../03-boxing-and-unboxing/) — ★ 이 문서가 쓴 **`cs-il.cs`** 의 전문이 그 (0)절에 있다. 할당 바이트를 재는 법도 거기서 굳혔다.
 - [06번](../06-nullable-reference-types/) — `new string[2]` 가 널로 채워지는 것을 **경고가 못 잡는** 이유.
-- 목록의 **10번 주제** — 크기가 변하는 그릇(`List<T>`·`Dictionary`)을 고르는 자리.
-- 목록의 **11번 주제** — `[1, 2, ..other]` 컬렉션 식. **`..` 라는 글자가 거기서는 「스프레드」로 쓰인다.**
-- 목록의 **14번 주제** — 인덱서를 **설계**하는 자리. 여기 (5)는 「`^`·`..` 를 받으려면 무엇이 필요한가」까지다.
+- [목록의 **10번 주제**](../10-collection-choosing-list-dictionary-hashset-queue-stack/) — 크기가 변하는 그릇(`List<T>`·`Dictionary`)을 고르는 자리.
+- [목록의 **11번 주제**](../11-collection-initializers-and-collection-expressions/) — `[1, 2, ..other]` 컬렉션 식. **`..` 라는 글자가 거기서는 「스프레드」로 쓰인다.**
+- [목록의 **14번 주제**](../14-indexers/) — 인덱서를 **설계**하는 자리. 여기 (5)는 「`^`·`..` 를 받으려면 무엇이 필요한가」까지다.
 - 목록의 **46번 주제** — `Span<T>`·`Memory<T>`·`stackalloc` 의 정본. **왜 필드에 못 두나**가 거기 있다.
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **15번**([`15-slices-ranges-and-utf8-boundaries/`](../../../rust/syntax/15-slices-ranges-and-utf8-boundaries/)) —\
   ★★ **Rust 의 `..` 와 C# 의 `..` 는 다른 물건**이다. Rust 의 `&v[1..4]` 는 **기본이 뷰**(슬라이스)이고\

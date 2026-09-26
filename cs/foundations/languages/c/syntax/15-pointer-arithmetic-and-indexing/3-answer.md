@@ -654,7 +654,7 @@ ex.c:5:14: warning: format ‘%d’ expects argument of type ‘int’, but argu
 
 **안 돌려 본 것 / 못 잰 것**
 
-- **안 돌려 본 것** — `restrict` 와 앨리어싱(목록의 **33번 주제**) · `p + huge` 로 정수 오버플로와 겹치는 자리 ·\
+- **안 돌려 본 것** — `restrict` 와 앨리어싱([목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/)) · `p + huge` 로 정수 오버플로와 겹치는 자리 ·\
   `p - p` 와 널끼리의 뺄셈 · **`size_t` 로 받았을 때 실제로 나오는 거대한 양수** ·\
   `-fsanitize=pointer-overflow` 의 **다른 형태**(널 아닌 오버플로) · `unsigned char *` 로 걷는 판.
 - **못 잰 것** — ★ **「clang 이 왜 `b` 를 `a` 앞에 두는가」.** 값이 `-4` 인 것은 봤지만\

@@ -1251,7 +1251,7 @@ report 32
   ★ **경계**: `as` 의 **비트 규칙**(자르기·부호 확장·부동→정수 포화)은 거기, 여기는 `From`/`TryFrom` 과의 **대비**만((5)).
 - [**14번 주제** — `String` 대 `&str`](../14-string-vs-str/) — 인자를 `&str` 로 받는 기본 판정. (7)·(9)가 그 위에 선다.
 - [**31번 주제** — 제네릭과 트레이트 경계·단형화](../31-generics-trait-bounds-where-and-monomorphization/) — (9)의 「실」을 **센다.**
-- 목록의 **39번 주제** — `HashMap`·`BTreeMap`. `entry` 와 조회 API 의 정본.
+- [목록의 **39번 주제**](../39-hashmap-vs-btreemap-and-entry-api/) — `HashMap`·`BTreeMap`. `entry` 와 조회 API 의 정본.
 - Go 의 오류 래핑 — [`go/syntax/24-error-wrapping-and-errors-is-as-join/`](../../../go/syntax/24-error-wrapping-and-errors-is-as-join/).
   ★ **대비**: Go 는 **런타임 사슬**(`%w` + `errors.Is`/`As`), Rust `?` 는 **컴파일 때 한 번의 `From`**((4)).
 - C# 의 `implicit`/`explicit` 변환 연산자 — C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **49번**(폴더 없음). 이 문서 (10)에서 **직접 던졌다.**

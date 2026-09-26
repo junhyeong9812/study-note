@@ -459,7 +459,7 @@ cls10.cpp:5:43: error: ‘this’ is unavailable for static member functions
   클래스 안의 `static int count_;` 는 **선언**이고, 클래스 밖의 `int Pool::count_ = 0;` 이 **정의**다.\
   정의를 빠뜨리면 컴파일은 되고 **링커에서 막힌다.**
 - ★★ **C++17 의 `static inline int born = 0;`** 은 그 짝을 없앤다 — **클래스 안 한 줄이 곧 정의**다.\
-  정본은 목록의 **25번 주제**다.
+  정본은 [목록의 **25번 주제**](../25-static-members-and-inline-variables/)다.
 - ★ 정적 멤버가 살아 있는 동안과 **언제 파괴되는가**는 [14번](../14-destructors-and-deterministic-destruction/)이 답한다.
 
 ### 9. ★★★ 경고 **0건**에 **`cc exit=0`** — 그런데 둘 다 ISO C++ 위반
@@ -572,7 +572,7 @@ clang -Wall -Wextra -pedantic 경고 2
 - **`const` 멤버 함수의 설계 활용** — 형제 [`10번`](../10-const-correctness/). 여기서는 **`this` 의 타입**까지만 썼다.
 - **구조체 패딩** — C 갈래 [`22-struct-padding-and-alignment/`](../../../c/syntax/22-struct-padding-and-alignment/)가 정본이다.
 - **멤버 초기화 순서** — [13번](../13-constructors-member-init-list-and-delegating/). 6번 문항의 `lazy` 가 거기서 풀린다.
-- **정적 멤버와 `inline` 변수** — 목록의 **25번 주제**.
+- **정적 멤버와 `inline` 변수** — [목록의 **25번 주제**](../25-static-members-and-inline-variables/).
 - **러스트의 데이터·코드 분리** — 러스트 갈래 [`16-structs-impl-and-associated-functions/`](../../../rust/syntax/16-structs-impl-and-associated-functions/).\
   C++ 이 한 중괄호에 넣은 것을 `struct` 와 `impl` 로 **아예 갈라 적는다.**
 
@@ -620,7 +620,7 @@ clang -Wall -Wextra -pedantic 경고 2
 - **안 돌려 본 것** — ★ **`-std=c++14` 이하 판**(`static inline` 이 안 되는 자리를 에러로 받지 않았다) ·\
   ★ **최적화를 켠 판**(전부 기본값으로만 돌렸다) · ★ **다른 ABI**(ARM·Windows) ·\
   ★ **`[[no_unique_address]]`** 를 붙인 판 · ★ **여러 번역 단위로 나눈 판**(심볼 병합을 직접 보지 않았다) ·\
-  ★ **`protected` 상속·`private` 상속**(기반 접근의 기본값 차이는 목록의 **19번 주제**로 미뤘다).
+  ★ **`protected` 상속·`private` 상속**(기반 접근의 기본값 차이는 [목록의 **19번 주제**](../19-inheritance-virtual-functions-override-final/)로 미뤘다).
 - **못 잰 것** — ★★★ **「캡슐화가 잘 됐는가」.** 이 문서가 잰 것은 **컴파일러가 막느냐**까지다.\
   **설계의 옳고 그름을 재는 도구는 이 환경에 없다.**
 - ★ **「부적용인 창」** — **런타임 sanitizer.** 접근 지정은 런타임에 아무것도 아니므로 **잴 것이 없다.**

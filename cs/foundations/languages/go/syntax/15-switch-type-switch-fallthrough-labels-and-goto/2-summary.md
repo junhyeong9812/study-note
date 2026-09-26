@@ -107,7 +107,7 @@ Go 는 **가지 하나만 골라 돌고 거기서 끝낸다.** 아래로 가고 
 2. 타입 스위치에서 **`v` 는 무슨 타입인가** — 가지마다 다르다면 그 규칙은 무엇인가.
 3. `break`·`continue`·`goto` 는 **어디까지 뛸 수 있나** — 못 뛰는 자리는 어디인가.
 
-★ 「인터페이스가 (타입, 값) 쌍이라는 것」은 이 주제가 아니다 — 목록의 **21번 주제**가 정본이다.
+★ 「인터페이스가 (타입, 값) 쌍이라는 것」은 이 주제가 아니다 — [목록의 **21번 주제**](../21-nil-interface-vs-interface-holding-nil-pointer/)가 정본이다.
 여기는 **타입 스위치라는 문법 표면**만 본다.
 
 ## 동작 방식
@@ -367,7 +367,7 @@ comma-ok 꼴 : s="문자열" ok=true
 - **`case Stringer:`** 처럼 **인터페이스**도 쓸 수 있다. `myInt` 가 거기 걸렸다.
   ★ **가지 순서가 의미를 갖는 자리**다 — 위에서 아래로 처음 맞는 것이 이긴다.
 - 아래 두 줄은 **타입 단언의 comma-ok 꼴**이다. 실패하면 **제로값과 `false`** 를 준다(패닉이 아니다).
-  정본은 목록의 **22번 주제**다.
+  정본은 [목록의 **22번 주제**](../22-type-assertion-any-and-comparable/)다.
 
 ```text
    switch v := x.(type) {
@@ -1147,10 +1147,10 @@ string : 3
   **그쪽은 루프 꼴과 `range` 까지**, 여기는 **`break`/`continue` 가 어디에 붙나**부터
 - [03번 주제](../03-constants-iota-and-untyped-constants/)(상수·`iota`) —
   **그쪽은 `iota` 가 값을 어떻게 펴는지까지**, 여기는 **그 상수 묶음에 `switch` 를 쓸 때의 위험**부터
-- 목록의 **21번 주제**(`nil` 인터페이스와 `nil` 포인터를 담은 인터페이스) —
+- [목록의 **21번 주제**](../21-nil-interface-vs-interface-holding-nil-pointer/)(`nil` 인터페이스와 `nil` 포인터를 담은 인터페이스) —
   **인터페이스가 (타입, 값) 쌍이라는 것의 정본.** 타입 스위치의 `case nil:` 이 거기서 설명된다
-- 목록의 **22번 주제**(타입 단언·`any`·`comparable`) — **단언 두 꼴의 정본**
-- 목록의 **26번 주제**(`defer`) — 깊은 중첩의 뒷정리는 Go 에서 `goto` 가 아니라 `defer` 다
+- [목록의 **22번 주제**](../22-type-assertion-any-and-comparable/)(타입 단언·`any`·`comparable`) — **단언 두 꼴의 정본**
+- [목록의 **26번 주제**](../26-defer-evaluation-lifo-named-results-and-loops/)(`defer`) — 깊은 중첩의 뒷정리는 Go 에서 `goto` 가 아니라 `defer` 다
 - [`../../../c/syntax/12-control-flow-and-switch/`](../../../c/syntax/12-control-flow-and-switch/) —
   **그쪽은 `switch` 가 「점프이지 블록이 아니라는」 것을 Duff's device 로 증명하고**,
   여기는 **그 성질을 언어가 뒤집은 쪽**이다.
@@ -1178,7 +1178,7 @@ string : 3
 ## 더 들어가면
 
 - `select` 는 채널 전용의 사촌이다 — 꼴은 `switch` 를 닮았는데 **가지를 고르는 방식이 다르다**
-  (준비된 것 중 **무작위**로 고른다). 정본은 목록의 **30번 주제**다.
+  (준비된 것 중 **무작위**로 고른다). 정본은 [목록의 **30번 주제**](../30-select-default-and-timeouts/)다.
 - `fallthrough` 앞에 **라벨을 붙일 수 있다**("a (possibly labeled) fallthrough statement").
   실무에서 볼 일은 거의 없다 — **이 문서는 안 던졌다.**
 - 식 스위치의 피연산자는 **비교 가능한 타입**이어야 한다("The switch expression type must be comparable").

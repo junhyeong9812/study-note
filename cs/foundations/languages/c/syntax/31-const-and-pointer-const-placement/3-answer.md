@@ -410,7 +410,7 @@ twice_read(&x, &x) = 7   (p 와 q 가 같은 곳 — const 인데 값이 바뀌�
 
 - ★★★ **`const int *p` 가 약속하는 것** — 「**나는 `p` 를 통해 그 `int` 를 고치지 않겠다**」.
 - ★★★ **「안 바뀐다」가 아닌 증거** — `twice_read(&x, &x) = 7`. `a = 7` 을 읽고, `*q = 0` 이 **같은 `x`** 를 0 으로 만들고, `b = *p` 는 **0** 이다. `p` 는 `const` 인데 `*p` 가 **바뀌었다** — 그리고 이것은 **UB 가 아니다**(비-`const` 객체를 다른 경로로 고친 것).
-- ★★ **겹치지 않는다는 약속은 `restrict`** 다(목록의 **33번 주제**).
+- ★★ **겹치지 않는다는 약속은 `restrict`** 다([목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/)).
 - ★ **「느리다」는 재지 않은 주장**이다 — 이 편은 명령 수만 셌고, 두 번 읽기는 **옳은 번역**이다.
 
 ### 9. 다섯 층 — **표준이 본체 · UB 가 둘째 · 조건부 표준·미명시는 비었다(안 던진 것 포함)** ★★★
@@ -439,7 +439,7 @@ twice_read(&x, &x) = 7   (p 와 q 가 같은 곳 — const 인데 값이 바뀌�
 **왜 그런가**
 
 - **선언 읽기** — [01번 형제](../01-declaration-syntax-and-reading/) · **포인터** — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · **리터럴의 저장 기간** — [20번 형제](../20-null-terminated-strings-and-string-literals/).
-- **`restrict`** — 목록의 **33번 주제** · **엄격한 앨리어싱** — 목록의 **55번 주제**.
+- **`restrict`** — [목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/) · **엄격한 앨리어싱** — 목록의 **55번 주제**.
 - ★ C++ 대비 — [C++ 10 — `const` 정확성](../../../cpp/syntax/10-const-correctness/).
 - ★ 이 주제가 책임지는 것 — ① **`const` 위치 읽기** ② **`const` 가 약속하지 않는 것**(재읽기 · 캐스트 · 리터럴) ③ **C 와 C++ 이 갈리는 셋**.
 

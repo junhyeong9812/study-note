@@ -905,8 +905,8 @@ func main() {
   **그쪽은 `defer` 의 평가 시점과 LIFO·명명 반환값까지**, 여기는 **그 규칙이 루프 변수와 겹치는 자리**부터
 - [14번 주제](../14-for-four-forms-range-over-int-and-func/)(`for` 의 네 형태·`range`) — **`for` 문법 자체의 정본.**
   이 주제는 그중 「변수가 몇 개인가」 한 축만 본다
-- 목록의 **26번 주제**(`defer` 의 평가 시점·루프 안의 `defer`) — 루프에서 `defer` 가 쌓이는 문제의 정본
-- 목록의 **28번 주제**(고루틴) · **35번 주제**(데이터 레이스와 `-race`) —
+- [목록의 **26번 주제**](../26-defer-evaluation-lifo-named-results-and-loops/)(`defer` 의 평가 시점·루프 안의 `defer`) — 루프에서 `defer` 가 쌓이는 문제의 정본
+- [목록의 **28번 주제**](../28-goroutines-go-statement-cost-and-termination/)(고루틴) · **35번 주제**(데이터 레이스와 `-race`) —
   **그쪽은 경쟁 자체까지**, 여기는 **캡처가 그 경쟁을 만드는 자리**까지
 - 목록의 **52번 주제**(도구·탈출 분석 읽기) — `-gcflags=-m` 출력 읽기의 정본
 - [`../../../python/syntax/22-closures-and-late-binding/`](../../../python/syntax/22-closures-and-late-binding/) —

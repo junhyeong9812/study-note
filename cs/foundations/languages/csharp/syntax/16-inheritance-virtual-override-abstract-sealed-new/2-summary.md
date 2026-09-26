@@ -19,7 +19,7 @@
 > ★ **상속·다형성 개념 자체**는 [`oop-basics/`](../../../../oop-basics/)가 정본이고, 여기는 **C# 의 기본값**이다.
 > ★★★ **대비 둘** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **09번**([`09-inheritance-overriding/`](../../../java/syntax/09-inheritance-overriding/))은 **기본 가상**이고,\
 > C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **19번**은 **기본 비가상인데 `new` 같은 키워드가 없다.**\
-> ★ 인터페이스 기본 구현 쪽 대비는 Java 갈래 목록의 **11번**([`11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/))이다.
+> ★ 인터페이스 기본 구현 쪽 대비는 Java 갈래 [목록의 **11번**](../11-collection-initializers-and-collection-expressions/)([`11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/))이다.
 >
 > ★★ **흔들리는 칸 / 안 흔들리는 칸**
 >

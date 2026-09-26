@@ -720,7 +720,7 @@ print(DEFAULT)
 ①은 내가 알고, ②는 몰라도 되지만 비싸고, ③은 **갈릴 것이 없게 만든다.**
 
 관련 주제로 이어진다 — 가변 객체가 함수 정의에 붙들리는 경우는 [20-mutable-default-args](../20-mutable-default-args/2-summary.md),\
-불변 구조체 설계는 목록의 **36번 주제** 「`dataclasses`」 가 정본이다.
+불변 구조체 설계는 [목록의 **36번 주제**](../36-dataclasses/) 「`dataclasses`」 가 정본이다.
 
 ---
 

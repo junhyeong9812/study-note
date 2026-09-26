@@ -125,7 +125,7 @@ public final class FtypesKt {
 - ★★ **`Int.() -> String` 과 `(Int) -> String` 은 디스크립터가 같다.** 수신자는 **첫 파라미터**로 내려간다\
   (확장 함수와 같은 자리 — [13번 주제](../13-extension-functions-and-properties/)).
 - ★ **`((Int) -> String)?` 도 같은 `Function1`** 이다. nullable 여부는 디스크립터에 안 남는다.
-- 제네릭 인자가 `? super Integer` 로 보이는 것은 **함수 타입의 파라미터가 반변**이기 때문이다(목록의 **28번 주제**).
+- 제네릭 인자가 `? super Integer` 로 보이는 것은 **함수 타입의 파라미터가 반변**이기 때문이다([목록의 **28번 주제**](../28-generics-variance-in-out-star-where/)).
 
 비용 — 타입 하나당 인터페이스 하나. 추가 객체는 (2) 에서 생긴다.
 
@@ -1095,7 +1095,7 @@ fun interface KInt { fun apply(x: Int): Int }
 - [목록의 **14번 주제**](../14-scope-functions/)(scope function) — `let`/`run`/`apply` 가 **전부 `inline` 고차 함수**다
 - 목록의 **36번 주제**(함수 타입·`fun interface`·SAM 변환) — **SAM 전체의 정본.** 여기는 박싱이 갈리는 자리만
 - 목록의 **37번 주제**(리시버 지정 람다와 DSL) — `A.() -> Unit` 의 정본
-- 목록의 **28번 주제**(선언 지점 변성) — `? super Integer` 가 보이는 이유
+- [목록의 **28번 주제**](../28-generics-variance-in-out-star-where/)(선언 지점 변성) — `? super Integer` 가 보이는 이유
 - 목록의 **47번 주제**(`Sequence`) — 지연 평가에서 람다가 어떻게 쌓이나
 
 ## 용어 풀이

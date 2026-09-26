@@ -15,9 +15,9 @@
 > [15번](../15-raii-resources-as-types/)이 **그 시점을 자원 관리에 쓰는 법**을 답한다.\
 > ★★ **[12번](../12-class-basics-members-access-and-this/) (6)의 `lazy` 가 여기서 풀린다** — 이름은 찾아졌는데 값이 없던 그 자리다.
 > **경계** — 「`{}` 초기화와 좁히기」는 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/),\
-> 「복사·이동이 무엇을 옮기나」는 형제 [`09번`](../09-rvalue-references-move-and-forward/)과 목록의 **16·17번 주제**,\
+> 「복사·이동이 무엇을 옮기나」는 형제 [`09번`](../09-rvalue-references-move-and-forward/)과 목록의 [**16**](../16-copy-constructor-and-copy-assignment/)·[**17**](../17-move-constructor-assignment-and-moved-from-state/)번 주제,\
 > 「어떤 매개변수로 받을까」는 형제 [`11번`](../11-choosing-parameter-passing/)이 정본이다.\
-> 「0/3/5의 법칙」은 목록의 **18번 주제**, 「`explicit` 과 변환 생성자」의 넓은 판은 목록의 **24번 주제**가 정본이다.\
+> 「0/3/5의 법칙」은 [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/), 「`explicit` 과 변환 생성자」의 넓은 판은 [목록의 **24번 주제**](../24-explicit-and-converting-constructors/)가 정본이다.\
 > 여기서는 「**초기화가 언제 몇 번 일어나나**」만 센다.
 > ★★★ **이 문서는 시간을 재지 않았다.** 근거는 **생성자·대입 호출 횟수**와 **컴파일러 진단** 둘뿐이다.\
 > 「몇 배 빠르다」는 문장은 **한 줄도 없다**.
@@ -562,7 +562,7 @@ ctor09.cpp:17:43: note: because ‘HasCopyAsn’ has user-provided ‘HasCopyAsn
 - ★★★ **「옮겼는데 복사가 돌았다」가 유일하게 믿을 만한 증거다.** `std::is_move_constructible_v` 는 **이 질문에 답하지 못한다** —\
   이동 생성자가 없어도 **복사 생성자가 rvalue 를 받아 주므로 그 특성은 참**이 되기 때문이다.\
   ★★ 그래서 이 절은 **특성이 아니라 계수**로 답한다.
-- ★★ **소멸자 하나를 적었을 뿐인데 이동이 사라진다** — 이것이 **0/3/5의 법칙**이 나온 이유다(목록의 **18번 주제**).
+- ★★ **소멸자 하나를 적었을 뿐인데 이동이 사라진다** — 이것이 **0/3/5의 법칙**이 나온 이유다([목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/)).
 - ★ **복사 대입만 적은 판에서는 경고가 하나 더 난다** — `implicitly-declared ... is deprecated [-Wdeprecated-copy]`.\
   **표준이 그 조합을 「비권장」으로 표시**해 둔 자리다.
 - ★ **`= default` 로 적는 것은 「적지 않은 것」과 다르다** — 명시적으로 적으면 **다른 것을 적어도 이동이 남는다.**
@@ -800,7 +800,7 @@ ctor13.cpp:6:23: note: declared here
 
 - ★ **일곱 에러가 이 주제의 규칙 넷에 대응한다** — `const`·참조 멤버 · `explicit` · 이동만 적어 사라진 기본 생성자 · `= delete`.
 - ★★ **`D d1;` 도 막힌다** — 복사 생성자를 `= delete` 로 **적은 것 자체가** 「사용자가 적은 생성자」라\
-  **기본 생성자가 더는 자동으로 생기지 않는다.** 이 한 줄이 0/3/5의 법칙(목록의 **18번 주제**)의 입구다.
+  **기본 생성자가 더는 자동으로 생기지 않는다.** 이 한 줄이 0/3/5의 법칙([목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/))의 입구다.
 
 ## 어디서 틀리나
 
@@ -945,7 +945,7 @@ UB 는 **(3) 하나**뿐이다.
 
 ## 더 들어가면
 
-- **0/3/5의 법칙** — (7)에서 본 「하나를 적으면 나머지도 따져야 한다」를 규칙으로 세운 것. 정본은 목록의 **18번 주제**.
+- **0/3/5의 법칙** — (7)에서 본 「하나를 적으면 나머지도 따져야 한다」를 규칙으로 세운 것. 정본은 [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/).
 - **복사 생략(copy elision)과 보장된 생략** — C++17 부터 prvalue 초기화에서 **복사·이동이 아예 일어나지 않는다.** 형제 [`08번`](../08-value-categories-lvalue-prvalue-xvalue/)이 그 정본이고, (1)의 계수가 그 영향을 받는다.
 - **집합체 초기화(aggregate initialization)** — 생성자를 하나도 안 적으면 `Widget w{1, 2}` 로 멤버를 직접 채울 수 있다. 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/).
 - **`constexpr` 생성자** — 컴파일 시간에 도는 생성자. 정본은 목록의 **38번 주제**.

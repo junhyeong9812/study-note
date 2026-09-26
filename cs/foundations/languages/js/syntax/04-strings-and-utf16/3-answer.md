@@ -507,10 +507,10 @@ new TextEncoder().encode(lone)     : ef bf bd</pre>
 | 주제 | 정본 |
 |---|---|
 | 코드 포인트와 UTF-8/16 의 **비트 배치** | [`cs/foundations/data-representation/`](../../../../data-representation/) |
-| `String` 메서드와 템플릿 리터럴 | 목록의 **28번 주제** |
-| 정규식의 `u`/`v` 플래그 | 목록의 **29·30번 주제** |
-| `[...s]` 가 코드 포인트 단위인 것의 **프로토콜** | 목록의 **19번 주제** |
-| well-formed `JSON.stringify` | 목록의 **31번 주제** |
+| `String` 메서드와 템플릿 리터럴 | [목록의 **28번 주제**](../28-string-methods-and-template-literals/) |
+| 정규식의 `u`/`v` 플래그 | 목록의 [**29**](../29-regexp-basics/)·[**30**](../30-regexp-advanced/)번 주제 |
+| `[...s]` 가 코드 포인트 단위인 것의 **프로토콜** | [목록의 **19번 주제**](../19-iterable-protocol-and-for-of/) |
+| well-formed `JSON.stringify` | [목록의 **31번 주제**](../31-json/) |
 | `Intl` 전반 | 목록의 **50번 주제** |
 
 - ★★★ **파이썬은 코드 포인트를 센다.** `len("👍")` 이 **1** 이다 — JS 의 `length` 가 2 인 것과 정확히 대비된다.

@@ -707,7 +707,7 @@ ex.21f.ts(28,7): error TS2322: Type 'readonly ["가", "나"]' is not assignable 
 - [**16번 주제** — 함수 타입과 오버로드](../16-function-types-and-overloads/) — 7절의 `.d.ts` 가 별칭을 안 펴는 성질은 그쪽.
 - [**07번 주제** — 객체 타입 세부](../07-object-type-details/) — `readonly` 가 **런타임을 막지 않는다**는 사실은 그쪽.
 - 목록의 **29번 주제**(`satisfies`) — 4절의 정본. 여기서는 **추론 제어와의 관계**까지만.
-- 목록의 **22번 주제**(`keyof` 와 인덱스 접근 타입) · 목록의 **27번 주제**(템플릿 리터럴 타입) — `const` 로 굳힌 리터럴을 **써먹는** 자리.
+- [목록의 **22번 주제**](../22-keyof-and-indexed-access-types/)(`keyof` 와 인덱스 접근 타입) · 목록의 **27번 주제**(템플릿 리터럴 타입) — `const` 로 굳힌 리터럴을 **써먹는** 자리.
 - 목록의 **46번 주제**(가변 튜플 타입) — 1절의 `readonly ["가", "나"]` 가 튜플이라는 사실이 거기서 값을 낸다.
 - Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **17번**([제네릭 선언](../../../java/syntax/17-generic-declarations/)) — ★ Java 에는 **추론 제어 장치가 없다.** 꺾쇠를 적거나 안 적거나뿐이다.
 

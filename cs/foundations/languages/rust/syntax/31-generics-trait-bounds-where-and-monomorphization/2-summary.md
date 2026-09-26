@@ -1088,7 +1088,7 @@ fn main() {
 - **`where` 를 쓴다** — 경계가 둘 이상이거나, **왼쪽이 파라미터가 아닌** 경계가 필요할 때.
 - **`?Sized` 를 단다** — `&T`·`Box<T>` 로 받는 함수가 **`str`·슬라이스·`dyn`** 도 받아야 할 때.
 - ★ **`dyn` 을 고른다** — 타입이 **실행 때 섞이거나**(한 `Vec` 에 여러 타입), **코드 크기가 중요**하고 타입 수가 많을 때.
-  이 문서가 보인 것은 **크기 쪽 값**뿐이다 — 속도와의 거래는 목록의 **33번 주제**에서 정적·동적 디스패치 선택으로 다룬다.
+  이 문서가 보인 것은 **크기 쪽 값**뿐이다 — 속도와의 거래는 [목록의 **33번 주제**](../33-dyn-trait-objects-and-object-safety/)에서 정적·동적 디스패치 선택으로 다룬다.
 - ★★ **코드 크기를 판단할 때는 판을 정하고 잰다** — `--release` 판(= `opt-level=3`)에서 심볼 표를 보라. `opt-level=0` 의 벌 수로 판단하지 않는다.
 - ★ **제네릭 안에서 비제네릭 몸통을 떼어 낸다** — 경계가 필요 없는 큰 부분을 **보통 함수로 빼면** 그 부분은 한 벌만 찍힌다.
   std 자신이 그렇게 쓴다 — 설치된 std 소스에서 `fs::read` 를 뽑으면:
@@ -1148,7 +1148,7 @@ for l in lines[start:start + 14]:
 - [**27번 주제** — `derive`](../27-derive-macros-debug-clone-partialeq-default-hash/) (4) — MIR 창의 첫 사용. 여기서는 **그 창이 못 보는 것**을 보였다((8)).
 - [**29번 주제** — 변환 트레이트](../29-conversion-traits-from-into-tryfrom-asref-borrow/) (9) — `impl Into<String>` 인자의 「실」이 이 주제의 벌 수다.
 - [**32번 주제** — `impl Trait`](../32-impl-trait-argument-return-position-and-2024-capture/) — 인자 자리 `impl Trait` 는 **이름 없는 제네릭**이라 여기의 단형화가 그대로 적용된다.
-- 목록의 **33번 주제** — `dyn Trait` 와 객체 안전성. (8)의 vtable 이 거기서 깊어진다.
+- [목록의 **33번 주제**](../33-dyn-trait-objects-and-object-safety/) — `dyn Trait` 와 객체 안전성. (8)의 vtable 이 거기서 깊어진다.
 - ★★ TS 의 제네릭 제약 — [`ts/syntax/20-generic-constraints-and-defaults/`](../../../ts/syntax/20-generic-constraints-and-defaults/) (6).
   ★ **그 편이 rustc 1.92.0 으로 직접 던진 판**을 (3)·(6)·(9)에서 인용했다 — 이 문서는 **다시 재지 않았다.**
 - Go 의 암묵 구현 — [`go/syntax/20-interface-declaration-and-implicit-implementation/`](../../../go/syntax/20-interface-declaration-and-implicit-implementation/) — 모양(구조) 쪽 셋째 점((9)).
@@ -1178,7 +1178,7 @@ for l in lines[start:start + 14]:
 ## 더 들어가면
 
 - **`impl` 블록의 경계와 조건부 구현** — `impl<T: Display> Wrapper<T> { … }` 는 `T` 가 `Display` 일 때만 메서드가 생긴다.
-- **고차 경계(HRTB)** — `where F: for<'a> Fn(&'a str)` — 수명에 대해 전칭하는 경계. 목록의 **34번 주제**(클로저) 근처에서 만난다.
+- **고차 경계(HRTB)** — `where F: for<'a> Fn(&'a str)` — 수명에 대해 전칭하는 경계. [목록의 **34번 주제**](../34-closures-fn-fnmut-fnonce-and-move/)(클로저) 근처에서 만난다.
 - **`const` 제네릭** — `fn f<const N: usize>(a: [u8; N])` — 값으로 단형화된다. 벌 수 세기가 그대로 적용된다(이 문서는 안 셌다).
 - **`-C codegen-units`·LTO** — 크레이트를 나눠 컴파일하는 단위와 링크 때 최적화. **벌 수·병합에 영향을 줄 수 있는 축**이다 — 이 격자는 기본값만 썼다.
 - **`cargo bloat` 같은 도구** — 외부 크레이트라 이 문서는 안 썼다. `nm -C -S --size-sort` 가 같은 질문의 std 판이다.

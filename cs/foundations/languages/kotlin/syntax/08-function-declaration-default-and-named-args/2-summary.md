@@ -688,7 +688,7 @@ fun hello(name: String, greeting: String = "안녕") = "$greeting, $name"
 - [목록의 **11번 주제**](../11-inline-functions/)(인라인 함수) — 인라인이 기본 인자와 만나는 자리
 - [목록의 **13번 주제**](../13-extension-functions-and-properties/)(확장 함수) — 수신자가 앞에 붙는 또 다른 선언 형태
 - [목록의 **15번 주제**](../15-class-declaration-constructors-and-init/)(클래스 선언 — 주 생성자) — **생성자에도 같은 `$default` 가 만들어진다**
-- 목록의 **22번 주제**(`data class`) — `copy()` 가 기본 인자로 만들어지는 대표 사례
+- [목록의 **22번 주제**](../22-data-class-generated-members/)(`data class`) — `copy()` 가 기본 인자로 만들어지는 대표 사례
 - 목록의 **34번 주제**(예외·`Nothing` 타입) — `Unit` 과 `Nothing` 의 구분
 - 목록의 **39번 주제**(Java 상호운용 애너테이션) — `@JvmOverloads` **전체**의 정본. 여기는 기본 인자의 짝으로만 다뤘다
 

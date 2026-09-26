@@ -20,9 +20,9 @@
 > 「스코프와 링크 일반」은 C 갈래 목록의 **29번**이 정본이다.\
 > 「캐스트 4종을 어떻게 고르나」의 정본은 형제 [`03번`](../03-four-cast-operators/)이다 —\
 > 여기서는 **`const_cast` 가 무엇을 사고 무엇을 잃는가**만 본다((6)).\
-> 「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/), 「값 범주」는 목록의 **08번 주제**,\
-> 「`const` 객체를 `move` 하면 무슨 일이 나나」는 목록의 **09번 주제**,\
-> 「그래서 매개변수를 `const&` 로 받나」는 목록의 **11번 주제**,\
+> 「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/), 「값 범주」는 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/),\
+> 「`const` 객체를 `move` 하면 무슨 일이 나나」는 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/),\
+> 「그래서 매개변수를 `const&` 로 받나」는 [목록의 **11번 주제**](../11-choosing-parameter-passing/),\
 > 「`constexpr`·`consteval` 자체」는 목록의 **38번 주제**가 정본이다.
 > ★★★ **이 주제는 「금지 목록」이 아니라 「계약」이다** — `const` 가 **무엇을 막고 무엇을 안 막는지**가 값의 전부다.\
 > 안 막는 쪽이 (4)·(6)·(10) 셋이고, **셋 다 진단이 0건**이다.
@@ -314,10 +314,10 @@ own  : 1           (이쪽은 정말 못 바꾼다)
    void f(const Buf b);     ★ 거의 뜻이 없다          복사본을 안 고치겠다는 말
 ```
 
-- ★★★ **`const T&` 가 lvalue·const lvalue·prvalue·xvalue 를 전부 받는다** — 그 격자의 정본은 목록의 **08번 주제**다.
+- ★★★ **`const T&` 가 lvalue·const lvalue·prvalue·xvalue 를 전부 받는다** — 그 격자의 정본은 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)다.
 - ★★ **값 매개변수에 `const` 를 붙이는 것은 선언에서는 무의미하다** — 호출하는 쪽이 볼 이유가 없다.\
   **정의에만** 붙여 「이 함수 안에서 안 고친다」를 적는 용도다.
-- ★ **그래서 무엇으로 받을지**를 크기·수명·소유권으로 고르는 것이 목록의 **11번 주제**다 — 여기서는 **계약 표기**까지만.
+- ★ **그래서 무엇으로 받을지**를 크기·수명·소유권으로 고르는 것이 [목록의 **11번 주제**](../11-choosing-parameter-passing/)다 — 여기서는 **계약 표기**까지만.
 
 ### (6) ★★★ `const_cast` — 진짜 `const` 를 고치면 UB
 
@@ -523,7 +523,7 @@ int shared_from_a() { return shared; }
   ★ 대신 **주소가 파일마다 다르다** — 주소를 비교하는 코드는 여기서 조용히 틀린다.
 - ★ **C 는 이렇지 않다** — C 의 파일 스코프 `const` 는 **외부 링크**다.\
   링크 일반의 정본은 C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **29번**이다.
-- ★ **C++17 부터는 `inline constexpr` 를 쓰면** 번역 단위마다 복사본이 안 생긴다 — 그 정본은 목록의 **25번 주제**다.
+- ★ **C++17 부터는 `inline constexpr` 를 쓰면** 번역 단위마다 복사본이 안 생긴다 — 그 정본은 [목록의 **25번 주제**](../25-static-members-and-inline-variables/)다.
 
 **비용** — 번역 단위마다 **객체 하나씩** 생길 수 있다. `int` 하나면 무시할 만하고, **큰 배열이면 아니다.**
 
@@ -658,7 +658,7 @@ cnst08.cpp:21:9: error: read-only variable is not assignable
 ```
 
 - ★ **g++ 의 셋에 `[-fpermissive]` 가 붙어 있다**((2)·(3)·(4)) — 그 플래그로 내려가는 진단이라는 뜻이다.\
-  ★★ 그 플래그가 무엇을 하는지의 실측은 목록의 **08번 주제**에 있다((10)과 같은 집안이다).
+  ★★ 그 플래그가 무엇을 하는지의 실측은 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)에 있다((10)과 같은 집안이다).
 
 ### (10) ★★★ 「종료 코드가 0인데 ill-formed」 — 이 갈래의 고정 항목
 
@@ -743,9 +743,9 @@ cnst07.cpp:6:15: warning: ISO C++11 does not allow conversion from string litera
 | 층 | 뜻 | 이 주제에서 해당하는 것 | 어떻게 확인했나 | **도구가 못 보는 것** |
 |---|---|---|---|---|
 | **표준** | 어느 구현에서도 같다 | **`const` 멤버 함수가 멤버를 못 고치는 것** · **`const` 객체로 비-const 멤버를 못 부르는 것** · **`const` 오버로드 선택**((2)) · **`mutable` 이 예외인 것**((3)) · **`const T*` → `T*` 암묵 변환이 없는 것** · **네임스페이스 스코프 `const` 가 내부 링크인 것**((7)) · **`constexpr` 가 상수식을 요구하는 것**((8)) | g++·clang **에러 7개 전부 일치** · `nm` · 실행 로그 | ★★ **`const` 가 포인터 멤버 너머를 안 막는 것**((4)) — **막는 게 아니라 원래 범위 밖**이다 |
-| **조건부 표준** | 표준판이 있을 때만 | ★★ **`char*` ← 문자열 리터럴이 C++11부터 ill-formed**((10)) · `constexpr` 는 C++11부터 · `inline` 변수는 C++17부터(목록의 **25번 주제**) | `-pedantic` 대 `-pedantic-errors` 두 판 | ★★★ **`-std=c++20` 만으로는 안 잡힌다** — `-pedantic-errors` 라야 `cc exit=1` |
+| **조건부 표준** | 표준판이 있을 때만 | ★★ **`char*` ← 문자열 리터럴이 C++11부터 ill-formed**((10)) · `constexpr` 는 C++11부터 · `inline` 변수는 C++17부터([목록의 **25번 주제**](../25-static-members-and-inline-variables/)) | `-pedantic` 대 `-pedantic-errors` 두 판 | ★★★ **`-std=c++20` 만으로는 안 잡힌다** — `-pedantic-errors` 라야 `cc exit=1` |
 | **구현 정의** | 문서화 의무가 있다 | 진단 문구 · **경고 이름**(`-Wwrite-strings` 대 `-Wwritable-strings`) · `nm` 의 **심볼 종류 문자**(ELF·binutils 2.42) · `const` 객체를 **어느 구역에 두는지** | 두 컴파일러 + `nm` 대조 | — |
-| **미명시** | 몇 가지 중 하나 | ★ **같은 문자열 리터럴이 합쳐지는지**(정본은 목록의 **08번 주제**) · ★ **문자열 리터럴이 쓰기 금지 구역에 놓이는지** — (10)에서 **실제로 그랬지만** 표준이 정한 것은 「**수정이 UB**」까지다 | (10)의 `run exit=139` | ★★ **「죽었다」가 「표준이 죽으라고 했다」가 아니다** — 죽는 것은 **이 구현의 결과**다 |
+| **미명시** | 몇 가지 중 하나 | ★ **같은 문자열 리터럴이 합쳐지는지**(정본은 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)) · ★ **문자열 리터럴이 쓰기 금지 구역에 놓이는지** — (10)에서 **실제로 그랬지만** 표준이 정한 것은 「**수정이 UB**」까지다 | (10)의 `run exit=139` | ★★ **「죽었다」가 「표준이 죽으라고 했다」가 아니다** — 죽는 것은 **이 구현의 결과**다 |
 | **UB** | 아무 일이나 | ★★★ **원래 `const` 인 객체를 `const_cast` 로 고치기**((6)) · ★★ **문자열 리터럴 수정**((10)) | `-O0`·`-O2`·clang·UBSan **네 판** / `run exit=139` | ★★★ **UBSan 이 (6)을 한 줄도 안 낸다**(`run exit=0`) · **컴파일러는 [A]와 [B]를 구별해 주지 않는다**((1)) |
 
 **「도구가 못 보는 것」을 층마다 — 전용 표**
@@ -875,7 +875,7 @@ int main() {
         예     ──> 안 붙인다
 
    ② 이 함수가 인자를 고치나?
-        아니오 ──> const T&  (또는 값 — 목록의 11번 주제)
+        아니오 ──> const T&  (또는 값 — [목록의 **11번 주제**](../11-choosing-parameter-passing/))
         예     ──> T&
 
    ③ 멤버에 포인터·핸들이 있나?
@@ -967,7 +967,7 @@ int main() {
 | 멤버 함수가 객체의 뜻을 안 바꾼다 | **`const` 를 붙인다** | 안 붙이면 `const` 사용자가 못 쓴다((2)) |
 | 캐시·호출 횟수를 둬야 한다 | **그 멤버만 `mutable`** | 선언에 예외가 적힌다((3)) |
 | 멤버에 포인터·핸들이 있다 | ★ **`const` 멤버는 `const T&` 를 돌려준다** | `const` 가 그 너머를 안 막는다((4)) |
-| 인자를 안 고친다 | **`const T&`**(크면) · **값**(작으면) | 고르는 기준은 목록의 **11번 주제** |
+| 인자를 안 고친다 | **`const T&`**(크면) · **값**(작으면) | 고르는 기준은 [목록의 **11번 주제**](../11-choosing-parameter-passing/) |
 | 헤더에 상수를 둔다 | **`inline constexpr`**(C++17\~) | `const` 만 쓰면 TU 마다 하나씩((7)) |
 | 옛 API 가 `const` 를 안 받는다 | ★ **원래 객체가 `const` 인지 먼저 본다** | `const` 였으면 `const_cast` 는 UB((6)) |
 | 컴파일 시간 값이 필요하다 | **`constexpr`** | `const` 는 런타임 값도 받는다((8)) |
@@ -990,9 +990,9 @@ int main() {
 - C 갈래 [`20번` 문자열 리터럴](../../../c/syntax/20-null-terminated-strings-and-string-literals/) — **리터럴의 저장 기간**은 거기, 여기는 **`char*` 변환이 ill-formed 인 것**((10)).
 - C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **31번** — **`const` 위치를 읽는 순서**가 거기, 여기는 **C++ 의 인터페이스 설계 도구로서의 `const`**.
 - C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **29번** — **스코프와 링크 일반**이 거기, 여기는 **`const` 가 링크를 바꾸는 한 줄**((7)).
-- 목록의 **08번 주제** — **값 범주**. `const T&` 가 네 범주를 다 받는 격자가 거기다.
-- 목록의 **09번 주제** — **`const` 객체를 `move` 하면 복사가 되는 것.**
-- 목록의 **11번 주제** — **그래서 무엇으로 받나**(값·`const&`·`&&`·`string_view`).
+- [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/) — **값 범주**. `const T&` 가 네 범주를 다 받는 격자가 거기다.
+- [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/) — **`const` 객체를 `move` 하면 복사가 되는 것.**
+- [목록의 **11번 주제**](../11-choosing-parameter-passing/) — **그래서 무엇으로 받나**(값·`const&`·`&&`·`string_view`).
 - 목록의 **38번 주제** — `constexpr`·`consteval`·`constinit` 자체.
 - Rust 대비 — [`rust/syntax/10 — 빌림 `&` 와 `&mut`, 별칭 규칙`](../../../rust/syntax/10-borrowing-and-aliasing-rules/).\
   **축은 「누가 지키나」다** — 아래 「더 들어가면」에 한 문단으로 뒀다.
@@ -1026,6 +1026,6 @@ int main() {
 ### 안 판 것
 
 - **`volatile`** — 같은 cv 한정자인데 축이 다르다. C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **32번**이 정본이다.
-- **`const` 멤버 함수의 `&`·`&&` 한정자** — `void f() const&` 같은 것. `operator=` 쪽 실측은 목록의 **08번 주제**에 있다.
+- **`const` 멤버 함수의 `&`·`&&` 한정자** — `void f() const&` 같은 것. `operator=` 쪽 실측은 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)에 있다.
 - **`const` 이터레이터** — 표준 라이브러리 쪽이라 목록의 **43번 주제**로 넘긴다. `std::as_const` 도 던지지 않았다.
 - **`const` 를 `constexpr` 로 올릴 때의 ABI 영향** — 재 보지 않았다.

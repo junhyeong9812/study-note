@@ -314,7 +314,7 @@ SUMMARY: AddressSanitizer: double-free ../../../../src/libsanitizer/asan/asan_ma
   `attempting double-free on 0x…` 로 죽인다 — **`run exit=1`**(`ABORTING`).\
   ★ [14번](../14-destructors-and-deterministic-destruction/) (5)의 `new-delete-type-mismatch`, (6)의 `bad-free` 와 **또 다른 이름**이다.
 - ★★★ **이 소스는 경고 없이 컴파일된다**(`cc exit=0`). **소멸자를 적었는데 복사를 안 막은 것**이\
-  **0/3/5의 법칙**(목록의 **18번 주제**)이 말하는 자리이고, **컴파일러는 아무 말도 하지 않는다**(9번).
+  **0/3/5의 법칙**([목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/))이 말하는 자리이고, **컴파일러는 아무 말도 하지 않는다**(9번).
 
 ### 5. ★★ `free` 는 **한 번** — 원본의 소멸자는 **여전히 돈다**
 
@@ -894,7 +894,7 @@ SUMMARY: AddressSanitizer: 48 byte(s) leaked in 2 allocation(s).
 
 - **RAII 가 성립하는 유일한 근거**는 [14번](../14-destructors-and-deterministic-destruction/) **(2)의 되감기**다 —\
   「예외가 지나가도 지역 객체의 소멸자가 전부 돈다」. 그 보장이 없으면 이 주제 전부가 희망이 된다.
-- 「**소멸자를 적었으면 복사도 결정하라**」의 정본은 목록의 **18번 주제**(0/3/5의 법칙)이고,\
+- 「**소멸자를 적었으면 복사도 결정하라**」의 정본은 [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/)(0/3/5의 법칙)이고,\
   실측은 [13번](../13-constructors-member-init-list-and-delegating/) (7)에 있다.
 - **`unique_ptr` 은 26번 · `shared_ptr` 은 27번 · `weak_ptr` 과 순환 참조는 28번 주제**다.\
   ★ 7번은 그중 **`sizeof` 와 deleter 동작만** 본 것이다.

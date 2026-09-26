@@ -1032,8 +1032,8 @@ For more information about this error, try `rustc --explain E0369`.
   ★ **경계**: **슈퍼트레이트** 문법은 거기, 여기는 그 사슬이 **계약을 어떻게 쌓나**다.
 - [**21번 주제** — `Option` 과 조합 메서드](../21-option-and-combinators/) —
   `partial_cmp` 가 `Option<Ordering>` 을 내는 이유와 `unwrap` 의 대가((6)).
-- 목록의 **39번 주제** — `HashMap`·`BTreeMap` 등 컬렉션. **어느 것을 고르나**의 정본이다.
-- 목록의 **36번 주제** — `Iterator` 와 어댑터. `max_by`·`min_by` 가 비교 함수를 받는 자리다.
+- [목록의 **39번 주제**](../39-hashmap-vs-btreemap-and-entry-api/) — `HashMap`·`BTreeMap` 등 컬렉션. **어느 것을 고르나**의 정본이다.
+- [목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/) — `Iterator` 와 어댑터. `max_by`·`min_by` 가 비교 함수를 받는 자리다.
 - Java 의 `equals`/`hashCode` 계약 — [`java/syntax/27-equals-hashcode-contract/`](../../../java/syntax/27-equals-hashcode-contract/).
   ★ **대비**: **계약의 내용이 거의 같다.** 다른 것은 **표면**이다 —
   Java 는 `Object` 에 **기본 구현이 있어** 안 고쳐도 컴파일·실행이 되고(참조 동등으로 조용히 동작),
@@ -1065,7 +1065,7 @@ For more information about this error, try `rustc --explain E0369`.
 ## 더 들어가면
 
 - **`Borrow` 와 조회 키** — `HashMap<String, V>` 를 `&str` 로 조회할 수 있는 것은 `Borrow` 덕분인데,
-  **`Borrow` 도 「같으면 해시도 같아야 한다」는 계약을 요구한다**(목록의 **29번 주제**).
+  **`Borrow` 도 「같으면 해시도 같아야 한다」는 계약을 요구한다**([목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/)).
 - **`Hasher` 를 바꾸기** — `BuildHasher` 를 갈아 끼우면 해시 함수를 바꿀 수 있다.
   이 문서는 **씨앗 고정**을 위해 그 자리를 썼다.
 - **HashDoS 와 `RandomState`** — 씨앗을 매번 새로 고르는 이유가 **공격자가 충돌을 몰아넣는 것**을 막기 위해서다.

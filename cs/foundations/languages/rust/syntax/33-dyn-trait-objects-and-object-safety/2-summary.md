@@ -1150,7 +1150,7 @@ u8 9
 - ★ [`언어-특성/README.md`](../../언어-특성/README.md) §6 — **제로 코스트 논증의 정본.** 「`dyn` 은 단형화 이점이 사라진다」는 **거기**의 문장이고, 이 문서는 시간을 재지 않았다.
 - ★ C++ 대비 — C++ 갈래의 [**19번**](../../../cpp/syntax/19-inheritance-virtual-functions-override-final/)(가상 함수)과 C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **21번**(vtable 비용). (1)의 `sizeof` 는 그 대비의 **크기 한 칸**만 쟀다.
 - [**34번 주제** — 클로저 세 종류](../34-closures-fn-fnmut-fnonce-and-move/) · [**35번 주제** — 클로저 반환](../35-function-pointers-and-returning-closures/) — `Box<dyn Fn>` 은 이 주제의 트레이트 객체가 **클로저 트레이트**에 쓰인 것이다.
-- 목록의 **40번 주제** — `Box<T>`·재귀 타입·`dyn` 담기. `Box<dyn …>` 를 **소유 쪽에서** 다루는 자리.
+- [목록의 **40번 주제**](../40-box-recursive-types-and-dyn/) — `Box<T>`·재귀 타입·`dyn` 담기. `Box<dyn …>` 를 **소유 쪽에서** 다루는 자리.
 - 목록의 **50번 주제** — `Send`/`Sync`. (6)의 `dyn Display + Send` 가 스레드 경계에서 쓰이는 자리.
 
 ## 용어 풀이

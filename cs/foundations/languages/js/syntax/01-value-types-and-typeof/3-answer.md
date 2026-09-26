@@ -264,11 +264,11 @@ js01b-01c-boxing.js                같다 (한 글자도)
 
 | 주제 | 정본 |
 |---|---|
-| TDZ 와 호이스팅 | 목록의 **05번 주제** |
+| TDZ 와 호이스팅 | [목록의 **05번 주제**](../05-var-let-const-and-tdz/) |
 | 엄격 모드가 바꾸는 규칙 전부 | 목록의 **35번 주제** |
 | `Array.isArray`·`instanceof`·브랜드 태그가 **어디서 깨지나** | 목록의 **34번 주제** |
-| `Symbol.toStringTag` 로 태그를 바꾸는 것 | 목록의 **22번 주제** |
-| 프로퍼티 열거 순서·`"k" in o` | 목록의 **13번 주제** |
+| `Symbol.toStringTag` 로 태그를 바꾸는 것 | [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) |
+| 프로퍼티 열거 순서·`"k" in o` | [목록의 **13번 주제**](../13-object-literals-and-properties/) |
 
 - ★★★ **TypeScript 갈래와의 경계** — 그쪽([`ts/syntax/01-what-ts-adds-and-erases`](../../../ts/syntax/01-what-ts-adds-and-erases/2-summary.md))은
   「**타입 표기는 런타임에 안 남는다**」가 정본이고, 여기는 「**런타임에 남아 있는 것이 무엇인가**」가 정본이다.

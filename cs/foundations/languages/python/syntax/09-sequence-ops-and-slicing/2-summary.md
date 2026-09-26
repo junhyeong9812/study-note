@@ -1185,7 +1185,7 @@ except ValueError as e:
 - 이어지는 곳: [목록의 **10번 주제**](../10-list-methods-and-sort-key/) 「list 메서드와 정렬 키」 — `sort` 대 `sorted`, 그리고 `s[:]` 로 정렬본을 따로 들기.
 - 이어지는 곳: [목록의 **11번 주제**](../11-tuple-and-unpacking/) 「tuple 과 언패킹」 — 별표 언패킹이 슬라이스와 겹치는 자리.
 - 이어지는 곳: [목록의 **18번 주제**](../18-loop-control-and-else/) 「반복 제어」 — 순회 중 컨테이너 변경.
-- 이어지는 곳: 목록의 **32번 주제** 「컨테이너 프로토콜」 — `__getitem__` 에서 `int` 와 `slice` 를 갈라 받는 법.
+- 이어지는 곳: [목록의 **32번 주제**](../32-container-protocol/) 「컨테이너 프로토콜」 — `__getitem__` 에서 `int` 와 `slice` 를 갈라 받는 법.
 - 이어지는 곳: 목록의 **43번 주제** 「`collections`」 — 앞쪽 삽입·삭제가 잦으면 `deque`.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — 리스트·인덱싱을 「이렇게 쓴다」까지 다룬다.\
   **경계**: 그쪽은 사용 예시까지, 여기는 「**무엇이 안 터지고 무엇이 공유되나**」부터다.
@@ -1217,4 +1217,4 @@ except ValueError as e:
 - **`memoryview`** 를 쓰면 `bytes` 의 슬라이스가 **복사 없이** 된다([06번](../06-strings-bytes-unicode/2-summary.md)).
 - **`list.insert(0, x)` 와 `del s[0]` 은 O(n)** 이다. 앞쪽이 잦으면 `collections.deque`(목록의 **43번 주제**).
 - **numpy 의 슬라이스는 뷰**다 — 파이썬 리스트의 슬라이스가 복사인 것과 정반대라, 옮겨 쓸 때 가장 크게 어긋나는 자리다(이 환경에 `numpy` 가 없어 **실행 검증하지 않았다**).
-- **`s[i:j]` 의 반환 타입을 사용자 클래스에서 정하려면** `__getitem__` 안에서 `isinstance(k, slice)` 를 갈라 처리한다(목록의 **32번 주제**).
+- **`s[i:j]` 의 반환 타입을 사용자 클래스에서 정하려면** `__getitem__` 안에서 `isinstance(k, slice)` 를 갈라 처리한다([목록의 **32번 주제**](../32-container-protocol/)).

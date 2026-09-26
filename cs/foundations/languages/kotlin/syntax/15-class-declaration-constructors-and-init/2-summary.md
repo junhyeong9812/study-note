@@ -8,8 +8,8 @@
 > 그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).
 > ⚠️ **다시 돌리면 달라지는 블록은 없다** — 싣는 스택 트레이스도 사용자 프레임뿐이다. 재대조 근거는 3-answer 의 「흔들리는 칸」 표다.
 > **버전** — 주 생성자·부 생성자·`init` 의 규칙은 **1.0** 이래 같다. 이 문서에 버전으로 갈리는 항목은 없다.
-> **경계** — `open`/`final` 기본값과 `override` 규칙은 목록의 **19번 주제**, backing field·`lateinit`·`const` 는 [16번 주제](../16-properties-backing-field-lateinit-const/),\
-> `data class` 가 무엇을 만들어 주는지는 목록의 **22번 주제**, 기본 인자·이름 붙인 인자는 [08번 주제](../08-function-declaration-default-and-named-args/)가 정본이다.\
+> **경계** — `open`/`final` 기본값과 `override` 규칙은 [목록의 **19번 주제**](../19-inheritance-open-final-override/), backing field·`lateinit`·`const` 는 [16번 주제](../16-properties-backing-field-lateinit-const/),\
+> `data class` 가 무엇을 만들어 주는지는 [목록의 **22번 주제**](../22-data-class-generated-members/), 기본 인자·이름 붙인 인자는 [08번 주제](../08-function-declaration-default-and-named-args/)가 정본이다.\
 > 여기는 **한 객체가 만들어질 때 무엇이 어느 순서로 도는가**만 다룬다.\
 > Java 쪽 짝은 [`../../../java/syntax/06-initialization-order/`](../../../java/syntax/06-initialization-order/)(순서)와\
 > [`../../../java/syntax/07-constructors/`](../../../java/syntax/07-constructors/)(`this()`/`super()`)다.
@@ -721,7 +721,7 @@ Exception in thread "main" java.lang.NullPointerException: Cannot invoke "String
 - ★ **JVM 의 「도움 되는 NPE」 메시지가 원인을 지목한다** — `because "this.label" is null`.
 - ★ 막는 법은 **상위 클래스 생성자·`init` 에서 `open` 멤버를 부르지 않는 것**뿐이다.\
   꼭 필요하면 `open` 대신 `final`(Kotlin 기본값) 로 두거나, 초기화를 생성 후 별도 메서드로 미룬다.\
-  Kotlin 이 **클래스와 멤버를 기본 `final` 로 둔 것**이 바로 이 구멍을 좁히는 장치다(목록의 **19번 주제**).
+  Kotlin 이 **클래스와 멤버를 기본 `final` 로 둔 것**이 바로 이 구멍을 좁히는 장치다([목록의 **19번 주제**](../19-inheritance-open-final-override/)).
 
 ### (7) 선언 순서를 어기면 — **이쪽은 컴파일러가 잡는다**
 
@@ -881,9 +881,9 @@ class D private constructor(val x: Int)
 - [05번 주제 — 플랫폼 타입](../05-platform-types/) — 널 불가 보장이 끝나는 **다른** 자리.
 - [08번 주제 — 함수 선언·기본 인자](../08-function-declaration-default-and-named-args/) — 생성자 오버로드를 대체하는 기본 인자.
 - [02번 주제 — 문자열 템플릿](../02-string-templates-and-raw-strings/) — 역어셈블에 `StringBuilder` 가 보이는 이유.
-- 목록의 **19번 주제** — `open`/`final` 기본값이 (6)의 구멍을 왜 좁히나.
-- 목록의 **22번 주제** — `data class` 가 주 생성자만 보는 이유.
-- 목록의 **25번 주제** — `companion object` 와 `static` 초기화의 자리.
+- [목록의 **19번 주제**](../19-inheritance-open-final-override/) — `open`/`final` 기본값이 (6)의 구멍을 왜 좁히나.
+- [목록의 **22번 주제**](../22-data-class-generated-members/) — `data class` 가 주 생성자만 보는 이유.
+- [목록의 **25번 주제**](../25-object-declaration-companion-and-object-expression/) — `companion object` 와 `static` 초기화의 자리.
 
 ## 용어 풀이
 
@@ -900,8 +900,8 @@ class D private constructor(val x: Int)
 ## 더 들어가면
 
 - **`data class` 의 `copy`·`equals`·`componentN` 은 주 생성자 프로퍼티만 본다.** 몸통에 선언한 프로퍼티는 빠진다 —\
-  (5)에서 본 「주 생성자 칸이 특별하다」의 또 다른 결과다. 정본은 목록의 **22번 주제**.
-- **`companion object` 의 초기화**는 인스턴스 초기화와 다른 시점이다(클래스 초기화). 정본은 목록의 **25번 주제**.
+  (5)에서 본 「주 생성자 칸이 특별하다」의 또 다른 결과다. 정본은 [목록의 **22번 주제**](../22-data-class-generated-members/).
+- **`companion object` 의 초기화**는 인스턴스 초기화와 다른 시점이다(클래스 초기화). 정본은 [목록의 **25번 주제**](../25-object-declaration-companion-and-object-expression/).
 - ★ **(6)을 정적으로 잡는 검사기**는 IDE 검사(`Calling non-final function in constructor`)로는 존재하지만\
   **`kotlinc` 자체는 이 문서의 두 프로그램에서 아무 경고도 내지 않았다.** 「IDE 가 잡아 주니 괜찮다」는 근거가 컴파일러에는 없다.
 - ★ **이 문서는 `-jvm-target` 을 바꿔 찍어 보지 않았다.** (2)의 명령 순서가 21 타깃에서도 같은지는 **확인하지 않았다** —\

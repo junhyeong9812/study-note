@@ -11,7 +11,7 @@
 > ★ **네 번째 창은 `decltype((식))` 을 정의 없는 템플릿에 넣어 타입으로 찍는 것**이다.
 > 그 창의 원리(이름 대 식)는 형제 [`05번`](../05-auto-and-decltype-type-deduction/)에 있다 — 여기서는 **창만 쓴다**.
 > 선행 — 형제 [`07번`](../07-references-vs-pointers/)(참조) · 형제 [`01번`](../01-function-overloading-and-overload-resolution/)(오버로드 해석).
-> 이 주제는 목록의 **09·11번 주제**로 이어지는 사슬의 첫 칸이다.
+> 이 주제는 목록의 [**09**](../09-rvalue-references-move-and-forward/)·[**11**](../11-choosing-parameter-passing/)번 주제로 이어지는 사슬의 첫 칸이다.
 
 ## 질문
 

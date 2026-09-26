@@ -677,4 +677,4 @@ snap.forEach(...)                                         // 되지만 live.forE
 - **`getElementsByTagName('*')` 은 문서 전체 요소를 라이브로 들고 있는 것**이라 옛 코드에서 성능 함정이었다. 오늘도 `document.all` 과 함께 남아 있지만 쓸 일이 없다.
 - **`querySelectorAll` 의 정적 `NodeList` 는 「배열 같은 것」이지 배열이 아니다.** `map` 이 없다. `forEach` 만 있는 이유는 DOM 명세가 그 하나만 넣었기 때문이다.
 - **선택자 매치를 문서 기준으로 하는 설계는 Selectors API 초안부터 논쟁**이었다. 「요소 안에서만 매치」가 직관적인데 **명시도·조합자 계산이 달라져** 그렇게 못 했고, 대신 `:scope` 가 들어왔다.
-- **Shadow DOM 경계를 넘는 조회는 없다.** `document.querySelector` 는 그림자 트리 안을 못 본다 — 그 규칙은 목록의 **12번 주제**가 정본이다.
+- **Shadow DOM 경계를 넘는 조회는 없다.** `document.querySelector` 는 그림자 트리 안을 못 본다 — 그 규칙은 [목록의 **12번 주제**](../12-shadow-dom/)가 정본이다.

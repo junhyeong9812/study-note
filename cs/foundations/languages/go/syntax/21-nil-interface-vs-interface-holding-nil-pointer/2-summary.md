@@ -138,7 +138,7 @@ go version go1.27.1 linux/amd64
 3. **포인터만 걸리나** — 맵·슬라이스·함수·채널·인터페이스는 어떤가. 그리고 **도구가 이것을 잡아 주나**.
 
 ★ 「인터페이스 값이 두 칸이다」 자체의 정본은 [20번 주제](../20-interface-declaration-and-implicit-implementation/)다.
-★ 「담긴 것을 되꺼내는 법」은 [22번 주제](../22-type-assertion-any-and-comparable/), 「오류 값 설계」는 [23번 주제](../23-error-interface-and-errors-as-values/)와 목록의 **25번 주제**다.
+★ 「담긴 것을 되꺼내는 법」은 [22번 주제](../22-type-assertion-any-and-comparable/), 「오류 값 설계」는 [23번 주제](../23-error-interface-and-errors-as-values/)와 [목록의 **25번 주제**](../25-sentinel-errors-vs-custom-error-types/)다.
 
 ## 동작 방식
 
@@ -848,7 +848,7 @@ main.main()
 | **포인터** | 필드를 읽으면 **패닉** | 메서드가 리시버를 안 쓰면 안 터진다 |
 
   ★★★ **슬라이스와 채널이 가장 나쁘다.** 슬라이스는 아무 일도 안 나고,
-  채널은 **조용히 멈춘다**(그쪽 정본은 목록의 **29번 주제**다).
+  채널은 **조용히 멈춘다**(그쪽 정본은 [목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/)다).
 - ★ 마지막 — `nil` 함수를 부르자 **`panic: runtime error: invalid memory address or nil pointer dereference`**,
   종료 코드 2다. (4)절의 `nil` 포인터 역참조와 **같은 문구**다.
 
@@ -1324,7 +1324,7 @@ ruleC: true
 - [23번 주제](../23-error-interface-and-errors-as-values/)(`error` 인터페이스) — **이 함정이 왜 `error` 에서 유명한가.**
   거기가 「오류가 값이다」의 정본이다
 - [24번 주제](../24-error-wrapping-and-errors-is-as-join/)(`%w`·`Is`/`As`) — ★ **`errors.Is`/`As` 가 이 함정을 못 막는 것**의 정본
-- 목록의 **29번 주제**(채널) — `nil` 채널이 **조용히 멈추는** 것의 정본
+- [목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/)(채널) — `nil` 채널이 **조용히 멈추는** 것의 정본
 - 목록의 **52번 주제**(도구) — `go vet` 이 무엇을 보고 무엇을 안 보는지의 정본
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **21번**
   ([`../../../rust/syntax/21-option-and-combinators/`](../../../rust/syntax/21-option-and-combinators/)) —

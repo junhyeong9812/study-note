@@ -488,7 +488,7 @@ fun f() { for (x in 1.0..2.0) println(x) }
 1.0..2.0 의 타입 = ClosedDoubleRange, 1.5 in 1.0..2.0 = true
 ```
 
-- 규약 이름만 짚고 넘어간다 — **연산자 오버로딩 전체의 정본은 목록의 31번 주제**다.
+- 규약 이름만 짚고 넘어간다 — **연산자 오버로딩 전체의 정본은 [목록의 31번 주제](../31-operator-overloading-infix-and-invoke/)다**.
 - `String`·`IntArray` 는 `Iterator` 없이 **인덱스로 편다**(`charAt`·`iaload`) — 아래 표에 정리했다.
 
 | `for` 대상 | 무엇이 되나 | 객체 |
@@ -524,7 +524,7 @@ repeat#0 repeat#1 repeat#2
    repeat(3) { … }             i 가 필요 없고 횟수만 필요할 때 (it 로 받을 수는 있다)
 ```
 
-- `withIndex()` 는 **구조 분해**로 받는다 — `(i, v)`. 구조 분해의 정본은 목록의 **30번 주제**다.
+- `withIndex()` 는 **구조 분해**로 받는다 — `(i, v)`. 구조 분해의 정본은 [목록의 **30번 주제**](../30-destructuring-declarations-and-componentn/)다.
 - `repeat(n) { }` 은 **stdlib 의 인라인 함수**다. 문법이 아니다.
 - `Map` 도 구조 분해로 돈다.
 
@@ -898,8 +898,8 @@ operator fun iterator(): Iterator<T>
 - [목록의 **11번 주제**](../11-inline-functions/)(인라인 함수 — `noinline`/`crossinline`·비지역 반환) — **비지역 `return` 이 왜 인라인에서만 되는가**의 정본. 이 문서는 현상까지만 적었다
 - [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/)(람다와 고차 함수) — 람다 자체의 정본
 - [목록의 **14번 주제**](../14-scope-functions/)(scope function) — `run`·`let` 의 정본. (10)의 `run skip@{ }` 이 그것이다
-- 목록의 **30번 주제**(구조 분해 선언) — `for ((i, v) in …)` 의 정본
-- 목록의 **31번 주제**(연산자 오버로딩·중위 함수·`invoke` 규약) — `iterator()`·`contains` 규약의 정본
+- [목록의 **30번 주제**](../30-destructuring-declarations-and-componentn/)(구조 분해 선언) — `for ((i, v) in …)` 의 정본
+- [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/)(연산자 오버로딩·중위 함수·`invoke` 규약) — `iterator()`·`contains` 규약의 정본
 - 목록의 **42번 주제**부터(컬렉션 변환·필터·집계) — "반복의 결과를 값으로" 쪽의 정본
 - 목록의 **45번 주제**(`take`/`drop`/`chunked`/`windowed`) — `for` 로 쓰던 패턴이 이미 함수로 있는 것
 

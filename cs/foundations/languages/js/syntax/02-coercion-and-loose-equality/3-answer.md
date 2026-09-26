@@ -436,9 +436,9 @@ Object.prototype.toString.call(document.all)   : [object HTMLAllCollection]</pre
 
 | 주제 | 정본 |
 |---|---|
-| `??`·`\|\|`·`?.` 와 falsy 케이스 | 목록의 **12번 주제** |
+| `??`·`\|\|`·`?.` 와 falsy 케이스 | [목록의 **12번 주제**](../12-optional-chaining-nullish-and-logical-assignment/) |
 | `===`·`Object.is`·SameValueZero 가 **`Map` 키·`includes`** 에서 갈리는 것 | 목록의 **33번 주제** |
-| `Symbol.toPrimitive` 를 포함한 **잘 알려진 심볼 전반** | 목록의 **22번 주제** |
+| `Symbol.toPrimitive` 를 포함한 **잘 알려진 심볼 전반** | [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) |
 | 엄격 모드가 바꾸는 규칙 | 목록의 **35번 주제** |
 
 - ★★★ **TypeScript 갈래와의 경계** — 그쪽([`ts/syntax/01-what-ts-adds-and-erases`](../../../ts/syntax/01-what-ts-adds-and-erases/2-summary.md))은

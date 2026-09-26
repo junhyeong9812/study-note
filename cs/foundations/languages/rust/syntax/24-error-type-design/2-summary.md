@@ -80,7 +80,7 @@
 > 구현해 두면 원인 사슬이 만들어진다.
 
 > **`Box<dyn Error>`** — 「`Error` 를 구현한 어떤 타입」을 담는 동적 봉투.\
-> 크기가 컴파일 시점에 안 정해지므로 `Box` 로 감싼다(트레이트 객체의 정본은 목록의 **33번 주제**).
+> 크기가 컴파일 시점에 안 정해지므로 `Box` 로 감싼다(트레이트 객체의 정본은 [목록의 **33번 주제**](../33-dyn-trait-objects-and-object-safety/)).
 
 > **다운캐스트(downcast)** — 동적 봉투에서 **구체 타입을 지정해** 되꺼내는 것.\
 > `downcast_ref::<T>()` 는 맞으면 `Some(&T)`, 아니면 `None` 이다.
@@ -759,7 +759,7 @@ d 복구 불가 — 위로 올린다: 12바이트 자리가 깨졌다
 - [**21번 주제** — `Option` 과 조합 메서드](../21-option-and-combinators/) — 「없음」에는 이유가 없다. 이유를 담기 시작하는 곳이 `Result` 다.
 - [**17번 주제** — 열거형](../17-enums-and-data-carrying-variants/) · [**18번 주제** — `match` 와 완전성](../18-match-and-exhaustiveness/) —
   오류 열거형이 얻는 **완전성 검사**의 정본이다.
-- 목록의 **33번 주제** — `dyn Trait` 와 객체 안전성. `Box<dyn Error>` 가 왜 `Box` 여야 하는지의 정본.
+- [목록의 **33번 주제**](../33-dyn-trait-objects-and-object-safety/) — `dyn Trait` 와 객체 안전성. `Box<dyn Error>` 가 왜 `Box` 여야 하는지의 정본.
 - 목록의 **48번 주제** — `Display`/`Debug` 구현과 포맷. 여기서는 오류에 필요한 만큼만 썼다.
 - [`ops-patterns/failure-modes/`](../../../../../ops-patterns/failure-modes/) —
   ★ **경계**: 실패 모드 **분류**는 거기, 여기는 **그 분류를 타입으로 적는 법**이다.
@@ -785,5 +785,5 @@ d 복구 불가 — 위로 올린다: 12바이트 자리가 깨졌다
 - **`Error::sources()`** — 사슬을 이터레이터로 주는 API. **아직 불안정**이라 여기서는 `while let` 으로 걸었다.
 - **`Box<dyn Error + Send + Sync + 'static>`** — 스레드 경계를 넘는 오류 봉투. 실무에서 자주 본다.
 - **`std::io::Error` 의 구조** — `ErrorKind` 라는 **열거형 축**과 OS 코드·메시지를 같이 갖는다. 설계 참고감이다.
-- **`From` 을 오류 변환에 쓸 때의 고아 규칙** — 남의 오류를 남의 타입으로 변환하는 impl 은 못 쓴다(목록의 **26번 주제**).
+- **`From` 을 오류 변환에 쓸 때의 고아 규칙** — 남의 오류를 남의 타입으로 변환하는 impl 은 못 쓴다([목록의 **26번 주제**](../26-orphan-rule-and-newtype/)).
 - **백트레이스** — `std::backtrace::Backtrace` 를 오류 구조체 필드로 들고 다니는 패턴이 있다.

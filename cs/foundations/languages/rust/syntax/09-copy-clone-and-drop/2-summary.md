@@ -97,7 +97,7 @@ impl Drop for D {
 }
 ```
 
-- 이 `D` 하나를 문서 끝까지 쓴다. `String`·`Vec` 자체에는 `Drop` 을 못 단다(고아 규칙 — 목록의 **26번 주제**).
+- 이 `D` 하나를 문서 끝까지 쓴다. `String`·`Vec` 자체에는 `Drop` 을 못 단다(고아 규칙 — [목록의 **26번 주제**](../26-orphan-rule-and-newtype/)).
 - ★ **`D` 는 `Copy` 가 될 수 없다.** 아래 (3)이 그 이유다 — 그래서 이 창은 `Copy` 타입에는 못 쓴다.
 
 비용 — 없음. 관찰용 `println!` 하나뿐이다.
@@ -417,7 +417,7 @@ For more information about this error, try `rustc --explain E0599`.
 - 에러가 그 사실을 직접 말한다 — **`unsatisfied trait bound introduced in this derive macro`**.
 - ★ 그래서 **파생은 편의이지 최선이 아니다.** 제네릭 타입에서 `derive` 가 과하게 조이는 자리가 있다.
 - 손으로 쓴 `impl<T> Clone for Manual<T>` 는 그 경계가 없어 **`NotClone` 에도 통한다.**
-- `derive` 전수는 목록의 **27번 주제**가 정본이다.
+- `derive` 전수는 [목록의 **27번 주제**](../27-derive-macros-debug-clone-partialeq-default-hash/)가 정본이다.
 
 비용 — 없음(컴파일 타임). 대가는 **API 가 불필요하게 좁아지는 것**이다.
 
@@ -857,10 +857,10 @@ impl Drop for D {               // 소멸자 — derive 는 없다. 반드시 �
 - [**10번 주제**](../10-borrowing-and-aliasing-rules/)(빌림 `&`·`&mut`) — **`&T` 가 `Copy` 이고 `&mut T` 는 아닌 것**의 정본
 - [`../../../../memory-management/`](../../../../memory-management/) — 할당·해제·참조 카운팅의 **일반론**은 거기,\
   **여기는 Rust 가 그 시점을 어느 줄로 정하나**까지
-- 목록의 **27번 주제**(`derive` 매크로) — 어떤 파생이 어떤 제약을 거는지의 정본
+- [목록의 **27번 주제**](../27-derive-macros-debug-clone-partialeq-default-hash/)(`derive` 매크로) — 어떤 파생이 어떤 제약을 거는지의 정본
 - 목록의 **41번 주제**(`Rc`/`Arc`) — `Rc::clone` 이 카운트만 올리는 것의 정본. 여기서는 **현상만**
 - 목록의 **44번 주제**(`Drop`·`mem::replace`/`take`) — 자원 타입을 직접 설계하는 쪽
-- 목록의 **26번 주제**(고아 규칙) — 남의 타입에 `Drop` 을 못 다는 이유
+- [목록의 **26번 주제**](../26-orphan-rule-and-newtype/)(고아 규칙) — 남의 타입에 `Drop` 을 못 다는 이유
 
 ## 용어 풀이
 
@@ -885,7 +885,7 @@ impl Drop for D {               // 소멸자 — derive 는 없다. 반드시 �
 - ★ **`Clone` 은 `Copy` 타입에도 의미가 있다.** `Copy` 가 `Clone` 을 요구하므로 `i32`·`[i32; 3]` 같은 타입도\
   `clone()` 을 가진다 — 제네릭 코드가 `T: Clone` 만 요구해도 `Copy` 타입이 통과하는 이유다.
 - **`Drop` 은 패닉 중에도 불린다**(unwind 중 정리). 그래서 `drop` 안에서 다시 패닉하면 프로그램이 죽는다.\
-  자세한 것은 목록의 **23번 주제**(`panic!` 대 `Result`) 쪽이다.
+  자세한 것은 [목록의 **23번 주제**](../23-panic-vs-result/)(`panic!` 대 `Result`) 쪽이다.
 - ★ **`mem::forget` 은 해제를 건너뛴다** — 안전한 함수인데도 소멸자를 안 부른다.\
   「메모리 누수는 Rust 의 안전성 보장 대상이 아니다」는 자리다. 목록의 **44번 주제**.
 - **필드 해제 순서를 바꾸려면 필드 선언 순서를 바꾼다.** 언어가 따로 지정 문법을 주지 않는다.\

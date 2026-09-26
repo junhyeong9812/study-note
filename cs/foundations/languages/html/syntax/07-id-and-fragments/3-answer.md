@@ -331,7 +331,7 @@ querySelector("#\\33 a")        -> "숫자로 시작하는 id"
 | `:target` 을 **선택자로서** 다루는 것 | CSS 갈래 목록([`css/syntax/README.md`](../../../css/syntax/README.md))의 **10번** | 다른 상태 의사 클래스와 나란히 놓는 것은 그쪽. 여기는 **조각이 그것을 켜고 끄는 것**까지 |
 | `getElementById`·`querySelector`·`scrollIntoView` | web-api 갈래 목록([`web-api/README.md`](../../../../web-api/README.md))의 **02번**·**11번** | API 는 그쪽. 여기서는 **찾는 근거가 갈리는 것**만 봤다 |
 | 전역 속성으로서의 `id` | [06번 주제](../06-global-attributes/3-answer.md) | 그쪽은 **속성**, 여기는 **URL 과 스크롤** |
-| `href`·`target`·`rel` | 목록의 **16번 주제** | 그쪽은 **바깥으로**, 여기는 **문서 안** |
+| `href`·`target`·`rel` | [목록의 **16번 주제**](../16-links/) | 그쪽은 **바깥으로**, 여기는 **문서 안** |
 
 ## 실행 검증
 

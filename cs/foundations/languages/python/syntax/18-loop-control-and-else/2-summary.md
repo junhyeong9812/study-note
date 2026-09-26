@@ -826,7 +826,7 @@ SyntaxError: 'continue' not properly in loop
 
 - **`for ... else` 를 쓰지 말자는 주장**도 오래됐다 — 언어 설계자 본인이 이름 선택을 후회한다고 밝힌 적이 있다.
   **읽는 사람이 `if`/`else` 로 오독하는 비율**이 높기 때문이다. 팀 코드에서는 플래그 변수나 함수 분리(`return` 으로 탈출)가 더 안전하다.
-- **`try`/`finally` 안의 `break`** 는 `finally` 를 반드시 돌린 뒤에 나간다(목록의 **25번 주제**).
+- **`try`/`finally` 안의 `break`** 는 `finally` 를 반드시 돌린 뒤에 나간다([목록의 **25번 주제**](../25-exceptions-and-finally/)).
 - **`itertools.zip_longest`** 의 `fillvalue` 는 **하나**뿐이다 — 이터러블마다 다른 채움값을 주려면 직접 짜야 한다(목록의 **44번 주제**).
 - **`enumerate` 의 `start` 에 음수·큰 수**도 들어간다 — 세는 수일 뿐이라 제약이 없다.
 - **비동기 판**은 `async for` 이고 `else` 도 붙는다(목록의 **51번 주제**).

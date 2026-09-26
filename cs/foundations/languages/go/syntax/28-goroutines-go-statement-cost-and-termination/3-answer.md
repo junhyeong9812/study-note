@@ -111,7 +111,7 @@ Wait 뒤 1 로 돌아왔나    : true
 
 - ★★ **시작 1**(main) · **띄운 직후 101**(막혀 있어도 센다 — 「currently exist」) · **Wait 뒤 1 로 돌아옴** · **받을 쪽 없는 10개 뒤 11** · **1초 기다려도 1 이 아님**.
 - ★★ `settle` 을 쓴 이유 — `Done` 을 부른 뒤 고루틴이 **실제로 사라지기까지 틈**이 있다. `Wait` 직후 바로 1 이라는 **보장이 없다.**
-- ★★★ 마지막 `false` — **고루틴 누수**. 아무도 안 닫는 채널에서 영원히 막혀 있다. 정본은 목록의 **31번 주제**.
+- ★★★ 마지막 `false` — **고루틴 누수**. 아무도 안 닫는 채널에서 영원히 막혀 있다. 정본은 [목록의 **31번 주제**](../31-goroutine-leaks/).
 
 ### 3. `1)` 아래 · main 고루틴에서 · A 는 1, B 는 2
 
@@ -340,7 +340,7 @@ func main() {
 
 - ★★ 다섯 줄 — `go len(s)`(결과를 버리는 내장 함수) · `go (f())`(괄호) · `go f`(호출 아님) · `defer f`(호출 아님) · `defer len(s)`(내장 함수 결과).
 - ★★★ `go f()` 는 통과 — 명세 「**If the function has any return values, they are discarded when the function completes.**」
-  **결과는 채널로** 받는다(목록의 **29번 주제**).
+  **결과는 채널로** 받는다([목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/)).
 
 ### 7. 「함수 값과 인자는 지금」이 같고, 「언제 도나」가 다르다
 
@@ -359,7 +359,7 @@ func main() {
 - ★★ 기다리기 — **`sync.WaitGroup`**, 1.25 부터 **`wg.Go(func)`**(`api/go1.25.txt:96`). 문서 「**The function f must not panic.**」
 - ★★ 결과값 — `go` 는 **반환값을 버린다.** **채널**로 받는다.
 - ★★ 패닉 — **그 고루틴의 첫 줄에 `defer`/`recover`.** 다른 고루틴(main 포함)은 못 잡는다([27번 주제](../27-panic-recover-and-where-to-use-them/) (4)절).
-- ★ 누수 — **`NumGoroutine()` 이 기준으로 수렴하나**를 잠깐 기다리며 본다((2)절의 `settle`). 정본은 목록의 **31번 주제**.
+- ★ 누수 — **`NumGoroutine()` 이 기준으로 수렴하나**를 잠깐 기다리며 본다((2)절의 `settle`). 정본은 [목록의 **31번 주제**](../31-goroutine-leaks/).
 
 ### 10. 데몬이라 안 기다린다 · `언어-특성` §2 · `process-thread/`
 

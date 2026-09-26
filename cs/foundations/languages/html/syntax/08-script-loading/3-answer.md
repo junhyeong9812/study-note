@@ -371,7 +371,7 @@ load                    트리의 data-mark = 3   readyState = complete
 | 무엇 | 정본 | 여기는 |
 |---|---|---|
 | `import`/`export`·라이브 바인딩·순환 의존·동적 `import` | JS 갈래 목록([`js/syntax/README.md`](../../../js/syntax/README.md))의 **42번**·**44번** | 모듈 **안**은 그쪽. 여기는 **마크업이 그 모듈을 어떻게 켜나** |
-| 스타일시트가 렌더를 막는 것·`preload` | 목록의 **09번 주제** | 그쪽은 `<link>`, 여기는 `<script>` |
+| 스타일시트가 렌더를 막는 것·`preload` | [목록의 **09번 주제**](../09-stylesheets-and-resource-hints/) | 그쪽은 `<link>`, 여기는 `<script>` |
 | 파싱 차단이 왜 파서를 멈추게 하나 | [03번 주제](../03-parser-and-error-recovery/3-answer.md) | 트리 만들기 절차가 그쪽 |
 | `innerHTML` 로 넣은 `<script>` 가 안 도는 것 | web-api 갈래 목록([`web-api/README.md`](../../../../web-api/README.md))의 **04번** | 그쪽 표면 |
 

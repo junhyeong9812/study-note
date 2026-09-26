@@ -15,8 +15,8 @@
 > **경계** — 「참조가 무엇인가」의 정본은 형제 [`07번`](../07-references-vs-pointers/),\
 > 「`decltype` 이 이름과 식을 어떻게 가르나」의 정본은 형제 [`05번`](../05-auto-and-decltype-type-deduction/)이다.\
 > 여기서는 **05 의 창(`decltype((식))`)을 빌려 쓰되 그 규칙을 다시 설명하지 않는다.**\
-> 「`std::move`·`std::forward`」는 목록의 **09번 주제**, 「`const` 정확성」은 목록의 **10번 주제**,\
-> 「매개변수를 무엇으로 받나」는 목록의 **11번 주제**, 「오버로드 해석의 전체 순서」는 형제 [`01번`](../01-function-overloading-and-overload-resolution/),\
+> 「`std::move`·`std::forward`」는 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/), 「`const` 정확성」은 [목록의 **10번 주제**](../10-const-correctness/),\
+> 「매개변수를 무엇으로 받나」는 [목록의 **11번 주제**](../11-choosing-parameter-passing/), 「오버로드 해석의 전체 순서」는 형제 [`01번`](../01-function-overloading-and-overload-resolution/),\
 > 「임시의 수명 연장과 댕글링」은 목록의 **30번 주제**가 정본이다.
 > ★★★ **08 → 09 → 11 은 한 사슬이다** — 여기서 **범주**를 정하고, 09 가 **그 범주를 만드는 법**(`std::move`)을 주고,\
 > 11 이 **그래서 무엇으로 받을지**를 고른다. 세 문서는 같은 격자를 다시 쓴다.
@@ -345,7 +345,7 @@ int main() {
 
 ### (4) 리터럴 — 문자열만 lvalue다
 
-**언제 쓰나** — `const char*` 와 `std::string` 사이에서 임시가 생기는 자리를 셀 때(목록의 **11번 주제**로 이어진다).
+**언제 쓰나** — `const char*` 와 `std::string` 사이에서 임시가 생기는 자리를 셀 때([목록의 **11번 주제**](../11-choosing-parameter-passing/)로 이어진다).
 
 ```text
 ===== 소스: vcat04.cpp =====
@@ -376,7 +376,7 @@ r[0] r[1] r[2]  = a b c
 - ★ **`a == b` 가 1** — 같은 리터럴 둘이 **한 덩어리로 합쳐졌다.** ★★ 그런데 **이것은 미명시**다.\
   표준은 「같은 리터럴이 구별되는 객체인지 정하지 않는다」 — **근거로 쓰면 안 되는 칸**이다.
 - ★ 나머지 리터럴(`42`·`'c'`·`1.5`)은 전부 **prvalue** 라 주소가 없다((9) 의 (5)번 에러).
-- ★ **문자열 리터럴을 `char*` 에 넣는 것은 C++11부터 ill-formed** 인데 **컴파일이 통과한다** — 그 정본은 목록의 **10번 주제**다.
+- ★ **문자열 리터럴을 `char*` 에 넣는 것은 C++11부터 ill-formed** 인데 **컴파일이 통과한다** — 그 정본은 [목록의 **10번 주제**](../10-const-correctness/)다.
 
 ### (5) 함수 반환값 — 셋을 갈라 본다
 
@@ -390,7 +390,7 @@ r[0] r[1] r[2]  = a b c
 
 (2)의 격자에서 세 줄이 각각 `int` · `int&` · `int&&` 로 찍혔다.
 
-- ★★ **`T&&` 를 돌려주는 함수는 새 객체를 만들지 않는다** — `std::move` 가 정확히 그 모양이다(목록의 **09번 주제**).
+- ★★ **`T&&` 를 돌려주는 함수는 새 객체를 만들지 않는다** — `std::move` 가 정확히 그 모양이다([목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)).
 - ★ **`byval()` 이 prvalue 라는 것이 (6)의 전제**다 — prvalue 라서 **물질화될 때까지 객체가 없다.**
 
 ### (6) ★★★ prvalue 는 객체가 아니다 — C++17 의 「물질화」
@@ -683,8 +683,8 @@ int main() {
 
 - ★★★ **prvalue 와 xvalue 가 같은 칸으로 간다** — 둘을 묶은 이름이 **rvalue** 이고, **`T&&` 가 그 칸을 받는다.**
 - ★★★ **`const` 를 붙이면 rvalue 라도 `T&&` 로 못 간다** — `std::move(ci)` 가 `f(const int&)` 로 떨어진다.\
-  **이것이 목록의 09번 주제에서 「`const` 를 `move` 하면 복사가 된다」로 이어지는 바로 그 자리**다.
-- ★ **`const T&` 는 셋 다 받는다** — 그래서 「하나만 둘 거면 `const T&`」가 기본값이 된다(목록의 **11번 주제**).
+  **이것이 [목록의 09번 주제](../09-rvalue-references-move-and-forward/)에서 「`const` 를 `move` 하면 복사가 된다」로 이어지는 바로 그 자리**다.
+- ★ **`const T&` 는 셋 다 받는다** — 그래서 「하나만 둘 거면 `const T&`」가 기본값이 된다([목록의 **11번 주제**](../11-choosing-parameter-passing/)).
 - ★ 오버로드 해석의 **전체 순서**(정확 일치 → 승격 → 변환)는 형제 [`01번`](../01-function-overloading-and-overload-resolution/)이 정본이다.
 
 ### (9) 범주가 막는 것 — 그리고 안 막는 것
@@ -990,10 +990,10 @@ vcat10.cpp:8:9: warning: using rvalue as lvalue [-fpermissive]
    void f(const T&);    ★ 넷 다              "읽기만 하겠다"
    void f(T&&);         prvalue · xvalue     "가져가겠다"
    template <class T>
-   void f(T&&);         ★ 전달 참조 — 규칙이 다르다 (목록의 09번 주제)
+   void f(T&&);         ★ 전달 참조 — 규칙이 다르다 ([목록의 **09번 주제**](../09-rvalue-references-move-and-forward/))
 ```
 
-- ★★ **마지막 줄만 값 범주 규칙이 아니라 템플릿 추론 규칙으로 움직인다.** 그 정본은 목록의 **09번 주제**다.
+- ★★ **마지막 줄만 값 범주 규칙이 아니라 템플릿 추론 규칙으로 움직인다.** 그 정본은 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)다.
 
 ### 금지 사례 — 던져서 받은 열
 
@@ -1042,18 +1042,18 @@ C++17 부터 **아니다**((6)).\
 ### 4. ★★ 「값으로 돌려주면 복사가 난다」
 
 C++17 부터 **안 난다**((6)의 `[1]`: `ctor` 하나).\
-★ 이것이 목록의 **11번 주제**에서 「싱크 매개변수는 값으로 받아도 된다」로 이어진다.
+★ 이것이 [목록의 **11번 주제**](../11-choosing-parameter-passing/)에서 「싱크 매개변수는 값으로 받아도 된다」로 이어진다.
 
 ### 5. ★★ 「`const T&` 로 받으면 손해가 없다」
 
 범주 면에서는 **네 칸을 다 받는** 가장 넓은 손이 맞다((9)).\
 ★ 그런데 「**훔칠 수 없다**」는 대가가 있고, 그 값을 보관하려면 **복사가 한 번 더** 난다.\
-숫자는 목록의 **11번 주제**가 센다 — 여기서 **추측으로 적지 않는다.**
+숫자는 [목록의 **11번 주제**](../11-choosing-parameter-passing/)가 센다 — 여기서 **추측으로 적지 않는다.**
 
 ### 6. ★★ 「`std::move(ci)` 는 이동한다」
 
 **안 한다.** `const int&&` 가 되어 **`const T&` 오버로드로 떨어진다**((8)의 다섯째 줄).\
-★ 클래스 타입이면 **조용히 복사 생성자가 불린다** — 경고 한 줄 없다. 실측은 목록의 **09번 주제**에 있다.
+★ 클래스 타입이면 **조용히 복사 생성자가 불린다** — 경고 한 줄 없다. 실측은 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)에 있다.
 
 ### 7. ★★ 「rvalue 에는 대입을 못 한다」
 
@@ -1112,8 +1112,8 @@ C++17 부터 **안 난다**((6)의 `[1]`: `ctor` 하나).\
 - 형제 [`07-references-vs-pointers/`](../07-references-vs-pointers/) — **참조가 무엇인가**가 거기. 여기는 **어떤 식에 참조가 묶이나**부터.
 - 형제 [`01-function-overloading-and-overload-resolution/`](../01-function-overloading-and-overload-resolution/) — **오버로드 해석의 전체 순서**가 거기. 여기는 **범주가 후보를 가르는 한 겹**만.
 - 형제 [`04-brace-initialization-narrowing-and-initializer-list/`](../04-brace-initialization-narrowing-and-initializer-list/) — `S{}` 라는 **임시를 만드는 문법**이 거기.
-- 목록의 **09번 주제** — `std::move`·`std::forward`. **여기서 정한 범주를 만드는 법**이다.
-- 목록의 **11번 주제** — 그래서 **무엇으로 받나**. 08 → 09 → 11 사슬의 끝.
+- [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/) — `std::move`·`std::forward`. **여기서 정한 범주를 만드는 법**이다.
+- [목록의 **11번 주제**](../11-choosing-parameter-passing/) — 그래서 **무엇으로 받나**. 08 → 09 → 11 사슬의 끝.
 - 목록의 **30번 주제** — 수명 연장이 **안 되는** 자리와 댕글링.
 - C 갈래 [`20-null-terminated-strings-and-string-literals/`](../../../c/syntax/20-null-terminated-strings-and-string-literals/) — **문자열 리터럴이 배열이라는 것**은 거기가 정본. 여기는 **그것이 lvalue 라는 것**만.
 - 대비 — [`../../../rust/syntax/08-ownership-and-move/`](../../../rust/syntax/08-ownership-and-move/): Rust 는 **이동이 기본**이라 「이 식이 rvalue 인가」를 물을 일이 없다. C++ 는 **기본이 복사**이고 rvalue 는 **식에 붙는 표시**다.
@@ -1137,4 +1137,4 @@ C++17 부터 **안 난다**((6)의 `[1]`: `ctor` 하나).\
 - **네 번째 범주는 없다** — 격자의 네 번째 칸(「이름이 없는데 훔칠 수 없는 것」)은 **비어 있다.** 그래서 범주가 셋이다.
 - ★ **`decltype(auto)`** — 반환 타입에 범주를 그대로 실어 나르는 도구. 정본은 형제 [`05번`](../05-auto-and-decltype-type-deduction/).
 - ★ **비트필드는 격자 밖에서 한 번 더 막힌다**((9)) — 범주는 lvalue 인데 `int&` 에 못 묶는다. 정본은 C 갈래 [`24-bit-fields/`](../../../c/syntax/24-bit-fields/).
-- ★ **이 문서가 안 던진 것** — 람다 식의 범주 · `co_await`/`co_yield` 식 · 클래스 prvalue 를 `auto&&` 로 받는 것 · `std::forward` 의 범주(목록의 **09번 주제**).
+- ★ **이 문서가 안 던진 것** — 람다 식의 범주 · `co_await`/`co_yield` 식 · 클래스 prvalue 를 `auto&&` 로 받는 것 · `std::forward` 의 범주([목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)).

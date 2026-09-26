@@ -78,7 +78,7 @@ dedu01.cpp:23:76: error: aggregate ‘TypeOf<int> t9’ has incomplete type and 
   `int* const` 의 `const` 는 **포인터 자신**에 붙어 **맨 위**다. **맨 위 것만** 떨어진다.\
   선언을 읽는 규칙의 정본은 C 갈래 [`01번`](../../../c/syntax/01-declaration-syntax-and-reading/)이다.
 - ★★ **⑦과 ⑧이 다른 이유** — `auto&&` 는 **전달 참조**라 **받은 값 범주에 따라** 타입이 정해진다.\
-  lvalue 면 `T&`, rvalue 면 `T&&`. 정본은 목록의 **09번 주제**다.
+  lvalue 면 `T&`, rvalue 면 `T&&`. 정본은 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)다.
 
 **clang 도 같은 타입을 답한다**(문구만 다르다).
 
@@ -188,7 +188,7 @@ dedu02.cpp:28:30: error: aggregate ‘TypeOf<int> yc’ has incomplete type and 
 | `decltype(i + 1)` | `int` | prvalue 식 |
 
 - ★★★ **이름이면 「선언 타입」, 식이면 「타입 + 값 범주」다.** lvalue 식은 **`T&`** 가 된다.\
-  값 범주와 `&`/`&&` 의 대응은 목록의 **08번 주제**가 정본이다.
+  값 범주와 `&`/`&&` 의 대응은 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)가 정본이다.
 - ★★ **`decltype(f)` 와 `decltype(f(1.0))` 의 차이** — 앞은 **함수 자체**(`int(double)`),\
   뒤는 **부른 결과**(`int`)다. ★ 그런데 **부르지는 않는다** — `decltype` 은 **식을 평가하지 않는다.**\
   이 소스의 `f` 는 **선언만 있고 정의가 없는데도** 컴파일이 여기까지 온다.
@@ -623,8 +623,8 @@ dedu10.cpp:4:11: warning: use of ‘auto’ in parameter declaration only availa
 - **`auto` 의 추론 규칙은 「함수 템플릿 인자 추론」과 거의 같다** — 정본은 목록의 **31번 주제**다.\
   ★ **갈리는 곳은 한 군데**, 중괄호 목록이다(`auto x = {1,2}` 는 되고 템플릿 추론은 실패한다).\
   ★ 이 문서는 **템플릿 쪽을 안 던졌다.**
-- **`auto&&` 가 전달 참조가 되는 규칙**의 정본은 목록의 **09번 주제**(rvalue 참조·`move`·`forward`)이고,\
-  그 밑의 **값 범주**는 목록의 **08번 주제**다.
+- **`auto&&` 가 전달 참조가 되는 규칙**의 정본은 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)(rvalue 참조·`move`·`forward`)이고,\
+  그 밑의 **값 범주**는 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)다.
 - **`auto x = {1}` 이 `initializer_list` 가 되는 것**의 정본은 형제\
   [**04번**](../04-brace-initialization-narrowing-and-initializer-list/)이다.
 - **`decltype(auto)` 로 지역을 돌려주면 생기는 문제**의 정본은 목록의 **30번 주제**(댕글링 참조와 수명)다.

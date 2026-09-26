@@ -483,7 +483,7 @@ typeof 1n                            : bigint</pre>
 |---|---|
 | 부호·지수·가수의 **비트 배치** | [`cs/foundations/data-representation/`](../../../../data-representation/) |
 | `===`·`Object.is`·SameValueZero 가 갈리는 것 | 목록의 **33번 주제** |
-| `JSON` 직렬화와 큰 수 파싱 | 목록의 **31번 주제** |
+| `JSON` 직렬화와 큰 수 파싱 | [목록의 **31번 주제**](../31-json/) |
 | 금액·숫자를 **화면에 찍는** 법 | 목록의 **50번 주제**(`Intl`) |
 
 - ★★★ **파이썬과 갈리는 세 자리** —

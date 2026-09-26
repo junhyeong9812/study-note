@@ -17,7 +17,7 @@
 > 여기는 **C++ 가 새로 하는 것**만 쓴다 — **그 한 덩어리를 넷으로 쪼갠 것**, 그리고\
 > **`dynamic_cast` 라는 C 에 없는 다섯째**, 그리고 **`const` 객체에 쓰는 UB 가 C 와 갈리는 자리**((4)).\
 > 「정수 승격·산술 변환」은 C 갈래 [`03번`](../../../c/syntax/03-integer-promotion-and-usual-arithmetic-conversions/),\
-> 「가상 함수와 다형성」은 목록의 **19번 주제**, 「`const` 정확성 설계」는 목록의 **10번 주제**가 정본이다.
+> 「가상 함수와 다형성」은 [목록의 **19번 주제**](../19-inheritance-virtual-functions-override-final/), 「`const` 정확성 설계」는 [목록의 **10번 주제**](../10-const-correctness/)가 정본이다.
 >
 > ★★ **흔들리는 칸 / 안 흔들리는 칸** — 이 주제는 **UB 가 만든 값이 본문에 실리므로** 이 선언이 특히 중요하다.
 >
@@ -1105,7 +1105,7 @@ C 갈래 [`05번`](../../../c/syntax/05-explicit-casts-and-pointer-conversions/)
 ★ **비트만 읽고 싶은 것이면 `std::bit_cast`/`memcpy` 가 답이다.**
 
 **`dynamic_cast`** — 기반 포인터가 **틀릴 수 있을 때**.\
-★ 자주 쓰게 되면 **설계를 의심한다** — 가상 함수 하나로 풀리는 경우가 많다(목록의 **19번 주제**).\
+★ 자주 쓰게 되면 **설계를 의심한다** — 가상 함수 하나로 풀리는 경우가 많다([목록의 **19번 주제**](../19-inheritance-virtual-functions-override-final/)).\
 `-fno-rtti` 빌드에서는 **쓸 수 없으므로** 대안을 미리 정해 둔다(태그 필드·`std::variant`).
 
 **C 스타일 `(T)x`** — **안 쓴다.** 무엇이 일어나는지 코드가 말하지 않고, `grep` 도 안 된다.\
@@ -1131,8 +1131,8 @@ C 갈래 [`05번`](../../../c/syntax/05-explicit-casts-and-pointer-conversions/)
 - [**01번 형제**](../01-function-overloading-and-overload-resolution/) — 캐스트로 **오버로드 후보의 계단을 하나로 만드는** 처방이 거기 있다.
 - [**02번 형제**](../02-enum-class-and-scoped-enumerations/) — (1)의 ⑤⑥이 그 주제의 담장을 넘는 도구다.\
   ★ 그리고 **범위 밖 값 캐스트가 UB 가 되는 경계**가 거기 있다.
-- 목록의 **10번 주제**(`const` 정확성) — `const_cast` 를 **안 쓰게 만드는** 설계.
-- 목록의 **19번 주제**(가상 함수) — `dynamic_cast` 를 **안 쓰게 만드는** 설계. vtable 이 무엇인지도 거기다.
+- [목록의 **10번 주제**](../10-const-correctness/)(`const` 정확성) — `const_cast` 를 **안 쓰게 만드는** 설계.
+- [목록의 **19번 주제**](../19-inheritance-virtual-functions-override-final/)(가상 함수) — `dynamic_cast` 를 **안 쓰게 만드는** 설계. vtable 이 무엇인지도 거기다.
 - 목록의 **47번 주제**(`variant`) — 「여럿 중 하나」를 **RTTI 없이** 하는 법.
 
 ## 용어 풀이
@@ -1163,7 +1163,7 @@ C 갈래 [`05번`](../../../c/syntax/05-explicit-casts-and-pointer-conversions/)
 - **`dynamic_cast` 의 비용** — (10)이 「호출이 생긴다」까지 보였다.\
   **얼마나 느린가**는 계층 깊이·다중 상속에 달려 있고 **이 문서는 재지 않았다**(수치를 적으려면 벤치마크가 따로 필요하다).
 - **다중 상속에서의 캐스트** — 업캐스트가 **주소 보정**을 한다. `reinterpret_cast` 가 위험한 진짜 이유다.\
-  정본은 목록의 **19번 주제**의 자매 주제로 미뤄져 있다.
+  정본은 [목록의 **19번 주제**](../19-inheritance-virtual-functions-override-final/)의 자매 주제로 미뤄져 있다.
 - **`dynamic_cast<void*>(p)`** — 최상위 객체의 시작 주소를 얻는 특수 형태다. 이 문서는 안 던졌다.
 - **`std::any` 와 `std::variant`** — RTTI 없이 「여럿 중 하나」를 하는 표준 도구. 목록의 **47번 주제**.
 - **`union` 을 통한 타입 펀닝** — **C 에서는 허용되고 C++ 에서는 아니다.**\

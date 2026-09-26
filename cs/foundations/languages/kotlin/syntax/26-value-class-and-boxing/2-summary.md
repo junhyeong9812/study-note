@@ -10,7 +10,7 @@
 > **경계** — 「값을 값으로」라는 논지는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §4 가 정본이고, 여기는 **박싱이 사라지는 조건과 다시 살아나는 조건**만 본다.\
 > 생성되는 `equals`/`toString` 의 모양은 [22번 주제](../22-data-class-generated-members/)(`data class`)와 같은 집안이다 — 거기서 본 것은 결론만 쓴다.\
 > 제네릭이 `Object` 로 지워지는 원리는 [12번 주제](../12-reified-type-parameters/)가 정본이다. 여기서는 **그 소거가 박싱을 부르는 자리**만 센다.\
-> `@JvmName` 을 포함한 상호운용 애너테이션 전부는 목록의 **39번 주제**, `==`/`===` 규약은 목록의 **32번 주제**다.\
+> `@JvmName` 을 포함한 상호운용 애너테이션 전부는 목록의 **39번 주제**, `==`/`===` 규약은 [목록의 **32번 주제**](../32-equality-and-equals-contract/)다.\
 > ★ **29번과 짝이다** — `value class` 는 **새 타입을 만들고** [29번 주제](../29-type-aliases-and-nested-type-aliases/)(`typealias`)는 **안 만든다.**
 > **대비** — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **26번**([`26-orphan-rule-and-newtype/`](../../../rust/syntax/26-orphan-rule-and-newtype/)) — Rust 의 newtype 은 **박싱이라는 개념 자체가 없다**(그쪽 (3)이 `size_of` 로 잰 결론).\
 > C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **3번**([`03-boxing-and-unboxing/`](../../../csharp/syntax/03-boxing-and-unboxing/)) — C# `struct` 는 **제네릭에서는 박싱되지 않고** 인터페이스로 올릴 때 박싱된다(그쪽이 할당 바이트로 잰 결론).
@@ -721,7 +721,7 @@ X [example.com, test.org]
 - [12번 주제](../12-reified-type-parameters/) — 소거. **제네릭이 `Object` 로 지워지는 원리**가 거기이고, 여기는 **그 소거가 박싱을 부르는 자리**만 센다.
 - [25번 주제](../25-object-declaration-companion-and-object-expression/) — Java 에서 Kotlin 을 부르는 창. `@JvmStatic` 이 거기다.
 - [29번 주제](../29-type-aliases-and-nested-type-aliases/) — `typealias`. ★ **짝이다** — 이쪽은 새 타입을 만들어 **섞으면 막히고**, 그쪽은 **안 막힌다.**
-- 목록의 **32번 주제** — `==`/`===` 규약. 여기는 **`===` 가 왜 금지인가**까지다.
+- [목록의 **32번 주제**](../32-equality-and-equals-contract/) — `==`/`===` 규약. 여기는 **`===` 가 왜 금지인가**까지다.
 - 목록의 **39번 주제** — `@JvmName`·`@JvmStatic` 등 상호운용 애너테이션 전부.
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) §4 — 「값을 값으로」라는 **설계 논지**와 실측. 여기는 **박싱이 살아나는 구체 조건**이다.
 - [`../../../rust/syntax/26-orphan-rule-and-newtype/`](../../../rust/syntax/26-orphan-rule-and-newtype/) — Rust newtype. **박싱이 없는 언어**의 같은 관용구.

@@ -291,7 +291,7 @@ globalThis.nope                  -> undefined
 - ★★★ **`typeof neverDeclared` 는 `"undefined"` 를 주고, 같은 이름을 그냥 읽으면 `ReferenceError` 다.**
   **언어 전체에서 이 특권을 가진 연산자는 `typeof` 하나뿐**이다.
 - ★★★ **그런데 TDZ 에서는 `typeof` 도 터진다.** 「선언이 없는 것」과 「선언은 있는데 아직 못 쓰는 것」은 다른 상태다.
-  ★ TDZ 자체의 정본은 목록의 **05번 주제**다 — 여기서는 「`typeof` 의 특권에 구멍이 있다」는 사실만 본다.
+  ★ TDZ 자체의 정본은 [목록의 **05번 주제**](../05-var-let-const-and-tdz/)다 — 여기서는 「`typeof` 의 특권에 구멍이 있다」는 사실만 본다.
 - ★★ **`"nope" in globalThis` 는 `false` 인데 `typeof nope` 는 `"undefined"` 다.** 두 질문이 다르다 —
   앞엣것은 「전역 객체에 그 키가 있나」이고 뒤엣것은 「이 이름을 읽으면 무엇이 나오나」다.
 - ★ `globalThis.nope` 는 그냥 `undefined` 를 준다. **객체의 없는 프로퍼티는 에러가 아니다.**
@@ -684,10 +684,10 @@ String(x);                // 이것이 문자열로 바꾸는 법
 - 이어지는 곳: [02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md) — 여기서 갈라 둔 **종류들이 서로 섞일 때** 무슨 일이 나나.
 - 이어지는 곳: [03 — 숫자와 `BigInt`](../03-numbers-and-bigint/2-summary.md) — `"number"` 와 `"bigint"` 두 칸의 속사정.
 - 이어지는 곳: [04 — 문자열과 UTF-16](../04-strings-and-utf16/2-summary.md) — `"string"` 한 칸의 속사정.
-- 이어지는 곳: 목록의 **05번 주제** 「`var`·`let`·`const` 와 TDZ」 — **TDZ 의 정본**이다. 여기서는 「`typeof` 의 특권에 구멍이 있다」까지만 본다.
+- 이어지는 곳: [목록의 **05번 주제**](../05-var-let-const-and-tdz/) 「`var`·`let`·`const` 와 TDZ」 — **TDZ 의 정본**이다. 여기서는 「`typeof` 의 특권에 구멍이 있다」까지만 본다.
 - 이어지는 곳: 목록의 **34번 주제** 「타입 검사 관용구」 — `Array.isArray`·`instanceof`·브랜드 태그가 **어디서 깨지나**의 정본.
 - 이어지는 곳: 목록의 **35번 주제** 「엄격 모드」 — 래퍼가 안 생기는 것과 **조용한 대입이 터지는 것**의 정본.
-- 이어지는 곳: 목록의 **22번 주제** 「`Symbol` 과 잘 알려진 심볼」 — `Symbol.toStringTag` 로 **브랜드 태그를 바꾸는** 자리.
+- 이어지는 곳: [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) 「`Symbol` 과 잘 알려진 심볼」 — `Symbol.toStringTag` 로 **브랜드 태그를 바꾸는** 자리.
 - 경계 — 타입 표기: TypeScript 갈래 목록([`ts/syntax/README.md`](../../../ts/syntax/README.md))의 **01번** [`01-what-ts-adds-and-erases`](../../../ts/syntax/01-what-ts-adds-and-erases/2-summary.md).
   **그쪽은 「타입은 런타임에 안 남는다」까지, 여기는 「런타임에 남아 있는 것이 무엇인가」부터다.** `typeof` 는 남는 쪽이다.
 - 경계 — 다른 언어의 같은 자리: [`python/syntax/01-object-and-name-binding`](../../../python/syntax/01-object-and-name-binding/2-summary.md) —

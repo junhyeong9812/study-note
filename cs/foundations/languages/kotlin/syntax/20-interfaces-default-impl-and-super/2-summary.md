@@ -10,7 +10,7 @@
 > **버전** — 인터페이스의 기본 구현·프로퍼티 선언·`super<T>` 는 전부 **1.0** 이다.\
 > ★ 그러나 **그것이 바이트코드로 내려가는 방식은 2.2 에서 바뀌었다** — `-jvm-default` 의 기본값이 `enable` 이 되어 **진짜 JVM `default` 메서드**가 나온다((5)).
 > **경계** — `open`/`override` 규칙은 [19번 주제](../19-inheritance-open-final-override/), 프로퍼티의 backing field 는 [16번 주제](../16-properties-backing-field-lateinit-const/),\
-> 위임으로 계층을 피하는 길은 [21번 주제](../21-class-delegation-by/), `sealed interface` 와 `when` 완결성은 목록의 **23번 주제**가 정본이다.\
+> 위임으로 계층을 피하는 길은 [21번 주제](../21-class-delegation-by/), `sealed interface` 와 `when` 완결성은 [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/)가 정본이다.\
 > Java 쪽 짝은 [`../../../java/syntax/11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/) — 거기는 **Java 8 이 왜 `default` 를 들였나**, 여기는 **Kotlin 이 그 위에서 무엇을 더 했나**.
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -734,7 +734,7 @@ forbid20.kt:12:27: error: multiple supertypes available. Specify the intended su
 |---|---|---|
 | 상태 없는 계약 · 여럿 겹쳐 입어야 한다 | **인터페이스** | 다중 구현이 된다 |
 | 공통 상태를 물려줘야 한다 | **추상 클래스** | 인터페이스는 서랍이 없다((2)) |
-| 하위 타입을 내가 다 알고 싶다 | **`sealed interface`** | 목록의 **23번 주제** |
+| 하위 타입을 내가 다 알고 싶다 | **`sealed interface`** | [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/) |
 | 기능을 빌려 오되 계층을 안 만든다 | **위임** | [21번 주제](../21-class-delegation-by/) |
 | 남의 타입에 함수만 더한다 | **확장 함수** | [13번 주제](../13-extension-functions-and-properties/) — 단 정적 디스패치다 |
 | Java 에서 구현할 인터페이스를 낸다 | 인터페이스 + **기본값 `-jvm-default`** | (6) — `disable` 로 내면 Java 쪽이 깨진다 |
@@ -756,7 +756,7 @@ forbid20.kt:12:27: error: multiple supertypes available. Specify the intended su
 - [13번 주제](../13-extension-functions-and-properties/) — 확장 함수의 정적 디스패치. (3)의 `D` 줄과 정면 대비다.
 - [`../../../java/syntax/11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/) — Java 8 의 `default` 메서드. **왜 그것이 생겼나**와 **class wins 규칙**은 거기.
 - [`../../../java/syntax/09-inheritance-overriding/`](../../../java/syntax/09-inheritance-overriding/) — Java 의 상속 규칙.
-- 목록의 **23번 주제** — `sealed interface` 와 `when` 완결성. **하위 타입을 닫는 것**은 거기.
+- [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/) — `sealed interface` 와 `when` 완결성. **하위 타입을 닫는 것**은 거기.
 - 목록의 **36번 주제** — `fun interface`·SAM 변환.
 
 ## 용어 풀이

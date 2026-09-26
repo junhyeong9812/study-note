@@ -517,7 +517,7 @@ forbid19.kt:18:23: error: return type of 'fun h(): Int' is not a subtype of the 
 5. ★ **`abstract` 에 `open` 을 덧붙인다.** 불필요하고(함의되어 있다) 컴파일러가 경고한다.
 6. ★ **가시성을 좁히려 한다.** `private override` 는 「`cannot weaken access privilege`」다([18번 주제](../18-visibility-modifiers/) 12번).
 7. ★ **`final` 이 성능 때문이라고 믿는다.** 기본값을 뒤집은 이유는 **설계**(깨지기 쉬운 상위 클래스 문제)이지 속도가 아니다 — 이 문서는 **속도를 재지 않았고 재지 않은 성능 주장은 하지 않는다.**
-8. ★ **`data class` 를 상속하려 한다.** `data class` 는 `open` 으로 만들 수 없다 — 목록의 **22번 주제**가 정본이다.
+8. ★ **`data class` 를 상속하려 한다.** `data class` 는 `open` 으로 만들 수 없다 — [목록의 **22번 주제**](../22-data-class-generated-members/)가 정본이다.
 
 ## 구현 세부사항 대 언어 보장
 
@@ -542,7 +542,7 @@ forbid19.kt:18:23: error: return type of 'fun h(): Int' is not a subtype of the 
 | 계약만 있고 상태가 없다 | **인터페이스** | [20번 주제](../20-interfaces-default-impl-and-super/) — 여럿을 섞을 수 있다 |
 | 기능을 빌려 오되 계층은 안 만든다 | **위임** | [21번 주제](../21-class-delegation-by/) — 상속 대신 합성 |
 | 남의 타입에 함수를 더한다 | **확장 함수** | [13번 주제](../13-extension-functions-and-properties/) — 단 정적 디스패치다 |
-| 값처럼 쓸 타입 | `data class` | 목록의 **22번 주제** — `open` 이 안 된다 |
+| 값처럼 쓸 타입 | `data class` | [목록의 **22번 주제**](../22-data-class-generated-members/) — `open` 이 안 된다 |
 | 상속을 열 이유가 없다 | **아무것도 안 적는다** | 그것이 Kotlin 의 기본값이다 |
 
 ## 핵심 문장
@@ -562,7 +562,7 @@ forbid19.kt:18:23: error: return type of 'fun h(): Int' is not a subtype of the 
 - [13번 주제](../13-extension-functions-and-properties/) — 확장 함수의 **정적 디스패치**. (4)의 가상 디스패치와 정면 대비다.
 - [`../../../java/syntax/09-inheritance-overriding/`](../../../java/syntax/09-inheritance-overriding/) — Java 의 상속. **기본값이 열려 있던 쪽**이 무엇을 겪었는지.
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) §11 — 왜 기본값을 뒤집었나(설계 논지).
-- 목록의 **22번 주제**와 목록의 **23번 주제** — `data class`·`sealed` 는 상속 계층을 **다른 방식으로** 닫는다.
+- [목록의 **22번 주제**](../22-data-class-generated-members/)와 [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/) — `data class`·`sealed` 는 상속 계층을 **다른 방식으로** 닫는다.
 
 ## 용어 풀이
 
@@ -596,4 +596,4 @@ forbid19.kt:18:23: error: return type of 'fun h(): Int' is not a subtype of the 
   그래서 `kotlin-allopen` 컴파일러 플러그인이 `@Component`·`@Transactional` 이 붙은 클래스를 자동으로 `open` 으로 바꾼다 — **언어 규칙을 빌드 도구가 되돌리는** 셈이다.\
   (컴파일러 플러그인 자체는 이 목록에서 뺀 주제다 — Kotlin 목록의 「뺀 것」 표를 보라.)
 - **「상속을 쓸 것인가」를 먼저 물어라.** Kotlin 은 그 질문을 문법으로 강제하는 언어다 — `open` 을 적는 순간 「**나는 이 클래스가 상속될 것을 알고 설계했다**」고 선언하는 것이다.
-- **`sealed`** 는 제3의 답이다 — 「열려 있지만 **내가 아는 하위 타입만**」. 목록의 **23번 주제**가 정본이다.
+- **`sealed`** 는 제3의 답이다 — 「열려 있지만 **내가 아는 하위 타입만**」. [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/)가 정본이다.

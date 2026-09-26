@@ -934,7 +934,7 @@ fn <impl at ex.rs:3:10: 3:19>::eq(_1: &P, _2: &P) -> bool {
   Rust 의 `derive` 는 **구현만 만들고 타입의 성질은 안 건드린다** — 가변 필드에도 `Debug` 를 붙일 수 있다.
   ★ 계약 쪽은 [`java/syntax/27-equals-hashcode-contract/`](../../../java/syntax/27-equals-hashcode-contract/)가 정본이다.
 - **C# 의 `record`** — C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **18번**,
-  동등성 규칙은 같은 목록의 **19번**. Java 와 같은 자리다.
+  동등성 규칙은 같은 [목록의 **19번**](../19-pattern-syntax-guards-bindings-and-match-ergonomics/). Java 와 같은 자리다.
 - **Go**(Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **20번**) —
   `derive` 가 **없다.** 같은 자리를 **둘로** 메운다: ① `%+v` 가 **런타임 리플렉션**으로 필드를 찍고
   ② `==` 가 **언어 규칙**으로 구조를 훑는다(비교 가능한 타입만).

@@ -273,7 +273,7 @@ let x = 5;                 // 추론
 let x: i64 = 5;            // 표기
 let mut x = 5;             // 가변
 let x;                     // 선언만 — 뒤에서 정확히 한 번 대입
-let (a, b) = (1, 2);       // 구조 분해 (정본은 목록의 19번 주제)
+let (a, b) = (1, 2);       // 구조 분해 (정본은 [목록의 **19번 주제**](../19-pattern-syntax-guards-bindings-and-match-ergonomics/))
 let _ = 5;                 // 이름을 안 붙인다
 let _unused = 5;           // 이름은 붙이되 경고를 끈다
 ```
@@ -488,7 +488,7 @@ warning: 3 warnings emitted
   **여기는 그 선택이 컴파일 에러로 어떻게 나타나는가**다.
 - [목록의 **07번 주제**](../07-const-static-and-const-fn/)(상수·`static`·`const fn`) — `const` 의 정본
 - [목록의 **08번 주제**](../08-ownership-and-move/)(소유권과 이동) — 섀도잉된 옛 값이 **언제 해제되는가**는 거기
-- 목록의 **19번 주제**(패턴 문법) — `let (a, b) = ...` 구조 분해의 정본
+- [목록의 **19번 주제**](../19-pattern-syntax-guards-bindings-and-match-ergonomics/)(패턴 문법) — `let (a, b) = ...` 구조 분해의 정본
 - [목록의 **15번 주제**](../15-slices-ranges-and-utf8-boundaries/)(슬라이스·UTF-8) — `"다섯".len() == 6` 의 정본
 
 ## 용어 풀이

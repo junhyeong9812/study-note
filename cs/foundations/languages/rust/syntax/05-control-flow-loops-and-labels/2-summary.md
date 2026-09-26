@@ -390,7 +390,7 @@ For more information about this error, try `rustc --explain E0382`.
 
 - 메시지가 **보이지 않는 호출을 이름으로 불러 준다** — 「`v` moved due to this **implicit call to `.into_iter()`**」.
 - `for` 가 `IntoIterator` 규약으로 돈다는 사실이 **에러 메시지로 드러난다.**\
-  규약 전수(어느 타입이 무엇을 주나)는 목록의 **37번 주제**가 정본이고, 여기서는 **현상까지**다.
+  규약 전수(어느 타입이 무엇을 주나)는 [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/)가 정본이고, 여기서는 **현상까지**다.
 - `help:` 가 고칠 글자 하나를 짚는다 — `&` 를 붙이라는 것.
 
 비용 — `&v`/`&mut v` 는 포인터 하나. `v` 는 소유권 이동이라 **깊은 복사가 아니다**([**08번 주제**](../08-ownership-and-move/)).
@@ -623,7 +623,7 @@ continue;                          continue '라벨;
 
 - ★ **`break 값` 이 되는지는 「`break` 가 어디 쓰였나」가 아니라 「어느 루프를 가리키나」로 갈린다.**\
   `for` 안의 `break 'search a` 가 통과한 것((5)번 4)과 라벨이 `for` 에 붙어 거부된 것(아래)이 그 짝이다.
-- `while let` 은 이 표에서 `while` 과 같은 칸이다. 정본은 목록의 **20번 주제**이고 여기서는 **이름까지**만 댄다.
+- `while let` 은 이 표에서 `while` 과 같은 칸이다. 정본은 [목록의 **20번 주제**](../20-if-let-while-let-let-else-and-let-chains/)이고 여기서는 **이름까지**만 댄다.
 
 ### 금지 사례 — 라벨이 `for` 에 붙어 있으면 값을 못 낸다
 
@@ -757,7 +757,7 @@ let a = while i < 3 { break 7; };       ->  E0571 `break` with value from a `whi
 ```
 
 - **두 에러가 다른 층이다.** 앞엣것은 타입, 뒤엣것은 문법이다.
-- 값을 내는 반복은 **`loop` + `break 값`** 뿐이다. 값을 **모으고** 싶으면 이터레이터로 간다(목록의 **36번 주제**).
+- 값을 내는 반복은 **`loop` + `break 값`** 뿐이다. 값을 **모으고** 싶으면 이터레이터로 간다([목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/)).
 
 ### 2. ★ `for x in v` 로 원본을 잃는다
 
@@ -954,7 +954,7 @@ std 문서(`primitive.array`, Editions 절)의 원문:
 | 순회하며 **원소를 가져간다** | `for x in v` | 뒤에서 `v` 를 안 쓸 때만 |
 | 중첩 루프의 **바깥**을 끝낸다 | 라벨 + `break 'outer` | 플래그 변수를 안 만들어도 된다 |
 | 조건 만족 시 **블록 하나를 일찍 끝낸다** | `'blk: { ... break 'blk 값 }` | 1.65.0부터. 함수로 쪼개지 않아도 된다 |
-| 순회 결과를 **모은다** | 이터레이터 `map`/`filter`/`collect` | 목록의 **36번 주제** |
+| 순회 결과를 **모은다** | 이터레이터 `map`/`filter`/`collect` | [목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/) |
 
 판단 규칙 두 줄.
 
@@ -984,9 +984,9 @@ std 문서(`primitive.array`, Editions 절)의 원문:
   여기는 「**이 문법이 실제로 무엇을 하나**」다. 이 문서는 모델을 논증하지 않고 **에러 메시지만** 읽는다
 - [목록의 **09번 주제**](../09-copy-clone-and-drop/)(`Copy`와 `Clone`) — 배열이 왜 남고 `Vec` 이 왜 사라지는지의 판정 기준
 - [목록의 **10번 주제**](../10-borrowing-and-aliasing-rules/)(빌림) · **11번 주제**(빌림 검사기 전형) — 순회 중 변경(E0502)의 정본
-- 목록의 **20번 주제**(`if let`·`while let`) — `while let` 의 정본. 여기서는 **이름만** 댔다
-- 목록의 **36번 주제**(`Iterator`) — 반복 결과를 **모으는** 관용
-- 목록의 **37번 주제**(`IntoIterator` 세 형태) — `iter`/`iter_mut`/`into_iter` 규약의 정본
+- [목록의 **20번 주제**](../20-if-let-while-let-let-else-and-let-chains/)(`if let`·`while let`) — `while let` 의 정본. 여기서는 **이름만** 댔다
+- [목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/)(`Iterator`) — 반복 결과를 **모으는** 관용
+- [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/)(`IntoIterator` 세 형태) — `iter`/`iter_mut`/`into_iter` 규약의 정본
 
 ## 용어 풀이
 
@@ -1029,7 +1029,7 @@ Some(4)
 ```
 
 - 「찾으면 그 값, 못 찾으면 기본값」을 **함수로 쪼개지 않고** 쓰는 관용이다.\
-  같은 일을 이터레이터로도 쓸 수 있다 — **두 결과가 같은지 던져서 확인했다**(정본은 목록의 **36번 주제**).
+  같은 일을 이터레이터로도 쓸 수 있다 — **두 결과가 같은지 던져서 확인했다**(정본은 [목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/)).
 
 ```text
 ===== 소스: ex.rs =====
@@ -1080,4 +1080,4 @@ For more information about this error, try `rustc --explain E0696`.
 - `v.iter()` 와 `&v` 는 같은 것을 준다(실측 — 둘 다 컴파일되고 `v` 가 그대로 남는다).\
   둘 중 무엇을 쓸지는 취향이지만, **`for` 에서는 `&v` 가 짧고 체인에서는 `.iter()` 가 이어 쓰기 좋다.**
 - `for` 의 왼쪽은 이름이 아니라 **패턴**이다 — `for (i, x) in v.iter().enumerate()` 가 그래서 된다.\
-  패턴 문법의 정본은 목록의 **19번 주제**다.
+  패턴 문법의 정본은 [목록의 **19번 주제**](../19-pattern-syntax-guards-bindings-and-match-ergonomics/)다.

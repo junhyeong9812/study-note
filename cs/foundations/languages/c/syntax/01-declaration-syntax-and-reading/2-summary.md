@@ -167,7 +167,7 @@ p2 vs p2+1 diff = 40 bytes
 
 ### (4) 함수 포인터 — 괄호가 필수인 자리
 
-**언제 쓰나** — 콜백·디스패치 테이블을 선언할 때. 정본은 목록의 **35번 주제**이고 여기서는 **읽는 법**만 본다.
+**언제 쓰나** — 콜백·디스패치 테이블을 선언할 때. 정본은 [목록의 **35번 주제**](../35-function-pointers-and-callback-tables/)이고 여기서는 **읽는 법**만 본다.
 
 ```text
 int  *f(int);      ①f ②f(int) 함수이고 ③*f(int) 포인터를 돌려주고 ④int 를 가리킨다
@@ -261,11 +261,11 @@ ex.c:12:7: error: assignment of read-only variable ‘r’
 - `p = &b;` 는 **에러가 안 났다** — 목록에 있었는데 진단이 없다. 그것이 답이다.
 - 외우는 법: **`*` 를 기준으로 `const` 가 왼쪽이면 값, 오른쪽이면 포인터.**
 
-비용 — 없다. `const` 는 **계약**이고 최적화 보장이 아니다(정본은 목록의 **31번 주제**).
+비용 — 없다. `const` 는 **계약**이고 최적화 보장이 아니다(정본은 [목록의 **31번 주제**](../31-const-and-pointer-const-placement/)).
 
 ### (6) 저장 클래스 지정자 — 두 축을 동시에 정한다
 
-**언제 쓰나** — 변수를 어디에 둘지 고를 때. 선택의 정본은 목록의 **28번 주제**·목록의 **29번 주제**이고, 여기서는 **선언 문법으로 무엇이 정해지나**만 본다.
+**언제 쓰나** — 변수를 어디에 둘지 고를 때. 선택의 정본은 [목록의 **28번 주제**](../28-choosing-among-four-storage-durations/)·[목록의 **29번 주제**](../29-scope-and-linkage-static-extern/)이고, 여기서는 **선언 문법으로 무엇이 정해지나**만 본다.
 
 ```text
                      저장 기간              연결
@@ -442,7 +442,7 @@ p=0x7ffe1e05fc68  q=503708776  (x 의 주소는 0x7ffe1e05fc68)
 
 ### 2. `int (*)[N]` 을 `int **` 로 받는다
 
-다차원 배열을 함수에 넘길 때 가장 흔하다. 정본은 목록의 **17번 주제**이고 여기서는 **선언이 왜 저 모양인가**만 본다.
+다차원 배열을 함수에 넘길 때 가장 흔하다. 정본은 [목록의 **17번 주제**](../17-multidimensional-arrays-and-pointer-types/)이고 여기서는 **선언이 왜 저 모양인가**만 본다.
 
 ```text
 int a[3][4];
@@ -578,11 +578,11 @@ clang -O2  : 1 2 3
 - [`../../../../memory-management/`](../../../../memory-management/) — **그쪽은 스택 프레임·주소 공간 구조까지, 여기는 그 위에 얹는 C 의 선언 문법부터.** `&a` 와 `&file_static` 의 주소가 왜 다른 영역인가는 거기
 - [`../../../../compiler-pipeline/`](../../../../compiler-pipeline/) — **그쪽은 링커 일반까지, 여기는 C 의 연결(linkage) 문법부터.** `undefined reference` 가 왜 링크 단계에서 나오나는 거기
 - [목록의 **06번 주제**](../06-typedef-and-type-aliases/) (`typedef` 와 타입 별칭) — 이 문서의 「`typedef` 로 푼다」가 정본으로 다뤄지는 곳
-- [목록의 **14번 주제**](../14-pointers-address-dereference-and-pointer-types/) (포인터 — 주소·역참조) · 목록의 **17번 주제** (다차원 배열과 그 포인터 타입)
-- 목록의 **28번 주제** (저장 기간 4종) · 목록의 **29번 주제** (스코프와 링크) — 「무엇을 고르나」의 정본
-- 목록의 **31번 주제** (`const` 와 포인터 const 위치) — `const` 가 계약인 이유
-- 목록의 **34번 주제** (함수 선언·정의·프로토타입) — `f()` 와 `f(void)` 의 정본
-- 목록의 **35번 주제** (함수 포인터와 콜백 테이블) — 이 문서의 `ft[3]` 을 실제로 쓰는 곳
+- [목록의 **14번 주제**](../14-pointers-address-dereference-and-pointer-types/) (포인터 — 주소·역참조) · [목록의 **17번 주제**](../17-multidimensional-arrays-and-pointer-types/) (다차원 배열과 그 포인터 타입)
+- [목록의 **28번 주제**](../28-choosing-among-four-storage-durations/) (저장 기간 4종) · [목록의 **29번 주제**](../29-scope-and-linkage-static-extern/) (스코프와 링크) — 「무엇을 고르나」의 정본
+- [목록의 **31번 주제**](../31-const-and-pointer-const-placement/) (`const` 와 포인터 const 위치) — `const` 가 계약인 이유
+- [목록의 **34번 주제**](../34-function-declarations-definitions-and-prototypes/) (함수 선언·정의·프로토타입) — `f()` 와 `f(void)` 의 정본
+- [목록의 **35번 주제**](../35-function-pointers-and-callback-tables/) (함수 포인터와 콜백 테이블) — 이 문서의 `ft[3]` 을 실제로 쓰는 곳
 - [`02-basic-types-sizes-and-fixed-width-integers/`](../02-basic-types-sizes-and-fixed-width-integers/) — 선언자를 다 풀고 남는 **기본 타입** 쪽
 
 ## 용어 풀이

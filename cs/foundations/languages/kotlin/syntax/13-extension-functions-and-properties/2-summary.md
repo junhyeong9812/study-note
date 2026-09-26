@@ -11,7 +11,7 @@
 > **경계** — ★ **「정적 디스패치라는 천장」이 무엇을 뜻하는지, 왜 그 대가를 치르고도 쓰는지는\
 > [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이 정본이다.** 여기는 **선언 문법 · 해소 순서 · 멤버와 충돌할 때의 규칙**만 다룬다.\
 > 수신자 지정 람다(`A.() -> Unit`)와 DSL 은 목록의 **37번 주제**, `infix` 확장은 [09번 주제](../09-varargs-spread-local-and-infix-functions/),\
-> scope function 은 [목록의 **14번 주제**](../14-scope-functions/), `operator` 확장은 목록의 **31번 주제**,\
+> scope function 은 [목록의 **14번 주제**](../14-scope-functions/), `operator` 확장은 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/),\
 > `@JvmName` 을 포함한 상호운용 애너테이션 **전체**는 목록의 **39번 주제**가 정본이다 —\
 > 여기서는 `@JvmName` 을 **디스크립터 충돌을 푸는 도구로만** 쓴다.\
 > `Intrinsics.checkNotNullParameter` 의 정본은 [03번 주제](../03-null-safe-types/)다.
@@ -704,7 +704,7 @@ fun Cup.peek(): Int = secret
 
 - ★ **확장은 클래스 바깥에 있으므로 바깥에서 보이는 것만 본다.** (1)의 `static` 이라는 사실의 직접 귀결이다.
 - 그래서 확장은 **캡슐화를 뚫지 못한다** — 남의 타입에 함수를 붙이면서도 안전한 이유다.
-- 대신 **`internal` 은 같은 모듈이면 보인다**(모듈 경계의 정본은 목록의 **18번 주제**).
+- 대신 **`internal` 은 같은 모듈이면 보인다**(모듈 경계의 정본은 [목록의 **18번 주제**](../18-visibility-modifiers/)).
 
 비용 — 없다. **못 하는 것이 값어치인 자리다.**
 
@@ -1090,8 +1090,8 @@ fun List<String>.describe() = "s"
 - [09번 주제](../09-varargs-spread-local-and-infix-functions/) — `infix` **확장** 함수의 형태와 우선순위
 - [목록의 **14번 주제**](../14-scope-functions/)(scope function) — `let`/`run`/`apply`/`also` 가 전부 **확장 함수**다. 이 문법의 대표 사용처
 - [목록의 **16번 주제**](../16-properties-backing-field-lateinit-const/)(프로퍼티 — backing field·`field`) — (5)에서 「없다」고 한 그것의 정본
-- 목록의 **18번 주제**(가시성 수식어) — `internal` 이 확장에서 보이는 범위
-- 목록의 **31번 주제**(연산자 오버로딩·`invoke` 규약) — `operator fun` 확장으로 기호를 만드는 것
+- [목록의 **18번 주제**](../18-visibility-modifiers/)(가시성 수식어) — `internal` 이 확장에서 보이는 범위
+- [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/)(연산자 오버로딩·`invoke` 규약) — `operator fun` 확장으로 기호를 만드는 것
 - 목록의 **36번 주제**(함수 타입·`fun interface`·SAM) · 목록의 **37번 주제**(수신자 지정 람다와 DSL) — `A.() -> Unit` 의 정본
 - 목록의 **39번 주제**(Java 상호운용 애너테이션) — `@JvmName` 전체. 여기서는 **충돌 해소 도구로만** 썼다
 - 목록의 **40번 주제**\~**48번 주제**(컬렉션·문자열 stdlib) — 그 API 의 상당수가 **확장 함수**다

@@ -153,7 +153,7 @@ append("문자열") -> ok, childNodes[0].nodeType=3
 - **넣기 전까지는 렌더도 스타일 계산도 없다.** 그래서 조립은 트리 밖에서 하는 쪽이 싸다.
 - `createTextNode` 는 **글자를 글자로만** 넣는 유일한 생성기다 — 마크업으로 해석되지 않는다([04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)).
 
-비용 — 만들기 자체는 싸다. 비싼 것은 **넣은 뒤에 따라오는 스타일·레이아웃**이다(목록의 **10번 주제**).
+비용 — 만들기 자체는 싸다. 비싼 것은 **넣은 뒤에 따라오는 스타일·레이아웃**이다([목록의 **10번 주제**](../10-layout-thrashing/)).
 
 ### (1) ★ `append` 와 `appendChild` — 이름만 비슷하다
 
@@ -467,7 +467,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --dump-dom ex03c.html | se
 - **조각 자신은 트리에 안 들어간다.** 그래서 「조각을 넣었는데 래퍼가 안 생기는」 것이 정상이다.
 - **한 번에 넣는 것이 싼가**는 이 문서가 **주장하지 않는다.** 그 비교는 [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)에서 수치로 재고, 결과가 직관과 달랐다.
 
-비용 — 조각을 만드는 것 자체는 싸다. **레이아웃이 몇 번 도느냐**가 본론이고 그것은 목록의 **05번 주제**와 **10번 주제**의 몫이다.
+비용 — 조각을 만드는 것 자체는 싸다. **레이아웃이 몇 번 도느냐**가 본론이고 그것은 [목록의 **05번 주제**](../05-documentfragment-and-template/)와 **10번 주제**의 몫이다.
 
 ### (5) `cloneNode` — 무엇이 따라오고 무엇이 안 오나
 
@@ -551,7 +551,7 @@ $ google-chrome --headless --disable-gpu --no-sandbox --dump-dom ex03e.html | se
 
 - **`id` 까지 복사된다.** 그대로 문서에 넣으면 **같은 `id` 가 둘**이 되고, `getElementById` 는 **첫 것만** 준다([02번 주제](../02-element-queries-and-live-collections/2-summary.md)).
 - ★ **리스너는 안 따라오는데 `onclick` 속성은 따라온다.** 실측에서 복제본을 클릭했더니 `addEventListener` 카운터는 **1 그대로**였고 `onclick` 속성은 **켜졌다.**
-- 그 이유는 한 줄이다 — **속성은 노드의 일부이고 리스너는 아니다.** 리스너는 노드와 따로 관리되는 목록이다(목록의 **15번 주제**).
+- 그 이유는 한 줄이다 — **속성은 노드의 일부이고 리스너는 아니다.** 리스너는 노드와 따로 관리되는 목록이다([목록의 **15번 주제**](../15-listener-registration/)).
 - **복제본은 트리 밖**이다(`isConnected = false`). 넣어야 보인다.
 
 비용 — 깊은 복제는 **하위 트리 크기에 비례**한다. 이 문서는 그 비용을 재지 않았다.
@@ -765,9 +765,9 @@ const c = btn.cloneNode(true);           // 리스너는 안 온다
 - [01번 주제](../01-document-and-node-tree/2-summary.md) — **노드와 트리 구조의 정본.** 그쪽은 「무엇이 있나」까지, 여기는 「그것을 어떻게 바꾸나」부터
 - [02번 주제](../02-element-queries-and-live-collections/2-summary.md) — 여기서 바꾼 결과가 **잡아 둔 컬렉션에 어떻게 비치나**의 정본
 - [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md) — **문자열로 트리를 만드는 쪽.** 여기는 노드를 하나씩 다루고, 그쪽은 마크업을 파싱해 통째로 만든다. **비용 비교도 그쪽**이다
-- 목록의 **05번 주제**(`DocumentFragment` 와 `<template>` 복제) — **일괄 삽입의 정본.** 여기는 조각의 **의미**(넣으면 빈다)까지, 그쪽은 **묶음 삽입 설계와 `<template>`** 부터
-- 목록의 **15번 주제**(리스너 등록과 해제) — `cloneNode` 가 리스너를 안 복사하는 이유가 되는 **리스너 관리 모델**의 정본
-- 목록의 **10번 주제**(레이아웃 스래싱) — 넣기가 비싸지는 **진짜 이유**. 여기는 삽입의 의미만 다루고 비용은 그쪽
+- [목록의 **05번 주제**](../05-documentfragment-and-template/)(`DocumentFragment` 와 `<template>` 복제) — **일괄 삽입의 정본.** 여기는 조각의 **의미**(넣으면 빈다)까지, 그쪽은 **묶음 삽입 설계와 `<template>`** 부터
+- [목록의 **15번 주제**](../15-listener-registration/)(리스너 등록과 해제) — `cloneNode` 가 리스너를 안 복사하는 이유가 되는 **리스너 관리 모델**의 정본
+- [목록의 **10번 주제**](../10-layout-thrashing/)(레이아웃 스래싱) — 넣기가 비싸지는 **진짜 이유**. 여기는 삽입의 의미만 다루고 비용은 그쪽
 - 목록의 **20번 주제**(리스너 수명) — 뗀 노드가 메모리에 남는 경로
 - HTML 갈래 목록([`html/syntax/README.md`](../../languages/html/syntax/README.md))의 **03번**(파서·오류 복구) — 「어떤 부모에 어떤 자식이 들어갈 수 있나」는 **파싱 때의 규칙**이다. `appendChild` 는 그 규칙을 **적용하지 않는다** — 04번 주제에 그 대비가 실려 있다
 - JS 갈래 목록([`js/syntax/README.md`](../../languages/js/syntax/README.md))의 **08번**(함수 정의 형태와 매개변수) — `append(...nodes)` 같은 **가변 인자**가 무엇인지는 그쪽. 여기는 **그 인자에 무엇을 줄 수 있나**만

@@ -106,7 +106,7 @@ go version go1.27.1 linux/amd64
 ★ 메서드 집합 규칙은 이 주제가 아니다 —
 [19번 주제](../19-method-sets-value-vs-pointer-receiver/)가 정본이고,
 여기는 **그 집합이 맞았다고 치고 그 다음**을 본다.
-★ `nil` 인터페이스 함정의 **정본은 목록의 21번 주제**다 — 여기서는 **한 번 던져 보고 넘긴다**((3)절).
+★ `nil` 인터페이스 함정의 **정본은 [목록의 21번 주제](../21-nil-interface-vs-interface-holding-nil-pointer/)다** — 여기서는 **한 번 던져 보고 넘긴다**((3)절).
 
 ## 동작 방식
 
@@ -1132,9 +1132,9 @@ func main() {
   **담긴 것을 분기하는 법의 정본.** 여기는 **comma-ok 한 꼴**까지
 - [17번 주제](../17-struct-literals-comparability-field-tags-and-sorting/)(구조체) —
   인터페이스 필드가 든 구조체의 `==` 가 런타임에 터지는 자리
-- 목록의 **21번 주제**(`nil` 인터페이스) — **(3)절의 정본.** 여기는 **한 번 던져 보는** 데까지
-- 목록의 **22번 주제**(타입 단언·`any`·`comparable`) — **(4)절의 정본**
-- 목록의 **23번 주제**(`error` 인터페이스) — (3)절의 `trap()` 이 왜 흔한 실수인지
+- [목록의 **21번 주제**](../21-nil-interface-vs-interface-holding-nil-pointer/)(`nil` 인터페이스) — **(3)절의 정본.** 여기는 **한 번 던져 보는** 데까지
+- [목록의 **22번 주제**](../22-type-assertion-any-and-comparable/)(타입 단언·`any`·`comparable`) — **(4)절의 정본**
+- [목록의 **23번 주제**](../23-error-interface-and-errors-as-values/)(`error` 인터페이스) — (3)절의 `trap()` 이 왜 흔한 실수인지
 - 목록의 **43번 주제**(`io.Reader`/`Writer`) — **(6)절의 정본.**
   여기는 **「작을수록 좋다」를 수로 보이는** 데까지
 - 목록의 **37번 주제**(제네릭) — 「`any` 로 받지 말고 타입 파라미터로」가 갈리는 자리
@@ -1178,7 +1178,7 @@ func main() {
   ★ 명세는 그 문단(「an interface T may use a … interface type name E as an interface element」)에
   **`[Go 1.14]`** 표시를 달아 둔다 — **이 문서는 그 판 경계가 정확히 무엇을 가르는지 안 던졌다.**
 - `errors.Is`/`As` 가 (3)절의 함정을 **못 막는다** — 인터페이스가 이미 안 비었기 때문이다.
-  정본은 목록의 **24번 주제**다.
+  정본은 [목록의 **24번 주제**](../24-error-wrapping-and-errors-is-as-join/)다.
 - **인터페이스를 값으로 담을지 포인터로 담을지**는 19번 주제의 격자가 정한다.
   그리고 **담긴 뒤에는 주소를 못 얻는다** — 인터페이스에서 꺼낸 값은 addressable 이 아니다.
   이 문서는 그 에러를 **안 던졌다.**

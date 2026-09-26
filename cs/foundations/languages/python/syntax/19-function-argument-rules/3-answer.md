@@ -548,7 +548,7 @@ SyntaxError: iterable argument unpacking follows keyword argument unpacking
 ★ **그래서 규칙 하나** — **새 파라미터는 `*` 뒤에 키워드 전용 + 기본값으로 넣는다.**\
 ★★ **더 나은 것은 처음부터 `*` 를 넣어 두는 것**이다. `def api(a, b, *)` 는 문법 오류지만(2번 답),
 `def api(a, b, *, )` 대신 **필요한 순간 키워드 전용 칸을 열 수 있도록** 설계 단계에서 인자 수를 줄여 두는 편이 낫다 —
-인자가 계속 늘 것 같으면 **데이터클래스 하나로 묶는다**(목록의 **36번 주제**).
+인자가 계속 늘 것 같으면 **데이터클래스 하나로 묶는다**([목록의 **36번 주제**](../36-dataclasses/)).
 
 ### 11. 세 층
 
@@ -640,7 +640,7 @@ __kwdefaults__ : {'kw2': 'K'}  <- 키워드 전용의 기본값
 | [12번](../12-dict-and-key-requirements/2-summary.md) | `{**a, **b}` 의 **뒤엣것이 이기는** 규칙은 그쪽, **호출에서 겹치면 터지는** 것은 여기 |
 | [16번](../16-iterator-protocol/2-summary.md) | `f(*it)` 로 풀면 **이터레이터가 소진되는** 것은 그쪽의 계약, 그것이 **인자가 되는** 것은 여기 |
 | [18번](../18-loop-control-and-else/2-summary.md) | `'break' outside loop` 이 **캐럿 없는 `SyntaxError`** 인 것 — **층 구분의 정본은 여기**다 |
-| 목록의 **24번 주제** | `(*args, **kwargs)` 래퍼와 `functools.wraps` 는 그쪽 |
+| [목록의 **24번 주제**](../24-decorators/) | `(*args, **kwargs)` 래퍼와 `functools.wraps` 는 그쪽 |
 | 목록의 **40번 주제** | 시그니처에 붙는 **타입 힌트**는 그쪽 — 이 주제의 검사는 **개수와 이름**만 본다 |
 
 ## 실행 검증

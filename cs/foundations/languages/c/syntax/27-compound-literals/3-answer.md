@@ -476,7 +476,7 @@ s27f.cpp:6:36: error: taking address of rvalue [-fpermissive]
 | **포인터의 값과 가리키는 값을 가르는 것** | [14번 형제](../14-pointers-address-dereference-and-pointer-types/) |
 | **댕글링 포인터가 왜 최악인가 · 코드 패턴** | 목록의 **57번 주제** |
 | **sanitizer 와 경고 플래그 사용법** | 목록의 **58번 주제** |
-| **불확정 값을 읽는 것** | 목록의 **30번 주제** |
+| **불확정 값을 읽는 것** | [목록의 **30번 주제**](../30-initialization-rules-and-indeterminate-values/) |
 | **매크로와 결합하는 관용구** | 목록의 **42번 주제** |
 
 - ★ **이 주제가 끝까지 책임지는 것 셋**

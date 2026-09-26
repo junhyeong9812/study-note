@@ -538,7 +538,7 @@ func main() {
   `'가'` 가 UTF-8 로 **3바이트**이기 때문이다. `r` 의 타입은 `int32`(`rune` 의 바닥 타입)다.
   정본은 [10번 주제](../10-strings-bytes-runes-and-utf8-iteration/)다.
 - **채널** — `1 2 3` 을 받고 끝난다. **`close` 를 지우면 영원히 막힌다** —
-  비었다고 끝나는 것이 아니라 **닫힐 때까지** 받기 때문이다. 정본은 목록의 **29번 주제**다.
+  비었다고 끝나는 것이 아니라 **닫힐 때까지** 받기 때문이다. 정본은 [목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/)다.
 - **맵** — 키를 모아 **정렬한 뒤** 찍었다. 순서가 보장이 아니라서다.
 - **변수 개수** — 0·1·2개 중 고른다. 1개만 받았을 때 주는 것이 피연산자마다 다르다.
 
@@ -728,7 +728,7 @@ maps.Keys 는 iter.Seq 다 — 정렬해서 찍는다 : [가 나 다]
 - **맵 순회 순서 무작위화** — [09번 주제](../09-maps-declaration-comma-ok-delete-and-iteration-order/).
 - **라벨 `break`/`continue`** — [15번 주제](../15-switch-type-switch-fallthrough-labels-and-goto/).
 - **`iter` 패키지 설계 자체** — 목록의 **39번 주제**. 여기서는 `range` 가 받는다는 것까지만 본다.
-- 덤 — **채널 `range` 와 `close`** 는 목록의 **29번 주제**,
+- 덤 — **채널 `range` 와 `close`** 는 [목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/),
   표를 `range` 로 도는 테스트 관용구는 **49번 주제**다.
 
 ---

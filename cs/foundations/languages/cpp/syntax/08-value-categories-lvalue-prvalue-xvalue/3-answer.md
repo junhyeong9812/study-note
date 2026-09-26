@@ -108,7 +108,7 @@ vcat01.cpp:36:45: error: aggregate ‘TypeOf<const char&> v20’ has incomplete 
 | v20 | `"abc"[0]` | `const char&` | lvalue | 배열의 첨자 |
 
 - ★★★ **`v10`·`v11`·`v12` 가 한 글자도 다르지 않다.** 「`std::move` 는 캐스트일 뿐」의 첫 증거이고,\
-  그 정본은 목록의 **09번 주제**다.
+  그 정본은 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)다.
 - ★★ **`v16` 과 `v17` 이 갈린다** — `S{}` 자체는 prvalue 인데 **멤버를 꺼내는 순간 물질화**되어 xvalue 가 된다.\
   ★ 「물질화」의 근거는 5번에 있다.
 - ★★ **`v02` 만 참조로 찍혔다** — 리터럴 중 **문자열만 lvalue** 다.
@@ -255,9 +255,9 @@ int main() {
 - ★★★ **`f(42)` 와 `f(std::move(i))` 가 같은 줄로 간다.** 둘을 묶은 이름이 **rvalue** 이고 **`T&&` 가 그 칸을 받는다.**
 - ★★★ **`f(std::move(ci))` 가 `f(const int&)` 로 떨어진다.** `std::move(ci)` 의 타입이 `const int&&` 라\
   **`int&&` 후보가 아예 후보가 못 된다.**\
-  ★ 클래스 타입이면 이 자리가 **조용한 복사**가 된다 — 실측은 목록의 **09번 주제**에 있다.
+  ★ 클래스 타입이면 이 자리가 **조용한 복사**가 된다 — 실측은 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)에 있다.
 - ★★ **`[3]` 은 셋 다 받는다** — `const T&` 가 네 칸을 다 받는 유일한 손이다(3번의 격자).\
-  그래서 **오버로드를 하나만 둘 거면 `const T&`** 가 기본값이 된다(목록의 **11번 주제**).
+  그래서 **오버로드를 하나만 둘 거면 `const T&`** 가 기본값이 된다([목록의 **11번 주제**](../11-choosing-parameter-passing/)).
 - ★ 오버로드 해석의 **전체 순서**는 형제 [`01번`](../01-function-overloading-and-overload-resolution/)이 정본이다. 여기서는 **범주가 후보를 거르는 한 겹**만 봤다.
 
 ### 3. ★ 여섯 개 — g++ 도 clang 도 여섯
@@ -389,7 +389,7 @@ r[0] r[1] r[2]  = a b c
 - ★★★ **`a == b` 가 1 이지만 이 칸은 미명시다.** 표준은 「같은 내용의 리터럴이 구별되는 객체인지」를 **정하지 않는다.**\
   ★ 그래서 이 문서는 그 칸을 머리말의 **흔들리는 칸**에 넣었다 — **출력이 1 이라고 「합쳐진다」로 적지 않는다.**
 - ★ 나머지 리터럴(`42`·`'c'`)은 전부 prvalue 라 **주소가 없다**(3번의 `e5`).
-- ★ **`char* p = "abc";` 는 C++11 부터 ill-formed** 인데 컴파일이 **통과한다** — 그 정본은 목록의 **10번 주제**다.
+- ★ **`char* p = "abc";` 는 C++11 부터 ill-formed** 인데 컴파일이 **통과한다** — 그 정본은 [목록의 **10번 주제**](../10-const-correctness/)다.
 
 ### 5. ★★ 셋 다 `ctor` 한 번 — 그리고 플래그가 아무 일도 안 한다
 
@@ -895,9 +895,9 @@ vcat10.cpp:8:9: warning: using rvalue as lvalue [-fpermissive]
   ★ 08 은 **그 창을 빌려** 범주를 물었을 뿐, 규칙을 다시 쓰지 않았다.
 - 「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/)이 정본이다.\
   ★ 07 이 「**참조는 재결합되지 않는다**」까지였다면, 08 은 「**어떤 식이 어느 참조에 묶이나**」를 얹었다(3번의 격자).
-- `std::move` 가 xvalue 를 만든다는 것의 정본은 목록의 **09번 주제**다.\
+- `std::move` 가 xvalue 를 만든다는 것의 정본은 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)다.\
   ★ 1번의 `v11`·`v12` 가 그 예고편이다.
-- 「매개변수를 무엇으로 받나」는 목록의 **11번 주제**다.\
+- 「매개변수를 무엇으로 받나」는 [목록의 **11번 주제**](../11-choosing-parameter-passing/)다.\
   ★ 2번의 표(`const T&` 가 넷을 다 받는다)가 그 표의 첫 줄이 된다.
 - 수명 연장이 **안 되는** 자리·댕글링은 목록의 **30번 주제**다. 6번은 **되는 쪽**만 봤다.
 - ★★ **Rust 에는 이 질문이 없다** — [`../../../rust/syntax/08-ownership-and-move/`](../../../rust/syntax/08-ownership-and-move/).\
@@ -950,7 +950,7 @@ vcat10.cpp:8:9: warning: using rvalue as lvalue [-fpermissive]
 
 - **안 돌려 본 것** — **람다 식의 범주** · **`co_await`/`co_yield` 식** ·
   **`decltype(auto)` 가 범주를 나르는 것**(정본이 형제 [`05번`](../05-auto-and-decltype-type-deduction/)) ·
-  **`std::forward` 의 범주**(정본이 목록의 **09번 주제**) ·
+  **`std::forward` 의 범주**(정본이 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)) ·
   **`auto&&` 로 prvalue 를 받는 것**(형제 [`05번`](../05-auto-and-decltype-type-deduction/)) ·
   **`-O1`·`-O2` 에서의 생성자 횟수**(5번은 최적화 없이 돌렸다 — ★ 다만 **C++17 의 보장은 최적화와 무관**하다) ·
   **clang 에 `-fpermissive` 를 주는 것**(그 플래그는 g++ 의 것이다).

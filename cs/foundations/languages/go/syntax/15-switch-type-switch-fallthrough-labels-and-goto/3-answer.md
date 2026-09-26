@@ -258,7 +258,7 @@ comma-ok 꼴 : s="문자열" ok=true
   그런데 `%T` 는 **`float64`** 를 찍는다 — `%T` 가 보는 것은 **동적 타입**이기 때문이다.
   **정적 타입은 `%T` 로 못 본다.** 7번의 `t15i.go` 에러가 그것을 보여 준다.
 - 마지막 두 줄 — comma-ok 단언은 실패해도 **패닉하지 않고** 제로값과 `false` 를 준다.
-  정본은 목록의 **22번 주제**다.
+  정본은 [목록의 **22번 주제**](../22-type-assertion-any-and-comparable/)다.
 - 층 — 전부 **명세 보장**이다.
 
 ### 4. ★★★ 컴파일된다 · 실행된다 · 경고 0건 — 그리고 `weight` 가 0을 돌려준다
@@ -748,13 +748,13 @@ func main() {
 **왜 그런가**
 
 - **라벨 `break`/`continue` 가 붙는 `for` 자체** — [14번 주제](../14-for-four-forms-range-over-int-and-func/).
-- **인터페이스가 (타입, 값) 쌍** — 목록의 **21번 주제**. 타입 스위치의 `case nil:` 이 거기서 설명된다.
-- **타입 단언 두 꼴**(패닉형·comma-ok형) — 목록의 **22번 주제**.
+- **인터페이스가 (타입, 값) 쌍** — [목록의 **21번 주제**](../21-nil-interface-vs-interface-holding-nil-pointer/). 타입 스위치의 `case nil:` 이 거기서 설명된다.
+- **타입 단언 두 꼴**(패닉형·comma-ok형) — [목록의 **22번 주제**](../22-type-assertion-any-and-comparable/).
 - **`iota` 열거** — [03번 주제](../03-constants-iota-and-untyped-constants/).
   4번의 「완전성 검사가 없는 이유」가 거기서 나온다.
-- **가지를 무작위로 고르는 사촌** — 목록의 **30번 주제**(`select`).
+- **가지를 무작위로 고르는 사촌** — [목록의 **30번 주제**](../30-select-default-and-timeouts/)(`select`).
   꼴은 `switch` 를 닮았는데 **준비된 가지 중 무작위**로 고른다.
-- 덤 — 깊은 중첩의 뒷정리는 Go 에서 `goto` 가 아니라 `defer` 다(목록의 **26번 주제**).
+- 덤 — 깊은 중첩의 뒷정리는 Go 에서 `goto` 가 아니라 `defer` 다([목록의 **26번 주제**](../26-defer-evaluation-lifo-named-results-and-loops/)).
 
 ---
 

@@ -529,7 +529,7 @@ J2.java:3: error: method greet in class KKt cannot be applied to given types;
 - **상호운용 애너테이션 전체 → 목록의 39번 주제**(`@JvmStatic`/`@JvmOverloads`/`@JvmName`/`@JvmField`/`@Throws`)가 정본이다.\
   여기서는 `@JvmOverloads` 만 기본 인자의 짝으로 다뤘다.
 - **`data class` 의 `copy()`** 가 기본 인자의 대표 사례다 — 모든 파라미터에 **현재 값이 기본값**으로 들어간다.\
-  그래서 `copy(name = "새 이름")` 한 줄이 된다. 정본은 목록의 **22번 주제**.
+  그래서 `copy(name = "새 이름")` 한 줄이 된다. 정본은 [목록의 **22번 주제**](../22-data-class-generated-members/).
 
 ---
 

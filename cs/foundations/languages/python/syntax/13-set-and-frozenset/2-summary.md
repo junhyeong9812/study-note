@@ -885,7 +885,7 @@ for seed in 0 1; do PYTHONHASHSEED=$seed python3.11 -c \
   「집합이 든 리스트를 정렬한다」의 결론을 여기서 문서 근거로 이어받는다.
 - 선행: [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md) — `frozenset` 의 복사가 자기 자신이 아닌 것.
 - 이어지는 곳: [14-comprehensions](../14-comprehensions/2-summary.md) — 집합 컴프리헨션.
-- 이어지는 곳: 목록의 **30번 주제** 「`__repr__`·`__eq__`·`__hash__` 계약」 — **집합 원소로 쓸 클래스 설계의 정본.**
+- 이어지는 곳: [목록의 **30번 주제**](../30-repr-eq-hash-contracts/) 「`__repr__`·`__eq__`·`__hash__` 계약」 — **집합 원소로 쓸 클래스 설계의 정본.**
 - 이어지는 곳: 목록의 **43번 주제** 「`collections`」 — `Counter` 가 「중복을 세는」 쪽이다.
 - 이어지는 곳: 목록의 **47번 주제** 「`json`」 — **set 은 JSON 으로 못 나간다**(리스트로 바꿔야 한다).
 - 원리: [`cs/data-structure/`](../../../../../data-structure/) — 해시 집합의 원리·충돌 해결·부하율은 그쪽이 정본이다.\
@@ -913,6 +913,6 @@ for seed in 0 1; do PYTHONHASHSEED=$seed python3.11 -c \
 - **`-R` 옵션은 「켜는」 스위치가 아니라 「도로 켜는」 스위치다** — 무작위화는 **3.3 부터 기본으로 켜져 있다.**
   던져 본 것은 동작 1 의 「끄고 도로 켜기」에 있다.
 - **`Counter`** 는 「중복을 세는」 쪽이다(목록의 **43번 주제**). 집합은 **있나 없나**만 안다.
-- **`collections.abc.Set`** 은 「집합처럼 구는 것」의 프로토콜이다(목록의 **35번 주제**).
+- **`collections.abc.Set`** 은 「집합처럼 구는 것」의 프로토콜이다([목록의 **35번 주제**](../35-abc-and-protocol/)).
   `dict.keys()` 가 그 프로토콜을 따르기 때문에 `d.keys() & {...}` 가 되는 것이다([12번](../12-dict-and-key-requirements/2-summary.md)).
 - **집합에 순서를 주고 싶으면** 표준 라이브러리에 `OrderedSet` 이 없다 — `dict.fromkeys()` 가 관용구다.

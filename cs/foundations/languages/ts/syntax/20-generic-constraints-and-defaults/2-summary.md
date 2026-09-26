@@ -226,7 +226,7 @@ ex.20b.ts(24,7): error TS2322: Type '"admin" | "age" | "name"' is not assignable
 - ★★★ 15행이 경계다. **`string` 타입 변수**를 키로 주면 막힌다 — 런타임에 무슨 값일지 모르기 때문이다.\
   **`keyof` 제약은 「키가 컴파일 타임에 알려져 있을 때」만 쓸 수 있다.**
 - ★ 20행 — 제약을 포기한 `getLoose` 는 `unknown` 을 준다. **오타도 안 잡고 타입도 안 준다.**
-- ★ 24행 — `keyof typeof user` 자체가 리터럴 유니온이다. 그 규칙은 목록의 **22번 주제**.
+- ★ 24행 — `keyof typeof user` 자체가 리터럴 유니온이다. 그 규칙은 [목록의 **22번 주제**](../22-keyof-and-indexed-access-types/).
 
 ```text
   키가 값 타입을 정한다
@@ -715,7 +715,7 @@ ex.20d.ts(34,25): error TS2744: Type parameter defaults can only reference previ
 - Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **18번** — [와일드카드와 PECS](../../../java/syntax/18-wildcards-pecs/). TS 에는 와일드카드가 **없다** — 대신 제약과 [**17번 주제**](../17-variance-and-parameter-compatibility/)의 변성으로 푼다.
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **25번** — [트레이트 정의·구현](../../../rust/syntax/25-traits-definition-impl-default-methods-and-associated-types/). 6절의 `impl Display for …` 가 **왜 필요한지**는 그쪽.
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **31번**(제네릭과 트레이트 경계·`where`·단형화) — 아직 폴더가 없다.
-- 목록의 **22번 주제**(`keyof` 와 인덱스 접근 타입) — 2절의 `keyof O`·`O[K]` 는 그쪽이 정본이다. 여기서는 **제약으로 쓰는 것**까지만.
+- [목록의 **22번 주제**](../22-keyof-and-indexed-access-types/)(`keyof` 와 인덱스 접근 타입) — 2절의 `keyof O`·`O[K]` 는 그쪽이 정본이다. 여기서는 **제약으로 쓰는 것**까지만.
 - 목록의 **40번 주제**(`strictNullChecks` 의 파급) — 7절에서 갈린 칸의 원인.
 
 ## 용어 풀이
@@ -740,5 +740,5 @@ ex.20d.ts(34,25): error TS2744: Type parameter defaults can only reference previ
 - **왜 「하한」인가** — 제약을 **상한**으로 읽으면 `T` 를 `Point` 로 취급해도 안전해야 한다. 그런데 호출자는 `Point3` 을 넘길 수 있고, 함수가 `Point` 를 만들어 돌려주면 **호출자가 잃어버린 `z` 를 찾다 터진다.** 그래서 TS 는 `T` 를 **끝까지 미지수로 둔다** — 읽기만 허용하고 만들기는 막는 3절의 비대칭이 거기서 나온다. 같은 비대칭이 [**17번 주제**](../17-variance-and-parameter-compatibility/)의 변성에도 있다.
 - **스프레드가 왜 통과하나** — `{ ...p, x: 0 }` 의 타입은 **`T & { x: number }`** 다(3절 25행). 교차는 `T` 의 **부분 타입**이므로 `T` 자리에 들어간다 — `z` 가 있었으면 `T` 안에 그대로 있다. 즉 「새로 만든 것」이 아니라 「**받은 것에 덧칠한 것**」이라서 통과한다. 이 규칙은 TS 3.2 의 제네릭 스프레드 지원 이후의 것이고, **이 판에서 던져서 확인했다.**
 - **와일드카드가 없는 대신** — Java 의 `? extends T`·`? super T` 에 해당하는 표기가 TS 에는 없다. 대신 ① **제약**(`<T extends U>`)으로 읽기 쪽을, ② **변성**([**17번 주제**](../17-variance-and-parameter-compatibility/))과 `readonly` 로 쓰기 쪽을 가른다. 어느 쪽이 나은지는 이 배치에서 **논증하지 않았다** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **18번** 과 나란히 읽을 자리다.
-- **재귀 제약의 한계** — `T extends Record<string, T>` 가 실제로 도는 것은 5절에서 봤지만 **깊이 한계와 검사 시간은 안 쟀다.** 조건부 타입의 재귀 한계는 목록의 **25번 주제**, 타입 수준 성능은 목록의 **45번 주제**다.
+- **재귀 제약의 한계** — `T extends Record<string, T>` 가 실제로 도는 것은 5절에서 봤지만 **깊이 한계와 검사 시간은 안 쟀다.** 조건부 타입의 재귀 한계는 [목록의 **25번 주제**](../25-infer-and-recursive-conditional-types/), 타입 수준 성능은 목록의 **45번 주제**다.
 - **명목 구분이 필요할 때** — 1절 22행처럼 **우연히 모양이 맞는 것**까지 통과시키는 것이 곤란하면 브랜드 타입을 쓴다([**05번 주제**](../05-structural-typing/)). Rust 처럼 「선언이 있어야 한다」를 흉내 내는 수다 — **이 배치에서는 안 던졌다.**

@@ -688,5 +688,5 @@ tsc --pretty false --module commonjs node-assert.d.ts ex.14f.ts            -> ex
 - **`@types/node` 를 실제로 설치한 판** — `node_modules` 를 만들지 않았다. 6번의 선언은 **직접 쓴 한 장**이다.
 - **`assert.ok`·`assert.strictEqual` 같은 멤버** — **안 던졌다.**
 - **`asserts` 와 오버로드의 조합** — [**16번 주제**](../16-function-types-and-overloads/). **안 던졌다.**
-- **단언 함수를 제네릭 제약과 섞는 깊은 예** — 목록의 **20번 주제**. **안 던졌다.**
+- **단언 함수를 제네릭 제약과 섞는 깊은 예** — [목록의 **20번 주제**](../20-generic-constraints-and-defaults/). **안 던졌다.**
 - **단언이 많을 때의 검사 시간** — **재지 않았고 수치를 적지 않았다.**

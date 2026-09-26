@@ -14,7 +14,7 @@
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 타입은 컴파일러 진단으로 접지했다.
 > **경계** — 「템플릿 인자 추론」의 정본은 목록의 **31번 주제**다.\
 > `auto` 의 규칙은 그것과 **거의 같지만 한 곳이 다르고**(중괄호 목록), 여기서는 **`auto` 쪽만** 쓴다((2)).\
-> 「값 범주(lvalue·xvalue·prvalue)」는 목록의 **08번 주제**, 「전달 참조와 `std::forward`」는 목록의 **09번 주제**,\
+> 「값 범주(lvalue·xvalue·prvalue)」는 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/), 「전달 참조와 `std::forward`」는 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/),\
 > 「댕글링과 수명」은 목록의 **30번 주제**가 정본이다.\
 > 「배열이 포인터로 감쇠하는 것」은 C 갈래 [`16번`](../../../c/syntax/16-array-pointer-decay-and-function-parameters/)이 정본이다((4)).\
 > 「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/)이다.\
@@ -78,7 +78,7 @@
 > **참조와 `const` 를 그대로 남기고 싶을 때** 쓴다.
 
 > **전달 참조(forwarding reference)** — 추론되는 자리의 `auto&&`/`T&&`.\
-> lvalue 를 받으면 `T&`, rvalue 를 받으면 `T&&` 가 된다. 정본은 목록의 **09번 주제**.
+> lvalue 를 받으면 `T&`, rvalue 를 받으면 `T&&` 가 된다. 정본은 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/).
 
 > **프록시 타입(proxy type)** — 「그 자리를 대신 가리키는 임시 객체」.\
 > `std::vector<bool>::reference` 가 대표다. `auto` 로 받으면 **값이 아니라 그 대리인이 복사된다**((5)).
@@ -177,7 +177,7 @@ dedu01.cpp:23:76: error: aggregate ‘TypeOf<int> t9’ has incomplete type and 
 - ★★ **③과 ④를 가르는 것은** 「`const` 가 어디에 붙었나」다. `const int*` 의 `const` 는\
   **가리키는 대상**에 붙어 있어 **타입의 일부**이고, `int* const` 의 `const` 는 **포인터 자신**에 붙어 있어 **맨 위**다.\
   맨 위 것만 떨어진다. 선언을 읽는 규칙의 정본은 C 갈래 [`01번`](../../../c/syntax/01-declaration-syntax-and-reading/)이다.
-- ★ **⑦/⑧은 전달 참조**다. `auto&&` 는 `&&` 가 아니라 「**받은 대로**」를 뜻한다 — 정본은 목록의 **09번 주제**.
+- ★ **⑦/⑧은 전달 참조**다. `auto&&` 는 `&&` 가 아니라 「**받은 대로**」를 뜻한다 — 정본은 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/).
 
 clang 도 **같은 타입**을 답한다(문구만 다르다).
 
@@ -285,7 +285,7 @@ dedu02.cpp:28:30: error: aggregate ‘TypeOf<int> yc’ has incomplete type and 
 | `decltype(i + 1)` | `int` | prvalue 식 |
 
 - ★★★ **괄호 하나가 「이름」을 「식」으로 바꾼다.** 이름이면 **선언 타입**, 식이면 **타입 + 값 범주**다.\
-  값 범주와 `&`/`&&` 의 대응 규칙은 목록의 **08번 주제**가 정본이다.
+  값 범주와 `&`/`&&` 의 대응 규칙은 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)가 정본이다.
 - ★★ **`decltype` 은 식을 평가하지 않는다** — `decltype(f(1.0))` 은 `f` 를 **부르지 않는다.**\
   그래서 `f` 는 **선언만 있고 정의가 없어도** 된다(이 소스가 그렇다 — 링크까지 가지 않는다).
 - ★★ **`auto` 와의 대비가 핵심이다** — `auto` 는 떨어뜨리고 `decltype` 은 남긴다.\
@@ -763,7 +763,7 @@ int main() {
    ★ 단 **프록시 컨테이너인지 확인한다**((5)) — `vector<bool>` 이면 **타입을 못 박는다.**
 4. **받은 것을 그대로 돌려주는 래퍼인가?** → **`decltype(auto)`**((3)).\
    ★ 그때 **`return (x);` 를 쓰지 않는다**((6)).
-5. **제네릭 코드에서 무엇이 올지 모르나?** → `auto&&` + `std::forward`(목록의 **09번 주제**).
+5. **제네릭 코드에서 무엇이 올지 모르나?** → `auto&&` + `std::forward`([목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)).
 6. **라이브러리 경계(헤더에 선언만)인가?** → **`auto` 반환을 피한다**((8)).
 
 ## 어디서 틀리나
@@ -863,8 +863,8 @@ int main() {
 - [**04번 형제**](../04-brace-initialization-narrowing-and-initializer-list/) —\
   `auto x{1}` 대 `auto x = {1}` 의 정본. `TypeOf<T>` 창도 거기서 처음 나왔다.
 - [**07번 형제**](../07-references-vs-pointers/) — `auto&`·`auto&&` 의 `&` 가 **무엇인지**가 거기다.
-- 목록의 **08번 주제**(값 범주) — `decltype(식)` 이 `T`/`T&`/`T&&` 중 무엇이 되는지를 **가르는 규칙**.
-- 목록의 **09번 주제**(rvalue 참조·`forward`) — `auto&&` 가 왜 「전달 참조」인지.
+- [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)(값 범주) — `decltype(식)` 이 `T`/`T&`/`T&&` 중 무엇이 되는지를 **가르는 규칙**.
+- [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)(rvalue 참조·`forward`) — `auto&&` 가 왜 「전달 참조」인지.
 - 목록의 **31번 주제**(함수 템플릿과 인자 추론) — ★ **`auto` 규칙의 본체.**\
   여기는 「그래서 `auto` 를 어떻게 읽나」까지고, **템플릿 쪽 규칙 전부**는 거기다.
 - 목록의 **30번 주제**(댕글링 참조와 수명) — (6)의 사고를 **수명 쪽에서** 본다.

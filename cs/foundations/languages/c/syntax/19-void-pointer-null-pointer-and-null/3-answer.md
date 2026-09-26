@@ -183,7 +183,7 @@ ex2.c:12:11: warning: initializing 'int (*)(int)' with an expression of type 'vo
 - **에러가 아니라 경고**다(`cc exit=0`). **실행 파일이 나온다.**
 - ★ **문구가 두 가지를 말한다** — gcc 는 「ISO C 가 금지한다」고 **표준을 근거로**,\
   clang 은 「`void` 포인터와 함수 포인터 사이를 변환한다」고 **무엇이 일어나는지**를 말한다.
-- ★ **이 변환이 꼭 필요한 자리는 POSIX `dlsym`** 이다 — **이 문서는 던지지 않았다**(목록의 **35번 주제**).
+- ★ **이 변환이 꼭 필요한 자리는 POSIX `dlsym`** 이다 — **이 문서는 던지지 않았다**([목록의 **35번 주제**](../35-function-pointers-and-callback-tables/)).
 
 ### 3. `void *` 에 `+1` 을 하면 — **1바이트. 표준에는 그 연산이 없다** ★★
 
@@ -1034,7 +1034,7 @@ int main(void) {
 
 **안 돌려 본 것 / 못 잰 것**
 
-- **안 돌려 본 것** — POSIX **`dlsym`**(목록의 **35번 주제**) · **`-fno-sanitize-recover=all`** ·\
+- **안 돌려 본 것** — POSIX **`dlsym`**([목록의 **35번 주제**](../35-function-pointers-and-callback-tables/)) · **`-fno-sanitize-recover=all`** ·\
   **`-fno-delete-null-pointer-checks`** · **`-O3`·`-Os`**(양쪽 다) ·\
   `void *` 를 **다른 타입으로 되받기**(엄격한 앨리어싱 — 목록의 **55번 주제**) ·\
   **`realloc`/`free` 에 널 넘기기** · **`qsort` 비교자의 `const void *`**.

@@ -1189,7 +1189,7 @@ print(f"{name=!s}")     # name=값
 - 이어지는 곳: [07-string-methods](../07-string-methods/2-summary.md) — `str.center` 와 포맷 스펙 `^` 가 **여분 칸을 반대쪽에 둔다**는 관찰이 거기 있다.
 - 이어지는 곳: [04-numeric-types-and-division](../04-numeric-types-and-division/2-summary.md) — `bool` 이 `int` 의 하위 클래스라 `f"{True:10}"` 이 `'         1'` 인 것.
 - 이어지는 곳: [20-mutable-default-args](../20-mutable-default-args/2-summary.md) — 기본 인자의 f-string 이 `def` 때 한 번 평가되는 것.
-- 이어지는 곳: 목록의 **30번 주제** 「`__repr__`·`__eq__`·`__hash__` 계약」 — `__repr__`/`__str__`/`__format__` 의 기본값 사슬.
+- 이어지는 곳: [목록의 **30번 주제**](../30-repr-eq-hash-contracts/) 「`__repr__`·`__eq__`·`__hash__` 계약」 — `__repr__`/`__str__`/`__format__` 의 기본값 사슬.
 - 이어지는 곳: 목록의 **50번 주제** 「`decimal`·float 정밀도·`round`」 — `f"{v:.2f}"` 가 반올림에서 무엇을 하나.
 - 이어지는 곳: 목록의 **49번 주제** 「`datetime` 과 `zoneinfo`」 — 포맷 스펙 자리를 `strftime` 형식으로 쓰는 대표 사례.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — 문자열 포맷을 「이렇게 쓴다」까지 다룬다.\

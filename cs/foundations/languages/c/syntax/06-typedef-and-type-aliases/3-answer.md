@@ -310,7 +310,7 @@ opq2.c:2:37: error: invalid application of ‘sizeof’ to incomplete type ‘S�
 - **구현의 `struct S` 를 바꿔도 헤더 사용자가 다시 컴파일하지 않아도 된다.**\
   크기를 모르니 애초에 크기에 의존하는 코드를 못 만들었기 때문이다.
 - 헤더에 `#include` 를 덜 써도 되는 것도 따라온다(멤버 타입의 헤더가 필요 없다).
-- 정본은 목록의 **25번 주제**.
+- 정본은 [목록의 **25번 주제**](../25-incomplete-types-and-opaque-struct/).
 
 ### 7. 같은 함수를 세 이름으로 선언해도 되는 이유
 
@@ -480,7 +480,7 @@ qsort(a, 4, sizeof a[0], c);
 
 - 선언·대입·전달이 **전부 한 낱말**로 읽힌다. 실측 결과 `1 2 5 9`.
 - 콜백 테이블(디스패치 테이블)을 만들 때 **배열 원소 타입으로 쓸 수 있는 것**이 더 큰 이득이다.
-- 정본은 목록의 **35번 주제**.
+- 정본은 [목록의 **35번 주제**](../35-function-pointers-and-callback-tables/).
 
 ### 11. 같은 `typedef` 를 두 번
 
@@ -586,7 +586,7 @@ re.c:1:13: note: previous declaration of ‘T’ with type ‘T’ {aka ‘int�
 **안 돌려 본 것 / 못 잰 것**
 
 - **안 돌려 본 것** — `struct` 래퍼의 **런타임 비용**(인라인되어 사라지는지) · `typedef` 와 `_Generic` 을 결합한\
-  타입 제네릭 인터페이스(목록의 **40번 주제**) · C23 의 `typeof_unqual` · `typedef` 가 붙은 VLA(목록의 **18번 주제**).
+  타입 제네릭 인터페이스(목록의 **40번 주제**) · C23 의 `typeof_unqual` · `typedef` 가 붙은 VLA([목록의 **18번 주제**](../18-variable-length-arrays-vla/)).
 - **못 잰 것** — 없다. 이 주제는 컴파일만으로 전부 확인된다.
 
 **버전이 올랐을 때 다시 돌려야 하는 것**

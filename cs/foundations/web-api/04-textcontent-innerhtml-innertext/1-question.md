@@ -124,7 +124,7 @@ const f = frag(); for (…) f.appendChild(만든span()); host.appendChild(f);
 
 - `innerHTML` 로 영역을 통째로 갈면 [02번 주제](../02-element-queries-and-live-collections/2-summary.md)의 라이브 컬렉션과 정적 스냅샷은 각각 어떻게 되는가?
 - [03번 주제](../03-node-creation-insertion-removal/2-summary.md)의 `appendChild` 와 여기의 `innerHTML` 은 **무엇을 검사하느냐**에서 어떻게 갈리는가?
-- `innerText` 읽기가 목록의 **10번 주제**(레이아웃 스래싱)의 씨앗이 되는 이유는 무엇인가?
+- `innerText` 읽기가 [목록의 **10번 주제**](../10-layout-thrashing/)(레이아웃 스래싱)의 씨앗이 되는 이유는 무엇인가?
 - 이 문서가 「`DocumentFragment` 가 빠르다」를 **주장하지 않은** 이유는 무엇인가?
 
 ## 복습 기록

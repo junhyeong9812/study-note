@@ -1343,7 +1343,7 @@ Rust 는 `f64` 에 `Eq` 를 안 줘서 **키가 되는 것 자체를 막았다**
 - 이어지는 곳: [31-comparison-protocol-and-sortability](../31-comparison-protocol-and-sortability/2-summary.md) — **순서의 계약.**\
   `NotImplemented` 를 돌려주는 규칙과 `functools.total_ordering` 이 `__hash__` 를 **못 채우는 것**이 거기다.
 - 이어지는 곳: [13-set-and-frozenset](../13-set-and-frozenset/2-summary.md) — 같은 해시 기계의 「순서 없는」 쪽.
-- 이어지는 곳: `목록의 **36번 주제**` 「`dataclasses`」 — `field`·`default_factory`·`order` 까지 포함한 정본.
+- 이어지는 곳: `[목록의 **36번 주제**](../36-dataclasses/)` 「`dataclasses`」 — `field`·`default_factory`·`order` 까지 포함한 정본.
   여기서는 **`__hash__` 가 어떻게 갈리는지**만 봤다.
 - 이어지는 곳: `목록의 **38번 주제**` 「`namedtuple`·`NamedTuple`·`TypedDict`」 — 튜플이 이미 세 메서드를 갖춘 자리.
 - ★ 대비: [`rust/syntax/28-partialeq-eq-partialord-ord-and-hash-contracts`](../../../rust/syntax/28-partialeq-eq-partialord-ord-and-hash-contracts/2-summary.md) — **이 주제의 직접 대비 대상.**\
@@ -1398,6 +1398,6 @@ Rust 는 `f64` 에 `Eq` 를 안 줘서 **키가 되는 것 자체를 막았다**
   ★ 동작 4 의 `Fixed` 가 그 자리를 우연히 보여 준다 — `CaseKey` 를 물려받아 `__hash__` 만 바꿨는데,
   `__eq__` 는 부모 것을 그대로 쓰면서도 해시가 되살아났다(자식 칸의 `__hash__` 가 더 가깝기 때문이다).
 - **`Protocol`·ABC 로 「해시 가능함」을 타입으로 요구할 수 있나** — `typing.Hashable` 이 있다.
-  ★ 정적 검사기가 잡아 주는 범위는 **안 확인했다**. 정본은 `목록의 **35번 주제**`다.
+  ★ 정적 검사기가 잡아 주는 범위는 **안 확인했다**. 정본은 `[목록의 **35번 주제**](../35-abc-and-protocol/)`다.
 - **`set` 의 순회 순서는 `PYTHONHASHSEED` 에 흔들린다** — 그래서 이 문서는 `set` 을 **`len()` 으로만** 찍었다.
   실측은 [13번](../13-set-and-frozenset/2-summary.md)에 있다.

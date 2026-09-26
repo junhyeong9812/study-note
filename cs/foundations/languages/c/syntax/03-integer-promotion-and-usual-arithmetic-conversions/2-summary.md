@@ -742,7 +742,7 @@ AddressSanitizer: stack-buffer-overflow ex.c:8 in f6
 - [`04-floating-point-types-and-conversions/`](../04-floating-point-types-and-conversions/) — 통상 산술 변환의 ① 단계(부동소수 쪽) · 범위 밖 부동→정수 UB
 - [목록의 **05번 주제**](../05-explicit-casts-and-pointer-conversions/) (명시 캐스트) — 「경고를 끄기만 하는 캐스트」를 가리는 곳
 - [목록의 **11번 주제**](../11-bitwise-operations-and-shifts/) (비트 연산과 시프트) — 시프트의 정본
-- 목록의 **36번 주제** (`<stdarg.h>`) — 기본 인자 승격은 이 주제의 사촌이다
+- [목록의 **36번 주제**](../36-variadic-functions-stdarg/) (`<stdarg.h>`) — 기본 인자 승격은 이 주제의 사촌이다
 - 목록의 **54번 주제** (부호 있는 정수 오버플로) — **오버플로를 일으키기 전에 검사하는 식**의 정본
 - 목록의 **58번 주제** (UB 를 잡는 도구) — 이 문서의 경고·sanitizer 표가 정본으로 다뤄지는 곳
 

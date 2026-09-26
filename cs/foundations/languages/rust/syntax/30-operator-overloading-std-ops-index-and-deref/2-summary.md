@@ -1319,7 +1319,7 @@ d.size=3  a.size=2
 ## 더 들어가면
 
 - **`DerefMut`** — `&mut` 판 역참조. [**26번 주제**](../26-orphan-rule-and-newtype/) (5)가 이것으로 불변식이 새는 것을 보였다.
-- **`Fn`·`FnMut`·`FnOnce` 도 `std::ops` 에 있다** — `f(x)` 호출 기호의 트레이트다. 사용자가 직접 구현하는 것은 **불안정**이다(목록의 **34번 주제**).
+- **`Fn`·`FnMut`·`FnOnce` 도 `std::ops` 에 있다** — `f(x)` 호출 기호의 트레이트다. 사용자가 직접 구현하는 것은 **불안정**이다([목록의 **34번 주제**](../34-closures-fn-fnmut-fnonce-and-move/)).
 - **`RangeBounds`** — `a..b` 를 받는 API(`Vec::drain` 등)가 쓰는 트레이트. `..` 자체는 범위 **타입**을 만드는 문법이다.
 - **`Try`·`FromResidual`** — `?` 를 다른 타입에 열어 주는 트레이트. (5)의 목록에 있지만 **불안정**이다.
 - **`impl<'a> Add<&'a T> for &'a T` 의 수명** — 참조 판에 수명을 명시하는 꼴. (3)은 생략 규칙에 맡겼다([**12번 주제**](../12-lifetime-annotations-and-elision/)).

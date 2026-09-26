@@ -998,6 +998,6 @@ new BoundCtor();                       // new 는 bind 를 이긴다 -- this 만
 - **`Reflect.apply` 와 `apply` 의 차이** — 값은 같지만 **`f.apply` 는 `f` 의 `apply` 프로퍼티를 읽는다.**
   누가 그 프로퍼티를 바꿔 놨으면 다른 함수가 불린다. `Reflect.apply` 는 그 조회를 건너뛴다. 정본은 46번이다.
 - **`Function.prototype.call.call`** — `call` 자신을 `call` 로 부르는 것. 언커리 관용구의 뿌리다.
-- **`Symbol.hasInstance`** — `instanceof` 의 판정을 가로채는 심볼. bound 함수의 `instanceof` 도 그 경로를 탄다. 목록의 **22번 주제**가 정본이다.
+- **`Symbol.hasInstance`** — `instanceof` 의 판정을 가로채는 심볼. bound 함수의 `instanceof` 도 그 경로를 탄다. [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/)가 정본이다.
 - **`bind` 의 폴리필이 못 흉내 내는 것** — 못질한 인자의 `length` 계산과 `new` 동작은 함수로 흉내 내기 어렵다.
   **재 본 적이 없으므로 「느리다」·「빠르다」는 이 문서에 없다.**

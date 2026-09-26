@@ -1199,7 +1199,7 @@ base G
   인터페이스에 담긴 것을 되꺼내는 법
 - 목록의 **45번 주제**(`encoding/json`) — **(7)절의 정본.**
   여기는 **임베딩이 만드는 네 모양**까지, 그쪽은 **태그 전체 규칙**부터
-- 목록의 **32번 주제**(`sync`) — `sync.Mutex` 를 임베딩할지 말지의 판단
+- [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/)(`sync`) — `sync.Mutex` 를 임베딩할지 말지의 판단
 - [`../../../../oop-basics/`](../../../../oop-basics/) —
   **그쪽은 상속·합성 설계 논의까지**, 여기는 **Go 의 승격 규칙**부터
 - [`../../../java/syntax/11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/) —

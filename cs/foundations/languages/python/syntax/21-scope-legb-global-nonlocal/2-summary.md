@@ -1568,8 +1568,8 @@ class D:
   **파라미터도 바인딩**이라 지역 이름을 만든다. **컴파일 시점 대 실행 시점의 층 구분**도 같은 축이다.
 - 함께 보는 곳: [20-mutable-default-args](../20-mutable-default-args/2-summary.md) —
   기본값은 **`def` 실행 시점**에 한 번 계산된다. **그쪽이 정본**이다.
-- 이어지는 곳: 목록의 **29번 주제** 「클래스와 인스턴스 속성」 — `self.x` 와 `C.x` 의 속성 조회가 그쪽이다.
-- 이어지는 곳: 목록의 **33번 주제** · **34번 주제** — 이름 해소와 **속성 해소**가 다른 기계라는 것.
+- 이어지는 곳: [목록의 **29번 주제**](../29-classes-and-attribute-lookup/) 「클래스와 인스턴스 속성」 — `self.x` 와 `C.x` 의 속성 조회가 그쪽이다.
+- 이어지는 곳: [목록의 **33번 주제**](../33-property-descriptor-slots/) · **34번 주제** — 이름 해소와 **속성 해소**가 다른 기계라는 것.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — 함수를 정의하고 부르는 것까지가 그쪽이다.\
   **경계**: 여기는 「**그 함수 안의 이름이 어디서 풀리나**」부터다.
 - 공식 문서: [Naming and binding](https://docs.python.org/3.12/reference/executionmodel.html#naming-and-binding) ·

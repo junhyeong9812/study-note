@@ -1164,8 +1164,8 @@ print("   그런데 for 는 돈다          :", [v for v in Old()])
 - 사슬 앞: [30-repr-eq-hash-contracts](../30-repr-eq-hash-contracts/2-summary.md) — `in` 이 `==` 로 비교한다는 것.\
   ★ **`__contains__` 를 안 만들면 순회하며 `==` 를 부른다** — 그 `__eq__` 가 틀리면 `in` 도 틀린다.
 - 사슬 앞: [31-comparison-protocol-and-sortability](../31-comparison-protocol-and-sortability/2-summary.md) — `sorted(내컨테이너)` 가 이 프로토콜로 원소를 꺼낸 뒤 그쪽 프로토콜로 비교한다.
-- 이어지는 곳: 목록의 **33번 주제** 「`property`·디스크립터·`__slots__`」 — 속성 쪽 가로채기.
-- 이어지는 곳: 목록의 **35번 주제** 「추상 베이스 클래스와 `Protocol`」 — ★ `collections.abc` 와 `typing.Protocol` 중 무엇을 고르나가 그쪽 정본이다.
+- 이어지는 곳: [목록의 **33번 주제**](../33-property-descriptor-slots/) 「`property`·디스크립터·`__slots__`」 — 속성 쪽 가로채기.
+- 이어지는 곳: [목록의 **35번 주제**](../35-abc-and-protocol/) 「추상 베이스 클래스와 `Protocol`」 — ★ `collections.abc` 와 `typing.Protocol` 중 무엇을 고르나가 그쪽 정본이다.
 - 이어지는 곳: 목록의 **43번 주제** 「`collections`」 — `UserList`·`UserDict` 로 내장을 물려받는 길.
 - 원리: [`cs/data-structure/`](../../../../../data-structure/) — 시퀀스·해시 자료구조의 원리와 복잡도는 그쪽이 정본이다.
 - 공식 문서: [3.3.7 Emulating container types](https://docs.python.org/3.12/reference/datamodel.html#emulating-container-types) · [Membership test operations](https://docs.python.org/3.12/reference/expressions.html#membership-test-operations) · [`collections.abc`](https://docs.python.org/3.12/library/collections.abc.html)
@@ -1208,6 +1208,6 @@ print("   그런데 for 는 돈다          :", [v for v in Old()])
   내 클래스에 `__class_getitem__` 을 두면 `MyBox[int]` 가 된다(PEP 560, 목록의 **41번 주제**).
 - **`UserList`·`UserDict`** 는 내장을 상속할 때 생기는 문제(내부 메서드가 서로를 안 부르는 것)를 피하려고 만든 래퍼다(목록의 **43번 주제**).
 - **`typing.Protocol`** 은 `collections.abc` 와 달리 **상속 없이** 구조로만 맞추는 길이다.
-  런타임 강제 여부가 갈리는 지점은 목록의 **35번 주제**가 정본이다.
+  런타임 강제 여부가 갈리는 지점은 [목록의 **35번 주제**](../35-abc-and-protocol/)가 정본이다.
 - ★ **비동기 판**은 `__aiter__`/`__anext__` 이고 `async for` 가 그것을 쓴다(PEP 492, 목록의 **51번 주제**).
   ★ **비동기에는 `__getitem__` 대체 경로가 없다** — 낡은 프로토콜은 동기 쪽에만 남아 있는 유산이다.

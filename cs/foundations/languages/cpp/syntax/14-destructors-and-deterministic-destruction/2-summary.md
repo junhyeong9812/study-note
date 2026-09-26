@@ -18,7 +18,7 @@
 > [13번](../13-constructors-member-init-list-and-delegating/)이 **채우는 법**을 답했다. **여기 14 가 「언제 비워지나」에 답하고**,\
 > [15번](../15-raii-resources-as-types/)이 **그 시점을 자원 관리에 쓰는 법**을 답한다.\
 > ★★ **[13번](../13-constructors-member-init-list-and-delegating/) (2)의 「선언 순서로 초기화된다」가 여기서 뒤집힌다** — 파괴는 그 **역순**이다((1)).
-> **경계** — 「**가상 소멸자를 언제 붙이나**」의 설계 판은 목록의 **20번 주제**가 정본이고,\
+> **경계** — 「**가상 소멸자를 언제 붙이나**」의 설계 판은 [목록의 **20번 주제**](../20-virtual-destructors-and-polymorphic-deletion/)가 정본이고,\
 > 여기서는 **안 붙였을 때 실제로 무엇이 일어나는가**만 던져 본다((5)).\
 > 「0/3/5의 법칙」은 **18번**, 「이동 후 상태」는 **17번**, 「`unique_ptr`」은 **26번**,\
 > 「예외와 스택 되감기」 자체는 **51번**, 「수명 연장 규칙의 전모」는 **30번 주제**가 정본이다.\
@@ -634,7 +634,7 @@ dtor06.cpp:7:30: warning: delete called on non-final 'Poly' that has virtual fun
 - ★ 경고 이름은 g++ `-Wdelete-non-virtual-dtor` · clang `-Wdelete-non-abstract-non-virtual-dtor` 로 **다르다.**
 
 **비용** — `virtual ~Base() = default;` 한 줄이 **vtable 포인터 8바이트**(이미 가상 함수가 있으면 0)와\
-**가상 호출 한 번**을 더한다. **설계 판단의 정본은 목록의 20번 주제**다.
+**가상 호출 한 번**을 더한다. **설계 판단의 정본은 [목록의 20번 주제](../20-virtual-destructors-and-polymorphic-deletion/)다**.
 
 ### (6) ★★ `delete` 대 `delete[]` — 소멸자가 몇 번 도나
 
@@ -1131,8 +1131,8 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - [12번](../12-class-basics-members-access-and-this/) — 클래스라는 그릇. `this` 와 멤버 배치는 거기.
 - 형제 [`09번`](../09-rvalue-references-move-and-forward/) — **이동 후 원본도 파괴된다.** (1)의 계수가 거기서 의미를 갖는다.
 - 형제 [`11번`](../11-choosing-parameter-passing/) — **로그·계수 방식의 뿌리**(`Probe`).
-- 목록의 **20번 주제** — 「가상 소멸자를 **언제 붙이나**」의 설계 판. 여기는 **안 붙였을 때 무엇이 일어나나**까지.
-- 목록의 **18번 주제** — 0/3/5의 법칙. 「소멸자를 적으면 이동이 사라진다」의 정본.
+- [목록의 **20번 주제**](../20-virtual-destructors-and-polymorphic-deletion/) — 「가상 소멸자를 **언제 붙이나**」의 설계 판. 여기는 **안 붙였을 때 무엇이 일어나나**까지.
+- [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/) — 0/3/5의 법칙. 「소멸자를 적으면 이동이 사라진다」의 정본.
 - 목록의 **30번 주제** — 수명 연장 규칙의 전모. (4)는 그중 **임시 하나**만 본 것이다.
 - 목록의 **51번 주제** — 예외와 스택 되감기 자체. (2)는 그 결과만 본 것이다.
 - C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **13번**([`13-goto-cleanup-idiom/`](../../../c/syntax/13-goto-cleanup-idiom/)) — **소멸자가 없으면** 같은 일을 라벨로 한다.
@@ -1185,4 +1185,4 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **소멸자와 `std::vector` 의 강한 보장** — 이동 생성자가 `noexcept` 가 아니면 `vector` 재할당이 **복사로 간다.**\
   정본은 목록의 **53번 주제**.
 - **`std::destroy_at`·`std::construct_at`(C++20)** — 수명을 손으로 여닫는 도구. 할당기·`optional` 구현이 쓴다.
-- **소멸 순서와 `static` 초기화 순서 문제** — 번역 단위가 둘 이상일 때의 미명시 구간. 정본은 목록의 **25번 주제**.
+- **소멸 순서와 `static` 초기화 순서 문제** — 번역 단위가 둘 이상일 때의 미명시 구간. 정본은 [목록의 **25번 주제**](../25-static-members-and-inline-variables/).

@@ -202,7 +202,7 @@ ex.04b.ts(7,7): error TS2322: Type 'unknown' is not assignable to type 'string'.
 ```
 
 > **좁히기(narrowing)** — 제어 흐름을 보고 그 분기 안에서 타입을 더 구체적으로 읽어 주는 것.\
-> 예: `if (typeof u === "string")` 안에서 `u` 는 `string` 으로 읽힌다. 전면 서술은 목록의 **12번 주제**.
+> 예: `if (typeof u === "string")` 안에서 `u` 는 `string` 으로 읽힌다. 전면 서술은 [목록의 **12번 주제**](../12-narrowing/).
 
 비용 — 검사만 는다. 런타임 비용은 **가드를 실제로 쓸 때만** 생긴다.
 
@@ -639,8 +639,8 @@ ping
 - [**03번 주제** — 기본 타입 표기](../03-basic-type-annotations/) — 원시·배열·튜플·객체·함수 표기는 그쪽이 정본. 여기서는 **위아래 끝의 네 타입**만.
 - [**05번 주제** — 구조적 타이핑](../05-structural-typing/) — 「왜 이 값이 이 자리에 들어가나」의 **일반 규칙**은 그쪽.
 - [**01번 주제** — TS 가 더하는 것과 지우는 것](../01-what-ts-adds-and-erases/) — 「방출에 안 남는다」의 근거는 그쪽.
-- 목록의 **09번 주제**(유니온 타입) · **12번 주제**(좁히기) — 판별 유니온과 좁히기의 전면 서술은 그쪽. 여기서는 **완전성 검사 관용구**만.
-- 목록의 **13번 주제**(타입 가드와 타입 술어) — `v is T` 의 전면 서술은 그쪽.
+- [목록의 **09번 주제**](../09-union-types/)(유니온 타입) · **12번 주제**(좁히기) — 판별 유니온과 좁히기의 전면 서술은 그쪽. 여기서는 **완전성 검사 관용구**만.
+- [목록의 **13번 주제**](../13-type-guards-and-predicates/)(타입 가드와 타입 술어) — `v is T` 의 전면 서술은 그쪽.
 - 목록의 **42번 주제**(암시적 `any` 와 catch 변수) — `noImplicitAny`·`useUnknownInCatchVariables` 는 그쪽.
 - `../../js/syntax/README.md` 의 **01번 주제**(값의 종류와 `typeof`) — `undefined` 의 **런타임 의미는 JS 갈래가 정본**이다.
 
@@ -670,6 +670,6 @@ ping
 ## 더 들어가면
 
 - **`unknown` 을 API 경계에 두는 설계** — 라이브러리의 `parse(raw: unknown)` 는 호출자에게 **좁히기를 강제**한다. `any` 로 받으면 그 의무가 사라진다.
-- **`never` 의 다른 얼굴** — 조건부 타입에서 `never` 는 **유니온에서 빠지는 것**을 뜻한다(`Exclude` 가 그렇게 구현돼 있다). 목록의 **24번 주제**.
+- **`never` 의 다른 얼굴** — 조건부 타입에서 `never` 는 **유니온에서 빠지는 것**을 뜻한다(`Exclude` 가 그렇게 구현돼 있다). [목록의 **24번 주제**](../24-conditional-types-and-distribution/).
 - **`void` 를 변수 타입으로 쓰는 경우** — 드물지만 `Promise<void>` 처럼 **타입 인자**로는 자주 쓴다. 그때도 뜻은 「반환값을 안 본다」다.
 - **`catch` 변수** — 이 판은 `strict` 가 기본 `true` 라 `catch (e)` 의 `e` 가 `unknown` 이다. 그래서 `e.message` 를 바로 못 읽고 `(e as Error).message` 나 `instanceof Error` 가 필요하다(`ex.04h.ts` 가 그 형태다).

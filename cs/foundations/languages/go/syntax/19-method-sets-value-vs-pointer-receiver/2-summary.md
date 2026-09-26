@@ -919,8 +919,8 @@ func(main.T) int func(*main.T) 3
 - [09번 주제](../09-maps-declaration-comma-ok-delete-and-iteration-order/)(맵) —
   맵 원소가 주소를 못 잡는 것의 정본
 - [17번 주제](../17-struct-literals-comparability-field-tags-and-sorting/)(구조체) — 메서드를 다는 대상
-- 목록의 **21번 주제**(`nil` 인터페이스) — 담긴 뒤에 생기는 함정
-- 목록의 **32번 주제**(`sync`) — **복사하면 안 되는 타입**의 정본. (6)절이 그 한 자리다
+- [목록의 **21번 주제**](../21-nil-interface-vs-interface-holding-nil-pointer/)(`nil` 인터페이스) — 담긴 뒤에 생기는 함정
+- [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/)(`sync`) — **복사하면 안 되는 타입**의 정본. (6)절이 그 한 자리다
 - 목록의 **42번 주제**(`fmt`) — `String()` 을 값 리시버로 달지 포인터로 달지가 출력에 보이는 자리
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **25번**
   ([`../../../rust/syntax/25-traits-definition-impl-default-methods-and-associated-types/`](../../../rust/syntax/25-traits-definition-impl-default-methods-and-associated-types/)) —

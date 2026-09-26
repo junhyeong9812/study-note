@@ -577,7 +577,7 @@ cs09b-dimsfail.cs(6,19): error CS0022: Wrong number of indices inside []; expect
 - ★★ **`md[^1]` 이 `CS0022`** 인 것은 **차원 수 검사가 먼저**라는 뜻이다.\
   ★ 「인덱스 타입이 틀렸다」와 「인덱스 개수가 틀렸다」는 **다른 단계**에서 잡힌다.
 - ★ **`HashSet<T>` 의 `CS0021` 은 성질이 다르다** — 나머지는 「계약을 덜 갖췄다」이고 이것은\
-  **「순서가 없어 걸 자리가 없다」다**. 집합에 「끝에서 첫 번째」라는 개념이 없다(목록의 **10번 주제**).
+  **「순서가 없어 걸 자리가 없다」다**. 집합에 「끝에서 첫 번째」라는 개념이 없다([목록의 **10번 주제**](../10-collection-choosing-list-dictionary-hashset-queue-stack/)).
 
 ### 8. ★★ **`^` 는 산술로, `..` 는 세 메서드로** 풀린다
 
@@ -732,7 +732,7 @@ cs09b-prec.cs(11,13): error CS0019: Operator '-' cannot be applied to operands o
 | 배열 전체 복사 | `a[..]` · `Clone()` · `Array.Copy` | 셋 다 **얕은 복사**다 |
 | 격자, 줄 길이 같음 | `int[,]` | 객체 **하나**(6번) |
 | 격자, 줄 길이 다름 | `int[][]` | 다차원으로는 표현 불가 |
-| 크기가 변한다 | `List<T>` | **배열은 크기 고정** — 목록의 **10번 주제** |
+| 크기가 변한다 | `List<T>` | **배열은 크기 고정** — [목록의 **10번 주제**](../10-collection-choosing-list-dictionary-hashset-queue-stack/) |
 
 - ★★★ **`Span<T>` 를 못 쓰는 자리** — **클래스의 필드** · **`async` 메서드의 `await` 를 건너는 지역변수** ·\
   **`yield return` 이 있는 메서드** · **람다가 캡처하는 변수** · **제네릭 타입 인자**(`List<Span<int>>`).\

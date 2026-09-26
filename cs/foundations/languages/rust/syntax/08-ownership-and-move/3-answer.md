@@ -583,7 +583,7 @@ v = [1, 2, 3]
 
 - **배열은 `for x in a` 뒤에도 `a` 를 쓸 수 있다.** `[i32; 3]` 이 **`Copy`** 라서 `for` 가 **사본을 먹었기** 때문이다.\
   ★ **`Copy` 인지는 컨테이너 타입이 정한다** — `Vec<i32>` 는 원소가 `Copy` 여도 `Copy` 가 아니다.
-- 이 셋의 정본은 목록의 **37번 주제**(`IntoIterator` 세 형태)다.
+- 이 셋의 정본은 [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/)(`IntoIterator` 세 형태)다.
 
 ### 10. 실행되지 않는 갈래와 루프
 

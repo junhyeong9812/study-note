@@ -337,7 +337,7 @@ i32::from(200_u8)        = 200
 - **넓히는 쪽은 `From`** 이라 실패가 없다 — `i32::from(200_u8)` 은 그냥 값이다.
 - **좁히는 쪽은 `TryFrom`** 이고 `Result` 를 준다. 실패를 **타입이 강제로 들게** 한다.
 - `as` 와의 차이 한 줄: **`as` 는 못 담으면 버리고, `try_into` 는 못 담으면 알려 준다.**
-- 트레이트 자체의 정본은 목록의 **29번 주제**(변환 트레이트)다. 여기서는 **`as` 의 대안**으로만 본다.
+- 트레이트 자체의 정본은 [목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/)(변환 트레이트)다. 여기서는 **`as` 의 대안**으로만 본다.
 
 비용 — `Result` 하나. 성공 경로는 `as` 와 같은 기계어로 줄어든다(할당 없음).
 
@@ -658,9 +658,9 @@ Reference(Behavior not considered `unsafe` — Integer overflow)의 원문:
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — **그쪽은 안전성을 어느 통화로 지불하는가의 논증**,\
   **여기는 그 지불이 산술 한 줄에서 어떤 모양으로 나타나는가**다.
 - [목록의 **15번 주제**](../15-slices-ranges-and-utf8-boundaries/)(슬라이스·UTF-8) — `"한".len() == 3` 의 정본
-- 목록의 **29번 주제**(변환 트레이트) — `From`/`TryFrom` 의 정본. 여기서는 `as` 의 대안으로만 봤다
+- [목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/)(변환 트레이트) — `From`/`TryFrom` 의 정본. 여기서는 `as` 의 대안으로만 봤다
 - [목록의 **07번 주제**](../07-const-static-and-const-fn/)(상수·`const fn`) — 상수 접기와 컴파일 타임 계산
-- 목록의 **23번 주제**(`panic!` 대 `Result`) — 「여기서 끝낼 것인가」의 판단
+- [목록의 **23번 주제**](../23-panic-vs-result/)(`panic!` 대 `Result`) — 「여기서 끝낼 것인가」의 판단
 
 ## 용어 풀이
 

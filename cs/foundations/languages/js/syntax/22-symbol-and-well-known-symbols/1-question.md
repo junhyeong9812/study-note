@@ -571,7 +571,7 @@ console.log("a `using` declaration: " + compiled);
 ### 12. 파이썬의 dunder 대 JS 의 잘 알려진 심볼 (연결)
 
 - 파이썬은 언어 동작을 바꾸는 훅을 **무엇으로** 부르고(Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **32번**), JS 는 무엇으로 부르나? 그 차이가 **이름 충돌**에 대해 무엇을 바꾸나?
-- 파이썬의 `__bool__`(같은 목록의 **05번**)에 해당하는 심볼이 JS 에 있나? 1번의 어느 줄이 그 답인가?
+- 파이썬의 `__bool__`(같은 [목록의 **05번**](../05-var-let-const-and-tdz/))에 해당하는 심볼이 JS 에 있나? 1번의 어느 줄이 그 답인가?
 
 ## 복습 기록
 

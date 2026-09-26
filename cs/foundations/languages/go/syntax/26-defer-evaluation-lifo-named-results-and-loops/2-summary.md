@@ -845,5 +845,5 @@ func main() {
 - ★ **`runtime.Goexit`** 도 `defer` 를 돌린다(`go doc runtime.Goexit` — [28번 주제](../28-goroutines-go-statement-cost-and-termination/)가 문서를 싣는다). 이 문서는 **`defer` 쪽에서는 안 던졌다.**
 - ★ **`defer` 가 힙에 가나 스택에 가나**(open-coded defer)는 **구현 세부**다 — 이 문서는 **안 봤고 안 쟀다.**
 - ★ 루프 안 `defer` 가 **`ulimit -n` 에 닿는 지점**은 **안 던졌다.**
-- ★ **`defer mu.Unlock()` 과 패닉** — 락을 쥔 채 패닉이 나도 풀린다는 것은 (2)절 규칙의 따름정리다. 락 자체는 목록의 **32번 주제**.
+- ★ **`defer mu.Unlock()` 과 패닉** — 락을 쥔 채 패닉이 나도 풀린다는 것은 (2)절 규칙의 따름정리다. 락 자체는 [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/).
 - ★★ `defer` 의 **비용**은 **안 쟀다.** 「비싸다」도 「공짜다」도 이 문서는 말하지 않는다.

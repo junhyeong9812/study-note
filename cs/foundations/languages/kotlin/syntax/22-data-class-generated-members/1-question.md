@@ -3,7 +3,7 @@
 > 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
 > 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
 > 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다. 이 주제는 [23번 주제](../23-sealed-classes-and-when-exhaustiveness/)·목록의 **26번 주제**와 목록의 **30번 주제**의 뿌리다.
+> 선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다. 이 주제는 [23번 주제](../23-sealed-classes-and-when-exhaustiveness/)·[목록의 **26번 주제**](../26-value-class-and-boxing/)와 [목록의 **30번 주제**](../30-destructuring-declarations-and-componentn/)의 뿌리다.
 > ★ **backing field 와 `const` 는 [16번 주제](../16-properties-backing-field-lateinit-const/)**, **`final` 기본값은 [19번 주제](../19-inheritance-open-final-override/)** 가 정본이라 여기서는 **결론만** 묻는다.
 > 문항 11개 중 코드블록이 붙는 예측형은 6개다.
 > 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.

@@ -8,7 +8,7 @@
 > ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
 > **버전** — `data class` 는 **1.0**, `data object` 는 **1.9** 다. 뒤의 것은 이 판에서 직접 던져 확인했다((5)).
 > **경계** — 프로퍼티의 backing field·`const` 는 [16번 주제](../16-properties-backing-field-lateinit-const/)가 정본이고, 상속 기본값은 [19번 주제](../19-inheritance-open-final-override/)가 정본이다.\
-> `componentN` 규약 자체를 파고드는 것은 목록의 **30번 주제**, `==`/`===` 와 `equals` 규약은 목록의 **32번 주제**, 박싱이 사라지는 `value class` 는 목록의 **26번 주제**다.\
+> `componentN` 규약 자체를 파고드는 것은 [목록의 **30번 주제**](../30-destructuring-declarations-and-componentn/), `==`/`===` 와 `equals` 규약은 [목록의 **32번 주제**](../32-equality-and-equals-contract/), 박싱이 사라지는 `value class` 는 [목록의 **26번 주제**](../26-value-class-and-boxing/)다.\
 > Java 쪽 짝은 [`../../../java/syntax/14-records/`](../../../java/syntax/14-records/) — **같은 목적에 방어선을 다른 곳에 둔 것**이 이 주제의 대비 축이다.
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -562,7 +562,7 @@ Z true Book(isbn=978-1, stock=0) 0 978-1 3 OutOfPrint
 | 상황 | 고르는 것 | 왜 |
 |---|---|---|
 | 값 몇 개를 묶어 나르고 비교·출력이 필요하다 | `data class` | 다섯 멤버가 공짜다 |
-| 필드가 하나뿐이고 래핑 비용이 아깝다 | `value class` | 목록의 **26번 주제** — 박싱이 사라진다 |
+| 필드가 하나뿐이고 래핑 비용이 아깝다 | `value class` | [목록의 **26번 주제**](../26-value-class-and-boxing/) — 박싱이 사라진다 |
 | 데이터 없는 변형(싱글턴)이 필요하다 | `data object` | (5) — `toString` 이 이름으로 나온다 |
 | 계층을 열어야 한다(하위 타입이 필요하다) | `sealed` + 그 아래 `data class` | [23번 주제](../23-sealed-classes-and-when-exhaustiveness/) — `data class` 자신은 못 연다 |
 | 신원(identity)이 값이 아니라 **객체 자체**다 | **일반 `class`** | 엔티티에 `data` 를 붙이면 `equals` 의 뜻이 바뀐다 |
@@ -585,9 +585,9 @@ Z true Book(isbn=978-1, stock=0) 0 978-1 3 OutOfPrint
 - [19번 주제](../19-inheritance-open-final-override/) — `final` 기본값. **`data class` 가 `open` 이 안 되는 것**이 그 규칙 위에 선다.
 - [23번 주제](../23-sealed-classes-and-when-exhaustiveness/) — `sealed`. **`data class` 를 변형으로 쓰는 자리**가 거기다.
 - [24번 주제](../24-enum-class-vs-sealed/) — `enum` 과 `sealed` 의 선택. **인스턴스를 여럿 만들 수 있나**가 갈림길이다.
-- 목록의 **26번 주제** — `value class`. 필드 하나짜리 값은 그쪽이다.
-- 목록의 **30번 주제** — 구조 분해 선언. (4)에서 결론만 썼고 **`componentN` 규약 자체는 거기**가 정본이다.
-- 목록의 **32번 주제** — `==`/`===` 와 `equals` 규약. (7)의 위임 규칙을 **규약 쪽에서** 다시 본다.
+- [목록의 **26번 주제**](../26-value-class-and-boxing/) — `value class`. 필드 하나짜리 값은 그쪽이다.
+- [목록의 **30번 주제**](../30-destructuring-declarations-and-componentn/) — 구조 분해 선언. (4)에서 결론만 썼고 **`componentN` 규약 자체는 거기**가 정본이다.
+- [목록의 **32번 주제**](../32-equality-and-equals-contract/) — `==`/`===` 와 `equals` 규약. (7)의 위임 규칙을 **규약 쪽에서** 다시 본다.
 - [`../../../java/syntax/14-records/`](../../../java/syntax/14-records/) — Java `record`. **불변을 강제하는 쪽**과의 정면 대비.
 - [`../../../../../data-structure/05-hashmap/`](../../../../../data-structure/05-hashmap/) — 해시 자료구조. (2)의 사고가 **왜 데이터 손실이 되는지**는 거기가 정본이다.
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) §4 — 「값을 값으로」라는 **설계 논지**. 여기는 **생성되는 멤버 목록**까지다.

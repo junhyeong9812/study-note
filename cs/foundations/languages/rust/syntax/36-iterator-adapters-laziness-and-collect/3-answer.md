@@ -396,7 +396,7 @@ into_iter alloc::string::String
 ```
 
 - ★★ **E0382 — borrow of moved value: `v`** — 「**`v` moved due to this implicit call to `.into_iter()`**」. `for s in v` 는 Reference 의 탈당대로 **`IntoIterator::into_iter(v)`** 다. `help:` 는 `for s in &v`.
-- ★ **`iter` → `&String` · `iter_mut` → `&mut String` · `into_iter` → `String`.** 정본은 목록의 **37번 주제**.
+- ★ **`iter` → `&String` · `iter_mut` → `&mut String` · `into_iter` → `String`.** 정본은 [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/).
 
 ### 7. ★★ E0282 — `Vec<_>` 만 적으면 된다 · `sum` 은 E0283
 

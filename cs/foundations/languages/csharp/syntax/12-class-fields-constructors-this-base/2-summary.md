@@ -15,7 +15,7 @@
 > **`-debug` 를 안 줬다** — 그래서 (4)의 스택 트레이스에 **절대 경로도 줄 번호도 안 박힌다.**
 > **버전** — 클래스·필드·생성자·`this`/`base` 는 **C# 1.0부터**. **`init` 은 C# 9**, **`required` 는 C# 11**,\
 > **기본 생성자(primary constructor)가 클래스에까지 온 것은 C# 12부터**다. `-langversion:latest` 로 던졌다.
-> **경계** — **상속과 `virtual`/`override` 의 설계 판**은 목록의 **16번**, **속성(property)의 전모**는 **13번**,\
+> **경계** — **상속과 `virtual`/`override` 의 설계 판**은 [목록의 **16번**](../16-inheritance-virtual-override-abstract-sealed-new/), **속성(property)의 전모**는 **13번**,\
 > **접근 한정자**는 **15번**, **`record`** 는 **18번**, **`IDisposable`/`using`** 은 **37번 주제**가 정본이다.\
 > 여기서는 「**객체가 만들어질 때 무엇이 어떤 순서로 도는가**」만 센다.\
 > ★ **클래스라는 개념 자체**는 [`oop-basics/`](../../../../oop-basics/)가 정본이고, 여기는 **C# 문법**이다.
@@ -505,7 +505,7 @@ cs12b-field-prop.cs(22,19): warning CS0649: Field 'Sample.Text' is never assigne
 - ★★★ **식 본문 프로퍼티(`=> …`)는 저장소가 없다** — 필드 목록에 없고 `get_Doubled` 하나뿐이다.
 - ★★ **`CS0649` 가 붙은 자리가 있다** — `Field 'Sample.Text' is never assigned to, and will always have its default value null`.\
   **공개 필드를 안 채우면 컴파일러가 말해 준다** — 이 주제에서 **컴파일러가 말해 주는 몇 안 되는 자리**다((9)).
-- ★ **프로퍼티의 전모는 목록의 13번 주제**다. 여기서는 「**무엇이 필드가 되나**」까지만 본다.
+- ★ **프로퍼티의 전모는 [목록의 13번 주제](../13-properties-init-required-field/)다**. 여기서는 「**무엇이 필드가 되나**」까지만 본다.
 
 **비용** — 자동 프로퍼티는 **필드 하나 + 호출 둘**. 식 본문 프로퍼티는 **저장소 0**이다.
 
@@ -967,9 +967,9 @@ cs12b-diag.cs(9,1): error CS0191: A readonly field cannot be assigned to (except
   ★ **C++ 은 스코프를 벗어나면 끝**이고, **C# 은 GC 가 언제 치울지 모른다** — 그 틈을 `IDisposable`/`using` 이 메운다(목록의 **37번 주제**).
 - [01번](../01-value-types-and-reference-types/) — **값 타입과 참조 타입.** 위 대비의 토대다.
 - [11번](../11-collection-initializers-and-collection-expressions/) — **객체 초기화자는 생성자가 끝난 뒤** 돈다. (1)의 순서가 거기서 이어진다.
-- 목록의 **13번 주제** — 속성(property)의 전모. (5)는 **무엇이 필드가 되나**까지다.
-- 목록의 **16번 주제** — 상속과 `virtual`/`override`. (4)의 **설계 판**이 거기다.
-- 목록의 **15번 주제** — 접근 한정자. (5)의 `public`/`private` 선택이 거기가 정본이다.
+- [목록의 **13번 주제**](../13-properties-init-required-field/) — 속성(property)의 전모. (5)는 **무엇이 필드가 되나**까지다.
+- [목록의 **16번 주제**](../16-inheritance-virtual-override-abstract-sealed-new/) — 상속과 `virtual`/`override`. (4)의 **설계 판**이 거기다.
+- [목록의 **15번 주제**](../15-access-modifiers-and-assembly-boundary/) — 접근 한정자. (5)의 `public`/`private` 선택이 거기가 정본이다.
 - 목록의 **18번 주제** — `record`. **생성자·동등성·`with` 를 한꺼번에 주는 길**이다.
 - [`oop-basics/`](../../../../oop-basics/) — 클래스·캡슐화 개념. 여기는 **C# 문법**이다.
 

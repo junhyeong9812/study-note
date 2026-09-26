@@ -1131,7 +1131,7 @@ match lvl { upstream::Level::Low => 1, upstream::Level::High => 2 }
 
 - **한 갈래만 궁금하면 `if let`** — 다음 주제([목록의 **20번 주제**](../20-if-let-while-let-let-else-and-let-chains/)).
 - **참/거짓만 필요하면 `matches!`** — `matches!(c, Cfg::Port(_))`.
-- **`Option`/`Result` 의 흔한 변환이면 조합 메서드** — `map`·`unwrap_or`(목록의 **21번 주제**).
+- **`Option`/`Result` 의 흔한 변환이면 조합 메서드** — `map`·`unwrap_or`([목록의 **21번 주제**](../21-option-and-combinators/)).
 
 ## 핵심 문장
 
@@ -1150,7 +1150,7 @@ match lvl { upstream::Level::Low => 1, upstream::Level::High => 2 }
 - [**08번 주제**](../08-ownership-and-move/) — 부분 이동(E0382)의 정본.
 - [목록의 **19번 주제**](../19-pattern-syntax-guards-bindings-and-match-ergonomics/) — 가드·`@`·or 패턴·매치 인체공학. **이 주제가 미뤄 둔 패턴 문법 전부**가 거기다.
 - [목록의 **20번 주제**](../20-if-let-while-let-let-else-and-let-chains/) — `if let`·`while let`·`let else`. **완전성 검사가 없는 쪽**이다.
-- 목록의 **33번 주제** — 변형이 열려야 할 때 쓰는 트레이트 객체.
+- [목록의 **33번 주제**](../33-dyn-trait-objects-and-object-safety/) — 변형이 열려야 할 때 쓰는 트레이트 객체.
 - 목록의 **47번 주제** — 에디션 차이 전수. 이 주제의 결과는 **2021 기준**이다.
 
 ## 용어 풀이

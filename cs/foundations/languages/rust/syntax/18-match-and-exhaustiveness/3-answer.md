@@ -262,7 +262,7 @@ Scroll 스크롤 3 false 포인터
 - 네 `help:` 는 각각 **그 자리의 코드에 맞춘** 고친 코드를 준다 — 한 줄짜리 `match` 에는
   `, Event::Drag => todo!() }` 를 덧붙이고, 여러 줄짜리에는 `Event::Drag => todo!(),` 를 한 줄로 넣는다.
 - ★★★ **`_` 판은 에러가 0개**다. 컴파일이 통과하고 프로그램이 돌며 `Drag` 는 조용히 `_` 팔로 흘러간다.
-- 유일한 불평은 `warning: variant `Drag` is never constructed` 인데
+- 유일한 불평은 ``warning: variant `Drag` is never constructed`` 인데
   ★ 이것은 「**안 쓰였다**」는 말이지 「**안 처리했다**」는 말이 아니다.
   다른 곳에서 `Drag` 를 한 번만 만들면 그 경고마저 사라진다 — 그러면 **아무 신호도 안 남는다.**
 
@@ -988,7 +988,7 @@ For more information about this error, try `rustc --explain E0308`.
 - 참/거짓만 필요하면 **`matches!`** 매크로 — **1.42.0부터**.
 - 완전성 검사가 성립하는 **근거**는 [**17번 주제**](../17-enums-and-data-carrying-variants/)의
   「**열거형은 닫힌 집합**」이라는 사실이다. 변형이 무한하면 셀 수가 없다.
-- 변형이 **열려야 하는** 설계라면 열거형 대신 **트레이트 객체**(목록의 **33번 주제**)를 쓴다.
+- 변형이 **열려야 하는** 설계라면 열거형 대신 **트레이트 객체**([목록의 **33번 주제**](../33-dyn-trait-objects-and-object-safety/))를 쓴다.
   그 대가로 완전성 검사를 잃는다.
 - 이 주제가 미뤄 둔 패턴 문법(가드·`@`·or 패턴·구조 분해·슬라이스 패턴·매치 인체공학)은
   [목록의 **19번 주제**](../19-pattern-syntax-guards-bindings-and-match-ergonomics/)에 전부 있다.

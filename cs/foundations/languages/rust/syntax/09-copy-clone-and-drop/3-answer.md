@@ -332,7 +332,7 @@ For more information about this error, try `rustc --explain E0599`.
 
 - 라이브러리 경계에서 문제가 되는 이유 — **내 타입의 `Clone` 가능 조건이 실제보다 좁게 공개된다.**\
   쓰는 쪽은 「왜 이게 안 되지」를 겪고, 고치려면 **공개 API 를 바꿔야** 한다.
-- `derive` 전수는 목록의 **27번 주제**가 정본이다.
+- `derive` 전수는 [목록의 **27번 주제**](../27-derive-macros-debug-clone-partialeq-default-hash/)가 정본이다.
 
 ### 6. ★★ 이 프로그램의 출력 순서
 

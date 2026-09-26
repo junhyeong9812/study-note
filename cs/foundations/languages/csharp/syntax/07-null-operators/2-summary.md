@@ -35,7 +35,7 @@
 > **`int?` 가 무엇인가**(`Nullable<T>` 구조체)는 [08번](../08-nullable-value-types/)이 정본이다.\
 > ★★★ **이 주제는 그 둘의 가운데**다 — `node?.Count` 한 줄에 **06의 `?`(주석)** 와 **08의 `int?`(진짜 타입)** 가 같이 나온다((1)).\
 > 값 타입/참조 타입의 이분은 [01번](../01-value-types-and-reference-types/)이 정본이다.\
-> 인덱서(`this[int]`)는 목록의 **14번 주제**, 이벤트와 델리게이트는 목록의 **27번·29번 주제**다.\
+> 인덱서(`this[int]`)는 [목록의 **14번 주제**](../14-indexers/), 이벤트와 델리게이트는 목록의 **27번·29번 주제**다.\
 > 패턴 매칭(`is null` · `is not null`)은 목록의 **21번 주제**다 — 여기는 **연산자**만 본다.\
 > 대비 — Kotlin 의 [널 안전 타입 편](../../../kotlin/syntax/03-null-safe-types/)에도 `?.`·`?:` 가 있는데\
 > **결과 타입 규칙이 다르다**((1)). TS 의 [`any`·`unknown`·`never`·`void` 편](../../../ts/syntax/04-any-unknown-never-void/)도 `?.`·`??` 를 갖는다.
@@ -779,7 +779,7 @@ cs07b-forbid.cs(5,12): warning CS8600: Converting null literal or possible null 
   ★★★ (1)의 「한 겹」과 (6)의 「양쪽이 다 `false`」가 **거기서 설명된다.** 이 주제의 **뒤**다.
 - [01번 — 값 타입과 참조 타입](../01-value-types-and-reference-types/) — 왜 값 타입에만 겹이 붙나.
 - [05번 — 숫자 타입](../05-numeric-types-checked-decimal/) — `int` 가 왜 널을 못 담나(값 타입이라서).
-- 목록의 **14번 주제**(인덱서) — `?[]` 가 인덱서에도 적용된다.
+- [목록의 **14번 주제**](../14-indexers/)(인덱서) — `?[]` 가 인덱서에도 적용된다.
 - 목록의 **21번 주제**(패턴 매칭) — `is null`·`is not null` 이 `== null` 과 갈리는 자리.
 - 목록의 **27번·29번 주제**(델리게이트·이벤트) — `handler?.Invoke()` 관용구의 정본.
 - **Kotlin 의 [널 안전 타입 편](../../../kotlin/syntax/03-null-safe-types/)** — `?.` 와 엘비스 `?:` 가 있다.\

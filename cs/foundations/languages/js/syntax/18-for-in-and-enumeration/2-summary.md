@@ -68,14 +68,14 @@
 > 15편이 **조회가 체인을 탄다**는 것을 세웠다. 여기서 더하는 것은 하나 — **「체인 순회」, 즉 체인을 걷는 열거**다.
 > **이어지는 곳** — [16 — `class` 문법](../16-class-syntax/2-summary.md)(클래스 메서드가 비열거라 `for...in` 에 안 나온다) ·
 > [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md) ·
-> 목록의 **22번 주제** 「`Symbol` 과 잘 알려진 심볼」 · 목록의 **27번 주제** 「`Object` 정적 메서드」 ·
-> 목록의 **31번 주제** 「`JSON`」 · 목록의 **45번 주제** 「`Proxy`」
+> [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) 「`Symbol` 과 잘 알려진 심볼」 · [목록의 **27번 주제**](../27-object-static-methods/) 「`Object` 정적 메서드」 ·
+> [목록의 **31번 주제**](../31-json/) 「`JSON`」 · 목록의 **45번 주제** 「`Proxy`」
 >
 > ★★ **경계 — own 키 순서 세 덩어리(배열 인덱스 → 문자열 → 심볼)와 정수 키 판정은 13편이 정본이다.** 여기서는 그 순서가 **체인 위에서 어떻게 이어지나**까지다.
 > ★★ **경계 — `enumerable` 플래그를 어떻게 바꾸나(`defineProperty`·`freeze`)는 14편이 정본이다.** 여기서는 그 플래그가 **열거에서 무엇을 하나**만 본다.
 > ★★ **경계 — 조회(`[[Get]]`)가 체인을 타는 규칙은 15편이 정본이다.** 여기서는 **열거가** 체인을 타는 규칙을 본다.
 > ★★ **경계 — `for...of` 와 이터러블 프로토콜은 19편이 정본이다.** 여기서는 **배열에서 둘이 갈리는 자리**까지다.
-> ★★ **경계 — `Object.keys`/`entries`/`assign` 의 쓰임은 목록의 27번 주제, `Proxy` 트랩 계약은 45번 주제가 정본이다.**
+> ★★ **경계 — `Object.keys`/`entries`/`assign` 의 쓰임은 [목록의 27번 주제](../27-object-static-methods/), `Proxy` 트랩 계약은 45번 주제가 정본이다.**
 
 ```sh
 # js16b-versions.sh
@@ -931,9 +931,9 @@ Object.keys(snap).forEach, delete c at a    ["a=1","b=2","c=undefined"]
 - [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md) — **그쪽이 `{ ...o }` 의 트랩 순서 정본**이다. 여기는 **그것이 체인에 안 닿는다**는 격자 칸.
 - [16 — `class` 문법](../16-class-syntax/2-summary.md) — **그쪽이 클래스 멤버의 플래그 정본**이다. 여기는 **그 플래그 때문에 `for...in` 결과가 바뀐다**는 연결까지.
 - [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md) — **그쪽이 `for...of` 의 정본**이다. 여기는 **배열에서 둘이 갈리는 자리**(구멍·문자열 인덱스)까지.
-- 목록의 **27번 주제** 「`Object` 정적 메서드」 — **그쪽이 `keys`/`entries`/`assign` 쓰임의 정본**이다.
+- [목록의 **27번 주제**](../27-object-static-methods/) 「`Object` 정적 메서드」 — **그쪽이 `keys`/`entries`/`assign` 쓰임의 정본**이다.
 - 목록의 **45번 주제** 「`Proxy`」 — **그쪽이 트랩 계약의 정본**이다. 여기서는 **로그 도구로만** 썼다.
-- 목록의 **22번 주제** 「`Symbol` 과 잘 알려진 심볼」 — **그쪽이 심볼 키 성질의 정본**이다. 여기는 **`for...in` 이 심볼을 안 낸다**까지.
+- [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) 「`Symbol` 과 잘 알려진 심볼」 — **그쪽이 심볼 키 성질의 정본**이다. 여기는 **`for...in` 이 심볼을 안 낸다**까지.
 - [ECMA-262 — 문과 선언 장](https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html) — `EnumerateObjectProperties` 와 `CreateForInIterator` 가 한곳에 있다.
 
 ## 용어 풀이

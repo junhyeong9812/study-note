@@ -559,7 +559,7 @@ For more information about this error, try `rustc --explain E0308`.
 - 그 타입은 **크기가 0**이다 — 어느 함수인지가 타입에 이미 적혀 있어 실행 시에 담을 것이 없다.
 - **`fn(i32) -> i32` 라고 적으면** 공통 포인터 타입으로 강제되고, 그때 **8바이트**가 생긴다.
 - **환경을 안 잡는 클로저**도 이 포인터로 온다. 잡으면 안 된다(다음 절).
-- 클로저 세 트레이트의 정본은 목록의 **34번 주제**, 클로저 반환은 목록의 **35번 주제**다.
+- 클로저 세 트레이트의 정본은 [목록의 **34번 주제**](../34-closures-fn-fnmut-fnonce-and-move/), 클로저 반환은 [목록의 **35번 주제**](../35-function-pointers-and-returning-closures/)다.
 
 비용 — fn 아이템은 0바이트(정적 디스패치). fn 포인터는 8바이트 + **간접 호출**이다.
 
@@ -760,7 +760,7 @@ note: closures can only be coerced to `fn` types if they do not capture any vari
 ```
 
 - **`k` 를 하나 잡는 순간** 포인터가 될 수 없다 — 잡은 값을 담을 자리가 포인터에 없기 때문이다.
-- 고치는 길은 `impl Fn` 이나 `Box<dyn Fn>` 이다(목록의 **34번 주제** · **35번 주제**).
+- 고치는 길은 `impl Fn` 이나 `Box<dyn Fn>` 이다([목록의 **34번 주제**](../34-closures-fn-fnmut-fnonce-and-move/) · **35번 주제**).
 
 ### 6. 함수 이름 둘을 한 변수에 넣는다
 
@@ -820,7 +820,7 @@ fn inner() -> i32 { k + 1 }   ->  error[E0434]: can't capture dynamic environmen
 | 아직 안 쓴 갈래 | `todo!()` · `unimplemented!()` | 둘 다 `!` 라 타입이 맞는다 |
 | 논리상 못 오는 갈래 | `unreachable!()` | 「여기 오면 버그」를 코드로 적는 것 |
 | 함수를 인자로 넘긴다 | `fn(i32) -> i32` | 환경을 안 잡으면 이쪽이 싸다(8바이트) |
-| 환경을 잡아야 한다 | 클로저 | `fn` 포인터로는 안 된다(목록의 **34번 주제**) |
+| 환경을 잡아야 한다 | 클로저 | `fn` 포인터로는 안 된다([목록의 **34번 주제**](../34-closures-fn-fnmut-fnonce-and-move/)) |
 
 판단 규칙 두 줄.
 
@@ -850,10 +850,10 @@ fn inner() -> i32 { k + 1 }   ->  error[E0434]: can't capture dynamic environmen
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) — 그쪽은 「**왜 Rust 를 고르나**」,\
   여기는 「**이 문법이 실제로 무엇을 하나**」다. 제로 코스트 논증은 그쪽 §6 이고,\
   여기서 실측한 것은 **fn 아이템이 0바이트라는 사실 하나**다
-- 목록의 **18번 주제**(`match` 와 완전성 검사) · **19번 주제**(패턴 문법) — `match` 의 정본
-- 목록의 **23번 주제**(`panic!` 대 `Result`) — **어디서 끝낼 것인가**의 정본. 여기는 `panic!` 의 **타입**만 다룬다
-- 목록의 **34번 주제**(클로저 `Fn`/`FnMut`/`FnOnce`) · **35번 주제**(함수 포인터와 클로저 반환) — 클로저의 정본
-- 목록의 **31번 주제**(제네릭·단형화) — fn 아이템이 0바이트인 것과 정적 디스패치의 관계
+- [목록의 **18번 주제**](../18-match-and-exhaustiveness/)(`match` 와 완전성 검사) · **19번 주제**(패턴 문법) — `match` 의 정본
+- [목록의 **23번 주제**](../23-panic-vs-result/)(`panic!` 대 `Result`) — **어디서 끝낼 것인가**의 정본. 여기는 `panic!` 의 **타입**만 다룬다
+- [목록의 **34번 주제**](../34-closures-fn-fnmut-fnonce-and-move/)(클로저 `Fn`/`FnMut`/`FnOnce`) · **35번 주제**(함수 포인터와 클로저 반환) — 클로저의 정본
+- [목록의 **31번 주제**](../31-generics-trait-bounds-where-and-monomorphization/)(제네릭·단형화) — fn 아이템이 0바이트인 것과 정적 디스패치의 관계
 
 ## 용어 풀이
 
@@ -905,4 +905,4 @@ ok
 - 꼬리에 `return` 을 써도 `rustc` 는 침묵하고 `clippy` 가 `needless_return` 으로 잡는다\
   (실측은 [**04번 주제**](../04-expressions-and-semicolons/) 10번에 있다).
 - `apply(double, 5)` 처럼 **fn 아이템을 fn 포인터 인자에 넘기면** 그 자리에서 포인터로 강제된다(실측 `apply = 10`).\
-  제네릭 `F: Fn(i32) -> i32` 로 받으면 강제 없이 아이템 타입 그대로 단형화된다 — 목록의 **31번 주제**.
+  제네릭 `F: Fn(i32) -> i32` 로 받으면 강제 없이 아이템 타입 그대로 단형화된다 — [목록의 **31번 주제**](../31-generics-trait-bounds-where-and-monomorphization/).

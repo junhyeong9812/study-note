@@ -9,8 +9,8 @@
 > 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
 > ★★★ **「복사인가 이동인가」는 읽어서 답하지 말고 로그로 센다.** 이 문서의 근거가 전부 그것이다.
 > ★ **네 번째 창은 생성자·소멸자 로그**이고, 보조로 `objdump`·`nm`·ASan 을 쓴다.
-> 선행 — 목록의 **08번 주제**(값 범주) · 형제 [`07번`](../07-references-vs-pointers/)(참조) · 형제 [`01번`](../01-function-overloading-and-overload-resolution/)(오버로드 해석).
-> 이 주제는 목록의 **11번 주제**로 이어지는 사슬의 가운데 칸이다.
+> 선행 — [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)(값 범주) · 형제 [`07번`](../07-references-vs-pointers/)(참조) · 형제 [`01번`](../01-function-overloading-and-overload-resolution/)(오버로드 해석).
+> 이 주제는 [목록의 **11번 주제**](../11-choosing-parameter-passing/)로 이어지는 사슬의 가운데 칸이다.
 
 ## 질문
 

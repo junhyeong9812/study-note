@@ -274,7 +274,7 @@ $ echo "콘솔 줄 수 = $(google-chrome --headless --disable-gpu --no-sandbox -
 - **생성 콘텐츠의 상자** — CSS 갈래 목록([`css/syntax/README.md`](../../../css/syntax/README.md))의 **13번**([의사 요소와 생성 콘텐츠](../../../css/syntax/13-pseudo-elements-and-generated-content/2-summary.md)).
 - **반영의 일반 규칙** — 웹 API 갈래 목록([`web-api/README.md`](../../../../web-api/README.md))의 **06번**([속성 대 성질](../../../../web-api/06-attribute-vs-property/2-summary.md)).
 - **날짜를 실제로 파싱하는 자리** — 목록의 **23번 주제**(`<input>` 숫자·날짜).
-- **`lang` 의 영향 전체** — 목록의 **20번 주제**(`lang`·`dir`).
+- **`lang` 의 영향 전체** — [목록의 **20번 주제**](../20-lang-dir-and-bidi/)(`lang`·`dir`).
 
 ## 실행 검증
 
@@ -305,7 +305,7 @@ $ echo "콘솔 줄 수 = $(google-chrome --headless --disable-gpu --no-sandbox -
 | `<cite>` 의 역할 | `generic` | HTML-AAM 은 「대응 없음」 |
 | 틀린 `datetime` 에 **경고가 없는 것** | 콘솔 0줄 | 판이 오르며 경고가 생길 수 있다 |
 
-**안 돌려 본 것** — ① **Firefox·Safari 의 따옴표 표**(엔진이 없다). ② **CSS 로 `quotes` 를 직접 준 경우** — CSS 갈래 13번의 표면이다. ③ **`<blockquote>` 안의 `<footer>`·`<figcaption>` 출처 구조** — 목록의 19번이다.
+**안 돌려 본 것** — ① **Firefox·Safari 의 따옴표 표**(엔진이 없다). ② **CSS 로 `quotes` 를 직접 준 경우** — CSS 갈래 13번의 표면이다. ③ **`<blockquote>` 안의 `<footer>`·`<figcaption>` 출처 구조** — [목록의 **19번**](../19-figure-address-hr/)이다.
 
 **못 잰 것** — ① **스크린리더가 따옴표를 읽는지·인용을 알려 주는지.** ② **`datetime` 이 유효한지** — 검증기가 없다. ③ **플랫폼 API 의 `datetime`·`AXURL`** — CDP 트리 밖이다. ④ **달력 앱·검색 엔진이 `time` 을 쓰는지.**
 

@@ -642,7 +642,7 @@ ex.cpp:11:18: error: use of dynamic_cast requires -frtti
   clang 은 **2줄**(종류당 1개로 묶는다) + `2 errors generated.`.\
   ★ **「에러가 몇 개냐」는 컴파일러의 세는 방식이지 문제의 개수가 아니다.**
 - **`-fno-rtti` 가 흔한 곳** — 임베디드·게임 엔진처럼 바이너리 크기와 결정성이 중요한 현장이다.\
-  거기서는 **가상 함수로 풀거나**(목록의 **19번 주제**), **태그 필드**·**`std::variant`**(목록의 **47번 주제**)로 대신한다.
+  거기서는 **가상 함수로 풀거나**([목록의 **19번 주제**](../19-inheritance-virtual-functions-override-final/)), **태그 필드**·**`std::variant`**(목록의 **47번 주제**)로 대신한다.
 
 ### 8. `static_cast` 판은 **미정의 심볼이 0개**, `dynamic_cast` 판은 **셋**
 
@@ -907,10 +907,10 @@ int main() {
 **왜 그런가**
 
 - **실행 시간 비용이 있는 것은 `dynamic_cast`** 하나다. 밑에 깔린 장치는 **vtable 과 RTTI** 이고,\
-  vtable 의 정본은 목록의 **19번 주제**(상속·가상 함수)다.
-- **`const_cast` 를 안 쓰게 만드는 설계**는 목록의 **10번 주제**(`const` 정확성)다 —\
+  vtable 의 정본은 [목록의 **19번 주제**](../19-inheritance-virtual-functions-override-final/)(상속·가상 함수)다.
+- **`const_cast` 를 안 쓰게 만드는 설계**는 [목록의 **10번 주제**](../10-const-correctness/)(`const` 정확성)다 —\
   인터페이스를 처음부터 `const` 정확하게 쓰면 벗길 일이 안 생긴다.
-- **`dynamic_cast` 를 안 쓰게 만드는 설계 둘** — ① **가상 함수**로 「물어보기」를 「시키기」로 바꾼다(목록의 **19번 주제**) ·\
+- **`dynamic_cast` 를 안 쓰게 만드는 설계 둘** — ① **가상 함수**로 「물어보기」를 「시키기」로 바꾼다([목록의 **19번 주제**](../19-inheritance-virtual-functions-override-final/)) ·\
   ② **`std::variant` + `visit`** 으로 닫힌 집합을 타입으로 만든다(목록의 **47번 주제**).
 - **열거형↔정수 캐스트가 필요한 이유**는 [**02번 형제**](../02-enum-class-and-scoped-enumerations/)의 담장 ②다.
 - **C 스타일 캐스트와 엄격한 앨리어싱의 정본**은 C 갈래\

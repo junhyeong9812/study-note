@@ -943,7 +943,7 @@ t17vet.go:12:7: net.TCPAddr struct literal uses unkeyed fields
 - **「필드 이름을 안 적은 필드」** — [18번 주제](../18-embedding-and-field-method-promotion/).
   **이 주제의 직접 후행**이고, 거기서 `struct{ Base }` 가 무엇을 하는지 본다.
 - 덤 — **정렬 API 의 정본**은 목록의 **38번 주제**,
-  **`comparable` 제약**은 목록의 **22번**·**37번 주제**,
+  **`comparable` 제약**은 [목록의 **22번**](../22-type-assertion-any-and-comparable/)·**37번 주제**,
   **크기 재는 일 자체의 비용**은 목록의 **50번 주제**다.
 
 ---

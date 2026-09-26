@@ -513,7 +513,7 @@ func main() { fmt.Println("main()") }
 「**테스트에서 `init` 을 끄고 싶다**」
 
 - **끌 수 없다.** 이름이 없으니 가려낼 수도, 대체할 수도 없다.
-- 그래서 처방은 언제나 「`init` 에 넣지 않는 것」이다 — 명시 호출이나 `sync.Once`(목록의 **32번 주제**).
+- 그래서 처방은 언제나 「`init` 에 넣지 않는 것」이다 — 명시 호출이나 `sync.Once`([목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/)).
 
 ### 8. 셋은 명세 보장, 하나는 빌드 도구, 하나는 이 판의 관찰
 
@@ -649,13 +649,13 @@ ex/beta <- [ex/alpha fmt]
 - **상수(`const`)** — 이 순서에 **아예 들어가지 않는다.** 상수는 컴파일 타임에 값이 정해져
   초기화할 것이 없다. 정본은 [03번 주제](../03-constants-iota-and-untyped-constants/)이고,
   거기서 어셈블리로 「런타임에 계산이 남지 않는다」를 보인다.
-- **첫 사용 시점에 한 번** — `sync.Once`. 정본은 목록의 **32번 주제**.
+- **첫 사용 시점에 한 번** — `sync.Once`. 정본은 [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/).
   `init` 은 **무조건** 돌지만 `Once` 는 **필요할 때만** 돈다.
 - **`main` 이 돌아왔을 때의 다른 고루틴** — 기다리지 않고 끝난다.
   명세: "It does not wait for other (non-main) goroutines to complete."
-  정본은 목록의 **28번 주제**다 — 이 문서에서는 **돌려 보지 않았고** 명세 인용까지만 했다.
+  정본은 [목록의 **28번 주제**](../28-goroutines-go-statement-cost-and-termination/)다 — 이 문서에서는 **돌려 보지 않았고** 명세 인용까지만 했다.
 - **순환 import 의 구조적 처방** — 인터페이스를 **쓰는 쪽(소비자)** 에 선언해 의존 방향을 한쪽으로 만든다.
-  정본은 목록의 **20번 주제**.
+  정본은 [목록의 **20번 주제**](../20-interface-declaration-and-implicit-implementation/).
 
 ---
 

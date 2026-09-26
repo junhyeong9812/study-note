@@ -1286,7 +1286,7 @@ func main() {
 - 목록의 **38번 주제**(`slices`·`maps`·`cmp`) — 정렬 API 의 정본. 여기는 **구조체를 정렬하는 자리**만
 - 목록의 **45번 주제**(`encoding/json`) — **태그를 읽는 쪽의 정본.**
   여기는 **태그가 무엇이고 `reflect` 로 어떻게 보이나**까지
-- 목록의 **22번 주제**(타입 단언·`comparable`) — 제네릭의 `comparable` 제약이 이 규칙과 만나는 자리
+- [목록의 **22번 주제**](../22-type-assertion-any-and-comparable/)(타입 단언·`comparable`) — 제네릭의 `comparable` 제약이 이 규칙과 만나는 자리
 - [`../../../../data-representation/`](../../../../data-representation/) —
   **그쪽은 정렬(alignment)·패딩 일반까지**, 여기는 **Go 에서 그것을 `unsafe.Sizeof` 로 재는 법**부터
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **28번**

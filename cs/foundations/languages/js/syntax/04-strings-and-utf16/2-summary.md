@@ -1208,11 +1208,11 @@ DB 칼럼 크기에 필요한 것은 `Buffer.byteLength` 나 `TextEncoder().enco
 - 선행: [02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md) — **`'10' < '9'` 가 참**인 이유.
   **경계**: 그쪽은 「문자열이 다른 타입과 섞일 때」까지, 여기는 「**그 문자열 안이 어떻게 생겼나**」부터다.
 - 선행: [03 — 숫자와 `BigInt`](../03-numbers-and-bigint/2-summary.md) — 큰 ID 를 **문자열로 주고받는** 이유.
-- 이어지는 곳: 목록의 **28번 주제** 「`String` 메서드와 템플릿 리터럴」 — 이 코드 유닛 열 위에서 도는 메서드들.
-- 이어지는 곳: 목록의 **29·30번 주제** 「정규식」 — **`u`/`v` 플래그**가 코드 포인트 단위를 켜는 자리.
-- 이어지는 곳: 목록의 **19번 주제** 「이터러블 프로토콜과 `for...of`」 — **`[...s]` 가 코드 포인트 단위인 것의 정본**.
+- 이어지는 곳: [목록의 **28번 주제**](../28-string-methods-and-template-literals/) 「`String` 메서드와 템플릿 리터럴」 — 이 코드 유닛 열 위에서 도는 메서드들.
+- 이어지는 곳: 목록의 [**29**](../29-regexp-basics/)·[**30**](../30-regexp-advanced/)번 주제 「정규식」 — **`u`/`v` 플래그**가 코드 포인트 단위를 켜는 자리.
+- 이어지는 곳: [목록의 **19번 주제**](../19-iterable-protocol-and-for-of/) 「이터러블 프로토콜과 `for...of`」 — **`[...s]` 가 코드 포인트 단위인 것의 정본**.
 - 이어지는 곳: 목록의 **50번 주제** 「`Intl` 국제화 포맷」 — `Intl.Segmenter` 를 포함한 ECMA-402 전반.
-- 이어지는 곳: 목록의 **31번 주제** 「`JSON`」 — well-formed `JSON.stringify` 의 정본.
+- 이어지는 곳: [목록의 **31번 주제**](../31-json/) 「`JSON`」 — well-formed `JSON.stringify` 의 정본.
 - 기존 노트: [`cs/foundations/data-representation/`](../../../../data-representation/) — 코드 포인트와 UTF-8/16 의 **비트 배치**.
   **경계**: 그쪽은 「바이트가 어떻게 생겼나」까지, 여기는 「**JS 가 그것을 어떤 타입으로 다루나**」부터다.
 - ★★ 형제 비교 — [`python/syntax/06-strings-bytes-unicode`](../../../python/syntax/06-strings-bytes-unicode/2-summary.md):

@@ -203,7 +203,7 @@ cs01b-null.cs(1,27): warning CS0649: Field 'Point.X' is never assigned to, and w
 - ★★★ 진단의 꼬리가 이유다 — ``because it is a non-nullable value type``.\
   **값 타입은 모든 비트 조합이 이미 어떤 값**이라 「없음」을 표현할 자리가 남지 않는다.
 - ★★ **`string s = null;` 이 경고도 안 나는 것**은 이 문서가 **널 허용 참조 타입 분석을 안 켰기** 때문이다.\
-  `#nullable enable`(또는 `-nullable:enable`)을 켜면 그제서야 경고가 난다 — 그 정본은 목록의 **06번 주제**다.\
+  `#nullable enable`(또는 `-nullable:enable`)을 켜면 그제서야 경고가 난다 — 그 정본은 [목록의 **06번 주제**](../06-nullable-reference-types/)다.\
   ★ **널 허용 참조 타입은 런타임 타입이 아니라 컴파일러 분석**이다.
 - ★ 경고 `CS0649`(「never assigned」)는 **질문과 무관한 잡음**이라 이 소스에서는 필드를 초기화해 지웠다.
 
@@ -316,7 +316,7 @@ z.Value          : InvalidOperationException: Nullable object must have a value.
   ★★ **이건 언어가 아니라 CLI(ECMA-335)의 박싱 규칙**이다.
 - ★ 값이 없는 `.Value` 는 **`InvalidOperationException: Nullable object must have a value.`** 다.\
   `q == null` 은 `==` 가 `HasValue` 를 보도록 정의돼 있어서 `True` 가 나온다.
-- ★ 정본은 목록의 **08번 주제**다.
+- ★ 정본은 [목록의 **08번 주제**](../08-nullable-value-types/)다.
 
 ### 7. ★★★ `new Point()` 는 **0바이트** · `new Node()` 는 **24바이트**
 
@@ -637,7 +637,7 @@ class Node { public int X; public int Y; }
 **안 돌려 본 것 / 못 잰 것**
 
 - **안 돌려 본 것** — **32비트 런타임**(이 머신에 없다) · **서버 GC** · **`ref` 지역·`ref` 반환·`ref struct`**(목록의 **45번 주제**) ·\
-  **`Span<T>`·`stackalloc`**(목록의 **46번 주제**) · **`#nullable enable` 을 켠 판**(목록의 **06번 주제**) ·\
+  **`Span<T>`·`stackalloc`**(목록의 **46번 주제**) · **`#nullable enable` 을 켠 판**([목록의 **06번 주제**](../06-nullable-reference-types/)) ·\
   **`Unsafe.As`·`MemoryMarshal`** · **`record class` 와 `record struct` 의 대비**(정본은 [02번](../02-struct-vs-class-choosing/)).
 - **못 잰 것** — ★ **「구조체 대입이 빠른가 느린가」를 수치로.**\
   9번이 보인 것은 「**IL 명령 수가 같다**」까지이고, 실제 비용은 **복사되는 바이트 수**에 달렸다.\

@@ -921,8 +921,8 @@ print("클래스도 같은 문법으로 감싼다:", C.tagged, "· 타입:", typ
 클래스 데코레이터도 **똑같이** 「정의된 것을 받아 무엇이든 돌려주는」 함수다.
 받는 것이 함수 객체 대신 **클래스 객체**일 뿐이다.
 
-★ **여기서는 이름만 세운다.** 클래스 쪽의 정본은 `목록의 **29번 주제**`(클래스 기초)와
-`목록의 **33번 주제**`(디스크립터·속성)다.
+★ **여기서는 이름만 세운다.** 클래스 쪽의 정본은 `[목록의 **29번 주제**](../29-classes-and-attribute-lookup/)`(클래스 기초)와
+`[목록의 **33번 주제**](../33-property-descriptor-slots/)`(디스크립터·속성)다.
 ★ `functools.lru_cache`·`cached_property` 처럼 **표준 라이브러리가 주는 데코레이터**는
 `목록의 **45번 주제**` 가 정본이다.
 
@@ -1225,7 +1225,7 @@ TypeError: 'str' object is not callable
 | **원본 시그니처가 문서·IDE 에 보여야** 한다 | ★ **`functools.wraps` 필수** |
 | 감싼 뒤 **원본을 꺼내야** 한다 | `__wrapped__` · `inspect.unwrap` — **들여다보기 전용** |
 | **캐시**를 붙이고 싶다 | 직접 만들지 말고 `functools.lru_cache`(`목록의 **45번 주제**`) |
-| **클래스 전체**에 붙이고 싶다 | 클래스 데코레이터 — 정본은 `목록의 **29번 주제**`·`목록의 **33번 주제**` |
+| **클래스 전체**에 붙이고 싶다 | 클래스 데코레이터 — 정본은 `[목록의 **29번 주제**](../29-classes-and-attribute-lookup/)`·`[목록의 **33번 주제**](../33-property-descriptor-slots/)` |
 | 데코레이터 안에서 **무거운 준비**를 한다 | ★ **래퍼 안으로 옮긴다** — 정의 시점은 임포트 시간이다 |
 | **부분 적용**이 필요할 뿐이다 | `functools.partial`(`목록의 **45번 주제**`) — 감싸는 것이 아니다 |
 | 감싼 함수를 **동등성·`is` 로 비교**하는 코드가 있다 | ★ **안 된다** — 이름이 가리키는 객체가 **다른 객체**다 |
@@ -1266,7 +1266,7 @@ TypeError: 'str' object is not callable
 - 선행: [23-lambda-and-higher-order-functions](../23-lambda-and-higher-order-functions/2-summary.md) — 함수를 값으로 넘기고 돌려받는 것.\
   **경계**: 데코레이터는 **고차 함수의 특수한 경우**에 문법 설탕이 붙은 것이다.
 - 함께 보는 곳: [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md) — `__dict__` 를 `update` 하는 것이 **얕은 복사**다.
-- 이어지는 곳: `목록의 **29번 주제**` · `목록의 **33번 주제**` — **클래스 데코레이터의 정본.**
+- 이어지는 곳: `[목록의 **29번 주제**](../29-classes-and-attribute-lookup/)` · `[목록의 **33번 주제**](../33-property-descriptor-slots/)` — **클래스 데코레이터의 정본.**
 - 이어지는 곳: `목록의 **45번 주제**` — `functools.lru_cache`·`cached_property`·`partial`.
 - 이어지는 곳: `목록의 **40번 주제**` — 타입 힌트. `wraps` 가 `__annotations__` 를 옮기는 이유가 거기 있다.
 - 공식 문서: [Function definitions](https://docs.python.org/3.12/reference/compound_stmts.html#function-definitions) ·
@@ -1305,9 +1305,9 @@ TypeError: 'str' object is not callable
 ## 더 들어가면
 
 - **클래스로 만드는 데코레이터** — `__call__` 이 있는 객체도 호출 가능하므로 데코레이터가 될 수 있다.
-  이 주제에서는 **안 돌려 봤다.** 정본은 `목록의 **33번 주제**` 다.
+  이 주제에서는 **안 돌려 봤다.** 정본은 `[목록의 **33번 주제**](../33-property-descriptor-slots/)` 다.
 - **메서드에 붙일 때가 까다롭다** — `@staticmethod`·`@classmethod`·`@property` 는
-  **디스크립터**를 돌려주는 특수한 데코레이터라 **순서가 걸린다.** 여기서는 안 다뤘다(`목록의 **33번 주제**`).
+  **디스크립터**를 돌려주는 특수한 데코레이터라 **순서가 걸린다.** 여기서는 안 다뤘다(`[목록의 **33번 주제**](../33-property-descriptor-slots/)`).
 - ★ **`wraps` 가 있어도 래퍼는 여전히 `(*a, **k)` 를 받는다** — 보이는 시그니처와 실제 받는 것이 다르다.
   **엄격히 맞추려면** 래퍼 자체를 원본과 같은 시그니처로 쓰거나, `inspect.Signature.bind` 로 **직접 검사**해야 한다.
 - ★ **데코레이터를 껐다 켤 수 있게 만드는 흔한 방법**은 래퍼 안에서 플래그를 보는 것이다.

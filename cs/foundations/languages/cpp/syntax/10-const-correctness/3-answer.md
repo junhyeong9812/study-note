@@ -382,7 +382,7 @@ int shared_from_a() { return shared; }
 - ★★ **`b.o` 에도 `r limit` 가 따로 있다** — 각자의 것이다. 출력이 「B 에서 99 · A 에서 10」인 이유다.
 - ★ **헤더에 `const int N = 10;` 을 두고 열 파일에서 포함하면 객체가 열 개** 생긴다.\
   값이 같으니 대개 안 드러나지만 **주소를 비교하면 조용히 틀린다.**\
-  ★ C++17 부터는 **`inline constexpr`** 로 하나로 만든다 — 정본은 목록의 **25번 주제**다.
+  ★ C++17 부터는 **`inline constexpr`** 로 하나로 만든다 — 정본은 [목록의 **25번 주제**](../25-static-members-and-inline-variables/)다.
 - ★★ **C 는 반대다** — C 의 파일 스코프 `const` 는 **외부 링크**라 두 파일에 같은 이름을 두면 **링크 에러**가 난다.\
   링크 일반의 정본은 C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **29번**이다.
 
@@ -528,7 +528,7 @@ cnst08.cpp:21:9: error: read-only variable is not assignable
 - ★ **clang 도 일곱 개**다(`7 errors generated.`). **판정은 같고 문구만 다르다.**
 - ★ **g++ 의 셋에 `[-fpermissive]` 가 붙어 있다**((2)·(3)·(4)) —\
   그 플래그로 **경고로 내려가는 진단**이라는 뜻이다.\
-  ★★ 그 플래그가 실제로 무엇을 하는지의 실측은 목록의 **08번 주제**에 있다.
+  ★★ 그 플래그가 실제로 무엇을 하는지의 실측은 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)에 있다.
 
 ### 8. ★★★ `cc exit=0` · `run exit=139` — 빌드는 통과하고 실행이 죽는다
 
@@ -631,11 +631,11 @@ cnst07.cpp:6:15: warning: ISO C++11 does not allow conversion from string litera
 
 - **`const_cast` 를 언제 고르나** — 형제 [`03번`](../03-four-cast-operators/)이 정본이다.\
   ★ 여기(4번)는 **그것이 UB 가 되는 경계**만 본다.
-- **`const T&` 가 어떤 식들을 받나** — 목록의 **08번 주제**(값 범주)가 정본이다.\
+- **`const T&` 가 어떤 식들을 받나** — [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)(값 범주)가 정본이다.\
   ★ `const T&` 는 **lvalue·const lvalue·prvalue·xvalue 넷을 다 받는 유일한 칸**이다.
-- **`const` 객체를 `std::move` 하면** — 목록의 **09번 주제**가 정본이다.\
+- **`const` 객체를 `std::move` 하면** — [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)가 정본이다.\
   ★ `const` 라서 `T&&` 오버로드로 못 가고 **조용히 복사**가 된다 — 08번의 오버로드 격자가 그 이유다.
-- **매개변수를 무엇으로 받나** — 목록의 **11번 주제**가 정본이다.\
+- **매개변수를 무엇으로 받나** — [목록의 **11번 주제**](../11-choosing-parameter-passing/)가 정본이다.\
   ★ 여기서 얻은 것은 **계약 표기**까지이고, **크기·수명·소유권으로 고르는 것**은 거기다.
 - **`const char*` / `char* const` 를 읽는 순서** — C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **31번**.\
   ★ 여기(7번)는 **에러 한 줄씩**으로 갈라 두는 데까지만 했다.
@@ -694,9 +694,9 @@ cnst07.cpp:6:15: warning: ISO C++11 does not allow conversion from string litera
 **안 돌려 본 것 / 못 잰 것**
 
 - **안 돌려 본 것** — **`volatile`**(C 갈래 목록의 **32번**이 정본) ·\
-  **멤버 함수의 `&`·`&&` 한정자**(목록의 **08번 주제**에 `operator=` 쪽 실측이 있다) ·\
+  **멤버 함수의 `&`·`&&` 한정자**([목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)에 `operator=` 쪽 실측이 있다) ·\
   **`std::as_const`·`const` 이터레이터**(목록의 **43번 주제**) ·\
-  **`inline constexpr` 로 TU 당 하나로 만드는 것**(목록의 **25번 주제** — 5번은 `const` 쪽만 던졌다) ·\
+  **`inline constexpr` 로 TU 당 하나로 만드는 것**([목록의 **25번 주제**](../25-static-members-and-inline-variables/) — 5번은 `const` 쪽만 던졌다) ·\
   **`const` 멤버 함수 둘을 `const_cast` 로 합치는 관용구**(4번의 경계를 알았으니 쓸 수는 있다) ·\
   **`mutable` 을 여러 스레드에서 동시에 부르는 것**(2번은 단일 스레드다) ·\
   **`cnst03.cpp` 를 clang 으로**(g++ 만 던졌다 — 경고 0건이 컴파일러에 달린 값인지 확인하지 않았다).

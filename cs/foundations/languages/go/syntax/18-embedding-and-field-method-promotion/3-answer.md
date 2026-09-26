@@ -860,7 +860,7 @@ func main() {
 - **「바깥이 안쪽의 인터페이스를 만족하는 것」이 본론이 되는 주제** —
   [20번 주제](../20-interface-declaration-and-implicit-implementation/).
 - 덤 — **타입 스위치로 되꺼내는 법**은 [15번 주제](../15-switch-type-switch-fallthrough-labels-and-goto/),
-  **`sync.Mutex` 임베딩의 대가**는 목록의 **32번 주제**,
+  **`sync.Mutex` 임베딩의 대가**는 [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/),
   **임베딩한 `String()` 이 무한 재귀가 되는 자리**는 목록의 **42번 주제**다.
 
 ---

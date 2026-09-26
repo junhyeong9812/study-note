@@ -701,5 +701,5 @@ gopher:알수없음 | gopher:알수없음 | gopher:알수없음 | gopher:알수�
 - **`zip`·`unzip`·`flatten`** — `Option<(A, B)>` 와 `(Option<A>, Option<B>)` 를 오간다. `flatten` 은 `and_then(|x| x)` 와 같다.
 - **`Option<&mut T>` 의 재빌림** — `as_mut()` 로 얻은 것을 두 번 쓰려면 수명이 걸린다([**12번 주제**](../12-lifetime-annotations-and-elision/)).
 - **`iter()`/`into_iter()`** — `Option` 은 원소가 0개 또는 1개인 이터레이터다. `Vec<Option<T>>` 를 `flatten()` 하면 `None` 이 사라진다.
-- **`Option<T>` 를 반환하는 트레이트 메서드** — `Iterator::next` 가 대표다(목록의 **36번 주제**).
+- **`Option<T>` 를 반환하는 트레이트 메서드** — `Iterator::next` 가 대표다([목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/)).
 - **`matches!` 매크로** — `matches!(opt, Some(x) if x > 3)` 으로 조건까지 한 줄에 판정한다.

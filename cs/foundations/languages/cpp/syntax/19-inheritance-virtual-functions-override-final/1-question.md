@@ -11,7 +11,7 @@
 > ★★ **네 번째 창은 「vtable 덤프」다**(8번) — `-fdump-lang-class`(g++)·`-fdump-vtable-layouts`(clang).
 > ★ **「부적용인 창」이 있다** — `-O2` 어셈블리 세기.
 > **가상 호출 비용은 이 문서가 재지 않는다.** 간접 호출 하나를 세는 것으로는 인라인 불가·분기 예측·캐시가 빠져 근거가 안 선다.
-> **「안 쟀다」가 아니라 「여기서 잴 것이 아니다」다** — 정본은 목록의 **21번 주제**다.
+> **「안 쟀다」가 아니라 「여기서 잴 것이 아니다」다** — 정본은 [목록의 **21번 주제**](../21-abstract-classes-pure-virtual-and-vtable-cost/)다.
 > ★★★ **이 편은 16\~18 과 다른 축이다** — 저쪽이 「값이 어떻게 옮겨지나」라면 여기는 「호출이 어디로 가나」다.
 > 겹치는 자리는 6번 하나이고, **[14번](../14-destructors-and-deterministic-destruction/) (5)가 남긴 「경고 0건」의 정본이 그것**이다.
 > 대비 — ★★ C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **12번**([`12-class-fields-constructors-this-base/`](../../../csharp/syntax/12-class-fields-constructors-this-base/))과 Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **9번**([`09-inheritance-overriding/`](../../../java/syntax/09-inheritance-overriding/))을 7번·8번에서 던진다.

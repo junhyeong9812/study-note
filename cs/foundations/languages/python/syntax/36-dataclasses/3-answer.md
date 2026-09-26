@@ -77,7 +77,7 @@ class Point3(Point):
 
 print("   Point3 의 필드 :", [f.name for f in dataclasses.fields(Point3)])
 print("   Point3.__init__ :", inspect.signature(Point3.__init__))
-print("   ★ MRO 를 거꾸로 훑어 모은다 — 정본은 목록의 34번 주제다")
+print("   ★ MRO 를 거꾸로 훑어 모은다 — 정본은 [목록의 **34번 주제**](../34-inheritance-mro-super/)다")
 
 print("⑦ asdict / astuple 은 재귀한다")
 print("   asdict(Point3(1,2,[9],3))  :", dataclasses.asdict(Point3(1, 2, [9], 3)))
@@ -107,7 +107,7 @@ print("   replace(p, y=99)           :", dataclasses.replace(p, y=99))
 ⑥ 상속하면 부모 필드가 앞에 온다
    Point3 의 필드 : ['x', 'y', 'tags', 'z']
    Point3.__init__ : (self, x: int, y: int = 0, tags: list = <factory>, z: int = 0) -> None
-   ★ MRO 를 거꾸로 훑어 모은다 — 정본은 목록의 34번 주제다
+   ★ MRO 를 거꾸로 훑어 모은다 — 정본은 [목록의 **34번 주제**](../34-inheritance-mro-super/)다
 ⑦ asdict / astuple 은 재귀한다
    asdict(Point3(1,2,[9],3))  : {'x': 1, 'y': 2, 'tags': [9], 'z': 3}
    astuple(Point3(1,2,[9],3)) : (1, 2, [9], 3)

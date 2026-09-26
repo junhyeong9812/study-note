@@ -563,9 +563,9 @@ fun f() { for (i in 1..3) { i = i + 1; println(i) } }
 - **비지역 `return` 이 왜 인라인에서만 되는가 → [목록의 11번 주제](../11-inline-functions/)**(인라인 함수 — `noinline`/`crossinline`·비지역 반환)가 정본이다.\
   이 문서는 **현상**(`'return' is prohibited here.` 와 `forEach` 의 함수째 반환)까지만 적었다.\
   람다 자체는 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/).
-- **구조 분해(`for ((i, v) in xs.withIndex())`) → 목록의 30번 주제**(구조 분해 선언 — `componentN` 과 그 한계)가 정본이다.\
+- **구조 분해(`for ((i, v) in xs.withIndex())`) → [목록의 30번 주제](../30-destructuring-declarations-and-componentn/)**(구조 분해 선언 — `componentN` 과 그 한계)가 정본이다.\
   `Map` 을 `for ((k, v) in m)` 으로 도는 것도 같은 문법이다.
-- **규약 전체 → 목록의 31번 주제**(연산자 오버로딩·중위 함수·`invoke` 규약)가 정본이다.\
+- **규약 전체 → [목록의 31번 주제](../31-operator-overloading-infix-and-invoke/)**(연산자 오버로딩·중위 함수·`invoke` 규약)가 정본이다.\
   `iterator()`(이 문서 5번)·`contains`(`in`)·`rangeTo`(`..`)·`step`/`downTo`(중위 함수)가 전부 거기 속한다.
 - **Java 레이블 `break`/`continue` → [`../../../java/syntax/20-control-flow-statements/`](../../../java/syntax/20-control-flow-statements/)** 가 정본이다.\
   `switch` 안의 `break` 는 [`../../../java/syntax/21-switch-statement-and-expression/`](../../../java/syntax/21-switch-statement-and-expression/) 쪽이다 —\

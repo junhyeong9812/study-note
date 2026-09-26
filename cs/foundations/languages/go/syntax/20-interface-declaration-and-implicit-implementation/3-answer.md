@@ -772,7 +772,7 @@ func MultiWriter(writers ...Writer) Writer
 - **IDE 가 구현체 목록을 보여 줄 수 있는 이유**는 소스에 `implements` 가 **적혀 있기 때문**이다.
   Go 에서는 **그 문자열이 없다**(8번의 grep 0줄). 에디터가 보여 준다면 **타입 검사를 전부 돌려** 흉내 낸 것이다.
 - **쓰는 쪽에 인터페이스를 두기 어려운 이유** — Rust 는 **고아 규칙**이 남의 타입에 남의 트레이트를
-  구현하지 못하게 막고(Rust 갈래 목록의 **26번**), 자바는 **기존 클래스를 고쳐야** 한다.
+  구현하지 못하게 막고(Rust 갈래 [목록의 **26번**](../26-defer-evaluation-lifo-named-results-and-loops/)), 자바는 **기존 클래스를 고쳐야** 한다.
   Go 는 둘 다 필요 없다.
 
 ### 11. 다른 주제와 잇기
@@ -785,14 +785,14 @@ func MultiWriter(writers ...Writer) Writer
   **이 주제의 직접 선행**이고, 2번의 `(*T)(nil)` 대 `T{}` 가 거기서 나온다.
 - **타입 스위치** — [15번 주제](../15-switch-type-switch-fallthrough-labels-and-goto/).
   5번은 **comma-ok 한 꼴**까지만 본다.
-- **`nil` 인터페이스 함정** — 목록의 **21번 주제**. 3번은 **한 번 던져 보는** 데까지다.
+- **`nil` 인터페이스 함정** — [목록의 **21번 주제**](../21-nil-interface-vs-interface-holding-nil-pointer/). 3번은 **한 번 던져 보는** 데까지다.
 - **`io.Reader`/`Writer` 조합** — 목록의 **43번 주제**. 6번은 **「작을수록 좋다」를 수로 보이는** 데까지다.
 - **인터페이스 필드가 든 구조체의 `==` 가 런타임에 터지는 실측** —
   [17번 주제](../17-struct-literals-comparability-field-tags-and-sorting/) (4)절
   (`comparing uncomparable type []int`).
 - 덤 — **인터페이스 임베딩**은 [18번 주제](../18-embedding-and-field-method-promotion/) (5)절,
-  **타입 단언·`comparable`** 은 목록의 **22번 주제**,
-  **오류 값 설계**는 목록의 **23번**·**24번 주제**,
+  **타입 단언·`comparable`** 은 [목록의 **22번 주제**](../22-type-assertion-any-and-comparable/),
+  **오류 값 설계**는 [목록의 **23번**](../23-error-interface-and-errors-as-values/)·**24번 주제**,
   **제네릭으로 `any` 를 대신하는 자리**는 목록의 **37번 주제**다.
 
 ---

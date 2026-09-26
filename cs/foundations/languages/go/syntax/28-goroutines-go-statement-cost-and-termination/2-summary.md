@@ -66,8 +66,8 @@ go version go1.27.1 linux/amd64
 | 일을 맡기고 **뒤도 안 돌아보고** 간다 | ★★ **`go f()`** — 부르는 쪽은 `f` 가 끝나길 **기다리지 않는다** |
 | 맡길 때 **재료를 지금 손에 쥐여 준다** | ★★★ **`go f(x)`** — 함수 값과 인자는 **부르는 쪽 고루틴에서 지금** 평가([26번 주제](../26-defer-evaluation-lifo-named-results-and-loops/)의 `defer` 와 **같은 규칙**) |
 | 주인이 문을 닫으면 **일하던 사람도 그 자리에서 사라진다** | ★★★ **`main` 반환 = 프로그램 종료.** 다른 고루틴을 **기다리지 않고**, 그들의 **`defer` 도 안 돈다** |
-| 문 닫기 전에 **다 끝났는지 확인**한다 | ★ **`sync.WaitGroup`** — 동시성 묶음의 정본은 목록의 **32번 주제** |
-| 맡긴 일꾼이 **영영 안 오는 손님**을 기다린다 | ★ **고루틴 누수** — `NumGoroutine` 이 **안 줄어든다**. 정본은 목록의 **31번 주제** |
+| 문 닫기 전에 **다 끝났는지 확인**한다 | ★ **`sync.WaitGroup`** — 동시성 묶음의 정본은 [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/) |
+| 맡긴 일꾼이 **영영 안 오는 손님**을 기다린다 | ★ **고루틴 누수** — `NumGoroutine` 이 **안 줄어든다**. 정본은 [목록의 **31번 주제**](../31-goroutine-leaks/) |
 | 일꾼 명단을 세어 본다 | **`runtime.NumGoroutine()`** — 지금 **있는** 고루틴 수 |
 
 ```text
@@ -276,7 +276,7 @@ Wait 뒤 1 로 돌아왔나    : true
   ★ `Wait` 가 돌아온 **바로 그 순간**에 1 이라는 보장은 없다 — `Done` 을 부른 뒤 고루틴이 **실제로 사라지기까지** 틈이 있다. 그래서 **기다리며 확인**했다(`settle`).
 - ★★★ **받을 쪽 없는 10개 뒤 11, 1초를 기다려도 1 로 안 간다**(`false`) — **고루틴 누수**다.
   `stuck` 채널을 아무도 안 닫으니 **영원히 막혀 있다.** GC 도 이것을 치우지 않는다.
-  ★ 누수의 형태·테스트로 잡는 법의 정본은 목록의 **31번 주제**다 — 여기는 「**`NumGoroutine` 이 안 줄어든다**」 까지.
+  ★ 누수의 형태·테스트로 잡는 법의 정본은 [목록의 **31번 주제**](../31-goroutine-leaks/)다 — 여기는 「**`NumGoroutine` 이 안 줄어든다**」 까지.
 - ★ **`wg.Go(func(){…})`** 는 **1.25** 의 새 메서드다 — `Add(1)` + `go` + `defer Done()` 을 한 번에 한다.
 
 ```text
@@ -305,7 +305,7 @@ func (wg *WaitGroup) Go(f func())
 ```
 
   ★★ 「**The function f must not panic.**」 — [27번 주제](../27-panic-recover-and-where-to-use-them/) (4)절대로 **다른 고루틴의 패닉은 못 잡으니** 그 고루틴 안에서 막아야 한다.
-  `WaitGroup` 전체(`Add`·`Wait`·복사 금지)의 정본은 목록의 **32번 주제**다.
+  `WaitGroup` 전체(`Add`·`Wait`·복사 금지)의 정본은 [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/)다.
 
 ```text
 ===== 명령: go doc runtime.NumGoroutine && go doc runtime.Goexit =====
@@ -591,7 +591,7 @@ func main() {
 - ★★ **다섯 줄이 거부된다** — `go len(s)`(결과를 버리는 내장 함수) · `go (f())`(괄호) · `go f`(호출이 아님) · `defer f` · `defer len(s)`.
   명세 「**The expression must be a function or method call; it cannot be parenthesized. Calls of built-in functions are restricted as for expression statements.**」
 - ★★★ **마지막 `go f()` 는 통과한다** — `f` 가 `int` 를 돌려주는데도. 명세 「**If the function has any return values, they are discarded**」.
-  ★ **고루틴에서 값을 받으려면 채널**이다(목록의 **29번 주제**). `go` 문 자체는 **값을 돌려줄 통로가 없다.**
+  ★ **고루틴에서 값을 받으려면 채널**이다([목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/)). `go` 문 자체는 **값을 돌려줄 통로가 없다.**
 - ★ `-gcflags=-e` 로 **에러 상한을 풀어** 다섯 줄을 다 받았다.
 
 비용 — 없다.
@@ -685,7 +685,7 @@ func main() {
 ### 5. ★★ 「`Wait` 가 돌아오면 `NumGoroutine` 은 바로 1 이다」
 
 - (2)절 — `Done` 을 부른 뒤 고루틴이 **사라지기까지 틈**이 있어 기다리며 확인했다. 바로 1 이라는 **보장은 없다.**
-- 고치는 법 — 누수 테스트는 **잠깐 기다리며 수렴을 본다**(목록의 **31번 주제**).
+- 고치는 법 — 누수 테스트는 **잠깐 기다리며 수렴을 본다**([목록의 **31번 주제**](../31-goroutine-leaks/)).
 
 ### 6. ★★ 「고루틴은 2KB 로 시작한다」
 
@@ -716,12 +716,12 @@ func main() {
 | 상황 | 고를 것 | 이유 |
 |---|---|---|
 | 기다리지 않아도 되는 일 | ★ **거의 없다** — `main` 이 끝나면 사라진다 | (1)절 |
-| 여러 일을 띄우고 다 끝날 때까지 | **`sync.WaitGroup`**(1.25+ `wg.Go`) | (2)절 · 목록의 **32번 주제** |
-| 결과를 받아야 한다 | **채널** | `go` 는 반환값을 버린다((6)절) · 목록의 **29번 주제** |
+| 여러 일을 띄우고 다 끝날 때까지 | **`sync.WaitGroup`**(1.25+ `wg.Go`) | (2)절 · [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/) |
+| 결과를 받아야 한다 | **채널** | `go` 는 반환값을 버린다((6)절) · [목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/) |
 | 지금 값으로 넘긴다 | **인자로**(`go f(x)`) | (3)절 |
 | 루프에서 띄운다 | **1.22+ 모듈이면 그대로**, 아니면 인자로 | (4)절 |
 | 끝낼 수 있어야 한다 | **취소 신호**(`context`) | 목록의 **34번 주제** |
-| 누수를 테스트한다 | **`NumGoroutine` 수렴** | (2)절 · 목록의 **31번 주제** |
+| 누수를 테스트한다 | **`NumGoroutine` 수렴** | (2)절 · [목록의 **31번 주제**](../31-goroutine-leaks/) |
 | 고루틴 안의 패닉 | **그 고루틴 안에서 `recover`** | [27번 주제](../27-panic-recover-and-where-to-use-them/) (4)절 |
 
 ## 핵심 문장
@@ -747,9 +747,9 @@ func main() {
 - [13번 주제](../13-closures-variable-capture-and-loop-variable-change/)(루프 변수) — ★★ **1.22 의미 변경의 정본**
 - [27번 주제](../27-panic-recover-and-where-to-use-them/)(`panic`) — 다른 고루틴의 패닉은 못 잡는다
 - [12번 주제](../12-functions-multiple-returns-named-results-and-variadics/)(함수) — 목록상 선행
-- 목록의 **29번 주제**(채널) — 고루틴에서 값을 받는 정본
-- 목록의 **31번 주제**(고루틴 누수) — ★ 누수의 정본. 여기는 `NumGoroutine` 이 안 줄어드는 것까지
-- 목록의 **32번 주제**(`sync`) — `WaitGroup` 의 정본
+- [목록의 **29번 주제**](../29-channels-buffering-direction-close-range-and-nil/)(채널) — 고루틴에서 값을 받는 정본
+- [목록의 **31번 주제**](../31-goroutine-leaks/)(고루틴 누수) — ★ 누수의 정본. 여기는 `NumGoroutine` 이 안 줄어드는 것까지
+- [목록의 **32번 주제**](../32-sync-mutex-rwmutex-waitgroup-once/)(`sync`) — `WaitGroup` 의 정본
 - 목록의 **34번 주제**(`context`) — 고루틴을 끝내는 신호
 - 목록의 **35번 주제**(레이스) · **36번 주제**(메모리 모델) — 이 문서가 일부러 **없앤** 경쟁의 정본
 - [`../../../java/syntax/56-virtual-threads/`](../../../java/syntax/56-virtual-threads/) — ★★ **가상 스레드는 항상 데몬 — `main` 이 끝나면 JVM 이 안 기다린다.** Go 와 같은 자리

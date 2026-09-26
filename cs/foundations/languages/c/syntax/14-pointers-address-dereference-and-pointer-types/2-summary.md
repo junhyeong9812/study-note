@@ -15,7 +15,7 @@
 > | ASan 의 PID·`BuildId`·모듈 오프셋 | ★ **등식**(`p==&x`·`pp==&p`·`*pp==p`) |
 > | — | **`파일:줄:칸`** · 진단 본문 · 플래그 이름 · **종료 코드** · `sizeof` 값 |
 >
-> **버전** — 포인터의 기본 규칙은 **C89 이후 바뀐 적이 없다.** `nullptr`(C23)은 목록의 **19번 주제**의 몫이다.
+> **버전** — 포인터의 기본 규칙은 **C89 이후 바뀐 적이 없다.** `nullptr`(C23)은 [목록의 **19번 주제**](../19-void-pointer-null-pointer-and-null/)의 몫이다.
 > 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
 > ★★ **경계** — 선언을 **읽는 법**(`int *p[10]` 대 `int (*p)[10]`)은 [01번 형제](../01-declaration-syntax-and-reading/)가 정본이다.\
 > **주소 공간·스택 프레임·힙**은 [`foundations/memory-management/`](../../../../memory-management/) 와 [`foundations/variables-and-memory/`](../../../../variables-and-memory/) 가 정본이고,\
@@ -367,7 +367,7 @@ ex.c:14:8: error: assignment to ‘double *’ from incompatible pointer type �
 - ★★ **경고이지 에러가 아니다.** `exit=0` 이고 **실행 파일이 나온다.**\
   C 에서 이것은 **제약 위반**이라 진단 의무가 있는데, gcc·clang 은 **경고로 내고 계속 간다.**
 - **`void *` 는 양방향으로 조용하다.** `int *` → `void *` 도, `void *` → `int *` 도 경고가 없다 —\
-  그것이 `void *` 의 존재 이유이고 목록의 **19번 주제**가 정본이다.
+  그것이 `void *` 의 존재 이유이고 [목록의 **19번 주제**](../19-void-pointer-null-pointer-and-null/)가 정본이다.
 - ★ **`-pedantic-errors` 를 붙이면 `error:` 로 바뀌고 `exit=1`** 이 된다(gcc·clang 둘 다 error 2건).\
   ★ 이 숫자를 처음 잴 때 **셸에서 `$?` 가 명령 치환의 종료 코드를 잡아** `exit=0` 으로 기록했었다.\
   **컴파일러를 파이프·치환 없이 직접 돌려 다시 재니 1** 이었다 — **도구를 믿기 전에 도구가 무엇을 보는지 확인해야 한다.**
@@ -663,10 +663,10 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [`15-pointer-arithmetic-and-indexing/`](../15-pointer-arithmetic-and-indexing/) — ★★ **`p + 1` 이 타입 크기만큼 움직이는 것**과 포인터 뺄셈의 정본. **이 주제의 타입 위에 선다**
 - [`16-array-pointer-decay-and-function-parameters/`](../16-array-pointer-decay-and-function-parameters/) — 배열이 포인터가 되는 자리
 - [`../../../memory-management/`](../../../../memory-management/) · [`../../../variables-and-memory/`](../../../../variables-and-memory/) — ★ **주소 공간·스택 프레임·힙 구조의 정본.** 그쪽은 「메모리가 어떻게 생겼나」, 여기는 **「C 문법으로 그것을 어떻게 가리키나」**
-- 목록의 **19번 주제** (`void *`·널 포인터·`NULL`) — `void *` 가 왜 캐스트 없이 오가나 · `NULL` 대 `nullptr`
-- 목록의 **28번 주제** (저장 기간 4종) — 가리키는 대상이 **언제 사라지나**
-- 목록의 **31번 주제** (`const` 와 포인터 const 위치) — 「바꾸지 않겠다」를 타입으로 말하는 법
-- 목록의 **35번 주제** (함수 포인터) — 함수 포인터가 객체 포인터와 다른 이유
+- [목록의 **19번 주제**](../19-void-pointer-null-pointer-and-null/) (`void *`·널 포인터·`NULL`) — `void *` 가 왜 캐스트 없이 오가나 · `NULL` 대 `nullptr`
+- [목록의 **28번 주제**](../28-choosing-among-four-storage-durations/) (저장 기간 4종) — 가리키는 대상이 **언제 사라지나**
+- [목록의 **31번 주제**](../31-const-and-pointer-const-placement/) (`const` 와 포인터 const 위치) — 「바꾸지 않겠다」를 타입으로 말하는 법
+- [목록의 **35번 주제**](../35-function-pointers-and-callback-tables/) (함수 포인터) — 함수 포인터가 객체 포인터와 다른 이유
 - 목록의 **55번 주제** (엄격한 앨리어싱) — 타입이 다른 포인터로 **읽는 것**이 왜 UB 인가
 - 목록의 **57번 주제** (해제 후 사용·댕글링) — 가리키는 대상이 사라진 뒤의 포인터
 
@@ -691,13 +691,13 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 
 - ★ **함수 포인터는 객체 포인터와 다른 세계다.** ISO C 는 둘 사이 변환을 보장하지 않고, gcc 가 `-Wpedantic` 으로 말한다.\
   그런데 POSIX `dlsym` 은 `void *` 를 돌려주므로 **캐스트가 불가피하다.**\
-  ★ **이 문서는 `dlsym` 을 던져 보지 않았고**, POSIX 는 축이 달라 이 목록 밖이다(목록의 **35번 주제** 참고).
+  ★ **이 문서는 `dlsym` 을 던져 보지 않았고**, POSIX 는 축이 달라 이 목록 밖이다([목록의 **35번 주제**](../35-function-pointers-and-callback-tables/) 참고).
 
 - **`intptr_t`/`uintptr_t` 는 선택 타입**이다. 이 환경에는 있고 8바이트였지만\
   ★ **없는 구현에서 무슨 일이 나는지는 확인할 수 없었다** — 이 머신에 그런 구현이 없다.
 
 - ★ **널 포인터 상수의 표기가 셋**이다 — `NULL`·`0`·C23 의 `nullptr`.\
-  ★ **이 문서는 `nullptr` 을 던져 보지 않았다.** 목록의 **19번 주제**의 몫이다.
+  ★ **이 문서는 `nullptr` 을 던져 보지 않았다.** [목록의 **19번 주제**](../19-void-pointer-null-pointer-and-null/)의 몫이다.
 
 - **「널 포인터의 비트 표현이 전부 0 인가」는 구현 정의**다. 이 환경에서 `%p` 가 `(nil)` 을 찍었지만\
   ★ **비트를 직접 들여다보지 않았다.** `memset(&p, 0, sizeof p)` 가 `p == NULL` 을 만드는지도 **던지지 않았다.**

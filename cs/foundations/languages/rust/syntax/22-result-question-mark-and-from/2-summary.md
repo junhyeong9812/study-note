@@ -77,7 +77,7 @@
 > 1.13.0 이전에는 같은 일을 `try!` 매크로가 했다.
 
 > **`From` 트레이트** — 「A 로부터 B 를 만든다」는 변환 계약. `impl From<A> for B` 를 쓰면\
-> `B::from(a)` 와 `a.into()` 가 **둘 다** 생긴다(변환 트레이트의 정본은 목록의 **29번 주제**).
+> `B::from(a)` 와 `a.into()` 가 **둘 다** 생긴다(변환 트레이트의 정본은 [목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/)).
 
 > **오류 변환(error conversion)** — 아래 층의 오류 타입을 내 층의 오류 타입으로 감싸거나 바꾸는 것.\
 > `?` 가 자동으로 하고, 손으로 하면 `map_err` 다.
@@ -707,7 +707,7 @@ Err(MyError("port= 로 시작하지 않는다"))
 - [**23번 주제** — `panic!` 대 `Result`](../23-panic-vs-result/) — **어디서 끝낼 것인가**. 종료 코드 1·101·내가 정한 값을 거기서 나란히 던진다.
 - [**24번 주제** — 오류 타입 설계](../24-error-type-design/) — `Box<dyn Error>`·`source` 사슬·다운캐스트. 이 주제의 `ConfigError` 를 제대로 설계하는 법.
 - [**17번 주제** — 열거형](../17-enums-and-data-carrying-variants/) — `Result` 가 그냥 열거형이라는 것의 정본.
-- 목록의 **29번 주제** — `From`/`Into`/`TryFrom`. 변환 트레이트 자체의 정본이다.
+- [목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/) — `From`/`Into`/`TryFrom`. 변환 트레이트 자체의 정본이다.
 - Go 의 `(T, error)` 관례 — Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **12번**·**23번**.
   ★ **대비**: Go 는 `if err != nil { return nil, err }` 를 **손으로** 적고 변환도 `fmt.Errorf("%w")` 로 손으로 한다.
   Rust 는 그 세 줄이 `?` 한 글자이고 **변환은 타입 시스템이 강제**한다.
@@ -730,5 +730,5 @@ Err(MyError("port= 로 시작하지 않는다"))
 - **`?` 와 `try` 블록** — `try { … }` 식은 아직 불안정하다. 지금은 클로저나 내부 함수로 흉내 낸다.
 - **`FromResidual`** — `?` 의 실제 펼침이 거치는 불안정 트레이트. 이름은 E0277 제목의 괄호에 나온다.
 - **`Result` 의 조합 메서드** — `map`·`and_then`·`or_else`·`unwrap_or_else` 가 `Option` 과 같은 모양으로 있다(21번과 같은 규칙).
-- **`collect::<Result<Vec<_>, _>>()`** — 실패가 하나라도 있으면 전체가 `Err` 가 되는 관용구(목록의 **36번 주제**).
+- **`collect::<Result<Vec<_>, _>>()`** — 실패가 하나라도 있으면 전체가 `Err` 가 되는 관용구([목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/)).
 - **`?` 와 `async`** — `async fn` 안에서도 그대로 쓴다. 반환 타입이 `Result` 인 future 라야 한다(목록의 **54번 주제**).

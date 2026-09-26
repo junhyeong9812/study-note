@@ -91,7 +91,7 @@ impl Drop for D {
 
 - `Drop` 을 구현한 타입을 하나 만들어 두고 **해제될 때 이름을 찍게** 한다.
 - 그러면 해제 시점이 **출력 순서**로 드러난다. 아래 모든 절이 이 창을 쓴다.
-- 이 창은 `String`·`Vec` 자체에는 못 단다(남의 타입이다 — 고아 규칙, 목록의 **26번 주제**).\
+- 이 창은 `String`·`Vec` 자체에는 못 단다(남의 타입이다 — 고아 규칙, [목록의 **26번 주제**](../26-orphan-rule-and-newtype/)).\
   대신 **같은 자리에 `D` 를 놓아** 규칙이 같다는 것을 본다.
 
 비용 — 없음. 관찰용 `println!` 하나뿐이고, 규칙 자체는 컴파일 타임에 끝난다.
@@ -620,7 +620,7 @@ help: consider iterating over a slice of the `Vec<String>`'s content to avoid mo
 - `for x in v` 는 **`v.into_iter()` 를 암묵적으로 부른다** — 그 메서드가 `self` 를 먹는다.
 - 그래서 순회가 끝나면 `v` 라는 이름이 죽는다. 컴파일러가 **`&v` 를 붙이라고** 직접 제안한다.
 - 세 형태의 실측 타입은 각각 `String`·`&String`·`&mut String` 이다\
-  ([**05번 주제**](../05-control-flow-loops-and-labels/)의 실측). 정본은 목록의 **37번 주제**.
+  ([**05번 주제**](../05-control-flow-loops-and-labels/)의 실측). 정본은 [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/).
 
 비용 — 없음. `into_iter` 는 원소를 옮길 뿐 복사하지 않는다.
 
@@ -710,7 +710,7 @@ help: consider cloning the value if the performance cost is acceptable
 ```
 
 - 인덱싱은 **빌림**이라 그 안에서 값을 빼낼 수 없다. `&v[0]` 이나 `.clone()` 을 쓴다.
-- 진짜로 꺼내야 하면 `v.remove(0)`·`v.swap_remove(0)`·`v.into_iter()` 쪽이다(목록의 **38번 주제**).
+- 진짜로 꺼내야 하면 `v.remove(0)`·`v.swap_remove(0)`·`v.into_iter()` 쪽이다([목록의 **38번 주제**](../38-vec-api-capacity-retain-and-drain/)).
 
 ## 어디서 틀리나
 

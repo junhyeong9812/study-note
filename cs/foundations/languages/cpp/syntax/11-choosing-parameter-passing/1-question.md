@@ -9,7 +9,7 @@
 > 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
 > ★★★ **「몇 배 빠른가」를 묻는 문항은 하나도 없다** — 이 문서는 **시간을 재지 않았다**(7번이 그 이유다).
 > ★ **네 번째 창은 AddressSanitizer** 다(5번). 컴파일러 셋이 다 조용한 자리를 그것만 잡는다.
-> 선행 — 목록의 **08번 주제**(값 범주)와 목록의 **09번 주제**(`std::move`·`std::forward`)가 이 주제의 바로 앞이다.
+> 선행 — [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)(값 범주)와 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)(`std::move`·`std::forward`)가 이 주제의 바로 앞이다.
 > 형제 [`07번`](../07-references-vs-pointers/)의 「참조가 무엇을 못 하나」가 여기서 설계 기준이 된다.
 
 ## 질문

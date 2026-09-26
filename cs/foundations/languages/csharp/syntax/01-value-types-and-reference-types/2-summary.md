@@ -570,7 +570,7 @@ cs01b-null.cs(1,27): warning CS0649: Field 'Point.X' is never assigned to, and w
 - ★★★ 진단이 이유까지 말한다 — ``because it is a non-nullable value type``.\
   **값 타입은 「값이 없는 상태」라는 걸 표현할 자리가 없다** — 모든 비트 조합이 이미 어떤 값이다.
 - ★ `string s = null;` 과 `object o = null;` 은 **에러가 아니다**(경고도 없다 — 이 문서는 널 허용 분석을 안 켰다).\
-  ★ `#nullable enable` 이 그 경고를 켜는 것이고, 그 정본은 목록의 **06번 주제**다.
+  ★ `#nullable enable` 이 그 경고를 켜는 것이고, 그 정본은 [목록의 **06번 주제**](../06-nullable-reference-types/)다.
 
 그러면 `int?` 는 무엇인가.
 
@@ -622,7 +622,7 @@ z.Value          : InvalidOperationException: Nullable object must have a value.
   **「널을 담을 수 있게 된 것」이지 「참조 타입이 된 것」이 아니다.**
 - ★★★ **박싱이 `Nullable` 을 특별 취급한다** — `object o = q` 는 `Nullable<int>` 를 박싱하는 게 아니라\
   **값이 있으면 그 `int` 를, 없으면 `null` 참조를** 만든다. 런타임이 정한 **특례**이고, 그래서 `GetType()` 이 `System.Int32` 다.\
-  ★ `int?` 자체의 정본은 목록의 **08번 주제**다.
+  ★ `int?` 자체의 정본은 [목록의 **08번 주제**](../08-nullable-value-types/)다.
 
 ### (8) ★ 크기를 재려면 — `sizeof` 는 `unsafe` 가 필요하다
 
@@ -876,8 +876,8 @@ class Node { public int X; public int Y; }
   (6)의 `ReferenceEquals(5, 5)` 와 (5)의 「박싱 1000번 = 24000바이트」가 거기서 이어진다.
 - [04번 — 변수 선언·`var`·타겟 타입 `new`](../04-var-and-target-typed-new/) — **선언 자리의 문법.**\
   (1)의 `var s2 = s1;` 이 왜 `Point` 로 추론되는지가 거기다.
-- 목록의 **06번 주제**(널 허용 참조 타입) — (7)에서 `string s = null;` 이 경고 없이 통과한 이유.
-- 목록의 **08번 주제**(`Nullable<T>`) — ★ (7)의 정본.
+- [목록의 **06번 주제**](../06-nullable-reference-types/)(널 허용 참조 타입) — (7)에서 `string s = null;` 이 경고 없이 통과한 이유.
+- [목록의 **08번 주제**](../08-nullable-value-types/)(`Nullable<T>`) — ★ (7)의 정본.
 - 목록의 **19번 주제**(동등성 규칙) — (1)의 `Equals` 가 타입마다 다른 이유.
 - 목록의 **44번 주제**(`ref`/`out`/`in`) — ★ (3)의 정본.
 - 목록의 **45번 주제**(`ref` 지역·`ref struct`) · **46번 주제**(`Span<T>`) — (8)의 `IsReferenceOrContainsReferences` 가 거기서 쓰인다.

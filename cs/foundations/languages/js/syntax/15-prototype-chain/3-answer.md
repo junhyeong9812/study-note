@@ -643,8 +643,8 @@ identical 18  ·  differs 1  ·  total 19
 - **`__proto__:` 리터럴 문법** → [13번](../13-object-literals-and-properties/2-summary.md) ·
   **무엇이 쓰기를 막나** → [14번](../14-property-descriptors-and-freezing/2-summary.md) ·
   **`this` 판정** → [07번](../07-this-binding-four-rules/2-summary.md) ·
-  **체인 순회 열거** → 목록의 **18번 주제** ·
-  **`class` 가 무엇을 어디에 붙이나** → 목록의 **16번 주제**(그리고 `super` 는 **17번**) ·
+  **체인 순회 열거** → [목록의 **18번 주제**](../18-for-in-and-enumeration/) ·
+  **`class` 가 무엇을 어디에 붙이나** → [목록의 **16번 주제**](../16-class-syntax/)(그리고 `super` 는 **17번**) ·
   **어느 타입 검사가 깨지나** → 목록의 **34번 주제** ·
   **`Proxy` 트랩 계약** → 목록의 **45번 주제**.
 - ★★★ **13번의 `__proto__`** 는 「객체 리터럴 안의 문법」이고

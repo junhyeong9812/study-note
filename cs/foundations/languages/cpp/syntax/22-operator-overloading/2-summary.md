@@ -16,7 +16,7 @@
 > ★★★ **이 편의 사슬** — (1)의 「**`1 + a` 가 막힌다**」가 [23번](../23-three-way-comparison-spaceship/)의 「**재작성 후보가 대칭을 푼다**」로 이어진다. **비교 연산자는 거기서 본다.**
 > **경계** — 「클래스·멤버·`this`」는 [12번](../12-class-basics-members-access-and-this/)이, 「오버로드 해결」은 [1번](../01-function-overloading-and-overload-resolution/)이, 「인자 의존 탐색(ADL)」은 [6번](../06-namespaces-and-adl/)이 정본이다.\
 > 「파이썬 dunder 로 본 연산자 오버로딩」은 [`oop-basics/`](../../../../oop-basics/) §19\~20 이 정본이고, 여기는 **C++ 규칙**만 본다.\
-> 「변환 생성자와 `explicit`」은 목록의 **24번 주제**다 — (1)이 그 자리를 **대칭의 재료**로만 건드린다.
+> 「변환 생성자와 `explicit`」은 [목록의 **24번 주제**](../24-explicit-and-converting-constructors/)다 — (1)이 그 자리를 **대칭의 재료**로만 건드린다.
 > **대비** — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **30번**(연산자 오버로딩 `std::ops`) — 아직 폴더가 없다.\
 > ★ Rust 는 **트레이트 구현이 곧 연산자**이고 **`impl Add<Money> for i64` 를 따로 써야** `1 + a` 가 된다 — 이 편은 그것을 **던지지 않았다**(그 편이 생기면 거기서 잰다).
 >
@@ -224,7 +224,7 @@ opov12.cpp:12:17: error: invalid operands to binary expression ('int' and 'Money
 
 - ★★★ **비멤버인데도 `a + 1` 과 `1 + a` 가 둘 다 막힌다** — **에러 2건**. 대칭을 만든 것은 비멤버가 아니라 「**두 자리 모두에서 변환이 허락된 것**」이었다.
 - ★★ **그래서 규칙은 둘이 한 쌍이다** — **비멤버에 두면 두 자리가 평등해지고**, **변환 생성자가 있으면 그 평등이 섞인 타입까지 넓어진다.**\
-  ★ 변환을 허락할지는 목록의 **24번 주제**(`explicit`)의 판단이다.
+  ★ 변환을 허락할지는 [목록의 **24번 주제**](../24-explicit-and-converting-constructors/)(`explicit`)의 판단이다.
 
 ```text
                       Money(long) 암묵        explicit Money(long)
@@ -927,7 +927,7 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - [6번](../06-namespaces-and-adl/) — **ADL.** 숨은 friend 가 찾아지는 길이다.
 - [10번](../10-const-correctness/) — **`const` 오버로드.** (3)의 두 벌이 그것이다.
 - [16번](../16-copy-constructor-and-copy-assignment/) — **복사 대입.** (7)의 `operator=` 가 멤버여야 하는 이유와 이어진다.
-- 목록의 **24번 주제** — **`explicit` 과 변환 생성자.** (1)의 대칭이 그 판단에 달려 있다.
+- [목록의 **24번 주제**](../24-explicit-and-converting-constructors/) — **`explicit` 과 변환 생성자.** (1)의 대칭이 그 판단에 달려 있다.
 - [`oop-basics/`](../../../../oop-basics/) §19\~20 — **파이썬 dunder 로 본 연산자 오버로딩.** 여기는 **C++ 규칙**까지.
 - Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **30번**(`std::ops`) — **폴더가 아직 없다.** Rust 는 `impl Add<Rhs> for Lhs` 를 **방향마다** 쓴다 — 이 편은 **던지지 않았다.**
 

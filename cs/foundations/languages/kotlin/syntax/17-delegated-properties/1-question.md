@@ -5,10 +5,10 @@
 > 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
 > 선행은 [16번 주제](../16-properties-backing-field-lateinit-const/)다.
 > ★ **backing field 와 `lateinit` 은 [16번 주제](../16-properties-backing-field-lateinit-const/)가 정본**이고,
-> `inline` 은 [11번 주제](../11-inline-functions/), 연산자 규약 전반은 목록의 **31번 주제**,
-> **클래스** 위임(`class A : B by b`)은 목록의 **21번 주제**가 정본이다.
+> `inline` 은 [11번 주제](../11-inline-functions/), 연산자 규약 전반은 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/),
+> **클래스** 위임(`class A : B by b`)은 [목록의 **21번 주제**](../21-class-delegation-by/)가 정본이다.
 > 여기는 **프로퍼티** 위임만 묻는다.
-> 이 주제는 목록의 **21번 주제**·**31번 주제**·**35번 주제**의 뿌리다.
+> 이 주제는 [목록의 **21번 주제**](../21-class-delegation-by/)·**31번 주제**·**35번 주제**의 뿌리다.
 > 문항 11개 중 코드블록이 붙는 예측형은 6개다.
 > 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
 > ⚠️ 8번은 **되풀이 돌리면 답이 달라지는** 문항이다 — 외울 것은 숫자가 아니라 성질이다.

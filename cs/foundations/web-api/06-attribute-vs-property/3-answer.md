@@ -351,7 +351,7 @@ const padw = (s, n) => s + ' '.repeat(Math.max(0, n - W(s)));
 | `d.attributes.length = 6` | 6 | 이 실험이 만든 개수다. 실험을 고치면 바뀐다 |
 | `document.baseURI` 가 `https://example.org/a/b/` 인 것 | 위 출력 | 이 실험이 `<base>` 로 심은 값이다 |
 
-**안 돌려 본 것** — ① Firefox·Safari 에서의 재현(엔진이 없다). ② **`<select>`/`<option>` 의 `selected`** — 명세 구조가 `checked` 와 같다는 것만 적었고 **던져 보지 않았다.** ③ `getAttributeNS`·`setAttributeNode` 계열(SVG 가 섞인 문서를 만들지 않았다). ④ **커스텀 요소가 직접 구현한 반영**(목록의 **13번 주제**의 몫). ⑤ `el.attributes` 를 순회하며 지웠을 때의 건너뜀 — [02번 주제](../02-element-queries-and-live-collections/2-summary.md)에서 `HTMLCollection` 으로 실측한 것을 **같은 성질이라고 적었을 뿐 `NamedNodeMap` 으로 다시 던지지는 않았다.** ⑥ **이미지·폼의 URL 속성**(`img.src`·`form.action`) — `a.href` 하나만 쟀다. **「URL 속성 전부가 그렇다」로 일반화하지 않는다.**
+**안 돌려 본 것** — ① Firefox·Safari 에서의 재현(엔진이 없다). ② **`<select>`/`<option>` 의 `selected`** — 명세 구조가 `checked` 와 같다는 것만 적었고 **던져 보지 않았다.** ③ `getAttributeNS`·`setAttributeNode` 계열(SVG 가 섞인 문서를 만들지 않았다). ④ **커스텀 요소가 직접 구현한 반영**([목록의 **13번 주제**](../13-custom-element-lifecycle/)의 몫). ⑤ `el.attributes` 를 순회하며 지웠을 때의 건너뜀 — [02번 주제](../02-element-queries-and-live-collections/2-summary.md)에서 `HTMLCollection` 으로 실측한 것을 **같은 성질이라고 적었을 뿐 `NamedNodeMap` 으로 다시 던지지는 않았다.** ⑥ **이미지·폼의 URL 속성**(`img.src`·`form.action`) — `a.href` 하나만 쟀다. **「URL 속성 전부가 그렇다」로 일반화하지 않는다.**
 
 ## 용어 풀이
 
