@@ -188,7 +188,7 @@
           createComponentTree 가 loading 아래를 잘라 낸다 (CCTREE L533-567)
 
  ① 의 createRouteTreePrefetch 결과
-      --> PPR 꺼진 동적 라우트의 `/_tree` 응답 ([트리 조립] [04]의 빌드 버퍼와 배타적이다)
+      --> PPR 꺼진 동적 라우트의 `/_tree` 응답 ([트리 조립] [04]의 prerender 버퍼와 배타적이다 — 그쪽은 정적 생성된 라우트)
 
  ③ 의 seedData
       --> [트리 조립]의 CacheNodeSeedData 튜플. [PPR 내비게이션]이 그 경로에 끼운다
