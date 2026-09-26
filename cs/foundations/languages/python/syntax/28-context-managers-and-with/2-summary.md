@@ -1252,7 +1252,7 @@ def managed():
 | 특정 예외를 조용히 넘긴다 | **`contextlib.suppress(구체타입)`** — `Exception` 은 주지 마라 |
 | 예외를 **삼켜야** 한다 | `__exit__` 에서 **참**을 돌려준다. **의도를 주석으로 남긴다** |
 | 정리 코드가 **실패할 수 있다** | ★ **그 안에서 직접 잡아 기록**한다 — 안 그러면 정보를 잃는다 |
-| `async with` 가 필요하다 | `목록의 **51번 주제**`·`목록의 **52번 주제**` — **이 주제 밖이다** |
+| `async with` 가 필요하다 | `[목록의 **51번 주제**](../51-asyncio-coroutine-basics/)`·`[목록의 **52번 주제**](../52-asyncio-concurrency-structure/)` — **이 주제 밖이다** |
 
 ## 핵심 문장
 
@@ -1291,8 +1291,8 @@ def managed():
   거기서 「접어 둔 API」로 나온다. **정본은 여기**다.
 - 함께 보는 곳: [27-exception-groups-and-except-star](../27-exception-groups-and-except-star/2-summary.md) —
   **정리 중 예외 여럿**을 묶음으로 만들지 **않는다**는 확인이 동작 10에 있다.
-- 이어지는 곳: `목록의 **48번 주제**` — `pathlib` 와 파일 I/O. **`with open(...)` 의 실무 자리**다.
-- 이어지는 곳: `목록의 **51번 주제**`·`목록의 **52번 주제**` — `async with` 와 `__aenter__`/`__aexit__`.
+- 이어지는 곳: `[목록의 **48번 주제**](../48-pathlib-and-file-io/)` — `pathlib` 와 파일 I/O. **`with open(...)` 의 실무 자리**다.
+- 이어지는 곳: `[목록의 **51번 주제**](../51-asyncio-coroutine-basics/)`·`[목록의 **52번 주제**](../52-asyncio-concurrency-structure/)` — `async with` 와 `__aenter__`/`__aexit__`.
 - 다른 갈래: 자바 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **26번** — try-with-resources.
   `AutoCloseable` 이 `__exit__` 자리이고, **정리 중 예외를 주 예외에 붙인다**(suppressed) —
   파이썬은 **그 장치가 없다**(동작 10).
@@ -1335,7 +1335,7 @@ def managed():
 ## 더 들어가면
 
 - **`async with` 와 `__aenter__`/`__aexit__`** — 같은 계약의 비동기 판.
-  `contextlib.AsyncExitStack` 도 있다. **이 주제에서는 안 돌려 봤다** — 정본은 `목록의 **51번 주제**`·`목록의 **52번 주제**` 다.
+  `contextlib.AsyncExitStack` 도 있다. **이 주제에서는 안 돌려 봤다** — 정본은 `[목록의 **51번 주제**](../51-asyncio-coroutine-basics/)`·`[목록의 **52번 주제**](../52-asyncio-concurrency-structure/)` 다.
 - **`contextlib.ContextDecorator`** — 컨텍스트 매니저를 **데코레이터로도** 쓰게 하는 믹스인.
   `@contextmanager` 가 만든 객체는 이미 이것을 상속한다. **안 돌려 봤다.**
 - ★ **`__exit__` 안에서 새 예외를 던지면** 원래 예외가 `__context__` 가 된다 —

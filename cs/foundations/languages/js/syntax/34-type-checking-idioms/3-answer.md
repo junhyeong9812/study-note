@@ -196,7 +196,7 @@ cells that differ from the truth: 32 / 100
 
 - ★★ **확인하지 않았다.** 관찰한 것은 **사슬의 객체가 다르고(`instanceof` `n*`) 슬롯은 넘는다(`y`)** 는 것이 `vm` 과 iframe 에서 같았다는 것이다.
 - ★★ **`util.types.isNativeError`** — node 의 호스트 API 다. `Error.isError`(ES2026)가 두 node 판에 없어 **창을 바꿔 물었다.**
-- ★ `Proxy` — 목록의 **45번 주제**. 워커·`structuredClone` 으로 건너온 값 — 목록의 **48번 주제**(복제).
+- ★ `Proxy` — [목록의 **45번 주제**](../45-proxy/). 워커·`structuredClone` 으로 건너온 값 — [목록의 **48번 주제**](../48-deep-copy-methods-compared/)(복제).
 
 ## 실행 검증
 

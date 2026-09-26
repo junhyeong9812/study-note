@@ -58,7 +58,7 @@
 > 「무엇을 거짓으로 치나」의 정본은 02번이고, 여기서는 **그 목록이 기본값 문법에서 만드는 사고**만 본다.
 > ★★ **10번이 바로 앞에서 같은 갈림을 실측했다** — 구조 분해의 기본값은 **`undefined` 에만** 걸리고 `null` 에는 안 걸린다.
 > `??` 는 그 짝이 아니다 — **`null` 도 막는다.** 두 문법이 「비었다」를 **서로 다르게 센다**는 것이 이 주제의 첫 매듭이다.
-> **이어지는 곳** — 목록의 **33번 주제** 「동등성 세 종류」 · 목록의 **35번 주제** 「엄격 모드」 · [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)
+> **이어지는 곳** — [목록의 **33번 주제**](../33-equality-three-kinds/) 「동등성 세 종류」 · [목록의 **35번 주제**](../35-strict-mode/) 「엄격 모드」 · [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)
 >
 > ★★ **경계 — 엄격 모드가 바꾸는 규칙 전부는 35번이 정본이다.** 여기서는 **논리 할당이 실패하는 자리에서 모드가 만드는 차이**까지다.
 > ★★ **경계 — `Object.is`·SameValueZero 는 33번이 정본이다.** 여기서는 `??` 가 **`null`/`undefined` 만 본다**는 사실까지다.
@@ -1070,8 +1070,8 @@ document.documentElement.appendChild(document.createElement("pre")).textContent 
 - [02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md) — **그쪽이 `ToBoolean`·falsy 목록의 정본**이다. 여기는 **그 목록이 기본값 문법에서 만드는 사고**부터.
 - [10 — 구조 분해 할당](../10-destructuring-assignment/2-summary.md) — **그쪽이 `undefined` 에만 걸리는 기본값의 정본**이다. 여기는 **`null` 까지 막는 `??` 와의 대비**만.
 - [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md) — **그쪽이 「왜 쓰기가 막히나」의 정본**이다. 여기는 **막혔을 때 무엇이 보이나**까지.
-- 목록의 **35번 주제** 「엄격 모드」 — **그쪽이 모드가 바꾸는 규칙 전부의 정본**이다. 여기는 **이 세 문법이 걸리는 칸**까지.
-- 목록의 **33번 주제** 「동등성 세 종류」 — **그쪽이 `Object.is`·SameValueZero 의 정본**이다.
+- [목록의 **35번 주제**](../35-strict-mode/) 「엄격 모드」 — **그쪽이 모드가 바꾸는 규칙 전부의 정본**이다. 여기는 **이 세 문법이 걸리는 칸**까지.
+- [목록의 **33번 주제**](../33-equality-three-kinds/) 「동등성 세 종류」 — **그쪽이 `Object.is`·SameValueZero 의 정본**이다.
 - Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **05번** — 파이썬의 `or`/`and` 는 **값을 돌려주는 단축 평가**라는 점이 같고, **nullish 전용 연산자가 없다**는 점이 다르다.
 
 ## 용어 풀이

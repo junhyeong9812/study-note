@@ -947,7 +947,7 @@ sum 으로 같은 것: 10
 - ★ **실측한 누적 순서는 `[(1, 2), (3, 3), (6, 4)]` 였다** — **왼쪽부터 접는다**는 것이 그대로 보인다.
 - ★ **합은 `sum` 이 답이다.** 실측에서 `reduce(lambda a, b: a + b, nums)` 와 `sum(nums)` 가 같은 `10` 을 냈다 —
   **`sum`·`max`·`min`·`any`·`all` 로 되는 것에 `reduce` 를 쓰지 않는다.**
-- **`reduce` 의 정본은 목록의 45번 주제**(`functools`)다. 여기서는 **`lambda`가 그 첫 인자로 들어간다**는 것까지다.
+- **`reduce` 의 정본은 [목록의 45번 주제](../45-functools/)**(`functools`)다. 여기서는 **`lambda`가 그 첫 인자로 들어간다**는 것까지다.
 
 **비용** — 읽는 사람이 **누적 방향을 머리로 재구성**해야 한다. 그것이 `reduce` 를 아껴 쓰는 이유다.
 
@@ -1149,7 +1149,7 @@ lambda x: int: x            # invalid syntax               ★ 애너테이션 �
 | 합·최대·전부·하나라도를 구한다 | ★ **`sum`·`max`·`any`·`all`** — `reduce` 를 쓰지 않는다 |
 | 두 원소를 **같이 봐야** 순서가 정해진다 | **`cmp_to_key`** — 그 전에 **키를 비틀어** 풀리는지 먼저 본다 |
 | 루프 안에서 `lambda`를 여러 개 만든다 | ★ **기본 인자로 굳힌다**(`lambda i=i: i`) — [22번](../22-closures-and-late-binding/2-summary.md)이 정본 |
-| 인자 몇 개를 미리 고정한다 | **`functools.partial`**(목록의 **45번 주제**) |
+| 인자 몇 개를 미리 고정한다 | **`functools.partial`**([목록의 **45번 주제**](../45-functools/)) |
 
 ## 핵심 문장
 
@@ -1189,8 +1189,8 @@ lambda x: int: x            # invalid syntax               ★ 애너테이션 �
 - 함께 보는 곳: [14-comprehensions](../14-comprehensions/2-summary.md) — `map`·`filter` 대신 쓰는 자리.
 - 함께 보는 곳: [20-mutable-default-args](../20-mutable-default-args/2-summary.md) — `lambda i=i:` 고침이 기대는 **기본값 평가 시점**의 정본.
 - 이어지는 곳: [24-decorators](../24-decorators/2-summary.md) — **함수를 받아 함수를 돌려주는** 고차 함수의 문법 설탕.
-- 이어지는 곳: 목록의 **44번 주제** 「`itertools`」 — 지연 이터레이터를 조합하는 쪽.
-- 이어지는 곳: 목록의 **45번 주제** 「`functools`」 — `partial`·`reduce`·`lru_cache` 의 정본.
+- 이어지는 곳: [목록의 **44번 주제**](../44-itertools/) 「`itertools`」 — 지연 이터레이터를 조합하는 쪽.
+- 이어지는 곳: [목록의 **45번 주제**](../45-functools/) 「`functools`」 — `partial`·`reduce`·`lru_cache` 의 정본.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — 「이렇게 쓴다」까지가 그쪽이다.\
   **경계**: 여기는 「**무엇을 못 담고, 못 담으면 무슨 에러가 나며, 어디서 틀리나**」부터다.
 - 공식 문서: [Lambdas](https://docs.python.org/3.12/reference/expressions.html#lambda) · [`map`](https://docs.python.org/3.12/library/functions.html#map) · [`filter`](https://docs.python.org/3.12/library/functions.html#filter) · [`sorted`](https://docs.python.org/3.12/library/functions.html#sorted) · [Sorting HOW TO](https://docs.python.org/3.12/howto/sorting.html) · [`functools`](https://docs.python.org/3.12/library/functools.html#functools.cmp_to_key)

@@ -143,7 +143,7 @@ new columns whose signature equals a reference column: 4 / 4
 
 - ★★ `String.prototype.includes` — 동등성이 아니라 부분 문자열 검색이라 정본 표에 **부적용**으로 올렸다(4번 `[2]`).
 - ★★ **안 들어간다** — 이 표는 **ECMA-262 가 정한 자리**만 담는다. 라이브러리가 무엇을 쓰는지는 그 라이브러리의 문서가 정한다.
-- ★ 목록의 **52번 주제**(`switch`·라벨·흐름 제어 세부).
+- ★ [목록의 **52번 주제**](../52-switch-labels-and-control-flow/)(`switch`·라벨·흐름 제어 세부).
 - ★ [23번](../23-map-set-and-weak-collections/2-summary.md) 동작 (9) — 파이썬은 **정체(`is`) 먼저, 그다음 `==`** 라 `nan` 두 개가 두 칸이 된다.
 
 ## 실행 검증

@@ -955,8 +955,8 @@ def hot_loop(d, keys):
   **이 주제의 접어 둔 API** 에 해당한다.
 - 이어지는 곳: [27-exception-groups-and-except-star](../27-exception-groups-and-except-star/2-summary.md) — 실패를 **여럿 모아** 나르는 법.
 - 이어지는 곳: [28-context-managers-and-with](../28-context-managers-and-with/2-summary.md) — `contextlib.suppress` 의 정본.
-- 이어지는 곳: `목록의 **43번 주제**` — `collections.defaultdict`·`Counter` 의 정본.
-- 이어지는 곳: `목록의 **48번 주제**` — `pathlib` 와 파일 I/O. **경쟁 조건의 실무 자리**가 거기다.
+- 이어지는 곳: `[목록의 **43번 주제**](../43-collections/)` — `collections.defaultdict`·`Counter` 의 정본.
+- 이어지는 곳: `[목록의 **48번 주제**](../48-pathlib-and-file-io/)` — `pathlib` 와 파일 I/O. **경쟁 조건의 실무 자리**가 거기다.
 - 다른 갈래: Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **23번** — `(T, error)`.
   Go 는 **실패를 반환값으로** 받으므로 이 선택 자체가 생기지 않는다 — **언제나 「검사」 쪽**이다.
 - 다른 갈래: Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **23번** — `panic!` 대 `Result`.
@@ -1003,6 +1003,6 @@ def hot_loop(d, keys):
   3.11 의 zero-cost exception 이후로 특히 그렇다 — **판별 비교는 안 돌려 봤다**(이 머신에 3.10 이하가 없다).
 - **`os.open` 의 `O_EXCL`·`O_CREAT`** — 경쟁 조건을 **OS 쪽에서** 없애는 길. 이 주제에서는 안 돌려 봤다.
 - ★ **타입 힌트·정적 검사기는 LBYL 쪽을 편든다** — 검사 뒤의 좁힘(narrowing)을 읽을 수 있기 때문이다.
-  그 이야기는 `목록의 **40번 주제**`·`목록의 **41번 주제**` 다.
+  그 이야기는 `[목록의 **40번 주제**](../40-type-hints-at-runtime/)`·`[목록의 **41번 주제**](../41-typing-and-generic-syntax/)` 다.
 - ★ **`contextlib.suppress` 는 EAFP 를 한 줄로 접은 것**이지만, **`try/except/pass` 보다 조금 느리다**고
   알려져 있다 — **이 문서에서는 안 쟀다.** 재지 않은 것은 적지 않는다.

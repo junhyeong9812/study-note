@@ -255,7 +255,7 @@ fn main() {
 | `strong_count` 1 → 2 → 1 | **근거** | `Rc` 의 계약 |
 | `0x607669d5ed00` 같은 **절댓값** | **아니다** | ASLR 로 실행마다 바뀐다 |
 
-- `Rc` 의 정본은 목록의 **41번 주제**다. 여기서는 **현상만** 싣는다.
+- `Rc` 의 정본은 [목록의 **41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/)다. 여기서는 **현상만** 싣는다.
 
 ### 5. `derive(Clone)` 이 붙이는 것
 
@@ -684,9 +684,9 @@ warning: 1 warning emitted
 
 ### 11. 다른 주제와 잇기
 
-- **`Rc::clone` 이 카운트만 올리는 것의 정본** — 목록의 **41번 주제**(`Rc`/`Arc` 공유 소유권).\
+- **`Rc::clone` 이 카운트만 올리는 것의 정본** — [목록의 **41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/)(`Rc`/`Arc` 공유 소유권).\
   여기서는 `strong_count` 1→2→1 이라는 **현상만** 실었다.
-- **`mem::take`/`replace` 의 정본** — 목록의 **44번 주제**.\
+- **`mem::take`/`replace` 의 정본** — [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/).\
   08번의 E0509(`Drop` 구현체에서 필드를 못 빼낸다)로 막힌 자리가 정확히 그 도구의 자리다.
 - **`&T` 는 `Copy`, `&mut T` 는 아니다** — 정본은 [**10번 주제**](../10-borrowing-and-aliasing-rules/).\
   그렇게 정한 이유는 **`&mut` 가 `Copy` 면 가변 별칭이 공짜로 생기기 때문**이다.\

@@ -369,7 +369,7 @@ Object.keys(new Old())       ["field"]
 ### 12. 경계 — 어디까지가 이 주제인가 ★★
 
 - **체인 조회·쓰기 경로** → [15번](../15-prototype-chain/2-summary.md) · **`extends`·`super`·`new.target`** → [17번](../17-inheritance-and-super/2-summary.md) ·
-  **열거 규칙** → [18번](../18-for-in-and-enumeration/2-summary.md) · **`Proxy` 트랩 계약** → 목록의 **45번 주제** ·
+  **열거 규칙** → [18번](../18-for-in-and-enumeration/2-summary.md) · **`Proxy` 트랩 계약** → [목록의 **45번 주제**](../45-proxy/) ·
   **클래스 TDZ** → [05번](../05-var-let-const-and-tdz/2-summary.md) · **떼어 낸 메서드의 `this`** → [07번](../07-this-binding-four-rules/2-summary.md) ·
   **「정의 대 대입」을 처음 잰 곳** → [11번](../11-spread-and-rest/2-summary.md).
 - ★★★ **15번에서 받아 쓴 것 넷** — ① 읽기는 체인을 타고 쓰기는 수신자에 내려앉는다 ② 쓰기 트랩 로그 `["C.set","B.set","A.set","C.gopd"]` ③ 체인 위 setter 의 `this` 는 수신자(그래서 `_x` 가 인스턴스에) ④ `prototype` 과 `[[Prototype]]` 은 다른 칸이다.

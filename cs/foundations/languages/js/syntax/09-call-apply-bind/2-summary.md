@@ -82,7 +82,7 @@ Google Chrome 151.0.7922.173
 > ★★★ **07번이 「어느 규칙이 이기나」까지였다면 여기는 그 명시적 바인딩의 API 세부다.**
 > 07번은 「`bind` 가 두 번 안 먹는다」 하나만 확인했고, **`bind` 가 만든 함수가 어떤 물건인지는 여기가 정본**이다.
 > ★ 08번에서 **함수 형태마다 `prototype`·`new` 칸이 따로 논다**는 것을 봤다. `bind` 가 그 격자의 한 행이었다.
-> **이어지는 곳** — [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md) · 목록의 **34번 주제** 「타입 검사 관용구」 · 목록의 **46번 주제** 「`Reflect`」
+> **이어지는 곳** — [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md) · [목록의 **34번 주제**](../34-type-checking-idioms/) 「타입 검사 관용구」 · [목록의 **46번 주제**](../46-reflect/) 「`Reflect`」
 >
 > ★★ **경계 — `this` 의 네 규칙과 우선순위는 07번이 정본이다.** 여기서는 **셋을 실제로 어떻게 쓰나**부터다.
 > ★★ **경계 — `Reflect` 전체는 46번이 정본이다.** 여기서는 `Reflect.apply` 가 **`apply` 와 무엇이 같고 다른지**까지만 본다.
@@ -975,9 +975,9 @@ new BoundCtor();                       // new 는 bind 를 이긴다 -- this 만
 - [07 — `this` 바인딩 네 규칙](../07-this-binding-four-rules/2-summary.md) — **그쪽은 네 규칙과 우선순위까지, 여기는 명시적 바인딩의 API 세부부터.**
 - [08 — 함수 정의 형태와 매개변수](../08-function-forms-and-parameters/2-summary.md) — **bound 함수가 그쪽 격자의 한 행이었다.** 여기서는 그 행을 통째로 편다.
 - [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md) — **`f(...arr)` 문법의 정본은 그쪽이고, 여기서는 `apply` 를 대신한다는 사실까지.**
-- 목록의 **34번 주제** 「타입 검사 관용구」 — **`Object.prototype.toString.call` 을 검사로 쓰는 법은 그쪽이 정본이고, 여기서는 관찰 도구로만 쓴다.**
-- 목록의 **46번 주제** 「`Reflect`」 — **`Reflect` 전체는 그쪽이고, 여기서는 `Reflect.apply` 가 `apply` 와 같은 답을 낸다는 것까지.**
-- 목록의 **35번 주제** 「엄격 모드」 — **strict 전체 규칙은 그쪽이고, 여기서는 `this` 박싱에 닿는 칸만 센다.**
+- [목록의 **34번 주제**](../34-type-checking-idioms/) 「타입 검사 관용구」 — **`Object.prototype.toString.call` 을 검사로 쓰는 법은 그쪽이 정본이고, 여기서는 관찰 도구로만 쓴다.**
+- [목록의 **46번 주제**](../46-reflect/) 「`Reflect`」 — **`Reflect` 전체는 그쪽이고, 여기서는 `Reflect.apply` 가 `apply` 와 같은 답을 낸다는 것까지.**
+- [목록의 **35번 주제**](../35-strict-mode/) 「엄격 모드」 — **strict 전체 규칙은 그쪽이고, 여기서는 `this` 박싱에 닿는 칸만 센다.**
 - [파이썬 갈래의 19번 「함수 인자 규칙」](../../../python/syntax/19-function-argument-rules/) — **`f(*args)` 로 편다는 점이 `apply`/스프레드와 닮았다.** 다만 파이썬에는 `this` 를 건네는 자리가 없다.
 - [TS 갈래의 16번 「함수 타입과 오버로드」](../../../ts/syntax/16-function-types-and-overloads/) — **`ThisParameterType`·`OmitThisParameter` 같은 타입 쪽은 그쪽이 정본이다.**
 

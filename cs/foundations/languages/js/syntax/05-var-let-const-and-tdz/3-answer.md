@@ -371,8 +371,8 @@ setTimeout(fn) this                    : globalThis (window)</pre>
 | 클로저 · 루프 클로저의 「상자 개수」 | [목록의 **06번 주제**](../06-scope-and-closures/) |
 | `this` 가 어떻게 정해지나 | [목록의 **07번 주제**](../07-this-binding-four-rules/) |
 | 함수 선언의 호이스팅 · 매개변수 기본값 | [목록의 **08번 주제**](../08-function-forms-and-parameters/) |
-| 엄격 모드가 바꾸는 규칙 전부 | 목록의 **35번 주제** |
-| 모듈(ESM)의 최상위 · 라이브 바인딩 | 목록의 **42번 주제** |
+| 엄격 모드가 바꾸는 규칙 전부 | [목록의 **35번 주제**](../35-strict-mode/) |
+| 모듈(ESM)의 최상위 · 라이브 바인딩 | [목록의 **42번 주제**](../42-esm-modules/) |
 | 프로퍼티 디스크립터(`configurable`) | [목록의 **14번 주제**](../14-property-descriptors-and-freezing/) |
 | `let`/`const` 가 언제 왜 들어왔나 | [`history/js/02-ES6-모던.md`](../../../../../../history/js/02-ES6-모던.md) |
 

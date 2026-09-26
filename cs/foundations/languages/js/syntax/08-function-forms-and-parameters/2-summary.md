@@ -82,7 +82,7 @@ Google Chrome 151.0.7922.173
 > ★★★ **07번이 「어떤 호출식이 어떤 `this` 를 주나」였다면 여기는 「어떤 형태가 애초에 `this` 칸을 가지나」다.**
 > 화살표가 `this` 를 안 만든다는 결론은 07번의 것이고, 여기서는 **그것이 `arguments`·`prototype`·`new` 와 한 묶음**이라는 것을 격자로 본다.
 > ★ TDZ 는 [05번](../05-var-let-const-and-tdz/2-summary.md)의 것이다 — 여기서는 **매개변수 기본값이 그 규칙을 그대로 받는다**는 것만 확인한다.
-> **이어지는 곳** — [09 — `call`·`apply`·`bind`](../09-call-apply-bind/2-summary.md) · [10 — 구조 분해 할당](../10-destructuring-assignment/2-summary.md) · 목록의 **35번 주제** 「엄격 모드」
+> **이어지는 곳** — [09 — `call`·`apply`·`bind`](../09-call-apply-bind/2-summary.md) · [10 — 구조 분해 할당](../10-destructuring-assignment/2-summary.md) · [목록의 **35번 주제**](../35-strict-mode/) 「엄격 모드」
 >
 > ★★ **경계 — 엄격 모드 자체는 35번이 정본이다.** 여기서는 **함수와 매개변수에 닿는 칸만** 세고, 그 밖의 strict 규칙은 다루지 않는다.
 > ★★ **경계 — `this` 의 네 규칙은 07번이 정본이다.** 여기서는 「형태가 `this` 칸을 갖느냐」까지다.
@@ -1428,7 +1428,7 @@ function bad7(eval) {}                  // 엄격에서만 금지 -- 비엄격�
 - [05 — `var`·`let`·`const` 와 TDZ](../05-var-let-const-and-tdz/2-summary.md) — **TDZ 의 정본은 그쪽이고, 여기서는 매개변수 기본값이 그 규칙을 그대로 받는 것만 본다.**
 - [09 — `call`·`apply`·`bind`](../09-call-apply-bind/2-summary.md) — **`bind` 가 만든 함수의 성질은 그쪽이 정본이고, 여기서는 격자의 한 행으로만 등장한다.**
 - [10 — 구조 분해 할당](../10-destructuring-assignment/2-summary.md) — **구조 분해 매개변수의 규칙은 그쪽이 정본이고, 여기서는 「목록을 단순하지 않게 만든다」는 사실까지.**
-- 목록의 **35번 주제** 「엄격 모드」 — **strict 전체 규칙은 그쪽이고, 여기서는 함수·매개변수에 닿는 칸만 센다.**
+- [목록의 **35번 주제**](../35-strict-mode/) 「엄격 모드」 — **strict 전체 규칙은 그쪽이고, 여기서는 함수·매개변수에 닿는 칸만 센다.**
 - [파이썬 갈래의 19번 「함수 인자 규칙」](../../../python/syntax/19-function-argument-rules/) — **위치 인자·키워드 인자·가변 인자의 조합 규칙은 그쪽이 정본이다.**
 - [파이썬 갈래의 20번 「가변 기본 인자 함정」](../../../python/syntax/20-mutable-default-args/) — ★★★ **기본값 평가 시점이 정반대인 자리.** 그쪽은 「한 번 만들어 계속 쓴다」, 여기는 「부를 때마다 만든다」.
 - [Go 갈래의 12번 「함수: 다중 반환·명명 반환값·가변 인자」](../../../go/syntax/12-functions-multiple-returns-named-results-and-variadics/) — **가변 인자를 슬라이스로 받는 설계 대비.**

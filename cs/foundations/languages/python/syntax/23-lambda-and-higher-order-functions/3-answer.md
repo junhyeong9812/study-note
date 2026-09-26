@@ -749,7 +749,7 @@ __kwdefaults__: None
 | [20번](../20-mutable-default-args/2-summary.md) | `lambda i=i:` 고침이 기대는 **기본값 평가 시점**의 정본 |
 | [14번](../14-comprehensions/2-summary.md) | `map`·`filter` 대신 쓰는 자리의 정본 |
 | [24번](../24-decorators/2-summary.md) | **함수를 받아 함수를 돌려주는** 것의 문법 설탕은 그쪽 |
-| 목록의 **45번 주제** | `partial`·`reduce`·`lru_cache` 의 정본 |
+| [목록의 **45번 주제**](../45-functools/) | `partial`·`reduce`·`lru_cache` 의 정본 |
 
 ## 실행 검증
 

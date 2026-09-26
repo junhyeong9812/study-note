@@ -647,7 +647,7 @@ q = deque(maxlen=3)              # append / appendleft / pop / popleft / rotate
 * 원리: [자료구조 04번 — 큐·덱](../../../../../data-structure/04-queue-deque/2-summary.md) — ★ **경계**: 양끝 O(1) 을 만드는 **원형 배열**(「구현 — CircularQueue」 절)은 그쪽,
   여기는 **`deque` API 가 무엇을 하나**만. [자료구조 10번 — LRU 캐시](../../../../../data-structure/10-lru-cache/2-summary.md) — 「동작 — 조회」·「동작 — 추가와 축출」 절이 `move_to_end` 의 쓰임이다.
   [자료구조 05번 — 해시맵](../../../../../data-structure/05-hashmap/2-summary.md) — `dict`·`Counter` 밑의 해시 테이블.
-* 이어지는 곳: 목록의 **44번 주제** — [44-itertools](../44-itertools/2-summary.md). `groupby` 는 `defaultdict(list)` 묶기와 **다른 전제**(정렬)를 요구한다.
+* 이어지는 곳: [목록의 **44번 주제**](../44-itertools/) — [44-itertools](../44-itertools/2-summary.md). `groupby` 는 `defaultdict(list)` 묶기와 **다른 전제**(정렬)를 요구한다.
 * 공식 문서: [`collections`](https://docs.python.org/3.12/library/collections.html)
 
 ## 용어 풀이
@@ -665,4 +665,4 @@ q = deque(maxlen=3)              # append / appendleft / pop / popleft / rotate
 
 * ★ **`dict` 하위 클래스에 `__missing__` 만 정의**해도 `defaultdict` 와 같은 갈래가 생긴다 — `Counter` 가 바로 그렇게 만들어져 있다(**넣지 않는 쪽**). 이 문서는 직접 하위 클래스를 쓰지는 않았다.
 * ★ **`Counter` 의 `&`(교집합 = 최솟값) · `|`(합집합 = 최댓값)** — 문서가 적고, 결과가 **양수만**인 것은 `+`·`-` 와 같다. 이 문서는 `+`·`-` 만 쟀다.
-* ★ **스레드와 `deque`** — 문서가 *"thread-safe, memory efficient appends and pops"* 라 적는다. 동시성은 목록의 **53번 주제**에서 다룬다.
+* ★ **스레드와 `deque`** — 문서가 *"thread-safe, memory efficient appends and pops"* 라 적는다. 동시성은 [목록의 **53번 주제**](../53-gil-and-choosing-concurrency/)에서 다룬다.

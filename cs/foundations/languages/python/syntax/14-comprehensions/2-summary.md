@@ -479,7 +479,7 @@ SyntaxError: expected 'else' after 'if' expression
 ```
 
 키가 겹치면 뒤엣것만 남는다. **개수가 줄어도 경고가 없다.**\
-중복이 의미 있으면 `defaultdict(list)` 로 모은다(목록의 43번 주제).
+중복이 의미 있으면 `defaultdict(list)` 로 모은다([목록의 **43번 주제**](../43-collections/)).
 
 ### (6) 3.12 부터 스택 트레이스 모양이 달라졌다 (PEP 709)
 

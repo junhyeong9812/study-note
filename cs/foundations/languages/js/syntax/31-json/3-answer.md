@@ -401,9 +401,9 @@ JSON.rawJSON('1')        TypeError 「JSON.rawJSON is not a function」
 ### 11. `structuredClone` 은 **HTML 표준(호스트)** · 깊은 복사는 **48번** · 원문 접근은 **ES2026 이고 Chrome 151 에만** 있다 ★★
 
 - ★★ `structuredClone` 은 ECMA-262 가 아니라 **HTML 표준**의 API 다. 실패는 **`DOMException`(이름 `DataCloneError`)**.
-- ★★ 깊은 복사 수단 비교는 목록의 **48번 주제**가 정본이다.
+- ★★ 깊은 복사 수단 비교는 [목록의 **48번 주제**](../48-deep-copy-methods-compared/)가 정본이다.
 - ★★★ JSON.parse source text access 는 TC39 finished proposals 에서 **2026** 이다(ES2026). 판별 블록에서 **node 18 · node 20 은 `no`, Chrome 151 은 `yes`**.
-- ★ JSON 모듈은 목록의 **44번 주제**(동적 `import`·import attributes)의 몫이다.
+- ★ JSON 모듈은 [목록의 **44번 주제**](../44-dynamic-import-top-level-await-and-import-attributes/)(동적 `import`·import attributes)의 몫이다.
 
 ## 실행 검증
 

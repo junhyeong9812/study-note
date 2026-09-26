@@ -316,9 +316,9 @@ python3.11: Python 3.11.15
 ### 10. `AggregateError` **ES2021** · `cause` **ES2022** · `Error.isError` **ES2026(Chrome 151 에만)** · 비동기는 **37·39번** · 판정은 **34번** · 정리 예외는 **51번** ★★
 
 - ★★★ TC39 finished proposals — `Promise.any`(와 `AggregateError`) **2021**, Error Cause **2022**, `Error.isError` **2026**. 판별 블록에서 앞의 둘은 **세 판 다 `yes`**, `Error.isError` 는 **node 18·20 `no`, Chrome 151 `yes`**.
-- ★★ 프로미스 거부는 목록의 **37번 주제**, `await` 의 `try`/`catch` 는 목록의 **39번 주제**.
+- ★★ 프로미스 거부는 [목록의 **37번 주제**](../37-promise-state-model/), `await` 의 `try`/`catch` 는 [목록의 **39번 주제**](../39-async-await/).
 - ★★ [34 — 타입 검사 관용구](../34-type-checking-idioms/2-summary.md) — realm 격자의 정본.
-- ★ **`SuppressedError`**(`using` 의 정리 중 예외) — 목록의 **51번 주제**.
+- ★ **`SuppressedError`**(`using` 의 정리 중 예외) — [목록의 **51번 주제**](../51-explicit-resource-management-and-using/).
 
 ## 실행 검증
 

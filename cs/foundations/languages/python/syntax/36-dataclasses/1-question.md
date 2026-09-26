@@ -743,7 +743,7 @@ print("   hasattr(f, '__dict__') :", hasattr(f, "__dict__"))
 
 * [20](../20-mutable-default-args/2-summary.md)·[30](../30-repr-eq-hash-contracts/2-summary.md)·[31](../31-comparison-protocol-and-sortability/2-summary.md)·[33](../33-property-descriptor-slots/2-summary.md)·[34](../34-inheritance-mro-super/2-summary.md) 가 이 주제에 **각각 무엇을 대 주는가** — 한 줄씩.
 * ★ Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **22번** 과 견주면 「비교에서 필드를 빼는 법」이 어떻게 다른가?
-* ★ 목록의 **40번 주제** 의 「힌트는 실행을 안 바꾼다」에 이 주제가 **어떤 예외**인가?
+* ★ [목록의 **40번 주제**](../40-type-hints-at-runtime/) 의 「힌트는 실행을 안 바꾼다」에 이 주제가 **어떤 예외**인가?
 
 ## 복습 기록
 

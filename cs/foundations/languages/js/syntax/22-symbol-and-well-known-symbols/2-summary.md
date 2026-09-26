@@ -60,8 +60,8 @@
 > [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md)(심볼 키가 열거 순서의 셋째 덩어리) ·
 > [15 — 프로토타입 체인](../15-prototype-chain/2-summary.md)(`instanceof`) · [17 — 상속과 `super`](../17-inheritance-and-super/2-summary.md)(`Symbol.species`) ·
 > [18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md)(여섯 종 × 아홉 문법 격자).
-> **이어지는 곳** — [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md) · 목록의 **40번 주제** 「비동기 이터레이션」(`Symbol.asyncIterator`) ·
-> 목록의 **45번 주제** 「`Proxy`」 · 목록의 **51번 주제** 「명시적 자원 관리 `using`」(`Symbol.dispose`).
+> **이어지는 곳** — [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md) · [목록의 **40번 주제**](../40-async-iteration-and-for-await/) 「비동기 이터레이션」(`Symbol.asyncIterator`) ·
+> [목록의 **45번 주제**](../45-proxy/) 「`Proxy`」 · [목록의 **51번 주제**](../51-explicit-resource-management-and-using/) 「명시적 자원 관리 `using`」(`Symbol.dispose`).
 >
 > ★★★ **19편이 `Symbol.iterator` 하나를 끝까지 팠다.** 여기서는 그것을 **일반화**한다 —
 > 「언어가 **어떤 연산 도중에** 객체의 **어떤 심볼 키**를 읽고, 그 값으로 **무엇을 바꾸나**」.
@@ -764,7 +764,7 @@ cells where the toString tag and the slot check disagree 7 / 7
 - ★★ **`[4]` — `Map` 의 태그는 `Map.prototype` 의 프로퍼티**(`value: "Map"` · `writable: false` · `configurable: true`)다. 지우자 `new Map()` 이 **`[object Object]`** 가 됐다.
   **`Array.prototype` 에는 그런 프로퍼티가 없다**(`"none"`) — 배열의 `"Array"` 는 ①에서 온다. **같은 `[object X]` 가 두 가지 출처를 갖는다.**
 - ★ **태그가 문자열이 아니면 무시된다**(`42`·`undefined` → `[object Object]`).
-- ★★ **그래서 판별은 슬롯을 두드리는 쪽이 정본이다** — `Array.isArray` · 메서드를 `call` 해 보기(`Map.prototype.has.call`). 이것은 목록의 **34번 주제** 「타입 검사 관용구」가 이어받는다.
+- ★★ **그래서 판별은 슬롯을 두드리는 쪽이 정본이다** — `Array.isArray` · 메서드를 `call` 해 보기(`Map.prototype.has.call`). 이것은 [목록의 **34번 주제**](../34-type-checking-idioms/) 「타입 검사 관용구」가 이어받는다.
 
 ### (5) ★★ 언어가 읽는 다른 키들 — `hasInstance` · `species` · `iterator` · `isConcatSpreadable` · `match` · `unscopables`
 
@@ -1357,7 +1357,7 @@ node20 에서 **`TypeError`** 다. 약한 키가 될 수 있는 심볼은 **장�
 
 - ★★ **15개 중 `dispose`·`asyncDispose` 둘은 ES2026 명세 본문에 없다** — 내려받은 ES2026 본문에서 `dispose` 가 **한 번도** 안 나오고, finished proposals 표는 Explicit Resource Management 를 **2027** 로 적는다.
   그런데 **세 판 다 그 심볼을 갖고 있다.** ★★★ **「심볼이 있다」와 「문법이 있다」는 다른 질문이다** — `using` 선언은 **node 두 판에서 `SyntaxError`** 이고 **Chrome 151 만 컴파일한다.**
-  이 문법의 정본은 목록의 **51번 주제**다.
+  이 문법의 정본은 [목록의 **51번 주제**](../51-explicit-resource-management-and-using/)다.
 - ★ **`using` 의 문구가 두 판에서 갈린다**(`Unexpected identifier` / `Unexpected identifier 'r'`) — 이 주제에서 **문구만** 갈린 블록이다.
 - ★ `Symbol.iterator` 자신은 `Symbol` 에 **`writable: false` · `configurable: false`** 로 붙어 있다 — 잘 알려진 심볼은 **바꿀 수 없는 상수**다. 바꿀 수 있는 것은 **각 객체의 그 키에 무엇을 두느냐**다.
 

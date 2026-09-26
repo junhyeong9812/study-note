@@ -1525,7 +1525,7 @@ struct Label { text: &'static str }
 - [**15번 주제**](../15-slices-ranges-and-utf8-boundaries/)(슬라이스·범위·UTF-8 경계) — (11)의 `&data[..3]` 이 왜 3인지는 거기
 - [**16번 주제**](../16-structs-impl-and-associated-functions/)(구조체 세 종류·`impl`·연관 함수) — ★ **경계.**\
   **그쪽은** `impl`·연관 함수·`Self` **일반**, **여기는** 그것들이 **수명 파라미터를 만났을 때**다
-- 목록의 **41번 주제**(`Rc`/`Arc`·`Weak`) — 자기 참조·순환을 **런타임 비용을 내고** 푸는 길
+- [목록의 **41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/)(`Rc`/`Arc`·`Weak`) — 자기 참조·순환을 **런타임 비용을 내고** 푸는 길
 - 목록의 **49번 주제**(스레드와 `'static`) · **55번 주제**(`Pin` 맛보기 — 자기 참조 future)
 - [`../../언어-특성/README.md`](../../언어-특성/README.md) §4 — **그쪽은** 수명이라는 **개념이 왜 필요한가**,\
   **여기는** 그것이 **타입 선언에 어떻게 박히나**다

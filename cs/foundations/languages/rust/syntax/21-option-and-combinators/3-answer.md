@@ -362,7 +362,7 @@ get_or_insert "기본값"
   마지막 줄에서 `payload` 가 `Some("기본값")` 이 된 것이 그것이다.
 - ★ 이 셋이 없으면 `&mut self` 메서드 안에서 **필드를 통째로 옮길 수 없어** 막힌다 —
   `self.payload` 를 `map` 에 넘기려는 순간 「빌린 것 뒤에서 옮길 수 없다」가 된다([**11번 주제**](../11-borrow-checker-rejections/)).
-  일반화한 도구는 `std::mem::take`/`std::mem::replace` 이고 정본은 목록의 **44번 주제**다.
+  일반화한 도구는 `std::mem::take`/`std::mem::replace` 이고 정본은 [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)다.
 
 ### 7. `None` 은 대부분 그대로 통과한다
 
@@ -557,7 +557,7 @@ gopher:알수없음 | gopher:알수없음 | gopher:알수없음 | gopher:알수�
 - **니치 최적화(niche optimization)** 다. `Option<Box<T>>` 가 `Box<T>` 와 같은 크기인 것은
   ★ **보장이 아니라 관찰**이다 — 17번 (7)이 `size_of` 와 `transmute` 로 직접 읽었고,
   같은 주제의 「구현 세부사항 대 언어 보장」 절이 그것을 **레이아웃 보장 아님**으로 못박았다.
-- **`std::mem::take` 와 `std::mem::replace`** 다. 정본은 목록의 **44번 주제**이며,
+- **`std::mem::take` 와 `std::mem::replace`** 다. 정본은 [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)이며,
   `Option::take`/`replace` 는 그 일반형의 `Option` 전용판이다.
 - ★ **Java 의 `Optional` 과 갈리는 지점** — Java 에는 **`null` 이 여전히 있다.**
   `Optional` 은 그 위에 얹힌 **선택적 관용구**라 필드·파라미터에 쓰면 안 된다는 안티패턴 절이 따로 필요하다

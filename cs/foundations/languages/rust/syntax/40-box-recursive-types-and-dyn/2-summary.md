@@ -440,7 +440,7 @@ sum a 3 · sum b 11 · owners of the shared tail 3
 (exit 0)
 ```
 
-- ★ **통과**(처음부터 `Rc::new` 로 만드는 자리까지 짰다) — `a`·`b` 가 **같은 꼬리**를 나눠 가져 `owners of the shared tail 3`(`tail` 변수 + `a` + `b`). **`Box` 는 한 주인, `Rc` 는 여러 주인**이다. `Rc` 는 목록의 **41번 주제**가 정본이다.
+- ★ **통과**(처음부터 `Rc::new` 로 만드는 자리까지 짰다) — `a`·`b` 가 **같은 꼬리**를 나눠 가져 `owners of the shared tail 3`(`tail` 변수 + `a` + `b`). **`Box` 는 한 주인, `Rc` 는 여러 주인**이다. `Rc` 는 [목록의 **41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/)가 정본이다.
 
 ### (2) ★★ `size_of` 격자 — 보관증의 크기
 
@@ -1018,8 +1018,8 @@ mode=3
 - [**08번 주제** — 이동](../08-ownership-and-move/) — (5)의 뿌리. 08번이 받은 E0507 은 **`Vec` 의 인덱스에서** 옮기려 한 경우다(「cannot move out of index of `Vec<String>`」) — 같은 번호, 다른 자리.
 - [**38번 주제** — `Vec<T>`](../38-vec-api-capacity-retain-and-drain/) — `into_boxed_slice`(남는 용량을 버린다)와 `Vec` 헤더 24.
 - [**37번 주제** — `IntoIterator` 세 형태](../37-intoiterator-three-forms-iter-iter-mut-into-iter/) (2) — `Box<[T]>` 의 `.into_iter()` 가 2024 에서 뜻이 바뀐 것(boxed 모듈 문서의 Editions 절).
-- 목록의 **41번 주제** — `Rc`/`Arc`. (1)의 `Rc` 판과 (5)의 `try_unwrap` 이 거기서 본체가 된다.
-- 목록의 **43번 주제** — `Deref` 강제. `&Box<T>` 가 `&T` 처럼 쓰이는 이유(`sum(rest)` 에 `&Box<List>` 를 넘긴 자리).
+- [목록의 **41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/) — `Rc`/`Arc`. (1)의 `Rc` 판과 (5)의 `try_unwrap` 이 거기서 본체가 된다.
+- [목록의 **43번 주제**](../43-deref-coercion-and-smart-pointers/) — `Deref` 강제. `&Box<T>` 가 `&T` 처럼 쓰이는 이유(`sum(rest)` 에 `&Box<List>` 를 넘긴 자리).
 
 ## 용어 풀이
 

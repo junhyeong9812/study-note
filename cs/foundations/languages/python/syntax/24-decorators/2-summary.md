@@ -924,7 +924,7 @@ print("클래스도 같은 문법으로 감싼다:", C.tagged, "· 타입:", typ
 ★ **여기서는 이름만 세운다.** 클래스 쪽의 정본은 `[목록의 **29번 주제**](../29-classes-and-attribute-lookup/)`(클래스 기초)와
 `[목록의 **33번 주제**](../33-property-descriptor-slots/)`(디스크립터·속성)다.
 ★ `functools.lru_cache`·`cached_property` 처럼 **표준 라이브러리가 주는 데코레이터**는
-`목록의 **45번 주제**` 가 정본이다.
+`[목록의 **45번 주제**](../45-functools/)` 가 정본이다.
 
 ## 문법 — 형태와 규칙
 
@@ -1224,10 +1224,10 @@ TypeError: 'str' object is not callable
 | 감싸면서 **설정값**을 주고 싶다 | **인자 있는 데코레이터**(세 층). 괄호를 잊지 마라 |
 | **원본 시그니처가 문서·IDE 에 보여야** 한다 | ★ **`functools.wraps` 필수** |
 | 감싼 뒤 **원본을 꺼내야** 한다 | `__wrapped__` · `inspect.unwrap` — **들여다보기 전용** |
-| **캐시**를 붙이고 싶다 | 직접 만들지 말고 `functools.lru_cache`(`목록의 **45번 주제**`) |
+| **캐시**를 붙이고 싶다 | 직접 만들지 말고 `functools.lru_cache`(`[목록의 **45번 주제**](../45-functools/)`) |
 | **클래스 전체**에 붙이고 싶다 | 클래스 데코레이터 — 정본은 `[목록의 **29번 주제**](../29-classes-and-attribute-lookup/)`·`[목록의 **33번 주제**](../33-property-descriptor-slots/)` |
 | 데코레이터 안에서 **무거운 준비**를 한다 | ★ **래퍼 안으로 옮긴다** — 정의 시점은 임포트 시간이다 |
-| **부분 적용**이 필요할 뿐이다 | `functools.partial`(`목록의 **45번 주제**`) — 감싸는 것이 아니다 |
+| **부분 적용**이 필요할 뿐이다 | `functools.partial`(`[목록의 **45번 주제**](../45-functools/)`) — 감싸는 것이 아니다 |
 | 감싼 함수를 **동등성·`is` 로 비교**하는 코드가 있다 | ★ **안 된다** — 이름이 가리키는 객체가 **다른 객체**다 |
 
 ## 핵심 문장
@@ -1267,8 +1267,8 @@ TypeError: 'str' object is not callable
   **경계**: 데코레이터는 **고차 함수의 특수한 경우**에 문법 설탕이 붙은 것이다.
 - 함께 보는 곳: [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md) — `__dict__` 를 `update` 하는 것이 **얕은 복사**다.
 - 이어지는 곳: `[목록의 **29번 주제**](../29-classes-and-attribute-lookup/)` · `[목록의 **33번 주제**](../33-property-descriptor-slots/)` — **클래스 데코레이터의 정본.**
-- 이어지는 곳: `목록의 **45번 주제**` — `functools.lru_cache`·`cached_property`·`partial`.
-- 이어지는 곳: `목록의 **40번 주제**` — 타입 힌트. `wraps` 가 `__annotations__` 를 옮기는 이유가 거기 있다.
+- 이어지는 곳: `[목록의 **45번 주제**](../45-functools/)` — `functools.lru_cache`·`cached_property`·`partial`.
+- 이어지는 곳: `[목록의 **40번 주제**](../40-type-hints-at-runtime/)` — 타입 힌트. `wraps` 가 `__annotations__` 를 옮기는 이유가 거기 있다.
 - 공식 문서: [Function definitions](https://docs.python.org/3.12/reference/compound_stmts.html#function-definitions) ·
   [`functools.wraps`](https://docs.python.org/3.12/library/functools.html#functools.wraps) ·
   [`inspect.signature`](https://docs.python.org/3.12/library/inspect.html#inspect.signature) ·

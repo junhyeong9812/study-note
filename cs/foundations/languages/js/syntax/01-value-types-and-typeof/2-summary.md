@@ -398,7 +398,7 @@ for (const [label, f] of [
 - ★★★ **느슨한 모드에서는 메서드 안의 `this` 가 정말 객체다** — `typeof this` 가 `"object"` 이고 `this instanceof String` 이 `true` 다.
   **봉투가 실제로 만들어졌다는 관찰**이다. 「그런 것처럼 동작한다」가 아니다.
 - ★★★ **엄격 모드에서는 안 만들어진다** — `typeof this` 가 `"number"` 다.
-  ★ 그래서 **같은 코드가 모드에 따라 `this` 의 타입이 다르다.** 엄격 모드의 정본은 목록의 **35번 주제**다.
+  ★ 그래서 **같은 코드가 모드에 따라 `this` 의 타입이 다르다.** 엄격 모드의 정본은 [목록의 **35번 주제**](../35-strict-mode/)다.
 - ★★ **`s.mine = 1` 이 조용히 버려진다.** 느슨한 모드에서는 에러도 안 난다 — 새 봉투에 넣고 그 봉투를 버린다.
   `new String("abc")` 로 만든 **진짜 봉투**에는 남는다.
 - ★★★ **래퍼 객체는 원시 값과 다른 물건이다.** `new Boolean(false)` 가 **truthy** 인 것이 그 결과다 —
@@ -580,7 +580,7 @@ String(x);                // 이것이 문자열로 바꾸는 법
 ### (6) ★ 배열을 `typeof` 로 가리려 한다
 
 `typeof []` 는 `"object"` 라 객체와 구분이 안 된다. `Array.isArray([])` 를 쓴다.
-셋 중 무엇이 언제 깨지는지는 목록의 **34번 주제**가 정본이다.
+셋 중 무엇이 언제 깨지는지는 [목록의 **34번 주제**](../34-type-checking-idioms/)가 정본이다.
 
 ### (7) ★ `typeof` 로 `NaN` 을 걸러낼 수 있다고 본다
 
@@ -685,8 +685,8 @@ String(x);                // 이것이 문자열로 바꾸는 법
 - 이어지는 곳: [03 — 숫자와 `BigInt`](../03-numbers-and-bigint/2-summary.md) — `"number"` 와 `"bigint"` 두 칸의 속사정.
 - 이어지는 곳: [04 — 문자열과 UTF-16](../04-strings-and-utf16/2-summary.md) — `"string"` 한 칸의 속사정.
 - 이어지는 곳: [목록의 **05번 주제**](../05-var-let-const-and-tdz/) 「`var`·`let`·`const` 와 TDZ」 — **TDZ 의 정본**이다. 여기서는 「`typeof` 의 특권에 구멍이 있다」까지만 본다.
-- 이어지는 곳: 목록의 **34번 주제** 「타입 검사 관용구」 — `Array.isArray`·`instanceof`·브랜드 태그가 **어디서 깨지나**의 정본.
-- 이어지는 곳: 목록의 **35번 주제** 「엄격 모드」 — 래퍼가 안 생기는 것과 **조용한 대입이 터지는 것**의 정본.
+- 이어지는 곳: [목록의 **34번 주제**](../34-type-checking-idioms/) 「타입 검사 관용구」 — `Array.isArray`·`instanceof`·브랜드 태그가 **어디서 깨지나**의 정본.
+- 이어지는 곳: [목록의 **35번 주제**](../35-strict-mode/) 「엄격 모드」 — 래퍼가 안 생기는 것과 **조용한 대입이 터지는 것**의 정본.
 - 이어지는 곳: [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) 「`Symbol` 과 잘 알려진 심볼」 — `Symbol.toStringTag` 로 **브랜드 태그를 바꾸는** 자리.
 - 경계 — 타입 표기: TypeScript 갈래 목록([`ts/syntax/README.md`](../../../ts/syntax/README.md))의 **01번** [`01-what-ts-adds-and-erases`](../../../ts/syntax/01-what-ts-adds-and-erases/2-summary.md).
   **그쪽은 「타입은 런타임에 안 남는다」까지, 여기는 「런타임에 남아 있는 것이 무엇인가」부터다.** `typeof` 는 남는 쪽이다.

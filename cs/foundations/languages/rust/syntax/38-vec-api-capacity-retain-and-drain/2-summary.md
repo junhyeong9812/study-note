@@ -599,6 +599,6 @@ fn main() {
 ## 더 들어가면
 
 - **`Vec` ↔ `Box<[T]>`** — std: 「`len == capacity` 면 **재할당·이동 없이** 서로 바꿀 수 있다」. `into_boxed_slice` 는 남는 용량을 먼저 줄인다. [40번 주제](../40-box-recursive-types-and-dyn/)의 큰 배열 대처가 이 길을 쓴다.
-- **`mem::take(&mut v)`** — 원본 자리에 빈 `Vec` 을 두고 **내용과 용량을 통째로** 가져간다(std 의 `split_off` 문서가 가리킨다). 목록의 **44번 주제**.
+- **`mem::take(&mut v)`** — 원본 자리에 빈 `Vec` 을 두고 **내용과 용량을 통째로** 가져간다(std 의 `split_off` 문서가 가리킨다). [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/).
 - **`try_reserve`** — 할당 실패를 **패닉 대신 `Result`** 로 받는다(이 문서는 던지지 않았다).
 - **`splice`** — 범위를 떼어 내고 **다른 이터레이터로 채워 넣기.** `drain` 의 짝이다.

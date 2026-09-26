@@ -1619,7 +1619,7 @@ class D:
 - **`locals()` 의 반환은 함수 스코프에서 스냅샷**이다. 거기에 대입해도 지역 변수가 안 바뀐다.
   모듈·클래스 몸통에서는 진짜 네임스페이스라 바뀐다 — 실측에서 모듈의 `locals() is globals()` 가 `True` 였다.
 - **애노테이션 스코프는 예외 중의 예외다** — 레퍼런스가 클래스 스코프 규칙에서 *"it does not include annotation scopes,
-  which have access to their enclosing class scopes"* 라고 따로 뺀다. 타입 힌트 쪽 이야기라 목록의 **40번 주제**에서 본다.
+  which have access to their enclosing class scopes"* 라고 따로 뺀다. 타입 힌트 쪽 이야기라 [목록의 **40번 주제**](../40-type-hints-at-runtime/)에서 본다.
 - **모듈 사이에는 스코프 사슬이 없다** — 다른 모듈의 전역은 아무리 올라가도 안 보인다. `import` 가 **이름을 내 칸에 만드는 것**이다.
 - ★ **E 층이 「셀」이라는 물건으로 구현된다는 것**까지 가면 [22번](../22-closures-and-late-binding/2-summary.md)이다.
   여기서 본 `COPY_FREE_VARS`·`LOAD_DEREF` 가 그 입구다.

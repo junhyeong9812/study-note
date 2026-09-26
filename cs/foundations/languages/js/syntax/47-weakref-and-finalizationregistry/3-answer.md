@@ -173,7 +173,7 @@ runs with deref() undefined in at least one round: 0 / 5 · runs with the callba
 
 - ★ 23번 머리말이 인용한 `WeakMap` 절의 이유 — 그 지연이 보이면 "a source of indeterminacy" 가 된다. `WeakRef` 는 그 비결정성을 **드러내 놓고** 준 API 다(이 연결은 이 문서의 해석이다).
 
-### 9. CPython — **참조 계수가 0 이 되는 순간**(순환이 없으면 결정적) · JS — 기댈 순간이 **없다**(명세 may · `gc()` 없이는 0) · 대신 **명시적 해제** — `try`/`finally` · `close()` · 목록의 **51번 주제** `using` ★★
+### 9. CPython — **참조 계수가 0 이 되는 순간**(순환이 없으면 결정적) · JS — 기댈 순간이 **없다**(명세 may · `gc()` 없이는 0) · 대신 **명시적 해제** — `try`/`finally` · `close()` · [목록의 **51번 주제**](../51-explicit-resource-management-and-using/) `using` ★★
 
 - ★ C++ 의 `weak_ptr` 도 결정적 쪽이다(C++ 28번). 「소멸 시점에 정리」 는 **결정적 수명**이 있는 언어의 관용구라 JS 로 그대로 옮기면 안 된다.
 

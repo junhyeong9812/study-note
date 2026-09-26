@@ -1520,7 +1520,7 @@ let _ = std::str::from_utf8(s.as_bytes());
 - [목록의 **21번 주제**](../21-option-and-combinators/)(`Option` 조합 메서드) — `get(..)` 이 돌려주는 것을 다루는 법
 - [목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/)(`Iterator`) · **37번 주제**(`IntoIterator`) — `chars()`·`chunks()` 가 이터레이터인 것의 정본
 - [목록의 **38번 주제**](../38-vec-api-capacity-retain-and-drain/)(`Vec` API) — `retain`·`drain`·용량 재할당이 참조를 무효화하는 이야기
-- 목록의 **43번 주제**(`Deref` 강제) — `&Vec<T>` 가 `&[T]` 처럼 쓰이는 장치의 정본
+- [목록의 **43번 주제**](../43-deref-coercion-and-smart-pointers/)(`Deref` 강제) — `&Vec<T>` 가 `&[T]` 처럼 쓰이는 장치의 정본
 - 목록의 **48번 주제**(문자열 포맷) — `{:?}` 가 ZWJ 를 `'\u{200d}'` 로 찍어 주는 이야기
 
 ## 용어 풀이

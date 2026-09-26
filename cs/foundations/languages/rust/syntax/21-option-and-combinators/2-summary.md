@@ -536,7 +536,7 @@ get_or_insert "기본값"
 - **`replace(v)` 는 새 값을 두고 옛 값을 가져온다.** `take()` 는 `replace(None)` 과 같은 일을 하는 특수형이다.
 - `get_or_insert(v)` 는 **비어 있을 때만 채우고** 안쪽에 대한 `&mut` 를 돌려준다.
 - ★ 이 셋이 없으면 `self.payload` 를 통째로 옮길 수 없어 [**11번 주제**](../11-borrow-checker-rejections/)의 전형적인 거부에 걸린다.
-  일반화한 도구가 `std::mem::take`/`replace` 이고 그쪽 정본은 목록의 **44번 주제**다.
+  일반화한 도구가 `std::mem::take`/`replace` 이고 그쪽 정본은 [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)다.
 
 ### (8) 무엇을 고르나 — 같은 답을 네 가지로
 
@@ -681,7 +681,7 @@ gopher:알수없음 | gopher:알수없음 | gopher:알수없음 | gopher:알수�
   ★ **경계**: 「조건에서 꺼내 쓰는 문법」은 거기, 여기는 「꺼내지 않고 옮기는 메서드」다. (8)이 둘을 나란히 놓았다.
 - [**22번 주제** — `Result` 와 `?`·`From` 변환](../22-result-question-mark-and-from/) — `ok_or` 로 건너가는 쪽. 「없음」에 **이유**를 붙인다.
 - [**23번 주제** — `panic!` 대 `Result`](../23-panic-vs-result/) — `unwrap` 을 **어디에 써도 되는가**의 정본.
-- 목록의 **44번 주제** — `mem::take`/`replace`. (7)의 `Option::take` 를 일반화한 것.
+- [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/) — `mem::take`/`replace`. (7)의 `Option::take` 를 일반화한 것.
 - Java 의 `Optional` — [`java/syntax/38-optional/`](../../../java/syntax/38-optional/). **필드·파라미터에 두면 안 되는 이유**가 거기 있다.
   ★ **대비**: Rust 의 `Option` 은 **`null` 이 없어서 유일한 표면**이고, Java 의 `Optional` 은 `null` 과 **공존한다** — 그래서 안티패턴 절이 필요하다.
 - [std — `Option` 전체 메서드 목록](https://doc.rust-lang.org/std/option/enum.Option.html)

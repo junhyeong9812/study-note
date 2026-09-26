@@ -480,9 +480,9 @@ identical 18  ·  differs 1  ·  total 19
 ### 11. 경계 — 어디까지가 이 주제인가 ★★
 
 - **falsy 목록** → [02번](../02-coercion-and-loose-equality/2-summary.md) ·
-  **엄격 모드 규칙 전부** → 목록의 **35번 주제** ·
+  **엄격 모드 규칙 전부** → [목록의 **35번 주제**](../35-strict-mode/) ·
   **동결이 왜 쓰기를 막나** → [14번](../14-property-descriptors-and-freezing/2-summary.md) ·
-  **`Object.is`·SameValueZero** → 목록의 **33번 주제**.
+  **`Object.is`·SameValueZero** → [목록의 **33번 주제**](../33-equality-three-kinds/).
 - ★★★ **10번의 기본값은 `undefined` 만 「비었다」로 세고, `??` 는 `null` 까지 센다.**
   구조 분해의 `const { a = 1 } = { a: null }` 은 `a` 가 **`null`** 이고, `obj.a ?? 1` 은 **`1`** 이다.
   **같은 「기본값」이라는 말이 두 문법에서 서로 다른 집합을 가리킨다** — 이것이 10번에서 이어받은 매듭이다.

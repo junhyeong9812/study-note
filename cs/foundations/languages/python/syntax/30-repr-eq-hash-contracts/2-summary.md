@@ -1306,7 +1306,7 @@ Rust 는 `f64` 에 `Eq` 를 안 줘서 **키가 되는 것 자체를 막았다**
 
 - 필드 몇 개짜리 값 객체 — `@dataclass(frozen=True)`.
 - 키로 안 쓸 것 — `@dataclass` 기본값으로 충분하다(해시 불가여도 상관없다).
-- 튜플로 충분하면 튜플 — `namedtuple`·`NamedTuple` 은 `목록의 **38번 주제**` 가 정본이다.
+- 튜플로 충분하면 튜플 — `namedtuple`·`NamedTuple` 은 `[목록의 **38번 주제**](../38-namedtuple-and-typeddict/)` 가 정본이다.
 
 **안 쓰는 게 나을 때**
 
@@ -1345,7 +1345,7 @@ Rust 는 `f64` 에 `Eq` 를 안 줘서 **키가 되는 것 자체를 막았다**
 - 이어지는 곳: [13-set-and-frozenset](../13-set-and-frozenset/2-summary.md) — 같은 해시 기계의 「순서 없는」 쪽.
 - 이어지는 곳: `[목록의 **36번 주제**](../36-dataclasses/)` 「`dataclasses`」 — `field`·`default_factory`·`order` 까지 포함한 정본.
   여기서는 **`__hash__` 가 어떻게 갈리는지**만 봤다.
-- 이어지는 곳: `목록의 **38번 주제**` 「`namedtuple`·`NamedTuple`·`TypedDict`」 — 튜플이 이미 세 메서드를 갖춘 자리.
+- 이어지는 곳: `[목록의 **38번 주제**](../38-namedtuple-and-typeddict/)` 「`namedtuple`·`NamedTuple`·`TypedDict`」 — 튜플이 이미 세 메서드를 갖춘 자리.
 - ★ 대비: [`rust/syntax/28-partialeq-eq-partialord-ord-and-hash-contracts`](../../../rust/syntax/28-partialeq-eq-partialord-ord-and-hash-contracts/2-summary.md) — **이 주제의 직접 대비 대상.**\
   `CaseKey` 실험의 원본이 거기 있고, 반사성을 깬 키가 **영영 안 꺼내지는 것**도 거기서 봤다.\
   **경계**: 그쪽은 `PartialEq`/`Eq`/`PartialOrd`/`Ord`/`Hash` 다섯 트레이트의 관계까지, 여기는 **파이썬 세 메서드**만.

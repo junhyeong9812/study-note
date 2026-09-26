@@ -872,7 +872,7 @@ print("클래스도 같은 문법으로 감싼다:", C.tagged, "· 타입:", typ
 ★ **문법은 똑같다.** 받는 것이 함수 객체 대신 **클래스 객체**일 뿐이고, 돌려준 것이 그 이름에 묶인다(2.6+).
 
 ★ **여기서는 이름만 세운다** — 클래스 쪽 정본은 `[목록의 **29번 주제**](../29-classes-and-attribute-lookup/)`(클래스 기초)와
-`[목록의 **33번 주제**](../33-property-descriptor-slots/)`(디스크립터·속성)다. `functools.lru_cache`·`cached_property` 는 `목록의 **45번 주제**` 다.
+`[목록의 **33번 주제**](../33-property-descriptor-slots/)`(디스크립터·속성)다. `functools.lru_cache`·`cached_property` 는 `[목록의 **45번 주제**](../45-functools/)` 다.
 
 ★ 다른 이웃과의 경계도 한 줄씩.
 
@@ -883,7 +883,7 @@ print("클래스도 같은 문법으로 감싼다:", C.tagged, "· 타입:", typ
 | [21번](../21-scope-legb-global-nonlocal/2-summary.md) | 데코레이터 식이 **정의를 감싸는 스코프**에서 평가된다는 것이 그 규칙의 적용 |
 | [22번](../22-closures-and-late-binding/2-summary.md) | **셀의 정본**은 그쪽, 여기는 래퍼의 셀 둘을 꺼내 보는 것까지 |
 | [23번](../23-lambda-and-higher-order-functions/2-summary.md) | 데코레이터는 **고차 함수에 문법 설탕이 붙은 것** |
-| `목록의 **45번 주제**` | `lru_cache`·`cached_property`·`partial` 은 그쪽 |
+| `[목록의 **45번 주제**](../45-functools/)` | `lru_cache`·`cached_property`·`partial` 은 그쪽 |
 
 ## 실행 검증
 

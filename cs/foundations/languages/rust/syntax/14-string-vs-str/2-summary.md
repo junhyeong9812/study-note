@@ -1343,7 +1343,7 @@ let y = format!("{}{}", "가", "나");            // 아무것도 안 뺏는다
 - [**16번 주제**](../16-structs-impl-and-associated-functions/)(구조체·`impl`) — 필드 타입을 고를 때 이 주제의 판단을 쓴다
 - [목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/)(`From`/`Into`/`AsRef`/`Borrow`) — ★ **`impl AsRef<str>`·`impl Into<String>` 으로 인자를 여는 설계는 거기가 정본**이다.\
   여기서는 **이름만** 언급했다
-- 목록의 **43번 주제**(`Deref` 강제와 스마트 포인터) — **그쪽은** `Deref` 라는 장치 자체,\
+- [목록의 **43번 주제**](../43-deref-coercion-and-smart-pointers/)(`Deref` 강제와 스마트 포인터) — **그쪽은** `Deref` 라는 장치 자체,\
   **여기는** 그 장치가 `String` → `str` 에서 하는 일까지
 - [목록의 **30번 주제**](../30-operator-overloading-std-ops-index-and-deref/)(연산자 오버로딩·`Index`) — `+` 가 왼쪽을 소비하는 **설계 이유**는 거기
 - 목록의 **48번 주제**(`format!`·`Display`) — 포매팅 기계의 정본

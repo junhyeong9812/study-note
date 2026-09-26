@@ -842,8 +842,8 @@ list(range(17)) : 200
 - 이어지는 곳: [13-set-and-frozenset](../13-set-and-frozenset/2-summary.md) — 집합이 든 리스트의 `sort` 가 정의되지 않는 이유.
 - 이어지는 곳: [목록의 **31번 주제**](../31-comparison-protocol-and-sortability/) 「비교 프로토콜과 정렬 가능성」 — `__lt__` 하나로 정렬이 되는 이유·`total_ordering`.
 - 이어지는 곳: [목록의 **23번 주제**](../23-lambda-and-higher-order-functions/) 「`lambda` 와 고차 함수」 — 정렬 `key` 로 쓰는 `lambda`.
-- 이어지는 곳: 목록의 **44번 주제** 「`itertools`」 — `groupby` 가 정렬을 전제한다는 것.
-- 이어지는 곳: 목록의 **45번 주제** 「`functools`」 — `cmp_to_key` 의 본거지.
+- 이어지는 곳: [목록의 **44번 주제**](../44-itertools/) 「`itertools`」 — `groupby` 가 정렬을 전제한다는 것.
+- 이어지는 곳: [목록의 **45번 주제**](../45-functools/) 「`functools`」 — `cmp_to_key` 의 본거지.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — 리스트 메서드를 「이렇게 쓴다」까지 다룬다.\
   **경계**: 그쪽은 사용 예시까지, 여기는 「**무엇이 `None` 을 돌려주고 무엇이 보장인가**」부터다.
 - 자료구조의 원리(동적 배열·정렬 알고리즘의 복잡도)는 여기가 아니다: [`cs/data-structure/`](../../../../../data-structure/) · [`cs/algorithm/`](../../../../../algorithm/)

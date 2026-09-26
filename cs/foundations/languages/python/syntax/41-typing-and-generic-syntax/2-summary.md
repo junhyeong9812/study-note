@@ -971,7 +971,7 @@ def is_str(x) -> TypeIs[str]: ...    # ★ 3.13+ (PEP 742) — 3.12 typing 에�
 * 선행: [35-abc-and-protocol](../35-abc-and-protocol/2-summary.md) — `Protocol`·`runtime_checkable` 과 **검사기 부재 판정의 정본.** 제네릭 `Protocol` 은 여기서 다루지 않았다.
 * 선행: [39-match-statement](../39-match-statement/2-summary.md) — 리터럴 패턴·캡처 패턴. 동작 4 의 `[3]` 이 이음매다.
 * 선행: [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md) — `1`·`True` 가 한 키. `Literal` 은 반대로 가른다.
-* 이어지는 곳: 목록의 **45번 주제**(`functools`) — `singledispatch` 가 **유니온 어노테이션**으로 등록되는지는 그쪽에서 잰다.
+* 이어지는 곳: [목록의 **45번 주제**](../45-functools/)(`functools`) — `singledispatch` 가 **유니온 어노테이션**으로 등록되는지는 그쪽에서 잰다.
 * 대비: [TS 09번 — 유니온](../../../ts/syntax/09-union-types/2-summary.md) · [TS 11번 — 리터럴 타입](../../../ts/syntax/11-literal-types-and-as-const/2-summary.md) ·
   [TS 13번 — 타입 술어](../../../ts/syntax/13-type-guards-and-predicates/2-summary.md) · [TS 19번 — 제네릭](../../../ts/syntax/19-generics-basics/2-summary.md) ·
   [TS 20번 — 제약과 기본값](../../../ts/syntax/20-generic-constraints-and-defaults/2-summary.md) —

@@ -324,7 +324,7 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 
 - ★★ 2번 격자에서 `clone` 열은 **`inner` 공유가 `n`**(안쪽까지 새로 만든다)과 **심볼이 `n`**(심볼 키를 안 옮긴다) 두 칸이 `assign` 과 다르다.
   그래도 **getter(값으로 굳는다) · 비열거 키 · `Point.prototype`** 은 넷 다 잃는다 — `structuredClone` 도 예외가 아니다.
-- ★★ 3번 `[3]` — `Object.freeze` 한 원본을 `assign` 으로 복사하면 **`isFrozen` 이 `false`**. 그리고 동결이 얕으므로 **복사본을 거쳐 원본의 `inner.deep` 이 바뀐다**(`[1,2]`). [14번](../14-property-descriptors-and-freezing/2-summary.md)은 「동결은 얕다」까지, 깊은 동결과 깊은 복사는 목록의 **48번 주제**가 정본이다.
+- ★★ 3번 `[3]` — `Object.freeze` 한 원본을 `assign` 으로 복사하면 **`isFrozen` 이 `false`**. 그리고 동결이 얕으므로 **복사본을 거쳐 원본의 `inner.deep` 이 바뀐다**(`[1,2]`). [14번](../14-property-descriptors-and-freezing/2-summary.md)은 「동결은 얕다」까지, 깊은 동결과 깊은 복사는 [목록의 **48번 주제**](../48-deep-copy-methods-compared/)가 정본이다.
 - ★ 이 문서는 `structuredClone` 을 **격자의 한 열**로만 쓴다(호스트 API — ECMA-262 밖).
 
 ## 실행 검증

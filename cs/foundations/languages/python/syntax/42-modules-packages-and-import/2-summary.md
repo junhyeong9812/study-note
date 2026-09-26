@@ -820,7 +820,7 @@ python3 pkg/mod.py              # __name__ = '__main__', __package__ = None,  sy
 
 * 선행: [21-scope-legb-global-nonlocal](../21-scope-legb-global-nonlocal/2-summary.md) — ★ **경계**: 이름이 **어느 스코프에서 풀리나**는 그쪽,
   여기는 **모듈 전역(= 모듈 객체의 속성)이 언제 채워지나**부터. 반쯤 찬 모듈의 `vars()` 가 `[]` 인 것(동작 1 의 ③)이 그 이음매다.
-* 이어지는 곳: 목록의 **51번 주제**(`asyncio` 기초) — `if __name__ == "__main__": asyncio.run(main())` 의 관용이 여기의 동작 4 위에 선다.
+* 이어지는 곳: [목록의 **51번 주제**](../51-asyncio-coroutine-basics/)(`asyncio` 기초) — `if __name__ == "__main__": asyncio.run(main())` 의 관용이 여기의 동작 4 위에 선다.
 * 대비: [Go 01번 — 패키지·import·main·init](../../../go/syntax/01-packages-imports-main-and-init/2-summary.md) — ★ **경계**: Go 의 순환 금지와 명세 인용은 그쪽이 정본. 여기서는 **같은 모양의 순환을 한 번 더 던져** 에러 전문만 얻었다.
 * 대비: JS 갈래 목록([`js/syntax/README.md`](../../../js/syntax/README.md))의 **42번**(ESM 모듈) · [05번 — TDZ](../../../js/syntax/05-var-let-const-and-tdz/2-summary.md) —
   ★ **경계**: ESM 의 라이브 바인딩·호이스팅은 JS 42번의 몫이다. 여기서는 **순환 한 모양**만 node 18 로 던졌다.

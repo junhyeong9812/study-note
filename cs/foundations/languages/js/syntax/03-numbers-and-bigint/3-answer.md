@@ -482,9 +482,9 @@ typeof 1n                            : bigint</pre>
 | 주제 | 정본 |
 |---|---|
 | 부호·지수·가수의 **비트 배치** | [`cs/foundations/data-representation/`](../../../../data-representation/) |
-| `===`·`Object.is`·SameValueZero 가 갈리는 것 | 목록의 **33번 주제** |
+| `===`·`Object.is`·SameValueZero 가 갈리는 것 | [목록의 **33번 주제**](../33-equality-three-kinds/) |
 | `JSON` 직렬화와 큰 수 파싱 | [목록의 **31번 주제**](../31-json/) |
-| 금액·숫자를 **화면에 찍는** 법 | 목록의 **50번 주제**(`Intl`) |
+| 금액·숫자를 **화면에 찍는** 법 | [목록의 **50번 주제**](../50-intl-formatting/)(`Intl`) |
 
 - ★★★ **파이썬과 갈리는 세 자리** —
   ① 파이썬의 `int` 는 **처음부터 임의 정밀도**라 안전 정수 한계가 없다(JS 는 `BigInt` 를 나중에 덧붙였다).

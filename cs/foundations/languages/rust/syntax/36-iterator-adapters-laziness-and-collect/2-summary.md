@@ -807,7 +807,7 @@ For more information about this error, try `rustc --explain E0382`.
 - [**35번 주제** — 함수 포인터](../35-function-pointers-and-returning-closures/) — `map(add1)` 처럼 **함수 이름**을 어댑터에 넘길 수 있는 이유.
 - [**22번 주제** — `Result` 와 `?`](../22-result-question-mark-and-from/) · [**21번 주제** — `Option` 조합자](../21-option-and-combinators/) — (4)의 `Result`/`Option` 수집이 거기서 본 타입이다.
 - [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/) — `IntoIterator` 세 형태. (6)과 「더 들어가면」의 배열 `into_iter` 가 거기서 본체가 된다.
-- 목록의 **42번 주제** — `RefCell`. (2)의 로그 장치가 그것이다.
+- [목록의 **42번 주제**](../42-refcell-cell-interior-mutability/) — `RefCell`. (2)의 로그 장치가 그것이다.
 
 ## 용어 풀이
 

@@ -64,7 +64,7 @@
 > `super.who()` 는 **탐색의 출발점만 바꾼 조회**이고, 수신자 규칙은 15번과 같다. 동작 (3)의 트랩 로그가 그것을 보인다.
 > ★★★ **07번과 정반대 자리가 이 주제의 급소다.** 07번은 「**떼어 붙이면 `this` 가 바뀐다**」였다. 여기는 「**떼어 붙여도 `super` 는 안 바뀐다**」다.
 > ★★ **16번이 「멤버가 어디에 붙나」와 「필드 초기화 순서」의 정본**이다. 여기서는 **상속이 끼었을 때** 그 순서가 무슨 사고를 내나만 본다.
-> **이어지는 곳** — [18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md) · [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) 「`Symbol` 과 잘 알려진 심볼」 · 목록의 **32번 주제** 「오류 처리와 `Error`」 · 목록의 **34번 주제** 「타입 검사 관용구」 · 목록의 **45번 주제** 「`Proxy`」 · 목록의 **46번 주제** 「`Reflect`」
+> **이어지는 곳** — [18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md) · [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) 「`Symbol` 과 잘 알려진 심볼」 · [목록의 **32번 주제**](../32-error-handling-and-error/) 「오류 처리와 `Error`」 · [목록의 **34번 주제**](../34-type-checking-idioms/) 「타입 검사 관용구」 · [목록의 **45번 주제**](../45-proxy/) 「`Proxy`」 · [목록의 **46번 주제**](../46-reflect/) 「`Reflect`」
 >
 > ★★ **경계 — 체인 조회 규칙은 15번이 정본이다.** 여기서는 **`extends` 가 체인에 무엇을 잇나**와 **`super` 가 체인의 어디서 출발하나**만 본다.
 > ★★ **경계 — `Error` 의 `throw`/`catch` 흐름과 `cause` 의 쓰임은 32번**, **`Symbol.species` 가 속한 잘 알려진 심볼 전체는 22번**, **`Proxy` 트랩의 계약은 45번**이 정본이다.
@@ -1001,9 +1001,9 @@ Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.m
 - [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md) — **그쪽이 `__proto__:` 리터럴 문법의 정본**이다. 동작 (3)의 리터럴 예가 그 문법을 쓴다.
 - [18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md) — 상속된 열거 가능 프로퍼티를 순회할 때 두 사슬 중 **인스턴스 쪽**이 걸린다.
 - [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) 「`Symbol` 과 잘 알려진 심볼」 — **그쪽이 `Symbol.species` 를 포함한 잘 알려진 심볼 전체의 정본**이다.
-- 목록의 **32번 주제** 「오류 처리와 `Error`」 — **그쪽이 `Error` 계층·`cause` 의 쓰임의 정본**이다. 여기는 **상속했을 때 `name` 이 무엇인가**까지.
-- 목록의 **34번 주제** 「타입 검사 관용구」 — **그쪽이 `instanceof`·`Array.isArray`·브랜드 중 무엇을 고르나의 정본**이다.
-- 목록의 **45번 주제** 「`Proxy`」 · 목록의 **46번 주제** 「`Reflect`」 — 트랩의 `receiver` 인자가 무엇인지의 정본. 여기서는 **로그 도구로만** 썼다.
+- [목록의 **32번 주제**](../32-error-handling-and-error/) 「오류 처리와 `Error`」 — **그쪽이 `Error` 계층·`cause` 의 쓰임의 정본**이다. 여기는 **상속했을 때 `name` 이 무엇인가**까지.
+- [목록의 **34번 주제**](../34-type-checking-idioms/) 「타입 검사 관용구」 — **그쪽이 `instanceof`·`Array.isArray`·브랜드 중 무엇을 고르나의 정본**이다.
+- [목록의 **45번 주제**](../45-proxy/) 「`Proxy`」 · [목록의 **46번 주제**](../46-reflect/) 「`Reflect`」 — 트랩의 `receiver` 인자가 무엇인지의 정본. 여기서는 **로그 도구로만** 썼다.
 - C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **12번** — ★★★ **생성자 속 가상 호출의 대비축.** 파생 필드 초기자 값이 **보였다.**
 - Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **34번** — ★★ **`super` 가 정해지는 방식의 대비축.** 그쪽은 `type(self)` 의 MRO, 여기는 HomeObject.
 - Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **09번** — 메서드는 재정의되고 필드는 숨는 **정적 언어 쪽 상속**. 여기는 인용하지 않았다.

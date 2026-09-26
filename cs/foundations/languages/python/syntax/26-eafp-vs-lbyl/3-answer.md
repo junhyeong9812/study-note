@@ -634,7 +634,7 @@ A = 값 1 · N = 값 None · Z = 키 자체가 없다
 - **「실패를 여럿 모으는 것」은 [27번](../27-exception-groups-and-except-star/2-summary.md)부터다.**
   여기의 두 관용구는 **실패가 하나일 때의 선택**이다.
 - **`contextlib.suppress` 의 정본은 [28번](../28-context-managers-and-with/2-summary.md)** 이다.
-- **dict API 자체는 [12번](../12-dict-and-key-requirements/2-summary.md)**, `defaultdict`·`Counter` 는 `목록의 **43번 주제**` 다.
+- **dict API 자체는 [12번](../12-dict-and-key-requirements/2-summary.md)**, `defaultdict`·`Counter` 는 `[목록의 **43번 주제**](../43-collections/)` 다.
 
 ## 실행 검증
 

@@ -68,7 +68,7 @@
 > ★★ **이 주제는 그 격자를 다시 만들지 않는다.** 11번이 「어느 자리가 이 프로토콜을 쓰나」까지였다면,
 > 여기는 **프로토콜 자체** — 무엇을 몇 번 부르고, 언제 닫고, 어디서 깨지나 — 부터다.
 > **이어지는 곳** — [목록의 **20번 주제**](../20-generators/) 「제너레이터」 · [목록의 **21번 주제**](../21-iterator-helpers/) 「이터레이터 헬퍼」 · [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) 「`Symbol` 과 잘 알려진 심볼」 ·
-> [목록의 **23번 주제**](../23-map-set-and-weak-collections/) 「`Map`·`Set` 과 약한 컬렉션」 · 목록의 **40번 주제** 「비동기 이터레이션」
+> [목록의 **23번 주제**](../23-map-set-and-weak-collections/) 「`Map`·`Set` 과 약한 컬렉션」 · [목록의 **40번 주제**](../40-async-iteration-and-for-await/) 「비동기 이터레이션」
 >
 > ★★ **경계 — 11번이 「세 자리의 문」의 정본이다.** 여기서는 그 문 뒤에서 **무엇이 불리나**만 본다.
 > ★★ **경계 — 제너레이터 내부 흐름(`yield`·`next(값)`·`yield*`)은 20번이 정본이다.** 여기서는 **제너레이터가 「자기 자신을 돌려주는 이터레이터」라는 사실**까지다.
@@ -366,7 +366,7 @@ return() was called in 8 of 17 probes
 - ★★★ **`Promise.all(it)` 이 돌아온 바로 다음 줄에 로그가 이미 `next#4 done` 까지 차 있다.**
   `then` 이 불리기 전, **마이크로태스크가 한 번도 돌기 전**이다.
   ★★ 즉 **「비동기 API 라서 나중에 읽겠지」가 아니다** — 이터러블 읽기는 **호출 그 자리**에서 끝나고, 기다리는 것은 각 값의 결판뿐이다.
-  ★ `Promise.all` 의 나머지(거부 전파·`allSettled` 와의 차이)는 목록의 **38번 주제** 「Promise 조합기」가 정본이다.
+  ★ `Promise.all` 의 나머지(거부 전파·`allSettled` 와의 차이)는 [목록의 **38번 주제**](../38-promise-combinators/) 「Promise 조합기」가 정본이다.
 
 **`[5]` 요약 표 — ② 전수 격자.**
 
@@ -1085,8 +1085,8 @@ BMP 밖 글자 하나가 **`length` 로는 2, `for...of` 로는 1** 이다. 잘�
 - [목록의 **21번 주제**](../21-iterator-helpers/) 「이터레이터 헬퍼」 — ES2025. **이 두 판에는 없었다.**
 - [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) 「`Symbol` 과 잘 알려진 심볼」 — **그쪽이 `Symbol.iterator` 를 포함한 잘 알려진 심볼 전체의 정본**이다.
 - [목록의 **23번 주제**](../23-map-set-and-weak-collections/) 「`Map`·`Set` 과 약한 컬렉션」 — **그쪽이 키 비교(SameValueZero)와 컬렉션 선택의 정본**이다. 여기는 **순서와 순회 중 변경**까지.
-- 목록의 **38번 주제** 「Promise 조합기」 — `Promise.all` 의 나머지. 여기는 **이터러블을 동기로 읽는다**까지.
-- 목록의 **40번 주제** 「비동기 이터레이션」 — `for await...of` · `Symbol.asyncIterator`. 여기는 **동기 프로토콜**까지.
+- [목록의 **38번 주제**](../38-promise-combinators/) 「Promise 조합기」 — `Promise.all` 의 나머지. 여기는 **이터러블을 동기로 읽는다**까지.
+- [목록의 **40번 주제**](../40-async-iteration-and-for-await/) 「비동기 이터레이션」 — `for await...of` · `Symbol.asyncIterator`. 여기는 **동기 프로토콜**까지.
 - Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **16번**·**32번** —
   ★★★ **이 주제의 대비축.** 16번이 `__iter__`/`__next__`/`StopIteration` 의 정본이고, 32번이 **`__getitem__` 대체 경로**를 로그로 찍었다. **JS 에는 그 경로가 없다.**
 

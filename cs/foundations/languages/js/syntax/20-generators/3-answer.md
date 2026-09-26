@@ -280,7 +280,7 @@ cells where body code ran: 4 / 9
 - [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md) — 소비자가 `next`·`return` 을 **언제 부르나**(8곳)까지.
 - 여기 — 그 호출이 **제너레이터 본문에서 무엇을 돌리나**(`finally`·`catch`·`yield*` 전달) · `next(값)` 의 양방향 흐름.
 - [21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md) — `map`·`filter`·`take` 의 **표준 판**과 배열 메서드판의 호출 횟수 대비. 여기는 손으로 짠 `take`/`map` 까지.
-- 목록의 **40번 주제** — `async function*`·`for await...of`.
+- [목록의 **40번 주제**](../40-async-iteration-and-for-await/) — `async function*`·`for await...of`.
 
 ## 실행 검증
 

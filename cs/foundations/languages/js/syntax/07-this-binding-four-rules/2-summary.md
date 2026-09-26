@@ -135,7 +135,7 @@ Google Chrome 151.0.7922.173
 
 > **엄격 모드(strict mode)** — `"use strict";` 로 켜는 더 깐깐한 규칙 집합(ES5).
 > 예: 기본 바인딩의 `this` 가 `globalThis` 가 아니라 `undefined` 다. **모듈과 `class` 몸통은 언제나 엄격**이다.
-> 정본은 목록의 **35번 주제**다.
+> 정본은 [목록의 **35번 주제**](../35-strict-mode/)다.
 
 ## 이 주제가 답하려는 질문
 
@@ -1333,8 +1333,8 @@ class K {                    // class 는 new 없이 못 부른다
 - 이어지는 곳: [목록의 **08번 주제**](../08-function-forms-and-parameters/) 「함수 정의 형태와 매개변수」 — 화살표에 **`arguments` 도 없다**는 것, 그리고 형태별 차이 표의 정본.
 - 이어지는 곳: [목록의 **09번 주제**](../09-call-apply-bind/) 「`call`·`apply`·`bind`」 — **세 메서드의 API 세부**가 거기다. 여기는 「`this` 를 정한다」까지다.
 - 이어지는 곳: [목록의 **16번 주제**](../16-class-syntax/) 「`class` 문법」 — 클래스 필드 화살표가 어디에 붙나.
-- 이어지는 곳: 목록의 **35번 주제** 「엄격 모드」 — 2번 절이 센 아홉 칸의 **정본**. 모듈이 언제나 엄격인 것도 그쪽이다.
-- 이어지는 곳: 목록의 **36번 주제** 「이벤트 루프와 마이크로태스크」 — 7번 절의 타이머가 **언제** 도는가.
+- 이어지는 곳: [목록의 **35번 주제**](../35-strict-mode/) 「엄격 모드」 — 2번 절이 센 아홉 칸의 **정본**. 모듈이 언제나 엄격인 것도 그쪽이다.
+- 이어지는 곳: [목록의 **36번 주제**](../36-event-loop-and-microtasks/) 「이벤트 루프와 마이크로태스크」 — 7번 절의 타이머가 **언제** 도는가.
 - 경계 — 다른 언어의 같은 자리: [`python/syntax/21-scope-legb-global-nonlocal`](../../../python/syntax/21-scope-legb-global-nonlocal/2-summary.md) —
   파이썬은 **`self` 를 매개변수로 명시**한다. 그래서 「떼어 내면 잃는다」가 성립하지 않고, 대신 **바운드 메서드**라는 객체가 따로 생긴다.
   **그쪽은 「이름이 어느 스코프에서 풀리나」까지, 여기는 「숨은 인자 하나가 어떻게 정해지나」부터다.**
@@ -1353,7 +1353,7 @@ class K {                    // class 는 new 없이 못 부른다
 - **`thisArg`**: `forEach` 류가 받는 두 번째 인자. 콜백의 `this` 가 된다. **화살표에는 안 먹는다.**
 - **`new.target`**: `new` 로 불렸는지 보는 값. `new` 면 그 함수, 아니면 `undefined`.
 - **엄격 모드(strict mode)**: `"use strict";` 로 켜는 깐깐한 규칙 집합. **모듈과 `class` 몸통은 언제나 엄격**이다.
-- **브랜드 태그(brand tag)**: `Object.prototype.toString.call(x)` 가 내놓는 `[object …]` 문자열. 정본은 목록의 **34번 주제**다.
+- **브랜드 태그(brand tag)**: `Object.prototype.toString.call(x)` 가 내놓는 `[object …]` 문자열. 정본은 [목록의 **34번 주제**](../34-type-checking-idioms/)다.
 
 ## 더 들어가면
 

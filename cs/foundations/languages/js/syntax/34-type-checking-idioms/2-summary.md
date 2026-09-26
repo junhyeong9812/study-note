@@ -63,7 +63,7 @@
 > **같은 배치** — [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(★★ **`Error.isError` 가 다른 realm 의 오류를 `true`, 프록시를 `false` 로** 본 것) · [33 — 동등성 세 종류](../33-equality-three-kinds/2-summary.md) · [35 — 엄격 모드](../35-strict-mode/2-summary.md).
 >
 > ★★ **경계 — `instanceof` 가 사슬을 어떻게 걷나**는 15번이 정본이다. 여기서는 **realm·조작 앞에서 몇 칸이 틀리나**만 센다.
-> ★★ **경계 — `Proxy` 자체**는 목록의 **45번 주제**의 몫이다. 여기서는 **판정 다섯이 프록시를 어떻게 보나**(채점 없음)까지다.
+> ★★ **경계 — `Proxy` 자체**는 [목록의 **45번 주제**](../45-proxy/)의 몫이다. 여기서는 **판정 다섯이 프록시를 어떻게 보나**(채점 없음)까지다.
 
 ```sh
 # js32b-versions.sh
@@ -541,7 +541,7 @@ for (const [label, v] of items) {
 
 ### (3) ★★★ `typeof v.then === "function"` 이면 진짜 프로미스라고 믿는다
 
-**`Object.create(Promise.prototype)` 도 통과한다**(`y*`). 다만 언어 자신도 `await`·`Promise.resolve` 에서 **이 덕 타이핑(thenable)** 을 쓴다 — 「프로미스인가」와 「기다릴 수 있나」는 다른 질문이다(목록의 **37번 주제**).
+**`Object.create(Promise.prototype)` 도 통과한다**(`y*`). 다만 언어 자신도 `await`·`Promise.resolve` 에서 **이 덕 타이핑(thenable)** 을 쓴다 — 「프로미스인가」와 「기다릴 수 있나」는 다른 질문이다([목록의 **37번 주제**](../37-promise-state-model/)).
 
 ### (4) ★★ `instanceof` 가 `true` 면 그 생성자가 만들었다고 믿는다
 
@@ -613,7 +613,7 @@ for (const [label, v] of items) {
 - [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md) — ★ **경계**: 그쪽이 **`toStringTag` 위조·은폐 `7 / 7`** 의 정본, 여기는 **그 위조를 조건 한 행으로 다른 판정과 나란히** 채점한 것.
 - [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md) — `Error.isError` 한 함수의 정본(동작 (7)).
 - [01 — 값의 종류와 `typeof`](../01-value-types-and-typeof/2-summary.md) — `typeof` 의 여덟 답.
-- 목록의 **45번 주제**(`Proxy`) — 프록시 자체의 정본. 목록의 **37번 주제**(Promise 상태 모델) — thenable 을 언어가 어떻게 기다리나.
+- [목록의 **45번 주제**](../45-proxy/)(`Proxy`) — 프록시 자체의 정본. [목록의 **37번 주제**](../37-promise-state-model/)(Promise 상태 모델) — thenable 을 언어가 어떻게 기다리나.
 
 ## 용어 풀이
 
@@ -629,4 +629,4 @@ for (const [label, v] of items) {
 ## 더 들어가면
 
 - **`Symbol.hasInstance` 로 realm 을 넘는 `instanceof` 만들기** — 가능하지만 **15번의 도구**다. 이 편은 재지 않았다.
-- **워커(Worker)·`structuredClone` 으로 건너온 값** — realm 을 넘는다기보다 **복제**다. 목록의 **48번 주제**의 몫이다.
+- **워커(Worker)·`structuredClone` 으로 건너온 값** — realm 을 넘는다기보다 **복제**다. [목록의 **48번 주제**](../48-deep-copy-methods-compared/)의 몫이다.

@@ -1166,7 +1166,7 @@ n=100000  예외 없음 | 길이 100000  | 정말 정렬됐나 False
 
 - `key=` — 이름표를 만들어 **그것끼리** 비교한다. 원소의 `__lt__` 는 안 쓰인다((7)).
 - `reverse=True` — **비교를 뒤집는다.** 결과를 뒤집는 것이 아니다((6)).
-- `functools.cmp_to_key` — 옛 `cmp` 함수를 `key` 로 바꾼다. 본거지는 목록의 **45번 주제**다.
+- `functools.cmp_to_key` — 옛 `cmp` 함수를 `key` 로 바꾼다. 본거지는 [목록의 **45번 주제**](../45-functools/)다.
 
 **금지 사례 — 이렇게 쓰면 터지거나 조용히 틀린다**
 
@@ -1343,9 +1343,9 @@ Java 를 쓰다 온 사람이 「크면 `IllegalArgumentException` 이 나겠지
 - 이어지는 곳: [32-container-protocol](../32-container-protocol/2-summary.md) — **같은 「프로토콜이 곧 계약」 주제의 컨테이너 판.**
 - 이어지는 곳: [13-set-and-frozenset](../13-set-and-frozenset/2-summary.md) — 집합이 든 리스트의 정렬이 정의되지 않는 이유.
 - 이어지는 곳: [목록의 **36번 주제**](../36-dataclasses/) 「`dataclasses`」 — `order=True` 가 순서 넷을 만들어 주는 것.
-- 이어지는 곳: 목록의 **45번 주제** 「`functools`」 — `cmp_to_key` 의 본거지.
-- 이어지는 곳: 목록의 **44번 주제** 「`itertools`」 — `groupby` 가 정렬을 전제한다는 것.
-- 이어지는 곳: 목록의 **50번 주제** 「`decimal`·float 정밀도」 — `nan` 이 어디서 생기나.
+- 이어지는 곳: [목록의 **45번 주제**](../45-functools/) 「`functools`」 — `cmp_to_key` 의 본거지.
+- 이어지는 곳: [목록의 **44번 주제**](../44-itertools/) 「`itertools`」 — `groupby` 가 정렬을 전제한다는 것.
+- 이어지는 곳: [목록의 **50번 주제**](../50-decimal-float-precision-and-round/) 「`decimal`·float 정밀도」 — `nan` 이 어디서 생기나.
 - 대비: [Rust 28번](../../../rust/syntax/28-partialeq-eq-partialord-ord-and-hash-contracts/2-summary.md) —
   **`f64` 가 `Ord` 가 아니라 `sort()` 가 컴파일조차 안 되는 것.** 같은 결함을 **타입으로** 막는 판이다.
 - 대비: [Java 28번](../../../java/syntax/28-comparable-comparator/2-summary.md) —
@@ -1400,10 +1400,10 @@ Java 를 쓰다 온 사람이 「크면 `IllegalArgumentException` 이 나겠지
   표준 자료구조가 없어서, 그 사고는 **정렬의 안정성이 무의미해지는** 모양으로만 나타난다.
   `__eq__` 가 「같다」는 둘을 `__lt__` 가 「다르다」고 하면 **동점 무리 자체가 생기지 않는다.**
 - **`functools.cmp_to_key`** — 두 원소를 받아 음수·0·양수를 돌려주는 옛 `cmp` 함수를 `key` 로 감싼다.
-  반환된 객체가 `__lt__` 를 구현하고 있어서 **(7)의 이름표 자리에 그대로 들어간다.** 정본은 목록의 **45번 주제**다.
+  반환된 객체가 `__lt__` 를 구현하고 있어서 **(7)의 이름표 자리에 그대로 들어간다.** 정본은 [목록의 **45번 주제**](../45-functools/)다.
 - **`dataclass(order=True)`** — 필드 선언 순서대로 튜플을 만들어 비교하는 순서 넷을 생성한다.
   `total_ordering` 과 달리 **`__lt__` 부터 넷을 다 만든다.** 정본은 [목록의 **36번 주제**](../36-dataclasses/)다.
 - **`bisect` 와 `heapq`** — 둘 다 `<` 만 쓴다. 그래서 `__lt__` 하나만 있는 객체도 **이진 탐색과 힙에 그대로 들어간다.**
 - **`sorted` 에 `key` 와 `reverse` 를 같이 주면** — 이름표를 만든 뒤 그 이름표 비교를 뒤집는다.
   기준마다 방향이 다르면 **나눠 정렬**이 유일한 일반해이고, 그 세부는 [10번](../10-list-methods-and-sort-key/2-summary.md)이 정본이다.
-- **`Enum` 의 비교** — 기본 `Enum` 은 순서가 없고 `IntEnum` 은 `int` 라서 섞인다. 목록의 **37번 주제**.
+- **`Enum` 의 비교** — 기본 `Enum` 은 순서가 없고 `IntEnum` 은 `int` 라서 섞인다. [목록의 **37번 주제**](../37-enum/).

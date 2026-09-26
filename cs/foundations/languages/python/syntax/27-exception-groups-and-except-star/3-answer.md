@@ -654,7 +654,7 @@ TaskGroup 이 낸 것: ExceptionGroup
 - **「예외 계층과 연쇄」는 [25번](../25-exceptions-and-finally/2-summary.md)이다.**
   `BaseException`/`Exception` 의 갈라짐도 `__context__`·`__cause__` 도 전부 그쪽이고,
   여기는 **그것이 괘선 안에서 어떻게 보이나**만 본다.
-- **「`TaskGroup` 의 취소 전파·타임아웃」은 `목록의 **52번 주제**`** 다.
+- **「`TaskGroup` 의 취소 전파·타임아웃」은 `[목록의 52번 주제](../52-asyncio-concurrency-structure/)**`** 다.
   여기서는 **왜 묶음이 필요했나**까지다.
 - **실패가 하나일 때의 선택은 [26번](../26-eafp-vs-lbyl/2-summary.md)** 이다.
 - **정리 중 난 예외 여럿**은 [28번](../28-context-managers-and-with/2-summary.md)의 `ExitStack` 자리다 —

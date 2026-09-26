@@ -101,7 +101,7 @@ GNU nm (GNU Binutils for Ubuntu) 2.42
 > 예: `impl Add for Poly` 를 쓰면 `Poly + Poly` 가 컴파일된다.
 
 > **역참조 강제(deref coercion)** — `&T` 를 기대하는 자리에 `&U` 를 주면 `U: Deref<Target = T>` 일 때 **컴파일러가 `deref` 를 끼워 맞추는 것**.\
-> 예: `&String` 을 `&str` 자리에 넣으면 된다. 정본은 목록의 **43번 주제**다.
+> 예: `&String` 을 `&str` 자리에 넣으면 된다. 정본은 [목록의 **43번 주제**](../43-deref-coercion-and-smart-pointers/)다.
 
 > **스마트 포인터(smart pointer)** — 값을 가리키면서 **소유·해제 규칙을 더 얹은** 타입. std 문서는 `Deref` 를 구현한 타입을 흔히 이렇게 부른다고 적는다.\
 > 예: `Box<T>`·`Rc<T>`·`String`.
@@ -810,7 +810,7 @@ For more information about this error, try `rustc --explain E0507`.
 ```
 
 - ★★ **E0507** — `` cannot move out of index of `Row` ``. `r[0]` 이 `*r.index(0)` 이라 **참조 뒤의 값을 옮기려는 것**이 된다.
-  `help:` 둘이 정석이다 — **`&r[0]` 로 빌리거나, `.clone()` 으로 복제한다.** `Vec` 도 똑같이 막힌다(그래서 `Vec::remove`·`swap_remove`·`mem::take` 가 따로 있다 — 목록의 **44번 주제**).
+  `help:` 둘이 정석이다 — **`&r[0]` 로 빌리거나, `.clone()` 으로 복제한다.** `Vec` 도 똑같이 막힌다(그래서 `Vec::remove`·`swap_remove`·`mem::take` 가 따로 있다 — [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)).
 
 ### (7) `Deref` — 스마트 포인터 관용구, 그리고 컴파일러가 끼운 호출 수
 
@@ -869,7 +869,7 @@ deref 호출 횟수    3
   2. **30행 `t.len()`** — 메서드 호출. `Tracked` 에 `len` 이 없어 **자동 역참조**로 `String::len` 을 찾았다.
   3. **31행 `takes_str(&t)`** — **역참조 강제**. `&Tracked<String>` → `&String` → `&str` 로 **두 번 벗겼는데**
      두 번째(`String` → `str`)는 **`String` 의 `Deref`** 라 이 계수기에 안 잡혔다. 그래서 **3 이다**(4 가 아니다).
-- ★ 역참조 강제의 **전이 규칙**(몇 단계까지 벗기나, 어디서 무너지나)은 [**14번 주제**](../14-string-vs-str/) (4)와 목록의 **43번 주제**가 정본이다 — 여기는 **호출이 몰래 끼워진다**는 것만 센다.
+- ★ 역참조 강제의 **전이 규칙**(몇 단계까지 벗기나, 어디서 무너지나)은 [**14번 주제**](../14-string-vs-str/) (4)와 [목록의 **43번 주제**](../43-deref-coercion-and-smart-pointers/)가 정본이다 — 여기는 **호출이 몰래 끼워진다**는 것만 센다.
 - ★ std 의 `Deref` 문서가 **경고**를 단다 — 「**컴파일러가 `Deref::deref` 호출을 조용히 끼운다**. 그래서 역참조 강제가 **바람직할 때만** 구현하라」.
 
 ### (8) ★★★ `Deref` 로 「상속」을 흉내 내면 — 세 군데서 깨진다
@@ -1289,8 +1289,8 @@ d.size=3  a.size=2
 - [**25번 주제** — 트레이트·연관 타입](../25-traits-definition-impl-default-methods-and-associated-types/) — `Rhs = Self` 기본 타입 파라미터를 여기로 넘겼다((4)).
 - [**09번 주제** — `Copy`·`Clone`·`Drop`](../09-copy-clone-and-drop/) — (2)의 「옮겨 간 것이 복사본」.
 - [**29번 주제** — 변환 트레이트](../29-conversion-traits-from-into-tryfrom-asref-borrow/) — 같은 「컴파일러가 이름을 아는 트레이트」의 변환 판.
-- 목록의 **43번 주제** — `Deref` 강제와 스마트 포인터. **역참조 강제의 정본**이다. (7)은 호출 수만 셌다.
-- 목록의 **44번 주제** — `mem::take`/`replace`. (6)의 E0507 을 푸는 다른 길.
+- [목록의 **43번 주제**](../43-deref-coercion-and-smart-pointers/) — `Deref` 강제와 스마트 포인터. **역참조 강제의 정본**이다. (7)은 호출 수만 셌다.
+- [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/) — `mem::take`/`replace`. (6)의 E0507 을 푸는 다른 길.
 - Go 의 임베딩 — [`go/syntax/18-embedding-and-field-method-promotion/`](../../../go/syntax/18-embedding-and-field-method-promotion/).
   ★ **대비**: Go 의 임베딩은 **승격된 메서드로 인터페이스를 만족한다**(그 편 (5)). **Rust 의 `Deref` 는 트레이트 경계를 못 넘는다**((8)의 E0277).
   둘 다 「안쪽 메서드가 바깥의 것을 모른다」는 같다 — 가상 디스패치가 아니다.

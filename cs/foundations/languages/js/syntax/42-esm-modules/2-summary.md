@@ -58,7 +58,7 @@
 > ★★★ **파이썬 42번과 나란히** — [Python 42 — 모듈·패키지·import](../../../python/syntax/42-modules-packages-and-import/2-summary.md)가 **순환 import 격자 `깨진 칸 7 / 24`** 를 쟀고, 그 편 7절이 node 18 로 **ESM 은 `ReferenceError: Cannot access 'TAG' before initialization`, CommonJS 는 조용히 `f>g>undefined` + 경고 한 줄**을 이미 던졌다. 여기서는 **그 JS 쪽을 격자로 전면에** 세운다(동작 (3)). **Go 는 순환 import 가 빌드에서 거부된다**([Go 01](../../../go/syntax/01-packages-imports-main-and-init/2-summary.md) — 파이썬 42번 7절의 `import cycle not allowed`).
 >
 > ★★ **경계 — 연혁**(CommonJS·AMD 에서 ESM 표준으로)은 [`history/js/02-ES6-모던.md`](../../../../../../history/js/02-ES6-모던.md) 의 **「모듈 (import / export)」** 절이 정본이다. 그 절은 「**정적 구조라 빌드 도구가 트리 셰이킹을 할 수 있다**」를 원문의 인과로 적는다 — 이 문서는 **그 정적 구조가 실행에서 어떻게 보이나**(블록 안 `import` 는 문법 오류 · 없는 이름은 **본문이 한 줄도 돌기 전에** 막힌다)부터 쓰고, 크기·속도는 **재지 않았다.**
-> ★ **CommonJS 와 ESM 이 서로 부르는 것**은 [43번](../43-cjs-and-esm-interop/2-summary.md), **동적 `import`·최상위 `await` 의 평가 순서·import attributes** 는 목록의 **44번 주제**다.
+> ★ **CommonJS 와 ESM 이 서로 부르는 것**은 [43번](../43-cjs-and-esm-interop/2-summary.md), **동적 `import`·최상위 `await` 의 평가 순서·import attributes** 는 [목록의 **44번 주제**](../44-dynamic-import-top-level-await-and-import-attributes/)다.
 
 **이 묶음(40\~43)의 Chrome 하네스** — 페이지 하나 · 셸 하나 · 로컬 서버 하나.
 
@@ -954,7 +954,7 @@ missing file: rejected with TypeError · code undefined
 - [`history/js/02-ES6-모던.md`](../../../../../../history/js/02-ES6-모던.md) — ★ **경계**: 그쪽은 **「모듈 (import / export)」 절의 연혁과 「정적 구조 → 트리 셰이킹」 인과**, 여기는 **그 정적 구조가 실행에서 보이는 모양**(연결·평가·바인딩)부터.
 - [35 — 엄격 모드](../35-strict-mode/2-summary.md) · [05 — TDZ](../05-var-let-const-and-tdz/2-summary.md) · [36 — 이벤트 루프](../36-event-loop-and-microtasks/2-summary.md) · [39 — `async`/`await`](../39-async-await/2-summary.md).
 - [Python 42 — 모듈·패키지·import](../../../python/syntax/42-modules-packages-and-import/2-summary.md) — 순환 격자 `7 / 24` · ESM/CJS 첫 대비. [Go 01 — 패키지·import](../../../go/syntax/01-packages-imports-main-and-init/2-summary.md) — 순환은 빌드 거부.
-- [43 — CJS 와 ESM 상호운용](../43-cjs-and-esm-interop/2-summary.md) · 목록의 **44번 주제**(동적 `import`·최상위 `await`·import attributes).
+- [43 — CJS 와 ESM 상호운용](../43-cjs-and-esm-interop/2-summary.md) · [목록의 **44번 주제**](../44-dynamic-import-top-level-await-and-import-attributes/)(동적 `import`·최상위 `await`·import attributes).
 
 ## 용어 풀이
 
@@ -970,6 +970,6 @@ missing file: rejected with TypeError · code undefined
 
 ## 더 들어가면
 
-- **최상위 `await` 가 순환·평가 순서에 끼면** — 목록의 **44번 주제**다. 이 문서는 돌리지 않았다.
+- **최상위 `await` 가 순환·평가 순서에 끼면** — [목록의 **44번 주제**](../44-dynamic-import-top-level-await-and-import-attributes/)다. 이 문서는 돌리지 않았다.
 - **`export * from` 의 이름 충돌(모호한 내보내기)** — `ResolveExport` 가 `ambiguous` 를 돌려주는 자리. 재지 않았다.
 - **브라우저의 import map** — 지정자 해석을 페이지가 정하는 장치. 호스트 쪽이라 이 문서 밖이다.

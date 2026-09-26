@@ -511,7 +511,7 @@ new TextEncoder().encode(lone)     : ef bf bd</pre>
 | 정규식의 `u`/`v` 플래그 | 목록의 [**29**](../29-regexp-basics/)·[**30**](../30-regexp-advanced/)번 주제 |
 | `[...s]` 가 코드 포인트 단위인 것의 **프로토콜** | [목록의 **19번 주제**](../19-iterable-protocol-and-for-of/) |
 | well-formed `JSON.stringify` | [목록의 **31번 주제**](../31-json/) |
-| `Intl` 전반 | 목록의 **50번 주제** |
+| `Intl` 전반 | [목록의 **50번 주제**](../50-intl-formatting/) |
 
 - ★★★ **파이썬은 코드 포인트를 센다.** `len("👍")` 이 **1** 이다 — JS 의 `length` 가 2 인 것과 정확히 대비된다.
   다만 **결합 문자·ZWJ 에서는 파이썬도 똑같이 걸린다**(가족 이모지가 5).

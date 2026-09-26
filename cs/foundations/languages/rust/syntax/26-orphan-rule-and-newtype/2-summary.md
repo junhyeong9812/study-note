@@ -412,7 +412,7 @@ first()   Some("가")
   (그래서 (1)에서 막힌 `Display` 를 `Deref` 로 얻을 수는 **없다** — newtype 에 직접 써야 한다.)
 - ★★ **처방** — **`Deref` 는 「스마트 포인터」에만** 단다(`Box`·`Rc`·`String`).
   **불변식을 지키는 newtype 에는 `Deref` 를 달지 말고**, 꼭 읽기만 열고 싶으면
-  `Deref` 만 달고 **`DerefMut` 은 안 다는** 절충이 있다. 정본은 목록의 **43번 주제**다.
+  `Deref` 만 달고 **`DerefMut` 은 안 다는** 절충이 있다. 정본은 [목록의 **43번 주제**](../43-deref-coercion-and-smart-pointers/)다.
 
 ### (6) ★★ 실제로 어디서 걸리나 — `?` 를 위한 `From`
 
@@ -716,7 +716,7 @@ rustc 가 거부된 `impl` 을 **그래도 등록해 두기** 때문이다. **�
   `derive` 는 **내 타입에 붙이는 것**이라 고아 규칙에 안 걸린다. 걸리는 것은 **손으로 쓰는 `impl`** 쪽이다.
 - [목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/) — `From`/`Into`/`TryFrom`/`AsRef`/`Borrow`. **어느 방향으로 구현하나**의 정본이다.
 - [목록의 **30번 주제**](../30-operator-overloading-std-ops-index-and-deref/) — 연산자 오버로딩과 `Deref`. ★ **`Deref` 남용의 정본**이 거기다.
-- 목록의 **43번 주제** — `Deref` 강제와 스마트 포인터 감각. (5)의 절충안이 거기서 깊어진다.
+- [목록의 **43번 주제**](../43-deref-coercion-and-smart-pointers/) — `Deref` 강제와 스마트 포인터 감각. (5)의 절충안이 거기서 깊어진다.
 - 목록의 **46번 주제** — 크레이트와 워크스페이스. 「크레이트 경계」가 무엇인지의 정본이다.
 - Kotlin 의 확장 함수 — [`kotlin/syntax/13-extension-functions-and-properties/`](../../../kotlin/syntax/13-extension-functions-and-properties/).
   ★ **대비**: 남의 타입에 함수를 붙이는 목적이 겹치는데, **확장 함수는 정적 디스패치라 충돌이 안 난다**

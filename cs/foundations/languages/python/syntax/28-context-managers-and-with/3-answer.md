@@ -927,9 +927,9 @@ twice(Reusable())
 
 **이웃 경계 한 줄씩**
 
-- **`async with` 와 `__aenter__`/`__aexit__` 는 `목록의 **51번 주제**`·`목록의 **52번 주제**`** 다.
+- **`async with` 와 `__aenter__`/`__aexit__` 는 `[목록의 51번 주제](../51-asyncio-coroutine-basics/)**`·`[목록의 52번 주제](../52-asyncio-concurrency-structure/)**`** 다.
   여기는 **동기 판**만 다룬다.
-- **`with open(...)` 의 실무(모드·인코딩·`newline`)는 `목록의 **48번 주제**`** 다.
+- **`with open(...)` 의 실무(모드·인코딩·`newline`)는 `[목록의 48번 주제](../48-pathlib-and-file-io/)**`** 다.
   여기는 **`with` 라는 문법**까지다.
 - **`try/finally` 자체는 [25번](../25-exceptions-and-finally/2-summary.md)** 이고,
   **`contextlib.suppress` 를 고르는 판단은 [26번](../26-eafp-vs-lbyl/2-summary.md)**,

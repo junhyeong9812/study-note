@@ -1120,7 +1120,7 @@ report 32
 
 - ★★ **대입 한 줄 `Fahrenheit f = new Celsius(100.0);` 에서 변환이 불렸다** — 소스에는 **변환 호출이 글자로 없는데** 출력에 「`(implicit 변환이 불렸다)`」가 찍혔다. 인자 자리(`Report(new Celsius(0.0))`)도 같다.
 - ★★ **Rust 에는 사용자 정의 암묵 변환이 없다** — (1)의 `c.into()`·`Fahrenheit::from(c)` 처럼 **글자로 적어야** 불린다.
-  Rust 가 몰래 끼우는 것은 **참조의 역참조 강제**뿐이다([**30번 주제**](../30-operator-overloading-std-ops-index-and-deref/) (7) · 목록의 **43번 주제**).
+  Rust 가 몰래 끼우는 것은 **참조의 역참조 강제**뿐이다([**30번 주제**](../30-operator-overloading-std-ops-index-and-deref/) (7) · [목록의 **43번 주제**](../43-deref-coercion-and-smart-pointers/)).
 - ★ 첫 줄 `10.0.401` 은 `r29_csc.sh` 가 찍은 **.NET SDK 판**이다(규칙 26 — 도구 판을 블록으로).
 
 ## 문법 — 형태와 규칙

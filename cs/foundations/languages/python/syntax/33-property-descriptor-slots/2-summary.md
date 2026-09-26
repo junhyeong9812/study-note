@@ -1353,7 +1353,7 @@ class Bad6Sub(Bad6):
 * 함께 보는 곳: [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md) — 고치기와 새로 묶기.
 * 이어지는 곳: [34-inheritance-mro-super](../34-inheritance-mro-super/2-summary.md) — 「상속·MRO·`super()`」 — ★ 이 주제가 「클래스 칸 **하나**」를 다뤘다면 그쪽은 **여러 칸을 훑는 순서**다.
 * 이어지는 곳: [36-dataclasses](../36-dataclasses/2-summary.md) — 「`dataclasses`」 — ★ `@dataclass(slots=True)` 가 이 주제의 `__slots__` 를 **대신 써 준다**(3.10+).
-* 이어지는 곳: 목록의 **45번 주제** 「`functools`」 — `cached_property` 가 **비데이터 디스크립터**라서
+* 이어지는 곳: [목록의 **45번 주제**](../45-functools/) 「`functools`」 — `cached_property` 가 **비데이터 디스크립터**라서
   첫 접근 뒤 인스턴스 칸에 지는 장치다. 이 문서의 네 층으로 바로 읽힌다.
 * 다른 갈래: Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **16번** 「프로퍼티 — backing field」 —
   코틀린은 **프로퍼티가 문법 기본값**이고 필드가 예외다. 파이썬은 반대로 **필드가 기본값이고 `property` 가 덧칠**이다.
@@ -1528,7 +1528,7 @@ print("   ★ 칸이 인스턴스 안에 있어 합계가 같다 — 이 창으�
   그 뒤로는 네 층 규칙에 따라 **인스턴스 칸이 이겨** 다시 안 계산된다 — 둘째 접근에 로그가 없다.
   ★ 그래서 **`__slots__` 인 클래스에는 못 쓴다**(②). 문구가 그 이유를 그대로 말한다 —
   `No '__dict__' attribute on 'Slotted' instance to cache 'value' property.`
-  **캐시를 둘 칸이 없는 것**이다. 정본은 목록의 **45번 주제**다.
+  **캐시를 둘 칸이 없는 것**이다. 정본은 [목록의 **45번 주제**](../45-functools/)다.
 * ★ **`classmethod`·`staticmethod` 도 디스크립터**다(③). 다섯을 한 표로 견주면
   **데이터인 것은 `property` 하나뿐**이고 나머지 넷은 전부 비데이터다.
   즉 **메서드류는 전부 인스턴스 칸에 진다** — [29번](../29-classes-and-attribute-lookup/2-summary.md) 동작 7의 ④가 그 결과다.

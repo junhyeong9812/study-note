@@ -30,7 +30,7 @@
 > | `function*` · `yield` · `yield*` · `next`/`return`/`throw` | **ES2015** |
 > | 객체·클래스의 제너레이터 메서드(`*m() {}`) | **ES2015** |
 > | 이터레이터 헬퍼(제너레이터 객체에도 붙는 `map`·`take` 등) | **ES2025** — ★ 두 node 판에는 **없다**(아래 판별 블록). [목록의 **21번 주제**](../21-iterator-helpers/)가 정본 |
-> | `async function*` · `for await...of` | **ES2018** — 이 주제 밖(목록의 **40번 주제**) |
+> | `async function*` · `for await...of` | **ES2018** — 이 주제 밖([목록의 **40번 주제**](../40-async-iteration-and-for-await/)) |
 >
 > **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
 >
@@ -61,7 +61,7 @@
 > ★★★ **19번이 이미 잰 것은 다시 재지 않는다** — 소비자 17가지가 `return()` 을 부르는 자리(**8곳**), `next()` 가 던지면 닫기 0,
 > 제너레이터 객체가 **이터러블이자 이터레이터**(`g[Symbol.iterator]() === g`)라 두 번째 스프레드가 `[]` 인 것.
 > 여기는 그 「닫기」가 **제너레이터 안쪽에서 무엇을 일으키나**부터 본다.
-> **이어지는 곳** — [21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md) · [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md) · 목록의 **40번 주제** 「비동기 이터레이션」
+> **이어지는 곳** — [21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md) · [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md) · [목록의 **40번 주제**](../40-async-iteration-and-for-await/) 「비동기 이터레이션」
 >
 > ★★ **경계 — 소비자 쪽 `return()` 호출표는 19번이 정본이다.** 여기서는 그 호출이 제너레이터의 `finally` 에서 **무엇을 돌리나**만 본다.
 > ★★ **경계 — 지연 파이프라인(`map`·`filter`·`take` 를 이어 붙이는 것)은 21번이 정본이다.** 여기서는 **손으로 짠 `take`/`map` 제너레이터**로 「당긴 만큼만 만든다」까지다.
@@ -1126,7 +1126,7 @@ console.log("  log " + J(L)); L.length = 0;
 - **쓴다** — 끝을 모르는 수열·페이지 조회를 **당긴 만큼만** 만들 때(동작 (8)) · 트리 순회를 **재귀 `yield*`** 로 짤 때 ·
   직접 이터러블을 만들 때 `[Symbol.iterator]` 를 **`*[Symbol.iterator]() { … }`** 로 쓰면 `next`/`done` 을 손으로 안 짜도 될 때.
 - ★ **조심해서 쓴다** — `next(값)` 으로 값을 밀어 넣는 코루틴 모양. **첫 값을 잃는 함정**(동작 (2))을 문서에 적어 둔다.
-- **안 쓴다** — 결과를 **두 번 돌아야** 하는 값(제너레이터 객체는 한 번 돌면 비어 있다 — 19번) · 비동기 흐름(목록의 **40번 주제**의 `async function*`·`for await` 로).
+- **안 쓴다** — 결과를 **두 번 돌아야** 하는 값(제너레이터 객체는 한 번 돌면 비어 있다 — 19번) · 비동기 흐름([목록의 **40번 주제**](../40-async-iteration-and-for-await/)의 `async function*`·`for await` 로).
 
 ## 핵심 문장
 
@@ -1162,5 +1162,5 @@ console.log("  log " + J(L)); L.length = 0;
 ## 더 들어가면
 
 - **`finally` 가 `yield` 하는 제너레이터를 `for...of` + `break` 로 닫으면** 제너레이터가 `finally` 중간에 멈춘 채 남는다 — 동작 (3)에서 **두 출력을 이어 읽은 추론**이고 로그로는 안 돌렸다. 확인하려면 그 조합에 로그를 심어 `break` 뒤에 `g.next()` 를 한 번 더 불러 보라.
-- **`async function*`** 은 `next`/`return`/`throw` 가 전부 **프라미스를 돌려주고 요청을 큐에 쌓는다** — 명세의 `AsyncGeneratorEnqueue`. 목록의 **40번 주제**가 정본이다.
+- **`async function*`** 은 `next`/`return`/`throw` 가 전부 **프라미스를 돌려주고 요청을 큐에 쌓는다** — 명세의 `AsyncGeneratorEnqueue`. [목록의 **40번 주제**](../40-async-iteration-and-for-await/)가 정본이다.
 - **`yield` 의 우선순위** — `yield a, b` 가 무엇을 내보내나, `yield` 뒤 줄바꿈이 무엇을 하나(ASI)는 이 문서가 돌리지 않았다.

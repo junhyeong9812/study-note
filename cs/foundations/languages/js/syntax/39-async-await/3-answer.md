@@ -167,7 +167,7 @@ SyntaxError: await is only valid in async functions and the top level bodies of 
 (exit 1 · standard output had 0 lines)
 ```
 
-- ★★ 기준은 **모듈 코드인가**다 — 표준 입력의 같은 글자도 모듈로 주면 돌았다. **어느 파일이 모듈인가는 node(호스트)가 정한다**(`.mjs` · `--input-type` · `package.json` 의 `type` — 목록의 **42번 주제**).
+- ★★ 기준은 **모듈 코드인가**다 — 표준 입력의 같은 글자도 모듈로 주면 돌았다. **어느 파일이 모듈인가는 node(호스트)가 정한다**(`.mjs` · `--input-type` · `package.json` 의 `type` — [목록의 **42번 주제**](../42-esm-modules/)).
 - ★ CommonJS 판은 **컴파일에서** 거절되어 `before` 조차 안 찍혔다 — 35번의 early error 와 같은 모양이다.
 
 ### 8. `yield x` ↔ `await x` · 거부 ↔ `it.throw(e)` — **줄 순서까지 같았다**(`identical: true`) ★★

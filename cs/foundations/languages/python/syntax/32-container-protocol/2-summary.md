@@ -1166,7 +1166,7 @@ print("   그런데 for 는 돈다          :", [v for v in Old()])
 - 사슬 앞: [31-comparison-protocol-and-sortability](../31-comparison-protocol-and-sortability/2-summary.md) — `sorted(내컨테이너)` 가 이 프로토콜로 원소를 꺼낸 뒤 그쪽 프로토콜로 비교한다.
 - 이어지는 곳: [목록의 **33번 주제**](../33-property-descriptor-slots/) 「`property`·디스크립터·`__slots__`」 — 속성 쪽 가로채기.
 - 이어지는 곳: [목록의 **35번 주제**](../35-abc-and-protocol/) 「추상 베이스 클래스와 `Protocol`」 — ★ `collections.abc` 와 `typing.Protocol` 중 무엇을 고르나가 그쪽 정본이다.
-- 이어지는 곳: 목록의 **43번 주제** 「`collections`」 — `UserList`·`UserDict` 로 내장을 물려받는 길.
+- 이어지는 곳: [목록의 **43번 주제**](../43-collections/) 「`collections`」 — `UserList`·`UserDict` 로 내장을 물려받는 길.
 - 원리: [`cs/data-structure/`](../../../../../data-structure/) — 시퀀스·해시 자료구조의 원리와 복잡도는 그쪽이 정본이다.
 - 공식 문서: [3.3.7 Emulating container types](https://docs.python.org/3.12/reference/datamodel.html#emulating-container-types) · [Membership test operations](https://docs.python.org/3.12/reference/expressions.html#membership-test-operations) · [`collections.abc`](https://docs.python.org/3.12/library/collections.abc.html)
 
@@ -1201,13 +1201,13 @@ print("   그런데 for 는 돈다          :", [v for v in Old()])
 
 - **매핑 쪽 프로토콜**은 같은 `__getitem__` 을 쓰지만 `in` 이 **키**를 본다.
   `Mapping` ABC 를 물려받으면 `keys`·`items`·`values`·`get`·`__eq__` 까지 따라온다([12번](../12-dict-and-key-requirements/2-summary.md)).
-- **`__missing__`** 은 `dict` 하위 클래스에서만 불리는 갈고리다 — `defaultdict` 가 그 위에 서 있다(목록의 **43번 주제**).
+- **`__missing__`** 은 `dict` 하위 클래스에서만 불리는 갈고리다 — `defaultdict` 가 그 위에 서 있다([목록의 **43번 주제**](../43-collections/)).
 - **`__length_hint__`** 는 `__len__` 이 없는 이터레이터가 「대충 몇 개 남았다」를 알려 주는 창이다.
   ★ **보장이 아니다** — 정본은 [16번](../16-iterator-protocol/2-summary.md)이다.
 - **`__getitem__` 이 제네릭 문법에도 쓰인다** — `list[int]` 는 `type.__getitem__` 이고,
-  내 클래스에 `__class_getitem__` 을 두면 `MyBox[int]` 가 된다(PEP 560, 목록의 **41번 주제**).
-- **`UserList`·`UserDict`** 는 내장을 상속할 때 생기는 문제(내부 메서드가 서로를 안 부르는 것)를 피하려고 만든 래퍼다(목록의 **43번 주제**).
+  내 클래스에 `__class_getitem__` 을 두면 `MyBox[int]` 가 된다(PEP 560, [목록의 **41번 주제**](../41-typing-and-generic-syntax/)).
+- **`UserList`·`UserDict`** 는 내장을 상속할 때 생기는 문제(내부 메서드가 서로를 안 부르는 것)를 피하려고 만든 래퍼다([목록의 **43번 주제**](../43-collections/)).
 - **`typing.Protocol`** 은 `collections.abc` 와 달리 **상속 없이** 구조로만 맞추는 길이다.
   런타임 강제 여부가 갈리는 지점은 [목록의 **35번 주제**](../35-abc-and-protocol/)가 정본이다.
-- ★ **비동기 판**은 `__aiter__`/`__anext__` 이고 `async for` 가 그것을 쓴다(PEP 492, 목록의 **51번 주제**).
+- ★ **비동기 판**은 `__aiter__`/`__anext__` 이고 `async for` 가 그것을 쓴다(PEP 492, [목록의 **51번 주제**](../51-asyncio-coroutine-basics/)).
   ★ **비동기에는 `__getitem__` 대체 경로가 없다** — 낡은 프로토콜은 동기 쪽에만 남아 있는 유산이다.

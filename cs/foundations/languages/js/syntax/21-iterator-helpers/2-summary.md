@@ -64,7 +64,7 @@
 > ★★★ **19번이 이미 잰 것을 다시 재지 않는다** — 소비자 17가지 중 `return()` 이 불린 자리는 **8가지**였고(`return() was called in 8 of 17 probes`),
 > `const [a, b, c] = it` 이 값이 딱 셋인데도 닫는다는 것, `next()` 자체가 던지면 닫지 않는다는 것도 거기서 봤다.
 > 그리고 19번 `js16b-19f-close-and-helpers.js` 의 `[4]` 가 **node20 에 `typeof globalThis.Iterator` 가 `undefined`** 임을 이미 찍었다.
-> **이어지는 곳** — [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md) · [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md) · 목록의 **40번 주제** 「비동기 이터레이션」
+> **이어지는 곳** — [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md) · [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md) · [목록의 **40번 주제**](../40-async-iteration-and-for-await/) 「비동기 이터레이션」
 >
 > ★★ **경계 — `return()` 이 언제 불리나의 규칙은 19번이 정본이다.** 여기서는 **헬퍼·종단 메서드가 그 규칙 위에서 원본을 언제 닫나**만 본다.
 > ★★ **경계 — 제너레이터의 내부 흐름(`yield`·`next(값)`·`yield*`)은 20번이 정본이다.** 여기서 제너레이터는 **끝없는 원본**과 **손수 만든 파이프라인**으로만 쓴다.
@@ -1017,5 +1017,5 @@ console.log("  order  " + L.join(" "));
 - ★ **헬퍼 객체의 메서드** — `typeof next / return / throw` 가 `function / function / undefined` 다(동작 (5)의 `[6]`). 자기 `return()` 을 받으면 원본에 전한다(동작 (6)의 `break` 줄).
   **`throw()` 는 없다** — 20번의 제너레이터 객체와 다른 점이다. 헬퍼는 **바깥에서 값을 밀어 넣는 통로가 없는** 한 방향 사슬이다.
 - ★ **`Iterator.concat`** — 인자를 **이터러블로만** 받고 이터레이터 프로토콜만 가진 `{ next }` 는 거절한다. 각 인자의 `Symbol.iterator` 는 **그 차례가 올 때** 부른다(3-answer 의 12번). ES2026.
-- ★ **비동기 쪽** — `AsyncIterator.prototype` 의 헬퍼는 ES2025 에 **없다**(finished proposals 의 「Sync Iterator helpers」 가 그 이름대로 동기만이다). 목록의 **40번 주제**의 몫이다.
+- ★ **비동기 쪽** — `AsyncIterator.prototype` 의 헬퍼는 ES2025 에 **없다**(finished proposals 의 「Sync Iterator helpers」 가 그 이름대로 동기만이다). [목록의 **40번 주제**](../40-async-iteration-and-for-await/)의 몫이다.
 - ★ **`Iterator.prototype[Symbol.dispose]`** — `using` 선언과 함께 쓰는 자원 정리 규약. Chrome 151 에 있고 finished proposals 에서 2027 이다. 이 문서는 다루지 않는다.

@@ -56,7 +56,7 @@
 > **같은 배치** — [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md) · [34 — 타입 검사 관용구](../34-type-checking-idioms/2-summary.md) · [35 — 엄격 모드](../35-strict-mode/2-summary.md).
 >
 > ★★ **경계 — `==` 의 강제 변환 표는 02번이 정본이다.** 여기서는 `==` 를 **기준 서명 하나**로만 쓴다.
-> ★★ **경계 — `switch` 의 나머지 규칙**(fall-through · 라벨)은 목록의 **52번 주제**의 몫이다. 여기서는 **`case` 가 무엇으로 견주나**만 본다.
+> ★★ **경계 — `switch` 의 나머지 규칙**(fall-through · 라벨)은 [목록의 **52번 주제**](../52-switch-labels-and-control-flow/)의 몫이다. 여기서는 **`case` 가 무엇으로 견주나**만 본다.
 
 ```sh
 # js32b-versions.sh
@@ -549,7 +549,7 @@ row("frozen { k: 0 }, redefine with -0", shot(() => (Object.defineProperty(Objec
 - [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md) — ★ **경계**: 그쪽이 **여덟 자리 격자 `9 / 56`** 과 **`-0` 저장**의 정본, 여기는 **그 격자에 네 열을 더하고 한 장으로 묶는 것**.
 - [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md) — `-0` · 구멍 · `lastIndexOf` · `findIndex(Number.isNaN)` 의 정본.
 - [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md) — 재정의가 막히는 격자(동작 (3)의 무대).
-- 목록의 **52번 주제**(`switch`·라벨·흐름 제어 세부) — `switch` 의 나머지 규칙.
+- [목록의 **52번 주제**](../52-switch-labels-and-control-flow/)(`switch`·라벨·흐름 제어 세부) — `switch` 의 나머지 규칙.
 - 파이썬의 「같은 키」 규칙(정체 먼저, 그다음 `==`)과의 대비는 **23번 동작 (9)** 가 정본이다 — 이 편은 다시 돌리지 않았다.
 
 ## 용어 풀이

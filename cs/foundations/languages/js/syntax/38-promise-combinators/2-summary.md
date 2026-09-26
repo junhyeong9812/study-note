@@ -57,7 +57,7 @@
 > [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(★★ **`Array.fromAsync` 는 `next` → settle 을 하나씩, `Promise.all([...gen()])` 은 `next` 셋을 먼저** — 동작 (2)의 「시작은 이미 끝났다」와 이어진다) ·
 > [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(★★ `AggregateError` 의 `errors` 는 **복사한 배열** — 거기가 정본이다).
 >
-> ★ **경계 — 순서의 원리**는 [36번](../36-event-loop-and-microtasks/2-summary.md), **`await` 로 조합기를 받는 법과 순차 대 병렬**은 [39번](../39-async-await/2-summary.md), **취소(`AbortController`)** 는 목록의 **41번 주제**다.
+> ★ **경계 — 순서의 원리**는 [36번](../36-event-loop-and-microtasks/2-summary.md), **`await` 로 조합기를 받는 법과 순차 대 병렬**은 [39번](../39-async-await/2-summary.md), **취소(`AbortController`)** 는 [목록의 **41번 주제**](../41-cancellation-and-timeouts/)다.
 
 ```text
 ===== ./js36b-versions.sh (exit=0) =====
@@ -350,7 +350,7 @@ const run = (combo) => {
 - ★★★ **`lines printed by the jobs after the combinator settled: 8`** — `all` 이 거부된 뒤에도 `A`·`C` 는 **끝까지** 걸었다(`A finished` · `C finished`). **`race` 도 똑같이 `8`** 이다.
 - ★★★ **입력은 조합기에 넘기기 전에 이미 시작했다** — `start` 세 줄이 조합기보다 먼저 찍혔다. 조합기는 **이미 도는 프라미스를 기다릴 뿐**이다. 명세의 네 알고리즘에는 **입력에게 무엇을 알리는 단계가 없다.**
 - ★★ **`B step 1` 과 `>> all rejected` 사이에 네 줄**(`C step 1` · `A step 2` · `C step 2` · `A step 3`)이 끼었다 — `B` 의 거부가 **async 함수의 결과 → `all` 의 반응 → 결과 프라미스 → `then` 처리기**를 거치며 틱을 먹는다(37번 동작 (2)의 흡수 규칙).
-- ★★ 멈추게 하려면 **취소 신호를 따로** 넘겨야 한다 — 프라미스 자체에는 취소가 없다(목록의 **41번 주제** `AbortController`).
+- ★★ 멈추게 하려면 **취소 신호를 따로** 넘겨야 한다 — 프라미스 자체에는 취소가 없다([목록의 **41번 주제**](../41-cancellation-and-timeouts/) `AbortController`).
 - ★ 입력이 **한꺼번에 시작하는 것**은 `Promise.all` 의 덕이 아니라 **배열을 만들 때 셋을 이미 불렀기 때문**이다 — 26번의 `Promise.all([...gen()])` 이 `next` 셋을 **먼저** 부른 것과 같은 이야기다. 39번 동작 (3)이 「시작 로그」로 다시 잰다.
 
 ### (3) ★★ 이미 확정된 입력 둘의 `race` — 200판 가짓수
@@ -524,7 +524,7 @@ rejected with RangeError 「guard: stopped at next #100000」
 
 - ★★★ **`Promise.all returned after 100000 next() calls`** — 가드가 던질 때까지 **호출이 돌아오지 않았다.** 네 조합기는 이터러블을 **호출 안에서 동기로 끝까지** 읽는다(19번 동작 (1)의 `[4]` — 호출 직후 이미 `next#4 done`).
 - ★★ 읽다가 난 예외는 **던지지 않고 거부**가 된다(`rejected with RangeError …`) — 명세의 `IfAbruptRejectPromise`. 호출한 자리의 `try`/`catch` 는 **아무것도 못 잡는다.**
-- ★ 하나씩 기다리며 당기려면 `for await` 나 `Array.fromAsync`(ES2026 — 26번 동작 (7))다. 목록의 **40번 주제**가 정본이다.
+- ★ 하나씩 기다리며 당기려면 `for await` 나 `Array.fromAsync`(ES2026 — 26번 동작 (7))다. [목록의 **40번 주제**](../40-async-iteration-and-for-await/)가 정본이다.
 
 ## 문법 — 형태와 규칙
 
@@ -624,7 +624,7 @@ rejected with RangeError 「guard: stopped at next #100000」
 - [37 — Promise 상태 모델](../37-promise-state-model/2-summary.md) — ★ **경계**: 그쪽은 **프라미스 하나**의 전이·전파·보고, 여기는 **여럿을 묶는 네 방식**.
 - [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md) — `Promise.all` 이 이터러블을 **동기로** 읽는다. [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md) — `Array.fromAsync` 대 `Promise.all`.
 - [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md) — `AggregateError`. [36](../36-event-loop-and-microtasks/2-summary.md) — 잡 FIFO. [39 — `async`/`await`](../39-async-await/2-summary.md) — 순차 대 병렬.
-- [Go 30 — `select`](../../../go/syntax/30-select-default-and-timeouts/2-summary.md) · [Go 28 — 고루틴](../../../go/syntax/28-goroutines-go-statement-cost-and-termination/2-summary.md) — 「기다리는 쪽」과 「도는 쪽」이 따로인 모양의 짝. 목록의 **41번 주제**(취소).
+- [Go 30 — `select`](../../../go/syntax/30-select-default-and-timeouts/2-summary.md) · [Go 28 — 고루틴](../../../go/syntax/28-goroutines-go-statement-cost-and-termination/2-summary.md) — 「기다리는 쪽」과 「도는 쪽」이 따로인 모양의 짝. [목록의 **41번 주제**](../41-cancellation-and-timeouts/)(취소).
 
 ## 용어 풀이
 

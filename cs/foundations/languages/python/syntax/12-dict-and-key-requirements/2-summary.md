@@ -527,7 +527,7 @@ defaultdict 는 dict 인가: True (<class 'collections.defaultdict'>, <class 'di
   `defaultdict` 는 **없을 때만** 팩토리를 부른다.
 - ★★ **`defaultdict` 는 조회만 해도 키가 생긴다.** 오타 한 번이 키를 늘린다.
   `dd.get(k)` 와 `k in dd` 는 안 만든다 — **읽기만 할 때는 이 둘을 쓴다.**
-- 자세한 것은 목록의 **43번 주제**(`collections`)가 정본이다. 여기서는 **「키를 만드나」까지**다.
+- 자세한 것은 [목록의 **43번 주제**](../43-collections/)(`collections`)가 정본이다. 여기서는 **「키를 만드나」까지**다.
 
 **비용** — `setdefault` 는 조회 한 번, `dd[k]` 도 한 번. `if k not in d: d[k] = []` 는 **두 번** 본다.
 
@@ -992,8 +992,8 @@ n in dn          : True | float('nan') in dn : False
 - 이어지는 곳: [20-mutable-default-args](../20-mutable-default-args/2-summary.md) — `dict.fromkeys(keys, [])` 와 같은 집안의 함정.
 - 이어지는 곳: [목록의 **30번 주제**](../30-repr-eq-hash-contracts/) 「`__repr__`·`__eq__`·`__hash__` 계약」 — **세 메서드 계약의 정본**이다.
   여기서는 「키가 되나 안 되나」까지만 본다.
-- 이어지는 곳: 목록의 **43번 주제** 「`collections`」 — `defaultdict`·`OrderedDict`·`Counter`·`ChainMap` 의 정본.
-- 이어지는 곳: 목록의 **47번 주제** 「`json`」 — **dict 키가 문자열로 바뀌는 것**. `{True: ...}` 가 `"true"` 로 나가는 자리다.
+- 이어지는 곳: [목록의 **43번 주제**](../43-collections/) 「`collections`」 — `defaultdict`·`OrderedDict`·`Counter`·`ChainMap` 의 정본.
+- 이어지는 곳: [목록의 **47번 주제**](../47-json/) 「`json`」 — **dict 키가 문자열로 바뀌는 것**. `{True: ...}` 가 `"true"` 로 나가는 자리다.
 - 원리: [`cs/data-structure/`](../../../../../data-structure/) — 해시 테이블의 원리·충돌 해결·재해시 비용은 그쪽이 정본이다.\
   **경계**: 그쪽은 **왜 평균 O(1) 인가**까지, 여기는 **그래서 파이썬 코드에서 무엇이 되고 안 되나**부터다.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — 딕셔너리를 「이렇게 쓴다」까지 다룬다.\
@@ -1017,8 +1017,8 @@ n in dn          : True | float('nan') in dn : False
 
 - **왜 str 만 무작위화하나** — 문서가 이유를 적는다: 악의적 입력으로 **dict 생성을 O(n²)** 로 만드는 DoS 방어다.
   공격 입력은 대개 문자열이라 **정수는 대상이 아니다**([13번](../13-set-and-frozenset/2-summary.md)에서 실측한다).
-- **`Counter`·`ChainMap`** 은 목록의 **43번 주제**. `Counter` 는 없는 키에 `0` 을 돌려주는데 **키를 안 만든다** — `defaultdict` 와 다르다.
-- **`TypedDict`** 는 목록의 **38번 주제** — 런타임에는 **그냥 dict** 다.
+- **`Counter`·`ChainMap`** 은 [목록의 **43번 주제**](../43-collections/). `Counter` 는 없는 키에 `0` 을 돌려주는데 **키를 안 만든다** — `defaultdict` 와 다르다.
+- **`TypedDict`** 는 [목록의 **38번 주제**](../38-namedtuple-and-typeddict/) — 런타임에는 **그냥 dict** 다.
 - **`__slots__` 와 인스턴스 `__dict__`** 는 [목록의 **33번 주제**](../33-property-descriptor-slots/).
 - **키를 정규화하는 실무 패턴** — 들어오는 키를 `str()` 로 한 번 통일하거나, 「숫자 키 금지」를 계약으로 박는다.
   `1`·`True` 혼용은 **테스트가 `==` 로는 못 잡는다.**

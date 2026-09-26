@@ -441,7 +441,7 @@
 | 구조 분해 패턴의 규칙 | [10 — 구조 분해 할당](../10-destructuring-assignment/2-summary.md) |
 | 이터러블 프로토콜 계약 | [목록의 **19번 주제**](../19-iterable-protocol-and-for-of/) |
 | `Object.assign` API | [목록의 **27번 주제**](../27-object-static-methods/) |
-| 깊은 복사 수단 비교 | 목록의 **48번 주제** |
+| 깊은 복사 수단 비교 | [목록의 **48번 주제**](../48-deep-copy-methods-compared/) |
 | 프로퍼티 열거 순서 | [목록의 **13번 주제**](../13-object-literals-and-properties/) |
 | `Array.from` 의 두 문 | [목록의 **26번 주제**](../26-array-search-flatten-and-create/) |
 

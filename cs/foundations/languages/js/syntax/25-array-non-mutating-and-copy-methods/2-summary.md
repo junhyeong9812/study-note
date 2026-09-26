@@ -55,7 +55,7 @@
 > [21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md)(배열 메서드 사슬이 **단계마다 전부 도는 것**) ·
 > [08 — 함수 정의 형태와 매개변수](../08-function-forms-and-parameters/2-summary.md)(`map(parseInt)` 의 이유 — 남는 인자와 `length`) ·
 > [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(얕은 복사).
-> **이어지는 곳** — [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(★ **구멍을 메서드마다 어떻게 보나**는 거기가 정본) · 목록의 **48번 주제** 「깊은 복사 수단 비교」.
+> **이어지는 곳** — [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(★ **구멍을 메서드마다 어떻게 보나**는 거기가 정본) · [목록의 **48번 주제**](../48-deep-copy-methods-compared/) 「깊은 복사 수단 비교」.
 >
 > ★★ **경계 — 변형 메서드의 동작 자체는 24번이 정본이다.** 여기서는 **같은 일을 복사로 하면 무엇이 달라지나**만 본다. 격자에 변형 메서드가 들어간 것은 **대조군**이다.
 > ★★ **경계 — species 가 무엇을 바꾸나는 22번(읽는 메서드)·17번(결과 생성자)이 정본이다.** 여기서는 그 표를 인용해 **복사 메서드 넷이 species 를 안 읽는다**는 것만 잇는다.
@@ -333,7 +333,7 @@ methods that returned with zero write traps: 9 / 17
 
 - ★★ **`Reflect.set` 에 받은 `receiver`(= Proxy)를 그대로 넘겼기 때문**이다. 평범한 쓰기는 「**수신자에** 데이터 프로퍼티를 정의」로 끝나고, 수신자가 Proxy 라 그 정의가 다시 트랩에 걸린다.
 - ★ 그래서 격자에서 **`set` 과 `defineProperty` 가 전 행에서 같은 수**다. **셀 때는 한 열만 보면 된다** — 이 문서는 둘을 다 싣고 합으로 판정했다.
-- ★ 트랩의 계약 자체는 목록의 **45번 주제**(`Proxy`)가 정본이다.
+- ★ 트랩의 계약 자체는 [목록의 **45번 주제**](../45-proxy/)(`Proxy`)가 정본이다.
 
 ### (3) ★★★ 범위 밖 인덱스 — `with` 는 던지고 대입은 조용히 늘린다
 
@@ -781,7 +781,7 @@ row4("map(x => x)", () => show([3, , 1].map((x) => x)));
 - ★★ **`[2]` 사슬의 첫 고리만 복사면 나머지 변형은 복사본에 일어난다** — `base.toSorted().reverse()` 의 `reverse` 는 **새 배열을 뒤집는다**(`base` 그대로). 옛 관용구 `slice().sort()` 와 결과가 같다.
   ★ 반대로 **첫 고리가 변형이면** 사슬 전체가 원본을 바꾼다 — 그 함정은 [24번](../24-array-mutating-methods/2-summary.md)이 정본이다.
 - ★★★ **`[3]` 복사는 한 겹이다** — `sorted === rows` 는 `false` 인데 **`sorted[1] === rows[0]` 은 `true`**. 복사본에서 `id` 를 바꾸면 **원본의 객체가 바뀐다**(`rows [{"id":200},{"id":1}]`).
-  스프레드의 얕은 복사와 같은 성질이다([11번](../11-spread-and-rest/2-summary.md)). 깊은 복사는 목록의 **48번 주제**.
+  스프레드의 얕은 복사와 같은 성질이다([11번](../11-spread-and-rest/2-summary.md)). 깊은 복사는 [목록의 **48번 주제**](../48-deep-copy-methods-compared/).
 - ★★★ **`[4]` 구멍 — 복사 메서드는 구멍을 `undefined` 로 채우고, 옛 메서드는 구멍을 남긴다.**
   `toSorted()` 는 `[1,3,undefined]` 인데 `sort()` 는 `[1,3,<hole>]` · `toReversed()` 는 `[1,undefined,3]` 인데 `reverse()` 는 `[1,<hole>,3]` · `with` 도 `undefined` · `slice`·`map` 은 `<hole>` 을 남긴다.
   ★ 명세가 그대로 갈라 적는다 — `sort` 는 `SortIndexedProperties(…, skip-holes)`, `toSorted` 는 `read-through-holes`. `toReversed`·`with` 는 칸마다 **`Get`** 으로 읽어 **`CreateDataPropertyOrThrow`** 로 쓴다 — 구멍을 읽으면 `undefined` 이고, 그것을 **칸으로 만든다.**
@@ -1016,4 +1016,4 @@ row("b.filter(() => false)", b.filter(() => false));
 
 - **`Set` 이 던지는 경우의 `sort`** — 되쓰는 도중 원본이 동결돼 있거나 setter 가 던지면 **그때는 일부만 쓰인 채** 끝날 수 있다(명세의 `?` 가 되쓰기 단계에도 붙어 있다). 이 문서는 **비교가 던지는 경우만** 쟀다. 동결 배열에 쓰는 쪽은 [24번](../24-array-mutating-methods/2-summary.md)과 [14번](../14-property-descriptors-and-freezing/2-summary.md)이다.
 - **`TypedArray` 의 복사 메서드** — 이 배치는 `TypedArray` 를 **한 줄도 안 돌렸다.** 어느 메서드가 거기에도 있는지는 이 문서가 말하지 않는다.
-- **`Proxy` 불변식** — 트랩이 거짓을 말할 수 있는 한계는 목록의 **45번 주제**다.
+- **`Proxy` 불변식** — 트랩이 거짓을 말할 수 있는 한계는 [목록의 **45번 주제**](../45-proxy/)다.

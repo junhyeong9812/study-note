@@ -55,7 +55,7 @@
 > [38 — Promise 조합기](../38-promise-combinators/2-summary.md)(`Promise.all` 은 **이미 시작한 것**을 기다린다) · [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(★ `Array.fromAsync` 는 하나씩, `Promise.all([...gen()])` 은 셋 다 먼저 — 순차 대 병렬의 **내장 함수 쪽 짝**).
 >
 > ★★ **경계 — 연혁**(`co` 러너에서 언어 문법으로)은 [`history/js/04-비동기-진화.md`](../../../../../../history/js/04-비동기-진화.md) 의 **「4단계 — 제너레이터/이터레이터」** 와 **「5단계 — async/await (ES2017)」** 절이 정본이다. 그 절의 순차/병렬 그림은 **「가로 길이는 원문 수치가 아니다」** 라고 스스로 적는다 — 여기서는 **시작 로그의 순서**로 같은 차이를 보인다.
-> ★ **경계 — `for await` 와 `async function*`** 는 목록의 **40번 주제**, **취소와 타임아웃**은 목록의 **41번 주제**, **모듈 적재 순서**는 목록의 **42번 주제**다.
+> ★ **경계 — `for await` 와 `async function*`** 는 [목록의 **40번 주제**](../40-async-iteration-and-for-await/), **취소와 타임아웃**은 [목록의 **41번 주제**](../41-cancellation-and-timeouts/), **모듈 적재 순서**는 [목록의 **42번 주제**](../42-esm-modules/)다.
 
 ```text
 ===== ./js36b-versions.sh (exit=0) =====
@@ -562,7 +562,7 @@ SyntaxError: await is only valid in async functions and the top level bodies of 
 ```
 
 - ★★★ **같은 글자가 ES 모듈로는 돌고(`before` · `after: value` · `exit 0`), CommonJS 로는 `SyntaxError 「await is only valid in async functions and the top level bodies of modules」` · `exit 1`** — 그리고 **표준 출력은 0 줄**이다. 컴파일 단계에서 거절돼 `before` 조차 안 찍혔다(35번의 early error 와 같은 모양).
-- ★★ **`.mjs` 만이 아니다** — `--input-type=module` 로 표준 입력에 준 **같은 글자**도 돌았다. 기준은 **확장자가 아니라 「모듈 코드인가」** 다(모듈 판정은 호스트의 몫 — 목록의 **42번 주제**).
+- ★★ **`.mjs` 만이 아니다** — `--input-type=module` 로 표준 입력에 준 **같은 글자**도 돌았다. 기준은 **확장자가 아니라 「모듈 코드인가」** 다(모듈 판정은 호스트의 몫 — [목록의 **42번 주제**](../42-esm-modules/)).
 - ★ 두 node 판이 같은 답을 냈다(node 18 도 ES2022 기능을 갖고 있다).
 
 ### (8) ★★ `async` 함수 = 제너레이터 + 프라미스 러너 — 로그가 한 줄씩 같은가
@@ -635,7 +635,7 @@ identical: true
 
 - ★★★ **`identical: true`** — 옆 사슬(`other 1`\~`other 6`)과 섞인 **줄 순서까지** 같았다. `await 1` · `await` 진짜 프라미스 · **거부된 프라미스를 `try` 안에서 `await`** 셋 모두.
 - ★★ 명세의 `Await` 도 **`PromiseResolve` → `PerformPromiseThen`** 이다 — 러너의 `Promise.resolve(r.value).then(…)` 과 같은 두 걸음이다. 연혁 문서의 「async 함수는 본질적으로 제너레이터 + Promise 자동 러너」를 **로그로** 확인한 셈이다.
-- ★ **같지 않은 자리도 있다** — 이 러너는 **thenable 이 아닌 값**과 **진짜 프라미스**만 봤다. 실제 `async` 함수는 러너가 없어도 되고, `yield` 와 `await` 를 **한 함수에 같이** 쓰면 `async function*` 이 된다(목록의 **40번 주제**). 20번의 `yield` 흐름이 정본이다.
+- ★ **같지 않은 자리도 있다** — 이 러너는 **thenable 이 아닌 값**과 **진짜 프라미스**만 봤다. 실제 `async` 함수는 러너가 없어도 되고, `yield` 와 `await` 를 **한 함수에 같이** 쓰면 `async function*` 이 된다([목록의 **40번 주제**](../40-async-iteration-and-for-await/)). 20번의 `yield` 흐름이 정본이다.
 
 ### (9) ★★ 파이썬 대비 — 코루틴은 부르기만 해서는 안 돈다
 
@@ -828,7 +828,7 @@ caller: before f() > f: line 1 > caller: after f() -- got Promise
 - [20 — 제너레이터](../20-generators/2-summary.md) — `yield` 흐름의 정본. [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md) — `return` 이 완료 기록에 담기는 시점. [35 — 엄격 모드](../35-strict-mode/2-summary.md) — early error.
 - [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md) — `Array.fromAsync` 대 `Promise.all`.
 - 파이썬 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **51번** · [Python 17 — 제너레이터](../../../python/syntax/17-generators-yield/2-summary.md) · 러스트 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **54번**.
-- 목록의 **40번 주제**(비동기 이터레이션) · **41번 주제**(취소와 타임아웃) · **42번 주제**(ESM 모듈).
+- [목록의 **40번 주제**](../40-async-iteration-and-for-await/)(비동기 이터레이션) · **41번 주제**(취소와 타임아웃) · **42번 주제**(ESM 모듈).
 
 ## 용어 풀이
 

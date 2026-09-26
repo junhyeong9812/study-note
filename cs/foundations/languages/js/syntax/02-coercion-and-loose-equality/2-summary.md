@@ -1052,9 +1052,9 @@ a || "기본값";             // 모든 falsy 에서 기본값 — 0 과 "" 이 
 - 이어지는 곳: [03 — 숫자와 `BigInt`](../03-numbers-and-bigint/2-summary.md) — `0n == 0` 은 참인데 `0n === 0` 은 거짓인 것의 정본.
 - 이어지는 곳: [04 — 문자열과 UTF-16](../04-strings-and-utf16/2-summary.md) — `'10' < '9'` 가 참인 것, 즉 **문자열 비교의 단위**.
 - 이어지는 곳: [목록의 **12번 주제**](../12-optional-chaining-nullish-and-logical-assignment/) 「옵셔널 체이닝·널 병합·논리 할당」 — `??` 와 `||` 가 갈리는 falsy 케이스.
-- 이어지는 곳: 목록의 **33번 주제** 「동등성 세 종류」 — `===`·`Object.is`·SameValueZero 가 **`Map` 키·`includes`** 에서 갈리는 것의 정본.
+- 이어지는 곳: [목록의 **33번 주제**](../33-equality-three-kinds/) 「동등성 세 종류」 — `===`·`Object.is`·SameValueZero 가 **`Map` 키·`includes`** 에서 갈리는 것의 정본.
 - 이어지는 곳: [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) 「`Symbol` 과 잘 알려진 심볼」 — `Symbol.toPrimitive` 가 **언어 동작 자체를 바꾸는** 자리의 정본.
-- 이어지는 곳: 목록의 **35번 주제** 「엄격 모드」 — 엄격 모드도 `==` 는 안 막는다는 것.
+- 이어지는 곳: [목록의 **35번 주제**](../35-strict-mode/) 「엄격 모드」 — 엄격 모드도 `==` 는 안 막는다는 것.
 - 경계 — 타입 검사: TypeScript 갈래 목록([`ts/syntax/README.md`](../../../ts/syntax/README.md))의 **01번** [`01-what-ts-adds-and-erases`](../../../ts/syntax/01-what-ts-adds-and-erases/2-summary.md).
   **그쪽은 「검사기가 무엇을 지우는가」까지, 여기는 「지워진 뒤 런타임이 무엇을 하는가」부터다.**
 - 경계 — 다른 언어의 같은 자리: [`python/syntax/04-numeric-types-and-division`](../../../python/syntax/04-numeric-types-and-division/2-summary.md) —

@@ -1190,8 +1190,8 @@ print(f"{name=!s}")     # name=값
 - 이어지는 곳: [04-numeric-types-and-division](../04-numeric-types-and-division/2-summary.md) — `bool` 이 `int` 의 하위 클래스라 `f"{True:10}"` 이 `'         1'` 인 것.
 - 이어지는 곳: [20-mutable-default-args](../20-mutable-default-args/2-summary.md) — 기본 인자의 f-string 이 `def` 때 한 번 평가되는 것.
 - 이어지는 곳: [목록의 **30번 주제**](../30-repr-eq-hash-contracts/) 「`__repr__`·`__eq__`·`__hash__` 계약」 — `__repr__`/`__str__`/`__format__` 의 기본값 사슬.
-- 이어지는 곳: 목록의 **50번 주제** 「`decimal`·float 정밀도·`round`」 — `f"{v:.2f}"` 가 반올림에서 무엇을 하나.
-- 이어지는 곳: 목록의 **49번 주제** 「`datetime` 과 `zoneinfo`」 — 포맷 스펙 자리를 `strftime` 형식으로 쓰는 대표 사례.
+- 이어지는 곳: [목록의 **50번 주제**](../50-decimal-float-precision-and-round/) 「`decimal`·float 정밀도·`round`」 — `f"{v:.2f}"` 가 반올림에서 무엇을 하나.
+- 이어지는 곳: [목록의 **49번 주제**](../49-datetime-and-zoneinfo/) 「`datetime` 과 `zoneinfo`」 — 포맷 스펙 자리를 `strftime` 형식으로 쓰는 대표 사례.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — 문자열 포맷을 「이렇게 쓴다」까지 다룬다.\
   **경계**: 그쪽은 사용 예시까지, 여기는 「**언제 평가되고 무엇으로 컴파일되나**」부터다.
 - 연혁은 여기가 아니다: [`history/python/`](../../../../../../history/python/)

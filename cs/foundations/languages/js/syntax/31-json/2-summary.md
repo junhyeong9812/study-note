@@ -61,7 +61,7 @@
 > [03 — 숫자와 `BigInt`](../03-numbers-and-bigint/2-summary.md)(`NaN`·`-0`·안전 정수 한계) · [04 — 문자열과 UTF-16](../04-strings-and-utf16/2-summary.md)(짝 없는 서로게이트).
 > **같은 배치** — [28 — `String` 메서드와 템플릿 리터럴](../28-string-methods-and-template-literals/2-summary.md) · [29 — 정규식 기본](../29-regexp-basics/2-summary.md) · [30 — 정규식 심화](../30-regexp-advanced/2-summary.md).
 >
-> ★★ **경계 — 깊은 복사는** 목록의 **48번 주제**가 정본이다. 여기서는 `structuredClone` 을 **격자의 비교 열 하나**로만 둔다.
+> ★★ **경계 — 깊은 복사는** [목록의 **48번 주제**](../48-deep-copy-methods-compared/)가 정본이다. 여기서는 `structuredClone` 을 **격자의 비교 열 하나**로만 둔다.
 > ★★ **경계 — `Map` 을 JSON 으로 옮기는 법은 23번이 정본이다.** 여기서는 격자의 **한 행**으로만 둔다.
 
 ```sh
@@ -768,7 +768,7 @@ console.log("  " + J('{"a":1,"a":2}').padEnd(18) + "-> " + J(JSON.parse('{"a":1,
 ### (5) ★★★ 깊은 복사 대용의 손실 — JSON 왕복 대 `structuredClone`
 
 **언제 쓰나** — 「상태를 통째로 복사해 두자」에서 `JSON.parse(JSON.stringify(x))` 를 떠올릴 때.
-★★ **깊은 복사 수단 비교의 정본은 목록의 48번 주제**다. 여기서는 **JSON 왕복이 무엇을 잃나**를 보고, `structuredClone` 은 **비교 열 하나**로만 둔다.
+★★ **깊은 복사 수단 비교의 정본은 [목록의 48번 주제](../48-deep-copy-methods-compared/)다**. 여기서는 **JSON 왕복이 무엇을 잃나**를 보고, `structuredClone` 은 **비교 열 하나**로만 둔다.
 
 ```js
 // js28b-31e-deep-copy.js
@@ -1090,7 +1090,7 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 | `JSON.parse(text)` | 값 — 문법이 틀리면 `SyntaxError` | ES5 | 동작 (4) |
 | `JSON.parse(text, fn)` | `fn.call(holder, key, value)` 를 **후위 순서로** — `undefined` 면 지운다 | ES5 | 동작 (4)의 `[1]` |
 | `fn(key, value, context)` · `JSON.rawJSON(text)` · `JSON.isRawJSON(o)` | 원시값의 원문 글자 · 원문을 그대로 끼우는 동결 객체 | **ES2026** | 동작 (6) — Chrome 만 |
-| `structuredClone(v)` | 깊은 복사 — **호스트 API**(ECMA-262 밖) | — | 동작 (5) · 목록의 **48번 주제** |
+| `structuredClone(v)` | 깊은 복사 — **호스트 API**(ECMA-262 밖) | — | 동작 (5) · [목록의 **48번 주제**](../48-deep-copy-methods-compared/) |
 
 - **자리가 정한다** — 못 싣는 값(`undefined`·함수·심볼)은 **속성이면 빠지고, 배열이면 `null`, 최상위면 `undefined`.**
 - **숫자** — 유한하지 않으면 `null`, `-0` 은 `0`, `BigInt` 는 `TypeError`.
@@ -1112,7 +1112,7 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 
 ### (4) ★★★ `JSON.parse(JSON.stringify(x))` 가 깊은 복사라 믿는다
 
-**`Date` → 문자열 · `Map` → `{}` · `undefined` → 키 없음 · `NaN` → `null` · 공유 → 둘로 · 순환 → `TypeError`**(동작 (5) — 두 열이 `11 / 13` 행에서 갈린다). 깊은 복사 수단의 선택은 목록의 **48번 주제**.
+**`Date` → 문자열 · `Map` → `{}` · `undefined` → 키 없음 · `NaN` → `null` · 공유 → 둘로 · 순환 → `TypeError`**(동작 (5) — 두 열이 `11 / 13` 행에서 갈린다). 깊은 복사 수단의 선택은 [목록의 **48번 주제**](../48-deep-copy-methods-compared/).
 
 ### (5) ★★★ `replacer` 에서 `value instanceof Date` 로 날짜를 잡는다
 
@@ -1176,7 +1176,7 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 - **`replacer` 함수** — 호출하는 쪽에서 한 번만 바꿀 때(비밀 필드 빼기 · `BigInt` → 문자열). **배열 `replacer`** 는 모든 깊이에 적용됨을 알고 쓴다.
 - **`reviver`** — `Date`·`BigInt` 를 되살릴 때. 부모가 자식보다 **나중**에 불린다는 것을 전제로 짠다.
 - **`context.source`·`JSON.rawJSON`** — ES2026 이 되는 런타임에서만(이 머신의 node 두 판에는 없다).
-- ★ **안 쓰는 자리** — **깊은 복사**(동작 (5) — 목록의 **48번 주제**) · 순환이 있을 수 있는 그래프 · 함수를 담은 설정 객체.
+- ★ **안 쓰는 자리** — **깊은 복사**(동작 (5) — [목록의 **48번 주제**](../48-deep-copy-methods-compared/)) · 순환이 있을 수 있는 그래프 · 함수를 담은 설정 객체.
 
 ## 핵심 문장
 
@@ -1195,7 +1195,7 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 - [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md) — `JSON.stringify(x)` 가 `toPrimitive` 를 안 부르는 것(`(no call)`).
 - [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md) — 리터럴 `__proto__:` 의 정본 · 정수 키 순서(동작 (1)의 `[3]`).
 - [03 — 숫자와 `BigInt`](../03-numbers-and-bigint/2-summary.md) — `-0`·`NaN`·안전 정수(동작 (6)의 20자리 숫자).
-- 목록의 **48번 주제**(깊은 복사 수단 비교) — ★ **경계**: 그쪽이 **`structuredClone`·JSON 왕복·스프레드의 선택**의 정본, 여기는 **JSON 왕복의 손실과 비교 열 하나**.
+- [목록의 **48번 주제**](../48-deep-copy-methods-compared/)(깊은 복사 수단 비교) — ★ **경계**: 그쪽이 **`structuredClone`·JSON 왕복·스프레드의 선택**의 정본, 여기는 **JSON 왕복의 손실과 비교 열 하나**.
 - Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **47번**(`json`) — 동작 (7)의 대비. 폴더가 아직 없어 직접 던졌다.
 
 ## 용어 풀이
@@ -1219,4 +1219,4 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 
 - **JSON superset(ES2019)** — 문자열 안의 U+2028·U+2029 가 JS 문자열 리터럴에서도 허용된 변화. 이 문서는 **돌리지 않았다.**
 - **Well-formed `JSON.stringify`(ES2019)** — 짝 없는 서로게이트를 `\ud800` 으로 이스케이프. 판별 블록에 한 줄로만 있다(04번의 주제).
-- **JSON 모듈(`import … with { type: "json" }`, ES2025)** — 목록의 **44번 주제**의 몫이다.
+- **JSON 모듈(`import … with { type: "json" }`, ES2025)** — [목록의 **44번 주제**](../44-dynamic-import-top-level-await-and-import-attributes/)의 몫이다.

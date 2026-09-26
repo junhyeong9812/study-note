@@ -919,8 +919,8 @@ For more information about this error, try `rustc --explain E0597`.
 |---|---|
 | 별칭 규칙 자체(E0499·E0502·NLL·재빌림) | [**10번 주제**](../10-borrowing-and-aliasing-rules/) |
 | 수명 표기와 생략 규칙 | [**12번 주제**](../12-lifetime-annotations-and-elision/) |
-| `RefCell` 내부 가변성 | 목록의 **42번 주제** |
-| `mem::replace`/`take`·`Drop` | 목록의 **44번 주제** |
+| `RefCell` 내부 가변성 | [목록의 **42번 주제**](../42-refcell-cell-interior-mutability/) |
+| `mem::replace`/`take`·`Drop` | [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/) |
 | `HashMap::entry` | [목록의 **39번 주제**](../39-hashmap-vs-btreemap-and-entry-api/) |
 | `Vec::retain`·`drain` | [목록의 **38번 주제**](../38-vec-api-capacity-retain-and-drain/) |
 | `iter`/`iter_mut`/`into_iter` | [목록의 **37번 주제**](../37-intoiterator-three-forms-iter-iter-mut-into-iter/) |

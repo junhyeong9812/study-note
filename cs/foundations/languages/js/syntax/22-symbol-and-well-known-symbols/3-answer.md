@@ -210,7 +210,7 @@ cells where the toString tag and the slot check disagree 7 / 7
   ★ **배열은 슬롯 목록(`IsArray`)에 있는데도 덮인다** — 태그는 마지막 단계다.
 - ★★ **`Map` 의 `"Map"` 은 `Map.prototype` 의 프로퍼티**라 지우면 `[object Object]` 로 떨어진다. **`Array.prototype` 에는 그 프로퍼티가 없다** — 배열의 `"Array"` 는 슬롯에서 온다.
 - ★ **태그가 문자열이 아니면**(`42`·`undefined`) 무시된다.
-- ★★ **판별은 슬롯을 두드려라** — `Array.isArray` · `Map.prototype.has.call(v, …)` 이 던지나. 목록의 **34번 주제**가 이어받는다.
+- ★★ **판별은 슬롯을 두드려라** — `Array.isArray` · `Map.prototype.has.call(v, …)` 이 던지나. [목록의 **34번 주제**](../34-type-checking-idioms/)가 이어받는다.
 
 ### 5. `hasInstance` — **대입은 물려받은 `writable: false` 에 막혀 비엄격은 조용히 무시, 엄격은 `TypeError`; `defineProperty` 는 된다**
 
@@ -522,7 +522,7 @@ a `using` declaration: compiled
 - ★★ **`Symbol.unscopables` 는 `with` 문이 객체에서 찾지 않을 이름**을 정한다(`with ([1, 2])` 안의 `keys` 가 바깥 변수). **그런데 `with` 는 엄격 모드에서 `SyntaxError` 이고 모듈·`class` 몸통은 늘 엄격**이라 효과를 볼 자리가 거의 없다.
   ★ 그 객체의 **프로토타입이 `null`** 인 것은 `Object.prototype` 의 이름이 섞이지 않게 하려는 모양새다. 키 **순서**는 두 판이 다르게 찍었다(흔들리는 칸).
 - ★★★ **잘 알려진 심볼은 세 판 다 15개이고 목록이 같다.** 그중 **`dispose`·`asyncDispose` 는 ES2026 본문에 없다**(finished proposals 표로 ES2027).
-  ★★★ **그런데 `using` 선언은 node 두 판에서 `SyntaxError`, Chrome 151 에서만 `compiled`** 다. **「심볼이 있다」는 「문법이 있다」가 아니다.** 목록의 **51번 주제**가 이어받는다.
+  ★★★ **그런데 `using` 선언은 node 두 판에서 `SyntaxError`, Chrome 151 에서만 `compiled`** 다. **「심볼이 있다」는 「문법이 있다」가 아니다.** [목록의 **51번 주제**](../51-explicit-resource-management-and-using/)가 이어받는다.
 - ★ `using` 의 문구가 node 두 판에서 다르다(`Unexpected identifier` / `... 'r'`) — **문구만** 갈린 블록이다.
 
 ### 12. 파이썬은 **이름**, JS 는 **심볼** — 그리고 진릿값 훅은 JS 에 없다 (연결)

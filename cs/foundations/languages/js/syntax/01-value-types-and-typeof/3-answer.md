@@ -223,7 +223,7 @@ js01b-01c-boxing.js                같다 (한 글자도)
 - ★★ **둘째 창은 `Object.prototype.toString.call(x)`** 이고 `[object Null]`·`[object Array]`·`[object Date]` 처럼 **브랜드 태그**를 준다.
   1번의 출력에서 `null`·`Date`·`RegExp`·`Map`·`Math`·`JSON` 이 전부 갈렸다.
 - ★★ **둘째 창도 속일 수 있다** — `Symbol.toStringTag` 를 객체에 박으면 그 문자열이 바뀐다.
-  ★ 「무엇이 언제 깨지나」는 목록의 **34번 주제**가 정본이다.
+  ★ 「무엇이 언제 깨지나」는 [목록의 **34번 주제**](../34-type-checking-idioms/)가 정본이다.
 - ★ **다섯을 가르는 법** — `null` 은 `x === null` · 배열은 `Array.isArray(x)` ·
   `Date`·`Map` 은 브랜드 태그나 `instanceof` · `Math` 는 값 비교(`x === Math`)다.
 - ★★ **세 창으로 못 푸는 질문**이 있다 — 「**이 객체가 다른 realm(다른 창·다른 워커)에서 왔나**」.
@@ -265,8 +265,8 @@ js01b-01c-boxing.js                같다 (한 글자도)
 | 주제 | 정본 |
 |---|---|
 | TDZ 와 호이스팅 | [목록의 **05번 주제**](../05-var-let-const-and-tdz/) |
-| 엄격 모드가 바꾸는 규칙 전부 | 목록의 **35번 주제** |
-| `Array.isArray`·`instanceof`·브랜드 태그가 **어디서 깨지나** | 목록의 **34번 주제** |
+| 엄격 모드가 바꾸는 규칙 전부 | [목록의 **35번 주제**](../35-strict-mode/) |
+| `Array.isArray`·`instanceof`·브랜드 태그가 **어디서 깨지나** | [목록의 **34번 주제**](../34-type-checking-idioms/) |
 | `Symbol.toStringTag` 로 태그를 바꾸는 것 | [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) |
 | 프로퍼티 열거 순서·`"k" in o` | [목록의 **13번 주제**](../13-object-literals-and-properties/) |
 

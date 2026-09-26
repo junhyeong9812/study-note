@@ -695,7 +695,7 @@ print("   parse_int=Decimal 로 4301 자리 :", type(json.loads("7" * 4301, pars
 그림 해설.
 
 * ★★ **`[1]` — 같은 값으로 돌아온 행 `7 / 7`.** `0.1 + 0.2` 는 `0.30000000000000004` 로 **보이는 그대로** 나가고 그대로 돌아온다.
-  ★ **`1e16 + 1` 이 `1e+16`** 인 것은 **`json` 이 잃은 것이 아니다** — 그 덧셈 결과가 이미 `1e16` 이다([04번](../04-numeric-types-and-division/2-summary.md)·목록의 **50번 주제**).
+  ★ **`1e16 + 1` 이 `1e+16`** 인 것은 **`json` 이 잃은 것이 아니다** — 그 덧셈 결과가 이미 `1e16` 이다([04번](../04-numeric-types-and-division/2-summary.md)·[목록의 **50번 주제**](../50-decimal-float-precision-and-round/)).
 * ★★ **`[2]`·`[3]` — `int` 는 자릿수 그대로** 나가고 **`9007199254740993`(`2 ** 53 + 1`)도 `int` 로 정확히** 돌아온다. 같은 글자 뒤에 **`.0` 을 붙이면 `float` 로 읽혀 `...992.0`** — 받는 타입은 **글자에 점이 있나**가 정한다.
   ★ JS 는 숫자를 전부 double 로 읽는다 — [JS 31번](../../../js/syntax/31-json/2-summary.md) 동작 (6)에서 20자리 id 가 `12345678901234567000` 으로 뭉개졌다. **파이썬이 정확히 낸 큰 정수를 JS 가 조용히 바꾼다.**
 * ★★ **`[3]` — `1e400` 은 에러 없이 `inf`**, **`-0`(정수 글자)은 `0`**(부호가 사라진다), **`-0.0` 은 `-0.0`**. 읽는 쪽도 **조용히 값을 바꾼다.**
@@ -1213,7 +1213,7 @@ json.loads(s, object_pairs_hook=검사함수)                 # 중복 키 거�
 * 선행: [13-set-and-frozenset](../13-set-and-frozenset/2-summary.md) — `set` 이 JSON 으로 못 나가는 것을 이 주제가 받았다(동작 1 — `TypeError`, 동작 8 — `default` 로 `sorted`).
 * 선행: [06-strings-bytes-unicode](../06-strings-bytes-unicode/2-summary.md) — 동작 5 의 오류 처리기 표. **경계**: 인코딩·오류 처리기는 그쪽, 여기는 **`ensure_ascii` 가 그것과 셋 중 둘에서 다르다**는 것만(동작 6).
 * 이웃: [31-comparison-protocol-and-sortability](../31-comparison-protocol-and-sortability/2-summary.md) — `sort_keys` 가 섞인 키에서 터지는 이유(`<` 가 없다).
-* 이웃: [04-numeric-types-and-division](../04-numeric-types-and-division/2-summary.md) — `1e16 + 1` 이 이미 `1e16` 인 이유는 float 쪽이다. 금액은 목록의 **50번 주제**.
+* 이웃: [04-numeric-types-and-division](../04-numeric-types-and-division/2-summary.md) — `1e16 + 1` 이 이미 `1e16` 인 이유는 float 쪽이다. 금액은 [목록의 **50번 주제**](../50-decimal-float-precision-and-round/).
 * 이어지는 곳: [48번](../48-pathlib-and-file-io/2-summary.md) 「`pathlib` 와 파일 I/O」 — `json.dump(obj, fp)` 의 `fp` 를 **어떤 인코딩으로 열었나**.
 * 대비: [JS 31번 — `JSON`](../../../js/syntax/31-json/2-summary.md) — ★★★ **경계**: JS 의 자리별 매핑 격자(`3 / 14`)·`toJSON`/replacer 순서·`reviver` 순서·순환 메시지의 경로·깊은 복사 손실, 그리고 **파이썬에 같은 질문을 던진 동작 (7)**(`NaN`·중복 키·tuple 키·`set`·순환·`default`·`loads('NaN')`)은 그쪽이다.
   여기는 그 위에서 **왕복 격자 · 키 왕복 손실 · `sort_keys` · `object_hook` 순서 · `default` 의 키 자리 · `ensure_ascii` · 인코더 경로와 판**을 더 갔다.

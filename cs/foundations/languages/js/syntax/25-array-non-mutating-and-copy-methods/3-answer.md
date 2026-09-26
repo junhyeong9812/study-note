@@ -253,7 +253,7 @@ methods that returned with zero write traps: 9 / 17
 - ★★ 평범한 쓰기(`OrdinarySet`)는 결국 **「receiver 에 데이터 프로퍼티를 정의」** 로 끝난다. 탐침의 `set` 트랩은 받은 `r`(= Proxy)을 그대로 `Reflect.set(t, k, v, r)` 에 넘기므로
   그 정의가 **Proxy 의 `[[DefineOwnProperty]]`** 가 되어 `defineProperty` 트랩이 한 번 더 불린다. 그래서 1번 격자의 두 열이 **행마다 같다.**
 - ★ **셀 때는 한 열(`set`)만 보면 된다.** 이 문서는 둘 다 싣고 **합**으로 0 을 판정했다 — 어느 쪽으로 세도 결론이 같다.
-- ★ `receiver` 를 안 넘기면(`Reflect.set(t, k, v)`) 정의는 **대상 `t`** 에 일어나 `defineProperty` 트랩이 안 불릴 것이다 — ★ **이 판에서 돌려 보지 않았다.** 트랩 계약은 목록의 **45번 주제**다.
+- ★ `receiver` 를 안 넘기면(`Reflect.set(t, k, v)`) 정의는 **대상 `t`** 에 일어나 `defineProperty` 트랩이 안 불릴 것이다 — ★ **이 판에서 돌려 보지 않았다.** 트랩 계약은 [목록의 **45번 주제**](../45-proxy/)다.
 
 ### 8. `map` 은 하위 클래스, `toSorted` 는 늘 `Array` — 복사 메서드는 species 를 안 읽는다 ★★★
 
@@ -569,7 +569,7 @@ identical 26  ·  differs 4  ·  total 30
 
 - ★★ `toSorted`·`slice`·`map` 은 **새 배열(컨테이너)** 을 만든다. 원소는 **값을 옮길 뿐**이라 객체 원소는 **같은 객체**다 — 2번 `[3]` 의 `sorted[1] === rows[0]` true.
   ★ 스프레드의 얕은 복사와 같은 성질이다([11번](../11-spread-and-rest/2-summary.md)).
-- ★ 중첩까지 새로 만드는 수단(`structuredClone` · JSON 왕복 …)은 목록의 **48번 주제**가 정본이다 — 이 편은 **「한 겹이다」까지**만.
+- ★ 중첩까지 새로 만드는 수단(`structuredClone` · JSON 왕복 …)은 [목록의 **48번 주제**](../48-deep-copy-methods-compared/)가 정본이다 — 이 편은 **「한 겹이다」까지**만.
 - ★ 비변형 메서드가 못 막는 원본 쓰기는 **콜백**에서 온다 — 1번 마지막 행(`set 3`). 메서드의 성질은 「**자신이** 안 쓴다」까지다.
 
 ### 11. 파이썬 `sorted` ↔ JS `toSorted` · 정렬 실패 시 파이썬은 부분 변경, JS `sort` 는 원본 그대로 — 명세(문서)가 정한 차이 ★★★

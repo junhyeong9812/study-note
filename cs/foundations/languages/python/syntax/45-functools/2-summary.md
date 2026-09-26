@@ -1199,7 +1199,7 @@ sorted(xs, key=cmp_to_key(cmp))
 
 ## 더 들어가면
 
-* ★ **`lru_cache` 의 스레드 안전** — 문서는 *"The cache is threadsafe"* 라 적되 *"It is possible for the wrapped function to be called more than once if another thread makes an additional call before the initial call has been completed and cached."* 라고 덧붙인다. **스레드 경쟁은 이 문서가 재지 않았다**(목록의 **53번 주제**).
+* ★ **`lru_cache` 의 스레드 안전** — 문서는 *"The cache is threadsafe"* 라 적되 *"It is possible for the wrapped function to be called more than once if another thread makes an additional call before the initial call has been completed and cached."* 라고 덧붙인다. **스레드 경쟁은 이 문서가 재지 않았다**([목록의 **53번 주제**](../53-gil-and-choosing-concurrency/)).
 * ★ **메서드 캐시를 인스턴스에 두는 법** — FAQ 는 `station_id` 가 바뀌는 경우 `__eq__`·`__hash__` 를 정의해 캐시가 변경을 알아채게 하는 예를 싣는다. 해시 계약은 [30번](../30-repr-eq-hash-contracts/2-summary.md)이 정본이다.
 * ★ **`singledispatchmethod`**(3.8) — 메서드판. 첫 인자가 아니라 **`self`·`cls` 다음 인자**의 타입으로 고른다(문서). 이 문서는 재지 않았다.
 * ★ **`total_ordering`** — 비교 메서드 하나로 나머지를 채운다. [31번](../31-comparison-protocol-and-sortability/2-summary.md)의 몫이다.

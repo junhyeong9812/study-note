@@ -50,7 +50,7 @@
 > [07](../07-this-binding-four-rules/2-summary.md) · [08](../08-function-forms-and-parameters/2-summary.md) · [09](../09-call-apply-bind/2-summary.md) · [10](../10-destructuring-assignment/2-summary.md) · [12](../12-optional-chaining-nullish-and-logical-assignment/2-summary.md) · [13](../13-object-literals-and-properties/2-summary.md) · [14](../14-property-descriptors-and-freezing/2-summary.md) · [16](../16-class-syntax/2-summary.md) · [24](../24-array-mutating-methods/2-summary.md) — 정본 표의 인용 행.
 > **같은 배치** — [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md) · [33 — 동등성 세 종류](../33-equality-three-kinds/2-summary.md) · [34 — 타입 검사 관용구](../34-type-checking-idioms/2-summary.md).
 >
-> ★★ **경계 — 모듈 자체**(`import`/`export`·로딩·최상위 `await`)는 목록의 **42번 주제**(ESM)와 **43번 주제**(CJS 상호운용)의 몫이다. 여기서는 **「모듈 코드는 늘 엄격」** 한 줄을 잰다.
+> ★★ **경계 — 모듈 자체**(`import`/`export`·로딩·최상위 `await`)는 [목록의 **42번 주제**](../42-esm-modules/)(ESM)와 **43번 주제**(CJS 상호운용)의 몫이다. 여기서는 **「모듈 코드는 늘 엄격」** 한 줄을 잰다.
 
 ```sh
 # js32b-versions.sh
@@ -592,7 +592,7 @@ echo "(exit $?)"
 - [08 — 함수 정의 형태와 매개변수](../08-function-forms-and-parameters/2-summary.md) — ★ **경계**: 그쪽이 **`arguments` `7 / 12` · 매개변수 형태 `7 / 20`** 의 정본.
 - [10](../10-destructuring-assignment/2-summary.md) · [12](../12-optional-chaining-nullish-and-logical-assignment/2-summary.md) · [14](../14-property-descriptors-and-freezing/2-summary.md) · [24](../24-array-mutating-methods/2-summary.md) — 쓰기 실패와 모드의 정본들.
 - [16 — `class` 문법](../16-class-syntax/2-summary.md) — 클래스 몸통이 늘 엄격인 것 · 누수 `1 / 2`.
-- 목록의 **42번 주제**(ESM 모듈) · 목록의 **43번 주제**(CJS 와 ESM 상호운용) — 모듈 자체의 정본.
+- [목록의 **42번 주제**](../42-esm-modules/)(ESM 모듈) · [목록의 **43번 주제**](../43-cjs-and-esm-interop/)(CJS 와 ESM 상호운용) — 모듈 자체의 정본.
 
 ## 용어 풀이
 

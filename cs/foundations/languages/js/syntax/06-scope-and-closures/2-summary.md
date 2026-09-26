@@ -1115,7 +1115,7 @@ function snapshot(v) { return () => v; }   // 값을 박아 두고 싶으면 이
 - 이어지는 곳: [목록의 **07번 주제**](../07-this-binding-four-rules/) 「`this` 바인딩 네 규칙」 — ★★ **`this` 는 이 문서의 규칙을 따르지 않는다.** 그 대비가 07번의 첫 문장이다.
 - 이어지는 곳: [목록의 **08번 주제**](../08-function-forms-and-parameters/) 「함수 정의 형태와 매개변수」 — 매개변수도 클로저가 잡는 이름이다. **기본값의 스코프**가 거기 있다.
 - 이어지는 곳: [목록의 **16번 주제**](../16-class-syntax/) 「`class` 문법」 — `#` 필드가 클로저 비공개와 같은 자리를 다른 방법으로 푼다.
-- 이어지는 곳: 목록의 **47번 주제** 「`WeakRef`·`FinalizationRegistry`」 — 6번 절이 쓴 도구의 정본. **GC 시점에 기대면 안 되는 이유**가 거기다.
+- 이어지는 곳: [목록의 **47번 주제**](../47-weakref-and-finalizationregistry/) 「`WeakRef`·`FinalizationRegistry`」 — 6번 절이 쓴 도구의 정본. **GC 시점에 기대면 안 되는 이유**가 거기다.
 - ★★★ 경계 — 다른 언어의 **같은 결함**: [`python/syntax/22-closures-and-late-binding`](../../../python/syntax/22-closures-and-late-binding/2-summary.md) —
   파이썬도 **루프가 상자를 안 만든다.** 그쪽은 `함수.__closure__[0]` 을 꺼내 **`is` 로 셀 개수를 세고**, 여기는 손잡이가 없어 **쓰기 탐침으로 센다.**
   ★★ **파이썬은 언어가 이 결함을 안 고쳤다** — 기본 인자·팩토리·`partial` 로 **쓰는 쪽이** 고친다.
@@ -1141,13 +1141,13 @@ function snapshot(v) { return () => v; }   // 값을 박아 두고 싶으면 이
 - **IIFE (Immediately Invoked Function Expression)**: 만들자마자 부르는 함수 표현식. `let` 이 없던 시절 **블록 스코프 대용**이었다.
 - **모듈 패턴(module pattern)**: 팩토리 안의 이름을 비공개 상태로 쓰고 메서드만 돌려주는 관용구.
 - **쓰기 탐침(write probe)**: 이 문서가 쓰는 도구. 한 함수로 쓰고 나머지로 읽어 **같은 칸인지 판정**한다. 주소를 안 쓴다.
-- **`WeakRef`**: 대상을 **붙들지 않고** 가리키는 참조(ES2021). 수거되면 `deref()` 가 `undefined` 다. 정본은 목록의 **47번 주제**다.
+- **`WeakRef`**: 대상을 **붙들지 않고** 가리키는 참조(ES2021). 수거되면 `deref()` 가 `undefined` 다. 정본은 [목록의 **47번 주제**](../47-weakref-and-finalizationregistry/)다.
 
 ## 더 들어가면
 
 - **엔진이 스코프를 어떻게 담는가**(변수 하나짜리 슬롯인가, 방 통째인가)는 **이 주제가 아니다.**
   표준 API 로 볼 방법이 없고, 6번 절의 「형제까지 산다」는 그 사정이 **밖으로 새어 나온 것**일 뿐 명세 보장이 아니다.
-- **`with` 와 직접 `eval` 이 스코프 체인을 바꾸는 자리**는 엄격 모드에서 막히거나 쓰지 않는다 — 목록의 **35번 주제**에서 한 줄로 다룬다.
+- **`with` 와 직접 `eval` 이 스코프 체인을 바꾸는 자리**는 엄격 모드에서 막히거나 쓰지 않는다 — [목록의 **35번 주제**](../35-strict-mode/)에서 한 줄로 다룬다.
 - **모듈(ESM)의 최상위 스코프**는 또 다르다. 이 배치는 CommonJS 와 브라우저 classic script 두 자리만 던졌다 — **ESM 은 42번 주제**의 몫이다.
 - **안 돌려 본 것** — ESM(`.mjs`) 최상위 · Web Worker · 다른 엔진(SpiderMonkey·JavaScriptCore) ·
   Node 18 보다 낮은 판 · **힙 스냅샷으로 실제 보유량을 재는 것** · `--max-old-space-size` 같은 플래그를 바꿔 GC 관찰을 되풀이하는 것.

@@ -63,7 +63,7 @@
 >
 > ★★ **경계 — 열거 순서와 뷰의 격자는 13번이 정본이다.** 여기서는 **그 순서를 `keys`·`entries`·`assign` 이 그대로 따른다는 것**과 **뷰가 무엇을 부르나**만 본다.
 > ★★ **경계 — 스프레드의 트랩 로그는 11번이 정본이다.** 여기서는 **`assign` 쪽의 getter·setter**를 잰다.
-> ★★ **경계 — 깊은 복사는** 목록의 **48번 주제**가 정본이다. 여기서는 `structuredClone` 을 **격자의 한 열**로만 둔다.
+> ★★ **경계 — 깊은 복사는** [목록의 **48번 주제**](../48-deep-copy-methods-compared/)가 정본이다. 여기서는 `structuredClone` 을 **격자의 한 열**로만 둔다.
 
 ```sh
 # js24b-versions.sh
@@ -458,7 +458,7 @@ cells whose answer differs from the Object.assign column: 3 / 18
 - ★★ **둘째 행 — getter 를 getter 째 옮기는 도구는 넷 중에 없다.** `[2]` 에서 넷 다 **복사하는 동안 한 번 읽었다**(`1`). 옮기고 싶으면 `Object.defineProperties({}, Object.getOwnPropertyDescriptors(src))` 쪽이다(이 문서는 격자에 넣지 않았다).
 - ★★ **셋째 행 — `Object.entries` 는 심볼 키를 안 센다.** 그래서 `fromEntries(entries(src))` 왕복은 **심볼을 잃는다**(동작 (4)).
 - ★★ **다섯째 행 — 넷 다 프로토타입을 잃는다.** `Point` 인스턴스를 복사하면 **평범한 객체**가 나온다. `structuredClone` 도 마찬가지다.
-- ★ **`structuredClone` 은 ECMA-262 가 아니라 호스트 API** 다(HTML 표준 — 이 판의 node 20 에는 전역으로 있다). 깊은 복사 수단의 비교는 목록의 **48번 주제**가 정본이라 여기서는 **한 열**로만 둔다.
+- ★ **`structuredClone` 은 ECMA-262 가 아니라 호스트 API** 다(HTML 표준 — 이 판의 node 20 에는 전역으로 있다). 깊은 복사 수단의 비교는 [목록의 **48번 주제**](../48-deep-copy-methods-compared/)가 정본이라 여기서는 **한 열**로만 둔다.
 
 ### (3) ★★★ 쓰기를 거부하는 대상 — 비엄격에서도 던지고, 되돌리지 않는다
 
@@ -951,7 +951,7 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 | `Object.groupBy(iterable, cb)` | **프로토타입이 `null` 인** 새 객체 — 값은 새 배열 | **ES2024** | 동작 (6) |
 | `Map.groupBy(iterable, cb)` | 새 `Map` — 키는 정체로(`-0` 은 `+0`) | **ES2024** | 동작 (6)의 `[4]` |
 | `Object.getOwnPropertyNames` · `Object.getOwnPropertySymbols` · `Reflect.ownKeys` | 비열거까지 · 심볼만 · 전부 | ES5 · ES2015 | 13번의 뷰 격자 |
-| `structuredClone(v)` | 깊은 복사 — **호스트 API**(ECMA-262 밖) | — | 동작 (2) · 목록의 **48번 주제** |
+| `structuredClone(v)` | 깊은 복사 — **호스트 API**(ECMA-262 밖) | — | 동작 (2) · [목록의 **48번 주제**](../48-deep-copy-methods-compared/) |
 
 - **대입 대 정의** — `assign` 은 `Set`(setter 를 부르고, 실패하면 **모드와 상관없이** 던진다), 스프레드·`fromEntries`·`groupBy` 는 `CreateDataProperty`(정의).
 - **얕다** — 이 표의 `Object.*` 는 전부 바깥 한 겹만 새로 만든다.
@@ -1040,7 +1040,7 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 - **`Object.entries` + `fromEntries`** — 객체의 값에 배열 메서드를 쓸 때. 심볼·비열거는 버려도 될 때만.
 - **`Object.groupBy`** — 글자 키로 묶을 때. 결과를 **찍기 전에 `JSON.stringify`** 를 떠올린다.
 - **`Map.groupBy`** — 객체를 키로 묶을 때 · 묶음 순서가 의미를 가질 때.
-- ★ **안 쓰는 자리** — **깊은 복사**(넷 다 얕다 — 목록의 **48번 주제**) · **원자적 갱신**(`assign` 은 도중 실패를 되돌리지 않는다) · 얼린 객체가 대상일 수 있는 곳(비엄격이라도 던진다).
+- ★ **안 쓰는 자리** — **깊은 복사**(넷 다 얕다 — [목록의 **48번 주제**](../48-deep-copy-methods-compared/)) · **원자적 갱신**(`assign` 은 도중 실패를 되돌리지 않는다) · 얼린 객체가 대상일 수 있는 곳(비엄격이라도 던진다).
 
 ## 핵심 문장
 
@@ -1059,7 +1059,7 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 - [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md) — ★ **경계**: 그쪽은 **동결이 무엇을 막나**, 여기는 **동결된 대상에 `assign` 하면**만.
 - [15 — 프로토타입 체인](../15-prototype-chain/2-summary.md) — `Object.create(null)` 의 증상(동작 (6)).
 - [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md) — `Map` 과 객체의 키 규칙(동작 (5)·(6)).
-- 목록의 **48번 주제**(깊은 복사 수단 비교) — ★ **경계**: 그쪽이 **`structuredClone`·JSON 왕복이 무엇을 잃나**의 정본, 여기는 **격자의 한 열**.
+- [목록의 **48번 주제**](../48-deep-copy-methods-compared/)(깊은 복사 수단 비교) — ★ **경계**: 그쪽이 **`structuredClone`·JSON 왕복이 무엇을 잃나**의 정본, 여기는 **격자의 한 열**.
 - 파이썬 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **12번**(dict 병합과 순서) — 동작 (7)의 대비.
 
 ## 용어 풀이
@@ -1081,4 +1081,4 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 
 - **getter 를 getter 째 복사하기** — `Object.defineProperties({}, Object.getOwnPropertyDescriptors(src))`. 이 문서는 격자에 넣지 않았다(**안 돌렸다**).
 - **`Object.groupBy` 가 `Array.prototype.group` 이 아닌 이유** — 제안 과정의 웹 호환성 논의다. 이 문서는 그 경위를 확인하지 않았다.
-- **깊은 병합** — 표준에 없다. 목록의 **48번 주제**와 라이브러리의 몫이다.
+- **깊은 병합** — 표준에 없다. [목록의 **48번 주제**](../48-deep-copy-methods-compared/)와 라이브러리의 몫이다.

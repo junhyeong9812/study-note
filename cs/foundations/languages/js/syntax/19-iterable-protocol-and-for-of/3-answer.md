@@ -412,7 +412,7 @@ identical 22  ·  differs 1  ·  total 23
 - **「세 자리의 문」**(`apply`·스프레드·`Array.from`) → [11번](../11-spread-and-rest/2-summary.md) ·
   **제너레이터의 `yield`/`next(값)` 흐름** → [목록의 **20번 주제**](../20-generators/) ·
   **이터레이터 헬퍼** → [목록의 **21번 주제**](../21-iterator-helpers/) ·
-  **`for await...of`** → 목록의 **40번 주제** ·
+  **`for await...of`** → [목록의 **40번 주제**](../40-async-iteration-and-for-await/) ·
   **`Map` 의 키 비교(SameValueZero)** → [목록의 **23번 주제**](../23-map-set-and-weak-collections/).
 - ★★★ **11번이 끝낸 것** — 배열·호출 자리는 이 프로토콜을, 객체 자리는 프로퍼티 복사를 부르고, `apply` 는 유사 배열만 연다.
   **이 주제가 시작하는 것** — 그 프로토콜이 **무엇을 몇 번 부르고, 언제 `return()` 으로 닫고, 어디서 깨지나.**

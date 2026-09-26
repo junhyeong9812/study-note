@@ -155,7 +155,7 @@ print("끝까지 왔다")
   **정적 검사로 잡히는 것과 안 잡히는 것의 경계**가 정확히 여기다.
 
 **비용** — 파서가 미리 잡아 주는 덕에 오타류가 실행 전에 걸린다.\
-대신 **인자 개수·이름 오류는 실행해야만** 걸린다 — 그래서 타입 체커(목록의 **40번 주제**)가 필요해진다.
+대신 **인자 개수·이름 오류는 실행해야만** 걸린다 — 그래서 타입 체커([목록의 **40번 주제**](../40-type-hints-at-runtime/))가 필요해진다.
 
 ### 2. ★ 정의 시점에 걸리는 것들 — 좌석표 자체가 말이 안 되는 경우
 
@@ -830,7 +830,7 @@ SyntaxError: iterable argument unpacking follows keyword argument unpacking
 | `**kwargs` 로 임의의 키를 받는다 | ★ **앞쪽 파라미터를 `/` 로 위치 전용**으로 — 이름 충돌이 사라진다 |
 | 나중에 파라미터 이름을 바꿀 수도 있다 | **`/`** — 이름이 계약에서 빠진다 |
 | 래퍼·데코레이터를 쓴다 | `(*args, **kwargs)` + **`functools.wraps`**([목록의 **24번 주제**](../24-decorators/)) |
-| 인자 몇 개를 미리 고정하고 싶다 | **`functools.partial`**(목록의 **45번 주제**) — 새 함수를 만들어 준다 |
+| 인자 몇 개를 미리 고정하고 싶다 | **`functools.partial`**([목록의 **45번 주제**](../45-functools/)) — 새 함수를 만들어 준다 |
 | 호출 전에 되는지 알아야 한다 | **`inspect.signature().bind()`** |
 | 인자가 아주 많아진다 | ★ **데이터클래스 하나로 묶는다**([목록의 **36번 주제**](../36-dataclasses/)) — 시그니처를 늘리는 것이 답이 아니다 |
 | 기본값에 리스트·dict 를 쓰고 싶다 | ★ **쓰지 않는다** — [20번](../20-mutable-default-args/2-summary.md)이 정본이다 |
@@ -865,8 +865,8 @@ SyntaxError: iterable argument unpacking follows keyword argument unpacking
 - 함께 보는 곳: [15-generator-expressions-lazy-eval](../15-generator-expressions-lazy-eval/2-summary.md) — `sum(x for x in xs, 0)` 이 `SyntaxError` 인 것이 같은 층이다.
 - 이어지는 곳: [목록의 **21번 주제**](../21-scope-legb-global-nonlocal/) 「스코프 LEGB」 — 파라미터가 만드는 지역 이름.
 - 이어지는 곳: [목록의 **24번 주제**](../24-decorators/) 「데코레이터」 — `(*args, **kwargs)` 래퍼와 `functools.wraps`.
-- 이어지는 곳: 목록의 **40번 주제** 「타입 힌트의 런타임 의미」 — 시그니처에 붙는 주석이 **실행을 안 바꾸는** 것.
-- 이어지는 곳: 목록의 **45번 주제** 「`functools`」 — `partial` 로 인자를 미리 고정하는 것.
+- 이어지는 곳: [목록의 **40번 주제**](../40-type-hints-at-runtime/) 「타입 힌트의 런타임 의미」 — 시그니처에 붙는 주석이 **실행을 안 바꾸는** 것.
+- 이어지는 곳: [목록의 **45번 주제**](../45-functools/) 「`functools`」 — `partial` 로 인자를 미리 고정하는 것.
 - 기존 노트: [`cs/foundations/python-basics/`](../../../../python-basics/) — 함수를 「이렇게 정의한다」까지가 그쪽이다.\
   **경계**: 여기는 「**어떤 호출이 되고, 안 되면 언제 걸리나**」부터다.
 - 공식 문서: [Function definitions](https://docs.python.org/3.12/reference/compound_stmts.html#function-definitions) · [Calls](https://docs.python.org/3.12/reference/expressions.html#calls) · [PEP 570](https://peps.python.org/pep-0570/) · [PEP 3102](https://peps.python.org/pep-3102/)
@@ -894,11 +894,11 @@ SyntaxError: iterable argument unpacking follows keyword argument unpacking
 
 ## 더 들어가면
 
-- **`functools.partial`** 은 인자 일부를 미리 고정한 **새 호출 가능 객체**를 만든다. 목록의 **45번 주제**가 정본이다.
+- **`functools.partial`** 은 인자 일부를 미리 고정한 **새 호출 가능 객체**를 만든다. [목록의 **45번 주제**](../45-functools/)가 정본이다.
   ★ 여기서 알 것 하나 — `partial` 로 고정한 위치 인자는 **앞에서부터** 붙으므로, 뒤쪽만 고정하려면 키워드로 줘야 한다.
 - **`/` 가 생기기 전**에는 C 로 짠 내장 함수만 위치 전용이었다 — 그래서 `len(obj=[])` 가 `TypeError` 인데
   순수 파이썬으로는 같은 것을 흉내 낼 수 없었다. PEP 570 이 그 비대칭을 없앴다.
-- **타입 힌트는 이 규칙을 하나도 안 바꾼다** — `def f(a: int)` 에 문자열을 줘도 **실행은 된다**(목록의 **40번 주제**).
+- **타입 힌트는 이 규칙을 하나도 안 바꾼다** — `def f(a: int)` 에 문자열을 줘도 **실행은 된다**([목록의 **40번 주제**](../40-type-hints-at-runtime/)).
   이 주제의 검사는 **개수와 이름**만 본다.
 - **`*` 를 시그니처 중간에 나중에 넣는 것은 호환을 깬다** — 기존 호출이 위치로 주고 있었다면 전부 `TypeError` 가 된다.
   반대로 **처음부터 `*` 를 넣어 두면** 나중에 파라미터를 추가·재배치해도 안 깨진다.

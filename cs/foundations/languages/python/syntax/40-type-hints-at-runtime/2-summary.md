@@ -963,7 +963,7 @@ typing.get_type_hints(f)                  문자열 평가 + None -> NoneType ·
   그 편이 「더 들어가면」에서 **`__future__` 를 쓰면 `f.type` 이 문자열이 된다**고 예고했다 — 동작 3 의 격자가 **3.11·3.12 에서 실측**했다.
 * 선행: [38-namedtuple-and-typeddict](../38-namedtuple-and-typeddict/2-summary.md) — 「런타임이 **쓴다 / 들고만 있다 / 검사기만 쓴다**」 세 칸의 표가 그쪽이다.
 * 선행: [35-abc-and-protocol](../35-abc-and-protocol/2-summary.md) — 검사기 부재 판정.
-* 이어지는 곳: 목록의 **41번 주제** 「`typing` 과 제네릭 신문법」 — `X | Y`·PEP 695 `type` 문.
+* 이어지는 곳: [목록의 **41번 주제**](../41-typing-and-generic-syntax/) 「`typing` 과 제네릭 신문법」 — `X | Y`·PEP 695 `type` 문.
   ★ 동작 5 의 `'Node | None'` 은 **문자열로 적었기에** 어느 판에서든 `def` 가 통과했다.
 * 대비: [TS 01번 — 더하는 것과 지우는 것](../../../ts/syntax/01-what-ts-adds-and-erases/2-summary.md) ·
   [TS 19번](../../../ts/syntax/19-generics-basics/2-summary.md) · [TS 23번](../../../ts/syntax/23-typeof-type-operator/2-summary.md) —

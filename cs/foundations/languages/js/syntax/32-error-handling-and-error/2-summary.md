@@ -63,9 +63,9 @@
 > [31 — `JSON`](../31-json/2-summary.md)(★★ 순환 참조 `TypeError` 의 **여러 줄 문구가 경로를 말해 준다** — 문구가 V8 의 것이라는 판정이 거기 있다) ·
 > [17 — 상속과 `super`](../17-inheritance-and-super/2-summary.md)(★ **옛 방식 `Error.call(this, m)` 이 `message` 를 잃는 것** — 거기가 정본).
 >
-> ★★ **경계 — 비동기 오류**(프로미스 거부 · `await` 의 `try`/`catch` · 미처리 거부)는 목록의 **37번 주제**와 **39번 주제**가 정본이다. 여기서는 `Promise.any` 가 **`AggregateError` 로 거부한다**는 한 줄만 쓴다.
+> ★★ **경계 — 비동기 오류**(프로미스 거부 · `await` 의 `try`/`catch` · 미처리 거부)는 [목록의 **37번 주제**](../37-promise-state-model/)와 **39번 주제**가 정본이다. 여기서는 `Promise.any` 가 **`AggregateError` 로 거부한다**는 한 줄만 쓴다.
 > ★★ **경계 — 판정 방법**(`instanceof` · 브랜드 · realm)은 [34번](../34-type-checking-idioms/2-summary.md)이 정본이다. 여기서는 **`Error.isError` 가 무엇을 오류로 보나**까지다.
-> ★ **경계 — 자원 정리**(`using` · `SuppressedError`)는 목록의 **51번 주제**의 몫이다.
+> ★ **경계 — 자원 정리**(`using` · `SuppressedError`)는 [목록의 **51번 주제**](../51-explicit-resource-management-and-using/)의 몫이다.
 
 ```sh
 # js32b-versions.sh
@@ -1118,7 +1118,7 @@ python3.11: Python 3.11.15
 - [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md) · [21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md) — 예외가 이터레이터를 **닫는** 자리.
 - [31 — `JSON`](../31-json/2-summary.md) — 순환 참조 `TypeError` 의 여러 줄 문구(V8 의 것) · 비열거 프로퍼티가 `stringify` 에서 빠지는 규칙.
 - [34 — 타입 검사 관용구](../34-type-checking-idioms/2-summary.md) — ★ **경계**: 그쪽이 **realm·프로토타입 조작에서 어느 판정이 깨지나**의 정본, 여기는 **`Error.isError` 한 함수**.
-- 목록의 **37번 주제**(Promise 상태 모델) · 목록의 **39번 주제**(`async`/`await`) — 비동기 오류의 정본. 목록의 **51번 주제**(`using`) — 자원 정리와 `SuppressedError`.
+- [목록의 **37번 주제**](../37-promise-state-model/)(Promise 상태 모델) · [목록의 **39번 주제**](../39-async-await/)(`async`/`await`) — 비동기 오류의 정본. [목록의 **51번 주제**](../51-explicit-resource-management-and-using/)(`using`) — 자원 정리와 `SuppressedError`.
 - [Go 24 — 오류 래핑 `%w` 와 `errors.Is`/`As`/`Join`](../../../go/syntax/24-error-wrapping-and-errors-is-as-join/2-summary.md) — 사슬 걷기 창의 정본.
 - [Python 25 — 예외와 `finally`](../../../python/syntax/25-exceptions-and-finally/2-summary.md) · [Python 27 — 예외 그룹과 `except*`](../../../python/syntax/27-exception-groups-and-except-star/2-summary.md) · [Java 25 — 예외](../../../java/syntax/25-exceptions/2-summary.md).
 
@@ -1137,6 +1137,6 @@ python3.11: Python 3.11.15
 
 ## 더 들어가면
 
-- **`SuppressedError` 와 `using`** — 정리 중 던진 예외가 원래 예외를 **덮지 않고 함께** 담기는 장치. 목록의 **51번 주제**의 몫이다(이 문서는 돌리지 않았다).
+- **`SuppressedError` 와 `using`** — 정리 중 던진 예외가 원래 예외를 **덮지 않고 함께** 담기는 장치. [목록의 **51번 주제**](../51-explicit-resource-management-and-using/)의 몫이다(이 문서는 돌리지 않았다).
 - **`Error.captureStackTrace` 의 표준화** — 지금은 V8 등의 확장이다. 이 문서는 **node 20 의 모양 하나**만 봤다.
 - **린터** — ESLint `no-unsafe-finally` 가 동작 (1)의 여섯 칸을 잡는다고 알려져 있다. **이 문서는 돌리지 않았다.**

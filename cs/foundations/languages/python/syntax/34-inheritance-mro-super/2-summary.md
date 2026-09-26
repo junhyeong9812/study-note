@@ -1206,7 +1206,7 @@ C3 는 규칙의 **이름**뿐 아니라 **계산법까지** 공식 하우투가
   `collections.abc` 의 믹스인이 이 주제의 MRO 로 합쳐진다.
 * 이어지는 곳: [36-dataclasses](../36-dataclasses/2-summary.md) — 「`dataclasses`」 — ★ 상속한 `dataclass` 의 필드가 **MRO 를 거꾸로 훑어** 모인다.
   「부모 필드가 앞」이라는 규칙이 이 주제 위에 선다.
-* 이어지는 곳: 목록의 **37번 주제** 「`enum`」 — `Enum` 이 **메타클래스**로 만들어진 대표 사례다.
+* 이어지는 곳: [목록의 **37번 주제**](../37-enum/) 「`enum`」 — `Enum` 이 **메타클래스**로 만들어진 대표 사례다.
 * 다른 갈래: 자바 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **09번** 「상속과 오버라이딩」 —
   ★ **자바는 클래스 단일 상속이라 MRO 가 필요 없다.** 필드는 **가리기**(hiding)이지 오버라이딩이 아니다.
 * 다른 갈래: 자바 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **11번** 「인터페이스 `default` 메서드」 —
@@ -1257,7 +1257,7 @@ C3 는 규칙의 **이름**뿐 아니라 **계산법까지** 공식 하우투가
 * ★ **`super()` 는 속성 조회에도 걸린다.** 메서드만이 아니라 `super().x` 도 MRO 다음부터 찾는다.
   ★ 이 문서는 메서드만 던졌다.
 * ★ **`__mro_entries__`(PEP 560)** 는 제네릭 별칭(`list[int]` 같은 것)을 베이스에 쓸 수 있게 해 주는 장치이고,
-  **MRO 계산 앞단**에 끼어든다. 목록의 **41번 주제** 가 그 자리다.
+  **MRO 계산 앞단**에 끼어든다. [목록의 **41번 주제**](../41-typing-and-generic-syntax/) 가 그 자리다.
 * ★ **`__init_subclass__` 와 `__set_name__` 은 같은 자리에서 불린다** —
   문서의 「Creating the class object」 절이 둘을 나란히 두었고 **`__set_name__` 이 먼저**다.
   [33번](../33-property-descriptor-slots/2-summary.md) 동작 3이 `__set_name__` 쪽 실측이다.

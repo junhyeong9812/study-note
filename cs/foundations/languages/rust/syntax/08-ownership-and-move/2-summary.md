@@ -519,7 +519,7 @@ help: consider cloning the value if the performance cost is acceptable
 - 부분 이동은 **칸 단위**다 — 빠져나간 칸만 죽고 나머지는 산다.
 - 다만 **구조체 전체를 값으로 쓰는 것**(출력·전달·반환)은 구멍 때문에 거부된다.
 - `Drop` 이 붙으면 **소멸자가 그 필드를 쓸 수 있으므로** 아예 못 빼낸다(E0509).
-- 그래서 `Drop` 타입에서 알맹이를 꺼내려면 `mem::take`/`replace` 를 쓴다(목록의 **44번 주제**).
+- 그래서 `Drop` 타입에서 알맹이를 꺼내려면 `mem::take`/`replace` 를 쓴다([목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)).
 
 비용 — 없음. 전부 컴파일 타임 판정이다.
 
@@ -872,7 +872,7 @@ cond = true
 | 잠깐 넘겼다가 계속 써야 한다 | 빌린다. 그게 안 되면 **돌려받는다** | 반환 타입이 부푸는 것이 신호다 |
 | 사본이 **따로 살아야** 한다 | `.clone()` | 원본과 남남이 되는 것이 목적일 때만 |
 | 순회한 뒤에도 원본이 필요하다 | `for x in &v` | `for x in v` 는 먹는다 |
-| 구조체에서 알맹이를 꺼낸다 | 필드 이동 — 단 `Drop` 이면 `mem::take` | E0509 를 피하는 관용구(목록의 **44번 주제**) |
+| 구조체에서 알맹이를 꺼낸다 | 필드 이동 — 단 `Drop` 이면 `mem::take` | E0509 를 피하는 관용구([목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)) |
 | 해제를 앞당긴다 | `drop(x)` | 락·파일을 일찍 놓을 때 |
 | 해제를 관찰한다 | `impl Drop` + `println!` | 「언제 사라지나」를 보는 유일한 창 |
 
@@ -936,7 +936,7 @@ cond = true
   `drop(m.lock().unwrap());` 뒤에는 같은 스레드의 `try_lock()` 이 **`true`**, `let _guard = m.lock()` 뒤에는 **`false`** 였다(실측).\
   그런데 `let _ = m.lock();` 자체는 **`let_underscore_lock`(deny 기본) 때문에 컴파일 에러**다 — 정답 4번에 전문을 실었다.\
   ★ **린트가 없는 다른 `Drop` 타입에서는 그대로 조용히 사라진다.** 락의 정본은 목록의 **52번 주제**다.
-- **한 소유자 규칙을 런타임 비용으로 푸는 길**이 `Rc`/`Arc` 다(목록의 **41번 주제**).\
+- **한 소유자 규칙을 런타임 비용으로 푸는 길**이 `Rc`/`Arc` 다([목록의 **41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/)).\
   `--explain E0382` 도 같은 말을 한다 — `outside of workarounds like Rc`.
-- **소유권을 안 넘기고 알맹이만 바꾸는 관용구**가 `mem::replace`/`mem::take` 다(목록의 **44번 주제**).\
+- **소유권을 안 넘기고 알맹이만 바꾸는 관용구**가 `mem::replace`/`mem::take` 다([목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)).\
   E0509 로 막힌 자리가 정확히 그 도구의 자리다.

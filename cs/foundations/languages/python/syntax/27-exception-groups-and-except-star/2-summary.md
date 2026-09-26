@@ -967,7 +967,7 @@ def empty_group():
   **경계**: 검사냐 예외냐는 그쪽, **실패가 여럿일 때 어떻게 나르나**는 여기다.
 - 이어지는 곳: [28-context-managers-and-with](../28-context-managers-and-with/2-summary.md) —
   `ExitStack` 이 **정리 중 난 예외 여럿**을 다루는 자리다.
-- 이어지는 곳: `목록의 **52번 주제**` — `asyncio.TaskGroup` 의 정본.\
+- 이어지는 곳: `[목록의 **52번 주제**](../52-asyncio-concurrency-structure/)` — `asyncio.TaskGroup` 의 정본.\
   **경계**: 여기서는 **왜 묶음이 필요했나**만 보이고, 취소 전파·타임아웃은 전부 그쪽이다.
 - 다른 갈래: 자바 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **26번** —
   try-with-resources 의 **suppressed exception**. 「정리 중 난 예외를 잃지 않는다」는 같은 문제의식이고,

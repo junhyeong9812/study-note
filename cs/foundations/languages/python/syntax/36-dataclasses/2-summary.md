@@ -62,7 +62,7 @@
    __repr__      ------------>   repr(p)
    __eq__        ------------>   p == Point(1, 2)
    __hash__ = None ---------->   ★ 30번이 정본이다
-   __match_args__ ----------->   목록의 39번 주제
+   __match_args__ ----------->   [목록의 **39번 주제**](../39-match-statement/)
 
    ★ "무엇을 적으면 무엇이 생기나" 를 외우지 말고 이 두 창으로 읽는다
 ```
@@ -280,7 +280,7 @@ print("   replace(p, y=99)           :", dataclasses.replace(p, y=99))
   `__annotations__`·`__dataclass_fields__`·`__dataclass_params__`·`__eq__`·`__hash__`·`__init__`·`__match_args__`·`__repr__`·`y`.
   ★ **`y` 가 섞여 있는 것**은 내가 기본값을 대입했기 때문이다(클래스 변수로 남는다).
   ★ **`__hash__` 가 생긴 것**이 [30번](../30-repr-eq-hash-contracts/2-summary.md)의 그 자리다 — 값이 `None` 이다(⑤).
-  ★ `__match_args__` 는 `match` 문이 쓰는 것이고 정본은 목록의 **39번 주제** 다.
+  ★ `__match_args__` 는 `match` 문이 쓰는 것이고 정본은 [목록의 **39번 주제**](../39-match-statement/) 다.
 * ★★★ **②가 창 ②다.** 서명을 **손으로 안 세고 읽는다.**
   `(self, x: int, y: int = 0, tags: list = <factory>) -> None` 이다.
   ★ **`<factory>` 는 실제 기본값이 아니라 표시**다 — 「만드는 법이 등록됐다」는 뜻이고,
@@ -1633,8 +1633,8 @@ class SomeClass: ...
 | 검증을 넣는다 | **`__post_init__`** — 모든 필드가 채워진 뒤다 |
 | 아주 많이 만든다 | **`slots=True`**(3.10) — ★ **클래스 객체가 바뀐다** |
 | 상속해서 필드를 더한다 | ★ **`kw_only=True`**(3.10) 가 순서 제약을 없앤다 |
-| 튜플처럼 쓰고 싶다 | 목록의 **38번 주제** — `NamedTuple` 은 **런타임 정체가 튜플**이다 |
-| 열거형이 필요하다 | 목록의 **37번 주제** |
+| 튜플처럼 쓰고 싶다 | [목록의 **38번 주제**](../38-namedtuple-and-typeddict/) — `NamedTuple` 은 **런타임 정체가 튜플**이다 |
+| 열거형이 필요하다 | [목록의 **37번 주제**](../37-enum/) |
 | 검증·직렬화가 본업이다 | ★ `dataclasses` 는 **검증을 안 한다.** 외부 라이브러리 영역이다 |
 
 ## 핵심 문장
@@ -1682,11 +1682,11 @@ class SomeClass: ...
 * 선행: [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md) — `frozen` 이 왜 얕은가.
 * 함께 보는 곳: [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md) —
   `__dataclass_fields__` 의 **순서가 보장되는 근거**가 그쪽이다.
-* 이어지는 곳: 목록의 **38번 주제** 「`namedtuple`·`NamedTuple`·`TypedDict`」 —
+* 이어지는 곳: [목록의 **38번 주제**](../38-namedtuple-and-typeddict/) 「`namedtuple`·`NamedTuple`·`TypedDict`」 —
   ★ **런타임 정체가 갈리는 대비**다. `NamedTuple` 은 진짜 튜플이고 `dataclass` 는 보통 클래스다.
-* 이어지는 곳: 목록의 **37번 주제** 「`enum`」 · 목록의 **39번 주제** 「`match` 문」 —
+* 이어지는 곳: [목록의 **37번 주제**](../37-enum/) 「`enum`」 · [목록의 **39번 주제**](../39-match-statement/) 「`match` 문」 —
   ★ `__match_args__` 가 이 주제에서 자동으로 생겼다(동작 1의 ①).
-* 이어지는 곳: 목록의 **40번 주제** 「타입 힌트의 런타임 의미」 —
+* 이어지는 곳: [목록의 **40번 주제**](../40-type-hints-at-runtime/) 「타입 힌트의 런타임 의미」 —
   ★★ **`dataclasses` 는 어노테이션을 실제로 읽는 드문 장치**다. 「힌트는 실행을 안 바꾼다」의 **예외**가 여기다.
 * 대비: Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **22번** 「`data class`」 —
   ★ **빼는 법이 정반대**다. 코틀린은 **본문으로 옮기면 암묵적으로 빠지고** 파이썬은 **명시해야** 빠진다.\
@@ -1729,7 +1729,7 @@ class SomeClass: ...
   동작 8의 ②가 그것과 가까운 일을 손으로 했다 — `type()` 으로 만든 클래스에 `dataclass(...)` 를 함수로 걸었다.
 * ★ **`field(metadata={...})`** 는 생성기가 **안 보는 칸**이다. 직렬화 라이브러리가 쓰라고 비워 둔 자리이고,
   `Field.__slots__` 목록(동작 3의 ④)에 그 이름이 있다.
-* ★★ **`dataclasses` 는 어노테이션을 실제로 읽는 드문 장치다.** 목록의 **40번 주제** 가
+* ★★ **`dataclasses` 는 어노테이션을 실제로 읽는 드문 장치다.** [목록의 **40번 주제**](../40-type-hints-at-runtime/) 가
   「힌트는 실행을 안 바꾼다」의 정본인데, **이 모듈이 그 예외**다.
   ★ 그래서 `from __future__ import annotations` 를 쓰면 `f.type` 이 **문자열**이 된다 —
   이 문서의 블록은 그 import 를 안 썼으므로 `f.type.__name__` 이 실제 타입 이름을 줬다(동작 1의 ③).
