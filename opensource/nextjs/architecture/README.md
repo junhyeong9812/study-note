@@ -1,13 +1,13 @@
 # Next.js 아키텍처 지도
 
-소스를 **직접 읽어서** 그린 탑다운 지도다. 지금까지 흐름 세 편, 15개 문서다.
+소스를 **직접 읽어서** 그린 탑다운 지도다. 지금까지 흐름 스물두 편, 105개 문서다.
 
 기준 태그: `v16.3.6` [`a758ffcf50`](https://github.com/vercel/next.js/tree/a758ffcf501f6f1ddb03175bd1033508424c261e) (2026-09-22). 모든 줄 번호는 이 태그 기준이다.
 
 ## 두 갈래로 읽는다
 
 ```text
- 흐름  무엇이 일어나는가      3편, 15개 문서
+ 흐름  무엇이 일어나는가      22편, 105개 문서
        요청 하나가 지나는 길을 메서드 단위로 따라간다
        폴더 하나 = 메서드 하나
 
@@ -17,13 +17,32 @@
 
 API 이름에서 거꾸로 찾고 싶으면 [API 역인덱스](api-index.md)를 보면 된다. 아직 문서가 없는 것도 전부 적어 두었다 — 그 표가 곧 남은 일의 목록이다.
 
-## 흐름 세 편
+## 흐름 스물두 편
 
 | 흐름 | 진입점 | 문서 |
 |---|---|---|
 | [요청이 들어와서 렌더로 가기까지](flows/request-to-render/README.md) | `NextNodeServer.getRequestHandler` L1269 | 6 |
 | [응답이 만들어져 나가기까지](flows/response-out/README.md) | `renderToResponseWithComponentsImpl` L2110 | 5 |
 | [App Router 가 페이지를 만드는 길](flows/app-render/README.md) | `renderToHTMLOrFlight` L3101 | 4 |
+| [동적 응답을 스트림으로 내보내기](flows/render-to-stream/README.md) | `renderToStream` L3258 | 5 |
+| [정적 응답을 미리 만들기](flows/prerender-to-stream/README.md) | `prerenderToStream` L8229 | 6 |
+| [서버 액션이 실행되기까지](flows/server-action/README.md) | `handleAction` L567 | 4 |
+| [재검증이 쌓이고 실행되기까지](flows/revalidation/README.md) | `revalidateTag` / `executeRevalidates` | 4 |
+| [클라이언트가 화면을 바꾸기까지](flows/client-router/README.md) | `router-reducer` 의 액션 6종 | 4 |
+| [프리페치가 쌓이고 내비게이션이 그것을 쓰기까지](flows/segment-cache/README.md) | `segment-cache/navigate` L68 | 4 |
+| [`'use cache'` 가 값을 돌려주기까지](flows/use-cache/README.md) | `use-cache-wrapper.cache` L1715 | 5 |
+| [무엇이 동적인지 가려내기](flows/dynamic-rendering/README.md) | `markCurrentScopeAsDynamic` L172 외 | 5 |
+| [동적 API 가 값을 내주기까지](flows/request-apis/README.md) | `cookies()` · `headers()` · `connection()` 외 | 5 |
+| [메타데이터가 `<head>` 가 되기까지](flows/metadata/README.md) | `createMetadataComponents` L36 | 5 |
+| [클라이언트 트리가 라우터 상태를 읽기까지](flows/client-components/README.md) | `AppRouter` L579 | 5 |
+| [트리를 조립하고 세그먼트로 자르기까지](flows/tree-assembly/README.md) | `createComponentTreeInternal` L84 · `collectSegmentData` L279 | 5 |
+| [내비게이션 요청이 트리를 중간부터 그리기까지](flows/partial-tree/README.md) | `walkTreeWithFlightRouterState` L28 | 4 |
+| [내비게이션이 서버 응답을 트리에 합치기까지](flows/ppr-navigation/README.md) | `startPPRNavigation` L222 · `spawnDynamicRequests` L1431 | 5 |
+| [즉시 내비게이션을 개발 중에 검증하기까지](flows/instant-validation/README.md) | `anySegmentNeedsInstantValidation` L132 · `validateInstantConfigs` L7063 | 5 |
+| [페이지가 아닌 요청이 처리되기까지](flows/non-page/README.md) | `resolveRoutes` 'middleware' L558 · `AppRouteRouteModule.handle` L757 | 4 |
+| [Pages Router 가 페이지를 그리기까지](flows/pages-router/README.md) | `renderToHTMLImpl` L459 · `Router.change` L1207 | 5 |
+| [`next build` 가 산출물을 만들기까지](flows/build/README.md) | `build` L1042 (3558줄) | 5 |
+| [빌드가 번들러 설정과 배포 산출물을 만들기까지](flows/build-details/README.md) | `getBaseWebpackConfig` L327 · `collectBuildTraces` L94 · `handleBuildComplete` L557 · `copyTracedFiles` L1223 | 5 |
 
 ## 흐름이 이어지는 자리
 
@@ -47,8 +66,11 @@ API 이름에서 거꾸로 찾고 싶으면 [API 역인덱스](api-index.md)를 
       | if (isStaticGeneration)
       +-------------------+
       v                   v
-   prerenderToStream   renderToStream        ← 둘 다 **아직 문서 없음**
-   (정적 응답)          (동적 응답)
+   [정적 응답]          [동적 응답 스트림]
+   prerenderToStream    renderToStream L3258
+   L8229  1996줄        L3258  1112줄
+   세 갈래 894/245/100  RSC 렌더 -> HTML 렌더
+   catch 559줄          catch 280줄
 ```
 
 ```text
@@ -83,13 +105,14 @@ API 이름에서 거꾸로 찾고 싶으면 [API 역인덱스](api-index.md)를 
 ## 아직 안 쓴 것
 
 ```text
- A  App Router 의 나머지     server/app-render/        약 28,700줄
-      renderToStream 1112 · prerenderToStream 1996 · 검증기계 3800
-      create-component-tree 1307 · dynamic-rendering 1592
-      action-handler 1580 · collect-segment-data 1528
- B  클라이언트 라우팅·캐시   client/components/        23,345줄
- E  Pages Router             server/render.tsx 외       약 4,000줄
- D  빌드 (webpack 경로)      build/                    62,106줄
+ API 역인덱스의 모든 행에 흐름 문서가 붙었고, instant 검증 · PPR 내비게이션 · 빌드 세부도 썼다.
+ 남은 것은 **더 깊은 본문**과 Turbopack 이다
 
- Turbopack(Rust, 294,455줄)은 언어도 도구도 달라 **별도 문서 트리**로 간다
+ B  클라이언트 라우팅의 나머지
+      segment-cache 본문 세부  cache.ts 4298 · scheduler.ts 2741 의 항목 수명 · 큐 규칙
+      optimistic-routes.ts 의 라우트 예측 · navigation-testing-lock.ts
+ D  빌드의 나머지
+      build/webpack/config/**(buildConfiguration) · 개별 플러그인 · 로더 본문 · @vercel/nft 알고리즘
+
+ Turbopack(Rust, crates/ 294,455줄)은 언어도 도구도 달라 **별도 문서 트리**로 간다
 ```
