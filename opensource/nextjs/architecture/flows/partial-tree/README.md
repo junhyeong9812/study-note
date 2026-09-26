@@ -130,8 +130,8 @@ export type FlightRouterState = [
 
  createRouteTreePrefetch 의 결과 (route tree 프리페치)
       --> **PPR 이 꺼진 동적 라우트**의 `/_tree` 요청에 대한 요청 시점 응답.
-          [트리 조립] [04]의 빌드 버퍼와는 **배타적**이다 — PPR 이 켜진 라우트는 그 버퍼를
-          캐시에서 주거나 404 이고 여기로 오지 않는다 ([프리페치]의 isRouteTreePrefetchRequest)
+          [트리 조립] [04]의 prerender 버퍼와는 **배타적**이다 — 정적 생성된 라우트(PPR 이든
+          평범한 SSG 든)는 그 버퍼를 캐시에서 주거나 404 이고 여기로 오지 않는다 ([프리페치]의 isRouteTreePrefetchRequest)
 ```
 
 ## 다루지 않는 것
