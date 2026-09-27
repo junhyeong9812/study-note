@@ -18,5 +18,8 @@
 |------|------|------|--------|---------|----------------|--------|-----------------|-----------------|------|---------------------|--------------|
 | 2026-09-11 | call-stack-readme (cs/systems/call-stack README 골격 생성) | 문서 | 낮음 | ~5m | ~4m | 없음 | - | 없음 | 없음 | 없음 | - |
 | 2026-09-24 | cs-issue-archive (cs/issue 전수 정리 — 카드 26→154, README 31, authoring-guide B2 개정) | 문서 | 중간 | ≈7h(추출 00:40 → push 07:30, 레이트리밋 대기 포함) | ≈4h(원문 사실검증·노출 교정·정확성 교정·재점검) | 노출 교정 1회(82카드)·정확성 교정 1회(154카드) | - | 사실검증 수정 약 120 · P0 노출 8(사내 필드명·형식·규모·미패치 서술) · 정확성 약 800 · 재점검 6 | 소수(표현 취향류 미채택) | 정확성 재점검은 codex 표본 8장만(나머지 교정 1패스) | - |
+| 2026-09-24 | 도구-분석-폴더-구조화 (postgres·redis·nginx·keycloak 골격 + 로드맵) | 문서 | 낮음 | ~15m | ~4m | 링크 형식 1회 | - | 루트 절대 링크 관례 위반 1건 | 없음 | 없음 | - |
+| 2026-09-25 | db-engine-챕터골격-pg-mysql (챕터 105파일 + pg 태그 고정 + mysql 골격 + 포크 클론) | 문서 | 낮음 | ~20m | ~5m | 없음 | - | 포크 태그 부재(방식 전환) | 없음 | 없음 | - |
+| 2026-09-25 | db-flow-api-리스트업 (PG 13흐름·MySQL 12흐름 목록 + api-index + db-engine 대응) | 문서 | 낮음 | ~40m | ~6m | 없음 | - | 표본 50개 대조 0 불일치 | 없음 | 없음 | - |
 | 2026-09-26 | backend-labs-scaffold (Kotlin/Boot 스캐폴드 17 repo + GitHub public + study-note lab/backend-labs) | 설정+문서 | 낮음 | ~1.5h | ~15m | study-note 구조 1회 재합의 | 0 | 검증이 잡은 결함: auction-lab 고아 프로세스 포트 점유, 선행 cs 추정 매핑 4건 | 없음 | 없음 | - |
 | 2026-09-27 | issue-toplevel-cs-rule (cs/issue→issue/ 92파일·cs/README 규칙 개정·하네스 issue-archive 경로) | 문서+정책 | 높음 | ~2h | ~1h(듀얼 리뷰 3루프) | 없음 | 0 | 규칙 정본 충돌(study-note-guide·루트 README·cs/index 범례)·stale 참조·트리 누락 등 10건(Opus 9·codex 1) | 0 | 외부검색·설계선검증·blind 워커 생략(사유 log) · codex 1차 bwrap 실패→인라인 재시도 · 리뷰 Opus 5.5+codex | - |

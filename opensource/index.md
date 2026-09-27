@@ -7,3 +7,8 @@
 | [spring-framework](spring-framework/) | 활성 — PR 27건(머지 17) 이전 완료(2026-09-08) | 업스트림 기여 학습 문서, [index](spring-framework/index.md) |
 | [spring-security](spring-security/) | 활성 — PR 3건(머지 1) 이전(2026-09-08), 동작 흐름 지도 14흐름(2026-09-20) | 업스트림 기여 학습 문서와 탑다운 아키텍처 지도, [index](spring-security/index.md) |
 | [elasticsearch](elasticsearch/) | 활성 — PR 4건(머지 3) 이전(2026-09-08) | 업스트림 기여 학습 문서, [index](elasticsearch/index.md) |
+| [postgres](postgres/) | 골격(2026-09-24) — 동작 구조 분석, 기준 태그 REL_18_6, pgvector 하위 포함 | 소스 기준 아키텍처 지도, [index](postgres/index.md) |
+| [redis](redis/) | 골격(2026-09-24) — 동작 구조 분석 | 소스 기준 아키텍처 지도, [index](redis/index.md) |
+| [nginx](nginx/) | 골격(2026-09-24) — 동작 구조 분석 | 소스 기준 아키텍처 지도, [index](nginx/index.md) |
+| [keycloak](keycloak/) | 골격(2026-09-24) — 동작 구조 분석, 기준 태그 26.6.2 | 소스 기준 아키텍처 지도, [index](keycloak/index.md) |
+| [mysql](mysql/) | 골격(2026-09-25) — 동작 구조 분석(InnoDB 중심), 기준 태그 mysql-9.7.2 | 소스 기준 아키텍처 지도, [index](mysql/index.md) |
