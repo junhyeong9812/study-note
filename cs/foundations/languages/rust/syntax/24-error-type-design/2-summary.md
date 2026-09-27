@@ -760,7 +760,7 @@ d 복구 불가 — 위로 올린다: 12바이트 자리가 깨졌다
 - [**17번 주제** — 열거형](../17-enums-and-data-carrying-variants/) · [**18번 주제** — `match` 와 완전성](../18-match-and-exhaustiveness/) —
   오류 열거형이 얻는 **완전성 검사**의 정본이다.
 - [목록의 **33번 주제**](../33-dyn-trait-objects-and-object-safety/) — `dyn Trait` 와 객체 안전성. `Box<dyn Error>` 가 왜 `Box` 여야 하는지의 정본.
-- 목록의 **48번 주제** — `Display`/`Debug` 구현과 포맷. 여기서는 오류에 필요한 만큼만 썼다.
+- [목록의 **48번 주제**](../48-format-macros-display-and-debug/) — `Display`/`Debug` 구현과 포맷. 여기서는 오류에 필요한 만큼만 썼다.
 - [`ops-patterns/failure-modes/`](../../../../../ops-patterns/failure-modes/) —
   ★ **경계**: 실패 모드 **분류**는 거기, 여기는 **그 분류를 타입으로 적는 법**이다.
 - Go 의 오류 래핑 — Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **24번**(`%w`·`errors.Is`/`As`/`Join`).

@@ -703,7 +703,7 @@ ex7.c:26:5: warning: ‘__builtin_strncpy’ output truncated copying 5 bytes fr
   ★ **진단 문구를 글자로 대조하는 검사는 최적화 수준에서 깨진다.**
 - ★★★ **clang 은 `-O2` 에서도 0건**이다. **같은 코드인데 한쪽만 말해 준다.**
 - ★ **(라)가 보장하는 것**은 「**널이 있다**」뿐이다. ★ **여전히 보장되지 않는 것은 「잘렸는지 아닌지」** —\
-  `d` 는 `abcd` 인데 원본은 `abcdefgh` 였고 **아무도 그 사실을 알려 주지 않는다**(목록의 **49번 주제**).
+  `d` 는 `abcd` 인데 원본은 `abcdefgh` 였고 **아무도 그 사실을 알려 주지 않는다**([목록의 **49번 주제**](../49-string-functions-and-pitfalls/)).
 
 ### 9. `sizeof` 와 `strlen` 이 답하는 것 ★★
 
@@ -757,7 +757,7 @@ ex7.c:26:5: warning: ‘__builtin_strncpy’ output truncated copying 5 bytes fr
 
 - **비어 있는 칸**은 「**조건부 표준**」이다 — 널 종단과 리터럴에는 **매크로로 켜지고 꺼지는 보장이 없다.**\
   ★ 굳이 대면 **널 종단을 보장하는 선택적 부속서의 `_s` 계열**이 있으나 **이 문서는 던지지 않았고**\
-  그쪽은 목록의 **49번 주제**의 몫이다.
+  그쪽은 [목록의 **49번 주제**](../49-string-functions-and-pitfalls/)의 몫이다.
 - ★★★ **가장 두꺼운 칸은 UB** 다 — **리터럴 수정**이 본체이고, **널 없는 배열에 `strlen`** 이 그 옆이다.
 - ★★ **두 번째로 두꺼운 칸은 미명시**다. ★ [16번 형제](../16-array-pointer-decay-and-function-parameters/)에서는 그 칸이 **「던지지 않았다」로 비어 있었는데**,\
   여기서는 **다섯 벌을 돌려 채웠고 갈렸다.** ★ **그 칸을 채운 것이 이 주제가 16번에 갚은 빚**이다.
@@ -771,7 +771,7 @@ ex7.c:26:5: warning: ‘__builtin_strncpy’ output truncated copying 5 bytes fr
 
 **답**
 
-- **`<string.h>` 함수들의 계약 전반**(`strcpy`·`strcat`·`strncat`·`strlen` 의 경계 조건) — 목록의 **49번 주제**가 정본이다.\
+- **`<string.h>` 함수들의 계약 전반**(`strcpy`·`strcat`·`strncat`·`strlen` 의 경계 조건) — [목록의 **49번 주제**](../49-string-functions-and-pitfalls/)가 정본이다.\
   여기서는 **`strncpy` 가 널을 안 붙일 수 있다**는 **한 가지만** 다뤘다.
 - **배열이 포인터로 감쇠하는 규칙** — [16번 형제](../16-array-pointer-decay-and-function-parameters/)가 정본이다.
 - **배열 밖 접근이 무엇을 만드나** — 목록의 **56번 주제**가 정본이다. 여기서는 **ASan 이 잡았다는 사실까지**다.

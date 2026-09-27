@@ -5,6 +5,7 @@
 | 폴더 | 성격 | 현재 규모 | 입구 |
 |------|------|----------|------|
 | [cs](cs/) | 개념 지식 — 질문/서머리/정답 3종 루프 | 주제군 8 (algorithm 30챕터·foundations 10주제 등) | [cs/index.md](cs/index.md) |
+| [issue](issue/) | 실전 이슈에서 뽑은 CS 패턴 아카이브 — 카드(질문/서머리/정답)·방안 비교 | cross-cutting·kotlin·python·typescript | [issue/README.md](issue/README.md) |
 | [opensource](opensource/) | 오픈소스 기여 아카이브 — PR별 표준 5종 + concepts | spring-framework PR 28·concepts 15 / spring-security 3 / elasticsearch 4 | [opensource/index.md](opensource/index.md) |
 | [practice](practice/) | 훈련 — 문제를 풀고 남기는 기록 | programmers (챕터별) | [practice/index.md](practice/index.md) |
 | [project](project/) | 만든 것의 기록 — 이슈 단위 해설 | db-engine · study-note-deploy-system | [project/index.md](project/index.md) |

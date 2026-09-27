@@ -107,7 +107,7 @@ ex2.c:1:1: error: static assertion failed: "this platform's int is 8 bytes"
 
 - **런타임 코드가 하나도 안 생긴다.** 컴파일 시간에 끝난다.
 - 메시지는 **ASCII 로 쓴다** — 한글을 넣으면 gcc 가 8진 이스케이프로 뱉는다(「더 들어가면」).
-- 정본은 목록의 **53번 주제**.
+- 정본은 [목록의 **53번 주제**](../53-assert-and-static-assert/).
 
 ### 3. `(char)200` 은 무엇인가
 
@@ -397,7 +397,7 @@ int idx = c;           /* -56 을 인덱스로 쓰면 배열 밖 = UB */
 ```
 
 - `char` 의 부호가 구현 정의라 **같은 코드가 x86 과 ARM 에서 다르게 돈다.**
-- `<ctype.h>` 함수에 음수 `char` 를 넘기는 것도 같은 사고다 — 그쪽은 **UB** 다(정본은 목록의 **52번 주제**).
+- `<ctype.h>` 함수에 음수 `char` 를 넘기는 것도 같은 사고다 — 그쪽은 **UB** 다(정본은 [목록의 **52번 주제**](../52-ctype-math-and-time-essentials/)).
 - 덧붙여 **바이트 값을 비교할 때 `> 127` 같은 조건 자체가 냄새**다. `unsigned char` 면 그냥 `>= 0x80` 이다.
 
 **100만 개 배열에 `int_fast32_t`**
@@ -472,7 +472,7 @@ ex.c:10:14: warning: format ‘%d’ expects argument of type ‘int’, but arg
 | `uint32_t` | `"%" PRIu32` | `<inttypes.h>` |
 | `long long` | `%lld` | — |
 
-- 정본은 목록의 **47번 주제**.
+- 정본은 [목록의 **47번 주제**](../47-stdio-streams-buffering-and-formatted-output/).
 
 ---
 

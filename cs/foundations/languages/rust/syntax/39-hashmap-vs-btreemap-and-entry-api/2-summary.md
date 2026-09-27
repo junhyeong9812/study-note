@@ -737,7 +737,7 @@ std 모듈 문서의 「**When Should You Use Which Collection?**」을 **요건
 
 ## 더 들어가면
 
-- **`HashMap` 을 `const`·`static` 에** — `HashMap::new()` 는 씨앗을 뽑아야 해서 `const` 에서 못 쓴다. std 는 `LazyLock` 으로 감싸라고 적는다(목록의 **53번 주제**).
+- **`HashMap` 을 `const`·`static` 에** — `HashMap::new()` 는 씨앗을 뽑아야 해서 `const` 에서 못 쓴다. std 는 `LazyLock` 으로 감싸라고 적는다([목록의 **53번 주제**](../53-atomics-oncelock-and-lazylock/)).
 - **재할당 때 키를 다시 해시하나** — (2)는 용량을 64 로 잡아 이 변수를 **뺐다.** 재할당이 끼면 `hash` 호출이 더 늘 수 있다 — 이 문서는 재지 않았다.
 - **`HashSet`·`BTreeSet`** — 맵의 키만 쓰는 판. std: 「집합의 모든 연산은 **같은 맵 연산의 비용**」. 36편의 `collect` 격자에 둘 다 나왔다.
 - **`BTreeMap::extract_if`(1.91)·`HashMap::extract_if`(1.88)** — 38편의 `Vec::extract_if` 와 같은 모양이 맵에도 안정됐다(릴리스 노트 — 이 문서는 던지지 않았다).

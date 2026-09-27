@@ -972,10 +972,10 @@ pop() 두 번을 한 printf 에 : 40 30
 - [`08-sizeof-alignment-and-offsetof/`](../08-sizeof-alignment-and-offsetof/) — 그 측정 사고가 **처음 난 자리**. `sizeof` 실험이 한 `printf` 안에서 뒤집혔다
 - [`03-integer-promotion-and-usual-arithmetic-conversions/`](../03-integer-promotion-and-usual-arithmetic-conversions/) — **UB 를 최적화 수준으로 흔들어 보는 수법**의 정본. 거기서는 값이 갈렸고 여기서는 **안 갈렸다**
 - [`11-bitwise-operations-and-shifts/`](../11-bitwise-operations-and-shifts/) — **UB 가 본체인 주제.** 거기서는 UBSan 이 말을 하고 여기서는 침묵한다 — **같은 도구의 두 얼굴**
-- 목록의 **42번 주제** (함수형 매크로의 함정) — **인자 중복 평가**의 정본. `MAX(i++, j)` 가 이 주제의 사고를 매크로로 옮긴 형태다
+- [목록의 **42번 주제**](../42-function-like-macro-pitfalls/) (함수형 매크로의 함정) — **인자 중복 평가**의 정본. `MAX(i++, j)` 가 이 주제의 사고를 매크로로 옮긴 형태다
 - 목록의 **54번 주제** (부호 있는 정수 오버플로) — UB 의 정본 중 하나
 - 목록의 **58번 주제** (UB 를 잡는 도구) — ★ **「sanitizer 가 못 보는 것」의 정본.** 이 문서의 (9)가 그 목록에 한 줄을 더한다
-- 목록의 **47번 주제** (`<stdio.h>` 서식 출력) — `printf` 인자 자리에 부작용을 넣는 사고가 실제로 나는 자리
+- [목록의 **47번 주제**](../47-stdio-streams-buffering-and-formatted-output/) (`<stdio.h>` 서식 출력) — `printf` 인자 자리에 부작용을 넣는 사고가 실제로 나는 자리
 
 ## 용어 풀이
 

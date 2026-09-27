@@ -1037,4 +1037,4 @@ mode=3
 - **`Box<dyn Trait>` 의 기본 수명은 `'static`** — `Box<dyn Display>` 는 `Box<dyn Display + 'static>` 이다. [33번 주제](../33-dyn-trait-objects-and-object-safety/) (6)이 받았다.
 - **`Box::new_uninit`(1.82)** — 초기화 안 된 상자를 먼저 힙에 잡고 나중에 채운다. (4)의 스택 경유를 피하는 다른 길이다(이 문서는 던지지 않았다).
 - **`Box<[T]>` 의 `.into_iter()` 는 2024 부터 값** — std boxed 모듈 문서의 Editions 절이 배열의 2021 특례와 나란히 적는다. 격자는 37편 (2).
-- **스레드 스택 크기** — 주 스레드는 `ulimit -s`, `std::thread::Builder::stack_size` 로 새 스레드의 스택을 정할 수 있다(목록의 **49번 주제** — 이 문서는 던지지 않았다).
+- **스레드 스택 크기** — 주 스레드는 `ulimit -s`, `std::thread::Builder::stack_size` 로 새 스레드의 스택을 정할 수 있다([목록의 **49번 주제**](../49-threads-spawn-join-and-move-closures/) — 이 문서는 던지지 않았다).

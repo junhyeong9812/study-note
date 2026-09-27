@@ -627,7 +627,7 @@ RefCell { value: 0 }
 - `static` 은 **공유되므로** 타입이 `Sync` 여야 한다. Reference 도 한 줄로 적는다 — `The type must have the Sync trait bound to allow thread-safe access.`
 - `const` 는 공유되는 게 없으니 **그 요구가 없다.** 그래서 (1)의 사고가 **타입 검사에 안 걸린다.**
 - ★ 이 대비가 (1) 결론의 **타입 층 증거**다. 「왜 `const` 카운터는 컴파일러가 안 막아 주나」의 답이 여기 있다.
-- `Sync` 자체의 정본은 목록의 **50번 주제**다.
+- `Sync` 자체의 정본은 [목록의 **50번 주제**](../50-send-sync-in-compiler-errors/)다.
 
 비용 — 없음(컴파일 타임 판정).
 
@@ -908,7 +908,7 @@ static GLOBAL: D = D("static");    // D 는 Drop 을 구현한다
 | 속을 고칠 수 있는 타입(`Atomic*`·`Mutex`) | ★ **절대 아니다** | **이것** | 지역이면 `let` |
 | 전역 카운터 | 아니다 | `static COUNTER: AtomicU64` | 아니다 |
 | 전역 가변 컬렉션 | 아니다 | `static Q: Mutex<…>` | 아니다 |
-| 전역을 **한 번만 늦게** 초기화 | 아니다 | `OnceLock`/`LazyLock`(목록의 **53번 주제**) | 아니다 |
+| 전역을 **한 번만 늦게** 초기화 | 아니다 | `OnceLock`/`LazyLock`([목록의 **53번 주제**](../53-atomics-oncelock-and-lazylock/)) | 아니다 |
 | 함수 안의 임시 이름 | 가능하나 드물다 | 드물다 | **이것** |
 | 같은 이름을 다른 타입으로 다시 쓴다 | 안 된다 | 안 된다 | **이것**(섀도잉) |
 
@@ -939,9 +939,9 @@ static GLOBAL: D = D("static");    // D 는 Drop 을 구현한다
   **여기는 「이 문법이 실제로 무엇을 하나」**(어느 키워드가 어떤 메모리·어떤 진단을 만드나)부터다
 - [목록의 **09번 주제**](../09-copy-clone-and-drop/)(`Copy`·`Clone`·`Drop` 시점) — 해제 시점 일반론
 - [목록의 **12번 주제**](../12-lifetime-annotations-and-elision/)(수명 표기 `'a`) · **13번 주제**(`'static` 의 두 의미) — `&'static` 의 정본
-- 목록의 **47번 주제**(에디션 2021 대 2024) — `static_mut_refs` 를 포함한 에디션 변경 전수
-- 목록의 **50번 주제**(`Send`/`Sync`) — `static` 이 `Sync` 를 요구하는 이유
-- 목록의 **52번 주제**(`Mutex`/`RwLock`) · **53번 주제**(`atomic`·`OnceLock`/`LazyLock`) — `static mut` 의 대안
+- [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)(에디션 2021 대 2024) — `static_mut_refs` 를 포함한 에디션 변경 전수
+- [목록의 **50번 주제**](../50-send-sync-in-compiler-errors/)(`Send`/`Sync`) — `static` 이 `Sync` 를 요구하는 이유
+- [목록의 **52번 주제**](../52-mutex-rwlock-arc-and-poisoning/)(`Mutex`/`RwLock`) · **53번 주제**(`atomic`·`OnceLock`/`LazyLock`) — `static mut` 의 대안
 
 ## 용어 풀이
 
@@ -952,7 +952,7 @@ static GLOBAL: D = D("static");    // D 는 Drop 을 구현한다
 - **`const fn`** — 상수 자리에서 부를 수 있게 표시한 함수. 런타임 자리에서는 보통 함수다.
 - **승격(promotion)** — 상수 값에 참조를 만들 때 컴파일러가 읽기 전용 자리에 그 값을 두어 `&'static` 을 만들어 주는 것.
 - **내부 가변성(interior mutability)** — `&` 만 가지고도 속을 고칠 수 있는 성질. `Cell`·`RefCell`·`Atomic*`·`Mutex` 가 그렇다(정본은 [목록의 **42번 주제**](../42-refcell-cell-interior-mutability/)).
-- **`Sync`** — 여러 스레드가 **참조를 나눠 가져도** 안전한 타입임을 나타내는 표시(정본은 목록의 **50번 주제**).
+- **`Sync`** — 여러 스레드가 **참조를 나눠 가져도** 안전한 타입임을 나타내는 표시(정본은 [목록의 **50번 주제**](../50-send-sync-in-compiler-errors/)).
 - **`'static` 수명** — 프로그램이 끝날 때까지 유효한 참조의 수명.
 - **`static_mut_refs`** — `static mut` 에 참조를 만들면 켜지는 린트. 2021 은 경고, 2024 는 에러.
 - **`const_item_mutation`** — `const` 항목에 대입하려 할 때 켜지는 기본 경고.

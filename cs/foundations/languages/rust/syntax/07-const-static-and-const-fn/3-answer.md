@@ -393,7 +393,7 @@ error[E0133]: use of mutable static is unsafe and requires unsafe function or bl
 > Using unsafe functionality is potentially dangerous and disallowed by safety checks.
 
 - 참조가 꼭 필요하면 **`&raw const`** 로 원시 포인터를 만든다 — 진단의 `help` 가 그것을 짚어 준다.
-- 에디션 변경 전수는 목록의 **47번 주제**가 정본이다.
+- 에디션 변경 전수는 [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)가 정본이다.
 
 ### 6. `const fn` 은 어디까지 쓸 수 있나
 
@@ -770,7 +770,7 @@ RefCell { value: 0 }
 
 > You tried to use a type which doesn't implement some trait in a place which expected that trait.
 
-- `Sync` 자체의 정본은 목록의 **50번 주제**다.
+- `Sync` 자체의 정본은 [목록의 **50번 주제**](../50-send-sync-in-compiler-errors/)다.
 
 ### 11. `'static` 은 누구의 수명인가
 
@@ -825,12 +825,12 @@ error[E0597]: `local` does not live long enough
 ### 12. 다른 주제와 잇기
 
 - **전역 카운터의 세 후보**
-  - `static COUNTER: AtomicU64` — 정수·불리언·포인터면 이것. 정본은 목록의 **53번 주제**.
-  - `static Q: Mutex<…>` — 더 복잡한 타입이면 이것. 정본은 목록의 **52번 주제**.
-  - `static X: OnceLock<…>` / `LazyLock<…>` — **늦게 한 번만** 초기화해야 하면 이것. 정본은 목록의 **53번 주제**.
+  - `static COUNTER: AtomicU64` — 정수·불리언·포인터면 이것. 정본은 [목록의 **53번 주제**](../53-atomics-oncelock-and-lazylock/).
+  - `static Q: Mutex<…>` — 더 복잡한 타입이면 이것. 정본은 [목록의 **52번 주제**](../52-mutex-rwlock-arc-and-poisoning/).
+  - `static X: OnceLock<…>` / `LazyLock<…>` — **늦게 한 번만** 초기화해야 하면 이것. 정본은 [목록의 **53번 주제**](../53-atomics-oncelock-and-lazylock/).
   - ★ `static mut` 은 이 셋이 다 안 될 때의 마지막 수단이다. Edition Guide 의 권고도 같은 순서다.
-- **`static` 이 `Sync` 를 요구하는 이유** — 목록의 **50번 주제**(`Send`/`Sync`).
-- **에디션 변경 전수** — 목록의 **47번 주제**(에디션 2021 대 2024).
+- **`static` 이 `Sync` 를 요구하는 이유** — [목록의 **50번 주제**](../50-send-sync-in-compiler-errors/)(`Send`/`Sync`).
+- **에디션 변경 전수** — [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)(에디션 2021 대 2024).
 - **해제 시점 일반론** — [목록의 **09번 주제**](../09-copy-clone-and-drop/)(`Copy`·`Clone`·`Drop` 시점) · `Drop` 관용구는 [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/).\
   「누가 주인이고 언제 사라지나」의 정본은 [**08번 주제**](../08-ownership-and-move/)다.
 - **`rustc` 는 침묵하고 다른 도구만 말하는 자리** — **1번**이다.\

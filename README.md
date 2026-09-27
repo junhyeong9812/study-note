@@ -15,7 +15,8 @@
 이 루프가 남들이 정리한 방법론과 어디서 겹치는지, 왜 이렇게 하는지는 [reference/learning/](reference/learning/README.md)에 적는다 (출처 1: 박문호 「빅퀘스천」 — 대칭화·모듈화·순서화, 맥락 기억).
 
 > **기록을 남기기 전에** — study-note에 무엇을 어떤 골격으로 쓰는지는 [reference/study-note-guide.md](reference/study-note-guide.md)에 모여 있다.\
-> 다른 프로젝트에서 내용을 이관할 때(사람이든 에이전트든) 그 문서 하나만 읽으면 된다.
+> 다른 프로젝트에서 내용을 이관할 때(사람이든 에이전트든) 그 문서 하나만 읽으면 된다.\
+> 단 **cs 주제의 작성 규칙은 [cs/README.md](cs/README.md) 「작성 규칙」이 정본**이다(2026-09-27 개정 — cs에 관해서는 가이드 전체보다 우선).
 
 ## 폴더 구조
 
@@ -27,6 +28,7 @@ study-note/
 ├── reference/                 ← 작성 지침 (★ study-note-guide.md — 작성법 정본 · organize-guide.md · writing/ — 문서 작성 근거 · learning/ — 공부 방법론)
 ├── 세미나/                     ← 컨퍼런스·세미나 후기 (예: nerdcon/nerdcon-5.md)
 ├── 독후감/                     ← 책 후기 — 책=폴더, 챕터별 기록 (규칙: 독후감/README.md)
+├── issue/                     ← 실전 이슈 → 재사용 CS 패턴 카드 (형식 정본: issue/authoring-guide.md)
 ├── cs/                        ← 개념 지식(1/2/3 챕터): systems·engineering·foundations·algorithm·data-structure·domain-modeling·ops-patterns·api-design
 ├── practice/                  ← 훈련(문제→풀이): programmers
 ├── project/                   ← 만든 것의 기록: db-engine·study-note-deploy-system
@@ -44,8 +46,8 @@ study-note/
 
 - 챕터 폴더명은 원본 자료(impl 문서 등)의 파일명을 그대로 따라 대응시킨다.
 - 파일을 3개로 물리적으로 나눈 이유: 정답이 실수로 눈에 들어오는 경로를 없애기 위해서다.
-- 새 챕터는 `templates/`의 세 파일을 복사해서 시작한다.
-- 서머리 작성(따라 친 노트 → 정리본 융합) 규칙은 `cs/README.md`와 `reference/organize-guide.md`를 따른다.
+- 새 챕터는 `templates/`의 세 파일을 복사해서 시작한다 — 단 cs 주제는 `cs/README.md` 「작성 규칙」의 골격을 따른다.
+- cs 작성 규칙(Claude 완성본·통일 골격·검수 상태)은 `cs/README.md`가 정본이다. 따라 친 노트를 융합하는 `reference/organize-guide.md`는 cs 외 폴더에만 적용한다.
 
 ## 복습 규칙 (접근 순서)
 
@@ -67,6 +69,7 @@ study-note/
 - **정답은 기억에서 먼저 쓴다.** 원본 문서에서 복사하지 않는다.
   기억으로 쓰고 → 실제 코드로 검증하고 → 틀린 부분만 고친다. 기준 소스는 문서가 아니라 코드다.
 - 질문과 정답은 직접 작성한다. 이 판별과 산출 과정이 효과의 절반이다.
+- **cs 주제는 예외** — Claude 완성본으로 3파일을 모두 쓰고 배포 사이트에서 검수한다. 규칙 정본은 [cs/README.md](cs/README.md) 「작성 규칙」.
 
 ## 복습 기록
 
@@ -94,6 +97,7 @@ study-note/
 | [cs/domain-modeling/advanced](cs/domain-modeling/advanced/) | `/home/jun/project/myway/domain-modeling-advanced` (01~30) | [index](cs/domain-modeling/advanced/index.md) |
 | [cs/ops-patterns](cs/ops-patterns/) | `/home/jun/project/myway/ops-patterns` (01~19) | [index](cs/ops-patterns/index.md) |
 | [cs/api-design](cs/api-design/) | `/home/jun/project/myway/api-design` (01~06, 확정 체크리스트 훈련) | [index](cs/api-design/index.md) |
+| [issue](issue/) | 실전 이슈 → 재사용 CS 패턴 카드 아카이브 (하네스 issue-archive 대상 — 형식 정본: authoring-guide) | [index](issue/README.md) |
 | [portfolio/k-brand-guard](portfolio/k-brand-guard/) | `/home/jun/project/resume` 경력기술서 - K-브랜드 지킴이 사례 5건 | [index](portfolio/k-brand-guard/index.md) |
 | [portfolio/markview](portfolio/markview/) | `/home/jun/project/resume` 경력기술서 - MarkView 사례 3건 | [index](portfolio/markview/index.md) |
 | [practice/programmers](practice/programmers/) | 프로그래머스 고득점 Kit (유형 10 · 문제 47) — 1-question.md / 3-answer.md (2-summary 없음) | — |

@@ -30,7 +30,7 @@
 > [05번 형제](../05-explicit-casts-and-pointer-conversions/)가 정본이고, 여기는 **캐스트가 필요 없는 쪽**만 본다.\
 > **포인터의 기본**(`&`·`*`·포인터 타입·이중 포인터)은 [14번 형제](../14-pointers-address-dereference-and-pointer-types/)가 정본이다 —\
 > 겹치는 것은 링크하고 **결론만** 되짚는다.\
-> **`memset`/`memcpy`/`calloc` 의 계약**은 목록의 **50번 주제**,\
+> **`memset`/`memcpy`/`calloc` 의 계약**은 [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/),\
 > **널 역참조가 어떤 실패 계급인가**는 목록의 **56번 주제**가 정본이다.\
 > ★ 여기는 「**`void *` 가 왜 캐스트 없이 오가나**」와 「**널을 어떻게 쓰고 어디서 깨지나**」까지다.
 > 선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · [05번 형제](../05-explicit-casts-and-pointer-conversions/).
@@ -898,7 +898,7 @@ int main(void) {
 - ★ **널로 채우고 싶으면 루프로 `p[i] = NULL` 을 쓰는 것이 맞다.**\
   **실무에서는 거의 모두 `memset`/`calloc` 에 의존하고**, POSIX 계열 구현에서는 그 가정이 성립한다 —\
   ★ **「성립한다」와 「보장된다」를 가르는 것이 이 절의 전부**다.\
-  **`memset`/`calloc` 의 계약 자체**는 목록의 **50번 주제**가 정본이다.
+  **`memset`/`calloc` 의 계약 자체**는 [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/)가 정본이다.
 
 비용 — 루프 한 줄. **거의 아무도 치르지 않는다.** 대신 **가정을 주석으로 적어 두는 것**이 현실적인 타협이다.
 
@@ -1322,7 +1322,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
   그쪽 경고는 기본으로 켜져 있고, 여기는 **`-pedantic` 이 있어야** 둘이 보인다
 - [`08-sizeof-alignment-and-offsetof/`](../08-sizeof-alignment-and-offsetof/) — `sizeof` 일반 규칙의 정본. **`sizeof(void)` 가 표준 밖인 것**은 여기
 - [`13-goto-cleanup-idiom/`](../13-goto-cleanup-idiom/) — 자원 포인터를 `NULL` 로 두는 관용구가 막는 사고
-- 목록의 **50번 주제** (`<string.h>` 메모리 함수) — ★ **`memset`/`calloc` 의 계약이 정본.**\
+- [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/) (`<string.h>` 메모리 함수) — ★ **`memset`/`calloc` 의 계약이 정본.**\
   여기는 「**0 바이트와 널 포인터는 다른 개념**」까지
 - 목록의 **56번 주제** (공간 위반 — 널 역참조) — ★ **널 역참조의 실패 계급이 정본.**\
   여기는 「**컴파일러·최적화 수준으로 갈린다**」까지
@@ -1387,4 +1387,4 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
   [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/)·**50번 주제** 쪽 이야기다.
 
 - **`void *` 를 비교·정렬하는 것**(`qsort` 비교자가 `const void *` 를 받는 자리)도 던지지 않았다.\
-  목록의 **51번 주제**의 몫이다.
+  [목록의 **51번 주제**](../51-stdlib-conversion-qsort-and-bsearch/)의 몫이다.

@@ -935,7 +935,7 @@ cond = true
 - **`let _ = 값;`** 과 **`let _z = 값;`** 의 차이는 락에서 사고가 될 뻔하다가 **린트가 막는다.**\
   `drop(m.lock().unwrap());` 뒤에는 같은 스레드의 `try_lock()` 이 **`true`**, `let _guard = m.lock()` 뒤에는 **`false`** 였다(실측).\
   그런데 `let _ = m.lock();` 자체는 **`let_underscore_lock`(deny 기본) 때문에 컴파일 에러**다 — 정답 4번에 전문을 실었다.\
-  ★ **린트가 없는 다른 `Drop` 타입에서는 그대로 조용히 사라진다.** 락의 정본은 목록의 **52번 주제**다.
+  ★ **린트가 없는 다른 `Drop` 타입에서는 그대로 조용히 사라진다.** 락의 정본은 [목록의 **52번 주제**](../52-mutex-rwlock-arc-and-poisoning/)다.
 - **한 소유자 규칙을 런타임 비용으로 푸는 길**이 `Rc`/`Arc` 다([목록의 **41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/)).\
   `--explain E0382` 도 같은 말을 한다 — `outside of workarounds like Rc`.
 - **소유권을 안 넘기고 알맹이만 바꾸는 관용구**가 `mem::replace`/`mem::take` 다([목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)).\

@@ -616,8 +616,8 @@ inf -nan                       (아무 말 없음)
 - [`03-integer-promotion-and-usual-arithmetic-conversions/`](../03-integer-promotion-and-usual-arithmetic-conversions/) — 통상 산술 변환의 ① 단계(부동소수가 정수를 이기는 규칙) · `float-cast-overflow` 가 기본 집합에 없다는 것
 - [목록의 **05번 주제**](../05-explicit-casts-and-pointer-conversions/) (명시 캐스트) — `(int)d` 가 「비트를 바꾸는 것」인지 「값을 바꾸는 것」인지
 - [목록의 **36번 주제**](../36-variadic-functions-stdarg/) (`<stdarg.h>`) — 기본 인자 승격의 정본. `va_arg(ap, float)` 이 왜 틀린가
-- 목록의 **47번 주제** (`<stdio.h>` 서식 출력) — `%f`·`%g`·`%.17g` 를 고르는 규칙
-- 목록의 **52번 주제** (`<math.h>` 핵심) — `isnan`/`isinf` 와 부동소수 비교의 정본
+- [목록의 **47번 주제**](../47-stdio-streams-buffering-and-formatted-output/) (`<stdio.h>` 서식 출력) — `%f`·`%g`·`%.17g` 를 고르는 규칙
+- [목록의 **52번 주제**](../52-ctype-math-and-time-essentials/) (`<math.h>` 핵심) — `isnan`/`isinf` 와 부동소수 비교의 정본
 
 ## 용어 풀이
 

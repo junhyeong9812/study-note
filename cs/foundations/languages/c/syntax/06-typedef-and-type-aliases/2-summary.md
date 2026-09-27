@@ -581,7 +581,7 @@ re.c:1:13: note: previous declaration of ‘T’ with type ‘T’ {aka ‘int�
 - [목록의 **31번 주제**](../31-const-and-pointer-const-placement/) (`const` 와 포인터 const 위치) — (5)의 `char * const` ↔ `const char *` 정본
 - [목록의 **35번 주제**](../35-function-pointers-and-callback-tables/) (함수 포인터와 콜백 테이블) — (6)이 정본으로 다뤄지는 곳
 - [목록의 **40번 주제**](../40-generic-selection-c11/) (`_Generic`) — 이 문서의 주된 증명 도구
-- 목록의 **42번 주제** (함수형 매크로의 함정) — `#define` 쪽의 정본
+- [목록의 **42번 주제**](../42-function-like-macro-pitfalls/) (함수형 매크로의 함정) — `#define` 쪽의 정본
 
 ## 용어 풀이
 

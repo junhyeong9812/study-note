@@ -872,7 +872,7 @@ if let Event::Click = e { … } else if let Event::Key = e { … } else { … }
 - [**05번 주제**](../05-control-flow-loops-and-labels/) — `loop`·`while`·`for` 의 정본. `while let` 은 그 위에 얹힌다.
 - [**04번 주제**](../04-expressions-and-semicolons/) — `if let` 이 식이라는 규칙의 뿌리.
 - [`history/rust/02-에디션.md`](../../../../../../history/rust/02-에디션.md) — 에디션 제도의 **역사**. 여기는 **내 코드가 어느 에디션에서 어떻게 컴파일되나**.
-- 목록의 **47번 주제** — 2021 대 2024 변경 **전수**. 여기는 이 주제에 걸린 **둘**만.
+- [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/) — 2021 대 2024 변경 **전수**. 여기는 이 주제에 걸린 **둘**만.
 - [목록의 **21번 주제**](../21-option-and-combinators/)·**22번 주제** — `Option`/`Result` 의 조합 메서드. 접개 대신 쓰는 넷째 길이다.
 - [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/) — `Drop` 시점. (5)의 임시값 실험이 그것을 창으로 쓴다.
 
@@ -897,5 +897,5 @@ if let Event::Click = e { … } else if let Event::Key = e { … } else { … }
   에디션은 그런 **문법 변경을 안전하게 넣는 장치**다. 제도 자체의 이야기는 `history/rust/02-에디션.md` 다.
 - **`if let ... else if let ...` 은 체인이 아니다.** 체인은 `&&` 로 잇는 것이고, 이쪽은 그냥 중첩이다.
 - **2024 의 임시값 변경은 `if let` 에만** 적용된다. `match`·`while let` 의 규칙은 그대로다 —
-  전수는 목록의 **47번 주제**에서 확인한다.
+  전수는 [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)에서 확인한다.
 - **`let else` 에 `if let` 처럼 `else if` 를 붙일 수 없다.** 발산해야 하므로 붙일 자리가 없다.

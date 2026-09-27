@@ -735,7 +735,7 @@ s22f.c   -Wall -Wextra 0건 · +pedantic 0건 · +UBSan 0건
 | `union` 의 크기·정렬·공통 초기 시퀀스 | [23번 형제](../23-union-and-the-boundary-of-type-punning/) |
 | 바이트 안의 **비트** 배치 | [24번 형제](../24-bit-fields/) |
 | 유연 배열 멤버 | [목록의 **26번 주제**](../26-flexible-array-members/) |
-| `memcmp`/`memcpy`/`memset` 의 계약 | 목록의 **50번 주제** |
+| `memcmp`/`memcpy`/`memset` 의 계약 | [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/) |
 | 엄격한 앨리어싱 | 목록의 **55번 주제** |
 
 - ★ 구조체의 **초기화 규칙**(지정 초기자로 안 적은 **멤버**가 0이 되는 것)은 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/)가 정본이고,\

@@ -8,8 +8,8 @@
 > ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
 > **버전** — `inline` 은 **C99 부터**다. 그 전의 **GNU C(gnu89) 확장 `inline`** 은 **뜻이 반대**다((2)).
 > ★★★ **경계** — **한 번역 단위 안의 C99 `inline` 세 형태**(`inline` 만 · `+ extern` 선언 · `static inline`)는 [29번 형제](../29-scope-and-linkage-static-extern/)의 (8)이 **이미 쟀다**(그쪽의 12칸 격자와 `nm` 의 `U`/`T`/`t`). 이 편은 그 결과를 **다시 재지 않고**, **두 번역 단위 · 헤더 · 판 뒤집힘 · C++ 대비 · 주소 · 제약**으로 넓힌다.\
-> ★ **정의가 몇 개 남나의 앞**(선언과 정의의 구분)은 [34번 형제](../34-function-declarations-definitions-and-prototypes/), **`static`/`extern` 의 링크 규칙 자체**는 [29번 형제](../29-scope-and-linkage-static-extern/)가 정본이다. **헤더에 무엇을 두나**는 목록의 **44번 주제**, **링크 오류를 거꾸로 읽기**는 목록의 **45번 주제**다.
-> 선행 — [29번 형제](../29-scope-and-linkage-static-extern/) · 목록의 **44번 주제**.
+> ★ **정의가 몇 개 남나의 앞**(선언과 정의의 구분)은 [34번 형제](../34-function-declarations-definitions-and-prototypes/), **`static`/`extern` 의 링크 규칙 자체**는 [29번 형제](../29-scope-and-linkage-static-extern/)가 정본이다. **헤더에 무엇을 두나**는 [목록의 **44번 주제**](../44-headers-and-separate-compilation/), **링크 오류를 거꾸로 읽기**는 [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/)다.
+> 선행 — [29번 형제](../29-scope-and-linkage-static-extern/) · [목록의 **44번 주제**](../44-headers-and-separate-compilation/).
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ★★★ **본체는 넷째 창 — 링크 결과다.** 컴파일은 전부 통과한다(경고 0). **링크에서만** 「정의가 없다」·「정의가 둘이다」가 갈린다.
@@ -567,7 +567,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★★ **이 표의 결론 세 줄**
   - ★★★ **인라인 규칙의 사고는 전부 링크에서 난다** — 컴파일러는 한 번역 단위만 보니 「정의가 몇 개인가」를 모른다.
   - ★★ **`-O2` 의 성공은 증거가 아니다** — 판을 `-O0` 으로 바꾸거나 주소를 쓰면 드러난다.
-  - ★★ **판(gnu89)이 바뀌면 에러의 종류가 뒤집힌다** — 에러 문구만 보고 원인을 적으면 틀린다(목록의 **45번 주제**).
+  - ★★ **판(gnu89)이 바뀌면 에러의 종류가 뒤집힌다** — 에러 문구만 보고 원인을 적으면 틀린다([목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/)).
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -600,8 +600,8 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [29번 형제 — 스코프와 링크](../29-scope-and-linkage-static-extern/) — ★★★ **선행.** (8)이 **한 번역 단위의 C99 `inline`** 12칸을 쟀고 (9)가 C++ 의 `inline` 변수를 보였다. `static`/`extern` 링크 규칙의 정본.
 - [34번 형제 — 함수 선언·정의·프로토타입](../34-function-declarations-definitions-and-prototypes/) — ★★ 「선언과 정의」의 앞.
 - [C++ 25 — 정적 멤버와 `inline` 변수](../../../cpp/syntax/25-static-members-and-inline-variables/) — ★ C++ 의 `inline` 이 「여러 정의 허용」인 자리.
-- 목록의 **44번 주제**(헤더와 분할 컴파일) — ★★ 헤더에 무엇을 두나의 정본.
-- 목록의 **45번 주제**(링크 오류 읽기) — ★★ `undefined reference` / `multiple definition` 을 거꾸로 읽는 법.
+- [목록의 **44번 주제**](../44-headers-and-separate-compilation/)(헤더와 분할 컴파일) — ★★ 헤더에 무엇을 두나의 정본.
+- [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/)(링크 오류 읽기) — ★★ `undefined reference` / `multiple definition` 을 거꾸로 읽는 법.
 
 ## 용어 풀이
 

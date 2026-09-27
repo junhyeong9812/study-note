@@ -717,7 +717,7 @@ rustc 가 거부된 `impl` 을 **그래도 등록해 두기** 때문이다. **�
 - [목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/) — `From`/`Into`/`TryFrom`/`AsRef`/`Borrow`. **어느 방향으로 구현하나**의 정본이다.
 - [목록의 **30번 주제**](../30-operator-overloading-std-ops-index-and-deref/) — 연산자 오버로딩과 `Deref`. ★ **`Deref` 남용의 정본**이 거기다.
 - [목록의 **43번 주제**](../43-deref-coercion-and-smart-pointers/) — `Deref` 강제와 스마트 포인터 감각. (5)의 절충안이 거기서 깊어진다.
-- 목록의 **46번 주제** — 크레이트와 워크스페이스. 「크레이트 경계」가 무엇인지의 정본이다.
+- [목록의 **46번 주제**](../46-crates-cargo-toml-features-and-workspaces/) — 크레이트와 워크스페이스. 「크레이트 경계」가 무엇인지의 정본이다.
 - Kotlin 의 확장 함수 — [`kotlin/syntax/13-extension-functions-and-properties/`](../../../kotlin/syntax/13-extension-functions-and-properties/).
   ★ **대비**: 남의 타입에 함수를 붙이는 목적이 겹치는데, **확장 함수는 정적 디스패치라 충돌이 안 난다**
   (가져온 쪽에서만 보인다). 그래서 Kotlin 에는 **고아 규칙이 필요 없다** — 대신 **다형성도 없다**.

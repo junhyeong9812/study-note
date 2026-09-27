@@ -526,7 +526,7 @@ CHAR_MIN=0 CHAR_MAX=255  (char 에 부호가 있나: 0)
 **그래서 무엇을 쓰나**
 
 - 바이트를 다룰 때는 **`unsigned char`** 다. `(unsigned char)200` 은 어느 플래그에서도 `200` 이다.
-- `<ctype.h>` 함수에 `char` 를 그냥 넘기면 안 되는 이유도 같다(목록의 **52번 주제**).
+- `<ctype.h>` 함수에 `char` 를 그냥 넘기면 안 되는 이유도 같다([목록의 **52번 주제**](../52-ctype-math-and-time-essentials/)).
 
 ### 9. 함수 포인터 캐스트
 

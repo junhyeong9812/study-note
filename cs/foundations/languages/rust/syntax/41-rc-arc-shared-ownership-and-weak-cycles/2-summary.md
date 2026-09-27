@@ -621,7 +621,7 @@ print("[3] end")
 - [**43번 주제**](../43-deref-coercion-and-smart-pointers/) — `&Rc<String>` 이 `&str` 자리에 들어가는 이유.
 - [**44번 주제**](../44-drop-mem-drop-replace-and-take/) — `mem::forget`(안전한 누수의 다른 길).
 - [**30번 주제**](../30-operator-overloading-std-ops-index-and-deref/) (9) — `strong_count` 가 연관 함수인 이유.
-- 목록의 **50번 주제**(`Send`/`Sync`) · **52번 주제**(`Arc<Mutex<T>>`) — 스레드 쪽 정본.
+- [목록의 **50번 주제**](../50-send-sync-in-compiler-errors/)(`Send`/`Sync`) · **52번 주제**(`Arc<Mutex<T>>`) — 스레드 쪽 정본.
 - C++ 갈래 [`27-shared-ptr-and-reference-counting`](../../../cpp/syntax/27-shared-ptr-and-reference-counting/2-summary.md) · [`28-weak-ptr-and-reference-cycles`](../../../cpp/syntax/28-weak-ptr-and-reference-cycles/2-summary.md) — **제어 블록·원자 명령·ASan 누수 리포트는 거기**, 여기는 Rust 의 판단.
 - Python 갈래 [`01-object-and-name-binding`](../../../python/syntax/01-object-and-name-binding/2-summary.md) — `sys.getrefcount` 와 순환 수집기의 일반.
 

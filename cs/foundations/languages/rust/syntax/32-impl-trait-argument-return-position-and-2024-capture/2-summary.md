@@ -108,7 +108,7 @@ GNU nm (GNU Binutils for Ubuntu) 2.42
 여기는 그 뒤 — **감춤의 경계, 새는 것, 에디션.** [**31번 주제**](../31-generics-trait-bounds-where-and-monomorphization/)의 **단형화**는 인자 위치 `impl Trait` 에 그대로 적용된다(이름 없는 제네릭이므로).
 ★★ **정본 경계** — **에디션 제도와 연혁**(언제 들어왔나, 2024 에 무엇이 함께 들어왔나)은 [`history/rust/02-에디션.md`](../../../../../../history/rust/02-에디션.md)가 정본이다.
 그 편의 「RPIT 수명 캡처 규칙」 절은 **규칙을 한 문단과 예 두 줄**로 적었다 — **여기서는 그것을 다시 쓰지 않고**, 같은 소스를 두 에디션에 던져 **어느 쪽으로 무엇이 깨지나**를 출력으로 보인다.
-**에디션 이전 절차 전체**(`cargo fix --edition`)는 목록의 **47번 주제**다.
+**에디션 이전 절차 전체**(`cargo fix --edition`)는 [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)다.
 
 ## 동작 방식
 
@@ -628,7 +628,7 @@ warning: 1 warning emitted
 
 - ★★ **2021 에서 `-W impl_trait_overcaptures` 를 켜면** ② 의 함수에 **경고**를 단다 — 「**will capture more lifetimes than possibly intended in edition 2024**」.
   **컴파일은 통과한다**(`exit 0`) — 2021 의미는 그대로이고 **2024 에서의 의미를 미리 알려 줄 뿐**이다.
-- ★ Edition Guide 에 따르면 이 린트는 `rust-2024-compatibility` 묶음에 들어 있어 **`cargo fix --edition` 이 자동으로 켜고, 대개 `use<..>` 를 자동으로 넣는다.** 그 절차는 목록의 **47번 주제**다(이 문서는 `cargo fix` 를 돌리지 않았다).
+- ★ Edition Guide 에 따르면 이 린트는 `rust-2024-compatibility` 묶음에 들어 있어 **`cargo fix --edition` 이 자동으로 켜고, 대개 `use<..>` 를 자동으로 넣는다.** 그 절차는 [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)다(이 문서는 `cargo fix` 를 돌리지 않았다).
 - ★ **①의 함수에는 이 경고가 안 붙는다** — 2021 에서 이미 에러이기 때문이다(① 블록).
 
 ### (7) ★★ `use<..>` — 포착 목록을 직접 적는다, 에디션에 안 매이게
@@ -996,8 +996,8 @@ fn main() {
 - [**20번 주제** — `let` 체인](../20-if-let-while-let-let-else-and-let-chains/) — 같은 갈래에서 **2024 에디션에서만** 되는 또 하나의 문법.
 - [목록의 **33번 주제**](../33-dyn-trait-objects-and-object-safety/) — `dyn Trait` 와 dyn 호환. (8)의 E0038 이 거기서 깊어진다.
 - [목록의 **34번**](../34-closures-fn-fnmut-fnonce-and-move/)·[**35번 주제**](../35-function-pointers-and-returning-closures/) — 클로저 세 종류와 **클로저를 돌려주기**(`impl Fn` 대 `Box<dyn Fn>`). (4)의 정본이다.
-- 목록의 **47번 주제** — 에디션 2021 대 2024, `cargo fix --edition`. (6)의 린트가 거기서 절차로 쓰인다.
-- 목록의 **50번 주제** — `Send`/`Sync`. (3)의 누수가 **스레드 경계**에서 나타나는 자리.
+- [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/) — 에디션 2021 대 2024, `cargo fix --edition`. (6)의 린트가 거기서 절차로 쓰인다.
+- [목록의 **50번 주제**](../50-send-sync-in-compiler-errors/) — `Send`/`Sync`. (3)의 누수가 **스레드 경계**에서 나타나는 자리.
 
 ## 용어 풀이
 
@@ -1044,6 +1044,6 @@ For more information about this error, try `rustc --explain E0562`.
 ```
 
   **E0562** — 「**only allowed in arguments and return types of functions and methods**」. Reference 의 Limitations 절과 같은 말이다.
-- **`async fn` 의 반환** — `async fn` 은 **`impl Future` 를 돌려주는 설탕**이고, Edition Guide 가 적는 대로 **모든 에디션에서 전부 포착**한다(목록의 **54번 주제**).
+- **`async fn` 의 반환** — `async fn` 은 **`impl Future` 를 돌려주는 설탕**이고, Edition Guide 가 적는 대로 **모든 에디션에서 전부 포착**한다([목록의 **54번 주제**](../54-async-await-and-future-state-machines/)).
 - **`Captures` 트릭** — 2021 에서 `use<..>` 없이 수명을 포착시키려고 쓰던 빈 트레이트 기법. Edition Guide 가 「`use<..>` 로 바꾸거나 2024 에서는 지우라」고 적는다.
 - **트레이트 안의 `use<..>`** — RPITIT 에 `use<..>` 를 쓰는 것은 **1.87** 에 안정됐다((0)의 버전 블록 첫 줄). 이 판(1.92)에 들어 있지만 **이 문서는 그 문법을 던지지 않았다.**
