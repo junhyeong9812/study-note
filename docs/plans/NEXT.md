@@ -4,19 +4,9 @@
 
 ## 기준
 
-- 마지막 갱신: 2026-09-27 · 직전 완료 작업: `docs/plans/2026-09-27/issue-toplevel-cs-rule/` · 기준 커밋: a8f8a9e1(study-note) · c2254f0(harness 브랜치 docs/issue-archive-toplevel-path) · 병합 상태: 둘 다 미push
+- 마지막 갱신: 2026-09-28 (N0-a 배포 완료 · N0-b 불요 종료 — 채팅은 Redis TTL 7일) · 이전: 2026-09-27 · 직전 완료 작업: `docs/plans/2026-09-27/issue-toplevel-cs-rule/` · 기준 커밋: a8f8a9e1(study-note) · c2254f0(harness 브랜치 docs/issue-archive-toplevel-path) · 병합 상태: 둘 다 미push
 
 ## 다음 작업 후보 (우선순위순)
-
-### N0-a. 하네스 deploy.sh 배포 — 우선순위: 높음 · 하네스 main은 push 완료(c2254f0), 배포 전까지 ~/.claude playbook이 옛 경로 `cs/issue`를 가리킴
-
-- **왜 다음인가**: 커밋만 됨(사용자 지시). 그 사이 CS 이슈 아카이브가 돌면 옛 경로에 카드를 쓴다.
-- **권장 대처**: 하네스 브랜치 push·병합 확인 → deploy.sh(manifest diff → 백업 → 신규 세션 smoke).
-
-### N0-b. 배포 사이트 채팅 기록 경로 마이그레이션(작업 C) — 우선순위: 높음(DB 변경·불가역)
-
-- **입력**: `docs/plans/2026-09-28/languages-toplevel/path-map-issue.tsv`(494행 — 09-27의 92행판 대체) + `path-map-languages.tsv`(2142행). ChatController `doc_path` 키.
-- **착수 전 확인할 것**: 저장소(DB/Redis) 종류·백업, 실행 개별 확인(core §6). study-note push 후 인덱싱이 rename을 어떻게 처리하는지.
 
 ### N0-c. CS 커리큘럼 확정 → cs 재편 — 우선순위: 높음 · 사용자 검토 대기
 
@@ -41,9 +31,13 @@
 - **왜 다음인가**: 이름·수치는 가공했지만 카드 조합으로 원 도메인 구조를 추정할 여지가 남았다(리뷰 잔여 리스크).
 - **권장 대처**: 해당 폴더 README·카드의 도메인 특유 예시를 다른 도메인 예로 교체할지 판단.
 
+### N2. mysql 아키텍처 지도 미완 링크 — 우선순위: 낮음
+
+- **관측**: 09-25 WIP 병합으로 깨진 링크 32 — record-lock 03~11 단계·structure/(memory-structures·redo-log-files·tablespace-page·threads·undo-segments·record-format)·mvcc-read·purge 미작성, `flows/structure/…` 경로 오기 일부.
+- **권장 대처**: 지도 작성 재개 시 미작성 문서부터, 경로 오기는 `../../structure/`로 교정.
+
 ## 보류·이월
 
-- CS 이슈 아카이브 1건 보류: codex 리뷰 시 중첩 샌드박스(bwrap loopback RTM_NEWADDR 권한 오류)로 파일 읽기 전면 실패 → 입력 인라인으로 우회. 사유: 이번 spec 범위에 아카이브 없음 — 재개 조건: 사용자 범위 확인(또는 N0-a 배포 후 새 경로로).
 
 - 통합 랩 08·09 — 01~07 API 서버 완성 후 동시 기동 구조로 전환(사용자 결정). 재개 조건: 01~07 완료.
 
