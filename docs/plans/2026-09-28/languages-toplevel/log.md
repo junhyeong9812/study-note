@@ -22,6 +22,7 @@
 | 2026-09-28 | 리뷰 회수: Opus 4건·codex 2건(중복) | 전부 채택 → 수정. 표시텍스트 보정 1차 스크립트가 과잉(202파일, 정상 라벨 `x.md`→`./x.md`) → 해당 파일 worktree만 restore 후 조건 강화(현 위치 기준 이미 일치하면 제외) 재적용: 514라벨·189파일(전부 languages/ 내부) |
 | 2026-09-28 | codex post-fix 재점검 | 1·3 resolved, 4 resolved(경로 제한 diff에서 rename 미검출로 codex가 못 봄 — 메인이 +행 확인), 2의 잔여 `java-jvm.md` 류 라벨은 이동 전부터 존재(a006aa30 동일) → 범위 밖 기각. 신규 0 |
 | 2026-09-28 | 최종 V2 신규 깨짐 0 · V3 잔존 0 · V1 R2142 · V4 비-md 0 · V5 path-map 2142 | 커밋 진행 |
+| 2026-09-28 | main ff(fc39af64..5b555b72, origin/main 선행 0) → push origin main | 완료. `git branch --no-merged main` 빈 결과. 브랜치·워크트리는 삭제하지 않음(합의) |
 
 ## 리뷰 ledger
 
@@ -40,3 +41,8 @@
 - mysql 브랜치 WIP 전방 링크 15건: 이동과 무관(워크트리 미커밋 대상) — 수정 안 함.
 
 ## 완료 요약
+
+- 통합: 미병합 7브랜치 → docs/integrate-2026-09-28 → main(5b555b72) push. 충돌 3종 해결(issue 재구성 494·Java add/add main판·측정로그/NEXT/README 합집합).
+- 이동: languages 2023 + web-api 118 + python-basics 1 = R2142, 링크 1702·라벨 514 교정, 신규 깨짐 0, 옛 경로 잔존 0.
+- 색인: 루트 index.md·README 트리 현행화.
+- 남은 것: 하네스 deploy.sh(N0-a), 채팅 경로 마이그레이션(N0-b — path-map 2종), 커리큘럼 기반 cs 재편(N0-c).
