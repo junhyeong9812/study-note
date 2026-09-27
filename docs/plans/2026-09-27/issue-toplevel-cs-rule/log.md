@@ -23,6 +23,9 @@
 | 2026-09-27 | 루프3: codex(인라인) 신규 0 · Opus(mirror /tmp/tmp.cGRNEki4t7) 신규 1(O10, 낮음) | O10 수정 → codex post-fix 타깃 재점검 "resolved·신규 없음", 링크 신규 깨짐 0 |
 | 2026-09-27 | 루프 종료 판정 | 3루프 상한 도달 — 루프3에 신규 채택 1건이 있어 형식상 종료조건 미충족 → `review unresolved(형식)`: O10은 fixed + 타깃 재점검 clean, open finding 0. 사용자 보고 |
 | 2026-09-27 | 미러 정리 | /tmp/tmp.fNPwubgnVH·CA6uIWgka7·cGRNEki4t7 삭제 |
+| 2026-09-27 | 커밋 | study-note a8f8a9e1 (R92·M3·A3, 경로 지정 스테이징) · harness c2254f0 (docs/issue-archive-toplevel-path) |
+| 2026-09-27 | 마감: measurement-log 1행·NEXT.md(N0-a/b/c, 보류 1) | 둘 다 기존 미커밋분과 섞여 있어 커밋하지 않음(I5) |
+| 2026-09-27 | 아카이브 보류(범위 미확인) — codex 중첩 샌드박스 bwrap 파일 읽기 실패 | NEXT 보류·이월 등재, 사용자 보고 |
 
 ## 리뷰 ledger
 
@@ -48,3 +51,8 @@
 - 하네스 deploy.sh: 사용자 지시 "커밋까지만" — 배포 전까지 ~/.claude playbook은 옛 경로(NEXT 등재)
 
 ## 완료 요약
+
+- study-note `a8f8a9e1`: `cs/issue/**` → `issue/**` 92 rename, 링크 58개 교정(`../../project/...` → `../project/...` 등), H1 `# cs/issue/...` → `# issue/...`, 루트 index·README 입구·트리, `cs/README.md` 「작성 규칙」 1~5 신설(흐름·융합·하지 말 것 절 교체), 루트 README cs 예외 2곳.
+- harness `c2254f0`: `playbooks/issue-archive.md` 대상 `/home/jun/project/study-note/issue/`·`issue/README.md`·`docs(issue):` · `src/core.md` §7 ② `study-note \`issue/\`` · `README.md:70` · HISTORY 1행.
+- 검증: V1 R92 · V2 신규 깨짐 0(기준선 173 동일) · V3 잔존 0 · V4 258 passed · V5 issue 비-md 0 · V7 path-map 92행 · 리뷰 3루프(채택 10, 이연 2) — 루프3 신규 1건 수정 후 타깃 재점검 clean, 형식상 `review unresolved`(3루프 상한).
+- 미완: push·deploy·채팅 마이그레이션(NEXT N0-a/b).
