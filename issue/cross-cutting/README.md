@@ -8,7 +8,7 @@
 |------|------|------|
 | [reliability](reliability/) | 실패가 조용히 삼켜지는 것·자원 고갈 | silent-failure · resource-bounding |
 | [network](network/) | 프로토콜·연결·프록시·서브넷 | chunked/Content-Length · 스트리밍 status · bind 주소 · 프록시 passthrough · 역터널 |
-| [infra](infra/) | 플랫폼·툴(compose·git·nginx·배포) | compose 변수해석 · 상태 드리프트 · git 함정 · nginx 아군오사 |
+| [infra](infra/) | 플랫폼·툴(compose·git·nginx·배포·컨테이너 런타임) | compose 변수해석 · 상태 드리프트 · git 함정 · nginx 아군오사 · API 버전 하한 |
 | [security](security/) | 비밀·권한 | 시크릿 단일소유·최소권한 |
 
 > 메타 태그(폴더를 가로지르는 주제): `silent-failure` · `resource-bounding` · `least-privilege`. 각 카드 본문에서 확인.

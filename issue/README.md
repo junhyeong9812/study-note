@@ -38,6 +38,7 @@ study-note-deploy-system(개인 위키+검색+챗봇 배포 시스템)을 만들
 - [state-drift-delete-propagation](cross-cutting/infra/state-drift-delete-propagation/) — 삭제 전파 부재·설정 채널 → git 단일 채널 (backend6, ci-cd2)
 - [git-pitfalls](cross-cutting/infra/git-pitfalls/) — dubious-ownership·빈디렉토리 미추적·quotepath (ci-cd2, front3, backend2)
 - [nginx-broadband-defense-friendly-fire](cross-cutting/infra/nginx-broadband-defense-friendly-fire/) — 광역 방어의 아군 오사(self-DoS) → allowlist (ci-cd5)
+- [client-api-version-floor](cross-cutting/infra/client-api-version-floor/) — 고정 API 버전 클라이언트 × 데몬의 최소 버전 상향 → 코드 변경 없이 거부, 폴백 요약 메시지가 원인을 가림 (실험 랩)
 
 ### security — 비밀·권한
 - [secret-ownership-least-privilege](cross-cutting/security/secret-ownership-least-privilege/) — 비밀 단일소유·정본은 실사용처·최소권한 (backend10, front4, ci-cd3)
@@ -61,6 +62,7 @@ study-note-deploy-system(개인 위키+검색+챗봇 배포 시스템)을 만들
   - [dip-port-ownership](kotlin/spring/dip-port-ownership/) — 도메인우선·DIP(usecase 포트소유)·특성테스트 안전망 (backend8)
   - [path-traversal-and-data-reality](kotlin/spring/path-traversal-and-data-reality/) — 트래버설 차단 + "버그의 절반은 데이터 실태"(0바이트 원본) (backend3)
   - [graceful-degradation-fault-isolation](kotlin/spring/graceful-degradation-fault-isolation/) — 보조기능 장애가 핵심을 인질 못하게, RRF·폴백 뱃지 (backend4)
+  - [jpa-save-merge-copy](kotlin/spring/jpa-save-merge-copy/) — 영속 애그리거트에 save() → merge가 새 자식의 복사본을 영속화, 원본 id null → flush (실험 랩)
 
 ### python — Python·FastAPI (llm)
 - (언어레벨) [module-resolution-and-accidental-pass](python/module-resolution-and-accidental-pass/) — pytest vs `python -m`의 sys.path 차이로 초록불이 갈림(우연한 통과) (llm3)
