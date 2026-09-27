@@ -231,7 +231,7 @@ Part 6  판단하는 법             data-analysis
 
 > 기존 01~30 유지, 신규 31번부터. 🔧 칸 = "쓰이는 곳".
 
-**권장 학습 순서**: 31 → 32 → 06 → 01 → 02 → 03 → 04 → 33 → 05 → 34 → 35 → 10 → 08 → 09 → 07 → 11 → 12 → 14 → 15 → 18 → 17 → 23 → 24 → 21 → 22 → 13 → 25 → 27 → 26 → 28 → 29 → (16 · 19 · 20 · 30 · 36 · 37 · 38 심화) → 39 → 40
+**권장 학습 순서**: 31 → 32 → 06 → 01 → 02 → 03 → 04 → 33 → 05 → 34 → 35 → 10 → 08 → 09 → 07 → 11 → 12 → 14 → 15 → 18 → 17 → 23 → 24 → 21 → 22 → 13 → 25 → 27 → 26 → 28 → 29 → 41 → 42 → (16 · 19 · 20 · 30 · 36 · 37 · 38 심화) → 39 → 40
 
 ### 3.1 분석·기초
 
@@ -300,6 +300,13 @@ Part 6  판단하는 법             data-analysis
 | 36-randomized-algorithms | 라스베이거스·몬테카를로, 기대 복잡도 | math/09-expectation-variance-tails | 결정적 시드 → 적대적 입력에 최악 재현 | 랜덤 피벗, 스킵 리스트, 샘플링 | CLRS 5 · 7.3 | 심화 | 신규 |
 | 37-complexity-p-np | P·NP·NP완전·환원·근사 | 31 | NP-hard 문제에 정확해 고집 → 무한 대기; 근사·휴리스틱 선택 기준 부재 | 스케줄링·빈 패킹·SAT 솔버 | CLRS 34 · Sipser 3부 [?] | 권장 | 신규 |
 | 38-computability-and-halting | 정지 문제·라이스 정리 | 37 | "모든 버그를 잡는 정적 분석기" 기대 → 오탐/미탐 불가피성 오해 | 정적 분석·타입 검사의 한계 | Sipser 4·5장 [?] | 심화 | 신규 |
+
+### 3.6b 압축 알고리즘 (2026-09-28 추가)
+
+| slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
+|---|---|---|---|---|---|---|---|
+| 41-lossless-compression-lz77-huffman | LZ77(슬라이딩 윈도 역참조) + 허프만 부호 = DEFLATE, 압축 한계 | math/13-information-theory-basics, 23-greedy, data-structure/07-heap | 해제 크기 상한 없음 → 압축 폭탄으로 메모리 고갈; 아주 작은 메시지 압축 → 헤더 때문에 오히려 커짐; 무작위·암호문은 압축 안 됨 | 해시 체인 매치 파인더, 슬라이딩 윈도, 허프만 트리(힙)·정규 허프만 부호 | RFC 1951 · Huffman 1952 · Ziv–Lempel 1977 | 필수 | 신규 |
+| 42-modern-codecs-lz4-zstd-brotli | 속도↔비율 절충, 딕셔너리 압축, 엔트로피 부호(ANS/FSE), 프레임·스트리밍 압축 | 41 | 최고 레벨 고정 → CPU 병목·꼬리 지연; 공유 딕셔너리 버전 불일치 → 해제 실패; 작은 레코드 개별 압축 → 비율 저하(배치 압축 필요) | ANS/FSE, 사전 학습 딕셔너리, 해시 매치 파인더 | RFC 8878(zstd) · RFC 7932(Brotli) · LZ4 블록·프레임 형식 문서 [?] | 권장 | 신규 (연결: `cs/systems/kafka-why-fast` 배치 압축) |
 
 ### 3.7 영역 마감
 
@@ -508,7 +515,7 @@ Part 6  판단하는 법             data-analysis
 > 장애의 중심은 TCP(15~22). "TCP 통신 도중 끊기면?"의 본체가 19·20·21이다.
 > 뼈대: Kurose & Ross 8판(이하 K&R — 9판도 1~5장 제목 동일 확인, 6~8장 번호는 8판 기준), Stevens 『TCP/IP Illustrated Vol.1』 2판(이하 Stevens — 13·14·17장 외 장 번호 `[?]`), Grigorik 『High Performance Browser Networking』(이하 HPBN — 장 제목으로 인용), Beej's Guide, RFC.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 06 → 05 → 07 → 08 → 10 → 12 → 13 → 11 → 09 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 27 → 28 → security/03~07 → 29 → 30 → 31 → 32 → 33 → 34 → 35 → 36 → 37 → 38 → 39 → 40 → 41 → 42 → 43 → 44 → 45
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 06 → 05 → 07 → 08 → 10 → 12 → 13 → 11 → 09 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 27 → 28 → security/03~07 → 29 → 30 → 31 → 32 → 33 → 34 → 35 → 36 → 37 → 38 → 46 → 48 → 49 → 50 → 47 → 52 → (51 심화) → 39 → 40 → 41 → 42 → 43 → 44 → 45
 
 ### 7.0 지도
 
@@ -592,6 +599,18 @@ Part 6  판단하는 법             data-analysis
 | 36-http2-multiplexing | 스트림·프레임·HPACK·흐름 제어, TCP HoL | 35 | 손실 한 번에 모든 스트림 정지(TCP HoL); `GOAWAY` 미처리 → 재시도 실패; 동시 스트림 한도 | HPACK 정적/동적 테이블, 우선순위 트리 | RFC 9113 · 7541 · HPBN "HTTP/2" | 권장 | 신규 |
 | 37-http3-quic | QUIC 스트림 독립·연결 마이그레이션·0-RTT | 36, 14 | UDP 차단망 → 폴백 지연; 방화벽이 QUIC 인식 못 함 | 패킷 번호 공간, 손실 탐지 | RFC 9000 · 9114 | 권장 | 신규 |
 | 38-websocket-sse-long-lived | WebSocket·SSE·롱폴링 | 35 | LB/프록시 idle timeout에 조용히 끊김; 서버 재배포 시 재연결 폭풍 | 브로드캐스트 팬아웃 | RFC 6455 · HTML 표준 SSE 절 · HPBN "WebSocket" | 권장 | 신규 (연결: `foundations/web-api/32·33`) |
+
+### 7.8b 데이터 전송·압축·스트리밍 (2026-09-28 추가)
+
+| slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
+|---|---|---|---|---|---|---|---|
+| 46-http-content-encoding | `Accept-Encoding`/`Content-Encoding` 협상(gzip·br·zstd), `Vary`, 압축 수준↔CPU, 압축 대상 선택 | 33, 34, algorithm/41-lossless-compression-lz77-huffman | `Vary: Accept-Encoding` 누락 → CDN이 압축본을 미지원 클라이언트에 전달(깨진 본문); 이미 압축된 이미지·zip 재압축 → CPU 낭비·오히려 커짐; 프록시 재압축 → 강한 ETag 불일치로 조건부 요청 실패 | DEFLATE(LZ77+허프만), q값 우선순위 협상 | RFC 9110 §8.4·§12.5.3 · RFC 1952(gzip) · RFC 7932(Brotli) · RFC 8878(zstd) | 필수 | 신규 (연결: `languages/web-api/26-response-body-streaming`) |
+| 47-compression-side-channels | 압축 + 암호화 + 비밀 반영 = 길이 사이드채널(CRIME·BREACH) | 46, 29 | 응답 길이 차이로 CSRF 토큰·쿠키 추론; TLS 수준 압축(CRIME)은 TLS 1.3에서 제거됨 | 압축률 = 반복 패턴 길이의 함수 | Rizzo–Duong CRIME 2012 [?] · Gluck 외 BREACH 2013 [?] · RFC 8446(압축 제거) | 권장 | 신규 |
+| 48-chunked-and-streaming-responses | HTTP/1.1 chunked·HTTP/2 DATA 프레임·스트리밍 응답·백프레셔 | 24, 33, 36, reliability/11-backpressure-and-load-shedding | 스트림 시작 후 에러 → 상태 코드 변경 불가(200 뒤 잘린 본문); 프록시 버퍼링으로 스트림이 한꺼번에 도착(예: nginx `proxy_buffering`); 느린 소비자 → 서버 메모리 누적 | 청크 = 길이 접두 프레이밍, 유한 버퍼·흐름 제어 윈도 | RFC 9112 §7.1 · RFC 9113 §6.1 | 필수 | 신규 (연결: `issue/cross-cutting/network/chunked-vs-content-length` · `http-streaming-status-locked`) |
+| 49-range-requests-and-resume | `Range`·206·`If-Range`·다중 범위, 이어받기 | 34, 48 | 파일이 바뀐 뒤 `If-Range` 없이 이어받기 → 두 버전이 섞인 손상 파일; 압축 표현에 Range → 바이트 오프셋 기준 혼동 | 구간 연산 | RFC 9110 §14 | 필수 | 신규 |
+| 50-large-file-upload-patterns | multipart/form-data·청크 업로드·재개 가능 업로드(tus)·멀티파트 업로드·presigned URL·청크 체크섬, 전송 경로(sendfile·zero-copy) | 49, os/27-data-integrity-checksums, os/30-zero-copy-and-io-uring | 단일 요청 대용량 → LB 타임아웃·`413 Payload Too Large`; 중단 후 처음부터 재전송; 완료 안 된 멀티파트 조각 누적 → 스토리지 비용; 체크섬 없이 조립 → 조용한 손상; 파일을 힙에 통째로 적재 → OOM | 청크 분할, 수신 청크 비트맵, 부분 해시·머클 트리 | RFC 7578 · tus 1.0 프로토콜 · S3 Multipart Upload 문서 | 필수 | 신규 |
+| 51-adaptive-media-streaming | HLS·DASH, 세그먼트·매니페스트, 적응형 비트레이트(ABR) | 48, 40 | 세그먼트 캐시 미스 → 리버퍼링; 매니페스트 TTL 과다 → 라이브 지연 증가; 화질 진동 | 처리량 추정(EWMA) + 버퍼 기반 제어 | RFC 8216(HLS) · ISO/IEC 23009-1(DASH) | 심화 | 신규 |
+| 52-websocket-compression | permessage-deflate, 컨텍스트 유지 여부 | 38, 46 | 연결마다 압축 컨텍스트(슬라이딩 윈도) 유지 → 동시 연결 많을 때 메모리 폭증; 비밀 반영 메시지 압축 → 47의 사이드채널 | 슬라이딩 윈도 딕셔너리 | RFC 7692 | 권장 | 신규 (연결: `languages/web-api/33-websocket`) |
 
 ### 7.9 인프라·종합
 
@@ -1073,7 +1092,7 @@ Part 6  판단하는 법             data-analysis
 > 원리(계약·자원·의미론) → 신뢰성 계약(멱등·페이지·버전·스키마) → 스타일(REST·RPC·GraphQL·비동기) → 기존 사례 6편. **HTTP 프로토콜 본문은 network/33~35**, 여기선 설계 판단만.
 > 뼈대: Fielding 박사논문 5장(2000), RFC 9110·9457, Google AIP(aip.dev), Kleppmann DDIA 4장, Stripe API 문서.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 08 → 09 → 12 → 13 → 07 → 14 → 10 → 11 → 15 → 16~21(사례) → 22 → 23
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 08 → 09 → 12 → 13 → 07 → 14 → 10 → 24 → 11 → 25 → 26 → 15 → 16~21(사례) → 22 → 23
 
 ### 15.1 원리
 
@@ -1104,6 +1123,9 @@ Part 6  판단하는 법             data-analysis
 | 10-rpc-and-grpc | RPC 의미론·gRPC·데드라인·상태 코드 | 09, network/36-http2-multiplexing | 데드라인 미설정 → 하류 정지 시 무한 대기; L4 LB + 장수 HTTP/2 연결 → 부하 불균형 | — | gRPC 문서 (Deadlines·Status codes) | 권장 | 신규 |
 | 11-graphql | 스키마·리졸버·쿼리 복잡도 | 02 | 리졸버 N+1; 깊이·복잡도 제한 없음 → 쿼리 하나로 DoS | DataLoader(배치+캐시) | GraphQL 명세 · graphql/dataloader | 권장 | 신규 |
 | 15-api-documentation-openapi | 명세 우선·OpenAPI·예제 | 01 | 문서-구현 불일치 → 클라이언트 오구현 | — | OpenAPI 3.1 명세 | 권장 | 신규 |
+| 24-grpc-streaming-modes | 단항·서버·클라이언트·양방향 스트리밍, 흐름 제어·데드라인·취소 | 10 | 장수 스트림 → LB 재조정 불가·특정 서버 편중; 스트림 중간 에러 처리 누락 → 조용한 절단; 백프레셔 무시 → 메모리 누적 | HTTP/2 스트림 흐름 제어 윈도 | gRPC 공식 문서 "Core concepts" · RFC 9113 | 권장 | 신규 |
+| 25-api-style-selection | REST·gRPC·GraphQL·WebSocket/SSE·메시지 큐 중 선택 기준 | 02, 10, 11, network/38-websocket-sse-long-lived | 브라우저에서 gRPC 직접 호출 불가(gRPC-Web·프록시 필요); 공개 조회를 GraphQL POST로 → HTTP 캐시 무력화; 서버 푸시가 필요한데 폴링 → 부하·지연 | — | Fielding 5장 · gRPC·GraphQL 공식 문서 | 필수 | 신규 |
+| 26-messaging-protocols | AMQP·MQTT·Kafka 프로토콜, 브로커 vs RPC, QoS·ack 모델 | 12, 25, distributed/24-queues-logs-and-delivery-semantics | MQTT QoS 0으로 중요 메시지 → 조용한 유실; 처리 전 ack → 장애 시 유실, 처리 후 ack 실패 → 중복; 장수 연결 끊김 감지 늦음 | 큐·오프셋 로그 | AMQP 0-9-1 명세 · MQTT 5.0(OASIS) · Kafka 프로토콜 문서 | 권장 | 신규 (연결: `cs/systems/kafka-consumer-failure`) |
 
 ### 15.4 사례 (기존 6편 — 번호만 이동)
 
@@ -1391,11 +1413,11 @@ study-note/
 |---|---|---|---|---|---|---|---|
 | 1 | CS 수학 | 17 | 16 | 1 | 10 | 7 | 0 |
 | 2 | 자료구조 | 43 | 5 | 38 | 16 | 16 | 11 |
-| 3 | 알고리즘 | 40 | 8 | 32 | 17 | 15 | 8 |
+| 3 | 알고리즘 | 42 | 10 | 32 | 18 | 16 | 8 |
 | 4 | 컴퓨터 구조 | 22 | 11 | 11 | 13 | 5 | 4 |
 | 5 | 운영체제 | 37 | 29 | 8 | 28 | 8 | 1 |
 | 6 | 프로그래밍 언어·컴파일러 | 21 | 11 | 10 | 11 | 9 | 1 |
-| 7 | 네트워크 | 45 | 43 | 2 | 32 | 13 | 0 |
+| 7 | 네트워크 | 52 | 50 | 2 | 36 | 15 | 1 |
 | 8 | 보안 | 28 | 22 | 6 | 18 | 10 | 0 |
 | 9 | 데이터베이스 | 40 | 31 | 9 | 24 | 12 | 4 |
 | 10 | 분산 시스템 | 32 | 16 | 16 | 17 | 10 | 5 |
@@ -1403,16 +1425,17 @@ study-note/
 | 12 | 소프트웨어 설계 | 24 | 17 | 7 | 14 | 10 | 0 |
 | 13 | 도메인 모델링 | 21 | 16 | 5 | 11 | 10 | 0 |
 | 14 | 테스트 | 19 | 19 | 0 | 8 | 10 | 1 |
-| 15 | API 설계 | 23 | 17 | 6 | 9 | 14 | 0 |
+| 15 | API 설계 | 26 | 20 | 6 | 10 | 16 | 0 |
 | 16 | 웹 플랫폼 | 13 | 13 | 0 | 6 | 7 | 0 |
 | 17 | 엔지니어링 실천 | 18 | 12 | 6 | 6 | 11 | 1 |
 | 18 | 데이터 분석·통계 | 28 | 28 | 0 | 17 | 9 | 2 |
-| | **합계** | **505** | **324** | **181** | **278** | **189** | **38** |
+| | **합계** | **517** | **336** | **181** | **284** | **194** | **39** |
 
 - 영역마다 역색인 1 + 실사건 1 = **36 leaf**가 마감용이다(역색인은 전부 필수, 실사건은 전부 권장).
 - **연습 컬렉션은 leaf 1개로 셌다**: domain-modeling basic 30편·advanced 30편(각 leaf 18·19), server-design 11편은 분할해 여러 leaf에 분산.
 - **CS 밖(reference/)으로 뺀 규모**: languages 2,023파일 + web-api 118파일 + python-basics 1편 — leaf 수에 포함하지 않았다.
-- 필수만 따라가면 278 leaf. 신규 필수는 영역별로 네트워크(30)·OS(20)·DB(19)·데이터 분석(17)·보안(15) 순으로 많다 — roadmap.md §11 착수 순서(네트워크 → OS → DB → …)와 맞는다.
+- 2026-09-28 추가 12 leaf(네트워크 46~52 전송·압축·스트리밍, 알고리즘 41~42 압축, API 24~26 gRPC 스트리밍·스타일 선택·메시징) 반영 수치.
+- 필수만 따라가면 284 leaf. 신규 필수는 영역별로 네트워크(30)·OS(20)·DB(19)·데이터 분석(17)·보안(15) 순으로 많다 — roadmap.md §11 착수 순서(네트워크 → OS → DB → …)와 맞는다.
 - `[?]` 표기: 문서 전체 129개(범례·출처 설명 포함) 중 **leaf 행 안 113개(103행)** — 주로 장 번호 미확인 교재(P&H·Dragon Book·TAPL·Sipser·GC Handbook·Kohavi·SRE 일부 장·Stevens 15·16장)와 수치·세부 사건 기록.
 
 ---
