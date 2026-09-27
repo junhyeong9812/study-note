@@ -17,3 +17,5 @@
 | 날짜 | 작업 | 유형 | stakes | 총 소요 | 하네스 오버헤드 | 재작업 | 테스트 실패→수정 | 검증이 잡은 결함 | 오탐 | 생략한 게이트(+결과) | 머지 후 결함 |
 |------|------|------|--------|---------|----------------|--------|-----------------|-----------------|------|---------------------|--------------|
 | 2026-09-11 | call-stack-readme (cs/systems/call-stack README 골격 생성) | 문서 | 낮음 | ~5m | ~4m | 없음 | - | 없음 | 없음 | 없음 | - |
+| 2026-09-26 | backend-labs-scaffold (Kotlin/Boot 스캐폴드 17 repo + GitHub public + study-note lab/backend-labs) | 설정+문서 | 낮음 | ~1.5h | ~15m | study-note 구조 1회 재합의 | 0 | 검증이 잡은 결함: auction-lab 고아 프로세스 포트 점유, 선행 cs 추정 매핑 4건 | 없음 | 없음 | - |
+| 2026-09-27 | issue-toplevel-cs-rule (cs/issue→issue/ 92파일·cs/README 규칙 개정·하네스 issue-archive 경로) | 문서+정책 | 높음 | ~2h | ~1h(듀얼 리뷰 3루프) | 없음 | 0 | 규칙 정본 충돌(study-note-guide·루트 README·cs/index 범례)·stale 참조·트리 누락 등 10건(Opus 9·codex 1) | 0 | 외부검색·설계선검증·blind 워커 생략(사유 log) · codex 1차 bwrap 실패→인라인 재시도 · 리뷰 Opus 5.5+codex | - |
