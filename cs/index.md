@@ -9,7 +9,7 @@
 cs/
 ├── systems/           ← 시스템 개념 — db-engine 9주제 + jun-bank 이관(architecture-styles·orchestration·event-sourcing·multi-tenancy·clickhouse·postgres-rls·timeseries·kafka-consumer·outbox·server-design 컬렉션)
 ├── engineering/       ← 설계·실천 — solid-principles·clean-code·design-patterns-gof·agile-and-squad·engineering-axes·data-access·failure-point-checklist·development-standards
-├── foundations/       ← CS 기초 10주제 + languages·security 컬렉션·three-virtues
+├── foundations/       ← CS 기초 9주제 + security 컬렉션·three-virtues (languages·web-api·python-basics는 최상위 languages/로 이동 2026-09-28)
 ├── algorithm/         ← 01~30 (myway/algorithm)
 ├── data-structure/    ← 01~35 (myway) + lsm-merge-model
 ├── domain-modeling/   ← basic/advanced + domain-vs-application-logic·pojo
@@ -25,7 +25,7 @@ cs/
 | [thrashing](systems/thrashing/) | **검토 대기(2026-08-23)** — 서머리·질문 5·정답(초안) — 동적 배열 resize 반복과 히스테리시스 | 직접 작성(원본 노트 = 2-summary) |
 | [Hysteresis](systems/Hysteresis/) | **검토 대기(2026-08-23)** — 서머리·질문 5·정답(초안) — 방향별 임계값 분리, hysteresis band | 직접 작성(원본 노트 = 2-summary) |
 | [development-standards](engineering/development-standards/) | 상세 문서+질문/정답 초안(2026-08-24) — 품질·보안·운영·법률 4축, 하위 [index](engineering/development-standards/index.md) | 원고 작성 예정 |
-| [foundations/*](foundations/) | 이관 완료(2026-09-05) — 부트캠프 10주제, 하위 [index](foundations/index.md) | `computer_science` repo |
+| [foundations/*](foundations/) | 이관 완료(2026-09-05) — 부트캠프 10주제(python-basics는 languages/로 이동 → 9), 하위 [index](foundations/index.md) | `computer_science` repo |
 
 ## jun-bank에서 공부한 주제 — 이관 완료 (2026-09-16)
 
@@ -70,7 +70,7 @@ jun-bank `docs/study/`의 학습 노트를 cs 골격으로 재작성해 이관�
 | 주제 | cs 위치 | 비고 |
 |------|---------|------|
 | data-access | [engineering/data-access](engineering/data-access/) | JPA·Data JDBC·비교 3편 |
-| languages | [foundations/languages](foundations/languages/) | C계열·Go·JVM·Kotlin·Rust 5편 |
+| languages | [languages/](../languages/) — **최상위로 이동(2026-09-28)** | C계열·Go·JVM·Kotlin·Rust 5편 |
 | security | [foundations/security](foundations/security/) | HMAC·SHA256·OIDC·JWKS·식별자·audit-rollout 6편 |
 
 > infra 코드 결착 노트(infra-journey·go-syntax-in-our-code·gate1-auth-pattern)와 워크플로우 양식은 cs가 아니라 **`project/jun-bank/`**(infra-journey·infra-notes·workflow)로 이관했다 — 프로젝트 결착이라 일반 CS 지식이 아니다.

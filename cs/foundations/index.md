@@ -13,4 +13,4 @@
 | [compiler-pipeline](compiler-pipeline/) | ch10 | 어휘 분석·BNF·파스 트리·AST·심벌 테이블·바이트코드·PVM + tokenize/ast/dis 실습 | 이관 |
 | [data-structures-basics](data-structures-basics/) | ch11~13 | 자료구조 개관·ADT·연결리스트/스택/큐·선택 기준·재귀·트리·BST — 심화판: [data-structure/](../data-structure/) | 이관 |
 | [algorithm-basics](algorithm-basics/) | ch14 | 빅오·분할 상환, 선형/이진 탐색, 버블·퀵 정렬 — 심화판: [algorithm/](../algorithm/) | 이관 |
-| [python-basics](python-basics/) | 부록 | list/dict/tuple/set·연산자·제어문 문법 노트 | 이관 |
+| [python-basics](../../languages/python/basics/) | 부록 | list/dict/tuple/set·연산자·제어문 문법 노트 | **최상위 languages/python/basics로 이동(2026-09-28)** |

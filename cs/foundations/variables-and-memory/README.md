@@ -40,7 +40,7 @@ type(num)
 
 파이썬은 -5부터 **256**까지의 정수는 프로그램 시작 때 메모리에 딱 하나씩만 미리 만들어놓는다.\
 단 이것은 **CPython 구현 세부사항**이지 언어가 보장하는 것이 아니다 — 다른 구현에서는 달라도 된다.\
-(2026-09-21 정정: 「254」는 실측과 어긋났다. CPython 3.12.3 에서 경계를 탐색하면 -5 ~ 256 이고 C API 문서도 같다. 자세한 것은 [languages/python/syntax/02-is-vs-eq-interning](../languages/python/syntax/02-is-vs-eq-interning/))
+(2026-09-21 정정: 「254」는 실측과 어긋났다. CPython 3.12.3 에서 경계를 탐색하면 -5 ~ 256 이고 C API 문서도 같다. 자세한 것은 [languages/python/syntax/02-is-vs-eq-interning](../../../languages/python/syntax/02-is-vs-eq-interning/))
 
 파이썬 메모리 누수 케이스:
 

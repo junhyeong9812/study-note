@@ -25,16 +25,20 @@ study-note/
 ├── README.md                  ← 이 파일 (공부 루프 + 규칙)
 ├── index.md                   ← 전체 색인 (최상위 지도, 구조 변경 시 갱신)
 ├── templates/                 ← 1-question / 2-summary / 3-answer 포맷 템플릿
-├── reference/                 ← 작성 지침 (★ study-note-guide.md — 작성법 정본 · organize-guide.md · writing/ — 문서 작성 근거 · learning/ — 공부 방법론)
+├── reference/                 ← 작성 지침 (★ study-note-guide.md — 작성법 정본 · organize-guide.md · render-rules.md · writing/ — 문서 작성 근거 · learning/ — 공부 방법론 · tools/)
+├── cs/                        ← 개념 지식(1/2/3 챕터): systems·engineering·foundations·algorithm·data-structure·domain-modeling·ops-patterns·api-design (작성 규칙 정본: cs/README.md)
+├── languages/                 ← 언어 레퍼런스: <언어>/syntax(문법·API 3파일)·<언어>/언어-특성·web-api — 13개 언어 (cs 밖, 2026-09-28 이동)
+├── issue/                     ← 실전 이슈 → 재사용 CS 패턴 카드 156 (형식 정본: issue/authoring-guide.md)
+├── practice/                  ← 훈련(문제→풀이): programmers
+├── project/                   ← 만든 것의 기록: db-engine·study-note-deploy-system·jun-bank
+├── lab/                       ← 실험 프로젝트 포트폴리오 9건 (프로젝트=폴더+README, 규칙: lab/README.md)
+├── opensource/                ← 오픈소스 기여·코드 읽기: spring-framework·spring-security·elasticsearch·nextjs·react·mysql·postgres·keycloak·nginx·redis
+├── portfolio/                 ← 대외용 정리 — project·lab에서 추려 산문으로 (k-brand-guard·markview)
+├── history/                   ← 기술 변천사 8주제 (database·java·js·network·python·rust·spring·web)
+├── workflow/                  ← 이 저장소 배포 시스템의 동작 흐름 문서
 ├── 세미나/                     ← 컨퍼런스·세미나 후기 (예: nerdcon/nerdcon-5.md)
 ├── 독후감/                     ← 책 후기 — 책=폴더, 챕터별 기록 (규칙: 독후감/README.md)
-├── issue/                     ← 실전 이슈 → 재사용 CS 패턴 카드 (형식 정본: issue/authoring-guide.md)
-├── cs/                        ← 개념 지식(1/2/3 챕터): systems·engineering·foundations·algorithm·data-structure·domain-modeling·ops-patterns·api-design
-├── practice/                  ← 훈련(문제→풀이): programmers
-├── project/                   ← 만든 것의 기록: db-engine·study-note-deploy-system
-├── lab/                       ← 실험 프로젝트 포트폴리오 (프로젝트=폴더+README, 규칙: lab/README.md)
-├── opensource/                ← 오픈소스 기여 아카이브: spring-framework·spring-security·elasticsearch
-├── portfolio/                 ← 대외용 정리 — project·lab에서 추려 산문으로 (k-brand-guard·markview)
+├── docs/                      ← 작업 기록(plans/날짜/작업명 — spec·log)·측정 로그·NEXT
 └── <주제>/                     ← 예: cs/systems/lsm-tree/
     ├── README.md              ← 그 주제의 공부 규칙
     ├── index.md               ← 챕터/주제 목록과 진행 상태 (상태 변경 시마다 갱신)
@@ -90,13 +94,14 @@ study-note/
 | [cs](cs/) | 개념 지식 전반 — systems·engineering·foundations·algorithm·data-structure·domain-modeling·ops-patterns·api-design | [index](cs/index.md) |
 | [cs/systems](cs/systems/) | 시스템 개념 8주제 — kafka-why-fast·lsm-tree·nand-flash·striping·straggler·partitioning-vs-sharding·thrashing·Hysteresis | [index](cs/index.md) |
 | [cs/engineering](cs/engineering/) | 설계·기준 — solid-principles·development-standards(품질·보안·운영·법률) | [index](cs/engineering/development-standards/index.md) |
-| [cs/foundations](cs/foundations/) | CS 기초 10주제 — 컴퓨터사이언스 부트캠프 원고 이관(변수·데이터 표현·OOP·하드웨어·메모리·프로세스/스레드·컴파일러 등) | [index](cs/foundations/index.md) |
+| [cs/foundations](cs/foundations/) | CS 기초 9주제(python-basics → languages/python/basics) — 컴퓨터사이언스 부트캠프 원고 이관(변수·데이터 표현·OOP·하드웨어·메모리·프로세스/스레드·컴파일러 등) | [index](cs/foundations/index.md) |
 | [cs/algorithm](cs/algorithm/) | `/home/jun/project/myway/algorithm` (01~30) | [index](cs/algorithm/index.md) |
 | [cs/data-structure](cs/data-structure/) | `/home/jun/project/myway/data-structure` (01~35) | [index](cs/data-structure/index.md) |
 | [cs/domain-modeling/basic](cs/domain-modeling/basic/) | `/home/jun/project/myway/domain-modeling-basic` (01~30) | [index](cs/domain-modeling/basic/index.md) |
 | [cs/domain-modeling/advanced](cs/domain-modeling/advanced/) | `/home/jun/project/myway/domain-modeling-advanced` (01~30) | [index](cs/domain-modeling/advanced/index.md) |
 | [cs/ops-patterns](cs/ops-patterns/) | `/home/jun/project/myway/ops-patterns` (01~19) | [index](cs/ops-patterns/index.md) |
 | [cs/api-design](cs/api-design/) | `/home/jun/project/myway/api-design` (01~06, 확정 체크리스트 훈련) | [index](cs/api-design/index.md) |
+| [languages](languages/) | 언어별 문법·표준 API·언어 특성 + 브라우저 Web API 레퍼런스 (cs/foundations에서 이동) | [README](languages/README.md) |
 | [issue](issue/) | 실전 이슈 → 재사용 CS 패턴 카드 아카이브 (하네스 issue-archive 대상 — 형식 정본: authoring-guide) | [index](issue/README.md) |
 | [portfolio/k-brand-guard](portfolio/k-brand-guard/) | `/home/jun/project/resume` 경력기술서 - K-브랜드 지킴이 사례 5건 | [index](portfolio/k-brand-guard/index.md) |
 | [portfolio/markview](portfolio/markview/) | `/home/jun/project/resume` 경력기술서 - MarkView 사례 3건 | [index](portfolio/markview/index.md) |
