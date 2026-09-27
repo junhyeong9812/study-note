@@ -44,7 +44,8 @@ SOURCE_LANGS = {
 # ★★★ info string 은 언어 하나로 끝나지 않는다 — ```` ```html demo ```` 처럼 뒤가 붙는다.
 #   `\n` 을 바로 요구하면 그 펜스에서 파싱이 어긋나 **뒤따르는 소스 펜스를 통째로 건너뛴다.**
 #   경고도 없이 개수만 줄어드는 **조용한 거짓 합격**이라 실측에서 22개 중 19개만 세고 있었다.
-FENCE = re.compile(r'^```([A-Za-z0-9_+-]*)[^\n]*\n(.*?)\n```$', re.S | re.M)
+# ★ 네 개 이상 백틱 펜스(안에 ``` 를 품는 문서 테스트 예제 등)도 받는다 — 닫는 펜스는 여는 것과 같은 길이(실측: 43 중 38 만 세고 있었다).
+FENCE = re.compile(r'^(`{3,})([A-Za-z0-9_+-]*)[^\n]*\n(.*?)\n\1$', re.S | re.M)
 
 
 def index_sources(root: pathlib.Path):
@@ -82,11 +83,11 @@ def main() -> None:
         p = pathlib.Path(md)
         text = p.read_text(encoding='utf-8')
         for m in FENCE.finditer(text):
-            lang = m.group(1).lower()
+            lang = m.group(2).lower()
             if lang not in SOURCE_LANGS:
                 nonsource += 1            # 출력 블록·그림 — 대조할 실파일이 없다
                 continue
-            body = m.group(2)
+            body = m.group(3)
             first = body.split('\n', 1)[0]
             bm = BANNER.match(first)
             if not bm:
