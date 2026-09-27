@@ -26,6 +26,7 @@
 | 2026-09-27 | 커밋 | study-note a8f8a9e1 (R92·M3·A3, 경로 지정 스테이징) · harness c2254f0 (docs/issue-archive-toplevel-path) |
 | 2026-09-27 | 마감: measurement-log 1행·NEXT.md(N0-a/b/c, 보류 1) | 둘 다 기존 미커밋분과 섞여 있어 커밋하지 않음(I5) |
 | 2026-09-27 | 아카이브 보류(범위 미확인) — codex 중첩 샌드박스 bwrap 파일 읽기 실패 | NEXT 보류·이월 등재, 사용자 보고 |
+| 2026-09-28 | harness: 사용자 지시로 main ff-merge(1a80f0f..c2254f0, origin/main 선행 0) → run.sh 258 passed → push origin main | 완료. deploy.sh는 미실행 |
 
 ## 리뷰 ledger
 
