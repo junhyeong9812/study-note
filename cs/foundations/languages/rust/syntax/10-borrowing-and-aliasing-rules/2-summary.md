@@ -1054,7 +1054,7 @@ For more information about this error, try `rustc --explain E0308`.
   값 자리(`&s`)에서는 **참조를 만드는 연산**이다. 패턴 자리(`let &x = r;`)에서는 **벗기는** 뜻이 된다([목록의 **19번 주제**](../19-pattern-syntax-guards-bindings-and-match-ergonomics/)).
 - **런타임으로 옮기는 길**이 `RefCell`/`Cell` 이다([목록의 **42번 주제**](../42-refcell-cell-interior-mutability/)).\
   규칙이 사라지는 게 아니라 **위반이 컴파일 에러에서 패닉으로 바뀐다** — 11번에 실측이 있다.
-- **스레드 경계를 넘는 공유**는 같은 규칙 위에 `Send`/`Sync` 가 얹힌다(목록의 **50번 주제**·**52번 주제**).\
+- **스레드 경계를 넘는 공유**는 같은 규칙 위에 `Send`/`Sync` 가 얹힌다([목록의 **50번 주제**](../50-send-sync-in-compiler-errors/)·**52번 주제**).\
   `Arc<Mutex<T>>` 가 「공유 다수」와 「가변 하나」를 **런타임 비용을 내고** 동시에 얻는 모양이다.
 - ★ **`&mut` 를 「mutable reference」가 아니라 「exclusive reference」로 읽으면 헷갈림이 줄어든다.**\
   중요한 성질은 「고칠 수 있다」가 아니라 「**나 말고 아무도 없다**」다.

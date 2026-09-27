@@ -476,8 +476,8 @@ s25i.c:3:21: note: previous declaration of ‘Node’ with type ‘Node’
 | **`typedef` 가 새 타입을 만들지 않는 것** | [6번 형제](../06-typedef-and-type-aliases/) |
 | **배열이 포인터로 감쇠하는 규칙** | [16번 형제](../16-array-pointer-decay-and-function-parameters/) |
 | **패딩·정렬** | [22번 형제](../22-struct-padding-and-alignment/) |
-| **무엇을 헤더에 두나 · include guard** | 목록의 **44번 주제** |
-| **`undefined reference`·`multiple definition` 읽기** | 목록의 **45번 주제** |
+| **무엇을 헤더에 두나 · include guard** | [목록의 **44번 주제**](../44-headers-and-separate-compilation/) |
+| **`undefined reference`·`multiple definition` 읽기** | [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/) |
 | **`malloc`/`free` 의 계약과 실패 처리** | [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) |
 | **`_new`/`_free` 짝을 시그니처로 표현하기** | [목록의 **38번 주제**](../38-expressing-ownership-conventions-in-code/) |
 | **`enum` 의 선언·상수 규칙** | [7번 형제](../07-enum-and-enumeration-constants/) |

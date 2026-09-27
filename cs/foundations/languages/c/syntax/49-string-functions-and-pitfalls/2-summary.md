@@ -7,7 +7,7 @@
 > ★★★ **본체는 경계 조건 격자다** — 함수 7 × 원본 길이 3(짧음 · 같음 · 김) × 빌드 3(gcc ASan · gcc `-O2` · clang `-O2`), `d` 는 `char[8]`.\
 > ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
 > ★★★ **경계** — **`strncpy` 의 세 경우를 바이트로**(`61 62 00 00 00` · `61 62 63 64 65` · 잘림)와 **널 없는 배열에 `strlen` → ASan `stack-buffer-overflow`**, **`sizeof` 대 `strlen`(배열 대 포인터)** 은 [20번 형제](../20-null-terminated-strings-and-string-literals/)가 **이미 쟀다.** 이 편은 그 바이트를 다시 찍지 않고 **여섯 함수를 한 격자**에 세운다.\
-> ★ **문자열 탐색 알고리즘**(KMP 등)은 [`algorithm/25-string-matching/`](../../../../../algorithm/25-string-matching/)이 정본이다 — 여기는 **표준 함수의 계약과 경계 조건**만 본다. **`memcpy`/`memmove` 의 겹침 · `memset`** 은 목록의 **50번 주제**다.
+> ★ **문자열 탐색 알고리즘**(KMP 등)은 [`algorithm/25-string-matching/`](../../../../../algorithm/25-string-matching/)이 정본이다 — 여기는 **표준 함수의 계약과 경계 조건**만 본다. **`memcpy`/`memmove` 의 겹침 · `memset`** 은 [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/)다.
 > 선행 — [20번 형제](../20-null-terminated-strings-and-string-literals/).
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -503,7 +503,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [20번 형제 — 널 종단 문자열과 문자열 리터럴](../20-null-terminated-strings-and-string-literals/) — ★★★ **선행.** `strncpy` 세 경우의 바이트 · 널 없는 배열에 `strlen` · `sizeof` 대 `strlen`.
 - [16번 형제 — 배열 감쇠와 함수 매개변수](../16-array-pointer-decay-and-function-parameters/) — ★★ 매개변수의 `sizeof` 가 8 인 이유.
 - [48번 형제 — `<stdio.h>` 입력과 파일](../48-stdio-input-and-files/) — ★ 읽은 줄(`fgets`)의 널과 개행.
-- 목록의 **50번 주제**(`<string.h>` 메모리 함수) — ★★ `memcpy`/`memmove` 의 겹침 · `memset`.
+- [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/)(`<string.h>` 메모리 함수) — ★★ `memcpy`/`memmove` 의 겹침 · `memset`.
 - [`algorithm/25-string-matching/`](../../../../../algorithm/25-string-matching/) — ★ 문자열 탐색 알고리즘은 거기, 여기는 **표준 함수의 계약**.
 - [Rust 15 — 슬라이스 · 범위 · UTF-8 경계](../../../rust/syntax/15-slices-ranges-and-utf8-boundaries/) — ★★ **길이를 가진** 문자열·슬라이스.
 

@@ -306,7 +306,7 @@ sqrt(2.0L) -> long double
 **왜 그런가**
 
 - **`typedef` 의 `two compatible types`** — [06번 형제](../06-typedef-and-type-aliases/) · **`NULL` 의 타입** — [19번 형제](../19-void-pointer-null-pointer-and-null/).
-- **매크로의 규칙** — 목록의 **41번 주제**(전처리기) · 목록의 **42번 주제**(함수형 매크로의 함정).
+- **매크로의 규칙** — [목록의 **41번 주제**](../41-preprocessor-directives-and-conditional-compilation/)(전처리기) · [목록의 **42번 주제**](../42-function-like-macro-pitfalls/)(함수형 매크로의 함정).
 - ★ 이 주제가 책임지는 것 — ① **제어식이 무슨 타입으로 보이나**(격자) ② **평가하지 않음 · 맞는 분기 없음** ③ **매크로와 묶었을 때의 한계**(닫힌 목록 · 고정된 호출 모양 · `<tgmath.h>` 의 실제 구현).
 
 ## 실행 검증

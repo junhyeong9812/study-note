@@ -620,8 +620,8 @@ sizeof(enum Small)=1 Neg=1 Big=4 Huge=4 Tiny=1  (int=4)
 - [`06-typedef-and-type-aliases/`](../06-typedef-and-type-aliases/) — `typedef enum { ... } Color;` 의 태그·이름 공간 규칙
 - [목록의 **12번 주제**](../12-control-flow-and-switch/) (제어문과 `switch`) — `switch` 문법의 정본. 여기는 **`-Wswitch` 가 `enum` 에 주는 것**까지만
 - [목록의 **24번 주제**](../24-bit-fields/) (비트필드) — 열거 상수를 비트필드 폭으로 쓰는 자리
-- 목록의 **41번 주제** (전처리기) — `#define` 쪽의 정본. `#if` 에 `enum` 을 못 쓰는 이유가 거기
-- 목록의 **53번 주제** (`assert` 와 `static_assert`) — 열거 상수를 `_Static_assert` 로 못 박는 자리
+- [목록의 **41번 주제**](../41-preprocessor-directives-and-conditional-compilation/) (전처리기) — `#define` 쪽의 정본. `#if` 에 `enum` 을 못 쓰는 이유가 거기
+- [목록의 **53번 주제**](../53-assert-and-static-assert/) (`assert` 와 `static_assert`) — 열거 상수를 `_Static_assert` 로 못 박는 자리
 
 ## 용어 풀이
 
@@ -654,4 +654,4 @@ sizeof(enum Small)=1 Neg=1 Big=4 Huge=4 Tiny=1  (int=4)
   Rust 의 `enum` 은 값을 담는 대수적 타입이다. 논증은 [`../../../c-cpp-csharp.md`](../../../c-cpp-csharp.md) 쪽이다.
 
 - **`enum` 이름을 문자열로 얻는 방법**은 C 에 없다. `X-매크로` 관용구로 이름 배열을 같이 만드는 것이 관례인데,\
-  그것은 목록의 **43번 주제**(`#`·`##`)의 몫이다. 이 문서에서는 **안 다뤘다.**
+  그것은 [목록의 **43번 주제**](../43-stringizing-and-token-pasting/)(`#`·`##`)의 몫이다. 이 문서에서는 **안 다뤘다.**

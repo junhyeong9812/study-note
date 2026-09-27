@@ -10,7 +10,7 @@
 > ★★ **경계** — **링커가 무엇을 하는가**(심볼 해석·재배치) 일반은 [`foundations/compiler-pipeline/`](../../../../compiler-pipeline/)가 정본이다.\
 > 여기는 「**C 의 어떤 선언이 어떤 심볼을 만드나**」만 본다.\
 > ★ **저장 기간**은 [28번 형제](../28-choosing-among-four-storage-durations/)가 정본이다 — 여기서는 **링크와 갈라 세우는 데**만 쓴다.\
-> ★ **`inline` 의 규칙 전체**는 [목록의 **39번 주제**](../39-inline-and-c-inline-rules/), **헤더에 무엇을 두나**는 목록의 **44번 주제**, **링크 오류를 거꾸로 읽는 법**은 목록의 **45번 주제**가 정본이다.\
+> ★ **`inline` 의 규칙 전체**는 [목록의 **39번 주제**](../39-inline-and-c-inline-rules/), **헤더에 무엇을 두나**는 [목록의 **44번 주제**](../44-headers-and-separate-compilation/), **링크 오류를 거꾸로 읽는 법**은 [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/)가 정본이다.\
 > ★ **파일 스코프 `const` 의 링크**는 [31번 형제](../31-const-and-pointer-const-placement/)가 정본이다.
 > 선행 — [28번 형제](../28-choosing-among-four-storage-durations/) · [25번 형제](../25-incomplete-types-and-opaque-struct/)(두 번역 단위 실험).
 > 이 본문은 Claude 작성이다(원고 없음).
@@ -451,7 +451,7 @@ s29c2.o:
 - ★★ `nm` 에서 **둘 다 소문자 `d`** 다. 링커가 **서로 짝지으려 하지 않는다.**
 - ★ `s29c2.o` 의 `U from_c1` — 함수는 `static` 이 아니라 **외부 링크로 짝지어졌다.** 한 파일 안에서도 이름마다 링크가 다르다.
 
-비용 — **`static` 은 충돌을 없애는 것이 아니라 「같은 것이 아니다」라고 선언하는 것**이다. 한 값을 공유하려던 것이면 **틀린 처방**이다 — 헤더에는 `extern int shared;` 를, 정의는 **한 파일에만** 둔다(목록의 **44번 주제**).
+비용 — **`static` 은 충돌을 없애는 것이 아니라 「같은 것이 아니다」라고 선언하는 것**이다. 한 값을 공유하려던 것이면 **틀린 처방**이다 — 헤더에는 `extern int shared;` 를, 정의는 **한 파일에만** 둔다([목록의 **44번 주제**](../44-headers-and-separate-compilation/)).
 
 ### (5) ★★★ 잠정 정의 — `int t;` 를 두 파일에 두면 **판에 달렸다**
 
@@ -553,7 +553,7 @@ collect2: error: ld returned 1 exit status
 - ★★ **표준은 무엇이라 하나** — 한 번역 단위 안의 잠정 정의는 **그 파일 끝에서 정의 하나**가 된다. 두 파일이면 **외부 정의가 둘**이고, 외부 링크 이름에 정의가 둘이면 **UB** 다(진단 의무가 없다).\
   ★★ `-fcommon` 의 병합은 **부록 J 의 「여러 외부 정의」 공통 확장**이다 — 표준이 **「이런 확장이 흔하다」고 적어 둔 것**이지 보장이 아니다.
 
-비용 — **옛 코드의 헤더에 `int t;` 가 있으면 새 컴파일러에서 깨진다.** 처방은 `-fcommon` 이 아니라 **헤더에는 `extern int t;`, 정의는 한 파일에**다(목록의 **44번 주제**).
+비용 — **옛 코드의 헤더에 `int t;` 가 있으면 새 컴파일러에서 깨진다.** 처방은 `-fcommon` 이 아니라 **헤더에는 `extern int t;`, 정의는 한 파일에**다([목록의 **44번 주제**](../44-headers-and-separate-compilation/)).
 
 ### (6) ★★ `static` 함수를 다른 파일에서 부르면 — **컴파일은 통과하고 링크에서 죽는다**
 
@@ -983,8 +983,8 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [31번 형제 — `const` 와 포인터 const 위치](../31-const-and-pointer-const-placement/) — ★ **파일 스코프 `const` 의 링크**(C 는 외부, C++ 은 내부)의 정본.
 - [01번 형제 — 선언 문법과 읽는 법](../01-declaration-syntax-and-reading/) — ★ `nm` 의 `T`/`t` 를 **처음 보인** 자리. 여기서는 그것을 **링크 셋 전체**로 넓혔다.
 - [목록의 **39번 주제**](../39-inline-and-c-inline-rules/) — `inline` 과 C 의 인라인 규칙. (8)은 **링크 쪽 증상**만 봤다.
-- 목록의 **44번 주제** — 헤더와 분할 컴파일. **`extern` 은 헤더, 정의는 한 곳**의 정본.
-- 목록의 **45번 주제** — 번역 단위와 링크 오류 읽기. `multiple definition`·`undefined reference` 를 **거꾸로 읽는 법**의 정본.
+- [목록의 **44번 주제**](../44-headers-and-separate-compilation/) — 헤더와 분할 컴파일. **`extern` 은 헤더, 정의는 한 곳**의 정본.
+- [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/) — 번역 단위와 링크 오류 읽기. `multiple definition`·`undefined reference` 를 **거꾸로 읽는 법**의 정본.
 - ★ **C++ 갈래와 갈리는 자리** — [C++ 06 — 네임스페이스와 ADL](../../../cpp/syntax/06-namespaces-and-adl/)(이름 없는 네임스페이스가 `t` 로 나오는 실측) · C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **25번**(`inline` 변수).
 
 ## 용어 풀이
@@ -1016,7 +1016,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 ## 더 들어가면
 
 - ★★ **`__attribute__((weak))` 와 약한 심볼(`W`/`V`)** — 정의가 둘이어도 되는 **또 하나의 확장**이다. ★ **던지지 않았다**(C++ `inline` 변수의 `V` 로만 봤다).
-- ★★ **정적 라이브러리(`.a`)에서의 `undefined reference`** — 링크 순서가 결과를 바꾸는 자리다. ★ **던지지 않았다**(목록의 **45번 주제**).
+- ★★ **정적 라이브러리(`.a`)에서의 `undefined reference`** — 링크 순서가 결과를 바꾸는 자리다. ★ **던지지 않았다**([목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/)).
 - ★ **`-fvisibility=hidden` 과 공유 라이브러리의 심볼 노출** — 외부 링크인데 **`.so` 밖에서는 안 보이는** 제4의 층이다. ★ **던지지 않았다.**
 - ★ **GCC 9 이하에서의 (5)** — ★ **못 잰 것**. 이 머신에 없다. 문서로만 적었다.
 - ★ **`-flto` 에 구조체 레이아웃 불일치를 주면** — [25번 형제](../25-incomplete-types-and-opaque-struct/)가 이미 **못 잡는다**를 보였다. 여기서는 **다시 던지지 않았다.**

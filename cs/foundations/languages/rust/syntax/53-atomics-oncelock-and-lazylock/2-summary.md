@@ -568,7 +568,7 @@ error: aborting due to 1 previous error
 (exit 1)
 ```
 
-- ★★ **2024 에서 `static mut` 의 공유 참조는 기본 거부(`#[deny(static_mut_refs)]`)** — `println!` 이 `COUNTER` 의 **참조**를 만들기 때문이다. `unsafe` 블록 안인데도 막힌다. 2021 에서는 같은 줄이 **경고**다. 에디션의 정본은 목록의 **47번 주제**다 — 여기서는 「**전역 가변 상태는 (1)·(3)·(4)의 도구로**」 한 줄만 챙긴다.
+- ★★ **2024 에서 `static mut` 의 공유 참조는 기본 거부(`#[deny(static_mut_refs)]`)** — `println!` 이 `COUNTER` 의 **참조**를 만들기 때문이다. `unsafe` 블록 안인데도 막힌다. 2021 에서는 같은 줄이 **경고**다. 에디션의 정본은 [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)다 — 여기서는 「**전역 가변 상태는 (1)·(3)·(4)의 도구로**」 한 줄만 챙긴다.
 
 ## 문법 — 형태와 규칙
 
@@ -670,7 +670,7 @@ error: aborting due to 1 previous error
 - [**41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/) — `Arc` 의 계수가 원자적이라는 점(`Rc` 와의 차이). **여기는 원자 연산을 직접 쓴다.**
 - [**42번 주제**](../42-refcell-cell-interior-mutability/) — `OnceCell`·`LazyCell` 은 이 편 두 타입의 **단일 스레드 판**이다(std `cell` 모듈 문서).
 - [**50번 주제**](../50-send-sync-in-compiler-errors/) — `static` 값이 `Sync` 여야 하는 이유의 에러 읽기.
-- 목록의 **47번 주제**(에디션 — `static mut` 참조 금지의 정본) · **56번 주제**(`unsafe`).
+- [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)(에디션 — `static mut` 참조 금지의 정본) · **56번 주제**(`unsafe`).
 - [Go 33번](../../../go/syntax/33-sync-atomic-and-sync-map/) — Go 의 `sync/atomic` 과 `sync.Map`. **그쪽은 Go 의 원자 타입과 맵, 여기는 Rust 의 `Ordering` 인자와 전역 초기화.**
 - [Java 55번](../../../java/syntax/55-atomics-and-concurrent-collections/) — `AtomicInteger` 와 동시성 컬렉션. **그쪽은 JVM, 여기는 Rust.**
 

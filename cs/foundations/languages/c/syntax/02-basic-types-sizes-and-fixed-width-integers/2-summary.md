@@ -149,7 +149,7 @@ ex2.c:1:1: error: static assertion failed: "this platform's int is 8 bytes"
 - 이 방식의 값어치: **가정이 주석이 아니라 빌드 실패가 된다.**\
   「`int` 는 4바이트겠지」를 머릿속에 두는 대신 컴파일러가 대신 기억한다.
 
-비용 — 컴파일 시간뿐. 런타임 코드가 안 생긴다. 정본은 목록의 **53번 주제**.
+비용 — 컴파일 시간뿐. 런타임 코드가 안 생긴다. 정본은 [목록의 **53번 주제**](../53-assert-and-static-assert/).
 
 > **`_Static_assert`** — 컴파일 시간에 조건을 검사해 거짓이면 컴파일을 실패시키는 선언(C11).\
 > 예: `_Static_assert(sizeof(int) == 4, "메시지");` 는 조건이 참이면 아무 코드도 안 만들고, 거짓이면 그 메시지로 컴파일이 멈춘다.\
@@ -382,7 +382,7 @@ ex.c:10:14: warning: format ‘%d’ expects argument of type ‘int’, but arg
   이 갈래의 제1 규칙 — 「안 터졌다」는 「안전하다」가 아니다.
 - `size_t` 는 **`%zu`**, `ptrdiff_t` 는 `%td`, `intmax_t` 는 `%jd`.
 - 고정폭 타입은 `<inttypes.h>` 의 매크로를 쓴다 — `printf("%" PRId64 "\n", v);`\
-  정본은 목록의 **47번 주제**.
+  정본은 [목록의 **47번 주제**](../47-stdio-streams-buffering-and-formatted-output/).
 
 ### 규칙 불릿
 
@@ -428,7 +428,7 @@ int idx = c;               /* -56 -> 배열 인덱스로 쓰면 배열 밖 */
 - `char` 의 부호가 **구현 정의**라 이 코드는 **환경에 따라 동작이 갈린다.**
 - x86 리눅스에서는 `c == -56`, `-funsigned-char` 나 ARM 리눅스에서는 `c == 200`.
 - `<ctype.h>` 의 `isalpha` 계열에 `char` 를 그대로 넘기는 것이 같은 사고다 —\
-  음수를 넘기면 **UB** 다(정본은 목록의 **52번 주제**).
+  음수를 넘기면 **UB** 다(정본은 [목록의 **52번 주제**](../52-ctype-math-and-time-essentials/)).
 - 막는 법: **바이트는 `unsigned char`.** 한 줄이다.
 
 ### 3. `size_t` 를 `int` 와 섞는다
@@ -540,8 +540,8 @@ __CHAR_UNSIGNED__ 미정의         __CHAR_UNSIGNED__ 정의됨
 - [`04-floating-point-types-and-conversions/`](../04-floating-point-types-and-conversions/) — `float`/`double`/`long double` 쪽
 - [목록의 **07번 주제**](../07-enum-and-enumeration-constants/) (`enum` 과 열거 상수) — 열거 상수의 타입 규칙과 C23 고정 기반 타입
 - [목록의 **08번 주제**](../08-sizeof-alignment-and-offsetof/) (`sizeof`·정렬·`offsetof`) — `sizeof` 가 컴파일 시간인 자리와 아닌 자리
-- 목록의 **47번 주제** (`<stdio.h>` 서식 출력) — `%zu`·`PRId64` 를 고르는 규칙
-- 목록의 **53번 주제** (`assert` 와 `static_assert`) — 이 문서의 `_Static_assert` 덩어리가 정본으로 다뤄지는 곳
+- [목록의 **47번 주제**](../47-stdio-streams-buffering-and-formatted-output/) (`<stdio.h>` 서식 출력) — `%zu`·`PRId64` 를 고르는 규칙
+- [목록의 **53번 주제**](../53-assert-and-static-assert/) (`assert` 와 `static_assert`) — 이 문서의 `_Static_assert` 덩어리가 정본으로 다뤄지는 곳
 
 ## 용어 풀이
 

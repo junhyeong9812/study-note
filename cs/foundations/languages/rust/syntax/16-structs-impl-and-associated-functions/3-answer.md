@@ -1067,7 +1067,7 @@ For more information about an error, try `rustc --explain E0603`.
   **칸마다 따로** 정한다.
 - ★★ **E0616 의 `help:` 가 관용구를 권한다** — `p.y` 가 막히자 **`p.y()`** 를 쓰라고 한다.
   **접근자를 필드와 같은 이름으로 짓는 것**이 그 관용구이고, 4번에서 본 「이름 공간이 다르다」가 그것을 가능하게 한다.
-- ★ 모듈 시스템 자체(`pub(crate)`·경로·파일 배치)는 목록의 **45번 주제**가 정본이다.
+- ★ 모듈 시스템 자체(`pub(crate)`·경로·파일 배치)는 [목록의 **45번 주제**](../45-module-system-mod-use-pub-crate-and-file-layout/)가 정본이다.
 
 **생성 에러 둘.**
 
@@ -1251,7 +1251,7 @@ Marker / Marker
 - **`{:?}`** 는 한 줄, **`{:#?}`** 는 **여러 줄 + 4칸 들여쓰기 + 꼬리 쉼표**다.
 - ★ **세 형태가 각각 다르게 찍힌다** — 이름 있는 것은 `{ }`, 튜플은 `( )`, 유닛은 **이름만**.
   `{:?}` 출력만 봐도 어느 형태인지 읽을 수 있다.
-- `derive` 자체는 [목록의 **27번 주제**](../27-derive-macros-debug-clone-partialeq-default-hash/), `Display`/`Debug` 직접 구현은 목록의 **48번 주제**가 정본이다.
+- `derive` 자체는 [목록의 **27번 주제**](../27-derive-macros-debug-clone-partialeq-default-hash/), `Display`/`Debug` 직접 구현은 [목록의 **48번 주제**](../48-format-macros-display-and-debug/)가 정본이다.
 
 ### 12. 에러 번호 지도
 

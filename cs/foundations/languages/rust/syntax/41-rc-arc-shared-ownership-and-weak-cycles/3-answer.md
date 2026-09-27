@@ -421,7 +421,7 @@ print("[3] end")
 | `Rc::try_unwrap` | `Err(rc)` | `Ok(T)`(40번 (5)) |
 | `Rc<RefCell<T>>` | **모두가 같은 값을 고친다** — 대신 빌림 검사가 런타임으로 간다 | 〃 |
 
-- ★★ 「모두가 같은 값을 고친다」 → **`Rc<RefCell<T>>`**(42번의 `r42_rc_refcell`: `strong 3 · ["from a", "from b"]`). 스레드를 넘으면 `Arc<Mutex<T>>`(목록의 **52번 주제**).
+- ★★ 「모두가 같은 값을 고친다」 → **`Rc<RefCell<T>>`**(42번의 `r42_rc_refcell`: `strong 3 · ["from a", "from b"]`). 스레드를 넘으면 `Arc<Mutex<T>>`([목록의 **52번 주제**](../52-mutex-rwlock-arc-and-poisoning/)).
 
 ## 실행 검증
 

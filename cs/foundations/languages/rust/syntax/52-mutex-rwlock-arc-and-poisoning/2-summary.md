@@ -300,7 +300,7 @@ strong after join 1
 - ★★ **`strong after join 1`** — 스레드마다 가졌던 `Arc` 복제가 스레드와 함께 버려졌다(41번 (3)의 `strong 2 → 1` 과 같은 모양).
 - ★★ **역할 분담** — `Arc` 는 「주인 여럿」(`thread::spawn` 이 `'static` 을 요구하므로 빌림 대신 소유권 공유), `Mutex` 는 「공유 참조로 고치기」. 42번의 `Rc<RefCell<T>>` 의 **스레드 판**이 `Arc<Mutex<T>>` 다.
 - ★ **`thread::scope` 를 쓸 수 있으면 `Arc` 는 필요 없다**((2)의 `r52_wrap_fix`). `Arc` 는 스레드가 **함수보다 오래 살 수 있을 때**의 값이다.
-- ★ 이 블록은 **맞는 값이 나왔다는 것만** 보인다. 동기화 없는 판과의 대비(잃은 갱신)는 목록의 **53번 주제**가 원자 연산 격자로 쟀다.
+- ★ 이 블록은 **맞는 값이 나왔다는 것만** 보인다. 동기화 없는 판과의 대비(잃은 갱신)는 [목록의 **53번 주제**](../53-atomics-oncelock-and-lazylock/)가 원자 연산 격자로 쟀다.
 
 ### (4) ★★★ 중독 — 가드를 쥔 채 패닉하면
 
@@ -562,8 +562,8 @@ fn main() {
 | 상태를 **한 스레드가 소유**할 수 있다 | ★ **채널**(51번) — 락이 아예 없다 | 51번 |
 | 여러 스레드가 **같은 값을 고친다** | **`Mutex<T>`** — 스코프 스레드면 `&Mutex`, 아니면 `Arc<Mutex<T>>` | (2)·(3) |
 | 읽기 여럿이 동시에 봐야 한다 | **`RwLock<T>`** — 허용 조합만 근거, 속도는 재지 않았다 | (6) |
-| 카운터 하나·플래그 하나 | 락 없이 되는지 먼저 본다 — 목록의 **53번 주제** | — |
-| 가드를 쥔 채 `await` 한다 | ★ **다른 문제** — 목록의 **55번 주제** | — |
+| 카운터 하나·플래그 하나 | 락 없이 되는지 먼저 본다 — [목록의 **53번 주제**](../53-atomics-oncelock-and-lazylock/) | — |
+| 가드를 쥔 채 `await` 한다 | ★ **다른 문제** — [목록의 **55번 주제**](../55-async-in-practice-runtime-send-and-pin/) | — |
 | 루프 조건에서 잠근다(`while let … lock()`) | ★ **꺼내기와 처리를 떼라** | (1)의 12행 |
 | 중독을 복구할 근거가 있다 | `into_inner()` · `clear_poison()` | (4) |
 
@@ -584,7 +584,7 @@ fn main() {
 - [**50번 주제**](../50-send-sync-in-compiler-errors/) — `Mutex`·`MutexGuard` 의 `Send`/`Sync` 칸.
 - [**51번 주제**](../51-mpsc-channels-and-sender-drop/) — 공유하지 않는 설계(채널).
 - [**53번 주제**](../53-atomics-oncelock-and-lazylock/) — 락 없이 되는 경우 · `static` 에 두는 전역.
-- 목록의 **55번 주제** — `await` 를 가로지르는 락.
+- [목록의 **55번 주제**](../55-async-in-practice-runtime-send-and-pin/) — `await` 를 가로지르는 락.
 - 대비 한 줄씩 —
   [Go 32번](../../../go/syntax/32-sync-mutex-rwmutex-waitgroup-once/): Go 의 `sync.Mutex` 는 데이터를 감싸지 않고, **값으로 복사하면 컴파일러가 아니라 `go vet` 의 `copylocks` 가** 잡는다(그 편의 탐침 18 중 13 이 답했다) ·
   [Kotlin 56번](../../../kotlin/syntax/56-channel-mutex-and-shared-mutable-state/): kotlinx `Mutex` 는 KDoc 이 **non-reentrant** 라고 적고, `synchronized` 블록 안의 중단점은 **컴파일 에러**다 ·

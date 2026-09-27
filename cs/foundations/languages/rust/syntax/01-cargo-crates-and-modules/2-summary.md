@@ -197,7 +197,7 @@ $ cargo build -v
 - 반대로 `rustc src/main.rs` 처럼 플래그를 빼면 **에디션 2015로 읽힌다** — cargo 로 돌던 코드가 깨질 수 있다.
 
 비용 — 크레이트가 컴파일 단위이므로 **한 글자만 고쳐도 그 크레이트는 통째로 다시 컴파일된다.**\
-큰 프로젝트를 여러 크레이트로 쪼개는 이유가 이것이다(자세한 것은 목록의 **46번 주제**).
+큰 프로젝트를 여러 크레이트로 쪼개는 이유가 이것이다(자세한 것은 [목록의 **46번 주제**](../46-crates-cargo-toml-features-and-workspaces/)).
 
 ### (5) `fn main` 의 반환 타입 — `()` 말고 `Result` 도 된다
 
@@ -263,7 +263,7 @@ src/greet/polite.rs  pub fn hello() {}
 | `cargo build` | `target/debug/<이름>` · `lib<이름>.rlib` | 실제로 돌릴 것을 만들 때 |
 | `cargo run` | build + 곧바로 실행 | 개발 중 대부분 |
 | `cargo build --release` | `target/release/<이름>` | 최적화 빌드. **오버플로 동작이 바뀐다**([03번](../03-primitive-types-and-integer-overflow/)) |
-| `cargo test` | 테스트 바이너리 | 정본은 목록의 **58번 주제** |
+| `cargo test` | 테스트 바이너리 | 정본은 [목록의 **58번 주제**](../58-testing-unit-integration-and-doc-tests/) |
 
 실측 — `cargo check` 뒤 `target/debug/` 에 실행 파일이 없고 `.rmeta` 만 있었다(3-answer 2번).
 
@@ -372,7 +372,7 @@ gen = 3
 | `Cargo.lock` 의 `version = 4` | **cargo 구현** | 포맷 판번호다. 손으로 고치지 않는다 |
 
 ★ **「내 머신에서 됐다」가 「에디션 무관하게 된다」가 아니다.**\
-이 묶음이 에디션을 머리말에 못박는 이유다. 에디션이 실제로 무엇을 바꾸는지는 목록의 **47번 주제**가 정본이다.
+이 묶음이 에디션을 머리말에 못박는 이유다. 에디션이 실제로 무엇을 바꾸는지는 [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)가 정본이다.
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -407,10 +407,10 @@ gen = 3
   **여기는 지금 내 손에서 무엇이 만들어지나**다.
 - [`../../../../../history/rust/02-에디션.md`](../../../../../../history/rust/02-에디션.md) — 에디션 제도가 **왜** 생겼나는 거기. 여기는 **기본값이 다르다는 실측**만.
 - [**02번 주제**](../02-bindings-mut-and-shadowing/)(변수 바인딩·`mut`·섀도잉) — 이 주제 다음에 온다
-- 목록의 **45번 주제**(모듈 시스템 전수) — `pub(in path)`·재수출(`pub use`)·가시성 설계는 거기가 정본
-- 목록의 **46번 주제**(크레이트·feature·워크스페이스) · 목록의 **47번 주제**(에디션 2021 대 2024)
+- [목록의 **45번 주제**](../45-module-system-mod-use-pub-crate-and-file-layout/)(모듈 시스템 전수) — `pub(in path)`·재수출(`pub use`)·가시성 설계는 거기가 정본
+- [목록의 **46번 주제**](../46-crates-cargo-toml-features-and-workspaces/)(크레이트·feature·워크스페이스) · [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)(에디션 2021 대 2024)
 - [목록의 **22번 주제**](../22-result-question-mark-and-from/)(`Result` 와 `?`) — `main` 이 `Result` 를 돌려주는 이유의 정본
-- 목록의 **58번 주제**(테스트) — `cargo test` 와 파일 배치
+- [목록의 **58번 주제**](../58-testing-unit-integration-and-doc-tests/)(테스트) — `cargo test` 와 파일 배치
 
 ## 용어 풀이
 

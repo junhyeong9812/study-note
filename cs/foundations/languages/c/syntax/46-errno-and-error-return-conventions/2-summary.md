@@ -7,7 +7,7 @@
 > ★★★ **본체는 판정 격자다** — 호출 7 × 호출 전 `errno = 0`(안 함 / 함) × 판정법 2(`errno` 로 / 반환값 먼저).\
 > ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
 > ★★★ **경계** — **`malloc` 실패의 반환·`errno`**(탐침 7 × 빌드 8)는 [37번 형제](../37-malloc-calloc-realloc-free/)가 **이미 쟀다** — clang `-O2` 에서 **`errno` 가 0 으로 읽힌** 두 칸이 거기 있고, 원인은 「**내 추론 · 확정 안 함**」으로 남아 있었다. 이 편은 그 칸을 **어셈블리로 확정**한다((4)).\
-> ★ **`strtol` 로 문자열을 파싱하는 법 전체**(끝 포인터 · 빈 입력 · `atoi` 대비)는 목록의 **51번 주제**, **`strerror`·`getenv` 결과를 놓으면 안 된다**는 소유 규칙은 [38번 형제](../38-expressing-ownership-conventions-in-code/)가 정본이다. 여기는 **`errno` 를 언제 믿나**만 본다.
+> ★ **`strtol` 로 문자열을 파싱하는 법 전체**(끝 포인터 · 빈 입력 · `atoi` 대비)는 [목록의 **51번 주제**](../51-stdlib-conversion-qsort-and-bsearch/), **`strerror`·`getenv` 결과를 놓으면 안 된다**는 소유 규칙은 [38번 형제](../38-expressing-ownership-conventions-in-code/)가 정본이다. 여기는 **`errno` 를 언제 믿나**만 본다.
 > 선행 — [34번 형제](../34-function-declarations-definitions-and-prototypes/) · [37번 형제](../37-malloc-calloc-realloc-free/).
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -313,7 +313,7 @@ ERRORS
 - ★★★ **`LONG_MAX` 는 성공의 값이기도 하다** — `"9223372036854775807"` 은 넘침이 아니다. 반환만으로는 **넘침과 정확한 최댓값이 같다.**
 - ★★★ **그래서 `errno` 가 유일한 구분자이고, 그 `errno` 를 믿으려면 호출 직전에 0 이어야 한다** — `strtol` 은 **성공 시 `errno` 를 안 건드리므로**(`man`) 남은 값이 그대로 보인다. 격자의 「반환값 먼저 · 안 함」 한 칸이 그 사고다.
 - ★★ **지우는 자리는 「바로 앞」** — `errno = 0;` 과 `strtol(…)` 사이에 다른 라이브러리 호출이 끼면 그 호출이 `errno` 를 쓸 수 있다((1)의 `localtime`).
-- ★ `man` 은 한 가지를 더 적는다 — 「**변환이 없었을 때(숫자 없음) `EINVAL` 을 넣을 수도 있다**」. **표준에는 없는 약속**이다. 빈 입력은 **끝 포인터**로 가른다 — 목록의 **51번 주제**.
+- ★ `man` 은 한 가지를 더 적는다 — 「**변환이 없었을 때(숫자 없음) `EINVAL` 을 넣을 수도 있다**」. **표준에는 없는 약속**이다. 빈 입력은 **끝 포인터**로 가른다 — [목록의 **51번 주제**](../51-stdlib-conversion-qsort-and-bsearch/).
 
 ### (4) ★★★ clang `-O2` 의 `errno` `0` — 37편의 추론을 확정한다
 
@@ -607,7 +607,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [37번 형제 — `malloc`/`calloc`/`realloc`/`free`](../37-malloc-calloc-realloc-free/) — ★★★ **선행.** 실패 격자의 clang `-O2` `errno` `0` 두 칸 — 이 편 (4)가 원인을 확정했다.
 - [34번 형제 — 함수 선언·정의·프로토타입](../34-function-declarations-definitions-and-prototypes/) — ★ 반환 타입으로 실패를 알리는 관례의 앞.
 - [38번 형제 — 소유권 관례](../38-expressing-ownership-conventions-in-code/) — ★ `strerror` 결과를 놓으면 안 된다.
-- 목록의 **51번 주제**(`<stdlib.h>` 변환) — ★★ `strtol` 파싱 전체(끝 포인터 · 빈 입력)의 정본.
+- [목록의 **51번 주제**](../51-stdlib-conversion-qsort-and-bsearch/)(`<stdlib.h>` 변환) — ★★ `strtol` 파싱 전체(끝 포인터 · 빈 입력)의 정본.
 - [47번 형제 — `<stdio.h>` 스트림 · 버퍼링 · 서식 출력](../47-stdio-streams-buffering-and-formatted-output/) — ★ `printf` 의 반환값(음수가 실패).
 - [Go 23 — `error` 인터페이스와 값으로서의 에러](../../../go/syntax/23-error-interface-and-errors-as-values/) — ★★ 실패를 **반환값 자리에** 두는 설계.
 

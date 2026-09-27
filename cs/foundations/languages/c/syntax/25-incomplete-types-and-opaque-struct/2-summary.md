@@ -14,8 +14,8 @@
 > 여기서는 「**`void` 가 왜 불완전 타입인가**」만 본다 — 그쪽은 「**포인터**」, 여기는 「**타입의 완성 여부**」다.\
 > ★ **`sizeof`·`offsetof` 라는 도구**는 [8번 형제](../08-sizeof-alignment-and-offsetof/), **구조체 선언·초기화**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/)가 정본이다.\
 > ★ **포인터 문법 자체**는 [14번 형제](../14-pointers-address-dereference-and-pointer-types/), **배열이 포인터로 감쇠하는 규칙**은 [16번 형제](../16-array-pointer-decay-and-function-parameters/)가 정본이다.\
-> ★ **헤더를 어떻게 나누나**는 목록의 **44번 주제**, **링크 오류 읽기**는 목록의 **45번 주제**, **`malloc` 의 계약**은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/)다.
-> 선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · 목록의 **44번 주제**.
+> ★ **헤더를 어떻게 나누나**는 [목록의 **44번 주제**](../44-headers-and-separate-compilation/), **링크 오류 읽기**는 [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/), **`malloc` 의 계약**은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/)다.
+> 선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [목록의 **44번 주제**](../44-headers-and-separate-compilation/).
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ## 한눈에 — 쉽게 말하면
@@ -938,8 +938,8 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [26번 형제 — 유연 배열 멤버](../26-flexible-array-members/) — ★ **「마지막 멤버의 크기를 안 적는다」는 다른 문법**이다. 그쪽은 **구조체가 완전한 채로** 꼬리만 비어 있다.
 - [28번 형제 — 저장 기간 4종을 고르는 법](../28-choosing-among-four-storage-durations/) — ★★ opaque 를 고르면 **할당 저장 기간**으로 떠밀린다.
 - [22번 형제 — 구조체 패딩·정렬](../22-struct-padding-and-alignment/) · [24번 형제 — 비트필드](../24-bit-fields/) — ★ **정반대의 주제**다. 그쪽은 「구현 정의·미명시」가 본체이고 여기는 「표준」이 본체다.
-- 목록의 **44번 주제** — 헤더와 분할 컴파일. **무엇을 헤더에 두나**는 그쪽이 정본이다.
-- 목록의 **45번 주제** — 번역 단위와 링크 오류 읽기. `undefined reference` 는 그쪽이다.
+- [목록의 **44번 주제**](../44-headers-and-separate-compilation/) — 헤더와 분할 컴파일. **무엇을 헤더에 두나**는 그쪽이 정본이다.
+- [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/) — 번역 단위와 링크 오류 읽기. `undefined reference` 는 그쪽이다.
 - [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) — `malloc` 계열의 계약. 생성 함수 안의 할당은 그쪽이 정본이다.
 - [목록의 **38번 주제**](../38-expressing-ownership-conventions-in-code/) — 소유권 관례. **`_new`/`_free` 짝**을 시그니처로 표현하는 법은 그쪽이다.
 - ★ **C++ 갈래와 갈리는 자리** — C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))에서 다룬다.\

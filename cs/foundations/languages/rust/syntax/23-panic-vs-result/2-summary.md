@@ -562,8 +562,8 @@ fn main() {
 - **`panic!` 은 `!`(never) 타입**이라 어떤 타입 자리에도 놓인다([**06번 주제**](../06-functions-and-never-type/)).
 - ★ **`Result` 를 `unwrap` 하면 `Err` 의 `Debug` 가 패닉 메시지에 들어간다** — `Option` 과 다른 점이다.
 - **`main` 의 오류 타입에는 `Debug` 가 필요하다**(`Termination` 계약).
-- ★ **스레드 하나가 패닉해도 프로세스가 죽지는 않는다** — `join` 이 `Err` 를 돌려준다(목록의 **49번 주제**).
-- **`#[should_panic]`** 으로 패닉을 테스트한다(목록의 **58번 주제**).
+- ★ **스레드 하나가 패닉해도 프로세스가 죽지는 않는다** — `join` 이 `Err` 를 돌려준다([목록의 **49번 주제**](../49-threads-spawn-join-and-move-closures/)).
+- **`#[should_panic]`** 으로 패닉을 테스트한다([목록의 **58번 주제**](../58-testing-unit-integration-and-doc-tests/)).
 
 ## 어디서 틀리나
 
@@ -648,6 +648,6 @@ fn main() {
 - **`panic::set_hook`** — 패닉 메시지 출력을 통째로 갈아 끼운다. 잡는 것과 찍는 것을 분리할 수 있다((6)).
 - **`#[panic_handler]`** — `no_std` 환경에서 패닉 동작을 직접 정의한다.
 - **`RUST_BACKTRACE=1`** — `note:` 줄이 안내하는 그것. 백트레이스를 켠다.
-- **스레드 경계의 패닉** — 자식 스레드가 패닉해도 프로세스는 살고 `join` 이 `Err` 를 낸다(목록의 **49번 주제**).
-  ★ `Mutex` 는 그때 **중독(poisoned)** 된다(목록의 **52번 주제**).
-- **`#[should_panic]`** — 패닉을 기대하는 테스트(목록의 **58번 주제**).
+- **스레드 경계의 패닉** — 자식 스레드가 패닉해도 프로세스는 살고 `join` 이 `Err` 를 낸다([목록의 **49번 주제**](../49-threads-spawn-join-and-move-closures/)).
+  ★ `Mutex` 는 그때 **중독(poisoned)** 된다([목록의 **52번 주제**](../52-mutex-rwlock-arc-and-poisoning/)).
+- **`#[should_panic]`** — 패닉을 기대하는 테스트([목록의 **58번 주제**](../58-testing-unit-integration-and-doc-tests/)).

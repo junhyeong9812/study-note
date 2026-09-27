@@ -353,7 +353,7 @@ feof = 1 · ferror = 0
 | ★★ **컴파일러 구현** | ★★★ `gets` 의 암시적 선언을 gcc 는 경고 · clang 은 에러 |
 | ★★★ **UB** | ★★★ `%s` · `gets` 의 넘침 |
 
-- ★ **읽은 문자열 다루기**는 [49번 형제](../49-string-functions-and-pitfalls/), **숫자 파싱**은 목록의 **51번 주제**가 정본이다.
+- ★ **읽은 문자열 다루기**는 [49번 형제](../49-string-functions-and-pitfalls/), **숫자 파싱**은 [목록의 **51번 주제**](../51-stdlib-conversion-qsort-and-bsearch/)가 정본이다.
 
 ## 실행 검증
 

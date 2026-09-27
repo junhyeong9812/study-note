@@ -1346,7 +1346,7 @@ let y = format!("{}{}", "가", "나");            // 아무것도 안 뺏는다
 - [목록의 **43번 주제**](../43-deref-coercion-and-smart-pointers/)(`Deref` 강제와 스마트 포인터) — **그쪽은** `Deref` 라는 장치 자체,\
   **여기는** 그 장치가 `String` → `str` 에서 하는 일까지
 - [목록의 **30번 주제**](../30-operator-overloading-std-ops-index-and-deref/)(연산자 오버로딩·`Index`) — `+` 가 왼쪽을 소비하는 **설계 이유**는 거기
-- 목록의 **48번 주제**(`format!`·`Display`) — 포매팅 기계의 정본
+- [목록의 **48번 주제**](../48-format-macros-display-and-debug/)(`format!`·`Display`) — 포매팅 기계의 정본
 - [`../../../../../data-structure/01-dynamic-array/`](../../../../../data-structure/01-dynamic-array/) — **그쪽은** 용량 증폭의 **상각 분석**,\
   **여기는** `capacity()` 가 `len()` 과 다르다는 것까지
 - [`../../../../data-representation/`](../../../../data-representation/) — **그쪽은** UTF-8 **인코딩 자체**, **여기는** 「`len()` 이 바이트다」까지

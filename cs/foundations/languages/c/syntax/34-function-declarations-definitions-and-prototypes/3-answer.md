@@ -570,7 +570,7 @@ s34g2.c:3:1: warning: ISO C does not support ‘[[]]’ attributes before C2X [-
 **왜 그런가**
 
 - **선언을 읽는 법** — [01번 형제](../01-declaration-syntax-and-reading/) · **링크** — [29번 형제](../29-scope-and-linkage-static-extern/).
-- **가변 인자** — [36번 형제](../36-variadic-functions-stdarg/) · **헤더 배치** — 목록의 **44번 주제**.
+- **가변 인자** — [36번 형제](../36-variadic-functions-stdarg/) · **헤더 배치** — [목록의 **44번 주제**](../44-headers-and-separate-compilation/).
 - ★ 이 주제가 책임지는 것 — ① **괄호 안의 뜻**(판마다) ② **프로토타입이 없을 때 일어나는 것**(검사 소멸 · 승격 · 도구의 눈 가림) ③ **선언 없이 부르기의 판 격자**.
 
 ## 실행 검증

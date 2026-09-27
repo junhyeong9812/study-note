@@ -255,7 +255,7 @@ clang grep exit=1
 
 ### 9. `memcpy` — **문자열 함수가 아니라 널을 모른다 · 결함이 아니라 계약** ★★
 
-- ★★ **`memcpy(d, s, n)` 은 n 바이트를 옮길 뿐** — `n = min(strlen(s), sizeof d)` 에는 **널이 포함되지 않으니** 세 길이 다 널이 없다. 문자열로 쓰려면 **`n` 에 널을 넣거나 직접 `d[n] = 0`** (자리가 있을 때). 겹침·`memmove` 는 목록의 **50번 주제**.
+- ★★ **`memcpy(d, s, n)` 은 n 바이트를 옮길 뿐** — `n = min(strlen(s), sizeof d)` 에는 **널이 포함되지 않으니** 세 길이 다 널이 없다. 문자열로 쓰려면 **`n` 에 널을 넣거나 직접 `d[n] = 0`** (자리가 있을 때). 겹침·`memmove` 는 [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/).
 
 ### 10. 길이를 가진 문자열 — **널을 찾는 걸음 · 널 없음 사고가 원리상 없다 · 잘림 판정과 UTF-8 경계는 남는다** ★★
 
@@ -271,7 +271,7 @@ clang grep exit=1
 | ★★ **컴파일러 구현(배포판)** | ★★★ Ubuntu gcc 의 `_FORTIFY_SOURCE=3` · 경고 두 종류 |
 | ★★★ **UB** | ★★★ 배열 밖 쓰기 · 널 없는 배열의 문자열 사용 |
 
-- ★ **문자열 탐색 알고리즘**은 [`algorithm/25-string-matching/`](../../../../../algorithm/25-string-matching/), **`memcpy`/`memmove` 의 겹침**은 목록의 **50번 주제**가 정본이다.
+- ★ **문자열 탐색 알고리즘**은 [`algorithm/25-string-matching/`](../../../../../algorithm/25-string-matching/), **`memcpy`/`memmove` 의 겹침**은 [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/)가 정본이다.
 
 ## 실행 검증
 

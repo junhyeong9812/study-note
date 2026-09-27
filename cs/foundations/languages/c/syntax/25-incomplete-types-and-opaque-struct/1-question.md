@@ -10,7 +10,7 @@
 > ★★★ **이 주제는 「표준」 칸이 본체**다 — [22번 형제](../22-struct-padding-and-alignment/)·[24번 형제](../24-bit-fields/)와 **정반대**로 구현 정의·미명시 칸이 거의 비어 있다.
 > 두 번째가 **UB** 인데 **자리가 하나뿐**이고, ★★ **그 하나를 보는 도구가 없다**(6번).
 > ★★ **「경고 몇 건」만 세지 마라** — 이 주제에는 **경고가 났는데 `cc exit=0`** 인 자리가 세 군데다.
-> 선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · 목록의 **44번 주제**.
+> 선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [목록의 **44번 주제**](../44-headers-and-separate-compilation/).
 
 ## 이 파일을 푸는 법
 

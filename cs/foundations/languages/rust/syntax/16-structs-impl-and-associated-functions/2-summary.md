@@ -1246,7 +1246,7 @@ For more information about an error, try `rustc --explain E0603`.
   이것이 (10)의 「필드와 메서드 동명」과 이어지는 자리다. **접근자를 필드와 같은 이름으로 짓는 관용구**가 여기서 나온다.
 - **같은 모듈 안에서는 `y` 가 그냥 보인다** — `impl Point` 의 `pub fn y(&self)` 가 `self.y` 를 읽는 데 아무 표시가 없었다.
 
-★ 모듈 시스템 자체(`pub(crate)`·경로·파일 배치)는 목록의 **45번 주제**가 정본이다.
+★ 모듈 시스템 자체(`pub(crate)`·경로·파일 배치)는 [목록의 **45번 주제**](../45-module-system-mod-use-pub-crate-and-file-layout/)가 정본이다.
 여기는 **「구조체의 필드가 기본 비공개」까지**만 다룬다.
 
 ### (10) 필드와 메서드가 이름이 같아도 되나

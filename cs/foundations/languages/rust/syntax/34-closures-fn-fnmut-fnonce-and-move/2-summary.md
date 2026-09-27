@@ -395,7 +395,7 @@ For more information about this error, try `rustc --explain E0382`.
 
 ### (4) ★★ `move` 가 꼭 필요한 자리 — E0373
 
-**언제 쓰나** — 클로저가 **지금 함수보다 오래 살 때** — 스레드에 넘기거나(스레드 쪽 정본은 목록의 **49번 주제**), 함수 밖으로 돌려줄 때(돌려주기는 [**35번 주제**](../35-function-pointers-and-returning-closures/)).
+**언제 쓰나** — 클로저가 **지금 함수보다 오래 살 때** — 스레드에 넘기거나(스레드 쪽 정본은 [목록의 **49번 주제**](../49-threads-spawn-join-and-move-closures/)), 함수 밖으로 돌려줄 때(돌려주기는 [**35번 주제**](../35-function-pointers-and-returning-closures/)).
 
 ```rust
 // r34_thread.rs
@@ -736,7 +736,7 @@ For more information about this error, try `rustc --explain E0382`.
 
 - ★ E0506 이 「**`p.age` is borrowed here**」라고 **클로저 전체**를 짚는다 — 클로저가 `p.name` 만 썼는데도 **`p` 를 빌렸기** 때문이다.
 - ★ E0382 의 `note:` 는 「**if `P` implemented `Clone`, you could clone the value**」 — **2021 로 올리면 필요 없는 처방**이다. 이 판의 2018 진단은 에디션 차이를 말해 주지 않는다.
-- ★ **옮길 때의 도구** — Edition Guide 에 따르면 2021 이전용 린트 `rust_2021_incompatible_closure_captures` 가 드롭 순서·트레이트가 바뀔 자리에 **`let _ = &p;`** 를 넣어 **통째 포착을 강제**한다(`cargo fix --edition` — 목록의 **47번 주제**. 이 문서는 돌리지 않았다).
+- ★ **옮길 때의 도구** — Edition Guide 에 따르면 2021 이전용 린트 `rust_2021_incompatible_closure_captures` 가 드롭 순서·트레이트가 바뀔 자리에 **`let _ = &p;`** 를 넣어 **통째 포착을 강제**한다(`cargo fix --edition` — [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/). 이 문서는 돌리지 않았다).
 
 ### (7) 루프에서 모은 클로저 — Rust 와 파이썬, Go
 
@@ -922,9 +922,9 @@ print([f() for f in fs2])
 - [**35번 주제** — 함수 포인터와 클로저 반환](../35-function-pointers-and-returning-closures/) — 이 주제의 **다음 사슬**. `fn` 으로의 강제 격자와 **반환할 때의 `move`**.
 - [**36번 주제** — `Iterator`](../36-iterator-adapters-laziness-and-collect/) — 어댑터가 받는 클로저가 **`FnMut`** 인 이유(여러 번 부르고, 상태를 고칠 수 있게).
 - ★ 교차 갈래 — Python 갈래의 [**22번**](../../../python/syntax/22-closures-and-late-binding/)(늦은 바인딩) · Go 갈래의 [**13번**](../../../go/syntax/13-closures-variable-capture-and-loop-variable-change/)(1.22 루프 변수) — (7)은 **두 편의 결론을 인용**했고 Go 는 다시 던지지 않았다.
-- 목록의 **47번 주제** — 에디션 이전과 `cargo fix --edition`. (6)의 린트가 거기서 절차로 쓰인다.
-- 목록의 **49번 주제** — 스레드 `spawn`/`join` 과 `move` 클로저. (4)의 E0373 이 거기서 본체가 된다.
-- 목록의 **50번 주제** — `Send`/`Sync`. (4)의 `thread::spawn` 이 요구하는 나머지 절반.
+- [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/) — 에디션 이전과 `cargo fix --edition`. (6)의 린트가 거기서 절차로 쓰인다.
+- [목록의 **49번 주제**](../49-threads-spawn-join-and-move-closures/) — 스레드 `spawn`/`join` 과 `move` 클로저. (4)의 E0373 이 거기서 본체가 된다.
+- [목록의 **50번 주제**](../50-send-sync-in-compiler-errors/) — `Send`/`Sync`. (4)의 `thread::spawn` 이 요구하는 나머지 절반.
 
 ## 용어 풀이
 
@@ -942,5 +942,5 @@ print([f() for f in fs2])
 
 - **고유 불변 빌림(unique immutable borrow)** — `let r = &mut x; let c = || *r = 1;` 처럼 **가변 참조를 통해 쓰는** 경우의 포착 방식. Reference 에만 나오는 넷째 방식이다(이 문서는 던지지 않았다).
 - **클로저의 `Clone`·`Copy`** — 잡은 것이 전부 `Copy` 이고 가변 빌림이 없으면 클로저도 `Copy` 다(Reference). [36번](../36-iterator-adapters-laziness-and-collect/)의 로그 클로저 `map_fn` 이 `&RefCell` 만 잡아 **세 사슬에 거듭 쓰였다**.
-- **`async` 클로저와 `AsyncFn*`** — 이 판에 안정돼 있다(Reference 의 async 절). 이 문서는 던지지 않았다 — 목록의 **54번 주제** 근처.
+- **`async` 클로저와 `AsyncFn*`** — 이 판에 안정돼 있다(Reference 의 async 절). 이 문서는 던지지 않았다 — [목록의 **54번 주제**](../54-async-await-and-future-state-machines/) 근처.
 - **HRTB(`for<'a> Fn(&'a T)`)** — 참조를 받는 클로저 경계에 숨어 있는 고차 수명. 이 목록에는 따로 주제가 없다(이 문서는 던지지 않았다).

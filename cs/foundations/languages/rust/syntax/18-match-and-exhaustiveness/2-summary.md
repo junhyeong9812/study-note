@@ -1151,7 +1151,7 @@ match lvl { upstream::Level::Low => 1, upstream::Level::High => 2 }
 - [목록의 **19번 주제**](../19-pattern-syntax-guards-bindings-and-match-ergonomics/) — 가드·`@`·or 패턴·매치 인체공학. **이 주제가 미뤄 둔 패턴 문법 전부**가 거기다.
 - [목록의 **20번 주제**](../20-if-let-while-let-let-else-and-let-chains/) — `if let`·`while let`·`let else`. **완전성 검사가 없는 쪽**이다.
 - [목록의 **33번 주제**](../33-dyn-trait-objects-and-object-safety/) — 변형이 열려야 할 때 쓰는 트레이트 객체.
-- 목록의 **47번 주제** — 에디션 차이 전수. 이 주제의 결과는 **2021 기준**이다.
+- [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/) — 에디션 차이 전수. 이 주제의 결과는 **2021 기준**이다.
 
 ## 용어 풀이
 

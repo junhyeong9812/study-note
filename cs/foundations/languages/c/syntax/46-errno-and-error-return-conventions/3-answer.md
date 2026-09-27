@@ -254,7 +254,7 @@ NULL 12
 | ★★ **POSIX · glibc** | ★★ `fopen`·`malloc` 의 `errno` · `__errno_location` · `localtime` 의 `ENOENT` |
 | ★★ **컴파일러 구현** | ★★★ clang `-O2` 의 `malloc` 가정 · `-fno-math-errno` 의 범위 |
 
-- ★ **`strtol` 파싱 전체**는 목록의 **51번 주제**, **`strerror` 결과의 소유**는 [38번 형제](../38-expressing-ownership-conventions-in-code/)가 정본이다.
+- ★ **`strtol` 파싱 전체**는 [목록의 **51번 주제**](../51-stdlib-conversion-qsort-and-bsearch/), **`strerror` 결과의 소유**는 [38번 형제](../38-expressing-ownership-conventions-in-code/)가 정본이다.
 
 ## 실행 검증
 

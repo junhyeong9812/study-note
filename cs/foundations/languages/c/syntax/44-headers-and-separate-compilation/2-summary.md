@@ -9,7 +9,7 @@
 > **버전** — include 와 링크 규칙은 C89 부터다. ★ **gcc 10 · clang 11 부터 `-fno-common` 이 기본**([29번 형제](../29-scope-and-linkage-static-extern/)가 문서로 확인). ★ **C23 은 같은 내용의 `struct` 재정의를 허용**하지만 이 판의 두 컴파일러는 아직 막는다((3)).
 > ★★★ **경계** — **링크 단계 일반(심볼 해결 · 재배치 · 라이브러리)** 은 [`compiler-pipeline/`](../../../../compiler-pipeline/)의 「4. 컴파일 전체 흐름과 링커」가 정본이다 — 그쪽은 **`.o` 여럿이 링커로 합쳐진다**까지, 이 편은 **그 `.o` 들이 같은 헤더를 가졌을 때 무엇을 두면 깨지나**부터.\
 > ★★★ **`static`/`extern` 의 링크 규칙 자체와 잠정 정의의 판 격자**(`-fno-common`/`-fcommon` × 컴파일러 3)는 [29번 형제](../29-scope-and-linkage-static-extern/)의 (5)가, **헤더의 `inline`·`extern inline` 링크 격자**는 [39번 형제](../39-inline-and-c-inline-rules/)가 **이미 쟀다** — 이 편은 그 격자를 **다시 재지 않고** 「헤더에 둘 수 있나」의 한 행씩으로만 인용한다.\
-> ★ **`#include` 가 텍스트를 붙여 넣는다는 것 · 검색 경로**는 [41번 형제](../41-preprocessor-directives-and-conditional-compilation/), **불투명 구조체**는 [25번 형제](../25-incomplete-types-and-opaque-struct/), **링크 오류를 거꾸로 읽기**는 목록의 **45번 주제**다.
+> ★ **`#include` 가 텍스트를 붙여 넣는다는 것 · 검색 경로**는 [41번 형제](../41-preprocessor-directives-and-conditional-compilation/), **불투명 구조체**는 [25번 형제](../25-incomplete-types-and-opaque-struct/), **링크 오류를 거꾸로 읽기**는 [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/)다.
 > 선행 — [29번 형제](../29-scope-and-linkage-static-extern/) · [41번 형제](../41-preprocessor-directives-and-conditional-compilation/).
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -260,7 +260,7 @@ collect2: error: ld returned 1 exit status
 0000000000000000 r hv
 ```
 
-- ★★ **링크 에러는 「누가 먼저 정의했나」를 댄다** — ``s44b.o … multiple definition of `hf'; s44a.o … first defined here``. **정의가 헤더에서 왔다는 말은 없다** — 두 `.o` 의 **공통 헤더**를 의심하는 것은 사람 몫이다(목록의 **45번 주제**).
+- ★★ **링크 에러는 「누가 먼저 정의했나」를 댄다** — ``s44b.o … multiple definition of `hf'; s44a.o … first defined here``. **정의가 헤더에서 왔다는 말은 없다** — 두 `.o` 의 **공통 헤더**를 의심하는 것은 사람 몫이다([목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/)).
 - ★★ **`const` 행** — C 의 `nm` 은 `R hv`(외부), C++ 의 `nm -C` 는 `r hv`(내부). 같은 소스가 **언어에 따라 링크가 바뀐다.** C 에서 상수를 헤더에 두려면 **`static const`** 나 `enum` · `#define` 이다(★ `static const` 행은 던지지 않았다 — 10행 `static int` 와 같은 규칙이다).
 
 ```text
@@ -857,7 +857,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [41번 형제 — 전처리기](../41-preprocessor-directives-and-conditional-compilation/) — ★★ **선행.** include 가 텍스트 복사라는 것 · 검색 경로.
 - [25번 형제 — 불투명 구조체](../25-incomplete-types-and-opaque-struct/) — ★★ 전방 선언 + 포인터의 다른 쓸모.
 - [34번 형제 — 선언·정의·프로토타입](../34-function-declarations-definitions-and-prototypes/) — ★ 선언과 정의의 구분.
-- 목록의 **45번 주제**(번역 단위와 링크 오류 읽기) — ★ 이 편의 링크 에러를 **거꾸로** 읽는 자리.
+- [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/)(번역 단위와 링크 오류 읽기) — ★ 이 편의 링크 에러를 **거꾸로** 읽는 자리.
 - [C++ 35 — 인스턴스화와 헤더 배치](../../../cpp/syntax/35-instantiation-header-placement-and-reading-errors/) · [C++ 25 — `inline` 변수](../../../cpp/syntax/25-static-members-and-inline-variables/) — ★ C++ 가 **정의를 헤더에 두게** 만든 장치들. C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **55번**(ODR · 모듈)이 번역 단위 규칙의 정본 자리다.
 
 ## 용어 풀이

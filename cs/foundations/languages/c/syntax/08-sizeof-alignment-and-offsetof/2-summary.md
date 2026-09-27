@@ -688,8 +688,8 @@ struct Bad   a...bbbbc.......dddddddd   (24 바이트, '.' 이 구멍)
 - [목록의 **24번 주제**](../24-bit-fields/) (비트필드) — `offsetof` 를 못 쓰는 멤버
 - [목록의 **26번 주제**](../26-flexible-array-members/) (유연 배열 멤버) — (7)이 정본으로 다뤄지는 곳
 - [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/) (`malloc` 계열) — `malloc` 이 `max_align_t` 정렬을 지키는 계약
-- 목록의 **50번 주제** (`<string.h>` 메모리 함수) — `memcmp` 로 구조체를 비교하면 안 되는 것의 정본
-- 목록의 **53번 주제** (`assert` 와 `static_assert`) — `_Static_assert` 의 정본
+- [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/) (`<string.h>` 메모리 함수) — `memcmp` 로 구조체를 비교하면 안 되는 것의 정본
+- [목록의 **53번 주제**](../53-assert-and-static-assert/) (`assert` 와 `static_assert`) — `_Static_assert` 의 정본
 
 ## 용어 풀이
 

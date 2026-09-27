@@ -585,7 +585,7 @@ For more information about this error, try `rustc --explain E0277`.
 - ★★ **E0277 — `` `std::sync::MutexGuard<'_, Vec<i32>>` cannot be sent between threads safely ``.** `static` 뮤텍스라 `'static` 문제는 없다 — **순수하게 `Send` 가 빠진 것**이다.
 - ★★★ **왜 `!Send` 인가** — 이 판의 로컬 std 문서에서 **이유를 찾지 못했고, 실행으로도 확인하지 않았다.** 확인한 것은 (4)의 **`impl<T: ?Sized> !Send for MutexGuard<'_, T>`** 한 줄이다 — 「막힌다」는 사실까지만 적는다.
 - ★★ **그런데 `Sync` 는 된다**((1) 마지막 행) — 여러 스레드가 `&MutexGuard` 로 **안을 읽기만** 하는 것은 `T: Sync` 면 안전하다.
-- ★ 가드가 **`await` 를 가로지르면** 같은 `!Send` 가 async 의 `Send` 경계에 걸린다 — 목록의 **55번 주제**.
+- ★ 가드가 **`await` 를 가로지르면** 같은 `!Send` 가 async 의 `Send` 경계에 걸린다 — [목록의 **55번 주제**](../55-async-in-practice-runtime-send-and-pin/).
 
 ## 문법 — 형태와 규칙
 
@@ -677,7 +677,7 @@ For more information about this error, try `rustc --explain E0277`.
 - [**42번 주제**](../42-refcell-cell-interior-mutability/) — `Arc<RefCell>` 의 E0277 과 `RwLock` 권고.
 - [**34번 주제**](../34-closures-fn-fnmut-fnonce-and-move/) — 2021 정밀 포착((3)의 사슬이 사라지는 이유).
 - [**51번 주제**](../51-mpsc-channels-and-sender-drop/) · [**52번 주제**](../52-mutex-rwlock-arc-and-poisoning/) — `Send` 인 값을 채널로 넘기기 · `Mutex` 로 `Sync` 를 얻기.
-- 목록의 **55번 주제**(async 의 `Send` 경계) · **56번 주제**(`unsafe`).
+- [목록의 **55번 주제**](../55-async-in-practice-runtime-send-and-pin/)(async 의 `Send` 경계) · **56번 주제**(`unsafe`).
 
 ## 용어 풀이
 
@@ -694,4 +694,4 @@ For more information about this error, try `rustc --explain E0277`.
 
 - `Sync` 이지만 `Send` 가 아닌 타입이 `MutexGuard` 말고도 std 에 있다(구현 목록). **이 문서는 목록을 전수로 훑지 않았다.**
 - `Arc<T>: Send` 의 정확한 선언(`T: Sync + Send`)은 로컬 문서에서 태그가 쪼개져 grep 으로 못 읽었다 — 41번과 42번의 진단 두 조각으로 맞췄다((0)의 제5의 상태).
-- async 에서는 `Future` 가 `Send` 인지가 같은 사슬 모양의 에러로 나온다(`await` 를 가로지르는 `!Send` 값) — 목록의 **55번 주제**.
+- async 에서는 `Future` 가 `Send` 인지가 같은 사슬 모양의 에러로 나온다(`await` 를 가로지르는 `!Send` 값) — [목록의 **55번 주제**](../55-async-in-practice-runtime-send-and-pin/).

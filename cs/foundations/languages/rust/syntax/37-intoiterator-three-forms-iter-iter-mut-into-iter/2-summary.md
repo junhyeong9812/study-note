@@ -345,7 +345,7 @@ i32
 | **2021 → 2024** | ★★ `Box<[T]>` 의 `.into_iter()` — `&T` → `T` | 이 편 (2) |
 | **2021 → 2024** | 반환 위치 `impl Trait` 의 수명 포착 — 적힌 수명만 → 시야 안 전부 | [32번 주제](../32-impl-trait-argument-return-position-and-2024-capture/) (5) |
 
-- ★ **공통점 — 넷 다 「같은 소스가 컴파일은 되는데 뜻이 바뀌는」 자리**다. 그래서 에디션을 올릴 때 **이전 린트**가 경고로 먼저 알려 준다(`array_into_iter` · `boxed_slice_into_iter` · 34편의 disjoint capture 린트). 에디션 전반은 목록의 **47번 주제**가 정본이다.
+- ★ **공통점 — 넷 다 「같은 소스가 컴파일은 되는데 뜻이 바뀌는」 자리**다. 그래서 에디션을 올릴 때 **이전 린트**가 경고로 먼저 알려 준다(`array_into_iter` · `boxed_slice_into_iter` · 34편의 disjoint capture 린트). 에디션 전반은 [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)가 정본이다.
 
 ### (3) ★★ `for x in &v` 가 되는 이유 — std 소스의 `impl` 셋
 
@@ -855,7 +855,7 @@ dune
 - [**25번 주제** — 트레이트·연관 타입](../25-traits-definition-impl-default-methods-and-associated-types/) — `type Item`·`type IntoIter`.
 - [**38번 주제** — `Vec<T>` API](../38-vec-api-capacity-retain-and-drain/) — 이 주제의 **다음 사슬**. 순회 **중에** `Vec` 을 고치면 무엇이 막히나.
 - [**39번 주제** — `HashMap` 대 `BTreeMap`](../39-hashmap-vs-btreemap-and-entry-api/) — (5)에서 피한 **순회 순서**가 거기서 본체가 된다.
-- 목록의 **47번 주제** — 에디션 2021 대 2024. (2)의 표가 그 입구다.
+- [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/) — 에디션 2021 대 2024. (2)의 표가 그 입구다.
 - Python 갈래의 [**16번**](../../../python/syntax/16-iterator-protocol/) — 이터레이터 프로토콜. 파이썬의 `for` 는 **리스트를 소비하지 않는다**(돈 뒤에도 리스트가 그대로다 — 소진되는 것은 `iter()` 가 만든 이터레이터 쪽) — Rust 의 「값으로 넘기면 원본이 없어진다」와 대비. 이 문서는 파이썬을 던지지 않았다.
 
 ## 용어 풀이

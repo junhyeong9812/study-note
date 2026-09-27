@@ -550,7 +550,7 @@ fn main() {
 - [**51번 주제**](../51-mpsc-channels-and-sender-drop/) · [**52번 주제**](../52-mutex-rwlock-arc-and-poisoning/) · [**53번 주제**](../53-atomics-oncelock-and-lazylock/) — 스레드끼리 값을 넘기고 나누는 세 방법.
 - [`process-thread/`](../../../../process-thread/) — 프로세스·스레드·TCB·경쟁 조건의 **원리는 거기**, 여기는 Rust 의 `spawn`/`scope` 가 수명으로 무엇을 요구하나로 좁힌다.
 - [Go 28번 주제](../../../go/syntax/28-goroutines-go-statement-cost-and-termination/) — `main` 이 반환하면 고루틴을 기다리지 않는다(같은 모양).
-- 목록의 **47번 주제**(에디션 2021 대 2024) — (1-1)의 에디션 차이는 2018→2021 쪽이다.
+- [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)(에디션 2021 대 2024) — (1-1)의 에디션 차이는 2018→2021 쪽이다.
 
 ## 용어 풀이
 

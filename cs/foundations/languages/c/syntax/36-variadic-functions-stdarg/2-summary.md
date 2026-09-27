@@ -8,7 +8,7 @@
 > ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
 > **버전** — `<stdarg.h>` 는 **C89 부터**, **`va_copy` 는 C99 부터**다. ★ **C23** 이 `va_start` 의 두 번째 인자를 **없어도 되게** 하고, **이름 있는 매개변수가 없는 `f(...)`** 를 허락했다((8)의 판 격자).
 > ★★ **경계** — **정수 승격 규칙 자체**는 [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/), **`float` → `double`** 은 [04번 형제](../04-floating-point-types-and-conversions/)가 정본이다. **프로토타입이 없을 때의 승격**은 [34번 형제](../34-function-declarations-definitions-and-prototypes/)가 정본이다 — 이 편과 **한 사슬**이다.\
-> ★ **`printf` 계열의 형식 문자열**은 목록의 **47번 주제**가 정본이다. 여기는 「**형식을 컴파일러가 검사하느냐**」만 본다.
+> ★ **`printf` 계열의 형식 문자열**은 [목록의 **47번 주제**](../47-stdio-streams-buffering-and-formatted-output/)가 정본이다. 여기는 「**형식을 컴파일러가 검사하느냐**」만 본다.
 > 선행 — [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/) · [34번 형제](../34-function-declarations-definitions-and-prototypes/).
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -920,7 +920,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [34번 형제 — 함수 선언·정의·프로토타입](../34-function-declarations-definitions-and-prototypes/) — ★★★ **같은 사슬.** 빈 괄호 호출의 승격과 `al` 채우기가 이 편의 가변 인자 호출과 **같은 번역**이다.
 - [03번 형제 — 정수 승격](../03-integer-promotion-and-usual-arithmetic-conversions/) · [04번 형제 — 부동소수점 변환](../04-floating-point-types-and-conversions/) — ★★ **선행.** 승격 규칙의 정본.
 - [30번 형제 — 초기화 규칙과 불확정 값](../30-initialization-rules-and-indeterminate-values/) — ★ `_Bool` 에 바이트 `2` — 「틀린 자리를 읽은 UB」의 이웃.
-- 목록의 **47번 주제** — `printf` 계열 형식 문자열의 정본.
+- [목록의 **47번 주제**](../47-stdio-streams-buffering-and-formatted-output/) — `printf` 계열 형식 문자열의 정본.
 - 목록의 **58번 주제** — sanitizer 사용법의 정본.
 - ★ **Go 갈래** — [Go 12번 형제](../../../go/syntax/12-functions-multiple-returns-named-results-and-variadics/). **가변 인자가 슬라이스**인 언어.
 - ★ C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **34번** — 가변 인자 템플릿(C 의 `<stdarg.h>` 를 대신한다고 그 목록이 적었다).

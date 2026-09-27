@@ -676,7 +676,7 @@ s23h.cpp:5:17: error: union member ‘U::s’ with non-trivial ‘std::__cxx11::
 
 - **엄격한 앨리어싱 규칙 전체** — 목록의 **55번 주제**가 정본이다.\
   여기는 「**union 은 되고 포인터 캐스트는 안 된다**」는 **경계 한 줄과 그 실측**까지다.
-- **`memcpy`·`memcmp` 의 계약** — 목록의 **50번 주제**가 정본이다. 여기는 「**이식하려면 `memcpy`**」까지.
+- **`memcpy`·`memcmp` 의 계약** — [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/)가 정본이다. 여기는 「**이식하려면 `memcpy`**」까지.
 - **엔디언·IEEE 754 표현 자체** — [`data-representation/`](../../../../data-representation/)가 정본이다.\
   여기는 **union 이 그것을 드러내 보인다**는 것까지.
 - **패딩 값이 미명시라는 것** — [22번 형제](../22-struct-padding-and-alignment/)가 정본이다.\

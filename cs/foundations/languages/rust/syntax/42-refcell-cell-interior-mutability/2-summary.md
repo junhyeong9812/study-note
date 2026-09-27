@@ -520,7 +520,7 @@ fn main() {
 (exit 0)
 ```
 
-- ★ `Mutex` 는 **읽기도 혼자**라 규칙이 더 좁다. 락의 정본은 목록의 **52번 주제**다. ★ **런타임 비용 비교는 하지 않았다.**
+- ★ `Mutex` 는 **읽기도 혼자**라 규칙이 더 좁다. 락의 정본은 [목록의 **52번 주제**](../52-mutex-rwlock-arc-and-poisoning/)다. ★ **런타임 비용 비교는 하지 않았다.**
 
 ### (8) ★ `Rc<RefCell<T>>` — 여럿이 같은 값을 고친다
 
@@ -636,7 +636,7 @@ strong 3  contents ["from a", "from b"]
 - [**10번 주제**](../10-borrowing-and-aliasing-rules/) — 컴파일 시점 규칙(E0502·E0499)의 정본.
 - [**41번 주제**](../41-rc-arc-shared-ownership-and-weak-cycles/) — `Rc<RefCell<T>>` 의 `Rc` 쪽 · `Arc` 의 `Send + Sync` 경계.
 - [**44번 주제**](../44-drop-mem-drop-replace-and-take/) — 가드가 반납되는 순간은 결국 **`Drop` 순서**다. 임시값의 해제 줄이 거기 격자에 있다.
-- 목록의 **47번 주제**(에디션 2021 대 2024) · **50번 주제**(`Send`/`Sync`) · **52번 주제**(`Mutex`/`RwLock`).
+- [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)(에디션 2021 대 2024) · **50번 주제**(`Send`/`Sync`) · **52번 주제**(`Mutex`/`RwLock`).
 
 ## 용어 풀이
 
@@ -651,4 +651,4 @@ strong 3  contents ["from a", "from b"]
 ## 더 들어가면
 
 - `RefCell::borrow` 가 돌려주는 `Ref` 는 `Ref::map` 으로 **안쪽 필드만** 빌린 가드로 좁힐 수 있다. **이 문서는 던지지 않았다.**
-- `OnceCell`·`LazyCell` — 한 번만 쓰는 칸(대응하는 `Sync` 판은 `OnceLock`·`LazyLock` — std `cell` 모듈 문서). 목록의 **53번 주제**.
+- `OnceCell`·`LazyCell` — 한 번만 쓰는 칸(대응하는 `Sync` 판은 `OnceLock`·`LazyLock` — std `cell` 모듈 문서). [목록의 **53번 주제**](../53-atomics-oncelock-and-lazylock/).

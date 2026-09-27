@@ -297,7 +297,7 @@ __STDC_IEC_559__ = 1
 **왜 그런가**
 
 - **패딩 덤프** — [22번 형제](../22-struct-padding-and-alignment/) (3)절. **`calloc` 의 0** — [37번 형제](../37-malloc-calloc-realloc-free/) · [30번 형제](../30-initialization-rules-and-indeterminate-values/).
-- **`strcpy`·`strncpy`** — 목록의 **49번 주제**.
+- **`strcpy`·`strncpy`** — [목록의 **49번 주제**](../49-string-functions-and-pitfalls/).
 
 ## 실행 검증
 

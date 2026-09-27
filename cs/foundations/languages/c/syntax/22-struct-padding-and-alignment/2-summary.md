@@ -13,7 +13,7 @@
 > 여기는 **규칙**이 정본이다 — 08 자신이 머리말에서 「패딩·정렬의 정본은 22번 주제」라고 선언해 두었다.\
 > 구조체의 **선언·초기화**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/),\
 > **`union` 의 크기·정렬**은 [23번 형제](../23-union-and-the-boundary-of-type-punning/),\
-> **유연 배열 멤버**는 [목록의 **26번 주제**](../26-flexible-array-members/), **`memcmp`/`memcpy` 의 계약**은 목록의 **50번 주제**,\
+> **유연 배열 멤버**는 [목록의 **26번 주제**](../26-flexible-array-members/), **`memcmp`/`memcpy` 의 계약**은 [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/),\
 > **엄격한 앨리어싱**은 목록의 **55번 주제**가 정본이다.
 
 ## 한눈에 — 쉽게 말하면
@@ -534,7 +534,7 @@ pack(1) 배열의 멤버 주소가 정렬을 지키나 (0 이면 지킨 것)
   `&arr[k].i % 4` 가 `1 · 2 · 3` 으로 돌아간다 — **어느 원소에서도 0이 아니다.**\
   값이 0으로 나오는 원소가 있어도 그것은 **우연**이고, 그 주소를 역참조하면 08 이 UBSan 으로 잡은 그 UB 다.
 
-비용 — 크기 3바이트를 얻고 **정렬 보장을 잃는다.** 이식 가능한 답은 **`memcpy` 로 바이트를 직접 옮기는 것**이다(목록의 **50번 주제**).
+비용 — 크기 3바이트를 얻고 **정렬 보장을 잃는다.** 이식 가능한 답은 **`memcpy` 로 바이트를 직접 옮기는 것**이다([목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/)).
 
 ### (6) 유연 배열 멤버 — 헤더 뒤에도 패딩이 있다
 
@@ -766,7 +766,7 @@ s22f.c   -Wall -Wextra 0건 · +pedantic 0건 · +UBSan 0건
 | 구조체 해시 | 멤버를 하나씩 먹이기 | 바이트 전체를 먹이기 |
 | 패딩을 0으로 | `memset` 직후에만 유효 | 「초기자를 썼으니 0이다」 |
 | 캐시 라인 맞추기 | `_Alignas(64)` | 수동 더미 멤버 |
-| 패킷·파일 매핑 | **`memcpy` 로 바이트 옮기기**(목록의 **50번 주제**) | packed 구조체를 그대로 캐스트 |
+| 패킷·파일 매핑 | **`memcpy` 로 바이트 옮기기**([목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/)) | packed 구조체를 그대로 캐스트 |
 | 헤더 + 가변 데이터 | `offsetof` 로 할당([목록의 **26번 주제**](../26-flexible-array-members/)) | `sizeof *p` 로 할당 |
 
 판단 규칙 두 줄.
@@ -796,7 +796,7 @@ s22f.c   -Wall -Wextra 0건 · +pedantic 0건 · +UBSan 0건
 - [02번 형제 — 기본 타입·크기·고정폭 정수](../02-basic-types-sizes-and-fixed-width-integers/) — 각 타입의 크기·정렬이 왜 고정이 아닌가.
 - [05번 형제 — 명시 캐스트와 포인터 변환](../05-explicit-casts-and-pointer-conversions/) — 정렬이 안 맞는 포인터를 만드는 자리.
 - [목록의 **26번 주제**](../26-flexible-array-members/) — 유연 배열 멤버가 정본.
-- 목록의 **50번 주제** — `memcmp`/`memcpy`/`memset` 의 계약이 정본.
+- [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/) — `memcmp`/`memcpy`/`memset` 의 계약이 정본.
 - 목록의 **55번 주제** — 엄격한 앨리어싱이 정본.
 
 ## 용어 풀이

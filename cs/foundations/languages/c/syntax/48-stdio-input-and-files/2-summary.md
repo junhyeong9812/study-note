@@ -6,7 +6,7 @@
 > **실행 검증** — 이 문서의 모든 출력·진단은 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.\
 > ★★★ **본체는 EOF 대 오류 격자다** — 입력 5(정상 · 빈 파일 · 마지막 개행 없음 · `0xFF` 바이트 · 디렉토리) × 읽기 4(`fgets` · `fgetc` 를 `char` 에 · `fgetc` 를 `int` 에 · `fread`).\
 > ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
-> ★★★ **경계** — **출력 쪽 스트림 · 버퍼링 · 서식 지정자**는 [47번 형제](../47-stdio-streams-buffering-and-formatted-output/), **널 종단 문자열 · 널 없는 배열에 `strlen`** 은 [20번 형제](../20-null-terminated-strings-and-string-literals/), **읽은 문자열을 복사·이어 붙이기**는 [49번 형제](../49-string-functions-and-pitfalls/), **읽은 숫자를 `strtol` 로 파싱**은 목록의 **51번 주제**가 정본이다. 여기는 **읽기가 멈춘 이유를 가르는 법 · 크기를 모르는 입력 함수**만 본다.
+> ★★★ **경계** — **출력 쪽 스트림 · 버퍼링 · 서식 지정자**는 [47번 형제](../47-stdio-streams-buffering-and-formatted-output/), **널 종단 문자열 · 널 없는 배열에 `strlen`** 은 [20번 형제](../20-null-terminated-strings-and-string-literals/), **읽은 문자열을 복사·이어 붙이기**는 [49번 형제](../49-string-functions-and-pitfalls/), **읽은 숫자를 `strtol` 로 파싱**은 [목록의 **51번 주제**](../51-stdlib-conversion-qsort-and-bsearch/)가 정본이다. 여기는 **읽기가 멈춘 이유를 가르는 법 · 크기를 모르는 입력 함수**만 본다.
 > 선행 — [47번 형제](../47-stdio-streams-buffering-and-formatted-output/).
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -698,7 +698,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 | 글자 단위 읽기 | ★★★ `int c = fgetc(f)` | `char c` |
 | 이진 덩어리 | ★★ `fread` 의 반환 = 읽은 수 · `< n` 이면 `ferror`/`feof` | 반환 무시 |
 | 단어 하나 | ★★ `scanf("%9s", buf)`(폭 = 크기 − 1) · 반환 `== 1` | `scanf("%s")` |
-| 숫자 | ★★ `fgets` 로 줄 → 파싱(목록의 **51번 주제**) | `while (scanf("%d") != EOF)` |
+| 숫자 | ★★ `fgets` 로 줄 → 파싱([목록의 **51번 주제**](../51-stdlib-conversion-qsort-and-bsearch/)) | `while (scanf("%d") != EOF)` |
 | 파일인지 확인 | ★ 읽기 오류를 처리하기(또는 POSIX `fstat`) | `fopen` 성공에 기대기 |
 
 판단 규칙 두 줄.
@@ -722,7 +722,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [20번 형제 — 널 종단 문자열](../20-null-terminated-strings-and-string-literals/) — ★★ `fgets` 가 붙이는 널 · 널 없는 배열의 사고.
 - [49번 형제 — `<string.h>` 문자열 함수와 함정](../49-string-functions-and-pitfalls/) — ★ 읽은 문자열의 복사 · 이어 붙이기.
 - [46번 형제 — `errno`](../46-errno-and-error-return-conventions/) — ★ `ferror` 다음에 이유(`EISDIR`)를 읽는 순서.
-- 목록의 **51번 주제**(`<stdlib.h>` 변환) — ★★ 읽은 숫자를 `strtol` 로.
+- [목록의 **51번 주제**](../51-stdlib-conversion-qsort-and-bsearch/)(`<stdlib.h>` 변환) — ★★ 읽은 숫자를 `strtol` 로.
 
 ## 용어 풀이
 

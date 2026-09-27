@@ -9,7 +9,7 @@
 > ③ **`qsort`·`bsearch` 가 약속하지 않는 것**(안정성 · 정렬 안 된 입력).
 > ★★★ **본체 창은 변환 격자** — 1번은 **입력마다 「`strtol` 이 무엇을 알렸나」** 를 적어야 답이다.
 > ★★ **정렬·탐색 알고리즘 자체는 묻지 않는다** — [`algorithm/03-quick-sort/`](../../../../../algorithm/03-quick-sort/) · [`algorithm/06-binary-search/`](../../../../../algorithm/06-binary-search/)가 정본이다.
-> 선행 — [35번 형제](../35-function-pointers-and-callback-tables/) · 목록의 **46번 주제**.
+> 선행 — [35번 형제](../35-function-pointers-and-callback-tables/) · [목록의 **46번 주제**](../46-errno-and-error-return-conventions/).
 
 ## 이 파일을 푸는 법
 

@@ -731,4 +731,4 @@ Err(MyError("port= 로 시작하지 않는다"))
 - **`FromResidual`** — `?` 의 실제 펼침이 거치는 불안정 트레이트. 이름은 E0277 제목의 괄호에 나온다.
 - **`Result` 의 조합 메서드** — `map`·`and_then`·`or_else`·`unwrap_or_else` 가 `Option` 과 같은 모양으로 있다(21번과 같은 규칙).
 - **`collect::<Result<Vec<_>, _>>()`** — 실패가 하나라도 있으면 전체가 `Err` 가 되는 관용구([목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/)).
-- **`?` 와 `async`** — `async fn` 안에서도 그대로 쓴다. 반환 타입이 `Result` 인 future 라야 한다(목록의 **54번 주제**).
+- **`?` 와 `async`** — `async fn` 안에서도 그대로 쓴다. 반환 타입이 `Result` 인 future 라야 한다([목록의 **54번 주제**](../54-async-await-and-future-state-machines/)).

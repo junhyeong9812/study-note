@@ -6,8 +6,8 @@
 > **실행 검증** — 이 문서의 모든 출력·진단은 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`, 캡처 셸은 `LC_ALL=C`.\
 > ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다. 이 편의 **그림 6 · 덤프(캡처 블록) 20**.
 > **버전** — 네 함수는 **C89 부터** 있다. ★ `memcpy` 매개변수의 `restrict` 는 **C99** 부터다(C89 에는 `restrict` 가 없다). 이 편의 규칙은 C11 · C17 · C23 사이에 **바뀌지 않았다**.
-> ★★★ **경계** — **`restrict` 의 뜻 · 앨리어싱 · 루프가 `memcpy` 로 바뀌는 것**은 [33번 형제](../33-restrict-and-the-aliasing-contract/)가 정본이다(그쪽 (2)·(4)·(6)절 — 이 편은 **다시 재지 않고** 인용한다). **패딩 바이트의 덤프 · 20 판 가짓수**는 [22번 형제](../22-struct-padding-and-alignment/)의 (3)절, **널 포인터의 바이트**는 [19번 형제](../19-void-pointer-null-pointer-and-null/)의 (8)절, **`calloc` 의 0** 은 [37번 형제](../37-malloc-calloc-realloc-free/)·[30번 형제](../30-initialization-rules-and-indeterminate-values/)가 정본이다. **문자열 함수**(`strcpy`·`strncpy`)는 목록의 **49번 주제**다.
-> 선행 — [33번 형제](../33-restrict-and-the-aliasing-contract/) · 목록의 **49번 주제**.
+> ★★★ **경계** — **`restrict` 의 뜻 · 앨리어싱 · 루프가 `memcpy` 로 바뀌는 것**은 [33번 형제](../33-restrict-and-the-aliasing-contract/)가 정본이다(그쪽 (2)·(4)·(6)절 — 이 편은 **다시 재지 않고** 인용한다). **패딩 바이트의 덤프 · 20 판 가짓수**는 [22번 형제](../22-struct-padding-and-alignment/)의 (3)절, **널 포인터의 바이트**는 [19번 형제](../19-void-pointer-null-pointer-and-null/)의 (8)절, **`calloc` 의 0** 은 [37번 형제](../37-malloc-calloc-realloc-free/)·[30번 형제](../30-initialization-rules-and-indeterminate-values/)가 정본이다. **문자열 함수**(`strcpy`·`strncpy`)는 [목록의 **49번 주제**](../49-string-functions-and-pitfalls/)다.
+> 선행 — [33번 형제](../33-restrict-and-the-aliasing-contract/) · [목록의 **49번 주제**](../49-string-functions-and-pitfalls/).
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ★★★ **본체는 셋째 창 — sanitizer 의 겹침 격자다.** 함수 둘(`memcpy`·`memmove`) × 겹침 셋 × 크기 둘(실행 시 값 · 상수 8)을 **ASan 빌드 다섯 벌**에 돌려 칸마다 「**ASan 이 무엇을 말했나**」를 찍는다.
@@ -667,7 +667,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [19번 형제 — `void *`·널 포인터·`NULL`](../19-void-pointer-null-pointer-and-null/) — (8)절 「`memset` 0 은 널이라는 보장이 없다」. 여기는 `double`·함수 포인터 칸을 더했다.
 - [37번 형제 — `malloc`/`calloc`](../37-malloc-calloc-realloc-free/) · [30번 형제 — 초기화와 불확정 값](../30-initialization-rules-and-indeterminate-values/) — `calloc` 의 0 과 `malloc` 의 불확정.
 - [04번 형제 — 부동소수점](../04-floating-point-types-and-conversions/) — `-0.0`·NaN 의 **값 규칙**.
-- 목록의 **49번 주제** — `strcpy`·`strncpy` 같은 **문자열** 함수의 경계.
+- [목록의 **49번 주제**](../49-string-functions-and-pitfalls/) — `strcpy`·`strncpy` 같은 **문자열** 함수의 경계.
 - 목록의 **58번 주제** — sanitizer 사용법 자체.
 
 ## 용어 풀이

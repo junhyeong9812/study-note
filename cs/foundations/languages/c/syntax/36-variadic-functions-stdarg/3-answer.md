@@ -508,7 +508,7 @@ func(...float32) float32
 **왜 그런가**
 
 - **정수 승격** — [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/) · **`float` 변환** — [04번 형제](../04-floating-point-types-and-conversions/).
-- **`printf` 형식 문자열** — 목록의 **47번 주제**.
+- **`printf` 형식 문자열** — [목록의 **47번 주제**](../47-stdio-streams-buffering-and-formatted-output/).
 - ★ 이 주제가 책임지는 것 — ① **승격된 인자를 어떻게 꺼내나**(격자) ② **누가 검사하나**(`printf` · 속성 · 침묵하는 도구) ③ **`va_list` 의 규칙**(`va_copy` · `va_end` · C23).
 
 ## 실행 검증

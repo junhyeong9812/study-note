@@ -1074,7 +1074,7 @@ For more information about this error, try `rustc --explain E0277`.
   ★ **경계**: **무엇이 생성되나**는 여기, **그 생성물이 지켜야 하는 계약**은 거기다.
   「`f64` 는 왜 `Eq` 가 아닌가」도 거기다.
 - [목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/) — `From`/`Into`/`TryFrom`. `Default` 와 함께 **「기본값·변환」 표면**을 이룬다.
-- 목록의 **57번 주제** — 매크로. `derive` 가 **절차적 매크로**라는 것의 정본이다.
+- [목록의 **57번 주제**](../57-macros-macro-rules-and-procedural-macros/) — 매크로. `derive` 가 **절차적 매크로**라는 것의 정본이다.
 - Kotlin 의 `data class` — [`kotlin/syntax/22-data-class-generated-members/`](../../../kotlin/syntax/22-data-class-generated-members/).
   ★ **대비**: 목적이 같은데 **고르는 방식이 반대**다 — Kotlin 은 `data` 한 낱말로 **다섯을 한꺼번에** 주고,
   Rust 는 **필요한 것만 골라** 적는다. 그리고 Kotlin 은 **주 생성자 프로퍼티만** 보고, Rust 는 **모든 필드**를 본다.

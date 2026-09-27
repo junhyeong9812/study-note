@@ -382,7 +382,7 @@ s44m.c:2:10: note: './d1/s44n.h' included multiple times, additional include sit
 ### 12. 경계 (연결) ★
 
 - ★ [`compiler-pipeline/`](../../../../compiler-pipeline/) 「4. 컴파일 전체 흐름과 링커」 — **`.o` 를 링커가 합친다**까지. 이 편은 **같은 헤더를 가진 `.o` 가 왜 충돌하나**부터.
-- ★ 링크 에러 거꾸로 읽기 = 목록의 **45번 주제** · 전방 선언 + 포인터 = [25번 형제](../25-incomplete-types-and-opaque-struct/)(불투명 구조체).
+- ★ 링크 에러 거꾸로 읽기 = [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/) · 전방 선언 + 포인터 = [25번 형제](../25-incomplete-types-and-opaque-struct/)(불투명 구조체).
 
 ## 실행 검증
 

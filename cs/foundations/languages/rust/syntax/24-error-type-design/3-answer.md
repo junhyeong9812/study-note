@@ -638,7 +638,7 @@ d 복구 불가 — 위로 올린다: 12바이트 자리가 깨졌다
   [**23번 주제**](../23-panic-vs-result/)의 `note:` 줄이 그것이다). 그 빈자리를 `anyhow` 나
   `std::backtrace::Backtrace` 필드가 채운다.
 - **스레드 경계를 넘기려면 `Box<dyn Error + Send + Sync>`** 라야 한다.
-  `Box<dyn Error>` 는 `Send`/`Sync` 가 아니라 스레드로 못 넘어간다(목록의 **50번 주제**).
+  `Box<dyn Error>` 는 `Send`/`Sync` 가 아니라 스레드로 못 넘어간다([목록의 **50번 주제**](../50-send-sync-in-compiler-errors/)).
 
 ## 실행 검증
 

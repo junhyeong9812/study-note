@@ -268,7 +268,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 - ★★★ **`sync_channel(0)` 은 랑데부다** — std: 「각 `send` 는 **짝이 되는 `recv` 가 올 때까지** 돌아오지 않는다」. 버퍼가 없으니 **첫 `send` 부터** 막혔다(0 / 3).
 - ★★ **`channel()` 은 한 번도 안 막혔다**(3 / 3) — std: 「**무한 버퍼**를 가지며 어떤 `send` 도 호출 스레드를 막지 않는다」. 소비자가 느리면 **큐가 메모리를 먹으며 자란다** — 그 자람을 재는 것은 배압 주제의 일이다(아래 경계).
 - ★ 넷 다 `received [1, 2, 3]` — **막혔다가 풀린 뒤 순서대로** 다 받았다(한 생산자 안의 순서는 std: 「보낸 순서대로」).
-- ★ 세는 방법 — 생산자가 `send` 가 돌아올 때마다 **두 번째 채널(`log_tx`)** 에 한 줄 남기고, main 이 `try_iter().count()` 로 **막히지 않고** 센다. 원자 변수(목록의 **53번 주제**) 없이 채널만으로 셌다.
+- ★ 세는 방법 — 생산자가 `send` 가 돌아올 때마다 **두 번째 채널(`log_tx`)** 에 한 줄 남기고, main 이 `try_iter().count()` 로 **막히지 않고** 센다. 원자 변수([목록의 **53번 주제**](../53-atomics-oncelock-and-lazylock/)) 없이 채널만으로 셌다.
 
 ★ **경계** — [`ops-patterns/05-backpressure`](../../../../../ops-patterns/05-backpressure/) 가 **배압 일반의 정본**이다(정원 · 오버플로 정책 넷 BLOCK · DROP_NEWEST · DROP_OLDEST · FAIL · 정원과 대기 시간). 여기서는 **std 가 무엇을 주나**만 — `sync_channel` 의 `send` 는 그 표의 **BLOCK** 이고, (4)의 `try_send` 는 **결정을 호출자에게 넘긴다**(돌려받은 값을 버리면 DROP_NEWEST, 에러로 올리면 FAIL). **DROP_OLDEST 는 std `mpsc` 에 없다** — 보내는 쪽이 큐의 머리를 꺼낼 수 없기 때문이다.
 
@@ -360,7 +360,7 @@ fn main() {
 
 ### (6) ★★ 상태의 주인을 한 스레드로 — 잠금 없는 설계
 
-**언제 쓰나** — 여러 스레드가 **한 표를 고쳐야** 할 때. `Arc<Mutex<_>>`(목록의 **52번**)와 다른 길이다.
+**언제 쓰나** — 여러 스레드가 **한 표를 고쳐야** 할 때. `Arc<Mutex<_>>`([목록의 **52번**](../52-mutex-rwlock-arc-and-poisoning/))와 다른 길이다.
 
 ```text
 ===== 소스: r51_owner.rs =====
@@ -524,7 +524,7 @@ owner exited, keys 3
 - [**44번 주제**](../44-drop-mem-drop-replace-and-take/) — `drop(tx)` 가 부르는 것은 `Sender` 의 `Drop` 이다.
 - [**52번 주제**](../52-mutex-rwlock-arc-and-poisoning/) — 공유 상태를 **잠금으로** 다루는 반대편 설계.
 - [**50번 주제**](../50-send-sync-in-compiler-errors/) — 채널로 보낼 값은 `Send` 여야 한다(`Sender<T>: Send` 는 `T: Send` 일 때).
-- 목록의 **54번 주제**(`async`) — 비동기 런타임의 채널은 이 편의 범위 밖이다.
+- [목록의 **54번 주제**](../54-async-await-and-future-state-machines/)(`async`) — 비동기 런타임의 채널은 이 편의 범위 밖이다.
 
 ## 용어 풀이
 

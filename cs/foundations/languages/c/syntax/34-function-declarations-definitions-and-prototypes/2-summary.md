@@ -8,7 +8,7 @@
 > ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
 > **버전** — **프로토타입은 C89 부터**, **암시적 함수 선언은 C99 가 뺐고**, **빈 괄호의 뜻과 옛(K&R) 정의는 C23 이 바꿨다.** `[[noreturn]]` 은 **C23**, `_Noreturn` 은 **C11**(C23 에서 구식 기능). ★ 이 판의 gcc 13 은 `-std=c23` 이 없어 **`-std=c2x`** 로 C23 을 부른다.
 > ★★ **경계** — **선언을 읽는 법**(`int (*f)(int)`)은 [01번 형제](../01-declaration-syntax-and-reading/)가, **링크**(`static`·`extern`)는 [29번 형제](../29-scope-and-linkage-static-extern/)가 정본이다. **가변 인자**는 [36번 형제](../36-variadic-functions-stdarg/)가 정본이다 — 이 편과 **한 사슬**이다(기본 인자 승격).\
-> ★ **헤더에 무엇을 두나**는 목록의 **44번 주제**, **`inline`** 은 [목록의 **39번 주제**](../39-inline-and-c-inline-rules/)다.
+> ★ **헤더에 무엇을 두나**는 [목록의 **44번 주제**](../44-headers-and-separate-compilation/), **`inline`** 은 [목록의 **39번 주제**](../39-inline-and-c-inline-rules/)다.
 > 선행 — [01번 형제](../01-declaration-syntax-and-reading/).
 > 이 본문은 Claude 작성이다(원고 없음).
 
@@ -885,7 +885,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [03번 형제 — 정수 승격과 통상 산술 변환](../03-integer-promotion-and-usual-arithmetic-conversions/) · [04번 형제 — 부동소수점 타입과 변환](../04-floating-point-types-and-conversions/) — ★ 승격 규칙 자체의 정본.
 - [25번 형제 — 불완전 타입과 opaque struct](../25-incomplete-types-and-opaque-struct/) — ★★ **`-flto` 가 서명은 본다**는 실측. 이 편이 「**호출 쪽에 서명이 있을 때**」라는 조건을 붙였다.
 - [29번 형제 — 스코프와 링크](../29-scope-and-linkage-static-extern/) — ★ (7)의 `static` 충돌이 그 링크 규칙이다.
-- 목록의 **44번 주제** — 헤더에 무엇을 두나.
+- [목록의 **44번 주제**](../44-headers-and-separate-compilation/) — 헤더에 무엇을 두나.
 - ★ **C++ 갈래** — [C++ 01번 형제 — 함수 오버로딩](../../../cpp/syntax/01-function-overloading-and-overload-resolution/). **서명이 곧 이름의 일부**인 언어.
 
 ## 용어 풀이

@@ -297,7 +297,7 @@ error: aborting due to 1 previous error
 
 **왜 그런가**
 
-- ★★ **`println!` 이 `COUNTER` 의 공유 참조를 만든다** — 2024 에서 `#[deny(static_mut_refs)]` 가 기본이라 `unsafe` 안이어도 **컴파일 에러**. 2021 에서는 같은 린트가 `warn` 이라 **경고 1개와 함께 통과**한다(위 블록의 첫 판 — `warning: 1 warning emitted` · 실행 `1`). 정본은 목록의 **47번 주제**.
+- ★★ **`println!` 이 `COUNTER` 의 공유 참조를 만든다** — 2024 에서 `#[deny(static_mut_refs)]` 가 기본이라 `unsafe` 안이어도 **컴파일 에러**. 2021 에서는 같은 린트가 `warn` 이라 **경고 1개와 함께 통과**한다(위 블록의 첫 판 — `warning: 1 warning emitted` · 실행 `1`). 정본은 [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/).
 - ★ 처방은 `static mut` 을 버리고 **원자 타입 · `Mutex` · `OnceLock`/`LazyLock`**(1·3·4·5번)으로 바꾸는 것이다.
 
 ### 7. ★★★ 원자성은 연산 하나까지 — 순서는 원자성을 늘리지 않는다

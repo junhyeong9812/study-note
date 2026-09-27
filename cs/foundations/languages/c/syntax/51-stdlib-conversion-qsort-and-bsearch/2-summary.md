@@ -7,8 +7,8 @@
 > ★★ **블록은 전부 캡처 파일에서 조립했다.** 이 편의 **그림 4 · 덤프(캡처 블록) 15**.
 > **버전** — `atoi`·`strtol`·`qsort`·`bsearch` 는 **C89 부터**, `strtoll` 은 **C99 부터**. ★★ **C23** 이 `strtol` 에 **`0b` 접두**(base 0 · 2)를 더했다 — 이 판의 glibc 는 `-std=c2x` 에서만 그 판으로 링크한다((2)).
 > ★★★ **경계** — **퀵 정렬 · 이분 탐색의 원리와 복잡도**는 [`algorithm/03-quick-sort/`](../../../../../algorithm/03-quick-sort/) · [`algorithm/06-binary-search/`](../../../../../algorithm/06-binary-search/)가 정본이다. 여기는 **표준 API 의 계약**만 본다.\
-> ★★ **`return a - b` 비교자의 넘침 · 서명이 다른 함수 포인터 호출의 일반형**은 [35번 형제](../35-function-pointers-and-callback-tables/) (4)·(5)절이 정본이다(이 편은 **다시 재지 않고** 인용한다). **`errno` 관례**는 목록의 **46번 주제**다.
-> 선행 — [35번 형제](../35-function-pointers-and-callback-tables/) · 목록의 **46번 주제**.
+> ★★ **`return a - b` 비교자의 넘침 · 서명이 다른 함수 포인터 호출의 일반형**은 [35번 형제](../35-function-pointers-and-callback-tables/) (4)·(5)절이 정본이다(이 편은 **다시 재지 않고** 인용한다). **`errno` 관례**는 [목록의 **46번 주제**](../46-errno-and-error-return-conventions/)다.
+> 선행 — [35번 형제](../35-function-pointers-and-callback-tables/) · [목록의 **46번 주제**](../46-errno-and-error-return-conventions/).
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ★★★ **본체는 둘째 창 — 실행 출력의 변환 격자다.** 입력 열 개를 `atoi` 와 `strtol`(+`endptr`+`errno`)에 넣고, 칸마다 **값 · 소비한 글자 수 · `errno` · 남은 글자 수**를 찍어 **스크립트가 「`strtol` 이 알린 것」을 분류**한다.
@@ -529,7 +529,7 @@ int main(int argc, char **argv) {
 ### 규칙 불릿
 
 - ★★★ **숫자 입력은 `strtol` 로 읽고 세 신호를 전부 본다.** `atoi` 는 **이미 검증된 문자열**에만.
-- ★★ **`errno` 는 부르기 전에 0.** `strtol` 은 성공할 때 `errno` 를 **안 건드린다** — 앞의 값이 남아 있으면 오판한다(목록의 **46번 주제**).
+- ★★ **`errno` 는 부르기 전에 0.** `strtol` 은 성공할 때 `errno` 를 **안 건드린다** — 앞의 값이 남아 있으면 오판한다([목록의 **46번 주제**](../46-errno-and-error-return-conventions/)).
 - ★★ **base 는 명시한다.** base 0 은 `08` · `010` · (C23 에서) `0b` 를 **알아서** 해석한다.
 - ★★★ **비교자는 부호만 — 뺄셈도 좁히기도 쓰지 않는다.**
 - ★★ **안정성이 필요하면 스스로 만든다.** `bsearch` 는 **정렬된 배열에만**.
@@ -609,7 +609,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 
 - [35번 형제 — 함수 포인터와 콜백 테이블](../35-function-pointers-and-callback-tables/) — ★★ `return a - b` 의 UBSan 전문 · 서명이 다른 함수 포인터(`int` → `long`)를 gcc 경고 · clang `-fsanitize=function` 이 나눠 잡는 것. 그쪽은 **콜백 일반**까지, 여기는 **`qsort` 가 부르는 비교자**부터.
 - [`algorithm/03-quick-sort/`](../../../../../algorithm/03-quick-sort/) · [`algorithm/06-binary-search/`](../../../../../algorithm/06-binary-search/) — 알고리즘의 원리. 여기는 **API 계약**만.
-- 목록의 **46번 주제** — `errno` 관례와 「언제 0 으로 두나」.
+- [목록의 **46번 주제**](../46-errno-and-error-return-conventions/) — `errno` 관례와 「언제 0 으로 두나」.
 - [Go 갈래 11번 — `strconv`](../../../go/syntax/11-strings-strconv-bytes-and-unicode-utf8/) — ★ `strconv.Atoi` 는 `" 42"` · `"42 "` · `"0x2a"` · `""` 를 **전부 `invalid syntax` 에러**로 돌려준다(그쪽 실측). C 의 `strtol` 은 앞 공백을 먹고, `atoi` 는 에러 자체가 없다 — **실패를 값의 일부로 돌려주는 언어**와의 대비다.
 
 ## 용어 풀이

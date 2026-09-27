@@ -7,8 +7,8 @@
 > ★★★ **본체는 선택 격자다** — 인자 14 × 컴파일러 3(gcc · gcc-12 · clang) × 판 2(`-std=c11`/`c17`), 칸마다 **고른 분기의 이름**.\
 > ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
 > **버전** — `_Generic` 은 **C11 부터**다.
-> ★★ **경계** — **`typedef` 가 새 타입을 안 만든다**(`two compatible types` 에러)는 [06번 형제](../06-typedef-and-type-aliases/), **`NULL`·`0`·`nullptr` 의 타입**을 `_Generic` 으로 가른 것은 [19번 형제](../19-void-pointer-null-pointer-and-null/)가 이미 보였다 — 이 편은 그 결과를 **다시 재지 않는다.** **매크로 자체의 규칙**은 목록의 **41번 주제**(전처리기)와 목록의 **42번 주제**(함수형 매크로의 함정)가 정본이다. `<tgmath.h>` 의 수학 함수 목록은 이 목록이 **뺀** 영역이다(README 「뺀 것과 이유」) — 여기는 **그 헤더가 무엇으로 만들어졌나**만 본다.
-> 선행 — 목록의 **41번 주제**.
+> ★★ **경계** — **`typedef` 가 새 타입을 안 만든다**(`two compatible types` 에러)는 [06번 형제](../06-typedef-and-type-aliases/), **`NULL`·`0`·`nullptr` 의 타입**을 `_Generic` 으로 가른 것은 [19번 형제](../19-void-pointer-null-pointer-and-null/)가 이미 보였다 — 이 편은 그 결과를 **다시 재지 않는다.** **매크로 자체의 규칙**은 [목록의 **41번 주제**](../41-preprocessor-directives-and-conditional-compilation/)(전처리기)와 [목록의 **42번 주제**](../42-function-like-macro-pitfalls/)(함수형 매크로의 함정)가 정본이다. `<tgmath.h>` 의 수학 함수 목록은 이 목록이 **뺀** 영역이다(README 「뺀 것과 이유」) — 여기는 **그 헤더가 무엇으로 만들어졌나**만 본다.
+> 선행 — [목록의 **41번 주제**](../41-preprocessor-directives-and-conditional-compilation/).
 > 이 본문은 Claude 작성이다(원고 없음).
 
 ★★★ **본체는 둘째 창 — 실행이 찍은 「고른 분기의 이름」이다.** `_Generic` 은 **컴파일 때 끝나는** 일이라 값이 곧 증거다 — 고른 분기의 문자열 리터럴을 찍었다.
@@ -623,7 +623,7 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - [19번 형제 — `void *`·`NULL`](../19-void-pointer-null-pointer-and-null/) — ★★ `NULL`·`0`·`nullptr` 의 타입을 `_Generic` 으로.
 - [02번 형제 — 기본 타입](../02-basic-types-sizes-and-fixed-width-integers/) · [18번 형제 — VLA](../18-variable-length-arrays-vla/) — ★ `_Generic` 으로 타입을 찍은 자리.
 - [16번 형제 — 배열 감쇠](../16-array-pointer-decay-and-function-parameters/) · [20번 형제 — 문자열 리터럴](../20-null-terminated-strings-and-string-literals/) — ★ 격자의 `a`·`"abc"` 칸의 정본.
-- 목록의 **41번 주제**(전처리기) · 목록의 **42번 주제**(함수형 매크로의 함정) — ★★ **선행.** 매크로 규칙의 정본.
+- [목록의 **41번 주제**](../41-preprocessor-directives-and-conditional-compilation/)(전처리기) · [목록의 **42번 주제**](../42-function-like-macro-pitfalls/)(함수형 매크로의 함정) — ★★ **선행.** 매크로 규칙의 정본.
 - [C++ 01 — 함수 오버로딩](../../../cpp/syntax/01-function-overloading-and-overload-resolution/) · [C++ 31 — 함수 템플릿](../../../cpp/syntax/31-function-templates-and-argument-deduction/) — ★ **열린 목록**의 두 길.
 
 ## 용어 풀이

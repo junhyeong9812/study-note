@@ -9,7 +9,7 @@
 > ③ **`memset` 이 바이트 단위라는 것**(`int` 배열 · 「모든 비트 0」이 무엇의 0 인가).
 > ★★★ **본체 창은 겹침 격자** — 1번은 **칸마다 「ASan 이 무엇을 말했나」** 를 적어야 답이다.
 > ★★ **`restrict` 의 뜻 자체는 묻지 않는다** — 그것은 [33번 형제](../33-restrict-and-the-aliasing-contract/)가 정본이다.
-> 선행 — [33번 형제](../33-restrict-and-the-aliasing-contract/) · 목록의 **49번 주제**.
+> 선행 — [33번 형제](../33-restrict-and-the-aliasing-contract/) · [목록의 **49번 주제**](../49-string-functions-and-pitfalls/).
 
 ## 이 파일을 푸는 법
 

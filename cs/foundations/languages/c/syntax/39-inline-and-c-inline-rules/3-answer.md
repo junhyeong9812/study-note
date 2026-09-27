@@ -345,7 +345,7 @@ s39f.c:3:1: note: use 'static' to give inline function 'count_calls' internal li
 **왜 그런가**
 
 - **한 번역 단위의 세 형태 · 링크 규칙** — [29번 형제](../29-scope-and-linkage-static-extern/)((8)·(9)).
-- **헤더 배치** — 목록의 **44번 주제** · **링크 오류 거꾸로 읽기** — 목록의 **45번 주제**.
+- **헤더 배치** — [목록의 **44번 주제**](../44-headers-and-separate-compilation/) · **링크 오류 거꾸로 읽기** — [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/).
 - ★ 이 주제가 책임지는 것 — ① **지정자별 정의 수와 링크**(격자 · `nm`) ② **판·언어의 뒤집힘**(gnu89 · C++) ③ **`inline` 이 보장하지 않는 것**(펼침 · 주소 · 제약).
 
 ## 실행 검증
