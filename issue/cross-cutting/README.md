@@ -31,7 +31,7 @@
 | [gui-platform/](gui-platform/) | 2 | 좌표계·웹뷰 엔진 |
 | [infra/](infra/) | 11 | 플랫폼·툴·배포 |
 | [network/](network/) | 11 | 프로토콜·연결·프록시 |
-| [os/](os/) | 6 | 프로세스·경로·터미널 |
+| [os/](os/) | 7 | 프로세스·경로·터미널 |
 | [reliability/](reliability/) | 23 | 실패가 삼켜지는 곳 |
 | [search-engine/](search-engine/) | 8 | 색인·쿼리·점수 |
 | [security/](security/) | 12 | 비밀·권한·신뢰 경계 |

@@ -18,10 +18,11 @@
 ## 패턴 카드
 
 - [execution-context-inheritance](execution-context-inheritance/) — 자식 프로세스·서비스·훅은 실행 방식(셸·GUI 런처·systemd·영속 cd·플랫폼 주입)에 따라 env·PATH·cwd·TERM을 다르게 물려받는다 — 필요한 실행 문맥을 명시적으로 결정·정화한다.
+- [nested-sandbox-capability](nested-sandbox-capability/) — 샌드박스 안에서 자체 격리를 켜는 도구를 띄우면 상속된 실행 문맥이 내부 격리 초기화를 거부할 수 있다 — 결과는 exit 0 결과물·지연으로 숨는다, 읽기 의존은 입력 인라인 우회·완료는 산출물·본문과 함께 판정
 - [os-api-limits-and-semantics](os-api-limits-and-semantics/) — OS API에는 고정 한계와 미정의 동작(UDS 경로 108바이트·소유하지 않은 디렉토리 chmod·순회 중 수정)이 있다 — 설계 전에 전제를 확인한다.
 - [path-canonical-identity](path-canonical-identity/) — 같은 파일을 가리키는 경로 표기는 여러 개다(`./`·구분자·대소문자·빈 문자열=cwd) — 비교·키·잠금 전에 모든 진입점이 같은 정규형을 거쳐야 한다.
 - [process-group-and-tree-termination](process-group-and-tree-termination/) — 부모만 죽이면 손자·다른 세션 자식은 고아로 남고, `pgrep/pkill -f`는 자기 명령줄도 매칭하며, SIGHUP·SIGKILL은 정리 경로를 건너뛴다 — 프로세스 그룹·신원 단위로 종료한다.
 - [pty-semantics](pty-semantics/) — PTY에 쓴 바이트는 수신 TUI의 현재 모드(raw·canonical·bracketed paste)로 해석된다 — CR≠LF, write 성공≠전달, EIO=EOF를 명시적으로 다룬다.
 - [subprocess-lifecycle-and-pipes](subprocess-lifecycle-and-pipes/) — spawn한 자식은 wait로 회수하고, 파이프는 양쪽 모두 드레인하며, stdio 프로토콜은 순수해야 하고 stdin은 닫아야 한다 — 아니면 좀비·교착·영구 대기가 된다.
 
-> 이 폴더의 메타 태그: `silent-failure`(1) · `resource-bounding`(2) · `environment-drift`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `silent-failure`(2) · `resource-bounding`(2) · `environment-drift`(2) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).
