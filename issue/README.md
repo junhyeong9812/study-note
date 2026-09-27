@@ -142,6 +142,7 @@ issue/  (154)
 #### [cross-cutting/infra/](cross-cutting/infra/) — 플랫폼·툴·배포
 
 - [bottleneck-identification](cross-cutting/infra/bottleneck-identification/) — 처리량 설정(병렬도·스레드풀·힙)은 실제 병목(디스크 IOPS·코어·요청 지연)에 상대적이다 — 병목을 실측하지 않고 늘리거나 이식하면 경합·기동 실패가 난다.
+- [client-api-version-floor](cross-cutting/infra/client-api-version-floor/) — 고정 API 버전 클라이언트 × 데몬의 최소 버전 상향 → 코드 변경 없이 거부, 폴백 요약 메시지가 원인을 가림 (실험 랩)
 - [compose-variable-resolution-timing](cross-cutting/infra/compose-variable-resolution-timing/) — compose의 변수·설정은 파싱 채널과 런타임 채널, 명령별 로드 범위가 다르다 — 값이 어느 채널로 누구에게 도달하는지 확인해야 한다.
 - [dependency-and-toolchain-compat](cross-cutting/infra/dependency-and-toolchain-compat/) — 의존성·툴체인은 선언·버전·런타임 호환(JDK·Node·Docker API·shade·peer deps·전이 의존)이 맞아야 동작한다 — 게시된 메타데이터·실제 해석 트리·대상 런타임으로 확인한다.
 - [effective-uid-file-access](cross-cutting/infra/effective-uid-file-access/) — 파일 접근 권한은 실제로 여는 주체(컨테이너 uid·리다이렉트를 여는 셸·기동 시 확정된 보조 그룹)의 것이다 — "존재"가 아니라 그 주체의 읽기·쓰기 가능성으로 판단한다.
@@ -253,6 +254,7 @@ issue/  (154)
 
 - [dip-port-ownership](kotlin/spring/dip-port-ownership/) — 도메인이 포트를 소유하고(DIP) 모듈 의존 방향을 지키며, 리팩토링은 특성 테스트 안전망 위에서 한다.
 - [graceful-degradation-fault-isolation](kotlin/spring/graceful-degradation-fault-isolation/) — 보조 기능(헬스 집계·통계·네이티브 라이브러리)의 장애가 핵심 경로를 인질로 잡지 못하게 격리·강등한다.
+- [jpa-save-merge-copy](kotlin/spring/jpa-save-merge-copy/) — 영속 애그리거트에 save() → merge가 새 자식의 복사본을 영속화, 원본 id null → flush (실험 랩)
 - [path-traversal-and-data-reality](kotlin/spring/path-traversal-and-data-reality/) — 외부 입력을 경로로 결합하면 트래버설로 경계를 벗어난다(검증은 canonical 경로·단일 검증 함수로) — 그리고 버그의 절반은 코드가 아니라 데이터 실태다.
 - [serialization-contract-leak](kotlin/spring/serialization-contract-leak/) — 내부 필드명·네이밍 전략·디버그 표현이 직렬화를 통해 외부 계약이 된다 — 와이어 이름을 명시 매핑하고 양쪽 실제 직렬화 결과로 교차 검증한다.
 

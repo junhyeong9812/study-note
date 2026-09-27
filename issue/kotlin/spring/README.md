@@ -17,6 +17,7 @@ Spring·Jackson과 모듈 구조에서 나오는 패턴이다.\
 
 - [dip-port-ownership](dip-port-ownership/) — 도메인이 포트를 소유하고(DIP) 모듈 의존 방향을 지키며, 리팩토링은 특성 테스트 안전망 위에서 한다.
 - [graceful-degradation-fault-isolation](graceful-degradation-fault-isolation/) — 보조 기능(헬스 집계·통계·네이티브 라이브러리)의 장애가 핵심 경로를 인질로 잡지 못하게 격리·강등한다.
+- [jpa-save-merge-copy](jpa-save-merge-copy/) — 영속 애그리거트에 `save()` → merge가 새 자식의 복사본을 영속화, 원본 참조는 id null → save 없이 flush
 - [path-traversal-and-data-reality](path-traversal-and-data-reality/) — 외부 입력을 경로로 결합하면 트래버설로 경계를 벗어난다(검증은 canonical 경로·단일 검증 함수로) — 그리고 버그의 절반은 코드가 아니라 데이터 실태다.
 - [serialization-contract-leak](serialization-contract-leak/) — 내부 필드명·네이밍 전략·디버그 표현이 직렬화를 통해 외부 계약이 된다 — 와이어 이름을 명시 매핑하고 양쪽 실제 직렬화 결과로 교차 검증한다.
 

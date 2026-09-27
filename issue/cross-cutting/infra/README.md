@@ -19,6 +19,7 @@
 ## 패턴 카드
 
 - [bottleneck-identification](bottleneck-identification/) — 처리량 설정(병렬도·스레드풀·힙)은 실제 병목(디스크 IOPS·코어·요청 지연)에 상대적이다 — 병목을 실측하지 않고 늘리거나 이식하면 경합·기동 실패가 난다.
+- [client-api-version-floor](client-api-version-floor/) — 고정 API 버전 클라이언트 × 자동 업데이트된 데몬의 최소 버전 상향 → 코드 변경 없이 연결 거부, 폴백 요약 메시지가 원인을 가림
 - [compose-variable-resolution-timing](compose-variable-resolution-timing/) — compose의 변수·설정은 파싱 채널과 런타임 채널, 명령별 로드 범위가 다르다 — 값이 어느 채널로 누구에게 도달하는지 확인해야 한다.
 - [dependency-and-toolchain-compat](dependency-and-toolchain-compat/) — 의존성·툴체인은 선언·버전·런타임 호환(JDK·Node·Docker API·shade·peer deps·전이 의존)이 맞아야 동작한다 — 게시된 메타데이터·실제 해석 트리·대상 런타임으로 확인한다.
 - [effective-uid-file-access](effective-uid-file-access/) — 파일 접근 권한은 실제로 여는 주체(컨테이너 uid·리다이렉트를 여는 셸·기동 시 확정된 보조 그룹)의 것이다 — "존재"가 아니라 그 주체의 읽기·쓰기 가능성으로 판단한다.

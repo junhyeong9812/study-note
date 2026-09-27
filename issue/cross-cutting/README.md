@@ -29,7 +29,7 @@
 | [distributed/](distributed/) | 2 | 원격 결과와 권리의 단조성 |
 | [document-rendering/](document-rendering/) | 2 | 텍스트·인쇄 레이아웃 |
 | [gui-platform/](gui-platform/) | 2 | 좌표계·웹뷰 엔진 |
-| [infra/](infra/) | 10 | 플랫폼·툴·배포 |
+| [infra/](infra/) | 11 | 플랫폼·툴·배포 |
 | [network/](network/) | 11 | 프로토콜·연결·프록시 |
 | [os/](os/) | 6 | 프로세스·경로·터미널 |
 | [reliability/](reliability/) | 23 | 실패가 삼켜지는 곳 |
