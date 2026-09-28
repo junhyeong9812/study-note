@@ -4,8 +4,28 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+배열은 만들 때 칸 수를 정해야 하고, 그 뒤로는 못 늘린다.\
+그런데 "몇 개가 들어올지"는 대개 실행 중에야 안다 — 파일의 줄 수, 검색 결과 수, 접속한 사용자 수.
+
+```text
+고정 배열 (칸 4)                 5번째 E 가 오면?
++---+---+---+---+
+| A | B | C | D |  <- E ?        (1) 더 못 넣는다           -> 에러
++---+---+---+---+                (2) 처음부터 아주 크게 잡는다 -> 대부분 빈 칸 = 낭비
+```
+
+동적 배열은 이 두 선택지 사이의 벽을 없앤다 — 작게 시작하고, 꽉 차면 스스로 더 큰 배열로 옮겨 담는다.\
+쉬운 예: 장바구니 — 몇 개 담을지 미리 정하지 않아도 계속 담긴다.\
+똑같은 구조다: Java `ArrayList`에 `add`만 반복하면 크기를 신경 쓸 필요가 없다.\
+실무 예: 네트워크로 조각(chunk) 단위로 들어오는 바이트를 한 덩어리로 이어 붙이는 수신 버퍼 — 총 길이를 모른 채 시작해도 된다.
+
+  - *버퍼(buffer)*: 데이터를 잠시 모아 두는 저장 공간.
+
+### 한눈에 — 쉽게 말하면
 
 **동적 배열 = 자리가 차면 두 배 큰 교실로 이사하는 반.**
 
@@ -29,22 +49,47 @@
 이 반이 **똑같은 구조로** 동적 배열이다: 교실 = 내부 배열(`elements`), 학생 수 = `size`, 교실 칸 수 = `capacity`, 이사 = 확장(더 큰 배열로 전체 복사).\
 Java의 `ArrayList`, Python의 `list`가 실제로 이렇게 동작한다.
 
+> ⚠ 정정(2026-09-28): "더 큰 배열로 전원 이사"는 같지만 배율은 두 배가 아니다. Java `ArrayList`는 약 1.5배(`oldCapacity + (oldCapacity >> 1)`), CPython `list`는 약 1.125배에 상수를 더해 늘린다(JDK `ArrayList.grow`, CPython `Objects/listobject.c`의 `list_resize`). 배율이 1보다 크면 상환 O(1)은 그대로다(정답 8번).
+
 > **size / capacity** — size는 실제로 담긴 개수(논리적 크기), capacity는 내부 배열의 칸 수(물리적 크기, 미리 잡아둔 여유).\
 > 예: 8칸 교실에 학생 3명이면 size=3, capacity=8.
 
 > **연속 저장 / 캐시 지역성(cache locality)** — 원소들이 메모리에 붙어 있으면 CPU가 근처 데이터를 한꺼번에 미리 가져와서 순회가 빨라지는 성질.\
 > 예: 같은 n개를 훑어도 배열이 연결 리스트보다 실측이 빠른 큰 이유가 이것이다.
 
-## 전체 흐름
+## 동작·원리
 
-<!-- 동적 배열이 "늘어나는 것처럼" 보이는 원리를 자기 말로.
-     고정 길이 배열 -> 내부 배열 + size/capacity 분리 -> 확장/축소 -> 연속 저장의 대가 순으로. -->
+### 전체 흐름
 
-## 구현 — DynamicArray (`src/main/java/com/datastructure/dynamicarray/DynamicArray.java`)
+```text
+[1] 고정 길이 배열              [2] 내부 배열 + size / capacity 분리
+    크기를 못 바꾼다                겉: size(담긴 수) / 속: capacity(칸 수)
+    +---+---+---+---+               +---+---+---+---+---+---+---+---+
+    | A | B | C | D |               | A | B | C |   |   |   |   |   |
+    +---+---+---+---+               +---+---+---+---+---+---+---+---+
+                                    |<-size=3->|<--- 빈 칸(여유) --->|
+           |                                     capacity = 8
+           v                                         |
+[3] 확장 / 축소                                      v
+    꽉 참      -> 2배 배열로 전부 복사     [4] 연속 저장의 대가
+    1/4 이하   -> 절반 배열로 전부 복사        get(i)     주소 계산 한 번   O(1)
+    (가끔 O(n), 평균 O(1) = 상환)              add(i, x)  뒤를 전부 민다   O(n)
+                                               remove(i)  뒤를 전부 당긴다 O(n)
+```
+
+- [1] 배열은 만들 때 길이가 정해지고 못 바꾼다 — 여기서 출발한다.
+- [2] 그래서 "겉으로 보이는 개수"(`size`)와 "실제 칸 수"(`capacity`)를 따로 둔다.\
+  빈 칸을 미리 가지고 있으면 추가할 때마다 이사할 필요가 없다.
+- [3] 빈 칸이 다 떨어지면 두 배 큰 배열을 만들어 전부 복사한다.\
+  반대로 1/4 이하로 비면 절반으로 줄여 메모리를 돌려준다.
+- [4] 붙어 있으니 번호로 바로 찾지만(O(1)), 중간에 끼우거나 빼면 뒤를 전부 밀거나 당겨야 한다(O(n)).\
+  이 대가가 연결 리스트(02)와 갈라지는 지점이다.
+
+### 구현 — DynamicArray (`src/main/java/com/datastructure/dynamicarray/DynamicArray.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 ```
 DynamicArray
@@ -64,7 +109,7 @@ size  = 논리적 크기 (사용자에게 보이는 범위, 이 밖은 "없는 �
 capacity = 물리적 크기 (실제 배열 길이, 미리 잡아둔 여유)
 ```
 
-### 동작 — 추가
+#### 동작 — 추가
 
 ```
 [1] add(E) : 맨 뒤 추가 — 빈 칸에 쓰기만 한다. O(1)
@@ -109,7 +154,7 @@ capacity = 물리적 크기 (실제 배열 길이, 미리 잡아둔 여유)
   미는 개수에 비례해 O(n).\
   뒤에서부터 밀어야 아직 안 옮긴 값을 덮지 않는다.
 
-### 동작 — 삭제
+#### 동작 — 삭제
 
 ```
 remove(index) : index 뒤를 전부 한 칸씩 당기고, 마지막 칸 참조를 끊는다
@@ -149,109 +194,127 @@ remove(index) : index 뒤를 전부 한 칸씩 당기고, 마지막 칸 참조�
 > **스래싱(thrashing)** — 절반(1/2)에서 바로 줄이면, 그 경계에서 add/remove 를 반복할 때마다 늘렸다 줄였다 전체 복사만 왕복하는 낭비.\
 > 예: capacity 8·size 4 인 자리에서 add 한 번, remove 한 번을 번갈아 하면 8칸↔4칸 이사만 되풀이된다. 그래서 1/4까지 기다렸다 줄인다.
 
-### `필드`
+#### `필드`
 
 - `private static final int DEFAULT_CAPACITY = 4` — 역할:
 - `private Object[] elements` — 역할:
 - `private int size` — 역할:
 - size 와 capacity(`elements.length`)가 다른 이유:
 
-### `DynamicArray()`, `DynamicArray(int initialCapacity)`
+#### `DynamicArray()`, `DynamicArray(int initialCapacity)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `size()`, `isEmpty()`, `capacity()`
+#### `size()`, `isEmpty()`, `capacity()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `get(int index)`
+#### `get(int index)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `set(int index, E element)`
+#### `set(int index, E element)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `add(E element)`
+#### `add(E element)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `add(int index, E element)`
+#### `add(int index, E element)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `remove(int index)`
+#### `remove(int index)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `remove(Object o)`
+#### `remove(Object o)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `indexOf(Object o)`, `contains(Object o)`
+#### `indexOf(Object o)`, `contains(Object o)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `clear()`
+#### `clear()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `toArray()`
+#### `toArray()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `toString()`
+#### `toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void ensureCapacity(int minCapacity)` — 용량 확장
+#### `private void ensureCapacity(int minCapacity)` — 용량 확장
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void maybeShrink()` — 용량 축소
+#### `private void maybeShrink()` — 용량 축소
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void checkIndex(int)`, `private void checkPositionIndex(int)`
+#### `private void checkIndex(int)`, `private void checkPositionIndex(int)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 문제 — ArrayProblems (`src/main/java/com/datastructure/dynamicarray/ArrayProblems.java`)
+## 쓰이는 곳
+
+- **Java `ArrayList`** — 내부 `Object[]`에 담고 꽉 차면 약 1.5배 큰 배열로 복사한다(이 노트는 2배). 이 노트의 `DynamicArray`가 그 축소판이다.\
+  단, 실제 `ArrayList`는 자동 축소를 하지 않는다(정답 9번 참고).
+- **Java `StringBuilder` · `ByteArrayOutputStream`** — 문자·바이트 배열을 두고 꽉 차면 확장한다. "원소가 문자/바이트인 동적 배열".
+- **Python `list`** — 포인터 배열을 두고 꽉 차면 더 큰 배열로 옮기는 같은 방식이다. 다만 배율은 약 1.125배에 상수를 더한 값이라 2배보다 작다(CPython `list_resize`).
+- **Go 슬라이스(slice)** — `(포인터, len, cap)` 세 값의 묶음. `len`/`cap`이 곧 `size`/`capacity`이고, `append`는 `cap`이 모자라면 새 배열을 잡아 복사한다.
+- **C++ `std::vector`** — `size()`/`capacity()`/`reserve()`를 그대로 노출한다. 재할당 뒤 옛 반복자가 무효가 되는 것이 대표 함정(아래 장애 시나리오).
+- **JavaScript `Array`** — `push`로 늘어나는 배열. V8 같은 엔진은 원소가 빽빽한 동안 연속 저장(fast elements)으로 유지하고, 구멍이 크게 나면 사전(해시) 저장으로 바꾼다.
+- **Redis 리스트** — 작은 리스트는 연속 메모리 인코딩(listpack, 7.0 이전은 ziplist)으로 두다가 커지면 quicklist로 바꾼다. quicklist는 연속 메모리 덩어리들을 연결 리스트로 이은 구조다.
+- **다음 챕터의 재료** — 배열 기반 [스택(03)](../03-stack/2-summary.md)·[큐/덱(04)](../04-queue-deque/2-summary.md)은 동적 배열 위에 세운다.
+
+## 적용 — 풀어나가는 법
+
+동적 배열 문제는 대부분 "어느 연산이 O(n)인가"를 먼저 세는 데서 갈린다.\
+순서: ① 각 연산의 비용을 확인한다(`get` O(1) · 중간 `add`/`remove` O(n) · 맨 뒤 `add`/`remove` O(1)) → ② 루프 안에 O(n) 연산이 있으면 총비용을 **곱해** 본다 → ③ 곱이 O(n²)이면 읽는 위치와 쓰는 위치를 따로 두어(두 포인터) 한 번의 순회로 바꾼다.\
+아래 다섯 문제 중 넷이 이 순서로 풀린다.
+
+### 문제 — ArrayProblems (`src/main/java/com/datastructure/dynamicarray/ArrayProblems.java`)
 
 > 공통 계약: 정렬을 다루는 문제(1, 3, 5)의 입력에는 null 이 들어오지 않는다고 가정한다.
 > DynamicArray 자체는 null 을 담을 수 있지만, "오름차순"이라는 조건이 null 의 순서를 정의하지 않는다.
 
-### 문제 1. 정렬된 배열에서 중복 제거 (제자리)
+#### 문제 1. 정렬된 배열에서 중복 제거 (제자리)
 
 > 문제 설명: 오름차순으로 정렬된 배열이 주어진다. 중복을 없애고 남은 개수를 반환한다.
 > 새 배열을 만들지 말고 주어진 배열을 직접 줄여야 한다.
@@ -262,12 +325,12 @@ remove(index) : index 뒤를 전부 한 칸씩 당기고, 마지막 칸 참조�
 > - 정렬되어 있다는 조건을 어디에 쓸 수 있는가?
 > - 한 번의 순회로 끝낼 수 있는가?
 
-#### 접근 1: 뒤에서부터 remove
+##### 접근 1: 뒤에서부터 remove
 
 - 논리:
 - 비용(왜):
 
-#### 접근 2: 두 포인터(read/write)로 덮어쓰고 꼬리만 자르기
+##### 접근 2: 두 포인터(read/write)로 덮어쓰고 꼬리만 자르기
 
 > **두 포인터(two pointers)** — 읽는 위치(read)와 쓰는 위치(write) 두 번호를 따로 움직여, 한 번의 순회로 끝내는 기법.\
 > 예: read 는 매 칸 전진하고, write 는 살리기로 한 값을 만났을 때만 그 자리에 쓰고 전진한다.
@@ -276,7 +339,7 @@ remove(index) : index 뒤를 전부 한 칸씩 당기고, 마지막 칸 참조�
 - 비용(왜):
 - 두 접근의 차이:
 
-### 문제 2. k 칸 오른쪽으로 회전
+#### 문제 2. k 칸 오른쪽으로 회전
 
 > 문제 설명: `[1, 2, 3, 4, 5], k=2  ->  [4, 5, 1, 2, 3]`
 >
@@ -289,7 +352,7 @@ remove(index) : index 뒤를 전부 한 칸씩 당기고, 마지막 칸 참조�
 - 논리:
 - 비용(왜):
 
-### 문제 3. 정렬을 유지하며 삽입
+#### 문제 3. 정렬을 유지하며 삽입
 
 > 문제 설명: 오름차순 배열에 값을 넣되 정렬이 깨지지 않게 한다. 삽입된 위치를 반환한다.
 > 같은 값이 이미 있으면 그 뒤에 넣는다.
@@ -310,7 +373,7 @@ remove(index) : index 뒤를 전부 한 칸씩 당기고, 마지막 칸 참조�
 - 논리:
 - 비용(왜):
 
-### 문제 4. 조건에 맞는 원소를 모두 제거 (이 문제집의 핵심)
+#### 문제 4. 조건에 맞는 원소를 모두 제거 (이 문제집의 핵심)
 
 > 문제 설명: predicate 가 true 인 원소를 전부 없애고, 제거한 개수를 반환한다.
 >
@@ -326,7 +389,7 @@ remove(index) : index 뒤를 전부 한 칸씩 당기고, 마지막 칸 참조�
 - 논리:
 - 비용(왜):
 
-### 문제 5. 정렬된 두 배열 병합
+#### 문제 5. 정렬된 두 배열 병합
 
 > 문제 설명: 오름차순 배열 둘을 합쳐 오름차순 새 배열로 만든다. 원본은 건드리지 않는다.
 >
@@ -340,15 +403,57 @@ remove(index) : index 뒤를 전부 한 칸씩 당기고, 마지막 칸 참조�
 - 논리:
 - 비용(왜):
 
+## 장애 시나리오와 대처
+
+**1. 확장 순간의 지연 스파이크**
+
+- 현상: 평소 빠른 `add`가 가끔 한 번씩 오래 걸린다.
+- 보이는 형태: 응답 시간의 꼬리(p99)가 튄다. 프로파일에 `Arrays.copyOf`/`System.arraycopy`가 찍히고, 크기가 4·8·16·…을 넘는 순간마다 반복된다.
+  - *p99*: 요청 100개 중 느린 쪽 1개의 응답 시간. "가끔 튀는" 것이 여기서 드러난다.
+- 원인: capacity가 찼을 때의 전체 복사(O(n)). 평균(상환)은 O(1)이지만 **그 한 번**은 O(n)이다.
+- 대처: 최종 크기를 알면 `new DynamicArray<>(n)`처럼 미리 잡아 확장을 0번으로 만든다(문제 5의 `merge`가 이렇게 한다).\
+  지연 상한이 중요한 경로라면 확장이 없는 구조(고정 크기 링 버퍼 — 04)로 바꾼다.
+
+**2. 지우지 않고 담기만 해서 죽는 OOM**
+
+- 현상: 오래 돌수록 메모리가 늘다가 프로세스가 죽는다.
+- 보이는 형태: `java.lang.OutOfMemoryError: Java heap space`. 힙 덤프에 거대한 `Object[]` 하나가 보인다.
+- 원인: 로그·이벤트를 `add`만 하고 지우지 않는 배열. 게다가 확장 순간에는 옛 배열과 새 배열이 **동시에** 살아 있어 필요 메모리가 순간적으로 더 튄다(정답 7번 참고).
+- 대처: 상한을 정하고 오래된 것을 버린다(링 버퍼), 또는 일정 개수마다 밖(파일·큐)으로 흘려보내고 `clear()`한다.
+
+**3. 지웠는데 메모리가 안 줄어드는 참조 누수**
+
+- 현상: `remove`·`clear`를 했는데 힙 사용량이 그대로다.
+- 보이는 형태: `size()`는 줄었는데 메모리는 안 줄어든다. 힙 덤프에서 이미 지운 객체가 `elements` 배열에서 여전히 참조되고 있다.
+- 원인: 뒤를 당긴 뒤 마지막 칸에 옛 참조가 남았거나, `clear()`가 `size`만 0으로 만들었다. size 밖은 사용자에게 "없는 값"이지만 배열은 여전히 붙잡고 있어 GC가 못 치운다.
+- 대처: `elements[--size] = null`, `clear()`는 칸을 전부 `null`로. 공개 API로는 관측할 수 없어서 테스트가 리플렉션으로 `elements`를 직접 본다.
+
+**4. 순회하면서 지우다가 건너뛰거나 깨짐**
+
+- 현상: 앞에서부터 돌며 `remove(i)`를 부르면 중복이 남거나 원소를 빠뜨린다.
+- 보이는 형태: Java `ArrayList`는 for-each 중 `remove`에 `ConcurrentModificationException`을 던진다. 이 노트의 `DynamicArray`에는 그 검사가 없어 **조용히** 틀린 결과가 나온다. C++ `vector`는 확장으로 재할당된 뒤 옛 반복자가 해제된 메모리를 가리킨다 — 정의되지 않은 동작이라 크래시할 수도, 조용히 틀릴 수도 있다.
+- 원인: 삭제가 뒤를 앞으로 당겨 아직 안 본 원소의 인덱스가 바뀌고, 확장이 배열 자체를 새 메모리로 옮긴다.
+- 대처: 뒤에서부터 지운다(아직 안 본 인덱스 보호), 또는 살릴 값을 앞으로 모아 마지막에 꼬리만 자른다(문제 4 — O(n)). 라이브러리라면 `removeIf`처럼 한 번에 처리하는 API를 쓴다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 동적 배열은 고정 배열 위에 `size`(보이는 개수)와 `capacity`(실제 칸 수)를 분리해 얹은 것이고, 그 여유 칸이 "늘어나는 것처럼" 보이게 한다.
+- 꽉 찼을 때만 두 배로 복사하므로 확장은 log n 번, 총 복사량은 2n 미만 — 그래서 `add` 한 번은 상환 O(1)이다.
+- 연속 저장의 대가에는 방향이 있다: 번호로 찾는 것은 O(1), 중간에 끼우거나 빼는 것은 뒤를 전부 밀어야 하는 O(n).
+- 루프 안에서 O(n) 연산을 부르면 전체가 O(n²)이 된다 — 배열 문제의 절반은 읽는 위치와 쓰는 위치를 따로 두어(두 포인터) 이것을 O(n)으로 되돌리는 일이다.
+- size 밖의 칸은 "없는 값"이지만 배열은 여전히 참조를 붙잡고 있으므로, 지운 자리는 `null`로 끊어야 GC가 치운다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 후속 — [02-linked-list](../02-linked-list/2-summary.md): 같은 인터페이스를 연속 저장 없이 만든다. 무엇을 얻고 무엇을 내주는지 여기와 대조한다.
+- 후속 — [03-stack](../03-stack/2-summary.md) · [04-queue-deque](../04-queue-deque/2-summary.md): 동적 배열 위에 세우는 구조. 링 버퍼는 회전(문제 2)을 O(1)로 만든다.
+- 기법 — [algorithm/06-binary-search](../../algorithm/06-binary-search/2-summary.md): 문제 3의 upper bound 탐색.
+- 기법 — [algorithm/08-two-pointers](../../algorithm/08-two-pointers/2-summary.md): 문제 1·4·5의 read/write 포인터.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `03-dynamic-array` (선행 `02-adt-and-cost-contracts` — 노트 미작성).
+- 교재 — CLRS 3판 17.4 동적 테이블(상환 분석).
+- myway 원본 — `/home/jun/project/myway/data-structure/01-dynamic-array/` (README.md · impl/DynamicArray.java · impl/ArrayProblems.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -359,7 +464,7 @@ remove(index) : index 뒤를 전부 한 칸씩 당기고, 마지막 칸 참조�
 - 정답 기준 소스: `/home/jun/project/myway/data-structure/01-dynamic-array/impl/DynamicArray.java`, `impl/ArrayProblems.java`
 - 다음 챕터로의 다리: `02-linked-list` (같은 인터페이스를 연속 저장이 아닌 방식으로)
 
-## 용어 풀이
+### 용어 풀이
 
 - **배열(array)**: 같은 종류의 값을 번호(0, 1, 2, …) 붙은 칸에 나란히 담는 저장 방식.\
   만들 때 칸 수가 정해지고 나중에 못 늘린다.

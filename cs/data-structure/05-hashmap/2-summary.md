@@ -4,8 +4,28 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+01~04는 전부 "어디에 있는지"(인덱스·앞뒤)로 찾는 구조였다.\
+그래서 "이 값을 **이미 봤는가**"를 물으면 처음부터 끝까지 훑어야 하고, n번 물으면 O(n²)이 된다.
+
+```text
+순서 구조에서 "7 있어?"                    해시맵에서 "7 있어?"
+[3][9][7][1][4]  -> 하나씩 비교 O(n)        7 --공식--> 2번 칸 -> 그 칸만 연다 O(1)
+                                            [ ][ ][7][ ][ ]
+```
+
+해시맵은 값 자체를 공식(해시 함수)에 넣어 **자리를 계산**한다. 훑지 않으니 넣기·찾기·지우기가 평균 O(1)이다.\
+대가는 셋이다 — 순서가 없고, 최악은 O(n)이고, 공간을 여유 있게 잡아야 한다.\
+쉬운 예: 이름으로 사물함 번호를 계산하는 사물함장 — 하나씩 열어 보지 않는다.\
+똑같은 구조다: Java `HashMap`에 `containsKey`를 n번 불러도 전체는 O(n)이다.\
+실무 예: 세션 ID → 사용자 정보, 상품 코드 → 재고처럼 "키로 바로 꺼내는" 저장소 전부. 문제 2(`twoSum`)의 "짝을 이미 봤는가"가 이 모양의 축소판이다.
+
+  - *해시 함수(hash function)*: 키를 정수 하나로 요약하는 공식. 같은 키는 항상 같은 숫자가 나온다.
+
+### 한눈에 — 쉽게 말하면
 
 **해시맵 = 이름으로 사물함 번호를 계산하는 사물함장.**
 
@@ -36,32 +56,38 @@ Java의 `HashMap`, Python의 `dict`가 이렇게 동작한다.
 > **충돌(collision)** — 서로 다른 키가 같은 칸 번호를 받는 일.\
 > 예: 피할 수 없는 일이라, 같은 칸에 줄줄이 매달지(체이닝) 옆 칸으로 밀지(오픈 어드레싱)가 구현을 가른다.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-01~04 는 전부 **순서**가 있는 구조였고 "어디에 있는지"로 찾았다.\
-여기서는 **값 자체로부터 위치를 계산**하는 구조를 직접 만든다 — 넣기/찾기/지우기가 전부 평균 O(1) 이 되는 대신, 순서가 없고 최악은 O(n) 이며 공간을 여유 있게 잡아야 한다는 세 가지 대가를 치른다.\
-같은 `Map` 계약을 충돌 처리 방식이 다른 세 가지로 구현해 보고, 그 선택이 삭제·메모리·캐시·최악 성능에서 무엇을 바꾸는지 몸으로 확인하는 것이 이 챕터의 목적이다.
+### 전체 흐름
 
-**과제**
+```text
+[1] 키 -> 칸 번호를 계산                 [2] 충돌: 다른 키가 같은 칸
+    bucketOf = (hashCode & 0x7fffffff) % capacity     "B" -> 1번,  "J" -> 1번
+    (부호 비트를 지워 음수를 막는다)          피할 수 없다 -> 다루는 방식이 구현을 가른다
+          |
+          v
+[3-a] 체이닝: 같은 칸에 사슬로 매단다     [3-b] 선형 탐사: 옆 칸으로 밀려난다
+    [1] -> [B] -> [J] -> null                idx   1     2     3
+    삭제 = 노드 하나 뺀다                    [ A ][ B ][ C ]   B 는 1번이 차서 2번에
+    LOAD_FACTOR 0.75                          삭제 = 그냥 비우면 뒤의 탐사 길이 끊긴다
+                                                   -> TOMBSTONE 을 남긴다
+                                              LOAD_FACTOR 0.5 (빈 칸이 줄면 급격히 느려진다)
+          |
+          v
+[4] 리사이즈 = 다시 계산하기             [5] 순서 되사오기: LinkedHashMap
+    칸 수가 바뀌면 % 결과가 바뀐다           ChainingHashMap 을 상속 + 이중 연결 리스트
+    통복사 X, 키마다 bucketOf 재계산           afterPut/afterRemove/afterClear 훅만 재정의
+    선형 탐사는 size 가 아니라 used 로 판단    -> 삽입 순서. 접근 순서로 바꾸면 LRU(10번)
+```
 
-- `MapContractTest.java` 를 따라친다 — 세 구현이 공유하는 계약이 여기 있다.
-- `ChainingHashMap` TODO 5개 — 버킷 배열 + 같은 자리에 매다는 사슬. `DEFAULT_CAPACITY = 8`, `LOAD_FACTOR = 0.75`.
-- `LinearProbingHashMap` TODO 5개 — 옆 칸으로 밀어 넣는 개방 주소법. `LOAD_FACTOR = 0.5`, 그리고 이 챕터의 함정인 tombstone 이 여기 있다.
-- `LinkedHashMap` TODO 4개 — `ChainingHashMap` 을 상속해 `afterPut`/`afterRemove`/`afterClear` 훅만 재정의한다(template method).
-- `MapProblems` TODO 3개 — `countFrequencies`(빈도 세기) / `twoSum`(더해서 target 이 되는 두 인덱스) / `firstUniqueChar`(처음으로 한 번만 나온 문자의 인덱스).
-- 성능·계약 제약 — `twoSum` 은 20만 건을 5초 안에 끝내야 한다(모든 쌍을 보는 O(n²)은 통과 못 한다).\
-  값으로 `null` 을 담을 수 있어야 하고(키 없음과 구분되어야 하므로 `containsKey` 가 따로 있다), 키로 `null` 은 거부해야 한다.\
-  음수 해시(`Integer.MIN_VALUE`, `-1`)도 정상 처리해야 한다.\
-  테스트가 내부 필드를 직접 들여다본다 — 체이닝은 `buckets`/`size`, 선형 탐사는 `keys`/`values`/`states` 라는 이름과 구조를 그대로 지켜야 한다.
-- 전체 83개 테스트가 처음에는 전부 실패한다(`./run.sh 05`).
+- [1] 해시를 계산해 칸 번호를 얻는다. 음수 해시를 그대로 `%`하면 음수 인덱스가 되므로 부호 비트를 먼저 지운다.
+- [2] 서로 다른 키가 같은 칸에 떨어지는 충돌은 피할 수 없다. 여기서 두 갈래로 나뉜다.
+- [3-a] 체이닝은 같은 칸에 노드를 매단다. 삭제가 쉽고 사슬이 길어질 뿐 급격히 무너지지는 않는다.
+- [3-b] 선형 탐사는 옆 칸으로 민다. 배열만 써서 캐시에 좋지만, 지운 자리를 그냥 비우면 뒤로 밀렸던 키를 못 찾는다 — 그래서 묘비(tombstone)가 필요하다.
+- [4] 적재율이 문턱을 넘으면 더 큰 배열로 옮기는데, 칸 수가 바뀌면 자리도 바뀌므로 키마다 다시 계산한다.
+- [5] 삽입 순서가 필요하면 체이닝 위에 이중 연결 리스트를 얹는다. 부모가 열어 둔 훅만 채우는 것이 template method다.
 
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — Map (`src/main/java/com/datastructure/hashmap/Map.java`)
+### 계약 — Map (`src/main/java/com/datastructure/hashmap/Map.java`)
 
 - `V put(K key, V value)`
 - `V get(Object key)`
@@ -72,11 +98,11 @@ Java의 `HashMap`, Python의 `dict`가 이렇게 동작한다.
 - `void clear()`
 - `Iterable<K> keys()`
 
-## 구현 — ChainingHashMap (`src/main/java/com/datastructure/hashmap/ChainingHashMap.java`)
+### 구현 — ChainingHashMap (`src/main/java/com/datastructure/hashmap/ChainingHashMap.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 ```
 ChainingHashMap — 버킷 배열 하나 + 버킷마다 매달린 노드 사슬
@@ -123,13 +149,13 @@ ChainingHashMap — 버킷 배열 하나 + 버킷마다 매달린 노드 사슬
 > **스프레딩 / 비트마스킹** — JDK가 쓰는 최적화(해시 비트를 섞기, `%` 대신 `&` 쓰기).\
 > 예: 이 구현은 배우기 쉽게 순수 나머지 연산만 쓴다.
 
-## 사전 지식 — hashCode 와 equals 의 약속 (조회를 읽기 전에)
+### 사전 지식 — hashCode 와 equals 의 약속 (조회를 읽기 전에)
 
 - 규칙 하나만 기억하면 된다: **equals로 같은 두 키는 hashCode도 반드시 같아야 한다.**
 - 그래야 "같은 키는 반드시 같은 칸에 떨어진다"가 보장되고, 그 칸만 뒤지면 된다.
 - 거꾸로는 성립 안 한다: hashCode가 같아도(같은 칸에 떨어져도) 다른 키일 수 있다 — 그래서 칸 안에서는 equals로 최종 확인한다.
 
-### 동작 — 조회
+#### 동작 — 조회
 
 ```
 get(key) / containsKey(key) : 칸을 계산하고, 그 칸의 사슬만 훑는다
@@ -152,7 +178,7 @@ get(key) / containsKey(key) : 칸을 계산하고, 그 칸의 사슬만 훑는�
 - 비용은 "그 칸 사슬의 길이"다.\
   잘 흩어져 있으면 사슬이 짧아 평균 O(1).
 
-### 동작 — 추가
+#### 동작 — 추가
 
 ```
 [1] 이미 있는 키 : 사슬에 새로 매달지 않고 값만 바꾼다. size 불변
@@ -196,7 +222,7 @@ get(key) / containsKey(key) : 칸을 계산하고, 그 칸의 사슬만 훑는�
 > **상환(amortized) O(1)** — 가끔 드는 큰 비용을 평소의 싼 연산들에 나눠 평균 낸 것.\
 > 예: 리사이즈 순간만 O(n)이지만 2배씩 늘려 드물게 일어나므로 put 1회 평균은 O(1)이다.
 
-### 동작 — 삭제
+#### 동작 — 삭제
 
 ```
 remove(key) : 사슬을 훑으며 prev 를 들고 있다가, 찾으면 앞뒤를 직접 잇는다
@@ -220,7 +246,7 @@ remove(key) : 사슬을 훑으며 prev 를 들고 있다가, 찾으면 앞뒤를
 - 찾으면 앞 노드와 뒤 노드를 직접 잇고, 떼어낸 노드의 next를 끊는다(GC를 위해).
 - 지운 노드가 사슬의 첫 노드였다면 이어줄 앞이 없으니 버킷 칸 자체를 갈아끼운다 — null 분기의 정체.
 
-### `필드`
+#### `필드`
 
 - `static class Node<K, V> { final K key; V value; Node<K, V> next; }` — 역할:
 - `static final int DEFAULT_CAPACITY = 8` — 역할:
@@ -228,87 +254,87 @@ remove(key) : 사슬을 훑으며 prev 를 들고 있다가, 찾으면 앞뒤를
 - `Node<K, V>[] buckets` — 역할:
 - `int size` — 역할:
 
-### `ChainingHashMap()`
+#### `ChainingHashMap()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int capacity()`
+#### `int capacity()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean containsKey(Object key)`
+#### `boolean containsKey(Object key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V get(Object key)`
+#### `V get(Object key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Iterable<K> keys()`
+#### `Iterable<K> keys()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Node<K, V> findNode(Object key)` (TODO)
+#### `Node<K, V> findNode(Object key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V put(K key, V value)` (TODO)
+#### `V put(K key, V value)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void resize()` (TODO)
+#### `void resize()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V remove(Object key)` (TODO)
+#### `V remove(Object key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()` (TODO)
+#### `void clear()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — LinearProbingHashMap (`src/main/java/com/datastructure/hashmap/LinearProbingHashMap.java`)
+### 구현 — LinearProbingHashMap (`src/main/java/com/datastructure/hashmap/LinearProbingHashMap.java`)
 
-### 구조
+#### 구조
 
 ```
 LinearProbingHashMap — 사슬이 없다. 자리가 차 있으면 옆 칸으로 밀려난다
@@ -346,7 +372,7 @@ LinearProbingHashMap — 사슬이 없다. 자리가 차 있으면 옆 칸으로
 > **묘비(TOMBSTONE)** — "여기 있었지만 지금은 없다"는 팻말.\
 > 예: 지운 칸을 그냥 비우면 그 뒤에 밀려 들어간 키를 영영 못 찾으므로, 지나가되 채워도 되는 자리로 표시해 둔다(왜 그런지는 아래 삭제 절이 보여준다).
 
-### 동작 — 조회
+#### 동작 — 조회
 
 ```
 indexOf(key) : 제 칸부터 오른쪽으로 훑는다. EMPTY 를 만나면 없는 것이다
@@ -374,7 +400,7 @@ indexOf(key) : 제 칸부터 오른쪽으로 훑는다. EMPTY 를 만나면 없�
   **한 번도 쓴 적 없는 칸(EMPTY)을 만나면 "없다"가 확정**된다 — 넣을 때도 같은 길을 걸었을 테니, 있었다면 그 전에 나왔어야 한다.
 - EMPTY가 탐사의 종료 표지라는 이 사실이, 삭제를 어렵게 만드는 원흉이다(아래 삭제 절).
 
-### 동작 — 추가
+#### 동작 — 추가
 
 ```
 put(key, value)
@@ -405,7 +431,7 @@ put(key, value)
 - 무덤을 보자마자 쓰면 안 되는 이유: 그 뒤에 같은 키가 살아 있을 수 있다.\
   그러면 한 키가 두 자리에 존재하게 된다.
 
-### 동작 — 삭제
+#### 동작 — 삭제
 
 ```
 remove(key) : 칸을 비우되 EMPTY 가 아니라 TOMBSTONE 으로 표시한다
@@ -435,7 +461,7 @@ remove(key) : 칸을 비우되 EMPTY 가 아니라 TOMBSTONE 으로 표시한다
 - 값과 키는 null로 지워도(GC), 상태만은 묘비로 남는다. size는 줄지만 used는 안 준다.
 - 묘비가 쌓이면 탐사만 길어지는데, 그 청소는 리사이즈가 맡는다(다음 절).
 
-### 동작 — 리사이즈
+#### 동작 — 리사이즈
 
 ```
 resize() : 새 용량이 항상 2배는 아니다. 무덤 청소용 재구축이라는 두 번째 얼굴이 있다
@@ -464,7 +490,7 @@ resize() : 새 용량이 항상 2배는 아니다. 무덤 청소용 재구축이
   무덤은 버린다 — used가 size로 리셋된다.
 - 새 배열엔 무덤도 중복도 없음이 확실하므로, 재삽입은 검사 없이 빈 칸만 찾으면 된다.
 
-### `필드`
+#### `필드`
 
 - `static final byte EMPTY = 0` — 역할:
 - `static final byte OCCUPIED = 1` — 역할:
@@ -477,87 +503,87 @@ resize() : 새 용량이 항상 2배는 아니다. 무덤 청소용 재구축이
 - `int size` — 역할:
 - `int used` — 역할:
 
-### `LinearProbingHashMap()`
+#### `LinearProbingHashMap()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int capacity()`
+#### `int capacity()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean containsKey(Object key)`
+#### `boolean containsKey(Object key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V get(Object key)`
+#### `V get(Object key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Iterable<K> keys()`
+#### `Iterable<K> keys()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int indexOf(Object key)` (TODO)
+#### `int indexOf(Object key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V put(K key, V value)` (TODO)
+#### `V put(K key, V value)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void resize()` (TODO)
+#### `void resize()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V remove(Object key)` (TODO)
+#### `V remove(Object key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()` (TODO)
+#### `void clear()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — LinkedHashMap (`src/main/java/com/datastructure/hashmap/LinkedHashMap.java`)
+### 구현 — LinkedHashMap (`src/main/java/com/datastructure/hashmap/LinkedHashMap.java`)
 
-### 구조
+#### 구조
 
 ```
 LinkedHashMap — ChainingHashMap 을 상속하고, "삽입 순서"를 담는 리스트를 옆에 하나 더 둔다
@@ -589,7 +615,7 @@ null <-+ prev  |<--------+ prev  |<--------+ prev  |
 > **훅(hook) / 템플릿 메서드 패턴** — 부모가 일 순서를 정해두고 중간중간 "여기서 뭘 할지는 자식이 정하라"고 비워둔 메서드.\
 > 예: `afterPut` 같은 빈 칸만 자식이 채워서, 부모의 put 본체는 그대로 둔 채 행동을 바꾼다.
 
-### 동작 — 훅으로 갈아끼우기
+#### 동작 — 훅으로 갈아끼우기
 
 ```
 부모의 put / remove / clear 본체는 그대로 쓰고, 비어 있던 훅 세 개만 재정의한다
@@ -629,38 +655,76 @@ order 가 없다면 afterRemove 가 리스트를 처음부터 훑어야 해서 O
 - keys(): 버킷 순서(예측 불가) 대신 first부터 next를 따라 걸어 "넣은 순서"로 낸다.
 - 이 "해시맵(빠른 찾기) + 이중 연결 리스트(순서 유지)" 조합은 LRU 캐시의 뼈대다.
 
-### `필드`
+#### `필드`
 
 - `static class Entry<K> { final K key; Entry<K> prev; Entry<K> next; }` — 역할:
 - `Entry<K> first` — 역할:
 - `Entry<K> last` — 역할:
 - `private final ChainingHashMap<K, Entry<K>> order` — 역할:
 
-### `protected void afterPut(K key, boolean isNewKey)` (TODO)
+#### `protected void afterPut(K key, boolean isNewKey)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `protected void afterRemove(Object key)` (TODO)
+#### `protected void afterRemove(Object key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `protected void afterClear()` (TODO)
+#### `protected void afterClear()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Iterable<K> keys()` (TODO)
+#### `Iterable<K> keys()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **Java `HashMap`** — 체이닝. 한 버킷의 사슬이 8개를 넘고(`TREEIFY_THRESHOLD = 8`) 테이블이 64칸 이상이면(`MIN_TREEIFY_CAPACITY = 64`) 그 버킷을 레드블랙 트리로 바꿔 최악을 O(log n)으로 막는다. 테이블이 64칸 미만이면 트리화 대신 리사이즈한다(JDK 8+ `HashMap` 소스·JEP 180). 이 노트의 `ChainingHashMap`이 그 축소판이다.
+- **Java `LinkedHashMap`** — `HashMap` + 이중 연결 리스트로 삽입·접근 순서를 기억한다. 이 노트의 `LinkedHashMap`과 같은 설계이고, 접근 순서로 두면 [10-lru-cache](../10-lru-cache/2-summary.md)가 된다.
+- **Python `dict` · Rust `HashMap` · Google SwissTable** — 개방 주소법 계열. 배열만 써서 캐시 지역성을 얻는 쪽이다([29-open-addressing](../29-open-addressing/2-summary.md)). 탐사 규칙은 제각각이다 — Python은 선형 탐사가 아니라 해시 상위 비트(perturb)를 섞어 다음 칸을 흩뿌리고, Rust 표준 `HashMap`은 1.36부터 SwissTable(hashbrown) 기반이다.
+- **컴파일러 심벌 테이블** — 식별자 이름 → 타입·주소. 변수 이름을 볼 때마다 훑을 수 없어서 해시맵이다.
+- **DB 버퍼풀의 페이지 테이블** — 페이지 번호 → 메모리 프레임. 디스크 페이지가 메모리에 있는지 평균 O(1)에 묻는다(PostgreSQL `buf_table.c`의 공유 해시 테이블, InnoDB 버퍼풀의 `page_hash`).
+- **커널 연결 추적(conntrack)** — 5-튜플(주소·포트·프로토콜) → 연결 상태. 패킷마다 조회하므로 평균 O(1) 조회가 필요하다(Linux `nf_conntrack`의 해시 테이블).
+- **분산 캐시의 키 분배** — 키를 해시해 서버를 고르는 것이 같은 원리이고, 서버가 늘고 줄 때 재배치를 줄이는 것이 [31-consistent-hashing](../31-consistent-hashing/2-summary.md)이다.
+- **[11-bloom-filter](../11-bloom-filter/2-summary.md)** — 해시 함수 k개로 비트만 켠다. "있는지"를 값 없이 확률적으로 답하는 해시의 변종이다.
+
+## 적용 — 풀어나가는 법
+
+해시맵 문제는 "무엇을 O(1)에 되묻고 싶은가"를 찾는 데서 갈린다.\
+순서: ① 반복해서 묻는 질문을 찾는다("이 값을 봤는가", "이 값이 몇 번 나왔나", "이 짝이 있는가") → ② 그 질문에서 **묻는 대상**(본 값·문자·짝)이 키가 되고, 질문의 답으로 함께 알아야 할 것(인덱스·횟수)이 값이 된다 → ③ 한 번의 순회로 "넣으면서 묻기"가 되는지 확인한다(문제 2 — 짝을 먼저 묻고 자기를 넣는다) → ④ 순서·범위·최솟값이 필요해지면 해시맵이 아니라 정렬 구조(06)다.\
+아래 세 문제가 모두 이 순서로 풀린다.
+
+### 문제 — 이 챕터가 시키는 것
+
+01~04 는 전부 **순서**가 있는 구조였고 "어디에 있는지"로 찾았다.\
+여기서는 **값 자체로부터 위치를 계산**하는 구조를 직접 만든다 — 넣기/찾기/지우기가 전부 평균 O(1) 이 되는 대신, 순서가 없고 최악은 O(n) 이며 공간을 여유 있게 잡아야 한다는 세 가지 대가를 치른다.\
+같은 `Map` 계약을 충돌 처리 방식이 다른 세 가지로 구현해 보고, 그 선택이 삭제·메모리·캐시·최악 성능에서 무엇을 바꾸는지 몸으로 확인하는 것이 이 챕터의 목적이다.
+
+**과제**
+
+- `MapContractTest.java` 를 따라친다 — 세 구현이 공유하는 계약이 여기 있다.
+- `ChainingHashMap` TODO 5개 — 버킷 배열 + 같은 자리에 매다는 사슬. `DEFAULT_CAPACITY = 8`, `LOAD_FACTOR = 0.75`.
+- `LinearProbingHashMap` TODO 5개 — 옆 칸으로 밀어 넣는 개방 주소법. `LOAD_FACTOR = 0.5`, 그리고 이 챕터의 함정인 tombstone 이 여기 있다.
+- `LinkedHashMap` TODO 4개 — `ChainingHashMap` 을 상속해 `afterPut`/`afterRemove`/`afterClear` 훅만 재정의한다(template method).
+- `MapProblems` TODO 3개 — `countFrequencies`(빈도 세기) / `twoSum`(더해서 target 이 되는 두 인덱스) / `firstUniqueChar`(처음으로 한 번만 나온 문자의 인덱스).
+- 성능·계약 제약 — `twoSum` 은 20만 건을 5초 안에 끝내야 한다(모든 쌍을 보는 O(n²)은 통과 못 한다).\
+  값으로 `null` 을 담을 수 있어야 하고(키 없음과 구분되어야 하므로 `containsKey` 가 따로 있다), 키로 `null` 은 거부해야 한다.\
+  음수 해시(`Integer.MIN_VALUE`, `-1`)도 정상 처리해야 한다.\
+  테스트가 내부 필드를 직접 들여다본다 — 체이닝은 `buckets`/`size`, 선형 탐사는 `keys`/`values`/`states` 라는 이름과 구조를 그대로 지켜야 한다.
+- 전체 83개 테스트가 처음에는 전부 실패한다(`./run.sh 05`).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -668,9 +732,9 @@ order 가 없다면 afterRemove 가 리스트를 처음부터 훑어야 해서 O
 | LinearProbingHashMap | | | |
 | LinkedHashMap | | | |
 
-## 문제 — MapProblems (`src/main/java/com/datastructure/hashmap/MapProblems.java`)
+### 문제 — MapProblems (`src/main/java/com/datastructure/hashmap/MapProblems.java`)
 
-### 문제 1. 빈도 세기
+#### 문제 1. 빈도 세기
 
 > 문제 설명: 각 값이 몇 번 나오는지 `counts` 에 담는다.
 > `[1, 2, 2, 3, 3, 3]` -> `{1=1, 2=2, 3=3}`
@@ -681,7 +745,7 @@ order 가 없다면 afterRemove 가 리스트를 처음부터 훑어야 해서 O
 - 논리:
 - 비용(왜):
 
-### 문제 2. 두 수의 합 (이 문제집의 함정)
+#### 문제 2. 두 수의 합 (이 문제집의 함정)
 
 > 문제 설명: 더해서 `target` 이 되는 서로 다른 두 인덱스를 찾아 `[작은인덱스, 큰인덱스]` 로 반환한다.
 > 없으면 빈 배열. 답이 여러 개면 두 번째 인덱스가 가장 작은 것을 반환한다.
@@ -695,7 +759,7 @@ order 가 없다면 afterRemove 가 리스트를 처음부터 훑어야 해서 O
 - 논리:
 - 비용(왜):
 
-### 문제 3. 처음으로 한 번만 나온 문자의 인덱스
+#### 문제 3. 처음으로 한 번만 나온 문자의 인덱스
 
 > 문제 설명: 문자열 전체에서 딱 한 번만 나오는 문자 중 가장 앞의 것의 인덱스. 없으면 -1.
 > `"leetcode"` -> `0` (l) / `"aabb"` -> `-1` / `"abac"` -> `1` (b)
@@ -707,15 +771,56 @@ order 가 없다면 afterRemove 가 리스트를 처음부터 훑어야 해서 O
 - 논리:
 - 비용(왜):
 
+## 장애 시나리오와 대처
+
+**1. 해시 충돌 공격 — 특정 요청에 CPU 100%**
+
+- 현상: 특정 클라이언트의 요청만 처리 시간이 수십 초로 튀고 CPU가 100%에 붙는다.
+- 보이는 형태: 프로파일에 `HashMap.get`·`put`이 상위에 찍히고, 요청 파라미터 개수가 수만 개다. 같은 개수의 평범한 파라미터는 순식간에 끝난다.
+  - *HashDoS*: 해시가 같은 키를 일부러 대량으로 보내 모든 키를 한 버킷에 몰아넣는 공격.
+- 원인: 해시 함수가 공개되어 있으면 충돌하는 키를 얼마든지 만들 수 있다. 한 버킷에 n개가 몰리면 조회가 O(n)이고, n번 넣으면 O(n²)이다(정답 10번의 최악과 같은 종류다).
+- 대처: 키 해시에 프로세스마다 다른 시드를 섞는다(해시 랜덤화 — Python 3.3부터 기본, Ruby도 2011년 HashDoS 공개 뒤 도입). 한 버킷이 길어지면 트리로 바꾼다(Java 8 `HashMap`의 트리화 — 사슬 8 초과 + 테이블 64칸 이상, JEP 180). Java는 `String.hashCode`를 랜덤화하지 않으므로 트리화가 방어선이다. 요청당 파라미터 개수에 상한을 둔다.
+
+**2. 키로 쓴 객체를 넣은 뒤에 바꿨다 — `get`이 `null`**
+
+- 현상: 분명히 `put`했는데 같은 키로 `get`하면 `null`이고, `size()`는 줄지 않았다.
+- 보이는 형태: 예외 없음. 순회하면 그 엔트리가 보인다. `containsKey`도 `false`다.
+- 원인: 키 객체의 필드를 `put` 뒤에 바꿔서 `hashCode()`가 달라졌다. 엔트리는 옛 해시로 계산한 칸에 있는데, 조회는 새 해시로 계산한 다른 칸을 연다.\
+  `equals`는 같은데 `hashCode`가 다른 두 클래스(한쪽만 재정의)도 같은 증상이다 — "equals로 같으면 hashCode도 같아야 한다"는 약속이 깨진 것이다.
+- 대처: 키는 불변 객체(`String`·`Integer`·`record`)로 쓴다. `equals`와 `hashCode`는 항상 같이 재정의하고, 같은 필드만 쓴다.
+
+**3. 개방 주소법에서 넣고 지우기만 반복했는데 느려진다**
+
+- 현상: 원소 수(`size`)는 그대로인데 조회가 점점 느려진다.
+- 보이는 형태: `size()`는 작은데 탐사 길이가 배열 크기에 가까워진다. 리사이즈는 일어나지 않는다.
+- 원인: 지운 자리마다 묘비(tombstone)가 남고, 탐사는 묘비를 지나쳐 가야 한다. 리사이즈 판단을 `size`로 하면 묘비는 세지 않아 배열이 묘비로 가득 찬다(정답 9번 참고).
+- 대처: 리사이즈 판단은 `used`(점유 + 묘비)로 한다. 실제 원소가 적으면 두 배로 늘리지 말고 같은 크기로 다시 배치해 묘비만 걷어낸다.
+
+**4. 순회 중 수정 — `ConcurrentModificationException`**
+
+- 현상: 맵을 돌면서 조건에 맞는 키를 지우는 코드가 죽는다.
+- 보이는 형태: Java `HashMap`은 `ConcurrentModificationException`을 던진다. 이 노트의 구현에는 그 검사가 없다. 대신 세 구현의 `keys()`가 모두 새 `ArrayList` 복사본을 돌려주므로(impl `ChainingHashMap.java:104`·`LinkedHashMap.java:80`) 그 리스트를 돌며 지워도 죽지 않는다. 사슬을 직접 걷는 순회였다면 예외 없이 원소를 건너뛸 수 있다.
+- 원인: 순회 중에 `put`이 리사이즈를 일으키거나 `remove`가 사슬을 끊으면, 순회가 들고 있던 위치가 무효가 된다.
+- 대처: 지울 키를 먼저 모아 두었다가 순회가 끝난 뒤 지운다. 또는 반복자의 `remove`·`removeIf`처럼 구조가 제공하는 삭제를 쓴다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 해시맵은 "어디에 있는지"를 찾는 대신 값에서 자리를 **계산**한다 — 그래서 넣기·찾기·지우기가 평균 O(1)이고, 그 대가로 순서를 잃고 최악 O(n)과 여유 공간을 치른다.
+- 충돌은 피할 수 없다. 사슬로 매달면(체이닝) 삭제가 쉽고 완만히 느려지고, 옆 칸으로 밀면(선형 탐사) 캐시에 좋은 대신 묘비와 군집화를 안고 산다.
+- 리사이즈는 옮기기가 아니라 다시 계산하기다 — 칸 수가 바뀌면 `%` 결과가 바뀐다. 04번 원형 배열의 감김과 같은 종류의 함정이다.
+- `equals`로 같으면 `hashCode`도 같아야 한다 — 이 약속 하나가 "같은 키는 같은 칸에 떨어진다"를 보장하고, 키를 넣은 뒤 바꾸는 순간 그 약속이 깨진다.
+- 해시맵이 필요한 상황은 대개 "이것을 이미 봤는가"를 n번 되묻는 모양이다 — 순서·범위·최솟값을 묻기 시작하면 정렬 구조(06)로 넘어간다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [04-queue-deque](../04-queue-deque/2-summary.md): 순서 구조에서 "들어 있는가"가 O(n)이 되는 한계. [02-linked-list](../02-linked-list/2-summary.md): 체이닝의 사슬과 `LinkedHashMap`의 이중 연결 리스트.
+- 후속 — [06-binary-search-tree](../06-binary-search-tree/2-summary.md): 해시맵이 버린 순서를 되찾는 구조. [10-lru-cache](../10-lru-cache/2-summary.md): `LinkedHashMap`에 접근 순서를 얹은 것.
+- 심화 — [29-open-addressing](../29-open-addressing/2-summary.md)(탐사 전략·로빈후드) · [31-consistent-hashing](../31-consistent-hashing/2-summary.md)(해시로 서버 고르기) · [11-bloom-filter](../11-bloom-filter/2-summary.md)(해시 k개로 집합 근사) · [algorithm/27-string-hashing](../../algorithm/27-string-hashing/2-summary.md)(문자열 해시 함수).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `07-hashmap` (선행 `03-dynamic-array`, `math/05-counting-and-birthday-bound`).
+- 교재 — CLRS 3판 11.1~11.4 해시 테이블.
+- myway 원본 — `/home/jun/project/myway/data-structure/05-hashmap/` (README.md · impl/ChainingHashMap.java · impl/LinearProbingHashMap.java · impl/LinkedHashMap.java · impl/MapProblems.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -724,7 +829,7 @@ order 가 없다면 afterRemove 가 리스트를 처음부터 훑어야 해서 O
 - 테스트: `/home/jun/project/myway/data-structure/05-hashmap/src/test/java/com/datastructure/hashmap/`
 - 참고 구현: `/home/jun/project/myway/data-structure/05-hashmap/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 - **맵(map)**: 키(이름표)로 값(내용물)을 찾는 자료구조.\
   한 키에 값은 하나.

@@ -4,8 +4,29 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+"배열의 from번부터 to번까지의 최솟값은?" 같은 구간 질문이 수만 번 들어온다. 매번 구간을 훑으면 질문 하나에 O(n)이다.
+13번 세그먼트 트리는 O(log n)으로 줄였지만, 값이 한 번도 바뀌지 않는 데이터라면 갱신 능력은 쓰지도 않는 비용이다.
+
+```text
+질문: [1..6] 의 min?      매번 훑기 O(n)        미리 적어둔 답안지 O(1)
+값   5 2 9 1 7 4 6 3      2 9 1 7 4 6 -> 1      길이 4 묶음 두 개로 덮는다
+자리 0 1 2 3 4 5 6 7      (6칸 다 본다)           [1..4]=1, [3..6]=1 -> min = 1
+                                                  가운데 [3..4] 가 겹치지만 min 은 그대로
+```
+
+희소 테이블은 갱신을 아예 포기하고, 길이 1·2·4·8… 구간의 답을 전부 미리 적어 둔다. 그러면 아무 구간이든 딱 두 칸으로 덮이고, 겹친 부분은 min·max·gcd처럼 두 번 세어도 답이 안 변하는 연산이면 문제가 없다.
+전처리 O(n log n)을 한 번 내면 그 뒤 질문은 몇 번이든 O(1)이다.
+
+- 쉬운 예: 반 학생 40명의 키 — 2명·4명·8명 묶음의 최소 키를 미리 적어 두면 "5번부터 20번까지"도 표 두 칸이다.
+- 똑같은 구조다: 이 노트의 `table[k][i]`는 "i에서 시작하는 길이 2^k 구간의 답"이고, `query`는 그중 두 칸을 `combine`한다.
+- 실무 예: 정적 로그·시계열의 구간 최댓값 대시보드, 트리의 최소 공통 조상(LCA)을 O(1)에 답하는 오일러 투어 + RMQ.
+  - *RMQ(range minimum query)*: 구간 최솟값 질의. 정적 데이터에서 O(1)이 가능한 대표 문제.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 미리 적어둔 답안지.** 반 학생 40명이 한 줄로 서 있다. "5번부터 20번까지 중 제일 작은 키는?"라는 질문이 수천 번 들어온다면, 매번 16명을 다 재는 대신 **2명씩·4명씩·8명씩 묶음의 최솟값을 미리 표로 적어 둔다**. 질문이 오면 그 구간을 덮는 큰 묶음 **두 개**만 본다 — 두 묶음이 가운데서 겹쳐도 "최솟값"은 같은 사람을 두 번 세어도 답이 안 변하니까 괜찮다. **희소 테이블이 똑같은 구조다** — 바뀌지 않는 배열에 구간 최솟값/최댓값 질문이 아주 많이 들어올 때 쓰고, 실무로는 로그 분석의 구간 통계, 트리에서 공통 조상(LCA) 찾기가 이 위에서 돈다.
 
@@ -24,40 +45,49 @@
 답 = min(묶음A의 답, 묶음B의 답)   <- 딱 2칸 조회
 ```
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-13번 세그먼트 트리는 조회도 갱신도 O(log n) 이었고, 17번 펜윅 트리는 역연산이 있는 연산만 하는 대신 메모리가 4n 에서 n+1 이 되고 코드가 열 줄이 됐다.
-여기서는 **갱신을 아예 포기하고** 그 대가로 조회를 **O(1)** 로 만드는 구조를 짓는다.
-길이가 2의 거듭제곱인 구간의 답을 전부 미리 계산해 두면 아무 구간이나 딱 두 조각으로 덮이는데, 그 두 조각이 **겹치기** 때문에 연산에 **멱등성**(`f(x, x) = x`)이라는 세 번째 대수적 조건이 붙는다.
-겹치지 않게 덮는 변형(`DisjointSparseTable`)까지 만들어 그 조건을 없애 보는 것이 이 챕터의 끝이다.
+### 전체 흐름
 
-**과제**
+```text
+[1] 삼각형의 세 번째 꼭짓점                [2] 표 짓기 — 배증 (전처리 O(n log n))
+    13 세그먼트 트리 : 조회 log, 갱신 log       table[0][i] = values[i]
+    17 펜윅 트리     : 역연산 필요, n+1 메모리    table[k][i] = combine(table[k-1][i], table[k-1][i + 2^(k-1)])
+    22 희소 테이블   : 갱신 포기 -> 조회 O(1)     붙이는 두 조각이 맞닿아 겹치지 않는다
+              |                                  log[i] = log[i >> 1] + 1 표도 미리
+              v                                          |
+[3] 조회 — 두 칸으로 덮는다 (O(1))                       v
+    len = to - from + 1, k = log[len]          [4] 겹쳐도 되는 조건 — 멱등성
+    combine(table[k][from], table[k][to - 2^k + 1])   min(a,a) = a, gcd(a,a) = a : 된다
+    2^k > len/2 라서 가운데서 반드시 만난다        sum(a,a) = 2a, xor(a,a) = 0 : 조용히 틀린다
+              |                                          |
+              v                                          v
+[5] DisjointSparseTable — 겹치지 않게      [6] 대가
+    층마다 중앙선에서 좌우로 누적               갱신 불가 — 한 칸 바꾸면 전부 다시 짓는다
+    level = 최상위 갈림 비트(from ^ to)         메모리 n log n (세그먼트 트리보다 크다)
+    두 조각이 맞닿기만 한다 -> 합·곱도 O(1)     질의가 적으면 전처리를 못 갚는다
+```
 
-1. `SparseTable` (TODO 3개, 본체) — `buildLogTable`, `build`, `query`
-2. `MinSparseTable` / `MaxSparseTable` / `GcdSparseTable` (각 TODO 2개) — `combine` 과 `identity`
-3. `DisjointSparseTable` (TODO 2개, 제일 어렵다) — 층마다 가운데를 기준으로 좌우 누적하는 `build` 와, 겹치지 않는 두 조각을 합치는 `query`
-4. `SparseTableProblems` (TODO 2개) — 슬라이딩 윈도우 최솟값, 구간 gcd 질의
+- [1] 조회·갱신·요구 조건의 삼각형에서 여기는 "갱신 없음"을 파는 꼭짓점이다. 무엇을 고를지는 조회와 갱신의 비율이 정한다.
+- [2] 아래층 답 두 개를 붙여 위층 답을 만든다. 전처리에서는 두 조각이 딱 맞닿으므로 어떤 연산이든 된다.
+  - *배증(doubling)*: 길이 2^(k-1) 답 두 개로 길이 2^k 답을 만드는 쌓기. 칸 수가 n log n이라 전처리도 O(n log n).
+- [3] 구간 길이에 맞는 가장 큰 2의 거듭제곱 하나로 왼쪽 끝과 오른쪽 끝에 붙인 두 칸을 본다. 각 조각이 절반을 넘게 덮으므로 빈틈이 없다.
+- [4] 두 조각이 겹치므로 같은 값을 두 번 넣어도 답이 안 변하는 연산이어야 한다. 합으로 만들면 컴파일도 되고 예외도 없이 조용히 틀린다(정답 6번 참고).
+  - *멱등(idempotent)*: `f(x, x) = x`. 13번의 결합법칙, 17번의 역원에 이은 세 번째 대수적 조건.
+- [5] 겹침을 없애려면 층마다 중앙선을 긋고 중앙까지의 누적을 적어 둔다. from과 to가 처음 갈라지는 비트 자리가 층 번호이고, 왼쪽 칸과 오른쪽 칸이 중앙에서 맞물린다.
+- [6] O(1) 조회는 공짜가 아니다 — 메모리와 갱신 불가, 그리고 질의 수 q가 전처리 비용을 갚을 만큼 커야 한다.
 
-`cd ~/project/myway/data-structure && ./run.sh 22` 을 돌리면 **90개 중 89개가 실패한다.**
-통과하는 1개는 TODO 위에 미리 채워둔 인자 검증만 본다.
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — StaticRangeQuery (`src/main/java/com/datastructure/sparsetable/StaticRangeQuery.java`)
+### 계약 — StaticRangeQuery (`src/main/java/com/datastructure/sparsetable/StaticRangeQuery.java`)
 
 - `int size()`
 - `long query(int from, int to)`
 - `long get(int index)`
 
-## 구현 — SparseTable (`src/main/java/com/datastructure/sparsetable/SparseTable.java`)
+### 구현 — SparseTable (`src/main/java/com/datastructure/sparsetable/SparseTable.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 ```
 table[k][i] = i 에서 시작하는 길이 2^k 구간 [i, i + 2^k - 1] 의 답 (0-base, 양끝 포함)
@@ -114,7 +144,7 @@ SparseTable (n = 8, min 을 예로)
   - *floor(log2 x)*: "x가 2의 몇 제곱 이상인가"의 정수 부분. log2 8 = 3, floor(log2 6) = 2.
   - *정적(static) 구조*: 한 번 만들면 값을 못 바꾸는 구조. 바꾸려면 처음부터 다시 짓는다.
 
-### 동작 — 전처리
+#### 동작 — 전처리
 
 **언제 쓰나** — 표를 처음 지을 때 한 번. 아래층(짧은 묶음)의 답 두 개를 붙여 위층(2배 긴 묶음)의 답을 만든다.
 
@@ -153,7 +183,7 @@ build() : 아래층 칸 두 개를 이어 붙여 위층 칸 하나를 만든다 
   - *i >> 1*: 비트를 오른쪽으로 한 칸 밀기 = 2로 나눈 몫. log[i]는 "i를 반으로 접은 것"의 log에 1을 더해 얻는다.
   - *combine*: 두 답을 하나로 합치는 연산(min이면 둘 중 작은 것). 자식 클래스가 정한다.
 
-### 동작 — 조회
+#### 동작 — 조회
 
 **언제 쓰나** — 표가 다 지어진 뒤, 아무 구간 [from, to]의 답을 물을 때. 표 두 칸만 본다.
 
@@ -198,7 +228,7 @@ query(from, to) : 길이 len = to - from + 1,  k = log[len] = floor(log2 len)
   - *멱등(idempotent)*: 같은 값을 두 번 넣어도 결과가 안 변하는 성질. min(a,a)=a. 합은 sum(a,a)=2a라 멱등이 아니다.
   - *identity(항등원)*: 연산에 넣어도 아무 영향이 없는 값. min의 항등원은 "무한대"(Long.MAX_VALUE), 합의 항등원은 0.
 
-### `필드`
+#### `필드`
 
 - `int n` 역할:
 - `int levels` 역할:
@@ -207,78 +237,78 @@ query(from, to) : 길이 len = to - from + 1,  k = log[len] = floor(log2 len)
 - `long[] values` 역할:
 - 요구 조건 — 멱등성 `f(x, x) = x` 가 필요한 이유:
 
-### `protected SparseTable(long[] initial)`
+#### `protected SparseTable(long[] initial)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `protected abstract long combine(long a, long b)`
+#### `protected abstract long combine(long a, long b)`
 
 - 하는 일:
 - 논리:
 
-### `protected abstract long identity()`
+#### `protected abstract long identity()`
 
 - 하는 일:
 - 논리(13번과 달리 **빈 구간에서만** 쓰인다는 것 — 그래서 틀려도 티가 덜 나는 위험):
 
-### `static int[] buildLogTable(int n)` (TODO)
+#### `static int[] buildLogTable(int n)` (TODO)
 
 - 하는 일:
 - 논리(`Math.log` 를 쓰지 않는 진짜 이유 — 오차가 아니라 비용):
 - 비용(왜):
 
-### `private void build()` (TODO)
+#### `private void build()` (TODO)
 
 - 하는 일:
 - 논리(2의 거듭제곱 길이 구간을 층마다 쌓는 것):
 - 비용(왜):
 
-### `public long query(int from, int to)` (TODO)
+#### `public long query(int from, int to)` (TODO)
 
 - 하는 일:
 - 논리(두 조각으로 덮기 · 두 조각이 겹친다는 것 · `+1` 두 개의 함정):
 - 비용(왜 O(1) 인가):
 
-### `public long get(int index)` / `public int size()`
+#### `public long get(int index)` / `public int size()`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int levels()` / `public int unitCount()`
+#### `public int levels()` / `public int unitCount()`
 
 - 하는 일:
 - 논리(메모리·걸음 수 측정용):
 - 비용(왜):
 
-## 구현 — MinSparseTable (`src/main/java/com/datastructure/sparsetable/MinSparseTable.java`)
+### 구현 — MinSparseTable (`src/main/java/com/datastructure/sparsetable/MinSparseTable.java`)
 
-### `protected long combine(long a, long b)` (TODO)
-
-- 하는 일:
-- 논리:
-
-### `protected long identity()` (TODO)
+#### `protected long combine(long a, long b)` (TODO)
 
 - 하는 일:
 - 논리:
 
-## 구현 — MaxSparseTable (`src/main/java/com/datastructure/sparsetable/MaxSparseTable.java`)
-
-### `protected long combine(long a, long b)` (TODO)
+#### `protected long identity()` (TODO)
 
 - 하는 일:
 - 논리:
 
-### `protected long identity()` (TODO)
+### 구현 — MaxSparseTable (`src/main/java/com/datastructure/sparsetable/MaxSparseTable.java`)
+
+#### `protected long combine(long a, long b)` (TODO)
 
 - 하는 일:
 - 논리:
 
-## 구현 — GcdSparseTable (`src/main/java/com/datastructure/sparsetable/GcdSparseTable.java`)
+#### `protected long identity()` (TODO)
 
-### 구조
+- 하는 일:
+- 논리:
+
+### 구현 — GcdSparseTable (`src/main/java/com/datastructure/sparsetable/GcdSparseTable.java`)
+
+#### 구조
 
 ```
 gcd 도 멱등이라 SparseTable 의 "겹쳐도 되는" 조회를 그대로 쓴다 (별도 구조가 필요 없다)
@@ -307,20 +337,20 @@ gcd 도 멱등이라 SparseTable 의 "겹쳐도 되는" 조회를 그대로 쓴�
   - *gcd(최대공약수)*: 두 수를 모두 나누어떨어뜨리는 가장 큰 수. gcd(12, 18) = 6.
   - *유클리드 호제법*: gcd를 빠르게 구하는 방법 — gcd(a, b) = gcd(b, a를 b로 나눈 나머지)를 나머지가 0이 될 때까지 반복.
 
-### `protected long combine(long a, long b)` (TODO)
+#### `protected long combine(long a, long b)` (TODO)
 
 - 하는 일:
 - 논리(유클리드 호제법):
 - 비용(왜):
 
-### `protected long identity()` (TODO)
+#### `protected long identity()` (TODO)
 
 - 하는 일:
 - 논리:
 
-## 구현 — DisjointSparseTable (`src/main/java/com/datastructure/sparsetable/DisjointSparseTable.java`)
+### 구현 — DisjointSparseTable (`src/main/java/com/datastructure/sparsetable/DisjointSparseTable.java`)
 
-### 구조
+#### 구조
 
 ```
 구간을 겹치지 않게 두 조각으로 나눈다 - 그래서 합처럼 멱등하지 않은 연산도 O(1)
@@ -372,7 +402,7 @@ DisjointSparseTable (n = 8, 기본 combine = 합, identity = 0)
 
   - *누적*: 한 칸씩 차례로 합쳐 온 값. "i부터 중앙까지 다 더한 것"을 칸마다 미리 적어 둔다.
 
-### 동작 — 조회
+#### 동작 — 조회
 
 **언제 쓰나** — 합처럼 겹치면 안 되는 연산의 구간 질의를 O(1)에 답할 때.
 
@@ -423,7 +453,7 @@ query(from, to) : from 과 to 가 처음으로 갈라지는 비트 자리가 곧
   - *numberOfLeadingZeros*: 32비트 정수에서 맨 앞에 연달아 있는 0의 개수. 31에서 빼면 가장 높은 1의 자리가 나온다.
   - *비가환*: a∘b와 b∘a가 다른 연산(행렬곱 등). 누적 방향과 인자 순서를 지켜야 하는 이유.
 
-### `필드`
+#### `필드`
 
 - `int n` 역할:
 - `int width` (패딩된 폭) 역할:
@@ -433,30 +463,64 @@ query(from, to) : from 과 to 가 처음으로 갈라지는 비트 자리가 곧
 - `long identity` 역할:
 - `LongBinaryOperator combine` 역할(상속 대신 인자로 받는 것 — 13번 GenericSegmentTree 와의 대비):
 
-### `public DisjointSparseTable(long[] initial)` / `public DisjointSparseTable(long[] initial, long identity, LongBinaryOperator combine)`
+#### `public DisjointSparseTable(long[] initial)` / `public DisjointSparseTable(long[] initial, long identity, LongBinaryOperator combine)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void build()` (TODO)
+#### `private void build()` (TODO)
 
 - 하는 일:
 - 논리(층마다 블록의 가운데를 기준으로 좌우로 누적 · 누적 방향과 인자 순서가 비가환 연산에서만 티가 나는 것):
 - 비용(왜):
 
-### `public long query(int from, int to)` (TODO)
+#### `public long query(int from, int to)` (TODO)
 
 - 하는 일:
 - 논리(두 조각이 **겹치지 않으므로** combine 이 무엇이든 되는 이유 · `l == r` 을 따로 빼야 하는 이유):
 - 비용(왜):
 
-### `public long get(int index)` / `public int size()` / `public int levels()` / `public int unitCount()`
+#### `public long get(int index)` / `public int size()` / `public int levels()` / `public int unitCount()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **LCA(최소 공통 조상)의 이진 점프** — `up[k][v]` = v의 2^k번째 조상. "2의 거듭제곱 단위로 미리 접어 두고 두 조각으로 덮는다"가 트리 위에서 되풀이된다. 오일러 투어 + RMQ로 LCA를 O(1)에 답하는 방법도 이 표다.
+- **접미사 배열의 LCP 구간 질의** — [21-suffix-array](../21-suffix-array/2-summary.md)에서 떨어진 두 접미사의 공통 접두사 길이는 `min(lcp[r+1..r'])`이다. lcp 배열은 정적이므로 희소 테이블이 맞는 자리다.
+- **정적 시계열의 구간 max/min 대시보드** — 이미 닫힌 기간(지난달 로그)의 임의 구간 최댓값을 반복 질의할 때. 값이 안 바뀌고 질의가 많다는 두 조건이 딱 맞는다.
+- **구간 gcd·비트 AND/OR 질의** — 멱등 연산이면 같은 표를 그대로 쓴다. 문제 2의 구간 gcd가 그것이고, 세그먼트 트리와 걸음 수로 비교하면 q가 클수록 벌어진다.
+- **슬라이딩 윈도우 최솟값의 변형** — 창 크기가 고정이면 [04-queue-deque](../04-queue-deque/2-summary.md)의 덱이 O(n)으로 싸고, 창 크기가 여럿이거나 구간이 제멋대로면 희소 테이블이 이긴다(문제 1).
+- **다른 챕터와의 관계** — [13-segment-tree](../13-segment-tree/2-summary.md)(결합법칙·갱신 O(log n))와 [17-fenwick-tree](../17-fenwick-tree/2-summary.md)(역연산·n+1 메모리)와 함께 "조회·갱신 비율로 고르는" 삼각형을 이룬다.
+
+## 적용 — 풀어나가는 법
+
+희소 테이블 문제는 "값이 바뀌는가"와 "연산이 멱등한가"를 먼저 묻는 데서 갈린다.
+순서: ① 갱신이 한 번이라도 있으면 13번·17번으로 간다 → ② 연산이 `f(x, x) = x`인지 본다 — min·max·gcd·AND·OR면 `SparseTable`, 합·곱·XOR이면 `DisjointSparseTable` → ③ 질의 수 q가 전처리 n log n을 갚는지 어림한다(q ≪ n이면 세그먼트 트리가 이긴다) → ④ 질의 범위를 먼저 검증한다 — 검증을 빼면 무엇이 예외로 새고 무엇이 조용히 답이 되는지가 문제 2의 요점이다.
+아래 두 문제가 이 순서로 풀린다.
+
+### 문제 — 이 챕터가 시키는 것
+
+13번 세그먼트 트리는 조회도 갱신도 O(log n) 이었고, 17번 펜윅 트리는 역연산이 있는 연산만 하는 대신 메모리가 4n 에서 n+1 이 되고 코드가 열 줄이 됐다.
+여기서는 **갱신을 아예 포기하고** 그 대가로 조회를 **O(1)** 로 만드는 구조를 짓는다.
+길이가 2의 거듭제곱인 구간의 답을 전부 미리 계산해 두면 아무 구간이나 딱 두 조각으로 덮이는데, 그 두 조각이 **겹치기** 때문에 연산에 **멱등성**(`f(x, x) = x`)이라는 세 번째 대수적 조건이 붙는다.
+겹치지 않게 덮는 변형(`DisjointSparseTable`)까지 만들어 그 조건을 없애 보는 것이 이 챕터의 끝이다.
+
+**과제**
+
+1. `SparseTable` (TODO 3개, 본체) — `buildLogTable`, `build`, `query`
+2. `MinSparseTable` / `MaxSparseTable` / `GcdSparseTable` (각 TODO 2개) — `combine` 과 `identity`
+3. `DisjointSparseTable` (TODO 2개, 제일 어렵다) — 층마다 가운데를 기준으로 좌우 누적하는 `build` 와, 겹치지 않는 두 조각을 합치는 `query`
+4. `SparseTableProblems` (TODO 2개) — 슬라이딩 윈도우 최솟값, 구간 gcd 질의
+
+`cd ~/project/myway/data-structure && ./run.sh 22` 을 돌리면 **90개 중 89개가 실패한다.**
+통과하는 1개는 TODO 위에 미리 채워둔 인자 검증만 본다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -466,9 +530,9 @@ query(from, to) : from 과 to 가 처음으로 갈라지는 비트 자리가 곧
 | DisjointSparseTable (겹치지 않는 두 조각) | | | |
 | 04번 덱 (고정 크기 슬라이딩 윈도우) | | | |
 
-## 문제 — SparseTableProblems (`src/main/java/com/datastructure/sparsetable/SparseTableProblems.java`)
+### 문제 — SparseTableProblems (`src/main/java/com/datastructure/sparsetable/SparseTableProblems.java`)
 
-### 문제 1. 슬라이딩 윈도우 최솟값 — `static int[] slidingWindowMin(int[] values, int k)`
+#### 문제 1. 슬라이딩 윈도우 최솟값 — `static int[] slidingWindowMin(int[] values, int k)`
 
 > 문제 설명: 크기 k 인 창을 왼쪽부터 한 칸씩 옮기며 각 창의 최솟값을 모은다.
 > 결과 길이는 `n - k + 1` 이다.
@@ -484,7 +548,7 @@ query(from, to) : from 과 to 가 처음으로 갈라지는 비트 자리가 곧
 - 논리:
 - 비용(왜):
 
-### 문제 2. 구간 gcd 질의 — `static long[] rangeGcdQueries(int[] values, int[][] queries)`
+#### 문제 2. 구간 gcd 질의 — `static long[] rangeGcdQueries(int[] values, int[][] queries)`
 
 > 문제 설명: 질의가 아주 많을 때의 구간 gcd. `queries[i] = {from, to}` 이고 결과의 i번째가 그 구간의 gcd 다.
 > 여기가 이 자료구조를 고르는 이유가 드러나는 자리다.
@@ -500,15 +564,48 @@ query(from, to) : from 과 to 가 처음으로 갈라지는 비트 자리가 곧
 - 논리:
 - 비용(왜):
 
+## 장애 시나리오와 대처
+
+**1. "값 하나만 바꿔 달라"는 요구가 들어와 전처리가 폭주**
+
+- 현상: 정적이라고 믿었던 데이터에 수정 요청이 생겨 값 하나를 고칠 때마다 표를 다시 짓는다.
+- 보이는 형태: 수정 한 건에 O(n log n) — n=16이면 combine 38번을 한 칸 때문에 또 한다. 수정이 잦아지면 CPU가 재구축에만 쓰이고 조회의 O(1) 이점이 사라진다.
+- 원인: `table[k][i]`는 한 원소를 덮는 칸이 층마다 하나씩 있어, 한 원소가 바뀌면 그것을 덮는 모든 층의 칸이 틀어진다. 갱신 연산이 없는 것은 구현 부족이 아니라 구조의 성질이다.
+- 대처: 갱신이 있다면 처음부터 [13-segment-tree](../13-segment-tree/2-summary.md)로 간다(잎에서 뿌리까지 한 줄, O(log n)). 갱신이 드물고 배치로 몰리면 "쌓아 두었다 한 번에 재구축"으로 횟수를 줄인다.
+
+**2. 검증 없는 질의 범위가 예외 또는 엉뚱한 답으로 새어 나감**
+
+- 현상: `queries[i] = {from, to}`에 `to >= n`이나 `from > to`가 섞여 들어온다.
+- 보이는 형태: `to >= n`이면 이 구현은 `query`의 `requireIndex`가 `IndexOutOfBoundsException`으로 죽는다(`impl/SparseTable.java` 46–47·83–86행 — 이 검사까지 없는 구현이라면 `table[k][…]`나 `log[len]`이 배열 밖을 읽어 `ArrayIndexOutOfBoundsException`). 반대로 `from > to`는 `query`가 빈 구간으로 보고 `identity()`(min이면 `Long.MAX_VALUE`)를 돌려주므로(같은 파일 48–50행) 조용히 결과 배열에 들어간다 — 이쪽이 더 나쁘다.
+- 원인: `query`는 각 인덱스가 배열 안인지만 검사하고, `from > to`는 오류가 아니라 빈 구간으로 해석한다. 빈 구간의 항등원은 "없음"이 아니라 값이다(정답 8번 참고).
+- 대처: 이 노트의 `rangeGcdQueries`처럼 질의를 받는 경계에서 `q == null`·길이·`from < 0`·`to >= n`·`from > to`를 전부 `IllegalArgumentException`으로 거부한다. 항등원이 결과에 섞이지 않게 한다.
+
+**3. 큰 n에서 표가 메모리를 넘김**
+
+- 현상: n이 수천만인 배열에 희소 테이블을 지으려다 프로세스가 죽는다.
+- 보이는 형태: `java.lang.OutOfMemoryError: Java heap space`. 힙 덤프에 `long[levels][n]`이 보인다. n=1,000만이면 층이 24개(`log[n] + 1`, 2^23 ≤ 1,000만 < 2^24), `long`이라 24 × 1,000만 × 8 = 약 1.92GB(≈1.79GiB)다.
+- 원인: 메모리가 n log n이다. 세그먼트 트리(4n)와 n=8에서는 같지만 n=16부터 역전되어 n=1000이면 2.5배다.
+- 대처: 층을 필요한 만큼만 두거나(질의 길이 상한이 있으면 그 이상의 층은 안 만든다), 원소를 `int`로 줄이거나, 메모리가 우선이면 세그먼트 트리로 돌아간다. 질의가 적으면 애초에 전처리를 갚지 못한다(정답 9번 참고).
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 희소 테이블은 갱신을 포기하고 조회 O(1)을 산다 — 13번(결합법칙, log/log)·17번(역연산, n+1)과 함께 조회·갱신 비율로 고르는 삼각형의 세 번째 꼭짓점이다.
+- 길이 2^k 구간의 답을 전부 미리 적어 두면 아무 구간이든 두 조각으로 덮인다. 각 조각이 절반을 넘게 덮어 가운데서 반드시 만나므로 길이가 백만이어도 combine은 두 번이다.
+- 두 조각이 겹치므로 연산은 멱등(`f(x, x) = x`)이어야 한다 — min·max·gcd는 되고, 합·XOR로 만들면 예외 없이 조용히 틀린다.
+- 겹침을 없애려면 층마다 중앙선에서 좌우로 누적해 두고(DisjointSparseTable), from과 to가 갈라지는 비트 자리로 층을 고른다 — 그러면 합·곱도 O(1)이다.
+- O(1)은 공짜가 아니다: 메모리 n log n, 갱신 불가, 그리고 질의 수가 전처리를 갚을 만큼 많아야 한다 — 손익분기가 이 구조의 선택 기준이다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [13-segment-tree](../13-segment-tree/2-summary.md): 결합법칙만 요구하고 갱신 O(log n). 갱신이 하나라도 있으면 이쪽이다.
+- 선행 — [17-fenwick-tree](../17-fenwick-tree/2-summary.md): 역연산이 있는 연산 전용. 세 구조의 요구 조건(결합법칙·역원·멱등)을 나란히 본다.
+- 선행 — [04-queue-deque](../04-queue-deque/2-summary.md): 창 크기 고정 슬라이딩 윈도우 최솟값 O(n). 문제 1의 비교 상대.
+- 연결 — [21-suffix-array](../21-suffix-array/2-summary.md): lcp 배열 위의 구간 min이 희소 테이블의 대표 쓰임.
+- 후속 — [23-splay-tree](../23-splay-tree/2-summary.md): 여기서는 갱신을 버려 O(1)을 얻었고, 거기서는 균형 보장을 버려 상환 O(log n)과 지역성을 얻는다.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `37-sparse-table` (선행 `33`, 원전 Bender–Farach-Colton 2000).
+- myway 원본 — `/home/jun/project/myway/data-structure/22-sparse-table/` (README.md · impl/SparseTable.java · impl/DisjointSparseTable.java · impl/SparseTableProblems.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -517,7 +614,7 @@ query(from, to) : from 과 to 가 처음으로 갈라지는 비트 자리가 곧
 - 테스트: `/home/jun/project/myway/data-structure/22-sparse-table/src/test/java/com/datastructure/sparsetable/`
 - 정답 구현: `/home/jun/project/myway/data-structure/22-sparse-table/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 > 본문에서 이미 등장 자리마다 풀었지만, 복습용으로 한곳에 모은다. (중학생 수준 1~2줄)
 

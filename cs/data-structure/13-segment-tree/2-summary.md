@@ -4,8 +4,28 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+"i번부터 j번까지의 합(또는 최솟값)은?"을 자주 묻는데, **값도 계속 바뀐다**면 기존 도구가 한쪽씩 무너진다.\
+매번 훑으면 조회가 O(n)이고, 누적합은 조회가 O(1)이지만 값 하나를 고치면 뒤의 누적합 전부를 다시 계산해야 한다(O(n)).
+
+```text
+조회 sum(2..5)                      갱신 a[2] = 7
+매번 훑기   a[2]+a[3]+a[4]+a[5]  O(n)     a[2] 만 바꿈                   O(1)
+누적합      prefix[6]-prefix[2]  O(1)     prefix[3..n] 전부 다시 계산     O(n)
+세그먼트    소계 노드 2~3개 더함  O(log n) 그 원소가 속한 소계 log n 개만  O(log n)
+```
+
+세그먼트 트리는 구간의 답을 **소계로 미리 접어 두는 이진 트리**라, 조회도 갱신도 트리 높이만큼만 일한다.\
+쉬운 예: 반별 성금 집계판 — "1·2반 소계", "1~4반 소계"를 적어 두면 3~7반 합도 소계 몇 개로 나오고, 한 반이 바뀌면 그 반이 속한 소계만 고친다.\
+똑같은 구조다: 대회 문제의 "구간 합·구간 최솟값 + 점 갱신"이 전부 이 트리다.\
+실무 예: 예약 시스템에서 "이 기간 동안 동시 예약 수의 최댓값" — 예약이 들어올 때마다 구간에 1을 더하고(lazy), 구간 최댓값을 물어 정원을 넘는지 본다.
+
+  - *소계(부분합)*: 전체가 아니라 일부 구간만 미리 합쳐 둔 값. 트리의 노드 하나가 소계 하나다.
+
+### 한눈에 — 쉽게 말하면
 
 **세그먼트 트리 = 소계를 미리 적어 둔 집계판.** 1반부터 8반까지 모은 성금을 자주 물어본다고 하자. 매번 8개 반을 다 더하는 대신, "1·2반 소계", "1\~4반 소계", "전체 합"처럼 덩어리 합을 미리 적어 둔다. 그러면 "3반\~7반 합은?" 같은 질문도 이미 적힌 소계 두세 개만 더하면 답이 나온다. 한 반의 금액이 바뀌면? 그 반이 속한 소계 몇 칸만 고치면 된다 — 전체를 다시 더하지 않는다.
 
@@ -23,38 +43,51 @@
 
 실무·대회에서 "값이 계속 바뀌는 배열에 구간 질문이 쏟아지는" 상황이 이 구조의 자리다 — 주식 구간 최고가, 게임 리더보드 구간 합, 알고리즘 대회의 구간 문제 대부분.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-비워 둔 TODO 를 채워 세그먼트 트리 다섯 가지를 완성하는 과제다.
-뼈대(`SegmentTree`)의 `build`·`update`·`query` 가 본체이고, 나머지 넷은 그 뼈대에 "무엇을 어떻게 접을 것인가"만 바꿔 끼운다.
-시작 상태는 테스트 37개 중 35개 실패이며, `cd ~/project/myway/data-structure && ./run.sh 13` 으로 확인한다.
+### 전체 흐름
 
-- `SegmentTree` — `build`, `update`, `query` 3개 (재귀 본체. 나머지 구현이 전부 여기에 의존한다)
-- `SumSegmentTree` / `MinSegmentTree` — 각각 `combine`, `identity` 2개씩 (뼈대는 하나, 결합 함수와 항등원만 다르다)
-- `MinMaxSegmentTree` — `merge`, `query` 2개 (접어 넣는 값이 스칼라일 필요가 없다는 것을 보여준다)
-- `GenericSegmentTree` — `query` 1개 (같은 추상화를 상속 대신 생성자 인자로 받는다)
-- `LazySegmentTree` — `push`, `apply`, `rangeAdd`, `rangeSum` 4개 (구간 전체 갱신을 O(log n)으로. 제일 어렵다)
+```text
+[1] 배열을 반씩 쪼개 트리로            [2] 노드 번호 = 계산 (07번 힙과 같다)
+    노드 1        [0..7] = 31              왼쪽 자식 2i, 오른쪽 자식 2i+1, mid = (lo+hi)>>>1
+    노드 2,3      [0..3]=9  [4..7]=22      배열 크기 4n 이면 어떤 n 에도 넘치지 않는다
+    노드 4~7      [0..1] [2..3] [4..5] [6..7]
+    잎            3 1 4 1 5 9 2 6          부모 = combine(왼쪽, 오른쪽)
+              |                                          |
+              v                                          v
+[3] query(l, r) — 세 경우                 [4] update(i, v) — 내려가서 고치고, 돌아오며 다시 접는다
+    안 겹침   -> identity 반환 (없는 것처럼)     잎까지 내려가 values[i] 갱신
+    완전 포함 -> tree[node] 그대로 (여기서 멈춤)  올라오며 tree[node] = combine(자식, 자식)
+    걸침      -> 양쪽 자식에 물어 combine         빠뜨리면 위쪽이 옛 답을 들고 조용히 틀린다
+    "완전 포함에서 멈춘다"가 O(log n) 을 만든다
+              |
+              v
+[5] combine 의 조건 = 모노이드            [6] 구간 갱신은 미룬다 (lazy)
+    결합법칙  (a*b)*c = a*(b*c)              rangeAdd(l, r, d): 구간을 덮는 노드에 쪽지(lazy)만 남긴다
+    항등원    범위 밖을 "없는 것처럼"         자식으로 내려가기 직전에만 push 로 쪽지를 넘긴다
+    합·min·max·gcd 는 되고, 평균은 (합, 개수) 를 같이 들고 다닌다
+```
 
-README 가 특히 생각해 보라고 짚은 것 — `query` 세 경우의 분기, `update` 가 돌아오는 길에 할 일, 최소 트리의 항등원이 0 이면 안 되는 이유, 평균처럼 결합법칙이 없는 연산에 무엇을 같이 들고 다닐지, 상속이냐 인자냐, 미루기의 쪽지를 언제 누구에게 넘길지.
+- [1] 잎에만 원소가 하나씩 들어가고, 위로 갈수록 넓은 구간의 답이 미리 접혀 있다.
+- [2] 구조가 규칙적이라 포인터가 필요 없다. 부모·자식을 번호 계산으로 오간다.
+- [3] 요청 구간을 미리 계산된 노드 몇 개로 덮는다. 아무리 넓어도 O(log n)개면 덮인다.
+- [4] 갱신은 잎에서 뿌리까지 한 줄만 다시 접는다. 돌아오는 길의 `combine`이 이 자료구조의 정확성이다.
+- [5] 구간을 어떤 순서로 쪼개 합치든 답이 같아야 하므로 결합법칙이 필요하고, 범위 밖을 지우려면 항등원이 필요하다.\
+  최소 트리의 항등원은 0이 아니라 +∞다.
+- [6] 구간 전체 갱신은 원소마다 하지 않고 쪽지로 미룬다. 쪽지를 언제 누구에게 넘기느냐가 전부다.
 
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — RangeQuery (`src/main/java/com/datastructure/segment/RangeQuery.java`)
+### 계약 — RangeQuery (`src/main/java/com/datastructure/segment/RangeQuery.java`)
 
 - `int size()`
 - `void update(int index, long value)`
 - `long query(int from, int to)`
 - `long get(int index)`
 
-## 구현 — SegmentTree (`src/main/java/com/datastructure/segment/SegmentTree.java`)
+### 구현 — SegmentTree (`src/main/java/com/datastructure/segment/SegmentTree.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 - *리프(leaf)*: 트리의 맨 아래, 자식이 없는 노드. 여기에만 원소 하나가 그대로 들어간다.
 - *combine*: 두 구간의 답을 하나로 합치는 연산. 합 트리면 `+`, 최솟값 트리면 `min`.
@@ -149,7 +182,7 @@ n = 6 의 실제 배치 (mid = (lo+hi) >>> 1 로 쪼갠 결과)
 2. `tree[0]` 은 안 쓴다 — 0×2=0 이라 번호 공식이 0에서 무너지기 때문이다.
 3. 배열 크기를 4n으로 넉넉히 잡는다 — n이 2의 거듭제곱이 아니면 번호가 듬성듬성 커져 2n으로는 넘친다. 공간을 버리고 계산의 단순함을 산다.
 
-### 동작 — 갱신
+#### 동작 — 갱신
 
 **언제 쓰나**: 원소 하나의 값이 바뀌었을 때. 그 원소를 포함하는 소계들만 다시 계산한다.
 
@@ -190,7 +223,7 @@ values[index] 도 같이 갱신한다. tree 에는 combine 결과만 남아서
 
 **비용**: 건드리는 노드 = 뿌리→리프 한 줄 = 트리 높이 = O(log n).
 
-### 동작 — 조회
+#### 동작 — 조회
 
 **언제 쓰나**: "구간 [from..to] 의 합(또는 최솟값)은?" 이라는 질문에 답할 때.
 
@@ -244,84 +277,84 @@ identity() 의 뜻 = 무교차 가지에서 돌려줘도 결과를 바꾸지 않
 
 **비용**: 깊이마다 상수 개 × 깊이 log n = 방문 노드 O(log n).
 
-### `필드`
+#### `필드`
 
 - `int n` 역할:
 - `long[] tree` 역할:
 - `long[] values` 역할:
 
-### `protected SegmentTree(long[] initial)`
+#### `protected SegmentTree(long[] initial)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `protected abstract long combine(long a, long b)`
+#### `protected abstract long combine(long a, long b)`
 
 - 하는 일:
 - 논리:
 
-### `protected abstract long identity()`
+#### `protected abstract long identity()`
 
 - 하는 일:
 - 논리:
 
-### `private void build(int node, int lo, int hi)` (TODO)
-
-- 하는 일:
-- 논리:
-- 비용(왜):
-
-### `public void update(int index, long value)` / `private void update(int node, int lo, int hi, int index, long value)` (TODO)
+#### `private void build(int node, int lo, int hi)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public long query(int from, int to)` / `private long query(int node, int lo, int hi, int from, int to)` (TODO)
+#### `public void update(int index, long value)` / `private void update(int node, int lo, int hi, int index, long value)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public long get(int index)`
+#### `public long query(int from, int to)` / `private long query(int node, int lo, int hi, int from, int to)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public int size()`
+#### `public long get(int index)`
+
+- 하는 일:
+- 논리:
+- 비용(왜):
+
+#### `public int size()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 — SumSegmentTree (`src/main/java/com/datastructure/segment/SumSegmentTree.java`)
+### 구현 — SumSegmentTree (`src/main/java/com/datastructure/segment/SumSegmentTree.java`)
 
-### `protected long combine(long a, long b)` (TODO)
-
-- 하는 일:
-- 논리:
-
-### `protected long identity()` (TODO)
+#### `protected long combine(long a, long b)` (TODO)
 
 - 하는 일:
 - 논리:
 
-## 구현 — MinSegmentTree (`src/main/java/com/datastructure/segment/MinSegmentTree.java`)
-
-### `protected long combine(long a, long b)` (TODO)
+#### `protected long identity()` (TODO)
 
 - 하는 일:
 - 논리:
 
-### `protected long identity()` (TODO)
+### 구현 — MinSegmentTree (`src/main/java/com/datastructure/segment/MinSegmentTree.java`)
+
+#### `protected long combine(long a, long b)` (TODO)
 
 - 하는 일:
 - 논리:
 
-## 구현 — MinMaxSegmentTree (`src/main/java/com/datastructure/segment/MinMaxSegmentTree.java`)
+#### `protected long identity()` (TODO)
 
-### 구조
+- 하는 일:
+- 논리:
+
+### 구현 — MinMaxSegmentTree (`src/main/java/com/datastructure/segment/MinMaxSegmentTree.java`)
+
+#### 구조
 
 ```
 SegmentTree 와 다른 점은 딱 하나 -- 노드 한 칸에 값이 두 개다.
@@ -352,45 +385,45 @@ values = [3,1,4,1,5,9,2,6]
 - *record*: 자바에서 "값 몇 개를 묶은 작은 상자"를 한 줄로 정의하는 문법. 여기서는 (min, max) 쌍.
 - *캐시(cache)*: CPU 가까이 있는 아주 빠른 임시 메모리. 붙어 있는 데이터를 한 번에 끌어오므로, 같은 경로를 두 번 밟는 것보다 한 번 밟는 쪽이 유리하다.
 
-### `필드`
+#### `필드`
 
 - `int n` 역할:
 - `MinMax[] tree` 역할:
 - `long[] values` 역할:
 - `record MinMax(long min, long max)` / `MinMax.IDENTITY` 역할:
 
-### `MinMax merge(MinMax other)` (TODO)
+#### `MinMax merge(MinMax other)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public MinMaxSegmentTree(long[] initial)`
+#### `public MinMaxSegmentTree(long[] initial)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public void update(int index, long value)`
+#### `public void update(int index, long value)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public MinMax query(int from, int to)` / `private MinMax query(int node, int lo, int hi, int from, int to)` (TODO)
+#### `public MinMax query(int from, int to)` / `private MinMax query(int node, int lo, int hi, int from, int to)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public int size()`
+#### `public int size()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 — GenericSegmentTree (`src/main/java/com/datastructure/segment/GenericSegmentTree.java`)
+### 구현 — GenericSegmentTree (`src/main/java/com/datastructure/segment/GenericSegmentTree.java`)
 
-### 구조
+#### 구조
 
 ```
 SegmentTree 와 다른 점 -- 값의 타입과 combine 을 "상속"이 아니라 "인자"로 받는다.
@@ -425,7 +458,7 @@ SegmentTree 와 다른 점 -- 값의 타입과 combine 을 "상속"이 아니라
 - *박싱(boxing)*: long 같은 원시값을 Long 객체로 감싸는 것. 객체가 되면 메모리에 흩어져 참조를 한 번 더 따라가야 한다.
 - *모노이드(monoid)*: "결합법칙이 성립하는 연산 + 항등원" 한 쌍. (합, 0), (min, +∞), (문자열 잇기, "") 전부 모노이드라 세그먼트 트리에 올릴 수 있다.
 
-### `필드`
+#### `필드`
 
 - `int n` 역할:
 - `Object[] tree` 역할:
@@ -433,44 +466,44 @@ SegmentTree 와 다른 점 -- 값의 타입과 combine 을 "상속"이 아니라
 - `T identity` 역할:
 - `BinaryOperator<T> combine` 역할:
 
-### `public GenericSegmentTree(List<T> initial, T identity, BinaryOperator<T> combine)`
+#### `public GenericSegmentTree(List<T> initial, T identity, BinaryOperator<T> combine)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public void update(int index, T value)`
+#### `public void update(int index, T value)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public T query(int from, int to)` / `private T query(int node, int lo, int hi, int from, int to)` (TODO)
+#### `public T query(int from, int to)` / `private T query(int node, int lo, int hi, int from, int to)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public T get(int index)`
+#### `public T get(int index)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int size()`
+#### `public int size()`
 
 - 하는 일:
 - 비용(왜):
 
-### `public List<T> toList()`
+#### `public List<T> toList()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 — LazySegmentTree (`src/main/java/com/datastructure/segment/LazySegmentTree.java`)
+### 구현 — LazySegmentTree (`src/main/java/com/datastructure/segment/LazySegmentTree.java`)
 
 "구간 [0..2] 전체에 5씩 더해라" 같은 **구간 수정**이 오면, 보통 트리로는 원소마다 update 를 불러야 한다. 게으른(lazy) 트리는 "나중에 해도 되는 일은 쪽지로 남겨 두고 미룬다" — 방학 숙제를 몰아서 하되, 어디까지 안 했는지는 정확히 적어 두는 방식이다.
 
-### 구조
+#### 구조
 
 ```
 LazySegmentTree (n = 4, initial = [1,2,3,4], 연산 = 구간 더하기 / 구간 합)
@@ -500,7 +533,7 @@ lazy 의 규약 (apply 를 읽으면 정확히 이것이다)
    자식으로 내려가기 직전에만 push 하면 된다.
 ```
 
-### 동작 — 구간 더하기
+#### 동작 — 구간 더하기
 
 **언제 쓰나**: 연속 구간의 모든 원소에 같은 값을 더할 때. 원소 수가 몇이든 O(log n)에 끝내는 것이 목표다.
 
@@ -542,7 +575,7 @@ rangeAdd(0, 2, +5) : 구간 [0..2] 의 모든 원소에 5 를 더한다
 
 **비용**: 원소가 몇 개든 건드리는 노드는 O(log n)개.
 
-### 동작 — 미룬 값 내리기
+#### 동작 — 미룬 값 내리기
 
 **언제 쓰나**: lazy 쪽지가 남아 있는 노드의 자식으로 내려가야 하는 순간 — 그 직전에 딱 한 번 쪽지를 자식에게 넘긴다(push).
 
@@ -578,54 +611,87 @@ push 를 하는 자리 = 자식으로 내려가기 직전 딱 두 곳 (rangeAdd 
 
 **비용**: 한 번의 질의에서 push 는 경로 길이만큼 = O(log n).
 
-### `필드`
+#### `필드`
 
 - `int n` 역할:
 - `long[] tree` 역할:
 - `long[] lazy` 역할:
 
-### `public LazySegmentTree(long[] initial)`
+#### `public LazySegmentTree(long[] initial)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void push(int node, int lo, int hi)` (TODO)
+#### `private void push(int node, int lo, int hi)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void apply(int node, int lo, int hi, long delta)` (TODO)
+#### `private void apply(int node, int lo, int hi, long delta)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public void rangeAdd(int from, int to, long delta)` / `private void rangeAdd(int node, int lo, int hi, int from, int to, long delta)` (TODO)
+#### `public void rangeAdd(int from, int to, long delta)` / `private void rangeAdd(int node, int lo, int hi, int from, int to, long delta)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public long rangeSum(int from, int to)` / `private long rangeSum(int node, int lo, int hi, int from, int to)` (TODO)
+#### `public long rangeSum(int from, int to)` / `private long rangeSum(int node, int lo, int hi, int from, int to)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public long get(int index)`
+#### `public long get(int index)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public int size()`
+#### `public int size()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **알고리즘 대회의 구간 문제** — 구간 합·최솟값·최댓값·GCD에 점 갱신이 섞이면 거의 전부 이 트리다. 구간 갱신까지 오면 lazy 판이다.
+- **예약·스케줄링의 정원 검사** — 시간 축을 배열로 두고 예약마다 구간에 +1(lazy `rangeAdd`), "이 기간 최대 동시 수"를 구간 최댓값으로 물어 정원 초과를 O(log n)에 판정한다.
+- **시계열 집계** — 값이 계속 들어오는 지표에서 "최근 구간의 최댓값·합"을 물을 때. [ops-patterns/17-timeseries](../../ops-patterns/17-timeseries/2-summary.md)의 롤업이 같은 "소계를 미리 접어 두기" 발상이다.
+- **순위 질의(order statistics)** — 값의 등장 횟수를 잎에 두면 "k번째로 작은 값"을 뿌리에서 내려가며 O(log n)에 찾는다. 06번 BST의 `kthSmallest`를 배열로 옮긴 모양이다.
+- **재료 — [07-heap](../07-heap/2-summary.md)** — 자식이 `2i`·`2i+1`이라는 번호 계산이 그대로다. 규칙적인 구조는 포인터를 계산으로 대신한다.
+- **정적 변종 — [algorithm/10-prefix-sum](../../algorithm/10-prefix-sum/2-summary.md) · [22-sparse-table](../22-sparse-table/2-summary.md)** — 값이 안 바뀌면 누적합(합)·희소 테이블(최솟값)이 조회 O(1)로 이긴다.
+- **합 전용 축약 — [17-fenwick-tree](../17-fenwick-tree/2-summary.md)** — 역연산이 있는 합만 필요하면 코드가 훨씬 짧은 펜윅 트리로 간다.
+- **다른 질문 — [30-interval-tree](../30-interval-tree/2-summary.md)** — "이 점과 겹치는 구간들은?"은 세그먼트 트리가 아니라 구간 트리의 질문이다.
+
+## 적용 — 풀어나가는 법
+
+세그먼트 트리를 꺼낼지는 "조회와 갱신이 둘 다 자주 있는가"로 정하고, 꺼냈다면 "무엇을 접을 것인가"를 먼저 고정한다.\
+순서: ① 값이 안 바뀌면 누적합·희소 테이블, 갱신이 압도적이면 매번 훑기 — 둘 다 잦을 때만 트리다 → ② 노드에 들고 다닐 값과 `combine`을 정하고 결합법칙·항등원을 확인한다(평균이면 합과 개수를 같이) → ③ 점 갱신만이면 기본 트리, 구간 갱신이 있으면 lazy → ④ 배열 크기 4n, 항등원, `hi - lo + 1`을 먼저 테스트로 못 박는다.\
+아래 과제 목록과 구현 전략 비교가 ②~③을 다룬다.
+
+### 문제 — 이 챕터가 시키는 것
+
+비워 둔 TODO 를 채워 세그먼트 트리 다섯 가지를 완성하는 과제다.
+뼈대(`SegmentTree`)의 `build`·`update`·`query` 가 본체이고, 나머지 넷은 그 뼈대에 "무엇을 어떻게 접을 것인가"만 바꿔 끼운다.
+시작 상태는 테스트 37개 중 35개 실패이며, `cd ~/project/myway/data-structure && ./run.sh 13` 으로 확인한다.
+
+- `SegmentTree` — `build`, `update`, `query` 3개 (재귀 본체. 나머지 구현이 전부 여기에 의존한다)
+- `SumSegmentTree` / `MinSegmentTree` — 각각 `combine`, `identity` 2개씩 (뼈대는 하나, 결합 함수와 항등원만 다르다)
+- `MinMaxSegmentTree` — `merge`, `query` 2개 (접어 넣는 값이 스칼라일 필요가 없다는 것을 보여준다)
+- `GenericSegmentTree` — `query` 1개 (같은 추상화를 상속 대신 생성자 인자로 받는다)
+- `LazySegmentTree` — `push`, `apply`, `rangeAdd`, `rangeSum` 4개 (구간 전체 갱신을 O(log n)으로. 제일 어렵다)
+
+README 가 특히 생각해 보라고 짚은 것 — `query` 세 경우의 분기, `update` 가 돌아오는 길에 할 일, 최소 트리의 항등원이 0 이면 안 되는 이유, 평균처럼 결합법칙이 없는 연산에 무엇을 같이 들고 다닐지, 상속이냐 인자냐, 미루기의 쪽지를 언제 누구에게 넘길지.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -634,15 +700,57 @@ push 를 하는 자리 = 자식으로 내려가기 직전 딱 두 곳 (rangeAdd 
 | GenericSegmentTree (인자로 주입) | | | |
 | LazySegmentTree (미루기) | | | |
 
+## 장애 시나리오와 대처
+
+**1. 특정 n에서만 터지는 `ArrayIndexOutOfBoundsException` — 배열을 `2n`으로 잡았을 때**
+
+- 현상: 원소 8개·5개·7개 테스트는 통과하는데 원소 6개에서 트리를 만들다 죽는다.
+- 보이는 형태: `ArrayIndexOutOfBoundsException: Index 2n+…` — `build`의 재귀가 배열 끝을 넘는 번호에 쓴다.
+- 원인: 트리 배열을 `2n`으로 잡았다. n이 2의 거듭제곱이면 노드 번호가 `2n-1`까지라 딱 맞는다. 거듭제곱이 아니면 트리가 한쪽으로 한 층 더 깊어질 수 있어, n에 따라 번호가 `2n`을 넘는다 — 이 구현의 쪼개기(`mid = (lo+hi)>>>1`, 왼쪽이 `[lo..mid]`)로 직접 세면 n = 5·7은 최대 번호 9·13으로 통과하고, n = 6은 13(> 11)으로 터진다. 그 다음은 n = 10~14다.
+- 대처: 배열 크기를 `4n`으로 잡는다(어떤 n에도 충분한 상한). 또는 n을 다음 2의 거듭제곱으로 올려 `2·그 값`으로 잡는다. 거듭제곱이 아닌 크기는 통과하는 것과 터지는 것이 섞여 있으므로, 테스트는 n = 1부터 수십까지 전부 돈다.
+
+**2. 답이 한 칸 어긋난다 — 구간 경계의 포함/제외 혼용**
+
+- 현상: `query(2, 5)`가 원소 4개가 아니라 3개(또는 5개)의 답을 낸다. lazy 트리에서는 구간 합이 원소 하나 분량만큼 모자란다.
+- 보이는 형태: 작은 배열에서 손으로 센 값과 1개 원소만큼 차이가 난다. lazy에서 길이를 `hi - lo`로 쓰면 길이 1짜리 노드(잎)에는 0이 더해져, 점 하나에 `rangeAdd`한 결과가 통째로 사라진다.
+- 원인: 어떤 곳은 `[lo, hi]`(양 끝 포함), 어떤 곳은 `[lo, hi)`로 썼다. lazy의 `apply`에서 구간 길이를 `hi - lo`로 써서 `+1`이 빠지면 노드 값에 더해지는 양이 한 원소만큼 모자란다.
+- 대처: 규약을 하나로 고정한다 — 이 구현은 양 끝 포함, 길이는 `hi - lo + 1`. 세 경우 분기(`r < lo || hi < l` / `l <= lo && hi <= r`)를 그 규약으로 쓰고, 길이 1·2·3짜리 구간을 전부 테스트한다.
+
+**3. 합이 음수로 튄다 — `int` 오버플로**
+
+- 현상: 원소가 전부 양수인데 구간 합이 음수이거나 터무니없이 작다.
+- 보이는 형태: 작은 입력은 맞고, 원소 값이 크거나 개수가 많은 입력에서만 틀린다. 예외는 없다.
+- 원인: 소계를 `int`에 접었다. 원소 10만 개 × 값 10억이면 합이 `int` 최댓값(약 21억)을 넘어 음수로 돌아온다. 트리는 부분합을 위로 접으므로 잎은 멀쩡해도 위쪽 노드부터 넘친다.
+  - *오버플로(overflow)*: 정수형이 담을 수 있는 최댓값을 넘겨 값이 반대편(음수)으로 넘어가는 현상.
+- 대처: 소계 자료형을 `long`으로 둔다. 최솟값·최댓값 트리는 안 넘치지만 합·곱 트리는 상한을 먼저 계산한다. 곱이면 모듈러 연산을 쓴다.
+
+**4. 동시에 읽기만 했는데 값이 틀린다 — 읽기가 구조를 바꾼다**
+
+- 현상: 여러 스레드가 `rangeSum`만 부르는데 결과가 가끔 틀리거나 서로 다르다.
+- 보이는 형태: 단일 스레드에서는 항상 맞고, 동시 조회에서만 재현된다. 쓰기 스레드가 없어도 난다.
+- 원인: lazy 트리의 `rangeSum`은 내려가면서 `push`로 쪽지를 자식에게 넘긴다 — **읽기가 `tree`·`lazy` 배열을 고친다**. 두 스레드가 같은 노드에서 동시에 `push`하면 쪽지가 두 번 더해지거나 사라진다. 10번 LRU의 `get`처럼 "읽기가 쓰기"인 연산이다(정답 6번 참고).
+- 대처: 조회도 락으로 감싼다. 갱신이 끝난 뒤 조회만 이어지는 국면이면 쪽지를 전부 내려보내(`push` 전체) 읽기 전용 상태로 만든 뒤 락 없이 읽는다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 세그먼트 트리는 구간의 답을 소계로 미리 접어 둔 이진 트리다 — 조회는 소계 몇 개로 구간을 덮고, 갱신은 잎에서 뿌리까지 한 줄만 다시 접어 둘 다 O(log n)이다.
+- 어느 쪽이 나은지는 조회와 갱신의 비율이 정한다: 값이 안 바뀌면 누적합·희소 테이블, 갱신이 압도적이면 매번 훑기, 둘 다 잦을 때만 이 트리다.
+- `combine`은 결합법칙과 항등원을 요구한다(모노이드) — 구간을 어떤 순서로 쪼개 합치든 같아야 하고, 범위 밖을 없는 것처럼 만들 값이 있어야 한다. 평균처럼 안 되는 연산은 합과 개수를 같이 들고 다니면 된다.
+- `query`의 세 경우와 `update`가 돌아오는 길의 `combine`이 이 자료구조의 전부다 — 한 경우에서 멈추지 않으면 전수 조사가 되고, 돌아오며 접지 않으면 조용히 틀린다.
+- 구간 갱신은 쪽지로 미룬다(lazy) — 그러면 조회도 쪽지를 넘기며 구조를 바꾸므로, 읽기가 더 이상 읽기가 아니다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [07-heap](../07-heap/2-summary.md): 자식 `2i`·`2i+1` 번호 계산. [algorithm/10-prefix-sum](../../algorithm/10-prefix-sum/2-summary.md): 값이 안 바뀔 때의 O(1) 조회 — 이 노트가 출발하는 갈림길.
+- 선행 — [12-skip-list](../12-skip-list/2-summary.md): 정렬 맵의 범위 조회가 O(k)인 자리에서 "구간에 대한 질문"이 시작된다.
+- 후속 — [17-fenwick-tree](../17-fenwick-tree/2-summary.md): 합만 필요할 때의 짧은 판. [14-union-find](../14-union-find/2-summary.md): 연산을 포기하고 속도를 얻는 반대 방향의 거래.
+- 형제 — [22-sparse-table](../22-sparse-table/2-summary.md)(정적 RMQ O(1)) · [30-interval-tree](../30-interval-tree/2-summary.md)(겹치는 구간 질의).
+- 응용 — [ops-patterns/17-timeseries](../../ops-patterns/17-timeseries/2-summary.md): 시계열 롤업.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `33-segment-tree` (선행 `09-binary-search-tree`).
+- 참고 — cp-algorithms "Segment Tree"(cp-algorithms.com/data_structures/segment_tree.html).
+- myway 원본 — `/home/jun/project/myway/data-structure/13-segment-tree/` (README.md · impl/SegmentTree.java · impl/LazySegmentTree.java · impl/MinMaxSegmentTree.java · impl/GenericSegmentTree.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -651,7 +759,7 @@ push 를 하는 자리 = 자식으로 내려가기 직전 딱 두 곳 (rangeAdd 
 - 테스트: `/home/jun/project/myway/data-structure/13-segment-tree/src/test/java/com/datastructure/segment/`
 - 정답 구현: `/home/jun/project/myway/data-structure/13-segment-tree/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 본문에 등장한 자리에서 이미 푼 용어를 포함해, 이 문서의 전문용어를 한곳에 모았다.
 

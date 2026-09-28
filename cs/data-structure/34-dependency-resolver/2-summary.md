@@ -4,8 +4,34 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+"B를 하려면 A가 먼저 끝나야 한다"는 관계가 수백 개 주어졌을 때, 전부를 만족하는 **한 줄 순서**를 뽑아야 한다.\
+관계는 부분적으로만 주어진다(a와 b 사이엔 아무 말이 없다) — 그런데 실행은 한 줄로만 할 수 있다.
+
+```text
+주어진 것 (부분 순서)                     필요한 것 (전순서 하나)
+   a ---> b ---> d                         a, c, b, d   또는   a, b, c, d
+   a ---> c ---> d                         (둘 다 맞다 — 모든 화살표를 만족한다)
+   b 와 c 사이엔 아무 말도 없다
+
+막히는 경우 (순환)
+   a ---> b                                순서가 아예 없다 — "없다"를 보고해야 한다
+   ^      |                                절반만 실행한 상태는 아무것도 안 한 상태보다 나쁘다
+   +------+
+```
+
+정렬(06번 BST)은 비교 가능한 값끼리만 세우고, 순회(08번 그래프)는 닿는 곳을 다 볼 뿐 순서를 만들지 않는다.\
+위상 정렬은 이 둘로는 안 되는 "화살표만 만족하는 순서 만들기"와 "순서가 없음을 판정하기"를 한다.
+
+- 쉬운 예: 요리 — 밥이 되어야 볶음밥, 볶음밥이 되어야 도시락. 밥과 계란 프라이는 아무 순서나.
+- 똑같은 구조다: `DependencyGraph`에 `dependsOn(볶음밥, 밥)`으로 화살표를 넣고 `resolve()`로 한 줄을 뽑는다.
+- 실무 예: `npm install`이 패키지를 받는 순서, Gradle이 태스크를 도는 순서, 빌드 서버가 "동시에 돌려도 되는 것"을 층으로 묶어 코어에 나눠 주는 일.
+  - *의존(dependency)*: "B를 하려면 A가 먼저 끝나야 한다"는 관계. B가 A에 기댄다고 말한다.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 요리 순서 정하기 — "밥이 되어야 볶음밥을 만들고, 볶음밥이 되어야 도시락을 싼다".**
 
@@ -26,45 +52,54 @@
 
 이 "요리 순서"와 **똑같은 구조**가 실무의 빌드·설치 도구다 — npm/Gradle의 패키지 설치 순서, Makefile의 빌드 순서, 수강신청의 선수과목 검사가 전부 의존 그래프의 위상 정렬이다.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-원본 README(`myway/data-structure/34-dependency-resolver/README.md`)의 요구사항은 이렇다.
+### 전체 흐름
 
-- `npm install` 이 무엇을 먼저 받을지 정하는 일 — **위상 정렬**이다.\
-  같은 문제를 두 알고리즘으로 푼다: 칸 알고리즘(앞에 아무것도 없는 것부터 뽑는다)과 DFS(다 내려갔다 돌아오는 순서를 뒤집는다).\
-  **답이 다르고 둘 다 맞다** — 그래서 32번·33번처럼 답을 맞대보는 대조가 여기서는 성립하지 않는다.
-- 답을 비교하는 대신 **성질 세 가지**를 검사한다: ①모든 노드가 정확히 한 번씩 ②앞에 와야 하는 것이 앞에 ③없는 이름이 안 섞임.\
-  ②만 보면 노드를 통째로 빠뜨린 구현이 통과한다(빠진 것은 순서를 안 어긴다).
-- 두 알고리즘의 차이는 답이 아니라 **진단 능력**에 있다 — 순환일 때 칸은 "있다"까지, DFS 는 "`a → b → c → a`"까지 말한다.
+```text
+[1] 그래프에 담는다 — 화살표 방향이 여기서 정해진다
+    dependsOn(d, b) = "d 는 b 에 기댄다"  ->  간선 b -> d (먼저 -> 나중), inDegree[d]++
+    edges : TreeMap<이름, TreeSet<이름>>   inDegree : TreeMap<이름, Integer>
+              |
+      +-------+-------------------------------+
+      v                                       v
+[2] 칸 (Kahn)                             [3] DFS 후위 + 3색
+    ready = inDegree 0 인 것들 (PriorityQueue)    WHITE(안 봤다) -> GRAY(내려가는 중) -> BLACK(끝)
+    꺼낸다 -> 뒤에 오는 것들의 차수를 1 내린다     자식을 다 본 뒤 자기를 적는다 (postorder)
+    0 이 되면 ready 에 넣는다                      뒤집으면 위상 순서
+    답 = 사전순으로 가장 이른 순서 하나             GRAY 를 다시 만나면 = 순환, path 가 곧 고리
+      |                                            |
+      v                                            v
+[4] 순환 판정                              
+    칸 : order.size() < 노드 수 -> "있다"까지      DFS : "a -> b -> c -> a" 경로까지
+    둘 다 부분 결과 대신 CycleException
+              |
+              v
+[5] 층 (layers) — 동시에 시작해도 되는 묶음
+    층 0 [a]  층 1 [b, c]  층 2 [d]      층 수 = 코어를 아무리 늘려도 못 줄이는 시간
+```
 
-과제(TODO 8개 + 구현 대상):
+- [1] "기댄다"를 어느 방향의 화살표로 적을지가 전부다. 뒤집으면 답이 정확히 거꾸로 나오는데 예외는 없다 — 순환은 뒤집어도 순환이라 순환 테스트는 통과한다.
+  - *진입 차수(in-degree)*: 들어오는 화살표 수 = 내가 기다려야 하는 일의 개수. 0이면 당장 시작 가능.
+- [2] 칸은 "지금 기다릴 것이 0개인 일"부터 꺼낸다. 여럿이면 사전순 — 답이 하나로 고정돼야 같은 입력에 같은 답을 보장한다.
+- [3] DFS는 끝까지 파고 내려갔다 돌아오며 적는다. 색이 셋인 이유: GRAY(지금 내려온 길)를 다시 만나면 순환이고, BLACK(이미 끝남)은 다시 파지 않는다 — 다시 파면 답은 맞는데 방문이 2의 거듭제곱으로 는다.
+  - *후위(postorder)*: 내 뒤에 와야 하는 것들을 전부 끝낸 다음에 나를 적는 순서. 뒤집으면 위상 순서.
+- [4] 두 알고리즘의 답은 다르고 둘 다 맞다. 차이는 순환일 때의 **진단 능력**이다 — 칸은 남은 것들이 있다는 것만, DFS는 어느 고리인지까지 안다.
+- [5] 층은 칸의 부산물이다(그 시점의 ready를 통째로). 노드 100개가 사슬이면 100층, 전부 독립이면 1층 — 가장 긴 사슬이 시간을 정한다.
 
-- `DependencyGraph` 의 TODO 3개 — `add` · `dependsOn` · `dependenciesOf`. **화살표 방향이 여기서 정해진다**(뒤집으면 답이 정확히 거꾸로 나오고 예외는 안 난다).
-- `KahnResolver` 의 TODO 2개 — `resolve` · `layers`(층이 이 알고리즘의 부산물이다).
-- `DfsResolver` 의 TODO 3개 — `resolve` · `walk`(색 세 가지가 본체다) · `layers`(여기서는 따로 계산해야 한다).
-- 응용으로 생각할 것 — 순환이면 부분 결과를 주지 않는 이유, 검은색을 다시 파면 답은 맞는데 방문이 2의 거듭제곱으로 터지는 것(계약 테스트로는 안 잡힌다), `TreeMap`/`TreeSet`/`PriorityQueue` 가 취향이 아니라 재현성 계약인 것.\
-  그리고 층 = 코어를 늘려도 못 줄이는 시간(노드 100개: 사슬 100층 / 이진 트리 7층 / 전부 독립 1층).
-- 검증: `ResolverContractTest`(성질 검사) + 구현별 테스트(칸의 사전순 최소, DFS 의 순환 경로) + `MeasurementTest` 수치 (72개 중 70개가 처음에 실패한다).
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — Resolver (`src/main/java/com/datastructure/depresolve/Resolver.java`)
+### 계약 — Resolver (`src/main/java/com/datastructure/depresolve/Resolver.java`)
 
 - `List<String> resolve()`
 - `List<String> cycle()`
 - `List<List<String>> layers()`
 
-## 보조
+### 보조
 
 - `CycleException` (`src/main/java/com/datastructure/depresolve/CycleException.java`) — 역할:
 
-## 구현 — DependencyGraph (`src/main/java/com/datastructure/depresolve/DependencyGraph.java`)
+### 구현 — DependencyGraph (`src/main/java/com/datastructure/depresolve/DependencyGraph.java`)
 
-### 구조
+#### 구조
 
 ```
 DependencyGraph
@@ -97,7 +132,7 @@ DependencyGraph
                                 (반대 방향이라 edges 전체를 훑어서 만든다 - O(V+E))
 ```
 
-### 동작 — 간선 추가
+#### 동작 — 간선 추가
 
 언제 쓰나: "d는 b에 기댄다"는 관계 하나를 그래프에 기록할 때(`dependsOn`). 아래 그림은 전/후 비교 — edges에는 "b 다음에 d"가 담기고, 기대는 쪽(d)의 진입 차수만 1 오른다. 같은 관계를 두 번 걸었을 때 카운트를 두 번 올리면 왜 "가짜 순환"이 생기는지가 이 절의 함정이다.
 
@@ -131,53 +166,53 @@ dependsOn("d", "b")  :  d 가 b 에 기댄다  ->  간선 b -> d
       dependenciesOf 만 반대 방향이라 O(V + E) 로 훑는다
 ```
 
-### 필드
+#### 필드
 - `edges` — 역할:
 - `inDegree` — 역할:
 
-### `void add(String name)` (TODO)
+#### `void add(String name)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void dependsOn(String dependent, String dependency)` (TODO)
+#### `void dependsOn(String dependent, String dependency)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> names()`
+#### `List<String> names()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> after(String name)`
+#### `List<String> after(String name)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int inDegreeOf(String name)`
+#### `int inDegreeOf(String name)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> dependenciesOf(String name)` (TODO)
+#### `List<String> dependenciesOf(String name)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()` / `int edgeCount()`
+#### `int size()` / `int edgeCount()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — KahnResolver (`src/main/java/com/datastructure/depresolve/KahnResolver.java`)
+### 구현 — KahnResolver (`src/main/java/com/datastructure/depresolve/KahnResolver.java`)
 
-### 동작 — 위상 정렬(단계별)
+#### 동작 — 위상 정렬(단계별)
 
 언제 쓰나: 순서를 실제로 뽑을 때(`resolve`). 요령은 "지금 기다릴 것이 0개인 일부터 한다"이다. 아래 표는 한 걸음마다 (꺼낸 것 / 대기열 ready / 남은 카운트 remaining / 지금까지의 순서 order)가 어떻게 변하는지를 전부 보여준다 — 하나를 끝낼 때마다 그것을 기다리던 일들의 카운트를 1씩 내리고, 0이 된 일을 대기열에 넣는다.
 
@@ -224,7 +259,7 @@ order.size() == graph.size() 이므로 순환이 없다.  결과 [a, b, c, d]
       relaxations(진입 차수를 내린 횟수) 는 간선 수와 같아야 한다. 여기서는 4.
 ```
 
-### 동작 — 사이클 감지
+#### 동작 — 사이클 감지
 
 언제 쓰나: 서로가 서로를 기다리는 맞물림(순환)이 있으면 순서가 존재하지 않는다 — 그것을 알아채고 예외로 알릴 때. 칸 알고리즘의 감지법은 간접적이다: 아래 그림처럼 대기열이 처음부터(또는 도중에) 비어 버려서, 다 끝났는데 순서에 담긴 개수가 전체 개수보다 적으면 순환이다.
 
@@ -259,43 +294,43 @@ order.size() == graph.size() 이므로 순환이 없다.  결과 [a, b, c, d]
       (같은 문제를 푸는 두 알고리즘의 차이가 답이 아니라 실패했을 때 말해줄 수 있는 것에 있다)
 ```
 
-### 필드
+#### 필드
 - `graph` — 역할:
 - `relaxations` — 역할:
 
-### `KahnResolver(DependencyGraph graph)`
+#### `KahnResolver(DependencyGraph graph)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> resolve()` (TODO)
+#### `List<String> resolve()` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> cycle()`
+#### `List<String> cycle()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<List<String>> layers()` (TODO)
+#### `List<List<String>> layers()` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long relaxations()`
+#### `long relaxations()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — DfsResolver (`src/main/java/com/datastructure/depresolve/DfsResolver.java`)
+### 구현 — DfsResolver (`src/main/java/com/datastructure/depresolve/DfsResolver.java`)
 
-### 동작 — DFS 후위 + 색칠
+#### 동작 — DFS 후위 + 색칠
 
 언제 쓰나: 같은 위상 정렬을 다른 길로 — 한 점에서 끝까지 파고 내려갔다 돌아오며 적는 방식. 미로 탐험에서 갈림길마다 분필로 표시를 남기는 것과 같다: 안 가 본 곳(WHITE), 지금 지나가는 중(GRAY), 다 둘러보고 나온 곳(BLACK). 아래 그림 [1]은 순환 없는 그래프에서 "돌아오면서 적기(후위) → 뒤집기 = 위상 순서"의 전 과정, [2]는 지나가는 중(GRAY)인 곳을 또 만나면 그 자리가 바로 순환이라는 것을 보여준다.
 
@@ -357,63 +392,140 @@ order.size() == graph.size() 이므로 순환이 없다.  결과 [a, b, c, d]
       (내 층 + 1 을 뒤엣것에 max 로 퍼뜨린다). 칸에서는 그냥 나오던 값이다.
 ```
 
-### 필드
+#### 필드
 - `WHITE` / `GRAY` / `BLACK` — 역할:
 - `graph` — 역할:
 - `visits` — 역할:
 - `foundCycle` — 역할:
 
-### `DfsResolver(DependencyGraph graph)`
+#### `DfsResolver(DependencyGraph graph)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> resolve()` (TODO)
+#### `List<String> resolve()` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean walk(String name, Map<String, Integer> color, List<String> path, List<String> postorder)` (TODO, private)
+#### `boolean walk(String name, Map<String, Integer> color, List<String> path, List<String> postorder)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> cycle()`
+#### `List<String> cycle()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<List<String>> layers()` (TODO)
+#### `List<List<String>> layers()` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long visits()`
+#### `long visits()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **패키지 관리자(npm·pnpm·pip·Gradle 의존성)** — 의존 그래프를 따라 설치·빌드·설치 스크립트 실행 순서를 정한다. 순환 의존의 처리는 도구마다 다르다 — Gradle의 태스크·프로젝트 순환은 오류지만, npm은 패키지 간 순환을 허용하고 설치한다. 같은 라이브러리에 두 경로로 닿는 "다이아몬드 의존"은 실무에서 주로 **버전 충돌**(두 경로가 다른 버전을 요구)로 알려져 있고, 이 노트에서는 같은 모양이 BLACK 재방문 문제로 나타난다.
+- **빌드 시스템(Make·Gradle 태스크 그래프·Bazel)** — 타깃 간 의존을 DAG로 두고, 층 단위로 병렬 실행한다. `layers()`가 곧 "동시에 돌려도 되는 타깃 묶음"이고, 가장 긴 사슬(critical path)이 빌드 시간의 하한이다.
+- **Spring의 빈 생성 순서** — 생성자 주입 그래프를 따라 만들고, 생성자 주입 순환이면 `BeanCurrentlyInCreationException`으로 기동을 거부한다(Spring 문서 — Spring Boot 2.6부터는 필드·세터 주입 순환도 기본으로 금지). "부분 결과를 주지 않는다"의 실무 판이다.
+- **워크플로 스케줄러(Airflow 류 DAG)** — 태스크 의존을 DAG로 선언하고, 업스트림이 모두 끝난 태스크부터 실행한다 — 칸 알고리즘의 "진입 차수 0부터"와 같은 발상이다. Airflow는 DAG를 읽을 때 순환이 있으면 거부한다(Airflow 문서).
+- **인프라 프로비저닝(Terraform 리소스 그래프)** — 리소스 간 참조로 DAG를 만들고 그래프를 병렬로 걷는다(기본 동시 10개, `-parallelism` — Terraform 문서). 층으로 끊지 않고 의존이 풀리는 대로 시작하므로, `layers()`는 그 최대 병렬도의 상한을 보여 주는 모형이다.
+- **수강 신청의 선수과목 검사·스프레드시트 수식 재계산** — 셀 참조 그래프에 순환이 생기면 "순환 참조" 에러를 내는 것이 `CycleException`이다.
+- **다른 챕터의 재료** — 인접 리스트와 순회는 [08-graph](../08-graph/2-summary.md), 3색 DFS는 [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md), 사전순 최소를 고정하는 우선순위 큐는 [07-heap](../07-heap/2-summary.md)이다.
+
+## 적용 — 풀어나가는 법
+
+의존성 문제는 "화살표를 어느 방향으로 적을 것인가"에서 절반이 갈린다.\
+순서: ① "X는 Y에 기댄다"를 간선 `Y → X`(먼저 → 나중)로 못 박고 작은 예로 답 방향을 확인한다 → ② 순환이 있으면 무엇을 돌려줄지(부분 결과 금지·경로 보고 여부)를 계약으로 정한다 → ③ 답이 여럿이므로 재현 규칙(사전순)을 하나 얹는다 → ④ 검증은 답 비교가 아니라 성질 세 가지(전부 한 번씩·앞뒤 관계·없는 이름 없음)로 한다.\
+아래 과제의 TODO 순서(그래프 → 칸 → DFS)가 이 순서와 같다.
+
+### 문제 — 이 챕터가 시키는 것
+
+원본 README(`myway/data-structure/34-dependency-resolver/README.md`)의 요구사항은 이렇다.
+
+- `npm install` 이 무엇을 먼저 받을지 정하는 일 — **위상 정렬**이다.\
+  같은 문제를 두 알고리즘으로 푼다: 칸 알고리즘(앞에 아무것도 없는 것부터 뽑는다)과 DFS(다 내려갔다 돌아오는 순서를 뒤집는다).\
+  **답이 다르고 둘 다 맞다** — 그래서 32번·33번처럼 답을 맞대보는 대조가 여기서는 성립하지 않는다.
+- 답을 비교하는 대신 **성질 세 가지**를 검사한다: ①모든 노드가 정확히 한 번씩 ②앞에 와야 하는 것이 앞에 ③없는 이름이 안 섞임.\
+  ②만 보면 노드를 통째로 빠뜨린 구현이 통과한다(빠진 것은 순서를 안 어긴다).
+- 두 알고리즘의 차이는 답이 아니라 **진단 능력**에 있다 — 순환일 때 칸은 "있다"까지, DFS 는 "`a → b → c → a`"까지 말한다.
+
+과제(TODO 8개 + 구현 대상):
+
+- `DependencyGraph` 의 TODO 3개 — `add` · `dependsOn` · `dependenciesOf`. **화살표 방향이 여기서 정해진다**(뒤집으면 답이 정확히 거꾸로 나오고 예외는 안 난다).
+- `KahnResolver` 의 TODO 2개 — `resolve` · `layers`(층이 이 알고리즘의 부산물이다).
+- `DfsResolver` 의 TODO 3개 — `resolve` · `walk`(색 세 가지가 본체다) · `layers`(여기서는 따로 계산해야 한다).
+- 응용으로 생각할 것 — 순환이면 부분 결과를 주지 않는 이유, 검은색을 다시 파면 답은 맞는데 방문이 2의 거듭제곱으로 터지는 것(계약 테스트로는 안 잡힌다), `TreeMap`/`TreeSet`/`PriorityQueue` 가 취향이 아니라 재현성 계약인 것.\
+  그리고 층 = 코어를 늘려도 못 줄이는 시간(노드 100개: 사슬 100층 / 이진 트리 7층 / 전부 독립 1층).
+- 검증: `ResolverContractTest`(성질 검사) + 구현별 테스트(칸의 사전순 최소, DFS 의 순환 경로) + `MeasurementTest` 수치 (72개 중 70개가 처음에 실패한다).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
 | KahnResolver | | | |
 | DfsResolver | | | |
 
+## 장애 시나리오와 대처
+
+**1. 설치 순서가 정확히 거꾸로 나오는데 예외가 없다**
+
+- 현상: 의존하는 쪽이 먼저 실행돼 "아직 없는 것"을 참조한다 — 라이브러리보다 앱이 먼저 빌드된다.
+- 보이는 형태: `resolve()`는 정상 종료하고, 순환 테스트도 통과한다. 결과 목록만 뒤집혀 있다.
+- 원인: `dependsOn(dependent, dependency)`에서 간선을 `dependent → dependency` 방향으로 넣었다. 위상 정렬은 화살표만 만족하므로 답이 정확히 거꾸로 나오고, 순환은 뒤집어도 순환이라 감지 테스트는 멀쩡하다.
+- 대처: 간선은 "먼저 와야 하는 것 → 나중에 오는 것"으로 계약에 적고, 두 노드짜리 그래프(`b`가 `a`에 기댄다 → 답 `[a, b]`)를 방향 고정 테스트로 둔다. "순환 테스트가 통과하니 그래프가 맞다"는 성립하지 않는다.
+
+**2. 다이아몬드 의존에서 빌드 시간이 노드 수와 안 맞게 폭증**
+
+- 현상: 노드는 수십 개인데 해석이 수십 초 걸린다. 노드를 하나 더하면 시간이 두 배가 된다.
+- 보이는 형태: 답은 맞다. 계약 테스트는 전부 통과하고 `visits()`만 노드 수의 몇 배로 튄다.
+- 원인: 같은 노드에 두 경로로 닿는 모양(다이아몬드)이 겹겹이 쌓였는데, DFS가 BLACK(이미 끝난) 노드를 다시 판다. 끝난 노드를 따로 표시하지 않고 "지금 경로에 있나"(GRAY)만 보거나, 돌아올 때 표시를 "안 봤다"로 되돌리면 끝난 노드를 다시 파게 되어 생기는 함정이다(정답 3번 참고).
+- 대처: 색을 셋으로 둔다 — BLACK은 건너뛰고 GRAY만 순환으로 본다. 방문 수가 노드 수와 같아야 한다는 것을 측정 테스트로 못 박는다.
+
+**3. 같은 입력인데 실행마다 순서가 달라 캐시·재현이 깨진다**
+
+- 현상: 빌드 캐시가 자꾸 무효화되거나, 테스트 기댓값이 어떤 날은 맞고 어떤 날은 틀린다.
+- 보이는 형태: 두 실행의 `resolve()` 결과가 다르다. 둘 다 위상 순서로는 맞다.
+- 원인: 인접 표를 `HashMap`/`HashSet`으로 들거나 ready를 삽입 순서 큐로 둬서, 독립인 노드들의 상대 순서가 해시 순서에 따라 달라진다.
+- 대처: `TreeMap`/`TreeSet` + `PriorityQueue`(사전순)로 "사전순으로 가장 이른 위상 정렬" 하나를 계약으로 고정한다. 취향이 아니라 재현성 계약이다.
+
+**4. 순환 보고에 관계없는 노드가 섞인다**
+
+- 현상: DFS가 알려준 고리 `x -> a -> b -> c -> a`에서 `x`는 고리에 없다.
+- 보이는 형태: `cycle()`이 실제 고리보다 길고, 앞쪽에 이미 끝난 가지가 붙어 있다.
+- 원인: 돌아올 때 `path`에서 자기를 빼지 않았다. 고리로 내려가는 길에 **먼저 끝나는 가지**가 있으면 그 가지가 경로에 남는다 — 이 변종은 단순 그래프에서는 살아남는다.
+- 대처: GRAY → BLACK으로 바꿀 때 `path`에서 pop을 짝 맞춰 한다. 고리 앞에 먼저 끝나는 가지가 있는 그래프를 테스트로 따로 둔다. 칸 알고리즘은 "남은 것" 전부를 고리로 보고하면 안 된다 — 고리에 매달린 노드(`e`)도 남기 때문이다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 위상 정렬은 부분 순서(화살표들)만 주어졌을 때 전부를 만족하는 한 줄 순서를 만들고, 순환이면 "순서가 없다"를 보고한다 — 순회도 정렬도 하지 못하는 일이다.
+- 화살표 방향이 전부다: 뒤집으면 답이 정확히 거꾸로 나오는데 예외는 없고, 순환은 뒤집어도 순환이라 순환 테스트는 통과한다.
+- 칸은 진입 차수 0부터 꺼내고 DFS는 후위를 뒤집는다 — 답이 다르고 둘 다 맞으며, 차이는 순환일 때의 진단 능력(칸은 "있다", DFS는 경로)에 있다.
+- 답이 여럿인 문제는 답 비교로 검증할 수 없다 — 성질 세 가지(전부 한 번씩·앞뒤 관계·없는 이름 없음)로 검사하고, 사전순 규칙을 얹어 답 하나를 재현 가능하게 고정한다.
+- 층 수는 코어를 아무리 늘려도 못 줄이는 시간이다 — 노드의 87%가 첫 층이어도 가장 긴 사슬이 전체 시간을 정한다.
 
--
--
--
+## 관련 주제·근거
 
-## 용어 풀이
+- 선행 — [08-graph](../08-graph/2-summary.md) · [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md) · [algorithm/11-bfs](../../algorithm/11-bfs/2-summary.md): 인접 리스트·3색 DFS·큐 기반 순회.
+- 선행 — [07-heap](../07-heap/2-summary.md): 사전순 최소를 고정하는 `PriorityQueue`.
+- 선행 — [33-filesystem](../33-filesystem/2-summary.md): 디렉터리 하드 링크를 막아 고리를 피했던 자리. 여기서는 고리 찾기가 본론이다.
+- 후속 — [35-allocator](../35-allocator/2-summary.md): "무엇을 먼저"가 정해진 뒤 남는 "어디에 놓을 것인가".
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `32-dependency-resolver` (선행 `11`, `algorithm/18-dfs`, 교재 CLRS 22.4). language 영역 `19-modules-and-dependency-resolution`이 semver·락파일 쪽 후속이다(노트 미작성).
+- myway 원본 — `/home/jun/project/myway/data-structure/34-dependency-resolver/` (README.md · impl/DependencyGraph.java · impl/KahnResolver.java · impl/DfsResolver.java).
+
+### 용어 풀이
 
 - **의존(dependency)**: "B를 하려면 A가 먼저 끝나야 한다"는 관계. B가 A에 기댄다고 말한다.
 - **그래프(graph)**: 점(노드)들과 그것을 잇는 화살표(간선)들로 관계를 그린 자료구조.
@@ -435,7 +547,7 @@ order.size() == graph.size() 이므로 순환이 없다.  결과 [a, b, c, d]
 - **V, E / O(V+E)**: 점의 수, 화살표의 수 / 모든 점과 화살표를 각각 한 번씩만 보는 비용.
 - **예외(Exception)**: 자바에서 "정상 진행 불가"를 알리는 신호. CycleException이 그 예다.
 
-## 관련 자료
+### 관련 자료
 
 - 원본 README: `/home/jun/project/myway/data-structure/34-dependency-resolver/README.md`
 - 구현 대상: `/home/jun/project/myway/data-structure/34-dependency-resolver/src/main/java/com/datastructure/depresolve/`

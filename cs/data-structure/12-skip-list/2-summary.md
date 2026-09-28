@@ -4,8 +4,33 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+"정렬을 유지하면서 빠르게 찾고, 범위도 묻고 싶다"에 이진 탐색 트리(06)가 답이었다.\
+그런데 BST는 **정렬된 순서로 넣으면** 한 줄로 쏠려 연결 리스트가 되고, 탐색이 O(n)으로 무너진다.
+
+```text
+BST 에 1,2,3,4 를 순서대로        스킵 리스트에 1,2,3,4 를 순서대로
+  1                                lv1  head ------> [2] ---------> [4]
+   \                               lv0  head -> [1] -> [2] -> [3] -> [4]
+    2                              어느 노드를 위층에 올릴지는 동전이 정한다
+     \        높이 n = O(n)        입력 순서와 무관하게 평균 O(log n)
+      3
+       \
+        4
+```
+
+고치는 길이 둘이다 — 회전으로 강제로 균형을 잡거나(16번), **동전을 던져 확률로** 층을 쌓거나(여기).\
+스킵 리스트는 정렬된 연결 리스트 위에 급행 층을 얹어, 균형 코드 한 줄 없이 평균 O(log n)을 만든다.\
+쉬운 예: 완행 위에 급행을 얹은 지하철 노선도 — 급행으로 크게 건너뛰다 완행으로 갈아탄다.\
+똑같은 구조다: Java `ConcurrentSkipListMap`이 이렇게 동작한다.\
+실무 예: Redis 정렬 집합(ZSET)이 점수 순 랭킹을 이 구조로 유지하고, "점수 100~200 사이" 같은 범위 질문에 답한다.
+
+  - *범위 조회(range query)*: "from 이상 to 이하인 키 전부"처럼 구간으로 묻는 것. 해시맵은 순서가 없어 답하지 못한다.
+
+### 한눈에 — 쉽게 말하면
 
 **스킵 리스트 = 완행 위에 급행을 얹은 지하철 노선도.** 완행(맨 아래층)은 모든 역에 서고, 급행(위층)은 큰 역에만 선다.\
 19번 역에 가려면 — 급행으로 갈 수 있는 데까지 간 다음, 지나칠 것 같으면 한 단계 느린 노선으로 갈아타고, 마지막에 완행으로 도착한다.\
@@ -34,29 +59,38 @@
 > **해시맵(hash map)** — 키를 해시로 흩어 담아 평균 O(1)에 찾는 구조.\
 > 예: 찾기는 더 빠르지만 순서를 안 지켜서 "20 이하 중 가장 큰 키" 같은 질문에는 답하지 못한다.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-06번 이진 탐색 트리가 정렬된 입력에서 높이 n으로 무너지는 문제를, **회전이 아니라 동전 던지기**로 고치는 구조를 직접 만든다.\
-`OrderedMapContractTest.java` 를 따라 친 뒤 `SkipList` 의 TODO 9개를 채우는 것이 본체이고, `SkipListSet` 의 TODO 2개는 두 줄짜리다.\
-`./run.sh 12` 로 시작하면 36개 중 35개가 실패한 상태에서 출발한다.
+### 전체 흐름
 
-- `SkipList` — `randomLevel()`: 앞면(확률 P)이 나오는 동안 층을 올리되 `MAX_LEVEL` 을 넘지 않기
-- `SkipList` — `findPredecessors(key)`: 층마다 "key보다 작은 마지막 노드"를 모으기 (한 층 내려갈 때 `head` 로 되돌리지 않기)
-- `SkipList` — `get(key)`: 위층부터 내려오며 전진하고 레벨 0의 다음 노드를 확인하기
-- `SkipList` — `put(key, value)`: 기존 키면 값만 갈기, 새 키면 레벨을 뽑고 새로 생긴 층의 앞 노드를 `head` 로 채운 뒤 링크 잇기
-- `SkipList` — `remove(key)`: 층마다 앞 노드를 목표의 다음으로 잇되 목표가 없는 층에서 멈추기, 빈 층은 레벨 내리기(1 아래로는 금지)
-- `SkipList` — `floorKey(key)` / `ceilingKey(key)`: 전진 조건 `<= 0` 과 `< 0` 의 차이로 이웃 찾기
-- `SkipList` — `keysInRange(from, to)`: 시작점으로 O(log n) 에 내려간 뒤 레벨 0을 `to` 까지만 걷기
-- `SkipList` — `lastKey()`: 위층부터 갈 데까지 가서 O(log n) 으로 마지막 키 찾기
-- `SkipListSet` — `add(key)` / `remove(key)`: 맵의 반환값으로 "새로 들어갔는지 / 있었는지" 판정하기
+```text
+[1] 정렬된 연결 리스트가 바닥(lv0)          [2] 동전으로 층을 올린다
+    head -> [3] -> [6] -> [9] -> [12] -> null      randomLevel(): 앞면(P=0.5)인 동안 +1, MAX_LEVEL(32) 상한
+    이대로면 탐색 O(n)                              절반이 1층, 1/4이 2층, ... -> 기대 높이 log n
+              |                                          |
+              v                                          v
+[3] 위층 = 급행                              [4] 탐색 = "다음이 작으면 전진, 아니면 내려간다"
+    lv2  head -----------> [ 9] ------> null       get(12): lv2 에서 9 까지 건너뜀 -> 12 는 9 뒤이므로 내려감
+    lv1  head -> [3] ----> [ 9] ------> null                lv1 에서 9 의 다음 null -> 내려감
+    lv0  head -> [3] -> [6] -> [9] -> [12]                  lv0 에서 9 의 다음 = 12  찾음
+    위층은 아래층의 부분집합                       한 층 내려갈 때 head 로 되돌리지 않는다 (되돌리면 O(n·층수))
+              |
+              v
+[5] 삽입·삭제 = 층마다 "앞 노드"를 모아 링크만 고친다
+    findPredecessors(key) -> update[i] = i층에서 key 보다 작은 마지막 노드
+    put : 새 노드의 forward[i] = update[i].forward[i];  update[i].forward[i] = 새 노드   (순서 고정)
+          새 노드가 지금 최고 층보다 높으면 새 층의 앞 노드는 head
+    remove : 목표가 있는 층에서만 update[i].forward[i] = 목표.forward[i];  빈 층은 내린다(1 아래 금지)
+```
 
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+- [1] 바닥층은 그냥 정렬된 단일 연결 리스트다. 여기만 있으면 02번과 같은 O(n) 탐색이다.
+- [2] 노드를 만들 때 동전을 던져 몇 층까지 올릴지 정한다. 입력 순서는 층 분포에 영향을 못 준다.\
+  무작위가 자료가 아니라 구조에 있어서, "나쁜 입력"이 없고 "나쁜 동전 운"만 있다.
+- [3] 위층은 정차역이 절반씩 주는 급행이다. 위층에 있는 노드는 반드시 아래층에도 있다.
+- [4] 맨 위층에서 시작해 크게 건너뛰고, 넘칠 것 같으면 한 층 내려간다. 걸음 수가 이진 탐색과 같은 O(log n)이다.
+- [5] 끼우고 빼는 일은 층마다 앞 노드를 모아 링크만 고친다. 회전이 없어 바뀌는 범위가 국소적이다 — 동시성 구현이 쉬운 이유다.
 
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — OrderedMap (`src/main/java/com/datastructure/skiplist/OrderedMap.java`)
+### 계약 — OrderedMap (`src/main/java/com/datastructure/skiplist/OrderedMap.java`)
 
 - `V put(K key, V value)`
 - `V get(K key)`
@@ -72,7 +106,7 @@
 - `List<K> keys()`
 - `List<K> keysInRange(K from, K to)`
 
-## 계약 — OrderedSet (`src/main/java/com/datastructure/skiplist/OrderedSet.java`)
+### 계약 — OrderedSet (`src/main/java/com/datastructure/skiplist/OrderedSet.java`)
 
 - `boolean add(K key)`
 - `boolean contains(K key)`
@@ -87,11 +121,11 @@
 - `List<K> toList()`
 - `List<K> range(K from, K to)`
 
-## 구현 — SkipList (`src/main/java/com/datastructure/skiplist/SkipList.java`)
+### 구현 — SkipList (`src/main/java/com/datastructure/skiplist/SkipList.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 > **더미(sentinel) 노드** — 데이터 없이 "출발점" 역할만 하는 가짜 노드.\
 > 예: head 는 key/value 없이 forward 32칸만 갖고 있어서, 맨 앞에 끼워 넣는 경우를 특별 취급하지 않아도 된다.
@@ -138,7 +172,7 @@ lv0   head->[ 3]->[ 6]->[ 7]->[ 9]->[12]->[17]->[19]->[21]->[25]-> null
 > **부분집합** — 어떤 집합의 원소 일부만 모은 집합.\
 > 예: lv1 에 있는 노드는 반드시 lv0 에도 있다 — 위층 정차역은 아래층 정차역의 부분집합이다.
 
-### 동작 — 탐색
+#### 동작 — 탐색
 
 **언제 쓰나**: get/containsKey 가 직접 쓰고, put/remove 도 "끼울 자리/지울 자리"를 찾을 때 같은 하강을 쓴다.
 
@@ -193,7 +227,7 @@ findPredecessors(key) : 하강하면서 각 층의 "key 보다 작은 마지막 
 **비용**: 층마다 평균 두어 칸 전진 × 층수 log n = 평균 O(log n).\
 (운이 아주 나쁘면 O(n)이지만 확률적으로 드물다.)
 
-### 동작 — 추가
+#### 동작 — 추가
 
 **언제 쓰나**: 새 키를 넣거나(끼워 넣기), 이미 있는 키의 값을 바꿀 때(교체).
 
@@ -248,7 +282,7 @@ put(20, v) : 동전 던지기로 층수를 정하고, 그 층수만큼만 끼워
 
 **비용**: 자리 찾기 O(log n) + 링크 고치기 O(층수) = 평균 O(log n).
 
-### 동작 — 삭제
+#### 동작 — 삭제
 
 **언제 쓰나**: 키를 지울 때.\
 새 그림을 그리는 게 아니라 "그 노드를 건너뛰게" 링크만 고친다.
@@ -296,7 +330,7 @@ remove(21)
 
 **비용**: 자리 찾기 O(log n) + 링크 고치기 O(층수) = 평균 O(log n).
 
-### 동작 — 이웃과 범위
+#### 동작 — 이웃과 범위
 
 **언제 쓰나**: "20 이하 중 가장 큰 키는?"(floorKey), "20 이상 중 가장 작은 키는?"(ceilingKey), "from~to 사이 전부"(keysInRange)\
 — 정렬을 유지하는 자료구조만 답할 수 있는 질문들이다.
@@ -342,7 +376,7 @@ keysInRange(from, to)
 > **O(1)** — 원소가 몇 개든 연산 횟수가 일정한 비용.\
 > 예: firstKey 는 `head.forward[0]` 한 번 읽기라 크기와 무관하다.
 
-### `필드`
+#### `필드`
 
 - `static final int MAX_LEVEL = 32` — 역할:
 - `static final double P = 0.5` — 역할:
@@ -352,117 +386,117 @@ keysInRange(from, to)
 - `int level` — 역할:
 - `private int size` — 역할:
 
-### `SkipList()`
+#### `SkipList()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `SkipList(long seed)`
+#### `SkipList(long seed)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int randomLevel()` (TODO)
+#### `int randomLevel()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Node<K, V>[] findPredecessors(K key)` (TODO)
+#### `Node<K, V>[] findPredecessors(K key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V get(K key)` (TODO)
+#### `V get(K key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V put(K key, V value)` (TODO)
+#### `V put(K key, V value)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V remove(K key)` (TODO)
+#### `V remove(K key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K floorKey(K key)` (TODO)
+#### `K floorKey(K key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K ceilingKey(K key)` (TODO)
+#### `K ceilingKey(K key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<K> keys()`
+#### `List<K> keys()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<K> keysInRange(K from, K to)` (TODO)
+#### `List<K> keysInRange(K from, K to)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K firstKey()`
+#### `K firstKey()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K lastKey()` (TODO)
+#### `K lastKey()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean containsKey(K key)`
+#### `boolean containsKey(K key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int currentLevel()`
+#### `int currentLevel()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()`
+#### `void clear()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — SkipListMap (`src/main/java/com/datastructure/skiplist/SkipListMap.java`)
+### 구현 — SkipListMap (`src/main/java/com/datastructure/skiplist/SkipListMap.java`)
 
-### 구조 — 감싸기만 한다
+#### 구조 — 감싸기만 한다
 
 > **위임(delegation)** — 일을 직접 하지 않고 안에 품은 다른 객체에게 그대로 넘기는 설계.\
 > 예: SkipListMap 은 자기 자료구조 없이 put/get/remove를 전부 SkipList 에 넘긴다 — "비서가 전화를 대신 돌려주는" 방식.
@@ -490,103 +524,103 @@ SkipListMap — SkipList 하나를 감싸는 순수 위임이다. 자기 자료�
 > **계약(interface, OrderedMap/OrderedSet)** — "이 메서드들을 이렇게 제공하겠다"는 약속 목록.\
 > 예: SkipList 자체는 이 약속을 몰라도 되고, 계약을 맞추는 일은 SkipListMap 이 맡는다.
 
-### `필드`
+#### `필드`
 
 - `private final SkipList<K, V> list` — 역할:
 
-### `SkipListMap()`
+#### `SkipListMap()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `SkipListMap(long seed)`
+#### `SkipListMap(long seed)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V put(K key, V value)`
+#### `V put(K key, V value)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V get(K key)`
+#### `V get(K key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean containsKey(K key)`
+#### `boolean containsKey(K key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V remove(K key)`
+#### `V remove(K key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()`
+#### `void clear()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K firstKey()`
+#### `K firstKey()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K lastKey()`
+#### `K lastKey()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K floorKey(K key)`
+#### `K floorKey(K key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K ceilingKey(K key)`
+#### `K ceilingKey(K key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<K> keys()`
+#### `List<K> keys()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<K> keysInRange(K from, K to)`
+#### `List<K> keysInRange(K from, K to)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — SkipListSet (`src/main/java/com/datastructure/skiplist/SkipListSet.java`)
+### 구현 — SkipListSet (`src/main/java/com/datastructure/skiplist/SkipListSet.java`)
 
-### 구조 — 값 자리에 자리표시자 하나
+#### 구조 — 값 자리에 자리표시자 하나
 
 > **포함(composition) vs 상속(inheritance)** — 다른 클래스를 "부품으로 안에 품기" vs "부모를 물려받기".\
 > 예: SkipListSet 은 SkipListMap 을 상속하지 않고 필드로 품어서, 맵의 메서드가 밖으로 새지 않는다.
@@ -617,96 +651,130 @@ SkipListSet — 상속이 아니라 포함이다. SkipListMap 의 값 자리에 
           ->  firstKey / lastKey / floorKey / ceilingKey / keys / keysInRange
 ```
 
-### `필드`
+#### `필드`
 
 - `private static final Object PRESENT` — 역할:
 - `private final SkipListMap<K, Object> map` — 역할:
 
-### `SkipListSet()`
+#### `SkipListSet()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `SkipListSet(long seed)`
+#### `SkipListSet(long seed)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean add(K key)` (TODO)
+#### `boolean add(K key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean contains(K key)`
+#### `boolean contains(K key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean remove(K key)` (TODO)
+#### `boolean remove(K key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()`
+#### `void clear()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K first()`
+#### `K first()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K last()`
+#### `K last()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K floor(K key)`
+#### `K floor(K key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K ceiling(K key)`
+#### `K ceiling(K key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<K> toList()`
+#### `List<K> toList()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<K> range(K from, K to)`
+#### `List<K> range(K from, K to)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **Redis 정렬 집합(ZSET)** — 점수 순 랭킹·리더보드를 스킵 리스트 + 해시로 유지한다(원소가 적을 때는 연속 메모리 인코딩 listpack을 쓰다가 커지면 바꾼다). `ZRANGEBYSCORE`가 곧 `keysInRange`다.
+- **LSM 저장소의 memtable** — LevelDB·RocksDB는 디스크에 쓰기 전 메모리에 정렬 상태로 모아 두는 memtable을 스킵 리스트로 만든다. [24-lsm-tree](../24-lsm-tree/2-summary.md) · [systems/lsm-tree](../../systems/lsm-tree/).
+- **Java `ConcurrentSkipListMap` / `ConcurrentSkipListSet`** — 락 없이 동시에 쓸 수 있는 정렬 맵. 회전이 없어 바뀌는 링크가 국소적이라는 점이 이 선택의 이유다.
+- **검색 엔진의 포스팅 리스트 skip pointer** — 정렬된 문서 번호 목록 위에 건너뛰기 포인터를 얹어 교집합을 빨리 구한다. 정보 검색 교재(Manning 외 『Introduction to Information Retrieval』 2.3절)의 기본형은 층 하나짜리 스킵 리스트이고, 실제 엔진은 여러 층을 두기도 한다. [32-inverted-index](../32-inverted-index/2-summary.md).
+- **Apache Cassandra의 memtable** — 기본 memtable이 `ConcurrentSkipListMap` 기반이다. 최근 버전에는 트라이 기반 memtable도 선택지로 생겼다 [?].
+- **재료 — [02-linked-list](../02-linked-list/2-summary.md)** — 바닥층이 그대로 정렬된 단일 연결 리스트다. `firstKey` O(1)/`lastKey` O(log n) 비대칭도 같은 뿌리다.
+- **대안 — [06-binary-search-tree](../06-binary-search-tree/2-summary.md) · [16-red-black-tree](../16-red-black-tree/2-summary.md)** — 같은 `OrderedMap` 계약을 트리로. 무너지는 BST → 회전으로 보장하는 RB → 확률로 피하는 스킵 리스트.
+
+## 적용 — 풀어나가는 법
+
+스킵 리스트를 고를지는 "정렬·범위가 필요한가"와 "동시 쓰기가 있는가" 두 질문으로 정한다.\
+순서: ① 단건 조회만이면 해시맵(05)이 이긴다 — 정렬 순회·범위·floor/ceiling이 있어야 후보다 → ② 단일 스레드면 트리(06·16)와 비교해 구현 단순성으로 고르고, 동시 쓰기가 잦으면 스킵 리스트가 유리하다 → ③ 확률 구조이므로 seed를 주입받는 생성자를 두어 실패를 재현할 수 있게 한다 → ④ 범위 조회는 결과 크기 k만큼 걷는다는 것을 비용에 넣는다.\
+아래 과제 목록과 구현 전략 비교가 ②~③을 다룬다.
+
+### 문제 — 이 챕터가 시키는 것
+
+06번 이진 탐색 트리가 정렬된 입력에서 높이 n으로 무너지는 문제를, **회전이 아니라 동전 던지기**로 고치는 구조를 직접 만든다.\
+`OrderedMapContractTest.java` 를 따라 친 뒤 `SkipList` 의 TODO 9개를 채우는 것이 본체이고, `SkipListSet` 의 TODO 2개는 두 줄짜리다.\
+`./run.sh 12` 로 시작하면 36개 중 35개가 실패한 상태에서 출발한다.
+
+- `SkipList` — `randomLevel()`: 앞면(확률 P)이 나오는 동안 층을 올리되 `MAX_LEVEL` 을 넘지 않기
+- `SkipList` — `findPredecessors(key)`: 층마다 "key보다 작은 마지막 노드"를 모으기 (한 층 내려갈 때 `head` 로 되돌리지 않기)
+- `SkipList` — `get(key)`: 위층부터 내려오며 전진하고 레벨 0의 다음 노드를 확인하기
+- `SkipList` — `put(key, value)`: 기존 키면 값만 갈기, 새 키면 레벨을 뽑고 새로 생긴 층의 앞 노드를 `head` 로 채운 뒤 링크 잇기
+- `SkipList` — `remove(key)`: 층마다 앞 노드를 목표의 다음으로 잇되 목표가 없는 층에서 멈추기, 빈 층은 레벨 내리기(1 아래로는 금지)
+- `SkipList` — `floorKey(key)` / `ceilingKey(key)`: 전진 조건 `<= 0` 과 `< 0` 의 차이로 이웃 찾기
+- `SkipList` — `keysInRange(from, to)`: 시작점으로 O(log n) 에 내려간 뒤 레벨 0을 `to` 까지만 걷기
+- `SkipList` — `lastKey()`: 위층부터 갈 데까지 가서 O(log n) 으로 마지막 키 찾기
+- `SkipListSet` — `add(key)` / `remove(key)`: 맵의 반환값으로 "새로 들어갔는지 / 있었는지" 판정하기
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -714,15 +782,59 @@ SkipListSet — 상속이 아니라 포함이다. SkipListMap 의 값 자리에 
 | SkipListMap | | | |
 | SkipListSet | | | |
 
+## 장애 시나리오와 대처
+
+**1. 넣은 키를 못 찾는다 — 비교 결과가 시간에 따라 달라지는 키**
+
+- 현상: `put(key, v)` 직후 `get(key)`가 `null`이거나, `keysInRange`가 있는 키를 빠뜨린다.
+- 보이는 형태: 단위 테스트는 통과하는데 실서비스에서 간헐적으로 "없다"가 나온다. 바닥층을 걸어 보면 키가 정렬 순서에서 어긋난 자리에 있다.
+- 원인: 키 객체의 필드가 넣은 뒤에 바뀌었거나, `compareTo`가 `equals`와 다른 기준을 본다. 스킵 리스트는 "앞 노드보다 크고 다음 노드보다 작다"는 정렬 불변식으로만 길을 찾으므로, 키가 제자리에 없으면 탐색이 그 앞에서 내려가 버린다.
+  - *정렬 불변식*: 바닥층을 걸으면 키가 항상 오름차순이라는 약속. 탐색·삽입·삭제 전부가 이 약속 위에 서 있다.
+- 대처: 키는 불변 객체로 두고, `compareTo`가 0이면 `equals`도 참이 되게 맞춘다. 키를 바꿔야 하면 `remove` 뒤 새 키로 `put`한다.
+
+**2. 동시에 `put`했더니 노드가 사라진다**
+
+- 현상: 두 스레드가 동시에 넣은 뒤 `size()`와 실제로 걸어 센 개수가 다르다.
+- 보이는 형태: 단일 스레드에서는 재현이 안 되고, 부하 테스트에서 드물게 원소가 없어진다. 에러는 없다.
+- 원인: 이 구현은 동기화가 없다. 두 스레드가 같은 자리에 대해 `findPredecessors`로 앞 노드를 모은 뒤 각자 링크를 고치면, 나중 쓰기가 먼저 쓴 쪽의 `forward`를 덮어 그 노드로 가는 길이 끊긴다(정답 5번의 링크 순서 문제가 스레드 사이에서 일어난 것이다).
+- 대처: 외부에서 락으로 감싸거나 `ConcurrentSkipListMap`을 쓴다. 후자는 링크 하나를 바꿀 때 "내가 읽은 값 그대로일 때만 바꾼다"(CAS)로 덮어쓰기를 막는다.
+  - *CAS(compare-and-swap)*: "지금 값이 내가 본 값이면 새 값으로 바꾼다"를 한 번에 하는 원자 연산. 실패하면 다시 읽고 재시도한다.
+
+**3. 범위 조회가 느리다 — O(log n)이 아니라 O(log n + k)**
+
+- 현상: "정렬 맵이니 빠르겠지" 하고 넓은 범위를 매 요청마다 물었더니 응답이 n에 비례해 늘어난다.
+- 보이는 형태: `keysInRange(min, max)`처럼 사실상 전체를 묻는 호출의 시간이 원소 수와 같이 자란다. 결과 리스트 복사로 힙 사용량도 튄다.
+- 원인: 범위 조회는 시작점까지만 O(log n)이고, 그 뒤는 바닥층을 `to`까지 **한 칸씩 걷는다**. 결과가 k개면 k걸음이다. 급행은 시작점을 찾을 때만 쓰인다.
+- 대처: 범위를 필요한 만큼만 좁히거나(페이지 단위 — `from`을 직전 결과의 마지막 키로), 결과를 리스트로 모으지 않고 반복자로 흘려보낸다. 집계가 목적이면 구간 합 구조(13)를 본다.
+
+**4. 같은 개수인데 트리 맵보다 메모리를 더 쓴다**
+
+- 현상: `TreeMap`을 스킵 리스트로 바꿨더니 힙 사용량이 늘었다.
+- 보이는 형태: 힙 덤프에서 `Node` 하나마다 `forward` 배열 객체가 따로 잡혀 있다. 노드 수는 같은데 객체 수가 두 배다.
+- 원인: 노드마다 참조 배열을 별도 객체로 갖고, 층수만큼 참조를 더 쓴다(P=0.5면 노드당 기대 층수가 1/(1-P) = 2라서 평균 2개). 트리 노드는 자식 참조 2~3개가 노드 안에 고정 필드로 들어 있다. `head`는 층수와 무관하게 32칸을 항상 잡는다.
+- 대처: 메모리가 우선이고 동시 쓰기가 없으면 트리(16)를 쓴다. 스킵 리스트를 유지하면 P를 낮춰(예: 0.25 — Pugh 1990이 권하고 Redis ZSET도 쓰는 값) 노드당 평균 참조를 1/(1-0.25) ≈ 1.33개로 줄이는 대신 탐색 걸음이 조금 늘어나는 것을 받아들인다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 스킵 리스트는 트리가 아니라 **정렬된 연결 리스트를 여러 층 쌓은 것**이다 — 위층이 급행이라 탐색이 이진 탐색과 같은 걸음 수 O(log n)이 된다.
+- 무작위가 자료가 아니라 구조에 있다: 어느 노드를 몇 층 올릴지 동전이 정하므로 정렬 입력·역순 입력·무작위 입력이 같은 층 분포를 내고, "나쁜 입력" 대신 아주 드문 "나쁜 동전 운"만 남는다.
+- 확률은 보장이 아니다 — 최악 O(n)의 확률을 낮출 뿐이고, 그것을 보장으로 바꾸는 것이 회전을 짊어진 레드블랙 트리(16)다.
+- 균형 코드가 없어 끼우고 빼는 일이 층마다 앞 노드의 링크를 고치는 국소 작업이다 — `ConcurrentSkipListMap`·LSM memtable이 동시 쓰기 때문에 이 구조를 골랐고, 단일 스레드인 Redis ZSET은 구현 단순성과 범위 조회 때문에 골랐다.
+- 범위 조회는 시작점까지만 O(log n)이고 그 뒤는 결과 크기만큼 바닥층을 걷는다 — 정렬 맵이 답하는 것은 "어디서부터"이지 "얼마나 빨리 전부"가 아니다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [02-linked-list](../02-linked-list/2-summary.md): 바닥층이 그대로 정렬된 단일 연결 리스트. 링크를 고치는 순서·앞뒤 비대칭이 여기서 다시 나온다.
+- 선행 — [06-binary-search-tree](../06-binary-search-tree/2-summary.md): 정렬 입력에서 무너지는 문제. 이 노트는 그것을 확률로 푼다.
+- 선행 — [11-bloom-filter](../11-bloom-filter/2-summary.md): 확률에 기대는 첫 자료구조. seed 주입이 검증 가능성을 바꾼다는 이야기가 이어진다.
+- 후속 — [16-red-black-tree](../16-red-black-tree/2-summary.md): 같은 문제를 회전으로 보장하는 쪽.
+- 후속 — [13-segment-tree](../13-segment-tree/2-summary.md): "구간에 대한 질문"을 O(log n)으로 — 스킵 리스트의 범위 조회가 O(k)인 자리에서 출발한다.
+- 응용 — [24-lsm-tree](../24-lsm-tree/2-summary.md)(memtable) · [32-inverted-index](../32-inverted-index/2-summary.md)(skip pointer).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `22-skip-list` (선행 `04-linked-list`).
+- 원논문 — Pugh 1990, "Skip Lists: A Probabilistic Alternative to Balanced Trees".
+- myway 원본 — `/home/jun/project/myway/data-structure/12-skip-list/` (README.md · impl/SkipList.java · impl/SkipListMap.java · impl/SkipListSet.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -731,7 +843,7 @@ SkipListSet — 상속이 아니라 포함이다. SkipListMap 의 값 자리에 
 - 테스트: `/home/jun/project/myway/data-structure/12-skip-list/src/test/java/com/datastructure/skiplist/`
 - 참고 구현: `/home/jun/project/myway/data-structure/12-skip-list/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 본문에 등장한 자리에서 이미 푼 용어를 포함해, 이 문서의 전문용어를 한곳에 모았다.
 

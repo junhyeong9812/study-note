@@ -4,8 +4,29 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+데이터를 서버 여러 대에 나눠 담을 때 "이 키는 어느 서버인가"를 정해야 한다. 제일 쉬운 답은 05번 해시맵과 같은 `hash(key) % N`이다.\
+그런데 서버 한 대가 죽거나 한 대를 더 들이면 분모 N이 바뀌어 **거의 모든 키**의 답이 바뀐다.
+
+```text
+hash(key) % N                          해시 링
+N = 3 -> 4 로 바뀌면                      A ---- k ----> B ---- C ---- (되감김)
+k1: A->D  k2: B->A  k3: C->B  ...        B 가 죽으면 k 만 C 로 밀린다
+새 서버와 무관한 A<->B<->C 도 서로 넘긴다   A~B 밖의 키는 아무 일도 없다
+키 10만 중 89,905 개 이동                  키 10만 중 12,044 개 이동 (원본 README 실측)
+```
+
+옮겨간다는 것은 캐시가 비고, 원본 저장소가 그 요청을 전부 받는다는 뜻이다 — 서버 한 대가 죽었는데 열 대가 무너진다.\
+일관된 해싱은 배정 규칙에서 N을 빼 버린다. 노드와 키를 같은 원에 올리고, 키는 시계 방향으로 처음 만나는 노드가 맡는다.\
+쉬운 예: 둥근 광장의 가게 — 손님은 자기 자리에서 시계 방향으로 걷다 처음 만나는 가게로 간다. 가게 하나가 닫으면 그 가게 손님만 옆 가게로 간다.\
+똑같은 구조다: 이 노트의 `ConsistentHashRing`은 `TreeMap`의 `ceilingEntry` 한 번 + "없으면 첫 항목"(되감김) 한 줄이다.\
+실무 예: 분산 캐시(Memcached 클라이언트)·분산 데이터베이스(Dynamo·Cassandra)·CDN이 "이 데이터는 어느 서버에 있나"를 이 원으로 정한다.
+  - *샤딩(sharding)*: 데이터를 여러 서버에 쪼개 나눠 담는 것. [systems/partitioning-vs-sharding](../../systems/partitioning-vs-sharding/2-summary.md)이 그 상위 개념이다.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 둥근 광장에 가게들이 띄엄띄엄 있고, 손님은 자기 자리에서 시계방향으로 걷다가 처음 만나는 가게로 간다.**
 
@@ -27,31 +48,42 @@
 
 이 "광장의 가게 찾기"와 **똑같은 구조**가 실무의 분산 캐시다 — Redis Cluster, CDN, 분산 데이터베이스가 "이 데이터는 어느 서버에 있나"를 정할 때 바로 이 원(링)을 쓴다. 가게 = 캐시 서버, 손님 = 키, 가게 폐업 = 서버 장애.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-원본 README는 05번의 `hash(key) % N` 을 **서버 목록**에 그대로 쓰면 서버 한 대가 죽는 순간 거의 전부가 자리를 옮긴다는 데서 출발한다 — 키 10만·서버 10대에서 모듈로 **89,905개(89.9%)** 대 일관된 해싱 **12,044개(12.0%)** 다.\
-차이는 **N 이 식 안에 있느냐**다 — 일관된 해싱은 노드와 키를 같은 원에 올리고 키가 시계 방향 첫 노드를 만나게 하므로 배정 규칙에 N 이 없고 **자리들의 배치만** 있다.\
-"다음에 오는 자리를 찾는다"는 06번 BST 의 `ceilingKey` 그대로이고, **원이라는 것은 마지막에서 처음으로 돌아온다는 규칙 한 줄**뿐이다.\
-과제는 네 구현(`ModuloSharding` · `ConsistentHashRing` · `WeightedConsistentHashRing` · `JumpConsistentHash`)을 만들어 **자리 메모리 / 한 대 죽을 때 이동량 / 가중치 / 가운데 제거 가능** 네 축으로 나란히 재는 것이고, 재는 것은 속도가 아니라 **이동량**이다.
+### 전체 흐름
 
-과제 목록 — `src/main/java/com/datastructure/conshash/`의 TODO 8개:
+```text
+[1] 기준선 : hash(key) % N               [2] 원 위에 올린다 (배정 규칙에 N 이 없다)
+    N 이 식 안에 있다                         0 ------------------------------ 2^32-1
+    N 이 바뀌면 전부 다시 계산                  A#0   B#0   C#0   A#1   B#1   C#1  (되감김 -> A#0)
+    이동량 ~ K 전부                           자리 = hash.position(node + "#" + i)
+              |                                          |
+              v                                          v
+[3] getNode(key) = ceilingEntry(position(key))  없으면 firstEntry()  <- 되감김 한 줄
+    시계 방향 첫 자리의 노드가 맡는다.  O(log(n * v))
+              |
+              v
+[4] 노드 추가/제거 = 그 노드의 자리만 넣고 빼기
+    바뀌는 것은 새로 생기거나 사라진 자리 "바로 앞 구간"뿐  -> 이동량 ~ K / n
+              |
+              v
+[5] 가상 노드 v 개          [6] 가중치 = 자리 수 x weight     [7] 점프 해시 = 링 없이 계산만
+    자리 하나면 구간이 18배     좋은 서버에 점을 더 찍는다        메모리 0, 이동량 최소
+    들쭉날쭉 -> 100 곳에 찍어   비율 1:2:3 이 몫의 비가 된다      대신 맨 뒤 노드만 뺄 수 있다
+    큰 조각·작은 조각 상쇄
+```
 
-- `ModuloSharding`(기준선) — TODO 1(`getNode` — `bucketHash(key) % nodes.size()`)
-- `ConsistentHashRing`(본체) — TODO 2(`addSlots` — 가상 이름으로 count 곳에 올리기) · TODO 3(`removeNode` — 그 노드의 자리만 지우기) · TODO 4(`getNode` — `ceilingEntry` + 되감기 한 줄)
-- `WeightedConsistentHashRing` — TODO 5(`addNode(node, weight)` — 자리를 weight 배로)
-- `JumpConsistentHash` — TODO 6(`jumpHash` — 논문 의사코드) · TODO 7(`removeNode` — 맨 뒤만, 아니면 `UnsupportedOperationException`) · TODO 8(`getNode`)
+- [1] 모듈로도 분포는 고르다. 나쁜 것은 오직 이동량이다 — N이 식 안에 있어 노드 하나가 바뀌면 서로 무관한 노드끼리도 키를 주고받는다.
+- [2] 노드 이름을 해시해 0 ~ 2^32-1의 자리로 찍는다. `TreeMap`이 자리를 정렬해 들고 있는 것이 링 그 자체다.
+  - *링(ring)*: 0부터 2^32-1까지를 원처럼 이어붙인 것. 끝을 지나면 처음으로 되돌아온다.
+- [3] 키도 같은 원에 찍고 "그 값 이상 중 가장 작은 자리"(`ceilingEntry`)를 찾는다 — 06번 BST의 `ceilingKey` 그대로다. 가장 큰 자리보다 뒤에 떨어지면 첫 자리로 되감는다. 이 분기를 빠뜨리는 것이 가장 흔한 실수이고, 자리 1000개에 키 10만 중 18개만 걸려 잘 안 드러난다.
+- [4] 노드를 넣거나 빼도 다른 자리들 사이의 구간은 불변이다. 옮겨간 키의 집합이 죽은 노드가 맡던 키의 집합과 **정확히 같다** — "적다"가 아니라 "그것뿐이다".
+- [5] 자리를 하나만 찍으면 구간 길이가 무작위라 최대/최소가 18배 벌어진다. 노드 하나를 `A#0 … A#99`로 100곳에 찍어 큰 조각과 작은 조각이 상쇄되게 한다. 대가는 `TreeMap` 항목 수(메모리)와 `log(n*v)`.
+  - *가상 노드(virtual node)*: 진짜 서버는 하나인데 원 위에는 여러 점으로 존재하는 것.
+- [6] 가중치는 자리 수를 곱하는 것뿐이다. 배정 규칙에 N이 없어서 가능하다 — 모듈로에서 같은 것을 하면 N이 커져 이동량이 더 나빠진다.
+- [7] 점프 해시는 자료구조 없이 LCG로 같은 난수열을 굴려 버킷을 정한다. 메모리 0에 균형도 낫지만 버킷 번호가 0..N-1로 이어져야 해서 가운데 노드를 못 뺀다 — 밀어서 채우면 28.7%가 움직여 1/N 보장이 사라진다.
 
-순서: `HashRingContractTest.java`를 따라 친 뒤 `ModuloSharding` → `ConsistentHashRing` → `WeightedConsistentHashRing` → `JumpConsistentHash`.\
-실행: `cd ~/project/myway/data-structure && ./run.sh 31` — README 기준 **84개 중 69개가 실패**한다.\
-(참고: README 의 "TODO 2개/6개/2개/6개"는 `TODO` **문자열** 등장 수이고, 실제 과제 항목은 위 8개다 — 항목마다 주석 1회 + `throw` 1회로 두 번씩 나온다.)
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — HashRing (`src/main/java/com/datastructure/conshash/HashRing.java`)
+### 계약 — HashRing (`src/main/java/com/datastructure/conshash/HashRing.java`)
 
 - `void addNode(String node)`
 - `void removeNode(String node)`
@@ -61,18 +93,18 @@
 - `int slotCount()`
 - `default Map<String, Integer> keyCounts(Iterable<String> keys)`
 
-## 계약 — RingHash (`src/main/java/com/datastructure/conshash/RingHash.java`)
+### 계약 — RingHash (`src/main/java/com/datastructure/conshash/RingHash.java`)
 
 - `long position(String name)`
 
-## 보조
+### 보조
 
 - `Hashing` (`src/main/java/com/datastructure/conshash/Hashing.java`) — 역할:
 - `RingMetrics` (`src/main/java/com/datastructure/conshash/RingMetrics.java`) — 역할:
 
-## 구현 — ModuloSharding (`src/main/java/com/datastructure/conshash/ModuloSharding.java`)
+### 구현 — ModuloSharding (`src/main/java/com/datastructure/conshash/ModuloSharding.java`)
 
-### 구조
+#### 구조
 
 ```
 ModuloSharding
@@ -89,7 +121,7 @@ ModuloSharding
                             ^^^^^^^^^^^^^^^^^^^^^^^^^ 최상위 비트를 지운 값 -> 나머지가 음수가 안 된다
 ```
 
-### 동작 — 노드 수 변화 (링과의 대비)
+#### 동작 — 노드 수 변화 (링과의 대비)
 
 언제 보나: "나머지로 나누는 방식(모듈로)이 왜 안 되는가"를 확인할 때. 아래 그림은 노드가 3대에서 4대로 늘어난 전/후를 나란히 놓고, 키 7개가 전부 이사하는 것을 보여준다.
 
@@ -126,32 +158,32 @@ n 이 3 -> 4 로 바뀐다 = 나눗셈의 분모가 바뀐다 = 모든 몫이 �
   분포는 이쪽도 고르다(ModuloShardingTest 가 확인한다). 나쁜 것은 오직 이동량이다.
 ```
 
-### 필드
+#### 필드
 - `nodes` — 역할:
 
-### `void addNode(String node)`
+#### `void addNode(String node)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void removeNode(String node)`
+#### `void removeNode(String node)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String getNode(String key)` (TODO)
+#### `String getNode(String key)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int nodeCount()` / `List<String> nodes()` / `int slotCount()`
+#### `int nodeCount()` / `List<String> nodes()` / `int slotCount()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — ConsistentHashRing (`src/main/java/com/datastructure/conshash/ConsistentHashRing.java`)
+### 구현 — ConsistentHashRing (`src/main/java/com/datastructure/conshash/ConsistentHashRing.java`)
 
-### 구조
+#### 구조
 
 ```
 ConsistentHashRing
@@ -190,7 +222,7 @@ ring 안의 실제 모습 (TreeMap - 자리 오름차순 정렬 그 자체가 �
 자리 값 120/350/... 은 이해를 위한 작은 예시다. 실제 자리는 0 .. 2^32-1 에 흩어진다.
 ```
 
-### 동작 — 키 배정 (시계방향 첫 노드)
+#### 동작 — 키 배정 (시계방향 첫 노드)
 
 언제 쓰나: `getNode(key)` — "이 키는 어느 노드가 맡나"를 답할 때. 아래 그림 [1]은 보통 경우(오른쪽으로 걷다 처음 만나는 자리), [2]는 원의 끝을 지나 처음으로 되돌아오는 경우(되감김)다.
 
@@ -228,7 +260,7 @@ getNode(key) : ring.ceilingEntry(hash.position(key)) 가 있으면 그 값,
        링이 비어 있으면 null. key 가 null 이면 IllegalArgumentException.
 ```
 
-### 동작 — 노드 추가 / 제거
+#### 동작 — 노드 추가 / 제거
 
 언제 쓰나: 서버를 새로 들이거나(`addNode`) 뺄 때(`removeNode`). 아래 그림 [1]은 D가 들어오기 전/후를 비교한다 — D의 자리 바로 앞 구간(611..700)만 주인이 바뀌고 나머지는 그대로라는 것이 이 자료구조의 존재 이유다. [2]는 뺄 때 "남의 자리를 지우지 않기 위한 확인"이 왜 필요한지를 보여준다.
 
@@ -274,7 +306,7 @@ getNode(key) : ring.ceilingEntry(hash.position(key)) 가 있으면 그 값,
 비용   : addNode / removeNode 모두 자리 v 개마다 TreeMap 연산 -> O(v log(n*v))
 ```
 
-### 동작 — 가상 노드
+#### 동작 — 가상 노드
 
 언제 쓰나: 노드마다 점을 하나만 찍으면 구간이 들쭉날쭉해서(실측 18배 차이) 몫이 불공평해진다. 그래서 노드 하나를 여러 이름(A#0, A#1, ...)으로 여러 곳에 찍는다. 아래 그림 [1]은 점 하나일 때의 불균형, [2]는 점 3개일 때 큰 조각·작은 조각이 섞여 상쇄되는 모습이다.
 
@@ -310,66 +342,66 @@ virtualName(node, i) = node + "#" + i        i 는 0 부터 count-1 까지
        그러면 가상 노드를 아무리 늘려도 분포가 안 펴진다. BalanceTest 가 그것을 잰다.
 ```
 
-### 필드
+#### 필드
 - `DEFAULT_VIRTUAL_NODES` — 역할:
 - `ring` — 역할:
 - `placed` — 역할:
 - `virtualNodes` — 역할:
 - `hash` — 역할:
 
-### `ConsistentHashRing()` / `ConsistentHashRing(int virtualNodes)` / `ConsistentHashRing(int virtualNodes, RingHash hash)`
+#### `ConsistentHashRing()` / `ConsistentHashRing(int virtualNodes)` / `ConsistentHashRing(int virtualNodes, RingHash hash)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static String virtualName(String node, int index)`
+#### `static String virtualName(String node, int index)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int virtualNodes()` (protected)
+#### `int virtualNodes()` (protected)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addNode(String node)`
+#### `void addNode(String node)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addSlots(String node, int count)` (TODO, protected)
+#### `void addSlots(String node, int count)` (TODO, protected)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void removeNode(String node)` (TODO)
+#### `void removeNode(String node)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String getNode(String key)` (TODO)
+#### `String getNode(String key)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int nodeCount()` / `List<String> nodes()` / `int slotCount()`
+#### `int nodeCount()` / `List<String> nodes()` / `int slotCount()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int slotsOf(String node)`
+#### `int slotsOf(String node)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `SortedMap<Long, String> ringView()`
+#### `SortedMap<Long, String> ringView()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — WeightedConsistentHashRing (`src/main/java/com/datastructure/conshash/WeightedConsistentHashRing.java`)
+### 구현 — WeightedConsistentHashRing (`src/main/java/com/datastructure/conshash/WeightedConsistentHashRing.java`)
 
-### 동작 — 가중치가 자리 수가 되는 곳 (부모와의 차이)
+#### 동작 — 가중치가 자리 수가 되는 곳 (부모와의 차이)
 
 언제 쓰나: 서버들의 성능이 다를 때 — 좋은 서버에 2배, 3배의 몫을 주고 싶을 때. 방법은 "점을 그 배수만큼 더 찍는다"가 전부다. 아래 그림은 가중치 1:2:3인 세 노드의 점 개수(3:6:9)와, 그 비율이 그대로 몫의 비가 되는 계산이다.
 
@@ -411,22 +443,22 @@ virtualNodes = 3 일 때
     BalanceTest 가 같은 가중치인 두 노드 사이에서도 6% 차이가 난다는 것까지 적어둔다.
 ```
 
-### 필드
+#### 필드
 - 자체 필드 없음 — `ConsistentHashRing` 의 `ring` / `placed` / `virtualNodes` / `hash` 를 상속해 쓴다. 역할:
 
-### `WeightedConsistentHashRing()` / `WeightedConsistentHashRing(int virtualNodes)` / `WeightedConsistentHashRing(int virtualNodes, RingHash hash)`
+#### `WeightedConsistentHashRing()` / `WeightedConsistentHashRing(int virtualNodes)` / `WeightedConsistentHashRing(int virtualNodes, RingHash hash)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addNode(String node, int weight)` (TODO)
+#### `void addNode(String node, int weight)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — JumpConsistentHash (`src/main/java/com/datastructure/conshash/JumpConsistentHash.java`)
+### 구현 — JumpConsistentHash (`src/main/java/com/datastructure/conshash/JumpConsistentHash.java`)
 
-### 동작 — 링 없이 점프로 버킷 찾기 (링과의 차이)
+#### 동작 — 링 없이 점프로 버킷 찾기 (링과의 차이)
 
 언제 쓰나: 링(TreeMap)의 메모리조차 아끼고 싶고, 노드가 "맨 뒤에서만" 늘고 줄어도 될 때. 저장하는 것 없이 계산만으로 키의 버킷을 정한다. 아래 그림은 키 하나가 버킷 0 → 2 → 3으로 점프하다가 범위를 벗어나는 순간 멈추고, 마지막 버킷 3이 답이 되는 과정이다.
 
@@ -491,35 +523,71 @@ jumpHash(key, numBuckets) : 지역 변수 둘과 반복문 하나. 자료구조�
    아무 노드나 죽을 수 있는 곳에서는 링 방식이 여전히 필요하다.
 ```
 
-### 필드
+#### 필드
 - `nodes` — 역할:
 
-### `static int jumpHash(long key, int numBuckets)` (TODO)
+#### `static int jumpHash(long key, int numBuckets)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addNode(String node)`
+#### `void addNode(String node)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void removeNode(String node)` (TODO)
+#### `void removeNode(String node)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String getNode(String key)` (TODO)
+#### `String getNode(String key)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int nodeCount()` / `List<String> nodes()` / `int slotCount()`
+#### `int nodeCount()` / `List<String> nodes()` / `int slotCount()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **Memcached 클라이언트의 서버 선택(ketama)** — 서버 목록을 링에 올리고 키마다 시계 방향 첫 서버로 보낸다. 서버 한 대가 빠져도 그 서버 몫의 캐시만 미스가 난다(libketama — 서버마다 MD5로 여러 점을 찍는 continuum, 즉 이 노트의 가상 노드와 같은 방식).
+- **Amazon Dynamo · Cassandra의 토큰 링** — 노드마다 여러 토큰(가상 노드, vnodes)을 링에 찍고, 키의 토큰에서 시계 방향으로 복제본을 둔다. 이 노트의 `ConsistentHashRing` + 가상 노드가 그 원형이다(원전 Karger 외 1997 · DeCandia 외 Dynamo 2007 · Cassandra `num_tokens` 설정). 실제 복제본 배치는 랙·데이터센터 인식 전략에 따라 달라진다.
+- **웹 캐시·CDN의 캐시 서버 배정** — 일관된 해싱이 처음 제안된 자리다(Karger 외 1997, 분산 웹 캐시 — 저자들이 이후 Akamai를 세웠다). 요청 URL을 링에 찍어 캐시 서버를 고르면 서버 증감에 캐시 적중이 무너지지 않는다. 오늘날 특정 CDN의 내부 배정 방식은 확인하지 못했다 [?].
+- **L4 로드 밸런서(Google Maglev)** — 연결을 백엔드에 고르게 나누되 백엔드 증감에 재배치를 최소화하는 룩업 테이블(Eisenbud 외, NSDI 2016). 링이 아니라 고정 크기 표를 채우는 방식이라 균형이 더 고르고, 대신 재배치가 링보다 약간 더 생긴다.
+- **점프 해시(Jump Consistent Hash)** — Lamping–Veach 2014, 구글. 버킷 수만 바뀌는 저장 계층(맨 뒤에서만 늘고 준다)에서 링 메모리 0으로 같은 보장을 얻는다. 이 노트의 `JumpConsistentHash`가 그 논문 의사코드다.
+- **샤드별 집계의 전제** — [19-probabilistic-counting](../19-probabilistic-counting/2-summary.md) 문제 2처럼 "어느 키가 어느 샤드로 가는가"가 안정적이어야 샤드별로 세고 합칠 수 있다.
+- **다른 챕터의 재료** — `getNode`는 [06-binary-search-tree](../06-binary-search-tree/2-summary.md)의 `ceilingKey`이고, `hash % N`의 출발점은 [05-hashmap](../05-hashmap/2-summary.md), 재해싱 이동 문제의 원형은 [29-open-addressing](../29-open-addressing/2-summary.md)의 resize다.
+
+## 적용 — 풀어나가는 법
+
+분산 배정 문제는 속도가 아니라 **노드가 바뀔 때 몇 개가 움직이는가**를 세는 데서 갈린다.\
+순서: ① 노드 증감이 있는지 본다(없으면 모듈로로 충분) → ② 아무 노드나 죽을 수 있으면 링, 맨 뒤에서만 늘고 줄면 점프 해시 → ③ 가상 노드 수를 정하되 해시가 섞이는지 먼저 확인한다(안 섞이면 자리 수는 소용없다) → ④ 서버 성능이 다르면 가중치 → ⑤ 이동량을 실측해 "죽은 노드 몫만 움직였는가"를 등식으로 확인한다.\
+아래 과제가 네 구현을 그 축으로 나란히 잰다.
+
+### 문제 — 이 챕터가 시키는 것
+
+원본 README는 05번의 `hash(key) % N` 을 **서버 목록**에 그대로 쓰면 서버 한 대가 죽는 순간 거의 전부가 자리를 옮긴다는 데서 출발한다 — 키 10만·서버 10대에서 모듈로 **89,905개(89.9%)** 대 일관된 해싱 **12,044개(12.0%)** 다.\
+차이는 **N 이 식 안에 있느냐**다 — 일관된 해싱은 노드와 키를 같은 원에 올리고 키가 시계 방향 첫 노드를 만나게 하므로 배정 규칙에 N 이 없고 **자리들의 배치만** 있다.\
+"다음에 오는 자리를 찾는다"는 06번 BST 의 `ceilingKey` 그대로이고, **원이라는 것은 마지막에서 처음으로 돌아온다는 규칙 한 줄**뿐이다.\
+과제는 네 구현(`ModuloSharding` · `ConsistentHashRing` · `WeightedConsistentHashRing` · `JumpConsistentHash`)을 만들어 **자리 메모리 / 한 대 죽을 때 이동량 / 가중치 / 가운데 제거 가능** 네 축으로 나란히 재는 것이고, 재는 것은 속도가 아니라 **이동량**이다.
+
+과제 목록 — `src/main/java/com/datastructure/conshash/`의 TODO 8개:
+
+- `ModuloSharding`(기준선) — TODO 1(`getNode` — `bucketHash(key) % nodes.size()`)
+- `ConsistentHashRing`(본체) — TODO 2(`addSlots` — 가상 이름으로 count 곳에 올리기) · TODO 3(`removeNode` — 그 노드의 자리만 지우기) · TODO 4(`getNode` — `ceilingEntry` + 되감기 한 줄)
+- `WeightedConsistentHashRing` — TODO 5(`addNode(node, weight)` — 자리를 weight 배로)
+- `JumpConsistentHash` — TODO 6(`jumpHash` — 논문 의사코드) · TODO 7(`removeNode` — 맨 뒤만, 아니면 `UnsupportedOperationException`) · TODO 8(`getNode`)
+
+순서: `HashRingContractTest.java`를 따라 친 뒤 `ModuloSharding` → `ConsistentHashRing` → `WeightedConsistentHashRing` → `JumpConsistentHash`.\
+실행: `cd ~/project/myway/data-structure && ./run.sh 31` — README 기준 **84개 중 69개가 실패**한다.\
+(참고: README 의 "TODO 2개/6개/2개/6개"는 `TODO` **문자열** 등장 수이고, 실제 과제 항목은 위 8개다 — 항목마다 주석 1회 + `throw` 1회로 두 번씩 나온다.)
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -528,15 +596,48 @@ jumpHash(key, numBuckets) : 지역 변수 둘과 반복문 하나. 자료구조�
 | WeightedConsistentHashRing | | | |
 | JumpConsistentHash | | | |
 
+## 장애 시나리오와 대처
+
+**1. 서버 한 대가 죽었는데 옆 서버 한 대만 연달아 죽는다**
+
+- 현상: 노드 B가 내려간 직후 시계 방향 이웃 C의 CPU·메모리가 튀고, 잠시 뒤 C도 내려간다. 다시 그 옆으로 번진다(연쇄 장애).
+- 보이는 형태: `keyCounts`로 세면 B가 맡던 키 전부가 C 하나에 얹혀 있다. 가상 노드 없이(`virtualNodes = 1`) 운영 중이거나, 가상 노드는 있는데 노드 수가 두세 대뿐이다.
+- 원인: 링에서 죽은 노드의 구간은 시계 방향 **다음 자리의 노드**가 통째로 받는다. 자리가 하나면 그 몫이 한 대에 몰린다. 가상 노드는 죽은 노드의 100개 자리가 원 곳곳에 흩어져 있어 그 몫이 여러 노드에 나뉘게 하는 장치다 — 균형(정답 4번 참고)만이 아니라 **장애 전파**를 막는 장치이기도 하다.
+- 대처: 가상 노드를 켜고(기본 100) 노드가 적을 때는 더 준다. 죽은 노드 몫이 어디로 갔는지를 `keyCounts` 전후 차이로 배포 전에 시뮬레이션한다. 이동한 키의 캐시 미스가 원본을 때리는 것은 [ops-patterns/09-stampede](../../ops-patterns/09-stampede/2-summary.md)의 대처(요청 병합·잠금)로 받는다.
+
+**2. 키 하나가 트래픽의 30%를 차지해 어느 서버로 가든 그 서버가 죽는다**
+
+- 현상: 링의 분포는 고른데(`keyCounts` 최대/최소 1.1배) 특정 노드만 과부하다. 그 노드를 빼도 문제가 다른 노드로 따라간다.
+- 보이는 형태: 노드별 **키 수**는 같고 **요청 수**만 한 노드에 쏠린다. 인기 상품·유명 계정처럼 핫키 하나가 원인이다.
+- 원인: 일관된 해싱은 키를 고르게 나누지 트래픽을 고르게 나누지 않는다. 키 하나는 어떤 자리로 가도 한 노드다 — 가상 노드도 가중치도 키 안쪽으로는 못 들어간다(커리큘럼 ⚠ "핫키는 해결 못 함").
+- 대처: 핫키를 링 밖에서 다룬다 — 클라이언트 로컬 캐시, 키를 `key#0 … key#k`로 쪼개 여러 노드에 복제하고 읽기를 분산, 또는 핫키 전용 노드. 어느 키가 핫한지는 [19-probabilistic-counting](../19-probabilistic-counting/2-summary.md)의 heavy hitter로 찾는다.
+
+**3. 서버가 늘어난 뒤 같은 키가 두 서버에 따로 저장된다**
+
+- 현상: 캐시를 갱신했는데 옛 값이 계속 읽힌다. 어떤 클라이언트는 새 값, 어떤 클라이언트는 옛 값을 본다.
+- 보이는 형태: 같은 키에 대해 클라이언트 X의 `getNode`는 D, 클라이언트 Y의 `getNode`는 A를 낸다. 두 서버 모두에 그 키가 있고 값이 다르다.
+- 원인: 링은 각 클라이언트가 **자기 메모리의 `TreeMap`**으로 들고 있다. 노드 D 추가가 클라이언트마다 다른 시각에 반영되면 그 사이 D의 자리 앞 구간(611..700)의 키를 X는 D에, Y는 A에 쓴다. 되감김 분기 누락(`ceilingEntry`가 null일 때 `firstEntry`로 안 가는 구현)은 원의 끝 뒤에 떨어진 키에서 `NullPointerException`을 내고, 누락된 구현과 올바른 구현의 클라이언트가 섞여 있으면(예: null을 다른 기본 노드로 처리) 그 키들만 클라이언트마다 다르게 배정되는 같은 모양으로 드러난다.
+- 대처: 노드 목록의 출처를 하나로 둔다(설정 서비스·좌표 서비스). 목록에 버전을 붙여 요청과 함께 보내고, 서버가 자기 담당이 아닌 키를 받으면 거부하거나 되돌린다. 되감김은 자리가 1000개일 때 키 10만 중 18개만 걸리므로 무작위 테스트 대신 "가장 큰 자리보다 뒤의 키"를 고정 케이스로 둔다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- `hash(key) % N`은 맵 안에서는 맞지만 서버 목록에 쓰면 N이 식 안에 있어 노드 하나가 바뀔 때 거의 전부가 움직인다. 일관된 해싱은 배정 규칙에서 N을 빼고 자리의 배치만 남긴다.
+- 링은 `TreeMap`의 `ceilingEntry` 한 번(06번 `ceilingKey`)과 "없으면 첫 항목"이라는 되감김 한 줄이다. 노드가 바뀔 때 움직이는 키는 그 노드가 맡던 것과 **정확히 같은 집합**이다.
+- 자리를 하나만 찍으면 구간이 18배 들쭉날쭉하다. 가상 노드는 큰 조각과 작은 조각을 상쇄해 균형을 만들고, 죽은 노드의 몫을 여러 이웃에 나눠 장애 전파도 막는다 — 대가는 `TreeMap` 메모리와 `log(n*v)`.
+- 가중치는 자리 수를 곱하는 것뿐이고, 해시가 안 섞이면 자리 수를 아무리 늘려도 원은 뭉친다 — 흩는 것은 자리 수가 아니라 섞는 해시다.
+- 점프 해시는 메모리 0에 이동량 최소지만 버킷 번호가 이어져야 해서 가운데 노드를 못 뺀다. 아무 노드나 죽을 수 있는 곳에서는 링이 여전히 필요하다 — 조용히 틀린 답보다 `UnsupportedOperationException`이 낫다.
 
--
--
--
+## 관련 주제·근거
 
-## 용어 풀이
+- 선행 — [05-hashmap](../05-hashmap/2-summary.md) · [06-binary-search-tree](../06-binary-search-tree/2-summary.md): `hash % N`의 출발점과 `ceilingKey` — 링은 이 둘의 조합이다.
+- 선행 — [29-open-addressing](../29-open-addressing/2-summary.md): resize 때 전부 재해싱하는 문제의 원형. 여기서는 그 재해싱을 노드 단위로 최소화한다.
+- 연결 — [19-probabilistic-counting](../19-probabilistic-counting/2-summary.md): 샤드별 집계의 전제(안정된 배정)와 핫키 탐지(heavy hitter).
+- 연결 — [systems/partitioning-vs-sharding](../../systems/partitioning-vs-sharding/2-summary.md) · [ops-patterns/09-stampede](../../ops-patterns/09-stampede/2-summary.md): 샤딩의 상위 개념, 노드 이동 직후 캐시 미스 폭주의 대처.
+- 후속 — [32-inverted-index](../32-inverted-index/2-summary.md): 답이 맞는 두 구현을 맞대보는 대조 검증이 유일한 검증 수단이 되는 자리.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `23-consistent-hashing` (선행 `07`, 원전 Karger 외 1997).
+- myway 원본 — `/home/jun/project/myway/data-structure/31-consistent-hashing/` (README.md · impl/ConsistentHashRing.java · impl/WeightedConsistentHashRing.java · impl/JumpConsistentHash.java · impl/ModuloSharding.java).
+
+### 용어 풀이
 
 - **해시(hash)**: 아무 문자열이나 넣으면 정해진 범위의 숫자 하나가 튀어나오는 함수. 같은 입력이면 늘 같은 숫자가 나온다.
 - **키(key)**: 저장하거나 찾으려는 데이터의 이름표. 예: 사용자 아이디.
@@ -559,7 +660,7 @@ jumpHash(key, numBuckets) : 지역 변수 둘과 반복문 하나. 자료구조�
 - **`IllegalArgumentException` / `UnsupportedOperationException`**: 자바에서 "잘못된 값을 줬다" / "이 동작은 지원 안 한다"를 알리는 예외(에러 신호).
 - **이동량(movement)**: 노드 수가 바뀔 때 배정이 달라져 이사해야 하는 키의 개수. 이 문제 전체의 평가 기준.
 
-## 관련 자료
+### 관련 자료
 
 - 원본 README: `/home/jun/project/myway/data-structure/31-consistent-hashing/README.md`
 - 구현 대상: `/home/jun/project/myway/data-structure/31-consistent-hashing/src/main/java/com/datastructure/conshash/`

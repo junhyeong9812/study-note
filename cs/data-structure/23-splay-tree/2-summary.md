@@ -4,8 +4,34 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+이진 탐색 트리는 정렬 입력에서 한 줄로 기울어 O(n)이 된다. 12·15·16번은 확률·위로 자라기·색 비트로 "매 순간 균형"을 보장해 그것을 막았다.
+그런데 실제 접근은 고르지 않다 — 10만 개 중 방금 쓴 100개가 다시 불린다. 균형 트리는 그 100개도 log(10만) 깊이에서 찾는다.
+
+```text
+균형 트리 (16번)                       스플레이 트리 (23번)
+매 순간 높이 <= 2 log n                 균형을 목표로 삼지 않는다
+자주 쓰는 키도 깊이 ~16                 건드린 키는 뿌리로 올린다 -> 다음엔 깊이 0
+노드마다 색 비트                        노드 = key / value / left / right 뿐
+        (5)                                get(2) 후        (2)
+       /   \                                              /   \
+     (2)   (7)     -- get(2) --> 모양 그대로            (1)     (5)
+     /                                                            \
+   (1)                                                            (7)
+```
+
+스플레이 트리는 규칙이 하나뿐이다 — 건드린 키를 회전으로 뿌리까지 끌어올린다(splay). 그것만으로 m번 연산의 총비용이 O(m log n)(상환)이고, 최근에 쓴 것이 저절로 얕은 곳에 온다.
+대가는 "지금 이 순간의 모양"에 대한 보장이 없다는 것 — 한 번은 O(n)일 수 있고, 읽기가 곧 쓰기다.
+
+- 쉬운 예: 책상 위 서류 더미 — 본 서류를 맨 위에 올려놓기만 하면 자주 보는 서류가 저절로 위쪽에 있다.
+- 똑같은 구조다: 이 노트의 `SplayTree.get`은 찾은 뒤 `splay`로 그 키를 `root`에 올린다. `depthOf(k)`가 0이 된다.
+- 실무 예: 소수의 핫 키가 반복되는 캐시형 탐색, 10번 LRU 캐시가 리스트를 손으로 관리해 얻던 "최근 것이 앞에" 성질을 구조가 공짜로 갖는다.
+  - *상환(amortized)*: 한 번 한 번이 아니라 m번을 합친 총비용으로 보장하는 방식. 01번 동적 배열의 "2배로 키우기"와 같은 논증이다.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 책상 위 서류 더미.** 서류를 볼 때마다 본 서류를 더미 맨 위에 올려놓는다고 하자. 정리 규칙은 그것뿐인데, 자주 보는 서류는 저절로 늘 위쪽에 있게 된다. **스플레이 트리가 똑같은 구조다** — 키를 찾을 때마다 그 키를 나무의 맨 위(뿌리)로 끌어올린다. 그래서 자주 찾는 키일수록 위에 모여 빨라진다. 실무로는 "방금 쓴 것을 곧 또 쓸" 가능성이 높은 캐시·메모리 할당자 류가 이 성질(접근 지역성) 위에 서 있다.
 
@@ -26,33 +52,41 @@ get(2)를 하면 2가 뿌리로 올라온다
        찾기만 했는데 나무 모양이 바뀐다 = "읽기가 곧 쓰기"
 ```
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-06번 이진 탐색 트리가 정렬 입력에서 무너진 뒤로 균형을 잡는 방법을 셋 봤다 — 12번은 확률로, 15번은 위로 자라기로, 16번은 회전으로 보장했다.
-스플레이 트리는 균형을 아예 목표로 삼지 않고, 접근한 노드를 뿌리로 끌어올리기만 한다(splay).
-색 비트도 높이 필드도 없이 상환(amortized) O(log n) 이 나오는 구조를 직접 구현하고, zig-zig 의 회전 순서를 일부러 틀린 대조군과 회전 수로 비교해 보는 것이 이 챕터의 과제다.
+### 전체 흐름
 
-**과제**
-
-1. `SplayTree` (TODO 4개) — `splay` 가 본체다. 나머지는 `put` · `remove` · `floorKey`.
-2. `MoveToRootTree` (TODO 1개) — `moveToRoot`. `SplayTree.splay` 와 **한 곳만** 다르게 짠 대조군이다.
-3. `SplayTreeSet` (TODO 2개) — `add` · `remove`. 별도 조회 없이 맵의 반환값으로 판별한다.
-
-`SplayTreeMapTest.java` 를 따라친 뒤 `SplayTree` → `MoveToRootTree` → `SplayTreeSet` 순서로 채운다.
-
-```bash
-cd ~/project/myway/data-structure && ./run.sh 23      # 34개 중 31개가 실패한다
+```text
+[1] 균형을 포기한다                          [2] splay — 건드린 키를 뿌리로
+    Node = key / value / left / right           zig     : 한 칸 남음 -> 회전 1회
+    색·높이·균형 정보 없음                       zig-zig : 같은 방향 두 칸 -> 할아버지 먼저, 부모 다음
+    정렬 입력이면 한 줄 (height n) 도 "정상"     zig-zag : 엇갈린 두 칸 -> 부모 먼저, 할아버지 다음
+              |                                          |
+              v                                          v
+[3] 경로가 반으로 접힌다 (path halving)      [4] 모든 연산이 "먼저 splay, 뿌리만 손본다"
+    깊이 6 인 키를 꺼내면 경로 위 노드들이        get   : splay 후 뿌리 키 비교
+    대부분 절반 높이로 내려온다                   put   : splay 로 이웃을 올린 뒤 새 노드를 뿌리에
+    한 번 O(n) 을 내면 다음부터 싸진다            remove: splay 로 올려 떼고, 왼쪽 최대를 splay 해 join
+    -> m 번 합쳐 O(m log n) = 상환 O(log n)       floorKey/ceilingKey 도 splay 한다
+              |                                          |
+              +--------------------+---------------------+
+                                   v
+[5] 대가
+    한 연산 최악 O(n) — 보장이 아니라 상환          읽기가 쓰기 -> 읽기 잠금 불가
+    zig-zig 순서를 틀리면(MoveToRootTree)          재귀 구현이라 깊은 한 줄에서 StackOverflowError
+      답은 같고 상환 보장만 깨진다 (O(m n))          같은 SortedTree 계약 — 타입이 차이를 못 말한다
 ```
 
-통과하는 3개는 미리 채워둔 코드만 본다.
+- [1] 노드에 여분 데이터가 하나도 없다. 정렬 순서로 넣으면 그 순간 높이 n짜리 한 줄인데, 이것도 정상이다 — 어느 한 순간의 모양을 보장하지 않는다.
+- [2] 찾는 키까지 내려갔다가 돌아 나오며 회전한다. 세 세대(할아버지·부모·목표)의 방향이 같은지 엇갈리는지로 케이스가 갈리고, 무엇을 먼저 돌리느냐가 전부다.
+  - *회전(rotation)*: 부모와 자식의 위아래를 맞바꾸는 한 수. 왼쪽 작다/오른쪽 크다는 그대로 유지된다.
+- [3] zig-zig에서 할아버지를 먼저 돌려야 지나온 경로가 접힌다. 그래서 같은 깊은 접근을 반복해도 다시 비싸지지 않는다.
+  - *path halving(경로 반접기)*: splay가 지나간 경로의 깊이가 대략 절반이 되는 효과. 상환 O(log n)의 원천.
+- [4] splay는 키가 없어도 실패하지 않고 이웃을 뿌리에 올린다. 그래서 put은 뿌리의 한쪽 부분트리를 통째로 옮겨 달고, remove는 후속자를 찾지 않고 두 부분트리를 join한다.
+  - *join(잇기)*: "왼쪽 모든 키 < 오른쪽 모든 키"일 때 두 나무를 하나로 합치는 것. 왼쪽 최대 키를 splay하면 그 오른쪽 자리가 비어 있다.
+- [5] 얻은 것은 여분 데이터 0과 접근 지역성, 내준 것은 단일 연산 보장과 동시 읽기다. 순서를 부모 먼저로 바꾸면 답은 그대로이고 걸음 수로만 차이가 잡힌다.
 
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — SortedTree (`src/main/java/com/datastructure/splay/SortedTree.java`)
+### 계약 — SortedTree (`src/main/java/com/datastructure/splay/SortedTree.java`)
 
 - `V put(K key, V value)`
 - `V get(K key)`
@@ -72,11 +106,11 @@ cd ~/project/myway/data-structure && ./run.sh 23      # 34개 중 31개가 실�
 
   - *계약(인터페이스)*: "이런 이름의 기능들을 제공하겠다"는 약속 목록. 안이 어떻게 구현됐는지는 말하지 않는다 — 그래서 get이 나무를 바꾸는지 여부는 겉만 봐서는 모른다.
 
-## 구현 — SplayTree (`src/main/java/com/datastructure/splay/SplayTree.java`)
+### 구현 — SplayTree (`src/main/java/com/datastructure/splay/SplayTree.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 ```
 평범한 이진 탐색 트리다. 색도 높이도 균형 정보도 없다 -- Node 는 key / value / left / right 뿐.
@@ -110,7 +144,7 @@ Node<K,V>                         SplayTree
   - *상환(amortized)*: 한 번 한 번이 아니라 여러 번을 합친 총비용으로 보장하는 방식. "가끔 한 번 비싸도, m번 합치면 m log n을 안 넘는다".
   - *지역성(locality)*: 방금 쓴 것을 곧 또 쓰는 경향. 자주 쓰는 키가 위로 모이면 이 경향에서 이득을 본다.
 
-### 동작 — splay
+#### 동작 — splay
 
 **언제 쓰나** — get/put/remove/floorKey/ceilingKey 전부의 첫걸음. 찾는 키를 회전을 반복해 뿌리까지 끌어올린다.
 
@@ -203,7 +237,7 @@ splay 는 key 가 없어도 실패하지 않는다. 자식이 null 이면 그 �
   - *path halving(경로 반접기)*: splay가 지나간 경로의 깊이가 대략 절반이 되는 효과. 상환 O(log n)의 원천.
   - *null*: "아무것도 없음"을 뜻하는 값. 자식이 null이면 그 방향에 매달린 노드가 없다는 뜻.
 
-### 동작 — 추가
+#### 동작 — 추가
 
 **언제 쓰나** — put(새 키 넣기)과 remove(키 지우기). 둘 다 "먼저 splay, 그 다음 뿌리 주변만 손본다".
 
@@ -253,123 +287,123 @@ remove(key) : splay 로 지울 노드를 뿌리로 올린 뒤, 남은 두 부분
 3. remove: 지울 키를 splay로 뿌리에 올려 떼어내면 나무가 왼쪽/오른쪽 둘로 갈라진다. 왼쪽에서 가장 큰 키를 다시 splay로 올리면 그 노드의 오른쪽 자리가 반드시 비어 있으므로, 오른쪽 나무를 그대로 끼우면 이어진다(join).
   - *join(잇기)*: 두 나무를 하나로 합치는 것. "왼쪽 나무의 모든 키 < 오른쪽 나무의 모든 키"일 때만 이렇게 싸게 된다.
 
-### `필드`
+#### `필드`
 
 - `Node<K,V> root` 역할:
 - `int size` 역할:
 - `long rotations` 역할(측정용):
 - `Node.key` / `Node.value` / `Node.left` / `Node.right` — 여분 데이터가 하나도 없다는 것의 뜻:
 
-### `private Node<K,V> rotateRight(Node<K,V> h)` / `private Node<K,V> rotateLeft(Node<K,V> h)`
+#### `private Node<K,V> rotateRight(Node<K,V> h)` / `private Node<K,V> rotateLeft(Node<K,V> h)`
 
 - 하는 일:
 - 논리(16번의 회전과 달리 색을 옮길 필요가 없는 이유):
 - 비용(왜):
 
-### `private Node<K,V> splay(Node<K,V> h, K key)` (TODO)
+#### `private Node<K,V> splay(Node<K,V> h, K key)` (TODO)
 
 - 하는 일:
 - 논리(부모 포인터 없이 재귀로 **두 층씩** 내려가는 것 · zig / zig-zig / zig-zag · zig-zig 에서 무엇을 먼저 돌리는가):
 - 비용(왜 — 상환 O(log n) 이 나오는 이유):
 
-### `public V put(K key, V value)` (TODO)
+#### `public V put(K key, V value)` (TODO)
 
 - 하는 일:
 - 논리(splay 를 부르고 새 노드를 뿌리 자리에 놓는 것):
 - 비용(왜):
 
-### `public V remove(K key)` (TODO)
+#### `public V remove(K key)` (TODO)
 
 - 하는 일:
 - 논리(splay 를 **두 번** 부르는 이유 — 06번처럼 후속자를 옮겨 심지 않는 것):
 - 비용(왜):
 
-### `public K floorKey(K key)` (TODO)
+#### `public K floorKey(K key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public V get(K key)`
+#### `public V get(K key)`
 
 - 하는 일:
 - 논리(조회가 구조를 바꾼다는 것 · 그래서 읽기 잠금을 못 쓴다는 것):
 - 비용(왜):
 
-### `public K ceilingKey(K key)`
+#### `public K ceilingKey(K key)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int depthOf(K key)` / `public long rotations()`
+#### `public int depthOf(K key)` / `public long rotations()`
 
 - 하는 일:
 - 논리(무엇을 재려고 열어둔 것인가):
 - 비용(왜):
 
-### `public List<K> keys()`
+#### `public List<K> keys()`
 
 - 하는 일:
 - 비용(왜):
 
-### `public K firstKey()` / `public K lastKey()`
+#### `public K firstKey()` / `public K lastKey()`
 
 - 하는 일:
 - 논리(이것도 구조를 바꾸는가):
 - 비용(왜):
 
-### `public int height()` / `public boolean containsKey(K key)` / `public int size()` / `public boolean isEmpty()` / `public void clear()`
+#### `public int height()` / `public boolean containsKey(K key)` / `public int size()` / `public boolean isEmpty()` / `public void clear()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 — SplayTreeMap (`src/main/java/com/datastructure/splay/SplayTreeMap.java`)
+### 구현 — SplayTreeMap (`src/main/java/com/datastructure/splay/SplayTreeMap.java`)
 
 TODO 없는 어댑터. `SplayTree` 를 `SortedTree` 계약으로 내보낸다.
 
-### `필드`
+#### `필드`
 
 - `SplayTree<K,V> tree` 역할:
 
-### `SortedTree 의 메서드 전부를 위임`
+#### `SortedTree 의 메서드 전부를 위임`
 
 - 하는 일:
 - 논리(16번 RedBlackTreeMap 과 같은 껍데기 — 같은 계약으로 나란히 재기 위한 것):
 
-## 구현 — SplayTreeSet (`src/main/java/com/datastructure/splay/SplayTreeSet.java`)
+### 구현 — SplayTreeSet (`src/main/java/com/datastructure/splay/SplayTreeSet.java`)
 
-### `필드`
+#### `필드`
 
 - `static final Object PRESENT` 역할:
 - `SplayTreeMap<K, Object> map` 역할:
 
-### `public boolean add(K key)` (TODO)
+#### `public boolean add(K key)` (TODO)
 
 - 하는 일:
 - 논리(별도 조회 없이 판별하는 이유 — `contains` 로 먼저 확인하면 무엇이 두 배가 되는가):
 - 비용(왜):
 
-### `public boolean remove(K key)` (TODO)
+#### `public boolean remove(K key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public boolean contains(K key)` / `public List<K> toList()` / `public K first()` / `public K last()` / `public K floor(K key)` / `public K ceiling(K key)`
+#### `public boolean contains(K key)` / `public List<K> toList()` / `public K first()` / `public K last()` / `public K floor(K key)` / `public K ceiling(K key)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int size()` / `public boolean isEmpty()` / `public void clear()`
+#### `public int size()` / `public boolean isEmpty()` / `public void clear()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 — MoveToRootTree (`src/main/java/com/datastructure/splay/MoveToRootTree.java`)
+### 구현 — MoveToRootTree (`src/main/java/com/datastructure/splay/MoveToRootTree.java`)
 
 > 잘못된 순서(부모 먼저)를 **일부러** 구현해 둔 비교용 클래스다.
 
-### 동작 — 조회
+#### 동작 — 조회
 
 **언제 쓰나** — 실제로 쓰려고가 아니라, "회전 순서가 왜 중요한가"를 수치로 재는 실험용(대조군).
 
@@ -440,35 +474,72 @@ SplayTree 와 코드가 딱 한 곳 다르다 -- zig-zig 가지에서 무엇을 
 3. 그래서 같은 깊은 접근을 반복하면 splay는 점점 싸지고, move-to-root는 계속 비싸다 — 누적 표에서 n이 2배 될 때 4배씩 벌어지는 이유다.
   - *대조군*: 실험에서 "비교 기준"이 되는 쪽. 일부러 한 곳만 다르게 만들어 그 한 곳의 효과를 잰다.
 
-### `필드`
+#### `필드`
 
 - `Node root` 역할:
 - `long rotations` 역할:
 - `Node.key` / `Node.left` / `Node.right` 역할:
 
-### `public static MoveToRootTree spine(int n)`
+#### `public static MoveToRootTree spine(int n)`
 
 - 하는 일:
 - 논리(한 줄짜리 트리를 만들어 무엇을 재는가):
 - 비용(왜):
 
-### `private Node rotateRight(Node h)` / `private Node rotateLeft(Node h)`
+#### `private Node rotateRight(Node h)` / `private Node rotateLeft(Node h)`
 
 - 하는 일:
 - 비용(왜):
 
-### `private Node moveToRoot(Node h, int key)` (TODO)
+#### `private Node moveToRoot(Node h, int key)` (TODO)
 
 - 하는 일:
 - 논리(`SplayTree.splay` 와 **한 곳만** 다른 것 — 그 한 곳이 무엇을 바꾸는가):
 - 비용(왜):
 
-### `public boolean get(int key)` / `public long rotations()` / `public int height()` / `public int depthOf(int key)`
+#### `public boolean get(int key)` / `public long rotations()` / `public int height()` / `public int depthOf(int key)`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **핫 키가 몰리는 캐시형 탐색** — 10만 개 중 100개만 돌아가며 조회하면 조회당 방문이 log2(100) 근처(약 6)로 내려온다. 비용이 트리 크기가 아니라 "최근에 쓴 것의 개수"로 정해진다.
+- **[10-lru-cache](../10-lru-cache/2-summary.md)와의 대비** — LRU는 해시맵 + 연결 리스트를 손으로 관리해 "최근 것이 앞에"를 만든다. 스플레이 트리는 그 성질을 구조가 저절로 갖되, 정렬 순서(floor/ceiling)까지 유지한다.
+- **운영체제 가상 메모리의 영역 조회** — FreeBSD의 `vm_map`(프로세스 주소 공간의 영역 목록)은 연결 리스트를 스플레이 트리로 바꿔 방금 조회한 영역 근처가 다시 불릴 때 빨리 찾는다(FreeBSD 커널 소스·freebsd-hackers 2010 논의). 할당기 쪽에서는 [35-allocator](../35-allocator/2-summary.md)의 free list와 견줄 자리이지만, 특정 할당기의 현재 구현은 확인하지 못했다 [?].
+- **컴파일러·시스템 소프트웨어의 내부 표** — GCC 내부(`libiberty`·`libgomp`의 `splay-tree.c`)가 스플레이 트리를 쓴다. 옛 사례 목록(Sleator 인용)에는 Windows NT 가상 메모리·네트워크 코드, 네트워크 라우터도 있으나 현재 버전의 사용 여부는 확인하지 못했다 [?].
+- **상환 분석의 교과서 예제** — 01번 동적 배열의 2배 확장, 14번 유니온파인드의 경로 압축과 같은 논증이 "트리 위에서" 나오는 자리다. [14-union-find](../14-union-find/2-summary.md)의 `find`도 읽기가 구조를 바꾼다.
+- **비교 상대** — [16-red-black-tree](../16-red-black-tree/2-summary.md): 같은 `SortedTree` 계약. 접근이 고르고 단일 연산 상한이 필요하면 그쪽, 접근이 몰리고 여분 데이터가 부담이면 이쪽이다.
+
+## 적용 — 풀어나가는 법
+
+스플레이 트리를 고를지는 "접근이 몰리는가"와 "한 번의 최악을 견디는가"를 먼저 묻는 데서 갈린다.
+순서: ① 접근 패턴을 본다 — 소수 키가 반복되면 이득, 고르게 무작위면 레드블랙보다 회전 상수만 더 든다 → ② 단일 연산 지연 상한이 필요한 경로(실시간·타임아웃)면 쓰지 않는다 → ③ 동시 읽기가 있으면 읽기도 쓰기 잠금이 필요하다는 것을 계산에 넣는다 → ④ 구현할 때는 zig-zig의 회전 순서(할아버지 먼저)를 걸음 수 테스트로 못 박는다 — 계약 테스트는 그 차이를 못 본다.
+아래 과제의 `MoveToRootTree`가 ④를 수치로 보여주는 대조군이다.
+
+### 문제 — 이 챕터가 시키는 것
+
+06번 이진 탐색 트리가 정렬 입력에서 무너진 뒤로 균형을 잡는 방법을 셋 봤다 — 12번은 확률로, 15번은 위로 자라기로, 16번은 회전으로 보장했다.
+스플레이 트리는 균형을 아예 목표로 삼지 않고, 접근한 노드를 뿌리로 끌어올리기만 한다(splay).
+색 비트도 높이 필드도 없이 상환(amortized) O(log n) 이 나오는 구조를 직접 구현하고, zig-zig 의 회전 순서를 일부러 틀린 대조군과 회전 수로 비교해 보는 것이 이 챕터의 과제다.
+
+**과제**
+
+1. `SplayTree` (TODO 4개) — `splay` 가 본체다. 나머지는 `put` · `remove` · `floorKey`.
+2. `MoveToRootTree` (TODO 1개) — `moveToRoot`. `SplayTree.splay` 와 **한 곳만** 다르게 짠 대조군이다.
+3. `SplayTreeSet` (TODO 2개) — `add` · `remove`. 별도 조회 없이 맵의 반환값으로 판별한다.
+
+`SplayTreeMapTest.java` 를 따라친 뒤 `SplayTree` → `MoveToRootTree` → `SplayTreeSet` 순서로 채운다.
+
+```bash
+cd ~/project/myway/data-structure && ./run.sh 23      # 34개 중 31개가 실패한다
+```
+
+통과하는 3개는 미리 채워둔 코드만 본다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -478,15 +549,54 @@ SplayTree 와 코드가 딱 한 곳 다르다 -- zig-zig 가지에서 무엇을 
 | 23번 스플레이 트리 (상환 + 접근 지역성) | | | |
 | MoveToRootTree (zig-zig 순서를 뒤집은 것) | | | |
 
+## 장애 시나리오와 대처
+
+**1. 읽기 잠금으로 동시 조회를 허용했다가 트리가 깨짐**
+
+- 현상: 여러 스레드가 `get`만 하는데 어느 순간 키가 사라지거나 `size()`와 `keys().size()`가 어긋나고, 드물게 조회가 끝나지 않는다(순환 참조).
+- 보이는 형태: 예외 없이 조용히 손상된다. 재현이 어렵고 부하가 높을 때만 난다. `ConcurrentModificationException` 같은 검사가 없다.
+- 원인: `get`이 `splay`를 불러 `root`와 여러 노드의 `left`/`right`를 바꾼다. 읽기가 곧 쓰기이므로 "읽기끼리는 동시에 해도 된다"는 읽기 잠금의 전제가 깨진다(정답 4번 참고).
+- 대처: 모든 연산에 배타 잠금을 건다. 읽기가 많아 동시성이 중요하면 스플레이 트리가 맞지 않다 — 조회가 구조를 바꾸지 않는 [16-red-black-tree](../16-red-black-tree/2-summary.md)로 간다.
+
+**2. `null` 값으로 "삭제 표시"를 하려다 예외**
+
+- 현상: 값이 없음을 나타내려고 `put(key, null)`을 했더니 프로그램이 죽는다.
+- 보이는 형태: `IllegalArgumentException: 값은 null 일 수 없다`. 키가 `null`이면 `키는 null 일 수 없다`.
+- 원인: `get`이 "없는 키"를 `null`로 돌려주므로 `null` 값을 허용하면 "없다"와 "null이 담겼다"를 구별할 수 없다. `SplayTreeSet.add`가 별도 조회 없이 `put`의 반환값으로 새 키인지 판별하는 것도 이 규칙 덕분이다.
+- 대처: 삭제는 `remove`로 한다. "비어 있음"을 값으로 표현해야 하면 `Optional`이나 전용 표식 객체를 담는다.
+
+**3. 대량 정렬 적재 직후 첫 조회들이 튐**
+
+- 현상: 정렬된 파일에서 0..n-1을 순서대로 `put`한 뒤 서비스를 열면 처음 몇 건의 조회가 유난히 느리다.
+- 보이는 형태: 적재 직후 `height()`가 n이다. `get(0)` 한 번에 노드 n개를 지나고 회전 n-1번을 한다 — p99가 튀고, 원본 README의 측정 기계 기본 스택에서는 n이 1만 6천일 때 재귀 깊이 때문에 `StackOverflowError`로 아예 죽었다(1만 4천은 됐다 — 스택 크기에 따라 다르다, 정답 7번 참고).
+- 원인: `put`은 새 키를 뿌리에 얹고 이전 뿌리를 자식으로 내린다. 오름차순이면 한 줄이 되고, 그것을 "사후에" 접는 첫 접근이 O(n)을 한 번에 낸다 — 보장이 아니라 상환이다.
+- 대처: 적재 순서를 섞거나(성능 테스트가 20만 개를 섞어 넣는 이유), 적재 후 중간 키 몇 개를 미리 `get`해 경로를 접어 둔다(warm-up). 깊이 상한이 필요하면 하향식(top-down) 반복 splay로 구현한다.
+
+**4. 측정 도구가 대상을 바꿈 — 깊이를 재려고 `get`을 부름**
+
+- 현상: "이 키가 얼마나 깊은가"를 확인하려고 `get(k)`를 한 뒤 깊이를 재면 항상 0이 나온다.
+- 보이는 형태: 벤치마크 결과가 전부 "깊이 0"이거나, 측정을 넣은 뒤 다른 키의 깊이가 달라진다.
+- 원인: `get`·`containsKey`·`floorKey`·`ceilingKey`는 모두 splay를 부른다. 관측이 구조를 바꾼다.
+- 대처: 이 노트의 `depthOf(key)`·`height()`·`rotations()`처럼 트리를 건드리지 않는 "재는 자"를 따로 두고, 측정에는 그것만 쓴다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 스플레이 트리는 균형을 목표로 삼지 않는다 — 규칙은 "건드린 키를 회전으로 뿌리까지 올린다" 하나이고, 노드에 여분 데이터가 없다.
+- zig-zig에서 할아버지를 먼저 돌려야 지나온 경로가 반으로 접힌다. 그 접힘이 m번 연산 총비용 O(m log n), 즉 상환 O(log n)의 원천이며, 순서를 뒤집으면 답은 같고 보장만 사라진다.
+- 보장이 아니라 상환이다 — 정렬 입력 직후는 높이 n짜리 한 줄이고 첫 접근이 O(n)을 한 번에 낸다. 그 한 번을 견딜 수 없는 경로에는 맞지 않다.
+- 최근에 쓴 것이 얕다 — 비용이 트리 크기가 아니라 최근에 쓴 키의 개수로 정해지므로, 접근이 몰리는 워크로드에서 완전 균형 BST보다 빠르다.
+- 읽기가 곧 쓰기다 — 조회가 구조를 바꾸므로 읽기 잠금을 못 쓰고, 같은 `SortedTree` 계약 뒤에 앉아 있어도 타입은 그 차이를 말해주지 않는다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [06-binary-search-tree](../06-binary-search-tree/2-summary.md): 정렬 입력에서 무너지는 출발점. 여기서는 그 한 줄을 "사후에" 접는다.
+- 선행 — [16-red-black-tree](../16-red-black-tree/2-summary.md): 같은 `SortedTree` 계약, 매 순간 보장 대 상환의 대비. [12-skip-list](../12-skip-list/2-summary.md)·[15-b-tree](../15-b-tree/2-summary.md)와 함께 균형 잡는 네 방법.
+- 연결 — [10-lru-cache](../10-lru-cache/2-summary.md) · [14-union-find](../14-union-find/2-summary.md): "읽기가 구조를 바꾼다"와 상환 분석을 공유한다.
+- 후속 — [24-lsm-tree](../24-lsm-tree/2-summary.md): 여기서는 조회가 쓰기였고, 거기서는 쓰기를 미룬다 — "지금 낼 비용과 나중에 낼 비용"의 거래.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `38-splay-tree` (선행 `09`, 원전 Sleator–Tarjan 1985).
+- myway 원본 — `/home/jun/project/myway/data-structure/23-splay-tree/` (README.md · impl/SplayTree.java · impl/MoveToRootTree.java · impl/SplayTreeSet.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -495,7 +605,7 @@ SplayTree 와 코드가 딱 한 곳 다르다 -- zig-zig 가지에서 무엇을 
 - 테스트: `/home/jun/project/myway/data-structure/23-splay-tree/src/test/java/com/datastructure/splay/`
 - 정답 구현: `/home/jun/project/myway/data-structure/23-splay-tree/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 > 본문에서 이미 등장 자리마다 풀었지만, 복습용으로 한곳에 모은다. (중학생 수준 1~2줄)
 

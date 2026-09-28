@@ -4,8 +4,30 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+"이 키를 본 적 있나?"만 묻는데, 답을 위해 키 전부를 메모리에 담아야 한다면 키가 100만·1억 개일 때 감당이 안 된다.\
+게다가 그 질문의 답은 대부분 "없다"이고, "없다"를 알아내려고 디스크·네트워크를 다녀오면 그 비용이 전체를 지배한다.
+
+```text
+질문: "key 있어?"          해시 집합                     블룸 필터
+                           +-----------------------+     +----------------+
+                           | key1, key2, ... 100만 |     | 0 1 0 0 1 ... |  비트만
+                           +-----------------------+     +----------------+
+메모리                      수십 MB (키를 담는다)          1.2MB (1% 오탐)
+답                          정확                           없다=확실 / 있다=아마
+```
+
+블룸 필터는 키를 담지 않고 "봤다"는 흔적만 비트로 남겨, **"확실히 없다"를 아주 작은 메모리로** 답한다.\
+쉬운 예: 출석 도장판 — 이름은 안 적고 도장 자리만 보고 "안 왔다"를 확신한다.\
+똑같은 구조다: DB 앞에 두면 "확실히 없다"인 조회는 디스크를 아예 안 읽는다.\
+실무 예: LSM 저장소([24-lsm-tree](../24-lsm-tree/2-summary.md))가 SSTable마다 필터를 두어, 키가 없는 파일은 읽지 않고 건너뛴다.
+
+  - *SSTable*: 디스크에 정렬해 써 둔 읽기 전용 키-값 파일. 파일이 여러 개라 "어느 파일에 있나"부터 걸러야 한다.
+
+### 한눈에 — 쉽게 말하면
 
 **블룸 필터 = 출석 도장판.** 교실 뒤에 칸이 잔뜩 그려진 판이 있고, 온 사람은 자기 이름으로 정해지는 3칸에 도장을 찍고 간다.\
 누가 왔었는지 물으면 그 사람의 3칸을 본다 — 한 칸이라도 비어 있으면 "확실히 안 왔다", 3칸 다 찍혀 있으면 "아마 왔을 것"이다.\
@@ -39,29 +61,36 @@
 예: DB 앞에 블룸 필터를 두고, "확실히 없다"가 나오면 디스크를 아예 읽지 않는다(카산드라·RocksDB 등이 실제로 이렇게 쓴다).\
 "아마 있다"가 나오면 그때만 진짜 저장소를 확인하면 된다.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-원본 README는 이 박스를 "**정확성을 일부러 파는**" 박스라고 소개한다.\
-01~10에서 만든 것들은 전부 정확했는데, 여기서는 그 정확성을 팔아 메모리를 수십 배 줄인다 — 100만 개를 `HashSet`은 수십 MB에, 블룸 필터는 **1.2MB**(1% 오탐)에 담는다.\
-비트 수 `m = -n ln(p) / (ln2)^2` 와 해시 개수 `k = (m/n) ln2` 를 직접 구현해 **크기를 감이 아니라 공식으로** 정하고, 64비트 해시 하나를 반으로 갈라 쓰는 이중 해싱의 함정 셋을 겪는 것이 과제다.\
-그 위에 삭제가 되는 `CountingBloomFilter`와 용량을 모를 때 쓰는 `ScalableBloomFilter`를 만들어, 각각이 무엇을 더 내고 무엇을 잃는지 확인한다.
+### 전체 흐름
 
-과제 목록 — `src/main/java/com/datastructure/bloom/`의 TODO:
+```text
+[1] 크기를 공식으로 정한다                  [2] 원소 -> k개 자리
+    n = 예상 개수, p = 목표 오탐률              h = mix64(item.hashCode())
+    m = ceil(-n ln p / (ln2)^2)  비트 수        h1 = 윗 32비트, h2 = 아랫 32비트
+    k = round(m/n * ln2)          자리 수        idx_i = floorMod(h1 + i*h2, m)   i = 0..k-1
+    (1% 오탐 -> 원소당 9.586비트, k=7)
+              |                                          |
+              v                                          v
+[3] add = k개 비트를 켠다                   [4] mightContain = k개 비트를 본다
+    words[idx>>>6] |= 1L << (idx&63)            하나라도 0  -> false  (확실히 없다)
+    비트는 켜기만 하고 끄지 않는다              전부 1      -> true   (아마 있다 — 남의 비트일 수 있음)
+              |
+              v
+[5] 변형 — 잃은 것을 되사기
+    Counting : 비트 -> 계수기(byte)  삭제 가능, 메모리 8배, 오탐 원소 삭제 시 누락 발생
+    Scalable : 꽉 차면 새 필터를 잇는다  용량 2배·오탐률 절반, 조회는 필터 수만큼
+```
 
-- `BloomFilter` — TODO 1(`optimalBits` — 올림) · TODO 2(`optimalHashCount` — 반올림, 최소 1) · TODO 3(`indexes` — 이중 해싱) · TODO 4(`add`) · TODO 5(`mightContain` — **전부** 켜져 있어야)
-- `CountingBloomFilter` — TODO 1(`add` — 계수기 올리기·포화) · TODO 2(`remove`) · TODO 3(`mightContain` — 전부 0보다 크면)
-- `ScalableBloomFilter` — TODO 1(`grow` — 용량 2배·오탐률 절반) · TODO 2(`add`) · TODO 3(`mightContain` — 하나라도 true면) · TODO 4(`expectedFalsePositiveRate` — 더하지 말고 곱으로)
+- [1] 크기는 감이 아니라 공식이다. n과 p를 주면 m과 k가 나오고, 원소가 int든 100자 URL이든 원소당 비트 수는 같다.
+- [2] 해시 함수를 k개 만들지 않는다. 64비트 해시 하나를 반으로 갈라 `h1 + i*h2`로 k개 자리를 만든다(이중 해싱).
+- [3] 원소는 저장하지 않는다. 자리 k개에 1을 세우는 것이 전부라 메모리가 원소 크기와 무관하다.
+- [4] 누락이 없는 이유는 "켠 비트를 끄지 않는다"에 있다. 넣은 원소의 k개 비트는 반드시 켜져 있다.\
+  오탐은 남이 켠 비트가 우연히 겹친 것이다.
+- [5] 기본형은 삭제와 확장이 안 된다. 그것을 되사는 것이 두 변형이고, 각각 값을 치른다.
 
-순서: `ProbabilisticSetContractTest.java`를 먼저 따라 친다 → `BloomFilter` 5개 → `CountingBloomFilter` 3개 → `ScalableBloomFilter` 4개.\
-실행: `cd ~/project/myway/data-structure && ./run.sh 11` — README 기준 **64개 중 61개가 실패**한다.
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — ProbabilisticSet (`src/main/java/com/datastructure/bloom/ProbabilisticSet.java`)
+### 계약 — ProbabilisticSet (`src/main/java/com/datastructure/bloom/ProbabilisticSet.java`)
 
 - `void add(T item)`
 - `boolean mightContain(T item)`
@@ -70,11 +99,11 @@
 - `double expectedFalsePositiveRate()`
 - `void clear()`
 
-## 구현 — BloomFilter (`src/main/java/com/datastructure/bloom/BloomFilter.java`)
+### 구현 — BloomFilter (`src/main/java/com/datastructure/bloom/BloomFilter.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 ```
 BloomFilter — 원소를 저장하지 않는다. "봤다"는 흔적만 비트로 남긴다
@@ -115,7 +144,7 @@ BloomFilter — 원소를 저장하지 않는다. "봤다"는 흔적만 비트�
 > **오탐률(false positive rate)** — 위양성이 일어날 확률.\
 > 예: 생성자에 목표 오탐률 p를 주면 그걸로 필요한 비트 수 m과 원소당 비트 수 k가 계산된다.
 
-### 동작 — k 개 자리 고르기
+#### 동작 — k 개 자리 고르기
 
 **언제 쓰나**: add 도 mightContain 도 제일 먼저 "이 원소는 어느 k칸을 쓰는가"를 정해야 한다.\
 그 계산이 이것이다.
@@ -173,7 +202,7 @@ indexes(item) : 해시 함수를 k 개 만들지 않는다. 64비트 해시 하�
 > **O(k)** — 연산 횟수가 해시 자리 수 k에만 비례한다는 뜻.\
 > 예: 이미 100만 개를 넣었든 10개를 넣었든, 한 번의 add는 똑같이 k칸만 만진다.
 
-### 동작 — 추가와 조회
+#### 동작 — 추가와 조회
 
 **언제 쓰나**: add 는 원소를 "봤다"고 기록할 때, mightContain 은 "본 적 있나"를 물을 때.
 
@@ -215,7 +244,7 @@ mightContain(item) : k 자리를 확인하다 하나라도 0 이면 즉시 false
 
 **비용**: 둘 다 O(k) — 원소 크기와도, 지금까지 넣은 개수와도 무관하다.
 
-### 동작 — 위양성이 생기는 순간
+#### 동작 — 위양성이 생기는 순간
 
 **언제 생기나**: 넣은 적 없는 원소의 k칸이, 다른 원소들이 켜 둔 비트만으로 우연히 전부 채워졌을 때.
 
@@ -264,7 +293,7 @@ mightContain(item) : k 자리를 확인하다 하나라도 0 이면 즉시 false
 **비용**: 판정 자체는 여전히 O(k).\
 대가는 시간이 아니라 "틀릴 확률"로 치른다.
 
-### `필드`
+#### `필드`
 
 - `private final int bits` — 역할:
 - `private final int hashCount` — 역할:
@@ -272,69 +301,69 @@ mightContain(item) : k 자리를 확인하다 하나라도 0 이면 즉시 false
 - `private final long[] words` — 역할:
 - `private long inserted` — 역할:
 
-### `BloomFilter(int expectedInsertions, double falsePositiveRate)`
+#### `BloomFilter(int expectedInsertions, double falsePositiveRate)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static int optimalBits(int n, double p)` (TODO)
+#### `static int optimalBits(int n, double p)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static int optimalHashCount(int m, int n)` (TODO)
+#### `static int optimalHashCount(int m, int n)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int[] indexes(T item)` (TODO)
+#### `int[] indexes(T item)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void add(T item)` (TODO)
+#### `void add(T item)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean mightContain(T item)` (TODO)
+#### `boolean mightContain(T item)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long insertedCount()`
+#### `long insertedCount()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long bitSize()`
+#### `long bitSize()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `double expectedFalsePositiveRate()`
+#### `double expectedFalsePositiveRate()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()`
+#### `void clear()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — CountingBloomFilter (`src/main/java/com/datastructure/bloom/CountingBloomFilter.java`)
+### 구현 — CountingBloomFilter (`src/main/java/com/datastructure/bloom/CountingBloomFilter.java`)
 
-### 구조 — 비트 대신 계수기
+#### 구조 — 비트 대신 계수기
 
 원본 블룸 필터는 지우기가 안 된다(칸을 남과 같이 쓰니까).\
 그래서 칸마다 "도장 있음/없음" 대신 "도장 몇 개"를 세면 어떨까 — 그게 이 변형이다.
@@ -359,7 +388,7 @@ CountingBloomFilter — 비트 1개를 계수기 1바이트로 바꾼다. 그래
         mightContain : k 자리 중 하나라도 0 이면 즉시 false
 ```
 
-### 동작 — 삭제와 포화
+#### 동작 — 삭제와 포화
 
 **언제 쓰나**: remove 는 원소를 진짜로 빼야 할 때(원본 블룸 필터로는 불가능한 일).\
 포화는 한 자리에 255개 이상이 몰렸을 때의 안전장치다.
@@ -418,7 +447,7 @@ remove(item) : 먼저 mightContain 으로 확인하고, false 면 아무것도 �
 **비용**: add/remove/mightContain 모두 O(k).\
 메모리는 원본의 8배(비트 1개 → 1바이트).
 
-### `필드`
+#### `필드`
 
 - `static final int MAX_COUNT = 255` — 역할:
 - `private final int bits` — 역할:
@@ -427,63 +456,63 @@ remove(item) : 먼저 mightContain 으로 확인하고, false 면 아무것도 �
 - `private long inserted` — 역할:
 - `private long saturations` — 역할:
 
-### `CountingBloomFilter(int expectedInsertions, double falsePositiveRate)`
+#### `CountingBloomFilter(int expectedInsertions, double falsePositiveRate)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void add(T item)` (TODO)
+#### `void add(T item)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean remove(T item)` (TODO)
+#### `boolean remove(T item)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean mightContain(T item)` (TODO)
+#### `boolean mightContain(T item)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long insertedCount()`
+#### `long insertedCount()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long bitSize()`
+#### `long bitSize()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int bitsPerSlot()`
+#### `int bitsPerSlot()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `double expectedFalsePositiveRate()`
+#### `double expectedFalsePositiveRate()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()`
+#### `void clear()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — ScalableBloomFilter (`src/main/java/com/datastructure/bloom/ScalableBloomFilter.java`)
+### 구현 — ScalableBloomFilter (`src/main/java/com/datastructure/bloom/ScalableBloomFilter.java`)
 
-### 구조 — 필터의 목록
+#### 구조 — 필터의 목록
 
 원본 블룸 필터는 만들 때 크기가 굳는다.\
 예상보다 많이 넣으면? 교실이 꽉 찼는데 전학생이 계속 오는 상황 — 이 변형은 "옆 교실을 새로 여는" 방식으로 푼다.
@@ -506,7 +535,7 @@ ScalableBloomFilter — 하나가 차면 새 필터를 덧붙인다. 필터 하�
     이미 켠 비트를 되돌릴 수 없으니 늘리는 방법은 "새 필터를 옆에 두는 것"뿐이다
 ```
 
-### 동작 — 커지기와 조회
+#### 동작 — 커지기와 조회
 
 **언제 쓰나**: 얼마나 넣게 될지 미리 알 수 없을 때.\
 꽉 차면 grow, 조회는 모든 필터에 물어본다.
@@ -555,7 +584,7 @@ mightContain(item) : 앞에서부터 물어보다 하나라도 true 면 즉시 t
 
 **비용**: add 는 O(k), 조회는 O(필터 개수 × k) — 무한히 커질 수 있다는 것의 대가가 조회 비용이다.
 
-### `필드`
+#### `필드`
 
 - `static final double TIGHTENING = 0.5` — 역할:
 - `static final int GROWTH = 2` — 역할:
@@ -566,61 +595,96 @@ mightContain(item) : 앞에서부터 물어보다 하나라도 true 면 즉시 t
 - `private double nextFpr` — 역할:
 - `private long inserted` — 역할:
 
-### `ScalableBloomFilter(int initialCapacity, double falsePositiveRate)`
+#### `ScalableBloomFilter(int initialCapacity, double falsePositiveRate)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void grow()` (TODO)
+#### `private void grow()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void add(T item)` (TODO)
+#### `void add(T item)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean mightContain(T item)` (TODO)
+#### `boolean mightContain(T item)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int filterCount()`
+#### `int filterCount()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long insertedCount()`
+#### `long insertedCount()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long bitSize()`
+#### `long bitSize()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `double expectedFalsePositiveRate()` (TODO)
+#### `double expectedFalsePositiveRate()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()`
+#### `void clear()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **LSM 저장소의 SSTable 조회 생략** — Cassandra·HBase·RocksDB는 SSTable 파일마다 블룸 필터를 붙여, 키가 "확실히 없는" 파일은 디스크를 읽지 않는다. [24-lsm-tree](../24-lsm-tree/2-summary.md) · [systems/lsm-tree](../../systems/lsm-tree/).
+- **캐시 관통 방어** — 존재하지 않는 키를 반복 조회하는 요청이 DB까지 내려가지 않게, 캐시 앞에 "있는 키의 필터"를 둔다. 없는 키는 필터에서 끝난다.
+- **CDN의 "한 번만 요청된 것은 캐시하지 않기"** — 첫 요청은 필터에만 기록하고, 두 번째 요청부터 캐시에 담는다(Akamai — Maggs & Sitaraman 2015 "Algorithmic Nuggets in Content Delivery").
+- **브라우저의 악성 URL 목록** — 초기 크롬 세이프 브라우징은 URL 전체 목록 대신 블룸 필터를 로컬에 두고 "아마 위험"일 때만 서버에 확인했다. 지금은 필터 대신 URL 해시의 앞부분만 모은 집합(prefix set)을 쓰지만, "로컬에서 걸러 거짓 양성만 서버에 묻는다"는 구조는 같다 [?].
+- **DB 조인·인덱스** — PostgreSQL의 `bloom` 인덱스 확장(contrib 모듈), 분산 조인에서 상대 테이블의 키 필터를 먼저 보내 불필요한 행을 거르는 bloom join(Spark의 런타임 블룸 필터 조인 등).
+- **재료 — [05-hashmap](../05-hashmap/2-summary.md)의 `hashCode`/[algorithm/27-string-hashing](../../algorithm/27-string-hashing/2-summary.md)** — 자리 고르기의 출발점. 해시가 고르지 않으면 공식이 약속한 오탐률이 나오지 않는다.
+- **재료 — [18-bitset](../18-bitset/2-summary.md)** — `long[]`에 비트를 켜고 읽는 `>>> 6`·`& 63`이 그대로 나온다.
+- **형제 — [19-probabilistic-counting](../19-probabilistic-counting/2-summary.md)** — "정확성을 팔아 메모리를 산다"는 같은 거래를 개수 세기에 적용한다.
+
+## 적용 — 풀어나가는 법
+
+블룸 필터를 쓸지는 "없다가 대부분이고, 없다를 확인하는 비용이 비싼가"로 정한다.\
+순서: ① 조회의 답 분포를 본다 — "없다"가 다수이고 그 확인이 디스크·네트워크를 타면 후보다 → ② 뒤에 정확한 저장소가 있는지 확인한다 — 필터는 앞단 거름망이지 저장소가 아니다 → ③ 예상 개수 n과 감당할 오탐률 p를 정해 m·k를 공식으로 받는다 → ④ 삭제가 필요하면 Counting, n을 모르면 Scalable로 바꾸고 그 값을 계산한다 → ⑤ 넣은 개수와 실측 오탐률을 지표로 남겨 용량 초과를 미리 본다.\
+아래 과제 목록과 구현 전략 비교가 ③~④를 다룬다.
+
+### 문제 — 이 챕터가 시키는 것
+
+원본 README는 이 박스를 "**정확성을 일부러 파는**" 박스라고 소개한다.\
+01~10에서 만든 것들은 전부 정확했는데, 여기서는 그 정확성을 팔아 메모리를 수십 배 줄인다 — 100만 개를 `HashSet`은 수십 MB에, 블룸 필터는 **1.2MB**(1% 오탐)에 담는다.\
+비트 수 `m = -n ln(p) / (ln2)^2` 와 해시 개수 `k = (m/n) ln2` 를 직접 구현해 **크기를 감이 아니라 공식으로** 정하고, 64비트 해시 하나를 반으로 갈라 쓰는 이중 해싱의 함정 셋을 겪는 것이 과제다.\
+그 위에 삭제가 되는 `CountingBloomFilter`와 용량을 모를 때 쓰는 `ScalableBloomFilter`를 만들어, 각각이 무엇을 더 내고 무엇을 잃는지 확인한다.
+
+과제 목록 — `src/main/java/com/datastructure/bloom/`의 TODO:
+
+- `BloomFilter` — TODO 1(`optimalBits` — 올림) · TODO 2(`optimalHashCount` — 반올림, 최소 1) · TODO 3(`indexes` — 이중 해싱) · TODO 4(`add`) · TODO 5(`mightContain` — **전부** 켜져 있어야)
+- `CountingBloomFilter` — TODO 1(`add` — 계수기 올리기·포화) · TODO 2(`remove`) · TODO 3(`mightContain` — 전부 0보다 크면)
+- `ScalableBloomFilter` — TODO 1(`grow` — 용량 2배·오탐률 절반) · TODO 2(`add`) · TODO 3(`mightContain` — 하나라도 true면) · TODO 4(`expectedFalsePositiveRate` — 더하지 말고 곱으로)
+
+순서: `ProbabilisticSetContractTest.java`를 먼저 따라 친다 → `BloomFilter` 5개 → `CountingBloomFilter` 3개 → `ScalableBloomFilter` 4개.\
+실행: `cd ~/project/myway/data-structure && ./run.sh 11` — README 기준 **64개 중 61개가 실패**한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -628,15 +692,57 @@ mightContain(item) : 앞에서부터 물어보다 하나라도 true 면 즉시 t
 | CountingBloomFilter | | | |
 | ScalableBloomFilter | | | |
 
+## 장애 시나리오와 대처
+
+**1. "아마 있다"를 "확실히 있다"로 다룬 코드 — 정상 요청이 거부된다**
+
+- 현상: 처음 온 사용자·주문이 "이미 처리됨"으로 거부되거나, 처음 보는 URL이 "중복"으로 건너뛰어진다.
+- 보이는 형태: 로그에 거부 건이 오탐률만큼(1%면 100건 중 1건꼴) 꾸준히 섞여 나오고, 재현하면 다른 키에서 또 난다. 에러는 없다.
+- 원인: `mightContain`의 `true`를 판정으로 썼다. `true`는 "남이 켠 비트가 겹쳤을 수 있다"는 뜻이라 확정이 아니다(정답 3번 참고).
+- 대처: `true` 뒤에는 반드시 정확한 저장소를 확인한다. 필터는 `false`일 때 조회를 건너뛰는 용도로만 쓴다. 거부·차단처럼 되돌리기 어려운 동작은 필터만으로 하지 않는다.
+
+**2. 저장했다 다시 읽은 필터가 전부 `false` — 해시가 프로세스마다 다르다**
+
+- 현상: 필터를 파일·캐시에 저장했다가 다른 프로세스에서 읽으면 넣었던 키가 모두 "없다"로 나온다.
+- 보이는 형태: 같은 프로세스에서는 정상인데 재시작·다른 서버에서 누락이 난다. `insertedCount()`는 맞는데 조회가 전부 `false`다.
+- 원인: 자리 고르기가 `hashCode()`에서 출발하는데, `hashCode`를 재정의하지 않은 클래스(와 `enum`)는 객체 정체성 기반(identity hash)이라 프로세스마다 값이 다르다. `String`·`Integer`처럼 값 기반 `hashCode`만 안정적이다. 필터는 키를 담지 않으므로 다시 계산해 복구할 수도 없다.
+- 대처: 키를 바이트 열로 직렬화한 뒤 값 기반 해시(예: Guava `BloomFilter`가 쓰는 murmur3 128비트)를 쓴다. 필터를 저장할 때 해시 방식·m·k를 함께 기록해 읽는 쪽이 같은 규칙을 쓰게 한다.
+
+**3. DB에는 넣었는데 필터에는 안 넣음 — 있는 키를 "확실히 없다"고 한다**
+
+- 현상: 방금 저장한 데이터를 조회하면 "없다"가 나온다. 필터가 유일하게 하지 않기로 한 오류(누락)가 난다.
+- 보이는 형태: 저장 직후 조회 실패가 간헐적으로 나고, 필터를 재구축하면 사라진다. DB에는 행이 있다.
+- 원인: 쓰기 경로에서 DB 쓰기와 필터 `add`가 한 단위가 아니다 — `add` 전에 프로세스가 죽었거나, 필터를 가진 인스턴스가 여러 개라 한쪽만 갱신됐다. 필터 자체의 보장은 멀쩡하고, 넣지 않은 것을 못 찾을 뿐이다.
+- 대처: 필터 `add`를 DB 쓰기와 같은 경로에서 항상 먼저 하거나, 필터를 저장소가 소유하게 한다(SSTable처럼 파일과 함께 만든다). 여러 인스턴스면 필터를 공유 저장소에 두거나 주기적으로 원본에서 재구축한다.
+
+**4. 동시 `add`에서 비트가 사라진다 — 누락**
+
+- 현상: 여러 스레드가 동시에 넣은 뒤 조회하면 넣은 키 일부가 "없다"로 나온다.
+- 보이는 형태: 단일 스레드 테스트는 통과하고, 부하 테스트에서만 드물게 누락이 난다. 재현이 어렵다.
+- 원인: `words[i] |= 1L << b`는 읽기·수정·쓰기 세 단계다. 두 스레드가 같은 `long`을 동시에 고치면 한쪽의 비트가 다른 쪽의 쓰기에 덮여 사라진다.
+  - *경쟁 조건(race condition)*: 실행 순서에 따라 결과가 달라지는 상태. 여기서는 "먼저 읽고 나중에 쓴" 쪽이 상대의 비트를 지운다.
+- 대처: `add`를 동기화하거나 `AtomicLongArray`의 원자적 OR 연산을 쓴다. 쓰기 스레드를 하나로 두고 조회만 여러 스레드에서 하면 락 없이도 안전하다(조회는 비트를 바꾸지 않는다).
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 블룸 필터는 원소를 담지 않고 "봤다"는 흔적만 k개 비트로 남긴다 — 그래서 메모리가 원소 크기와 무관하고, 대신 꺼내기·삭제·정확한 답을 포기한다.
+- 오류에는 방향이 있다: 켠 비트를 끄지 않으므로 "없다"는 절대 틀리지 않고, 남의 비트가 겹칠 수 있으므로 "있다"만 가끔 틀린다 — 이 비대칭이 "비싼 조회를 건너뛰는 앞단 거름망"을 성립시킨다.
+- 크기는 감이 아니라 공식이다: n과 p에서 m과 k가 나오고, k를 더 키우면 비트가 빨리 차서 오탐이 오히려 는다.
+- 기본형의 진짜 약점은 오탐이 아니라 용량 고정이다 — 원소를 담지 않았으니 리사이즈할 재료가 없고, 그래서 Counting은 계수기로, Scalable은 필터를 이어 붙이는 방식으로 값을 치르고 되산다.
+- 필터의 보장은 "넣은 것은 반드시 켜져 있다"까지다 — 쓰기 경로 불일치·동시 쓰기·불안정한 해시는 그 전제를 깨고, 그때 유일하게 없어야 할 누락이 난다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [05-hashmap](../05-hashmap/2-summary.md): `hashCode`·음수 해시·`floorMod`가 여기서 이중 해싱의 재료로 다시 나온다.
+- 선행 — [18-bitset](../18-bitset/2-summary.md): `long[]` 위에서 비트 하나를 켜고 읽는 방법.
+- 후속 — [12-skip-list](../12-skip-list/2-summary.md): 확률에 기대는 두 번째 자료구조. 무작위를 주입받게 만드는 규칙이 검증 가능성을 바꾼다.
+- 후속 — [19-probabilistic-counting](../19-probabilistic-counting/2-summary.md): 같은 거래(정확성 ↔ 메모리)를 개수 세기에 적용. seed 주입으로 `h2 == 0` 방어선이 검증 가능해진다.
+- 응용 — [24-lsm-tree](../24-lsm-tree/2-summary.md) · [systems/lsm-tree](../../systems/lsm-tree/): SSTable 조회 생략.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `20-bloom-filter` (선행 `07-hashmap`, `math/07-probability-and-bayes` — 노트 미작성).
+- 원논문 — Bloom 1970 · 이중 해싱은 Kirsch & Mitzenmacher 2006.
+- myway 원본 — `/home/jun/project/myway/data-structure/11-bloom-filter/` (README.md · impl/BloomFilter.java · impl/CountingBloomFilter.java · impl/ScalableBloomFilter.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -645,7 +751,7 @@ mightContain(item) : 앞에서부터 물어보다 하나라도 true 면 즉시 t
 - 테스트: `/home/jun/project/myway/data-structure/11-bloom-filter/src/test/java/com/datastructure/bloom/`
 - 참고 구현: `/home/jun/project/myway/data-structure/11-bloom-filter/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 본문에 등장한 자리에서 이미 푼 용어를 포함해, 이 문서의 전문용어를 한곳에 모았다.
 

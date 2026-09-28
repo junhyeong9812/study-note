@@ -4,8 +4,31 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+"몇 번 나왔나"와 "서로 다른 것이 몇 개인가"를 정확히 답하려면 본 원소를 전부 들고 있어야 한다.
+그런데 원소 종류가 1억 개면 명부도 1억 줄이다 — 메모리가 원소 종류 수에 비례해 자란다.
+
+```text
+정확한 방법 (HashMap / HashSet)          스케치 (CMS / HLL)
++----+----+----+----+ ... 1억 줄         +--+--+--+--+  칸 수 고정
+| 7  | 19 | 23 | 42 |                   |  |  |  |  |  (16 byte ~ 108 KB)
++----+----+----+----+                   +--+--+--+--+
+메모리 = 종류 수 x 엔트리 크기            메모리 = 항상 같다
+답 = 정확                                답 = 어림값, 틀려도 한 방향(>= 실제)
+```
+
+스트림에서 궁금한 것은 많이 나온 소수인데, 메모리는 한두 번 나오고 끝나는 다수가 먹는다.
+스케치는 원소를 버리고 **해시의 통계**만 남겨 이 비례를 끊는다 — 대신 답이 추정값이 된다.
+
+- 쉬운 예: 축제 입장객을 "대략 몇 명"만 알면 되면, 전원의 이름을 적는 대신 수첩 한 장의 요약만 적는다.
+- 똑같은 구조다: `HyperLogLog`(몇 종류인가)와 `CountMinSketch`(몇 번 나왔나)는 고정 크기 표에 요약만 남긴다.
+- 실무 예: "오늘 방문한 서로 다른 사용자 수"(UV)를 서버 100대가 각자 16KB 레지스터만 보내 합친다. 원본 로그는 한 줄도 옮기지 않는다.
+  - *스트림(stream)*: 한 번 지나가면 되돌려 볼 수 없는 데이터의 흐름. 다 저장할 수 없어서 요약이 필요해진다.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 축제 입장객 세기.** 정확히 세려면 온 사람 전원의 이름을 명부에 적어야 한다 — 100만 명이면 명부도 100만 줄. 그런데 "대략 몇 명인지"만 알면 된다면, 작은 수첩 한 장에 요약 통계만 적어도 된다. 대신 답은 어림값이다.
 
@@ -25,28 +48,40 @@
   답 = 정확                            답 = 오차 몇 % 의 어림값
 ```
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-11번 블룸 필터는 "있나 없나" 하나만 답했다. 여기서 두 걸음 더 간다 — "몇 번 나왔나"(Count-Min 스케치)와 "서로 다른 것이 몇 개인가"(HyperLogLog)다.
-둘 다 정확히 답하려면 **원소 종류 수에 비례하는 메모리**가 드는데, 스트림의 대다수 원소는 한두 번 나오고 끝난다. 궁금한 것은 많이 나온 소수인데 메모리는 안 궁금한 다수가 먹는다.
-그래서 칸 수를 미리 고정하고, 11번의 비대칭("한 방향으로만 틀린다")을 `추정치 >= 실제` 라는 모양으로 다시 가져온다.
-`FrequencyEstimatorContractTest.java` 를 따라친 뒤 TODO 를 채운다(처음에는 96개 중 90개가 실패한다).
+### 전체 흐름
 
-- `ExactCounter` 의 TODO 1개 — `add(int, long)` (기준선)
-- `ExactCardinality` 의 TODO 1개 — `add(int)` (기준선)
-- `CountMinSketch` 의 TODO 5개 — `widthFor` · `depthFor` · `indexes` · `add(int, long)` · `estimateCount`
-- `HyperLogLog` 의 TODO 4개 — `add` · `rawEstimate` · `estimate` · `merge`
-- `SketchProblems` 의 TODO 2개 — `heavyHitters` · `distinctAcrossShards`
-- 덩어리는 넷이다 — 기준선(정확 구현 2개) → 공식·이중 해싱·최소(CMS) → 랭크·조화평균·보정·merge(HLL) → 문제 2개
-- 응용으로 따져볼 것: 왜 행별 **최소**인가 · 행(d)을 늘려도 오차 크기는 안 줄고 "한계를 넘을 확률"만 준다는 것 · 오차 `epsilon x 전체개수` 가 **절대량**이라 heavy hitter 에만 쓸모가 있다는 것 · HLL 이 작은 카디널리티에서 무너지고 linear counting 이 그것을 대신한다는 것 · `merge` 가 max 한 줄인데 결과가 바이트 단위로 같은 이유 · 합집합은 되고 **교집합은 안 되는** 이유 · 무작위(seed)를 주입받게 만든 덕에 11번에서 못 잡았던 `h2 == 0` 방어선을 여기서 잡는다는 것
+```text
+[1] 정확 집계 (기준선)                    [2] 칸 수를 미리 고정한다
+    ExactCounter   = HashMap<원소, 횟수>        CountMinSketch : long[depth][width]
+    ExactCardinality = HashSet<원소>            HyperLogLog    : byte[m], m = 2^p
+    종류 수만큼 메모리가 자란다                 원소는 저장하지 않는다 — 해시의 통계만
+              |                                          |
+              v                                          v
+[3] Count-Min 스케치 ("몇 번")            [4] HyperLogLog ("몇 종류")
+    add : 행마다 한 칸씩 +1 (이중 해싱)        add : 앞 p비트 = 버킷, 나머지 = rank
+    query : 그 칸들의 min                       버킷마다 max(rank) 만 남긴다
+    칸은 남의 몫을 얹어 받기만 한다             estimate : 조화평균 -> 작은 값은 linear counting
+    -> 추정치 >= 실제 (과대만)                  merge : 버킷별 max -> 합집합이 바이트 단위로 같다
+              |                                          |
+              +--------------------+---------------------+
+                                   v
+[5] 대가 — 고칠 수 없는 것 셋
+    원소를 되찾을 수 없다 (칸이 누구 것인지 모른다)
+    드문 원소의 빈도는 못 쓴다 (오차 epsilon x 전체개수 는 절대량)
+    교집합은 하면 안 된다 (큰 수 셋의 뺄셈 — 오차가 답을 삼킨다)
+```
 
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+- [1] 정확한 방법이 먼저다 — `HashMap`·`HashSet`은 오차가 없지만 원소 종류 수만큼 메모리가 자란다. 스케치의 답을 맞춰 보는 정답지 역할도 한다.
+- [2] 그래서 표의 칸 수를 처음부터 못 박는다. 원소가 몇 종류 들어오든 표는 그대로다.
+- [3] CMS는 원소 하나를 행마다 한 칸씩, `depth`개 칸에 더한다. 조회는 그 칸들 중 **최솟값** — 어느 칸도 진짜보다 작을 수 없어서 min이 가장 덜 부푼 답이다.
+  - *이중 해싱*: 해시 하나를 반으로 쪼개 `h1 + i*h2`로 행마다 다른 열을 싸게 만드는 수법. 11번 블룸 필터와 같다.
+- [4] HLL은 해시 앞 p비트로 버킷을 고르고, 나머지에서 앞쪽 0의 개수(rank)를 잰다. "드문 rank를 봤다 = 많이 들어왔다"를 버킷 m개로 나눠 재서 흔들림을 줄인다.
+  - *rank*: 해시 이진수 앞쪽의 연속된 0 개수 + 1. 0이 k개 연속일 확률은 2^-k.
+- [5] 얻은 것은 고정 메모리, 내준 것은 세 가지다. 이 셋은 파라미터를 키워도 돌아오지 않는다.
 
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — FrequencyEstimator (`src/main/java/com/datastructure/sketch/FrequencyEstimator.java`)
+### 계약 — FrequencyEstimator (`src/main/java/com/datastructure/sketch/FrequencyEstimator.java`)
 
 - `void add(int item)`
 - `void add(int item, long count)`
@@ -54,17 +89,17 @@
 - `long totalCount()`
 - `long memoryBytes()`
 
-## 계약 — CardinalityEstimator (`src/main/java/com/datastructure/sketch/CardinalityEstimator.java`)
+### 계약 — CardinalityEstimator (`src/main/java/com/datastructure/sketch/CardinalityEstimator.java`)
 
 - `void add(int item)`
 - `long estimate()`
 - `long memoryBytes()`
 
-## 구현 — ExactCounter (`src/main/java/com/datastructure/sketch/ExactCounter.java`)
+### 구현 — ExactCounter (`src/main/java/com/datastructure/sketch/ExactCounter.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 ```
 HashMap<Integer, Long> - 원소마다 칸을 하나씩 잡고 정확한 횟수를 센다
@@ -89,37 +124,37 @@ HashMap<Integer, Long> - 원소마다 칸을 하나씩 잡고 정확한 횟수�
   둘의 답을 맞춰 보는 기준(정답지) 역할로도 쓴다.
 ```
 
-### `필드`
+#### `필드`
 
 - `static final long BYTES_PER_ENTRY = 64` 역할:
 - `Map<Integer, Long> counts` 역할:
 - `long total` 역할:
 
-### `public void add(int item, long count)` (TODO)
+#### `public void add(int item, long count)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public void add(int item)`
+#### `public void add(int item)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public long estimateCount(int item)` / `public long totalCount()`
+#### `public long estimateCount(int item)` / `public long totalCount()`
 
 - 하는 일:
 - 비용(왜):
 
-### `public long memoryBytes()` / `public int distinctCount()`
+#### `public long memoryBytes()` / `public int distinctCount()`
 
 - 하는 일:
 - 논리(기준선으로서 무엇을 재려고 있는가):
 - 비용(왜):
 
-## 구현 — ExactCardinality (`src/main/java/com/datastructure/sketch/ExactCardinality.java`)
+### 구현 — ExactCardinality (`src/main/java/com/datastructure/sketch/ExactCardinality.java`)
 
-### 구조
+#### 구조
 
 ```
 HashSet<Integer> - 본 원소를 전부 담아 두고 크기를 답으로 낸다
@@ -142,24 +177,24 @@ HashSet<Integer> - 본 원소를 전부 담아 두고 크기를 답으로 낸다
   대신 답은 추정값이고, 여기서는 estimate() 가 곧 정답이라 오차 비교의 기준이 된다.
 ```
 
-### `필드`
+#### `필드`
 
 - `static final long BYTES_PER_ELEMENT = 48` 역할:
 - `Set<Integer> seen` 역할:
 
-### `public void add(int item)` (TODO)
+#### `public void add(int item)` (TODO)
 
 - 하는 일:
 - 비용(왜):
 
-### `public long estimate()` / `public long memoryBytes()`
+#### `public long estimate()` / `public long memoryBytes()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 — CountMinSketch (`src/main/java/com/datastructure/sketch/CountMinSketch.java`)
+### 구현 — CountMinSketch (`src/main/java/com/datastructure/sketch/CountMinSketch.java`)
 
-### 구조
+#### 구조
 
 먼저 알아야 할 것 세 줄:
 
@@ -200,7 +235,7 @@ CountMinSketch (depth = 4 행, width = 8 열)
    폭과 깊이는 오차에서 역산한다 : width = ceil(e / epsilon),  depth = ceil(ln(1 / delta))
 ```
 
-### 동작 — 추가
+#### 동작 — 추가
 
 **언제 쓰나**: 원소가 스트림에서 나올 때마다. 행마다 한 칸씩, depth개 칸을 +1 한다. 아래 그림이 전 상태(모두 0) → add(A) → 후 상태이고, 이어서 충돌(두 원소가 한 칸을 나눠 쓰는 것)이 어떻게 생기는지다.
 
@@ -240,7 +275,7 @@ add(x, c) : x 가 대응되는 칸을 행마다 하나씩 골라 전부 c 만큼
   삭제가 없는 이유도 같다 - 한 칸을 빼면 거기 섞인 남의 몫까지 깎여 과소가 생긴다.
 ```
 
-### 동작 — 조회
+#### 동작 — 조회
 
 **언제 쓰나**: "x가 몇 번 나왔나"를 물을 때. add가 건드린 그 depth개 칸을 다시 읽어 **최솟값**을 답으로 낸다. 모든 칸은 "진짜 빈도 + 남이 얹은 몫"이라 진짜보다 작을 수 없다 — 그래서 min이 가장 덜 부풀려진 답이다.
 
@@ -276,7 +311,7 @@ estimateCount(x) : 같은 depth 개 칸을 다시 읽어 그 중 최솟값을 �
   하지만 많이 들어온 원소를 놓치는 일은 없다 - heavy hitter 찾기에 맞는 성질이다.
 ```
 
-### `필드`
+#### `필드`
 
 - `static final int MAX_WIDTH` / `MAX_DEPTH` 역할:
 - `int width` (w) 역할:
@@ -285,62 +320,62 @@ estimateCount(x) : 같은 depth 개 칸을 다시 읽어 그 중 최솟값을 �
 - `long[][] table` 역할:
 - `long total` 역할:
 
-### `public CountMinSketch(double epsilon, double delta)` / `public CountMinSketch(int width, int depth, long seed)`
+#### `public CountMinSketch(double epsilon, double delta)` / `public CountMinSketch(int width, int depth, long seed)`
 
 - 하는 일:
 - 논리(w 가 오차를, d 가 신뢰도를 정한다는 것):
 - 비용(왜):
 
-### `static int widthFor(double epsilon)` (TODO)
+#### `static int widthFor(double epsilon)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static int depthFor(double delta)` (TODO)
+#### `static int depthFor(double delta)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static long mix64(long z)`
+#### `static long mix64(long z)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int[] indexes(int item)` (TODO)
+#### `int[] indexes(int item)` (TODO)
 
 - 하는 일:
 - 논리(11번과 똑같은 이중 해싱 · `h2 == 0` 이면 무슨 일이 생기는가):
 - 비용(왜):
 
-### `public void add(int item, long count)` (TODO)
+#### `public void add(int item, long count)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public long estimateCount(int item)` (TODO)
+#### `public long estimateCount(int item)` (TODO)
 
 - 하는 일:
 - 논리(왜 최소인가 · 평균/최대를 써도 과소평가는 안 하는 이유):
 - 비용(왜):
 
-### `public void add(int item)` / `public long totalCount()` / `public long memoryBytes()`
+#### `public void add(int item)` / `public long totalCount()` / `public long memoryBytes()`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int width()` / `public int depth()` / `public double epsilon()` / `public double delta()` / `public long errorBound()`
+#### `public int width()` / `public int depth()` / `public double epsilon()` / `public double delta()` / `public long errorBound()`
 
 - 하는 일:
 - 논리(오차 한계가 절대량이라는 것):
 - 비용(왜):
 
-## 구현 — HyperLogLog (`src/main/java/com/datastructure/sketch/HyperLogLog.java`)
+### 구현 — HyperLogLog (`src/main/java/com/datastructure/sketch/HyperLogLog.java`)
 
-### 구조
+#### 구조
 
 먼저 알아야 할 것 세 줄 — 동전 던지기 직관:
 
@@ -380,7 +415,7 @@ HyperLogLog (p = 4  ->  m = 1 << 4 = 16 개 레지스터)
        h << 4 = 0001 0000 ...  -> 선행 0 이 3개 -> rank = 3 + 1 = 4
 ```
 
-### 동작 — 추가
+#### 동작 — 추가
 
 **언제 쓰나**: 원소가 나올 때마다. 해시의 앞 p비트로 버킷을 고르고, 나머지에서 rank를 재서 그 버킷의 최댓값만 갱신한다. 아래 그림이 전 상태 → max 갱신 → 후 상태다.
 
@@ -410,7 +445,7 @@ merge(other) : 같은 p 끼리 버킷마다 큰 값을 취하면 두 스트림�
    원본 스트림을 다시 보지 않고 합칠 수 있다 - 샤드별로 세고 나중에 합치는 게 가능해진다.
 ```
 
-### 동작 — 세기
+#### 동작 — 세기
 
 **언제 쓰나**: "지금까지 몇 종류나 봤나"를 물을 때. 버킷마다 남은 최대 rank를 "그 버킷에 들어온 개수의 어림(2^k)"으로 되돌려 평균 낸다.
 
@@ -440,54 +475,87 @@ estimate() = 작은 값 구간 보정
    원소가 적으면 대부분의 버킷이 비어 조화평균 쪽 추정이 흔들리기 때문이다.
 ```
 
-### `필드`
+#### `필드`
 
 - `static final int MIN_PRECISION` / `MAX_PRECISION` 역할:
 - `int p` (정밀도) 역할:
 - `int m` (= 2^p, 레지스터 수) 역할:
 - `byte[] registers` 역할:
 
-### `public HyperLogLog(int p)`
+#### `public HyperLogLog(int p)`
 
 - 하는 일:
 - 비용(왜):
 
-### `static double alpha(int m)`
+#### `static double alpha(int m)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public void add(int item)` (TODO)
+#### `public void add(int item)` (TODO)
 
 - 하는 일:
 - 논리(레지스터 번호와 랭크를 뽑는 방법 · max 로만 남기는 이유 · 랭크 상한):
 - 비용(왜):
 
-### `public long rawEstimate()` (TODO)
+#### `public long rawEstimate()` (TODO)
 
 - 하는 일:
 - 논리(조화평균을 쓰는 이유):
 - 비용(왜):
 
-### `public long estimate()` (TODO)
+#### `public long estimate()` (TODO)
 
 - 하는 일:
 - 논리(작은 카디널리티에서 조화평균이 무너지는 이유 · linear counting 보정):
 - 비용(왜):
 
-### `public void merge(HyperLogLog other)` (TODO)
+#### `public void merge(HyperLogLog other)` (TODO)
 
 - 하는 일:
 - 논리(max 가 결합법칙·교환법칙을 지켜서 "비슷한 정도가 아니라 바이트 단위로 같다"는 것):
 - 비용(왜):
 
-### `public long memoryBytes()` / `public int precision()` / `public int registerCount()`
+#### `public long memoryBytes()` / `public int precision()` / `public int registerCount()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **Redis `PFADD` / `PFCOUNT` / `PFMERGE`** — 키 하나가 HyperLogLog다. 샤드별로 세고 `PFMERGE`로 합치는 것이 이 노트의 `merge`(레지스터별 max) 그대로다.
+- **RedisBloom의 `CMS.INCRBY` / `CMS.QUERY`** — Count-Min 스케치를 명령어로 노출한다. `CMS.INITBYPROB`가 오차율·확률로 표 크기를 역산하는 것은 `widthFor`·`depthFor`와 같은 발상이다. 다만 공식은 다르다 — RedisBloom은 `width = ceil(2/error)`, `depth = ceil(log2(1/prob))`이고 이 노트는 `ceil(e/epsilon)`, `ceil(ln(1/delta))`다(redis.io `CMS.INITBYPROB` 문서 · `impl/CountMinSketch.java` 35·46행).
+- **분석 DB의 `APPROX_COUNT_DISTINCT` 류** — BigQuery(`APPROX_COUNT_DISTINCT`, HLL++)·Trino(`approx_distinct`, HLL)가 정확한 `COUNT(DISTINCT)` 대신 HLL 계열로 어림한다. ClickHouse는 함수마다 다르다 — `uniqHLL12`는 HLL, `uniqCombined`는 배열·해시표·HLL 혼합, 기본 `uniq`는 HLL이 아니라 적응형 샘플링이다(ClickHouse 문서). 집계를 파티션별로 돌리고 합치는 것이 문제 2다.
+- **웹 분석의 UV(unique visitors)** — 일·주·월 UV를 일별 HLL을 합쳐 만든다. 합집합은 되고 교집합("두 날 모두 온 사용자")은 안 되는 것이 정답 8번의 이유다.
+- **네트워크 트래픽 heavy hitter 탐지** — 요청을 가장 많이 보낸 IP 상위 k개(DDoS 감시·레이트 리밋 후보)를 CMS + 최소 힙으로 뽑는다. 문제 1의 구조다.
+- **Java `HashMap`·`HashSet`** — 기준선. 이 노트의 `ExactCounter`·`ExactCardinality`가 그것을 감싼 것이다. 종류 수가 작으면 이쪽이 맞다.
+- **다른 챕터의 재료** — [11-bloom-filter](../11-bloom-filter/2-summary.md)의 이중 해싱과 "한 방향으로만 틀린다"를 그대로 가져왔고, 문제 1의 상위 k 관리는 [07-heap](../07-heap/2-summary.md)의 `KthLargest`와 같은 발상이다.
+
+## 적용 — 풀어나가는 법
+
+스케치 문제는 "정확해야 하는가"를 먼저 묻는 데서 갈린다.
+순서: ① 답이 위로만 틀려도 되는지 확인한다(안 되면 `HashMap`/`HashSet`) → ② 무엇을 묻는지 고른다 — "몇 번"이면 CMS, "몇 종류"면 HLL → ③ 허용 오차에서 표 크기를 역산한다(`epsilon`·`delta` → `width`·`depth`, `p` → `m`) → ④ 원소를 되찾아야 하면 스케치 밖에 후보 목록을 따로 둔다(문제 1이 스트림을 두 번 훑는 이유).
+아래 두 문제가 이 순서로 풀린다.
+
+### 문제 — 이 챕터가 시키는 것
+
+11번 블룸 필터는 "있나 없나" 하나만 답했다. 여기서 두 걸음 더 간다 — "몇 번 나왔나"(Count-Min 스케치)와 "서로 다른 것이 몇 개인가"(HyperLogLog)다.
+둘 다 정확히 답하려면 **원소 종류 수에 비례하는 메모리**가 드는데, 스트림의 대다수 원소는 한두 번 나오고 끝난다. 궁금한 것은 많이 나온 소수인데 메모리는 안 궁금한 다수가 먹는다.
+그래서 칸 수를 미리 고정하고, 11번의 비대칭("한 방향으로만 틀린다")을 `추정치 >= 실제` 라는 모양으로 다시 가져온다.
+`FrequencyEstimatorContractTest.java` 를 따라친 뒤 TODO 를 채운다(처음에는 96개 중 90개가 실패한다).
+
+- `ExactCounter` 의 TODO 1개 — `add(int, long)` (기준선)
+- `ExactCardinality` 의 TODO 1개 — `add(int)` (기준선)
+- `CountMinSketch` 의 TODO 5개 — `widthFor` · `depthFor` · `indexes` · `add(int, long)` · `estimateCount`
+- `HyperLogLog` 의 TODO 4개 — `add` · `rawEstimate` · `estimate` · `merge`
+- `SketchProblems` 의 TODO 2개 — `heavyHitters` · `distinctAcrossShards`
+- 덩어리는 넷이다 — 기준선(정확 구현 2개) → 공식·이중 해싱·최소(CMS) → 랭크·조화평균·보정·merge(HLL) → 문제 2개
+- 응용으로 따져볼 것: 왜 행별 **최소**인가 · 행(d)을 늘려도 오차 크기는 안 줄고 "한계를 넘을 확률"만 준다는 것 · 오차 `epsilon x 전체개수` 가 **절대량**이라 heavy hitter 에만 쓸모가 있다는 것 · HLL 이 작은 카디널리티에서 무너지고 linear counting 이 그것을 대신한다는 것 · `merge` 가 max 한 줄인데 결과가 바이트 단위로 같은 이유 · 합집합은 되고 **교집합은 안 되는** 이유 · 무작위(seed)를 주입받게 만든 덕에 11번에서 못 잡았던 `h2 == 0` 방어선을 여기서 잡는다는 것
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -497,9 +565,9 @@ estimate() = 작은 값 구간 보정
 | HyperLogLog | | | |
 | 11번 BloomFilter (멤버십) | | | |
 
-## 문제 — SketchProblems (`src/main/java/com/datastructure/sketch/SketchProblems.java`)
+### 문제 — SketchProblems (`src/main/java/com/datastructure/sketch/SketchProblems.java`)
 
-### 문제 1. heavy hitters — `static List<int[]> heavyHitters(int[] stream, int k)`
+#### 문제 1. heavy hitters — `static List<int[]> heavyHitters(int[] stream, int k)`
 
 > 문제 설명: 스트림에서 가장 많이 나온 k 개를 빈도 내림차순으로 구한다.
 > 반환은 `{값, 추정빈도}` 의 목록이다. 동점이면 값이 작은 것이 먼저다.
@@ -513,7 +581,7 @@ estimate() = 작은 값 구간 보정
 - 논리:
 - 비용(왜):
 
-### 문제 2. 샤드 병합 카디널리티 — `static long distinctAcrossShards(int[][] shards, int p)`
+#### 문제 2. 샤드 병합 카디널리티 — `static long distinctAcrossShards(int[][] shards, int p)`
 
 > 문제 설명: 샤드마다 따로 세고 병합해서 전체 카디널리티를 구한다.
 > 요점은 원본을 하나도 안 옮긴다는 것이다. 샤드가 각자 2만 5천 개를 들고 있어도
@@ -527,15 +595,47 @@ estimate() = 작은 값 구간 보정
 - 논리:
 - 비용(왜):
 
+## 장애 시나리오와 대처
+
+**1. 정밀도가 다른 HLL을 합치려다 실패**
+
+- 현상: 샤드별 카디널리티를 합치는 배치가 중간에 죽는다.
+- 보이는 형태: `IllegalArgumentException: 정밀도가 다르면 병합할 수 없다: 14 대 12`. 문제 2의 `distinctAcrossShards`는 모든 샤드에 같은 `p`를 넘기므로 안 나지만, 샤드마다 스케치를 따로 만드는 운영 코드에서 난다.
+- 원인: `merge`는 같은 번호의 레지스터끼리 max를 취한다. `p`가 다르면 버킷 수(`m = 2^p`)가 달라 "같은 번호"가 성립하지 않는다.
+- 대처: `p`를 설정이 아니라 **계약**으로 고정한다(스케치를 만드는 코드가 한 곳). 저장된 스케치에는 `p`를 함께 기록해 두고 합치기 전에 `precision()`을 비교한다.
+
+**2. 오차율을 너무 작게 잡아 생성 자체가 거부됨**
+
+- 현상: "더 정확하게"를 위해 `epsilon`을 줄였더니 스케치가 만들어지지 않는다.
+- 보이는 형태: `IllegalArgumentException: 오차율이 너무 작다. 칸이 … 개 필요하다`. `width = ceil(e / epsilon)`이 `MAX_WIDTH`(2^22)를 넘는 순간이다. `delta`도 같은 식으로 `MAX_DEPTH`(64)에 걸린다.
+- 원인: 오차 상한 `epsilon x 전체개수`는 절대량이라, 드문 원소까지 정확히 보려면 표가 정확 집계보다 커진다. 그 시점에 스케치는 존재 이유를 잃는다.
+- 대처: `epsilon`은 "찾고 싶은 최소 빈도 / 전체 개수"에서 거꾸로 정한다. 드문 원소의 빈도가 필요하면 스케치가 아니라 `ExactCounter`다(정답 6번 참고).
+
+**3. 스케치에서 "빼기"를 구현해 답이 실제보다 작아짐**
+
+- 현상: 취소·삭제 이벤트를 반영하려고 `add(item, -count)`처럼 칸을 깎았더니, 어떤 원소의 추정치가 실제보다 작게 나온다.
+- 보이는 형태: 계약 테스트 `추정치 >= 실제`가 깨진다. 이 노트의 `add(int, long)`은 `count < 0`에 `IllegalArgumentException`을 던져 애초에 막는다.
+- 원인: 칸 하나에는 여러 원소의 몫이 섞여 있다. 한 원소를 빼면 거기 얹힌 남의 몫까지 깎여 과소가 생긴다 — "한 방향으로만 틀린다"는 성질이 무너진다.
+- 대처: 삭제가 필요한 워크로드에는 CMS를 쓰지 않는다. 시간 창(window)별로 스케치를 따로 만들고 창이 지나면 통째로 버리는 방식으로 "빼기"를 대신한다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 정확한 빈도·카디널리티는 원소 종류 수에 비례하는 메모리를 먹는다. 스케치는 원소를 버리고 해시의 통계만 고정 크기 표에 남겨 그 비례를 끊는다.
+- CMS의 칸은 남의 몫을 얹어 받기만 하고 깎이지 않으므로 어느 칸도 진짜보다 작을 수 없다. 그래서 답은 min이고, 오차는 `추정치 >= 실제` 한 방향뿐이다 — `w`가 오차 크기를, `d`가 그 한계를 넘을 확률을 정한다.
+- HLL은 "드문 해시를 봤다 = 많이 들어왔다"를 버킷 m개로 나눠 재고 조화평균으로 되돌린다. 원소가 적으면 빈 버킷이 분모를 지배하므로 linear counting으로 바꿔 낀다.
+- `merge`는 버킷별 max 한 줄인데, max가 결합·교환법칙을 지켜 합친 결과가 한 번에 넣은 것과 바이트 단위로 같다 — 그래서 샤드별로 세고 나중에 합칠 수 있다.
+- 파라미터를 키워도 돌아오지 않는 것이 셋이다: 원소 되찾기, 드문 원소의 빈도, 교집합. 이 셋이 필요한 곳에 스케치를 쓰면 조용히 틀린다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [11-bloom-filter](../11-bloom-filter/2-summary.md): 이중 해싱 `h1 + i*h2`와 "한 방향으로만 틀린다"의 원형. 여기서는 `h2 == 0` 방어선을 seed 주입으로 실제로 찌른다.
+- 선행 — [05-hashmap](../05-hashmap/2-summary.md) · [07-heap](../07-heap/2-summary.md): 기준선 `ExactCounter`/`ExactCardinality`의 재료, 문제 1의 상위 k 최소 힙.
+- 후속 — [20-radix-trie](../20-radix-trie/2-summary.md): 여기서는 정확도를 팔아 공간을 얻었고, 거기서는 정확도를 그대로 두고 표현의 중복만 줄인다.
+- 연결 — [31-consistent-hashing](../31-consistent-hashing/2-summary.md): 샤드별로 세고 합치는 문제 2의 전제(어느 원소가 어느 샤드로 가는가).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `21-probabilistic-counting` (선행 `20`, 원전 Flajolet 외 2007 · Cormode–Muthukrishnan 2005).
+- myway 원본 — `/home/jun/project/myway/data-structure/19-probabilistic-counting/` (README.md · impl/CountMinSketch.java · impl/HyperLogLog.java · impl/SketchProblems.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -544,7 +644,7 @@ estimate() = 작은 값 구간 보정
 - 테스트: `/home/jun/project/myway/data-structure/19-probabilistic-counting/src/test/java/com/datastructure/sketch/`
 - 정답 구현: `/home/jun/project/myway/data-structure/19-probabilistic-counting/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 - **스케치(sketch)**: 원본을 다 담지 않고 요약 통계만 남기는 고정 크기 자료구조. 메모리가 원소 수와 무관해지는 대신 답이 어림값이다.
 - **스트림**: 한 번 지나가면 되돌려 볼 수 없는 데이터의 흐름. 다 저장할 수 없어서 스케치가 필요해진다.

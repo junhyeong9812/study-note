@@ -4,8 +4,28 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+01~07의 구조는 전부 "원소를 어떻게 담을까"였다. 그런데 "A에서 B로 갈 수 있나", "무엇을 먼저 해야 하나" 같은 질문은 원소가 아니라 **원소 사이의 관계**를 물어본다.\
+관계를 담을 자리가 없으면 이런 질문에 답할 수 없다.
+
+```text
+원소만 담은 것                      관계까지 담은 것 (그래프)
++----+----+----+----+              v0 --- v1        "v0에서 v2로 갈 수 있나?"  -> v0-v1-v2, 있다
+| v0 | v1 | v2 | v3 |              |       |         "v3에서 v2까지 몇 칸?"     -> v3-v0-v1-v2, 3칸
++----+----+----+----+              v3     v2         원소만으로는 이 질문 자체를 못 만든다
+```
+
+그래프는 점(정점)과 선(간선)으로 관계를 그대로 적는다.\
+쉬운 예: 지하철 노선도 — 역 목록만 있으면 환승 경로를 못 찾고, 선로가 그려져야 찾는다.\
+똑같은 구조다: 빌드 도구가 "A는 B 다음에 컴파일"을 저장하는 의존성 그래프.\
+실무 예: 내비게이션 도로망(교차로 = 정점, 도로 = 간선, 거리 = 가중치)에서 최단 경로를 찾는 다익스트라.
+
+  - *정점(vertex)·간선(edge)*: 그래프의 점 하나 · 두 점을 잇는 선 하나. 이 노트에서 정점은 0..V-1 정수다.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 지하철 노선도.** 역(동그라미)들과 그 사이를 잇는 선로가 있다.\
 어떤 역끼리는 바로 이어져 있고, 어떤 역은 갈아타며 가야 한다.
@@ -37,32 +57,36 @@
     v4                               v4: [v3]
 ```
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-원본 README는 이 박스를 "**담는 것이 아니라 잇는 것**"을 다루는 첫 박스라고 소개한다.\
-01~07은 전부 "원소를 어떻게 담을까"였는데, 여기서는 원소 사이의 관계 자체가 자료구조다.\
-같은 `Graph` 계약을 **인접 리스트**와 **인접 행렬** 두 가지로 구현해서, 결과는 똑같은데 메모리와 비용만 달라지는 것을 숫자로 확인하는 것이 과제다.\
-그 위에 BFS·DFS·위상 정렬·다익스트라 네 알고리즘을 얹어, 앞 챕터에서 만든 큐(04)·스택(03)·힙(07)을 **도구로 쓰는** 첫 경험을 한다.
+### 전체 흐름
 
-과제 목록 — `src/main/java/com/datastructure/graph/`의 TODO 01~12:
+```text
+[1] 관계를 점과 선으로 적는다        [2] 종이에 옮기는 두 방법
+    v0 --(4)-- v1                        인접 리스트                 인접 행렬
+    |           |                        v0: [1(4), 3(2)]              0  1  2  3
+  (2)          (5)                       v1: [0(4), 2(5)]           0  .  4  .  2
+    |           |                        v2: [1(5)]                 1  4  .  5  .
+    v3         v2                        v3: [0(2)]                 2  .  5  .  .
+                                         메모리 O(V+E)              3  2  .  .  .   O(V^2)
+              |
+              v
+[3] 같은 계약, 다른 비용                [4] 그 위에 탐색을 얹는다 — 앞 챕터가 도구가 된다
+    hasEdge(u,v)   리스트 O(deg)  행렬 O(1)     BFS      큐(04)   -> 간선 수 기준 최단 거리
+    neighbors(v)   리스트 O(deg)  행렬 O(V)     DFS      스택(03) -> 깊이 우선 방문 순서
+    BFS/DFS 전체   O(V+E)         O(V^2)        위상정렬 큐(04)   -> 진입 차수 0부터, 남으면 순환
+    -> 밀도(E vs V^2)가 선택을 정한다           다익스트라 힙(07) -> 가중치 합 기준 최단 거리
+```
 
-- `AdjacencyListGraph` — TODO 01(`addEdge` — 덮어쓰기·무방향 양쪽 저장·self loop) · TODO 02(`hasEdge`) · TODO 03(`weight`) · TODO 04(`neighbors` — 복사본)
-- `AdjacencyMatrixGraph` — TODO 05(`addEdge` — 두 칸 채우기) · TODO 06(`hasEdge` — O(1)) · TODO 07(`weight`) · TODO 08(`neighbors` — V칸 훑기)
-- `GraphProblems.bfsDistances` — TODO 09: 문제 1(최단 거리 — 방문 표시를 넣을 때)
-- `GraphProblems.dfsOrder` — TODO 10: 문제 2(깊이 우선 — **반복**으로, 테스트에 깊은 그래프가 있다)
-- `GraphProblems.topologicalSort` — TODO 11: 문제 3(위상 정렬 — Kahn, 순환 탐지가 끝나는 방식에서 나온다)
-- `GraphProblems.shortestPaths` — TODO 12: 문제 4(다익스트라 — 낡은 항목 거르기)
+- [1] 정점은 이름 없이 정수 번호다. 그래서 배열 인덱스로 바로 쓰고, 행렬이 곧 2차원 배열이 된다.
+- [2] 인접 리스트는 정점마다 "닿는 곳 목록"을, 인접 행렬은 모든 쌍의 표를 둔다.\
+  담는 그래프는 같고 종이(메모리)와 질문 속도의 거래만 다르다.
+- [3] `hasEdge`는 행렬이, `neighbors`와 전체 순회는 리스트가 이긴다.\
+  현실의 그래프는 대개 희소하므로 기본은 리스트다.
+- [4] 탐색 알고리즘은 그래프를 바꾸지 않고 `neighbors`만 부른다.\
+  그래서 `GraphProblems`의 코드는 두 표현에서 똑같고 비용만 달라진다.
 
-순서: `GraphContractTest.java`를 먼저 따라 친다(계약이 거기 있다) → 리스트 4개 → 행렬 4개 → 문제 4개.\
-실행: `cd ~/project/myway/data-structure && ./run.sh 08` — README 기준 **62개가 전부 실패**한다.
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — Graph (`src/main/java/com/datastructure/graph/Graph.java`)
+### 계약 — Graph (`src/main/java/com/datastructure/graph/Graph.java`)
 
 - `int vertexCount()`
 - `int edgeCount()` (무방향에서 u-v 는 한 개로 센다)
@@ -73,11 +97,11 @@
 - `int weight(int from, int to)` (간선이 없으면 `NO_EDGE = Integer.MAX_VALUE`)
 - `Iterable<Integer> neighbors(int from)`
 
-## 구현 — AdjacencyListGraph (`src/main/java/com/datastructure/graph/AdjacencyListGraph.java`)
+### 구현 — AdjacencyListGraph (`src/main/java/com/datastructure/graph/AdjacencyListGraph.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 ```
 아래 두 구현이 담는 그래프는 같은 것이다 (정점 5개, 무방향, 간선 4개)
@@ -119,7 +143,7 @@ AdjacencyListGraph — 정점마다 "내가 닿는 곳" 목록을 들고 있다
 > **가중치(weight)** — 간선에 붙는 숫자(거리·요금·비용).\
 > 예: v0-v1에 4가 붙어 있으면 그 선로를 지나는 비용이 4다. 이 구현은 음수를 거부한다.
 
-### 동작 — 간선 추가
+#### 동작 — 간선 추가
 
 **언제 쓰나** — 두 정점을 잇는 연결선을 등록할 때(addEdge).\
 같은 간선을 또 넣으면 가중치만 바뀐다.
@@ -161,7 +185,7 @@ addEdge(0, 3, 2) — 무방향
 > **차수(degree, deg)** — 한 정점에 붙어 있는 간선의 개수. "옆 역이 몇 개인가".\
 > 예: v0의 옆 역이 v1·v3 둘이면 deg(0) = 2 이고, 중복 확인이 최대 두 칸만 훑는다.
 
-### 동작 — 조회와 순회
+#### 동작 — 조회와 순회
 
 **언제 쓰나** — "이 둘 이어져 있어?"(hasEdge) / "요금 얼마야?"(weight) / "여기서 갈 수 있는 곳 전부?"(neighbors).
 
@@ -199,7 +223,7 @@ neighbors(0) : 목록에서 e.to 만 뽑아 새 리스트로 복사해 준다 ->
 > **O(V + E)** — 정점 전부와 간선 전부를 한 번씩 본다는 뜻.\
 > 예: 정점 5개·간선 4개짜리 노선도에서 모든 정점의 이웃을 한 번씩 훑으면 딱 그만큼의 일로 끝난다.
 
-### `필드`
+#### `필드`
 
 - `static class Edge { final int to; int weight; }` — 역할:
 - `private final int vertexCount` — 역할:
@@ -207,69 +231,69 @@ neighbors(0) : 목록에서 e.to 만 뽑아 새 리스트로 복사해 준다 ->
 - `List<Edge>[] adjacency` — 역할:
 - `int edges` — 역할:
 
-### `AdjacencyListGraph(int vertexCount, boolean directed)`
+#### `AdjacencyListGraph(int vertexCount, boolean directed)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int vertexCount()`
+#### `int vertexCount()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int edgeCount()`
+#### `int edgeCount()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isDirected()`
+#### `boolean isDirected()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addEdge(int from, int to)`
+#### `void addEdge(int from, int to)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addEdge(int from, int to, int weight)` (TODO)
+#### `void addEdge(int from, int to, int weight)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean hasEdge(int from, int to)` (TODO)
+#### `boolean hasEdge(int from, int to)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int weight(int from, int to)` (TODO)
+#### `int weight(int from, int to)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Iterable<Integer> neighbors(int from)` (TODO)
+#### `Iterable<Integer> neighbors(int from)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — AdjacencyMatrixGraph (`src/main/java/com/datastructure/graph/AdjacencyMatrixGraph.java`)
+### 구현 — AdjacencyMatrixGraph (`src/main/java/com/datastructure/graph/AdjacencyMatrixGraph.java`)
 
-### 구조
+#### 구조
 
 ```
 AdjacencyMatrixGraph — V x V 표를 깔아 놓고 (from, to) 칸에 가중치를 적는다
@@ -308,7 +332,7 @@ AdjacencyMatrixGraph — V x V 표를 깔아 놓고 (from, to) 칸에 가중치�
 > **NO_EDGE / 센티널(sentinel)** — "없음"을 나타내려고 정해 둔 특별한 값(여기서는 `Integer.MAX_VALUE`).\
 > 예: 0을 "없음"으로 쓰면 가중치가 0인 진짜 간선과 구분할 수 없어서, 절대 안 쓰일 큰 값을 골라 둔다.
 
-### 동작 — 간선 추가
+#### 동작 — 간선 추가
 
 **언제 쓰나** — 리스트 쪽과 같은 일(addEdge).\
 다만 목록에 줄을 추가하는 대신 표의 칸에 적는다.
@@ -338,7 +362,7 @@ addEdge(0, 3, 2) — 무방향
 > **O(1)** — 데이터가 몇 개든 일의 양이 똑같은 비용. "한 번에 끝난다".\
 > 예: `matrix[0][3]` 은 정점이 5개든 5만 개든 칸 하나 읽기로 끝난다.
 
-### 동작 — 조회와 순회
+#### 동작 — 조회와 순회
 
 **언제 쓰나** — 같은 질문(hasEdge/weight/neighbors)을 표에서 답한다.\
 "연결됐나"는 즉답, "이웃 전부"는 한 행 완주.
@@ -376,83 +400,120 @@ neighbors(0) : 그 행 전체를 훑어 NO_EDGE 가 아닌 칸의 번호를 모�
 > **희소/밀집(sparse/dense)** — 가능한 간선 수 대비 실제 간선이 적으면 희소, 빽빽하면 밀집.\
 > 예: 정점 5개면 가능한 간선이 10개인데 실제로 4개뿐이니 희소하다 — 이럴 때는 리스트가 유리하다.
 
-### `필드`
+#### `필드`
 
 - `private final int vertexCount` — 역할:
 - `private final boolean directed` — 역할:
 - `int[][] matrix` — 역할:
 - `int edges` — 역할:
 
-### `AdjacencyMatrixGraph(int vertexCount, boolean directed)`
+#### `AdjacencyMatrixGraph(int vertexCount, boolean directed)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int vertexCount()`
+#### `int vertexCount()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int edgeCount()`
+#### `int edgeCount()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isDirected()`
+#### `boolean isDirected()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addEdge(int from, int to)`
+#### `void addEdge(int from, int to)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addEdge(int from, int to, int weight)` (TODO)
+#### `void addEdge(int from, int to, int weight)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean hasEdge(int from, int to)` (TODO)
+#### `boolean hasEdge(int from, int to)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int weight(int from, int to)` (TODO)
+#### `int weight(int from, int to)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Iterable<Integer> neighbors(int from)` (TODO)
+#### `Iterable<Integer> neighbors(int from)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **빌드·패키지 의존성**([34-dependency-resolver](../34-dependency-resolver/2-summary.md)) — 모듈이 정점, "A가 B를 필요로 한다"가 방향 간선. 위상 정렬이 빌드 순서를 주고, 남는 정점이 순환 의존이다.
+- **내비게이션·라우팅** — 교차로가 정점, 도로가 가중 간선. [algorithm/14-dijkstra](../../algorithm/14-dijkstra/2-summary.md)가 이 노트의 문제 4다. 네트워크 라우팅 프로토콜(OSPF)도 링크 상태를 그래프로 두고 다익스트라를 돌린다(RFC 2328 §16의 최단 경로 트리 계산).
+- **소셜 그래프** — 사용자가 정점, 친구·팔로우가 간선. "몇 다리 건너 아는 사이"가 BFS 거리다.
+- **[algorithm/11-bfs](../../algorithm/11-bfs/2-summary.md) · [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md)** — 이 노트의 문제 1·2를 알고리즘 쪽에서 다시 다룬다. [algorithm/18-scc](../../algorithm/18-scc/2-summary.md)·[algorithm/17-mst](../../algorithm/17-mst/2-summary.md)도 같은 표현 위에 선다.
+- **가비지 컬렉터의 도달 가능성** — 객체가 정점, 참조가 간선. 루트에서 DFS/BFS로 닿지 않는 객체를 회수한다.
+- **상태 기계·워크플로 엔진** — 상태가 정점, 전이가 간선. 도달 불가능한 상태를 그래프 탐색으로 찾는다.
+- **행렬 표현의 자리** — 정점이 적고 빽빽한 그래프(예: 모든 쌍 최단 경로 Floyd–Warshall — [algorithm/15-bellman-floyd](../../algorithm/15-bellman-floyd/2-summary.md))에서는 행렬이 맞다.
+
+## 적용 — 풀어나가는 법
+
+그래프 문제는 "무엇이 정점이고 무엇이 간선인가"를 먼저 정하면 절반이 풀린다.\
+순서: ① 정점·간선·방향·가중치를 문제 문장에서 뽑아낸다 → ② 밀도(E가 V²에 가까운가)로 리스트/행렬을 고른다 → ③ 질문의 종류에 맞는 탐색을 고른다(간선 수 최단 = BFS, 전부 방문·순환 = DFS, 순서 = 위상 정렬, 가중치 최단 = 다익스트라) → ④ 방문 표시와 종료 조건을 정한다.\
+아래 네 문제는 ③의 네 갈래를 하나씩 보여 준다.
+
+### 문제 — 이 챕터가 시키는 것
+
+원본 README는 이 박스를 "**담는 것이 아니라 잇는 것**"을 다루는 첫 박스라고 소개한다.\
+01~07은 전부 "원소를 어떻게 담을까"였는데, 여기서는 원소 사이의 관계 자체가 자료구조다.\
+같은 `Graph` 계약을 **인접 리스트**와 **인접 행렬** 두 가지로 구현해서, 결과는 똑같은데 메모리와 비용만 달라지는 것을 숫자로 확인하는 것이 과제다.\
+그 위에 BFS·DFS·위상 정렬·다익스트라 네 알고리즘을 얹어, 앞 챕터에서 만든 큐(04)·스택(03)·힙(07)을 **도구로 쓰는** 첫 경험을 한다.
+
+과제 목록 — `src/main/java/com/datastructure/graph/`의 TODO 01~12:
+
+- `AdjacencyListGraph` — TODO 01(`addEdge` — 덮어쓰기·무방향 양쪽 저장·self loop) · TODO 02(`hasEdge`) · TODO 03(`weight`) · TODO 04(`neighbors` — 복사본)
+- `AdjacencyMatrixGraph` — TODO 05(`addEdge` — 두 칸 채우기) · TODO 06(`hasEdge` — O(1)) · TODO 07(`weight`) · TODO 08(`neighbors` — V칸 훑기)
+- `GraphProblems.bfsDistances` — TODO 09: 문제 1(최단 거리 — 방문 표시를 넣을 때)
+- `GraphProblems.dfsOrder` — TODO 10: 문제 2(깊이 우선 — **반복**으로, 테스트에 깊은 그래프가 있다)
+- `GraphProblems.topologicalSort` — TODO 11: 문제 3(위상 정렬 — Kahn, 순환 탐지가 끝나는 방식에서 나온다)
+- `GraphProblems.shortestPaths` — TODO 12: 문제 4(다익스트라 — 낡은 항목 거르기)
+
+순서: `GraphContractTest.java`를 먼저 따라 친다(계약이 거기 있다) → 리스트 4개 → 행렬 4개 → 문제 4개.\
+실행: `cd ~/project/myway/data-structure && ./run.sh 08` — README 기준 **62개가 전부 실패**한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
 | AdjacencyListGraph | | | |
 | AdjacencyMatrixGraph | | | |
 
-## 문제 — GraphProblems (`src/main/java/com/datastructure/graph/GraphProblems.java`)
+### 문제 — GraphProblems (`src/main/java/com/datastructure/graph/GraphProblems.java`)
 
-### 문제 1. 최단 거리 (간선 수 기준)
+#### 문제 1. 최단 거리 (간선 수 기준)
 
 > 문제 설명: `start` 에서 각 정점까지 몇 개의 간선을 거쳐야 하는지.\
 > 못 가면 -1. 가중치는 무시한다.\
@@ -471,7 +532,7 @@ neighbors(0) : 그 행 전체를 훑어 NO_EDGE 가 아닌 칸의 번호를 모�
 - 논리:
 - 비용(왜):
 
-### 문제 2. 깊이 우선 방문 순서
+#### 문제 2. 깊이 우선 방문 순서
 
 > 문제 설명: `start` 에서 시작해 갈 수 있는 데까지 들어갔다가 되돌아 나오는 순서.\
 > 이웃은 `neighbors` 가 주는 순서대로 본다.\
@@ -491,7 +552,7 @@ neighbors(0) : 그 행 전체를 훑어 NO_EDGE 가 아닌 칸의 번호를 모�
 - 논리:
 - 비용(왜):
 
-### 문제 3. 위상 정렬
+#### 문제 3. 위상 정렬
 
 > 문제 설명: 방향 그래프에서 "모든 간선이 앞에서 뒤로 가도록" 정점을 늘어놓는다.\
 > 빌드 의존성, 강의 선수과목, 작업 순서가 전부 이 문제다.\
@@ -513,7 +574,7 @@ neighbors(0) : 그 행 전체를 훑어 NO_EDGE 가 아닌 칸의 번호를 모�
 - 논리:
 - 비용(왜):
 
-### 문제 4. 가중치 최단 거리 (다익스트라)
+#### 문제 4. 가중치 최단 거리 (다익스트라)
 
 > 문제 설명: `start` 에서 각 정점까지의 가중치 합이 최소인 경로 비용. 못 가면 -1.\
 > 생각할 것 — BFS 는 왜 안 되는가? 간선 수가 적어도 가중치 합이 클 수 있다. /\
@@ -530,15 +591,58 @@ neighbors(0) : 그 행 전체를 훑어 NO_EDGE 가 아닌 칸의 번호를 모�
 - 논리:
 - 비용(왜):
 
+## 장애 시나리오와 대처
+
+**1. 방문 표시를 빠뜨려 순환에서 탐색이 끝나지 않는다**
+
+- 현상: 작은 예제에서는 맞던 BFS/DFS가 특정 입력에서 끝나지 않는다.
+- 보이는 형태: CPU 100%에 큐·스택 크기가 계속 자란다. 결국 `OutOfMemoryError`(큐) 또는 반복 스택이 무한히 커진다. 트리 모양 입력에서는 재현되지 않는다.
+- 원인: 순환이 있는 그래프에서 `visited` 표시가 없거나 늦게 찍혀, 같은 정점이 계속 다시 들어간다. 트리에는 순환이 없어 표시 없이도 끝나므로 테스트가 놓치기 쉽다.
+- 대처: 큐/스택에 **넣을 때** 표시한다(정답 1번 참고). 테스트에 순환 그래프와 self loop를 반드시 넣는다.
+
+**2. 위상 정렬 결과를 길이 검사 없이 써서 일부가 조용히 빠진다**
+
+- 현상: 빌드·작업 순서가 정점 수보다 짧게 나왔는데 그대로 실행되어 일부 작업이 영영 실행되지 않는다.
+- 보이는 형태: 에러 없음. 결과 리스트 크기가 V보다 작다. 나중에 "그 모듈은 왜 안 빌드됐나"로 드러난다.
+- 원인: Kahn 방식은 순환에 걸린 정점을 결과에 넣지 않고 끝난다(정답 3번 참고). 그 성질이 곧 순환 탐지인데, 호출자가 크기를 확인하지 않으면 부분 결과가 정답처럼 보인다.
+  - *Kahn 알고리즘*: 진입 차수 0인 정점을 큐에서 빼며 이웃의 진입 차수를 줄이는 위상 정렬 방식.
+- 대처: `result.size() != V`면 예외를 던지고, 남은 정점(진입 차수 > 0)을 순환 후보로 함께 보고한다. 이 노트의 구현도 그렇게 예외로 드러낸다.
+
+**3. 외부 ID를 정점 번호로 그대로 써서 배열이 터지거나 낭비된다**
+
+- 현상: 사용자 ID·주문 번호처럼 큰 정수를 정점 번호로 넣자마자 죽거나, 정점 수가 터무니없이 크게 잡힌다.
+- 보이는 형태: 이 구현에서는 정점 범위 검사가 던지는 `IndexOutOfBoundsException`(impl `AdjacencyListGraph.java:76`), 또는 `new AdjacencyMatrixGraph(maxId)`가 `OutOfMemoryError`. 인접 리스트라도 빈 리스트가 수억 개 생긴다.
+- 원인: 이 구현은 정점이 0..V-1 연속 정수라고 가정한다. 그 단순화 덕에 배열 인덱스로 쓰지만, 외부 ID는 연속도 아니고 작지도 않다.
+- 대처: 바깥에서 `Map<외부ID, Integer>`로 압축 번호를 매기고 역매핑 배열을 함께 둔다. 그래프는 압축 번호만 본다.
+
+**4. "없음" 센티널을 더해 거리가 음수로 뒤집힌다**
+
+- 현상: 다익스트라 결과에 음수 거리나 터무니없이 작은 거리가 나온다.
+- 보이는 형태: 에러 없음. 도달 불가능해야 할 정점이 "가장 가깝게" 나온다.
+- 원인: 초기 거리를 `Integer.MAX_VALUE`로 두고 `dist[u] + w`를 계산하면 오버플로로 음수가 된다. `int` 산술은 넘치면 조용히 감긴다.
+  - *오버플로(overflow)*: 표현 가능한 최댓값을 넘겨 값이 반대쪽 끝으로 감기는 현상.
+- 대처: 거리는 `long`으로 들고, "없음" 센티널에는 절대 더하지 않는다. 이 노트의 참고 구현은 `long[] best`를 `Long.MAX_VALUE`로 채우되, 힙에서 꺼낸 정점(이미 도달한 정점)에서만 더하기를 하므로 센티널에 더할 일이 없다. 결과에서는 `Long.MAX_VALUE`로 남은 정점을 -1로 바꿔 돌려준다(impl `GraphProblems.shortestPaths`).
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 그래프는 원소가 아니라 관계를 담는다 — 정점과 간선으로 "갈 수 있나·몇 칸인가·무엇이 먼저인가"를 물을 수 있게 된다.
+- 인접 리스트(O(V+E))와 인접 행렬(O(V²))은 같은 그래프를 담고, `hasEdge`는 행렬이, `neighbors`와 전체 순회는 리스트가 이긴다 — 밀도가 선택을 정하고 현실은 대개 희소하다.
+- 탐색은 `neighbors`만 부르므로 표현을 바꿔도 알고리즘 코드는 그대로이고 비용만 달라진다 — 계약과 비용 구조가 분리된다는 뜻이다.
+- BFS는 큐, DFS는 스택, 위상 정렬은 큐, 다익스트라는 힙 — 그래프는 앞 챕터의 자료구조를 도구로 쓰는 첫 문제다.
+- 알고리즘이 끝나는 방식이 답을 준다 — 위상 정렬에서 정점이 남으면 순환이고, 다익스트라에서 확정된 정점이 다시 나오면 낡은 항목이다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [03-stack](../03-stack/2-summary.md) · [04-queue-deque](../04-queue-deque/2-summary.md) · [07-heap](../07-heap/2-summary.md): DFS·BFS·다익스트라가 각각 도구로 쓴다.
+- 후속 — [09-trie](../09-trie/2-summary.md): 관계를 명시적으로 잇는 대신 접두사를 공유하는 트리.
+- 후속 — [14-union-find](../14-union-find/2-summary.md): "연결되어 있나"만 물을 때 탐색 없이 답하는 구조.
+- 응용 — [34-dependency-resolver](../34-dependency-resolver/2-summary.md): 문제 3(위상 정렬)이 실제 시스템이 되는 자리.
+- 기법 — [algorithm/11-bfs](../../algorithm/11-bfs/2-summary.md) · [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md) · [algorithm/14-dijkstra](../../algorithm/14-dijkstra/2-summary.md).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `11-graph` (선행 `math/04-graph-theory-basics` — 노트 미작성).
+- 교재 — CLRS 3판 22.1 그래프의 표현 · 22.2 BFS · 22.3 DFS · 22.4 위상 정렬 · 24.3 다익스트라.
+- myway 원본 — `/home/jun/project/myway/data-structure/08-graph/` (README.md · impl/AdjacencyListGraph.java · impl/AdjacencyMatrixGraph.java · impl/GraphProblems.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -547,7 +651,7 @@ neighbors(0) : 그 행 전체를 훑어 NO_EDGE 가 아닌 칸의 번호를 모�
 - 테스트: `/home/jun/project/myway/data-structure/08-graph/src/test/java/com/datastructure/graph/`
 - 참고 구현: `/home/jun/project/myway/data-structure/08-graph/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 - **그래프(graph)**: 점(정점)들과 그 사이 연결(간선)로 관계를 표현하는 자료구조. 노선도·친구 관계·의존성이 전부 그래프다.
 - **정점(vertex, V)**: 그래프의 점 하나. 이 구현에서는 0..V-1 정수 번호다.

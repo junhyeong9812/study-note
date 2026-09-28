@@ -4,8 +4,32 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+점 (3, 7)과 (5, 2) 중 무엇이 더 큰가 — 정할 수 없다. x로 보면 앞이 작고 y로 보면 뒤가 작다.
+2차원에는 전순서가 없어서, "왼쪽은 작고 오른쪽은 크다" 하나로 갈라 온 BST도, 이웃 관계를 버린 해시맵도 "이 사각형 안의 점"·"가장 가까운 점"에 답하지 못한다.
+
+```text
+전순서 없음 -> 전수 조사             공간을 조각내고 안 겹치는 조각을 버린다
+  질의 1번 = 점 100만 개 전부         +-------+-------+
+  * * * * * * * * * * * *             | 질의  |       |   오른쪽 절반은 x > 5
+  * * * * * * * * * * * *             | 구역  |  x>5  |   질의 구역은 x <= 3
+  * * * * * * * * * * * *             +-------+-------+   -> 통째로 안 본다
+                                              x=5
+```
+
+공간 인덱스는 전순서 대신 **조각**을 새긴다 — 질의와 겹치지 않는 조각은 들여다보지 않는다(가지치기).
+점이 선을 정하는 KD-트리와 칸이 먼저 있는 쿼드트리, 두 가지 조각내기를 만들고 방문한 노드 수로 가지치기가 실제로 일을 줄였는지 잰다.
+
+- 쉬운 예: 지도를 동/서/남/북 구역으로 접어 두면 "가장 가까운 편의점"은 내 구역과 그 옆 구역만 보면 된다.
+- 똑같은 구조다: 이 노트의 `KdTree`(축을 번갈아 반으로 가르기)와 `QuadTree`(칸이 넘치면 넷으로 쪼개기).
+- 실무 예: "내 위치 반경 1km의 매장", 게임의 충돌 후보 좁히기, 지리 DB의 공간 인덱스.
+  - *전순서(total order)*: 어떤 두 값이든 "누가 앞인가"를 정할 수 있는 순서. 1차원 수에는 있고 2차원 점에는 없다.
+  - *가지치기(pruning)*: "이 아래엔 답이 있을 수 없다"가 확실한 서브트리를 통째로 건너뛰는 것.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 지도를 구역으로 접어 두기.** "지금 있는 곳에서 가장 가까운 편의점"을 찾는데 전국 편의점 목록을 처음부터 끝까지 다 훑는 사람은 없다. 지도를 동/서/남/북 구역으로 나눠 두면, 내 구역과 그 근처만 보면 되고 멀리 떨어진 구역은 **통째로 건너뛴다**. **공간 인덱스가 똑같은 구조다** — 평면을 미리 잘라 두고(KD-트리는 선으로 반씩, 쿼드트리는 칸을 넷으로), 질문 범위와 겹칠 수 없는 조각은 아예 들여다보지 않는다(가지치기). 실무로는 지도 앱의 "내 주변 검색", 게임의 충돌 판정, 위치 기반 추천이 이 위에서 돈다.
 
@@ -24,31 +48,39 @@
            x=5
 ```
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-2차원 점에는 전순서가 없어서 06번 BST도 05번 해시맵도 못 쓴다.\
-그래서 "이 사각형 안의 점 전부"와 "가장 가까운 점"에 답하는 길이 전수 조사밖에 안 남는다.\
-전순서를 포기하는 대신 공간을 조각내고 질의와 안 겹치는 조각을 통째로 버리는 구조(가지치기)를 두 가지 방식으로 만든다.\
-그리고 그 가지치기가 실제로 일을 줄이는지, 언제 안 줄이는지를 방문한 노드 수로 직접 측정한다.
+### 전체 흐름
 
-**과제**
+```text
+[1] 기준선 — 전부 훑는다              [2] 조각내기 두 가지
+    NaiveSpatialIndex                       KdTree                 QuadTree
+    rangeSearch / nearest = 점 수 n           A(5,5) x로 가름          +-------+-------+
+    visits = n, 언제나                        /      \                |       |       |
+                                        B(2,7)      C(8,2) y로 가름   +-------+-------+
+              |                         점이 선을 정한다              칸이 먼저, 점이 들어간다
+              v                         깊이 = 넣은 순서              깊이 = 좌표 범위
+[3] 질의 = 내려가며 겹치는 쪽만 본다
+    rangeSearch(area)  : 분할선과 area 가 겹치는 자식만 재귀 (겹치지 않는 쪽 = 가지치기)
+    nearest(target)    : 가까운 쪽 먼저 -> 최선 반경 r 확보 -> "r > 분할선까지 거리" 일 때만 먼 쪽
+    nearestK(target,k) : 최대 힙 KNearest 가 k 개를 들고, 힙 머리(가장 먼 것)가 r 이 된다
+              |
+              v
+[4] 대가 — visits 로 잰다
+    가지치기 조건을 빼도 답은 맞고 느려질 뿐   -> 시간 대신 방문 노드 수를 계약으로
+    모든 점이 같은 거리면 한 개도 못 건너뛴다   -> 최악은 "최단 거리 > 데이터 폭"
+    KD 는 삭제·재균형이 없다 (build 로 재구축)   쿼드는 경계 밖을 표현하지 못한다
+```
 
-1. `Point2D`, `Rectangle` (TODO 4개) — 제곱거리, 사각형의 점 포함·교차, 사각형에서 점까지의 거리
-2. `KNearest` (TODO 1개) — 지금까지의 최선 k개를 담는 최대 힙의 `offer`
-3. `NaiveSpatialIndex` (TODO 3개) — 전부 훑는 기준선의 `rangeSearch` / `nearest` / `nearestK`
-4. `KdTree` (TODO 5개) — 축을 번갈아 가르는 삽입·일괄 구축과 가지치기하는 범위 조회·최근접
-5. `QuadTree` (TODO 4개) — 칸이 넘치면 넷으로 쪼개는 삽입·분할과 가지치기하는 범위 조회·최근접
+- [1] 아무것도 안 나누면 질의 한 번이 점 수만큼이다. 이 기준선이 있어야 트리가 "덜 봤다"를 증명할 수 있다.
+  - *visits*: 질의 한 번에 실제로 들여다본 노드 수. JIT로 흔들리는 시간 대신 쓰는 결정적인 잣대.
+- [2] KD-트리는 깊이마다 x·y를 번갈아 비교 축으로 써서 평면을 반씩 가른다(`depth & 1`). 노드 하나 = 점 하나 + 분할선 하나. 쿼드트리는 칸(`bounds`)이 먼저 있고 점이 `capacity`를 넘치면 넷으로 쪼갠다 — 점은 언제나 잎에만 산다.
+  - *중앙값(median)*: 정렬했을 때 한가운데 값. `KdTree.build`는 축별로 정렬해 중앙값을 뿌리로 삼아 처음부터 균형을 잡는다.
+- [3] 범위 검색은 분할선과 사각형이 겹치는 자식만 내려간다. 최근접은 가까운 쪽을 먼저 내려가 최선 반경을 확보한 뒤, 분할선까지의 거리가 그 반경보다 짧을 때만 먼 쪽을 본다. k개는 최대 힙이 "지금까지의 k개 중 가장 먼 것"을 반경으로 내준다.
+  - *반경(radius)*: 지금까지 찾은 최선까지의 거리. 이보다 먼 곳은 볼 필요가 없다는 경계선. 비교만 하므로 제곱거리로 충분하다.
+- [4] 가지치기 조건이 빠져도 정답은 나온다 — 그래서 방문 수를 재지 않으면 전수 조사와 같은 코드를 트리라고 부르게 된다. 최악 입력·삭제 부재·경계 제약은 고칠 수 없는 성질이다.
 
-`cd ~/project/myway/data-structure && ./run.sh 25` — 113개 중 97개가 실패한다.\
-테스트가 `root`와 노드의 `point`/`left`/`right`, `bounds`/`points`/`children`을 직접 읽는다 — 필드 이름이 계약이다.
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — SpatialIndex (`src/main/java/com/datastructure/spatial/SpatialIndex.java`)
+### 계약 — SpatialIndex (`src/main/java/com/datastructure/spatial/SpatialIndex.java`)
 
 - `boolean insert(Point2D p)`
 - `boolean contains(Point2D p)`
@@ -59,91 +91,91 @@
 - `Point2D nearest(Point2D target)`
 - `List<Point2D> nearestK(Point2D target, int k)`
 
-## 계약 — VisitCounting (`src/main/java/com/datastructure/spatial/VisitCounting.java`)
+### 계약 — VisitCounting (`src/main/java/com/datastructure/spatial/VisitCounting.java`)
 
 - `long visits()`
 - `void resetVisits()`
 
-## 구현 — Point2D (`src/main/java/com/datastructure/spatial/Point2D.java`)
+### 구현 — Point2D (`src/main/java/com/datastructure/spatial/Point2D.java`)
 
-### 필드
+#### 필드
 - `x` — 역할:
 - `y` — 역할:
 
-### `Point2D(int x, int y)`
+#### `Point2D(int x, int y)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int coordinate(int axis)`
+#### `int coordinate(int axis)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long squaredDistanceTo(Point2D other)` (TODO)
+#### `long squaredDistanceTo(Point2D other)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `double distanceTo(Point2D other)`
+#### `double distanceTo(Point2D other)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean equals(Object o)` / `int hashCode()` / `String toString()`
+#### `boolean equals(Object o)` / `int hashCode()` / `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — Rectangle (`src/main/java/com/datastructure/spatial/Rectangle.java`)
+### 구현 — Rectangle (`src/main/java/com/datastructure/spatial/Rectangle.java`)
 
-### 필드
+#### 필드
 - `minX` / `minY` — 역할:
 - `maxX` / `maxY` — 역할:
 
-### `Rectangle(int minX, int minY, int maxX, int maxY)`
+#### `Rectangle(int minX, int minY, int maxX, int maxY)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int min(int axis)` / `int max(int axis)`
+#### `int min(int axis)` / `int max(int axis)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean contains(Point2D p)` (TODO)
+#### `boolean contains(Point2D p)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean intersects(Rectangle other)` (TODO)
+#### `boolean intersects(Rectangle other)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long squaredDistanceTo(Point2D p)` (TODO)
+#### `long squaredDistanceTo(Point2D p)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean canSubdivide()`
+#### `boolean canSubdivide()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Rectangle[] subdivide()`
+#### `Rectangle[] subdivide()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean equals(Object o)` / `int hashCode()` / `String toString()`
+#### `boolean equals(Object o)` / `int hashCode()` / `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — KNearest (`src/main/java/com/datastructure/spatial/KNearest.java`)
+### 구현 — KNearest (`src/main/java/com/datastructure/spatial/KNearest.java`)
 
-### 구조
+#### 구조
 
 ```
 KNearest : 지금까지의 최선 k 개를 담아두는 상자. 안은 최대 힙이다. (k = 3, target = T)
@@ -182,40 +214,39 @@ KNearest : 지금까지의 최선 k 개를 담아두는 상자. 안은 최대 �
   - *비교자(comparator)*: 무엇을 크다고 볼지 정해 주는 규칙. 여기서는 "target에서 먼 것 = 크다"로 뒤집어 놓았다.
   - *제곱거리*: 거리를 제곱한 값. 크고 작음만 비교할 거면 제곱근(sqrt)을 안 구해도 순서가 같아서, 느린 sqrt 호출을 아낀다.
 
-
-### 필드
+#### 필드
 - `target` — 역할:
 - `k` — 역할:
 - `heap` — 역할:
 
-### `KNearest(Point2D target, int k)`
+#### `KNearest(Point2D target, int k)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void offer(Point2D candidate)` (TODO)
+#### `void offer(Point2D candidate)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long radius()`
+#### `long radius()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<Point2D> drain()`
+#### `List<Point2D> drain()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — NaiveSpatialIndex (`src/main/java/com/datastructure/spatial/NaiveSpatialIndex.java`)
+### 구현 — NaiveSpatialIndex (`src/main/java/com/datastructure/spatial/NaiveSpatialIndex.java`)
 
-### 구조
+#### 구조
 
 ```
 NaiveSpatialIndex : 공간을 나누지 않는다. 그냥 목록이다. 무슨 질의든 전부 훑는다.
@@ -244,49 +275,48 @@ NaiveSpatialIndex : 공간을 나누지 않는다. 그냥 목록이다. 무슨 �
   - *기준선(baseline)*: 비교의 출발점이 되는 가장 단순한 방법. 트리의 성적은 이것 대비 얼마나 덜 봤는가로 잰다.
   - *JIT*: 자바가 실행 중에 코드를 기계어로 다시 굽는 장치. 실행 시간이 이것 때문에 들쭉날쭉해서, 시간 대신 결정적인 visits를 센다.
 
-
-### 필드
+#### 필드
 - `points` — 역할:
 - `visits` — 역할:
 
-### `boolean insert(Point2D p)`
+#### `boolean insert(Point2D p)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean contains(Point2D p)`
+#### `boolean contains(Point2D p)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()` / `void clear()`
+#### `int size()` / `void clear()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<Point2D> rangeSearch(Rectangle area)` (TODO)
+#### `List<Point2D> rangeSearch(Rectangle area)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Point2D nearest(Point2D target)` (TODO)
+#### `Point2D nearest(Point2D target)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<Point2D> nearestK(Point2D target, int k)` (TODO)
+#### `List<Point2D> nearestK(Point2D target, int k)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long visits()` / `void resetVisits()`
+#### `long visits()` / `void resetVisits()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — KdTree (`src/main/java/com/datastructure/spatial/KdTree.java`)
+### 구현 — KdTree (`src/main/java/com/datastructure/spatial/KdTree.java`)
 
-### 구조
+#### 구조
 
 ```
 KD-트리 : 깊이마다 비교 축을 번갈아 바꾸며 평면을 반씩 잘라 들어간다
@@ -334,7 +364,7 @@ KD-트리 : 깊이마다 비교 축을 번갈아 바꾸며 평면을 반씩 잘�
   - *depth & 1*: 깊이를 2로 나눈 나머지를 비트 연산으로 구한 것. 0이면 x, 1이면 y.
   - *중앙값(median)*: 정렬했을 때 한가운데 값. 이걸 뿌리로 삼으면 좌우 개수가 반반이라 균형이 잡힌다.
 
-### 동작 — 삽입
+#### 동작 — 삽입
 
 **언제 쓰나** — 점을 하나 추가할 때. 이미 있는 노드는 하나도 안 옮기고, 새 점은 언제나 잎으로 붙는다.
 
@@ -369,7 +399,7 @@ D(1,3)                  E(7,6)       D(1,3)                  E(7,6)
 2. "작거나 같으면 왼쪽, 크면 오른쪽" 규칙대로 빈 자리에 닿으면 거기 새 노드를 단다.
 3. 같은 점이 이미 있으면 아무것도 바꾸지 않고 false를 돌려준다(중복 거부).
 
-### 동작 — 범위 검색 (가지치기)
+#### 동작 — 범위 검색 (가지치기)
 
 **언제 쓰나** — "이 사각형 안의 점을 전부 달라"는 질문(rangeSearch).
 
@@ -426,7 +456,7 @@ rangeSearch(area) : 분할선과 질의 사각형을 견줘 한쪽 서브트리�
 2. 질문 사각형이 분할선의 한쪽에만 있으면 반대쪽 서브트리는 통째로 건너뛴다 — A에서 오른쪽(C, E)이 잘린 이유.
 3. 그래서 visits가 3(트리) vs 5(전수)로 갈린다. 사각형이 넓어지면 이 이득은 사라진다.
 
-### 동작 — k-최근접 (반경과 분할선 견주기)
+#### 동작 — k-최근접 (반경과 분할선 견주기)
 
 **언제 쓰나** — "가장 가까운 점"(nearest) / "가까운 점 k개"(nearestK)를 물을 때. 범위 검색과 달리 사각형 대신 **지금까지 찾은 최선까지의 거리**(반경)로 가지를 자른다.
 
@@ -471,86 +501,85 @@ nearest / nearestK : 가까운 쪽을 먼저 파고, 반대쪽은 지금까지�
   - *gap*: target에서 분할선까지의 수직 거리. 음수면 target이 왼쪽에 있다는 뜻이라 부호는 방향으로만 쓴다.
   - *long으로 올려 계산*: int끼리 곱하면 담을 수 있는 수의 한계를 넘칠 수 있어, 더 큰 그릇(long)으로 바꿔 곱한다(오버플로 방지).
 
-
-### 필드
+#### 필드
 - `root` — 역할:
 - `size` — 역할:
 - `visits` — 역할:
 - `Node.point` / `Node.left` / `Node.right` — 역할:
 
-### `boolean insert(Point2D p)`
+#### `boolean insert(Point2D p)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Node insertInto(Node node, Point2D p, int depth)` (TODO, private)
+#### `Node insertInto(Node node, Point2D p, int depth)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static KdTree build(List<Point2D> points)`
+#### `static KdTree build(List<Point2D> points)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static Node buildRange(List<Point2D> points, int from, int to, int depth)` (TODO, private)
+#### `static Node buildRange(List<Point2D> points, int from, int to, int depth)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean contains(Point2D p)`
+#### `boolean contains(Point2D p)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()` / `void clear()`
+#### `int size()` / `void clear()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<Point2D> rangeSearch(Rectangle area)`
+#### `List<Point2D> rangeSearch(Rectangle area)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void rangeFrom(Node node, Rectangle area, int depth, List<Point2D> out)` (TODO, private)
+#### `void rangeFrom(Node node, Rectangle area, int depth, List<Point2D> out)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Point2D nearest(Point2D target)`
+#### `Point2D nearest(Point2D target)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Point2D nearestFrom(Node node, Point2D target, int depth, Point2D best)` (TODO, private)
+#### `Point2D nearestFrom(Node node, Point2D target, int depth, Point2D best)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<Point2D> nearestK(Point2D target, int k)`
+#### `List<Point2D> nearestK(Point2D target, int k)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void nearestKFrom(Node node, Point2D target, int depth, KNearest best)` (TODO, private)
+#### `void nearestKFrom(Node node, Point2D target, int depth, KNearest best)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int height()`
+#### `int height()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long visits()` / `void resetVisits()`
+#### `long visits()` / `void resetVisits()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — QuadTree (`src/main/java/com/datastructure/spatial/QuadTree.java`)
+### 구현 — QuadTree (`src/main/java/com/datastructure/spatial/QuadTree.java`)
 
-### 구조
+#### 구조
 
 ```
 쿼드트리 : 점이 아니라 "칸"을 먼저 정해두고, 칸이 넘치면 그 칸을 넷으로 쪼갠다
@@ -593,7 +622,7 @@ nearest / nearestK : 가까운 쪽을 먼저 파고, 반대쪽은 지금까지�
   - *capacity(용량)*: 잎 하나가 쪼개지기 전까지 담을 수 있는 점의 최대 개수.
   - *잎(leaf)*: 자식이 없는 노드. 쿼드트리에서 점은 전부 잎에만 있다.
 
-### 동작 — 삽입 / 분할
+#### 동작 — 삽입 / 분할
 
 **언제 쓰나** — 점을 추가할 때. 평소엔 잎에 그냥 담고, 잎이 용량을 넘기는 순간에만 그 잎을 넷으로 쪼갠다.
 
@@ -650,8 +679,7 @@ after :
 4. 쪼갠 뒤 부모의 points는 빈다. 점은 언제나 잎에만 산다.
   - *재배치*: 쪼개는 순간 그 잎에 있던 점들을 새 네 칸에 다시 나눠 담는 일. capacity+1개만 옮기면 된다.
 
-
-### 필드
+#### 필드
 - `root` — 역할:
 - `bounds` — 역할:
 - `capacity` — 역할:
@@ -659,77 +687,112 @@ after :
 - `visits` — 역할:
 - `Node.bounds` / `Node.points` / `Node.children` — 역할:
 
-### `QuadTree(Rectangle bounds, int capacity)`
+#### `QuadTree(Rectangle bounds, int capacity)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Rectangle bounds()` / `int capacity()`
+#### `Rectangle bounds()` / `int capacity()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean insert(Point2D p)`
+#### `boolean insert(Point2D p)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean insertInto(Node node, Point2D p)` (TODO, private)
+#### `boolean insertInto(Node node, Point2D p)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void subdivide(Node node)` (TODO, private)
+#### `void subdivide(Node node)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean contains(Point2D p)`
+#### `boolean contains(Point2D p)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()` / `void clear()`
+#### `int size()` / `void clear()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<Point2D> rangeSearch(Rectangle area)`
+#### `List<Point2D> rangeSearch(Rectangle area)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void rangeFrom(Node node, Rectangle area, List<Point2D> out)` (TODO, private)
+#### `void rangeFrom(Node node, Rectangle area, List<Point2D> out)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Point2D nearest(Point2D target)`
+#### `Point2D nearest(Point2D target)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<Point2D> nearestK(Point2D target, int k)`
+#### `List<Point2D> nearestK(Point2D target, int k)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void searchNearest(Node node, Point2D target, KNearest best)` (TODO, private)
+#### `void searchNearest(Node node, Point2D target, KNearest best)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int depth()` / `int leafCount()`
+#### `int depth()` / `int leafCount()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long visits()` / `void resetVisits()`
+#### `long visits()` / `void resetVisits()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **지리 DB의 공간 인덱스 — PostGIS(GiST/R-tree) · MySQL SPATIAL** — "반경 1km의 매장" 질의를 사각형 교차 가지치기로 좁힌다. PostGIS는 GiST 위의 R-tree 계열, MySQL InnoDB의 SPATIAL 인덱스는 R-tree다(각 공식 문서). R-tree는 쿼드트리처럼 공간을 고정 칸으로 자르지 않고, B-트리처럼 균형을 유지하며 서로 겹칠 수 있는 최소 경계 사각형(MBR)으로 묶는 구조다(Guttman 1984).
+- **geohash · S2 · H3 셀** — 위경도를 문자열/정수 셀로 바꿔 해시맵·정렬 인덱스에 얹는 방식. geohash(위·경도 비트 교차 = Z-order)와 S2(정육면체 면 위 쿼드트리 + 힐베르트 곡선)는 쿼드트리의 "칸 번호"를 편 것과 같다. H3는 사각형이 아니라 육각형 계층이라 쿼드트리는 아니지만, 셀 경계 근처의 이웃 누락이라는 함정은 셋 다 같다(커리큘럼 ⚠).
+- **게임·시뮬레이션의 충돌 후보 좁히기** — 매 프레임 "내 근처의 물체"만 검사한다. 물체가 움직이므로 쿼드트리를 프레임마다 다시 짓거나(정적 구축) 잎 용량을 넉넉히 둔다.
+- **ML의 k-최근접 탐색 — scikit-learn `KDTree`·`BallTree`** — 저차원에서는 `nearestK`와 같은 가지치기, 고차원(수십 차원↑)에서는 차원의 저주로 무너져 근사(LSH·HNSW)로 간다(정답 6번 참고).
+- **이미지·지형 압축의 쿼드트리** — 같은 색/높이인 칸은 더 쪼개지 않는다. "칸이 넘치면 쪼갠다"를 "칸이 균일하지 않으면 쪼갠다"로 바꾼 것.
+- **이 노트가 가져다 쓰는 것** — [06-binary-search-tree](../06-binary-search-tree/2-summary.md)(1차원 가르기의 원형), [07-heap](../07-heap/2-summary.md)(`KNearest`의 최대 힙 — `KthLargest`와 같은 발상).
+
+## 적용 — 풀어나가는 법
+
+공간 질의 문제는 "무엇이 가지치기 조건인가"를 한 줄로 쓰는 데서 갈린다.
+순서: ① 질의 종류를 정한다(범위 / 최근접 / k개) → ② 가지치기 조건을 적는다 — 범위는 "분할선과 사각형이 겹치는가", 최근접은 "최선 반경 > 분할선까지 거리인가" → ③ 같은 좌표를 어느 쪽에 둘지(`<=`는 왼쪽)를 삽입·조회·범위 모두 같은 규칙으로 맞춘다 → ④ 기준선(전수 조사)과 방문 수를 대조해 가지치기가 실제로 줄였는지 확인한다.
+아래 과제 다섯이 이 순서로 풀린다.
+
+### 문제 — 이 챕터가 시키는 것
+
+2차원 점에는 전순서가 없어서 06번 BST도 05번 해시맵도 못 쓴다.\
+그래서 "이 사각형 안의 점 전부"와 "가장 가까운 점"에 답하는 길이 전수 조사밖에 안 남는다.\
+전순서를 포기하는 대신 공간을 조각내고 질의와 안 겹치는 조각을 통째로 버리는 구조(가지치기)를 두 가지 방식으로 만든다.\
+그리고 그 가지치기가 실제로 일을 줄이는지, 언제 안 줄이는지를 방문한 노드 수로 직접 측정한다.
+
+**과제**
+
+1. `Point2D`, `Rectangle` (TODO 4개) — 제곱거리, 사각형의 점 포함·교차, 사각형에서 점까지의 거리
+2. `KNearest` (TODO 1개) — 지금까지의 최선 k개를 담는 최대 힙의 `offer`
+3. `NaiveSpatialIndex` (TODO 3개) — 전부 훑는 기준선의 `rangeSearch` / `nearest` / `nearestK`
+4. `KdTree` (TODO 5개) — 축을 번갈아 가르는 삽입·일괄 구축과 가지치기하는 범위 조회·최근접
+5. `QuadTree` (TODO 4개) — 칸이 넘치면 넷으로 쪼개는 삽입·분할과 가지치기하는 범위 조회·최근접
+
+`cd ~/project/myway/data-structure && ./run.sh 25` — 113개 중 97개가 실패한다.\
+테스트가 `root`와 노드의 `point`/`left`/`right`, `bounds`/`points`/`children`을 직접 읽는다 — 필드 이름이 계약이다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -737,22 +800,62 @@ after :
 | KdTree | | | |
 | QuadTree | | | |
 
+## 장애 시나리오와 대처
+
+**1. 쿼드트리 경계 밖의 점이 조용히 버려짐**
+
+- 현상: 넣은 점 수와 `size()`가 다르다. 어떤 지역의 점이 검색에 아예 안 나온다.
+- 보이는 형태: 예외 없음 — `insert`가 `false`를 돌려주고 끝난다. 좌표가 음수이거나 `bounds`를 넘는 데이터(예: 경계를 `[0,1023]`로 잡았는데 좌표가 2000)에서 난다.
+- 원인: 쿼드트리는 칸이 먼저다 — `bounds.contains(p)`가 아니면 표현할 자리가 없다. 중복 점도 같은 `false`라 둘이 구별되지 않는다.
+- 대처: `insert`의 반환값을 버리지 않는다(`false`면 세어서 경고). 경계는 데이터의 실제 범위에서 정하고, 범위를 모르면 KD-트리를 쓴다 — 점이 선을 정하므로 경계가 없다.
+
+**2. 같은 좌표를 어느 쪽에 두는지가 삽입과 조회에서 어긋남**
+
+- 현상: 분명히 넣은 점을 `contains`가 못 찾고, `rangeSearch`가 일부를 빠뜨린다.
+- 보이는 형태: 좌표 범위가 좁은 데이터(2000개를 40x40에)에서만 드러난다 — 같은 x나 y를 가진 점이 많아야 갈림길이 생기기 때문이다. 넓은 범위 테스트는 다 통과한다.
+- 원인: 삽입은 `<=`를 왼쪽으로 보냈는데 조회나 범위 재귀는 `<`로 판단했다. 분할선 위의 점이 다른 쪽 서브트리에 있어 내려가지 않는다.
+- 대처: "같으면 왼쪽" 한 규칙을 `insertInto`·`contains`·`rangeFrom`(`area.min <= split`이면 왼쪽, `area.max > split`이면 오른쪽) 셋에 같은 부호로 새긴다. 대조 테스트에 좁은 범위 데이터셋을 반드시 둔다.
+
+**3. 가지치기 조건이 빠졌는데 테스트가 전부 통과**
+
+- 현상: 정답은 다 맞는데 데이터가 커지면 전수 조사와 속도가 같다.
+- 보이는 형태: 범위 조회 200번의 방문이 KD-트리 기대치 약 9,135가 아니라 기준선 800,000에 가깝다(README 실측). 정답 테스트는 113개가 다 통과하고 방문 수 측정 하나만 깨진다.
+- 원인: `rangeFrom`의 "겹치는 쪽만" 조건이나 `nearestFrom`의 "반경 > 분할선 거리일 때만 먼 쪽" 조건이 없어도 답은 맞다 — 그냥 양쪽을 다 내려갈 뿐이다.
+- 대처: 시간이 아니라 `visits()`를 계약에 넣는다. 기준선 대비 방문 수 상한을 테스트로 박아, 조건이 빠지면 빨갛게 만든다(정답 3번 참고).
+
+**4. 제곱거리 계산이 `int`에서 넘쳐 엉뚱한 점이 최근접이 됨**
+
+- 현상: 좌표가 큰 데이터(수만 이상)에서 `nearest`가 멀리 있는 점을 돌려준다.
+- 보이는 형태: 예외 없음. `dx*dx + dy*dy`가 음수나 작은 값으로 뒤집혀 비교가 뒤바뀐다.
+  - *오버플로(overflow)*: 계산 결과가 자료형의 범위를 넘쳐 엉뚱한 값이 되는 것. `int`는 약 21억까지라 좌표 차이가 5만이면 제곱 하나(25억)만으로 넘치고, 둘을 더하면 차이가 3만 3천 근처부터 넘친다.
+- 원인: 좌표가 `int`라 곱셈도 `int`로 일어난다. 더한 뒤에 `long`으로 올리면 이미 늦다.
+- 대처: `Point2D.squaredDistanceTo`처럼 빼기 **전에** `(long) x - other.x`로 올린다. 제곱근은 쓰지 않는다 — 비교만 할 것이면 제곱거리로 순서가 같고 부동소수점 오차도 없다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 2차원 점에는 전순서가 없어서 BST도 해시맵도 "근처"에 답하지 못한다 — 공간 인덱스는 순서 대신 조각을 새기고, 질의와 겹치지 않는 조각을 통째로 버린다.
+- 조각내는 철학이 둘이다: KD-트리는 점이 선을 정하고(깊이 = 넣은 순서), 쿼드트리는 칸이 먼저 있고 점이 들어간다(깊이 = 좌표 범위).
+- 가지치기 조건은 두 줄뿐이다 — 범위는 "분할선과 사각형이 겹치는가", 최근접은 "최선 반경 > 분할선까지 거리인가". 이 조건이 빠져도 답은 맞으므로 시간이 아니라 방문 수를 계약으로 잰다.
+- 최악은 직선이 아니라 "최단 거리가 데이터 폭보다 크다"일 때다 — 모든 점이 거의 같은 거리면 한 개도 못 건너뛰고, 차원이 오르면 그것이 기본이 된다.
+- KD-트리는 삭제·재균형이 없어 정적으로 쓰거나 `build`로 재구축하고, 쿼드트리는 경계 밖을 표현하지 못한다 — 둘 다 고칠 수 없는 성질이다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [06-binary-search-tree](../06-binary-search-tree/2-summary.md): 1차원 가르기와 삽입 순서에 따른 편향. KD-트리가 축만 번갈아 쓴 같은 문제를 물려받는다.
+- 선행 — [05-hashmap](../05-hashmap/2-summary.md): "옆에 뭐가 있나"를 버린 구조. geohash는 그 위에 칸 번호를 얹어 이웃을 되찾는 방식이다.
+- 재료 — [07-heap](../07-heap/2-summary.md): `KNearest`의 최대 힙 — 머리가 "k개 중 가장 먼 것" = 가지치기 반경.
+- 연결 — [11-bloom-filter](../11-bloom-filter/2-summary.md): 차원의 저주에서 정확한 최근접을 포기하고 근사(LSH·HNSW)로 가는 거래의 원형.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `39-spatial-index` (선행 `16` · 원전 Guttman 1984 — R-tree).
+- myway 원본 — `/home/jun/project/myway/data-structure/25-spatial-index/` (README.md · impl/KdTree.java · impl/QuadTree.java · impl/KNearest.java · impl/Point2D.java).
+
+### 관련 자료
 
 - 원본 README: `/home/jun/project/myway/data-structure/25-spatial-index/README.md`
 - 구현 대상: `/home/jun/project/myway/data-structure/25-spatial-index/src/main/java/com/datastructure/spatial/`
 - 테스트: `/home/jun/project/myway/data-structure/25-spatial-index/src/test/java/com/datastructure/spatial/`
 - 정답 구현: `/home/jun/project/myway/data-structure/25-spatial-index/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 > 본문에서 이미 등장 자리마다 풀었지만, 복습용으로 한곳에 모은다. (중학생 수준 1~2줄)
 

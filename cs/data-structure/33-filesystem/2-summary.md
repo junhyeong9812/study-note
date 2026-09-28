@@ -4,8 +4,32 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+"폴더 안에 폴더, 그 안에 파일"을 담고 만들기·읽기·지우기·옮기기를 해 주려면 **경로 → 무엇**의 대응이 필요하다.\
+가장 쉬운 방법은 전체 경로 문자열을 키로 쓰는 맵 하나다 — 그런데 그 맵에는 부모·자식 관계가 어디에도 적혀 있지 않다.
+
+```text
+평면 맵 : "/src" 아래 341개를 "/dst" 로 옮긴다      트리 : 가지 하나를 떼어 다른 부모에 붙인다
++--------------+          +--------------+               /                    /
+| "/src/a"     |  ->      | "/dst/a"     |               +-- src        ->    +-- dst
+| "/src/a/b"   |  ->      | "/dst/a/b"   |               |    +-- a               +-- a
+|  ... x 341   |  ->      |  ... x 341   |               |         +-- b               +-- b
++--------------+          +--------------+               키 재기록 1개
+키 재기록 341개 (경로가 곧 키라서)
+```
+
+관계를 묻는 일(자식 나열·아래 전부 찾기·통째로 옮기기)은 관계가 적혀 있는 구조라야 싸다.\
+반대로 경로 하나를 짚는 일은 해시 한 번인 평면 맵이 이긴다 — 무엇을 물어보느냐가 구조를 정한다.
+
+- 쉬운 예: 서랍장(서랍 안에 서랍)과 이름표 붙인 보관함 목록 — "3번 서랍 안에 뭐 있어?"는 서랍장이, "'겨울옷-장갑' 찾아줘"는 목록이 빠르다.
+- 똑같은 구조다: `TreeFileSystem`(이름 → 자식 `TreeMap`을 층층이)과 `FlatPathFileSystem`(전체 경로 → `Blob` 맵 하나). 계약은 같고 비용만 다르다.
+- 실무 예: 리눅스 파일 시스템(inode 트리)은 `mv`가 디렉터리 크기와 무관하고, S3 같은 객체 저장소(키 = 경로 문자열)는 "폴더 이름 바꾸기"가 아래 객체 전부를 복사·삭제하는 일이다.
+  - *inode*: 유닉스에서 이름과 실제 내용·정보를 분리해 두는 구조. 이 노트의 `Blob`이 그 역할이다.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 물건을 정리하는 두 방식 — 서랍장 안의 서랍(트리) vs 이름표 붙인 보관함 목록(평면 맵).**
 
@@ -26,31 +50,47 @@
 
 이 두 방식과 **똑같은 구조**가 실무에 다 있다 — 리눅스/유닉스 파일 시스템(inode)이 트리 방식이고, Amazon S3 같은 객체 저장소가 "경로 문자열 = 키"인 평면 방식이다(S3에 폴더가 "진짜로는 없는" 이유).
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-원본 README(`myway/data-structure/33-filesystem/README.md`)의 요구사항은 이렇다.
+### 전체 흐름
 
-- 인메모리 파일 시스템을 **두 가지로** 만든다 — `TreeFileSystem`(이름 → 자식 맵을 층층이 쌓는 진짜 트리)과 `FlatPathFileSystem`(전체 경로가 키인 맵 하나).
-- 두 번째가 훨씬 쉽고 **계약 테스트 68개를 똑같이 통과한다**. 그러면 트리는 왜 있는가 — 이 박스는 그 질문 하나다.\
-  답은 비용이다: `/src` 아래 341개를 옮길 때 트리는 키를 **1개**, 평면 맵은 **341개** 다시 쓴다.\
-  그런데 깊이 21인 경로 하나를 읽으면 트리는 22번 내려가고 평면 맵은 해시 한 번이다 — **무엇을 물어보느냐가 정한다.**
+```text
+[1] 경로 규칙 (Paths) — 두 구현의 공통 조상
+    "/a//b/./../b/f.txt"  --normalize-->  "/a/b/f.txt"  --split-->  ["a", "b", "f.txt"]
+    ".." 은 스택에서 하나 빼기, 루트에서는 더 못 올라간다
+    조상 판정은 문자열 접두사가 아니라 조각 단위 ("/ab" 는 "/a" 의 자손이 아니다)
+                  |
+                  v
+[2] 트리 : 조각을 따라 한 칸씩 내려간다            [2'] 평면 맵 : 정규화한 경로가 곧 키
+    root -> children["a"] -> children["b"]              entries["/a/b/f.txt"] -> Blob
+         -> children["f.txt"] -> Blob                    (해시 한 번, 깊이 무관)
+    비용 = 깊이 d                                        관계는 키 문자열 안에만 있다
+                  |
+                  v
+[3] 연산 — 트리는 관계가, 평면 맵은 짚기가 싸다
+    ls /a     트리: children 을 읽는다 (2)      평면: 전 키의 parent 를 계산 (343)
+    mv /src   트리: 부모에서 떼어 붙인다 (1)    평면: 아래 키 전부 재기록 (341)
+    read      트리: 깊이만큼 내려간다 (22)      평면: 해시 한 번 (1)
+    cp        둘 다 서브트리를 통째로 새로 만든다 (85 = 85)
+                  |
+                  v
+[4] 이름과 내용의 분리 — Blob { content, links }
+    /a/f.txt --+
+               +--> Blob{ "hi", links=2 }     link : 이름표 하나 더 (같은 Blob)
+    /b/g.txt --+                              cp   : 새 Blob (깊은 복사)
+    rm 은 이름표를 뗀다. links 가 0 이 되는 순간에만 내용이 죽는다
+    -> 자식이 부모를 둘 가진다 = 더 이상 트리가 아니다
+```
 
-과제(TODO 24개 + 구현 대상):
+- [1] 경로 규칙이 먼저다. 여기가 틀리면 두 구현이 **똑같이** 틀려 대조로 못 잡는다 — `PathsTest`가 따로 있는 이유다.
+  - *정규화(normalize)*: `//a/./b/..` 같은 여러 표기를 표준 형태 하나로 통일하는 것.
+- [2] 트리는 조각마다 `TreeMap`에서 자식을 찾아 내려간다. 자식이 이름 오름차순이라 `ls` 결과가 하나로 정해진다.
+- [2'] 평면 맵은 정규화한 경로 문자열로 해시 한 번이다. 부모·자식 관계는 키 안에만 있어서 `ls`·`find`·`mv`마다 전체 키를 훑어 관계를 되살린다.
+- [3] 경로 하나를 짚는 일은 평면 맵이, 관계를 묻는 일은 트리가 이긴다. `cp`만은 둘 다 서브트리 크기만큼 일한다 — 구조가 아무것도 안 구해준다.
+- [4] 이름(디렉터리 항목)과 내용(`Blob`)을 가르면 하드 링크가 되고, "지운다"의 뜻이 "마지막 이름이 사라질 때만 내용이 죽는다"로 바뀐다.
+  - *하드 링크(hard link)*: 같은 내용에 이름표(경로)를 하나 더 붙이는 것. `cp`는 새 `Blob`, `link`는 같은 `Blob`.
 
-- `Paths` 의 TODO 5개 — `normalize` · `split` · `parent` · `join` · `isAncestorOrSame`. 경로 규칙이고 **버그가 제일 많이 나는 곳**이다.
-- `TreeFileSystem` 의 TODO 13개 — `lookup` · `mkdir` · `mkdirs` · `write` · `ls` · `sizeOf` · `collect` · `rm` · `releaseAll` · `mv` · `rename` · `deepCopy` 등.
-- `FlatPathFileSystem` 의 TODO 7개 — 같은 계약을 전체 경로 키 하나로 지킨다.
-- 응용으로 생각할 것 — `..` 이 루트를 넘어가려 할 때, 조상 판정을 문자열 접두사로 할 때(`/ab` 가 `/a` 의 자손), 디렉터리를 자기 안으로 옮길 때 각각 무엇이 조용히 깨지는가.\
-  그리고 이름과 내용을 갈라놓아(`Blob`) 하드 링크가 되는 순간 **구조가 트리가 아니게 되는 것**, `cp` 와 `link` 가 한 글자 차이인 것.
-- 검증: `PathsTest`(공통 조상이라 대조로 못 잡는다) + `FileSystemContractTest` 34개 × 2구현 + `CrossCheckTest` 무작위 연산 3,200번(연산마다 전체 상태 스냅샷 비교) + `MeasurementTest` 수치 (91개 중 89개가 처음에 실패한다).
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — FileSystem (`src/main/java/com/datastructure/filesystem/FileSystem.java`)
+### 계약 — FileSystem (`src/main/java/com/datastructure/filesystem/FileSystem.java`)
 
 - `void mkdir(String path)`
 - `void mkdirs(String path)`
@@ -70,19 +110,19 @@
 - `void link(String existingPath, String newPath)`
 - `int linkCount(String path)`
 
-## 계약 — FsStats (`src/main/java/com/datastructure/filesystem/FsStats.java`)
+### 계약 — FsStats (`src/main/java/com/datastructure/filesystem/FsStats.java`)
 
 - `long visitedNodes()`
 - `long rewrittenEntries()`
 
-## 보조 — TODO 없는 값·부품 클래스
+### 보조 — TODO 없는 값·부품 클래스
 
 - `Blob` (`Blob.java`) — 역할:
 - `Node` (`Node.java`) — 역할:
 
-## 구현 — Paths (`src/main/java/com/datastructure/filesystem/Paths.java`)
+### 구현 — Paths (`src/main/java/com/datastructure/filesystem/Paths.java`)
 
-### 동작 — 경로 정규화
+#### 동작 — 경로 정규화
 
 언제 쓰나: 모든 연산의 맨 앞 — 사용자가 준 지저분한 경로("//a///b/../c")를 표준 모양 하나로 통일한다. 같은 곳을 가리키는 경로는 같은 문자열이 되어야 그다음 비교·조회가 성립한다. 아래 그림은 조각을 스택에 쌓으며 걷는 규칙표와, ".."가 스택에서 한 칸 빼는 모습이다.
 
@@ -122,42 +162,42 @@ normalize(path) : 조각을 스택에 쌓으며 걷는다. 절대 경로만 받�
 비용: 경로 길이에 비례 O(L). 조각 수 d 만큼 스택 push/pop.
 ```
 
-### 필드
+#### 필드
 - `ROOT` — 역할:
 
-### `static String normalize(String path)` (TODO 1)
+#### `static String normalize(String path)` (TODO 1)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static List<String> split(String path)` (TODO 2)
+#### `static List<String> split(String path)` (TODO 2)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static String parent(String path)` (TODO 3)
+#### `static String parent(String path)` (TODO 3)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static String name(String path)`
+#### `static String name(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static String join(String parent, String name)` (TODO 4)
+#### `static String join(String parent, String name)` (TODO 4)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static boolean isAncestorOrSame(String ancestor, String path)` (TODO 5)
+#### `static boolean isAncestorOrSame(String ancestor, String path)` (TODO 5)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — TreeFileSystem (`src/main/java/com/datastructure/filesystem/TreeFileSystem.java`)
+### 구현 — TreeFileSystem (`src/main/java/com/datastructure/filesystem/TreeFileSystem.java`)
 
-### 구조
+#### 구조
 
 ```
 TreeFileSystem
@@ -198,7 +238,7 @@ Blob 필드 (이름과 내용의 분리 = inode)
             0 이 되는 순간에만 내용이 죽는다
 ```
 
-### 동작 — 경로 해석
+#### 동작 — 경로 해석
 
 언제 쓰나: 트리 방식에서 경로 문자열을 실제 노드로 바꾸는 모든 연산의 공통 관문(lookup). 아래 그림은 `/a/b/f.txt`를 조각으로 쪼갠 뒤 루트에서 한 칸씩 내려가는 과정 — 계단을 한 층씩 내려가는 것과 같고, 층수(visitedNodes)를 센다.
 
@@ -228,7 +268,7 @@ lookup("/a/b/f.txt")
        평면 맵의 해시 1회와 대비되는 자리다. 깊이가 얕으면 이 비용만 남는다.
 ```
 
-### 동작 — mkdir(부모 생성)
+#### 동작 — mkdir(부모 생성)
 
 언제 쓰나: 폴더 만들기. 엄격한 것(`mkdir` — 부모가 이미 있어야 함)과 너그러운 것(`mkdirs` — 없는 중간 폴더를 다 만들어 줌) 두 가지다. 아래 그림 [1]은 mkdir이 실패할 때 "절반만 만들어 두는 일이 없다"는 것, [2]는 mkdirs가 내려가며 없는 칸을 채우는 전/후다.
 
@@ -259,7 +299,7 @@ lookup("/a/b/f.txt")
       mkdirs = 조각마다 get 또는 put 1회 = O(d * log k)
 ```
 
-### 동작 — 삭제(재귀)
+#### 동작 — 삭제(재귀)
 
 언제 쓰나: 폴더를 통째로 지울 때(`rmr`). 트리에서는 부모가 쥔 고리 하나만 끊으면 가지 전체가 떨어져 나간다 — 나뭇가지를 꺾으면 그 끝의 잎이 다 같이 떨어지는 것과 같다. 아래 그림은 그 한 줄(remove)과, 그 뒤 잎(파일)마다 Blob의 링크 수를 내리는 뒷정리(releaseAll)다.
 
@@ -290,134 +330,134 @@ rmr("/a") : 부모의 children 에서 링크 하나만 끊으면 서브트리 �
       releaseAll 이 서브트리 m 개를 훑으므로 전체 O(m). 평면 맵은 여기서 전체 키 n 을 훑는다.
 ```
 
-### 필드
+#### 필드
 - `root` — 역할:
 - `visitedNodes` — 역할:
 - `rewrittenEntries` — 역할:
 
-### `Node lookup(String path)` (TODO 6, private)
+#### `Node lookup(String path)` (TODO 6, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void mkdir(String path)` (TODO 7)
+#### `void mkdir(String path)` (TODO 7)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void mkdirs(String path)` (TODO 8)
+#### `void mkdirs(String path)` (TODO 8)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void touch(String path)`
+#### `void touch(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void write(String path, String content)` (TODO 9)
+#### `void write(String path, String content)` (TODO 9)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String read(String path)`
+#### `String read(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> ls(String path)` (TODO 10)
+#### `List<String> ls(String path)` (TODO 10)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean exists(String path)` / `boolean isDirectory(String path)`
+#### `boolean exists(String path)` / `boolean isDirectory(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long size(String path)`
+#### `long size(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long sizeOf(Node node)` (TODO 11, private)
+#### `long sizeOf(Node node)` (TODO 11, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> find(String path, String name)`
+#### `List<String> find(String path, String name)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void collect(Node node, String here, String name, List<String> out)` (TODO 12, private)
+#### `void collect(Node node, String here, String name, List<String> out)` (TODO 12, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void rm(String path)` (TODO 13)
+#### `void rm(String path)` (TODO 13)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void rmdir(String path)`
+#### `void rmdir(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void rmr(String path)`
+#### `void rmr(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void releaseAll(Node node)` (TODO 14, private)
+#### `void releaseAll(Node node)` (TODO 14, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void mv(String src, String dst)` (TODO 15)
+#### `void mv(String src, String dst)` (TODO 15)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Node rename(Node node, String newName)` (TODO 16, private)
+#### `Node rename(Node node, String newName)` (TODO 16, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void cp(String src, String dst)`
+#### `void cp(String src, String dst)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Node deepCopy(Node node, String newName)` (TODO 17, private)
+#### `Node deepCopy(Node node, String newName)` (TODO 17, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void link(String existingPath, String newPath)` (TODO 18)
+#### `void link(String existingPath, String newPath)` (TODO 18)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int linkCount(String path)`
+#### `int linkCount(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long visitedNodes()` / `long rewrittenEntries()`
+#### `long visitedNodes()` / `long rewrittenEntries()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — FlatPathFileSystem (`src/main/java/com/datastructure/filesystem/FlatPathFileSystem.java`)
+### 구현 — FlatPathFileSystem (`src/main/java/com/datastructure/filesystem/FlatPathFileSystem.java`)
 
-### 구조
+#### 구조
 
 ```
 FlatPathFileSystem
@@ -449,7 +489,7 @@ FlatPathFileSystem
   평면   자식을 알려면 모든 키의 parent 를 계산해 봐야 한다
 ```
 
-### 동작 — 조회 / 디렉터리 나열
+#### 동작 — 조회 / 디렉터리 나열
 
 언제 보나: 평면 맵 방식의 밝음과 어두움이 한 절에 다 있다. [1] 조회는 해시 한 번(깊이 무관, 트리보다 빠르다). [2]~[4]는 그 대가 — 부모-자식 관계가 키 문자열 안에만 있어서, 자식 나열·재귀 삭제·폴더 이동이 전부 "전체 키 훑기"가 된다. 마지막 비용 대비 표가 이 문제의 결론이다.
 
@@ -490,122 +530,197 @@ FlatPathFileSystem
     d = 깊이, k = 자식 수, m = 서브트리 크기, n = 전체 항목 수
 ```
 
-### 필드
+#### 필드
 - `entries` (`Map<String, Blob>`) — 역할:
 - `visitedNodes` — 역할:
 - `rewrittenEntries` — 역할:
 
-### `FlatPathFileSystem()`
+#### `FlatPathFileSystem()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void mkdir(String path)`
+#### `void mkdir(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void mkdirs(String path)`
+#### `void mkdirs(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void touch(String path)`
+#### `void touch(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void write(String path, String content)`
+#### `void write(String path, String content)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String read(String path)`
+#### `String read(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> ls(String path)` (TODO 19)
+#### `List<String> ls(String path)` (TODO 19)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean exists(String path)` / `boolean isDirectory(String path)`
+#### `boolean exists(String path)` / `boolean isDirectory(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long size(String path)` (TODO 20)
+#### `long size(String path)` (TODO 20)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> find(String path, String name)` (TODO 21)
+#### `List<String> find(String path, String name)` (TODO 21)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void rm(String path)`
+#### `void rm(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void rmdir(String path)`
+#### `void rmdir(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void rmr(String path)` (TODO 22)
+#### `void rmr(String path)` (TODO 22)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void mv(String src, String dst)` (TODO 23)
+#### `void mv(String src, String dst)` (TODO 23)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void cp(String src, String dst)` (TODO 24)
+#### `void cp(String src, String dst)` (TODO 24)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void link(String existingPath, String newPath)` (TODO 25)
+#### `void link(String existingPath, String newPath)` (TODO 25)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int linkCount(String path)`
+#### `int linkCount(String path)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long visitedNodes()` / `long rewrittenEntries()` / `int entryCount()`
+#### `long visitedNodes()` / `long rewrittenEntries()` / `int entryCount()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **리눅스/유닉스 파일 시스템(VFS·inode·dentry)** — 디렉터리는 "이름 → inode 번호" 표, inode는 내용과 링크 수를 든다. `ls -l`의 두 번째 열이 이 노트의 `Blob.links`다. `mv`가 같은 파일 시스템 안에서는 디렉터리 항목만 고치는 것이 [3]의 "트리 1"이다.
+- **Amazon S3 류 객체 저장소** — 키 = 전체 경로 문자열, 폴더는 "진짜로는 없다". 접두사(prefix)로 목록을 뽑는 것이 평면 맵의 `ls`이고, "폴더 이름 바꾸기"가 아래 객체 전부 복사·삭제인 것이 `mv` 341이다(범용 버킷 기준 — 계층형 네임스페이스를 가진 저장소는 다를 수 있다 [?]).
+- **git 트리 객체** — 커밋 → 트리 → (이름 → 블롭/트리) 매핑이 `TreeFileSystem`과 같은 모양이고, 내용은 해시로 식별되는 블롭에 따로 있다. 같은 내용을 여러 이름이 가리키는 것이 하드 링크와 같다([27-merkle-tree](../27-merkle-tree/2-summary.md)).
+- **Java `java.nio.file.Path.normalize()` / `resolve()`** — `Paths.normalize`·`join`과 같은 일을 하는 표준 API. `..`이 루트를 넘는 처리와 조각 단위 비교를 라이브러리가 대신 해 준다.
+- **Redis 키 공간(`user:1:profile` 같은 `:` 구분 키)** — 평면 맵 그대로다. "이 접두사의 키 전부"를 `KEYS`/`SCAN`으로 뽑는 것이 전체 키 훑기이고, 접두사 이름 바꾸기가 전부 재기록인 것도 같다.
+- **웹 서버의 정적 파일 서빙·업로드 경로 검사** — `../`로 루트 밖을 가리키는 요청(경로 순회)을 막는 첫 방어선이 [1]의 정규화다.
+- **다른 챕터의 재료** — 이름으로 내려가는 트리는 [09-trie](../09-trie/2-summary.md)가 글자로 내려가던 것의 확장이고, 평면 맵은 [05-hashmap](../05-hashmap/2-summary.md) 하나다.
+
+## 적용 — 풀어나가는 법
+
+파일 시스템 문제는 "경로를 어떻게 자르고, 관계를 어디에 두나"에서 갈린다.\
+순서: ① 경로 규칙(정규화·조각·조상 판정)을 먼저 못 박고 단독 테스트로 지킨다 → ② 워크로드가 "경로 하나 짚기"인지 "관계 묻기"인지 센다 → ③ 짚기가 대부분이면 평면 맵, 나열·이동·찾기가 잦으면 트리 → ④ 이름과 내용을 가를지(하드 링크·참조 계수) 정한다.\
+아래 과제의 TODO 순서(`Paths` → 트리 → 평면 맵)가 이 순서와 같다 — 공통 조상이 틀리면 뒤의 대조가 전부 무의미해진다.
+
+### 문제 — 이 챕터가 시키는 것
+
+원본 README(`myway/data-structure/33-filesystem/README.md`)의 요구사항은 이렇다.
+
+- 인메모리 파일 시스템을 **두 가지로** 만든다 — `TreeFileSystem`(이름 → 자식 맵을 층층이 쌓는 진짜 트리)과 `FlatPathFileSystem`(전체 경로가 키인 맵 하나).
+- 두 번째가 훨씬 쉽고 **계약 테스트 68개를 똑같이 통과한다**. 그러면 트리는 왜 있는가 — 이 박스는 그 질문 하나다.\
+  답은 비용이다: `/src` 아래 341개를 옮길 때 트리는 키를 **1개**, 평면 맵은 **341개** 다시 쓴다.\
+  그런데 깊이 21인 경로 하나를 읽으면 트리는 22번 내려가고 평면 맵은 해시 한 번이다 — **무엇을 물어보느냐가 정한다.**
+
+과제(TODO 24개 + 구현 대상):
+
+- `Paths` 의 TODO 5개 — `normalize` · `split` · `parent` · `join` · `isAncestorOrSame`. 경로 규칙이고 **버그가 제일 많이 나는 곳**이다.
+- `TreeFileSystem` 의 TODO 13개 — `lookup` · `mkdir` · `mkdirs` · `write` · `ls` · `sizeOf` · `collect` · `rm` · `releaseAll` · `mv` · `rename` · `deepCopy` 등.
+- `FlatPathFileSystem` 의 TODO 7개 — 같은 계약을 전체 경로 키 하나로 지킨다.
+- 응용으로 생각할 것 — `..` 이 루트를 넘어가려 할 때, 조상 판정을 문자열 접두사로 할 때(`/ab` 가 `/a` 의 자손), 디렉터리를 자기 안으로 옮길 때 각각 무엇이 조용히 깨지는가.\
+  그리고 이름과 내용을 갈라놓아(`Blob`) 하드 링크가 되는 순간 **구조가 트리가 아니게 되는 것**, `cp` 와 `link` 가 한 글자 차이인 것.
+- 검증: `PathsTest`(공통 조상이라 대조로 못 잡는다) + `FileSystemContractTest` 34개 × 2구현 + `CrossCheckTest` 무작위 연산 3,200번(연산마다 전체 상태 스냅샷 비교) + `MeasurementTest` 수치 (91개 중 89개가 처음에 실패한다).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
 | TreeFileSystem | | | |
 | FlatPathFileSystem | | | |
 
+## 장애 시나리오와 대처
+
+**1. `..`으로 루트 밖에 닿는 경로 순회**
+
+- 현상: 사용자가 준 파일 이름으로 파일을 열어 주는 기능에서 시스템 파일이 읽힌다.
+- 보이는 형태: 요청 경로가 `/uploads/../../etc/passwd`인데 정규화가 없으면 루트 밖의 파일이 응답에 실린다. 이 노트의 `normalize`는 루트에서 `..`을 더 못 올라가게 막아 조용한 오답을 없앤다(정답 5번 참고).
+- 원인: 경로를 문자열 이어붙이기(`base + "/" + name`)로만 만들고 조각 단위로 해석하지 않았다.
+- 대처: 요청 경로를 정규화한 뒤 **허용 루트의 자손인지** 조각 단위로 판정한다(`isAncestorOrSame`). 문자열 접두사 검사는 `/uploads-old`를 `/uploads`의 자손으로 본다.
+
+**2. 지웠는데 용량이 안 줄어든다**
+
+- 현상: 큰 파일을 `rm`했는데 `sizeOf("/")`(실무에서는 `df`)가 그대로다.
+- 보이는 형태: `exists`는 `false`인데 내용은 살아 있다. 실무에서는 같은 inode에 다른 하드 링크가 남아 있거나, 프로세스가 파일을 열어 둔 채다.
+- 원인: `rm`은 이름표를 떼는 일이지 내용을 지우는 일이 아니다. `Blob.links`가 0이 되는 순간에만 내용이 죽는다 — 다른 이름이 아직 가리키고 있다(정답 6번 참고).
+- 대처: 용량을 따질 때는 이름 수가 아니라 `Blob` 수로 센다. 링크 수(`ls -l` 두 번째 열)가 1보다 크면 다른 이름부터 찾는다.
+
+**3. `ls` 결과가 실행마다 달라 테스트가 흔들린다**
+
+- 현상: 같은 디렉터리를 나열했는데 순서가 바뀌고, 순서에 기대는 테스트·중복 제거가 가끔 깨진다.
+- 보이는 형태: 대조 테스트가 "같은 상태"인데 스냅샷 문자열이 달라 실패한다.
+- 원인: 자식 맵을 `HashMap`으로 두면 순회 순서가 정해지지 않는다. 평면 맵도 전체 키 훑기 순서가 해시 순이다.
+- 대처: 자식은 `TreeMap`(이름 오름차순)으로 들고, 평면 맵의 `ls`는 모은 뒤 정렬한다 — 계약이 "정렬된 목록"이면 두 구현의 답이 하나로 정해진다.
+
+**4. 디렉터리에 하드 링크를 걸면 순회가 끝나지 않는다**
+
+- 현상: `find`·`sizeOf`·`rmdir -r`가 멈추지 않거나 스택이 넘친다.
+- 보이는 형태: `StackOverflowError`, 또는 같은 경로가 무한히 길어지며 반복 방문된다. 이 노트는 `link`가 디렉터리를 받으면 `IllegalArgumentException: 디렉터리에는 하드 링크를 못 건다`로 막는다.
+- 원인: 디렉터리가 자기 조상을 가리키면 그래프에 **고리**가 생긴다. 재귀 순회는 트리(고리 없음)를 전제로 한다.
+- 대처: 디렉터리 링크를 계약에서 금지한다(유닉스도 같다). 고리를 허용해야 하는 구조라면 방문 집합으로 검출한다 — [34-dependency-resolver](../34-dependency-resolver/2-summary.md)의 본론이다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 파일 시스템의 두 구현은 답이 같고 비용만 다르다 — 경로 하나를 짚는 일은 해시 한 번인 평면 맵이, 자식·서브트리·이동처럼 관계를 묻는 일은 관계가 적혀 있는 트리가 이긴다.
+- 평면 맵에는 부모·자식 관계가 키 문자열 안에만 있어서 `ls`·`find`마다 전체를 훑어 되살리고, `mv`는 아래 키를 전부 다시 쓴다. 트리의 `mv`는 가지 하나를 떼어 붙이는 1회다.
+- 경로 규칙(`Paths`)은 두 구현의 공통 조상이라 틀리면 둘이 똑같이 틀린다 — 대조로 못 잡는 것은 대조 밖에서 따로 검증한다.
+- 이름과 내용을 가르면(`Blob`) 하드 링크가 되고 구조는 더 이상 트리가 아니다. "지운다"는 이름표를 떼는 일이 되고, 마지막 이름이 사라질 때만 내용이 죽는다.
+- `cp`와 `link`는 새 `Blob`을 만드느냐 같은 `Blob`을 가리키느냐 한 글자 차이다 — 가변 내용을 공유하면 사본에 쓴 것이 원본에 비친다.
 
--
--
--
+## 관련 주제·근거
 
-## 용어 풀이
+- 선행 — [09-trie](../09-trie/2-summary.md) · [05-hashmap](../05-hashmap/2-summary.md): 글자로 내려가는 트리와 전체 경로 키 맵.
+- 선행 — [26-persistent](../26-persistent/2-summary.md): 구조 공유가 안전했던 이유(불변). 가변 `Blob`은 공유하면 안 된다.
+- 후속 — [34-dependency-resolver](../34-dependency-resolver/2-summary.md): 디렉터리 하드 링크를 막았던 이유(고리)가 본론이 된다.
+- 연결 — [27-merkle-tree](../27-merkle-tree/2-summary.md): git이 트리 객체와 내용 블롭을 가르는 방식.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `30-filesystem` (선행 `09`, `35`, 교재 OSTEP 40). os 영역 `22-file-system-implementation`이 블록·비트맵 쪽 후속이다(노트 미작성).
+- myway 원본 — `/home/jun/project/myway/data-structure/33-filesystem/` (README.md · impl/Paths.java · impl/TreeFileSystem.java · impl/FlatPathFileSystem.java · impl/Blob.java).
+
+### 용어 풀이
 
 - **트리(tree)**: 뿌리(루트)에서 가지가 갈라져 내려가는 구조. 폴더 안의 폴더가 정확히 이 모양이다.
 - **루트(root)**: 트리의 맨 꼭대기. 여기서는 경로 `/`.
@@ -628,7 +743,7 @@ FlatPathFileSystem
 - **계약(인터페이스)**: 두 구현(트리/평면)이 똑같이 지키는 메서드 목록(FileSystem). 답은 같고 비용만 다르다.
 - **계수기(visitedNodes / rewrittenEntries)**: 정답 여부가 아니라 "일을 얼마나 했나"를 재는 측정용 카운터.
 
-## 관련 자료
+### 관련 자료
 
 - 원본 README: `/home/jun/project/myway/data-structure/33-filesystem/README.md`
 - 구현 대상: `/home/jun/project/myway/data-structure/33-filesystem/src/main/java/com/datastructure/filesystem/`

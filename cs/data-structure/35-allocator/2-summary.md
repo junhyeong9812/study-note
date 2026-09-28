@@ -4,8 +4,33 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+01번부터 34번까지 `new`를 쓸 때마다 누군가가 고정된 메모리에서 자리를 떼어 주고, 다 쓰면 돌려받았다.\
+그 "누군가"가 없으면 두 길뿐이다 — 자리를 돌려받지 않거나(언젠가 바닥난다), 돌려받되 어디가 비었는지 매번 전체를 훑거나.
+
+```text
+메모리 = 한 줄 (0 ~ capacity)
+
+돌려받지 않는다 (bump)                     돌려받는다 — 그런데 어디를 내줄까?
++----------------+-------------------+     +------+------+----------+------+--------+
+| 떼어준 것들     | 아직 안 쓴 영역    |     | 사용 | 빈 20 |   사용   | 빈 40 |  사용  |
++----------------+-------------------+     +------+------+----------+------+--------+
+                 ^ next 만 밀어올린다              ^ "30 주세요" -> 20 은 안 되고 40 은 된다
+                   빠르지만 리셋 전엔 회수 없음        빈 총합 60 이어도 60 짜리는 못 준다 (단편화)
+```
+
+할당자는 빈 자리들을 **자료구조로** 들고, 어느 자리를 내줄지·돌려받은 자리를 어떻게 합칠지 정하는 관리인이다.\
+코드는 짧고, 선택의 결과는 한참 뒤에 나타난다 — 절반이 비었는데 17바이트를 못 주는 상태가 그것이다.
+
+- 쉬운 예: 긴 주차장 관리인 — 나간 차 자리를 되살리고, 옆 칸이 같이 비면 큰 차 자리로 합친다.
+- 똑같은 구조다: `FreeListAllocator`는 빈 블록을 주소순 목록으로 들고 `choose`로 고르고 `insertAndCoalesce`로 합친다. `BuddyAllocator`는 2의 거듭제곱으로만 쪼개 짝을 계산으로 찾는다.
+- 실무 예: C의 `malloc`/`free`, 리눅스 커널의 페이지 할당(버디), 게임 엔진의 프레임 메모리(범프). 01번 동적 배열이 두 배로 늘릴 때 새 배열을 받아온 곳이 여기다.
+  - *단편화(fragmentation)*: 빈 공간이 작게 흩어져 총합은 충분한데 연속된 큰 자리가 없는 상태.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 긴 주차장에 차 대주기 — 관리인이 어느 칸을 내줄지, 나간 자리를 어떻게 되살릴지 정한다.**
 
@@ -27,32 +52,47 @@
 
 이 관리인과 **똑같은 구조**가 실무의 메모리 관리다 — C의 malloc/free, 운영체제의 페이지 할당(리눅스 커널이 실제로 버디 방식을 쓴다), 게임 엔진의 프레임 할당자(범프 방식)가 전부 이 문제를 푸는 것이다.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-원본 README(`myway/data-structure/35-allocator/README.md`)의 요구사항은 이렇다.
+### 전체 흐름
 
-- 01번부터 34번까지 필요할 때마다 쓴 `new` 가 실제로 하는 일을 만든다 — **고정된 공간에서 자리를 떼어주고 돌려받는다**.\
-  코드는 짧다. 어려운 것은 **어디를 떼어줄지**이고, 그 선택의 결과는 한참 뒤에 나타난다.
-- 16바이트 64개로 1024를 꽉 채우고 한 칸 걸러 돌려주면 남은 총량 512에 가장 큰 덩어리 16, 덩어리 수 32가 되어 **`allocate(17)` 이 실패한다**.\
-  절반이 비었는데 못 준다 — **외부 단편화**다. `freeBytes` 만 보면 여유로워 보이고 `largestFreeBlock` 을 같이 봐야 드러난다.
-- **계약 테스트 117개를 다섯 구현이 다 통과한다.** 갈리는 것은 한참 쓰고 난 뒤의 모양이다.
+```text
+[1] 기준선 — bump : 포인터 하나
+    allocate(size) : address = next ; next += size      free : 무시 (ignoredFrees++)
+    단편화 없음. 수명이 다 같을 때만 맞는 설계
+                  |
+                  v
+[2] 자유 목록 — 빈 블록을 주소 오름차순으로 든다
+    free : [ {30,20} , {60,40} ]     allocated : { 0->30, 50->10 }
+      |
+      +-- allocate(16) : choose 로 블록 하나 고른다 -> 앞 16 을 떼어주고 꼬리를 남긴다 (분할)
+      |       first : 맞는 것 중 제일 앞 (만나면 멈춘다)
+      |       best  : 남는 조각이 가장 작은 것 (전부 훑는다)
+      |       worst : 가장 큰 것 (전부 훑는다)
+      |
+      +-- free(address) : allocated 에서 크기를 찾아 목록의 주소 자리에 끼우고
+              양옆이 맞닿아 있으면 한 덩어리로 합친다 (coalesce)   <- 이것이 생명
+                  |
+                  v
+[3] 버디 — 크기를 2의 거듭제곱으로만
+    allocate(10) -> 16 짜리 : 있는 층에서 반씩 쪼개 내려온다 (splits++)
+    free : 짝의 주소 = 주소 XOR 크기 -> 짝도 비어 있으면 합쳐 한 층 올라간다 (merges++), O(1)
+    대가 : 10 을 달라면 16 을 준다 (내부 단편화, wastedBytes)
+                  |
+                  v
+[4] 대가를 재는 자 — 하나로는 안 보인다
+    freeBytes 512 인데 largestFreeBlock 16, freeBlockCount 32  -> allocate(17) = FAIL   (외부 단편화)
+    freeBytes 0 인데 실제 사용 528, wastedBytes 496              -> 갇힌 바이트         (내부 단편화)
+```
 
-과제(TODO 10개 + 구현 대상):
+- [1] 범프는 `next`를 밀어올리기만 한다. 회수는 전체 리셋뿐이라 단편화가 아예 없다 — 관리 비용은 수명이 제각각일 때 생긴다.
+- [2] 자유 목록은 **무엇을 정렬해 두느냐가 무엇을 할 수 있는지를 정한다**. 주소순이면 이웃이 옆칸에 있어 합칠 수 있고, 크기순이면 고르기는 빨라지되 합치기가 불가능하다.
+  - *분할(split) / 병합(coalesce)*: 큰 빈 블록에서 필요한 만큼 잘라내는 것 / 맞닿은 빈 블록을 한 덩어리로 합치는 것.
+- [3] 버디는 크기가 2의 거듭제곱이고 주소가 그 배수라서 짝을 계산으로 찾는다 — 목록을 훑지 않는다. 붙어 있어도 짝이 아니면 못 합치는 것이 그 값이다.
+  - *XOR(^)*: 다른 비트만 1이 되는 연산. 여기서는 "비트 하나 뒤집어 짝의 주소 얻기".
+- [4] 계약 테스트는 다섯 구현이 다 통과한다. 갈리는 것은 한참 쓰고 난 뒤의 모양이고, `freeBytes` 하나로는 안 보인다 — 그래서 자를 여섯 개 둔다.
 
-- `BumpAllocator` 의 TODO 1 — 기준선. 밀어올리기만 하고 회수하지 않는다(세 줄).
-- `FreeListAllocator` 의 TODO 2~4 — `allocate`(분할) · `free` · `insertAndCoalesce`. **합치기가 생명이다**(목록은 주소 오름차순 유지).
-- `First`/`Best`/`Worst` 의 TODO 5~7 — 각각 `choose` 세 줄. 결과는 크게 갈린다(요청 300개에 실패 169 / 170 / 178).
-- `BuddyAllocator` 의 TODO 8~10 — 2의 거듭제곱으로 쪼개고 `짝의 주소 = 주소 XOR 크기` 로 O(1) 합치기.
-- 응용으로 생각할 것 — 합치기를 안 해도 계약 테스트가 거의 통과하는 것(총량은 맞으니까), 무엇을 정렬해 두느냐가 무엇을 할 수 있는지를 정하는 것(주소순 = 합치기 가능 / 크기순 = 고르기 빠름), 버디가 붙어 있어도 짝이 아니면 못 합치는 것, 33바이트를 16번 떼어가면 496이 갇히는데 **어떤 자에도 안 잡히는** 것, 이중 free 를 조용히 넘어가면 안 되는 것.
-- 검증: `AllocatorContractTest` 21개 × 5구현 + 구현별 테스트(buddy 8 · bump 4) + `FragmentationTest` 8개 수치 측정 (125개 중 106개가 처음에 실패한다).
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — Allocator (`src/main/java/com/datastructure/allocator/Allocator.java`)
+### 계약 — Allocator (`src/main/java/com/datastructure/allocator/Allocator.java`)
 
 - `int FAIL = -1` (상수)
 - `int allocate(int size)`
@@ -64,9 +104,9 @@
 - `int freeBlockCount()`
 - `int wastedBytes()`
 
-## 구현 — BumpAllocator (`src/main/java/com/datastructure/allocator/BumpAllocator.java`)
+### 구현 — BumpAllocator (`src/main/java/com/datastructure/allocator/BumpAllocator.java`)
 
-### 구조
+#### 구조
 
 ```
 BumpAllocator (capacity = 100)   -   상태가 int 네 개뿐이다
@@ -88,7 +128,7 @@ BumpAllocator (capacity = 100)   -   상태가 int 네 개뿐이다
                                "단편화가 아예 없다" 는 말이 이 뜻이다
 ```
 
-### 동작 — 할당/리셋
+#### 동작 — 할당/리셋
 
 언제 쓰나: 떼어준 것들의 수명이 전부 같을 때(예: 게임 한 프레임 동안만 쓰고 통째로 버리는 임시 메모리). 아래 그림은 포인터(next) 하나가 오른쪽으로만 밀리는 할당 [1]~[3], "돌려줘도 돌아가지 않는" free, 그리고 유일한 회수 수단인 reset이다.
 
@@ -146,55 +186,55 @@ reset() :  전부 버리고 처음으로. 이 할당자가 회수하는 유일�
       수명이 다 같으면 관리할 것이 없다. 관리 비용은 수명이 제각각일 때 생긴다.
 ```
 
-### 필드
+#### 필드
 - `capacity` — 역할:
 - `next` — 역할:
 - `handedOut` — 역할:
 - `freeCalls` — 역할:
 
-### `BumpAllocator(int capacity)`
+#### `BumpAllocator(int capacity)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int allocate(int size)` (TODO)
+#### `int allocate(int size)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void free(int address)`
+#### `void free(int address)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int capacity()` / `int usedBytes()` / `int freeBytes()`
+#### `int capacity()` / `int usedBytes()` / `int freeBytes()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int largestFreeBlock()` / `int freeBlockCount()` / `int wastedBytes()`
+#### `int largestFreeBlock()` / `int freeBlockCount()` / `int wastedBytes()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int ignoredFrees()`
+#### `int ignoredFrees()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void reset()`
+#### `void reset()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — FreeListAllocator (`src/main/java/com/datastructure/allocator/FreeListAllocator.java`)
+### 구현 — FreeListAllocator (`src/main/java/com/datastructure/allocator/FreeListAllocator.java`)
 
-### 구조
+#### 구조
 
 ```
 capacity = 100, 그림은 1 칸 = 2 바이트.  A(30) 과 C(10) 이 나가 있는 상태
@@ -227,7 +267,7 @@ capacity = 100, 그림은 1 칸 = 2 바이트.  A(30) 과 C(10) 이 나가 있�
     무엇을 정렬해 두느냐가 무엇을 할 수 있는지를 정한다.
 ```
 
-### 동작 — 할당(분할)
+#### 동작 — 할당(분할)
 
 언제 쓰나: 자유 목록 방식에서 자리를 내줄 때. 빈 블록 하나를 골라(choose — 하위 클래스가 정한다) 앞부분을 요청한 만큼 잘라 주고, 남은 꼬리를 그대로 자유 블록으로 둔다. 아래 그림은 자유 20짜리에서 16을 떼어 주고 4가 남는 전/후다.
 
@@ -267,7 +307,7 @@ after    free = [ {46,4}, {60,40} ]      돌려준 주소 = 30
 비용: choose 가 목록을 훑는 O(F) + 자르기 O(1).   F = 자유 블록 수
 ```
 
-### 동작 — 해제(병합 coalescing)
+#### 동작 — 해제(병합 coalescing)
 
 언제 쓰나: 자리를 돌려받을 때. 그냥 목록에 넣고 끝이 아니라, 양옆이 비어 있으면 한 덩어리로 합쳐야 한다 — 옆자리 차가 빠지면 두 칸이 한 큰 칸이 되는 것과 같다. 아래 그림은 [0] 주소 순서 자리에 꽂기 → [1] 오른쪽 이웃과 합치기 → [2] 왼쪽 이웃과 합치기의 세 걸음이고, "오른쪽부터"인 이유(인덱스가 밀리는 문제)와 안 합쳤을 때의 조용한 병이 뒤에 붙어 있다.
 
@@ -313,7 +353,7 @@ free(50) :  주소 순서에 맞는 자리에 꽂고, 양옆이 붙어 있으면
 비용: 꽂을 자리를 찾느라 O(F), 합치기는 양옆 두 번 보는 O(1).
 ```
 
-### 동작 — 단편화
+#### 동작 — 단편화
 
 언제 보나: "왜 자리가 있는데도 실패하나"를 이해할 때. 주차장에 빈칸이 세 칸 흩어져 있어도 버스 한 대는 못 대는 상황이다. 아래 그림은 빈 공간 총합(freeBytes)은 30인데 연속 최대(largestFreeBlock)는 10뿐이라 allocate(20)이 실패하는 상태 — 예외도 없이 조용히 일어나는 실패라는 것이 요점이다.
 
@@ -343,66 +383,66 @@ free(50) :  주소 순서에 맞는 자리에 꽂고, 양옆이 붙어 있으면
   외부 단편화가 그 대가다. BuddyAllocator 는 정확히 반대쪽을 고른다.
 ```
 
-### 필드
+#### 필드
 - `capacity` — 역할:
 - `free` — 역할:
 - `allocated` — 역할:
 - `scanned` — 역할:
 - `Block.start` / `Block.size` / `Block.end()` — 역할:
 
-### `FreeListAllocator(int capacity)` (protected)
+#### `FreeListAllocator(int capacity)` (protected)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `abstract int choose(List<Block> blocks, int size)` (protected)
+#### `abstract int choose(List<Block> blocks, int size)` (protected)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int allocate(int size)` (TODO)
+#### `int allocate(int size)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void free(int address)` (TODO)
+#### `void free(int address)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void insertAndCoalesce(Block block)` (TODO, private)
+#### `void insertAndCoalesce(Block block)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int capacity()` / `int usedBytes()` / `int freeBytes()`
+#### `int capacity()` / `int usedBytes()` / `int freeBytes()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int largestFreeBlock()` / `int freeBlockCount()` / `int wastedBytes()`
+#### `int largestFreeBlock()` / `int freeBlockCount()` / `int wastedBytes()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long scanned()` / `void countScan(long n)` (protected)
+#### `long scanned()` / `void countScan(long n)` (protected)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> freeBlocks()`
+#### `List<String> freeBlocks()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static void requireSize(int size)` (protected)
+#### `static void requireSize(int size)` (protected)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — FirstFitAllocator (`src/main/java/com/datastructure/allocator/FirstFitAllocator.java`)
+### 구현 — FirstFitAllocator (`src/main/java/com/datastructure/allocator/FirstFitAllocator.java`)
 
-### 동작 — 자리 고르기
+#### 동작 — 자리 고르기
 
 언제 쓰나: 빈 블록이 여럿일 때 "어느 것을 내줄까"의 첫 번째 답 — 처음 만난 맞는 것. 마트에서 계산대를 고를 때 입구에서 제일 가까운 빈 계산대로 바로 가는 것과 같다. 아래 그림은 세 전략 공통의 초기 상태에서 first fit이 index 0에서 즉시 멈추는 모습이다.
 
@@ -434,27 +474,27 @@ first fit : 앞에서부터 보다가 처음으로 size 이상인 것을 만나�
               실제 구현들이 "지난번에 멈춘 자리부터" 로 고치는 이유다 (next fit).
 ```
 
-### 필드
+#### 필드
 - 없음 — `FreeListAllocator` 의 상태를 그대로 쓴다.
 
-### `FirstFitAllocator(int capacity)`
+#### `FirstFitAllocator(int capacity)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int choose(List<Block> blocks, int size)` (TODO, protected)
+#### `int choose(List<Block> blocks, int size)` (TODO, protected)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — BestFitAllocator (`src/main/java/com/datastructure/allocator/BestFitAllocator.java`)
+### 구현 — BestFitAllocator (`src/main/java/com/datastructure/allocator/BestFitAllocator.java`)
 
-### 동작 — 자리 고르기
+#### 동작 — 자리 고르기
 
 언제 쓰나: 두 번째 답 — 맞는 것 중 남는 조각이 가장 작은 것("제일 딱 맞는 옷"). 다 입어 봐야 제일 맞는 옷을 아는 것처럼, 목록 전체를 훑어야 한다. 아래 그림은 같은 초기 상태에서 index 1(자유 12)을 골라 자투리 2바이트가 남는 모습이다.
 
@@ -487,27 +527,27 @@ best fit : 맞는 것 중 남는 조각이 가장 작은 것. 제일 작은 것�
               목록에는 계속 남아 훑는 비용만 늘린다.
 ```
 
-### 필드
+#### 필드
 - 없음 — `FreeListAllocator` 의 상태를 그대로 쓴다.
 
-### `BestFitAllocator(int capacity)`
+#### `BestFitAllocator(int capacity)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int choose(List<Block> blocks, int size)` (TODO, protected)
+#### `int choose(List<Block> blocks, int size)` (TODO, protected)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — WorstFitAllocator (`src/main/java/com/datastructure/allocator/WorstFitAllocator.java`)
+### 구현 — WorstFitAllocator (`src/main/java/com/datastructure/allocator/WorstFitAllocator.java`)
 
-### 동작 — 자리 고르기
+#### 동작 — 자리 고르기
 
 언제 쓰나: 세 번째 답 — 맞는 것 중 가장 큰 것. "큰 데서 떼면 남는 것도 커서 다음 손님도 받겠지"라는 생각이다. 아래 그림은 같은 초기 상태에서 index 2(자유 30)를 골라 20이 남는 모습 — 그럴듯하지만 큰 자리를 제일 먼저 깎아먹는다는 반전이 뒤에 있다.
 
@@ -541,27 +581,27 @@ worst fit : 맞는 것 중 가장 큰 것. 이것도 전부 봐야 한다
 셋 다 "그럴듯한 이유"가 있는데 결과가 갈린다. 재기 전에는 어느 쪽이 맞는지 알 수 없다.
 ```
 
-### 필드
+#### 필드
 - 없음 — `FreeListAllocator` 의 상태를 그대로 쓴다.
 
-### `WorstFitAllocator(int capacity)`
+#### `WorstFitAllocator(int capacity)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int choose(List<Block> blocks, int size)` (TODO, protected)
+#### `int choose(List<Block> blocks, int size)` (TODO, protected)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — BuddyAllocator (`src/main/java/com/datastructure/allocator/BuddyAllocator.java`)
+### 구현 — BuddyAllocator (`src/main/java/com/datastructure/allocator/BuddyAllocator.java`)
 
-### 구조
+#### 구조
 
 ```
 BuddyAllocator (capacity = 64 = 2^6)
@@ -587,7 +627,7 @@ BuddyAllocator (capacity = 64 = 2^6)
   크기가 2의 거듭제곱이고 주소가 그 배수라서, 짝의 주소를 계산으로 구할 수 있다.
 ```
 
-### 동작 — 분할
+#### 동작 — 분할
 
 언제 쓰나: 버디 방식의 할당. 종이를 반으로, 또 반으로 접어 자르듯 — 요청을 담는 가장 작은 2의 거듭제곱 크기가 나올 때까지 큰 블록을 반씩 쪼갠다. 아래 그림은 allocate(10)이 64짜리 통짜를 32, 16으로 두 번 쪼개 [0..16)을 내주는 과정이다.
 
@@ -628,7 +668,7 @@ allocate(10) :  levelFor(10) = 4    (10 을 담는 가장 작은 2의 거듭제�
 비용: 층을 훑고 쪼개는 것이므로 O(log capacity).
 ```
 
-### 동작 — 병합
+#### 동작 — 병합
 
 언제 쓰나: 버디 방식의 해제. 쪼갤 때 갈라진 반쪽(짝, buddy)이 둘 다 비면 원래 크기로 도로 붙인다. 짝의 주소는 목록을 뒤지는 게 아니라 XOR 한 번으로 계산한다. 아래 그림은 free(0)이 짝 16, 짝 32와 연달아 합쳐져 64짜리 통짜로 돌아가는 과정이다.
 
@@ -668,7 +708,7 @@ free(0) :  떼어준 크기 16 에서 지수를 되찾는다 (numberOfTrailingZe
 비용: 합쳐 올라가는 것이 최대 levels 번이므로 O(log capacity).
 ```
 
-### 필드
+#### 필드
 - `capacity` — 역할:
 - `levels` — 역할:
 - `freeByLevel` — 역할:
@@ -676,52 +716,89 @@ free(0) :  떼어준 크기 16 에서 지수를 되찾는다 (numberOfTrailingZe
 - `splits` — 역할:
 - `merges` — 역할:
 
-### `BuddyAllocator(int capacity)`
+#### `BuddyAllocator(int capacity)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int allocate(int size)` (TODO)
+#### `int allocate(int size)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void free(int address)` (TODO)
+#### `void free(int address)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int levelFor(int size)` (TODO, private)
+#### `int levelFor(int size)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int capacity()` / `int usedBytes()` / `int freeBytes()`
+#### `int capacity()` / `int usedBytes()` / `int freeBytes()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int largestFreeBlock()` / `int freeBlockCount()` / `int wastedBytes()`
+#### `int largestFreeBlock()` / `int freeBlockCount()` / `int wastedBytes()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long splits()` / `long merges()`
+#### `long splits()` / `long merges()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<Integer> freeCountsByLevel()`
+#### `List<Integer> freeCountsByLevel()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **C `malloc` / `free`(glibc 등)** — 자유 목록 + 분할·병합이 본체다. glibc `malloc`은 크기별 목록(bin — fast·small·large·unsorted)을 여러 개 두어 고르기를 빠르게 하고, 해제 때 이웃 청크와 합친다(glibc malloc 내부 문서). 이것이 이 노트의 "크기순 vs 주소순" 긴장을 푸는 실무 답이다.
+- **리눅스 커널 페이지 할당자** — 버디 방식이다. 페이지 블록을 2의 거듭제곱 단위로 쪼개고 짝을 합친다. `/proc/buddyinfo`가 영역(zone)별·층(order)별 자유 블록 수, 곧 이 노트의 `freeByLevel`의 크기다(커널 문서).
+- **슬랩(slab) 계열 할당자(SLAB·현재 기본 SLUB)** — 커널이 같은 크기의 객체를 반복해 만들 때 버디에서 큰 덩어리를 받아 고정 크기 칸으로 나눠 쓴다. 같은 크기끼리 모아 외부 단편화와 초기화 비용을 줄이는 방식이다(객체 크기가 칸에 맞지 않으면 내부 단편화는 남는다).
+- **JVM의 TLAB(Thread-Local Allocation Buffer)** — 스레드마다 받은 영역에서 포인터만 밀어올려 `new`를 처리한다. 범프 할당이고(HotSpot), 개별 `free`는 없고 회수는 GC가 한다.
+- **아레나·프레임 할당자** — 요청 하나·프레임 하나 동안만 사는 메모리를 범프로 떼어 주고 끝나면 통째로 리셋한다(웹 서버의 요청 단위 풀, 게임 엔진의 프레임 메모리). bump가 나쁜 설계가 아닌 자리다.
+- **jemalloc·tcmalloc 같은 대체 할당자** — 크기 클래스(size class)로 올림해 떼어 준다. 버디의 "33을 달라면 64"와 같은 내부 단편화를 더 촘촘한 계급으로 줄이는 설계다(jemalloc·tcmalloc 설계 문서의 size class).
+- **다른 챕터의 재료** — 주소순 목록은 [01-dynamic-array](../01-dynamic-array/2-summary.md)·[02-linked-list](../02-linked-list/2-summary.md), `allocated` 맵은 [05-hashmap](../05-hashmap/2-summary.md), `주소 XOR 크기`는 [18-bitset](../18-bitset/2-summary.md)의 위치 산술이다.
+
+## 적용 — 풀어나가는 법
+
+할당자 문제는 "수명이 같은가"와 "무엇으로 잴 것인가"에서 갈린다.\
+순서: ① 요청들의 수명이 다 같으면 범프(회수 없음)로 끝낸다 → ② 제각각이면 자유 목록을 **주소순**으로 들고 합치기부터 만든다 → ③ 고르는 규칙(first/best/worst)은 재기 전에는 모른다 — 실제 요청 열로 실패 수·훑은 횟수를 잰다 → ④ 요청 크기가 2의 거듭제곱 근처면 버디를 재 본다 → ⑤ `freeBytes`만 보지 말고 `largestFreeBlock`·`wastedBytes`를 같이 본다.\
+아래 과제의 TODO 순서(bump → 자유 목록 → 세 규칙 → 버디)가 이 순서와 같다.
+
+### 문제 — 이 챕터가 시키는 것
+
+원본 README(`myway/data-structure/35-allocator/README.md`)의 요구사항은 이렇다.
+
+- 01번부터 34번까지 필요할 때마다 쓴 `new` 가 실제로 하는 일을 만든다 — **고정된 공간에서 자리를 떼어주고 돌려받는다**.\
+  코드는 짧다. 어려운 것은 **어디를 떼어줄지**이고, 그 선택의 결과는 한참 뒤에 나타난다.
+- 16바이트 64개로 1024를 꽉 채우고 한 칸 걸러 돌려주면 남은 총량 512에 가장 큰 덩어리 16, 덩어리 수 32가 되어 **`allocate(17)` 이 실패한다**.\
+  절반이 비었는데 못 준다 — **외부 단편화**다. `freeBytes` 만 보면 여유로워 보이고 `largestFreeBlock` 을 같이 봐야 드러난다.
+- **계약 테스트 117개를 다섯 구현이 다 통과한다.** 갈리는 것은 한참 쓰고 난 뒤의 모양이다.
+
+과제(TODO 10개 + 구현 대상):
+
+- `BumpAllocator` 의 TODO 1 — 기준선. 밀어올리기만 하고 회수하지 않는다(세 줄).
+- `FreeListAllocator` 의 TODO 2~4 — `allocate`(분할) · `free` · `insertAndCoalesce`. **합치기가 생명이다**(목록은 주소 오름차순 유지).
+- `First`/`Best`/`Worst` 의 TODO 5~7 — 각각 `choose` 세 줄. 결과는 크게 갈린다(요청 300개에 실패 169 / 170 / 178).
+- `BuddyAllocator` 의 TODO 8~10 — 2의 거듭제곱으로 쪼개고 `짝의 주소 = 주소 XOR 크기` 로 O(1) 합치기.
+- 응용으로 생각할 것 — 합치기를 안 해도 계약 테스트가 거의 통과하는 것(총량은 맞으니까), 무엇을 정렬해 두느냐가 무엇을 할 수 있는지를 정하는 것(주소순 = 합치기 가능 / 크기순 = 고르기 빠름), 버디가 붙어 있어도 짝이 아니면 못 합치는 것, 33바이트를 16번 떼어가면 496이 갇히는데 **어떤 자에도 안 잡히는** 것, 이중 free 를 조용히 넘어가면 안 되는 것.
+- 검증: `AllocatorContractTest` 21개 × 5구현 + 구현별 테스트(buddy 8 · bump 4) + `FragmentationTest` 8개 수치 측정 (125개 중 106개가 처음에 실패한다).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -731,15 +808,54 @@ free(0) :  떼어준 크기 16 에서 지수를 되찾는다 (numberOfTrailingZe
 | WorstFitAllocator | | | |
 | BuddyAllocator | | | |
 
+## 장애 시나리오와 대처
+
+**1. 이중 free를 조용히 넘어가서 없는 자리를 떼어 준다**
+
+- 현상: 한참 뒤에 두 요청이 같은 메모리를 쓰고 있다. 데이터가 서로 덮어써진다.
+- 보이는 형태: `freeBytes`가 `capacity`보다 커지거나, 빈 자리 목록에 겹치는 블록이 생긴다. 이 노트의 `free`는 `allocated`에 없는 주소에 `IllegalArgumentException: 떼어준 적 없거나 이미 돌려받은 주소다`를 던지고, 목록 삽입 시 겹침을 `IllegalStateException: 빈 자리가 겹친다`로 막는다.
+- 원인: 같은 주소를 두 번 돌려받아 두 번 세었다. 손상은 그 자리가 다시 떼어질 때까지 드러나지 않는다.
+- 대처: `allocated` 맵을 정본으로 두고 `free`는 거기서 **지우면서** 크기를 꺼낸다. 삽입 후 이웃과 겹치는지 검사한다 — 조용한 실패가 가장 위험하다.
+
+**2. 남은 공간은 충분한데 할당이 실패한다 — 지표 착시**
+
+- 현상: 모니터링의 "남은 메모리"는 절반인데 요청이 실패한다.
+- 보이는 형태: `allocate(17)`이 `FAIL(-1)`을 돌려주는데 예외가 아니라서 호출자가 `-1`을 주소로 쓰는 사고로 이어진다. `freeBytes()`는 512, `largestFreeBlock()`은 16, `freeBlockCount()`는 32.
+- 원인: 외부 단편화 — 한 칸 걸러 돌려준 뒤 빈 자리가 16짜리 32조각으로 흩어졌다(정답 4번 참고). 총량만 보는 지표는 이것을 못 본다.
+- 대처: `FAIL`을 반드시 검사하고 지표로 감시한다. `largestFreeBlock`·`freeBlockCount`를 같이 본다. 단편화가 쌓이는 워크로드면 크기별 풀(슬랩)이나 버디로 바꾸거나, 수명이 같은 것끼리 아레나로 묶는다.
+
+**3. 합치기를 빼먹었는데 테스트가 통과한다**
+
+- 현상: 처음엔 멀쩡하다가 오래 돌수록 큰 요청부터 실패한다.
+- 보이는 형태: 계약 테스트는 거의 다 통과한다(남은 총량은 맞으니까). 시간이 갈수록 `freeBlockCount`가 늘고 `largestFreeBlock`이 준다.
+- 원인: `free`가 블록을 목록에 끼우기만 하고 양옆과 합치지 않았다. 잘게 부서진 것은 가장 큰 덩어리를 재야만 드러난다.
+- 대처: 삽입 후 왼쪽 이웃의 `end()`가 내 `start`와 같으면, 내 `end()`가 오른쪽 이웃의 `start`와 같으면 합친다(주소순이라 가능하다). "자를 하나만 두면 안 되는" 자리다.
+
+**4. 범프 할당자에 `free`를 기대해 메모리가 바닥난다**
+
+- 현상: 요청마다 떼어 주고 돌려줬는데 `next`가 계속 오른쪽으로만 간다.
+- 보이는 형태: `free`가 조용히 무시되고 `ignoredFrees`만 는다. 결국 `allocate`가 `FAIL`이다.
+- 원인: 범프는 회수를 하지 않는다 — 수명이 다 같다는 전제에서만 맞는 설계다. 수명이 제각각인 데 썼다.
+- 대처: 수명이 같은 단위(요청·프레임·패스)마다 `reset()`으로 통째로 돌려주는 구조가 아니면 자유 목록으로 바꾼다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 할당자는 고정된 메모리에서 자리를 떼어 주고 돌려받는 관리인이고, 빈 자리를 어떤 자료구조로 드느냐가 무엇을 할 수 있는지를 정한다 — 주소순이면 합칠 수 있고, 크기순이면 빨리 고를 수 있다.
+- 다섯 구현이 계약 테스트를 다 통과한다. 갈리는 것은 한참 쓰고 난 뒤의 모양이라, `freeBytes` 하나가 아니라 `largestFreeBlock`·`freeBlockCount`·`wastedBytes`를 같이 재야 드러난다.
+- 외부 단편화는 총량은 충분한데 연속된 자리가 없는 병이고, 합치기가 그 약이다. 버디는 2의 거듭제곱 제약으로 외부 단편화를 줄이고 O(1) 합치기를 얻는 대신 내부 단편화(갇힌 바이트)를 안는다.
+- best fit의 "큰 자리를 아끼자"도 worst fit의 "조각을 크게 남기자"도 그럴듯하지만, 재 보면 가장 단순한 first fit이 이겼다 — 재기 전에는 어느 쪽이 맞는지 알 수 없다.
+- 범프는 나쁜 설계가 아니다. 수명이 다 같으면 관리할 것이 없고, 관리 비용은 수명이 제각각일 때 생긴다.
 
--
--
--
+## 관련 주제·근거
 
-## 용어 풀이
+- 선행 — [01-dynamic-array](../01-dynamic-array/2-summary.md) · [02-linked-list](../02-linked-list/2-summary.md) · [05-hashmap](../05-hashmap/2-summary.md) · [18-bitset](../18-bitset/2-summary.md): 자유 목록·`allocated` 맵·XOR 위치 산술의 재료(정답 6번).
+- 선행 — [34-dependency-resolver](../34-dependency-resolver/2-summary.md): "무엇을 먼저"가 정해진 뒤 남는 "어디에 놓을 것인가".
+- 연결 — [foundations/memory-management](../../foundations/memory-management/README.md): 힙·스택·GC 관점에서 본 같은 문제.
+- 연결 — [10-lru-cache](../10-lru-cache/2-summary.md): 고정 용량에서 무엇을 내보낼지 정하는 또 하나의 관리인.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `31-allocator` (선행 `04`, 교재 OSTEP 17). os 영역 `11-heap-allocation`이 malloc·slab 쪽 후속이다.
+- myway 원본 — `/home/jun/project/myway/data-structure/35-allocator/` (README.md · impl/FreeListAllocator.java · impl/BuddyAllocator.java · impl/BumpAllocator.java).
+
+### 용어 풀이
 
 - **할당자(allocator)**: "size 바이트 주세요/돌려드려요" 요청을 받아 메모리의 자리를 관리하는 관리인.
 - **할당(allocate) / 해제(free)**: 자리를 내주는 것 / 다 쓴 자리를 돌려주는 것.
@@ -765,7 +881,7 @@ free(0) :  떼어준 크기 16 에서 지수를 되찾는다 (numberOfTrailingZe
 - **추상 메서드(abstract) / 하위 클래스**: 뼈대 클래스가 "이건 네가 정해"라고 비워 둔 메서드(choose) / 그것을 채우는 자식 클래스. 템플릿 메서드 패턴이라 부른다.
 - **계수기(scanned / splits / merges / ignoredFrees)**: 정답이 아니라 "일을 얼마나 했나, 무엇을 포기했나"를 재는 측정용 카운터.
 
-## 관련 자료
+### 관련 자료
 
 - 원본 README: `/home/jun/project/myway/data-structure/35-allocator/README.md`
 - 구현 대상: `/home/jun/project/myway/data-structure/35-allocator/src/main/java/com/datastructure/allocator/`

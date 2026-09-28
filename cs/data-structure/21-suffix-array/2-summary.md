@@ -4,8 +4,30 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+"이 문자열 안에 어떤 조각이 어디에 몇 번 있나", "서로 다른 부분 문자열이 몇 개인가"를 빠르게 답하려면 모든 접미사를 줄 세워 둬야 한다.
+09번처럼 접미사를 전부 트라이에 넣으면 답은 맞지만 노드가 n(n+1)/2개다 — 길이 10만이면 50억 개라 만들 수조차 없다.
+
+```text
+접미사 트라이 (09번)                     접미사 배열 (21번)
+접미사 6개를 글자 단위 노드로 저장         접미사를 저장하지 않는다
+  노드 수 ~ n(n+1)/2                        sa = [5, 3, 1, 0, 4, 2]  <- 시작 자리만
+  길이 10만 -> 50억 노드                    길이 10만 -> int 10만 개 = 400 KB
+  (노드당 40B면 200 GB)                    "ana" 찾기 = 이 줄에서 이진 탐색
+```
+
+접미사 배열은 접미사를 사전순으로 정렬하되 남기는 것은 **시작 위치 숫자뿐**이다. 문자열은 하나도 새로 만들지 않는다 — O(n) 공간의 정체다.
+여기에 이웃끼리의 겹침(LCP 배열)을 얹으면 09번의 문제가 뺄셈 한 번이 된다.
+
+- 쉬운 예: 국어사전 — 단어를 가나다순으로 세워 두면 아무 단어나 책을 반씩 갈라 가며 찾는다. 사전에 "꼬리"들을 실어 둔 것이 접미사 배열이다.
+- 똑같은 구조다: 이 노트의 `SuffixArray.sa`는 "사전순 r번째 접미사가 시작하는 자리"이고, `find`는 그 위에서 이진 탐색 두 번이다.
+- 실무 예: 전문 검색·데이터 압축(BWT)의 색인 — 원문 전체를 한 번 정렬해 두고, 어떤 패턴이든 O(m log n)에 위치를 찾는다.
+  - *접미사(suffix)*: 문자열의 어느 자리부터 끝까지 자른 꼬리. 어떤 조각이 문자열 안에 있다는 것은 반드시 어떤 접미사의 맨 앞부분이라는 뜻이다.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 국어사전.** 사전은 단어를 가나다순으로 세워 두었기 때문에, 아무 단어나 책을 반씩 갈라 가며 금방 찾을 수 있다. **접미사 배열이 똑같은 구조다** — 문자열의 모든 "꼬리"(접미사)를 사전순으로 세워 두고, 반씩 갈라 가며 찾는다. 실무에서는 검색 엔진의 문서 내 검색, DNA 염기서열에서 특정 패턴 찾기가 이 구조 위에서 돈다.
 
@@ -28,31 +50,46 @@ text = "banana"
   nana    <- 2번 자리부터
 ```
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-09번 마지막 문제(서로 다른 부분 문자열 수)를 접미사 트라이로 풀면 답은 맞지만 노드가 O(n^2) 다 — 길이 1000 이면 50만 개, 길이 10만이면 50억 개라 아예 못 만든다.
-09번 문서가 "접미사 배열과 접미사 오토마타가 존재하는 이유"라고 적고 넘어간 그 약속을 여기서 갚는다.
-접미사를 **저장하지 않고 시작 위치 숫자만** 사전순으로 정렬해 남기고(O(n) 공간), 거기에 LCP 배열을 얹어 같은 문제를 뺄셈 한 번으로 푼다.
-`SuffixArrayContractTest.java` 를 따라친 뒤 TODO 를 채운다(처음에는 90개 중 83개가 실패한다).
+### 전체 흐름
 
-- `NaiveSuffixArray` 의 TODO 1개 — `compareSuffixes`(다섯 줄이면 되고 답도 맞다. 한계를 재는 상대다)
-- `SuffixArray` 의 TODO 7개 — `initialRanks` · `comparePair` · `reRank` · 배가법 본체 · `lowerBound` · `upperBound` · `find`
-- `LcpArray` 의 TODO 2개 — `inverse` · `kasai`
-- `SuffixArrayProblems` 의 TODO 3개 — `countDistinctSubstrings` · `longestRepeatedSubstring` · `longestCommonSubstring`
-- 덩어리는 넷이다 — 나이브로 정답의 모양을 잡고 → 배가법으로 만드는 비용을 줄이고 → Kasai 로 LCP 를 얹고 → 그 둘로 문제 셋을 푼다.
-- 응용으로 따져볼 것: 배가법이 재활용하는 것은 "순위"다(k 글자를 이미 요약하고 있어 비교가 상수) · `reRank` 가 같은 쌍을 같은 순위로 묶지 않으면 다음 라운드가 통째로 틀어진다 · 범위 밖을 **-1** 로 봐야 `a` 가 `ab` 보다 앞이다 · Kasai 가 O(n) 인 이유는 **원문 순서**로 훑는 데 있다 · 검색은 이진 탐색 **두 번**이고 결과는 위치 오름차순으로 정렬해 준다 · 문제 3 의 구분자를 빼면 답이 조용히 틀린다 · 테스트가 구별하지 못하는 코드가 셋 있다.
+```text
+[1] 접미사를 저장하지 않는다                [2] 정렬 — 나이브에서 배가법으로
+    text = "banana", sa = [5,3,1,0,4,2]        나이브 : 꼬리끼리 한 글자씩 비교, O(n^2 log n)
+    sa[r] = 사전순 r 번째 접미사의 시작 자리    배가법 : (rank[i], rank[i+k]) 정수 쌍으로 정렬
+    공간 = int[n] = 4n 바이트                   k = 1, 2, 4, ... 라운드 log n 회, O(n log^2 n)
+              |                                 reRank : 같은 쌍 = 같은 순위, 0..n-1 로 촘촘히
+              v                                          |
+[3] 검색 — 이진 탐색 두 번                           v
+    pattern 으로 시작하는 접미사는 연속 구간    [4] LCP 배열 (Kasai, O(n))
+    lowerBound / upperBound 로 [lo, hi)           lcp[r] = 이웃 접미사 둘의 공통 접두사 길이
+    count = hi - lo, O(m log n)                   원문 순서로 훑고 h 는 한 걸음에 최대 1 감소
+    find 는 sa 값을 위치 순으로 다시 정렬           떨어진 둘의 LCP = 구간 min(lcp)
+              |                                          |
+              +--------------------+---------------------+
+                                   v
+[5] 문제 셋이 산수가 된다                    [6] 대가
+    서로 다른 부분 문자열 = n(n+1)/2 - sum(lcp)   직관을 버린다 — 숫자 배열 둘을 믿어야 한다
+    가장 긴 반복 = max(lcp)                       문자열이 바뀌면 처음부터 다시 만든다
+    두 문자열 공통 = a + SEP + b 의 lcp 중 경계 넘는 최댓값   검색이 O(m) 이 아니라 O(m log n)
+```
 
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+- [1] "접미사"는 text와 시작 자리만 있으면 언제든 다시 볼 수 있으니 담지 않는다. 이것이 09번 트라이의 O(n²)을 O(n)으로 끊는 전부다.
+- [2] 나이브 정렬은 답은 맞지만 겹침이 긴 입력("aaaa…")에서 비교 한 번이 O(n)이다. 배가법은 이미 매긴 순위가 k글자를 요약하고 있어서 길이 2k 비교가 정수 두 개 비교가 된다.
+  - *배가법(doubling)*: 길이 1 → 2 → 4 … 로 비교 길이를 라운드마다 두 배로 늘리되, 앞 라운드의 순위를 재료로 쓰는 구축법. 범위 밖은 -1(짧은 쪽이 앞).
+- [3] 사전순이므로 패턴으로 시작하는 접미사는 반드시 한 구간에 모여 있다. 양끝을 이진 탐색으로 잡으면 개수는 나열 없이 `hi - lo`다.
+  - *[lo, hi) 반열린 구간*: lo는 포함, hi는 미포함. 두 탐색의 차이는 "같다"를 왼쪽으로 미느냐 오른쪽으로 미느냐뿐이다.
+- [4] 사전순으로 세우면 비슷한 꼬리끼리 이웃하므로 이웃끼리의 겹침 n개만 재 두면 모든 쌍의 겹침을 되찾을 수 있다. Kasai는 순위 순서가 아니라 원문 순서로 훑어 O(n)이다.
+  - *LCP(최장 공통 접두사)*: 두 문자열이 맨 앞에서부터 몇 글자까지 같은가. "ana"와 "anana"는 3.
+- [5] 접미사 하나가 만드는 부분 문자열은 (길이)개이고, 이웃과 겹치는 것은 앞 lcp글자로 시작하는 것들뿐이다. 정렬해 두면 겹치는 상대가 바로 앞 하나라 한 번씩만 빼면 된다.
+- [6] 얻은 것은 O(n) 공간과 10만 길이에서도 돌아가는 세 문제, 내준 것은 그림이 그려지는 직관과 갱신 가능성이다.
 
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 구현 — NaiveSuffixArray (`src/main/java/com/datastructure/suffix/NaiveSuffixArray.java`)
+### 구현 — NaiveSuffixArray (`src/main/java/com/datastructure/suffix/NaiveSuffixArray.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 ```
 접미사 배열 = "모든 접미사를 사전순으로 세운 뒤, 시작 인덱스만 남긴 int 배열"
@@ -81,7 +118,7 @@ text = "banana"  (n = 6, 0-base)
     "접미사" 는 text 와 시작 인덱스만 있으면 언제든 다시 볼 수 있는 것이라, 굳이 담지 않는다
 ```
 
-### 동작 — 정렬
+#### 동작 — 정렬
 
 **언제 쓰나** — 접미사 배열을 처음 만들 때. 순진한 방법(naive)은 "꼬리 두 개를 한 글자씩 맞대 보는 비교"를 정렬에 그대로 넘긴다.
 
@@ -121,32 +158,32 @@ compareSuffixes(i, j) : 두 접미사를 첫 글자부터 한 글자씩 맞대�
 3. 이 비교 한 번이 최악이면 글자 n개를 다 본다. 그래서 느린 것이다.
   - *O(n^2 log n)*: 입력 길이 n이 커질 때 걸리는 시간의 증가 속도 표기(빅오). n=길이, 비교 1회 최대 n글자 × 정렬이 부르는 비교 약 n log n회.
 
-### `필드`
+#### `필드`
 
 - `String text` 역할:
 - `int[] sa` 역할:
 - `long charComparisons` 역할(무엇을 재려고 있는가):
 
-### `public NaiveSuffixArray(String text)`
+#### `public NaiveSuffixArray(String text)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int compareSuffixes(int i, int j)` (TODO)
+#### `int compareSuffixes(int i, int j)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public int[] toArray()` / `public int size()` / `public long charComparisons()` / `public static int[] of(String text)`
+#### `public int[] toArray()` / `public int size()` / `public long charComparisons()` / `public static int[] of(String text)`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 — SuffixArray (`src/main/java/com/datastructure/suffix/SuffixArray.java`)
+### 구현 — SuffixArray (`src/main/java/com/datastructure/suffix/SuffixArray.java`)
 
-### 구조
+#### 구조
 
 먼저 알아야 할 것 — **순위(rank)**:
 - 순위 = 줄 세웠을 때의 등수. 같은 것끼리는 같은 등수를 준다.
@@ -202,7 +239,7 @@ reRank 가 하는 일 : 정렬된 sa 를 한 번 훑으며 "앞 이웃과 쌍이
   - *O(1)*: 입력이 아무리 커도 걸음 수가 일정하다는 뜻. 숫자 두 개 비교가 그렇다.
   - *O(n log^2 n)*: 라운드가 log n번, 라운드마다 정렬 n log n — 곱해서 나온 비용.
 
-### 동작 — 검색
+#### 동작 — 검색
 
 **언제 쓰나** — 이미 만들어 둔 sa 에서 패턴("ana")이 어디 있는지 물을 때.
 
@@ -249,80 +286,80 @@ find("ana") on "banana"
 4. 개수는 끝 빼기 시작(hi - lo)으로 바로 나온다. 구간을 나열할 필요가 없다.
   - *[lo, hi) 반열린 구간*: lo는 포함하고 hi는 포함하지 않는 구간 표기. 개수가 hi-lo로 깔끔하게 떨어진다.
 
-### `필드`
+#### `필드`
 
 - `String text` 역할:
 - `int[] sa` 역할(접미사를 저장하지 않고 시작 위치만 남긴다는 것):
 - `int sortRounds` 역할:
 - `int searchProbes` 역할:
 
-### `public SuffixArray(String text)` — 배가법 본체 (TODO)
+#### `public SuffixArray(String text)` — 배가법 본체 (TODO)
 
 - 하는 일:
 - 논리(k 를 2배씩 늘리며 정렬 · 순위가 이미 k 글자를 요약한다는 것 · 종료 조건):
 - 비용(왜):
 
-### `static int[] initialRanks(String text)` (TODO)
+#### `static int[] initialRanks(String text)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static int comparePair(int[] rank, int i, int j, int k)` (TODO)
+#### `static int comparePair(int[] rank, int i, int j, int k)` (TODO)
 
 - 하는 일:
 - 논리(범위 밖을 -1 로 봐야 하는 이유 — `a` 가 `ab` 보다 앞인 이유):
 - 비용(왜):
 
-### `static int[] reRank(int[] sa, int[] rank, int k)` (TODO)
+#### `static int[] reRank(int[] sa, int[] rank, int k)` (TODO)
 
 - 하는 일:
 - 논리(같은 쌍끼리 같은 순위로 묶어야 하는 이유):
 - 비용(왜):
 
-### `int comparePrefix(int start, String pattern)`
+#### `int comparePrefix(int start, String pattern)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int lowerBound(String pattern)` (TODO)
+#### `int lowerBound(String pattern)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int upperBound(String pattern)` (TODO)
+#### `int upperBound(String pattern)` (TODO)
 
 - 하는 일:
 - 논리(lowerBound 와 딱 한 글자 다른 이유):
 - 비용(왜):
 
-### `public List<Integer> find(String pattern)` (TODO)
+#### `public List<Integer> find(String pattern)` (TODO)
 
 - 하는 일:
 - 논리(찾은 위치를 그대로 주면 안 되는 이유 — 사전순이라 banana 의 `a` 는 5,3,1 순):
 - 비용(왜):
 
-### `public boolean contains(String pattern)` / `public int count(String pattern)`
+#### `public boolean contains(String pattern)` / `public int count(String pattern)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int size()` / `public String text()` / `public int[] toArray()` / `public String suffixAt(int rank)`
+#### `public int size()` / `public String text()` / `public int[] toArray()` / `public String suffixAt(int rank)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int sortRounds()` / `public int lastSearchProbes()` / `public long memoryBytes()`
+#### `public int sortRounds()` / `public int lastSearchProbes()` / `public long memoryBytes()`
 
 - 하는 일:
 - 논리(측정용으로 열어둔 것들):
 - 비용(왜):
 
-## 구현 — LcpArray (`src/main/java/com/datastructure/suffix/LcpArray.java`)
+### 구현 — LcpArray (`src/main/java/com/datastructure/suffix/LcpArray.java`)
 
-### 구조
+#### 구조
 
 먼저 알아야 할 것 — **LCP(Longest Common Prefix, 최장 공통 접두사)**:
 - 두 문자열이 맨 앞에서부터 몇 글자까지 같은가. "ana"와 "anana"는 앞 3글자가 같으니 LCP = 3.
@@ -350,7 +387,7 @@ text = "banana",  sa = [5, 3, 1, 0, 4, 2]
     -> 인접 정보 n 개만 들고 있으면 모든 쌍의 겹침을 답할 수 있다
 ```
 
-### 동작 — 구축 (Kasai)
+#### 동작 — 구축 (Kasai)
 
 **언제 쓰나** — sa 가 이미 있을 때, lcp 배열을 O(n)에 만들려고. (이웃끼리 순진하게 다 맞대 보면 O(n^2)까지 간다.)
 
@@ -389,47 +426,78 @@ sa 순서(r = 0, 1, 2 ...)가 아니라 원문 위치 순서(i = 0, 1, 2 ...)로
 4. h는 한 걸음에 최대 1씩만 줄고 다 합쳐 n을 넘게 늘지 못하므로, 전체 글자 비교가 O(n)이다.
   - *inverse(역함수)*: sa가 "등수 → 자리"라면 rank는 그 반대 "자리 → 등수". 서로 뒤집은 표다.
 
-### `필드`
+#### `필드`
 
 - `String text` 역할:
 - `int[] sa` 역할:
 - `int[] lcp` 역할(이웃한 두 접미사가 앞에서 몇 글자까지 같은가):
 - `long charComparisons` 역할:
 
-### `public LcpArray(SuffixArray suffixArray)` / `public LcpArray(String text, int[] suffixArray)`
+#### `public LcpArray(SuffixArray suffixArray)` / `public LcpArray(String text, int[] suffixArray)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public static int[] inverse(int[] suffixArray)` (TODO)
+#### `public static int[] inverse(int[] suffixArray)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private int[] kasai()` (TODO)
+#### `private int[] kasai()` (TODO)
 
 - 하는 일:
 - 논리(순위 순서가 아니라 **원문 순서**로 훑는 이유 · h 를 0 으로 되돌리지 않는 이유):
 - 비용(왜 O(n) 인가):
 
-### `public static int[] build(String text, int[] suffixArray)`
+#### `public static int[] build(String text, int[] suffixArray)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int size()` / `public int get(int rank)` / `public int[] toArray()`
+#### `public int size()` / `public int get(int rank)` / `public int[] toArray()`
 
 - 하는 일:
 - 비용(왜):
 
-### `public long sum()` / `public int max()` / `public int argMax()` / `public long charComparisons()`
+#### `public long sum()` / `public int max()` / `public int argMax()` / `public long charComparisons()`
 
 - 하는 일:
 - 논리(각각 어떤 문제의 답이 되는가):
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **전문 검색(full-text) 색인** — 원문 전체의 접미사 배열 하나로 임의 패턴의 위치·개수를 O(m log n)에 답한다. 단어 단위가 아니라 "아무 조각"을 찾아야 할 때 [32-inverted-index](../32-inverted-index/2-summary.md)의 단어 색인 대신 쓴다.
+- **BWT 기반 압축·색인(bzip2, FM-index)** — Burrows–Wheeler 변환은 순환(rotation)을 정렬한 뒤 각 줄의 마지막 글자(= 그 접미사 바로 앞 글자)만 뽑은 것이다. 끝 표시 문자(`$`)를 붙이면 순환 정렬이 접미사 정렬과 같아져 접미사 배열이 그 순서를 준다(교재: Gusfield · Burrows–Wheeler 1994). bzip2가 이 변환을 쓴다.
+- **생물정보학의 유전체 검색** — 수십억 글자 참조 유전체에서 짧은 조각(read)의 위치를 찾는 정렬기(BWA·Bowtie)가 BWT 위의 FM-index를 쓴다(BWA 논문 제목이 "… with Burrows-Wheeler transform"(Li & Durbin 2009)이고, Bowtie도 BWT 기반 FM-index 정렬기다).
+- **표절·중복 탐지** — "두 문서의 가장 긴 공통 부분 문자열"(문제 3)과 "가장 긴 반복 구간"(문제 2)이 그대로 쓰인다. `a + SEP + b`로 잇고 경계를 넘는 이웃의 lcp 최댓값을 본다.
+- **Java `String.indexOf`·정규식과의 분업** — 한 번 찾고 끝이면 [algorithm/25-string-matching](../../algorithm/25-string-matching/2-summary.md)(KMP)이 O(n+m)으로 더 싸다. 같은 원문에 질의가 반복될 때만 선행 계산 O(n log² n)이 본전을 뽑는다.
+- **다른 챕터의 재료** — [09-trie](../09-trie/2-summary.md)의 접미사 트라이가 못 만든 것을 배열로 만들고, [22-sparse-table](../22-sparse-table/2-summary.md)의 구간 min으로 "떨어진 두 접미사의 LCP"를 O(1)에 되찾는다.
+
+## 적용 — 풀어나가는 법
+
+접미사 배열 문제는 "원문이 고정되고 질의가 반복되는가"를 먼저 묻는 데서 갈린다.
+순서: ① 원문이 바뀌지 않고 질의가 여러 번이면 접미사 배열, 한 번 찾고 끝이면 KMP → ② 질문을 "접미사 정렬 순서"의 성질로 바꾼다 — 위치·개수는 연속 구간(이진 탐색), 겹침·중복은 이웃의 lcp → ③ 두 문자열이면 유일한 구분자로 이어 붙이고 경계를 넘는 쌍만 본다 → ④ 답의 크기를 먼저 어림한다(n = 10만이면 부분 문자열 수 49억 — `long`).
+아래 세 문제가 이 순서로 풀린다.
+
+### 문제 — 이 챕터가 시키는 것
+
+09번 마지막 문제(서로 다른 부분 문자열 수)를 접미사 트라이로 풀면 답은 맞지만 노드가 O(n^2) 다 — 길이 1000 이면 50만 개, 길이 10만이면 50억 개라 아예 못 만든다.
+09번 문서가 "접미사 배열과 접미사 오토마타가 존재하는 이유"라고 적고 넘어간 그 약속을 여기서 갚는다.
+접미사를 **저장하지 않고 시작 위치 숫자만** 사전순으로 정렬해 남기고(O(n) 공간), 거기에 LCP 배열을 얹어 같은 문제를 뺄셈 한 번으로 푼다.
+`SuffixArrayContractTest.java` 를 따라친 뒤 TODO 를 채운다(처음에는 90개 중 83개가 실패한다).
+
+- `NaiveSuffixArray` 의 TODO 1개 — `compareSuffixes`(다섯 줄이면 되고 답도 맞다. 한계를 재는 상대다)
+- `SuffixArray` 의 TODO 7개 — `initialRanks` · `comparePair` · `reRank` · 배가법 본체 · `lowerBound` · `upperBound` · `find`
+- `LcpArray` 의 TODO 2개 — `inverse` · `kasai`
+- `SuffixArrayProblems` 의 TODO 3개 — `countDistinctSubstrings` · `longestRepeatedSubstring` · `longestCommonSubstring`
+- 덩어리는 넷이다 — 나이브로 정답의 모양을 잡고 → 배가법으로 만드는 비용을 줄이고 → Kasai 로 LCP 를 얹고 → 그 둘로 문제 셋을 푼다.
+- 응용으로 따져볼 것: 배가법이 재활용하는 것은 "순위"다(k 글자를 이미 요약하고 있어 비교가 상수) · `reRank` 가 같은 쌍을 같은 순위로 묶지 않으면 다음 라운드가 통째로 틀어진다 · 범위 밖을 **-1** 로 봐야 `a` 가 `ab` 보다 앞이다 · Kasai 가 O(n) 인 이유는 **원문 순서**로 훑는 데 있다 · 검색은 이진 탐색 **두 번**이고 결과는 위치 오름차순으로 정렬해 준다 · 문제 3 의 구분자를 빼면 답이 조용히 틀린다 · 테스트가 구별하지 못하는 코드가 셋 있다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -438,12 +506,12 @@ sa 순서(r = 0, 1, 2 ...)가 아니라 원문 위치 순서(i = 0, 1, 2 ...)로
 | SuffixArray (배가법) | | | |
 | 기수 정렬 / SA-IS | | | |
 
-## 문제 — SuffixArrayProblems (`src/main/java/com/datastructure/suffix/SuffixArrayProblems.java`)
+### 문제 — SuffixArrayProblems (`src/main/java/com/datastructure/suffix/SuffixArrayProblems.java`)
 
 > 셋 다 접미사 배열 없이도 풀린다. 다만 길이 10만에서는 그 방법들이 안 돌아간다.
 > 상수 `SEPARATOR = (char) 1` — 두 문자열을 이을 때 끼우는 구분자. 유일해야 하는 것이 절대 조건이다.
 
-### 문제 1. 서로 다른 부분 문자열 개수 — `static long countDistinctSubstrings(String s)`
+#### 문제 1. 서로 다른 부분 문자열 개수 — `static long countDistinctSubstrings(String s)`
 
 > 문제 설명: 문자열 s 의 서로 다른 부분 문자열 개수를 센다. (빈 문자열은 세지 않는다)
 > 09번 문제 3번과 같은 문제다. 거기서는 모든 접미사를 트라이에 밀어 넣고 만들어진 노드를 셌다.
@@ -464,7 +532,7 @@ sa 순서(r = 0, 1, 2 ...)가 아니라 원문 위치 순서(i = 0, 1, 2 ...)로
 - 논리:
 - 비용(왜):
 
-### 문제 2. 가장 긴 반복 부분 문자열 — `static String longestRepeatedSubstring(String s)`
+#### 문제 2. 가장 긴 반복 부분 문자열 — `static String longestRepeatedSubstring(String s)`
 
 > 문제 설명: 두 번 이상 나오는 가장 긴 부분 문자열. 없으면 빈 문자열.
 > 겹쳐도 두 번으로 센다. `"aaa"` 에서 `"aa"` 는 위치 0 과 1 에 있다.
@@ -475,7 +543,7 @@ sa 순서(r = 0, 1, 2 ...)가 아니라 원문 위치 순서(i = 0, 1, 2 ...)로
 - 논리:
 - 비용(왜):
 
-### 문제 3. 두 문자열의 가장 긴 공통 부분 문자열 — `static String longestCommonSubstring(String a, String b)`
+#### 문제 3. 두 문자열의 가장 긴 공통 부분 문자열 — `static String longestCommonSubstring(String a, String b)`
 
 > 문제 설명: a 와 b 에 둘 다 들어 있는 가장 긴 부분 문자열. 없으면 빈 문자열.
 > 답이 여럿이면 사전순으로 앞선 것을 준다.
@@ -488,15 +556,54 @@ sa 순서(r = 0, 1, 2 ...)가 아니라 원문 위치 순서(i = 0, 1, 2 ...)로
 - 논리:
 - 비용(왜):
 
+## 장애 시나리오와 대처
+
+**1. 빈 패턴을 물어 예외**
+
+- 현상: 검색창이 비어 있는 채로 `find("")`·`count("")`를 호출하면 프로그램이 죽는다.
+- 보이는 형태: `IllegalArgumentException: 빈 패턴은 모든 자리에 있으므로 질문이 되지 않는다`.
+- 원인: `comparePrefix`는 패턴 길이 m만큼만 보는데 m = 0이면 모든 접미사가 "같다"라서 구간이 [0, n) 전체가 된다. 답이 정의되지 않으므로 이 노트는 거부한다.
+- 대처: 호출 전에 비어 있는지 검사해 "질의 없음"으로 처리한다. `null`도 같은 예외다.
+
+**2. 입력에 구분자 문자가 섞여 공통 부분 문자열이 틀림**
+
+- 현상: 외부에서 받은 두 문자열의 최장 공통 부분 문자열이 실제로는 한쪽에 없는 조각을 답한다 — 또는 `IllegalArgumentException: 구분자로 쓰는 \u0001 이 입력에 들어 있다`로 거부된다.
+- 보이는 형태: 바이너리·제어 문자가 섞인 로그를 넣었을 때만 난다. 순수 텍스트에서는 재현되지 않는다.
+- 원인: `SEPARATOR = (char) 1`이 유일해야 `a + SEP + b`의 경계가 보존된다. 입력에 같은 글자가 있으면 경계를 넘는 접미사 쌍이 가짜 공통 조각을 보고한다(정답 3번 참고).
+- 대처: 입력을 먼저 정규화해 제어 문자를 걸러내거나, 이 노트처럼 검사해서 거부한다. 거부하는 편이 "조용히 틀린 답"보다 낫다.
+
+**3. 원문을 고쳤는데 옛 배열로 검색**
+
+- 현상: 문서를 편집한 뒤 검색하면 지운 단어가 여전히 "있다"고 나오거나 위치가 어긋난다.
+- 보이는 형태: `find`가 돌려준 위치에서 `text.substring`을 해 보면 패턴과 다른 글자가 나온다. 예외는 없다.
+- 원인: `sa`는 생성 시점의 text에 대한 순위표다. 갱신 연산이 없고 한 글자만 바뀌어도 순위가 전부 흔들려 처음부터 다시 만들어야 한다(O(n log² n)).
+- 대처: 원문과 배열을 한 객체로 묶어 불변으로 두고, 편집이 잦으면 접미사 배열이 맞지 않는다 — 편집 단위로 [28-rope](../28-rope/2-summary.md) 같은 구조를 쓰고 색인은 배치로 다시 만든다.
+
+**4. 부분 문자열 개수가 `int`를 넘침**
+
+- 현상: 길이 10만 문자열의 서로 다른 부분 문자열 수가 음수나 엉뚱한 값으로 나온다.
+- 보이는 형태: `n * (n + 1) / 2`를 `int`로 계산하면 n = 10만에서 50억이 되어 오버플로된다. 정답은 약 49억으로 `int` 최댓값(약 21억)을 넘는다.
+- 원인: 부분 문자열 수는 O(n²)로 자란다. 배열은 O(n)이지만 답은 그렇지 않다.
+- 대처: 반환형과 중간 계산을 `long`으로 둔다(`countDistinctSubstrings`가 `long`을 돌려주는 이유). 곱셈 전에 `(long) n`으로 올린다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 접미사 배열은 접미사를 저장하지 않는다 — 사전순으로 정렬한 시작 위치 숫자만 남겨 09번 접미사 트라이의 O(n²)을 O(n) 공간으로 끊는다.
+- 배가법이 재활용하는 것은 순위다: 순위가 이미 k글자를 요약하고 있어 길이 2k 비교가 정수 쌍 비교가 되고, `reRank`가 같은 쌍을 같은 순위로 묶어야 다음 라운드가 성립한다.
+- 사전순이므로 패턴으로 시작하는 접미사는 한 구간에 모여 있다 — 이진 탐색 두 번으로 양끝을 잡으면 개수는 `hi - lo`, 비용은 O(m log n)이다.
+- LCP는 이웃끼리만 재도 충분하고(떨어진 둘은 구간 min), Kasai는 원문 순서로 훑어 "겹침은 한 걸음에 최대 1만 준다"는 성질로 O(n)에 만든다.
+- 그 둘로 서로 다른 부분 문자열 수는 `n(n+1)/2 - sum(lcp)`, 가장 긴 반복은 `max(lcp)`가 된다 — 대가는 직관과 갱신이다. 문자열이 바뀌면 처음부터 다시 만든다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [09-trie](../09-trie/2-summary.md): 접미사 트라이가 O(n²) 노드로 못 만든 문제를 여기서 배열로 갚는다.
+- 선행 — [algorithm/06-binary-search](../../algorithm/06-binary-search/2-summary.md): `lowerBound`/`upperBound`의 원형. "같다"를 어느 쪽으로 미느냐가 유일한 차이다.
+- 연결 — [algorithm/25-string-matching](../../algorithm/25-string-matching/2-summary.md): 한 번 찾고 끝이면 KMP O(n+m), 같은 원문에 질의가 반복되면 접미사 배열.
+- 후속 — [22-sparse-table](../22-sparse-table/2-summary.md): 갱신을 아예 포기하고 조회를 O(1)로 — 떨어진 두 접미사의 LCP(구간 min)도 이것으로 답한다.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `36-suffix-array` (선행 `algorithm/28-string-matching`, 원전 Manber–Myers 1990).
+- myway 원본 — `/home/jun/project/myway/data-structure/21-suffix-array/` (README.md · impl/SuffixArray.java · impl/LcpArray.java · impl/SuffixArrayProblems.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -505,7 +612,7 @@ sa 순서(r = 0, 1, 2 ...)가 아니라 원문 위치 순서(i = 0, 1, 2 ...)로
 - 테스트: `/home/jun/project/myway/data-structure/21-suffix-array/src/test/java/com/datastructure/suffix/`
 - 정답 구현: `/home/jun/project/myway/data-structure/21-suffix-array/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 > 본문에서 이미 등장 자리마다 풀었지만, 복습용으로 한곳에 모은다. (중학생 수준 1~2줄)
 

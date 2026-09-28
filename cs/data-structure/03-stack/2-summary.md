@@ -4,8 +4,28 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+"가장 최근에 시작한 일을 가장 먼저 끝내야 하는" 상황이 있다.\
+함수가 함수를 부르면 **나중에 부른 쪽이 먼저 끝나야** 부른 곳으로 돌아갈 수 있고, 괄호는 **나중에 연 것이 먼저 닫혀야** 짝이 맞는다.
+
+```text
+f() 가 g() 를, g() 가 h() 를 불렀다        (  [  {  }  ]  )
+                                          ^  ^  ^  |  |  |
+  돌아갈 곳: h -> g -> f  (부른 순서의 역순)    마지막에 연 { 가 가장 먼저 닫힌다
+```
+
+이 일을 리스트로 하려면 "마지막 것이 어디인지"를 매번 찾아야 하고, 중간을 건드릴 수 있어 순서가 어긋날 여지가 생긴다.\
+스택은 접근 지점을 **맨 위 하나**로 제한한다 — 넣는 것도 꺼내는 것도 거기서만 하니 "마지막 것"이 항상 손에 있고, 넣기·꺼내기가 O(1)로 끝난다.\
+쉬운 예: 되돌리기(Ctrl+Z) — 마지막 편집부터 거꾸로 취소한다.\
+똑같은 구조다: 함수 호출 스택([systems/call-stack](../../systems/call-stack/README.md)) — 부른 순서의 역순으로 돌아간다.\
+실무 예: 컴파일러·계산기의 수식 파서 — 연산자 우선순위와 괄호를 스택 하나로 처리한다(문제 5).
+
+  - *접근 지점*: 자료구조에서 넣고 뺄 수 있는 자리. 스택은 이것이 한 곳(top)뿐이다.
+
+### 한눈에 — 쉽게 말하면
 
 **스택 = 접시 쌓기.**\
 설거지한 접시를 위로만 쌓고, 쓸 때도 맨 위 것부터 꺼낸다.
@@ -38,31 +58,42 @@ push(C)                pop() -> C
 > **top** — 맨 위의 위치를 가리키는 표지.\
 > 예: ArrayStack 에서는 "다음에 쓸 배열 인덱스"(숫자)이고, LinkedStack 에서는 "맨 위 노드 그 자체"(참조)다 — 이름은 같은데 뜻이 다르다.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-여기서부터 구조가 하나 늘어난다 — **같은 계약(`Stack` 인터페이스)을 두 방식으로 구현**한다.\
-`ArrayStack`은 배열에 쌓아 01번 동적 배열의 성질을, `LinkedStack`은 노드를 이어 02번 연결 리스트의 성질을 그대로 물려받는다.\
-둘은 겉으로 **완전히 같게** 동작해야 하고, 다른 것은 "언제 느려지는가"와 "메모리를 어떻게 쓰는가"뿐이다.\
-그래서 계약 테스트도 한 번만 쓰고 두 구현에 함께 물린다.
+### 전체 흐름
 
-**과제**
+```text
+[1] 접근 지점을 하나로 제한             [2] top 표지 하나로 전부
+    push/pop/peek 전부 맨 위에서만          ArrayStack : top = 다음에 쓸 인덱스 (= size)
+    +---+                                   LinkedStack: top = 맨 위 노드 그 자체
+    | C | <- top
+    +---+          같은 이름, 다른 뜻
+    | B |
+    +---+
+    | A |
+    +---+
+          |
+          v
+[3] 두 구현, 같은 계약                  [4] 대가: 확장 스파이크 vs 노드 오버헤드
+    ArrayStack : 배열 끝 = top             ArrayStack : push 가 가끔 O(n)(복사), 상환 O(1)
+                 시프트 0회 -> O(1)                      원소만 저장, 남는 용량
+    LinkedStack: head = top                LinkedStack: push 가 언제나 O(1)
+                 addFirst/removeFirst 만                 노드마다 참조 1개, 지역성 나쁨
+          |
+          v
+[5] 꺼낸 자리 정리                      [6] 응용: "아직 해소되지 않은 것"을 쌓는다
+    배열: elements[--top] = null             괄호 / 후위 계산 / 단조 스택(nextGreater)
+    연결: 떼어낸 노드의 next = null          / shunting yard
+```
 
-- README "하는 방법" 5단계 — ① `StackContractTest.java` 따라치기(계약이 여기 있다) → ② `ArrayStack.java` TODO 5개 → ③ `LinkedStack.java` TODO 4개 → ④ `StackProblemsTest.java` 따라치기 → ⑤ `StackProblems.java` 채우기.
-- 구현 대상은 `Stack`(인터페이스, TODO 없음 — 계약은 주어지는 것) + `ArrayStack` + `LinkedStack` + `StackProblems`.
-- 응용 문제 — `isBalanced` 괄호 짝 맞추기 / `evaluatePostfix` 후위 표기식 계산 / `nextGreater` 오른쪽의 첫 번째 더 큰 값 / `sortAscending` 보조 스택 하나로 스택 정렬 / `infixToPostfix` 중위 → 후위 변환(shunting yard).\
-  (README 본문은 "TODO 4개 / 네 메서드"라고 적지만 실제 `StackProblems`에는 위 다섯 개가 있다.)
-- 성능 제약 — `nextGreater`는 20만 건을 5초 안에 끝내야 한다(`mustBeLinear`). 각 원소마다 오른쪽을 훑는 O(n²)은 통과하지 못한다.
-- 계약 제약 — `StackProblems`의 메서드는 전부 `Stack` 인터페이스와 **작업용 스택**을 인자로 받는다. 안에서 `new ArrayStack<>()`이라고 쓰면 두 구현으로 돌릴 자유를 잃는다.
-- 구현 고유 제약 — `ArrayStackTest`·`LinkedStackTest`가 내부 필드(`elements`, `top`, `Node.next`)를 직접 들여다본다. `pop`한 자리를 `null`로 비우고 떼어낸 노드의 링크를 끊어야 통과한다.
-- `sortAscending`은 배열·리스트로 옮기지 말고 보조 스택 하나만 써야 한다 — 그래서 O(n²)이고, 그게 맞는 답이다.
+- [1] 접근 지점을 맨 위 하나로 제한하는 것이 스택의 전부다. 그래서 "마지막에 넣은 것"이 언제나 O(1)에 나온다(LIFO).
+- [2] `top`이 배열판에서는 숫자(다음 칸), 연결판에서는 노드(맨 위)다 — 이름이 같아서 헷갈리기 쉬운 지점이다.
+- [3] 배열판은 01번 동적 배열의 "맨 뒤 추가·삭제 O(1)"만 쓴다. 연결판은 02번 연결 리스트의 `addFirst`·`removeFirst`만 쓰므로 `tail`이 필요 없다.
+- [4] 둘은 겉으로 완전히 같고, "언제 느려지나"와 "메모리를 어떻게 쓰나"만 다르다. 확장 순간의 지연이 중요한 곳에서만 연결판이 이긴다.
+- [5] 01·02와 같은 문제가 세 번째로 나온다 — 꺼낸 칸을 `null`로 비우고, 떼어낸 노드의 링크를 끊어야 GC가 치운다.
+- [6] 응용 문제는 전부 "아직 답이 안 정해진 것을 쌓아 두었다가, 정해지는 순간 꺼낸다"는 한 모양이다.
 
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — Stack (`src/main/java/com/datastructure/stack/Stack.java`)
+### 계약 — Stack (`src/main/java/com/datastructure/stack/Stack.java`)
 
 - `void push(E element)`
 - `E pop()`
@@ -71,11 +102,11 @@ push(C)                pop() -> C
 - `boolean isEmpty()`
 - `void clear()`
 
-## 구현 — ArrayStack (`src/main/java/com/datastructure/stack/ArrayStack.java`)
+### 구현 — ArrayStack (`src/main/java/com/datastructure/stack/ArrayStack.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 ```
 ArrayStack — 맨 위가 배열의 "끝"이다
@@ -99,7 +130,7 @@ ArrayStack — 맨 위가 배열의 "끝"이다
 바닥에서 넣고 빼는 스택이었다면 매번 전체를 밀어야 해서 O(n) 이 됐을 것이다
 ```
 
-### 동작 — push
+#### 동작 — push
 
 ```
 [1] push(D) : 빈 칸에 쓰고 top 을 올린다. O(1)
@@ -136,7 +167,7 @@ ArrayStack — 맨 위가 배열의 "끝"이다
 > **시프트(shift)** — 배열 중간에 넣거나 뺄 때 뒤 원소들을 밀고 당기는 일.\
 > 예: 스택은 끝에서만 조작하므로 시프트가 0회 — 이게 push/pop 이 O(1)인 비밀이다.
 
-### 동작 — pop
+#### 동작 — pop
 
 ```
 pop() : top 을 내리고 그 칸을 읽은 뒤 null 로 비운다. O(1)
@@ -173,81 +204,81 @@ LIFO — 넣은 순서 A B C D, 꺼내는 순서 D C B A
 
 - 빈 스택에서 pop하면 돌려줄 것이 없다 — `EmptyStackException`을 던진다.
 
-### `필드`
+#### `필드`
 
 - `private static final int DEFAULT_CAPACITY = 4` — 역할:
 - `Object[] elements` — 역할:
 - `int top` — 역할:
 
-### `ArrayStack()`
+#### `ArrayStack()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `ArrayStack(int initialCapacity)`
+#### `ArrayStack(int initialCapacity)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int capacity()`
+#### `int capacity()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void ensureCapacity(int minCapacity)` (TODO)
+#### `private void ensureCapacity(int minCapacity)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void push(E element)` (TODO)
+#### `void push(E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E pop()` (TODO)
+#### `E pop()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E peek()` (TODO)
+#### `E peek()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()` (TODO)
+#### `void clear()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — LinkedStack (`src/main/java/com/datastructure/stack/LinkedStack.java`)
+### 구현 — LinkedStack (`src/main/java/com/datastructure/stack/LinkedStack.java`)
 
-### 구조
+#### 구조
 
 ```
 LinkedStack — 맨 앞(head)이 스택의 top 이다. 배열도 용량도 확장도 없다
@@ -270,7 +301,7 @@ LinkedStack — 맨 앞(head)이 스택의 top 이다. 배열도 용량도 확�
 여기서 tail 은 아예 필요 없다. 스택은 한쪽 끝만 쓰는 자료구조이기 때문이다
 ```
 
-### 동작 — push / pop
+#### 동작 — push / pop
 
 ```
 [1] push(E) : 새 노드가 옛 top 을 가리키고 top 을 새 노드로. 언제나 O(1)
@@ -311,64 +342,101 @@ LinkedStack — 맨 앞(head)이 스택의 top 이다. 배열도 용량도 확�
 - 두 구현의 마무리 손질이 다른 이유: 배열은 "칸"이 값을 붙잡고, 연결 리스트는 "버린 노드"가 사슬을 붙잡는다.\
   붙잡는 주체가 달라서 null을 넣는 자리가 다르다.
 
-### `필드`
+#### `필드`
 
 - `static class Node<E> { E item; Node<E> next; }` — 역할:
 - `Node<E> top` — 역할:
 - `private int size` — 역할:
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void push(E element)` (TODO)
+#### `void push(E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E pop()` (TODO)
+#### `E pop()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E peek()` (TODO)
+#### `E peek()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()` (TODO)
+#### `void clear()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **함수 호출 스택** — 각 호출의 지역 변수·돌아갈 주소를 프레임으로 쌓는다. 재귀가 깊어지면 이것이 넘친다([systems/call-stack](../../systems/call-stack/README.md)).
+- **Java `ArrayDeque`** — JDK가 스택으로 권하는 클래스. `java.util.Stack`의 문서 자체가 `Deque`(예: `ArrayDeque`)를 우선 쓰라고 적는다 — 옛 `Stack`은 `Vector`를 상속해 모든 메서드에 동기화가 붙고 중간 접근도 열려 있다.
+- **파서·계산기** — 괄호 짝 검사(문제 1), 후위 표기 계산(문제 2), 중위→후위 변환(문제 5)이 그대로 컴파일러의 연산자 우선순위 파싱이다.
+- **되돌리기(undo)** — 편집기의 편집 이력. Ctrl+Z가 `pop`, 다시 실행(redo)은 두 번째 스택이다.
+- **브라우저 뒤로 가기** — 방문 이력을 쌓고 뒤로 가기가 `pop`한다.
+- **반복 DFS** — 재귀 대신 명시적 스택으로 깊이 우선 탐색을 돈다([algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md)). 깊이가 깊을 때 호출 스택 넘침을 피하는 방법이다.
+- **단조 스택 문제 계열** — 다음 큰 값(문제 3), 히스토그램 최대 직사각형 등. "아직 답을 못 찾은 인덱스"를 쌓는 같은 기법이다.
+- **JVM 피연산자 스택** — 바이트코드가 피연산자를 스택에 쌓고 연산자를 만나면 꺼내 계산한다. 문제 2의 후위 계산과 같은 모양이다(JVM 명세 §2.6.2 — 프레임마다 피연산자 스택을 둔다).
+
+## 적용 — 풀어나가는 법
+
+스택 문제는 "지금 필요한 정보가 가장 최근에 본 것 하나뿐인가"에서 갈린다.\
+순서: ① 무엇을 쌓을지 정한다(괄호 문자·피연산자·아직 답 없는 인덱스) → ② 무엇이 "꺼내는 사건"인지 정한다(닫는 괄호·연산자·더 큰 값의 등장) → ③ 끝났을 때 스택에 남은 것의 뜻을 정한다(남으면 안 닫힘·정확히 하나 남아야 올바른 식) → ④ 각 원소가 몇 번 들어가고 나오는지 세어 비용을 잡는다(1번씩이면 O(n)).\
+아래 다섯 문제 중 넷이 이 순서로 풀리고, 문제 4(스택 정렬)만 제약 때문에 O(n²)이 맞는 답이다.
+
+### 문제 — 이 챕터가 시키는 것
+
+여기서부터 구조가 하나 늘어난다 — **같은 계약(`Stack` 인터페이스)을 두 방식으로 구현**한다.\
+`ArrayStack`은 배열에 쌓아 01번 동적 배열의 성질을, `LinkedStack`은 노드를 이어 02번 연결 리스트의 성질을 그대로 물려받는다.\
+둘은 겉으로 **완전히 같게** 동작해야 하고, 다른 것은 "언제 느려지는가"와 "메모리를 어떻게 쓰는가"뿐이다.\
+그래서 계약 테스트도 한 번만 쓰고 두 구현에 함께 물린다.
+
+**과제**
+
+- README "하는 방법" 5단계 — ① `StackContractTest.java` 따라치기(계약이 여기 있다) → ② `ArrayStack.java` TODO 5개 → ③ `LinkedStack.java` TODO 4개 → ④ `StackProblemsTest.java` 따라치기 → ⑤ `StackProblems.java` 채우기.
+- 구현 대상은 `Stack`(인터페이스, TODO 없음 — 계약은 주어지는 것) + `ArrayStack` + `LinkedStack` + `StackProblems`.
+- 응용 문제 — `isBalanced` 괄호 짝 맞추기 / `evaluatePostfix` 후위 표기식 계산 / `nextGreater` 오른쪽의 첫 번째 더 큰 값 / `sortAscending` 보조 스택 하나로 스택 정렬 / `infixToPostfix` 중위 → 후위 변환(shunting yard).\
+  (README 본문은 "TODO 4개 / 네 메서드"라고 적지만 실제 `StackProblems`에는 위 다섯 개가 있다.)
+- 성능 제약 — `nextGreater`는 20만 건을 5초 안에 끝내야 한다(`mustBeLinear`). 각 원소마다 오른쪽을 훑는 O(n²)은 통과하지 못한다.
+- 계약 제약 — `StackProblems`의 메서드는 전부 `Stack` 인터페이스와 **작업용 스택**을 인자로 받는다. 안에서 `new ArrayStack<>()`이라고 쓰면 두 구현으로 돌릴 자유를 잃는다.
+- 구현 고유 제약 — `ArrayStackTest`·`LinkedStackTest`가 내부 필드(`elements`, `top`, `Node.next`)를 직접 들여다본다. `pop`한 자리를 `null`로 비우고 떼어낸 노드의 링크를 끊어야 통과한다.
+- `sortAscending`은 배열·리스트로 옮기지 말고 보조 스택 하나만 써야 한다 — 그래서 O(n²)이고, 그게 맞는 답이다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
 | ArrayStack | | | |
 | LinkedStack | | | |
 
-## 문제 — StackProblems (`src/main/java/com/datastructure/stack/StackProblems.java`)
+### 문제 — StackProblems (`src/main/java/com/datastructure/stack/StackProblems.java`)
 
-### 문제 1. 괄호 짝 맞추기
+#### 문제 1. 괄호 짝 맞추기
 
 > 문제 설명: `()`, `[]`, `{}` 세 종류가 올바르게 짝지어졌는지 본다. 괄호 외의 문자는 무시한다.
 > `"a(b[c]d)e"` -> true
@@ -383,7 +451,7 @@ LinkedStack — 맨 앞(head)이 스택의 top 이다. 배열도 용량도 확�
 - 논리:
 - 비용(왜):
 
-### 문제 2. 후위 표기식 계산
+#### 문제 2. 후위 표기식 계산
 
 > 문제 설명: 공백으로 구분된 후위 표기식을 계산한다. 정수와 `+ - * /` 만 나온다.
 > `"3 4 +"` -> 7 / `"3 4 + 2 *"` -> 14 / `"5 1 2 + 4 * + 3 -"` -> 14
@@ -400,7 +468,7 @@ LinkedStack — 맨 앞(head)이 스택의 top 이다. 배열도 용량도 확�
 - 논리:
 - 비용(왜):
 
-### 문제 3. 오른쪽의 첫 번째 더 큰 값 (이 문제집의 함정)
+#### 문제 3. 오른쪽의 첫 번째 더 큰 값 (이 문제집의 함정)
 
 > 문제 설명: 각 원소에 대해, 그 오른쪽에서 처음으로 나타나는 더 큰 값을 찾는다. 없으면 -1.
 > `[2, 1, 3]` -> `[3, 3, -1]` / `[5, 4, 3]` -> `[-1, -1, -1]` / `[1, 3, 2, 4]` -> `[3, 4, 4, -1]`
@@ -417,7 +485,7 @@ LinkedStack — 맨 앞(head)이 스택의 top 이다. 배열도 용량도 확�
 - 논리:
 - 비용(왜):
 
-### 문제 4. 스택 정렬
+#### 문제 4. 스택 정렬
 
 > 문제 설명: 스택을 오름차순으로 만든다. 큰 값이 top 에 오게 한다.
 > 배열이나 리스트로 옮기지 말고, 주어진 보조 스택 하나만 써서 해결하라.
@@ -431,7 +499,7 @@ LinkedStack — 맨 앞(head)이 스택의 top 이다. 배열도 용량도 확�
 - 논리:
 - 비용(왜):
 
-### 문제 5. 중위 표기식을 후위 표기식으로
+#### 문제 5. 중위 표기식을 후위 표기식으로
 
 > 문제 설명: 우리가 쓰는 표기(중위)를 문제 2가 계산할 수 있는 표기(후위)로 바꾼다.
 > 토큰은 공백으로 구분되고 정수, `+ - * /`, 괄호만 나온다.
@@ -459,15 +527,55 @@ LinkedStack — 맨 앞(head)이 스택의 top 이다. 배열도 용량도 확�
 - 논리:
 - 비용(왜):
 
+## 장애 시나리오와 대처
+
+**1. 재귀가 깊어져 호출 스택이 넘친다**
+
+- 현상: 깊은 재귀(트리·그래프·연결 리스트 순회)가 어느 입력 크기부터 갑자기 죽는다.
+- 보이는 형태: Java `StackOverflowError`(스택 트레이스에 같은 메서드가 수천 줄 반복), C·C++이면 SIGSEGV. 작은 입력에서는 멀쩡하다.
+  - *스택 프레임(stack frame)*: 함수 호출 한 번의 지역 변수·돌아갈 주소를 담은 덩어리. 호출마다 하나씩 쌓인다.
+- 원인: 호출 스택은 크기가 정해져 있다(64비트 Linux의 HotSpot 기본 1MB — `-Xss`/`-XX:ThreadStackSize`로 바꾸며, 플랫폼마다 다르다). 재귀 깊이가 입력 크기에 비례하면 그 한계를 넘는다.
+- 대처: 재귀를 명시적 스택(`ArrayStack`·`ArrayDeque`)을 쓰는 반복문으로 바꾼다 — 힙에 쌓이므로 상한이 메모리 전체가 된다. 스레드 스택 크기(`-Xss`)를 키우는 것은 한계를 미루는 것뿐이다.
+
+**2. 빈 스택에서 `pop`·`peek` — 잘못된 입력이 예외로 새어 나온다**
+
+- 현상: 괄호 검사나 후위 계산에 이상한 입력을 주면 `false`나 `IllegalArgumentException`이 아니라 `EmptyStackException`이 터진다.
+- 보이는 형태: `")("`·`"3 +"` 같은 입력에서 `java.util.EmptyStackException` 스택 트레이스. 호출자는 "입력이 틀렸다"가 아니라 "구현이 깨졌다"로 읽는다.
+- 원인: 계약상 빈 스택의 `pop`·`peek`은 `EmptyStackException`이다. 닫는 괄호가 먼저 오거나 피연산자가 모자라면 꺼낼 것이 없는데, 꺼내기 전에 `isEmpty()`를 안 봤다.
+- 대처: 꺼내기 전에 `isEmpty()`를 확인하고, 비어 있으면 문제가 정한 답(`false` / `IllegalArgumentException`)으로 바꿔 돌려준다. 자료구조의 예외와 입력 검증의 예외를 섞지 않는다.
+
+**3. 피연산자 순서 뒤집힘 — 예외 없이 틀린 값**
+
+- 현상: `"3 4 -"`가 -1이 아니라 1로 계산된다. 덧셈·곱셈 테스트는 전부 통과한다.
+- 보이는 형태: 뺄셈·나눗셈에서만 부호나 값이 다르다. 예외가 없어서 테스트가 없으면 배포까지 간다.
+- 원인: 스택은 나중에 쌓인 것을 먼저 준다. 첫 번째로 꺼낸 것이 **오른쪽** 피연산자인데 왼쪽으로 썼다. 교환법칙이 성립하는 `+`·`*`에서는 드러나지 않는다.
+- 대처: `right = pop(); left = pop();` 순서를 고정하고, 비가환 연산(`-`·`/`) 테스트를 반드시 둔다(정답 2번 참고).
+
+**4. 확장 복사가 튀어서는 안 되는 경로에 `ArrayStack`**
+
+- 현상: 평소 빠른 `push`가 가끔 한 번씩 오래 걸린다.
+- 보이는 형태: 지연 분포의 꼬리(p99)가 튀고, 프로파일에 배열 복사가 용량 경계(4·8·16·…)마다 찍힌다.
+- 원인: 배열판의 확장은 그 한 번이 O(n)이다. 상환은 O(1)이지만 실시간 경로는 평균이 아니라 최악을 본다(정답 9·10번 참고).
+- 대처: 최대 깊이를 알면 초기 용량을 그만큼 잡아 확장을 0번으로 만든다. 모르면 `LinkedStack`으로 바꿔 "가끔 O(n)"을 없앤다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 스택은 접근 지점을 맨 위 하나로 제한한 것이고, 그 제한이 "마지막에 넣은 것을 O(1)에 꺼내는" 성질(LIFO)을 공짜로 준다.
+- 배열판은 01번의 맨 뒤 추가·삭제만, 연결판은 02번의 `addFirst`·`removeFirst`만 쓴다 — 두 구조의 약점(중간 삽입·인덱스 접근)이 스택에는 아예 없다.
+- 두 구현은 겉으로 같고 "언제 느려지나"만 다르다: 배열판은 확장 순간에 튀고, 연결판은 안 튀는 대신 노드마다 참조를 치른다.
+- 응용은 전부 한 모양이다 — 아직 해소되지 않은 것을 쌓아 두고, 해소하는 사건(닫는 괄호·연산자·더 큰 값)이 오면 꺼낸다. 각 원소가 한 번 들어가고 한 번 나오면 O(n)이다.
+- 빈 스택의 `pop`은 자료구조의 예외이고 잘못된 입력은 문제의 예외다 — 꺼내기 전에 `isEmpty()`를 보고 둘을 섞지 않는다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [01-dynamic-array](../01-dynamic-array/2-summary.md) · [02-linked-list](../02-linked-list/2-summary.md): `ArrayStack`·`LinkedStack`이 각각 물려받는 성질.
+- 후속 — [04-queue-deque](../04-queue-deque/2-summary.md): 반대 규칙(FIFO). 양 끝을 다 써야 해서 배열 큐가 원형이어야 하는 이유가 거기서 나온다.
+- 응용 — [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md)(명시적 스택 DFS) · [algorithm/13-backtracking](../../algorithm/13-backtracking/2-summary.md)(선택을 쌓고 되돌리기) · [systems/call-stack](../../systems/call-stack/README.md)(호출 스택).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `05-stack` (선행 `01`, `03-dynamic-array`).
+- 교재 — CLRS 3판 10.1 스택과 큐.
+- myway 원본 — `/home/jun/project/myway/data-structure/03-stack/` (README.md · impl/ArrayStack.java · impl/LinkedStack.java · impl/StackProblems.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -476,7 +584,7 @@ LinkedStack — 맨 앞(head)이 스택의 top 이다. 배열도 용량도 확�
 - 테스트: `/home/jun/project/myway/data-structure/03-stack/src/test/java/com/datastructure/stack/`
 - 참고 구현: `/home/jun/project/myway/data-structure/03-stack/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 - **스택(stack)**: 한쪽 끝(맨 위)에서만 넣고 꺼내는 자료구조.\
   접시 쌓기.

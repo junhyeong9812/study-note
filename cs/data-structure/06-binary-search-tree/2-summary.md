@@ -4,8 +4,30 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+해시맵(05)은 키를 일부러 흩뿌려 O(1)을 얻었다. 그 순간 "5 옆에 뭐가 있나"라는 정보가 사라진다.\
+그래서 가장 작은 키, 45에 가장 가까운 키, 35~65 사이 전부 — **순서를 묻는 질문**은 전부 훑어야 한다.
+
+```text
+해시맵: 5 와 6 이 전혀 다른 칸                BST: 순서가 구조에 새겨져 있다
+[ 9 ][   ][ 5 ][ 1 ][   ][ 6 ]                    [50]
+"5 다음은?" -> 전부 훑어야 안다 O(n)             /    \
+                                              [30]    [70]     "45 이하 중 최대는?"
+                                             /   \    /   \     -> 한 갈래만 내려간다 O(log n)
+                                          [20] [40] [60] [80]
+```
+
+이진 탐색 트리는 반대 거래를 한다 — "왼쪽은 나보다 작고 오른쪽은 나보다 크다"를 구조에 새겨서, 조회를 O(log n)으로 내주는 대신 최소·최대·이웃·범위·정렬 순회를 전부 싸게 만든다.\
+쉬운 예: 업다운 게임 — "50보다 커?" 한 번에 후보 절반이 사라진다.\
+똑같은 구조다: Java `TreeMap`의 `floorKey`·`subMap`이 이 노트의 `floorKey`·`keysInRange`다.\
+실무 예: DB 인덱스의 `BETWEEN`·`ORDER BY` — 정렬을 유지하는 트리 계열(B+트리, 15)이 범위를 한 갈래로 내려가 처리한다.
+
+  - *정렬 유지(ordered)*: 넣을 때마다 순서를 지켜 두어, 따로 정렬하지 않아도 작은 것부터 꺼낼 수 있는 성질.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 스무고개(업다운 게임).**\
 1~100 중 숫자 하나를 맞힐 때 "50보다 커? 작아?"라고 물으면\
@@ -44,36 +66,37 @@
     비교 1번 = 후보 절반 삭제
 ```
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-05번 해시맵은 평균 O(1)을 얻는 대가로 **순서를 버렸다** — 키를 일부러 흩뿌리기 때문이다.\
-여기서는 반대 거래를 한다: "왼쪽은 작고 오른쪽은 크다"를 구조에 새겨서, 조회를 O(log n)으로 내주는 대신 최소·최대·이웃·범위·정렬 순회를 전부 싸게 만든다.\
-키 순서를 유지하는 맵 `SortedMap`을 이진 탐색 트리로 구현하고, 그 위에서 "가장 가까운 것"을 묻는 응용 문제 셋을 푼다.
+### 전체 흐름
 
-**과제**
+```text
+[1] 불변식 하나                          [2] 탐색 = 한 갈래로만 내려간다
+    모든 노드에서                              get(40): 50 -> 왼쪽(40<50) -> 30 -> 오른쪽(40>30) -> 40
+    왼쪽 전체 < 나 < 오른쪽 전체               비교 1번 = 반대쪽 절반 버림
+    ("왼쪽 자식"이 아니라 "왼쪽 전체")          비용 = 그 노드의 깊이
+          |
+          v
+[3] 삽입 = 탐색해서 빈자리에 단다         [4] 이웃·범위 = 후보를 기억하며 내려간다
+    put(45): 50 -> 30 -> 40 -> 오른쪽 null     floorKey(45): 40 을 후보로 붙잡고 계속 내려간다
+    잎으로만 들어간다, 회전 없음                  "찾으면 바로 반환"이 안 되는 유일한 탐색
+                                               keysInRange(35,65): from 이하면 왼쪽 가지를 통째로 건너뜀
+          |                                    -> O(log n + k)
+          v
+[5] 삭제 = 자식 수로 세 갈래              [6] 대가: 편향
+    0개: 뗀다 / 1개: 자식을 올린다             정렬 순서로 넣으면 한 줄 -> 높이 n -> O(n)
+    2개: 후속자(오른쪽의 최소)를 가져오고        1000개 정렬 삽입 = 높이 1000 (균형이면 ~10)
+        그 자리를 "자식 1개 이하" 문제로 바꾼다    여기서는 확인만, 고치는 것은 16번(회전)
+```
 
-- `SortedMapContractTest.java`를 따라 친다(계약이 거기 있다) → `BinarySearchTree`의 **TODO 9개** → `BSTProblems`의 **TODO 3개**.\
-  순서는 `findNode` → `put` → `firstKey`/`lastKey` → `keys` 를 권하고, `remove`는 마지막에 한다.
-- 구현 대상 — `BinarySearchTree<K extends Comparable<K>, V> implements SortedMap<K, V>`: `findNode`, `put`, `remove`, `firstKey`, `lastKey`, `floorKey`, `ceilingKey`, `keys`, `keysInRange`.
-- 응용 문제 3개(`BSTProblems`)
-  - `closestKey(map, target)` — `target`과 차이가 가장 작은 키. 차이가 같으면 작은 쪽, 비었으면 `NoSuchElementException`.
-  - `rangeSum(map, from, to)` — `from` 이상 `to` 이하인 키들의 값 합(`long`).
-  - `kthSmallest(map, k)` — k 번째로 작은 키(1부터). 범위를 벗어나면 `IndexOutOfBoundsException`.
-- 성능·계약 제약
-  - `closestKey`는 O(log n)이어야 한다 — 10만 개 트리에 10만 질의 5초 제한(`mustBeLogarithmic`). 전부 훑어 최소 차이를 찾으면 막힌다.
-  - `keysInRange`는 가지치기로 O(log n + k)여야 한다. 전부 훑고 거르면 O(n)이다.
-  - `SortedMap` 인터페이스에는 TODO가 없다 — **계약은 주어지는 것**이고 12·15·16번이 그대로 물려받는다.
-  - 계약 테스트는 "정렬된 결과가 나오는가"만 보므로, `BinarySearchTreeTest`가 **`root`·`size`와 `Node`의 `key`·`value`·`left`·`right` 필드를 직접 들여다보며** 탐색 성질을 재귀로 검사한다.
-  - 편향은 고치지 않는다 — 1000개를 정렬 순서로 넣으면 높이 1000이 되는 것을 `sortedInsertDegenerates`로 **확인만** 한다(고치는 것은 16번 레드-블랙 트리).
-- 시작 상태: `./run.sh 06` 을 돌리면 테스트 31개가 전부 실패한다.
+- [1] 규칙은 하나뿐이다 — 왼쪽 서브트리 **전체**가 작고 오른쪽 **전체**가 크다. 자식 하나가 아니라 아래 전부다.
+- [2] 그 규칙 덕에 한 칸에서 비교 한 번이면 반대쪽 절반은 볼 필요가 없다. 비용은 뿌리에서 그 노드까지의 깊이다.
+- [3] 삽입은 탐색과 같은 길을 내려가 `null` 자리에 새 잎을 단다. 기존 노드는 아무도 안 움직인다.
+- [4] 이웃 키(`floorKey`)는 지금 노드가 답일 수도 있고 더 가까운 답이 아래에 있을 수도 있어, 후보를 들고 끝까지 내려간다. 범위 조회는 답이 있을 수 없는 가지를 통째로 건너뛴다.
+- [5] 자식이 둘인 노드는 아무 자식이나 올리면 규칙이 깨진다. 대신할 수 있는 값은 선행자·후속자 둘뿐이고, 그것을 가져오면 원래 자리는 쉬운 경우로 바뀐다.
+- [6] 비용이 깊이에 비례하므로 트리가 한 줄로 늘어지면 연결 리스트다. 이 챕터는 그 성질을 확인만 하고 고치지 않는다.
 
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — SortedMap (`src/main/java/com/datastructure/bst/SortedMap.java`)
+### 계약 — SortedMap (`src/main/java/com/datastructure/bst/SortedMap.java`)
 
 - `V put(K key, V value)`
 - `V get(K key)`
@@ -90,11 +113,11 @@
 - `Iterable<K> keysInRange(K from, K to)`
 - 타입 파라미터: `SortedMap<K extends Comparable<K>, V>`
 
-## 구현 — BinarySearchTree (`src/main/java/com/datastructure/bst/BinarySearchTree.java`)
+### 구현 — BinarySearchTree (`src/main/java/com/datastructure/bst/BinarySearchTree.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 ```
 BinarySearchTree — 노드마다 "왼쪽 전부가 나보다 작고, 오른쪽 전부가 나보다 크다"만 지킨다
@@ -130,7 +153,7 @@ BinarySearchTree — 노드마다 "왼쪽 전부가 나보다 작고, 오른쪽 
     해시맵에는 없는 성질이 바로 이 두 번째다 — 순서, 범위, 이웃 키를 물을 수 있다
 ```
 
-### 동작 — 탐색
+#### 동작 — 탐색
 
 **언제 쓰나** — "이 키 있어?"(get/containsKey), "45 근처의 키는?"(floorKey/ceilingKey), "35~65 사이 전부 줘"(keysInRange).
 
@@ -187,7 +210,7 @@ keysInRange(from, to) : 가지치기가 붙은 중위 순회. 양 끝 모두 포
 
 **비용** — 전부 "루트에서 한 줄로 내려가는 길이"만큼 = 트리 높이 = 균형 잡히면 O(log n).
 
-### 동작 — 추가
+#### 동작 — 추가
 
 **언제 쓰나** — 새 키-값을 넣을 때(put).\
 이미 있는 키면 값만 바꾼다.
@@ -244,7 +267,7 @@ put(key, value) : 내려갈 자리가 없을 때까지 내려가서, 새 노드�
 **비용** — 내려간 길이만큼 = O(높이).\
 균형이면 O(log n), 편향이면 O(n).
 
-### 동작 — 삭제
+#### 동작 — 삭제
 
 **언제 쓰나** — 키 하나를 지울 때(remove).\
 지운 자리를 어떻게 메우느냐가 문제의 전부다.
@@ -313,111 +336,152 @@ remove(key) : 자식 수에 따라 세 갈래다. parent 를 손에 들고 내�
 
 **비용** — 지울 노드까지 내려가기 + (케이스 3이면) 후속자까지 더 내려가기 = O(높이) = 균형이면 O(log n).
 
-### `필드`
+#### `필드`
 
 - `static class Node<K, V> { K key; V value; Node<K, V> left; Node<K, V> right; }` — 역할:
 - `Node<K, V> root` — 역할:
 - `int size` — 역할:
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean containsKey(K key)`
+#### `boolean containsKey(K key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V get(K key)`
+#### `V get(K key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()`
+#### `void clear()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int height()`
+#### `int height()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Node<K, V> findNode(K key)` (TODO)
+#### `Node<K, V> findNode(K key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V put(K key, V value)` (TODO)
+#### `V put(K key, V value)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V remove(K key)` (TODO)
+#### `V remove(K key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K firstKey()` (TODO)
+#### `K firstKey()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K lastKey()` (TODO)
+#### `K lastKey()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K floorKey(K key)` (TODO)
+#### `K floorKey(K key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `K ceilingKey(K key)` (TODO)
+#### `K ceilingKey(K key)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Iterable<K> keys()` (TODO)
+#### `Iterable<K> keys()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Iterable<K> keysInRange(K from, K to)` (TODO)
+#### `Iterable<K> keysInRange(K from, K to)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 문제 — BSTProblems (`src/main/java/com/datastructure/bst/BSTProblems.java`)
+## 쓰이는 곳
 
-### 문제 1. 가장 가까운 키
+- **Java `TreeMap` · `TreeSet`** — `SortedMap` 계약의 실무판. 내부는 균형을 유지하는 레드-블랙 트리([16-red-black-tree](../16-red-black-tree/2-summary.md))이지만, `floorKey`·`ceilingKey`·`subMap`·`firstKey`는 이 노트의 연산 그대로다.
+- **DB 인덱스** — `WHERE k BETWEEN a AND b`, `ORDER BY k`를 정렬 유지 트리가 한 갈래로 내려가 처리한다. 디스크에 맞게 다분기로 바꾼 것이 [15-b-tree](../15-b-tree/2-summary.md)다.
+- **범위·이웃 질의가 있는 캐시·스케줄러** — "지금 시각 이후 가장 가까운 타이머"(`ceilingKey`), "이 값 이하의 최대 버전"(`floorKey`) 같은 질문에 `TreeMap`을 쓴다.
+- **[12-skip-list](../12-skip-list/2-summary.md)** — 같은 `SortedMap` 계약을 트리 대신 확률적 다층 연결 리스트로 구현한다. Redis 정렬 집합(ZSET)이 이쪽이다.
+- **[13-segment-tree](../13-segment-tree/2-summary.md) · [30-interval-tree](../30-interval-tree/2-summary.md)** — "왼쪽은 작고 오른쪽은 크다"를 구간에 적용한 트리들. 범위 합·겹치는 구간을 O(log n)에 답한다.
+- **표현식 트리·구문 트리** — 정렬은 아니지만 "재귀 구조 + 순회 순서가 의미를 정한다"는 같은 도구다. 중위 순회가 정렬을 주는 것과 같은 원리로 후위 순회가 계산 순서를 준다.
+- **[algorithm/06-binary-search](../../algorithm/06-binary-search/2-summary.md)** — 정렬된 배열 위의 이진 탐색을 "삽입·삭제가 되는 구조"로 옮긴 것이 BST다. 반씩 버리는 논리가 같다.
+
+## 적용 — 풀어나가는 법
+
+BST 문제는 "무엇을 물을 것인가"에서 갈린다 — 정확히 있는지만 물으면 해시맵이 낫고, 순서를 물으면 여기다.\
+순서: ① 질문을 이 노트의 연산으로 옮긴다(가장 가까운 → `floorKey`+`ceilingKey`, 구간 → `keysInRange`, k번째 → 중위 순회) → ② 전부 훑는 풀이(O(n))를 먼저 적고, 불변식으로 **어느 가지를 안 봐도 되는지** 찾는다 → ③ 비용을 깊이로 센다(균형이면 log n, 편향이면 n) → ④ 편향이 실제 입력에서 생기는지 확인하고, 생기면 균형 트리(16)나 스킵 리스트(12)로 바꾼다.\
+아래 세 문제가 모두 이 순서로 풀린다.
+
+### 문제 — 이 챕터가 시키는 것
+
+05번 해시맵은 평균 O(1)을 얻는 대가로 **순서를 버렸다** — 키를 일부러 흩뿌리기 때문이다.\
+여기서는 반대 거래를 한다: "왼쪽은 작고 오른쪽은 크다"를 구조에 새겨서, 조회를 O(log n)으로 내주는 대신 최소·최대·이웃·범위·정렬 순회를 전부 싸게 만든다.\
+키 순서를 유지하는 맵 `SortedMap`을 이진 탐색 트리로 구현하고, 그 위에서 "가장 가까운 것"을 묻는 응용 문제 셋을 푼다.
+
+**과제**
+
+- `SortedMapContractTest.java`를 따라 친다(계약이 거기 있다) → `BinarySearchTree`의 **TODO 9개** → `BSTProblems`의 **TODO 3개**.\
+  순서는 `findNode` → `put` → `firstKey`/`lastKey` → `keys` 를 권하고, `remove`는 마지막에 한다.
+- 구현 대상 — `BinarySearchTree<K extends Comparable<K>, V> implements SortedMap<K, V>`: `findNode`, `put`, `remove`, `firstKey`, `lastKey`, `floorKey`, `ceilingKey`, `keys`, `keysInRange`.
+- 응용 문제 3개(`BSTProblems`)
+  - `closestKey(map, target)` — `target`과 차이가 가장 작은 키. 차이가 같으면 작은 쪽, 비었으면 `NoSuchElementException`.
+  - `rangeSum(map, from, to)` — `from` 이상 `to` 이하인 키들의 값 합(`long`).
+  - `kthSmallest(map, k)` — k 번째로 작은 키(1부터). 범위를 벗어나면 `IndexOutOfBoundsException`.
+- 성능·계약 제약
+  - `closestKey`는 O(log n)이어야 한다 — 10만 개 트리에 10만 질의 5초 제한(`mustBeLogarithmic`). 전부 훑어 최소 차이를 찾으면 막힌다.
+  - `keysInRange`는 가지치기로 O(log n + k)여야 한다. 전부 훑고 거르면 O(n)이다.
+  - `SortedMap` 인터페이스에는 TODO가 없다 — **계약은 주어지는 것**이고 12·15·16번이 그대로 물려받는다.
+  - 계약 테스트는 "정렬된 결과가 나오는가"만 보므로, `BinarySearchTreeTest`가 **`root`·`size`와 `Node`의 `key`·`value`·`left`·`right` 필드를 직접 들여다보며** 탐색 성질을 재귀로 검사한다.
+  - 편향은 고치지 않는다 — 1000개를 정렬 순서로 넣으면 높이 1000이 되는 것을 `sortedInsertDegenerates`로 **확인만** 한다(고치는 것은 16번 레드-블랙 트리).
+- 시작 상태: `./run.sh 06` 을 돌리면 테스트 31개가 전부 실패한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 문제 — BSTProblems (`src/main/java/com/datastructure/bst/BSTProblems.java`)
+
+#### 문제 1. 가장 가까운 키
 
 > 문제 설명: `target` 과 차이가 가장 작은 키를 반환한다. 비었으면 `NoSuchElementException`.
 > 양쪽 차이가 같으면 작은 쪽을 반환한다.
@@ -433,7 +497,7 @@ remove(key) : 자식 수에 따라 세 갈래다. parent 를 손에 들고 내�
 - 논리:
 - 비용(왜):
 
-### 문제 2. 구간 합
+#### 문제 2. 구간 합
 
 > 문제 설명: `from` 이상 `to` 이하인 키들의 값을 더한다. 값은 정수다.
 > `{1=10, 5=50, 9=90}, from=1, to=5` -> `60`
@@ -444,7 +508,7 @@ remove(key) : 자식 수에 따라 세 갈래다. parent 를 손에 들고 내�
 - 논리:
 - 비용(왜):
 
-### 문제 3. k 번째로 작은 키 (1부터 센다)
+#### 문제 3. k 번째로 작은 키 (1부터 센다)
 
 > 문제 설명: `{1, 5, 9}, k=2` -> `5`
 > k 가 범위를 벗어나면 `IndexOutOfBoundsException`.
@@ -457,15 +521,54 @@ remove(key) : 자식 수에 따라 세 갈래다. parent 를 손에 들고 내�
 - 논리:
 - 비용(왜):
 
+## 장애 시나리오와 대처
+
+**1. 정렬된 입력을 넣었더니 트리가 한 줄 — O(log n)이 O(n)으로**
+
+- 현상: 시간순·ID순으로 들어오는 데이터를 넣었더니 조회가 데이터 크기에 비례해 느려진다.
+- 보이는 형태: 높이가 원소 수와 같다(1000개면 1000). 원소가 수만 개를 넘으면 재귀로 짠 구현(순회 등)은 `StackOverflowError`로 먼저 죽을 수 있다(이 노트의 `get`·`put`은 반복문이다). 같은 데이터를 섞어 넣으면 빠르다.
+- 원인: 삽입이 항상 오른쪽(또는 왼쪽) 자식으로만 내려가 연결 리스트가 된다. 비용이 깊이에 비례하는 구조에서 깊이가 n이 된 것이다(정답 10번 참고).
+- 대처: 실무 입력은 정렬된 채 들어오는 일이 흔하므로 균형 트리(`TreeMap` = 레드-블랙 트리, 16)를 쓴다. 이 노트의 BST는 입력이 무작위임이 보장될 때만 그대로 쓴다.
+
+**2. 가지치기 없는 범위 조회 — 답은 맞는데 시간이 초과된다**
+
+- 현상: `rangeSum`·`keysInRange`가 작은 범위를 물어도 전체 크기에 비례해 느리다.
+- 보이는 형태: 결과는 정확하다. 답이 k개인데 시간이 n에 비례한다. 10만 개 트리에 좁은 범위 질의 10만 번이 시간 제한에 걸린다.
+- 원인: `keys()`로 전부 순회한 뒤 걸렀거나, `keysInRange`가 불변식을 쓰지 않고 양쪽 가지를 다 내려갔다.
+- 대처: 지금 키가 `from` 이하면 왼쪽 가지는 전부 `from` 미만이므로 들어가지 않는다(`to` 쪽은 대칭). 이 두 줄이 O(n)을 O(log n + k)로 만든다. 테스트는 결과만 보지 말고 방문 노드 수를 센다.
+
+**3. `floorKey`에서 "찾으면 바로 반환" — 더 가까운 답을 놓친다**
+
+- 현상: `floorKey(45)`가 30을 돌려준다. 40이 있는데도.
+- 보이는 형태: 정확히 일치하는 키가 있을 때는 맞고, 없을 때만 틀린다. `closestKey`가 엉뚱한 키를 준다.
+- 원인: 45 이하인 첫 노드(30)를 만나자마자 반환했다. 30의 오른쪽 서브트리에 45 이하이면서 더 큰 키(40)가 있을 수 있다.
+- 대처: "지금 노드 ≤ key"이면 후보로 기억만 하고 오른쪽으로 계속 내려간다. 끝(`null`)에 닿았을 때 후보가 답이다(정답 7번 참고). 일치 키가 없는 경우를 테스트에 반드시 둔다.
+
+**4. 자식 둘인 노드를 지우며 아무 자식이나 올림 — 조용히 깨진 불변식**
+
+- 현상: `remove` 뒤 얼마 지나 `get`이 분명히 넣은 키를 못 찾는다. 예외는 없다.
+- 보이는 형태: 이 구현의 `keys()`는 중위 순회라, 찍어 보면 순서가 어긋난 구간이 보인다(중위 순회가 정렬돼 나오면 불변식은 지켜진 것이다). 계약 테스트는 "정렬된 결과가 나오는가"만 보므로, 자식 둘인 노드를 지운 뒤를 그렇게 확인하지 않으면 지나간다. 노드를 재귀로 훑어 "왼쪽 전체 < 나 < 오른쪽 전체"를 직접 검사하는 `BinarySearchTreeTest`가 이 자리를 잡는다.
+- 원인: 지운 자리에 왼쪽 자식을 그대로 올리면 그 오른쪽 서브트리가 새 노드보다 큰지 보장되지 않는다. 탐색은 불변식을 믿고 한 갈래만 내려가므로 잘못된 쪽으로 간다.
+- 대처: 대신할 값은 선행자(왼쪽의 최대)나 후속자(오른쪽의 최소)뿐이다. 그 값을 복사해 오고 원래 자리를 "자식 1개 이하" 삭제로 바꾼다(정답 9번 참고). 삭제 뒤 불변식 검사를 테스트에 둔다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 이진 탐색 트리는 "왼쪽 전체 < 나 < 오른쪽 전체"라는 규칙 하나를 구조에 새긴 것이고, 그 규칙이 비교 한 번에 반대쪽 절반을 버리게 한다.
+- 해시맵과의 거래는 정반대다 — `get`을 O(1)에서 O(log n)으로 내주는 대신 최소·최대·이웃·범위·정렬 순회를 얻는다. 무엇을 물을 것인지가 구조를 정한다.
+- 중위 순회가 정렬 순서인 것, `floorKey`가 후보를 기억하며 끝까지 내려가는 것, `keysInRange`가 가지를 통째로 건너뛰는 것은 전부 같은 불변식의 귀결이다.
+- 자식이 둘인 노드를 지울 때 대신할 값은 선행자·후속자 둘뿐이고, 그것을 가져오면 원래 자리가 쉬운 경우로 바뀐다.
+- 비용은 깊이에 비례한다 — 정렬된 입력은 트리를 한 줄로 만들어 O(n)이 되고, 이것은 버그가 아니라 성질이라 균형 트리(16)가 따로 필요하다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [05-hashmap](../05-hashmap/2-summary.md): 순서를 버리고 O(1)을 얻은 쪽. 여기와 반대 거래. [algorithm/06-binary-search](../../algorithm/06-binary-search/2-summary.md): 반씩 버리는 논리의 배열판.
+- 후속 — [07-heap](../07-heap/2-summary.md): 전체 순서가 아니라 "가장 큰 것"만 필요할 때. [16-red-black-tree](../16-red-black-tree/2-summary.md): 편향을 회전으로 고친다. [15-b-tree](../15-b-tree/2-summary.md): 디스크용 다분기.
+- 같은 계약 — [12-skip-list](../12-skip-list/2-summary.md): `SortedMap`을 확률적 연결 리스트로. [13-segment-tree](../13-segment-tree/2-summary.md) · [17-fenwick-tree](../17-fenwick-tree/2-summary.md): 문제 3(k번째)을 O(log n)으로 만드는 "부분 개수" 아이디어.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `09-binary-search-tree` (선행 `01`, `05-stack`).
+- 교재 — CLRS 3판 12장 이진 검색 트리.
+- myway 원본 — `/home/jun/project/myway/data-structure/06-binary-search-tree/` (README.md · impl/BinarySearchTree.java · impl/BSTProblems.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -474,7 +577,7 @@ remove(key) : 자식 수에 따라 세 갈래다. parent 를 손에 들고 내�
 - 테스트: `/home/jun/project/myway/data-structure/06-binary-search-tree/src/test/java/com/datastructure/bst/`
 - 참고 구현: `/home/jun/project/myway/data-structure/06-binary-search-tree/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 - **노드(node)**: 트리를 이루는 칸 하나.\
   키·값과 왼쪽/오른쪽 자식으로 가는 연결을 담는다.

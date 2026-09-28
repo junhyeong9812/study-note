@@ -4,8 +4,30 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+"값이 계속 바뀌는데 앞에서부터의 합도 계속 묻는다" — 이 두 요구가 같이 오면 단순한 답이 둘 다 무너진다.\
+원소 배열은 갱신 O(1)이지만 합을 물을 때마다 O(n)이고, 누적합 배열은 조회 O(1)이지만 값 하나가 바뀌면 뒤를 전부 다시 계산해야 한다(O(n)).
+
+```text
+원소 배열  [3][1][4][1][5][9][2][6]   합(1~7)? -> 7개 더한다 O(n)   /  갱신 O(1)
+누적합    [3][4][8][9][14][23][25][31] 합(1~7)? -> 한 칸 읽기 O(1) /  2번 값 바뀌면 뒤 7칸 다시 O(n)
+
+펜윅      tree[1..8] = 소계 칸 (1칸·2칸·1칸·4칸·1칸·2칸·1칸·8칸)
+           합(1~7) = tree[7] + tree[6] + tree[4]  <- 3칸만          갱신도 3칸만   둘 다 O(log n)
+```
+
+펜윅 트리는 배열 위에 "구간 소계" 칸을 겹겹이 두어, 조회도 갱신도 소계 log n개만 만지게 한다.\
+13번 세그먼트 트리도 같은 일을 하지만, 펜윅은 "역연산이 있는 연산(합)"으로 범위를 좁힌 대가로 코드 열 줄·메모리 n+1을 받아 낸다.\
+쉬운 예: 소계 칸이 있는 용돈 기입장 — 30일치를 매번 더하지 않고 소계 몇 개만 골라 더한다.\
+똑같은 구조다: 이 노트의 `FenwickTree.tree[i]`는 "원소 `i-lowbit(i)+1`부터 `i`까지"의 소계를 갖는다.\
+실무 예: 온라인 순위표 — 점수 빈도를 세어 두면 "내 점수는 상위 몇 등인가"와 "k등의 점수는"을 둘 다 O(log n)에 답한다.
+
+  - *역연산*: 한 일을 되돌리는 연산. 덧셈의 역연산은 뺄셈 — `합(1~7) - 합(1~3) = 합(4~7)`이 성립하는 이유다. 최솟값에는 이것이 없다.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 소계 칸이 있는 용돈 기입장.** 1일부터 30일까지 쓴 돈의 합을 알고 싶을 때, 30개를 매번 다 더하면 느리다. 그래서 장부에 "1\~16일 소계", "17\~24일 소계", "25\~28일 소계" 같은 소계 칸을 미리 만들어 두면, 소계 몇 개만 골라 더해 답이 나온다.
 
@@ -23,25 +45,38 @@
   1~7의 합 = "1~4 소계" + "5~6 소계" + "7 한 칸"  <- 8개 대신 3개만 더한다
 ```
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-13번 세그먼트 트리는 결합법칙만 있으면 무엇이든 접었고, 그 일반성의 값이 코드 길이(수십 줄)와 메모리(4n)였다.\
-여기서는 **역연산이 있는 연산(사실상 합)만** 하도록 범위를 좁히고, 그 대신 코드 열 줄과 메모리 n+1 을 받아 내는 구조를 직접 만든다.\
-`FenwickTreeTest.java` 를 따라친 뒤 TODO 를 채운다(처음에는 23개 중 20개가 실패한다).
+### 전체 흐름
 
-- `FenwickTree` 의 TODO 6개 — `buildFrom` · `add` · `prefixSum` · `rangeSum` · `set` · `findPrefixIndex`.\
-  `add` 와 `prefixSum` 이 핵심이고 나머지는 그 위에 얹힌다.
-- `FenwickTree2D` 의 TODO 3개 — `add` · `prefixSum` · `rangeSum`.\
-  1차원을 행에 한 번, 열에 한 번 겹쳐 쓰면 된다. 루프가 이중이 될 뿐이다.
-- 응용으로 따져볼 것: 안쪽에서 1부터 세지 않으면 무한 루프(`0 & -0 == 0`, 그래서 모든 테스트에 30초 제한) · `add` 와 `prefixSum` 은 걷는 방향이 반대 · `set` 을 직접 못 하고 차이를 더하는 것만 해서 두 배 비싸다 · `buildFrom` 은 한 번만 훑어 O(n) · `findPrefixIndex` 는 트리 위에서 직접 이진 탐색해 O(log^2 n) 이 아니라 O(log n)(빈도표로 "정렬했을 때 k번째") · 2차원은 1차원을 두 번 겹친 것이고 안쪽 루프에 함정이 하나 · 직사각형 합의 포함-배제에서 마지막 항 부호를 빠뜨리는 것이 제일 흔한 실수 · `BinaryIndexedTree` 는 같은 것의 다른 이름.
+```text
+[1] 규칙 하나: tree[i] 는 i 에서 왼쪽으로 lowbit(i) 개를 덮는다     lowbit(i) = i & -i = 최하위 1비트
+    i:      1     2     3     4     5     6     7     8
+    lowbit: 1     2     1     4     1     2     1     8
+    덮는 곳 [1]  [1-2]  [3]  [1-4]  [5]  [5-6]  [7]  [1-8]
+              |
+              v
+[2] 조회 prefixSum(7) = 7 을 비트로 쪼갠다      [3] 갱신 add(3, d) = 3 을 덮는 칸을 전부 고친다
+    7 = 0111b -> tree[7] (i -= lowbit) -> 6           3 = 0011b -> tree[3] (i += lowbit) -> 4
+      = 0110b -> tree[6]               -> 4             = 0100b -> tree[4]               -> 8
+      = 0100b -> tree[4]               -> 0 끝            = 1000b -> tree[8]               -> 9 > n 끝
+    아래로(빼며) 걷는다 · 걸음 수 = 1비트 개수      위로(더하며) 걷는다 · 걸음 수 <= log n
+              |
+              v
+[4] 그 위에 얹는 것                                    [5] 대가
+    rangeSum(l, r) = prefixSum(r) - prefixSum(l-1)          역연산 없는 연산(min/max)은 못 한다 -> 13번
+    set(i, v)      = add(i, v - get(i))   두 배 비쌈         tree[0] 은 못 쓴다 (0 & -0 == 0 -> 무한 루프)
+    buildFrom      = 한 번 훑으며 부모에게 넘김 O(n)         바깥 0-base / 안 1-base 경계 +1
+    findPrefixIndex= 트리 위 이진 탐색 O(log n) ("k번째")
+```
 
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+- [1] 노드도 링크도 없다. 칸 번호의 이진수 모양이 곧 "몇 칸을 맡는가"이고, 그것이 트리를 대신한다.
+- [2] 합을 물으면 번호를 2의 거듭제곱으로 쪼개 소계 칸을 골라 더한다. 걸음 수가 1비트의 개수라 log n 이하다.
+- [3] 값을 바꾸면 그 자리를 덮는 소계 칸을 전부 고친다. `i += lowbit`로 올라가는 부모 사슬이 그 칸들이다. 조회와 방향이 반대다.
+- [4] 구간 합·값 바꾸기·초기 구성·"k번째 찾기"가 전부 이 두 걸음 위에 얹힌다.
+- [5] 대가는 셋 — 뺄셈이 되는 연산만, `tree[0]`은 비워 두기(안 그러면 무한 루프), 안팎 인덱스 경계의 +1.
 
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — PrefixSumTree (`src/main/java/com/datastructure/fenwick/PrefixSumTree.java`)
+### 계약 — PrefixSumTree (`src/main/java/com/datastructure/fenwick/PrefixSumTree.java`)
 
 - `int size()`
 - `void add(int index, long delta)`
@@ -50,11 +85,11 @@
 - `long prefixSum(int index)`
 - `long rangeSum(int from, int to)`
 
-## 구현 — FenwickTree (`src/main/java/com/datastructure/fenwick/FenwickTree.java`)
+### 구현 — FenwickTree (`src/main/java/com/datastructure/fenwick/FenwickTree.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 먼저 알아야 할 것 세 줄:
 
@@ -118,7 +153,7 @@ tree[8] = 31   i=1000b  lowbit=8|===============================================
   -> 누적합의 차로만 답을 만든다 -> 뺄셈이 있는 연산(합)에만 쓸 수 있다.
 ```
 
-### 동작 — 갱신
+#### 동작 — 갱신
 
 **언제 쓰나**: 원소 하나의 값이 바뀔 때. 그 원소를 담고 있는 소계 칸들만 골라 고친다.
 
@@ -160,7 +195,7 @@ tree[8] += 10   (1000b)  |===============================================|
   -> 자리 수 = log2(n) 번을 넘길 수 없다.
 ```
 
-### 동작 — 조회
+#### 동작 — 조회
 
 **언제 쓰나**: "맨 앞부터 어떤 자리까지의 합"을 물을 때. 소계 조각 몇 개를 이어 붙여 답을 만든다.
 
@@ -230,67 +265,67 @@ rangeSum(2,6) = 21                  |=============================|   25 - 4 = 2
    tree 에는 원소값이 그대로 남아 있지 않기 때문이다 -- get 조차 rangeSum 을 거친다.
 ```
 
-### `필드`
+#### `필드`
 
 - `int n` 역할:
 - `long[] tree` (크기 n+1) 역할:
 - `tree[i]` 가 덮는 구간의 규칙 (`i & -i`):
 
-### `public FenwickTree(int size)` / `public FenwickTree(long[] initial)`
+#### `public FenwickTree(int size)` / `public FenwickTree(long[] initial)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void buildFrom(long[] values)` (TODO)
+#### `private void buildFrom(long[] values)` (TODO)
 
 - 하는 일:
 - 논리(왜 한 번 훑기로 되는가):
 - 비용(왜):
 
-### `public void add(int index, long delta)` (TODO)
+#### `public void add(int index, long delta)` (TODO)
 
 - 하는 일:
 - 논리(`x += x & -x` 로 올라가는 이유):
 - 비용(왜):
 
-### `public long prefixSum(int index)` (TODO)
+#### `public long prefixSum(int index)` (TODO)
 
 - 하는 일:
 - 논리(`x -= x & -x` 로 내려가는 이유 · 걸음 수 = 1비트 개수):
 - 비용(왜):
 
-### `public long rangeSum(int from, int to)` (TODO)
+#### `public long rangeSum(int from, int to)` (TODO)
 
 - 하는 일:
 - 논리(이 한 줄이 자료구조의 한계를 정하는 이유):
 - 비용(왜):
 
-### `public void set(int index, long value)` (TODO)
+#### `public void set(int index, long value)` (TODO)
 
 - 하는 일:
 - 논리(대입을 직접 못 하는 이유):
 - 비용(왜):
 
-### `public int findPrefixIndex(long target)` (TODO)
+#### `public int findPrefixIndex(long target)` (TODO)
 
 - 하는 일:
 - 논리(트리 칸 구조가 이미 이진 탐색의 모양이라는 것):
 - 비용(왜):
 
-### `public long get(int index)`
+#### `public long get(int index)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int size()`
+#### `public int size()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 — FenwickTree2D (`src/main/java/com/datastructure/fenwick/FenwickTree2D.java`)
+### 구현 — FenwickTree2D (`src/main/java/com/datastructure/fenwick/FenwickTree2D.java`)
 
-### 구조
+#### 구조
 
 ```
 FenwickTree2D -- 같은 lowbit 규칙을 두 축에 각각 적용한다 (4 x 4 격자)
@@ -393,45 +428,75 @@ rangeSum(r1, c1, r2, c2) = A - B - C + D  (포함-배제)
   (0 을 안 돌려주고 예외를 냈다면 경계마다 따로 분기해야 했을 것이다)
 ```
 
-### `필드`
+#### `필드`
 
 - `int rows` / `int cols` 역할:
 - `long[][] tree` (크기 (rows+1) x (cols+1)) 역할:
 
-### `public FenwickTree2D(int rows, int cols)`
+#### `public FenwickTree2D(int rows, int cols)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public void add(int row, int col, long delta)` (TODO)
+#### `public void add(int row, int col, long delta)` (TODO)
 
 - 하는 일:
 - 논리(안쪽 루프의 시작값을 매번 다시 잡아야 하는 이유):
 - 비용(왜):
 
-### `public long prefixSum(int row, int col)` (TODO)
+#### `public long prefixSum(int row, int col)` (TODO)
 
 - 하는 일:
 - 논리(음수 경계에서 0 을 반환하는 것이 왜 포함-배제를 성립시키는가):
 - 비용(왜):
 
-### `public long rangeSum(int r1, int c1, int r2, int c2)` (TODO)
+#### `public long rangeSum(int r1, int c1, int r2, int c2)` (TODO)
 
 - 하는 일:
 - 논리(포함-배제 · 마지막 항의 부호):
 - 비용(왜):
 
-### `public long get(int row, int col)` / `public void set(int row, int col, long value)`
+#### `public long get(int row, int col)` / `public void set(int row, int col, long value)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int rows()` / `public int cols()`
+#### `public int rows()` / `public int cols()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **온라인 순위표·백분위 집계** — 점수별 빈도를 펜윅 트리에 두면 "내 점수 아래에 몇 명"(`prefixSum`)과 "k등의 점수"(`findPrefixIndex`)가 둘 다 O(log n)이다. 중앙값 추적도 같은 모양이다.
+- **역전 쌍 세기(inversion count)** — 값을 순서대로 넣으며 "지금까지 나온 것 중 나보다 큰 것"을 `prefixSum`으로 세면 O(n log n)이다. [algorithm/02-merge-sort](../../algorithm/02-merge-sort/2-summary.md)의 병합 세기와 같은 답을 다른 길로 낸다.
+- **적분 영상(integral image)·히트맵 집계·OLAP 부분 합** — 2차원 펜윅의 직사각형 합이 이 모양이다. 갱신이 없으면 2차원 누적합 배열로 충분하고, 갱신이 있으면 `FenwickTree2D`다.
+- **적응형 산술 부호화의 누적 빈도표** — 기호 빈도가 계속 바뀌는데 누적 빈도를 계속 물어야 해서 펜윅 트리를 쓴다. 원논문(Fenwick 1994)의 출발점이 이 문제다 — 논문 제목이 "누적 빈도표"다.
+- **[13-segment-tree](../13-segment-tree/2-summary.md)의 특수형** — 합·XOR처럼 역연산이 있는 연산이면 세그먼트 트리 대신 이것을 쓴다. 코드 열 줄, 메모리 1/4, 상수도 작다.
+- **[algorithm/10-prefix-sum](../../algorithm/10-prefix-sum/2-summary.md)의 갱신판** — 정적 누적합에 "값이 바뀐다"를 더하면 펜윅 트리가 된다.
+- **[algorithm/29-bit-manipulation](../../algorithm/29-bit-manipulation/2-summary.md)** — `i & -i`(최하위 1비트)와 2의 보수가 이 구조의 전부다.
+
+## 적용 — 풀어나가는 법
+
+펜윅 트리 문제는 "합으로 바꿔 쓸 수 있는가"에서 갈린다.\
+순서: ① 묻는 연산에 역연산이 있는지 확인한다 — 합·XOR이면 펜윅, min/max/GCD면 13번이다 → ② 갱신이 없으면 누적합 배열로 끝낸다 — 갱신이 있어야 펜윅이 값어치를 한다 → ③ "k번째"·"순위"는 값의 빈도표를 펜윅에 얹어 `findPrefixIndex`로 푼다 → ④ 2차원은 같은 규칙을 축마다 겹치고, 직사각형 합은 포함-배제로 만든다 → ⑤ 안쪽 인덱스가 1부터인지, 바깥 경계에 +1이 붙었는지 마지막에 다시 본다.\
+아래 과제 9개가 이 순서다 — `add`와 `prefixSum`이 핵심이고 나머지는 그 위에 얹힌다.
+
+### 문제 — 이 챕터가 시키는 것
+
+13번 세그먼트 트리는 결합법칙만 있으면 무엇이든 접었고, 그 일반성의 값이 코드 길이(수십 줄)와 메모리(4n)였다.\
+여기서는 **역연산이 있는 연산(사실상 합)만** 하도록 범위를 좁히고, 그 대신 코드 열 줄과 메모리 n+1 을 받아 내는 구조를 직접 만든다.\
+`FenwickTreeTest.java` 를 따라친 뒤 TODO 를 채운다(처음에는 23개 중 20개가 실패한다).
+
+- `FenwickTree` 의 TODO 6개 — `buildFrom` · `add` · `prefixSum` · `rangeSum` · `set` · `findPrefixIndex`.\
+  `add` 와 `prefixSum` 이 핵심이고 나머지는 그 위에 얹힌다.
+- `FenwickTree2D` 의 TODO 3개 — `add` · `prefixSum` · `rangeSum`.\
+  1차원을 행에 한 번, 열에 한 번 겹쳐 쓰면 된다. 루프가 이중이 될 뿐이다.
+- 응용으로 따져볼 것: 안쪽에서 1부터 세지 않으면 무한 루프(`0 & -0 == 0`, 그래서 모든 테스트에 30초 제한) · `add` 와 `prefixSum` 은 걷는 방향이 반대 · `set` 을 직접 못 하고 차이를 더하는 것만 해서 두 배 비싸다 · `buildFrom` 은 한 번만 훑어 O(n) · `findPrefixIndex` 는 트리 위에서 직접 이진 탐색해 O(log^2 n) 이 아니라 O(log n)(빈도표로 "정렬했을 때 k번째") · 2차원은 1차원을 두 번 겹친 것이고 안쪽 루프에 함정이 하나 · 직사각형 합의 포함-배제에서 마지막 항 부호를 빠뜨리는 것이 제일 흔한 실수 · `BinaryIndexedTree` 는 같은 것의 다른 이름.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -440,15 +505,56 @@ rangeSum(r1, c1, r2, c2) = A - B - C + D  (포함-배제)
 | FenwickTree2D (차원 겹치기) | | | |
 | 누적합 배열 (갱신 없음) | | | |
 
+## 장애 시나리오와 대처
+
+**1. 테스트가 30초에 걸려 죽는다 — 1-base 위반의 무한 루프**
+
+- 현상: `add` 한 번이 끝나지 않는다(같은 실수가 `prefixSum`에서는 무한 루프가 아니라 조용히 0이나 틀린 합으로 나온다).
+- 보이는 형태: 테스트가 30초 제한에 걸려 실패한다. CPU 100%, 스레드 덤프에서 `add`의 `for (x = …; x <= n; x += x & -x)` 루프 안에 계속 있다. 예외는 없다.
+- 원인: 안쪽 인덱스가 0에 닿았다. `0 & -0 == 0`이라 `x += x & -x`가 `x`를 바꾸지 못하고, `0 <= n`은 늘 참이라 걸음이 멈추지 않는다. (`prefixSum`의 `x > 0` 조건은 0에서 바로 빠져나와 멈추기는 한다.) 바깥 0-base 인덱스를 +1 없이 그대로 썼거나, `add`와 `prefixSum`의 방향을 바꿔 썼을 때 생긴다(정답 4번 참고).
+- 대처: 안쪽 진입점에서 `x = index + 1`을 한 번만 하고 그 아래는 1-base로만 쓴다. 루프 조건을 `i > 0`·`i <= n`으로 못 박고, 테스트에 시간 제한을 둔다 — 이 문제집이 모든 테스트에 30초를 건 이유다.
+
+**2. 합이 조용히 음수가 된다 — 정수 오버플로**
+
+- 현상: 값은 전부 양수인데 `prefixSum`이 음수나 터무니없이 작은 값을 돌려준다.
+- 보이는 형태: 어느 순간부터 순위·통계가 뒤집힌다. 예외는 없다. 원소 하나하나는 `int`에 들어가서 문제없어 보인다.
+- 원인: 소계 칸은 원소 여러 개의 합이라 원소보다 훨씬 크다. `tree[8]`은 원소 8개의 합, 맨 위 칸은 전체 합이다. 소계를 `int`로 두면 원소가 `int`여도 넘친다.
+  - *오버플로(overflow)*: 표현할 수 있는 최댓값을 넘어 부호가 뒤집히거나 엉뚱한 값이 되는 것. Java의 정수 연산은 넘쳐도 예외를 내지 않는다.
+- 대처: 소계 배열을 `long`으로 둔다(이 노트의 `tree`가 `long[]`인 이유). 상한을 미리 계산한다 — 원소 최댓값 × n이 `long`에 드는지. 넘칠 수 있으면 `Math.addExact`로 예외를 내게 한다.
+
+**3. 경계 하나가 틀린 구간 합 — `from = 0`과 포함/제외**
+
+- 현상: `rangeSum(0, r)`이 `ArrayIndexOutOfBoundsException`으로 죽거나, 구간 합이 첫 원소만큼 빠지거나 더해진다.
+- 보이는 형태: 무작위 테스트에서 `rangeSum`이 원소를 직접 더한 값과 첫 칸 하나만큼 어긋난다. `from = 0`인 경우만 예외가 난다.
+- 원인: `rangeSum(from, to) = prefixSum(to) - prefixSum(from - 1)`에서 `from = 0`이면 `prefixSum(-1)`이 필요하고, 그 값이 0이라는 약속이 코드에 없다. 또는 `prefixSum(index)`가 `index`를 포함하는지 제외하는지를 안팎에서 다르게 잡았다.
+- 대처: `prefixSum`의 뜻("0부터 index까지, index 포함")을 계약에 한 줄로 적고, `prefixSum(-1) == 0`을 첫 줄에서 처리한다. 무작위 배열로 원소 직접 합과 대조하는 테스트를 둔다 — 경계는 눈으로 못 잡는다.
+
+**4. 최솟값에 썼더니 갱신 뒤 답이 안 바뀐다**
+
+- 현상: 앞에서부터의 최솟값(prefix min)을 펜윅 트리로 만들었더니 값을 키운 뒤에도 최솟값이 옛 값에 머문다. 임의 구간 `[l, r]`의 최솟값은 값을 줄이든 키우든 처음부터 만들 수 없다.
+- 보이는 형태: `add`는 예외 없이 끝나고, 값을 줄일 때는 맞다가 키울 때만 틀린다.
+- 원인: `min`에는 역연산이 없다. 소계 칸에 "구간 최솟값"을 두면 값이 커졌을 때 그 칸을 다시 계산할 방법이 없고, `prefixMin(r) - prefixMin(l-1)` 같은 뺄셈도 성립하지 않는다(정답 2번 참고).
+- 대처: 역연산이 없는 연산은 13번 세그먼트 트리로 간다. 펜윅은 합·XOR·(곱, 모듈로 역원이 있을 때)까지만.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 펜윅 트리는 "값이 바뀌면서 누적합도 계속 묻는" 문제에서 조회와 갱신을 둘 다 O(log n)으로 만든다 — 원소 배열도 누적합 배열도 한쪽이 O(n)이었다.
+- 트리라고 부르지만 배열 하나다 — `tree[i]`가 왼쪽으로 `i & -i`개를 덮는다는 규칙 하나에서 조회(빼며 내려가기)와 갱신(더하며 올라가기)이 따라 나온다.
+- 13번 세그먼트 트리에서 "역연산 없는 연산"을 포기한 대가가 코드 열 줄·메모리 n+1·작은 상수다 — 덜 하면 더 싸다.
+- 걸음 수는 곧 1비트의 개수다 — 그래서 `tree[0]`을 쓰면 `0 & -0 == 0`으로 걸음이 멈추지 않고, 안팎 인덱스 경계의 +1 하나가 정확성을 가른다.
+- 빈도표 위에 얹으면 "k번째"·"순위"를 트리 위 이진 탐색으로 O(log n)에 답하고, 축마다 겹치면 2차원 직사각형 합이 된다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [13-segment-tree](../13-segment-tree/2-summary.md): 일반성(모노이드)의 값이 코드·메모리였고, 여기서 그 하나를 포기한다. [algorithm/10-prefix-sum](../../algorithm/10-prefix-sum/2-summary.md): 갱신이 없을 때의 답.
+- 기법 — [algorithm/29-bit-manipulation](../../algorithm/29-bit-manipulation/2-summary.md)(`i & -i`·2의 보수) · [algorithm/06-binary-search](../../algorithm/06-binary-search/2-summary.md)(`findPrefixIndex`의 트리 위 이진 탐색) · [algorithm/02-merge-sort](../../algorithm/02-merge-sort/2-summary.md)(역전 쌍 세기의 다른 길).
+- 대조 — [22-sparse-table](../22-sparse-table/2-summary.md): 갱신 없는 구간 최솟값을 O(1)에. 갱신·역연산 두 축으로 13·17·22가 갈린다.
+- 후속 — [18-bitset](../18-bitset/2-summary.md): "구조를 계산으로 대신했다"에서 한 걸음 더 — 값 자체를 비트로 눕힌다.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `34-fenwick-tree` (선행 `33-segment-tree`).
+- 교재 — Fenwick, "A New Data Structure for Cumulative Frequency Tables", Software: Practice and Experience 24(3), 1994 · cp-algorithms "Fenwick Tree".
+- myway 원본 — `/home/jun/project/myway/data-structure/17-fenwick-tree/` (README.md · impl/FenwickTree.java · impl/FenwickTree2D.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -457,7 +563,7 @@ rangeSum(r1, c1, r2, c2) = A - B - C + D  (포함-배제)
 - 테스트: `/home/jun/project/myway/data-structure/17-fenwick-tree/src/test/java/com/datastructure/fenwick/`
 - 정답 구현: `/home/jun/project/myway/data-structure/17-fenwick-tree/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 - **펜윅 트리(BIT, Binary Indexed Tree)**: 배열 위에 구간 소계 칸을 겹겹이 두어, 누적합 조회와 값 갱신을 둘 다 O(log n)에 하는 자료구조.
 - **누적합(prefix sum)**: 맨 앞부터 어떤 자리까지 다 더한 값. `prefixSum(6)` = 인덱스 0\~6의 합.

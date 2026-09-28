@@ -4,8 +4,29 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+"이 단어가 든 문서를 전부 찾아라"를 색인 없이 하면, 질의마다 모든 문서를 열어 다시 읽어야 한다.\
+문서 2,000개면 2,000번, 질의가 초당 100건이면 초당 20만 번 문서를 연다 — 답이 2개뿐이어도 그렇다.
+
+```text
+전수 조사 : 질의마다 전부 연다               역색인 : 미리 뒤집어 둔 표만 본다
+"cat"? -> [doc0][doc1][doc2][doc3] ...       "cat"? -> index["cat"] = [0, 1, 3]
+          ^^^^^^^^^^^^^^^^^^^^^^^^                     ^^^^^^^^^^^^^^^^^^^^^^^^
+          문서 수 x 문서 길이                           매칭 포스팅 수만큼 — doc2 는 열지도 않는다
+```
+
+역색인은 "문서 → 단어들"을 한 번 뒤집어 "단어 → 문서 목록"으로 저장해 둔다.\
+목록을 문서 번호 오름차순으로 유지하면 두 단어를 다 가진 문서(AND)도 두 목록을 한 번 훑기로 낸다.
+
+- 쉬운 예: 책 맨 뒤의 찾아보기 — "고양이 → 12, 87, 203쪽". 책을 처음부터 넘기지 않는다.
+- 똑같은 구조다: `InvertedIndexEngine`의 `Map<String, List<Posting>>` — 항 하나에 docId 정렬된 포스팅 리스트.
+- 실무 예: 로그 검색 — 하루 수억 줄에서 `error` AND `timeout`이 같이 나온 줄만 찾는다. 원문을 다시 읽지 않고 두 포스팅 리스트의 교집합만 본다.
+  - *포스팅(posting)*: "(이 단어가) 어느 문서의 어느 위치들에 있나"를 담은 기록 하나.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 책 맨 뒤의 "찾아보기(색인)" 페이지.**
 
@@ -25,30 +46,42 @@
 
 이 "찾아보기 페이지"와 **똑같은 구조**가 실무의 검색 엔진이다 — 구글 검색, Elasticsearch, 데이터베이스의 전문(full-text) 검색이 전부 역색인 위에서 돈다. 단어 = 항(term), 페이지 목록 = 포스팅 리스트.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-원본 README(`myway/data-structure/32-inverted-index/README.md`)의 요구사항은 이렇다.
+### 전체 흐름
 
-- 문서 2,000개에서 특정 항이 든 문서를 찾는다 — 전수 조사는 2,000개를 다 열고, 역색인은 2개만 연다.\
-  그 차이를 만드는 것이 **"항 → 그 항이 든 문서 목록"** 이고, 포스팅 리스트를 **문서 번호 오름차순으로 유지**하는 것이 값의 근원이다.
-- 교집합 병합은 부등호 하나만 틀려도 "봐야 하는 문서를 안 본다"가 되고 **예외가 안 난다**.\
-  그래서 **답이 맞는 구현을 둘 만들어 대조한다** — `LinearScanEngine`(기준선, 쉬워서 맞다)과 `InvertedIndexEngine`(본체, 빨라서 의심스럽다).
+```text
+[1] 색인 (index)                                    [2] 질의 (search)
+    문서 "cat dog cat" (doc 3)                          "Cat DOG"
+      | 분석기: 자르기 -> 소문자화 -> 불용어 제거            | 같은 분석기 (다르면 조용히 0건)
+      v                                                  v
+    [cat, dog, cat]  위치 = 순서 번호                    [cat, dog]
+      |                                                  |
+      v                                                  v
+    index["cat"] += {3, [0, 2]}                        index["cat"] -> [0, 1, 3]
+    index["dog"] += {3, [1]}                           index["dog"] -> [1, 2, 3]
+    (docId 오름차순 자리에 끼워 넣는다)                     |
+                                                         v
+[3] 교집합 병합 — 짧은 리스트부터, 두 포인터로 한 번 훑기
+    [0, 1, 3]  vs  [1, 2, 3]  ->  [1, 3]     작은 쪽만 전진, 같으면 답에 넣고 둘 다 전진
+                                                         |
+                                                         v
+[4] 점수 -> 정렬 -> 상위 k                          [5] 구문 검색 "cat dog"
+    score = sum( tf x ln(N/df) )                        AND 로 먼저 좁힌 뒤,
+    점수 내림차순, 동점은 docId 오름차순                  그 문서들 안에서만 위치가 이어지는지 본다
+                                                        doc 3: cat@0, dog@1 -> 붙어 있다 O
+```
 
-과제(TODO 12개 + 구현 대상):
+- [1] 문서가 들어오면 분석기가 항(term)으로 바꾸고, 항마다 포스팅 리스트의 **정렬된 자리**에 끼운다. 빈도는 따로 들지 않고 `positions.size()`로 센다 — 두 값을 들면 어긋날 자리가 생긴다.
+  - *항(term)*: 분석을 마치고 색인에 들어가는 최종 형태의 단어.
+- [2] 질의도 **같은 분석기**를 거친다. 색인은 소문자인데 질의는 대문자면 표에 없는 키를 찾는 것이라, 예외 없이 0건이다.
+- [3] 정렬돼 있으니 교집합은 두 포인터로 한 번 훑기다. 짧은 리스트부터 합치면 비교 횟수가 준다(231 대 683 — 답은 같다).
+  - *두 포인터(two pointers)*: 정렬된 두 목록에 위치 표시를 하나씩 두고 작은 쪽만 전진시키는 기법.
+- [4] 남은 문서에 tf-idf 점수를 매겨 정렬한다. 모든 문서에 있는 항은 `ln(N/df) = 0` — 문서를 가르지 못하므로 점수 0이 맞다.
+  - *tf / df*: 이 문서에서 그 항이 나온 횟수 / 그 항을 가진 문서 수.
+- [5] 구문 검색은 AND보다 좁다. 먼저 AND로 후보를 줄이고 그 안에서만 위치를 본다 — 안 줄이면 전수 조사가 된다.
 
-- TODO 1~4 — 부품: `SimpleTokenizer`(자르기), `StandardAnalyzer`(자르기 → 소문자화 → 불용어 제거), `TfIdfScorer`(`tf × log(N/df)`), `SearchResult.compareTo`(점수 내림차순 · 동점은 문서 번호 오름차순).
-- TODO 5~6 — `LinearScanEngine`: 전수 조사 기준선. 대조가 여기 걸려 있으므로 먼저 만든다.
-- TODO 7~12 — `InvertedIndexEngine`: 색인 넣기(`insertSorted`), AND 교집합 병합(`intersect`), 구문 검색(`searchPhrase` / `containsPhrase`), 통계(`postingCount` / `positionCount`).
-- 응용으로 생각할 것 — 병합 순서(짧은 것부터 231 대 질의 순서 683), 분석기 불일치가 만드는 조용한 0건, 위치를 담는 대가(포스팅 37,348 대 위치 40,158), 모든 문서에 있는 항을 물으면 색인이 지는 것, `df == N` 일 때 점수가 0 인 것.
-- 검증: `SearchEngineContractTest` 계약 + `CrossCheckTest` 무작위 대조(문서 2,000 · 질의 250) + `MeasurementTest` 수치 + `AnalyzerMismatchTest` + `PhraseTest` + `ScoringTest` (96개 중 86개가 처음에 실패한다).
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — SearchEngine (`src/main/java/com/datastructure/searchindex/SearchEngine.java`)
+### 계약 — SearchEngine (`src/main/java/com/datastructure/searchindex/SearchEngine.java`)
 
 - `void index(int docId, String text)`
 - `int docCount()`
@@ -57,32 +90,32 @@
 - `List<Integer> searchPhrase(String phrase)`
 - `static List<String> distinctTerms(List<String> analyzed)`
 
-## 계약 — Analyzer (`src/main/java/com/datastructure/searchindex/Analyzer.java`)
+### 계약 — Analyzer (`src/main/java/com/datastructure/searchindex/Analyzer.java`)
 
 - `List<String> analyze(String text)`
 
-## 계약 — Tokenizer (`src/main/java/com/datastructure/searchindex/Tokenizer.java`)
+### 계약 — Tokenizer (`src/main/java/com/datastructure/searchindex/Tokenizer.java`)
 
 - `List<String> tokenize(String text)`
 
-## 계약 — Scorer (`src/main/java/com/datastructure/searchindex/Scorer.java`)
+### 계약 — Scorer (`src/main/java/com/datastructure/searchindex/Scorer.java`)
 
 - `double score(int termFrequency, int documentFrequency, int documentCount)`
 
-## 계약 — SearchStats (`src/main/java/com/datastructure/searchindex/SearchStats.java`)
+### 계약 — SearchStats (`src/main/java/com/datastructure/searchindex/SearchStats.java`)
 
 - `long visitedDocs()`
 - `long comparisons()`
 
-## 보조 — TODO 없는 값·부품 클래스
+### 보조 — TODO 없는 값·부품 클래스
 
 - `MergeOrder` (`MergeOrder.java`) — 역할:
 - `Posting` (`Posting.java`) — 역할:
 - `TermFrequencyScorer` (`TermFrequencyScorer.java`) — 역할:
 
-## 구현 — SimpleTokenizer (`src/main/java/com/datastructure/searchindex/SimpleTokenizer.java`)
+### 구현 — SimpleTokenizer (`src/main/java/com/datastructure/searchindex/SimpleTokenizer.java`)
 
-### 동작 — 자르기 규칙
+#### 동작 — 자르기 규칙
 
 언제 쓰나: 문장을 단어(토큰) 단위로 자르는 첫 단계. 아래 그림은 "The cat, sat"이 글자 단위 판정(글자냐/경계냐)을 거쳐 세 토큰이 되는 과정과, 마지막 토큰 "sat"이 경계 없이 텍스트가 끝나 흘려보내기를 한 번 더 해야 하는 함정을 보여준다.
 
@@ -119,22 +152,22 @@ tokenize(text) : Character.isLetterOrDigit(c) 가 true 면 buf 에 쌓고, false
          영어 어간 추출(stemming)도 같은 이유로 없다.
 ```
 
-### 필드
+#### 필드
 - (없음) — 역할:
 
-### `List<String> tokenize(String text)` (TODO 1)
+#### `List<String> tokenize(String text)` (TODO 1)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — StandardAnalyzer (`src/main/java/com/datastructure/searchindex/StandardAnalyzer.java`)
+### 구현 — StandardAnalyzer (`src/main/java/com/datastructure/searchindex/StandardAnalyzer.java`)
 
-### 구조
+#### 구조
 
 ```
 StandardAnalyzer
@@ -148,7 +181,7 @@ StandardAnalyzer
   분석기는 색인 쪽과 질의 쪽에 각각 주입된다. 둘을 다르게 주면 답이 어긋난다(AnalyzerMismatchTest).
 ```
 
-### 동작 — 분석(analyze) 파이프라인
+#### 동작 — 분석(analyze) 파이프라인
 
 언제 쓰나: 색인할 때와 검색할 때 모두, 텍스트를 "색인에 넣을 최종 형태"로 다듬는 단계. 아래 그림은 한 문장이 자르기 → 소문자화 → 불용어 제거의 세 관문을 차례로 통과하는 흐름이다. 순서 자체가 약속(계약)이라는 것이 요점이다.
 
@@ -187,34 +220,34 @@ StandardAnalyzer
 비용 : 토큰마다 소문자화 1회 + 해시 집합 조회 1회 -> O(토큰 수)
 ```
 
-### 필드
+#### 필드
 - `tokenizer` — 역할:
 - `stopwords` — 역할:
 - `DEFAULT_STOPWORDS` — 역할:
 
-### `StandardAnalyzer()` / `StandardAnalyzer(Set<String> stopwords)` / `StandardAnalyzer(Tokenizer tokenizer, Set<String> stopwords)`
+#### `StandardAnalyzer()` / `StandardAnalyzer(Set<String> stopwords)` / `StandardAnalyzer(Tokenizer tokenizer, Set<String> stopwords)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> analyze(String text)` (TODO 2)
+#### `List<String> analyze(String text)` (TODO 2)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Set<String> stopwords()`
+#### `Set<String> stopwords()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — TfIdfScorer (`src/main/java/com/datastructure/searchindex/TfIdfScorer.java`)
+### 구현 — TfIdfScorer (`src/main/java/com/datastructure/searchindex/TfIdfScorer.java`)
 
-### 동작 — tf 와 idf 가 어디서 오나
+#### 동작 — tf 와 idf 가 어디서 오나
 
 언제 쓰나: 검색 결과의 순위를 매길 때 — "이 문서가 이 질의어와 얼마나 관련 있나"를 숫자 하나로 만든다. 아래 그림은 tf(문서 안을 본다)와 df(색인 전체를 본다)가 서로 다른 표에서 나와 한 식에서 만나는 흐름과, 드문 말일수록 점수가 커지는 표다.
 
@@ -263,48 +296,48 @@ score(termFrequency, documentFrequency, documentCount) = tf * ln(N / df)
 비용 : 로그 한 번. O(1). 상태가 없어 스레드 안전하다.
 ```
 
-### 필드
+#### 필드
 - (없음) — 역할:
 
-### `double score(int termFrequency, int documentFrequency, int documentCount)` (TODO 3)
+#### `double score(int termFrequency, int documentFrequency, int documentCount)` (TODO 3)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — SearchResult (`src/main/java/com/datastructure/searchindex/SearchResult.java`)
+### 구현 — SearchResult (`src/main/java/com/datastructure/searchindex/SearchResult.java`)
 
-### 필드
+#### 필드
 - `docId` — 역할:
 - `score` — 역할:
 
-### `SearchResult(int docId, double score)`
+#### `SearchResult(int docId, double score)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int docId()` / `double score()`
+#### `int docId()` / `double score()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int compareTo(SearchResult other)` (TODO 4)
+#### `int compareTo(SearchResult other)` (TODO 4)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean equals(Object o)` / `int hashCode()` / `String toString()`
+#### `boolean equals(Object o)` / `int hashCode()` / `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — LinearScanEngine (`src/main/java/com/datastructure/searchindex/LinearScanEngine.java`)
+### 구현 — LinearScanEngine (`src/main/java/com/datastructure/searchindex/LinearScanEngine.java`)
 
-### 구조
+#### 구조
 
 ```
 LinearScanEngine   (전수 조사 기준선 - 색인을 아예 안 만든다)
@@ -327,7 +360,7 @@ LinearScanEngine   (전수 조사 기준선 - 색인을 아예 안 만든다)
    TreeMap 인 이유 : 훑는 순서가 정해져야 답(동점 순서 포함)이 하나로 정해진다.
 ```
 
-### 동작 — 전수 조사 검색 (역색인과의 대비)
+#### 동작 — 전수 조사 검색 (역색인과의 대비)
 
 언제 보나: 역색인이 얼마나 이득인지 재는 기준선, 그리고 역색인의 조용한 누락을 잡는 대조 상대. 아래 그림은 질의 한 번에 모든 문서를 열어 다시 분석하는 흐름 — "답이 하나여도 전부 연다"가 이 방식의 비용이다.
 
@@ -366,56 +399,56 @@ search("cat dog", k) : 질의마다 전 문서를 열어 다시 분석한다. �
 그 조용한 누락을 잡는 자가 이 클래스다 - 두 엔진의 답이 같아야 한다.
 ```
 
-### 필드
+#### 필드
 - `indexAnalyzer` — 역할:
 - `queryAnalyzer` — 역할:
 - `scorer` — 역할:
 - `documents` — 역할:
 - `visitedDocs` — 역할:
 
-### `LinearScanEngine()` / `LinearScanEngine(Analyzer analyzer, Scorer scorer)` / `LinearScanEngine(Analyzer indexAnalyzer, Analyzer queryAnalyzer, Scorer scorer)`
+#### `LinearScanEngine()` / `LinearScanEngine(Analyzer analyzer, Scorer scorer)` / `LinearScanEngine(Analyzer indexAnalyzer, Analyzer queryAnalyzer, Scorer scorer)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void index(int docId, String text)`
+#### `void index(int docId, String text)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int docCount()`
+#### `int docCount()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int termCount()`
+#### `int termCount()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<SearchResult> search(String query, int k)` (TODO 5)
+#### `List<SearchResult> search(String query, int k)` (TODO 5)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<Integer> searchPhrase(String phrase)` (TODO 6)
+#### `List<Integer> searchPhrase(String phrase)` (TODO 6)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long visitedDocs()` / `long comparisons()`
+#### `long visitedDocs()` / `long comparisons()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — InvertedIndexEngine (`src/main/java/com/datastructure/searchindex/InvertedIndexEngine.java`)
+### 구현 — InvertedIndexEngine (`src/main/java/com/datastructure/searchindex/InvertedIndexEngine.java`)
 
-### 구조
+#### 구조
 
 ```
 정방향 색인   문서 -> 그 안의 항들        (문서를 보여줄 때 쓴다)
@@ -455,7 +488,7 @@ index (HashMap)         Posting = { docId , positions }   frequency() = position
   위치를 안 담으면 구문 검색을 아예 못 한다. 대신 원문 토큰 하나마다 정수 하나가 색인에 들어간다.
 ```
 
-### 동작 — 색인(indexing)
+#### 동작 — 색인(indexing)
 
 언제 쓰나: 문서가 새로 들어올 때 — 검색이 빨라지도록 "단어 → 문서 목록" 표를 미리 갱신해 둔다. 아래 그림은 문서 하나가 분석되고, 문서 안에서 항별로 모인 뒤, 전체 색인의 정렬된 자리에 꽂히는 3단계다.
 
@@ -494,7 +527,7 @@ index(docId, text)
 비용 : 분석 O(문서 길이) + 항마다 이분 탐색 O(log p) + 리스트 중간 삽입 O(p)
 ```
 
-### 동작 — AND 검색 (posting 교집합)
+#### 동작 — AND 검색 (posting 교집합)
 
 언제 쓰나: "cat도 있고 dog도 있는 문서"처럼 질의어 전부를 가진 문서를 찾을 때. 아래 그림의 핵심은 [3] — 정렬된 두 목록에 손가락(포인터)을 하나씩 얹고, 작은 쪽 손가락만 앞으로 밀면서 같은 번호가 만나면 답에 담는 한 번 훑기다.
 
@@ -534,7 +567,7 @@ intersect(terms) : 질의어를 전부 가진 문서 번호를 오름차순으�
 계수 : 비교 1회마다 comparisons++ , 전진한 포인터마다 visitedDocs++
 ```
 
-### 동작 — 점수(tf-idf) 흐름
+#### 동작 — 점수(tf-idf) 흐름
 
 언제 쓰나: 교집합으로 추린 후보 문서들에 순위를 매겨 상위 k개만 돌려줄 때. 아래 그림은 후보 두 문서가 질의어별 점수를 합산받고, 정렬을 거쳐 상위 k개로 잘리는 흐름이다. df를 "포스팅 리스트의 길이"로 그냥 읽는다는 것 — 전수 조사가 전 문서를 훑어 얻는 값을 여기서는 공짜로 얻는다는 것이 역색인의 두 번째 이득이다.
 
@@ -578,7 +611,7 @@ tf 는 Posting 안(문서 안)에서, df 는 포스팅 리스트 길이(색인 �
 비용 : 후보 수 x 질의어 수 만큼 채점 + 정렬 O(m log m). 후보가 아닌 문서는 열지도 않는다.
 ```
 
-### 필드
+#### 필드
 - `indexAnalyzer` — 역할:
 - `queryAnalyzer` — 역할:
 - `scorer` — 역할:
@@ -588,67 +621,101 @@ tf 는 Posting 안(문서 안)에서, df 는 포스팅 리스트 길이(색인 �
 - `visitedDocs` — 역할:
 - `comparisons` — 역할:
 
-### `InvertedIndexEngine()` 외 생성자 4개 (analyzer / scorer / mergeOrder / 색인·질의 분석기 분리)
+#### `InvertedIndexEngine()` 외 생성자 4개 (analyzer / scorer / mergeOrder / 색인·질의 분석기 분리)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void index(int docId, String text)` (TODO 7)
+#### `void index(int docId, String text)` (TODO 7)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static void insertSorted(List<Posting> postings, Posting posting)` (TODO 8, private)
+#### `static void insertSorted(List<Posting> postings, Posting posting)` (TODO 8, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int docCount()` / `int termCount()`
+#### `int docCount()` / `int termCount()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<Posting> postings(String term)`
+#### `List<Posting> postings(String term)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long postingCount()` / `long positionCount()`
+#### `long postingCount()` / `long positionCount()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<Integer> intersect(List<String> terms)` (TODO 9, private)
+#### `List<Integer> intersect(List<String> terms)` (TODO 9, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<SearchResult> search(String query, int k)` (TODO 10)
+#### `List<SearchResult> search(String query, int k)` (TODO 10)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<Integer> searchPhrase(String phrase)` (TODO 11)
+#### `List<Integer> searchPhrase(String phrase)` (TODO 11)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean containsPhrase(List<String> terms, int docId)` (TODO 12, private)
+#### `boolean containsPhrase(List<String> terms, int docId)` (TODO 12, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `long visitedDocs()` / `long comparisons()`
+#### `long visitedDocs()` / `long comparisons()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **Lucene / Elasticsearch / OpenSearch** — 역색인 그 자체. 색인 시 분석기(analyzer)가 문자 필터 → 토크나이저(자르기) → 토큰 필터(소문자화·불용어 제거 등) 순서로 항을 만든다 — 이 노트의 `StandardAnalyzer`와 같은 뼈대다. 단 Elasticsearch의 기본 `standard` 분석기는 자르기 + 소문자화까지이고 불용어 제거는 기본으로 꺼져 있다(Elastic 문서). 한국어는 형태소 분석기(nori)를 끼운다. 색인·질의 분석기 불일치가 조용한 누락을 만드는 것도 같다.
+- **PostgreSQL 전문 검색(`tsvector` + GIN 인덱스)** — 문서를 항 목록(`tsvector`)으로 바꾸고 GIN이 "항 → 행 목록"을 든다. `to_tsquery`가 질의 쪽 분석기다(PostgreSQL 문서 「Full Text Search」 — 두 쪽이 같은 text search configuration을 써야 맞는 것도 같다).
+- **SQLite FTS5 · MySQL FULLTEXT** — 내장 DB의 전문 검색도 같은 "항 → 문서 목록" 표다(MySQL 문서는 InnoDB FULLTEXT를 "inverted index design"이라 부르고, FTS5도 항별 문서 목록을 b-tree에 저장한다).
+- **로그 검색(예: 중앙 로그 서버의 키워드 검색)** — 줄마다 항을 뽑아 역색인을 두면 `error AND timeout` 같은 질의를 원문 재독 없이 낸다. 모든 줄에 있는 항(예: 로그 레벨 `INFO`)을 물으면 색인이 지는 것도 같다(정답 4번 참고).
+- **IDE·에디터의 심볼 검색** — 식별자 → 파일 목록. 파일을 저장할 때마다 색인을 갱신하는 비용을 내고 검색을 즉시 낸다.
+- **다른 챕터의 재료** — 포스팅 리스트의 정렬 삽입은 [algorithm/06-binary-search](../../algorithm/06-binary-search/2-summary.md), 교집합 병합은 [algorithm/08-two-pointers](../../algorithm/08-two-pointers/2-summary.md), "정렬이 곧 능력"은 [06-binary-search-tree](../06-binary-search-tree/2-summary.md)의 되풀이다.
+
+## 적용 — 풀어나가는 법
+
+역색인 문제는 "무엇을 항으로 삼고, 목록을 어떻게 줄이나"에서 갈린다.\
+순서: ① 분석기를 먼저 못 박는다(색인과 질의가 같은 파이프라인) → ② 항 → 정렬된 문서 목록을 만든다 → ③ 질의의 항들 중 **가장 짧은 목록**부터 교집합을 낸다 → ④ 남은 후보에만 점수·위치 검사를 붙인다.\
+아래 과제의 TODO 순서(부품 → 기준선 → 본체)가 이 순서와 같다 — 기준선을 먼저 만들어야 본체의 조용한 누락을 대조로 잡는다.
+
+### 문제 — 이 챕터가 시키는 것
+
+원본 README(`myway/data-structure/32-inverted-index/README.md`)의 요구사항은 이렇다.
+
+- 문서 2,000개에서 특정 항이 든 문서를 찾는다 — 전수 조사는 2,000개를 다 열고, 역색인은 2개만 연다.\
+  그 차이를 만드는 것이 **"항 → 그 항이 든 문서 목록"** 이고, 포스팅 리스트를 **문서 번호 오름차순으로 유지**하는 것이 값의 근원이다.
+- 교집합 병합은 부등호 하나만 틀려도 "봐야 하는 문서를 안 본다"가 되고 **예외가 안 난다**.\
+  그래서 **답이 맞는 구현을 둘 만들어 대조한다** — `LinearScanEngine`(기준선, 쉬워서 맞다)과 `InvertedIndexEngine`(본체, 빨라서 의심스럽다).
+
+과제(TODO 12개 + 구현 대상):
+
+- TODO 1~4 — 부품: `SimpleTokenizer`(자르기), `StandardAnalyzer`(자르기 → 소문자화 → 불용어 제거), `TfIdfScorer`(`tf × log(N/df)`), `SearchResult.compareTo`(점수 내림차순 · 동점은 문서 번호 오름차순).
+- TODO 5~6 — `LinearScanEngine`: 전수 조사 기준선. 대조가 여기 걸려 있으므로 먼저 만든다.
+- TODO 7~12 — `InvertedIndexEngine`: 색인 넣기(`insertSorted`), AND 교집합 병합(`intersect`), 구문 검색(`searchPhrase` / `containsPhrase`), 통계(`postingCount` / `positionCount`).
+- 응용으로 생각할 것 — 병합 순서(짧은 것부터 231 대 질의 순서 683), 분석기 불일치가 만드는 조용한 0건, 위치를 담는 대가(포스팅 37,348 대 위치 40,158), 모든 문서에 있는 항을 물으면 색인이 지는 것, `df == N` 일 때 점수가 0 인 것.
+- 검증: `SearchEngineContractTest` 계약 + `CrossCheckTest` 무작위 대조(문서 2,000 · 질의 250) + `MeasurementTest` 수치 + `AnalyzerMismatchTest` + `PhraseTest` + `ScoringTest` (96개 중 86개가 처음에 실패한다).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 엔진 (`SearchEngine` 두 구현)
 
@@ -666,15 +733,48 @@ tf 는 Posting 안(문서 안)에서, df 는 포스팅 리스트 길이(색인 �
 | MergeOrder.SHORTEST_FIRST | | | |
 | MergeOrder.QUERY_ORDER | | | |
 
+## 장애 시나리오와 대처
+
+**1. 색인과 질의의 분석기가 달라 검색이 조용히 0건**
+
+- 현상: 분명히 있는 문서가 검색되지 않는다. 특정 대문자·조사 붙은 말에서만 빈다.
+- 보이는 형태: 예외도 경고도 없이 `search`가 빈 목록을 돌려준다. `AnalyzerMismatchTest`가 이 경우를 따로 본다. 실무에서는 "삼성전자"로 "삼성"이 안 나오거나, 색인은 형태소 분석기로 만들고 질의는 공백 분리로 넣은 경우다.
+- 원인: 색인 쪽은 `cat`으로 저장했는데 질의 쪽은 `Cat`을 찾는다 — 표에 없는 키다. 구조가 아니라 **파이프라인**의 버그라 전수 조사에서도 똑같이 난다.
+- 대처: 분석기 인스턴스를 하나만 만들어 양쪽에 같은 것을 주입한다. 분석기를 바꾸면 **전체 재색인**이다 — 색인 시각과 분석기 버전을 함께 기록해 둔다.
+
+**2. 문서 갱신을 `index`로 다시 넣다가 예외**
+
+- 현상: 수정된 문서를 반영하려고 같은 번호로 `index(docId, text)`를 다시 부른다.
+- 보이는 형태: `IllegalArgumentException: 이미 색인된 문서 번호다: 7`. 이 검사를 빼면 옛 포스팅과 새 포스팅이 한 리스트에 섞여 `positionCount()`가 원문 항 수와 어긋난다.
+- 원인: 포스팅 리스트는 "항 → 문서들" 방향이라, 한 문서를 지우려면 **그 문서의 항을 전부** 찾아 각 리스트에서 빼야 한다. 이 구현은 삭제·갱신을 계약에 두지 않았다(정답 2번 참고).
+- 대처: 갱신은 "삭제 + 새 번호로 삽입"으로 정의하고, 삭제는 문서 → 항 목록(정방향 색인)을 따로 들어 그 항들의 리스트만 손본다. 실제 검색 엔진이 삭제를 표시(tombstone)만 해 두고 나중에 세그먼트를 합치며 지우는 이유다.
+
+**3. 점수 합산 순서가 달라 대조 테스트가 마지막 자리에서 실패**
+
+- 현상: 두 엔진의 문서 번호는 같은데 점수가 아주 미세하게 다르다.
+- 보이는 형태: `CrossCheckTest`가 두 점수의 마지막 소수 자리 차이로 실패한다. 순위는 그대로인데 동점 처리만 갈리기도 한다.
+- 원인: `double` 덧셈은 순서에 따라 오차가 다르게 쌓인다. 역색인이 병합 순서(짧은 리스트부터)로 더하고 전수 조사가 질의 순서로 더하면 값이 갈린다.
+  - *부동소수점(floating point)*: 컴퓨터의 소수 표현. `(a + b) + c`와 `a + (b + c)`가 마지막 비트에서 다를 수 있다.
+- 대처: 점수를 더하는 순서를 **질의 항 순서**로 못 박는다(병합 순서와 분리). 정답이 아니라 검증 장치가 무너지는 경로이므로, 대조 테스트를 "비트 일치"로 두려면 이 규칙이 계약이어야 한다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 역색인은 "문서 → 항"을 "항 → 문서 목록"으로 한 번 뒤집어 둔 표다. 질의 비용이 문서 수가 아니라 매칭 포스팅 수에 비례하게 되는 것이 전부다.
+- 포스팅 리스트를 문서 번호 오름차순으로 유지하는 것이 값의 근원이다 — 정렬돼 있어야 교집합을 두 포인터 한 번 훑기로 내고, 짧은 리스트부터 합치면 답은 같고 일만 준다.
+- 색인과 질의는 같은 분석기를 거쳐야 한다. 다르면 예외 없이 0건이 나오고, 이것은 구조가 아니라 파이프라인의 버그라 전수 조사에서도 똑같이 난다.
+- 위치를 담아야 구문 검색이 되고, 그 위치 정수가 색인의 대부분을 차지한다. 원문을 버린 색인은 미리 담지 않으면 영영 못 한다.
+- 교집합 병합은 부등호 하나가 틀려도 예외 없이 문서가 빠지므로, 쉬워서 맞는 전수 조사 기준선과 답을 대조하는 것이 이 구조의 검증 방법이다.
 
--
--
--
+## 관련 주제·근거
 
-## 용어 풀이
+- 선행 — [09-trie](../09-trie/2-summary.md) · [06-binary-search-tree](../06-binary-search-tree/2-summary.md): 글자로 내려가는 사전과 "정렬이 곧 능력".
+- 기법 — [algorithm/08-two-pointers](../../algorithm/08-two-pointers/2-summary.md) · [algorithm/06-binary-search](../../algorithm/06-binary-search/2-summary.md): 교집합 병합과 정렬 삽입.
+- 후속 — [33-filesystem](../33-filesystem/2-summary.md): "이름 → 노드" 매핑이 경로를 타고 트리가 되는 곳(정답 6번).
+- 연결 — [24-lsm-tree](../24-lsm-tree/2-summary.md): 실제 검색 엔진이 색인을 불변 세그먼트로 쌓고 병합하는 방식은 SSTable·compaction과 같은 모양이다.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `24-inverted-index` (선행 `07`, 교재 Manning 외 『Introduction to Information Retrieval』 1장). database 영역 `46-full-text-search-and-analyzers`가 분석기·BM25 쪽 후속이다(노트 미작성).
+- myway 원본 — `/home/jun/project/myway/data-structure/32-inverted-index/` (README.md · impl/InvertedIndexEngine.java · impl/LinearScanEngine.java · impl/StandardAnalyzer.java).
+
+### 용어 풀이
 
 - **역색인(inverted index)**: "문서 → 단어들"을 뒤집어 "단어 → 그 단어가 있는 문서들"로 만든 표. 책 뒤의 찾아보기와 같다.
 - **정방향 색인(forward index)**: "문서 → 그 안의 단어들" 방향의 표. 문서를 보여줄 때 쓴다.
@@ -702,7 +802,7 @@ tf 는 Posting 안(문서 안)에서, df 는 포스팅 리스트 길이(색인 �
 - **계약(인터페이스)**: 구현들이 공통으로 지키는 메서드 목록과 약속(SearchEngine, Analyzer 등).
 - **주입(injection)**: 부품(분석기·채점기)을 밖에서 만들어 생성자로 넣어 주는 방식. 부품만 바꿔 끼울 수 있게 한다.
 
-## 관련 자료
+### 관련 자료
 
 - 원본 README: `/home/jun/project/myway/data-structure/32-inverted-index/README.md`
 - 구현 대상: `/home/jun/project/myway/data-structure/32-inverted-index/src/main/java/com/datastructure/searchindex/`

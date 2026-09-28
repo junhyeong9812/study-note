@@ -4,8 +4,30 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+"먼저 온 것을 먼저 처리한다"는 약속을 지키려면 넣는 쪽과 빼는 쪽이 **반대 끝**이어야 한다.\
+스택(03)은 한쪽 끝만 써서 배열과 잘 맞았지만, 반대 끝에서 빼기 시작하는 순간 배열은 앞이 비어 간다.
+
+```text
+배열로 만든 줄: 앞에서 빼면 앞칸이 죽는다      원형으로 감으면 앞칸을 다시 쓴다
++---+---+---+---+---+                          +---+---+---+---+---+
+|   |   | C | D | E | <- 넣기                   | F |   |   | D | E |
++---+---+---+---+---+                          +---+---+---+---+---+
+  x   x   ^ head  (빈 두 칸은 영영 못 쓴다)        ^ 끝을 넘으면 0번으로 되감긴다
+```
+
+큐는 이 문제를 "한 칸씩 당기기(O(n))" 대신 "표지를 옮기고 끝에서 되감기"로 푼다 — 넣기·빼기 모두 O(1).\
+덱은 여기에 "양 끝 모두에서 넣고 뺀다"를 더해, 스택과 큐를 한 구조로 흉내 낸다.\
+쉬운 예: 급식 줄 — 뒤에 서고 앞에서 받는다.\
+똑같은 구조다: Java `ArrayDeque` — 원형 배열 하나로 큐와 스택을 다 한다.\
+실무 예: 서버의 요청 대기열·작업 큐 — 들어온 순서대로 워커가 꺼내 처리한다.
+
+  - *되감기(wrap-around)*: 인덱스가 배열 끝을 넘으면 0번으로 돌아오는 것. `(head + i) % 길이` 한 줄이다.
+
+### 한눈에 — 쉽게 말하면
 
 **큐 = 급식 줄.**\
 뒤로 와서 서고, 앞에서부터 받는다.\
@@ -35,36 +57,40 @@
 > **데크(deque, double-ended queue)** — 양쪽 끝에서 모두 넣고 뺄 수 있는 구조.\
 > 예: 한쪽으로만 쓰면 스택이 되고, 한쪽으로 넣어 반대쪽으로 빼면 큐가 된다.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-03번 스택(LIFO)과 정확히 반대인 선입선출(FIFO)을 직접 만든다.\
-스택은 한쪽 끝만 건드리므로 배열과 잘 맞았지만, 큐는 넣는 쪽과 빼는 쪽이 반대라 배열 구현에서 문제가 생긴다.\
-**그 문제를 일부러 만든 다음에 고치는 것이 이 과제의 본체다** — 1번을 건너뛰고 2번부터 하면 원형 배열은 그냥 복잡하기만 하다.
+### 전체 흐름
 
-**과제**
+```text
+[1] 큐 = 반대 끝에서 넣고 뺀다           [2] 나이브 배열 큐: head 가 오른쪽으로만 간다
+    빼기 <- [ A | B | C ] <- 넣기            +---+---+---+---+
+    head                  head+size          | x | x | C | D |   앞칸이 버려진다 -> 용량이 계속 는다
+                                             +---+---+---+---+    (wastesSpace: 2048)
+          |
+          v
+[3] 원형 큐: % 로 되감는다               [4] 왜 tail 을 안 두나
+    idx  0   1   2   3   4                   head == tail 이 "꽉 참"인지 "빔"인지 모른다
+       +---+---+---+---+---+                 size 하나면 모호함이 없다:
+       | E |   |   | C | D |                    빔 = size == 0, 꽉 참 = size == length
+       +---+---+---+---+---+
+         ^ 감겨서 0번으로   ^ head
+    논리 i번째 = elements[(head + i) % length]          (reusesSpace: 4)
+          |
+          v
+[5] 확장은 감김을 풀면서                 [6] 덱 = 양 끝 모두
+    감긴 상태로 통복사하면 순서가 깨진다     addFirst: head = (head - 1 + length) % length
+    논리 순서대로 새 배열 0번부터 옮긴다             (head - 1 만 하면 -1)
+    (01번의 Arrays.copyOf 가 여기서는 안 통함)   연결판(LinkedDeque): 되감기·확장·용량이 전부 없다
+```
 
-- 순서대로 네 구현을 채운다(TODO 25개, 테스트 114개가 전부 실패인 상태에서 시작한다).\
-  `ArrayQueue`(가장 먼저 떠오르는 방식 — 동작은 맞는데 한계가 있다) → `CircularQueue`(그 한계를 되감기로 고침) → `ArrayDeque`(원형을 양쪽 끝으로 확장) → `LinkedDeque`(노드 — 되감기도 확장도 용량도 없다).
-- `Deque extends Queue` 라서 연결 기반 큐는 따로 만들지 않는다 — `LinkedDeque` 가 겸한다(누락이 아니라 중복 제거).
-- 응용 문제 4개 (`QueueProblems`)\
-  `isPalindrome(String, Deque<Character>)` — 양 끝에서 하나씩 빼며 회문 판정.\
-  `slidingWindowMax(int[], int, Deque<Integer>)` — 창마다 최댓값. 이 문제집의 함정이다.\
-  `firstUniqueStream(String, Queue<Character>)` — 스트림에서 처음으로 한 번만 나온 문자.\
-  `rotate(Deque<E>, int)` — k 칸 오른쪽 회전. 01번(세 번 뒤집기)·02번(링크 재연결)에 이은 세 번째 방법.
-- `RecentCounter.ping(int t)` — 최근 3000ms 안의 요청 수. 창이 양끝 포함이라 조건이 `< t - 3000` 이다(`<=` 로 쓰면 off-by-one).
-- 성능·계약 제약\
-  `slidingWindowMax` 는 100만 x k=5만을 5초 안에 — 창마다 k 개를 훑는 O(n·k) 구현은 통과하지 못한다(README 의 임계값 메모: 4.75e10 회).\
-  `RecentCounter` 는 10만 번 호출을 5초 안에, 끝나고 3,001개만 남아야 한다.\
-  `ArrayQueueTest.wastesSpace` 와 `CircularQueueTest.reusesSpace` 는 같은 시나리오인데 용량이 갈린다 — 그 대비가 2번을 만드는 이유다.\
-  계약 테스트가 내부 필드를 직접 본다 — `elements`, `head`(배열판), `first`/`last`/`Node`(연결판) 이름이 사실상 계약의 일부다.
+- [1] 넣는 끝과 빼는 끝이 다르다. 그래서 "끝 하나만 보면 된다"는 스택의 편의가 사라진다.
+- [2] `head`를 옮기기만 하면 앞칸이 죽는다. 동작은 맞는데 같은 시나리오에서 용량이 2048까지 는다.
+- [3] 끝과 처음을 이어 붙이면 죽는 칸이 없다. 나머지 연산 한 글자가 원형 큐의 전부다.
+- [4] `tail` 대신 `size`를 두면 "꽉 참"과 "빔"이 구분된다. 한 칸 비워두기·플래그 방식보다 단순하다.
+- [5] 확장할 때는 논리 순서대로 풀어서 옮긴다. 01번에서 통하던 통복사가 여기서 깨지는 이유가 감김이다.
+- [6] 앞으로도 넣으려면 `head`를 뒤로 감아야 하고, 음수를 피하려면 길이를 더한 뒤 나머지를 취한다. 연결판은 이 계산이 아예 없다.
 
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — Queue (`src/main/java/com/datastructure/queue/Queue.java`)
+### 계약 — Queue (`src/main/java/com/datastructure/queue/Queue.java`)
 
 - `void enqueue(E element)`
 - `E dequeue()`
@@ -73,7 +99,7 @@
 - `boolean isEmpty()`
 - `void clear()`
 
-## 계약 — Deque (`src/main/java/com/datastructure/queue/Deque.java`)
+### 계약 — Deque (`src/main/java/com/datastructure/queue/Deque.java`)
 
 - `void addFirst(E element)`
 - `void addLast(E element)`
@@ -83,11 +109,11 @@
 - `E peekLast()`
 - (extends `Queue<E>` — `enqueue` = `addLast`, `dequeue` = `removeFirst`, `peek` = `peekFirst`)
 
-## 구현 — ArrayQueue (`src/main/java/com/datastructure/queue/ArrayQueue.java`)
+### 구현 — ArrayQueue (`src/main/java/com/datastructure/queue/ArrayQueue.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 ```
 ArrayQueue — 되감지 않는 나이브 버전. head 는 오른쪽으로만 간다
@@ -111,7 +137,7 @@ FIFO — 한쪽 끝(head)에서 빼고 반대쪽 끝(head+size)에서 넣는다.
 스택과 달리 양 끝을 다 써야 해서 "끝 하나만 보면 된다"가 성립하지 않는다
 ```
 
-### 동작 — 추가
+#### 동작 — 추가
 
 ```
 enqueue(F) : 뒤쪽 빈 칸에 쓰기만 한다. O(1)
@@ -129,7 +155,7 @@ enqueue(F) : 뒤쪽 빈 칸에 쓰기만 한다. O(1)
   아무도 안 움직이니 O(1).
 - 확장 검사 때 "버려진 왼쪽 칸"까지 포함해 자리를 계산한다 — 왼쪽 칸은 있어도 못 쓰는 칸이기 때문.
 
-### 동작 — 삭제
+#### 동작 — 삭제
 
 ```
 [1] dequeue() : 앞 칸을 비우고 head 를 오른쪽으로 한 칸. 원소를 당기지 않으므로 O(1)
@@ -172,82 +198,82 @@ enqueue(F) : 뒤쪽 빈 칸에 쓰기만 한다. O(1)
 - [2] 그 대가: head가 지나간 왼쪽 칸은 비어 있는데도 영영 못 쓴다.\
   넣고 빼기를 반복하면 원소는 몇 개 없는데 배열만 계속 커진다 — 이 낭비를 고치는 것이 다음 절의 원형 큐다.
 
-### `필드`
+#### `필드`
 
 - `private static final int DEFAULT_CAPACITY = 4` — 역할:
 - `Object[] elements` — 역할:
 - `int head` — 역할:
 - `private int size` — 역할:
 
-### `ArrayQueue()`
+#### `ArrayQueue()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `ArrayQueue(int initialCapacity)`
+#### `ArrayQueue(int initialCapacity)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int capacity()`
+#### `int capacity()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void ensureCapacity(int minCapacity)` (TODO)
+#### `private void ensureCapacity(int minCapacity)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void enqueue(E element)` (TODO)
+#### `void enqueue(E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E dequeue()` (TODO)
+#### `E dequeue()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E peek()` (TODO)
+#### `E peek()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()` (TODO)
+#### `void clear()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — CircularQueue (`src/main/java/com/datastructure/queue/CircularQueue.java`)
+### 구현 — CircularQueue (`src/main/java/com/datastructure/queue/CircularQueue.java`)
 
-### 구조
+#### 구조
 
 ```
 CircularQueue — 배열의 끝과 처음을 이어 원처럼 쓴다. 필드는 ArrayQueue 와 똑같다
@@ -289,7 +315,7 @@ tail 인덱스 필드를 두지 않는 이유
 > **원형 배열(circular buffer)** — 배열의 끝과 처음을 이어 붙인 것처럼 쓰는 방식.\
 > 예: head 가 앞으로 나아가도 빈 앞칸을 버리지 않고 다시 돌아와 채우므로, 배열 길이가 그대로여도 enqueue/dequeue 를 무한히 반복할 수 있다.
 
-### 동작 — 추가
+#### 동작 — 추가
 
 ```
 enqueue(F) : "다음에 쓸 칸"을 필드로 들고 있지 않고 그때그때 계산해 쓴다. O(1)
@@ -311,7 +337,7 @@ enqueue(F) : "다음에 쓸 칸"을 필드로 들고 있지 않고 그때그때 
   O(1).
 - 순서 주의: 확장(ensureCapacity)이 배열 길이를 바꿀 수 있으므로, 칸 계산은 반드시 확장 뒤에 한다.
 
-### 동작 — 삭제
+#### 동작 — 삭제
 
 ```
 dequeue() : 앞 칸을 비우고 head 를 되감아 한 칸 옮긴다. O(1)
@@ -331,7 +357,7 @@ dequeue() : 앞 칸을 비우고 head 를 되감아 한 칸 옮긴다. O(1)
   O(1).
 - ArrayQueue와의 차이는 `head++` 뒤에 `% len` 하나뿐인데, 이 한 글자가 "버려진 칸" 문제를 없앤다.
 
-### 동작 — 확장
+#### 동작 — 확장
 
 ```
 꽉 참 -> 2배 확장. 여기서는 Arrays.copyOf 로 통복사하면 안 된다
@@ -361,82 +387,82 @@ clear() 도 같은 이유로 indexOf(i) 를 따라 논리 순서로 지운 뒤 h
   줄 선 순서대로(indexOf(i)를 따라) 한 명씩 새 배열의 0번부터 옮겨, 감김을 편다.
 - 옮긴 뒤 head = 0. 확장은 그 순간만 O(n), 두 배씩 늘리므로 상환 O(1)은 그대로다.
 
-### `필드`
+#### `필드`
 
 - `private static final int DEFAULT_CAPACITY = 4` — 역할:
 - `Object[] elements` — 역할:
 - `int head` — 역할:
 - `private int size` — 역할:
 
-### `CircularQueue()`
+#### `CircularQueue()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `CircularQueue(int initialCapacity)`
+#### `CircularQueue(int initialCapacity)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int capacity()`
+#### `int capacity()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void ensureCapacity(int minCapacity)` (TODO)
+#### `private void ensureCapacity(int minCapacity)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void enqueue(E element)` (TODO)
+#### `void enqueue(E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E dequeue()` (TODO)
+#### `E dequeue()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E peek()` (TODO)
+#### `E peek()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()` (TODO)
+#### `void clear()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — ArrayDeque (`src/main/java/com/datastructure/queue/ArrayDeque.java`)
+### 구현 — ArrayDeque (`src/main/java/com/datastructure/queue/ArrayDeque.java`)
 
-### 구조
+#### 구조
 
 ```
 ArrayDeque — CircularQueue 와 같은 (head + size) % length 구조에 "앞쪽 끝" 연산을 더한 것
@@ -455,7 +481,7 @@ ArrayDeque — CircularQueue 와 같은 (head + size) % length 구조에 "앞쪽
 그래서 되감기가 오른쪽뿐 아니라 왼쪽으로도 필요해진다
 ```
 
-### 동작 — 앞쪽 끝
+#### 동작 — 앞쪽 끝
 
 ```
 [1] addFirst(B) : head 를 왼쪽으로 되감고 그 칸에 쓴다. O(1)
@@ -486,7 +512,7 @@ ArrayDeque — CircularQueue 와 같은 (head + size) % length 구조에 "앞쪽
 
 - [2] 앞에서 빼기: 원형 큐의 dequeue와 완전히 같다.
 
-### 동작 — 뒤쪽 끝
+#### 동작 — 뒤쪽 끝
 
 ```
 [3] addLast(F) : elements[indexOf(size)] = F. CircularQueue.enqueue 와 같다
@@ -511,112 +537,112 @@ ArrayDeque — CircularQueue 와 같은 (head + size) % length 구조에 "앞쪽
   O(1).
 - 기억 규칙: **앞을 만지면 head가 움직이고, 뒤를 만지면 size만 변한다.**
 
-### `필드`
+#### `필드`
 
 - `private static final int DEFAULT_CAPACITY = 4` — 역할:
 - `Object[] elements` — 역할:
 - `int head` — 역할:
 - `private int size` — 역할:
 
-### `ArrayDeque()`
+#### `ArrayDeque()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `ArrayDeque(int initialCapacity)`
+#### `ArrayDeque(int initialCapacity)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int capacity()`
+#### `int capacity()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void enqueue(E element)`
+#### `void enqueue(E element)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E dequeue()`
+#### `E dequeue()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E peek()`
+#### `E peek()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E peekFirst()`
+#### `E peekFirst()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E peekLast()`
+#### `E peekLast()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addFirst(E element)` (TODO)
+#### `void addFirst(E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addLast(E element)` (TODO)
+#### `void addLast(E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E removeFirst()` (TODO)
+#### `E removeFirst()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E removeLast()` (TODO)
+#### `E removeLast()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()` (TODO)
+#### `void clear()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — LinkedDeque (`src/main/java/com/datastructure/queue/LinkedDeque.java`)
+### 구현 — LinkedDeque (`src/main/java/com/datastructure/queue/LinkedDeque.java`)
 
-### 구조
+#### 구조
 
 ```
 LinkedDeque — 용량도 되감기도 % 연산도 없다. 양 끝 노드를 직접 들고 있다
@@ -637,7 +663,7 @@ null <-+ prev  |<--------+ prev  |<--------+ prev  |
 Queue 쪽은 위임한다: enqueue = addLast, dequeue = removeFirst, peek = peekFirst
 ```
 
-### 동작 — 추가
+#### 동작 — 추가
 
 ```
 addFirst(B) : 새 노드를 앞에 매달고 옛 first 의 prev 를 채운다. O(1)
@@ -665,7 +691,7 @@ addLast(Y) 는 완전 대칭 (new Node(oldLast, Y, null), last 갱신, oldLast.n
   O(1).
 - 리스트가 비어 있었다면 새 노드가 처음이자 끝이므로 last도 함께 세운다.
 
-### 동작 — 삭제
+#### 동작 — 삭제
 
 ```
 removeLast() : last 를 한 칸 앞으로 당기고, 떼어낸 노드의 prev 만 끊는다. O(1)
@@ -700,92 +726,159 @@ removeLast() : last 를 한 칸 앞으로 당기고, 떼어낸 노드의 prev �
 > **흩어진 메모리 접근(캐시 지역성)** — 쓸 데이터가 메모리에 붙어 있으면 CPU가 한꺼번에 미리 읽어 오고, 흩어져 있으면 매번 새로 찾아가야 하는 성질.\
 > 예: 연결 리스트의 노드는 여기저기 흩어져 있어서, 같은 O(1)이라도 실측은 배열판이 빠른 편이다.
 
-### `필드`
+#### `필드`
 
 - `static class Node<E> { E item; Node<E> prev; Node<E> next; }` — 역할:
 - `Node<E> first` — 역할:
 - `Node<E> last` — 역할:
 - `private int size` — 역할:
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void enqueue(E element)`
+#### `void enqueue(E element)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E dequeue()`
+#### `E dequeue()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E peek()`
+#### `E peek()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E peekFirst()`
+#### `E peekFirst()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E peekLast()`
+#### `E peekLast()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addFirst(E element)` (TODO)
+#### `void addFirst(E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addLast(E element)` (TODO)
+#### `void addLast(E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E removeFirst()` (TODO)
+#### `E removeFirst()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E removeLast()` (TODO)
+#### `E removeLast()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()` (TODO)
+#### `void clear()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+### 구현 — RecentCounter (`src/main/java/com/datastructure/queue/RecentCounter.java`)
+
+#### `필드`
+
+- `public static final int WINDOW_MILLIS = 3000` — 역할:
+- `private final Queue<Integer> requests` — 역할:
+
+#### `RecentCounter(Queue<Integer> queue)`
+
+- 하는 일:
+- 논리:
+- 비용(왜):
+
+#### `int ping(int t)` (TODO)
+
+- 하는 일:
+- 논리:
+- 비용(왜):
+
+#### `int size()`
+
+- 하는 일:
+- 논리:
+- 비용(왜):
+
+## 쓰이는 곳
+
+- **Java `ArrayDeque`** — 원형 배열 하나로 `Deque`를 구현한다. JDK가 큐와 스택 양쪽에 권하는 클래스이고, 이 노트의 `ArrayDeque`가 그 축소판이다.
+- **작업 큐·메시지 큐** — 요청을 들어온 순서로 워커에 넘긴다. 큐가 무한히 자라는 것을 막는 장치가 [ops-patterns/05-backpressure](../../ops-patterns/05-backpressure/2-summary.md)다.
+- **BFS의 프런티어** — 다음에 방문할 정점을 큐에 넣고 앞에서 꺼낸다([algorithm/11-bfs](../../algorithm/11-bfs/2-summary.md)). 그래서 가까운 정점부터 나온다.
+- **링 버퍼** — 고정 크기 원형 큐. NIC의 송수신 디스크립터 링, 커널 로그 버퍼(printk ring buffer), Linux `io_uring`의 제출·완료 큐가 이 모양이다. 꽉 찼을 때 덮어쓸지 막을지가 정책이다.
+- **슬라이딩 윈도우 최댓값** — 단조 덱으로 창의 최댓값을 O(n)에 구한다([algorithm/09-sliding-window](../../algorithm/09-sliding-window/2-summary.md), 문제 2).
+- **요율 제한의 슬라이딩 윈도우** — 최근 N초 안의 요청만 큐에 남기고 앞에서 만료를 빼는 것이 `RecentCounter`이고, [ops-patterns/04-rate-limiter](../../ops-patterns/04-rate-limiter/2-summary.md)의 슬라이딩 로그 방식과 같다.
+- **스레드 풀의 작업 대기열** — Java `ThreadPoolExecutor`는 제출된 작업을 `BlockingQueue`에 쌓고 워커 스레드가 앞에서 꺼낸다(기본 구성은 FIFO).
+- **작업 훔치기(work stealing) 덱** — 자기 작업은 한쪽 끝에서 넣고 빼고, 다른 워커는 반대 끝에서 훔친다. 양 끝이 필요한 대표 사례다(Java `ForkJoinPool`의 워커 큐, Chase–Lev 덱).
+
+## 적용 — 풀어나가는 법
+
+큐·덱 문제는 "순서만 필요한가, 양 끝이 다 필요한가"에서 갈린다.\
+순서: ① 넣는 끝과 빼는 끝을 정한다(한쪽만이면 스택, 반대 끝이면 큐, 양쪽이면 덱) → ② 파라미터는 필요한 만큼만 받는다(`Queue`로 받으면 호출자가 앞에 넣을 수 없어 의도가 드러난다) → ③ 창(window)이 있는 문제는 "아직 답이 될 수 있는 후보"만 덱에 남기고 앞에서 만료·뒤에서 탈락을 뺀다 → ④ 각 원소가 몇 번 들어가고 나오는지 세어 O(n)인지 확인한다.\
+아래 네 문제와 `RecentCounter`가 모두 이 순서로 풀린다.
+
+### 문제 — 이 챕터가 시키는 것
+
+03번 스택(LIFO)과 정확히 반대인 선입선출(FIFO)을 직접 만든다.\
+스택은 한쪽 끝만 건드리므로 배열과 잘 맞았지만, 큐는 넣는 쪽과 빼는 쪽이 반대라 배열 구현에서 문제가 생긴다.\
+**그 문제를 일부러 만든 다음에 고치는 것이 이 과제의 본체다** — 1번을 건너뛰고 2번부터 하면 원형 배열은 그냥 복잡하기만 하다.
+
+**과제**
+
+- 순서대로 네 구현을 채운다(TODO 25개, 테스트 114개가 전부 실패인 상태에서 시작한다).\
+  `ArrayQueue`(가장 먼저 떠오르는 방식 — 동작은 맞는데 한계가 있다) → `CircularQueue`(그 한계를 되감기로 고침) → `ArrayDeque`(원형을 양쪽 끝으로 확장) → `LinkedDeque`(노드 — 되감기도 확장도 용량도 없다).
+- `Deque extends Queue` 라서 연결 기반 큐는 따로 만들지 않는다 — `LinkedDeque` 가 겸한다(누락이 아니라 중복 제거).
+- 응용 문제 4개 (`QueueProblems`)\
+  `isPalindrome(String, Deque<Character>)` — 양 끝에서 하나씩 빼며 회문 판정.\
+  `slidingWindowMax(int[], int, Deque<Integer>)` — 창마다 최댓값. 이 문제집의 함정이다.\
+  `firstUniqueStream(String, Queue<Character>)` — 스트림에서 처음으로 한 번만 나온 문자.\
+  `rotate(Deque<E>, int)` — k 칸 오른쪽 회전. 01번(세 번 뒤집기)·02번(링크 재연결)에 이은 세 번째 방법.
+- `RecentCounter.ping(int t)` — 최근 3000ms 안의 요청 수. 창이 양끝 포함이라 조건이 `< t - 3000` 이다(`<=` 로 쓰면 off-by-one).
+- 성능·계약 제약\
+  `slidingWindowMax` 는 100만 x k=5만을 5초 안에 — 창마다 k 개를 훑는 O(n·k) 구현은 통과하지 못한다(README 의 임계값 메모: 4.75e10 회).\
+  `RecentCounter` 는 10만 번 호출을 5초 안에, 끝나고 3,001개만 남아야 한다.\
+  `ArrayQueueTest.wastesSpace` 와 `CircularQueueTest.reusesSpace` 는 같은 시나리오인데 용량이 갈린다 — 그 대비가 2번을 만드는 이유다.\
+  계약 테스트가 내부 필드를 직접 본다 — `elements`, `head`(배열판), `first`/`last`/`Node`(연결판) 이름이 사실상 계약의 일부다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -794,34 +887,9 @@ removeLast() : last 를 한 칸 앞으로 당기고, 떼어낸 노드의 prev �
 | ArrayDeque | | | |
 | LinkedDeque | | | |
 
-## 구현 — RecentCounter (`src/main/java/com/datastructure/queue/RecentCounter.java`)
+### 문제 — QueueProblems (`src/main/java/com/datastructure/queue/QueueProblems.java`)
 
-### `필드`
-
-- `public static final int WINDOW_MILLIS = 3000` — 역할:
-- `private final Queue<Integer> requests` — 역할:
-
-### `RecentCounter(Queue<Integer> queue)`
-
-- 하는 일:
-- 논리:
-- 비용(왜):
-
-### `int ping(int t)` (TODO)
-
-- 하는 일:
-- 논리:
-- 비용(왜):
-
-### `int size()`
-
-- 하는 일:
-- 논리:
-- 비용(왜):
-
-## 문제 — QueueProblems (`src/main/java/com/datastructure/queue/QueueProblems.java`)
-
-### 문제 1. 회문 판별
+#### 문제 1. 회문 판별
 
 > 문제 설명: 알파벳과 숫자만 보고 대소문자는 무시한다.
 > `"A man, a plan, a canal: Panama"` -> `true` / `"race a car"` -> `false` / `""` -> `true`
@@ -836,7 +904,7 @@ removeLast() : last 를 한 칸 앞으로 당기고, 떼어낸 노드의 prev �
 - 논리:
 - 비용(왜):
 
-### 문제 2. 슬라이딩 윈도우 최댓값 (이 문제집의 함정)
+#### 문제 2. 슬라이딩 윈도우 최댓값 (이 문제집의 함정)
 
 > 문제 설명: 크기 k 인 창을 왼쪽부터 한 칸씩 옮기며 각 창의 최댓값을 모은다.
 > `[1, 3, -1, -3, 5, 3, 6, 7], k=3` -> `[3, 3, 5, 5, 6, 7]`
@@ -857,7 +925,7 @@ removeLast() : last 를 한 칸 앞으로 당기고, 떼어낸 노드의 prev �
 - 논리:
 - 비용(왜):
 
-### 문제 3. 스트림에서 처음으로 한 번만 나온 문자
+#### 문제 3. 스트림에서 처음으로 한 번만 나온 문자
 
 > 문제 설명: 문자열을 앞에서부터 읽으며, 그 시점까지 딱 한 번만 나온 문자 중 가장 먼저 나온 것을 기록한다.
 > 없으면 `'#'` 을 넣는다.
@@ -873,7 +941,7 @@ removeLast() : last 를 한 칸 앞으로 당기고, 떼어낸 노드의 prev �
 - 논리:
 - 비용(왜):
 
-### 문제 4. k 칸 오른쪽으로 회전
+#### 문제 4. k 칸 오른쪽으로 회전
 
 > 문제 설명: `[1, 2, 3, 4, 5], k=2` -> `[4, 5, 1, 2, 3]`
 > 01번(배열)에서는 세 번 뒤집었고, 02번(연결)에서는 링크 몇 개만 바꿨다.
@@ -886,15 +954,56 @@ removeLast() : last 를 한 칸 앞으로 당기고, 떼어낸 노드의 prev �
 - 논리:
 - 비용(왜):
 
+## 장애 시나리오와 대처
+
+**1. 소비가 생산을 못 따라가 큐가 무한히 자란다**
+
+- 현상: 오래 돌수록 메모리가 늘고 응답이 느려지다가 프로세스가 죽는다.
+- 보이는 형태: `java.lang.OutOfMemoryError: Java heap space`. 힙 덤프에 거대한 큐 하나. 죽기 전에는 큐 앞의 요청이 몇 분 전 것이라 처리해도 이미 늦은 상태(지연 누적)다.
+  - *백프레셔(backpressure)*: 소비자가 못 따라가면 생산자를 늦추거나 막는 신호.
+- 원인: 이 노트의 큐는 용량 상한이 없다 — 확장하거나(배열판) 노드를 계속 만든다(연결판). 넣는 속도가 빼는 속도보다 빠르면 끝없이 는다.
+- 대처: 상한을 둔다. 꽉 찼을 때의 정책을 정한다 — 생산자를 막거나(블로킹), 거부하거나, 가장 오래된 것을 버린다(링 버퍼). Java `ArrayBlockingQueue`가 첫 번째 정책이다.
+
+**2. `head`를 뒤로 감을 때 음수 인덱스**
+
+- 현상: `addFirst`가 빈 큐나 `head == 0`에서 죽는다.
+- 보이는 형태: `ArrayIndexOutOfBoundsException: Index -1`. `head`가 0일 때만 나므로, 새 덱에 곧바로 `addFirst`하면 바로 터진다. 반대로 `addLast`·`pollFirst`로 `head`를 0에서 옮겨 둔 테스트만 돌리면 지나간다.
+- 원인: `(head - 1) % length`는 `head == 0`일 때 -1이다. Java의 `%`는 피제수의 부호를 따르므로 음수가 그대로 나온다.
+- 대처: `(head - 1 + length) % length`로 길이를 먼저 더한다. 빈 덱의 `addFirst`와 `head`를 거꾸로 감는 경우(테스트 `addFirstWrapsHeadBackwards`)를 테스트에 넣는다(정답 10번 참고).
+
+**3. 창 경계의 off-by-one — 세지 않아야 할 것을 센다**
+
+- 현상: `RecentCounter.ping`이 기대보다 1 크거나 작다. 대부분의 입력에서는 맞는다.
+- 보이는 형태: 정확히 창 크기만큼 떨어진 요청(`t - 3000`)이 있을 때만 결과가 다르다. 예외는 없다.
+- 원인: 창이 양끝 포함인데 만료 조건을 `<= t - 3000`으로 썼거나, 반대로 포함이 아닌데 `<`로 썼다. "포함/제외"를 계약에서 확인하지 않았다.
+- 대처: 경계값을 딱 맞춘 테스트를 하나 둔다(`ping(1)`, `ping(3001)` → 2). 문제 문장의 "이상/초과"를 조건식 옆에 주석으로 옮겨 적는다.
+
+**4. 감긴 원형 배열을 통째로 복사한 확장**
+
+- 현상: 확장 뒤 큐의 순서가 뒤바뀌거나 `null`이 나온다.
+- 보이는 형태: 용량 경계(4→8)를 넘긴 직후 `dequeue`가 엉뚱한 값을 준다. 그 전까지는 정상이다.
+- 원인: 감긴 상태에서는 논리 순서와 배열의 물리 순서가 다르다. `Arrays.copyOf`는 물리 순서로 복사하므로 `head` 앞의 원소들이 새 배열 앞쪽에 가고 순서가 깨진다.
+- 대처: 확장 시 논리 순서(`(head + i) % length`)대로 새 배열 0번부터 옮기고 `head = 0`으로 되돌린다. 감긴 상태에서 확장하는 테스트(원본의 `growsWhileWrapped`)를 둔다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 큐는 넣는 끝과 빼는 끝이 반대다 — 그래서 스택과 달리 배열의 앞이 비고, 그 문제를 `head` 표지와 되감기(`%`)로 푼 것이 원형 큐다.
+- `tail` 대신 `size`를 두면 "꽉 참"과 "빔"이 구분되고, 확장은 감김을 논리 순서대로 풀면서 옮겨야 한다 — 01번의 통복사가 여기서 깨지는 이유다.
+- 덱은 양 끝을 다 열어 큐와 스택을 겸하며, `Deque extends Queue`이므로 연결 기반 큐를 따로 만들지 않는다. 파라미터는 필요한 능력만 받아 의도를 드러낸다.
+- 창이 있는 문제는 덱에 "아직 답이 될 수 있는 후보"만 남기는 것이 핵심이고, 각 원소가 한 번 들어가고 한 번 나오면 O(n)이다(03번 단조 스택과 같은 상환 논리).
+- 큐는 상한이 없으면 무한히 자란다 — 꽉 찼을 때의 정책(막기·거부·덮어쓰기)이 없는 큐는 운영에서 OOM으로 돌아온다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [03-stack](../03-stack/2-summary.md): 한쪽 끝만 쓰는 구조. 반대 끝을 쓰는 순간 무엇이 달라지는지 여기와 대조한다.
+- 선행 — [01-dynamic-array](../01-dynamic-array/2-summary.md) · [02-linked-list](../02-linked-list/2-summary.md): 배열판의 확장과 연결판의 노드.
+- 후속 — [05-hashmap](../05-hashmap/2-summary.md): 순서 구조의 한계("들어 있는가"가 O(n))가 키로 찾는 구조를 부른다.
+- 응용 — [algorithm/11-bfs](../../algorithm/11-bfs/2-summary.md) · [algorithm/09-sliding-window](../../algorithm/09-sliding-window/2-summary.md) · [ops-patterns/05-backpressure](../../ops-patterns/05-backpressure/2-summary.md) · [ops-patterns/04-rate-limiter](../../ops-patterns/04-rate-limiter/2-summary.md).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `06-queue-deque` (후속 `25-ring-buffer` — 노트 미작성).
+- 교재 — CLRS 3판 10.1 스택과 큐.
+- myway 원본 — `/home/jun/project/myway/data-structure/04-queue-deque/` (README.md · impl/ArrayQueue.java · impl/CircularQueue.java · impl/ArrayDeque.java · impl/LinkedDeque.java · impl/QueueProblems.java · impl/RecentCounter.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -903,7 +1012,7 @@ removeLast() : last 를 한 칸 앞으로 당기고, 떼어낸 노드의 prev �
 - 테스트: `/home/jun/project/myway/data-structure/04-queue-deque/src/test/java/com/datastructure/queue/`
 - 참고 구현: `/home/jun/project/myway/data-structure/04-queue-deque/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 - **큐(queue)**: 뒤로 들어와 앞으로 나가는 줄. enqueue(줄 서기) / dequeue(맨 앞이 나가기) / peek(맨 앞 보기).
 - **FIFO(선입선출) / LIFO(후입선출)**: 먼저 온 것이 먼저 나감(큐) / 나중에 온 것이 먼저 나감(스택).

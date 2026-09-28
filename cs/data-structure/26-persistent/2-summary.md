@@ -4,8 +4,34 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+지금까지의 자료구조는 전부 덮어썼다. `put`을 하면 이전 상태가 사라져 "5분 전 상태"를 물을 방법이 없다 — 시간 축이 없다.
+버전마다 통째로 복사해 두면 시간 축은 생기지만 수정 하나가 O(n)이라 쓸모가 없다.
+
+```text
+덮어쓰기 (01~25)             통째 복사                    경로 복사 (26)
+  v1 [50]                    v1 [50]     v2 [50]'          v1 [50]      v2 [50]*
+      / \      put(45)          / \         / \                / \       /  \
+   [30] [70]  ----->        [30][70]   [30]'[70]'         [30] [70]  [30]*  |
+   v1 은 사라진다           전부 새로 = O(n)            /  \    ^______|    |
+                                                       [20][40]*<- 옛 [40]  공유
+                                                             \
+                                                            [45]*
+```
+
+영속 자료구조는 바꾸지 않고 새 버전을 만든다. 비용은 바뀐 **길목**만 새로 만들고 나머지는 옛 버전과 공유해서 낸다 — 1023개 트리에 키 하나를 넣으면 새 노드 11개, 공유 1013개다.
+공유가 안전한 이유는 노드가 불변이기 때문이다. 불변이 먼저이고 공유는 그 결과다.
+
+- 쉬운 예: 수정 금지 공책 + 포스트잇 — 바뀐 부분만 새 종이에 쓰고 "3쪽부터는 옛 공책 그대로"라고 가리킨다.
+- 똑같은 구조다: 이 노트의 `ConsList`(앞에 붙이면 셀 하나), `PersistentTreeMap`(경로 복사), `VersionedStore`(버전마다 뿌리만 보관).
+- 실무 예: git 커밋(바뀐 파일만 새 객체), 편집기의 undo, Clojure·Scala의 불변 컬렉션.
+  - *영속(persistent)*: 고칠 때마다 새 버전이 생기고 옛 버전도 그대로 읽히는 성질. 디스크 저장과는 다른 말이다.
+  - *구조 공유(structural sharing)*: 두 버전이 안 바뀐 부분을 복사하지 않고 같은 객체를 함께 가리키는 것.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 수정 금지 공책 + 포스트잇.** 한 번 쓴 공책 페이지는 절대 지우거나 고치지 않는다.
 내용을 바꾸고 싶으면 바뀐 부분만 새 종이에 쓰고, 안 바뀐 부분은 "3쪽부터는 옛날 공책 그대로 보세요"라고 가리킨다.
@@ -26,35 +52,41 @@
 이 문서의 자료구조들이 **똑같은 구조다**: 바뀐 조각만 새로 만들고, 나머지는 옛 버전과 공유한다.
 실무에서도 같은 아이디어를 쓴다 — git 은 커밋마다 바뀐 파일만 새로 저장하고 나머지는 이전 커밋 것을 가리키며, 편집기의 undo 도 매번 문서 전체를 복사하지 않는다.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-01번부터 25번까지 만든 것은 전부 덮어썼다.
-`put` 을 하면 이전 상태가 사라져서 "5분 전 상태"를 물으면 답할 방법이 없었다 — 시간 축이 없었다.
-여기서는 **바꾸지 않고 새 버전을 만드는** 자료구조를 만든다.
-버전마다 통째로 복사하면 수정 하나가 O(n) 이라 쓸모가 없으므로, 바뀐 길목만 새로 만들고 나머지는 옛 버전과 공유한다(경로 복사).
+### 전체 흐름
 
-**과제**
+```text
+[1] 불변이 먼저다                          [2] 리스트 — 앞에 붙이면 셀 하나
+    Node / 셀의 모든 필드가 final               v2 = v1.prepend(A)
+    한 번 만든 조각은 영원히 안 바뀐다          v2 --> [A] --> v1 --> [B] --> [C] --> EMPTY
+    -> 남이 가리켜도 뒤에서 변할 일이 없다       새로 만든 것 = [A] 하나. v1 은 그대로 [B, C]
+              |                                   append / reverse 는 n 개 전부 새로 (공유 0)
+              v
+[3] 트리 — 경로 복사                        [4] 버전 저장소 — 뿌리만 보관
+    v2 = v1.put(45)                              versions [ EMPTY | root1 | root2 | root3 ]  영원히 남는다
+    뿌리 -> 45 자리까지의 길 위 노드만 새로       history  [   0   |   1   |   2   |   3   ]  undo/redo 의 길
+    옆가지는 v1 의 참조를 그대로 넘긴다                                                 ^ cursor
+    새 노드 = height + 1 개, 나머지 공유          undo = cursor 만 뒤로. 새 커밋 = cursor 뒤를 잘라낸다
+              |
+              v
+[5] 대가
+    균형을 못 잡는다 (회전이 없다) -> 정렬 입력이면 O(n) 조회 + O(n) 메모리 + 깊은 재귀
+    버전을 아무도 안 보면 새 노드 전부가 GC 쓰레기 -> 영속이 이기는 것은 버전이 필요할 때뿐
+    공유 여부는 값으로 검증할 수 없다 -> 참조 동일성(==) 을 세야 한다
+```
 
-1. `ConsList` (TODO 3개) — 앞에만 붙이는 불변 목록. `prepend` 는 셀 하나만 만들고 꼬리로 옛 목록 자신을 가리킨다
-2. `PersistentTreeMap` (TODO 2개) — 경로 복사로 만드는 불변 이진 탐색 트리. 지나간 길목만 새로 만들고 안 지나간 가지는 받은 참조를 그대로 넘긴다
-3. `VersionedStore` (TODO 3개) — 버전을 전부 들고 있는 저장소. undo, redo, 그리고 아무 시점 조회
-4. `PersistentProblems` (TODO 2개) — `replay`(명령 재생과 시점별 스냅샷), `countSharedNodes`(두 버전이 공유하는 노드 수)
+- [1] 출발점은 불변이다. `final` 필드만 있는 노드는 만들어진 뒤 절대 안 바뀌므로, 여러 버전이 같은 노드를 가리켜도 안전하다. 순서를 뒤집어 "공유하니까 불변"이라고 하면 안 된다.
+  - *불변(immutable)*: 한 번 만들면 내용이 절대 안 바뀌는 것. 바꾸고 싶으면 새것을 만든다.
+- [2] 리스트는 셀 하나가 "값 + 나머지 목록"이라 맨 앞에 붙이는 것은 새 셀 하나로 끝난다(O(1)). 마지막 셀을 고칠 수 없으므로 뒤에 붙이기·뒤집기는 n개를 전부 새로 만든다.
+  - *cons 셀*: `head`(값 하나) + `tail`(나머지 목록)로 된 리스트의 기본 조각.
+- [3] 트리는 바뀐 자리까지 내려가는 길 위의 노드만 새로 만든다. 재귀가 되짚어 올라오며 층마다 새 노드를 만들고, 안 지나간 자식은 받은 참조를 그대로 넘긴다.
+  - *경로 복사(path copying)*: 뿌리에서 바뀐 자리까지의 "길"만 복사하고 옆가지는 공유하는 방법. 새 노드 수 = 높이 + 1.
+- [4] 버전 저장소는 버전마다 그 시점의 뿌리를 목록에 담는다. 뿌리는 서로 다른 객체지만 아래로 내려가면 대부분을 이웃 버전과 함께 쓴다. `versions`(만들어진 모든 상태)와 `history`(되돌리기 길)를 나눈 것이 요점이다.
+  - *커서(cursor)*: `history` 안에서 지금 서 있는 자리. undo는 커서만 뒤로 옮기고 아무것도 지우지 않는다.
+- [5] 회전을 못 쓰니 균형이 없고, 버전을 안 보면 상수 인자만 손해이며, 공유는 값이 아니라 참조로만 검증된다 — 셋 다 이 구조의 성질이다.
 
-순서는 `ConsList 3개 -> PersistentTreeMap 2개 -> VersionedStore 3개 -> PersistentProblems 2개` 다.
-`./run.sh 26` 을 돌리면 처음에 **61개 중 55개가 실패한다.**
-필드 이름 `root`, `Node` 의 `key, value, left, right, size`, `ConsList` 의 `head, tail, size` 는 테스트가 직접 들여다본다.
-
-이 박스의 계약은 `assertEquals` 로 검증할 수 없다.
-`put` 이 안 지나간 부분트리를 통째로 복사하도록 고쳐도 답은 한 글자도 안 틀리고 **61개 중 56개를 통과**한다.
-갈리는 것은 참조 동일성을 보는 다섯 개뿐이다(`assertSame` 하나와 `countSharedNodes` 넷).
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — PersistentList (`src/main/java/com/datastructure/persistent/PersistentList.java`)
+### 계약 — PersistentList (`src/main/java/com/datastructure/persistent/PersistentList.java`)
 
 - `PersistentList<E> prepend(E element)`
 - `E head()`
@@ -65,7 +97,7 @@
 - `PersistentList<E> reverse()`
 - `List<E> toList()`
 
-## 계약 — PersistentMap (`src/main/java/com/datastructure/persistent/PersistentMap.java`)
+### 계약 — PersistentMap (`src/main/java/com/datastructure/persistent/PersistentMap.java`)
 
 - `PersistentMap<K, V> put(K key, V value)`
 - `V get(K key)`
@@ -75,9 +107,9 @@
 - `default boolean isEmpty()`
 - `List<K> keys()`
 
-## 구현 — ConsList (`src/main/java/com/datastructure/persistent/ConsList.java`)
+### 구현 — ConsList (`src/main/java/com/datastructure/persistent/ConsList.java`)
 
-### 구조
+#### 구조
 
 아래 그림을 읽는 데 필요한 말 세 개만 먼저.
   - *셀(cons 셀)*: "값 하나 + 나머지 목록이 어디 있는지" 두 칸짜리 조각. 이게 사슬처럼 이어져 리스트가 된다.
@@ -106,7 +138,7 @@ ConsList : 셀 하나 = 머리 한 개 + 나머지 목록 하나. 그게 전부�
   of(...) : 뒤에서부터 prepend 를 반복해 순서를 맞춘다.
 ```
 
-### 동작 — prepend (셀 공유)
+#### 동작 — prepend (셀 공유)
 
 **언제 쓰나**: 리스트 맨 앞에 원소 하나를 붙이면서, 옛 리스트도 그대로 살려두고 싶을 때.
 그림 먼저 — 왼쪽이 전 상태(v1), 오른쪽이 후 상태(v2). 새로 만든 것은 셀 딱 하나다.
@@ -141,7 +173,7 @@ before                                  after :  v2 = v1.prepend(A)
   - *구조 공유(structural sharing)*: 두 버전이 안 바뀐 부분을 복사하지 않고 같은 조각을 함께 가리키는 것.
   - *가변(mutable)*: 만든 뒤에도 내용을 고칠 수 있는 것. 불변의 반대말.
 
-### 동작 — reverse (여기서는 공유가 끊긴다)
+#### 동작 — reverse (여기서는 공유가 끊긴다)
 
 **언제 쓰나**: 리스트의 순서를 통째로 뒤집고 싶을 때. prepend 와 달리 이 연산은 셀을 하나도 공유하지 못한다 — 왜 그런지가 이 절의 요점이다.
 
@@ -169,71 +201,70 @@ reverse 가 그 경우를 그대로 보여준다.
   (뒤에 나오는 PersistentTreeMap 의 경로 복사가 이 문제를 O(log n) 으로 줄이는 답이다)
 ```
 
-
-### 필드
+#### 필드
 - `EMPTY` (static) — 역할:
 - `head` — 역할:
 - `tail` — 역할:
 - `size` — 역할:
 
-### `private ConsList()` / `private ConsList(E head, ConsList<E> tail)`
+#### `private ConsList()` / `private ConsList(E head, ConsList<E> tail)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static <E> ConsList<E> empty()`
+#### `static <E> ConsList<E> empty()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static <E> ConsList<E> of(E... elements)`
+#### `static <E> ConsList<E> of(E... elements)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()` / `boolean isEmpty()`
+#### `int size()` / `boolean isEmpty()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E head()`
+#### `E head()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `ConsList<E> tail()`
+#### `ConsList<E> tail()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<E> toList()`
+#### `List<E> toList()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `ConsList<E> prepend(E element)` (TODO)
+#### `ConsList<E> prepend(E element)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E get(int index)` (TODO)
+#### `E get(int index)` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `ConsList<E> reverse()` (TODO)
+#### `ConsList<E> reverse()` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean equals(Object o)` / `int hashCode()` / `String toString()`
+#### `boolean equals(Object o)` / `int hashCode()` / `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — PersistentTreeMap (`src/main/java/com/datastructure/persistent/PersistentTreeMap.java`)
+### 구현 — PersistentTreeMap (`src/main/java/com/datastructure/persistent/PersistentTreeMap.java`)
 
-### 구조
+#### 구조
 
 리스트는 "맨 앞"만 싸게 고칠 수 있었다. 아무 키나 싸게 넣고 빼려면 트리가 필요하다. 그림 앞에 말 세 개만.
   - *이진 탐색 트리(BST)*: 각 노드의 왼쪽에는 작은 키, 오른쪽에는 큰 키를 두는 트리. 비교하며 내려가면 자리가 나온다.
@@ -275,7 +306,7 @@ PersistentTreeMap : 값이 안 바뀌는 이진 탐색 트리. 균형 잡기(회
   nodesCreated : "직전 연산이 새로 만든 노드 수". 공유가 실제로 먹었는지 재는 계기판이다.
 ```
 
-### 동작 — put (경로 복사)
+#### 동작 — put (경로 복사)
 
 **언제 쓰나**: 맵에 키-값 하나를 넣으면서, 옛 버전 맵도 그대로 살려두고 싶을 때.
 그림 먼저 — 왼쪽이 전 상태(v1), 오른쪽이 후 상태(v2). `*` 붙은 노드만 새로 만들었다.
@@ -316,7 +347,7 @@ before (v1)                              after (v2 = v1.put(45, "x"))
   값만 갈아끼운 새 노드를 만든다 (아래 서브트리는 통째로 공유).
 ```
 
-### 동작 — 두 버전이 공존
+#### 동작 — 두 버전이 공존
 
 **언제 쓰나**: put 이 끝난 직후의 세상을 보는 절이다. 옛 버전(v1)과 새 버전(v2)이 동시에 살아 있고, 대부분을 같이 쓴다.
   - *`==` 비교*: 값이 같은지가 아니라 "정말 같은 객체(같은 메모리)인지"를 따지는 비교.
@@ -357,86 +388,85 @@ put 이 끝난 뒤 v1 과 v2 는 둘 다 살아 있고, 트리의 대부분을 �
   그 길도 함께 복사한다.
 ```
 
-
-### 필드
+#### 필드
 - `EMPTY` (static) — 역할:
 - `root` — 역할:
 - `nodesCreated` — 역할:
 - `Node.key` / `Node.value` / `Node.left` / `Node.right` / `Node.size` — 역할:
 
-### `static <K, V> PersistentTreeMap<K, V> empty()`
+#### `static <K, V> PersistentTreeMap<K, V> empty()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static int sizeOf(Node<?, ?> node)` / `static void requireKey(Object key)`
+#### `static int sizeOf(Node<?, ?> node)` / `static void requireKey(Object key)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int nodesCreatedByLastPut()`
+#### `int nodesCreatedByLastPut()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()` / `boolean isEmpty()`
+#### `int size()` / `boolean isEmpty()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V get(K key)`
+#### `V get(K key)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean containsKey(K key)`
+#### `boolean containsKey(K key)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<K> keys()` / `void inorder(Node<K, V> node, List<K> out)`
+#### `List<K> keys()` / `void inorder(Node<K, V> node, List<K> out)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int height()` / `int height(Node<K, V> node)`
+#### `int height()` / `int height(Node<K, V> node)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `PersistentTreeMap<K, V> put(K key, V value)`
+#### `PersistentTreeMap<K, V> put(K key, V value)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Node<K, V> put(Node<K, V> node, K key, V value, int[] created)` (TODO, private)
+#### `Node<K, V> put(Node<K, V> node, K key, V value, int[] created)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `PersistentTreeMap<K, V> remove(K key)`
+#### `PersistentTreeMap<K, V> remove(K key)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Node<K, V> remove(Node<K, V> node, K key, int[] created)` (TODO, private)
+#### `Node<K, V> remove(Node<K, V> node, K key, int[] created)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Node<K, V> removeMin(Node<K, V> node, int[] created)` (private)
+#### `Node<K, V> removeMin(Node<K, V> node, int[] created)` (private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — VersionedStore (`src/main/java/com/datastructure/persistent/VersionedStore.java`)
+### 구현 — VersionedStore (`src/main/java/com/datastructure/persistent/VersionedStore.java`)
 
-### 구조
+#### 구조
 
 불변 맵(위의 PersistentTreeMap)이 재료다. 버전마다 그 시점의 뿌리(root)를 목록에 담아두면 "몇 번 버전 보여줘"가 공짜가 된다.
   - *스냅샷(snapshot)*: 어느 한 시점의 모습을 통째로 보관한 것. 사진 찍어두기.
@@ -473,7 +503,7 @@ VersionedStore : 버전마다 그때의 뿌리를 통째로 보관한다. 보관
     history  = 되돌리기 위해 걸어온 길 (undo 후 새로 쓰면 잘려나간다)
 ```
 
-### 동작 — 커밋 / 조회
+#### 동작 — 커밋 / 조회
 
 **언제 쓰나**: put/remove 로 새 버전을 하나 확정(커밋)할 때, 그리고 아무 시점이나 다시 읽을 때. undo 뒤에 새로 쓰면 무슨 일이 나는지가 핵심 그림이다.
   - *방어 복사(defensive copy)*: 내부 데이터를 밖에 줄 때 남이 못 고치게 복사본을 주는 것. 여기서는 맵이 불변이라 원본을 그냥 줘도 안전하다.
@@ -525,54 +555,93 @@ put / remove -> commit(next) 로 모인다
   m 번의 명령이면 O(m n) 대 O(m log n) - 그 차이를 테스트가 노드 수로 잰다.
 ```
 
-
-### 필드
+#### 필드
 - `versions` — 역할:
 - `history` — 역할:
 - `cursor` — 역할:
 - `nodesCreated` — 역할:
 
-### `VersionedStore()`
+#### `VersionedStore()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int currentVersion()` / `int versionCount()` / `long nodesCreated()`
+#### `int currentVersion()` / `int versionCount()` / `long nodesCreated()`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int put(K key, V value)` / `int remove(K key)`
+#### `int put(K key, V value)` / `int remove(K key)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `V get(K key)` / `V get(int version, K key)`
+#### `V get(K key)` / `V get(int version, K key)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `PersistentTreeMap<K, V> snapshot(int version)`
+#### `PersistentTreeMap<K, V> snapshot(int version)`
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int commit(PersistentTreeMap<K, V> next)` (TODO, private)
+#### `int commit(PersistentTreeMap<K, V> next)` (TODO, private)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean undo()` (TODO)
+#### `boolean undo()` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean redo()` (TODO)
+#### `boolean redo()` (TODO)
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **Clojure · Scala의 불변 컬렉션** — 해시 맵·집합은 같은 경로 복사를 32갈래 해시 트라이(HAMT, Scala 2.13은 그 변형 CHAMP)에 적용해 정렬 입력의 편향 없이 얕은 깊이를 유지한다. 정렬 맵(Clojure `sorted-map`)은 영속 레드블랙 트리로, 회전까지 경로 복사로 처리해 균형을 잡는다. `assoc`/`updated`가 새 컬렉션을 돌려주는 것이 `put`의 반환형과 같다.
+- **git 객체 저장소** — 커밋마다 바뀐 파일(blob)과 그 길 위의 tree만 새로 만들고 나머지는 이전 커밋의 객체를 가리킨다. 참조 대신 해시로 공유를 표현하는 것이 [27-merkle-tree](../27-merkle-tree/2-summary.md)다.
+- **React 상태 관리 — Immer · Immutable.js** — 상태를 불변으로 두고 바뀐 경로만 새 객체로 만든다. 참조 비교 한 번으로 "바뀌었나"를 알 수 있어 재렌더링 판정이 싸진다 — React는 상태 변경을 `Object.is` 참조 비교로 판정하고, Immer는 바뀐 경로만 새 객체로 만들며 나머지를 공유한다(React·Immer 문서).
+- **DB의 MVCC(다중 버전 동시성 제어)** — 갱신 시 옛 행을 덮지 않고 새 버전을 쓰고, 읽기 트랜잭션은 자기 시점의 버전을 본다. "조회에 잠금이 필요 없다"가 같은 생각이다(정답 3번 참고).
+- **copy-on-write 파일시스템 스냅샷 — ZFS · Btrfs** — 블록을 덮어쓰지 않고 새로 쓰며 바뀐 길 위의 메타데이터만 갱신한다. 스냅샷 = 옛 뿌리를 붙잡아 두기(ZFS·Btrfs 설계 문서의 copy-on-write 설명). 공유는 객체 참조가 아니라 블록 포인터로 표현된다.
+- **편집기의 undo/redo** — 문서 전체를 복사하지 않고 버전을 남긴다. `VersionedStore`의 `versions`/`history` 분리와 "undo 뒤 새 편집이 redo 경로를 잘라내는" 규칙이 그대로다.
+- **이 노트가 가져다 쓰는 것** — [02-linked-list](../02-linked-list/2-summary.md)(`ConsList`의 원형), [06-binary-search-tree](../06-binary-search-tree/2-summary.md)(`PersistentTreeMap`의 탐색·삭제).
+
+## 적용 — 풀어나가는 법
+
+영속 구조 문제는 "버전을 누가 볼 것인가"를 먼저 묻는 데서 갈린다.
+순서: ① 옛 버전을 읽을 일이 있는지 확인한다(없으면 가변 구조가 11배 싸다) → ② 연산이 어느 길목을 지나는지 그린다 — 그 길만 새로 만들고 옆가지는 참조를 넘긴다 → ③ 새로 만든 노드 수(`nodesCreated`)와 공유 노드 수를 참조 동일성으로 센다 — 값 비교로는 검증되지 않는다 → ④ 버전 목록과 되돌리기 길을 분리해 undo/redo와 시점 조회를 얹는다.
+아래 과제 넷이 이 순서로 풀린다.
+
+### 문제 — 이 챕터가 시키는 것
+
+01번부터 25번까지 만든 것은 전부 덮어썼다.
+`put` 을 하면 이전 상태가 사라져서 "5분 전 상태"를 물으면 답할 방법이 없었다 — 시간 축이 없었다.
+여기서는 **바꾸지 않고 새 버전을 만드는** 자료구조를 만든다.
+버전마다 통째로 복사하면 수정 하나가 O(n) 이라 쓸모가 없으므로, 바뀐 길목만 새로 만들고 나머지는 옛 버전과 공유한다(경로 복사).
+
+**과제**
+
+1. `ConsList` (TODO 3개) — 앞에만 붙이는 불변 목록. `prepend` 는 셀 하나만 만들고 꼬리로 옛 목록 자신을 가리킨다
+2. `PersistentTreeMap` (TODO 2개) — 경로 복사로 만드는 불변 이진 탐색 트리. 지나간 길목만 새로 만들고 안 지나간 가지는 받은 참조를 그대로 넘긴다
+3. `VersionedStore` (TODO 3개) — 버전을 전부 들고 있는 저장소. undo, redo, 그리고 아무 시점 조회
+4. `PersistentProblems` (TODO 2개) — `replay`(명령 재생과 시점별 스냅샷), `countSharedNodes`(두 버전이 공유하는 노드 수)
+
+순서는 `ConsList 3개 -> PersistentTreeMap 2개 -> VersionedStore 3개 -> PersistentProblems 2개` 다.
+`./run.sh 26` 을 돌리면 처음에 **61개 중 55개가 실패한다.**
+필드 이름 `root`, `Node` 의 `key, value, left, right, size`, `ConsList` 의 `head, tail, size` 는 테스트가 직접 들여다본다.
+
+이 박스의 계약은 `assertEquals` 로 검증할 수 없다.
+`put` 이 안 지나간 부분트리를 통째로 복사하도록 고쳐도 답은 한 글자도 안 틀리고 **61개 중 56개를 통과**한다.
+갈리는 것은 참조 동일성을 보는 다섯 개뿐이다(`assertSame` 하나와 `countSharedNodes` 넷).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -580,9 +649,9 @@ put / remove -> commit(next) 로 모인다
 | PersistentTreeMap (경로 복사) | | | |
 | VersionedStore (버전 스냅샷 보관) | | | |
 
-## 문제 — PersistentProblems (`src/main/java/com/datastructure/persistent/PersistentProblems.java`)
+### 문제 — PersistentProblems (`src/main/java/com/datastructure/persistent/PersistentProblems.java`)
 
-### 문제 1. 명령 재생과 시점별 스냅샷 — `replay(List<String[]> commands)`
+#### 문제 1. 명령 재생과 시점별 스냅샷 — `replay(List<String[]> commands)`
 
 > 문제 설명: 명령을 하나씩 실행하며 매 시점의 맵을 전부 남긴다. 결과의 0번은 아무것도 실행하기 전,
 > i+1번은 i번 명령을 실행한 뒤다.
@@ -599,7 +668,7 @@ put / remove -> commit(next) 로 모인다
 - 논리:
 - 비용(왜):
 
-### 문제 2. 두 버전이 공유하는 노드 수 — `countSharedNodes(PersistentTreeMap<K,V> before, PersistentTreeMap<K,V> after)`
+#### 문제 2. 두 버전이 공유하는 노드 수 — `countSharedNodes(PersistentTreeMap<K,V> before, PersistentTreeMap<K,V> after)`
 
 > 문제 설명: 두 버전이 실제로 공유하는 노드의 수.
 > 값이 같은 것이 아니라 같은 객체인 것만 센다.
@@ -609,22 +678,61 @@ put / remove -> commit(next) 로 모인다
 - 논리:
 - 비용(왜):
 
+## 장애 시나리오와 대처
+
+**1. 정렬된 키를 넣다가 스택이 터짐**
+
+- 현상: 키를 오름차순으로 계속 넣으면 어느 순간 `put`이 죽는다.
+- 보이는 형태: `StackOverflowError`. README 실측으로 이 기계 기본 스택에서 정렬 입력 1만 200개는 되고 1만 300개에서 터진다. 그 전부터 `nodesCreated`가 수정 한 번에 n에 가깝게 오른다.
+- 원인: 균형이 없어 정렬 입력은 한 줄로 늘어져 높이 = 원소 수다. 경로 복사는 되짚어 올라오며 노드를 만들어야 해서 재귀를 반복문으로 바꾸기도 어렵다.
+- 대처: 키 순서를 섞어 넣거나, 실무처럼 균형을 잡는 구조로 바꾼다(해시 맵이면 HAMT, 정렬 맵이면 영속 레드블랙 트리). 입력이 정렬됐다면 중앙값부터 넣어 균형을 만든다. 테스트가 정렬 입력을 1000개로 제한한 이유다(메모리 쪽은 정답 6번 참고).
+
+**2. 버전을 영원히 붙잡아 메모리가 회수되지 않음**
+
+- 현상: 오래 돌수록 힙이 늘고 결국 `OutOfMemoryError`. 옛 버전은 아무도 안 보는데도 줄지 않는다.
+- 보이는 형태: 힙 덤프에서 `versions` 목록이 뿌리 수천 개를 붙잡고 있고, 각 뿌리 아래의 "그 버전만 쓰는" 노드들이 전부 살아 있다. `versionCount()`가 단조 증가한다.
+- 원인: `VersionedStore`는 `versions`에 한 번 넣으면 절대 빼지 않는다 — 과거 조회의 근거라서다. 누군가 뿌리를 가리키는 한 GC는 그 아래를 치우지 못한다(커리큘럼 ⚠ "옛 버전 참조 → 메모리 회수 불가").
+- 대처: 보관 정책을 둔다 — 버전 수 상한, 오래된 버전 버리기, 또는 필요한 시점만 스냅샷으로 남기고 나머지는 명령 로그(`replay`)로 재생한다. 옛 뿌리 참조를 끊는 순간 그 버전만의 노드는 GC가 회수한다.
+
+**3. 값만 비교하는 테스트가 "공유하는 척"하는 구현을 통과시킴**
+
+- 현상: 모든 기능 테스트가 초록인데 메모리가 O(n)씩 는다.
+- 보이는 형태: `put`이 안 지나간 부분트리까지 통째로 복사해도 답은 한 글자도 안 틀려 61개 중 56개를 통과한다(README). 갈리는 것은 `assertSame` 하나와 `countSharedNodes` 넷뿐이다.
+- 원인: 공유는 "값이 같다"가 아니라 "같은 객체다"의 문제라 `assertEquals`로는 보이지 않는다.
+- 대처: `nodesCreated`(수정 한 번에 만든 노드 수 = 높이 + 1)와 `countSharedNodes`(참조 동일성, `IdentityHashMap`)를 계약에 넣는다(정답 2번 참고).
+
+**4. undo 뒤에 새로 쓰면 redo가 사라짐**
+
+- 현상: 두 번 되돌리고 하나를 새로 쓴 뒤 `redo()`를 눌렀는데 아무 일도 안 일어난다.
+- 보이는 형태: `redo()`가 `false`(또는 현재 버전 그대로)를 돌려준다. 되돌렸던 버전은 `versions`에 남아 있어 `snapshot(n)`으로는 여전히 읽힌다.
+- 원인: 새 커밋은 `cursor` 뒤에 남아 있던 `history`를 잘라낸다 — 갈라진 두 미래를 한 줄의 되돌리기 길에 담을 수 없어서다. 편집기의 undo와 같은 규칙이다.
+- 대처: 이것은 버그가 아니라 계약이다. 갈라진 미래가 필요하면 `history`를 한 줄이 아니라 트리로 만들거나, 버전 번호를 직접 들고 `snapshot(n)`으로 읽는다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 영속 자료구조는 바꾸지 않고 새 버전을 만든다 — 버전마다 통째로 복사하는 대신 바뀐 길목만 새로 만들고 나머지는 옛 버전과 공유한다(경로 복사).
+- 공유가 안전한 이유는 불변이기 때문이다: 불변이 먼저이고 공유는 그 결과다 — 순서를 뒤집으면 안 된다.
+- 불변이 공짜로 주는 것은 리스트의 앞에 붙이기뿐이다. 뒤에 붙이기·뒤집기는 n개를 전부 새로 만들고, 트리는 수정 하나에 높이 + 1개를 만든다.
+- 공유는 값으로 검증할 수 없다 — "같은 객체다"를 참조 동일성으로 세야 O(n) 메모리로 O(log n)인 척하는 구현이 걸러진다.
+- 영속이 이기는 것은 버전이 필요할 때뿐이다: 아무도 안 볼 버전이면 상수 인자 11배가 손해이고, 시점 100개를 남기면 97배가 뒤집힌다. 그리고 옛 뿌리를 붙잡는 한 그 버전의 메모리는 돌아오지 않는다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [02-linked-list](../02-linked-list/2-summary.md) · [06-binary-search-tree](../06-binary-search-tree/2-summary.md): 가변 원형. `put`의 반환형이 "옛 값"에서 "새 자료구조"로 바뀌는 지점을 대조한다.
+- 선행 — [16-red-black-tree](../16-red-black-tree/2-summary.md): 회전으로 균형을 잡는 방법. 불변 트리에서는 회전도 경로 위 노드를 새로 만들어 처리한다(Clojure `sorted-map`·Okasaki의 영속 레드블랙 트리) — 해시 맵은 HAMT로 균형 문제를 아예 피한다.
+- 후속 — [27-merkle-tree](../27-merkle-tree/2-summary.md): 같은 불변성 위에서 "이게 그대로인가"에 답한다 — 참조 공유 대신 해시 요약.
+- 연결 — [ops-patterns/16-event-sourcing](../../ops-patterns/16-event-sourcing/2-summary.md): 문제 1의 `replay`(명령 재생 + 시점 스냅샷)가 그 패턴의 축소판이다.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `40-persistent` (선행 `09` · 원전 Driscoll 외 1989 · Okasaki 1998).
+- myway 원본 — `/home/jun/project/myway/data-structure/26-persistent/` (README.md · impl/ConsList.java · impl/PersistentTreeMap.java · impl/VersionedStore.java · impl/PersistentProblems.java).
+
+### 관련 자료
 
 - 원본 README: `/home/jun/project/myway/data-structure/26-persistent/README.md`
 - 구현 대상: `/home/jun/project/myway/data-structure/26-persistent/src/main/java/com/datastructure/persistent/`
 - 테스트: `/home/jun/project/myway/data-structure/26-persistent/src/test/java/com/datastructure/persistent/`
 - 정답 구현: `/home/jun/project/myway/data-structure/26-persistent/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 - **영속 자료구조(persistent data structure)**: 고칠 때마다 새 버전이 생기고, 옛 버전도 계속 읽을 수 있는 자료구조. "지우고 덮어쓰기"가 없다.
 - **불변(immutable)**: 한 번 만들면 내용이 절대 안 바뀌는 것. 바꾸고 싶으면 새것을 만든다.

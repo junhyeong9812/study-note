@@ -4,8 +4,34 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+"이 둘이 같은 묶음(연결돼 있나)?"에 그래프(08)는 BFS로 O(V+E)에 답한다.\
+그런데 간선이 **하나씩 들어오면서** 질문이 섞여 오면, 매 질문마다 그래프를 다시 훑어야 한다.
+
+```text
+간선 추가 -> 질문 -> 간선 추가 -> 질문 -> ...   (m 번)
+BFS 로 답하기        매번 O(V+E)  ->  총 O(m·(V+E))
+유니온-파인드        find(x) == find(y)   ->  연산당 거의 O(1)
+
+   대표 따라가기        0            "1 과 3 같은 팀?"  1->0,  3->2->0  ->  같다
+                      / \
+                     1   2
+                          \
+                           3
+```
+
+유니온-파인드는 원소마다 "내가 따르는 사람" 한 칸(`parent`)만 두고, 대표(뿌리)가 같은지로 답한다.\
+합칠 때는 한 대표가 다른 대표를 따르게 하면 끝이라 명단을 고칠 필요가 없다.\
+쉬운 예: 팀 대표 따라가기 — 각자 한 명만 기억해도 팀 소속은 대표를 따라 올라가면 나온다.\
+똑같은 구조다: 크루스칼 MST에서 "이 간선을 넣으면 사이클이 생기나"가 `find(u) == find(v)` 한 줄이다.\
+실무 예: 네트워크 장비가 하나씩 켜지며 링크가 붙을 때 "A와 B가 지금 통하나"를 매번 전체 탐색 없이 답한다.
+
+  - *증분(incremental)*: 처음부터 다시 계산하지 않고, 새로 들어온 변화만 반영해 답을 갱신하는 방식.
+
+### 한눈에 — 쉽게 말하면
 
 **유니온-파인드 = 팀 대표 따라가기.** 반 아이들이 여러 팀으로 나뉘어 있는데, 각자 "내가 따르는 사람" 한 명만 기억한다. 따라가다 보면 팀의 최종 대표가 나온다. "너희 둘 같은 팀이야?"는 각자 대표를 따라 올라가 같은 사람이 나오는지만 보면 되고(find), 두 팀을 합칠 때는 한 팀의 대표가 다른 팀 대표를 따르게만 하면 된다(union) — 팀원 전체 명단을 고칠 필요가 없다.
 
@@ -26,30 +52,37 @@
 
 실무·알고리즘에서 "같은 그룹인지 빠르게 판정"이 필요한 곳마다 쓰인다 — 네트워크에서 두 컴퓨터가 연결돼 있는지, 이미지에서 같은 덩어리 픽셀인지, 최소 신장 트리(크루스칼)에서 사이클이 생기는지.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-08번 그래프에서 "이 둘이 연결돼 있나"는 BFS 로 O(V+E) 에 답했지만, 간선이 하나씩 들어오면 매번 다시 돌려야 한다.\
-그 질문에 증분적으로, 거의 O(1) 에 답하는 구조를 직접 만든다 — 대신 "경로를 모른다"와 "쪼갤 수 없다"를 포기한다.\
-`UnionFindContractTest.java` 를 따라 친 뒤 TODO 10개를 채우는 것이 과제다(처음 돌리면 52개 중 49개가 실패한다).
+### 전체 흐름
 
-- `ArrayUnionFind` — TODO 3개(`find`, `union`, `sizeOf`).\
-  배열 두 개로 트리를 표현한다. 여기가 본체다.
-- `MapUnionFind` — TODO 2개(`find`, `union`).\
-  같은 알고리즘인데 저장소만 배열에서 맵으로 바뀐다.\
-  원소 수를 미리 몰라도 되고 흩어진 아이디도 받는다.
-- `DisjointSet<T>` — TODO 2개(`add`, `groups`).\
-  아무 타입이나 받도록 번호를 붙여 안쪽 구현에 넘긴다.
-- `WeightedUnionFind` — TODO 3개(`find`, `union`, `diff`).\
-  연결 여부만이 아니라 값의 **차이**까지 관리한다. 제일 어렵다.
-- 생각해볼 것 — 경로 압축 루프의 순서 함정 · 재귀 대신 반복 · `sizeOf` 는 뿌리 것만 정확 · `groups()` 가 O(n) 인 이유 · 배열이냐 맵이냐 · `find` 순서를 틀리면 조용히 틀린다 · 크기로 붙이기 때문에 weight 부호를 두 경우 다 · Integer 캐시 함정.
+```text
+[1] 배열 하나가 숲이다                     [2] find = 대표 따라 올라가기
+    parent[i] = i 의 부모, 뿌리는 자기 자신       x -> parent[x] -> ... -> parent[r] == r
+    처음엔 전부 혼자: parent[i] = i               "같은 묶음?" = find(x) == find(y)
+    treeSize[r] = 뿌리일 때만 뜻 있는 크기
+              |                                          |
+              v                                          v
+[3] union = 대표끼리만 잇는다               [4] 요령 1 — 크기로 붙이기 (union by size)
+    rx = find(x), ry = find(y)                   작은 나무를 큰 나무 밑에 넣는다
+    rx == ry 면 이미 같은 묶음 -> false           깊이가 1 늘려면 크기가 2배 -> 깊이 <= log n
+    아니면 parent[작은 뿌리] = 큰 뿌리, components--
+              |
+              v
+[5] 요령 2 — 경로 압축 (path compression)   [6] 대가
+    find 가 올라간 김에 지나온 칸을 전부           "어떻게" 연결됐는지(경로)는 모른다
+    뿌리 직속으로 바꿔 단다 (두 번 훑기, 반복문)    한 번 합친 것은 쪼갤 수 없다 (압축이 옛 모양을 지운다)
+    둘 다 켜면 연산당 α(n) — 사실상 상수           "누가 같은 묶음인가" 목록은 O(n)
+```
 
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+- [1] 트리를 포인터 없이 배열 한 줄로 표현한다. 묶음의 모양에는 뜻이 없고 뿌리가 누구냐만 뜻이 있다.
+- [2] 질문은 둘의 뿌리를 비교하는 것뿐이다. 그래서 빠른 것은 "둘이 같은가"뿐이다.
+- [3] 합치기는 대표 한 명의 `parent`만 바꾼다. 팀원 명단은 손대지 않는다.
+- [4] 작은 쪽을 밑에 넣어야 나무가 옆으로 퍼진다. 이것만으로 깊이가 log n에 갇힌다.
+- [5] 찾으러 올라간 김에 길을 평평하게 만든다 — 조회가 자료구조를 바꾼다(10번 LRU의 `get`, 13번 lazy의 `rangeSum`과 같은 성질).
+- [6] 속도의 값이다. 경로와 분리를 포기했고, 그 포기가 α(n)을 산다.
 
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — UnionFind (`src/main/java/com/datastructure/unionfind/UnionFind.java`)
+### 계약 — UnionFind (`src/main/java/com/datastructure/unionfind/UnionFind.java`)
 
 - `int find(int x)`
 - `boolean union(int x, int y)`
@@ -58,11 +91,11 @@
 - `int size()`
 - `int sizeOf(int x)`
 
-## 구현 — ArrayUnionFind (`src/main/java/com/datastructure/unionfind/ArrayUnionFind.java`)
+### 구현 — ArrayUnionFind (`src/main/java/com/datastructure/unionfind/ArrayUnionFind.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 - *포레스트(forest)*: 트리(나무)가 여러 그루 모인 것. 묶음 하나 = 트리 한 그루, 뿌리 = 그 묶음의 대표.
 - *컴포넌트(component)*: 서로 연결된 원소들의 묶음. components 는 지금 묶음이 몇 개인지다.
@@ -106,7 +139,7 @@ treeSize  |  4  |  1  |  2  |  1  |  4  |  1  |  2  |  1  |
   sizeOf(x) 는 treeSize[find(x)] 로 읽는다 -- 뿌리 칸만 믿는다.
 ```
 
-### 동작 — 찾기
+#### 동작 — 찾기
 
 **언제 쓰나**: "x의 대표가 누구인가"를 알아야 하는 모든 순간 — connected/union/sizeOf 전부 find 로 시작한다.
 
@@ -156,7 +189,7 @@ union by size 와 같이 쓰면 연산당 상환 비용이 거의 상수(역아�
 - *상환(amortized) 비용*: 연산 여러 번의 비용을 평균 낸 값. 한 번 비싸도 그 덕에 다음이 싸지면 평균은 낮다.
 - *역아커만 함수 α(n)*: 상상 못 할 만큼 천천히 자라는 함수. 우주의 원자 수만큼 넣어도 5 이하 — 사실상 상수라는 뜻으로 쓴다.
 
-### 동작 — 합치기
+#### 동작 — 합치기
 
 **언제 쓰나**: "x와 y는 이제 같은 묶음"이라는 사실이 생겼을 때(간선 추가, 팀 합병).
 
@@ -202,7 +235,7 @@ union(x, y) : 두 뿌리를 찾아 한쪽을 다른 쪽 밑에 매단다
 
 **비용**: find 두 번 + 상수 대입. 경로 압축과 합치면 연산당 사실상 상수(α(n)).
 
-### `필드`
+#### `필드`
 
 - `int[] parent` 역할:
 - `int[] treeSize` 역할:
@@ -210,49 +243,49 @@ union(x, y) : 두 뿌리를 찾아 한쪽을 다른 쪽 밑에 매단다
 - `boolean pathCompression` 역할:
 - `int components` 역할:
 
-### `public ArrayUnionFind(int n)`
+#### `public ArrayUnionFind(int n)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public int find(int x)` (TODO)
+#### `public int find(int x)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public boolean union(int x, int y)` (TODO)
+#### `public boolean union(int x, int y)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public int sizeOf(int x)` (TODO)
+#### `public int sizeOf(int x)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public boolean connected(int x, int y)`
+#### `public boolean connected(int x, int y)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public int componentCount()`
+#### `public int componentCount()`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int size()`
+#### `public int size()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 — MapUnionFind (`src/main/java/com/datastructure/unionfind/MapUnionFind.java`)
+### 구현 — MapUnionFind (`src/main/java/com/datastructure/unionfind/MapUnionFind.java`)
 
-### 구조
+#### 구조
 
 - *해시맵(hash map)*: 키를 해시 함수로 흩어 담아, 아무 값이나 키로 쓰면서 평균 O(1)에 찾는 저장소. 배열처럼 "0..n-1 연속 번호"일 필요가 없다.
 
@@ -285,49 +318,49 @@ parent    |  0  |  0  |  2  |  2  |           | 7    -> 7   (뿌리)        |
 쓰는 자리: 원소가 0..n-1 이 아닐 때 (아이디, 좌표를 접은 값, 띄엄띄엄한 번호)
 ```
 
-### `필드`
+#### `필드`
 
 - `Map<Integer, Integer> parent` 역할:
 - `Map<Integer, Integer> treeSize` 역할:
 - `int components` 역할:
 
-### `public boolean add(int x)`
+#### `public boolean add(int x)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public boolean contains(int x)`
+#### `public boolean contains(int x)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int find(int x)` (TODO)
-
-- 하는 일:
-- 논리:
-- 비용(왜):
-
-### `public boolean union(int x, int y)` (TODO)
+#### `public int find(int x)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public boolean connected(int x, int y)`
-
-- 하는 일:
-- 비용(왜):
-
-### `public int componentCount()` / `public int size()` / `public int sizeOf(int x)`
+#### `public boolean union(int x, int y)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — DisjointSet&lt;T&gt; (`src/main/java/com/datastructure/unionfind/DisjointSet.java`)
+#### `public boolean connected(int x, int y)`
 
-### 구조
+- 하는 일:
+- 비용(왜):
+
+#### `public int componentCount()` / `public int size()` / `public int sizeOf(int x)`
+
+- 하는 일:
+- 논리:
+- 비용(왜):
+
+### 구현 — DisjointSet&lt;T&gt; (`src/main/java/com/datastructure/unionfind/DisjointSet.java`)
+
+#### 구조
 
 - *제네릭 T*: "어떤 타입이든 담을 수 있게" 비워 둔 타입 자리. 문자열이든 객체든 T 에 끼워 쓴다.
 - *LinkedHashMap*: 넣은 순서를 기억하는 해시맵.
@@ -360,56 +393,56 @@ DisjointSet<T> 는 union-find 를 새로 만들지 않는다. T 를 번호로 �
   대가 = 원소 하나마다 해시맵 조회가 한 겹 더 붙는다
 ```
 
-### `필드`
+#### `필드`
 
 - `Map<T, Integer> ids` 역할:
 - `List<T> items` 역할:
 - `MapUnionFind uf` 역할:
 
-### `public boolean add(T item)` (TODO)
+#### `public boolean add(T item)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public Map<T, List<T>> groups()` (TODO)
+#### `public Map<T, List<T>> groups()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public boolean contains(T item)`
+#### `public boolean contains(T item)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public T find(T item)`
-
-- 하는 일:
-- 논리:
-- 비용(왜):
-
-### `public boolean union(T a, T b)`
+#### `public T find(T item)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public boolean connected(T a, T b)`
+#### `public boolean union(T a, T b)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public int componentCount()` / `public int size()` / `public int sizeOf(T item)`
+#### `public boolean connected(T a, T b)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — WeightedUnionFind (`src/main/java/com/datastructure/unionfind/WeightedUnionFind.java`)
+#### `public int componentCount()` / `public int size()` / `public int sizeOf(T item)`
 
-### 구조
+- 하는 일:
+- 논리:
+- 비용(왜):
+
+### 구현 — WeightedUnionFind (`src/main/java/com/datastructure/unionfind/WeightedUnionFind.java`)
+
+#### 구조
 
 ```
 WeightedUnionFind -- "같은 묶음인가" 에 더해 "값이 얼마나 차이 나는가" 까지 들고 있다
@@ -444,7 +477,7 @@ treeSize  |  4  |  1  |  2  |  1  |
   weight[3] = 5  : 아직 부모가 2 라서 "2 와의 차이" 다. 뿌리 0 과의 차이가 아니다.
 ```
 
-### 동작 — 찾기(가중치 누적)
+#### 동작 — 찾기(가중치 누적)
 
 **언제 쓰나**: "x와 y는 같은 묶음이고 값 차이가 w다" 같은 상대적 관계를 다룰 때 — 환율(A는 B의 2배), 위치 차이, 수지 차이 등. find 가 대표를 찾으면서 "대표와의 차이"도 함께 맞춰 둔다.
 
@@ -493,48 +526,83 @@ weight    |  0  |  3  | 13  |  5  |              |  0  |  3  | 13  | 18  |
 
 **비용**: ArrayUnionFind 의 find 와 같은 O(α(n)) 상환 — 덧셈 하나가 더 붙을 뿐이다.
 
-### `필드`
+#### `필드`
 
 - `int[] parent` 역할:
 - `int[] treeSize` 역할:
 - `long[] weight` 역할:
 - `int components` 역할:
 
-### `public WeightedUnionFind(int n)`
+#### `public WeightedUnionFind(int n)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public int find(int x)` (TODO)
+#### `public int find(int x)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public boolean union(int x, int y, long w)` (TODO)
+#### `public boolean union(int x, int y, long w)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public long diff(int x, int y)` (TODO)
+#### `public long diff(int x, int y)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public boolean connected(int x, int y)`
+#### `public boolean connected(int x, int y)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int componentCount()` / `public int size()`
+#### `public int componentCount()` / `public int size()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **크루스칼 최소 신장 트리** — 간선을 가중치 순으로 보며 `find(u) == find(v)`면 사이클이라 버린다. [algorithm/17-mst](../../algorithm/17-mst/2-summary.md).
+- **동적 연결성** — 노드·링크가 하나씩 추가되는 네트워크에서 "지금 통하나"를 증분으로 답한다. 오프라인이면 삭제도 역순으로 바꿔 처리한다.
+- **이미지 처리의 연결 요소 라벨링** — 이웃한 같은 색 픽셀을 union으로 묶어 "같은 덩어리"에 같은 번호를 붙인다.
+- **컴파일러·타입 검사의 단일화(unification)** — 타입 변수 둘이 같아야 한다는 제약을 union으로 합치고, 같은 묶음인지로 일관성을 본다(Hindley–Milner 타입 추론 구현의 표준 부품).
+- **등식·차이 제약 풀이** — `WeightedUnionFind`의 모양이다. 환율 일관성 검사, 상대 좌표, 서버 간 시계 오프셋("A가 B보다 30ms 빠르다"를 모아 임의 두 서버의 차이를 유도)이 전부 "차이만 알면 되는" 문제다. 시계가 어긋나는 배경은 [ops-patterns/14-logical-clock](../../ops-patterns/14-logical-clock/2-summary.md).
+- **퍼콜레이션·격자 시뮬레이션** — 격자 칸을 열며 "위와 아래가 연결됐나"를 묻는 고전 예제(Sedgewick·Wayne의 Princeton Algorithms 강의 과제 Percolation).
+- **재료 — [08-graph](../08-graph/2-summary.md) · [algorithm/11-bfs](../../algorithm/11-bfs/2-summary.md)** — 같은 질문을 경로까지 답하는 쪽. 경로가 필요하면 그쪽으로 돌아간다.
+
+## 적용 — 풀어나가는 법
+
+유니온-파인드를 꺼낼지는 "합치기만 하고 쪼개지 않는가"와 "경로는 필요 없는가" 두 질문으로 정한다.\
+순서: ① 질문이 "둘이 같은 묶음인가"뿐인지 확인한다 — 경로·목록이 필요하면 그래프 탐색이다 → ② 간선이 추가만 되는지 본다 — 삭제가 있으면 역순 오프라인 처리나 재구축을 설계한다 → ③ 원소가 0..n-1로 조밀하면 배열판, 흩어진 아이디·임의 타입이면 맵판·`DisjointSet<T>` → ④ "차이"까지 물으면 `WeightedUnionFind`로 올리고 `union`의 반환값(모순)을 반드시 처리한다.\
+아래 과제 목록과 구현 전략 비교가 ③~④를 다룬다.
+
+### 문제 — 이 챕터가 시키는 것
+
+08번 그래프에서 "이 둘이 연결돼 있나"는 BFS 로 O(V+E) 에 답했지만, 간선이 하나씩 들어오면 매번 다시 돌려야 한다.\
+그 질문에 증분적으로, 거의 O(1) 에 답하는 구조를 직접 만든다 — 대신 "경로를 모른다"와 "쪼갤 수 없다"를 포기한다.\
+`UnionFindContractTest.java` 를 따라 친 뒤 TODO 10개를 채우는 것이 과제다(처음 돌리면 52개 중 49개가 실패한다).
+
+- `ArrayUnionFind` — TODO 3개(`find`, `union`, `sizeOf`).\
+  배열 두 개로 트리를 표현한다. 여기가 본체다.
+- `MapUnionFind` — TODO 2개(`find`, `union`).\
+  같은 알고리즘인데 저장소만 배열에서 맵으로 바뀐다.\
+  원소 수를 미리 몰라도 되고 흩어진 아이디도 받는다.
+- `DisjointSet<T>` — TODO 2개(`add`, `groups`).\
+  아무 타입이나 받도록 번호를 붙여 안쪽 구현에 넘긴다.
+- `WeightedUnionFind` — TODO 3개(`find`, `union`, `diff`).\
+  연결 여부만이 아니라 값의 **차이**까지 관리한다. 제일 어렵다.
+- 생각해볼 것 — 경로 압축 루프의 순서 함정 · 재귀 대신 반복 · `sizeOf` 는 뿌리 것만 정확 · `groups()` 가 O(n) 인 이유 · 배열이냐 맵이냐 · `find` 순서를 틀리면 조용히 틀린다 · 크기로 붙이기 때문에 weight 부호를 두 경우 다 · Integer 캐시 함정.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -543,15 +611,55 @@ weight    |  0  |  3  | 13  |  5  |              |  0  |  3  | 13  | 18  |
 | DisjointSet&lt;T&gt; (번호 매핑 + 포함) | | | |
 | WeightedUnionFind (차이까지) | | | |
 
+## 장애 시나리오와 대처
+
+**1. 큰 입력에서만 `StackOverflowError` — 재귀 `find`**
+
+- 현상: 원소 수천 개까지는 잘 돌다가 10만 개를 한 줄로 이으면 `find`에서 죽는다.
+- 보이는 형태: `java.lang.StackOverflowError`, 스택 트레이스에 `find`가 수천 번 겹쳐 있다.
+- 원인: 크기로 붙이기 없이 `find`를 재귀로 썼다. 압축이 아직 안 된 깊은 사슬에서는 재귀 깊이가 사슬 길이(최대 n)만큼 되고, JVM 스택이 그만큼을 담지 못한다. (크기로 붙이기가 있으면 깊이가 log n — 10만 개에 17 — 에 갇혀 재귀도 안전하다. 이 노트의 `WeightedUnionFind.find`가 재귀인 채로 괜찮은 이유다.) 08번 DFS가 재귀에서 무너진 것과 같은 이유다.
+- 대처: 두 번 훑는 반복문으로 쓴다 — 먼저 뿌리를 찾고, 다시 올라가며 `parent[cur] = root`로 덮는다. 테스트에 "압축 없이 n개를 한 줄로 이은 뒤 `find`"를 넣어 깊이를 실제로 만든다.
+
+**2. 동시에 `find`만 했는데 묶음이 섞인다 — 조회가 쓰기다**
+
+- 현상: 쓰기 스레드가 없는데 동시 `connected` 결과가 서로 다르거나, 나중에 뿌리가 둘로 갈라진다.
+- 보이는 형태: 단일 스레드에서는 절대 안 나고, 부하 테스트에서 드물게 `components`와 실제 뿌리 수가 어긋난다. 에러는 없다.
+- 원인: 경로 압축이 `parent`를 덮어쓴다 — **`find`가 읽기가 아니라 쓰기**다(정답 2번 참고). 두 스레드가 같은 칸을 동시에 다른 뿌리로 덮으면(한쪽은 `union` 직전의 옛 뿌리를 읽었을 때) 나무가 두 뿌리 사이에서 찢어진다.
+- 대처: `find`·`union`을 모두 락으로 감싼다. 조회가 압도적이면 압축 없는 읽기 전용 `find`(크기로 붙이기만으로 log n 보장)를 따로 두고, 압축은 쓰기 락 안에서만 한다.
+
+**3. 링크가 끊겼는데 여전히 "연결됨"이라 답한다 — 쪼갤 수 없다**
+
+- 현상: 삭제된 간선을 반영하려는데 방법이 없고, `connected`가 옛 답을 계속 준다.
+- 보이는 형태: 삭제 요구를 무시한 채 돌아가거나, 삭제마다 처음부터 다시 만들어 삭제 한 번이 O(n + m)이 된다.
+- 원인: 이 구조는 `union`만 있다. 경로 압축이 "원래 누구 밑이었는지"를 지우므로 되돌릴 정보 자체가 없다(정답 2번 참고).
+- 대처: 질문 전체를 미리 알면 **역순으로** 푼다 — 삭제를 뒤에서부터 "추가"로 바꿔 유니온-파인드로 답한 뒤 답을 뒤집는다(오프라인). 실시간이면 그래프 탐색(08)으로 돌아가거나 삭제까지 받는 동적 연결성 구조(Holm–de Lichtenberg–Thorup 2001, 연산당 상각 O(log² n))를 쓴다.
+
+**4. 모순되는 선언이 조용히 통과한다 — `union`의 반환값을 버렸다**
+
+- 현상: `WeightedUnionFind`에 "1은 0보다 3 크다"와 "1은 0보다 5 크다"가 차례로 들어왔는데 시스템이 그냥 진행한다.
+- 보이는 형태: 나중에 `diff`가 어느 선언과도 안 맞는 값을 내거나, 환율·좌표 검증이 통과했다고 나온다. 예외는 없다.
+- 원인: `union(x, y, w)`는 둘이 이미 같은 묶음이면 `weight[y] - weight[x] == w`를 검사해 **`false`로 모순을 알린다** — 그런데 호출자가 그 반환값을 버렸다. 두 번째 선언은 무시되고 첫 번째만 남는다.
+- 대처: 반환값이 `false`면 예외를 던지거나 입력을 거부한다. 계약 테스트에 "모순 선언 → `false`"와 "직접 말한 적 없는 차이 → 정확히 유도"를 둘 다 넣는다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 유니온-파인드는 "둘이 같은 묶음인가"에 증분적으로, 연산당 거의 O(1)에 답하는 구조다 — 원소마다 "내가 따르는 사람" 한 칸만 두고 뿌리가 같은지로 판정한다.
+- 그 속도는 두 가지를 팔아 산 것이다: 경로(어떻게 연결됐는지)를 모르고, 한 번 합친 것은 쪼갤 수 없다 — 빠른 것은 "둘이 같은가"뿐이고 "누가 같은 묶음인가" 목록은 O(n)이다.
+- 크기로 붙이기는 깊이를 log n에 가두고, 경로 압축은 찾으러 간 김에 길을 평평하게 만든다 — 둘을 합치면 α(n), 사실상 상수다.
+- 경로 압축은 조회가 자료구조를 바꾸는 연산이다 — 그래서 쪼갤 수 없고, 동시 조회에도 락이 필요하다.
+- `weight`를 "부모와의 차이"로 두면 뿌리의 값을 끝까지 몰라도 차이가 소거되어 나온다 — 등식 제약·환율·상대 좌표가 전부 이 모양이고, 모순은 `union`의 반환값이 알린다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [08-graph](../08-graph/2-summary.md) · [algorithm/11-bfs](../../algorithm/11-bfs/2-summary.md) · [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md): 같은 연결 질문을 경로까지 답하는 쪽. 재귀 깊이 문제도 여기서 왔다.
+- 선행 — [13-segment-tree](../13-segment-tree/2-summary.md): "무엇을 포기하면 무엇을 얻는가"의 반대 방향 거래. lazy의 `rangeSum`처럼 조회가 구조를 바꾼다.
+- 후속 — [15-b-tree](../15-b-tree/2-summary.md): 여기까지는 메모리 안의 구조. "한 번 읽는 비용이 비싸다"가 자식 둘을 수백 개로 바꾼다.
+- 응용 — [algorithm/17-mst](../../algorithm/17-mst/2-summary.md)(크루스칼) · [ops-patterns/14-logical-clock](../../ops-patterns/14-logical-clock/2-summary.md)(서버 시계가 어긋나는 배경 — 오프셋 차이 문제의 출발점).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `15-union-find` (선행 `11-graph`).
+- 교재 — CLRS 3판 21장 서로소 집합 · Sedgewick 『Algorithms』 4판 1.5.
+- myway 원본 — `/home/jun/project/myway/data-structure/14-union-find/` (README.md · impl/ArrayUnionFind.java · impl/MapUnionFind.java · impl/DisjointSet.java · impl/WeightedUnionFind.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -560,7 +668,7 @@ weight    |  0  |  3  | 13  |  5  |              |  0  |  3  | 13  | 18  |
 - 테스트: `/home/jun/project/myway/data-structure/14-union-find/src/test/java/com/datastructure/unionfind/`
 - 정답 구현: `/home/jun/project/myway/data-structure/14-union-find/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 본문에 등장한 자리에서 이미 푼 용어를 포함해, 이 문서의 전문용어를 한곳에 모았다.
 

@@ -4,8 +4,32 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+B+트리는 키를 넣을 때 그 키가 들어갈 잎을 찾아가 **그 자리를** 고친다. 디스크에서 그것은 임의 쓰기다.
+HDD는 순차 쓰기가 임의 쓰기보다 수십~수백 배 빠르고(원본 README 7행), SSD도 작은 임의 쓰기가 순차보다 느리고 내부 쓰기 증폭을 부른다 — 격차는 제품·블록 크기·큐 깊이에 따라 다르다. 그래서 쓰기가 압도적으로 많은 워크로드에서는 제자리 고치기 자체가 병목이 된다.
+
+```text
+제자리 갱신 (B+트리)                         덧붙이기만 (LSM)
+  put(k)  ->  잎을 찾아가 그 자리를 고친다      put(k)  ->  메모리 공책에 적는다
+             +----+----+----+----+                       +---------+
+             |    | k! |    |    |  임의 쓰기             | memtable| 차면 통째로
+             +----+----+----+----+                       +---------+ 순차로 쏟는다
+                                                              v
+                                                         [SST 최신][SST 옛것]  절대 안 고친다
+```
+
+LSM 트리는 거래를 뒤집는다 — 디스크의 제자리를 절대 고치지 않고 덧붙이기만 해서 쓰기를 순차로 만든다.
+그 대가로 읽기가 여러 장을 봐야 하고(읽기 증폭) 옛 판본이 쌓이며(공간 증폭), 그 빚을 블룸 필터와 compaction으로 갚는다.
+
+- 쉬운 예: 장부를 고치지 않고 "정정 기록"을 맨 뒤에 새로 적는 회계 장부 — 최신 줄이 답이고, 옛 줄은 결산 때 정리한다.
+- 똑같은 구조다: 이 노트의 `LsmTree` — `MemTable`(공책) → `SSTable`(불변 묶음) → `Compactor`(결산).
+- 실무 예: 로그·시계열·이벤트 스트림처럼 초당 수만 건이 들어오는 저장소. RocksDB·Cassandra가 이 구조 위에 서 있다.
+  - *임의 쓰기(random write)*: 파일 중간을 찾아가 고치는 쓰기. *순차 쓰기*: 파일 끝에 이어서 쓰는 쓰기.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 책상 위 공책과 서류함.** 새로 적을 일이 생기면 서류함을 뒤져 옛 기록을 고치는 게 아니라, 일단 책상 위 공책에 쓴다. 공책이 가득 차면 내용을 가나다순으로 정리해 **통째로 한 묶음** 만들어 서류함에 넣고 공책은 비운다. 서류함의 묶음은 절대 고치지 않는다. 지울 때도 "이건 지웠음"이라는 쪽지를 공책에 새로 쓴다. 찾을 때는 공책 → 가장 최근 묶음 → 옛 묶음 순서로 보고, 처음 만난 기록을 믿는다. 묶음이 너무 쌓이면 가끔 대청소를 해서 옛 판본과 "지웠음" 쪽지를 함께 버린다.
 
@@ -26,32 +50,40 @@
   [ SSTable 옛것 ]  <- 디스크    [ SSTable 옛것 ]
 ```
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-15번 B+트리는 읽기에 최적화되어 있어서 조회가 높이 4번이면 끝났다.\
-그런데 쓰기는 키가 들어갈 잎을 찾아가 **그 자리를** 고쳐야 하고, 디스크에서 그것은 임의 쓰기다.\
-디스크는 순차 쓰기가 임의 쓰기보다 수십~수백 배 빠르므로, 쓰기가 압도적으로 많은 워크로드(로그·시계열·이벤트 스트림)에서는 B+트리가 무너진다.\
-그래서 **거래를 뒤집은** 저장 구조를 직접 만든다 — 제자리를 절대 안 고치고 덧붙이기만 하며, 그 대가로 늘어난 읽기·공간 비용을 블룸 필터와 compaction 으로 갚는다.
+### 전체 흐름
 
-**과제**
+```text
+[1] 쓰기 — 위로만                    [2] flush — 통째로 굳힌다
+    put(k,v) / delete(k)                 memtable.size >= threshold
+         |                                    |
+         v                                    v
+    +-----------------+   정렬 유지       +-----------------+
+    | MemTable(TreeMap)|  -------------->  | SSTable (불변)  |  keys[] / values[] / bloom
+    +-----------------+   delete = MARKER  +-----------------+  sstables.add(0, …) = 맨 앞이 최신
+                                                  |
+[3] 읽기 — 위에서 아래로, 첫 히트에서 멈춘다        v
+    get(k): MemTable -> SST[0] -> SST[1] -> …      index 0    1    2
+            장마다 bloom.mightContain 먼저          [최신] [   ] [옛것]   같은 키의 옛 판본이 남아 있다
+            false = 확실히 없다 -> 건너뜀                  |
+            MARKER 를 만나면 null 로 풀어 답한다          |
+                                                          v
+[4] compaction — 빚을 몰아서 갚는다        k-way 머지: 커서 k 개, 최솟값 키를 하나씩 뽑는다
+    compact() / compactNewest(count)        같은 키 = 가장 최신 장의 값만 채택
+    dropTombstones 는 맨 아래층까지 합칠 때만  결과 한 장을 다시 맨 앞에 놓는다
+```
 
-1. `MemTable` (TODO 1) — 담고 있는 것을 키 순서대로 목록에 담아 돌려주기(`entriesInOrder`)
-2. `TinyBloomFilter` (TODO 2) — 원소가 켜야 할 비트 자리 `hashCount` 개 구하기(`indexes`, 11번 것을 그대로 옮겨도 된다)
-3. `SSTable` (TODO 3, 4) — 목록을 두 배열로 굳히고 바이트를 세고 블룸을 채우는 생성자 / 정렬된 `keys` 에서 이진 탐색(`indexOf`)
-4. `Compactor` (TODO 5) — 정렬된 목록 k 개를 한 번 훑어 하나로 합치기(`mergeEntries`)
-5. `LsmTree` (TODO 6~10) — `write` · `get` · `flush` · `compactNewest` · `mergedLive`
+- [1] 쓰기는 항상 메모리의 `MemTable` 한 곳으로만 들어간다. 삭제도 "지웠다는 표식"(`Tombstone.MARKER`)을 **쓰는** 것이다 — 그래서 삭제 비용 = 쓰기 비용.
+  - *tombstone(묘비)*: "이 키는 지워졌다"는 표식. `null`을 쓰면 "지워졌다"와 "이 층에 없다"를 구별하지 못해 옛 값이 되살아난다.
+- [2] 공책이 차면 키 순서 그대로 `SSTable` 한 장으로 굳혀 맨 앞에 쌓는다. 한 번 태어난 장은 절대 안 고친다(필드 전부 `final`).
+  - *flush*: 가득 찬 MemTable을 SSTable로 내리고 MemTable을 비우는 것. 디스크 쓰기는 이때 한 번, 순차로만 일어난다.
+- [3] 읽기는 최신에서 옛것 순서로 내려가다 처음 만난 값에서 멈춘다. 순서를 뒤집으면 예외 없이 옛 값이 나온다. 장마다 블룸 필터에 먼저 물어 "확실히 없다"면 디스크를 안 읽는다.
+  - *읽기 증폭*: 키 하나를 확인하려고 장 수만큼 들추는 것. 블룸 필터는 없는 키 쪽만 잘라 준다.
+- [4] 장이 쌓이면 여러 장을 한 번 훑는 k-way 머지로 합친다. 정렬되어 있으니 병합이 "훑기"로 끝난다 — O(전체 엔트리), 임의 읽기 0. tombstone은 맨 아래층까지 합칠 때만 버릴 수 있다.
+  - *k-way 머지*: 정렬된 줄 k개에 커서를 하나씩 놓고, 커서가 가리키는 것 중 가장 작은 키를 하나씩 뽑아 하나로 합치는 방법.
 
-순서는 `MemTable` → `TinyBloomFilter` → `SSTable` → `Compactor` → `LsmTree` 다.\
-`./run.sh 24` 를 돌리면 **72개 중 65개가 실패한다**(통과하는 7개는 전부 TODO 위에 미리 채워둔 코드만 본다).\
-`get` 을 먼저 하라 — **층 순서가 이 문제의 전부**라서 거기가 잡히면 나머지가 따라온다.
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — KeyValueStore (`src/main/java/com/datastructure/lsm/KeyValueStore.java`)
+### 계약 — KeyValueStore (`src/main/java/com/datastructure/lsm/KeyValueStore.java`)
 
 - `void put(K key, V value)` — 15번과 달리 옛 값을 반환하지 않는다
 - `V get(K key)`
@@ -68,11 +100,11 @@
 - `long storedEntryCount()`
 - `double spaceAmplification()`
 
-## 구현 — Tombstone (`src/main/java/com/datastructure/lsm/Tombstone.java`)
+### 구현 — Tombstone (`src/main/java/com/datastructure/lsm/Tombstone.java`)
 
 TODO 없음. 삭제 표식.
 
-### 구조
+#### 구조
 
 ```
 값 자리에 들어갈 수 있는 것이 셋이고, 셋이 서로 다른 뜻이다
@@ -96,19 +128,19 @@ null 을 표식으로 쓰면 안 되는 이유
   - *null*: "아무것도 없음"을 뜻하는 값. 여기서는 "이 층에 그 키가 없다"만 뜻하게 남겨 둔다.
   - *하나뿐인 인스턴스 / == 판별*: MARKER 객체를 딱 하나만 만들어 두고, "내용이 같나"가 아니라 "바로 그 물건인가"(==)로 확인한다.
 
-### `필드`
+#### `필드`
 
 - `static final Tombstone MARKER` 역할(값 자리에 `null` 을 쓰지 않는 이유 — 삭제와 부재를 구별하지 못하면 무엇이 되살아나는가):
 
-### `public static boolean is(Object value)` / `public String toString()`
+#### `public static boolean is(Object value)` / `public String toString()`
 
 - 하는 일:
 - 논리(동일성(`==`)으로 판별하는 이유):
 - 비용(왜):
 
-## 구현 — MemTable (`src/main/java/com/datastructure/lsm/MemTable.java`)
+### 구현 — MemTable (`src/main/java/com/datastructure/lsm/MemTable.java`)
 
-### 구조
+#### 구조
 
 ```
 MemTable = TreeMap<K, Object> 한 개. 메모리에 있는 "쓰기를 받는 층"
@@ -140,81 +172,81 @@ MemTable = TreeMap<K, Object> 한 개. 메모리에 있는 "쓰기를 받는 층
   - *flush*: 가득 찬 MemTable을 통째로 디스크 파일(SSTable)로 굳혀 내리고, MemTable을 비우는 것.
   - *순차 쓰기 / 임의 쓰기*: 파일 끝에 이어서 쭉 쓰기 / 파일 중간을 찾아가 고치기. 디스크에서는 순차가 훨씬 싸다.
 
-### `필드`
+#### `필드`
 
 - `TreeMap<K, Object> entries` 역할 — 값 자리에 `Object` 를 쓰는 이유:
 - 실무가 여기에 12번 스킵 리스트를 쓰는 이유:
 
-### `public void put(K key, Object value)`
+#### `public void put(K key, Object value)`
 
 - 하는 일:
 - 논리(같은 키가 오면 덮어쓰는 것 — 삭제도 쓰기라는 것):
 - 비용(왜):
 
-### `public Object get(K key)`
+#### `public Object get(K key)`
 
 - 하는 일:
 - 논리(없음 / 값 / MARKER 셋을 구별하는 책임이 부르는 쪽에 있는 이유):
 - 비용(왜):
 
-### `public List<Map.Entry<K, Object>> entriesInOrder()` (TODO)
+#### `public List<Map.Entry<K, Object>> entriesInOrder()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public boolean containsKey(K key)` / `public int size()` / `public boolean isEmpty()` / `public void clear()`
+#### `public boolean containsKey(K key)` / `public int size()` / `public boolean isEmpty()` / `public void clear()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 — TinyBloomFilter (`src/main/java/com/datastructure/lsm/TinyBloomFilter.java`)
+### 구현 — TinyBloomFilter (`src/main/java/com/datastructure/lsm/TinyBloomFilter.java`)
 
 먼저 알아야 할 것 — **블룸 필터** (11번에서 다룬 것):
 - "이 키가 이 파일에 있을 수도 있나?"를 아주 작은 메모리로 미리 답해 주는 장치.
 - 키를 해시(뒤섞기 함수)로 몇 개의 비트 자리로 바꿔 켜 둔다. 물어보면 그 자리들이 다 켜져 있는지 본다.
 - 답이 "없다"면 **확실히 없다**(파일을 안 읽어도 된다). 답이 "있을 수도"는 가끔 틀린다(오탐) — 읽어 보면 없을 수 있지만, 정확성은 안 깨진다.
 
-### `필드`
+#### `필드`
 
 - `int bits` 역할:
 - `int hashCount` 역할:
 - `long[] words` 역할:
 
-### `public TinyBloomFilter(int expectedInsertions, double falsePositiveRate)`
+#### `public TinyBloomFilter(int expectedInsertions, double falsePositiveRate)`
 
 - 하는 일:
 - 비용(왜):
 
-### `static int optimalBits(int n, double p)` / `static int optimalHashCount(int m, int n)` / `static long mix64(long z)`
+#### `static int optimalBits(int n, double p)` / `static int optimalHashCount(int m, int n)` / `static long mix64(long z)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int[] indexes(Object item)` (TODO)
+#### `int[] indexes(Object item)` (TODO)
 
 - 하는 일:
 - 논리(이중 해싱 · `h2 == 0` 방어가 테스트에 안 잡히는 것):
 - 비용(왜):
 
-### `public void add(Object item)` / `public boolean mightContain(Object item)`
+#### `public void add(Object item)` / `public boolean mightContain(Object item)`
 
 - 하는 일:
 - 논리(비대칭 — 아는 것은 "없다" 한쪽뿐):
 - 비용(왜):
 
-### `public int hashCount()` / `public long bitSize()`
+#### `public int hashCount()` / `public long bitSize()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 — SSTable (`src/main/java/com/datastructure/lsm/SSTable.java`)
+### 구현 — SSTable (`src/main/java/com/datastructure/lsm/SSTable.java`)
 
 > 구조 테스트가 "제자리를 안 고친다"를 못 박는다 — 필드가 전부 `final`, 클래스도 `final`,
 > `set`/`add`/`put` 으로 시작하는 메서드가 없다. **필드 이름 자체가 계약이다.**
 
-### 구조
+#### 구조
 
 ```
 SSTable 한 장 = flush 한 순간의 MemTable 을 얼려 놓은 것. 만들어진 뒤에는 절대 고치지 않는다
@@ -251,7 +283,7 @@ mightContain(key) : 블룸 필터에게 먼저 물어본다
   - *이진 탐색*: 정렬된 줄에서 가운데를 보고 절반씩 버리며 찾는 방법. 정렬돼 있어야만 가능하다.
   - *읽기 증폭*: 값 하나 읽으려고 실제로는 파일 몇 개를 들춰야 하는가. 블룸 필터가 이를 줄인다.
 
-### `필드`
+#### `필드`
 
 - `static final int HEADER_BYTES = 8` 역할:
 - `Object[] keys` 역할:
@@ -259,42 +291,42 @@ mightContain(key) : 블룸 필터에게 먼저 물어본다
 - `long bytes` 역할:
 - `TinyBloomFilter bloom` 역할:
 
-### `public SSTable(List<Map.Entry<K, Object>> sortedEntries, boolean withBloom)` (TODO)
+#### `public SSTable(List<Map.Entry<K, Object>> sortedEntries, boolean withBloom)` (TODO)
 
 - 하는 일:
 - 논리(목록을 두 배열로 굳히고, 바이트를 세고, 블룸을 채우는 것 · 정렬 전제 검사가 정상 경로에서는 도달 불가인데도 남기는 이유):
 - 비용(왜):
 
-### `int indexOf(K key)` (TODO)
+#### `int indexOf(K key)` (TODO)
 
 - 하는 일:
 - 논리(정렬된 배열이라 이진 탐색이 되는 것):
 - 비용(왜):
 
-### `private static int compare(Object a, Object b)` / `public static long entryBytes(Object key, Object value)` / `public static <K> Map.Entry<K, Object> cell(K key, Object value)`
+#### `private static int compare(Object a, Object b)` / `public static long entryBytes(Object key, Object value)` / `public static <K> Map.Entry<K, Object> cell(K key, Object value)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public Object rawValue(K key)` / `public boolean mightContain(K key)` / `public boolean hasBloom()`
+#### `public Object rawValue(K key)` / `public boolean mightContain(K key)` / `public boolean hasBloom()`
 
 - 하는 일:
 - 논리(블룸을 먼저 묻는 순서가 읽기 증폭을 어떻게 줄이는가):
 - 비용(왜):
 
-### `public int size()` / `public long byteSize()` / `public K keyAt(int index)` / `public Object valueAt(int index)` / `public boolean isTombstoneAt(int index)`
+#### `public int size()` / `public long byteSize()` / `public K keyAt(int index)` / `public Object valueAt(int index)` / `public boolean isTombstoneAt(int index)`
 
 - 하는 일:
 - 비용(왜):
 
-### `public List<Map.Entry<K, Object>> entries()` / `public int tombstoneCount()`
+#### `public List<Map.Entry<K, Object>> entries()` / `public int tombstoneCount()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 — Compactor (`src/main/java/com/datastructure/lsm/Compactor.java`)
+### 구현 — Compactor (`src/main/java/com/datastructure/lsm/Compactor.java`)
 
-### 동작 — 병합
+#### 동작 — 병합
 
 **언제 쓰나** — compaction 때. 정렬된 SSTable 여러 장을 새 한 장으로 합치면서, 같은 키는 최신 것만 남긴다.
 
@@ -341,21 +373,21 @@ step 3   남은 것은 SST1 의 c=3 뿐            출력 : c=3
   - *커서*: "지금 이 줄의 어디까지 봤나"를 가리키는 손가락. 앞으로만 간다.
   - *엔트리*: 키-값 한 쌍. tombstone도 한 엔트리로 자리를 차지한다.
 
-### `public static <K, V> List<Map.Entry<K, Object>> mergeEntries(List<SSTable<K,V>> newestFirst, boolean dropTombstones)` (TODO)
+#### `public static <K, V> List<Map.Entry<K, Object>> mergeEntries(List<SSTable<K,V>> newestFirst, boolean dropTombstones)` (TODO)
 
 - 하는 일:
 - 논리(k-way 병합 · 같은 키면 **가장 최신** 것을 채택 · `dropTombstones` 가 맨 아래층까지 합칠 때만 true 여야 하는 이유):
 - 비용(왜):
 
-### `public static <K, V> SSTable<K,V> compact(List<SSTable<K,V>> newestFirst, boolean dropTombstones, boolean withBloom)`
+#### `public static <K, V> SSTable<K,V> compact(List<SSTable<K,V>> newestFirst, boolean dropTombstones, boolean withBloom)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — LsmTree (`src/main/java/com/datastructure/lsm/LsmTree.java`)
+### 구현 — LsmTree (`src/main/java/com/datastructure/lsm/LsmTree.java`)
 
-### 구조
+#### 구조
 
 ```
 쓰기는 항상 맨 위 한 곳으로만 들어가고, 아래로는 통째로 흘러내리기만 한다
@@ -402,7 +434,7 @@ step 3   남은 것은 SST1 의 c=3 뿐            출력 : c=3
   - *공간 증폭(space amplification)*: 살아 있는 키 수 대비 실제 저장된 엔트리 수의 비율. 옛 판본이 쌓일수록 커진다.
   - *compaction(다지기)*: 여러 장을 합쳐 같은 키의 옛 판본과 tombstone을 정리하는 대청소.
 
-### 동작 — 읽기
+#### 동작 — 읽기
 
 **언제 쓰나** — get(k). 층이 여러 개라서 "어디부터 어떤 순서로 보느냐"가 곧 정확성이다.
 
@@ -450,7 +482,7 @@ get(k) : 위에서 아래로, 최신에서 옛것으로. 처음 만난 값에서
 3. 처음 만난 값에서 멈춘다 — 더 아래의 같은 키는 전부 죽은 옛 판본이다. 순서를 뒤집으면 예외 없이 옛 값이 나온다.
   - *히트(hit)*: 찾던 것을 만났다는 뜻. "첫 히트에서 멈춘다" = 처음 만난 기록을 답으로 삼는다.
 
-### 동작 — 삭제와 compaction
+#### 동작 — 삭제와 compaction
 
 **언제 쓰나** — delete(k)와, 장이 쌓여 읽기·공간이 나빠졌을 때의 청소(compact / compactNewest).
 
@@ -502,7 +534,7 @@ compaction : 가리개와 그 아래 옛 값을 함께 없앤다
 3. 일부 층만 합칠 때는 아래에 안 합친 장이 남아 있으므로, tombstone을 버리지 않고 결과에 그대로 들고 내려간다.
   - *bottommost(맨 아래까지)*: 합치는 범위에 가장 오래된 장까지 포함됐다는 뜻. 이때만 tombstone을 버려도 안전하다.
 
-### `필드`
+#### `필드`
 
 - `int memtableThreshold` 역할:
 - `boolean bloomEnabled` 역할:
@@ -510,76 +542,114 @@ compaction : 가리개와 그 아래 옛 값을 함께 없앤다
 - `List<SSTable<K,V>> sstables` 역할 — **0번이 가장 최신**이라는 순서가 정확성을 만드는 이유:
 - `long diskReads` / `long sequentialBytesWritten` / `long flushCount` / `long compactionCount` 역할(읽기·쓰기·공간 증폭을 재는 계수기):
 
-### `public LsmTree(int memtableThreshold)` / `public LsmTree(int memtableThreshold, boolean bloomEnabled)`
+#### `public LsmTree(int memtableThreshold)` / `public LsmTree(int memtableThreshold, boolean bloomEnabled)`
 
 - 하는 일:
 - 비용(왜):
 
-### `private void write(K key, Object value)` (TODO)
+#### `private void write(K key, Object value)` (TODO)
 
 - 하는 일:
 - 논리(디스크를 안 건드리는 것 · 꽉 차면 쏟는 것):
 - 비용(왜):
 
-### `public V get(K key)` (TODO)
+#### `public V get(K key)` (TODO)
 
 - 하는 일:
 - 논리(최신 층부터 차례로 뒤져 **처음 만난 것**을 답으로 삼는 것 · tombstone 을 만나면 무엇을 답하는가 · 층 순서를 뒤집으면 왜 예외 없이 옛 값이 나오는가):
 - 비용(왜):
 
-### `public void flush()` (TODO)
+#### `public void flush()` (TODO)
 
 - 하는 일:
 - 논리(memtable 을 SSTable 로 굳히는 것 · 순차 쓰기 바이트가 여기서 늘어나는 것):
 - 비용(왜):
 
-### `public void compactNewest(int count)` (TODO)
+#### `public void compactNewest(int count)` (TODO)
 
 - 하는 일:
 - 논리(앞에서 count 장만 합치는 **부분 compaction** 에서 tombstone 을 지우면 안 되는 이유):
 - 비용(왜):
 
-### `private List<Map.Entry<K, V>> mergedLive(K from, K to)` (TODO)
+#### `private List<Map.Entry<K, V>> mergedLive(K from, K to)` (TODO)
 
 - 하는 일:
 - 논리(층을 최신부터 훑어 같은 키는 처음 본 것만 채택):
 - 비용(왜):
 
-### `public void put(K key, V value)` / `public void delete(K key)`
+#### `public void put(K key, V value)` / `public void delete(K key)`
 
 - 하는 일:
 - 논리(`put` 이 옛 값을 반환하지 않는 이유 — 읽지 않는 것이 이 구조의 전부):
 - 비용(왜):
 
-### `public void compact()`
+#### `public void compact()`
 
 - 하는 일:
 - 논리(전체 compaction 이라 tombstone 을 버려도 되는 이유):
 - 비용(왜):
 
-### `public List<Map.Entry<K,V>> rangeScan(K from, K to)` / `public List<K> keys()`
+#### `public List<Map.Entry<K,V>> rangeScan(K from, K to)` / `public List<K> keys()`
 
 - 하는 일:
 - 비용(왜):
 
-### `public boolean containsKey(K key)` / `public int size()` / `public boolean isEmpty()`
+#### `public boolean containsKey(K key)` / `public int size()` / `public boolean isEmpty()`
 
 - 하는 일:
 - 논리(`size()` 가 O(전체)인 이유 — 실제 LSM 저장소가 정확한 count API 를 잘 안 주는 이유):
 - 비용(왜):
 
-### `public int sstableCount()` / `public long diskReads()` / `public long sequentialBytesWritten()` / `public long storedEntryCount()` / `public double spaceAmplification()`
+#### `public int sstableCount()` / `public long diskReads()` / `public long sequentialBytesWritten()` / `public long storedEntryCount()` / `public double spaceAmplification()`
 
 - 하는 일:
 - 논리(증폭 셋을 각각 어떤 수로 재는가):
 - 비용(왜):
 
-### `public int memtableSize()` / `public long flushCount()` / `public long compactionCount()` / `public boolean bloomEnabled()` / `public SSTable<K,V> sstableAt(int index)` / `public void resetDiskReads()`
+#### `public int memtableSize()` / `public long flushCount()` / `public long compactionCount()` / `public boolean bloomEnabled()` / `public SSTable<K,V> sstableAt(int index)` / `public void resetDiskReads()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **RocksDB · LevelDB** — memtable + SSTable + compaction 그대로. 이 노트와 달리 층이 여러 레벨이고(기본 leveled compaction — RocksDB는 universal·FIFO도 고를 수 있다) WAL이 붙는다. `Put`이 옛 값을 돌려주지 않는 것도 같다(정답 3번 참고).
+- **Cassandra · HBase · ScyllaDB** — 분산 저장소의 노드 하나하나가 LSM이다. "삭제했는데 디스크가 안 줄어든다"는 운영 질문이 tombstone과 compaction 때문에 나온다.
+- **Kafka 로그 세그먼트** — 파티션 로그는 덧붙이기만 하는 세그먼트 파일이고, `cleanup.policy=compact` 토픽은 키마다 최신 값만 남기는 log compaction을 한다(값이 `null`인 레코드가 tombstone — Kafka 문서 「Log Compaction」). LSM 트리는 아니지만 여기의 `Compactor`와 같은 발상이다.
+- **Lucene / Elasticsearch 세그먼트** — 색인을 불변 세그먼트로 쓰고 나중에 병합한다. 삭제는 "지웠음" 비트로 표시했다가 병합 때 없앤다 — tombstone과 같은 구조([32-inverted-index](../32-inverted-index/2-summary.md)).
+- **[systems/lsm-tree](../../systems/lsm-tree/2-summary.md)** — 같은 구조를 저장 엔진 관점(쓰기·읽기·공간 증폭)에서 본 노트.
+- **이 노트가 가져다 쓰는 것** — [11-bloom-filter](../11-bloom-filter/2-summary.md)(`TinyBloomFilter`), [algorithm/02-merge-sort](../../algorithm/02-merge-sort/2-summary.md)의 병합(`mergeEntries`의 k-way 머지), [12-skip-list](../12-skip-list/2-summary.md)(실무 memtable — RocksDB·LevelDB의 기본 memtable이 스킵 리스트이고, RocksDB는 동시 삽입도 지원한다).
+
+## 적용 — 풀어나가는 법
+
+LSM 문제는 "층 순서"를 먼저 잡는 데서 갈린다.
+순서: ① 값 자리에 올 수 있는 셋(값·`MARKER`·`null`)의 뜻을 구별한다 → ② `get`을 최신→옛것으로 내려가며 첫 히트에서 멈추게 만든다 → ③ `flush`·`compaction`은 그 순서(`index 0 = 최신`)를 지키며 장을 넣고 뺀다 → ④ 증폭 셋(읽기·쓰기·공간)을 숫자로 재서 블룸 필터와 compaction 주기를 정한다.
+아래 과제 다섯이 이 순서로 풀린다.
+
+### 문제 — 이 챕터가 시키는 것
+
+15번 B+트리는 읽기에 최적화되어 있어서 조회가 높이 4번이면 끝났다.\
+그런데 쓰기는 키가 들어갈 잎을 찾아가 **그 자리를** 고쳐야 하고, 디스크에서 그것은 임의 쓰기다.\
+디스크는 순차 쓰기가 임의 쓰기보다 수십~수백 배 빠르므로, 쓰기가 압도적으로 많은 워크로드(로그·시계열·이벤트 스트림)에서는 B+트리가 무너진다.\
+그래서 **거래를 뒤집은** 저장 구조를 직접 만든다 — 제자리를 절대 안 고치고 덧붙이기만 하며, 그 대가로 늘어난 읽기·공간 비용을 블룸 필터와 compaction 으로 갚는다.
+
+> ⚠ 정정(2026-09-28): "수십~수백 배"는 HDD 기준이다. SSD는 순차·임의 쓰기의 격차가 훨씬 작고(제품·블록 크기·큐 깊이에 따라 다르다), 작은 임의 쓰기가 불리한 이유는 주로 내부 쓰기 증폭·GC다. "B+트리가 무너진다"도 쓰기 비중이 매우 클 때 병목이 된다는 뜻으로 읽는다.
+
+**과제**
+
+1. `MemTable` (TODO 1) — 담고 있는 것을 키 순서대로 목록에 담아 돌려주기(`entriesInOrder`)
+2. `TinyBloomFilter` (TODO 2) — 원소가 켜야 할 비트 자리 `hashCount` 개 구하기(`indexes`, 11번 것을 그대로 옮겨도 된다)
+3. `SSTable` (TODO 3, 4) — 목록을 두 배열로 굳히고 바이트를 세고 블룸을 채우는 생성자 / 정렬된 `keys` 에서 이진 탐색(`indexOf`)
+4. `Compactor` (TODO 5) — 정렬된 목록 k 개를 한 번 훑어 하나로 합치기(`mergeEntries`)
+5. `LsmTree` (TODO 6~10) — `write` · `get` · `flush` · `compactNewest` · `mergedLive`
+
+순서는 `MemTable` → `TinyBloomFilter` → `SSTable` → `Compactor` → `LsmTree` 다.\
+`./run.sh 24` 를 돌리면 **72개 중 65개가 실패한다**(통과하는 7개는 전부 TODO 위에 미리 채워둔 코드만 본다).\
+`get` 을 먼저 하라 — **층 순서가 이 문제의 전부**라서 거기가 잡히면 나머지가 따라온다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
@@ -589,15 +659,48 @@ compaction : 가리개와 그 아래 옛 값을 함께 없앤다
 | 전체 compaction (`compact()`) | | | |
 | 부분 compaction (`compactNewest(k)`) | | | |
 
+## 장애 시나리오와 대처
+
+**1. compaction을 안 돌려 조회가 점점 느려짐**
+
+- 현상: 쓰기는 계속 빠른데 `get`이 시간이 갈수록 느려진다. 특히 없는 키 조회가 심하다.
+- 보이는 형태: `sstableCount()`가 flush마다 1씩 늘고, `diskReads()`가 조회 수의 몇 배로 오른다. 실제 엔진에서는 compaction이 밀리면 쓰기까지 늦추거나 멈춘다 — RocksDB는 L0 파일 수·대기 중 compaction 바이트가 임계를 넘으면 write stall을 건다(RocksDB wiki 「Write Stalls」).
+- 원인: 이 노트의 `LsmTree`는 flush만 자동이고 compaction은 호출해야만 돈다. 장 수 = 없는 키 조회의 읽기 횟수다(정답 5번 참고).
+- 대처: 장 수 상한을 두고 넘으면 `compact()`/`compactNewest(k)`를 돌린다. 블룸 필터를 켜서 없는 키 쪽 헛읽기를 먼저 잘라 낸다(정답 6번 참고).
+
+**2. 프로세스가 죽어 아직 flush되지 않은 쓰기가 사라짐**
+
+- 현상: 재시작 뒤 최근에 `put`한 키가 `null`로 나온다.
+- 보이는 형태: 죽기 직전의 쓰기 수가 `memtableThreshold` 미만이면 `sequentialBytesWritten()`에 반영된 적이 없다 — 디스크에 간 적이 없다.
+- 원인: `MemTable`은 메모리다. 이 노트에는 WAL이 없어 flush 전 쓰기는 메모리에만 있다(README 「한계」5).
+- 대처: 쓰기를 memtable에 넣기 **전에** 덧붙이기 전용 로그(WAL)에 순차로 기록하고, 재시작 시 WAL을 재생해 memtable을 복원한다. 순차 쓰기 한 번이 추가될 뿐 LSM의 거래는 유지된다.
+  - *WAL(write-ahead log)*: 본 저장소를 바꾸기 전에 먼저 적는 순차 로그. 장애 복구의 근거.
+
+**3. 정렬되지 않은 목록으로 SSTable을 만들려다 거부됨**
+
+- 현상: memtable을 굳히는 자리에서 예외가 난다.
+- 보이는 형태: `IllegalArgumentException: SSTable 은 정렬된 입력만 받는다: b 다음에 a`. 또는 `키와 값에 null 을 담을 수 없다`.
+- 원인: `SSTable` 생성자는 오름차순 전제를 검사한다. `entriesInOrder()` 대신 `HashMap` 순회 결과를 넘기거나, 삭제를 `MARKER` 대신 `null`로 적으면 여기서 걸린다.
+- 대처: 정렬은 `MemTable`(`TreeMap`)이 이미 보장한다 — `entriesInOrder()`를 그대로 쓴다. 이진 탐색(`indexOf`)과 k-way 머지가 모두 이 정렬 전제 위에 서 있으므로 검사는 지우지 않는다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- LSM 트리는 디스크의 제자리를 절대 고치지 않고 덧붙이기만 해서 쓰기를 순차로 만든 구조다 — 자료구조 선택이 아니라 워크로드 선택이다.
+- 삭제도 쓰기다: `null`이 아니라 하나뿐인 `MARKER`를 새로 적어야 "지워졌다"와 "이 층에 없다"가 구별되고, 옛 값이 되살아나지 않는다.
+- 읽기는 최신에서 옛것으로 내려가 첫 히트에서 멈춘다 — 이 층 순서가 정확성의 전부이고, 뒤집으면 예외 없이 옛 값이 나온다.
+- 쓰기를 순차로 만든 대가를 읽기·공간 증폭이 내고, 블룸 필터는 없는 키 쪽만, compaction은 장 수와 옛 판본을 줄인다 — 셋을 동시에 줄일 수는 없다.
+- SSTable이 정렬돼 있어서 병합이 "한 번 훑기"로 끝나고, tombstone은 맨 아래층까지 합칠 때만 버릴 수 있다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [15-b-tree](../15-b-tree/2-summary.md): 제자리를 고쳐 읽기를 산 구조. 여기서는 그 거래를 뒤집는다.
+- 선행 — [11-bloom-filter](../11-bloom-filter/2-summary.md): `TinyBloomFilter`의 원형. "없다"만 확실한 비대칭이 읽기 증폭을 어디까지 지우는지 여기서 숫자로 본다.
+- 재료 — [12-skip-list](../12-skip-list/2-summary.md)(RocksDB·LevelDB의 기본 memtable) · [algorithm/02-merge-sort](../../algorithm/02-merge-sort/2-summary.md)(k-way 머지).
+- 같은 구조, 다른 관점 — [systems/lsm-tree](../../systems/lsm-tree/2-summary.md): 저장 엔진의 증폭 셋과 compaction 전략.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `18-lsm-tree` (선행 `22`, `20` · 원전 O'Neil 외 1996 · DDIA 3장).
+- myway 원본 — `/home/jun/project/myway/data-structure/24-lsm-tree/` (README.md · impl/LsmTree.java · impl/Compactor.java · impl/SSTable.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -606,7 +709,7 @@ compaction : 가리개와 그 아래 옛 값을 함께 없앤다
 - 테스트: `/home/jun/project/myway/data-structure/24-lsm-tree/src/test/java/com/datastructure/lsm/`
 - 정답 구현: `/home/jun/project/myway/data-structure/24-lsm-tree/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 > 본문에서 이미 등장 자리마다 풀었지만, 복습용으로 한곳에 모은다. (중학생 수준 1~2줄)
 

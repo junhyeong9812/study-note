@@ -4,8 +4,30 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+배열은 붙어 있어서 빠르지만, 바로 그 이유로 **중간에 끼우거나 빼면 뒤를 전부 밀어야** 한다.\
+맨 앞에 하나 넣는 데 n개가 움직이는 구조로는 "앞에서 넣고 앞에서 빼는" 일을 싸게 할 수 없다.
+
+```text
+배열에 맨 앞 삽입 X                    연결 리스트에 맨 앞 삽입 X
++---+---+---+---+                      head
+| A | B | C |   |                        |
++---+---+---+---+                        v
+  -> -> ->        전부 한 칸 밀림 O(n)   [X]-o->[A]-o->[B]-o->[C]     고리 하나만 걸면 끝 O(1)
+```
+
+연결 리스트는 원소를 붙여 두지 않고, 각 칸이 "다음 칸이 어디인지"만 들고 있다.\
+그래서 어디에 끼우든 **고리 두 개만 고치면** 되고, 아무도 움직이지 않는다.\
+쉬운 예: 줄 서기 — 중간에 한 명이 들어와도 앞뒤 사람만 "내 뒤는 너"를 다시 정하면 된다.\
+똑같은 구조다: Java `LinkedList`에 `addFirst`를 반복해도 뒤가 밀리지 않는다.\
+실무 예: 캐시에서 "방금 쓴 항목을 줄 맨 앞으로 옮기기"([10-lru-cache](../10-lru-cache/2-summary.md)) — 매번 O(n)으로 밀면 캐시가 캐시가 아니다.
+
+  - *고리(링크, link)*: 노드가 들고 있는 "다음 칸의 주소". 코드에서는 `next` 참조.
+
+### 한눈에 — 쉽게 말하면
 
 **연결 리스트 = 기차.**\
 배열이 "번호 붙은 좌석이 붙어 있는 극장"이라면, 연결 리스트는 칸끼리 연결고리로만 이어진 기차다.
@@ -34,33 +56,39 @@ Java의 `LinkedList`가 이렇게 동작한다.
 > **head / tail** — 첫 칸과 마지막 칸을 가리키는 표지.\
 > 예: 이 둘만 알면 리스트 전체에 들어갈 수 있다 — head 에서 걸어 나가고, tail 뒤에 바로 붙인다.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-01번 동적 배열과 **같은 일을 하는데 저장 방식이 정반대인** 리스트를 직접 만든다.\
-같은 `List` 계약을 단일 연결과 이중 연결 **두 가지**로 구현해서, "참조 하나를 더 두는 것"이 무엇을 바꾸는지 비교하는 것이 이 챕터의 본체다.\
-`tail` 을 들고 있는데 왜 `removeLast` 가 O(n) 인지에 답할 수 있으면 단일 연결 리스트를 이해한 것이다.
+### 전체 흐름
 
-**과제**
+```text
+[1] 노드 = 값 + 다음 칸 주소          [2] head / tail 두 표지로 진입
+    +---------+                           head                  tail
+    | item: A |                             |                     |
+    | next  --+--> 다음 노드 (없으면 null)   v                     v
+    +---------+                           [A]-o->[B]-o->[C]-o-> null
+                                          앞에서 걸어 들어가고, 뒤에는 바로 붙인다
+              |
+              v
+[3] 링크 고치기 = 순서가 생명            [4] 단일 vs 이중
+    add(1, X):  (1) X.next = A.next        단일: [A]-o->[B]        next 하나 — 뒤로 못 간다
+                (2) A.next = X                   removeLast = 앞 노드를 찾으러 O(n)
+    (2)를 먼저 하면 B로 가는 유일한 길이 끊긴다
+                                           이중: [A]<-o-o->[B]     prev + next — 뒤로 간다
+              |                                  removeLast O(1), 노드당 참조 2개
+              v
+[5] 반복자(Iterator)로 걷는다
+    get(i)를 n번  = 매번 head부터 세서 O(n²)
+    Iterator 로 n번 = 책갈피를 이어 가서 O(n)   <- 이 챕터에만 Iterator 가 있는 이유
+```
 
-- `ListContractTest.java` 를 따라친다 → `SinglyLinkedList` 의 **TODO 15개** → `DoublyLinkedList` 의 **TODO 2개**(나머지는 채워져 있다) → `ListIterationContractTest.java`(reverse·iterator) 따라치기 → `ListProblems` 의 **TODO 3개** 순서.\
-  단일을 먼저 한다 — 링크가 하나뿐이라 단순하고, 그 뒤에 이중을 하면 차이가 선명해진다.
-- 응용 문제 3개 — `removeAllIf`(조건에 맞는 원소를 모두 제거, O(n)) / `findMiddle`(가운데 값, `size()` 금지 + 한 번만 훑기) / `mergeSorted`(정렬된 두 리스트 병합, O(n+m)).\
-  셋 다 인덱스를 한 번도 쓰지 않고 `Iterator` 로 푼다.
-- 성능·계약 제약 — `removeAllIf` 에 **10만 건 시간 제한**이 걸려 있다(테스트 `mustBeLinear`, 5초).\
-  01번에서는 `remove` 의 **시프트** 때문에 O(n²)이었고, 여기서는 **탐색** 때문이다 — 증상은 같은데 원인이 다르다.
-- 계약 테스트가 **내부를 본다** — `head`, `tail` 과 `Node` 필드가 패키지 공개라 이 이름들이 계약의 일부다.\
-  `DoublyLinkedListTest.assertSound` 는 앞으로 훑은 결과와 뒤로 훑은 결과가 서로의 역순인지 검사한다(이게 없으면 `prev` 를 아예 안 잇는 구현도 대부분 통과한다).\
-  `SinglyLinkedListTest` 쪽은 `tail` 이 정말 마지막 노드를 가리키는지를 본다.
-- `Iterator` 는 이 문제집에서 여기에만 있다.\
-  `get(i)` 를 반복하면 전체가 O(n²)이 되므로, 여기서 `Iterator` 는 문법 설탕이 아니라 **복잡도를 바꾸는 장치**다.
+- [1] 원소가 이웃해 있지 않다. "다음이 어디냐"는 `next`에만 적혀 있어서, 번호로 바로 뛰지 못하고 세면서 간다(`get(i)` O(n)).
+- [2] `head`에서 걸어 들어가고 `tail`에 바로 붙인다. 그래서 `addFirst`·`addLast`는 O(1)이다.
+- [3] 끼우고 빼는 일은 고리 두 개만 고친다 — 단, **필요한 참조를 먼저 붙잡고** 고친다.\
+  `reverse`·`Iterator.remove`도 결국 같은 문제다.
+- [4] 단일 연결은 `tail`을 알아도 그 앞 칸을 모른다. 이 한 줄이 이중 연결(`prev`)을 만든 이유다.
+- [5] 인덱스를 버리고 반복자로 걸어야 순회가 O(n)이다. 여기서 `Iterator`는 문법 설탕이 아니라 복잡도를 바꾸는 장치다.
 
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — List (`src/main/java/com/datastructure/linkedlist/List.java`)
+### 계약 — List (`src/main/java/com/datastructure/linkedlist/List.java`)
 
 - `int size()`
 - `boolean isEmpty()`
@@ -77,11 +105,11 @@ Java의 `LinkedList`가 이렇게 동작한다.
 - `void reverse()`
 - `Iterator<E> iterator()` (extends `Iterable<E>`)
 
-## 구현 — SinglyLinkedList (`src/main/java/com/datastructure/linkedlist/SinglyLinkedList.java`)
+### 구현 — SinglyLinkedList (`src/main/java/com/datastructure/linkedlist/SinglyLinkedList.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 ```
 SinglyLinkedList — 원소가 이웃해 있지 않다. "다음이 어디냐"는 next 참조에만 적혀 있다
@@ -102,7 +130,7 @@ node(index) 는 언제나 head 부터 index 번 걸어간다 -> 인덱스 접근
 tail 을 들고 있어 addLast 는 O(1). 그런데 tail 의 "앞" 노드는 아무도 모른다
 ```
 
-### 동작 — 추가
+#### 동작 — 추가
 
 ```
 [1] addFirst(X) : 새 노드가 옛 head 를 가리키게 하고 head 를 옮긴다. O(1)
@@ -148,7 +176,7 @@ tail 을 들고 있어 addLast 는 O(1). 그런데 tail 의 "앞" 노드는 아�
 - [3] 중간 추가: 끼울 자리 "앞 칸"(pred)까지 걸어간 뒤(여기가 O(n)), 고리 두 개만 바꾼다(여기는 O(1)).\
   **순서가 생명** — 새 칸에 뒷길을 먼저 담지 않고 앞 칸 고리부터 바꾸면, 뒤쪽 전체로 가는 유일한 길이 끊긴다.
 
-### 동작 — 삭제
+#### 동작 — 삭제
 
 ```
 [1] removeFirst() : head 를 한 칸 옮기고, 떼어낸 노드의 참조를 끊는다. O(1)
@@ -194,7 +222,7 @@ tail 을 들고 있어 addLast 는 O(1). 그런데 tail 의 "앞" 노드는 아�
   앞 칸을 찾으러 처음부터 끝까지 걸어야 해서 O(n).\
   이 한 줄의 불편함이 이중 연결 리스트를 만든 이유다.
 
-### 동작 — 뒤집기
+#### 동작 — 뒤집기
 
 ```
 reverse() : 값을 옮기지 않고 next 가 가리키는 방향만 반대로 돌린다. O(n), 추가 메모리 O(1)
@@ -223,148 +251,148 @@ reverse() : 값을 옮기지 않고 next 가 가리키는 방향만 반대로 �
 - 전체를 한 번 걷고 끝.\
   O(n), 새 칸을 만들지 않으니 추가 메모리 O(1).
 
-### `필드`
+#### `필드`
 
 - `static class Node<E> { E item; Node<E> next; }` — 역할:
 - `Node<E> head` — 역할:
 - `Node<E> tail` — 역할:
 - `private int size` — 역할:
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean contains(Object o)`
+#### `boolean contains(Object o)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E getFirst()`
+#### `E getFirst()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E getLast()`
+#### `E getLast()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addFirst(E element)` (TODO)
+#### `void addFirst(E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addLast(E element)` (TODO)
+#### `void addLast(E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void add(E element)`
+#### `void add(E element)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private Node<E> node(int index)` (TODO)
+#### `private Node<E> node(int index)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void add(int index, E element)` (TODO)
+#### `void add(int index, E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E get(int index)` (TODO)
+#### `E get(int index)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E set(int index, E element)` (TODO)
+#### `E set(int index, E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E remove(int index)` (TODO)
+#### `E remove(int index)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean remove(Object o)` (TODO)
+#### `boolean remove(Object o)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E removeFirst()` (TODO)
+#### `E removeFirst()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E removeLast()` (TODO)
+#### `E removeLast()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int indexOf(Object o)` (TODO)
+#### `int indexOf(Object o)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()` (TODO)
+#### `void clear()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Object[] toArray()` (TODO)
+#### `Object[] toArray()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void reverse()` (TODO)
+#### `void reverse()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Iterator<E> iterator()` (TODO)
+#### `Iterator<E> iterator()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — DoublyLinkedList (`src/main/java/com/datastructure/linkedlist/DoublyLinkedList.java`)
+### 구현 — DoublyLinkedList (`src/main/java/com/datastructure/linkedlist/DoublyLinkedList.java`)
 
-### 구조
+#### 구조
 
 ```
 DoublyLinkedList — 노드마다 prev 와 next 를 둘 다 가진다. 더미(sentinel) 노드는 쓰지 않는다
@@ -397,7 +425,7 @@ null <-+ prev  |<--------+ prev  |<--------+ prev  |
 > **단일 연결(singly) / 이중 연결(doubly)** — 각 노드가 다음 칸만 아는가(next), 앞 칸도 아는가(prev+next)의 차이.\
 > 예: 화살표 하나를 더 쓰는 대가로 removeLast 가 O(n)에서 O(1)로 떨어진다.
 
-### 동작 — 추가
+#### 동작 — 추가
 
 ```
 [1] linkLast(Y) : 끝에 붙이면서 반대편 참조도 같이 채운다. O(1)
@@ -437,7 +465,7 @@ null <-+ prev  |<--------+ prev  |<--------+ prev  |
   대신 succ의 "앞 칸"을 succ.prev로 즉시 아니까, 단일 연결처럼 앞 칸을 찾으러 걸을 필요가 없다.
 - [3] 인덱스 삽입 = 자리 찾기(node(index), O(n)) + 끼우기(O(1))의 조합.
 
-### 동작 — 삭제
+#### 동작 — 삭제
 
 ```
 unlink(node) : 앞뒤를 서로 직접 잇고, 떼어낸 노드의 참조를 끊는다. 노드를 알면 O(1)
@@ -468,7 +496,7 @@ removeFirst() = unlink(head),  removeLast() = unlink(tail)
 - 떼어낸 B의 화살표(prev, next, item)는 전부 끊는다 — GC가 치울 수 있게.
 - B가 맨 앞/맨 뒤 칸이었으면 이어줄 이웃이 없으니, 대신 head/tail 표지를 옮긴다(그래서 null 분기가 있다).
 
-### 동작 — 인덱스 접근
+#### 동작 — 인덱스 접근
 
 ```
 node(int index) : 절반을 넘어가면 tail 쪽에서 거슬러 온다. 최악은 여전히 O(n), 평균 이동은 절반
@@ -493,179 +521,218 @@ node(int index) : 절반을 넘어가면 tail 쪽에서 거슬러 온다. 최악
 > **`size >> 1`(오른쪽 시프트)** — 비트를 한 칸 밀어 2로 나눈 것.\
 > 예: `size / 2`와 같다 — size 6이면 3, 7이면 3(소수점 버림).
 
-### `필드`
+#### `필드`
 
 - `static class Node<E> { E item; Node<E> prev; Node<E> next; }` — 역할:
 - `Node<E> head` — 역할:
 - `Node<E> tail` — 역할:
 - `private int size` — 역할:
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addFirst(E element)`
+#### `void addFirst(E element)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void addLast(E element)`
+#### `void addLast(E element)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void add(E element)`
+#### `void add(E element)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E getFirst()`
+#### `E getFirst()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E getLast()`
+#### `E getLast()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean contains(Object o)`
+#### `boolean contains(Object o)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void linkFirst(E element)` (TODO)
+#### `private void linkFirst(E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void linkLast(E element)` (TODO)
+#### `private void linkLast(E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void linkBefore(E element, Node<E> succ)` (TODO)
+#### `private void linkBefore(E element, Node<E> succ)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E unlink(Node<E> node)` (TODO)
+#### `E unlink(Node<E> node)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private Node<E> node(int index)` (TODO)
+#### `private Node<E> node(int index)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void add(int index, E element)` (TODO)
+#### `void add(int index, E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E get(int index)` (TODO)
+#### `E get(int index)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E set(int index, E element)` (TODO)
+#### `E set(int index, E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E remove(int index)` (TODO)
+#### `E remove(int index)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean remove(Object o)` (TODO)
+#### `boolean remove(Object o)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E removeFirst()` (TODO)
+#### `E removeFirst()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E removeLast()` (TODO)
+#### `E removeLast()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int indexOf(Object o)` (TODO)
+#### `int indexOf(Object o)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()` (TODO)
+#### `void clear()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Object[] toArray()` (TODO)
+#### `Object[] toArray()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void reverse()` (TODO)
+#### `void reverse()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Iterator<E> iterator()` (TODO)
+#### `Iterator<E> iterator()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **Java `LinkedList`** — 이중 연결 리스트. `List`와 `Deque`를 함께 구현하고, 양 끝 추가·삭제가 O(1)이다.
+- **Java `LinkedHashMap`** — 해시 엔트리들을 이중 연결 리스트로 한 번 더 꿰어 **삽입(또는 접근) 순서**를 기억한다. 이 노트의 `DoublyLinkedList`가 그 줄이다.
+- **[10-lru-cache](../10-lru-cache/2-summary.md)** — 해시맵 + 이중 연결 리스트. "방금 쓴 것을 줄 맨 앞으로"가 O(1)이어야 해서 이중 연결이 필수다.
+- **[05-hashmap](../05-hashmap/2-summary.md) 체이닝 버킷** — 같은 버킷에 떨어진 엔트리들을 단일 연결 리스트로 잇는다.
+- **[12-skip-list](../12-skip-list/2-summary.md)** — 정렬된 연결 리스트를 여러 층으로 쌓아 탐색을 O(log n)으로 만든다.
+- **메모리 할당기의 free list**([35-allocator](../35-allocator/2-summary.md)) — 비어 있는 블록들을 연결 리스트로 꿰어 두고 할당 때 하나 떼어 준다.
+- **운영체제 커널의 큐** — Linux는 소켓의 송수신 큐(`struct sk_buff_head`)에서 패킷 버퍼(`sk_buff`)를 `next`/`prev` 이중 연결 리스트로 줄 세운다. 커널 전반의 `list_head`도 이중 원형 연결 리스트다. (TCP 재전송 큐처럼 일부 큐는 레드블랙 트리로 옮겨 갔다.)
+- **다음 챕터의 재료** — [03-stack](../03-stack/2-summary.md)의 `LinkedStack`, [04-queue-deque](../04-queue-deque/2-summary.md)의 `LinkedDeque`는 이 노트의 노드 위에 세운다.
+
+## 적용 — 풀어나가는 법
+
+연결 리스트 문제는 "인덱스를 쓰지 않고 풀 수 있는가"에서 갈린다.\
+순서: ① 인덱스(`get(i)`·`remove(i)`)가 루프 안에 있으면 O(n²)을 의심한다 → ② 반복자 하나로 한 번만 걷도록 바꾼다(지우기는 `Iterator.remove`) → ③ 두 지점을 동시에 봐야 하면 반복자 두 개(fast/slow, 병합)를 나란히 움직인다 → ④ 링크를 고칠 때는 잃어버리면 안 되는 참조를 먼저 붙잡는다.\
+아래 세 문제가 모두 이 순서로 풀린다.
+
+### 문제 — 이 챕터가 시키는 것
+
+01번 동적 배열과 **같은 일을 하는데 저장 방식이 정반대인** 리스트를 직접 만든다.\
+같은 `List` 계약을 단일 연결과 이중 연결 **두 가지**로 구현해서, "참조 하나를 더 두는 것"이 무엇을 바꾸는지 비교하는 것이 이 챕터의 본체다.\
+`tail` 을 들고 있는데 왜 `removeLast` 가 O(n) 인지에 답할 수 있으면 단일 연결 리스트를 이해한 것이다.
+
+**과제**
+
+- `ListContractTest.java` 를 따라친다 → `SinglyLinkedList` 의 **TODO 15개** → `DoublyLinkedList` 의 **TODO 2개**(나머지는 채워져 있다) → `ListIterationContractTest.java`(reverse·iterator) 따라치기 → `ListProblems` 의 **TODO 3개** 순서.\
+  단일을 먼저 한다 — 링크가 하나뿐이라 단순하고, 그 뒤에 이중을 하면 차이가 선명해진다.
+- 응용 문제 3개 — `removeAllIf`(조건에 맞는 원소를 모두 제거, O(n)) / `findMiddle`(가운데 값, `size()` 금지 + 한 번만 훑기) / `mergeSorted`(정렬된 두 리스트 병합, O(n+m)).\
+  셋 다 인덱스를 한 번도 쓰지 않고 `Iterator` 로 푼다.
+- 성능·계약 제약 — `removeAllIf` 에 **10만 건 시간 제한**이 걸려 있다(테스트 `mustBeLinear`, 5초).\
+  01번에서는 `remove` 의 **시프트** 때문에 O(n²)이었고, 여기서는 **탐색** 때문이다 — 증상은 같은데 원인이 다르다.
+- 계약 테스트가 **내부를 본다** — `head`, `tail` 과 `Node` 필드가 패키지 공개라 이 이름들이 계약의 일부다.\
+  `DoublyLinkedListTest.assertSound` 는 앞으로 훑은 결과와 뒤로 훑은 결과가 서로의 역순인지 검사한다(이게 없으면 `prev` 를 아예 안 잇는 구현도 대부분 통과한다).\
+  `SinglyLinkedListTest` 쪽은 `tail` 이 정말 마지막 노드를 가리키는지를 본다.
+- `Iterator` 는 이 문제집에서 여기에만 있다.\
+  `get(i)` 를 반복하면 전체가 O(n²)이 되므로, 여기서 `Iterator` 는 문법 설탕이 아니라 **복잡도를 바꾸는 장치**다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
 | SinglyLinkedList | | | |
 | DoublyLinkedList | | | |
 
-## 문제 — ListProblems (`src/main/java/com/datastructure/linkedlist/ListProblems.java`)
+### 문제 — ListProblems (`src/main/java/com/datastructure/linkedlist/ListProblems.java`)
 
-### 문제 1. 조건에 맞는 원소를 모두 제거 (이 문제집의 함정)
+#### 문제 1. 조건에 맞는 원소를 모두 제거 (이 문제집의 함정)
 
 > 문제 설명: `predicate` 가 true 인 원소를 전부 없애고 제거한 개수를 반환한다.
 > 함정 — `for (int i = size-1; i >= 0; i--) if (test(get(i))) remove(i)` 가 가장 먼저 떠오른다.
@@ -686,7 +753,7 @@ node(int index) : 절반을 넘어가면 tail 쪽에서 거슬러 온다. 최악
 - 논리:
 - 비용(왜):
 
-### 문제 2. 가운데 값 찾기
+#### 문제 2. 가운데 값 찾기
 
 > 문제 설명: 원소가 짝수 개면 뒤쪽 것을 반환한다.
 > `[1, 2, 3]` -> `2` / `[1, 2, 3, 4]` -> `3`
@@ -704,7 +771,7 @@ node(int index) : 절반을 넘어가면 tail 쪽에서 거슬러 온다. 최악
 - 논리:
 - 비용(왜):
 
-### 문제 3. 정렬된 두 리스트 병합
+#### 문제 3. 정렬된 두 리스트 병합
 
 > 문제 설명: 오름차순 리스트 둘을 합쳐 `result` 에 오름차순으로 담는다. `a` 와 `b` 는 건드리지 않는다.
 > `result` 는 비어 있는 상태로 들어온다.
@@ -724,15 +791,56 @@ node(int index) : 절반을 넘어가면 tail 쪽에서 거슬러 온다. 최악
 - 논리:
 - 비용(왜):
 
+## 장애 시나리오와 대처
+
+**1. "같은 O(n)인데" 배열보다 느린 순회**
+
+- 현상: 원소 n개를 앞에서 뒤로 한 번 훑는 데 배열보다 눈에 띄게 오래 걸린다.
+- 보이는 형태: 벤치마크에서 같은 n·같은 O(n) 순회인데 연결 리스트 쪽 시간이 몇 배 크다. 프로파일러의 캐시 미스 수치가 배열보다 훨씬 높다 [?].
+  - *캐시 미스(cache miss)*: CPU가 찾는 데이터가 가까운 캐시에 없어 느린 메모리까지 가서 가져오는 일.
+- 원인: 노드가 힙 여기저기에 흩어져 있어, 다음 노드로 갈 때마다 메모리를 새로 가져온다. 배열은 붙어 있어 한 번 가져온 근처 데이터를 이어서 쓴다.
+- 대처: 순회·읽기가 대부분인 데이터는 배열(01)을 쓴다. 연결 리스트는 "노드를 손에 쥔 채 끼우고 빼는" 일이 주된 곳에만 쓴다(정답 5번 참고).
+
+**2. 동시 수정으로 생긴 순환 — CPU 100% 무한 루프**
+
+- 현상: 리스트를 훑는 코드가 끝나지 않고, 프로세스 CPU가 100%에 붙는다.
+- 보이는 형태: 스레드 덤프를 여러 번 떠도 같은 스레드가 `while (n != null) n = n.next` 같은 루프 안에 계속 있다. 에러는 나지 않는다.
+- 원인: 두 스레드가 동기화 없이 같은 링크를 고쳐 `A -> B -> A`처럼 고리가 자기 자신으로 돌아왔다. `next`만 따라가는 순회는 끝(null)을 영원히 못 만난다. JDK 7 이하 `HashMap`의 동시 리사이즈에서 버킷 리스트가 이렇게 꼬인 것이 유명한 사례다 — 옮길 때 사슬 순서를 뒤집는 방식이라 두 스레드가 겹치면 고리가 생겼다. JDK 8은 순서를 보존하도록 바꿨지만, `HashMap`은 여전히 스레드 안전하지 않다.
+- 대처: 쓰기 스레드를 하나로 제한하거나 락으로 감싼다. 공유가 필요하면 동시성용 컬렉션(`ConcurrentHashMap` 등)을 쓴다. 순회 코드에 방문 횟수 상한을 두면 무한 루프 대신 에러로 드러난다.
+
+**3. `Iterator.remove()`의 상태 위반 — `IllegalStateException`**
+
+- 현상: 순회하며 지우는 코드가 `IllegalStateException`으로 죽는다.
+- 보이는 형태: `next()`를 한 번도 부르지 않고 `remove()`를 불렀거나, `remove()`를 연속으로 두 번 불렀을 때 터진다.
+- 원인: 반복자는 "마지막으로 돌려준 노드"를 기억해야 지울 수 있다. 아직 돌려준 것이 없거나 이미 지웠으면 지울 대상이 없다 — 그래서 계약이 예외를 요구한다.
+- 대처: `remove()`는 반드시 직전 `next()` 한 번에 한 번만 부른다. 반복자 구현에서는 `lastReturned`를 지운 뒤 `null`로 되돌려 두 번째 호출을 막는다(정답 10번의 링크 순서 문제와 짝을 이룬다).
+
+**4. `tail`이 마지막이 아닌 상태 — 원소가 조용히 사라진다**
+
+- 현상: `removeLast`·`reverse`·`Iterator.remove` 뒤에 `addLast`한 원소가 순회에 안 보이거나, `getLast()`가 이미 지운 값을 돌려준다.
+- 보이는 형태: `size()`와 실제로 걸어서 센 개수가 다르다. `SinglyLinkedListTest`의 `tail` 검사, `DoublyLinkedListTest.assertSound`(앞으로 훑은 것과 뒤로 훑은 것이 역순인지)가 실패한다. 앞으로만 읽는 테스트는 통과한다.
+- 원인: `tail`(또는 `prev`)을 바꿔야 하는 경로에서 갱신을 빠뜨렸다. 앞으로 읽을 때는 멀쩡해서 가장 늦게 발견된다.
+- 대처: `head`·`tail`·`prev`를 건드리는 메서드를 전부 목록으로 만들고, 각 메서드 끝에서 불변식(`tail.next == null`, `head.prev == null`, 앞뒤 순회가 역순)을 단언한다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 연결 리스트는 원소를 붙여 두지 않고 "다음이 어디인지"만 들고 있는 구조다 — 그래서 번호로 못 뛰고(`get` O(n)), 대신 어디든 고리 두 개만 고쳐 끼우고 뺀다(O(1)).
+- `head`·`tail` 두 표지가 양 끝 O(1)을 만들지만, 단일 연결은 `tail`의 **앞**을 모르므로 `removeLast`가 O(n)이다 — 이 한 줄이 이중 연결(`prev`)이 존재하는 이유다.
+- 링크를 고칠 때는 잃으면 안 되는 참조를 먼저 붙잡는다. `add`·`remove`·`reverse`·`Iterator.remove`가 전부 같은 문제다.
+- 인덱스로 도는 루프는 매번 처음부터 세므로 O(n²)이 되고, 반복자는 책갈피를 이어 가므로 O(n)이다 — 이 챕터에만 `Iterator`가 있는 이유다.
+- 떼어낸 노드의 고리는 끊어야 GC가 치우고, `tail`·`prev` 갱신 누락은 앞으로 읽을 때 보이지 않으므로 불변식 단언으로만 잡힌다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [01-dynamic-array](../01-dynamic-array/2-summary.md): 같은 `List` 계약의 반대편. 연속 저장이 주는 것(O(1) 접근·캐시 지역성)과 빼앗는 것(중간 삽입 O(n))을 여기와 대조한다.
+- 후속 — [03-stack](../03-stack/2-summary.md) · [04-queue-deque](../04-queue-deque/2-summary.md): 접근 지점을 양 끝으로 제한하면 배열과 연결 중 무엇이 유리해지는지.
+- 응용 — [05-hashmap](../05-hashmap/2-summary.md)(체이닝 버킷) · [10-lru-cache](../10-lru-cache/2-summary.md)(이중 연결 + 해시맵) · [12-skip-list](../12-skip-list/2-summary.md)(층층이 쌓은 연결 리스트).
+- 기법 — [algorithm/08-two-pointers](../../algorithm/08-two-pointers/2-summary.md): 문제 2의 fast/slow, 문제 3의 두 반복자 병합.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `04-linked-list` (선행 `02-adt-and-cost-contracts` — 노트 미작성).
+- 교재 — CLRS 3판 10.2 연결 리스트.
+- myway 원본 — `/home/jun/project/myway/data-structure/02-linked-list/` (README.md · impl/SinglyLinkedList.java · impl/DoublyLinkedList.java · impl/ListProblems.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -741,7 +849,7 @@ node(int index) : 절반을 넘어가면 tail 쪽에서 거슬러 온다. 최악
 - 테스트: `/home/jun/project/myway/data-structure/02-linked-list/src/test/java/com/datastructure/linkedlist/`
 - 참고 구현: `/home/jun/project/myway/data-structure/02-linked-list/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 - **노드(node)**: 리스트의 한 칸.\
   값(item)과 다음 칸을 가리키는 화살표(next)를 함께 담은 작은 상자.

@@ -4,8 +4,31 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+이진 탐색 트리는 갈림길마다 둘 중 하나만 고르므로, 균형이 잘 잡혀 있어도 100만 개면 스무 층쯤 내려가야 한다(한쪽으로 치우치면 O(n)층).\
+메모리 안에서는 괜찮다. 그런데 노드가 **디스크**에 있으면 "한 번 내려가기"가 곧 "페이지 한 장 방문"이고, 그 페이지가 메모리 캐시에 없으면 디스크 읽기 한 번이다. 그 한 번이 메모리 읽기의 수만 배다.
+
+```text
+BST (자식 2, 균형일 때)             B-트리 (자식 최대 100)
+100만 개 -> 약 20층                  100만 개 -> 약 3~4층 (채움률에 따라)
+페이지 방문 약 20번 = 느리다         페이지 방문 3~4번 = 빠르다
+(캐시 미스인 방문만 디스크 읽기가 된다)
+   o                                 [ 10 | 20 | ... | 990 ]   <- 노드 하나 = 블록 하나
+  / \                                 |    |          |
+ o   o   ...스무 층...                 한 번 읽으면 갈림길 100개가 통째로 온다
+```
+
+B-트리는 "비교 횟수를 줄이자"가 아니라 **"읽기 횟수를 줄이자"**에 답한다 — 노드 하나를 디스크 블록 하나에 맞춰 키를 수백 개 담고, 높이를 3~4로 눌러 버린다.\
+쉬운 예: 도서관 안내판 — 갈림길이 여럿 적힌 안내판 두세 개만 보면 서가에 도착한다.\
+똑같은 구조다: 이 노트의 `BTree`는 노드 하나에 키를 `2t-1`개까지 담고, 뿌리가 쪼개질 때만 위로 자란다.\
+실무 예: DB 인덱스와 파일시스템 디렉터리가 B-트리 계열과 그 변형을 쓴다. MySQL InnoDB·PostgreSQL의 인덱스는 값을 잎에 모으고 잎끼리 잇는 B+트리 계열이다. 다만 제품마다 세부가 다르다 — SQLite의 인덱스 B-tree는 내부 페이지에도 키를 두고, ext4의 대용량 디렉터리(HTree)는 파일 이름의 해시로 찾는다.
+
+  - *블록(block)*: 디스크가 한 번에 읽고 쓰는 덩어리(예: 4KB·16KB). 한 바이트만 필요해도 블록 하나가 통째로 온다.
+
+### 한눈에 — 쉽게 말하면
 
 **B-트리 = 갈림길이 아주 많은 도서관 안내판.** 이진 트리는 갈림길마다 "왼쪽? 오른쪽?" 둘 중 하나라 목적지까지 계단을 수십 번 오르내려야 한다. 도서관은 다르다 — 입구 안내판 하나에 "ㄱ\~ㅁ은 1구역, ㅂ\~ㅇ은 2구역, ㅈ\~ㅎ은 3구역"처럼 갈림길이 여러 개 적혀 있어서, 안내판 두세 번만 보면 책이 있는 칸에 도착한다.
 
@@ -19,34 +42,40 @@ B-트리는 이 안내판과 똑같은 구조다 — 노드 하나에 키를 여
 
 실제 데이터베이스(MySQL InnoDB 등)와 파일시스템의 인덱스가 바로 이 구조다 — 특히 값은 잎에만 두고 잎끼리 사슬로 이은 변형(B+트리)을 쓴다.
 
-## 문제 — 이 챕터가 시키는 것
+> ⚠ 정정(2026-09-28): 제품마다 세부가 다르다. InnoDB·PostgreSQL 인덱스는 B+트리 계열이지만, SQLite 인덱스 B-tree는 내부 페이지에도 키를 두고, ext4 대용량 디렉터리(HTree)는 이름의 해시로 찾는다(SQLite 파일 형식 문서, 커널 ext4 디렉터리 문서).
 
-`SearchTreeContractTest.java` 를 따라 친 뒤, 같은 `SearchTree` 계약을 두 가지 구조로 채운다.\
-하나는 값이 모든 노드에 있는 **B-트리**, 다른 하나는 값이 잎에만 있고 잎끼리 사슬로 이어진 **B+트리**다.\
-시작 상태는 48개 테스트 중 42개 실패이고(`./run.sh 15`), TODO 11개를 채우면 전부 통과한다.\
-`removeFrom` 을 마지막에 한다 — 이 문제집에서 경우가 가장 많은 메서드다.
+## 동작·원리
 
-- `BTree.splitChild` — 꽉 찬 자식을 반으로 쪼개고 가운데 키를 부모로 올린다
-- `BTree.insertNonFull` — 내려가면서 꽉 찬 노드를 미리 쪼개고 잎에 끼워 넣는다
-- `BTree.removeFrom` — 잎 / 내부 노드 / 선행자 / 후속자 / 병합의 네 경우를 가른다
-- `BTree.fill` — 부족한 자식을 빌리기나 병합으로 채우고 **내려갈 인덱스를 돌려준다**
-- `BTree.mergeChildren` — 자식 둘과 부모 키 하나를 한 노드로 합친다
-- `BPlusTree.childIndex` — 구분키와 같은 키는 오른쪽으로 보낸다(`lowerBound` 와 부등호가 다르다)
-- `BPlusTree.splitLeaf` — 가운데 키를 **복사해서** 올리고 `next` 사슬을 이어 붙인다
-- `BPlusTree.splitInternal` — 가운데 키를 **빼내서** 올린다
-- `BPlusTree.keysInRange` — 시작 잎을 한 번 찾고 잎 사슬을 옆으로 걷는다
-- `BPlusTree.fix` — 부족한 자식을 빌리기나 병합으로 채운다
-- `BPlusTree.merge` — 잎 병합과 내부 병합을 나누고, 잎 쪽에서는 `next` 를 이어준다
+### 전체 흐름
 
-`BTreeStructureTest.assertInvariants` 가 넣는 내내·지우는 내내 키 개수, 자식 개수, 정렬, 그리고 모든 잎이 같은 깊이인지를 검사한다.
+```text
+[1] 노드 = 키 여러 개 + 자식 (키 + 1)개       [2] 검색 = 노드 안 lowerBound -> 자식으로
+    +------------------------+                    get(70): [40|80] -> 40<70<=80 -> children[1]
+    | 30 | 60 | 90 |  (t-1 ~ 2t-1 개)                       -> [60] -> 60<70 -> children[1]
+    +--+----+----+----+                                     -> [70] 찾음
+       |    |    |    |                             높이만큼만 읽는다 = O(log_t n) 번
+     <30  30~60 60~90 >90
+              |
+              v
+[3] 넣기 = 내려가면서 꽉 찬 노드를 미리 쪼갠다   [4] 지우기 = 내려가기 전에 부족한 자식을 미리 채운다
+    꽉 참 [10|20|30] -> 가운데 20을 부모로        자식 키가 t-1개뿐이면
+    +----+     +----+                                형제에게 빌리기(회전) -> 안 되면 형제와 병합
+    | 10 |     | 30 |     되돌아 올라갈 일이 없다     둘 중 무엇을 골랐느냐로 내려갈 자리가 바뀐다
+    뿌리가 쪼개질 때만 위로 자란다 -> 모든 잎 깊이 같음
+              |
+              v
+[5] B+트리 = 값은 잎에만, 잎끼리 next 사슬
+    내부 [ 30 | 50 | 70 ]   <- 구분키(길잡이). 값이 아니라 경계값 (분할 직후엔 잎에도 같은 키가 있다)
+    잎   [10 20]>[30 40]>[50 60]>[70 80]> null   <- 범위 조회 = 시작 잎 찾고 옆으로 걷기
+```
 
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+- [1] 노드 하나에 키를 여러 개 담아 갈림길을 늘린다. 키 개수가 `t-1`~`2t-1`로 묶여 있어 너무 비지도 넘치지도 않는다.
+- [2] 검색은 노드 안에서 이분 탐색으로 자리를 잡고, 맞는 구간의 자식으로 내려간다. 디스크 읽기는 높이만큼만 일어난다.
+- [3] 넣기는 내려가는 길에 꽉 찬 노드를 먼저 쪼갠다. 잎에 도착하면 위로 되돌아갈 일이 없다 — 되돌아가면 지나온 페이지를 다시 만져야 하고, 그 페이지가 캐시에서 밀려났으면 다시 읽어야 한다.
+- [4] 지우기는 그 대칭이다. 최소치뿐인 자식을 만나면 빌리거나 합친 뒤에 내려간다. 내부 노드의 키를 지우면 선행자·후속자를 데려온다(06 BST의 그 문제).
+- [5] B+트리는 값을 잎에만 두고 잎을 사슬로 잇는다. 조회는 늘 잎까지 내려가지만, 범위 조회가 "옆으로 걷기"가 된다 — 실무 DB 인덱스 다수가 B+트리 계열인 이유다.
 
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — SearchTree (`src/main/java/com/datastructure/btree/SearchTree.java`)
+### 계약 — SearchTree (`src/main/java/com/datastructure/btree/SearchTree.java`)
 
 - `V put(K key, V value)`
 - `V get(K key)`
@@ -60,11 +89,11 @@ B-트리는 이 안내판과 똑같은 구조다 — 노드 하나에 키를 여
 - `K lastKey()`
 - `int height()`
 
-## 구현 — BTree (`src/main/java/com/datastructure/btree/BTree.java`)
+### 구현 — BTree (`src/main/java/com/datastructure/btree/BTree.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 - *minDegree(t)*: 노드가 가질 수 있는 키 개수의 하한을 정하는 숫자. 키는 t-1개 이상 2t-1개 이하 — "안내판이 너무 비지도, 넘치지도 않게" 하는 규칙이다.
 - *잎(leaf)*: 자식이 없는 맨 아래 노드.
@@ -102,7 +131,7 @@ leaf() == children.isEmpty()  -- 잎은 자식 리스트가 비어 있다
 - values 가 내부 노드에도 있다. 키를 만난 그 자리에서 값을 돌려준다 (BPlusTree 와 다른 점)
 ```
 
-### 동작 — 검색
+#### 동작 — 검색
 
 **언제 쓰나**: 키 하나의 값을 찾을 때. 노드 안에서 자리를 잡고, 없으면 맞는 구간의 자식으로 내려간다.
 
@@ -141,7 +170,7 @@ get(70)
 
 **비용**: 높이 O(log_t n) × 노드 안 이분탐색 O(log t) = O(log n).
 
-### 동작 — 추가
+#### 동작 — 추가
 
 **언제 쓰나**: 새 키를 넣을 때. 자리는 항상 잎에 생기고, 잎이 넘칠 것 같으면 내려가는 길에 미리 쪼갠다.
 
@@ -213,11 +242,12 @@ put 은 내려가면서 "꽉 찬 노드를 미리 쪼갠다"(preemptive split). 
 
 **비용**: 뿌리→잎 한 번 내려가며 필요할 때만 쪼갠다 = O(log n).
 
-### 동작 — 삭제
+#### 동작 — 삭제
 
 **언제 쓰나**: 키를 지울 때. 추가의 거울상이다 — 내려가는 길에 "너무 마른 노드"를 미리 채워 두고 내려간다.
 
 - *underfull(부족)*: 키가 최소치(t-1)밖에 없어서, 하나라도 빠지면 규칙을 어기게 되는 노드.
+> ⚠ 정정(2026-09-28): 보통 underfull은 키 수가 최소치보다 **작은** 상태를 말한다. 최소치(t-1)만 가진 노드는 유효한 노드이고, 이 노트는 "삭제 전에 미리 보강할 대상"이라는 뜻으로 이 말을 쓴다(CLRS 18.3의 삭제 절차).
 - *빌리기(borrow) / 합치기(merge)*: 마른 노드를 채우는 두 방법 — 여유 있는 형제에게서 부모를 거쳐 한 칸 돌려받거나, 형제와 부모 키 하나를 합쳐 한 노드로 만들거나.
 
 ```
@@ -282,95 +312,96 @@ put 은 내려가면서 "꽉 찬 노드를 미리 쪼갠다"(preemptive split). 
 
 **비용**: 내려가는 길에서만 고친다 = O(log n).
 
-### `필드`
+#### `필드`
 
 - `int minDegree` (t) 역할:
 - `Node<K,V> root` 역할:
 - `int size` 역할:
 - `Node.keys` / `Node.values` / `Node.children` 역할:
 
-### `public BTree(int minDegree)`
+#### `public BTree(int minDegree)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void splitChild(Node<K,V> parent, int i)` (TODO)
+#### `private void splitChild(Node<K,V> parent, int i)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private V insertNonFull(Node<K,V> node, K key, V value)` (TODO)
+#### `private V insertNonFull(Node<K,V> node, K key, V value)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void removeFrom(Node<K,V> node, K key)` (TODO)
+#### `private void removeFrom(Node<K,V> node, K key)` (TODO)
 
 - 하는 일:
 - 논리(네 경우):
 - 비용(왜):
 
-### `private int fill(Node<K,V> node, int i)` (TODO)
+#### `private int fill(Node<K,V> node, int i)` (TODO)
 
 - 하는 일:
 - 논리(우선순위와 반환값의 뜻):
 - 비용(왜):
 
-### `private void mergeChildren(Node<K,V> node, int i)` (TODO)
+#### `private void mergeChildren(Node<K,V> node, int i)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public V put(K key, V value)`
+#### `public V put(K key, V value)`
 
 - 하는 일:
 - 논리(뿌리가 꽉 찼을 때):
 - 비용(왜):
 
-### `public V get(K key)`
+#### `public V get(K key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public V remove(K key)`
+#### `public V remove(K key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public List<K> keys()`
+#### `public List<K> keys()`
 
 - 하는 일:
 - 비용(왜):
 
-### `public K firstKey()` / `public K lastKey()`
+#### `public K firstKey()` / `public K lastKey()`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int height()`
+#### `public int height()`
 
 - 하는 일:
 - 논리(왜 왼쪽 한 줄만 세면 되는가):
 - 비용(왜):
 
-### `public boolean containsKey(K key)` / `public int size()` / `public boolean isEmpty()` / `public void clear()`
+#### `public boolean containsKey(K key)` / `public int size()` / `public boolean isEmpty()` / `public void clear()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 — BPlusTree (`src/main/java/com/datastructure/btree/BPlusTree.java`)
+### 구현 — BPlusTree (`src/main/java/com/datastructure/btree/BPlusTree.java`)
 
-### 구조
+#### 구조
 
 B-트리에서 한 발 더 — "값은 전부 맨 아래 잎에만 두고, 잎끼리 옆으로 사슬로 잇자". 책은 전부 1층 서가에 꽂고, 위층 안내판에는 표지판만 남기는 도서관이다. 그러면 "ㄱ부터 ㄷ까지 전부"를 찾을 때 1층 서가를 옆으로 걷기만 하면 된다.
 
 - *구분키(separator)*: 내부 노드의 키. 답이 아니라 "어느 쪽으로 갈지" 알려주는 표지판이라서, 같은 키가 잎에 한 번 더 있다.
+> ⚠ 정정(2026-09-28): 같은 키가 잎에 있는 것은 분할 직후의 모습이다. 구분키는 자식의 탐색 범위를 나누는 경계값이라, 이 구현에서는 그 키가 잎에서 지워진 뒤에도 구분키로 남을 수 있다(README 84행 "지워진 키가 구분키로 남아 있어도 아무 문제가 없습니다").
 
 ```
 BPlusTree(order) : order = 노드 하나가 가질 수 있는 "자식의 최대 수". 키는 order-1 개까지
@@ -407,7 +438,7 @@ BTree 와 나란히 놓으면
   BPlusTree  : get(70) 은 내부 노드에서 만나도 안 멈춘다. 늘 잎까지 내려간다 (깊이가 항상 같다)
 ```
 
-### 동작 — 추가
+#### 동작 — 추가
 
 **언제 쓰나**: 새 키·값을 넣을 때. 값은 반드시 잎에 들어가고, 넘친 노드는 올라오며 쪼갠다.
 
@@ -469,7 +500,7 @@ BTree 와 달리 "미리 쪼개기"가 아니라, 잎에 먼저 넣고 넘치면
 
 **비용**: 잎까지 O(log n) 내려가고, 넘칠 때만 올라오며 쪼갠다 = O(log n).
 
-### 동작 — 범위 조회
+#### 동작 — 범위 조회
 
 **언제 쓰나**: "35 이상 85 이하 전부" 같은 구간 질문. B+트리가 B-트리를 이기는 바로 그 장면이다.
 
@@ -512,7 +543,7 @@ keys() 도 같은 원리다 -- firstLeaf() 하나 잡고 next 를 끝까지 따�
 
 **비용**: O(log n + 결과 개수 k). DB 의 `BETWEEN` 질의가 빠른 이유가 이 잎 사슬이다.
 
-### `필드`
+#### `필드`
 
 - `int order` 역할:
 - `Node<K,V> root` 역할:
@@ -520,109 +551,183 @@ keys() 도 같은 원리다 -- firstLeaf() 하나 잡고 next 를 끝까지 따�
 - `Node.leaf` / `Node.keys` / `Node.values` / `Node.children` / `Node.next` 역할:
 - `record`성 보조 `Split<K,V>{ K key; Node right; }` 역할:
 
-### `public BPlusTree(int order)`
+#### `public BPlusTree(int order)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static int lowerBound(Node<K,V> node, K key)` (주어짐)
+#### `static int lowerBound(Node<K,V> node, K key)` (주어짐)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static int childIndex(Node<K,V> node, K key)` (TODO)
+#### `static int childIndex(Node<K,V> node, K key)` (TODO)
 
 - 하는 일:
 - 논리(lowerBound 와 부등호가 왜 달라야 하는가):
 - 비용(왜):
 
-### `private Split<K,V> splitLeaf(Node<K,V> node)` (TODO)
+#### `private Split<K,V> splitLeaf(Node<K,V> node)` (TODO)
 
 - 하는 일:
 - 논리(올려보낼 키를 잎에 남기는가):
 - 비용(왜):
 
-### `private Split<K,V> splitInternal(Node<K,V> node)` (TODO)
+#### `private Split<K,V> splitInternal(Node<K,V> node)` (TODO)
 
 - 하는 일:
 - 논리(가운데 키를 올려보내고 지우는 이유):
 - 비용(왜):
 
-### `public List<K> keysInRange(K from, K to)` (TODO)
+#### `public List<K> keysInRange(K from, K to)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void fix(Node<K,V> node, int i)` (TODO)
+#### `private void fix(Node<K,V> node, int i)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private void merge(Node<K,V> node, int i)` (TODO)
+#### `private void merge(Node<K,V> node, int i)` (TODO)
 
 - 하는 일:
 - 논리(잎 병합과 내부 병합의 차이 · `next` 이어주기):
 - 비용(왜):
 
-### `public V put(K key, V value)`
+#### `public V put(K key, V value)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public V get(K key)`
+#### `public V get(K key)`
 
 - 하는 일:
 - 논리(왜 늘 잎까지 내려가는가):
 - 비용(왜):
 
-### `public V remove(K key)`
+#### `public V remove(K key)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `public List<K> keys()`
+#### `public List<K> keys()`
 
 - 하는 일:
 - 논리(사슬 걷기):
 - 비용(왜):
 
-### `public K firstKey()` / `public K lastKey()`
+#### `public K firstKey()` / `public K lastKey()`
 
 - 하는 일:
 - 비용(왜):
 
-### `public int height()`
+#### `public int height()`
 
 - 하는 일:
 - 비용(왜):
 
-### `public boolean containsKey(K key)` / `public int size()` / `public boolean isEmpty()` / `public void clear()`
+#### `public boolean containsKey(K key)` / `public int size()` / `public boolean isEmpty()` / `public void clear()`
 
 - 하는 일:
 - 비용(왜):
 
-## 구현 전략 비교
+## 쓰이는 곳
+
+- **관계형 DB 인덱스** — MySQL InnoDB·PostgreSQL의 기본 인덱스가 B+트리 계열이다. `WHERE age BETWEEN`·`ORDER BY`·페이지네이션이 잎 사슬 걷기로 풀린다. InnoDB는 클러스터드 인덱스가 행 데이터 자체를 저장한다(MySQL 문서 "Clustered and Secondary Indexes"). SQLite는 테이블 B-tree(데이터를 잎에만)와 인덱스 B-tree(내부 페이지에도 키)를 구분한다(SQLite 파일 형식 문서).
+- **파일시스템 디렉터리·메타데이터** — Btrfs는 이름 그대로 B-트리(copy-on-write)로 메타데이터를 둔다. NTFS의 디렉터리 인덱스도 B-트리 계열이다 [?]. ext4의 대용량 디렉터리(HTree)는 파일 이름의 **해시**를 키로 쓰는 얕은 트리라서, 이름 순서로 범위를 걷는 구조가 아니다(커널 ext4 디렉터리 문서).
+- **MongoDB·키-값 저장소의 인덱스** — MongoDB의 기본 엔진 WiredTiger는 B-트리 계열 파일 형식을 쓴다(WiredTiger 파일 형식 문서). 교과서 B+트리의 잎 연결 구조까지 그대로 따른다는 뜻은 아니다.
+- **[24-lsm-tree](../24-lsm-tree/2-summary.md)와의 대비** — "읽기 위주면 B+트리, 쓰기 위주면 LSM"은 흔한 출발점인 경험칙이다. 실제로는 읽기·쓰기·공간 증폭, 캐시, 범위 조회, 압축 정책이 함께 영향을 주므로 워크로드로 측정해 고른다.
+- **[16-red-black-tree](../16-red-black-tree/2-summary.md)** — t=2 B-트리(2-3-4 트리)를 이진 트리로 흉내낸 것. 메모리 안에서 흔히 쓰이는 선택지다. 다만 메모리 안에서도 B-트리가 캐시 지역성 덕에 유리할 수 있어(Rust `BTreeMap`·Abseil `btree_map`), 키 크기·갱신 비용에 따라 달라진다.
+- **[06-binary-search-tree](../06-binary-search-tree/2-summary.md)의 삭제 문제** — 내부 노드 키 삭제가 선행자·후속자 바꿔치기라는 점은 그대로이고, "데려올 쪽의 사정"만 더 붙는다.
+- **[algorithm/06-binary-search](../../algorithm/06-binary-search/2-summary.md)** — 노드 안에서 자리를 잡는 `lowerBound`가 이 기법이다. 부등호 하나(`childIndex`)가 B+트리의 정확성을 가른다.
+
+## 적용 — 풀어나가는 법
+
+B-트리 문제는 "내려가기 전에 무엇을 미리 해 두는가"에서 갈린다.\
+순서: ① 이 자료가 디스크(블록)에 사는지부터 확인한다 — 메모리 안이면 16번 레드블랙 트리도 후보가 된다(메모리 B-트리도 쓰인다) → ② 노드 크기를 블록에 맞춰 `t`(또는 `order`)를 정한다 → ③ 넣기는 "꽉 찬 노드를 미리 쪼개기", 지우기는 "부족한 자식을 미리 채우기"로 되돌아가지 않게 짠다 → ④ 범위 조회가 많으면 값을 잎에 모으고 잎 사슬(B+)을 둔다 → ⑤ 넣는 내내·지우는 내내 불변식(키 개수·자식 개수·정렬·잎 깊이)을 검사한다.\
+아래 과제 11개가 이 순서를 따른다 — `removeFrom`을 마지막에 하는 이유는 경우가 가장 많아서다.
+
+### 문제 — 이 챕터가 시키는 것
+
+`SearchTreeContractTest.java` 를 따라 친 뒤, 같은 `SearchTree` 계약을 두 가지 구조로 채운다.\
+하나는 값이 모든 노드에 있는 **B-트리**, 다른 하나는 값이 잎에만 있고 잎끼리 사슬로 이어진 **B+트리**다.\
+시작 상태는 48개 테스트 중 42개 실패이고(`./run.sh 15`), TODO 11개를 채우면 전부 통과한다.\
+`removeFrom` 을 마지막에 한다 — 이 문제집에서 경우가 가장 많은 메서드다.
+
+- `BTree.splitChild` — 꽉 찬 자식을 반으로 쪼개고 가운데 키를 부모로 올린다
+- `BTree.insertNonFull` — 내려가면서 꽉 찬 노드를 미리 쪼개고 잎에 끼워 넣는다
+- `BTree.removeFrom` — 잎 / 내부 노드 / 선행자 / 후속자 / 병합의 네 경우를 가른다
+- `BTree.fill` — 부족한 자식을 빌리기나 병합으로 채우고 **내려갈 인덱스를 돌려준다**
+- `BTree.mergeChildren` — 자식 둘과 부모 키 하나를 한 노드로 합친다
+- `BPlusTree.childIndex` — 구분키와 같은 키는 오른쪽으로 보낸다(`lowerBound` 와 부등호가 다르다)
+- `BPlusTree.splitLeaf` — 가운데 키를 **복사해서** 올리고 `next` 사슬을 이어 붙인다
+- `BPlusTree.splitInternal` — 가운데 키를 **빼내서** 올린다
+- `BPlusTree.keysInRange` — 시작 잎을 한 번 찾고 잎 사슬을 옆으로 걷는다
+- `BPlusTree.fix` — 부족한 자식을 빌리기나 병합으로 채운다
+- `BPlusTree.merge` — 잎 병합과 내부 병합을 나누고, 잎 쪽에서는 `next` 를 이어준다
+
+`BTreeStructureTest.assertInvariants` 가 넣는 내내·지우는 내내 키 개수, 자식 개수, 정렬, 그리고 모든 잎이 같은 깊이인지를 검사한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
 | BTree (값이 모든 노드에) | | | |
 | BPlusTree (값은 잎에만 + 잎 사슬) | | | |
 
+## 장애 시나리오와 대처
+
+**1. 무작위 키(UUIDv4) 삽입 — 페이지 분할이 폭증하고 쓰기가 느려진다**
+
+- 현상: 기본 키를 UUIDv4로 잡은 테이블에 삽입이 쌓일수록 쓰기 처리량이 떨어지고 인덱스 파일이 데이터보다 훨씬 커진다.
+- 보이는 형태: 인덱스 크기가 예상의 몇 배로 부풀고, 디스크 쓰기량이 삽입한 바이트의 몇 배로 찍힌다(쓰기 증폭). 잎 페이지의 채움률이 순차 삽입 때보다 낮다(InnoDB 문서는 무작위 삽입이면 페이지가 1/2~15/16 찬다고 설명한다).
+  - *쓰기 증폭(write amplification)*: 사용자가 쓴 양보다 저장 장치에 실제로 쓰인 양이 몇 배로 늘어나는 것.
+- 원인: 무작위 키는 매번 다른 잎에 떨어져 잎마다 조금씩 채우다 쪼개진다. 쪼개진 잎은 절반이 비고, 쪼개진 잎을 전부 디스크에 다시 써야 한다. 순차 키(자동 증가)라면 늘 맨 오른쪽 잎만 채워진다. 분할 정책이 이것을 알아채면(InnoDB 등) 잎을 거의 채운 뒤 새 잎으로 넘어가므로 공간 낭비가 적다. 채움률과 분할 빈도는 구현마다 다르다.
+- 대처: 시간순 정렬에 유리한 키(자동 증가 정수, UUIDv7 같은 시간 접두 UUID — RFC 9562)를 쓴다. UUIDv7은 같은 밀리초 안의 순서·시계 역행 처리가 생성기마다 달라, 엄격한 단조 증가가 필요하면 생성기 정책을 확인한다. 불가피하면 지원되는 DB에서 인덱스 생성·재구축 때 채움률(fill factor)을 낮춰 잎에 여유를 남긴다 — 앞으로의 분할은 줄지만 인덱스는 그만큼 커지고, 여유가 소진되면 다시 분할된다.
+
+**2. 긴 문자열 키 — fan-out이 줄어 높이가 늘고, 캐시 미스마다 읽기가 늘어난다**
+
+- 현상: 인덱스 키를 긴 `VARCHAR`(URL·이메일)로 잡았더니 같은 건수인데 조회가 눈에 띄게 느리다.
+- 보이는 형태: 인덱스 높이가 3에서 4로 늘어 있고(DB의 인덱스 통계 [?]), 조회당 페이지 방문이 하나 더 찍힌다. 그 페이지가 버퍼에 없을 때(버퍼 미스) 디스크 읽기도 하나 더 생긴다.
+- 원인: 노드 하나는 블록 하나다. 키가 길면 한 노드에 담기는 키 수(fan-out)가 줄고, 같은 n을 담는 데 층이 하나 더 필요해질 수 있다(반드시 늘지는 않는다). 높이가 1 늘면 모든 조회가 페이지 방문 1회를 더 치르고, 그 방문이 캐시 미스일 때 물리적 읽기가 는다(정답 1번 참고). 한 페이지에 담기는 키가 줄어 캐시 적중률이 떨어지는 것도 느려지는 원인이다.
+  - *fan-out*: 노드 하나가 가진 자식의 수. 클수록 높이가 낮다.
+- 대처: 정수·짧은 키로 바꾼다. 동등 검색만 필요하면 긴 키의 해시를 인덱스 키로 쓰고 원문으로 다시 확인한다 — 해시는 범위 검색·정렬을 지원하지 않고 충돌 확인이 필요하다. 문자열 앞부분만 담는 접두 인덱스(prefix index — MySQL 지원)는 선택도와 지원되는 쿼리를 확인한다. 원문 범위 검색·정렬이 필요하면 둘 다 그대로 대체할 수 없다.
+
+**3. 불변식이 깨진 채 조용히 굴러가다 나중에 터진다**
+
+- 현상: 넣기·지우기가 예외 없이 끝나는데, 한참 뒤의 `get`이 `null`을 돌려주거나 `IndexOutOfBoundsException`이 엉뚱한 자리에서 난다.
+- 보이는 형태: 계약 테스트는 통과하는데 `BTreeStructureTest.assertInvariants`가 실패한다 — 키 개수와 자식 개수가 `+1` 관계를 벗어났거나, 잎의 깊이가 서로 다르다.
+- 원인: 쪼개기·병합에서 `keys`·`values`·`children` 세 리스트를 함께 옮기지 않았다. 리스트 하나만 어긋나도 그 순간에는 안 보이고, 그 노드를 다시 지나갈 때 드러난다.
+- 대처: 세 리스트를 항상 한 자리에서 같이 옮긴다. 넣는 내내·지우는 내내 불변식(키 개수 범위 — 최소 `t-1`은 뿌리가 아닌 노드에만·`children.size() == keys.size() + 1`은 내부 노드에만·정렬·모든 잎 같은 깊이)을 단언하는 테스트를 계약 테스트와 별도로 둔다(정답 3번의 "쪼갠 직후 함정"과 짝이다).
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- B-트리의 기준은 "비교 횟수"가 아니라 "읽기 횟수"다 — 노드 하나를 디스크 블록 하나에 맞춰 키를 수백 개 담으면 높이 20이 3~4가 되고, 노드 안 훑기는 이미 읽어 온 메모리의 일이라 공짜다.
+- 뿌리가 쪼개질 때만 위로 자라므로 어떤 순서로 넣어도 모든 잎의 깊이가 같다 — 균형이 결과가 아니라 구조이고, 회전(16)도 동전(12)도 필요 없다.
+- 넣기는 내려가며 미리 쪼개고, 지우기는 내려가기 전에 미리 채운다 — 되돌아가면 지나온 페이지를 다시 만져야 하고, 캐시에서 밀려났으면 다시 읽어야 해서 그렇다.
+- B+트리는 값을 잎에만 두고 잎을 사슬로 잇는다 — 운 좋은 조회를 포기하는 대신 범위 조회가 "옆으로 걷기"가 되고, 그래서 실무 DB 인덱스 다수가 B+트리 계열이다.
+- 구분키는 값이 아니라 길잡이다 — 지워진 키가 구분키로 남아도 문제없고, 부등호 하나(`childIndex`)와 잎 사슬(`next`) 한 줄이 정확성을 가른다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [06-binary-search-tree](../06-binary-search-tree/2-summary.md): 자식이 둘인 탐색 트리. 내부 노드 키 삭제(선행자·후속자 바꿔치기)가 여기로 그대로 이어진다.
+- 대조 — [12-skip-list](../12-skip-list/2-summary.md)(확률로 균형) · [16-red-black-tree](../16-red-black-tree/2-summary.md)(회전으로 균형 — t=2 B-트리의 이진 흉내): 균형을 잡는 세 가지 길.
+- 후속 — [24-lsm-tree](../24-lsm-tree/2-summary.md) · [systems/lsm-tree](../../systems/lsm-tree/): 읽기 최적(B+) 대 쓰기 최적(LSM)의 갈림길.
+- 기법 — [algorithm/06-binary-search](../../algorithm/06-binary-search/2-summary.md): 노드 안 `lowerBound`.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `16-b-tree` (선행 `09-binary-search-tree`).
+- 교재 — CLRS 3판 18장 B-트리 · Bayer–McCreight 1972 "Organization and Maintenance of Large Ordered Indexes"(Acta Informatica).
+- myway 원본 — `/home/jun/project/myway/data-structure/15-b-tree/` (README.md · impl/BTree.java · impl/BPlusTree.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -631,7 +736,7 @@ keys() 도 같은 원리다 -- firstLeaf() 하나 잡고 next 를 끝까지 따�
 - 테스트: `/home/jun/project/myway/data-structure/15-b-tree/src/test/java/com/datastructure/btree/`
 - 정답 구현: `/home/jun/project/myway/data-structure/15-b-tree/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 본문에 등장한 자리에서 이미 푼 용어를 포함해, 이 문서의 전문용어를 한곳에 모았다.
 
@@ -645,10 +750,12 @@ keys() 도 같은 원리다 -- firstLeaf() 하나 잡고 next 를 끝까지 따�
 - **미리 쪼개기(preemptive split)**: 내려가는 길에 꽉 찬 노드를 먼저 쪼개 두어, 되돌아 올라올 일을 없애는 방식.
 - **승격(promote)**: 쪼갤 때 가운데 키가 부모로 올라가는 것.
 - **underfull(부족)**: 키가 최소치뿐이라 하나도 못 빼는 상태의 노드.
+> ⚠ 정정(2026-09-28): 보통 underfull은 키 수가 허용 최소치보다 작은 상태다. 최소치만 가진 노드는 유효하며, 삭제 전에 보강할 대상일 뿐이다.
 - **borrow(빌리기, 회전)**: 여유 있는 형제의 키를 부모를 거쳐 한 칸 돌려받는 채우기 방법.
 - **merge(합치기)**: 형제 둘과 부모 키 하나를 한 노드로 합치는 채우기 방법.
 - **선행자(predecessor) / 후행자(successor)**: 어떤 키 바로 앞/바로 뒤의 키. 내부 노드 삭제 때 바꿔치기 상대.
 - **구분키(separator)**: B+트리 내부 노드의 키. 답이 아니라 길 안내 표지판이며, 잎에 같은 키가 또 있다.
+> ⚠ 정정(2026-09-28): 잎에 같은 키가 있는 것은 분할 직후뿐이다. 삭제 뒤에는 잎에 없는 키가 경계값으로 남을 수 있다(README 84행).
 - **copy up / push up**: 가운데 키를 복사해 올리기(잎 쪼개기 — 원본이 잎에 남는다) / 빼서 올리기(내부 쪼개기 — 아래에서 사라진다).
 - **next(잎 사슬)**: 잎끼리 한 방향으로 이어 둔 연결. 범위 조회를 "옆으로 걷기"로 만든다.
 - **중위 순회(in-order traversal)**: 왼쪽 부분트리 → 내 키 → 오른쪽 부분트리 순으로 트리 전체를 도는 방법. 잎 사슬이 없으면 이걸 해야 한다.

@@ -4,8 +4,30 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+해시맵은 키를 일부러 흩뿌려 O(1)을 얻었고, BST는 순서를 되찾았다. 그런데 둘 다 **"car로 시작하는 것 전부"**에는 답하지 못한다.\
+해시맵은 car와 card를 아예 다른 버킷에 넣고, BST는 범위로 흉내내지만 비교마다 문자열 전체를 훑는다.
+
+```text
+해시맵: "car"  -> 버킷 7        "card" -> 버킷 2      서로 아무 관계가 없다
+                                                     "car로 시작하는 것"은 전부 뒤져야(O(n)) 안다
+트라이:  (뿌리)-c-a-r            <- 여기가 "car"의 끝. 이 노드 아래가 곧 "car로 시작하는 것 전부"
+                   +-d           <- "card"
+                   +-e           <- "care"
+```
+
+트라이는 키를 통째로 저장하지 않는다. 한 글자가 간선 하나이고, 뿌리에서 내려온 **경로가 곧 키**다.\
+그래서 앞부분이 같은 키들은 길을 나눠 쓰고, "이 접두사 아래 전부"가 부분 트리 하나로 나온다.\
+쉬운 예: 사전의 색인 — c 섹션 → a → r로 글자를 따라 들어가면 car로 시작하는 단어가 한 곳에 모여 있다.\
+똑같은 구조다: 검색창에 "ca"까지 치면 뜨는 자동완성 목록.\
+실무 예: 라우터가 목적지 IP의 앞 비트들을 따라 내려가며 "가장 긴 접두사가 맞는 경로"를 고르는 라우팅 테이블.
+
+  - *접두사(prefix)*: 문자열의 앞부분. "ca"는 cat·car·card 셋 모두의 접두사다.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 국어사전의 찾아가기.** "car"를 찾을 때 사전 전체를 뒤지지 않는다.\
 ㄱㄴㄷ 순 색인처럼, c 섹션 → 그 안의 a → 그 안의 r로 **글자를 하나씩 따라 들어간다.**
@@ -37,29 +59,38 @@
                     +--r   <- 여기서 "car" 끝
 ```
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-원본 README는 이 박스를 "**05번 해시맵도 06번 BST도 못 하는 질문**을 다루는 박스"라고 소개한다.\
-해시맵은 car와 card를 아예 다른 버킷에 넣어 "car로 시작하는 것 전부"가 불가능하고, BST는 범위로 흉내내지만 비교마다 문자열 전체를 훑는다.\
-키를 통째로 저장하지 않고 **한 글자를 간선 하나로 삼아 경로가 곧 키가 되는** 구조를 직접 만들고, 같은 계약을 맵 자식(`MapTrie`)과 26칸 배열 자식(`ArrayTrie`) 두 가지로 구현해 메모리·순서의 거래를 숫자로 확인하는 것이 과제다.
+### 전체 흐름
 
-과제 목록 — `src/main/java/com/datastructure/trie/`의 TODO:
+```text
+[1] 키를 쪼개 경로로 만든다           [2] 노드에는 "끝 표시"와 "아래 단어 수"만
+    "cat","car","card","dog"              (root)            end=F  wordsBelow=4
+    -> c-a-t, c-a-r, c-a-r-d, d-o-g        +-c [c]          end=F  wordsBelow=3
+    공통 접두사 c-a 는 한 번만 만든다        |  +-a [ca]      end=F  wordsBelow=3
+                                           |     +-t [cat]  end=T  wordsBelow=1
+              |                            |     +-r [car]  end=T  wordsBelow=2
+              v                            |        +-d     end=T  wordsBelow=1
+[3] 조회 = 글자 수만큼 내려간다             +-d-o-g           end=T
+    contains("car")   c -> a -> r, end?    -> O(L), n 과 무관
+    startsWith("ca")  c -> a, 노드 있나?    -> O(L)   (빈 접두사 함정: root 는 늘 있다)
+    countWithPrefix   그 노드의 wordsBelow  -> O(L), 아래를 안 훑는다
+              |
+              v
+[4] 접두사 아래 전부 = 부분 트리 순회        [5] 두 구현 — 자식을 어디에 두나
+    keysWithPrefix("ca"): [ca] 아래를        MapTrie   children = TreeMap  아무 문자, 빈 자식 비용 0
+    붙였다(append) 떼며(deleteCharAt) 걷는다  ArrayTrie children = Node[26] a~z, 인덱스가 곧 문자
+    -> O(L + 출력 크기)                       -> 0~25 순회가 곧 사전순, 대신 빈 칸도 26개
+```
 
-- `MapTrie` — TODO 1(`insert`) · TODO 2(`remove` — 어디까지 끊어도 되는가) · TODO 3(`findNode`) · TODO 4(`collect` — 붙였다 떼기) · TODO 5(`countWithPrefix`)
-- `ArrayTrie` — TODO 1(`indexOf` — 위아래 범위 밖 전부 -1) · TODO 2(`remove`) · TODO 3(`collect` — 자식 도는 방법만 다르다). 나머지는 이미 채워져 있다
-- `WordDictionary` — TODO 1(`addWord`) · TODO 2(`search` — `.` 와일드카드, 되돌아오기)
-- `TrieProblems` — TODO 1: 문제 1(`longestCommonPrefix`) · TODO 2: 문제 2(`autocomplete` — k개 차면 멈추기) · TODO 3: 문제 3(`countDistinctSubstrings`)
+- [1] 문자열을 어디에도 통째로 저장하지 않는다. c-a-t 세 간선으로만 존재하고, 앞이 같으면 저장도 한 번만 한다.
+- [2] 노드가 있다고 단어인 것은 아니다 — `[ca]`는 노드지만 단어가 아니다. 그래서 `end` 표시가 따로 있다.\
+  `wordsBelow`는 넣고 뺄 때 미리 갱신해 두어 "접두사 개수"에 즉답하고, 지울 때 "어디까지 끊어도 되는가"를 알려 준다.
+- [3] 조회 비용은 키 길이 L에만 비례한다. 100만 단어가 들어 있어도 "abc"는 세 걸음이다.
+- [4] 접두사로 내려간 뒤 그 아래를 전부 걷는다. 경로 문자열은 하나를 붙였다 떼며 돌려 쓴다(백트래킹).
+- [5] 자식을 맵에 두면 어떤 문자든 되고, 배열에 두면 접근이 O(1)이고 순서가 공짜지만 빈 칸을 늘 잡는다.
 
-순서: `TrieContractTest.java`를 먼저 따라 친다(계약이 거기 있다) → `MapTrie` 5개 → `ArrayTrie` 3개 → `WordDictionary` 2개 → `TrieProblems` 3개.\
-실행: `cd ~/project/myway/data-structure && ./run.sh 09` — README 기준 **130개 중 128개가 실패**한다(통과하는 2개는 미리 채워둔 null 검사 테스트).
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — Trie (`src/main/java/com/datastructure/trie/Trie.java`)
+### 계약 — Trie (`src/main/java/com/datastructure/trie/Trie.java`)
 
 - `void insert(String word)`
 - `boolean contains(String word)`
@@ -71,11 +102,11 @@
 - `List<String> keysWithPrefix(String prefix)`
 - `int countWithPrefix(String prefix)`
 
-## 구현 — MapTrie (`src/main/java/com/datastructure/trie/MapTrie.java`)
+### 구현 — MapTrie (`src/main/java/com/datastructure/trie/MapTrie.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조
+#### 구조
 
 ```
 MapTrie — 글자 하나가 간선이고, 뿌리에서 여기까지 온 "경로"가 곧 문자열이다
@@ -126,7 +157,7 @@ MapTrie — 글자 하나가 간선이고, 뿌리에서 여기까지 온 "경로
 > **wordsBelow** — 그 노드를 지나는 단어 수(= 이 경로를 접두사로 갖는 단어 수).\
 > 예: cat·car·card가 담겨 있으면 [ca].wordsBelow는 3이다.
 
-### 동작 — 추가
+#### 동작 — 추가
 
 **언제 쓰나** — 단어를 등록할 때(insert).\
 "글자 따라 내려가며 없는 길만 새로 깐다".
@@ -172,7 +203,7 @@ insert(word) : 글자마다 내려가며 없으면 만들고, 지나는 노드�
 **비용** — 단어 길이 L만큼 = O(L).\
 담긴 단어 수 n과 무관하다.
 
-### 동작 — 탐색
+#### 동작 — 탐색
 
 **언제 쓰나** — "이 단어 있어?"(contains), "이걸로 시작하는 단어 있어/몇 개/전부?"(startsWith, countWithPrefix, keysWithPrefix).
 
@@ -220,7 +251,7 @@ findNode(s) : root 에서 글자마다 children 을 따라 내려간다. 중간�
 **비용** — 접두사까지 O(L), 목록 만들기는 O(접두사 길이 + 결과 글자 수).\
 트라이 전체 크기와 무관.
 
-### 동작 — 삭제
+#### 동작 — 삭제
 
 **언제 쓰나** — 단어 하나를 지울 때(remove).\
 남들과 같이 쓰는 길은 남기고, 나 혼자 쓰던 길만 끊는 게 요점이다.
@@ -266,7 +297,7 @@ remove(word) : 지나는 노드마다 wordsBelow 를 내리고, 0 이 되는 첫
 
 **비용** — 단어 길이만큼 한 번 내려가기 = O(L).
 
-### `필드`
+#### `필드`
 
 - `static final class Node` — 역할:
 - `Map<Character, Node> children` (Node, `new TreeMap<>()`) — 역할:
@@ -274,75 +305,75 @@ remove(word) : 지나는 노드마다 wordsBelow 를 내리고, 0 이 되는 첫
 - `int wordsBelow` (Node) — 역할:
 - `Node root` — 역할:
 
-### `void insert(String word)` (TODO)
+#### `void insert(String word)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean remove(String word)` (TODO)
+#### `boolean remove(String word)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `Node findNode(String s)` (TODO)
+#### `Node findNode(String s)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static void collect(Node node, StringBuilder path, List<String> out)` (TODO)
+#### `static void collect(Node node, StringBuilder path, List<String> out)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int countWithPrefix(String prefix)` (TODO)
+#### `int countWithPrefix(String prefix)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> keysWithPrefix(String prefix)`
+#### `List<String> keysWithPrefix(String prefix)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean contains(String word)`
+#### `boolean contains(String word)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean startsWith(String prefix)`
+#### `boolean startsWith(String prefix)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()`
+#### `void clear()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — ArrayTrie (`src/main/java/com/datastructure/trie/ArrayTrie.java`)
+### 구현 — ArrayTrie (`src/main/java/com/datastructure/trie/ArrayTrie.java`)
 
-### 구조 — children 이 맵에서 배열로
+#### 구조 — children 이 맵에서 배열로
 
 ```
 ArrayTrie — Node 의 필드 이름도 규약(end, wordsBelow)도 MapTrie 와 같다.
@@ -386,7 +417,7 @@ ArrayTrie — Node 의 필드 이름도 규약(end, wordsBelow)도 MapTrie 와 �
 > **래딕스 트라이(radix trie)** — 자식이 하나뿐인 길목들을 한 칸으로 합쳐 메모리를 아끼는 트라이(20장).\
 > 예: ArrayTrie에서 "26칸 중 25칸이 null" 인 낭비가 그 출발점이다.
 
-### `필드`
+#### `필드`
 
 - `static final int ALPHABET = 26` — 역할:
 - `static final class Node` — 역할:
@@ -395,82 +426,75 @@ ArrayTrie — Node 의 필드 이름도 규약(end, wordsBelow)도 MapTrie 와 �
 - `int wordsBelow` (Node) — 역할:
 - `Node root` — 역할:
 
-### `static int indexOf(char c)` (TODO)
+#### `static int indexOf(char c)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean remove(String word)` (TODO)
+#### `boolean remove(String word)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `static void collect(Node node, StringBuilder path, List<String> out)` (TODO)
+#### `static void collect(Node node, StringBuilder path, List<String> out)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void insert(String word)`
+#### `void insert(String word)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `List<String> keysWithPrefix(String prefix)`
+#### `List<String> keysWithPrefix(String prefix)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean contains(String word)`
+#### `boolean contains(String word)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean startsWith(String prefix)`
+#### `boolean startsWith(String prefix)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int countWithPrefix(String prefix)`
+#### `int countWithPrefix(String prefix)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()`
+#### `void clear()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+### 구현 — WordDictionary (`src/main/java/com/datastructure/trie/WordDictionary.java`)
 
-| 전략 | 장점 | 단점 | 적합한 경우 |
-|------|------|------|-------------|
-| MapTrie | | | |
-| ArrayTrie | | | |
-
-## 구현 — WordDictionary (`src/main/java/com/datastructure/trie/WordDictionary.java`)
-
-### 동작 — 와일드카드 탐색
+#### 동작 — 와일드카드 탐색
 
 **언제 쓰나** — "ca."처럼 아무 글자나 되는 칸(.)이 섞인 패턴으로 단어를 찾을 때(search).
 
@@ -526,37 +550,78 @@ search(pattern) : '.' 은 아무 글자 하나와 맞는다. 갈림길에서 전
 **비용** — '.'이 없으면 O(L).\
 '.' 하나마다 그 자리의 자식 수만큼 갈래가 곱해진다.
 
-### `필드`
+#### `필드`
 
 - `private final MapTrie trie` — 역할:
 
-### `void addWord(String word)` (TODO)
+#### `void addWord(String word)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean search(String pattern)`
+#### `boolean search(String pattern)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `private static boolean search(MapTrie.Node node, String pattern, int i)` (TODO)
+#### `private static boolean search(MapTrie.Node node, String pattern, int i)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 문제 — TrieProblems (`src/main/java/com/datastructure/trie/TrieProblems.java`)
+## 쓰이는 곳
 
-### 문제 1. 주어진 단어들의 가장 긴 공통 접두사
+- **검색창 자동완성** — 입력한 접두사 아래의 부분 트리를 사전순으로 k개까지만 걷는다. 이 노트의 문제 2가 그 엔진이다.
+- **IP 라우팅 테이블·HTTP 라우터**([20-radix-trie](../20-radix-trie/2-summary.md)) — 목적지 주소의 앞 비트(또는 URL의 앞 경로)를 따라 내려가 **가장 긴 접두사**가 맞는 항목을 고른다. 자식이 하나뿐인 길목을 합친 압축 트라이를 쓴다.
+- **문자열 다중 패턴 매칭**([algorithm/26-aho-corasick](../../algorithm/26-aho-corasick/2-summary.md)) — 패턴들을 트라이에 넣고 실패 링크를 얹어 본문을 한 번만 훑는다. 침입 탐지·금칙어 필터가 이렇게 돈다.
+- **사전·맞춤법 검사기** — 단어 집합을 트라이로 두고 `contains`·접두사 제안을 O(L)에 답한다. 와일드카드 검색(`WordDictionary`)도 같은 자리다.
+- **[algorithm/13-backtracking](../../algorithm/13-backtracking/2-summary.md)의 가지치기** — 격자에서 단어 찾기 같은 문제는 트라이로 "이 접두사로 시작하는 단어가 없다"를 즉시 알아 탐색을 끊는다.
+- **접미사 트리·접미사 배열**([21-suffix-array](../21-suffix-array/2-summary.md)) — 문제 3의 "모든 접미사를 트라이에 넣기"가 n²으로 터지는 자리에서, 같은 질문을 O(n) 메모리(접미사 시작 위치 정수 n개)로 답하는 후속 구조다.
+- **[32-inverted-index](../32-inverted-index/2-summary.md)의 용어 사전** — 검색 엔진이 용어 → 문서 목록을 찾을 때 용어 사전을 트라이 계열로 두어 접두사·와일드카드 질의를 받는다. Lucene은 용어 사전의 색인에 FST(접두사와 접미사를 함께 공유하는 트라이의 압축형)를 쓴다.
+
+## 적용 — 풀어나가는 법
+
+트라이 문제는 "질문이 접두사에 관한 것인가"에서 갈린다 — 아니면 해시맵이 더 싸다.\
+순서: ① 질문이 접두사(시작하는 것 전부·개수·공통 접두사)인지 확인한다 → ② 문자 집합을 정해 맵 자식/배열 자식을 고른다 → ③ 노드에 미리 저장할 것(`end`·`wordsBelow`)을 정한다 → ④ 접두사까지 내려간 뒤 부분 트리를 걷되, 출력 크기 상한(k)이 있으면 중간에 멈춘다.\
+아래 세 문제는 ④에서 갈린다 — 첫 갈림길까지만 걷기, k개에서 멈추기, 접미사를 전부 넣고 노드를 세기.
+
+### 문제 — 이 챕터가 시키는 것
+
+원본 README는 이 박스를 "**05번 해시맵도 06번 BST도 못 하는 질문**을 다루는 박스"라고 소개한다.\
+해시맵은 car와 card를 아예 다른 버킷에 넣어 "car로 시작하는 것 전부"가 불가능하고, BST는 범위로 흉내내지만 비교마다 문자열 전체를 훑는다.\
+키를 통째로 저장하지 않고 **한 글자를 간선 하나로 삼아 경로가 곧 키가 되는** 구조를 직접 만들고, 같은 계약을 맵 자식(`MapTrie`)과 26칸 배열 자식(`ArrayTrie`) 두 가지로 구현해 메모리·순서의 거래를 숫자로 확인하는 것이 과제다.
+
+과제 목록 — `src/main/java/com/datastructure/trie/`의 TODO:
+
+- `MapTrie` — TODO 1(`insert`) · TODO 2(`remove` — 어디까지 끊어도 되는가) · TODO 3(`findNode`) · TODO 4(`collect` — 붙였다 떼기) · TODO 5(`countWithPrefix`)
+- `ArrayTrie` — TODO 1(`indexOf` — 위아래 범위 밖 전부 -1) · TODO 2(`remove`) · TODO 3(`collect` — 자식 도는 방법만 다르다). 나머지는 이미 채워져 있다
+- `WordDictionary` — TODO 1(`addWord`) · TODO 2(`search` — `.` 와일드카드, 되돌아오기)
+- `TrieProblems` — TODO 1: 문제 1(`longestCommonPrefix`) · TODO 2: 문제 2(`autocomplete` — k개 차면 멈추기) · TODO 3: 문제 3(`countDistinctSubstrings`)
+
+순서: `TrieContractTest.java`를 먼저 따라 친다(계약이 거기 있다) → `MapTrie` 5개 → `ArrayTrie` 3개 → `WordDictionary` 2개 → `TrieProblems` 3개.\
+실행: `cd ~/project/myway/data-structure && ./run.sh 09` — README 기준 **130개 중 128개가 실패**한다(통과하는 2개는 미리 채워둔 null 검사 테스트).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
+
+| 전략 | 장점 | 단점 | 적합한 경우 |
+|------|------|------|-------------|
+| MapTrie | | | |
+| ArrayTrie | | | |
+
+### 문제 — TrieProblems (`src/main/java/com/datastructure/trie/TrieProblems.java`)
+
+#### 문제 1. 주어진 단어들의 가장 긴 공통 접두사
 
 > 문제 설명: `words` 가 비었으면 `""`. 공통 접두사가 없으면 `""`.\
 > 흔한 풀이는 첫 단어를 기준으로 나머지와 한 글자씩 비교하는 것이고, 그게 더 짧다.\
@@ -572,7 +637,7 @@ search(pattern) : '.' 은 아무 글자 하나와 맞는다. 갈림길에서 전
 - 논리:
 - 비용(왜):
 
-### 문제 2. 접두사로 시작하는 단어를 사전순 앞에서 k 개
+#### 문제 2. 접두사로 시작하는 단어를 사전순 앞에서 k 개
 
 > 문제 설명: k 개보다 적으면 있는 만큼. k 가 0 이하면 빈 리스트.\
 > 여기 시간 제한이 있다. 접두사에 20만 개가 걸려 있는데 k 가 10 인 질의를 반복한다.\
@@ -593,7 +658,7 @@ search(pattern) : '.' 은 아무 글자 하나와 맞는다. 갈림길에서 전
 - 논리:
 - 비용(왜):
 
-### 문제 3. 문자열 s 의 서로 다른 부분 문자열 개수
+#### 문제 3. 문자열 s 의 서로 다른 부분 문자열 개수
 
 > 문제 설명: 빈 문자열은 세지 않는다.\
 > `"abc"` 면 a, ab, abc, b, bc, c 로 6개. `"aaa"` 면 a, aa, aaa 로 3개. (같은 것은 한 번만)\
@@ -615,15 +680,50 @@ search(pattern) : '.' 은 아무 글자 하나와 맞는다. 갈림길에서 전
 - 논리:
 - 비용(왜):
 
+## 장애 시나리오와 대처
+
+**1. 고유한 긴 키를 넣어 노드가 폭증한다 — OOM**
+
+- 현상: URL·UUID·로그 ID처럼 앞부분이 거의 겹치지 않는 키를 수십만 개 넣자 메모리가 급증한다.
+- 보이는 형태: `OutOfMemoryError`. 힙 덤프에서 `Node` 객체 수가 총 글자 수에 가깝고, `ArrayTrie`면 노드마다 26칸 참조 배열이 붙어 있다(정답 11번의 5만 칸 계산이 그대로 현장에 나타난다).
+- 원인: 트라이는 접두사를 **공유할 때만** 노드를 아낀다. 앞이 다 다른 키는 글자마다 노드 하나를 만들어 문자열을 통째로 저장하는 것보다 훨씬 무겁다.
+- 대처: 자식이 하나뿐인 길목을 한 칸으로 합친 압축 트라이(20-radix-trie)로 바꾼다. 접두사 질의가 필요 없으면 해시맵으로 돌아간다. 문자 집합이 넓으면 배열 자식 대신 맵 자식을 쓴다.
+
+**2. 대소문자·유니코드 정규화 없이 넣어 검색이 조용히 빠진다**
+
+- 현상: 분명히 넣은 단어가 `contains`에서 false이고 자동완성에 안 뜬다.
+- 보이는 형태: 에러 없음. "Apple"과 "apple"이 다른 경로로 들어가 두 번 세어지거나, 한글 자모가 분리된 문자열(NFD)과 합쳐진 문자열(NFC)이 서로를 못 찾는다. `ArrayTrie`는 범위 밖 문자에 `insert`가 예외를 던져 그나마 드러나지만 조회는 false로 조용하다.
+  - *유니코드 정규화(NFC/NFD)*: 같은 글자를 한 코드로 합쳐 쓰거나(NFC) 자모로 풀어 쓰는(NFD) 표현 방식. 겉보기는 같아도 코드가 다르다.
+- 원인: 트라이는 글자 코드 하나가 간선 하나다. 겉보기가 같아도 코드가 다르면 다른 길이다.
+- 대처: 넣기·찾기 양쪽에서 같은 정규화(소문자화·NFC)를 거친 뒤 트라이에 넘긴다. 정규화를 트라이 바깥의 한 함수로 모아 두 경로가 어긋나지 않게 한다.
+
+**3. 아주 긴 키에서 재귀 순회가 스택을 넘긴다**
+
+- 현상: 특정 접두사의 `keysWithPrefix`가 `StackOverflowError`로 죽는다.
+- 보이는 형태: 스택 트레이스에 `collect` 프레임이 수천 번 반복된다. 짧은 키만 있는 테스트에서는 재현되지 않는다.
+- 원인: `collect`는 자식으로 내려갈 때마다 재귀 호출하므로 호출 깊이 = 가장 긴 키의 길이다. 키가 수만 글자(붙여 넣은 본문·긴 경로)면 기본 스택을 넘긴다.
+- 대처: 키 길이에 상한을 두고 넘으면 거부한다. 상한을 둘 수 없으면 명시적 스택으로 반복 순회로 바꾼다(08번 DFS를 반복으로 짠 이유와 같다).
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 트라이는 키를 통째로 저장하지 않고 한 글자를 간선 하나로 삼아 경로가 곧 키가 되게 한다 — 그래서 앞이 같은 키들이 길을 나눠 쓰고 "이 접두사 아래 전부"가 부분 트리 하나로 나온다.
+- 조회 비용은 키 길이 L에만 비례하고 담긴 개수 n과 무관하다 — 해시맵·BST가 못 하는 접두사 질문을 O(L + 출력)에 답하는 것이 존재 이유다.
+- 노드가 있다고 단어인 것은 아니므로 `end` 표시가 필요하고, `wordsBelow`를 미리 저장해 두면 접두사 개수와 삭제 시 끊을 지점을 훑지 않고 안다.
+- 맵 자식은 어떤 문자든 받고 빈 자식 비용이 없으며, 배열 자식은 접근 O(1)에 순서가 공짜지만 빈 칸을 늘 잡는다 — 문자 집합이 선택을 정한다.
+- 접두사를 공유할 때만 노드를 아끼므로 고유한 긴 키에서는 폭증한다 — 압축 트라이·접미사 배열이 존재하는 이유다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [05-hashmap](../05-hashmap/2-summary.md) · [06-binary-search-tree](../06-binary-search-tree/2-summary.md): 각각 접두사 질문에 왜 답하지 못하는지(흩뿌림 vs 문자열 전체 비교)를 여기와 대조한다.
+- 후속 — [20-radix-trie](../20-radix-trie/2-summary.md): 자식이 하나뿐인 길목을 합쳐 노드 폭증을 잡는 압축 트라이.
+- 후속 — [21-suffix-array](../21-suffix-array/2-summary.md): 문제 3의 n(n+1)/2 한계를 넘는 구조.
+- 후속 — [10-lru-cache](../10-lru-cache/2-summary.md): 전부 기억하는 대신 일부러 잊어 메모리를 한정하는 쪽.
+- 기법 — [algorithm/26-aho-corasick](../../algorithm/26-aho-corasick/2-summary.md) · [algorithm/13-backtracking](../../algorithm/13-backtracking/2-summary.md).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `12-trie` (선행 `09-binary-search-tree`).
+- 교재 — Sedgewick 『Algorithms』 4판 5.2 Tries.
+- myway 원본 — `/home/jun/project/myway/data-structure/09-trie/` (README.md · impl/MapTrie.java · impl/ArrayTrie.java · impl/WordDictionary.java · impl/TrieProblems.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -632,7 +732,7 @@ search(pattern) : '.' 은 아무 글자 하나와 맞는다. 갈림길에서 전
 - 테스트: `/home/jun/project/myway/data-structure/09-trie/src/test/java/com/datastructure/trie/`
 - 참고 구현: `/home/jun/project/myway/data-structure/09-trie/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 - **트라이(trie)**: 글자 하나가 갈림길 하나인 나무. 뿌리에서 어떤 노드까지의 경로가 곧 문자열이다. 이름은 re**trie**val(검색)에서 왔다.
 - **접두사(prefix)**: 단어의 앞부분. "ca"는 "cat", "car", "card"의 접두사다.

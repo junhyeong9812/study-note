@@ -4,8 +4,31 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 확장(Claude 작성) — 한눈에 절·동작 그림·용어 풀이 추가.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+작업 큐·타이머·최단 경로 탐색은 "지금 가장 급한 것 **하나**"만 계속 꺼내면 된다.\
+그런데 이것을 정렬로 풀면, 새 항목이 올 때마다 줄 전체를 다시 세워야 한다.
+
+```text
+정렬된 줄에 7을 끼우기                       힙에 7을 넣기
++---+---+---+---+---+                          [1]
+| 1 | 3 | 5 | 9 |   |  <- 7 자리 찾고 9를 민다   /   \
++---+---+---+---+---+     n개면 O(n)         [3]   [5]      7은 빈 끝자리에 넣고
+                                            /                부모(3)와만 비교 -> O(log n)
+                                          [9]  [7]<-
+```
+
+힙은 "부모가 자식보다 앞선다"는 약속 **하나만** 지킨다. 형제끼리 순서는 정하지 않는다.\
+그래서 1등은 항상 꼭대기에 있고(O(1)), 넣기·빼기는 트리 높이만큼만 일한다(O(log n)).\
+쉬운 예: 응급실 — 대기자 전원을 급한 순서로 세우지 않아도 "다음 환자"는 바로 정해진다.\
+똑같은 구조다: Java `PriorityQueue`에 `add`·`poll`만 반복하면 항상 최우선 원소가 나온다.\
+실무 예: 이벤트 스케줄러 — 타이머 수만 개 중 "가장 먼저 울릴 것"만 꺼내면 되고, 전부 정렬할 이유가 없다.
+
+  - *우선순위 큐(priority queue)*: 들어온 순서가 아니라 우선순위 순서로 나가는 줄. 힙이 그 대표 구현이다.
+
+### 한눈에 — 쉽게 말하면
 
 **비유: 응급실 대기실.** 먼저 온 순서가 아니라 **가장 급한 환자부터** 진료한다.\
 대기자 전체를 급한 순서로 줄 세울 필요는 없다 — "지금 제일 급한 사람이 누구인가"만 항상 알면 된다.
@@ -41,31 +64,38 @@
        [ 7 ] [ 5 ]         규칙: 부모 <= 자식 (이것뿐)
 ```
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-원본 README는 이 박스를 "**덜 지키니까 더 싼** 거래를 다루는 박스"라고 소개한다.\
-06번 BST는 전부 정렬 상태를 유지해 순서에 관한 무엇이든 물을 수 있었지만, 실무의 작업 큐·다익스트라·이벤트 스케줄러는 "지금 가장 급한 것 하나"만 알면 된다.\
-그래서 부모가 자식보다 앞선다는 **부분 순서**만 지키는 구조를 직접 만들고, 정렬 삽입 방식(`SortedListHeap`)과 배열 트리 방식(`BinaryHeap`)의 비용 차이를 계수기(`moves`)로 숫자로 확인하는 것이 과제다.\
-README는 순서를 못박는다 — `SortedListHeap` → `BinaryHeap` → `MinHeap`/`MaxHeap`, 1번을 건너뛰지 말 것.
+### 전체 흐름
 
-과제 목록 — `src/main/java/com/datastructure/heap/`의 TODO 01~12:
+```text
+[1] 약속을 줄인다                         [2] 완전 이진 트리 -> 배열 하나
+    BST: 왼쪽 < 나 < 오른쪽 (전체 정렬)         idx  0   1   2   3   4   5   6
+    힙 : 부모 <= 자식      (부분 순서)          +---+---+---+---+---+---+---+
+    형제 사이는 약속 없음                        | 1 | 3 | 2 | 7 | 5 | 9 | 4 |
+    -> 1등 = elements[0], peek O(1)             +---+---+---+---+---+---+---+
+              |                                 parent(i) = (i-1)/2
+              v                                 left(i)   = 2i+1, right(i) = 2i+2
+[3] insert = 끝에 넣고 siftUp               [4] poll = 꼭대기 빼고, 마지막 원소로 구멍 메운 뒤 siftDown
+    [1]                [1]                      [1] 나감        [4]                [2]
+   /   \              /   \                    /   \    ->     /   \      ->      /   \
+  [3]  [2]   ->     [3]  [0]<- 부모보다        [3]  [2]        [3]  [2]          [3]  [4]
+  /  \  /           /  \  /     앞서면 교환      / \  /          / \              / \
+[7][5][0]<-새 원소 [7][5][2]                 [7][5][4]      [7][5]            [7][5]
+    부모와만 비교 -> 높이 h = log n 번          더 앞선 자식과 교환 -> log n 번
+              |
+              v
+[5] 대가: 임의 키 찾기 O(n), 정렬 순회 O(n log n) — "1등 하나"만 필요한 곳에서만 이긴다
+```
 
-- `SortedListHeap` — TODO 01(정렬을 유지하며 끼워 넣기 + `moves` 세기) · TODO 02(`peek`) · TODO 03(`poll` — 시프트가 필요한가)
-- `BinaryHeap` — TODO 04(`siftUp`) · TODO 05(`siftDown` — 어느 자식과 바꾸는가) · TODO 06(`insert`) · TODO 07(`peek`) · TODO 08(`poll` — 구멍을 무엇으로 메우는가)
-- `MinHeap` / `MaxHeap` — TODO 없음(비교자만 끼우면 `BinaryHeap`이 그대로 동작한다)
-- `HeapProblems.heapSort` — TODO 09: 문제 1(전부 넣었다 하나씩 꺼내기)
-- `KthLargest.add` — TODO 10: 문제 2(k 번째로 큰 값 — 최소 힙을 쓴다)
-- `MedianFinder` — TODO 11(`add` — 두 힙의 균형·순서) · TODO 12(`median` — 정수 나눗셈 함정)
+- [1] BST가 지키던 전체 정렬을 포기하고 "부모가 자식보다 앞선다"만 남긴다. 약속이 적으니 지키는 비용도 적다.
+- [2] 빈틈없이 채운 트리(완전 이진 트리)는 위치가 산수로 나오므로 참조 없이 배열 한 장에 담긴다.\
+  02번 연결 리스트의 `next` 참조를 인덱스 계산이 대신한다.
+- [3] 새 원소는 배열 끝(트리의 다음 빈 자리)에 넣어 모양을 지키고, 부모와 비교해 위로 떠올려(siftUp) 성질을 되찾는다.
+- [4] 꼭대기를 빼면 마지막 원소로 구멍을 메워야 모양이 안 깨진다. 그다음 **더 앞선 자식**과 바꿔 가며 가라앉힌다(siftDown).
+- [5] 힙은 "지금 1등"만 안다. 임의의 키를 찾거나 정렬해서 순회하려면 다른 구조(06 BST)가 맞다.
 
-실행: `cd ~/project/myway/data-structure && ./run.sh 07` — README 기준 **48개 중 47개가 실패**한다(통과하는 1개는 미리 채워둔 인덱스 계산 테스트).
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
-<!-- 이 자료구조가 동작하는 원리를 자기 말로 -->
-
-## 계약 — Heap (`src/main/java/com/datastructure/heap/Heap.java`)
+### 계약 — Heap (`src/main/java/com/datastructure/heap/Heap.java`)
 
 - `void insert(E element)`
 - `E peek()`
@@ -74,11 +104,11 @@ README는 순서를 못박는다 — `SortedListHeap` → `BinaryHeap` → `MinH
 - `boolean isEmpty()`
 - `void clear()`
 
-## 구현 — BinaryHeap (`src/main/java/com/datastructure/heap/BinaryHeap.java`)
+### 구현 — BinaryHeap (`src/main/java/com/datastructure/heap/BinaryHeap.java`)
 
 <!-- 메서드마다 내 언어로. 복잡도는 "왜 그런지"까지. -->
 
-### 구조 — 트리를 배열에 담는 법
+#### 구조 — 트리를 배열에 담는 법
 
 ```
 BinaryHeap — 트리처럼 생각하고 배열에 담는다. 참조(포인터)가 하나도 없다
@@ -137,7 +167,7 @@ BinaryHeap — 트리처럼 생각하고 배열에 담는다. 참조(포인터)�
 > **참조/포인터(reference/pointer)** — 다른 객체가 어디 있는지 가리키는 값.\
 > 예: BST는 자식이 어디 있는지 참조로 들고 있어야 하지만, 힙은 `2i+1` 산수로 알아내므로 참조가 하나도 없다.
 
-### 동작 — 삽입 (siftUp)
+#### 동작 — 삽입 (siftUp)
 
 **언제 쓰나** — 새 원소를 넣을 때(insert).\
 "끝에 놓고 → 제자리까지 떠올린다" 두 단계다.
@@ -197,7 +227,7 @@ insert(0) : 배열 맨 끝 = 트리의 "다음 자리"에 놓고, 부모와 비�
 > **상환 O(1)(amortized)** — 가끔 비싼 일(2배 복사)이 있어도 여러 번에 나눠 평균 내면 한 번당 거의 공짜라는 뜻.\
 > 예: 배열이 꽉 차는 순간에만 8칸을 16칸으로 복사하고, 나머지 삽입은 칸에 한 번 쓰기로 끝난다.
 
-### 동작 — 꺼내기 (siftDown)
+#### 동작 — 꺼내기 (siftDown)
 
 **언제 쓰나** — 1등을 꺼내 갈 때(poll).\
 "루트를 빼고 → 마지막 원소를 루트에 올리고 → 제자리까지 가라앉힌다" 세 단계다.
@@ -264,82 +294,82 @@ peek() = elements[0], O(1). "루트가 언제나 답"이라는 것이 힙의 전
 **비용** — 내려간 길은 아래로 한 줄 = O(log n).\
 peek은 0번 칸 읽기 = O(1).
 
-### `필드`
+#### `필드`
 
 - `private static final int DEFAULT_CAPACITY = 8` — 역할:
 - `private final Comparator<? super E> comparator` — 역할:
 - `Object[] elements` — 역할:
 - `int size` — 역할:
 
-### `BinaryHeap(Comparator<? super E> comparator)`
+#### `BinaryHeap(Comparator<? super E> comparator)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int capacity()`
+#### `int capacity()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()`
+#### `void clear()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `String toString()`
+#### `String toString()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void siftUp(int index)` (TODO)
+#### `void siftUp(int index)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void siftDown(int index)` (TODO)
+#### `void siftDown(int index)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void insert(E element)` (TODO)
+#### `void insert(E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E peek()` (TODO)
+#### `E peek()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E poll()` (TODO)
+#### `E poll()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — MinHeap (`src/main/java/com/datastructure/heap/MinHeap.java`)
+### 구현 — MinHeap (`src/main/java/com/datastructure/heap/MinHeap.java`)
 
-### 구조 — 차이는 comparator 하나
+#### 구조 — 차이는 comparator 하나
 
 ```
 MinHeap / MaxHeap 은 BinaryHeap 을 그대로 상속하고 생성자 한 줄만 다르다
@@ -369,31 +399,31 @@ siftUp / siftDown 코드는 한 줄도 다르지 않다. 바뀌는 것은 "앞�
 > **상속(inheritance)** — 기존 클래스의 코드를 그대로 물려받아 일부만 바꾸는 것.\
 > 예: MinHeap과 MaxHeap은 BinaryHeap을 물려받고 생성자 한 줄(comparator)만 다르다.
 
-### `필드`
+#### `필드`
 
 - (없음 — `BinaryHeap<E>` 를 상속만 한다) — 역할:
 
-### `MinHeap()`
+#### `MinHeap()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — MaxHeap (`src/main/java/com/datastructure/heap/MaxHeap.java`)
+### 구현 — MaxHeap (`src/main/java/com/datastructure/heap/MaxHeap.java`)
 
-### `필드`
+#### `필드`
 
 - (없음 — `BinaryHeap<E>` 를 상속만 한다) — 역할:
 
-### `MaxHeap()`
+#### `MaxHeap()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 — SortedListHeap (`src/main/java/com/datastructure/heap/SortedListHeap.java`)
+### 구현 — SortedListHeap (`src/main/java/com/datastructure/heap/SortedListHeap.java`)
 
-### 구조
+#### 구조
 
 ```
 SortedListHeap — 트리가 아니라 "정렬을 유지하는 배열". 같은 계약, 다른 대가
@@ -415,7 +445,7 @@ SortedListHeap — 트리가 아니라 "정렬을 유지하는 배열". 같은 �
     BinaryHeap 과 달리 여기서는 전체가 완전히 정렬되어 있다 — 그게 곧 비용이다
 ```
 
-### 동작 — 삽입과 꺼내기
+#### 동작 — 삽입과 꺼내기
 
 **언제 쓰나** — 힙과 같은 계약을 "항상 완전 정렬된 배열"로 지키면 비용이 어디로 옮겨 가는지 보는 비교용 구현.
 
@@ -466,7 +496,7 @@ peek() = elements[size-1], O(1)
 > **O(n)** — 원소 수에 그대로 비례하는 비용. 전부 한 번씩 본다는 뜻.\
 > 예: SortedListHeap에 1,000개가 들어 있으면 하나 끼워 넣을 때 최악에 1,000칸을 밀어야 한다.
 
-### `필드`
+#### `필드`
 
 - `private static final int DEFAULT_CAPACITY = 8` — 역할:
 - `private final Comparator<? super E> comparator` — 역할:
@@ -474,118 +504,154 @@ peek() = elements[size-1], O(1)
 - `int size` — 역할:
 - `long moves` — 역할:
 
-### `SortedListHeap(Comparator<? super E> comparator)`
+#### `SortedListHeap(Comparator<? super E> comparator)`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `int size()`
+#### `int size()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `boolean isEmpty()`
+#### `boolean isEmpty()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void clear()`
+#### `void clear()`
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `void insert(E element)` (TODO)
+#### `void insert(E element)` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E peek()` (TODO)
+#### `E peek()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-### `E poll()` (TODO)
+#### `E poll()` (TODO)
 
 - 하는 일:
 - 논리:
 - 비용(왜):
 
-## 구현 전략 비교
+### 구현 — KthLargest (`src/main/java/com/datastructure/heap/KthLargest.java`)
+
+#### `필드`
+
+- `private final int k` — 역할:
+- `private final Heap<Integer> heap` — 역할:
+
+#### `KthLargest(int k, Heap<Integer> heap)`
+
+- 하는 일:
+- 논리:
+- 비용(왜):
+
+#### `int add(int value)` (TODO)
+
+- 하는 일:
+- 논리:
+- 비용(왜):
+
+#### `int size()`
+
+- 하는 일:
+- 논리:
+- 비용(왜):
+
+### 구현 — MedianFinder (`src/main/java/com/datastructure/heap/MedianFinder.java`)
+
+> **중앙값(median)** — 크기 순으로 줄 세웠을 때 한가운데 값.\
+> 예: 1, 3, 7 의 중앙값은 3이고, 짝수 개인 1, 3, 7, 9 면 가운데 두 개(3, 7)의 평균인 5다.
+
+#### `필드`
+
+- `private final Heap<Integer> lower` — 역할:
+- `private final Heap<Integer> upper` — 역할:
+- `private int count` — 역할:
+
+#### `MedianFinder(Heap<Integer> lower, Heap<Integer> upper)`
+
+- 하는 일:
+- 논리:
+- 비용(왜):
+
+#### `void add(int value)` (TODO)
+
+- 하는 일:
+- 논리:
+- 비용(왜):
+
+#### `double median()` (TODO)
+
+- 하는 일:
+- 논리:
+- 비용(왜):
+
+#### `int count()`
+
+- 하는 일:
+- 논리:
+- 비용(왜):
+
+## 쓰이는 곳
+
+- **Java `PriorityQueue`** — 배열 기반 이진 힙. `offer`·`poll`이 이 노트의 `insert`·`poll`이고, 생성자에 `Comparator`를 끼우는 방식도 같다.
+- **[algorithm/14-dijkstra](../../algorithm/14-dijkstra/2-summary.md)** — "아직 확정 안 된 정점 중 거리가 가장 짧은 것"을 매번 꺼낸다. 최소 힙이 그 부품이다.
+- **[algorithm/04-heap-sort](../../algorithm/04-heap-sort/2-summary.md)** — 배열 자체를 힙으로 만들어 제자리에서 정렬한다. 이 노트의 문제 1은 그 축소판이다.
+- **타이머·스케줄러**([ops-patterns/10-scheduler](../../ops-patterns/10-scheduler/2-summary.md)) — "가장 먼저 울릴 타이머"만 꺼내면 되므로 만료 시각을 키로 한 최소 힙을 쓴다. Java `ScheduledThreadPoolExecutor`의 지연 큐(`DelayedWorkQueue`)는 이진 힙이고, Go 런타임의 타이머는 4진 힙(자식 4개)이다. 반면 Linux 커널 타이머는 힙이 아니라 타이머 휠(timer wheel)을 쓴다.
+- **운영체제 스케줄러** — 우선순위가 가장 높은(또는 가장 덜 실행된) 태스크를 꺼내는 자리. Linux CFS(6.6 이전)는 힙 대신 레드블랙 트리([16-red-black-tree](../16-red-black-tree/2-summary.md))를 썼고, 6.6부터의 EEVDF도 레드블랙 트리를 쓴다.
+- **Top-k·스트림 통계** — `KthLargest`(k개짜리 최소 힙)와 `MedianFinder`(최대 힙 + 최소 힙)처럼, 전체를 정렬하지 않고 경계값만 유지한다.
+- **k-way 병합**([algorithm/02-merge-sort](../../algorithm/02-merge-sort/2-summary.md)) — 정렬된 스트림 k개를 합칠 때 각 스트림의 머리만 힙에 넣는 k-way 병합. LSM 트리의 compaction([24-lsm-tree](../24-lsm-tree/2-summary.md))이 이렇게 SSTable을 합친다.
+
+## 적용 — 풀어나가는 법
+
+힙 문제는 "전체 순서가 정말 필요한가"를 먼저 묻는 데서 갈린다.\
+순서: ① 원하는 답이 "1등 하나"(또는 경계값 하나)인지 확인한다 → ② 그렇다면 무엇이 "앞선다"인지 비교자로 정한다(최소/최대) → ③ 힙에 몇 개를 들고 있어야 하는지 정한다(전부 vs k개 vs 두 절반) → ④ `peek`/`poll`이 호출되는 횟수 × O(log n)으로 비용을 센다.\
+아래 세 문제(힙 정렬·k번째 큰 값·중앙값)는 ③에서 갈린다 — 전부, k개, 절반씩.
+
+### 문제 — 이 챕터가 시키는 것
+
+원본 README는 이 박스를 "**덜 지키니까 더 싼** 거래를 다루는 박스"라고 소개한다.\
+06번 BST는 전부 정렬 상태를 유지해 순서에 관한 무엇이든 물을 수 있었지만, 실무의 작업 큐·다익스트라·이벤트 스케줄러는 "지금 가장 급한 것 하나"만 알면 된다.\
+그래서 부모가 자식보다 앞선다는 **부분 순서**만 지키는 구조를 직접 만들고, 정렬 삽입 방식(`SortedListHeap`)과 배열 트리 방식(`BinaryHeap`)의 비용 차이를 계수기(`moves`)로 숫자로 확인하는 것이 과제다.\
+README는 순서를 못박는다 — `SortedListHeap` → `BinaryHeap` → `MinHeap`/`MaxHeap`, 1번을 건너뛰지 말 것.
+
+과제 목록 — `src/main/java/com/datastructure/heap/`의 TODO 01~12:
+
+- `SortedListHeap` — TODO 01(정렬을 유지하며 끼워 넣기 + `moves` 세기) · TODO 02(`peek`) · TODO 03(`poll` — 시프트가 필요한가)
+- `BinaryHeap` — TODO 04(`siftUp`) · TODO 05(`siftDown` — 어느 자식과 바꾸는가) · TODO 06(`insert`) · TODO 07(`peek`) · TODO 08(`poll` — 구멍을 무엇으로 메우는가)
+- `MinHeap` / `MaxHeap` — TODO 없음(비교자만 끼우면 `BinaryHeap`이 그대로 동작한다)
+- `HeapProblems.heapSort` — TODO 09: 문제 1(전부 넣었다 하나씩 꺼내기)
+- `KthLargest.add` — TODO 10: 문제 2(k 번째로 큰 값 — 최소 힙을 쓴다)
+- `MedianFinder` — TODO 11(`add` — 두 힙의 균형·순서) · TODO 12(`median` — 정수 나눗셈 함정)
+
+실행: `cd ~/project/myway/data-structure && ./run.sh 07` — README 기준 **48개 중 47개가 실패**한다(통과하는 1개는 미리 채워둔 인덱스 계산 테스트).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 구현 전략 비교
 
 | 전략 | 장점 | 단점 | 적합한 경우 |
 |------|------|------|-------------|
 | SortedListHeap | | | |
 | BinaryHeap | | | |
 
-## 구현 — KthLargest (`src/main/java/com/datastructure/heap/KthLargest.java`)
+### 문제 — HeapProblems (`src/main/java/com/datastructure/heap/HeapProblems.java`)
 
-### `필드`
-
-- `private final int k` — 역할:
-- `private final Heap<Integer> heap` — 역할:
-
-### `KthLargest(int k, Heap<Integer> heap)`
-
-- 하는 일:
-- 논리:
-- 비용(왜):
-
-### `int add(int value)` (TODO)
-
-- 하는 일:
-- 논리:
-- 비용(왜):
-
-### `int size()`
-
-- 하는 일:
-- 논리:
-- 비용(왜):
-
-## 구현 — MedianFinder (`src/main/java/com/datastructure/heap/MedianFinder.java`)
-
-> **중앙값(median)** — 크기 순으로 줄 세웠을 때 한가운데 값.\
-> 예: 1, 3, 7 의 중앙값은 3이고, 짝수 개인 1, 3, 7, 9 면 가운데 두 개(3, 7)의 평균인 5다.
-
-### `필드`
-
-- `private final Heap<Integer> lower` — 역할:
-- `private final Heap<Integer> upper` — 역할:
-- `private int count` — 역할:
-
-### `MedianFinder(Heap<Integer> lower, Heap<Integer> upper)`
-
-- 하는 일:
-- 논리:
-- 비용(왜):
-
-### `void add(int value)` (TODO)
-
-- 하는 일:
-- 논리:
-- 비용(왜):
-
-### `double median()` (TODO)
-
-- 하는 일:
-- 논리:
-- 비용(왜):
-
-### `int count()`
-
-- 하는 일:
-- 논리:
-- 비용(왜):
-
-## 문제 — HeapProblems (`src/main/java/com/datastructure/heap/HeapProblems.java`)
-
-### 문제 1. 힙 정렬
+#### 문제 1. 힙 정렬
 
 > 문제 설명: 배열을 오름차순으로 정렬한다.\
 > 원본 배열을 직접 고친다.\
@@ -602,15 +668,50 @@ peek() = elements[size-1], O(1)
 - 논리:
 - 비용(왜):
 
+## 장애 시나리오와 대처
+
+**1. 같은 우선순위끼리 순서가 뒤바뀐다 — FIFO 기대 붕괴**
+
+- 현상: 우선순위가 같은 작업들이 넣은 순서와 다르게 나온다.
+- 보이는 형태: 같은 우선순위로 A·B·C를 넣었는데 `poll`이 A·C·B로 준다. 테스트는 통과하는데(힙 성질은 만족) 사용자가 "먼저 요청한 게 늦게 처리된다"고 신고한다.
+- 원인: 힙은 부모·자식 사이만 약속하고 형제 사이는 약속하지 않는다. 같은 키끼리 순서는 sift 교환 과정에 따라 아무렇게나 된다 — 정렬 알고리즘으로 치면 **불안정(unstable)**이다.
+  - *안정 정렬(stable)*: 같은 키의 원래 순서가 보존되는 정렬. 힙 정렬은 안정하지 않다.
+- 대처: 키를 `(우선순위, 들어온 순번)` 쌍으로 만들어 비교자가 순번까지 본다. 순번은 단조 증가 카운터로 붙인다.
+
+**2. 취소된 항목이 쌓여 힙이 무한히 자란다**
+
+- 현상: 오래 돌수록 메모리가 늘고 `poll`이 점점 느려진다.
+- 보이는 형태: 타이머·이벤트 큐의 `size()`가 실제 살아 있는 작업 수보다 훨씬 크다. 힙 덤프에 이미 취소된 작업 객체가 `elements`에 남아 있다. 결국 `OutOfMemoryError`.
+- 원인: 힙은 임의의 원소를 찾아 지우는 데 O(n)이라(정답 3번 참고) 취소를 "표시만" 하고 힙에서 안 뺀다. 표시된 항목을 아무도 걷어내지 않으면 쌓인다.
+- 대처: `poll`할 때 취소 표시된 항목은 버리고 다음을 꺼낸다(lazy deletion). 취소 비율이 높으면 주기적으로 살아 있는 것만 모아 힙을 다시 짓는다(`buildHeap` O(n)). 크기 상한을 두고 넘으면 에러로 드러낸다.
+
+**3. 힙 안에 든 원소의 키를 밖에서 바꿨다 — 조용히 틀린 `peek`**
+
+- 현상: 분명히 더 급한 작업이 있는데 `peek`이 다른 것을 돌려준다.
+- 보이는 형태: 에러 없음. 다익스트라에서 거리 갱신 후 잘못된 정점이 먼저 나오거나, 우선순위를 올린 작업이 계속 뒤로 밀린다.
+- 원인: 힙은 `insert`·`poll` 순간에만 성질을 복구한다. 힙 안 객체의 우선순위 필드를 직접 고치면 부모·자식 관계가 깨진 채로 남는다.
+- 대처: 키를 바꾸지 말고 **새 항목을 다시 넣는다**(옛 항목은 시나리오 2처럼 꺼낼 때 버린다). 또는 인덱스를 추적하는 힙에서 `decreaseKey`로 그 자리에서 siftUp한다. 키 필드는 불변으로 만든다.
+
 ## 핵심 문장
 
-<!-- 지도 수준의 문장들 — 세부가 아니라 "왜 이 구조인가"를 담은 문장 -->
+- 힙은 "부모가 자식보다 앞선다"는 약속 하나만 지키는 트리다 — 덜 지키니까 넣기·빼기가 O(log n)이고, 그 대가로 임의 키 찾기와 정렬 순회는 포기한다.
+- 빈틈없이 채운 완전 이진 트리는 위치가 산수(`(i-1)/2`, `2i+1`, `2i+2`)로 나오므로 참조 없이 배열 하나에 담긴다 — 구조가 규칙적이면 규칙이 포인터를 대신한다.
+- `insert`는 끝에 넣고 떠올리고, `poll`은 꼭대기를 빼고 마지막 원소로 구멍을 메운 뒤 더 앞선 자식 쪽으로 가라앉힌다 — 모양을 먼저 지키고 성질을 되찾는 순서다.
+- 최소 힙과 최대 힙의 차이는 비교자 하나이므로 힙 로직은 한 줄도 다시 쓰지 않는다.
+- 전체 순서 없이 경계값만 유지하는 것이 힙의 진가다 — k개짜리 최소 힙이 "k번째로 큰 값"을, 최대 힙+최소 힙이 중앙값을 O(log n)에 준다.
 
--
--
--
+## 관련 주제·근거
 
-## 관련 자료
+- 선행 — [06-binary-search-tree](../06-binary-search-tree/2-summary.md): 전체 정렬을 지키는 구조. 무엇을 포기해서 힙이 싸지는지 여기와 대조한다.
+- 선행 — [01-dynamic-array](../01-dynamic-array/2-summary.md): `elements` 배열의 확장이 그대로 쓰인다.
+- 후속 — [08-graph](../08-graph/2-summary.md) · [algorithm/14-dijkstra](../../algorithm/14-dijkstra/2-summary.md): 힙이 알고리즘의 부품이 되는 자리.
+- 기법 — [algorithm/04-heap-sort](../../algorithm/04-heap-sort/2-summary.md): 문제 1을 제자리 정렬로 확장한 것.
+- 대안 — [16-red-black-tree](../16-red-black-tree/2-summary.md): 1등뿐 아니라 임의 키 삭제·순회까지 필요할 때.
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `10-heap` (선행 `03-dynamic-array`).
+- 교재 — CLRS 3판 6장 힙 정렬(6.1 힙, 6.5 우선순위 큐).
+- myway 원본 — `/home/jun/project/myway/data-structure/07-heap/` (README.md · impl/BinaryHeap.java · impl/SortedListHeap.java · impl/KthLargest.java · impl/MedianFinder.java).
+
+### 관련 자료
 
 <!-- 원본 문서·코드 경로. 기준 소스는 문서가 아니라 코드/원전이다. -->
 
@@ -619,7 +720,7 @@ peek() = elements[size-1], O(1)
 - 테스트: `/home/jun/project/myway/data-structure/07-heap/src/test/java/com/datastructure/heap/`
 - 참고 구현: `/home/jun/project/myway/data-structure/07-heap/impl/`
 
-## 용어 풀이
+### 용어 풀이
 
 - **힙(heap)**: "부모가 자식보다 앞선다"는 규칙 하나만 지키는 트리. 1등(최우선 원소)을 즉시 꺼낼 수 있다.
 - **우선순위 큐(priority queue)**: 들어온 순서가 아니라 우선순위 순서로 나가는 줄. 힙이 그 대표 구현이다.
