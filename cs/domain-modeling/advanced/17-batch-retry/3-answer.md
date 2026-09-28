@@ -489,6 +489,35 @@ if (retryScope == RetryScope.WHOLE_BATCH || attempt.rolledBack()) {
 > **회차(attempt)** — 배치 목록을 한 바퀴 도는 것. 상한(`maxAttempts`, 기본 3)까지 반복한다.\
 > 예: 상한이 3인데 3번 작업이 세 번 다 실패하면 `attempts = 3` 에 `unresolved = [3]` 으로 끝난다.
 
+### C. 통일 골격 (Claude 초안 2026-09-28)
+
+- C1. "실패하면 재시도한다"는 한 줄이 정하지 않은 물음 셋은 무엇이고, 그 답이 틀렸을 때 드러나는 조건은 무엇인가?\
+  A: ①실패를 만나면 멈추나·건너뛰나·되돌리나(`FailureRule`) ②다음 회차에 무엇을 다시 도나(`RetryScope`) ③결과를 모르면 성공으로 보나 실패로 보나(`UnknownRule`).\
+  틀린 조합의 구멍은 **실패가 나야 열린다** — 문제 0%에서는 18조합 1,800번이 통째로 같아서 개발 환경 테스트로는 안 보인다.
+
+- C2. `retryJobs`가 재시도 목록을 정렬하지 않아도 원래 순서가 지켜지는 이유는 어떤 불변식 때문이고, 그것을 담는 자료구조는 무엇인가?\
+  A: 불변식은 "안 돌린 것은 실패한 것이 있을 때만, 실패한 것 **뒤에서만** 생긴다"다.\
+  `runOnce`가 원래 순서로 훑으며 `failed`·`untouched`(둘 다 `ArrayList`)에 담으므로, `failed` 뒤에 `untouched`를 이어 붙이면 그것이 원래 순서다.\
+  이 불변식 덕분에 "다시 정렬하는" 방어선이 죽은 코드가 되어 변종 검증에서 지워졌다.
+
+- C3. `Ledger.schedule`이 큐(`ArrayDeque`)를 쓰는 이유는 무엇이며, 이것이 테스트 전략에서 어떤 역할을 하는가?\
+  A: 작업마다 "1회차엔 FAILED, 2회차엔 UNKNOWN_APPLIED, 그 뒤엔 DONE"처럼 **시도 순서대로** 결과를 정해 두려면 FIFO가 필요하다. `apply`가 `poll()`로 앞에서 하나씩 꺼내고, 큐가 비면 DONE으로 본다.\
+  역할은 **실패·UNKNOWN 주입**이다 — 구멍은 실패가 나야 열리므로, 이 대본 없이는 조합마다 갈리는 계약(장부 금액·이중·미해결)을 검증할 수 없다.
+
+- C4. 회차를 거듭할수록 `unknownSeen`이 커지고 상대 시스템에 429가 늘어난다면 원인은 무엇이고 대처 둘은 무엇인가?\
+  A: 원인은 재시도 자체가 상대의 실패를 늘리는 되먹임이다 — 회차 사이에 간격이 없고, `WHOLE_BATCH`·`TREAT_AS_FAILED`가 이미 된 건까지 다시 보낸다.\
+  대처: ①회차 사이에 백오프를 둔다 ②요청에 멱등 키(`orderId`)를 붙여 상대가 두 번째부터는 아무 일도 안 하게 한다.\
+  멱등 키는 초과(이중 반영)를 없애지만 `STOP + FAILED_ONLY`의 누락(안 돌린 건)은 못 없앤다.
+
+- C5. 어제 배치의 미처리 건이 오늘 배치에서 두 번 반영되는 것을 `UnknownRule`이 막지 못하는 이유와, 막는 방법은 무엇인가?\
+  A: `UnknownRule`은 **한 번의 `run` 안에서** UNKNOWN을 어느 쪽으로 볼지만 정한다. 오늘 배치는 어제 장부를 모르므로 어제의 `UNKNOWN_APPLIED`를 처음 보는 작업으로 돌린다.\
+  막으려면 미처리 건을 다음 배치에 넣기 전에 `orderId`로 상대에게 조회해 반영 여부를 확인하거나, 작업 번호를 멱등 키로 넘겨 상대가 두 번째 반영을 거르게 한다.\
+  그리고 `unresolved`에 "누가 언제까지 본다"는 운영 약속을 붙인다 — 목록만 있고 약속이 없으면 그 건은 다음 날 아무도 안 본다.
+
+- C6. 이 챕터의 `ROLLBACK`·회차 상한·이중 반영은 ops-patterns의 어느 노트들로 이어지는가?\
+  A: `ROLLBACK`(반영한 것을 `undo`로 되감기) → `ops-patterns/08-saga`의 보상 트랜잭션, 회차 상한(`maxAttempts`)과 회차 간 간격 → `ops-patterns/01-retry-backoff`, 이중 반영을 막는 멱등 키 → `ops-patterns/06-idempotency-store`.\
+  이 챕터는 그 셋이 없을 때 어느 조합이 어느 방향으로 틀리는지를 건별 반영 횟수로 잰 것이다.
+
 ## 근거
 
 - 기준 소스(정답 구현): `/home/jun/project/myway/domain-modeling-advanced/17-batch-retry/impl/com/domain/batch/BatchRunner.java`
