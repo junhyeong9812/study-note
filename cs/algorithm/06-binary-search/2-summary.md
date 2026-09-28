@@ -4,8 +4,27 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 서머리(Claude 작성) — 원본 myway/algorithm 코드 기준.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+정렬돼 있는데도 앞에서부터 하나씩 보면 100만 개에 평균 50만 번이다.\
+"가운데를 보고 절반을 버리기"를 반복하면 20번이면 끝난다 — 정렬이 만들어 준 전제를 쓰지 않는 것이 낭비다.
+
+```text
+선형 탐색:   [10][20][20][20][30][40][50]   40 은 어디?  ->  앞에서부터 6번
+이진 탐색:   [10][20][20][20][30][40][50]
+                          ^ 20 < 40 -> 왼쪽 절반 버림
+                                  ^ 40 == 40 -> 2번
+```
+
+쉬운 예: 사전에서 단어 찾기 — 아무도 첫 장부터 넘기지 않는다. 가운데를 펴고 앞뒤를 정한다.\
+똑같은 구조다: 찾는 것이 "값"이 아니라 "조건이 참으로 바뀌는 경계"라고 보면, 배열이 없어도(`firstTrue`) 같은 방법이 선다.\
+실무 예: DB 인덱스 페이지 안에서 키 위치 찾기, `git bisect`로 버그가 처음 생긴 커밋 찾기, 일관 해시 링에서 담당 노드 찾기.
+
+  - *경계(boundary)*: 조건이 거짓에서 참으로 바뀌는 자리. 이진 탐색이 실제로 찾는 것.
+
+### 한눈에 — 쉽게 말하면
 
 **이진 탐색 = 업다운 숫자 맞히기 게임.**
 
@@ -42,28 +61,9 @@
 
 실무 예: `Arrays.binarySearch`, DB 인덱스 탐색, git bisect(버그가 처음 생긴 커밋 찾기 — 이것도 "경계 찾기"다).
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-같은 이진 탐색을 **두 가지 판**(반열린 구간 `[lo, hi)` / 닫힌 구간 `[lo, hi]`)으로 각각 구현하라는 챕터다.
-
-> **반열린 구간 `[lo, hi)`** — lo는 포함, hi는 제외인 구간. 닫힌 구간 `[lo, hi]`는 양끝 다 포함.\
-> 예: 길이 7인 배열이면 반열린 판은 `hi = 7`(구간 밖)로, 닫힌 판은 `hi = 6`(구간 안)으로 시작한다.
-
-네 가지 연산 — `lowerBound`(key 이상인 첫 자리) · `upperBound`(key 초과인 첫 자리) · `find`(값 찾기) · `firstTrue`(술어가 참이 되는 첫 인덱스, 배열을 안 받는다) — 을 판마다 채운다.\
-계약 테스트가 길이 0\~40, 키 -1\~40을 전부 대조하므로 경계 하나만 어긋나도 걸린다.
-
-> **lowerBound / upperBound** — key 이상인 첫 자리 / key 초과인 첫 자리. 둘의 차이가 그 값의 개수.\
-> 예: 위 배열에서 lowerBound(20)=1, upperBound(20)=4 이고 4 - 1 = 3 이 20 의 개수다.
-
-**과제 목록** (`src/main/java/com/algo/bsearch/`의 TODO 1\~8):
-
-- `HalfOpenSearch.java` — TODO 1 `lowerBound` / TODO 2 `upperBound` / TODO 3 `find`(lowerBound로 파생) / TODO 4 `firstTrue`(넘침 주의)
-- `ClosedIntervalSearch.java` — TODO 5 `lowerBound`(답 후보 기억) / TODO 6 `upperBound` / TODO 7 `find`(직접 찾기 — 비교 3갈래) / TODO 8 `firstTrue`
-- 응용 문제집(*Problems.java)은 이 챕터에 없다.
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
+### 전체 흐름
 
 ```text
 전제: 배열이 정렬되어 있다 (확인 안 한다 — 확인하면 O(n)이라 배보다 배꼽이 커진다)
@@ -80,7 +80,7 @@ upperBound - lowerBound = 그 값의 개수
 > **술어(predicate)** — 값 하나를 받아 참/거짓을 돌려주는 조건 함수. "이 자리는 조건을 만족하나?"\
 > 예: `i -> i >= 4` 는 인덱스 하나를 받아 4 이상인지 판정한다.
 
-## 동작 — lowerBound (`HalfOpenSearch`, 반열린 판)
+### 동작 — lowerBound (`HalfOpenSearch`, 반열린 판)
 
 **언제 쓰나**: "key 이상인 값이 처음 나오는 자리"가 필요할 때.\
 삽입 위치, 개수 세기, 구간 잡기가 전부 여기서 나온다.
@@ -129,7 +129,7 @@ lowerBound(20) = 1        upperBound(20) = 4  (부등호 하나만 다르다: �
 **비용**: O(log n) — 한 번 비교할 때마다 구간이 절반이 되기 때문.\
 측정으로는 n=1,000에 10번, n=1,000,000에 20번 — 원소를 1000배 늘려도 비교는 2배만 는다.
 
-## 동작 — lowerBound (`ClosedIntervalSearch`, 닫힌 판)
+### 동작 — lowerBound (`ClosedIntervalSearch`, 닫힌 판)
 
 **언제 쓰나**: 하는 일은 반열린 판과 완전히 같다.\
 교과서에 더 자주 나오는 형태라 읽을 줄 알아야 한다.
@@ -154,7 +154,7 @@ lo=0, hi=6, answer=size(=7 : "아무것도 못 찾음"의 초기값)
 **비용**: O(log n) — 반열린과 **완전히 같다.**\
 갈리는 것은 코드의 실수 여지지 성능이 아니다.
 
-## 동작 — find (값 찾기)
+### 동작 — find (값 찾기)
 
 **언제 쓰나**: "그 값이 어디 있나(없으면 -1)"만 필요할 때.
 
@@ -184,7 +184,7 @@ lo=0, hi=6, answer=size(=7 : "아무것도 못 찾음"의 초기값)
 
 **비용**: O(log n) — 구조는 lowerBound와 같다.
 
-## 동작 — firstTrue (배열 없는 이진 탐색)
+### 동작 — firstTrue (배열 없는 이진 탐색)
 
 **언제 쓰나**: "술어가 거짓...거짓, 참...참으로 바뀌는 첫 자리"를 찾을 때.\
 **배열을 안 받는다** — 인덱스 범위 `[lo, hi]`와 술어만 받는다.\
@@ -233,7 +233,44 @@ mid = lo + (hi - lo) / 2  ← 차이(10억)는 안전. 이렇게 써야 한다
 
 **비용**: O(log(hi-lo)) — 후보 구간이 절반씩 준다.
 
-## 비교 — 반열린 판 vs 닫힌 판
+## 쓰이는 곳
+
+- **`Arrays.binarySearch` · `Collections.binarySearch`(자바)** — 못 찾으면 `-(삽입 위치) - 1`을 돌려준다. 삽입 위치가 곧 lowerBound다.
+- **C++ `std::lower_bound`/`upper_bound`, 파이썬 `bisect`** — C++은 이 챕터의 lowerBound/upperBound와 이름까지 같고, 파이썬 `bisect_left`/`bisect_right`가 같은 두 연산이다.
+- **B+ 트리 페이지 안 탐색** — 많은 DB 인덱스 구현이 한 페이지 안의 정렬된 키 배열을 이진 탐색해 다음 페이지를 고른다(세부는 제품마다 다르다 — 페이지 디렉터리로 먼저 좁힌 뒤 선형으로 훑는 구현도 있다)([data-structure/15-b-tree](../../data-structure/15-b-tree/2-summary.md)).
+- **일관 해시 링 조회** — 정렬된 해시 값 배열에서 "키 해시 이상인 첫 노드"를 lowerBound로 찾는다([data-structure/31-consistent-hashing](../../data-structure/31-consistent-hashing/2-summary.md)).
+- **`git bisect`** — "이 커밋에서 버그가 있나"를 술어로 두고 커밋 범위를 `firstTrue`로 좁힌다. 배열 없는 이진 탐색의 실물.
+- **시계열 저장소** — 타임스탬프순으로 쌓인 블록에서 "이 시각 이후 첫 레코드"를 lowerBound로 찾는다.
+- **07번 매개변수 탐색** — `firstTrue`의 인덱스를 "답 후보"로 바꾸면 그대로 07번이 된다.
+
+## 적용 — 풀어나가는 법
+
+이진 탐색 문제는 "무엇을 찾는가"를 경계로 다시 쓰는 데서 시작한다.\
+① 정렬 또는 단조성이 성립하는지 확인한다(안 되면 못 쓴다) → ② 찾는 것을 "key 이상인 첫 자리"(lowerBound)·"초과인 첫 자리"(upperBound)·"술어가 참이 되는 첫 자리"(firstTrue) 중 하나로 바꿔 쓴다 → ③ 반열린 판 하나로 고정하고 `lo + (hi - lo) / 2`를 쓴다 → ④ 빈 배열·전부 작음·전부 큼·중복 있음을 경계 테스트로 둔다.\
+아래 과제는 같은 탐색을 두 판으로 짜서 실수 여지가 어디서 갈리는지 본다.
+
+### 문제 — 이 챕터가 시키는 것
+
+같은 이진 탐색을 **두 가지 판**(반열린 구간 `[lo, hi)` / 닫힌 구간 `[lo, hi]`)으로 각각 구현하라는 챕터다.
+
+> **반열린 구간 `[lo, hi)`** — lo는 포함, hi는 제외인 구간. 닫힌 구간 `[lo, hi]`는 양끝 다 포함.\
+> 예: 길이 7인 배열이면 반열린 판은 `hi = 7`(구간 밖)로, 닫힌 판은 `hi = 6`(구간 안)으로 시작한다.
+
+네 가지 연산 — `lowerBound`(key 이상인 첫 자리) · `upperBound`(key 초과인 첫 자리) · `find`(값 찾기) · `firstTrue`(술어가 참이 되는 첫 인덱스, 배열을 안 받는다) — 을 판마다 채운다.\
+계약 테스트가 길이 0\~40, 키 -1\~40을 전부 대조하므로 경계 하나만 어긋나도 걸린다.
+
+> **lowerBound / upperBound** — key 이상인 첫 자리 / key 초과인 첫 자리. 둘의 차이가 그 값의 개수.\
+> 예: 위 배열에서 lowerBound(20)=1, upperBound(20)=4 이고 4 - 1 = 3 이 20 의 개수다.
+
+**과제 목록** (`src/main/java/com/algo/bsearch/`의 TODO 1\~8):
+
+- `HalfOpenSearch.java` — TODO 1 `lowerBound` / TODO 2 `upperBound` / TODO 3 `find`(lowerBound로 파생) / TODO 4 `firstTrue`(넘침 주의)
+- `ClosedIntervalSearch.java` — TODO 5 `lowerBound`(답 후보 기억) / TODO 6 `upperBound` / TODO 7 `find`(직접 찾기 — 비교 3갈래) / TODO 8 `firstTrue`
+- 응용 문제집(*Problems.java)은 이 챕터에 없다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+### 비교 — 반열린 판 vs 닫힌 판
 
 | | 구간 | 루프 조건 | 답 | 답 후보를 만나면 |
 |---|---|---|---|---|
@@ -246,6 +283,29 @@ mid = lo + (hi - lo) / 2  ← 차이(10억)는 안전. 이렇게 써야 한다
 - **비용은 완전히 같다.**\
   고르는 기준은 실수 여지다.
 
+## 장애 시나리오와 대처
+
+**1. 2³⁰개를 넘자 음수 인덱스로 죽는다 (JDK의 실제 버그, 2006)**
+
+- 현상: 거의 모든 입력에서 잘 돌던 이진 탐색이 아주 큰 배열에서만 죽는다.
+- 보이는 형태: 음수 인덱스의 `ArrayIndexOutOfBoundsException`(예: lo+hi가 정확히 2³¹이면 mid = -1073741824). 원소 약 10억 개(2³⁰) 이상에서만 재현.
+- 원인: `mid = (lo + hi) / 2`의 덧셈이 int 최대(약 21억)를 넘어 음수가 된다. JDK의 `Arrays.binarySearch`에 9년간 있었던 결함이다(Bloch 2006).
+- 대처: `lo + (hi - lo) / 2` 또는 `(lo + hi) >>> 1`. 배열 없는 `firstTrue`에는 `lo=10억, hi=20억`을 직접 넣는 테스트를 둔다 — 여기서는 잡을 수 있다.
+
+**2. 요청 하나가 영원히 끝나지 않는다**
+
+- 현상: 특정 키를 찾는 요청만 응답이 없다.
+- 보이는 형태: CPU 한 코어 100%, 스레드 덤프를 여러 번 떠도 같은 `search` 프레임의 같은 줄.
+- 원인: 구간이 안 줄어든다 — 닫힌 판(`lo <= hi`)에 반열린 판의 `hi = mid`를 섞었다. `lo == hi == mid`인 순간 `hi = mid`가 아무것도 안 바꿔 제자리걸음이다. `lo = mid`로 쓴 경우도 같다 — 구간이 2칸일 때 mid가 lo와 같아 멈춘다. (반대로 반열린 판에 `hi = mid - 1`을 섞으면 무한 루프가 아니라 오답이 난다 — 정답 1번 「mid가 답 후보일 때」 참고.)
+- 대처: 한 판으로 고정한다. "mid가 아직 답 후보인가"로 `hi = mid`(후보 남김)와 `mid - 1`(후보 버림)을 정한다. 길이 0~40·키 -1~40 전수 대조처럼 작은 경계를 다 도는 테스트를 둔다.
+
+**3. 분명히 있는 값인데 -1이 나온다**
+
+- 현상: 이진 탐색이 간헐적으로 "없음"을 돌려준다. 선형으로 훑으면 있다.
+- 보이는 형태: 예외 없음. 같은 값을 다시 찾으면 되기도 한다. 최근에 갱신된 항목에서 자주.
+- 원인: 정렬 전제가 깨졌다 — 다른 코드가 배열에 값을 덧붙이고 재정렬하지 않았거나, 정렬할 때와 탐색할 때의 비교 기준이 다르다(대소문자·로케일). 이진 탐색은 정렬을 확인하지 않는다(확인하면 O(n)).
+- 대처: 삽입은 upperBound 자리에 넣어 정렬을 유지하고, 정렬·탐색의 비교자를 하나로 둔다. 디버그 빌드에서만 `isSorted` 검사를 켠다.
+
 ## 핵심 문장
 
 - 이진 탐색의 본체는 값 찾기가 아니라 **경계 찾기**다 — lowerBound/upperBound만 있으면 find도, 개수 세기도 다 파생된다.
@@ -254,7 +314,16 @@ mid = lo + (hi - lo) / 2  ← 차이(10억)는 안전. 이렇게 써야 한다
 - `firstTrue`는 배열이 아니라 술어를 탐색한다 — 그래서 메모리에 없는 10억 개 구간도 30번에 좁히고, 매개변수 탐색(07)의 토대가 된다.
 - `lo + (hi - lo) / 2` — 같은 넘침 결함도 인터페이스가 바뀌면 테스트로 잡을 수 있게 된다.
 
-## 관련 자료
+## 관련 주제·근거
+
+- 후속 — [07-parametric-search](../07-parametric-search/2-summary.md): `firstTrue`의 인덱스를 답 후보로 바꾼 것.
+- 이웃 — [08-two-pointers](../08-two-pointers/2-summary.md): 정렬 위에서 "한쪽을 통째로 버리기"의 다른 형태. [02-merge-sort](../02-merge-sort/2-summary.md): 같은 `(lo+hi)/2` 결함이 테스트로 안 잡히던 자리.
+- 자료구조 — [data-structure/01-dynamic-array](../../data-structure/01-dynamic-array/2-summary.md)(문제 3의 upper bound 삽입) · [data-structure/06-binary-search-tree](../../data-structure/06-binary-search-tree/2-summary.md)(같은 생각을 삽입 O(log n)까지 되게 만든 구조) · [data-structure/15-b-tree](../../data-structure/15-b-tree/2-summary.md) · [data-structure/31-consistent-hashing](../../data-structure/31-consistent-hashing/2-summary.md).
+- 영역 표 — [algorithm/curriculum.md](../curriculum.md) `04-binary-search`.
+- 교재 — CLRS 3판 2.3-5 연습(이진 탐색) · Joshua Bloch, "Nearly All Binary Searches and Mergesorts are Broken", Google Research 블로그 2006.
+- myway 원본 — `/home/jun/project/myway/algorithm/06-binary-search/` (README.md · impl/com/algo/bsearch/ · src/test/java/com/algo/bsearch/SearcherContractTest.java).
+
+### 관련 자료
 
 - 챕터 안내: `/home/jun/project/myway/algorithm/06-binary-search/README.md`
 - 내 구현(TODO 껍데기): `/home/jun/project/myway/algorithm/06-binary-search/src/main/java/com/algo/bsearch/HalfOpenSearch.java`, `ClosedIntervalSearch.java`
@@ -264,7 +333,7 @@ mid = lo + (hi - lo) / 2  ← 차이(10억)는 안전. 이렇게 써야 한다
 - 테스트: `.../src/test/java/com/algo/bsearch/SearcherContractTest.java`(길이 0\~40, 키 -1\~40 전수 대조), `HalfOpenSearchTest.java`, `ClosedIntervalSearchTest.java`, `MeasurementTest.java`
 - 다음 챕터로의 다리: `07-parametric-search` (firstTrue 위에 선다 — 인덱스 대신 답 후보를 이분)
 
-## 용어 풀이
+### 용어 풀이
 
 - **이진 탐색(binary search)**: 정렬된 범위에서 가운데를 보고 절반을 버리기를 반복하는 탐색.\
   O(log n).
