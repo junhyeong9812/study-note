@@ -4,9 +4,24 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 서머리(Claude 작성) — 원본 myway 코드·문서 기준.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
 
+프로세스를 끄는 순간 처리 중이던 요청은 어떻게 되나 — 정해 두지 않으면 예외도 로그도 없이 사라진다.\
+앞의 열여덟 상자가 만든 재시도·아웃박스·사가도, 하던 일을 버리고 죽으면 소용없다.
+
+```text
+즉시 종료:   stop() --> STOPPED            처리 중 10건 증발. 클라이언트는 타임아웃만 본다
+우아한 종료: shutdown() --> DRAINING --> (0건 또는 기한) --> STOPPED
+                          새 요청 거절      하던 일 완료           못 끝낸 것은 세어서 보고
+```
+
+쉬운 예: 가게 문 닫기 — "영업 종료" 팻말을 먼저 걸어 새 손님을 막고, 안의 손님은 끝까지 대접하고, 마감 시간이 되면 정리한다. 팻말 없이 불을 꺼 버리면 식사 중인 손님이 쫓겨난다.\
+똑같은 구조다: RUNNING → DRAINING → STOPPED 세 단계와 기한, 그리고 DRAINING을 밖(로드밸런서)에 알리는 것.\
+실무 예: 쿠버네티스 롤링 배포(SIGTERM → 유예 시간 → SIGKILL), "배포하면 가끔 오류가 난다"로 몇 달을 보내는 팀.
+
+### 한눈에 — 쉽게 말하면
 **우아한 종료 = 가게 문 닫을 때 "새 손님은 안 받고, 안에 있는 손님은 끝까지 대접하기".**
 
 > **우아한 종료(graceful shutdown)** — 새 요청을 막고, 하던 일을 끝내고, 기한이 지나면 세어서 버리고 끝내는 종료.\
@@ -33,27 +48,9 @@ stop() -> 그 자리에서 STOPPED          shutdown() -> DRAINING(새것 거절
 
 실무 예: 쿠버네티스 롤링 배포(SIGTERM → 유예 시간 → SIGKILL), 로드밸런서의 헬스체크로 트래픽 빼기(드레이닝).
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-프로세스를 끄는 순간 처리 중이던 요청 10건이 **예외도 로그도 없이 사라진다** — 앞의 열여덟 상자가 만든 재시도·아웃박스·사가가 전부 무의미해지는 지점이다.\
-"종료한다"를 한 단계로 하면 새 요청 막기와 하던 일 끝내기가 섞여 둘 중 하나를 반드시 잘못하니, **RUNNING → DRAINING → STOPPED 세 단계와 기한을 가진 종료(GracefulServer)를 구현하라**는 챕터다.
-
-과제(원본 README "하는 방법"):
-
-1. `ShutdownTest.java` 를 따라친다.
-2. `AbruptServer` 의 **TODO 1** — 기준선.\
-   **기다리면 안 된다**(즉시 STOPPED).\
-   다만 **몇 개를 버렸는지는 센다.**
-3. `GracefulServer` 의 **TODO 2**(accept — RUNNING 일 때만 받는다.\
-   DRAINING 에서도 거절) · **TODO 3**(shutdown — 본체.\
-   먼저 막고 → 0이 될 때까지 기다리고 → 기한(이상)이면 세어서 보고) · **TODO 4**(isHealthy — 배수 중이면 false).
-
-시작점: `cd ~/project/myway/ops-patterns && ./run.sh 19` — 15개 중 13개가 실패하는 상태에서 출발한다.
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
+### 전체 흐름
 ```text
 상태(Phase): RUNNING ──shutdown 시작──> DRAINING ──0건 또는 기한──> STOPPED
              평소                        새 요청 거절,               다 끝났(거나 버렸)다
@@ -67,8 +64,7 @@ shutdown(timeoutMillis):
 isHealthy(): DRAINING 이면 false  <- 로드밸런서가 이걸 보고 트래픽을 뺀다
 ```
 
-## 동작 — 기준선: 즉시 종료 (AbruptServer)
-
+### 동작 — 기준선: 즉시 종료 (AbruptServer)
 **언제 쓰나**: 안 기다리면 무엇이 사라지는지 보여주는 기준선.\
 그리고 실제로 대부분의 서비스가 이 모양이다.
 
@@ -97,8 +93,7 @@ STOPPED, inFlight 10건 증발  ->  보고: "0ms 기다렸는데 10건이 남았
 
 **비용**: 종료는 0ms. 대가는 처리 중이던 전부.
 
-## 동작 — 우아한 종료 (GracefulServer.shutdown: 순서가 계약이다)
-
+### 동작 — 우아한 종료 (GracefulServer.shutdown: 순서가 계약이다)
 **언제 쓰나**: 종료 신호(SIGTERM)를 받았을 때.\
 이 메서드가 이 상자의 본체다.
 
@@ -150,8 +145,7 @@ STOPPED, inFlight = {}  ->  보고: "300ms 기다려 10건 완료 (거절 n)"
 > **abandoned(버린 건수)** — 기한이 지나 버린 처리 중 요청의 수. 세어서 보고하는 것이 즉시 종료와의 차이다.\
 > 예: 남은 것을 세고 비운 뒤 timedOut 으로 보고한다.
 
-## 동작 — 밖에 알리기 (isHealthy: 안 알리면 우아해도 오류다)
-
+### 동작 — 밖에 알리기 (isHealthy: 안 알리면 우아해도 오류다)
 **언제 쓰나**: 로드밸런서의 헬스체크가 주기적으로 부른다.
 
 > **헬스체크(health check)** — 로드밸런서가 주기적으로 "건강하냐"고 묻는 것.\
@@ -169,8 +163,40 @@ LB ──요청──> [DRAINING 서버] -> 전부 거절   LB: isHealthy()=fals
   > **드레이닝(draining, 배수)** — 새 물은 잠그고 남은 물을 빼는 것 — 새 요청은 거절, 하던 일은 완료.\
   > 예: DRAINING 이면 새 요청을 거절하고 inFlight 가 0 이 되기를 기다린다.
 
-## 기한을 얼마로 잡나 — 측정
+## 쓰이는 자료구조·알고리즘
 
+- **상태 기계** — `RUNNING / DRAINING / STOPPED`. 둘이 아니라 셋인 이유는 "새 요청 막기"와 "하던 일 끝내기"를 섞지 않기 위해서다.
+- **처리 중 집합(in-flight)** — 이 impl은 원자 카운터가 아니라 요청 id의 `LinkedHashSet`을 `synchronized` 안에서 관리한다(같은 id의 중복 접수·모르는 id의 완료를 잡으려고). 그 크기가 0이 되기를 기다리는 것이 배수다.
+- **폴링 대기 루프** — `ticker.sleep(확인 주기)`로 조건을 다시 본다. [05-backpressure](../05-backpressure/2-summary.md)의 `wait/notifyAll`과 대비되는 방식이고, 그래서 `notifyAll`이 죽은 코드였다.
+- **시그널(SIGTERM/SIGKILL)** — OS가 프로세스에 보내는 종료 신호. 잡을 수 있는 것과 없는 것.
+- **헬스체크·readiness** — 로드밸런서가 트래픽을 뺄지 판단하는 신호. `isHealthy()`가 그 답이다.
+- **데드라인** — 기한 판정은 이상(≥). [01-retry-backoff](../01-retry-backoff/2-summary.md)·[04-rate-limiter](../04-rate-limiter/2-summary.md)·[17-timeseries](../17-timeseries/2-summary.md)와 같은 `Ticker` 계약.
+- 실제 시스템 — 쿠버네티스 Pod 종료(`preStop` 훅 → SIGTERM → `terminationGracePeriodSeconds` → SIGKILL), Spring Boot `server.shutdown=graceful`, Go `http.Server.Shutdown`, Java `ExecutorService.shutdown()` + `awaitTermination()`.
+
+## 적용 — 풀어나가는 법
+
+### 문제 — 이 챕터가 시키는 것
+프로세스를 끄는 순간 처리 중이던 요청 10건이 **예외도 로그도 없이 사라진다** — 앞의 열여덟 상자가 만든 재시도·아웃박스·사가가 전부 무의미해지는 지점이다.\
+"종료한다"를 한 단계로 하면 새 요청 막기와 하던 일 끝내기가 섞여 둘 중 하나를 반드시 잘못하니, **RUNNING → DRAINING → STOPPED 세 단계와 기한을 가진 종료(GracefulServer)를 구현하라**는 챕터다.
+
+과제(원본 README "하는 방법"):
+
+1. `ShutdownTest.java` 를 따라친다.
+2. `AbruptServer` 의 **TODO 1** — 기준선.\
+   **기다리면 안 된다**(즉시 STOPPED).\
+   다만 **몇 개를 버렸는지는 센다.**
+3. `GracefulServer` 의 **TODO 2**(accept — RUNNING 일 때만 받는다.\
+   DRAINING 에서도 거절) · **TODO 3**(shutdown — 본체.\
+   먼저 막고 → 0이 될 때까지 기다리고 → 기한(이상)이면 세어서 보고) · **TODO 4**(isHealthy — 배수 중이면 false).
+
+시작점: `cd ~/project/myway/ops-patterns && ./run.sh 19` — 15개 중 13개가 실패하는 상태에서 출발한다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+실제 시스템에 붙일 때의 순서: ① 종료 신호를 **받게** 만든다(SIGTERM 핸들러, PID 1 문제) → ② 먼저 막고(DRAINING) 밖에 알린다(헬스체크 false) → ③ 로드밸런서가 그 사실을 알 때까지의 전파 시간을 기다린 뒤 거절을 시작한다 → ④ 기한 = 최악 요청 기준, 오케스트레이터의 유예 시간 안에 → ⑤ 못 끝낸 수를 세어 보고하고 지표로 남긴다 → ⑥ 기한 안에 못 끝나는 긴 작업은 요청 처리에서 분리한다.\
+①·③이 이 노트 코드 밖에 있는데 사고의 대부분이 거기서 난다. 위 「문제」절의 TODO는 ②·④·⑤를 만든다.
+
+### 기한을 얼마로 잡나 — 측정
 요청 하나가 500ms 걸릴 때 (README 실측):
 
 ```text
@@ -187,21 +213,7 @@ LB ──요청──> [DRAINING 서버] -> 전부 거절   LB: isHealthy()=fals
 
 - 기한 0은 "안 기다린다" — 즉시 종료와 같되 세어서 보고한다는 점만 다르다.
 
-## 한계 — 이 패턴이 못 지키는 것
-
-- **종료 신호를 안 받으면 아무 소용이 없다.**\
-  이 상자는 "신호를 받았다"부터 시작하는데 실제로는 그 앞이 더 자주 문제다: SIGTERM 핸들러를 안 걸었거나, 컨테이너에서 PID 1이라 기본 핸들러가 없거나, 프로세스 매니저가 SIGKILL을 먼저 보내면 — 아무리 잘 만든 shutdown도 안 불리고, **증상은 즉시 종료와 똑같다.**
-
-  > **PID 1** — 컨테이너의 첫 프로세스.\
-  > 일반 프로세스와 달리 신호의 기본 동작이 없어서 SIGTERM을 그냥 무시하게 되기 쉽다.\
-  > 예: SIGTERM 이 무시되면 증상이 즉시 종료와 똑같아진다.
-
-- **기한 안에 못 끝나는 요청은 여전히 잃는다.**\
-  30초짜리 배치가 요청 처리에 섞여 있으면 어떤 기한으로도 못 지킨다 — **우아한 종료는 짧은 요청을 지키는 것이지 긴 작업을 지키는 것이 아니다.**\
-  긴 작업은 07번 아웃박스처럼 저장해 두고 따로 도는 구조로 옮겨야 한다.
-
-## 만들면서 배운 것 (README)
-
+### 만들면서 배운 것 (README)
 - **변종 9개 중 8개가 테스트에 잡혔고 하나는 죽은 코드였다**: `complete`의 `notifyAll` — 이 구현의 대기 루프는 `wait`가 아니라 주기 확인 방식이라 부를 사람이 없었다.\
   테스트를 억지로 만드는 대신 그 줄을 지웠다.\
   안 쓰는 장치를 두면 읽는 사람이 "누군가 wait 하고 있다"고 잘못 읽는다.
@@ -215,6 +227,44 @@ LB ──요청──> [DRAINING 서버] -> 전부 거절   LB: isHealthy()=fals
 > **시계 주입(Ticker)** — 시간과 대기를 인터페이스로 받아 테스트가 가짜 시계로 시간을 감게 하는 것.\
 > 예: shutdown 이 `ticker.sleep` 으로 기다려서 테스트가 10초를 실제로 안 기다린다.
 
+## 장애 시나리오와 대처
+
+아래 「한계」절(신호를 못 받음·긴 작업)과 위 「기한을 얼마로 잡나」 측정 말고, 운영에서 따로 보이는 장애들이다.
+
+**1. 알렸는데 로드밸런서가 아직 모른다**
+
+- 현상: `isHealthy()`를 false로 바꿨는데도 배포마다 수십 초간 502가 튄다.
+- 보이는 형태: DRAINING 동안 거절 수(`rejected`)가 0이 아니다. 로드밸런서의 헬스체크 주기(예: 10초) × 실패 임계(예: 3회)가 배수 시간보다 길다.
+- 원인: "알렸다"와 "상대가 알았다" 사이에 시간이 있다. 그 사이 로드밸런서는 계속 보내고 서버는 전부 거절한다 — 우아하게 종료했는데 사용자는 오류를 본다.
+- 대처: DRAINING으로 바꾼 뒤 헬스체크 전파 시간만큼 기다렸다가 거절을 시작한다(쿠버네티스라면 `preStop`에서 잠깐 sleep). readiness 주기·임계를 그 시간에 맞춘다.
+
+**2. 유예 시간이 기한보다 짧아 보고 없이 죽는다**
+
+- 현상: `shutdown` 로그가 중간에 끊긴다. `abandoned` 보고가 없다.
+- 보이는 형태: 오케스트레이터의 유예 시간(쿠버네티스 `terminationGracePeriodSeconds`, 기본 30초 — Kubernetes Pod 명세 문서)이 헬스체크 전파 + 배수 기한보다 짧다. SIGKILL이 먼저 온다.
+- 원인: 두 기한을 따로 정했다. 서버는 60초를 기다리려 하는데 오케스트레이터는 30초 뒤 죽인다 — 증상은 정답 7번의 "신호를 못 받은 경우"와 같다.
+- 대처: 유예 시간 ≥ 전파 대기 + 배수 기한 + 여유로 잡고, 서버의 기한은 유예 시간에서 역산한다. 한쪽만 바꾸지 않는다.
+
+**3. 열린 연결로 새 요청이 계속 들어온다**
+
+- 현상: `accept`를 막았는데도 DRAINING 중에 요청이 들어와 거절되고, 유휴 연결 때문에 배수가 안 끝난다.
+- 보이는 형태: 처리 중은 0인데 연결 수는 그대로다. HTTP keep-alive·HTTP/2 연결이 살아 있어 클라이언트가 그 연결로 다음 요청을 보낸다.
+  - *keep-alive*: 요청 하나마다 연결을 새로 맺지 않고 한 연결을 여러 요청에 재사용하는 것.
+- 원인: "새 요청 막기"를 새 연결 수준에서만 했다. 이미 열린 연결은 여전히 요청을 실어 온다.
+- 대처: DRAINING에 들어가면 열린 연결에 `Connection: close`(HTTP/1.1)나 GOAWAY(HTTP/2)를 보내 클라이언트가 다른 서버로 옮기게 하고, 유휴 연결은 닫는다. 처리 중 요청의 연결만 응답 뒤에 닫는다.
+
+### 한계 — 이 패턴이 못 지키는 것
+- **종료 신호를 안 받으면 아무 소용이 없다.**\
+  이 상자는 "신호를 받았다"부터 시작하는데 실제로는 그 앞이 더 자주 문제다: SIGTERM 핸들러를 안 걸었거나, 컨테이너에서 PID 1이라 기본 핸들러가 없거나, 프로세스 매니저가 SIGKILL을 먼저 보내면 — 아무리 잘 만든 shutdown도 안 불리고, **증상은 즉시 종료와 똑같다.**
+
+  > **PID 1** — 컨테이너의 첫 프로세스.\
+  > 일반 프로세스와 달리 신호의 기본 동작이 없어서 SIGTERM을 그냥 무시하게 되기 쉽다.\
+  > 예: SIGTERM 이 무시되면 증상이 즉시 종료와 똑같아진다.
+
+- **기한 안에 못 끝나는 요청은 여전히 잃는다.**\
+  30초짜리 배치가 요청 처리에 섞여 있으면 어떤 기한으로도 못 지킨다 — **우아한 종료는 짧은 요청을 지키는 것이지 긴 작업을 지키는 것이 아니다.**\
+  긴 작업은 07번 아웃박스처럼 저장해 두고 따로 도는 구조로 옮겨야 한다.
+
 ## 핵심 문장
 
 - 즉시 종료의 진짜 문제는 요청을 버리는 것이 아니라 **버렸다는 사실을 보고하지 않는 것**이다 — 예외도 로그도 없이, 배포 직후 오류율로만 나타난다.
@@ -224,8 +274,18 @@ LB ──요청──> [DRAINING 서버] -> 전부 거절   LB: isHealthy()=fals
   기한이 지나 버리는 것은 즉시 종료와 같지만, 몇 개를 버렸는지 아는 것이 다르다.
 - 열아홉 상자의 결론: **실패는 없앨 수 없고, 무엇을 잃을지 고를 수 있을 뿐이다. 고르지 않으면 제일 나쁜 것을 잃는다 — 대개 조용히.**
 
-## 관련 자료
+## 관련 주제·근거
 
+- 선행 — [05-backpressure](../05-backpressure/2-summary.md): 대기 방식(wait/notify vs 폴링)의 대비. [10-scheduler](../10-scheduler/2-summary.md): 배치와 요청 처리를 섞지 않는 이유.
+- 곁 — [07-outbox](../07-outbox/2-summary.md): 긴 작업을 저장해 두고 따로 도는 구조로 옮기는 자리.
+- 곁 — [deadline-propagation](../deadline-propagation/2-summary.md): 기한을 상위(오케스트레이터)에서 받아 내려오는 관계.
+- 곁 — [systems/server-design/02-request-path.md](../../systems/server-design/02-request-path.md): 요청 경로 안에서 graceful shutdown의 자리.
+- 총정리 — [01-retry-backoff](../01-retry-backoff/2-summary.md)부터의 열아홉 상자가 종료 순간에 만나는 곳.
+- 영역 표 — [reliability/README.md](../../reliability/README.md) `14-graceful-shutdown`.
+- 근거 — Kubernetes 문서 "Pod Lifecycle — Termination of Pods" · Spring Boot 문서 "Graceful Shutdown".
+- myway 원본 — `/home/jun/project/myway/ops-patterns/19-graceful-shutdown/` (README.md · impl/AbruptServer.java · impl/GracefulServer.java · src/main/.../ShutdownReport.java · src/test/.../ShutdownTest.java).
+
+### 관련 자료
 - 챕터 안내: `/home/jun/project/myway/ops-patterns/19-graceful-shutdown/README.md`
 - 단계·보고(TODO 없음): `.../src/main/java/com/ops/shutdown/Phase.java`, `ShutdownReport.java` (clean/timedOut — 숨기지 않는 것이 요점)
 - 내 구현(TODO 껍데기): `.../src/main/java/com/ops/shutdown/AbruptServer.java`(TODO 1 — 기준선, 기다리면 안 된다), `GracefulServer.java`(TODO 2~4 — shutdown이 본체)
@@ -234,8 +294,7 @@ LB ──요청──> [DRAINING 서버] -> 전부 거절   LB: isHealthy()=fals
 - 테스트: `.../src/test/java/com/ops/shutdown/ShutdownTest.java` (즉시 멈춤 / 배수 / 기한 / 나란히 비교 + 한계 2개), `FakeTicker.java`, `ScriptedTicker.java`
 - 이웃 챕터: 01-retry부터의 총정리 자리, 07-outbox(긴 작업은 저장해 두고 따로), 04·17의 Ticker 주입과 같은 계약
 
-## 용어 풀이
-
+### 용어 풀이
 - **우아한 종료(graceful shutdown)**: 새 요청을 막고, 하던 일을 끝내고, 기한이 지나면 세어서 버리고 끝내는 종료.
 - **즉시 종료(abrupt stop)**: 하던 일을 안 기다리고 그냥 멈추는 것.\
   처리 중 요청이 조용히 사라진다.

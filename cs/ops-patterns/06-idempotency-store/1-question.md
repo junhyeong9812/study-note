@@ -195,6 +195,15 @@ public boolean tryBegin(IdempotencyKey key, String fingerprint, long expiresAtMi
 - `debugging/02-toctou-idempotency` 와 이 챕터는 같은 주제를 어떻게 다르게 보는가?
 - 07-outbox 가 정면으로 다루는 것은 이 챕터의 어느 한계인가?
 
+### C. 통일 골격 (Claude 초안 2026-09-28)
+
+- C1. 멱등성 저장소가 있으면 재시도에서 무엇은 그대로 두 번 일어나고 무엇은 한 번만 일어나는가?
+- C2. Redis의 `SET key value NX EX ttl` 한 줄은 이 노트의 어떤 두 조각을 한 번에 대신하는가?
+- C3. 멱등성을 실제 API에 붙일 때 가장 먼저 정하는 것은 무엇이고, 그것을 빼먹으면 어떤 사고가 나는가?
+- C4. 정상 재시도가 전부 `KeyReuseException`으로 거절되는 것은 지문의 무엇이 잘못된 것이고, 어떻게 고치는가?
+- C5. 같은 키가 TTL 내내 409만 받는 좀비 상태는 왜 생기고, 두 가지 대처는 무엇인가?
+- C6. 07-outbox와 11-distributed-lock은 이 노트의 어느 한계를 각각 이어받는가?
+
 ## 복습 기록
 
 | 날짜 | 결과 | 틀린 질문 | 다음 복습 |

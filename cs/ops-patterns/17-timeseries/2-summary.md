@@ -4,9 +4,24 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 서머리(Claude 작성) — 원본 myway 코드·문서 기준.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
 
+시각과 함께 쌓이는 값은 멈추지 않는다 — 초당 1000개면 하루 8640만 개다.\
+줄이는 장치가 없으면 메모리와 디스크가 못 버티고, 있어도 "무엇을 남길지"를 먼저 정하지 않으면 필요한 것이 사라진다.
+
+```text
+원본:   . . . . . . . . . . . . . . . . . . . .   8640만 점/일 — 한 달 전 점 하나하나는 볼 일이 없다
+접기:   [1분: n, sum, min, max] ... (최근)        [1시간: n, sum, min, max] (오래됨)
+                                   되돌릴 수 없다 — 접기 전에 담을 것을 정한다
+```
+
+쉬운 예: 일기를 매일 쓰다가 오래된 것은 "그달 요약"만 남기기 — 작년 3월은 "평균적으로 바빴다"만 기억한다.\
+똑같은 구조다: 최근 것은 가는 버킷으로 자세히, 오래된 것은 굵은 버킷으로 접어서 들고 있는다. 접는 순간 원본은 사라진다.\
+실무 예: 시계열 DB의 보존 정책과 다운샘플링(InfluxDB 1.x의 continuous query, Graphite의 해상도 계층 — Prometheus 자체는 보존 기간만 두고 다운샘플링은 Thanos 같은 외부 구성요소가 한다), 모니터링 대시보드의 "최근 1시간은 초 단위, 지난주는 시간 단위" 그래프, 요금 정산용 사용량 집계.
+
+### 한눈에 — 쉽게 말하면
 **시계열 접기 = 일기를 매일 쓰다가, 오래된 것은 "그달 요약"만 남기기.**
 
 - 오늘 일은 시간 단위로 자세히 기억하지만, 작년 3월은 "평균적으로 바빴다" 정도만 기억한다.\
@@ -38,17 +53,9 @@
 > **다운샘플링(downsampling)** — 해상도를 낮춰 데이터를 줄이는 것 — 접기의 일반 용어.\
 > 예: "최근 1시간은 초 단위, 지난주는 시간 단위"로 그래프의 해상도를 낮춘다.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-- 초당 1000개씩 오는 값을 다 들고 있을 수 없으니, 최근 것은 가는 버킷으로 자세히·오래된 것은 굵은 버킷으로 접어 들고 있는 시계열 저장소를 만들라는 챕터다 — 접기는 되돌릴 수 없고, 경계 처리가 전부다.
-- 과제(README 「하는 방법」): ① `TimeSeriesTest.java` 를 따라 친다 ② `RawSeries` 의 TODO 1\~2(summarize/quantile) — **기준선. 정확한데 비싸다** ③ `RollingSeries` 의 TODO 3\~6(record/rollUp/summarize/bucketStart) — **경계가 전부다**.\
-  `./run.sh 17` 로 시작하면 18개 중 15개가 실패한다.
-- 별도 응용 문제(*Problems.java)는 없다.
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
+### 전체 흐름
 ```text
 record(at, value)                     rollUp()                    summarize(from, to)
   at이 이미 접힌 구간이면 -> 버림        보존 기간 지난 가는 버킷을      가는 버킷 + 굵은 버킷을
@@ -63,8 +70,7 @@ RawSeries     기준선. 점을 전부 들고 있다 — 어떤 질문에도 정
 RollingSeries 접어서 들고 있다 — 싸다. 대신 답할 수 있는 질문이 줄어든다
 ```
 
-## 동작 — 버킷 하나 (Bucket: 무엇을 담을지가 결정이다)
-
+### 동작 — 버킷 하나 (Bucket: 무엇을 담을지가 결정이다)
 **언제 쓰나**: 한 구간의 요약.\
 `count, sum, min, max` 네 값만 담는다.
 
@@ -92,8 +98,7 @@ average():     sum / count. 빈 버킷이면 NaN
 
 - **중앙값·99분위는 이 넷으로 못 구한다** — 아래 "무엇을 잃는가" 절.
 
-## 동작 — 기록 (record: 가는 버킷에 넣기)
-
+### 동작 — 기록 (record: 가는 버킷에 넣기)
 **언제 쓰나**: 값이 도착할 때마다.\
 시각 순서로 온다고 가정하지 않는다 — 뒤늦게 오는 값이 실제로 있다.
 
@@ -130,8 +135,7 @@ average():     sum / count. 빈 버킷이면 NaN
 > **TreeMap** — 키(시작 시각) 순서로 정렬된 맵. 범위 조회를 전부 훑지 않고 바로 찾게 해준다.\
 > 예: 조회 구간에 걸린 버킷만 바로 찾아 합친다(subMap).
 
-## 동작 — 접기 (rollUp: 가는 버킷 → 굵은 버킷)
-
+### 동작 — 접기 (rollUp: 가는 버킷 → 굵은 버킷)
 **언제 쓰나**: 주기적으로.\
 보존 기간이 지난 가는 버킷을 굵은 버킷으로 합친다.
 
@@ -170,8 +174,7 @@ average():     sum / count. 빈 버킷이면 NaN
 **비용/트레이드오프**: 24시간 초당 1개 = 원본 86,400점 vs 버킷 100개 미만(테스트 계약: 천 분의 일 이하; README의 1분/1시간 예시로는 24버킷).\
 대신 그 안의 분포는 사라진다.
 
-## 동작 — 요약 조회 (summarize: 반열린 구간, 겹칠 때만)
-
+### 동작 — 요약 조회 (summarize: 반열린 구간, 겹칠 때만)
 **언제 쓰나**: "[from, to) 사이 평균/최대가 얼마였나".
 
 전 상태 — 굵은 버킷 [0,1h) 하나, 가는 버킷 몇 개:
@@ -205,8 +208,56 @@ average():     sum / count. 빈 버킷이면 NaN
 
 **비용**: 원본은 600분치에서 앞 10분을 물어도 **600점을 전부 훑고**(scanned 계측), 버킷은 TreeMap에서 시각으로 바로 찾는다 — 32번 역색인의 전수 조사와 같은 자리.
 
-## 무엇을 잃는가 — 실패 시나리오·측정
+## 쓰이는 자료구조·알고리즘
 
+- **정렬 맵(`TreeMap`)** — 버킷을 시작 시각 순으로 두고 `subMap`으로 범위를 바로 찾는다. 내부는 레드-블랙 트리 — [data-structure/16-red-black-tree](../../data-structure/16-red-black-tree/2-summary.md).
+- **합칠 수 있는 통계(모노이드)** — 개수·합·최소·최대는 부분 요약 둘을 합쳐도 정확하다. 구간 질의를 미리 합쳐 두는 [data-structure/13-segment-tree](../../data-structure/13-segment-tree/2-summary.md)와 같은 조건이다.
+  - *모노이드(monoid)*: 결합법칙을 만족하는 합치기 연산과 항등원이 있는 구조. "부분을 합쳐도 전체가 맞다"의 수학 이름.
+- **`floorDiv` 버킷 정렬** — 임의 원점의 시각을 버킷 시작으로. [04-rate-limiter](../04-rate-limiter/2-summary.md)의 창 번호와 같은 산수, 같은 반열린 경계.
+- **분위수 근사** — 합칠 수 없는 분위수는 원본을 들거나 근사 구조(t-digest·HdrHistogram — 둘 다 부분 요약끼리 합칠 수 있게 설계된 분위수 근사)를 쓴다. 확률적 요약의 발상은 [data-structure/19-probabilistic-counting](../../data-structure/19-probabilistic-counting/2-summary.md).
+- **링 버퍼** — 고정 개수의 최근 버킷만 들고 도는 구현(RRDtool의 "Round Robin Database"가 이름 그대로 — 고정 크기 파일에 원형으로 덮어쓴다).
+- 실제 시스템 — Prometheus의 retention·recording rule, InfluxDB 1.x의 retention policy·continuous query(2.x는 버킷 보존 기간·task), Graphite whisper의 해상도 계층, [systems/timeseries-resolution-tiers](../../systems/timeseries-resolution-tiers/2-summary.md).
+
+## 적용 — 풀어나가는 법
+
+### 문제 — 이 챕터가 시키는 것
+- 초당 1000개씩 오는 값을 다 들고 있을 수 없으니, 최근 것은 가는 버킷으로 자세히·오래된 것은 굵은 버킷으로 접어 들고 있는 시계열 저장소를 만들라는 챕터다 — 접기는 되돌릴 수 없고, 경계 처리가 전부다.
+- 과제(README 「하는 방법」): ① `TimeSeriesTest.java` 를 따라 친다 ② `RawSeries` 의 TODO 1\~2(summarize/quantile) — **기준선. 정확한데 비싸다** ③ `RollingSeries` 의 TODO 3\~6(record/rollUp/summarize/bucketStart) — **경계가 전부다**.\
+  `./run.sh 17` 로 시작하면 18개 중 15개가 실패한다.
+- 별도 응용 문제(*Problems.java)는 없다.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+실제 시스템에 붙일 때의 순서: ① **무엇을 물을 것인가**를 먼저 적는다(평균? 최대? 99분위? 이 목록이 담을 통계를 정한다) → ② 담을 통계(합칠 수 있는 것만 — 분위수가 필요하면 원본 보존 기간을 따로) → ③ 해상도 계층과 보존 기간(1분/1시간, 각각 며칠) → ④ 기록 시각은 이벤트 발생 시각으로, 보존 기간은 늦게 오는 값보다 길게 → ⑤ 접기 작업이 도는지 감시.\
+①을 건너뛰고 접으면 나중에 필요한 질문에 답이 없고, 되돌릴 수 없다. 위 「문제」절의 TODO는 정확한 기준선(원본)과 접는 구현을 나란히 만든다.
+
+## 장애 시나리오와 대처
+
+아래 「무엇을 잃는가」절(분포 소실·분위수·경계 변종) 말고, 운영에서 따로 보이는 장애들이다.
+
+**1. 접기가 안 돌아 디스크가 찬다**
+
+- 현상: 어느 날부터 메모리·디스크 사용량이 선형으로 는다. 조회는 멀쩡하다.
+- 보이는 형태: 가는 버킷 수가 "보존 기간 ÷ 버킷 폭"보다 훨씬 많다. `rollUp`을 부르는 스케줄 작업의 마지막 실행 시각이 며칠 전이다.
+- 원인: 접기는 별도 작업이고, 안 돌아도 기록·조회는 정상이라 아무 신호가 없다. [10-scheduler](../10-scheduler/2-summary.md)의 "안 도는지를 감시한다"가 여기서 필요하다.
+- 대처: 가는 버킷 수에 상한 지표와 알람을 둔다. 접기를 스케줄에만 맡기지 않고 `record` 경로에서 버킷 수가 상한을 넘으면 접기를 같이 건다(09의 "읽는 김에"와 같은 발상).
+
+**2. 시계열 개수가 폭발한다**
+
+- 현상: 접기를 잘 하는데도 메모리가 폭증한다. 모니터링 시스템이 "높은 카디널리티" 경고를 낸다.
+- 보이는 형태: 시계열 키에 `user_id`·요청 id 같은 값이 들어가 시계열 수가 수백만이다. 버킷 수 = 시계열 수 × 버킷 수.
+  - *카디널리티(cardinality)*: 서로 다른 시계열(키 조합)의 개수.
+- 원인: 접기는 시계열 하나의 시간 축만 줄인다. 시계열 개수는 안 줄인다.
+- 대처: 값이 무한히 늘어나는 라벨은 시계열 키에 넣지 않는다. 집계 차원(서비스·엔드포인트·상태 코드)을 미리 정하고, 개별 요청 단위는 로그·트레이스로 보낸다.
+
+**3. 수집 시각으로 기록해 일별 합계가 어긋난다**
+
+- 현상: 일별 집계의 합이 원본 총합과 다르다. 자정 근처 값이 다음 날로 넘어가 있다.
+- 보이는 형태: 늦게 도착한 값이 도착 시각 버킷에 들어가 있다. 원본에는 23:59, 버킷에는 00:02.
+- 원인: `record(at, value)`의 `at`에 이벤트 발생 시각이 아니라 수집(도착) 시각을 넘겼다. 지연이 곧 오차가 된다.
+- 대처: 이벤트 발생 시각으로 기록한다. 그러면 늦게 오는 값이 이미 접힌 구간에 떨어질 수 있으니 보존 기간을 실제 지연보다 길게 두고, `lateDrops`를 지표로 본다.
+
+### 무엇을 잃는가 — 실패 시나리오·측정
 - **분포가 사라진다**: 한 시간 중 59분이 0, 1분만 6000이었다.\
   접으면 `60개 평균 100.0 (0.0 ~ 6000.0)` — "평균 100"만 보면 계속 100이었는지 한 번 6000이었는지 알 수 없다.\
   **최대를 같이 담아둔 덕분에** 이 경우는 눈치챌 수 있다(원본의 중앙값은 0, 접은 평균은 100).\
@@ -236,8 +287,18 @@ average():     sum / count. 빈 버킷이면 NaN
 - 늦게 온 값은 조용히 넣지도 조용히 버리지도 않는다 — 버리고 **센다**(lateDrops).\
   0이 아니면 보존 기간이 짧다는 신호다.
 
-## 관련 자료
+## 관련 주제·근거
 
+- 선행 — [16-event-sourcing](../16-event-sourcing/2-summary.md): 전부 들고 있기. 여기서는 줄여 가며 들고 있기.
+- 후속 — [18-blockchain](../18-blockchain/2-summary.md): 접어서 버린 것을 못 되돌리는 데서, 아예 못 바꾸게 하는 쪽으로.
+- 재료 — [04-rate-limiter](../04-rate-limiter/2-summary.md): 반열린 경계와 `floorDiv`. [10-scheduler](../10-scheduler/2-summary.md): 접기 작업의 감시.
+- 재료 — [data-structure/13-segment-tree](../../data-structure/13-segment-tree/2-summary.md)(합칠 수 있는 구간 요약) · [data-structure/19-probabilistic-counting](../../data-structure/19-probabilistic-counting/2-summary.md)(근사 요약) · [data-structure/32-inverted-index](../../data-structure/32-inverted-index/2-summary.md)(전수 조사 기준선).
+- 곁 — [systems/timeseries-resolution-tiers](../../systems/timeseries-resolution-tiers/2-summary.md): 해상도 계층의 개념 정리(병합 검토 대상).
+- 영역 표 — [database/README.md](../../database/README.md) `44-timeseries-resolution-tiers`.
+- 근거 — Prometheus 문서(storage·recording rules) · RRDtool 문서(round-robin 저장).
+- myway 원본 — `/home/jun/project/myway/ops-patterns/17-timeseries/` (README.md · impl/RawSeries.java · impl/RollingSeries.java · src/main/.../Bucket.java · src/test/.../TimeSeriesTest.java).
+
+### 관련 자료
 - 챕터 안내: `/home/jun/project/myway/ops-patterns/17-timeseries/README.md`
 - 요약 상자(TODO 없음): `.../src/main/java/com/ops/timeseries/Bucket.java` (add/mergeWith — 평균이 아니라 합·개수를 담는 이유)
 - 내 구현(TODO 껍데기): `.../src/main/java/com/ops/timeseries/RawSeries.java`(TODO 1\~2, 기준선), `RollingSeries.java`(TODO 3\~6, 경계가 전부)
@@ -246,8 +307,7 @@ average():     sum / count. 빈 버킷이면 NaN
 - 테스트: `.../src/test/java/com/ops/timeseries/TimeSeriesTest.java` (접어도 같은 답 / 무엇을 잃나 / 무엇을 얻나 / 경계와 뒤늦은 값), `FakeTicker.java`
 - 이웃 챕터: 04-rate-limiter(고정 창 = 같은 반열린 경계), 32-inverted-index(전수 조사 기준선), 19번 확률적 집계(분위수 근사), 다음 18-blockchain(못 되돌림 → 아예 못 바꾸게)
 
-## 용어 풀이
-
+### 용어 풀이
 - **시계열(time series)**: 시각과 함께 쌓이는 값의 나열.\
   초당 요청 수, 온도, CPU 사용률.
 - **버킷(bucket)**: 한 시간 구간의 요약 상자.\

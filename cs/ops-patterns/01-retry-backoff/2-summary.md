@@ -4,9 +4,25 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 서머리(Claude 작성) — 원본 myway 코드·문서 기준.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
 
+네트워크 너머의 호출은 가끔 실패한다 — 타임아웃, 503, 데드락.\
+"한 번 더"를 어떻게 할지 정해 두지 않으면 두 가지 중 하나가 된다.
+
+```text
+(1) 재시도 없음:     일시 실패 1번  = 사용자 에러 1번          곧 멀쩡해질 상대를 못 기다린다
+(2) 무작정 재시도:   1000명 실패    -> 1000명이 즉시 다시 요청   아픈 서버를 더 때린다 = 폭풍
+```
+
+쉬운 예: 통화 중인 친구에게 다시 걸기 — 끊자마자 또 걸면 계속 통화 중이고, 열 명이 같은 초에 걸면 회선이 막힌다.\
+똑같은 구조다: 서버 호출이 실패했을 때 **얼마나 기다렸다가 · 몇 번까지 · 전체 트래픽의 몇 %까지** 다시 할지를 정하는 것이 이 패턴이다.\
+실무 예: 결제 게이트웨이(PG) 호출이 타임아웃 났을 때 — 재시도가 없으면 결제 실패, 무작정 하면 PG 서버 폭주 + 이중 결제.
+
+  - *PG(payment gateway)*: 카드사·은행과 가맹점 사이에서 결제를 중계하는 외부 서비스.
+
+### 한눈에 — 쉽게 말하면
 **재시도 = 통화 중일 때 다시 전화 걸기. 백오프 = 점점 오래 기다렸다 걸기. 지터 = 각자 다른 시각에 걸기.**
 
 > **재시도(retry)** — 실패한 작업을 다시 시도하는 것.\
@@ -37,27 +53,9 @@
 
 실무 예: AWS SDK의 exponential backoff with jitter, gRPC retry throttling, 브라우저 재접속 로직.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-재시도 라이브러리를 직접 만드는 챕터다.\
-`RetryPolicyContractTest`(계약 테스트)를 따라친 뒤,
-`src/main/java/com/ops/retry/` 의 TODO 껍데기 5개를 채워 61개 테스트를 전부 통과시킨다
-(`./run.sh 01` — 시작 시점엔 41개가 실패하는 게 정상이다).
-
-채울 TODO:
-
-- `FixedDelayRetry` (TODO 1) — 늘 같은 간격. 한 줄.
-- `ExponentialBackoffRetry` (TODO 1) — base × 2^(attempt-1), 상한까지.\
-  오버플로를 곱하기 전에 막는다.
-- `JitteredBackoffRetry` (TODO 1) — 감싼 정책의 백오프를 FULL/EQUAL 로 흔든다.
-- `Retryer` (TODO 1) — 실행 루프.\
-  멈추는 경우가 넷이라 제일 길다.
-- `RetryBudget` (TODO 2) — onRequest(토큰 채우기) + tryRetry(먼저 확인, 나중에 빼기).
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
+### 전체 흐름
 ```text
 Ticker            시간·대기를 주입 (Thread.sleep 을 코드에 박으면 테스트가 진짜 30초 걸린다)
    |
@@ -71,8 +69,7 @@ Retryer           "언제 멈출까" — 정책대로 실제 실행하는 루프
 RetryBudget       "전체 재시도가 트래픽의 10%를 넘지 않게" — 정책 밖의 마지막 안전판
 ```
 
-## 동작 — Ticker (시계 주입)
-
+### 동작 — Ticker (시계 주입)
 **언제 쓰나**: "3초 뒤에 다시"를 테스트해야 할 때.\
 자료구조에는 시간이 없었지만 여기서부터는 **시간이 자료의 일부**다.
 
@@ -91,8 +88,7 @@ RetryBudget       "전체 재시도가 트래픽의 10%를 넘지 않게" — �
 **비용**: 인터페이스 한 겹.\
 이 리포 전체(서킷 브레이커, 리미터, 백프레셔…)가 이 한 겹 위에 선다.
 
-## 동작 — 세 가지 대기 정책 (RetryPolicy)
-
+### 동작 — 세 가지 대기 정책 (RetryPolicy)
 **언제 쓰나**: 실패한 뒤 "얼마나 기다렸다가" 다시 할지 정할 때.\
 `delayMillisAfter(attempt)` 하나가 본체다(attempt는 1부터).
 
@@ -125,8 +121,7 @@ EQUAL 지터  50~100 100~200 200~400 …               절반은 반드시 기�
 FULL은 제일 잘 흩어지지만 0ms가 나올 수 있고(즉시 재시도 허용), EQUAL은 최소 간격(절반)이 보장되는 대신 더 몰린다.\
 EQUAL에는 홀수 backoff에서만 드러나는 경계 함정이 있다 — `half + random(backoff - half + 1)`로 써야 상한이 정확히 backoff가 된다.
 
-## 동작 — Retryer (언제 멈출까)
-
+### 동작 — Retryer (언제 멈출까)
 **언제 쓰나**: 정책은 "얼마나"만 정한다.\
 실제로 실행하고 **멈출 시점을 판단**하는 것은 Retryer다.
 
@@ -164,8 +159,7 @@ EQUAL에는 홀수 backoff에서만 드러나는 경계 함정이 있다 — `ha
 
 **비용**: 재시도 자체가 지연과 부하를 산다 — 그래서 다음 조각(예산)이 필요하다.
 
-## 동작 — RetryBudget (전체 부하의 상한)
-
+### 동작 — RetryBudget (전체 부하의 상한)
 **언제 쓰나**: 정책만으로는 전체 부하를 못 막을 때.\
 재시도 3번 정책은 **한 요청**을 3번으로 묶을 뿐 — 상대가 완전히 죽으면 **모든 요청이** 3번씩 해서 전체 부하가 3배가 된다.\
 회복하려는 서버에 평소의 3배를 꽂는 셈이다.
@@ -193,8 +187,74 @@ EQUAL에는 홀수 backoff에서만 드러나는 경계 함정이 있다 — `ha
 double로 `tokens += 0.1`을 100번 하면 10.0이 아니라 9.999…가 되어(0.1은 2진수로 딱 안 떨어진다) "100 요청에 10번"이 9번이 되고, 그 1번이 어디 갔는지 아무도 설명 못 한다.\
 **세는 것은 정수로 센다** — 원본도 double로 먼저 썼다가 테스트에서 걸렸다.
 
-## 실패 시나리오와 측정 — 재시도 폭풍 (RetryStormTest)
+## 쓰이는 자료구조·알고리즘
 
+- **토큰 버킷(token bucket)** — `RetryBudget`이 그것이다. 요청마다 ratio만큼 채우고 재시도마다 1개 쓴다.\
+  [04-rate-limiter](../04-rate-limiter/2-summary.md)의 `TokenBucketLimiter`와 같은 모양이고, 여기서는 "재시도 비율"을 제한한다.
+- **비트 시프트 거듭제곱** — `base << (attempt-1)`. 곱셈 대신 시프트를 쓰고, 넘칠지를 `shift >= 63 || base > (max >> shift)`로 **먼저** 판정한다.\
+  시프트와 오버플로 판정은 [algorithm/29-bit-manipulation](../../algorithm/29-bit-manipulation/2-summary.md)의 재료다.
+- **의사 난수(PRNG) 주입** — 지터는 `Random`을 seed로 받아 결정적으로 만든다.\
+  [data-structure/12-skip-list](../../data-structure/12-skip-list/2-summary.md)의 Random 주입과 같은 이유다.
+- **단조 시계(monotonic clock)** — 운영용 `Ticker.system()`의 `nowMillis()`는 `System.nanoTime` 기반이라 원점이 임의다(impl `Retryer.NO_DEADLINE` 주석).\
+  이 컬렉션의 서킷 브레이커·리미터·스케줄러가 전부 이 시계 위에 선다.
+- **고정 소수점 정수 산술** — 토큰을 1/1000 단위 정수(`tokensScaled`)로 센다. 부동소수점 누적 오차를 피하는 기본 기법이다.
+- **데코레이터(wrapper)** — `JitteredBackoffRetry`는 별도 정책이 아니라 기존 정책을 감싸 결과만 흔든다.
+- 실제 라이브러리 — AWS SDK의 exponential backoff with jitter, gRPC의 `retryThrottling`(maxTokens·tokenRatio — 예산과 같은 모양), Resilience4j `Retry`, Finagle의 `RetryBudget`(Twitter Finagle 문서의 retry budget).
+
+## 적용 — 풀어나가는 법
+
+### 문제 — 이 챕터가 시키는 것
+재시도 라이브러리를 직접 만드는 챕터다.\
+`RetryPolicyContractTest`(계약 테스트)를 따라친 뒤,
+`src/main/java/com/ops/retry/` 의 TODO 껍데기 5개를 채워 61개 테스트를 전부 통과시킨다
+(`./run.sh 01` — 시작 시점엔 41개가 실패하는 게 정상이다).
+
+채울 TODO:
+
+- `FixedDelayRetry` (TODO 1) — 늘 같은 간격. 한 줄.
+- `ExponentialBackoffRetry` (TODO 1) — base × 2^(attempt-1), 상한까지.\
+  오버플로를 곱하기 전에 막는다.
+- `JitteredBackoffRetry` (TODO 1) — 감싼 정책의 백오프를 FULL/EQUAL 로 흔든다.
+- `Retryer` (TODO 1) — 실행 루프.\
+  멈추는 경우가 넷이라 제일 길다.
+- `RetryBudget` (TODO 2) — onRequest(토큰 채우기) + tryRetry(먼저 확인, 나중에 빼기).
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+실제 시스템에 붙일 때의 순서는 위 「문제」절의 TODO 순서와 같다.\
+시계를 주입할 수 있게 만들고(Ticker) → "얼마나 기다릴까"(정책) → "언제 멈출까"(Retryer) → "전체 몇 %까지"(예산) 순으로 바깥 겹을 씌운다.\
+어느 단계든 첫 질문은 같다: **이 오류는 재시도해도 되는가.** 그 판단이 없으면 나머지는 낭비를 정교하게 만들 뿐이다.
+
+## 장애 시나리오와 대처
+
+아래 「실패 시나리오와 측정」절의 재시도 폭풍 말고, 정책이 요청별로는 올바르게 동작하는데도 생기는 장애들이다.
+
+**1. 계층마다 재시도가 겹쳐 곱해진다**
+
+- 현상: 상대 서비스가 잠깐 흔들렸을 뿐인데 평소의 수십 배 요청이 꽂힌다.
+- 보이는 형태: 상대 쪽 로그에 같은 요청 ID가 수십 번 찍힌다. 게이트웨이 3회 × 서비스 3회 × DB 클라이언트 3회면 요청 하나가 **27번**이다.
+- 원인: 각 계층이 자기 시야에서만 "3번"을 지킨다. 정책은 한 요청의 재시도만 묶고 계층 간 곱은 아무도 안 본다.
+- 대처: 재시도는 **한 계층에서만** 하고 나머지 계층은 실패를 그대로 전파한다.\
+  어느 계층이든 `RetryBudget` 같은 총량 상한을 둔다(정답 10번 참고).
+
+**2. 호출자가 떠난 뒤에 재시도가 성공한다**
+
+- 현상: 사용자는 실패 화면을 봤는데 DB에는 주문이 들어가 있다. 다시 누르면 주문이 두 개가 된다.
+- 보이는 형태: 클라이언트 타임아웃 3초, 서버 쪽 `attempts=3`·`totalWaitMillis=4200` 같은 계측값(예시 값 — 원본 측정치 아님). 결제는 됐는데 응답은 아무도 안 받았다.
+- 원인: 재시도 대기가 호출자의 남은 시간과 정렬되지 않았고, 작업이 비멱등이다.
+  - *멱등(idempotent)*: 같은 요청을 여러 번 해도 결과가 한 번 한 것과 같은 성질.
+- 대처: 데드라인을 호출자에게서 받아 넘겨(`deadline` 인자) 남은 시간보다 긴 대기는 포기한다(이유 4).\
+  비멱등 작업은 멱등 키로 중복을 받아낸다 — [06-idempotency-store](../06-idempotency-store/2-summary.md).
+
+**3. 동기 대기가 스레드 풀을 말린다**
+
+- 현상: 상대 하나가 느려졌을 뿐인데 무관한 API까지 전부 느려진다.
+- 보이는 형태: 스레드 풀 `active == max`, 큐 대기 시간 증가. 스레드 덤프에 `Ticker.sleep`(실제로는 `Thread.sleep`)에 멈춘 요청 스레드가 가득하다.
+- 원인: 재시도 대기가 요청 스레드 위에서 블로킹으로 일어난다. 최대 3회 시도면 대기는 2번이므로, 대기 상한 10초면 대기만으로 스레드 하나가 최대 20초(+호출 시간) 묶인다.
+- 대처: 최대 시도 × 최대 대기가 스레드 풀 크기·호출자 타임아웃과 맞는지 계산한다.\
+  상대별로 자원을 나누어 번짐을 막는다 — [03-bulkhead](../03-bulkhead/2-summary.md).
+
+### 실패 시나리오와 측정 — 재시도 폭풍 (RetryStormTest)
 클라이언트 1000개가 같은 순간에 실패했다고 하고, **첫 재시도가 가장 붐비는 10ms 구간에 몇 개 몰리는지** 센다:
 
 ```text
@@ -223,8 +283,18 @@ EQUAL 지터         500개 미만 (FULL 보다는 몰리지만 최소 간격 �
 - 시간·무작위는 주입한다(Ticker·seed) — 결정적으로 만들 수 없는 것은 검증할 수 없다.\
   그리고 세는 것은 정수로 센다.
 
-## 관련 자료
+## 관련 주제·근거
 
+- 후속 — [02-circuit-breaker](../02-circuit-breaker/2-summary.md): 재시도를 아예 하지 않기로 결정하는 쪽. 여기서 만든 `Ticker`가 상태 전이의 축이 된다.
+- 후속 — [03-bulkhead](../03-bulkhead/2-summary.md): 재시도 대기가 묶는 스레드를 상대별 칸으로 나눈다.
+- 후속 — [06-idempotency-store](../06-idempotency-store/2-summary.md): 재시도가 만드는 중복을 받아내는 저장소.
+- 재료 — [04-rate-limiter](../04-rate-limiter/2-summary.md): `RetryBudget`은 토큰 버킷이다.
+- 곁 — [deadline-propagation](../deadline-propagation/2-summary.md): 호출자 타임아웃과 재시도 대기의 정렬.
+- 영역 표 — [reliability/README.md](../../reliability/README.md) `06-retry-backoff-jitter`.
+- 교재 — Google SRE 책 22장 "Addressing Cascading Failures"(재시도 예산·지터 — sre.google/sre-book 목차 확인) · AWS Architecture Blog "Exponential Backoff And Jitter"(Brooker, 2015).
+- myway 원본 — `/home/jun/project/myway/ops-patterns/01-retry-backoff/` (README.md · impl/*.java · src/test/.../RetryStormTest.java).
+
+### 관련 자료
 - 챕터 안내: `/home/jun/project/myway/ops-patterns/01-retry-backoff/README.md`
 - 계약(TODO 없음): `.../src/main/java/com/ops/retry/RetryPolicy.java`, `Ticker.java`, `TransientFailureException.java`, `PermanentFailureException.java`
 - 내 구현(TODO 껍데기): `.../src/main/java/com/ops/retry/FixedDelayRetry.java`, `ExponentialBackoffRetry.java`, `JitteredBackoffRetry.java`, `Retryer.java`, `RetryBudget.java`
@@ -233,8 +303,7 @@ EQUAL 지터         500개 미만 (FULL 보다는 몰리지만 최소 간격 �
 - 다음 챕터로의 다리: `02-circuit-breaker` — 재시도를 **아예 하지 않기로 결정하는** 쪽.\
   여기서 만든 Ticker가 상태 전이의 축이 된다.
 
-## 용어 풀이
-
+### 용어 풀이
 - **재시도(retry)**: 실패한 작업을 다시 시도하는 것.\
   공짜가 아니다 — 지연과 부하를 산다.
 - **백오프(backoff)**: 실패할수록 대기 시간을 늘리는 것.\

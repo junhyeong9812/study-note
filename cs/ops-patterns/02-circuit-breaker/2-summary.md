@@ -4,9 +4,26 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 서머리(Claude 작성) — 원본 myway 코드·문서 기준.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
 
+상대가 **확실히** 죽었는데도 계속 부르면, 재시도(01)는 답이 아니라 낭비가 된다.\
+차단하는 장치가 없으면 세 사람이 동시에 손해를 본다.
+
+```text
+브레이커 없음:  요청 --> 죽은 상대 --> 1초 타임아웃 --> 재시도 3번 --> 사용자는 4초 뒤 실패
+                                 └─ 그동안 우리 스레드·커넥션은 묶여 있음
+                                 └─ 죽어가는 상대는 계속 두들겨 맞아 회복 못 함
+```
+
+쉬운 예: 집의 누전 차단기 — 이상 전류가 감지되면 전기를 끊고, 나중에 조심스럽게 한 번 올려본다. 끊지 않으면 불이 난다.\
+똑같은 구조다: 실패가 임계를 넘으면 **호출 자체를 안 하고** 즉시 실패시킨다. 그리고 주기적으로 한 번만 찔러본다.\
+실무 예: 추천 API가 죽었을 때 상품 페이지 전체가 4초씩 느려지는 대신, 추천 칸만 비우고 0ms 만에 나머지를 그린다.
+
+  - *임계(threshold)*: 이 값을 넘으면 동작이 바뀌는 경계값. 여기서는 실패율.
+
+### 한눈에 — 쉽게 말하면
 **서킷 브레이커 = 집의 누전 차단기.**\
 문제가 감지되면 전기를 아예 끊고, 나중에 조심스럽게 한 번 올려본다.
 
@@ -37,25 +54,9 @@
 
 실무 예: Resilience4j·Hystrix의 CircuitBreaker, MSA에서 결제·외부 API 호출 보호.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-서킷 브레이커를 직접 만드는 챕터다.\
-`src/main/java/com/ops/breaker/` 의 TODO 껍데기를
-채워 71개 테스트를 전부 통과시킨다(`./run.sh 02` — 시작 시점엔 58개가 실패하는 게 정상이다).\
-설정(CircuitBreakerConfig)·인터페이스(SlidingWindow·ResilienceStrategy)·예외는 주어진다.
-
-채울 TODO (권장 순서대로):
-
-- `CountBasedWindow` (TODO 1) — 최근 N개 링 버퍼.\
-  덮어쓰기 전에 나가는 값을 먼저 뺀다.
-- `TimeBasedWindow` (TODO 2) — 시간 버킷.\
-  expire(창 밖 비우기) + record(floorMod 로 칸 찾기).
-- `CircuitBreaker` (TODO 5, 본체) — currentState / acquirePermission / onSuccess / onError / evaluate.
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
+### 전체 흐름
 ```text
              실패율 >= 임계 (표본 >= minimumCalls)
   CLOSED ────────────────────────────────────────> OPEN
@@ -76,8 +77,7 @@
 - 이름은 전기 회로에서 왔다: **회로가 닫혀(CLOSED) 있어야 전류가 흐른다.**\
   자꾸 뒤집어 읽게 되니 "OPEN은 열려서 아무것도 못 지나간다"로 외우는 편이 낫다.
 
-## 동작 — 상태 전이 (CircuitBreaker 본체)
-
+### 동작 — 상태 전이 (CircuitBreaker 본체)
 **언제 쓰나**: 특정 상대(외부 API, DB)가 통째로 죽었을 때 빨리 실패하고 회복을 기다리고 싶을 때.
 
 > **빨리 실패(fail fast)** — 될 가망 없는 요청을 기다리게 하지 않고 즉시 실패시키는 것.\
@@ -120,8 +120,7 @@ execute 전체를 synchronized로 감싸면 느린 원격 호출 하나가 락�
 > **락(lock)** — 여러 스레드가 상태를 동시에 만지지 못하게 하는 장치.\
 > 예: 여기서는 상태만 잠그고 액션 실행은 락 밖에서 한다.
 
-## 동작 — SlidingWindow ("최근"의 정의)
-
+### 동작 — SlidingWindow ("최근"의 정의)
 **언제 쓰나**: "실패율 50%"의 **분모**를 정할 때.\
 서비스 시작 이후 전부를 세면 하루 종일 잘 돌다 방금 죽은 서버의 누적 실패율이 0.1%라 회로가 영원히 안 열린다.
 
@@ -157,8 +156,71 @@ TimeBasedWindow   최근 T밀리초 — 시간 버킷 배열 (epochs/calls/failu
 **한계**: TimeBasedWindow의 실제 창 길이는 정확히 T가 아니라 T-버킷길이 ~ T 사이다.\
 버킷을 잘게 쪼개면 정확해지는 대신 배열이 커진다.
 
-## 실패 시나리오와 측정 (CircuitBreakerReliefTest)
+## 쓰이는 자료구조·알고리즘
 
+- **상태 기계(state machine)** — CLOSED / OPEN / HALF_OPEN 셋과 전이 규칙이 본체다. 상태마다 허용되는 입력(허가·보고·조회)이 다르다.
+- **링 버퍼(ring buffer)** — `CountBasedWindow`. 고정 배열을 원형으로 돌려 "최근 N개"만 남긴다.\
+  [data-structure/04-queue-deque](../../data-structure/04-queue-deque/2-summary.md)의 원형 큐와 같은 발상이다.
+- **시간 버킷 배열 + `floorDiv`/`floorMod`** — `TimeBasedWindow`. 시각을 버킷 번호로 바꿔 배열 칸을 고르고, 창 밖 버킷은 비운다.\
+  [04-rate-limiter](../04-rate-limiter/2-summary.md)의 슬라이딩 카운터가 같은 재료로 다른 것을 센다.
+- **슬라이딩 윈도우(sliding window)** — "최근"의 정의. 알고리즘 쪽 원형은 [algorithm/09-sliding-window](../../algorithm/09-sliding-window/2-summary.md).
+- **뮤텍스(락)** — 상태와 통계만 잠그고 액션 실행은 밖에서. 락의 기본은 [systems/semaphore](../../systems/semaphore/2-summary.md).
+- **술어 함수(predicate)** — `Predicate<Throwable>` 하나가 "무엇을 실패로 셀지"를 정한다. 숫자 넷보다 이 함수가 중요하다.
+- **데코레이터(decorator)** — `ResilienceStrategy.execute(Callable)` 모양을 맞춰 브레이커·벌크헤드·재시도를 겹친다.
+- 실제 라이브러리 — Resilience4j `CircuitBreaker`(슬라이딩 창 타입이 `COUNT_BASED`/`TIME_BASED`로 이 노트와 같은 두 갈래), Netflix Hystrix(유지보수 모드), Envoy의 outlier detection(실패가 잦은 호스트를 일정 시간 빼는 기능 — Envoy의 "circuit breaking" 설정은 이름과 달리 동시 연결·요청 수 상한이다).
+
+## 적용 — 풀어나가는 법
+
+### 문제 — 이 챕터가 시키는 것
+서킷 브레이커를 직접 만드는 챕터다.\
+`src/main/java/com/ops/breaker/` 의 TODO 껍데기를
+채워 71개 테스트를 전부 통과시킨다(`./run.sh 02` — 시작 시점엔 58개가 실패하는 게 정상이다).\
+설정(CircuitBreakerConfig)·인터페이스(SlidingWindow·ResilienceStrategy)·예외는 주어진다.
+
+채울 TODO (권장 순서대로):
+
+- `CountBasedWindow` (TODO 1) — 최근 N개 링 버퍼.\
+  덮어쓰기 전에 나가는 값을 먼저 뺀다.
+- `TimeBasedWindow` (TODO 2) — 시간 버킷.\
+  expire(창 밖 비우기) + record(floorMod 로 칸 찾기).
+- `CircuitBreaker` (TODO 5, 본체) — currentState / acquirePermission / onSuccess / onError / evaluate.
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+실제 시스템에 붙일 때 정하는 순서는 코드 순서와 다르다.\
+① **무엇을 실패로 셀지**(술어 — 400·`BulkheadFullException`은 제외) → ② "최근"의 정의(트래픽 양에 비춰 개수 창이 보는 시간 길이가 너무 짧거나 길지 않은지 따져 고른다 — 시간 창이면 한가할 때를 위해 `minimumCalls`) → ③ 숫자 넷(실패율 임계·minimumCalls·waitDuration·HALF_OPEN permits) → ④ 재시도·벌크헤드와 겹치는 순서.\
+위 「문제」절의 TODO는 이 중 ②(창)를 먼저 만들고 본체로 간다.
+
+## 장애 시나리오와 대처
+
+아래 「실패 시나리오와 측정」절이 다루는 것(멀쩡한 요청 차단·프로세스별 상태·설정 충돌) 말고, 운영에서 따로 보이는 장애들이다.
+
+**1. 플래핑 — 열렸다 닫혔다를 반복한다**
+
+- 현상: 상대는 반쯤 살아 있는데 회로가 몇 초마다 열리고 닫힌다.
+- 보이는 형태: 상태 전이 로그가 `OPEN → HALF_OPEN → CLOSED → OPEN …`을 초 단위로 반복한다. 성공률 그래프가 톱니 모양이다.
+  - *플래핑(flapping)*: 두 상태 사이를 빠르게 오가며 안정되지 않는 것.
+- 원인: 임계가 과민하다 — `minimumCalls`가 작아 표본 몇 개로 판단하거나, HALF_OPEN permits가 1이라 간 보기 한 번의 운으로 닫힌다. 닫히자마자 창이 비어 있어(reset) 다시 몇 개의 실패로 열린다.
+- 대처: `minimumCalls`와 창을 키워 표본을 확보하고, HALF_OPEN permits를 여러 개로 둔다.\
+  열림 → 닫힘 조건을 닫힘 → 열림 조건보다 엄격하게 두는 것이 원리다 — [systems/Hysteresis](../../systems/Hysteresis/2-summary.md).
+
+**2. 폴백이 없어 차단이 곧 500이다**
+
+- 현상: 회로가 열렸는데 사용자 화면은 여전히 에러다. 브레이커를 넣기 전보다 에러율이 높아 보인다.
+- 보이는 형태: `CircuitBreakerOpenException`이 처리되지 않고 500으로 매핑된다. 에러율 100%, 다만 응답 시간만 0ms.
+- 원인: 브레이커는 "시도조차 안 했다"를 알려줄 뿐 **대신 무엇을 줄지**는 정하지 않는다. 그 결정이 빠졌다.
+  - *폴백(fallback)*: 본래 경로가 막혔을 때 대신 돌려주는 값이나 경로.
+- 대처: 열린 회로의 예외를 잡아 폴백(캐시된 값·기본값·기능 축소 응답)을 돌려주거나, 503 + `Retry-After`로 매핑해 클라이언트가 물러나게 한다.
+
+**3. 상대가 죽지 않고 느려지기만 해서 회로가 안 열린다**
+
+- 현상: p99 응답 시간이 30초인데 브레이커는 CLOSED다. 스레드 풀이 먼저 마른다.
+- 보이는 형태: 창의 `totalCalls`가 거의 안 는다 — 호출이 끝나야 결과가 창에 들어가는데, 아직 아무것도 안 끝났다.
+- 원인: 결과 보고는 호출이 **끝난 뒤**에 일어난다. 느림은 실패가 아니라서 창에 실패로 안 잡히고, 타임아웃이 길면 그 시간만큼 판단이 늦다.
+- 대처: 브레이커 안쪽에 짧은 타임아웃을 두어 느림을 실패로 바꾼다. Resilience4j는 느린 호출 비율(`slowCallRateThreshold`·`slowCallDurationThreshold`)로도 회로를 열 수 있다 — 이 impl에는 그 기능이 없다.\
+  판단이 늦는 동안 스레드가 마르는 것은 브레이커의 일이 아니다(정답 13번 참고) — [03-bulkhead](../03-bulkhead/2-summary.md)가 막는다.
+
+### 실패 시나리오와 측정 (CircuitBreakerReliefTest)
 상대가 완전히 죽었다.\
 1000건이 100ms 간격으로 들어오고, 한 번 나가면 타임아웃 1초:
 
@@ -198,8 +260,18 @@ TimeBasedWindow   최근 T밀리초 — 시간 버킷 배열 (epochs/calls/failu
 - **조회가 상태를 바꾼다**(OPEN→HALF_OPEN은 물어볼 때 일어난다) — 읽기처럼 생긴 것이 쓰기라 동시성이 까다롭고, 그래서 락을 잡되 액션 실행만은 락 밖이다.
 - 대가는 명확하다: 멀쩡한 요청까지 막고, 상태는 프로세스마다 따로고, 설정 둘(minimumCalls vs 창 크기)이 서로를 죽일 수 있다.
 
-## 관련 자료
+## 관련 주제·근거
 
+- 선행 — [01-retry-backoff](../01-retry-backoff/2-summary.md): 같은 `Ticker`, 같은 "누구 탓인가" 판단. 겹쳐 쓰는 순서가 창을 채우는 속도를 바꾼다.
+- 후속 — [03-bulkhead](../03-bulkhead/2-summary.md): 회로가 열리기 전의 느림이 스레드 풀을 말리는 것을 막는다. `ResilienceStrategy`로 겹친다.
+- 재료 — [04-rate-limiter](../04-rate-limiter/2-summary.md): 같은 슬라이딩 창으로 결과가 아니라 요청 수를 센다.
+- 곁 — [systems/Hysteresis](../../systems/Hysteresis/2-summary.md): 플래핑을 막는 "열림·닫힘 조건의 비대칭".
+- 곁 — [deadline-propagation](../deadline-propagation/2-summary.md): 브레이커 안쪽 타임아웃과 호출자 데드라인의 관계.
+- 영역 표 — [reliability/README.md](../../reliability/README.md) `10-circuit-breaker`.
+- 교재 — Nygard 『Release It!』 2판 5장 "Stability Patterns"의 Circuit Breaker · Fowler "CircuitBreaker"(2014).
+- myway 원본 — `/home/jun/project/myway/ops-patterns/02-circuit-breaker/` (README.md · impl/CircuitBreaker.java · impl/CountBasedWindow.java · impl/TimeBasedWindow.java · src/test/.../CircuitBreakerReliefTest.java).
+
+### 관련 자료
 - 챕터 안내: `/home/jun/project/myway/ops-patterns/02-circuit-breaker/README.md`
 - 계약(TODO 없음): `.../src/main/java/com/ops/breaker/State.java`, `SlidingWindow.java`, `CircuitBreakerConfig.java`, `ResilienceStrategy.java`, `Ticker.java`, `CircuitBreakerOpenException.java`
 - 내 구현(TODO 껍데기): `.../src/main/java/com/ops/breaker/CountBasedWindow.java`, `TimeBasedWindow.java`, `CircuitBreaker.java`
@@ -208,8 +280,7 @@ TimeBasedWindow   최근 T밀리초 — 시간 버킷 배열 (epochs/calls/failu
 - 다음 챕터로의 다리: `03-bulkhead` — 회로는 상대별로 끊지만 스레드 풀이 통째로 마르는 건 못 막는다.\
   `ResilienceStrategy`가 거기서 겹쳐진다.
 
-## 용어 풀이
-
+### 용어 풀이
 - **서킷 브레이커(circuit breaker)**: 실패가 임계를 넘으면 호출 자체를 차단하고 주기적으로만 찔러보는 패턴.\
   이름은 누전 차단기에서.
 - **CLOSED / OPEN / HALF_OPEN**: 통과(정상) / 차단(즉시 실패) / 간 보기(정해진 수만 통과).\

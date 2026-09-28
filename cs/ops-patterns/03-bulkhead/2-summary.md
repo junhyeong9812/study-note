@@ -4,9 +4,23 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 서머리(Claude 작성) — 원본 myway 코드·문서 기준.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
 
+자원(스레드·커넥션)이 하나의 공용 풀이면, **가장 느린 용도**가 풀을 전부 물고 나머지를 굶긴다.\
+막을 장치가 없으면 중요도와 무관하게 "먼저 느려진 쪽"이 이긴다.
+
+```text
+공용 풀 20:   추천(느림)이 1개씩 물고 안 놓음 --> 20개 전부 추천 --> 결제가 잡을 자리 0
+칸막이:       추천 4칸 | 배송 6칸 | 결제 10칸  --> 추천은 4에서 멈춤 --> 결제 10칸은 무사
+```
+
+쉬운 예: 응급실 침대 — 경증 환자가 침대를 다 차지하면 응급 환자가 못 눕는다. 그래서 응급 전용 침대를 따로 빼 둔다.\
+똑같은 구조다: 이름(용도)마다 칸을 배정하고, 한 이름은 자기 칸 밖을 못 쓰게 한다. 전용 칸이 비어 있어도 남이 못 쓰는 것이 이 패턴의 값이자 비용이다.\
+실무 예: 결제 API와 추천 API가 같은 HTTP 클라이언트 커넥션 풀을 쓰다가, 추천 서버 지연 하나로 결제까지 타임아웃 나는 사고.
+
+### 한눈에 — 쉽게 말하면
 **벌크헤드 = 배의 칸막이벽.**\
 배 한 칸에 물이 새도 칸막이가 있으면 그 칸만 잠기고 배는 뜬다.
 
@@ -32,28 +46,9 @@
 
 실무 예: Resilience4j Bulkhead, 서비스별 스레드 풀·커넥션 풀 분리, 컨테이너별 CPU/메모리 쿼터.
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
 
-자원 격리(벌크헤드)를 세 방식으로 직접 만드는 챕터다.\
-`BulkheadContractTest`를 따라친 뒤
-`src/main/java/com/ops/bulkhead/` 의 TODO 10개를 채워 82개 테스트를 전부 통과시킨다
-(`./run.sh 03` — 시작 시점엔 73개가 실패하는 게 정상이다).\
-계약 테스트 71개는 세 구현이
-전부 통과해야 한다 — 갈리는 것은 한 이름이 자리를 물고 안 놓을 때다.
-
-채울 TODO (권장 순서대로):
-
-- `SharedPool` (TODO 1~4) — 기준선(칸 없음).\
-  tryAcquire 둘 + release + call(try/finally가 여기서 나온다).
-- `FixedBulkhead` (TODO 5~7) — 이름마다 자기 칸.\
-  tryAcquire + release(초과 반납 검사) + semaphoreOf(모르는 이름은 던진다).
-- `ElasticBulkhead` (TODO 8~10) — 보장 + 공용.\
-  내 칸 먼저 쓰고 공용에서 빌리기, **빌리고 갚는 규칙이 본체다.**
-
-아래 서머리는 이 문제(README)를 분석·정리한 것이다.
-
-## 전체 흐름
-
+### 전체 흐름
 ```text
 Bulkhead 인터페이스: tryAcquire(key) / release(key) / call(key, task) — 이름(key)별로 자리를 관리
 
@@ -63,8 +58,7 @@ Bulkhead 인터페이스: tryAcquire(key) / release(key) / call(key, task) — �
   ElasticBulkhead  보장 칸 + 공용 여유분. 자기 칸 다 쓰면 공용에서 빌린다
 ```
 
-## 동작 — FixedBulkhead (고정 칸막이)
-
+### 동작 — FixedBulkhead (고정 칸막이)
 **언제 쓰나**: 한 이름의 폭주가 다른 이름에 절대 못 번지게 해야 할 때(결제처럼 죽으면 안 되는 것이 있을 때).
 
 > **세마포어(Semaphore)** — "동시에 N명까지"를 세는 자물쇠. acquire 로 자리를 잡고 release 로 돌려준다.\
@@ -105,8 +99,7 @@ Bulkhead 인터페이스: tryAcquire(key) / release(key) / call(key, task) — �
 > **활용률(utilization)** — 전체 자원 중 실제로 쓰이는 비율.\
 > 예: 격리의 대가로 지불하는 것 — 추천이 놀아도 결제는 그 4칸을 못 쓴다.
 
-## 동작 — ElasticBulkhead (탄력: 보장 + 공용)
-
+### 동작 — ElasticBulkhead (탄력: 보장 + 공용)
 **언제 쓰나**: 고정의 격리와 공용 풀의 활용률을 절반씩 갖고 싶을 때.
 
 > **공용 여유분(shared pool)** — 탄력 방식에서 누구나 빌려 쓸 수 있는 칸.\
@@ -144,8 +137,68 @@ Bulkhead 인터페이스: tryAcquire(key) / release(key) / call(key, task) — �
 > **보장(guarantee) / 최대(maximum)** — 어떤 경우에도 쓸 수 있는 수 / 공용이 비어 있을 때만 나오는 수.\
 > 예: 결제 보장 6 + 공용 8 이면 최대는 14지만 계획은 보장 6으로만 한다.
 
-## 실패 시나리오와 측정 (IsolationTest)
+## 쓰이는 자료구조·알고리즘
 
+- **카운팅 세마포어(counting semaphore)** — "동시에 N명까지"를 세는 자물쇠. `java.util.concurrent.Semaphore`를 이름마다 하나씩 둔다.\
+  원리는 [systems/semaphore](../../systems/semaphore/2-summary.md). `release`가 용량을 안 본다는 것이 이 노트의 함정 절반이다.
+- **해시맵 이름 → 세마포어** — `semaphoreOf(key)`. 모르는 이름은 던진다(설계 결정). [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md).
+- **CAS 원자 카운터** — 빌린 개수(`borrowed`)를 락 없이 `compareAndSet`으로 갚는다. 락 대신 원자 연산으로 상태 하나를 지키는 기본 기법이다.
+- **try/finally 자원 반납** — `call(key, task)`. 잡기·일하기·돌려주기를 한 곳에 고정해 반납 누락의 자리를 없앤다.
+- **2단 획득(내 칸 → 공용)** — `ElasticBulkhead`의 "보장 + 공용" 배분. 최소 보장에 공유 여유분을 얹는 자원 배분 방식이다.
+- 실제 시스템 — Resilience4j `SemaphoreBulkhead`/`ThreadPoolBulkhead`, Hystrix의 커맨드별 스레드 풀 격리, DB 커넥션 풀을 서비스별로 분리.\
+  쿠버네티스의 `requests`/`limits`가 "보장 / 최대"와 비슷한 구조다 — 스케줄러는 requests 합으로 노드에 배치하고, limits는 넘을 수 없는 상한이다(CPU는 조절, 메모리는 초과 시 OOM kill). 계획은 requests로 한다.
+
+## 적용 — 풀어나가는 법
+
+### 문제 — 이 챕터가 시키는 것
+자원 격리(벌크헤드)를 세 방식으로 직접 만드는 챕터다.\
+`BulkheadContractTest`를 따라친 뒤
+`src/main/java/com/ops/bulkhead/` 의 TODO 10개를 채워 82개 테스트를 전부 통과시킨다
+(`./run.sh 03` — 시작 시점엔 73개가 실패하는 게 정상이다).\
+계약 테스트 71개는 세 구현이
+전부 통과해야 한다 — 갈리는 것은 한 이름이 자리를 물고 안 놓을 때다.
+
+채울 TODO (권장 순서대로):
+
+- `SharedPool` (TODO 1~4) — 기준선(칸 없음).\
+  tryAcquire 둘 + release + call(try/finally가 여기서 나온다).
+- `FixedBulkhead` (TODO 5~7) — 이름마다 자기 칸.\
+  tryAcquire + release(초과 반납 검사) + semaphoreOf(모르는 이름은 던진다).
+- `ElasticBulkhead` (TODO 8~10) — 보장 + 공용.\
+  내 칸 먼저 쓰고 공용에서 빌리기, **빌리고 갚는 규칙이 본체다.**
+
+아래 서머리는 이 문제(README)를 분석·정리한 것이다.
+
+실제 시스템에 붙일 때 정하는 순서는 ① **격리 단위**(무엇을 같은 칸에 넣을지 — 중요도·장애 상관관계로) → ② 방식(고정 vs 탄력) → ③ 쿼터(보장 기준으로 합해서 계획, 공용은 없다고 치고) → ④ 거절(`BulkheadFullException`)을 어떻게 분류하고 응답할지.\
+①이 코드가 아니라 설계이고, 잘못 잡으면 나머지가 성실히 틀린다. 위 「문제」절의 TODO는 ②의 세 방식을 기준선부터 순서대로 만든다.
+
+## 장애 시나리오와 대처
+
+아래 「실패 시나리오와 측정」절이 다루는 조용한 손상(이중 반납·반납 누락)과 한계(격리 단위·대기 큐) 말고, 운영에서 따로 보이는 장애들이다.
+
+**1. 칸 수가 아래 자원보다 크다**
+
+- 현상: 벌크헤드는 거절 0인데 결제가 여전히 타임아웃 난다.
+- 보이는 형태: `rejections("결제") == 0`, 그런데 DB 커넥션 풀 쪽에서 `connection timeout`(예: HikariPool 대기 초과) 로그.
+- 원인: 결제 칸이 10인데 결제가 쓰는 커넥션 풀은 5다. 칸을 얻은 요청 5개가 커넥션을 못 얻어 **칸 안에서** 기다린다. 세마포어가 세는 수와 실제 병목 자원의 수가 다르다.
+- 대처: 칸 수 ≤ 그 이름이 쓰는 하위 자원 수로 맞춘다. 또는 병목 자원(커넥션 풀) 자체를 이름별로 분리해 격리 계층을 병목과 같은 곳에 둔다.
+
+**2. 칸은 지켰는데 스레드는 묶인다**
+
+- 현상: 추천이 자기 4칸에서 멈추긴 하는데, 그 4개 요청 스레드가 30초씩 묶여 있다.
+- 보이는 형태: 스레드 덤프에 추천 호출 스레드 4개가 소켓 읽기에서 대기 중. 격리는 됐지만 4개 스레드는 그동안 아무것도 못 한다.
+- 원인: 세마포어 방식은 **동시 호출 수**만 제한하고 호출 스레드는 호출자의 것이다. 칸 안에서 얼마나 오래 있을지는 아무도 안 정한다.
+- 대처: 칸 안 호출에 타임아웃을 건다(느림을 실패로 바꾸는 것은 [02-circuit-breaker](../02-circuit-breaker/2-summary.md)의 안쪽 타임아웃과 같은 자리).\
+  스레드 자체를 격리해야 하면 이름별 스레드 풀 방식(큐 상한 필수 — 무한 큐는 정답 9번의 함정)으로 바꾼다.
+
+**3. 새 이름이 칸을 못 받고 배포된다**
+
+- 현상: 새 기능을 배포하자마자 그 기능만 100% 실패한다.
+- 보이는 형태: 새 엔드포인트의 모든 요청이 `IllegalArgumentException`(모르는 이름) 같은 예외로 즉시 실패. 다른 기능은 멀쩡하다.
+- 원인: 이름 → 쿼터 배분은 설정이고, 코드에 새 이름을 쓰는 변경과 같이 움직이지 않았다. "모르는 이름은 던진다"는 설계가 여기서 시끄럽게 드러난다 — 조용히 통과시켰다면 오타 하나가 새 칸을 만들었을 것이다.
+- 대처: 기동 시점에 코드가 쓰는 이름 목록과 배분 설정을 대조해 빠진 이름이 있으면 기동을 실패시킨다. 던지는 설계는 유지한다 — 시끄러운 실패가 조용한 새 칸보다 낫다.
+
+### 실패 시나리오와 측정 (IsolationTest)
 측정 1 — 추천이 물고 안 놓을 때 **결제가 잡을 수 있는 자리** / 측정 2 — **결제 혼자 바쁠 때** 전체 20 중 쓰는 자리:
 
 ```text
@@ -197,8 +250,17 @@ ElasticBulkhead (6/4/2+8)      6                 14
   release의 검사와 call의 finally가 그 방어선이다.
 - 무엇을 같은 칸에 넣을지가 이 패턴의 전부다 — 잘못 묶으면 칸 안에서 같은 사고가 그대로 난다.
 
-## 관련 자료
+## 관련 주제·근거
 
+- 선행 — [01-retry-backoff](../01-retry-backoff/2-summary.md) · [02-circuit-breaker](../02-circuit-breaker/2-summary.md): 상대가 아플 때의 정책. 벌크헤드는 시선이 안으로 바뀐다. `BulkheadFullException`을 02의 실패로 세면 안 된다.
+- 후속 — [04-rate-limiter](../04-rate-limiter/2-summary.md): 들어오는 쪽을 막는다. [05-backpressure](../05-backpressure/2-summary.md): 못 받겠다고 말한다. 셋이 과부하의 세 층이다.
+- 재료 — [systems/semaphore](../../systems/semaphore/2-summary.md): 세마포어의 원리와 `release`의 성질.
+- 곁 — [deadline-propagation](../deadline-propagation/2-summary.md): 칸 안에서 얼마나 기다릴지의 상한.
+- 영역 표 — [reliability/README.md](../../reliability/README.md) `28-bulkhead`.
+- 교재 — Nygard 『Release It!』 2판 5장 "Stability Patterns"의 Bulkheads.
+- myway 원본 — `/home/jun/project/myway/ops-patterns/03-bulkhead/` (README.md · impl/SharedPool.java · impl/FixedBulkhead.java · impl/ElasticBulkhead.java · src/test/.../IsolationTest.java).
+
+### 관련 자료
 - 챕터 안내: `/home/jun/project/myway/ops-patterns/03-bulkhead/README.md`
 - 계약(TODO 없음): `.../src/main/java/com/ops/bulkhead/Bulkhead.java`, `BulkheadFullException.java`
 - 내 구현(TODO 껍데기): `.../src/main/java/com/ops/bulkhead/SharedPool.java`, `FixedBulkhead.java`, `ElasticBulkhead.java`
@@ -206,8 +268,7 @@ ElasticBulkhead (6/4/2+8)      6                 14
 - 테스트: `.../src/test/java/com/ops/bulkhead/BulkheadContractTest.java`(세 구현 공통 계약), `IsolationTest.java`(격리·활용률·한계 측정), `SharedPoolTest.java`, `FixedBulkheadTest.java`, `ElasticBulkheadTest.java`
 - 다음 챕터로의 다리: `04-rate-limiter`는 **들어오는 쪽**을 막고, `05-backpressure`는 못 받겠다고 **말한다** — 셋이 같은 문제의 세 층이다.
 
-## 용어 풀이
-
+### 용어 풀이
 - **벌크헤드(bulkhead)**: 배의 침수 방지 칸막이벽.\
   자원을 이름별 칸으로 나눠 한 곳의 폭주가 못 번지게 하는 패턴.
 - **자원 격리(resource isolation)**: 스레드·커넥션 같은 내 자원을 용도별로 나눠 지키는 것.
