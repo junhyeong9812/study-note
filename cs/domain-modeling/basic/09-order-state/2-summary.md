@@ -4,8 +4,28 @@
 > 작성 방식: 내가 먼저 기억으로 흐름을 서술하고, Claude는 빠지거나 틀린 곳을 짚는다. 대신 써주지 않는다.
 > 이미 따라 치며 만든 정리본이 따로 있으면(organize류) 이 파일은 핵심 문장 압축 + 링크만 담는다.
 > 2026-09-14: 쉽게 풀어쓴 서머리(Claude 작성) — 원본 myway 코드·문서 기준.
+> 2026-09-28: 통일 골격 양식으로 재배치 + 새 절 추가(Claude 작성 — 기존 본문은 이동만).
 
-## 한눈에 — 쉽게 말하면
+## 해결하는 문제
+
+주문의 상태를 `String status` 필드 하나와 `if` 몇 개로 관리하면, 화살표 9개짜리 그림은 다 그린 것 같아도 **표의 빈칸 55개**에 대한 답이 없다.\
+그리고 같은 이벤트가 두 번 왔을 때 "성공/실패" 둘로는 답이 안 나온다.
+
+```text
+그림: PLACED → PAID → PREPARING → SHIPPED → …   (화살표 9개, 다 그린 것 같다)
+
+표:          PLACED  PAID  PREPARING  SHIPPED  DELIVERED  …
+  PLACED       ?      O       ?         ?         ?          8×8 = 64칸
+  PAID         ?      ?       O         ?         ?          채워진 칸 9개
+  SHIPPED      ?      ?       ?         ?         O          빈칸 55개 = "안 된다"인가 "아직 안 그렸다"인가
+```
+
+이 방식이 없으면 결제 없이 배송이 나가고(빈칸을 통과), 재전송된 결제완료 이벤트가 포인트를 두 번 적립하거나(무시를 성공으로), 정상 재시도가 장애 경보를 울린다(무시를 실패로).\
+쉬운 예: 보드게임 말판 — 갈 수 있는 칸은 규칙표가 정하고, 이미 있는 칸으로 "이동"하는 것은 성공도 실패도 아닌 제자리다.\
+똑같은 구조다: 전이 표(`Map<상태, Set<상태>>`)가 곧 규칙이고, 결과는 APPLIED / IGNORED / REJECTED **셋**이다.\
+실무 예: 주문·결제·배송 상태, 티켓 워크플로우, 배포 파이프라인, 구독 상태 — 수명 주기가 있는 모든 것.
+
+### 한눈에 — 쉽게 말하면
 
 **주문 상태 전이 = 보드게임의 말판.**
 
@@ -28,7 +48,134 @@
   화살표 9개 / 가능한 칸 64개 = 14%.  나머지 86%는 전부 "거부"다.
 ```
 
-## 문제 — 이 챕터가 시키는 것
+## 동작·원리
+
+### 전체 흐름
+
+```text
+요구사항 문장                            코드로의 번역
+──────────────────────────────────────────────────────────────
+"주문 상태들"                  →  OrderState enum 8개
+"갈 수 있는 길"                →  Map<OrderState, Set<OrderState>> 전이 표
+                                   standard(): 흔한 쇼핑몰 규칙 9개 화살표
+"전이 결과"                    →  TransitionResult(상태, 종류)
+                                   APPLIED / IGNORED / REJECTED 3갈래
+"중복 이벤트를 어떻게 보나"    →  sameStateIsIdempotent (boolean 정책)
+"이벤트 여러 개 순서대로"      →  applyAll — 거부돼도 멈추지 않고 계속
+"끝난 상태"                    →  isTerminalIn(machine) — 필드가 아니라 표가 말한다
+"표가 제대로 이어졌나"         →  reachableFrom — BFS (11번 그대로)
+```
+
+> **상태 머신(state machine)** — 상태들과 그 사이의 허용된 전이(화살표)를 표로 들고 있는 것.\
+> 예: 표에 PLACED→PAID 가 있으면 그 이동은 되고, 표에 없는 PLACED→SHIPPED 는 전부 거부다.
+
+> **멱등(idempotent)** — 같은 요청을 두 번 해도 결과가 한 번 한 것과 같은 성질.\
+> 예: 결제완료 이벤트가 재전송으로 두 번 와도 주문은 결제완료 상태 하나로 끝난다.
+
+### 규칙 1 — 결과는 둘이 아니라 셋이다 (이 챕터의 핵심)
+
+**어떤 요구사항인가**: "전이를 시도하면 성공 또는 실패" — 라고 쓰고 싶지만, 셋이 필요하다.
+
+```text
+  APPLIED   상태가 바뀌었다         changed=true   isError=false
+  IGNORED   이미 그 상태다          changed=false  isError=false   ← 제3의 값
+  REJECTED  허용되지 않는 전이다    changed=false  isError=true
+```
+
+**왜 불리언 하나로 안 되나**: 결과가 답해야 할 질문이 **둘**이기 때문이다 — ① 상태가 바뀌었나(`changed`) → 후처리를 돌릴지 정한다 ② 잘못된 요청인가(`isError`) → 경보를 울릴지 정한다.
+
+IGNORED는 (false, false)라서 둘 중 어느 쪽으로 뭉개도 사고가 난다:
+
+- IGNORED를 APPLIED로 뭉개면 → 중복 결제 이벤트에 포인트 적립·알림이 **두 번** 돈다.
+- IGNORED를 REJECTED로 뭉개면 → 네트워크 재시도가 실패로 보고되어 **경보가 울린다.**
+
+**예시 입력**: PLACED에서 [PAID, PAID]를 받으면 → APPLIED(PAID가 됨), IGNORED(이미 PAID).\
+멱등을 끄면(strict) 두 번째가 REJECTED.
+
+### 규칙 2 — 같은 상태인지를 표보다 먼저 본다 (순서가 계약)
+
+**`apply`의 판정 순서**: ① from == to 인가 → 멱등이면 IGNORED ② 표에 있나 → APPLIED ③ 없으면 REJECTED.
+
+**함정**: 표준 표에는 자기 전이(자기 자신으로 가는 화살표)가 없어서, 어느 것을 먼저 보든 답이 같다 — **표준 표만 시험하면 이 순서가 아무 의미도 없어 보인다.**\
+순서가 갈리는 것은 표에 자기 전이가 있을 때다:
+
+> **자기 전이(self-transition)** — 어떤 상태에서 자기 자신으로 가는 화살표.\
+> 예: "배송 중 위치 갱신"처럼 SHIPPED 에서 다시 SHIPPED 로 오는 이벤트가 의미를 갖는 표.
+
+```text
+  "배송 중 위치 갱신"처럼 SHIPPED → SHIPPED 가 의미 있는 표라면
+
+    같은 상태를 먼저 본다  →  IGNORED   (중복 이벤트로 본다)
+    표를 먼저 본다         →  APPLIED   (갱신으로 본다)
+
+  impl은 같은 상태 먼저 + 멱등 off 스위치로 둘 다 표현한다.
+```
+
+### 규칙 3 — 거부는 멈추지 않고, 원래 상태를 담아 돌려준다
+
+**예시 입력**: PLACED에서 이벤트 [SHIPPED, PAID]:
+
+```text
+  SHIPPED  →  REJECTED, 상태는 여전히 PLACED   (결제 없이 배송 불가)
+  PAID     →  APPLIED,  PLACED → PAID          (뒤의 이벤트는 유효했다)
+```
+
+**왜 이렇게 모델링했나**:
+
+- **거부해도 멈추지 않는다** — 뒤의 이벤트가 유효할 수 있다.\
+  멈출지 계속할지도 "정해야 하는 규칙"이고, 여기서는 계속으로 정했다.
+- **거부·무시는 원래 상태를 그대로 담아 돌려준다.**\
+  그래서 `applyAll`은 결과의 상태를 **조건 없이 대입**한다(`current = result.state()`).
+- 변종 검증에서 고친 것: 원래는 `changed()`를 확인하고 대입했는데, 거부·무시가 원래 상태를 담고 있으니 **그 조건이 아무 일도 안 하고 있었다.**\
+  조건을 지우고, "거부는 원래 상태를 준다"는 불변식을 계약 테스트로 옮겼다 — 거부가 시도한 상태를 담게 바꾸는 변종은 테스트 3개가 잡는다.
+
+> **변종 검증(mutation testing)** — 코드를 일부러 조금 틀리게 바꿔보고 테스트가 그걸 잡는지 확인하는 방법.\
+> 예: 거부가 원래 상태 대신 시도한 상태를 담게 바꿨더니 테스트 3개가 깨졌다면, 그 약속은 실제로 지켜지고 있는 것이다.
+
+### 규칙 4 — "끝났다"는 필드가 아니라 표가 말한다
+
+**어떤 요구사항인가**: CANCELLED와 REFUNDED는 종점이다.
+
+**코드로의 번역**: `isTerminalIn(machine)` = "나가는 화살표가 0개인가"(`allowedFrom(state).isEmpty()`).
+
+**왜 이렇게 모델링했나**: `boolean terminal` 필드를 따로 두면 표와 어긋날 수 있고, **어긋나도 아무도 모른다.**\
+같은 사실의 출처를 하나(표)로 두면 어긋남 자체가 불가능하다. (06번의 "같은 것을 두 곳에서 지키지 마라"와 같은 원리.)
+
+### 규칙 5 — 표가 곧 그래프다: BFS로 표를 검사한다
+
+**어떤 요구사항인가**: 표를 손으로 채우면 아무도 못 가는 상태가 생길 수 있다.
+
+**예시**: DELIVERED → RETURN_REQUESTED 화살표를 빠뜨리면:
+
+```text
+  PLACED에서 BFS  →  닿는 상태 6개 (8개여야 정상)
+  RETURN_REQUESTED, REFUNDED 에 아무도 못 간다 = 죽은 상태
+
+  그런데 그 두 상태는 enum에도 switch에도 남아 있어서 아무도 안 지운다.
+```
+
+> **BFS(너비 우선 탐색)** — 시작점에서 가까운 곳부터 큐로 차례차례 훑는 그래프 탐색.\
+> 예: 전이 표를 그래프로 보고 PLACED 에서 훑으면, 한 걸음 거리인 PAID·CANCELLED 부터 차례로 나온다.
+
+**계산 방법**: `reachableFrom`은 11번 BFS를 그대로 쓴다 — 표가 곧 그래프다.\
+시작점을 먼저 방문 처리하므로 끝난 상태도 자기 자신에는 닿는다(0개가 아니라 1개).
+
+## 쓰이는 자료구조·알고리즘
+
+- **전이 표 = 인접 리스트** — `EnumMap<OrderState, EnumSet<OrderState>>`. 상태가 노드, 허용 전이가 간선인 방향 그래프다 — [data-structure/08-graph](../../../data-structure/08-graph/2-summary.md). `EnumMap`/`EnumSet`은 enum 상수를 키로 쓰는 빠르고 작은 표다. 단, 상태를 새로 추가하고 표에 안 넣으면 `allowedFrom`의 `getOrDefault`가 빈 집합을 돌려줘 조용히 "끝 상태"가 된다 — 컴파일러는 못 잡고, 아래 도달성 검사가 잡는다.
+- **BFS 도달성 검사** — `reachableFrom`은 `ArrayDeque` 큐로 표를 훑는다. 아무도 못 가는 상태(죽은 상태)와 "돌이킬 수 없는 경계"(닿는 수가 6→4로 주는 지점)를 찾는다 — [algorithm/11-bfs](../../../algorithm/11-bfs/2-summary.md).
+- **3갈래 결과 enum + 레코드** — `TransitionResult(state, kind)`. 답할 질문이 둘(바뀌었나·오류인가)이라 boolean 하나로는 안 된다. [10-payment](../10-payment/2-summary.md)의 CANCELLED/DUPLICATE/INSUFFICIENT, [13-inventory](../13-inventory/2-summary.md)의 4종 결과가 같은 자리.
+- **판정 순서 고정** — ① 같은 상태인가 → ② 표에 있나 → ③ 거부. 자기 전이가 있는 표에서만 순서가 갈린다. [07-notification](../07-notification/2-summary.md)의 파이프라인 순서와 같은 교훈.
+- **파생 속성** — `isTerminalIn` = 나가는 간선 0개. 필드로 두지 않고 표에서 계산해 어긋날 자리를 없앤다. [10-payment](../10-payment/2-summary.md)의 파생 상태와 같은 원리.
+- **멱등 스위치** — `sameStateIsIdempotent`: 중복 이벤트를 IGNORED로 볼지 REJECTED로 볼지의 정책. 최종 상태는 안 바뀌고 "무엇을 오류로 볼 것인가"만 바뀐다 — [ops-patterns/06-idempotency-store](../../../ops-patterns/06-idempotency-store/2-summary.md).
+- **거부 = 반환값** — 무작위 이벤트의 73%가 거부라 예외로 던지면 예외가 정상 흐름이 된다.
+
+## 적용 — 풀어나가는 법
+
+수명 주기가 있는 개체(주문·티켓·배포)를 모델링할 때의 순서: ① 상태를 enum으로 전부 나열한다 ② 그림 대신 표를 그리고 빈칸 하나하나에 "안 된다"를 확인한다 ③ 결과를 셋으로 나누고, 중복 이벤트를 오류로 볼지 정책으로 올린다 ④ 판정 순서(같은 상태 → 표 → 거부)를 고정하고 자기 전이가 있는 표로 시험한다 ⑤ BFS로 닿을 수 없는 상태와 좁아지는 지점을 확인한다.\
+아래 「문제」 절이 ①~③의 재료이고, 「측정」 절이 ⑤의 결과다.
+
+### 문제 — 이 챕터가 시키는 것
 
 원본 README가 준 것은 그림 한 장과 한 문장이다.
 
@@ -76,117 +223,7 @@ IGNORED를 APPLIED로 뭉개면 중복 이벤트가 후처리를 두 번 돌리�
 
 아래 서머리는 이 문제(README)를 분석·정리한 것이다.
 
-## 전체 흐름
-
-```text
-요구사항 문장                            코드로의 번역
-──────────────────────────────────────────────────────────────
-"주문 상태들"                  →  OrderState enum 8개
-"갈 수 있는 길"                →  Map<OrderState, Set<OrderState>> 전이 표
-                                   standard(): 흔한 쇼핑몰 규칙 9개 화살표
-"전이 결과"                    →  TransitionResult(상태, 종류)
-                                   APPLIED / IGNORED / REJECTED 3갈래
-"중복 이벤트를 어떻게 보나"    →  sameStateIsIdempotent (boolean 정책)
-"이벤트 여러 개 순서대로"      →  applyAll — 거부돼도 멈추지 않고 계속
-"끝난 상태"                    →  isTerminalIn(machine) — 필드가 아니라 표가 말한다
-"표가 제대로 이어졌나"         →  reachableFrom — BFS (11번 그대로)
-```
-
-> **상태 머신(state machine)** — 상태들과 그 사이의 허용된 전이(화살표)를 표로 들고 있는 것.\
-> 예: 표에 PLACED→PAID 가 있으면 그 이동은 되고, 표에 없는 PLACED→SHIPPED 는 전부 거부다.
-
-> **멱등(idempotent)** — 같은 요청을 두 번 해도 결과가 한 번 한 것과 같은 성질.\
-> 예: 결제완료 이벤트가 재전송으로 두 번 와도 주문은 결제완료 상태 하나로 끝난다.
-
-## 규칙 1 — 결과는 둘이 아니라 셋이다 (이 챕터의 핵심)
-
-**어떤 요구사항인가**: "전이를 시도하면 성공 또는 실패" — 라고 쓰고 싶지만, 셋이 필요하다.
-
-```text
-  APPLIED   상태가 바뀌었다         changed=true   isError=false
-  IGNORED   이미 그 상태다          changed=false  isError=false   ← 제3의 값
-  REJECTED  허용되지 않는 전이다    changed=false  isError=true
-```
-
-**왜 불리언 하나로 안 되나**: 결과가 답해야 할 질문이 **둘**이기 때문이다 — ① 상태가 바뀌었나(`changed`) → 후처리를 돌릴지 정한다 ② 잘못된 요청인가(`isError`) → 경보를 울릴지 정한다.
-
-IGNORED는 (false, false)라서 둘 중 어느 쪽으로 뭉개도 사고가 난다:
-
-- IGNORED를 APPLIED로 뭉개면 → 중복 결제 이벤트에 포인트 적립·알림이 **두 번** 돈다.
-- IGNORED를 REJECTED로 뭉개면 → 네트워크 재시도가 실패로 보고되어 **경보가 울린다.**
-
-**예시 입력**: PLACED에서 [PAID, PAID]를 받으면 → APPLIED(PAID가 됨), IGNORED(이미 PAID).\
-멱등을 끄면(strict) 두 번째가 REJECTED.
-
-## 규칙 2 — 같은 상태인지를 표보다 먼저 본다 (순서가 계약)
-
-**`apply`의 판정 순서**: ① from == to 인가 → 멱등이면 IGNORED ② 표에 있나 → APPLIED ③ 없으면 REJECTED.
-
-**함정**: 표준 표에는 자기 전이(자기 자신으로 가는 화살표)가 없어서, 어느 것을 먼저 보든 답이 같다 — **표준 표만 시험하면 이 순서가 아무 의미도 없어 보인다.**\
-순서가 갈리는 것은 표에 자기 전이가 있을 때다:
-
-> **자기 전이(self-transition)** — 어떤 상태에서 자기 자신으로 가는 화살표.\
-> 예: "배송 중 위치 갱신"처럼 SHIPPED 에서 다시 SHIPPED 로 오는 이벤트가 의미를 갖는 표.
-
-```text
-  "배송 중 위치 갱신"처럼 SHIPPED → SHIPPED 가 의미 있는 표라면
-
-    같은 상태를 먼저 본다  →  IGNORED   (중복 이벤트로 본다)
-    표를 먼저 본다         →  APPLIED   (갱신으로 본다)
-
-  impl은 같은 상태 먼저 + 멱등 off 스위치로 둘 다 표현한다.
-```
-
-## 규칙 3 — 거부는 멈추지 않고, 원래 상태를 담아 돌려준다
-
-**예시 입력**: PLACED에서 이벤트 [SHIPPED, PAID]:
-
-```text
-  SHIPPED  →  REJECTED, 상태는 여전히 PLACED   (결제 없이 배송 불가)
-  PAID     →  APPLIED,  PLACED → PAID          (뒤의 이벤트는 유효했다)
-```
-
-**왜 이렇게 모델링했나**:
-
-- **거부해도 멈추지 않는다** — 뒤의 이벤트가 유효할 수 있다.\
-  멈출지 계속할지도 "정해야 하는 규칙"이고, 여기서는 계속으로 정했다.
-- **거부·무시는 원래 상태를 그대로 담아 돌려준다.**\
-  그래서 `applyAll`은 결과의 상태를 **조건 없이 대입**한다(`current = result.state()`).
-- 변종 검증에서 고친 것: 원래는 `changed()`를 확인하고 대입했는데, 거부·무시가 원래 상태를 담고 있으니 **그 조건이 아무 일도 안 하고 있었다.**\
-  조건을 지우고, "거부는 원래 상태를 준다"는 불변식을 계약 테스트로 옮겼다 — 거부가 시도한 상태를 담게 바꾸는 변종은 테스트 3개가 잡는다.
-
-> **변종 검증(mutation testing)** — 코드를 일부러 조금 틀리게 바꿔보고 테스트가 그걸 잡는지 확인하는 방법.\
-> 예: 거부가 원래 상태 대신 시도한 상태를 담게 바꿨더니 테스트 3개가 깨졌다면, 그 약속은 실제로 지켜지고 있는 것이다.
-
-## 규칙 4 — "끝났다"는 필드가 아니라 표가 말한다
-
-**어떤 요구사항인가**: CANCELLED와 REFUNDED는 종점이다.
-
-**코드로의 번역**: `isTerminalIn(machine)` = "나가는 화살표가 0개인가"(`allowedFrom(state).isEmpty()`).
-
-**왜 이렇게 모델링했나**: `boolean terminal` 필드를 따로 두면 표와 어긋날 수 있고, **어긋나도 아무도 모른다.**\
-같은 사실의 출처를 하나(표)로 두면 어긋남 자체가 불가능하다. (06번의 "같은 것을 두 곳에서 지키지 마라"와 같은 원리.)
-
-## 규칙 5 — 표가 곧 그래프다: BFS로 표를 검사한다
-
-**어떤 요구사항인가**: 표를 손으로 채우면 아무도 못 가는 상태가 생길 수 있다.
-
-**예시**: DELIVERED → RETURN_REQUESTED 화살표를 빠뜨리면:
-
-```text
-  PLACED에서 BFS  →  닿는 상태 6개 (8개여야 정상)
-  RETURN_REQUESTED, REFUNDED 에 아무도 못 간다 = 죽은 상태
-
-  그런데 그 두 상태는 enum에도 switch에도 남아 있어서 아무도 안 지운다.
-```
-
-> **BFS(너비 우선 탐색)** — 시작점에서 가까운 곳부터 큐로 차례차례 훑는 그래프 탐색.\
-> 예: 전이 표를 그래프로 보고 PLACED 에서 훑으면, 한 걸음 거리인 PAID·CANCELLED 부터 차례로 나온다.
-
-**계산 방법**: `reachableFrom`은 11번 BFS를 그대로 쓴다 — 표가 곧 그래프다.\
-시작점을 먼저 방문 처리하므로 끝난 상태도 자기 자신에는 닿는다(0개가 아니라 1개).
-
-## 측정이 알려준 것
+### 측정이 알려준 것
 
 - **표의 86%가 빈칸이다**: 상태 8개, 칸 64개, 표에 있는 전이 9개(14%).\
   취소 가능한 상태는 3/8.
@@ -208,7 +245,30 @@ IGNORED는 (false, false)라서 둘 중 어느 쪽으로 뭉개도 사고가 난
 `PREPARING → SHIPPED` 한 걸음에 취소와 그 뒤가 통째로 사라진다(6→4).\
 표를 눈으로 읽는 대신 이 수를 보면 어디가 "돌이킬 수 없는 경계"인지 보인다.
 
-## 경계·모서리 케이스
+## 장애 시나리오와 대처
+
+**1. 결제완료 재전송에 포인트가 두 번 적립된다**
+
+- 현상: 같은 주문에 적립·알림이 두 번 나간다.
+- 보이는 형태: 결제 게이트웨이의 재전송 로그(같은 이벤트 ID 두 번)와 적립 이력 두 건. 상태는 PAID 그대로.
+- 원인: 전이 결과를 boolean으로 만들어 IGNORED(이미 그 상태)를 APPLIED(바뀜)로 뭉갰다 — 후처리가 `changed`가 아니라 "성공"을 보고 돌았다.
+- 대처: 결과를 셋으로 나누고 후처리는 `changed == true`일 때만 돌린다. 멱등 켠 상태에서 [PAID, PAID] → APPLIED, IGNORED를 테스트로 고정한다(정답 2번 참고).
+
+**2. 장애가 아닌데 새벽에 경보가 울린다**
+
+- 현상: 상태 전이 실패율 경보가 잦은데 확인하면 전부 정상 재시도다.
+- 보이는 형태: 거부 로그의 대부분이 `from == to`. 재시도하는 쪽은 "실패" 응답을 받고 또 재시도한다.
+- 원인: IGNORED를 REJECTED로 뭉갰다 — 중복 이벤트가 "허용되지 않는 전이"로 보고됐다. 멱등이냐로 730/1,000이 갈리지만 최종 상태는 같아서 상태만 보면 못 찾는다.
+- 대처: `isError`는 REJECTED에서만 true. 경보는 `isError` 기준으로, 재시도 쪽에는 IGNORED를 "이미 됐음"으로 돌려준다.
+
+**3. 표에 화살표 하나를 빠뜨려 환불이 영영 안 된다**
+
+- 현상: 반품 요청이 전부 거부되는데 코드에는 RETURN_REQUESTED·REFUNDED 처리가 다 있다.
+- 보이는 형태: `reachableFrom(PLACED)`가 8개가 아니라 6개. DELIVERED → RETURN_REQUESTED 칸이 비어 있다.
+- 원인: 표를 손으로 채우다 화살표를 빠뜨렸다. 그 상태들은 enum에도 switch에도 남아 있어 아무도 이상하게 보지 않는다.
+- 대처: "표준 표에서 PLACED는 8개 전부에 닿는다"를 계약 테스트로 둔다. 표를 바꿀 때마다 BFS 도달성 검사가 돈다(정답 4번 참고).
+
+### 경계·모서리 케이스
 
 | 함정 | 올바른 처리 |
 |---|---|
@@ -230,7 +290,15 @@ IGNORED는 (false, false)라서 둘 중 어느 쪽으로 뭉개도 사고가 난
 - "끝났다" 같은 파생 사실은 필드로 두지 말고 표가 말하게 하라 — 출처가 하나면 어긋날 수가 없다.
 - 표는 그래프다 — BFS로 닿을 수 없는 상태(죽은 코드)를 찾고, 닿는 상태 수로 "돌이킬 수 없는 경계"를 읽는다.
 
-## 관련 자료
+## 관련 주제·근거
+
+- 자료구조·알고리즘 — [data-structure/08-graph](../../../data-structure/08-graph/2-summary.md): 전이 표 = 인접 리스트. [algorithm/11-bfs](../../../algorithm/11-bfs/2-summary.md): `reachableFrom`이 그대로 쓰는 탐색.
+- 같은 자리 — [10-payment](../10-payment/2-summary.md): 3갈래 결과·파생 상태의 돈 버전. [11-delivery-tracking](../11-delivery-tracking/2-summary.md): 남이 찍은 이벤트를 사후 해석하는 단조 진행.
+- 운영 패턴 — [ops-patterns/06-idempotency-store](../../../ops-patterns/06-idempotency-store/2-summary.md): 중복 이벤트를 "이미 됐음"으로 답하기. [ops-patterns/08-saga](../../../ops-patterns/08-saga/2-summary.md): 여러 서비스에 걸친 상태 전이와 보상.
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · `11-state-machines-in-domain`(상태·전이·가드 — 미작성, 이 노트를 연결).
+- myway 원본 — `/home/jun/project/myway/domain-modeling-basic/09-order-state/` (README.md · impl/com/domain/order/OrderStateMachine.java · src/main/java/com/domain/order/OrderState.java · TransitionResult.java).
+
+### 관련 자료
 
 - 챕터 안내: `/home/jun/project/myway/domain-modeling-basic/09-order-state/README.md`
 - 내 구현(TODO 껍데기): `/home/jun/project/myway/domain-modeling-basic/09-order-state/src/main/java/com/domain/order/OrderStateMachine.java`
@@ -239,7 +307,7 @@ IGNORED는 (false, false)라서 둘 중 어느 쪽으로 뭉개도 사고가 난
 - 테스트: `.../src/test/java/com/domain/order/OrderStateTest.java`(정상 경로·취소 경계·멱등·자기 전이·도달성), `MeasurementTest.java`(86%·73%·730/1,000·닿는 상태 수)
 - 이웃 챕터: 11번 BFS(reachableFrom이 그대로 씀), 10번 결제(같은 상태 머신 사고의 돈 버전)
 
-## 용어 풀이
+### 용어 풀이
 
 - **상태 머신(state machine)**: 상태 목록 + 허용된 전이 표. 표에 없는 이동은 거부한다.
 - **전이(transition)**: 한 상태에서 다른 상태로의 이동. 표의 화살표 하나.
