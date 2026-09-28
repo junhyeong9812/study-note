@@ -2,7 +2,7 @@
 
 > **생성 문서** — `docs/plans/2026-09-27/cs-fundamentals-roadmap/curriculum.md` §2에서 `docs/plans/2026-09-28/cs-restructure/gen_area_readme.py`로 만든다. 직접 고치지 말고 커리큘럼을 고친 뒤 재실행한다.
 > 번호 = 권장 학습 순서. 상태: `미작성` · `원고 있음` · `초안(Claude)` · `검수 완료`. ⚠ 깨지면·🔧·📚 세부는 커리큘럼 본문에 있다.
-> 현황: 미작성 6 · 원고 있음 3 · 초안(Claude) 35 · 검수 완료 0
+> 현황: 미작성 6 · 원고 있음 2 · 초안(Claude) 36 · 검수 완료 0
 
 > **번호 = 권장 학습 순서**(2026-09-28 재번호). 기존 노트 폴더(`data-structure/01~35`)는 원래 번호 그대로이며 영역 표의 노트 링크 칸이 대응을 맡는다. 🔧 칸 = **"쓰이는 곳"** — 다른 영역 leaf로 역링크된다.
 > 근거: CLRS 3판(이하 CLRS), Sedgewick 『Algorithms』 4판, 각 자료구조 원논문.
@@ -18,7 +18,7 @@
 | # | 주제 | 요지 | 등급 | 상태 | 노트 |
 |---|---|---|---|---|---|
 | 02 | `adt-and-cost-contracts` | ADT = 연산 + 비용 계약. 같은 인터페이스, 다른 비용 | 필수 | 미작성 | — |
-| 03 | `dynamic-array` | 연속 메모리 + 용량 2배 확장 = 분할상환 O(1) | 필수 | 원고 있음 | [01-dynamic-array](01-dynamic-array/) |
+| 03 | `dynamic-array` | 연속 메모리 + 용량 2배 확장 = 분할상환 O(1) | 필수 | 초안(Claude) | [01-dynamic-array](01-dynamic-array/) |
 | 04 | `linked-list` | 포인터 연결, O(1) 삽입·삭제, 캐시 비친화 | 필수 | 초안(Claude) | [02-linked-list](02-linked-list/) |
 | 05 | `stack` | LIFO — 호출·되돌리기·파싱 | 필수 | 초안(Claude) | [03-stack](03-stack/) |
 | 06 | `queue-deque` | FIFO·양방향 큐 | 필수 | 초안(Claude) | [04-queue-deque](04-queue-deque/) |
