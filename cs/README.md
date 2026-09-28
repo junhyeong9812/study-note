@@ -4,7 +4,7 @@
 어느 프로젝트에서 공부했든, 프로젝트 무관 지식은 여기로 모은다.
 복습 접근 순서·간격 규칙은 루트 [README](../README.md)를 따르고, 파일 형식은 아래 「작성 규칙」이 정본이다 — cs 주제에 관해서는 루트 README 「작성 규칙」·[templates/](../templates/)·[reference/study-note-guide.md](../reference/study-note-guide.md) **전체**(3파일 골격·문법 주제 골격·원고와 보강의 경계·이관 출처 표기·체크리스트 등)보다 이 문서가 우선한다.
 
-## 작성 규칙 (2026-09-27 개정)
+## 작성 규칙 (2026-09-27 개정 · 2026-09-28 보강)
 
 > 이전 규칙(따라 친 원고 → 원고 문체를 유지한 서머리 → 서머리 완성 후 질문·정답)은 폐기했다.
 > 근거·결정 기록: `docs/plans/2026-09-27/issue-toplevel-cs-rule/`.
@@ -34,17 +34,33 @@
 루트 [templates/2-summary.md](../templates/2-summary.md)의 "대신 써주지 않는다" 방식은 cs에는 적용하지 않는다 — cs의 서머리 형식은 이 절이 정본이다.
 문단 길이·표 사용 같은 형식 상한은 [reference/writing/](../reference/writing/README.md)을 따른다.
 
-### 4. 검수 상태
+**코드 스니펫 언어** — 개념을 코드로 보일 때 기본은 **Java · JavaScript · TypeScript**다. Java로 표현하기 어려운 저수준(메모리 레이아웃·포인터·시스템콜·커널 경로 등)은 **C**, 또는 그 개념을 가장 쉽게 보여주는 언어로 쓴다. 흐름·구조는 ASCII 도식을 병행한다.
 
-각 주제 index의 상태 칸: `초안(Claude)` → `검수 완료`.
-검수는 배포 학습 사이트에서 읽으며 하고, 막히는 곳은 LLM 질문으로 구체화한 뒤 문서에 반영한다.
-기존 [index.md](index.md) 범례(`서머리` → `질문/정답` → `복습중`)와 "기준 문서는 사용자 지정" 문구의 전환은 후속 작업이다 — 전환 전까지도 새로 쓰는 주제는 이 어휘를 쓴다.
+### 4. 상태 — 네 단계
+
+| 상태 | 뜻 |
+|---|---|
+| `미작성` | 커리큘럼에만 있고 노트가 없다 |
+| `원고 있음` | 기존 노트가 있다(이전 형식) — 통일 골격으로 보강 대상 |
+| `초안(Claude)` | Claude가 쓴 3파일이 있다 — 검수 대기 |
+| `검수 완료` | 배포 학습 사이트에서 읽고 LLM 질문으로 구체화한 뒤 확정했다 |
+
+상태는 영역 README(생성 문서)의 표에 나오고, 생성 스크립트가 노트의 `1-question.md`·`3-answer.md`를 보고 판정한다 — `Claude 초안` 표기가 있으면 `초안(Claude)`, 검수를 확정하면 그 표기를 지우고 두 파일 상단에 `✅ 검수 완료(YYYY-MM-DD)` 한 줄을 둔다 → `검수 완료`. 둘 다 없으면 `원고 있음`, 노트가 없으면 `미작성`.
 
 ### 5. cs = 지식 본문만
 
-진행 기록(공부중·챕터 진도), 원본 저장소 대응표, 구현·실험 연계는 cs에 두지 않는다 — [project/](../project/)·[lab/](../lab/)·[practice/](../practice/)로 보낸다(기존 index의 진행 칸 분리는 후속 작업).
+**새로 쓰는 노트에는** 진행 기록(공부중·챕터 진도)·원본 저장소 대응표·구현·실험 연계를 두지 않는다 — [project/](../project/)·[lab/](../lab/)·[practice/](../practice/)로 보낸다. myway 컬렉션의 진도·원본 대응은 [project/myway/README.md](../project/myway/README.md)로 옮겼다(2026-09-28). [index.md](index.md) 아래쪽의 이관 이력 표와 컬렉션 README의 "원본:" 한 줄은 **출처 이력**으로 남긴다.
 실전 이슈에서 뽑은 패턴 카드는 최상위 [issue/](../issue/)에 둔다.
+
+### 6. 구조 — 영역 README + 기존 컬렉션 (2026-09-28)
+
+- **19개 영역**(커리큘럼 기준): `math · data-structure · algorithm · architecture · os · language · network · security · database · distributed · reliability · software-design · domain-modeling · testing · api-design · web-platform · engineering-practice · data-engineering · data-analysis`.
+- 영역마다 **생성 문서** 하나가 전체 주제 표(번호 = 권장 학습 순서 · 상태 · 노트 링크)를 가진다 — `cs/<영역>/README.md`, 기존 컬렉션과 이름이 겹치는 영역(algorithm·data-structure·domain-modeling·api-design)은 `cs/<영역>/curriculum.md`.
+  정본은 [curriculum.md](../docs/plans/2026-09-27/cs-fundamentals-roadmap/curriculum.md)이고 표는 `docs/plans/2026-09-28/cs-restructure/gen_area_readme.py`로 만든다 — **표를 직접 고치지 않는다.**
+- **기존 노트는 제자리에 둔다** — myway 컬렉션(algorithm·data-structure·domain-modeling basic/advanced·ops-patterns·api-design)은 원래 번호 그대로, foundations·systems·engineering 노트도 그대로. 영역 표의 노트 링크가 커리큘럼 주제와 기존 노트를 잇는다.
+- 새 주제 노트는 집필할 때 해당 영역 폴더 아래 `NN-slug/`(커리큘럼 번호)로 만든다.
+- 기초판과 심화판은 각각 둔다 — 심화 주제가 기초 주제를 선행으로 링크한다.
 
 ## 주제 현황
 
-주제 목록·상태·이관 후보는 [index.md](index.md)에 기록한다. 주제 상태가 바뀔 때마다 그 파일을 갱신한다.
+영역별 상태는 각 영역 README(생성 문서)가 정본이다. 기존 컬렉션 목록과 이관 이력은 [index.md](index.md)에 있다.

@@ -26,7 +26,7 @@ study-note/
 ├── index.md                   ← 전체 색인 (최상위 지도, 구조 변경 시 갱신)
 ├── templates/                 ← 1-question / 2-summary / 3-answer 포맷 템플릿
 ├── reference/                 ← 작성 지침 (★ study-note-guide.md — 작성법 정본 · organize-guide.md · render-rules.md · writing/ — 문서 작성 근거 · learning/ — 공부 방법론 · tools/)
-├── cs/                        ← 개념 지식(1/2/3 챕터): systems·engineering·foundations·algorithm·data-structure·domain-modeling·ops-patterns·api-design (작성 규칙 정본: cs/README.md)
+├── cs/                        ← 개념 지식(1/2/3): 커리큘럼 19영역 README(생성 문서) + 기존 컬렉션 제자리(myway 5종·foundations·systems·engineering) (작성 규칙 정본: cs/README.md)
 ├── languages/                 ← 언어 레퍼런스: <언어>/syntax(문법·API 3파일)·<언어>/언어-특성·web-api — 13개 언어 (cs 밖, 2026-09-28 이동)
 ├── issue/                     ← 실전 이슈 → 재사용 CS 패턴 카드 156 (형식 정본: issue/authoring-guide.md)
 ├── practice/                  ← 훈련(문제→풀이): programmers
@@ -91,16 +91,16 @@ study-note/
 | 주제 | 원본 | 진행 |
 |------|------|------|
 | [project/db-engine](project/db-engine/) | `/home/jun/project/db-engine` (impl/ 01~21) | [index](project/db-engine/index.md) |
-| [cs](cs/) | 개념 지식 전반 — systems·engineering·foundations·algorithm·data-structure·domain-modeling·ops-patterns·api-design | [index](cs/index.md) |
+| [cs](cs/) | 개념 지식 전반 — 커리큘럼 19영역(영역 README) + 기존 컬렉션 | [index](cs/index.md) |
 | [cs/systems](cs/systems/) | 시스템 개념 8주제 — kafka-why-fast·lsm-tree·nand-flash·striping·straggler·partitioning-vs-sharding·thrashing·Hysteresis | [index](cs/index.md) |
 | [cs/engineering](cs/engineering/) | 설계·기준 — solid-principles·development-standards(품질·보안·운영·법률) | [index](cs/engineering/development-standards/index.md) |
 | [cs/foundations](cs/foundations/) | CS 기초 9주제(python-basics → languages/python/basics) — 컴퓨터사이언스 부트캠프 원고 이관(변수·데이터 표현·OOP·하드웨어·메모리·프로세스/스레드·컴파일러 등) | [index](cs/foundations/index.md) |
-| [cs/algorithm](cs/algorithm/) | `/home/jun/project/myway/algorithm` (01~30) | [index](cs/algorithm/index.md) |
-| [cs/data-structure](cs/data-structure/) | `/home/jun/project/myway/data-structure` (01~35) | [index](cs/data-structure/index.md) |
-| [cs/domain-modeling/basic](cs/domain-modeling/basic/) | `/home/jun/project/myway/domain-modeling-basic` (01~30) | [index](cs/domain-modeling/basic/index.md) |
-| [cs/domain-modeling/advanced](cs/domain-modeling/advanced/) | `/home/jun/project/myway/domain-modeling-advanced` (01~30) | [index](cs/domain-modeling/advanced/index.md) |
-| [cs/ops-patterns](cs/ops-patterns/) | `/home/jun/project/myway/ops-patterns` (01~19) | [index](cs/ops-patterns/index.md) |
-| [cs/api-design](cs/api-design/) | `/home/jun/project/myway/api-design` (01~06, 확정 체크리스트 훈련) | [index](cs/api-design/index.md) |
+| [cs/algorithm](cs/algorithm/) | myway 컬렉션 (01~30) — 원본·진도: [project/myway](project/myway/README.md) | [index](cs/algorithm/index.md) |
+| [cs/data-structure](cs/data-structure/) | myway 컬렉션 (01~35) — 원본·진도: [project/myway](project/myway/README.md) | [index](cs/data-structure/index.md) |
+| [cs/domain-modeling/basic](cs/domain-modeling/basic/) | myway 컬렉션 (01~30) — 원본·진도: [project/myway](project/myway/README.md) | [index](cs/domain-modeling/basic/index.md) |
+| [cs/domain-modeling/advanced](cs/domain-modeling/advanced/) | myway 컬렉션 (01~30) — 원본·진도: [project/myway](project/myway/README.md) | [index](cs/domain-modeling/advanced/index.md) |
+| [cs/ops-patterns](cs/ops-patterns/) | myway 컬렉션 (01~19) — 원본·진도: [project/myway](project/myway/README.md) | [index](cs/ops-patterns/index.md) |
+| [cs/api-design](cs/api-design/) | myway 컬렉션 (01~06, 확정 체크리스트 훈련) — 원본·진도: [project/myway](project/myway/README.md) | [index](cs/api-design/index.md) |
 | [languages](languages/) | 언어별 문법·표준 API·언어 특성 + 브라우저 Web API 레퍼런스 (cs/foundations에서 이동) | [README](languages/README.md) |
 | [issue](issue/) | 실전 이슈 → 재사용 CS 패턴 카드 아카이브 (하네스 issue-archive 대상 — 형식 정본: authoring-guide) | [index](issue/README.md) |
 | [portfolio/k-brand-guard](portfolio/k-brand-guard/) | `/home/jun/project/resume` 경력기술서 - K-브랜드 지킴이 사례 5건 | [index](portfolio/k-brand-guard/index.md) |

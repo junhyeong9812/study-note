@@ -4,7 +4,7 @@
 
 | 폴더 | 성격 | 현재 규모 | 입구 |
 |------|------|----------|------|
-| [cs](cs/) | 개념 지식 — 질문/서머리/정답 3종 루프 (작성 규칙: [cs/README.md](cs/README.md)) | 주제군 8 — algorithm 30 · data-structure 35 · ops-patterns 19 · foundations 9주제+security·three-virtues · systems · engineering · domain-modeling · api-design (커리큘럼 재편 예정) | [cs/index.md](cs/index.md) |
+| [cs](cs/) | 개념 지식 — 질문/서머리/정답 3종 루프 (작성 규칙: [cs/README.md](cs/README.md)) | 커리큘럼 19영역·644 주제(영역 README = 생성 문서) + 기존 컬렉션(myway 5종·foundations·systems·engineering) | [cs/index.md](cs/index.md) |
 | [languages](languages/) | 언어 레퍼런스 — 언어별 문법·표준 API(syntax 3파일)·언어 특성·브라우저 Web API (cs 밖) | 13개 언어(c·cpp·csharp·css·go·html·java·js·kotlin·python·rust·sql·ts) + web-api | [languages/README.md](languages/README.md) |
 | [issue](issue/) | 실전 이슈에서 뽑은 CS 패턴 카드 — 질문/서머리/정답·방안 비교 (하네스 issue-archive 대상) | 카드 156 — cross-cutting·java·kotlin·python·rust·shell·typescript | [issue/README.md](issue/README.md) |
 | [opensource](opensource/) | 오픈소스 기여·코드 읽기 아카이브 — PR별 표준 5종 + concepts + 아키텍처 지도 | spring-framework · spring-security · elasticsearch · nextjs · react · mysql · postgres · keycloak · nginx · redis | [opensource/index.md](opensource/index.md) |

@@ -4,15 +4,15 @@
 
 ## 기준
 
-- 마지막 갱신: 2026-09-28 (N0-a 배포 완료 · N0-b 불요 종료 — 채팅은 Redis TTL 7일) · 이전: 2026-09-27 · 직전 완료 작업: `docs/plans/2026-09-27/issue-toplevel-cs-rule/` · 기준 커밋: a8f8a9e1(study-note) · c2254f0(harness 브랜치 docs/issue-archive-toplevel-path) · 병합 상태: 둘 다 미push
+- 마지막 갱신: 2026-09-28 cs-restructure 완료 (N0-a 배포 완료 · N0-b 불요 종료 — 채팅은 Redis TTL 7일) · 이전: 2026-09-27 · 직전 완료 작업: `docs/plans/2026-09-27/issue-toplevel-cs-rule/` · 기준 커밋: a8f8a9e1(study-note) · c2254f0(harness 브랜치 docs/issue-archive-toplevel-path) · 병합 상태: 둘 다 미push
 
 ## 다음 작업 후보 (우선순위순)
 
-### N0-c. CS 커리큘럼 확정 → cs 재편 — 우선순위: 높음 · 사용자 검토 대기
+### N0-c. myway 5 cs 주제 완성 — 우선순위: 높음 · 사용자 지시 "빈 곳도 전부 채워서 문서를 다 완성"
 
-- **입력**: `docs/plans/2026-09-27/cs-fundamentals-roadmap/curriculum.md`(505 leaf·18영역, 이식 매핑 §19).
-- **결정 필요**: systems/ops-patterns 해체, foundations 나머지 해체 이식 (languages·web-api·python-basics는 2026-09-28 최상위 languages/로 이동 완료).
-- **함께 처리할 stale 참조(리뷰 O5·O6·O10 이연)**: `issue/authoring-guide.md:27,31` "cs 컨벤션" 의존 · `reference/learning/README.md:33-43`·`cs/engineering/development-standards/README.md:5` 옛 규칙 인용 · `reference/study-note-guide.md` §2·§2-1·§5·§7·§8 본문 · `cs/index.md:4` 옛 상태 범례 · `templates/` cs 비적용 표기.
+- **대상**: cs/algorithm 01~30 · data-structure 01~35 · domain-modeling basic·advanced 각 30 · ops-patterns 01~19 · api-design 01~06 (3파일 완비, 빈 곳 = DS 「핵심 문장」 35 등 — 전수 스캔 필요).
+- **착수 전 확인할 것**: 통일 골격(해결 문제→원리→자료구조·알고리즘→적용→장애) 보강 범위, "Claude 초안" 표기 유지 여부, 코드 스니펫 언어 규칙(Java·JS·TS).
+- **관측**: 커리큘럼 순방향 선행 7건(옛 학습 순서가 그대로 번호가 됨) — 집필 시 순서 조정 여부 판단.
 
 ### N1. seat-reservation-lab 첫 API — 우선순위: 중간 · 17개 랩 중 선행 cs가 가장 명확한 첫 주제
 

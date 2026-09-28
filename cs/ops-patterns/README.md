@@ -1,7 +1,9 @@
 # ops-patterns 공부 노트 — 운영 패턴 (19)
 
+> 이 컬렉션의 주제는 커리큘럼 [reliability](../reliability/README.md)·[distributed](../distributed/README.md) 영역 표에서 링크된다 · 진행 기록 = [project/myway](../../project/myway/README.md) — 2026-09-28 cs 재편.
+
 원본: `/home/jun/project/myway/ops-patterns` — 재시도·서킷브레이커·아웃박스·사가·분산락 등 운영 패턴을 직접 구현하며 공부한다.
-복습 접근 순서·간격 규칙 등 공통 규칙은 상위 [README](../README.md), 파일 포맷은 [templates/](../templates/)를 따른다.
+공통 규칙·파일 형식은 상위 [cs/README.md](../README.md) 「작성 규칙」을 따른다(2026-09-28 — templates/는 cs에 적용하지 않음).
 
 ## 챕터 하나의 진행 순서 (작성 순서)
 

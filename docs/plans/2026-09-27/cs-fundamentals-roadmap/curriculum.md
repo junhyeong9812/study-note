@@ -24,7 +24,7 @@
 
 ### 0.2 자료구조·알고리즘 연결 규칙
 
-모든 leaf에 `🔧` 칸을 둔다. 여기 적힌 자료구조·알고리즘은 **`data-structure/`·`algorithm/` leaf로 역링크**한다(예: network/08 LPM → `data-structure/20-radix-trie`). 결과적으로 DS·ALG 영역은 "문제풀이 연습장"이 아니라 **시스템 전체가 기대는 부품 창고**가 된다. DS·ALG leaf의 🔧 칸은 반대로 "쓰이는 곳"을 적는다.
+모든 leaf에 `🔧` 칸을 둔다. 여기 적힌 자료구조·알고리즘은 **`data-structure/`·`algorithm/` leaf로 역링크**한다(예: network/08 LPM → `data-structure/13-radix-trie`). 결과적으로 DS·ALG 영역은 "문제풀이 연습장"이 아니라 **시스템 전체가 기대는 부품 창고**가 된다. DS·ALG leaf의 🔧 칸은 반대로 "쓰이는 곳"을 적는다.
 
 ### 0.3 층위 순서 (학습 순서의 뼈대)
 
@@ -81,11 +81,11 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 15 | API 설계 | `api-design/` | api-design 01~06 |
 | 16 | 프론트엔드 엔지니어링 | `web-platform/` | (신설 — 원리·성능 최적화·프론트엔드 설계. DOM API·프레임워크 API 레퍼런스는 CS 밖) |
 | 17 | 엔지니어링 실천 | `engineering-practice/` | engineering/agile-and-squad·development-standards, foundations/three-virtues |
-| 18a | 데이터 공학 | `data-engineering/` | (없음 — distributed/21의 CDC 한 줄, data-analysis/23의 품질 검사 일부를 심화) |
+| 18a | 데이터 공학 | `data-engineering/` | (없음 — distributed/16의 CDC 한 줄, data-analysis/18의 품질 검사 일부를 심화) |
 | 18 | 데이터 분석·통계 | `data-analysis/` | (없음) |
 
 - CS2023 17개 KA와의 대응: AL→2·3, AR→4, DM→9, FPL→6, MSF→1·18, NC→7, OS→5, PDC→10, SEC→8, SDF→12, SE→12~17, SF→4·5·11, SPD→16. **AI·GIT(그래픽스)·HCI·SEP는 이 트리에서 뺐다** — 백엔드 개발 기본기 범위 밖(HCI 일부는 web-platform/11 접근성으로만).
-- SWEBOK v4 18 KA 대응: Requirements·Management·Process·Economics·Professional Practice·Config Mgmt→17, Architecture·Design·Construction·Models→12·13, Testing→14, Quality→12/20·17, Security→8, **Operations(v4 신설)→11**, Maintenance→12/05~06, Computing/Mathematical/Engineering Foundations→1~6.
+- SWEBOK v4 18 KA 대응: Requirements·Management·Process·Economics·Professional Practice·Config Mgmt→17, Architecture·Design·Construction·Models→12·13, Testing→14, Quality→12/46·17, Security→8, **Operations(v4 신설)→11**, Maintenance→12/10·13, Computing/Mathematical/Engineering Foundations→1~6.
 
 ### 0.7 코드 스니펫 언어
 
@@ -95,19 +95,19 @@ Part 6  판단하는 법             data-engineering → data-analysis
 
 ### 0.8 읽기 경로 — 성능 트랙
 
-> 성능은 **별도 영역을 두지 않는다.** 성능 leaf의 선행이 층위 영역 안에 닫혀 있고(GC 튜닝 → language/13, 가상화 → web-platform/02·04, 캐시 계층 → database/38), "장애는 주제 안에서 가르친다"(§0.1)는 원칙과도 맞기 때문이다(근거: [`gap-performance.md`](gap-performance.md) §3). 대신 한 번에 공부하는 길을 **slug 목록(뷰)** 으로 둔다. 폴더가 아니다.
+> 성능은 **별도 영역을 두지 않는다.** 성능 leaf의 선행이 층위 영역 안에 닫혀 있고(GC 튜닝 → language/10, 가상화 → web-platform/02·04, 캐시 계층 → database/30), "장애는 주제 안에서 가르친다"(§0.1)는 원칙과도 맞기 때문이다(근거: [`gap-performance.md`](gap-performance.md) §3). 대신 한 번에 공부하는 길을 **slug 목록(뷰)** 으로 둔다. 폴더가 아니다.
 
-1. `reliability/38-performance-method-and-amdahl` — 측정 → 병목 → 하나만 바꾸기, Amdahl
-2. `reliability/18-performance-measurement` → `reliability/19-profiling`
-3. `architecture/12-memory-hierarchy-and-locality` → `architecture/13-cache-organization` → `architecture/14-latency-numbers`
-4. `os/35-os-observability-tools`
-5. `language/22-jit-tiered-compilation-and-warmup` → `language/23-aot-native-image-and-startup` → `language/24-gc-tuning-and-gc-logs` → `language/25-object-layout-and-allocation-reduction`
-6. `reliability/39-microbenchmarking` → `reliability/40-memory-leak-and-heap-analysis` → `reliability/42-async-io-gains-and-limits` → `reliability/43-batching-and-round-trips` → `reliability/50-performance-and-stability-antipatterns-in-code`
-7. `database/32-connection-pooling` → `database/33-orm-and-n-plus-one` → `database/52-multi-level-caching`
-8. `reliability/20-scaling-principles` → `reliability/21-capacity-and-load-testing` → `reliability/41-cold-start-and-scale-from-zero`
-9. `web-platform/08-web-performance-vitals` → `web-platform/15-critical-path-and-resource-loading` → `web-platform/16-image-optimization` → `web-platform/17-web-font-loading` → `web-platform/18-long-tasks-and-web-workers` → `web-platform/19-list-virtualization` → `web-platform/20-ui-rerender-and-memoization` → `web-platform/21-hydration-cost-and-partial-hydration` → `web-platform/22-performance-budgets-and-regression-gates`
-10. `engineering-practice/20-container-image-optimization`
-11. (심화) `language/26-lto-pgo-and-binary-size`
+1. `reliability/20-performance-method-and-amdahl` — 측정 → 병목 → 하나만 바꾸기, Amdahl
+2. `reliability/19-performance-measurement` → `reliability/36-profiling`
+3. `architecture/11-memory-hierarchy-and-locality` → `architecture/12-cache-organization` → `architecture/13-latency-numbers`
+4. `os/31-os-observability-tools`
+5. `language/23-jit-tiered-compilation-and-warmup` → `language/24-aot-native-image-and-startup` → `language/11-gc-tuning-and-gc-logs` → `language/12-object-layout-and-allocation-reduction`
+6. `reliability/38-microbenchmarking` → `reliability/37-memory-leak-and-heap-analysis` → `reliability/39-async-io-gains-and-limits` → `reliability/40-batching-and-round-trips` → `reliability/48-performance-and-stability-antipatterns-in-code`
+7. `database/21-connection-pooling` → `database/23-orm-and-n-plus-one` → `database/49-multi-level-caching`
+8. `reliability/21-scaling-principles` → `reliability/22-capacity-and-load-testing` → `reliability/42-cold-start-and-scale-from-zero`
+9. `web-platform/08-web-performance-vitals` → `web-platform/13-critical-path-and-resource-loading` → `web-platform/14-image-optimization` → `web-platform/15-web-font-loading` → `web-platform/16-long-tasks-and-web-workers` → `web-platform/17-list-virtualization` → `web-platform/18-ui-rerender-and-memoization` → `web-platform/19-hydration-cost-and-partial-hydration` → `web-platform/20-performance-budgets-and-regression-gates`
+10. `engineering-practice/08-container-image-optimization`
+11. (심화) `language/25-lto-pgo-and-binary-size`
 
 - 다시 판단할 조건: 성능 leaf가 더 늘어 `reliability/` 11.3 단원이 15개를 넘거나, "성능 엔지니어" 직무 트랙을 따로 원하면 `performance/` 신설을 검토한다(같은 근거 문서 §3).
 
@@ -115,11 +115,11 @@ Part 6  판단하는 법             data-engineering → data-analysis
 
 > 추적성은 층위가 아니라 **여러 층을 가로지르는 성질**이라 영역으로 두지 않는다(근거: [`gap-data-trace-timeout.md`](gap-data-trace-timeout.md) §3.2). "왜 이 값이 되었나"는 로그를 grep해 재구성하는 것이 아니라 **도메인 데이터에 근거를 1급으로 저장**해 답한다. 로그는 버려도 되는 운영 신호, 결정의 근거는 버리면 안 되는 업무 기록이다.
 
-1. `reliability/23-logging` → `reliability/25-distributed-tracing` → `reliability/44-logs-traces-audit-roles`
-2. `distributed/27-event-sourcing`
-3. `domain-modeling/24-decision-log-and-provenance` → `domain-modeling/25-versioned-rules-and-effective-dating` → `domain-modeling/26-double-entry-ledger` → `domain-modeling/27-reconciliation`
-4. `database/53-temporal-and-bitemporal-tables`
-5. `data-engineering/12-data-lineage` → `data-engineering/14-data-retention-and-erasure`
+1. `reliability/15-logging` → `reliability/17-distributed-tracing` → `reliability/18-logs-traces-audit-roles`
+2. `distributed/22-event-sourcing`
+3. `domain-modeling/22-decision-log-and-provenance` → `domain-modeling/23-versioned-rules-and-effective-dating` → `domain-modeling/24-double-entry-ledger` → `domain-modeling/25-reconciliation`
+4. `database/50-temporal-and-bitemporal-tables`
+5. `data-engineering/11-data-lineage` → `data-engineering/12-data-retention-and-erasure`
 
 ---
 
@@ -130,7 +130,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 > 백엔드에서 수학이 "틀리면" 보이는 곳: 정렬 예외, 음수 샤드 인덱스, ID 충돌, 부동소수 합계 불일치, 이용률 80% 절벽. 증명보다 **불변식·확률·큐잉**을 우선한다.
 > 뼈대: MIT 6.042 『Mathematics for Computer Science』(Lehman·Leighton·Meyer, 이하 MCS — 장 번호 `[?]`), CLRS 3판 부록, OpenIntro 3·4장(확률 부분).
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 07 → 08 → 09 → 10 → 15 → (06 · 11 · 12 · 13 · 14 필요 시) → 16 → 17
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → (11 · 12 · 13 · 14 · 15 필요 시) → 16 → 17
 
 ### 1.1 논리·증명·관계
 
@@ -146,26 +146,26 @@ Part 6  판단하는 법             data-engineering → data-analysis
 |---|---|---|---|---|---|---|---|
 | 04-graph-theory-basics | 그래프·트리·DAG·연결성·사이클의 정의와 성질 | 03 | 순환 의존(DAG 가정 위반) → 무한 재귀 `StackOverflowError`, 빌드/마이그레이션 순서 교착 | 인접 리스트·위상정렬·사이클 탐지(DFS 색칠) | MCS 그래프 장 [?] · CLRS 부록 B.4 | 필수 | 신규 |
 | 05-counting-and-birthday-bound | 경우의 수·비둘기집·이항계수·생일 한계 | 03 | 32비트 랜덤 ID는 약 7.7만 개에서 충돌 확률 50% → 간헐 PK 중복 `duplicate key`; 짧은 해시 prefix 충돌 | 해시 충돌 확률, UUID/Snowflake 비트 설계 | MCS 세기 장 [?] · CLRS 5.4.1(생일 역설) | 필수 | 신규 |
-| 06-modular-arithmetic | 모듈러·GCD·소수·모듈러 역원·빠른 거듭제곱 | 05 | `-7 % 3` 이 언어마다 다름(Java −1 / Python 2) → 음수 샤드 인덱스 `ArrayIndexOutOfBounds`; `Math.abs(Integer.MIN_VALUE)` 음수 | 유클리드 호제법·빠른 거듭제곱 → RSA·해시 | CLRS 31장 | 권장 | 신규 (연결: `algorithm/28-number-theory`) |
-| 07-recurrences-and-asymptotics | 점화식·급수·로그 — 마스터 정리까지 | 02 | 선형 재귀 깊이 → 스택 오버플로; 지수 점화 → 입력 30만 넘자 타임아웃 | 분할정복 분석·재귀 트리 | CLRS 3·4장 | 필수 | 신규 |
+| 11-modular-arithmetic | 모듈러·GCD·소수·모듈러 역원·빠른 거듭제곱 | 05 | `-7 % 3` 이 언어마다 다름(Java −1 / Python 2) → 음수 샤드 인덱스 `ArrayIndexOutOfBounds`; `Math.abs(Integer.MIN_VALUE)` 음수 | 유클리드 호제법·빠른 거듭제곱 → RSA·해시 | CLRS 31장 | 권장 | 신규 (연결: `algorithm/28-number-theory`) |
+| 06-recurrences-and-asymptotics | 점화식·급수·로그 — 마스터 정리까지 | 02 | 선형 재귀 깊이 → 스택 오버플로; 지수 점화 → 입력 30만 넘자 타임아웃 | 분할정복 분석·재귀 트리 | CLRS 3·4장 | 필수 | 신규 |
 
 ### 1.3 확률
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 08-probability-and-bayes | 확률 공리·조건부 확률·독립·베이즈 정리 | 05 | 기저율 무시 → "99% 정확한 이상탐지"가 알람의 대부분을 오탐으로 채움(알람 피로) | 블룸 필터 FP 계산, 나이브 베이즈 | OpenIntro 3.1–3.2 · MCS 확률 장 [?] | 필수 | 신규 |
-| 09-expectation-variance-tails | 기댓값 선형성·분산·꼬리 부등식(마르코프·체비셰프·체르노프) | 08 | 평균만 보고 꼬리(p99) 무시; "독립" 가정한 가용성 곱셈 → 같은 랙·같은 AZ 동시 장애를 과소평가 | 해시 테이블 기대 탐색 길이, 랜덤 퀵정렬 분석 | CLRS 5장·부록 C · OpenIntro 3.4 | 필수 | 신규 |
-| 10-common-distributions | 균등·기하·이항·포아송·지수·정규·멱법칙(Zipf) | 09 | 트래픽을 포아송으로 가정 → 버스트·핫키(Zipf) 과소평가로 캐시·샤드 과부하 | 지수 백오프, 포아송 도착, Zipf와 캐시 적중률 | OpenIntro 4장 | 권장 | 신규 |
-| 11-randomness-and-prng | 의사난수·시드·CSPRNG·셔플·샘플링 | 10 | 같은 시드의 인스턴스들이 같은 지터 → thundering herd 재발; `Math.random()` 토큰 → 예측 가능 세션 | LCG·xorshift, Fisher–Yates, reservoir sampling | CLRS 5.3 · Knuth TAOCP 2권 3장 [?] | 권장 | 신규 |
+| 07-probability-and-bayes | 확률 공리·조건부 확률·독립·베이즈 정리 | 05 | 기저율 무시 → "99% 정확한 이상탐지"가 알람의 대부분을 오탐으로 채움(알람 피로) | 블룸 필터 FP 계산, 나이브 베이즈 | OpenIntro 3.1–3.2 · MCS 확률 장 [?] | 필수 | 신규 |
+| 08-expectation-variance-tails | 기댓값 선형성·분산·꼬리 부등식(마르코프·체비셰프·체르노프) | 07 | 평균만 보고 꼬리(p99) 무시; "독립" 가정한 가용성 곱셈 → 같은 랙·같은 AZ 동시 장애를 과소평가 | 해시 테이블 기대 탐색 길이, 랜덤 퀵정렬 분석 | CLRS 5장·부록 C · OpenIntro 3.4 | 필수 | 신규 |
+| 09-common-distributions | 균등·기하·이항·포아송·지수·정규·멱법칙(Zipf) | 08 | 트래픽을 포아송으로 가정 → 버스트·핫키(Zipf) 과소평가로 캐시·샤드 과부하 | 지수 백오프, 포아송 도착, Zipf와 캐시 적중률 | OpenIntro 4장 | 권장 | 신규 |
+| 12-randomness-and-prng | 의사난수·시드·CSPRNG·셔플·샘플링 | 09 | 같은 시드의 인스턴스들이 같은 지터 → thundering herd 재발; `Math.random()` 토큰 → 예측 가능 세션 | LCG·xorshift, Fisher–Yates, reservoir sampling | CLRS 5.3 · Knuth TAOCP 2권 3장 [?] | 권장 | 신규 |
 
 ### 1.4 선형대수·정보·수치·큐잉
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 12-linear-algebra-essentials | 벡터·행렬·내적·노름·코사인 유사도 | 07 | 정규화 누락 → 유사도 검색 순위 왜곡; 행/열 순회 방향 → 캐시 미스로 10배 느림 | 행렬곱, 임베딩 근사 최근접 탐색(ANN) | MIT 18.06 (Strang) [?] | 권장 | 신규 |
-| 13-information-theory-basics | 엔트로피·부호화·압축 한계·오류 검출/정정 부호 | 08 | 이미 압축·암호화된 데이터 재압축 → 오히려 커짐; 압축 폭탄(zip bomb) OOM | 허프만 부호, CRC, 해밍 코드 | Shannon 1948 · MCS [?] | 권장 | 신규 |
-| 14-numerical-stability | 부동소수 오차 누적·파국적 상쇄·Kahan 합 | architecture/03-floating-point-ieee754 | 큰 수+작은 수 반복 합산 손실 → 집계 합계가 원장과 불일치; 병렬 합산 순서마다 다른 결과 | Kahan summation, pairwise sum | Goldberg 1991 · Higham 『Accuracy and Stability of Numerical Algorithms』 [?] | 권장 | 신규 |
-| 15-queueing-and-littles-law | L=λW, M/M/1, 이용률과 대기시간의 비선형 관계 | 10 | 이용률 80% 넘자 지연 급등(대기 ∝ ρ/(1−ρ)); 스레드풀·커넥션풀 크기 오산정 | 큐, 포아송 도착, 서비스 시간 분포 | Little 1961 · Harchol-Balter 『Performance Modeling and Design of Computer Systems』 [?] | 필수 | `systems/server-design/01-scaling-principles.md` (분할 — Little's Law 절) |
+| 13-linear-algebra-essentials | 벡터·행렬·내적·노름·코사인 유사도 | 06 | 정규화 누락 → 유사도 검색 순위 왜곡; 행/열 순회 방향 → 캐시 미스로 10배 느림 | 행렬곱, 임베딩 근사 최근접 탐색(ANN) | MIT 18.06 (Strang) [?] | 권장 | 신규 |
+| 14-information-theory-basics | 엔트로피·부호화·압축 한계·오류 검출/정정 부호 | 07 | 이미 압축·암호화된 데이터 재압축 → 오히려 커짐; 압축 폭탄(zip bomb) OOM | 허프만 부호, CRC, 해밍 코드 | Shannon 1948 · MCS [?] | 권장 | 신규 |
+| 15-numerical-stability | 부동소수 오차 누적·파국적 상쇄·Kahan 합 | architecture/03-floating-point-ieee754 | 큰 수+작은 수 반복 합산 손실 → 집계 합계가 원장과 불일치; 병렬 합산 순서마다 다른 결과 | Kahan summation, pairwise sum | Goldberg 1991 · Higham 『Accuracy and Stability of Numerical Algorithms』 [?] | 권장 | 신규 |
+| 10-queueing-and-littles-law | L=λW, M/M/1, 이용률과 대기시간의 비선형 관계 | 09 | 이용률 80% 넘자 지연 급등(대기 ∝ ρ/(1−ρ)); 스레드풀·커넥션풀 크기 오산정 | 큐, 포아송 도착, 서비스 시간 분포 | Little 1961 · Harchol-Balter 『Performance Modeling and Design of Computer Systems』 [?] | 필수 | `systems/server-design/01-scaling-principles.md` (분할 — Little's Law 절) |
 
 ### 1.5 영역 마감
 
@@ -178,178 +178,190 @@ Part 6  판단하는 법             data-engineering → data-analysis
 
 ## 2. 자료구조 (`data-structure/`)
 
-> 기존 01~35 번호를 **그대로 유지**한다(재번호 churn 방지). 신규는 36번부터. 🔧 칸 = **"쓰이는 곳"** — 다른 영역 leaf로 역링크된다.
+> **번호 = 권장 학습 순서**(2026-09-28 재번호). 기존 노트 폴더(`data-structure/01~35`)는 원래 번호 그대로이며 영역 표의 노트 링크 칸이 대응을 맡는다. 🔧 칸 = **"쓰이는 곳"** — 다른 영역 leaf로 역링크된다.
 > 근거: CLRS 3판(이하 CLRS), Sedgewick 『Algorithms』 4판, 각 자료구조 원논문.
 
-**권장 학습 순서**: 36 → 01 → 02 → 03 → 04 → 05 → 29 → 06 → 07 → 08 → 09 → 20 → 10 → 14 → 15 → 16 → 24 → 40 → 11 → 19 → 12 → 31 → 32 → 38 → 37 → 27 → 41 → 39 → 33 → 35 → 34 → (13 · 17 · 18 · 21 · 22 · 23 · 25 · 26 · 28 · 30 심화) → 42 → 43
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 27 → 28 → 29 → 30 → 31 → 32 → (33 · 34 · 35 · 36 · 37 · 38 · 39 · 40 · 41 · 42 심화) → 43 → 44
+
+### 2.0 기초 (2026-09-28 — 기초판은 독립 leaf, 심화 leaf가 선행으로 링크)
+
+| slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
+|---|---|---|---|---|---|---|---|
+| 01-data-structures-basics | 자료구조 개관 기초판 — ADT·연결 리스트/스택/큐·선택 기준·재귀·트리·BST를 한 편에 | — | 연산 비용을 보지 않고 구조 선택 → 잘못된 구조로 O(n²)·메모리 낭비 | 배열·연결 리스트·스택·큐·BST | 컴퓨터사이언스 부트캠프 ch11~13 | 필수 | `foundations/data-structures-basics` |
 
 ### 2.1 선형 구조
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 36-adt-and-cost-contracts | ADT = 연산 + 비용 계약. 같은 인터페이스, 다른 비용 | algorithm/31-asymptotic-analysis | `List.get(i)` 를 LinkedList에 루프로 호출 → O(n²) 느려짐(인터페이스만 보고 비용 계약 무시) | 모든 컬렉션 선택 | CLRS 10장 서론 · Sedgewick 1.3 | 필수 | `foundations/data-structures-basics` (분할 — ADT·선택 기준 절) |
-| 01-dynamic-array | 연속 메모리 + 용량 2배 확장 = 분할상환 O(1) | 36 | resize 순간 지연 스파이크; C++ 재할당 후 반복자 무효화 → 크래시; 무한 성장 OOM | ArrayList·Go slice·소켓 버퍼 | CLRS 17.4 | 필수 | `data-structure/01-dynamic-array` |
-| 02-linked-list | 포인터 연결, O(1) 삽입·삭제, 캐시 비친화 | 36 | 캐시 미스로 배열보다 느림; 동시 수정 시 순환 리스트 → 무한 루프(JDK7 HashMap resize) | LRU 이중 연결, free list, 커널 `sk_buff` 큐 | CLRS 10.2 | 필수 | `data-structure/02-linked-list` · `foundations/data-structures-basics` (분할) |
-| 03-stack | LIFO — 호출·되돌리기·파싱 | 01 | 재귀 깊이 초과 `StackOverflowError`/SIGSEGV | 호출 스택, 괄호·표현식 파서, 반복 DFS | CLRS 10.1 | 필수 | `data-structure/03-stack` · `foundations/data-structures-basics` (분할) |
-| 04-queue-deque | FIFO·양방향 큐 | 01 | 무한 큐 → 메모리 폭증·지연 누적(백프레셔 부재, OOM) | 작업 큐, BFS, 링 버퍼, 슬라이딩 윈도 최댓값 | CLRS 10.1 | 필수 | `data-structure/04-queue-deque` · `foundations/data-structures-basics` (분할) |
-| 38-ring-buffer | 고정 크기 원형 버퍼 — 생산자/소비자, 덮어쓰기 정책 | 04 | 가득 찼을 때 정책 부재 → 조용한 드롭(NIC `rx_dropped`)·또는 생산자 블로킹; head/tail 경합 | NIC DMA 링, 로그 버퍼, LMAX Disruptor, TCP 송수신 버퍼 | LMAX Disruptor 논문 2011 [?] · packagecloud 커널 네트워크 글 | 권장 | 신규 |
+| 02-adt-and-cost-contracts | ADT = 연산 + 비용 계약. 같은 인터페이스, 다른 비용 | 01, algorithm/02-asymptotic-analysis | `List.get(i)` 를 LinkedList에 루프로 호출 → O(n²) 느려짐(인터페이스만 보고 비용 계약 무시) | 모든 컬렉션 선택 | CLRS 10장 서론 · Sedgewick 1.3 | 필수 | 신규 (기초: data-structure/01-data-structures-basics) |
+| 03-dynamic-array | 연속 메모리 + 용량 2배 확장 = 분할상환 O(1) | 02 | resize 순간 지연 스파이크; C++ 재할당 후 반복자 무효화 → 크래시; 무한 성장 OOM | ArrayList·Go slice·소켓 버퍼 | CLRS 17.4 | 필수 | `data-structure/01-dynamic-array` |
+| 04-linked-list | 포인터 연결, O(1) 삽입·삭제, 캐시 비친화 | 01, 02 | 캐시 미스로 배열보다 느림; 동시 수정 시 순환 리스트 → 무한 루프(JDK7 HashMap resize) | LRU 이중 연결, free list, 커널 `sk_buff` 큐 | CLRS 10.2 | 필수 | `data-structure/02-linked-list` |
+| 05-stack | LIFO — 호출·되돌리기·파싱 | 01, 03 | 재귀 깊이 초과 `StackOverflowError`/SIGSEGV | 호출 스택, 괄호·표현식 파서, 반복 DFS | CLRS 10.1 | 필수 | `data-structure/03-stack` |
+| 06-queue-deque | FIFO·양방향 큐 | 01, 03 | 무한 큐 → 메모리 폭증·지연 누적(백프레셔 부재, OOM) | 작업 큐, BFS, 링 버퍼, 슬라이딩 윈도 최댓값 | CLRS 10.1 | 필수 | `data-structure/04-queue-deque` |
+| 25-ring-buffer | 고정 크기 원형 버퍼 — 생산자/소비자, 덮어쓰기 정책 | 06 | 가득 찼을 때 정책 부재 → 조용한 드롭(NIC `rx_dropped`)·또는 생산자 블로킹; head/tail 경합 | NIC DMA 링, 로그 버퍼, LMAX Disruptor, TCP 송수신 버퍼 | LMAX Disruptor 논문 2011 [?] · packagecloud 커널 네트워크 글 | 권장 | 신규 |
 
 ### 2.2 해시
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 05-hashmap | 체이닝·로드 팩터·리해시·트리화 | 01, math/05-counting-and-birthday-bound | 충돌 공격 → O(n) 저하·CPU 100%(HashDoS); 가변 키 수정 후 `get` 이 null; equals/hashCode 불일치 | 심벌 테이블, conntrack, 버퍼풀 page table, 캐시 | CLRS 11.1–11.3 | 필수 | `data-structure/05-hashmap` |
-| 29-open-addressing | 선형·이차 탐사·로빈후드, tombstone | 05 | 삭제 tombstone 누적 → 탐색 길이 증가로 점진적 느려짐; 로드 팩터 0.9↑ 급격 저하 | Python dict, SwissTable, 커널 해시 | CLRS 11.4 | 권장 | `data-structure/29-open-addressing` |
-| 31-consistent-hashing | 해시 링·가상 노드 — 노드 증감 시 최소 재배치 | 05 | 가상 노드 없음 → 부하 불균형; 핫키는 해결 못 함 | 샤딩, 캐시 클러스터, L4 LB(Maglev), Dynamo | Karger 외 1997 | 필수 | `data-structure/31-consistent-hashing` |
+| 07-hashmap | 체이닝·로드 팩터·리해시·트리화 | 03, math/05-counting-and-birthday-bound | 충돌 공격 → O(n) 저하·CPU 100%(HashDoS); 가변 키 수정 후 `get` 이 null; equals/hashCode 불일치 | 심벌 테이블, conntrack, 버퍼풀 page table, 캐시 | CLRS 11.1–11.3 | 필수 | `data-structure/05-hashmap` |
+| 08-open-addressing | 선형·이차 탐사·로빈후드, tombstone | 07 | 삭제 tombstone 누적 → 탐색 길이 증가로 점진적 느려짐; 로드 팩터 0.9↑ 급격 저하 | Python dict, SwissTable, 커널 해시 | CLRS 11.4 | 권장 | `data-structure/29-open-addressing` |
+| 23-consistent-hashing | 해시 링·가상 노드 — 노드 증감 시 최소 재배치 | 07 | 가상 노드 없음 → 부하 불균형; 핫키는 해결 못 함 | 샤딩, 캐시 클러스터, L4 LB(Maglev), Dynamo | Karger 외 1997 | 필수 | `data-structure/31-consistent-hashing` |
 
 ### 2.3 트리·힙·트라이
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 06-binary-search-tree | 정렬 불변식, 탐색 O(h) | 03 | 정렬된 입력 삽입 → 편향 트리 O(n) | 정렬 맵의 기초 | CLRS 12 | 필수 | `data-structure/06-binary-search-tree` · `foundations/data-structures-basics` (분할 — 트리·BST 절) |
-| 16-red-black-tree | 색 규칙으로 높이 O(log n) 보장 | 06 | 회전 구현 오류 → 불변식 붕괴(조용한 오답) | Java TreeMap, Linux CFS(vruntime), epoll 관심 목록 | CLRS 13 | 권장 | `data-structure/16-red-black-tree` |
-| 15-b-tree | 다분기·노드=페이지, 높이 3~4로 수억 행 | 06 | 랜덤 키(UUIDv4) 삽입 → 페이지 분할·단편화로 쓰기 증폭 | DB 인덱스(B+Tree), 파일시스템 디렉터리(ext4 htree) | CLRS 18 | 필수 | `data-structure/15-b-tree` |
-| 23-splay-tree | 접근 시 루트로 — 지역성 적응 | 06 | 읽기가 구조를 바꿈 → 동시 읽기에도 락 필요 | 캐시형 탐색, 일부 할당기 | Sleator–Tarjan 1985 | 심화 | `data-structure/23-splay-tree` |
-| 07-heap | 완전 이진 트리 + 힙 순서, top/pop O(log n) | 01 | 같은 우선순위 순서 보장 안 됨(FIFO 기대 붕괴); 무한 성장 | 타이머, 스케줄러, top-k, 다익스트라 | CLRS 6 | 필수 | `data-structure/07-heap` |
-| 37-timer-structures | 타이머 힙 vs 계층형 타이머 휠 | 07, 38 | 타이머 수백만 개에서 힙 O(log n) 비용 누적; 휠 해상도보다 짧은 타임아웃이 늦게 발화 | 커널 타이머, TCP RTO, Netty HashedWheelTimer, Kafka purgatory | Varghese–Lauck 1987 | 권장 | 신규 |
-| 09-trie | 문자 단위 분기 — 접두사 질의 | 06 | 노드 폭증 메모리 | 자동완성, 라우터 경로 매칭 | Sedgewick 5.2 | 권장 | `data-structure/09-trie` |
-| 20-radix-trie | 압축 트라이(PATRICIA) | 09 | 비트 경계 처리 오류 → 잘못된 경로 선택 | **라우팅 테이블 최장 접두사 매칭**, HTTP 라우터 | Morrison 1968 | 필수 | `data-structure/20-radix-trie` |
-| 13-segment-tree | 구간 질의·갱신 O(log n) | 06 | 배열 크기 4n 미만 할당 → 인덱스 초과; 구간 경계 off-by-one | 구간 합·최솟값 | cp-algorithms "Segment Tree" | 심화 | `data-structure/13-segment-tree` |
-| 17-fenwick-tree | 비트 트릭 누적합 | 13 | 1-indexed 규칙 위반 → 무한 루프 | 누적 빈도·순위 | Fenwick 1994 | 심화 | `data-structure/17-fenwick-tree` |
-| 30-interval-tree | 겹치는 구간 질의 | 16 | 경계 포함/제외 규칙 불일치 → 예약 중복 | 예약·스케줄 충돌 탐지 | CLRS 14.3 | 심화 | `data-structure/30-interval-tree` |
-| 22-sparse-table | 정적 RMQ O(1) | 13 | 갱신 불가 구조에 갱신 요구 | RMQ·LCA | Bender–Farach-Colton 2000 | 심화 | `data-structure/22-sparse-table` |
-| 25-spatial-index | R-tree·쿼드트리·geohash | 15 | geohash 셀 경계 근처 이웃 누락 | 위치 검색 | Guttman 1984 | 심화 | `data-structure/25-spatial-index` |
+| 09-binary-search-tree | 정렬 불변식, 탐색 O(h) | 01, 05 | 정렬된 입력 삽입 → 편향 트리 O(n) | 정렬 맵의 기초 | CLRS 12 | 필수 | `data-structure/06-binary-search-tree` |
+| 17-red-black-tree | 색 규칙으로 높이 O(log n) 보장 | 09 | 회전 구현 오류 → 불변식 붕괴(조용한 오답) | Java TreeMap, Linux CFS(vruntime), epoll 관심 목록 | CLRS 13 | 권장 | `data-structure/16-red-black-tree` |
+| 16-b-tree | 다분기·노드=페이지, 높이 3~4로 수억 행 | 09 | 랜덤 키(UUIDv4) 삽입 → 페이지 분할·단편화로 쓰기 증폭 | DB 인덱스(B+Tree), 파일시스템 디렉터리(ext4 htree) | CLRS 18 | 필수 | `data-structure/15-b-tree` |
+| 38-splay-tree | 접근 시 루트로 — 지역성 적응 | 09 | 읽기가 구조를 바꿈 → 동시 읽기에도 락 필요 | 캐시형 탐색, 일부 할당기 | Sleator–Tarjan 1985 | 심화 | `data-structure/23-splay-tree` |
+| 10-heap | 완전 이진 트리 + 힙 순서, top/pop O(log n) | 03 | 같은 우선순위 순서 보장 안 됨(FIFO 기대 붕괴); 무한 성장 | 타이머, 스케줄러, top-k, 다익스트라 | CLRS 6 | 필수 | `data-structure/07-heap` |
+| 26-timer-structures | 타이머 힙 vs 계층형 타이머 휠 | 10, 25 | 타이머 수백만 개에서 힙 O(log n) 비용 누적; 휠 해상도보다 짧은 타임아웃이 늦게 발화 | 커널 타이머, TCP RTO, Netty HashedWheelTimer, Kafka purgatory | Varghese–Lauck 1987 | 권장 | 신규 |
+| 12-trie | 문자 단위 분기 — 접두사 질의 | 09 | 노드 폭증 메모리 | 자동완성, 라우터 경로 매칭 | Sedgewick 5.2 | 권장 | `data-structure/09-trie` |
+| 13-radix-trie | 압축 트라이(PATRICIA) | 12 | 비트 경계 처리 오류 → 잘못된 경로 선택 | **라우팅 테이블 최장 접두사 매칭**, HTTP 라우터 | Morrison 1968 | 필수 | `data-structure/20-radix-trie` |
+| 33-segment-tree | 구간 질의·갱신 O(log n) | 09 | 배열 크기 4n 미만 할당 → 인덱스 초과; 구간 경계 off-by-one | 구간 합·최솟값 | cp-algorithms "Segment Tree" | 심화 | `data-structure/13-segment-tree` |
+| 34-fenwick-tree | 비트 트릭 누적합 | 33 | 1-indexed 규칙 위반 → 무한 루프 | 누적 빈도·순위 | Fenwick 1994 | 심화 | `data-structure/17-fenwick-tree` |
+| 42-interval-tree | 겹치는 구간 질의 | 17 | 경계 포함/제외 규칙 불일치 → 예약 중복 | 예약·스케줄 충돌 탐지 | CLRS 14.3 | 심화 | `data-structure/30-interval-tree` |
+| 37-sparse-table | 정적 RMQ O(1) | 33 | 갱신 불가 구조에 갱신 요구 | RMQ·LCA | Bender–Farach-Colton 2000 | 심화 | `data-structure/22-sparse-table` |
+| 39-spatial-index | R-tree·쿼드트리·geohash | 16 | geohash 셀 경계 근처 이웃 누락 | 위치 검색 | Guttman 1984 | 심화 | `data-structure/25-spatial-index` |
 
 ### 2.4 그래프·집합·확률적 구조
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 08-graph | 인접 행렬 vs 리스트 | math/04-graph-theory-basics | 인접 행렬 V² 메모리 폭발 | 의존성, 라우팅, 소셜 그래프 | CLRS 22.1 | 필수 | `data-structure/08-graph` |
-| 14-union-find | 경로 압축 + 랭크 | 08 | 경로 압축 누락 → O(n) 체인 | 연결성, 크루스칼, 동치류 | CLRS 21 | 권장 | `data-structure/14-union-find` |
-| 18-bitset | 비트 단위 집합·Roaring | 01 | 희소 데이터에 고정 비트셋 → 메모리 낭비; 시프트 부호 확장 | 페이지 할당 비트맵, 블룸 필터, 권한 플래그 | Chambi 외 2016 (Roaring) | 권장 | `data-structure/18-bitset` |
-| 11-bloom-filter | "없음"은 확실, "있음"은 확률 | 05, math/08-probability-and-bayes | 설계 용량 초과 삽입 → FP 급증; 삭제 불가 | LSM SSTable 조회 생략, 캐시 관통 방어 | Bloom 1970 | 필수 | `data-structure/11-bloom-filter` |
-| 19-probabilistic-counting | HyperLogLog·Count-Min | 11 | 작은 카디널리티 편향; Count-Min 과대 추정 | UV 집계, heavy hitter | Flajolet 외 2007 · Cormode–Muthukrishnan 2005 | 권장 | `data-structure/19-probabilistic-counting` |
-| 12-skip-list | 확률적 다층 연결 리스트 | 02 | 최악 O(n)(확률적 보장) | Redis ZSET, LSM memtable | Pugh 1990 | 권장 | `data-structure/12-skip-list` |
+| 11-graph | 인접 행렬 vs 리스트 | math/04-graph-theory-basics | 인접 행렬 V² 메모리 폭발 | 의존성, 라우팅, 소셜 그래프 | CLRS 22.1 | 필수 | `data-structure/08-graph` |
+| 15-union-find | 경로 압축 + 랭크 | 11 | 경로 압축 누락 → O(n) 체인 | 연결성, 크루스칼, 동치류 | CLRS 21 | 권장 | `data-structure/14-union-find` |
+| 35-bitset | 비트 단위 집합·Roaring | 03 | 희소 데이터에 고정 비트셋 → 메모리 낭비; 시프트 부호 확장 | 페이지 할당 비트맵, 블룸 필터, 권한 플래그 | Chambi 외 2016 (Roaring) | 권장 | `data-structure/18-bitset` |
+| 20-bloom-filter | "없음"은 확실, "있음"은 확률 | 07, math/07-probability-and-bayes | 설계 용량 초과 삽입 → FP 급증; 삭제 불가 | LSM SSTable 조회 생략, 캐시 관통 방어 | Bloom 1970 | 필수 | `data-structure/11-bloom-filter` |
+| 21-probabilistic-counting | HyperLogLog·Count-Min | 20 | 작은 카디널리티 편향; Count-Min 과대 추정 | UV 집계, heavy hitter | Flajolet 외 2007 · Cormode–Muthukrishnan 2005 | 권장 | `data-structure/19-probabilistic-counting` |
+| 22-skip-list | 확률적 다층 연결 리스트 | 04 | 최악 O(n)(확률적 보장) | Redis ZSET, LSM memtable | Pugh 1990 | 권장 | `data-structure/12-skip-list` |
 
 ### 2.5 문자열·영속·동시성 구조
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 21-suffix-array | 모든 접미사 정렬 | algorithm/25-string-matching | 구성 O(n log² n) 메모리 초과 | 전문 검색, 압축 | Manber–Myers 1990 | 심화 | `data-structure/21-suffix-array` |
-| 28-rope | 트리로 쪼갠 문자열 | 06 | 작은 편집마다 재균형 비용 | 텍스트 에디터 버퍼 | Boehm 외 1995 | 심화 | `data-structure/28-rope` |
-| 32-inverted-index | 단어→문서 목록 | 05 | 토크나이저 불일치(한국어 형태소) → 검색 누락 | 검색 엔진, 로그 검색 | Manning 외 『Introduction to Information Retrieval』 1장 | 권장 | `data-structure/32-inverted-index` |
-| 26-persistent | 구조 공유로 버전 유지 | 06 | 옛 버전 참조 → 메모리 회수 불가 | 불변 컬렉션, MVCC 사고방식 | Driscoll 외 1989 · Okasaki 1998 | 심화 | `data-structure/26-persistent` |
-| 27-merkle-tree | 해시의 트리 — 부분 검증 | 05 | 트리 구성 규칙(패딩·정렬) 불일치 → 전 노드 해시 불일치 | git 객체, anti-entropy 동기화, Certificate Transparency | Merkle 1987 | 권장 | `data-structure/27-merkle-tree` |
-| 39-concurrent-data-structures | 락 기반·lock-free 큐·해시맵, ABA | 05, os/16-locks-and-spinlocks | 동시 수정 → `ConcurrentModificationException`; lock-free의 ABA → 조용한 손상 | ConcurrentHashMap, 작업 훔치기 deque | OSTEP 29 · Michael–Scott 1996 | 심화 | 신규 |
+| 36-suffix-array | 모든 접미사 정렬 | algorithm/28-string-matching | 구성 O(n log² n) 메모리 초과 | 전문 검색, 압축 | Manber–Myers 1990 | 심화 | `data-structure/21-suffix-array` |
+| 41-rope | 트리로 쪼갠 문자열 | 09 | 작은 편집마다 재균형 비용 | 텍스트 에디터 버퍼 | Boehm 외 1995 | 심화 | `data-structure/28-rope` |
+| 24-inverted-index | 단어→문서 목록 | 07 | 토크나이저 불일치(한국어 형태소) → 검색 누락 | 검색 엔진, 로그 검색 | Manning 외 『Introduction to Information Retrieval』 1장 | 권장 | `data-structure/32-inverted-index` |
+| 40-persistent | 구조 공유로 버전 유지 | 09 | 옛 버전 참조 → 메모리 회수 불가 | 불변 컬렉션, MVCC 사고방식 | Driscoll 외 1989 · Okasaki 1998 | 심화 | `data-structure/26-persistent` |
+| 27-merkle-tree | 해시의 트리 — 부분 검증 | 07 | 트리 구성 규칙(패딩·정렬) 불일치 → 전 노드 해시 불일치 | git 객체, anti-entropy 동기화, Certificate Transparency | Merkle 1987 | 권장 | `data-structure/27-merkle-tree` |
+| 29-concurrent-data-structures | 락 기반·lock-free 큐·해시맵, ABA | 07, os/16-locks-and-spinlocks | 동시 수정 → `ConcurrentModificationException`; lock-free의 ABA → 조용한 손상 | ConcurrentHashMap, 작업 훔치기 deque | OSTEP 29 · Michael–Scott 1996 | 심화 | 신규 |
 
 ### 2.6 시스템 구현형 (구현 챕터)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 10-lru-cache | 해시맵 + 이중 연결 리스트, 교체 정책 계열(LRU/LFU/CLOCK/W-TinyLFU) | 05, 02 | 순차 스캔 한 번에 캐시 전체 오염; 용량 과소 → 적중률 절벽 | 버퍼풀, CDN, 앱 캐시, 페이지 교체 | OSTEP 22 · Einziger 외 2017 (TinyLFU) | 필수 | `data-structure/10-lru-cache` |
-| 24-lsm-tree | memtable + SSTable + compaction | 12, 11 | compaction 밀림 → 쓰기 정지(write stall); 읽기 증폭 | RocksDB, Cassandra, Kafka 계열 스토리지 | O'Neil 외 1996 | 필수 | `data-structure/24-lsm-tree` |
-| 40-lsm-merge-model | LSM 병합 모델 — 레벨·티어 트레이드오프 | 24 | 레벨/티어 선택 오류 → 공간·쓰기 증폭 폭증 | compaction 전략 | O'Neil 외 1996 · RocksDB wiki | 심화 | `data-structure/lsm-merge-model` |
-| 41-resize-thrashing | 동적 배열 확장/축소 임계값이 붙으면 resize 반복 | 01 | 원소 수가 경계에서 진동 → 매 연산 O(n) 재할당, CPU 급등 | 축소 임계 1/4(히스테리시스) | CLRS 17.4.2 | 권장 | `systems/thrashing` |
-| 33-filesystem | inode·디렉터리 트리 구현 | 06, 18 | 경로 정규화 누락 → `..` 로 트리 밖 접근 | → os/23 | OSTEP 40 | 권장 | `data-structure/33-filesystem` |
-| 35-allocator | free list·버디·단편화 | 02 | 외부 단편화 → 총 여유는 충분한데 할당 실패 | → os/11 malloc | OSTEP 17 | 권장 | `data-structure/35-allocator` |
-| 34-dependency-resolver | 위상정렬·사이클·버전 해결 | 08, algorithm/12-dfs | 순환 의존 → 해결 불가 에러; 다이아몬드 의존 | → language/17 패키지 관리, 빌드 | CLRS 22.4 | 권장 | `data-structure/34-dependency-resolver` |
+| 14-lru-cache | 해시맵 + 이중 연결 리스트, 교체 정책 계열(LRU/LFU/CLOCK/W-TinyLFU) | 07, 04 | 순차 스캔 한 번에 캐시 전체 오염; 용량 과소 → 적중률 절벽 | 버퍼풀, CDN, 앱 캐시, 페이지 교체 | OSTEP 22 · Einziger 외 2017 (TinyLFU) | 필수 | `data-structure/10-lru-cache` |
+| 18-lsm-tree | memtable + SSTable + compaction | 22, 20 | compaction 밀림 → 쓰기 정지(write stall); 읽기 증폭 | RocksDB, Cassandra, Kafka 계열 스토리지 | O'Neil 외 1996 | 필수 | `data-structure/24-lsm-tree` |
+| 19-lsm-merge-model | LSM 병합 모델 — 레벨·티어 트레이드오프 | 18 | 레벨/티어 선택 오류 → 공간·쓰기 증폭 폭증 | compaction 전략 | O'Neil 외 1996 · RocksDB wiki | 심화 | `data-structure/lsm-merge-model` |
+| 28-resize-thrashing | 동적 배열 확장/축소 임계값이 붙으면 resize 반복 | 03 | 원소 수가 경계에서 진동 → 매 연산 O(n) 재할당, CPU 급등 | 축소 임계 1/4(히스테리시스) | CLRS 17.4.2 | 권장 | `systems/thrashing` |
+| 30-filesystem | inode·디렉터리 트리 구현 | 09, 35 | 경로 정규화 누락 → `..` 로 트리 밖 접근 | → os/22 | OSTEP 40 | 권장 | `data-structure/33-filesystem` |
+| 31-allocator | free list·버디·단편화 | 04 | 외부 단편화 → 총 여유는 충분한데 할당 실패 | → os/11 malloc | OSTEP 17 | 권장 | `data-structure/35-allocator` |
+| 32-dependency-resolver | 위상정렬·사이클·버전 해결 | 11, algorithm/18-dfs | 순환 의존 → 해결 불가 에러; 다이아몬드 의존 | → language/19 패키지 관리, 빌드 | CLRS 22.4 | 권장 | `data-structure/34-dependency-resolver` |
 
 ### 2.7 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 42-ds-symptom-index | 역색인: `ConcurrentModificationException`, 해시 성능 절벽, `StackOverflowError`, 무한 큐 OOM, resize 스파이크, 캐시 적중률 절벽 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 43-ds-incidents | 실사건: HashDoS(28C3, 2011) → Java 8 HashMap 트리화·Python 해시 랜덤화 · JDK7 HashMap 동시 resize 무한 루프 | 42 | — | — | Klink–Wälde 28C3 2011 · JEP 180 | 권장 | 신규 |
+| 43-ds-symptom-index | 역색인: `ConcurrentModificationException`, 해시 성능 절벽, `StackOverflowError`, 무한 큐 OOM, resize 스파이크, 캐시 적중률 절벽 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
+| 44-ds-incidents | 실사건: HashDoS(28C3, 2011) → Java 8 HashMap 트리화·Python 해시 랜덤화 · JDK7 HashMap 동시 resize 무한 루프 | 43 | — | — | Klink–Wälde 28C3 2011 · JEP 180 | 권장 | 신규 |
 
 ---
 
 ## 3. 알고리즘 (`algorithm/`)
 
-> 기존 01~30 유지, 신규 31번부터. 🔧 칸 = "쓰이는 곳".
+> **번호 = 권장 학습 순서**(2026-09-28 재번호). 기존 노트 폴더(`algorithm/01~30`)는 원래 번호 그대로 — 노트 링크 칸이 대응. 🔧 칸 = "쓰이는 곳".
 
-**권장 학습 순서**: 31 → 32 → 06 → 01 → 02 → 03 → 04 → 33 → 05 → 34 → 35 → 10 → 08 → 09 → 07 → 11 → 12 → 14 → 15 → 18 → 17 → 23 → 24 → 21 → 22 → 13 → 25 → 27 → 26 → 28 → 29 → 41 → 42 → (16 · 19 · 20 · 30 · 36 · 37 · 38 심화) → 39 → 40
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 27 → 28 → 29 → 30 → 31 → 32 → 33 → 34 → (35 · 36 · 37 · 38 · 39 · 40 · 41 심화) → 42 → 43
+
+### 3.0 기초 (2026-09-28 — 기초판은 독립 leaf, 심화 leaf가 선행으로 링크)
+
+| slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
+|---|---|---|---|---|---|---|---|
+| 01-algorithm-basics | 알고리즘 기초판 — 빅오·분할 상환, 선형/이진 탐색, 버블·퀵 정렬을 한 편에 | data-structure/01-data-structures-basics | 입력 규모를 보지 않은 선택 → 테스트에선 빠르고 운영에선 타임아웃 | 선형·이진 탐색, 기본 정렬 | 컴퓨터사이언스 부트캠프 ch14 | 필수 | `foundations/algorithm-basics` |
 
 ### 3.1 분석·기초
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 31-asymptotic-analysis | 빅오·최악/평균·분할상환 | math/07-recurrences-and-asymptotics | 테스트 데이터(100건)에선 빠른 O(n²)가 운영(100만 건)에서 타임아웃 | 모든 선택의 기준 | CLRS 3·17 | 필수 | `foundations/algorithm-basics` (분할 — 빅오·분할상환 절) |
-| 32-recursion | 재귀 = 귀납의 코드. 기저·축소·꼬리 재귀 | 31, math/02-induction-and-invariants | 기저 누락 → `StackOverflowError`; 중복 부분문제 → 지수 시간 | DFS, 파서, 분할정복 | CLRS 2.3 · 4 | 필수 | `foundations/data-structures-basics` (분할 — 재귀 절) |
+| 02-asymptotic-analysis | 빅오·최악/평균·분할상환 | 01, math/06-recurrences-and-asymptotics | 테스트 데이터(100건)에선 빠른 O(n²)가 운영(100만 건)에서 타임아웃 | 모든 선택의 기준 | CLRS 3·17 | 필수 | 신규 (기초: algorithm/01-algorithm-basics) |
+| 03-recursion | 재귀 = 귀납의 코드. 기저·축소·꼬리 재귀 | data-structure/01-data-structures-basics, 02, math/02-induction-and-invariants | 기저 누락 → `StackOverflowError`; 중복 부분문제 → 지수 시간 | DFS, 파서, 분할정복 | CLRS 2.3 · 4 | 필수 | 신규 (기초: data-structure/01-data-structures-basics) |
 
 ### 3.2 정렬·탐색
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 06-binary-search | 불변식으로 구간 절반 | 31 | `(lo+hi)/2` 정수 오버플로(Bloch 2006); 경계 갱신 실수 → 무한 루프 | 인덱스 탐색, 일관 해시 링 조회 | CLRS 2.3 연습 · Bloch 2006 | 필수 | `algorithm/06-binary-search` · `foundations/algorithm-basics` (분할) |
-| 01-elementary-sort | 선택·삽입·버블 | 31 | 운영 데이터에서 O(n²) 폭발; 삽입정렬은 거의 정렬된 입력에 강함 | TimSort 내부 삽입정렬 | CLRS 2.1 | 필수 | `algorithm/01-elementary-sort` · `foundations/algorithm-basics` (분할) |
-| 02-merge-sort | 분할정복·안정 정렬 | 32 | 추가 메모리 O(n) → 대용량 OOM | 외부 정렬, TimSort | CLRS 2.3 | 필수 | `algorithm/02-merge-sort` |
-| 03-quick-sort | 분할·피벗 | 32 | 나쁜 피벗 → 정렬된 입력 O(n²)·재귀 깊이 폭증 → introsort로 방어 | 언어 기본 정렬(원시 타입) | CLRS 7 | 필수 | `algorithm/03-quick-sort` · `foundations/algorithm-basics` (분할) |
-| 04-heap-sort | 제자리 O(n log n) | data-structure/07-heap | 캐시 비친화로 실측 느림 | introsort 폴백 | CLRS 6.4 | 권장 | `algorithm/04-heap-sort` |
-| 33-sorting-in-practice | 안정성·비교자 계약·TimSort·다중 키 | 02, math/03-sets-relations-orders | 비교자 추이성 위반 → `Comparison method violates its general contract!`; 불안정 정렬로 2차 키 순서 뒤섞임 → 페이지네이션 중복 | TimSort, 다중 키 정렬 | Peters `listsort.txt` · de Gouw 외 2015 | 필수 | 신규 |
-| 05-non-comparison-sort | 계수·기수 정렬 | 33 | 키 범위 큼 → 메모리 폭발 | 정수 키 대량 정렬 | CLRS 8 | 권장 | `algorithm/05-non-comparison-sort` |
-| 34-external-sort-and-k-way-merge | 메모리보다 큰 데이터 정렬, k-way 병합 | 02, data-structure/07-heap | 정렬 메모리 초과 → DB 디스크 스필로 쿼리 수십 배 느림 | DB `ORDER BY`, LSM compaction, MapReduce shuffle | CMU 15-445 L11 | 권장 | 신규 |
-| 35-hash-functions | 좋은 해시의 조건·유니버설 해싱·SipHash, 암호/비암호 구분 | data-structure/05-hashmap | 예측 가능 해시 → HashDoS; 암호 해시를 해시맵에 → 느림, 비암호 해시를 무결성에 → 위조 | 해시맵, 샤딩, 체크섬 | CLRS 11.3 · Aumasson–Bernstein 2012 (SipHash) | 권장 | 신규 |
+| 04-binary-search | 불변식으로 구간 절반 | 01, 02 | `(lo+hi)/2` 정수 오버플로(Bloch 2006); 경계 갱신 실수 → 무한 루프 | 인덱스 탐색, 일관 해시 링 조회 | CLRS 2.3 연습 · Bloch 2006 | 필수 | `algorithm/06-binary-search` |
+| 05-elementary-sort | 선택·삽입·버블 | 01, 02 | 운영 데이터에서 O(n²) 폭발; 삽입정렬은 거의 정렬된 입력에 강함 | TimSort 내부 삽입정렬 | CLRS 2.1 | 필수 | `algorithm/01-elementary-sort` |
+| 06-merge-sort | 분할정복·안정 정렬 | 03 | 추가 메모리 O(n) → 대용량 OOM | 외부 정렬, TimSort | CLRS 2.3 | 필수 | `algorithm/02-merge-sort` |
+| 07-quick-sort | 분할·피벗 | 01, 03 | 나쁜 피벗 → 정렬된 입력 O(n²)·재귀 깊이 폭증 → introsort로 방어 | 언어 기본 정렬(원시 타입) | CLRS 7 | 필수 | `algorithm/03-quick-sort` |
+| 08-heap-sort | 제자리 O(n log n) | data-structure/10-heap | 캐시 비친화로 실측 느림 | introsort 폴백 | CLRS 6.4 | 권장 | `algorithm/04-heap-sort` |
+| 09-sorting-in-practice | 안정성·비교자 계약·TimSort·다중 키 | 06, math/03-sets-relations-orders | 비교자 추이성 위반 → `Comparison method violates its general contract!`; 불안정 정렬로 2차 키 순서 뒤섞임 → 페이지네이션 중복 | TimSort, 다중 키 정렬 | Peters `listsort.txt` · de Gouw 외 2015 | 필수 | 신규 |
+| 10-non-comparison-sort | 계수·기수 정렬 | 09 | 키 범위 큼 → 메모리 폭발 | 정수 키 대량 정렬 | CLRS 8 | 권장 | `algorithm/05-non-comparison-sort` |
+| 11-external-sort-and-k-way-merge | 메모리보다 큰 데이터 정렬, k-way 병합 | 06, data-structure/10-heap | 정렬 메모리 초과 → DB 디스크 스필로 쿼리 수십 배 느림 | DB `ORDER BY`, LSM compaction, MapReduce shuffle | CMU 15-445 L11 | 권장 | 신규 |
+| 12-hash-functions | 좋은 해시의 조건·유니버설 해싱·SipHash, 암호/비암호 구분 | data-structure/07-hashmap | 예측 가능 해시 → HashDoS; 암호 해시를 해시맵에 → 느림, 비암호 해시를 무결성에 → 위조 | 해시맵, 샤딩, 체크섬 | CLRS 11.3 · Aumasson–Bernstein 2012 (SipHash) | 권장 | 신규 |
 
 ### 3.3 기법
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 10-prefix-sum | 누적합으로 구간 합 O(1) | 31 | 누적 오버플로(int) | 통계 집계, 시계열 | CLRS 연습 [?] | 필수 | `algorithm/10-prefix-sum` |
-| 08-two-pointers | 정렬 전제 양 끝 수렴 | 06 | 정렬 전제 위반 → 조용한 오답 | 병합, 중복 제거 | — | 필수 | `algorithm/08-two-pointers` |
-| 09-sliding-window | 고정/가변 창 | 08 | 창 경계 포함/제외 혼동 | **rate limiter 슬라이딩 윈도**, TCP 윈도 개념 | — | 필수 | `algorithm/09-sliding-window` |
-| 07-parametric-search | 최적화 → 결정 문제 + 이진 탐색 | 06 | 단조성 가정 위반 → 오답 | 용량 산정 역산 | — | 권장 | `algorithm/07-parametric-search` |
-| 23-greedy | 국소 최적 선택과 교환 논증 | 31 | 증명 없는 탐욕 → 반례에서 오답 | 허프만, 스케줄링, MST | CLRS 16 | 필수 | `algorithm/23-greedy` |
-| 24-divide-conquer | 분할정복·마스터 정리 | 32 | 균형 안 맞는 분할 → 최악 복잡도 | 병합 정렬, 분산 집계 | CLRS 4 | 필수 | `algorithm/24-divide-conquer` |
-| 21-dp-basics | 최적 부분 구조 + 중복 부분 문제 | 32 | 메모이제이션 없는 재귀 → 지수 시간 | diff(LCS), 편집 거리 | CLRS 15 | 필수 | `algorithm/21-dp-basics` |
-| 22-dp-advanced | 비트마스크·구간·트리 DP | 21 | 상태 공간 폭발 → OOM | 최적 스케줄, 쿼리 조인 순서 최적화(System R) | CLRS 15 · Selinger 외 1979 | 심화 | `algorithm/22-dp-advanced` |
-| 13-backtracking | 가지치기 전수 탐색 | 32 | 지수 시간 → **정규식 백트래킹(ReDoS)** 로 이어짐 | 제약 만족, 정규식 엔진 | — | 권장 | `algorithm/13-backtracking` |
-| 29-bit-manipulation | 비트 트릭·마스크 | 31 | 부호 있는 오른쪽 시프트 부호 확장; 1<<31 음수 | 플래그, 비트맵, 해시 | Warren 『Hacker's Delight』 | 권장 | `algorithm/29-bit-manipulation` |
-| 30-sweeping | 이벤트 정렬 후 스윕 | 33 | 동시각 이벤트 처리 순서 오류 → 겹침 오판 | 예약 충돌, 구간 합집합 | CLRS 33.2 | 심화 | `algorithm/30-sweeping` |
+| 13-prefix-sum | 누적합으로 구간 합 O(1) | 02 | 누적 오버플로(int) | 통계 집계, 시계열 | CLRS 연습 [?] | 필수 | `algorithm/10-prefix-sum` |
+| 14-two-pointers | 정렬 전제 양 끝 수렴 | 04 | 정렬 전제 위반 → 조용한 오답 | 병합, 중복 제거 | — | 필수 | `algorithm/08-two-pointers` |
+| 15-sliding-window | 고정/가변 창 | 14 | 창 경계 포함/제외 혼동 | **rate limiter 슬라이딩 윈도**, TCP 윈도 개념 | — | 필수 | `algorithm/09-sliding-window` |
+| 16-parametric-search | 최적화 → 결정 문제 + 이진 탐색 | 04 | 단조성 가정 위반 → 오답 | 용량 산정 역산 | — | 권장 | `algorithm/07-parametric-search` |
+| 23-greedy | 국소 최적 선택과 교환 논증 | 02 | 증명 없는 탐욕 → 반례에서 오답 | 허프만, 스케줄링, MST | CLRS 16 | 필수 | `algorithm/23-greedy` |
+| 24-divide-conquer | 분할정복·마스터 정리 | 03 | 균형 안 맞는 분할 → 최악 복잡도 | 병합 정렬, 분산 집계 | CLRS 4 | 필수 | `algorithm/24-divide-conquer` |
+| 25-dp-basics | 최적 부분 구조 + 중복 부분 문제 | 03 | 메모이제이션 없는 재귀 → 지수 시간 | diff(LCS), 편집 거리 | CLRS 15 | 필수 | `algorithm/21-dp-basics` |
+| 26-dp-advanced | 비트마스크·구간·트리 DP | 25 | 상태 공간 폭발 → OOM | 최적 스케줄, 쿼리 조인 순서 최적화(System R) | CLRS 15 · Selinger 외 1979 | 심화 | `algorithm/22-dp-advanced` |
+| 27-backtracking | 가지치기 전수 탐색 | 03 | 지수 시간 → **정규식 백트래킹(ReDoS)** 로 이어짐 | 제약 만족, 정규식 엔진 | — | 권장 | `algorithm/13-backtracking` |
+| 32-bit-manipulation | 비트 트릭·마스크 | 02 | 부호 있는 오른쪽 시프트 부호 확장; 1<<31 음수 | 플래그, 비트맵, 해시 | Warren 『Hacker's Delight』 | 권장 | `algorithm/29-bit-manipulation` |
+| 38-sweeping | 이벤트 정렬 후 스윕 | 09 | 동시각 이벤트 처리 순서 오류 → 겹침 오판 | 예약 충돌, 구간 합집합 | CLRS 33.2 | 심화 | `algorithm/30-sweeping` |
 
 ### 3.4 그래프
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 11-bfs | 레벨 순회·최단 홉 | data-structure/08-graph, data-structure/04-queue-deque | 방문 표시를 큐 삽입이 아닌 꺼낼 때 → 중복 폭증 | 최단 홉, GC 도달성, 크롤러 | CLRS 22.2 | 필수 | `algorithm/11-bfs` |
-| 12-dfs | 깊이 순회·색칠·위상정렬 | 11 | 재귀 DFS 스택 오버플로; 사이클 미탐지 | **데드락 wait-for 사이클 탐지**, 의존성 순서, GC 마킹 | CLRS 22.3–22.4 | 필수 | `algorithm/12-dfs` |
-| 18-scc | 강연결요소(Tarjan·Kosaraju) | 12 | — (순환 그룹을 못 찾으면 순환 의존 방치) | 순환 의존 묶음 탐지 | CLRS 22.5 · Tarjan 1972 | 권장 | `algorithm/18-scc` |
-| 14-dijkstra | 음이 아닌 가중치 최단 경로 | 11, data-structure/07-heap | 음수 가중치 → 조용한 오답 | **OSPF 링크 상태 라우팅** | CLRS 24.3 | 필수 | `algorithm/14-dijkstra` |
-| 15-bellman-floyd | 벨만-포드·플로이드 | 14 | 음수 사이클 → 발산; 거리 벡터 count-to-infinity | **거리 벡터 라우팅(RIP)** | CLRS 24.1 · 25.2 | 권장 | `algorithm/15-bellman-floyd` |
-| 17-mst | 크루스칼·프림 | data-structure/14-union-find | — | 망 설계, 클러스터링 | CLRS 23 | 권장 | `algorithm/17-mst` |
-| 20-a-star | 휴리스틱 최단 경로 | 14 | 과대 추정 휴리스틱 → 최적 아님 | 경로 탐색 | Hart–Nilsson–Raphael 1968 | 심화 | `algorithm/20-a-star` |
-| 16-euler-path | 모든 간선 한 번 | 12 | — | 경로 재구성 | Hierholzer 1873 [?] | 심화 | `algorithm/16-euler-path` |
-| 19-network-flow | 최대 유량·이분 매칭 | 11 | 용량 모델링 오류 → 할당 오답 | 작업 배정, 대역폭 | CLRS 26 | 심화 | `algorithm/19-network-flow` |
+| 17-bfs | 레벨 순회·최단 홉 | data-structure/11-graph, data-structure/06-queue-deque | 방문 표시를 큐 삽입이 아닌 꺼낼 때 → 중복 폭증 | 최단 홉, GC 도달성, 크롤러 | CLRS 22.2 | 필수 | `algorithm/11-bfs` |
+| 18-dfs | 깊이 순회·색칠·위상정렬 | 17 | 재귀 DFS 스택 오버플로; 사이클 미탐지 | **데드락 wait-for 사이클 탐지**, 의존성 순서, GC 마킹 | CLRS 22.3–22.4 | 필수 | `algorithm/12-dfs` |
+| 21-scc | 강연결요소(Tarjan·Kosaraju) | 18 | — (순환 그룹을 못 찾으면 순환 의존 방치) | 순환 의존 묶음 탐지 | CLRS 22.5 · Tarjan 1972 | 권장 | `algorithm/18-scc` |
+| 19-dijkstra | 음이 아닌 가중치 최단 경로 | 17, data-structure/10-heap | 음수 가중치 → 조용한 오답 | **OSPF 링크 상태 라우팅** | CLRS 24.3 | 필수 | `algorithm/14-dijkstra` |
+| 20-bellman-floyd | 벨만-포드·플로이드 | 19 | 음수 사이클 → 발산; 거리 벡터 count-to-infinity | **거리 벡터 라우팅(RIP)** | CLRS 24.1 · 25.2 | 권장 | `algorithm/15-bellman-floyd` |
+| 22-mst | 크루스칼·프림 | data-structure/15-union-find | — | 망 설계, 클러스터링 | CLRS 23 | 권장 | `algorithm/17-mst` |
+| 37-a-star | 휴리스틱 최단 경로 | 19 | 과대 추정 휴리스틱 → 최적 아님 | 경로 탐색 | Hart–Nilsson–Raphael 1968 | 심화 | `algorithm/20-a-star` |
+| 35-euler-path | 모든 간선 한 번 | 18 | — | 경로 재구성 | Hierholzer 1873 [?] | 심화 | `algorithm/16-euler-path` |
+| 36-network-flow | 최대 유량·이분 매칭 | 17 | 용량 모델링 오류 → 할당 오답 | 작업 배정, 대역폭 | CLRS 26 | 심화 | `algorithm/19-network-flow` |
 
 ### 3.5 문자열·수론
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 25-string-matching | KMP 실패 함수 | 31 | 나이브 매칭 O(nm) 로그 검색 폭증 | grep, 필터 | CLRS 32.4 | 권장 | `algorithm/25-string-matching` |
-| 27-string-hashing | 롤링 해시(Rabin-Karp) | 35 | anti-hash 입력 충돌 → 오답 | 중복 탐지, rsync 청크 | CLRS 32.2 | 권장 | `algorithm/27-string-hashing` |
-| 26-aho-corasick | 다중 패턴 오토마톤 | 25, data-structure/09-trie | 패턴 수 폭증 메모리 | WAF·IDS 시그니처, 금칙어 필터 | Aho–Corasick 1975 | 심화 | `algorithm/26-aho-corasick` |
-| 28-number-theory | 소수·GCD·모듈러 역원 | math/06-modular-arithmetic | 모듈러 곱셈 오버플로 | RSA, 해시 | CLRS 31 | 권장 | `algorithm/28-number-theory` |
+| 28-string-matching | KMP 실패 함수 | 02 | 나이브 매칭 O(nm) 로그 검색 폭증 | grep, 필터 | CLRS 32.4 | 권장 | `algorithm/25-string-matching` |
+| 29-string-hashing | 롤링 해시(Rabin-Karp) | 12 | anti-hash 입력 충돌 → 오답 | 중복 탐지, rsync 청크 | CLRS 32.2 | 권장 | `algorithm/27-string-hashing` |
+| 30-aho-corasick | 다중 패턴 오토마톤 | 28, data-structure/12-trie | 패턴 수 폭증 메모리 | WAF·IDS 시그니처, 금칙어 필터 | Aho–Corasick 1975 | 심화 | `algorithm/26-aho-corasick` |
+| 31-number-theory | 소수·GCD·모듈러 역원 | math/11-modular-arithmetic | 모듈러 곱셈 오버플로 | RSA, 해시 | CLRS 31 | 권장 | `algorithm/28-number-theory` |
 
 ### 3.6 확률·계산 이론
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 36-randomized-algorithms | 라스베이거스·몬테카를로, 기대 복잡도 | math/09-expectation-variance-tails | 결정적 시드 → 적대적 입력에 최악 재현 | 랜덤 피벗, 스킵 리스트, 샘플링 | CLRS 5 · 7.3 | 심화 | 신규 |
-| 37-complexity-p-np | P·NP·NP완전·환원·근사 | 31 | NP-hard 문제에 정확해 고집 → 무한 대기; 근사·휴리스틱 선택 기준 부재 | 스케줄링·빈 패킹·SAT 솔버 | CLRS 34 · Sipser 3부 [?] | 권장 | 신규 |
-| 38-computability-and-halting | 정지 문제·라이스 정리 | 37 | "모든 버그를 잡는 정적 분석기" 기대 → 오탐/미탐 불가피성 오해 | 정적 분석·타입 검사의 한계 | Sipser 4·5장 [?] | 심화 | 신규 |
+| 39-randomized-algorithms | 라스베이거스·몬테카를로, 기대 복잡도 | math/08-expectation-variance-tails | 결정적 시드 → 적대적 입력에 최악 재현 | 랜덤 피벗, 스킵 리스트, 샘플링 | CLRS 5 · 7.3 | 심화 | 신규 |
+| 40-complexity-p-np | P·NP·NP완전·환원·근사 | 02 | NP-hard 문제에 정확해 고집 → 무한 대기; 근사·휴리스틱 선택 기준 부재 | 스케줄링·빈 패킹·SAT 솔버 | CLRS 34 · Sipser 3부 [?] | 권장 | 신규 |
+| 41-computability-and-halting | 정지 문제·라이스 정리 | 40 | "모든 버그를 잡는 정적 분석기" 기대 → 오탐/미탐 불가피성 오해 | 정적 분석·타입 검사의 한계 | Sipser 4·5장 [?] | 심화 | 신규 |
 
 ### 3.6b 압축 알고리즘 (2026-09-28 추가)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 41-lossless-compression-lz77-huffman | LZ77(슬라이딩 윈도 역참조) + 허프만 부호 = DEFLATE, 압축 한계 | math/13-information-theory-basics, 23-greedy, data-structure/07-heap | 해제 크기 상한 없음 → 압축 폭탄으로 메모리 고갈; 아주 작은 메시지 압축 → 헤더 때문에 오히려 커짐; 무작위·암호문은 압축 안 됨 | 해시 체인 매치 파인더, 슬라이딩 윈도, 허프만 트리(힙)·정규 허프만 부호 | RFC 1951 · Huffman 1952 · Ziv–Lempel 1977 | 필수 | 신규 |
-| 42-modern-codecs-lz4-zstd-brotli | 속도↔비율 절충, 딕셔너리 압축, 엔트로피 부호(ANS/FSE), 프레임·스트리밍 압축 | 41 | 최고 레벨 고정 → CPU 병목·꼬리 지연; 공유 딕셔너리 버전 불일치 → 해제 실패; 작은 레코드 개별 압축 → 비율 저하(배치 압축 필요) | ANS/FSE, 사전 학습 딕셔너리, 해시 매치 파인더 | RFC 8878(zstd) · RFC 7932(Brotli) · LZ4 블록·프레임 형식 문서 [?] | 권장 | 신규 (연결: `cs/systems/kafka-why-fast` 배치 압축) |
+| 33-lossless-compression-lz77-huffman | LZ77(슬라이딩 윈도 역참조) + 허프만 부호 = DEFLATE, 압축 한계 | math/14-information-theory-basics, 23-greedy, data-structure/10-heap | 해제 크기 상한 없음 → 압축 폭탄으로 메모리 고갈; 아주 작은 메시지 압축 → 헤더 때문에 오히려 커짐; 무작위·암호문은 압축 안 됨 | 해시 체인 매치 파인더, 슬라이딩 윈도, 허프만 트리(힙)·정규 허프만 부호 | RFC 1951 · Huffman 1952 · Ziv–Lempel 1977 | 필수 | 신규 |
+| 34-modern-codecs-lz4-zstd-brotli | 속도↔비율 절충, 딕셔너리 압축, 엔트로피 부호(ANS/FSE), 프레임·스트리밍 압축 | 33 | 최고 레벨 고정 → CPU 병목·꼬리 지연; 공유 딕셔너리 버전 불일치 → 해제 실패; 작은 레코드 개별 압축 → 비율 저하(배치 압축 필요) | ANS/FSE, 사전 학습 딕셔너리, 해시 매치 파인더 | RFC 8878(zstd) · RFC 7932(Brotli) · LZ4 블록·프레임 형식 문서 [?] | 권장 | 신규 (연결: `cs/systems/kafka-why-fast` 배치 압축) |
 
 ### 3.7 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 39-alg-symptom-index | 역색인: 데이터 늘자 타임아웃(복잡도), 정렬 계약 예외, 재귀 스택 오버플로, 정규식 CPU 100%, 이진 탐색 무한 루프 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 40-alg-incidents | 실사건: JDK 이진 탐색 오버플로(Bloch 2006) · Stack Overflow 정규식 장애(2016-07-20) · Cloudflare WAF 정규식 백트래킹 전역 CPU 100%(2019-07-02) | 39 | — | — | Bloch 2006 Google Research 블로그 · Stack Exchange 포스트모템 2016 · Cloudflare 블로그 2019-07-12 | 권장 | 신규 |
+| 42-alg-symptom-index | 역색인: 데이터 늘자 타임아웃(복잡도), 정렬 계약 예외, 재귀 스택 오버플로, 정규식 CPU 100%, 이진 탐색 무한 루프 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
+| 43-alg-incidents | 실사건: JDK 이진 탐색 오버플로(Bloch 2006) · Stack Overflow 정규식 장애(2016-07-20) · Cloudflare WAF 정규식 백트래킹 전역 CPU 100%(2019-07-02) | 42 | — | — | Bloch 2006 Google Research 블로그 · Stack Exchange 포스트모템 2016 · Cloudflare 블로그 2019-07-12 | 권장 | 신규 |
 
 # Part 1 — 컴퓨터 한 대
 
@@ -358,55 +370,55 @@ Part 6  판단하는 법             data-engineering → data-analysis
 > 비트 → 게이트 → CPU → 메모리 계층 → 저장장치. 백엔드가 여기서 만나는 장애: 정수 오버플로, 부동소수 오차, 인코딩 깨짐, 아키텍처 불일치 바이너리, false sharing, SSD 지연 스파이크.
 > 뼈대: CS:APP 3판(2·3·4·5·6장), OSTEP 36·37·44, Patterson&Hennessy 『Computer Organization and Design』(이하 P&H — 장 번호 `[?]`).
 
-**권장 학습 순서**: 01 → 02 → 03 → 05 → 23 → 04 → 06 → 07 → 08 → 09 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → (10 · 11 · 19 · 20 심화) → 21 → 22
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → (18 · 19 · 20 · 21 심화) → 22 → 23
 
 ### 4.1 데이터 표현
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 01-number-systems-twos-complement | 진수 변환·2의 보수·부호/무부호 | math/01-propositional-logic | signed/unsigned 비교 → `-1 > 0u` 참; 부호 확장 실수 | 비트 연산 | CS:APP 2.1–2.2 | 필수 | `foundations/data-representation` (분할 — 진수·2의 보수 절) |
-| 02-integer-overflow-and-truncation | 오버플로 wrap, 좁히기 캐스팅 절단 | 01 | Java `int` 21억 초과 → 음수 금액; 64→16비트 변환 예외(Ariane 5); `size_t` 언더플로 → 거대 할당 | 포화 산술, `Math.addExact` | CS:APP 2.3 | 필수 | 신규 (연결: `foundations/languages/c/syntax/03-integer-promotion-and-usual-arithmetic-conversions`) |
-| 03-floating-point-ieee754 | 부호·지수·가수, ε, 특수값(NaN·Inf) | 01 | `0.1+0.2 != 0.3`; `NaN != NaN` 으로 정렬·집합 붕괴; 돈을 `double` 로 → 원 단위 불일치 | 반올림 모드, Kahan 합(math/14) | CS:APP 2.4 · Goldberg 1991 | 필수 | `foundations/data-representation` (분할 — IEEE 754 절) |
-| 04-byte-order-and-alignment | 엔디안·정렬·구조체 패딩 | 01 | 네트워크 바이트 순서 누락 → 포트·길이 필드 뒤집힘; ARM 비정렬 접근 `SIGBUS`; 패딩 포함 직렬화로 프로토콜 불일치 | 바이트 스왑 | CS:APP 2.1.3 · 3.9.3 | 권장 | `foundations/data-representation` (분할 — 엔디안 절) · 연결: `languages/c/syntax/08·22` |
-| 05-character-encoding-unicode | 코드 포인트·UTF-8/16·서로게이트·정규화 | 01 | 모지바케(`Ã©`); 서로게이트 쌍 중간 절단 → `�`; NFC/NFD 불일치 → 같은 파일명 두 개; MySQL `utf8`(3바이트)에 이모지 → `Incorrect string value` | 가변 길이 부호화, 바이트 경계 탐색 | RFC 3629 · Unicode Standard 2·3장 [?] | 필수 | `foundations/data-representation` (분할 — ASCII/유니코드 절) |
-| 23-text-length-segmentation-and-case | 길이의 4가지 뜻(바이트·UTF-16 단위·코드포인트·그래핌), 안전한 자르기, 대소문자 변환·케이스 폴딩의 로캘 의존, 혼동 문자 | 05-character-encoding-unicode | "10자 제한" 검증(JS `length`)과 DB `VARCHAR(10)`(MySQL 문자 수 vs PG) 기준이 달라 저장 실패. 이모지·국기(🇰🇷 = 코드포인트 2개)를 중간에서 잘라 깨진 미리보기. 터키 로캘 `"TITLE".toLowerCase()` → `tıtle`로 비교 실패. 정규화가 멱등이 아닌 사용자명 → **계정 탈취(Spotify 2013)** | 그래핌 경계 상태 기계, 가변 길이 역방향 탐색 | Unicode UAX #29 "Text Segmentation" https://www.unicode.org/reports/tr29/ · UTS #39 "Unicode Security Mechanisms" · Spotify Engineering "Creative usernames and Spotify account hijacking" 2013 | 필수 | 신규 |
+| 02-integer-overflow-and-truncation | 오버플로 wrap, 좁히기 캐스팅 절단 | 01 | Java `int` 21억 초과 → 음수 금액; 64→16비트 변환 예외(Ariane 5); `size_t` 언더플로 → 거대 할당 | 포화 산술, `Math.addExact` | CS:APP 2.3 | 필수 | 신규 (연결: `languages/c/syntax/03-integer-promotion-and-usual-arithmetic-conversions`) |
+| 03-floating-point-ieee754 | 부호·지수·가수, ε, 특수값(NaN·Inf) | 01 | `0.1+0.2 != 0.3`; `NaN != NaN` 으로 정렬·집합 붕괴; 돈을 `double` 로 → 원 단위 불일치 | 반올림 모드, Kahan 합(math/15) | CS:APP 2.4 · Goldberg 1991 | 필수 | `foundations/data-representation` (분할 — IEEE 754 절) |
+| 06-byte-order-and-alignment | 엔디안·정렬·구조체 패딩 | 01 | 네트워크 바이트 순서 누락 → 포트·길이 필드 뒤집힘; ARM 비정렬 접근 `SIGBUS`; 패딩 포함 직렬화로 프로토콜 불일치 | 바이트 스왑 | CS:APP 2.1.3 · 3.9.3 | 권장 | `foundations/data-representation` (분할 — 엔디안 절) · 연결: `languages/c/syntax/08·22` |
+| 04-character-encoding-unicode | 코드 포인트·UTF-8/16·서로게이트·정규화 | 01 | 모지바케(`Ã©`); 서로게이트 쌍 중간 절단 → `�`; NFC/NFD 불일치 → 같은 파일명 두 개; MySQL `utf8`(3바이트)에 이모지 → `Incorrect string value` | 가변 길이 부호화, 바이트 경계 탐색 | RFC 3629 · Unicode Standard 2·3장 [?] | 필수 | `foundations/data-representation` (분할 — ASCII/유니코드 절) |
+| 05-text-length-segmentation-and-case | 길이의 4가지 뜻(바이트·UTF-16 단위·코드포인트·그래핌), 안전한 자르기, 대소문자 변환·케이스 폴딩의 로캘 의존, 혼동 문자 | 04-character-encoding-unicode | "10자 제한" 검증(JS `length`)과 DB `VARCHAR(10)`(MySQL 문자 수 vs PG) 기준이 달라 저장 실패. 이모지·국기(🇰🇷 = 코드포인트 2개)를 중간에서 잘라 깨진 미리보기. 터키 로캘 `"TITLE".toLowerCase()` → `tıtle`로 비교 실패. 정규화가 멱등이 아닌 사용자명 → **계정 탈취(Spotify 2013)** | 그래핌 경계 상태 기계, 가변 길이 역방향 탐색 | Unicode UAX #29 "Text Segmentation" https://www.unicode.org/reports/tr29/ · UTS #39 "Unicode Security Mechanisms" · Spotify Engineering "Creative usernames and Spotify account hijacking" 2013 | 필수 | 신규 |
 
 ### 4.2 논리 회로에서 명령어까지
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 06-logic-gates-to-adder | 트랜지스터→게이트→가산기·ALU | 01 | 캐리 전파 지연이 클록 상한을 정함(타이밍 위반) | 불리언 대수, ripple O(n) vs lookahead O(log n) | P&H 부록 A [?] · CS:APP 4.2 | 권장 | `foundations/hardware-basics` (분할 — 게이트·가산기 절) |
-| 07-sequential-logic-clock | 플립플롭·클록·레지스터·상태 기계 | 06 | 비동기 신호 동기화 실패 → 메타안정성(간헐 오동작) | 유한 상태 기계 | CS:APP 4.2.5 · P&H 부록 A [?] | 권장 | `foundations/hardware-basics` (분할 — 플립플롭·클록·레지스터 절) |
-| 08-isa-and-machine-code | ISA·레지스터·어셈블리(x86-64/ARM64) | 07 | arm64 이미지를 amd64에서 실행 → `exec format error`; 에뮬레이션(Rosetta·QEMU)로 수배 느림 | 명령어 인코딩 | CS:APP 3장 | 필수 | `foundations/hardware-basics` (분할 — 인스트럭션 세트 절) |
-| 09-calling-convention-and-stack-frame | 호출 규약·스택 프레임·ESP/RSP | 08, data-structure/03-stack | 깊은 재귀 → `StackOverflowError`/`SIGSEGV`; 버퍼 오버플로로 반환 주소 덮어쓰기 | 스택 | CS:APP 3.7 | 필수 | `systems/call-stack` · `foundations/memory-management` (분할 — 스택 프레임 절) |
-| 10-pipelining-and-branch-prediction | 파이프라인·해저드·분기 예측 | 08 | 분기 예측 실패 → 정렬 안 된 데이터 루프가 수배 느림 | 2비트 포화 카운터 예측기 | CS:APP 4.4–4.5 · P&H 4장 [?] | 심화 | 신규 |
-| 11-out-of-order-and-speculation | 비순차·투기 실행과 부채널 | 10 | Spectre/Meltdown — 권한 밖 메모리가 캐시 타이밍으로 샘; 패치 후 syscall 성능 저하 | 재정렬 버퍼 | Kocher 외 2019 · Lipp 외 2018 | 심화 | 신규 |
+| 07-logic-gates-to-adder | 트랜지스터→게이트→가산기·ALU | 01 | 캐리 전파 지연이 클록 상한을 정함(타이밍 위반) | 불리언 대수, ripple O(n) vs lookahead O(log n) | P&H 부록 A [?] · CS:APP 4.2 | 권장 | `foundations/hardware-basics` (분할 — 게이트·가산기 절) |
+| 08-sequential-logic-clock | 플립플롭·클록·레지스터·상태 기계 | 07 | 비동기 신호 동기화 실패 → 메타안정성(간헐 오동작) | 유한 상태 기계 | CS:APP 4.2.5 · P&H 부록 A [?] | 권장 | `foundations/hardware-basics` (분할 — 플립플롭·클록·레지스터 절) |
+| 09-isa-and-machine-code | ISA·레지스터·어셈블리(x86-64/ARM64) | 08 | arm64 이미지를 amd64에서 실행 → `exec format error`; 에뮬레이션(Rosetta·QEMU)로 수배 느림 | 명령어 인코딩 | CS:APP 3장 | 필수 | `foundations/hardware-basics` (분할 — 인스트럭션 세트 절) |
+| 10-calling-convention-and-stack-frame | 호출 규약·스택 프레임·ESP/RSP | 09, data-structure/05-stack | 깊은 재귀 → `StackOverflowError`/`SIGSEGV`; 버퍼 오버플로로 반환 주소 덮어쓰기 | 스택 | CS:APP 3.7 | 필수 | `systems/call-stack` · `foundations/memory-management` (분할 — 스택 프레임 절) |
+| 18-pipelining-and-branch-prediction | 파이프라인·해저드·분기 예측 | 09 | 분기 예측 실패 → 정렬 안 된 데이터 루프가 수배 느림 | 2비트 포화 카운터 예측기 | CS:APP 4.4–4.5 · P&H 4장 [?] | 심화 | 신규 |
+| 19-out-of-order-and-speculation | 비순차·투기 실행과 부채널 | 18 | Spectre/Meltdown — 권한 밖 메모리가 캐시 타이밍으로 샘; 패치 후 syscall 성능 저하 | 재정렬 버퍼 | Kocher 외 2019 · Lipp 외 2018 | 심화 | 신규 |
 
 ### 4.3 메모리 계층
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 12-memory-hierarchy-and-locality | 레지스터→캐시→DRAM→SSD, 시간·공간 지역성 | 08 | 열 우선 순회·포인터 추적 → 캐시 미스로 수~수십 배 느림 | 배열 vs 연결 리스트 선택 근거 | CS:APP 6.1–6.3 | 필수 | `foundations/memory-management` (분할 — 메모리 계층·캐시 지역성 절) |
-| 13-cache-organization | 라인·집합 연관·쓰기 정책·교체 | 12 | **false sharing** → 멀티스레드 카운터가 단일보다 느림; 2의 거듭제곱 stride 충돌 미스 | 의사 LRU, 인덱스 비트 해싱 | CS:APP 6.4–6.6 | 필수 | 신규 |
-| 14-latency-numbers | 지연 자릿수 감각·AMAT | 12 | "네트워크 1회 ≈ 메모리 접근 수십만 회"를 무시한 루프 내 원격 호출(N+1) | AMAT 계산 | Dean "Latency Numbers" · CS:APP 6.1 | 필수 | 신규 |
-| 15-cache-coherence-and-memory-ordering | MESI·저장 버퍼·재정렬·배리어·CAS | 13 | 가시성 결여 → 플래그 대기 무한 루프; 재정렬로 DCL 싱글턴 반쯤 초기화된 객체 노출 | MESI 상태 기계, CAS | Sorin·Hill·Wood 『A Primer on Memory Consistency and Cache Coherence』 [?] · CS:APP 12.5 [?] | 필수 | 신규 |
+| 11-memory-hierarchy-and-locality | 레지스터→캐시→DRAM→SSD, 시간·공간 지역성 | 09 | 열 우선 순회·포인터 추적 → 캐시 미스로 수~수십 배 느림 | 배열 vs 연결 리스트 선택 근거 | CS:APP 6.1–6.3 | 필수 | `foundations/memory-management` (분할 — 메모리 계층·캐시 지역성 절) |
+| 12-cache-organization | 라인·집합 연관·쓰기 정책·교체 | 11 | **false sharing** → 멀티스레드 카운터가 단일보다 느림; 2의 거듭제곱 stride 충돌 미스 | 의사 LRU, 인덱스 비트 해싱 | CS:APP 6.4–6.6 | 필수 | 신규 |
+| 13-latency-numbers | 지연 자릿수 감각·AMAT | 11 | "네트워크 1회 ≈ 메모리 접근 수십만 회"를 무시한 루프 내 원격 호출(N+1) | AMAT 계산 | Dean "Latency Numbers" · CS:APP 6.1 | 필수 | 신규 |
+| 14-cache-coherence-and-memory-ordering | MESI·저장 버퍼·재정렬·배리어·CAS | 12 | 가시성 결여 → 플래그 대기 무한 루프; 재정렬로 DCL 싱글턴 반쯤 초기화된 객체 노출 | MESI 상태 기계, CAS | Sorin·Hill·Wood 『A Primer on Memory Consistency and Cache Coherence』 [?] · CS:APP 12.5 [?] | 필수 | 신규 |
 
 ### 4.4 I/O·저장장치·병렬
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 16-io-devices-interrupts-dma | 폴링 vs 인터럽트, DMA, 장치 레지스터 | 12 | 인터럽트 폭주 → 한 코어 softirq 100%; DMA 링 가득 → 패킷 드롭 | 디스크립터 링(data-structure/38) | OSTEP 36 | 필수 | 신규 |
-| 17-storage-media-workload | HDD 탐색·회전 vs SSD, 순차/랜덤 IOPS 유도 | 16 | 랜덤 I/O 워크로드를 HDD에 → IOPS 한계로 지연 폭증 | 엘리베이터 스케줄링 | OSTEP 37 | 필수 | `systems/storage-media-workload` |
-| 18-nand-flash-ftl | 셀·블록·FTL·GC·쓰기 증폭 | 17 | SSD 내부 GC → 주기적 지연 스파이크; 쓰기 증폭 → 수명 소진·`SMART` 경고 | 로그 구조 매핑, 웨어 레벨링 | OSTEP 44 | 권장 | `systems/nand-flash` |
-| 19-multicore-and-numa | 멀티코어·SMT·NUMA 원격 메모리 | 15 | NUMA 원격 접근 → 같은 코드인데 지연 편차; 코어 수 이상 스레드 → 경합 | 스레드 배치(affinity) | CS:APP 12.6 [?] · Drepper 2007 | 심화 | 신규 |
-| 20-simd-and-gpu | 데이터 병렬(SIMD·GPU)의 모양 | 19 | 분기 많은 코드를 GPU로 → 워프 분기로 느림 | 벡터화 루프 | P&H 6장 [?] | 심화 | 신규 |
+| 15-io-devices-interrupts-dma | 폴링 vs 인터럽트, DMA, 장치 레지스터 | 11 | 인터럽트 폭주 → 한 코어 softirq 100%; DMA 링 가득 → 패킷 드롭 | 디스크립터 링(data-structure/25) | OSTEP 36 | 필수 | 신규 |
+| 16-storage-media-workload | HDD 탐색·회전 vs SSD, 순차/랜덤 IOPS 유도 | 15 | 랜덤 I/O 워크로드를 HDD에 → IOPS 한계로 지연 폭증 | 엘리베이터 스케줄링 | OSTEP 37 | 필수 | `systems/storage-media-workload` |
+| 17-nand-flash-ftl | 셀·블록·FTL·GC·쓰기 증폭 | 16 | SSD 내부 GC → 주기적 지연 스파이크; 쓰기 증폭 → 수명 소진·`SMART` 경고 | 로그 구조 매핑, 웨어 레벨링 | OSTEP 44 | 권장 | `systems/nand-flash` |
+| 20-multicore-and-numa | 멀티코어·SMT·NUMA 원격 메모리 | 14 | NUMA 원격 접근 → 같은 코드인데 지연 편차; 코어 수 이상 스레드 → 경합 | 스레드 배치(affinity) | CS:APP 12.6 [?] · Drepper 2007 | 심화 | 신규 |
+| 21-simd-and-gpu | 데이터 병렬(SIMD·GPU)의 모양 | 20 | 분기 많은 코드를 GPU로 → 워프 분기로 느림 | 벡터화 루프 | P&H 6장 [?] | 심화 | 신규 |
 
 ### 4.5 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 21-arch-symptom-index | 역색인: `SIGSEGV`/`SIGBUS`/`SIGILL`, `exec format error`, 음수 금액, 합계 불일치, 모지바케, 멀티스레드가 더 느림, SSD 지연 톱니 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 22-arch-incidents | 실사건: Patriot 미사일 시계 오차 누적(1991) · Ariane 5 64→16비트 변환(1996) · Intel FDIV(1994) · Spectre/Meltdown(2018) · 2038년 문제 | 21 | — | — | GAO/IMTEC-92-26 · Ariane 501 조사보고서 1996 · Spectre/Meltdown 논문 | 권장 | 신규 |
+| 22-arch-symptom-index | 역색인: `SIGSEGV`/`SIGBUS`/`SIGILL`, `exec format error`, 음수 금액, 합계 불일치, 모지바케, 멀티스레드가 더 느림, SSD 지연 톱니 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
+| 23-arch-incidents | 실사건: Patriot 미사일 시계 오차 누적(1991) · Ariane 5 64→16비트 변환(1996) · Intel FDIV(1994) · Spectre/Meltdown(2018) · 2038년 문제 | 22 | — | — | GAO/IMTEC-92-26 · Ariane 501 조사보고서 1996 · Spectre/Meltdown 논문 | 권장 | 신규 |
 
 ---
 
@@ -415,13 +427,13 @@ Part 6  판단하는 법             data-engineering → data-analysis
 > 가상화(CPU·메모리) → 동시성 → 영속성 → I/O·격리. 기존 부트캠프 노트는 프로세스·메모리 기초만 덮는다 — **동기화 심화·시그널·파일시스템·fsync·I/O 모델·컨테이너**가 신규의 중심.
 > 뼈대: OSTEP(장 번호 확인), CS:APP 3판 7~12장, Linux man-pages(`signal(7)`·`epoll(7)`·`fsync(2)`).
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 22 → 23 → 24 → 25 → 28 → 29 → 21 → 34 → 32 → 31 → 35 → (26 · 27 · 30 · 33 · 38 심화·권장) → 36 → 37
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 27 → 28 → 29 → 30 → 31 → (32 · 33 · 34 · 35 · 36 심화·권장) → 37 → 38
 
 ### 5.1 커널과 프로세스
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 01-kernel-and-user-mode | OS의 역할, 보호 링, 제한된 직접 실행 | architecture/08-isa-and-machine-code | 유저 코드가 특권 명령 → `SIGILL`/`SIGSEGV` 로 강제 종료 | 트랩 테이블 | OSTEP 2·6 | 필수 | 신규 |
+| 01-kernel-and-user-mode | OS의 역할, 보호 링, 제한된 직접 실행 | architecture/09-isa-and-machine-code | 유저 코드가 특권 명령 → `SIGILL`/`SIGSEGV` 로 강제 종료 | 트랩 테이블 | OSTEP 2·6 | 필수 | 신규 |
 | 02-system-calls | syscall 경로·비용·`strace` | 01 | 작은 `write` 반복 → sys CPU 급등; `EINTR` 미처리 → 간헐 실패 | syscall 테이블(배열 인덱스 디스패치) | OSTEP 6 · CS:APP 8.1 · `syscalls(2)` | 필수 | 신규 |
 | 03-interrupts-traps-faults | 인터럽트·트랩·폴트·예외적 제어흐름 | 02 | page fault 폭주(major fault) → 디스크 대기로 지연 급등 | 인터럽트 벡터 테이블 | CS:APP 8.1 | 필수 | 신규 |
 | 04-process-and-lifecycle | 프로세스 추상화·5상태·PCB | 03 | 좀비(`<defunct>`) 누적 → PID 고갈 `fork: Resource temporarily unavailable`; 고아 프로세스 | PCB 연결 리스트, 상태 기계 | OSTEP 4 · CS:APP 8.2 | 필수 | `foundations/process-thread` (분할 — 5상태·PCB 절) |
@@ -435,8 +447,8 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 09-address-space | 가상 주소 공간·코드/데이터/힙/스택·세그먼트 | 04 | null·해제된 주소 접근 `SIGSEGV`(exit 139) | 베이스/바운드 | OSTEP 13 · 15 · 16 | 필수 | `foundations/memory-management` (분할 — 가상 주소 4세그먼트 절) |
-| 10-paging-and-tlb | 페이지 테이블·다단계·TLB | 09, architecture/13-cache-organization | TLB 미스 폭증 → 큰 힙 랜덤 접근 느림(huge page 검토) | **다단계 페이지 테이블 = 기수 트리**, TLB = 연관 캐시 | OSTEP 18·19·20 | 필수 | `foundations/memory-management` (분할 — MMU·페이징·TLB 절) |
-| 11-heap-allocation | malloc·free list·단편화·buddy·slab | 09, data-structure/35-allocator | 단편화로 RSS가 안 줄어듦; double free·use-after-free 크래시 | free list, buddy, slab | OSTEP 14 · 17 | 필수 | `foundations/memory-management` (분할 — 힙 절) · 연결: `data-structure/35-allocator` |
+| 10-paging-and-tlb | 페이지 테이블·다단계·TLB | 09, architecture/12-cache-organization | TLB 미스 폭증 → 큰 힙 랜덤 접근 느림(huge page 검토) | **다단계 페이지 테이블 = 기수 트리**, TLB = 연관 캐시 | OSTEP 18·19·20 | 필수 | `foundations/memory-management` (분할 — MMU·페이징·TLB 절) |
+| 11-heap-allocation | malloc·free list·단편화·buddy·slab | 09, data-structure/31-allocator | 단편화로 RSS가 안 줄어듦; double free·use-after-free 크래시 | free list, buddy, slab | OSTEP 14 · 17 | 필수 | `foundations/memory-management` (분할 — 힙 절) · 연결: `data-structure/35-allocator` |
 | 12-swapping-and-page-replacement | 스왑·교체 정책·작업 집합·스래싱 | 10 | 스왑 폭주 → 시스템 전체 멈춘 듯(스래싱); 교체 정책이 스캔에 오염 | **LRU 근사 = CLOCK**, 작업 집합 | OSTEP 21 · 22 | 필수 | 신규 (연결: `systems/thrashing` 은 자료구조 resize 스래싱 — 용어 대비) |
 | 13-oom-and-memory-limits | overcommit·OOM killer·cgroup memory | 12 | 컨테이너 `OOMKilled`(exit 137); JVM 힙 < limit인데 native·메타스페이스로 초과 | oom_score 선택 | `proc(5)` · 커널 문서 cgroup v2 | 필수 | 신규 |
 | 14-mmap-and-page-cache | 파일 매핑·페이지 캐시·dirty writeback | 10 | `free` 가 "사용 중"으로 보여 메모리 누수 오판; 매핑 중인 파일 절단 → `SIGBUS` | 기수 트리(page cache 인덱스) | OSTEP 23 · CS:APP 9.8 | 권장 | 신규 (연결: `systems/kafka-why-fast` 페이지 캐시 절) |
@@ -446,44 +458,44 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 15-race-conditions | 임계 구역·원자성·check-then-act | 07 | `count++` 유실; 재고 음수; 테스트에선 안 나고 부하에서만 | — | OSTEP 26 | 필수 | `foundations/process-thread` (분할 — 경쟁 조건·Lock 절) |
-| 16-locks-and-spinlocks | test-and-set·CAS·futex·공정성 | 15, architecture/15-cache-coherence-and-memory-ordering | 스핀락 과점유 → CPU 낭비; 락 경합 → 코어 늘려도 처리량 역전 | CAS, 티켓 락(큐) | OSTEP 28 · 29 | 필수 | 신규 |
+| 16-locks-and-spinlocks | test-and-set·CAS·futex·공정성 | 15, architecture/14-cache-coherence-and-memory-ordering | 스핀락 과점유 → CPU 낭비; 락 경합 → 코어 늘려도 처리량 역전 | CAS, 티켓 락(큐) | OSTEP 28 · 29 | 필수 | 신규 |
 | 17-condition-variables-and-monitors | 대기/통지·모니터 | 16 | `if` 로 대기 → spurious wakeup 후 빈 큐 접근; lost wakeup → 영원히 대기 | 대기 큐 | OSTEP 30 | 필수 | 신규 |
 | 18-semaphores | 카운팅 세마포어·생산자/소비자 | 17 | release 누락(예외 경로) → permit 영구 소진 hang | 카운터 + 대기 큐 | OSTEP 31 | 필수 | `systems/semaphore` |
 | 19-deadlock | 4조건·예방·회피·탐지 | 16 | 스레드 덤프 `Found one Java-level deadlock`; DB `1213 Deadlock found` / `40P01` | **wait-for 그래프 사이클 탐지(DFS)**, 락 전순서, 은행원 알고리즘 | OSTEP 32 | 필수 | 신규 |
 | 20-concurrency-bugs | 원자성 위반·순서 위반·기아·라이브락·우선순위 역전 | 19 | 우선순위 역전 → 워치독 리셋(Mars Pathfinder); 라이브락 → CPU 바쁜데 진행 0 | 우선순위 상속 | OSTEP 32 · Lu 외 ASPLOS 2008 | 필수 | 신규 |
-| 21-event-based-concurrency | 이벤트 루프·reactor·콜백 | 29 | 이벤트 루프에서 블로킹 호출 → 모든 요청 동시 지연 | 이벤트 큐·타이머 힙 | OSTEP 33 | 필수 | 신규 |
+| 27-event-based-concurrency | 이벤트 루프·reactor·콜백 | 26 | 이벤트 루프에서 블로킹 호출 → 모든 요청 동시 지연 | 이벤트 큐·타이머 힙 | OSTEP 33 | 필수 | 신규 |
 
 ### 5.4 영속성·I/O
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 22-files-and-descriptors | fd·inode·링크·open/close 의미 | 05 | fd 누수 `EMFILE: Too many open files`; 삭제한 로그가 공간을 안 돌려줌(열린 fd) | fd 테이블(배열) | OSTEP 39 · CS:APP 10 | 필수 | 신규 |
-| 23-file-system-implementation | 블록·inode·비트맵·디렉터리·VFS·FFS | 22, data-structure/33-filesystem | `df` 여유 있는데 `No space left on device`(inode 고갈) | 비트맵, 다단계 인덱스, 디렉터리 B-트리(htree) | OSTEP 40 · 41 | 필수 | 신규 (연결: `data-structure/33-filesystem`) |
-| 24-crash-consistency-and-journaling | fsck·저널링·COW·LFS | 23 | 전원 장애 후 0바이트 파일·torn write | **WAL(저널)**, 로그 구조 | OSTEP 42 · 43 | 필수 | 신규 |
-| 25-fsync-and-durability | write≠디스크, fsync·fdatasync·rename 원자성·디렉터리 fsync | 24 | fsync `EIO` 후 재시도 "성공" 위장 → 조용한 유실(fsyncgate); 디렉터리 fsync 누락 → rename 소실 | — | `fsync(2)` · LWN 752063 · Pillai 외 OSDI 2014 | 필수 | 신규 |
-| 26-raid | RAID 0/1/5/6/10·재구축 | architecture/17-storage-media-workload | 재구축 중 2차 디스크 장애·URE → 어레이 유실; RAID5 write hole | 패리티(XOR) | OSTEP 38 | 권장 | 신규 |
-| 27-data-integrity-checksums | 조용한 손상·체크섬·스크러빙 | 26 | 비트 부패가 에러 없이 복제·백업까지 전파 | CRC, 체크섬 트리(Merkle) | OSTEP 45 | 권장 | 신규 |
-| 28-io-models | 블로킹/논블로킹·동기/비동기 4분면 | 22 | 논블로킹 소켓에서 `EAGAIN` 무시 → busy loop CPU 100% | — | CS:APP 12.2 [?] · Stevens UNP 6.2 [?] | 필수 | 신규 |
-| 29-io-multiplexing-epoll | select/poll/epoll, 레벨 vs 엣지 트리거 | 28 | 엣지 트리거에서 끝까지 안 읽음 → 연결 hang; select `FD_SETSIZE` 1024 초과 | select 비트맵 O(n) vs **epoll RB트리 + ready list** | `epoll(7)` · Kegel "C10K" | 필수 | 신규 |
-| 30-zero-copy-and-io-uring | sendfile·splice·mmap·io_uring | 29, 14 | zero-copy 경로에 TLS 끼면 사라짐; io_uring 보안 비활성 환경 | 제출/완료 링 버퍼 | `sendfile(2)` · Axboe "Efficient IO with io_uring" 2019 | 심화 | 신규 (연결: `systems/kafka-why-fast` zero-copy 절) |
-| 38-server-concurrency-architectures | 연결당 스레드 vs Reactor(단일·멀티 리액터) vs Proactor(IOCP·io_uring) vs Half-Sync/Half-Async(NIO 수신 + 워커 풀) vs Leader/Followers, Acceptor-Connector | 21-event-based-concurrency, 29-io-multiplexing-epoll, 30-zero-copy-and-io-uring | 연결당 스레드 → C10K에서 메모리·컨텍스트 스위칭 폭증; 리액터 스레드에서 DB 호출 → 모든 연결 동시 지연(Netty 이벤트 루프 블로킹); 반동기/반비동기 사이 큐 무한 → 지연 폭증 후 OOM | 준비 이벤트 디멀티플렉싱(epoll), 완료 큐(io_uring CQ), 핸드오프 큐 | Schmidt 외 POSA2 2000 · Kegel "The C10K problem" [?] · Netty 문서 [?] | 권장 | 신규 |
+| 21-files-and-descriptors | fd·inode·링크·open/close 의미 | 05 | fd 누수 `EMFILE: Too many open files`; 삭제한 로그가 공간을 안 돌려줌(열린 fd) | fd 테이블(배열) | OSTEP 39 · CS:APP 10 | 필수 | 신규 |
+| 22-file-system-implementation | 블록·inode·비트맵·디렉터리·VFS·FFS | 21, data-structure/30-filesystem | `df` 여유 있는데 `No space left on device`(inode 고갈) | 비트맵, 다단계 인덱스, 디렉터리 B-트리(htree) | OSTEP 40 · 41 | 필수 | 신규 (연결: `data-structure/33-filesystem`) |
+| 23-crash-consistency-and-journaling | fsck·저널링·COW·LFS | 22 | 전원 장애 후 0바이트 파일·torn write | **WAL(저널)**, 로그 구조 | OSTEP 42 · 43 | 필수 | 신규 |
+| 24-fsync-and-durability | write≠디스크, fsync·fdatasync·rename 원자성·디렉터리 fsync | 23 | fsync `EIO` 후 재시도 "성공" 위장 → 조용한 유실(fsyncgate); 디렉터리 fsync 누락 → rename 소실 | — | `fsync(2)` · LWN 752063 · Pillai 외 OSDI 2014 | 필수 | 신규 |
+| 32-raid | RAID 0/1/5/6/10·재구축 | architecture/16-storage-media-workload | 재구축 중 2차 디스크 장애·URE → 어레이 유실; RAID5 write hole | 패리티(XOR) | OSTEP 38 | 권장 | 신규 |
+| 33-data-integrity-checksums | 조용한 손상·체크섬·스크러빙 | 32 | 비트 부패가 에러 없이 복제·백업까지 전파 | CRC, 체크섬 트리(Merkle) | OSTEP 45 | 권장 | 신규 |
+| 25-io-models | 블로킹/논블로킹·동기/비동기 4분면 | 21 | 논블로킹 소켓에서 `EAGAIN` 무시 → busy loop CPU 100% | — | CS:APP 12.2 [?] · Stevens UNP 6.2 [?] | 필수 | 신규 |
+| 26-io-multiplexing-epoll | select/poll/epoll, 레벨 vs 엣지 트리거 | 25 | 엣지 트리거에서 끝까지 안 읽음 → 연결 hang; select `FD_SETSIZE` 1024 초과 | select 비트맵 O(n) vs **epoll RB트리 + ready list** | `epoll(7)` · Kegel "C10K" | 필수 | 신규 |
+| 34-zero-copy-and-io-uring | sendfile·splice·mmap·io_uring | 26, 14 | zero-copy 경로에 TLS 끼면 사라짐; io_uring 보안 비활성 환경 | 제출/완료 링 버퍼 | `sendfile(2)` · Axboe "Efficient IO with io_uring" 2019 | 심화 | 신규 (연결: `systems/kafka-why-fast` zero-copy 절) |
+| 36-server-concurrency-architectures | 연결당 스레드 vs Reactor(단일·멀티 리액터) vs Proactor(IOCP·io_uring) vs Half-Sync/Half-Async(NIO 수신 + 워커 풀) vs Leader/Followers, Acceptor-Connector | 27-event-based-concurrency, 26-io-multiplexing-epoll, 34-zero-copy-and-io-uring | 연결당 스레드 → C10K에서 메모리·컨텍스트 스위칭 폭증; 리액터 스레드에서 DB 호출 → 모든 연결 동시 지연(Netty 이벤트 루프 블로킹); 반동기/반비동기 사이 큐 무한 → 지연 폭증 후 OOM | 준비 이벤트 디멀티플렉싱(epoll), 완료 큐(io_uring CQ), 핸드오프 큐 | Schmidt 외 POSA2 2000 · Kegel "The C10K problem" [?] · Netty 문서 [?] | 권장 | 신규 |
 
 ### 5.5 IPC·링킹·격리·관측
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 31-ipc | 파이프·공유 메모리·유닉스 소켓·메시지 큐 | 22 | 자식 stdout을 안 읽음 → 파이프 버퍼(64KiB) 가득 → 부모·자식 교착 | 링 버퍼 | CS:APP 10·11 [?] · `pipe(7)` | 권장 | 신규 |
-| 32-linking-and-loading | 정적/동적 링킹·심볼 해석·PIC·로더 | architecture/08-isa-and-machine-code | `undefined reference to`; `error while loading shared libraries`; alpine(musl)에서 glibc 바이너리 `GLIBC_2.xx not found` | 심볼 테이블(해시), 재배치 | CS:APP 7장 | 권장 | 신규 (연결: `languages/c/syntax/44·45`) |
-| 33-virtualization-hypervisor | 하이퍼바이저·VM·steal time | 01 | noisy neighbor → steal time 증가로 원인 모를 지연 | 섀도/중첩 페이지 테이블 | OSTEP 부록 B [?] | 권장 | 신규 |
-| 34-containers-namespaces-cgroups | namespace·cgroup·이미지 레이어 | 13, 08 | 컨테이너가 호스트 코어 수를 보고 스레드풀 과다; CPU throttling; PID 1 시그널 미전달 | 계층형 cgroup 트리, 유니온 FS | `namespaces(7)` · `cgroups(7)` | 필수 | 신규 |
-| 35-os-observability-tools | top·vmstat·iostat·strace·perf·/proc, USE 방법론 | 02 | load average를 CPU 사용률로 오해(D 상태 I/O 대기 포함) | 샘플링 프로파일러 | Gregg 『Systems Performance』 2판 2장 [?] | 권장 | 신규 |
+| 30-ipc | 파이프·공유 메모리·유닉스 소켓·메시지 큐 | 21 | 자식 stdout을 안 읽음 → 파이프 버퍼(64KiB) 가득 → 부모·자식 교착 | 링 버퍼 | CS:APP 10·11 [?] · `pipe(7)` | 권장 | 신규 |
+| 29-linking-and-loading | 정적/동적 링킹·심볼 해석·PIC·로더 | architecture/09-isa-and-machine-code | `undefined reference to`; `error while loading shared libraries`; alpine(musl)에서 glibc 바이너리 `GLIBC_2.xx not found` | 심볼 테이블(해시), 재배치 | CS:APP 7장 | 권장 | 신규 (연결: `languages/c/syntax/44·45`) |
+| 35-virtualization-hypervisor | 하이퍼바이저·VM·steal time | 01 | noisy neighbor → steal time 증가로 원인 모를 지연 | 섀도/중첩 페이지 테이블 | OSTEP 부록 B [?] | 권장 | 신규 |
+| 28-containers-namespaces-cgroups | namespace·cgroup·이미지 레이어 | 13, 08 | 컨테이너가 호스트 코어 수를 보고 스레드풀 과다; CPU throttling; PID 1 시그널 미전달 | 계층형 cgroup 트리, 유니온 FS | `namespaces(7)` · `cgroups(7)` | 필수 | 신규 |
+| 31-os-observability-tools | top·vmstat·iostat·strace·perf·/proc, USE 방법론 | 02 | load average를 CPU 사용률로 오해(D 상태 I/O 대기 포함) | 샘플링 프로파일러 | Gregg 『Systems Performance』 2판 2장 [?] | 권장 | 신규 |
 
 ### 5.6 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 36-os-symptom-index | 역색인: errno(`EINTR`·`EAGAIN`·`EMFILE`·`ENOSPC`·`ENOMEM`·`EIO`), exit code(137·139·143), D 상태, 좀비, load 높은데 CPU 낮음 | 전체 | — | — | 이 영역 leaf · `errno(3)` | 필수 | 신규 |
-| 37-os-incidents | 실사건: Mars Pathfinder 우선순위 역전(1997) · fsyncgate(PostgreSQL, 2018) · 2012 윤초 커널 hrtimer 버그로 Java·MySQL CPU 폭주 · ext4 지연 할당 0바이트 파일(2009) [?] | 36 | — | — | Reeves 1997 (UNC 사본) · LWN 752063 · Red Hat/LKML 2012-07 [?] | 권장 | 신규 |
+| 37-os-symptom-index | 역색인: errno(`EINTR`·`EAGAIN`·`EMFILE`·`ENOSPC`·`ENOMEM`·`EIO`), exit code(137·139·143), D 상태, 좀비, load 높은데 CPU 낮음 | 전체 | — | — | 이 영역 leaf · `errno(3)` | 필수 | 신규 |
+| 38-os-incidents | 실사건: Mars Pathfinder 우선순위 역전(1997) · fsyncgate(PostgreSQL, 2018) · 2012 윤초 커널 hrtimer 버그로 Java·MySQL CPU 폭주 · ext4 지연 할당 0바이트 파일(2009) [?] | 37 | — | — | Reeves 1997 (UNC 사본) · LWN 752063 · Red Hat/LKML 2012-07 [?] | 권장 | 신규 |
 
 ---
 
@@ -492,69 +504,69 @@ Part 6  판단하는 법             data-engineering → data-analysis
 > **언어 중립 원리**만 둔다(문법 레퍼런스는 CS 밖 — §19 판정). 코드가 실행되기까지(어휘→구문→의미→코드), 타입, 메모리 관리, 동시성 모델, 의존성.
 > 뼈대: Aho 외 『Compilers』(Dragon Book, 장 번호 `[?]`), Pierce 『TAPL』 [?], Jones 외 『The Garbage Collection Handbook』 [?], JSR-133(JMM), CS2023 FPL.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 06 → 07 → 08 → 09 → 12 → 13 → 24 → 25 → 14 → 15 → 16 → 27 → 11 → 10 → 17 → 18 → 19 → (05 심화) → 22 → 23 → (26 심화) → 20 → 21
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → (22 심화) → 23 → 24 → (25 심화) → 26 → 27
 
 ### 6.1 실행 모델과 컴파일 파이프라인
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 01-compile-interpret-jit | 컴파일·인터프리트·바이트코드·JIT | architecture/08-isa-and-machine-code | JIT 워밍업 전 첫 요청 느림(배포 직후 p99 급등); AOT/JIT 차이로 리플렉션 실패 | 핫스팟 카운터 | Dragon Book 1장 [?] | 필수 | `foundations/compiler-pipeline` (분할 — 바이트코드·PVM 절) |
+| 01-compile-interpret-jit | 컴파일·인터프리트·바이트코드·JIT | architecture/09-isa-and-machine-code | JIT 워밍업 전 첫 요청 느림(배포 직후 p99 급등); AOT/JIT 차이로 리플렉션 실패 | 핫스팟 카운터 | Dragon Book 1장 [?] | 필수 | `foundations/compiler-pipeline` (분할 — 바이트코드·PVM 절) |
 | 02-lexing-and-regular-languages | 토큰화·정규식·유한 오토마타 | 01 | **ReDoS** — 백트래킹 엔진에서 `(a+)+$` 류가 지수 시간 CPU 100% | NFA/DFA, Thompson 구성 | Dragon Book 3장 [?] · Sipser 1장 [?] · Cox 2007 | 필수 | `foundations/compiler-pipeline` (분할 — 어휘 분석 절) |
-| 03-parsing-grammars-ast | BNF·CFG·재귀 하강·AST | 02, data-structure/03-stack | 두 구성 요소의 파서 불일치 → HTTP request smuggling; 깊은 중첩 입력 → 파서 스택 오버플로(JSON bomb) | 재귀 하강, 푸시다운(스택), 트리 | Dragon Book 4장 [?] | 필수 | `foundations/compiler-pipeline` (분할 — BNF·파스 트리·AST 절) |
+| 03-parsing-grammars-ast | BNF·CFG·재귀 하강·AST | 02, data-structure/05-stack | 두 구성 요소의 파서 불일치 → HTTP request smuggling; 깊은 중첩 입력 → 파서 스택 오버플로(JSON bomb) | 재귀 하강, 푸시다운(스택), 트리 | Dragon Book 4장 [?] | 필수 | `foundations/compiler-pipeline` (분할 — BNF·파스 트리·AST 절) |
 | 04-semantic-analysis-and-scopes | 심벌 테이블·스코프·바인딩 | 03 | 섀도잉 버그; JS `var` 루프 클로저가 마지막 값만 캡처 | **스코프 체인 = 해시 테이블 스택** | Dragon Book 2.7·6장 [?] | 권장 | `foundations/compiler-pipeline` (분할 — 심벌 테이블 절) · `foundations/variables-and-memory` (분할 — 스코프 절) |
-| 05-ir-and-optimization | IR·SSA·인라이닝·데드 코드 제거·레지스터 할당 | 04 | 최적화가 UB 코드의 null 검사를 삭제; 마이크로벤치마크 결과가 DCE로 0ns | 제어 흐름 그래프, 데이터 흐름 분석, 그래프 컬러링 | Dragon Book 8·9장 [?] | 심화 | 신규 |
+| 22-ir-and-optimization | IR·SSA·인라이닝·데드 코드 제거·레지스터 할당 | 04 | 최적화가 UB 코드의 null 검사를 삭제; 마이크로벤치마크 결과가 DCE로 0ns | 제어 흐름 그래프, 데이터 흐름 분석, 그래프 컬러링 | Dragon Book 8·9장 [?] | 심화 | 신규 |
 
 ### 6.2 타입·값·추상화
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 06-type-systems | 정적/동적·강/약·명목/구조·제네릭·변성 | 04 | `ClassCastException`; 제네릭 소거로 런타임 타입 정보 없음; 공변 배열 `ArrayStoreException` | 타입 추론(단일화) | Pierce TAPL 1장 [?] | 필수 | 신규 |
-| 07-values-references-passing | 값/참조, 전달 방식, 얕은/깊은 복사, 동일성 vs 동등성 | 06 | 파이썬 가변 기본 인자 공유; 얕은 복사본 수정이 원본 변경; `==` vs `equals` | 참조 그래프 | CS2023 FPL [?] | 필수 | `foundations/variables-and-memory` (분할 — 전달 방식·얕은/깊은 복사 절) |
-| 08-scope-closures-first-class-functions | 1급 함수·클로저·람다 | 04, 07 | 클로저가 큰 객체를 붙잡아 누수; 캡처한 가변 변수 경쟁 | 환경 레코드 체인 | SICP 3.2 [?] | 권장 | `foundations/variables-and-memory` (분할 — 람다 절) |
-| 09-error-handling-models | 예외·에러 값·Result/Option·panic | 06 | 삼킨 예외(`catch {}`) → **조용한 실패**; `finally` 안 `return` 이 예외 소멸; 체크 안 한 에러 반환값 | 합 타입(태그 유니언) | 언어 명세 각 장 [?] | 필수 | 신규 (연결: `languages/rust/syntax/22·23`, `languages/c/syntax/46`) |
-| 10-functional-concepts | 불변·순수 함수·고차 함수·지연 평가 | 08 | 지연 스트림 두 번 소비 → `IllegalStateException: stream has already been operated upon`; `map` 안 부수효과 | 지연 리스트, 영속 자료구조 | SICP 1·3장 [?] | 권장 | 신규 |
-| 11-dispatch-and-polymorphism-mechanics | 정적/동적 디스패치·vtable·단형화·인라인 캐시 | 06 | 오버로딩(컴파일 시점) vs 오버라이딩(실행 시점) 혼동 → 엉뚱한 메서드 호출 | vtable(함수 포인터 배열), 인라인 캐시 | Dragon Book [?] | 권장 | 신규 (연결: `languages/rust/syntax/31·33`) |
+| 05-type-systems | 정적/동적·강/약·명목/구조·제네릭·변성 | 04 | `ClassCastException`; 제네릭 소거로 런타임 타입 정보 없음; 공변 배열 `ArrayStoreException` | 타입 추론(단일화) | Pierce TAPL 1장 [?] | 필수 | 신규 |
+| 06-values-references-passing | 값/참조, 전달 방식, 얕은/깊은 복사, 동일성 vs 동등성 | 05 | 파이썬 가변 기본 인자 공유; 얕은 복사본 수정이 원본 변경; `==` vs `equals` | 참조 그래프 | CS2023 FPL [?] | 필수 | `foundations/variables-and-memory` (분할 — 전달 방식·얕은/깊은 복사 절) |
+| 07-scope-closures-first-class-functions | 1급 함수·클로저·람다 | 04, 06 | 클로저가 큰 객체를 붙잡아 누수; 캡처한 가변 변수 경쟁 | 환경 레코드 체인 | SICP 3.2 [?] | 권장 | `foundations/variables-and-memory` (분할 — 람다 절) |
+| 08-error-handling-models | 예외·에러 값·Result/Option·panic | 05 | 삼킨 예외(`catch {}`) → **조용한 실패**; `finally` 안 `return` 이 예외 소멸; 체크 안 한 에러 반환값 | 합 타입(태그 유니언) | 언어 명세 각 장 [?] | 필수 | 신규 (연결: `languages/rust/syntax/22·23`, `languages/c/syntax/46`) |
+| 18-functional-concepts | 불변·순수 함수·고차 함수·지연 평가 | 07 | 지연 스트림 두 번 소비 → `IllegalStateException: stream has already been operated upon`; `map` 안 부수효과 | 지연 리스트, 영속 자료구조 | SICP 1·3장 [?] | 권장 | 신규 |
+| 17-dispatch-and-polymorphism-mechanics | 정적/동적 디스패치·vtable·단형화·인라인 캐시 | 05 | 오버로딩(컴파일 시점) vs 오버라이딩(실행 시점) 혼동 → 엉뚱한 메서드 호출 | vtable(함수 포인터 배열), 인라인 캐시 | Dragon Book [?] | 권장 | 신규 (연결: `languages/rust/syntax/31·33`) |
 
 ### 6.3 메모리 관리
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 12-memory-management-models | 수동·참조 카운팅·추적 GC·소유권 | 07, os/11-heap-allocation | 참조 카운팅 순환 → 누수; 수동 관리 use-after-free; 소유권 규칙 위반 → 컴파일 거부 | 참조 카운트, 소유권 그래프 | Jones 외 GC Handbook 1장 [?] | 필수 | `foundations/variables-and-memory` (분할 — 참조 카운트·GC 절) · 연결: `languages/rust/언어-특성` |
-| 13-garbage-collection | mark-sweep·copying·세대·동시 GC(G1·ZGC) | 12, algorithm/11-bfs | STW pause → p99 스파이크·헬스체크 실패; `GC overhead limit exceeded`; static 컬렉션 누수로 Full GC 반복 | **도달성 = 그래프 순회**, 삼색 마킹, 카드 테이블 | Jones 외 GC Handbook [?] | 필수 | 신규 |
-| 14-language-memory-model | happens-before·data race·volatile·final | 13, architecture/15-cache-coherence-and-memory-ordering | `volatile` 누락 → 종료 플래그 못 봄; DCL 부분 초기화 객체 | happens-before 부분 순서 | JSR-133 · Manson 외 POPL 2005 | 권장 | 신규 (연결: `languages/java/syntax/33-synchronized-and-volatile`) |
+| 09-memory-management-models | 수동·참조 카운팅·추적 GC·소유권 | 06, os/11-heap-allocation | 참조 카운팅 순환 → 누수; 수동 관리 use-after-free; 소유권 규칙 위반 → 컴파일 거부 | 참조 카운트, 소유권 그래프 | Jones 외 GC Handbook 1장 [?] | 필수 | `foundations/variables-and-memory` (분할 — 참조 카운트·GC 절) · 연결: `languages/rust/언어-특성` |
+| 10-garbage-collection | mark-sweep·copying·세대·동시 GC(G1·ZGC) | 09, algorithm/17-bfs | STW pause → p99 스파이크·헬스체크 실패; `GC overhead limit exceeded`; static 컬렉션 누수로 Full GC 반복 | **도달성 = 그래프 순회**, 삼색 마킹, 카드 테이블 | Jones 외 GC Handbook [?] | 필수 | 신규 |
+| 13-language-memory-model | happens-before·data race·volatile·final | 10, architecture/14-cache-coherence-and-memory-ordering | `volatile` 누락 → 종료 플래그 못 봄; DCL 부분 초기화 객체 | happens-before 부분 순서 | JSR-133 · Manson 외 POPL 2005 | 권장 | 신규 (연결: `languages/java/syntax/33-synchronized-and-volatile`) |
 
 ### 6.3b 런타임 성능 (2026-09-28 추가)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 22-jit-tiered-compilation-and-warmup | 계층 컴파일(인터프리터 → C1 → C2), 프로파일 수집, 인라이닝, OSR, 역최적화(deopt), 코드 캐시, 워밍업 전략 | 01, 05, 11 | 배포 직후 readiness는 통과했는데 JIT가 끝나지 않아 p99가 몇 배로 뜀. 타입 프로파일이 깨져 역최적화가 연쇄 → 간헐적 CPU 스파이크. `CodeCache is full. Compiler has been disabled.` 경고 뒤 전체가 인터프리터 속도로 떨어짐 | 호출·백엣지 카운터, 타입 프로파일(인라인 캐시), 호출 그래프 | OpenJDK HotSpot 문서 [?] · JEP 483(AOT 클래스 로딩·링킹) | 권장 | 신규 |
-| 23-aot-native-image-and-startup | 닫힌 세계 가정의 AOT 네이티브 이미지(GraalVM), 리플렉션·프록시 설정, AOT 캐시(CDS·Leyden)로 시작 시간 줄이기, 최고 처리량과의 트레이드오프 | 22, os/32-linking-and-loading | 리플렉션 대상이 설정에서 빠짐 → JVM에선 되는데 네이티브에서만 `ClassNotFoundException`·`NoSuchMethodException`. 빌드가 수 분 걸리고 메모리를 수 GB 씀. PGO가 없으면 최고 처리량이 JIT보다 낮을 수 있다 [?] | **도달성 분석**(호출 그래프 순회, algorithm/11-bfs), 스냅숏(힙 이미지) | GraalVM "Native Image" 레퍼런스 매뉴얼(호환성·최적화 가이드) · JEP 483 · Spring Boot "GraalVM Native Image Support" | 권장 | 신규 |
-| 24-gc-tuning-and-gc-logs | 수집기 선택(처리량형 vs 지연형 — Parallel·G1·ZGC), 힙 크기와 일시정지 목표(`MaxGCPauseMillis`), GC 로그 읽기, 할당률과 승격률, 컨테이너 메모리 인지(`MaxRAMPercentage`) | 13, os/13-oom-and-memory-limits | 컨테이너에서 기본 최대 힙(메모리의 1/4)을 그대로 씀 → 메모리 낭비. 반대로 힙을 limit 가까이 잡음 → native 영역 포함 초과로 `OOMKilled`(exit 137). G1 `to-space exhausted`·evacuation failure 뒤 Full GC. humongous 할당 반복 | 세대 가설, 영역 기반 수집 집합 선택(탐욕, algorithm/23-greedy) | Oracle "HotSpot Virtual Machine Garbage Collection Tuning Guide"(G1 절) · Oracle "Garbage First Garbage Collector Tuning" | 권장 | 신규 |
-| 25-object-layout-and-allocation-reduction | 객체 헤더·압축 참조(compressed oops)·패딩, 박싱 비용, 객체 배열 vs 원시 배열, 탈출 분석과 스칼라 치환, TLAB, 할당률 줄이기, 객체 풀링 반패턴 | 12, 13, architecture/12-memory-hierarchy-and-locality, architecture/04-byte-order-and-alignment | `List<Long>` 1천만 개 → `long[]`보다 몇 배 많은 메모리(헤더 + 참조 + 패딩). 초당 GB 단위로 할당 → Young GC가 잦아지고 p99가 튄다. 객체 풀링 → 오래 사는 객체가 Old 영역을 오염시켜 Full GC | AoS vs SoA, 원시형 특화 컬렉션, 탈출 분석(데이터 흐름 분석) | OpenJDK JOL README · Shipilëv "JVM Anatomy Quark #18: Scalar Replacement" | 권장 | 신규 |
-| 26-lto-pgo-and-binary-size | 링크 타임 최적화(LTO·ThinLTO), 프로파일 기반 최적화(PGO), 링크 단계 데드 코드 제거, 심볼 제거(strip), 정적·동적 링크별 바이너리 크기 | 05, os/32-linking-and-loading | full LTO를 켜자 링크 시간과 메모리가 급증해 CI 타임아웃 [?]. 대표성 없는 프로파일로 PGO를 돌림 → 실제 핫 경로가 더 느려짐. 디버그 심볼이 들어간 채 배포 → 바이너리 수백 MB, 이미지 pull 지연 | 전역 호출 그래프 분석, 도달성 기반 제거 | LLVM "How To Build Clang and LLVM with Profile-Guided Optimizations" · Clang ThinLTO 문서 [?] | 심화 | 신규 |
+| 23-jit-tiered-compilation-and-warmup | 계층 컴파일(인터프리터 → C1 → C2), 프로파일 수집, 인라이닝, OSR, 역최적화(deopt), 코드 캐시, 워밍업 전략 | 01, 22, 17 | 배포 직후 readiness는 통과했는데 JIT가 끝나지 않아 p99가 몇 배로 뜀. 타입 프로파일이 깨져 역최적화가 연쇄 → 간헐적 CPU 스파이크. `CodeCache is full. Compiler has been disabled.` 경고 뒤 전체가 인터프리터 속도로 떨어짐 | 호출·백엣지 카운터, 타입 프로파일(인라인 캐시), 호출 그래프 | OpenJDK HotSpot 문서 [?] · JEP 483(AOT 클래스 로딩·링킹) | 권장 | 신규 |
+| 24-aot-native-image-and-startup | 닫힌 세계 가정의 AOT 네이티브 이미지(GraalVM), 리플렉션·프록시 설정, AOT 캐시(CDS·Leyden)로 시작 시간 줄이기, 최고 처리량과의 트레이드오프 | 23, os/29-linking-and-loading | 리플렉션 대상이 설정에서 빠짐 → JVM에선 되는데 네이티브에서만 `ClassNotFoundException`·`NoSuchMethodException`. 빌드가 수 분 걸리고 메모리를 수 GB 씀. PGO가 없으면 최고 처리량이 JIT보다 낮을 수 있다 [?] | **도달성 분석**(호출 그래프 순회, algorithm/17-bfs), 스냅숏(힙 이미지) | GraalVM "Native Image" 레퍼런스 매뉴얼(호환성·최적화 가이드) · JEP 483 · Spring Boot "GraalVM Native Image Support" | 권장 | 신규 |
+| 11-gc-tuning-and-gc-logs | 수집기 선택(처리량형 vs 지연형 — Parallel·G1·ZGC), 힙 크기와 일시정지 목표(`MaxGCPauseMillis`), GC 로그 읽기, 할당률과 승격률, 컨테이너 메모리 인지(`MaxRAMPercentage`) | 10, os/13-oom-and-memory-limits | 컨테이너에서 기본 최대 힙(메모리의 1/4)을 그대로 씀 → 메모리 낭비. 반대로 힙을 limit 가까이 잡음 → native 영역 포함 초과로 `OOMKilled`(exit 137). G1 `to-space exhausted`·evacuation failure 뒤 Full GC. humongous 할당 반복 | 세대 가설, 영역 기반 수집 집합 선택(탐욕, algorithm/23-greedy) | Oracle "HotSpot Virtual Machine Garbage Collection Tuning Guide"(G1 절) · Oracle "Garbage First Garbage Collector Tuning" | 권장 | 신규 |
+| 12-object-layout-and-allocation-reduction | 객체 헤더·압축 참조(compressed oops)·패딩, 박싱 비용, 객체 배열 vs 원시 배열, 탈출 분석과 스칼라 치환, TLAB, 할당률 줄이기, 객체 풀링 반패턴 | 09, 10, architecture/11-memory-hierarchy-and-locality, architecture/06-byte-order-and-alignment | `List<Long>` 1천만 개 → `long[]`보다 몇 배 많은 메모리(헤더 + 참조 + 패딩). 초당 GB 단위로 할당 → Young GC가 잦아지고 p99가 튄다. 객체 풀링 → 오래 사는 객체가 Old 영역을 오염시켜 Full GC | AoS vs SoA, 원시형 특화 컬렉션, 탈출 분석(데이터 흐름 분석) | OpenJDK JOL README · Shipilëv "JVM Anatomy Quark #18: Scalar Replacement" | 권장 | 신규 |
+| 25-lto-pgo-and-binary-size | 링크 타임 최적화(LTO·ThinLTO), 프로파일 기반 최적화(PGO), 링크 단계 데드 코드 제거, 심볼 제거(strip), 정적·동적 링크별 바이너리 크기 | 22, os/29-linking-and-loading | full LTO를 켜자 링크 시간과 메모리가 급증해 CI 타임아웃 [?]. 대표성 없는 프로파일로 PGO를 돌림 → 실제 핫 경로가 더 느려짐. 디버그 심볼이 들어간 채 배포 → 바이너리 수백 MB, 이미지 pull 지연 | 전역 호출 그래프 분석, 도달성 기반 제거 | LLVM "How To Build Clang and LLVM with Profile-Guided Optimizations" · Clang ThinLTO 문서 [?] | 심화 | 신규 |
 
 ### 6.4 동시성 모델
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 15-concurrency-models | 스레드·액터·CSP·async/await·코루틴·가상 스레드 | os/21-event-based-concurrency | async 안 블로킹 호출 → 런타임 정지; 가상 스레드 `synchronized` pinning → 캐리어 고갈 | 상태 기계로 변환된 Future, 채널 큐 | Hoare 1978 (CSP) · JEP 444 | 필수 | 신규 (연결: `languages/java/syntax/56`, `languages/rust/syntax/54·55`) |
-| 16-gil-and-runtime-constraints | GIL 같은 런타임 제약 | 15 | CPU 바운드 멀티스레드가 안 빨라짐 | — | Python 문서 (GIL) [?] · PEP 703 | 권장 | `foundations/process-thread` (분할 — GIL 절) |
-| 27-concurrency-design-patterns | Executor·스레드 풀(크기·큐·거부 정책)·Future/Promise 합성·Active Object·Monitor Object·Scoped Locking(RAII/try-with-resources)·Thread-Specific Storage·**Double-Checked Locking의 함정**·불변 스냅샷 + 원자 참조 교체 | 15-concurrency-models, 14-language-memory-model, os/18-semaphores | 무한 큐 스레드풀 → 거부 없이 대기열 OOM; 공용 풀(ForkJoin common pool)에서 블로킹 → 전체 비동기 정지; `volatile` 없는 DCL → **반쯤 생성된 객체** 관측; 스레드풀에서 ThreadLocal 미정리 → 사용자 A 컨텍스트가 B 요청에 누출; `CompletableFuture` 예외 미처리 → 조용한 실패 | 블로킹 큐 + 워커, 완료 콜백 체인, CAS 참조 교체 | Schmidt 외 POSA2 2000 · Goetz 외 『Java Concurrency in Practice』 [?] · Pugh 외 "Double-Checked Locking is Broken" Declaration | 필수 | 신규 (연결: `data-structure/39-concurrent-data-structures`) |
+| 14-concurrency-models | 스레드·액터·CSP·async/await·코루틴·가상 스레드 | os/27-event-based-concurrency | async 안 블로킹 호출 → 런타임 정지; 가상 스레드 `synchronized` pinning → 캐리어 고갈 | 상태 기계로 변환된 Future, 채널 큐 | Hoare 1978 (CSP) · JEP 444 | 필수 | 신규 (연결: `languages/java/syntax/56`, `languages/rust/syntax/54·55`) |
+| 15-gil-and-runtime-constraints | GIL 같은 런타임 제약 | 14 | CPU 바운드 멀티스레드가 안 빨라짐 | — | Python 문서 (GIL) [?] · PEP 703 | 권장 | `foundations/process-thread` (분할 — GIL 절) |
+| 16-concurrency-design-patterns | Executor·스레드 풀(크기·큐·거부 정책)·Future/Promise 합성·Active Object·Monitor Object·Scoped Locking(RAII/try-with-resources)·Thread-Specific Storage·**Double-Checked Locking의 함정**·불변 스냅샷 + 원자 참조 교체 | 14-concurrency-models, 13-language-memory-model, os/18-semaphores | 무한 큐 스레드풀 → 거부 없이 대기열 OOM; 공용 풀(ForkJoin common pool)에서 블로킹 → 전체 비동기 정지; `volatile` 없는 DCL → **반쯤 생성된 객체** 관측; 스레드풀에서 ThreadLocal 미정리 → 사용자 A 컨텍스트가 B 요청에 누출; `CompletableFuture` 예외 미처리 → 조용한 실패 | 블로킹 큐 + 워커, 완료 콜백 체인, CAS 참조 교체 | Schmidt 외 POSA2 2000 · Goetz 외 『Java Concurrency in Practice』 [?] · Pugh 외 "Double-Checked Locking is Broken" Declaration | 필수 | 신규 (연결: `data-structure/29-concurrent-data-structures`) |
 
 ### 6.5 빌드·생태계·선택
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 17-modules-and-dependency-resolution | 모듈·패키지·semver·락파일 | data-structure/34-dependency-resolver | 다이아몬드 의존 → `NoSuchMethodError`/`ClassNotFoundException`; 락파일 없는 빌드 비재현 | **위상정렬**, 버전 해결 = SAT | semver.org · Cox "Minimal Version Selection" 2018 | 필수 | 신규 (연결: `data-structure/34-dependency-resolver`) |
-| 18-undefined-behavior-and-memory-safety | UB·경계 검사·메모리 안전 | 12 | 버퍼 오버런이 크래시 대신 **다른 요청의 데이터 누출**(Cloudbleed·Heartbleed) | — | C 표준 부록 J [?] · CISA 메모리 안전 로드맵 2023 [?] | 권장 | `foundations/languages/c-cpp-csharp.md` (분할) |
-| 19-language-choice-tradeoffs | "틀렸을 때 어떻게 틀리는가"로 언어 고르기 | 18, 13 | 조용한 실패를 허용하는 언어·관례 선택 → 정합성 사고 | — | 기존 노트 원고 | 권장 | `foundations/languages/README.md` 축① + `c-cpp-csharp.md` + `go·java·kotlin·rust/언어-특성/` (병합) |
+| 19-modules-and-dependency-resolution | 모듈·패키지·semver·락파일 | data-structure/32-dependency-resolver | 다이아몬드 의존 → `NoSuchMethodError`/`ClassNotFoundException`; 락파일 없는 빌드 비재현 | **위상정렬**, 버전 해결 = SAT | semver.org · Cox "Minimal Version Selection" 2018 | 필수 | 신규 (연결: `data-structure/34-dependency-resolver`) |
+| 20-undefined-behavior-and-memory-safety | UB·경계 검사·메모리 안전 | 09 | 버퍼 오버런이 크래시 대신 **다른 요청의 데이터 누출**(Cloudbleed·Heartbleed) | — | C 표준 부록 J [?] · CISA 메모리 안전 로드맵 2023 [?] | 권장 | `languages/c-cpp-csharp.md` (분할) |
+| 21-language-choice-tradeoffs | "틀렸을 때 어떻게 틀리는가"로 언어 고르기 | 20, 10 | 조용한 실패를 허용하는 언어·관례 선택 → 정합성 사고 | — | 기존 노트 원고 | 권장 | `languages/README.md` 축① + `languages/c-cpp-csharp.md` + `languages/go/언어-특성/` · `languages/java/언어-특성/` · `languages/kotlin/언어-특성/` · `languages/rust/언어-특성/` (병합) |
 
 ### 6.6 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 20-pl-symptom-index | 역색인: `NoSuchMethodError`·`ClassCastException`·`NullPointerException`·`StackOverflowError`·`GC overhead`·정규식 CPU 100%·async 정지 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 21-pl-incidents | 실사건: Cloudbleed(2017, 생성된 파서 버퍼 오버런) · Heartbleed(2014, 경계 검사 누락 — 보안 관점은 security/28) · left-pad(2016, 의존성 제거로 빌드 연쇄 실패) | 20 | — | — | Cloudflare 블로그 2017-02-23 · CVE-2014-0160 · npm 블로그 2016-03 [?] | 권장 | 신규 |
+| 26-pl-symptom-index | 역색인: `NoSuchMethodError`·`ClassCastException`·`NullPointerException`·`StackOverflowError`·`GC overhead`·정규식 CPU 100%·async 정지 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
+| 27-pl-incidents | 실사건: Cloudbleed(2017, 생성된 파서 버퍼 오버런) · Heartbleed(2014, 경계 검사 누락 — 보안 관점은 security/30) · left-pad(2016, 의존성 제거로 빌드 연쇄 실패) | 26 | — | — | Cloudflare 블로그 2017-02-23 · CVE-2014-0160 · npm 블로그 2016-03 [?] | 권장 | 신규 |
 
 # Part 2 — 두 대 사이
 
@@ -564,7 +576,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 > 장애의 중심은 TCP(15~22). "TCP 통신 도중 끊기면?"의 본체가 19·20·21이다.
 > 뼈대: Kurose & Ross 8판(이하 K&R — 9판도 1~5장 제목 동일 확인, 6~8장 번호는 8판 기준), Stevens 『TCP/IP Illustrated Vol.1』 2판(이하 Stevens — 13·14·17장 외 장 번호 `[?]`), Grigorik 『High Performance Browser Networking』(이하 HPBN — 장 제목으로 인용), Beej's Guide, RFC.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 06 → 05 → 07 → 08 → 10 → 12 → 13 → 11 → 09 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 27 → 28 → security/03~07 → 29 → 30 → 31 → 32 → 33 → 34 → 35 → 36 → 37 → 38 → 46 → 48 → 49 → 50 → 47 → 52 → (51 심화) → 39 → 40 → 41 → 42 → 43 → 53 → 44 → 45
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 27 → 28 → security/03~07 → 29 → 30 → 31 → 32 → 33 → 34 → 35 → 36 → 37 → 38 → 39 → 40 → 41 → 42 → 43 → 44 → (45 심화) → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53
 
 ### 7.0 지도
 
@@ -572,27 +584,27 @@ Part 6  판단하는 법             data-engineering → data-analysis
 |---|---|---|---|---|---|---|---|
 | 01-layer-map-osi-tcpip | OSI 7 vs TCP/IP 4계층, 계층별 프로토콜·PDU(세그먼트/패킷/프레임) | — | 증상의 계층을 못 짚음 → "네트워크 문제"로 뭉뚱그려 진단 지연 | 계층 = 인터페이스 스택 | K&R 1.5 · RFC 1122 | 필수 | 신규 |
 | 02-encapsulation | 헤더가 붙고 벗겨지는 과정, 계층별 헤더 필드 | 01 | 터널·VPN 헤더 오버헤드로 MTU 초과 → 큰 패킷만 실패(12로 이어짐) | 헤더 = 고정 오프셋 레코드 | K&R 1.5.2 | 필수 | 신규 |
-| 03-latency-bandwidth-bdp | 지연 4요소(처리·큐잉·전송·전파), 대역폭 vs 지연, BDP | 02 | 고BDP(대륙 간) 링크에서 윈도 부족 → 대역폭 놔두고 느림; 큐잉 지연 = bufferbloat | 큐(math/15) | K&R 1.4 · HPBN "Primer on Latency and Bandwidth" | 필수 | 신규 |
+| 03-latency-bandwidth-bdp | 지연 4요소(처리·큐잉·전송·전파), 대역폭 vs 지연, BDP | 02 | 고BDP(대륙 간) 링크에서 윈도 부족 → 대역폭 놔두고 느림; 큐잉 지연 = bufferbloat | 큐(math/10) | K&R 1.4 · HPBN "Primer on Latency and Bandwidth" | 필수 | 신규 |
 
 ### 7.1 링크 계층
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 04-ethernet-and-mac | 이더넷 프레임·MAC 주소·충돌 도메인 | 02 | duplex 불일치 → CRC 에러·late collision으로 간헐 느림 [?] | CRC32 프레임 검사 | K&R 6.4.2 | 필수 | 신규 |
-| 05-switching-and-vlan | 허브 vs 스위치, 자가 학습·플러딩·에이징, VLAN, STP | 04 | L2 루프 + STP 부재 → **브로드캐스트 스톰**으로 망 전체 마비; MAC 테이블 가득 → 플러딩 | **MAC 테이블 = 해시(CAM)**, 스패닝 트리 | K&R 6.4.3–6.4.4 · IEEE 802.1D [?] | 권장 | 신규 |
-| 06-arp | IP→MAC 해석, ARP 캐시, gratuitous ARP | 04 | VIP 페일오버 후 이웃의 stale ARP → 죽은 서버로 계속 전송; IP 충돌; ARP 스푸핑 | ARP 캐시(해시 + 타이머) | RFC 826 · K&R 6.4.1 | 필수 | 신규 |
+| 06-switching-and-vlan | 허브 vs 스위치, 자가 학습·플러딩·에이징, VLAN, STP | 04 | L2 루프 + STP 부재 → **브로드캐스트 스톰**으로 망 전체 마비; MAC 테이블 가득 → 플러딩 | **MAC 테이블 = 해시(CAM)**, 스패닝 트리 | K&R 6.4.3–6.4.4 · IEEE 802.1D [?] | 권장 | 신규 |
+| 05-arp | IP→MAC 해석, ARP 캐시, gratuitous ARP | 04 | VIP 페일오버 후 이웃의 stale ARP → 죽은 서버로 계속 전송; IP 충돌; ARP 스푸핑 | ARP 캐시(해시 + 타이머) | RFC 826 · K&R 6.4.1 | 필수 | 신규 |
 
 ### 7.2 네트워크 계층
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 07-ip-addressing-cidr | IPv4/IPv6 주소, 서브넷·CIDR·사설 대역 | 01 | VPC 피어링 CIDR 겹침 → 라우팅 불가; 도커 기본 브리지 172.17/16이 사내망과 충돌 → 특정 대역만 접속 불가 | 비트 마스크 | RFC 791 · 4632 · 1918 · 8200 · K&R 4.3 | 필수 | 신규 |
-| 08-routing-and-longest-prefix-match | 라우팅 테이블·**최장 접두사 매칭**·기본 게이트웨이·TTL | 07, data-structure/20-radix-trie | 라우팅 루프 → `Time to live exceeded`; 블랙홀 라우트 → 조용한 드롭; 비대칭 라우팅 + 상태 방화벽 → 응답만 차단 | **radix/PATRICIA 트라이**, 포워딩 테이블 | K&R 4.2.1 · RFC 1812 | 필수 | 신규 |
-| 09-routing-protocols-ospf-bgp | 링크 상태(OSPF) vs 거리 벡터 vs 경로 벡터(BGP) | 08, algorithm/14-dijkstra | BGP 경로 누출·하이재킹 → 대규모 도달 불가(Facebook 2021·Pakistan-YouTube 2008) | **OSPF = 다익스트라**, 거리 벡터 = 벨만-포드 | K&R 5.2–5.4 · RFC 2328 · 4271 | 권장 | 신규 |
-| 10-icmp-ping-traceroute | ICMP 메시지·ping·traceroute 원리 | 08 | ICMP 전면 차단 → PMTUD 깨짐(12); ping 된다 ≠ 서비스 된다 | TTL 증가 탐색 | RFC 792 · K&R 5.6 | 필수 | 신규 |
-| 11-dhcp | 주소 자동 할당·리스 | 07 | DHCP 풀 고갈 → 새 기기 `169.254.x.x`(링크 로컬) | 리스 테이블 | RFC 2131 · K&R 4.3.3 | 권장 | 신규 |
-| 12-fragmentation-mtu-pmtud | MTU·IP 단편화·DF·PMTUD | 10, 02 | **PMTUD 블랙홀** — 작은 요청은 되는데 큰 응답·TLS 인증서 전송에서 hang(VPN·터널) | — | RFC 1191 · 8899 · Cloudflare "IP fragmentation is broken" | 필수 | 신규 |
-| 13-nat-and-conntrack | SNAT/DNAT·포트 매핑·연결 추적·idle timeout | 07 | NAT idle timeout 후 재사용 → RST(AWS NAT GW 350s); `nf_conntrack: table full, dropping packet`; SNAT 포트 고갈 | **conntrack = 해시 테이블 + 타이머** | RFC 3022 · 5382 · AWS NAT GW 문서 | 필수 | 신규 |
+| 08-routing-and-longest-prefix-match | 라우팅 테이블·**최장 접두사 매칭**·기본 게이트웨이·TTL | 07, data-structure/13-radix-trie | 라우팅 루프 → `Time to live exceeded`; 블랙홀 라우트 → 조용한 드롭; 비대칭 라우팅 + 상태 방화벽 → 응답만 차단 | **radix/PATRICIA 트라이**, 포워딩 테이블 | K&R 4.2.1 · RFC 1812 | 필수 | 신규 |
+| 13-routing-protocols-ospf-bgp | 링크 상태(OSPF) vs 거리 벡터 vs 경로 벡터(BGP) | 08, algorithm/19-dijkstra | BGP 경로 누출·하이재킹 → 대규모 도달 불가(Facebook 2021·Pakistan-YouTube 2008) | **OSPF = 다익스트라**, 거리 벡터 = 벨만-포드 | K&R 5.2–5.4 · RFC 2328 · 4271 | 권장 | 신규 |
+| 09-icmp-ping-traceroute | ICMP 메시지·ping·traceroute 원리 | 08 | ICMP 전면 차단 → PMTUD 깨짐(10); ping 된다 ≠ 서비스 된다 | TTL 증가 탐색 | RFC 792 · K&R 5.6 | 필수 | 신규 |
+| 12-dhcp | 주소 자동 할당·리스 | 07 | DHCP 풀 고갈 → 새 기기 `169.254.x.x`(링크 로컬) | 리스 테이블 | RFC 2131 · K&R 4.3.3 | 권장 | 신규 |
+| 10-fragmentation-mtu-pmtud | MTU·IP 단편화·DF·PMTUD | 09, 02 | **PMTUD 블랙홀** — 작은 요청은 되는데 큰 응답·TLS 인증서 전송에서 hang(VPN·터널) | — | RFC 1191 · 8899 · Cloudflare "IP fragmentation is broken" | 필수 | 신규 |
+| 11-nat-and-conntrack | SNAT/DNAT·포트 매핑·연결 추적·idle timeout | 07 | NAT idle timeout 후 재사용 → RST(AWS NAT GW 350s); `nf_conntrack: table full, dropping packet`; SNAT 포트 고갈 | **conntrack = 해시 테이블 + 타이머** | RFC 3022 · 5382 · AWS NAT GW 문서 | 필수 | 신규 |
 
 ### 7.3 전송 계층 — UDP
 
@@ -610,17 +622,17 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 18-tcp-congestion-control | slow start·AIMD·fast recovery·CUBIC·BBR | 17 | 유휴 후 slow start 재시작 → 첫 응답 느림; bufferbloat → 지연 수백 ms | **AIMD 제어 루프**, cwnd 상태 기계 | RFC 5681 · 9438 · K&R 3.6–3.7 · HPBN "Building Blocks of TCP" | 필수 | 신규 |
 | 19-tcp-termination-fin-rst-half-open | 4-way 종료·상태 다이어그램, FIN vs RST, half-open | 15 | FIN → `read()` 0(EOF); RST → `ECONNRESET`; 닫힌 소켓에 write → `EPIPE`·SIGPIPE; half-open(상대 재부팅·케이블 단절) → 보낼 게 없으면 영원히 살아 보이고 `read` 무한 대기 | **TCP 상태 기계(11상태)** | RFC 9293 3.6 · Stevens 13장 · Cloudflare "When TCP sockets refuse to die" | 필수 | 신규 |
 | 20-time-wait-and-close-wait | TIME_WAIT의 존재 이유, CLOSE_WAIT의 의미 | 19 | TIME_WAIT 누적 → 임시 포트 고갈 `EADDRNOTAVAIL`(Cannot assign requested address); CLOSE_WAIT 누적 = **앱이 close 안 함** → fd 고갈 `EMFILE` | 4-튜플 해시 | Bernat 2014 "Coping with the TCP TIME-WAIT state" · Stevens 13장 | 필수 | 신규 |
-| 21-tcp-keepalive-and-user-timeout | keepalive·`TCP_USER_TIMEOUT`·앱 heartbeat | 19, 13 | 기본 keepalive 7200s가 NAT/LB idle timeout보다 길어 무용; 상대가 사라져도 write는 성공(커널 버퍼) → 한참 뒤 `ETIMEDOUT`(retries2 ≈ 15분 [?]) | 타이머(data-structure/37) | RFC 1122 4.2.3.6 · RFC 5482 · Stevens 17장 · `tcp(7)` | 필수 | 신규 |
+| 21-tcp-keepalive-and-user-timeout | keepalive·`TCP_USER_TIMEOUT`·앱 heartbeat | 19, 11 | 기본 keepalive 7200s가 NAT/LB idle timeout보다 길어 무용; 상대가 사라져도 write는 성공(커널 버퍼) → 한참 뒤 `ETIMEDOUT`(retries2 ≈ 15분 [?]) | 타이머(data-structure/26) | RFC 1122 4.2.3.6 · RFC 5482 · Stevens 17장 · `tcp(7)` | 필수 | 신규 |
 | 22-nagle-and-delayed-ack | Nagle × delayed ACK 상호작용 | 16 | 작은 write 두 번 → 요청당 ~40ms 고정 지연; 해결 `TCP_NODELAY` | — | RFC 896 · 1122 4.2.3.2 | 권장 | 신규 |
 
 ### 7.5 소켓과 커널 경로 — "프로세스가 NIC로 나가는 길"
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 23-socket-api | socket/bind/listen/accept/connect/send/recv/close, 송수신 버퍼, fd | 15, os/22-files-and-descriptors | 부분 write/read 미처리(short write) → 메시지 잘림; 재시작 시 `Address already in use`(`SO_REUSEADDR`) | fd 테이블, 소켓 버퍼 | Beej · CS:APP 11.4 · `socket(7)` | 필수 | 신규 |
+| 23-socket-api | socket/bind/listen/accept/connect/send/recv/close, 송수신 버퍼, fd | 15, os/21-files-and-descriptors | 부분 write/read 미처리(short write) → 메시지 잘림; 재시작 시 `Address already in use`(`SO_REUSEADDR`) | fd 테이블, 소켓 버퍼 | Beej · CS:APP 11.4 · `socket(7)` | 필수 | 신규 |
 | 24-application-protocol-framing | TCP는 바이트 스트림 — 길이 접두·구분자·TLV 프레이밍 | 23 | 메시지 경계 가정 → 두 메시지가 한 read에 붙거나 쪼개져 파싱 오류(간헐, 부하 시에만) | 길이 접두 파서, 상태 기계 | Redis RESP 명세 · Beej 7.5 [?] | 필수 | `systems/resp-protocol` |
-| 25-kernel-network-stack | 송신: 소켓→TCP/IP→qdisc→드라이버→NIC(DMA) / 수신: NIC→DMA→IRQ→NAPI/softirq→IP→TCP→소켓 버퍼 | 23, architecture/16-io-devices-interrupts-dma | NIC 링 오버플로 → `rx_dropped` 조용한 손실; softirq가 한 코어에 몰림 → 그 코어 100%·나머지 한가 | **DMA 링 버퍼**, `sk_buff` 연결 리스트, RSS 해시 | packagecloud "Monitoring and Tuning the Linux Networking Stack" 수신·송신편 | 권장 | 신규 |
-| 26-packet-journey | 종합: 프로세스→소켓→커널→NIC→스위치→라우터→…→수신측 역방향 | 25, 08, 06 | (종합편 — 각 구간에서 무엇이 보이나를 한 장으로) | — | 『성공과 실패를 결정하는 1%의 네트워크 원리』 [?] · alex/what-happens-when | 필수 | 신규 |
+| 25-kernel-network-stack | 송신: 소켓→TCP/IP→qdisc→드라이버→NIC(DMA) / 수신: NIC→DMA→IRQ→NAPI/softirq→IP→TCP→소켓 버퍼 | 23, architecture/15-io-devices-interrupts-dma | NIC 링 오버플로 → `rx_dropped` 조용한 손실; softirq가 한 코어에 몰림 → 그 코어 100%·나머지 한가 | **DMA 링 버퍼**, `sk_buff` 연결 리스트, RSS 해시 | packagecloud "Monitoring and Tuning the Linux Networking Stack" 수신·송신편 | 권장 | 신규 |
+| 26-packet-journey | 종합: 프로세스→소켓→커널→NIC→스위치→라우터→…→수신측 역방향 | 25, 08, 05 | (종합편 — 각 구간에서 무엇이 보이나를 한 장으로) | — | 『성공과 실패를 결정하는 1%의 네트워크 원리』 [?] · alex/what-happens-when | 필수 | 신규 |
 
 ### 7.6 DNS
 
@@ -628,7 +640,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 |---|---|---|---|---|---|---|---|
 | 27-dns-resolution | 재귀·반복 질의, 루트/TLD/권한, 레코드(A/AAAA/CNAME/MX/NS/TXT) | 14 | 권한 서버 장애 → `SERVFAIL`; CNAME at apex 불가; 해석기 없는 컨테이너 → `UnknownHostException` | **도메인 트리(역순 라벨 트라이)** | RFC 1034 · 1035 · K&R 2.4 | 필수 | 신규 |
 | 28-dns-caching-and-ttl | TTL·캐시 계층·부정 캐시·검색 도메인 | 27 | 페일오버 후 **JVM DNS 캐시**로 죽은 IP 접속; NXDOMAIN 부정 캐시로 새 레코드가 한참 안 보임; k8s `ndots:5` 로 외부 조회 5배 | TTL 캐시(해시 + 만료) | RFC 2308 · Java `networkaddress.cache.ttl` 문서 | 필수 | 신규 |
-| 53-email-delivery-and-authentication | SMTP 전달 경로, SPF·DKIM·DMARC(DNS TXT), 정렬(alignment), 바운스·수신 거부, 대량 발송자 요건 | 27-dns-resolution, security/06-public-key-and-signatures | SPF 10회 DNS 조회 한도 초과 → `permerror`로 스팸함 행. 발송 대행사 도메인과 From 도메인이 정렬되지 않아 DMARC 실패. DKIM 키 회전 중 DNS 레코드 선삭제 → 전량 거부. 2024년부터 Gmail·Yahoo 대량 발송 요건(원클릭 수신 거부) 미충족 → 거절 | DNS TXT 파싱, RSA/Ed25519 서명(헤더 정규화) | RFC 5321 · RFC 7208 (SPF) · RFC 6376 (DKIM) · RFC 7489 (DMARC) · RFC 8058 · Google "Email sender guidelines" https://support.google.com/a/answer/81126 | 권장 | 신규 (연결: `api-design/27-notification-delivery-pipeline`) |
+| 51-email-delivery-and-authentication | SMTP 전달 경로, SPF·DKIM·DMARC(DNS TXT), 정렬(alignment), 바운스·수신 거부, 대량 발송자 요건 | 27-dns-resolution, security/06-public-key-and-signatures | SPF 10회 DNS 조회 한도 초과 → `permerror`로 스팸함 행. 발송 대행사 도메인과 From 도메인이 정렬되지 않아 DMARC 실패. DKIM 키 회전 중 DNS 레코드 선삭제 → 전량 거부. 2024년부터 Gmail·Yahoo 대량 발송 요건(원클릭 수신 거부) 미충족 → 거절 | DNS TXT 파싱, RSA/Ed25519 서명(헤더 정규화) | RFC 5321 · RFC 7208 (SPF) · RFC 6376 (DKIM) · RFC 7489 (DMARC) · RFC 8058 · Google "Email sender guidelines" https://support.google.com/a/answer/81126 | 권장 | 신규 (연결: `api-design/10-notification-delivery-pipeline`) |
 
 ### 7.7 TLS·인증서 (암호 기초는 security/03~07 선행)
 
@@ -648,36 +660,36 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 35-http-connection-management | keep-alive·커넥션 풀·idle timeout 정렬 | 33, 21 | 서버 idle close와 클라이언트 재사용 경합 → `socket hang up`·`Connection reset`·간헐 502; 풀 고갈 → 대기 타임아웃 | 커넥션 풀(큐·LRU) | RFC 9112 9장 · HPBN "HTTP/1.X" | 필수 | 신규 |
 | 36-http2-multiplexing | 스트림·프레임·HPACK·흐름 제어, TCP HoL | 35 | 손실 한 번에 모든 스트림 정지(TCP HoL); `GOAWAY` 미처리 → 재시도 실패; 동시 스트림 한도 | HPACK 정적/동적 테이블, 우선순위 트리 | RFC 9113 · 7541 · HPBN "HTTP/2" | 권장 | 신규 |
 | 37-http3-quic | QUIC 스트림 독립·연결 마이그레이션·0-RTT | 36, 14 | UDP 차단망 → 폴백 지연; 방화벽이 QUIC 인식 못 함 | 패킷 번호 공간, 손실 탐지 | RFC 9000 · 9114 | 권장 | 신규 |
-| 38-websocket-sse-long-lived | WebSocket·SSE·롱폴링 | 35 | LB/프록시 idle timeout에 조용히 끊김; 서버 재배포 시 재연결 폭풍 | 브로드캐스트 팬아웃 | RFC 6455 · HTML 표준 SSE 절 · HPBN "WebSocket" | 권장 | 신규 (연결: `foundations/web-api/32·33`) |
+| 38-websocket-sse-long-lived | WebSocket·SSE·롱폴링 | 35 | LB/프록시 idle timeout에 조용히 끊김; 서버 재배포 시 재연결 폭풍 | 브로드캐스트 팬아웃 | RFC 6455 · HTML 표준 SSE 절 · HPBN "WebSocket" | 권장 | 신규 (연결: `languages/web-api/32·33`) |
 
 ### 7.8b 데이터 전송·압축·스트리밍 (2026-09-28 추가)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 46-http-content-encoding | `Accept-Encoding`/`Content-Encoding` 협상(gzip·br·zstd), `Vary`, 압축 수준↔CPU, 압축 대상 선택 | 33, 34, algorithm/41-lossless-compression-lz77-huffman | `Vary: Accept-Encoding` 누락 → CDN이 압축본을 미지원 클라이언트에 전달(깨진 본문); 이미 압축된 이미지·zip 재압축 → CPU 낭비·오히려 커짐; 프록시 재압축 → 강한 ETag 불일치로 조건부 요청 실패 | DEFLATE(LZ77+허프만), q값 우선순위 협상 | RFC 9110 §8.4·§12.5.3 · RFC 1952(gzip) · RFC 7932(Brotli) · RFC 8878(zstd) | 필수 | 신규 (연결: `languages/web-api/26-response-body-streaming`) |
-| 47-compression-side-channels | 압축 + 암호화 + 비밀 반영 = 길이 사이드채널(CRIME·BREACH) | 46, 29 | 응답 길이 차이로 CSRF 토큰·쿠키 추론; TLS 수준 압축(CRIME)은 TLS 1.3에서 제거됨 | 압축률 = 반복 패턴 길이의 함수 | Rizzo–Duong CRIME 2012 [?] · Gluck 외 BREACH 2013 [?] · RFC 8446(압축 제거) | 권장 | 신규 |
-| 48-chunked-and-streaming-responses | HTTP/1.1 chunked·HTTP/2 DATA 프레임·스트리밍 응답·백프레셔 | 24, 33, 36, reliability/11-backpressure-and-load-shedding | 스트림 시작 후 에러 → 상태 코드 변경 불가(200 뒤 잘린 본문); 프록시 버퍼링으로 스트림이 한꺼번에 도착(예: nginx `proxy_buffering`); 느린 소비자 → 서버 메모리 누적 | 청크 = 길이 접두 프레이밍, 유한 버퍼·흐름 제어 윈도 | RFC 9112 §7.1 · RFC 9113 §6.1 | 필수 | 신규 (연결: `issue/cross-cutting/network/chunked-vs-content-length` · `http-streaming-status-locked`) |
-| 49-range-requests-and-resume | `Range`·206·`If-Range`·다중 범위, 이어받기 | 34, 48 | 파일이 바뀐 뒤 `If-Range` 없이 이어받기 → 두 버전이 섞인 손상 파일; 압축 표현에 Range → 바이트 오프셋 기준 혼동 | 구간 연산 | RFC 9110 §14 | 필수 | 신규 |
-| 50-large-file-upload-patterns | multipart/form-data·청크 업로드·재개 가능 업로드(tus)·멀티파트 업로드·presigned URL·청크 체크섬, 전송 경로(sendfile·zero-copy) | 49, os/27-data-integrity-checksums, os/30-zero-copy-and-io-uring | 단일 요청 대용량 → LB 타임아웃·`413 Payload Too Large`; 중단 후 처음부터 재전송; 완료 안 된 멀티파트 조각 누적 → 스토리지 비용; 체크섬 없이 조립 → 조용한 손상; 파일을 힙에 통째로 적재 → OOM | 청크 분할, 수신 청크 비트맵, 부분 해시·머클 트리 | RFC 7578 · tus 1.0 프로토콜 · S3 Multipart Upload 문서 | 필수 | 신규 |
-| 51-adaptive-media-streaming | HLS·DASH, 세그먼트·매니페스트, 적응형 비트레이트(ABR) | 48, 40 | 세그먼트 캐시 미스 → 리버퍼링; 매니페스트 TTL 과다 → 라이브 지연 증가; 화질 진동 | 처리량 추정(EWMA) + 버퍼 기반 제어 | RFC 8216(HLS) · ISO/IEC 23009-1(DASH) | 심화 | 신규 |
-| 52-websocket-compression | permessage-deflate, 컨텍스트 유지 여부 | 38, 46 | 연결마다 압축 컨텍스트(슬라이딩 윈도) 유지 → 동시 연결 많을 때 메모리 폭증; 비밀 반영 메시지 압축 → 47의 사이드채널 | 슬라이딩 윈도 딕셔너리 | RFC 7692 | 권장 | 신규 (연결: `languages/web-api/33-websocket`) |
+| 39-http-content-encoding | `Accept-Encoding`/`Content-Encoding` 협상(gzip·br·zstd), `Vary`, 압축 수준↔CPU, 압축 대상 선택 | 33, 34, algorithm/33-lossless-compression-lz77-huffman | `Vary: Accept-Encoding` 누락 → CDN이 압축본을 미지원 클라이언트에 전달(깨진 본문); 이미 압축된 이미지·zip 재압축 → CPU 낭비·오히려 커짐; 프록시 재압축 → 강한 ETag 불일치로 조건부 요청 실패 | DEFLATE(LZ77+허프만), q값 우선순위 협상 | RFC 9110 §8.4·§12.5.3 · RFC 1952(gzip) · RFC 7932(Brotli) · RFC 8878(zstd) | 필수 | 신규 (연결: `languages/web-api/26-response-body-streaming`) |
+| 43-compression-side-channels | 압축 + 암호화 + 비밀 반영 = 길이 사이드채널(CRIME·BREACH) | 39, 29 | 응답 길이 차이로 CSRF 토큰·쿠키 추론; TLS 수준 압축(CRIME)은 TLS 1.3에서 제거됨 | 압축률 = 반복 패턴 길이의 함수 | Rizzo–Duong CRIME 2012 [?] · Gluck 외 BREACH 2013 [?] · RFC 8446(압축 제거) | 권장 | 신규 |
+| 40-chunked-and-streaming-responses | HTTP/1.1 chunked·HTTP/2 DATA 프레임·스트리밍 응답·백프레셔 | 24, 33, 36, reliability/12-backpressure-and-load-shedding | 스트림 시작 후 에러 → 상태 코드 변경 불가(200 뒤 잘린 본문); 프록시 버퍼링으로 스트림이 한꺼번에 도착(예: nginx `proxy_buffering`); 느린 소비자 → 서버 메모리 누적 | 청크 = 길이 접두 프레이밍, 유한 버퍼·흐름 제어 윈도 | RFC 9112 §7.1 · RFC 9113 §6.1 | 필수 | 신규 (연결: `issue/cross-cutting/network/chunked-vs-content-length` · `http-streaming-status-locked`) |
+| 41-range-requests-and-resume | `Range`·206·`If-Range`·다중 범위, 이어받기 | 34, 40 | 파일이 바뀐 뒤 `If-Range` 없이 이어받기 → 두 버전이 섞인 손상 파일; 압축 표현에 Range → 바이트 오프셋 기준 혼동 | 구간 연산 | RFC 9110 §14 | 필수 | 신규 |
+| 42-large-file-upload-patterns | multipart/form-data·청크 업로드·재개 가능 업로드(tus)·멀티파트 업로드·presigned URL·청크 체크섬, 전송 경로(sendfile·zero-copy) | 41, os/33-data-integrity-checksums, os/34-zero-copy-and-io-uring | 단일 요청 대용량 → LB 타임아웃·`413 Payload Too Large`; 중단 후 처음부터 재전송; 완료 안 된 멀티파트 조각 누적 → 스토리지 비용; 체크섬 없이 조립 → 조용한 손상; 파일을 힙에 통째로 적재 → OOM | 청크 분할, 수신 청크 비트맵, 부분 해시·머클 트리 | RFC 7578 · tus 1.0 프로토콜 · S3 Multipart Upload 문서 | 필수 | 신규 |
+| 45-adaptive-media-streaming | HLS·DASH, 세그먼트·매니페스트, 적응형 비트레이트(ABR) | 40, 47 | 세그먼트 캐시 미스 → 리버퍼링; 매니페스트 TTL 과다 → 라이브 지연 증가; 화질 진동 | 처리량 추정(EWMA) + 버퍼 기반 제어 | RFC 8216(HLS) · ISO/IEC 23009-1(DASH) | 심화 | 신규 |
+| 44-websocket-compression | permessage-deflate, 컨텍스트 유지 여부 | 38, 39 | 연결마다 압축 컨텍스트(슬라이딩 윈도) 유지 → 동시 연결 많을 때 메모리 폭증; 비밀 반영 메시지 압축 → 47의 사이드채널 | 슬라이딩 윈도 딕셔너리 | RFC 7692 | 권장 | 신규 (연결: `languages/web-api/33-websocket`) |
 
 ### 7.9 인프라·종합
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 39-load-balancers-and-proxies | L4 vs L7, 리버스 프록시, 헬스체크, 연결 드레이닝 | 35, 13 | 깊은 헬스체크 → 의존성 장애가 전 인스턴스 제외로 번짐; `X-Forwarded-For` 스푸핑; sticky 세션 불균형 | 라운드로빈·least-conn·**일관 해싱/Maglev** | `systems/server-design` 02 · Eisenbud 외 NSDI 2016 (Maglev) | 필수 | `systems/server-design/02-request-path.md` (분할 — LB·게이트웨이·헬스체크 절) |
-| 40-cdn-and-edge | CDN 캐시 계층·원점 보호·무효화 | 34 | 캐시 키에 쿠키·쿼리 누락 → 개인화 페이지 교차 노출; 퍼지 누락 | 계층 캐시 | HPBN 1장 [?] · 각 CDN 문서 | 권장 | 신규 |
-| 41-firewalls-and-network-policy | 상태 방화벽·보안 그룹·iptables/nftables | 13 | drop(→ `ETIMEDOUT`) vs reject(→ `ECONNREFUSED`) 증상 차이 무시; 규칙 수천 개 → 선형 매칭 지연 | 규칙 선형 탐색 vs ipset 해시·nftables 집합 | `iptables(8)` · `nft(8)` | 권장 | 신규 |
-| 42-what-happens-when-url | 종합: URL 입력 → DNS → TCP → TLS → HTTP → 렌더링 | 26, 28, 29, 33 | (구간별 실패 지도) | — | alex/what-happens-when | 필수 | 신규 |
-| 43-network-diagnostics | `ss`·`tcpdump`/Wireshark·`curl -v`·`openssl s_client`·`dig`·`mtr`·`ip route` | 42 | 도구 없이 추측 진단 | BPF 필터 | 각 man page | 필수 | 신규 |
+| 46-load-balancers-and-proxies | L4 vs L7, 리버스 프록시, 헬스체크, 연결 드레이닝 | 35, 11 | 깊은 헬스체크 → 의존성 장애가 전 인스턴스 제외로 번짐; `X-Forwarded-For` 스푸핑; sticky 세션 불균형 | 라운드로빈·least-conn·**일관 해싱/Maglev** | `systems/server-design` 02 · Eisenbud 외 NSDI 2016 (Maglev) | 필수 | `systems/server-design/02-request-path.md` (분할 — LB·게이트웨이·헬스체크 절) |
+| 47-cdn-and-edge | CDN 캐시 계층·원점 보호·무효화 | 34 | 캐시 키에 쿠키·쿼리 누락 → 개인화 페이지 교차 노출; 퍼지 누락 | 계층 캐시 | HPBN 1장 [?] · 각 CDN 문서 | 권장 | 신규 |
+| 48-firewalls-and-network-policy | 상태 방화벽·보안 그룹·iptables/nftables | 11 | drop(→ `ETIMEDOUT`) vs reject(→ `ECONNREFUSED`) 증상 차이 무시; 규칙 수천 개 → 선형 매칭 지연 | 규칙 선형 탐색 vs ipset 해시·nftables 집합 | `iptables(8)` · `nft(8)` | 권장 | 신규 |
+| 49-what-happens-when-url | 종합: URL 입력 → DNS → TCP → TLS → HTTP → 렌더링 | 26, 28, 29, 33 | (구간별 실패 지도) | — | alex/what-happens-when | 필수 | 신규 |
+| 50-network-diagnostics | `ss`·`tcpdump`/Wireshark·`curl -v`·`openssl s_client`·`dig`·`mtr`·`ip route` | 49 | 도구 없이 추측 진단 | BPF 필터 | 각 man page | 필수 | 신규 |
 
 ### 7.10 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 44-network-symptom-index | **에러 코드 사전**: `ECONNRESET`·`EPIPE`·`ETIMEDOUT`·`ECONNREFUSED`·`EADDRNOTAVAIL`·`EMFILE`·`EHOSTUNREACH`·`SERVFAIL`·`NXDOMAIN`·TLS alert·502/503/504 → 원인 leaf | 전체 | — | — | 이 영역 leaf · `errno(3)` | 필수 | 신규 |
-| 45-network-incidents | 실사건: Facebook BGP·DNS 전면 장애(2021-10-04) · Let's Encrypt DST Root CA X3 만료로 구형 클라이언트 체인 실패(2021-09-30) · Pakistan Telecom YouTube BGP 하이재킹(2008-02) | 44 | — | — | Facebook Engineering 2021-10-05 · Let's Encrypt 2021 공지 · RIPE NCC 2008 분석 | 권장 | 신규 |
+| 52-network-symptom-index | **에러 코드 사전**: `ECONNRESET`·`EPIPE`·`ETIMEDOUT`·`ECONNREFUSED`·`EADDRNOTAVAIL`·`EMFILE`·`EHOSTUNREACH`·`SERVFAIL`·`NXDOMAIN`·TLS alert·502/503/504 → 원인 leaf | 전체 | — | — | 이 영역 leaf · `errno(3)` | 필수 | 신규 |
+| 53-network-incidents | 실사건: Facebook BGP·DNS 전면 장애(2021-10-04) · Let's Encrypt DST Root CA X3 만료로 구형 클라이언트 체인 실패(2021-09-30) · Pakistan Telecom YouTube BGP 하이재킹(2008-02) | 52 | — | — | Facebook Engineering 2021-10-05 · Let's Encrypt 2021 공지 · RIPE NCC 2008 분석 | 권장 | 신규 |
 
 ---
 
@@ -686,7 +698,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 > 원리 → 암호 기초 → 인증·인가 → 웹/앱 공격 → 공급망·운영. **TLS/PKI 본문은 network/29~32에만** 둔다(단일 출처) — 여기선 암호 부품과 신뢰 모델까지.
 > 뼈대: OSTEP 53~57(Security 파트), K&R 8장, OWASP Top 10 2021, Aumasson 『Serious Cryptography』 [?], RFC.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → (network/29~32) → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 29 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 30 → 26 → 27 → 28
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → (network/29~32) → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 27 → 28 → 29 → 30
 
 ### 8.1 원리
 
@@ -699,13 +711,13 @@ Part 6  판단하는 법             data-engineering → data-analysis
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 03-symmetric-encryption-and-aead | 블록 암호·운용 모드·AEAD(AES-GCM·ChaCha20-Poly1305) | 01, math/13-information-theory-basics | ECB → 패턴 노출; **GCM nonce 재사용** → 평문 XOR 노출·인증 위조; 인증 없는 CBC → 패딩 오라클 | 블록·카운터 모드 | OSTEP 56 · NIST SP 800-38D · RFC 8439 | 필수 | 신규 |
+| 03-symmetric-encryption-and-aead | 블록 암호·운용 모드·AEAD(AES-GCM·ChaCha20-Poly1305) | 01, math/14-information-theory-basics | ECB → 패턴 노출; **GCM nonce 재사용** → 평문 XOR 노출·인증 위조; 인증 없는 CBC → 패딩 오라클 | 블록·카운터 모드 | OSTEP 56 · NIST SP 800-38D · RFC 8439 | 필수 | 신규 |
 | 04-hash-functions-and-digests | 암호 해시의 3성질·SHA-2·길이 확장 | 03 | MD5/SHA-1 충돌 → 위조 인증서·파일; `H(key‖msg)` 를 MAC으로 → 길이 확장 공격 | Merkle–Damgård 구조 | FIPS 180-4 | 필수 | `foundations/security/sha256-and-digest.md` |
 | 05-mac-and-hmac | 무결성+출처 인증, HMAC | 04 | 비상수 시간 비교 → 타이밍 공격; 서명 원문 정규화(JSON 키 순서·공백) 불일치 → 웹훅 서명 검증 `401` | HMAC 이중 해시 | RFC 2104 · 4231 | 필수 | `foundations/security/hmac.md` |
-| 06-public-key-and-signatures | RSA·ECC·전자서명(ECDSA·Ed25519) | 04, math/06-modular-arithmetic | 서명 검증 생략·알고리즘 혼동; ECDSA nonce 재사용 → 개인키 유출(PS3 2010) | 모듈러 거듭제곱, 타원곡선 군 연산 | RFC 8017 · 8032 · OSTEP 56 | 필수 | 신규 |
+| 06-public-key-and-signatures | RSA·ECC·전자서명(ECDSA·Ed25519) | 04, math/11-modular-arithmetic | 서명 검증 생략·알고리즘 혼동; ECDSA nonce 재사용 → 개인키 유출(PS3 2010) | 모듈러 거듭제곱, 타원곡선 군 연산 | RFC 8017 · 8032 · OSTEP 56 | 필수 | 신규 |
 | 07-key-exchange-forward-secrecy | DH·ECDHE·전방 비밀성 | 06 | 정적 RSA 키 교환 → 키 유출 시 과거 트래픽 전부 복호화 | 이산 로그 | RFC 7748 · RFC 8446 부록 [?] | 권장 | 신규 |
 | 08-password-storage-and-kdf | salt·느린 KDF(bcrypt·scrypt·Argon2)·pepper | 04 | 평문·단일 SHA-256 저장 → 유출 시 GPU로 대량 크래킹; bcrypt 72바이트 초과 절단 | 메모리 하드 함수 | RFC 9106 · OWASP Password Storage Cheat Sheet | 필수 | 신규 |
-| 09-randomness-and-key-management | CSPRNG·키 수명·회전·KMS·시크릿 관리 | 03, math/11-randomness-and-prng | 하드코딩 시크릿 git 유출; 회전 절차 부재 → 유출 후 대응 불가 | 봉투 암호화(키 계층 트리) | NIST SP 800-57 [?] | 필수 | 신규 |
+| 09-randomness-and-key-management | CSPRNG·키 수명·회전·KMS·시크릿 관리 | 03, math/12-randomness-and-prng | 하드코딩 시크릿 git 유출; 회전 절차 부재 → 유출 후 대응 불가 | 봉투 암호화(키 계층 트리) | NIST SP 800-57 [?] | 필수 | 신규 |
 
 ### 8.3 인증·인가
 
@@ -718,35 +730,35 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 14-oauth2-and-oidc | 위임 인가·인가 코드+PKCE·ID 토큰 | 12 | `redirect_uri` 느슨한 검증 → 코드 탈취; `state` 누락 → 로그인 CSRF; access token을 인증으로 오용 | — | RFC 6749 · 7636 · OIDC Core 1.0 | 필수 | `foundations/security/oidc.md` |
 | 15-access-control-models | ACL·RBAC·ABAC·ReBAC, 객체 수준 인가 | 01 | **IDOR/BOLA** — ID만 바꾸면 남의 데이터(OWASP A01); 수평·수직 권한 상승 | 역할 그래프, 관계 그래프 탐색(Zanzibar) | OSTEP 55 · OWASP A01 · Pang 외 USENIX ATC 2019 | 필수 | 신규 (연결: `domain-modeling/advanced/28-authorization`) |
 | 16-identifiers-and-enumeration | 순차 ID vs 랜덤·불투명 식별자 | 15, math/05-counting-and-birthday-bound | 순차 ID 열거로 대량 수집(Optus 2022 [?]); 짧은 랜덤 ID 충돌 | UUIDv4/v7, ULID | RFC 9562 | 권장 | `foundations/security/identity-and-ids.md` |
-| 29-refresh-token-rotation-and-revocation | access·refresh 수명 설계, refresh 회전과 재사용 탐지, 동시 갱신 경합, 전체 로그아웃·강제 만료, 브라우저 저장 위치와 BFF | 12-tokens-and-jwt, 11-sessions-and-cookie-security | 탭 여러 개가 동시에 refresh → 회전된 토큰 재사용으로 판정돼 **정상 사용자 전원 로그아웃**. 비밀번호 변경 후에도 기존 refresh 토큰 유효. 긴 수명 access 토큰 탈취 → 만료까지 무방비. localStorage 저장 → XSS 한 번에 탈취 | 토큰 패밀리(체인) 추적, 폐기 목록(TTL 해시) | RFC 9700 (OAuth 2.0 Security BCP, 2025) · RFC 6749 §6 · IETF draft "OAuth 2.0 for Browser-Based Applications" [?] | 필수 | 신규 (연결: `web-platform/06-browser-storage`) |
+| 17-refresh-token-rotation-and-revocation | access·refresh 수명 설계, refresh 회전과 재사용 탐지, 동시 갱신 경합, 전체 로그아웃·강제 만료, 브라우저 저장 위치와 BFF | 12-tokens-and-jwt, 11-sessions-and-cookie-security | 탭 여러 개가 동시에 refresh → 회전된 토큰 재사용으로 판정돼 **정상 사용자 전원 로그아웃**. 비밀번호 변경 후에도 기존 refresh 토큰 유효. 긴 수명 access 토큰 탈취 → 만료까지 무방비. localStorage 저장 → XSS 한 번에 탈취 | 토큰 패밀리(체인) 추적, 폐기 목록(TTL 해시) | RFC 9700 (OAuth 2.0 Security BCP, 2025) · RFC 6749 §6 · IETF draft "OAuth 2.0 for Browser-Based Applications" [?] | 필수 | 신규 (연결: `web-platform/06-browser-storage`) |
 
 ### 8.4 웹·애플리케이션 공격
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 17-injection | SQL·명령·LDAP 인젝션, 파라미터 바인딩 | 01, language/03-parsing-grammars-ast | 문자열 연결 쿼리 → 데이터 유출·`' OR 1=1`; 셸 경유 실행 → 원격 명령 실행 | 파서 문맥 분리 | OWASP A03 | 필수 | 신규 |
-| 18-xss-and-csp | 반사·저장·DOM XSS, 문맥별 인코딩, CSP | 17 | 세션 탈취·계정 탈취; `innerHTML` 에 사용자 입력 | 문맥 인코딩 상태 기계 | OWASP A03 · W3C CSP Level 3 | 필수 | 신규 (연결: `foundations/web-api/04-textcontent-innerhtml-innertext`) |
-| 19-csrf-and-samesite | 교차 사이트 요청 위조, 토큰·SameSite·Origin 검사 | 11 | 상태 변경 GET → 이미지 태그로 송금; CSRF 토큰 누락 → 403 대신 성공 | 동기화 토큰 | OWASP CSRF Cheat Sheet | 필수 | 신규 |
-| 20-same-origin-and-cors | 출처 모델·SOP·CORS·preflight | 11 | 콘솔 CORS 에러인데 **서버는 200**(브라우저가 응답 차단); `credentials` + `*` 불가; preflight 405 | 출처 튜플 비교 | RFC 6454 · WHATWG Fetch "CORS protocol" | 필수 | 신규 (연결: `foundations/web-api/28-cors-simple-and-preflight`, `29-credentials-and-cookies`) |
-| 21-ssrf | 서버가 대신 요청하게 만들기 | 20, network/07-ip-addressing-cidr | 클라우드 메타데이터 `169.254.169.254` 로 자격 증명 유출(Capital One 2019); DNS rebinding으로 허용 목록 우회 | IP 대역 판정(CIDR) | OWASP A10 | 필수 | 신규 |
-| 22-deserialization-and-parser-attacks | 안전하지 않은 역직렬화·XXE·문자열 lookup 기능 | 17 | 역직렬화 가젯 → RCE; 로그 문자열 `${jndi:...}` → RCE(Log4Shell) | — | OWASP A08 · CVE-2021-44228 | 권장 | 신규 |
-| 23-memory-safety-exploits | 버퍼 오버플로·UAF·ROP·완화책(ASLR·NX·카나리) | language/18-undefined-behavior-and-memory-safety | 경계 밖 읽기 → 개인키·세션 누출(Heartbleed) | — | CS:APP 3.10.3–3.10.4 | 권장 | 신규 |
+| 18-injection | SQL·명령·LDAP 인젝션, 파라미터 바인딩 | 01, language/03-parsing-grammars-ast | 문자열 연결 쿼리 → 데이터 유출·`' OR 1=1`; 셸 경유 실행 → 원격 명령 실행 | 파서 문맥 분리 | OWASP A03 | 필수 | 신규 |
+| 19-xss-and-csp | 반사·저장·DOM XSS, 문맥별 인코딩, CSP | 18 | 세션 탈취·계정 탈취; `innerHTML` 에 사용자 입력 | 문맥 인코딩 상태 기계 | OWASP A03 · W3C CSP Level 3 | 필수 | 신규 (연결: `languages/web-api/04-textcontent-innerhtml-innertext`) |
+| 20-csrf-and-samesite | 교차 사이트 요청 위조, 토큰·SameSite·Origin 검사 | 11 | 상태 변경 GET → 이미지 태그로 송금; CSRF 토큰 누락 → 403 대신 성공 | 동기화 토큰 | OWASP CSRF Cheat Sheet | 필수 | 신규 |
+| 21-same-origin-and-cors | 출처 모델·SOP·CORS·preflight | 11 | 콘솔 CORS 에러인데 **서버는 200**(브라우저가 응답 차단); `credentials` + `*` 불가; preflight 405 | 출처 튜플 비교 | RFC 6454 · WHATWG Fetch "CORS protocol" | 필수 | 신규 (연결: `languages/web-api/28-cors-simple-and-preflight`, `29-credentials-and-cookies`) |
+| 22-ssrf | 서버가 대신 요청하게 만들기 | 21, network/07-ip-addressing-cidr | 클라우드 메타데이터 `169.254.169.254` 로 자격 증명 유출(Capital One 2019); DNS rebinding으로 허용 목록 우회 | IP 대역 판정(CIDR) | OWASP A10 | 필수 | 신규 |
+| 23-deserialization-and-parser-attacks | 안전하지 않은 역직렬화·XXE·문자열 lookup 기능 | 18 | 역직렬화 가젯 → RCE; 로그 문자열 `${jndi:...}` → RCE(Log4Shell) | — | OWASP A08 · CVE-2021-44228 | 권장 | 신규 |
+| 24-memory-safety-exploits | 버퍼 오버플로·UAF·ROP·완화책(ASLR·NX·카나리) | language/20-undefined-behavior-and-memory-safety | 경계 밖 읽기 → 개인키·세션 누출(Heartbleed) | — | CS:APP 3.10.3–3.10.4 | 권장 | 신규 |
 
 ### 8.5 공급망·운영
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 24-supply-chain-security | 의존성 위험·SBOM·서명·재현 빌드, 의존성 업데이트 운영(Renovate·EOL 런타임) 절 | language/17-modules-and-dependency-resolution | 미패치 구성 요소(OWASP A06, Equifax 2017); 유지보수자 장악 백도어(xz 2024); typosquatting | 의존성 그래프, Merkle 서명 로그(Sigstore) | OWASP A06 · A08 · SLSA | 권장 | 신규 |
-| 25-security-logging-and-audit | 보안 로그·감사 추적·단계적 강제(audit→enforce) | 01 | 로그에 토큰·비밀번호·PII 기록; 감사 로그 부재 → 침해 범위 산정 불가(OWASP A09) | 해시 체인(변조 탐지) | OWASP A09 | 권장 | `foundations/security/audit-enforce-rollout.md` (연결: `engineering/development-standards/security-standards`, `reliability/44-logs-traces-audit-roles`) |
-| 26-dos-and-abuse | 볼륨·프로토콜·애플리케이션 계층 DoS, 봇·남용 | network/15-tcp-handshake-and-backlog | SYN flood, slowloris → 커넥션 고갈; 비싼 엔드포인트 반복 호출 → DB 과부하 | 토큰 버킷(reliability/10) | K&R 8장 [?] · Cloudflare 학습 센터 | 권장 | 신규 |
-| 30-pii-classification-masking-retention | 데이터 분류, 마스킹·토큰화·가명화, 로그·트레이스·에러 리포트 유출 차단(redaction), 보관 기한과 파기(백업 포함), 운영 데이터를 테스트에 복제 금지 | 25-security-logging-and-audit, 09-randomness-and-key-management | 요청 바디 전체 로깅 → 카드번호·주민번호가 로그 수집기와 외부 SaaS로 복제. 예외 메시지에 이메일 포함 → Sentry 등 에러 트래커에 노출. 탈퇴 회원 데이터가 백업·분석 DW에 영구 잔존. 운영 DB 덤프로 스테이징 구성 → 스테이징 유출이 실유출이 됨 | 형식 보존 토큰화, 키 파기로 삭제(crypto-shredding) | NIST SP 800-122 · OWASP Logging Cheat Sheet · GDPR Art. 17 · 개인정보보호위원회 "가명정보 처리 가이드라인" [?] | 필수 | 신규 (연결: `engineering-practice/15-legal-standards`, `data-engineering/14-data-retention-and-erasure`) |
+| 25-supply-chain-security | 의존성 위험·SBOM·서명·재현 빌드, 의존성 업데이트 운영(Renovate·EOL 런타임) 절 | language/19-modules-and-dependency-resolution | 미패치 구성 요소(OWASP A06, Equifax 2017); 유지보수자 장악 백도어(xz 2024); typosquatting | 의존성 그래프, Merkle 서명 로그(Sigstore) | OWASP A06 · A08 · SLSA | 권장 | 신규 |
+| 26-security-logging-and-audit | 보안 로그·감사 추적·단계적 강제(audit→enforce) | 01 | 로그에 토큰·비밀번호·PII 기록; 감사 로그 부재 → 침해 범위 산정 불가(OWASP A09) | 해시 체인(변조 탐지) | OWASP A09 | 권장 | `foundations/security/audit-enforce-rollout.md` (연결: `engineering/development-standards/security-standards`, `reliability/18-logs-traces-audit-roles`) |
+| 28-dos-and-abuse | 볼륨·프로토콜·애플리케이션 계층 DoS, 봇·남용 | network/15-tcp-handshake-and-backlog | SYN flood, slowloris → 커넥션 고갈; 비싼 엔드포인트 반복 호출 → DB 과부하 | 토큰 버킷(reliability/11) | K&R 8장 [?] · Cloudflare 학습 센터 | 권장 | 신규 |
+| 27-pii-classification-masking-retention | 데이터 분류, 마스킹·토큰화·가명화, 로그·트레이스·에러 리포트 유출 차단(redaction), 보관 기한과 파기(백업 포함), 운영 데이터를 테스트에 복제 금지 | 26-security-logging-and-audit, 09-randomness-and-key-management | 요청 바디 전체 로깅 → 카드번호·주민번호가 로그 수집기와 외부 SaaS로 복제. 예외 메시지에 이메일 포함 → Sentry 등 에러 트래커에 노출. 탈퇴 회원 데이터가 백업·분석 DW에 영구 잔존. 운영 DB 덤프로 스테이징 구성 → 스테이징 유출이 실유출이 됨 | 형식 보존 토큰화, 키 파기로 삭제(crypto-shredding) | NIST SP 800-122 · OWASP Logging Cheat Sheet · GDPR Art. 17 · 개인정보보호위원회 "가명정보 처리 가이드라인" [?] | 필수 | 신규 (연결: `engineering-practice/17-legal-standards`, `data-engineering/12-data-retention-and-erasure`) |
 
 ### 8.6 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 27-security-symptom-index | 역색인: 401 vs 403, CORS 에러, `invalid signature`, `kid not found`, CSRF 403, TLS alert, 로그인 폭주, 메타데이터 접근 로그 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 28-security-incidents | 실사건: Heartbleed(2014) · Equifax Struts 미패치(2017) · Capital One SSRF(2019) · Log4Shell(2021) · xz 백도어(2024) | 27 | — | — | CVE-2014-0160 · 미 GAO-18-559 [?] · CVE-2021-44228 · CVE-2024-3094 | 권장 | 신규 |
+| 29-security-symptom-index | 역색인: 401 vs 403, CORS 에러, `invalid signature`, `kid not found`, CSRF 403, TLS alert, 로그인 폭주, 메타데이터 접근 로그 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
+| 30-security-incidents | 실사건: Heartbleed(2014) · Equifax Struts 미패치(2017) · Capital One SSRF(2019) · Log4Shell(2021) · xz 백도어(2024) | 29 | — | — | CVE-2014-0160 · 미 GAO-18-559 [?] · CVE-2021-44228 · CVE-2024-3094 | 권장 | 신규 |
 
 # Part 3 — 데이터
 
@@ -755,7 +767,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 > 모델·SQL → 스토리지 → 인덱스 → 쿼리 처리 → 트랜잭션·동시성 제어 → 로깅·복구 → 복제·분할 → 애플리케이션과 DB. 기존 보유(LSM·파티셔닝·clickhouse·RLS·시계열)는 대부분 스토리지·분할 쪽이므로 **트랜잭션·격리 수준·MVCC·WAL**이 신규의 중심.
 > 뼈대: CMU 15-445 Fall 2024 강의 번호(이하 L#, 확인), DDIA 1판 2~7장(확인), Berenson 외 1995, PostgreSQL·MySQL 문서.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 07 → 09 → 12 → 13 → 42 → 17 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 28 → 32 → 54 → 33 → 46 → 55 → 34 → 41 → 43 → 45 → 38 → 47 → 29 → 30 → 44 → 48 → (06 · 08 · 10 · 11 · 14 · 16 · 27 · 35 · 36 · 37 · 49 · 50 · 51 · 52 · 53 · 56 · 57 권장) → (15 · 18 · 31 심화) → 39 → 40
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 27 → 28 → 29 → 30 → 31 → 32 → 33 → 34 → 35 → (36 · 37 · 38 · 39 · 40 · 41 · 42 · 43 · 44 · 45 · 46 · 47 · 48 · 49 · 50 · 51 · 52 권장) → (53 · 54 · 55 심화) → 56 → 57
 
 ### 9.1 모델·SQL
 
@@ -766,108 +778,108 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 03-normalization | 함수 종속·1NF~BCNF·반정규화 판단 | 02 | 갱신 이상 → 같은 사실이 두 곳에서 다른 값; 과정규화 → 조인 폭발 | 함수 종속 폐포 | Silberschatz 『Database System Concepts』 7장 [?] | 필수 | 신규 |
 | 04-sql-joins-and-aggregation | 논리 처리 순서·조인·집계·NULL 3치 논리 | 01 | 조인 팬아웃 → `SUM` 부풀림; `NOT IN (… NULL …)` → 빈 결과; `WHERE` vs `ON` 외부 조인 차이 | — | L2 | 필수 | 신규 (연결: `languages/sql/syntax/01·04·13~25`) |
 | 05-window-functions-and-cte | 윈도 함수·프레임·CTE·재귀 CTE | 04 | `RANGE` 기본 프레임 → 동률 행이 같은 누계; 재귀 CTE 종료 조건 누락 → 무한 | — | L2 | 권장 | 신규 (연결: `languages/sql/syntax/26~33`) |
-| 06-data-models-document-graph | 관계 vs 문서 vs 그래프, 스키마 온 리드 | 01 | 문서 모델에 다대다 → 조인을 앱에서 → 불일치; 스키마 없는 쓰기 → 읽기 시 파싱 실패 | 트리(문서)·그래프 | DDIA 2장 | 권장 | 신규 |
+| 36-data-models-document-graph | 관계 vs 문서 vs 그래프, 스키마 온 리드 | 01 | 문서 모델에 다대다 → 조인을 앱에서 → 불일치; 스키마 없는 쓰기 → 읽기 시 파싱 실패 | 트리(문서)·그래프 | DDIA 2장 | 권장 | 신규 |
 
 ### 9.2 스토리지
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 07-pages-and-tuple-layout | 힙 파일·슬롯 페이지·튜플 헤더·대형 값(TOAST) | 01, architecture/17-storage-media-workload | 넓은 행 → 페이지당 행 수 감소 → 스캔 I/O 증가; UPDATE 반복 → 페이지 부풀림(bloat) | 슬롯 배열 | L3 · L4 | 필수 | 신규 |
-| 08-row-vs-column-storage | 행 저장 vs 컬럼 저장·압축 | 07 | OLAP 쿼리를 행 저장 OLTP DB에서 → 전체 스캔; 컬럼 저장에 단건 UPDATE → 느림 | 런 렝스·딕셔너리 인코딩, 비트맵 | L5 · DDIA 3장 | 권장 | 신규 (연결: `systems/clickhouse-mergetree`) |
-| 09-buffer-pool | 버퍼 풀·핀·dirty·교체 정책 | 07, data-structure/10-lru-cache | 대형 순차 스캔이 버퍼 풀 오염(sequential flooding) → 이후 OLTP 적중률 급락 | **page table 해시 + LRU-K/CLOCK** | L6 | 필수 | 신규 |
-| 10-lsm-storage-engine | memtable·SSTable·compaction·쓰기/읽기/공간 증폭 | 07, data-structure/24-lsm-tree | compaction 적체 → write stall; tombstone 누적 → 범위 조회 느림 | LSM, 블룸 필터, 스킵 리스트 | DDIA 3장 · O'Neil 외 1996 | 권장 | `systems/lsm-tree` |
+| 06-pages-and-tuple-layout | 힙 파일·슬롯 페이지·튜플 헤더·대형 값(TOAST) | 01, architecture/16-storage-media-workload | 넓은 행 → 페이지당 행 수 감소 → 스캔 I/O 증가; UPDATE 반복 → 페이지 부풀림(bloat) | 슬롯 배열 | L3 · L4 | 필수 | 신규 |
+| 37-row-vs-column-storage | 행 저장 vs 컬럼 저장·압축 | 06 | OLAP 쿼리를 행 저장 OLTP DB에서 → 전체 스캔; 컬럼 저장에 단건 UPDATE → 느림 | 런 렝스·딕셔너리 인코딩, 비트맵 | L5 · DDIA 3장 | 권장 | 신규 (연결: `systems/clickhouse-mergetree`) |
+| 07-buffer-pool | 버퍼 풀·핀·dirty·교체 정책 | 06, data-structure/14-lru-cache | 대형 순차 스캔이 버퍼 풀 오염(sequential flooding) → 이후 OLTP 적중률 급락 | **page table 해시 + LRU-K/CLOCK** | L6 | 필수 | 신규 |
+| 38-lsm-storage-engine | memtable·SSTable·compaction·쓰기/읽기/공간 증폭 | 06, data-structure/18-lsm-tree | compaction 적체 → write stall; tombstone 누적 → 범위 조회 느림 | LSM, 블룸 필터, 스킵 리스트 | DDIA 3장 · O'Neil 외 1996 | 권장 | `systems/lsm-tree` |
 
 ### 9.3 인덱스
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 11-hash-indexes | 정적·확장·선형 해싱 | 09, data-structure/05-hashmap | 범위 조회에 해시 인덱스 → 미사용; 해시 버킷 분할 중 지연 | 확장 해싱, 선형 해싱 | L7 | 권장 | 신규 |
-| 12-btree-indexes | B+Tree 구조·분할/병합·클러스터드 vs 보조 | 09, data-structure/15-b-tree | 랜덤 UUID PK → 페이지 분할·쓰기 증폭; 인덱스 컬럼에 함수 적용 → 인덱스 미사용 | **B+Tree** | L8 · L9 | 필수 | 신규 |
-| 13-index-design | 복합·커버링·부분·표현식 인덱스, 선택도 | 12 | 복합 인덱스 선행 컬럼 누락 → 풀스캔; 인덱스 과다 → 쓰기 느려짐 | — | L8 · Winand 『SQL Performance Explained』 [?] | 필수 | 신규 (연결: `languages/sql/syntax/46·47`) |
-| 14-filters-and-specialized-indexes | 블룸 필터·역색인·공간·BRIN | 12 | 전문 검색을 `LIKE '%x%'` 로 → 풀스캔 | 블룸, 역색인, R-tree | L9 | 권장 | 신규 (연결: `data-structure/11·25·32`) |
-| 15-index-concurrency-control | 래치·래치 크래빙·B-link 트리 | 12, os/16-locks-and-spinlocks | 핫 인덱스 페이지 래치 경합 → 단조 증가 키 삽입 병목 | 래치 크래빙 | L10 · Lehman–Yao 1981 | 심화 | 신규 |
+| 39-hash-indexes | 정적·확장·선형 해싱 | 07, data-structure/07-hashmap | 범위 조회에 해시 인덱스 → 미사용; 해시 버킷 분할 중 지연 | 확장 해싱, 선형 해싱 | L7 | 권장 | 신규 |
+| 08-btree-indexes | B+Tree 구조·분할/병합·클러스터드 vs 보조 | 07, data-structure/16-b-tree | 랜덤 UUID PK → 페이지 분할·쓰기 증폭; 인덱스 컬럼에 함수 적용 → 인덱스 미사용 | **B+Tree** | L8 · L9 | 필수 | 신규 |
+| 09-index-design | 복합·커버링·부분·표현식 인덱스, 선택도 | 08 | 복합 인덱스 선행 컬럼 누락 → 풀스캔; 인덱스 과다 → 쓰기 느려짐 | — | L8 · Winand 『SQL Performance Explained』 [?] | 필수 | 신규 (연결: `languages/sql/syntax/46·47`) |
+| 40-filters-and-specialized-indexes | 블룸 필터·역색인·공간·BRIN | 08 | 전문 검색을 `LIKE '%x%'` 로 → 풀스캔 | 블룸, 역색인, R-tree | L9 | 권장 | 신규 (연결: `data-structure/20·39·24`) |
+| 53-index-concurrency-control | 래치·래치 크래빙·B-link 트리 | 08, os/16-locks-and-spinlocks | 핫 인덱스 페이지 래치 경합 → 단조 증가 키 삽입 병목 | 래치 크래빙 | L10 · Lehman–Yao 1981 | 심화 | 신규 |
 
 ### 9.4 쿼리 처리
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 16-sorting-and-aggregation | 외부 정렬·해시 집계·스필 | 09, algorithm/34-external-sort-and-k-way-merge | `work_mem` 초과 → 디스크 스필로 수십 배 느림(`Sort Method: external merge`) | 외부 병합 정렬, 해시 테이블 | L11 | 권장 | 신규 |
-| 17-join-algorithms | 중첩 루프·해시 조인·정렬 병합 조인 | 16 | 추정 오류로 대형 테이블에 중첩 루프 → 쿼리 수 분 | 해시 테이블, 병합 | L12 | 필수 | 신규 |
-| 18-query-execution-models | 반복자(Volcano)·벡터화·병렬 실행 | 17 | — (행 단위 반복의 CPU 오버헤드) | 반복자 트리 | L13 · L14 | 심화 | 신규 |
-| 19-query-optimizer-and-explain | 비용 기반 최적화·통계·카디널리티 추정·EXPLAIN 읽기 | 17, 13 | 통계 오래됨 → 플랜 급변으로 야간 배치 후 쿼리 폭주; 추정 vs 실제 행 수 괴리 | 조인 순서 DP(System R), 히스토그램 | L15 · Selinger 외 1979 | 필수 | 신규 (연결: `languages/sql/syntax/58·59·60`) |
+| 41-sorting-and-aggregation | 외부 정렬·해시 집계·스필 | 07, algorithm/11-external-sort-and-k-way-merge | `work_mem` 초과 → 디스크 스필로 수십 배 느림(`Sort Method: external merge`) | 외부 병합 정렬, 해시 테이블 | L11 | 권장 | 신규 |
+| 11-join-algorithms | 중첩 루프·해시 조인·정렬 병합 조인 | 41 | 추정 오류로 대형 테이블에 중첩 루프 → 쿼리 수 분 | 해시 테이블, 병합 | L12 | 필수 | 신규 |
+| 54-query-execution-models | 반복자(Volcano)·벡터화·병렬 실행 | 11 | — (행 단위 반복의 CPU 오버헤드) | 반복자 트리 | L13 · L14 | 심화 | 신규 |
+| 12-query-optimizer-and-explain | 비용 기반 최적화·통계·카디널리티 추정·EXPLAIN 읽기 | 11, 09 | 통계 오래됨 → 플랜 급변으로 야간 배치 후 쿼리 폭주; 추정 vs 실제 행 수 괴리 | 조인 순서 DP(System R), 히스토그램 | L15 · Selinger 외 1979 | 필수 | 신규 (연결: `languages/sql/syntax/58·59·60`) |
 
 ### 9.5 트랜잭션·동시성 제어
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 20-transactions-acid | 원자성·일관성·격리·지속성의 정확한 뜻, 직렬화 가능성 | 04, os/15-race-conditions | 트랜잭션 경계 밖 외부 호출 → 롤백돼도 메일은 발송; autocommit 가정 | 충돌 그래프 | L16 · DDIA 7장 | 필수 | 신규 (연결: `languages/sql/syntax/55`) |
-| 21-isolation-levels-and-anomalies | RU/RC/RR/SI/Serializable, dirty·non-repeatable·phantom·**lost update·write skew** | 20 | SI에서 write skew → 당직 0명·잔액 음수; RC에서 lost update | 이상 현상 분류 | Berenson 외 1995 · DDIA 7장 | 필수 | 신규 (연결: `languages/sql/syntax/56`) |
-| 22-two-phase-locking-and-deadlock | 2PL·엄격 2PL·락 모드·DB 데드락 탐지 | 21, os/19-deadlock | `Lock wait timeout exceeded`(MySQL 1205); `deadlock detected`(PG 40P01 / MySQL 1213) | 락 테이블 해시, **wait-for 그래프** | L17 | 필수 | 신규 (연결: `languages/sql/syntax/57`) |
-| 23-mvcc | 버전 체인·스냅샷·가시성·가비지 수집(vacuum) | 21 | 장기 트랜잭션 → vacuum 불가 → 테이블 bloat; PG XID wraparound 임박 → 쓰기 중단 | 버전 체인(연결 리스트), 스냅샷 | L19 · PostgreSQL 문서 "Routine Vacuuming" | 필수 | 신규 |
-| 24-occ-and-timestamp-ordering | 낙관적 동시성·타임스탬프 순서·버전 컬럼 | 21 | 경합 높은 행에 OCC → `OptimisticLockException` 재시도 폭증 | 버전 번호 비교 | L18 · Kung–Robinson 1981 | 권장 | 신규 |
-| 25-app-level-concurrency-patterns | `SELECT … FOR UPDATE`·조건부 UPDATE·원자적 upsert·유니크 제약 활용 | 22, 24 | check-then-insert → 중복 행; 재고 음수; 트랜잭션 안 원격 호출 → 락 장기 보유 | — | DDIA 7장 · PostgreSQL 문서 "Explicit Locking" | 필수 | 신규 (연결: `api-design/03-stock-deduct`, `reliability/04-failure-modes-catalog` F-01~08) |
+| 13-transactions-acid | 원자성·일관성·격리·지속성의 정확한 뜻, 직렬화 가능성 | 04, os/15-race-conditions | 트랜잭션 경계 밖 외부 호출 → 롤백돼도 메일은 발송; autocommit 가정 | 충돌 그래프 | L16 · DDIA 7장 | 필수 | 신규 (연결: `languages/sql/syntax/55`) |
+| 14-isolation-levels-and-anomalies | RU/RC/RR/SI/Serializable, dirty·non-repeatable·phantom·**lost update·write skew** | 13 | SI에서 write skew → 당직 0명·잔액 음수; RC에서 lost update | 이상 현상 분류 | Berenson 외 1995 · DDIA 7장 | 필수 | 신규 (연결: `languages/sql/syntax/56`) |
+| 15-two-phase-locking-and-deadlock | 2PL·엄격 2PL·락 모드·DB 데드락 탐지 | 14, os/19-deadlock | `Lock wait timeout exceeded`(MySQL 1205); `deadlock detected`(PG 40P01 / MySQL 1213) | 락 테이블 해시, **wait-for 그래프** | L17 | 필수 | 신규 (연결: `languages/sql/syntax/57`) |
+| 16-mvcc | 버전 체인·스냅샷·가시성·가비지 수집(vacuum) | 14 | 장기 트랜잭션 → vacuum 불가 → 테이블 bloat; PG XID wraparound 임박 → 쓰기 중단 | 버전 체인(연결 리스트), 스냅샷 | L19 · PostgreSQL 문서 "Routine Vacuuming" | 필수 | 신규 |
+| 17-occ-and-timestamp-ordering | 낙관적 동시성·타임스탬프 순서·버전 컬럼 | 14 | 경합 높은 행에 OCC → `OptimisticLockException` 재시도 폭증 | 버전 번호 비교 | L18 · Kung–Robinson 1981 | 권장 | 신규 |
+| 18-app-level-concurrency-patterns | `SELECT … FOR UPDATE`·조건부 UPDATE·원자적 upsert·유니크 제약 활용 | 15, 17 | check-then-insert → 중복 행; 재고 음수; 트랜잭션 안 원격 호출 → 락 장기 보유 | — | DDIA 7장 · PostgreSQL 문서 "Explicit Locking" | 필수 | 신규 (연결: `api-design/03-stock-deduct`, `reliability/04-failure-modes-catalog` F-01~08) |
 
 ### 9.6 로깅·복구·백업
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 26-wal-and-logging | WAL 규칙·group commit·no-force/steal | 23, os/25-fsync-and-durability | `fsync=off`·쓰기 캐시 → 크래시 후 커밋된 데이터 유실; WAL 디스크 풀 → DB 정지 | **append-only 로그**, LSN | L20 | 필수 | 신규 |
-| 27-recovery-aries-checkpoints | ARIES(분석·재실행·취소)·체크포인트 | 26 | 체크포인트 간격 과대 → 재시작 복구 수십 분 | LSN 체인 | L21 · Mohan 외 1992 | 권장 | 신규 |
-| 28-backup-and-pitr | 논리/물리 백업·PITR·복원 검증 | 26 | **복원 테스트 안 한 백업** → 사고 때 전부 무용(GitLab 2017); 백업 중 락 | WAL 아카이브 | PostgreSQL 문서 "Backup and Restore" | 필수 | 신규 |
+| 19-wal-and-logging | WAL 규칙·group commit·no-force/steal | 16, os/24-fsync-and-durability | `fsync=off`·쓰기 캐시 → 크래시 후 커밋된 데이터 유실; WAL 디스크 풀 → DB 정지 | **append-only 로그**, LSN | L20 | 필수 | 신규 |
+| 42-recovery-aries-checkpoints | ARIES(분석·재실행·취소)·체크포인트 | 19 | 체크포인트 간격 과대 → 재시작 복구 수십 분 | LSN 체인 | L21 · Mohan 외 1992 | 권장 | 신규 |
+| 20-backup-and-pitr | 논리/물리 백업·PITR·복원 검증 | 19 | **복원 테스트 안 한 백업** → 사고 때 전부 무용(GitLab 2017); 백업 중 락 | WAL 아카이브 | PostgreSQL 문서 "Backup and Restore" | 필수 | 신규 |
 
 ### 9.7 복제·분할
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 29-replication-leader-follower | 동기/비동기 복제·복제 지연·읽기 보장 | 26 | 복제 지연 → **방금 쓴 글이 안 보임**(read-your-writes 위반); 비동기 페일오버 → 확인된 쓰기 유실 | 복제 로그(WAL 스트림) | DDIA 5장 | 필수 | `systems/server-design/03-data-layer.md` (분할 — 복제·복제 지연 절) |
-| 30-partitioning-and-sharding | 키 범위·해시 분할·보조 인덱스·재조정 | 29 | 핫 파티션; 크로스 샤드 쿼리 폭증; 리샤딩 중 이중 쓰기 불일치 | 해시, **일관 해싱** | DDIA 6장 | 필수 | `systems/partitioning-vs-sharding` · `systems/server-design/03-data-layer.md` (분할 — 샤딩·리샤딩 절) |
-| 31-distributed-databases | 분산 OLTP·OLAP 개관, NewSQL | 30, distributed/19-two-phase-commit | — (분산 트랜잭션 지연, 시계 의존) | — | L22 · L23 · L24 | 심화 | 신규 |
+| 32-replication-leader-follower | 동기/비동기 복제·복제 지연·읽기 보장 | 19 | 복제 지연 → **방금 쓴 글이 안 보임**(read-your-writes 위반); 비동기 페일오버 → 확인된 쓰기 유실 | 복제 로그(WAL 스트림) | DDIA 5장 | 필수 | `systems/server-design/03-data-layer.md` (분할 — 복제·복제 지연 절) |
+| 33-partitioning-and-sharding | 키 범위·해시 분할·보조 인덱스·재조정 | 32 | 핫 파티션; 크로스 샤드 쿼리 폭증; 리샤딩 중 이중 쓰기 불일치 | 해시, **일관 해싱** | DDIA 6장 | 필수 | `systems/partitioning-vs-sharding` · `systems/server-design/03-data-layer.md` (분할 — 샤딩·리샤딩 절) |
+| 55-distributed-databases | 분산 OLTP·OLAP 개관, NewSQL | 33, distributed/14-two-phase-commit | — (분산 트랜잭션 지연, 시계 의존) | — | L22 · L23 · L24 | 심화 | 신규 |
 
 ### 9.8 애플리케이션과 DB
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 32-connection-pooling | 풀 크기·대기·검증·max_connections, `maxLifetime` < 중간 장비·DB idle timeout 규칙(서버 측 한도는 54) | 20, math/15-queueing-and-littles-law | `Connection is not available, request timed out after 30000ms`(풀 고갈); `FATAL: sorry, too many clients already`; 풀 크기 과대 → DB 컨텍스트 스위칭 | 풀 = 블로킹 큐 | HikariCP wiki "About Pool Sizing" | 필수 | 신규 |
-| 54-database-side-timeouts | 서버 측 시간 한도(`statement_timeout`·`lock_timeout`·`idle_in_transaction_session_timeout`·MySQL `innodb_lock_wait_timeout`)와 클라이언트 측(소켓·쿼리 타임아웃·풀 `maxLifetime`)의 정렬. 역할별 기본값을 두는 방어선 | 22, 32 | 폭주 쿼리가 커넥션을 붙잡는다 → 풀 고갈(`Connection is not available`). `ERROR: canceling statement due to statement timeout`(57014). `lock_timeout` 없는 DDL이 락 대기열 앞에 선다 → 뒤의 모든 쿼리가 멈춘다. idle in transaction → vacuum이 막히고 락이 유지된다(25P03 [?]). **앱 소켓 타임아웃으로 끊어도 DB 쿼리는 계속 돈다.** `maxLifetime`이 중간 장비의 idle timeout보다 길다 → 이미 끊긴 커넥션을 빌린다 | 타이머, 락 대기 큐 | PostgreSQL 문서 "Client Connection Defaults" [?] · HikariCP README (`connectionTimeout`·`maxLifetime`) | 필수 | 신규 (연결: `reliability/45-timeout-taxonomy-by-layer`·`47-cancellation-propagation`) |
-| 33-orm-and-n-plus-one | ORM 매핑·영속성 컨텍스트·지연 로딩·N+1 | 32 | N+1 쿼리 폭증; `LazyInitializationException`; 더티 체킹으로 의도치 않은 UPDATE | 1차 캐시(식별자 맵) | Fowler 『PoEAA』 Identity Map·Unit of Work | 필수 | `engineering/data-access` (README·jpa·spring-data-jdbc·comparison 병합) |
-| 55-data-source-patterns | Table/Row Data Gateway·Active Record·Data Mapper·Repository(PoEAA 정의)·Query Object·Metadata Mapping — "누가 SQL을 아는가" | 33-orm-and-n-plus-one, domain-modeling/08-repositories-and-factories | Active Record로 복잡한 도메인 → 저장 로직과 규칙이 한 클래스에 엉켜 DB 없이 테스트 불가; Data Mapper인데 도메인이 ORM 어노테이션 의존; 리포지토리가 `findByAAndBOrC…` 메서드 수십 개로 비대 | 메타데이터 매핑 표(필드 ↔ 컬럼), 쿼리 객체 = 조건 AST | PoEAA 데이터 소스 아키텍처·메타데이터 매핑 패턴 | 필수 | 신규 (연결: `engineering/data-access` comparison — Data Mapper 절) |
-| 56-object-relational-structural-mapping | Identity Field(대리키 vs 자연키)·Embedded Value·Foreign Key / Association Table Mapping·Dependent Mapping·Serialized LOB·상속 매핑 3종(단일·클래스·구체 테이블) | 55, 03-normalization | 단일 테이블 상속 → nullable 컬럼 폭증·NOT NULL 제약 불가; 클래스 테이블 상속 → 조회마다 조인 N개; 값 객체를 별도 테이블 → 불필요한 식별자·고아 행; JSON LOB에 넣은 필드로 검색 요구 발생 → 풀스캔 | 조인 = 상속 계층 트리, 임베디드 값 = 컬럼 평탄화 | PoEAA O-R 구조 패턴 · JPA 명세 상속 전략 [?] | 권장 | 신규 (연결: `43-key-strategy-surrogate-natural-public-id`) |
-| 57-offline-concurrency-patterns | 여러 요청에 걸친 **비즈니스 트랜잭션**의 동시성 — Optimistic / Pessimistic Offline Lock·Coarse-Grained Lock(aggregate 단위 버전)·Implicit Lock, 락 만료·해제 | 24-occ-and-timestamp-ordering, domain-modeling/05-aggregates-and-invariants | 편집 화면을 오래 연 사이 다른 사용자가 저장 → **lost update**(DB 트랜잭션은 이미 끝나 보호 안 됨); 비관적 오프라인 락 해제 누락 → "다른 사용자가 편집 중" 영구 표시; 자식만 수정해 루트 버전이 안 올라 aggregate 불변식 파괴 | 버전 번호 비교, 락 테이블(소유자·만료 TTL) | PoEAA 오프라인 동시성 패턴 | 권장 | 신규 (연결: `api-design/13-concurrency-control-in-apis`) |
-| 34-schema-migration | 무중단 마이그레이션·expand/contract·백필 | 12, 23 | `ALTER TABLE` 테이블 락 → 서비스 정지; 롤백 불가 마이그레이션; 백필이 복제 지연 유발 | — | `systems/server-design` 08 · Sadalage–Ambler 『Refactoring Databases』 [?] | 필수 | `systems/server-design/08-deployment-ops.md` (분할 — DB 마이그레이션 절) |
-| 35-row-level-security | 행 수준 보안·테넌트 격리 | 02, security/15-access-control-models | 정책 누락 테이블로 테넌트 간 누출; 소유자 역할은 RLS 우회 | 정책 술어 | PostgreSQL 문서 "Row Security Policies" | 권장 | `systems/postgres-rls` |
-| 36-timeseries-resolution-tiers | 시계열 해상도 계층·다운샘플·보존 | 08 | 롤업 경계 버그 → 집계 이중 계산; 보존 정책 누락 → 디스크 풀 | 링 버퍼·롤업 | 기존 노트 원고 | 권장 | `systems/timeseries-resolution-tiers` · `ops-patterns/17-timeseries` (병합 검토) |
-| 37-clickhouse-mergetree | 컬럼 저장 + 병합 트리 엔진 | 08, 10 | 작은 INSERT 폭주 → `Too many parts` | 정렬 파트 병합(LSM 계열) | ClickHouse 문서 MergeTree | 심화 | `systems/clickhouse-mergetree` |
-| 38-caching-with-databases | cache-aside·write-through·무효화·일관성 | 29, data-structure/10-lru-cache | 무효화 경합 → 오래된 값 고착; 캐시 스탬피드·관통·눈사태 | LRU, TTL, 블룸(관통 방어) | `systems/server-design` 04 · Nishtala 외 NSDI 2013 | 필수 | `systems/server-design/04-caching.md` (연결: `reliability/13-cache-stampede`) |
-| 52-multi-level-caching | 로컬 L1(프로세스 내) + 분산 L2(Redis) 계층, 인스턴스 간 무효화 전파(pub/sub·서버 지원 클라이언트 캐싱), 로컬 캐시의 크기 제한과 GC 압박, 핫키 로컬화 | 38, distributed/30-distributed-cache-consistency, data-structure/10-lru-cache | L1 무효화가 전파되지 않음 → 로드밸런서 라운드로빈 때문에 새로고침마다 값이 바뀜. 로컬 캐시에 크기 제한이 없음 → Old 영역이 커지고 GC 일시정지. Redis 핫키 하나 → 단일 샤드 CPU 100%, 네트워크 포화 | W-TinyLFU 허용 정책, 무효화 브로드캐스트, 서버 측 추적 테이블 | Redis 문서 "Client-side caching reference" · Redis `CLIENT TRACKING` · Einziger 외 "TinyLFU" ACM TOS 2017 [?] | 권장 | 신규 |
+| 21-connection-pooling | 풀 크기·대기·검증·max_connections, `maxLifetime` < 중간 장비·DB idle timeout 규칙(서버 측 한도는 22) | 13, math/10-queueing-and-littles-law | `Connection is not available, request timed out after 30000ms`(풀 고갈); `FATAL: sorry, too many clients already`; 풀 크기 과대 → DB 컨텍스트 스위칭 | 풀 = 블로킹 큐 | HikariCP wiki "About Pool Sizing" | 필수 | 신규 |
+| 22-database-side-timeouts | 서버 측 시간 한도(`statement_timeout`·`lock_timeout`·`idle_in_transaction_session_timeout`·MySQL `innodb_lock_wait_timeout`)와 클라이언트 측(소켓·쿼리 타임아웃·풀 `maxLifetime`)의 정렬. 역할별 기본값을 두는 방어선 | 15, 21 | 폭주 쿼리가 커넥션을 붙잡는다 → 풀 고갈(`Connection is not available`). `ERROR: canceling statement due to statement timeout`(57014). `lock_timeout` 없는 DDL이 락 대기열 앞에 선다 → 뒤의 모든 쿼리가 멈춘다. idle in transaction → vacuum이 막히고 락이 유지된다(25P03 [?]). **앱 소켓 타임아웃으로 끊어도 DB 쿼리는 계속 돈다.** `maxLifetime`이 중간 장비의 idle timeout보다 길다 → 이미 끊긴 커넥션을 빌린다 | 타이머, 락 대기 큐 | PostgreSQL 문서 "Client Connection Defaults" [?] · HikariCP README (`connectionTimeout`·`maxLifetime`) | 필수 | 신규 (연결: `reliability/07-timeout-taxonomy-by-layer`·`09-cancellation-propagation`) |
+| 23-orm-and-n-plus-one | ORM 매핑·영속성 컨텍스트·지연 로딩·N+1 | 21 | N+1 쿼리 폭증; `LazyInitializationException`; 더티 체킹으로 의도치 않은 UPDATE | 1차 캐시(식별자 맵) | Fowler 『PoEAA』 Identity Map·Unit of Work | 필수 | `engineering/data-access` (README·jpa·spring-data-jdbc·comparison 병합) |
+| 25-data-source-patterns | Table/Row Data Gateway·Active Record·Data Mapper·Repository(PoEAA 정의)·Query Object·Metadata Mapping — "누가 SQL을 아는가" | 23-orm-and-n-plus-one, domain-modeling/10-repositories-and-factories | Active Record로 복잡한 도메인 → 저장 로직과 규칙이 한 클래스에 엉켜 DB 없이 테스트 불가; Data Mapper인데 도메인이 ORM 어노테이션 의존; 리포지토리가 `findByAAndBOrC…` 메서드 수십 개로 비대 | 메타데이터 매핑 표(필드 ↔ 컬럼), 쿼리 객체 = 조건 AST | PoEAA 데이터 소스 아키텍처·메타데이터 매핑 패턴 | 필수 | 신규 (연결: `engineering/data-access` comparison — Data Mapper 절) |
+| 51-object-relational-structural-mapping | Identity Field(대리키 vs 자연키)·Embedded Value·Foreign Key / Association Table Mapping·Dependent Mapping·Serialized LOB·상속 매핑 3종(단일·클래스·구체 테이블) | 25, 03-normalization | 단일 테이블 상속 → nullable 컬럼 폭증·NOT NULL 제약 불가; 클래스 테이블 상속 → 조회마다 조인 N개; 값 객체를 별도 테이블 → 불필요한 식별자·고아 행; JSON LOB에 넣은 필드로 검색 요구 발생 → 풀스캔 | 조인 = 상속 계층 트리, 임베디드 값 = 컬럼 평탄화 | PoEAA O-R 구조 패턴 · JPA 명세 상속 전략 [?] | 권장 | 신규 (연결: `28-key-strategy-surrogate-natural-public-id`) |
+| 52-offline-concurrency-patterns | 여러 요청에 걸친 **비즈니스 트랜잭션**의 동시성 — Optimistic / Pessimistic Offline Lock·Coarse-Grained Lock(aggregate 단위 버전)·Implicit Lock, 락 만료·해제 | 17-occ-and-timestamp-ordering, domain-modeling/05-aggregates-and-invariants | 편집 화면을 오래 연 사이 다른 사용자가 저장 → **lost update**(DB 트랜잭션은 이미 끝나 보호 안 됨); 비관적 오프라인 락 해제 누락 → "다른 사용자가 편집 중" 영구 표시; 자식만 수정해 루트 버전이 안 올라 aggregate 불변식 파괴 | 버전 번호 비교, 락 테이블(소유자·만료 TTL) | PoEAA 오프라인 동시성 패턴 | 권장 | 신규 (연결: `api-design/11-concurrency-control-in-apis`) |
+| 26-schema-migration | 무중단 마이그레이션·expand/contract·백필 | 08, 16 | `ALTER TABLE` 테이블 락 → 서비스 정지; 롤백 불가 마이그레이션; 백필이 복제 지연 유발 | — | `systems/server-design` 08 · Sadalage–Ambler 『Refactoring Databases』 [?] | 필수 | `systems/server-design/08-deployment-ops.md` (분할 — DB 마이그레이션 절) |
+| 43-row-level-security | 행 수준 보안·테넌트 격리 | 02, security/15-access-control-models | 정책 누락 테이블로 테넌트 간 누출; 소유자 역할은 RLS 우회 | 정책 술어 | PostgreSQL 문서 "Row Security Policies" | 권장 | `systems/postgres-rls` |
+| 44-timeseries-resolution-tiers | 시계열 해상도 계층·다운샘플·보존 | 37 | 롤업 경계 버그 → 집계 이중 계산; 보존 정책 누락 → 디스크 풀 | 링 버퍼·롤업 | 기존 노트 원고 | 권장 | `systems/timeseries-resolution-tiers` · `ops-patterns/17-timeseries` (병합 검토) |
+| 45-clickhouse-mergetree | 컬럼 저장 + 병합 트리 엔진 | 37, 38 | 작은 INSERT 폭주 → `Too many parts` | 정렬 파트 병합(LSM 계열) | ClickHouse 문서 MergeTree | 심화 | `systems/clickhouse-mergetree` |
+| 30-caching-with-databases | cache-aside·write-through·무효화·일관성 | 32, data-structure/14-lru-cache | 무효화 경합 → 오래된 값 고착; 캐시 스탬피드·관통·눈사태 | LRU, TTL, 블룸(관통 방어) | `systems/server-design` 04 · Nishtala 외 NSDI 2013 | 필수 | `systems/server-design/04-caching.md` (연결: `reliability/29-cache-stampede`) |
+| 49-multi-level-caching | 로컬 L1(프로세스 내) + 분산 L2(Redis) 계층, 인스턴스 간 무효화 전파(pub/sub·서버 지원 클라이언트 캐싱), 로컬 캐시의 크기 제한과 GC 압박, 핫키 로컬화 | 30, distributed/32-distributed-cache-consistency, data-structure/14-lru-cache | L1 무효화가 전파되지 않음 → 로드밸런서 라운드로빈 때문에 새로고침마다 값이 바뀜. 로컬 캐시에 크기 제한이 없음 → Old 영역이 커지고 GC 일시정지. Redis 핫키 하나 → 단일 샤드 CPU 100%, 네트워크 포화 | W-TinyLFU 허용 정책, 무효화 브로드캐스트, 서버 측 추적 테이블 | Redis 문서 "Client-side caching reference" · Redis `CLIENT TRACKING` · Einziger 외 "TinyLFU" ACM TOS 2017 [?] | 권장 | 신규 |
 
 ### 9.8b 실무 데이터 운영 (2026-09-28 추가)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 41-temporal-types-and-session-timezone | `timestamp` vs `timestamptz`·`DATETIME` vs `TIMESTAMP`, 세션 시간대, 드라이버 변환, 시간대 기준 `date_trunc` | 20-transactions-acid, 04-sql-joins-and-aggregation, distributed/05-physical-clocks-and-ntp | JVM·DB·세션 시간대가 서로 달라 저장값이 9시간 밀림(KST↔UTC). 일별 집계를 UTC 자정으로 잘라 한국 기준 매출이 전날로 넘어감. MySQL `TIMESTAMP` 2038-01-19 상한 | epoch 정수 표현, 구간 경계 계산 | PostgreSQL 문서 "Date/Time Types" 8.5 · MySQL 문서 "The DATE, DATETIME, and TIMESTAMP Types" · RFC 3339 | 필수 | 신규 (연결: `data-analysis/23-data-cleaning-and-quality`, `domain-modeling/22-instant-vs-local-time-and-tz-rules`) |
-| 42-collation-and-text-comparison | collation(대소문자·악센트 무시), 정렬 순서, 유니크 제약과 비교 규칙, ICU vs libc | 13-index-design, architecture/05-character-encoding-unicode | `_ci` collation에서 `a@x.com`과 `A@x.com`이 UNIQUE 위반, 또는 반대로 중복 허용. 앱 정렬과 DB `ORDER BY`가 달라 커서 페이지네이션에서 누락·중복 발생. **glibc 2.28 collation 변경 후 PG 인덱스 조용한 손상**(복제본·업그레이드) | 정렬 키 생성(UCA 다단계 가중치), B+Tree 비교 함수 | Unicode UTS #10 (UCA) https://www.unicode.org/reports/tr10/ · PostgreSQL wiki "Locale data changes" https://wiki.postgresql.org/wiki/Locale_data_changes · MySQL 문서 "Character Sets and Collations" | 필수 | 신규 (연결: `api-design/06-pagination`) |
-| 43-key-strategy-surrogate-natural-public-id | 대리키 vs 자연키, bigint vs UUIDv4/v7, 내부 PK와 외부 노출 ID 분리, 접두어 ID(`cus_…`) | 12-btree-indexes, security/16-identifiers-and-enumeration, distributed/18-distributed-id-generation | 자연키(이메일·주민번호)를 PK로 써서 값이 바뀌자 FK 연쇄 수정. 순차 PK 노출 → 열거·사업 규모 노출. UUIDv4 PK → 삽입 페이지 분할·버퍼 풀 적중률 하락. 64비트 ID를 JSON 숫자로 → 끝자리 변형 | 비트 필드(시간+랜덤), B+Tree 삽입 지역성 | RFC 9562 · Stripe "Designing APIs for humans: Object IDs" (dev.to, 2022 [?]) | 필수 | 신규 (연결: `api-design/09-schema-and-serialization`) |
-| 44-large-backfill-and-batch-dml | 대량 UPDATE·DELETE·백필: keyset 청크, 스로틀(복제 지연 기준), 재시작 가능성, 전후 행 수 검증 | 34-schema-migration, 29-replication-leader-follower, 23-mvcc | 단일 `UPDATE … WHERE` 1억 행 → 락·undo 폭증·복제 지연 수십 분. `LIMIT` 청크를 offset으로 돌려 **행 누락이나 중복 처리가 에러 없이 끝남**. 중단 후 재실행 시 이미 처리한 행을 다시 변환(비멱등). PG 대량 DELETE → bloat | keyset 범위 스캔, 체크포인트 커서 | Stripe "Online migrations at scale" 2017 https://stripe.com/blog/online-migrations · gh-ost https://github.com/github/gh-ost | 필수 | 신규 (연결: `systems/server-design/08-deployment-ops.md` 마이그레이션 절) |
-| 45-soft-delete-and-data-lifecycle | `deleted_at` 소프트 삭제, 부분 유니크 인덱스, 기본 필터 누락, 아카이브 테이블, 보관 기한과 하드 삭제 | 02-keys-and-constraints, 13-index-design | 삭제한 회원 이메일로 재가입 시 UNIQUE 위반. 쿼리 한 곳에서 `deleted_at IS NULL` 누락 → 삭제된 데이터 노출. FK가 소프트 삭제 행을 가리켜 고아 참조. 삭제 요청 법정 기한을 넘겨도 원본이 남음 | 부분 인덱스(술어 인덱스) | Brandur "Soft deletion probably isn't worth it" 2022 https://brandur.org/soft-deletion · PostgreSQL 문서 "Partial Indexes" | 필수 | 신규 (연결: `security/30-pii-classification-masking-retention`) |
-| 46-transaction-boundaries-in-app-code | 선언적 트랜잭션(프록시·자기 호출), 전파 속성, readOnly, 롤백 규칙, 커밋 후 훅, 트랜잭션 안 외부 호출 금지 | 20-transactions-acid, 32-connection-pooling, distributed/21-outbox-and-dual-write | 같은 클래스 내부 호출이라 `@Transactional`이 **조용히 무시**됨. checked 예외는 기본적으로 롤백되지 않아 반쯤 커밋됨. 트랜잭션 안 HTTP 호출 3초 → 커넥션 풀 고갈 `Connection is not available`. `REQUIRES_NEW` 남용 → 같은 행 자기 교착 | 호출 스택별 트랜잭션 컨텍스트(스레드 로컬 스택) | Spring Framework 문서 "Declarative Transaction Management" · "Transaction Propagation" · DDIA 7장 | 필수 | 신규 (연결: `engineering/data-access`, `software-design/53-aop-and-proxies`) |
-| 47-cache-key-versioning-and-serialization | 캐시 키 설계(네임스페이스·테넌트·버전), 값 직렬화 스키마 호환, null 캐싱, 핫 키, TTL 지터, write-behind 위험 | 38-caching-with-databases, api-design/08-versioning-and-compatibility | 배포 직후 구 버전 객체를 역직렬화하지 못해 `SerializationException`, 캐시 전부 미스 → DB 폭주. 키에 테넌트·로캘 누락 → 다른 사용자 데이터 반환. 같은 TTL 일괄 적재 → 동시 만료 눈사태. write-behind 큐 유실 → 조용한 데이터 손실 | 해시 기반 키, 난수 지터(math/11) | AWS Builders' Library "Caching challenges and strategies" https://aws.amazon.com/builders-library/caching-challenges-and-strategies/ · Nishtala 외 NSDI 2013 | 필수 | 신규 (연결: `reliability/13-cache-stampede`) |
-| 48-bulk-file-import-export | CSV·엑셀 입출력: RFC 4180 인용 규칙, 스트리밍 파싱, 인코딩 감지(UTF-8·BOM·CP949), 행 단위 오류 보고, 부분 적재 정책, CSV 수식 주입 | 44-large-backfill-and-batch-dml, architecture/05-character-encoding-unicode, network/48-chunked-and-streaming-responses | 엑셀에서 연 UTF-8 CSV(BOM 없음)가 한글 깨짐. 한국 사용자가 올린 CP949 파일을 UTF-8로 읽어 `MalformedInputException` 또는 �. 파일 전체를 메모리에 적재 → OOM. 필드 안 줄바꿈·따옴표 → 열 밀림. `=HYPERLINK(…)` 셀 → 다운로드한 관리자 PC에서 수식 실행. 3만 행 중 10행 실패를 알리지 않음 | 상태 기계 파서(인용 상태), 유계 버퍼 스트리밍 | RFC 4180 · OWASP "CSV Injection" https://owasp.org/www-community/attacks/CSV_Injection · WHATWG Encoding Standard | 필수 | 신규 |
-| 53-temporal-and-bitemporal-tables | 유효 시간(현실에서 참이던 기간) vs 기록 시간(시스템이 알던 기간), SQL:2011 application-time·system-versioned 테이블, 기간 겹침 제약, "그때 무엇을 알았나" 질의 | 23, 02 | UPDATE로 덮어쓴다 → "3월 1일 기준으로 시스템이 알던 주소"를 물으면 답할 수 없다. 소급 정정 후 과거 리포트를 재현하지 못한다. 기간 겹침 제약이 없다 → 같은 시점에 유효한 행이 둘 | 구간 트리(`data-structure/30-interval-tree`), 제외 제약(GiST) | SQL:2011 Part 2 (temporal) · Snodgrass 『Developing Time-Oriented Database Applications in SQL』 [?] · Fowler "Bitemporal History" [?] | 권장 | 신규 (연결: `data-engineering/04-slowly-changing-dimensions`, `domain-modeling/25-versioned-rules-and-effective-dating`) |
+| 27-temporal-types-and-session-timezone | `timestamp` vs `timestamptz`·`DATETIME` vs `TIMESTAMP`, 세션 시간대, 드라이버 변환, 시간대 기준 `date_trunc` | 13-transactions-acid, 04-sql-joins-and-aggregation, distributed/04-physical-clocks-and-ntp | JVM·DB·세션 시간대가 서로 달라 저장값이 9시간 밀림(KST↔UTC). 일별 집계를 UTC 자정으로 잘라 한국 기준 매출이 전날로 넘어감. MySQL `TIMESTAMP` 2038-01-19 상한 | epoch 정수 표현, 구간 경계 계산 | PostgreSQL 문서 "Date/Time Types" 8.5 · MySQL 문서 "The DATE, DATETIME, and TIMESTAMP Types" · RFC 3339 | 필수 | 신규 (연결: `data-analysis/18-data-cleaning-and-quality`, `domain-modeling/13-instant-vs-local-time-and-tz-rules`) |
+| 10-collation-and-text-comparison | collation(대소문자·악센트 무시), 정렬 순서, 유니크 제약과 비교 규칙, ICU vs libc | 09-index-design, architecture/04-character-encoding-unicode | `_ci` collation에서 `a@x.com`과 `A@x.com`이 UNIQUE 위반, 또는 반대로 중복 허용. 앱 정렬과 DB `ORDER BY`가 달라 커서 페이지네이션에서 누락·중복 발생. **glibc 2.28 collation 변경 후 PG 인덱스 조용한 손상**(복제본·업그레이드) | 정렬 키 생성(UCA 다단계 가중치), B+Tree 비교 함수 | Unicode UTS #10 (UCA) https://www.unicode.org/reports/tr10/ · PostgreSQL wiki "Locale data changes" https://wiki.postgresql.org/wiki/Locale_data_changes · MySQL 문서 "Character Sets and Collations" | 필수 | 신규 (연결: `api-design/06-pagination`) |
+| 28-key-strategy-surrogate-natural-public-id | 대리키 vs 자연키, bigint vs UUIDv4/v7, 내부 PK와 외부 노출 ID 분리, 접두어 ID(`cus_…`) | 08-btree-indexes, security/16-identifiers-and-enumeration, distributed/13-distributed-id-generation | 자연키(이메일·주민번호)를 PK로 써서 값이 바뀌자 FK 연쇄 수정. 순차 PK 노출 → 열거·사업 규모 노출. UUIDv4 PK → 삽입 페이지 분할·버퍼 풀 적중률 하락. 64비트 ID를 JSON 숫자로 → 끝자리 변형 | 비트 필드(시간+랜덤), B+Tree 삽입 지역성 | RFC 9562 · Stripe "Designing APIs for humans: Object IDs" (dev.to, 2022 [?]) | 필수 | 신규 (연결: `api-design/08-schema-and-serialization`) |
+| 34-large-backfill-and-batch-dml | 대량 UPDATE·DELETE·백필: keyset 청크, 스로틀(복제 지연 기준), 재시작 가능성, 전후 행 수 검증 | 26-schema-migration, 32-replication-leader-follower, 16-mvcc | 단일 `UPDATE … WHERE` 1억 행 → 락·undo 폭증·복제 지연 수십 분. `LIMIT` 청크를 offset으로 돌려 **행 누락이나 중복 처리가 에러 없이 끝남**. 중단 후 재실행 시 이미 처리한 행을 다시 변환(비멱등). PG 대량 DELETE → bloat | keyset 범위 스캔, 체크포인트 커서 | Stripe "Online migrations at scale" 2017 https://stripe.com/blog/online-migrations · gh-ost https://github.com/github/gh-ost | 필수 | 신규 (연결: `systems/server-design/08-deployment-ops.md` 마이그레이션 절) |
+| 29-soft-delete-and-data-lifecycle | `deleted_at` 소프트 삭제, 부분 유니크 인덱스, 기본 필터 누락, 아카이브 테이블, 보관 기한과 하드 삭제 | 02-keys-and-constraints, 09-index-design | 삭제한 회원 이메일로 재가입 시 UNIQUE 위반. 쿼리 한 곳에서 `deleted_at IS NULL` 누락 → 삭제된 데이터 노출. FK가 소프트 삭제 행을 가리켜 고아 참조. 삭제 요청 법정 기한을 넘겨도 원본이 남음 | 부분 인덱스(술어 인덱스) | Brandur "Soft deletion probably isn't worth it" 2022 https://brandur.org/soft-deletion · PostgreSQL 문서 "Partial Indexes" | 필수 | 신규 (연결: `security/27-pii-classification-masking-retention`) |
+| 24-transaction-boundaries-in-app-code | 선언적 트랜잭션(프록시·자기 호출), 전파 속성, readOnly, 롤백 규칙, 커밋 후 훅, 트랜잭션 안 외부 호출 금지 | 13-transactions-acid, 21-connection-pooling, distributed/16-outbox-and-dual-write | 같은 클래스 내부 호출이라 `@Transactional`이 **조용히 무시**됨. checked 예외는 기본적으로 롤백되지 않아 반쯤 커밋됨. 트랜잭션 안 HTTP 호출 3초 → 커넥션 풀 고갈 `Connection is not available`. `REQUIRES_NEW` 남용 → 같은 행 자기 교착 | 호출 스택별 트랜잭션 컨텍스트(스레드 로컬 스택) | Spring Framework 문서 "Declarative Transaction Management" · "Transaction Propagation" · DDIA 7장 | 필수 | 신규 (연결: `engineering/data-access`, `software-design/33-aop-and-proxies`) |
+| 31-cache-key-versioning-and-serialization | 캐시 키 설계(네임스페이스·테넌트·버전), 값 직렬화 스키마 호환, null 캐싱, 핫 키, TTL 지터, write-behind 위험 | 30-caching-with-databases, api-design/07-versioning-and-compatibility | 배포 직후 구 버전 객체를 역직렬화하지 못해 `SerializationException`, 캐시 전부 미스 → DB 폭주. 키에 테넌트·로캘 누락 → 다른 사용자 데이터 반환. 같은 TTL 일괄 적재 → 동시 만료 눈사태. write-behind 큐 유실 → 조용한 데이터 손실 | 해시 기반 키, 난수 지터(math/12) | AWS Builders' Library "Caching challenges and strategies" https://aws.amazon.com/builders-library/caching-challenges-and-strategies/ · Nishtala 외 NSDI 2013 | 필수 | 신규 (연결: `reliability/29-cache-stampede`) |
+| 35-bulk-file-import-export | CSV·엑셀 입출력: RFC 4180 인용 규칙, 스트리밍 파싱, 인코딩 감지(UTF-8·BOM·CP949), 행 단위 오류 보고, 부분 적재 정책, CSV 수식 주입 | 34-large-backfill-and-batch-dml, architecture/04-character-encoding-unicode, network/40-chunked-and-streaming-responses | 엑셀에서 연 UTF-8 CSV(BOM 없음)가 한글 깨짐. 한국 사용자가 올린 CP949 파일을 UTF-8로 읽어 `MalformedInputException` 또는 �. 파일 전체를 메모리에 적재 → OOM. 필드 안 줄바꿈·따옴표 → 열 밀림. `=HYPERLINK(…)` 셀 → 다운로드한 관리자 PC에서 수식 실행. 3만 행 중 10행 실패를 알리지 않음 | 상태 기계 파서(인용 상태), 유계 버퍼 스트리밍 | RFC 4180 · OWASP "CSV Injection" https://owasp.org/www-community/attacks/CSV_Injection · WHATWG Encoding Standard | 필수 | 신규 |
+| 50-temporal-and-bitemporal-tables | 유효 시간(현실에서 참이던 기간) vs 기록 시간(시스템이 알던 기간), SQL:2011 application-time·system-versioned 테이블, 기간 겹침 제약, "그때 무엇을 알았나" 질의 | 16, 02 | UPDATE로 덮어쓴다 → "3월 1일 기준으로 시스템이 알던 주소"를 물으면 답할 수 없다. 소급 정정 후 과거 리포트를 재현하지 못한다. 기간 겹침 제약이 없다 → 같은 시점에 유효한 행이 둘 | 구간 트리(`data-structure/42-interval-tree`), 제외 제약(GiST) | SQL:2011 Part 2 (temporal) · Snodgrass 『Developing Time-Oriented Database Applications in SQL』 [?] · Fowler "Bitemporal History" [?] | 권장 | 신규 (연결: `data-engineering/04-slowly-changing-dimensions`, `domain-modeling/23-versioned-rules-and-effective-dating`) |
 
 ### 9.8c 검색 (2026-09-28 추가)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 49-full-text-search-and-analyzers | 분석기(토크나이저·필터), 한국어 형태소(nori) vs n-gram, BM25 관련도, 동의어 | 14-filters-and-specialized-indexes, data-structure/32-inverted-index | "삼성전자"로 "삼성" 검색 누락, 또는 n-gram 과다 매칭으로 무관한 결과. 색인 분석기와 검색 분석기 불일치 → 0건. 사전 갱신 후 재색인 누락. `LIKE '%…%'` 풀스캔 | 역색인, BM25 점수, 형태소 분석(격자 위 최단 경로·비터비) | Manning 외 『Introduction to Information Retrieval』 2·6장 · Robertson–Zaragoza 2009 "The Probabilistic Relevance Framework: BM25 and Beyond" · Elasticsearch 문서 "Korean (nori) analysis plugin" | 권장 | 신규 |
-| 50-autocomplete-and-typeahead | 접두사 완성, edge n-gram, 인기도 순위, 한글 자모·초성 분해, 디바운스·캐시 | 49, data-structure/09-trie | "ㅅㅁ"(초성)이나 조합 중인 "삼ㅅ" 입력에 결과 없음(자모 미분해). 키 입력마다 요청 → 검색 클러스터 QPS 폭증. 늦게 온 이전 응답이 최신 결과를 덮어씀(요청 순서 역전) | 트라이·FST, top-k 힙, 한글 음절 = 초·중·종성 산술 조합 | Unicode Standard 3.12 "Conjoining Jamo Behavior" [?] · Elasticsearch 문서 "search_as_you_type" · Lucene FST [?] | 권장 | 신규 (연결: `web-platform/05-fetch-from-browser` 중단) |
-| 51-search-index-sync-and-reindexing | DB→검색 인덱스 동기화(이중 쓰기 vs CDC), 지연·불일치 감지, 별칭 교체로 무중단 재색인 | 49, distributed/21-outbox-and-dual-write | 이중 쓰기 중 검색 쪽 실패 → 삭제된 상품이 검색에 계속 노출. 매핑 변경을 제자리 재색인 → 검색 공백. 재색인 중 들어온 변경 유실 | CDC 로그 재생, 별칭(포인터 원자 교체) | Elasticsearch 문서 "Aliases" · "Reindex API" · Kleppmann DDIA 11장 (파생 데이터) | 권장 | 신규 (연결: `data-engineering/06-change-data-capture`) |
+| 46-full-text-search-and-analyzers | 분석기(토크나이저·필터), 한국어 형태소(nori) vs n-gram, BM25 관련도, 동의어 | 40-filters-and-specialized-indexes, data-structure/24-inverted-index | "삼성전자"로 "삼성" 검색 누락, 또는 n-gram 과다 매칭으로 무관한 결과. 색인 분석기와 검색 분석기 불일치 → 0건. 사전 갱신 후 재색인 누락. `LIKE '%…%'` 풀스캔 | 역색인, BM25 점수, 형태소 분석(격자 위 최단 경로·비터비) | Manning 외 『Introduction to Information Retrieval』 2·6장 · Robertson–Zaragoza 2009 "The Probabilistic Relevance Framework: BM25 and Beyond" · Elasticsearch 문서 "Korean (nori) analysis plugin" | 권장 | 신규 |
+| 47-autocomplete-and-typeahead | 접두사 완성, edge n-gram, 인기도 순위, 한글 자모·초성 분해, 디바운스·캐시 | 46, data-structure/12-trie | "ㅅㅁ"(초성)이나 조합 중인 "삼ㅅ" 입력에 결과 없음(자모 미분해). 키 입력마다 요청 → 검색 클러스터 QPS 폭증. 늦게 온 이전 응답이 최신 결과를 덮어씀(요청 순서 역전) | 트라이·FST, top-k 힙, 한글 음절 = 초·중·종성 산술 조합 | Unicode Standard 3.12 "Conjoining Jamo Behavior" [?] · Elasticsearch 문서 "search_as_you_type" · Lucene FST [?] | 권장 | 신규 (연결: `web-platform/05-fetch-from-browser` 중단) |
+| 48-search-index-sync-and-reindexing | DB→검색 인덱스 동기화(이중 쓰기 vs CDC), 지연·불일치 감지, 별칭 교체로 무중단 재색인 | 46, distributed/16-outbox-and-dual-write | 이중 쓰기 중 검색 쪽 실패 → 삭제된 상품이 검색에 계속 노출. 매핑 변경을 제자리 재색인 → 검색 공백. 재색인 중 들어온 변경 유실 | CDC 로그 재생, 별칭(포인터 원자 교체) | Elasticsearch 문서 "Aliases" · "Reindex API" · Kleppmann DDIA 11장 (파생 데이터) | 권장 | 신규 (연결: `data-engineering/05-change-data-capture`) |
 
 ### 9.9 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 39-db-symptom-index | 역색인: 1205/1213/40P01/40001, 풀 고갈 메시지, `too many clients`, bloat, 복제 지연, `Too many parts`, 플랜 급변, 스필, 저장값 9시간 밀림·일별 매출이 전날로, collation UNIQUE 위반, 백필 후 행 누락, `@Transactional` 무시, 배포 직후 캐시 역직렬화 실패, 57014 statement timeout, 앱은 끊었는데 DB 쿼리는 계속 돔 | 전체 | — | — | 이 영역 leaf · PostgreSQL 부록 A(SQLSTATE) | 필수 | 신규 |
-| 40-db-incidents | 실사건: GitLab DB 삭제 + 백업 5종 실패(2017-01-31) · Sentry PostgreSQL XID wraparound(2015) · GitHub MySQL 페일오버 불일치(2018-10-21 — 분산 관점은 distributed/32) | 39 | — | — | GitLab 포스트모템 2017-02-10 · Sentry 블로그 2015-07 · GitHub 블로그 2018-10-30 | 권장 | 신규 |
+| 56-db-symptom-index | 역색인: 1205/1213/40P01/40001, 풀 고갈 메시지, `too many clients`, bloat, 복제 지연, `Too many parts`, 플랜 급변, 스필, 저장값 9시간 밀림·일별 매출이 전날로, collation UNIQUE 위반, 백필 후 행 누락, `@Transactional` 무시, 배포 직후 캐시 역직렬화 실패, 57014 statement timeout, 앱은 끊었는데 DB 쿼리는 계속 돔 | 전체 | — | — | 이 영역 leaf · PostgreSQL 부록 A(SQLSTATE) | 필수 | 신규 |
+| 57-db-incidents | 실사건: GitLab DB 삭제 + 백업 5종 실패(2017-01-31) · Sentry PostgreSQL XID wraparound(2015) · GitHub MySQL 페일오버 불일치(2018-10-21 — 분산 관점은 distributed/36) | 56 | — | — | GitLab 포스트모템 2017-02-10 · Sentry 블로그 2015-07 · GitHub 블로그 2018-10-30 | 권장 | 신규 |
 
 ---
 
@@ -878,78 +890,78 @@ Part 6  판단하는 법             data-engineering → data-analysis
 > 모델(무엇이 실패하나) → 시간 → 복제·일관성 → 합의·조정 → 분산 트랜잭션·데이터 흐름. 기존 ops-patterns의 분산 패턴(논리 시계·CRDT·리더 선출·분산 락·Snowflake·outbox·saga·event sourcing)이 **이론 단원 안으로** 들어온다.
 > 뼈대: DDIA 1판 5·8·9·10·11장(확인), MIT 6.5840 Spring 2026 강의(이하 6.5840 L#, 확인), 원논문.
 
-**권장 학습 순서**: 01 → 02 → 03 → 05 → 06 → 08 → 10 → 11 → 09 → 14 → 16 → 17 → 18 → 19 → 20 → 21 → 24 → 26 → 34 → 36 → 25 → 27 → 23 → 12 → (04 · 07 · 13 · 15 · 22 · 28 · 29 · 30 · 33 · 35 권장·심화) → 31 → 32
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → (25 · 26 · 27 · 28 · 29 · 30 · 31 · 32 · 33 · 34 권장·심화) → 35 → 36
 
 ### 10.1 모델
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 01-why-distributed-and-fallacies | 분산의 이유와 8가지 오류(네트워크는 믿을 만하다 등) | network/42-what-happens-when-url | 네트워크 무결 가정 코드 → 부분 실패 시 무한 대기·데이터 불일치 | — | Deutsch "Fallacies of Distributed Computing" · 6.5840 L1 | 필수 | 신규 |
+| 01-why-distributed-and-fallacies | 분산의 이유와 8가지 오류(네트워크는 믿을 만하다 등) | network/49-what-happens-when-url | 네트워크 무결 가정 코드 → 부분 실패 시 무한 대기·데이터 불일치 | — | Deutsch "Fallacies of Distributed Computing" · 6.5840 L1 | 필수 | 신규 |
 | 02-system-and-failure-models | 동기/부분동기/비동기, crash-stop·crash-recovery·비잔틴 | 01 | **느림과 죽음을 구분 못 함** → 살아 있는 노드를 죽었다고 판단해 이중 처리 | 장애 탐지기(φ accrual) | DDIA 8장 | 필수 | 신규 |
 | 03-partial-failure-and-timeouts | 부분 실패·모호한 결과·타임아웃 선택 | 02 | 타임아웃 났는데 실제론 성공 → 재시도로 **중복 결제**; 너무 짧은 타임아웃 → 오탐 페일오버 | — | DDIA 8장 | 필수 | `ops-patterns/failure-at-scale` (분할 — 양상 1 부분 실패 절) |
-| 04-impossibility-results | 두 장군 문제·FLP 불가능성 | 02 | "정확히 한 번 전달" 보장 주장의 허구 → 설계 오해 | — | Fischer–Lynch–Paterson 1985 · Gray 1978 [?] | 권장 | 신규 |
+| 25-impossibility-results | 두 장군 문제·FLP 불가능성 | 02 | "정확히 한 번 전달" 보장 주장의 허구 → 설계 오해 | — | Fischer–Lynch–Paterson 1985 · Gray 1978 [?] | 권장 | 신규 |
 
 ### 10.2 시간
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 05-physical-clocks-and-ntp | 벽시계·단조 시계·NTP·clock skew·윤초 | 02 | 벽시계로 경과 시간 계산 → **음수 duration** panic(Cloudflare 2017 윤초); 시계 어긋남 → JWT `nbf`/인증서 거절, LWW 역전 | NTP 필터 알고리즘 | RFC 5905 · DDIA 8장 | 필수 | 신규 |
-| 06-logical-clocks | 램포트 시계·벡터 시계·happens-before | 05 | 벽시계 타임스탬프로 이벤트 순서 결정 → 인과 역전 | 램포트 카운터, 벡터 | Lamport 1978 | 필수 | `ops-patterns/14-logical-clock` |
-| 07-hybrid-clocks-and-truetime | HLC·TrueTime·commit wait | 06 | 시계 불확실성 상한 초과 → 외부 일관성 위반 | 구간 시간 | Corbett 외 OSDI 2012 · 6.5840 L12 · Kulkarni 외 2014 | 심화 | 신규 |
+| 04-physical-clocks-and-ntp | 벽시계·단조 시계·NTP·clock skew·윤초 | 02 | 벽시계로 경과 시간 계산 → **음수 duration** panic(Cloudflare 2017 윤초); 시계 어긋남 → JWT `nbf`/인증서 거절, LWW 역전 | NTP 필터 알고리즘 | RFC 5905 · DDIA 8장 | 필수 | 신규 |
+| 05-logical-clocks | 램포트 시계·벡터 시계·happens-before | 04 | 벽시계 타임스탬프로 이벤트 순서 결정 → 인과 역전 | 램포트 카운터, 벡터 | Lamport 1978 | 필수 | `ops-patterns/14-logical-clock` |
+| 26-hybrid-clocks-and-truetime | HLC·TrueTime·commit wait | 05 | 시계 불확실성 상한 초과 → 외부 일관성 위반 | 구간 시간 | Corbett 외 OSDI 2012 · 6.5840 L12 · Kulkarni 외 2014 | 심화 | 신규 |
 
 ### 10.3 복제·일관성
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 08-replication-strategies | 단일 리더·다중 리더·리더리스 | database/29-replication-leader-follower | 다중 리더 쓰기 충돌 → 조용한 덮어쓰기; 리더리스 읽기 복구 누락 → 오래된 값 | 복제 로그 | DDIA 5장 | 필수 | 신규 |
-| 09-quorums | R+W>N·sloppy quorum·hinted handoff·anti-entropy | 08 | sloppy quorum에서 R+W>N이어도 오래된 읽기; 정족수 미달 → 쓰기 거부 | **Merkle 트리 anti-entropy**, 일관 해싱 | DeCandia 외 SOSP 2007 · DDIA 5장 | 권장 | 신규 |
-| 10-consistency-models | 선형화·순차·인과·최종 일관성, 세션 보장 | 08 | 최종 일관성 저장소에서 "쓰고 바로 읽기" → 옛 값; 선형화 가정한 분산 카운터 → 과발급 | — | Herlihy–Wing 1990 · 6.5840 L8 · DDIA 9장 | 필수 | 신규 |
-| 11-cap-and-pacelc | 분할 시 C vs A, 평시 L vs C | 10 | "CA 시스템" 주장 → 분할 시 동작 미정의 | — | Gilbert–Lynch 2002 · Abadi 2012 | 필수 | 신규 |
-| 12-conflict-resolution-and-crdt | LWW·버전 벡터·CRDT | 06, 08 | LWW → 동시 쓰기 조용한 유실; 시계 어긋남 → 최신 쓰기가 짐 | G-Counter·OR-Set(반격자) | Shapiro 외 2011 | 권장 | `ops-patterns/15-crdt` |
-| 33-collaborative-editing-ot-and-sequence-crdt | 실시간 공동 편집: OT(변환 함수·중앙 서버) vs 시퀀스 CRDT(RGA·Yjs), 오프라인 병합, 프레즌스·커서 | 12-conflict-resolution-and-crdt, data-structure/28-rope | 두 사용자 동시 입력 후 문서가 사용자마다 다르게 수렴(변환 함수 버그). 오프라인 병합 시 문단이 섞여 끼워짐(interleaving). tombstone 누적 → 문서 크기·메모리 증가 | 변환 함수, 위치 식별자 트리, 벡터 시계 | Ellis–Gibbs SIGMOD 1989 · Figma "How Figma's multiplayer technology works" 2019 · Kleppmann 외 "Local-first software" Onward! 2019 | 심화 | 신규 |
-| 13-chain-replication-and-striping | 체인 복제·앙상블/쓰기 정족수·스트라이핑 | 09 | 체인 중간 노드 느림 → 전체 쓰기 지연; 스트라이프 배치 편중 | 체인, 라운드로빈 배치 | van Renesse–Schneider OSDI 2004 · 6.5840 L13 · BookKeeper 문서 | 심화 | `systems/striping` |
+| 06-replication-strategies | 단일 리더·다중 리더·리더리스 | database/32-replication-leader-follower | 다중 리더 쓰기 충돌 → 조용한 덮어쓰기; 리더리스 읽기 복구 누락 → 오래된 값 | 복제 로그 | DDIA 5장 | 필수 | 신규 |
+| 09-quorums | R+W>N·sloppy quorum·hinted handoff·anti-entropy | 06 | sloppy quorum에서 R+W>N이어도 오래된 읽기; 정족수 미달 → 쓰기 거부 | **Merkle 트리 anti-entropy**, 일관 해싱 | DeCandia 외 SOSP 2007 · DDIA 5장 | 권장 | 신규 |
+| 07-consistency-models | 선형화·순차·인과·최종 일관성, 세션 보장 | 06 | 최종 일관성 저장소에서 "쓰고 바로 읽기" → 옛 값; 선형화 가정한 분산 카운터 → 과발급 | — | Herlihy–Wing 1990 · 6.5840 L8 · DDIA 9장 | 필수 | 신규 |
+| 08-cap-and-pacelc | 분할 시 C vs A, 평시 L vs C | 07 | "CA 시스템" 주장 → 분할 시 동작 미정의 | — | Gilbert–Lynch 2002 · Abadi 2012 | 필수 | 신규 |
+| 24-conflict-resolution-and-crdt | LWW·버전 벡터·CRDT | 05, 06 | LWW → 동시 쓰기 조용한 유실; 시계 어긋남 → 최신 쓰기가 짐 | G-Counter·OR-Set(반격자) | Shapiro 외 2011 | 권장 | `ops-patterns/15-crdt` |
+| 33-collaborative-editing-ot-and-sequence-crdt | 실시간 공동 편집: OT(변환 함수·중앙 서버) vs 시퀀스 CRDT(RGA·Yjs), 오프라인 병합, 프레즌스·커서 | 24-conflict-resolution-and-crdt, data-structure/41-rope | 두 사용자 동시 입력 후 문서가 사용자마다 다르게 수렴(변환 함수 버그). 오프라인 병합 시 문단이 섞여 끼워짐(interleaving). tombstone 누적 → 문서 크기·메모리 증가 | 변환 함수, 위치 식별자 트리, 벡터 시계 | Ellis–Gibbs SIGMOD 1989 · Figma "How Figma's multiplayer technology works" 2019 · Kleppmann 외 "Local-first software" Onward! 2019 | 심화 | 신규 |
+| 27-chain-replication-and-striping | 체인 복제·앙상블/쓰기 정족수·스트라이핑 | 09 | 체인 중간 노드 느림 → 전체 쓰기 지연; 스트라이프 배치 편중 | 체인, 라운드로빈 배치 | van Renesse–Schneider OSDI 2004 · 6.5840 L13 · BookKeeper 문서 | 심화 | `systems/striping` |
 
 ### 10.4 합의·조정
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 14-leader-election | 리더 선출·리스·임기 | 02, 05 | 네트워크 분할 → **리더 둘**(split-brain); 리스 시계 의존 | 임기 번호(에포크) | DDIA 9장 | 필수 | `ops-patterns/12-leader-election` |
-| 15-consensus-paxos | Paxos 기본형 | 14 | — (이해 난도 — Raft로 대체 학습) | 제안 번호·정족수 교집합 | Lamport 2001 "Paxos Made Simple" · 6.5840 L4 | 권장 | 신규 |
-| 16-consensus-raft | 리더 선출·로그 복제·안전성·멤버십 변경 | 14 | 과반 없는 쪽 쓰기 거부(가용성 저하); 선거 타임아웃 튜닝 실패 → 선거 폭풍 | **복제 로그**, 무작위 타임아웃 | Ongaro–Ousterhout 2014 · 6.5840 L6–L7 | 필수 | 신규 |
-| 17-coordination-and-fencing | ZooKeeper·etcd·분산 락·**fencing token** | 16 | GC 멈춤 중 락 만료 → **두 소유자 동시 쓰기**; Redlock 시계 가정 | 단조 증가 토큰 | Hunt 외 USENIX ATC 2010 · 6.5840 L9 · Kleppmann 2016 "How to do distributed locking" | 필수 | `ops-patterns/11-distributed-lock` |
-| 18-distributed-id-generation | Snowflake·UUIDv7·시퀀스 블록 | 05 | 시계 역행 → ID 중복·역순; worker ID 중복 할당 | 비트 필드 조합 | Twitter Snowflake(2010) · RFC 9562 | 권장 | `ops-patterns/13-snowflake` |
+| 10-leader-election | 리더 선출·리스·임기 | 02, 04 | 네트워크 분할 → **리더 둘**(split-brain); 리스 시계 의존 | 임기 번호(에포크) | DDIA 9장 | 필수 | `ops-patterns/12-leader-election` |
+| 28-consensus-paxos | Paxos 기본형 | 10 | — (이해 난도 — Raft로 대체 학습) | 제안 번호·정족수 교집합 | Lamport 2001 "Paxos Made Simple" · 6.5840 L4 | 권장 | 신규 |
+| 11-consensus-raft | 리더 선출·로그 복제·안전성·멤버십 변경 | 10 | 과반 없는 쪽 쓰기 거부(가용성 저하); 선거 타임아웃 튜닝 실패 → 선거 폭풍 | **복제 로그**, 무작위 타임아웃 | Ongaro–Ousterhout 2014 · 6.5840 L6–L7 | 필수 | 신규 |
+| 12-coordination-and-fencing | ZooKeeper·etcd·분산 락·**fencing token** | 11 | GC 멈춤 중 락 만료 → **두 소유자 동시 쓰기**; Redlock 시계 가정 | 단조 증가 토큰 | Hunt 외 USENIX ATC 2010 · 6.5840 L9 · Kleppmann 2016 "How to do distributed locking" | 필수 | `ops-patterns/11-distributed-lock` |
+| 13-distributed-id-generation | Snowflake·UUIDv7·시퀀스 블록 | 04 | 시계 역행 → ID 중복·역순; worker ID 중복 할당 | 비트 필드 조합 | Twitter Snowflake(2010) · RFC 9562 | 권장 | `ops-patterns/13-snowflake` |
 
 ### 10.5 분산 트랜잭션·데이터 흐름
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 19-two-phase-commit | 2PC·코디네이터·in-doubt | database/20-transactions-acid, 03 | 코디네이터 장애 → 참가자 **블로킹**(락 보유 채 대기); XA 트랜잭션 방치 | 상태 기계 | 6.5840 L11 · DDIA 9장 | 필수 | 신규 |
-| 20-saga | 보상 트랜잭션·순방향/역방향 복구 | 19 | 보상 실패 → 반쯤 된 주문; 보상 불가 작업(메일 발송) 설계 누락 | 상태 기계 | Garcia-Molina–Salem 1987 | 필수 | `ops-patterns/08-saga` |
-| 21-outbox-and-dual-write | 이중 쓰기 문제·transactional outbox·CDC(상세 — 스냅샷·복제 슬롯·DDL — 는 `data-engineering/06`) | 20 | DB 커밋 후 메시지 발행 전 크래시 → 이벤트 유실; 순서 역전 | 로그 테이블 폴링·CDC | Richardson microservices.io "Transactional outbox" | 필수 | `ops-patterns/07-outbox` |
-| 22-outbox-vs-dispatch-log | outbox와 dispatch log의 경계 | 21 | 역할 혼동 → 재발행 폭주 또는 누락 | — | 기존 노트 원고 | 심화 | `systems/outbox-vs-dispatch-log` |
-| 23-orchestration-vs-choreography | 중앙 조정 vs 이벤트 연쇄 | 20 | 코레오그래피 흐름 추적 불가 → 멈춘 사가 방치; 오케스트레이터 단일 장애점 | 워크플로 상태 기계 | 기존 노트 원고 | 권장 | `systems/orchestration-choreography` |
-| 24-queues-logs-and-delivery-semantics | 큐 vs 로그, at-most/at-least/effectively-once, 순서 | 21 | at-least-once → **중복 소비**(멱등성 필요); 파티션 간 순서 역전 | append-only 로그, 오프셋 | DDIA 11장 · `systems/server-design` 07 | 필수 | `systems/server-design/07-async-messaging.md` |
-| 25-kafka-internals | 파티션·세그먼트·페이지 캐시·zero-copy·ISR | 24, os/30-zero-copy-and-io-uring | ISR 축소 + `acks=1` → 확인된 메시지 유실; 세그먼트 보존 설정 실수 | 세그먼트 로그 + 오프셋 인덱스(희소 인덱스·이진 탐색) | Kreps 외 NetDB 2011 · Kafka 문서 | 권장 | `systems/kafka-why-fast` |
-| 26-consumer-failure-handling | 오프셋 커밋 순서·재시도·DLQ·poison pill·리밸런스 | 24 | 처리 전 커밋 → 유실 / 처리 후 커밋 실패 → 중복; poison 메시지로 파티션 정지; 리밸런스 폭풍 | 재시도 큐 | Kafka 문서 Consumer | 필수 | `systems/kafka-consumer-failure` |
-| 27-event-sourcing | 이벤트를 원천으로, 스냅샷·재생·버전 | 24 | 이벤트 스키마 변경 → 재생 실패; 스냅샷 없음 → 재생 시간 폭증 | append-only 로그, 폴드 | Fowler "Event Sourcing" · DDIA 11장 | 권장 | `systems/event-sourcing` · `ops-patterns/16-event-sourcing` (병합 검토) |
-| 28-batch-and-stream-processing | MapReduce·스트림·윈도·워터마크 | 24 | 늦게 온 이벤트 → 윈도 집계 누락; 스큐된 키 → 한 태스크만 느림 | 셔플 = 해시 분할 + 외부 정렬 | DDIA 10·11장 · Dean–Ghemawat 2004 · 6.5840 L1 | 권장 | 신규 |
-| 29-byzantine-and-blockchain | 비잔틴 장애·PBFT·블록체인 | 16 | — (신뢰 모델 오판) | 해시 체인, Merkle 트리 | Castro–Liskov OSDI 1999 · Nakamoto 2008 · 6.5840 L20–L21 | 심화 | `ops-patterns/18-blockchain` |
-| 30-distributed-cache-consistency | 대규모 캐시 일관성·lease·무효화 | database/38-caching-with-databases | 늦은 set이 삭제를 덮어써 **오래된 값 고착**; 무효화 폭풍 | lease 토큰 | Nishtala 외 NSDI 2013 · 6.5840 L16 | 심화 | 신규 |
+| 14-two-phase-commit | 2PC·코디네이터·in-doubt | database/13-transactions-acid, 03 | 코디네이터 장애 → 참가자 **블로킹**(락 보유 채 대기); XA 트랜잭션 방치 | 상태 기계 | 6.5840 L11 · DDIA 9장 | 필수 | 신규 |
+| 15-saga | 보상 트랜잭션·순방향/역방향 복구 | 14 | 보상 실패 → 반쯤 된 주문; 보상 불가 작업(메일 발송) 설계 누락 | 상태 기계 | Garcia-Molina–Salem 1987 | 필수 | `ops-patterns/08-saga` |
+| 16-outbox-and-dual-write | 이중 쓰기 문제·transactional outbox·CDC(상세 — 스냅샷·복제 슬롯·DDL — 는 `data-engineering/05`) | 15 | DB 커밋 후 메시지 발행 전 크래시 → 이벤트 유실; 순서 역전 | 로그 테이블 폴링·CDC | Richardson microservices.io "Transactional outbox" | 필수 | `ops-patterns/07-outbox` |
+| 29-outbox-vs-dispatch-log | outbox와 dispatch log의 경계 | 16 | 역할 혼동 → 재발행 폭주 또는 누락 | — | 기존 노트 원고 | 심화 | `systems/outbox-vs-dispatch-log` |
+| 23-orchestration-vs-choreography | 중앙 조정 vs 이벤트 연쇄 | 15 | 코레오그래피 흐름 추적 불가 → 멈춘 사가 방치; 오케스트레이터 단일 장애점 | 워크플로 상태 기계 | 기존 노트 원고 | 권장 | `systems/orchestration-choreography` |
+| 17-queues-logs-and-delivery-semantics | 큐 vs 로그, at-most/at-least/effectively-once, 순서 | 16 | at-least-once → **중복 소비**(멱등성 필요); 파티션 간 순서 역전 | append-only 로그, 오프셋 | DDIA 11장 · `systems/server-design` 07 | 필수 | `systems/server-design/07-async-messaging.md` |
+| 21-kafka-internals | 파티션·세그먼트·페이지 캐시·zero-copy·ISR | 17, os/34-zero-copy-and-io-uring | ISR 축소 + `acks=1` → 확인된 메시지 유실; 세그먼트 보존 설정 실수 | 세그먼트 로그 + 오프셋 인덱스(희소 인덱스·이진 탐색) | Kreps 외 NetDB 2011 · Kafka 문서 | 권장 | `systems/kafka-why-fast` |
+| 18-consumer-failure-handling | 오프셋 커밋 순서·재시도·DLQ·poison pill·리밸런스 | 17 | 처리 전 커밋 → 유실 / 처리 후 커밋 실패 → 중복; poison 메시지로 파티션 정지; 리밸런스 폭풍 | 재시도 큐 | Kafka 문서 Consumer | 필수 | `systems/kafka-consumer-failure` |
+| 22-event-sourcing | 이벤트를 원천으로, 스냅샷·재생·버전 | 17 | 이벤트 스키마 변경 → 재생 실패; 스냅샷 없음 → 재생 시간 폭증 | append-only 로그, 폴드 | Fowler "Event Sourcing" · DDIA 11장 | 권장 | `systems/event-sourcing` · `ops-patterns/16-event-sourcing` (병합 검토) |
+| 30-batch-and-stream-processing | MapReduce·스트림·윈도·워터마크 | 17 | 늦게 온 이벤트 → 윈도 집계 누락; 스큐된 키 → 한 태스크만 느림 | 셔플 = 해시 분할 + 외부 정렬 | DDIA 10·11장 · Dean–Ghemawat 2004 · 6.5840 L1 | 권장 | 신규 |
+| 31-byzantine-and-blockchain | 비잔틴 장애·PBFT·블록체인 | 11 | — (신뢰 모델 오판) | 해시 체인, Merkle 트리 | Castro–Liskov OSDI 1999 · Nakamoto 2008 · 6.5840 L20–L21 | 심화 | `ops-patterns/18-blockchain` |
+| 32-distributed-cache-consistency | 대규모 캐시 일관성·lease·무효화 | database/30-caching-with-databases | 늦은 set이 삭제를 덮어써 **오래된 값 고착**; 무효화 폭풍 | lease 토큰 | Nishtala 외 NSDI 2013 · 6.5840 L16 | 심화 | 신규 |
 
 ### 10.5b 통합·메시징 패턴 (2026-09-28 추가)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 34-message-types-channels-and-endpoints | 메시지 종류(Command·Event·Document), Correlation ID·Return Address·Expiration, 채널(P2P·Pub-Sub·Datatype·Dead Letter·Invalid Message), 소비 쪽 확장(Competing Consumers·Queue-Based Load Leveling·Priority Queue·Sequential Convoy·Selective Consumer) | 24-queues-logs-and-delivery-semantics, 26-consumer-failure-handling | 이벤트("주문됨")와 명령("결제하라")을 혼동 → 구독자가 늘 때마다 발행자 수정(결합 역전); Correlation ID 없는 요청-응답 → 응답을 엉뚱한 요청에 매칭; 경쟁 소비자로 순서 필요한 메시지 병렬 처리 → 상태 역행; 만료 없는 메시지 → 장애 복구 후 낡은 명령 일괄 실행 | 큐, **우선순위 큐(data-structure/07-heap)**, 키 해시 → 파티션(세션·순서 보장) | Hohpe–Woolf 『Enterprise Integration Patterns』 2003 · Azure Competing Consumers·Queue-Based Load Leveling·Priority Queue·Sequential Convoy | 필수 | 신규 (연결: `api-design/26-messaging-protocols`, `reliability/12-idempotency`) |
-| 35-message-routing-and-transformation | Pipes-and-Filters, Content-based Router·Filter·Recipient List·Splitter/Aggregator·Resequencer·Scatter-Gather·Routing Slip, Translator·Enricher·Claim Check·Normalizer·Canonical Data Model, Wire Tap·Message Store | 34, 23-orchestration-vs-choreography | Aggregator 완료 조건 부재 → 영원히 기다리는 부분 집합이 메모리에 누적; 큰 페이로드를 브로커에 직접 → 메시지 크기 한도 초과·브로커 디스크 압박(Claim Check 누락); 필터 사이 공유 상태 → 파이프라인 병렬화 불가; Canonical 모델 강제 → 전사 공용 모델이 모든 팀 변경을 막음 | 파이프라인(필터 합성), 상관 키 → 버퍼 맵(Aggregator), **재정렬 버퍼 = 힙**(Resequencer) | Hohpe–Woolf EIP 2003 · Azure Claim Check·Pipes and Filters·Messaging Bridge | 권장 | 신규 (연결: `domain-modeling/14-context-mapping` Published Language) |
-| 36-data-ownership-and-cross-service-queries | Database per Service vs Shared Database, API Composition·Command-side Replica·Materialized View·Index Table — 서비스 경계를 넘는 조회 | 21-outbox-and-dual-write, software-design/18-monolith-vs-microservices, domain-modeling/17-cqrs | 공유 DB → 한 팀의 스키마 변경이 다른 서비스 장애(분산 모놀리스); API Composition으로 목록 조회 → 서비스 N개 × 페이지 크기 호출(N+1의 분산판)·가장 느린 서비스가 전체 지연 결정; 복제 뷰 지연 → "주문했는데 목록에 없음" | 해시 조인(메모리 합성), 이벤트 → 프로젝션 폴드 | microservices.io Database per Service·API Composition·Command-side replica · Azure Materialized View·Index Table | 필수 | 신규 (연결: `reliability/32-server-design-antipatterns` "공유 데이터베이스") |
+| 19-message-types-channels-and-endpoints | 메시지 종류(Command·Event·Document), Correlation ID·Return Address·Expiration, 채널(P2P·Pub-Sub·Datatype·Dead Letter·Invalid Message), 소비 쪽 확장(Competing Consumers·Queue-Based Load Leveling·Priority Queue·Sequential Convoy·Selective Consumer) | 17-queues-logs-and-delivery-semantics, 18-consumer-failure-handling | 이벤트("주문됨")와 명령("결제하라")을 혼동 → 구독자가 늘 때마다 발행자 수정(결합 역전); Correlation ID 없는 요청-응답 → 응답을 엉뚱한 요청에 매칭; 경쟁 소비자로 순서 필요한 메시지 병렬 처리 → 상태 역행; 만료 없는 메시지 → 장애 복구 후 낡은 명령 일괄 실행 | 큐, **우선순위 큐(data-structure/10-heap)**, 키 해시 → 파티션(세션·순서 보장) | Hohpe–Woolf 『Enterprise Integration Patterns』 2003 · Azure Competing Consumers·Queue-Based Load Leveling·Priority Queue·Sequential Convoy | 필수 | 신규 (연결: `api-design/20-messaging-protocols`, `reliability/13-idempotency`) |
+| 34-message-routing-and-transformation | Pipes-and-Filters, Content-based Router·Filter·Recipient List·Splitter/Aggregator·Resequencer·Scatter-Gather·Routing Slip, Translator·Enricher·Claim Check·Normalizer·Canonical Data Model, Wire Tap·Message Store | 19, 23-orchestration-vs-choreography | Aggregator 완료 조건 부재 → 영원히 기다리는 부분 집합이 메모리에 누적; 큰 페이로드를 브로커에 직접 → 메시지 크기 한도 초과·브로커 디스크 압박(Claim Check 누락); 필터 사이 공유 상태 → 파이프라인 병렬화 불가; Canonical 모델 강제 → 전사 공용 모델이 모든 팀 변경을 막음 | 파이프라인(필터 합성), 상관 키 → 버퍼 맵(Aggregator), **재정렬 버퍼 = 힙**(Resequencer) | Hohpe–Woolf EIP 2003 · Azure Claim Check·Pipes and Filters·Messaging Bridge | 권장 | 신규 (연결: `domain-modeling/18-context-mapping` Published Language) |
+| 20-data-ownership-and-cross-service-queries | Database per Service vs Shared Database, API Composition·Command-side Replica·Materialized View·Index Table — 서비스 경계를 넘는 조회 | 16-outbox-and-dual-write, software-design/45-monolith-vs-microservices, domain-modeling/21-cqrs | 공유 DB → 한 팀의 스키마 변경이 다른 서비스 장애(분산 모놀리스); API Composition으로 목록 조회 → 서비스 N개 × 페이지 크기 호출(N+1의 분산판)·가장 느린 서비스가 전체 지연 결정; 복제 뷰 지연 → "주문했는데 목록에 없음" | 해시 조인(메모리 합성), 이벤트 → 프로젝션 폴드 | microservices.io Database per Service·API Composition·Command-side replica · Azure Materialized View·Index Table | 필수 | 신규 (연결: `reliability/47-server-design-antipatterns` "공유 데이터베이스") |
 
 ### 10.6 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 31-distributed-symptom-index | 역색인: 중복 처리·유실·순서 역전·리더 둘·오래된 읽기·블로킹된 트랜잭션·음수 시간 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 32-distributed-incidents | 실사건: GitHub 43초 분할 → 24시간 복구(2018-10-21) · Cloudflare 윤초 RRDNS(2017-01-01) · AWS EBS 재미러링 폭풍(2011-04) · metastable failure | 31 | — | — | GitHub 블로그 2018-10-30 · Cloudflare 블로그 2017-01-01 · AWS 요약 2011 · Bronson 외 HotOS 2021 | 권장 | 신규 |
+| 35-distributed-symptom-index | 역색인: 중복 처리·유실·순서 역전·리더 둘·오래된 읽기·블로킹된 트랜잭션·음수 시간 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
+| 36-distributed-incidents | 실사건: GitHub 43초 분할 → 24시간 복구(2018-10-21) · Cloudflare 윤초 RRDNS(2017-01-01) · AWS EBS 재미러링 폭풍(2011-04) · metastable failure | 35 | — | — | GitHub 블로그 2018-10-30 · Cloudflare 블로그 2017-01-01 · AWS 요약 2011 · Bronson 외 HotOS 2021 | 권장 | 신규 |
 
 ---
 
@@ -958,7 +970,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 > "여러 대가 돌 때 어떻게 버티고, 어떻게 보고, 어떻게 바꾸나". 기존 ops-patterns(복원력 패턴)·server-design(컬렉션)·failure 노트가 주력이다. 신규는 **성능 측정·관측성·사고 대응**.
 > 뼈대: Google 『Site Reliability Engineering』(이하 SRE — 장 번호 3·4·6·21·22 외 `[?]`), Nygard 『Release It!』 [?], Gregg 『Systems Performance』 [?], Dean–Barroso 2013.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 06 → 07 → 45 → 46 → 47 → 08 → 10 → 11 → 12 → 14 → 23 → 24 → 25 → 44 → 18 → 38 → 20 → 21 → 27 → 35 → 28 → 29 → 05 → 09 → 13 → 15 → 36 → 48 → 16 → 17 → 49 → 19 → 40 → 39 → 42 → 43 → 22 → 41 → 26 → 37 → 30 → 31 → 32 → 50 → 53 → 51 → 52 → 33 → 34
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 27 → 28 → 29 → 30 → 31 → 32 → 33 → 34 → 35 → 36 → 37 → 38 → 39 → 40 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53
 
 ### 11.1 신뢰성 개념
 
@@ -968,87 +980,87 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 02-slo-sli-error-budget | SLI 선택·SLO·에러 버짓·번 레이트 | 01 | 평균 지연 SLI → 꼬리 사용자 불만 미포착; SLO 없음 → 안정성 vs 속도 논쟁 무한 | 슬라이딩 윈도 집계 | SRE 4장 · SRE Workbook 2·5장 [?] | 필수 | `systems/server-design/09-capacity-slo.md` (분할 — SLO/에러 버짓 절) |
 | 03-failure-at-scale | 부분 실패 상시화·재시도 증폭·균등 가정 붕괴·상태의 확장 불가 | 01 | 재시도가 부하를 N배로 → 복구 불가 | — | 기존 노트 원고 · SRE 22장 | 필수 | `ops-patterns/failure-at-scale` |
 | 04-failure-modes-catalog | 실패 카탈로그 F-01~25(동시성·DB / 분산·비동기 / 결제) | 03 | (카탈로그 자체가 ⚠ 모음) | — | 기존 노트 원고 | 필수 | `ops-patterns/failure-modes` |
-| 05-failure-point-checklist | 설계 시 실패 지점 점검 절차 | 04 | 점검 없이 출시 → 알려진 실패 모드 재발 | — | 기존 노트 원고 | 권장 | `engineering/failure-point-checklist` |
+| 27-failure-point-checklist | 설계 시 실패 지점 점검 절차 | 04 | 점검 없이 출시 → 알려진 실패 모드 재발 | — | 기존 노트 원고 | 권장 | `engineering/failure-point-checklist` |
 
 ### 11.2 복원력 패턴
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 06-timeouts-and-deadline-propagation | 타임아웃 계층 정렬·데드라인 전파. gRPC는 절대 시각 대신 경과 시간을 뺀 타임아웃으로 전파(시계 어긋남 회피)하고, 서버는 취소를 주기적으로 확인할 책임이 있다(심화는 46·47) | distributed/03-partial-failure-and-timeouts | 하류 타임아웃 > 상류 → 이미 포기한 요청을 계속 처리(헛일); 타임아웃 없음 → 스레드 고갈 | 남은 예산 전파 | gRPC deadline 문서 · SRE 22장 | 필수 | `ops-patterns/deadline-propagation` · `systems/server-design/06-resilience.md` (분할 — 타임아웃 절) |
-| 07-retry-backoff-jitter | 지수 백오프·지터·재시도 예산 — 구체형: Finagle 기본(요청의 20% + 초당 최소 10회, 토큰 10초 만료), gRPC `retryThrottling`(maxTokens·tokenRatio — 토큰이 절반 미만이면 재시도·헤지 중단) | 06, math/11-randomness-and-prng | 지터 없는 재시도 → 동기화된 재시도 폭풍; 계층마다 재시도 → 곱셈 증폭 | 지수 백오프, 토큰 버킷(재시도 예산) | AWS Architecture Blog "Exponential Backoff and Jitter" 2015 · Finagle 블로그 "Retry Budgets" 2016-02-08 · gRFC A6 Client Retries | 필수 | `ops-patterns/01-retry-backoff` |
-| 08-circuit-breaker | 닫힘·열림·반열림 | 07 | 임계값 과민 → 정상 서비스 차단 flapping; 폴백 없음 → 즉시 에러 전파 | 상태 기계, 슬라이딩 윈도 실패율 | Nygard 『Release It!』 5장 [?] | 필수 | `ops-patterns/02-circuit-breaker` |
-| 09-bulkhead | 자원 격벽(스레드풀·커넥션 분리) | 08 | 공유 풀 하나 → 느린 의존성 하나가 전체 스레드 점유 | 세마포어(os/18) | Nygard 『Release It!』 [?] | 권장 | `ops-patterns/03-bulkhead` |
-| 10-rate-limiter | 토큰 버킷·리키 버킷·고정/슬라이딩 윈도·분산 제한 | 07, algorithm/09-sliding-window | 고정 윈도 경계에서 2배 버스트; 분산 카운터 경합 → 초과 허용 | **토큰 버킷**, 슬라이딩 로그/카운터 | RFC 6585 (429) · Stripe 블로그 2017 [?] | 필수 | `ops-patterns/04-rate-limiter` |
-| 11-backpressure-and-load-shedding | 역압·큐 한도·우선순위 셰딩 | 10, math/15-queueing-and-littles-law | 무한 큐 → 지연 폭증 후 OOM; 셰딩 없음 → 과부하 시 처리량 0으로 붕괴 | 유계 큐, CoDel | SRE 21장 | 필수 | `ops-patterns/05-backpressure` · `systems/server-design/06-resilience.md` (분할 — 백프레셔·로드 셰딩 절) |
-| 12-idempotency | 멱등 키 저장소·중복 억제·결과 재생 | 07 | 재시도 → 중복 결제·이중 적립; 멱등 키 저장과 처리의 비원자성 | 키-결과 맵(TTL) | Stripe "Idempotent requests" | 필수 | `ops-patterns/06-idempotency-store` |
-| 13-cache-stampede | 스탬피드·관통·눈사태 방어 | database/38-caching-with-databases | 인기 키 만료 순간 DB로 동시 수천 요청 → DB 다운 | 단일 비행(single-flight), 확률적 조기 만료, 블룸 | Vattani 외 VLDB 2015 | 권장 | `ops-patterns/09-stampede` |
-| 14-graceful-shutdown | SIGTERM → 준비 해제 → 드레이닝 → 종료 | os/06-signals, network/39-load-balancers-and-proxies | 배포 때마다 502 순간 증가(LB 해제 전 종료); 진행 중 작업 유실 | 진행 중 요청 카운터 | k8s Pod lifecycle 문서 | 필수 | `ops-patterns/19-graceful-shutdown` · `systems/server-design/02-request-path.md` (분할 — graceful shutdown 절) |
-| 15-scheduler-and-cron-ha | 스케줄러 이중화·중복 실행 방지·미실행 보정 | distributed/17-coordination-and-fencing | 두 인스턴스가 같은 배치 실행 → 이중 정산; 장애 중 놓친 실행 | 타이머 휠·리스 | 기존 노트 원고 | 권장 | `ops-patterns/10-scheduler` |
-| 16-hysteresis-and-flapping | 방향별 임계값 분리로 진동 방지 | 08 | 오토스케일·알람·서킷 임계값 flapping | hysteresis band | 기존 노트 원고 | 권장 | `systems/Hysteresis` |
-| 17-tail-latency-and-stragglers | 팬아웃에서 꼬리 지연 증폭, hedged request | math/09-expectation-variance-tails | 100개 팬아웃 → p99가 사실상 중앙값 경험; hedging 과다 → 부하 2배 | 백분위 추정 | Dean–Barroso CACM 2013 | 권장 | `systems/straggler` |
-| 50-performance-and-stability-antipatterns-in-code | 코드 수준 안티패턴 — Chatty I/O·Extraneous Fetching·Improper Instantiation(요청마다 HTTP 클라이언트·커넥션 생성)·Synchronous I/O·Busy Database·Busy Front End·Monolithic Persistence, Nygard의 Integration Points·Blocked Threads·Unbounded Result Sets·Self-Denial·Dogpile | 32-server-design-antipatterns, database/32-connection-pooling | 요청마다 `new HttpClient` → 소켓 고갈 `TIME_WAIT` 폭증·`EADDRNOTAVAIL`; `LIMIT` 없는 조회 → 데이터가 커진 어느 날 OOM; 스레드 풀 전부 느린 외부 호출에 묶임(Blocked Threads) → 헬스체크까지 실패; 자정 배치·쿠폰 공지 → 자기 트래픽이 DoS(Self-Denial·Dogpile) | 풀링(공유 인스턴스), 배치·페이지네이션 | Azure 성능 안티패턴 카탈로그 · Nygard 『Release It!』 2판 4장 "Stability Antipatterns" [?] | 필수 | 신규 (32와 구분 — 32는 구조·운영, 이쪽은 코드 수준) |
-| 51-sidecar-ambassador-and-service-mesh | Sidecar·Ambassador, 서비스 메시(데이터·컨트롤 플레인, mTLS·재시도·관측 위임), Microservice Chassis(라이브러리) vs 메시, 서비스 디스커버리(클라이언트·서버 측, 레지스트리, 자기·제3자 등록) | network/39-load-balancers-and-proxies, os/34-containers-namespaces-cgroups, 07-retry-backoff-jitter | 앱 재시도 + 메시 재시도 중복 → **곱셈 증폭**; 사이드카 준비 전 앱 시작 → 기동 직후 연결 실패; 레지스트리에 죽은 인스턴스 잔존 → 간헐적 연결 거부; 메시 설정 오류 하나가 전 서비스 장애 | 서비스 레지스트리(키-값 + TTL 하트비트), 프록시 체인 | Azure Sidecar·Ambassador · microservices.io Service discovery·Microservice chassis · Burns–Oppenheimer "Design Patterns for Container-based Distributed Systems" HotCloud 2016 [?] | 권장 | 신규 |
-| 53-steady-state-fail-fast-and-supervision | Steady State(무한 증가 자원 정리 — 로그·세션·캐시·테이블), Fail Fast(입구 검증), Let It Crash + 감독 트리, Handshaking, Governor(자동화 속도 제한), Test Harness | 11-backpressure-and-load-shedding, 14-graceful-shutdown | 정리 작업 없음 → 수개월 뒤 디스크 풀·테이블 비대로 서서히 느려짐; 자원 부족을 끝까지 가서야 발견 → 이미 부분 처리된 작업 롤백; 손상된 상태로 계속 실행 → 오염 전파(재시작이 나았음); 자동 스케일-인·정리 스크립트 폭주 → 전 인스턴스 삭제(Governor 부재) | 감독 트리(재시작 전략 one_for_one 등), 보존 정책(TTL·링 버퍼) | Nygard 『Release It!』 2판 5장 "Stability Patterns" · Armstrong 박사논문 2003 (Erlang 감독) [?] | 권장 | 신규 (연결: `language/15-concurrency-models` 액터) |
+| 05-timeouts-and-deadline-propagation | 타임아웃 계층 정렬·데드라인 전파. gRPC는 절대 시각 대신 경과 시간을 뺀 타임아웃으로 전파(시계 어긋남 회피)하고, 서버는 취소를 주기적으로 확인할 책임이 있다(심화는 08·09) | distributed/03-partial-failure-and-timeouts | 하류 타임아웃 > 상류 → 이미 포기한 요청을 계속 처리(헛일); 타임아웃 없음 → 스레드 고갈 | 남은 예산 전파 | gRPC deadline 문서 · SRE 22장 | 필수 | `ops-patterns/deadline-propagation` · `systems/server-design/06-resilience.md` (분할 — 타임아웃 절) |
+| 06-retry-backoff-jitter | 지수 백오프·지터·재시도 예산 — 구체형: Finagle 기본(요청의 20% + 초당 최소 10회, 토큰 10초 만료), gRPC `retryThrottling`(maxTokens·tokenRatio — 토큰이 절반 미만이면 재시도·헤지 중단) | 05, math/12-randomness-and-prng | 지터 없는 재시도 → 동기화된 재시도 폭풍; 계층마다 재시도 → 곱셈 증폭 | 지수 백오프, 토큰 버킷(재시도 예산) | AWS Architecture Blog "Exponential Backoff and Jitter" 2015 · Finagle 블로그 "Retry Budgets" 2016-02-08 · gRFC A6 Client Retries | 필수 | `ops-patterns/01-retry-backoff` |
+| 10-circuit-breaker | 닫힘·열림·반열림 | 06 | 임계값 과민 → 정상 서비스 차단 flapping; 폴백 없음 → 즉시 에러 전파 | 상태 기계, 슬라이딩 윈도 실패율 | Nygard 『Release It!』 5장 [?] | 필수 | `ops-patterns/02-circuit-breaker` |
+| 28-bulkhead | 자원 격벽(스레드풀·커넥션 분리) | 10 | 공유 풀 하나 → 느린 의존성 하나가 전체 스레드 점유 | 세마포어(os/18) | Nygard 『Release It!』 [?] | 권장 | `ops-patterns/03-bulkhead` |
+| 11-rate-limiter | 토큰 버킷·리키 버킷·고정/슬라이딩 윈도·분산 제한 | 06, algorithm/15-sliding-window | 고정 윈도 경계에서 2배 버스트; 분산 카운터 경합 → 초과 허용 | **토큰 버킷**, 슬라이딩 로그/카운터 | RFC 6585 (429) · Stripe 블로그 2017 [?] | 필수 | `ops-patterns/04-rate-limiter` |
+| 12-backpressure-and-load-shedding | 역압·큐 한도·우선순위 셰딩 | 11, math/10-queueing-and-littles-law | 무한 큐 → 지연 폭증 후 OOM; 셰딩 없음 → 과부하 시 처리량 0으로 붕괴 | 유계 큐, CoDel | SRE 21장 | 필수 | `ops-patterns/05-backpressure` · `systems/server-design/06-resilience.md` (분할 — 백프레셔·로드 셰딩 절) |
+| 13-idempotency | 멱등 키 저장소·중복 억제·결과 재생 | 06 | 재시도 → 중복 결제·이중 적립; 멱등 키 저장과 처리의 비원자성 | 키-결과 맵(TTL) | Stripe "Idempotent requests" | 필수 | `ops-patterns/06-idempotency-store` |
+| 29-cache-stampede | 스탬피드·관통·눈사태 방어 | database/30-caching-with-databases | 인기 키 만료 순간 DB로 동시 수천 요청 → DB 다운 | 단일 비행(single-flight), 확률적 조기 만료, 블룸 | Vattani 외 VLDB 2015 | 권장 | `ops-patterns/09-stampede` |
+| 14-graceful-shutdown | SIGTERM → 준비 해제 → 드레이닝 → 종료 | os/06-signals, network/46-load-balancers-and-proxies | 배포 때마다 502 순간 증가(LB 해제 전 종료); 진행 중 작업 유실 | 진행 중 요청 카운터 | k8s Pod lifecycle 문서 | 필수 | `ops-patterns/19-graceful-shutdown` · `systems/server-design/02-request-path.md` (분할 — graceful shutdown 절) |
+| 30-scheduler-and-cron-ha | 스케줄러 이중화·중복 실행 방지·미실행 보정 | distributed/12-coordination-and-fencing | 두 인스턴스가 같은 배치 실행 → 이중 정산; 장애 중 놓친 실행 | 타이머 휠·리스 | 기존 노트 원고 | 권장 | `ops-patterns/10-scheduler` |
+| 33-hysteresis-and-flapping | 방향별 임계값 분리로 진동 방지 | 10 | 오토스케일·알람·서킷 임계값 flapping | hysteresis band | 기존 노트 원고 | 권장 | `systems/Hysteresis` |
+| 34-tail-latency-and-stragglers | 팬아웃에서 꼬리 지연 증폭, hedged request | math/08-expectation-variance-tails | 100개 팬아웃 → p99가 사실상 중앙값 경험; hedging 과다 → 부하 2배 | 백분위 추정 | Dean–Barroso CACM 2013 | 권장 | `systems/straggler` |
+| 48-performance-and-stability-antipatterns-in-code | 코드 수준 안티패턴 — Chatty I/O·Extraneous Fetching·Improper Instantiation(요청마다 HTTP 클라이언트·커넥션 생성)·Synchronous I/O·Busy Database·Busy Front End·Monolithic Persistence, Nygard의 Integration Points·Blocked Threads·Unbounded Result Sets·Self-Denial·Dogpile | 47-server-design-antipatterns, database/21-connection-pooling | 요청마다 `new HttpClient` → 소켓 고갈 `TIME_WAIT` 폭증·`EADDRNOTAVAIL`; `LIMIT` 없는 조회 → 데이터가 커진 어느 날 OOM; 스레드 풀 전부 느린 외부 호출에 묶임(Blocked Threads) → 헬스체크까지 실패; 자정 배치·쿠폰 공지 → 자기 트래픽이 DoS(Self-Denial·Dogpile) | 풀링(공유 인스턴스), 배치·페이지네이션 | Azure 성능 안티패턴 카탈로그 · Nygard 『Release It!』 2판 4장 "Stability Antipatterns" [?] | 필수 | 신규 (32와 구분 — 32는 구조·운영, 이쪽은 코드 수준) |
+| 50-sidecar-ambassador-and-service-mesh | Sidecar·Ambassador, 서비스 메시(데이터·컨트롤 플레인, mTLS·재시도·관측 위임), Microservice Chassis(라이브러리) vs 메시, 서비스 디스커버리(클라이언트·서버 측, 레지스트리, 자기·제3자 등록) | network/46-load-balancers-and-proxies, os/28-containers-namespaces-cgroups, 06-retry-backoff-jitter | 앱 재시도 + 메시 재시도 중복 → **곱셈 증폭**; 사이드카 준비 전 앱 시작 → 기동 직후 연결 실패; 레지스트리에 죽은 인스턴스 잔존 → 간헐적 연결 거부; 메시 설정 오류 하나가 전 서비스 장애 | 서비스 레지스트리(키-값 + TTL 하트비트), 프록시 체인 | Azure Sidecar·Ambassador · microservices.io Service discovery·Microservice chassis · Burns–Oppenheimer "Design Patterns for Container-based Distributed Systems" HotCloud 2016 [?] | 권장 | 신규 |
+| 49-steady-state-fail-fast-and-supervision | Steady State(무한 증가 자원 정리 — 로그·세션·캐시·테이블), Fail Fast(입구 검증), Let It Crash + 감독 트리, Handshaking, Governor(자동화 속도 제한), Test Harness | 12-backpressure-and-load-shedding, 14-graceful-shutdown | 정리 작업 없음 → 수개월 뒤 디스크 풀·테이블 비대로 서서히 느려짐; 자원 부족을 끝까지 가서야 발견 → 이미 부분 처리된 작업 롤백; 손상된 상태로 계속 실행 → 오염 전파(재시작이 나았음); 자동 스케일-인·정리 스크립트 폭주 → 전 인스턴스 삭제(Governor 부재) | 감독 트리(재시작 전략 one_for_one 등), 보존 정책(TTL·링 버퍼) | Nygard 『Release It!』 2판 5장 "Stability Patterns" · Armstrong 박사논문 2003 (Erlang 감독) [?] | 권장 | 신규 (연결: `language/14-concurrency-models` 액터) |
 
 ### 11.2b 시간 예산 설계 (2026-09-28 추가)
 
-> 사용자 질문 "단계별 타임아웃 설계도 하나의 패턴이 되지 않나"를 받는 단원이다. 기존 06·07·17은 11.2에 두고 **순서만 묶는다**: `06 데드라인 전파` → `45 계층별 타임아웃` → `07 재시도·재시도 예산` → `46 예산 분배` → `47 취소 전파` → `17 헤지` → `48 배치·잡 시간 한도` → `49 종합 연습`. (46의 선행이 07이라 07을 46 앞에 둔다.)
+> 사용자 질문 "단계별 타임아웃 설계도 하나의 패턴이 되지 않나"를 받는 단원이다. 기존 05·06·34은 11.2에 두고 **순서만 묶는다**: `05 데드라인 전파` → `07 계층별 타임아웃` → `06 재시도·재시도 예산` → `08 예산 분배` → `09 취소 전파` → `34 헤지` → `32 배치·잡 시간 한도` → `35 종합 연습`. (08의 선행이 06이라 06을 08 앞에 둔다.)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 45-timeout-taxonomy-by-layer | 호출 하나에 달린 타임아웃 목록과 포함 관계: 풀 획득 → DNS → connect → TLS 핸드셰이크 → 요청 쓰기 → 첫 바이트(응답 헤더) → 읽기 idle → 전체(call) → 커넥션 idle·수명. 라이브러리마다 다른 기본값과 "무엇이 포함되나" | 06, network/15-tcp-handshake-and-backlog, network/29-tls-handshake, network/35-http-connection-management | connect 타임아웃을 설정하지 않았다 → 방화벽이 SYN을 drop하면 OS 기본 재시도(리눅스 `tcp_syn_retries`=6에서 약 2분 [?]) 동안 스레드가 멈춘다. read(idle) 타임아웃만 있다 → 조금씩 흘러오는 응답(slow drip)은 끝나지 않는다. 전체 타임아웃이 필요하다. 풀 대기가 타임아웃에 포함되지 않는다 → 실제 지연 = 대기 + 호출 | 타이머 휠(`data-structure/37-timer-structures`) | Envoy FAQ "How do I configure timeouts?"(connect_timeout은 TLS 포함, 기본 5초) · Cloudflare 블로그 "The complete guide to Go net/http timeouts" [?] | 필수 | 신규 (연결: `database/54-database-side-timeouts`) |
-| 46-time-budget-allocation | **총 예산을 단계에 나누는 설계 패턴.** SLO에서 총 예산 역산, 단계별 타임아웃 = 하류 p99.x 기반(오탐률 선택), per-try 타임아웃 vs 전체, 재시도·폴백·응답 직렬화 몫 예약, 남은 예산이 최소치 미만이면 시작하지 않기 | 45, 07, 02-slo-sli-error-budget, data-analysis/06-percentiles-and-latency-distributions | 단계 타임아웃의 합이 전체보다 크다 → 마지막 단계가 늘 잘린다. per-try 없이 재시도 → 첫 시도가 예산을 다 쓴다. 상류 5s·하류 10s(역전) → 헛일. p50 기준 타임아웃 → 오탐 타임아웃과 재시도 폭풍. 폴백 몫이 없다 → 폴백을 실행할 시간이 없어 결국 504 | 예산 = 남은 시간 차감, 백분위 추정 | Amazon Builders' Library "Timeouts, retries, and backoff with jitter"(오탐률 → p99.9) · Envoy `per_try_timeout` · gRPC Deadlines 가이드(경과 시간 차감 변환) | 필수 | 신규 (흡수: `reliability/06`의 "남은 예산 전파"를 여기서 심화) |
-| 47-cancellation-propagation | 타임아웃이 나면 **작업을 실제로 멈추는** 방법: Go `context`, Java 인터럽트·`Future.cancel`·구조적 동시성(StructuredTaskScope), gRPC 취소, DB 쿼리 취소, 취소 불가 구간(외부 결제 호출)의 처리 | 46, language/15-concurrency-models, os/06-signals | 클라이언트는 포기했는데 서버는 끝까지 처리한다 → 과부하 때 헛일이 폭증하고 goodput이 0이 된다. `CompletableFuture` 타임아웃(Resilience4j TimeLimiter)이 원래 작업을 취소하지 않는다 → 스레드가 새어 나간다. 인터럽트를 삼킨다(`catch InterruptedException {}`). 취소 불가 외부 호출 → 결과가 모호해진다 → `domain-modeling/27-reconciliation` 대사로 넘긴다 | 취소 트리(부모 → 자식 전파) | Go `context` 패키지 문서 · JEP 505/525 Structured Concurrency (preview) · Resilience4j TimeLimiter 문서(`cancelRunningFuture`는 Future에만 적용) | 필수 | 신규 |
-| 48-batch-and-job-time-bounds | 배치·스케줄 작업의 시간 한도: 잡 전체·단계·태스크 타임아웃, heartbeat·lease, 마감 알림(끝나지 않아도 발화), 체크포인트와 재개(설계 본문은 36), 강제 종료 후 부분 산출물 정리 | 46, 15-scheduler-and-cron-ha, 36-batch-job-restart-and-checkpoint, data-engineering/09-idempotent-pipelines-and-backfill | 잡이 멈춘다(hang) → 다음 스케줄과 겹쳐 이중 실행된다. 잡 전체 타임아웃만 있다 → 어느 단계가 느린지 모른다. 타임아웃으로 kill한 뒤 부분 산출물이 남는다 → 다음 단계가 반쯤 된 데이터를 읽는다. 체크포인트가 없다 → 매번 처음부터 다시 해서 영원히 못 끝낸다. SLA 알림이 **작업이 끝난 뒤에야** 발화한다 | lease·fencing(`distributed/17-coordination-and-fencing`), 체크포인트 | Airflow 문서 `execution_timeout`·`dagrun_timeout`·Deadline Alerts(3.x, SLA 대체) · Spring Batch 문서 [?] | 권장 | 신규 |
-| 49-timeout-design-worksheet | 종합 연습: 요청 경로 하나(게이트웨이 → 서비스 A → B·DB·외부 PG)에 **단계별 시간 예산표**를 쓰고 Envoy(route `timeout`·`per_try_timeout`·`idle_timeout`, cluster `connect_timeout`)와 Resilience4j(TimeLimiter·Retry·CircuitBreaker 순서) 설정으로 옮긴다. 결과가 모호한 단계는 멱등 키와 대사 경로를 붙인다 | 45, 46, 47, 08-circuit-breaker, api-design/05-idempotency-keys | 게이트웨이 타임아웃 < 서비스 타임아웃 → 사용자는 504를 받았는데 결제는 된다. 데코레이터 순서 착오(Retry가 TimeLimiter 안쪽) → 재시도 전체가 한 번의 타임아웃에 묶인다 [?]. 서킷브레이커가 타임아웃을 실패로 세지 않는다 → 느린 하류를 계속 호출한다 | 예산표 = 트리(호출 그래프)의 경로 합 | Envoy route_components 문서 · Resilience4j 문서 · `reliability/06`·`12` | 권장 | 신규 |
+| 07-timeout-taxonomy-by-layer | 호출 하나에 달린 타임아웃 목록과 포함 관계: 풀 획득 → DNS → connect → TLS 핸드셰이크 → 요청 쓰기 → 첫 바이트(응답 헤더) → 읽기 idle → 전체(call) → 커넥션 idle·수명. 라이브러리마다 다른 기본값과 "무엇이 포함되나" | 05, network/15-tcp-handshake-and-backlog, network/29-tls-handshake, network/35-http-connection-management | connect 타임아웃을 설정하지 않았다 → 방화벽이 SYN을 drop하면 OS 기본 재시도(리눅스 `tcp_syn_retries`=6에서 약 2분 [?]) 동안 스레드가 멈춘다. read(idle) 타임아웃만 있다 → 조금씩 흘러오는 응답(slow drip)은 끝나지 않는다. 전체 타임아웃이 필요하다. 풀 대기가 타임아웃에 포함되지 않는다 → 실제 지연 = 대기 + 호출 | 타이머 휠(`data-structure/26-timer-structures`) | Envoy FAQ "How do I configure timeouts?"(connect_timeout은 TLS 포함, 기본 5초) · Cloudflare 블로그 "The complete guide to Go net/http timeouts" [?] | 필수 | 신규 (연결: `database/22-database-side-timeouts`) |
+| 08-time-budget-allocation | **총 예산을 단계에 나누는 설계 패턴.** SLO에서 총 예산 역산, 단계별 타임아웃 = 하류 p99.x 기반(오탐률 선택), per-try 타임아웃 vs 전체, 재시도·폴백·응답 직렬화 몫 예약, 남은 예산이 최소치 미만이면 시작하지 않기 | 07, 06, 02-slo-sli-error-budget, data-analysis/05-percentiles-and-latency-distributions | 단계 타임아웃의 합이 전체보다 크다 → 마지막 단계가 늘 잘린다. per-try 없이 재시도 → 첫 시도가 예산을 다 쓴다. 상류 5s·하류 10s(역전) → 헛일. p50 기준 타임아웃 → 오탐 타임아웃과 재시도 폭풍. 폴백 몫이 없다 → 폴백을 실행할 시간이 없어 결국 504 | 예산 = 남은 시간 차감, 백분위 추정 | Amazon Builders' Library "Timeouts, retries, and backoff with jitter"(오탐률 → p99.9) · Envoy `per_try_timeout` · gRPC Deadlines 가이드(경과 시간 차감 변환) | 필수 | 신규 (흡수: `reliability/05`의 "남은 예산 전파"를 여기서 심화) |
+| 09-cancellation-propagation | 타임아웃이 나면 **작업을 실제로 멈추는** 방법: Go `context`, Java 인터럽트·`Future.cancel`·구조적 동시성(StructuredTaskScope), gRPC 취소, DB 쿼리 취소, 취소 불가 구간(외부 결제 호출)의 처리 | 08, language/14-concurrency-models, os/06-signals | 클라이언트는 포기했는데 서버는 끝까지 처리한다 → 과부하 때 헛일이 폭증하고 goodput이 0이 된다. `CompletableFuture` 타임아웃(Resilience4j TimeLimiter)이 원래 작업을 취소하지 않는다 → 스레드가 새어 나간다. 인터럽트를 삼킨다(`catch InterruptedException {}`). 취소 불가 외부 호출 → 결과가 모호해진다 → `domain-modeling/25-reconciliation` 대사로 넘긴다 | 취소 트리(부모 → 자식 전파) | Go `context` 패키지 문서 · JEP 505/525 Structured Concurrency (preview) · Resilience4j TimeLimiter 문서(`cancelRunningFuture`는 Future에만 적용) | 필수 | 신규 |
+| 32-batch-and-job-time-bounds | 배치·스케줄 작업의 시간 한도: 잡 전체·단계·태스크 타임아웃, heartbeat·lease, 마감 알림(끝나지 않아도 발화), 체크포인트와 재개(설계 본문은 31), 강제 종료 후 부분 산출물 정리 | 08, 30-scheduler-and-cron-ha, 31-batch-job-restart-and-checkpoint, data-engineering/08-idempotent-pipelines-and-backfill | 잡이 멈춘다(hang) → 다음 스케줄과 겹쳐 이중 실행된다. 잡 전체 타임아웃만 있다 → 어느 단계가 느린지 모른다. 타임아웃으로 kill한 뒤 부분 산출물이 남는다 → 다음 단계가 반쯤 된 데이터를 읽는다. 체크포인트가 없다 → 매번 처음부터 다시 해서 영원히 못 끝낸다. SLA 알림이 **작업이 끝난 뒤에야** 발화한다 | lease·fencing(`distributed/12-coordination-and-fencing`), 체크포인트 | Airflow 문서 `execution_timeout`·`dagrun_timeout`·Deadline Alerts(3.x, SLA 대체) · Spring Batch 문서 [?] | 권장 | 신규 |
+| 35-timeout-design-worksheet | 종합 연습: 요청 경로 하나(게이트웨이 → 서비스 A → B·DB·외부 PG)에 **단계별 시간 예산표**를 쓰고 Envoy(route `timeout`·`per_try_timeout`·`idle_timeout`, cluster `connect_timeout`)와 Resilience4j(TimeLimiter·Retry·CircuitBreaker 순서) 설정으로 옮긴다. 결과가 모호한 단계는 멱등 키와 대사 경로를 붙인다 | 07, 08, 09, 10-circuit-breaker, api-design/05-idempotency-keys | 게이트웨이 타임아웃 < 서비스 타임아웃 → 사용자는 504를 받았는데 결제는 된다. 데코레이터 순서 착오(Retry가 TimeLimiter 안쪽) → 재시도 전체가 한 번의 타임아웃에 묶인다 [?]. 서킷브레이커가 타임아웃을 실패로 세지 않는다 → 느린 하류를 계속 호출한다 | 예산표 = 트리(호출 그래프)의 경로 합 | Envoy route_components 문서 · Resilience4j 문서 · `reliability/05`·`13` | 권장 | 신규 |
 
 ### 11.3 성능·용량
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 18-performance-measurement | 지연 분포·백분위·벤치마크 방법론·coordinated omission, open vs closed 부하 모델(도착률 고정 vs 사용자 수 고정) | data-analysis/06-percentiles-and-latency-distributions | 평균만 보고 판단; 부하 생성기가 느린 응답 동안 요청을 안 보냄 → p99 과소 측정 [?] | HdrHistogram, t-digest | Gregg 『Systems Performance』 2판 12장 [?] · Tene "How NOT to Measure Latency" [?] · Grafana k6 "Open and closed models" · giltene/wrk2 README | 필수 | 신규 |
-| 19-profiling | CPU·메모리·락·off-CPU 프로파일링, 플레임 그래프, 실습: async-profiler(AsyncGetCallTrace + perf_events) — 힙 분석 심화는 40 | 18, os/35-os-observability-tools | 추측 최적화 → 병목 아닌 곳 수정; 세이프포인트 편향 프로파일러 | 스택 샘플 집계(트라이) | Gregg "Flame Graphs" CACM 2016 | 권장 | 신규 |
-| 20-scaling-principles | 병목 이동·Little's Law·USL·무상태화 | math/15-queueing-and-littles-law | 인스턴스 늘렸는데 처리량 역전(USL 역행 — 경합·일관성 비용) | USL 곡선 | Gunther USL · `systems/server-design` 01 | 필수 | `systems/server-design/01-scaling-principles.md` |
-| 21-capacity-and-load-testing | 사이징·부하 테스트 설계·헤드룸, open vs closed 부하 모델 선택 | 20, 18 | 부하 테스트 데이터가 캐시에 다 들어가 운영보다 낙관적; 헤드룸 없이 피크 진입 | — | SRE 18장 [?] · `systems/server-design` 09 | 필수 | `systems/server-design/09-capacity-slo.md` (분할 — 사이징·부하 테스트·오토스케일링 절) |
-| 22-autoscaling | 지표 기반 확장·반응 지연·쿨다운 | 21, 16 | 스케일 반응(수 분) < 트래픽 급증(수 초) → 확장 전 붕괴; 쿨다운 없음 → flapping | 제어 루프, 이동 평균 | k8s HPA 문서 | 권장 | 신규 |
-| 38-performance-method-and-amdahl | 측정 → 병목 특정 → 한 가지만 바꾸기 → 재측정. Amdahl의 법칙, 병목 이동, 안티 방법론(가로등 효과·무작위 튜닝) | os/35-os-observability-tools, 18 | 전체의 5%인 구간을 2배 빠르게 해 봐야 전체는 약 2.5% 개선(Amdahl). JVM·커널 플래그를 여러 개 한꺼번에 바꿈 → 무엇이 효과였는지 모르고 회귀도 재현하지 못함 | Amdahl 식, 병목 탐색 순서(USE 체크리스트) | Amdahl AFIPS 1967 · Gregg 『Systems Performance』 2판 2장 [?] | 필수 | 신규 (연결: `engineering/engineering-axes/performance.md` 대원칙 절) |
-| 39-microbenchmarking | JMH, 워밍업·반복·포크, 데드 코드 제거·상수 접기 함정, Blackhole, 결과 비교의 통계 | 18, language/05-ir-and-optimization, data-analysis/08-confidence-intervals | 결과가 0.3 ns/op → 계산이 DCE로 지워졌다. `System.nanoTime` 루프로 직접 잼 → OSR·워밍업 때문에 왜곡. 포크 1회로 여러 벤치마크를 돌림 → 프로파일이 섞여 실행 순서마다 결과가 다름 | 반복 측정 분포, 신뢰구간 | OpenJDK JMH(`jmh-samples`) · Georges 외 OOPSLA 2007 "Statistically Rigorous Java Performance Evaluation" [?] | 권장 | 신규 |
-| 40-memory-leak-and-heap-analysis | 힙 덤프·히스토그램, 지배자 트리와 retained size, 누수 패턴(static 컬렉션·리스너·ThreadLocal·무제한 캐시), 힙 밖 누수(direct buffer·native·NMT), RSS vs 힙 | 19, language/13-garbage-collection, os/13-oom-and-memory-limits | GC 후 바닥선이 계속 올라가는 톱니 → 결국 `OutOfMemoryError: Java heap space`. 힙은 정상인데 RSS만 우상향 → native·direct 메모리 누수로 `OOMKilled`. 운영 중에 힙 덤프를 뜸 → 수십 초 STW와 디스크 풀 | **지배자 트리**(Lengauer–Tarjan), 객체 그래프 도달성(algorithm/12-dfs) | Eclipse MAT 문서 "Dominator Tree" [?] · Lengauer–Tarjan TOPLAS 1979 | 필수 | 신규 |
-| 41-cold-start-and-scale-from-zero | 서버리스 Init 단계, 컨테이너 이미지 pull, 런타임 시작 + JIT 워밍업, readiness 설계, provisioned concurrency·스냅숏 복원(SnapStart) | 22, language/23-aot-native-image-and-startup, os/34-containers-namespaces-cgroups | Lambda Init Duration 수 초 → 첫 요청 타임아웃. 스케일 아웃된 새 파드가 이미지 pull과 워밍업 도중 트래픽을 받아 p99가 급등. 스냅숏 복원 뒤 난수 시드·커넥션 같은 고유 상태가 복제되는 문제 [?] | 인스턴스 풀(예열 풀 크기 = Little's law, math/15-queueing-and-littles-law) | AWS Lambda "Understanding the Lambda execution environment lifecycle" · AWS Lambda "Improving startup performance with Lambda SnapStart" · AWS Compute Blog "Understanding and Remediating Cold Starts" | 권장 | 신규 (연결: `language/22-jit-tiered-compilation-and-warmup`) |
-| 42-async-io-gains-and-limits | 비동기·논블로킹·가상 스레드가 늘려 주는 것은 **동시성**(처리량)이지 지연이 아니다. CPU 바운드에서는 이득 없음, 블로킹 경로가 섞였을 때, 병목이 하류 풀로 이동 | language/15-concurrency-models, os/28-io-models, math/15-queueing-and-littles-law, database/32-connection-pooling | 리액티브로 전환했는데 JDBC가 블로킹 → 이벤트 루프 스레드 고갈로 처리량이 오히려 떨어짐. 가상 스레드로 동시 요청이 10배 → DB 풀 고갈 `Connection is not available, request timed out`. 백프레셔 없는 비동기 팬아웃 → 메모리 폭증 | Little's law(L=λW), 유계 큐 | JEP 444 "Virtual Threads"(scale, not speed) · Little 1961 | 권장 | 신규 |
-| 43-batching-and-round-trips | 왕복(RTT) 줄이기: 요청 배칭, 파이프라이닝, bulk insert·`COPY`, DataLoader식 모으기. 배치 크기 ↔ 지연 트레이드오프, 배치의 부분 실패 | architecture/14-latency-numbers, database/33-orm-and-n-plus-one, network/22-nagle-and-delayed-ack | 1건씩 INSERT 10만 번 → 수 분(배치하면 수 초 [?]). 배치가 너무 큼 → 락 장기 보유, MySQL `Packet for query is too large`(max_allowed_packet). 배치를 모으는 대기 시간이 p99에 더해진다. 배치 중 일부만 실패했는데 전체 성공으로 처리 | 버퍼 + 크기·시간 트리거 flush(data-structure/38-ring-buffer) | Redis 문서 "Pipelining" [?] · PostgreSQL 문서 "Populating a Database"(COPY) [?] | 권장 | 신규 |
+| 19-performance-measurement | 지연 분포·백분위·벤치마크 방법론·coordinated omission, open vs closed 부하 모델(도착률 고정 vs 사용자 수 고정) | data-analysis/05-percentiles-and-latency-distributions | 평균만 보고 판단; 부하 생성기가 느린 응답 동안 요청을 안 보냄 → p99 과소 측정 [?] | HdrHistogram, t-digest | Gregg 『Systems Performance』 2판 12장 [?] · Tene "How NOT to Measure Latency" [?] · Grafana k6 "Open and closed models" · giltene/wrk2 README | 필수 | 신규 |
+| 36-profiling | CPU·메모리·락·off-CPU 프로파일링, 플레임 그래프, 실습: async-profiler(AsyncGetCallTrace + perf_events) — 힙 분석 심화는 37 | 19, os/31-os-observability-tools | 추측 최적화 → 병목 아닌 곳 수정; 세이프포인트 편향 프로파일러 | 스택 샘플 집계(트라이) | Gregg "Flame Graphs" CACM 2016 | 권장 | 신규 |
+| 21-scaling-principles | 병목 이동·Little's Law·USL·무상태화 | math/10-queueing-and-littles-law | 인스턴스 늘렸는데 처리량 역전(USL 역행 — 경합·일관성 비용) | USL 곡선 | Gunther USL · `systems/server-design` 01 | 필수 | `systems/server-design/01-scaling-principles.md` |
+| 22-capacity-and-load-testing | 사이징·부하 테스트 설계·헤드룸, open vs closed 부하 모델 선택 | 21, 19 | 부하 테스트 데이터가 캐시에 다 들어가 운영보다 낙관적; 헤드룸 없이 피크 진입 | — | SRE 18장 [?] · `systems/server-design` 09 | 필수 | `systems/server-design/09-capacity-slo.md` (분할 — 사이징·부하 테스트·오토스케일링 절) |
+| 41-autoscaling | 지표 기반 확장·반응 지연·쿨다운 | 22, 33 | 스케일 반응(수 분) < 트래픽 급증(수 초) → 확장 전 붕괴; 쿨다운 없음 → flapping | 제어 루프, 이동 평균 | k8s HPA 문서 | 권장 | 신규 |
+| 20-performance-method-and-amdahl | 측정 → 병목 특정 → 한 가지만 바꾸기 → 재측정. Amdahl의 법칙, 병목 이동, 안티 방법론(가로등 효과·무작위 튜닝) | os/31-os-observability-tools, 19 | 전체의 5%인 구간을 2배 빠르게 해 봐야 전체는 약 2.5% 개선(Amdahl). JVM·커널 플래그를 여러 개 한꺼번에 바꿈 → 무엇이 효과였는지 모르고 회귀도 재현하지 못함 | Amdahl 식, 병목 탐색 순서(USE 체크리스트) | Amdahl AFIPS 1967 · Gregg 『Systems Performance』 2판 2장 [?] | 필수 | 신규 (연결: `engineering/engineering-axes/performance.md` 대원칙 절) |
+| 38-microbenchmarking | JMH, 워밍업·반복·포크, 데드 코드 제거·상수 접기 함정, Blackhole, 결과 비교의 통계 | 19, language/22-ir-and-optimization, data-analysis/08-confidence-intervals | 결과가 0.3 ns/op → 계산이 DCE로 지워졌다. `System.nanoTime` 루프로 직접 잼 → OSR·워밍업 때문에 왜곡. 포크 1회로 여러 벤치마크를 돌림 → 프로파일이 섞여 실행 순서마다 결과가 다름 | 반복 측정 분포, 신뢰구간 | OpenJDK JMH(`jmh-samples`) · Georges 외 OOPSLA 2007 "Statistically Rigorous Java Performance Evaluation" [?] | 권장 | 신규 |
+| 37-memory-leak-and-heap-analysis | 힙 덤프·히스토그램, 지배자 트리와 retained size, 누수 패턴(static 컬렉션·리스너·ThreadLocal·무제한 캐시), 힙 밖 누수(direct buffer·native·NMT), RSS vs 힙 | 36, language/10-garbage-collection, os/13-oom-and-memory-limits | GC 후 바닥선이 계속 올라가는 톱니 → 결국 `OutOfMemoryError: Java heap space`. 힙은 정상인데 RSS만 우상향 → native·direct 메모리 누수로 `OOMKilled`. 운영 중에 힙 덤프를 뜸 → 수십 초 STW와 디스크 풀 | **지배자 트리**(Lengauer–Tarjan), 객체 그래프 도달성(algorithm/18-dfs) | Eclipse MAT 문서 "Dominator Tree" [?] · Lengauer–Tarjan TOPLAS 1979 | 필수 | 신규 |
+| 42-cold-start-and-scale-from-zero | 서버리스 Init 단계, 컨테이너 이미지 pull, 런타임 시작 + JIT 워밍업, readiness 설계, provisioned concurrency·스냅숏 복원(SnapStart) | 41, language/24-aot-native-image-and-startup, os/28-containers-namespaces-cgroups | Lambda Init Duration 수 초 → 첫 요청 타임아웃. 스케일 아웃된 새 파드가 이미지 pull과 워밍업 도중 트래픽을 받아 p99가 급등. 스냅숏 복원 뒤 난수 시드·커넥션 같은 고유 상태가 복제되는 문제 [?] | 인스턴스 풀(예열 풀 크기 = Little's law, math/10-queueing-and-littles-law) | AWS Lambda "Understanding the Lambda execution environment lifecycle" · AWS Lambda "Improving startup performance with Lambda SnapStart" · AWS Compute Blog "Understanding and Remediating Cold Starts" | 권장 | 신규 (연결: `language/23-jit-tiered-compilation-and-warmup`) |
+| 39-async-io-gains-and-limits | 비동기·논블로킹·가상 스레드가 늘려 주는 것은 **동시성**(처리량)이지 지연이 아니다. CPU 바운드에서는 이득 없음, 블로킹 경로가 섞였을 때, 병목이 하류 풀로 이동 | language/14-concurrency-models, os/25-io-models, math/10-queueing-and-littles-law, database/21-connection-pooling | 리액티브로 전환했는데 JDBC가 블로킹 → 이벤트 루프 스레드 고갈로 처리량이 오히려 떨어짐. 가상 스레드로 동시 요청이 10배 → DB 풀 고갈 `Connection is not available, request timed out`. 백프레셔 없는 비동기 팬아웃 → 메모리 폭증 | Little's law(L=λW), 유계 큐 | JEP 444 "Virtual Threads"(scale, not speed) · Little 1961 | 권장 | 신규 |
+| 40-batching-and-round-trips | 왕복(RTT) 줄이기: 요청 배칭, 파이프라이닝, bulk insert·`COPY`, DataLoader식 모으기. 배치 크기 ↔ 지연 트레이드오프, 배치의 부분 실패 | architecture/13-latency-numbers, database/23-orm-and-n-plus-one, network/22-nagle-and-delayed-ack | 1건씩 INSERT 10만 번 → 수 분(배치하면 수 초 [?]). 배치가 너무 큼 → 락 장기 보유, MySQL `Packet for query is too large`(max_allowed_packet). 배치를 모으는 대기 시간이 p99에 더해진다. 배치 중 일부만 실패했는데 전체 성공으로 처리 | 버퍼 + 크기·시간 트리거 flush(data-structure/25-ring-buffer) | Redis 문서 "Pipelining" [?] · PostgreSQL 문서 "Populating a Database"(COPY) [?] | 권장 | 신규 |
 
 ### 11.4 관측성
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 23-logging | 구조화 로그·상관 ID·레벨·샘플링 | 01 | 로그 폭증 → 디스크 풀·비용; 상관 ID 없음 → 요청 추적 불가; 동기 로깅이 지연 유발 | 링 버퍼 비동기 appender | OpenTelemetry Logs 명세 · 12-factor XI | 필수 | 신규 |
-| 24-metrics-and-golden-signals | 4 골든 시그널·RED·USE, 카운터/게이지/히스토그램 | 23 | 레이블 카디널리티 폭발(user_id 레이블) → TSDB OOM; 평균 지표로 꼬리 은폐; 히스토그램 버킷 부적절 | 히스토그램 버킷, 시계열 압축(Gorilla) | SRE 6장 · Gregg USE · Pelkonen 외 VLDB 2015 | 필수 | `systems/server-design/08-deployment-ops.md` (분할 — 골든 시그널 절) |
-| 25-distributed-tracing | 트레이스·스팬·컨텍스트 전파·샘플링, **baggage**(업무 문맥 전파 — W3C Baggage, 64항목·8192바이트까지 전파 의무), **span link**(큐·배치에서 여러 부모 연결) | 24 | 비동기 경계(큐·스레드풀)에서 컨텍스트 끊김 → 트레이스 조각남; head 샘플링으로 에러 트레이스 누락; 배치 소비에서 producer span을 부모로 삼아 트레이스 왜곡(span link로 해결) | 스팬 트리 | W3C Trace Context · W3C Baggage · OTel Messaging spans semconv · Sigelman 외 2010 (Dapper) | 필수 | 신규 |
-| 26-alerting-and-on-call | 증상 기반 알람·번 레이트 알람·온콜 | 02, 24 | 원인 기반 알람 남발 → 알람 피로로 진짜 장애 놓침 | 다중 윈도 번 레이트 | SRE 6장 · SRE Workbook 5장 [?] | 권장 | 신규 |
-| 44-logs-traces-audit-roles | 네 가지 기록의 역할 구분. 운영 로그(버려도 됨·샘플링 가능), 지표, 추적(인과·지연 — 샘플링됨), **감사 기록·업무 기록**(버리면 안 됨·보존 기한·변조 방지). "이 사건은 어디에 남겨야 하나" 판정 기준 | 23, 25, security/25-security-logging-and-audit | 감사가 필요한 사건을 앱 로그에만 남긴다 → 14일 보존이 지나면 증거가 사라진다. 로그 샘플링·레벨 조정이 업무 이벤트까지 버린다. 트레이스를 감사 근거로 쓴다 → head 샘플링으로 해당 요청이 없다. 로그에 PII를 남긴다 → 삭제 요청 범위가 로그까지 번진다 | 해시 체인, 링 버퍼(운영 로그) | OpenTelemetry 명세 Signals(Logs·Traces·Metrics) · OWASP Logging Cheat Sheet [?] | 필수 | 신규 |
+| 15-logging | 구조화 로그·상관 ID·레벨·샘플링 | 01 | 로그 폭증 → 디스크 풀·비용; 상관 ID 없음 → 요청 추적 불가; 동기 로깅이 지연 유발 | 링 버퍼 비동기 appender | OpenTelemetry Logs 명세 · 12-factor XI | 필수 | 신규 |
+| 16-metrics-and-golden-signals | 4 골든 시그널·RED·USE, 카운터/게이지/히스토그램 | 15 | 레이블 카디널리티 폭발(user_id 레이블) → TSDB OOM; 평균 지표로 꼬리 은폐; 히스토그램 버킷 부적절 | 히스토그램 버킷, 시계열 압축(Gorilla) | SRE 6장 · Gregg USE · Pelkonen 외 VLDB 2015 | 필수 | `systems/server-design/08-deployment-ops.md` (분할 — 골든 시그널 절) |
+| 17-distributed-tracing | 트레이스·스팬·컨텍스트 전파·샘플링, **baggage**(업무 문맥 전파 — W3C Baggage, 64항목·8192바이트까지 전파 의무), **span link**(큐·배치에서 여러 부모 연결) | 16 | 비동기 경계(큐·스레드풀)에서 컨텍스트 끊김 → 트레이스 조각남; head 샘플링으로 에러 트레이스 누락; 배치 소비에서 producer span을 부모로 삼아 트레이스 왜곡(span link로 해결) | 스팬 트리 | W3C Trace Context · W3C Baggage · OTel Messaging spans semconv · Sigelman 외 2010 (Dapper) | 필수 | 신규 |
+| 43-alerting-and-on-call | 증상 기반 알람·번 레이트 알람·온콜 | 02, 16 | 원인 기반 알람 남발 → 알람 피로로 진짜 장애 놓침 | 다중 윈도 번 레이트 | SRE 6장 · SRE Workbook 5장 [?] | 권장 | 신규 |
+| 18-logs-traces-audit-roles | 네 가지 기록의 역할 구분. 운영 로그(버려도 됨·샘플링 가능), 지표, 추적(인과·지연 — 샘플링됨), **감사 기록·업무 기록**(버리면 안 됨·보존 기한·변조 방지). "이 사건은 어디에 남겨야 하나" 판정 기준 | 15, 17, security/26-security-logging-and-audit | 감사가 필요한 사건을 앱 로그에만 남긴다 → 14일 보존이 지나면 증거가 사라진다. 로그 샘플링·레벨 조정이 업무 이벤트까지 버린다. 트레이스를 감사 근거로 쓴다 → head 샘플링으로 해당 요청이 없다. 로그에 PII를 남긴다 → 삭제 요청 범위가 로그까지 번진다 | 해시 체인, 링 버퍼(운영 로그) | OpenTelemetry 명세 Signals(Logs·Traces·Metrics) · OWASP Logging Cheat Sheet [?] | 필수 | 신규 |
 
 ### 11.5 배포·변경·사고 대응
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 27-deployment-strategies | 롤링·블루그린·카나리·피처 플래그·롤백 | 14 | 신·구 버전 동시 실행 비호환(스키마·메시지) → 배포 중에만 에러; 롤백 불가 변경 | 점진 비율 제어 | `systems/server-design` 08 · SRE 8장 [?] | 필수 | `systems/server-design/08-deployment-ops.md` (분할 — 무중단 배포·롤백 절) |
-| 28-high-availability-topology | 이중화 모델·페일오버·split-brain·다중 AZ/리전 | 01, distributed/14-leader-election | 페일오버 자동화가 오탐으로 멀쩡한 주 노드 강등; 같은 AZ 이중화 → 동시 장애 | 헬스 판정 상태 기계 | `systems/server-design` 05 | 필수 | `systems/server-design/05-ha-topology.md` (분할 — 이중화·failover·다중 AZ 절) |
-| 29-incident-response-and-postmortem | 사고 지휘·완화 우선·비난 없는 포스트모템 | 26 | 원인 규명부터 하다 완화 지연; 개인 비난 → 은폐 문화 | 타임라인 | SRE 14·15장 [?] | 필수 | 신규 |
-| 30-chaos-and-resilience-testing | 장애 주입·게임 데이 | 29 | 가정한 페일오버가 실제로는 안 됨을 사고 때 발견 | — | Basiri 외 IEEE Software 2016 (Chaos Engineering) | 권장 | 신규 |
-| 31-disaster-recovery | RPO/RTO·백업 리전·복구 훈련 | 28, database/28-backup-and-pitr | DR 훈련 안 함 → 실제 전환 시 설정 누락; RPO 약속과 복제 방식 불일치 | — | AWS "Disaster Recovery of Workloads" 백서 [?] | 권장 | 신규 |
-| 32-server-design-antipatterns | 흔한 안티패턴 카탈로그(구조·운영 — 코드 수준 성능·안정성 안티패턴은 50) | 27 | (카탈로그 자체가 ⚠ 모음) | — | 기존 노트 원고 | 권장 | `systems/server-design/11-antipatterns.md` |
-| 35-feature-flag-lifecycle | 플래그 유형(릴리스·운영 킬 스위치·실험·권한), 평가 일관성, 플래그 서비스 장애 시 기본값, 제거 부채 | 27-deployment-strategies, engineering-practice/05-branching-strategies | 재사용한 오래된 플래그가 죽은 코드를 되살림(Knight Capital 2012). 플래그 서버 장애 → 기본값이 "켜짐"이라 미완성 기능 전면 노출. 요청마다 평가가 달라 한 화면 안에서 신·구 UI 혼재. 수백 개 방치 플래그 → 조합 테스트 불가 | 결정적 해시 버킷(사용자 → %), 규칙 트리 평가 | Hodgson "Feature Toggles (aka Feature Flags)" https://martinfowler.com/articles/feature-toggles.html · SEC 명령 34-70694 (Knight Capital) | 필수 | 신규 (연결: `engineering-practice/18-practice-incidents`, `software-design/49-designing-for-deletion`) |
-| 36-batch-job-restart-and-checkpoint | 배치 설계: 청크 커밋·체크포인트, 멱등 재실행, 실행 이력(잡 저장소), 부분 실패 보고, 크론 시간대·DST, 배포와 장시간 잡 공존 | 15-scheduler-and-cron-ha, 12-idempotency, database/44-large-backfill-and-batch-dml | 중간 실패 후 처음부터 재실행 → 앞부분 이중 정산. 실패 행을 스킵하고 "COMPLETED"로 끝남(**부분 실패 성공 위장**). DST 전환일에 `0 2 * * *` 잡이 누락되거나 두 번 실행. 배포 SIGTERM에 잡이 죽어 락만 남음 | 체크포인트 커서, 실행 상태 기계 | Spring Batch 문서 "Configuring a Step"(재시작·skip) · Kubernetes 문서 "CronJob"(`concurrencyPolicy`·`timeZone`·`startingDeadlineSeconds`) | 필수 | 신규 (연결: `api-design/19-case-settlement-report`, 시간 한도는 `48-batch-and-job-time-bounds`) |
-| 37-runbooks-and-operational-readiness | 런북 구조(증상·확인 명령·완화·에스컬레이션), 알람 → 런북 링크, 출시 전 운영 준비도 점검(PRR), 온콜 인수인계 | 29-incident-response-and-postmortem, 26-alerting-and-on-call | 새벽 알람에 런북이 없어 담당자 호출까지 30분. 런북 명령이 구 인프라 기준이라 실행 시 2차 사고. 출시 후 대시보드·알람이 없어 고객 문의로 장애 인지 | 결정 트리(증상 분기) | SRE Workbook "On-Call" [?] · SRE 32장 "The Evolving SRE Engagement Model"(PRR) [?] · PagerDuty Incident Response 문서 https://response.pagerduty.com/ | 권장 | 신규 (연결: `engineering-practice/11-documentation-practices`) |
-| 52-cells-stamps-and-blast-radius | Deployment Stamps·셀 기반 아키텍처·Geode·셔플 샤딩 — 장애 반경을 구조로 제한 | 28-high-availability-topology, software-design/19-multi-tenancy | 전역 공유 구성 요소 하나 장애 → 전 고객 동시 중단; 셀 라우팅 계층 자체가 SPOF; 셀 간 데이터 이동(재배치) 절차 부재 → 대형 테넌트가 셀 하나를 포화 | 테넌트 → 셀 매핑(일관 해싱 data-structure/31), 셔플 샤딩 조합 | Azure Deployment Stamps·Geode · AWS Well-Architected "Reducing the Scope of Impact with Cell-Based Architecture" [?] · AWS Builders' Library "Workload isolation using shuffle-sharding" [?] | 권장 | 신규 |
+| 23-deployment-strategies | 롤링·블루그린·카나리·피처 플래그·롤백 | 14 | 신·구 버전 동시 실행 비호환(스키마·메시지) → 배포 중에만 에러; 롤백 불가 변경 | 점진 비율 제어 | `systems/server-design` 08 · SRE 8장 [?] | 필수 | `systems/server-design/08-deployment-ops.md` (분할 — 무중단 배포·롤백 절) |
+| 25-high-availability-topology | 이중화 모델·페일오버·split-brain·다중 AZ/리전 | 01, distributed/10-leader-election | 페일오버 자동화가 오탐으로 멀쩡한 주 노드 강등; 같은 AZ 이중화 → 동시 장애 | 헬스 판정 상태 기계 | `systems/server-design` 05 | 필수 | `systems/server-design/05-ha-topology.md` (분할 — 이중화·failover·다중 AZ 절) |
+| 26-incident-response-and-postmortem | 사고 지휘·완화 우선·비난 없는 포스트모템 | 43 | 원인 규명부터 하다 완화 지연; 개인 비난 → 은폐 문화 | 타임라인 | SRE 14·15장 [?] | 필수 | 신규 |
+| 45-chaos-and-resilience-testing | 장애 주입·게임 데이 | 26 | 가정한 페일오버가 실제로는 안 됨을 사고 때 발견 | — | Basiri 외 IEEE Software 2016 (Chaos Engineering) | 권장 | 신규 |
+| 46-disaster-recovery | RPO/RTO·백업 리전·복구 훈련 | 25, database/20-backup-and-pitr | DR 훈련 안 함 → 실제 전환 시 설정 누락; RPO 약속과 복제 방식 불일치 | — | AWS "Disaster Recovery of Workloads" 백서 [?] | 권장 | 신규 |
+| 47-server-design-antipatterns | 흔한 안티패턴 카탈로그(구조·운영 — 코드 수준 성능·안정성 안티패턴은 48) | 23 | (카탈로그 자체가 ⚠ 모음) | — | 기존 노트 원고 | 권장 | `systems/server-design/11-antipatterns.md` |
+| 24-feature-flag-lifecycle | 플래그 유형(릴리스·운영 킬 스위치·실험·권한), 평가 일관성, 플래그 서비스 장애 시 기본값, 제거 부채 | 23-deployment-strategies, engineering-practice/04-branching-strategies | 재사용한 오래된 플래그가 죽은 코드를 되살림(Knight Capital 2012). 플래그 서버 장애 → 기본값이 "켜짐"이라 미완성 기능 전면 노출. 요청마다 평가가 달라 한 화면 안에서 신·구 UI 혼재. 수백 개 방치 플래그 → 조합 테스트 불가 | 결정적 해시 버킷(사용자 → %), 규칙 트리 평가 | Hodgson "Feature Toggles (aka Feature Flags)" https://martinfowler.com/articles/feature-toggles.html · SEC 명령 34-70694 (Knight Capital) | 필수 | 신규 (연결: `engineering-practice/20-practice-incidents`, `software-design/54-designing-for-deletion`) |
+| 31-batch-job-restart-and-checkpoint | 배치 설계: 청크 커밋·체크포인트, 멱등 재실행, 실행 이력(잡 저장소), 부분 실패 보고, 크론 시간대·DST, 배포와 장시간 잡 공존 | 30-scheduler-and-cron-ha, 13-idempotency, database/34-large-backfill-and-batch-dml | 중간 실패 후 처음부터 재실행 → 앞부분 이중 정산. 실패 행을 스킵하고 "COMPLETED"로 끝남(**부분 실패 성공 위장**). DST 전환일에 `0 2 * * *` 잡이 누락되거나 두 번 실행. 배포 SIGTERM에 잡이 죽어 락만 남음 | 체크포인트 커서, 실행 상태 기계 | Spring Batch 문서 "Configuring a Step"(재시작·skip) · Kubernetes 문서 "CronJob"(`concurrencyPolicy`·`timeZone`·`startingDeadlineSeconds`) | 필수 | 신규 (연결: `api-design/25-case-settlement-report`, 시간 한도는 `32-batch-and-job-time-bounds`) |
+| 44-runbooks-and-operational-readiness | 런북 구조(증상·확인 명령·완화·에스컬레이션), 알람 → 런북 링크, 출시 전 운영 준비도 점검(PRR), 온콜 인수인계 | 26-incident-response-and-postmortem, 43-alerting-and-on-call | 새벽 알람에 런북이 없어 담당자 호출까지 30분. 런북 명령이 구 인프라 기준이라 실행 시 2차 사고. 출시 후 대시보드·알람이 없어 고객 문의로 장애 인지 | 결정 트리(증상 분기) | SRE Workbook "On-Call" [?] · SRE 32장 "The Evolving SRE Engagement Model"(PRR) [?] · PagerDuty Incident Response 문서 https://response.pagerduty.com/ | 권장 | 신규 (연결: `engineering-practice/11-documentation-practices`) |
+| 51-cells-stamps-and-blast-radius | Deployment Stamps·셀 기반 아키텍처·Geode·셔플 샤딩 — 장애 반경을 구조로 제한 | 25-high-availability-topology, software-design/49-multi-tenancy | 전역 공유 구성 요소 하나 장애 → 전 고객 동시 중단; 셀 라우팅 계층 자체가 SPOF; 셀 간 데이터 이동(재배치) 절차 부재 → 대형 테넌트가 셀 하나를 포화 | 테넌트 → 셀 매핑(일관 해싱 data-structure/23), 셔플 샤딩 조합 | Azure Deployment Stamps·Geode · AWS Well-Architected "Reducing the Scope of Impact with Cell-Based Architecture" [?] · AWS Builders' Library "Workload isolation using shuffle-sharding" [?] | 권장 | 신규 |
 
 ### 11.6 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 33-reliability-symptom-index | **증상 → 진단 → 처방 플레이북**(지연 급증·에러율 급증·연쇄 장애·배포 직후 502·메모리 우상향 등). 추가: 배포 직후만 느림(language/22, 41), RSS만 우상향(40), 비동기 전환 후 더 느림(42), 504인데 결제됨(49·domain-modeling/27), 타임아웃 났는데 DB 쿼리는 계속 돔(47·database/54), 잡 hang 후 이중 실행(48) | 전체 | — | — | 기존 노트 원고 | 필수 | `systems/server-design/10-playbook-by-symptom.md` |
-| 34-reliability-incidents | 실사건: AWS S3 us-east-1 오타 명령(2017-02-28) · Slack 연휴 후 복귀 트래픽(2021-01-04) · Roblox Consul 73시간(2021-10) · CrowdStrike 채널 파일(2024-07-19) | 33 | — | — | AWS 요약 2017 · Slack Engineering 2021 · Roblox 블로그 2022-01 · CrowdStrike PIR 2024 | 권장 | 신규 |
+| 52-reliability-symptom-index | **증상 → 진단 → 처방 플레이북**(지연 급증·에러율 급증·연쇄 장애·배포 직후 502·메모리 우상향 등). 추가: 배포 직후만 느림(language/23, 42), RSS만 우상향(37), 비동기 전환 후 더 느림(39), 504인데 결제됨(35·domain-modeling/25), 타임아웃 났는데 DB 쿼리는 계속 돔(09·database/22), 잡 hang 후 이중 실행(32) | 전체 | — | — | 기존 노트 원고 | 필수 | `systems/server-design/10-playbook-by-symptom.md` |
+| 53-reliability-incidents | 실사건: AWS S3 us-east-1 오타 명령(2017-02-28) · Slack 연휴 후 복귀 트래픽(2021-01-04) · Roblox Consul 73시간(2021-10) · CrowdStrike 채널 파일(2024-07-19) | 52 | — | — | AWS 요약 2017 · Slack Engineering 2021 · Roblox 블로그 2022-01 · CrowdStrike PIR 2024 | 권장 | 신규 |
 
 # Part 5 — 만드는 법
 
@@ -1057,7 +1069,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 > 복잡도 → 모듈 → 코드 수준 → OOP → 패턴 → 아키텍처 → 품질 속성. 소프트웨어 설계에서 "깨지면"은 크래시가 아니라 **변경 비용 폭증·조용한 결합**으로 보인다 — ⚠ 칸은 스멜과 변경 시 증상으로 적는다. 2026-09-28 병합으로 **설계를 코드로 옮기는 층**(12.2b)·**패턴 확장과 프레임워크 합성**(12.4b·12.4c)·**경계와 표현**(12.5b)·**유지보수성 판단**(12.1b·12.2a·12.5c — "언제·얼마나·어떤 순서로 바꾸나")을 더했다.
 > 뼈대: Ousterhout 『A Philosophy of Software Design』 2판(이하 APOSD), Fowler 『Refactoring』 2판, Martin 『Clean Architecture』, GoF, Parnas 1972, ISO/IEC 25010:2023, SWEBOK v4 Design·Architecture KA.
 
-**권장 학습 순서**: 01 → 02 → 03 → 37 → 38 → 04 → 46 → 47 → 48 → 05 → 39 → 40 → 06 → 41 → 07 → 30 → 26 → 50 → 08 → 09 → 10 → 11 → 12 → 31 → 29 → 32 → 13 → 51 → 33 → 27 → 14 → 52 → 53 → 54 → 55 → 56 → 15 → 16 → 17 → 28 → 43 → 34 → 35 → 36 → 18 → 20 → 21 → 22 → 19 → 25 → 42 → 44 → 45 → 49 → 23 → 24
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 27 → 28 → 29 → 30 → 31 → 32 → 33 → 34 → 35 → 36 → 37 → 38 → 39 → 40 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56
 
 ### 12.1 복잡도와 모듈
 
@@ -1071,123 +1083,123 @@ Part 6  판단하는 법             data-engineering → data-analysis
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 37-decompose-by-change | 분해 기준 = **바뀔 결정을 숨긴다**. 처리 단계(흐름도)로 나누지 않는다. KWIC 두 분해 비교, 변동성 축 찾기(무엇이 어떤 이유로 얼마나 자주 바뀌나), 기능 분해의 함정 | 02-modularity-coupling-cohesion, 03-deep-modules-and-abstraction | 요구 1건("결제 수단 추가")에 컨트롤러·서비스·DTO·매퍼·enum 등 파일 12개 수정. 저장 포맷 변경이 모든 단계 모듈을 깨뜨림(단계별 분해가 포맷을 공유). 기능별 서비스(`OrderService`·`PaymentService`)가 같은 변동을 나눠 가짐 | 의존 그래프 위 변경 전파 범위(도달 가능 집합) | Parnas CACM 1972 · Löwy 『Righting Software』 2019 1부 [?] · APOSD 5장 | 필수 | 신규 (02를 심화) |
-| 38-connascence | 결합을 **종류·강도·지역성·정도**로 재는 어휘다. 이름 → 타입 → 의미 → 위치 → 알고리즘(정적), 실행 순서 → 타이밍 → 값 → 동일성(동적). 강한 것은 약하게 바꾸고, 멀리 떨어질수록 약한 것만 허용한다 | 02 | 인자 순서 결합: `transfer(from, to, amount)`에서 from/to 뒤바뀜 → 컴파일은 통과하고 반대 송금. 매직 값 결합: 상태 `3`의 뜻이 서비스 2곳에 따로 하드코딩돼 한쪽만 수정. 호출 순서 결합: `init()` 전 `send()` 호출 시 NPE | — | Page-Jones 『What Every Programmer Should Know About OOD』 1995 [?] · Weirich "Grand Unified Theory of Software Design" 2009 [?] · connascence.io | 권장 | 신규 |
+| 04-decompose-by-change | 분해 기준 = **바뀔 결정을 숨긴다**. 처리 단계(흐름도)로 나누지 않는다. KWIC 두 분해 비교, 변동성 축 찾기(무엇이 어떤 이유로 얼마나 자주 바뀌나), 기능 분해의 함정 | 02-modularity-coupling-cohesion, 03-deep-modules-and-abstraction | 요구 1건("결제 수단 추가")에 컨트롤러·서비스·DTO·매퍼·enum 등 파일 12개 수정. 저장 포맷 변경이 모든 단계 모듈을 깨뜨림(단계별 분해가 포맷을 공유). 기능별 서비스(`OrderService`·`PaymentService`)가 같은 변동을 나눠 가짐 | 의존 그래프 위 변경 전파 범위(도달 가능 집합) | Parnas CACM 1972 · Löwy 『Righting Software』 2019 1부 [?] · APOSD 5장 | 필수 | 신규 (02를 심화) |
+| 05-connascence | 결합을 **종류·강도·지역성·정도**로 재는 어휘다. 이름 → 타입 → 의미 → 위치 → 알고리즘(정적), 실행 순서 → 타이밍 → 값 → 동일성(동적). 강한 것은 약하게 바꾸고, 멀리 떨어질수록 약한 것만 허용한다 | 02 | 인자 순서 결합: `transfer(from, to, amount)`에서 from/to 뒤바뀜 → 컴파일은 통과하고 반대 송금. 매직 값 결합: 상태 `3`의 뜻이 서비스 2곳에 따로 하드코딩돼 한쪽만 수정. 호출 순서 결합: `init()` 전 `send()` 호출 시 NPE | — | Page-Jones 『What Every Programmer Should Know About OOD』 1995 [?] · Weirich "Grand Unified Theory of Software Design" 2009 [?] · connascence.io | 권장 | 신규 |
 
 ### 12.2 코드 수준
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 04-clean-code | 좋은 코드의 5속성(CLEAN — Cohesive·Loosely coupled·Encapsulated·Assertive·Nonredundant)과 속성 간 긴장 — 품질 검사표. 이름·함수·주석은 46·47·48로 분리 | 02 | 검사표 없이 리뷰 → 결합·중복을 놓침; Nonredundant만 좇아 우연한 중복까지 합침 → 잘못된 추상화(→ 39) | — | 기존 원고(jun-bank 노트) · Shalloway–Trott 『Design Patterns Explained』 CLEAN 두문자어 [?] | 필수 | `engineering/clean-code` (연결: E ↔ 09, A ↔ domain-modeling/09, N ↔ 39) |
-| 05-code-smells | 스멜 카탈로그(Shotgun Surgery·Divergent Change·Speculative Generality·Feature Envy 등) — Mäntylä 분류(Bloaters·OO Abusers·Change Preventers·Dispensables·Couplers) [?]로 묶고, 질문이 10개를 넘으면 05a(Change Preventers·Couplers)·05b(Bloaters·Dispensables)로 분할 | 04 | 스멜 방치 → 변경마다 회귀 버그 | — | Fowler 『Refactoring』 2판 3장 | 필수 | 신규 |
-| 06-refactoring | 동작 보존 변환·작은 단계·테스트 안전망 | 05, testing/02-good-unit-tests | 테스트 없이 리팩터링 → 조용한 동작 변경; 큰 한 방 리팩터링 → 머지 지옥(판단층은 41 Tidy First·42 레거시 기법·45 핫스팟·39 추상화 되돌리기) | — | Fowler 『Refactoring』 2판 1·2·4장 | 필수 | 신규 |
-| 07-error-handling-design | fail-fast·예외 경계·에러 정의로 없애기 | language/09-error-handling-models | 모든 곳에서 catch-log-rethrow → 로그 중복·원인 은폐; 삼킨 예외 → 조용한 실패 | — | APOSD 10장 | 필수 | 신규 |
-| 08-immutability-and-value-objects | 불변 객체·값 의미론 | 07, language/07-values-references-passing | 공유 가변 객체 → 한 곳 수정이 다른 요청에 누출; 해시 키 변이 | 영속 자료구조 | Bloch 『Effective Java』 3판 Item 17 | 권장 | 신규 (연결: `languages/java/syntax/59-immutable-objects`) |
+| 06-clean-code | 좋은 코드의 5속성(CLEAN — Cohesive·Loosely coupled·Encapsulated·Assertive·Nonredundant)과 속성 간 긴장 — 품질 검사표. 이름·함수·주석은 07·08·09로 분리 | 02 | 검사표 없이 리뷰 → 결합·중복을 놓침; Nonredundant만 좇아 우연한 중복까지 합침 → 잘못된 추상화(→ 11) | — | 기존 원고(jun-bank 노트) · Shalloway–Trott 『Design Patterns Explained』 CLEAN 두문자어 [?] | 필수 | `engineering/clean-code` (연결: E ↔ 20, A ↔ domain-modeling/06, N ↔ 11) |
+| 10-code-smells | 스멜 카탈로그(Shotgun Surgery·Divergent Change·Speculative Generality·Feature Envy 등) — Mäntylä 분류(Bloaters·OO Abusers·Change Preventers·Dispensables·Couplers) [?]로 묶고, 질문이 10개를 넘으면 05a(Change Preventers·Couplers)·05b(Bloaters·Dispensables)로 분할 | 06 | 스멜 방치 → 변경마다 회귀 버그 | — | Fowler 『Refactoring』 2판 3장 | 필수 | 신규 |
+| 13-refactoring | 동작 보존 변환·작은 단계·테스트 안전망 | 10, testing/02-good-unit-tests | 테스트 없이 리팩터링 → 조용한 동작 변경; 큰 한 방 리팩터링 → 머지 지옥(판단층은 14 Tidy First·51 레거시 기법·53 핫스팟·11 추상화 되돌리기) | — | Fowler 『Refactoring』 2판 1·2·4장 | 필수 | 신규 |
+| 15-error-handling-design | fail-fast·예외 경계·에러 정의로 없애기 | language/08-error-handling-models | 모든 곳에서 catch-log-rethrow → 로그 중복·원인 은폐; 삼킨 예외 → 조용한 실패 | — | APOSD 10장 | 필수 | 신규 |
+| 19-immutability-and-value-objects | 불변 객체·값 의미론 | 15, language/06-values-references-passing | 공유 가변 객체 → 한 곳 수정이 다른 요청에 누출; 해시 키 변이 | 영속 자료구조 | Bloch 『Effective Java』 3판 Item 17 | 권장 | 신규 (연결: `languages/java/syntax/59-immutable-objects`) |
 
-### 12.2a 가독성 — 04 분할 (2026-09-28 추가)
+### 12.2a 가독성 — 06 분할 (2026-09-28 추가)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 46-naming | 이름 = 추상화 수준의 첫 표현. 의도 드러내기, 도메인 어휘(ubiquitous language), 범위에 비례한 길이, 모호어(`data`·`info`·`manager`·`process`) 금지, 부정 boolean 피하기, 이름 붙이기 어렵다 = 책임이 불명확하다는 설계 신호 | 04-clean-code | `processData(list, flag)` → 리뷰어가 동작을 추측하다 버그 통과. `isNotDisabled` 이중 부정 → 조건 반전 버그. 같은 개념이 `user`·`member`·`customer`로 섞여 검색 누락, 한쪽만 수정 | — | Boswell–Foucher 『The Art of Readable Code』 2·3장 [?] · Hermans 『The Programmer's Brain』 8장 [?] · APOSD 14장 [?] | 필수 | 신규 (04에서 분할) |
-| 47-function-design | 함수 하나 = 한 추상화 수준(SLAP). 인자 수와 인자 객체, **플래그 인자 금지**, CQS(명령은 상태를 바꾸고, 질의는 값만 돌려준다), 출력 인자 금지, 가드 절, 함수 길이보다 깊이 | 46 | `save(order, true, false, null)` → 호출처에서 의미 불명, 순서 실수. 조회처럼 보이는 `getBalance()`가 캐시 갱신·로그를 해서 두 번 부르면 결과가 다름. 한 함수에 SQL 문자열 조립과 할인 정책이 섞여 정책 변경 때 SQL 회귀 | — | Fowler "CommandQuerySeparation" 2005 · Meyer 『OOSC』 2판 [?] · Martin 『Clean Code』 3장 [?] · APOSD 9장 [?] | 필수 | 신규 (04에서 분할) |
-| 48-comments-and-conventions | 주석이 필요한 자리: **왜**(결정·제약·외부 사정·버그 번호), 인터페이스 계약, 놀라운 동작. 불필요한 주석(what 반복·주석 처리된 코드·낡은 주석). 일관성: 팀 관례·포매터·린터로 논쟁 제거 | 47, 21-architecture-decision-records | 주석과 코드가 반대("재시도 3회" 주석, 코드는 5회) → 장애 때 잘못된 판단. `// 건드리지 마세요`만 있고 이유 없음 → 아무도 못 고침. 파일마다 스타일이 달라 diff의 절반이 포매팅 | — | APOSD 12·13장 [?] · Boswell–Foucher 5·6장 [?] · Google eng-practices "What to look for in a code review" | 권장 | 신규 (04에서 분할) |
+| 07-naming | 이름 = 추상화 수준의 첫 표현. 의도 드러내기, 도메인 어휘(ubiquitous language), 범위에 비례한 길이, 모호어(`data`·`info`·`manager`·`process`) 금지, 부정 boolean 피하기, 이름 붙이기 어렵다 = 책임이 불명확하다는 설계 신호 | 06-clean-code | `processData(list, flag)` → 리뷰어가 동작을 추측하다 버그 통과. `isNotDisabled` 이중 부정 → 조건 반전 버그. 같은 개념이 `user`·`member`·`customer`로 섞여 검색 누락, 한쪽만 수정 | — | Boswell–Foucher 『The Art of Readable Code』 2·3장 [?] · Hermans 『The Programmer's Brain』 8장 [?] · APOSD 14장 [?] | 필수 | 신규 (04에서 분할) |
+| 08-function-design | 함수 하나 = 한 추상화 수준(SLAP). 인자 수와 인자 객체, **플래그 인자 금지**, CQS(명령은 상태를 바꾸고, 질의는 값만 돌려준다), 출력 인자 금지, 가드 절, 함수 길이보다 깊이 | 07 | `save(order, true, false, null)` → 호출처에서 의미 불명, 순서 실수. 조회처럼 보이는 `getBalance()`가 캐시 갱신·로그를 해서 두 번 부르면 결과가 다름. 한 함수에 SQL 문자열 조립과 할인 정책이 섞여 정책 변경 때 SQL 회귀 | — | Fowler "CommandQuerySeparation" 2005 · Meyer 『OOSC』 2판 [?] · Martin 『Clean Code』 3장 [?] · APOSD 9장 [?] | 필수 | 신규 (04에서 분할) |
+| 09-comments-and-conventions | 주석이 필요한 자리: **왜**(결정·제약·외부 사정·버그 번호), 인터페이스 계약, 놀라운 동작. 불필요한 주석(what 반복·주석 처리된 코드·낡은 주석). 일관성: 팀 관례·포매터·린터로 논쟁 제거 | 08, 47-architecture-decision-records | 주석과 코드가 반대("재시도 3회" 주석, 코드는 5회) → 장애 때 잘못된 판단. `// 건드리지 마세요`만 있고 이유 없음 → 아무도 못 고침. 파일마다 스타일이 달라 diff의 절반이 포매팅 | — | APOSD 12·13장 [?] · Boswell–Foucher 5·6장 [?] · Google eng-practices "What to look for in a code review" | 권장 | 신규 (04에서 분할) |
 
 ### 12.2b 코드로 표현하는 설계 (2026-09-28 추가)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 30-error-strategy-exceptions-vs-results | 예외 vs 결과 타입 선택 기준(예상 가능한 도메인 실패 vs 버그·인프라 장애), Railway-oriented 합성, Special Case/Null Object, 경계에서 에러 → HTTP·메시지로 번역 | 07-error-handling-design, language/09-error-handling-models | 도메인 실패("잔액 부족")를 예외로 → 흐름 제어에 예외 남용·트랜잭션 롤백 규칙 오작동; 결과 타입을 무시하고 `.get()`/`unwrap()` → 런타임 panic; 모든 실패를 500으로 번역 → 클라이언트가 재시도해 폭풍 | Result/Either의 bind 체인(모나드적 합성), 합 타입 에러 계층 | Wlaschin "Railway Oriented Programming" · PoEAA Special Case · APOSD 10장 · RFC 9457 | 필수 | 신규 |
-| 26-error-messages-and-log-level-policy | 로그 레벨의 조작적 정의(ERROR = 사람 조치 필요, WARN = 자동 복구됨 등), 사용자용·개발자용 메시지 분리, 에러 코드 체계, 한 번만 로깅 | 07-error-handling-design, reliability/23-logging, api-design/04-error-format-problem-details | 예상된 4xx(검증 실패)를 ERROR로 기록 → 알람 피로로 진짜 장애 무시. catch-log-rethrow 계층마다 반복 → 스택 트레이스 5중 기록. 사용자에게 SQL 에러 원문 노출(정보 누출). "오류가 발생했습니다"만 표시 → 고객 문의로 원인 역추적 불가 | 에러 코드 → 메시지 맵 | RFC 5424 §6.2.1 (severity) · OWASP Error Handling Cheat Sheet · OWASP Logging Cheat Sheet | 필수 | 신규 |
-| 50-absence-and-null-design | "없음"의 설계: null 반환 vs 빈 컬렉션 vs `Optional` vs Null Object vs 예외. Optional 남용(필드·인자), null 경계 정하기(경계에서 제거하고 안쪽은 non-null 가정), 기본값의 의미 | 07-error-handling-design, 30, language/09-error-handling-models | 목록 조회가 `null`을 반환해 호출처 11곳 중 1곳이 체크 누락 → NPE. `Optional.get()` 무조건 호출로 NPE가 `NoSuchElementException`으로 이름만 바뀜. "없음"과 "0"을 구분 못 해 미입력 할인율을 0%로 저장 | Null Object(빈 구현) | Hoare "Null References: The Billion Dollar Mistake" QCon 2009 [?] · Bloch 『Effective Java』 3판 Item 54·55 [?] · Fowler 『Refactoring』 2판 "Introduce Special Case" | 권장 | 신규 |
-| 31-types-as-invariants | 원시 타입 집착 제거(ID·이메일·수량을 전용 타입으로), **parse, don't validate**(경계에서 한 번 파싱해 검증된 타입 반환), 불법 상태를 표현할 수 없게(합 타입·`sealed`, 필드 조합 대신 상태별 타입), 스마트 생성자·팩토리로 생성 시점에 불변식 확보 | 08-immutability-and-value-objects, 12-design-by-contract, language/06-type-systems, language/09-error-handling-models | `userId`와 `orderId`가 둘 다 `Long`이라 인자가 뒤바뀌어도 컴파일 통과, 남의 주문 조회. 같은 검증이 호출부 7곳에 반복되고 1곳만 최신 규칙 → 한 경로 누락으로 **불법 상태 저장**(음수 금액·빈 이메일). `status=PAID`인데 `paidAt=null`인 행 → 정산 NPE. 검증한 사실이 타입에 남지 않아 방어 코드 중복 | 합 타입(태그드 유니온), 정제 타입(newtype), 타입 상태(typestate) | King "Parse, don't validate" 2019 · Minsky "Effective ML" 2010 [?] · Wlaschin 『Domain Modeling Made Functional』 [?] · Fowler 『Refactoring』 2판 "Replace Primitive with Object" | 필수 | 신규 (연결: `domain-modeling/04`·`05`·`10`) |
-| 29-dependency-injection-and-composition-root | 생성자 주입·Composition Root(조립은 한 곳)·객체 수명(singleton/scoped/transient). 테스트하기 어려움 = 설계 신호 — 시계·난수·UUID 같은 **숨은 입력**도 주입한다. 안티패턴: Service Locator·Control Freak(`new` 숨김)·Ambient Context·정적 호출·Captive Dependency (Separated Interface·Plugin은 56) | 11-solid, testing/03-test-doubles | 싱글턴 빈에 요청 범위 객체 주입(**captive dependency**) → 요청 간 상태 누출; Service Locator·`getBean()` → 의존성이 시그니처에 안 보여 테스트 설정 누락이 런타임에야 발견; 순환 주입 `BeanCurrentlyInCreationException`; 서비스 단위 테스트에 DB·Redis·외부 API가 전부 필요하고 `mockStatic` 도배; `LocalDate.now()` 직접 호출로 월말에만 실패 (자기 호출 프록시 우회는 53) | 의존 그래프 + 위상 정렬(생성 순서), 프록시(Interceptor) | Seemann–van Deursen 『Dependency Injection Principles, Practices, and Patterns』 2019 · Fowler "Inversion of Control Containers and the Dependency Injection pattern" 2004 | 필수 | 신규 (연결: `engineering/design-patterns-gof` "Spring이 대신 해주는 것", `testing/12-testing-time-and-concurrency`) |
-| 32-functional-core-imperative-shell | 결정은 순수 함수(코어), I/O·DB·시간은 바깥 껍질(셸). "읽기 → 결정 → 쓰기" 샌드위치, 값 파이프라인 합성, 결정을 명령 값으로 반환, "의존성 주입 대신 의존성 거부" | 29, 31, language/10-functional-concepts | 할인 계산 로직이 리포지토리 호출 사이에 끼어 규칙 하나 테스트에 mock 7개 + 순서 검증 → 리팩터링마다 대량 실패(깨지기 쉬운 테스트). 같은 계산이 배치·API에서 부수효과와 엉켜 재사용 불가. 시계·난수 직접 호출 → 재현 불가 버그 | 값 파이프라인(map/filter/fold), 결정 = 명령 값(Command 반환) | Bernhardt "Boundaries" SCNA 2012 · Seemann "Dependency rejection" 2017 [?] · Khorikov 7장(Humble Object) [?] | 권장 | 신규 (연결: `testing/12-testing-time-and-concurrency`) |
+| 16-error-strategy-exceptions-vs-results | 예외 vs 결과 타입 선택 기준(예상 가능한 도메인 실패 vs 버그·인프라 장애), Railway-oriented 합성, Special Case/Null Object, 경계에서 에러 → HTTP·메시지로 번역 | 15-error-handling-design, language/08-error-handling-models | 도메인 실패("잔액 부족")를 예외로 → 흐름 제어에 예외 남용·트랜잭션 롤백 규칙 오작동; 결과 타입을 무시하고 `.get()`/`unwrap()` → 런타임 panic; 모든 실패를 500으로 번역 → 클라이언트가 재시도해 폭풍 | Result/Either의 bind 체인(모나드적 합성), 합 타입 에러 계층 | Wlaschin "Railway Oriented Programming" · PoEAA Special Case · APOSD 10장 · RFC 9457 | 필수 | 신규 |
+| 17-error-messages-and-log-level-policy | 로그 레벨의 조작적 정의(ERROR = 사람 조치 필요, WARN = 자동 복구됨 등), 사용자용·개발자용 메시지 분리, 에러 코드 체계, 한 번만 로깅 | 15-error-handling-design, reliability/15-logging, api-design/04-error-format-problem-details | 예상된 4xx(검증 실패)를 ERROR로 기록 → 알람 피로로 진짜 장애 무시. catch-log-rethrow 계층마다 반복 → 스택 트레이스 5중 기록. 사용자에게 SQL 에러 원문 노출(정보 누출). "오류가 발생했습니다"만 표시 → 고객 문의로 원인 역추적 불가 | 에러 코드 → 메시지 맵 | RFC 5424 §6.2.1 (severity) · OWASP Error Handling Cheat Sheet · OWASP Logging Cheat Sheet | 필수 | 신규 |
+| 18-absence-and-null-design | "없음"의 설계: null 반환 vs 빈 컬렉션 vs `Optional` vs Null Object vs 예외. Optional 남용(필드·인자), null 경계 정하기(경계에서 제거하고 안쪽은 non-null 가정), 기본값의 의미 | 15-error-handling-design, 16, language/08-error-handling-models | 목록 조회가 `null`을 반환해 호출처 11곳 중 1곳이 체크 누락 → NPE. `Optional.get()` 무조건 호출로 NPE가 `NoSuchElementException`으로 이름만 바뀜. "없음"과 "0"을 구분 못 해 미입력 할인율을 0%로 저장 | Null Object(빈 구현) | Hoare "Null References: The Billion Dollar Mistake" QCon 2009 [?] · Bloch 『Effective Java』 3판 Item 54·55 [?] · Fowler 『Refactoring』 2판 "Introduce Special Case" | 권장 | 신규 |
+| 24-types-as-invariants | 원시 타입 집착 제거(ID·이메일·수량을 전용 타입으로), **parse, don't validate**(경계에서 한 번 파싱해 검증된 타입 반환), 불법 상태를 표현할 수 없게(합 타입·`sealed`, 필드 조합 대신 상태별 타입), 스마트 생성자·팩토리로 생성 시점에 불변식 확보 | 19-immutability-and-value-objects, 23-design-by-contract, language/05-type-systems, language/08-error-handling-models | `userId`와 `orderId`가 둘 다 `Long`이라 인자가 뒤바뀌어도 컴파일 통과, 남의 주문 조회. 같은 검증이 호출부 7곳에 반복되고 1곳만 최신 규칙 → 한 경로 누락으로 **불법 상태 저장**(음수 금액·빈 이메일). `status=PAID`인데 `paidAt=null`인 행 → 정산 NPE. 검증한 사실이 타입에 남지 않아 방어 코드 중복 | 합 타입(태그드 유니온), 정제 타입(newtype), 타입 상태(typestate) | King "Parse, don't validate" 2019 · Minsky "Effective ML" 2010 [?] · Wlaschin 『Domain Modeling Made Functional』 [?] · Fowler 『Refactoring』 2판 "Replace Primitive with Object" | 필수 | 신규 (연결: `domain-modeling/04`·`05`·`11`) |
+| 25-dependency-injection-and-composition-root | 생성자 주입·Composition Root(조립은 한 곳)·객체 수명(singleton/scoped/transient). 테스트하기 어려움 = 설계 신호 — 시계·난수·UUID 같은 **숨은 입력**도 주입한다. 안티패턴: Service Locator·Control Freak(`new` 숨김)·Ambient Context·정적 호출·Captive Dependency (Separated Interface·Plugin은 36) | 22-solid, testing/03-test-doubles | 싱글턴 빈에 요청 범위 객체 주입(**captive dependency**) → 요청 간 상태 누출; Service Locator·`getBean()` → 의존성이 시그니처에 안 보여 테스트 설정 누락이 런타임에야 발견; 순환 주입 `BeanCurrentlyInCreationException`; 서비스 단위 테스트에 DB·Redis·외부 API가 전부 필요하고 `mockStatic` 도배; `LocalDate.now()` 직접 호출로 월말에만 실패 (자기 호출 프록시 우회는 33) | 의존 그래프 + 위상 정렬(생성 순서), 프록시(Interceptor) | Seemann–van Deursen 『Dependency Injection Principles, Practices, and Patterns』 2019 · Fowler "Inversion of Control Containers and the Dependency Injection pattern" 2004 | 필수 | 신규 (연결: `engineering/design-patterns-gof` "Spring이 대신 해주는 것", `testing/10-testing-time-and-concurrency`) |
+| 26-functional-core-imperative-shell | 결정은 순수 함수(코어), I/O·DB·시간은 바깥 껍질(셸). "읽기 → 결정 → 쓰기" 샌드위치, 값 파이프라인 합성, 결정을 명령 값으로 반환, "의존성 주입 대신 의존성 거부" | 25, 24, language/18-functional-concepts | 할인 계산 로직이 리포지토리 호출 사이에 끼어 규칙 하나 테스트에 mock 7개 + 순서 검증 → 리팩터링마다 대량 실패(깨지기 쉬운 테스트). 같은 계산이 배치·API에서 부수효과와 엉켜 재사용 불가. 시계·난수 직접 호출 → 재현 불가 버그 | 값 파이프라인(map/filter/fold), 결정 = 명령 값(Command 반환) | Bernhardt "Boundaries" SCNA 2012 · Seemann "Dependency rejection" 2017 [?] · Khorikov 7장(Humble Object) [?] | 권장 | 신규 (연결: `testing/10-testing-time-and-concurrency`) |
 
 ### 12.3 객체지향
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 09-oop-fundamentals | 캡슐화·상속·다형성·추상 클래스, IS-A/HAS-A | 02 | getter/setter 전부 공개 → 캡슐화 붕괴로 불변식 외부에서 깨짐 | vtable(language/11) | GoF 1장 · Meyer 『OOSC』 [?] | 필수 | `foundations/oop-basics` |
-| 10-composition-over-inheritance | 상속의 비용·취약한 기반 클래스·위임 | 09 | 부모 변경이 자식 전부 파손(fragile base class); `HashSet` 상속 카운터 이중 집계 | — | Bloch 『Effective Java』 3판 Item 18 · GoF 1장 | 권장 | 신규 |
-| 11-solid | SRP·OCP·LSP·ISP·DIP | 09 | LSP 위반 → 하위 타입에서 `UnsupportedOperationException`; DIP 부재 → 테스트 불가 | — | Martin 『Clean Architecture』 3부 | 필수 | `engineering/solid-principles` |
-| 12-design-by-contract | 사전조건·사후조건·클래스 불변식 | 11 | 계약 미명시 → 호출자·피호출자가 서로 검증 미룸 → 무효 상태 진입 | 불변식 검사 | Meyer 1992 "Applying Design by Contract" | 권장 | 신규 |
+| 20-oop-fundamentals | 캡슐화·상속·다형성·추상 클래스, IS-A/HAS-A | 02 | getter/setter 전부 공개 → 캡슐화 붕괴로 불변식 외부에서 깨짐 | vtable(language/17) | GoF 1장 · Meyer 『OOSC』 [?] | 필수 | `foundations/oop-basics` |
+| 21-composition-over-inheritance | 상속의 비용·취약한 기반 클래스·위임 | 20 | 부모 변경이 자식 전부 파손(fragile base class); `HashSet` 상속 카운터 이중 집계 | — | Bloch 『Effective Java』 3판 Item 18 · GoF 1장 | 권장 | 신규 |
+| 22-solid | SRP·OCP·LSP·ISP·DIP | 20 | LSP 위반 → 하위 타입에서 `UnsupportedOperationException`; DIP 부재 → 테스트 불가 | — | Martin 『Clean Architecture』 3부 | 필수 | `engineering/solid-principles` |
+| 23-design-by-contract | 사전조건·사후조건·클래스 불변식 | 22 | 계약 미명시 → 호출자·피호출자가 서로 검증 미룸 → 무효 상태 진입 | 불변식 검사 | Meyer 1992 "Applying Design by Contract" | 권장 | 신규 |
 
 ### 12.4 패턴
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 13-design-patterns-gof | 생성·구조·행위 패턴 23 | 11 | 패턴을 위한 패턴 → 간접 계층만 늘어남 | 합성(Composite=트리), 옵서버 목록, 상태 기계(State) | GoF | 필수 | `engineering/design-patterns-gof` |
-| 14-antipatterns | God Object·싱글턴 남용·Big Ball of Mud·과설계 | 13 | 전역 싱글턴 → 테스트 간 상태 누출·동시성 버그 | — | Foote–Yoder 1997 "Big Ball of Mud" | 권장 | 신규 |
+| 27-design-patterns-gof | 생성·구조·행위 패턴 23 | 22 | 패턴을 위한 패턴 → 간접 계층만 늘어남 | 합성(Composite=트리), 옵서버 목록, 상태 기계(State) | GoF | 필수 | `engineering/design-patterns-gof` |
+| 31-antipatterns | God Object·싱글턴 남용·Big Ball of Mud·과설계 | 27 | 전역 싱글턴 → 테스트 간 상태 누출·동시성 버그 | — | Foote–Yoder 1997 "Big Ball of Mud" | 권장 | 신규 |
 
 ### 12.4b 패턴 확장 (2026-09-28 추가)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 27-pattern-languages-and-catalogs | 패턴의 형식(맥락·힘·해법·결과)과 카탈로그 지형(GoF → POSA → PoEAA → EIP → microservices.io → 클라우드 패턴), 패턴 언어. 카탈로그 → leaf 역링크 표를 갖는 **허브** leaf | 13-design-patterns-gof | 이름만 빌리고 힘(forces)을 검토하지 않음 → 문제 없는 곳에 간접 계층 추가; **같은 이름 다른 뜻**(PoEAA Repository vs DDD Repository, Gateway vs API Gateway)으로 리뷰에서 서로 다른 것을 말함 | 패턴 관계 그래프(선행·대안·조합) | Alexander 『A Pattern Language』 1977 · Buschmann 외 POSA1 1996 · POSA5 "On Patterns and Pattern Languages" 2007 [?] · Azure "Combine patterns" 절 | 권장 | 신규 (연결: `engineering/design-patterns-gof` 우선순위표) |
-| 33-refactoring-to-patterns | 스멜에서 패턴 쪽으로(Replace Conditional with Strategy/State/Polymorphism, Replace Type Code with Class, Introduce Null Object, Move Accumulation to Collecting Parameter), **패턴에서 멀어지기**(Inline Singleton 등) | 06-refactoring, 13-design-patterns-gof | 처음부터 패턴을 설계 → Speculative Generality; 분기 폭증을 방치 → 새 타입 추가마다 `switch` N곳 수정(Shotgun Surgery); 패턴을 제거하지 못해 간접 계층 화석화 | 조건 분기 → 다형 디스패치 테이블 | Kerievsky 『Refactoring to Patterns』 2004 · Fowler 『Refactoring』 2판 10장 [?] | 권장 | 신규 |
-| 51-taming-conditionals | if 지옥 해소의 **도구 선택**: 가드 절 → 분해 → 테이블(맵) 기반 → 다형성(Strategy·State) → 규칙 엔진, 각각을 언제 쓰나. 같은 `switch`가 여러 곳에 반복되는 것이 진짜 신호. 설정 조합 폭발 (패턴 쪽 리팩터링 경로는 33) | 13-design-patterns-gof, 05-code-smells | 요금 계산 `if-else` 200줄에 고객 등급·지역·프로모션이 얽혀 새 등급 추가 시 분기 누락. `switch(type)`이 7개 파일에 복제돼 새 타입 추가 때 한 곳 누락 → 기본 분기로 조용히 처리. 반대로 단순 분기 3개를 클래스 5개로 → 흐름 추적 불가 | 결정 테이블, 룩업 맵(해시), 디스패치 테이블 | Fowler 『Refactoring』 2판 10장 "Replace Conditional with Polymorphism"·"Decompose Conditional" [?] · McConnell 『Code Complete』 2판 18장 "Table-Driven Methods" [?] | 필수 | 신규 |
+| 30-pattern-languages-and-catalogs | 패턴의 형식(맥락·힘·해법·결과)과 카탈로그 지형(GoF → POSA → PoEAA → EIP → microservices.io → 클라우드 패턴), 패턴 언어. 카탈로그 → leaf 역링크 표를 갖는 **허브** leaf | 27-design-patterns-gof | 이름만 빌리고 힘(forces)을 검토하지 않음 → 문제 없는 곳에 간접 계층 추가; **같은 이름 다른 뜻**(PoEAA Repository vs DDD Repository, Gateway vs API Gateway)으로 리뷰에서 서로 다른 것을 말함 | 패턴 관계 그래프(선행·대안·조합) | Alexander 『A Pattern Language』 1977 · Buschmann 외 POSA1 1996 · POSA5 "On Patterns and Pattern Languages" 2007 [?] · Azure "Combine patterns" 절 | 권장 | 신규 (연결: `engineering/design-patterns-gof` 우선순위표) |
+| 29-refactoring-to-patterns | 스멜에서 패턴 쪽으로(Replace Conditional with Strategy/State/Polymorphism, Replace Type Code with Class, Introduce Null Object, Move Accumulation to Collecting Parameter), **패턴에서 멀어지기**(Inline Singleton 등) | 13-refactoring, 27-design-patterns-gof | 처음부터 패턴을 설계 → Speculative Generality; 분기 폭증을 방치 → 새 타입 추가마다 `switch` N곳 수정(Shotgun Surgery); 패턴을 제거하지 못해 간접 계층 화석화 | 조건 분기 → 다형 디스패치 테이블 | Kerievsky 『Refactoring to Patterns』 2004 · Fowler 『Refactoring』 2판 10장 [?] | 권장 | 신규 |
+| 28-taming-conditionals | if 지옥 해소의 **도구 선택**: 가드 절 → 분해 → 테이블(맵) 기반 → 다형성(Strategy·State) → 규칙 엔진, 각각을 언제 쓰나. 같은 `switch`가 여러 곳에 반복되는 것이 진짜 신호. 설정 조합 폭발 (패턴 쪽 리팩터링 경로는 29) | 27-design-patterns-gof, 10-code-smells | 요금 계산 `if-else` 200줄에 고객 등급·지역·프로모션이 얽혀 새 등급 추가 시 분기 누락. `switch(type)`이 7개 파일에 복제돼 새 타입 추가 때 한 곳 누락 → 기본 분기로 조용히 처리. 반대로 단순 분기 3개를 클래스 5개로 → 흐름 추적 불가 | 결정 테이블, 룩업 맵(해시), 디스패치 테이블 | Fowler 『Refactoring』 2판 10장 "Replace Conditional with Polymorphism"·"Decompose Conditional" [?] · McConnell 『Code Complete』 2판 18장 "Table-Driven Methods" [?] | 필수 | 신규 |
 
 ### 12.4c 프레임워크가 돕는 합성 (2026-09-28 추가)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 52-inversion-of-control-and-framework-flow | 제어 역전 — 흐름은 프레임워크가 쥐고 내 코드는 불린다("Don't call us, we'll call you"). 템플릿 메서드(골격은 상위, 단계는 하위가 채움)와 콜백(함수를 넘겨 나중에 호출), 라이브러리(내가 부름) vs 프레임워크(나를 부름) | 11-solid, 13-design-patterns-gof | 흐름이 코드에 안 보여 "누가 이걸 부르나"를 추적하기 어려움; 템플릿 메서드의 상위 골격을 바꾸면 모든 하위 구현의 동작이 함께 바뀜(취약한 기반 클래스, 10); 프레임워크 수명 주기 밖에서 `new`로 만든 객체엔 주입·훅이 적용되지 않음 | 템플릿 메서드 = 고정 골격 + 훅, 콜백 등록 목록 | GoF Template Method · Fowler "InversionOfControl" (bliki) [?] · Johnson–Foote "Designing Reusable Classes" JOOP 1988 [?] | 필수 | 신규 (연결: `engineering/design-patterns-gof` "Spring이 대신 해주는 것") |
-| 53-aop-and-proxies | 횡단 관심사(트랜잭션·로깅·보안)를 프록시로 끼워 넣기: JDK dynamic proxy(인터페이스 기반) vs CGLIB(서브클래스 생성), Spring AOP(프록시 기반 메서드 가로채기), TS 데코레이터(클래스·메서드 래핑), 여러 어드바이스의 프록시 순서 | 52, 29-dependency-injection-and-composition-root | 같은 클래스 안 자기 호출(self-invocation)은 프록시를 거치지 않아 `@Transactional`이 **조용히 미적용**(database/46); CGLIB 서브클래스 프록시는 `final` 클래스·메서드를 가로챌 수 없어 프록시 불가·적용 누락; 프록시 순서가 뒤바뀌어 트랜잭션·재시도·로깅이 의도와 다른 순서로 감싸짐 | 프록시(대리 객체) = 위임 체인, 리플렉션 호출 디스패치 | Spring Framework 문서 "Aspect Oriented Programming with Spring"·"Proxying Mechanisms" [?] · Java `java.lang.reflect.Proxy` API 문서 [?] · Kiczales 외 "Aspect-Oriented Programming" ECOOP 1997 [?] · TypeScript 문서 "Decorators" [?] | 필수 | 신규 (연결: `database/46-transaction-boundaries-in-app-code`) |
-| 54-middleware-filter-interceptor-chains | 요청 처리 파이프라인을 체인으로 합성: Servlet Filter, Spring HandlerInterceptor, Express·Koa(`next()`)·NestJS 미들웨어, 그 뼈대인 Chain of Responsibility. 등록 순서 = 실행 순서 | 52, 13-design-patterns-gof | 등록 순서가 바뀌어 인증 전에 로깅·바디 파싱이 실행됨; 미들웨어에서 `next()` 호출 누락 → 응답 없이 요청이 멈춰 클라이언트 타임아웃 | 연결 리스트 체인(책임 연쇄), 들어간 역순으로 빠져나오는 호출 스택 | GoF Chain of Responsibility · Jakarta Servlet 명세 "Filter" [?] · Spring 문서 "HandlerInterceptor" [?] · Express 문서 "Using middleware" [?] · NestJS 문서 "Middleware"·"Interceptors" [?] | 필수 | 신규 |
-| 55-annotation-and-metadata-programming | 선언(어노테이션)을 읽어 동작을 만드는 두 방식: 런타임 리플렉션(프레임워크가 기동 시 스캔) vs 컴파일 타임 어노테이션 처리(Lombok·MapStruct가 코드 생성). 보존 정책(`@Retention`) | 52, 53 | 동작이 코드에 보이지 않는 "마법" → 어노테이션 하나로 생긴 버그를 디버거로 따라가기 어려움; 기동 시 스캔·리플렉션으로 시작 시간이 늘어남(→ reliability/41); 네이티브 이미지에선 리플렉션 대상 설정 누락으로 실패(→ language/23) | 메타데이터 맵(클래스 → 어노테이션), 코드 생성(AST 변환) | JSR 269 "Pluggable Annotation Processing API" [?] · Project Lombok 문서 [?] · MapStruct 문서 [?] | 권장 | 신규 |
-| 56-extension-points-and-plugins | 코드를 고치지 않고 기능을 끼우는 확장 지점: SPI(인터페이스는 공개, 구현은 외부), Java `ServiceLoader`, Spring Boot 자동 설정(조건부 빈), 이벤트 리스너, PoEAA Separated Interface·Plugin | 29-dependency-injection-and-composition-root, 11-solid, 52 | 자동 설정이 의도치 않은 빈을 덮어씀 → 엉뚱한 구현이 주입되거나 같은 타입 빈 충돌로 기동 실패 | 레지스트리(이름 → 구현 맵), 조건 평가(술어) | Java `ServiceLoader` API 문서 [?] · Spring Boot 문서 "Creating Your Own Auto-configuration" [?] · PoEAA Plugin·Separated Interface | 권장 | 신규 |
+| 32-inversion-of-control-and-framework-flow | 제어 역전 — 흐름은 프레임워크가 쥐고 내 코드는 불린다("Don't call us, we'll call you"). 템플릿 메서드(골격은 상위, 단계는 하위가 채움)와 콜백(함수를 넘겨 나중에 호출), 라이브러리(내가 부름) vs 프레임워크(나를 부름) | 22-solid, 27-design-patterns-gof | 흐름이 코드에 안 보여 "누가 이걸 부르나"를 추적하기 어려움; 템플릿 메서드의 상위 골격을 바꾸면 모든 하위 구현의 동작이 함께 바뀜(취약한 기반 클래스, 21); 프레임워크 수명 주기 밖에서 `new`로 만든 객체엔 주입·훅이 적용되지 않음 | 템플릿 메서드 = 고정 골격 + 훅, 콜백 등록 목록 | GoF Template Method · Fowler "InversionOfControl" (bliki) [?] · Johnson–Foote "Designing Reusable Classes" JOOP 1988 [?] | 필수 | 신규 (연결: `engineering/design-patterns-gof` "Spring이 대신 해주는 것") |
+| 33-aop-and-proxies | 횡단 관심사(트랜잭션·로깅·보안)를 프록시로 끼워 넣기: JDK dynamic proxy(인터페이스 기반) vs CGLIB(서브클래스 생성), Spring AOP(프록시 기반 메서드 가로채기), TS 데코레이터(클래스·메서드 래핑), 여러 어드바이스의 프록시 순서 | 32, 25-dependency-injection-and-composition-root | 같은 클래스 안 자기 호출(self-invocation)은 프록시를 거치지 않아 `@Transactional`이 **조용히 미적용**(database/24); CGLIB 서브클래스 프록시는 `final` 클래스·메서드를 가로챌 수 없어 프록시 불가·적용 누락; 프록시 순서가 뒤바뀌어 트랜잭션·재시도·로깅이 의도와 다른 순서로 감싸짐 | 프록시(대리 객체) = 위임 체인, 리플렉션 호출 디스패치 | Spring Framework 문서 "Aspect Oriented Programming with Spring"·"Proxying Mechanisms" [?] · Java `java.lang.reflect.Proxy` API 문서 [?] · Kiczales 외 "Aspect-Oriented Programming" ECOOP 1997 [?] · TypeScript 문서 "Decorators" [?] | 필수 | 신규 (연결: `database/24-transaction-boundaries-in-app-code`) |
+| 34-middleware-filter-interceptor-chains | 요청 처리 파이프라인을 체인으로 합성: Servlet Filter, Spring HandlerInterceptor, Express·Koa(`next()`)·NestJS 미들웨어, 그 뼈대인 Chain of Responsibility. 등록 순서 = 실행 순서 | 32, 27-design-patterns-gof | 등록 순서가 바뀌어 인증 전에 로깅·바디 파싱이 실행됨; 미들웨어에서 `next()` 호출 누락 → 응답 없이 요청이 멈춰 클라이언트 타임아웃 | 연결 리스트 체인(책임 연쇄), 들어간 역순으로 빠져나오는 호출 스택 | GoF Chain of Responsibility · Jakarta Servlet 명세 "Filter" [?] · Spring 문서 "HandlerInterceptor" [?] · Express 문서 "Using middleware" [?] · NestJS 문서 "Middleware"·"Interceptors" [?] | 필수 | 신규 |
+| 35-annotation-and-metadata-programming | 선언(어노테이션)을 읽어 동작을 만드는 두 방식: 런타임 리플렉션(프레임워크가 기동 시 스캔) vs 컴파일 타임 어노테이션 처리(Lombok·MapStruct가 코드 생성). 보존 정책(`@Retention`) | 32, 33 | 동작이 코드에 보이지 않는 "마법" → 어노테이션 하나로 생긴 버그를 디버거로 따라가기 어려움; 기동 시 스캔·리플렉션으로 시작 시간이 늘어남(→ reliability/42); 네이티브 이미지에선 리플렉션 대상 설정 누락으로 실패(→ language/24) | 메타데이터 맵(클래스 → 어노테이션), 코드 생성(AST 변환) | JSR 269 "Pluggable Annotation Processing API" [?] · Project Lombok 문서 [?] · MapStruct 문서 [?] | 권장 | 신규 |
+| 36-extension-points-and-plugins | 코드를 고치지 않고 기능을 끼우는 확장 지점: SPI(인터페이스는 공개, 구현은 외부), Java `ServiceLoader`, Spring Boot 자동 설정(조건부 빈), 이벤트 리스너, PoEAA Separated Interface·Plugin | 25-dependency-injection-and-composition-root, 22-solid, 32 | 자동 설정이 의도치 않은 빈을 덮어씀 → 엉뚱한 구현이 주입되거나 같은 타입 빈 충돌로 기동 실패 | 레지스트리(이름 → 구현 맵), 조건 평가(술어) | Java `ServiceLoader` API 문서 [?] · Spring Boot 문서 "Creating Your Own Auto-configuration" [?] · PoEAA Plugin·Separated Interface | 권장 | 신규 |
 
 ### 12.5 아키텍처
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 15-architecture-styles | 계층·이벤트 기반·마이크로커널·공간 기반·서비스 기반 등 | 13 | 스타일-요구 불일치 → 품질 속성 미달 | — | Richards–Ford 『Fundamentals of Software Architecture』 [?] | 필수 | `systems/architecture-styles` |
-| 16-layered-hexagonal-clean | 의존 방향 규칙·포트와 어댑터·클린 아키텍처 | 15, 11 | 도메인이 프레임워크·DB에 의존 → 교체·테스트 불가; 계층 건너뛰기 누적 | 의존 그래프 방향(DAG) | Cockburn 2005 "Hexagonal Architecture" · Martin 『Clean Architecture』 5부 | 필수 | 신규 |
-| 17-component-principles | REP·CCP·CRP·ADP·SDP·SAP | 16 | 컴포넌트 순환 의존 → 독립 배포 불가 | **순환 탐지(SCC)** | Martin 『Clean Architecture』 4부 | 권장 | 신규 (연결: `algorithm/18-scc`) |
-| 18-monolith-vs-microservices | 모듈러 모놀리스·서비스 분해·분산 모놀리스, 전환 시점(언제 쪼개나) | 17, distributed/01-why-distributed-and-fallacies | **분산 모놀리스** — 서비스 나눴는데 동시 배포 필요·공유 DB; 동기 호출 체인 → 가용성 곱셈 저하 | — | Newman 『Building Microservices』 2판 [?] | 필수 | 신규 |
-| 19-multi-tenancy | 테넌트 격리 모델(사일로·풀·브리지)·noisy neighbor | 18 | 테넌트 ID 필터 누락 → 교차 테넌트 노출; 대형 테넌트가 공유 자원 독점 | 테넌트 키 파티셔닝 | 기존 노트 원고 · AWS SaaS Lens [?] | 권장 | `systems/multi-tenancy` (연결: `database/35-row-level-security`) |
-| 20-quality-attributes-and-tradeoffs | 품질 속성(가용성·성능·확장성·유지보수성·동시성·UX)과 트레이드오프 | 15 | 속성 간 충돌을 명시 안 함 → 한 속성 최적화가 다른 속성 붕괴 | 유틸리티 트리(ATAM) | ISO/IEC 25010:2023 · Bass 외 『Software Architecture in Practice』 [?] | 필수 | `engineering/engineering-axes` (README + 7축 병합) |
-| 21-architecture-decision-records | ADR — 결정·맥락·결과 기록 | 20 | 결정 근거 소실 → 같은 논쟁 반복, 반대 결정으로 회귀 | — | Nygard 2011 "Documenting Architecture Decisions" | 권장 | 신규 |
-| 22-configuration-and-12factor | 설정·환경 분리·12-factor | 16 | 환경별 설정 드리프트 → 스테이징 통과·운영 장애; 시크릿 이미지 포함 | — | 12factor.net | 권장 | 신규 |
+| 37-architecture-styles | 계층·이벤트 기반·마이크로커널·공간 기반·서비스 기반 등 | 27 | 스타일-요구 불일치 → 품질 속성 미달 | — | Richards–Ford 『Fundamentals of Software Architecture』 [?] | 필수 | `systems/architecture-styles` |
+| 38-layered-hexagonal-clean | 의존 방향 규칙·포트와 어댑터·클린 아키텍처 | 37, 22 | 도메인이 프레임워크·DB에 의존 → 교체·테스트 불가; 계층 건너뛰기 누적 | 의존 그래프 방향(DAG) | Cockburn 2005 "Hexagonal Architecture" · Martin 『Clean Architecture』 5부 | 필수 | 신규 |
+| 39-component-principles | REP·CCP·CRP·ADP·SDP·SAP | 38 | 컴포넌트 순환 의존 → 독립 배포 불가 | **순환 탐지(SCC)** | Martin 『Clean Architecture』 4부 | 권장 | 신규 (연결: `algorithm/18-scc`) |
+| 45-monolith-vs-microservices | 모듈러 모놀리스·서비스 분해·분산 모놀리스, 전환 시점(언제 쪼개나) | 39, distributed/01-why-distributed-and-fallacies | **분산 모놀리스** — 서비스 나눴는데 동시 배포 필요·공유 DB; 동기 호출 체인 → 가용성 곱셈 저하 | — | Newman 『Building Microservices』 2판 [?] | 필수 | 신규 |
+| 49-multi-tenancy | 테넌트 격리 모델(사일로·풀·브리지)·noisy neighbor | 45 | 테넌트 ID 필터 누락 → 교차 테넌트 노출; 대형 테넌트가 공유 자원 독점 | 테넌트 키 파티셔닝 | 기존 노트 원고 · AWS SaaS Lens [?] | 권장 | `systems/multi-tenancy` (연결: `database/43-row-level-security`) |
+| 46-quality-attributes-and-tradeoffs | 품질 속성(가용성·성능·확장성·유지보수성·동시성·UX)과 트레이드오프 | 37 | 속성 간 충돌을 명시 안 함 → 한 속성 최적화가 다른 속성 붕괴 | 유틸리티 트리(ATAM) | ISO/IEC 25010:2023 · Bass 외 『Software Architecture in Practice』 [?] | 필수 | `engineering/engineering-axes` (README + 7축 병합) |
+| 47-architecture-decision-records | ADR — 결정·맥락·결과 기록 | 46 | 결정 근거 소실 → 같은 논쟁 반복, 반대 결정으로 회귀 | — | Nygard 2011 "Documenting Architecture Decisions" | 권장 | 신규 |
+| 48-configuration-and-12factor | 설정·환경 분리·12-factor | 38 | 환경별 설정 드리프트 → 스테이징 통과·운영 장애; 시크릿 이미지 포함 | — | 12factor.net | 권장 | 신규 |
 
 ### 12.5b 경계와 표현 (2026-09-28 추가)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 28-codebase-structure | 패키지 배치: by layer vs by feature vs **by component**, 가시성(package-private·`public` 최소화)으로 경계 강제, "소리치는 아키텍처"(최상위 폴더가 도메인을 말한다), 공통(`common`·`util`) 폴더의 함정 (규칙의 자동 검증은 43) | 16-layered-hexagonal-clean, 17-component-principles | 계층별 패키지 + 전부 `public` → 컨트롤러가 리포지토리를 직접 호출해 **서비스 계층 우회**가 조용히 누적; 기능 하나 수정에 `controller/`·`service/`·`repository/`·`dto/` 네 폴더를 오감; `util` 패키지가 3천 줄로 커져 모든 모듈이 의존; 순환 의존으로 모듈 분리 불가(→ 43) | 패키지 의존 그래프, 가시성 규칙 | Brown "Package by component"(『Clean Architecture』 34장 "The Missing Chapter") [?] · Martin "Screaming Architecture" 2011 [?] · Java 모듈 시스템(JEP 261) | 필수 | 신규 |
-| 43-architecture-fitness-rules | 경계를 **테스트로 강제**한다. ArchUnit(Java)·dependency-cruiser(JS/TS)·import-linter(Python)로 계층·순환·명명 규칙 검사, 기존 위반 동결(baseline). 순환 **제거** 기법(DIP 역전, 공통부 추출, 합치기, 이벤트) | 28, algorithm/18-scc | 다이어그램에는 계층이 있는데 코드는 도메인 → 컨트롤러 import. 모듈 A↔B 순환으로 A만 떼어 배포·테스트 불가. 규칙이 위키에만 있어 신규 입사자 PR마다 리뷰에서 반복 지적 | **순환 탐지(SCC)**, 경로 규칙 매칭 | ArchUnit User Guide · dependency-cruiser 문서 [?] · Ford 외 『Building Evolutionary Architectures』 2판 2장(fitness function) [?] | 권장 | 신규 |
-| 34-ui-architecture-patterns | MVC 계보 — Smalltalk MVC → 서버 MVC(Front·Page Controller, Template View) → MVP·MVVM(양방향 바인딩) → 단방향(Flux/Elm) | 16-layered-hexagonal-clean | 컨트롤러에 규칙 집중(Massive Controller) → 규칙 재사용·테스트 불가; 양방향 바인딩 연쇄 → 값이 어디서 바뀌었는지 추적 불가; 뷰 템플릿에 로직 → 화면별 규칙 불일치 | 옵서버(데이터 바인딩), 디스패처 큐(Flux) | Fowler "GUI Architectures" 2006 · PoEAA 웹 프레젠테이션 패턴 · Flux 문서 "In-Depth Overview" | 권장 | 신규 |
-| 35-data-across-boundaries | DTO·Remote Facade·Assembler/Mapper, 계층 간 모델 분리(요청 모델·도메인·영속 모델), 엔티티 직렬화 금지 | 16-layered-hexagonal-clean, api-design/09-schema-and-serialization | 엔티티를 그대로 JSON으로 → `LazyInitializationException`·**민감 필드 노출**·양방향 연관 무한 재귀; 세밀한 원격 인터페이스 → Chatty I/O(요청 1번에 왕복 수십 회); 매핑 코드 폭증 → 필드 추가 시 한 계층 누락 | 매퍼(필드 대응 표), 거친 입도(coarse-grained) 파사드 | PoEAA DTO·Remote Facade · Fowler "LocalDTO" 2004 [?] | 필수 | 신규 (연결: `database/33-orm-and-n-plus-one`) |
-| 36-architecture-in-code | 유스케이스 하나를 **계층형·헥사고날·클린 세 방식으로 직접 구현**해 비교 — 포트 인터페이스 위치, 어댑터 방향, 매핑 비용, 트랜잭션·예외 경계 위치 | 16-layered-hexagonal-clean, 28, 29, 35 | "헥사고날" 폴더명만 있고 도메인이 JPA 엔티티를 import → 의존 방향 역전 실패; 포트를 기술 단위(`JpaPort`)로 만들어 교체 불가; 계층마다 1:1 매핑만 반복하는 의례적 구조 | 의존 그래프(DAG) 방향 검사 | Cockburn 2005 · Martin 『Clean Architecture』 22장 [?] · Graça "Explicit Architecture" 2017 [?] | 필수 | 신규 (연결: `domain-modeling/basic` 실습 1편을 예제로) |
+| 40-codebase-structure | 패키지 배치: by layer vs by feature vs **by component**, 가시성(package-private·`public` 최소화)으로 경계 강제, "소리치는 아키텍처"(최상위 폴더가 도메인을 말한다), 공통(`common`·`util`) 폴더의 함정 (규칙의 자동 검증은 41) | 38-layered-hexagonal-clean, 39-component-principles | 계층별 패키지 + 전부 `public` → 컨트롤러가 리포지토리를 직접 호출해 **서비스 계층 우회**가 조용히 누적; 기능 하나 수정에 `controller/`·`service/`·`repository/`·`dto/` 네 폴더를 오감; `util` 패키지가 3천 줄로 커져 모든 모듈이 의존; 순환 의존으로 모듈 분리 불가(→ 41) | 패키지 의존 그래프, 가시성 규칙 | Brown "Package by component"(『Clean Architecture』 34장 "The Missing Chapter") [?] · Martin "Screaming Architecture" 2011 [?] · Java 모듈 시스템(JEP 261) | 필수 | 신규 |
+| 41-architecture-fitness-rules | 경계를 **테스트로 강제**한다. ArchUnit(Java)·dependency-cruiser(JS/TS)·import-linter(Python)로 계층·순환·명명 규칙 검사, 기존 위반 동결(baseline). 순환 **제거** 기법(DIP 역전, 공통부 추출, 합치기, 이벤트) | 40, algorithm/21-scc | 다이어그램에는 계층이 있는데 코드는 도메인 → 컨트롤러 import. 모듈 A↔B 순환으로 A만 떼어 배포·테스트 불가. 규칙이 위키에만 있어 신규 입사자 PR마다 리뷰에서 반복 지적 | **순환 탐지(SCC)**, 경로 규칙 매칭 | ArchUnit User Guide · dependency-cruiser 문서 [?] · Ford 외 『Building Evolutionary Architectures』 2판 2장(fitness function) [?] | 권장 | 신규 |
+| 42-ui-architecture-patterns | MVC 계보 — Smalltalk MVC → 서버 MVC(Front·Page Controller, Template View) → MVP·MVVM(양방향 바인딩) → 단방향(Flux/Elm) | 38-layered-hexagonal-clean | 컨트롤러에 규칙 집중(Massive Controller) → 규칙 재사용·테스트 불가; 양방향 바인딩 연쇄 → 값이 어디서 바뀌었는지 추적 불가; 뷰 템플릿에 로직 → 화면별 규칙 불일치 | 옵서버(데이터 바인딩), 디스패처 큐(Flux) | Fowler "GUI Architectures" 2006 · PoEAA 웹 프레젠테이션 패턴 · Flux 문서 "In-Depth Overview" | 권장 | 신규 |
+| 43-data-across-boundaries | DTO·Remote Facade·Assembler/Mapper, 계층 간 모델 분리(요청 모델·도메인·영속 모델), 엔티티 직렬화 금지 | 38-layered-hexagonal-clean, api-design/08-schema-and-serialization | 엔티티를 그대로 JSON으로 → `LazyInitializationException`·**민감 필드 노출**·양방향 연관 무한 재귀; 세밀한 원격 인터페이스 → Chatty I/O(요청 1번에 왕복 수십 회); 매핑 코드 폭증 → 필드 추가 시 한 계층 누락 | 매퍼(필드 대응 표), 거친 입도(coarse-grained) 파사드 | PoEAA DTO·Remote Facade · Fowler "LocalDTO" 2004 [?] | 필수 | 신규 (연결: `database/23-orm-and-n-plus-one`) |
+| 44-architecture-in-code | 유스케이스 하나를 **계층형·헥사고날·클린 세 방식으로 직접 구현**해 비교 — 포트 인터페이스 위치, 어댑터 방향, 매핑 비용, 트랜잭션·예외 경계 위치 | 38-layered-hexagonal-clean, 40, 25, 43 | "헥사고날" 폴더명만 있고 도메인이 JPA 엔티티를 import → 의존 방향 역전 실패; 포트를 기술 단위(`JpaPort`)로 만들어 교체 불가; 계층마다 1:1 매핑만 반복하는 의례적 구조 | 의존 그래프(DAG) 방향 검사 | Cockburn 2005 · Martin 『Clean Architecture』 22장 [?] · Graça "Explicit Architecture" 2017 [?] | 필수 | 신규 (연결: `domain-modeling/basic` 실습 1편을 예제로) |
 
 ### 12.5c 유지보수성 판단 (2026-09-28 추가)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 39-when-to-abstract | 추상화 **시점**: rule of three, "잘못된 추상화보다 중복이 훨씬 싸다", DRY = 지식의 단일 표현이지 글자 중복 제거가 아니다, 우연한 중복 판별(함께 바뀌나), 잘못된 추상화에서 되돌아가기(인라인 후 재추출) | 04-clean-code, 05-code-smells | 공통 함수에 boolean·type 인자가 5개 붙고 내부 `if` 12개. 한 호출처를 고치면 다른 호출처 회귀. "공통 모듈"을 팀 3개가 공유해 아무도 못 고침. 두 번째 사례에서 뽑은 추상화가 세 번째 사례에 안 맞아 파라미터가 늘어남 | — | Fowler 『Refactoring』 2판 2장(Rule of Three, Don Roberts) [?] · Metz "The Wrong Abstraction" 2016 · Hunt–Thomas 『The Pragmatic Programmer』 20주년판 DRY [?] | 필수 | 신규 (연결: `engineering/clean-code` N절) |
-| 40-simple-design-and-yagni | Beck 단순 설계 4규칙(테스트 통과 → 의도 드러냄 → 중복 없음 → 요소 최소, 우선순위 순). YAGNI의 비용 4종(build·delay·carry·repair). **확장점은 두 번째 요구가 올 때** 만든다 | 39 | 안 쓰는 인터페이스·팩토리·플러그인 구조 → 새 기능 추가 때마다 5계층 수정(carry 비용). "나중에 필요할" 설정 키 40개 중 38개 미사용, 조합 테스트 불가. 추측한 확장점이 실제 요구 모양과 달라 결국 우회(repair 비용) | — | Fowler "BeckDesignRules" 2015 · Fowler "Yagni" 2015 · Beck 『XP Explained』 2판 [?] | 필수 | 신규 |
-| 41-tidy-first | **구조 변경과 동작 변경을 섞지 않는다.** 정리(tidying) 목록(가드 절·죽은 코드 삭제·대칭 맞추기·설명 변수 등), 정리 시점(먼저·나중·나중에 따로·안 함), 커밋·PR 분리, 결합과 응집의 경제학(옵션 가치) | 06-refactoring, engineering-practice/06-code-review | 이름 변경 300줄과 로직 수정 5줄이 한 PR → 리뷰어가 버그를 못 봄. 섞인 커밋은 revert하면 정리까지 날아가 되돌리기 불가. "정리하느라" 기능 PR이 2주 지연되며 충돌 누적 | — | Beck 『Tidy First?』 2023 (1·2·3부) [?] | 권장 | 신규 |
-| 25-legacy-migration-strangler-fig | Strangler Fig, branch by abstraction, 병행 실행·결과 비교(shadow·Parallel Run), 라우팅 전환과 되돌리기, ACL·expand/contract와의 조합, 빅뱅 재작성의 위험 (코드 수준 변경 기법은 42) | 18-monolith-vs-microservices, testing/16-characterization-tests-legacy, domain-modeling/15-anti-corruption-layer | 전면 재작성 2년 → 구·신 기능 격차로 전환 불가·중단. 신규 경로와 레거시가 같은 테이블에 이중 쓰기 → 불일치. 비교 없이 전환 → 레거시의 문서화 안 된 동작(반올림·정렬) 소실·조용한 데이터 불일치. 라우팅 전환 후 구 경로를 제거하지 않음 → 두 시스템 영구 병존 | 라우팅 테이블(기능별 전환 비율), 결과 diff 비교기 | Fowler "StranglerFigApplication" https://martinfowler.com/bliki/StranglerFigApplication.html · Fowler "BranchByAbstraction" · GitHub Scientist https://github.com/github/scientist · Azure Strangler Fig · microservices.io Strangler Application | 권장 | 신규 (연결: `database/34-schema-migration`) |
-| 42-legacy-change-techniques | 레거시 변경 알고리즘(변경점 찾기 → 테스트 지점 → 의존 끊기 → 테스트 → 변경), seam 종류와 enabling point, **sprout method/class, wrap method/class**, 의존 끊기 기법(인터페이스 추출·매개변수화), 코드 인터페이스의 parallel change(expand → migrate → contract) | testing/16-characterization-tests-legacy, 06-refactoring | 3천 줄 메서드 한가운데 새 규칙을 끼워 넣음 → 테스트 불가 상태가 더 커짐. 시그니처를 한 번에 바꿔 호출처 80곳이 동시 변경, 머지 지옥. "일단 다 고치고 테스트" → 숨은 동작(반올림·정렬) 소실 | 호출 그래프(영향 범위) | Feathers 『Working Effectively with Legacy Code』 2004 (2·4·6·25장) [?] · Fowler "ParallelChange" 2014 | 필수 | 신규 (연결: `25-legacy-migration-strangler-fig`) |
-| 44-complexity-metrics | 순환 복잡도(McCabe, 독립 경로 수 = 최소 테스트 수), 인지 복잡도(중첩 가중·선형 흐름 단절), 크기·중첩 깊이. **지표의 한계**(게이밍, 맥락 없음) | 04-clean-code, testing/06-test-design-techniques | 순환 복잡도 40인 메서드에 분기 누락 버그가 반복. 지표 게이트를 맞추려고 메서드를 잘게 쪼개 흐름이 5파일로 흩어짐(굿하트). 중첩 5단 `if` → 리뷰에서 else 누락 통과 | **제어 흐름 그래프(V = E − N + 2P)** | McCabe IEEE TSE 1976 [?] · Campbell "Cognitive Complexity" SonarSource 백서 v1.7 2023 | 권장 | 신규 (연결: `testing/15-coverage-and-its-limits`) |
-| 45-code-forensics-hotspots | git 이력으로 보는 유지보수성: **핫스팟 = 변경 빈도 × 복잡도**, change coupling(함께 커밋되는 파일 = 숨은 결합), 지식 분포(bus factor), 부채 상환 우선순위 결정 | 44, engineering-practice/04-version-control-and-git-internals, engineering-practice/10-technical-debt | 전체 리팩터링 계획이 이력상 거의 안 바뀌는 파일에 인력을 소진. `Order.java`와 `OrderMapper.java`가 커밋의 90%에서 함께 바뀌는데 아무도 모름. 퇴사자 1명만 알던 모듈에서 장애 | 커밋 로그 집계(빈도), 공동 변경 행렬, 파일 쌍 지지도·신뢰도(연관 규칙) | Tornhill 『Your Code as a Crime Scene』 2판 2024 [?] · Tornhill 『Software Design X-Rays』 2018 [?] | 권장 | 신규 |
-| 49-designing-for-deletion | **지우기 쉬운 코드**: 결합이 적은 단위로 나누기, 확장보다 교체, 죽은 코드 찾기와 제거(미사용 탐지·호출 로그), 플래그 분기 코드 걷어내기, 주석 처리 코드 금지(git이 기억한다), 내부 deprecate 절차 | 40, 43 | 호출처가 없는 코드 30%가 남아 리팩터링 때마다 같이 고침. 끝난 실험 플래그의 `else` 분기가 몇 년 뒤 재활성(Knight Capital 유형). "혹시 몰라" 남긴 구 API를 신규 코드가 다시 호출 | 호출 그래프 도달성(루트에서 안 닿는 노드 = 죽은 코드) | tef "Write code that is easy to delete, not easy to extend" 2016 · Hodgson "Feature Toggles" (제거 절) | 권장 | 신규 (연결: `reliability/35-feature-flag-lifecycle`) |
+| 11-when-to-abstract | 추상화 **시점**: rule of three, "잘못된 추상화보다 중복이 훨씬 싸다", DRY = 지식의 단일 표현이지 글자 중복 제거가 아니다, 우연한 중복 판별(함께 바뀌나), 잘못된 추상화에서 되돌아가기(인라인 후 재추출) | 06-clean-code, 10-code-smells | 공통 함수에 boolean·type 인자가 5개 붙고 내부 `if` 12개. 한 호출처를 고치면 다른 호출처 회귀. "공통 모듈"을 팀 3개가 공유해 아무도 못 고침. 두 번째 사례에서 뽑은 추상화가 세 번째 사례에 안 맞아 파라미터가 늘어남 | — | Fowler 『Refactoring』 2판 2장(Rule of Three, Don Roberts) [?] · Metz "The Wrong Abstraction" 2016 · Hunt–Thomas 『The Pragmatic Programmer』 20주년판 DRY [?] | 필수 | 신규 (연결: `engineering/clean-code` N절) |
+| 12-simple-design-and-yagni | Beck 단순 설계 4규칙(테스트 통과 → 의도 드러냄 → 중복 없음 → 요소 최소, 우선순위 순). YAGNI의 비용 4종(build·delay·carry·repair). **확장점은 두 번째 요구가 올 때** 만든다 | 11 | 안 쓰는 인터페이스·팩토리·플러그인 구조 → 새 기능 추가 때마다 5계층 수정(carry 비용). "나중에 필요할" 설정 키 40개 중 38개 미사용, 조합 테스트 불가. 추측한 확장점이 실제 요구 모양과 달라 결국 우회(repair 비용) | — | Fowler "BeckDesignRules" 2015 · Fowler "Yagni" 2015 · Beck 『XP Explained』 2판 [?] | 필수 | 신규 |
+| 14-tidy-first | **구조 변경과 동작 변경을 섞지 않는다.** 정리(tidying) 목록(가드 절·죽은 코드 삭제·대칭 맞추기·설명 변수 등), 정리 시점(먼저·나중·나중에 따로·안 함), 커밋·PR 분리, 결합과 응집의 경제학(옵션 가치) | 13-refactoring, engineering-practice/05-code-review | 이름 변경 300줄과 로직 수정 5줄이 한 PR → 리뷰어가 버그를 못 봄. 섞인 커밋은 revert하면 정리까지 날아가 되돌리기 불가. "정리하느라" 기능 PR이 2주 지연되며 충돌 누적 | — | Beck 『Tidy First?』 2023 (1·2·3부) [?] | 권장 | 신규 |
+| 50-legacy-migration-strangler-fig | Strangler Fig, branch by abstraction, 병행 실행·결과 비교(shadow·Parallel Run), 라우팅 전환과 되돌리기, ACL·expand/contract와의 조합, 빅뱅 재작성의 위험 (코드 수준 변경 기법은 51) | 45-monolith-vs-microservices, testing/17-characterization-tests-legacy, domain-modeling/19-anti-corruption-layer | 전면 재작성 2년 → 구·신 기능 격차로 전환 불가·중단. 신규 경로와 레거시가 같은 테이블에 이중 쓰기 → 불일치. 비교 없이 전환 → 레거시의 문서화 안 된 동작(반올림·정렬) 소실·조용한 데이터 불일치. 라우팅 전환 후 구 경로를 제거하지 않음 → 두 시스템 영구 병존 | 라우팅 테이블(기능별 전환 비율), 결과 diff 비교기 | Fowler "StranglerFigApplication" https://martinfowler.com/bliki/StranglerFigApplication.html · Fowler "BranchByAbstraction" · GitHub Scientist https://github.com/github/scientist · Azure Strangler Fig · microservices.io Strangler Application | 권장 | 신규 (연결: `database/26-schema-migration`) |
+| 51-legacy-change-techniques | 레거시 변경 알고리즘(변경점 찾기 → 테스트 지점 → 의존 끊기 → 테스트 → 변경), seam 종류와 enabling point, **sprout method/class, wrap method/class**, 의존 끊기 기법(인터페이스 추출·매개변수화), 코드 인터페이스의 parallel change(expand → migrate → contract) | testing/17-characterization-tests-legacy, 13-refactoring | 3천 줄 메서드 한가운데 새 규칙을 끼워 넣음 → 테스트 불가 상태가 더 커짐. 시그니처를 한 번에 바꿔 호출처 80곳이 동시 변경, 머지 지옥. "일단 다 고치고 테스트" → 숨은 동작(반올림·정렬) 소실 | 호출 그래프(영향 범위) | Feathers 『Working Effectively with Legacy Code』 2004 (2·4·6·25장) [?] · Fowler "ParallelChange" 2014 | 필수 | 신규 (연결: `50-legacy-migration-strangler-fig`) |
+| 52-complexity-metrics | 순환 복잡도(McCabe, 독립 경로 수 = 최소 테스트 수), 인지 복잡도(중첩 가중·선형 흐름 단절), 크기·중첩 깊이. **지표의 한계**(게이밍, 맥락 없음) | 06-clean-code, testing/07-test-design-techniques | 순환 복잡도 40인 메서드에 분기 누락 버그가 반복. 지표 게이트를 맞추려고 메서드를 잘게 쪼개 흐름이 5파일로 흩어짐(굿하트). 중첩 5단 `if` → 리뷰에서 else 누락 통과 | **제어 흐름 그래프(V = E − N + 2P)** | McCabe IEEE TSE 1976 [?] · Campbell "Cognitive Complexity" SonarSource 백서 v1.7 2023 | 권장 | 신규 (연결: `testing/16-coverage-and-its-limits`) |
+| 53-code-forensics-hotspots | git 이력으로 보는 유지보수성: **핫스팟 = 변경 빈도 × 복잡도**, change coupling(함께 커밋되는 파일 = 숨은 결합), 지식 분포(bus factor), 부채 상환 우선순위 결정 | 52, engineering-practice/03-version-control-and-git-internals, engineering-practice/10-technical-debt | 전체 리팩터링 계획이 이력상 거의 안 바뀌는 파일에 인력을 소진. `Order.java`와 `OrderMapper.java`가 커밋의 90%에서 함께 바뀌는데 아무도 모름. 퇴사자 1명만 알던 모듈에서 장애 | 커밋 로그 집계(빈도), 공동 변경 행렬, 파일 쌍 지지도·신뢰도(연관 규칙) | Tornhill 『Your Code as a Crime Scene』 2판 2024 [?] · Tornhill 『Software Design X-Rays』 2018 [?] | 권장 | 신규 |
+| 54-designing-for-deletion | **지우기 쉬운 코드**: 결합이 적은 단위로 나누기, 확장보다 교체, 죽은 코드 찾기와 제거(미사용 탐지·호출 로그), 플래그 분기 코드 걷어내기, 주석 처리 코드 금지(git이 기억한다), 내부 deprecate 절차 | 12, 41 | 호출처가 없는 코드 30%가 남아 리팩터링 때마다 같이 고침. 끝난 실험 플래그의 `else` 분기가 몇 년 뒤 재활성(Knight Capital 유형). "혹시 몰라" 남긴 구 API를 신규 코드가 다시 호출 | 호출 그래프 도달성(루트에서 안 닿는 노드 = 죽은 코드) | tef "Write code that is easy to delete, not easy to extend" 2016 · Hodgson "Feature Toggles" (제거 절) | 권장 | 신규 (연결: `reliability/24-feature-flag-lifecycle`) |
 
 ### 12.6 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 23-design-symptom-index | 역색인: "작은 변경에 파일 N개", "테스트 작성 불가", "배포를 같이 해야 함", "이 클래스는 아무도 못 건드림" → 원인 스멜·원칙. 추가: 공통 함수 인자만 계속 늘어남(39), 테스트에 DB·mock 도배(29·32), 기능 하나에 폴더 4개(28), 리팩터링 어디부터?(45), 플래그·죽은 코드 누적(49), 불법 상태 행(31), NPE(50), switch 복제(51), `@Transactional` 미적용(53), 미들웨어 순서 역전(54) | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 24-design-incidents | 실사건: Therac-25(1985–87, 재사용 코드의 하드웨어 인터록 가정 + 경쟁 조건) · Healthcare.gov 출시 장애(2013, 통합·아키텍처) | 23 | — | — | Leveson–Turner IEEE Computer 1993 · 미 GAO-14-694 [?] | 권장 | 신규 |
+| 55-design-symptom-index | 역색인: "작은 변경에 파일 N개", "테스트 작성 불가", "배포를 같이 해야 함", "이 클래스는 아무도 못 건드림" → 원인 스멜·원칙. 추가: 공통 함수 인자만 계속 늘어남(11), 테스트에 DB·mock 도배(25·26), 기능 하나에 폴더 4개(40), 리팩터링 어디부터?(53), 플래그·죽은 코드 누적(54), 불법 상태 행(24), NPE(18), switch 복제(28), `@Transactional` 미적용(33), 미들웨어 순서 역전(34) | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
+| 56-design-incidents | 실사건: Therac-25(1985–87, 재사용 코드의 하드웨어 인터록 가정 + 경쟁 조건) · Healthcare.gov 출시 장애(2013, 통합·아키텍처) | 55 | — | — | Leveson–Turner IEEE Computer 1993 · 미 GAO-14-694 [?] | 권장 | 신규 |
 
 ---
 
 ## 13. 도메인 모델링 (`domain-modeling/`)
 
-> 기초(도메인 vs 애플리케이션) → 전술 설계 → 전략 설계 → 연습 트랙. 기존 basic 30·advanced 30 연습 문제는 **컬렉션 그대로 유지**하고 leaf 18·19가 가리킨다.
+> 기초(도메인 vs 애플리케이션) → 전술 설계 → 전략 설계 → 연습 트랙. 기존 basic 30·advanced 30 연습 문제는 **컬렉션 그대로 유지**하고 leaf 15·26가 가리킨다.
 > 뼈대: Evans 『Domain-Driven Design』(2부 Building Blocks, 4부 Strategic Design), Evans 『DDD Reference』 2015, Vernon 『Implementing DDD』, Vernon "Effective Aggregate Design" 2011.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 09 → 28 → 06 → 07 → 08 → 10 → 11 → 22 → 23 → 18 → 12 → 13 → 14 → 15 → 16 → 17 → 24 → 25 → 26 → 27 → 19 → 20 → 21
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 27 → 28
 
 ### 13.1 기초
 
@@ -1196,58 +1208,58 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 01-domain-vs-application-logic | 도메인 규칙과 애플리케이션 흐름의 경계 | software-design/02-modularity-coupling-cohesion | 규칙이 서비스·컨트롤러에 흩어짐 → 같은 규칙 N벌 중 하나만 수정 | — | Evans 4장 · Fowler 『PoEAA』 Service Layer | 필수 | `domain-modeling/domain-vs-application-logic` |
 | 02-pojo-and-persistence-ignorance | 프레임워크 독립 도메인 객체 | 01 | 도메인이 ORM 어노테이션·프록시에 묶임 → 단위 테스트 불가·지연 로딩 예외 | — | Fowler "POJO" · Evans | 권장 | `domain-modeling/pojo` |
 | 03-ubiquitous-language | 코드·대화·문서의 단일 언어 | 01 | 같은 단어 다른 뜻(예: "주문 완료") → 요구와 구현 불일치; 단위 누락 | 용어집 | Evans 2장 | 필수 | 신규 |
-| 28-domain-logic-patterns-and-service-layer | Transaction Script·Table Module·Domain Model 3택의 선택 기준(복잡도 곡선), Service Layer = 유스케이스·트랜잭션 경계·권한 검사 위치, 명령-조회 분리(CQS) | 01-domain-vs-application-logic, 09-anemic-vs-rich-model | 규칙이 늘었는데 트랜잭션 스크립트 유지 → 같은 검증 N벌 복제; 단순 CRUD에 풍부한 모델 → 매핑 비용만 증가; 서비스 계층 없이 컨트롤러가 여러 리포지토리 호출 → 트랜잭션 경계가 요청마다 다름 | 유스케이스 = 명령 핸들러(입력 → 결과) | PoEAA 도메인 로직 패턴·Service Layer · Meyer CQS(『OOSC』) [?] | 필수 | 신규 |
+| 07-domain-logic-patterns-and-service-layer | Transaction Script·Table Module·Domain Model 3택의 선택 기준(복잡도 곡선), Service Layer = 유스케이스·트랜잭션 경계·권한 검사 위치, 명령-조회 분리(CQS) | 01-domain-vs-application-logic, 06-anemic-vs-rich-model | 규칙이 늘었는데 트랜잭션 스크립트 유지 → 같은 검증 N벌 복제; 단순 CRUD에 풍부한 모델 → 매핑 비용만 증가; 서비스 계층 없이 컨트롤러가 여러 리포지토리 호출 → 트랜잭션 경계가 요청마다 다름 | 유스케이스 = 명령 핸들러(입력 → 결과) | PoEAA 도메인 로직 패턴·Service Layer · Meyer CQS(『OOSC』) [?] | 필수 | 신규 |
 
 ### 13.2 전술 설계
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 04-entities-and-value-objects | 식별성 vs 값 동등성 | 03, software-design/08-immutability-and-value-objects | 값 객체 equals 누락 → 컬렉션 중복; 원시값 집착(금액을 `long`) → 통화 혼합 | — | Evans 5장 | 필수 | 신규 |
-| 05-aggregates-and-invariants | 일관성 경계·불변식·Vernon 4규칙 | 04, database/20-transactions-acid | 거대 aggregate → 락 경합·`OptimisticLockException` 폭증; 경계 밖 불변식 → 동시성에 깨짐 | 트리(루트 경유 접근) | Evans 6장 · Vernon 2011 | 필수 | 신규 |
-| 06-domain-services-and-policies | 엔티티에 안 맞는 규칙·정책 객체 | 05 | 서비스 비대 → 빈약한 모델로 회귀 | 전략 패턴 | Evans 5장 | 권장 | 신규 |
-| 07-domain-events | 도메인 이벤트 발행·처리 | 05, distributed/21-outbox-and-dual-write | 트랜잭션 커밋 전 이벤트 발행 → 롤백됐는데 후속 처리 진행 | — | Vernon 『IDDD』 8장 [?] | 필수 | 신규 |
-| 08-repositories-and-factories | 영속성 추상·생성 캡슐화 | 05 | 리포지토리가 쿼리 메서드 폭증 → 도메인 로직 누출 | — | Evans 6장 | 권장 | 신규 |
-| 09-anemic-vs-rich-model | 빈약한 도메인 모델 vs 풍부한 모델 | 05 | setter로 아무 상태나 → 불법 상태 저장 | — | Fowler "AnemicDomainModel" 2003 | 필수 | 신규 |
-| 10-state-machines-in-domain | 상태·전이·가드로 수명 주기 모델링 | 09 | 불법 전이(환불된 주문 배송) → 데이터 모순; 동시 전이 경합 | **유한 상태 기계** | Harel 1987 (statecharts) | 필수 | 신규 (연결: `domain-modeling/basic/09-order-state`) |
-| 11-time-money-and-units | 금액(정밀 소수·반올림)·통화·시간대·기간·단위 — 개관(시간 심화는 22, 금액 심화는 23) | 04, architecture/03-floating-point-ieee754 | 반올림 누적 → 1원 차이 정산 불일치; DST 전환일 중복/누락 시간; 단위 혼동 | 정밀 소수, 은행가 반올림 | Fowler 『PoEAA』 Money · IANA tz 데이터베이스 | 필수 | 신규 (연결: `advanced/05-multi-currency`, `languages/java/syntax/51~53`) |
-| 22-instant-vs-local-time-and-tz-rules | Instant·LocalDateTime·LocalDate 구분, 미래 일정은 "현지 시각 + tz ID"로 저장, DST 공백·중복, tzdata 갱신, 기간(Period)과 지속시간(Duration) | 11-time-money-and-units, distributed/05-physical-clocks-and-ntp | 미래 예약을 UTC로 저장했는데 해당 국가가 DST 규칙을 바꿔 1시간 어긋남. "매월 31일" 정기 결제가 2월에 누락. DST 전환일 02:30 알람이 없거나 두 번 울림. 생일(날짜)을 자정 UTC 타임스탬프로 저장 → 해외 사용자에게 하루 전으로 표시. 2월 29일 처리 버그(Zune 2008, Azure 2012) | 구간 연산, tz 전이 테이블 이진 탐색 | Jon Skeet "Storing UTC is not a silver bullet" 2019 · IANA tz database https://www.iana.org/time-zones · RFC 9557 · Java `java.time` 문서 | 필수 | 신규 (연결: `testing/12-testing-time-and-concurrency`, `database/41-temporal-types-and-session-timezone`) |
-| 23-money-arithmetic-rounding-allocation | 정밀 소수·통화별 소수 자릿수(ISO 4217), 반올림 모드와 **반올림 위치**, 배분(1원 나머지 처리), 세금·할인 계산 순서, 직렬화 | 11-time-money-and-units, architecture/03-floating-point-ieee754 | 10,000원을 3명에게 나누면 3,333×3 = 9,999로 1원 소실. 줄 단위 반올림 vs 합계 후 반올림 차이 → PG 금액과 주문 금액 불일치로 결제 거절. JPY(0자리)·KWD(3자리)를 소수 2자리로 가정. `BigDecimal("1.0").equals("1.00")`이 false라 중복 판정 실패 | 최대 잔여 배분(largest remainder), 고정 소수점 정수 | Fowler 『PoEAA』 Money(allocation) · ISO 4217 · Java `RoundingMode`·`BigDecimal` 문서 | 필수 | 신규 (연결: `advanced/05-multi-currency`) |
+| 04-entities-and-value-objects | 식별성 vs 값 동등성 | 03, software-design/19-immutability-and-value-objects | 값 객체 equals 누락 → 컬렉션 중복; 원시값 집착(금액을 `long`) → 통화 혼합 | — | Evans 5장 | 필수 | 신규 |
+| 05-aggregates-and-invariants | 일관성 경계·불변식·Vernon 4규칙 | 04, database/13-transactions-acid | 거대 aggregate → 락 경합·`OptimisticLockException` 폭증; 경계 밖 불변식 → 동시성에 깨짐 | 트리(루트 경유 접근) | Evans 6장 · Vernon 2011 | 필수 | 신규 |
+| 08-domain-services-and-policies | 엔티티에 안 맞는 규칙·정책 객체 | 05 | 서비스 비대 → 빈약한 모델로 회귀 | 전략 패턴 | Evans 5장 | 권장 | 신규 |
+| 09-domain-events | 도메인 이벤트 발행·처리 | 05, distributed/16-outbox-and-dual-write | 트랜잭션 커밋 전 이벤트 발행 → 롤백됐는데 후속 처리 진행 | — | Vernon 『IDDD』 8장 [?] | 필수 | 신규 |
+| 10-repositories-and-factories | 영속성 추상·생성 캡슐화 | 05 | 리포지토리가 쿼리 메서드 폭증 → 도메인 로직 누출 | — | Evans 6장 | 권장 | 신규 |
+| 06-anemic-vs-rich-model | 빈약한 도메인 모델 vs 풍부한 모델 | 05 | setter로 아무 상태나 → 불법 상태 저장 | — | Fowler "AnemicDomainModel" 2003 | 필수 | 신규 |
+| 11-state-machines-in-domain | 상태·전이·가드로 수명 주기 모델링 | 06 | 불법 전이(환불된 주문 배송) → 데이터 모순; 동시 전이 경합 | **유한 상태 기계** | Harel 1987 (statecharts) | 필수 | 신규 (연결: `domain-modeling/basic/09-order-state`) |
+| 12-time-money-and-units | 금액(정밀 소수·반올림)·통화·시간대·기간·단위 — 개관(시간 심화는 13, 금액 심화는 14) | 04, architecture/03-floating-point-ieee754 | 반올림 누적 → 1원 차이 정산 불일치; DST 전환일 중복/누락 시간; 단위 혼동 | 정밀 소수, 은행가 반올림 | Fowler 『PoEAA』 Money · IANA tz 데이터베이스 | 필수 | 신규 (연결: `advanced/05-multi-currency`, `languages/java/syntax/51~53`) |
+| 13-instant-vs-local-time-and-tz-rules | Instant·LocalDateTime·LocalDate 구분, 미래 일정은 "현지 시각 + tz ID"로 저장, DST 공백·중복, tzdata 갱신, 기간(Period)과 지속시간(Duration) | 12-time-money-and-units, distributed/04-physical-clocks-and-ntp | 미래 예약을 UTC로 저장했는데 해당 국가가 DST 규칙을 바꿔 1시간 어긋남. "매월 31일" 정기 결제가 2월에 누락. DST 전환일 02:30 알람이 없거나 두 번 울림. 생일(날짜)을 자정 UTC 타임스탬프로 저장 → 해외 사용자에게 하루 전으로 표시. 2월 29일 처리 버그(Zune 2008, Azure 2012) | 구간 연산, tz 전이 테이블 이진 탐색 | Jon Skeet "Storing UTC is not a silver bullet" 2019 · IANA tz database https://www.iana.org/time-zones · RFC 9557 · Java `java.time` 문서 | 필수 | 신규 (연결: `testing/10-testing-time-and-concurrency`, `database/27-temporal-types-and-session-timezone`) |
+| 14-money-arithmetic-rounding-allocation | 정밀 소수·통화별 소수 자릿수(ISO 4217), 반올림 모드와 **반올림 위치**, 배분(1원 나머지 처리), 세금·할인 계산 순서, 직렬화 | 12-time-money-and-units, architecture/03-floating-point-ieee754 | 10,000원을 3명에게 나누면 3,333×3 = 9,999로 1원 소실. 줄 단위 반올림 vs 합계 후 반올림 차이 → PG 금액과 주문 금액 불일치로 결제 거절. JPY(0자리)·KWD(3자리)를 소수 2자리로 가정. `BigDecimal("1.0").equals("1.00")`이 false라 중복 판정 실패 | 최대 잔여 배분(largest remainder), 고정 소수점 정수 | Fowler 『PoEAA』 Money(allocation) · ISO 4217 · Java `RoundingMode`·`BigDecimal` 문서 | 필수 | 신규 (연결: `advanced/05-multi-currency`) |
 
 ### 13.3 전략 설계
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 12-bounded-contexts | 모델의 유효 경계 | 03 | 하나의 "고객" 모델을 전사 공유 → 모든 팀이 서로를 깨뜨림 | — | Evans 14장 · DDD Reference | 필수 | 신규 |
-| 13-subdomains | 핵심·지원·일반 서브도메인과 투자 배분 | 12 | 일반 서브도메인(인증·결제 게이트웨이) 자체 구현에 핵심 역량 소진 | — | Evans 15장 · DDD Reference | 권장 | 신규 |
-| 14-context-mapping | Partnership·Shared Kernel·Customer/Supplier·Conformist·ACL·OHS·Published Language·Separate Ways | 12 | 관계 미정의 → 상류 변경이 하류를 예고 없이 파손 | 컨텍스트 그래프 | Evans 14장 · DDD Reference | 권장 | 신규 |
-| 15-anti-corruption-layer | 외부 모델 번역 계층 | 14 | ACL 부재 → 레거시·외부 API 모델이 핵심 도메인 오염 | 어댑터·번역기 | Evans 14장 | 권장 | 신규 |
-| 16-event-storming | 이벤트 중심 협업 모델링 | 12 | 개발자만 모델링 → 도메인 전문가 지식 누락 | 타임라인 | Brandolini 『Introducing EventStorming』 [?] | 권장 | 신규 |
-| 17-cqrs | 명령과 조회 모델 분리 | 07, database/29-replication-leader-follower | 조회 모델 지연 → "저장했는데 목록에 없음"; 불필요한 CQRS → 복잡도만 증가 | 프로젝션(폴드) | Fowler "CQRS" 2011 · `systems/server-design` 03 | 권장 | `systems/server-design/03-data-layer.md` (분할 — CQRS 절) |
+| 16-bounded-contexts | 모델의 유효 경계 | 03 | 하나의 "고객" 모델을 전사 공유 → 모든 팀이 서로를 깨뜨림 | — | Evans 14장 · DDD Reference | 필수 | 신규 |
+| 17-subdomains | 핵심·지원·일반 서브도메인과 투자 배분 | 16 | 일반 서브도메인(인증·결제 게이트웨이) 자체 구현에 핵심 역량 소진 | — | Evans 15장 · DDD Reference | 권장 | 신규 |
+| 18-context-mapping | Partnership·Shared Kernel·Customer/Supplier·Conformist·ACL·OHS·Published Language·Separate Ways | 16 | 관계 미정의 → 상류 변경이 하류를 예고 없이 파손 | 컨텍스트 그래프 | Evans 14장 · DDD Reference | 권장 | 신규 |
+| 19-anti-corruption-layer | 외부 모델 번역 계층 | 18 | ACL 부재 → 레거시·외부 API 모델이 핵심 도메인 오염 | 어댑터·번역기 | Evans 14장 | 권장 | 신규 |
+| 20-event-storming | 이벤트 중심 협업 모델링 | 16 | 개발자만 모델링 → 도메인 전문가 지식 누락 | 타임라인 | Brandolini 『Introducing EventStorming』 [?] | 권장 | 신규 |
+| 21-cqrs | 명령과 조회 모델 분리 | 09, database/32-replication-leader-follower | 조회 모델 지연 → "저장했는데 목록에 없음"; 불필요한 CQRS → 복잡도만 증가 | 프로젝션(폴드) | Fowler "CQRS" 2011 · `systems/server-design` 03 | 권장 | `systems/server-design/03-data-layer.md` (분할 — CQRS 절) |
 
 ### 13.3b 추적 가능한 도메인 — 결정·버전·원장·대사 (2026-09-28 추가)
 
-> 사용자의 "로그보다는 추적성" 문제의식을 받는 단원이다. **"왜 이 값이 되었나"는 로그를 grep해서 재구성하는 게 아니라 도메인 데이터에 근거를 1급으로 저장해야 한다.** 로그는 버려도 되는 운영 신호, 결정의 근거는 버리면 안 되는 업무 기록이다(구분은 `reliability/44-logs-traces-audit-roles`). 읽기 경로는 §0.9.
+> 사용자의 "로그보다는 추적성" 문제의식을 받는 단원이다. **"왜 이 값이 되었나"는 로그를 grep해서 재구성하는 게 아니라 도메인 데이터에 근거를 1급으로 저장해야 한다.** 로그는 버려도 되는 운영 신호, 결정의 근거는 버리면 안 되는 업무 기록이다(구분은 `reliability/18-logs-traces-audit-roles`). 읽기 경로는 §0.9.
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 24-decision-log-and-provenance | 결정 기록: 입력 스냅샷(또는 참조 + 버전)·적용 규칙 ID와 버전·중간 산출·결과·결정 시각을 한 레코드로. 재현 가능성 테스트("같은 입력으로 다시 계산하면 같은가") | 06, 07, distributed/27-event-sourcing | 고객이 "왜 이 금액인가"를 물었는데 재현할 수 없다. 로그로 재구성하려 했으나 보존 기한이 지났다. 규칙 ID만 남기고 입력을 참조로만 뒀다 → 참조 데이터가 바뀌어 재계산 결과가 다르다 | 불변 레코드, 해시 체인(변조 탐지) | W3C PROV-DM(2013) [?] · DDIA 1판 12장 "Designing for auditability" [?] | 필수 | 신규 |
-| 25-versioned-rules-and-effective-dating | 요율표·세율·정책·가격표를 버전으로 관리하고 **적용 기준 시각**(주문 시각? 결제 시각?)을 명시한다. 결과 행에 버전 스탬프를 남긴다. 미래 발효 예약 | 24, 11-time-money-and-units | 요율표를 덮어쓴다 → 과거 주문을 재계산하면 금액이 다르다. 적용 기준 시각이 불명확하다 → 경계 시각 주문에서 분쟁이 난다. "배포 시각 = 발효 시각"으로 가정한다 → 배포가 늦어지면 구 요율로 결제된다 | 구간 탐색(발효일 이진 탐색, `algorithm/06-binary-search`) | Fowler "Temporal Patterns"(Effectivity·Temporal Property) [?] · `database/53-temporal-and-bitemporal-tables` | 필수 | 신규 |
-| 26-double-entry-ledger | 복식부기 원장: 모든 이동 = 차변·대변 쌍, 잔액은 파생값(= 분개 합), 정정은 역분개(UPDATE·DELETE 금지), 멱등 전표, 잔액 스냅샷 | 05-aggregates-and-invariants, 11-time-money-and-units, 23, database/25-app-level-concurrency-patterns | 잔액 컬럼만 UPDATE한다 → 이력이 없어 잔액이 틀려도 원인을 추적할 수 없다. 정정을 UPDATE·DELETE로 한다 → 감사 흔적이 사라진다. 차변 합 ≠ 대변 합인데 알람이 없다. 동시 이체에서 잔액이 음수가 된다 | append-only 로그, 폴드(잔액 = 전표 합) | Fowler 『Analysis Patterns』 Accounting Patterns [?] · Square "Books, an immutable double-entry accounting database service" 2019 https://developer.squareup.com/blog/books-an-immutable-double-entry-accounting-database-service/ · Modern Treasury "Accounting for Developers" [?] | 필수 | 신규 (연결: `api-design/19-case-settlement-report`·`21-case-refund`) |
-| 27-reconciliation | 대사: 내부 원장 vs 외부(PG·은행·파트너) 기록을 키로 맞추고 차이를 분류(누락·중복·금액 불일치·상태 불일치)해 조정 분개로 처리한다. **타임아웃으로 결과를 모르는 요청의 최종 확정 경로** | 26, reliability/12-idempotency, distributed/03-partial-failure-and-timeouts | PG는 승인했는데 내부 호출이 타임아웃 났다 → 돈은 빠졌는데 주문이 없다(방치하면 고객 이중 청구). 대사를 하지 않는다 → 누락이 고객 민원으로 발견된다. 대사 키(외부 거래 ID)를 저장하지 않았다 → 수작업으로 매칭한다. 대사 배치의 날짜 경계(시간대)가 외부와 달라 매일 가짜 차이가 난다. 차이를 자동 보정한다 → 원인이 은폐된다 | 정렬 병합 조인(`algorithm/34-external-sort-and-k-way-merge`), 해시 조인, 두 집합 차집합 | 결제사 정산 문서 [?] · `reliability/04-failure-modes-catalog` 결제 F-항목 | 필수 | 신규 |
+| 22-decision-log-and-provenance | 결정 기록: 입력 스냅샷(또는 참조 + 버전)·적용 규칙 ID와 버전·중간 산출·결과·결정 시각을 한 레코드로. 재현 가능성 테스트("같은 입력으로 다시 계산하면 같은가") | 08, 09, distributed/22-event-sourcing | 고객이 "왜 이 금액인가"를 물었는데 재현할 수 없다. 로그로 재구성하려 했으나 보존 기한이 지났다. 규칙 ID만 남기고 입력을 참조로만 뒀다 → 참조 데이터가 바뀌어 재계산 결과가 다르다 | 불변 레코드, 해시 체인(변조 탐지) | W3C PROV-DM(2013) [?] · DDIA 1판 12장 "Designing for auditability" [?] | 필수 | 신규 |
+| 23-versioned-rules-and-effective-dating | 요율표·세율·정책·가격표를 버전으로 관리하고 **적용 기준 시각**(주문 시각? 결제 시각?)을 명시한다. 결과 행에 버전 스탬프를 남긴다. 미래 발효 예약 | 22, 12-time-money-and-units | 요율표를 덮어쓴다 → 과거 주문을 재계산하면 금액이 다르다. 적용 기준 시각이 불명확하다 → 경계 시각 주문에서 분쟁이 난다. "배포 시각 = 발효 시각"으로 가정한다 → 배포가 늦어지면 구 요율로 결제된다 | 구간 탐색(발효일 이진 탐색, `algorithm/04-binary-search`) | Fowler "Temporal Patterns"(Effectivity·Temporal Property) [?] · `database/50-temporal-and-bitemporal-tables` | 필수 | 신규 |
+| 24-double-entry-ledger | 복식부기 원장: 모든 이동 = 차변·대변 쌍, 잔액은 파생값(= 분개 합), 정정은 역분개(UPDATE·DELETE 금지), 멱등 전표, 잔액 스냅샷 | 05-aggregates-and-invariants, 12-time-money-and-units, 14, database/18-app-level-concurrency-patterns | 잔액 컬럼만 UPDATE한다 → 이력이 없어 잔액이 틀려도 원인을 추적할 수 없다. 정정을 UPDATE·DELETE로 한다 → 감사 흔적이 사라진다. 차변 합 ≠ 대변 합인데 알람이 없다. 동시 이체에서 잔액이 음수가 된다 | append-only 로그, 폴드(잔액 = 전표 합) | Fowler 『Analysis Patterns』 Accounting Patterns [?] · Square "Books, an immutable double-entry accounting database service" 2019 https://developer.squareup.com/blog/books-an-immutable-double-entry-accounting-database-service/ · Modern Treasury "Accounting for Developers" [?] | 필수 | 신규 (연결: `api-design/25-case-settlement-report`·`27-case-refund`) |
+| 25-reconciliation | 대사: 내부 원장 vs 외부(PG·은행·파트너) 기록을 키로 맞추고 차이를 분류(누락·중복·금액 불일치·상태 불일치)해 조정 분개로 처리한다. **타임아웃으로 결과를 모르는 요청의 최종 확정 경로** | 24, reliability/13-idempotency, distributed/03-partial-failure-and-timeouts | PG는 승인했는데 내부 호출이 타임아웃 났다 → 돈은 빠졌는데 주문이 없다(방치하면 고객 이중 청구). 대사를 하지 않는다 → 누락이 고객 민원으로 발견된다. 대사 키(외부 거래 ID)를 저장하지 않았다 → 수작업으로 매칭한다. 대사 배치의 날짜 경계(시간대)가 외부와 달라 매일 가짜 차이가 난다. 차이를 자동 보정한다 → 원인이 은폐된다 | 정렬 병합 조인(`algorithm/11-external-sort-and-k-way-merge`), 해시 조인, 두 집합 차집합 | 결제사 정산 문서 [?] · `reliability/04-failure-modes-catalog` 결제 F-항목 | 필수 | 신규 |
 
 ### 13.4 연습 트랙
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 18-basic-modeling-exercises | 기초 모델링 연습 30편(주차 요금~배차) — 컬렉션 유지 | 11 | (각 편의 ⚠ 절) | 편별 상이(FSM·구간·트리·그래프) | 기존 원고 | 필수 | `domain-modeling/basic` (30편 유지) |
-| 19-advanced-modeling-exercises | 심화 모델링 연습 30편(급여~B2B 등급) — 컬렉션 유지 | 17, 18 | (각 편의 ⚠ 절) | 편별 상이 | 기존 원고 | 권장 | `domain-modeling/advanced` (30편 유지) |
+| 15-basic-modeling-exercises | 기초 모델링 연습 30편(주차 요금~배차) — 컬렉션 유지 | 12 | (각 편의 ⚠ 절) | 편별 상이(FSM·구간·트리·그래프) | 기존 원고 | 필수 | `domain-modeling/basic` (30편 유지) |
+| 26-advanced-modeling-exercises | 심화 모델링 연습 30편(급여~B2B 등급) — 컬렉션 유지 | 21, 15 | (각 편의 ⚠ 절) | 편별 상이 | 기존 원고 | 권장 | `domain-modeling/advanced` (30편 유지) |
 
 ### 13.5 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 20-dm-symptom-index | 역색인: 불법 상태 데이터, 1원 정산 차이, 같은 규칙 N벌, 거대 트랜잭션 락, 팀 간 모델 충돌, 미래 예약 1시간 어긋남·DST 알람 누락/중복, 1원 배분 소실, 과거 금액 재계산 불일치, 잔액 원인 불명, 504인데 결제됨(대사) | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 21-dm-incidents | 실사건: Mars Climate Orbiter 단위 불일치(1999, 파운드·초 vs 뉴턴·초) · 영국 Post Office Horizon 회계 불일치(1999~) | 20 | — | — | NASA MCO 사고조사보고서 1999 · Bates v Post Office [2019] EWHC 3408 (QB) | 권장 | 신규 |
+| 27-dm-symptom-index | 역색인: 불법 상태 데이터, 1원 정산 차이, 같은 규칙 N벌, 거대 트랜잭션 락, 팀 간 모델 충돌, 미래 예약 1시간 어긋남·DST 알람 누락/중복, 1원 배분 소실, 과거 금액 재계산 불일치, 잔액 원인 불명, 504인데 결제됨(대사) | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
+| 28-dm-incidents | 실사건: Mars Climate Orbiter 단위 불일치(1999, 파운드·초 vs 뉴턴·초) · 영국 Post Office Horizon 회계 불일치(1999~) | 27 | — | — | NASA MCO 사고조사보고서 1999 · Bates v Post Office [2019] EWHC 3408 (QB) | 권장 | 신규 |
 
 ---
 
@@ -1256,7 +1268,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 > 기존 보유 0 — **갭 최대**. 왜·무엇을 → 단위 테스트의 질 → 테스트 더블·학파 → TDD → 설계 기법 → 통합·계약 → 고급 기법 → 불안정성.
 > 뼈대: Google 『Software Engineering at Google』(이하 SWE@G — 11·12·13·14장), Khorikov 『Unit Testing Principles, Practices, and Patterns』, Beck 『TDD by Example』·"Canon TDD"(2023), Fowler "Mocks Aren't Stubs", Meszaros 『xUnit Test Patterns』, Feathers 『Working Effectively with Legacy Code』.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 21 → 06 → 07 → 11 → 12 → 14 → 20 → 08 → 09 → 10 → 15 → 16 → 13 → 17 → 18 → 19
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
@@ -1265,22 +1277,22 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 03-test-doubles | Dummy·Fake·Stub·Spy·Mock | 02 | 과도한 mock → 테스트는 초록인데 실제 통합에서 실패; mock이 실제와 다른 계약 | Fake = 인메모리 자료구조 구현 | Meszaros · Fowler "Mocks Aren't Stubs" · SWE@G 13장 | 필수 | 신규 |
 | 04-classical-vs-london | 고전파 vs 런던파(상태 검증 vs 상호작용 검증) | 03 | 런던파 과용 → 구현에 고착된 테스트 | — | Khorikov 2장 · Fowler "Mocks Aren't Stubs" | 권장 | 신규 |
 | 05-tdd | 테스트 목록 → 하나씩 → 통과 → 리팩터링 | 02 | 기대값에 계산 결과를 붙여 넣기 → 버그를 정답으로 고정; 리팩터링 단계 생략 | — | Beck 『TDD by Example』 · Beck "Canon TDD" 2023 | 필수 | 신규 |
-| 06-test-design-techniques | 동치 분할·경계값·결정 테이블·상태 전이·쌍 조합 | 02, math/02-induction-and-invariants | 경계값 누락 → off-by-one·빈 입력·최댓값에서 장애 | 상태 전이 그래프, pairwise 조합 | ISTQB Foundation Syllabus 4장 [?] | 필수 | 신규 |
-| 07-integration-tests-real-dependencies | 실제 DB·브로커로 통합 테스트(Testcontainers) | 03 | H2로 테스트 → 운영 PostgreSQL 방언·락 동작 차이로 운영에서만 실패 | — | SWE@G 14장 · Testcontainers 문서 | 필수 | 신규 |
-| 08-contract-testing | 소비자 주도 계약 테스트 | 07, api-design/08-versioning-and-compatibility | 제공자 필드 변경 → 소비자만 운영에서 파손 | 계약 = 예제 집합 | Pact 문서 · Fowler "ContractTest" | 권장 | 신규 |
-| 09-property-based-testing | 성질·생성기·축소(shrinking) | 06 | 예제 기반만 → 드문 입력 조합 버그 누락 | 무작위 생성 + 축소(이진 탐색식) | Claessen–Hughes ICFP 2000 (QuickCheck) | 권장 | 신규 |
-| 10-mutation-testing | 변이 주입으로 테스트의 판별력 측정 | 02 | 커버리지 100%인데 단언 없음 → 버그 통과 | 변이 연산자 | Jia–Harman TSE 2011 · PIT 문서 | 권장 | 신규 |
-| 11-flaky-tests | 불안정 테스트의 원인(시간·순서·동시성·공유 상태·네트워크) | 07 | 재시도로 덮기 → 진짜 경쟁 조건 은폐; CI 신뢰 붕괴 | — | Luo 외 FSE 2014 | 필수 | 신규 |
-| 12-testing-time-and-concurrency | 시계 주입·결정적 스케줄·동시성 테스트 | 11, os/15-race-conditions | `Thread.sleep` 기반 테스트 → 느리고 불안정; 자정·월말·DST에만 실패 | 가짜 시계, 결정적 스케줄러 | SWE@G 13장 [?] · Java `Clock` 문서 | 권장 | 신규 |
-| 13-e2e-and-ui-testing | E2E·UI 테스트의 범위와 비용 | 07 | 선택자 취약 → UI 변경마다 대량 실패 | — | SWE@G 14장 | 권장 | 신규 |
-| 14-test-data-and-fixtures | 픽스처·빌더·오브젝트 마더·격리 | 02 | 공유 픽스처 → 테스트 순서 의존; 거대 픽스처 → 무엇을 검증하는지 불명 | 테스트 데이터 빌더 | Meszaros 『xUnit Test Patterns』 | 권장 | 신규 |
-| 15-coverage-and-its-limits | 라인·분기·조건 커버리지의 의미와 한계 | 10 | 커버리지 목표 강제 → 단언 없는 테스트 양산(굿하트) | 제어 흐름 그래프 | SWE@G 11장 [?] · Google Testing Blog "Code Coverage Best Practices" 2020 | 권장 | 신규 |
-| 16-characterization-tests-legacy | 레거시의 안전망 — 특성 테스트·이음새(seam) 찾기. 변경 기법(sprout·wrap·의존 끊기)은 software-design/42로 넘긴다 | 06, software-design/06-refactoring | 안전망 없이 레거시 수정 → 숨은 동작 파손 | 이음새(seam) | Feathers 『Working Effectively with Legacy Code』 | 권장 | 신규 |
-| 17-testing-in-production | 합성 모니터링·카나리 분석·섀도 트래픽 | reliability/27-deployment-strategies | 운영 검증 없이 배포 → 테스트 환경에서 재현 안 되는 장애 | — | SRE Workbook [?] | 심화 | 신규 |
-| 20-test-smells-and-xunit-patterns | 테스트 스멜(Obscure·Fragile·Slow Test, Assertion Roulette, Mystery Guest, Conditional Test Logic, Test Code Duplication)과 처방 패턴(Humble Object·Custom Assertion·Parameterized Test·Test-Specific Subclass·Delegated Setup) | 02-good-unit-tests, 14-test-data-and-fixtures | 무엇을 검증하는지 안 보이는 테스트 → 실패해도 원인 파악에 30분; 단언 10개 한 테스트 → 첫 실패에서 멈춰 나머지 결함 은폐; 테스트 안 `if` → 분기 한쪽만 검증; UI·프레임워크에 로직 → 테스트 불가(Humble Object 부재) | 파라미터 표(데이터 주도), 겸손한 객체 = 로직/접착 분리 | Meszaros 『xUnit Test Patterns』 2007 · xunitpatterns.com | 권장 | 신규 |
-| 21-outside-in-tdd-and-acceptance-tests | 이중 루프 TDD(인수 테스트 → 단위 테스트), Walking Skeleton, 인수 테스트·BDD(Given-When-Then)의 추상화 수준, 협력 객체 발견을 위한 mock | 05-tdd, 04-classical-vs-london | 단위 테스트만 초록 → 기능 전체는 동작 안 함(조립 누락); UI 조작 단계로 쓴 인수 테스트 → 화면 변경마다 전부 파손(추상화 수준 오류); 골격 없이 계층별로 완성 → 통합 시점에 대량 불일치 | 테스트 DSL(도메인 동사 계층) | Freeman–Pryce 『Growing Object-Oriented Software, Guided by Tests』 2009 · North "Introducing BDD" 2006 [?] | 권장 | 신규 |
-| 18-test-symptom-index | 역색인: CI 가끔 실패, 리팩터링마다 대량 실패, 초록인데 운영 장애, 테스트 느림, 커버리지 높은데 버그 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 19-test-incidents | 실사건: Apple `goto fail`(2014, 중복 goto로 서명 검증 우회 — 음성 테스트 부재) · CrowdStrike(2024, 콘텐츠 검증기 결함과 단계적 배포 부재 — 운영 관점은 reliability/34) | 18 | — | — | CVE-2014-1266 · CrowdStrike PIR 2024-08-06 | 권장 | 신규 |
+| 07-test-design-techniques | 동치 분할·경계값·결정 테이블·상태 전이·쌍 조합 | 02, math/02-induction-and-invariants | 경계값 누락 → off-by-one·빈 입력·최댓값에서 장애 | 상태 전이 그래프, pairwise 조합 | ISTQB Foundation Syllabus 4장 [?] | 필수 | 신규 |
+| 08-integration-tests-real-dependencies | 실제 DB·브로커로 통합 테스트(Testcontainers) | 03 | H2로 테스트 → 운영 PostgreSQL 방언·락 동작 차이로 운영에서만 실패 | — | SWE@G 14장 · Testcontainers 문서 | 필수 | 신규 |
+| 13-contract-testing | 소비자 주도 계약 테스트 | 08, api-design/07-versioning-and-compatibility | 제공자 필드 변경 → 소비자만 운영에서 파손 | 계약 = 예제 집합 | Pact 문서 · Fowler "ContractTest" | 권장 | 신규 |
+| 14-property-based-testing | 성질·생성기·축소(shrinking) | 07 | 예제 기반만 → 드문 입력 조합 버그 누락 | 무작위 생성 + 축소(이진 탐색식) | Claessen–Hughes ICFP 2000 (QuickCheck) | 권장 | 신규 |
+| 15-mutation-testing | 변이 주입으로 테스트의 판별력 측정 | 02 | 커버리지 100%인데 단언 없음 → 버그 통과 | 변이 연산자 | Jia–Harman TSE 2011 · PIT 문서 | 권장 | 신규 |
+| 09-flaky-tests | 불안정 테스트의 원인(시간·순서·동시성·공유 상태·네트워크) | 08 | 재시도로 덮기 → 진짜 경쟁 조건 은폐; CI 신뢰 붕괴 | — | Luo 외 FSE 2014 | 필수 | 신규 |
+| 10-testing-time-and-concurrency | 시계 주입·결정적 스케줄·동시성 테스트 | 09, os/15-race-conditions | `Thread.sleep` 기반 테스트 → 느리고 불안정; 자정·월말·DST에만 실패 | 가짜 시계, 결정적 스케줄러 | SWE@G 13장 [?] · Java `Clock` 문서 | 권장 | 신규 |
+| 18-e2e-and-ui-testing | E2E·UI 테스트의 범위와 비용 | 08 | 선택자 취약 → UI 변경마다 대량 실패 | — | SWE@G 14장 | 권장 | 신규 |
+| 11-test-data-and-fixtures | 픽스처·빌더·오브젝트 마더·격리 | 02 | 공유 픽스처 → 테스트 순서 의존; 거대 픽스처 → 무엇을 검증하는지 불명 | 테스트 데이터 빌더 | Meszaros 『xUnit Test Patterns』 | 권장 | 신규 |
+| 16-coverage-and-its-limits | 라인·분기·조건 커버리지의 의미와 한계 | 15 | 커버리지 목표 강제 → 단언 없는 테스트 양산(굿하트) | 제어 흐름 그래프 | SWE@G 11장 [?] · Google Testing Blog "Code Coverage Best Practices" 2020 | 권장 | 신규 |
+| 17-characterization-tests-legacy | 레거시의 안전망 — 특성 테스트·이음새(seam) 찾기. 변경 기법(sprout·wrap·의존 끊기)은 software-design/51로 넘긴다 | 07, software-design/13-refactoring | 안전망 없이 레거시 수정 → 숨은 동작 파손 | 이음새(seam) | Feathers 『Working Effectively with Legacy Code』 | 권장 | 신규 |
+| 19-testing-in-production | 합성 모니터링·카나리 분석·섀도 트래픽 | reliability/23-deployment-strategies | 운영 검증 없이 배포 → 테스트 환경에서 재현 안 되는 장애 | — | SRE Workbook [?] | 심화 | 신규 |
+| 12-test-smells-and-xunit-patterns | 테스트 스멜(Obscure·Fragile·Slow Test, Assertion Roulette, Mystery Guest, Conditional Test Logic, Test Code Duplication)과 처방 패턴(Humble Object·Custom Assertion·Parameterized Test·Test-Specific Subclass·Delegated Setup) | 02-good-unit-tests, 11-test-data-and-fixtures | 무엇을 검증하는지 안 보이는 테스트 → 실패해도 원인 파악에 30분; 단언 10개 한 테스트 → 첫 실패에서 멈춰 나머지 결함 은폐; 테스트 안 `if` → 분기 한쪽만 검증; UI·프레임워크에 로직 → 테스트 불가(Humble Object 부재) | 파라미터 표(데이터 주도), 겸손한 객체 = 로직/접착 분리 | Meszaros 『xUnit Test Patterns』 2007 · xunitpatterns.com | 권장 | 신규 |
+| 06-outside-in-tdd-and-acceptance-tests | 이중 루프 TDD(인수 테스트 → 단위 테스트), Walking Skeleton, 인수 테스트·BDD(Given-When-Then)의 추상화 수준, 협력 객체 발견을 위한 mock | 05-tdd, 04-classical-vs-london | 단위 테스트만 초록 → 기능 전체는 동작 안 함(조립 누락); UI 조작 단계로 쓴 인수 테스트 → 화면 변경마다 전부 파손(추상화 수준 오류); 골격 없이 계층별로 완성 → 통합 시점에 대량 불일치 | 테스트 DSL(도메인 동사 계층) | Freeman–Pryce 『Growing Object-Oriented Software, Guided by Tests』 2009 · North "Introducing BDD" 2006 [?] | 권장 | 신규 |
+| 20-test-symptom-index | 역색인: CI 가끔 실패, 리팩터링마다 대량 실패, 초록인데 운영 장애, 테스트 느림, 커버리지 높은데 버그 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
+| 21-test-incidents | 실사건: Apple `goto fail`(2014, 중복 goto로 서명 검증 우회 — 음성 테스트 부재) · CrowdStrike(2024, 콘텐츠 검증기 결함과 단계적 배포 부재 — 운영 관점은 reliability/53) | 20 | — | — | CVE-2014-1266 · CrowdStrike PIR 2024-08-06 | 권장 | 신규 |
 
 ---
 
@@ -1289,13 +1301,13 @@ Part 6  판단하는 법             data-engineering → data-analysis
 > 원리(계약·자원·의미론) → 신뢰성 계약(멱등·페이지·버전·스키마) → 스타일(REST·RPC·GraphQL·비동기) → 기존 사례 6편. **HTTP 프로토콜 본문은 network/33~35**, 여기선 설계 판단만.
 > 뼈대: Fielding 박사논문 5장(2000), RFC 9110·9457, Google AIP(aip.dev), Kleppmann DDIA 4장, Stripe API 문서.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 08 → 09 → 12 → 27 → 13 → 07 → 14 → 28 → 10 → 24 → 11 → 25 → 29 → 26 → 15 → 16~21(사례) → 22 → 23
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22~27(사례) → 28 → 29
 
 ### 15.1 원리
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 01-api-as-contract | API = 공개 계약, Hyrum의 법칙 | software-design/12-design-by-contract | 문서에 없는 동작(정렬 순서·에러 문구)에 클라이언트가 의존 → "버그 수정"이 장애 | — | SWE@G 1장 (Hyrum's Law) [?] · hyrumslaw.com | 필수 | 신규 |
+| 01-api-as-contract | API = 공개 계약, Hyrum의 법칙 | software-design/23-design-by-contract | 문서에 없는 동작(정렬 순서·에러 문구)에 클라이언트가 의존 → "버그 수정"이 장애 | — | SWE@G 1장 (Hyrum's Law) [?] · hyrumslaw.com | 필수 | 신규 |
 | 02-rest-and-resource-modeling | 자원·표현·균일 인터페이스·성숙도 모델 | 01, network/33-http-semantics | 동사형 URL·모든 것을 POST → 캐시·재시도 의미 상실 | 자원 계층(트리) | Fielding 2000 5장 · Fowler "Richardson Maturity Model" | 필수 | 신규 |
 | 03-status-codes-for-apis | 상태 코드 선택(4xx vs 5xx, 409/422/429) | 02 | 200에 에러 바디 → 모니터링·재시도 로직 무력화; 4xx를 5xx로 → 불필요 재시도 폭풍 | — | RFC 9110 15장 | 필수 | 신규 |
 | 04-error-format-problem-details | 에러 응답 표준 형식 | 03 | 에러 형식 제각각 → 클라이언트 파싱 실패; 스택 트레이스 노출 | — | RFC 9457 | 권장 | 신규 |
@@ -1304,99 +1316,99 @@ Part 6  판단하는 법             data-engineering → data-analysis
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 05-idempotency-keys | `Idempotency-Key`·멱등 메서드·재시도 안전 | 03, reliability/12-idempotency | 네트워크 타임아웃 후 재시도 → **이중 결제**; 같은 키 다른 본문 처리 규칙 부재 | 키-결과 저장소 | Stripe "Idempotent requests" · IETF draft-ietf-httpapi-idempotency-key-header [?] | 필수 | 신규 |
-| 06-pagination | offset vs 커서(keyset) | 02, database/12-btree-indexes | 깊은 offset → 풀스캔으로 느려짐; 페이지 사이 삽입 → 중복·누락 | keyset = B+Tree 범위 스캔 | Google AIP-158 · Winand "Paging Through Results" [?] | 필수 | 신규 (연결: `languages/sql/syntax/09-limit-offset-keyset-pagination`) |
-| 07-filtering-sorting-search | 필터·정렬 파라미터 설계 | 06 | 임의 필드 정렬 허용 → 인덱스 없는 정렬 쿼리로 DB 과부하 | — | Google AIP-160 · AIP-132 | 권장 | 신규 |
-| 08-versioning-and-compatibility | 하위 호환 규칙·버저닝·폐기(Deprecation/Sunset) | 01 | 필드 삭제·의미 변경 → 구 클라이언트 파손; **enum 값 추가** → 엄격 역직렬화 클라이언트 실패 | — | Google AIP-180 · RFC 8594 · RFC 9745 [?] | 필수 | 신규 |
-| 09-schema-and-serialization | JSON·Protobuf·Avro, 스키마 진화 | 08 | 64비트 ID를 JSON 숫자로 → JS에서 2^53 초과 정밀도 손실; 필드 번호 재사용(Protobuf) → 조용한 오역 | 가변 길이 정수 인코딩(varint) | DDIA 4장 · RFC 8259 | 필수 | 신규 |
-| 12-async-apis-and-webhooks | 웹훅·콜백·재전송·서명 | 05, security/05-mac-and-hmac | 서명 검증 없음 → 위조 이벤트; 순서 역전·중복 전달 → 상태 역행 | 재시도 큐, 서명 | Standard Webhooks 명세 [?] | 필수 | 신규 (연결: `api-design/05-delivery-webhook` 사례) |
-| 13-concurrency-control-in-apis | ETag·`If-Match`·조건부 요청 | 08, database/24-occ-and-timestamp-ordering | 동시 편집 → **lost update**; `412 Precondition Failed` 처리 누락 | 버전 비교 | RFC 9110 13장 | 권장 | 신규 |
-| 14-long-running-operations | `202 Accepted` + 작업 자원·폴링 | 12 | 동기로 처리하다 LB 타임아웃 → 결과 불명 + 재시도 중복 | 작업 상태 기계 | Google AIP-151 | 권장 | 신규 |
-| 27-notification-delivery-pipeline | 이메일·SMS·푸시 발송 파이프라인: outbox → 큐 → 공급자, 멱등 발송 키, 재시도 vs 영구 실패 구분, 억제 목록(바운스·수신 거부), 사용자 선호·야간 발송 제한, 푸시 토큰 무효화 | 05-idempotency-keys, 12-async-apis-and-webhooks, distributed/26-consumer-failure-handling | 재시도로 같은 알림 3번 발송. 트랜잭션 롤백됐는데 "주문 완료" 메일은 발송됨. 하드 바운스 주소에 계속 발송 → 발송 평판 하락으로 전체 도달률 붕괴. 만료된 FCM/APNs 토큰 누적 → 발송 실패율 상승. 광고성 정보를 야간(21~08시)에 발송 → 정보통신망법 위반 [?] | 재시도 큐 + 지수 백오프, 억제 목록 해시 셋 | Standard Webhooks 명세 [?] · Firebase Cloud Messaging 문서 "Manage registration tokens" · 방송통신위원회 "불법 스팸 방지 안내서" [?] | 필수 | 신규 (연결: `api-design/20-case-delivery-webhook`, `network/53-email-delivery-and-authentication`) |
-| 28-rate-limit-and-quota-contracts | 제한 키 선택(사용자·API 키·IP·테넌트), 429와 `Retry-After`, `RateLimit` 헤더, 요금제 쿼터 vs 보호용 스로틀, 클라이언트 동작 계약 | 03-status-codes-for-apis, reliability/10-rate-limiter | IP 기준 제한 → 회사 NAT 뒤 수백 명이 한꺼번에 차단. `Retry-After` 없는 429 → 클라이언트가 즉시 재시도해 폭주. 로그인 엔드포인트를 전역 한도에 묶어 공격 중 정상 사용자 로그인 불가. 테넌트 하나가 공유 한도를 독점 | 토큰 버킷, 키별 카운터 해시 | RFC 6585 · RFC 9110 §10.2.3 (Retry-After) · IETF draft-ietf-httpapi-ratelimit-headers (-11, 2026-05, 초안) https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/ · Stripe "Scaling your API with rate limiters" 2017 | 권장 | 신규 |
+| 05-idempotency-keys | `Idempotency-Key`·멱등 메서드·재시도 안전 | 03, reliability/13-idempotency | 네트워크 타임아웃 후 재시도 → **이중 결제**; 같은 키 다른 본문 처리 규칙 부재 | 키-결과 저장소 | Stripe "Idempotent requests" · IETF draft-ietf-httpapi-idempotency-key-header [?] | 필수 | 신규 |
+| 06-pagination | offset vs 커서(keyset) | 02, database/08-btree-indexes | 깊은 offset → 풀스캔으로 느려짐; 페이지 사이 삽입 → 중복·누락 | keyset = B+Tree 범위 스캔 | Google AIP-158 · Winand "Paging Through Results" [?] | 필수 | 신규 (연결: `languages/sql/syntax/09-limit-offset-keyset-pagination`) |
+| 12-filtering-sorting-search | 필터·정렬 파라미터 설계 | 06 | 임의 필드 정렬 허용 → 인덱스 없는 정렬 쿼리로 DB 과부하 | — | Google AIP-160 · AIP-132 | 권장 | 신규 |
+| 07-versioning-and-compatibility | 하위 호환 규칙·버저닝·폐기(Deprecation/Sunset) | 01 | 필드 삭제·의미 변경 → 구 클라이언트 파손; **enum 값 추가** → 엄격 역직렬화 클라이언트 실패 | — | Google AIP-180 · RFC 8594 · RFC 9745 [?] | 필수 | 신규 |
+| 08-schema-and-serialization | JSON·Protobuf·Avro, 스키마 진화 | 07 | 64비트 ID를 JSON 숫자로 → JS에서 2^53 초과 정밀도 손실; 필드 번호 재사용(Protobuf) → 조용한 오역 | 가변 길이 정수 인코딩(varint) | DDIA 4장 · RFC 8259 | 필수 | 신규 |
+| 09-async-apis-and-webhooks | 웹훅·콜백·재전송·서명 | 05, security/05-mac-and-hmac | 서명 검증 없음 → 위조 이벤트; 순서 역전·중복 전달 → 상태 역행 | 재시도 큐, 서명 | Standard Webhooks 명세 [?] | 필수 | 신규 (연결: `api-design/05-delivery-webhook` 사례) |
+| 11-concurrency-control-in-apis | ETag·`If-Match`·조건부 요청 | 07, database/17-occ-and-timestamp-ordering | 동시 편집 → **lost update**; `412 Precondition Failed` 처리 누락 | 버전 비교 | RFC 9110 13장 | 권장 | 신규 |
+| 13-long-running-operations | `202 Accepted` + 작업 자원·폴링 | 09 | 동기로 처리하다 LB 타임아웃 → 결과 불명 + 재시도 중복 | 작업 상태 기계 | Google AIP-151 | 권장 | 신규 |
+| 10-notification-delivery-pipeline | 이메일·SMS·푸시 발송 파이프라인: outbox → 큐 → 공급자, 멱등 발송 키, 재시도 vs 영구 실패 구분, 억제 목록(바운스·수신 거부), 사용자 선호·야간 발송 제한, 푸시 토큰 무효화 | 05-idempotency-keys, 09-async-apis-and-webhooks, distributed/18-consumer-failure-handling | 재시도로 같은 알림 3번 발송. 트랜잭션 롤백됐는데 "주문 완료" 메일은 발송됨. 하드 바운스 주소에 계속 발송 → 발송 평판 하락으로 전체 도달률 붕괴. 만료된 FCM/APNs 토큰 누적 → 발송 실패율 상승. 광고성 정보를 야간(21~08시)에 발송 → 정보통신망법 위반 [?] | 재시도 큐 + 지수 백오프, 억제 목록 해시 셋 | Standard Webhooks 명세 [?] · Firebase Cloud Messaging 문서 "Manage registration tokens" · 방송통신위원회 "불법 스팸 방지 안내서" [?] | 필수 | 신규 (연결: `api-design/26-case-delivery-webhook`, `network/51-email-delivery-and-authentication`) |
+| 14-rate-limit-and-quota-contracts | 제한 키 선택(사용자·API 키·IP·테넌트), 429와 `Retry-After`, `RateLimit` 헤더, 요금제 쿼터 vs 보호용 스로틀, 클라이언트 동작 계약 | 03-status-codes-for-apis, reliability/11-rate-limiter | IP 기준 제한 → 회사 NAT 뒤 수백 명이 한꺼번에 차단. `Retry-After` 없는 429 → 클라이언트가 즉시 재시도해 폭주. 로그인 엔드포인트를 전역 한도에 묶어 공격 중 정상 사용자 로그인 불가. 테넌트 하나가 공유 한도를 독점 | 토큰 버킷, 키별 카운터 해시 | RFC 6585 · RFC 9110 §10.2.3 (Retry-After) · IETF draft-ietf-httpapi-ratelimit-headers (-11, 2026-05, 초안) https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/ · Stripe "Scaling your API with rate limiters" 2017 | 권장 | 신규 |
 
 ### 15.3 스타일·문서
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 10-rpc-and-grpc | RPC 의미론·gRPC·데드라인·상태 코드 | 09, network/36-http2-multiplexing | 데드라인 미설정 → 하류 정지 시 무한 대기; L4 LB + 장수 HTTP/2 연결 → 부하 불균형 | — | gRPC 문서 (Deadlines·Status codes) | 권장 | 신규 |
-| 11-graphql | 스키마·리졸버·쿼리 복잡도 | 02 | 리졸버 N+1; 깊이·복잡도 제한 없음 → 쿼리 하나로 DoS | DataLoader(배치+캐시) | GraphQL 명세 · graphql/dataloader | 권장 | 신규 |
-| 15-api-documentation-openapi | 명세 우선·OpenAPI·예제 | 01 | 문서-구현 불일치 → 클라이언트 오구현 | — | OpenAPI 3.1 명세 | 권장 | 신규 |
-| 24-grpc-streaming-modes | 단항·서버·클라이언트·양방향 스트리밍, 흐름 제어·데드라인·취소 | 10 | 장수 스트림 → LB 재조정 불가·특정 서버 편중; 스트림 중간 에러 처리 누락 → 조용한 절단; 백프레셔 무시 → 메모리 누적 | HTTP/2 스트림 흐름 제어 윈도 | gRPC 공식 문서 "Core concepts" · RFC 9113 | 권장 | 신규 |
-| 25-api-style-selection | REST·gRPC·GraphQL·WebSocket/SSE·메시지 큐 중 선택 기준 | 02, 10, 11, network/38-websocket-sse-long-lived | 브라우저에서 gRPC 직접 호출 불가(gRPC-Web·프록시 필요); 공개 조회를 GraphQL POST로 → HTTP 캐시 무력화; 서버 푸시가 필요한데 폴링 → 부하·지연 | — | Fielding 5장 · gRPC·GraphQL 공식 문서 | 필수 | 신규 |
-| 26-messaging-protocols | AMQP·MQTT·Kafka 프로토콜, 브로커 vs RPC, QoS·ack 모델 | 12, 25, distributed/24-queues-logs-and-delivery-semantics | MQTT QoS 0으로 중요 메시지 → 조용한 유실; 처리 전 ack → 장애 시 유실, 처리 후 ack 실패 → 중복; 장수 연결 끊김 감지 늦음 | 큐·오프셋 로그 | AMQP 0-9-1 명세 · MQTT 5.0(OASIS) · Kafka 프로토콜 문서 | 권장 | 신규 (연결: `cs/systems/kafka-consumer-failure`) |
-| 29-api-gateway-and-bff | Gateway Routing·Aggregation·Offloading(인증·TLS·속도 제한)·Gatekeeper, BFF(클라이언트별 백엔드), Valet Key(직접 접근 위임) | 25-api-style-selection, network/39-load-balancers-and-proxies | 게이트웨이에 비즈니스 로직 축적 → 새 **분산 모놀리스**·배포 병목; 공용 게이트웨이 하나로 모바일·웹 요구 충돌 → 필드 과다 응답; 집계 호출에 타임아웃·부분 응답 정책 없음 → 하위 하나 지연이 전체 지연; 게이트웨이 SPOF | 경로 → 백엔드 라우팅 테이블(접두사 트리), 병렬 팬아웃 + 데드라인 | microservices.io API gateway·BFF · Azure Gateway Routing·Aggregation·Offloading·Gatekeeper·BFF·Valet Key · Newman "Backends For Frontends" 2015 [?] | 필수 | 신규 |
+| 15-rpc-and-grpc | RPC 의미론·gRPC·데드라인·상태 코드 | 08, network/36-http2-multiplexing | 데드라인 미설정 → 하류 정지 시 무한 대기; L4 LB + 장수 HTTP/2 연결 → 부하 불균형 | — | gRPC 문서 (Deadlines·Status codes) | 권장 | 신규 |
+| 17-graphql | 스키마·리졸버·쿼리 복잡도 | 02 | 리졸버 N+1; 깊이·복잡도 제한 없음 → 쿼리 하나로 DoS | DataLoader(배치+캐시) | GraphQL 명세 · graphql/dataloader | 권장 | 신규 |
+| 21-api-documentation-openapi | 명세 우선·OpenAPI·예제 | 01 | 문서-구현 불일치 → 클라이언트 오구현 | — | OpenAPI 3.1 명세 | 권장 | 신규 |
+| 16-grpc-streaming-modes | 단항·서버·클라이언트·양방향 스트리밍, 흐름 제어·데드라인·취소 | 15 | 장수 스트림 → LB 재조정 불가·특정 서버 편중; 스트림 중간 에러 처리 누락 → 조용한 절단; 백프레셔 무시 → 메모리 누적 | HTTP/2 스트림 흐름 제어 윈도 | gRPC 공식 문서 "Core concepts" · RFC 9113 | 권장 | 신규 |
+| 18-api-style-selection | REST·gRPC·GraphQL·WebSocket/SSE·메시지 큐 중 선택 기준 | 02, 15, 17, network/38-websocket-sse-long-lived | 브라우저에서 gRPC 직접 호출 불가(gRPC-Web·프록시 필요); 공개 조회를 GraphQL POST로 → HTTP 캐시 무력화; 서버 푸시가 필요한데 폴링 → 부하·지연 | — | Fielding 5장 · gRPC·GraphQL 공식 문서 | 필수 | 신규 |
+| 20-messaging-protocols | AMQP·MQTT·Kafka 프로토콜, 브로커 vs RPC, QoS·ack 모델 | 09, 18, distributed/17-queues-logs-and-delivery-semantics | MQTT QoS 0으로 중요 메시지 → 조용한 유실; 처리 전 ack → 장애 시 유실, 처리 후 ack 실패 → 중복; 장수 연결 끊김 감지 늦음 | 큐·오프셋 로그 | AMQP 0-9-1 명세 · MQTT 5.0(OASIS) · Kafka 프로토콜 문서 | 권장 | 신규 (연결: `cs/systems/kafka-consumer-failure`) |
+| 19-api-gateway-and-bff | Gateway Routing·Aggregation·Offloading(인증·TLS·속도 제한)·Gatekeeper, BFF(클라이언트별 백엔드), Valet Key(직접 접근 위임) | 18-api-style-selection, network/46-load-balancers-and-proxies | 게이트웨이에 비즈니스 로직 축적 → 새 **분산 모놀리스**·배포 병목; 공용 게이트웨이 하나로 모바일·웹 요구 충돌 → 필드 과다 응답; 집계 호출에 타임아웃·부분 응답 정책 없음 → 하위 하나 지연이 전체 지연; 게이트웨이 SPOF | 경로 → 백엔드 라우팅 테이블(접두사 트리), 병렬 팬아웃 + 데드라인 | microservices.io API gateway·BFF · Azure Gateway Routing·Aggregation·Offloading·Gatekeeper·BFF·Valet Key · Newman "Backends For Frontends" 2015 [?] | 필수 | 신규 |
 
 ### 15.4 사례 (기존 6편 — 번호만 이동)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 16-case-order-point | 주문·포인트 API 사례 | 05, 13 | (사례 본문 ⚠) | — | 기존 원고 | 권장 | `api-design/01-order-point` |
-| 17-case-coupon-issue | 선착순 쿠폰 발급 | 05, database/25-app-level-concurrency-patterns | 초과 발급 | 원자 카운터 | 기존 원고 | 권장 | `api-design/02-coupon-issue` |
-| 18-case-stock-deduct | 재고 차감 | database/25-app-level-concurrency-patterns | 재고 음수 | 조건부 UPDATE | 기존 원고 | 권장 | `api-design/03-stock-deduct` |
-| 19-case-settlement-report | 정산 리포트 | 14, 06 | 대용량 동기 조회 타임아웃 | 배치·스트리밍 | 기존 원고 | 권장 | `api-design/04-settlement-report` |
-| 20-case-delivery-webhook | 배송 웹훅 | 12 | 중복·순서 역전 | 재시도 큐 | 기존 원고 | 권장 | `api-design/05-delivery-webhook` |
-| 21-case-refund | 환불 | 05, distributed/20-saga | 부분 환불 이중 처리 | 상태 기계 | 기존 원고 | 권장 | `api-design/06-refund` |
+| 22-case-order-point | 주문·포인트 API 사례 | 05, 11 | (사례 본문 ⚠) | — | 기존 원고 | 권장 | `api-design/01-order-point` |
+| 23-case-coupon-issue | 선착순 쿠폰 발급 | 05, database/18-app-level-concurrency-patterns | 초과 발급 | 원자 카운터 | 기존 원고 | 권장 | `api-design/02-coupon-issue` |
+| 24-case-stock-deduct | 재고 차감 | database/18-app-level-concurrency-patterns | 재고 음수 | 조건부 UPDATE | 기존 원고 | 권장 | `api-design/03-stock-deduct` |
+| 25-case-settlement-report | 정산 리포트 | 13, 06 | 대용량 동기 조회 타임아웃 | 배치·스트리밍 | 기존 원고 | 권장 | `api-design/04-settlement-report` |
+| 26-case-delivery-webhook | 배송 웹훅 | 09 | 중복·순서 역전 | 재시도 큐 | 기존 원고 | 권장 | `api-design/05-delivery-webhook` |
+| 27-case-refund | 환불 | 05, distributed/15-saga | 부분 환불 이중 처리 | 상태 기계 | 기존 원고 | 권장 | `api-design/06-refund` |
 
 ### 15.5 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 22-api-symptom-index | 역색인: 이중 처리, 목록 중복/누락, 구 앱만 크래시, ID 끝자리 변형, 412/409/429, 웹훅 역순 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 23-api-incidents | 실사건: Twitter 64비트 ID와 JS 정밀도 → `id_str` 도입(2010) · Optus 무인증 API 열거 유출(2022) [?] | 22 | — | — | Twitter 개발자 공지 2010 [?] · 호주 의회·OAIC 자료 [?] | 권장 | 신규 |
+| 28-api-symptom-index | 역색인: 이중 처리, 목록 중복/누락, 구 앱만 크래시, ID 끝자리 변형, 412/409/429, 웹훅 역순 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
+| 29-api-incidents | 실사건: Twitter 64비트 ID와 JS 정밀도 → `id_str` 도입(2010) · Optus 무인증 API 열거 유출(2022) [?] | 28 | — | — | Twitter 개발자 공지 2010 [?] · 호주 의회·OAIC 자료 [?] | 권장 | 신규 |
 
 ---
 
 ## 16. 프론트엔드 엔지니어링 (`web-platform/`) — 신설
 
-> 브라우저라는 **실행 환경의 원리**(렌더링 파이프라인·이벤트 루프·출처 모델·저장소·캐시)에서 출발해 **성능 최적화**(로딩 순서·이미지·폰트·긴 태스크·가상화·재렌더·하이드레이션·성능 예산)와 **프론트엔드 설계**(컴포넌트·상태·Islands·마이크로 프론트엔드)까지 다룬다. 특정 프레임워크(React 등)는 원리의 예시로만 든다. DOM API 118파일 레퍼런스(`foundations/web-api`)와 프레임워크 API 레퍼런스는 CS 밖(§19) — 여기서 실습 근거로 링크한다. SOP/CORS 본문은 security/20, HTTP 캐시 본문은 network/34, 전송 압축은 network/46.
+> 브라우저라는 **실행 환경의 원리**(렌더링 파이프라인·이벤트 루프·출처 모델·저장소·캐시)에서 출발해 **성능 최적화**(로딩 순서·이미지·폰트·긴 태스크·가상화·재렌더·하이드레이션·성능 예산)와 **프론트엔드 설계**(컴포넌트·상태·Islands·마이크로 프론트엔드)까지 다룬다. 특정 프레임워크(React 등)는 원리의 예시로만 든다. DOM API 118파일 레퍼런스(`languages/web-api`)와 프레임워크 API 레퍼런스는 CS 밖(§19) — 여기서 실습 근거로 링크한다. SOP/CORS 본문은 security/21, HTTP 캐시 본문은 network/34, 전송 압축은 network/39.
 > 뼈대: WHATWG HTML 표준(Event loops 절·Rendering 절), WHATWG Fetch, web.dev "Rendering performance"·Core Web Vitals·learn/performance, W3C Service Workers, patterns.dev.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 12 → 13
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24
 
 ### 16.1 원리
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 01-browser-architecture | 멀티 프로세스·사이트 격리·렌더러 | os/04-process-and-lifecycle | 한 탭 무한 루프 → 해당 렌더러만 "응답 없음" | — | Chromium 설계 문서 "Multi-process Architecture" | 권장 | 신규 |
-| 02-rendering-pipeline | 파싱 → DOM/CSSOM → 스타일 → 레이아웃 → 페인트 → 합성. 합성 레이어 — transform·opacity만 컴포지터에서 처리, 레이어 과다는 메모리 비용 | 01, language/03-parsing-grammars-ast | 읽기·쓰기 교대 → **layout thrashing** 강제 동기 레이아웃; 렌더 차단 CSS·JS | DOM 트리, 스타일 규칙 매칭(오른쪽→왼쪽) | web.dev "Rendering performance" · web.dev "Stick to Compositor-Only Properties and Manage Layer Count" · HTML 표준 "Rendering" | 필수 | 신규 (연결: `foundations/web-api/10-layout-thrashing`, `08·09`) |
-| 03-event-loop | 태스크·마이크로태스크·렌더링 기회·rAF | 02, os/21-event-based-concurrency | 긴 태스크 → 입력 지연(INP 악화); 마이크로태스크 무한 연쇄 → 렌더 영구 정지 | 태스크 큐, 마이크로태스크 큐 | HTML 표준 "Event loops" 절 | 필수 | 신규 (연결: `foundations/web-api/38-request-animation-frame`, `39-idle-scheduling`) |
-| 04-dom-and-event-model | DOM 트리·이벤트 전파(캡처/버블)·위임 | 03 | 리스너 누수 → 메모리 증가; `stopPropagation` 남용 → 위임 핸들러 무력화 | 트리 순회 | WHATWG DOM 표준 | 필수 | 신규 (연결: `foundations/web-api/01·15~18·20`) |
-| 05-fetch-from-browser | fetch 수명·스트리밍·중단·자격 증명 | 04, network/33-http-semantics | **fetch는 4xx/5xx에 reject하지 않음** → 에러를 성공으로 처리; 타임아웃 기본값 없음 | — | WHATWG Fetch | 필수 | 신규 (연결: `foundations/web-api/25~30`) |
+| 02-rendering-pipeline | 파싱 → DOM/CSSOM → 스타일 → 레이아웃 → 페인트 → 합성. 합성 레이어 — transform·opacity만 컴포지터에서 처리, 레이어 과다는 메모리 비용 | 01, language/03-parsing-grammars-ast | 읽기·쓰기 교대 → **layout thrashing** 강제 동기 레이아웃; 렌더 차단 CSS·JS | DOM 트리, 스타일 규칙 매칭(오른쪽→왼쪽) | web.dev "Rendering performance" · web.dev "Stick to Compositor-Only Properties and Manage Layer Count" · HTML 표준 "Rendering" | 필수 | 신규 (연결: `languages/web-api/10-layout-thrashing`, `08·09`) |
+| 03-event-loop | 태스크·마이크로태스크·렌더링 기회·rAF | 02, os/27-event-based-concurrency | 긴 태스크 → 입력 지연(INP 악화); 마이크로태스크 무한 연쇄 → 렌더 영구 정지 | 태스크 큐, 마이크로태스크 큐 | HTML 표준 "Event loops" 절 | 필수 | 신규 (연결: `languages/web-api/38-request-animation-frame`, `39-idle-scheduling`) |
+| 04-dom-and-event-model | DOM 트리·이벤트 전파(캡처/버블)·위임 | 03 | 리스너 누수 → 메모리 증가; `stopPropagation` 남용 → 위임 핸들러 무력화 | 트리 순회 | WHATWG DOM 표준 | 필수 | 신규 (연결: `languages/web-api/01·15~18·20`) |
+| 05-fetch-from-browser | fetch 수명·스트리밍·중단·자격 증명 | 04, network/33-http-semantics | **fetch는 4xx/5xx에 reject하지 않음** → 에러를 성공으로 처리; 타임아웃 기본값 없음 | — | WHATWG Fetch | 필수 | 신규 (연결: `languages/web-api/25~30`) |
 | 06-browser-storage | 쿠키·localStorage·IndexedDB·쿼터·축출 | 05, security/11-sessions-and-cookie-security | localStorage에 토큰 → XSS 한 번에 탈취; Safari ITP 7일 제한으로 저장소 삭제 [?]; 쿼터 초과 `QuotaExceededError` | 키-값 저장소, B-트리(IndexedDB 구현) | WHATWG Storage · W3C IndexedDB | 권장 | 신규 |
 | 07-service-workers-and-offline | 서비스 워커 수명·캐시 전략 | 06, network/34-http-caching | SW 캐시 고착 → 배포해도 구 버전이 계속 뜸 | 캐시 저장소 | W3C Service Workers | 권장 | 신규 |
-| 09-js-modules-and-bundling | 모듈 체계·번들링·코드 분할·트리 셰이킹 | 05, language/17-modules-and-dependency-resolution | 번들 비대 → 초기 로드 지연; 청크 해시 불일치 → 배포 직후 `ChunkLoadError` | 모듈 의존 그래프, 도달성 분석(트리 셰이킹) | ECMA-262 Modules 절 · 번들러 문서 | 권장 | 신규 |
+| 09-js-modules-and-bundling | 모듈 체계·번들링·코드 분할·트리 셰이킹 | 05, language/19-modules-and-dependency-resolution | 번들 비대 → 초기 로드 지연; 청크 해시 불일치 → 배포 직후 `ChunkLoadError` | 모듈 의존 그래프, 도달성 분석(트리 셰이킹) | ECMA-262 Modules 절 · 번들러 문서 | 권장 | 신규 |
 | 10-rendering-strategies | CSR·SSR·SSG·스트리밍·하이드레이션 | 02, 09 | 서버/클라이언트 렌더 결과 불일치 → hydration mismatch 경고·깜빡임; SSR에서 사용자별 데이터 캐시 → 교차 노출 | — | web.dev "Rendering on the Web" | 권장 | 신규 |
 | 11-accessibility-basics | 시맨틱 마크업·접근성 트리·키보드·ARIA | 04 | div 버튼 → 키보드·스크린리더 사용 불가; 잘못된 ARIA가 없는 것보다 나쁨 | 접근성 트리 | WCAG 2.2 · WAI-ARIA 1.2 | 권장 | 신규 |
-| 14-internationalization-and-localization | 로캘 협상(`Accept-Language`·BCP 47), 메시지 카탈로그, 복수형 규칙, 숫자·통화·날짜 서식, RTL, 이름·주소 가정 | 05-fetch-from-browser, architecture/05-character-encoding-unicode, network/33-http-semantics | 문자열 이어 붙이기로 번역 → 어순이 다른 언어에서 문장 붕괴. "1 items"류 복수형 오류. 서버 로캘 기본값으로 `1,234.5`와 `1.234,5`가 뒤바뀌어 금액 파싱 오류. 이름을 성·이름 2칸으로 강제 → 가입 불가 | CLDR 복수형 규칙(술어 평가), 로캘 폴백 체인 | Unicode CLDR https://cldr.unicode.org/ · ICU MessageFormat 문서 · RFC 5646 (BCP 47) · McKenzie "Falsehoods Programmers Believe About Names" 2010 | 권장 | 신규 |
+| 12-internationalization-and-localization | 로캘 협상(`Accept-Language`·BCP 47), 메시지 카탈로그, 복수형 규칙, 숫자·통화·날짜 서식, RTL, 이름·주소 가정 | 05-fetch-from-browser, architecture/04-character-encoding-unicode, network/33-http-semantics | 문자열 이어 붙이기로 번역 → 어순이 다른 언어에서 문장 붕괴. "1 items"류 복수형 오류. 서버 로캘 기본값으로 `1,234.5`와 `1.234,5`가 뒤바뀌어 금액 파싱 오류. 이름을 성·이름 2칸으로 강제 → 가입 불가 | CLDR 복수형 규칙(술어 평가), 로캘 폴백 체인 | Unicode CLDR https://cldr.unicode.org/ · ICU MessageFormat 문서 · RFC 5646 (BCP 47) · McKenzie "Falsehoods Programmers Believe About Names" 2010 | 권장 | 신규 |
 
-### 16.2 성능 (2026-09-28 추가 — 측정은 08, 처방은 15~22)
+### 16.2 성능 (2026-09-28 추가 — 측정은 08, 처방은 13~20)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 08-web-performance-vitals | LCP·INP·CLS와 측정(RUM vs 랩) | 02, 03 | 랩 측정만 → 실제 사용자 저사양 기기 성능 은폐; 이미지 크기 미지정 → 레이아웃 이동 | 백분위(p75) 집계 | web.dev "Web Vitals" | 필수 | 신규 |
-| 15-critical-path-and-resource-loading | 크리티컬 렌더링 패스, 파서 차단·렌더 차단 자원, preload 스캐너, 리소스 힌트(preconnect·dns-prefetch·preload·fetchpriority), async/defer | 02, 08, network/35-http-connection-management | `<head>`의 동기 `<script>`·큰 CSS → FCP·LCP 지연(LCP > 2.5s = "개선 필요"). preload를 남발하면 대역폭을 서로 빼앗아 LCP가 오히려 나빠진다. 첫 화면 LCP 이미지에 `loading=lazy`를 걸면 LCP가 늦어진다 | 자원 의존 그래프의 임계 경로(최장 경로, data-structure/08-graph), 우선순위 큐 | web.dev "Understand the critical path"(learn/performance) · web.dev "Assist the browser with resource hints" · web.dev "Optimize resource loading" | 필수 | 신규 |
-| 16-image-optimization | 포맷 선택(AVIF·WebP·JPEG 폴백), 반응형 이미지(`srcset`·`sizes`·`<picture>`), 지연 로딩, `width`/`height`로 공간 예약, 첫 화면 이미지 우선순위 | 15 | 4000px 원본을 모바일에 그대로 보냄 → 수 MB 전송, LCP 악화. 크기를 지정하지 않은 이미지 → 로드 후 레이아웃 이동(CLS > 0.1). 모든 이미지에 lazy → 히어로 이미지 LCP 지연 | 해상도별 후보 선택(DPR × 뷰포트), 손실 압축(변환 부호화 — algorithm/42-modern-codecs-lz4-zstd-brotli와 무손실 대비) [?] | web.dev "Responsive images"(learn/design) · web.dev "Optimize Cumulative Layout Shift" · web.dev "Preload responsive images" | 권장 | 신규 |
-| 17-web-font-loading | FOIT·FOUT, `font-display`(swap·fallback·optional), 서브셋과 `unicode-range`, 폰트 preload, 대체 폰트 메트릭 맞추기 | 15 | 폰트 로딩 동안 텍스트가 보이지 않음(FOIT — 블록 기간 약 3초 [?]). swap으로 폰트가 바뀔 때 글자 폭 차이로 CLS 발생. 한글 폰트 전체(수 MB)를 모든 페이지에서 로드 → LCP 지연 | 사용 글리프 집합 계산(data-structure/18-bitset), 유니코드 범위 분할 | web.dev "Optimize web fonts"(learn/performance) · web.dev "Optimize WebFont loading and rendering" · web.dev "Preload optional fonts" | 권장 | 신규 |
-| 18-long-tasks-and-web-workers | 긴 태스크(50ms 초과)와 INP, 메인 스레드에 양보(yield)하기, 작업 쪼개기, 웹 워커로 넘기기, `postMessage`의 구조적 복제 비용과 Transferable | 03, 08 | 클릭 핸들러 안의 무거운 계산 → INP > 200ms, "버튼이 안 눌린다". 큰 객체를 워커로 넘기면 구조적 복제 비용 때문에 오히려 느려진다. 워커 안에서 DOM 접근 → `ReferenceError: document is not defined` | 협력적 스케줄링(청크 분할), 메시지 큐, 소유권 이전(Transferable) | web.dev "Optimize long tasks" · web.dev "Use web workers to run JavaScript off the browser's main thread" · HTML 표준 "Web workers" 절 | 필수 | 신규 (연결: `foundations/web-api/39-idle-scheduling`) |
-| 19-list-virtualization | 보이는 행만 렌더링(windowing), overscan, 가변 높이 측정, 무한 스크롤과의 결합 | 02, 04 | 1만 행 테이블을 그대로 DOM에 올림 → 스크롤 프레임 드롭, 탭 메모리 수백 MB [?]. 가변 높이를 잘못 추정 → 스크롤바가 튀고 위치가 어긋남. 가상화한 목록은 브라우저 찾기(Ctrl+F)와 스크린리더 탐색에서 빠진다 | 보이는 구간 계산 = 누적 높이(algorithm/10-prefix-sum) + 이진 탐색(algorithm/06-binary-search). 높이 갱신에는 data-structure/17-fenwick-tree | web.dev "Virtualize large lists with react-window" | 권장 | 신규 |
-| 20-ui-rerender-and-memoization | 선언형 UI의 재렌더 모델: 상태 변경 → 하위 트리 재렌더 → 재조정(diff). 참조 동일성, memo·useMemo·useCallback, 상태를 어디에 둘지 (React는 예시) | 04, language/07-values-references-passing | 최상위 상태 하나가 바뀌면 수천 개 자식이 재렌더 → 타이핑 지연(INP 악화). 렌더할 때마다 새 객체·함수를 prop으로 넘김 → memo가 무력화된다. memo를 남발하면 비교 비용과 메모리만 늘고 효과가 없다 | 트리 diff 휴리스틱 O(n)(일반 트리 편집 거리는 O(n³)) [?], 얕은 비교, 메모이제이션(algorithm/21-dp-basics) | react.dev "memo" · react.dev "useMemo" | 권장 | 신규 |
-| 21-hydration-cost-and-partial-hydration | 하이드레이션 비용(보이지만 반응하지 않는 구간), 점진·부분 하이드레이션, islands 아키텍처(설계 관점은 24), 서버 컴포넌트 | 10, 09, 18 | SSR로 LCP는 빨라졌는데 하이드레이션 전 클릭이 무시됨(TTI 격차). 페이지 전체를 한 번에 하이드레이션 → 긴 태스크, INP 악화. 직렬화한 초기 상태 JSON이 HTML에 중복 삽입 → 문서 비대 | DOM 트리와 컴포넌트 트리 매칭(트리 순회) | web.dev "Rendering on the Web" · patterns.dev "Islands Architecture" | 권장 | 신규 |
-| 22-performance-budgets-and-regression-gates | 성능 예산(번들 KB·LCP·요청 수), 랩 도구(Lighthouse), CI 회귀 게이트, 측정 노이즈 다루기 | 08, 09, engineering-practice/08-ci-cd-pipelines | 의존성 하나를 추가했는데 번들이 수백 KB 늘어난 것을 아무도 모름. Lighthouse 점수가 실행마다 흔들려 게이트가 오탐 → 결국 꺼 둠 [?] | 임계값 비교, 반복 측정의 중앙값(data-analysis/04-descriptive-statistics) | web.dev "Performance budgets 101" · web.dev "Incorporate performance budgets into your build process" · MDN "Performance budgets" | 권장 | 신규 |
+| 13-critical-path-and-resource-loading | 크리티컬 렌더링 패스, 파서 차단·렌더 차단 자원, preload 스캐너, 리소스 힌트(preconnect·dns-prefetch·preload·fetchpriority), async/defer | 02, 08, network/35-http-connection-management | `<head>`의 동기 `<script>`·큰 CSS → FCP·LCP 지연(LCP > 2.5s = "개선 필요"). preload를 남발하면 대역폭을 서로 빼앗아 LCP가 오히려 나빠진다. 첫 화면 LCP 이미지에 `loading=lazy`를 걸면 LCP가 늦어진다 | 자원 의존 그래프의 임계 경로(최장 경로, data-structure/11-graph), 우선순위 큐 | web.dev "Understand the critical path"(learn/performance) · web.dev "Assist the browser with resource hints" · web.dev "Optimize resource loading" | 필수 | 신규 |
+| 14-image-optimization | 포맷 선택(AVIF·WebP·JPEG 폴백), 반응형 이미지(`srcset`·`sizes`·`<picture>`), 지연 로딩, `width`/`height`로 공간 예약, 첫 화면 이미지 우선순위 | 13 | 4000px 원본을 모바일에 그대로 보냄 → 수 MB 전송, LCP 악화. 크기를 지정하지 않은 이미지 → 로드 후 레이아웃 이동(CLS > 0.1). 모든 이미지에 lazy → 히어로 이미지 LCP 지연 | 해상도별 후보 선택(DPR × 뷰포트), 손실 압축(변환 부호화 — algorithm/34-modern-codecs-lz4-zstd-brotli와 무손실 대비) [?] | web.dev "Responsive images"(learn/design) · web.dev "Optimize Cumulative Layout Shift" · web.dev "Preload responsive images" | 권장 | 신규 |
+| 15-web-font-loading | FOIT·FOUT, `font-display`(swap·fallback·optional), 서브셋과 `unicode-range`, 폰트 preload, 대체 폰트 메트릭 맞추기 | 13 | 폰트 로딩 동안 텍스트가 보이지 않음(FOIT — 블록 기간 약 3초 [?]). swap으로 폰트가 바뀔 때 글자 폭 차이로 CLS 발생. 한글 폰트 전체(수 MB)를 모든 페이지에서 로드 → LCP 지연 | 사용 글리프 집합 계산(data-structure/35-bitset), 유니코드 범위 분할 | web.dev "Optimize web fonts"(learn/performance) · web.dev "Optimize WebFont loading and rendering" · web.dev "Preload optional fonts" | 권장 | 신규 |
+| 16-long-tasks-and-web-workers | 긴 태스크(50ms 초과)와 INP, 메인 스레드에 양보(yield)하기, 작업 쪼개기, 웹 워커로 넘기기, `postMessage`의 구조적 복제 비용과 Transferable | 03, 08 | 클릭 핸들러 안의 무거운 계산 → INP > 200ms, "버튼이 안 눌린다". 큰 객체를 워커로 넘기면 구조적 복제 비용 때문에 오히려 느려진다. 워커 안에서 DOM 접근 → `ReferenceError: document is not defined` | 협력적 스케줄링(청크 분할), 메시지 큐, 소유권 이전(Transferable) | web.dev "Optimize long tasks" · web.dev "Use web workers to run JavaScript off the browser's main thread" · HTML 표준 "Web workers" 절 | 필수 | 신규 (연결: `languages/web-api/39-idle-scheduling`) |
+| 17-list-virtualization | 보이는 행만 렌더링(windowing), overscan, 가변 높이 측정, 무한 스크롤과의 결합 | 02, 04 | 1만 행 테이블을 그대로 DOM에 올림 → 스크롤 프레임 드롭, 탭 메모리 수백 MB [?]. 가변 높이를 잘못 추정 → 스크롤바가 튀고 위치가 어긋남. 가상화한 목록은 브라우저 찾기(Ctrl+F)와 스크린리더 탐색에서 빠진다 | 보이는 구간 계산 = 누적 높이(algorithm/13-prefix-sum) + 이진 탐색(algorithm/04-binary-search). 높이 갱신에는 data-structure/34-fenwick-tree | web.dev "Virtualize large lists with react-window" | 권장 | 신규 |
+| 18-ui-rerender-and-memoization | 선언형 UI의 재렌더 모델: 상태 변경 → 하위 트리 재렌더 → 재조정(diff). 참조 동일성, memo·useMemo·useCallback, 상태를 어디에 둘지 (React는 예시) | 04, language/06-values-references-passing | 최상위 상태 하나가 바뀌면 수천 개 자식이 재렌더 → 타이핑 지연(INP 악화). 렌더할 때마다 새 객체·함수를 prop으로 넘김 → memo가 무력화된다. memo를 남발하면 비교 비용과 메모리만 늘고 효과가 없다 | 트리 diff 휴리스틱 O(n)(일반 트리 편집 거리는 O(n³)) [?], 얕은 비교, 메모이제이션(algorithm/25-dp-basics) | react.dev "memo" · react.dev "useMemo" | 권장 | 신규 |
+| 19-hydration-cost-and-partial-hydration | 하이드레이션 비용(보이지만 반응하지 않는 구간), 점진·부분 하이드레이션, islands 아키텍처(설계 관점은 22), 서버 컴포넌트 | 10, 09, 16 | SSR로 LCP는 빨라졌는데 하이드레이션 전 클릭이 무시됨(TTI 격차). 페이지 전체를 한 번에 하이드레이션 → 긴 태스크, INP 악화. 직렬화한 초기 상태 JSON이 HTML에 중복 삽입 → 문서 비대 | DOM 트리와 컴포넌트 트리 매칭(트리 순회) | web.dev "Rendering on the Web" · patterns.dev "Islands Architecture" | 권장 | 신규 |
+| 20-performance-budgets-and-regression-gates | 성능 예산(번들 KB·LCP·요청 수), 랩 도구(Lighthouse), CI 회귀 게이트, 측정 노이즈 다루기 | 08, 09, engineering-practice/06-ci-cd-pipelines | 의존성 하나를 추가했는데 번들이 수백 KB 늘어난 것을 아무도 모름. Lighthouse 점수가 실행마다 흔들려 게이트가 오탐 → 결국 꺼 둠 [?] | 임계값 비교, 반복 측정의 중앙값(data-analysis/04-descriptive-statistics) | web.dev "Performance budgets 101" · web.dev "Incorporate performance budgets into your build process" · MDN "Performance budgets" | 권장 | 신규 |
 
 ### 16.3 프론트엔드 설계 (2026-09-28 추가)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 23-component-and-state-patterns | 컴포넌트 합성(Compound·Container/Presentational → 커스텀 훅·Render props), 제어/비제어 컴포넌트, 단방향 데이터 흐름(Flux/Redux/Elm), 상태 위치 선정(로컬·끌어올리기·전역), **서버 상태 캐시 vs 클라이언트 상태**, 파생 상태 | 04-dom-and-event-model, 03-event-loop, 20, software-design/34-ui-architecture-patterns | 서버 데이터를 전역 스토어에 복사 → 오래된 값·수동 무효화 누락; props를 state로 복사(파생 상태) → 부모 변경이 반영 안 됨; 전역 스토어 하나 변경에 전 트리 리렌더 → 입력 지연(INP — 재렌더 비용은 20); prop drilling 10단계 | 불변 상태 트리 + 리듀서(폴드), 구조 공유(data-structure/26), 키 기반 캐시 + stale-while-revalidate | patterns.dev (Container/Presentational·Hooks·Compound) · Flux 문서 · Redux 문서 "Three Principles" [?] | 권장 | 신규 |
-| 24-islands-and-micro-frontends | Islands(서버 HTML + 부분 하이드레이션 — 비용 측면은 21), Micro-frontends(빌드 타임 vs 런타임 통합 — iframe·Web Components·Module Federation), 서버·클라이언트 측 UI 조합 | 10-rendering-strategies, 09-js-modules-and-bundling, 21, 23 | 마이크로 프론트엔드마다 React 사본 → 번들 중복·**싱글턴 라이브러리 두 벌**(훅 오류); 팀 간 CSS 충돌; 공유 상태를 전역 객체로 주고받음 → 숨은 결합; 섬 사이 통신 부재 → 같은 데이터 이중 fetch | 모듈 그래프 공유(dedupe), 이벤트 버스 | Miller "Islands Architecture" 2020 · Jackson "Micro Frontends" (martinfowler.com) 2019 · microservices.io Client-side UI composition | 심화 | 신규 |
+| 21-component-and-state-patterns | 컴포넌트 합성(Compound·Container/Presentational → 커스텀 훅·Render props), 제어/비제어 컴포넌트, 단방향 데이터 흐름(Flux/Redux/Elm), 상태 위치 선정(로컬·끌어올리기·전역), **서버 상태 캐시 vs 클라이언트 상태**, 파생 상태 | 04-dom-and-event-model, 03-event-loop, 18, software-design/42-ui-architecture-patterns | 서버 데이터를 전역 스토어에 복사 → 오래된 값·수동 무효화 누락; props를 state로 복사(파생 상태) → 부모 변경이 반영 안 됨; 전역 스토어 하나 변경에 전 트리 리렌더 → 입력 지연(INP — 재렌더 비용은 18); prop drilling 10단계 | 불변 상태 트리 + 리듀서(폴드), 구조 공유(data-structure/40), 키 기반 캐시 + stale-while-revalidate | patterns.dev (Container/Presentational·Hooks·Compound) · Flux 문서 · Redux 문서 "Three Principles" [?] | 권장 | 신규 |
+| 22-islands-and-micro-frontends | Islands(서버 HTML + 부분 하이드레이션 — 비용 측면은 19), Micro-frontends(빌드 타임 vs 런타임 통합 — iframe·Web Components·Module Federation), 서버·클라이언트 측 UI 조합 | 10-rendering-strategies, 09-js-modules-and-bundling, 19, 21 | 마이크로 프론트엔드마다 React 사본 → 번들 중복·**싱글턴 라이브러리 두 벌**(훅 오류); 팀 간 CSS 충돌; 공유 상태를 전역 객체로 주고받음 → 숨은 결합; 섬 사이 통신 부재 → 같은 데이터 이중 fetch | 모듈 그래프 공유(dedupe), 이벤트 버스 | Miller "Islands Architecture" 2020 · Jackson "Micro Frontends" (martinfowler.com) 2019 · microservices.io Client-side UI composition | 심화 | 신규 |
 
 ### 16.4 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 12-web-symptom-index | 역색인: CORS 에러, fetch 성공인데 에러, 화면 멈춤, hydration mismatch, `ChunkLoadError`, 배포가 반영 안 됨, 레이아웃 튐, INP 나쁨, LCP 이미지 늦음, 폰트 깜빡임, 스크롤 버벅임, 하이드레이션 전 클릭 무시 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 13-web-incidents | 실사건: British Airways 결제 페이지 스크립트 변조(Magecart, 2018) · polyfill.io 도메인 인수 후 악성 코드 배포(2024) | 12 | — | — | ICO 과징금 결정 2020 · Sansec 2024-06 보고 | 권장 | 신규 |
+| 23-web-symptom-index | 역색인: CORS 에러, fetch 성공인데 에러, 화면 멈춤, hydration mismatch, `ChunkLoadError`, 배포가 반영 안 됨, 레이아웃 튐, INP 나쁨, LCP 이미지 늦음, 폰트 깜빡임, 스크롤 버벅임, 하이드레이션 전 클릭 무시 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
+| 24-web-incidents | 실사건: British Airways 결제 페이지 스크립트 변조(Magecart, 2018) · polyfill.io 도메인 인수 후 악성 코드 배포(2024) | 23 | — | — | ICO 과징금 결정 2020 · Sansec 2024-06 보고 | 권장 | 신규 |
 
 ---
 
@@ -1405,30 +1417,30 @@ Part 6  판단하는 법             data-engineering → data-analysis
 > SWEBOK v4의 Requirements·Configuration Management·Process·Management·Professional Practice·Economics KA를 개발자 시점으로 압축. 기존 agile-and-squad·development-standards(4축)·three-virtues가 들어온다.
 > 뼈대: SWEBOK v4, SWE@G 9·16·18·23·24장(16·18 `[?]`), DORA, Google eng-practices, ISO/IEC/IEEE 29148.
 
-**권장 학습 순서**: 01 → 02 → 04 → 05 → 06 → 08 → 07 → 20 → 09 → 10 → 11 → 03 → 19 → 12 → 13 → 14 → 15 → 16 → 17 → 18
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 01-lifecycle-and-agile | 개발 수명 주기·애자일·스쿼드 | — | 의식만 남은 애자일 → 회고 없음·같은 문제 반복 | — | Agile Manifesto 2001 · SWEBOK v4 Process KA | 필수 | `engineering/agile-and-squad` |
 | 02-requirements-engineering | 요구 도출·명세·검증·추적 | 01 | 모호 요구("빠르게") → 구현 후 재작업; 비기능 요구 누락 | 추적 매트릭스 | ISO/IEC/IEEE 29148 · SWEBOK v4 Requirements KA | 권장 | 신규 |
-| 03-estimation-and-planning | 추정·불확실성 원뿔·계획 | 02 | 단일 점 추정 → 일정 상습 초과 | 3점 추정 | McConnell 『Software Estimation』 [?] | 권장 | 신규 |
-| 04-version-control-and-git-internals | 스냅샷·객체 모델·브랜치·병합 | data-structure/27-merkle-tree | force push로 남의 커밋 유실; 병합 충돌 오해결 → 조용한 코드 소실 | **Merkle DAG**, 3-way merge(LCA) | Pro Git 10장 | 필수 | 신규 |
-| 05-branching-strategies | git-flow vs trunk-based·피처 플래그 | 04 | 장수 브랜치 → 머지 지옥·통합 버그 | — | SWE@G 16장 [?] · trunkbaseddevelopment.com | 필수 | 신규 |
-| 06-code-review | 리뷰의 목적·기준·크기 | 05 | 거대 PR → 형식적 승인(LGTM)으로 버그 통과 | — | Google eng-practices · SWE@G 9장 | 필수 | 신규 |
-| 07-build-systems-and-reproducibility | 증분 빌드·캐시·재현 가능 빌드 | 04, language/17-modules-and-dependency-resolution | 로컬에선 되는데 CI에선 실패(환경 의존); 캐시 오염 → 옛 산출물 배포 | **빌드 DAG + 위상정렬**, 콘텐츠 해시 캐시 | SWE@G 18장 [?] · reproducible-builds.org | 권장 | 신규 |
-| 08-ci-cd-pipelines | 지속적 통합·전달·배포 파이프라인 | 05, testing/01-why-test-and-pyramid | 빨간 main 방치 → 모두 막힘; 배포 수동 단계 → 절차 누락(Knight Capital) | 파이프라인 DAG | SWE@G 23·24장 · Humble–Farley 『Continuous Delivery』 | 필수 | 신규 |
-| 09-dora-metrics | 배포 빈도·리드 타임·변경 실패율·복구 시간·재작업률 | 08 | 지표를 목표로 → 게이밍(굿하트) | — | dora.dev "DORA's software delivery metrics" | 권장 | 신규 |
-| 10-technical-debt | 기술부채 4사분면·상환 전략 | software-design/05-code-smells | 부채 가시화 안 함 → 속도 점진 저하 후 전면 재작성 유혹 | — | Fowler "TechnicalDebtQuadrant" 2009 | 권장 | 신규 |
+| 12-estimation-and-planning | 추정·불확실성 원뿔·계획 | 02 | 단일 점 추정 → 일정 상습 초과 | 3점 추정 | McConnell 『Software Estimation』 [?] | 권장 | 신규 |
+| 03-version-control-and-git-internals | 스냅샷·객체 모델·브랜치·병합 | data-structure/27-merkle-tree | force push로 남의 커밋 유실; 병합 충돌 오해결 → 조용한 코드 소실 | **Merkle DAG**, 3-way merge(LCA) | Pro Git 10장 | 필수 | 신규 |
+| 04-branching-strategies | git-flow vs trunk-based·피처 플래그 | 03 | 장수 브랜치 → 머지 지옥·통합 버그 | — | SWE@G 16장 [?] · trunkbaseddevelopment.com | 필수 | 신규 |
+| 05-code-review | 리뷰의 목적·기준·크기 | 04 | 거대 PR → 형식적 승인(LGTM)으로 버그 통과 | — | Google eng-practices · SWE@G 9장 | 필수 | 신규 |
+| 07-build-systems-and-reproducibility | 증분 빌드·캐시·재현 가능 빌드 | 03, language/19-modules-and-dependency-resolution | 로컬에선 되는데 CI에선 실패(환경 의존); 캐시 오염 → 옛 산출물 배포 | **빌드 DAG + 위상정렬**, 콘텐츠 해시 캐시 | SWE@G 18장 [?] · reproducible-builds.org | 권장 | 신규 |
+| 06-ci-cd-pipelines | 지속적 통합·전달·배포 파이프라인 | 04, testing/01-why-test-and-pyramid | 빨간 main 방치 → 모두 막힘; 배포 수동 단계 → 절차 누락(Knight Capital) | 파이프라인 DAG | SWE@G 23·24장 · Humble–Farley 『Continuous Delivery』 | 필수 | 신규 |
+| 09-dora-metrics | 배포 빈도·리드 타임·변경 실패율·복구 시간·재작업률 | 06 | 지표를 목표로 → 게이밍(굿하트) | — | dora.dev "DORA's software delivery metrics" | 권장 | 신규 |
+| 10-technical-debt | 기술부채 4사분면·상환 전략 | software-design/10-code-smells | 부채 가시화 안 함 → 속도 점진 저하 후 전면 재작성 유혹 | — | Fowler "TechnicalDebtQuadrant" 2009 | 권장 | 신규 |
 | 11-documentation-practices | 문서 유형(튜토리얼·방법·레퍼런스·설명)·문서 신선도 | 02 | 낡은 런북 → 사고 때 잘못된 절차 실행 | — | Diátaxis · SWE@G 10장 [?] | 권장 | 신규 |
-| 12-quality-standards | 품질 표준(코드 품질 기준) | 06 | 기준 부재 → 리뷰 편차 | — | 기존 원고 | 권장 | `engineering/development-standards/quality-standards` |
-| 13-security-standards | 보안 표준(개발 보안 기준) | security/01-security-principles | 기준 부재 → 알려진 취약점 반복 | — | 기존 원고 | 권장 | `engineering/development-standards/security-standards` |
-| 14-operational-standards | 운영 표준 | reliability/23-logging | 기준 부재 → 서비스마다 다른 로그·지표 | — | 기존 원고 | 권장 | `engineering/development-standards/operational-standards` |
-| 15-legal-standards | 법률 표준(개인정보·라이선스 등) | 12 | 라이선스 위반 의존성·개인정보 보관 기한 위반 | — | 기존 원고 (`provisions.md` 포함) | 권장 | `engineering/development-standards/legal-standards` (+ `index.md`·`README.md` 흡수) |
-| 16-engineering-virtues | 게으름·조급함·오만 — 개발자 태도 | 01 | — | — | Wall 외 『Programming Perl』 용어집 | 심화 | `foundations/three-virtues` |
-| 19-build-vs-buy-and-adoption | 직접 만들기 vs SaaS·OSS 도입: 핵심·범용 판별, 총소유비용(운영·온콜 포함), 종료 비용·데이터 반출, 벤더 종속, OSS 건강도(유지보수자·라이선스) | 03-estimation-and-planning, domain-modeling/13-subdomains, security/24-supply-chain-security | 인증·결제·검색을 자체 구현해 핵심 기능 개발 인력을 소진. 반대로 핵심 차별화 기능을 SaaS에 의존 → 가격 인상·API 폐기 시 대안 없음. 라이선스 변경(예: 오픈소스 → 소스 공개 라이선스 전환) 후 대응 불가 | 의사결정 행렬(가중합) | Fowler "UtilityVsStrategicDichotomy" https://martinfowler.com/bliki/UtilityVsStrategicDichotomy.html · OpenSSF Scorecard https://securityscorecards.dev/ | 권장 | 신규 |
-| 20-container-image-optimization | 멀티스테이지 빌드, 최소 베이스(distroless·slim·alpine의 musl 함정), 레이어 순서와 빌드 캐시, `.dockerignore`, 이미지 크기가 pull·스케일 아웃·롤백 시간에 주는 영향 | 07-build-systems-and-reproducibility, os/34-containers-namespaces-cgroups | 2GB 이미지 → 새 노드에서 pull에 수십 초~수 분 걸려 스케일 아웃과 롤백이 늦어지고, 실패하면 `ImagePullBackOff`. `COPY . .`를 의존성 설치보다 앞에 둠 → 코드 한 줄만 바꿔도 의존성 레이어 전체를 다시 빌드. distroless에는 셸이 없어 `exec: "sh": executable file not found` 때문에 디버깅이 막힘 | 콘텐츠 주소 레이어(해시), 캐시 = 레이어 접두사 일치 | Docker 문서 "Multi-stage builds" [?] · GoogleContainerTools/distroless README [?] | 권장 | 신규 (연결: `os/32-linking-and-loading` musl·glibc 증상) |
-| 17-practice-symptom-index | 역색인: 머지 지옥, CI 불신, 배포 공포, 리뷰 병목, "이건 왜 이렇게 했지?" | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 18-practice-incidents | 실사건: Knight Capital(2012-08-01, 수동 배포 누락 서버 + 재사용된 플래그로 45분 4.4억 달러 손실) · Cloudflare WAF 규칙 전역 즉시 배포(2019-07-02 — 알고리즘 관점은 algorithm/40) | 17 | — | — | 미 SEC 명령 34-70694 (2013) · Cloudflare 블로그 2019-07-12 | 권장 | 신규 |
+| 14-quality-standards | 품질 표준(코드 품질 기준) | 05 | 기준 부재 → 리뷰 편차 | — | 기존 원고 | 권장 | `engineering/development-standards/quality-standards` |
+| 15-security-standards | 보안 표준(개발 보안 기준) | security/01-security-principles | 기준 부재 → 알려진 취약점 반복 | — | 기존 원고 | 권장 | `engineering/development-standards/security-standards` |
+| 16-operational-standards | 운영 표준 | reliability/15-logging | 기준 부재 → 서비스마다 다른 로그·지표 | — | 기존 원고 | 권장 | `engineering/development-standards/operational-standards` |
+| 17-legal-standards | 법률 표준(개인정보·라이선스 등) | 14 | 라이선스 위반 의존성·개인정보 보관 기한 위반 | — | 기존 원고 (`provisions.md` 포함) | 권장 | `engineering/development-standards/legal-standards` (+ `index.md`·`README.md` 흡수) |
+| 18-engineering-virtues | 게으름·조급함·오만 — 개발자 태도 | 01 | — | — | Wall 외 『Programming Perl』 용어집 | 심화 | `foundations/three-virtues` |
+| 13-build-vs-buy-and-adoption | 직접 만들기 vs SaaS·OSS 도입: 핵심·범용 판별, 총소유비용(운영·온콜 포함), 종료 비용·데이터 반출, 벤더 종속, OSS 건강도(유지보수자·라이선스) | 12-estimation-and-planning, domain-modeling/17-subdomains, security/25-supply-chain-security | 인증·결제·검색을 자체 구현해 핵심 기능 개발 인력을 소진. 반대로 핵심 차별화 기능을 SaaS에 의존 → 가격 인상·API 폐기 시 대안 없음. 라이선스 변경(예: 오픈소스 → 소스 공개 라이선스 전환) 후 대응 불가 | 의사결정 행렬(가중합) | Fowler "UtilityVsStrategicDichotomy" https://martinfowler.com/bliki/UtilityVsStrategicDichotomy.html · OpenSSF Scorecard https://securityscorecards.dev/ | 권장 | 신규 |
+| 08-container-image-optimization | 멀티스테이지 빌드, 최소 베이스(distroless·slim·alpine의 musl 함정), 레이어 순서와 빌드 캐시, `.dockerignore`, 이미지 크기가 pull·스케일 아웃·롤백 시간에 주는 영향 | 07-build-systems-and-reproducibility, os/28-containers-namespaces-cgroups | 2GB 이미지 → 새 노드에서 pull에 수십 초~수 분 걸려 스케일 아웃과 롤백이 늦어지고, 실패하면 `ImagePullBackOff`. `COPY . .`를 의존성 설치보다 앞에 둠 → 코드 한 줄만 바꿔도 의존성 레이어 전체를 다시 빌드. distroless에는 셸이 없어 `exec: "sh": executable file not found` 때문에 디버깅이 막힘 | 콘텐츠 주소 레이어(해시), 캐시 = 레이어 접두사 일치 | Docker 문서 "Multi-stage builds" [?] · GoogleContainerTools/distroless README [?] | 권장 | 신규 (연결: `os/29-linking-and-loading` musl·glibc 증상) |
+| 19-practice-symptom-index | 역색인: 머지 지옥, CI 불신, 배포 공포, 리뷰 병목, "이건 왜 이렇게 했지?" | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
+| 20-practice-incidents | 실사건: Knight Capital(2012-08-01, 수동 배포 누락 서버 + 재사용된 플래그로 45분 4.4억 달러 손실) · Cloudflare WAF 규칙 전역 즉시 배포(2019-07-02 — 알고리즘 관점은 algorithm/43) | 19 | — | — | 미 SEC 명령 34-70694 (2013) · Cloudflare 블로그 2019-07-12 | 권장 | 신규 |
 
 ---
 
@@ -1437,50 +1449,50 @@ Part 6  판단하는 법             data-engineering → data-analysis
 ## 18a. 데이터 공학 (`data-engineering/`) — 신설 (2026-09-28)
 
 > **번호 메모**: 기존 §18(data-analysis)과 §19~§21 번호를 유지하려고 18a로 끼웠다. 읽는 순서는 **18a → 18**이다 — 만든 데이터를 옮기고 관리한 뒤 판단한다.
-> 흐름: 원천과 파생 → 분석 저장소와 모델 → 옮기기(CDC·배치·스트림) → 안전하게 다시 돌리기 → 계약·품질·계보 → 보존·삭제 → 조직. 이 영역의 "깨지면"은 크래시로 보이지 않는다. **파이프라인은 초록인데 숫자가 틀린** 모양으로 보인다 — ⚠ 칸에는 가능한 한 "어느 숫자가 어떻게 어긋나 보이나"를 적었다. 엔진 기능에 가까운 temporal 테이블(database/53)과 DB 서버 타임아웃(database/54)은 database에 둔다.
+> 흐름: 원천과 파생 → 분석 저장소와 모델 → 옮기기(CDC·배치·스트림) → 안전하게 다시 돌리기 → 계약·품질·계보 → 보존·삭제 → 조직. 이 영역의 "깨지면"은 크래시로 보이지 않는다. **파이프라인은 초록인데 숫자가 틀린** 모양으로 보인다 — ⚠ 칸에는 가능한 한 "어느 숫자가 어떻게 어긋나 보이나"를 적었다. 엔진 기능에 가까운 temporal 테이블(database/50)과 DB 서버 타임아웃(database/22)은 database에 둔다.
 > 뼈대: DDIA 1판 3장(OLTP vs 분석·스타 스키마)·10장(배치 출력의 철학)·11장(CDC·이벤트 소싱)·12장(파생 데이터·감사 가능성, 절 제목 `[?]`), Kimball Group "Dimensional Modeling Techniques"(『The Data Warehouse Toolkit』 3판 장 번호 `[?]`), Armbrust 외 CIDR 2021 "Lakehouse", Kreps 2014 "Questioning the Lambda Architecture", Beauchemin "Functional Data Engineering"(연도 `[?]`), Reis–Housley 『Fundamentals of Data Engineering』(2022) `[?]`.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 06 → 13 → 07 → 09 → 10 → 11 → 12 → 14 → (05 · 08 · 15 권장·심화) → 16 → 17
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → (13 · 14 · 15 권장·심화) → 16 → 17
 
 ### 18a.1 원천·파생과 분석 저장소
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 01-system-of-record-and-derived-data | 기록 시스템(원천)과 파생 데이터(캐시·검색 인덱스·집계·읽기 모델)의 구분. 비정규화는 "파생본을 하나 더 두는 결정"이다. 원천이 있어야 파생본을 재구축할 수 있다 | database/03-normalization, distributed/24-queues-logs-and-delivery-semantics | 두 저장소가 서로 원천이라고 주장한다 → 값이 다를 때 어느 쪽이 맞는지 판정할 수 없다. 검색 인덱스를 직접 수정한다 → 재색인하는 순간 수정분이 사라진다. 비정규화 사본의 갱신 경로가 누락된다 → 목록 화면과 상세 화면의 값이 다르다 | 파생 = 원천 로그의 폴드(fold) | DDIA 1판 3부 서론 · 11·12장 [?] | 필수 | 신규 (연결: `domain-modeling/17-cqrs`, `database/38-caching-with-databases`) |
-| 02-oltp-olap-and-warehouse | 운영 DB와 분석 저장소를 나누는 이유, 웨어하우스·마트, ETL vs ELT(원본을 먼저 적재한 뒤 변환) | 01, database/08-row-vs-column-storage | 운영 DB에서 분석 쿼리를 돌린다 → 리포트 시간대에 p99가 급등하고 복제 지연이 생긴다. 변환에 실패한 행을 조용히 건너뛴다 → 대시보드 합계가 운영 DB와 다르다. 원본을 남기지 않는 ETL → 변환 버그를 찾아도 재처리할 원본이 없다 | 컬럼 저장·압축, 외부 정렬 | DDIA 1판 3장 "Transaction Processing or Analytics?" | 필수 | 신규 |
-| 08-lakehouse-table-formats | 객체 저장소 위의 테이블 포맷(Iceberg·Delta·Hudi): 메타데이터 트리, 스냅샷 격리, time travel, 스냅샷 만료·compaction | 02, database/23-mvcc | 작은 파일이 폭증한다 → 쿼리 계획 시간이 실행 시간보다 길다. 스냅샷을 만료시키지 않는다 → 스토리지 비용이 계속 는다. 만료 후 time travel 쿼리가 실패한다. 동시 커밋이 충돌한다 → 쓰기 재시도 [?] | 매니페스트 트리(Merkle 유사), 원자적 메타데이터 교체(CAS) | Apache Iceberg Spec · Armbrust 외 CIDR 2021 | 권장 | 신규 |
+| 01-system-of-record-and-derived-data | 기록 시스템(원천)과 파생 데이터(캐시·검색 인덱스·집계·읽기 모델)의 구분. 비정규화는 "파생본을 하나 더 두는 결정"이다. 원천이 있어야 파생본을 재구축할 수 있다 | database/03-normalization, distributed/17-queues-logs-and-delivery-semantics | 두 저장소가 서로 원천이라고 주장한다 → 값이 다를 때 어느 쪽이 맞는지 판정할 수 없다. 검색 인덱스를 직접 수정한다 → 재색인하는 순간 수정분이 사라진다. 비정규화 사본의 갱신 경로가 누락된다 → 목록 화면과 상세 화면의 값이 다르다 | 파생 = 원천 로그의 폴드(fold) | DDIA 1판 3부 서론 · 11·12장 [?] | 필수 | 신규 (연결: `domain-modeling/21-cqrs`, `database/30-caching-with-databases`) |
+| 02-oltp-olap-and-warehouse | 운영 DB와 분석 저장소를 나누는 이유, 웨어하우스·마트, ETL vs ELT(원본을 먼저 적재한 뒤 변환) | 01, database/37-row-vs-column-storage | 운영 DB에서 분석 쿼리를 돌린다 → 리포트 시간대에 p99가 급등하고 복제 지연이 생긴다. 변환에 실패한 행을 조용히 건너뛴다 → 대시보드 합계가 운영 DB와 다르다. 원본을 남기지 않는 ETL → 변환 버그를 찾아도 재처리할 원본이 없다 | 컬럼 저장·압축, 외부 정렬 | DDIA 1판 3장 "Transaction Processing or Analytics?" | 필수 | 신규 |
+| 14-lakehouse-table-formats | 객체 저장소 위의 테이블 포맷(Iceberg·Delta·Hudi): 메타데이터 트리, 스냅샷 격리, time travel, 스냅샷 만료·compaction | 02, database/16-mvcc | 작은 파일이 폭증한다 → 쿼리 계획 시간이 실행 시간보다 길다. 스냅샷을 만료시키지 않는다 → 스토리지 비용이 계속 는다. 만료 후 time travel 쿼리가 실패한다. 동시 커밋이 충돌한다 → 쓰기 재시도 [?] | 매니페스트 트리(Merkle 유사), 원자적 메타데이터 교체(CAS) | Apache Iceberg Spec · Armbrust 외 CIDR 2021 | 권장 | 신규 |
 
 ### 18a.2 분석 모델링
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 03-dimensional-modeling | 팩트·차원·**grain(한 행의 뜻) 선언**, 스타 vs 스노우플레이크, 가산·반가산·비가산 지표, 공통 차원(conformed) | 02, database/04-sql-joins-and-aggregation | grain이 섞인 팩트 테이블 → 주문 합계가 2배로 나온다. 차원 키 매칭 실패 + inner join → 팩트 행이 빠져 매출 합계가 줄어든다(에러 없음). 비율 지표를 `SUM` → 의미 없는 숫자 | 스타 조인 = 해시 조인 + 비트맵 | Kimball Group "Dimensional Modeling Techniques" · DDIA 1판 3장 "Stars and Snowflakes" | 필수 | 신규 |
-| 04-slowly-changing-dimensions | SCD Type 0~3(+4·6·7), 대리 키와 내구 키, 유효 기간 컬럼 | 03 | Type 1 덮어쓰기 → **과거 리포트 숫자가 소급해서 바뀐다**("지난달 지역별 매출이 달라졌어요"). Type 2의 유효 기간이 겹치거나 빈다 → 기간 조인에서 행이 중복되거나 누락된다. 현재 행 플래그가 둘인 멤버 | 구간 비교(`data-structure/30-interval-tree`) | Kimball Group "Type 2: Add New Row" · Design Tip #152 (Types 0,4,5,6,7) | 필수 | 신규 (연결: `database/53-temporal-and-bitemporal-tables`) |
-| 05-data-vault | Hub(비즈니스 키)·Link(관계)·Satellite(시점별 속성), 적재 이력 보존형 통합 모델 | 04 | 비즈니스 키 정규화 누락(공백·대소문자) → 같은 고객의 Hub 행이 둘이 된다. Satellite가 폭증한다 → 리포트 쿼리 하나에 조인 수십 개. 모델만 도입하고 마트를 두지 않는다 → 분석가가 쓸 수 없다 | 해시 키(`algorithm/35-hash-functions`) | Linstedt–Olschimke 『Building a Scalable Data Warehouse with Data Vault 2.0』 [?] | 심화 | 신규 |
+| 04-slowly-changing-dimensions | SCD Type 0~3(+4·6·7), 대리 키와 내구 키, 유효 기간 컬럼 | 03 | Type 1 덮어쓰기 → **과거 리포트 숫자가 소급해서 바뀐다**("지난달 지역별 매출이 달라졌어요"). Type 2의 유효 기간이 겹치거나 빈다 → 기간 조인에서 행이 중복되거나 누락된다. 현재 행 플래그가 둘인 멤버 | 구간 비교(`data-structure/42-interval-tree`) | Kimball Group "Type 2: Add New Row" · Design Tip #152 (Types 0,4,5,6,7) | 필수 | 신규 (연결: `database/50-temporal-and-bitemporal-tables`) |
+| 13-data-vault | Hub(비즈니스 키)·Link(관계)·Satellite(시점별 속성), 적재 이력 보존형 통합 모델 | 04 | 비즈니스 키 정규화 누락(공백·대소문자) → 같은 고객의 Hub 행이 둘이 된다. Satellite가 폭증한다 → 리포트 쿼리 하나에 조인 수십 개. 모델만 도입하고 마트를 두지 않는다 → 분석가가 쓸 수 없다 | 해시 키(`algorithm/12-hash-functions`) | Linstedt–Olschimke 『Building a Scalable Data Warehouse with Data Vault 2.0』 [?] | 심화 | 신규 |
 
 ### 18a.3 옮기기와 다시 돌리기
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 06-change-data-capture | 로그 기반 CDC(WAL·binlog 구독), 초기 스냅샷 + 스트리밍, 증분 스냅샷, 삭제 tombstone, DDL 변경 | 01, database/26-wal-and-logging, distributed/21-outbox-and-dual-write | 커넥터가 멈춘 사이 복제 슬롯이 WAL을 붙잡는다 → PG 디스크가 가득 찬다(`pg_replication_slots`에 inactive 슬롯). binlog 보존 기간이 지난다 → 전체 재스냅샷이 필요하다. 스냅샷과 스트림 경계에서 중복이 생긴다. 삭제 이벤트를 처리하지 않는다 → 하류에 지운 행이 남는다 | append-only 로그 오프셋, 체크포인트 | Debezium 문서 "Features"·PostgreSQL connector · Debezium 블로그 2021-10-07 "Incremental Snapshots" | 필수 | 신규 (흡수: `distributed/21`의 CDC 한 줄) |
-| 13-event-data-modeling | 이벤트 스키마 설계: 이벤트 시각 vs 수집 시각 vs 처리 시각, 봉투(envelope: id·type·version·source·subject), 상태 스냅샷 vs 변경 이벤트 | 06, distributed/05-physical-clocks-and-ntp, distributed/27-event-sourcing | 처리 시각으로 일별 집계 → 자정 경계에서 수치가 어긋난다. 이벤트 ID가 없다 → 중복을 제거할 수 없다. 클라이언트 시계를 믿는다 → "미래" 이벤트가 생긴다. 상태 스냅샷만 보낸다 → 무엇이 왜 바뀌었는지 모른다 | 워터마크, 해시 기반 중복 제거 | CloudEvents 1.0 명세 [?] · DDIA 1판 11장 | 필수 | 신규 |
-| 07-batch-stream-architectures | Lambda(배치 + 속도 계층) vs Kappa(재생 가능한 로그 하나로 스트림 재처리), 재처리 전략 | 06, distributed/28-batch-and-stream-processing, distributed/25-kafka-internals | 배치 경로와 스트림 경로의 결과가 다르다 → 같은 지표가 대시보드마다 다르다. 로그 보존 기간이 재처리 구간보다 짧다 → 과거를 다시 돌릴 수 없다. 재처리 잡이 운영 출력 토픽에 쓴다 → 하류에 이중으로 반영된다 | 세그먼트 로그 재생, 윈도 | Kreps 2014 "Questioning the Lambda Architecture" (O'Reilly Radar) · Marz 2011 "How to beat the CAP theorem" [?] | 권장 | 신규 |
-| 09-idempotent-pipelines-and-backfill | 파티션 단위 **덮어쓰기**로 멱등하게 만들기, 순수한 태스크, 백필 = 파티션 재선택, 늦게 온 데이터의 재계산, 시점별 규칙 적용 | 07, reliability/12-idempotency | append 방식 잡을 다시 돌린다 → 행이 2배가 된다. 백필이 **현재 규칙으로 과거를 계산**한다 → 확정된 과거 수치가 바뀐다. 대량 백필 → 운영 DB·클러스터 지연. 늦게 온 이벤트가 속한 파티션을 재계산하지 않는다 → 영구 누락 | 파티션 DAG(`algorithm/12-dfs` 위상정렬) | Beauchemin "Functional Data Engineering — a modern paradigm for batch data processing" · DDIA 1판 10장 [?] | 필수 | 신규 (연결: `database/34-schema-migration` 백필, `database/44-large-backfill-and-batch-dml`) |
+| 05-change-data-capture | 로그 기반 CDC(WAL·binlog 구독), 초기 스냅샷 + 스트리밍, 증분 스냅샷, 삭제 tombstone, DDL 변경 | 01, database/19-wal-and-logging, distributed/16-outbox-and-dual-write | 커넥터가 멈춘 사이 복제 슬롯이 WAL을 붙잡는다 → PG 디스크가 가득 찬다(`pg_replication_slots`에 inactive 슬롯). binlog 보존 기간이 지난다 → 전체 재스냅샷이 필요하다. 스냅샷과 스트림 경계에서 중복이 생긴다. 삭제 이벤트를 처리하지 않는다 → 하류에 지운 행이 남는다 | append-only 로그 오프셋, 체크포인트 | Debezium 문서 "Features"·PostgreSQL connector · Debezium 블로그 2021-10-07 "Incremental Snapshots" | 필수 | 신규 (흡수: `distributed/16`의 CDC 한 줄) |
+| 06-event-data-modeling | 이벤트 스키마 설계: 이벤트 시각 vs 수집 시각 vs 처리 시각, 봉투(envelope: id·type·version·source·subject), 상태 스냅샷 vs 변경 이벤트 | 05, distributed/04-physical-clocks-and-ntp, distributed/22-event-sourcing | 처리 시각으로 일별 집계 → 자정 경계에서 수치가 어긋난다. 이벤트 ID가 없다 → 중복을 제거할 수 없다. 클라이언트 시계를 믿는다 → "미래" 이벤트가 생긴다. 상태 스냅샷만 보낸다 → 무엇이 왜 바뀌었는지 모른다 | 워터마크, 해시 기반 중복 제거 | CloudEvents 1.0 명세 [?] · DDIA 1판 11장 | 필수 | 신규 |
+| 07-batch-stream-architectures | Lambda(배치 + 속도 계층) vs Kappa(재생 가능한 로그 하나로 스트림 재처리), 재처리 전략 | 05, distributed/30-batch-and-stream-processing, distributed/21-kafka-internals | 배치 경로와 스트림 경로의 결과가 다르다 → 같은 지표가 대시보드마다 다르다. 로그 보존 기간이 재처리 구간보다 짧다 → 과거를 다시 돌릴 수 없다. 재처리 잡이 운영 출력 토픽에 쓴다 → 하류에 이중으로 반영된다 | 세그먼트 로그 재생, 윈도 | Kreps 2014 "Questioning the Lambda Architecture" (O'Reilly Radar) · Marz 2011 "How to beat the CAP theorem" [?] | 권장 | 신규 |
+| 08-idempotent-pipelines-and-backfill | 파티션 단위 **덮어쓰기**로 멱등하게 만들기, 순수한 태스크, 백필 = 파티션 재선택, 늦게 온 데이터의 재계산, 시점별 규칙 적용 | 07, reliability/13-idempotency | append 방식 잡을 다시 돌린다 → 행이 2배가 된다. 백필이 **현재 규칙으로 과거를 계산**한다 → 확정된 과거 수치가 바뀐다. 대량 백필 → 운영 DB·클러스터 지연. 늦게 온 이벤트가 속한 파티션을 재계산하지 않는다 → 영구 누락 | 파티션 DAG(`algorithm/18-dfs` 위상정렬) | Beauchemin "Functional Data Engineering — a modern paradigm for batch data processing" · DDIA 1판 10장 [?] | 필수 | 신규 (연결: `database/26-schema-migration` 백필, `database/34-large-backfill-and-batch-dml`) |
 
 ### 18a.4 계약·품질·계보·보존
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 10-data-contracts-and-schema-registry | 생산자–소비자 데이터 계약(스키마·의미·품질·SLA·소유자), 스키마 레지스트리 호환성 모드(BACKWARD·FORWARD·FULL·TRANSITIVE), 강제 지점 | 01, api-design/09-schema-and-serialization, testing/08-contract-testing | 상류 팀이 컬럼 이름을 바꾼다 → 하류 컬럼이 **조용히 NULL**이 된다. enum에 새 값이 생긴다 → 집계의 "기타"가 급증한다. 호환성을 `NONE`으로 둔다 → 소비자 역직렬화가 실패한다. 비transitive `BACKWARD` → 최신 직전 버전과만 검사되어, 처음부터 재생할 때 오래된 레코드를 못 읽는다 | 스키마 호환성 검사 = 필드 집합 비교 | Confluent 문서 "Schema Evolution and Compatibility" · Bitol ODCS v3.x | 필수 | 신규 |
-| 11-data-quality-and-data-observability | 파이프라인 안의 품질 검사(스키마·유일성·참조·허용값)와 관측 5축(신선도·볼륨·스키마·분포·계보), 차단 vs 경고 | 10, data-analysis/23-data-cleaning-and-quality, reliability/24-metrics-and-golden-signals | **잡은 성공(초록)인데 0행 적재**. 신선도 지연을 모른다 → 어제 데이터로 의사결정을 한다. NULL 비율이 급변했는데 합계는 멀쩡해 보인다. 검사가 너무 엄격하다 → 매일 경고가 나 무시된다(알람 피로) | 행 수 이동 평균·EWMA, 분포 스케치(`data-structure/19-probabilistic-counting`) | Monte Carlo "The 5 Pillars of Data Observability" · dbt tests·Great Expectations 문서 [?] | 필수 | 신규 |
-| 12-data-lineage | 데이터셋·잡·실행 단위의 계보, 테이블 수준 vs 컬럼 수준, 정적(SQL 파싱) vs 런타임 수집, 영향 분석 | 09, 11 | 컬럼을 지운 영향 범위를 모른다 → 하류 대시보드가 깨진 걸 며칠 뒤에 안다. "이 숫자 왜 틀렸나"를 추적하는 데 며칠이 걸린다. PII가 어디까지 복제됐는지 모른다 → 삭제 요청을 일부만 처리한다 | **계보 그래프(DAG) 순회**(`data-structure/08-graph`, `algorithm/11-bfs`) | OpenLineage 명세 "Object Model"(run·job·dataset·facet) | 필수 | 신규 |
-| 14-data-retention-and-erasure | 보존 기한 설계, 삭제 전파(백업·로그·파생 복제본·검색 인덱스), 불변 로그와 삭제권의 충돌, **crypto-shredding**(주체별 키 폐기), 가명화 | 12, security/03-symmetric-encryption-and-aead, security/09-randomness-and-key-management | 원본은 지웠는데 백업·분석 복제본·로그에 남아 있다 → 삭제 요청에 거짓으로 답한 셈이 된다. 불변 이벤트 로그에 평문 PII가 있다 → 지울 방법이 없다. 보존 기한이 없는 로그 → 비용과 규제 위반. 키를 폐기했더니 필요한 비개인 데이터까지 복호화할 수 없다(암호화 범위 설계 오류) | 주체별 키 맵, 톰스톤·compaction | GDPR 제17조 · EDPB Guidelines 02/2025(블록체인) [?] · event-driven.io "GDPR in event-driven architecture" | 필수 | 신규 (연결: `engineering-practice/15-legal-standards`, `security/30-pii-classification-masking-retention`) |
+| 09-data-contracts-and-schema-registry | 생산자–소비자 데이터 계약(스키마·의미·품질·SLA·소유자), 스키마 레지스트리 호환성 모드(BACKWARD·FORWARD·FULL·TRANSITIVE), 강제 지점 | 01, api-design/08-schema-and-serialization, testing/13-contract-testing | 상류 팀이 컬럼 이름을 바꾼다 → 하류 컬럼이 **조용히 NULL**이 된다. enum에 새 값이 생긴다 → 집계의 "기타"가 급증한다. 호환성을 `NONE`으로 둔다 → 소비자 역직렬화가 실패한다. 비transitive `BACKWARD` → 최신 직전 버전과만 검사되어, 처음부터 재생할 때 오래된 레코드를 못 읽는다 | 스키마 호환성 검사 = 필드 집합 비교 | Confluent 문서 "Schema Evolution and Compatibility" · Bitol ODCS v3.x | 필수 | 신규 |
+| 10-data-quality-and-data-observability | 파이프라인 안의 품질 검사(스키마·유일성·참조·허용값)와 관측 5축(신선도·볼륨·스키마·분포·계보), 차단 vs 경고 | 09, data-analysis/18-data-cleaning-and-quality, reliability/16-metrics-and-golden-signals | **잡은 성공(초록)인데 0행 적재**. 신선도 지연을 모른다 → 어제 데이터로 의사결정을 한다. NULL 비율이 급변했는데 합계는 멀쩡해 보인다. 검사가 너무 엄격하다 → 매일 경고가 나 무시된다(알람 피로) | 행 수 이동 평균·EWMA, 분포 스케치(`data-structure/21-probabilistic-counting`) | Monte Carlo "The 5 Pillars of Data Observability" · dbt tests·Great Expectations 문서 [?] | 필수 | 신규 |
+| 11-data-lineage | 데이터셋·잡·실행 단위의 계보, 테이블 수준 vs 컬럼 수준, 정적(SQL 파싱) vs 런타임 수집, 영향 분석 | 08, 10 | 컬럼을 지운 영향 범위를 모른다 → 하류 대시보드가 깨진 걸 며칠 뒤에 안다. "이 숫자 왜 틀렸나"를 추적하는 데 며칠이 걸린다. PII가 어디까지 복제됐는지 모른다 → 삭제 요청을 일부만 처리한다 | **계보 그래프(DAG) 순회**(`data-structure/11-graph`, `algorithm/17-bfs`) | OpenLineage 명세 "Object Model"(run·job·dataset·facet) | 필수 | 신규 |
+| 12-data-retention-and-erasure | 보존 기한 설계, 삭제 전파(백업·로그·파생 복제본·검색 인덱스), 불변 로그와 삭제권의 충돌, **crypto-shredding**(주체별 키 폐기), 가명화 | 11, security/03-symmetric-encryption-and-aead, security/09-randomness-and-key-management | 원본은 지웠는데 백업·분석 복제본·로그에 남아 있다 → 삭제 요청에 거짓으로 답한 셈이 된다. 불변 이벤트 로그에 평문 PII가 있다 → 지울 방법이 없다. 보존 기한이 없는 로그 → 비용과 규제 위반. 키를 폐기했더니 필요한 비개인 데이터까지 복호화할 수 없다(암호화 범위 설계 오류) | 주체별 키 맵, 톰스톤·compaction | GDPR 제17조 · EDPB Guidelines 02/2025(블록체인) [?] · event-driven.io "GDPR in event-driven architecture" | 필수 | 신규 (연결: `engineering-practice/17-legal-standards`, `security/27-pii-classification-masking-retention`) |
 
 ### 18a.5 조직
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 15-data-mesh-and-data-products | 도메인 소유·데이터를 제품으로·셀프서비스 플랫폼·연합 계산 거버넌스 — 중앙 데이터팀 병목의 대안과 비용 | 10, 12, domain-modeling/12-bounded-contexts | 중앙 팀이 병목이 된다 → 요청이 수주씩 대기한다. 도메인마다 "활성 사용자" 정의가 다르다 → 경영 보고 숫자가 서로 다르다. 거버넌스 없이 분산한다 → 아무도 소유하지 않는 테이블이 쌓인다 | — | Dehghani 『Data Mesh』(2022) [?] · Dehghani 2019 "How to Move Beyond a Monolithic Data Lake" [?] | 심화 | 신규 |
+| 15-data-mesh-and-data-products | 도메인 소유·데이터를 제품으로·셀프서비스 플랫폼·연합 계산 거버넌스 — 중앙 데이터팀 병목의 대안과 비용 | 09, 11, domain-modeling/16-bounded-contexts | 중앙 팀이 병목이 된다 → 요청이 수주씩 대기한다. 도메인마다 "활성 사용자" 정의가 다르다 → 경영 보고 숫자가 서로 다르다. 거버넌스 없이 분산한다 → 아무도 소유하지 않는 테이블이 쌓인다 | — | Dehghani 『Data Mesh』(2022) [?] · Dehghani 2019 "How to Move Beyond a Monolithic Data Lake" [?] | 심화 | 신규 |
 
 ### 18a.6 영역 마감
 
@@ -1493,10 +1505,10 @@ Part 6  판단하는 법             data-engineering → data-analysis
 
 ## 18. 데이터 분석·통계 (`data-analysis/`) — 신설
 
-> 데이터가 어디서 왔나 → 요약 → 추론 → 관계·모델 → 실험 → 실무(SQL·정제·시각화). 확률·분포 기초는 **math/08~10이 단일 출처**(여기서 반복하지 않음).
+> 데이터가 어디서 왔나 → 요약 → 추론 → 관계·모델 → 실험 → 실무(SQL·정제·시각화). 확률·분포 기초는 **math/07~09이 단일 출처**(여기서 반복하지 않음).
 > 뼈대: OpenIntro Statistics 4판(장·절 확인), Kohavi·Tang·Xu 『Trustworthy Online Controlled Experiments』(2020, 장 번호 `[?]`), Wilke 『Fundamentals of Data Visualization』, Downey 『Think Stats』 2판, Tukey 『Exploratory Data Analysis』.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 06 → 05 → 07 → 08 → 09 → 10 → 11 → 14 → 15 → 19 → 20 → 21 → 22 → 23 → 25 → 12 → 13 → 16 → 24 → 26 → (17 · 18 심화) → 27 → 28
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → (25 · 26 심화) → 27 → 28
 
 ### 18.1 데이터와 수집
 
@@ -1510,49 +1522,49 @@ Part 6  판단하는 법             data-engineering → data-analysis
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 04-descriptive-statistics | 중심(평균·중앙값)·산포(분산·IQR)·분위수·이상치 | 01, math/09-expectation-variance-tails | 치우친 분포(소득·지연)에 평균 보고 → 대부분의 경험과 괴리 | 선택 알고리즘(중앙값 O(n)) | OpenIntro 2.1–2.2 | 필수 | 신규 |
-| 05-exploratory-data-analysis | EDA — 분포·관계 먼저 보기 | 04 | 요약 통계만 보고 모델링 → Anscombe 콰르텟 함정 | 히스토그램·박스플롯 | Tukey 1977 · OpenIntro 2.3 | 권장 | 신규 |
-| 06-percentiles-and-latency-distributions | 백분위 계산·병합·히스토그램, 긴 꼬리 | 04 | **백분위를 평균 내기**(인스턴스 p99의 평균 ≠ 전체 p99); 버킷 해상도 부족 | HdrHistogram, t-digest, 분위 스케치 | Dunning–Ertl 2019 (t-digest) | 필수 | 신규 |
+| 04-descriptive-statistics | 중심(평균·중앙값)·산포(분산·IQR)·분위수·이상치 | 01, math/08-expectation-variance-tails | 치우친 분포(소득·지연)에 평균 보고 → 대부분의 경험과 괴리 | 선택 알고리즘(중앙값 O(n)) | OpenIntro 2.1–2.2 | 필수 | 신규 |
+| 06-exploratory-data-analysis | EDA — 분포·관계 먼저 보기 | 04 | 요약 통계만 보고 모델링 → Anscombe 콰르텟 함정 | 히스토그램·박스플롯 | Tukey 1977 · OpenIntro 2.3 | 권장 | 신규 |
+| 05-percentiles-and-latency-distributions | 백분위 계산·병합·히스토그램, 긴 꼬리 | 04 | **백분위를 평균 내기**(인스턴스 p99의 평균 ≠ 전체 p99); 버킷 해상도 부족 | HdrHistogram, t-digest, 분위 스케치 | Dunning–Ertl 2019 (t-digest) | 필수 | 신규 |
 
-### 18.3 추론 (확률 기초는 math/08~10)
+### 18.3 추론 (확률 기초는 math/07~09)
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 07-sampling-distributions-and-clt | 표본 분포·표준오차·중심극한정리 | 04, math/10-common-distributions | 작은 표본·극단 꼬리 분포에 정규 근사 → 신뢰구간 과소 | 부트스트랩 재표집 | OpenIntro 5.1 | 필수 | 신규 |
+| 07-sampling-distributions-and-clt | 표본 분포·표준오차·중심극한정리 | 04, math/09-common-distributions | 작은 표본·극단 꼬리 분포에 정규 근사 → 신뢰구간 과소 | 부트스트랩 재표집 | OpenIntro 5.1 | 필수 | 신규 |
 | 08-confidence-intervals | 신뢰구간 해석과 계산 | 07 | "참값이 95% 확률로 구간 안" 오해석 | — | OpenIntro 5.2 | 필수 | 신규 |
 | 09-hypothesis-testing | 귀무·대립·p-value·1종/2종 오류 | 08 | p < 0.05 = "효과가 크다" 오해; 통계적 유의 ≠ 실질적 유의 | — | OpenIntro 5.3 | 필수 | 신규 |
 | 10-power-and-sample-size | 검정력·최소 탐지 효과·표본 크기 | 09 | 검정력 부족 실험 → "효과 없음" 오결론; 너무 작은 효과 추적 → 영원히 안 끝나는 실험 | — | OpenIntro 7.4 | 권장 | 신규 |
 | 11-multiple-comparisons | 다중 비교·p-hacking·보정 | 09 | 지표 20개 중 1개 유의 → 우연을 발견으로 발표 | Bonferroni·BH 절차 | OpenIntro 7.5C · Ioannidis 2005 | 필수 | 신규 |
-| 12-categorical-inference | 비율 추론·카이제곱 적합도·독립성 | 09 | 기대 빈도 작은 칸에 카이제곱 → 부정확 | 분할표 | OpenIntro 6장 | 권장 | 신규 |
-| 13-numerical-inference-t-anova | t 분포·대응 표본·두 평균 차·ANOVA | 09 | 대응 데이터를 독립 표본으로 검정 → 검정력 낭비 | — | OpenIntro 7장 | 권장 | 신규 |
+| 20-categorical-inference | 비율 추론·카이제곱 적합도·독립성 | 09 | 기대 빈도 작은 칸에 카이제곱 → 부정확 | 분할표 | OpenIntro 6장 | 권장 | 신규 |
+| 21-numerical-inference-t-anova | t 분포·대응 표본·두 평균 차·ANOVA | 09 | 대응 데이터를 독립 표본으로 검정 → 검정력 낭비 | — | OpenIntro 7장 | 권장 | 신규 |
 
 ### 18.4 관계·모델
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 14-correlation-vs-causation | 상관·교란·**심슨의 역설** | 03, 09 | 부분군별 추세와 전체 추세 반대 → 잘못된 정책 결정 | — | OpenIntro 8.1 · Pearl 외 『Causal Inference in Statistics: A Primer』 [?] | 필수 | 신규 |
-| 15-linear-regression | 최소제곱·잔차·결정계수·회귀 추론 | 14 | 외삽; 이상치 레버리지로 기울기 왜곡; 잔차 패턴 무시 | 최소제곱(선형대수, math/12) | OpenIntro 8장 | 필수 | 신규 |
-| 16-multiple-and-logistic-regression | 다중 회귀·모델 선택·로지스틱 회귀 | 15 | 다중공선성 → 계수 부호 뒤집힘; 누설 변수(미래 정보)로 과대 성능 | 경사 하강 | OpenIntro 9장 | 권장 | 신규 |
-| 17-causal-inference-basics | 인과 DAG·교란 통제·차분의 차분·도구 변수 | 14 | 매개 변수·충돌 변수를 통제 → 편향 유발 | **인과 DAG(그래프)** | Pearl 외 Primer [?] · Angrist–Pischke 『Mostly Harmless Econometrics』 [?] | 심화 | 신규 |
-| 18-bayesian-thinking | 사전·사후·베이즈 갱신 | math/08-probability-and-bayes | 사전분포 무시 → 소표본 극단값(별점 5.0 리뷰 1개) 과신 | 켤레 사전분포 갱신 | Downey 『Think Bayes』 [?] | 심화 | 신규 |
+| 12-correlation-vs-causation | 상관·교란·**심슨의 역설** | 03, 09 | 부분군별 추세와 전체 추세 반대 → 잘못된 정책 결정 | — | OpenIntro 8.1 · Pearl 외 『Causal Inference in Statistics: A Primer』 [?] | 필수 | 신규 |
+| 13-linear-regression | 최소제곱·잔차·결정계수·회귀 추론 | 12 | 외삽; 이상치 레버리지로 기울기 왜곡; 잔차 패턴 무시 | 최소제곱(선형대수, math/13) | OpenIntro 8장 | 필수 | 신규 |
+| 22-multiple-and-logistic-regression | 다중 회귀·모델 선택·로지스틱 회귀 | 13 | 다중공선성 → 계수 부호 뒤집힘; 누설 변수(미래 정보)로 과대 성능 | 경사 하강 | OpenIntro 9장 | 권장 | 신규 |
+| 25-causal-inference-basics | 인과 DAG·교란 통제·차분의 차분·도구 변수 | 12 | 매개 변수·충돌 변수를 통제 → 편향 유발 | **인과 DAG(그래프)** | Pearl 외 Primer [?] · Angrist–Pischke 『Mostly Harmless Econometrics』 [?] | 심화 | 신규 |
+| 26-bayesian-thinking | 사전·사후·베이즈 갱신 | math/07-probability-and-bayes | 사전분포 무시 → 소표본 극단값(별점 5.0 리뷰 1개) 과신 | 켤레 사전분포 갱신 | Downey 『Think Bayes』 [?] | 심화 | 신규 |
 
 ### 18.5 실험
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 19-ab-testing-design | 무작위 배정·단위·지표·기간 | 09, 10 | 배정 단위 불일치(세션 vs 사용자) → 분산 과소; 신규성 효과 | 해시 기반 결정적 배정 | Kohavi 외 2020 2·3장 [?] | 필수 | 신규 (연결: `domain-modeling/advanced/27-ab-assign`) |
-| 20-ab-pitfalls-srm-peeking | **SRM**(표본 비율 불일치)·엿보기·간섭 | 19, 11 | 50:50 설계인데 50.8:49.2 → 배정·로깅 버그 신호(결과 무효); 중간에 보고 멈추기 → 1종 오류 폭증 | 카이제곱 적합도(12) | Kohavi 외 2020 21장 [?] · Fabijan 외 KDD 2019 | 필수 | 신규 |
-| 21-metrics-design | 목표·가드레일·대리 지표 | 19 | 대리 지표 최적화 → 본 목표 훼손(굿하트); 가드레일 없음 → 지연·오류 악화 출시 | — | Kohavi 외 2020 6·7장 [?] | 권장 | 신규 |
+| 14-ab-testing-design | 무작위 배정·단위·지표·기간 | 09, 10 | 배정 단위 불일치(세션 vs 사용자) → 분산 과소; 신규성 효과 | 해시 기반 결정적 배정 | Kohavi 외 2020 2·3장 [?] | 필수 | 신규 (연결: `domain-modeling/advanced/27-ab-assign`) |
+| 15-ab-pitfalls-srm-peeking | **SRM**(표본 비율 불일치)·엿보기·간섭 | 14, 11 | 50:50 설계인데 50.8:49.2 → 배정·로깅 버그 신호(결과 무효); 중간에 보고 멈추기 → 1종 오류 폭증 | 카이제곱 적합도(20) | Kohavi 외 2020 21장 [?] · Fabijan 외 KDD 2019 | 필수 | 신규 |
+| 16-metrics-design | 목표·가드레일·대리 지표 | 14 | 대리 지표 최적화 → 본 목표 훼손(굿하트); 가드레일 없음 → 지연·오류 악화 출시 | — | Kohavi 외 2020 6·7장 [?] | 권장 | 신규 |
 
 ### 18.6 실무
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 22-sql-for-analysis | 코호트·퍼널·리텐션·세션화 SQL | database/05-window-functions-and-cte | 조인 팬아웃으로 전환율 부풀림; 시간대 경계 날짜 잘림 | 윈도 함수, gaps-and-islands | Mode/Winand 자료 [?] | 필수 | 신규 (연결: `languages/sql/syntax/26~33`) |
-| 23-data-cleaning-and-quality | 결측·중복·이상치·타임존·스키마 드리프트 | 04 | 조용한 결측을 0으로 채움 → 평균 왜곡; UTC/KST 혼합 → 일별 집계 어긋남; **행 수 제한에서 조용한 절단** | 중복 제거(해시), 레코드 연결 | Wickham "Tidy Data" 2014 | 필수 | 신규 (연결: `data-engineering/11-data-quality-and-data-observability` — 이쪽은 분석 측 정제, 저쪽은 파이프라인 측 검사) |
-| 24-time-series-basics | 추세·계절성·이동평균·이상 탐지 | 04 | 계절성 무시 → 월요일마다 이상 알람; 이동평균 지연으로 급변 늦게 탐지 | **EWMA**, 이동 창 | Hyndman–Athanasopoulos 『Forecasting: Principles and Practice』 3판 [?] | 권장 | 신규 |
-| 25-data-visualization-principles | 인코딩 선택·비례 잉크·축·색 | 04 | 잘린 y축으로 차이 과장; 3D 파이 → 비율 오독; 이중 축 조작 | — | Wilke 『Fundamentals of Data Visualization』 | 필수 | 신규 |
-| 26-reproducible-analysis | 노트북 재현성·파이프라인·버전 | 23 | 셀 실행 순서 의존 → 재실행 시 다른 결과 | 파이프라인 DAG | Wilson 외 "Good Enough Practices in Scientific Computing" 2017 | 권장 | 신규 |
+| 17-sql-for-analysis | 코호트·퍼널·리텐션·세션화 SQL | database/05-window-functions-and-cte | 조인 팬아웃으로 전환율 부풀림; 시간대 경계 날짜 잘림 | 윈도 함수, gaps-and-islands | Mode/Winand 자료 [?] | 필수 | 신규 (연결: `languages/sql/syntax/26~33`) |
+| 18-data-cleaning-and-quality | 결측·중복·이상치·타임존·스키마 드리프트 | 04 | 조용한 결측을 0으로 채움 → 평균 왜곡; UTC/KST 혼합 → 일별 집계 어긋남; **행 수 제한에서 조용한 절단** | 중복 제거(해시), 레코드 연결 | Wickham "Tidy Data" 2014 | 필수 | 신규 (연결: `data-engineering/10-data-quality-and-data-observability` — 이쪽은 분석 측 정제, 저쪽은 파이프라인 측 검사) |
+| 23-time-series-basics | 추세·계절성·이동평균·이상 탐지 | 04 | 계절성 무시 → 월요일마다 이상 알람; 이동평균 지연으로 급변 늦게 탐지 | **EWMA**, 이동 창 | Hyndman–Athanasopoulos 『Forecasting: Principles and Practice』 3판 [?] | 권장 | 신규 |
+| 19-data-visualization-principles | 인코딩 선택·비례 잉크·축·색 | 04 | 잘린 y축으로 차이 과장; 3D 파이 → 비율 오독; 이중 축 조작 | — | Wilke 『Fundamentals of Data Visualization』 | 필수 | 신규 |
+| 24-reproducible-analysis | 노트북 재현성·파이프라인·버전 | 18 | 셀 실행 순서 의존 → 재실행 시 다른 결과 | 파이프라인 DAG | Wilson 외 "Good Enough Practices in Scientific Computing" 2017 | 권장 | 신규 |
 
 ### 18.7 영역 마감
 
@@ -1572,31 +1584,31 @@ Part 6  판단하는 법             data-engineering → data-analysis
 
 | 기존 | 판정 | 새 위치 | 이유 |
 |---|---|---|---|
-| `foundations/variables-and-memory` | 분할 | language/07 (전달·복사) · language/08 (람다) · language/04 (스코프) · language/12 (참조 카운트·GC) | 파이썬 원고지만 개념은 언어 중립. 파이썬 고유 인터닝 세부는 language/12 안 예시로 |
-| `foundations/data-representation` | 분할 | architecture/01 · 03 · 04 · 05 | 진수·IEEE 754·엔디안·유니코드가 각각 서머리 1편 크기 |
-| `foundations/oop-basics` | 이동 | software-design/09 | OOP 기초 한 편. 연산자 오버로딩 레퍼런스 절은 languages/python 쪽으로 |
-| `foundations/hardware-basics` | 분할 | architecture/06 · 07 · 08 | 게이트→가산기 / 플립플롭→레지스터 / ISA 3단 |
-| `foundations/memory-management` | 분할 | architecture/12 (계층·지역성) · architecture/09 (스택 프레임) · os/09 · os/10 · os/11 · 「대용량 조회 스트리밍」 절 → database/32 예시 | 하드웨어(계층)와 OS(가상 메모리) 경계가 섞여 있음 |
-| `foundations/process-thread` | 분할 | os/04 · os/07 · os/08 · os/15 · language/16 (GIL) | 프로세스·스레드·스케줄링·경쟁·GIL 5덩어리 |
+| `foundations/variables-and-memory` | 분할 | language/06 (전달·복사) · language/07 (람다) · language/04 (스코프) · language/09 (참조 카운트·GC) | 파이썬 원고지만 개념은 언어 중립. 파이썬 고유 인터닝 세부는 language/09 안 예시로 |
+| `foundations/data-representation` | 분할 | architecture/01 · 03 · 06 · 04 | 진수·IEEE 754·엔디안·유니코드가 각각 서머리 1편 크기 |
+| `foundations/oop-basics` | 이동 | software-design/20 | OOP 기초 한 편. 연산자 오버로딩 레퍼런스 절은 languages/python 쪽으로 |
+| `foundations/hardware-basics` | 분할 | architecture/07 · 08 · 09 | 게이트→가산기 / 플립플롭→레지스터 / ISA 3단 |
+| `foundations/memory-management` | 분할 | architecture/11 (계층·지역성) · architecture/10 (스택 프레임) · os/09 · os/10 · os/11 · 「대용량 조회 스트리밍」 절 → database/21 예시 | 하드웨어(계층)와 OS(가상 메모리) 경계가 섞여 있음 |
+| `foundations/process-thread` | 분할 | os/04 · os/07 · os/08 · os/15 · language/15 (GIL) | 프로세스·스레드·스케줄링·경쟁·GIL 5덩어리 |
 | `foundations/compiler-pipeline` | 분할 | language/01 · 02 · 03 · 04 | 어휘→구문→심벌→바이트코드. tokenize/ast/dis 실습은 각 leaf 실습 절로 |
-| `foundations/data-structures-basics` | 분할 | data-structure/36 (ADT) · 02 · 03 · 04 · 06 (기초 절) · algorithm/32 (재귀) | 심화판(`data-structure/`)과 중복 — 기초 절만 흡수 후 폐기 검토 |
-| `foundations/algorithm-basics` | 분할 | algorithm/31 · 06 · 01 · 03 (기초 절) | 심화판(`algorithm/`)과 중복 — 흡수 후 폐기 검토 |
-| `foundations/python-basics` | **CS 밖** | 별도 최상위 `reference/languages/python/` 로 흡수 | list/dict/연산자·제어문 = 언어 문법 레퍼런스. 원리가 아니라 "쓰는 법" |
-| `foundations/security` (README + 6편) | 분할·이동 | `sha256-and-digest` → security/04 · `hmac` → security/05 · `jwks` → security/13 · `oidc` → security/14 · `identity-and-ids` → security/16 · `audit-enforce-rollout` → security/25 · README → security 영역 index | 6편이 각각 leaf 1개 크기. 이미 3파일 전환 대상 |
-| `foundations/three-virtues` | 이동 | engineering-practice/16 | CS 지식이라기보다 태도 — 실천 영역의 심화로 |
-| `foundations/languages` (13개 언어 × `syntax/`, 총 2,023파일) | **CS 밖** | 별도 최상위 `reference/languages/<언어>/syntax/` | 아래 19.2 |
-| `foundations/languages` 의 언어-특성 5편 + `c-cpp-csharp.md` + README 축① | 병합 | language/19 (+ language/18 에 c-cpp-csharp 일부) | "틀렸을 때 어떻게 틀리는가"로 언어를 비교 — 언어 중립 판단 축이므로 CS 안 |
-| `foundations/web-api` (README + 39주제, 118파일) | **CS 밖** | 별도 최상위 `reference/web-platform-api/` | 아래 19.2 |
+| `foundations/data-structures-basics` | 유지(독립 기초 leaf) | data-structure/01-data-structures-basics | 기초판과 심화판을 각각 둔다 — 심화 leaf(02·04·05·06·09, algorithm/03)가 선행으로 링크 (2026-09-28 사용자 결정) |
+| `foundations/algorithm-basics` | 유지(독립 기초 leaf) | algorithm/01-algorithm-basics | 기초판과 심화판을 각각 둔다 — 심화 leaf(02·04·05·07)가 선행으로 링크 (2026-09-28 사용자 결정) |
+| `languages/python/basics` | **CS 밖** | 별도 최상위 `reference/languages/python/` 로 흡수 | list/dict/연산자·제어문 = 언어 문법 레퍼런스. 원리가 아니라 "쓰는 법" |
+| `foundations/security` (README + 6편) | 분할·이동 | `sha256-and-digest` → security/04 · `hmac` → security/05 · `jwks` → security/13 · `oidc` → security/14 · `identity-and-ids` → security/16 · `audit-enforce-rollout` → security/26 · README → security 영역 index | 6편이 각각 leaf 1개 크기. 이미 3파일 전환 대상 |
+| `foundations/three-virtues` | 이동 | engineering-practice/18 | CS 지식이라기보다 태도 — 실천 영역의 심화로 |
+| `languages` (13개 언어 × `syntax/`, 총 2,023파일) | **CS 밖** | 별도 최상위 `reference/languages/<언어>/syntax/` | 아래 19.2 |
+| `languages` 의 언어-특성 5편 + `c-cpp-csharp.md` + README 축① | 병합 | language/21 (+ language/20 에 c-cpp-csharp 일부) | "틀렸을 때 어떻게 틀리는가"로 언어를 비교 — 언어 중립 판단 축이므로 CS 안 |
+| `languages/web-api` (README + 39주제, 118파일) | **CS 밖** | 별도 최상위 `reference/web-platform-api/` | 아래 19.2 |
 | `foundations/README.md` · `index.md` | 폐기(대체) | 새 루트 `cs/index.md` 의 Part 지도가 대체 | 부트캠프 챕터 기준 목차라 새 트리와 축이 다름 |
 
 ### 19.2 CS 밖 판정 상세 — 별도 최상위 `reference/` 권고
 
 | 대상 | 규모 | 판정 | 이유 | CS 트리와의 연결 방식 |
 |---|---|---|---|---|
-| `foundations/languages/{c,cpp,csharp,css,go,html,java,js,kotlin,python,rust,sql,ts}/syntax/` | 13개 언어, 언어당 약 50~60주제, 2,023파일 | **CS 밖** | ① 언어 버전에 종속된 **문법·표준 API 레퍼런스**("그 언어로 어떻게 쓰나") — CS 트리는 언어 중립 원리("왜 그렇게 동작하나") ② 규모가 CS 전체 leaf(약 500)의 4배라 한 트리에 두면 사이트 탐색·통계가 레퍼런스에 잠식됨 ③ 갱신 주기가 다름(언어 릴리스 따라감) | CS leaf의 `기존` 칸에 `(연결: languages/…)` 로 실습 예시 링크. 예: os/32 ↔ `c/syntax/44·45`, language/14 ↔ `java/syntax/33`, language/12 ↔ `rust/syntax/08~12`, database/21 ↔ `sql/syntax/56` |
-| `foundations/languages/sql/syntax/` (60주제) | 60 | **CS 밖(특례: database 영역 강결합)** | SQL은 DB 이론의 표면이지만 이 노트들은 방언·문법 단위("LATERAL join", "RETURNING")라 레퍼런스 성격. database 영역은 원리(격리·인덱스·옵티마이저)만 | database/02·04·05·13·19·20·21·22 가 `sql/syntax/` 해당 번호를 실습 부록으로 링크 |
-| `foundations/web-api/` (39주제) | 118파일 | **CS 밖** | **호스트(브라우저) API 레퍼런스** — `querySelector`·`dataset`·`ResizeObserver` 사용법. README 스스로 "언어가 아니라 플랫폼"이라 규정. 원리(렌더링 파이프라인·이벤트 루프·출처 모델)만 web-platform 영역으로 | web-platform/02 ↔ `08·09·10`, /03 ↔ `38·39`, /04 ↔ `01·15~18·20`, /05 ↔ `25~30`, security/20 ↔ `28·29`, network/38 ↔ `32·33` |
-| `foundations/python-basics` | 1편 | **CS 밖** | 파이썬 문법 노트 — `reference/languages/python/` 로 | — |
+| `languages/{c,cpp,csharp,css,go,html,java,js,kotlin,python,rust,sql,ts}/syntax/` | 13개 언어, 언어당 약 50~60주제, 2,023파일 | **CS 밖** | ① 언어 버전에 종속된 **문법·표준 API 레퍼런스**("그 언어로 어떻게 쓰나") — CS 트리는 언어 중립 원리("왜 그렇게 동작하나") ② 규모가 CS 전체 leaf(약 500)의 4배라 한 트리에 두면 사이트 탐색·통계가 레퍼런스에 잠식됨 ③ 갱신 주기가 다름(언어 릴리스 따라감) | CS leaf의 `기존` 칸에 `(연결: languages/…)` 로 실습 예시 링크. 예: os/29 ↔ `c/syntax/44·45`, language/13 ↔ `java/syntax/33`, language/09 ↔ `rust/syntax/08~12`, database/14 ↔ `sql/syntax/56` |
+| `languages/sql/syntax/` (60주제) | 60 | **CS 밖(특례: database 영역 강결합)** | SQL은 DB 이론의 표면이지만 이 노트들은 방언·문법 단위("LATERAL join", "RETURNING")라 레퍼런스 성격. database 영역은 원리(격리·인덱스·옵티마이저)만 | database/02·04·05·09·12·13·14·15 가 `sql/syntax/` 해당 번호를 실습 부록으로 링크 |
+| `languages/web-api/` (39주제) | 118파일 | **CS 밖** | **호스트(브라우저) API 레퍼런스** — `querySelector`·`dataset`·`ResizeObserver` 사용법. README 스스로 "언어가 아니라 플랫폼"이라 규정. 원리(렌더링 파이프라인·이벤트 루프·출처 모델)만 web-platform 영역으로 | web-platform/02 ↔ `08·09·10`, /03 ↔ `38·39`, /04 ↔ `01·15~18·20`, /05 ↔ `25~30`, security/21 ↔ `28·29`, network/38 ↔ `32·33` |
+| `languages/python/basics` | 1편 | **CS 밖** | 파이썬 문법 노트 — `reference/languages/python/` 로 | — |
 
 권고 최상위 구조:
 
@@ -1610,28 +1622,28 @@ study-note/
 
 | 기존 | 판정 | 새 위치 |
 |---|---|---|
-| `systems/Hysteresis` | 이동 | reliability/16-hysteresis-and-flapping |
-| `systems/architecture-styles` | 이동 | software-design/15-architecture-styles |
-| `systems/call-stack` | 병합 | architecture/09-calling-convention-and-stack-frame (+ memory-management 스택 프레임 절) |
-| `systems/clickhouse-mergetree` | 이동 | database/37-clickhouse-mergetree |
-| `systems/event-sourcing` | 병합 | distributed/27-event-sourcing (+ ops-patterns/16) |
-| `systems/kafka-consumer-failure` | 이동 | distributed/26-consumer-failure-handling |
-| `systems/kafka-why-fast` | 이동 | distributed/25-kafka-internals (연결: os/14·30) |
-| `systems/lsm-tree` | 이동 | database/10-lsm-storage-engine (자료구조 관점은 data-structure/24 — 중복 절 정리) |
-| `systems/multi-tenancy` | 이동 | software-design/19-multi-tenancy |
-| `systems/nand-flash` | 이동 | architecture/18-nand-flash-ftl |
+| `systems/Hysteresis` | 이동 | reliability/33-hysteresis-and-flapping |
+| `systems/architecture-styles` | 이동 | software-design/37-architecture-styles |
+| `systems/call-stack` | 병합 | architecture/10-calling-convention-and-stack-frame (+ memory-management 스택 프레임 절) |
+| `systems/clickhouse-mergetree` | 이동 | database/45-clickhouse-mergetree |
+| `systems/event-sourcing` | 병합 | distributed/22-event-sourcing (+ ops-patterns/16) |
+| `systems/kafka-consumer-failure` | 이동 | distributed/18-consumer-failure-handling |
+| `systems/kafka-why-fast` | 이동 | distributed/21-kafka-internals (연결: os/14·34) |
+| `systems/lsm-tree` | 이동 | database/38-lsm-storage-engine (자료구조 관점은 data-structure/18 — 중복 절 정리) |
+| `systems/multi-tenancy` | 이동 | software-design/49-multi-tenancy |
+| `systems/nand-flash` | 이동 | architecture/17-nand-flash-ftl |
 | `systems/orchestration-choreography` | 이동 | distributed/23-orchestration-vs-choreography |
-| `systems/outbox-vs-dispatch-log` | 이동 | distributed/22-outbox-vs-dispatch-log |
-| `systems/partitioning-vs-sharding` | 이동 | database/30-partitioning-and-sharding |
-| `systems/postgres-rls` | 이동 | database/35-row-level-security |
+| `systems/outbox-vs-dispatch-log` | 이동 | distributed/29-outbox-vs-dispatch-log |
+| `systems/partitioning-vs-sharding` | 이동 | database/33-partitioning-and-sharding |
+| `systems/postgres-rls` | 이동 | database/43-row-level-security |
 | `systems/resp-protocol` | 이동 | network/24-application-protocol-framing (RESP를 프레이밍 사례로) |
 | `systems/semaphore` | 이동 | os/18-semaphores |
-| `systems/server-design` (README + 11편 컬렉션) | **분할** | 01 → reliability/20 · math/15(Little 절) / 02 → network/39 · reliability/14 / 03 → database/29 · 30 · domain-modeling/17(CQRS) / 04 → database/38 / 05 → reliability/01 · 28 / 06 → reliability/06 · 11 (+ 07·08·09 패턴 연결) / 07 → distributed/24 / 08 → reliability/27 · 24 · database/34 / 09 → reliability/02 · 21 / 10 → reliability/33(역색인) / 11 → reliability/32 / README → reliability 영역 index |
-| `systems/storage-media-workload` | 이동 | architecture/17-storage-media-workload |
-| `systems/straggler` | 이동 | reliability/17-tail-latency-and-stragglers |
-| `systems/striping` | 이동 | distributed/13-chain-replication-and-striping |
-| `systems/thrashing` | 이동 | data-structure/41-resize-thrashing (OS 스래싱 os/12와 용어 대비 링크) |
-| `systems/timeseries-resolution-tiers` | 병합 | database/36-timeseries-resolution-tiers (+ ops-patterns/17) |
+| `systems/server-design` (README + 11편 컬렉션) | **분할** | 01 → reliability/21 · math/10(Little 절) / 02 → network/46 · reliability/14 / 03 → database/32 · 33 · domain-modeling/21(CQRS) / 04 → database/30 / 05 → reliability/01 · 25 / 06 → reliability/05 · 12 (+ 06·10·28 패턴 연결) / 07 → distributed/17 / 08 → reliability/23 · 16 · database/26 / 09 → reliability/02 · 22 / 10 → reliability/52(역색인) / 11 → reliability/47 / README → reliability 영역 index |
+| `systems/storage-media-workload` | 이동 | architecture/16-storage-media-workload |
+| `systems/straggler` | 이동 | reliability/34-tail-latency-and-stragglers |
+| `systems/striping` | 이동 | distributed/27-chain-replication-and-striping |
+| `systems/thrashing` | 이동 | data-structure/28-resize-thrashing (OS 스래싱 os/12와 용어 대비 링크) |
+| `systems/timeseries-resolution-tiers` | 병합 | database/44-timeseries-resolution-tiers (+ ops-patterns/17) |
 
 → `systems/` 는 **폴더 해체**. "시스템"은 영역 이름으로 너무 넓어 새 트리에서 architecture·os·database·distributed·reliability로 흩어진다.
 
@@ -1640,40 +1652,40 @@ study-note/
 | 기존 | 판정 | 새 위치 |
 |---|---|---|
 | `engineering/agile-and-squad` | 이동 | engineering-practice/01-lifecycle-and-agile |
-| `engineering/clean-code` | 이동 | software-design/04-clean-code (요지를 원고 실제 내용인 CLEAN 5속성에 맞춤 — 이름·함수·주석은 신규 46·47·48) |
-| `engineering/data-access` (README + jpa + spring-data-jdbc + comparison) | 병합 | database/33-orm-and-n-plus-one (프레임워크 고유 API 세부는 `reference/` 후보; comparison의 Data Mapper 절 → database/55 연결, 트랜잭션 절 → database/46 연결) |
-| `engineering/design-patterns-gof` | 이동 | software-design/13-design-patterns-gof |
-| `engineering/development-standards` (4축 + index + README) | 분할 | engineering-practice/12 (quality) · 13 (security) · 14 (operational) · 15 (legal, provisions.md 포함) |
-| `engineering/engineering-axes` (README + 7축) | 병합 | software-design/20-quality-attributes-and-tradeoffs (7축 = 가용성·동시성·유지보수성·성능·확장성·시스템 설계·UX는 서머리 절로; performance.md 대원칙 절 → reliability/38 연결) |
-| `engineering/failure-point-checklist` | 이동 | reliability/05-failure-point-checklist |
-| `engineering/solid-principles` | 이동 | software-design/11-solid |
+| `engineering/clean-code` | 이동 | software-design/06-clean-code (요지를 원고 실제 내용인 CLEAN 5속성에 맞춤 — 이름·함수·주석은 신규 07·08·09) |
+| `engineering/data-access` (README + jpa + spring-data-jdbc + comparison) | 병합 | database/23-orm-and-n-plus-one (프레임워크 고유 API 세부는 `reference/` 후보; comparison의 Data Mapper 절 → database/25 연결, 트랜잭션 절 → database/24 연결) |
+| `engineering/design-patterns-gof` | 이동 | software-design/27-design-patterns-gof |
+| `engineering/development-standards` (4축 + index + README) | 분할 | engineering-practice/14 (quality) · 15 (security) · 16 (operational) · 17 (legal, provisions.md 포함) |
+| `engineering/engineering-axes` (README + 7축) | 병합 | software-design/46-quality-attributes-and-tradeoffs (7축 = 가용성·동시성·유지보수성·성능·확장성·시스템 설계·UX는 서머리 절로; performance.md 대원칙 절 → reliability/20 연결) |
+| `engineering/failure-point-checklist` | 이동 | reliability/27-failure-point-checklist |
+| `engineering/solid-principles` | 이동 | software-design/22-solid |
 
 ### 19.5 `ops-patterns/` (01~19 + 3개 개념 폴더)
 
 | 기존 | 판정 | 새 위치 |
 |---|---|---|
-| `01-retry-backoff` | 이동 | reliability/07 |
-| `02-circuit-breaker` | 이동 | reliability/08 |
-| `03-bulkhead` | 이동 | reliability/09 |
-| `04-rate-limiter` | 이동 | reliability/10 |
-| `05-backpressure` | 이동 | reliability/11 |
-| `06-idempotency-store` | 이동 | reliability/12 |
-| `07-outbox` | 이동 | distributed/21 |
-| `08-saga` | 이동 | distributed/20 |
-| `09-stampede` | 이동 | reliability/13 |
-| `10-scheduler` | 이동 | reliability/15 |
-| `11-distributed-lock` | 이동 | distributed/17 |
-| `12-leader-election` | 이동 | distributed/14 |
-| `13-snowflake` | 이동 | distributed/18 |
-| `14-logical-clock` | 이동 | distributed/06 |
-| `15-crdt` | 이동 | distributed/12 |
-| `16-event-sourcing` | 병합 | distributed/27 (+ systems/event-sourcing) |
-| `17-timeseries` | 병합 | database/36 (+ systems/timeseries-resolution-tiers) |
-| `18-blockchain` | 이동 | distributed/29 |
+| `01-retry-backoff` | 이동 | reliability/06 |
+| `02-circuit-breaker` | 이동 | reliability/10 |
+| `03-bulkhead` | 이동 | reliability/28 |
+| `04-rate-limiter` | 이동 | reliability/11 |
+| `05-backpressure` | 이동 | reliability/12 |
+| `06-idempotency-store` | 이동 | reliability/13 |
+| `07-outbox` | 이동 | distributed/16 |
+| `08-saga` | 이동 | distributed/15 |
+| `09-stampede` | 이동 | reliability/29 |
+| `10-scheduler` | 이동 | reliability/30 |
+| `11-distributed-lock` | 이동 | distributed/12 |
+| `12-leader-election` | 이동 | distributed/10 |
+| `13-snowflake` | 이동 | distributed/13 |
+| `14-logical-clock` | 이동 | distributed/05 |
+| `15-crdt` | 이동 | distributed/24 |
+| `16-event-sourcing` | 병합 | distributed/22 (+ systems/event-sourcing) |
+| `17-timeseries` | 병합 | database/44 (+ systems/timeseries-resolution-tiers) |
+| `18-blockchain` | 이동 | distributed/31 |
 | `19-graceful-shutdown` | 이동 | reliability/14 |
-| `deadline-propagation` | 이동 | reliability/06 |
+| `deadline-propagation` | 이동 | reliability/05 |
 | `failure-at-scale` | 이동 + 분할 | reliability/03 (본문) · distributed/03 (양상 1 부분 실패 절 연결) |
-| `failure-modes` | 이동 | reliability/04 (F-01~08은 database/25·os/15에서 역링크) |
+| `failure-modes` | 이동 | reliability/04 (F-01~08은 database/18·os/15에서 역링크) |
 
 → `ops-patterns/` 는 **reliability(복원력)와 distributed(조정·데이터 흐름)로 양분**. myway 구현 챕터 번호는 원본 레포 대응을 위해 각 leaf 서머리 머리말에 `원본: ops-patterns/NN` 으로 남긴다.
 
@@ -1681,27 +1693,27 @@ study-note/
 
 | 기존 | 판정 | 새 위치 |
 |---|---|---|
-| `data-structure/01~35` | 유지(번호·폴더명 그대로) | data-structure/01~35 |
-| `data-structure/lsm-merge-model` | 이동(번호 부여) | data-structure/40-lsm-merge-model |
-| `algorithm/01~30` | 유지(번호·폴더명 그대로) | algorithm/01~30 |
+| `data-structure/01~35` | 유지(번호·폴더명 그대로) | data-structure/03~18·20~24·27·30~42 |
+| `data-structure/lsm-merge-model` | 이동(번호 부여) | data-structure/19-lsm-merge-model |
+| `algorithm/01~30` | 유지(번호·폴더명 그대로) | algorithm/04~08·10·13~32·35~38 |
 | `domain-modeling/domain-vs-application-logic` | 이동 | domain-modeling/01 |
 | `domain-modeling/pojo` | 이동 | domain-modeling/02 |
-| `domain-modeling/basic` (30편) | 유지(컬렉션) | domain-modeling/18 이 가리킴 |
-| `domain-modeling/advanced` (30편) | 유지(컬렉션) | domain-modeling/19 가 가리킴 |
-| `api-design/01~06` | 이동(번호만 16~21로) | api-design/16-case-order-point ~ 21-case-refund |
+| `domain-modeling/basic` (30편) | 유지(컬렉션) | domain-modeling/15 이 가리킴 |
+| `domain-modeling/advanced` (30편) | 유지(컬렉션) | domain-modeling/26 가 가리킴 |
+| `api-design/01~06` | 유지(노트 폴더 `api-design/01~06` 그대로 — leaf 번호만 22~27) | api-design/22-case-order-point ~ 27-case-refund |
 
 ---
 
 ## 20. leaf 통계
 
 > 집계 기준: 이 문서 §1~§18(§18a 포함) 표의 leaf 행(`| NN-slug |`)을 스크립트로 셌다. **기존** = `기존` 칸이 기존 노트 경로로 시작(이동·분할·병합·유지 포함), **신규** = `신규`로 시작(`(연결: …)` 만 있는 것 포함). **증감** = 2026-09-28 갭 병합 전(517 leaf) 대비.
-> 검증(스크립트): 영역 안 중복 slug 0·중복 번호 0 · 모든 leaf 행 8열 · 선행 칸 참조 931개(`영역/slug` 247 + 같은 영역 684) 불일치 0 · 등급 오기 0 · 영역별 권장 학습 순서가 그 영역 leaf 번호를 빠짐없이 포함.
+> 검증(스크립트): 영역 안 중복 slug 0·중복 번호 0 · 모든 leaf 행 8열 · 선행 칸 참조 불일치 0(2026-09-28 재번호 후 재검증 — renumber-report.md) · 등급 오기 0 · 영역별 권장 학습 순서가 그 영역 leaf 번호를 빠짐없이 포함.
 
 | # | 영역 | leaf | 증감 | 신규 | 기존 | 필수 | 권장 | 심화 |
 |---|---|---|---|---|---|---|---|---|
 | 1 | CS 수학 | 17 | 0 | 16 | 1 | 10 | 7 | 0 |
-| 2 | 자료구조 | 43 | 0 | 5 | 38 | 16 | 16 | 11 |
-| 3 | 알고리즘 | 42 | 0 | 10 | 32 | 18 | 16 | 8 |
+| 2 | 자료구조 | 44 | +1 | 6 | 38 | 17 | 16 | 11 |
+| 3 | 알고리즘 | 43 | +1 | 12 | 31 | 19 | 16 | 8 |
 | 4 | 컴퓨터 구조 | 23 | +1 | 12 | 11 | 14 | 5 | 4 |
 | 5 | 운영체제 | 38 | +1 | 30 | 8 | 28 | 9 | 1 |
 | 6 | 프로그래밍 언어·컴파일러 | 27 | +6 | 17 | 10 | 12 | 13 | 2 |
@@ -1718,16 +1730,17 @@ study-note/
 | 17 | 엔지니어링 실천 | 20 | +2 | 14 | 6 | 6 | 13 | 1 |
 | 18a | 데이터 공학 | 17 | +17 | 17 | 0 | 12 | 3 | 2 |
 | 18 | 데이터 분석·통계 | 28 | 0 | 28 | 0 | 17 | 9 | 2 |
-| | **합계** | **642** | **+125** | **461** | **181** | **349** | **249** | **44** |
+| | **합계** | **644** | **+127** | **464** | **180** | **351** | **249** | **44** |
 
 - 영역마다 역색인 1 + 실사건 1 = **38 leaf**가 마감용이다(역색인은 전부 필수, 실사건은 전부 권장).
-- **연습 컬렉션은 leaf 1개로 셌다**: domain-modeling basic 30편·advanced 30편(각 leaf 18·19), server-design 11편은 분할해 여러 leaf에 분산.
+- **연습 컬렉션은 leaf 1개로 셌다**: domain-modeling basic 30편·advanced 30편(각 leaf 15·26), server-design 11편은 분할해 여러 leaf에 분산.
 - **CS 밖(reference/)으로 뺀 규모**: languages 2,023파일 + web-api 118파일 + python-basics 1편 — leaf 수에 포함하지 않았다.
-- 2026-09-28 추가 12 leaf(네트워크 46~52 전송·압축·스트리밍, 알고리즘 41~42 압축, API 24~26 gRPC 스트리밍·스타일 선택·메시징) 반영 수치.
+- 2026-09-28 추가 12 leaf(네트워크 39~45 전송·압축·스트리밍, 알고리즘 33~34 압축, API 16·18·20 gRPC 스트리밍·스타일 선택·메시징) 반영 수치.
 - **2026-09-28 갭 병합 +125 leaf**: 제안 합계 126(실무 28 · 성능 21 · 데이터·추적·타임아웃 29 · 디자인 패턴 29 · 유지보수성 19) + 프레임워크 합성 5 = 131에서 **중복 6건을 통합해 −6** → +125.
-  - 통합: ① DI·Composition Root(디자인 패턴 #3 + 유지보수성 32 → software-design/29) ② functional core(#6 + 33 → software-design/32) ③ 불법 상태 차단(#5 + 43 → software-design/31-types-as-invariants) ④ 패키지 구조(#2 + 35 → software-design/28-codebase-structure, 아키텍처 테스트 부분은 43) ⑤ Strangler(실무 25 + 디자인 패턴 #8 → software-design/25) ⑥ 원장·대사(실무 domain-modeling/24 → domain-modeling/26·27로 흡수, 등급은 더 구체적인 쪽의 필수).
-  - 기존 leaf 수정(행 수 불변): software-design/04 요지를 원고(CLEAN 5속성)에 맞추고 이름·함수·주석을 46~48로 분리, 역색인 5개(software-design/23·reliability/33·database/39·domain-modeling/20·web-platform/12) 증상 보강, 절 추가(reliability/06·07·18·19·21·25, database/32, web-platform/02, security/24, software-design/02·05·06·18, testing/16, distributed/21 등).
-- 필수만 따라가면 349 leaf. 신규 필수는 영역별로 네트워크(34)·DB(29)·소프트웨어 설계(25)·OS(20)·보안(17)·데이터 분석(17) 순으로 많다.
+  - 통합: ① DI·Composition Root(디자인 패턴 #3 + 유지보수성 32 → software-design/25) ② functional core(#6 + 33 → software-design/26) ③ 불법 상태 차단(#5 + 43 → software-design/24-types-as-invariants) ④ 패키지 구조(#2 + 35 → software-design/40-codebase-structure, 아키텍처 테스트 부분은 41) ⑤ Strangler(실무 25 + 디자인 패턴 #8 → software-design/50) ⑥ 원장·대사(실무 제안 #24(gap-practical) → domain-modeling/24·25로 흡수, 등급은 더 구체적인 쪽의 필수).
+  - 기존 leaf 수정(행 수 불변): software-design/06 요지를 원고(CLEAN 5속성)에 맞추고 이름·함수·주석을 07~09로 분리, 역색인 5개(software-design/55·reliability/52·database/56·domain-modeling/27·web-platform/23) 증상 보강, 절 추가(reliability/05·06·19·36·22·17, database/21, web-platform/02, security/25, software-design/02·10·13·45, testing/17, distributed/16 등).
+- 2026-09-28 cs 재편: 기초 leaf 2(data-structure/01·algorithm/01) 독립 + **전 영역 번호 = 권장 학습 순서로 재번호**(옛→새: `docs/plans/2026-09-28/cs-restructure/slug-map.tsv`).
+- 필수만 따라가면 351 leaf. 신규 필수는 영역별로 네트워크(34)·DB(29)·소프트웨어 설계(25)·OS(20)·보안(17)·데이터 분석(17) 순으로 많다.
 - `[?]` 표기: 문서 전체 261개(범례·출처 설명 포함) 중 **leaf 행 안 240개(185행)** — 주로 장 번호 미확인 교재(P&H·Dragon Book·TAPL·Sipser·GC Handbook·Kohavi·SRE 일부 장·Stevens 15·16장·POSA·Release It!·Clean Architecture 장 번호)와 수치·세부 사건 기록.
 
 ---
@@ -1754,7 +1767,7 @@ study-note/
 - [`gap-performance.md`](gap-performance.md) — 성능 공학 21 leaf(웹 로딩·렌더 처방, JIT·GC·할당·시작 시간, Amdahl·마이크로벤치·힙 분석·콜드 스타트·비동기·배칭, 다단 캐시, 컨테이너 이미지)와 성능 트랙
 - [`gap-data-trace-timeout.md`](gap-data-trace-timeout.md) — `data-engineering/` 17 leaf, 추적 가능한 도메인·관측성 역할 구분, 시간 예산 설계 단원과 추적성 트랙
 - [`gap-design-patterns.md`](gap-design-patterns.md) — PoEAA·EIP·POSA2·microservices.io·Azure·Nygard·xUnit 카탈로그 대조표와 29 leaf
-- [`gap-maintainability.md`](gap-maintainability.md) — 유지보수성 판단층 19 leaf와 04-clean-code 요지 불일치 진단
+- [`gap-maintainability.md`](gap-maintainability.md) — 유지보수성 판단층 19 leaf와 06-clean-code 요지 불일치 진단
 
 ### 1차 리서치(roadmap.md)에서 이어받은 것
 

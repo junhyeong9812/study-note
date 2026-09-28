@@ -1,23 +1,55 @@
 # cs 인덱스
 
-프로젝트 무관 CS·설계 지식의 주제 목록.
-상태: `서머리` → `질문/정답` → `복습중`. 기준 문서 위치는 주제마다 사용자가 지정한다.
+CS 지식 지도. **영역 = 커리큘럼 19영역**(번호 = 권장 학습 순서), 기존 노트는 제자리에 두고 영역 표가 링크한다 — 규칙은 [README.md](README.md) 「작성 규칙」 §6.
+상태: `미작성` → `원고 있음` / `초안(Claude)` → `검수 완료` (README §4).
 
-## 폴더 구조
+## 영역 (커리큘럼 19영역 — 생성 문서)
+
+영역별 현황(미작성·원고 있음·초안·검수 완료 수)은 각 생성 문서 상단 「현황」 줄이 정본이다.
+
+| 영역 | 이름 |
+|---|---|
+| [math](math/README.md) | CS 수학 |
+| [data-structure](data-structure/curriculum.md) | 자료구조 |
+| [algorithm](algorithm/curriculum.md) | 알고리즘 |
+| [architecture](architecture/README.md) | 컴퓨터 구조 |
+| [os](os/README.md) | 운영체제 |
+| [language](language/README.md) | 프로그래밍 언어·컴파일러 |
+| [network](network/README.md) | 네트워크 |
+| [security](security/README.md) | 보안 |
+| [database](database/README.md) | 데이터베이스 |
+| [distributed](distributed/README.md) | 분산 시스템 |
+| [reliability](reliability/README.md) | 운영·신뢰성 |
+| [software-design](software-design/README.md) | 소프트웨어 설계 |
+| [domain-modeling](domain-modeling/curriculum.md) | 도메인 모델링 |
+| [testing](testing/README.md) | 테스트 |
+| [api-design](api-design/curriculum.md) | API 설계 |
+| [web-platform](web-platform/README.md) | 프론트엔드 엔지니어링 |
+| [engineering-practice](engineering-practice/README.md) | 엔지니어링 실천 |
+| [data-engineering](data-engineering/README.md) | 데이터 공학 |
+| [data-analysis](data-analysis/README.md) | 데이터 분석·통계 |
+
+## 기존 컬렉션 (제자리 유지)
 
 ```text
 cs/
 ├── systems/           ← 시스템 개념 — db-engine 9주제 + jun-bank 이관(architecture-styles·orchestration·event-sourcing·multi-tenancy·clickhouse·postgres-rls·timeseries·kafka-consumer·outbox·server-design 컬렉션)
 ├── engineering/       ← 설계·실천 — solid-principles·clean-code·design-patterns-gof·agile-and-squad·engineering-axes·data-access·failure-point-checklist·development-standards
 ├── foundations/       ← CS 기초 9주제 + security 컬렉션·three-virtues (languages·web-api·python-basics는 최상위 languages/로 이동 2026-09-28)
-├── algorithm/         ← 01~30 (myway/algorithm)
-├── data-structure/    ← 01~35 (myway) + lsm-merge-model
-├── domain-modeling/   ← basic/advanced + domain-vs-application-logic·pojo
-├── ops-patterns/      ← 01~19 + failure-at-scale·failure-modes
-└── api-design/        ← 01~06
+├── algorithm/         ← 01~30 myway 컬렉션 (+ curriculum.md 영역 표)
+├── data-structure/    ← 01~35 myway 컬렉션 + lsm-merge-model (+ curriculum.md)
+├── domain-modeling/   ← basic/advanced myway 컬렉션 + domain-vs-application-logic·pojo (+ curriculum.md)
+├── ops-patterns/      ← 01~19 myway 컬렉션 + deadline-propagation·failure-at-scale·failure-modes
+└── api-design/        ← 01~06 myway 컬렉션 (+ curriculum.md)
 ```
 
-## 진행 중 (검토·정답 대기)
+myway 컬렉션의 원본 경로·진도 = [project/myway/README.md](../project/myway/README.md).
+
+---
+
+## 이관 이력 (2026-09-28 이전 기록 — 옛 상태 어휘 `서머리`·`질문/정답`·`검토 대기`를 그대로 둔다. 현재 상태는 영역 생성 문서가 정본)
+
+### 진행 중 (검토·정답 대기)
 
 | 주제 | 상태 | 원본(따라 친 노트) 위치 |
 |------|------|------------------------|
