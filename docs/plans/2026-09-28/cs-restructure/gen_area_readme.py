@@ -84,8 +84,8 @@ def render(num, title, area, body, outdir):
                 c = [x.strip() for x in l.split('|')]
                 ps = notes(c[8])
                 leaf = f'cs/{area}/{c[1]}'   # 새 커리큘럼 노트(cs/<area>/NN-slug/)는 폴더 존재로 찾는다
-                if not ps and os.path.exists(os.path.join(R, leaf, '1-question.md')):
-                    ps = [leaf]
+                if os.path.exists(os.path.join(R, leaf, '1-question.md')):
+                    ps = [leaf] + [p for p in ps if p != leaf]   # 새 leaf가 있으면 먼저, 원고는 뒤에 링크 유지
                 st = status(ps); cnt[st] += 1
                 links = ' · '.join(f'[{os.path.relpath(os.path.join(R, p), outdir)}]({os.path.relpath(os.path.join(R, p), outdir)}{"/" if os.path.isdir(os.path.join(R, p)) else ""})' for p in ps) or '—'
                 rows.append((c[1], f'| {c[1][:2]} | `{c[1][3:]}` | {c[2]} | {c[7]} | {st} | {links} |'))

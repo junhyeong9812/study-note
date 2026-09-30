@@ -1,0 +1,33 @@
+# 웹 교차 표본 — 운영체제 새 노트 (V5, 2026-09-30)
+
+> 점검·판정 워커가 "원문으로 확인했다"고 보고한 외부 사실 가운데 24건을 뽑았다.
+> 뽑을 때는 버전 조건, 기본값, man 페이지와 소스가 어긋나는 곳, 사건 사실을 우선했다.
+> 교차 확인자는 점검자와 다른 컨텍스트에서 출처를 **직접 다시 열어** 판정한다. 노트 본문이 그 사실을 같은 뜻으로 적었는지도 대조한다.
+> 판정은 셋 중 하나다: 일치 / 불일치(무엇이) / 확인 불가(사유)
+
+| # | 노트 | 주장 | 출처 | 판정 |
+|---|---|---|---|---|
+| 1 | 05·10 | 리눅스 5.8부터 공유 anon THP에 쓰면 PMD를 쪼개 4KB만 복사(commit 3917c80280c9) | https://github.com/torvalds/linux/commit/3917c80280c93a7123f1a3a6dcdb10a3ea19737d | 일치 — 'For anon-THP we try to allocate huge page on the write fault, but on file-THP we split PMD and allocate 4k page.' + 패치 `fallback: __split_huge_pmd(...); return VM_FAULT_FALLBACK;`, branch_commits 최초 태그 v5.8-rc1 (note 05 2-summary.md:284, 10 2-summary.md:248) |
+| 2 | 08 | EEVDF는 6.6부터 | https://docs.kernel.org/scheduler/sched-eevdf.html | 일치 — 'The Linux kernel began transitioning to EEVDF in version 6.6' (note 08 2-summary.md:105) |
+| 3 | 08 | cgroup v2 `cpu.max` 기본 "max 100000" | https://docs.kernel.org/admin-guide/cgroup-v2.html | 일치 — 'The default is “max 100000”.' (note 08 2-summary.md:157) |
+| 4 | 06 | 표준 시그널은 큐잉되지 않음 | https://man7.org/linux/man-pages/man7/signal.7.html | 일치 — 'if multiple instances of a standard signal are delivered while that signal is currently blocked, then only one instance is queued.' (note 06 2-summary.md:71) |
+| 5 | 06·28 | PID ns의 init은 핸들러를 건 시그널만 받음 | https://man7.org/linux/man-pages/man7/pid_namespaces.7.html | 일치 — 'Only signals for which the "init" process has established a signal handler can be sent to the "init" process by other members of the PID namespace.' 조상 ns의 SIGKILL·SIGSTOP 예외도 원문과 같음 (note 06 2-summary.md:297, 3-answer.md:81; 28 2-summary.md:361) |
+| 6 | 07·13 | glibc pthread_create는 스택 ENOMEM을 EAGAIN으로 바꿈 | https://raw.githubusercontent.com/bminor/glibc/master/nptl/pthread_create.c | 일치 — 'retval = err == ENOMEM ? EAGAIN : err;' (note 13 2-summary.md:260; 07 2-summary.md:246은 EAGAIN 조건에 스택 메모리 부족 포함) |
+| 7 | 21 | 공유 OFD write의 오프셋 갱신은 3.14부터 원자적 | https://man7.org/linux/man-pages/man2/write.2.html | 일치 — 'This problem was fixed in Linux 3.14.' (note 21 2-summary.md:76, 3-answer.md:72) |
+| 8 | 21 | `nr_open` 기본 1048576 | https://man7.org/linux/man-pages/man5/proc_sys_fs.5.html | 일치 — 'The default value in this file is 1048576.' (note 21 2-summary.md:149 `1024*1024`) |
+| 9 | 24 | 디렉터리 fsync도 필요 | https://man7.org/linux/man-pages/man2/fsync.2.html | 일치 — 'For that an explicit fsync() on a file descriptor for the directory is also needed.' (note 24 3-answer.md:33, 2-summary.md:84) |
+| 10 | 24·38 | errseq: fd를 열기 전에 난 에러도 한 번은 보고(b4678df184b3) | https://github.com/torvalds/linux/commit/b4678df184b314a2bd47d2329feca2c2534aa12b | 일치 — 'report errors to all file descriptors which are opened after the error occurred, but before it was reported to any file descriptor.' 최초 태그 v4.17-rc4 (note 24 2-summary.md:137, 38 2-summary.md:146) |
+| 11 | 23 | ext4 `commit=` 기본 5초 | https://docs.kernel.org/admin-guide/ext4.html | 일치 — 'The default value is 5 seconds.' (note 23 2-summary.md:120) |
+| 12 | 22 | ext4 htree 깊이 2(large_dir면 3) | https://docs.kernel.org/filesystems/ext4/directory.html | 일치 — 'Cannot be larger than 3 if the INCOMPAT_LARGEDIR feature is set; cannot be larger than 2 otherwise.' (note 22 2-summary.md:99) |
+| 13 | 30 | 파이프 기본 용량 65,536바이트(2.6.11+) | https://man7.org/linux/man-pages/man7/pipe.7.html | 일치 — 'Since Linux 2.6.11, the pipe capacity is 16 pages (i.e., 65,536 bytes in a system with a page size of 4096 bytes).' (note 30 2-summary.md:62, 3-answer.md:21) |
+| 14 | 30 | `mq` msg_max 기본 10 | https://man7.org/linux/man-pages/man7/mq_overview.7.html | 일치 — 'The default value for msg_max is 10.' (note 30 2-summary.md:147) |
+| 15 | 31 | load average = R + D 평균 | https://man7.org/linux/man-pages/man5/proc_loadavg.5.html | 일치 — 'the number of jobs in the run queue (state R) or waiting for disk I/O (state D) averaged over 1, 5, and 15 minutes.' (note 31 2-summary.md:63) |
+| 16 | 31 | `perf_event_paranoid` 기본 2 | https://docs.kernel.org/admin-guide/sysctl/kernel.html | 일치 — 'The default value is 2.' (note 31 2-summary.md:125) |
+| 17 | 34 | sendfile 최대 0x7ffff000 바이트 | https://man7.org/linux/man-pages/man2/sendfile.2.html | 일치 — 'sendfile() will transfer at most 0x7ffff000 (2,147,479,552) bytes' (note 34 2-summary.md:81, 3-answer.md:36) |
+| 18 | 26 | select의 FD_SETSIZE 1024는 glibc 한도 | https://man7.org/linux/man-pages/man2/select.2.html | 일치 — 'The Linux kernel imposes no fixed limit, but the glibc implementation makes fd_set a fixed-size type, with FD_SETSIZE defined as 1024' (note 26 2-summary.md:45) |
+| 19 | 12 | swappiness=0이면 free+file이 high watermark 아래가 될 때까지 스왑 시작 안 함(전통 LRU) | https://docs.kernel.org/admin-guide/sysctl/vm.html | 일치 — 'At 0, the kernel will not initiate swap until the amount of free and file-backed pages is less than the high watermark in a zone.' 문서는 LRU 종류를 가르지 않음 — '전통 LRU' 한정·MGLRU/cgroup 예외는 노트가 vmscan.c로 덧붙인 것 (note 12 2-summary.md:240, 3-answer.md:106) |
+| 20 | 13 | memory.high 초과는 OOM killer를 부르지 않음 | https://docs.kernel.org/admin-guide/cgroup-v2.html | 일치 — 'Going over the high limit never invokes the OOM killer and under extreme conditions the limit may be breached.' (note 13 2-summary.md:127, 3-answer.md:56) |
+| 21 | 09 | x86-64 사용자 공간 끝 00007fffffffefff(~128TB) | https://docs.kernel.org/arch/x86/x86_64/mm.html | 일치 — '0000000000000000 / 0 / 00007fffffffefff / ~128 TB / user-space virtual memory, different per mm'(원문 표 구분자를 슬래시로 바꿔 인용) (note 09 2-summary.md:56) |
+| 22 | 35 | KVM steal time은 vCPU idle 시간을 넣지 않음 | https://docs.kernel.org/virt/kvm/x86/msr.html | 일치 — 'Time during which the vcpu is idle, will not be reported as steal time.' (note 35 2-summary.md:140, 3-answer.md:56) |
+| 23 | 38 | 2012 윤초 커밋 4873fa070ae8: CLOCK_REALTIME 타이머가 1초 일찍·늦게 만료 | https://github.com/torvalds/linux/commit/4873fa070ae84a4115f0b3c9dfabc224f1bc7c51 | 일치 — 'timers based on CLOCK_REALTIME are either expiring a second early or late depending on whether a leap second has been inserted or deleted' 최초 태그 v3.5-rc7 (note 38 2-summary.md:207, 3-answer.md:81) |
+| 24 | 20·38 | Pathfinder: 전역 변수 값을 바꿔 우선순위 상속을 켬(Jones) | https://www.cs.cornell.edu/courses/cs614/1999sp/papers/pathfinder.html | 일치 — 'A short C program was uploaded to the spacecraft, which when interpreted, changed the values of these variables from FALSE to TRUE.' (note 20 2-summary.md:147, 3-answer.md:80; 38 2-summary.md:403) |
