@@ -4,15 +4,25 @@
 
 ## 기준
 
-- 마지막 갱신: 2026-09-28 cs-restructure 완료 (N0-a 배포 완료 · N0-b 불요 종료 — 채팅은 Redis TTL 7일) · 이전: 2026-09-27 · 직전 완료 작업: `docs/plans/2026-09-27/issue-toplevel-cs-rule/` · 기준 커밋: a8f8a9e1(study-note) · c2254f0(harness 브랜치 docs/issue-archive-toplevel-path) · 병합 상태: 둘 다 미push
+- 마지막 갱신: 2026-09-30 network-writing 완료(네트워크 51편 새 집필·검증) · 직전: 2026-09-28 cs-restructure · 작업 폴더: `docs/plans/2026-09-30/network-writing/` · 기준 커밋: d313fe16 → 작업 브랜치 docs/network-writing
 
 ## 다음 작업 후보 (우선순위순)
 
-### N0-c. 커리큘럼 미작성 464 leaf 집필 — 우선순위: 높음 · myway 5 주제 완성(2026-09-28) 다음 단계
+### N0-c. 커리큘럼 미작성 413 leaf 집필 — 우선순위: 높음 · 네트워크 51편 완료(2026-09-30) 다음 영역
 
-- **입력**: 영역 생성 문서(`cs/<영역>/README.md`)의 `미작성` 행, 통일 골격·코드 언어 규칙(cs/README), myway-cs-complete의 브리핑·check.py·factfix 브리핑(재사용 가능).
-- **관측**: 이번 150편에서 표본 오류율이 높아(전 컬렉션 승격) — 새 집필도 **작성 → Opus 전수 사실 점검 → 웹 교차 표본**을 기본 파이프라인으로. 원본(myway) 없는 주제는 근거가 교재·RFC뿐이라 `[?]` 관리가 더 중요.
-- **착수 전 확인할 것**: 영역 우선순위(로드맵: 네트워크 → OS → DB …), 한 번에 몇 영역.
+- **입력**: `cs/<영역>/README.md`의 `미작성` 행 · 통일 골격·코드 언어 규칙(cs/README) · 재사용 도구: `docs/plans/2026-09-30/network-writing/`의 briefing·check_new.py·factcheck-briefing·adjudicate-briefing, scratchpad의 relink 패턴(영역 폴더 존재로 "미작성" → 링크).
+- **관측(네트워크 실측)**: Opus 집필 → Opus 전수 점검만으로는 부족 — 뒤이은 codex/대체 리뷰가 편당 1~11건(합계 ~130)을 더 찾았고 판정 기각 0. 유형: 조건 없는 단정, 노트 내부 모순(그림 vs 식, 정답 N vs M), 규범 수준, **man 페이지가 최신 커널보다 뒤처짐**(tcp(7) 127초 vs 6.5+ 131초, udp(7) EMSGSIZE, ss(8) rto), 병렬 집필로 노트 간 불일치.
+- **권장 파이프라인**: 집필(Opus) → 사실 점검(Opus) → **2차 리뷰(codex, 한도 시 Opus 적대 리뷰)** → 판정·반영(Opus, 1차 출처 재확인) → 노트 간 공통 사실 일관성 재점검 → 링크 전환 → README 재생성. 공통 사실(에러 매핑·기본값)은 영역 착수 전에 "정답표"로 먼저 고정하면 병렬 불일치가 준다.
+- **발생 가능한 문제**: codex 사용 한도(이번에 47편 실행 중 소진 — 23:18까지) → 대체 리뷰로 모델 다양성 손실. 뒤집기 반복(duplex 불일치 쪽 — 1차 출처 재조회로 고정, 정지 규칙).
+- **착수 전 확인할 것**: 다음 영역(로드맵: OS → DB …), 한 번에 몇 영역.
+
+### N0-e. 커리큘럼 본문 오기 3건 — 우선순위: 낮음(1행)
+
+- curriculum.md §7: 02행 "12로 이어짐" → 10(fragmentation-mtu-pmtud) · 44행 ⚠ "47의 사이드채널" → 43 · 08행 선행 `data-structure/13-radix-trie` → `20-radix-trie`. 고친 뒤 gen_area_readme.py 재실행.
+
+### N0-f. 네트워크 51편 사용자 검수 — 우선순위: 중간
+
+- 배포 사이트에서 읽기 → 확정 시 3파일 상단 `✅ 검수 완료(YYYY-MM-DD)`. `[?]` 잔여(편당 0~5)는 검수 때 판단. 08 blackhole `ip route get` EINVAL·23 SYN-ACK 한도 소진 뒤 결과는 실행 미검증(userns 불가).
 
 ### N0-d. myway 150편 사용자 검수 — 우선순위: 중간
 
