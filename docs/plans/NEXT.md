@@ -2,7 +2,7 @@
 
 ## 기준
 
-- 마지막 갱신: 2026-09-30 os-writing 완료(OS 38편) · 직전: network-writing(51편) · 작업 폴더: `docs/plans/2026-09-30/os-writing/` · 작업 브랜치 docs/os-writing(main fb3bf94c)
+- 마지막 갱신: 2026-10-01 distributed-writing 완료(분산 36편, 실험 근거) · 직전: db-writing(57편, push 69df46fb) · 진행 중: reliability-writing(53편) · 작업 폴더: `docs/plans/2026-10-01/distributed-writing/` · 브랜치: `docs/distributed-writing`
 
 ## 다음 작업 후보 (우선순위순)
 
@@ -15,13 +15,21 @@
 - **착수 전 확인할 것**: 다음 영역, codex 한도, 원고 있는 leaf 처리 방식(OS는 새 leaf + 원고 링크).
 - **DB 관측(10-01)**: codex 57편 전수가 가능했다(한도 1회, 리셋 대기). 2차 지적 314건 중 기각 3 — 1차 Opus 점검 뒤에도 편당 ~5.5건. 판정 때 원문을 열지 않고 판정한 근거가 묶음마다 1~3건 → 정합 패스에서 원문 대조로 회수. **명세 파일 생성은 게이트를 리셋한다** — 진행 중인 워커가 있으면 합의 직후 set-state, 또는 워커가 쉴 때 생성. **/tmp scratchpad는 재부팅에 사라진다** — 실험 코드·산출물 원본이 근거면 저장소 밖 영구 경로 검토.
 
-### N0-e. 커리큘럼 본문 오기 3건 — 우선순위: 낮음(1행)
+- **분산 관측(10-01)**: 사용자 요청으로 **실험 근거 우선(I7)** 도입 — 편당 실험 1개+, 사실 점검이 재실행(V1b). 재실행으로 중대 2건(15 출력 +94/+100 재현 불가 → 실측 교체, 30 Kafka Streams 늦은 레코드 WARN 로그 존재)을 잡았다. 재부팅(/tmp 소실)으로 실험 원본이 사라짐 → 이후 영역은 실험 코드 핵심을 노트에 싣고 scratchpad에도 둔다. codex 22편 + 한도 뒤 Opus 대체 14편.
+
+### N0-e. 커리큘럼 본문 오기 4건 — 우선순위: 낮음(1행)
 
 - curriculum.md §7: 02행 "12로 이어짐" → 10(fragmentation-mtu-pmtud) · 44행 ⚠ "47의 사이드채널" → 43 · 08행 선행 `data-structure/13-radix-trie` → `20-radix-trie`. 고친 뒤 gen_area_readme.py 재실행.
+- (10-01 분산) curriculum.md §10 33행 선행·데이터 구조 표 240행 `data-structure/41-rope` → 실제 노트 `28-rope`.
 
 ### N0-f. 네트워크 51편 사용자 검수 — 우선순위: 중간
 
 - 배포 사이트에서 읽기 → 확정 시 3파일 상단 `✅ 검수 완료(YYYY-MM-DD)`. `[?]` 잔여(편당 0~5)는 검수 때 판단. 08 blackhole `ip route get` EINVAL·23 SYN-ACK 한도 소진 뒤 결과는 실행 미검증(userns 불가).
+
+### N0-i. 분산 36편 사용자 검수 + 영역 밖 후속 — 우선순위: 중간
+
+- 새 형식(metadata 단계 `초안`). `[?]` 잔여: 05 Fidge 1988·04 STEPT 실제 데몬·27 랙 배치·23 경험칙 2.
+- 영역 밖 후속: `cs/database/57-db-incidents/2-summary.md` 212·348행 "distributed 36(미작성)" → `../../distributed/36-distributed-incidents/2-summary.md` · `cs/distributed/03` 285행의 reliability 07·08 링크는 reliability 작업 후 재점검.
 
 ### N0-h. DB 57편 사용자 검수 — 우선순위: 중간
 
