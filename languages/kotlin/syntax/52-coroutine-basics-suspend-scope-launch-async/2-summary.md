@@ -1,15 +1,5 @@
 # kotlin/syntax/52 — 코루틴 기초 — `suspend`·`CoroutineScope`·`launch`/`async`/`await` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 `kotlin.coroutines.intrinsics`(`COROUTINE_SUSPENDED`) · **`kotlinx-coroutines-core-jvm` 1.11.0 의 소스 jar**(같은 판 — 53번 주제에서 발췌). ★ 공식 문서 페이지와 KEEP 문서는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 설계 논거는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 원고째 인용한다.
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 9회(호출 규칙 격자 스크립트 안의 1회 포함) · `java` 6회 + 순서 로그 셋을 다섯 판씩 되풀이한 15회 · `javap` 3회 · stdlib 소스 jar 발췌 2곳.\
-> ★★★ **라이브러리 판 — `kotlinx-coroutines-core-jvm` 1.11.0**(이 머신의 gradle 캐시에 있던 판 중 가장 새 것 · 매니페스트 `Implementation-Version: 1.11.0` · 클래스 메타데이터 `mv=[2,2,0]` 이라 kotlinc 2.4.20 이 **그대로 읽는다** — `-Xskip-metadata-version-check` 불필요). `launch`·`async`·`runBlocking`·`delay`·`yield` 는 **이 라이브러리의 것**이다. 라이브러리 판이 결과를 바꿀 수 있어 **흔들리는 칸 표에 판을 선언**한다.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「막힌 탐침 N / M」은 스크립트가 스스로 센 것**이다.
-> **버전** — `COROUTINE_SUSPENDED` 는 stdlib 소스에 **`@SinceKotlin("1.3")`**(코루틴이 Stable 이 된 판)((5)).
-> **경계** — ★★★ 「**코루틴 = 스레드가 아니라 컴파일러 변환**」이라는 **논지**와 가상 스레드와의 대비는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 정본이다. **스레드·프로세스 개념**은 [`cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다 — 여기는 **`suspend` 함수의 호출 규칙과 JVM 에서의 모양**만 본다. 람다가 JVM 에서 무엇이 되나는 [10번 주제](../10-lambdas-and-higher-order-functions/), `coroutineScope { }` 의 `this` 가 수신자 람다라는 것은 [37번 주제](../37-lambdas-with-receiver-and-type-safe-builders/)가 정본이다. **취소·예외가 형제와 부모로 번지는 규칙**은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/)다. 디스패처와 `withContext` 는 [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/)다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**`javap` — `suspend fun f(x: Int): Int` 가 JVM 에서 `f(int, Continuation): Object` 가 되고 상태 기계 클래스가 생기는 것**」. 둘째 본체는 **호출 규칙 격자**(어디서 부르면 막히나)다. 「스레드가 아니다」는 **스레드 수를 세는** 로그로만 말한다 — 가볍다·빠르다는 재지 않았다.
 
 ## 이 주제가 쓰는 세 층
@@ -680,3 +670,13 @@ two direct calls took at least 200ms: true
 - **`invokeSuspend` 안** — 상태 기계의 나머지 절반(이어 들어올 때 `label` 을 올리고 `twice` 를 다시 부르는 쪽)은 `Cps52Kt$twice$1` 의 `javap -c` 에 있다. 이 문서는 서명과 필드까지만 실었다.
 - **`suspendCoroutine` / `suspendCancellableCoroutine`** — 콜백 API 를 `suspend` 로 감싸는 다리. 돌리지 않았다.
 - **`-Xdebug` 와 「was optimized out」** — 디버거에서 지역 변수가 사라지는 비용은 [`언어-특성`](../../언어-특성/README.md) §6 이 원고째 적는다. 이 문서는 확인하지 않았다.
+
+## 실행 환경
+
+**기준 소스** — **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 `kotlin.coroutines.intrinsics`(`COROUTINE_SUSPENDED`) · **`kotlinx-coroutines-core-jvm` 1.11.0 의 소스 jar**(같은 판 — 53번 주제에서 발췌). ★ 공식 문서 페이지와 KEEP 문서는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 설계 논거는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 원고째 인용한다.
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 9회(호출 규칙 격자 스크립트 안의 1회 포함) · `java` 6회 + 순서 로그 셋을 다섯 판씩 되풀이한 15회 · `javap` 3회 · stdlib 소스 jar 발췌 2곳.\
+★★★ **라이브러리 판 — `kotlinx-coroutines-core-jvm` 1.11.0**(이 머신의 gradle 캐시에 있던 판 중 가장 새 것 · 매니페스트 `Implementation-Version: 1.11.0` · 클래스 메타데이터 `mv=[2,2,0]` 이라 kotlinc 2.4.20 이 **그대로 읽는다** — `-Xskip-metadata-version-check` 불필요). `launch`·`async`·`runBlocking`·`delay`·`yield` 는 **이 라이브러리의 것**이다. 라이브러리 판이 결과를 바꿀 수 있어 **흔들리는 칸 표에 판을 선언**한다.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「막힌 탐침 N / M」은 스크립트가 스스로 센 것**이다.
+**버전** — `COROUTINE_SUSPENDED` 는 stdlib 소스에 **`@SinceKotlin("1.3")`**(코루틴이 Stable 이 된 판)((5)).
+**경계** — ★★★ 「**코루틴 = 스레드가 아니라 컴파일러 변환**」이라는 **논지**와 가상 스레드와의 대비는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 정본이다. **스레드·프로세스 개념**은 [`cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다 — 여기는 **`suspend` 함수의 호출 규칙과 JVM 에서의 모양**만 본다. 람다가 JVM 에서 무엇이 되나는 [10번 주제](../10-lambdas-and-higher-order-functions/), `coroutineScope { }` 의 `this` 가 수신자 람다라는 것은 [37번 주제](../37-lambdas-with-receiver-and-type-safe-builders/)가 정본이다. **취소·예외가 형제와 부모로 번지는 규칙**은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/)다. 디스패처와 `withContext` 는 [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/)다.

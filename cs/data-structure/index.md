@@ -1,8 +1,5 @@
 # data-structure 인덱스
 
-> myway 연습 프로젝트와 1:1 대응하는 노트 컬렉션이다. **진행 기록(원본 경로·진도)은 [project/myway/README.md](../../project/myway/README.md)** 에 있고,
-> 커리큘럼상 위치·상태는 [data-structure 커리큘럼](../data-structure/curriculum.md) 에서 본다(2026-09-28 cs 재편).
-
 | 챕터 |
 |------|
 | [01-dynamic-array](01-dynamic-array/) |
@@ -40,3 +37,8 @@
 | [33-filesystem](33-filesystem/) |
 | [34-dependency-resolver](34-dependency-resolver/) |
 | [35-allocator](35-allocator/) |
+
+---
+
+myway 연습 프로젝트와 1:1 대응하는 노트 컬렉션이다. **진행 기록(원본 경로·진도)은 [project/myway/README.md](../../project/myway/README.md)** 에 있고,
+커리큘럼상 위치·상태는 [data-structure 커리큘럼](../data-structure/curriculum.md) 에서 본다(2026-09-28 cs 재편).

@@ -1,11 +1,5 @@
 # domain-modeling-basic/18-shipping-fee — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/18-shipping-fee/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -386,3 +380,7 @@ isFree = false 인데 fee = 0   전부 취소된 주문             →  fee 0  
   A: 차액을 받을지는 정책(안 받으면 악용 경로, 받으면 환불 항의)이지만, 어느 쪽을 고르든 차액을 **계산할 수 있어야** 고를 수 있기 때문이다.\
   그래서 "받을지"(정책)와 "계산할 수 있는지"(능력)를 분리했다.\
   구현은 상태 없이 취소 전·후 목록으로 두 번 계산해 빼는 순수 함수라 표 한 장으로 테스트된다.
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/18-shipping-fee/impl/`).

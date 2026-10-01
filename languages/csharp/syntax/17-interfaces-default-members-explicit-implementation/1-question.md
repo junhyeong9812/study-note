@@ -1,17 +1,5 @@
 # csharp/syntax/17 — 인터페이스·기본 구현 멤버·명시적 구현 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ★★★ 이 주제의 질문은 「**다시 컴파일했나 안 했나**」를 늘 갈라 묻는다 — 같은 사고를 **컴파일러와 런타임이 각각** 말한다.
-> **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
-> Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`. 대비는 **javac 21.0.5** 다.
-> ★★★ **본체 창은 ② 진단이다** — 그런데 **다시 컴파일 안 한 바이너리**는 진단이 원리상 못 본다.
-> 그 칸은 **실행 출력의 예외 타입**으로 물었다(**제5의 상태 — 창을 바꿔 답한 것**).
-> ★★ **④ 할당 바이트는 적용이다**(16편에서는 부적용이었다) — 2×2 판 격자로 쟀고 **시간은 안 쟀다.**
-> 선행 — [16번](../16-inheritance-virtual-override-abstract-sealed-new/)(★★★ **기본 구현이 클래스로 안 내려오는 것**은 거기서 쟀다)·[03번](../03-boxing-and-unboxing/)(박싱).
-> 대비 — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **11번**([`11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/)).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (예측) / (왜) / (경계) / (연결) -->
@@ -230,6 +218,17 @@ class Program {
 - **박싱 자체**와 이 문서의 **IL 디스어셈블러**는 몇 번 주제가 정본인가?
 - ★ Java `default` 메서드의 **충돌 해소 세 규칙**은 어느 갈래 몇 번인가?
 - ★ `constrained.`·`where T :` 의 정본이 될 자리는 이 목록의 몇 번 주제인가?
+
+## 실행 환경
+
+★★★ 이 주제의 질문은 「**다시 컴파일했나 안 했나**」를 늘 갈라 묻는다 — 같은 사고를 **컴파일러와 런타임이 각각** 말한다.
+**환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
+Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`. 대비는 **javac 21.0.5** 다.
+★★★ **본체 창은 ② 진단이다** — 그런데 **다시 컴파일 안 한 바이너리**는 진단이 원리상 못 본다.
+그 칸은 **실행 출력의 예외 타입**으로 물었다(**제5의 상태 — 창을 바꿔 답한 것**).
+★★ **④ 할당 바이트는 적용이다**(16편에서는 부적용이었다) — 2×2 판 격자로 쟀고 **시간은 안 쟀다.**
+선행 — [16번](../16-inheritance-virtual-override-abstract-sealed-new/)(★★★ **기본 구현이 클래스로 안 내려오는 것**은 거기서 쟀다)·[03번](../03-boxing-and-unboxing/)(박싱).
+대비 — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **11번**([`11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/)).
 
 ## 복습 기록
 

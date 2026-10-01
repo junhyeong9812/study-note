@@ -1,11 +1,5 @@
 # domain-modeling-basic/29-transfer-fare — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/29-transfer-fare/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -460,3 +454,7 @@ return total;
 - 문제 원문: `src/main/java/com/domain/transit/TransferFare.java`(TODO 1~3 javadoc), `Ride.java`·`FareRule.java`(계약 — `night()`는 승차 시각 판정, `fareFor`는 올림), `README.md`(함정·측정·변종 검증·생각해볼 것)
 - 측정 수치: `README.md` "측정이 알려준 것" 하나~여섯 — 여정 2,000건·승차 8,009회, 갈린 여정 1,470(73.5%), 하차 기준 5,616,750원 vs 승차 기준 8,290,150원, 차이 2,673,400원(47.6%), 한 건 최대 4,600원 / 경계값 93/2,000(4.7%) / 정확히 경계인 짝 86/6,053(1.4%) / 환승 미적용 10,320,950원 vs 적용 5,616,750원(45.6%) / 한도 소진 346/3,837(9%) / 심야 승차 3,461/7,978(43%), 시간 비율 41.7% / 변종 14개 전부 잡힘
 - 계약 테스트: `src/test/java/com/domain/transit/TransferFareTest.java` — `fareFor` 0·9,999·10,000=1,250 / 10,001·15,000=1,350 / 15,001·20,000=1,450, 기준점 1,350 vs 2,500(차이 1,150), 승차 기준에서 40분 탄 사람은 2여정·하차 기준은 1여정, 정확히 30분은 INCLUSIVE 1여정·EXCLUSIVE 2여정, 29분·31분은 두 규칙 동일, 30분 59초는 INCLUSIVE 1여정, 심야 21:00 승차는 50분 대기도 환승·13:00은 아님, 심야 경계 20:59·21:00·06:59·07:00, 20분 간격 6회는 여정 2개(5+1)·15,000m·총 2,600원·환승 미적용 7,500원, 단일 탑승 1여정·환승 0회·1,250원, 빈 목록은 여정 0개·0원, 시간 역행은 하차 기준 2여정·승차 기준 1여정, 잘못된 `Ride`·빈 `Journey`는 `IllegalArgumentException`
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/29-transfer-fare/impl/`).

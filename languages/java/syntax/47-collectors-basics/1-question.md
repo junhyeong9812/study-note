@@ -1,12 +1,5 @@
 # java/syntax/47 — `Collectors`: 기본 수집기와 `toMap` 의 함정 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **선행** — [`../46-terminal-operations/`](../46-terminal-operations/) 의 질문을 먼저 푼다. `collect` 가 최종 연산이라는 것이 전제다.
-> 이 주제는 **계약형에 가깝다** — 「어기면 무엇이 출력되나」를 묻는 문항이 많다.
-> 그룹핑·분할은 [`../48-collectors-grouping/`](../48-collectors-grouping/) 의 질문이다.
-
 ## 예시 데이터
 
 세 문항 이상이 이 데이터를 쓴다.
@@ -164,6 +157,12 @@ System.out.println(src.stream().collect(
 - 중복을 없애되 입력 순서는 지켜야 한다 — 무엇을 쓰는가?
 - 개수만 센다 — `counting()` 인가 다른 것인가?
 - `counting()`·`summingInt()` 의 진짜 자리는 어디인가?
+
+## 실행 환경
+
+**선행** — [`../46-terminal-operations/`](../46-terminal-operations/) 의 질문을 먼저 푼다. `collect` 가 최종 연산이라는 것이 전제다.
+이 주제는 **계약형에 가깝다** — 「어기면 무엇이 출력되나」를 묻는 문항이 많다.
+그룹핑·분할은 [`../48-collectors-grouping/`](../48-collectors-grouping/) 의 질문이다.
 
 ## 복습 기록
 

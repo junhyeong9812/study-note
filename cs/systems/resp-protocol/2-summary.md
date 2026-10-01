@@ -1,9 +1,5 @@
 # cs/resp-protocol — RESP: Redis 유선 프로토콜 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> 원고는 deploy-study-note/docs/cs/RESP.md(2026-09 프로젝트 작업 중 정리) — 이관하며 이 자리로 옮겼다.
-> 기준 소스는 코드다: ci-cd `internal/shared/logger.go`의 `respArray` + 소켓 쓰기.
-
 ## 한 줄
 
 RESP(REdis Serialization Protocol)는 **클라이언트와 Redis가 TCP 위에서 주고받는
@@ -74,3 +70,11 @@ pub/sub 구독** 같은 상태 관리가 필요해지는 순간 라이브러리(
 - 명령은 벌크 문자열들의 배열(`*N` + `$len\r\n내용`).
 - 길이 파싱이라 이스케이프가 없다 → 개행·한글·바이너리 안전.
 - 명령 몇 개·단방향이면 직접 짜기가 싸고, 풀·재연결·pub/sub이 필요해지면 라이브러리.
+
+## 실행 환경
+
+기준 소스는 코드다: ci-cd `internal/shared/logger.go`의 `respArray` + 소켓 쓰기.
+
+## 출처
+
+원고는 deploy-study-note/docs/cs/RESP.md(2026-09 프로젝트 작업 중 정리) — 이관하며 이 자리로 옮겼다.

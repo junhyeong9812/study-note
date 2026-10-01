@@ -1,15 +1,5 @@
 # c/syntax/06 — `typedef` 와 타입 별칭: 새 타입이 아니라 별명이다 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — typedef declaration (C)](https://en.cppreference.com/w/c/language/typedef) · [cppreference — Scope](https://en.cppreference.com/w/c/language/scope) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·경고·에러는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> **이 주제의 가장 강한 근거는 「컴파일 에러」다** — `typedef` 는 런타임에 흔적이 없어서 실행 출력으로는 증명이 안 되는 것이 많다.\
-> 버전이 갈리는 자리는 `-std=c89`·`-std=c17`·`-std=c2x` 로 나눠 돌렸다. 기본 플래그는 `-std=c17 -Wall -Wextra`.
-> **버전** — `typedef` 는 C89 부터 같다. **같은 `typedef` 를 두 번 쓰는 것**은 C11 부터 적법하다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 결과는 컴파일·실행으로 접지했다.
-> **경계** — 「선언을 안쪽→바깥으로 읽는 법」은 [01번 형제](../01-declaration-syntax-and-reading/)가 정본이다.\
-> 여기는 **그 선언을 `typedef` 로 자르는 쪽**만 쓴다. 「불완전 타입과 opaque struct」의 정본은 [목록의 **25번 주제**](../25-incomplete-types-and-opaque-struct/)다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`typedef` 는 새 타입을 만들지 않는다. 이미 있는 타입에 별명을 붙일 뿐이다.**
@@ -631,3 +621,14 @@ selfref3.c:2:54: warning: assignment to ‘struct Node *’ from incompatible po
   선언 자체는 **경고 하나 없이 통과**한다. `struct Node` 가 그 자리에서 **새 불완전 타입으로 생겨** 버리기 때문이다.\
   그래서 `next` 는 **영원히 정의되지 않을 다른 타입**을 가리킨다. 태그를 붙이면(`typedef struct Node {...} Node;`)\
   같은 코드가 **0건**으로 통과한다. **(3)의 「태그와 이름을 같게 쓴다」가 여기서도 답이다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — typedef declaration (C)](https://en.cppreference.com/w/c/language/typedef) · [cppreference — Scope](https://en.cppreference.com/w/c/language/scope) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
+**실행 검증** — 이 문서의 모든 출력·경고·에러는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+**이 주제의 가장 강한 근거는 「컴파일 에러」다** — `typedef` 는 런타임에 흔적이 없어서 실행 출력으로는 증명이 안 되는 것이 많다.\
+버전이 갈리는 자리는 `-std=c89`·`-std=c17`·`-std=c2x` 로 나눠 돌렸다. 기본 플래그는 `-std=c17 -Wall -Wextra`.
+**버전** — `typedef` 는 C89 부터 같다. **같은 `typedef` 를 두 번 쓰는 것**은 C11 부터 적법하다.
+
+**경계** — 「선언을 안쪽→바깥으로 읽는 법」은 [01번 형제](../01-declaration-syntax-and-reading/)가 정본이다.\
+여기는 **그 선언을 `typedef` 로 자르는 쪽**만 쓴다. 「불완전 타입과 opaque struct」의 정본은 [목록의 **25번 주제**](../25-incomplete-types-and-opaque-struct/)다.

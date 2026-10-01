@@ -1,12 +1,5 @@
 # ts/syntax/13 — 타입 가드와 타입 술어 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Narrowing: Using type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) ·
-> [Handbook — Narrowing: Assertion functions](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) ·
-> [TypeScript 5.5 릴리스 노트 — Inferred Type Predicates](https://devblogs.microsoft.com/typescript/announcing-typescript-5-5/).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -18,7 +11,6 @@ v18.19.1
 > 이 블록들은 설정 파일 없이도 그대로 재현된다.
 > **버전** — `x is T` 술어는 TS 1.6, `asserts x is T` 는 3.7, **추론된 타입 술어는 5.5** 다.
 > ★★★ 「5.5 기능이 7.0 에서도 도는가」는 **외우지 않고 던져서 확인했다** — 4·5절이 그 결과다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -813,3 +805,11 @@ ex.13e.ts    exit 1 / exit 1 · ★ 다르다
 - **술어를 안전하게 쓰는 수** — 몸통을 **내장 가드만으로** 짜고(12번 주제) 다른 함수를 부르지 않으면 실수할 여지가 준다. 6절의 `isUser` 가 그 모양이다.
 - **스키마 검증 라이브러리** — 필드가 많아지면 술어를 손으로 적는 것이 한계다. 검증기가 술어를 만들어 주는 방식이 흔하다. **이 배치에서는 안 던졌고 이름도 적지 않는다.**
 - **추론 조건이 넓어질 가능성** — 5절의 다섯 조건은 **5.5 구현의 경계**다. 판이 오르면 넓어질 수 있다 — **외우지 말고 다시 던져라.** 이 문서가 그 격자를 남겨 둔 이유다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Narrowing: Using type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) ·
+[Handbook — Narrowing: Assertion functions](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) ·
+[TypeScript 5.5 릴리스 노트 — Inferred Type Predicates](https://devblogs.microsoft.com/typescript/announcing-typescript-5-5/).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

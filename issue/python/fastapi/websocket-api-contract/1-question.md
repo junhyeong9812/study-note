@@ -1,10 +1,5 @@
 # issue/python/fastapi/websocket-api-contract — 다른 라이브러리 관용구가 안 통하는 WebSocket API — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. (예측) WebSocket 입력 루프가 `await ws.receive_text()`로 메시지를 받는다. 클라이언트가 binary 프레임을 하나 보내면 무슨 일이 일어나는가? "타입 특화 수신 API"를 외부 입력 루프에 쓰면 안 되는 이유는 무엇인가?
 2. (왜) 다른 WebSocket 라이브러리에서 쓰던 `async for msg in ws:`를 Starlette/FastAPI에 그대로 옮겼더니 연결 직후 끊기기를 반복했다. 에러 메시지는 무엇을 말하고, 이 관용구가 통하려면 객체가 무엇을 구현해야 하는가?

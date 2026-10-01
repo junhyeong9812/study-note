@@ -1,18 +1,5 @@
 # python/syntax/05-truthiness-and-short-circuit — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [Truth Value Testing](https://docs.python.org/3.12/library/stdtypes.html#truth-value-testing) — 무엇이 거짓인가, `__bool__`/`__len__` 규칙
-> - [Boolean Operations — and, or, not](https://docs.python.org/3.12/library/stdtypes.html#boolean-operations-and-or-not) — `and`/`or` 가 **피연산자를 돌려준다**는 규정
-> - [6.10. Comparisons](https://docs.python.org/3.12/reference/expressions.html#comparisons) — 비교 체이닝의 정의
-> - [`any()`](https://docs.python.org/3.12/library/functions.html#any) · [`all()`](https://docs.python.org/3.12/library/functions.html#all)
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> **버전** — 진릿값·단축 평가 규칙은 Python 3 전체 공통. 바이트코드 명령 이름(`POP_JUMP_IF_FALSE` 등)은 **3.12 의 것**이다.
-> **선행** — [목록의 **04번 주제**](../04-numeric-types-and-division/) — `bool` 이 `int` 의 하위 클래스라는 사실이 여기로 이어진다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`and`·`or` 는 참·거짓을 돌려주는 게 아니라, 마지막으로 들여다본 값을 그대로 내민다.**
@@ -900,3 +887,15 @@ print(logged)     # []   <- 로그가 안 남았다
 - **`if x:` 와 `if len(x):` 는 성능이 다를 수 있다.** 앞엣것은 `__bool__`/`__len__` 을 직접 부르고, 뒤엣것은 정수를 만든 뒤 다시 판정한다. 의미도 다르다 — `__bool__` 이 있는 객체에서 갈린다.
 - **`numpy` 배열은 `__bool__` 이 예외를 던진다.** 원소가 여럿인 배열에 `if arr:` 를 쓰면 *"The truth value of an array with more than one element is ambiguous"* 가 난다. 이 갈래의 규칙을 라이브러리가 **일부러 거부한** 사례다(이 문서에서는 실행 검증하지 않았다 — 이 환경에 `numpy` 가 없다).
 - **`match` 문의 패턴은 진릿값 판정을 쓰지 않는다.** 구조 분해와 `==` 로 동작한다([목록의 **39번 주제**](../39-match-statement/)).
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [Truth Value Testing](https://docs.python.org/3.12/library/stdtypes.html#truth-value-testing) — 무엇이 거짓인가, `__bool__`/`__len__` 규칙
+- [Boolean Operations — and, or, not](https://docs.python.org/3.12/library/stdtypes.html#boolean-operations-and-or-not) — `and`/`or` 가 **피연산자를 돌려준다**는 규정
+- [6.10. Comparisons](https://docs.python.org/3.12/reference/expressions.html#comparisons) — 비교 체이닝의 정의
+- [`any()`](https://docs.python.org/3.12/library/functions.html#any) · [`all()`](https://docs.python.org/3.12/library/functions.html#all)
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+**버전** — 진릿값·단축 평가 규칙은 Python 3 전체 공통. 바이트코드 명령 이름(`POP_JUMP_IF_FALSE` 등)은 **3.12 의 것**이다.
+**선행** — [목록의 **04번 주제**](../04-numeric-types-and-division/) — `bool` 이 `int` 의 하위 클래스라는 사실이 여기로 이어진다.

@@ -1,11 +1,5 @@
 # ts/syntax/41 — 인덱스·선택 프로퍼티 엄격 플래그 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [TSConfig — `noUncheckedIndexedAccess`](https://www.typescriptlang.org/tsconfig/#noUncheckedIndexedAccess)(「Turning on `noUncheckedIndexedAccess` will add `undefined` to any un-declared field in the type」 · 4.1) ·
-> [`exactOptionalPropertyTypes`](https://www.typescriptlang.org/tsconfig/#exactOptionalPropertyTypes)(「Without this flag enabled, there are three values which you can set an optional property to: the declared type, `undefined`, or it can be missing.」 · 4.4).
-> 위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다.
-> **실행 검증** — 본판은 아래다. 5절의 도움말 대조에만 **`tsc` 5.9.3 · 4.9.5** 를 환경변수(`TSC_OLD`·`TSC_49`)로 받아 **읽기만** 했다.
-
 ```text
 ===== tsc --version · node --version · "$NODE20" --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -20,7 +14,6 @@ Python 3.12.3
 > ★★★ [**07번 주제**](../07-object-type-details/) 4절이 **이미 쟀다** — 두 플래그를 한 설정으로 켜면 `{ port: undefined }` 가 **`TS2375`**, `bag.missing.toFixed` 가 **`TS18048`**, 둘 다 **`strict` 에 안 든다.** 인용하고, 여기서는 **어느 꼴에 붙고 어느 꼴에 안 붙나**와 **런타임에서 갈리는 것**으로 넓힌다.
 > ★ 소스 펜스 첫 줄 `// 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -546,3 +539,10 @@ exactOptionalPropertyTypes   2    22:TS2375 25:TS2412
 - **`noPropertyAccessFromIndexSignature`** — 인덱스 시그니처의 키를 `.k` 로 못 쓰게 하는 플래그. 이 문서의 1절 8행과 같은 자리지만 **던지지 않았다.**
 - **`Object.assign` 과 `structuredClone`** — 3절은 스프레드만 찍었다. 둘도 `undefined` 값을 복사하는지 **던지지 않았다.**
 - **`Partial<T>` 와 `exactOptionalPropertyTypes`** — `Partial` 이 만드는 `?:` 도 같은 규칙을 따를 것으로 읽히지만 **던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [TSConfig — `noUncheckedIndexedAccess`](https://www.typescriptlang.org/tsconfig/#noUncheckedIndexedAccess)(「Turning on `noUncheckedIndexedAccess` will add `undefined` to any un-declared field in the type」 · 4.1) ·
+[`exactOptionalPropertyTypes`](https://www.typescriptlang.org/tsconfig/#exactOptionalPropertyTypes)(「Without this flag enabled, there are three values which you can set an optional property to: the declared type, `undefined`, or it can be missing.」 · 4.4).
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다.
+**실행 검증** — 본판은 맨 위 블록이다. 5절의 도움말 대조에만 **`tsc` 5.9.3 · 4.9.5** 를 환경변수(`TSC_OLD`·`TSC_49`)로 받아 **읽기만** 했다.

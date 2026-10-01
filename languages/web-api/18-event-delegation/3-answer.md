@@ -1,10 +1,5 @@
 # web-api/18 — 이벤트 위임: 조상 하나로 자손 전체 받기·`closest()` 로 되찾기 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 클릭·포커스·마우스 이동은 **CDP 로 넣은 진짜 입력**이다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 `closest()`·`contains()`·`composedPath()`·dispatch 절로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 **★ 이 편에는 흔들리는 칸이 없었다.**
 
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
@@ -236,3 +231,9 @@ python3 wa16b-cdp.py page wa16b-18-more.html
 | `mouseover` 가 같은 항목 안에서 또 나는 것 | 세 번 | 이 판의 관찰 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② **위임의 이득**(메모리·시간). ③ **슬롯에 배정된 자식의 위임** — [12번 주제](../12-shadow-dom/3-answer.md)가 합성으로 쟀고 여기서 다시 던지지 않았다. ④ **포인터 이벤트 위임** — [목록의 **23번 주제**](../23-pointer-events/) 몫이다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 클릭·포커스·마우스 이동은 **CDP 로 넣은 진짜 입력**이다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 `closest()`·`contains()`·`composedPath()`·dispatch 절로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

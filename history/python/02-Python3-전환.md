@@ -1,9 +1,5 @@
 # Python 3 대전환 (2008~2020)
 
-> 원본: `~/project/python-history/02-Python3-전환.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·PEP 번호·Python/bash 코드블록 10개는 원문 그대로다.\
-> ASCII 도식 2개와 「한눈에」의 강 건너기 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -374,3 +370,9 @@ Python 3 대전환은 소프트웨어 역사에서 손꼽히는 **장기 호환�
 - [PEP 373 – Python 2.7 Release Schedule](https://peps.python.org/pep-0373/)
 - [History of Python — Wikipedia](https://en.wikipedia.org/wiki/History_of_Python)
 - [Python 3 is out – now what? — LWN.net](https://lwn.net/Articles/310438/)
+
+## 출처
+
+원본: `~/project/python-history/02-Python3-전환.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·PEP 번호·Python/bash 코드블록 10개는 원문 그대로다.\
+ASCII 도식 2개와 「한눈에」의 강 건너기 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

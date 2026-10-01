@@ -1,11 +1,5 @@
 # domain-modeling-advanced/13-contract-renewal — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/13-contract-renewal/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -380,3 +374,7 @@ return !date.isBefore(contract.endsOn()) && date.isBefore(graceEndsOn(contract))
 - 기준 소스: `/home/jun/project/myway/domain-modeling-advanced/13-contract-renewal/impl/com/domain/contract/RenewalPolicy.java`
 - 문제 원문: `src/main/java/com/domain/contract/RenewalPolicy.java`(TODO 1~4 javadoc), `src/main/java/com/domain/contract/Contract.java`(계약·반열림), `README.md`(요구사항·함정·측정이 알려준 것·변종 검증에서 고친 것·생각해볼 것)
 - 계약·수치: `src/test/java/com/domain/contract/RenewalPolicyTest.java`(12-02 / 12-01 · daysOfNotice 0 / -1 · 2026-03-04 · 2027-02-01 · 2028-01-01 · 2029-12-31 / 2029-01-01 · 2030-12-31 / 2031-01-01 · 유예 경계 2/16), `src/test/java/com/domain/contract/MeasurementTest.java` 및 README 표(97/10,000 · 5,014 · 4,917 · 97·170·508·1,429 · 31·181·365·730 vs 365·365·365·366 · 19,614 vs 9,432 · 유예 0일)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/13-contract-renewal/impl/`).

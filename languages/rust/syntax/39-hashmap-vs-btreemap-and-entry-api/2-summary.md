@@ -1,18 +1,5 @@
 # rust/syntax/39 — `HashMap` 대 `BTreeMap` — 무엇을 고르나, `entry` API — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `HashMap`](https://doc.rust-lang.org/std/collections/struct.HashMap.html)(무작위 씨앗 · 「arbitrary order」 · Usage in const and static) ·
-> [std — `BTreeMap`](https://doc.rust-lang.org/std/collections/struct.BTreeMap.html)(「sorted by key」 · `range`) ·
-> [std — `std::collections` 모듈 문서](https://doc.rust-lang.org/std/collections/index.html)(When Should You Use Which Collection? · Performance · **Entries**) ·
-> [std — `RandomState`](https://doc.rust-lang.org/std/hash/struct.RandomState.html) · [std — `hash_map::Entry`](https://doc.rust-lang.org/std/collections/hash_map/enum.Entry.html).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. 키 요구 트레이트가 걸린 자리는 같은 사본의 **std 소스 페이지에서 스크립트로 뽑았다**((5)).
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> **`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다. 대비는 `Python 3.12.3` · `node v18.19.1`.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
-> ★★★ **이 문서는 속도를 한 번도 재지 않았다.** 「`BTreeMap` 이 느리다」·「`entry` 가 빠르다」는 **이 문서의 주장이 아니다** — 센 것은 **`hash`·`eq`·`cmp` 호출 횟수**와 **순회 순서의 가짓수**뿐이다. 복잡도는 **std 문서의 표를 인용**했다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ```text
 ===== rustc --version =====
 rustc 1.92.0 (ded5c06cf 2025-12-08)
@@ -741,3 +728,16 @@ std 모듈 문서의 「**When Should You Use Which Collection?**」을 **요건
 - **재할당 때 키를 다시 해시하나** — (2)는 용량을 64 로 잡아 이 변수를 **뺐다.** 재할당이 끼면 `hash` 호출이 더 늘 수 있다 — 이 문서는 재지 않았다.
 - **`HashSet`·`BTreeSet`** — 맵의 키만 쓰는 판. std: 「집합의 모든 연산은 **같은 맵 연산의 비용**」. 36편의 `collect` 격자에 둘 다 나왔다.
 - **`BTreeMap::extract_if`(1.91)·`HashMap::extract_if`(1.88)** — 38편의 `Vec::extract_if` 와 같은 모양이 맵에도 안정됐다(릴리스 노트 — 이 문서는 던지지 않았다).
+
+## 실행 환경
+
+**기준 소스** — [std — `HashMap`](https://doc.rust-lang.org/std/collections/struct.HashMap.html)(무작위 씨앗 · 「arbitrary order」 · Usage in const and static) ·
+[std — `BTreeMap`](https://doc.rust-lang.org/std/collections/struct.BTreeMap.html)(「sorted by key」 · `range`) ·
+[std — `std::collections` 모듈 문서](https://doc.rust-lang.org/std/collections/index.html)(When Should You Use Which Collection? · Performance · **Entries**) ·
+[std — `RandomState`](https://doc.rust-lang.org/std/hash/struct.RandomState.html) · [std — `hash_map::Entry`](https://doc.rust-lang.org/std/collections/hash_map/enum.Entry.html).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. 키 요구 트레이트가 걸린 자리는 같은 사본의 **std 소스 페이지에서 스크립트로 뽑았다**((5)).
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+**`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다. 대비는 `Python 3.12.3` · `node v18.19.1`.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
+★★★ **이 문서는 속도를 한 번도 재지 않았다.** 「`BTreeMap` 이 느리다」·「`entry` 가 빠르다」는 **이 문서의 주장이 아니다** — 센 것은 **`hash`·`eq`·`cmp` 호출 횟수**와 **순회 순서의 가짓수**뿐이다. 복잡도는 **std 문서의 표를 인용**했다.

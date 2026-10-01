@@ -1,15 +1,5 @@
 # c/syntax/01 — 선언 문법과 읽는 법: 안에서 밖으로·저장 클래스·`const` 의 자리 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Declarations (C)](https://en.cppreference.com/w/c/language/declarations) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 플래그는 `-std=c17 -Wall -Wextra` 이고, **다른 표준·최적화 수준을 쓴 자리는 블록마다 명시**한다.\
-> C23 은 이 gcc 에서 `-std=c23` 이 **없고** `-std=c2x` 만 있다(`__STDC_VERSION__ = 202000L` — 최종안 `202311L` 이 아니다).
-> **버전** — 선언 문법 자체는 C89 부터 같다. **`f()` 의 뜻은 C23 에서 바뀌었다**(「어디서 틀리나」 3번).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> **경계** — 「C·C++·C# 이 왜 이렇게 갈라졌나」는 [`../../../c-cpp-csharp.md`](../../../c-cpp-csharp.md) 가 정본이다.\
-> 여기는 **이 문법이 실제로 무엇을 하나**만 쓴다.
-
 ## 한눈에 — 쉽게 말하면
 
 **C 의 선언은 타입을 적는 게 아니라, 「이 이름을 이렇게 쓰면 왼쪽의 타입이 나온다」는 사용 설명서다.**
@@ -610,3 +600,14 @@ clang -O2  : 1 2 3
 - **선언자 문법은 재귀적이라 원리상 무한히 깊어진다.** 그래서 「읽는 법」이 규칙 세 줄로 끝나고, 사람이 못 읽는 것은 깊이의 문제지 규칙의 문제가 아니다.
 - 매개변수 자리의 `[]` 는 **언제나 `*` 로 바뀐다.** `void f(int a[10])` 은 `void f(int *a)` 와 완전히 같고, `10` 은 문서 효과뿐이다(C99 의 `static` 수식자는 예외 — [목록의 **16번 주제**](../16-array-pointer-decay-and-function-parameters/)).
 - gcc 에는 선언을 말로 풀어 주는 기능이 없다. `cdecl` 이라는 별도 도구가 그 일을 하지만 **이 머신에는 없다** — 대신 위 (2)·(4)의 단계 규칙으로 손으로 푼다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Declarations (C)](https://en.cppreference.com/w/c/language/declarations) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 플래그는 `-std=c17 -Wall -Wextra` 이고, **다른 표준·최적화 수준을 쓴 자리는 블록마다 명시**한다.\
+C23 은 이 gcc 에서 `-std=c23` 이 **없고** `-std=c2x` 만 있다(`__STDC_VERSION__ = 202000L` — 최종안 `202311L` 이 아니다).
+**버전** — 선언 문법 자체는 C89 부터 같다. **`f()` 의 뜻은 C23 에서 바뀌었다**(「어디서 틀리나」 3번).
+
+**경계** — 「C·C++·C# 이 왜 이렇게 갈라졌나」는 [`../../../c-cpp-csharp.md`](../../../c-cpp-csharp.md) 가 정본이다.\
+여기는 **이 문법이 실제로 무엇을 하나**만 쓴다.

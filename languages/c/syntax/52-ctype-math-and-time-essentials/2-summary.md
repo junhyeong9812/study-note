@@ -1,16 +1,5 @@
 # c/syntax/52 — `<ctype.h>` · `<math.h>` · `<time.h>` 핵심: 「**`isalpha` 는 `unsigned char` 의 값을 기다리고, NaN 검사는 옵션 하나에 지워지며, `localtime` 은 하나뿐인 칸을 돌려준다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — `<ctype.h>` 머리의 「**the argument is an int, the value of which shall be representable as an unsigned char or shall equal the value of the macro EOF. If the argument has any other value, the behavior is undefined.**」·「**affected by the current locale**」, `isalpha` 의 「**In the "C" locale, isalpha returns true only for the characters for which isupper or islower is true**」, `isnan` 의 「**returns a nonzero value if and only if its argument has a NaN value**」, `struct tm` 의 「**tm_mon — months since January — [0, 11]**」·「**tm_year — years since 1900**」, `mktime` 의 「**the original values of the other components are not restricted to the ranges indicated**」, `gmtime`·`localtime` 의 「**may overwrite the information returned from any previous call to one of these functions that uses the same object**」, 부록의 바뀐 점 목록 「**integration of functions: gmtime_r, localtime_r**」를 **본문에서 직접 찾아 읽었다**) · glibc `/usr/include/ctype.h` 의 주석(이 머신)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **분류 결과 · sanitizer · 어셈블리 · 시각은 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`, 캡처 셸은 `LC_ALL=C`.\
-> ★★ **현재 시각은 한 번도 찍지 않았다** — `time_t` 는 전부 고정값(`1700000000` · `1800000000`)이고, 시간대는 **명령에 `TZ=` 로 적었다.**\
-> ★★ **블록은 전부 캡처 파일에서 조립했다.** 이 편의 **그림 3 · 덤프(캡처 블록) 19**.
-> **버전** — `<ctype.h>`·`<math.h>`·`<time.h>` 의 이 편 함수는 **C89 부터**(`isnan`·`fpclassify` 는 **C99**, `iswalpha` 는 **C95**). ★★ **C23** 이 `localtime_r`·`gmtime_r` 를 표준에 넣었다 — 이 판의 glibc 는 `-std=c2x` 에서 **헤더가 선언해 준다**((6)).
-> ★★★ **경계** — **`0.1 + 0.2` · `DBL_EPSILON` · 큰 수에서 1 이 사라지는 것 · `-ffast-math` 로 `isnan` 이 0 이 되는 것 · `__STDC_IEC_559__` 가 사라지는 것**은 [04번 형제](../04-floating-point-types-and-conversions/) (2)·(3)·(5)절이 정본이다(이 편은 **다시 재지 않고** 인용하고, **컴파일러 대비 · 최적화 수준 · 검사 방법 · 어셈블리** 칸만 더한다). **`char` 의 부호**는 [02번 형제](../02-basic-types-sizes-and-fixed-width-integers/), **문자열이 바이트의 나열이라는 것**은 [20번 형제](../20-null-terminated-strings-and-string-literals/)가 정본이다.
-> 선행 — [04번 형제](../04-floating-point-types-and-conversions/) · [20번 형제](../20-null-terminated-strings-and-string-literals/).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 둘째 창 — 실행 출력의 ctype 격자다.** 로케일 다섯 × `char` 부호 둘 × 바이트 둘(`0xE9` · `0xFF`)에서 `isalpha(c)` 와 `isalpha((unsigned char)c)` 를 나란히 찍고, **스크립트가 두 호출이 갈린 칸을 센다.**
 ★★★ 그 격자에서 **갈린 칸 1 / 20** — 그런데 그 한 칸은 **UB 칸이 아니라 정의된 칸**이다. UB 인 다섯 칸은 **glibc 가 표를 음수 쪽으로 늘려 둔 덕에** 전부 멀쩡한 값을 냈다.
 
@@ -654,3 +643,14 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★★ **`mbrtowc` + `iswalpha`** — UTF-8 바이트열을 글자로 읽어 분류하는 정석. ★ 이 편은 **`iswalpha` 에 코드 포인트를 직접 넣었을 뿐** 다중 바이트 해석은 던지지 않았다.
 - ★ **`timegm`** — `mktime` 의 UTC 판(표준 아님 · glibc·BSD 확장). **던지지 않았다.**
 - ★ **`fenv.h` 와 `FE_INVALID`** — NaN 이 **생긴 순간**을 잡는 창. **던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — `<ctype.h>` 머리의 「**the argument is an int, the value of which shall be representable as an unsigned char or shall equal the value of the macro EOF. If the argument has any other value, the behavior is undefined.**」·「**affected by the current locale**」, `isalpha` 의 「**In the "C" locale, isalpha returns true only for the characters for which isupper or islower is true**」, `isnan` 의 「**returns a nonzero value if and only if its argument has a NaN value**」, `struct tm` 의 「**tm_mon — months since January — [0, 11]**」·「**tm_year — years since 1900**」, `mktime` 의 「**the original values of the other components are not restricted to the ranges indicated**」, `gmtime`·`localtime` 의 「**may overwrite the information returned from any previous call to one of these functions that uses the same object**」, 부록의 바뀐 점 목록 「**integration of functions: gmtime_r, localtime_r**」를 **본문에서 직접 찾아 읽었다**) · glibc `/usr/include/ctype.h` 의 주석(이 머신)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **분류 결과 · sanitizer · 어셈블리 · 시각은 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`, 캡처 셸은 `LC_ALL=C`.\
+★★ **현재 시각은 한 번도 찍지 않았다** — `time_t` 는 전부 고정값(`1700000000` · `1800000000`)이고, 시간대는 **명령에 `TZ=` 로 적었다.**\
+★★ **블록은 전부 캡처 파일에서 조립했다.** 이 편의 **그림 3 · 덤프(캡처 블록) 19**.
+**버전** — `<ctype.h>`·`<math.h>`·`<time.h>` 의 이 편 함수는 **C89 부터**(`isnan`·`fpclassify` 는 **C99**, `iswalpha` 는 **C95**). ★★ **C23** 이 `localtime_r`·`gmtime_r` 를 표준에 넣었다 — 이 판의 glibc 는 `-std=c2x` 에서 **헤더가 선언해 준다**((6)).
+★★★ **경계** — **`0.1 + 0.2` · `DBL_EPSILON` · 큰 수에서 1 이 사라지는 것 · `-ffast-math` 로 `isnan` 이 0 이 되는 것 · `__STDC_IEC_559__` 가 사라지는 것**은 [04번 형제](../04-floating-point-types-and-conversions/) (2)·(3)·(5)절이 정본이다(이 편은 **다시 재지 않고** 인용하고, **컴파일러 대비 · 최적화 수준 · 검사 방법 · 어셈블리** 칸만 더한다). **`char` 의 부호**는 [02번 형제](../02-basic-types-sizes-and-fixed-width-integers/), **문자열이 바이트의 나열이라는 것**은 [20번 형제](../20-null-terminated-strings-and-string-literals/)가 정본이다.
+선행 — [04번 형제](../04-floating-point-types-and-conversions/) · [20번 형제](../20-null-terminated-strings-and-string-literals/).

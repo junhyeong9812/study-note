@@ -1,11 +1,5 @@
 # java/syntax/13 — `enum` 클래스: 상수별 본문·`EnumSet`/`EnumMap` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·에러·역어셈블은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> `case` 라벨의 한정 이름만 `--release 17 · 20 · 21` 과 Temurin **JDK 25.0.1** 넷에서 비교했다.\
-> 긴 역어셈블 출력은 [2-summary.md](2-summary.md) 「동작 방식」에 전문이 있고, 여기서는 **판정에 쓰이는 줄**만 다시 옮긴다.\
-> JLS 인용은 [SE 21 §8.9](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§14.11.1](https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html) 에서, 구현 코드 인용은 **JDK 21.0.5 의 `lib/src.zip`** 에서 복사했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -611,3 +605,10 @@ java/lang/Enum.java — valueOf (JDK 21.0.5 src.zip)
 - `RegularEnumSet`/`JumboEnumSet` 의 **이름과 64 경계**(13-c), `RegularEnumSet.elements` 필드(13-g).
 - `case Day.SAT:` 의 `--release` 별 결과(13-err4) — 새 버전이 나오면 그 버전을 추가한다.
 - `javap` 출력 형식 자체(명령 번호·상수 풀 인덱스 `#nn` 은 컴파일마다 달라질 수 있다).
+
+## 실행 환경
+
+이 파일의 모든 출력·에러·역어셈블은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+`case` 라벨의 한정 이름만 `--release 17 · 20 · 21` 과 Temurin **JDK 25.0.1** 넷에서 비교했다.\
+긴 역어셈블 출력은 [2-summary.md](2-summary.md) 「동작 방식」에 전문이 있고, 여기서는 **판정에 쓰이는 줄**만 다시 옮긴다.\
+JLS 인용은 [SE 21 §8.9](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§14.11.1](https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html) 에서, 구현 코드 인용은 **JDK 21.0.5 의 `lib/src.zip`** 에서 복사했다.

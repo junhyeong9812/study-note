@@ -1,8 +1,5 @@
 # issue/typescript/react/tree-position-semantics — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-24) — 이슈 원문·코드 기준. 복습 전 읽지 말 것.
-
 태그: `test-reliability`
 
 ## 정답

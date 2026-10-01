@@ -1,8 +1,5 @@
 # os/14-mmap-and-page-cache — 파일을 메모리처럼: mmap·페이지 캐시·dirty writeback — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> ⚠️ 이 서머리는 Claude 초안(2026-09-30) — 근거는 아래 「관련 주제·근거」. 본인 검수 후 이 줄을 `✅ 검수 완료(날짜)`로 바꾼다.
-
 ## 해결하는 문제
 
 디스크는 메모리보다 수만 배 이상 느리다(원고 [memory-management §14](../../foundations/memory-management/README.md)의 지연 표).\

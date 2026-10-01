@@ -1,15 +1,5 @@
 # sql/43-기본키·UNIQUE 제약과 NULL — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Constraints](https://www.postgresql.org/docs/18/ddl-constraints.html) · [PostgreSQL 18 · CREATE TABLE](https://www.postgresql.org/docs/18/sql-createtable.html) · [MySQL 8.4 · CREATE TABLE](https://dev.mysql.com/doc/refman/8.4/en/create-table.html) · [MySQL 8.4 · Primary Key Optimization](https://dev.mysql.com/doc/refman/8.4/en/primary-key-optimization.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — `UNIQUE ... NULLS NOT DISTINCT` 는 PostgreSQL 15 부터다(**MySQL 8.4.10 은 문법 에러** — 아래 4번에서 던져 확인).\
-> ★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t43_pk`·`t43_nnd`·`t43_comp`·`t43_addpk`·`t43_un` 을 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> **선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/) · [42 테이블 정의와 변경](../42-create-alter-drop-table/) · 이어지는 것은 [44 외래키](../44-foreign-key-referential-actions/) · [46 인덱스 정의](../46-index-definition-composite-partial-expression/) 다.
-
 ## 한눈에 — 쉽게 말하면
 
 **기본키 = 「이 열로 행 하나를 콕 집을 수 있다」는 약속.**
@@ -539,3 +529,12 @@ Create Table: CREATE TABLE `t43_dc` (
   `CREATE UNIQUE INDEX` 로 만든 것은 제약이 아니다 — 카탈로그가 다르다(46번에 출력이 있다).
 - **`NULL` 이 여럿 허용되는 성질을 역이용하는 설계**가 있다 — 「소프트 삭제된 행은 `code` 를 `NULL` 로」.\
   살아 있는 행만 유일하게 만들 수 있다. PG 라면 **부분 유니크 인덱스**가 더 정직한 표현이다(46번).
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Constraints](https://www.postgresql.org/docs/18/ddl-constraints.html) · [PostgreSQL 18 · CREATE TABLE](https://www.postgresql.org/docs/18/sql-createtable.html) · [MySQL 8.4 · CREATE TABLE](https://dev.mysql.com/doc/refman/8.4/en/create-table.html) · [MySQL 8.4 · Primary Key Optimization](https://dev.mysql.com/doc/refman/8.4/en/primary-key-optimization.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — `UNIQUE ... NULLS NOT DISTINCT` 는 PostgreSQL 15 부터다(**MySQL 8.4.10 은 문법 에러** — 본문 4번에서 던져 확인).\
+★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t43_pk`·`t43_nnd`·`t43_comp`·`t43_addpk`·`t43_un` 을 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+**선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/) · [42 테이블 정의와 변경](../42-create-alter-drop-table/) · 이어지는 것은 [44 외래키](../44-foreign-key-referential-actions/) · [46 인덱스 정의](../46-index-definition-composite-partial-expression/) 다.

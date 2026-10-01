@@ -1,8 +1,5 @@
 # 개념: 저장 함수란 무엇인가 — 이름 없는 반환 슬롯을 가진 호출 대상
 
-> J5(`CallMetaDataContext.reconcileParameters`의 반환 파라미터 처리 결함) 작업의 배경 개념
-> 문서. 짝 문서: [저장 프로시저](../stored-procedure/stored-procedure.md).
-
 ## 한 줄 정의 — 호출식이 값이 되는 서브프로그램
 
 저장 함수는 DB 안에 저장된 서브프로그램이되 **호출식 자체가 값을 갖는다**. `x := f(a)`나

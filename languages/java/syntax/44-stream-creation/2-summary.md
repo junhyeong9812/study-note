@@ -1,15 +1,5 @@
 # java/syntax/44 — `Stream` 생성: 소스별·기본형 스트림 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [`java.util.stream` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/stream/IntPipeline.java`(`lib/src.zip`)
-> **실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 같은 프로그램을 **17.0.13 · 25.0.1** 에서도 돌려 확인했다.
-> **버전** — `Stream` 은 **Java 8**. `Stream.ofNullable` 과 3인자 `Stream.iterate` 는 **Java 9**.\
-> `toList()`(중간 리스트 없이 바로 불변 리스트)는 **Java 16**. 17·21·25 동작 동일.
-> **범위** — "무엇을 순회하고 무엇을 거르는가"라는 **알고리즘**은 [`../../../../cs/algorithm/`](../../../../cs/algorithm/) 이 정본이다.\
-> 여기는 **API 표면과 평가 시점**만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **스트림은 컨베이어 벨트이고, 소스는 그 벨트에 물건을 올려 주는 장치다.**
@@ -443,3 +433,13 @@ st.toList();                           // (3) 소비 -> [a, b, c]
 
   `toList()` 는 **수정 불가능하지만 `null` 원소는 받는다.**\
   `Collectors.toUnmodifiableList()` 는 `null` 에서 NPE 를 던진다 — 같은 "불변"이 아니다.
+
+## 실행 환경
+
+**기준 소스** — [`java.util.stream` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/stream/IntPipeline.java`(`lib/src.zip`)
+**실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+같은 프로그램을 **17.0.13 · 25.0.1** 에서도 돌려 확인했다.
+**버전** — `Stream` 은 **Java 8**. `Stream.ofNullable` 과 3인자 `Stream.iterate` 는 **Java 9**.\
+`toList()`(중간 리스트 없이 바로 불변 리스트)는 **Java 16**. 17·21·25 동작 동일.
+**범위** — "무엇을 순회하고 무엇을 거르는가"라는 **알고리즘**은 [`../../../../cs/algorithm/`](../../../../cs/algorithm/) 이 정본이다.\
+여기는 **API 표면과 평가 시점**만 다룬다.

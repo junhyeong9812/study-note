@@ -1,24 +1,5 @@
 # rust/syntax/29 — 변환 트레이트 `From`/`Into`/`TryFrom`/`AsRef`/`Borrow` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `trait From`](https://doc.rust-lang.org/std/convert/trait.From.html) ·
-> [`trait Into`](https://doc.rust-lang.org/std/convert/trait.Into.html) ·
-> [`trait TryFrom`](https://doc.rust-lang.org/std/convert/trait.TryFrom.html) ·
-> [`trait AsRef`](https://doc.rust-lang.org/std/convert/trait.AsRef.html) ·
-> [`trait Borrow`](https://doc.rust-lang.org/std/borrow/trait.Borrow.html) ·
-> [Reference — The try propagation expression](https://doc.rust-lang.org/reference/expressions/operator-expr.html#the-try-propagation-expression).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다 — 온라인 판과 문구가 다를 수 있다.
-> ★ 포괄 구현(blanket impl)은 **이 머신에 설치된 `rust-docs` 의 std 소스 페이지**(`src/core/convert/mod.rs.html`)를 **스크립트로 뽑아** 확인했다((3)).
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 <파일>.rs`** 로 실제로 돌려 받은 것이다.\
-> ★★ **`--edition` 을 빼면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.
-> 소스 펜스도 캡처가 찍었다(첫 줄 `// <파일명>.rs` 가 실제로 컴파일한 파일 이름이다).\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
-> **버전** — `From`·`Into`·`AsRef`·`Borrow` 는 **1.0.0**, `TryFrom`·`TryInto` 는 **1.34.0** 부터다((3)의 `#[stable(since = …)]` 속성 그대로).
-> **2021 에디션부터 `TryFrom`·`TryInto` 가 프렐류드에 들어 있어** `use` 없이 쓴다(이 문서의 소스가 전부 그렇다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ```text
 ===== rustc --version =====
 rustc 1.92.0 (ded5c06cf 2025-12-08)
@@ -478,7 +459,7 @@ For more information about this error, try `rustc --explain E0391`.
 - **785행 — `impl<T> From<T> for T`** — (1)의 21행 `report(Fahrenheit(1.0))` 이 된 이유.
 - ★★ **827행 — `impl<T, U> TryFrom<U> for T where U: Into<T>`**, `type Error = Infallible` — (2)의 뜻밖의 `try_from`.
   조건이 `From` 이 아니라 **`Into`** 라서, `From` 을 쓰면 `Into` 를 거쳐 **이중으로** 도달하고, `Into` 만 써도 도달한다.
-- ★ 속성 줄의 **`since = "1.0.0"`·`since = "1.34.0"`** 이 머리말의 버전 근거다.
+- ★ 속성 줄의 **`since = "1.0.0"`·`since = "1.34.0"`** 이 「실행 환경」의 버전 근거다.
   ★ `const`·`[const]` 는 **불안정 기능(`const_convert`)의 표식**이다(766행 `rustc_const_unstable`) — 안정 판 사용자 코드에는 안 쓴다.
 
 ### (4) ★★ `?` 는 `From` 을 부른다 — `Into` 만으로는 못 돈다
@@ -812,7 +793,7 @@ For more information about this error, try `rustc --explain E0405`.
 
 - ★ **E0405** — `TryFrom` 이라는 **이름을 못 찾는다.** `note:` 가 이유를 직접 말한다 — 「**included in the prelude starting in Edition 2021**」.
   트레이트가 없어진 것이 아니라 **프렐류드에 없을 뿐**이라 `use std::convert::TryFrom;` 한 줄이면 된다(`help:`).
-  ★ 머리말의 「`--edition` 을 빼면 다른 언어」가 **이 주제에서는 이 한 줄**로 나타난다.
+  ★ 「실행 환경」의 「`--edition` 을 빼면 다른 언어」가 **이 주제에서는 이 한 줄**로 나타난다.
 
 ### (7) `AsRef<str>` — 빌려서 보기만 한다
 
@@ -1280,3 +1261,22 @@ report 32
 - **`From<!> for T`** — (3)의 소스 페이지에 **「아직 없지만 자리를 예약해 둔」 구현**이 있다(`rustc_reservation_impl`). `!` 타입이 안정되면 들어올 자리다.
 - **`impl Into<T>` 대신 제네릭** — `fn new<S: Into<String>>(s: S)` 는 같은 뜻이고 **터보피시로 타입을 찍을 수 있다**([**32번 주제**](../32-impl-trait-argument-return-position-and-2024-capture/)의 (1)).
 - **1.41 이전의 `Into`** — std 의 `Into` 문서는 「1.41 전에는 **남의 타입으로 가는 변환**을 고아 규칙 때문에 `From` 으로 못 써서 `Into` 를 직접 썼다」고 적는다. 지금 `Into` 를 직접 쓴 코드를 보면 대개 그 시절의 흔적이다.
+
+## 실행 환경
+
+**기준 소스** — [std — `trait From`](https://doc.rust-lang.org/std/convert/trait.From.html) ·
+[`trait Into`](https://doc.rust-lang.org/std/convert/trait.Into.html) ·
+[`trait TryFrom`](https://doc.rust-lang.org/std/convert/trait.TryFrom.html) ·
+[`trait AsRef`](https://doc.rust-lang.org/std/convert/trait.AsRef.html) ·
+[`trait Borrow`](https://doc.rust-lang.org/std/borrow/trait.Borrow.html) ·
+[Reference — The try propagation expression](https://doc.rust-lang.org/reference/expressions/operator-expr.html#the-try-propagation-expression).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다 — 온라인 판과 문구가 다를 수 있다.
+★ 포괄 구현(blanket impl)은 **이 머신에 설치된 `rust-docs` 의 std 소스 페이지**(`src/core/convert/mod.rs.html`)를 **스크립트로 뽑아** 확인했다((3)).
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 <파일>.rs`** 로 실제로 돌려 받은 것이다.\
+★★ **`--edition` 을 빼면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.
+소스 펜스도 캡처가 찍었다(첫 줄 `// <파일명>.rs` 가 실제로 컴파일한 파일 이름이다).\
+★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
+**버전** — `From`·`Into`·`AsRef`·`Borrow` 는 **1.0.0**, `TryFrom`·`TryInto` 는 **1.34.0** 부터다((3)의 `#[stable(since = …)]` 속성 그대로).
+**2021 에디션부터 `TryFrom`·`TryInto` 가 프렐류드에 들어 있어** `use` 없이 쓴다(이 문서의 소스가 전부 그렇다).

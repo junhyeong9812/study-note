@@ -1,12 +1,5 @@
 # css/syntax/07 — CSS 구문과 오류 복구: 선언·규칙·at-rule 단위로 버리는 규칙 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Syntax Level 3](https://drafts.csswg.org/css-syntax-3/) 의 「Parsing」·「Error Handling」 절과 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「Invalid at computed-value time」 규정. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `document.styleSheets[…].cssRules`·`CSS.supports()`·`getComputedStyle` 로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — CSS 에는 언어 버전이 없다. 오류 복구 규칙 자체는 CSS1 부터 있었지만, **중첩(nesting)이 2023 년에 들어오면서 「중괄호를 안 닫았을 때」의 결과가 바뀌었다** — 아래 (5)가 그 이야기다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **★ CSS 는 에러가 없는 언어다. 모르는 것을 만나면 조용히 버리고 다음으로 간다.**
@@ -550,3 +543,10 @@ document.styleSheets[0].cssRules                     // 다른 출처 시트면 
 - **HTML 과 대비가 선명하다.** HTML 파서는 **복구해서 트리를 만든다**(태그를 닫아 주고 요소를 끼워 넣는다). CSS 파서는 **버린다.** 둘 다 에러를 안 던지지만 방향이 반대다.
 - **`@supports` 와 오류 복구는 겹치는 도구**다. 선언 하나면 오류 복구로 충분하고, **여러 선언이 맞물려 한 덩어리로 성립하거나 깨질 때**만 `@supports` 가 필요하다([목록의 **41번 주제**](../41-supports-feature-queries/)).
 - **`cssRules` 를 읽는 것 자체가 진단 기법**이다. 빌드 파이프라인에서 시트를 브라우저에 로드해 **`cssRules.length` 가 예상과 같은지** 검사하면, 린터가 못 잡는 「삼켜진 규칙」을 잡을 수 있다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Syntax Level 3](https://drafts.csswg.org/css-syntax-3/) 의 「Parsing」·「Error Handling」 절과 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「Invalid at computed-value time」 규정. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `document.styleSheets[…].cssRules`·`CSS.supports()`·`getComputedStyle` 로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — CSS 에는 언어 버전이 없다. 오류 복구 규칙 자체는 CSS1 부터 있었지만, **중첩(nesting)이 2023 년에 들어오면서 「중괄호를 안 닫았을 때」의 결과가 바뀌었다** — 본문 (5)가 그 이야기다.

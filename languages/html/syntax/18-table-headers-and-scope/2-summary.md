@@ -1,14 +1,5 @@
 # html/syntax/18 — 표 머리 연결: `th`·`scope`·`headers`/`id`·`rowspan`/`colspan` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [4.9.12 「표 처리 모델」](https://html.spec.whatwg.org/multipage/tables.html#table-processing-model)(4.9.12.1 「표 만들기」 · 4.9.12.2 「데이터 칸과 머리 칸의 관계 맺기」 — 열 머리·행 머리의 정의와 머리 칸 배정 알고리즘)과 [`th` 요소](https://html.spec.whatwg.org/multipage/tables.html#the-th-element)(`scope` 의 네 상태 · `abbr`), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/)(편집본 — `th` 의 네 줄 대응 · `headers`·`scope`·`abbr` 속성 대응). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 블록마다 던진 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다(캡처 조립기). 하네스는 [17번 주제의 3-answer.md](../17-table-structure/3-answer.md) `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다** — 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — HTML 에는 언어 버전이 없다. `api.webstatus.dev` 조회로 **「Tables」 는 Baseline widely**(2018-01-29). `scope`·`headers`·`rowspan`·`colspan` 은 그 안의 오래된 속성이다. ★ `rowspan="0"` 은 따로 잡힌 기능 항목이 없어 **Baseline 으로 접지하지 못했다.**
-> **선행** — [17번 주제](../17-table-structure/2-summary.md)(표 구조 — 이 주제가 쓰는 **표 처리 모델의 칸 좌표**가 거기서 나왔다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **본체는 창 ⑦ 이다 — 그런데 창 ⑦ 에는 「이 칸의 머리는 무엇인가」가 없다.** CDP 도 내부 덤프도 셀 노드에 머리 관계를 속성으로 달지 않는다((1)). 그래서 이 주제는 **두 개의 제5의 상태**로 선다 — **명세 알고리즘을 페이지 스크립트로 옮겨 「명세가 정한 머리」를 계산**하고, 트리에서는 **그 계산의 재료(칸 좌표·머리 역할)** 를 받아 **나란히** 놓았다. 「갈린 칸 N / M」은 스크립트가 센다.
-
 ```text
 $ google-chrome --version
 Google Chrome 151.0.7922.173 
@@ -877,3 +868,13 @@ Chrome 의 트리는 그래도 `columnheader`·`rowheader` 를 줘서 **화면�
 - **왜 명세는 「어느 머리도 아닌 `th`」를 허용하나** — 표 처리 모델은 **오류를 거부하지 않고 해석한다.** 파서가 태그 수프를 트리로 만들 듯, 표 모델도 어떤 표든 칸마다 답을 낸다. 그 답이 「머리 없음」일 수 있을 뿐이다.
 - **불투명 머리(opaque headers)** — 배정 알고리즘의 훑기는 **데이터 칸을 지나면 그 앞의 머리 덩어리를 「불투명」으로** 적어 두고, 같은 폭·높이의 머리를 막는다. 머리 블록이 여러 번 나오는 표에서 **가까운 블록만** 머리가 되게 하는 장치다. 이 판에서 따로 재지 않았다.
 - **`summary` 와 `abbr` 의 운명** — 둘 다 「표를 소리로 읽을 때」를 위해 생긴 속성이다. `summary` 는 비준수가 됐고 `abbr` 은 남았다. 둘 다 트리에 흔적이 없다는 것까지가 이 판의 관찰이다(`abbr` — (1)).
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [4.9.12 「표 처리 모델」](https://html.spec.whatwg.org/multipage/tables.html#table-processing-model)(4.9.12.1 「표 만들기」 · 4.9.12.2 「데이터 칸과 머리 칸의 관계 맺기」 — 열 머리·행 머리의 정의와 머리 칸 배정 알고리즘)과 [`th` 요소](https://html.spec.whatwg.org/multipage/tables.html#the-th-element)(`scope` 의 네 상태 · `abbr`), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/)(편집본 — `th` 의 네 줄 대응 · `headers`·`scope`·`abbr` 속성 대응). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 블록마다 던진 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다(캡처 조립기). 하네스는 [17번 주제의 3-answer.md](../17-table-structure/3-answer.md) `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다** — 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — HTML 에는 언어 버전이 없다. `api.webstatus.dev` 조회로 **「Tables」 는 Baseline widely**(2018-01-29). `scope`·`headers`·`rowspan`·`colspan` 은 그 안의 오래된 속성이다. ★ `rowspan="0"` 은 따로 잡힌 기능 항목이 없어 **Baseline 으로 접지하지 못했다.**
+**선행** — [17번 주제](../17-table-structure/2-summary.md)(표 구조 — 이 주제가 쓰는 **표 처리 모델의 칸 좌표**가 거기서 나왔다).
+
+★★★ **본체는 창 ⑦ 이다 — 그런데 창 ⑦ 에는 「이 칸의 머리는 무엇인가」가 없다.** CDP 도 내부 덤프도 셀 노드에 머리 관계를 속성으로 달지 않는다((1)). 그래서 이 주제는 **두 개의 제5의 상태**로 선다 — **명세 알고리즘을 페이지 스크립트로 옮겨 「명세가 정한 머리」를 계산**하고, 트리에서는 **그 계산의 재료(칸 좌표·머리 역할)** 를 받아 **나란히** 놓았다. 「갈린 칸 N / M」은 스크립트가 센다.

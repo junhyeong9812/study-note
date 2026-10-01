@@ -1,12 +1,5 @@
 # java/syntax/40 — `List`·`Set` API 와 불변 팩토리: `List.of`·`copyOf`·`unmodifiable*` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/) 의 질문을 먼저 푼다. 옵셔널 연산이 전제다.
-> 해시 집합의 **내부**(버킷·충돌)는 여기서 묻지 않는다 — [`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 의 질문이다.
-> `equals`/`hashCode` **계약 자체**도 여기가 아니다 — [`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/) 의 질문이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -171,6 +164,12 @@ public List<String> getItems() { return ???; }
 - 원본을 고친 뒤 `subList` 를 읽으면 CME 가 난다는 것은?
 - `Set.of` 의 순회 순서가 실행마다 바뀐다는 것은?
 - 이 넷 중 테스트에 적어도 되는 것은 무엇인가?
+
+## 실행 환경
+
+**선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/) 의 질문을 먼저 푼다. 옵셔널 연산이 전제다.
+해시 집합의 **내부**(버킷·충돌)는 여기서 묻지 않는다 — [`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 의 질문이다.
+`equals`/`hashCode` **계약 자체**도 여기가 아니다 — [`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/) 의 질문이다.
 
 ## 복습 기록
 

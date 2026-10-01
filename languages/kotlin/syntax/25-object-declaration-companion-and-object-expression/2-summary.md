@@ -1,17 +1,5 @@
 # kotlin/syntax/25 — `object` 선언·`companion object`·`object` 식 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Object declarations and expressions](https://kotlinlang.org/docs/object-declarations.html) · [Java 에서 Kotlin 호출하기](https://kotlinlang.org/docs/java-to-kotlin-interop.html)(`@JvmStatic`·`const`).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
-> `kotlinc` 5회(컴파일 실패 2벌) · `javac` 2회(1벌은 실패가 결과) · `java` 3회 · `javap` 2회. ★ **Java 를 섞어 던졌다** — `@JvmStatic` 은 Kotlin 쪽에서만 보면 아무것도 안 바뀐 것처럼 보이기 때문이다.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
-> **버전** — `object` 선언·`companion object`·`object` 식·`@JvmStatic`·`const` 는 전부 **1.0** 이다. `data object` 만 **1.9** 이고 그것은 [22번 주제](../22-data-class-generated-members/)가 정본이다.
-> **경계** — `const val` 이 **호출부에 박히는 것**은 [16번 주제](../16-properties-backing-field-lateinit-const/)가 정본이라 여기서는 **「어디에 사는가」까지**만 본다.\
-> 클래스 선언·`init` 순서는 [15번 주제](../15-class-declaration-constructors-and-init/), 확장 함수가 `companion` 에 붙는 것은 [13번 주제](../13-extension-functions-and-properties/)가 정본이다.\
-> `@JvmStatic`·`@JvmField`·`@JvmName` 을 **전부 훑는 것**은 [목록의 **39번 주제**](../39-java-interop-annotations/)이고, 여기는 **`object` 를 Java 에서 부르는 데 필요한 만큼**만 본다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다.
 
 | 흔들린다 | 안 흔들린다 |
@@ -698,3 +686,15 @@ X handled by t1 false
 - **왜 `static` 이라는 낱말을 안 뒀나** — `static` 멤버는 **객체가 아니어서** 인터페이스를 구현할 수도, 확장을 받을 수도, 변수에 담을 수도 없다. `companion object` 를 **진짜 객체**로 두면 그 셋이 전부 가능해진다. 대가가 (3)의 Java 쪽 지저분함이고, `@JvmStatic` 이 그 대가를 되사는 장치다.
 - **`object` 의 가변 상태는 전역 변수다.** 프로세스 하나에 인스턴스가 하나이므로 **모든 스레드가 공유**한다. 테스트 사이에 상태가 남는 문제도 같은 뿌리다 — 「싱글턴이라 편하다」와 「전역이라 위험하다」는 **같은 사실의 앞뒷면**이다.
 - **익명 타입이 밖으로 안 새는 규칙**((4))은 [12번 주제](../12-reified-type-parameters/)의 소거와는 **다른 이유**다. 소거는 런타임에 타입이 사라지는 것이고, 이쪽은 **컴파일러가 공개 시그니처에 이름 없는 타입을 쓰지 못하게** 막는 것이다 — **이름을 댈 수 없는 타입을 API 에 둘 수 없다**는 원칙이다.
+
+## 실행 환경
+
+**기준 소스** — [Object declarations and expressions](https://kotlinlang.org/docs/object-declarations.html) · [Java 에서 Kotlin 호출하기](https://kotlinlang.org/docs/java-to-kotlin-interop.html)(`@JvmStatic`·`const`).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
+`kotlinc` 5회(컴파일 실패 2벌) · `javac` 2회(1벌은 실패가 결과) · `java` 3회 · `javap` 2회. ★ **Java 를 섞어 던졌다** — `@JvmStatic` 은 Kotlin 쪽에서만 보면 아무것도 안 바뀐 것처럼 보이기 때문이다.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
+**버전** — `object` 선언·`companion object`·`object` 식·`@JvmStatic`·`const` 는 전부 **1.0** 이다. `data object` 만 **1.9** 이고 그것은 [22번 주제](../22-data-class-generated-members/)가 정본이다.
+**경계** — `const val` 이 **호출부에 박히는 것**은 [16번 주제](../16-properties-backing-field-lateinit-const/)가 정본이라 여기서는 **「어디에 사는가」까지**만 본다.\
+클래스 선언·`init` 순서는 [15번 주제](../15-class-declaration-constructors-and-init/), 확장 함수가 `companion` 에 붙는 것은 [13번 주제](../13-extension-functions-and-properties/)가 정본이다.\
+`@JvmStatic`·`@JvmField`·`@JvmName` 을 **전부 훑는 것**은 [목록의 **39번 주제**](../39-java-interop-annotations/)이고, 여기는 **`object` 를 Java 에서 부르는 데 필요한 만큼**만 본다.

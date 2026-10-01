@@ -1,12 +1,5 @@
 # css/syntax/38 — 미디어 쿼리: 문법·범위 구문·논리 연산 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Media Queries Level 4](https://drafts.csswg.org/mediaqueries-4/) 의 「Media Query Syntax」·「Range Context」·「Evaluating Media Queries」 절과 [Media Queries Level 5](https://drafts.csswg.org/mediaqueries-5/) 의 사용자 선호 기능 목록. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 읽은 것이다. **뷰포트 폭은 `--window-size=W,H` 를 바꿔 가며 잰다** — 경계값은 **599 · 600 · 601 을 각각 따로 띄워** 찍었다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — CSS 에 언어 버전은 없다. 미디어 쿼리 자체는 Baseline **widely**(2015-07-29 → 2018-01-29), **범위 구문**(`(400px <= width <= 700px)`)은 Baseline **widely**(newly 2023-03-27 → widely 2025-09-27) — `api.webstatus.dev` 조회 결과.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **미디어 쿼리는 「이 스타일을 **언제** 켤 것인가」를 뷰포트에 대고 재는 자다.**
@@ -554,3 +547,10 @@ document.styleSheets[0].cssRules[3].conditionText     // 같은 문자열
 - **`matchMedia` 는 이벤트를 준다.** `mq.addEventListener("change", …)` 로 조건이 뒤집히는 순간을 잡을 수 있다 — JS 쪽 로직을 CSS 중단점과 **한 숫자로 묶는** 표준 방법이다.
 - **컨테이너 쿼리가 나온 뒤에도 미디어 쿼리는 안 없어진다.** 페이지 단위의 결정(사이드바를 접을지, 인쇄 레이아웃)은 여전히 뷰포트 문제다. 둘은 대체가 아니라 **축이 다르다.**
 - **MQ5 는 「사용자」 쪽 기능을 잔뜩 들여왔다** — `prefers-color-scheme`·`prefers-reduced-motion`·`prefers-contrast`·`forced-colors`. 「기기를 재던 자」가 「사람을 재는 자」로 넓어진 것이고, 그 이야기는 [39번 주제](../39-color-scheme-and-preferences/2-summary.md)다.
+
+## 실행 환경
+
+**기준 소스** — [Media Queries Level 4](https://drafts.csswg.org/mediaqueries-4/) 의 「Media Query Syntax」·「Range Context」·「Evaluating Media Queries」 절과 [Media Queries Level 5](https://drafts.csswg.org/mediaqueries-5/) 의 사용자 선호 기능 목록. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 읽은 것이다. **뷰포트 폭은 `--window-size=W,H` 를 바꿔 가며 잰다** — 경계값은 **599 · 600 · 601 을 각각 따로 띄워** 찍었다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — CSS 에 언어 버전은 없다. 미디어 쿼리 자체는 Baseline **widely**(2015-07-29 → 2018-01-29), **범위 구문**(`(400px <= width <= 700px)`)은 Baseline **widely**(newly 2023-03-27 → widely 2025-09-27) — `api.webstatus.dev` 조회 결과.

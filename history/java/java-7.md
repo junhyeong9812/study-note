@@ -1,10 +1,5 @@
 # Java 7 (Java SE 7, Dolphin, 2011년 7월)
 
-> 원본: `~/project/java-history/java/java-7.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JSR 번호·클래스/패키지 이름·코드블록 11개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
-> 「한눈에」의 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 그리고 같은 시리즈 다른 편의 원문을 끌어와 적은 교차 주 4개는 원문에 없는 보충이다.\
-> 새로 그린 도식은 없다 — 원문에 도식이 없고, 원문이 전/후를 보여 주는 자리는 「도입 전」·「도입 후」 코드블록 쌍이 이미 맡고 있다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -318,3 +313,10 @@ JVM 바이트코드에 동적 메서드 호출을 위한 새 명령 `invokedynam
 - [JSR 336: Java SE 7 Release Contents — JCP](https://jcp.org/en/jsr/detail?id=336)
 - [Java 7 — WikiChip](https://en.wikichip.org/wiki/Java_7)
 - [JSR 334: Small Enhancements to the Java Programming Language (Project Coin) — JCP](https://jcp.org/en/jsr/detail?id=334)
+
+## 출처
+
+원본: `~/project/java-history/java/java-7.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JSR 번호·클래스/패키지 이름·코드블록 11개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
+「한눈에」의 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 그리고 같은 시리즈 다른 편의 원문을 끌어와 적은 교차 주 4개는 원문에 없는 보충이다.\
+새로 그린 도식은 없다 — 원문에 도식이 없고, 원문이 전/후를 보여 주는 자리는 「도입 전」·「도입 후」 코드블록 쌍이 이미 맡고 있다.

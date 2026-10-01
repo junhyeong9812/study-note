@@ -1,11 +1,5 @@
 # java/syntax/27 — `equals`/`hashCode`/`toString` 계약 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> javadoc 인용은 `lib/src.zip` 의 `java.base/java/lang/Object.java` 원문 그대로다.\
-> 17.0.13 · 25.0.1 에서도 같은 프로그램을 돌려 확인했다(갈리는 것은 1번에 따로 적었다).
-> 해시 테이블의 **원리**는 이 파일이 다루지 않는다 — [`data-structure/05-hashmap`](../../../../cs/data-structure/05-hashmap/) 이 정본이다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -531,3 +525,10 @@ TreeSet size       : 1 [1.0]
 | `TreeVsHash` | `equals` 와 `compareTo` 불일치 -> `TreeSet` 에서 원소가 사라짐 | 21 |
 | `ConstHash` | `return 1` — 계약은 지켜지고 성능만 나빠짐 | 21 |
 | `src.zip` 열람 | `Object` 의 세 javadoc, `HashMap.hash`, `Objects.hash`, `Arrays.hashCode` | 21 |
+
+## 실행 환경
+
+이 파일의 모든 출력은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+javadoc 인용은 `lib/src.zip` 의 `java.base/java/lang/Object.java` 원문 그대로다.\
+17.0.13 · 25.0.1 에서도 같은 프로그램을 돌려 확인했다(갈리는 것은 1번에 따로 적었다).
+해시 테이블의 **원리**는 이 파일이 다루지 않는다 — [`data-structure/05-hashmap`](../../../../cs/data-structure/05-hashmap/) 이 정본이다.

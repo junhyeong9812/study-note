@@ -1,15 +1,5 @@
 # go/syntax/28 — 고루틴: `go` 문·시작 비용·종료 조건 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세 — Go statements · Program execution](https://go.dev/ref/spec#Go_statements) ·
-> [`runtime`](https://pkg.go.dev/runtime) · [`sync.WaitGroup`](https://pkg.go.dev/sync#WaitGroup) 문서.
-> 명세·`runtime` 소스·`api/go1NN.txt` 는 **이 툴체인의 `$(go env GOROOT)` 에서 직접 떴다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> ★★ **버전** — **루프 변수가 회차마다 새로 생기는 것이 1.22**((4)절 — **`go.mod` 판 격자로** 같은 소스를 두 번 던졌다) ·
-> `sync.WaitGroup.Go` 가 **1.25**(`api/go1.25.txt:96`) · 정수 `range` 가 **1.22**.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**`main` 이 끝난 뒤의 출력 파일을 셸이 검사해, 「끝까지 안 찍혔다」만 참거짓으로 남기는 창**」.
 고루틴이 **몇 줄 찍고 끊겼나**는 실행마다 흔들린다. **「끝 줄이 없다」·「`defer` 가 안 돌았다」는 안 흔들린다.**
 흔들리는 것을 지우는 대신 **안 흔들리는 질문으로 바꿔** 물었다.
@@ -774,3 +764,13 @@ func main() {
 - ★ **`adaptivestackstart` 가 실제로 시작 크기를 키우는 조건**(GC 사이에 깊은 스택)은 **안 던졌다.** (5)절 격자는 그 조건을 안 만들었다.
 - ★ **`testing/synctest`**(고루틴을 결정적으로 테스트하는 패키지)는 **안 던졌다** — [목록의 **49번 주제**](../49-testing-table-driven-t-run-cleanup-and-parallel/) 쪽이다.
 - ★★ 고루틴 생성의 **시간 비용**은 **안 쟀다.**
+
+## 실행 환경
+
+**기준 소스** — [Go 명세 — Go statements · Program execution](https://go.dev/ref/spec#Go_statements) ·
+[`runtime`](https://pkg.go.dev/runtime) · [`sync.WaitGroup`](https://pkg.go.dev/sync#WaitGroup) 문서.
+명세·`runtime` 소스·`api/go1NN.txt` 는 **이 툴체인의 `$(go env GOROOT)` 에서 직접 떴다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+★★ **버전** — **루프 변수가 회차마다 새로 생기는 것이 1.22**((4)절 — **`go.mod` 판 격자로** 같은 소스를 두 번 던졌다) ·
+`sync.WaitGroup.Go` 가 **1.25**(`api/go1.25.txt:96`) · 정수 `range` 가 **1.22**.

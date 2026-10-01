@@ -1,11 +1,5 @@
 # html/syntax/24 — `<input>` 타입 지도 ③ 선택·특수: `checkbox`/`radio`/`file`/`color`/`hidden`/`submit`/`image` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [21번 주제](../21-form-submission-model/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「Constructing the entry list」·「The input element」 절과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **본체는 창 ⑤ 다** — 「안 실린다」는 서버가 받은 필드 목록에서 **찾아보고 없었다**로만 선다(A2).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -253,3 +247,10 @@ $ python3 html21b-form.py 시도 html21b-24-radio.html
 - **라디오 단추 그룹** — 같은 폼 소유자 · 같은 트리 · 같은 이름.
 - **선택된 좌표** — 그림 단추를 누른 자리.
 - **`_charset_`** — 인코딩 이름을 보내는 `hidden` 의 특수 이름.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [21번 주제](../21-form-submission-model/3-answer.md)의 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「Constructing the entry list」·「The input element」 절과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **본체는 창 ⑤ 다** — 「안 실린다」는 서버가 받은 필드 목록에서 **찾아보고 없었다**로만 선다(A2).

@@ -1,16 +1,5 @@
 # js/syntax/32 — 오류 처리와 `Error`: 「`finally` 가 끝을 쥐면 `try` 의 끝은 사라진다 · `cause` 는 손으로 잇는다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151.0.7922.173**(6번의 `.web.js`) · **python3 3.12.3**(9번) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
->
-> ★★ **예외는 `이름 「메시지」` 꼴로** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다. 5번의 둘째 블록만 `node -e` 의 표준 오류 전문이다(경로 대신 `[eval]`).
-> ★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical`).
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
-> `js32b-32a-finally-grid.js`(1번 · 7번) · `js32b-32b-finally-details.js`(2번 · 7번) · `js32b-32c-cause-chain.js`(3번 · 8번) · `js32b-32d-hierarchy.js`(4번) ·
-> `js32b-32e-thrown-values.js` 와 `js32b-32i-uncaught.sh`(5번 · 8번) · `js32b-32g-iserror-node.js` 와 `js32b-32h-iserror.web.js`(6번 · 8번 · 10번) · `js32b-32f-python-contrast.sh` 와 `js32b-32-h-pyerr.py`(9번).
-
 ## 정답
 
 ### 1. **`finally` 가 `return`·`throw` 로 끝난 여섯 칸은 전부 `finally` 의 것**이 나간다 — `try` 의 끝이 닿지 못한 칸 `6 / 9` · 던진 행 중 예외가 사라진 행 `2 / 3` ★★★
@@ -385,3 +374,15 @@ identical 12  ·  differs 0  ·  total 12
 - ★★ **`stack` 의 자리**(데이터 대 접근자) — 이미 node 20 과 Chrome 151 이 다르다.
 - ★ 예외 **문구**와 `node:internal/…` 줄 번호 — V8·node 의 것이다.
 - ★ 파이썬 **3.14** 가 생기면 `finally` 의 `return` 경고(PEP 765)를 잰다.
+
+## 실행 환경
+
+이 파일의 모든 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151.0.7922.173**(6번의 `.web.js`) · **python3 3.12.3**(9번) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
+
+★★ **예외는 `이름 「메시지」` 꼴로** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다. 5번의 둘째 블록만 `node -e` 의 표준 오류 전문이다(경로 대신 `[eval]`).
+★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical`).
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
+`js32b-32a-finally-grid.js`(1번 · 7번) · `js32b-32b-finally-details.js`(2번 · 7번) · `js32b-32c-cause-chain.js`(3번 · 8번) · `js32b-32d-hierarchy.js`(4번) ·
+`js32b-32e-thrown-values.js` 와 `js32b-32i-uncaught.sh`(5번 · 8번) · `js32b-32g-iserror-node.js` 와 `js32b-32h-iserror.web.js`(6번 · 8번 · 10번) · `js32b-32f-python-contrast.sh` 와 `js32b-32-h-pyerr.py`(9번).

@@ -1,11 +1,5 @@
 # css/syntax/18 — 마진 상쇄 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 간격은 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 잰 값**이다.\
-> **간격 = 위 상자의 `rect.bottom` 과 아래 상자의 `rect.top` 의 차이.** 단위는 px 다.\
-> ★ 측정은 전부 `<!doctype html>` + `html, body { margin: 0; padding: 0 }` 래퍼 안에서 했다 — **`body` 기본 마진 8px 과 쿼크 모드가 이 실험을 오염시키기 때문**이다(8번).\
-> 규칙은 [CSS Box Model Level 3](https://drafts.csswg.org/css-box-3/) 과 [CSS Display Module Level 3](https://drafts.csswg.org/css-display-3/) 으로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -340,3 +334,10 @@ flex 항목 안에 margin-top: 40px 인 손자를 넣은 경우
 **구현 의존 항목** — **쿼크 모드가 `box-sizing` 을 바꾸지 않는 것**은 Chrome 151 에서 관찰한 결과다. 예상과 달랐던 칸이므로 버전이 오르면 다시 찍는다.\
 **`body` 의 기본 마진 8px** 은 브라우저 기본 스타일시트의 값이지 CSS 의 보장이 아니다.\
 **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.**
+
+## 실행 환경
+
+이 파일의 **모든 간격은 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 잰 값**이다.\
+**간격 = 위 상자의 `rect.bottom` 과 아래 상자의 `rect.top` 의 차이.** 단위는 px 다.\
+★ 측정은 전부 `<!doctype html>` + `html, body { margin: 0; padding: 0 }` 래퍼 안에서 했다 — **`body` 기본 마진 8px 과 쿼크 모드가 이 실험을 오염시키기 때문**이다(8번).\
+규칙은 [CSS Box Model Level 3](https://drafts.csswg.org/css-box-3/) 과 [CSS Display Module Level 3](https://drafts.csswg.org/css-display-3/) 으로 접지했다.

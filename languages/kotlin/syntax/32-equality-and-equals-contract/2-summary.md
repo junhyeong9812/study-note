@@ -1,17 +1,5 @@
 # kotlin/syntax/32 — 동등성: `==`/`===`·`equals` 규약·`data class` 와의 관계 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Equality](https://kotlinlang.org/docs/equality.html)(`a == b` 는 **`a?.equals(b) ?: (b === null)`** · 부동소수점은 **정적 타입**에 따라 IEEE 754 와 `equals` 가 갈린다 · 배열은 `contentEquals`) · [Operator overloading — Equality and inequality operators](https://kotlinlang.org/docs/operator-overloading.html) · [`Any.equals`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/equals.html).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 11회(경고 줄을 세는 1회 포함 · 컴파일 실패 1벌 · 경고 3벌) · `java` 10회(`-XX:AutoBoxCacheMax` 1판 포함) · `javac` 1회 · `javap` 5회 · `unzip` 1회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
-> **버전** — `==`/`===` 의 의미는 1.0 부터다. 이 문서의 **진단 문구와 경고의 유무는 K2(2.4.20)** 의 것이다.
-> **경계** — ★★ **해시 자료구조의 원리**(버킷·충돌·왜 `hashCode` 가 먼저인가)는 [`cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/)이 정본이다 — 여기는 「**Kotlin 의 `==` 가 무엇으로 번역되고, 규약을 어기면 JVM 컬렉션이 무엇을 잃나**」까지다.\
-> `data class` 가 **`equals` 를 만든다는 것**과 「본문 프로퍼티는 빠진다」의 첫 실측은 [22번 주제](../22-data-class-generated-members/) (2)·(7)이 정본이다. `value class` 의 **`===` 금지**는 [26번 주제](../26-value-class-and-boxing/)가 정본이다. `==` 가 연산자 번역표에 **없다**는 것은 [31번 주제](../31-operator-overloading-infix-and-invoke/) (5)에서 넘겨받았다.
-> **대비** — ★★★ Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **27번**([`27-equals-hashcode-contract/`](../../../java/syntax/27-equals-hashcode-contract/)) — Java 는 **`==` 가 참조 비교**다. 같은 모양을 `javac` 로 던져 나란히 놓았다((2)).\
-> Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **30번**([`30-repr-eq-hash-contracts/`](../../../python/syntax/30-repr-eq-hash-contracts/)) · Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **28번**([`28-partialeq-eq-partialord-ord-and-hash-contracts/`](../../../rust/syntax/28-partialeq-eq-partialord-ord-and-hash-contracts/)) — **같은 규약 위반 실험**을 한 형제다((9)).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **본체는 둘째 창이다** — 「**규약을 하나씩 깬 키를 `HashSet` 과 `ArrayList` 에 넣고, 둘이 갈린 칸을 스크립트가 센 격자**」.
 첫째 창(`javap`)은 `==` 가 **무엇으로 번역되는지**를 보여 주고, 둘째 창은 그 번역 위에서 **규약을 어기면 무엇을 잃는지**를 보여 준다.
 
@@ -813,3 +801,15 @@ Z true false true false 1 true
 
 - **왜 `==` 에 `null` 처리를 붙였나** — Java 에서 `a.equals(b)` 의 가장 흔한 사고가 **`a` 가 `null`** 인 것이었다((2)의 `C NPE`). `Objects.equals` 가 나중에 들어와 그 사고를 덜었는데, Kotlin 은 **기호의 기본 뜻**으로 삼았다. 대가는 없다시피 하다 — 정적 메서드 하나에 `null` 검사 두 번이다(시간은 안 쟀다).
 - **왜 `Int?` 의 `===` 는 경고이고 `value class` 는 에러인가** — `Int?` 는 JVM 에서 **진짜 `Integer` 객체**라 동일성이 **정의는 된다**(답이 구현에 달릴 뿐). `value class` 는 [26번 주제](../26-value-class-and-boxing/)에서 봤듯 **자리마다 상자가 생겼다 사라지므로** 동일성이라는 질문 자체가 **성립하지 않는다.** 「답이 불안정하다」(경고)와 「질문이 없다」(에러)의 차이다.
+
+## 실행 환경
+
+**기준 소스** — [Equality](https://kotlinlang.org/docs/equality.html)(`a == b` 는 **`a?.equals(b) ?: (b === null)`** · 부동소수점은 **정적 타입**에 따라 IEEE 754 와 `equals` 가 갈린다 · 배열은 `contentEquals`) · [Operator overloading — Equality and inequality operators](https://kotlinlang.org/docs/operator-overloading.html) · [`Any.equals`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/equals.html).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 11회(경고 줄을 세는 1회 포함 · 컴파일 실패 1벌 · 경고 3벌) · `java` 10회(`-XX:AutoBoxCacheMax` 1판 포함) · `javac` 1회 · `javap` 5회 · `unzip` 1회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
+**버전** — `==`/`===` 의 의미는 1.0 부터다. 이 문서의 **진단 문구와 경고의 유무는 K2(2.4.20)** 의 것이다.
+**경계** — ★★ **해시 자료구조의 원리**(버킷·충돌·왜 `hashCode` 가 먼저인가)는 [`cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/)이 정본이다 — 여기는 「**Kotlin 의 `==` 가 무엇으로 번역되고, 규약을 어기면 JVM 컬렉션이 무엇을 잃나**」까지다.\
+`data class` 가 **`equals` 를 만든다는 것**과 「본문 프로퍼티는 빠진다」의 첫 실측은 [22번 주제](../22-data-class-generated-members/) (2)·(7)이 정본이다. `value class` 의 **`===` 금지**는 [26번 주제](../26-value-class-and-boxing/)가 정본이다. `==` 가 연산자 번역표에 **없다**는 것은 [31번 주제](../31-operator-overloading-infix-and-invoke/) (5)에서 넘겨받았다.
+**대비** — ★★★ Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **27번**([`27-equals-hashcode-contract/`](../../../java/syntax/27-equals-hashcode-contract/)) — Java 는 **`==` 가 참조 비교**다. 같은 모양을 `javac` 로 던져 나란히 놓았다((2)).\
+Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **30번**([`30-repr-eq-hash-contracts/`](../../../python/syntax/30-repr-eq-hash-contracts/)) · Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **28번**([`28-partialeq-eq-partialord-ord-and-hash-contracts/`](../../../rust/syntax/28-partialeq-eq-partialord-ord-and-hash-contracts/)) — **같은 규약 위반 실험**을 한 형제다((9)).

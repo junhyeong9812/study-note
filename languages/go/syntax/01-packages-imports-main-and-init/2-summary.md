@@ -1,15 +1,5 @@
 # go/syntax/01 — 패키지 선언·import·`main` 과 `init` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Package clause · Import declarations ·
-> Package initialization · Program initialization · Program execution 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 손으로 옮겨 적은 블록은 없다.
-> **버전** — 이 절의 규칙은 Go 1 호환성 약속 아래 1.0부터 같다. 이 문서는 버전이 갈리는 자리를 다루지 않는다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 ## 이 갈래가 쓰는 세 층
 
 Go 는 **명세가 짧고 강하다.** 그래서 이 갈래의 모든 사실은 다음 세 층 중 하나에 넣고,
@@ -783,3 +773,13 @@ package ex
   (5)절 실측에서 `alfa` 와 `zulu` 의 순서를 import 문으로는 바꿀 수 없었다.
 - 순환 import 에러는 **타입 검사 이전 단계**라, 순환이 있으면 다른 에러가 아예 안 보인다.
   순환부터 풀고 다시 빌드해야 한다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Package clause · Import declarations ·
+Package initialization · Program initialization · Program execution 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+손으로 옮겨 적은 블록은 없다.
+**버전** — 이 절의 규칙은 Go 1 호환성 약속 아래 1.0부터 같다. 이 문서는 버전이 갈리는 자리를 다루지 않는다.

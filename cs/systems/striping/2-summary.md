@@ -1,9 +1,5 @@
 # cs/striping — Striping: 하나의 ledger를 여러 Bookie에 담자 (BookKeeper) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다.
-> 원고는 내가 직접 쓴 `db-engine-lab/docs/study/Striping.md`(2026-08-20)다. 본문 1~6절은 원고 그대로(소제목 번호·문단 배치만 정리, 오탈자만 교정).
-> 「전체 흐름」「핵심 문장」은 원고를 압축한 것이고, 맨 아래 「[Claude 추가]」 절만 원고에 없던 내용이다. Kafka 쪽 전제는 [kafka-why-fast](../kafka-why-fast/)를 본다.
-
 ## 전체 흐름
 
 ```text
@@ -154,3 +150,8 @@ BookKeeper가 기술적으로 더 정교하지만 Kafka가 여전히 지배적�
 - KIP-405 Tiered Storage는 오래된 세그먼트를 object storage로 내려보내 broker 로컬 디스크에는 최근 데이터만 남긴다. 원고 §6의 "확장 = 수 TB 물리 이동" 고통을 줄이는 쪽의 대응이다(옮길 로컬 데이터가 작아진다). 정식 도입 버전은 (확인 필요).
 - 그러나 "한 파티션의 쓰기 상한 = 리더 디스크 1대"라는 원고 §1의 제약은 그대로다 — 쓰기는 여전히 리더 한 대가 받는다. 즉 Tiered Storage는 저장·확장 문제의 답이지 striping의 대체물이 아니다.
 - 더 나아가 KRaft(ZooKeeper 제거)로 운영 복잡도를 줄이고, 최근에는 object storage에 직접 쓰는 "diskless" 계열 제안(KIP-1150 등, 확인 필요)도 논의된다 — 방향이 "리더 디스크를 없앤다"는 점에서 BookKeeper와 다른 길로 같은 제약을 푸는 시도다.
+
+## 출처
+
+원고는 내가 직접 쓴 `db-engine-lab/docs/study/Striping.md`(2026-08-20)다. 본문 1~6절은 원고 그대로(소제목 번호·문단 배치만 정리, 오탈자만 교정).
+「전체 흐름」「핵심 문장」은 원고를 압축한 것이고, 맨 아래 「[Claude 추가]」 절만 원고에 없던 내용이다. Kafka 쪽 전제는 [kafka-why-fast](../kafka-why-fast/)를 본다.

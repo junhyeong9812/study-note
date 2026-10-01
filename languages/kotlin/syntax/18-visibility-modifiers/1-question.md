@@ -1,16 +1,5 @@
 # kotlin/syntax/18 — 가시성 수식어: `internal` 이 Java 에 없는 이유 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다.
-> ★ **클래스·생성자 선언 형태는 [15번 주제](../15-class-declaration-constructors-and-init/)**, `open`/`override` 는 [19번 주제](../19-inheritance-open-final-override/),
-> `@JvmName` 을 비롯한 상호운용 애너테이션 전반은 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이다.
-> Java 의 네 단계는 [`../../../java/syntax/10-access-modifiers/`](../../../java/syntax/10-access-modifiers/)가 정본이다 — 여기는 **그 자리에 `internal` 을 끼운 결과**만 묻는다.
-> 문항 12개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -215,6 +204,16 @@ fun outside(b: Box2) = b.hidden
 - 상위의 `protected` 멤버를 하위에서 `public` 으로 넓힐 수 있는가?
 - 반대로 `public` 을 `protected` 로 좁힐 수 있는가?
 - 그 규칙이 [19번 주제](../19-inheritance-open-final-override/)의 어느 결론과 같은 뿌리인가?
+
+## 실행 환경
+
+선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다.
+★ **클래스·생성자 선언 형태는 [15번 주제](../15-class-declaration-constructors-and-init/)**, `open`/`override` 는 [19번 주제](../19-inheritance-open-final-override/),
+`@JvmName` 을 비롯한 상호운용 애너테이션 전반은 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이다.
+Java 의 네 단계는 [`../../../java/syntax/10-access-modifiers/`](../../../java/syntax/10-access-modifiers/)가 정본이다 — 여기는 **그 자리에 `internal` 을 끼운 결과**만 묻는다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

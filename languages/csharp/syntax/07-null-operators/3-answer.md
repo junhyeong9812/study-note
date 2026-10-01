@@ -1,17 +1,5 @@
 # csharp/syntax/07 — 널 관련 연산자 `?.`·`??`·`??=` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — `checked`/`unchecked`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/checked-and-unchecked) · [Learn — 널 허용 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types) · [Learn — 널 허용 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-reference-types) · [Learn — 멤버 접근·널 조건 연산자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
-> 런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-25).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 첫 줄(`// cs0Nb-….cs` 꼴)도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
-> **읽는 법** — ★★★ **이 주제의 근거는 「무엇이 안 찍혔나」다.**\
-> 프로그램이 `[평가됨]` 을 찍게 만들어 두었으므로, **출력에 없는 줄이 단락의 증거**다.\
-> ★ **4번만은 진단이 근거이고, 문구가 아니라 `(행,열)` 을 읽는다.**\
-> ★ **`cc exit` 과 `run exit` 을 갈라 적었다.**\
-> 자세한 환경과 던진 형태는 [2-summary.md](2-summary.md)의 머리말·(0)절에 있다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -658,3 +646,16 @@ cs07b-forbid.cs(5,12): warning CS8600: Converting null literal or possible null 
 - ★★ **7번의 IL 다섯 벌** — Roslyn 이 바뀌면 명령이 움직인다. **성질(단락·한 번 평가)은 안 움직인다.**
 - ★ **4번의 열 번호** — 진단 위치 계산이 바뀌면 움직인다. **결합 방향 자체는 문법이라 안 움직인다.**
 - ★ **6번** — C# 14 기능이라 **`-langversion` 을 바꾸면 통째로 갈린다.**
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — `checked`/`unchecked`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/checked-and-unchecked) · [Learn — 널 허용 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types) · [Learn — 널 허용 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-reference-types) · [Learn — 멤버 접근·널 조건 연산자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
+런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-25).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 첫 줄(`// cs0Nb-….cs` 꼴)도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
+**읽는 법** — ★★★ **이 주제의 근거는 「무엇이 안 찍혔나」다.**\
+프로그램이 `[평가됨]` 을 찍게 만들어 두었으므로, **출력에 없는 줄이 단락의 증거**다.\
+★ **4번만은 진단이 근거이고, 문구가 아니라 `(행,열)` 을 읽는다.**\
+★ **`cc exit` 과 `run exit` 을 갈라 적었다.**\
+자세한 환경과 던진 형태는 [2-summary.md](2-summary.md)의 「실행 환경」·(0)절에 있다.

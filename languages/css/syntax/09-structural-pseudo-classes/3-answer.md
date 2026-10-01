@@ -1,10 +1,5 @@
 # css/syntax/09 — 구조적 의사 클래스: `:nth-child()`·`:nth-of-type()` 과 `of S` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 개수와 노드 이름은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 받은 것**이다.\
-> 매치는 `document.querySelectorAll(sel).length` 와 잡힌 노드 `id`, 규칙 생존은 `document.styleSheets[*].cssRules`, 화면 결과는 `getComputedStyle` + 스크린샷으로 읽었다.\
-> 규칙은 [Selectors Level 4 §Child-indexed pseudo-classes](https://drafts.csswg.org/selectors-4/#child-index) 로, 지원 상태는 `api.webstatus.dev` 조회(2026-09-23)로 접지했다. **엔진은 Chrome 하나다.**
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -449,3 +444,9 @@
 | `An+B` 전개 · 요소만 세는 것 · 숨긴 형제가 번호를 차지하는 것 | **명세 보장** — 버전이 올라도 안 바뀐다 | 다시 찍을 필요 없음 |
 
 **안 돌려 본 것** — `:nth-of-type` 의 네임스페이스 판정(XML 문서 필요), grid 의 `grid-auto-flow` 와 선택자 번호의 관계, `:has()` 안에서의 `:nth-child` 동작. 셋 다 이 문서에서 **결론으로 쓰지 않았고 「미실행」으로 표기했다.**
+
+## 실행 환경
+
+이 파일의 **모든 개수와 노드 이름은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 받은 것**이다.\
+매치는 `document.querySelectorAll(sel).length` 와 잡힌 노드 `id`, 규칙 생존은 `document.styleSheets[*].cssRules`, 화면 결과는 `getComputedStyle` + 스크린샷으로 읽었다.\
+규칙은 [Selectors Level 4 §Child-indexed pseudo-classes](https://drafts.csswg.org/selectors-4/#child-index) 로, 지원 상태는 `api.webstatus.dev` 조회(2026-09-23)로 접지했다. **엔진은 Chrome 하나다.**

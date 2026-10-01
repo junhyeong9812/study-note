@@ -1,17 +1,5 @@
 # sql/20-LATERAL 조인 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Table Expressions (LATERAL Subqueries)](https://www.postgresql.org/docs/18/queries-table-expressions.html#QUERIES-LATERAL) · [MySQL 8.4 · Lateral Derived Tables](https://dev.mysql.com/doc/refman/8.4/en/lateral-derived-tables.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 버전은 `SELECT VERSION()` 으로 두 서버에서 직접 확인했다(`PostgreSQL 18.6 …` · `8.4.10`).\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
-> 표는 기존 `emp`·`dept` 두 개만 썼다. **새로 만든 표가 없다.**\
-> **버전** — `LATERAL` 은 **PostgreSQL 9.3 부터**, **MySQL 8.0.14 부터**다. 두 도입 버전은 **릴리스 노트**에서 확인한 것이고 매뉴얼 본문에는 없다([주제 목록](../README.md)의 「버전 기준」 참조).\
-> **선행** — [11 서브쿼리](../11-subquery-scalar-correlated-any-all/) · [13 INNER JOIN](../13-inner-join/) · [10 FROM 절](../10-from-clause-aliases-derived-tables/).\
-> **이 주제의 출발점** — [10번](../10-from-clause-aliases-derived-tables/)의 「파생 테이블은 바깥을 못 본다」. **그 벽에 난 문이 `LATERAL` 이다.**
-
 ## 한눈에 — 쉽게 말하면
 
 **`LATERAL` = `FROM` 안의 서브쿼리에게 「앞에 있는 표의 현재 행을 봐도 된다」고 허락하는 표시.**
@@ -566,3 +554,14 @@ ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the ma
 
 - **`RIGHT JOIN LATERAL` 도 왼쪽을 참조하지 않으면 통과한다.** 제약은 문법 형태가 아니라 **실제 참조**에 걸린다 — PG 의 `DETAIL` 이 "for a LATERAL reference" 라고 조건을 단 이유다.
 - **「그룹별 상위 N」은 세 가지로 쓸 수 있다** — 상관 서브쿼리(N=1 만) · `LATERAL` · `ROW_NUMBER`([목록의 **29번 주제**](../29-ranking-functions/)). 큰 표에서 어느 쪽이 빠른지는 **인덱스가 정렬 순서를 만들어 주느냐**에 달렸다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Table Expressions (LATERAL Subqueries)](https://www.postgresql.org/docs/18/queries-table-expressions.html#QUERIES-LATERAL) · [MySQL 8.4 · Lateral Derived Tables](https://dev.mysql.com/doc/refman/8.4/en/lateral-derived-tables.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+버전은 `SELECT VERSION()` 으로 두 서버에서 직접 확인했다(`PostgreSQL 18.6 …` · `8.4.10`).\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
+표는 기존 `emp`·`dept` 두 개만 썼다. **새로 만든 표가 없다.**\
+**버전** — `LATERAL` 은 **PostgreSQL 9.3 부터**, **MySQL 8.0.14 부터**다. 두 도입 버전은 **릴리스 노트**에서 확인한 것이고 매뉴얼 본문에는 없다([주제 목록](../README.md)의 「버전 기준」 참조).\
+**선행** — [11 서브쿼리](../11-subquery-scalar-correlated-any-all/) · [13 INNER JOIN](../13-inner-join/) · [10 FROM 절](../10-from-clause-aliases-derived-tables/).\
+**이 주제의 출발점** — [10번](../10-from-clause-aliases-derived-tables/)의 「파생 테이블은 바깥을 못 본다」. **그 벽에 난 문이 `LATERAL` 이다.**

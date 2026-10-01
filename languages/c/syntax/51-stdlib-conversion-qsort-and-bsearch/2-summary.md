@@ -1,16 +1,5 @@
 # c/syntax/51 — `<stdlib.h>` 변환 · `qsort` · `bsearch`: 「**`atoi` 에는 실패를 말할 자리가 없다 — `strtol` 의 `endptr` 와 `errno` 가 그 자리다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — 수 변환 함수 머리의 「**atof, atoi, atol, and atoll are not required to affect the value of … errno on an error. If the value of the result cannot be represented, the behavior is undefined.**」, `atoi` 의 「**Except for the behavior on error, they are equivalent to … (int)strtol(nptr, nullptr, 10)**」, `strtol` 의 세 부분 분해(공백 · 주어 · 나머지) · 「**no conversion … the value of nptr is stored in the object pointed to by endptr**」 · 「**LONG_MAX … and the value of the macro ERANGE is stored in errno**」 · 「**If the value of base is 2, the characters 0b or 0B may optionally precede**」, 검색·정렬 공통 절의 「**for qsort they shall define a total ordering**」, `qsort` 의 「**If two elements compare as equal, their order in the resulting sorted array is unspecified.**」, `bsearch` 의 「**The array shall consist of: all the elements that compare less than, … equal to, and … greater than the key object, in that order**」, 규범 절의 「**If a "shall" … requirement that appears outside of a constraint … is violated, the behavior is undefined**」를 **본문에서 직접 찾아 읽었다**)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값 · `errno` · 소비한 글자 수 · 경고 · sanitizer 리포트 · 링크 심볼은 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`, 캡처 셸은 `LC_ALL=C`.\
-> ★★ **블록은 전부 캡처 파일에서 조립했다.** 이 편의 **그림 4 · 덤프(캡처 블록) 15**.
-> **버전** — `atoi`·`strtol`·`qsort`·`bsearch` 는 **C89 부터**, `strtoll` 은 **C99 부터**. ★★ **C23** 이 `strtol` 에 **`0b` 접두**(base 0 · 2)를 더했다 — 이 판의 glibc 는 `-std=c2x` 에서만 그 판으로 링크한다((2)).
-> ★★★ **경계** — **퀵 정렬 · 이분 탐색의 원리와 복잡도**는 [`algorithm/03-quick-sort/`](../../../../cs/algorithm/03-quick-sort/) · [`algorithm/06-binary-search/`](../../../../cs/algorithm/06-binary-search/)가 정본이다. 여기는 **표준 API 의 계약**만 본다.\
-> ★★ **`return a - b` 비교자의 넘침 · 서명이 다른 함수 포인터 호출의 일반형**은 [35번 형제](../35-function-pointers-and-callback-tables/) (4)·(5)절이 정본이다(이 편은 **다시 재지 않고** 인용한다). **`errno` 관례**는 [목록의 **46번 주제**](../46-errno-and-error-return-conventions/)다.
-> 선행 — [35번 형제](../35-function-pointers-and-callback-tables/) · [목록의 **46번 주제**](../46-errno-and-error-return-conventions/).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 둘째 창 — 실행 출력의 변환 격자다.** 입력 열 개를 `atoi` 와 `strtol`(+`endptr`+`errno`)에 넣고, 칸마다 **값 · 소비한 글자 수 · `errno` · 남은 글자 수**를 찍어 **스크립트가 「`strtol` 이 알린 것」을 분류**한다.
 ★★★ 그 격자에서 **`strtol` 이 성공이 아니라고 알린 입력 6 / 10** — `atoi` 는 그 여섯을 **성공과 가를 수단이 없다**(다섯은 평범한 값을 돌려주고, 하나는 UB 다).
 
@@ -633,3 +622,14 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★★ **`strtoul` 의 음수** — `"-1"` 을 `strtoul` 로 읽으면 **`ULONG_MAX`** 가 **에러 없이** 나온다(부호가 반환 타입에서 적용된다 — 표준 문장). ★ 이 편은 **던지지 않았다.**
 - ★ **로케일** — 「C 로케일이 아니면 로케일 고유의 주어 형식을 더 받아도 된다」(표준). 이 편은 `LC_ALL=C` 로만 돌렸다.
 - ★ **`qsort_s`/`bsearch_s`(부록 K)** — glibc 에 없다(★ 확인하지 않았다).
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — 수 변환 함수 머리의 「**atof, atoi, atol, and atoll are not required to affect the value of … errno on an error. If the value of the result cannot be represented, the behavior is undefined.**」, `atoi` 의 「**Except for the behavior on error, they are equivalent to … (int)strtol(nptr, nullptr, 10)**」, `strtol` 의 세 부분 분해(공백 · 주어 · 나머지) · 「**no conversion … the value of nptr is stored in the object pointed to by endptr**」 · 「**LONG_MAX … and the value of the macro ERANGE is stored in errno**」 · 「**If the value of base is 2, the characters 0b or 0B may optionally precede**」, 검색·정렬 공통 절의 「**for qsort they shall define a total ordering**」, `qsort` 의 「**If two elements compare as equal, their order in the resulting sorted array is unspecified.**」, `bsearch` 의 「**The array shall consist of: all the elements that compare less than, … equal to, and … greater than the key object, in that order**」, 규범 절의 「**If a "shall" … requirement that appears outside of a constraint … is violated, the behavior is undefined**」를 **본문에서 직접 찾아 읽었다**)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값 · `errno` · 소비한 글자 수 · 경고 · sanitizer 리포트 · 링크 심볼은 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`, 캡처 셸은 `LC_ALL=C`.\
+★★ **블록은 전부 캡처 파일에서 조립했다.** 이 편의 **그림 4 · 덤프(캡처 블록) 15**.
+**버전** — `atoi`·`strtol`·`qsort`·`bsearch` 는 **C89 부터**, `strtoll` 은 **C99 부터**. ★★ **C23** 이 `strtol` 에 **`0b` 접두**(base 0 · 2)를 더했다 — 이 판의 glibc 는 `-std=c2x` 에서만 그 판으로 링크한다((2)).
+★★★ **경계** — **퀵 정렬 · 이분 탐색의 원리와 복잡도**는 [`algorithm/03-quick-sort/`](../../../../cs/algorithm/03-quick-sort/) · [`algorithm/06-binary-search/`](../../../../cs/algorithm/06-binary-search/)가 정본이다. 여기는 **표준 API 의 계약**만 본다.\
+★★ **`return a - b` 비교자의 넘침 · 서명이 다른 함수 포인터 호출의 일반형**은 [35번 형제](../35-function-pointers-and-callback-tables/) (4)·(5)절이 정본이다(이 편은 **다시 재지 않고** 인용한다). **`errno` 관례**는 [목록의 **46번 주제**](../46-errno-and-error-return-conventions/)다.
+선행 — [35번 형제](../35-function-pointers-and-callback-tables/) · [목록의 **46번 주제**](../46-errno-and-error-return-conventions/).

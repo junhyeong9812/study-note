@@ -1,11 +1,5 @@
 # domain-modeling-advanced/17-batch-retry — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/17-batch-retry/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -526,3 +520,7 @@ if (retryScope == RetryScope.WHOLE_BATCH || attempt.rolledBack()) {
 - 챕터 안내(규칙·함정·측정이 알려준 것·변종 검증·생각해볼 것): `/home/jun/project/myway/domain-modeling-advanced/17-batch-retry/README.md`
 - 계약 테스트(2,000 · 4,000 · 0 · 3,000 · 5,000 · 9,000 · 6,000 · 이중 4건 · 상한 1에서 미해결 5건): `/home/jun/project/myway/domain-modeling-advanced/17-batch-retry/src/test/java/com/domain/batch/BatchRunnerTest.java`
 - 측정 테스트(18조합 0건 · 2,183,000 / 6,581,000 / 5,157 / 4,398,000 · 11,762 · 628,000 / 693,000 · 18,636,000 · 1,800번 중 0): `/home/jun/project/myway/domain-modeling-advanced/17-batch-retry/src/test/java/com/domain/batch/MeasurementTest.java`
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/17-batch-retry/impl/`).

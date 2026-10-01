@@ -1,19 +1,5 @@
 # python/syntax/07-string-methods — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [String Methods](https://docs.python.org/3.12/library/stdtypes.html#string-methods) — 메서드 전수의 정본
-> - [Text Sequence Type — str](https://docs.python.org/3.12/library/stdtypes.html#text-sequence-type-str) — `str` 의 정의
-> - [`unicodedata`](https://docs.python.org/3.12/library/unicodedata.html) — `decimal`/`digit`/`numeric` 의 정의
-> - [PEP 616 — String methods to remove prefixes and suffixes](https://peps.python.org/pep-0616/) — `removeprefix`/`removesuffix`(3.9+)
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> **버전** — 대부분 Python 3 전체 공통. **`removeprefix`/`removesuffix` 는 3.9+**.
-> `isdecimal`/`isnumeric` 의 답은 **유니코드 DB 판**에 달렸다(이 설치본은 `15.0.0`).
-> **선행** — [06-strings-bytes-unicode](../06-strings-bytes-unicode/2-summary.md) — 「`str` 은 코드 포인트 열」이 이 주제의 절반을 설명한다.
-
 ## 한눈에 — 쉽게 말하면
 
 **문자열 메서드에서 나는 사고는 거의 전부 「무엇을 인자로 받는가」를 잘못 읽은 것이다.**
@@ -1087,3 +1073,16 @@ print(out)                # 012
 - **`bytes` 쪽에도 같은 이름의 메서드가 대부분 있다** — `b.split`·`b.strip`·`b.replace`. 다만 인자도 `bytes` 여야 하고 `splitlines` 의 목록이 짧다.
 - **`str.encode` 이후의 정규화는 소용없다.** 정규화는 `str` 위에서만 뜻이 있다.
 - **`re.split` 은 빈 매치에서 3.7 부터 동작이 바뀌었다.** 문자열 메서드에는 그런 판 차이가 거의 없다는 것이 이 계열의 장점이다([목록의 **46번 주제**](../46-re/)).
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [String Methods](https://docs.python.org/3.12/library/stdtypes.html#string-methods) — 메서드 전수의 정본
+- [Text Sequence Type — str](https://docs.python.org/3.12/library/stdtypes.html#text-sequence-type-str) — `str` 의 정의
+- [`unicodedata`](https://docs.python.org/3.12/library/unicodedata.html) — `decimal`/`digit`/`numeric` 의 정의
+- [PEP 616 — String methods to remove prefixes and suffixes](https://peps.python.org/pep-0616/) — `removeprefix`/`removesuffix`(3.9+)
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+**버전** — 대부분 Python 3 전체 공통. **`removeprefix`/`removesuffix` 는 3.9+**.
+`isdecimal`/`isnumeric` 의 답은 **유니코드 DB 판**에 달렸다(이 설치본은 `15.0.0`).
+**선행** — [06-strings-bytes-unicode](../06-strings-bytes-unicode/2-summary.md) — 「`str` 은 코드 포인트 열」이 이 주제의 절반을 설명한다.

@@ -1,12 +1,5 @@
 # web-api/36 — `ResizeObserver`: 관측 상자 세 종류와 무한 루프 경고 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 세 계열이 테두리 · `transform` 을 포함하나는 [09번 주제](../09-element-geometry/1-question.md), 관찰 시작의 첫 알림은 [35번 주제](../35-intersection-observer/1-question.md)(IO)가 물었다. 렌더링 단계 안의 순서는 [38번 주제](../38-request-animation-frame/1-question.md)다. 여기는 **무엇이 바뀌면 오나**와 **콜백 안에서 크기를 바꾸면 무엇이 나나**를 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 명세는 **W3C Resize Observer 2020 WD 사본**과 HTML 을 받아 읽었다(편집자 초안은 못 봤다). **비용은 재지 않았다.**
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -110,6 +103,12 @@ new ResizeObserver(() => {
 
 - [35번 주제](../35-intersection-observer/1-question.md)의 IO 와 **같은 점**(관찰 시작) 하나와 **다른 점**(무엇이 바뀌면 오나) 하나는?
 - [09번 주제](../09-element-geometry/1-question.md) (9)의 「`transform` 은 한쪽에만 섞인다」에서 RO 는 **어느 쪽**을 보나?
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — 세 계열이 테두리 · `transform` 을 포함하나는 [09번 주제](../09-element-geometry/1-question.md), 관찰 시작의 첫 알림은 [35번 주제](../35-intersection-observer/1-question.md)(IO)가 물었다. 렌더링 단계 안의 순서는 [38번 주제](../38-request-animation-frame/1-question.md)다. 여기는 **무엇이 바뀌면 오나**와 **콜백 안에서 크기를 바꾸면 무엇이 나나**를 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 명세는 **W3C Resize Observer 2020 WD 사본**과 HTML 을 받아 읽었다(편집자 초안은 못 봤다). **비용은 재지 않았다.**
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

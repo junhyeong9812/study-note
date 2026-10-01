@@ -1,41 +1,5 @@
 # cpp/syntax/19 — 상속·가상 함수·`override`/`final` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 가상 함수](https://en.cppreference.com/w/cpp/language/virtual) · [cppreference — `override`](https://en.cppreference.com/w/cpp/language/override) · [cppreference — `final`](https://en.cppreference.com/w/cpp/language/final) · [cppreference — 추상 클래스](https://en.cppreference.com/w/cpp/language/abstract_class) · [Itanium C++ ABI](https://itanium-cxx-abi.github.io/cxx-abi/abi.html) · [GCC 13 Developer Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Developer-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **javac 21.0.5** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`virt01.cpp` \~ `virt14.cpp` · `Virt.java`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
-> ★★★ **ASan 을 붙인 블록은 마커를 `stderr` 로 찍었다.** sanitizer 가 `abort()` 로 죽이면\
-> **버퍼에 남은 표준 출력이 통째로 사라지기 때문**이다((8)의 소스에 그렇게 적혀 있다).\
-> ★★ **리포트를 자른 블록은 자르는 명령을 배너에 적었다** — 실린 것이 「생략한 일부」가 아니라 「**그 명령의 전체 출력**」이다.
-> **버전** — 가상 함수·순수 가상·추상 클래스는 **C++98부터**. **`override`·`final` 은 C++11부터**다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-> ★★★ **이 편은 16\~18 과 다른 축이다.** 16\~18 이 「**값이 어떻게 옮겨지나**」였다면 여기는 「**호출이 어디로 가나**」다.\
-> 겹치는 자리는 하나다 — (8)의 **가상 소멸자 없는 다형적 삭제**이고, **여기가 그 자리의 정본**이다.
-> **경계** — 「캡슐화·IS-A·다형성의 개념」은 [`oop-basics/`](../../../../cs/foundations/oop-basics/) §14\~18 이 정본이고,\
-> 여기는 **C++ 의 가상 디스패치 규칙**만 본다.\
-> 「가상 소멸자와 다형적 삭제의 전모」는 [목록의 **20번**](../20-virtual-destructors-and-polymorphic-deletion/), 「추상 클래스·vtable 비용」은 **21번**,\
-> 「연산자 오버로딩」은 **22번**, 「오버로드 해결」은 [1번](../01-function-overloading-and-overload-resolution/)이 정본이다.\
-> ★ (8)은 **14번이 「경고 0건」으로 남겨 둔 자리를 계수와 ASan 으로 닫는 것**까지다.
-> **대비** — ★★ C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **12번**([`12-class-fields-constructors-this-base/`](../../../csharp/syntax/12-class-fields-constructors-this-base/)) — **생성자 속 가상 호출이 C++ 과 정반대로 위험하다.**\
-> **그 편이 양쪽을 나란히 실측했고**, (9)에서 그 결과를 인용한다.\
-> Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **9번**([`09-inheritance-overriding/`](../../../java/syntax/09-inheritance-overriding/)) — **자바는 기본 가상**이다. (10)에서 던져 본다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ASan 리포트의 **PID**·주소·스택 프레임 줄 | ★★★ **어느 함수가 불렸나**(호출 로그) — 이 주제의 답 자체다 |
-> | **g++ vtable 덤프의 주소**(`(0x0x724f…)`) | ★★★ **vtable 항목 수와 그 자리에 무엇이 있나** |
-> | 두 컴파일러의 **진단 문구** · 실행 시간 | ★★ **소멸자 호출 횟수와 놓은 바이트 수** · **`sizeof`** |
-> | `typeid(...).name()` 의 **꾸밈 형식**(`1B`·`1D`) | ★★ **`cc exit`/`run exit`** · **경고·에러 개수** · **진단의 `(행,열)`** |
->
-> ★ **`typeid(...).name()` 이 `1B`·`1D` 로 나오는 것은 Itanium ABI 의 꾸민 이름**이다.\
-> **근거로 쓰는 것은 「정적 타입 자리와 동적 타입 자리가 다르다」는 사실**이지 그 글자가 아니다.
-
 ## 한눈에 — 쉽게 말하면
 
 **정적 타입은 「명찰」이고 동적 타입은 「사람」이다.**
@@ -1417,3 +1381,40 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **비가상 인터페이스(NVI) 관용구** — public 비가상이 protected 가상을 부르는 배치. (형태)의 `scaled()` 가 그 모양이다.
 - **다중 상속과 가상 상속** — vtable 에 `offset_to_top` 이 왜 있는지가 거기서 쓰인다. 이 문서는 **단일 상속만** 봤다.
 - **`final` 이 여는 최적화** — 정적 타입이 `final` 이면 가상 호출을 직접 호출로 바꿀 수 있다. ★ **이 문서는 그것을 재지 않았다** — [목록의 **21번 주제**](../21-abstract-classes-pure-virtual-and-vtable-cost/)다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 가상 함수](https://en.cppreference.com/w/cpp/language/virtual) · [cppreference — `override`](https://en.cppreference.com/w/cpp/language/override) · [cppreference — `final`](https://en.cppreference.com/w/cpp/language/final) · [cppreference — 추상 클래스](https://en.cppreference.com/w/cpp/language/abstract_class) · [Itanium C++ ABI](https://itanium-cxx-abi.github.io/cxx-abi/abi.html) · [GCC 13 Developer Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Developer-Options.html)
+**실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **javac 21.0.5** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`virt01.cpp` \~ `virt14.cpp` · `Virt.java`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
+★★★ **ASan 을 붙인 블록은 마커를 `stderr` 로 찍었다.** sanitizer 가 `abort()` 로 죽이면\
+**버퍼에 남은 표준 출력이 통째로 사라지기 때문**이다((8)의 소스에 그렇게 적혀 있다).\
+★★ **리포트를 자른 블록은 자르는 명령을 배너에 적었다** — 실린 것이 「생략한 일부」가 아니라 「**그 명령의 전체 출력**」이다.
+**버전** — 가상 함수·순수 가상·추상 클래스는 **C++98부터**. **`override`·`final` 은 C++11부터**다. 기준은 **C++20**이다.
+
+★★★ **이 편은 16\~18 과 다른 축이다.** 16\~18 이 「**값이 어떻게 옮겨지나**」였다면 여기는 「**호출이 어디로 가나**」다.\
+겹치는 자리는 하나다 — (8)의 **가상 소멸자 없는 다형적 삭제**이고, **여기가 그 자리의 정본**이다.
+**경계** — 「캡슐화·IS-A·다형성의 개념」은 [`oop-basics/`](../../../../cs/foundations/oop-basics/) §14\~18 이 정본이고,\
+여기는 **C++ 의 가상 디스패치 규칙**만 본다.\
+「가상 소멸자와 다형적 삭제의 전모」는 [목록의 **20번**](../20-virtual-destructors-and-polymorphic-deletion/), 「추상 클래스·vtable 비용」은 **21번**,\
+「연산자 오버로딩」은 **22번**, 「오버로드 해결」은 [1번](../01-function-overloading-and-overload-resolution/)이 정본이다.\
+★ (8)은 **14번이 「경고 0건」으로 남겨 둔 자리를 계수와 ASan 으로 닫는 것**까지다.
+**대비** — ★★ C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **12번**([`12-class-fields-constructors-this-base/`](../../../csharp/syntax/12-class-fields-constructors-this-base/)) — **생성자 속 가상 호출이 C++ 과 정반대로 위험하다.**\
+**그 편이 양쪽을 나란히 실측했고**, (9)에서 그 결과를 인용한다.\
+Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **9번**([`09-inheritance-overriding/`](../../../java/syntax/09-inheritance-overriding/)) — **자바는 기본 가상**이다. (10)에서 던져 본다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ASan 리포트의 **PID**·주소·스택 프레임 줄 | ★★★ **어느 함수가 불렸나**(호출 로그) — 이 주제의 답 자체다 |
+| **g++ vtable 덤프의 주소**(`(0x0x724f…)`) | ★★★ **vtable 항목 수와 그 자리에 무엇이 있나** |
+| 두 컴파일러의 **진단 문구** · 실행 시간 | ★★ **소멸자 호출 횟수와 놓은 바이트 수** · **`sizeof`** |
+| `typeid(...).name()` 의 **꾸밈 형식**(`1B`·`1D`) | ★★ **`cc exit`/`run exit`** · **경고·에러 개수** · **진단의 `(행,열)`** |
+
+★ **`typeid(...).name()` 이 `1B`·`1D` 로 나오는 것은 Itanium ABI 의 꾸민 이름**이다.\
+**근거로 쓰는 것은 「정적 타입 자리와 동적 타입 자리가 다르다」는 사실**이지 그 글자가 아니다.

@@ -1,19 +1,5 @@
 # js/syntax/03 — 숫자와 `BigInt`: 「수 타입이 하나뿐이라는 것」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 최신 초안](https://tc39.es/ecma262/) — Number 타입(IEEE 754 배정밀도)·BigInt 타입·`toFixed`·`Math.round` 의 규정
-> - [ECMA-262 판별 아카이브](https://262.ecma-international.org/) — `BigInt` 가 들어온 판(ES2020)을 가릴 때
-> - [MDN — `Number`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) · [MDN — `BigInt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·예외 타입과 메시지는 전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> **어느 판에서 나왔는지는 아래 첫 블록**에 있다.
-
 ```sh
 // js01b-versions.sh
 #!/usr/bin/env bash
@@ -1209,3 +1195,16 @@ Math.trunc(n);                // 32비트 한계 없이 정수로 — 이것이 
 - **십진 소수 제안(Decimal)이 TC39 에 있다.** 아직 확정 전이라 이 머신에서 실행 검증이 불가하고, 이 문서에서는 다루지 않았다.
 - **`BigInt` 의 나눗셈이 0 쪽으로 버리는 것**은 C 계열의 정수 나눗셈과 같다. 파이썬의 `//` 는 **아래로** 버려서 음수에서 갈린다.
   이 문서에서는 파이썬을 던지지 않았다 — 형제 문서를 링크만 했다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 최신 초안](https://tc39.es/ecma262/) — Number 타입(IEEE 754 배정밀도)·BigInt 타입·`toFixed`·`Math.round` 의 규정
+- [ECMA-262 판별 아카이브](https://262.ecma-international.org/) — `BigInt` 가 들어온 판(ES2020)을 가릴 때
+- [MDN — `Number`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) · [MDN — `BigInt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·예외 타입과 메시지는 전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+**어느 판에서 나왔는지는 본문의 첫 블록**에 있다.

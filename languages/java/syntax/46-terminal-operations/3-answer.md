@@ -1,10 +1,5 @@
 # java/syntax/46 — 최종 연산과 지연 평가·단락 평가 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> javadoc 인용은 `lib/src.zip` 의 `java.base/java/util/stream/Stream.java`·`package-info.java` 와 [패키지 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) 원문이다.\
-> 17.0.13 · 25.0.1 에서도 같은 프로그램을 돌렸다 — **스택트레이스 줄 번호 말고는 출력이 전부 같았다**(11번).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -608,3 +603,9 @@ catch (IllegalStateException e) { ... }
 - 병렬 `forEach` 의 출력 순서와 관여 스레드 수 — 머신의 코어 수(이 머신은 24)에 따라 다르다.
 - 스택트레이스의 줄 번호 — 버전마다 다르다.
 - `forEachOrdered` 의 액션을 실행하는 스레드 — 실측에서 `main` 일 때도, 워커일 때도 있었다(5회 중 1~2개 스레드).
+
+## 실행 환경
+
+이 파일의 모든 출력은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+javadoc 인용은 `lib/src.zip` 의 `java.base/java/util/stream/Stream.java`·`package-info.java` 와 [패키지 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) 원문이다.\
+17.0.13 · 25.0.1 에서도 같은 프로그램을 돌렸다 — **스택트레이스 줄 번호 말고는 출력이 전부 같았다**(11번).

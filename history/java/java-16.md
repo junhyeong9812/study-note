@@ -1,9 +1,5 @@
 # Java 16 (2021년 3월)
 
-> 원본: `~/project/java-history/java/java-16.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JEP 번호·클래스/옵션 이름·코드블록 3개(java 3)·「릴리스 정보」와 「그 외 변경」의 목록은 원문 그대로다.\
-> 「한눈에」의 이삿짐 비유와 대응표, 「이 편에서 미리보기인가 정식인가」 표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다. 새 도식은 없다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -182,3 +178,9 @@ incubator 단계의 Vector·외부 메모리 API는 Java의 고성능·네이티
 - [JEP 396: Strongly Encapsulate JDK Internals by Default](https://openjdk.org/jeps/396)
 - [JEP 392: Packaging Tool](https://openjdk.org/jeps/392)
 - [Java version history - Wikipedia](https://en.wikipedia.org/wiki/Java_version_history)
+
+## 출처
+
+원본: `~/project/java-history/java/java-16.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JEP 번호·클래스/옵션 이름·코드블록 3개(java 3)·「릴리스 정보」와 「그 외 변경」의 목록은 원문 그대로다.\
+「한눈에」의 이삿짐 비유와 대응표, 「이 편에서 미리보기인가 정식인가」 표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다. 새 도식은 없다.

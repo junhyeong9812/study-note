@@ -1,17 +1,5 @@
 # kotlin/syntax/24 — `enum class` 와 `sealed` 선택 기준 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Enum classes](https://kotlinlang.org/docs/enum-classes.html) · [Sealed classes and interfaces](https://kotlinlang.org/docs/sealed-classes.html) · [`kotlin.enums.EnumEntries`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.enums/-enum-entries/).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
-> `kotlinc` 10회(컴파일 실패 2벌) · `java` 8회(그중 1회는 **예외로 죽는 것이 결과**) · `javap` 1회. 리플렉션 실험에는 `kotlin-reflect.jar` 를 썼다.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다.
-> **버전** — `enum class` 는 **1.0**, **`entries` 는 1.9**, `sealed interface` 는 **1.5** 다.
-> **경계** — `sealed` 와 `when` 완결성은 [23번 주제](../23-sealed-classes-and-when-exhaustiveness/)가 정본이고, `when` 의 `enum` 주체가 어떤 바이트코드가 되는지는 [6번 주제](../06-when-expression/)가 정본이다(`$EnumSwitchMapping`).\
-> `data class`·`data object` 는 [22번 주제](../22-data-class-generated-members/), `object` 가 싱글턴이 되는 원리는 [25번 주제](../25-object-declaration-companion-and-object-expression/)다.\
-> Java 쪽 짝은 [`../../../java/syntax/13-enum-classes/`](../../../java/syntax/13-enum-classes/) — **`values()` 의 방어 복사·`ordinal` 의 위험은 거기가 정본**이고, 여기는 **`sealed` 와 견주어 무엇을 고르나**다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다.
 
 | 흔들린다 | 안 흔들린다 |
@@ -455,7 +443,7 @@ Exception in thread "main" java.lang.IllegalArgumentException: No enum constant 
 
 - 예외 타입과 메시지가 정확하다 — 「`java.lang.IllegalArgumentException: No enum constant Status.PENDING`」.
 - ★ **마커를 `System.err.println` 으로 찍었다.** 스택트레이스도 표준 오류라 **한 블록 안에서 순서가 고정**된다. `println` 으로 찍었다면 파이프로 받을 때 순서가 뒤집혔을 것이다.
-- ★ `at java.base/java.lang.Enum.valueOf(Enum.java:293)` 의 **줄 번호는 이 JDK 판의 것**이다(머리말의 흔들리는 칸). **첫 프레임과 메시지가 근거**다.
+- ★ `at java.base/java.lang.Enum.valueOf(Enum.java:293)` 의 **줄 번호는 이 JDK 판의 것**이다(맨 위 부분의 흔들리는 칸). **첫 프레임과 메시지가 근거**다.
 
 **안 터뜨리는 길**
 
@@ -536,7 +524,7 @@ G [true, true, true]
 - `D true false` — `Color::class.java.isEnum` 은 참, `Shape` 는 거짓. **`sealed` 는 JVM 의 enum 이 아니다.**
 - `E false true` — `Circle(1.0)` 둘은 **다른 객체**이고 `==` 만 참이다((4)).
 - `F true` · `G [true, true, true]` — `data object` 도 `enum` 상수도 **싱글턴**이고, `valueOf` 는 **같은 객체**를 돌려준다.
-- ★★ **이 문서는 `B` 를 정렬해서 찍는다.** 5판 모두 순서가 같았지만 그것은 **관찰이지 보장이 아니다** — 근거로 쓸 칸은 **집합과 개수**다(머리말 표).
+- ★★ **이 문서는 `B` 를 정렬해서 찍는다.** 5판 모두 순서가 같았지만 그것은 **관찰이지 보장이 아니다** — 근거로 쓸 칸은 **집합과 개수**다(맨 위 부분 표).
 - ★ 「모든 변형 테스트」가 **`enum` 쪽은 공짜, `sealed` 쪽은 손이 간다** — 이것도 선택 기준의 한 칸이다.
 
 ## 문법 — 형태와 규칙
@@ -679,3 +667,15 @@ Y [3층 화재, 20cm 침수, 훈련]
 - **「상태 기계」를 어느 쪽으로 쓸 것인가**가 이 선택의 실제 얼굴이다. 전이(transition)에 **페이로드가 붙으면** `sealed`, **상태 이름만 오가면** `enum` 이다. 둘을 섞는 관용구도 있다 — `enum` 으로 **상태 이름**을 두고 `sealed` 로 **이벤트**를 두는 식이다.
 - **`enum` 이 `sealed` 로 못 하는 것** — `EnumSet`·`EnumMap` 이 대표다. 둘 다 `ordinal` 을 인덱스로 쓰는 자료구조라 **`enum` 에만 존재**한다([`../../../java/syntax/13-enum-classes/`](../../../java/syntax/13-enum-classes/)). 「플래그 여러 개를 켜고 끈다」면 `sealed` 로 옮기는 순간 `Set<Shape>` 이 해시로 떨어진다.
 - **`ordinal` 함정의 집안 사람**이 [22번 주제](../22-data-class-generated-members/)의 `hashCode` 다 — 둘 다 **「프로그램 안에서만 뜻이 있는 숫자」를 밖으로 내보내서** 나는 사고다. 경계를 넘는 값은 **이름이나 명시적 코드**로 적는다.
+
+## 실행 환경
+
+**기준 소스** — [Enum classes](https://kotlinlang.org/docs/enum-classes.html) · [Sealed classes and interfaces](https://kotlinlang.org/docs/sealed-classes.html) · [`kotlin.enums.EnumEntries`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.enums/-enum-entries/).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
+`kotlinc` 10회(컴파일 실패 2벌) · `java` 8회(그중 1회는 **예외로 죽는 것이 결과**) · `javap` 1회. 리플렉션 실험에는 `kotlin-reflect.jar` 를 썼다.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다.
+**버전** — `enum class` 는 **1.0**, **`entries` 는 1.9**, `sealed interface` 는 **1.5** 다.
+**경계** — `sealed` 와 `when` 완결성은 [23번 주제](../23-sealed-classes-and-when-exhaustiveness/)가 정본이고, `when` 의 `enum` 주체가 어떤 바이트코드가 되는지는 [6번 주제](../06-when-expression/)가 정본이다(`$EnumSwitchMapping`).\
+`data class`·`data object` 는 [22번 주제](../22-data-class-generated-members/), `object` 가 싱글턴이 되는 원리는 [25번 주제](../25-object-declaration-companion-and-object-expression/)다.\
+Java 쪽 짝은 [`../../../java/syntax/13-enum-classes/`](../../../java/syntax/13-enum-classes/) — **`values()` 의 방어 복사·`ordinal` 의 위험은 거기가 정본**이고, 여기는 **`sealed` 와 견주어 무엇을 고르나**다.

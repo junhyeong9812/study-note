@@ -1,9 +1,5 @@
 # Spring Framework 5.x (2017 ~)
 
-> 원본: `~/project/java-history/spring/framework-5.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·클래스/어노테이션 이름·코드블록 8개(Java 4 · Kotlin 4)·「릴리스 정보」와 「마이너 버전별 변화」의 목록·`route()` 참고 인용구는 원문 그대로다.\
-> ASCII 도식 3개(모두 원문 mermaid 그림을 글자로 옮긴 것이다), 「한눈에」의 식당 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -328,3 +324,9 @@ Flow<T> (0..N 스트림)    <-- asFlux / Flux.asFlow -->       Flux<T> (0..N)
 - [Spring Framework 5.2 Release Notes (GitHub wiki)](https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-5.2-Release-Notes)
 - [Spring Framework 5.3 - versionlog](https://versionlog.com/spring-framework/5.3/)
 - [Spring Framework - Wikipedia](https://en.wikipedia.org/wiki/Spring_Framework)
+
+## 출처
+
+원본: `~/project/java-history/spring/framework-5.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·클래스/어노테이션 이름·코드블록 8개(Java 4 · Kotlin 4)·「릴리스 정보」와 「마이너 버전별 변화」의 목록·`route()` 참고 인용구는 원문 그대로다.\
+ASCII 도식 3개(모두 원문 mermaid 그림을 글자로 옮긴 것이다), 「한눈에」의 식당 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

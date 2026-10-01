@@ -1,9 +1,5 @@
 # 인터넷의 탄생과 TCP/IP (1969~1983)
 
-> 원본: `~/project/network-history/01-인터넷-탄생-TCP-IP.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·논문명·기관명·RFC 번호·인용문은 원문 그대로다.\
-> ASCII 도식 3개와 「한눈에」의 우편 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -256,3 +252,9 @@ ARPANET 초기에 각 대학 대학원생들이 모인 비공식 모임 **NWG(Ne
 - [46 Years of RFCs - Internet Society](https://www.internetsociety.org/blog/2015/04/46-years-of-rfcs-celebrating-the-anniversary-of-rfc-1/)
 - [Introduction to the IETF](https://www.ietf.org/about/introduction/)
 - ["Rough Consensus and Running Code" and the Internet (Froomkin) - Duke CS PDF](https://courses.cs.duke.edu/common/compsci092/papers/govern/consensus.pdf)
+
+## 출처
+
+원본: `~/project/network-history/01-인터넷-탄생-TCP-IP.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·논문명·기관명·RFC 번호·인용문은 원문 그대로다.\
+ASCII 도식 3개와 「한눈에」의 우편 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

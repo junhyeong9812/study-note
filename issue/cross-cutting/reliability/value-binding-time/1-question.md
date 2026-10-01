@@ -1,10 +1,5 @@
 # issue/cross-cutting/reliability/value-binding-time — 값은 해석되는 시점에 박제된다 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 
 1. (왜) `.env`를 고치고 `docker compose restart`를 했는데 컨테이너는 옛 값으로 돈다. `restart`와 `up -d`(재생성)는 무엇이 다르고, 컨테이너 환경변수는 **언제** 정해지는가?

@@ -1,16 +1,5 @@
 # c/syntax/02 — 기본 타입·크기·고정폭 정수: 표준은 최소만 정한다 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Arithmetic types (C)](https://en.cppreference.com/w/c/language/arithmetic_types) · [GCC 13 — Implementation-defined behavior](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/C-Implementation.html)
-> **실행 검증** — 이 문서의 모든 수치·출력은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux(LP64) 에서 실제로 돌려 얻은 것이다.\
-> 기본 플래그는 `-std=c17 -Wall -Wextra` 이고, 다른 표준을 쓴 블록은 그 자리에 밝혔다.\
-> gcc 13 에는 `-std=c23` 이 **없다** — C23 확인은 전부 `-std=c2x`(`__STDC_VERSION__ = 202000L`).
-> ★ **이 문서의 수치는 대부분 「이 환경의 값」이지 「C 의 값」이 아니다.** 그 경계가 이 주제의 본체다.
-> **버전** — `<stdint.h>`·`_Bool` 은 C99 부터. `bool`/`true`/`false` 키워드화는 **C23 부터**.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「2진 표현·2의 보수·엔디언」은 [`../../../../cs/foundations/data-representation/`](../../../../cs/foundations/data-representation/) 가 정본이다.\
-> 여기는 **C 에서 어떤 타입을 고르나**만 쓴다.
-
 ## 한눈에 — 쉽게 말하면
 
 **C 의 기본 타입은 옷 사이즈이지 줄자 눈금이 아니다.**
@@ -601,3 +590,15 @@ sizeof(boom()) = 4  <- 위에 boom 이 안 찍혔으면 sizeof 는 피연산자�
 
   `boom()` 이 `puts` 를 부르는데 **아무것도 안 찍혔다.** 타입만 보고 크기를 냈다는 뜻이다.\
   VLA 라는 예외가 있고, 그것은 [목록의 **08번 주제**](../08-sizeof-alignment-and-offsetof/)·[목록의 **18번 주제**](../18-variable-length-arrays-vla/)의 몫이다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Arithmetic types (C)](https://en.cppreference.com/w/c/language/arithmetic_types) · [GCC 13 — Implementation-defined behavior](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/C-Implementation.html)
+**실행 검증** — 이 문서의 모든 수치·출력은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux(LP64) 에서 실제로 돌려 얻은 것이다.\
+기본 플래그는 `-std=c17 -Wall -Wextra` 이고, 다른 표준을 쓴 블록은 그 자리에 밝혔다.\
+gcc 13 에는 `-std=c23` 이 **없다** — C23 확인은 전부 `-std=c2x`(`__STDC_VERSION__ = 202000L`).
+★ **이 문서의 수치는 대부분 「이 환경의 값」이지 「C 의 값」이 아니다.** 그 경계가 이 주제의 본체다.
+**버전** — `<stdint.h>`·`_Bool` 은 C99 부터. `bool`/`true`/`false` 키워드화는 **C23 부터**.
+
+**경계** — 「2진 표현·2의 보수·엔디언」은 [`../../../../cs/foundations/data-representation/`](../../../../cs/foundations/data-representation/) 가 정본이다.\
+여기는 **C 에서 어떤 타입을 고르나**만 쓴다.

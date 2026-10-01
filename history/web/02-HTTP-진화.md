@@ -1,10 +1,5 @@
 # HTTP 프로토콜의 진화 — HTTP/0.9부터 HTTP/3·TLS 1.3까지
 
-> 원본: `~/project/web-history/02-HTTP-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·논문명·표준번호·코드·표는 원문 그대로다.\
-> ASCII 도식 21개와 「한눈에」의 택배 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
-> 원문이 절마다 반복해 쓴 소제목(「시대적 배경」)은 이 문서의 골격으로 대체했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **HTTP의 30년은 "택배 절차를 계속 고쳐 온 역사"다 — 1.0 이후로는 무엇을 보내는지를 그대로 두고, 보내는 방법만 바꿨다.**
@@ -721,3 +716,10 @@ RFC 9110이 이 버전 공통 의미론을 한곳에 모은 것은 그래서다.
 - [A Detailed Look at RFC 8446 (a.k.a. TLS 1.3) — Cloudflare](https://blog.cloudflare.com/rfc-8446-aka-tls-1-3/)
 - [Transport Layer Security — Wikipedia](https://en.wikipedia.org/wiki/Transport_Layer_Security)
 - [SSL and TLS Versions: Complete History — SSL Dragon](https://www.ssldragon.com/blog/history-of-ssl-tls-versions/)
+
+## 출처
+
+원본: `~/project/web-history/02-HTTP-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·논문명·표준번호·코드·표는 원문 그대로다.\
+ASCII 도식 21개와 「한눈에」의 택배 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
+원문이 절마다 반복해 쓴 소제목(「시대적 배경」)은 이 문서의 골격으로 대체했다.

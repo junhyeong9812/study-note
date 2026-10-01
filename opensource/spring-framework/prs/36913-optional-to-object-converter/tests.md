@@ -1,7 +1,5 @@
 # PR #36913 — 테스트 해설 (테스트 하나하나)
 
-> PR #36913 테스트 해설. 형식·개념은 ../37153/tests.md, ../37153/guard-tests.md 참조.
-
 이 PR은 `DefaultConversionServiceTests`의 중첩 클래스 `OptionalConversionTests`에 5건을 추가했다.\
 판별 기준은 수정 전 `matches()`가 **입력과 무관하게 항상 true**였다는 사실이다.
 

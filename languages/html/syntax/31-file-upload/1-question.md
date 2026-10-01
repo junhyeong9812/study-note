@@ -1,14 +1,5 @@
 # html/syntax/31 — 파일 업로드: `accept`/`multiple`/`capture` 와 `enctype=multipart/form-data` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★★★ 이 주제의 답은 **서버가 받은 부분**이다 — 칸마다 「**부분이 몇 개 · `filename` 은 무엇 · 부분 `Content-Type` 은 무엇 · 내용이 갔나 이름만 갔나**」로 답하라.
-> ★ 소스 펜스 첫 줄의 `<!-- 파일이름 -->` 은 **어느 파일을 던진 것인지 표시**이지 파일 내용이 아니다. 펜스의 소스는 전부 실제로 던진 파일이다.
-> ★ 올린 파일 셋 — `p1.png`(1×1 PNG · 67 바이트) · `t1.txt`(글자 `abc` + 줄바꿈 · 4 바이트) · `t2.png`(글자 `xyz` + 줄바꿈 · 4 바이트). 넣는 길 셋 — `files`(CDP `DOM.setFileInputFiles`) · `drop`(CDP 끌어다 놓기) · `chooser`(진짜 마우스로 칸을 눌러 뜬 고르기 창에 넣기).
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
-> 선행 — [21번 주제](../21-form-submission-model/1-question.md) · [24번 주제](../24-input-types-choice-special/1-question.md).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -184,6 +175,14 @@ window.__시도 = [
 ### 11. 정본 경계 긋기 (연결)
 
 - `enctype` 여섯 칸 · 빈 파일 칸 · `FormData` 에 `File` 을 넣을 때의 `filename` · 받은 `File` 미리보기의 정본은?
+
+## 실행 환경
+
+★★★ 이 주제의 답은 **서버가 받은 부분**이다 — 칸마다 「**부분이 몇 개 · `filename` 은 무엇 · 부분 `Content-Type` 은 무엇 · 내용이 갔나 이름만 갔나**」로 답하라.
+★ 소스 펜스 첫 줄의 `<!-- 파일이름 -->` 은 **어느 파일을 던진 것인지 표시**이지 파일 내용이 아니다. 펜스의 소스는 전부 실제로 던진 파일이다.
+★ 올린 파일 셋 — `p1.png`(1×1 PNG · 67 바이트) · `t1.txt`(글자 `abc` + 줄바꿈 · 4 바이트) · `t2.png`(글자 `xyz` + 줄바꿈 · 4 바이트). 넣는 길 셋 — `files`(CDP `DOM.setFileInputFiles`) · `drop`(CDP 끌어다 놓기) · `chooser`(진짜 마우스로 칸을 눌러 뜬 고르기 창에 넣기).
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
+선행 — [21번 주제](../21-form-submission-model/1-question.md) · [24번 주제](../24-input-types-choice-special/1-question.md).
 
 ## 복습 기록
 

@@ -1,17 +1,5 @@
 # sql/55-트랜잭션 경계 — `COMMIT`·`ROLLBACK`·`SAVEPOINT` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · BEGIN](https://www.postgresql.org/docs/18/sql-begin.html) · [COMMIT](https://www.postgresql.org/docs/18/sql-commit.html) · [ROLLBACK](https://www.postgresql.org/docs/18/sql-rollback.html) · [SAVEPOINT](https://www.postgresql.org/docs/18/sql-savepoint.html) · [MySQL 8.4 · START TRANSACTION, COMMIT, and ROLLBACK](https://dev.mysql.com/doc/refman/8.4/en/commit.html) · [SAVEPOINT, ROLLBACK TO SAVEPOINT, RELEASE SAVEPOINT](https://dev.mysql.com/doc/refman/8.4/en/savepoint.html) · [Statements That Cause an Implicit Commit](https://dev.mysql.com/doc/refman/8.4/en/implicit-commit.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> ★ **이 주제는 설정에 달려 있다** — 자동 커밋이 어디에 사는지가 두 엔진에서 다르다. 그래서 「환경 확인」이 본문 앞에 있다.\
-> ★ **두 세션이 필요한 실험이 있다.** 이름 붙인 FIFO 로 두 접속을 열어 두고 한 줄씩 먹였다(맨 끝 「실행 검증」에 방법 그대로).\
-> **이 편이 만든 객체와 그 뒷정리** — 표 `t55_acct`(2행) · `t55_tmp`(MySQL 의 암묵 커밋 실험용). **끝나고 둘 다 `DROP` 했다**(3-answer 의 「실행 검증」).\
-> ★ **기존 `emp`·`dept` 는 이 편에서 읽지도 잠그지도 않았다.** 트랜잭션 자체가 실험 대상이라 `ROLLBACK` 에 기댈 수 없는 자리가 많아, 공용 표를 아예 건드리지 않았다.\
-> **선행** — [49 INSERT](../49-insert-multi-row-and-insert-select/). 넣는 문이 있어야 「되돌린다」가 성립한다.
-
 ## 한눈에 — 쉽게 말하면
 
 **트랜잭션은 「여기서부터 여기까지는 전부 되거나 전부 안 된 것으로 쳐라」는 괄호다.**
@@ -568,3 +556,14 @@ MySQL 의 DDL(4번), 두 번째 `START TRANSACTION`(ㅁ), `SET autocommit=1` 로
 - **`AND CHAIN` 의 쓸모.** 배치 루프에서 커밋 뒤 **같은 격리 수준으로** 다음 묶음을 시작하고 싶을 때 한 줄로 줄인다.
 - **2단계 커밋(`PREPARE TRANSACTION`).** PG 에는 분산 트랜잭션용 2단계 커밋 문법이 따로 있다.\
   이 편의 범위 밖이고, 분산 조율의 위험은 [`ops-patterns/11-distributed-lock`](../../../../cs/ops-patterns/11-distributed-lock/) 쪽 이야기다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · BEGIN](https://www.postgresql.org/docs/18/sql-begin.html) · [COMMIT](https://www.postgresql.org/docs/18/sql-commit.html) · [ROLLBACK](https://www.postgresql.org/docs/18/sql-rollback.html) · [SAVEPOINT](https://www.postgresql.org/docs/18/sql-savepoint.html) · [MySQL 8.4 · START TRANSACTION, COMMIT, and ROLLBACK](https://dev.mysql.com/doc/refman/8.4/en/commit.html) · [SAVEPOINT, ROLLBACK TO SAVEPOINT, RELEASE SAVEPOINT](https://dev.mysql.com/doc/refman/8.4/en/savepoint.html) · [Statements That Cause an Implicit Commit](https://dev.mysql.com/doc/refman/8.4/en/implicit-commit.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+★ **이 주제는 설정에 달려 있다** — 자동 커밋이 어디에 사는지가 두 엔진에서 다르다. 그래서 「환경 확인」이 본문 앞에 있다.\
+★ **두 세션이 필요한 실험이 있다.** 이름 붙인 FIFO 로 두 접속을 열어 두고 한 줄씩 먹였다(맨 끝 「실행 검증」에 방법 그대로).\
+**이 편이 만든 객체와 그 뒷정리** — 표 `t55_acct`(2행) · `t55_tmp`(MySQL 의 암묵 커밋 실험용). **끝나고 둘 다 `DROP` 했다**(3-answer 의 「실행 검증」).\
+★ **기존 `emp`·`dept` 는 이 편에서 읽지도 잠그지도 않았다.** 트랜잭션 자체가 실험 대상이라 `ROLLBACK` 에 기댈 수 없는 자리가 많아, 공용 표를 아예 건드리지 않았다.\
+**선행** — [49 INSERT](../49-insert-multi-row-and-insert-select/). 넣는 문이 있어야 「되돌린다」가 성립한다.

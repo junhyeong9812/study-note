@@ -1,12 +1,5 @@
 # ts/syntax/38 — 앰비언트·전역 타입 구성 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [TSConfig — `types`](https://www.typescriptlang.org/tsconfig/#types)(「By default `types` is set to `[]`. For versions below TypeScript 6.0, by default all visible `@types` packages are included」) ·
-> [`typeRoots`](https://www.typescriptlang.org/tsconfig/#typeRoots)(지정하면 **그 아래 패키지만**) · [`lib`](https://www.typescriptlang.org/tsconfig/#lib)(내장 JS API·브라우저 환경의 선언 파일을 고른다).
-> 위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다.
-> ★ 레퍼런스는 `types` 의 기본값 변화를 **6.0** 으로 적는다. 이 머신에는 6.x 가 없어 **7.0.2 와 5.9.3 사이**에서만 갈림을 봤다 — 「6.0 에서 바뀌었다」는 **문서의 말**이지 이 문서가 잰 것이 아니다.
-> **실행 검증** — 본판은 아래다. ★ 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**. node 20 은 **`NODE20`**(nvm 판)이다.
-
 ```text
 ===== tsc --version · node --version · "$NODE20" --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -22,7 +15,6 @@ Python 3.12.3
 > ★ 소스 펜스 첫 줄 `// 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ JSON(`tsconfig.json`)은 주석을 달 수 없어 **캡처가 `===== 소스: 경로 =====` 배너를 찍어** 싣는다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -635,3 +627,11 @@ scrg38.ts(1,9): error TS2669: Augmentations for the global scope can only be dir
 - **진짜 `@types/node`·`@types/jest`** — 이 문서는 `index.d.ts` 한 장으로 흉내 냈다. 진짜 패키지는 `package.json` 의 `types` 필드·의존 `@types` 까지 따라가므로 들어오는 선언이 **훨씬 넓다.** `npm install` 을 하지 않아 **던지지 않았다.**
 - **`types` 와 `skipLibCheck` 의 겹침** — 37편 6절의 「충돌 전역의 파일 순서」는 `types` 가 무엇을 넣느냐에 따라 **충돌 자체가 생기거나 안 생긴다.** 둘을 한 격자로 **던지지 않았다.**
 - **`noLib`** · **`lib` 에 `dom.iterable`·`webworker`** — 이 문서는 `es20xx`·`dom` 만 던졌다.
+
+## 실행 환경
+
+**기준 소스** — [TSConfig — `types`](https://www.typescriptlang.org/tsconfig/#types)(「By default `types` is set to `[]`. For versions below TypeScript 6.0, by default all visible `@types` packages are included」) ·
+[`typeRoots`](https://www.typescriptlang.org/tsconfig/#typeRoots)(지정하면 **그 아래 패키지만**) · [`lib`](https://www.typescriptlang.org/tsconfig/#lib)(내장 JS API·브라우저 환경의 선언 파일을 고른다).
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다.
+★ 레퍼런스는 `types` 의 기본값 변화를 **6.0** 으로 적는다. 이 머신에는 6.x 가 없어 **7.0.2 와 5.9.3 사이**에서만 갈림을 봤다 — 「6.0 에서 바뀌었다」는 **문서의 말**이지 이 문서가 잰 것이 아니다.
+**실행 검증** — 본판은 맨 위 블록이다. ★ 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**. node 20 은 **`NODE20`**(nvm 판)이다.

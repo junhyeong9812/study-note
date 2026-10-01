@@ -1,62 +1,5 @@
 # js/syntax/40 — 비동기 이터레이션: 「`for await` 는 값마다 기다리고, 떠날 때 `return()` 을 기다리며, 동기 이터러블은 감싸서 쓴다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다** — 루프 셋(`for...of` + 동기 제너레이터 · `for await` + async generator · `for await` + **프라미스를 내는 동기 제너레이터**) × 루프가 끝나는 법 다섯(`break` · `return` · `throw` · 끝까지 · **값이 거부된 프라미스**) = 15칸에서 **`return()` 이 불렸나 · `finally` 가 돌았나**를 찍고, 마지막 줄에 「**동기판과 갈린 칸 N / M**」을 스크립트가 찍는다(동작 (1)).
-> ★★ 보조로 **① 추상 연산에 로그 심기**(`Symbol.asyncIterator`/`Symbol.iterator` 를 읽는 getter · 계수 잡의 `@k` · `next()` 세 번의 줄 순서)와 **④ 예외의 `constructor.name` + `message`**(이터러블이 아닐 때의 `TypeError`)를 쓴다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — `GetIterator`](https://tc39.es/ecma262/multipage/abstract-operations.html) — 「kind 가 async 면 `@@asyncIterator` 를 먼저 찾고, **없으면 `@@iterator` 를 찾아 `CreateAsyncFromSyncIterator` 로 감싼다**」 · `AsyncIteratorClose` — 「`return` 을 부르고 그 결과를 **`Await`** 한다」
-> - [ECMA-262 — `Yield` · `AsyncGeneratorYield` · `AsyncFromSyncIteratorContinuation`](https://tc39.es/ecma262/multipage/control-abstraction-objects.html) — 「genKind 가 async 면 `AsyncGeneratorYield(? Await(arg))`」 · 「**queue 가 비어 있지 않으면 멈추지 않고 계속 간다**」 · 「값 프라미스가 거부되면 **`closeOnRejection` 일 때 동기 이터레이터를 닫는다**」
-> - [ECMA-262 2025 (16판)](https://262.ecma-international.org/16.0/) · [2024 (15판)](https://262.ecma-international.org/15.0/) — **`closeOnRejection` 이라는 낱말이 16판에는 있고 15판·14판에는 없다**(본문 문자열 검색: 4건 / 0건 / 0건)
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(Asynchronous Iteration **2018** · `Array.fromAsync` **2026**)
-> - [Node.js v20 — `--unhandled-rejections`](https://nodejs.org/docs/latest-v20.x/api/cli.html#--unhandled-rejectionsmode) — 동작 (2)의 `exit 1` 이 어디서 오나(37번과 같다)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 순서·틱 수·예외는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다. Chrome 151 은 `./js40b-browser.sh`(소스는 [42번](../42-esm-modules/2-summary.md) 머리말 — `file://` 에 **`--allow-file-access-from-files`** 를 기본으로 넣었다).
-> ★★★ **격자 한 칸이 Chrome 151 과 두 node 판에서 갈렸다** — 동작 (1)의 C 행 `rejects` 칸. 나머지 탐침은 세 판이 한 글자도 같았다(아래 대조기).
-> ★★ **시간은 재지 않았다** — 「`for await` 가 느리다」·「스트림이 메모리를 아낀다」를 **쓰지 않는다.**
->
-> **버전**
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `for await...of` · `async function*` · `Symbol.asyncIterator` | **ES2018** | 세 판 다 있다 |
-> | 값이 거부되면 감싼 동기 이터레이터를 닫는다(`closeOnRejection`) | **ES2025(16판) 본문에서 처음 보인다** | ★★★ **Chrome 151 만 닫았다**, node 18·20 은 안 닫았다(동작 (1)) |
-> | `Array.fromAsync` | **ES2026** | node 18·20 에 없다 · Chrome 151 에 있다(26번) |
->
-> ★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — Asynchronous Iteration **2018**. README 40행은 판을 적지 않는다.
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체) | 루프 3 × 끝나는 법 5 = 15칸 — `return()` · `finally` · 결과 · 이벤트 줄 · 마지막 줄 「`… differs from row A …: N / 10`」(동작 (1)) · 미리 만든 프라미스 4행(동작 (2)) |
-> | ★★ **① 추상 연산에 로그 심기** | `@@asyncIterator`/`@@iterator` 를 **읽는 순간** getter 가 찍는다(동작 (3)) · 계수 잡의 `@k`(동작 (4)) · `next()` 세 번의 줄 순서(동작 (5)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | 이터러블이 아닌 것에 `for await`/`for...of` → `TypeError` 문구(동작 (3)) · 거부가 어디로 올라오나 |
-> | ★ **부적용 — ③ 브랜드 태그** | 판정할 객체의 종류가 없다(async generator 객체가 무엇을 가졌나는 `typeof` 로 충분했다) |
-> | ★ **안 쟀다 — 시간·메모리** | 「스트림처럼 조금씩 읽으면 가볍다」는 **이 문서의 근거가 아니다** |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 판별 블록의 판 문자열 — 머신에 매인다 | ★★★ 격자의 `yes`/`no` · 이벤트 줄 순서 · `@k` · 종료 코드 `0`·`1` — 걸음은 전부 **마이크로태스크나 `setTimeout` 0 하나씩**이다(36번) |
-> | ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | ★★ **판 사이에서 갈린 칸**(C 행 `rejects`)은 흔들림이 아니라 **판의 차이**다 — 세 판 모두 재실행에서 같았다 |
->
-> **층** — `for await` 와 async generator 는 **언어(ECMA-262)** 의 것이다. **호스트가 끼는 자리는 둘**이다 — 걸음을 만든 **타이머**와, 기다리기 전에 거부된 프라미스를 **보고하는** node(동작 (2) · 37번).
->
-> **선행** — [20 — 제너레이터](../20-generators/2-summary.md)(직접 선행 — ★★★ **`return()` 과 `finally`** 의 동기판이 거기 (3)에 있다) ·
-> [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ **소비자 17가지 중 `return()` 을 부른 것 8** — 이 문서의 A 행이 그 격자의 `break`·`return`·`throw` 줄과 같은 것을 다시 보인다) ·
-> [39 — `async`/`await`](../39-async-await/2-summary.md)(★★★ **`await` 의 틱 · 먼저 만든 프라미스의 거부** — 동작 (2)는 39번 동작 (4)의 `for await` 판이다) ·
-> [37 — Promise 상태 모델](../37-promise-state-model/2-summary.md)(미처리 거부 보고 · 틱 세는 계수 잡) · [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(`Array.fromAsync` — 비동기 이터러블을 배열로 모으는 내장 함수).
->
-> ★★ **경계** — 동기 쪽 **소비자별 `return()` 호출표는 19번**, 제너레이터 **`return()`·`throw()` 의 상태별 동작은 20번**이 정본이다. 여기서는 **그것이 `for await` 에서 어떻게 달라지나**만 본다.
-> ★ **취소**(`AbortSignal` 로 루프를 끊기)는 [41번](../41-cancellation-and-timeouts/2-summary.md), **모듈**은 [42번](../42-esm-modules/2-summary.md)이다.
-
 ```text
 ===== ./js40b-versions.sh (exit=0) =====
 node 18.19.1  v8 10.2.154.26-node.28
@@ -657,3 +600,59 @@ const measure = (label, loop) => new Promise((done) => {
 - **`yield*` 의 비동기판** — async generator 안의 `yield*` 가 동기 이터러블을 받는 자리. **이 문서는 재지 않았다** — 동작 (1)의 C 행과 같은 감싸개가 끼는지는 다음 판에서 격자에 한 행으로 더할 자리다.
 - **`return()` 을 이미 도는 중에 또 부르면**(요청 큐 안의 `return`) — 재지 않았다.
 - **호스트의 비동기 이터러블**(node 스트림 등) — 이 문서는 언어 쪽만 봤다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 전수 격자다** — 루프 셋(`for...of` + 동기 제너레이터 · `for await` + async generator · `for await` + **프라미스를 내는 동기 제너레이터**) × 루프가 끝나는 법 다섯(`break` · `return` · `throw` · 끝까지 · **값이 거부된 프라미스**) = 15칸에서 **`return()` 이 불렸나 · `finally` 가 돌았나**를 찍고, 마지막 줄에 「**동기판과 갈린 칸 N / M**」을 스크립트가 찍는다(동작 (1)).
+★★ 보조로 **① 추상 연산에 로그 심기**(`Symbol.asyncIterator`/`Symbol.iterator` 를 읽는 getter · 계수 잡의 `@k` · `next()` 세 번의 줄 순서)와 **④ 예외의 `constructor.name` + `message`**(이터러블이 아닐 때의 `TypeError`)를 쓴다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — `GetIterator`](https://tc39.es/ecma262/multipage/abstract-operations.html) — 「kind 가 async 면 `@@asyncIterator` 를 먼저 찾고, **없으면 `@@iterator` 를 찾아 `CreateAsyncFromSyncIterator` 로 감싼다**」 · `AsyncIteratorClose` — 「`return` 을 부르고 그 결과를 **`Await`** 한다」
+- [ECMA-262 — `Yield` · `AsyncGeneratorYield` · `AsyncFromSyncIteratorContinuation`](https://tc39.es/ecma262/multipage/control-abstraction-objects.html) — 「genKind 가 async 면 `AsyncGeneratorYield(? Await(arg))`」 · 「**queue 가 비어 있지 않으면 멈추지 않고 계속 간다**」 · 「값 프라미스가 거부되면 **`closeOnRejection` 일 때 동기 이터레이터를 닫는다**」
+- [ECMA-262 2025 (16판)](https://262.ecma-international.org/16.0/) · [2024 (15판)](https://262.ecma-international.org/15.0/) — **`closeOnRejection` 이라는 낱말이 16판에는 있고 15판·14판에는 없다**(본문 문자열 검색: 4건 / 0건 / 0건)
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(Asynchronous Iteration **2018** · `Array.fromAsync` **2026**)
+- [Node.js v20 — `--unhandled-rejections`](https://nodejs.org/docs/latest-v20.x/api/cli.html#--unhandled-rejectionsmode) — 동작 (2)의 `exit 1` 이 어디서 오나(37번과 같다)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 순서·틱 수·예외는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다. Chrome 151 은 `./js40b-browser.sh`(소스는 [42번](../42-esm-modules/2-summary.md) 맨 위 부분 — `file://` 에 **`--allow-file-access-from-files`** 를 기본으로 넣었다).
+★★★ **격자 한 칸이 Chrome 151 과 두 node 판에서 갈렸다** — 동작 (1)의 C 행 `rejects` 칸. 나머지 탐침은 세 판이 한 글자도 같았다(맨 위 대조기).
+★★ **시간은 재지 않았다** — 「`for await` 가 느리다」·「스트림이 메모리를 아낀다」를 **쓰지 않는다.**
+
+**버전**
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `for await...of` · `async function*` · `Symbol.asyncIterator` | **ES2018** | 세 판 다 있다 |
+| 값이 거부되면 감싼 동기 이터레이터를 닫는다(`closeOnRejection`) | **ES2025(16판) 본문에서 처음 보인다** | ★★★ **Chrome 151 만 닫았다**, node 18·20 은 안 닫았다(동작 (1)) |
+| `Array.fromAsync` | **ES2026** | node 18·20 에 없다 · Chrome 151 에 있다(26번) |
+
+★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — Asynchronous Iteration **2018**. README 40행은 판을 적지 않는다.
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체) | 루프 3 × 끝나는 법 5 = 15칸 — `return()` · `finally` · 결과 · 이벤트 줄 · 마지막 줄 「`… differs from row A …: N / 10`」(동작 (1)) · 미리 만든 프라미스 4행(동작 (2)) |
+| ★★ **① 추상 연산에 로그 심기** | `@@asyncIterator`/`@@iterator` 를 **읽는 순간** getter 가 찍는다(동작 (3)) · 계수 잡의 `@k`(동작 (4)) · `next()` 세 번의 줄 순서(동작 (5)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | 이터러블이 아닌 것에 `for await`/`for...of` → `TypeError` 문구(동작 (3)) · 거부가 어디로 올라오나 |
+| ★ **부적용 — ③ 브랜드 태그** | 판정할 객체의 종류가 없다(async generator 객체가 무엇을 가졌나는 `typeof` 로 충분했다) |
+| ★ **안 쟀다 — 시간·메모리** | 「스트림처럼 조금씩 읽으면 가볍다」는 **이 문서의 근거가 아니다** |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 판별 블록의 판 문자열 — 머신에 매인다 | ★★★ 격자의 `yes`/`no` · 이벤트 줄 순서 · `@k` · 종료 코드 `0`·`1` — 걸음은 전부 **마이크로태스크나 `setTimeout` 0 하나씩**이다(36번) |
+| ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | ★★ **판 사이에서 갈린 칸**(C 행 `rejects`)은 흔들림이 아니라 **판의 차이**다 — 세 판 모두 재실행에서 같았다 |
+
+**층** — `for await` 와 async generator 는 **언어(ECMA-262)** 의 것이다. **호스트가 끼는 자리는 둘**이다 — 걸음을 만든 **타이머**와, 기다리기 전에 거부된 프라미스를 **보고하는** node(동작 (2) · 37번).
+
+**선행** — [20 — 제너레이터](../20-generators/2-summary.md)(직접 선행 — ★★★ **`return()` 과 `finally`** 의 동기판이 거기 (3)에 있다) ·
+[19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ **소비자 17가지 중 `return()` 을 부른 것 8** — 이 문서의 A 행이 그 격자의 `break`·`return`·`throw` 줄과 같은 것을 다시 보인다) ·
+[39 — `async`/`await`](../39-async-await/2-summary.md)(★★★ **`await` 의 틱 · 먼저 만든 프라미스의 거부** — 동작 (2)는 39번 동작 (4)의 `for await` 판이다) ·
+[37 — Promise 상태 모델](../37-promise-state-model/2-summary.md)(미처리 거부 보고 · 틱 세는 계수 잡) · [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(`Array.fromAsync` — 비동기 이터러블을 배열로 모으는 내장 함수).
+
+★★ **경계** — 동기 쪽 **소비자별 `return()` 호출표는 19번**, 제너레이터 **`return()`·`throw()` 의 상태별 동작은 20번**이 정본이다. 여기서는 **그것이 `for await` 에서 어떻게 달라지나**만 본다.
+★ **취소**(`AbortSignal` 로 루프를 끊기)는 [41번](../41-cancellation-and-timeouts/2-summary.md), **모듈**은 [42번](../42-esm-modules/2-summary.md)이다.

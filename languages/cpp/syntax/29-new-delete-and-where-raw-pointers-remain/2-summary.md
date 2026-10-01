@@ -1,32 +1,5 @@
 # cpp/syntax/29 — `new`/`delete` 와 raw 포인터가 남는 자리 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `new` 식](https://en.cppreference.com/w/cpp/language/new) · [cppreference — `std::bad_array_new_length`](https://en.cppreference.com/w/cpp/memory/new/bad_array_new_length)\
-> ★ **cppreference 의 `new` 식 쪽은 이 배치에서 열었다** — 「배열 크기가 음수면 `bad_array_new_length` 와 맞는 예외」 조항만 읽었고, (3)이 그것과 **다른 관찰**을 싣는다. 나머지 규칙은 **실행·ASan·정적 분석기·`-O2` 어셈블리**로 적었다.
-> **실행 검증** — 이 문서의 모든 출력·리포트·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`raw01.cpp` \~ `raw05.cpp` · `raw-grid.sh` · `raw-asm.sh`).\
-> ★★★ **ASan 블록은 마커를 `stderr` 로 찍었다** · 자른 블록은 **자르는 명령을 배너에** 적었다 · clang + ASan 블록은 런타임 프레임의 절대 경로와 BuildId 를 `sed` 로 지웠다(그 `sed` 도 배너에 있다).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다. **시간은 한 번도 재지 않았다.**
-> **버전** — `new`/`delete`·`new (std::nothrow)`·`std::bad_alloc` 은 **C++98부터**, **`std::bad_array_new_length` 는 C++11부터**다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 실행으로 접지했다.
-> ★★★ **[26번](../26-unique-ptr-and-ownership-transfer/)의 결론이다 — 앞 편들이 잰 것은 다시 재지 않고 인용한다.**\
-> [26번](../26-unique-ptr-and-ownership-transfer/) (3) — **삭제자 크기 격자 「커진 칸 7 / 10」**(상태 없는 삭제자는 8 그대로) · (4) **배열을 `unique_ptr<T>` 에 맡기면 `Cell` 은 `bad-free` · `int` 는 `alloc-dealloc-mismatch`**(두 컴파일러) · (5) **`release()` 한 줄에 `Direct leak`, 경고 0 · 0** · ★★ (7) **C++11 식 `f(unique_ptr<W>(new W), g())` 의 누수는 두 컴파일러에서 재현되지 않았다**(g++ 는 `g()` 먼저, clang 은 `unique_ptr` 완성 뒤 — 「못 잰 것」).\
-> [14번](../14-destructors-and-deterministic-destruction/) (6) — **`new D[3]` 을 `delete` 로 놓으면 소멸자 1회 · g++ `run exit=134`(`munmap_chunk(): invalid pointer`) · `-Wmismatched-new-delete` · ASan `bad-free`.**\
-> [20번](../20-virtual-destructors-and-polymorphic-deletion/) (6) — **파생 배열을 기반 포인터로 `delete[]` 하면 g++ 는 SEGV, clang 은 `run exit=0` 인데 `~Derived` 0회·쓰레기 값** — ★ 이것은 **`delete` 대 `delete[]` 불일치가 아니라 「기반 포인터로 배열 지우기」** 다(두 사고를 섞지 마라).\
-> [15번](../15-raii-resources-as-types/) — ★★ **ASan 은 메모리만 본다 — 파일 핸들·락은 못 본다.**\
-> ★★ **여기서 새로 묻는 것은 셋이다** — **손으로 쓴 `new`/`delete` 사고 여섯을 도구 일곱이 각각 잡나** · **할당 실패는 무엇으로 오나** · **raw 포인터가 정당한 자리는 어디인가**.
-> **경계** — 「RAII 가 못 지우는 것 — C API 경계에서는 전부 raw 포인터로 돌아간다」의 **논증은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md) 의 「C++ — RAII는 해제를 잊는 실패를 지우고, 죽은 것을 가리키는 실패는 못 지운다」 절**이 정본이다.\
-> 「`malloc`/`free` 의 API 계약」은 C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **37번**(폴더 없음), 「C 의 다중 자원 해제」는 [C 13번 `goto cleanup`](../../../c/syntax/13-goto-cleanup-idiom/)이다.\
-> 「예외와 되감기」는 목록의 **51번 주제**, 「이터레이터·포인터 무효화 규칙」은 목록의 **43번 주제**가 정본이다 — 여기서는 **raw 포인터 판단에 필요한 한 조각**만 던진다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ASan 리포트의 **PID**·주소 | ★★★ **사고 격자의 칸마다 도구가 댄 이름 · 「제 이름으로 댄 칸 N / 42」** — 이 주제의 답 자체다 |
-> | ★ **clang + ASan 의 (2) 누수 판정** — 이 판에서는 **10 / 10 판 침묵**이었지만, 27편에서 같은 도구가 **판마다** 갈렸으므로 수를 성질로 적지 않는다 | ★★★ **`operator delete` · `_Unwind_Resume` 호출 수** · **잡은 예외 이름 · `q==nullptr`** · **ASan 오류 종류** · **`run exit`** |
-
 ## 한눈에 — 쉽게 말하면
 
 **`new`/`delete` 는 「열쇠를 손으로 반납하는 코인 로커」이고, raw 포인터는 「로커 번호가 적힌 쪽지」다.**
@@ -769,3 +742,31 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **placement new 와 `std::destroy_at`** — 이미 있는 메모리에 객체를 만들고 지운다. `delete` 가 아닌 짝이 있다. 이 문서는 던지지 않았다.
 - **`gsl::owner<T*>` 와 `not_null`** — raw 포인터에 **소유 여부를 이름으로** 붙이는 관례(가이드라인 지원 라이브러리). 이 문서는 던지지 않았다.
 - **`allocator_may_return_null`** — ASan 이 할당 실패를 죽이지 않고 돌려주게 하는 옵션. 예행에서 **던지는 `new` 에는 효과가 없었다** — 원인은 재지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `new` 식](https://en.cppreference.com/w/cpp/language/new) · [cppreference — `std::bad_array_new_length`](https://en.cppreference.com/w/cpp/memory/new/bad_array_new_length)\
+★ **cppreference 의 `new` 식 쪽은 이 배치에서 열었다** — 「배열 크기가 음수면 `bad_array_new_length` 와 맞는 예외」 조항만 읽었고, (3)이 그것과 **다른 관찰**을 싣는다. 나머지 규칙은 **실행·ASan·정적 분석기·`-O2` 어셈블리**로 적었다.
+**실행 검증** — 이 문서의 모든 출력·리포트·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`raw01.cpp` \~ `raw05.cpp` · `raw-grid.sh` · `raw-asm.sh`).\
+★★★ **ASan 블록은 마커를 `stderr` 로 찍었다** · 자른 블록은 **자르는 명령을 배너에** 적었다 · clang + ASan 블록은 런타임 프레임의 절대 경로와 BuildId 를 `sed` 로 지웠다(그 `sed` 도 배너에 있다).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다. **시간은 한 번도 재지 않았다.**
+**버전** — `new`/`delete`·`new (std::nothrow)`·`std::bad_alloc` 은 **C++98부터**, **`std::bad_array_new_length` 는 C++11부터**다. 기준은 **C++20**이다.
+
+★★★ **[26번](../26-unique-ptr-and-ownership-transfer/)의 결론이다 — 앞 편들이 잰 것은 다시 재지 않고 인용한다.**\
+[26번](../26-unique-ptr-and-ownership-transfer/) (3) — **삭제자 크기 격자 「커진 칸 7 / 10」**(상태 없는 삭제자는 8 그대로) · (4) **배열을 `unique_ptr<T>` 에 맡기면 `Cell` 은 `bad-free` · `int` 는 `alloc-dealloc-mismatch`**(두 컴파일러) · (5) **`release()` 한 줄에 `Direct leak`, 경고 0 · 0** · ★★ (7) **C++11 식 `f(unique_ptr<W>(new W), g())` 의 누수는 두 컴파일러에서 재현되지 않았다**(g++ 는 `g()` 먼저, clang 은 `unique_ptr` 완성 뒤 — 「못 잰 것」).\
+[14번](../14-destructors-and-deterministic-destruction/) (6) — **`new D[3]` 을 `delete` 로 놓으면 소멸자 1회 · g++ `run exit=134`(`munmap_chunk(): invalid pointer`) · `-Wmismatched-new-delete` · ASan `bad-free`.**\
+[20번](../20-virtual-destructors-and-polymorphic-deletion/) (6) — **파생 배열을 기반 포인터로 `delete[]` 하면 g++ 는 SEGV, clang 은 `run exit=0` 인데 `~Derived` 0회·쓰레기 값** — ★ 이것은 **`delete` 대 `delete[]` 불일치가 아니라 「기반 포인터로 배열 지우기」** 다(두 사고를 섞지 마라).\
+[15번](../15-raii-resources-as-types/) — ★★ **ASan 은 메모리만 본다 — 파일 핸들·락은 못 본다.**\
+★★ **여기서 새로 묻는 것은 셋이다** — **손으로 쓴 `new`/`delete` 사고 여섯을 도구 일곱이 각각 잡나** · **할당 실패는 무엇으로 오나** · **raw 포인터가 정당한 자리는 어디인가**.
+**경계** — 「RAII 가 못 지우는 것 — C API 경계에서는 전부 raw 포인터로 돌아간다」의 **논증은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md) 의 「C++ — RAII는 해제를 잊는 실패를 지우고, 죽은 것을 가리키는 실패는 못 지운다」 절**이 정본이다.\
+「`malloc`/`free` 의 API 계약」은 C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **37번**(폴더 없음), 「C 의 다중 자원 해제」는 [C 13번 `goto cleanup`](../../../c/syntax/13-goto-cleanup-idiom/)이다.\
+「예외와 되감기」는 목록의 **51번 주제**, 「이터레이터·포인터 무효화 규칙」은 목록의 **43번 주제**가 정본이다 — 여기서는 **raw 포인터 판단에 필요한 한 조각**만 던진다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ASan 리포트의 **PID**·주소 | ★★★ **사고 격자의 칸마다 도구가 댄 이름 · 「제 이름으로 댄 칸 N / 42」** — 이 주제의 답 자체다 |
+| ★ **clang + ASan 의 (2) 누수 판정** — 이 판에서는 **10 / 10 판 침묵**이었지만, 27편에서 같은 도구가 **판마다** 갈렸으므로 수를 성질로 적지 않는다 | ★★★ **`operator delete` · `_Unwind_Resume` 호출 수** · **잡은 예외 이름 · `q==nullptr`** · **ASan 오류 종류** · **`run exit`** |

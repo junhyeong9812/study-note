@@ -1,9 +1,5 @@
 # 06. 프론트엔드 프레임워크 진화
 
-> 원본: `~/project/js-history/06-프레임워크-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
-> 연도·인명·버전·코드·표는 원문 그대로다.\
-> ASCII 도식 7개(그중 3개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 통증 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -538,3 +534,9 @@ corpus 「렌더링 전략」의 결론 — "기본은 정적·서버 렌더, �
 - [web.dev — Rendering on the Web (Miller·Osmani)](https://web.dev/articles/rendering-on-the-web)
 - [Astro — Islands Architecture](https://docs.astro.build/en/concepts/islands/)
 - [SolidJS — Resources](https://www.solidjs.com/resources) · [Next-Gen Reactivity: SolidJS Signals vs Svelte 5 Runes — Leapcell](https://leapcell.io/blog/next-gen-reactivity-rethink-preact-solidjs-signals-vs-svelte-5-runes)
+
+## 출처
+
+원본: `~/project/js-history/06-프레임워크-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
+연도·인명·버전·코드·표는 원문 그대로다.\
+ASCII 도식 7개(그중 3개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 통증 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

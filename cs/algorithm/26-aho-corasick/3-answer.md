@@ -1,11 +1,5 @@
 # algorithm/26-aho-corasick — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`impl/com/algo/aho/AhoCorasick.java`).
-
-⚠️ 정답은 Claude 초안(2026-09-14) — impl 코드·README 기준으로 작성. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
@@ -377,3 +371,7 @@ public static List<Match> findAll(CountedAutomaton automaton, String text) {
   A: "없는 간선을 미리 채우기" 거래다 — 노드마다 알파벳 크기 배열을 두어 탐색 루프를 없애는 대신 노드 × 알파벳 메모리를 쓴다.\
   유니코드면 알파벳이 Java `char` 기준 65,536칸이라, 노드 수만 개 × 6만여 칸 × 4바이트면 수 GB로 터진다.\
   간선을 해시맵으로 바꾸고 찾을 때 실패 링크를 따라 올라가는 방식으로 되돌린다(정답 4번) — 메모리와 탐색 단순함을 맞바꾼다.
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`impl/com/algo/aho/AhoCorasick.java`).

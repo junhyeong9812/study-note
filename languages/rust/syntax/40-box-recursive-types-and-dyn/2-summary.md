@@ -1,18 +1,5 @@
 # rust/syntax/40 — `Box<T>`·재귀 타입·`dyn` 담기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `std::boxed` 모듈 문서](https://doc.rust-lang.org/std/boxed/index.html)(재귀 구조 · Memory layout · Editions) ·
-> [std — `Box`](https://doc.rust-lang.org/std/boxed/struct.Box.html)(`new` · `leak`) ·
-> [std — `std::option` 모듈 문서](https://doc.rust-lang.org/std/option/index.html)(Representation — 널 포인터 최적화) ·
-> [Reference — Recursive types](https://doc.rust-lang.org/reference/types.html#recursive-types) ·
-> [Reference — Moved and copied types](https://doc.rust-lang.org/reference/expressions.html#moved-and-copied-types)(옮겨 꺼낼 수 있는 자리).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> **`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(최적화 격자는 `-C opt-level=0\~3`).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음). **속도는 한 번도 재지 않았다.** 주소도 **싣지 않았다** — 「어느 영역인가」를 참/거짓과 영역 이름으로만 찍었다((3)).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ```text
 ===== rustc --version =====
 rustc 1.92.0 (ded5c06cf 2025-12-08)
@@ -1038,3 +1025,16 @@ mode=3
 - **`Box::new_uninit`(1.82)** — 초기화 안 된 상자를 먼저 힙에 잡고 나중에 채운다. (4)의 스택 경유를 피하는 다른 길이다(이 문서는 던지지 않았다).
 - **`Box<[T]>` 의 `.into_iter()` 는 2024 부터 값** — std boxed 모듈 문서의 Editions 절이 배열의 2021 특례와 나란히 적는다. 격자는 37편 (2).
 - **스레드 스택 크기** — 주 스레드는 `ulimit -s`, `std::thread::Builder::stack_size` 로 새 스레드의 스택을 정할 수 있다([목록의 **49번 주제**](../49-threads-spawn-join-and-move-closures/) — 이 문서는 던지지 않았다).
+
+## 실행 환경
+
+**기준 소스** — [std — `std::boxed` 모듈 문서](https://doc.rust-lang.org/std/boxed/index.html)(재귀 구조 · Memory layout · Editions) ·
+[std — `Box`](https://doc.rust-lang.org/std/boxed/struct.Box.html)(`new` · `leak`) ·
+[std — `std::option` 모듈 문서](https://doc.rust-lang.org/std/option/index.html)(Representation — 널 포인터 최적화) ·
+[Reference — Recursive types](https://doc.rust-lang.org/reference/types.html#recursive-types) ·
+[Reference — Moved and copied types](https://doc.rust-lang.org/reference/expressions.html#moved-and-copied-types)(옮겨 꺼낼 수 있는 자리).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+**`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(최적화 격자는 `-C opt-level=0\~3`).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음). **속도는 한 번도 재지 않았다.** 주소도 **싣지 않았다** — 「어느 영역인가」를 참/거짓과 영역 이름으로만 찍었다((3)).

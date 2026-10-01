@@ -1,11 +1,5 @@
 # python/syntax/17-generators-yield — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> [1-question.md](1-question.md)의 번호와 **1:1**로 대응한다. 질문 8개 = 답 8개.
->
-> 이 파일의 모든 출력은 `python3` **3.12.3** 에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> `<generator object ... at 0x...>` 의 **주소 숫자**만 실행할 때마다 달라진다.
-
 ## 정답
 
 ### 1. 출력 순서가 답이다 (예측)
@@ -444,3 +438,8 @@ Python 3.12.3
 - 부록 — `GEN_RUNNING`(제너레이터가 자기를 들여다봄), `generator already executing`, 도달 못 하는 `yield`, PEP 479(`RuntimeError: generator raised StopIteration`)
 
 중단·재개·상태 전이는 **언어 보장**이다. `gi_frame`·`f_lineno` 같은 내부 들여다보기는 CPython 의 내성 기능이므로 다른 구현에서는 안 보일 수 있다.
+
+## 실행 환경
+
+이 파일의 모든 출력은 `python3` **3.12.3** 에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+`<generator object ... at 0x...>` 의 **주소 숫자**만 실행할 때마다 달라진다.

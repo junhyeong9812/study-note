@@ -1,13 +1,5 @@
 # css/syntax/44 — 배경과 대체 요소 맞춤 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Backgrounds and Borders Level 3](https://drafts.csswg.org/css-backgrounds-3/) (`background-*` 아홉 롱핸드와 레이어 규칙의 정본) · [CSS Images Level 3](https://drafts.csswg.org/css-images-3/) (`object-fit`·`object-position`·`contain`/`cover` 의 정본) · [CSS Backgrounds Level 4](https://drafts.csswg.org/css-backgrounds-4/) (`background-clip: text`). 열어서 확인한 것만 적었다.
-> **실행 검증** — **Google Chrome 151.0.7922.173** headless 하나. 단축 분해를 `cssRules` 로 **10개 규칙** 받았고, 렌더 결과 **7장**을 스크린샷으로 찍어 **PNG 픽셀의 `(r,g,b)` 를 파이썬으로 읽어 칠해진 구간과 타일 위치를 좌표로 뽑았다.** 본문의 px 좌표는 전부 그 실측이다.
-> **엔진은 Chrome 하나다** — Firefox 155 는 이 환경에서 headless 스크린샷이 산출되지 않는다. 크로스 브라우저는 **Baseline 데이터로만** 접지했고 「두 엔진에서 확인했다」고 적지 않았다.
-> **버전** — `background-clip` = **widely**(2015-07-29) · `object-fit` = **widely**(low 2020-01-15 · high 2022-07-15) · `Gradients` = **widely**(2015-07-29) · ★ `background-clip: text` = **limited**(Chrome 120 / Safari 14 / **Firefox 는 접두사 없는 형태 미지원**) · ★ `background-attachment` = **limited**. `webstatus.dev` API 로 조회한 값이다(2026-09-23).
-> **여기서 다루지 않는 것** — 이 배경이 칠해지는 **상자 네 겹 자체**는 [15번](../15-box-model-and-box-sizing/2-summary.md)이 정본이다. 배경으로 들어가는 **그라디언트 이미지**는 [45번](../45-gradients-and-interpolation/2-summary.md), 배경에 쓰는 **색 표기**는 [42번](../42-color-notation-and-spaces/2-summary.md)이 정본이다. **테두리와 `border-radius`** 는 [목록의 **46번 주제**](../46-borders-radius-outline-shadow/), **아래 레이어와 섞는 것**(`background-blend-mode`)은 [목록의 **48번 주제**](../48-blend-modes-and-isolation/), **잘라내기·마스킹**(`clip-path`·`mask`)은 [목록의 **49번 주제**](../49-clip-path-and-mask/)다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **배경은 유리창에 겹쳐 붙인 필름이고, 대체 요소 맞춤은 액자에 사진을 끼우는 것이다.**
@@ -621,3 +613,11 @@ background: url(a) 10px 20px 40px 30px;    /* / 가 없으면 size 가 아니라
 - **`background-blend-mode` 는 레이어끼리 섞는다** — [목록의 **48번 주제**](../48-blend-modes-and-isolation/)가 정본이다. 「누가 위인가」(여기)와 「어떻게 섞이나」(그쪽)가 갈린다.
 - **`object-fit` 은 `<iframe>`·`<embed>` 에도 정의돼 있다.** 흔히 `<img>`·`<video>` 로만 배우지만 대체 요소 전반의 규칙이다.
 - **`image-rendering: pixelated`** 는 작은 이미지를 크게 늘일 때 흐릿해지지 않게 한다 — 이 문서의 demo 가 16×8 이미지를 120px 로 키우면서 쓴 것이 그것이다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Backgrounds and Borders Level 3](https://drafts.csswg.org/css-backgrounds-3/) (`background-*` 아홉 롱핸드와 레이어 규칙의 정본) · [CSS Images Level 3](https://drafts.csswg.org/css-images-3/) (`object-fit`·`object-position`·`contain`/`cover` 의 정본) · [CSS Backgrounds Level 4](https://drafts.csswg.org/css-backgrounds-4/) (`background-clip: text`). 열어서 확인한 것만 적었다.
+**실행 검증** — **Google Chrome 151.0.7922.173** headless 하나. 단축 분해를 `cssRules` 로 **10개 규칙** 받았고, 렌더 결과 **7장**을 스크린샷으로 찍어 **PNG 픽셀의 `(r,g,b)` 를 파이썬으로 읽어 칠해진 구간과 타일 위치를 좌표로 뽑았다.** 본문의 px 좌표는 전부 그 실측이다.
+**엔진은 Chrome 하나다** — Firefox 155 는 이 환경에서 headless 스크린샷이 산출되지 않는다. 크로스 브라우저는 **Baseline 데이터로만** 접지했고 「두 엔진에서 확인했다」고 적지 않았다.
+**버전** — `background-clip` = **widely**(2015-07-29) · `object-fit` = **widely**(low 2020-01-15 · high 2022-07-15) · `Gradients` = **widely**(2015-07-29) · ★ `background-clip: text` = **limited**(Chrome 120 / Safari 14 / **Firefox 는 접두사 없는 형태 미지원**) · ★ `background-attachment` = **limited**. `webstatus.dev` API 로 조회한 값이다(2026-09-23).
+**여기서 다루지 않는 것** — 이 배경이 칠해지는 **상자 네 겹 자체**는 [15번](../15-box-model-and-box-sizing/2-summary.md)이 정본이다. 배경으로 들어가는 **그라디언트 이미지**는 [45번](../45-gradients-and-interpolation/2-summary.md), 배경에 쓰는 **색 표기**는 [42번](../42-color-notation-and-spaces/2-summary.md)이 정본이다. **테두리와 `border-radius`** 는 [목록의 **46번 주제**](../46-borders-radius-outline-shadow/), **아래 레이어와 섞는 것**(`background-blend-mode`)은 [목록의 **48번 주제**](../48-blend-modes-and-isolation/), **잘라내기·마스킹**(`clip-path`·`mask`)은 [목록의 **49번 주제**](../49-clip-path-and-mask/)다.

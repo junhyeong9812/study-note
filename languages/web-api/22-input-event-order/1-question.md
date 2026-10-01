@@ -1,13 +1,5 @@
 # web-api/22 — 입력 이벤트의 순서: `keydown`→`beforeinput`→`input`→`change` 와 IME 조합 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 키보드가 `click` 을 만드는 것과 Enter 의 암묵 제출은 [17번 주제](../17-stoppropagation-vs-preventdefault/1-question.md)가 정본이다. 여기는 **한 번 타이핑의 이벤트 순서와 조합**을 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 명세 문장이다. 이식성은 주장 범위 밖이다.
-> ★★★ **조합(IME)을 묻는 문항은 CDP 의 흉내를 전제로 한다** — 실제 입력기의 순서는 이 편이 **못 쟀다.**
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -130,6 +122,13 @@ Input.insertText({ text: '한' })
 
 - [17번 주제](../17-stoppropagation-vs-preventdefault/1-question.md)의 「Enter 의 암묵 제출」은 문항 6의 어느 칸에서 다시 보였나? 어느 칸에서는 왜 안 보였나?
 - HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **22번**(텍스트 계열 `<input>`)과 이 편은 무엇을 나눠 맡나?
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — 키보드가 `click` 을 만드는 것과 Enter 의 암묵 제출은 [17번 주제](../17-stoppropagation-vs-preventdefault/1-question.md)가 정본이다. 여기는 **한 번 타이핑의 이벤트 순서와 조합**을 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 명세 문장이다. 이식성은 주장 범위 밖이다.
+★★★ **조합(IME)을 묻는 문항은 CDP 의 흉내를 전제로 한다** — 실제 입력기의 순서는 이 편이 **못 쟀다.**
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

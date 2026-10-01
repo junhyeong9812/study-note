@@ -1,14 +1,5 @@
 # csharp/syntax/21 — 패턴 매칭 — 타입·속성·관계·목록 패턴 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ★★★ 이 주제의 질문은 「**패턴 하나가 IL 로 무엇이 되나**」 하나로 거의 다 풀린다 — 답이 막히면 무엇을 **부르는지**(연산자·getter·인덱서)를 떠올려라.
-> **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
-> Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`. 대비는 **javac 21.0.5** 다.
-> ★★★ **본체 창은 ① IL 덤프다.** getter·연산자 호출은 **실행 로그**로, 할당은 **2×2 판 격자**로 물었다.
-> 선행 — [16번](../16-inheritance-virtual-override-abstract-sealed-new/)(상속·타입 계층) · 함께 보면 좋은 것 — [14번](../14-indexers/)(패턴 기반 인덱싱)·[19번](../19-equality-equals-gethashcode-operator/)(`==` 가 고르는 것).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (예측) / (왜) / (경계) / (연결) -->
@@ -237,6 +228,13 @@ class Program {
 - ★★ 위치 패턴이 부르는 `Deconstruct` 를 **자동 생성**하는 주제는?
 - ★★ 2번의 `!= null` 이 연산자를 고르는 규칙의 정본은?
 - ★ **팔 여럿의 완전성·도달 불가**는 이 목록의 몇 번 주제인가?
+
+## 실행 환경
+
+**환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
+Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`. 대비는 **javac 21.0.5** 다.
+★★★ **본체 창은 ① IL 덤프다.** getter·연산자 호출은 **실행 로그**로, 할당은 **2×2 판 격자**로 물었다.
+선행 — [16번](../16-inheritance-virtual-override-abstract-sealed-new/)(상속·타입 계층) · 함께 보면 좋은 것 — [14번](../14-indexers/)(패턴 기반 인덱싱)·[19번](../19-equality-equals-gethashcode-operator/)(`==` 가 고르는 것).
 
 ## 복습 기록
 

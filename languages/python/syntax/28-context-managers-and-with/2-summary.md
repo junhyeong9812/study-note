@@ -1,42 +1,5 @@
 # python/syntax/28-context-managers-and-with — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [8.5. The `with` statement](https://docs.python.org/3.12/reference/compound_stmts.html#the-with-statement) — **등가식**과 `__exit__` 반환값의 계약
-> - [3.3.9. With Statement Context Managers](https://docs.python.org/3.12/reference/datamodel.html#with-statement-context-managers) — `__enter__`·`__exit__` 의 계약
-> - [3.3.1. Special method lookup](https://docs.python.org/3.12/reference/datamodel.html#special-method-lookup) — **특수 메서드는 타입에서 찾는다**
-> - [`contextlib`](https://docs.python.org/3.12/library/contextlib.html) — `contextmanager`·`suppress`·`closing`·`ExitStack`
-> - [PEP 343 — The "with" Statement](https://peps.python.org/pep-0343/) · [PEP 617 로 들어온 괄호 다중 `with`(3.10)](https://docs.python.org/3.12/whatsnew/3.10.html#parenthesized-context-managers)
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
-> ★★ **이 주제는 트레이스백을 한 블록도 싣지 않았다** — `contextlib` 안에서 난 예외의 트레이스백에는
-> **`/usr/lib/python3.12/contextlib.py` 라는 절대경로가 박혀** 다른 머신에서 재현이 안 되기 때문이다.
-> 대신 **예외의 타입·메시지·`__context__` 사슬을 찍어** 같은 사실을 결정적으로 보였다.\
-> **버전** — `with` 는 **2.5+**(PEP 343), `contextlib.ExitStack` 은 **3.3+**, `suppress` 는 **3.4+**.
-> 갈리는 것 하나 — **괄호로 감싼 다중 `with` 가 3.10 부터**다(그 전에는 역슬래시가 필요했다).
-> 3.9 이하는 이 머신에 없어 **옛 판의 `SyntaxError` 는 직접 못 돌려 봤다** — 문서 근거다.\
-> **구현 대 언어 보장 한 줄** — **등가식·`__exit__` 반환값의 계약·해제 역순·`__enter__` 실패 시 `__exit__` 미호출까지가 언어 보장**이고,
-> **`ExitStack` 이 정리 중 예외를 어떻게 잇는지는 CPython `contextlib` 의 구현**이다.\
-> **★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | (판이 오르면) `_GeneratorContextManager` 같은 **내부 클래스 이름** | `__enter__`·`__exit__` 가 **불렸나 안 불렸나** |
-> | (판이 오르면) 예외 **문구** 전부 | 예외 **종류** · **열림/닫힘 마커의 순서** · 종료 코드 |
-> | (판이 오르면) `ExitStack` 의 **`__context__` 사슬 길이** | `__exit__` 반환값의 **참·거짓에 따른 삼킴 여부** |
-> | — | **해제가 역순이라는 것** · `__enter__` 실패 시 그 객체의 `__exit__` 가 **안 도는 것** |
->
-> ★ **이 주제의 블록에는 주소도 시간도 절대경로도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다.**\
-> **선행** — [25-exceptions-and-finally](../25-exceptions-and-finally/2-summary.md)(**`try/finally` 의 정본**) ·
-> [17-generators-yield](../17-generators-yield/2-summary.md)(`yield` 자리로 예외를 던지는 것) ·
-> [24-decorators](../24-decorators/2-summary.md)(**`@contextmanager` 가 데코레이터다**) ·
-> [05-truthiness-and-short-circuit](../05-truthiness-and-short-circuit/2-summary.md)(**`__exit__` 반환값은 「참」이지 「`True`」가 아니다**).\
-> **이 사슬** — [25](../25-exceptions-and-finally/2-summary.md) → [26](../26-eafp-vs-lbyl/2-summary.md) → [27](../27-exception-groups-and-except-star/2-summary.md) → 28.
-> **여기가 사슬의 끝이다** — 25 의 `try/finally` 를 **객체로 굳혀** 재사용 가능하게 만든 것이 `with` 다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`with` 는 「`try/finally` 를 객체에 넣어 이름 붙인 것」이다.**
@@ -1344,3 +1307,43 @@ def managed():
   `see issue 20317` 주석이 그 자리를 가리킨다. **판이 오르면 고쳐질 수 있으므로 다시 던져 봐야 한다.**
 - ★ **`with` 가 등가식대로 `__exit__` 를 먼저 찾아 두는 것**은 실무에서 한 줄로 드러난다 —
   `__exit__` 만 없을 때 에러 문구에 **`(missed __exit__ method)`** 가 붙는 것이 그 증거다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [8.5. The `with` statement](https://docs.python.org/3.12/reference/compound_stmts.html#the-with-statement) — **등가식**과 `__exit__` 반환값의 계약
+- [3.3.9. With Statement Context Managers](https://docs.python.org/3.12/reference/datamodel.html#with-statement-context-managers) — `__enter__`·`__exit__` 의 계약
+- [3.3.1. Special method lookup](https://docs.python.org/3.12/reference/datamodel.html#special-method-lookup) — **특수 메서드는 타입에서 찾는다**
+- [`contextlib`](https://docs.python.org/3.12/library/contextlib.html) — `contextmanager`·`suppress`·`closing`·`ExitStack`
+- [PEP 343 — The "with" Statement](https://peps.python.org/pep-0343/) · [PEP 617 로 들어온 괄호 다중 `with`(3.10)](https://docs.python.org/3.12/whatsnew/3.10.html#parenthesized-context-managers)
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
+★★ **이 주제는 트레이스백을 한 블록도 싣지 않았다** — `contextlib` 안에서 난 예외의 트레이스백에는
+**`/usr/lib/python3.12/contextlib.py` 라는 절대경로가 박혀** 다른 머신에서 재현이 안 되기 때문이다.
+대신 **예외의 타입·메시지·`__context__` 사슬을 찍어** 같은 사실을 결정적으로 보였다.\
+**버전** — `with` 는 **2.5+**(PEP 343), `contextlib.ExitStack` 은 **3.3+**, `suppress` 는 **3.4+**.
+갈리는 것 하나 — **괄호로 감싼 다중 `with` 가 3.10 부터**다(그 전에는 역슬래시가 필요했다).
+3.9 이하는 이 머신에 없어 **옛 판의 `SyntaxError` 는 직접 못 돌려 봤다** — 문서 근거다.\
+**구현 대 언어 보장 한 줄** — **등가식·`__exit__` 반환값의 계약·해제 역순·`__enter__` 실패 시 `__exit__` 미호출까지가 언어 보장**이고,
+**`ExitStack` 이 정리 중 예외를 어떻게 잇는지는 CPython `contextlib` 의 구현**이다.\
+**★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| (판이 오르면) `_GeneratorContextManager` 같은 **내부 클래스 이름** | `__enter__`·`__exit__` 가 **불렸나 안 불렸나** |
+| (판이 오르면) 예외 **문구** 전부 | 예외 **종류** · **열림/닫힘 마커의 순서** · 종료 코드 |
+| (판이 오르면) `ExitStack` 의 **`__context__` 사슬 길이** | `__exit__` 반환값의 **참·거짓에 따른 삼킴 여부** |
+| — | **해제가 역순이라는 것** · `__enter__` 실패 시 그 객체의 `__exit__` 가 **안 도는 것** |
+
+★ **이 주제의 블록에는 주소도 시간도 절대경로도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다.**\
+**선행** — [25-exceptions-and-finally](../25-exceptions-and-finally/2-summary.md)(**`try/finally` 의 정본**) ·
+[17-generators-yield](../17-generators-yield/2-summary.md)(`yield` 자리로 예외를 던지는 것) ·
+[24-decorators](../24-decorators/2-summary.md)(**`@contextmanager` 가 데코레이터다**) ·
+[05-truthiness-and-short-circuit](../05-truthiness-and-short-circuit/2-summary.md)(**`__exit__` 반환값은 「참」이지 「`True`」가 아니다**).
+
+**여기가 사슬의 끝이다** — 25 의 `try/finally` 를 **객체로 굳혀** 재사용 가능하게 만든 것이 `with` 다.
+
+---
+
+**이 사슬** — [25](../25-exceptions-and-finally/2-summary.md) → [26](../26-eafp-vs-lbyl/2-summary.md) → [27](../27-exception-groups-and-except-star/2-summary.md) → 28.

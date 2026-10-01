@@ -1,11 +1,5 @@
 # domain-modeling-advanced/20-approval-chain — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/20-approval-chain/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -582,3 +576,7 @@ if (!atLevel && level != 0) { throw ... }
 - 챕터 안내(규칙·함정·측정이 알려준 것·변종 검증에서 고친 것·생각해볼 것): `/home/jun/project/myway/domain-modeling-advanced/20-approval-chain/README.md`
 - 계약 수치: `/home/jun/project/myway/domain-modeling-advanced/20-approval-chain/src/test/java/com/domain/approval/ApprovalChainTest.java`(과반 1·2·2·3 · 중복 클릭 1건 · 자기결재 0건 · 대기 목록 순서)
 - 측정 수치: `/home/jun/project/myway/domain-modeling-advanced/20-approval-chain/src/test/java/com/domain/approval/MeasurementTest.java`(18조합 0 어긋남 · 913 / 711 / 47 · 237 / 730 / 2,482 · 189 / 592 / 1,000 · 되돌림 408 / 811 · 498 · 1,328 · 0 / 185 / 284)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/20-approval-chain/impl/`).

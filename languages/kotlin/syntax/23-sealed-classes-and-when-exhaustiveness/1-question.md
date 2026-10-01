@@ -1,14 +1,5 @@
 # kotlin/syntax/23 — `sealed class`/`sealed interface` 와 `when` 완결성 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [6번 주제](../06-when-expression/)·[20번 주제](../20-interfaces-default-impl-and-super/)·[22번 주제](../22-data-class-generated-members/)다. 이 주제는 [24번 주제](../24-enum-class-vs-sealed/)의 뿌리다.
-> ★ **`when` 의 가지 형태·guard·바이트코드 분기·런타임 예외는 [6번 주제](../06-when-expression/)가 정본**이라 여기서는 **결론만** 묻는다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **기본 `-jvm-target`(1.8)과 `-jvm-target 17` 을 나란히** 묻는다 — 이 주제에서 **그 둘이 다르다**.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -306,6 +297,14 @@ public class Intruder extends Shape {
 - [`../../../rust/syntax/18-match-and-exhaustiveness/`](../../../rust/syntax/18-match-and-exhaustiveness/)의 같은 실험에서 `_` 판은 에러 몇 건, 경고 몇 건이었는가? Kotlin 과 무엇이 다른가?
 - Rust 의 `match` 에는 「문이라 검사 안 되는 자리」가 있는가?
 - [`../../../java/syntax/23-switch-pattern-matching/`](../../../java/syntax/23-switch-pattern-matching/)에서 명단이 뒤에 늘면 런타임에 무엇이 나는가? Kotlin 쪽 대응물은?
+
+## 실행 환경
+
+선행은 [6번 주제](../06-when-expression/)·[20번 주제](../20-interfaces-default-impl-and-super/)·[22번 주제](../22-data-class-generated-members/)다. 이 주제는 [24번 주제](../24-enum-class-vs-sealed/)의 뿌리다.
+★ **`when` 의 가지 형태·guard·바이트코드 분기·런타임 예외는 [6번 주제](../06-when-expression/)가 정본**이라 여기서는 **결론만** 묻는다.
+
+바이트코드를 묻는 문항은 **기본 `-jvm-target`(1.8)과 `-jvm-target 17` 을 나란히** 묻는다 — 이 주제에서 **그 둘이 다르다**.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

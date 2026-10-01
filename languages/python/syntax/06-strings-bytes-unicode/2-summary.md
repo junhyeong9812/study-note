@@ -1,21 +1,5 @@
 # python/syntax/06-strings-bytes-unicode — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [Text Sequence Type — str](https://docs.python.org/3.12/library/stdtypes.html#text-sequence-type-str) — `str` 의 정의
-> - [Binary Sequence Types — bytes, bytearray, memoryview](https://docs.python.org/3.12/library/stdtypes.html#binary-sequence-types-bytes-bytearray-memoryview) — `bytes`/`bytearray` 의 정의
-> - [codecs — Error Handlers](https://docs.python.org/3.12/library/codecs.html#error-handlers) — 에러 핸들러 표
-> - [`unicodedata`](https://docs.python.org/3.12/library/unicodedata.html) — 정규화 네 형태
-> - [`sys.getsizeof`](https://docs.python.org/3.12/library/sys.html#sys.getsizeof) · [`sys.maxunicode`](https://docs.python.org/3.12/library/sys.html#sys.maxunicode)
-> - [PEP 393 — Flexible String Representation](https://peps.python.org/pep-0393/) — 내부 표현이 세 갈래인 이유
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> **버전** — `str`/`bytes` 의 분리는 Python 3 전체 공통. `sys.getsizeof` 의 **구체적 바이트 수**는 이 판의 관찰이다.
-> 유니코드 데이터베이스는 이 설치본에서 `unicodedata.unidata_version` 이 `15.0.0` 이다.
-> **선행** — [01-object-and-name-binding](../01-object-and-name-binding/2-summary.md)(이름 바인딩 정본) · [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md)(인터닝 정본 — 문자열이 언제 같은 객체가 되나).
-
 ## 한눈에 — 쉽게 말하면
 
 **`str` 은 「글자 번호의 줄」이고 `bytes` 는 「숫자 0\~255 의 줄」이다. 둘 사이를 건너는 다리가 인코딩이다.**
@@ -981,3 +965,18 @@ print(len("가".encode("utf-8")), len("가".encode("euc-kr")), len("가".encode(
 - **`str.translate` 로 서로게이트를 한 번에 털어낼 수 있다**(07번 주제). 출력 직전 방어선으로 쓸 수 있다.
 - **`sys.intern` 은 `str` 에만 있고 `bytes` 에는 없다**([02번](../02-is-vs-eq-interning/2-summary.md)).
 - **이모지의 「한 칸」을 제대로 세려면** 자소 클러스터(grapheme cluster) 분할이 필요하고, 그것은 표준 라이브러리에 없다(`regex`·`grapheme` 같은 서드파티가 한다). 이 문서에서는 실행 검증하지 않았다 — 이 환경에 그 패키지가 없다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [Text Sequence Type — str](https://docs.python.org/3.12/library/stdtypes.html#text-sequence-type-str) — `str` 의 정의
+- [Binary Sequence Types — bytes, bytearray, memoryview](https://docs.python.org/3.12/library/stdtypes.html#binary-sequence-types-bytes-bytearray-memoryview) — `bytes`/`bytearray` 의 정의
+- [codecs — Error Handlers](https://docs.python.org/3.12/library/codecs.html#error-handlers) — 에러 핸들러 표
+- [`unicodedata`](https://docs.python.org/3.12/library/unicodedata.html) — 정규화 네 형태
+- [`sys.getsizeof`](https://docs.python.org/3.12/library/sys.html#sys.getsizeof) · [`sys.maxunicode`](https://docs.python.org/3.12/library/sys.html#sys.maxunicode)
+- [PEP 393 — Flexible String Representation](https://peps.python.org/pep-0393/) — 내부 표현이 세 갈래인 이유
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+**버전** — `str`/`bytes` 의 분리는 Python 3 전체 공통. `sys.getsizeof` 의 **구체적 바이트 수**는 이 판의 관찰이다.
+유니코드 데이터베이스는 이 설치본에서 `unicodedata.unidata_version` 이 `15.0.0` 이다.
+**선행** — [01-object-and-name-binding](../01-object-and-name-binding/2-summary.md)(이름 바인딩 정본) · [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md)(인터닝 정본 — 문자열이 언제 같은 객체가 되나).

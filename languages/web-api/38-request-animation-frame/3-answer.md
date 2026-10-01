@@ -1,10 +1,5 @@
 # web-api/38 — `requestAnimationFrame` 과 프레임 예산 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — `--virtual-time-budget` 없이 **실제 시간**으로 돌렸고, 페이지는 같은 기계의 로컬 서버(A)에서 열었다.\
-> ★ 명세는 **HTML(update the rendering · animation frames)** 과 **W3C Intersection Observer** 를 받아 읽었다. **시간은 찍지 않았다** — 간격은 범주, 나머지는 순서 · 참/거짓 · 횟수다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** 헤드리스에는 모니터가 없다.
-
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
 |---|---|
 | 위치 로그 두 판 · 간격 격자 25칸 · 숨김 · timestamp 두 줄 · `LayoutCount` 12칸 | ★ **판에 매일 수 있는 칸** — 간격 범주(실제 시간 — 경계에서 먼 조건을 골랐다) |
@@ -156,3 +151,9 @@ python3 wa36b-net.py page wa36b-38-layout.html
 | `scrollend` 가 같은 틀 | 난다 | CSSOM View 를 받지 않았다 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② 실제 화면(헤드풀 · 모니터). ③ ms 예산. ④ 숨은 탭의 긴 경향.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — `--virtual-time-budget` 없이 **실제 시간**으로 돌렸고, 페이지는 같은 기계의 로컬 서버(A)에서 열었다.\
+★ 명세는 **HTML(update the rendering · animation frames)** 과 **W3C Intersection Observer** 를 받아 읽었다. **시간은 찍지 않았다** — 간격은 범주, 나머지는 순서 · 참/거짓 · 횟수다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** 헤드리스에는 모니터가 없다.

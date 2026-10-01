@@ -1,12 +1,5 @@
 # ts/syntax/11 — 리터럴 타입과 `as const` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Everyday Types: Literal Types](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types) ·
-> [Handbook — Everyday Types: `const` assertions](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-inference) ·
-> [Handbook — Template Literal Types](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -18,7 +11,6 @@ v18.19.1
 > 이 블록들은 설정 파일 없이도 그대로 재현된다.
 > **버전** — 리터럴 타입은 TS 2.0(문자열)·2.1(숫자·불리언), `as const` 는 3.4, 템플릿 리터럴 타입은 4.1 부터다.
 > 7.0 은 템플릿 리터럴 타입의 **유니코드 코드 포인트 취급**을 바꿨다 — 이 문서는 ASCII 만 던졌다([목록의 **27번 주제**](../27-template-literal-types/)).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -671,3 +663,11 @@ ex.11d.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 - **`as const` 대 `satisfies`** — `as const` 는 **추론을 굳히고**, `satisfies` 는 **검사만 하고 추론을 살린다.** 둘을 같이 쓰는 관용구도 있다. [목록의 **29번 주제**](../29-satisfies/)에서 던진다 — 여기서는 **형태도 적지 않았다.**
 - **`as const` 로 enum 을 대신하기** — `const Color = { Red: "red" } as const` 와 `typeof Color[keyof typeof Color]` 조합. [목록의 **23번**](../23-typeof-type-operator/)·**31번 주제**와 엮인다. 이 배치에서는 **안 던졌다.**
 - **템플릿 리터럴 조합의 비용** — `` `${A}-${B}-${C}` `` 처럼 조각이 늘면 멤버가 곱으로 는다. 이 배치에서는 **재지 않았다** — [목록의 **45번 주제**](../45-type-level-performance/)에서 잰다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Everyday Types: Literal Types](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types) ·
+[Handbook — Everyday Types: `const` assertions](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-inference) ·
+[Handbook — Template Literal Types](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

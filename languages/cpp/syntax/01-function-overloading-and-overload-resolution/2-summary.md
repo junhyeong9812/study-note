@@ -1,30 +1,5 @@
 # cpp/syntax/01 — 함수 오버로딩과 오버로드 해석 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — Overload resolution](https://en.cppreference.com/w/cpp/language/overload_resolution) · [cppreference — Implicit conversions](https://en.cppreference.com/w/cpp/language/implicit_conversion) · [cppreference — Unqualified name lookup](https://en.cppreference.com/w/cpp/language/unqualified_lookup) · [GCC 13 C++ Dialect Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/C_002b_002b-Dialect-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·에러·심볼은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic ex.cpp -o ex` 이고, 소스 파일 이름은 **전부 `ex.cpp`** 로 고정했다.\
-> **진단의 줄 번호는 그 파일 기준**이라, 진단을 싣는 블록마다 **그 진단을 낸 소스를 같은 자리에** 뒀다.\
-> ★ 블록은 `capture.sh` 가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
-> **버전** — 함수 오버로딩과 오버로드 해석은 **C++98부터** 있고 이 문서가 쓰는 규칙은 그때와 같다.\
-> `__PRETTY_FUNCTION__` 은 **표준이 아니라 gcc·clang 확장**이다(표준의 `__func__` 는 이름만 준다 — 서명이 없다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> **경계** — 「정수 승격·통상 산술 변환」의 정본은 C 갈래의\
-> [`03-integer-promotion-and-usual-arithmetic-conversions/`](../../../c/syntax/03-integer-promotion-and-usual-arithmetic-conversions/)다.\
-> 여기는 **그 승격이 오버로드 해석의 한 계단으로 쓰이는 자리**까지만 쓴다.\
-> 「이름이 어느 네임스페이스에서 찾아지나(ADL)」는 [목록의 **06번 주제**](../06-namespaces-and-adl/), 「값 범주가 `T&`/`T&&` 를 가르는 것」은 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/),\
-> 「`const` 정확성의 설계」는 [목록의 **10번 주제**](../10-const-correctness/), 「템플릿 인자 추론」은 [목록의 **31번 주제**](../31-function-templates-and-argument-deduction/)가 정본이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조를 한 줄에 판정하려고 미리 갈라 둔다.
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 컴파일 시간 · 오브젝트 파일의 타임스탬프 | **진단 본문** · `파일:줄:칸` · 캐럿 줄의 물결 개수 |
-> | 없음 — 이 주제에는 주소도 난수도 안 나온다 | **종료 코드**(`cc exit` 과 `run exit` 을 갈라 적었다) |
-> | — | `__PRETTY_FUNCTION__` 문자열 · **맹글링된 심볼 이름**(`_Z4pickc`) |
-> | — | 후보가 **몇 개 나열되는지**와 **그 순서** |
-
 ## 한눈에 — 쉽게 말하면
 
 **오버로드 해석은 「같은 이름의 창구 여럿 중 어디로 갈지」를 컴파일러가 정하는 절차다.**
@@ -953,3 +928,29 @@ int main() {
 - **ADL 이 후보를 늘리는 것** — 인자의 타입이 사는 네임스페이스가 **후보 집합에 얹힌다.** [목록의 **06번 주제**](../06-namespaces-and-adl/).
 - **`=delete` 로 후보를 죽이는 것** — 후보에는 들어오되 **뽑히면 에러**가 된다. 「그 타입으로는 부르지 마라」를 진단으로 만드는 수법이다. [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/).
 - **`-fdump-lang-all` 로 컴파일러 내부를 보기** — g++ 에 있지만 **이 주제에서는 `nm` 쪽이 훨씬 읽기 쉬웠다**(내부 덤프는 후보 목록을 그대로 내놓지 않는다). 그래서 (8)의 창을 골랐다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — Overload resolution](https://en.cppreference.com/w/cpp/language/overload_resolution) · [cppreference — Implicit conversions](https://en.cppreference.com/w/cpp/language/implicit_conversion) · [cppreference — Unqualified name lookup](https://en.cppreference.com/w/cpp/language/unqualified_lookup) · [GCC 13 C++ Dialect Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/C_002b_002b-Dialect-Options.html)
+**실행 검증** — 이 문서의 모든 출력·에러·심볼은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic ex.cpp -o ex` 이고, 소스 파일 이름은 **전부 `ex.cpp`** 로 고정했다.\
+**진단의 줄 번호는 그 파일 기준**이라, 진단을 싣는 블록마다 **그 진단을 낸 소스를 같은 자리에** 뒀다.\
+★ 블록은 `capture.sh` 가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
+**버전** — 함수 오버로딩과 오버로드 해석은 **C++98부터** 있고 이 문서가 쓰는 규칙은 그때와 같다.\
+`__PRETTY_FUNCTION__` 은 **표준이 아니라 gcc·clang 확장**이다(표준의 `__func__` 는 이름만 준다 — 서명이 없다).
+
+**경계** — 「정수 승격·통상 산술 변환」의 정본은 C 갈래의\
+[`03-integer-promotion-and-usual-arithmetic-conversions/`](../../../c/syntax/03-integer-promotion-and-usual-arithmetic-conversions/)다.\
+여기는 **그 승격이 오버로드 해석의 한 계단으로 쓰이는 자리**까지만 쓴다.\
+「이름이 어느 네임스페이스에서 찾아지나(ADL)」는 [목록의 **06번 주제**](../06-namespaces-and-adl/), 「값 범주가 `T&`/`T&&` 를 가르는 것」은 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/),\
+「`const` 정확성의 설계」는 [목록의 **10번 주제**](../10-const-correctness/), 「템플릿 인자 추론」은 [목록의 **31번 주제**](../31-function-templates-and-argument-deduction/)가 정본이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조를 한 줄에 판정하려고 미리 갈라 둔다.
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 컴파일 시간 · 오브젝트 파일의 타임스탬프 | **진단 본문** · `파일:줄:칸` · 캐럿 줄의 물결 개수 |
+| 없음 — 이 주제에는 주소도 난수도 안 나온다 | **종료 코드**(`cc exit` 과 `run exit` 을 갈라 적었다) |
+| — | `__PRETTY_FUNCTION__` 문자열 · **맹글링된 심볼 이름**(`_Z4pickc`) |
+| — | 후보가 **몇 개 나열되는지**와 **그 순서** |

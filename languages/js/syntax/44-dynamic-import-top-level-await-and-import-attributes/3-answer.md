@@ -1,13 +1,5 @@
 # js/syntax/44 — 동적 `import`·최상위 `await`·import attributes: 「`import()` 는 그 줄에서 · 최상위 `await` 는 가져오는 쪽만 세우고 · `with` 는 node 18 이, `assert` 는 Chrome 이 막는다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151**(로컬 HTTP 서버) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다.
-> ★★★ **평가 순서(1\~3번)는 세 판이 한 글자도 같았고, import attributes(4번)는 세 판이 `8 / 12` 행에서 갈렸다.**
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(격자를 세 판에 돌리는 `.sh` 와 Chrome 쪽 스크립트는 [2-summary.md](2-summary.md) 동작 (4), 끝내 안 풀리는 `await` 를 돌리는 `.sh` 는 동작 (2)).
-> `js44b-44a/`(1번 · 10번) · `js44b-44b/`(2번 · 5번 · 6번) · `js44b-44c/`(3번 · 9번) · `js44b-44d-attributes-grid.js` + `.web.js` + `.sh`(4번 · 7번 · 8번).
-
 ## 정답
 
 ### 1. `stat44a` 본문 → `first line` → `p1 === p2 false` → `dyn44a` 본문(**한 번**) → 두 이름공간 `true` → 정적 이름공간과도 `true` → `last line` ★★★
@@ -228,3 +220,12 @@ node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identica
 - ★★★ **import attributes 격자 전부** — node 18.20+ · node 22 · Chrome 의 다음 판에서 `with`/`assert` 칸이 바뀐다(node 20 경고가 「future version」에서 `assert` 를 없앤다고 적는다).
 - ★★ node 의 에러 **코드 이름**(`ERR_IMPORT_ASSERTION_…`) · 키 중복 문구의 `assertion`/`attribute`.
 - ★ 끝내 안 풀린 최상위 `await` 의 **경고 유무**(이 두 판은 0 줄).
+
+## 실행 환경
+
+이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151**(로컬 HTTP 서버) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다.
+★★★ **평가 순서(1\~3번)는 세 판이 한 글자도 같았고, import attributes(4번)는 세 판이 `8 / 12` 행에서 갈렸다.**
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(격자를 세 판에 돌리는 `.sh` 와 Chrome 쪽 스크립트는 [2-summary.md](2-summary.md) 동작 (4), 끝내 안 풀리는 `await` 를 돌리는 `.sh` 는 동작 (2)).
+`js44b-44a/`(1번 · 10번) · `js44b-44b/`(2번 · 5번 · 6번) · `js44b-44c/`(3번 · 9번) · `js44b-44d-attributes-grid.js` + `.web.js` + `.sh`(4번 · 7번 · 8번).

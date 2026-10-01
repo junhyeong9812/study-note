@@ -1,12 +1,5 @@
 # css/syntax/03 — 상속: 상속되는 속성과 `inherit`/`initial`/`unset`/`revert`/`revert-layer` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「Inheritance」·「Defaulting」(`initial`/`inherit`/`unset`/`revert`/`revert-layer`) 절. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle` 로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 그대로 적어 두었다.\
-> **엔진은 Chrome 하나다.** 이 머신의 Firefox 155.0.1 은 headless 스크린샷이 산출되지 않고, WebKit 은 아예 없다 — 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — CSS 에는 언어 버전이 없다. `inherit` 은 CSS1, `initial` 은 CSS3, `unset`·`revert` 는 css-cascade-4, `revert-layer` 는 css-cascade-5 에서 들어왔다. 실행 확인은 Chrome 151 한 판이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **상속 = 아무도 지원하지 않은 자리에만 부모 것이 내려오는 것이다.**
@@ -472,3 +465,10 @@ CSS 는 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **상속은 DOM 트리를 타지 플랫 트리를 탄다.** `display: contents` 로 상자를 없앤 요소도 **상속은 그대로 통과시킨다** — 상자가 없어졌다고 상속이 끊기지 않는다([목록의 **16번 주제**](../16-display-inner-outer/)).
 - **`:root` 대 `html` 대 `*`** — 상속의 출발점을 잡을 때 `*` 를 쓰면 상속이 아니라 **모든 요소에 선언을 하나씩 넣는 것**이라 그 아래로 아무것도 안 내려간다. 출발점은 `:root` 나 `body` 에 건다.
 - 전역 키워드가 다섯인데 **`all` 은 여섯 번째가 아니다** — `all` 은 키워드가 아니라 그 다섯만 받는 **속성**이다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「Inheritance」·「Defaulting」(`initial`/`inherit`/`unset`/`revert`/`revert-layer`) 절. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle` 로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 그대로 적어 두었다.\
+**엔진은 Chrome 하나다.** 이 머신의 Firefox 155.0.1 은 headless 스크린샷이 산출되지 않고, WebKit 은 아예 없다 — 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — CSS 에는 언어 버전이 없다. `inherit` 은 CSS1, `initial` 은 CSS3, `unset`·`revert` 는 css-cascade-4, `revert-layer` 는 css-cascade-5 에서 들어왔다. 실행 확인은 Chrome 151 한 판이다.

@@ -1,11 +1,5 @@
 # go/syntax/42 — `fmt`: 포맷 동사·`Stringer`·`Errorf` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [`fmt`](https://pkg.go.dev/fmt) 패키지 문서(`go doc fmt` · `go doc fmt.Errorf`) · 툴체인 소스 `src/fmt/doc.go`·`print.go`·`internal/fmtsort/sort.go`. 전부 **이 툴체인에서 직접 떴다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> ★★ **버전** — 이 문서가 쓰는 동사·`Stringer`·`%!` 표기는 이 판(1.27.1)에서 잰 것이다. `%w` 는 1.13, `%w` 여러 개는 1.20 — [24번 주제](../24-error-wrapping-and-errors-is-as-join/) 머리말이 그 판 표기의 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**동사 격자** — 값 13 가지 × 동사 6 개를 `Sprintf` 로 찍고, 칸마다 **`String()`·`Error()` 가 몇 번 불렸나**를 세는 로그」.
 마지막 줄 「**String()·Error() 가 불린 칸 18 / 78**」((1)절). ★★★ **`String()` 을 가졌는데도 안 불린 칸이 세 종류** 있다 — 포인터 리시버를 값으로 넘김 · 비공개 필드 · `%#v`/`%d`((2)절).
 ★★ 짝이 되는 창은 「**`go vet` 의 `printf` 검사**」 — 재귀(`String` 안에서 자기 자신을 `%v`)와 잘못된 동사 **여섯 줄을 전부 잡는데**, 격자처럼 **동사가 변수면 한 줄도 못 본다**((3)·(5)절).
@@ -405,7 +399,7 @@ prog exit=0
 | `v12 Emb` | `V<7>` | 1 | ★★ **승격된 `V.String` 이 `Emb` 전체를 대신 찍었다** — **`Extra:9` 가 안 보인다** |
 
 - ★★★ **포인터 리시버** — [19번 주제](../19-method-sets-value-vs-pointer-receiver/)의 규칙(**값의 메서드 집합에는 포인터 리시버 메서드가 없다**)이 `fmt` 에서는 **에러가 아니라 「조용히 기본 꼴」** 로 나타난다. `fmt.Println(pr)` 과 `fmt.Println(&pr)` 이 **다른 것을 찍는다.**
-- ★★★ **비공개 필드** — 문서 문장 그대로다(머리말 `t42doc`). `fmt` 는 `reflect` 로 필드를 보는데 **비공개 필드의 값은 패키지 밖에서 인터페이스로 꺼낼 수 없다** — [40번 주제](../40-package-visibility-naming-and-internal/) (4)절에서 `encoding/json` 이 비공개 필드를 **조용히 건너뛴 것**과 같은 뿌리다.
+- ★★★ **비공개 필드** — 문서 문장 그대로다(「이 판」 절 `t42doc`). `fmt` 는 `reflect` 로 필드를 보는데 **비공개 필드의 값은 패키지 밖에서 인터페이스로 꺼낼 수 없다** — [40번 주제](../40-package-visibility-naming-and-internal/) (4)절에서 `encoding/json` 이 비공개 필드를 **조용히 건너뛴 것**과 같은 뿌리다.
 - ★★ **임베딩** — [18번 주제](../18-embedding-and-field-method-promotion/)가 「무한 재귀의 씨앗이 되는 자리」라 적고 안 던진 곳이다. 여기서 본 것은 재귀가 아니라 **필드가 가려지는 것**이다 — `%+v` 도 `V<7>` 이고, **`%#v` 만** `main.Emb{V:main.V{N:7}, Extra:9}` 로 전부 보인다.
 
 비용 — 없다.
@@ -587,7 +581,7 @@ b6 감쌈: %!w(string=문자열) true
 - ★★★ **런타임은 한 번도 안 멈췄다**(`exit 0`) — 전부 **글자로** 적는다: `%!d(string=hi)` · `%!v(MISSING)` · `%!z(int=1)`.
 - ★★★ **`b3` — `%!(EXTRA int=2)` 가 다음 줄 머리에 붙었다** — 남는 인자는 **서식 문자열이 다 끝난 뒤**(그러니까 `\n` **뒤**)에 덧붙는다. 그래서 `b4` 가 **그 줄에 이어 찍혔다.** 로그 한 줄이 **두 줄로 번지는** 자리다.
 - ★★ **`b5` — `Printf` 의 `%w` 는 `%!w(*errors.errorString=&{x})`** — `%w` 는 **`Errorf` 에서만** 뜻이 있다. `vet` 문구 「**does not support error-wrapping directive %w**」.
-- ★★★ **`b6` — `Errorf` 에 `error` 아닌 인자로 `%w`** — 메시지에 `%!w(string=문자열)` 이 박히고 **`errors.Unwrap(err) == nil` 이 `true`** — **감싼 것이 없다.** 문서 「**It is invalid to supply the %w verb with an operand that does not implement the error interface**」(머리말 `t42errorf`).
+- ★★★ **`b6` — `Errorf` 에 `error` 아닌 인자로 `%w`** — 메시지에 `%!w(string=문자열)` 이 박히고 **`errors.Unwrap(err) == nil` 이 `true`** — **감싼 것이 없다.** 문서 「**It is invalid to supply the %w verb with an operand that does not implement the error interface**」(「이 판」 절 `t42errorf`).
   ★ `%w` 를 여러 개 쓰면 `Unwrap() []error` 가 되는 것은 [24번 주제](../24-error-wrapping-and-errors-is-as-join/) (6)절이 쟀다.
 - ★★★ **`vet 이 짚은 줄 6 / 6`** — 여섯 줄 전부. ★★★ **그런데 (1)절 격자는 `vet exit=0`** 이었다 — 격자의 `%s`·`%d` 칸도 **같은 종류의 실수**인데, **동사를 변수(`verb`)로 넘겨서** `vet` 이 서식 문자열을 **읽을 수 없었다.** `vet` 은 **상수 서식 문자열만** 본다.
 
@@ -750,3 +744,9 @@ func main() {
 - ★ **`Formatter`·`GoStringer`·폭·정밀도·플래그(`%6.2f`·`%-10s`·`%q`·`%x`)** — 이 문서는 격자에 넣지 않았다.
 - ★ **자기 자신을 담는 슬라이스**(문서가 「the package does not protect against them」이라 적은 경우) — 안 던졌다.
 - ★ **다른 `fatal error`**(동시 맵 쓰기 등)도 같은 성질인지 — 안 던졌다. 이 문서가 잰 것은 **스택 넘침 하나**다.
+
+## 실행 환경
+
+**기준 소스** — [`fmt`](https://pkg.go.dev/fmt) 패키지 문서(`go doc fmt` · `go doc fmt.Errorf`) · 툴체인 소스 `src/fmt/doc.go`·`print.go`·`internal/fmtsort/sort.go`. 전부 **이 툴체인에서 직접 떴다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+★★ **버전** — 이 문서가 쓰는 동사·`Stringer`·`%!` 표기는 이 판(1.27.1)에서 잰 것이다. `%w` 는 1.13, `%w` 여러 개는 1.20 — [24번 주제](../24-error-wrapping-and-errors-is-as-join/) 「실행 환경」이 그 판 표기의 정본이다.

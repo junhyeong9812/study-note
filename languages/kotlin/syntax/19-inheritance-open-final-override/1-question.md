@@ -1,15 +1,5 @@
 # kotlin/syntax/19 — 상속: `open`/`final` 기본값 뒤집기·`override` 강제 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다. 이 주제는 [20번 주제](../20-interfaces-default-impl-and-super/)·[21번 주제](../21-class-delegation-by/)의 뿌리다.
-> ★ **`init` 순서와 「상위 생성자에서 `open` 멤버를 부르는 구멍」은 [15번 주제](../15-class-declaration-constructors-and-init/)가 정본**이라 여기서는 **결론만** 묻는다.
-> 가시성은 [18번 주제](../18-visibility-modifiers/), 인터페이스의 충돌 해소는 [20번 주제](../20-interfaces-default-impl-and-super/)가 정본이다.
-> 문항 12개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -226,6 +216,15 @@ class C : B() {
 - 상위 클래스 `init` 에서 `open` 함수를 부르면 무엇이 보이는가(결론만)?
 - 그 구멍이 Java 에서 **더 넓은** 이유는 무엇인가?
 - Kotlin 에서 그 구멍에 빠지려면 프로그래머가 무엇을 **먼저 적어야** 하는가?
+
+## 실행 환경
+
+선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다. 이 주제는 [20번 주제](../20-interfaces-default-impl-and-super/)·[21번 주제](../21-class-delegation-by/)의 뿌리다.
+★ **`init` 순서와 「상위 생성자에서 `open` 멤버를 부르는 구멍」은 [15번 주제](../15-class-declaration-constructors-and-init/)가 정본**이라 여기서는 **결론만** 묻는다.
+가시성은 [18번 주제](../18-visibility-modifiers/), 인터페이스의 충돌 해소는 [20번 주제](../20-interfaces-default-impl-and-super/)가 정본이다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

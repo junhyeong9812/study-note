@@ -1,9 +1,5 @@
 # cs/development-standards/security-standards — 보안 기준 (OWASP Top 10 · NIST SSDF · OWASP ASVS) — 공부용 상세 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> ⚠️ **이 본문은 Claude가 기준 문서를 바탕으로 작성했다(2026-08-24, Top 10 2025·ASVS 5.0은 웹 근거 확인).** 원고(내 문장)가 아니다 — 공부하며 자기 문장으로 교체해 가는 것을 권장. 공격 예시는 **교육용 전형 예**이고, 불확실한 곳은 (확인 필요) 표시.
-> 상위 묶음: [development-standards](../README.md)
-
 ## 전체 흐름
 
 ```text
@@ -283,3 +279,7 @@ SSDF류 프로세스를 "개발자에게 보안 업무 떠넘기기"로 구현�
 ### C. 한국 맥락의 이웃 기준
 
 KISA 주요정보통신기반시설 취약점 분석·평가 기준, 전자금융 감독규정, ISMS-P 인증 — 법률 축(legal-standards)과 보안 축이 실제로 만나는 지점은 국내에서는 이런 제도들이다.
+
+---
+
+상위 묶음: [development-standards](../README.md)

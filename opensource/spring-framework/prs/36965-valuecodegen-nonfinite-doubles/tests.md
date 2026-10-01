@@ -1,7 +1,5 @@
 # PR #36965 — 테스트 해설 (테스트 하나하나)
 
-> PR #36965 테스트 해설. 형식·개념은 ../37153/tests.md, ../37153/guard-tests.md 참조.
-
 이 PR이 추가한 테스트는 `ValueCodeGeneratorTests.PrimitiveTests`의 여섯 건이고, 여섯 건 전부 수정 전에 실패하는 red 테스트다.\
 가드 역할은 새로 추가된 것이 아니라 같은 중첩 클래스에 이미 있던 `generateWhenFloat`·`generateWhenDouble` 두 건이 맡는다.\
 `Float`와 `Double` 각각에 대해 NaN, 양의 무한대, 음의 무한대 세 값을 곱집합으로 덮은 구조이므로, 여섯 테스트는 사실상 같은 주장의 여섯 좌표다.

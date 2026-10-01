@@ -1,10 +1,5 @@
 # issue/infra/compose-variable-resolution-timing — compose ${VAR}의 두 채널(파싱 vs 런타임) — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-23).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. (왜) docker compose 파일에서 `${VAR}`가 풀리는 시점이 왜 하나가 아닌가. `container_name: ci-cd-${MODE}`의 `MODE`와 `env_file`이 컨테이너에 주입하는 `MODE`는 각각 **언제·누가** 읽는가.
 2. (예측) `env_file: .env`에 `MODE=master`를 넣고 `container_name: ci-cd-${MODE}`를 썼다. compose는 무엇을 출력하며(`${MODE}`와 `${MODE:?}`에서 각각), 왜 env_file의 값으로 container_name을 못 채우는가.

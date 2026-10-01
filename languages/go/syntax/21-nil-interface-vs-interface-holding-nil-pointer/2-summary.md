@@ -1,17 +1,5 @@
 # go/syntax/21 — `nil` 인터페이스와 `nil` 포인터를 담은 인터페이스 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Comparison operators · Interface types ·
-> Type switches 절. 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했고,
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> `errors.Is` 의 근거는 `$(go env GOROOT)/src/errors/wrap.go` 를 직접 떠 왔다.\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> **버전** — 이 주제에는 **판 경계가 없다.** 인터페이스 값이 (타입, 값) 두 칸인 것은 **1.0부터 같다.**
-> ★★★ 그리고 이것은 **명세가 못 박은 자리**다 — 비교 규칙이 「dynamic types」·「dynamic values」라고
-> **두 칸을 직접 부른다.** gc 가 그렇게 구현한 것이 아니다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★ **본체는 셋째 창이다** — 「`x == nil` 과 `reflect.ValueOf(x).IsNil()` 을 같은 줄에 나란히 찍는 창」.
 이 주제의 전부가 **그 둘의 답이 갈리는 칸** 하나다.
 
@@ -1359,3 +1347,15 @@ ruleC: true
   그 뒤에 무엇이 되는지는 **안 던졌다** — [24번 주제](../24-error-wrapping-and-errors-is-as-join/)가 정본이다.
 - **에디터·언어 서버**가 이 함정을 경고해 주는지는 **근거로 안 썼다.**
   그것은 도구의 기능이지 언어의 것이 아니고, 이 문서는 에디터를 안 열었다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Comparison operators · Interface types ·
+Type switches 절. 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했고,
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+`errors.Is` 의 근거는 `$(go env GOROOT)/src/errors/wrap.go` 를 직접 떠 왔다.\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+**버전** — 이 주제에는 **판 경계가 없다.** 인터페이스 값이 (타입, 값) 두 칸인 것은 **1.0부터 같다.**
+★★★ 그리고 이것은 **명세가 못 박은 자리**다 — 비교 규칙이 「dynamic types」·「dynamic values」라고
+**두 칸을 직접 부른다.** gc 가 그렇게 구현한 것이 아니다.

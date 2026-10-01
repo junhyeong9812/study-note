@@ -1,9 +1,5 @@
 # PR #36933 — 무대의 실구조와 워크플로우
 
-> PR #36933의 무대가 되는 실구조·워크플로우. 문제·수정은 README.md, 테스트는 tests.md 참조.
->
-> 기준: upstream main 526c706d1c3. 이 문서의 `파일:줄` 인용은 모두 이 커밋 기준이며, PR 시점의 base 코드와 다른 곳은 본문에서 명시한다.
-
 이 문서가 다루는 것은 `org.springframework.aot.nativex.feature` 패키지의 두 클래스 — `ThrowawayClassLoader`와 그 유일한 소비자 `PreComputeFieldFeature` — 가 어떻게 맞물려 있고, `loadClass` 한 번이 바이트 배열을 얻어 `Class` 객체를 만들기까지 어떤 자원을 붙들었다 놓는가다.\
 PR이 바꾼 것은 `try` 한 줄이지만, 그 줄이 지키는 것은 "이 메서드가 여는 스트림의 소유권이 누구에게 있는가"라는 계약이다.
 
@@ -412,3 +408,7 @@ inflater 버퍼가 쌓이면 빌드 프로세스의 메모리 사용이 필요 �
 분기 3-a의 `return null`(`:70`)이 `loadClass`의 반환값으로 그대로 흘러나가 `ClassLoader.loadClass` 계약을 위반하던 문제이며, 후속 PR #36938이 `:57~61`의 catch 블록을 고쳐 해결했다.\
 두 결함은 같은 메서드를 무대로 삼지만 건드리는 줄이 달라 서로 충돌하지 않는다.\
 그쪽의 구조 설명은 `../36938/structure.md`에 있다.
+
+## 출처
+
+기준: upstream main 526c706d1c3. 이 문서의 `파일:줄` 인용은 모두 이 커밋 기준이며, PR 시점의 base 코드와 다른 곳은 본문에서 명시한다.

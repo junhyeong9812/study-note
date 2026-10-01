@@ -1,20 +1,5 @@
 # kotlin/syntax/12 — `reified` 타입 파라미터: 소거를 뚫는 방법 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Inline functions — Reified type parameters](https://kotlinlang.org/docs/inline-functions.html#reified-type-parameters) · [Generics](https://kotlinlang.org/docs/generics.html) · [Type checks and casts](https://kotlinlang.org/docs/typecasts.html) · [Reflection](https://kotlinlang.org/docs/reflection.html) · [kotlin.reflect.typeOf API](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.reflect/type-of.html).
-> **실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> **Java 쪽은 같은 JDK 의 `javac` 로 컴파일해 실제로 섞어 돌렸다**((4)).\
-> `kotlinc` 17회 · `javac` 2회 · `java` 8회 · `javap` 6회. 컴파일 실패 시나리오 **7벌** · 경고 시나리오 1벌.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다.\
-> ★ 다만 이 주제의 결론은 타깃에 안 흔들렸다 — 같은 파일을 `-jvm-target 21`(`major version: 65`)로 다시 찍어 `diff` 했더니 **한 글자도 다르지 않았다**((10)).
-> ⚠️ **`typeOf<T>()` 의 출력은 클래스패스에 `kotlin-reflect.jar` 가 있느냐로 통째로 달라진다**((6)) — 이 문서는 **양쪽을 다 찍었다**.
-> **버전** — `inline`·`reified` 는 **1.0**. `typeOf<T>()` 는 **1.6**(1.3 실험).
-> **경계** — ★★ **`inline` 이 왜 이 주제의 전제인지, 인라인이 무엇을 펼치는지는 [11번 주제](../11-inline-functions/)가 정본이다.**\
-> **소거가 무엇을 지우는지의 정본은 [`../../../java/syntax/19-type-erasure/`](../../../java/syntax/19-type-erasure/)** 다 — 여기서는 **그 결론만 받아 쓴다**.\
-> 람다가 객체가 되는 것은 [10번 주제](../10-lambdas-and-higher-order-functions/), `is`/`as` 자체의 문법은 [목록의 **33번 주제**](../33-type-checks-and-casts-is-as/),\
-> 변성·star projection 은 [목록의 **28번 주제**](../28-generics-variance-in-out-star-where/), `kotlin-reflect` API 전체는 [목록의 **35번 주제**](../35-annotations-and-use-site-targets/)가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **제네릭 함수 안에서는 `T` 가 무엇이었는지 알 수 없다.** 컴파일이 끝나면 지워지기 때문이다.
@@ -1005,3 +990,18 @@ R castR<String>(1) 를 Any 로 받기 : java.lang.ClassCastException
   "`is T` 가 `Class.isInstance` 보다 빠르다" 같은 것은 **하지 않은 주장**이다.
 - **못 잰 것** — `kotlinx.serialization` 의 `serializer(typeOf<T>())` 처럼 **`KType` 을 실제로 소비하는 라이브러리**는\
   stdlib 밖이라 이 환경에 없다. **`typeOf<T>()` 가 그 라이브러리에서 무엇을 하는지는 돌려 보지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Inline functions — Reified type parameters](https://kotlinlang.org/docs/inline-functions.html#reified-type-parameters) · [Generics](https://kotlinlang.org/docs/generics.html) · [Type checks and casts](https://kotlinlang.org/docs/typecasts.html) · [Reflection](https://kotlinlang.org/docs/reflection.html) · [kotlin.reflect.typeOf API](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.reflect/type-of.html).
+**실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+**Java 쪽은 같은 JDK 의 `javac` 로 컴파일해 실제로 섞어 돌렸다**((4)).\
+`kotlinc` 17회 · `javac` 2회 · `java` 8회 · `javap` 6회. 컴파일 실패 시나리오 **7벌** · 경고 시나리오 1벌.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다.\
+★ 다만 이 주제의 결론은 타깃에 안 흔들렸다 — 같은 파일을 `-jvm-target 21`(`major version: 65`)로 다시 찍어 `diff` 했더니 **한 글자도 다르지 않았다**((10)).
+⚠️ **`typeOf<T>()` 의 출력은 클래스패스에 `kotlin-reflect.jar` 가 있느냐로 통째로 달라진다**((6)) — 이 문서는 **양쪽을 다 찍었다**.
+**버전** — `inline`·`reified` 는 **1.0**. `typeOf<T>()` 는 **1.6**(1.3 실험).
+**경계** — ★★ **`inline` 이 왜 이 주제의 전제인지, 인라인이 무엇을 펼치는지는 [11번 주제](../11-inline-functions/)가 정본이다.**\
+**소거가 무엇을 지우는지의 정본은 [`../../../java/syntax/19-type-erasure/`](../../../java/syntax/19-type-erasure/)** 다 — 여기서는 **그 결론만 받아 쓴다**.\
+람다가 객체가 되는 것은 [10번 주제](../10-lambdas-and-higher-order-functions/), `is`/`as` 자체의 문법은 [목록의 **33번 주제**](../33-type-checks-and-casts-is-as/),\
+변성·star projection 은 [목록의 **28번 주제**](../28-generics-variance-in-out-star-where/), `kotlin-reflect` API 전체는 [목록의 **35번 주제**](../35-annotations-and-use-site-targets/)가 정본이다.

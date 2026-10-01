@@ -1,12 +1,5 @@
 # web-api/33 — WebSocket: 핸드셰이크·프레임·닫힘 코드와 재연결 설계 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 한 방향 · 브라우저가 다시 붙는 쪽은 [32번 주제](../32-server-sent-events/1-question.md)가 물었다. 재시도 간격(지수 · 지터)은 [`ops-patterns/01-retry-backoff`](../../../cs/ops-patterns/01-retry-backoff/1-question.md)가 정본이다. 여기는 **HTTP 가 어떻게 WebSocket 이 되고, 선로에 무엇이 오가고, 끊긴 것을 페이지가 무엇으로 아나**를 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과, 표준 라이브러리로 직접 짠 서버의 선로 덤프다. **명세 원문(WHATWG WebSockets · RFC 6455)은 이 판에서 열지 못했다.** 이식성은 주장 범위 밖이다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -122,6 +115,12 @@ ws.close(4000, "박동 없음");                       // 서버는 이 close �
 
 - 끊김을 아는 신호는 무엇뿐이었나? 반쯤 열린 연결은 무엇으로 잡나? 다시 붙는 간격은 이 편과 [`ops-patterns/01-retry-backoff`](../../../cs/ops-patterns/01-retry-backoff/1-question.md) 중 어디가 정본인가?
 - [32번 주제](../32-server-sent-events/1-question.md)의 SSE 와 비교해 **앱이 더 해야 하는 일** 두 가지는?
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — 한 방향 · 브라우저가 다시 붙는 쪽은 [32번 주제](../32-server-sent-events/1-question.md)가 물었다. 재시도 간격(지수 · 지터)은 [`ops-patterns/01-retry-backoff`](../../../cs/ops-patterns/01-retry-backoff/1-question.md)가 정본이다. 여기는 **HTTP 가 어떻게 WebSocket 이 되고, 선로에 무엇이 오가고, 끊긴 것을 페이지가 무엇으로 아나**를 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과, 표준 라이브러리로 직접 짠 서버의 선로 덤프다. **명세 원문(WHATWG WebSockets · RFC 6455)은 이 판에서 열지 못했다.** 이식성은 주장 범위 밖이다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

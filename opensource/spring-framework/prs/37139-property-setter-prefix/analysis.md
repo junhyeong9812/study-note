@@ -1,13 +1,5 @@
 # PR #37139 분석 — Property.resolveName() write 분기의 set 부분일치
 
-> 기준: 커밋 `e8e293a7060` (author junhyeong9812, committer Sam Brannen, 2026-08-19,
-> 마일스톤 7.1.0-M2). PR 자체는 **CLOSED**다 — #36911과 #37139가 각각 `PropertyTests.java`를
-> 신규 생성해 충돌했고, 메인테이너가 이 커밋을 **수동 적용**한 뒤(내용 무변경, 저자 크레딧 유지)
-> PR을 닫았다. main에서 `f067d40f0a6`(#36911) 바로 뒤에 얹혀 있다.
-> 근거: 실파일 정독 + `e8e293a7060` diff + `docs/plans/2026-08-14/property-setter-startswith/`.
-> 이 폴더의 README(서사)·structure(무대·워크플로우)·tests(테스트별)·gates(이해 게이트)와
-> 중복을 피해, 이 문서는 **이름표 사전·단계 추적 표·계약 대조·기각된 대안**을 맡는다.
-
 ## 0. 결론
 
 `Property#resolveName()`의 write 분기는 setter 여부를 `indexOf("set") == -1`로 판정했다.\
@@ -322,3 +314,11 @@ read 분기는 `startsWith` 실패 시 폴백(index = 0)으로 흘려보내지�
 - **다루지 않은 것.**\
   `resolveMethodParameter()`의 read/write 타입 선택(:191-197), `getField()`의 3변형
   폴백(:246-253), `annotationCache` 키 설계는 이 PR의 범위 밖이며 결함과도 무관하다.
+
+## 출처
+
+기준: 커밋 `e8e293a7060` (author junhyeong9812, committer Sam Brannen, 2026-08-19,
+마일스톤 7.1.0-M2). PR 자체는 **CLOSED**다 — #36911과 #37139가 각각 `PropertyTests.java`를
+신규 생성해 충돌했고, 메인테이너가 이 커밋을 **수동 적용**한 뒤(내용 무변경, 저자 크레딧 유지)
+PR을 닫았다. main에서 `f067d40f0a6`(#36911) 바로 뒤에 얹혀 있다.
+근거: 실파일 정독 + `e8e293a7060` diff + `docs/plans/2026-08-14/property-setter-startswith/`.

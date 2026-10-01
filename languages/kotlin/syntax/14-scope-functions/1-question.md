@@ -1,17 +1,5 @@
 # kotlin/syntax/14 — scope function 5종: `let`/`run`/`with`/`apply`/`also` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [10번 주제](../10-lambdas-and-higher-order-functions/)와 [13번 주제](../13-extension-functions-and-properties/)다.
-> ★ **`inline` 이 무엇을 없애고 무엇을 제약하는지는 [11번 주제](../11-inline-functions/)가 정본**이고,
-> 다섯이 전부 **확장 함수**라는 사실은 [13번 주제](../13-extension-functions-and-properties/)가 정본이다.
-> 여기는 **다섯을 어떻게 갈라서 고르나**를 묻는다.
-> 이 주제는 [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/)·**58번 주제**의 뿌리다.
-> Java 에는 대응이 **없다** — [`../../../java/syntax/README.md`](../../../java/syntax/README.md) 목록의 59\~60 관용구 편이 같은 자리를 다른 방식으로 메운다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이고, 람다 전략 플래그를 따로 밝힌다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -239,6 +227,17 @@ fun five(cup: Cup): Int {
 - 다섯이 **`inline`** 이라는 사실에서 따라 나오는 성질은 무엇인가?
 - 「인라인이라 빠르다」는 이 주제가 증명한 것인가 — 증명한 것은 정확히 무엇인가?
 - 수신자 지정 람다를 **깊게** 쌓는 것(DSL)은 어느 주제가 정본인가?
+
+## 실행 환경
+
+선행은 [10번 주제](../10-lambdas-and-higher-order-functions/)와 [13번 주제](../13-extension-functions-and-properties/)다.
+★ **`inline` 이 무엇을 없애고 무엇을 제약하는지는 [11번 주제](../11-inline-functions/)가 정본**이고,
+다섯이 전부 **확장 함수**라는 사실은 [13번 주제](../13-extension-functions-and-properties/)가 정본이다.
+여기는 **다섯을 어떻게 갈라서 고르나**를 묻는다.
+이 주제는 [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/)·**58번 주제**의 뿌리다.
+Java 에는 대응이 **없다** — [`../../../java/syntax/README.md`](../../../java/syntax/README.md) 목록의 59\~60 관용구 편이 같은 자리를 다른 방식으로 메운다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이고, 람다 전략 플래그를 따로 밝힌다.
 
 ## 복습 기록
 

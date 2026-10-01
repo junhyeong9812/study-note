@@ -1,16 +1,5 @@
 # java/syntax/11 — 인터페이스: `default`/`static`/`private` 메서드와 충돌 해소 (8+) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §9.4 Method Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html) · [§9.4.1 Inheriting Methods with Override-Equivalent Signatures](https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html) · [§8.4.8 Inheritance, Overriding, and Hiding](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§9.3 Field (Constant) Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html)
-> **실행 검증** — 이 문서의 모든 출력·에러 메시지는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 정상 실행되는 프로그램은 **17.0.13 · 21.0.5 · 25.0.1** 셋에서 다 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
-> 바이트코드와 멤버 목록은 `javap -c -p` · `javap -p` 출력을 그대로 옮겼다.
-> **버전** — `default`·`static` 메서드는 **Java 8**, `private`(및 `private static`) 메서드는 **Java 9** 부터.\
-> 그 이전 릴리스로 컴파일하면 거부된다(아래 「구현 세부사항 대 언어 보장」).
-> **범위** — 인터페이스가 **왜 Java 8 에서 바뀌었나**(람다·스트림을 넣으려는 동기)는\
-> [`../../../../history/java/java-8.md`](../../../../history/java/java-8.md) 가 정본이다. 여기는 **그래서 무엇을 쓰고 무엇이 막히나**만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **인터페이스는 계약서인데, Java 8 부터 그 계약서에 "기본 조항"이 들어갈 수 있게 됐다.**
@@ -569,3 +558,14 @@ interface I { private void helper() { } private static void s() { } }
                                    ^
   1 error
   ```
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §9.4 Method Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html) · [§9.4.1 Inheriting Methods with Override-Equivalent Signatures](https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html) · [§8.4.8 Inheritance, Overriding, and Hiding](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§9.3 Field (Constant) Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html)
+**실행 검증** — 이 문서의 모든 출력·에러 메시지는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+정상 실행되는 프로그램은 **17.0.13 · 21.0.5 · 25.0.1** 셋에서 다 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
+바이트코드와 멤버 목록은 `javap -c -p` · `javap -p` 출력을 그대로 옮겼다.
+**버전** — `default`·`static` 메서드는 **Java 8**, `private`(및 `private static`) 메서드는 **Java 9** 부터.\
+그 이전 릴리스로 컴파일하면 거부된다(본문 「구현 세부사항 대 언어 보장」).
+**범위** — 인터페이스가 **왜 Java 8 에서 바뀌었나**(람다·스트림을 넣으려는 동기)는\
+[`../../../../history/java/java-8.md`](../../../../history/java/java-8.md) 가 정본이다. 여기는 **그래서 무엇을 쓰고 무엇이 막히나**만 다룬다.

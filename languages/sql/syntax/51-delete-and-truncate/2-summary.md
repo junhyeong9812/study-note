@@ -1,18 +1,5 @@
 # sql/51-DELETE 와 TRUNCATE — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · DELETE](https://www.postgresql.org/docs/18/sql-delete.html) · [PostgreSQL 18 · TRUNCATE](https://www.postgresql.org/docs/18/sql-truncate.html) · [MySQL 8.4 · DELETE](https://dev.mysql.com/doc/refman/8.4/en/delete.html) · [MySQL 8.4 · TRUNCATE TABLE](https://dev.mysql.com/doc/refman/8.4/en/truncate-table.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·수치는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> ★ **환경 확인** — MySQL `autocommit=1` · `sql_safe_updates=0`(기본) · 스토리지 엔진 **InnoDB**.\
-> **엔진이 MyISAM 이면 4번 절의 결론이 통째로 달라지므로** 먼저 밝힌다.\
-> ★ **측정 조건** — 6번의 수치는 **JMH 같은 도구가 아니라 클라이언트 타이머**다(PG 는 `psql \timing`, MySQL 은 `SYSDATE(6)` 차). **3판의 원값을 그대로 싣는다.** 재현되는 것은 **절댓값이 아니라 자릿수와 방향**이다.\
-> ★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t51_a`·`t51_p`·`t51_c`·`t51_pc`·`t51_cc`·`t51_big`(5만 행) 을 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> ★ **`WHERE` 없는 `DELETE` 와 `TRUNCATE` 가 이 주제다 — 전부 내 표에서만 던졌다.**\
-> **선행** — [50 UPDATE](../50-update-with-join-and-subquery/)(`WHERE` 없는 문의 위험·`sql_safe_updates`) · [44 외래키와 참조 동작](../44-foreign-key-referential-actions/).
-
 ## 한눈에 — 쉽게 말하면
 
 **둘 다 「표를 비운다」인데, 하는 일이 근본적으로 다르다.**
@@ -937,3 +924,15 @@ DELETE IGNORE FROM t ...;                   -- MySQL
   인덱스 스캔이 앞에서부터 진행되게 하려는 것이다. 붙이지 않으면 **매 회차가 표 전체를 훑을 수 있다.**\
   ★ **이 효과는 계획으로 확인하지 않았다** — 계획은 통계에 흔들린다([작성법 §2-1](../../../../reference/study-note-guide.md)).
 - **PG 18 에는 `DELETE … RETURNING` 에 `OLD`/`NEW` 별칭이 생겼다** — [54 번](../54-returning-and-data-modifying-cte/)이 그것을 다룬다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · DELETE](https://www.postgresql.org/docs/18/sql-delete.html) · [PostgreSQL 18 · TRUNCATE](https://www.postgresql.org/docs/18/sql-truncate.html) · [MySQL 8.4 · DELETE](https://dev.mysql.com/doc/refman/8.4/en/delete.html) · [MySQL 8.4 · TRUNCATE TABLE](https://dev.mysql.com/doc/refman/8.4/en/truncate-table.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·수치는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+★ **환경 확인** — MySQL `autocommit=1` · `sql_safe_updates=0`(기본) · 스토리지 엔진 **InnoDB**.\
+**엔진이 MyISAM 이면 4번 절의 결론이 통째로 달라지므로** 먼저 밝힌다.\
+★ **측정 조건** — 6번의 수치는 **JMH 같은 도구가 아니라 클라이언트 타이머**다(PG 는 `psql \timing`, MySQL 은 `SYSDATE(6)` 차). **3판의 원값을 그대로 싣는다.** 재현되는 것은 **절댓값이 아니라 자릿수와 방향**이다.\
+★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t51_a`·`t51_p`·`t51_c`·`t51_pc`·`t51_cc`·`t51_big`(5만 행) 을 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+★ **`WHERE` 없는 `DELETE` 와 `TRUNCATE` 가 이 주제다 — 전부 내 표에서만 던졌다.**\
+**선행** — [50 UPDATE](../50-update-with-join-and-subquery/)(`WHERE` 없는 문의 위험·`sql_safe_updates`) · [44 외래키와 참조 동작](../44-foreign-key-referential-actions/).

@@ -1,14 +1,5 @@
 # web-api/22 — 입력 이벤트의 순서: `keydown`→`beforeinput`→`input`→`change` 와 IME 조합 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ④ 를 늘린 「한 번 타이핑의 시간선」이다** — 진짜 키 입력 한 번이 부르는 이벤트를 **한 줄씩, 그때의 `value` 와 함께** 적는다. 이벤트가 **값을 바꾸기 전인가 뒤인가**가 이 시간선에서만 보인다.\
-> ★★★ **IME 조합은 CDP 의 흉내다 — 진짜 입력기가 아니다.** `Input.imeSetComposition`·`Input.insertText` 는 CDP 문서 스스로 **experimental** 이고 「IME 를 **흉내 낸다**(emulates)」고 적는다. 이 편이 조합에 대해 적는 것은 전부 **「CDP 가 조합을 흉내 냈을 때 Chrome 151 이 낸 이벤트」** 이고, **실제 한글·일본어 입력기가 같은 순서를 내는지는 못 쟀다**(아래 「도구가 못 보는 것」).\
-> **기준 소스** — [W3C UI Events](https://w3c.github.io/uievents/) 의 「3.6.5 Key Events During Composition」·「3.6.6 Input Events During Composition」·「7.3.1 How to determine keyCode for keydown and keyup events」(비규범 절 — 입력기가 처리 중이면 **229**) · [W3C Input Events Level 2](https://w3c.github.io/input-events/) 의 `inputType` 표(`insertCompositionText` 는 **「beforeinput cancelable: No」**) · [HTML Living Standard — The input element](https://html.spec.whatwg.org/multipage/input.html) 의 「Common event behaviors」 절(「`change` 는 값이 **확정될 때**, 그게 말이 안 되면 **포커스를 잃을 때**」) · CDP 는 [devtools-protocol 의 `browser_protocol.json`](https://github.com/ChromeDevTools/devtools-protocol/blob/master/json/browser_protocol.json) 의 `Input` 도메인. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **키는 CDP `Input.dispatchKeyEvent` 로 넣은 진짜 입력**(렌더러가 사용자 키처럼 처리한다), 붙여넣기는 같은 키에 **편집 명령 `copy`·`paste`** 를 실은 것, **조합은 CDP 의 흉내**다. 하네스는 [20번 주제](../20-listener-lifetime/2-summary.md)의 (1)에 있다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — [16번 주제](../16-event-propagation-phases/2-summary.md)(순서 로그를 적는 법 · `input`·`keydown` 이 버블한다). ★ **[17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md)의 (7)·(8)** 이 **키보드 Space/Enter 가 `click` 을 만드는 것**과 **Enter 의 암묵 제출**을 쟀다 — 여기의 `keydown` 이 그 앞단이다. 마크업 쪽(`<input>` 타입 지도)은 HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **22번**이 정본이다(아직 폴더 없음).\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -747,3 +738,12 @@ $ python3 wa20b-cdp.py page wa20b-22-enter.html | sed -n '19,23p'
 - **`getTargetRanges()`** 로 `contenteditable` 의 편집 범위를 읽는 것은 던지지 않았다.
 - **`Input.dispatchKeyEvent` 의 `commands`** 는 붙여넣기에만 썼다 — 실행 취소(`historyUndo`) 등은 던지지 않았다.
 - **실제 입력기**로 재려면 창이 있는 Chrome 과 OS 입력기가 필요하다 — 이 하네스 밖이다.
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ④ 를 늘린 「한 번 타이핑의 시간선」이다** — 진짜 키 입력 한 번이 부르는 이벤트를 **한 줄씩, 그때의 `value` 와 함께** 적는다. 이벤트가 **값을 바꾸기 전인가 뒤인가**가 이 시간선에서만 보인다.\
+★★★ **IME 조합은 CDP 의 흉내다 — 진짜 입력기가 아니다.** `Input.imeSetComposition`·`Input.insertText` 는 CDP 문서 스스로 **experimental** 이고 「IME 를 **흉내 낸다**(emulates)」고 적는다. 이 편이 조합에 대해 적는 것은 전부 **「CDP 가 조합을 흉내 냈을 때 Chrome 151 이 낸 이벤트」** 이고, **실제 한글·일본어 입력기가 같은 순서를 내는지는 못 쟀다**(맨 위 「도구가 못 보는 것」).\
+**기준 소스** — [W3C UI Events](https://w3c.github.io/uievents/) 의 「3.6.5 Key Events During Composition」·「3.6.6 Input Events During Composition」·「7.3.1 How to determine keyCode for keydown and keyup events」(비규범 절 — 입력기가 처리 중이면 **229**) · [W3C Input Events Level 2](https://w3c.github.io/input-events/) 의 `inputType` 표(`insertCompositionText` 는 **「beforeinput cancelable: No」**) · [HTML Living Standard — The input element](https://html.spec.whatwg.org/multipage/input.html) 의 「Common event behaviors」 절(「`change` 는 값이 **확정될 때**, 그게 말이 안 되면 **포커스를 잃을 때**」) · CDP 는 [devtools-protocol 의 `browser_protocol.json`](https://github.com/ChromeDevTools/devtools-protocol/blob/master/json/browser_protocol.json) 의 `Input` 도메인. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **키는 CDP `Input.dispatchKeyEvent` 로 넣은 진짜 입력**(렌더러가 사용자 키처럼 처리한다), 붙여넣기는 같은 키에 **편집 명령 `copy`·`paste`** 를 실은 것, **조합은 CDP 의 흉내**다. 하네스는 [20번 주제](../20-listener-lifetime/2-summary.md)의 (1)에 있다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — [16번 주제](../16-event-propagation-phases/2-summary.md)(순서 로그를 적는 법 · `input`·`keydown` 이 버블한다). ★ **[17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md)의 (7)·(8)** 이 **키보드 Space/Enter 가 `click` 을 만드는 것**과 **Enter 의 암묵 제출**을 쟀다 — 여기의 `keydown` 이 그 앞단이다. 마크업 쪽(`<input>` 타입 지도)은 HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **22번**이 정본이다(아직 폴더 없음).

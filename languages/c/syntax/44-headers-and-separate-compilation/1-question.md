@@ -1,15 +1,5 @@
 # c/syntax/44 — 헤더와 분할 컴파일: 「**헤더는 include 한 모든 번역 단위에 그대로 복사된다 — 그래서 헤더에는 복사돼도 정의가 하나로 남는 것만 둔다**」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **환경** — gcc 13.3.0 · gcc-12 12.4.0 · clang 18.1.3 · g++ 13.3.0 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① **헤더에 무엇을 두면 링크가 깨지나**(선언 · 정의 · `static` · `const` · 타입) ② **두 번 들어오는 것을 무엇이 막나**(guard 대 `#pragma once` · 경로가 다른 같은 파일)
-> ③ **헤더끼리의 순환과 재컴파일**(전방 선언 · `-H` · `-MMD`).
-> ★★★ **본체 창은 링크 결과 + `nm`** — 1번은 **칸마다 「링크 성공 / `multiple definition` / `undefined reference`」** 와 `nm` 글자를 적어야 답이다.
-> 선행 — [29번 형제](../29-scope-and-linkage-static-extern/) · [41번 형제](../41-preprocessor-directives-and-conditional-compilation/).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 여섯 문항(1\~6)은 소스만 보고 적어 본 뒤** 답을 연다.
@@ -333,6 +323,13 @@ size_t fa_size(void) { return sizeof(struct fa); }
 
 - **링커 일반**은 어느 문서가 정본이고, 이 편과의 경계는?
 - ★ 링크 에러를 **거꾸로 읽는 법**은 목록의 몇 번 주제인가? **전방 선언 + 포인터**의 다른 쓸모는 몇 번 형제인가?
+
+## 실행 환경
+
+**환경** — gcc 13.3.0 · gcc-12 12.4.0 · clang 18.1.3 · g++ 13.3.0 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
+
+★★★ **본체 창은 링크 결과 + `nm`** — 1번은 **칸마다 「링크 성공 / `multiple definition` / `undefined reference`」** 와 `nm` 글자를 적어야 답이다.
+선행 — [29번 형제](../29-scope-and-linkage-static-extern/) · [41번 형제](../41-preprocessor-directives-and-conditional-compilation/).
 
 ## 복습 기록
 

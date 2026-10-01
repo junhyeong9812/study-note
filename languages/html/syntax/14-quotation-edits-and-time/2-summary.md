@@ -1,14 +1,5 @@
 # html/syntax/14 — 인용·편집·시각: `blockquote`/`q`/`cite`·`ins`/`del`·`time` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The `q` element」](https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-q-element)·[「The `cite` element」](https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-cite-element)·[「The `time` element」](https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-time-element)·[「Edits」](https://html.spec.whatwg.org/multipage/edits.html)·[「The `blockquote` element」](https://html.spec.whatwg.org/multipage/grouping-content.html#the-blockquote-element) 절, [렌더링 절](https://html.spec.whatwg.org/multipage/rendering.html)의 `q::before`/`q::after` 규칙, 그리고 [HTML-AAM](https://w3c.github.io/html-aam/). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 블록마다 던진 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다. 하네스는 [13번 주제의 3-answer.md](../13-phrasing-semantics/3-answer.md) `## 실행 검증` 절에 있다(이 배치가 공유한다).\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 이 주제의 요소들은 전부 오래된 표면이다. ★ 다만 **`quotes: auto`**(언어에 맞춰 따옴표를 고르는 CSS 값)는 CSS 쪽의 비교적 새 표면이고, **HTML 명세 렌더링 절에는 이제 언어별 따옴표 표가 없다**(렌더링 절 전문에서 `quotes` 를 찾아 확인했다 — `q::before { content: open-quote }` 두 줄만 있다).
-> **선행** — [13번 주제](../13-phrasing-semantics/2-summary.md)(같은 구절 시맨틱 묶음 · 창 ② × 창 ⑦ 대조).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ③ 대 창 ⑦ 이다 — `q` 의 따옴표는 `innerText` 에 없고 접근성 트리에는 있다.** 그리고 **`time` 에서는 창 ② 가 본체다** — `dateTime` 이 **아무것도 해석하지 않고** 속성 글자를 돌려준다.
-
 **이 판의 Chrome**
 
 ```text
@@ -276,7 +267,7 @@ RootWebArea    이름='14 q 의 따옴표'
 
 - ★★★ **접근성 트리에는 따옴표가 글자(`StaticText`)로 있다.** 창 ①·③ 에 없던 것이 **렌더 결과를 읽는 창**에는 나온다 — 보조 기술은 따옴표를 **받는다.**
 - ★★ **만드는 것은 CSS 다.** `::before` 의 계산값이 `open-quote`, `::after` 가 `close-quote` 이고, `q` 의 자식 노드는 `#text, Q` 뿐이다 — **따옴표 노드가 없다.**
-- ★★ **모양은 `lang` 이 고른다.** 계산값은 전부 `quotes = auto` 로 같은데 **글자가 다섯 가지로 갈렸다.** `auto` 가 「요소의 언어에 맞춰라」이기 때문이다. ★ **어느 언어가 어느 글자인지는 이 판의 구현 표**다 — HTML 명세 렌더링 절에는 언어별 표가 없다(머리말).
+- ★★ **모양은 `lang` 이 고른다.** 계산값은 전부 `quotes = auto` 로 같은데 **글자가 다섯 가지로 갈렸다.** `auto` 가 「요소의 언어에 맞춰라」이기 때문이다. ★ **어느 언어가 어느 글자인지는 이 판의 구현 표**다 — HTML 명세 렌더링 절에는 언어별 표가 없다(「실행 환경」).
 - ★ **`ko` 의 세 겹째는 `‘’` 를 되풀이했다** — 표에 두 단계만 있으면 마지막 단계를 되풀이한다.
 - ★ **`q` 자신은 이 트리에 노드로 안 나왔다** — 따옴표와 글자가 문단에 바로 붙었다. HTML-AAM 이 `q` → **`generic`** 이고, 이 판이 **`id` 없는 `generic` 을 무시된 노드로 빼기** 때문으로 보인다(이 배치에서 본 사례가 전부 그랬다 — 구현의 관찰이지 규칙이 아니다). `id` 를 단 `<q>` 는 (4) 의 트리에서 **`generic` 노드로 남는다.** 어느 쪽이든 **「인용」이라는 역할은 없다.**
 
@@ -809,3 +800,13 @@ RootWebArea    이름='14 따옴표를 손으로 또 쓰면'
 - **왜 따옴표를 CSS 로 만들게 했나** — 인용 부호는 **언어마다 다르다.** 마크업에 글자로 박으면 번역·재사용 때마다 고쳐야 한다. 「여기가 인용이다」만 적고 **모양은 언어가 고르게** 한 것이 `<q>` 의 설계다. 대가가 (1) 의 「복사하면 사라진다」다.
 - **왜 브라우저가 `datetime` 을 검사하지 않나** — `time` 은 **보이는 동작이 없는** 요소다. 검사해서 거절할 동작(제출·계산)이 없으니 **검사할 이유도 자리도 없다.** `input type=date` 는 반대다 — 값을 **제출**하므로 파싱한다(목록의 **23번 주제**).
 - **`blockquote` 의 출처 표시** — 명세 — 「인용의 출처 표기는 **`blockquote` 요소 밖에 두어야 한다**(must)」. 뒤따르는 문단이 명세의 예이고, `figure`·`figcaption` 으로 묶는 구조는 [목록의 **19번 주제**](../19-figure-address-hr/)가 다룬다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The `q` element」](https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-q-element)·[「The `cite` element」](https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-cite-element)·[「The `time` element」](https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-time-element)·[「Edits」](https://html.spec.whatwg.org/multipage/edits.html)·[「The `blockquote` element」](https://html.spec.whatwg.org/multipage/grouping-content.html#the-blockquote-element) 절, [렌더링 절](https://html.spec.whatwg.org/multipage/rendering.html)의 `q::before`/`q::after` 규칙, 그리고 [HTML-AAM](https://w3c.github.io/html-aam/). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 블록마다 던진 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다. 하네스는 [13번 주제의 3-answer.md](../13-phrasing-semantics/3-answer.md) `## 실행 검증` 절에 있다(이 배치가 공유한다).\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 이 주제의 요소들은 전부 오래된 표면이다. ★ 다만 **`quotes: auto`**(언어에 맞춰 따옴표를 고르는 CSS 값)는 CSS 쪽의 비교적 새 표면이고, **HTML 명세 렌더링 절에는 이제 언어별 따옴표 표가 없다**(렌더링 절 전문에서 `quotes` 를 찾아 확인했다 — `q::before { content: open-quote }` 두 줄만 있다).
+**선행** — [13번 주제](../13-phrasing-semantics/2-summary.md)(같은 구절 시맨틱 묶음 · 창 ② × 창 ⑦ 대조).
+
+★★★ **이 주제의 본체는 창 ③ 대 창 ⑦ 이다 — `q` 의 따옴표는 `innerText` 에 없고 접근성 트리에는 있다.** 그리고 **`time` 에서는 창 ② 가 본체다** — `dateTime` 이 **아무것도 해석하지 않고** 속성 글자를 돌려준다.

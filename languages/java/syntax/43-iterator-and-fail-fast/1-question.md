@@ -1,13 +1,5 @@
 # java/syntax/43 — `Iterator`·`ListIterator`·fail-fast 와 `ConcurrentModificationException` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/) 의 질문을 먼저 푼다.
-> **향상된 `for` 라는 문법 자체**(배열과의 차이·레이블 `break`·바이트코드)는 여기서 묻지 않는다 —
-> [`../20-control-flow-statements/`](../20-control-flow-statements/) 의 질문이다.
-> 여기는 **`Iterator` 인터페이스의 계약·`ListIterator`·삭제 셋·fail-fast 의 구현과 한계**를 묻는다.
-
 ## 예시 데이터
 
 여러 문항이 이 리스트를 쓴다. **위치가 이름에 박혀 있다.**
@@ -188,6 +180,13 @@ for (String k : chm.keySet()) if (k.equals("k1")) chm.remove(k);  // (C)
 - 「`reversed()` 로 역순 순회하기」는 어디인가?
 - 「`compute*` 안에서 맵을 고치면」은 어디인가?
 - 「`CopyOnWriteArrayList` 의 동시성 계약」은 어디인가?
+
+## 실행 환경
+
+**선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/) 의 질문을 먼저 푼다.
+**향상된 `for` 라는 문법 자체**(배열과의 차이·레이블 `break`·바이트코드)는 여기서 묻지 않는다 —
+[`../20-control-flow-statements/`](../20-control-flow-statements/) 의 질문이다.
+여기는 **`Iterator` 인터페이스의 계약·`ListIterator`·삭제 셋·fail-fast 의 구현과 한계**를 묻는다.
 
 ## 복습 기록
 

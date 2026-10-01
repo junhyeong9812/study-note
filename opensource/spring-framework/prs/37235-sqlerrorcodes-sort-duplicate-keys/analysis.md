@@ -1,14 +1,5 @@
 # PR #37235 - 착수 분석: setDuplicateKeyCodes의 정렬 누락
 
-> 원본: `docs/plans/2026-08-29/j6-sqlerrorcodes-duplicate-key-sort/analysis.md`(착수 전
-> 작성). 학습 문서로 옮기면서 작업 진행용 절을 덜어내고, 수정이 적용된 현재 시점에
-> 맞춰 시제를 정리했으며 실측 근거를 절로 승격했다. 결론은 PR #37235로 반영됐다
-> (커밋 `e0704925b9a`).
->
-> **좌표 주의**: 본문의 `SQLErrorCodes.java L125-127`은 **수정 전** 파일(upstream main
-> `5d6a56fe4a0`) 기준이다. 수정 후 좌표와 분기도는 [structure.md](structure.md)를
-> 본다. 문제와 수정 요약은 [README.md](README.md), 테스트는 [tests.md](tests.md).
-
 ## 0. 결론 먼저
 
 `SQLErrorCodes`의 코드 배열 setter 열 개 중 아홉 개는 `StringUtils.sortStringArray`로 정렬해 저장하는데 `setDuplicateKeyCodes`만 입력 배열을 그대로 저장했다(L125-127).\
@@ -295,3 +286,14 @@ public void setDuplicateKeyCodes(String... duplicateKeyCodes) {
 
 - **도입 시점**: `sortStringArray` 호출은 2012년 모듈 리네임 커밋(`02a4473c62d`) 이전부터 존재한다.\
   이 setter만 처음부터 빠져 있었던 것으로 보이나 그 이전 이력은 확인하지 않았다.
+
+## 출처
+
+원본: `docs/plans/2026-08-29/j6-sqlerrorcodes-duplicate-key-sort/analysis.md`(착수 전
+작성). 학습 문서로 옮기면서 작업 진행용 절을 덜어내고, 수정이 적용된 현재 시점에
+맞춰 시제를 정리했으며 실측 근거를 절로 승격했다. 결론은 PR #37235로 반영됐다
+(커밋 `e0704925b9a`).
+
+**좌표 주의**: 본문의 `SQLErrorCodes.java L125-127`은 **수정 전** 파일(upstream main
+`5d6a56fe4a0`) 기준이다. 수정 후 좌표와 분기도는 [structure.md](structure.md)를
+본다. 문제와 수정 요약은 [README.md](README.md), 테스트는 [tests.md](tests.md).

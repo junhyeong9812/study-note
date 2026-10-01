@@ -1,9 +1,5 @@
 # PR #151154 - 테스트 해설
 
-> 신규 파일 `MatrixStatsAggregationBuilderTests`의 두 건.\
-> 문제와 수정은 [README.md](README.md), 계층 구조는 [structure.md](structure.md), 공통 배경은
-> [개념 문서](../../concepts/serialized-state-equality-contract/serialized-state-equality-contract.md).
-
 배치를 먼저 본다.\
 이 PR은 **두 층에 각각 결함이 있으므로 테스트도 층마다 하나씩**이다.\
 부모 층의 `missingMap`과 자식 층의 `multiValueMode`를 각각 겨눈다.\

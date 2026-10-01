@@ -1,11 +1,5 @@
 # sql/32-CTE(`WITH`) — 이름 붙인 서브질의와 가시성 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러·실행 계획은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> 표는 기존 `emp`·`dept` 만 썼다 — **새로 만든 표가 없다.**\
-> 문서 근거는 [PG 18 WITH Queries](https://www.postgresql.org/docs/18/queries-with.html) · [PG 12 릴리스 노트](https://www.postgresql.org/docs/release/12.0/) · [MySQL 8.4 WITH](https://dev.mysql.com/doc/refman/8.4/en/with.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -443,3 +437,10 @@ MySQL 쪽 벽 유무의 근거는 **8번·9번의 `EXPLAIN FORMAT=TREE`** 다.
 3번은 **성패가 같고 메시지의 질만 다르다** — PG 만 `WITH` 항목임을 알려 준다.
 
 **순서 보장** — 없다. 위 출력에 `ORDER BY` 를 붙인 것은 그 때문이다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러·실행 계획은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+표는 기존 `emp`·`dept` 만 썼다 — **새로 만든 표가 없다.**\
+문서 근거는 [PG 18 WITH Queries](https://www.postgresql.org/docs/18/queries-with.html) · [PG 12 릴리스 노트](https://www.postgresql.org/docs/release/12.0/) · [MySQL 8.4 WITH](https://dev.mysql.com/doc/refman/8.4/en/with.html).

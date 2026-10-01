@@ -1,12 +1,5 @@
 # ts/syntax/24 — 조건부 타입과 분배 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Conditional Types](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html) ·
-> [Handbook — Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html).
-> 위 링크는 **규칙 확인용**이고, 본문의 진단 전문은 **전부 이 판에서 직접 던져서 받은 것**이다.
-> 핸드북 문장을 옮기거나 번역한 자리는 **한 군데도 없다.**
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version · javac -version · rustc --version (sh exit=0) =====
 Version 7.0.2
@@ -36,7 +29,6 @@ rustc 1.92.0 (ded5c06cf 2025-12-08)
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
 > **버전** — 조건부 타입과 `Exclude`·`Extract`·`NonNullable` 은 **TS 2.8** 이다(릴리스 이력 기준).
 > **7.0.2 에서 그 규칙대로 도는가는 외우지 않고 던져서 확인했다** — 아래가 그 결과다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -841,3 +833,11 @@ export {};
   ★ 그래서 구현 안에서는 `as` 로 넘기고 **계약은 시그니처가 지킨다** — 이 위험은 [목록의 **30번 주제**](../30-type-assertions-and-non-null/) 쪽 이야기다.
 - **이 주제에서 안 던진 것** — 매핑 타입과 함께 쓰기([목록의 **26번 주제**](../26-mapped-types/)) · `infer` 를 붙인 조건부([**25번 주제**](../25-infer-and-recursive-conditional-types/)) ·\
   조건부의 **검사 비용**([목록의 **45번 주제**](../45-type-level-performance/)). ★★★ **비용은 재지 않았으므로 이 문서에 수치가 한 개도 없다.**
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Conditional Types](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html) ·
+[Handbook — Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html).
+위 링크는 **규칙 확인용**이고, 본문의 진단 전문은 **전부 이 판에서 직접 던져서 받은 것**이다.
+핸드북 문장을 옮기거나 번역한 자리는 **한 군데도 없다.**
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

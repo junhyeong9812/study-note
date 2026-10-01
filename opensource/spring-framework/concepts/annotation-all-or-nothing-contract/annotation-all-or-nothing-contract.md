@@ -1,8 +1,5 @@
 # 개념: annotation 격리는 왜 all-or-nothing인가 — 부분 숨김이 불가능한 타입 계약
 
-> F1(nested annotation probe) 작업 중 나온 설계 질문의 배경 문서. 질문의 형태:
-> "깨진 속성(config)만 숨기고 멀쩡한 속성(name)은 보이면 안 되나?"
-
 ## 질문의 무대
 
 ```java

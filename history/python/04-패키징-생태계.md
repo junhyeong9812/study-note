@@ -1,9 +1,5 @@
 # Python 패키징·도구 변천사
 
-> 원본: `~/project/python-history/04-패키징-생태계.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·인명·버전·PEP 번호·수치·코드블록·표는 원문 그대로다.\
-> ASCII 도식 9개(그중 2개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 집·설비 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -649,3 +645,9 @@ uv가 속도와 통합으로, PEP 621/751이 메타데이터·락파일 표준�
 - [astral-sh/uv – GitHub](https://github.com/astral-sh/uv)
 - [pylock.toml Specification — Python Packaging User Guide](https://packaging.python.org/en/latest/specifications/pylock-toml/)
 - [What's New In Python 3.12 (distutils removal)](https://docs.python.org/3/whatsnew/3.12.html)
+
+## 출처
+
+원본: `~/project/python-history/04-패키징-생태계.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·인명·버전·PEP 번호·수치·코드블록·표는 원문 그대로다.\
+ASCII 도식 9개(그중 2개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 집·설비 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

@@ -1,15 +1,5 @@
 # sql/28-프레임 — `ROWS`·`RANGE`·`GROUPS` 와 기본 프레임 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Window Function Calls](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 · Window Function Frame Specification](https://dev.mysql.com/doc/refman/8.4/en/window-functions-frames.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — `ROWS`·`RANGE` 는 PG 8.4 · MySQL 8.0 부터. **`GROUPS` 와 `EXCLUDE` 는 PG 11 부터이고 MySQL 8.4 에는 없다**(4·5번에서 에러로 확인했다).\
-> **이 주제는 방언 차이가 큰 자리다** — 목록 README 의 표기(`ROWS`/`RANGE`/`GROUPS`+`EXCLUDE` 대 `ROWS`/`RANGE`)가 **맞았다.**\
-> **선행** — [27 PARTITION BY 와 윈도우 ORDER BY](../27-partition-by-and-window-order-by/). **뒤 주제** — [30 오프셋·경계 함수](../30-offset-and-boundary-functions/).
-
 ## 한눈에 — 쉽게 말하면
 
 **줄 서 있는 사람들 사이에서, 내가 「몇 명까지 뒤돌아볼 것인가」를 정하는 규칙이다.**
@@ -706,3 +696,12 @@ LAST_VALUE(salary) OVER (ORDER BY salary ROWS BETWEEN UNBOUNDED PRECEDING AND UN
   MySQL 의 `ERROR 3587` 이 *"of numeric or temporal type"* 이라 적은 것이 **날짜도 받는다**는 표시다.
 - **프레임과 성능** — `ROWS` 는 슬라이딩으로 계산되고 `RANGE`/`GROUPS` 는 피어 경계를 찾아야 한다.\
   **이 주제에서 측정하지 않았다.** 계획 읽는 법은 [목록의 **58번 주제**](../58-explain-plan-tree/)다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Window Function Calls](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 · Window Function Frame Specification](https://dev.mysql.com/doc/refman/8.4/en/window-functions-frames.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — `ROWS`·`RANGE` 는 PG 8.4 · MySQL 8.0 부터. **`GROUPS` 와 `EXCLUDE` 는 PG 11 부터이고 MySQL 8.4 에는 없다**(4·5번에서 에러로 확인했다).\
+**이 주제는 방언 차이가 큰 자리다** — 목록 README 의 표기(`ROWS`/`RANGE`/`GROUPS`+`EXCLUDE` 대 `ROWS`/`RANGE`)가 **맞았다.**\
+**선행** — [27 PARTITION BY 와 윈도우 ORDER BY](../27-partition-by-and-window-order-by/). **뒤 주제** — [30 오프셋·경계 함수](../30-offset-and-boundary-functions/).

@@ -1,13 +1,5 @@
 # web-api/25 — `fetch` 와 `Request`/`Response`: 옵션·헤더·상태 코드가 예외가 아니라는 것 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」 — 페이지가 본 것과 서버가 한 일을 나란히 놓는 「`catch` 로 간 칸」 격자다.** 200 · 404 · 500 · 아무도 안 듣는 포트 · 다른 출처의 허용 없는 POST · 허용 있는 POST 여섯 요청을 던지고, 칸마다 **`then`/`catch` · `res.ok` · `res.status` · 오류 이름**을 적은 뒤 **서버 두 대의 로그와 콘솔**을 같이 싣는다.\
-> **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 「ok status」(**200\~299** 범위의 상태) · fetch() 메서드 단계(「**If response is a network error, then reject p with a TypeError**」) · HTTP fetch 의 「response tainting 이 cors 이고 **CORS check 가 실패하면 network error 를 돌려준다**」 · 「forbidden request-header」(`Host` · `Cookie` · `Origin` · `Referer` · `Content-Length` · `Connection` 등, 그리고 `proxy-`·`sec-` 로 시작하는 이름) · 「forbidden response-header name」(`Set-Cookie`·`Set-Cookie2`) · `Response`/`Request` 의 `clone()`(「unusable 이면 TypeError」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 페이지는 **서버 A**(`http://127.0.0.1`)에서 열었고, 다른 출처는 **같은 기계의 다른 포트인 서버 B** 다. **바깥 인터넷으로는 한 번도 요청하지 않았다.** 하네스는 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 (1)에 있다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — [JS 39번 주제](../../js/syntax/39-async-await/2-summary.md)(`await`·`try`/`catch` 가 거부를 받는 자리) · [JS 37번 주제](../../js/syntax/37-promise-state-model/2-summary.md)의 (5)(**미처리 거부가 언제 `unhandledrejection` 으로 보고되나** — Chrome 에서도 쟀다) · [JS 32번 주제](../../js/syntax/32-error-handling-and-error/2-summary.md)의 (3)(`TypeError` 가 어느 가족인가). ★ CORS 자체(단순 요청·프리플라이트)는 [목록의 **28번 주제**](../28-cors-simple-and-preflight/)의 몫이다 — 여기서는 **「거부돼도 요청은 갔다」** 한 가지만 본다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -495,3 +487,11 @@ A GET /status?code=500  → 500 응답을 끝까지 보냈다
 - **`mode: "no-cors"`** 는 불투명 응답(`status 0`)을 준다 — 던지지 않았다(28번 주제).
 - **리다이렉트(`redirect: "manual"`)** 와 **`Response.error()`** 는 던지지 않았다.
 - **HTTP/2 에서의 헤더 이름 글자꼴**은 이 판의 서버(HTTP/1.1)로는 못 본다.
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」 — 페이지가 본 것과 서버가 한 일을 나란히 놓는 「`catch` 로 간 칸」 격자다.** 200 · 404 · 500 · 아무도 안 듣는 포트 · 다른 출처의 허용 없는 POST · 허용 있는 POST 여섯 요청을 던지고, 칸마다 **`then`/`catch` · `res.ok` · `res.status` · 오류 이름**을 적은 뒤 **서버 두 대의 로그와 콘솔**을 같이 싣는다.\
+**기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 「ok status」(**200\~299** 범위의 상태) · fetch() 메서드 단계(「**If response is a network error, then reject p with a TypeError**」) · HTTP fetch 의 「response tainting 이 cors 이고 **CORS check 가 실패하면 network error 를 돌려준다**」 · 「forbidden request-header」(`Host` · `Cookie` · `Origin` · `Referer` · `Content-Length` · `Connection` 등, 그리고 `proxy-`·`sec-` 로 시작하는 이름) · 「forbidden response-header name」(`Set-Cookie`·`Set-Cookie2`) · `Response`/`Request` 의 `clone()`(「unusable 이면 TypeError」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 페이지는 **서버 A**(`http://127.0.0.1`)에서 열었고, 다른 출처는 **같은 기계의 다른 포트인 서버 B** 다. **바깥 인터넷으로는 한 번도 요청하지 않았다.** 하네스는 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 (1)에 있다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — [JS 39번 주제](../../js/syntax/39-async-await/2-summary.md)(`await`·`try`/`catch` 가 거부를 받는 자리) · [JS 37번 주제](../../js/syntax/37-promise-state-model/2-summary.md)의 (5)(**미처리 거부가 언제 `unhandledrejection` 으로 보고되나** — Chrome 에서도 쟀다) · [JS 32번 주제](../../js/syntax/32-error-handling-and-error/2-summary.md)의 (3)(`TypeError` 가 어느 가족인가). ★ CORS 자체(단순 요청·프리플라이트)는 [목록의 **28번 주제**](../28-cors-simple-and-preflight/)의 몫이다 — 여기서는 **「거부돼도 요청은 갔다」** 한 가지만 본다.

@@ -1,11 +1,5 @@
 # html/syntax/16 — 링크: `href` 의 형태·`target`·`rel`(`noopener`/`noreferrer`/`nofollow`)·`download` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「Links」 절·[Referrer Policy](https://w3c.github.io/webappsec-referrer-policy/)·[HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)와 새 창 쪽 프로브다.** `rel` 이 바꾸는 것은 화면에 하나도 없다(A3·A4).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -501,3 +495,10 @@ if __name__ == "__main__":
 - **`strict-origin-when-cross-origin`** — Referrer Policy 의 기본 정책. 다른 출처에는 출처만 보낸다.
 - **자동 부착 + 디버거 대기** — 새 창을 뜨는 순간 붙잡아 멈춰 두는 CDP 방법. 시간 상수 없이 새 창을 읽는 수단이다.
 - **제4의 상태(잴 것이 없다) · 제3의 상태(못 잰 것)** — `nofollow` 의 브라우저 쪽 / 검색 엔진 쪽.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「Links」 절·[Referrer Policy](https://w3c.github.io/webappsec-referrer-policy/)·[HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)와 새 창 쪽 프로브다.** `rel` 이 바꾸는 것은 화면에 하나도 없다(A3·A4).

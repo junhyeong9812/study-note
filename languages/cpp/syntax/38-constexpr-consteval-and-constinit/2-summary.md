@@ -1,26 +1,5 @@
 # cpp/syntax/38 — `constexpr` · `consteval` · `constinit` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — constexpr](https://en.cppreference.com/w/cpp/language/constexpr) · [cppreference — consteval](https://en.cppreference.com/w/cpp/language/consteval) · [cppreference — constinit](https://en.cppreference.com/w/cpp/language/constinit)\
-> ★ 이 배치에서 **위 세 cppreference 쪽을 열어 확인했다** — `constexpr` 함수는 「**An invocation of a constexpr function can appear in a constant expression**」(나타날 **수 있다** — 의무가 아니다) · 가상 함수 금지와 `try` 블록 금지가 **(until C++20)** · `consteval` 은 「**every potentially-evaluated call to the function must (directly or indirectly) produce a compile time constant expression**」 · `constinit` 은 「**asserts that a variable has static initialization … otherwise the program is ill-formed**」 · 「`constinit` 은 `const` 를 붙이지 않는다」.
-> **실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · **g++-12 (Ubuntu 12.4.0-2ubuntu1\~24.04.1) 12.4.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(g++-12 는 libstdc++ 12) · GNU objdump·nm 2.42 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> ★★ **clang 도 libstdc++ 13 을 쓴다** — `constexpr std::vector` 칸((3))에서 **g++ 13 과 clang 이 같은 것은 같은 헤더를 읽어서**다. **g++-12 칸만 다른 라이브러리 판(12)** 이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`cx01.cpp`·`cx20.cpp`·`leak01.cpp`·`ub01.cpp`·`ub02.cpp`·`cinit01.cpp`·`ifcv01.cpp`·`cx-grid.sh`·`cx20-grid.sh`).\
-> ★ **진단에 소스 경로가 박히지 않게 상대 경로로 컴파일**했고, ASan 블록은 `-ffile-prefix-map="$PWD"=.` 을 붙였다. 블록은 캡처 스크립트가 받은 것이다 — 사람이 옮겨 적은 줄은 없다.
-> **버전** — `constexpr` 는 **C++11**(C++14 에서 몸통 제한 완화), **`consteval`·`constinit`·`constexpr` 가상 함수·`constexpr` 안 `new`/`delete`·`try` 블록은 C++20**, **`if consteval` 은 C++23** 이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★★ **[31번](../31-function-templates-and-argument-deduction/)에서 온다** — 템플릿 인자는 **컴파일 시간에 알아야 하는 값**이다. 이 편은 「**어떤 계산이 그 자리에 들어갈 수 있나**」를 묻는다.
-> ★★★ **「`constexpr` 이 빠르다」는 이 문서가 재지 않았다** — 보인 것은 **역어셈블에 호출이 남았나 · 상수가 박혔나**뿐이다(시간 0회 측정).
-> **경계** — 「정적 멤버·`inline` 변수」는 [25번](../25-static-members-and-inline-variables/)이, 「`if constexpr`」는 [37번](../37-sfinae-and-enable-if/) (4)가, 「런타임 UB 를 도구로 잡는 법」은 [30번](../30-dangling-references-and-lifetime-extension/)이 정본이다. Rust 의 같은 자리는 [Rust 07번](../../../rust/syntax/07-const-static-and-const-fn/)(`const fn`).
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** · 역어셈블의 **오프셋·레지스터·명령 순서** · ASan 리포트의 **PID·주소** | ★★★ **컴파일되나(`cc exit`)** · ★★★ **`probe(int)` 안에 `sq(int)` 재배치(호출)가 있나 · 상수 `$0x31` 이 있나** |
-> | ★★ **`-O0` 에서 상수로 접히나 — 컴파일러의 선택**((1) 5행 — 두 컴파일러가 갈린 칸) | ★★★ **`consteval` 의 런타임 인자 에러 · 상수 평가 안 UB 에러** · `nm` 의 **`D`/`B` 글자와 `_GLOBAL__sub_I` 기호의 유무** |
-
 ## 한눈에 — 쉽게 말하면
 
 **컴파일 시간 계산은 「미리 계산해서 인쇄해 둔 표」다.** 계산기를 들고 다니는 대신 **답을 인쇄해 붙여 둔다.**
@@ -827,3 +806,25 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **`std::is_constant_evaluated()`(C++20)** — `if consteval` 의 앞 판. `if constexpr (std::is_constant_evaluated())` 로 쓰면 **항상 참**이 되는 함정이 알려져 있다 — 이 편은 **던지지 않았다.**
 - **정적 초기화 순서 문제의 두 번역 단위 실험** — (5)는 기호표로 「동적 초기화가 생긴다」까지만 보였다. 실제로 **0 을 읽는 판**은 던지지 않았다.
 - **`constexpr` 소멸자 · `constexpr std::string`** — C++20. 이 편은 `vector` 만 봤다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — constexpr](https://en.cppreference.com/w/cpp/language/constexpr) · [cppreference — consteval](https://en.cppreference.com/w/cpp/language/consteval) · [cppreference — constinit](https://en.cppreference.com/w/cpp/language/constinit)\
+★ 이 배치에서 **위 세 cppreference 쪽을 열어 확인했다** — `constexpr` 함수는 「**An invocation of a constexpr function can appear in a constant expression**」(나타날 **수 있다** — 의무가 아니다) · 가상 함수 금지와 `try` 블록 금지가 **(until C++20)** · `consteval` 은 「**every potentially-evaluated call to the function must (directly or indirectly) produce a compile time constant expression**」 · `constinit` 은 「**asserts that a variable has static initialization … otherwise the program is ill-formed**」 · 「`constinit` 은 `const` 를 붙이지 않는다」.
+**실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · **g++-12 (Ubuntu 12.4.0-2ubuntu1\~24.04.1) 12.4.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(g++-12 는 libstdc++ 12) · GNU objdump·nm 2.42 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+★★ **clang 도 libstdc++ 13 을 쓴다** — `constexpr std::vector` 칸((3))에서 **g++ 13 과 clang 이 같은 것은 같은 헤더를 읽어서**다. **g++-12 칸만 다른 라이브러리 판(12)** 이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`cx01.cpp`·`cx20.cpp`·`leak01.cpp`·`ub01.cpp`·`ub02.cpp`·`cinit01.cpp`·`ifcv01.cpp`·`cx-grid.sh`·`cx20-grid.sh`).\
+★ **진단에 소스 경로가 박히지 않게 상대 경로로 컴파일**했고, ASan 블록은 `-ffile-prefix-map="$PWD"=.` 을 붙였다. 블록은 캡처 스크립트가 받은 것이다 — 사람이 옮겨 적은 줄은 없다.
+**버전** — `constexpr` 는 **C++11**(C++14 에서 몸통 제한 완화), **`consteval`·`constinit`·`constexpr` 가상 함수·`constexpr` 안 `new`/`delete`·`try` 블록은 C++20**, **`if consteval` 은 C++23** 이다.
+
+★★★ **[31번](../31-function-templates-and-argument-deduction/)에서 온다** — 템플릿 인자는 **컴파일 시간에 알아야 하는 값**이다. 이 편은 「**어떤 계산이 그 자리에 들어갈 수 있나**」를 묻는다.
+★★★ **「`constexpr` 이 빠르다」는 이 문서가 재지 않았다** — 보인 것은 **역어셈블에 호출이 남았나 · 상수가 박혔나**뿐이다(시간 0회 측정).
+**경계** — 「정적 멤버·`inline` 변수」는 [25번](../25-static-members-and-inline-variables/)이, 「`if constexpr`」는 [37번](../37-sfinae-and-enable-if/) (4)가, 「런타임 UB 를 도구로 잡는 법」은 [30번](../30-dangling-references-and-lifetime-extension/)이 정본이다. Rust 의 같은 자리는 [Rust 07번](../../../rust/syntax/07-const-static-and-const-fn/)(`const fn`).
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** · 역어셈블의 **오프셋·레지스터·명령 순서** · ASan 리포트의 **PID·주소** | ★★★ **컴파일되나(`cc exit`)** · ★★★ **`probe(int)` 안에 `sq(int)` 재배치(호출)가 있나 · 상수 `$0x31` 이 있나** |
+| ★★ **`-O0` 에서 상수로 접히나 — 컴파일러의 선택**((1) 5행 — 두 컴파일러가 갈린 칸) | ★★★ **`consteval` 의 런타임 인자 에러 · 상수 평가 안 UB 에러** · `nm` 의 **`D`/`B` 글자와 `_GLOBAL__sub_I` 기호의 유무** |

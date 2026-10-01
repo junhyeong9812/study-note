@@ -1,10 +1,5 @@
 # css/syntax/28 — Grid 배치: 라인 번호·`span`·자동 배치 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **트랙 값은 `getComputedStyle(el).gridTemplateColumns`/`.gridTemplateRows`, 항목 좌표는 `getBoundingClientRect()`** 로 **Google Chrome 151.0.7922.173** headless 에서 각각 따로 잰 값이다.\
-> 좌표는 별말이 없으면 **컨테이너의 바깥 왼쪽 위 모서리를 원점**으로 한 값이고 단위는 px 다(테두리 2px 을 포함하므로 내용 영역의 왼쪽 위는 x=2, y=2 다).\
-> 규칙은 [CSS Grid Layout Level 1](https://drafts.csswg.org/css-grid-1/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -380,3 +375,9 @@ row (기본)                     column
 **구현 의존 항목** — **계산값의 직렬화 형태**(`row dense` → `dense` · `grid-area` → `grid-column: 1 / 3` · 맞바꿈 흔적이 안 남는 것)는 Chrome 151 에서 관찰한 것이다. 버전이 오르면 이 칸을 다시 찍는다.\
 **px 값**은 이 머신의 폰트·창 크기에 딸린 값이다 — 재현되는 것은 숫자가 아니라 성질이다.\
 **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.** 크로스 브라우저 상태는 Grid 가 Baseline **widely**(2020-04-17)라는 데이터로만 접지했다.
+
+## 실행 환경
+
+이 파일의 **트랙 값은 `getComputedStyle(el).gridTemplateColumns`/`.gridTemplateRows`, 항목 좌표는 `getBoundingClientRect()`** 로 **Google Chrome 151.0.7922.173** headless 에서 각각 따로 잰 값이다.\
+좌표는 별말이 없으면 **컨테이너의 바깥 왼쪽 위 모서리를 원점**으로 한 값이고 단위는 px 다(테두리 2px 을 포함하므로 내용 영역의 왼쪽 위는 x=2, y=2 다).\
+규칙은 [CSS Grid Layout Level 1](https://drafts.csswg.org/css-grid-1/) 로 접지했다.

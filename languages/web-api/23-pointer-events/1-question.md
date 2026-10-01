@@ -1,12 +1,5 @@
 # web-api/23 — 포인터 이벤트: `pointerdown` 계열·마우스/터치/펜 통합·`setPointerCapture` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — `touch-action` 과 터치 스크롤의 첫 측정은 [19번 주제](../19-passive-and-scroll/1-question.md)(`touchmove` 쪽)가 정본이다. 여기는 **포인터 쪽의 순서 · 캡처 · `pointercancel`** 을 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 Pointer Events 명세 문장이다. 이식성은 주장 범위 밖이다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -114,6 +107,12 @@
 - [19번 주제](../19-passive-and-scroll/1-question.md)의 「`touch-action: none` 이면 리스너 없이 안 움직인다」와 문항 6은 같은 사실의 어느 두 면인가?
 - [18번 주제](../18-event-delegation/1-question.md)의 `mouseenter`/`mouseover` 차이는 포인터 쪽에서 어떤 짝으로 다시 나오나?
 - 이 편의 **도구가 못 보는 것** 두 가지를 대라.
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — `touch-action` 과 터치 스크롤의 첫 측정은 [19번 주제](../19-passive-and-scroll/1-question.md)(`touchmove` 쪽)가 정본이다. 여기는 **포인터 쪽의 순서 · 캡처 · `pointercancel`** 을 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 Pointer Events 명세 문장이다. 이식성은 주장 범위 밖이다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

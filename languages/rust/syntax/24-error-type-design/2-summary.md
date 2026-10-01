@@ -1,21 +1,5 @@
 # rust/syntax/24 — 오류 타입 설계 — 열거형 오류·`Error` 트레이트·`source`·`Box<dyn Error>` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `trait Error`](https://doc.rust-lang.org/std/error/trait.Error.html) ·
-> [std — `Error::source`](https://doc.rust-lang.org/std/error/trait.Error.html#method.source) ·
-> [std — `Box<dyn Error>` 의 `downcast_ref`](https://doc.rust-lang.org/std/error/trait.Error.html#method.downcast_ref) ·
-> [std — `trait Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html).
-> ★ `rustc --explain E0308` · `E0277` · `E0271` 은 **확인용으로만 열었고 본문에 옮기지 않았다.**
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다.** `thiserror`·`anyhow` 는 **이름만** 나온다((8)) —
-> 이 주제의 목적은 **표준만으로 어디까지 되는지**를 먼저 세우는 것이다.
-> **버전** — `std::error::Error` 는 **1.0.0**, **`Error::source` 는 1.30.0**(그 전에는 `cause`, 지금은 deprecated) 부터.\
-> `Box<dyn Error>` 의 `downcast_ref` 는 1.0.0 부터다. **전부 에디션과 무관하다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 흔들리는 칸 / 안 흔들리는 칸
 
 | | 칸 | 왜 |
@@ -787,3 +771,19 @@ d 복구 불가 — 위로 올린다: 12바이트 자리가 깨졌다
 - **`std::io::Error` 의 구조** — `ErrorKind` 라는 **열거형 축**과 OS 코드·메시지를 같이 갖는다. 설계 참고감이다.
 - **`From` 을 오류 변환에 쓸 때의 고아 규칙** — 남의 오류를 남의 타입으로 변환하는 impl 은 못 쓴다([목록의 **26번 주제**](../26-orphan-rule-and-newtype/)).
 - **백트레이스** — `std::backtrace::Backtrace` 를 오류 구조체 필드로 들고 다니는 패턴이 있다.
+
+## 실행 환경
+
+**기준 소스** — [std — `trait Error`](https://doc.rust-lang.org/std/error/trait.Error.html) ·
+[std — `Error::source`](https://doc.rust-lang.org/std/error/trait.Error.html#method.source) ·
+[std — `Box<dyn Error>` 의 `downcast_ref`](https://doc.rust-lang.org/std/error/trait.Error.html#method.downcast_ref) ·
+[std — `trait Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html).
+★ `rustc --explain E0308` · `E0277` · `E0271` 은 **확인용으로만 열었고 본문에 옮기지 않았다.**
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
+★★ **외부 크레이트를 하나도 쓰지 않았다.** `thiserror`·`anyhow` 는 **이름만** 나온다((8)) —
+이 주제의 목적은 **표준만으로 어디까지 되는지**를 먼저 세우는 것이다.
+**버전** — `std::error::Error` 는 **1.0.0**, **`Error::source` 는 1.30.0**(그 전에는 `cause`, 지금은 deprecated) 부터.\
+`Box<dyn Error>` 의 `downcast_ref` 는 1.0.0 부터다. **전부 에디션과 무관하다.**

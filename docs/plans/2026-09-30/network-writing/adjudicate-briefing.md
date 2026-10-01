@@ -1,8 +1,5 @@
 # codex 지적 판정·반영 브리핑 — 네트워크 새 노트 (2026-09-30)
 
-> 배경: Opus 전수 사실 점검 뒤 codex(high)가 편마다 남은 오류를 지적했다. 지적은 **주장**이지 사실이 아니다 — 판정자가 1차 출처로 확인한 것만 반영한다.
-> 집필 규칙: `briefing.md`(§3 사실 규칙, §3-1 시범 교훈)를 먼저 읽는다.
-
 ## 1. 입력
 
 - 담당 노트마다 codex 지적 파일: `/tmp/claude-1000/-home-jun-project-study-note/16696510-853f-4d10-82ba-64d9eb37bcc8/scratchpad/codexnet/out-<NN>.md`

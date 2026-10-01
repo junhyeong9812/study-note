@@ -1,12 +1,5 @@
 # web-api/26 — 응답 본문과 스트리밍: `json()`/`text()`/`blob()` 은 한 번만·`body` 와 `ReadableStream` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — `fetch` 가 언제 이행·거부하나는 [25번 주제](../25-fetch-request-response/1-question.md)가, 본문을 읽는 중의 취소는 [27번 주제](../27-abort-and-timeout/1-question.md)가 정본이다. 여기는 **본문을 몇 번 · 어떤 단위로 읽나**를 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 Fetch·Streams 명세 문장이다. 이식성은 주장 범위 밖이다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -84,6 +77,12 @@ const [갑, 을] = res.body.tee();
 
 - [25번 주제](../25-fetch-request-response/1-question.md)의 「한 번 쓴 `Request`」와 문항 1은 어떤 같은 규칙인가?
 - 이 편의 **도구가 못 보는 것** 두 가지를 대라.
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — `fetch` 가 언제 이행·거부하나는 [25번 주제](../25-fetch-request-response/1-question.md)가, 본문을 읽는 중의 취소는 [27번 주제](../27-abort-and-timeout/1-question.md)가 정본이다. 여기는 **본문을 몇 번 · 어떤 단위로 읽나**를 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 Fetch·Streams 명세 문장이다. 이식성은 주장 범위 밖이다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

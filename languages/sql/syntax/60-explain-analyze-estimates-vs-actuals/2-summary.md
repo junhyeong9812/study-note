@@ -1,20 +1,5 @@
 # sql/60-`EXPLAIN ANALYZE` — 추정과 실측의 어긋남 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · EXPLAIN](https://www.postgresql.org/docs/18/sql-explain.html) · [PostgreSQL 18 · ANALYZE](https://www.postgresql.org/docs/18/sql-analyze.html) · [MySQL 8.4 · Obtaining Information with EXPLAIN ANALYZE](https://dev.mysql.com/doc/refman/8.4/en/explain.html#explain-analyze) · [MySQL 8.4 · ANALYZE TABLE](https://dev.mysql.com/doc/refman/8.4/en/analyze-table.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 계획·출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 숫자는 없다.\
-> **이 편이 만든 객체와 그 뒷정리** — 표 `t60_skew`(19만 행) · `t60_big`(20만 행) · `t60_out`(10행) · `t60_tx` · `t60_s`.
-> PG 는 전부 `BEGIN … ROLLBACK` 안에서 만들었고, MySQL 은 DDL 이 암묵 커밋이라 `DROP TABLE IF EXISTS` 로 직접 지웠다.\
-> ★ **`emp` 에 `EXPLAIN ANALYZE DELETE` 를 실제로 던졌다** — 4행이 3행이 되는 것까지 확인하고 **`ROLLBACK` 으로 되돌렸다.**
-> 그 편의 끝에서 `emp` 가 4행인 것을 다시 확인했다(3-answer 의 「실행 검증」).\
-> **측정 조건** — PG 계획은 전부 `max_parallel_workers_per_gather = 0`(병렬 끔). 시간(`actual time`)은 근거로 쓰지 않는다 —
-> **근거로 쓰는 칸은 `actual rows`·`loops`·`Rows Removed by Filter` 다.**\
-> ★ **실행 계획은 관찰이지 보장이 아니다.** 본문 계획은 **제출 직전에 다시 찍어 대조**했다(3-answer).\
-> **선행** — [58 `EXPLAIN` 읽기](../58-explain-plan-tree/). 58 의 `rows=` 가 전부 **추정**이라는 것이 이 편의 출발점이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`EXPLAIN` 은 예보이고, `EXPLAIN ANALYZE` 는 예보와 실황을 나란히 놓은 것이다.**
@@ -658,3 +643,17 @@ SELECT table_rows FROM information_schema.tables WHERE table_name='…';
 - **`EXPLAIN (ANALYZE, WAL)`** — 변경문이 만든 WAL 양을 보여 준다. 6절처럼 변경문을 계측할 때 딸려 오는 칸이다.
 - **MySQL 의 옵티마이저 트레이스** — `SET optimizer_trace='enabled=on'` 뒤 질의를 돌리면
   「왜 그 계획을 골랐나」의 내부 계산을 JSON 으로 볼 수 있다. `EXPLAIN` 이 결론이라면 이쪽은 과정이다. *(이 편에서는 돌려 보지 않았다.)*
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · EXPLAIN](https://www.postgresql.org/docs/18/sql-explain.html) · [PostgreSQL 18 · ANALYZE](https://www.postgresql.org/docs/18/sql-analyze.html) · [MySQL 8.4 · Obtaining Information with EXPLAIN ANALYZE](https://dev.mysql.com/doc/refman/8.4/en/explain.html#explain-analyze) · [MySQL 8.4 · ANALYZE TABLE](https://dev.mysql.com/doc/refman/8.4/en/analyze-table.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 계획·출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 숫자는 없다.\
+**이 편이 만든 객체와 그 뒷정리** — 표 `t60_skew`(19만 행) · `t60_big`(20만 행) · `t60_out`(10행) · `t60_tx` · `t60_s`.
+PG 는 전부 `BEGIN … ROLLBACK` 안에서 만들었고, MySQL 은 DDL 이 암묵 커밋이라 `DROP TABLE IF EXISTS` 로 직접 지웠다.\
+★ **`emp` 에 `EXPLAIN ANALYZE DELETE` 를 실제로 던졌다** — 4행이 3행이 되는 것까지 확인하고 **`ROLLBACK` 으로 되돌렸다.**
+그 편의 끝에서 `emp` 가 4행인 것을 다시 확인했다(3-answer 의 「실행 검증」).\
+**측정 조건** — PG 계획은 전부 `max_parallel_workers_per_gather = 0`(병렬 끔). 시간(`actual time`)은 근거로 쓰지 않는다 —
+**근거로 쓰는 칸은 `actual rows`·`loops`·`Rows Removed by Filter` 다.**\
+★ **실행 계획은 관찰이지 보장이 아니다.** 본문 계획은 **제출 직전에 다시 찍어 대조**했다(3-answer).\
+**선행** — [58 `EXPLAIN` 읽기](../58-explain-plan-tree/). 58 의 `rows=` 가 전부 **추정**이라는 것이 이 편의 출발점이다.

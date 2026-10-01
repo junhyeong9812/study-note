@@ -1,12 +1,5 @@
 # js/syntax/48 — 깊은 복사 수단 비교: 「잃음 `24 / 68` · 공유 `20 / 68` — 스프레드·`assign` 은 얕고, `structuredClone` 은 호스트가 준 깊은 복사지만 함수·심볼 키·프로토타입·getter 를 못 옮긴다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 출력은 **node v20.19.6 · v18.19.1 · Google Chrome 151 · Python 3.12.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> ★★★ **`structuredClone` 은 ECMA-262 가 아니라 호스트 API 다** — 이 파일의 `clone` 열과 2\~4번의 `structuredClone` 줄은 **세 호스트의 관찰**이고, 이 문서는 HTML 의 해당 절을 읽지 않았다(7번).
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
-> `js48b-48a-copy-grid.js` + `.sh`(1번 · 6번 · 7번 · 9번) · `js48b-48b-clone-details.js`(2번 · 3번 · 4번 · 8번) · `js48b-48d-python.py`(5번).
-
 ## 정답
 
 ### 1. `JSON` 열 — 16칸을 잃고 `kept` 는 **`nested plain object`** 하나 · `spread` 와 `assign` 은 **한 칸도 다르지 않다** · 둘 다 `shared` 가 아닌 행은 원시 값·`undefined` 속성·심볼 키(`kept`)와 클래스 인스턴스·getter(`->`) · `clone` 열의 넷 — **함수 `throws DOMException/DataCloneError`** · **심볼 키 `-> key gone`** · **클래스 인스턴스 `-> plain {"x":1}`** · **getter `-> data property 1`** · **`20 / 68`** · **`24 / 68`** · 비교 두 줄 **`yes`** ★★★
@@ -191,3 +184,11 @@ Chrome 151.
 | `js48b-48d-python.py` | ★★ CPython `deepcopy` 의 클래스 · 예외 · 함수 | python3 3.12.3 |
 
 **구현 의존 항목 — 판이 오르면 다시 돌릴 것** — ★★★ **`clone` 열 전체**와 2\~4번의 `structuredClone` 줄(호스트 API — 특히 `Error` 의 `cause`·`stack`·하위 클래스 칸과 예외 문구). 왼쪽 세 열(ECMA-262)은 판이 올라도 같아야 한다.
+
+## 실행 환경
+
+이 파일의 출력은 **node v20.19.6 · v18.19.1 · Google Chrome 151 · Python 3.12.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이고, 블록은 **전부 캡처 파일에서 조립**했다.
+★★★ **`structuredClone` 은 ECMA-262 가 아니라 호스트 API 다** — 이 파일의 `clone` 열과 2\~4번의 `structuredClone` 줄은 **세 호스트의 관찰**이고, 이 문서는 HTML 의 해당 절을 읽지 않았다(7번).
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
+`js48b-48a-copy-grid.js` + `.sh`(1번 · 6번 · 7번 · 9번) · `js48b-48b-clone-details.js`(2번 · 3번 · 4번 · 8번) · `js48b-48d-python.py`(5번).

@@ -1,16 +1,5 @@
 # c/syntax/05 — 명시 캐스트와 포인터 변환: 내가 대놓고 바꾸는 것 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **예측형 위주**다 — 아는지가 아니라 **출력을 맞힐 수 있는지**를 묻는다.
-> **환경** — gcc 13.3.0 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra`.\
-> 최적화 수준이 답을 바꾸는 문항은 **문항 안에 어느 수준을 돌리는지 적었다.**
-> ★ **이 주제는 03번의 반대편이다.** 거기가 「컴파일러가 몰래 바꾸는 것」이라면
-> 여기는 「**내가 대놓고 바꾸는 것**」이고, 대놓고 하니까 **컴파일러가 말려 주지 않는다.**
-> 선행 — [`03-integer-promotion-and-usual-arithmetic-conversions/`](../03-integer-promotion-and-usual-arithmetic-conversions/) ·
-> [`04-floating-point-types-and-conversions/`](../04-floating-point-types-and-conversions/).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -154,6 +143,15 @@ printf("*bad = %d, frozen = %d\n", *bad, frozen);
 - 「캐스트를 쓰고 싶다」는 생각이 들 때 **먼저 물어야 할 한 문장**은?
 - 이 주제의 결론을 빌드 플래그 한 줄로 쓰면?
 - UB 다섯 개(정렬·앨리어싱·`const`·시그니처·리터럴) 중 **도구가 못 잡는 것**은 몇 개인가?
+
+## 실행 환경
+
+**환경** — gcc 13.3.0 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra`.\
+최적화 수준이 답을 바꾸는 문항은 **문항 안에 어느 수준을 돌리는지 적었다.**
+★ **이 주제는 03번의 반대편이다.** 거기가 「컴파일러가 몰래 바꾸는 것」이라면
+여기는 「**내가 대놓고 바꾸는 것**」이고, 대놓고 하니까 **컴파일러가 말려 주지 않는다.**
+선행 — [`03-integer-promotion-and-usual-arithmetic-conversions/`](../03-integer-promotion-and-usual-arithmetic-conversions/) ·
+[`04-floating-point-types-and-conversions/`](../04-floating-point-types-and-conversions/).
 
 ## 복습 기록
 

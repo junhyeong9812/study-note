@@ -1,10 +1,5 @@
 # issue/java/serializable-capture-contract — Serializable 객체가 비직렬화 객체를 캡처하면 계약이 조용히 깨진다 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. 직렬화 가능한 람다(`Serializable`로 캐스팅된 람다)는 스트림에 무엇을 싣는가? 그 람다가 `java.lang.reflect.Field`를 캡처하고 있으면 `writeObject`에서 무슨 일이 일어나는가.
 2. 예측: 클래스가 `Serializable`을 선언하고, 지연 초기화용 supplier 람다를 `final`(non-transient) 필드로 들고 있다. 캐시를 이미 채운 뒤에 직렬화하면 supplier는 스트림에서 빠지는가? 왜 "성능 최적화 수단이 계약과 충돌"했다고 말하는가.

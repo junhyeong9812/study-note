@@ -1,13 +1,5 @@
 # kotlin/syntax/32 — 동등성: `==`/`===`·`equals` 규약·`data class` 와의 관계 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [22번 주제](../22-data-class-generated-members/)다 — `data class` 의 `equals` 가 **무엇을 보는지**는 거기서 봤다. 해시 원리는 [`cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/)이 정본이다.
-> 문항 12개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5**(Java 쪽은 **javac 21.0.5**)에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -229,6 +221,13 @@ fun main() {
 ### 12. Python·Rust 와의 방어선 (연결)
 
 - `equals` 만 고친 키를 해시 셋에 넣는 사고를 **Kotlin·Python·Rust** 는 각각 언제(컴파일·런타임·안 막음) 잡는가?
+
+## 실행 환경
+
+선행은 [22번 주제](../22-data-class-generated-members/)다 — `data class` 의 `equals` 가 **무엇을 보는지**는 거기서 봤다. 해시 원리는 [`cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/)이 정본이다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5**(Java 쪽은 **javac 21.0.5**)에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

@@ -1,8 +1,5 @@
 # PR #37082 — 이해 게이트 기록
 
-> 출처: 세션 b5319e6a (2026-07-22), 작업 폴더 `docs/plans/2026-07-22/c3-resolvabletype-toplevel-name-fallback`. 답변은 원문 그대로(오타 포함), 판정과 정답은 대화에 기록된 것만 옮긴다.
-> 모드: lazy (매 diff 이해 게이트, 최대 2회, 판정은 별도 서브에이전트 워커). 게이트 발생은 `gate-guard` 훅이 강제했다 — 08:14 이전 fixture 편집 시도가 `PENDING_GATE=1`로 실제 차단된 기록이 있다.
-
 ## 게이트 목록
 
 이 작업에서 열린 게이트는 계획 하나와 diff 다섯, 모두 여섯 건이다.
@@ -271,3 +268,8 @@ void resolveTypeVariableByNameWhenNarrowingParameterizedSupertype() {
 - 훅이 실제로 작동했다. fixture 편집 시도가 `PENDING_GATE=1`로 차단되면서 테스트 메서드와 fixture가 별개의 게이트 단위로 쪼개졌다.
 - 동일 구조 반복에는 판정 워커를 생략했다. G3, G5, G6은 직전 게이트에서 워커가 이미 검증한 구조라 메인이 직접 게이트를 내렸다. 워커가 실제로 판정한 것은 G2와 G4 두 건뿐이다.
 - 게이트가 리뷰 산출물로도 이어졌다. 듀얼 리뷰에서 채택된 F2(양성 narrowing 테스트)가 새 diff가 되면서 G5라는 추가 게이트를 만들었다.
+
+## 출처
+
+출처: 세션 b5319e6a (2026-07-22), 작업 폴더 `docs/plans/2026-07-22/c3-resolvabletype-toplevel-name-fallback`. 답변은 원문 그대로(오타 포함), 판정과 정답은 대화에 기록된 것만 옮긴다.
+모드: lazy (매 diff 이해 게이트, 최대 2회, 판정은 별도 서브에이전트 워커). 게이트 발생은 `gate-guard` 훅이 강제했다 — 08:14 이전 fixture 편집 시도가 `PENDING_GATE=1`로 실제 차단된 기록이 있다.

@@ -1,11 +1,5 @@
 # sql/13-INNER JOIN — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
-> 8\~10번의 `proj`·`emp_proj` 는 **트랜잭션 안에서 만들고 롤백**했다(MySQL 은 `CREATE` → 질의 → `DROP`). DB 에 남기지 않았다.\
-> 문서 근거는 [PG 18 Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -567,3 +561,10 @@ MySQL 은 DDL 에 트랜잭션이 안 걸리므로 `CREATE` → 질의 → `DROP
 
 **언어 보장 항목** — 1\~5·7\~11번. `ON` 의 `TRUE`-만-통과 규칙, 짝 없는 행의 소멸, 팬아웃의 곱셈은 전부 문서가 정한 것이다.\
 **문법이 갈리는 항목** — 6번(`JOIN` 에 `ON` 누락). 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않았다.**
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
+8\~10번의 `proj`·`emp_proj` 는 **트랜잭션 안에서 만들고 롤백**했다(MySQL 은 `CREATE` → 질의 → `DROP`). DB 에 남기지 않았다.\
+문서 근거는 [PG 18 Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html).

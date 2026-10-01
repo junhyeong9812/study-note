@@ -1,15 +1,5 @@
 # c/syntax/50 — `<string.h>` 메모리 함수: 「**`memcpy` 는 겹치지 않는다는 약속 위에 서고, `memset`·`memcmp` 는 값이 아니라 바이트를 다룬다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — `memcpy` 의 「**If copying takes place between objects that overlap, the behavior is undefined.**」, `memmove` 의 「**as if the n characters … are first copied into a temporary array**」, `memset` 의 「**the value of c (converted to an unsigned char)**」, `memcmp` 각주의 「**padding … take on unspecified values**」, 정수 표현 절의 「**all the bits are zero shall be a representation of the value zero**」, `calloc` 각주의 「**need not be the same as the representation of floating-point zero or a null pointer constant**」를 **본문에서 직접 찾아 읽었다**)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **결과 바이트 · ASan 리포트 · 경고 · 재배치 심볼은 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`, 캡처 셸은 `LC_ALL=C`.\
-> ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다. 이 편의 **그림 6 · 덤프(캡처 블록) 20**.
-> **버전** — 네 함수는 **C89 부터** 있다. ★ `memcpy` 매개변수의 `restrict` 는 **C99** 부터다(C89 에는 `restrict` 가 없다). 이 편의 규칙은 C11 · C17 · C23 사이에 **바뀌지 않았다**.
-> ★★★ **경계** — **`restrict` 의 뜻 · 앨리어싱 · 루프가 `memcpy` 로 바뀌는 것**은 [33번 형제](../33-restrict-and-the-aliasing-contract/)가 정본이다(그쪽 (2)·(4)·(6)절 — 이 편은 **다시 재지 않고** 인용한다). **패딩 바이트의 덤프 · 20 판 가짓수**는 [22번 형제](../22-struct-padding-and-alignment/)의 (3)절, **널 포인터의 바이트**는 [19번 형제](../19-void-pointer-null-pointer-and-null/)의 (8)절, **`calloc` 의 0** 은 [37번 형제](../37-malloc-calloc-realloc-free/)·[30번 형제](../30-initialization-rules-and-indeterminate-values/)가 정본이다. **문자열 함수**(`strcpy`·`strncpy`)는 [목록의 **49번 주제**](../49-string-functions-and-pitfalls/)다.
-> 선행 — [33번 형제](../33-restrict-and-the-aliasing-contract/) · [목록의 **49번 주제**](../49-string-functions-and-pitfalls/).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 셋째 창 — sanitizer 의 겹침 격자다.** 함수 둘(`memcpy`·`memmove`) × 겹침 셋 × 크기 둘(실행 시 값 · 상수 8)을 **ASan 빌드 다섯 벌**에 돌려 칸마다 「**ASan 이 무엇을 말했나**」를 찍는다.
 ★★★ 그 격자에서 **ASan 이 잡은 칸 10 / 60** — `memcpy` 겹침 **스물 칸 중 열 칸이 침묵**했고, 침묵은 **두 갈래 이유**(상수 크기의 인라인 · 배포판 기본 `_FORTIFY_SOURCE`)로 갈렸다.
 
@@ -693,3 +683,13 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★★ **`memset_explicit`(C23)** — 컴파일러가 「곧 버릴 메모리에 쓰기」로 보고 **지우지 못하게** 하는 판. 비밀번호 지우기용이다. ★ 이 편은 **던지지 않았다**([30번 형제](../30-initialization-rules-and-indeterminate-values/)가 `-O2` 에서 `memset` 이 사라지는 것을 쟀다).
 - ★ **`memccpy`(C23 표준 편입)** — 특정 바이트에서 멈추는 복사. 역시 `restrict` · 겹치면 UB. **던지지 않았다.**
 - ★ **다른 배포판의 gcc** — `_FORTIFY_SOURCE` 기본값이 없는 판에서 1번 격자의 gcc `-O2` 열이 어떻게 되는지는 **돌려 보지 않았다**(여기서는 `-U_FORTIFY_SOURCE` 로 그 판을 흉내 냈다).
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — `memcpy` 의 「**If copying takes place between objects that overlap, the behavior is undefined.**」, `memmove` 의 「**as if the n characters … are first copied into a temporary array**」, `memset` 의 「**the value of c (converted to an unsigned char)**」, `memcmp` 각주의 「**padding … take on unspecified values**」, 정수 표현 절의 「**all the bits are zero shall be a representation of the value zero**」, `calloc` 각주의 「**need not be the same as the representation of floating-point zero or a null pointer constant**」를 **본문에서 직접 찾아 읽었다**)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **결과 바이트 · ASan 리포트 · 경고 · 재배치 심볼은 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`, 캡처 셸은 `LC_ALL=C`.\
+★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다. 이 편의 **그림 6 · 덤프(캡처 블록) 20**.
+**버전** — 네 함수는 **C89 부터** 있다. ★ `memcpy` 매개변수의 `restrict` 는 **C99** 부터다(C89 에는 `restrict` 가 없다). 이 편의 규칙은 C11 · C17 · C23 사이에 **바뀌지 않았다**.
+★★★ **경계** — **`restrict` 의 뜻 · 앨리어싱 · 루프가 `memcpy` 로 바뀌는 것**은 [33번 형제](../33-restrict-and-the-aliasing-contract/)가 정본이다(그쪽 (2)·(4)·(6)절 — 이 편은 **다시 재지 않고** 인용한다). **패딩 바이트의 덤프 · 20 판 가짓수**는 [22번 형제](../22-struct-padding-and-alignment/)의 (3)절, **널 포인터의 바이트**는 [19번 형제](../19-void-pointer-null-pointer-and-null/)의 (8)절, **`calloc` 의 0** 은 [37번 형제](../37-malloc-calloc-realloc-free/)·[30번 형제](../30-initialization-rules-and-indeterminate-values/)가 정본이다. **문자열 함수**(`strcpy`·`strncpy`)는 [목록의 **49번 주제**](../49-string-functions-and-pitfalls/)다.
+선행 — [33번 형제](../33-restrict-and-the-aliasing-contract/) · [목록의 **49번 주제**](../49-string-functions-and-pitfalls/).

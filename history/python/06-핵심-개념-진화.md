@@ -1,9 +1,5 @@
 # Python 핵심 개념·구현의 진화 (개념사)
 
-> 원본: `~/project/python-history/06-핵심-개념-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·인명·버전·PEP 번호·수치·코드블록·표는 원문 그대로다.\
-> ASCII 도식 10개(그중 4개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 빚 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -699,3 +695,9 @@ Python의 개념사는 단발적 기능 추가의 나열이 아니라, **초기 
 - [PEP 659 – Specializing Adaptive Interpreter](https://peps.python.org/pep-0659/)
 - [PEP 744 – JIT Compilation](https://peps.python.org/pep-0744/)
 - [Breaking down Python 3.13's Latest Features (InfoQ)](https://www.infoq.com/news/2024/10/python-313-latest-features/)
+
+## 출처
+
+원본: `~/project/python-history/06-핵심-개념-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·인명·버전·PEP 번호·수치·코드블록·표는 원문 그대로다.\
+ASCII 도식 10개(그중 4개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 빚 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

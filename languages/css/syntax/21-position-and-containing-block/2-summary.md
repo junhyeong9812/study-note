@@ -1,12 +1,5 @@
 # css/syntax/21 — `position` 다섯 값과 포함 블록 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Positioned Layout Module Level 3](https://drafts.csswg.org/css-position-3/) (다섯 값·포함 블록·`inset` 의 정본) · [CSS Transforms Level 2](https://drafts.csswg.org/css-transforms-2/) (변형된 조상이 포함 블록이 되는 규정). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 **포함 블록을 바꾼다고 알려진 선언 12가지**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 좌표를 쟀고, 잘림 여부는 **스크린샷 픽셀을 읽어** 판정했다.\
-> **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
-> **여기서 다루지 않는 것** — **누가 위에 그려지나(쌓임 맥락·`z-index`)는 [22번](../22-stacking-context-and-z-index/2-summary.md)이 정본**이고, 여기는 **어디에 놓이나**까지다. 둘은 만드는 조건이 **비슷해 보이지만 다르다**((5)에서 실측으로 가른다). 스크롤 컨테이너와 `overflow` 값들은 [23번](../23-overflow-and-scroll-containers/2-summary.md), 상자의 네 겹 치수는 [15번](../15-box-model-and-box-sizing/2-summary.md), `%` 가 어느 단계에서 풀리는지는 [04번](../04-value-processing-stages/2-summary.md), 흐름에서 **반쯤** 빠지는 float 는 [20번](../20-float-and-clear/2-summary.md), BFC 는 [17번](../17-block-formatting-context/2-summary.md)이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 좌표는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`position` 은 「이 상자를 **무엇에 대고** 재서 놓을까」를 고르는 스위치다.**
@@ -483,3 +476,10 @@
 - **`absolute` 는 부모의 `overflow` 에 잘린다 — 단 그 부모가 벽일 때만.** 실측에서 `overflow: hidden` 인 상자(자신이 `relative`)의 `absolute` 자식은 **잘렸고**(스크린샷 픽셀이 바깥에서 흰색), 같은 상자의 `fixed` 자식은 **안 잘리고 화면에 그대로 그려졌다**(픽셀 `(252,165,165)`).
 - **`position: absolute` 는 BFC 를 연다**([17번](../17-block-formatting-context/2-summary.md) 실측). 다만 흐름에서 빠져 있어 마진 상쇄 이야기가 애초에 성립하지 않는 경우가 많다.
 - **앵커 위치 지정(`anchor-name`·`position-anchor`)** 은 「어느 요소에 붙일지」를 **조상 관계 없이** 정하는 새 기능이다. 이 문서는 실행으로 확인한 것만 적으므로 이름만 적어 둔다(**안 돌려 봄**).
+
+## 실행 환경
+
+**기준 소스** — [CSS Positioned Layout Module Level 3](https://drafts.csswg.org/css-position-3/) (다섯 값·포함 블록·`inset` 의 정본) · [CSS Transforms Level 2](https://drafts.csswg.org/css-transforms-2/) (변형된 조상이 포함 블록이 되는 규정). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 **포함 블록을 바꾼다고 알려진 선언 12가지**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 좌표를 쟀고, 잘림 여부는 **스크린샷 픽셀을 읽어** 판정했다.\
+**WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
+**여기서 다루지 않는 것** — **누가 위에 그려지나(쌓임 맥락·`z-index`)는 [22번](../22-stacking-context-and-z-index/2-summary.md)이 정본**이고, 여기는 **어디에 놓이나**까지다. 둘은 만드는 조건이 **비슷해 보이지만 다르다**((5)에서 실측으로 가른다). 스크롤 컨테이너와 `overflow` 값들은 [23번](../23-overflow-and-scroll-containers/2-summary.md), 상자의 네 겹 치수는 [15번](../15-box-model-and-box-sizing/2-summary.md), `%` 가 어느 단계에서 풀리는지는 [04번](../04-value-processing-stages/2-summary.md), 흐름에서 **반쯤** 빠지는 float 는 [20번](../20-float-and-clear/2-summary.md), BFC 는 [17번](../17-block-formatting-context/2-summary.md)이다.

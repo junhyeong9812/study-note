@@ -1,12 +1,5 @@
 # sql/30-오프셋·경계 함수 — `LAG`·`LEAD`·`FIRST_VALUE`·`LAST_VALUE` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> MySQL 의 경고는 **`SHOW WARNINGS` 로 따로 물어서** 받았다(11번).\
-> 모든 질의는 [1-question.md](1-question.md) 머리의 `WITH emp8 AS (...)` CTE 를 앞에 붙여 돌렸다.\
-> 문서 근거는 [PG 18 Window Functions](https://www.postgresql.org/docs/18/functions-window.html) · [MySQL 8.4 Window Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/window-function-descriptions.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -629,3 +622,11 @@ MySQL 의 파서는 이런 인자 자리에 **부호 없는 정수 리터럴만*
 
 **재지 않은 것** — `LAG`/`LEAD` 와 경계 함수의 비용 차이. **측정하지 않았으므로 적지 않았다.**\
 **던져 보지 않은 것** — 9번의 일반 우회(구간 번호 매기기)와 11번의 `CAST` + `COALESCE` 형태. 둘 다 **형태만 적었다.**
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+MySQL 의 경고는 **`SHOW WARNINGS` 로 따로 물어서** 받았다(11번).\
+모든 질의는 [1-question.md](1-question.md) 머리의 `WITH emp8 AS (...)` CTE 를 앞에 붙여 돌렸다.\
+문서 근거는 [PG 18 Window Functions](https://www.postgresql.org/docs/18/functions-window.html) · [MySQL 8.4 Window Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/window-function-descriptions.html).

@@ -1,11 +1,5 @@
 # ops-patterns/01-retry-backoff — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다(`/home/jun/project/myway/ops-patterns/01-retry-backoff/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-14) — impl 코드·README 기준으로 작성. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
@@ -453,3 +447,7 @@ public boolean tryRetry() {
 
 - 2026-09-14: impl 5개 파일·skeleton 주석·README와 대조하여 작성 (Claude).
 - 2026-09-23: 「실사용 사례」절 병합 — deploy-study-note/docs/cs/backoff.md 이관. 기준 소스 = llm 래퍼 로그 전송부(`_disabled_until`) (Claude 초안, 본인 복습 시 실코드 재확인 요망).
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다(`/home/jun/project/myway/ops-patterns/01-retry-backoff/impl/`).

@@ -1,21 +1,5 @@
 # rust/syntax/26 — 고아 규칙과 newtype — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Reference — Implementations / Orphan rules](https://doc.rust-lang.org/reference/items/implementations.html#orphan-rules) ·
-> [std — `trait Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html) ·
-> [std — `trait From`](https://doc.rust-lang.org/std/convert/trait.From.html).
-> ★ `rustc --explain E0117` · `E0599` 는 **확인용으로만 열었고 본문에 옮기지 않았다.**
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음). 「남의 크레이트」 자리는 **std 가 맡는다** —
-> `Vec`·`String`·`Display`·`From`·`io::Error` 가 전부 남의 것이다.
-> **버전** — 고아 규칙은 1.0.0 부터, 지금의 완화된 판정(covered type 규칙)은 RFC 2451 이후다. **에디션과 무관하다.**\
-> ★★★ **이 주제는 「에러가 곧 규칙」인 주제다.** 아래 **E0117 전문의 `= note:` 세 줄**이
-> 규칙·근거·처방을 그대로 말해 준다((1)). 본문은 그 전문을 읽는 순서로 짜여 있다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 흔들리는 칸 / 안 흔들리는 칸
 
 | | 칸 | 왜 |
@@ -748,3 +732,19 @@ rustc 가 거부된 `impl` 을 **그래도 등록해 두기** 때문이다. **�
 - **`Borrow`/`AsRef` 로 위임하기** — `Deref` 대신 쓰는 더 좁은 길. 어느 쪽을 열지 **고를 수 있다**([목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/)).
 - **`derive_more` 같은 크레이트** — 위임 메서드를 매크로로 만들어 준다. ★ **이 환경에서는 못 쓴다**(외부 크레이트 금지).
 - **RFC 2451(re-rebalancing coherence)** — 지금의 covered type 규칙이 들어온 제안. (2)②가 통과하는 근거다.
+
+## 실행 환경
+
+**기준 소스** — [Reference — Implementations / Orphan rules](https://doc.rust-lang.org/reference/items/implementations.html#orphan-rules) ·
+[std — `trait Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html) ·
+[std — `trait From`](https://doc.rust-lang.org/std/convert/trait.From.html).
+★ `rustc --explain E0117` · `E0599` 는 **확인용으로만 열었고 본문에 옮기지 않았다.**
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
+★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음). 「남의 크레이트」 자리는 **std 가 맡는다** —
+`Vec`·`String`·`Display`·`From`·`io::Error` 가 전부 남의 것이다.
+**버전** — 고아 규칙은 1.0.0 부터, 지금의 완화된 판정(covered type 규칙)은 RFC 2451 이후다. **에디션과 무관하다.**\
+★★★ **이 주제는 「에러가 곧 규칙」인 주제다.** 본문의 **E0117 전문의 `= note:` 세 줄**이
+규칙·근거·처방을 그대로 말해 준다((1)). 본문은 그 전문을 읽는 순서로 짜여 있다.

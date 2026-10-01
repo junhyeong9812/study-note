@@ -1,14 +1,5 @@
 # html/syntax/10 — `template`·`slot`·선언적 Shadow DOM·커스텀 요소 맛보기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The `template` element」](https://html.spec.whatwg.org/multipage/scripting.html#the-template-element)·[「The `slot` element」](https://html.spec.whatwg.org/multipage/scripting.html#the-slot-element)·[「Custom elements」](https://html.spec.whatwg.org/multipage/custom-elements.html) 절과 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 [「Shadow tree」](https://dom.spec.whatwg.org/#shadow-trees) 절. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. `<template>`·`<slot>`·커스텀 요소는 2018년 전후, **선언적 Shadow DOM(`shadowrootmode`)은 2023\~2024년**에 자리 잡았다 — 이 묶음에서 **가장 새 표면**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★ **이 주제의 본체는 창 ①(`--dump-dom`)과 창 ⑤(서버 요청 로그) 둘이다** — 「`<template>` 안이 안 산다」는 **요청 로그**가 가장 강하게 말하고(받아 오지도 않는다), 「그림자가 생겼나」는 **창 ①이 못 보는 자리**라 창 ②가 대신 답한다. 창 넷의 정의는 [01번 주제](../01-document-skeleton/2-summary.md)의 「이 갈래의 창」 절에, 창 ⑤ 는 [08번 주제](../08-script-loading/2-summary.md)의 (6) 에 있다.
-> ★★★ **경계** — **Shadow DOM 의 API 는 web-api 갈래가 정본이다.** web-api 갈래 목록([`web-api/README.md`](../../../web-api/README.md))의 **12번**(`attachShadow`·캡슐화 경계·`::part`)과 **13번**(커스텀 요소 수명주기)이 그쪽이고, **여기는 마크업까지**다 — `<template>` 의 파싱, `shadowrootmode` 라는 **속성**, `<slot>` 의 **문법과 기본 내용**. 웹 컴포넌트가 **왜 생겼나**는 [`history/web/05-웹플랫폼-API.md`](../../../../history/web/05-웹플랫폼-API.md) §6 이 정본이다.
-
 **이 판의 Chrome**
 
 ```text
@@ -874,3 +865,13 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 선언적 Shadow DOM 이 필요했나** — `attachShadow` 는 **스크립트가 돌아야** 하므로 서버가 보낸 첫 HTML 에는 그림자가 없다. 그래서 컴포넌트가 **화면에 늦게 나타나거나 한 번 깜빡였다.** 마크업만으로 만들 수 있게 한 것이 이 표면이다.
 - **왜 직렬화가 기본 「안 보임」인가** — 섀도는 **캡슐화**가 목적이다. `innerHTML` 로 아무나 안을 꺼내 갈 수 있으면 그 목적이 깨진다. 그래서 **마크업이 `shadowrootserializable` 로 명시적으로 허락**해야 뽑힌다((4)).
 - **`<slot>` 이 왜 「투영」인가** — 라이트 자식은 **옮겨지지 않는다.** 트리에서는 여전히 호스트의 자식이고, **그려질 때만** 슬롯 자리로 간다. (5) 에서 `textContent` 와 `innerText` 가 갈린 것이 그 흔적이다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The `template` element」](https://html.spec.whatwg.org/multipage/scripting.html#the-template-element)·[「The `slot` element」](https://html.spec.whatwg.org/multipage/scripting.html#the-slot-element)·[「Custom elements」](https://html.spec.whatwg.org/multipage/custom-elements.html) 절과 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 [「Shadow tree」](https://dom.spec.whatwg.org/#shadow-trees) 절. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. `<template>`·`<slot>`·커스텀 요소는 2018년 전후, **선언적 Shadow DOM(`shadowrootmode`)은 2023\~2024년**에 자리 잡았다 — 이 묶음에서 **가장 새 표면**이다.
+
+★★ **이 주제의 본체는 창 ①(`--dump-dom`)과 창 ⑤(서버 요청 로그) 둘이다** — 「`<template>` 안이 안 산다」는 **요청 로그**가 가장 강하게 말하고(받아 오지도 않는다), 「그림자가 생겼나」는 **창 ①이 못 보는 자리**라 창 ②가 대신 답한다. 창 넷의 정의는 [01번 주제](../01-document-skeleton/2-summary.md)의 「이 갈래의 창」 절에, 창 ⑤ 는 [08번 주제](../08-script-loading/2-summary.md)의 (6) 에 있다.
+★★★ **경계** — **Shadow DOM 의 API 는 web-api 갈래가 정본이다.** web-api 갈래 목록([`web-api/README.md`](../../../web-api/README.md))의 **12번**(`attachShadow`·캡슐화 경계·`::part`)과 **13번**(커스텀 요소 수명주기)이 그쪽이고, **여기는 마크업까지**다 — `<template>` 의 파싱, `shadowrootmode` 라는 **속성**, `<slot>` 의 **문법과 기본 내용**. 웹 컴포넌트가 **왜 생겼나**는 [`history/web/05-웹플랫폼-API.md`](../../../../history/web/05-웹플랫폼-API.md) §6 이 정본이다.

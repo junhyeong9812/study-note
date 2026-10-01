@@ -1,13 +1,5 @@
 # ts/syntax/30 — 타입 단언과 non-null `!` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Everyday Types (Type Assertions · Non-null Assertion Operator)](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html) ·
-> [TypeScript 2.0 릴리스 노트 — Non-null assertion operator](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-0.html) ·
-> [TypeScript 2.7 릴리스 노트 — Definite Assignment Assertions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html) ·
-> [TypeScript 3.7 릴리스 노트 — Assertion Functions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html).
-> 위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 이 판에서 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -23,7 +15,6 @@ Python 3.12.3
 > ★ 단언 함수의 **몸통을 컴파일러가 검사하지 않는다**는 것은 [**14번 주제**](../14-assertion-signatures/)가, 타입 술어가 거짓말해도 믿는다는 것은 [**13번 주제**](../13-type-guards-and-predicates/)가 정본이다 — 인용한다.
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > **버전** — `!` 는 **2.0**(릴리스 노트가 「방출된 JavaScript 에서 그냥 지워진다」고 적는다), 확정 할당 단언은 **2.7**, 단언 함수는 **3.7**. ★ **7.0.2 에서 도는지는 던져서 확인했다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -665,3 +656,12 @@ ex.30c.ts    exit 0 = exit 0 · 출력 한 글자도 같다
 - **`[plain]` 행이 실행까지 된 이유** — `tsc` 는 진단이 있어도 방출한다(`noEmitOnError` 기본값 `false`). 격자는 그 성질을 이용해 **진단이 난 칸도 실행 칸을 채웠다.** CI 에서 `--noEmitOnError` 를 켜는 이유가 이것이다 — **이 플래그 자체는 던지지 않았다.**
 - **`!` 대신 무엇을** — `??`(기본값) · `?.`(없으면 `undefined` 로 계속) · `if (v === undefined) throw new Error("…")`(제자리에서 멈춤). JS 쪽 연산자는 JS 갈래 [`../../../js/syntax/12-optional-chaining-nullish-and-logical-assignment/`](../../../js/syntax/12-optional-chaining-nullish-and-logical-assignment/) 가 정본이다.
 - **격자를 `--strict false` 로 돌리면** — 안 돌렸다(5절). `[plain]` 과 `[bang]` 의 진단 칸이 같아질 것이라는 **예상**만 있다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Everyday Types (Type Assertions · Non-null Assertion Operator)](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html) ·
+[TypeScript 2.0 릴리스 노트 — Non-null assertion operator](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-0.html) ·
+[TypeScript 2.7 릴리스 노트 — Definite Assignment Assertions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html) ·
+[TypeScript 3.7 릴리스 노트 — Assertion Functions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html).
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 이 판에서 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

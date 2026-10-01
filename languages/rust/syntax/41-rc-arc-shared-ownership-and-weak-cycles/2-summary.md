@@ -1,18 +1,5 @@
 # rust/syntax/41 — `Rc`/`Arc` 공유 소유권 · `Weak` 와 순환 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `std::rc` 모듈 문서](https://doc.rust-lang.org/std/rc/index.html)(「A cycle between `Rc` pointers will never be deallocated」 · `Send` 아님) ·
-> [std — `Rc`](https://doc.rust-lang.org/std/rc/struct.Rc.html)(`make_mut` · `get_mut` · `try_unwrap`) ·
-> [std — `Weak`](https://doc.rust-lang.org/std/rc/struct.Weak.html)(`upgrade` · `weak_count`) ·
-> [std — `Arc`](https://doc.rust-lang.org/std/sync/struct.Arc.html) ·
-> [std — `mem::forget`](https://doc.rust-lang.org/std/mem/fn.forget.html)(§Safety — 순환이 안전한 누수라는 근거).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> **`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다. Python 대비는 `Python 3.12.3`.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다.** ★★★ **속도는 한 번도 재지 않았다** — 「`Arc` 는 원자 연산이라 느리다」 류의 문장은 이 문서에 **근거가 없으므로 쓰지 않는다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체 창 — ① `Drop` 로그와 ② `strong_count`/`weak_count` 카운트 로그다.** 「해제됐나」를 **메모리 도구가 아니라 이 둘로** 묻는다(아래 (0) — 제5의 상태).
 
 ```text
@@ -122,7 +109,7 @@ C++ 갈래 [`27-shared-ptr-and-reference-counting`](../../../cpp/syntax/27-share
 | ③ ★★ **컴파일러 진단 E0277** | `Rc` 가 스레드를 **못 넘는** 것 | 쓴다((3)) |
 | ④ ★ **`Rc::ptr_eq` · `Rc::as_ptr` 비교(참/거짓)** | `make_mut` 가 **복사했나** | 쓴다((4)) — 주소값 자체는 싣지 않는다 |
 | ⑤ **Python `__del__` 로그 + `gc.collect()`** | 추적 수집기가 있는 언어는 순환을 **회수하나** | 대비로 쓴다((5)) |
-| 메모리 누수량(바이트) | 「얼마나 샜나」 | ★★★ **못 잰 것** — Miri 도 valgrind 도 이 머신에 없다(머리말 블록: 설치된 구성 요소에 `miri` 가 없고 `cargo miri --version exit=1` · `command -v valgrind exit=1`). **누수량은 주장하지 않는다** |
+| 메모리 누수량(바이트) | 「얼마나 샜나」 | ★★★ **못 잰 것** — Miri 도 valgrind 도 이 머신에 없다(맨 위 부분 블록: 설치된 구성 요소에 `miri` 가 없고 `cargo miri --version exit=1` · `command -v valgrind exit=1`). **누수량은 주장하지 않는다** |
 | 실행 시간 · 원자 명령 비용 | 「`Arc` 는 느리다」 | ★ **부적용 — 재지 않는다.** 원자 명령을 **센** 것은 C++ 27편 (7)이다(`shared_ptr` 복사 대입 한 번 = 원자 명령 4개) — Rust 쪽은 세지 않았다 |
 
 ★★ **제5의 상태 — 「같은 질문을 다른 창으로」.** 「순환이면 **샌다**」를 메모리 도구로 물을 수 없어서(도구 없음), 질문을 **「그 값의 `Drop` 이 불렸나 · 누가 아직 쥐고 있나」** 로 바꿔 ①·② 에 물었다.
@@ -639,3 +626,16 @@ print("[3] end")
 
 - `Rc::new_cyclic` — 만드는 도중에 자기를 가리키는 `Weak` 를 받는 생성자(자기 참조 노드). **이 문서는 던지지 않았다.**
 - `Weak` 가 살려 두는 **할당**이 언제 반납되는지 — std 는 「값은 안 살리고 할당은 살린다」고만 적는다. 바이트 수준의 확인은 **메모리 도구가 있는 판**에서 할 일이다(C++ 27편 (6)이 `shared_ptr` 쪽을 쟀다).
+
+## 실행 환경
+
+**기준 소스** — [std — `std::rc` 모듈 문서](https://doc.rust-lang.org/std/rc/index.html)(「A cycle between `Rc` pointers will never be deallocated」 · `Send` 아님) ·
+[std — `Rc`](https://doc.rust-lang.org/std/rc/struct.Rc.html)(`make_mut` · `get_mut` · `try_unwrap`) ·
+[std — `Weak`](https://doc.rust-lang.org/std/rc/struct.Weak.html)(`upgrade` · `weak_count`) ·
+[std — `Arc`](https://doc.rust-lang.org/std/sync/struct.Arc.html) ·
+[std — `mem::forget`](https://doc.rust-lang.org/std/mem/fn.forget.html)(§Safety — 순환이 안전한 누수라는 근거).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+**`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다. Python 대비는 `Python 3.12.3`.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★ **외부 크레이트를 하나도 쓰지 않았다.** ★★★ **속도는 한 번도 재지 않았다** — 「`Arc` 는 원자 연산이라 느리다」 류의 문장은 이 문서에 **근거가 없으므로 쓰지 않는다.**

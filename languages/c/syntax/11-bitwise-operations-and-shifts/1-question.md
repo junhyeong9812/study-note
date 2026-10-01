@@ -1,16 +1,5 @@
 # c/syntax/11 — 비트 연산과 시프트: 자리를 다루는 법과 **넘으면 안 되는 선** — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **예측형 위주**다 — 아는지가 아니라 **출력을 맞힐 수 있는지**를 묻는다.
-> **환경** — gcc 13.3.0 · clang 18.1.3 · x86-64 Linux · `CHAR_BIT=8` · `sizeof(int)=4`.\
-> 기본 플래그는 `-std=c17 -Wall -Wextra -pedantic`.
-> ★★ **이 주제는 UB 가 본체다.** 바로 앞 [10번 형제](../10-evaluation-order-and-sequence-points/)에서 한 줄도 안 냈던 UBSan 이 여기서는 말을 한다 —\
-> **그래서 「무엇이 UB 이고 무엇이 구현 정의인가」를 가르는 것이 이 주제의 인출 대상**이다.
-> ★ **값을 맞히는 것보다 「어느 층인가」와 「누가 말해 주나」를 맞히는 것이 중요하다.**
-> 선행 — [02번 형제](../02-basic-types-sizes-and-fixed-width-integers/) · [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -155,6 +144,15 @@ struct Flags f = { 1, 5, -3, 7 };
 - 이 주제의 UB 셋을 덮는 **규칙 두 줄**은 무엇인가?
 - 빌드·CI 플래그로 무엇을 켜는가?
 - 비트 트릭 자체의 정본은 어느 갈래이고, 2진 표현의 정본은 어디인가?
+
+## 실행 환경
+
+**환경** — gcc 13.3.0 · clang 18.1.3 · x86-64 Linux · `CHAR_BIT=8` · `sizeof(int)=4`.\
+기본 플래그는 `-std=c17 -Wall -Wextra -pedantic`.
+★★ **이 주제는 UB 가 본체다.** 바로 앞 [10번 형제](../10-evaluation-order-and-sequence-points/)에서 한 줄도 안 냈던 UBSan 이 여기서는 말을 한다 —\
+**그래서 「무엇이 UB 이고 무엇이 구현 정의인가」를 가르는 것이 이 주제의 인출 대상**이다.
+★ **값을 맞히는 것보다 「어느 층인가」와 「누가 말해 주나」를 맞히는 것이 중요하다.**
+선행 — [02번 형제](../02-basic-types-sizes-and-fixed-width-integers/) · [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/).
 
 ## 복습 기록
 

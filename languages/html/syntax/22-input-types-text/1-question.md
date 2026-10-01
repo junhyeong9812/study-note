@@ -1,13 +1,5 @@
 # html/syntax/22 — `<input>` 타입 지도 ① 텍스트 계열: `text`/`password`/`email`/`url`/`tel`/`search` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★★★ 이 주제의 본체는 **창 ②(`validity`·`.value`)** 다. 답할 때마다 「**무효인가**」·「**값이 다듬어졌나**」 중 **어느 칸**의 이야기인지 적어라. ★ `validationMessage` 문구는 근거가 아니다.
-> ★ 소스 펜스 첫 줄의 `<!-- 파일이름 -->` 은 **어느 파일을 던진 것인지 표시**이지 파일 내용이 아니다. 펜스의 소스는 전부 실제로 던진 파일이다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
-> 선행 — [21번 주제](../21-form-submission-model/1-question.md).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -150,6 +142,13 @@ document.body.append(Object.assign(document.createElement("pre"), {
 
 - `value` 속성과 `.value` 가 갈리는 이유의 정본은?
 - `:invalid`·`:user-invalid` 로 칠하는 것, `pattern`·`minlength`, `autocomplete`·`inputmode` 의 정본은?
+
+## 실행 환경
+
+★★★ 이 주제의 본체는 **창 ②(`validity`·`.value`)** 다. 답할 때마다 「**무효인가**」·「**값이 다듬어졌나**」 중 **어느 칸**의 이야기인지 적어라. ★ `validationMessage` 문구는 근거가 아니다.
+★ 소스 펜스 첫 줄의 `<!-- 파일이름 -->` 은 **어느 파일을 던진 것인지 표시**이지 파일 내용이 아니다. 펜스의 소스는 전부 실제로 던진 파일이다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
+선행 — [21번 주제](../21-form-submission-model/1-question.md).
 
 ## 복습 기록
 

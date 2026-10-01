@@ -1,7 +1,5 @@
 # algorithm 공부 노트 — 알고리즘 구현 (30)
 
-> 커리큘럼상 이 영역의 전체 주제·상태 = [curriculum.md](curriculum.md)(생성 문서) · 진행 기록(원본·진도) = [project/myway](../../project/myway/README.md) — 2026-09-28 cs 재편.
-
 원본: `/home/jun/project/myway/algorithm` — 정렬·탐색·그래프·DP·문자열 등 알고리즘을 직접 구현하며 공부한다. 챕터 폴더명은 원본 챕터 폴더명과 1:1 대응.
 공통 규칙·파일 형식은 상위 [cs/README.md](../README.md) 「작성 규칙」을 따른다(2026-09-28 — templates/는 cs에 적용하지 않음).
 
@@ -27,3 +25,7 @@
 ## 챕터 진행 현황
 
 전체 목록과 상태는 [index.md](index.md)에 기록한다. 상태가 바뀔 때마다 갱신한다.
+
+---
+
+커리큘럼상 이 영역의 전체 주제·상태 = [curriculum.md](curriculum.md)(생성 문서) · 진행 기록(원본·진도) = [project/myway](../../project/myway/README.md) — 2026-09-28 cs 재편.

@@ -1,17 +1,5 @@
 # java/syntax/51 — `java.time` — `Instant`·`LocalDate`/`LocalDateTime`·`ZonedDateTime` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — 없다. 다만 간격·형식(`Duration`·`Period`·`DateTimeFormatter`)은 [`../52-duration-period-formatter/`](../52-duration-period-formatter/) 가 이어받는다.
-> **기준 소스** — Temurin **JDK 21.0.5** 표준 라이브러리 소스 `java.base/java/time/Instant.java`·`LocalDate.java`·`LocalDateTime.java`·`ZonedDateTime.java`·`Clock.java`·`zone/ZoneRules.java`(`lib/src.zip`) · [`java.time` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/package-summary.html) · [`ZonedDateTime` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/ZonedDateTime.html)
-> **실행 검증** — 이 문서의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 다섯(51-a~51-e)을 **17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
-> ★ **세 판의 출력이 전부 같지는 않았다.** `ZoneRulesProvider` 의 tzdb 판이 다르고, 그 때문에 **같은 코드가 다른 답**을 냈다(아래 「구현 세부사항 대 언어 보장」이 정본).
-> **버전** — `Instant`·`LocalDate`·`LocalDateTime`·`ZonedDateTime`·`Clock` 전부 `src.zip` 의 **`@since 1.8`**.
-> **측정 조건** — 이 머신의 기본 시간대는 `Asia/Seoul`, 기본 `Locale` 은 `ko_KR`, `file.encoding` 은 `UTF-8` 이다. 시간대에 의존하는 출력은 그 사실이 붙어 있다.
-> **범위** — 시계열 데이터를 **버킷으로 접어 저장·조회하는 패턴**은 [`../../../../cs/ops-patterns/17-timeseries/`](../../../../cs/ops-patterns/17-timeseries/) 가 정본이다.\
-> 그쪽은 **시간 축 위에 값을 어떻게 쌓고 굴리나**까지, 여기는 **그 축의 한 점을 Java 의 어느 타입으로 적나**까지다.\
-> `java.time` 이 **왜 Java 8 에 들어왔나**(Joda-Time·`Calendar` 의 문제)는 [`../../../../history/java/java-8.md`](../../../../history/java/java-8.md) 가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **세 타입은 "사진"·"메모"·"약속"이다.**
@@ -787,3 +775,15 @@ zone 개수    : 603                 zone 개수    : 603               zone 개
 - **`compareTo` 와 `equals` 가 불일치한다.**\
   `ZonedDateTime` 의 `compareTo` 는 순간 → 지역 시각 → 지역 ID 순으로 비교한다. 실측에서 같은 순간의 서울/뉴욕이 `compareTo == 1` 이었다.\
   `Comparable` 계약이 권장하는 "compareTo == 0 이면 equals" 를 **의도적으로 어긴 것**이고, javadoc 에도 그 사실이 적혀 있다([**28번 주제**](../28-comparable-comparator/)가 그 계약의 정본이다).
+
+## 실행 환경
+
+**선행** — 없다. 다만 간격·형식(`Duration`·`Period`·`DateTimeFormatter`)은 [`../52-duration-period-formatter/`](../52-duration-period-formatter/) 가 이어받는다.
+**기준 소스** — Temurin **JDK 21.0.5** 표준 라이브러리 소스 `java.base/java/time/Instant.java`·`LocalDate.java`·`LocalDateTime.java`·`ZonedDateTime.java`·`Clock.java`·`zone/ZoneRules.java`(`lib/src.zip`) · [`java.time` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/package-summary.html) · [`ZonedDateTime` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/ZonedDateTime.html)
+**실행 검증** — 이 문서의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 다섯(51-a~51-e)을 **17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
+★ **세 판의 출력이 전부 같지는 않았다.** `ZoneRulesProvider` 의 tzdb 판이 다르고, 그 때문에 **같은 코드가 다른 답**을 냈다(본문 「구현 세부사항 대 언어 보장」이 정본).
+**버전** — `Instant`·`LocalDate`·`LocalDateTime`·`ZonedDateTime`·`Clock` 전부 `src.zip` 의 **`@since 1.8`**.
+**측정 조건** — 이 머신의 기본 시간대는 `Asia/Seoul`, 기본 `Locale` 은 `ko_KR`, `file.encoding` 은 `UTF-8` 이다. 시간대에 의존하는 출력은 그 사실이 붙어 있다.
+**범위** — 시계열 데이터를 **버킷으로 접어 저장·조회하는 패턴**은 [`../../../../cs/ops-patterns/17-timeseries/`](../../../../cs/ops-patterns/17-timeseries/) 가 정본이다.\
+그쪽은 **시간 축 위에 값을 어떻게 쌓고 굴리나**까지, 여기는 **그 축의 한 점을 Java 의 어느 타입으로 적나**까지다.\
+`java.time` 이 **왜 Java 8 에 들어왔나**(Joda-Time·`Calendar` 의 문제)는 [`../../../../history/java/java-8.md`](../../../../history/java/java-8.md) 가 정본이다.

@@ -1,11 +1,5 @@
 # domain-modeling-basic/28-friend-suggestion — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/28-friend-suggestion/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -517,3 +511,7 @@ for (String candidate : candidates(me).keySet()) {
 - 문제 원문: `src/main/java/com/domain/social/FriendSuggestion.java`(TODO 1~5 javadoc), `Social.java`(계약 — 친구는 무방향·차단/거절은 유방향, 자기 자신과의 관계 거부), `README.md`(함정·측정·변종 검증·생각해볼 것)
 - 측정 수치: `README.md` "측정이 알려준 것" 하나~여섯 — 차단 50/200/800건 → 갈리는 사람 1·4·30 / 전체 목록 148 vs 상위 10 30 / 공통 친구 분포 10,962(80%)·2,389(17%)·267(1%)·20(0%) / 순서 다름 200, 명단 다름 186(93%) / 후보 14,498 중 친구 644·차단 146·거절 70, 남는 것 13,638(94%) / 두 단 72.5명·세 단 195.6명 / 변종 16개 전부 잡힘
 - 계약 테스트: `src/test/java/com/domain/social/FriendSuggestionTest.java` — 9명 표본(me·a~h), 후보 `{a,b,c,d,e,g,h}`(f는 세 단째라 제외), `c`의 공통 친구 2(`{a,b}`), `I_BLOCKED` → `[c,e,h]` vs `EITHER_BLOCKED` → `[c,h]`, `Excluded(2,1,1)`/`Excluded(2,2,1)`·total 4·후보 7, 여러 이유에 걸린 x는 `Excluded(2,0,0)`, EARLIEST `[c,e,h]` vs LATEST `[c,h,e]` vs BY_ID `[c,e,h]`, joinOrder 동일 시 `[y,z]`, limit 1·2·100, `limit=0`·없는 사람은 `IllegalArgumentException`, 친구는 양방향·차단은 단방향, 자기 자신과의 관계·없는 사람·중복 식별자 거부
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/28-friend-suggestion/impl/`).

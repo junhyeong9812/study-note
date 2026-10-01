@@ -1,9 +1,5 @@
 # JavaScript 탄생 ~ ES5 (1995 ~ 2009)
 
-> 원본: `~/project/js-history/01-탄생-ES5.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
-> 연도·인명·표준번호·코드·표는 원문 그대로다.\
-> ASCII 도식 5개와 「한눈에」의 말·사전 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -455,3 +451,9 @@ console.log(Object.keys(temp));         // 열거 가능한 키 배열
 - [What Does AJAX Even Stand For? - The History of the Web](https://thehistoryoftheweb.com/what-does-ajax-even-stand-for/)
 - [John Resig - ECMAScript 5 Strict Mode, JSON, and More](https://johnresig.com/blog/ecmascript-5-strict-mode-json-and-more/)
 - [JavaScript ES5 (JS 2009) - GeeksforGeeks](https://www.geeksforgeeks.org/javascript/javascript-es5-js-2009/)
+
+## 출처
+
+원본: `~/project/js-history/01-탄생-ES5.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
+연도·인명·표준번호·코드·표는 원문 그대로다.\
+ASCII 도식 5개와 「한눈에」의 말·사전 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

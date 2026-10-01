@@ -1,44 +1,5 @@
 # python/syntax/35-abc-and-protocol — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [`abc`](https://docs.python.org/3.12/library/abc.html) — `ABC`·`abstractmethod`·`register`·`__subclasshook__`
-> - [`abc.ABCMeta.register`](https://docs.python.org/3.12/library/abc.html#abc.ABCMeta.register) — *"Register subclass as a 'virtual subclass'"*
-> - [`typing.Protocol`](https://docs.python.org/3.12/library/typing.html#typing.Protocol) · [`typing.runtime_checkable`](https://docs.python.org/3.12/library/typing.html#typing.runtime_checkable)
->   — *"runtime_checkable() will check only the presence of the required methods, not their type signatures"*
-> - [PEP 544 — Protocols: Structural subtyping](https://peps.python.org/pep-0544/) — 구조적 서브타이핑의 정의
-> - [`collections.abc`](https://docs.python.org/3.12/library/collections.abc.html) — 어느 추상 메서드를 주면 어느 믹스인이 따라오나
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ 던지는 형태를 하나로 고정했다 — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
-> ★★★ **이 주제는 트레이스백을 한 블록도 싣지 않았다.** 던진 예외가 전부 `abc`·`typing` 을 지나
-> **절대 경로가 박히기** 때문이다. 전부 `except` 로 받아 **타입과 메시지만** 찍었다
-> ([28](../28-context-managers-and-with/2-summary.md)·[30](../30-repr-eq-hash-contracts/2-summary.md)이 같은 처방을 썼다).
-> 그래서 이 문서에는 **줄 번호에 기대는 칸이 하나도 없다.**\
-> **버전** — `abc` 는 **2.6**(PEP 3119), `Protocol`·`runtime_checkable` 은 **3.8**(PEP 544)부터다.
-> 3.12 에서 `__protocol_attrs__` 가 노출되고 `isinstance` 구현이 빨라졌다.\
-> ★★★ **구현 대 언어 보장 한 줄** — 이 주제의 축은 「**런타임이 강제하는 것 / 타입 검사기만 보는 것**」이다.
-> **ABC 의 인스턴스화 거부는 런타임 강제**이고, **`Protocol` 의 구조 판정은 타입 검사기만 본다.**
-> `runtime_checkable` 은 그 사이에 있는데, **보는 것이 메서드 이름뿐**이라 반쪽이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | `id()` 와 `0x…` 주소 — **이 주제는 한 번도 안 찍었다** | 예외 **종류** · `(exit N)` |
-> | 판이 오르면 예외 **문구**(3.12 가 ABC 문구를 바꿨다) | `isinstance`·`issubclass` 의 **참·거짓** |
-> | `__protocol_attrs__` 라는 **내부 이름**(3.12 에서 노출) | `__mro__` 의 **순서**와 그 안에 무엇이 **있나 없나** |
-> | 타입 검사기가 설치돼 있는지 — **이 머신에는 없다**(첫 블록) | `__abstractmethods__` 의 **내용**(정렬해서 찍었다) |
->
-> ★ **순서가 보장 안 되는 출력은 이 문서에 하나도 없다** — `__abstractmethods__` 는 `frozenset` 이라
-> **전부 `sorted()` 로 찍었고**, `__protocol_attrs__` 도 같다.\
-> **선행** — [34-inheritance-mro-super](../34-inheritance-mro-super/2-summary.md)(ABC 가 그 줄 위에 선다) ·
-> [32-container-protocol](../32-container-protocol/2-summary.md)(★★★ **`collections.abc` 믹스인의 정본**) ·
-> [29-classes-and-attribute-lookup](../29-classes-and-attribute-lookup/2-summary.md)(클래스 칸과 MRO).\
-> **이 사슬** — [32](../32-container-protocol/2-summary.md) → [34](../34-inheritance-mro-super/2-summary.md) → 35.
-> **32 가 「프로토콜을 반만 지켜도 언어가 채워 준다」였다면, 35 는 「그 계약을 누가 강제하나」다.**
-
 ## 한눈에 — 쉽게 말하면
 
 **둘 다 「이런 모양이어야 한다」는 약속인데, 그 약속을 지키라고 **누가** 말하느냐가 다르다.**
@@ -1379,3 +1340,45 @@ ABC 는 런타임이 **만들 때**, `runtime_checkable` 은 런타임이 **이�
   동작 3의 ②·③·⑤가 **전부 에러로 잡힐 것**이지만, **이 배치는 그것을 확인하지 못했다**(도구 없음).
   ★ 「못 잰 것」으로 적는다 — 「안 돌려 본 것」과 다르다.
   ★ **쪼개서 잰 조각** — 런타임 쪽은 전부 실측했고, `PATH` 조회로 **도구의 부재 자체도 출력으로** 남겼다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [`abc`](https://docs.python.org/3.12/library/abc.html) — `ABC`·`abstractmethod`·`register`·`__subclasshook__`
+- [`abc.ABCMeta.register`](https://docs.python.org/3.12/library/abc.html#abc.ABCMeta.register) — *"Register subclass as a 'virtual subclass'"*
+- [`typing.Protocol`](https://docs.python.org/3.12/library/typing.html#typing.Protocol) · [`typing.runtime_checkable`](https://docs.python.org/3.12/library/typing.html#typing.runtime_checkable)
+  — *"runtime_checkable() will check only the presence of the required methods, not their type signatures"*
+- [PEP 544 — Protocols: Structural subtyping](https://peps.python.org/pep-0544/) — 구조적 서브타이핑의 정의
+- [`collections.abc`](https://docs.python.org/3.12/library/collections.abc.html) — 어느 추상 메서드를 주면 어느 믹스인이 따라오나
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ 던지는 형태를 하나로 고정했다 — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
+★★★ **이 주제는 트레이스백을 한 블록도 싣지 않았다.** 던진 예외가 전부 `abc`·`typing` 을 지나
+**절대 경로가 박히기** 때문이다. 전부 `except` 로 받아 **타입과 메시지만** 찍었다
+([28](../28-context-managers-and-with/2-summary.md)·[30](../30-repr-eq-hash-contracts/2-summary.md)이 같은 처방을 썼다).
+그래서 이 문서에는 **줄 번호에 기대는 칸이 하나도 없다.**\
+**버전** — `abc` 는 **2.6**(PEP 3119), `Protocol`·`runtime_checkable` 은 **3.8**(PEP 544)부터다.
+3.12 에서 `__protocol_attrs__` 가 노출되고 `isinstance` 구현이 빨라졌다.\
+★★★ **구현 대 언어 보장 한 줄** — 이 주제의 축은 「**런타임이 강제하는 것 / 타입 검사기만 보는 것**」이다.
+**ABC 의 인스턴스화 거부는 런타임 강제**이고, **`Protocol` 의 구조 판정은 타입 검사기만 본다.**
+`runtime_checkable` 은 그 사이에 있는데, **보는 것이 메서드 이름뿐**이라 반쪽이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| `id()` 와 `0x…` 주소 — **이 주제는 한 번도 안 찍었다** | 예외 **종류** · `(exit N)` |
+| 판이 오르면 예외 **문구**(3.12 가 ABC 문구를 바꿨다) | `isinstance`·`issubclass` 의 **참·거짓** |
+| `__protocol_attrs__` 라는 **내부 이름**(3.12 에서 노출) | `__mro__` 의 **순서**와 그 안에 무엇이 **있나 없나** |
+| 타입 검사기가 설치돼 있는지 — **이 머신에는 없다**(첫 블록) | `__abstractmethods__` 의 **내용**(정렬해서 찍었다) |
+
+★ **순서가 보장 안 되는 출력은 이 문서에 하나도 없다** — `__abstractmethods__` 는 `frozenset` 이라
+**전부 `sorted()` 로 찍었고**, `__protocol_attrs__` 도 같다.\
+**선행** — [34-inheritance-mro-super](../34-inheritance-mro-super/2-summary.md)(ABC 가 그 줄 위에 선다) ·
+[32-container-protocol](../32-container-protocol/2-summary.md)(★★★ **`collections.abc` 믹스인의 정본**) ·
+[29-classes-and-attribute-lookup](../29-classes-and-attribute-lookup/2-summary.md)(클래스 칸과 MRO).
+
+**32 가 「프로토콜을 반만 지켜도 언어가 채워 준다」였다면, 35 는 「그 계약을 누가 강제하나」다.**
+
+---
+
+**이 사슬** — [32](../32-container-protocol/2-summary.md) → [34](../34-inheritance-mro-super/2-summary.md) → 35.

@@ -1,11 +1,5 @@
 # PR #37186 — 무대의 실구조와 워크플로우
 
-> PR #37186의 무대가 되는 실구조·워크플로우.\
-> 문제·수정은 [README.md](README.md), 테스트는 [tests.md](tests.md), 리뷰 과정은 [review.md](review.md) 참조.
->
-> 기준: 로컬 HEAD `3bb5ed1ae4f`(브랜치 `fix/typedescriptor-derived-serialization` — upstream main `89047909ea4` 리베이스 + fix 커밋).\
-> **이 시점의 `ResolvableType.java`에는 이미 수정이 반영돼 있다** — 아래 file:line은 "수정 후" 좌표이고, 2절의 수정 전 워크플로우는 `gh pr diff 37186`의 `-`쪽(= 프록시 4블록이 없는 상태)으로 재구성한 것이다.
-
 ## 1. 무대 — 실구조
 
 `ResolvableType`은 6개 필드만 스트림에 싣고 4개 캐시는 버리는 값 객체다.\
@@ -414,3 +408,8 @@ Serializable 이면서 ResolvableType 을 비-transient 로 보유
 - [PR #37109의 실구조](../37109-typedescriptor-serialization/structure.md) — 같은 직렬화 계열의 인접 작업.\
   그쪽 무대는 같은 `TypeDescriptor`의 **애너테이션 공급자 필드**이고, 이쪽 무대는 그 옆의 `resolvableType` 필드(TypeDescriptor.java:74)가 가리키는 그래프다.\
   두 문서를 겹쳐 읽으면 `TypeDescriptor` 네 필드의 직렬화 사정이 전부 채워진다.
+
+## 출처
+
+기준: 로컬 HEAD `3bb5ed1ae4f`(브랜치 `fix/typedescriptor-derived-serialization` — upstream main `89047909ea4` 리베이스 + fix 커밋).\
+**이 시점의 `ResolvableType.java`에는 이미 수정이 반영돼 있다** — 본문의 file:line은 "수정 후" 좌표이고, 2절의 수정 전 워크플로우는 `gh pr diff 37186`의 `-`쪽(= 프록시 4블록이 없는 상태)으로 재구성한 것이다.

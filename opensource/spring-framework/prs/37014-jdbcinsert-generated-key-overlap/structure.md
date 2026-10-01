@@ -1,9 +1,5 @@
 # PR #37014 — 무대 구조와 워크플로우: SimpleJdbcInsert 메타데이터 파이프라인
 
-> PR #37014의 무대가 되는 실구조·워크플로우. 문제·수정은 README.md, 테스트는 tests.md 참조.
->
-> 기준: upstream main `526c706d1c3`. 이하 file:line은 모두 이 커밋의 작업 트리 기준이며, `reconcileColumnsToUse`는 아직 PR 이전 상태(선언 경로 조기 반환)다.
-
 ## 1. 무대 — 실구조
 
 이 PR의 무대는 `SimpleJdbcInsert`가 SQL을 조립하기까지 거치는 **메타데이터 파이프라인** 전체다.\
@@ -583,3 +579,7 @@ PR의 수정이 새 비교 규칙을 발명하지 않고 층 2의 기존 관용�
 
 이 무대와 직접 겹치는 개념 문서는 아직 `../../concepts/`에 없다.\
 JDBC 메타데이터 파이프라인은 이 문서 안에서 자기완결로 다뤘다.
+
+## 출처
+
+기준: upstream main `526c706d1c3`. 이하 file:line은 모두 이 커밋의 작업 트리 기준이며, `reconcileColumnsToUse`는 아직 PR 이전 상태(선언 경로 조기 반환)다.

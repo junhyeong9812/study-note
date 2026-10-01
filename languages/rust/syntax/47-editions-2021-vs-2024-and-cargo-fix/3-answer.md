@@ -1,11 +1,5 @@
 # rust/syntax/47 — 에디션 2021 대 2024 — 같은 코드가 다르게 컴파일되는 자리 · `cargo fix --edition` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·에러는 **`rustc 1.92.0 (ded5c06cf 2025-12-08)`** · **`cargo 1.92.0 (344c4567c 2025-10-21)`** · `x86_64-unknown-linux-gnu` 에서
-> 블록 배너의 명령으로 실제로 돌려 받은 것이다. cargo 는 `CARGO_NET_OFFLINE=true`(의존성 0개).\
-> ★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
-> ★★ `cargo fix` 가 찍는 절대 경로는 배너의 `sed "s|$PWD|.|g"` 로 `.` 로 바꿨다. `Finished … in 0.26s` 의 **시간**은 실행마다 바뀌는 칸이다(서머리 머리말의 표).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -940,7 +934,7 @@ For more information about this error, try `rustc --explain E0277`.
 | ★★★ **`cargo fix --edition` 절차** | `r47_fix_before` · `r47_nofix` · `r47_fix`(fix → diff → `edition` 확인 → 올림 → 실행) | 3 | 경고 1 · 에러 5 · **11 fixes · `edition` 그대로 · `free=false` → `free=true`** |
 | 에디션 섞어 링크 | `r47_interop` · `r47_interop_plain` | 2 | `7` · reserved keyword |
 | `!` 폴백 | `r47_never`(2021 · 2024) | 2 | 거부 린트 · E0277 |
-| 판 연혁 | 머리말 `tools` 블록 — 로컬 `releases.md` | 1 | 2021 = 1.56.0 · 2024 = 1.85.0 |
+| 판 연혁 | 2-summary 맨 위 부분 `tools` 블록 — 로컬 `releases.md` | 1 | 2021 = 1.56.0 · 2024 = 1.85.0 |
 | **안 던진 것** — 2015·2018 판 · `cargo fix --edition-idioms` · `--all-features` 로 feature 뒤의 코드까지 고치기 · rustfmt 의 스타일 에디션 · `gen` 블록 · 예약 구문 `#"…"#` · 꼬리식 임시값의 `Drop` 순서 | — | 0 | ★ 「안 던졌다」로 표시했다 |
 
 **구현 의존 항목**(버전·환경이 바뀌면 **다시 찍어야 하는** 것).
@@ -953,3 +947,10 @@ For more information about this error, try `rustc --explain E0277`.
 | 진단 문구 | ★ rustc·cargo 판에 매인다 |
 
 ★ **다시 찍는 법** — `capture.sh <새 디렉토리>` 를 그대로 돌리고 `normalize-shaky.py <원본> <새 디렉토리>` 로 견준다.
+
+## 실행 환경
+
+이 파일의 모든 출력·에러는 **`rustc 1.92.0 (ded5c06cf 2025-12-08)`** · **`cargo 1.92.0 (344c4567c 2025-10-21)`** · `x86_64-unknown-linux-gnu` 에서
+블록 배너의 명령으로 실제로 돌려 받은 것이다. cargo 는 `CARGO_NET_OFFLINE=true`(의존성 0개).\
+★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
+★★ `cargo fix` 가 찍는 절대 경로는 배너의 `sed "s|$PWD|.|g"` 로 `.` 로 바꿨다. `Finished … in 0.26s` 의 **시간**은 실행마다 바뀌는 칸이다(서머리 맨 위 부분의 표).

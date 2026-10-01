@@ -1,10 +1,5 @@
 # css/syntax/44 — 배경과 대체 요소 맞춤 — 질문
 
-> 먼저 답해 보고, 막히면 [2-summary.md](2-summary.md), 그래도 막히면 [3-answer.md](3-answer.md).
-> 예측형은 **출력을 먼저 적고** 이유를 적는다. 기준: **Google Chrome 151.0.7922.173** headless.
-> 위치·크기 답에는 **px 좌표**를 적는다 — 「위쪽에 붙는다」는 답이 아니다.
-> 선행: [15번 박스 모델과 `box-sizing`](../15-box-model-and-box-sizing/1-question.md).
-
 ### 1. 단축이 푸는 아홉 가지 (예측)
 
 ```css
@@ -109,6 +104,12 @@ div { background-size: cover; background-image: url(같은이미지); }
 ### 12. 썸네일은 `<img>` 인가 배경인가 (연결)
 
 카드 목록의 썸네일을 `<img> + object-fit: cover` 로 할 때와 `background-image + background-size: cover` 로 할 때, **결과 화면은 같게 만들 수 있다.** 그래도 어느 쪽을 골라야 하나 — 무엇이 기준인가.
+
+## 실행 환경
+
+예측형은 **출력을 먼저 적고** 이유를 적는다. 기준: **Google Chrome 151.0.7922.173** headless.
+위치·크기 답에는 **px 좌표**를 적는다 — 「위쪽에 붙는다」는 답이 아니다.
+선행: [15번 박스 모델과 `box-sizing`](../15-box-model-and-box-sizing/1-question.md).
 
 ## 복습 기록
 

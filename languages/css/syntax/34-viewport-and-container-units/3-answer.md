@@ -1,11 +1,5 @@
 # css/syntax/34 — 뷰포트 단위와 컨테이너 단위 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 수치는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 잰 값**이다. 단위는 px 다.\
-> **뷰포트가 주제이므로 `--window-size` 를 바꿔 가며 세 판을 쟀다**(800×600 · 375×667 · 1200×400).\
-> ★ **`svh`/`lvh`/`dvh` 가 갈리는 것은 이 환경에서 재지 못했다** — headless 에 접히는 주소창이 없다. 해당 답에 그렇게 적었다.\
-> **손으로 계산해 유도한 수치는 없다.** 규칙은 [CSS Values and Units 4](https://drafts.csswg.org/css-values-4/) 와 [CSS Containment 3](https://drafts.csswg.org/css-contain-3/) 으로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -257,3 +251,10 @@
 **재지 못한 것** — ① `svh`/`lvh`/`dvh` 가 **갈리는 것**(headless 에 접히는 주소창이 없다) ② **세로쓰기**에서 `vi`/`vb` 가 뒤집히는 것 ③ **오버레이 스크롤바** 환경의 `100vw` ④ `--window-size=375` 판(Chrome 하한 500 에 걸렸다).\
 **구현 의존 항목** — 스크롤바 폭 15px · `innerHeight` 가 창 높이보다 작은 것(600 → 513) · 창 폭 하한 500 은 전부 **이 환경의 Chrome 151 관찰**이다.\
 **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.**
+
+## 실행 환경
+
+이 파일의 **모든 수치는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 잰 값**이다. 단위는 px 다.\
+**뷰포트가 주제이므로 `--window-size` 를 바꿔 가며 세 판을 쟀다**(800×600 · 375×667 · 1200×400).\
+★ **`svh`/`lvh`/`dvh` 가 갈리는 것은 이 환경에서 재지 못했다** — headless 에 접히는 주소창이 없다. 해당 답에 그렇게 적었다.\
+**손으로 계산해 유도한 수치는 없다.** 규칙은 [CSS Values and Units 4](https://drafts.csswg.org/css-values-4/) 와 [CSS Containment 3](https://drafts.csswg.org/css-contain-3/) 으로 접지했다.

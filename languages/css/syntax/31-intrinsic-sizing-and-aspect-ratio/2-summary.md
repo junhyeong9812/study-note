@@ -1,13 +1,5 @@
 # css/syntax/31 — 내재적 크기(`min-content`/`max-content`/`fit-content`)와 `aspect-ratio` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/) (내재적 크기 키워드·`min-width: auto`) · [CSS Box Sizing Level 4](https://drafts.csswg.org/css-sizing-4/) (`aspect-ratio`·`fit-content()`). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 치수는 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 잰 값이다. 선언이 **담겼는지**는 `document.styleSheets[…].cssRules` 로 따로 확인했다(진단 3창의 첫째 창).\
-> **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 엔진 차이는 주장하지 않는다.
-> **버전** — `min-content`/`max-content` 는 Baseline **widely**(newly 2020-01-15 → widely 2022-07-15) · `fit-content` **키워드**는 **widely**(2021-11-02 → 2024-05-02) · `aspect-ratio` 는 **widely**(2021-09-20 → 2024-03-20) · ★ **`fit-content()` 함수는 `width`/`height` 에서 Baseline `limited` 다**(아래 (5)에서 실측으로도 확인했다). 전부 `api.webstatus.dev` 조회값이다.
-> **여기서 다루지 않는 것** — Grid 의 `fr`·`minmax()` 는 [목록의 **27번 주제**](../27-grid-track-sizing/)다. 여기서는 **내재적 크기 키워드**까지만 다룬다. 박스 모델과 `box-sizing` 은 [15번](../15-box-model-and-box-sizing/), flex 항목 크기 해결은 [25번](../25-flex-shorthand-and-sizing/)이 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **「내용만큼」에는 두 가지 뜻이 있다 — 「최대한 쥐어짜서」와 「한 줄로 쭉 펴서」.**
@@ -522,3 +514,11 @@ Chrome 151 에서 **선언이 담기지도 않는다**((5)). `getComputedStyle` 
   ★ 그래서 [25번](../25-flex-shorthand-and-sizing/)의 사고를 **`min-width: 0` 없이** 고칠 수 있다 —\
   *(실측: 컨테이너 300 · 사이드바 100 · 본문 `flex: 1` 에 긴 URL 한 줄을 넣으면 기본은 본문 폭 248.00 에 오른끝 348.00(뚫는다)인데, 본문에 `overflow-wrap: anywhere` 한 줄만 더하면 **200.00 · 오른끝 300.00** 이 된다. 대신 높이가 48 → 72 로 늘어난다.)*\
   정본은 [목록의 **51번 주제**](../51-text-wrapping-and-decoration/).
+
+## 실행 환경
+
+**기준 소스** — [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/) (내재적 크기 키워드·`min-width: auto`) · [CSS Box Sizing Level 4](https://drafts.csswg.org/css-sizing-4/) (`aspect-ratio`·`fit-content()`). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 치수는 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 잰 값이다. 선언이 **담겼는지**는 `document.styleSheets[…].cssRules` 로 따로 확인했다(진단 3창의 첫째 창).\
+**WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 엔진 차이는 주장하지 않는다.
+**버전** — `min-content`/`max-content` 는 Baseline **widely**(newly 2020-01-15 → widely 2022-07-15) · `fit-content` **키워드**는 **widely**(2021-11-02 → 2024-05-02) · `aspect-ratio` 는 **widely**(2021-09-20 → 2024-03-20) · ★ **`fit-content()` 함수는 `width`/`height` 에서 Baseline `limited` 다**(본문 (5)에서 실측으로도 확인했다). 전부 `api.webstatus.dev` 조회값이다.
+**여기서 다루지 않는 것** — Grid 의 `fr`·`minmax()` 는 [목록의 **27번 주제**](../27-grid-track-sizing/)다. 여기서는 **내재적 크기 키워드**까지만 다룬다. 박스 모델과 `box-sizing` 은 [15번](../15-box-model-and-box-sizing/), flex 항목 크기 해결은 [25번](../25-flex-shorthand-and-sizing/)이 정본이다.

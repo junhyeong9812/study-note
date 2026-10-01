@@ -1,16 +1,5 @@
 # kotlin/syntax/55 — `Flow` — 콜드 스트림·연산자·`collect` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — **`kotlinx-coroutines-core-jvm` 1.11.0 의 소스 jar**(`Flow.kt` 의 KDoc — 「cold flow」·「Context preservation」 · `Builders.kt` 의 `flow { }` · `operators/Limit.kt` 의 `take` · `internal/FlowExceptions.kt` · `internal/SafeCollector*.kt` 의 두 에러 문구)와 **stdlib 소스 jar 2.4.20**(`SequenceBuilder.kt` · `Continuation.kt` 의 `@RestrictsSuspension`). ★ 공식 문서 페이지는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 인용은 전부 소스 jar 의 KDoc 이다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.\
-> `kotlinc` 9회 · `java` 8회 + 순서가 걸린 셋(`grid55` · `take55` · `ctx55`)을 다섯 판씩 되풀이한 15회 · 소스 jar 발췌 9곳.\
-> ★★★ **라이브러리 판 — `kotlinx-coroutines-core-jvm` 1.11.0**(이 머신의 gradle 캐시에 있던 판 중 가장 새 것 · 매니페스트 `Implementation-Version: 1.11.0`). `Flow`·`flow { }`·`map`·`take`·`flowOn`·`StateFlow` 는 **전부 이 라이브러리의 것**이다 — 언어 기능이 아니다.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 칸 N / M」은 격자 프로그램이 스스로 센 것**이다.
-> **버전** — `@RestrictsSuspension`·`SequenceScope` 는 stdlib 소스에 **`@SinceKotlin("1.3")`**((4)). `Flow` 쪽의 도입 판은 **이 판의 소스에서 확인하지 않았다** — 1.11.0 에서 돌렸다는 것만 말한다.
-> **경계** — ★★★ **같은 「끝 연산 전에는 아무 일도 안 한다」의 동기판**(`Sequence` — 호출 수 격자 · 단계별 대 원소별 · 두 번 돌기)은 [47번 주제](../47-sequences-lazy-evaluation/)가 정본이다 — 여기서는 **같은 사슬을 `Flow` 열과 함께 한 격자로** 다시 센다. **`suspend` 호출 규칙**(어디서 부르면 막히나 — 진단 두 종)은 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/), **취소가 `CancellationException` 이라는 것과 그것을 삼키면 생기는 일**은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/), **디스패처와 `withContext`** 는 [54번 주제](../54-coroutine-context-dispatchers-and-withcontext/)가 정본이다.\
-> 교차 갈래 — **Python 제너레이터**의 「한 번 소진하면 끝」은 [Python 17번](../../../python/syntax/17-generators-yield/) · **JS 제너레이터**의 「불러도 본문은 안 돈다」는 [JS 20번](../../../js/syntax/20-generators/) · **비동기 이터레이터**(`for await`)는 [JS 40번](../../../js/syntax/40-async-iteration-and-for-await/) · **Java `Stream`** 의 지연과 한 번 쓰기는 [Java 44번](../../../java/syntax/44-stream-creation/)·[Java 45번](../../../java/syntax/45-intermediate-operations/) 이 쟀다 — 이 문서는 그것들을 **다시 돌리지 않았다.**
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 둘째 창이다** — 「**호출 수 격자 — 사슬 넷 × (`List` · `Sequence` · `Flow`) → 람다 호출 수 · 로그 순서(단계별/원소별)**」. 첫째 창(콜드 증거 — 만들기만 하면 0줄 · 두 번 모으면 두 번)은 그 격자가 서는 **전제**다. 「빠르다·가볍다」는 **재지 않았다** — 이 문서의 수는 호출 수와 로그 순서뿐이다.
 
 ## 이 주제가 쓰는 세 층
@@ -789,3 +778,14 @@ fun main() = runBlocking {
 - **`buffer`·`conflate`·`channelFlow`** — 상류와 하류를 **다른 코루틴**으로 떼어 원소별 흐름을 깨는 연산자. (2)의 격자가 달라질 자리 — **돌리지 않았다.**
 - **`Flow.catch` 와 예외 투명성** — (3)의 에러 문구가 권하는 길. 하류의 예외는 안 잡고 상류의 것만 잡는다고 알려져 있지만 **이 판에서 재지 않았다.**
 - **`stateIn`·`shareIn`** — 콜드를 핫으로 바꾸는 연산자. 몸통이 **몇 번** 도는지를 (1)의 로그 방식으로 세 볼 자리 — 돌리지 않았다.
+
+## 실행 환경
+
+**기준 소스** — **`kotlinx-coroutines-core-jvm` 1.11.0 의 소스 jar**(`Flow.kt` 의 KDoc — 「cold flow」·「Context preservation」 · `Builders.kt` 의 `flow { }` · `operators/Limit.kt` 의 `take` · `internal/FlowExceptions.kt` · `internal/SafeCollector*.kt` 의 두 에러 문구)와 **stdlib 소스 jar 2.4.20**(`SequenceBuilder.kt` · `Continuation.kt` 의 `@RestrictsSuspension`). ★ 공식 문서 페이지는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 인용은 전부 소스 jar 의 KDoc 이다.
+**실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.\
+`kotlinc` 9회 · `java` 8회 + 순서가 걸린 셋(`grid55` · `take55` · `ctx55`)을 다섯 판씩 되풀이한 15회 · 소스 jar 발췌 9곳.\
+★★★ **라이브러리 판 — `kotlinx-coroutines-core-jvm` 1.11.0**(이 머신의 gradle 캐시에 있던 판 중 가장 새 것 · 매니페스트 `Implementation-Version: 1.11.0`). `Flow`·`flow { }`·`map`·`take`·`flowOn`·`StateFlow` 는 **전부 이 라이브러리의 것**이다 — 언어 기능이 아니다.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 칸 N / M」은 격자 프로그램이 스스로 센 것**이다.
+**버전** — `@RestrictsSuspension`·`SequenceScope` 는 stdlib 소스에 **`@SinceKotlin("1.3")`**((4)). `Flow` 쪽의 도입 판은 **이 판의 소스에서 확인하지 않았다** — 1.11.0 에서 돌렸다는 것만 말한다.
+**경계** — ★★★ **같은 「끝 연산 전에는 아무 일도 안 한다」의 동기판**(`Sequence` — 호출 수 격자 · 단계별 대 원소별 · 두 번 돌기)은 [47번 주제](../47-sequences-lazy-evaluation/)가 정본이다 — 여기서는 **같은 사슬을 `Flow` 열과 함께 한 격자로** 다시 센다. **`suspend` 호출 규칙**(어디서 부르면 막히나 — 진단 두 종)은 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/), **취소가 `CancellationException` 이라는 것과 그것을 삼키면 생기는 일**은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/), **디스패처와 `withContext`** 는 [54번 주제](../54-coroutine-context-dispatchers-and-withcontext/)가 정본이다.\
+교차 갈래 — **Python 제너레이터**의 「한 번 소진하면 끝」은 [Python 17번](../../../python/syntax/17-generators-yield/) · **JS 제너레이터**의 「불러도 본문은 안 돈다」는 [JS 20번](../../../js/syntax/20-generators/) · **비동기 이터레이터**(`for await`)는 [JS 40번](../../../js/syntax/40-async-iteration-and-for-await/) · **Java `Stream`** 의 지연과 한 번 쓰기는 [Java 44번](../../../java/syntax/44-stream-creation/)·[Java 45번](../../../java/syntax/45-intermediate-operations/) 이 쟀다 — 이 문서는 그것들을 **다시 돌리지 않았다.**

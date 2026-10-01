@@ -1,15 +1,5 @@
 # sql/10-FROM 절 — 테이블 별칭·파생 테이블 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · Derived Tables](https://dev.mysql.com/doc/refman/8.4/en/derived-tables.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
-> **버전** — 테이블 별칭·파생 테이블 자체는 두 엔진 모두 오래전부터 있다. 아래에서 갈리는 것은 **별칭 의무**와 **`VALUES` 리스트 문법**이고, 두 매뉴얼 어느 쪽도 「몇 버전부터」를 적지 않아 **도입 버전은 적지 않는다.**\
-> **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/). `FROM` 이 **1번 칸**이라는 것이 이 주제의 전부다.\
-> **경계** — 바깥 행을 참조하는 서브쿼리(상관 서브쿼리)는 [목록의 **11번 주제**](../11-subquery-scalar-correlated-any-all/), `FROM` 안에서 그것을 하는 `LATERAL` 은 [목록의 **20번 주제**](../20-lateral-join/)다. 여기서는 **경계선이 어디인지**까지만 보여 준다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`FROM` 은 「작업대에 무엇을 올릴까」이고, 별칭은 「올린 것에 이름표를 붙이는 일」이다.**
@@ -619,3 +609,12 @@ MySQL 쪽도 두 경우가 갈린다.
   예: PG 의 에러 힌트가 가리킨 그것. [목록의 **20번 주제**](../20-lateral-join/)다.
 - **`ERROR 1248`** — MySQL 의 "Every derived table must have its own alias" 오류 번호.\
   예: `FROM (SELECT …)` 에 `AS t` 를 안 붙이면 온다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · Derived Tables](https://dev.mysql.com/doc/refman/8.4/en/derived-tables.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
+**버전** — 테이블 별칭·파생 테이블 자체는 두 엔진 모두 오래전부터 있다. 본문에서 갈리는 것은 **별칭 의무**와 **`VALUES` 리스트 문법**이고, 두 매뉴얼 어느 쪽도 「몇 버전부터」를 적지 않아 **도입 버전은 적지 않는다.**\
+**선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/). `FROM` 이 **1번 칸**이라는 것이 이 주제의 전부다.\
+**경계** — 바깥 행을 참조하는 서브쿼리(상관 서브쿼리)는 [목록의 **11번 주제**](../11-subquery-scalar-correlated-any-all/), `FROM` 안에서 그것을 하는 `LATERAL` 은 [목록의 **20번 주제**](../20-lateral-join/)다. 여기서는 **경계선이 어디인지**까지만 보여 준다.

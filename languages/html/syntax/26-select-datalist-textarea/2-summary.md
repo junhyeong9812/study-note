@@ -1,15 +1,5 @@
 # html/syntax/26 — `select`/`option`/`optgroup`·`datalist`·`textarea` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The select element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-select-element)(★ **selectedness setting algorithm** · 표시 크기), [「The option element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-option-element)(값 = `value` 속성, 없으면 **HTML 인식 텍스트 내용**), [「The datalist element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-datalist-element)와 `list` 속성(「**제안**된 선택지」), [「The textarea element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-textarea-element)(★ **원 값·API 값·값**의 세 가지 정규화 · 자식이 바뀔 때의 단계), [「Constructing the entry list」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-form-data-set)·「이름·값 쌍 목록으로 바꾸기」(★ **줄바꿈을 CRLF 로**), [파싱 절의 `textarea` 시작 태그 줄](https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-inbody)·[직렬화 절](https://html.spec.whatwg.org/multipage/parsing.html#serialising-html-fragments), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/). **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다.**
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 제출은 **CDP 의 진짜 마우스**, 목록 밖 값은 **진짜 글자 입력**(`Input.insertText`)이다. 하네스는 [25번 주제](../25-label-association/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. ★ 명세의 `select` 절에는 **선택지를 CSS 로 꾸미는 새 모델**(`selectedcontent` 등 — 「Customizable `<select>`」)이 함께 들어 있다. 이 문서는 그 부분을 **재지 않았다** — 여기는 옛 모델의 **제출·값**까지다.
-> **선행** — [24번 주제](../24-input-types-choice-special/2-summary.md)(서버가 받은 필드 목록으로 「안 실린다」를 증명하는 방식) · [04번 주제](../04-whitespace-and-character-references/2-summary.md)(`textarea` 첫 줄바꿈을 파서가 지우는 것 — (3) 절).
-> **경계** — **`select` 를 스크립트로 다루는 표면**(`add()`·`remove()`·`selectedOptions` 의 살아 있는 목록)은 web-api 갈래의 몫이고, **`required` 인 `select` 의 빈 선택지**는 목록의 **29번 주제**(제약 검증)의 몫이다 — 여기는 **무엇이 실리나**와 **`textarea` 의 값이 어디서 오나**까지.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다.** 「`multiple` 에서 아무것도 안 고르면 **안 실린다**」·「목록 밖 값도 **실린다**」·「줄바꿈이 **CRLF 로** 간다」는 셋 다 **서버가 받은 바이트**로만 선다(`%0D%0A`). 짝으로 창 ②(`.value`·`selectedIndex`)와 창 ①(`--dump-dom`)이 **`textarea` 의 값이 속성이 아니라 자식 텍스트**임을 맡는다.
-
 **이 판의 Chrome**
 
 ```text
@@ -620,3 +610,14 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 제출 때 CRLF 인가** — 명세는 이유를 적지 않는다. `application/x-www-form-urlencoded`·`multipart/form-data` 가 **인터넷 텍스트 형식의 줄 끝 관습(CRLF)** 위에서 자란 형식이라는 연혁과 맞물린다고 읽을 수 있다(해석이다 — 연혁은 이 문서가 확인하지 않았다).
 - **`textarea` 의 세 정규화가 「역사적 이유」인 것** — 명세의 문장 그대로다 — 「역사적 이유로 이 요소의 값은 **세 가지 목적에 맞게 세 가지로** 정규화된다」. `maxlength` 가 **LF 하나를 한 글자**로 세는 것(API 값)과 서버가 받는 것(값)이 다른 이유가 여기 있다.
 - **Customizable `<select>`** — 명세의 현재 판 `select` 절에는 `selectedcontent` 요소가 들어 있다(선택된 선택지를 단추 안에 복제하는 모델). 이 문서는 그 모델의 제출·트리를 **재지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The select element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-select-element)(★ **selectedness setting algorithm** · 표시 크기), [「The option element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-option-element)(값 = `value` 속성, 없으면 **HTML 인식 텍스트 내용**), [「The datalist element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-datalist-element)와 `list` 속성(「**제안**된 선택지」), [「The textarea element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-textarea-element)(★ **원 값·API 값·값**의 세 가지 정규화 · 자식이 바뀔 때의 단계), [「Constructing the entry list」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-form-data-set)·「이름·값 쌍 목록으로 바꾸기」(★ **줄바꿈을 CRLF 로**), [파싱 절의 `textarea` 시작 태그 줄](https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-inbody)·[직렬화 절](https://html.spec.whatwg.org/multipage/parsing.html#serialising-html-fragments), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/). **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다.**
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 제출은 **CDP 의 진짜 마우스**, 목록 밖 값은 **진짜 글자 입력**(`Input.insertText`)이다. 하네스는 [25번 주제](../25-label-association/3-answer.md)의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. ★ 명세의 `select` 절에는 **선택지를 CSS 로 꾸미는 새 모델**(`selectedcontent` 등 — 「Customizable `<select>`」)이 함께 들어 있다. 이 문서는 그 부분을 **재지 않았다** — 여기는 옛 모델의 **제출·값**까지다.
+**선행** — [24번 주제](../24-input-types-choice-special/2-summary.md)(서버가 받은 필드 목록으로 「안 실린다」를 증명하는 방식) · [04번 주제](../04-whitespace-and-character-references/2-summary.md)(`textarea` 첫 줄바꿈을 파서가 지우는 것 — (3) 절).
+**경계** — **`select` 를 스크립트로 다루는 표면**(`add()`·`remove()`·`selectedOptions` 의 살아 있는 목록)은 web-api 갈래의 몫이고, **`required` 인 `select` 의 빈 선택지**는 목록의 **29번 주제**(제약 검증)의 몫이다 — 여기는 **무엇이 실리나**와 **`textarea` 의 값이 어디서 오나**까지.
+
+★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다.** 「`multiple` 에서 아무것도 안 고르면 **안 실린다**」·「목록 밖 값도 **실린다**」·「줄바꿈이 **CRLF 로** 간다」는 셋 다 **서버가 받은 바이트**로만 선다(`%0D%0A`). 짝으로 창 ②(`.value`·`selectedIndex`)와 창 ①(`--dump-dom`)이 **`textarea` 의 값이 속성이 아니라 자식 텍스트**임을 맡는다.

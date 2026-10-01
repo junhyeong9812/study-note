@@ -1,16 +1,5 @@
 # sql/17-SELF JOIN — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
-> 상사-부하 절의 `staff` 표는 **기존 `emp` 에서 만들어 트랜잭션 안에서 쓰고 롤백**했다(MySQL 은 `CREATE` → 질의 → `DROP`). 만드는 문은 그 절에 적어 두었다.\
-> **`emp`·`dept` 는 한 행도 바꾸지 않았다.**\
-> **버전** — `SELF JOIN` 은 전용 문법이 아니라 **같은 표를 두 별칭으로 여는 사용법**이다. 도입 버전이라는 것이 없어 **버전은 적지 않는다.**\
-> **선행** — [13 INNER JOIN](../13-inner-join/). 여기서 붙이는 두 표가 **같은 표일 뿐**이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`SELF JOIN` = 같은 명단을 두 장 복사해서 왼쪽 명단과 오른쪽 명단을 맞춰 보는 것. 새 문법은 하나도 없다 — 별칭 두 개가 전부다.**
@@ -528,3 +517,13 @@ FROM staff e LEFT JOIN staff m ON …                  -- 별칭 하나 = 계층
 - **`SELF JOIN` 은 「같은 표를 두 번 스캔한다」는 뜻이 아니다.** 엔진이 한 번 읽어 양쪽에 쓸 수도 있다 — 계획을 보고 판단한다([목록의 **58번 주제**](../58-explain-plan-tree/)).
 - **`staff` 에 외래키를 걸 수 있다** — `mgr_id` 가 같은 표의 `id` 를 참조하는 자기 참조 외래키([목록의 **44번 주제**](../44-foreign-key-referential-actions/)). 그러면 없는 상사를 가리키는 행이 막힌다.
 - **짝짓기에서 `a.id < b.id` 대신 `a.name < b.name` 을 쓰면** 이름 비교가 collation 에 달라지고, 엔진 설정에 따라 결과가 갈릴 수 있다([39번](../39-collation/)).
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
+상사-부하 절의 `staff` 표는 **기존 `emp` 에서 만들어 트랜잭션 안에서 쓰고 롤백**했다(MySQL 은 `CREATE` → 질의 → `DROP`). 만드는 문은 그 절에 적어 두었다.\
+**`emp`·`dept` 는 한 행도 바꾸지 않았다.**\
+**버전** — `SELF JOIN` 은 전용 문법이 아니라 **같은 표를 두 별칭으로 여는 사용법**이다. 도입 버전이라는 것이 없어 **버전은 적지 않는다.**\
+**선행** — [13 INNER JOIN](../13-inner-join/). 여기서 붙이는 두 표가 **같은 표일 뿐**이다.

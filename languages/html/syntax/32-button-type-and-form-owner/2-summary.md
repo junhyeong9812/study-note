@@ -1,15 +1,5 @@
 # html/syntax/32 — `button` 의 `type` 과 폼 소유권: `form` 속성·`formaction`/`formmethod` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The button element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-button-element)(★ `type` 의 **누락 기본값·무효 기본값 = Auto 상태** · 「Auto 상태이고 **`command`·`commandfor` 가 없고** 부모가 `select` 가 아니면 **제출 단추**」 · **활성화 동작** — 「폼 소유자가 있으면 … **Auto 상태면 돌아간다**」), [「Implicit submission」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#implicit-submission)(★ **기본 단추 = 그 폼이 소유한 트리 순서로 첫 제출 단추**), [「Association of controls and forms」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#association-of-controls-and-forms)(`form` 속성), [「Form submission algorithm」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-algorithm)(**제출자 요소의** method·action·no-validate), [`requestSubmit()`](https://html.spec.whatwg.org/multipage/forms.html#dom-form-requestsubmit)·[`submit()`](https://html.spec.whatwg.org/multipage/forms.html#dom-form-submit), [「Constructing the entry list」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-form-data-set)(「단추인데 **제출자가 아니면** 건너뛴다」). **명세 본문은 앞 배치가 2026-09-26 에 받아 둔 사본**으로 읽었다 — 이 배치는 네트워크를 쓰지 않았다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 클릭·Enter 는 **CDP 의 진짜 마우스·키**다. 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. ★ **`command`·`commandfor`** 는 뒤에 들어온 것이다(이 배치는 도입 시점을 조회하지 않았다) — 그 둘이 **「type 없는 단추 = 제출」 규칙의 예외**를 만든다((1)).
-> **선행** — [21번 주제](../21-form-submission-model/2-summary.md) — ★★★ 이 편과 가장 많이 겹친다. **제출을 일으키는 것 열여섯 시도**((2) — 단추 없는 폼의 Enter · `type=button` · `type=zzz` · `disabled` 기본 단추) · **단추마다 덮기**((3) — `formaction`·`formmethod`·`formenctype`) · **어느 `form` 에 속하나**((4) — `input` 의 `form` 속성 · 없는 id · 중첩 `form`)를 이미 쟀다. **여기서는 그 측정을 다시 하지 않고**, 거기 없던 것 — **`commandfor` 단추 · Enter 가 고르는 기본 단추의 격자 · 단추(`button`) 쪽의 소유권 · 누른 단추의 `name`/`value` 와 `requestSubmit` 의 예외** — 만 잰다.
-> **경계** — **`name`/`value` 는 누른 단추만 실린다**는 [24번](../24-input-types-choice-special/2-summary.md)의 (1) 이 클릭·`requestSubmit()` 으로 쟀다 — 여기는 **Enter 와 `requestSubmit(단추)`** 쪽을 더한다. **중첩 `form` 을 파서가 버리는 것**의 정본은 [05번](../05-content-categories-and-models/2-summary.md). **`dialog` 를 여는 동작**은 목록의 **47번 주제**.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다** — 「제출됐나」는 서버가 요청을 받았나로, 「누가 제출했나」는 **서버가 받은 `act` 값**으로 판정한다. 짝으로 **창 ②**(`submit` 이벤트의 `submitter` · `button.type` · `willValidate` · `button.form`)와 **창 ①**(`--dump-dom` — 중첩 `form`)을 쓴다.
-
 **이 판의 Chrome**
 
 ```text
@@ -624,3 +614,14 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 Auto 상태가 폼 안에서 먼저 돌아가나** — `commandfor` 를 새로 넣으면서 **옛 페이지의 `type` 없는 단추**가 갑자기 명령을 보내지 않게 하려는 순서로 읽힌다 — 폼 안에서는 옛 동작(제출)이냐 아무것도 아니냐만 남는다(해석이다 — 명세의 비규범 설명은 이 사본에서 찾지 못했다).
 - **`formtarget`** — 제출 결과를 열 창. 이 판은 던지지 않았다.
 - **그림 단추(`type=image`)의 좌표** — [24번](../24-input-types-choice-special/2-summary.md)의 `img.x`·`img.y`.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The button element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-button-element)(★ `type` 의 **누락 기본값·무효 기본값 = Auto 상태** · 「Auto 상태이고 **`command`·`commandfor` 가 없고** 부모가 `select` 가 아니면 **제출 단추**」 · **활성화 동작** — 「폼 소유자가 있으면 … **Auto 상태면 돌아간다**」), [「Implicit submission」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#implicit-submission)(★ **기본 단추 = 그 폼이 소유한 트리 순서로 첫 제출 단추**), [「Association of controls and forms」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#association-of-controls-and-forms)(`form` 속성), [「Form submission algorithm」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-algorithm)(**제출자 요소의** method·action·no-validate), [`requestSubmit()`](https://html.spec.whatwg.org/multipage/forms.html#dom-form-requestsubmit)·[`submit()`](https://html.spec.whatwg.org/multipage/forms.html#dom-form-submit), [「Constructing the entry list」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-form-data-set)(「단추인데 **제출자가 아니면** 건너뛴다」). **명세 본문은 앞 배치가 2026-09-26 에 받아 둔 사본**으로 읽었다 — 이 배치는 네트워크를 쓰지 않았다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 클릭·Enter 는 **CDP 의 진짜 마우스·키**다. 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. ★ **`command`·`commandfor`** 는 뒤에 들어온 것이다(이 배치는 도입 시점을 조회하지 않았다) — 그 둘이 **「type 없는 단추 = 제출」 규칙의 예외**를 만든다((1)).
+**선행** — [21번 주제](../21-form-submission-model/2-summary.md) — ★★★ 이 편과 가장 많이 겹친다. **제출을 일으키는 것 열여섯 시도**((2) — 단추 없는 폼의 Enter · `type=button` · `type=zzz` · `disabled` 기본 단추) · **단추마다 덮기**((3) — `formaction`·`formmethod`·`formenctype`) · **어느 `form` 에 속하나**((4) — `input` 의 `form` 속성 · 없는 id · 중첩 `form`)를 이미 쟀다. **여기서는 그 측정을 다시 하지 않고**, 거기 없던 것 — **`commandfor` 단추 · Enter 가 고르는 기본 단추의 격자 · 단추(`button`) 쪽의 소유권 · 누른 단추의 `name`/`value` 와 `requestSubmit` 의 예외** — 만 잰다.
+**경계** — **`name`/`value` 는 누른 단추만 실린다**는 [24번](../24-input-types-choice-special/2-summary.md)의 (1) 이 클릭·`requestSubmit()` 으로 쟀다 — 여기는 **Enter 와 `requestSubmit(단추)`** 쪽을 더한다. **중첩 `form` 을 파서가 버리는 것**의 정본은 [05번](../05-content-categories-and-models/2-summary.md). **`dialog` 를 여는 동작**은 목록의 **47번 주제**.
+
+★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다** — 「제출됐나」는 서버가 요청을 받았나로, 「누가 제출했나」는 **서버가 받은 `act` 값**으로 판정한다. 짝으로 **창 ②**(`submit` 이벤트의 `submitter` · `button.type` · `willValidate` · `button.form`)와 **창 ①**(`--dump-dom` — 중첩 `form`)을 쓴다.

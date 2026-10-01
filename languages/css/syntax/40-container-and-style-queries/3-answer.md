@@ -1,11 +1,5 @@
 # css/syntax/40 — 컨테이너 쿼리와 스타일 쿼리 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 질문의 코드를 그대로 돌려 읽은 것**이다.\
-> **뷰포트 무관성은 `--window-size` 를 500 · 780 · 1400 으로 바꿔 세 번 띄워** 확인했다.\
-> 규칙은 [CSS Containment Module Level 3](https://drafts.csswg.org/css-contain-3/) 로 접지했다.\
-> **엔진은 Chrome 하나다.**
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -393,3 +387,10 @@ done
 - **존재 질의** — `style(--x)` 처럼 값을 뺀 형태. 그 속성이 정해져 있는지만 묻는다.
 - **`CSSContainerRule`** — `@container` 의 CSSOM 타입. `containerName`·`containerQuery` 를 읽는다.
 - **순환(cycle)** — 조회 결과가 조회 대상을 바꾸는 고리. 자기 조회 금지와 `size` 억제의 이유.
+
+## 실행 환경
+
+이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 질문의 코드를 그대로 돌려 읽은 것**이다.\
+**뷰포트 무관성은 `--window-size` 를 500 · 780 · 1400 으로 바꿔 세 번 띄워** 확인했다.\
+규칙은 [CSS Containment Module Level 3](https://drafts.csswg.org/css-contain-3/) 로 접지했다.\
+**엔진은 Chrome 하나다.**

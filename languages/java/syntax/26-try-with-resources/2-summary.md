@@ -1,15 +1,5 @@
 # java/syntax/26 — `try`-with-resources: `AutoCloseable`·suppressed·`finally` 순서 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §14.20.3 try-with-resources](https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html) · [`java.lang.AutoCloseable` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/AutoCloseable.html) · [`java.lang.Throwable#addSuppressed`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Throwable.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/AutoCloseable.java`·`Throwable.java`·`java/io/Closeable.java`(`lib/src.zip`).
-> **실행 검증** — 이 문서의 모든 출력·스택트레이스·컴파일 에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> `Ex.java (26-a)` `(26-b)` `(26-c)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 돌렸고 **출력이 한 글자도 다르지 않았다.**\
-> **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·javadoc 인용으로만 적었다.
-> **버전** — `try`-with-resources 와 `AutoCloseable`·`addSuppressed`/`getSuppressed` 는 **Java 7**(`src.zip` 의 `@since 1.7` 을 직접 읽었다).\
-> **effectively final 변수를 자원 자리에 직접 쓰는 형태는 Java 9** 부터다 — `javac --release 8` 로 거부되는 것을 확인했다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 JLS·javadoc 으로, 출력은 실행으로 접지했다.
-> **선행** — [`../25-exceptions/`](../25-exceptions/) 의 `finally` 함정(특히 「예외가 예외를 덮는다」)을 먼저 본다. 이 주제는 그 함정의 해결책이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`try`-with-resources 는 "나갈 때 불을 끄고 문을 잠그는 것을 계약으로 만든 방"이다.**
@@ -692,3 +682,14 @@ java.lang.RuntimeException: 주 예외
 - **`ExecutorService` 가 21에서 `AutoCloseable` 이 됐다.** 위 리플렉션 출력이 17과 21의 차이를 그대로 보여 준다.\
   그래서 `try (var ex = Executors.newFixedThreadPool(4)) { ... }` 형태를 21부터 쓸 수 있다.\
   닫으면 `shutdown()` 후 **종료를 기다린다** — 그 의미와 주의점은 [**54번 주제**](../54-executorservice-and-future/)가 정본이다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §14.20.3 try-with-resources](https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html) · [`java.lang.AutoCloseable` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/AutoCloseable.html) · [`java.lang.Throwable#addSuppressed`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Throwable.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/AutoCloseable.java`·`Throwable.java`·`java/io/Closeable.java`(`lib/src.zip`).
+**실행 검증** — 이 문서의 모든 출력·스택트레이스·컴파일 에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+`Ex.java (26-a)` `(26-b)` `(26-c)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 돌렸고 **출력이 한 글자도 다르지 않았다.**\
+**"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·javadoc 인용으로만 적었다.
+**버전** — `try`-with-resources 와 `AutoCloseable`·`addSuppressed`/`getSuppressed` 는 **Java 7**(`src.zip` 의 `@since 1.7` 을 직접 읽었다).\
+**effectively final 변수를 자원 자리에 직접 쓰는 형태는 Java 9** 부터다 — `javac --release 8` 로 거부되는 것을 확인했다.
+
+**선행** — [`../25-exceptions/`](../25-exceptions/) 의 `finally` 함정(특히 「예외가 예외를 덮는다」)을 먼저 본다. 이 주제는 그 함정의 해결책이다.

@@ -1,9 +1,5 @@
 # Spring Framework 7.x (2025 ~)
 
-> 원본: `~/project/java-history/spring/framework-7.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·패키지/클래스/애노테이션 이름·수치·코드블록 10개(모두 Java)·「릴리스 정보」와 「마이그레이션 관점 (6.x → 7.0)」의 목록·`maxRetries` 참고 인용구는 원문 그대로다.\
-> ASCII 도식 1개(원문 mermaid 그림을 글자로 옮긴 것이다), 「한눈에」의 사무실 정비 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -292,3 +288,9 @@ Jackson 3은 패키지가 `tools.jackson`으로 바뀌었다(애노테이션 클
 - [Resilience (Spring Framework Reference)](https://docs.spring.io/spring-framework/reference/core/resilience.html)
 - [API Versioning in Spring (spring.io blog)](https://spring.io/blog/2025/09/16/api-versioning-in-spring/)
 - [Null-safety (Spring Framework Reference)](https://docs.spring.io/spring-framework/reference/core/null-safety.html)
+
+## 출처
+
+원본: `~/project/java-history/spring/framework-7.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·패키지/클래스/애노테이션 이름·수치·코드블록 10개(모두 Java)·「릴리스 정보」와 「마이그레이션 관점 (6.x → 7.0)」의 목록·`maxRetries` 참고 인용구는 원문 그대로다.\
+ASCII 도식 1개(원문 mermaid 그림을 글자로 옮긴 것이다), 「한눈에」의 사무실 정비 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

@@ -1,11 +1,5 @@
 # html/syntax/25 — `label` 연결과 폼 필드 이름: `for`/`id`·감싸기·클릭 위임 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 클릭은 **CDP 의 진짜 마우스**다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「The label element」·「Interactive content」·`click()` 절과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **본체는 창 ⑦ 과 창 ② 의 짝이다** — 「끊겼다」는 이름·클릭·`labels` **세 물음이 함께 비는 것**으로 선다(A1).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -1195,3 +1189,10 @@ src_sh   capture-sh       ../capture.sh
 - **click in progress flag** — `click()` 의 재진입을 막는 표시.
 - **대화형 콘텐츠** — 사용자 조작용 요소. 라벨은 그것을 향한 이벤트에 아무것도 안 한다.
 - **`nameFrom`** — 이름의 출처(내부 덤프).
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 클릭은 **CDP 의 진짜 마우스**다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「The label element」·「Interactive content」·`click()` 절과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **본체는 창 ⑦ 과 창 ② 의 짝이다** — 「끊겼다」는 이름·클릭·`labels` **세 물음이 함께 비는 것**으로 선다(A1).

@@ -1,10 +1,5 @@
 # css/syntax/31 — 내재적 크기(`min-content`/`max-content`/`fit-content`)와 `aspect-ratio` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getBoundingClientRect()` 로 잰 값**이다. 단위는 px, 글꼴은 별말이 없으면 `16px monospace` 다.\
-> **선언이 담겼는지**는 `document.styleSheets[…].cssRules` 로 따로 확인했다 — 계산값만 읽으면 「안 쓴 것」과 「썼는데 버려진 것」이 구분되지 않기 때문이다.\
-> 규칙은 [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/)·[Level 4](https://drafts.csswg.org/css-sizing-4/) 로, 지원 상태는 `api.webstatus.dev` 의 Baseline 데이터로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -410,3 +405,9 @@ overflow-wrap: break-word  80.00  (높이 72)    <- 안 줄인다
 - **`aspect-ratio`** — 한 축이 정해지면 다른 축을 비율로 만든다. 두 축이 다 지정되면 **담기되 무시된다.**
 - **퇴화한 비율(degenerate ratio)** — `0 / 1` 처럼 어느 한쪽이 0 인 비율. 담기지만 레이아웃에서 쓰이지 않는다.
 - **진단 3창** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 5번은 첫째 창에서, 8·9번은 셋을 다 통과하고 `getBoundingClientRect()` 에서 갈렸다.
+
+## 실행 환경
+
+이 파일의 **모든 치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getBoundingClientRect()` 로 잰 값**이다. 단위는 px, 글꼴은 별말이 없으면 `16px monospace` 다.\
+**선언이 담겼는지**는 `document.styleSheets[…].cssRules` 로 따로 확인했다 — 계산값만 읽으면 「안 쓴 것」과 「썼는데 버려진 것」이 구분되지 않기 때문이다.\
+규칙은 [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/)·[Level 4](https://drafts.csswg.org/css-sizing-4/) 로, 지원 상태는 `api.webstatus.dev` 의 Baseline 데이터로 접지했다.

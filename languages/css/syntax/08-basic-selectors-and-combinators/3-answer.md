@@ -1,10 +1,5 @@
 # css/syntax/08 — 기본 선택자·조합자·속성 선택자 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 개수와 모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 받은 것**이다.\
-> 매치 개수는 `document.querySelectorAll(sel).length` 와 잡힌 노드의 `id`, 규칙 생존 여부는 `document.styleSheets[*].cssRules` 로 읽었다.\
-> 규칙은 [Selectors Level 4](https://drafts.csswg.org/selectors-4/) 로, 지원 상태는 `api.webstatus.dev` 조회(2026-09-23)로 접지했다. **엔진은 Chrome 하나다.**
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -405,3 +400,9 @@
 | 조합자·속성 연산자의 매칭 규칙 | **명세 보장** — 버전이 올라도 안 바뀐다 | 다시 찍을 필요 없음 |
 
 **안 돌려 본 것** — XML 문서에서 타입 선택자가 대소문자를 구분하는 것, 선택자 매칭 **성능**(오른쪽에서 왼쪽), `@namespace` 를 쓴 네임스페이스 구분자. 셋 다 이 문서에서 **결론으로 쓰지 않았다.**
+
+## 실행 환경
+
+이 파일의 **모든 개수와 모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 받은 것**이다.\
+매치 개수는 `document.querySelectorAll(sel).length` 와 잡힌 노드의 `id`, 규칙 생존 여부는 `document.styleSheets[*].cssRules` 로 읽었다.\
+규칙은 [Selectors Level 4](https://drafts.csswg.org/selectors-4/) 로, 지원 상태는 `api.webstatus.dev` 조회(2026-09-23)로 접지했다. **엔진은 Chrome 하나다.**

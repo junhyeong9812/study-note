@@ -1,26 +1,5 @@
 # js/syntax/27 — `Object` 정적 메서드: 「복사·나열·묶기 — 결과가 같아 보여도 부르는 것이 다르다」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151.0.7922.173(헤드리스) · x86-64 Linux.
-> 배너의 `node20` 은 v20.19.6 이다. ★ **6번(`Object.groupBy`·`Map.groupBy`)은 Chrome 에서만** 돌렸다 — 두 node 판에는 그 메서드가 없다.
->
-> ★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
-> `Object.assign` 은 결과 객체만 보면 스프레드와 구별이 안 된다. **원본의 getter 와 대상의 setter 에 로그를 심어** 무엇이 몇 번, 어떤 순서로 불리는지를 찍는다. **1번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **`assign` 은 원본과 대상에게 무엇을 부르나** — 그리고 도중에 실패하면 대상에 무엇이 남나
-> ② **`keys`·`values`·`entries` 가 무엇을 세고 어떤 순서로 내나**
-> ③ **`groupBy` 가 돌려주는 객체는 어떤 객체인가**(그리고 `Map.groupBy` 와 무엇이 다른가).
->
-> ★★ **예외는 타입과 메시지로만 답한다.**
->
-> **선행** — [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md) · [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md) ·
-> [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md) · [15 — 프로토타입 체인](../15-prototype-chain/2-summary.md) · [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md).
-> ★★★ **11번의 `[4]` 블록을 먼저 떠올려라** — 대상에 setter 가 있을 때 스프레드는 몇 번, `Object.assign` 은 몇 번 불렀나.
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 여섯 문항(1 · 2 · 3 · 4 · 5 · 6)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -465,6 +444,19 @@ for (const w of words) {
 - ★★ 2번 격자에서 `structuredClone` 열이 `assign` 열과 **다른 행**은 무엇이고, 그래도 잃는 것은 무엇인가?
 - ★★ `Object.freeze` 한 원본을 `assign` 으로 복사하면 **얼음이 따라오나**? 14번의 「동결은 얕다」와 어떻게 이어지나?
 - ★ 깊은 복사 수단 비교는 목록의 몇 번 주제가 정본인가?
+
+## 실행 환경
+
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151.0.7922.173(헤드리스) · x86-64 Linux.
+배너의 `node20` 은 v20.19.6 이다. ★ **6번(`Object.groupBy`·`Map.groupBy`)은 Chrome 에서만** 돌렸다 — 두 node 판에는 그 메서드가 없다.
+
+★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
+`Object.assign` 은 결과 객체만 보면 스프레드와 구별이 안 된다. **원본의 getter 와 대상의 setter 에 로그를 심어** 무엇이 몇 번, 어떤 순서로 불리는지를 찍는다. **1번 문항이 이 주제의 중심이다.**
+
+★★ **예외는 타입과 메시지로만 답한다.**
+
+**선행** — [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md) · [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md) ·
+[14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md) · [15 — 프로토타입 체인](../15-prototype-chain/2-summary.md) · [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md).
 
 ## 복습 기록
 

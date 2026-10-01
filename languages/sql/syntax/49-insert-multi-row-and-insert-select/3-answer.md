@@ -1,12 +1,5 @@
 # sql/49-INSERT — 다중 행·INSERT SELECT·기본값 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> ★ **환경** — MySQL 의 `sql_mode` 에 `STRICT_TRANS_TABLES` 가 켜져 있고 `autocommit=1` 이다.\
-> 이 편이 만든 표(`t49_a`·`t49_src`·`t49_p`·`t49_c`·`t49_d`·`t49_ai`)는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> 문서 근거는 [PG 18 INSERT](https://www.postgresql.org/docs/18/sql-insert.html) · [MySQL 8.4 INSERT](https://dev.mysql.com/doc/refman/8.4/en/insert.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -576,7 +569,7 @@ ERROR 1406 (22001) at line 1: Data too long for column 'name' at row 1
 
 | 무엇을 | 어디서 | 몇 번 | 비고 |
 |---|---|---|---|
-| `sql_mode`·`autocommit` 조회 (머리말) | MySQL 8.4.10 | 1회 | `STRICT_TRANS_TABLES` 확인 |
+| `sql_mode`·`autocommit` 조회 (「실행 환경」) | MySQL 8.4.10 | 1회 | `STRICT_TRANS_TABLES` 확인 |
 | 표 6개 생성·삭제 | PG 18.6 · MySQL 8.4.10 | 각 6회 | `t49_a`·`t49_src`·`t49_p`·`t49_c`·`t49_d`·`t49_ai` |
 | 다중 행 `VALUES` (1번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | 삽입 + `SELECT` 확인 |
 | ★ 부분 실패 원자성 (2번) | PG 18.6 · MySQL 8.4.10 | 각 3회 | **에러 + `IN (20,21)` + `count(*)` — 둘 다 0행** |
@@ -614,3 +607,11 @@ ERROR 1406 (22001) at line 1: Data too long for column 'name' at row 1
 
 **DB 잔재** — 없다. `t49_` 로 시작하는 표를 두 엔진에서 전부 삭제했고 `emp`·`dept` 는 **읽지도 쓰지도 않았다.**\
 두 엔진의 최종 표 목록은 [54 편의 「실행 검증」](../54-returning-and-data-modifying-cte/3-answer.md)에 있다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+★ **환경** — MySQL 의 `sql_mode` 에 `STRICT_TRANS_TABLES` 가 켜져 있고 `autocommit=1` 이다.\
+이 편이 만든 표(`t49_a`·`t49_src`·`t49_p`·`t49_c`·`t49_d`·`t49_ai`)는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+문서 근거는 [PG 18 INSERT](https://www.postgresql.org/docs/18/sql-insert.html) · [MySQL 8.4 INSERT](https://dev.mysql.com/doc/refman/8.4/en/insert.html).

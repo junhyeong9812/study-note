@@ -1,72 +1,5 @@
 # js/syntax/32 — 오류 처리와 `Error`: 「`finally` 가 끝을 바꿔 쥐면 `try` 의 끝은 사라진다 · `cause` 는 손으로 잇는 사슬이다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다** — `try` 가 끝나는 세 방식 × `finally` 가 끝나는 세 방식 = **9칸**을 스크립트가 전부 돌리고,
-> **`try` 자신의 끝(반환값·예외)이 호출자에게 닿지 못한 칸을 스크립트가 센다**(동작 (1)).
-> ★★ 보조로 **④ 예외의 `constructor.name` + `message`**(언어가 고르는 생성자 · `cause` 사슬의 층마다의 이름 · 삼켜진 예외)와
-> **① 추상 연산에 로그 심기**(`new Error(m, options)` 가 `options` 를 **어떤 순서로** 읽나 — 트랩을 다 심은 `Proxy`)를 쓴다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — The `try` Statement](https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-try-statement) — `TryStatement : try Block Finally` 의 평가(「**F 가 정상 완료면 F 를 B 로 바꾼다**」)
-> - [ECMA-262 — Error Objects](https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-error-objects) — `InstallErrorCause` · `Error.isError` · Native Error Types · `AggregateError`
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(`Promise.any` 2021 · Error Cause 2022 · `Error.isError` 2026)
-> - 명세 문장은 이 배치가 받아 둔 **ES2026 판 HTML** 에서 읽었다(알고리즘 단계를 옮기지 않고 연산 이름과 짧은 인용만 싣는다).
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★ **예외는 `try`/`catch` 로 받아 `이름 「메시지」` 꼴로** 찍었다. ★★ **`stack` 은 첫 줄 또는 「있나」만** 찍었다 — 둘째 줄부터는 파일 경로와 줄 번호가 박힌다.
-> ★★ 단 하나, **아무도 안 받은 `throw` 를 node 가 어떻게 적나**(동작 (6))만은 표준 오류 전문을 실었다 — `node -e` 로 던져 경로 대신 `[eval]` 이 찍히게 했다.
-> ★★★ **`Error.isError`(ES2026)는 두 node 판에 없다**(아래 판별 블록). 그 탐침은 **Google Chrome 151 을 헤드리스로** 돌렸다 — 배너가 `google-chrome --headless` 로 시작하는 블록이다.
-> ★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기 — 이 배치 전체 `identical 12`).
->
-> **버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `throw` · `try`/`catch`/`finally` · `Error` 와 여섯 하위 생성자 | ES3 | 세 판 다 있다 |
-> | `catch { }` — 바인딩 없는 `catch`(optional catch binding) | ES2019 | 세 판 다 있다 |
-> | `AggregateError` · `Promise.any` | **ES2021** | 세 판 다 있다 |
-> | `new Error(message, { cause })` — Error Cause | **ES2022** | 세 판 다 있다 |
-> | `Error.isError` | **ES2026** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
-> | `stack` · `Error.captureStackTrace` · `Error.stackTraceLimit` | — **ECMA-262 밖**(V8) | 세 판 다 있다 — ★ **그런데 `stack` 이 붙는 모양이 node 20 과 Chrome 151 에서 다르다**(동작 (6)·(7)) |
->
-> ★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — 32행의 `cause`(ES2022)·`Error.isError`(ES2026)는 표와 같다. README 에 `AggregateError` 의 판은 적혀 있지 않다(표에서 `Promise.any` 가 2021).
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체) | `try` 3 × `finally` 3 = **9칸** — 호출자가 받은 것과 **`try` 의 끝이 닿았나**를 칸마다 찍고 **닿지 못한 칸을 스크립트가 센다**(동작 (1)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | 언어가 스스로 고르는 생성자(동작 (3)) · `cause` 사슬의 층마다의 이름(동작 (4)) · **바꿔치기된 예외에 원래 예외의 흔적이 있나**(동작 (2)) |
-> | ★★ **① 추상 연산에 로그 심기** | `new RangeError(m, options)` 가 `options` 에 **`has cause` → `get cause`** 순으로 묻는 것(동작 (4)의 `[3]`) |
-> | ★ **③ 브랜드 태그** | 보조 — 하위 생성자 일곱이 **전부 `[object Error]`** 인 것(동작 (3)) · 다른 realm 의 오류도 `[object Error]` 인 것(동작 (7)). ★ 판정의 정본은 34번이다 |
-> | ★ **창을 바꿔 물었다**(제5의 상태) | node 에는 `Error.isError` 가 없어서, **같은 질문(「다른 realm 의 오류도 오류로 보나」)을 node 의 호스트 함수 `util.types.isNativeError` 로** 물었다(동작 (7)). 그 함수는 ECMA-262 가 아니다 |
-> | ★ **부적용 — 두 번 컴파일**(엄격/비엄격) | 이 주제의 규칙은 모드를 안 탄다. 엄격 모드가 바꾸는 규칙은 35번이 정본이다 |
-> | ★ **안 쟀다 — 성능** | ★★★ **「`try`/`catch` 는 느리다」를 한 줄도 쓰지 않는다.** 시간을 안 쟀다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★★ **`stack` 의 둘째 줄부터** — 파일 경로·줄·칸이 박힌다. 그래서 **첫 줄 또는 「있나」만** 찍었다 | ★★★ 9칸 격자의 **칸 글자**와 「닿지 못한 칸 N / M」 · `cause` 사슬의 **층 수와 이름** |
-> | 동작 (6)의 표준 오류 블록의 **`node:internal/…:줄:칸`** — 실행마다가 아니라 **node 판마다** 바뀐다(판을 고정했으므로 재실행에서는 같다) | 예외의 **종류**(`TypeError`·`RangeError`…) — 명세가 어느 생성자를 쓰라고 정한다 |
-> | 예외 **문구**(`Cannot read properties of null (reading 'stack')` 등) — V8 의 글자다 | `Error.isError` 와 `instanceof Error` 가 **갈리는 행** · ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) |
->
-> **선행** — [01 — 값의 종류와 `typeof`](../01-value-types-and-typeof/2-summary.md)(직접 선행 — `throw` 는 **아무 값이나** 던진다는 것이 거기서 이어진다) ·
-> [20 — 제너레이터](../20-generators/2-summary.md)(★★★ **`finally` 가 흐름을 가로채는 또 한 자리** — `g.return()` 이 `finally` 를 돌리고, **`finally` 안의 `yield` 가 `return()` 을 멈추고**, `finally` 의 `return "F"` 가 반환값을 바꾼다. 거기가 정본이다) ·
-> [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(본문이 던지면 `return()` 이 불린다 — 예외 조기 종료) ·
-> [21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md)(헬퍼가 인자 검사에서 던질 때 **원본을 닫는다**) ·
-> [31 — `JSON`](../31-json/2-summary.md)(★★ 순환 참조 `TypeError` 의 **여러 줄 문구가 경로를 말해 준다** — 문구가 V8 의 것이라는 판정이 거기 있다) ·
-> [17 — 상속과 `super`](../17-inheritance-and-super/2-summary.md)(★ **옛 방식 `Error.call(this, m)` 이 `message` 를 잃는 것** — 거기가 정본).
->
-> ★★ **경계 — 비동기 오류**(프로미스 거부 · `await` 의 `try`/`catch` · 미처리 거부)는 [목록의 **37번 주제**](../37-promise-state-model/)와 **39번 주제**가 정본이다. 여기서는 `Promise.any` 가 **`AggregateError` 로 거부한다**는 한 줄만 쓴다.
-> ★★ **경계 — 판정 방법**(`instanceof` · 브랜드 · realm)은 [34번](../34-type-checking-idioms/2-summary.md)이 정본이다. 여기서는 **`Error.isError` 가 무엇을 오류로 보나**까지다.
-> ★ **경계 — 자원 정리**(`using` · `SuppressedError`)는 [목록의 **51번 주제**](../51-explicit-resource-management-and-using/)의 몫이다.
-
 ```sh
 # js32b-versions.sh
 #!/usr/bin/env bash
@@ -1140,3 +1073,69 @@ python3.11: Python 3.11.15
 - **`SuppressedError` 와 `using`** — 정리 중 던진 예외가 원래 예외를 **덮지 않고 함께** 담기는 장치. [목록의 **51번 주제**](../51-explicit-resource-management-and-using/)의 몫이다(이 문서는 돌리지 않았다).
 - **`Error.captureStackTrace` 의 표준화** — 지금은 V8 등의 확장이다. 이 문서는 **node 20 의 모양 하나**만 봤다.
 - **린터** — ESLint `no-unsafe-finally` 가 동작 (1)의 여섯 칸을 잡는다고 알려져 있다. **이 문서는 돌리지 않았다.**
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 전수 격자다** — `try` 가 끝나는 세 방식 × `finally` 가 끝나는 세 방식 = **9칸**을 스크립트가 전부 돌리고,
+**`try` 자신의 끝(반환값·예외)이 호출자에게 닿지 못한 칸을 스크립트가 센다**(동작 (1)).
+★★ 보조로 **④ 예외의 `constructor.name` + `message`**(언어가 고르는 생성자 · `cause` 사슬의 층마다의 이름 · 삼켜진 예외)와
+**① 추상 연산에 로그 심기**(`new Error(m, options)` 가 `options` 를 **어떤 순서로** 읽나 — 트랩을 다 심은 `Proxy`)를 쓴다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — The `try` Statement](https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-try-statement) — `TryStatement : try Block Finally` 의 평가(「**F 가 정상 완료면 F 를 B 로 바꾼다**」)
+- [ECMA-262 — Error Objects](https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-error-objects) — `InstallErrorCause` · `Error.isError` · Native Error Types · `AggregateError`
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(`Promise.any` 2021 · Error Cause 2022 · `Error.isError` 2026)
+- 명세 문장은 이 배치가 받아 둔 **ES2026 판 HTML** 에서 읽었다(알고리즘 단계를 옮기지 않고 연산 이름과 짧은 인용만 싣는다).
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★ **예외는 `try`/`catch` 로 받아 `이름 「메시지」` 꼴로** 찍었다. ★★ **`stack` 은 첫 줄 또는 「있나」만** 찍었다 — 둘째 줄부터는 파일 경로와 줄 번호가 박힌다.
+★★ 단 하나, **아무도 안 받은 `throw` 를 node 가 어떻게 적나**(동작 (6))만은 표준 오류 전문을 실었다 — `node -e` 로 던져 경로 대신 `[eval]` 이 찍히게 했다.
+★★★ **`Error.isError`(ES2026)는 두 node 판에 없다**(맨 위 판별 블록). 그 탐침은 **Google Chrome 151 을 헤드리스로** 돌렸다 — 배너가 `google-chrome --headless` 로 시작하는 블록이다.
+★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기 — 이 배치 전체 `identical 12`).
+
+**버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `throw` · `try`/`catch`/`finally` · `Error` 와 여섯 하위 생성자 | ES3 | 세 판 다 있다 |
+| `catch { }` — 바인딩 없는 `catch`(optional catch binding) | ES2019 | 세 판 다 있다 |
+| `AggregateError` · `Promise.any` | **ES2021** | 세 판 다 있다 |
+| `new Error(message, { cause })` — Error Cause | **ES2022** | 세 판 다 있다 |
+| `Error.isError` | **ES2026** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
+| `stack` · `Error.captureStackTrace` · `Error.stackTraceLimit` | — **ECMA-262 밖**(V8) | 세 판 다 있다 — ★ **그런데 `stack` 이 붙는 모양이 node 20 과 Chrome 151 에서 다르다**(동작 (6)·(7)) |
+
+★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — 32행의 `cause`(ES2022)·`Error.isError`(ES2026)는 표와 같다. README 에 `AggregateError` 의 판은 적혀 있지 않다(표에서 `Promise.any` 가 2021).
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체) | `try` 3 × `finally` 3 = **9칸** — 호출자가 받은 것과 **`try` 의 끝이 닿았나**를 칸마다 찍고 **닿지 못한 칸을 스크립트가 센다**(동작 (1)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | 언어가 스스로 고르는 생성자(동작 (3)) · `cause` 사슬의 층마다의 이름(동작 (4)) · **바꿔치기된 예외에 원래 예외의 흔적이 있나**(동작 (2)) |
+| ★★ **① 추상 연산에 로그 심기** | `new RangeError(m, options)` 가 `options` 에 **`has cause` → `get cause`** 순으로 묻는 것(동작 (4)의 `[3]`) |
+| ★ **③ 브랜드 태그** | 보조 — 하위 생성자 일곱이 **전부 `[object Error]`** 인 것(동작 (3)) · 다른 realm 의 오류도 `[object Error]` 인 것(동작 (7)). ★ 판정의 정본은 34번이다 |
+| ★ **창을 바꿔 물었다**(제5의 상태) | node 에는 `Error.isError` 가 없어서, **같은 질문(「다른 realm 의 오류도 오류로 보나」)을 node 의 호스트 함수 `util.types.isNativeError` 로** 물었다(동작 (7)). 그 함수는 ECMA-262 가 아니다 |
+| ★ **부적용 — 두 번 컴파일**(엄격/비엄격) | 이 주제의 규칙은 모드를 안 탄다. 엄격 모드가 바꾸는 규칙은 35번이 정본이다 |
+| ★ **안 쟀다 — 성능** | ★★★ **「`try`/`catch` 는 느리다」를 한 줄도 쓰지 않는다.** 시간을 안 쟀다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★★ **`stack` 의 둘째 줄부터** — 파일 경로·줄·칸이 박힌다. 그래서 **첫 줄 또는 「있나」만** 찍었다 | ★★★ 9칸 격자의 **칸 글자**와 「닿지 못한 칸 N / M」 · `cause` 사슬의 **층 수와 이름** |
+| 동작 (6)의 표준 오류 블록의 **`node:internal/…:줄:칸`** — 실행마다가 아니라 **node 판마다** 바뀐다(판을 고정했으므로 재실행에서는 같다) | 예외의 **종류**(`TypeError`·`RangeError`…) — 명세가 어느 생성자를 쓰라고 정한다 |
+| 예외 **문구**(`Cannot read properties of null (reading 'stack')` 등) — V8 의 글자다 | `Error.isError` 와 `instanceof Error` 가 **갈리는 행** · ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) |
+
+**선행** — [01 — 값의 종류와 `typeof`](../01-value-types-and-typeof/2-summary.md)(직접 선행 — `throw` 는 **아무 값이나** 던진다는 것이 거기서 이어진다) ·
+[20 — 제너레이터](../20-generators/2-summary.md)(★★★ **`finally` 가 흐름을 가로채는 또 한 자리** — `g.return()` 이 `finally` 를 돌리고, **`finally` 안의 `yield` 가 `return()` 을 멈추고**, `finally` 의 `return "F"` 가 반환값을 바꾼다. 거기가 정본이다) ·
+[19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(본문이 던지면 `return()` 이 불린다 — 예외 조기 종료) ·
+[21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md)(헬퍼가 인자 검사에서 던질 때 **원본을 닫는다**) ·
+[31 — `JSON`](../31-json/2-summary.md)(★★ 순환 참조 `TypeError` 의 **여러 줄 문구가 경로를 말해 준다** — 문구가 V8 의 것이라는 판정이 거기 있다) ·
+[17 — 상속과 `super`](../17-inheritance-and-super/2-summary.md)(★ **옛 방식 `Error.call(this, m)` 이 `message` 를 잃는 것** — 거기가 정본).
+
+★★ **경계 — 비동기 오류**(프로미스 거부 · `await` 의 `try`/`catch` · 미처리 거부)는 [목록의 **37번 주제**](../37-promise-state-model/)와 **39번 주제**가 정본이다. 여기서는 `Promise.any` 가 **`AggregateError` 로 거부한다**는 한 줄만 쓴다.
+★★ **경계 — 판정 방법**(`instanceof` · 브랜드 · realm)은 [34번](../34-type-checking-idioms/2-summary.md)이 정본이다. 여기서는 **`Error.isError` 가 무엇을 오류로 보나**까지다.
+★ **경계 — 자원 정리**(`using` · `SuppressedError`)는 [목록의 **51번 주제**](../51-explicit-resource-management-and-using/)의 몫이다.

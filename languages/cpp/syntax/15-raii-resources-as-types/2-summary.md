@@ -1,40 +1,5 @@
 # cpp/syntax/15 — RAII: 자원을 타입으로 묶기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — RAII](https://en.cppreference.com/w/cpp/language/raii) · [cppreference — `std::unique_ptr`](https://en.cppreference.com/w/cpp/memory/unique_ptr) · [cppreference — `std::lock_guard`](https://en.cppreference.com/w/cpp/thread/lock_guard) · [cppreference — 소멸자](https://en.cppreference.com/w/cpp/language/destructor) · [GCC 13 Optimize Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html) · [AddressSanitizer](https://github.com/google/sanitizers/wiki/AddressSanitizer)
-> **실행 검증** — 이 문서의 모든 출력·진단·어셈블리 수치는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`raii01.cpp` \~ `raii13.cpp`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
-> ★★★ **ASan 을 붙인 블록은 마커를 `stderr` 로 찍었다.** sanitizer 가 `abort()` 로 죽이면\
-> **버퍼에 남은 표준 출력이 통째로 사라지기 때문**이다((4)의 소스에 그렇게 적혀 있다).\
-> ★★ **리포트를 자른 블록은 자르는 명령을 배너에 적었다** — 실린 것이 「생략한 일부」가 아니라 「**그 명령의 전체 출력**」이다.
-> **버전** — RAII 관용구 자체는 **C++98부터**. **`= delete` 와 이동 생성자는 C++11부터**,\
-> `std::unique_ptr`·`std::lock_guard` 도 **C++11부터**다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-> ★★★ **12 → 13 → 14 → 15 는 한 사슬의 끝이다** — [14번](../14-destructors-and-deterministic-destruction/)이 「**언제 파괴되나**」를 전수로 찍었고,\
-> **여기 15 는 「그 시점에 무엇을 얹나」에 답한다.** 이 주제의 모든 것이 **[14번](../14-destructors-and-deterministic-destruction/) (2)의 되감기** 위에 서 있다.
-> **경계** — 「**RAII 가 무엇을 못 지우는가**」(UAF·순환 참조)의 논증은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md)가 정본이고,\
-> 여기는 **어떻게 만드나**만 본다.\
-> 「`unique_ptr` 의 API 전모」는 [목록의 **26번**](../26-unique-ptr-and-ownership-transfer/), 「`shared_ptr`」은 **27번**, 「`weak_ptr` 와 순환」은 **28번**,\
-> 「이동 후 상태」는 **17번**, 「0/3/5의 법칙」은 **18번**, 「예외 안전 보장 4단계」는 **52번 주제**가 정본이다.\
-> ★ 여기서는 **자원 하나를 감싸는 타입을 직접 써 보는 것**까지다.
-> **대비** — ★★★ C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **13번**([`13-goto-cleanup-idiom/`](../../../c/syntax/13-goto-cleanup-idiom/))이 **직접 대비**다.\
-> 그쪽은 **소멸자가 없는 언어**가 같은 문제를 라벨로 푸는 법이고, (7)에서 **같은 방식으로 재어 나란히 놓는다.**\
-> Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **9번**([`09-copy-clone-and-drop/`](../../../rust/syntax/09-copy-clone-and-drop/))은 **RAII 를 언어가 강제하는 판**이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ASan 리포트의 **PID**(`==1140768==`)·주소·스택 프레임 줄 | ★★★ **살아 있는 자원 개수**(`alive`) — 이 주제의 답 자체다 |
-> | 어셈블리의 **레지스터 이름**과 명령 배치 | ★★★ **ASan 이 샌 바이트 수와 객체 수**(`128 byte(s) in 2 object(s)`) |
-> | 두 컴파일러의 **진단 문구** · 실행 시간 | ★★ **어셈블리의 명령·분기·`call` 개수** · **예외 표 절 수** |
-> | 객체의 주소값 | ★★ **`cc exit`/`run exit`** · **경고 개수** · **소스 줄 수와 해제 호출 개수** |
-> | — | ★ **`sizeof`**(래퍼가 원시 포인터보다 커지는가) |
-
 ## 한눈에 — 쉽게 말하면
 
 **RAII 는 「빌린 물건을 가방에 넣는 것」이다.** 가방을 놓는 순간 물건이 저절로 반납된다.
@@ -1360,3 +1325,39 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **`std::unique_lock` 과 조건 변수** — 푼 상태를 기억해야 `wait()` 가 성립한다((5)의 16바이트가 그 값이다).
 - **`finally` 흉내** — `std::experimental::scope_exit`·`gsl::finally`. **임의의 코드를 소멸자에 얹는 도구**다.
 - **예외 안전 보장 4단계와 copy-and-swap** — (1)이 보인 것은 **기본 보장**이고, **강한 보장**은 목록의 **52번 주제**다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — RAII](https://en.cppreference.com/w/cpp/language/raii) · [cppreference — `std::unique_ptr`](https://en.cppreference.com/w/cpp/memory/unique_ptr) · [cppreference — `std::lock_guard`](https://en.cppreference.com/w/cpp/thread/lock_guard) · [cppreference — 소멸자](https://en.cppreference.com/w/cpp/language/destructor) · [GCC 13 Optimize Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html) · [AddressSanitizer](https://github.com/google/sanitizers/wiki/AddressSanitizer)
+**실행 검증** — 이 문서의 모든 출력·진단·어셈블리 수치는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`raii01.cpp` \~ `raii13.cpp`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
+★★★ **ASan 을 붙인 블록은 마커를 `stderr` 로 찍었다.** sanitizer 가 `abort()` 로 죽이면\
+**버퍼에 남은 표준 출력이 통째로 사라지기 때문**이다((4)의 소스에 그렇게 적혀 있다).\
+★★ **리포트를 자른 블록은 자르는 명령을 배너에 적었다** — 실린 것이 「생략한 일부」가 아니라 「**그 명령의 전체 출력**」이다.
+**버전** — RAII 관용구 자체는 **C++98부터**. **`= delete` 와 이동 생성자는 C++11부터**,\
+`std::unique_ptr`·`std::lock_guard` 도 **C++11부터**다. 기준은 **C++20**이다.
+
+★★★ **12 → 13 → 14 → 15 는 한 사슬의 끝이다** — [14번](../14-destructors-and-deterministic-destruction/)이 「**언제 파괴되나**」를 전수로 찍었고,\
+**여기 15 는 「그 시점에 무엇을 얹나」에 답한다.** 이 주제의 모든 것이 **[14번](../14-destructors-and-deterministic-destruction/) (2)의 되감기** 위에 서 있다.
+**경계** — 「**RAII 가 무엇을 못 지우는가**」(UAF·순환 참조)의 논증은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md)가 정본이고,\
+여기는 **어떻게 만드나**만 본다.\
+「`unique_ptr` 의 API 전모」는 [목록의 **26번**](../26-unique-ptr-and-ownership-transfer/), 「`shared_ptr`」은 **27번**, 「`weak_ptr` 와 순환」은 **28번**,\
+「이동 후 상태」는 **17번**, 「0/3/5의 법칙」은 **18번**, 「예외 안전 보장 4단계」는 **52번 주제**가 정본이다.\
+★ 여기서는 **자원 하나를 감싸는 타입을 직접 써 보는 것**까지다.
+**대비** — ★★★ C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **13번**([`13-goto-cleanup-idiom/`](../../../c/syntax/13-goto-cleanup-idiom/))이 **직접 대비**다.\
+그쪽은 **소멸자가 없는 언어**가 같은 문제를 라벨로 푸는 법이고, (7)에서 **같은 방식으로 재어 나란히 놓는다.**\
+Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **9번**([`09-copy-clone-and-drop/`](../../../rust/syntax/09-copy-clone-and-drop/))은 **RAII 를 언어가 강제하는 판**이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ASan 리포트의 **PID**(`==1140768==`)·주소·스택 프레임 줄 | ★★★ **살아 있는 자원 개수**(`alive`) — 이 주제의 답 자체다 |
+| 어셈블리의 **레지스터 이름**과 명령 배치 | ★★★ **ASan 이 샌 바이트 수와 객체 수**(`128 byte(s) in 2 object(s)`) |
+| 두 컴파일러의 **진단 문구** · 실행 시간 | ★★ **어셈블리의 명령·분기·`call` 개수** · **예외 표 절 수** |
+| 객체의 주소값 | ★★ **`cc exit`/`run exit`** · **경고 개수** · **소스 줄 수와 해제 호출 개수** |
+| — | ★ **`sizeof`**(래퍼가 원시 포인터보다 커지는가) |

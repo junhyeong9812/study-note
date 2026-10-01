@@ -1,13 +1,5 @@
 # kotlin/syntax/36 — 함수 타입·`fun interface`·SAM 변환 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [10번 주제](../10-lambdas-and-higher-order-functions/)다 — 함수 타입이 `FunctionN` 이라는 것, 람다가 `invokedynamic` 이 되는 것, SAM 변환이 **박싱을 없애는 자리**를 거기서 봤다. [31번 주제](../31-operator-overloading-infix-and-invoke/)의 `invoke` 규약도 이어진다.
-> 문항 12개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -220,6 +212,13 @@ fun suspendType(f: suspend (Int) -> Int) {}
 ### 12. Java 의 함수형 인터페이스와 견주면 (연결)
 
 - Java 는 함수 타입이 없고 함수형 인터페이스만 있다([`../../../java/syntax/31-functional-interfaces/`](../../../java/syntax/31-functional-interfaces/)). Kotlin 이 **둘 다** 가진 대가는 1번 격자의 어디에 나타나는가?
+
+## 실행 환경
+
+선행은 [10번 주제](../10-lambdas-and-higher-order-functions/)다 — 함수 타입이 `FunctionN` 이라는 것, 람다가 `invokedynamic` 이 되는 것, SAM 변환이 **박싱을 없애는 자리**를 거기서 봤다. [31번 주제](../31-operator-overloading-infix-and-invoke/)의 `invoke` 규약도 이어진다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

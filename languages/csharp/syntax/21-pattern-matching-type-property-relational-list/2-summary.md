@@ -1,30 +1,5 @@
 # csharp/syntax/21 — 패턴 매칭 — 타입·속성·관계·목록 패턴 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — 패턴](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/patterns)(열어서 확인: 「선언 패턴은 식의 결과가 **null 이 아니고** 런타임 타입이 맞을 때 맞는다」 ·\
-> 「컴파일러는 `x is null` 을 평가할 때 **사용자가 오버로드한 `==` 를 부르지 않는다고 보장**한다」 · 「빈 속성 패턴 `is { }` 는 **null 아닌 모든 것**과 맞는다」 ·\
-> 「**결합 순서가 같은 패턴을 컴파일러가 어떤 순서로 검사하는지는 정해져 있지 않다**」 · 「슬라이스 패턴은 목록 패턴 안에서 **한 번만**」)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`). **대비는 실측이다** — **javac 21.0.5** 로 Java 패턴을 돌렸다((8)).
-> **버전** — ★★ **판 경계는 컴파일러에게 물었다**((7)) — 선언 패턴 **C# 7** · 속성·위치 패턴과 `switch` 식 **C# 8** · 타입만 적는 패턴·관계·`and`/`or`/`not` **C# 9** · 확장 속성 패턴 **C# 10** · 목록·슬라이스 패턴 **C# 11**.
-> **경계** — ★★ **`switch` 식·`switch` 문과 완전성 검사**는 목록의 **22번 주제**가 정본이다 — 여기서는 **패턴 하나가 IL 로 무엇이 되나**만 본다.\
-> ★ **`Deconstruct` 가 생성되는 것**은 [18번](../18-record-value-equality-and-with/)이, **`==` 가 정적 타입으로 골라지는 것**은 [19번](../19-equality-equals-gethashcode-operator/)이,\
-> **패턴 기반 인덱싱(`Length` + `this[int]`)** 은 [14번](../14-indexers/) (5)가, **배열 `..` 이 복사라는 것**은 [09번](../09-arrays-index-and-range/) (3)이 정본이다.
-> ★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **22번**([`22-instanceof-type-patterns/`](../../../java/syntax/22-instanceof-type-patterns/))·**24번**([`24-record-patterns/`](../../../java/syntax/24-record-patterns/)) ·\
-> Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **33번**([`33-type-checks-and-casts-is-as/`](../../../kotlin/syntax/33-type-checks-and-casts-is-as/)) — **스마트 캐스트** ·\
-> Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **39번**([`39-match-statement/`](../../../python/syntax/39-match-statement/)) — **점 없는 이름은 캡처**다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** | ★★★ **진단 코드**(`CS8985`·`CS8980`·`CS0021`·`CS0270`·`CS0103`·`CS8370`·`CS8400`·`CS8773`·`CS8936`)와 **`(행,열)`** |
-> | **IL 오프셋 폭** · 분기 명령의 짧은/긴 꼴 | ★★★ **옵코드와 부른 멤버**(`isinst` · `ldlen` · `get_Count` · `get_Item` · `GetSubArray` · `cgt.un` · `op_Inequality`) |
-> | ★ **getter·`Deconstruct` 호출 횟수**(Roslyn 의 결정 DAG 가 정한다 — 명세는 순서를 **정하지 않는다**) | ★★ 이 판에서 그 횟수가 **`csc` 기본과 `-optimize` 에서 같았다**는 것 |
-> | 증분의 절댓값 일부(규칙 24) | ★★★ **네 판에서 갈린 줄 수**(스크립트가 센 마지막 줄) |
-
 ## 이 판
 
 ```text
@@ -832,3 +807,29 @@ record Order(int Qty, decimal Total);
 - ★ **결정 DAG 가 getter 를 두 번 읽게 되는 자리** — `when` 절 사이에 끼면 다시 읽을 수 있다고 알려져 있으나 **이 판에서 안 던졌다.**
 - ★ **목록 패턴의 완전성** — 22번 주제의 완전성 격자가 `[] / [_]` 만 적은 배열에 `CS8509`(`{ Length: 2 }`)를 냈다. Learn 은 「목록 패턴은 경고를 안 낸다」고 적어 **실측과 다르다** — 거기서 다룬다.
 - ★ **`Span<char>` 을 문자열 상수 패턴과 맞추는 것**(Learn 이 언급) — **이 판에서 안 던졌다.**
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — 패턴](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/patterns)(열어서 확인: 「선언 패턴은 식의 결과가 **null 이 아니고** 런타임 타입이 맞을 때 맞는다」 ·\
+「컴파일러는 `x is null` 을 평가할 때 **사용자가 오버로드한 `==` 를 부르지 않는다고 보장**한다」 · 「빈 속성 패턴 `is { }` 는 **null 아닌 모든 것**과 맞는다」 ·\
+「**결합 순서가 같은 패턴을 컴파일러가 어떤 순서로 검사하는지는 정해져 있지 않다**」 · 「슬라이스 패턴은 목록 패턴 안에서 **한 번만**」)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`). **대비는 실측이다** — **javac 21.0.5** 로 Java 패턴을 돌렸다((8)).
+**버전** — ★★ **판 경계는 컴파일러에게 물었다**((7)) — 선언 패턴 **C# 7** · 속성·위치 패턴과 `switch` 식 **C# 8** · 타입만 적는 패턴·관계·`and`/`or`/`not` **C# 9** · 확장 속성 패턴 **C# 10** · 목록·슬라이스 패턴 **C# 11**.
+**경계** — ★★ **`switch` 식·`switch` 문과 완전성 검사**는 목록의 **22번 주제**가 정본이다 — 여기서는 **패턴 하나가 IL 로 무엇이 되나**만 본다.\
+★ **`Deconstruct` 가 생성되는 것**은 [18번](../18-record-value-equality-and-with/)이, **`==` 가 정적 타입으로 골라지는 것**은 [19번](../19-equality-equals-gethashcode-operator/)이,\
+**패턴 기반 인덱싱(`Length` + `this[int]`)** 은 [14번](../14-indexers/) (5)가, **배열 `..` 이 복사라는 것**은 [09번](../09-arrays-index-and-range/) (3)이 정본이다.
+★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **22번**([`22-instanceof-type-patterns/`](../../../java/syntax/22-instanceof-type-patterns/))·**24번**([`24-record-patterns/`](../../../java/syntax/24-record-patterns/)) ·\
+Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **33번**([`33-type-checks-and-casts-is-as/`](../../../kotlin/syntax/33-type-checks-and-casts-is-as/)) — **스마트 캐스트** ·\
+Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **39번**([`39-match-statement/`](../../../python/syntax/39-match-statement/)) — **점 없는 이름은 캡처**다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** | ★★★ **진단 코드**(`CS8985`·`CS8980`·`CS0021`·`CS0270`·`CS0103`·`CS8370`·`CS8400`·`CS8773`·`CS8936`)와 **`(행,열)`** |
+| **IL 오프셋 폭** · 분기 명령의 짧은/긴 꼴 | ★★★ **옵코드와 부른 멤버**(`isinst` · `ldlen` · `get_Count` · `get_Item` · `GetSubArray` · `cgt.un` · `op_Inequality`) |
+| ★ **getter·`Deconstruct` 호출 횟수**(Roslyn 의 결정 DAG 가 정한다 — 명세는 순서를 **정하지 않는다**) | ★★ 이 판에서 그 횟수가 **`csc` 기본과 `-optimize` 에서 같았다**는 것 |
+| 증분의 절댓값 일부(규칙 24) | ★★★ **네 판에서 갈린 줄 수**(스크립트가 센 마지막 줄) |

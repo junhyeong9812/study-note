@@ -1,13 +1,5 @@
 # web-api/14 — `dialog`·`popover` 의 스크립트 제어: `showModal()`·`togglePopover()`·최상위 레이어·포커스 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **마크업 갈래와의 경계** — HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **47번** 과 **48번** 은 `dialog`·`popover` 를 **마크업으로** 다루고, 여기는 **그것을 스크립트로 열고 닫는 쪽**이다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
-> ★★ **가벼운 닫기와 `Esc` 문항은 진짜 입력으로 던진 것**이다 — `dispatchEvent` 로는 한 칸도 안 움직인다.
-> ★ 선행은 [03번 주제](../03-node-creation-insertion-removal/2-summary.md)(노드를 붙이고 떼는 것)와 [CSS 22번 주제](../../css/syntax/22-stacking-context-and-z-index/2-summary.md)(쌓임 맥락과 `z-index`)다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -184,6 +176,13 @@ show() 로 연 비모달에
 - [CSS 22번 주제](../../css/syntax/22-stacking-context-and-z-index/2-summary.md)의 `z-index` 와 최상위 레이어의 관계를 한 문장으로 적어라.
 - [08번 주제](../08-getcomputedstyle/2-summary.md)의 「계산값이 무엇을 말하나」가 이 주제의 어느 자리에서 되풀이되는가?
 - [06번 주제](../06-attribute-vs-property/2-summary.md)의 「조용히 버려짐」이 이 주제의 어디에 나오는가?
+
+## 실행 환경
+
+★ **마크업 갈래와의 경계** — HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **47번** 과 **48번** 은 `dialog`·`popover` 를 **마크업으로** 다루고, 여기는 **그것을 스크립트로 열고 닫는 쪽**이다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
+★★ **가벼운 닫기와 `Esc` 문항은 진짜 입력으로 던진 것**이다 — `dispatchEvent` 로는 한 칸도 안 움직인다.
+★ 선행은 [03번 주제](../03-node-creation-insertion-removal/2-summary.md)(노드를 붙이고 떼는 것)와 [CSS 22번 주제](../../css/syntax/22-stacking-context-and-z-index/2-summary.md)(쌓임 맥락과 `z-index`)다.
 
 ## 복습 기록
 

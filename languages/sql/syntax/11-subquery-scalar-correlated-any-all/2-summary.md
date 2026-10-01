@@ -1,16 +1,5 @@
 # sql/11-서브쿼리 — 스칼라·상관·ANY/ALL — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Subquery Expressions](https://www.postgresql.org/docs/18/functions-subquery.html) · [PostgreSQL 18 · Scalar Subqueries](https://www.postgresql.org/docs/18/sql-expressions.html#SQL-SYNTAX-SCALAR-SUBQUERIES) · [MySQL 8.4 · Subqueries](https://dev.mysql.com/doc/refman/8.4/en/subqueries.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
-> 표는 기존 `emp`·`dept` 두 개만 썼다. **새로 만든 표가 없다.**\
-> **버전** — 이 주제의 문법은 두 엔진 모두 오래전부터 있고, 두 매뉴얼에 도입 버전이 적혀 있지 않아 **버전은 적지 않는다.**\
-> **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/) · [10 FROM 절 — 테이블 별칭·파생 테이블](../10-from-clause-aliases-derived-tables/).\
-> **복선** — 상관 서브쿼리를 `FROM` 으로 끌어내린 것이 [20 LATERAL](../20-lateral-join/)이고, `EXISTS`/`IN` 만 따로 떼어 본 것이 [19 세미·안티 조인](../19-semi-anti-join/)이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **서브쿼리 = 질의 안에 넣은 작은 질의. 그 작은 질의가 「값 하나」를 내느냐 「목록」을 내느냐 「표」를 내느냐로 놓을 자리가 정해진다.**
@@ -753,3 +742,13 @@ FROM   (SELECT ...) AS t
 - **`EXISTS` 는 `SELECT` 목록을 아예 계산하지 않는다.** `SELECT 1/0` 을 넣어도 0 으로 나누지 않는다 — 그 증거는 [19번](../19-semi-anti-join/)에 있다.
 - **상관 서브쿼리를 `FROM` 으로 내리면** 여러 열·여러 행을 한 번에 받을 수 있다. 그것이 [`LATERAL`](../20-lateral-join/)이다.
 - **「행마다 상위 N개」는 세 가지로 쓸 수 있다** — 상관 서브쿼리 · `LATERAL` · 윈도우 함수(`ROW_NUMBER`, [목록의 **29번 주제**](../29-ranking-functions/)). 셋의 선택 기준은 29번이 정본이다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Subquery Expressions](https://www.postgresql.org/docs/18/functions-subquery.html) · [PostgreSQL 18 · Scalar Subqueries](https://www.postgresql.org/docs/18/sql-expressions.html#SQL-SYNTAX-SCALAR-SUBQUERIES) · [MySQL 8.4 · Subqueries](https://dev.mysql.com/doc/refman/8.4/en/subqueries.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
+표는 기존 `emp`·`dept` 두 개만 썼다. **새로 만든 표가 없다.**\
+**버전** — 이 주제의 문법은 두 엔진 모두 오래전부터 있고, 두 매뉴얼에 도입 버전이 적혀 있지 않아 **버전은 적지 않는다.**\
+**선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/) · [10 FROM 절 — 테이블 별칭·파생 테이블](../10-from-clause-aliases-derived-tables/).\
+**복선** — 상관 서브쿼리를 `FROM` 으로 끌어내린 것이 [20 LATERAL](../20-lateral-join/)이고, `EXISTS`/`IN` 만 따로 떼어 본 것이 [19 세미·안티 조인](../19-semi-anti-join/)이다.

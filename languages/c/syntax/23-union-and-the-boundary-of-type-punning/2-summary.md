@@ -1,25 +1,5 @@
 # c/syntax/23 — `union` 과 타입 펀닝의 경계: 「**union 은 동시에 담는 상자가 아니라 같은 바이트를 겹쳐 보는 창이다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — union declaration](https://en.cppreference.com/w/c/language/union) · [cppreference — 객체와 앨리어싱](https://en.cppreference.com/w/c/language/object) · [GCC 13 Optimize Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)\
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙의 진술은 위 문서로, **값·바이트·진단·종료 코드는 전부 실행으로** 접지했다.
-> **실행 검증** — 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과 **clang 18.1.3** ·\
-> **g++ 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> ★★ **엄격한 앨리어싱 실험은 한 수준만 돌리지 않았다** — `-O0`·`-O1`·`-O2`·`-O3` 와 `-fno-strict-aliasing` 까지 **열 벌**이다.\
-> ★ 덤프를 결정적으로 만들려고 `s23e.c`·`s23f.c` 는 **`memset` 으로 먼저 채운 뒤** 멤버를 썼다.
-> **버전** — `union` 자체는 **C89부터**. **지정 초기자로 멤버를 고르는 것은 C99부터**(`.i = …`).\
-> ★ **`union` 을 통한 타입 펀닝이 「허용된다」고 못 박힌 것은 C99 의 결함 보고 처리 이후**이고 **C11\~C17 에도 그대로 있다**.\
-> ★★ **C++ 는 이 대목이 다르다** — 이 문서는 그 차이를 **산문 한 줄과 실측 한 벌**로 갈라 둔다.
-> ★★ **경계** — **엄격한 앨리어싱 규칙 전체**는 목록의 **55번 주제**가 정본이다.\
-> 여기서는 「**`union` 은 되고 포인터 캐스트는 안 되는 경계**」까지만 본다.\
-> **`memcpy`·`memcmp` 의 계약**은 [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/), **2진 표현·IEEE 754·엔디언 자체**는\
-> [`data-representation/`](../../../../cs/foundations/data-representation/)가 정본이다 — 여기는 **C 문법이 그것을 어떻게 드러내나**만.\
-> **캐스트가 「비트를 바꾸는가 해석을 바꾸는가」** 는 [05번 형제](../05-explicit-casts-and-pointer-conversions/)가 정본이다.\
-> **구조체 선언·초기화**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/),\
-> **패딩·정렬**은 [22번 형제](../22-struct-padding-and-alignment/), **비트필드**는 [24번 형제](../24-bit-fields/)다.\
-> **`restrict` 가 컴파일러에게 무엇을 약속하나**는 [목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/)다.
-> 선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [08번 형제](../08-sizeof-alignment-and-offsetof/) · [05번 형제](../05-explicit-casts-and-pointer-conversions/).
-
 ## 한눈에 — 쉽게 말하면
 
 **`union` 은 「여러 개를 한꺼번에 담는 상자」가 아니다.**\
@@ -822,3 +802,24 @@ union 을 거치면 허용이고 포인터 캐스트면 UB** 다. 그 경계가 
   **익명 구조체**로 다룬 것과 같은 규칙이다 — 여기서는 따로 던지지 않았다.
 - ★★ **C++ 의 `std::bit_cast`** 가 이 주제의 C++ 쪽 답이지만 **C 에는 없다.**\
   C++ 갈래(`../../cpp/syntax/`)가 정본이고, 지금은 그 주제가 아직 없다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — union declaration](https://en.cppreference.com/w/c/language/union) · [cppreference — 객체와 앨리어싱](https://en.cppreference.com/w/c/language/object) · [GCC 13 Optimize Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)\
+★ **표준 조항 번호는 인용하지 않는다.** 규칙의 진술은 위 문서로, **값·바이트·진단·종료 코드는 전부 실행으로** 접지했다.
+**실행 검증** — 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과 **clang 18.1.3** ·\
+**g++ 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+★★ **엄격한 앨리어싱 실험은 한 수준만 돌리지 않았다** — `-O0`·`-O1`·`-O2`·`-O3` 와 `-fno-strict-aliasing` 까지 **열 벌**이다.\
+★ 덤프를 결정적으로 만들려고 `s23e.c`·`s23f.c` 는 **`memset` 으로 먼저 채운 뒤** 멤버를 썼다.
+**버전** — `union` 자체는 **C89부터**. **지정 초기자로 멤버를 고르는 것은 C99부터**(`.i = …`).\
+★ **`union` 을 통한 타입 펀닝이 「허용된다」고 못 박힌 것은 C99 의 결함 보고 처리 이후**이고 **C11\~C17 에도 그대로 있다**.\
+★★ **C++ 는 이 대목이 다르다** — 이 문서는 그 차이를 **산문 한 줄과 실측 한 벌**로 갈라 둔다.
+★★ **경계** — **엄격한 앨리어싱 규칙 전체**는 목록의 **55번 주제**가 정본이다.\
+여기서는 「**`union` 은 되고 포인터 캐스트는 안 되는 경계**」까지만 본다.\
+**`memcpy`·`memcmp` 의 계약**은 [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/), **2진 표현·IEEE 754·엔디언 자체**는\
+[`data-representation/`](../../../../cs/foundations/data-representation/)가 정본이다 — 여기는 **C 문법이 그것을 어떻게 드러내나**만.\
+**캐스트가 「비트를 바꾸는가 해석을 바꾸는가」** 는 [05번 형제](../05-explicit-casts-and-pointer-conversions/)가 정본이다.\
+**구조체 선언·초기화**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/),\
+**패딩·정렬**은 [22번 형제](../22-struct-padding-and-alignment/), **비트필드**는 [24번 형제](../24-bit-fields/)다.\
+**`restrict` 가 컴파일러에게 무엇을 약속하나**는 [목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/)다.
+선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [08번 형제](../08-sizeof-alignment-and-offsetof/) · [05번 형제](../05-explicit-casts-and-pointer-conversions/).

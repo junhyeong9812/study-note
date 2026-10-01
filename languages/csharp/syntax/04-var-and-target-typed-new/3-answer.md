@@ -1,15 +1,5 @@
 # csharp/syntax/04 — 변수 선언·`var`·타겟 타입 `new` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) · [Learn — 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) · [.NET API — `GC.GetAllocatedBytesForCurrentThread`](https://learn.microsoft.com/en-us/dotnet/api/system.gc.getallocatedbytesforcurrentthread)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
-> 런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-24).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
-> **읽는 법** — 이 주제의 근거는 거의 전부 **진단 문구**다. 진단 코드·문구·`(행,열)` 은 **안 흔들리는 칸**이고,\
-> ★ **「에러가 몇 개 나오나」는 컴파일러가 어디서 포기하느냐에 달린 것**이라 문제의 개수와 다르다(4번).\
-> **IL 덤프는 `-optimize` 없이**(기본 디버그) 낸 것이고, **`-debug` 는 안 줘서** 트레이스에 절대 경로가 없다.\
-> 자세한 환경은 [2-summary.md](2-summary.md) 머리말에 있다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -599,3 +589,14 @@ static class Probe {
 - ★ **5번의 자연 타입** — 새 판이 `var` 에 담을 수 있는 것을 더 넓힐 수 있다.
 - ★ **3·4번의 에러 개수** — 컴파일러가 포기하는 지점이 바뀌면 움직인다.
 - **진단 문구와 진단 코드** 전부.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) · [Learn — 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) · [.NET API — `GC.GetAllocatedBytesForCurrentThread`](https://learn.microsoft.com/en-us/dotnet/api/system.gc.getallocatedbytesforcurrentthread)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
+런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-24).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
+**읽는 법** — 이 주제의 근거는 거의 전부 **진단 문구**다. 진단 코드·문구·`(행,열)` 은 **안 흔들리는 칸**이고,\
+★ **「에러가 몇 개 나오나」는 컴파일러가 어디서 포기하느냐에 달린 것**이라 문제의 개수와 다르다(4번).\
+**IL 덤프는 `-optimize` 없이**(기본 디버그) 낸 것이고, **`-debug` 는 안 줘서** 트레이스에 절대 경로가 없다.\
+자세한 환경은 [2-summary.md](2-summary.md) 「실행 환경」에 있다.

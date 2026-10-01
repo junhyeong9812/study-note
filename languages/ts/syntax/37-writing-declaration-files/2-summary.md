@@ -1,12 +1,5 @@
 # ts/syntax/37 — 선언 파일 작성 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Declaration Reference](https://www.typescriptlang.org/docs/handbook/declaration-files/by-example.html)(전역 변수는 `declare var`·`declare const`·`declare let` · 전역 함수는 `declare function` · 점 표기로 묶을 때는 `declare namespace`) ·
-> [Handbook — Modules Reference](https://www.typescriptlang.org/docs/handbook/modules/reference.html)(`exports` 의 `types` 조건 — 35편).
-> 위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
-> ★ 핸드북의 해당 쪽은 「전역 선언 파일과 모듈 선언 파일의 구분」을 **따로 싣지 않는다**(다른 장 — 라이브러리 구조 — 으로 넘긴다). 그 구분은 이 문서가 **던져서** 세웠다(3절).
-> **실행 검증** — 본판은 아래다. ★ 5절의 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.
-
 ```text
 ===== tsc --version · node --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -21,7 +14,6 @@ Python 3.12.3
 > ★ [**34번 주제**](../34-namespace-place/) 4절이 `skipLibCheck` 가 옛 `.d.ts` 의 `TS1540` 을 숨기는 것을 쟀다 — 6절이 그 창을 넓힌다.
 > ★ 소스 펜스 첫 줄 `// 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -708,3 +700,11 @@ usedup37.ts(1,7): error TS2322: Type 'number' is not assignable to type 'null'.
 - **`.d.ts` 와 JS 의 일치를 검사하는 법** — 이 문서는 「tsc 는 안 한다」까지다. 소스가 JS 면 `allowJs` + `checkJs` + `--declaration` 으로 **JS 에서 뽑는** 길이 있다([목록의 **48번 주제**](../48-js-file-type-checking/)). **던지지 않았다.**
 - **`declare global` 을 모듈 `.d.ts` 안에서** — 모듈 선언 파일이면서 전역을 보강하는 꼴. 33편 4절이 `.ts` 쪽을 쟀다 — `.d.ts` 쪽은 **던지지 않았다.**
 - **`typesVersions`·`exports` 의 `types` 조건으로 패키지에 `.d.ts` 싣기** — 35편 3절의 추적이 `types` 조건을 보였다. 패키지 배포 자체는 **던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Declaration Reference](https://www.typescriptlang.org/docs/handbook/declaration-files/by-example.html)(전역 변수는 `declare var`·`declare const`·`declare let` · 전역 함수는 `declare function` · 점 표기로 묶을 때는 `declare namespace`) ·
+[Handbook — Modules Reference](https://www.typescriptlang.org/docs/handbook/modules/reference.html)(`exports` 의 `types` 조건 — 35편).
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
+★ 핸드북의 해당 쪽은 「전역 선언 파일과 모듈 선언 파일의 구분」을 **따로 싣지 않는다**(다른 장 — 라이브러리 구조 — 으로 넘긴다). 그 구분은 이 문서가 **던져서** 세웠다(3절).
+**실행 검증** — 본판은 맨 위 블록이다. ★ 5절의 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.

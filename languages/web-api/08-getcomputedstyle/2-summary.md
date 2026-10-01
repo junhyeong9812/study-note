@@ -1,14 +1,5 @@
 # web-api/08 — `getComputedStyle`: 스크립트에서 계산값을 읽는다는 것 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 갈래는 언어가 아니라 플랫폼이다.** 여기서 다루는 것은 **「CSS 가 무엇을 계산하나」가 아니라 「스크립트가 그것을 어떻게 읽나**」다. **값이 어느 단계에서 픽셀이 되는지는 [CSS 04번 주제](../../css/syntax/04-value-processing-stages/2-summary.md)가 정본**이고 여기서 다시 쓰지 않는다.\
-> **기준 소스** — [CSSOM](https://drafts.csswg.org/cssom/#dom-window-getcomputedstyle) 의 「`getComputedStyle()`」·「`CSSStyleDeclaration`」·「resolved values」 절. 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.**\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `getComputedStyle` 은 DOM Level 2 Style(2000) 부터 있었고 **Baseline 추적 대상이 아닐 만큼 오래됐다**(갈래 [`../README.md`](../README.md) 의 「확인하지 못한 것」).\
-> **선행** — [07번 주제](../07-dataset-classlist-inline-style/2-summary.md)(`el.style`)와 [CSS 04번 주제](../../css/syntax/04-value-processing-stages/2-summary.md)(값 처리 단계).\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -1049,3 +1040,12 @@ for (const d of rows) { d.style.paddingLeft = '1px'; sink += getComputedStyle(d)
 - **`getComputedStyle` 의 두 번째 인자는 의사 요소만** 받는다. **의사 클래스(`:hover`)는 못 준다** — 상태를 시뮬레이션해 읽는 방법은 표준에 없고 개발자 도구의 기능이다.
 - **스타일 재계산과 레이아웃은 다른 단계**다. (11)에서 `color` 읽기가 7.80ms, `width` 읽기가 242.50ms 로 갈린 것이 그 경계다 — 앞은 스타일 재계산까지, 뒤는 레이아웃까지 간다. 그 파이프라인 전체는 [목록의 **10번 주제**](../10-layout-thrashing/)와 [CSS 56번 주제](../../css/syntax/56-rendering-pipeline-and-will-change/2-summary.md)가 정본이다.
 - **그림자 경계 안의 요소**도 `getComputedStyle` 로 읽을 수 있다 — 요소 참조만 있으면 된다. 다만 **`closed` 그림자는 참조를 얻을 길이 없다.** 그 경계는 [목록의 **12번 주제**](../12-shadow-dom/)다.
+
+## 실행 환경
+
+**이 갈래는 언어가 아니라 플랫폼이다.** 여기서 다루는 것은 **「CSS 가 무엇을 계산하나」가 아니라 「스크립트가 그것을 어떻게 읽나**」다. **값이 어느 단계에서 픽셀이 되는지는 [CSS 04번 주제](../../css/syntax/04-value-processing-stages/2-summary.md)가 정본**이고 여기서 다시 쓰지 않는다.\
+**기준 소스** — [CSSOM](https://drafts.csswg.org/cssom/#dom-window-getcomputedstyle) 의 「`getComputedStyle()`」·「`CSSStyleDeclaration`」·「resolved values」 절. 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.**\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `getComputedStyle` 은 DOM Level 2 Style(2000) 부터 있었고 **Baseline 추적 대상이 아닐 만큼 오래됐다**(갈래 [`../README.md`](../README.md) 의 「확인하지 못한 것」).\
+**선행** — [07번 주제](../07-dataset-classlist-inline-style/2-summary.md)(`el.style`)와 [CSS 04번 주제](../../css/syntax/04-value-processing-stages/2-summary.md)(값 처리 단계).

@@ -1,16 +1,5 @@
 # java/syntax/14 — `record` (16+): 컴팩트 생성자·불변 계약·못 하는 것 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/Record.java` 의 **javadoc 원문**(`lib/src.zip` 에서 직접 인용 — 클래스 javadoc의 복사 불변식, `equals`·`hashCode`·`toString` 의 `@implSpec`) · [JLS SE 21 §8.10 Record Classes](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [JEP 395: Records](https://openjdk.org/jeps/395)
-> **실행 검증** — 이 문서의 모든 출력·에러 메시지는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 같은 프로그램을 **17.0.13 · 25.0.1** 에서도 돌려 **출력이 한 글자도 다르지 않음**을 확인했다\
-> (단 배열의 `toString` 에 박히는 `[I@77459877` 같은 **identity 해시는 실행마다 다르다** — 그 줄만 예외다).\
-> 바이트코드는 `javap -c -p` · `javap -v -p` 출력을 그대로 옮겼다.
-> **버전** — `record` 는 **Java 16** 정식이다(`src.zip` 의 `java/lang/Record.java` 가 `@since 16`, `java/lang/reflect/RecordComponent.java` 도 `@since 16`).\
-> `javac --release 15` 로 컴파일하면 `records are not supported in -source 15` 로 막힌다 — 아래 「문법」 절에 출력 그대로 있다.\
-> 14·15 에서는 preview 였다(그 연혁은 [`../../../../history/java/java-16.md`](../../../../history/java/java-16.md)).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 javadoc·JLS 로, 동작은 실행·역어셈블로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`record` 는 「보관함 번호가 적힌 영수증」이다.**
@@ -912,3 +901,14 @@ HashMap 조회      = a
   그래서 접근자만 보는 검증 프레임워크는 `@OnlyField` 를 못 본다 — 애너테이션 자체는 [**16번 주제**](../16-annotations/)가 정본이다.
 - **`record` 는 값 타입(Valhalla)의 예고가 아니다.**\
   `record` 는 여전히 힙에 놓이는 참조 객체다. `==` 는 `false` 였다(14-a). 식별자 없는 값 타입은 별개의 프로젝트다.
+
+## 실행 환경
+
+**기준 소스** — JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/Record.java` 의 **javadoc 원문**(`lib/src.zip` 에서 직접 인용 — 클래스 javadoc의 복사 불변식, `equals`·`hashCode`·`toString` 의 `@implSpec`) · [JLS SE 21 §8.10 Record Classes](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [JEP 395: Records](https://openjdk.org/jeps/395)
+**실행 검증** — 이 문서의 모든 출력·에러 메시지는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+같은 프로그램을 **17.0.13 · 25.0.1** 에서도 돌려 **출력이 한 글자도 다르지 않음**을 확인했다\
+(단 배열의 `toString` 에 박히는 `[I@77459877` 같은 **identity 해시는 실행마다 다르다** — 그 줄만 예외다).\
+바이트코드는 `javap -c -p` · `javap -v -p` 출력을 그대로 옮겼다.
+**버전** — `record` 는 **Java 16** 정식이다(`src.zip` 의 `java/lang/Record.java` 가 `@since 16`, `java/lang/reflect/RecordComponent.java` 도 `@since 16`).\
+`javac --release 15` 로 컴파일하면 `records are not supported in -source 15` 로 막힌다 — 본문 「문법」 절에 출력 그대로 있다.\
+14·15 에서는 preview 였다(그 연혁은 [`../../../../history/java/java-16.md`](../../../../history/java/java-16.md)).

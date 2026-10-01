@@ -1,8 +1,5 @@
 # algorithm 인덱스
 
-> myway 연습 프로젝트와 1:1 대응하는 노트 컬렉션이다. **진행 기록(원본 경로·진도)은 [project/myway/README.md](../../project/myway/README.md)** 에 있고,
-> 커리큘럼상 위치·상태는 [algorithm 커리큘럼](../algorithm/curriculum.md) 에서 본다(2026-09-28 cs 재편).
-
 | 챕터 |
 |------|
 | [01-elementary-sort](01-elementary-sort/) |
@@ -35,3 +32,8 @@
 | [28-number-theory](28-number-theory/) |
 | [29-bit-manipulation](29-bit-manipulation/) |
 | [30-sweeping](30-sweeping/) |
+
+---
+
+myway 연습 프로젝트와 1:1 대응하는 노트 컬렉션이다. **진행 기록(원본 경로·진도)은 [project/myway/README.md](../../project/myway/README.md)** 에 있고,
+커리큘럼상 위치·상태는 [algorithm 커리큘럼](../algorithm/curriculum.md) 에서 본다(2026-09-28 cs 재편).

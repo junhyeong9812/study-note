@@ -1,18 +1,5 @@
 # c/syntax/44 — 헤더와 분할 컴파일: 「**헤더는 include 한 모든 번역 단위에 그대로 복사된다 — 그래서 헤더에는 복사돼도 정의가 하나로 남는 것만 둔다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) 외부 정의 절 — 「**외부 링크 식별자가 식에 쓰이면 프로그램 전체에 외부 정의가 정확히 하나 있어야 한다**」 · 「**초기자 없는 파일 스코프 객체 선언은 잠정 정의**」 · 태그 절 — 「**같은 태그의 두 선언이 멤버 목록을 가지면 호환 타입의 요건을 채워야 한다**」(C23 의 태그 호환) 를 **본문에서 직접 찾아 읽었다** · ★ **`#pragma once` 는 N3220 에 한 번도 나오지 않는다**(`grep` 0건))
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **링크 결과 · `nm` 글자 · include 트리 · 진단은 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.\
-> ★★★ **본체는 헤더 배치 격자다** — 헤더에 둔 것 14 × 빌드 5(gcc · gcc-12 · clang · gcc `-fcommon` · g++), **두 번역 단위가 같은 헤더를 include** 하고 따로 `-c` 한 뒤 링크한다. 칸마다 **링크 결과**, 끝 칸에 **`nm` 글자**.\
-> ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
-> **버전** — include 와 링크 규칙은 C89 부터다. ★ **gcc 10 · clang 11 부터 `-fno-common` 이 기본**([29번 형제](../29-scope-and-linkage-static-extern/)가 문서로 확인). ★ **C23 은 같은 내용의 `struct` 재정의를 허용**하지만 이 판의 두 컴파일러는 아직 막는다((3)).
-> ★★★ **경계** — **링크 단계 일반(심볼 해결 · 재배치 · 라이브러리)** 은 [`compiler-pipeline/`](../../../../cs/foundations/compiler-pipeline/)의 「4. 컴파일 전체 흐름과 링커」가 정본이다 — 그쪽은 **`.o` 여럿이 링커로 합쳐진다**까지, 이 편은 **그 `.o` 들이 같은 헤더를 가졌을 때 무엇을 두면 깨지나**부터.\
-> ★★★ **`static`/`extern` 의 링크 규칙 자체와 잠정 정의의 판 격자**(`-fno-common`/`-fcommon` × 컴파일러 3)는 [29번 형제](../29-scope-and-linkage-static-extern/)의 (5)가, **헤더의 `inline`·`extern inline` 링크 격자**는 [39번 형제](../39-inline-and-c-inline-rules/)가 **이미 쟀다** — 이 편은 그 격자를 **다시 재지 않고** 「헤더에 둘 수 있나」의 한 행씩으로만 인용한다.\
-> ★ **`#include` 가 텍스트를 붙여 넣는다는 것 · 검색 경로**는 [41번 형제](../41-preprocessor-directives-and-conditional-compilation/), **불투명 구조체**는 [25번 형제](../25-incomplete-types-and-opaque-struct/), **링크 오류를 거꾸로 읽기**는 [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/)다.
-> 선행 — [29번 형제](../29-scope-and-linkage-static-extern/) · [41번 형제](../41-preprocessor-directives-and-conditional-compilation/).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 넷째 창 — 링크 결과 + `nm` 이다.** 컴파일은 모든 칸이 통과한다. **링크에서만** 「정의가 둘」·「정의가 없다」가 갈린다.
 ★★★ 그 격자에서 **링크가 깨진 칸 18 / 42**(gcc · gcc-12 · clang) — **세 컴파일러가 갈린 행은 0 / 14**. 갈린 것은 **플래그**(`-fcommon` 이 1행을 살린다)와 **언어**(C++ 가 `const` 1행을 살린다)다.
 
@@ -882,3 +869,16 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★★ **헤더를 고친 뒤 한쪽 `.o` 만 다시 만든 빌드** — 두 번역 단위가 다른 `struct` 를 믿는 사고. ★ 던지지 않았다.
 - ★ **`static const int` 를 헤더에** — 10행과 같은 규칙일 것 — ★ 던지지 않았다.
 - ★ **clang 의 `#pragma once` 판단 기준** — inode 인가 경로 해석인가. 이 격자는 「사본을 다른 파일로 본다」까지만 보였다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) 외부 정의 절 — 「**외부 링크 식별자가 식에 쓰이면 프로그램 전체에 외부 정의가 정확히 하나 있어야 한다**」 · 「**초기자 없는 파일 스코프 객체 선언은 잠정 정의**」 · 태그 절 — 「**같은 태그의 두 선언이 멤버 목록을 가지면 호환 타입의 요건을 채워야 한다**」(C23 의 태그 호환) 를 **본문에서 직접 찾아 읽었다** · ★ **`#pragma once` 는 N3220 에 한 번도 나오지 않는다**(`grep` 0건))
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **링크 결과 · `nm` 글자 · include 트리 · 진단은 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.\
+★★★ **본체는 헤더 배치 격자다** — 헤더에 둔 것 14 × 빌드 5(gcc · gcc-12 · clang · gcc `-fcommon` · g++), **두 번역 단위가 같은 헤더를 include** 하고 따로 `-c` 한 뒤 링크한다. 칸마다 **링크 결과**, 끝 칸에 **`nm` 글자**.\
+★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
+**버전** — include 와 링크 규칙은 C89 부터다. ★ **gcc 10 · clang 11 부터 `-fno-common` 이 기본**([29번 형제](../29-scope-and-linkage-static-extern/)가 문서로 확인). ★ **C23 은 같은 내용의 `struct` 재정의를 허용**하지만 이 판의 두 컴파일러는 아직 막는다((3)).
+★★★ **경계** — **링크 단계 일반(심볼 해결 · 재배치 · 라이브러리)** 은 [`compiler-pipeline/`](../../../../cs/foundations/compiler-pipeline/)의 「4. 컴파일 전체 흐름과 링커」가 정본이다 — 그쪽은 **`.o` 여럿이 링커로 합쳐진다**까지, 이 편은 **그 `.o` 들이 같은 헤더를 가졌을 때 무엇을 두면 깨지나**부터.\
+★★★ **`static`/`extern` 의 링크 규칙 자체와 잠정 정의의 판 격자**(`-fno-common`/`-fcommon` × 컴파일러 3)는 [29번 형제](../29-scope-and-linkage-static-extern/)의 (5)가, **헤더의 `inline`·`extern inline` 링크 격자**는 [39번 형제](../39-inline-and-c-inline-rules/)가 **이미 쟀다** — 이 편은 그 격자를 **다시 재지 않고** 「헤더에 둘 수 있나」의 한 행씩으로만 인용한다.\
+★ **`#include` 가 텍스트를 붙여 넣는다는 것 · 검색 경로**는 [41번 형제](../41-preprocessor-directives-and-conditional-compilation/), **불투명 구조체**는 [25번 형제](../25-incomplete-types-and-opaque-struct/), **링크 오류를 거꾸로 읽기**는 [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/)다.
+선행 — [29번 형제](../29-scope-and-linkage-static-extern/) · [41번 형제](../41-preprocessor-directives-and-conditional-compilation/).

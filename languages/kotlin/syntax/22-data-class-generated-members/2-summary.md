@@ -1,17 +1,5 @@
 # kotlin/syntax/22 — `data class`: 무엇이 생성되고 무엇이 안 되나 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Data classes](https://kotlinlang.org/docs/data-classes.html) · [Destructuring declarations](https://kotlinlang.org/docs/destructuring-declarations.html) · [Object declarations](https://kotlinlang.org/docs/object-declarations.html)(`data object`).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
-> `kotlinc` 7회(컴파일 실패 1벌) · `java` 6회 · `javap` 2회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
-> **버전** — `data class` 는 **1.0**, `data object` 는 **1.9** 다. 뒤의 것은 이 판에서 직접 던져 확인했다((5)).
-> **경계** — 프로퍼티의 backing field·`const` 는 [16번 주제](../16-properties-backing-field-lateinit-const/)가 정본이고, 상속 기본값은 [19번 주제](../19-inheritance-open-final-override/)가 정본이다.\
-> `componentN` 규약 자체를 파고드는 것은 [목록의 **30번 주제**](../30-destructuring-declarations-and-componentn/), `==`/`===` 와 `equals` 규약은 [목록의 **32번 주제**](../32-equality-and-equals-contract/), 박싱이 사라지는 `value class` 는 [목록의 **26번 주제**](../26-value-class-and-boxing/)다.\
-> Java 쪽 짝은 [`../../../java/syntax/14-records/`](../../../java/syntax/14-records/) — **같은 목적에 방어선을 다른 곳에 둔 것**이 이 주제의 대비 축이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다.
 
 | 흔들린다 | 안 흔들린다 |
@@ -184,7 +172,7 @@ F true
 ```
 
 - `A true` — **`note` 가 다른데 `==` 가 참**이다. `equals` 가 `id`·`name` 만 대조하기 때문이다.
-- `B true` — 해시코드도 같다. 값을 안 찍고 「같나」만 찍은 이유는 머리말의 표를 보라.
+- `B true` — 해시코드도 같다. 값을 안 찍고 「같나」만 찍은 이유는 맨 위 부분의 표를 보라.
 - `C User(id=1, name=kim)` — `toString` 에도 **`note` 가 없다.**
 - `D A 쪽 메모 / B 쪽 메모` — 그런데 **`note` 자체는 멀쩡히 살아 있다.** 「사라진 것」이 아니라 「**안 보이는 것**」이다.
 - `E 1 kim` — `componentN` 은 둘뿐이고 순서대로다.
@@ -489,7 +477,7 @@ E Wrap(p=Plain
 - `A false` / `B false` — `Wrap` 둘은 **다르다.** `data` 가 붙었는데도 그렇다.
 - `C true` / `D true` — `Flat` 둘은 같다.
 - ★★ **`data` 는 「깊은 비교」를 약속하지 않는다.** 약속은 「**컴포넌트마다 그 컴포넌트의 `equals` 를 부른다**」뿐이고, 컴포넌트가 참조 비교면 결과도 참조 비교다.
-- ★ 그래서 `Wrap` 의 해시코드는 **실행마다 바뀐다.** 값이 아니라 「같나 다르나」만 근거로 쓴 이유가 여기 있다(머리말 표).
+- ★ 그래서 `Wrap` 의 해시코드는 **실행마다 바뀐다.** 값이 아니라 「같나 다르나」만 근거로 쓴 이유가 여기 있다(맨 위 부분 표).
 - ★ 배열 컴포넌트는 특히 위험하다 — `Array` 의 `equals` 는 **참조 비교**라 내용이 같아도 다르다. Java `record` 도 **완전히 같은 함정**이다([`../../../java/syntax/14-records/`](../../../java/syntax/14-records/)).
 
 ## 문법 — 형태와 규칙
@@ -620,3 +608,15 @@ Z true Book(isbn=978-1, stock=0) 0 978-1 3 OutOfPrint
 - **왜 본문 프로퍼티를 안 읽게 설계했나** — 읽으면 `copy` 의 시그니처가 정해지지 않는다. 계산 프로퍼티(`upper`)·`lateinit`·위임 프로퍼티까지 들어오면 「무엇을 인자로 받을 것인가」의 답이 없다. **주 생성자 괄호를 명세서로 고정한 것**이 그 문제를 한 줄로 끊은 것이다.
 - **Java `record` 와의 방어선 위치** — record 는 **컴포넌트가 곧 불변 필드**이고 본문에 인스턴스 필드를 **아예 못 둔다.** 그래서 (2)의 사고가 **문법 단계에서 불가능**하다. Kotlin 은 본문을 허용하는 대신 「생성 멤버는 명세서만 본다」는 규칙 하나로 처리했다 — **자유도를 주고 사고 가능성을 남긴 쪽**이다.
 - **`hashCode` 값을 저장소에 내보내지 마라** — (7)에서 봤듯 컴포넌트 하나가 `Any.hashCode` 로 떨어지면 **실행마다 바뀐다.** 같은 함정의 `enum` 판이 `ordinal` 이고, 그쪽은 [24번 주제](../24-enum-class-vs-sealed/)에서 실측으로 깨뜨린다.
+
+## 실행 환경
+
+**기준 소스** — [Data classes](https://kotlinlang.org/docs/data-classes.html) · [Destructuring declarations](https://kotlinlang.org/docs/destructuring-declarations.html) · [Object declarations](https://kotlinlang.org/docs/object-declarations.html)(`data object`).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
+`kotlinc` 7회(컴파일 실패 1벌) · `java` 6회 · `javap` 2회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
+**버전** — `data class` 는 **1.0**, `data object` 는 **1.9** 다. 뒤의 것은 이 판에서 직접 던져 확인했다((5)).
+**경계** — 프로퍼티의 backing field·`const` 는 [16번 주제](../16-properties-backing-field-lateinit-const/)가 정본이고, 상속 기본값은 [19번 주제](../19-inheritance-open-final-override/)가 정본이다.\
+`componentN` 규약 자체를 파고드는 것은 [목록의 **30번 주제**](../30-destructuring-declarations-and-componentn/), `==`/`===` 와 `equals` 규약은 [목록의 **32번 주제**](../32-equality-and-equals-contract/), 박싱이 사라지는 `value class` 는 [목록의 **26번 주제**](../26-value-class-and-boxing/)다.\
+Java 쪽 짝은 [`../../../java/syntax/14-records/`](../../../java/syntax/14-records/) — **같은 목적에 방어선을 다른 곳에 둔 것**이 이 주제의 대비 축이다.

@@ -1,12 +1,5 @@
 # go/syntax/45 — `encoding/json`: 태그·`omitempty`·포인터·숫자·스트리밍 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [`encoding/json`](https://pkg.go.dev/encoding/json) · [`encoding/json/v2`](https://pkg.go.dev/encoding/json/v2) 패키지 문서(`go doc encoding/json` · `json.Unmarshal` · `json.Marshal`). **이 툴체인에서 직접 떴다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
-> JS 대비는 **`node v18.19.1`** 이다(머리말 `tools`).\
-> **버전** — `omitzero` 는 **1.24** 부터다(이보다 옛 판은 이 머신에 없어 **안 돌렸다**). ★★ **이 판(`go1.27.1`)은 `encoding/json/v2` 가 기본으로 켜져 있고, v1 패키지가 v2 위에서 돈다**((6)절).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**빠진 필드 대 `null` 격자** — 입력 4(`{}` · `{"A":null}` · `{"A":0}` · `{"A":1}`) × 필드 타입 6(`int` · `*int` · `json.RawMessage` · `any` · 사용자 타입 `Opt` · `sql.NullInt64`)으로 디코드한 값」.
 마지막 줄 「**네 입력을 서로 다른 값으로 받은 행 2 / 6**」((2)절). ★★★ **`*int` 도 `any` 도 「키가 없음」과 「`null`」을 못 가른다.** 가르는 것은 **`json.RawMessage` 와 `UnmarshalJSON` 을 가진 사용자 타입**뿐이었다.
 ★★ 짝이 되는 창은 「**`omitempty` 대 `omitzero` 격자**」 — 값 10가지 중 **빠진 칸이 둘 다 `7 / 10` 인데 빠진 칸의 모양이 다르다**((4)절).
@@ -995,3 +988,10 @@ func main() {
 - ★ **v2 의 옵션**(`MatchCaseInsensitiveNames` · `FormatNilSliceAsNull` 등)으로 v1 동작을 되살리는 것 — **안 던졌다.**
 - ★ **`omitzero` 이전 판**의 태그 무시 — 툴체인이 없어 **못 쟀다.**
 - ★ **`Decoder` 의 메모리 사용** — 원소 단위로 읽는다는 것은 `InputOffset` 으로 보였지만 **바이트는 재지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [`encoding/json`](https://pkg.go.dev/encoding/json) · [`encoding/json/v2`](https://pkg.go.dev/encoding/json/v2) 패키지 문서(`go doc encoding/json` · `json.Unmarshal` · `json.Marshal`). **이 툴체인에서 직접 떴다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
+JS 대비는 **`node v18.19.1`** 이다(「이 판」 절 `tools`).\
+**버전** — `omitzero` 는 **1.24** 부터다(이보다 옛 판은 이 머신에 없어 **안 돌렸다**). ★★ **이 판(`go1.27.1`)은 `encoding/json/v2` 가 기본으로 켜져 있고, v1 패키지가 v2 위에서 돈다**((6)절).

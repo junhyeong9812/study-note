@@ -1,62 +1,5 @@
 # js/syntax/39 — `async`/`await`: 「부르면 첫 `await` 까지 지금 돌고, 늘 프라미스를 돌려주고, `await` 마다 틱 하나 이상 쉰다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다** — `async` 함수 본문의 줄마다, 호출한 쪽의 다음 줄에, **`await` 가 멈추고 다시 도는 지점**마다 로그를 심는다.
-> 틱 수는 37번의 **계수 잡**으로 센다(동작 (2)). ★★★ **순차 대 병렬은 시간이 아니라 「시작 로그의 순서」로** 가른다 — **`b` 가 `a` 가 끝나기 전에 시작했나**(참/거짓)를 스크립트가 찍는다(동작 (3)).
-> ★★ 보조로 **② 전수 격자**(반환 모양 4 · 틱 6행 · 순차/병렬 4행)와 **④ 예외의 `constructor.name` + `message`**(`catch` 가 잡았나 · 최상위 `await` 의 `SyntaxError`)를 쓴다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — Async Function Abstract Operations · `Await`](https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-async-function-objects) — `Await(arg)`: 「`PromiseResolve(%Promise%, arg)` → `PerformPromiseThen(promise, onFulfilled, onRejected)` → 호출자 문맥으로 돌아간다」
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(Async functions **2017** · Top-level `await` **2022**)
-> - [Node.js v20 — `--unhandled-rejections`](https://nodejs.org/docs/latest-v20.x/api/cli.html#--unhandled-rejectionsmode) — 동작 (4)의 `exit 1` 이 어디서 오나(37번과 같다)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 순서·틱 수·예외는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다. 파이썬은 3.12.
-> ★★ **이 주제의 node 탐침은 두 node 판과 Chrome 151 에서 한 글자도 같았다**(아래 대조기의 집계 줄 · Chrome 은 `./js36b-browser.sh` — 소스는 [36번](../36-event-loop-and-microtasks/2-summary.md)).
-> ★★★ **시간은 한 번도 재지 않았다** — 「병렬이 빠르다」·「`await` 가 느리다」를 **쓰지 않는다.**
->
-> **버전**
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `async function` · `await` · `async` 화살표 · `async` 메서드 | **ES2017** | 세 판 다 있다 |
-> | 최상위 `await`(모듈 코드에서만) | **ES2022** | node 18 · 20 둘 다 ES 모듈에서 돌았다(동작 (7)) |
->
-> ★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — Async functions **2017** · Top-level `await` **2022**. README 39행은 판을 적지 않는다.
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **① 추상 연산에 로그 심기**(본체) | 본문 줄 · 호출자의 다음 줄 · `await` 뒤 — **어느 줄이 먼저 찍히나**(동작 (1)·(3)·(4)·(5)) · 계수 잡의 `@k`(동작 (2)) |
-> | ★★ **② 전수 격자** | 반환 모양 4행 · 틱 6행 · 순차/병렬 4행 — 마지막 칸 「`b started before a ended`」 를 스크립트가 찍는다 |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | `return` 과 `return await` 에서 **`catch` 가 잡았나** · CommonJS 의 최상위 `await` → `SyntaxError` |
-> | ★ **창을 바꿔 물었다**(제5의 상태) | 「`async` 함수는 제너레이터 + 프라미스 러너인가」를 **명세 비교가 아니라 로그 비교**로 물었다 — 옆에서 도는 다른 마이크로태스크와 **한 줄씩 같은가**(동작 (8)) |
-> | ★ **부적용 — ③ 브랜드 태그** | 판정할 객체의 종류가 없다(반환값이 `Promise` 인지는 `instanceof` 로 충분했다) |
-> | ★ **안 쟀다 — 시간** | ★★★ 순차 대 병렬을 **시간으로 재지 않았다.** 「시작 로그의 순서」가 전부다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 판별 블록의 판 문자열 — 머신에 매인다 | ★★★ 모든 로그의 **줄 순서** · `@k` · `true`/`false` — 걸음은 전부 **마이크로태스크나 `setTimeout` 0 하나씩**이고, 같은 지연의 타이머는 등록 순서다(36번) |
-> | ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | 종료 코드 `0`·`1` · 두 node 판이 같은 두 답(`2 / 2`) |
->
-> **층** — `async`/`await` 의 멈춤과 재개는 **언어(ECMA-262)** 의 것이다. **호스트가 끼는 자리는 둘**이다 — 걸음을 만든 **타이머**와, 먼저 거부된 프라미스를 **보고하는** node(동작 (4) · 37번).
->
-> **선행** — [37 — Promise 상태 모델](../37-promise-state-model/2-summary.md)(직접 선행 — ★★★ **흡수 규칙과 틱 세는 창**이 거기서 온다 · 미처리 거부) ·
-> [36 — 이벤트 루프와 마이크로태스크](../36-event-loop-and-microtasks/2-summary.md)(★★ **`A1` 이 `S2` 보다 먼저**였던 것 — 여기서 정본으로 다시 잰다) ·
-> [20 — 제너레이터](../20-generators/2-summary.md)(★★★ **`yield` ↔ `await`** — 멈췄다 이어 도는 함수. 동작 (8)이 러너로 같은 로그를 낸다) ·
-> [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(★★ **`try`/`catch`/`finally` 의 흐름** — `return` 과 `return await` 가 그 흐름에서 갈린다. 동작 (6)) ·
-> [38 — Promise 조합기](../38-promise-combinators/2-summary.md)(`Promise.all` 은 **이미 시작한 것**을 기다린다) · [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(★ `Array.fromAsync` 는 하나씩, `Promise.all([...gen()])` 은 셋 다 먼저 — 순차 대 병렬의 **내장 함수 쪽 짝**).
->
-> ★★ **경계 — 연혁**(`co` 러너에서 언어 문법으로)은 [`history/js/04-비동기-진화.md`](../../../../history/js/04-비동기-진화.md) 의 **「4단계 — 제너레이터/이터레이터」** 와 **「5단계 — async/await (ES2017)」** 절이 정본이다. 그 절의 순차/병렬 그림은 **「가로 길이는 원문 수치가 아니다」** 라고 스스로 적는다 — 여기서는 **시작 로그의 순서**로 같은 차이를 보인다.
-> ★ **경계 — `for await` 와 `async function*`** 는 [목록의 **40번 주제**](../40-async-iteration-and-for-await/), **취소와 타임아웃**은 [목록의 **41번 주제**](../41-cancellation-and-timeouts/), **모듈 적재 순서**는 [목록의 **42번 주제**](../42-esm-modules/)다.
-
 ```text
 ===== ./js36b-versions.sh (exit=0) =====
 node 18.19.1  v8 10.2.154.26-node.28
@@ -846,3 +789,59 @@ caller: before f() > f: line 1 > caller: after f() -- got Promise
 - **최상위 `await` 가 모듈 그래프에 주는 영향** — 그 모듈을 `import` 한 쪽의 평가가 기다린다고 알려져 있다. **이 문서는 돌리지 않았다**(42번).
 - **옛 명세의 `await` 틱 수** — ES2019 전의 `await` 는 진짜 프라미스에도 틱을 더 먹었다고 알려져 있다. 이 머신의 세 판은 모두 새 모양이었다.
 - **`async` 함수의 스택 추적**(V8 의 async stack trace) — 명세 밖이다. 재지 않았다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다** — `async` 함수 본문의 줄마다, 호출한 쪽의 다음 줄에, **`await` 가 멈추고 다시 도는 지점**마다 로그를 심는다.
+틱 수는 37번의 **계수 잡**으로 센다(동작 (2)). ★★★ **순차 대 병렬은 시간이 아니라 「시작 로그의 순서」로** 가른다 — **`b` 가 `a` 가 끝나기 전에 시작했나**(참/거짓)를 스크립트가 찍는다(동작 (3)).
+★★ 보조로 **② 전수 격자**(반환 모양 4 · 틱 6행 · 순차/병렬 4행)와 **④ 예외의 `constructor.name` + `message`**(`catch` 가 잡았나 · 최상위 `await` 의 `SyntaxError`)를 쓴다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — Async Function Abstract Operations · `Await`](https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-async-function-objects) — `Await(arg)`: 「`PromiseResolve(%Promise%, arg)` → `PerformPromiseThen(promise, onFulfilled, onRejected)` → 호출자 문맥으로 돌아간다」
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(Async functions **2017** · Top-level `await` **2022**)
+- [Node.js v20 — `--unhandled-rejections`](https://nodejs.org/docs/latest-v20.x/api/cli.html#--unhandled-rejectionsmode) — 동작 (4)의 `exit 1` 이 어디서 오나(37번과 같다)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 순서·틱 수·예외는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다. 파이썬은 3.12.
+★★ **이 주제의 node 탐침은 두 node 판과 Chrome 151 에서 한 글자도 같았다**(맨 위 대조기의 집계 줄 · Chrome 은 `./js36b-browser.sh` — 소스는 [36번](../36-event-loop-and-microtasks/2-summary.md)).
+★★★ **시간은 한 번도 재지 않았다** — 「병렬이 빠르다」·「`await` 가 느리다」를 **쓰지 않는다.**
+
+**버전**
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `async function` · `await` · `async` 화살표 · `async` 메서드 | **ES2017** | 세 판 다 있다 |
+| 최상위 `await`(모듈 코드에서만) | **ES2022** | node 18 · 20 둘 다 ES 모듈에서 돌았다(동작 (7)) |
+
+★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — Async functions **2017** · Top-level `await` **2022**. README 39행은 판을 적지 않는다.
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **① 추상 연산에 로그 심기**(본체) | 본문 줄 · 호출자의 다음 줄 · `await` 뒤 — **어느 줄이 먼저 찍히나**(동작 (1)·(3)·(4)·(5)) · 계수 잡의 `@k`(동작 (2)) |
+| ★★ **② 전수 격자** | 반환 모양 4행 · 틱 6행 · 순차/병렬 4행 — 마지막 칸 「`b started before a ended`」 를 스크립트가 찍는다 |
+| ★★ **④ 예외의 `constructor.name` + `message`** | `return` 과 `return await` 에서 **`catch` 가 잡았나** · CommonJS 의 최상위 `await` → `SyntaxError` |
+| ★ **창을 바꿔 물었다**(제5의 상태) | 「`async` 함수는 제너레이터 + 프라미스 러너인가」를 **명세 비교가 아니라 로그 비교**로 물었다 — 옆에서 도는 다른 마이크로태스크와 **한 줄씩 같은가**(동작 (8)) |
+| ★ **부적용 — ③ 브랜드 태그** | 판정할 객체의 종류가 없다(반환값이 `Promise` 인지는 `instanceof` 로 충분했다) |
+| ★ **안 쟀다 — 시간** | ★★★ 순차 대 병렬을 **시간으로 재지 않았다.** 「시작 로그의 순서」가 전부다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 판별 블록의 판 문자열 — 머신에 매인다 | ★★★ 모든 로그의 **줄 순서** · `@k` · `true`/`false` — 걸음은 전부 **마이크로태스크나 `setTimeout` 0 하나씩**이고, 같은 지연의 타이머는 등록 순서다(36번) |
+| ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | 종료 코드 `0`·`1` · 두 node 판이 같은 두 답(`2 / 2`) |
+
+**층** — `async`/`await` 의 멈춤과 재개는 **언어(ECMA-262)** 의 것이다. **호스트가 끼는 자리는 둘**이다 — 걸음을 만든 **타이머**와, 먼저 거부된 프라미스를 **보고하는** node(동작 (4) · 37번).
+
+**선행** — [37 — Promise 상태 모델](../37-promise-state-model/2-summary.md)(직접 선행 — ★★★ **흡수 규칙과 틱 세는 창**이 거기서 온다 · 미처리 거부) ·
+[36 — 이벤트 루프와 마이크로태스크](../36-event-loop-and-microtasks/2-summary.md)(★★ **`A1` 이 `S2` 보다 먼저**였던 것 — 여기서 정본으로 다시 잰다) ·
+[20 — 제너레이터](../20-generators/2-summary.md)(★★★ **`yield` ↔ `await`** — 멈췄다 이어 도는 함수. 동작 (8)이 러너로 같은 로그를 낸다) ·
+[32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(★★ **`try`/`catch`/`finally` 의 흐름** — `return` 과 `return await` 가 그 흐름에서 갈린다. 동작 (6)) ·
+[38 — Promise 조합기](../38-promise-combinators/2-summary.md)(`Promise.all` 은 **이미 시작한 것**을 기다린다) · [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(★ `Array.fromAsync` 는 하나씩, `Promise.all([...gen()])` 은 셋 다 먼저 — 순차 대 병렬의 **내장 함수 쪽 짝**).
+
+★★ **경계 — 연혁**(`co` 러너에서 언어 문법으로)은 [`history/js/04-비동기-진화.md`](../../../../history/js/04-비동기-진화.md) 의 **「4단계 — 제너레이터/이터레이터」** 와 **「5단계 — async/await (ES2017)」** 절이 정본이다. 그 절의 순차/병렬 그림은 **「가로 길이는 원문 수치가 아니다」** 라고 스스로 적는다 — 여기서는 **시작 로그의 순서**로 같은 차이를 보인다.
+★ **경계 — `for await` 와 `async function*`** 는 [목록의 **40번 주제**](../40-async-iteration-and-for-await/), **취소와 타임아웃**은 [목록의 **41번 주제**](../41-cancellation-and-timeouts/), **모듈 적재 순서**는 [목록의 **42번 주제**](../42-esm-modules/)다.

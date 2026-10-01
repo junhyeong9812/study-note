@@ -1,16 +1,5 @@
 # kotlin/syntax/21 — 클래스 위임 (`by`): 상속 대신 합성 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [20번 주제](../20-interfaces-default-impl-and-super/)다.
-> ★★ **`by` 라는 낱말이 두 곳에 쓰인다** — **프로퍼티 위임**(`by lazy`)은 [17번 주제](../17-delegated-properties/)가 정본이고 여기서는 묻지 않는다.
-> 여기는 **클래스 위임**(`class A : B by b`)만 묻는다.
-> 인터페이스와 기본 구현은 [20번 주제](../20-interfaces-default-impl-and-super/), `open`/`override` 는 [19번 주제](../19-inheritance-open-final-override/)가 정본이다.
-> 문항 11개 중 코드블록이 붙는 예측형은 3개다(2·4번은 코드블록 없이 1·3번의 소스를 다시 본다).
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -214,6 +203,16 @@ class Car(n: NotEngine) : Engine by n
 - [19번 주제](../19-inheritance-open-final-override/)의 상속으로 1번을 다시 쓰면 무엇이 달라지는가?
 - [13번 주제](../13-extension-functions-and-properties/)의 확장 함수로 3번의 `addAll` 을 빼면 함정이 사라지는가?
 - 「계층을 만들 것인가, 가질 것인가」를 가르는 기준을 한 줄로 적어 보라.
+
+## 실행 환경
+
+선행은 [20번 주제](../20-interfaces-default-impl-and-super/)다.
+★★ **`by` 라는 낱말이 두 곳에 쓰인다** — **프로퍼티 위임**(`by lazy`)은 [17번 주제](../17-delegated-properties/)가 정본이고 여기서는 묻지 않는다.
+여기는 **클래스 위임**(`class A : B by b`)만 묻는다.
+인터페이스와 기본 구현은 [20번 주제](../20-interfaces-default-impl-and-super/), `open`/`override` 는 [19번 주제](../19-inheritance-open-final-override/)가 정본이다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

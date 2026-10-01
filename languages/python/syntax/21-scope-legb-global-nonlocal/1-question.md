@@ -1,23 +1,5 @@
 # python/syntax/21-scope-legb-global-nonlocal — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★ 이 주제에서는 **「무슨 예외인가」보다 「어느 줄에서 나는가」가 답인 자리가 많다.**
-> 예외 이름만 맞히고 **줄 번호**를 못 대면 반만 맞은 것이다.
->
-> ★★ **이 주제는 사슬의 첫 고리다** — [22번](../22-closures-and-late-binding/1-question.md)(클로저)·[23번](../23-lambda-and-higher-order-functions/1-question.md)(`lambda`)·[24번](../24-decorators/1-question.md)(데코레이터)이 전부 여기 위에 선다.
-> 여기서 틀린 것은 그 셋에서 그대로 다시 틀린다.
->
-> 실행 환경: `python3` **3.12.3**(Linux). 던지는 형태는 `python3 - <파일` 로 고정했다 —
-> 트레이스백이 `File "<stdin>", line N` 이 된다.
-> ★ **캐럿 규칙** — 실행 중 예외에는 소스 줄도 캐럿도 안 나오고, `SyntaxError` 에는 대개 나온다.
-> **다만 이 주제의 `SyntaxError` 다섯은 전부 캐럿이 안 나온다** — 그것이 3번 문항의 답 절반이다.
-> ★ **소스 펜스의 첫 줄은 캡처가 붙인 파일명 주석**이다. 줄 번호를 셀 때는 그 주석을 빼고 센다.
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -344,6 +326,20 @@ boom_genexp()
 
 - 이 주제가 [22번](../22-closures-and-late-binding/2-summary.md)·[23번](../23-lambda-and-higher-order-functions/2-summary.md)·[24번](../24-decorators/2-summary.md)의 **무엇을 떠받치는지** 한 줄씩 말할 수 있는가?
 - 인라인화 이야기는 **어디까지가 이 주제이고 어디부터가 [14번](../14-comprehensions/2-summary.md)·[15번](../15-generator-expressions-lazy-eval/2-summary.md)인지** 선을 그을 수 있는가?
+
+## 실행 환경
+
+★ 이 주제에서는 **「무슨 예외인가」보다 「어느 줄에서 나는가」가 답인 자리가 많다.**
+예외 이름만 맞히고 **줄 번호**를 못 대면 반만 맞은 것이다.
+
+★★ **이 주제는 사슬의 첫 고리다** — [22번](../22-closures-and-late-binding/1-question.md)(클로저)·[23번](../23-lambda-and-higher-order-functions/1-question.md)(`lambda`)·[24번](../24-decorators/1-question.md)(데코레이터)이 전부 여기 위에 선다.
+여기서 틀린 것은 그 셋에서 그대로 다시 틀린다.
+
+실행 환경: `python3` **3.12.3**(Linux). 던지는 형태는 `python3 - <파일` 로 고정했다 —
+트레이스백이 `File "<stdin>", line N` 이 된다.
+★ **캐럿 규칙** — 실행 중 예외에는 소스 줄도 캐럿도 안 나오고, `SyntaxError` 에는 대개 나온다.
+**다만 이 주제의 `SyntaxError` 다섯은 전부 캐럿이 안 나온다** — 그것이 3번 문항의 답 절반이다.
+★ **소스 펜스의 첫 줄은 캡처가 붙인 파일명 주석**이다. 줄 번호를 셀 때는 그 주석을 빼고 센다.
 
 ## 복습 기록
 

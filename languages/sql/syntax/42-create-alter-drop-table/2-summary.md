@@ -1,15 +1,5 @@
 # sql/42-테이블 정의와 변경 (CREATE·ALTER·DROP) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · CREATE TABLE](https://www.postgresql.org/docs/18/sql-createtable.html) · [PostgreSQL 18 · ALTER TABLE](https://www.postgresql.org/docs/18/sql-altertable.html) · [PostgreSQL 18 · DROP TABLE](https://www.postgresql.org/docs/18/sql-droptable.html) · [MySQL 8.4 · CREATE TABLE](https://dev.mysql.com/doc/refman/8.4/en/create-table.html) · [MySQL 8.4 · ALTER TABLE](https://dev.mysql.com/doc/refman/8.4/en/alter-table.html) · [MySQL 8.4 · Online DDL Operations](https://dev.mysql.com/doc/refman/8.4/en/innodb-online-ddl-operations.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·**경고(Note)** 는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — `ALTER TABLE ... ALGORITHM=INSTANT` 는 MySQL 8.0 부터다. 그 밖의 동작에는 「어느 버전부터」가 붙는 것을 두 매뉴얼에서 찾지 못해 **적지 않는다.**\
-> ★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t42_a`·`t42_b`·`t42_tx` 와 뷰 `v42_a` 를 만들었고 **전부 지웠다.** `emp`·`dept` 는 **한 줄도 건드리지 않았다.**\
-> **선행** — [35 타입 체계와 캐스팅](../35-type-system-and-casting/) · 이어지는 것은 [43 기본키·UNIQUE](../43-primary-key-unique-and-null/) · [45 CHECK·DEFAULT·생성 열](../45-check-not-null-default-generated-columns/) · [46 인덱스 정의](../46-index-definition-composite-partial-expression/) 다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`CREATE TABLE` = 「앞으로 들어올 값이 지켜야 할 약속」을 엔진에 맡기는 것.**
@@ -625,3 +615,12 @@ Create Table: CREATE TABLE `t42_c` (
   그때의 에러 문구는 **이 실험에서 재현하지 못했다**(한도에 도달할 만큼 열을 붙이지 않았다).
 - **`DROP TABLE` 은 어느 엔진에서도 롤백의 대상이 아니라 「복구의 대상**」이다.\
   PG 에서 `BEGIN` 안이라면 되돌아가지만, 커밋된 뒤에는 백업에서 되살리는 수밖에 없다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · CREATE TABLE](https://www.postgresql.org/docs/18/sql-createtable.html) · [PostgreSQL 18 · ALTER TABLE](https://www.postgresql.org/docs/18/sql-altertable.html) · [PostgreSQL 18 · DROP TABLE](https://www.postgresql.org/docs/18/sql-droptable.html) · [MySQL 8.4 · CREATE TABLE](https://dev.mysql.com/doc/refman/8.4/en/create-table.html) · [MySQL 8.4 · ALTER TABLE](https://dev.mysql.com/doc/refman/8.4/en/alter-table.html) · [MySQL 8.4 · Online DDL Operations](https://dev.mysql.com/doc/refman/8.4/en/innodb-online-ddl-operations.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·**경고(Note)** 는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — `ALTER TABLE ... ALGORITHM=INSTANT` 는 MySQL 8.0 부터다. 그 밖의 동작에는 「어느 버전부터」가 붙는 것을 두 매뉴얼에서 찾지 못해 **적지 않는다.**\
+★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t42_a`·`t42_b`·`t42_tx` 와 뷰 `v42_a` 를 만들었고 **전부 지웠다.** `emp`·`dept` 는 **한 줄도 건드리지 않았다.**\
+**선행** — [35 타입 체계와 캐스팅](../35-type-system-and-casting/) · 이어지는 것은 [43 기본키·UNIQUE](../43-primary-key-unique-and-null/) · [45 CHECK·DEFAULT·생성 열](../45-check-not-null-default-generated-columns/) · [46 인덱스 정의](../46-index-definition-composite-partial-expression/) 다.

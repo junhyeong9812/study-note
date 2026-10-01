@@ -1,13 +1,5 @@
 # sql/51-DELETE 와 TRUNCATE — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러·수치는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> ★ **환경** — MySQL `autocommit=1` · `sql_safe_updates=0`(기본) · 스토리지 엔진 **InnoDB**.\
-> ★ **측정 조건** — 11번의 수치는 JMH 가 아니라 **클라이언트 타이머**다(`psql \timing` · `SYSDATE(6)` 차). **3판 원값**을 싣는다.\
-> 이 편이 만든 표(`t51_a`·`t51_p`·`t51_c`·`t51_pc`·`t51_cc`·`t51_big`)는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> 문서 근거는 [PG 18 TRUNCATE](https://www.postgresql.org/docs/18/sql-truncate.html) · [MySQL 8.4 TRUNCATE TABLE](https://dev.mysql.com/doc/refman/8.4/en/truncate-table.html) · [MySQL 8.4 mysql Client Options](https://dev.mysql.com/doc/refman/8.4/en/mysql-command-options.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -768,7 +760,7 @@ DELETE FROM t51_c WHERE p_id IN (SELECT id FROM t51_p WHERE name = 'p1');
 
 | 무엇을 | 어디서 | 몇 번 | 비고 |
 |---|---|---|---|
-| `autocommit`·`sql_safe_updates`·엔진 확인 (머리말) | MySQL 8.4.10 | 3회 | **InnoDB 가 전제다** |
+| `autocommit`·`sql_safe_updates`·엔진 확인 (「실행 환경」) | MySQL 8.4.10 | 3회 | **InnoDB 가 전제다** |
 | 표 6개 생성·삭제 | PG 18.6 · MySQL 8.4.10 | 각 6회 | `t51_a`·`t51_p`·`t51_c`·`t51_pc`·`t51_cc`·`t51_big` |
 | `DELETE` 롤백 (1번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **둘 다 5행 복귀** |
 | ★★ `TRUNCATE` 롤백 (2번) | PG 18.6 · MySQL 8.4.10 | 각 2회 | **PG 5 / MySQL 0 — MySQL 쪽은 손으로 복구했다** |
@@ -819,3 +811,12 @@ DELETE FROM t51_c WHERE p_id IN (SELECT id FROM t51_p WHERE name = 'p1');
 
 **DB 잔재** — 없다. `t51_` 로 시작하는 표를 두 엔진에서 전부 삭제했고 `emp`·`dept` 는 **읽지도 쓰지도 않았다.**\
 두 엔진의 최종 표 목록은 [54 편의 「실행 검증」](../54-returning-and-data-modifying-cte/3-answer.md)에 있다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러·수치는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+★ **환경** — MySQL `autocommit=1` · `sql_safe_updates=0`(기본) · 스토리지 엔진 **InnoDB**.\
+★ **측정 조건** — 11번의 수치는 JMH 가 아니라 **클라이언트 타이머**다(`psql \timing` · `SYSDATE(6)` 차). **3판 원값**을 싣는다.\
+이 편이 만든 표(`t51_a`·`t51_p`·`t51_c`·`t51_pc`·`t51_cc`·`t51_big`)는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+문서 근거는 [PG 18 TRUNCATE](https://www.postgresql.org/docs/18/sql-truncate.html) · [MySQL 8.4 TRUNCATE TABLE](https://dev.mysql.com/doc/refman/8.4/en/truncate-table.html) · [MySQL 8.4 mysql Client Options](https://dev.mysql.com/doc/refman/8.4/en/mysql-command-options.html).

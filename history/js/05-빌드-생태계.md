@@ -1,9 +1,5 @@
 # JS 모듈·빌드·도구 생태계 변천사
 
-> 원본: `~/project/js-history/05-빌드-생태계.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
-> 연도·인명·버전·수치·코드·표는 원문 그대로다.\
-> ASCII 도식 7개(그중 3개는 원문 mermaid 그림을 글자로 옮긴 것, 1개는 원문의 글자 도식 그대로)와 「한눈에」의 공구상 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -682,3 +678,9 @@ JS 도구를 JS로 만들던 자기참조 시대의 종언이다.
 - [swc — Rust-based platform for the Web](https://swc.rs/)
 - [Turborepo, Nx, and Lerna: monorepo tooling (DEV)](https://dev.to/dataformathub/turborepo-nx-and-lerna-the-truth-about-monorepo-tooling-in-2026-71)
 - [State of JavaScript 2026 (LangPop)](https://langpop.com/blog/state-of-javascript-2026)
+
+## 출처
+
+원본: `~/project/js-history/05-빌드-생태계.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
+연도·인명·버전·수치·코드·표는 원문 그대로다.\
+ASCII 도식 7개(그중 3개는 원문 mermaid 그림을 글자로 옮긴 것, 1개는 원문의 글자 도식 그대로)와 「한눈에」의 공구상 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

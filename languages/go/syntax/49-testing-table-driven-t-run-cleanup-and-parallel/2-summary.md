@@ -1,12 +1,5 @@
 # go/syntax/49 — `testing`: 표 기반 테스트·`t.Run`·`t.Cleanup`·`t.Parallel` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [`testing`](https://pkg.go.dev/testing) 패키지 문서(`go doc testing` 의 「Subtests and Sub-benchmarks」 · `T.Run` · `T.Parallel` · `T.Cleanup` · `T.FailNow`) · `go help test`. **이 툴체인에서 직접 떴다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
-> ★ 테스트는 **`go test -c -o t.test .` 로 바이너리를 만든 뒤 `./t.test` 로** 돌렸다 — `go test .` 의 `ok … 0.004s` 줄(시간)이 안 섞이게. `go test .` 을 그대로 실은 블록은 (1)절 하나다.\
-> **버전** — `t.Parallel` 은 1.0 · `t.Run` 은 1.7 · `t.Cleanup` 은 1.14 · `t.Setenv` 1.17 · `t.Context` 1.24(이 툴체인의 `api/go1*.txt` — 아래 「이 판」) · ★★ **`for` 루프 변수가 회차마다 새로 생기는 것은 1.22**(언어 판 — [13번 주제](../13-closures-variable-capture-and-loop-variable-change/)).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**정리 순서 판 격자** — 「A 가 B 보다 먼저인가」 질문 9 × 판 3(하위 `t.Parallel()` 없음 · 있음 · 있음 + `t.Run("group", …)` 으로 감쌈)」.
 마지막 두 줄 「**판 1 과 판 2 가 갈린 칸 3 / 9**」·「**판 1 과 판 3 이 갈린 칸 0 / 9**」((2)절). ★★★ **`t.Parallel()` 한 줄이 부모의 `defer` 를 병렬 하위보다 먼저 돌게 만들고, `group` 한 겹이 그것을 되돌린다.**
 ★★ 짝이 되는 창은 「**두 파일, 같은 루프**」 — 한 패키지 안에서 `//go:build go1.21` 파일과 보통 파일이 **같은 표 기반 병렬 테스트**를 돌려 **「두 파일이 갈린 칸 2 / 3」**((3)절).
@@ -205,7 +198,7 @@ go test exit=1
 
 - ★★ **`--- FAIL: TestAbs/neg1 (0.00s)`** — 실패한 케이스가 **표의 `name`** 으로 보고된다. 부모 `TestAbs` 도 `FAIL` 이다(하위가 하나라도 실패하면 부모도 실패).
 - ★★ **`t49table_test.go:26:`** — `t.Errorf` 를 부른 **줄**이 붙는다. 표의 어느 **행**인지는 줄 번호가 아니라 **이름**이 말한다 — 그래서 `name` 칸을 둔다.
-- ★★ **`t.Errorf` 는 멈추지 않는다** — 실패를 표시만 하고 그 하위를 끝까지 돈다. `t.Fatalf` 였다면 **그 하위만** 멈추고 **다음 행은 여전히 돈다**(하위마다 고루틴이 따로다 — 머리말 `Run` 문서 「in a separate goroutine」).
+- ★★ **`t.Errorf` 는 멈추지 않는다** — 실패를 표시만 하고 그 하위를 끝까지 돈다. `t.Fatalf` 였다면 **그 하위만** 멈추고 **다음 행은 여전히 돈다**(하위마다 고루틴이 따로다 — 「이 판」 절 `Run` 문서 「in a separate goroutine」).
 - ★ `abs` 의 조건이 `x < -1` 이라 `-1` 만 틀린다 — `-2` 는 맞는다. **경계값 행이 있어야** 잡힌다.
 
 ```text
@@ -371,7 +364,7 @@ P.defer 가 P.cleanup2 보다 먼저	true	true	true
 그림 해설 (한 단계씩):
 
 - ★★★ **판 1(Parallel 없음) — `순서:` 줄이 곧 직관이다** — `s1 → s2 → s3` 가 각자 `본문 → defer → cleanup` 을 마치고, 부모가 `P.return → P.defer → P.cleanup2 → P.cleanup1`. **`defer` 가 `Cleanup` 보다 먼저, `Cleanup` 은 나중 등록부터.**
-- ★★★ **판 2(s2·s3 가 `t.Parallel()`) — 위 세 줄이 뒤집혔다: `P.return`·`P.defer` 가 `s2.body` 보다 먼저 · `P.defer` 가 `s3.cleanup` 보다 먼저** — 머리말 `Run` 문서 「blocks until f returns **or calls t.Parallel**」 그대로다. `Run` 이 돌아오니 부모 함수가 **끝까지 가서 반환**하고, **그때 `defer` 가 돈다** — 병렬 하위는 **그 뒤에야** 풀려난다.
+- ★★★ **판 2(s2·s3 가 `t.Parallel()`) — 위 세 줄이 뒤집혔다: `P.return`·`P.defer` 가 `s2.body` 보다 먼저 · `P.defer` 가 `s3.cleanup` 보다 먼저** — 「이 판」 절 `Run` 문서 「blocks until f returns **or calls t.Parallel**」 그대로다. `Run` 이 돌아오니 부모 함수가 **끝까지 가서 반환**하고, **그때 `defer` 가 돈다** — 병렬 하위는 **그 뒤에야** 풀려난다.
 - ★★★ **그런데 `P.cleanup1`·`P.cleanup2` 는 판 2 에서도 `s2.cleanup`·`s3.cleanup` 뒤다** — 문서 「when the test (or subtest) **and all its subtests** complete」. **부모의 `defer` 로 공유 자원을 닫으면 병렬 하위가 닫힌 자원을 쓰고, `t.Cleanup` 으로 닫으면 안 그렇다** — 이 한 쌍이 이 주제의 결론이다.
 - ★★ **판 3(판 2 + `t.Run("group", subs)` 로 감쌈) — 판 1 과 갈린 칸 `0 / 9`** — `group` 도 하위 테스트이고, **하위를 가진 하위는 그 하위가 다 끝나야 끝난다**(`go doc testing` 「A parent test will only complete once all of its subtests complete」). 그래서 바깥 `t.Run("group")` 이 **병렬 하위가 끝날 때까지** 안 돌아온다. `defer` 를 꼭 써야 한다면 이 모양이다.
 - ★ **판 1·2·3 모두 `s1.cleanup` 이 `s2.body` 보다 먼저** — 병렬이 아닌 `s1` 은 `Run` 이 끝까지 기다리므로 **자기 `Cleanup` 까지 마친 뒤** 돌아온다. 하위의 `Cleanup` 은 **그 하위가 끝날 때** 돈다.
@@ -515,7 +508,7 @@ test exit=1
 
 그림 해설 (한 단계씩):
 
-- ★★★ **`in goroutine` 뒤의 `goroutine: after Fatal` 은 안 찍혔고, `test: after <-done` 은 찍혔다** — `t.Fatal` → `FailNow` → **`runtime.Goexit`**(머리말 문서). `Goexit` 은 **부른 고루틴만** 끝낸다(그 고루틴의 `defer` 는 돈다 — `close(done)` 이 돌아서 테스트가 안 멈췄다). **테스트 함수는 멈추지 않고 끝까지 갔다.**
+- ★★★ **`in goroutine` 뒤의 `goroutine: after Fatal` 은 안 찍혔고, `test: after <-done` 은 찍혔다** — `t.Fatal` → `FailNow` → **`runtime.Goexit`**(「이 판」 절 문서). `Goexit` 은 **부른 고루틴만** 끝낸다(그 고루틴의 `defer` 는 돈다 — `close(done)` 이 돌아서 테스트가 안 멈췄다). **테스트 함수는 멈추지 않고 끝까지 갔다.**
 - ★★ **테스트는 `FAIL`** — 실패 **표시**는 됐다. 문서 「Calling FailNow does not stop those other goroutines」의 반대 방향 — **다른 고루틴에서 불러도 테스트 고루틴을 멈추지 못한다.**
 - ★★★ **`go vet exit=1`(`call to (*testing.T).Fatal from a non-test goroutine`) · `go test` 는 빌드했다** — 여기서도 `go test` 의 `vet` 부분 집합에 **`testinggoroutine` 이 없다**((3)절과 같은 구멍).
 - ★ 고치는 법 — 고루틴에서는 **`t.Error` + `return`**(멈출 필요가 없으면), 또는 **에러를 채널로 돌려받아** 테스트 고루틴에서 `t.Fatal`.
@@ -642,9 +635,9 @@ PASS
 |---|---|---|
 | 루프 변수가 회차마다 새 변수 | **명세**(1.22 · `go` 줄·`//go:build go1.NN` 이 판을 고른다) | (3)절 · 13번 |
 | `defer` 는 함수 반환 때 · LIFO | **명세** | (2)절 · 26번 |
-| `Run` 이 `t.Parallel` 에서 돌아온다 | **표준 라이브러리 계약** | 머리말 `t49pdoc` |
-| `Cleanup` 은 하위까지 기다린 뒤 · 나중 등록부터 | **표준 라이브러리 계약** | 머리말 · (2)절 |
-| `FailNow`·`SkipNow` 가 `runtime.Goexit` | **표준 라이브러리 계약** | 머리말 · (4)·(5)절 |
+| `Run` 이 `t.Parallel` 에서 돌아온다 | **표준 라이브러리 계약** | 「이 판」 절 `t49pdoc` |
+| `Cleanup` 은 하위까지 기다린 뒤 · 나중 등록부터 | **표준 라이브러리 계약** | 「이 판」 절 · (2)절 |
+| `FailNow`·`SkipNow` 가 `runtime.Goexit` | **표준 라이브러리 계약** | 「이 판」 절 · (4)·(5)절 |
 | `-run` 이 단계별 비고정 정규식 | **도구 계약**(`go doc testing`) | (5)절 |
 | `go test` 가 도는 `vet` 분석기 목록 | ★★ **도구(`go` 명령) 판의 성질** — 명세가 아니다 | (3)·(4)절 · 52번 |
 | 병렬 하위끼리의 순서 | ★★ **약속 없음** — 관찰도 칸으로 안 만들었다 | 흔들리는 칸 표 |
@@ -698,3 +691,10 @@ PASS
 - ★ **`t.Context()`(1.24)** — 문서 「canceled just before Cleanup-registered functions are called」. 이 문서는 **돌려 보지 않았다.**
 - ★ **`t.Setenv` 는 병렬 테스트(와 병렬 조상을 가진 테스트)에서 못 쓴다**는 문서 조항이 있다 — 「Because Setenv affects the whole process」. 이 문서는 그 패닉을 **돌려 보지 않았다.**
 - ★ 퍼징(`FuzzXxx`·`f.Add`)은 같은 `testing` 패키지지만 이 묶음 밖이다.
+
+## 실행 환경
+
+**기준 소스** — [`testing`](https://pkg.go.dev/testing) 패키지 문서(`go doc testing` 의 「Subtests and Sub-benchmarks」 · `T.Run` · `T.Parallel` · `T.Cleanup` · `T.FailNow`) · `go help test`. **이 툴체인에서 직접 떴다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
+★ 테스트는 **`go test -c -o t.test .` 로 바이너리를 만든 뒤 `./t.test` 로** 돌렸다 — `go test .` 의 `ok … 0.004s` 줄(시간)이 안 섞이게. `go test .` 을 그대로 실은 블록은 (1)절 하나다.\
+**버전** — `t.Parallel` 은 1.0 · `t.Run` 은 1.7 · `t.Cleanup` 은 1.14 · `t.Setenv` 1.17 · `t.Context` 1.24(이 툴체인의 `api/go1*.txt` — 맨 위 「이 판」) · ★★ **`for` 루프 변수가 회차마다 새로 생기는 것은 1.22**(언어 판 — [13번 주제](../13-closures-variable-capture-and-loop-variable-change/)).

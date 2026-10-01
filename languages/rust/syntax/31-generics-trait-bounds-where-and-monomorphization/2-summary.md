@@ -1,24 +1,5 @@
 # rust/syntax/31 — 제네릭과 트레이트 경계·`where`·단형화 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Reference — Generic parameters](https://doc.rust-lang.org/reference/items/generics.html) ·
-> [Reference — Trait and lifetime bounds](https://doc.rust-lang.org/reference/trait-bounds.html) ·
-> [Reference — `Sized`](https://doc.rust-lang.org/reference/special-types-and-traits.html#sized) ·
-> [Book 10.1 — Performance of Code Using Generics](https://doc.rust-lang.org/book/ch10-01-syntax.html#performance-of-code-using-generics) ·
-> [rustc book — Codegen options(`symbol-mangling-version`)](https://doc.rust-lang.org/rustc/codegen-options/index.html#symbol-mangling-version).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> ★★ **단형화(monomorphization)라는 말은 Reference 가 아니라 Book 이 쓴다** — 언어는 제네릭의 **의미**만 정하고, **몇 벌을 찍나는 구현이 정한다**(§구현 세부).
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 <파일>.rs`** 로 실제로 돌려 받은 것이다. **`-C` 플래그는 전부 배너에 적었다**(`opt-level`·`symbol-mangling-version`).\
-> C++ 대비는 **`g++ 13.3.0` 과 `clang++ 18.1.3`** 두 컴파일러로 `-std=c++20 -Wall -Wextra` 로 던졌다(아래 판 블록).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
-> ★★★ **이 문서는 속도를 한 번도 재지 않았다.** 「단형화는 빠르고 `dyn` 은 느리다」는 **이 문서의 주장이 아니다.**
-> 잰 것은 **벌 수(심볼 개수)와 바이트(심볼 크기)** 둘뿐이다.
-> **버전** — 제네릭·트레이트 경계·`where`·`?Sized` 는 전부 **1.0.0**, 에디션과 무관하다.
-> `-C symbol-mangling-version=v0` 은 **이 판의 안정 코드젠 옵션**이다(rustc book 이 지원 값으로 `v0` 을 적는다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ```text
 ===== rustc --version =====
 rustc 1.92.0 (ded5c06cf 2025-12-08)
@@ -139,7 +120,7 @@ GNU nm (GNU Binutils for Ubuntu) 2.42
   그래서 **같은 질문을 링크 뒤의 심볼 표로 물었다.** ★ 이 창이 **못 보는 것** — 인라인되어 **심볼이 없어진 벌**은 안 세어진다.
   그래서 `#[inline(never)]` 판을 **따로** 세웠다(0 벌이 「안 찍었다」인지 「녹였다」인지를 가르려고).
 
-★ **「부적용인 창」** — **실행 시간**이다. 이 주제는 속도를 **재지 않는다**(머리말).
+★ **「부적용인 창」** — **실행 시간**이다. 이 주제는 속도를 **재지 않는다**(「실행 환경」).
 
 ### (1) ★★ 경계 없이 메서드를 부르면 — 호출이 하나도 없어도 막힌다
 
@@ -1074,12 +1055,12 @@ fn main() {
 | 인자를 **호출 자리에서** 경계와 대조하는 것 | ★ **언어 보장** | (3)의 E0277 |
 | 숨은 **`Sized`** 경계 | ★ **언어 보장** — Reference(`Sized`) | (5)의 note |
 | 함수에 **기본 타입 인자 금지** | ★ **언어 보장** — 옛 판에서 받아 주던 것을 **린트로 거둬들이는 중**(`deny` 기본) | TS 20 (6) 인용 |
-| **단형화라는 전략** 자체 | ★ **구현 전략** — Book 이 설명하고, Reference 는 **의미만** 정한다 | 머리말 |
+| **단형화라는 전략** 자체 | ★ **구현 전략** — Book 이 설명하고, Reference 는 **의미만** 정한다 | 「실행 환경」 |
 | ★★★ **몇 벌이 생기나** | ★ **구현 세부** — `opt-level`·인라인·병합에 달렸다. **3 · 0 · 2** 를 봤다 | (8)의 격자 |
 | ★★ **몸이 같은 두 벌이 합쳐지는** 것 | ★ **구현 세부** — `opt-level=2` 부터 이 판에서 관찰 | (8)의 격자 |
 | 심볼 **바이트** | ★ **구현 세부** — 판마다 다르다(106 · 209) | (8)의 격자 |
 | `dyn` 의 **vtable 모양**(드롭·크기·정렬·메서드) | ★ **구현 세부** — 레이아웃은 언어가 정하지 않는다 | (8)의 IR |
-| `-C symbol-mangling-version=v0` | ★ **이 판의 안정 코드젠 옵션** — 기본값은 「바뀔 수 있다」고 rustc book 이 적는다 | 머리말 |
+| `-C symbol-mangling-version=v0` | ★ **이 판의 안정 코드젠 옵션** — 기본값은 「바뀔 수 있다」고 rustc book 이 적는다 | 「실행 환경」 |
 | C++ 템플릿이 **인스턴스화 때** 몸통을 검사하는 것 | ★ **C++ 표준의 성질**(의존 이름) — 두 컴파일러가 같았다. **진단 모양은 달랐다** | (7) |
 
 ## 언제 쓰고 언제 안 쓰나
@@ -1182,3 +1163,22 @@ for l in lines[start:start + 14]:
 - **`const` 제네릭** — `fn f<const N: usize>(a: [u8; N])` — 값으로 단형화된다. 벌 수 세기가 그대로 적용된다(이 문서는 안 셌다).
 - **`-C codegen-units`·LTO** — 크레이트를 나눠 컴파일하는 단위와 링크 때 최적화. **벌 수·병합에 영향을 줄 수 있는 축**이다 — 이 격자는 기본값만 썼다.
 - **`cargo bloat` 같은 도구** — 외부 크레이트라 이 문서는 안 썼다. `nm -C -S --size-sort` 가 같은 질문의 std 판이다.
+
+## 실행 환경
+
+**기준 소스** — [Reference — Generic parameters](https://doc.rust-lang.org/reference/items/generics.html) ·
+[Reference — Trait and lifetime bounds](https://doc.rust-lang.org/reference/trait-bounds.html) ·
+[Reference — `Sized`](https://doc.rust-lang.org/reference/special-types-and-traits.html#sized) ·
+[Book 10.1 — Performance of Code Using Generics](https://doc.rust-lang.org/book/ch10-01-syntax.html#performance-of-code-using-generics) ·
+[rustc book — Codegen options(`symbol-mangling-version`)](https://doc.rust-lang.org/rustc/codegen-options/index.html#symbol-mangling-version).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+★★ **단형화(monomorphization)라는 말은 Reference 가 아니라 Book 이 쓴다** — 언어는 제네릭의 **의미**만 정하고, **몇 벌을 찍나는 구현이 정한다**(§구현 세부).
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 <파일>.rs`** 로 실제로 돌려 받은 것이다. **`-C` 플래그는 전부 배너에 적었다**(`opt-level`·`symbol-mangling-version`).\
+C++ 대비는 **`g++ 13.3.0` 과 `clang++ 18.1.3`** 두 컴파일러로 `-std=c++20 -Wall -Wextra` 로 던졌다(맨 위 판 블록).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
+★★★ **이 문서는 속도를 한 번도 재지 않았다.** 「단형화는 빠르고 `dyn` 은 느리다」는 **이 문서의 주장이 아니다.**
+잰 것은 **벌 수(심볼 개수)와 바이트(심볼 크기)** 둘뿐이다.
+**버전** — 제네릭·트레이트 경계·`where`·`?Sized` 는 전부 **1.0.0**, 에디션과 무관하다.
+`-C symbol-mangling-version=v0` 은 **이 판의 안정 코드젠 옵션**이다(rustc book 이 지원 값으로 `v0` 을 적는다).

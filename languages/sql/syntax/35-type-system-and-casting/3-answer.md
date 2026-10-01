@@ -1,11 +1,5 @@
 # sql/35-타입 체계와 캐스팅 (명시 변환·암시 변환) — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> 표를 만든 실험은 전부 **끝나고 지웠다**(`t35`·`t35b`). `emp`·`dept` 는 읽기만 했다.\
-> 문서 근거는 [PG 18 Type Conversion](https://www.postgresql.org/docs/18/typeconv.html) · [MySQL 8.4 Type Conversion](https://dev.mysql.com/doc/refman/8.4/en/type-conversion.html) · [MySQL 8.4 Cast Functions](https://dev.mysql.com/doc/refman/8.4/en/cast-functions.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -758,3 +752,10 @@ MySQL -> PG 로 옮긴다
 목록 README 의 규칙대로, 확인하지 못한 도입 버전은 적지 않았다.
 
 **DB 잔재** — 없다. `t35`·`t35b`·`t35n` 은 실험 후 삭제했고, `emp`·`dept` 는 읽기만 했다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+표를 만든 실험은 전부 **끝나고 지웠다**(`t35`·`t35b`). `emp`·`dept` 는 읽기만 했다.\
+문서 근거는 [PG 18 Type Conversion](https://www.postgresql.org/docs/18/typeconv.html) · [MySQL 8.4 Type Conversion](https://dev.mysql.com/doc/refman/8.4/en/type-conversion.html) · [MySQL 8.4 Cast Functions](https://dev.mysql.com/doc/refman/8.4/en/cast-functions.html).

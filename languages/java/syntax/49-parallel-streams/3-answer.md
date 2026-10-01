@@ -1,12 +1,5 @@
 # java/syntax/49 — 병렬 스트림: 값이 나오는 조건 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·에러·수치는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> 측정 머신: **CPU 24코어**(`availableProcessors` = 24, 공용 풀 병렬도 23).\
-> ⚠️ **JMH 가 아니다.** 워밍업 5회 뒤 9회 측정의 중앙값이고, 두 번 돌리면 배수가 흔들린다.\
-> 수치는 **자릿수만** 읽는다. 다른 머신에서 그대로 재현되지 않는다.\
-> javadoc 인용은 `lib/src.zip` 의 `java.base/java/util/stream/package-info.java`·`Collectors.java` 원문이다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -815,3 +808,11 @@ list.stream().collect(Collectors.toMap(...));   // 순차로 바꿔 다시 돌�
 - 재귀 분할 조각 수(1024 / 1025 / 2048).
 - `ArrayList` 경쟁의 구체적 실패 형태(유실 개수·예외 발생률).
 - **Java 8 의 동작은 안 돌려 봄** — 이 머신에 8이 없다.
+
+## 실행 환경
+
+이 파일의 모든 출력·에러·수치는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+측정 머신: **CPU 24코어**(`availableProcessors` = 24, 공용 풀 병렬도 23).\
+⚠️ **JMH 가 아니다.** 워밍업 5회 뒤 9회 측정의 중앙값이고, 두 번 돌리면 배수가 흔들린다.\
+수치는 **자릿수만** 읽는다. 다른 머신에서 그대로 재현되지 않는다.\
+javadoc 인용은 `lib/src.zip` 의 `java.base/java/util/stream/package-info.java`·`Collectors.java` 원문이다.

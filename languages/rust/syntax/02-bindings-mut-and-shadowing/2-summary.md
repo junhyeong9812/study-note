@@ -1,14 +1,5 @@
 # rust/syntax/02 — 변수 바인딩·`mut`·섀도잉·타입 추론 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Variables · `let` statements · Type inference 절 ·
-> `rustc --explain E0384` / `E0308` / `E0282` / `E0381` 의 공식 설명. 이 머신의 `rust-docs`(1.92.0)를 열어 확인했다.
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
-> 컴파일러가 **거부한 코드**가 이 주제의 본문이다 — 에러 메시지를 통째로 싣는다.
-> **버전** — 여기 나오는 문법은 전부 1.0부터다. 관찰용으로 쓴 `std::any::type_name_of_val` 만 **1.76.0**부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`let` 은 상자를 만드는 것이 아니라 상자에 이름표를 붙여 선반 앞줄에 올리는 것이다.**
@@ -555,3 +546,12 @@ error: aborting due to 1 previous error
 
 For more information about this error, try `rustc --explain E0453`.
 ```
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Variables · `let` statements · Type inference 절 ·
+`rustc --explain E0384` / `E0308` / `E0282` / `E0381` 의 공식 설명. 이 머신의 `rust-docs`(1.92.0)를 열어 확인했다.
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
+컴파일러가 **거부한 코드**가 이 주제의 본문이다 — 에러 메시지를 통째로 싣는다.
+**버전** — 여기 나오는 문법은 전부 1.0부터다. 관찰용으로 쓴 `std::any::type_name_of_val` 만 **1.76.0**부터다.

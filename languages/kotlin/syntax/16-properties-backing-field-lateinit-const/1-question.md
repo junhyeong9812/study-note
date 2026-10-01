@@ -1,17 +1,5 @@
 # kotlin/syntax/16 — 프로퍼티: backing field·커스텀 접근자·`lateinit`·`const` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다.
-> ★ **초기화가 언제 도는지는 [15번 주제](../15-class-declaration-constructors-and-init/)가 정본**이고,
-> 위임(`by lazy`·`observable`)은 [17번 주제](../17-delegated-properties/), 확장 프로퍼티는 [13번 주제](../13-extension-functions-and-properties/)가 정본이다.
-> 여기는 **프로퍼티 하나가 필드와 접근자로 어떻게 쪼개지나**를 묻는다.
-> 이 주제는 [17번 주제](../17-delegated-properties/)·[목록의 **35번 주제**](../35-annotations-and-use-site-targets/)·**39번 주제**의 뿌리다.
-> Java 쪽 짝은 [`../../../java/syntax/06-initialization-order/`](../../../java/syntax/06-initialization-order/)의 「컴파일 타임 상수」 절이다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -214,6 +202,17 @@ fun main() {
 - 확장 프로퍼티는 무엇으로 컴파일되는가 — 정본은 어느 주제인가?
 - 이 주제의 축(필드 유무)으로 보면 확장 프로퍼티는 어느 칸인가?
 - 위임 프로퍼티(`by`)의 필드에는 무엇이 들어 있는가 — 정본은 어느 주제인가?
+
+## 실행 환경
+
+선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다.
+★ **초기화가 언제 도는지는 [15번 주제](../15-class-declaration-constructors-and-init/)가 정본**이고,
+위임(`by lazy`·`observable`)은 [17번 주제](../17-delegated-properties/), 확장 프로퍼티는 [13번 주제](../13-extension-functions-and-properties/)가 정본이다.
+여기는 **프로퍼티 하나가 필드와 접근자로 어떻게 쪼개지나**를 묻는다.
+이 주제는 [17번 주제](../17-delegated-properties/)·[목록의 **35번 주제**](../35-annotations-and-use-site-targets/)·**39번 주제**의 뿌리다.
+Java 쪽 짝은 [`../../../java/syntax/06-initialization-order/`](../../../java/syntax/06-initialization-order/)의 「컴파일 타임 상수」 절이다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
 
 ## 복습 기록
 

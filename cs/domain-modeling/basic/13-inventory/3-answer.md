@@ -1,11 +1,5 @@
 # domain-modeling-basic/13-inventory — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 — `impl/com/domain/inventory/Inventory.java`, `StockResult.java`, `InventoryTest.java`, README 측정표.
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 README·impl·테스트 근거로 작성. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
@@ -486,3 +480,7 @@
   A: `Inventory`는 상품 하나 단위라 상품 A 예약 OK, 상품 B SHORT가 따로 나온다. 주문은 실패하는데 A의 예약이 장부에 남아 잠긴 재고가 된다.\
   더 정할 것: 주문 단위의 전부 아니면 전무 — 하나라도 SHORT면 이미 잡은 예약을 전부 `release`한다(02번 블록 잡기와 같은 계약).\
   상품이 서로 다른 서비스에 있으면 그 되돌리기가 보상 트랜잭션(saga)이 된다. README "생각해볼 것"의 질문이다.
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 — `impl/com/domain/inventory/Inventory.java`, `StockResult.java`, `InventoryTest.java`, README 측정표.

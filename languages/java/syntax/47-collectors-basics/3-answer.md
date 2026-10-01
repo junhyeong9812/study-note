@@ -1,10 +1,5 @@
 # java/syntax/47 — `Collectors`: 기본 수집기와 `toMap` 의 함정 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·에러는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> 소스·javadoc 인용은 `lib/src.zip` 의 `java.base/java/util/stream/Collectors.java` 원문이다.\
-> 17.0.13 · 25.0.1 에서도 같은 프로그램을 돌렸다 — **메시지는 같고 스택트레이스만 달랐다**(11번).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -619,3 +614,9 @@ users.stream().collect(Collectors.toMap(User::id, u -> u));
 - 스택트레이스의 줄 번호와 **합성 람다 일련번호**(`lambda$toMap$68` vs `$0`) — 세 버전이 전부 달랐다.
 - `toSet()` 의 순회 순서 — `HashSet` 의 해시 배치에 달려 있다.
 - **Java 8 의 동작은 안 돌려 봄** — 이 머신에 8이 없다. `toUnmodifiable*`(10+)·`Stream.toList()`(16+)는 애초에 8에 없다.
+
+## 실행 환경
+
+이 파일의 모든 출력·에러는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+소스·javadoc 인용은 `lib/src.zip` 의 `java.base/java/util/stream/Collectors.java` 원문이다.\
+17.0.13 · 25.0.1 에서도 같은 프로그램을 돌렸다 — **메시지는 같고 스택트레이스만 달랐다**(11번).

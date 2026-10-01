@@ -1,12 +1,5 @@
 # sql/36-수치 타입과 수치 함수 (정수 나눗셈·반올림·정밀도) — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다. **손계산으로 유도한 값은 하나도 없다.**\
-> 표를 쓴 실험은 전부 트랜잭션으로 감싸 **롤백**했고, `emp`·`dept` 는 읽기만 했다.\
-> **MySQL 조건** — `sql_mode` 기본값(`STRICT_TRANS_TABLES`·`ERROR_FOR_DIVISION_BY_ZERO` 포함) · `div_precision_increment` = 4.\
-> 문서 근거는 [PG 18 Numeric Types](https://www.postgresql.org/docs/18/datatype-numeric.html) · [PG 18 Math Functions](https://www.postgresql.org/docs/18/functions-math.html) · [MySQL 8.4 Arithmetic Operators](https://dev.mysql.com/doc/refman/8.4/en/arithmetic-functions.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -408,7 +401,7 @@ MySQL 의 sql_mode 가 갈림길이다
                                                   -> ERROR 1365
 ```
 
-이 서버의 `sql_mode` 에 둘 다 들어 있다(머리말 참조). **설정이 다르면 (b)도 조용히 `NULL` 이 들어간다.**
+이 서버의 `sql_mode` 에 둘 다 들어 있다(「실행 환경」 참조). **설정이 다르면 (b)도 조용히 `NULL` 이 들어간다.**
 
 **대가** — **조회로 검증한 식이 적재에서 터진다.** 반대 방향(적재는 되는데 조회가 틀림)보다는 낫지만,\
 테스트를 `SELECT` 로만 하면 이 차이를 못 본다.
@@ -677,7 +670,7 @@ DISTINCT f              같은 이유로 위험하다 — 같아 보이는 값�
 반복해도 갈리지 않았고, 갈릴 근거도 없다 — 두 엔진이 같은 IEEE 754 배정밀도와 같은 십진 반올림 규칙을 쓰기 때문이다.
 
 **설정 의존 항목** — 2번(`div_precision_increment` = 4) · 6번의 (b)(`sql_mode` 의 `STRICT_TRANS_TABLES`·`ERROR_FOR_DIVISION_BY_ZERO`).\
-**이 둘은 서버 설정이 바뀌면 답이 바뀐다.** 머리말에 적은 값에서 나온 결과다.
+**이 둘은 서버 설정이 바뀌면 답이 바뀐다.** 「실행 환경」에 적은 값에서 나온 결과다.
 
 **구현·표현 의존 항목** — 3·4·9번의 부동소수 값.\
 이것은 엔진의 선택이 아니라 **IEEE 754 배정밀도**의 성질이다. 표현 자체는 [`foundations/data-representation`](../../../../cs/foundations/data-representation/)이 정본이다.
@@ -687,3 +680,11 @@ DISTINCT f              같은 이유로 위험하다 — 같아 보이는 값�
 **버전을 적지 않은 이유** — 이 주제의 동작에 「어느 버전부터」가 붙은 것을 **두 매뉴얼에서도 릴리스 노트에서도 찾지 못했다.**
 
 **DB 잔재** — 없다. 실험 표(`t36`·`t36b`·`t36f`·`t36z`·`tt`)는 전부 임시 표이거나 롤백됐고, `emp`·`dept` 는 읽기만 했다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다. **손계산으로 유도한 값은 하나도 없다.**\
+표를 쓴 실험은 전부 트랜잭션으로 감싸 **롤백**했고, `emp`·`dept` 는 읽기만 했다.\
+**MySQL 조건** — `sql_mode` 기본값(`STRICT_TRANS_TABLES`·`ERROR_FOR_DIVISION_BY_ZERO` 포함) · `div_precision_increment` = 4.\
+문서 근거는 [PG 18 Numeric Types](https://www.postgresql.org/docs/18/datatype-numeric.html) · [PG 18 Math Functions](https://www.postgresql.org/docs/18/functions-math.html) · [MySQL 8.4 Arithmetic Operators](https://dev.mysql.com/doc/refman/8.4/en/arithmetic-functions.html).

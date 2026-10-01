@@ -1,12 +1,5 @@
 # css/syntax/04 — 값 처리 단계: 지정값·계산값·사용값·실제값 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「Value Processing」(specified / computed / used / actual value) 절과 [CSSOM](https://drafts.csswg.org/cssom/) 의 「resolved values」 절. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle`·`getBoundingClientRect`·`offsetWidth` 로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — CSS 에는 언어 버전이 없다. 네 단계 구분은 CSS2 부터 있었고, `getComputedStyle` 이 「해석값」을 돌려준다는 규정은 CSSOM 의 것이다. 1/64px 격자 같은 수치는 **Chrome 151 의 구현 세부**이며 그 자리에 표시해 두었다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **값 처리 = 「50%」라고 적은 종이가 네 번 다시 쓰여 마지막에 화면의 점이 되는 과정이다.**
@@ -442,3 +435,10 @@ el.offsetWidth / 3                              // 이미 반올림된 정수를
 - **커스텀 속성에는 이 네 단계가 다르게 적용된다.** 등록하지 않은 `--x` 는 계산값이 **토큰 나열 그대로**이고, `@property` 로 `syntax` 를 등록해야 타입이 생겨 보간 대상이 된다([목록의 **36번 주제**](../36-custom-properties/)·**37번 주제**).
 - **`getComputedStyle` 의 두 번째 인자**로 의사 요소를 지정하면 `::before` 의 해석값도 읽힌다 — 생성 콘텐츠가 실제로 무엇이 됐는지 확인하는 유일한 방법이다([목록의 **13번 주제**](../13-pseudo-elements-and-generated-content/)).
 - **읽기와 쓰기를 번갈아 하면 레이아웃이 그 수만큼 돈다**(layout thrashing). 읽을 것을 먼저 모아 읽고 쓸 것을 나중에 몰아 쓰면 한 번으로 줄어든다. 이 비용의 정체는 「③ 사용값을 만들려면 레이아웃이 최신이어야 한다」는 이 문서의 ②③ 경계 그 자체다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「Value Processing」(specified / computed / used / actual value) 절과 [CSSOM](https://drafts.csswg.org/cssom/) 의 「resolved values」 절. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle`·`getBoundingClientRect`·`offsetWidth` 로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — CSS 에는 언어 버전이 없다. 네 단계 구분은 CSS2 부터 있었고, `getComputedStyle` 이 「해석값」을 돌려준다는 규정은 CSSOM 의 것이다. 1/64px 격자 같은 수치는 **Chrome 151 의 구현 세부**이며 그 자리에 표시해 두었다.

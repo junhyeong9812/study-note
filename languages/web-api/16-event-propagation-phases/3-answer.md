@@ -1,10 +1,5 @@
 # web-api/16 — 전파 3단계: 캡처·타깃·버블과 `target` 대 `currentTarget` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 클릭·포커스·마우스 이동은 **CDP 로 넣은 진짜 입력**이다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG DOM Standard — Events](https://dom.spec.whatwg.org/#events) 의 「dispatch」·「invoke」·「inner invoke」 절과 [HTML Standard](https://html.spec.whatwg.org/multipage/dom.html#the-document-object) 의 `Document` get the parent 문장으로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 **★ 이 편에는 흔들리는 칸이 없었다** — 세는 것이 호출 순서와 횟수뿐이고 시간을 안 잰다.
 
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
@@ -268,3 +263,9 @@ python3 wa16b-cdp.py page wa16b-16-same.html
 | 타깃에서 capture 무리가 먼저 | B → D → A → C | 명세 본문과 맞다. 옛 설명과 다르므로 판이 오르면 다시 찍는다 |
 
 **안 돌려 본 것** — ① Firefox·Safari 에서의 재현(엔진이 없다). ② **포인터 이벤트**(`pointerdown` 등) — [목록의 **23번 주제**](../23-pointer-events/) 몫이다. ③ **그림자 경계의 경로** — [12번 주제](../12-shadow-dom/3-answer.md)가 이미 쟀다. ④ **디스패치 시간** — 재지 않았다. ⑤ **「타깃에서는 등록 순서」가 언제 바뀌었나** — 확인하지 않았다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 클릭·포커스·마우스 이동은 **CDP 로 넣은 진짜 입력**이다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG DOM Standard — Events](https://dom.spec.whatwg.org/#events) 의 「dispatch」·「invoke」·「inner invoke」 절과 [HTML Standard](https://html.spec.whatwg.org/multipage/dom.html#the-document-object) 의 `Document` get the parent 문장으로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

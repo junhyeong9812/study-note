@@ -1,72 +1,5 @@
 # js/syntax/26 — 배열 탐색·평탄화·생성: 「구멍을 누가 건너뛰고 누가 읽나 · 찾기는 무엇으로 비교하나 · 배열을 만드는 입구 넷」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다.**
-> 배열의 **구멍**(프로퍼티가 아예 없는 칸)은 메서드마다 다르게 다뤄진다 — 건너뛰는 쪽과 `undefined` 로 읽는 쪽.
-> 흔히 「**ES5 까지의 메서드는 건너뛰고 ES2015 부터는 읽는다**」로 외운다. 그 통설을 **구멍 하나짜리 배열 `[, 1]` × 연산 스물아홉 줄**에 들이대고,
-> **통설과 어긋난 줄을 스크립트가 마지막 줄로 센다**(동작 (1)). 통설은 **거의** 맞고, 어긋난 줄이 통설 대신 쓸 규칙을 알려 준다.
-> ★★ 나머지 절은 창이 바뀐다 — 찾기 메서드는 **콜백에 심은 로그**(방문한 인덱스)로, 배열 생성은 **구멍을 드러내는 출력 함수**(`<hole>`)로 본다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 2026 (17판)](https://262.ecma-international.org/17.0/) — `Array ( ...values )` · `Array.from` · `Array.fromAsync` · `Array.of` · `Array.prototype.includes`(note 셋) · `Array.prototype.indexOf` ·
->   `FindViaPredicate`(`find`·`findIndex`·`findLast`·`findLastIndex` 가 함께 쓰는 연산) · `Array.prototype.flat` · `FlattenIntoArray` · `Array.prototype.copyWithin` · `AsyncFromSyncIteratorContinuation`(`closeOnRejection`)
-> - [ECMA-262 2025 (16판)](https://262.ecma-international.org/16.0/) — **`Array.fromAsync` 가 이 판에는 없다**(본문에서 그 이름을 찾아 0건)
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(`includes` 2016 · `flat`/`flatMap` 2019 · `.at()` 2022 · find from last 2023 · `Array.fromAsync` 2026)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node` 다. **이 주제의 node 탐침은 node 18 에서도 한 글자도 같았다**(아래 대조기).
-> ★★★ **`Array.fromAsync`(ES2026)는 두 node 판에 없다**(아래 판별 블록). 그 탐침은 **Google Chrome 151 을 헤드리스로** 돌렸다 —
-> 배너가 `google-chrome --headless` 로 시작하는 블록이 그것이다. 페이지는 `console.log` 를 가로채 줄이 늘 때마다 `<pre>` 를 다시 쓰고,
-> `--virtual-time-budget=2000` 이 **타이머를 가상 시간으로** 돌려 프라미스·타이머 뒤의 줄까지 받는다(`js24b-page.html`).
-> ★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
->
-> **버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `indexOf` · `lastIndexOf` · `forEach` · `map` · `filter` · `some` · `every` · `reduce` | **ES5** | 세 판 다 있다 |
-> | `find` · `findIndex` · `fill` · `copyWithin` · `keys`/`entries` · `Array.from` · `Array.of` | **ES2015** | 세 판 다 있다 |
-> | `includes` | **ES2016** | 세 판 다 있다 |
-> | `flat` · `flatMap` | **ES2019** | 세 판 다 있다 |
-> | `at` | **ES2022** | 세 판 다 있다 |
-> | `findLast` · `findLastIndex` | **ES2023** | 세 판 다 있다(★ node 18 에도 있다 — 같은 ES2023 의 복사 메서드는 node 18 에 없다. [25번](../25-array-non-mutating-and-copy-methods/2-summary.md)) |
-> | `Array.fromAsync` | **ES2026** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체) | 구멍 하나짜리 배열 × 연산 **스물아홉 줄**. 「판이 ES5 이하면 건너뛴다」는 통설과 **어긋난 줄을 스크립트가 센다**(동작 (1)) |
-> | ★★★ **① 추상 연산에 로그 심기** | 찾기 네 형제의 **방문한 인덱스**(동작 (3)) · `Array.fromAsync` 가 원본의 `next` 를 **언제 부르나**와 거부 뒤 **`finally` 가 도나**(동작 (7)) · `Array.from` 매핑 함수의 **인자 수와 `this`**(동작 (6)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | `Array(2.5)` · `Array(-1)` 의 `RangeError` · `Array.from(null)` · 아주 깊은 `flat(Infinity)` · 없는 판의 `Array.fromAsync` |
-> | ★ **⑤ 두 판 대조기** | **이 주제의 node 탐침 일곱 개는 두 판에서 전부 같았다.** 대조기의 `DIFFERS` 줄은 다른 주제의 탐침이다 |
-> | ★ **부적용 — ③ 브랜드 태그** | 「이것이 배열인가」는 `flat` 이 `IsArray` 로 묻는 한 자리뿐이고, 그것은 동작 (5)의 `[3]` 이 **결과로** 보여 준다(`Set` 을 안 편다). 태그를 따로 읽을 거리가 없다 — **잴 것이 없다** |
-> | ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. 전부 런타임 의미다 — **잴 것이 없다** |
-> | ★ **안 쟀다 — 성능** | 「`find` 가 `filter` 보다 빠르다」·「`includes` 가 `indexOf` 보다 느리다」·「`flat` 은 비싸다」를 **한 줄도 쓰지 않는다.** 콜백 **호출 횟수만** 셌다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 예외 **문구** — V8 의 글자다(`Invalid array length` · `Maximum call stack size exceeded` · `object null is not iterable …`). 종류만 명세가 정한다 | ★★★ 격자의 `skips`/`reads` 와 「**N / M**」 · 돌려받은 배열의 **구멍 위치** · 찾기 메서드의 **반환값과 방문한 인덱스** |
-> | ★ **아주 깊은 배열에서 `flat(Infinity)` 가 터지는 깊이** — 명세에는 한계가 없고, 스택 크기는 엔진·설정의 몫이다. 이 판에서 10만 겹이 `RangeError` 였을 뿐이다(재대조에서는 안 흔들렸다) | ★★ `Array.fromAsync` 로그의 **`next`/`settle` 순서** — 타이머가 가상 시간이라 기계 속도에 안 매인다(재대조 동일) |
->
-> **선행** — [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(★★★ `indexOf`/`includes` 가 `NaN` 에서 갈리는 것 — 거기서 쟀다) ·
-> [18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md)(구멍은 **프로퍼티가 없는 칸**이다 — `for-in` 은 건너뛰고 `for-of` 는 방문) ·
-> [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(스프레드와 `Array.from` 이 구멍을 채우고 `slice` 는 남긴다) ·
-> [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(`Array.from` 이 이터러블과 유사 배열을 **둘 다** 받는다) ·
-> [21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md)(`find`·`some`·`every` 는 배열판도 도중에 멈춘다) ·
-> [24 — 배열 변형 메서드](../24-array-mutating-methods/2-summary.md)(이 주제가 갈라져 나온 곳).
-> **이어지는 곳** — [25 — 배열 비변형·복사 메서드](../25-array-non-mutating-and-copy-methods/2-summary.md) · [27 — `Object` 정적 메서드](../27-object-static-methods/2-summary.md).
->
-> ★★ **경계 — `NaN` 에서 `indexOf` 와 `includes` 가 갈리는 것은 23번이 정본이다**(비교 격자 `9 / 56`). 여기서는 인용만 하고 **`-0` 과 구멍**으로 넓힌다.
-> ★★ **경계 — 스프레드·`apply`·`Array.from` 이 무엇을 받는가는 11번·19번이 정본이다.** 여기서는 `Array.from` 의 **매핑 함수·길이만 있는 객체·`Array(n)` 과의 짝**만 본다.
-> ★ **경계 — `sort` 가 구멍을 끝으로 보내는 규칙은 24번이 정본이다.** 격자에는 `skips` 한 칸으로만 들어간다.
-
 ```sh
 # js24b-versions.sh
 #!/usr/bin/env bash
@@ -1131,3 +1064,69 @@ done
 - **구멍이 프로토타입에서 값을 얻는 경우** — `Array.prototype[0] = "p"` 를 두면 `HasProperty` 가 체인에서 찾아 **`forEach` 도 그 자리를 방문**한다. 이 배치는 그 탐침을 돌리지 않았다 — **안 돌렸다.** 체인 자체는 [15번](../15-prototype-chain/2-summary.md)이 정본이다.
 - **엔진이 희소 배열을 어떻게 저장하나**(V8 의 elements kind) — 관찰 가능한 의미가 아니라 이 문서 밖이다. 성능 이야기도 **안 쟀다.**
 - **`Array.fromAsync` 의 node 판** — node 22 이후 판에서 판별 블록의 `no` 가 `yes` 로 바뀌면 동작 (7)을 node 로도 돌린다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 전수 격자다.**
+배열의 **구멍**(프로퍼티가 아예 없는 칸)은 메서드마다 다르게 다뤄진다 — 건너뛰는 쪽과 `undefined` 로 읽는 쪽.
+흔히 「**ES5 까지의 메서드는 건너뛰고 ES2015 부터는 읽는다**」로 외운다. 그 통설을 **구멍 하나짜리 배열 `[, 1]` × 연산 스물아홉 줄**에 들이대고,
+**통설과 어긋난 줄을 스크립트가 마지막 줄로 센다**(동작 (1)). 통설은 **거의** 맞고, 어긋난 줄이 통설 대신 쓸 규칙을 알려 준다.
+★★ 나머지 절은 창이 바뀐다 — 찾기 메서드는 **콜백에 심은 로그**(방문한 인덱스)로, 배열 생성은 **구멍을 드러내는 출력 함수**(`<hole>`)로 본다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 2026 (17판)](https://262.ecma-international.org/17.0/) — `Array ( ...values )` · `Array.from` · `Array.fromAsync` · `Array.of` · `Array.prototype.includes`(note 셋) · `Array.prototype.indexOf` ·
+  `FindViaPredicate`(`find`·`findIndex`·`findLast`·`findLastIndex` 가 함께 쓰는 연산) · `Array.prototype.flat` · `FlattenIntoArray` · `Array.prototype.copyWithin` · `AsyncFromSyncIteratorContinuation`(`closeOnRejection`)
+- [ECMA-262 2025 (16판)](https://262.ecma-international.org/16.0/) — **`Array.fromAsync` 가 이 판에는 없다**(본문에서 그 이름을 찾아 0건)
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(`includes` 2016 · `flat`/`flatMap` 2019 · `.at()` 2022 · find from last 2023 · `Array.fromAsync` 2026)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node` 다. **이 주제의 node 탐침은 node 18 에서도 한 글자도 같았다**(맨 위 대조기).
+★★★ **`Array.fromAsync`(ES2026)는 두 node 판에 없다**(맨 위 판별 블록). 그 탐침은 **Google Chrome 151 을 헤드리스로** 돌렸다 —
+배너가 `google-chrome --headless` 로 시작하는 블록이 그것이다. 페이지는 `console.log` 를 가로채 줄이 늘 때마다 `<pre>` 를 다시 쓰고,
+`--virtual-time-budget=2000` 이 **타이머를 가상 시간으로** 돌려 프라미스·타이머 뒤의 줄까지 받는다(`js24b-page.html`).
+★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+
+**버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `indexOf` · `lastIndexOf` · `forEach` · `map` · `filter` · `some` · `every` · `reduce` | **ES5** | 세 판 다 있다 |
+| `find` · `findIndex` · `fill` · `copyWithin` · `keys`/`entries` · `Array.from` · `Array.of` | **ES2015** | 세 판 다 있다 |
+| `includes` | **ES2016** | 세 판 다 있다 |
+| `flat` · `flatMap` | **ES2019** | 세 판 다 있다 |
+| `at` | **ES2022** | 세 판 다 있다 |
+| `findLast` · `findLastIndex` | **ES2023** | 세 판 다 있다(★ node 18 에도 있다 — 같은 ES2023 의 복사 메서드는 node 18 에 없다. [25번](../25-array-non-mutating-and-copy-methods/2-summary.md)) |
+| `Array.fromAsync` | **ES2026** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체) | 구멍 하나짜리 배열 × 연산 **스물아홉 줄**. 「판이 ES5 이하면 건너뛴다」는 통설과 **어긋난 줄을 스크립트가 센다**(동작 (1)) |
+| ★★★ **① 추상 연산에 로그 심기** | 찾기 네 형제의 **방문한 인덱스**(동작 (3)) · `Array.fromAsync` 가 원본의 `next` 를 **언제 부르나**와 거부 뒤 **`finally` 가 도나**(동작 (7)) · `Array.from` 매핑 함수의 **인자 수와 `this`**(동작 (6)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | `Array(2.5)` · `Array(-1)` 의 `RangeError` · `Array.from(null)` · 아주 깊은 `flat(Infinity)` · 없는 판의 `Array.fromAsync` |
+| ★ **⑤ 두 판 대조기** | **이 주제의 node 탐침 일곱 개는 두 판에서 전부 같았다.** 대조기의 `DIFFERS` 줄은 다른 주제의 탐침이다 |
+| ★ **부적용 — ③ 브랜드 태그** | 「이것이 배열인가」는 `flat` 이 `IsArray` 로 묻는 한 자리뿐이고, 그것은 동작 (5)의 `[3]` 이 **결과로** 보여 준다(`Set` 을 안 편다). 태그를 따로 읽을 거리가 없다 — **잴 것이 없다** |
+| ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. 전부 런타임 의미다 — **잴 것이 없다** |
+| ★ **안 쟀다 — 성능** | 「`find` 가 `filter` 보다 빠르다」·「`includes` 가 `indexOf` 보다 느리다」·「`flat` 은 비싸다」를 **한 줄도 쓰지 않는다.** 콜백 **호출 횟수만** 셌다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 예외 **문구** — V8 의 글자다(`Invalid array length` · `Maximum call stack size exceeded` · `object null is not iterable …`). 종류만 명세가 정한다 | ★★★ 격자의 `skips`/`reads` 와 「**N / M**」 · 돌려받은 배열의 **구멍 위치** · 찾기 메서드의 **반환값과 방문한 인덱스** |
+| ★ **아주 깊은 배열에서 `flat(Infinity)` 가 터지는 깊이** — 명세에는 한계가 없고, 스택 크기는 엔진·설정의 몫이다. 이 판에서 10만 겹이 `RangeError` 였을 뿐이다(재대조에서는 안 흔들렸다) | ★★ `Array.fromAsync` 로그의 **`next`/`settle` 순서** — 타이머가 가상 시간이라 기계 속도에 안 매인다(재대조 동일) |
+
+**선행** — [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(★★★ `indexOf`/`includes` 가 `NaN` 에서 갈리는 것 — 거기서 쟀다) ·
+[18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md)(구멍은 **프로퍼티가 없는 칸**이다 — `for-in` 은 건너뛰고 `for-of` 는 방문) ·
+[11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(스프레드와 `Array.from` 이 구멍을 채우고 `slice` 는 남긴다) ·
+[19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(`Array.from` 이 이터러블과 유사 배열을 **둘 다** 받는다) ·
+[21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md)(`find`·`some`·`every` 는 배열판도 도중에 멈춘다) ·
+[24 — 배열 변형 메서드](../24-array-mutating-methods/2-summary.md)(이 주제가 갈라져 나온 곳).
+**이어지는 곳** — [25 — 배열 비변형·복사 메서드](../25-array-non-mutating-and-copy-methods/2-summary.md) · [27 — `Object` 정적 메서드](../27-object-static-methods/2-summary.md).
+
+★★ **경계 — `NaN` 에서 `indexOf` 와 `includes` 가 갈리는 것은 23번이 정본이다**(비교 격자 `9 / 56`). 여기서는 인용만 하고 **`-0` 과 구멍**으로 넓힌다.
+★★ **경계 — 스프레드·`apply`·`Array.from` 이 무엇을 받는가는 11번·19번이 정본이다.** 여기서는 `Array.from` 의 **매핑 함수·길이만 있는 객체·`Array(n)` 과의 짝**만 본다.
+★ **경계 — `sort` 가 구멍을 끝으로 보내는 규칙은 24번이 정본이다.** 격자에는 `skips` 한 칸으로만 들어간다.

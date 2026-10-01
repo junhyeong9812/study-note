@@ -1,19 +1,5 @@
 # rust/syntax/54 — `async`/`await` 와 `Future` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Reference — Async functions](https://doc.rust-lang.org/reference/items/functions.html#async-functions)(「Async functions do no work when called: instead, they capture their arguments into a future」) ·
-> [Reference — Await expressions](https://doc.rust-lang.org/reference/expressions/await-expr.html)(`poll` 이 `Pending` 이면 「그 future 도 `Pending` 을 돌려주며 상태를 멈춰 둔다」) ·
-> [std — `Future`](https://doc.rust-lang.org/std/future/trait.Future.html)(§Runtime characteristics 「Futures alone are inert; they must be actively polled」) ·
-> [std — `task::Wake`](https://doc.rust-lang.org/std/task/trait.Wake.html) · [std — `pin`](https://doc.rust-lang.org/std/pin/index.html).
-> ★ 전부 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> **실행 검증** — 이 문서의 모든 출력·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> **`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(크기 표만 `-C opt-level=3` 판을 하나 더).\
-> ★★★ **외부 크레이트를 하나도 쓰지 않았다** — 실행기는 표준 라이브러리만으로 직접 썼다(`Wake` 트레이트 · `thread::park` · `unsafe` 0줄).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★ **속도·메모리 사용량은 재지 않았다** — 「async 가 스레드보다 가볍다」 같은 주장은 이 문서에 없다. 잰 것은 **future 값 하나의 바이트 크기**(`size_of_val`)뿐이다.
-> **버전** — `async`/`await` 는 **1.39.0**(에디션 2018 부터 — Reference: 「Async functions are only available beginning with Rust 2018」) · `Wake` 트레이트 **1.51.0** · `std::pin::pin!` **1.68.0** · `type_name_of_val` **1.76.0** · `Waker::noop` **1.85.0**(모두 로컬 std 문서의 「Stable since」).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체 창 — ① 게으름 로그(「몸통이 찍는 줄이 있나」)와 ② 상태 기계 크기 격자(`size_of_val`)다.** 「future 는 상태 기계다」는 **바이트 수가 await 너머의 지역 변수를 따라 움직이는 것**으로 본다 — 컴파일러가 만든 타입을 직접 열어 볼 도구가 이 판(stable)에 없기 때문이다.
 
 ## 흔들리는 칸 / 안 흔들리는 칸
@@ -85,7 +71,7 @@
 | ③ ★★ **컴파일러 경고** `unused_must_use` | 버린 future 를 **컴파일러가 잡나** | 쓴다((1)) |
 | ④ ★★★ **직접 만든 실행기의 poll 로그** | `poll` 횟수 · `Waker` 가 불린 자리 | 쓴다((2)·(3)) |
 | ⑤ ★ **`timeout` 종료 코드** | 벨이 안 울리면 **끝나지 않는다** | 쓴다((3)) |
-| 상태 기계의 **필드 이름·배치** | 컴파일러가 만든 타입의 내부 | ★ **못 잰 것** — stable 에 덤프 도구가 없다(`-Zunpretty`·`-Zprint-type-sizes` 는 nightly 전용 — [57번](../57-macros-macro-rules-and-procedural-macros/)의 머리말 블록). **그래서 ② 로 바꿔 물었다**(아래) |
+| 상태 기계의 **필드 이름·배치** | 컴파일러가 만든 타입의 내부 | ★ **못 잰 것** — stable 에 덤프 도구가 없다(`-Zunpretty`·`-Zprint-type-sizes` 는 nightly 전용 — [57번](../57-macros-macro-rules-and-procedural-macros/)의 맨 위 부분 블록). **그래서 ② 로 바꿔 물었다**(아래) |
 | 시간·메모리 사용량 | — | ★ **안 쟀다** — 이 주제의 질문이 아니다 |
 | ⑥ ★★ **`Drop` 로그** | 버린 future 가 **무엇을 정리하나**(취소) | 쓴다((5)) |
 | 다른 언어의 「부른 순간」 | — | ★ **이미 잰 것** — Python 51 · JS 39 · Kotlin 52 가 쟀다((6)) |
@@ -819,3 +805,17 @@ fn main() {
 - `async fn` 이 인자를 **어떻게 캡처하나**(참조 인자의 수명이 future 에 묶인다 — Reference 의 desugar 예) — 55번의 `'static` 경계와 이어진다.
 - `-Zprint-type-sizes`(nightly) — 상태 기계의 **상태별 배치**를 찍는다. 이 머신은 stable 뿐이라 **못 잰 것**이다.
 - 재귀 `async fn` 은 크기가 무한이 되어 `Box::pin` 이 필요하다 — **던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Reference — Async functions](https://doc.rust-lang.org/reference/items/functions.html#async-functions)(「Async functions do no work when called: instead, they capture their arguments into a future」) ·
+[Reference — Await expressions](https://doc.rust-lang.org/reference/expressions/await-expr.html)(`poll` 이 `Pending` 이면 「그 future 도 `Pending` 을 돌려주며 상태를 멈춰 둔다」) ·
+[std — `Future`](https://doc.rust-lang.org/std/future/trait.Future.html)(§Runtime characteristics 「Futures alone are inert; they must be actively polled」) ·
+[std — `task::Wake`](https://doc.rust-lang.org/std/task/trait.Wake.html) · [std — `pin`](https://doc.rust-lang.org/std/pin/index.html).
+★ 전부 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+**실행 검증** — 이 문서의 모든 출력·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+**`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(크기 표만 `-C opt-level=3` 판을 하나 더).\
+★★★ **외부 크레이트를 하나도 쓰지 않았다** — 실행기는 표준 라이브러리만으로 직접 썼다(`Wake` 트레이트 · `thread::park` · `unsafe` 0줄).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★ **속도·메모리 사용량은 재지 않았다** — 「async 가 스레드보다 가볍다」 같은 주장은 이 문서에 없다. 잰 것은 **future 값 하나의 바이트 크기**(`size_of_val`)뿐이다.
+**버전** — `async`/`await` 는 **1.39.0**(에디션 2018 부터 — Reference: 「Async functions are only available beginning with Rust 2018」) · `Wake` 트레이트 **1.51.0** · `std::pin::pin!` **1.68.0** · `type_name_of_val` **1.76.0** · `Waker::noop` **1.85.0**(모두 로컬 std 문서의 「Stable since」).

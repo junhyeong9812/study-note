@@ -1,24 +1,5 @@
 # c/syntax/27 — 복합 리터럴: 「**이름 없는 변수를 식 한가운데 세운다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf)) · [cppreference — Compound literals (C)](https://en.cppreference.com/w/c/language/compound_literal) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·주소·진단·종료 코드는 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **clang 18.1.3** · **g++ 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> ★★ **UB 가 걸린 실험은 「컴파일러 2 × 최적화 3」 여섯 벌**을 돌렸다 — 한 벌만 돌리면 **정반대 결론**이 난다(아래 (3)).\
-> ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
-> **버전** — 복합 리터럴은 **C99 부터**다.\
-> ★★ **C23 부터** 복합 리터럴에 **저장 클래스 지정자**를 붙일 수 있다(`(static struct P){1,2}`) — 아래 (6).\
-> ★ **gcc 13 은 `-std=c2x` 로 지원하고 clang 18 은 지원하지 않는다**(실측 — `error: expected expression`).\
-> ★★ **`-std=` 는 강제가 아니라 기본값 선택**이다 — `-std=c17 -pedantic` 에서 그 문법이 **경고 1건에 `cc exit=0`** 으로 통과했다.
-> ★★ **경계** — **구조체 선언·초기화·지정 초기자**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/)가 정본이다.\
-> 여기는 「**그 초기자 문법을 식 한가운데 놓으면 무엇이 생기나**」만 본다 — ★ **수명과 좌변값성**이 이 편의 값이다.\
-> ★ **문자열 리터럴의 저장 기간·수정 금지**는 [20번 형제](../20-null-terminated-strings-and-string-literals/)가 정본이다 — 여기서는 **복합 리터럴과의 대비**로만 쓴다.\
-> ★ **자동·정적 저장 기간의 수명 규칙 자체**는 [28번 형제](../28-choosing-among-four-storage-durations/), **포인터 문법**은 [14번 형제](../14-pointers-address-dereference-and-pointer-types/)가 정본이다.\
-> ★ **`sizeof`** 는 [8번 형제](../08-sizeof-alignment-and-offsetof/), **해제 후 사용·댕글링**은 목록의 **57번 주제**, **sanitizer** 는 목록의 **58번 주제**다.
-> 선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [28번 형제](../28-choosing-among-four-storage-durations/).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **복합 리터럴은 「이름표를 안 붙인 변수」다.**
@@ -808,3 +789,22 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★ **VLA 타입의 복합 리터럴**(`(int[n]){…}`) — ★ **던지지 않았다**([18번 형제](../18-variable-length-arrays-vla/)가 VLA 의 정본).
 - ★ **`-Os`·`-O3` 에서의 (3) 격자** — ★ **던지지 않았다**(`-O0`\~`-O2` 까지만 흔들었다).
 - ★ **clang 이 왜 이 UB 에 침묵하는가** — `-Wdangling` 계열 플래그를 따로 켜면 달라지는지 **확인하지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf)) · [cppreference — Compound literals (C)](https://en.cppreference.com/w/c/language/compound_literal) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·주소·진단·종료 코드는 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**clang 18.1.3** · **g++ 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+★★ **UB 가 걸린 실험은 「컴파일러 2 × 최적화 3」 여섯 벌**을 돌렸다 — 한 벌만 돌리면 **정반대 결론**이 난다(본문 (3)).\
+★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
+**버전** — 복합 리터럴은 **C99 부터**다.\
+★★ **C23 부터** 복합 리터럴에 **저장 클래스 지정자**를 붙일 수 있다(`(static struct P){1,2}`) — 본문 (6).\
+★ **gcc 13 은 `-std=c2x` 로 지원하고 clang 18 은 지원하지 않는다**(실측 — `error: expected expression`).\
+★★ **`-std=` 는 강제가 아니라 기본값 선택**이다 — `-std=c17 -pedantic` 에서 그 문법이 **경고 1건에 `cc exit=0`** 으로 통과했다.
+★★ **경계** — **구조체 선언·초기화·지정 초기자**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/)가 정본이다.\
+여기는 「**그 초기자 문법을 식 한가운데 놓으면 무엇이 생기나**」만 본다 — ★ **수명과 좌변값성**이 이 편의 값이다.\
+★ **문자열 리터럴의 저장 기간·수정 금지**는 [20번 형제](../20-null-terminated-strings-and-string-literals/)가 정본이다 — 여기서는 **복합 리터럴과의 대비**로만 쓴다.\
+★ **자동·정적 저장 기간의 수명 규칙 자체**는 [28번 형제](../28-choosing-among-four-storage-durations/), **포인터 문법**은 [14번 형제](../14-pointers-address-dereference-and-pointer-types/)가 정본이다.\
+★ **`sizeof`** 는 [8번 형제](../08-sizeof-alignment-and-offsetof/), **해제 후 사용·댕글링**은 목록의 **57번 주제**, **sanitizer** 는 목록의 **58번 주제**다.
+선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [28번 형제](../28-choosing-among-four-storage-durations/).

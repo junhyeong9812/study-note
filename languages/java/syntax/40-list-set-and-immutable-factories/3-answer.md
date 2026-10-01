@@ -1,10 +1,5 @@
 # java/syntax/40 — `List`·`Set` API 와 불변 팩토리: `List.of`·`copyOf`·`unmodifiable*` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·에러는 **Temurin JDK 에서 실제로 돌려 얻은 것**이다.\
-> javadoc·소스 인용은 JDK 21.0.5 의 `lib/src.zip` 을 풀어 읽은 원문이다.\
-> 어느 프로그램을 어느 버전에서 돌렸는지는 맨 끝 「실행 검증」 표에 있다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -545,3 +540,9 @@ unmodifiableList(unmodifiableList) == 원본 : true
 - 구조적 수정 뒤 `subList` 에서 **CME 가 난다는 것 자체** — javadoc 은 "undefined" 까지만 약속한다.
 - `Set.of`·`Map.of` 의 **구체적인 순서** — 매 실행 다르다. 다시 돌릴 때마다 값이 바뀐다.
 - **Java 8·9 는 안 돌려 봄** — 이 머신에 없다. `List.of`(9)·`copyOf`(10)는 8에 애초에 없다.
+
+## 실행 환경
+
+이 파일의 모든 출력·에러는 **Temurin JDK 에서 실제로 돌려 얻은 것**이다.\
+javadoc·소스 인용은 JDK 21.0.5 의 `lib/src.zip` 을 풀어 읽은 원문이다.\
+어느 프로그램을 어느 버전에서 돌렸는지는 맨 끝 「실행 검증」 표에 있다.

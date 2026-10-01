@@ -1,16 +1,5 @@
 # rust/syntax/48 — 문자열 포맷 `format!` · `Display`/`Debug` 구현 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `std::fmt`](https://doc.rust-lang.org/std/fmt/index.html)(지정자 문법 · 「정렬은 일부 타입에서 구현되지 않을 수 있다 — 특히 `Debug`」 · 정밀도 「문자열은 최대 폭 · 정수는 무시 · 부동소수는 소수점 아래 자리」 · `0` 플래그는 정수용) ·
-> [std — `Debug`](https://doc.rust-lang.org/std/fmt/trait.Debug.html)(§Stability 「**파생 `Debug` 형식은 안정적이지 않다**」) · [std — `Formatter::pad`](https://doc.rust-lang.org/std/fmt/struct.Formatter.html#method.pad) ·
-> std 소스 `process.rs` 의 `impl Termination for Result<T, E>`(`Error: {err:?}` — 아래 블록) · 릴리스 노트 1.58.0(이름 캡처 — 아래 블록).
-> ★ 전부 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> 블록 배너의 명령(기본 **`rustc --edition 2021`**, 에디션 비교는 `2015`·`2018`)으로 돌려 받은 것이다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★ **속도·할당은 재지 않았다** — `format!` 이 `write!` 보다 비싸다는 식의 말은 이 문서에 없다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체 창 — ⑩ 포맷 격자(값 일곱 × 지정자 일곱 → 찍힌 글자 · 안 되면 컴파일 에러)다.** 지정자는 **어느 트레이트를 부를지**를 정하므로 「안 되는 칸」은 런타임이 아니라 **컴파일러**가 말하고, 「되는 칸」은 **찍힌 글자**가 말한다 — 한 격자가 두 창을 겸한다.
 
 ## 흔들리는 칸 / 안 흔들리는 칸
@@ -639,3 +628,14 @@ For more information about this error, try `rustc --explain E0117`.
 - `f.debug_struct("P").field("x", &self.x).finish()` — `Debug` 를 손으로 쓰되 파생과 같은 모양(그리고 `{:#?}` 지원)을 얻는 빌더. **던지지 않았다.**
 - `f.alternate()`(`{:#}` 의 `#`) · `f.width()`/`f.precision()` 을 읽어 직접 분기하기 — **던지지 않았다.**
 - `{:1$}`·`{:.*}` 처럼 폭·정밀도를 인자로 받기 · `{:+}`·`{:#x}`·`{:e}` — **던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [std — `std::fmt`](https://doc.rust-lang.org/std/fmt/index.html)(지정자 문법 · 「정렬은 일부 타입에서 구현되지 않을 수 있다 — 특히 `Debug`」 · 정밀도 「문자열은 최대 폭 · 정수는 무시 · 부동소수는 소수점 아래 자리」 · `0` 플래그는 정수용) ·
+[std — `Debug`](https://doc.rust-lang.org/std/fmt/trait.Debug.html)(§Stability 「**파생 `Debug` 형식은 안정적이지 않다**」) · [std — `Formatter::pad`](https://doc.rust-lang.org/std/fmt/struct.Formatter.html#method.pad) ·
+std 소스 `process.rs` 의 `impl Termination for Result<T, E>`(`Error: {err:?}` — 본문의 블록) · 릴리스 노트 1.58.0(이름 캡처 — 본문의 블록).
+★ 전부 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+블록 배너의 명령(기본 **`rustc --edition 2021`**, 에디션 비교는 `2015`·`2018`)으로 돌려 받은 것이다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★ **속도·할당은 재지 않았다** — `format!` 이 `write!` 보다 비싸다는 식의 말은 이 문서에 없다.

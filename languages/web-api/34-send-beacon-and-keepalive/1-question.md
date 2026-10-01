@@ -1,12 +1,5 @@
 # web-api/34 — `navigator.sendBeacon` 과 이탈 시점 전송: `fetch` 의 `keepalive` 와의 관계 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 떠날 때 **어느 이벤트가 불리나**는 [24번 주제](../24-document-lifecycle-events/1-question.md), 취소해도 요청이 닿는 판은 [27번 주제](../27-abort-and-timeout/1-question.md), 프리플라이트 조건은 [28번 주제](../28-cors-simple-and-preflight/1-question.md)가 물었다. 여기는 **그 이벤트 안에서 보낸 요청이 닿았나, 무엇이 잘렸나**를 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진 · localhost 서버**의 관찰과 Fetch 명세 문장이다. 이식성과 **먼 서버에서의 결과**는 주장 범위 밖이다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -118,6 +111,12 @@ addEventListener("pagehide", () => {
 ### 10. 「5판 모두 닿았다」를 어디까지 믿나 (연결)
 
 - [27번 주제](../27-abort-and-timeout/1-question.md)의 「같은 잡에서 `abort()` 해도 닿은 판」과 이 편의 결과는 어떤 성질이 같은가? 이 편이 **주장하지 않는 것**은?
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — 떠날 때 **어느 이벤트가 불리나**는 [24번 주제](../24-document-lifecycle-events/1-question.md), 취소해도 요청이 닿는 판은 [27번 주제](../27-abort-and-timeout/1-question.md), 프리플라이트 조건은 [28번 주제](../28-cors-simple-and-preflight/1-question.md)가 물었다. 여기는 **그 이벤트 안에서 보낸 요청이 닿았나, 무엇이 잘렸나**를 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진 · localhost 서버**의 관찰과 Fetch 명세 문장이다. 이식성과 **먼 서버에서의 결과**는 주장 범위 밖이다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

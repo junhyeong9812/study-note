@@ -1,8 +1,5 @@
 # 개념: 저장 프로시저란 무엇인가 — 반환 슬롯이 없고 결과가 전부 이름을 갖는 호출 대상
 
-> J5(`CallMetaDataContext.reconcileParameters`의 반환 파라미터 처리 결함) 작업의 배경 개념
-> 문서. 짝 문서: [저장 함수](../stored-function/stored-function.md).
-
 ## 한 줄 정의 — 결과를 파라미터로 돌려주는 서브프로그램
 
 저장 프로시저는 DB 안에 이름을 갖고 저장된 서브프로그램이며, **호출식의 값이 되지

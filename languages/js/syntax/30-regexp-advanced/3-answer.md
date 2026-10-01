@@ -1,17 +1,5 @@
 # js/syntax/30 — 정규식 심화: 「그룹·둘러보기·유니코드 — 그리고 같은 패턴이 어떤 엔진에서는 끝나지 않는다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151.0.7922.173**(8번) · **go1.27.1** · **Python 3.12.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
->
-> ★★★ **경과 시간은 이 파일 어디에도 없다** — 셸이 `timeout 2` 의 종료 코드만 보고 참/거짓으로 바꿨다.
-> ★★ **예외는 `e.constructor.name` 과 `e.message` 로만** `이름 「메시지」` 꼴로 찍었다(Go 는 `%T 「%v」`, 파이썬은 `type(e).__name__ 「str(e)」`).
-> ★★ **이 주제에서 두 node 판이 갈린 탐침은 셋**이다(1번 · 3번 · 4번) — 갈린 판의 블록을 나란히 싣는다.
->
-> **이 파일이 인용하는 출력을 낸 소스** — 1\~6번의 소스 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다. 7 · 8 · 10 · 11번의 소스는 여기 싣는다.
-> `js28b-30a-groups.js`(1번) · `js28b-30b-lookaround.js`(2번) · `js28b-30c-unicode.js`(3번) · `js28b-30d-vflag.js`(4번) · `js28b-30x-explode.sh`(5번 · 12번) · `js28b-30y-steps.sh`(6번) ·
-> `js28b-30e-indices.js`(7번) · `js28b-30f-es2025.web.js` · `js28b-30g-es2025-node.js`(8번) · `js28b-30u-syntax.sh`(10번 · 12번) · `js28b-30v-v8flags.sh` · `js28b-30w-linear.sh`(11번).
-
 ## 정답
 
 ### 1. 비캡처는 칸이 없고, 명명 그룹은 칸에 **이름표를 더한다** — `groups` 는 **null 프로토타입**, 반복 안의 캡처는 **반복마다 비워진다** ★★★
@@ -983,3 +971,16 @@ js28b-31x-node-rawjson.js                    identical
 
 identical 19  ·  differs 6  ·  total 25
 ```
+
+## 실행 환경
+
+이 파일의 모든 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151.0.7922.173**(8번) · **go1.27.1** · **Python 3.12.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
+
+★★★ **경과 시간은 이 파일 어디에도 없다** — 셸이 `timeout 2` 의 종료 코드만 보고 참/거짓으로 바꿨다.
+★★ **예외는 `e.constructor.name` 과 `e.message` 로만** `이름 「메시지」` 꼴로 찍었다(Go 는 `%T 「%v」`, 파이썬은 `type(e).__name__ 「str(e)」`).
+★★ **이 주제에서 두 node 판이 갈린 탐침은 셋**이다(1번 · 3번 · 4번) — 갈린 판의 블록을 나란히 싣는다.
+
+**이 파일이 인용하는 출력을 낸 소스** — 1\~6번의 소스 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다. 7 · 8 · 10 · 11번의 소스는 여기 싣는다.
+`js28b-30a-groups.js`(1번) · `js28b-30b-lookaround.js`(2번) · `js28b-30c-unicode.js`(3번) · `js28b-30d-vflag.js`(4번) · `js28b-30x-explode.sh`(5번 · 12번) · `js28b-30y-steps.sh`(6번) ·
+`js28b-30e-indices.js`(7번) · `js28b-30f-es2025.web.js` · `js28b-30g-es2025-node.js`(8번) · `js28b-30u-syntax.sh`(10번 · 12번) · `js28b-30v-v8flags.sh` · `js28b-30w-linear.sh`(11번).

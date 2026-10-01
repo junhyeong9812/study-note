@@ -1,16 +1,5 @@
 # c/syntax/36 — 가변 인자 함수 `<stdarg.h>`: 「**`...` 뒤에서는 타입이 사라지고, 승격된 것만 남는다**」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **환경** — gcc 13.3.0 · gcc-12 12.4.0 · clang 18.1.3 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① **승격된 인자를 무엇으로 꺼내나**(두 컴파일러의 컴파일 · 실행 · sanitizer) ② **타입과 개수는 누가 검사하나**(`printf` 대 내 함수 · 속성)
-> ③ **`va_list` 의 규칙**(`va_copy` · `va_end` · C23).
-> ★★★ **본체 창은 승격 격자** — 2번은 **칸마다 경고 · 종료 코드 · 값이 같나**를 적어야 답이다.
-> ★★ **UB 의 값은 「같나」 참/거짓으로만** 적어라 — 쓰레기 값 자체를 맞히는 문항이 아니다.
-> 선행 — [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/) · [34번 형제](../34-function-declarations-definitions-and-prototypes/).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 여섯 문항(1\~6)은 소스만 보고 적어 본 뒤** 답을 연다.
@@ -273,6 +262,14 @@ int main(void) {
 - **정수 승격**과 **`float` 변환**은 각각 어느 형제가 정본인가?
 - **`printf` 형식 문자열**은 목록의 몇 번 주제인가?
 - ★ 이 주제가 **끝까지 책임지는 것** 세 가지를 대면?
+
+## 실행 환경
+
+**환경** — gcc 13.3.0 · gcc-12 12.4.0 · clang 18.1.3 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
+
+★★★ **본체 창은 승격 격자** — 2번은 **칸마다 경고 · 종료 코드 · 값이 같나**를 적어야 답이다.
+★★ **UB 의 값은 「같나」 참/거짓으로만** 적어라 — 쓰레기 값 자체를 맞히는 문항이 아니다.
+선행 — [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/) · [34번 형제](../34-function-declarations-definitions-and-prototypes/).
 
 ## 복습 기록
 

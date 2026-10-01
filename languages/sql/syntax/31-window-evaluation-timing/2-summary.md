@@ -1,16 +1,5 @@
 # sql/31-윈도우 함수의 평가 시점과 `WINDOW` 절 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Window Functions (튜토리얼)](https://www.postgresql.org/docs/18/tutorial-window.html) · [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · Window Function Concepts and Syntax](https://dev.mysql.com/doc/refman/8.4/en/window-functions-usage.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — `WINDOW` 절은 윈도우 함수와 같이 들어왔다(PG 8.4 · MySQL 8.0).\
-> **이 주제에서 두 엔진의 결과가 갈린 자리는 `NULL` 위치 하나**다(4번) — 평가 시점 자체는 양쪽이 같다.\
-> **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/)(**이 주제의 뼈대**) · [26 윈도우 함수의 개념](../26-window-functions-vs-aggregates/).\
-> **이 주제는 목록 README 의 31번 제목(「평가 시점과 `WINDOW` 절」)대로 `WINDOW` 절까지 다룬다**(8번).
-
 ## 한눈에 — 쉽게 말하면
 
 **[01번](../01-logical-query-processing-order/)의 여덟 칸짜리 컨베이어에서, 윈도우 함수는 다섯 번째 칸에서 태어난다.**
@@ -661,3 +650,13 @@ ERROR 6037 (HY000) at line 1: 'QUALIFY clause' can be used only if the hypergrap
   `QUALIFY` 하나만 붙였을 때는 안 막히고 **그다음 낱말에서** 막힌다 — **`QUALIFY` 가 그냥 이름으로 먹혔다**는 뜻이다.\
   ★ **결론: 두 엔진 모두 지금은 못 쓴다.** 다만 **이유가 다르다** — PG 는 **문법에 없고**, MySQL 은 **문법에 있는데 실행 경로가 없다**.\
   MySQL 쪽은 *"does not **yet** support"* 이므로 **버전이 오르면 다시 찍을 자리**다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Window Functions (튜토리얼)](https://www.postgresql.org/docs/18/tutorial-window.html) · [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · Window Function Concepts and Syntax](https://dev.mysql.com/doc/refman/8.4/en/window-functions-usage.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — `WINDOW` 절은 윈도우 함수와 같이 들어왔다(PG 8.4 · MySQL 8.0).\
+**이 주제에서 두 엔진의 결과가 갈린 자리는 `NULL` 위치 하나**다(4번) — 평가 시점 자체는 양쪽이 같다.\
+**선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/)(**이 주제의 뼈대**) · [26 윈도우 함수의 개념](../26-window-functions-vs-aggregates/).\
+**이 주제는 목록 README 의 31번 제목(「평가 시점과 `WINDOW` 절」)대로 `WINDOW` 절까지 다룬다**(8번).

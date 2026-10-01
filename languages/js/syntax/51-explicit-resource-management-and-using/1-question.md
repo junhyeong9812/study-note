@@ -1,20 +1,5 @@
 # js/syntax/51 — 명시적 자원 관리 `using`: 「이 런타임에서 도나 · 무엇을 어떤 순서로 치우나 · 치우다 던지면 무엇이 남나」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1 · v20.19.6 · Google Chrome 151(헤드리스 — 하네스는 2-summary 머리말) · tsc 7.0.2 · x86-64 Linux.
->
-> ★★★ **이 주제의 본체는 지원 판별 격자다** — 판 셋 × 기능 일곱. **1번 문항이 이 주제의 중심이고, 3번 · 4번이 그다음이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **어느 런타임에 무엇이 있나 · 선언이 어디에 설 수 있나**
-> ② ★★★ **해제는 언제 · 어떤 순서로 불리나**(동기 · 비동기)
-> ③ ★★ **해제가 던지면 무엇이 남나 · 문법이 없는 판에서는 어떻게 하나.**
->
-> **선행** — [32](../32-error-handling-and-error/2-summary.md) · [20](../20-generators/2-summary.md) · [40](../40-async-iteration-and-for-await/2-summary.md) · [47](../47-weakref-and-finalizationregistry/2-summary.md).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 문항(1 · 2 · 3 · 4 · 6 · 8)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -424,6 +409,14 @@ done
 ### 11. 세 갈래의 해제 오류 (연결) ★★
 
 - ★★ Python `with` · Java `try`-with-resources · JS `using` 은 해제 중 오류를 각각 어떤 모양으로 남기나? 「주인공」 이 되는 것은 어느 오류인가?
+
+## 실행 환경
+
+**환경** — node v18.19.1 · v20.19.6 · Google Chrome 151(헤드리스 — 하네스는 2-summary 맨 위 부분) · tsc 7.0.2 · x86-64 Linux.
+
+★★★ **이 주제의 본체는 지원 판별 격자다** — 판 셋 × 기능 일곱. **1번 문항이 이 주제의 중심이고, 3번 · 4번이 그다음이다.**
+
+**선행** — [32](../32-error-handling-and-error/2-summary.md) · [20](../20-generators/2-summary.md) · [40](../40-async-iteration-and-for-await/2-summary.md) · [47](../47-weakref-and-finalizationregistry/2-summary.md).
 
 ## 복습 기록
 

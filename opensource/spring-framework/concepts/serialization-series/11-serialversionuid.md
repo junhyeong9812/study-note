@@ -1,8 +1,5 @@
 # 11. `serialVersionUID`와 클래스 호환성 (리뷰 finding R2)
 
-> 리뷰어(Opus·codex 양쪽)가 지적한 것: **"`private final` -> `private transient`로 바꾸면 기본 `serialVersionUID`가 바뀐다."**
-> 실측으로 확인했고, 이 문서는 그 동작 원리를 정리한다.
-
 ## 1. `serialVersionUID`가 하는 일
 
 직렬화된 바이트에는 클래스 **이름**과 함께 `serialVersionUID`라는 숫자가 실린다. 역직렬화할 때 JVM은 이렇게 확인한다.

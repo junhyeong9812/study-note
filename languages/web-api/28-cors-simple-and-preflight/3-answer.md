@@ -1,10 +1,5 @@
 # web-api/28 — CORS: 단순 요청과 프리플라이트, 막는 것과 못 막는 것 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버 두 대(A·B)는 같은 기계의 로컬 서버이고 **바깥 인터넷으로는 요청하지 않았다.** 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 CORS-safelisted method · CORS-safelisted request-header · main fetch 의 프리플라이트 조건 · HTTP fetch · CORS-preflight fetch · CORS-preflight cache · opaque filtered response · Request 생성자로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
 |---|---|
 | 격자 32칸 · 격자 밖 · 거부 · 노출 헤더 · `no-cors` · 리다이렉트 · Go | **시간에 기댄 칸** — `Max-Age` 없음의 「1번」(기본 5초 안) |
@@ -298,3 +293,9 @@ python3 wa28b-net.py go wa28b-28-client.go
 | `Max-Age` 없음의 캐시 | 5초 안의 두 번째는 캐시 | 명세 기본값이지만 **시간에 기댄 칸** |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② `HEAD` · `Allow-Methods: *`. ③ HTTP/2 서버.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버 두 대(A·B)는 같은 기계의 로컬 서버이고 **바깥 인터넷으로는 요청하지 않았다.** 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 CORS-safelisted method · CORS-safelisted request-header · main fetch 의 프리플라이트 조건 · HTTP fetch · CORS-preflight fetch · CORS-preflight cache · opaque filtered response · Request 생성자로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

@@ -1,9 +1,5 @@
 # 프로토콜 스택 — OSI vs TCP/IP, 그리고 TCP/UDP
 
-> 원본: `~/project/network-history/02-프로토콜-스택.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·RFC 번호·표준명·수치·혼잡 제어 알고리즘 표는 원문 그대로다.\
-> ASCII 도식 16개(그중 7개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 택배 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -741,3 +737,9 @@ TCP 연결 = 4-튜플로 유일 식별
 - [TCP Congestion Control: A Systems Approach](https://tcpcc.systemsapproach.org/algorithm.html)
 - [TCP Tahoe and TCP Reno (GeeksforGeeks)](https://www.geeksforgeeks.org/computer-networks/tcp-tahoe-and-tcp-reno/)
 - [End-to-End Arguments in System Design (Saltzer, Reed, Clark)](https://web.mit.edu/Saltzer/www/publications/endtoend/endtoend.pdf)
+
+## 출처
+
+원본: `~/project/network-history/02-프로토콜-스택.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·RFC 번호·표준명·수치·혼잡 제어 알고리즘 표는 원문 그대로다.\
+ASCII 도식 16개(그중 7개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 택배 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

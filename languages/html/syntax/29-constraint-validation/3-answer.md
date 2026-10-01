@@ -1,11 +1,5 @@
 # html/syntax/29 — 제약 검증: 유효성 상태·`novalidate`·`:valid`/`:user-invalid` 의 관계 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 아래 `## 실행 검증` 절에 전문이 있다(30\~32번이 같은 하네스를 쓴다).\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「Constraints」·「Form submission algorithm」·user validity·focus update steps 와 [Selectors Level 4 §12.3.4](https://drafts.csswg.org/selectors-4/#user-pseudos) 로 접지했다(앞 배치가 받아 둔 사본).\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **본체는 `matches()` 격자다** — 72 칸을 미리 선언하고 「로드와 갈린 칸」·「명세 열과 갈린 칸」을 스크립트가 센다(A1).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -1145,3 +1139,10 @@ src_sh   capture-sh       ../capture.sh
 - **focus update steps** — 포커스 이동 때 도는 알고리즘. 떠나는 칸의 `change` 와 도장.
 - **no-validate 상태** — `formnovalidate`(제출자) 또는 `novalidate`(폼).
 - **custom error** — `setCustomValidity` 의 메시지가 빈 문자열이 아닌 상태.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 위 `## 실행 검증` 절에 전문이 있다(30\~32번이 같은 하네스를 쓴다).\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「Constraints」·「Form submission algorithm」·user validity·focus update steps 와 [Selectors Level 4 §12.3.4](https://drafts.csswg.org/selectors-4/#user-pseudos) 로 접지했다(앞 배치가 받아 둔 사본).\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **본체는 `matches()` 격자다** — 72 칸을 미리 선언하고 「로드와 갈린 칸」·「명세 열과 갈린 칸」을 스크립트가 센다(A1).

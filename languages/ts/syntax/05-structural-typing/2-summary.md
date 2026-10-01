@@ -1,13 +1,5 @@
 # ts/syntax/05 — 구조적 타이핑 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Type Compatibility](https://www.typescriptlang.org/docs/handbook/type-compatibility.html) ·
-> [Handbook — Object Types: Excess Property Checks](https://www.typescriptlang.org/docs/handbook/2/objects.html#excess-property-checks) ·
-> [Handbook — More on Functions: Function Type Compatibility](https://www.typescriptlang.org/docs/handbook/2/functions.html) ·
-> [TSConfig — `strictFunctionTypes`](https://www.typescriptlang.org/tsconfig/#strictFunctionTypes).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -17,7 +9,6 @@ v18.19.1
 > ★★★ **`tsc` 가 7.0.2 다 — 5.x 가 아니다.** 이 주제에서 결과를 좌우하는 기본값은 **`strict` 가 켜져 있다**는 것이다(7.0 기본 `true`).
 > 그래서 `strictFunctionTypes` 도 켜져 있다 — **끈 판을 따로 던져 두 결과를 나란히 실었다.**
 > **버전** — 구조적 타이핑은 TS 1.x 부터, `strictFunctionTypes` 는 2.6, JS 의 `#` 비공개 필드는 TS 3.8 부터 쓸 수 있다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -619,3 +610,12 @@ __brand 프로퍼티: undefined
 - **브랜드를 `unique symbol` 로** — `declare const brand: unique symbol;` 를 키로 쓰면 `__brand` 라는 이름조차 충돌하지 않는다. [목록의 **23번 주제**](../23-typeof-type-operator/)와 엮인다.
 - **`satisfies`(4.9)와의 궁합** — 브랜드 객체를 만들 때 `as` 대신 `satisfies` 를 쓰면 추론을 살리면서 검사만 할 수 있다. [목록의 **29번 주제**](../29-satisfies/).
 - **양변이 남은 이유** — `Array<T>.push`·DOM 이벤트 핸들러처럼 **양변을 전제로 쓰이던 코드**가 너무 많아, 메서드 문법에만 예외를 남겼다. `strictFunctionTypes` 문서가 그 사정을 적는다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Type Compatibility](https://www.typescriptlang.org/docs/handbook/type-compatibility.html) ·
+[Handbook — Object Types: Excess Property Checks](https://www.typescriptlang.org/docs/handbook/2/objects.html#excess-property-checks) ·
+[Handbook — More on Functions: Function Type Compatibility](https://www.typescriptlang.org/docs/handbook/2/functions.html) ·
+[TSConfig — `strictFunctionTypes`](https://www.typescriptlang.org/tsconfig/#strictFunctionTypes).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

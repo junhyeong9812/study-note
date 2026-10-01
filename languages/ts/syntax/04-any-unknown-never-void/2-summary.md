@@ -1,13 +1,5 @@
 # ts/syntax/04 — `any`·`unknown`·`never`·`void` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Everyday Types: `any`](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#any) ·
-> [Handbook — Narrowing](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) ·
-> [Handbook — More on Functions: Return type `void`](https://www.typescriptlang.org/docs/handbook/2/functions.html#return-type-void) ·
-> [TSConfig — `strict`](https://www.typescriptlang.org/tsconfig/#strict).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -17,7 +9,6 @@ v18.19.1
 > ★★★ **`tsc` 가 7.0.2 다 — 5.x 가 아니다.** 이 주제의 결과를 좌우하는 기본값은 **`strict` 가 켜져 있다**는 것이다(7.0 기본 `true`).
 > `strictNullChecks` 가 꺼지면 이 문서의 격자가 통째로 달라진다 — **설정 없이 실린 결과는 재현이 안 된다.**
 > **버전** — `any`·`void`·`never` 는 TS 1.x\~2.0, **`unknown` 은 3.0**, `useUnknownInCatchVariables` 는 4.4 부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -673,3 +664,12 @@ ping
 - **`never` 의 다른 얼굴** — 조건부 타입에서 `never` 는 **유니온에서 빠지는 것**을 뜻한다(`Exclude` 가 그렇게 구현돼 있다). [목록의 **24번 주제**](../24-conditional-types-and-distribution/).
 - **`void` 를 변수 타입으로 쓰는 경우** — 드물지만 `Promise<void>` 처럼 **타입 인자**로는 자주 쓴다. 그때도 뜻은 「반환값을 안 본다」다.
 - **`catch` 변수** — 이 판은 `strict` 가 기본 `true` 라 `catch (e)` 의 `e` 가 `unknown` 이다. 그래서 `e.message` 를 바로 못 읽고 `(e as Error).message` 나 `instanceof Error` 가 필요하다(`ex.04h.ts` 가 그 형태다).
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Everyday Types: `any`](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#any) ·
+[Handbook — Narrowing](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) ·
+[Handbook — More on Functions: Return type `void`](https://www.typescriptlang.org/docs/handbook/2/functions.html#return-type-void) ·
+[TSConfig — `strict`](https://www.typescriptlang.org/tsconfig/#strict).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

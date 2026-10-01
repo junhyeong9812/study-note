@@ -1,17 +1,5 @@
 # kotlin/syntax/38 — context parameters — 2.2 실험 → 2.4.0 Stable — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Context parameters](https://kotlinlang.org/docs/context-parameters.html)(「Context parameters replace an older experimental feature called context receivers」 · 선언은 「`name: Type`」 꼴, 「You can use `_` as a context parameter name」 · 「To access its value explicitly, use `contextOf<T>()`」 · 「Kotlin resolves context parameters at the call site by searching for matching context values in the current scope. Kotlin matches them by their type. If multiple compatible values exist at the same scope level, the compiler reports an ambiguity.」) · [언어 기능·제안 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html)(context parameters — 「Available since 2.2.0, Stable since 2.4.0」 · context receivers — 「Revoked」).
-> ★ 같은 문서의 「Experimental」 표시는 **명시 전달**(`-Xexplicit-context-arguments`) 한 절에만 붙어 있다 — 기능 전체가 아니다(열어서 확인).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 격자 24회 + 단독 10회(컴파일 실패 4벌) · `javac` 1회 · `java` 5회 · `javap` 1회 · stdlib 소스 jar 에서 `contextOf` 선언 1곳.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **판 격자의 「통과 N / M」은 스크립트가 스스로 센 것**이다.
-> **버전** — context parameters 는 **2.2.0 에 실험으로 들어와 2.4.0 에 Stable**(상태표). 그 전신 context receivers 는 **1.6.20 실험 → 폐기**(문서가 1.6.20 의 what's new 로 링크한다).\
-> ★★ **이 판에서 「2.2 실험」은 잴 수 없었다** — 그것은 **컴파일러 2.2.0 이 나왔을 때의 성질**이고, 이 머신의 컴파일러는 2.4.20 하나다. `-language-version` 을 낮춰도 **2.4.20 컴파일러가 그 판을 흉내 낼 뿐**이다((1)).
-> **경계** — ★★★ **수신자 람다가 `Function1` 의 첫 인자로 내려가는 것**은 [37번 주제](../37-lambdas-with-receiver-and-type-safe-builders/) (4)가 이미 쟀다 — 여기서는 **context parameter 가 같은 자리에 앉는가**만 더한다((3)).\
-> 확장 함수의 수신자는 [13번 주제](../13-extension-functions-and-properties/), `with`/`run` 이 암묵 수신자를 여는 것은 [14번 주제](../14-scope-functions/)가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**판 격자 — `-language-version` × 플래그 × 두 문법의 컴파일 결과**」. 이 주제의 질문 「언제부터 되나 · 옛 문법은 어떻게 되나」는 **실행 결과가 아니라 컴파일러의 거부 여부**로만 답해진다. 둘째 창(에러 전문)이 「**수신자와 무엇이 다른가**」를 답한다.
 
 ## 이 주제가 쓰는 세 층
@@ -577,3 +565,15 @@ L
 ```
 
   이것이 JVM 에서 무엇이 되는지(`Function1` 인가), 수신자 람다와 무엇이 갈리는지는 **재지 않았다** — [37번 주제](../37-lambdas-with-receiver-and-type-safe-builders/) (4)와 나란히 재 볼 다음 자리다.
+
+## 실행 환경
+
+**기준 소스** — [Context parameters](https://kotlinlang.org/docs/context-parameters.html)(「Context parameters replace an older experimental feature called context receivers」 · 선언은 「`name: Type`」 꼴, 「You can use `_` as a context parameter name」 · 「To access its value explicitly, use `contextOf<T>()`」 · 「Kotlin resolves context parameters at the call site by searching for matching context values in the current scope. Kotlin matches them by their type. If multiple compatible values exist at the same scope level, the compiler reports an ambiguity.」) · [언어 기능·제안 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html)(context parameters — 「Available since 2.2.0, Stable since 2.4.0」 · context receivers — 「Revoked」).
+★ 같은 문서의 「Experimental」 표시는 **명시 전달**(`-Xexplicit-context-arguments`) 한 절에만 붙어 있다 — 기능 전체가 아니다(열어서 확인).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 격자 24회 + 단독 10회(컴파일 실패 4벌) · `javac` 1회 · `java` 5회 · `javap` 1회 · stdlib 소스 jar 에서 `contextOf` 선언 1곳.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **판 격자의 「통과 N / M」은 스크립트가 스스로 센 것**이다.
+**버전** — context parameters 는 **2.2.0 에 실험으로 들어와 2.4.0 에 Stable**(상태표). 그 전신 context receivers 는 **1.6.20 실험 → 폐기**(문서가 1.6.20 의 what's new 로 링크한다).\
+★★ **이 판에서 「2.2 실험」은 잴 수 없었다** — 그것은 **컴파일러 2.2.0 이 나왔을 때의 성질**이고, 이 머신의 컴파일러는 2.4.20 하나다. `-language-version` 을 낮춰도 **2.4.20 컴파일러가 그 판을 흉내 낼 뿐**이다((1)).
+**경계** — ★★★ **수신자 람다가 `Function1` 의 첫 인자로 내려가는 것**은 [37번 주제](../37-lambdas-with-receiver-and-type-safe-builders/) (4)가 이미 쟀다 — 여기서는 **context parameter 가 같은 자리에 앉는가**만 더한다((3)).\
+확장 함수의 수신자는 [13번 주제](../13-extension-functions-and-properties/), `with`/`run` 이 암묵 수신자를 여는 것은 [14번 주제](../14-scope-functions/)가 정본이다.

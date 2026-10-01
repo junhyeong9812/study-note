@@ -1,12 +1,5 @@
 # ts/syntax/25 — `infer` 와 재귀 조건부 타입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Conditional Types](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html) ·
-> [Handbook — Indexed Access Types](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html) ·
-> [Handbook — Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html).
-> 위는 **규칙 확인용 링크**이고, 본문의 진단·출력은 **전부 이 판에서 직접 던져 받은 것**이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version · javac -version · rustc --version (sh exit=0) =====
 Version 7.0.2
@@ -26,7 +19,6 @@ rustc 1.92.0 (ded5c06cf 2025-12-08)
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
 > **버전** — 조건부 타입과 `infer` 는 TS **2.8**, **꼬리 재귀 꼴의 완화는 TS 4.5**, `infer X extends …` 는 TS **4.8** 이다.
 > ★ 그 세 버전이 **7.0.2 에서 그대로 도는지는 외우지 않고 던져서 확인했다** — 아래 블록이 그 결과다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## ★★★ 이 주제가 쓰는 탐침 — 그리고 탐침이 말을 못 하는 자리
 
@@ -911,3 +903,11 @@ ex.25b.ts    5회 md5 가짓수 1
   거짓 가지를 `never` 대신 **눈에 띄는 리터럴**(`"안 맞음"`)로 두면 탐침이 말을 한다.
   ★ 이 배치에서는 **표준 유틸리티의 모양을 그대로 흉내 내려고** `never` 를 유지했다.
   실무에서 자기 타입을 만들 때는 **거짓 가지를 리터럴로 두고 디버깅한 뒤 `never` 로 바꾸는** 쪽이 싸다. **안 던져 봤다.**
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Conditional Types](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html) ·
+[Handbook — Indexed Access Types](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html) ·
+[Handbook — Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html).
+위는 **규칙 확인용 링크**이고, 본문의 진단·출력은 **전부 이 판에서 직접 던져 받은 것**이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

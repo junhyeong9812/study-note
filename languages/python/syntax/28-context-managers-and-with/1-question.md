@@ -1,21 +1,5 @@
 # python/syntax/28-context-managers-and-with — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★★ 이 주제에서는 **「어떤 줄이 안 찍히나」가 답인 자리가 많다.**
-> `__exit__` 가 **안 도는** 경우와 정리가 **안 되는** 경우를 짚어야 맞은 것이다.
-> ★ 이 주제의 블록에는 **트레이스백이 한 줄도 없다** — `contextlib` 안에서 난 예외에는 **절대경로가 박혀**
-> 다른 머신에서 재현이 안 되기 때문이다. 대신 **타입·메시지·`__context__` 사슬**을 찍었다.
->
-> 실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
-> ★ **이 주제는 [25번](../25-exceptions-and-finally/2-summary.md)·[17번](../17-generators-yield/2-summary.md)·[24번](../24-decorators/2-summary.md)·[05번](../05-truthiness-and-short-circuit/2-summary.md)을 전부 쓴다.**
-> 막히면 그 넷 중 어느 것이 안 잡힌 것인지부터 짚어라.
-> ★ **이 사슬은 [25](../25-exceptions-and-finally/1-question.md) → [26](../26-eafp-vs-lbyl/1-question.md) → [27](../27-exception-groups-and-except-star/1-question.md) → 28** 로 이어지고, **여기가 끝**이다.
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -330,8 +314,22 @@ run("ExitStack — 몸통도 터짐", stacked_with_body)
 - ★ 6번 문항에서 갈린 것은 **어느 층**인가?
 - **`async with` 가 어디부터 다른 주제이고, `with open(...)` 의 실무가 어디부터인지** 한 줄로 그을 수 있는가?
 
+## 실행 환경
+
+★★ 이 주제에서는 **「어떤 줄이 안 찍히나」가 답인 자리가 많다.**
+`__exit__` 가 **안 도는** 경우와 정리가 **안 되는** 경우를 짚어야 맞은 것이다.
+★ 이 주제의 블록에는 **트레이스백이 한 줄도 없다** — `contextlib` 안에서 난 예외에는 **절대경로가 박혀**
+다른 머신에서 재현이 안 되기 때문이다. 대신 **타입·메시지·`__context__` 사슬**을 찍었다.
+
+실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
+★ **이 주제는 [25번](../25-exceptions-and-finally/2-summary.md)·[17번](../17-generators-yield/2-summary.md)·[24번](../24-decorators/2-summary.md)·[05번](../05-truthiness-and-short-circuit/2-summary.md)을 전부 쓴다.**
+
 ## 복습 기록
 
 | 날짜 | 결과 | 틀린 질문 | 다음 복습 |
 |------|------|-----------|-----------|
 | | | | |
+
+---
+
+★ **이 사슬은 [25](../25-exceptions-and-finally/1-question.md) → [26](../26-eafp-vs-lbyl/1-question.md) → [27](../27-exception-groups-and-except-star/1-question.md) → 28** 로 이어지고, **여기가 끝**이다.

@@ -1,12 +1,5 @@
 # cs/storage-media-workload - 저장 매체와 워크로드 (HDD, SSD의 동작 방식과 데이터 특성별 선택 기준) - 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다.
-> 따라 친 원고 없이, 포트폴리오 사례(랜덤 액세스 워크로드를 HDD에 두었다가 계층을 나눈 경험)를 일반화해 쓴 글이다. README 규칙상 서머리는 본인 문장이 원칙이니 읽다가 걸리는 곳은 본인 문장으로 바꿔 간다.
-> **수치 근거(2026-09-20 접지)** — 전부 제조사 데이터시트다. HDD: Seagate Exos X24 / Exos M / Exos 2X18 / Exos 10E2400 / Exos 15E900 / BarraCuda, WD Ultrastar DC HC580 / He10, Toshiba MG 시리즈. SSD: Samsung PM893(SATA) / PM9A3, WD·SanDisk Ultrastar DC SN655, Kioxia CM7. PCIe 레인 대역폭은 PCI-SIG 표. 링크는 맨 아래 "수치 출처"에.
-> **계산으로 확정한 값**: 회전 대기 = 60,000ms / rpm, 랜덤 접근 시간 = 탐색 + 회전 대기 + 전송, 그리고 거기서 나오는 IOPS 상한. 본문에 식을 같이 적어 둔다 — 외울 값이 아니라 유도할 값이다.
-> **자릿수로만 적는 값**: 용량당 가격비(데이터시트에 없다), NAND 내부 시간과 적층 수(-> nand-flash 정본).
-> SSD 내부(FTL, GC, Write Amplification)는 [nand-flash](../nand-flash/)가 정본이라 여기서는 접근 특성 수준으로만 다룬다.
-
 ## 전체 흐름
 
 ```text
@@ -199,3 +192,10 @@
 - [Samsung PM9A3 데이터시트](https://image.semiconductor.samsung.com/resources/data-sheet/samsung_ssd_pm9a3_data_sheet_rev1_0.pdf) - PCIe Gen4 x4, `4KB Ran. Read (QD32) 580~1,100 KIOPS`, `Sequential Read 6,500~6,900 MB/s`.
 - [Kioxia 엔터프라이즈 SSD 데이터시트 (CM7 시리즈)](https://americas.kioxia.com/content/dam/kioxia/shared/business/ssd/enterprise-ssd/asset/datasheet/EnterpriseSSD_DataSheet_E.pdf) - PCIe Gen5 x4, `Sequential Read 최대 14,000 MB/s`, `Random Read 최대 2,700 KIOPS`.
 - PCIe 레인 대역폭: PCI-SIG 표([Kioxia FAQ Table 1](https://www.kioxia.com/content/dam/kioxia/shared/business/ssd/asset/KIOXIA_What_You_Need_To_Know_About_PCIe_4_NVMe_SSDs_FAQ_v2_6.pdf)에 "Source: PCI-SIG"로 재수록) - PCIe 4.0 = 16.0 GT/s, x4에서 7.88GB/s. PCIe 5.0 = 32.0 GT/s, x4에서 15.75GB/s. 위 SSD들의 6.8\~14GB/s는 이 이론 상한의 85\~90%다.
+
+## 실행 환경
+
+**수치 근거(2026-09-20 접지)** — 전부 제조사 데이터시트다. HDD: Seagate Exos X24 / Exos M / Exos 2X18 / Exos 10E2400 / Exos 15E900 / BarraCuda, WD Ultrastar DC HC580 / He10, Toshiba MG 시리즈. SSD: Samsung PM893(SATA) / PM9A3, WD·SanDisk Ultrastar DC SN655, Kioxia CM7. PCIe 레인 대역폭은 PCI-SIG 표. 링크는 맨 아래 "수치 출처"에.
+**계산으로 확정한 값**: 회전 대기 = 60,000ms / rpm, 랜덤 접근 시간 = 탐색 + 회전 대기 + 전송, 그리고 거기서 나오는 IOPS 상한. 본문에 식을 같이 적어 둔다 — 외울 값이 아니라 유도할 값이다.
+**자릿수로만 적는 값**: 용량당 가격비(데이터시트에 없다), NAND 내부 시간과 적층 수(-> nand-flash 정본).
+SSD 내부(FTL, GC, Write Amplification)는 [nand-flash](../nand-flash/)가 정본이라 여기서는 접근 특성 수준으로만 다룬다.

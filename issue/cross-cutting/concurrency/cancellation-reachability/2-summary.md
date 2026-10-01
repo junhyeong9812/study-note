@@ -1,7 +1,5 @@
 # issue/concurrency/cancellation-reachability — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-
 ## 전체 흐름
 
 ```

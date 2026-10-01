@@ -1,11 +1,5 @@
 # Java 24 (2025.03)
 
-> 원본: `~/project/java-history/java/java-24.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JEP 번호·클래스/옵션/알고리즘 이름·자바 코드블록 3개와 셸 코드블록 1개·「릴리스 정보」의 JEP 목록·「참고 출처」는 원문 그대로다.\
-> 도식은 넣지 않았다 — 원문에 도식이 없고, 원문이 절차로 적은 AOT 세 단계는 원문 셸 코드블록의 주석에 이미 번호로 나뉘어 있다.\
-> 「한눈에」의 전날 손질 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
-> 「이 편의 기능은 지금 어디쯤인가」 표의 「그 앞」·「그 뒤」 칸은 같은 시리즈의 다른 편(`java-21.md`~`java-23.md`·`java-25.md`·`java-26.md`)에서 끌어온 보충이고, 출처 편을 칸마다 적었다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -220,3 +214,11 @@ Java 24는 LTS 직전 릴리스답게 "정식화 러시"를 보여준다.\
 - [Java 24 Features (with Examples) - HappyCoders](https://www.happycoders.eu/java/java-24-features/)
 - [Six JDK 24 Features You Should Know About - foojay.io](https://foojay.io/today/six-jdk-24-features-you-should-know-about/)
 - [Java version history - Wikipedia](https://en.wikipedia.org/wiki/Java_version_history)
+
+## 출처
+
+원본: `~/project/java-history/java/java-24.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JEP 번호·클래스/옵션/알고리즘 이름·자바 코드블록 3개와 셸 코드블록 1개·「릴리스 정보」의 JEP 목록·「참고 출처」는 원문 그대로다.\
+도식은 넣지 않았다 — 원문에 도식이 없고, 원문이 절차로 적은 AOT 세 단계는 원문 셸 코드블록의 주석에 이미 번호로 나뉘어 있다.\
+「한눈에」의 전날 손질 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
+「이 편의 기능은 지금 어디쯤인가」 표의 「그 앞」·「그 뒤」 칸은 같은 시리즈의 다른 편(`java-21.md`~`java-23.md`·`java-25.md`·`java-26.md`)에서 끌어온 보충이고, 출처 편을 칸마다 적었다.

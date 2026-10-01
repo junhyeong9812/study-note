@@ -1,14 +1,5 @@
 # html/syntax/09 — 스타일시트·리소스 힌트 연결: `<link rel>`·`media`·`preload`/`preconnect`/`modulepreload` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The `link` element」](https://html.spec.whatwg.org/multipage/semantics.html#the-link-element)·[「Link types」](https://html.spec.whatwg.org/multipage/links.html#linkTypes)·[「Blocking attribute」](https://html.spec.whatwg.org/multipage/urls-and-fetching.html#blocking-attributes) 절. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. `<link rel=stylesheet>` 는 1990년대부터, `preload`/`preconnect` 는 2016년 전후, `modulepreload` 는 2019년 전후에 자리 잡았다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★ **이 주제의 본체는 창 ②(프로브)와 창 ⑤(서버 요청 로그) 둘이다** — 「담겼나」는 프로브가, 「**받아 오기는 했나**」는 요청 로그가 답한다. 그리고 이 편이 **창 ⑥(`renderBlockingStatus`)을 새로 세운다** — 「**막았나**」는 그것 말고는 물을 데가 없다. 창 넷의 정의는 [01번 주제](../01-document-skeleton/2-summary.md)의 「이 갈래의 창」 절에, 창 ⑤ 는 [08번 주제](../08-script-loading/2-summary.md)의 (6) 에 있다.
-> ★★★ **네트워크가 없다.** 이 머신은 바깥으로 나가지 못한다. 그래서 `preconnect`·`dns-prefetch` 가 실제로 무엇을 아끼는지는 「**못 잰 것**」이다 — 「안 돌려 본 것」이 아니라 **잴 수단 자체가 없는 것**이다. 아래 (6) 이 그 경계를 긋는다.
-
 **이 판의 Chrome**
 
 ```text
@@ -889,3 +880,13 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 `media` 가 안 맞아도 받나** — 창을 줄이거나 인쇄를 누르면 **그 순간 조건이 참**이 될 수 있다. 그때 가서 받으면 **화면이 한 번 깜빡인다.** 받아 두되 막지 않는 것이 타협점이다.
 - **왜 `as` 를 필수로 했나** — 우선순위·`Accept` 헤더·CSP 판정이 전부 **자원 종류에 달려 있다.** 종류를 모르면 브라우저가 **무엇으로 받아야 할지 못 정한다** — 그래서 아예 안 받는다.
 - **`blocking="render"` 속성** — 최근 명세는 `<link>`·`<script>`·`<style>` 에 **명시적으로 렌더 차단을 선언하는** `blocking` 속성을 두었다. 이 배치에서는 **던지지 않았다**(다음 배치의 자리).
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The `link` element」](https://html.spec.whatwg.org/multipage/semantics.html#the-link-element)·[「Link types」](https://html.spec.whatwg.org/multipage/links.html#linkTypes)·[「Blocking attribute」](https://html.spec.whatwg.org/multipage/urls-and-fetching.html#blocking-attributes) 절. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. `<link rel=stylesheet>` 는 1990년대부터, `preload`/`preconnect` 는 2016년 전후, `modulepreload` 는 2019년 전후에 자리 잡았다.
+
+★★ **이 주제의 본체는 창 ②(프로브)와 창 ⑤(서버 요청 로그) 둘이다** — 「담겼나」는 프로브가, 「**받아 오기는 했나**」는 요청 로그가 답한다. 그리고 이 편이 **창 ⑥(`renderBlockingStatus`)을 새로 세운다** — 「**막았나**」는 그것 말고는 물을 데가 없다. 창 넷의 정의는 [01번 주제](../01-document-skeleton/2-summary.md)의 「이 갈래의 창」 절에, 창 ⑤ 는 [08번 주제](../08-script-loading/2-summary.md)의 (6) 에 있다.
+★★★ **네트워크가 없다.** 이 머신은 바깥으로 나가지 못한다. 그래서 `preconnect`·`dns-prefetch` 가 실제로 무엇을 아끼는지는 「**못 잰 것**」이다 — 「안 돌려 본 것」이 아니라 **잴 수단 자체가 없는 것**이다. 본문 (6) 이 그 경계를 긋는다.

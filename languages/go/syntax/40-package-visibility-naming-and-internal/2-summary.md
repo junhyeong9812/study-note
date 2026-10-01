@@ -1,13 +1,5 @@
 # go/syntax/40 — 패키지 가시성·이름 규칙·`internal` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec)의 Exported identifiers · `go help importpath` 의 Internal packages · `go help test` · [`encoding/json`](https://pkg.go.dev/encoding/json) 문서.
-> 명세와 `go help` 는 **이 툴체인에서 직접 떴다.** `go help importpath` 가 가리키는 설계 문서(go14internal)와 Effective Go 의 이름 절은 **안 열었다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> ★★ **버전** — 대문자 규칙은 **1.0 부터** 명세에 있다. `internal` 규칙은 **명세가 아니라 `go` 명령의 규칙**이다(명세에 「internal」 이라는 낱말이 **패키지 뜻으로는 한 번도 안 나온다** — 머리말 블록).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**`internal` 격자** — 한 `internal` 패키지를 여덟 자리(같은 모듈의 부모·형제·조카, 다른 모듈 둘)에서 import 해 **막혔나**를 찍는 로그」.
 마지막 줄 「**막힌 칸 4 / 8**」 — 그리고 ★★★ **다른 모듈인데 통과한 칸이 하나 있다**((2)절).
 ★★ 짝이 되는 창은 「**소문자 이름 탐침 13 개가 받은 진단의 꼴**」 — 컴파일러는 소문자 이름을 「**없다**」로도 「**비공개다**」로도 말하고, ★★★ **어느 쪽인지가 다른 함수의 인라인 여부에 달려 있었다**((1)·(3)절).
@@ -309,7 +301,7 @@ p13 : 「no field or method」 꼴
 
 ### (2) ★★★ `internal` 격자 — 누가 막히나
 
-`go help` 가 규칙을 한 줄로 적는다(머리말 블록) — 「**importable only by code that shares the same import path above the internal directory**」. 여덟 자리에서 던졌다:
+`go help` 가 규칙을 한 줄로 적는다(「이 판」 절 블록) — 「**importable only by code that shares the same import path above the internal directory**」. 여덟 자리에서 던졌다:
 
 ```text
 ===== 소스: t40w.go =====
@@ -785,7 +777,7 @@ func Ärger() {}
 
 | 사실 | 층 | 근거 |
 |---|---|---|
-| ★★★ **첫 글자 유니코드 대문자(Lu) → 공개** | **명세** | (1)절 · 머리말 `t40spec` |
+| ★★★ **첫 글자 유니코드 대문자(Lu) → 공개** | **명세** | (1)절 · 「이 판」 절 `t40spec` |
 | 한글 이름은 공개 불가 | **명세의 귀결**(Lo 는 Lu 가 아니다) | (1)절 `p10` |
 | ★★★ **`internal` — import 경로 접두 규칙** | **`go` 명령의 규칙** — 명세에 없다 | (2)절 · `t40help` · `t40specint` |
 | `_test` 패키지는 별도 패키지 | **`go` 명령의 규칙** | (5)절 |
@@ -840,3 +832,11 @@ func Ärger() {}
 - ★ `go help importpath` 가 가리키는 설계 문서(go14internal)와 Effective Go 의 이름 절(`MixedCaps`·패키지 이름·게터)은 **안 열었다.**
 - ★ `vendor/` 의 가시성 규칙은 `go help gopath` 가 「internal 과 같은 규칙」이라 적는다 — **GOPATH 모드 이야기라 던지지 않았다.**
 - ★ 내보내기 데이터 파일을 직접 풀어 `discount` 가 실렸는지 보는 것(`go tool` 의 해당 도구)은 **하지 않았다** — (3)절은 행동으로만 갈랐다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec)의 Exported identifiers · `go help importpath` 의 Internal packages · `go help test` · [`encoding/json`](https://pkg.go.dev/encoding/json) 문서.
+명세와 `go help` 는 **이 툴체인에서 직접 떴다.** `go help importpath` 가 가리키는 설계 문서(go14internal)와 Effective Go 의 이름 절은 **안 열었다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+★★ **버전** — 대문자 규칙은 **1.0 부터** 명세에 있다. `internal` 규칙은 **명세가 아니라 `go` 명령의 규칙**이다(명세에 「internal」 이라는 낱말이 **패키지 뜻으로는 한 번도 안 나온다** — 「이 판」 절 블록).

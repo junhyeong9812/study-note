@@ -1,9 +1,5 @@
 # kotlin/syntax/50 — `kotlin.time` — `Duration`·시간 측정 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.
-> ★★ 아래 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -426,3 +422,8 @@ Implementation-Version: 1.11.0
 1. ★★★ **`Long.MAX_VALUE.nanoseconds * 2` 가 포화하지 않았다** — 밀리초 정밀도로 옮겨 타 584년(`inWholeDays / 365`)이 나왔다. `Long.MAX_VALUE.nanoseconds` 자체도 이미 밀리초 정밀도였다. 포화를 보려면 밀리초 범위까지 넘겨야 했다.
 2. ★★ **`Thread.sleep` 에 `Duration` 판이 있었다** — 다만 `java.time.Duration` 이다. 진단이 두 후보를 다 보여 줬다.
 3. ★★ **`Instant` 의 「2.1 도입」은 판 격자로 안 보였다** — 2.0 에서도 opt-in 만 달면 컴파일된다(`@WasExperimental`).
+
+## 실행 환경
+
+모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.
+★★ 본문의 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.

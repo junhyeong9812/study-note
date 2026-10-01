@@ -1,17 +1,5 @@
 # sql/40-날짜·시간 타입과 함수 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Date/Time Types](https://www.postgresql.org/docs/18/datatype-datetime.html) · [PostgreSQL 18 · Date/Time Functions and Operators](https://www.postgresql.org/docs/18/functions-datetime.html) · [MySQL 8.4 · Date and Time Data Types](https://dev.mysql.com/doc/refman/8.4/en/date-and-time-types.html) · [MySQL 8.4 · Date and Time Functions](https://dev.mysql.com/doc/refman/8.4/en/date-and-time-functions.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> ★ **시간대 조건** — PG `TimeZone` = **`Etc/UTC`** · MySQL `@@global.time_zone`·`@@session.time_zone` = **`SYSTEM`**(그 SYSTEM 이 `UTC`).\
-> **이 설정이 4·5번의 답을 정한다.** 아래 「시간대 확인」 절에 직접 찍은 출력을 실었다.\
-> MySQL `sql_mode` 는 기본값(`STRICT_TRANS_TABLES`·`NO_ZERO_DATE` 포함)이다 — 3번의 결과가 여기 달렸다.\
-> **버전** — 도입 버전이 확인된 것은 없어 **버전을 적지 않는다.**\
-> **선행** — [35 타입 체계와 캐스팅](../35-type-system-and-casting/)
-
 ## 한눈에 — 쉽게 말하면
 
 **날짜·시간 타입의 핵심 질문은 하나다 — 「이 값에 시간대가 붙어 있나?」**
@@ -909,3 +897,14 @@ NOW() / CURRENT_TIMESTAMP        SYSDATE()                                  -- M
 - **날짜 열에 함수를 씌우지 않는 습관**이 이 주제의 실무 핵심이다.\
   `DATE(at) = '2026-09-21'` 대신 `at >= '2026-09-21' AND at < '2026-09-22'` —\
   결과가 같고 **인덱스가 산다.** 35번·37번·38번·39번에서 반복된 그 한 문장이다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Date/Time Types](https://www.postgresql.org/docs/18/datatype-datetime.html) · [PostgreSQL 18 · Date/Time Functions and Operators](https://www.postgresql.org/docs/18/functions-datetime.html) · [MySQL 8.4 · Date and Time Data Types](https://dev.mysql.com/doc/refman/8.4/en/date-and-time-types.html) · [MySQL 8.4 · Date and Time Functions](https://dev.mysql.com/doc/refman/8.4/en/date-and-time-functions.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+★ **시간대 조건** — PG `TimeZone` = **`Etc/UTC`** · MySQL `@@global.time_zone`·`@@session.time_zone` = **`SYSTEM`**(그 SYSTEM 이 `UTC`).\
+**이 설정이 4·5번의 답을 정한다.** 본문 「시간대 확인」 절에 직접 찍은 출력을 실었다.\
+MySQL `sql_mode` 는 기본값(`STRICT_TRANS_TABLES`·`NO_ZERO_DATE` 포함)이다 — 3번의 결과가 여기 달렸다.\
+**버전** — 도입 버전이 확인된 것은 없어 **버전을 적지 않는다.**\
+**선행** — [35 타입 체계와 캐스팅](../35-type-system-and-casting/)

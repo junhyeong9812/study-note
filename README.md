@@ -50,7 +50,7 @@ study-note/
 
 - 챕터 폴더명은 원본 자료(impl 문서 등)의 파일명을 그대로 따라 대응시킨다.
 - 파일을 3개로 물리적으로 나눈 이유: 정답이 실수로 눈에 들어오는 경로를 없애기 위해서다.
-- 새 챕터는 `templates/`의 세 파일을 복사해서 시작한다 — 단 cs 주제는 `cs/README.md` 「작성 규칙」의 골격을 따른다.
+- 새 챕터는 `templates/`의 세 파일과 `metadata.md`를 복사해서 시작한다(파일별 작성 방식은 [templates/README.md](templates/README.md)) — 단 cs 주제는 `cs/README.md` 「작성 규칙」의 골격을 따른다.
 - cs 작성 규칙(Claude 완성본·통일 골격·검수 상태)은 `cs/README.md`가 정본이다. 따라 친 노트를 융합하는 `reference/organize-guide.md`는 cs 외 폴더에만 적용한다.
 
 ## 복습 규칙 (접근 순서)

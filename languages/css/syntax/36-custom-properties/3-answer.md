@@ -1,11 +1,5 @@
 # css/syntax/36 — 사용자 정의 속성: 선언·`var()`·대체값·상속 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 네 창으로 읽은 것**이다 —
-> `cssRules[i].style`(담긴 선언 목록) · `cssRules[i].style.getPropertyValue('--x')`(담긴 변수 값) ·
-> `getComputedStyle(el).getPropertyValue('--x')`(변수의 계산값) · `getComputedStyle(el).<속성>`(쓰는 쪽의 계산값).\
-> **손으로 계산해 유도한 값은 없다.** 규칙은 [css-variables-1](https://drafts.csswg.org/css-variables-1/) 과 [css-cascade-5](https://drafts.csswg.org/css-cascade-5/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -356,3 +350,10 @@
 **재지 않은 것** — `@property` 로 등록했을 때 달라지는 것 전부([목록의 **37번 주제**](../37-at-property/)).\
 **구현 의존 항목** — ① `--empty` 의 계산값이 `""` 로 보이는 것 ② `--c` 가 `"calc(10px * 3)"` 으로 보이는 것(접기 범위는 구현 재량) ③ `el.style['--x']` 가 안 먹는 것. **Chrome 151 에서 관찰한 것**이고 브라우저가 바뀌면 다시 찍어야 한다.\
 **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.**
+
+## 실행 환경
+
+이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 네 창으로 읽은 것**이다 —
+`cssRules[i].style`(담긴 선언 목록) · `cssRules[i].style.getPropertyValue('--x')`(담긴 변수 값) ·
+`getComputedStyle(el).getPropertyValue('--x')`(변수의 계산값) · `getComputedStyle(el).<속성>`(쓰는 쪽의 계산값).\
+**손으로 계산해 유도한 값은 없다.** 규칙은 [css-variables-1](https://drafts.csswg.org/css-variables-1/) 과 [css-cascade-5](https://drafts.csswg.org/css-cascade-5/) 로 접지했다.

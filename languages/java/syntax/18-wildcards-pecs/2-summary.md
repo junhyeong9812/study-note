@@ -1,17 +1,5 @@
 # java/syntax/18 — 와일드카드와 PECS: `? extends` / `? super` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §4.5.1 Type Arguments of Parameterized Types](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [§5.1.10 Capture Conversion](https://docs.oracle.com/javase/specs/jls/se21/html/jls-5.html) · [§4.10.2 Subtyping among Class and Interface Types](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [§4.10.3 Subtyping among Array Types](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/*.java`(`lib/src.zip`).
-> **실행 검증** — 이 문서의 모든 출력·에러는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> `Ex.java (18-a)` `(18-b)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 다 돌렸고 출력이 한 글자도 다르지 않았다.\
-> 컴파일 에러 `(18-c)` `(18-d)` 도 17 과 25 에서 `diff` 로 대조해 **문자 단위로 같았다.**\
-> **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·javadoc 인용으로만 적었다.
-> **버전** — 와일드카드는 **Java 5**. 이후 문법 변화 없다.
-> **범위** — 타입 파라미터를 **선언하는 것**은 [`../17-generic-declarations/`](../17-generic-declarations/) 가,\
-> 타입 인자가 **런타임에 사라지는 것**은 [`../19-type-erasure/`](../19-type-erasure/) 가 정본이다.\
-> 여기는 **`?` 가 읽기·쓰기를 어떻게 막는가**만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 JLS 로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`? extends` 는 "출구 전용 문", `? super` 는 "입구 전용 문"이다.**
@@ -846,3 +834,15 @@ remove("a")   = true -> [b]
 - **배열과 제네릭을 섞으면 컴파일러가 아예 막는다.** `new List<String>[3]` 은 `generic array creation` 에러다.\
   공변성(배열)과 소거(제네릭)를 합치면 **검사가 아무것도 못 잡는 배열**이 생기기 때문이다.\
   정본은 [`../19-type-erasure/`](../19-type-erasure/) 다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §4.5.1 Type Arguments of Parameterized Types](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [§5.1.10 Capture Conversion](https://docs.oracle.com/javase/specs/jls/se21/html/jls-5.html) · [§4.10.2 Subtyping among Class and Interface Types](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [§4.10.3 Subtyping among Array Types](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/*.java`(`lib/src.zip`).
+**실행 검증** — 이 문서의 모든 출력·에러는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+`Ex.java (18-a)` `(18-b)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 다 돌렸고 출력이 한 글자도 다르지 않았다.\
+컴파일 에러 `(18-c)` `(18-d)` 도 17 과 25 에서 `diff` 로 대조해 **문자 단위로 같았다.**\
+**"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·javadoc 인용으로만 적었다.
+**버전** — 와일드카드는 **Java 5**. 이후 문법 변화 없다.
+**범위** — 타입 파라미터를 **선언하는 것**은 [`../17-generic-declarations/`](../17-generic-declarations/) 가,\
+타입 인자가 **런타임에 사라지는 것**은 [`../19-type-erasure/`](../19-type-erasure/) 가 정본이다.\
+여기는 **`?` 가 읽기·쓰기를 어떻게 막는가**만 다룬다.

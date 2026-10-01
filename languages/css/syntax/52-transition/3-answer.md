@@ -1,10 +1,5 @@
 # css/syntax/52 — `transition`: 전환 가능한 속성·타이밍 함수·지연·`transition-behavior` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 시각별 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 측정한 것**이다.\
-> CDP 로 실제 마우스를 움직여 `:hover` 를 발생시킨 뒤, 벽시계 기준 시각마다 `getComputedStyle` 을 읽었다(샘플 시각은 ±10ms 오차).\
-> 규칙은 [CSS Transitions Level 1](https://drafts.csswg.org/css-transitions-1/) · [Level 2](https://drafts.csswg.org/css-transitions-2/) · [CSS Easing Functions Level 1](https://drafts.csswg.org/css-easing-1/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -398,7 +393,7 @@
 | ★ 7번 문항의 **고장난 판** | 문서가 적어 둔 단축 판(`transition: margin-left 2s`)을 그대로 되살려 2판 | **넷이 여전히 한 값** — 50ms `3.41` · 500ms `106.22` · 1000ms `208.63`. **사고 자체는 그대로 재현된다** |
 | ★ 지금 실린 demo (4) 가 **고쳐져 있나** | 위 두 줄을 나란히 본다 | **고쳐져 있다.** 롱핸드 판은 50ms 에 `6.50/3.41/0.30/0`, 단축 판은 `3.41/3.41/3.41/3.41` — **넷이 갈린다** |
 | 기준 소스 | drafts.csswg.org 의 css-transitions-1 · css-easing-1 원문 대조 | transitionable 정의·되돌리기 계수 정의는 **원문 그대로** · 네 이징 키워드의 `cubic-bezier` 대응도 원문에 있다 |
-| Baseline | api.webstatus.dev 조회 2026-09-23 | `transitions` widely 2015-09-30 / 2018-03-30 · `linear-easing` widely 2023-12-11 / 2026-06-11 · `transition-behavior`·`starting-style` newly 2024-08-06 — 머리말과 일치 |
+| Baseline | api.webstatus.dev 조회 2026-09-23 | `transitions` widely 2015-09-30 / 2018-03-30 · `linear-easing` widely 2023-12-11 / 2026-06-11 · `transition-behavior`·`starting-style` newly 2024-08-06 — 「실행 환경」과 일치 |
 
 **흔들리는 칸 / 안 흔들리는 칸** — 근거로 쓸 자리를 미리 가른다.
 
@@ -412,3 +407,9 @@
 ★ **이 문서는 픽셀을 읽지 않았다** — 전부 계산값이다. 그래서 `--disable-gpu` 의 합성 반올림 문제는 이 문서의 대상이 아니고, 동시에 **「화면이 그때 어떻게 보였나」는 이 문서가 보장하지 않는다.**
 
 **엔진은 Chrome 151.0.7922.173 하나다.** Firefox 155 는 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.**
+
+## 실행 환경
+
+이 파일의 **모든 시각별 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 측정한 것**이다.\
+CDP 로 실제 마우스를 움직여 `:hover` 를 발생시킨 뒤, 벽시계 기준 시각마다 `getComputedStyle` 을 읽었다(샘플 시각은 ±10ms 오차).\
+규칙은 [CSS Transitions Level 1](https://drafts.csswg.org/css-transitions-1/) · [Level 2](https://drafts.csswg.org/css-transitions-2/) · [CSS Easing Functions Level 1](https://drafts.csswg.org/css-easing-1/) 로 접지했다.

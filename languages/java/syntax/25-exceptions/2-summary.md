@@ -1,13 +1,5 @@
 # java/syntax/25 — 예외: checked/unchecked·전파·다중 `catch`·재던지기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §11 Exceptions](https://docs.oracle.com/javase/specs/jls/se21/html/jls-11.html) (§11.1.1 예외의 종류 · §11.2 컴파일 타임 검사 · §14.20 `try` 문) · [`java.lang.Throwable` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Throwable.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/Throwable.java`(`lib/src.zip`).
-> **실행 검증** — 이 문서의 모든 출력·스택트레이스·컴파일 에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> `Ex.java (25-b)` `(25-c)` `(25-d)` `(25-e)` `(25-h)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 돌렸고 **출력이 한 글자도 다르지 않았다.**\
-> `finally` 경고 문구도 세 JDK 에서 같았다. **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·javadoc 인용으로만 적었다.
-> **버전** — `try`/`catch`/`finally`·checked 예외는 **Java 1.0**. 다중 `catch` 와 **정밀 재던지기**는 **Java 7**. `addSuppressed`/`getSuppressed` 도 **7**(`src.zip` 의 `@since 1.7` 을 직접 읽었다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 JLS·javadoc 으로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **예외는 "호출 사슬을 거꾸로 거슬러 올라가는 비상 신호"다.**
@@ -787,3 +779,11 @@ writableStackTrace=false 일 때 깊이 = 0
 - **`Error` 를 잡아야 하는 예외적인 경우가 있다.**\
   서버 최상위 루프에서 `Throwable` 을 잡아 로그를 남기고 스레드를 재시작하는 패턴이 그것이다.\
   그때도 `OutOfMemoryError` 는 **잡아도 대개 할 수 있는 일이 없다** — 로그를 남기려다 또 터질 수 있다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §11 Exceptions](https://docs.oracle.com/javase/specs/jls/se21/html/jls-11.html) (§11.1.1 예외의 종류 · §11.2 컴파일 타임 검사 · §14.20 `try` 문) · [`java.lang.Throwable` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Throwable.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/Throwable.java`(`lib/src.zip`).
+**실행 검증** — 이 문서의 모든 출력·스택트레이스·컴파일 에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+`Ex.java (25-b)` `(25-c)` `(25-d)` `(25-e)` `(25-h)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 돌렸고 **출력이 한 글자도 다르지 않았다.**\
+`finally` 경고 문구도 세 JDK 에서 같았다. **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·javadoc 인용으로만 적었다.
+**버전** — `try`/`catch`/`finally`·checked 예외는 **Java 1.0**. 다중 `catch` 와 **정밀 재던지기**는 **Java 7**. `addSuppressed`/`getSuppressed` 도 **7**(`src.zip` 의 `@since 1.7` 을 직접 읽었다).

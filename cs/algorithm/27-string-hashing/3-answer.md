@@ -1,11 +1,5 @@
 # algorithm/27-string-hashing — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`impl/com/algo/strhash/`).
-
-⚠️ 정답은 Claude 초안(2026-09-14) — impl 코드·README 기준으로 작성. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
@@ -407,3 +401,7 @@ static String duplicateOfLength(String s, int length, long mod, CountedHasher ha
   A: ① 빼기 뒤 `+ mod`를 안 했다 — 자바 `%`는 음수를 그대로 돌려준다(`(-5) % 3 == -2`).\
   ② 맨 앞 글자의 자릿값으로 `B^m`을 썼다 — 자리가 m개면 최고 자리는 `B^(m-1)`이다.\
   둘 다 두 번째 창부터 어긋나므로, 굴린 값을 직접 계산한 값과 대조하는 테스트로 잡는다.
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`impl/com/algo/strhash/`).

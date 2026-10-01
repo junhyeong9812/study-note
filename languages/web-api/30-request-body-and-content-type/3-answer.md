@@ -1,10 +1,5 @@
 # web-api/30 — 요청 본문 만들기: `FormData`·`URLSearchParams`·JSON 과 `Content-Type` 자동 설정 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버는 같은 기계의 로컬 서버 A 이고 **바깥 인터넷으로는 요청하지 않았다.** 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 extract a body · Request 생성자, [WHATWG HTML](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html) 의 create an entry · constructing the entry list · multipart/form-data 인코딩 알고리즘으로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
 |---|---|
 | 격자 14칸 · 원문 · 바이트 수 · 파일 칸 · 폼 대 `fetch` · 파이썬 | ★ **boundary 뒤 16자 · `requests` 의 32자** — 요청마다 새로 만든다. **하네스가 출력 전에 가렸다** |
@@ -198,3 +193,9 @@ python3 wa28b-net.py py
 | `urllib` 의 기본 `Content-Type` | `application/x-www-form-urlencoded` | 라이브러리 설계 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② `text/plain` 폼 인코딩 · 비 UTF-8 폼. ③ `filename` 에 `"`·줄바꿈.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버는 같은 기계의 로컬 서버 A 이고 **바깥 인터넷으로는 요청하지 않았다.** 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 extract a body · Request 생성자, [WHATWG HTML](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html) 의 create an entry · constructing the entry list · multipart/form-data 인코딩 알고리즘으로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

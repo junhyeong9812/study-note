@@ -1,14 +1,5 @@
 # css/syntax/29 — Grid 영역: `grid-template-areas`·이름 붙은 라인 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Grid Layout Level 1](https://drafts.csswg.org/css-grid-1/) (`grid-template-areas` 문법과 유효성·이름 붙은 라인·암묵 이름 규칙·`grid-area` 단축). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 판정을 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 확인했다.\
-> **무효한 영역 정의가 버려지는 것은 「진단 3창」으로** 쟀다 — `cssRules[i].style.gridTemplateAreas`(담겼나) → 항목 매치(잡혔나) → `getComputedStyle(el).gridTemplateAreas`(이겼나). 항목 좌표는 `getBoundingClientRect()` 로 따로 쟀다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않았다.
-> **버전** — Grid 는 Baseline **widely**(newly 2017-10-17 → widely 2020-04-17). `grid-template-areas` 는 Grid 와 같이 들어왔다.
-> **여기서 다루지 않는 것** — **트랙을 만드는 것**은 [**27번**](../27-grid-track-sizing/), **번호로 놓는 것**은 [**28번**](../28-grid-placement/)이 정본이다(이 문서는 둘의 실측을 그대로 이어 쓴다). 정렬(`justify-*`/`align-*`)의 정본은 [**24번**](../24-flexbox-axes/)이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 판정은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`grid-template-areas` = 주차장 바닥에 칸 번호 대신 「장애인」·「경차」라고 글자를 써 놓는 것.**
@@ -453,3 +444,12 @@ grid-area: 2 / hd-start / 3 / hd-end     번호와 이름을 섞어도 된다
 - **도면의 이름은 `<custom-ident>`** 라 `span`·`auto` 같은 예약어는 못 쓴다. 한글도 문법적으로는 쓸 수 있지만 이 문서에서는 **안 돌려 봤다.**
 - **`grid-area` 하나에 이름을 쓰면 네 축에 전부 그 이름이 들어간다** — `grid-area: hd` 는 `grid-row-start/column-start/row-end/column-end` 를 모두 `hd` 로 만든다.\
   그래서 영역이 없을 때 **네 축이 동시에** 라인 이름 찾기로 떨어지고, 항목이 행·열 **양쪽 모두** 암묵 격자로 밀려난다((2)의 실측이 그것이다).
+
+## 실행 환경
+
+**기준 소스** — [CSS Grid Layout Level 1](https://drafts.csswg.org/css-grid-1/) (`grid-template-areas` 문법과 유효성·이름 붙은 라인·암묵 이름 규칙·`grid-area` 단축). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 판정을 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 확인했다.\
+**무효한 영역 정의가 버려지는 것은 「진단 3창」으로** 쟀다 — `cssRules[i].style.gridTemplateAreas`(담겼나) → 항목 매치(잡혔나) → `getComputedStyle(el).gridTemplateAreas`(이겼나). 항목 좌표는 `getBoundingClientRect()` 로 따로 쟀다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않았다.
+**버전** — Grid 는 Baseline **widely**(newly 2017-10-17 → widely 2020-04-17). `grid-template-areas` 는 Grid 와 같이 들어왔다.
+**여기서 다루지 않는 것** — **트랙을 만드는 것**은 [**27번**](../27-grid-track-sizing/), **번호로 놓는 것**은 [**28번**](../28-grid-placement/)이 정본이다(이 문서는 둘의 실측을 그대로 이어 쓴다). 정렬(`justify-*`/`align-*`)의 정본은 [**24번**](../24-flexbox-axes/)이다.

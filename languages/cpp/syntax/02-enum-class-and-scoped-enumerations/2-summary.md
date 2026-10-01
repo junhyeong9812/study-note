@@ -1,31 +1,5 @@
 # cpp/syntax/02 — `enum class` 와 범위 있는 열거형 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — Enumeration declaration](https://en.cppreference.com/w/cpp/language/enum) · [cppreference — `std::underlying_type`](https://en.cppreference.com/w/cpp/types/underlying_type) · [cppreference — `std::to_underlying`](https://en.cppreference.com/w/cpp/utility/to_underlying) · [GCC 13 C++ Dialect Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/C_002b_002b-Dialect-Options.html) · [Clang UndefinedBehaviorSanitizer](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html)
-> **실행 검증** — 이 문서의 모든 출력·경고·에러는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **gcc 13.3.0**(C 대비용) · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic ex.cpp -o ex` 이고,\
-> **C 와 나란히 던진 블록은 `gcc -std=c17 -Wall -Wextra -pedantic ex.c -o ex`** 다.\
-> ★ 블록은 `capture.sh` 가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
-> **버전** — `enum class`(범위 있는 열거형)와 **기저 타입 지정**(`: unsigned char`)은 **C++11부터**다.\
-> **`using enum`** 은 **C++20부터**이고 이 g++ 에서 **된다**((10)). **`std::to_underlying`** 은 **C++23부터**이고\
-> `-std=c++20` 에서는 에러다((6)). ★ 이 g++ 의 `-std=c++23` 은 `__cplusplus` 가 `202100L` 이다(정식 값 `202302L` 이 아니다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「C 의 `enum` 이 무엇을 안 막나」의 정본은 C 갈래의\
-> [`07-enum-and-enumeration-constants/`](../../../c/syntax/07-enum-and-enumeration-constants/)다.\
-> 그쪽은 **크기·부호·`-fshort-enums`·C23 고정 기반 타입**까지 다 결론지었다.\
-> 여기는 **C++ 가 새로 하는 것**만 쓴다 — 이름을 가두는 것 · 암묵 변환을 끊는 것 · **범위 밖 값의 판정이 C 와 갈리는 것**.\
-> 「`static_cast` 자체」는 [**03번 형제**](../03-four-cast-operators/), 「오버로드 후보가 줄어드는 것」은 [**01번 형제**](../01-function-overloading-and-overload-resolution/)가 정본이다.\
-> 「`switch` 문법」은 C 갈래의 [`12-control-flow-and-switch/`](../../../c/syntax/12-control-flow-and-switch/)가 정본이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 컴파일 시간 | **진단 본문** · `파일:줄:칸` · **종료 코드**(`cc exit`·`run exit` 을 갈라 적었다) |
-> | — | `sizeof` 값 · `std::is_same_v` 판정 · **경고 건수**(`grep -c 'warning:'`) |
-> | ★ **UB 가 만든 값**(`Plain=200`) | ★ **그 값이 「유효하지 않다」고 판정된 사실**과 **어느 도구가 그걸 말했나** |
-
 ## 한눈에 — 쉽게 말하면
 
 **`enum class` 는 「이름을 자기 안에 가두고, 정수와의 통행을 끊은 열거형」이다.**
@@ -1004,3 +978,30 @@ C 갈래 [`07번`](../../../c/syntax/07-enum-and-enumeration-constants/)에 있�
   [`08-sizeof-alignment-and-offsetof/`](../../../c/syntax/08-sizeof-alignment-and-offsetof/).
 - **C 헤더와 공유하기** — `enum class` 는 C 에 없다. 경계에서는 **고정 기저 타입을 쓴 범위 없는 열거형**을 두고\
   C++ 쪽에서만 감싸는 방법이 흔하다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — Enumeration declaration](https://en.cppreference.com/w/cpp/language/enum) · [cppreference — `std::underlying_type`](https://en.cppreference.com/w/cpp/types/underlying_type) · [cppreference — `std::to_underlying`](https://en.cppreference.com/w/cpp/utility/to_underlying) · [GCC 13 C++ Dialect Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/C_002b_002b-Dialect-Options.html) · [Clang UndefinedBehaviorSanitizer](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html)
+**실행 검증** — 이 문서의 모든 출력·경고·에러는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **gcc 13.3.0**(C 대비용) · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic ex.cpp -o ex` 이고,\
+**C 와 나란히 던진 블록은 `gcc -std=c17 -Wall -Wextra -pedantic ex.c -o ex`** 다.\
+★ 블록은 `capture.sh` 가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
+**버전** — `enum class`(범위 있는 열거형)와 **기저 타입 지정**(`: unsigned char`)은 **C++11부터**다.\
+**`using enum`** 은 **C++20부터**이고 이 g++ 에서 **된다**((10)). **`std::to_underlying`** 은 **C++23부터**이고\
+`-std=c++20` 에서는 에러다((6)). ★ 이 g++ 의 `-std=c++23` 은 `__cplusplus` 가 `202100L` 이다(정식 값 `202302L` 이 아니다).
+
+**경계** — 「C 의 `enum` 이 무엇을 안 막나」의 정본은 C 갈래의\
+[`07-enum-and-enumeration-constants/`](../../../c/syntax/07-enum-and-enumeration-constants/)다.\
+그쪽은 **크기·부호·`-fshort-enums`·C23 고정 기반 타입**까지 다 결론지었다.\
+여기는 **C++ 가 새로 하는 것**만 쓴다 — 이름을 가두는 것 · 암묵 변환을 끊는 것 · **범위 밖 값의 판정이 C 와 갈리는 것**.\
+「`static_cast` 자체」는 [**03번 형제**](../03-four-cast-operators/), 「오버로드 후보가 줄어드는 것」은 [**01번 형제**](../01-function-overloading-and-overload-resolution/)가 정본이다.\
+「`switch` 문법」은 C 갈래의 [`12-control-flow-and-switch/`](../../../c/syntax/12-control-flow-and-switch/)가 정본이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 컴파일 시간 | **진단 본문** · `파일:줄:칸` · **종료 코드**(`cc exit`·`run exit` 을 갈라 적었다) |
+| — | `sizeof` 값 · `std::is_same_v` 판정 · **경고 건수**(`grep -c 'warning:'`) |
+| ★ **UB 가 만든 값**(`Plain=200`) | ★ **그 값이 「유효하지 않다」고 판정된 사실**과 **어느 도구가 그걸 말했나** |

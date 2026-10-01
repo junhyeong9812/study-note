@@ -1,17 +1,5 @@
 # js/syntax/24 — 배열 변형 메서드: 「무엇이 원본을 바꾸고 무엇을 돌려주나 — 그리고 `sort` 는 무엇으로 비교하나」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
->
-> ★★ **예외는 `e.constructor.name` 과 `e.message` 로만 찍었다** — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★★★ **이 주제의 탐침은 두 node 판에서 한 글자도 같았다** — 판 대조기의 집계 줄은 [2-summary.md](2-summary.md) 머리말에 있다.
-> ★★ **8번의 둘째 블록(난수 비교 함수)은 분포를 찍지 않는다** — 가짓수만 찍어 흔들리지 않게 만들었다.
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(7·8·10번의 소스만 여기 싣는다).
-> `js24b-24a-mutation-grid.js`(1번) · `js24b-24b-return-values.js`(2번) · `js24b-24c-default-order.js`(3번) · `js24b-24g-undefined-and-holes.js`(4번) ·
-> `js24b-24h-same-array.js`(5번) · `js24b-24i-frozen-target.js`(6번) · `js24b-24d-equal-keys.js`(7번) · `js24b-24e-inconsistent-fixed.js` · `js24b-24f-inconsistent-random.js`(8번) · `js24b-24j-frozen-sloppy.js`(10번).
-
 ## 정답
 
 ### 1. 원본을 바꾸는 것은 **열 개**, 원본을 돌려주는 넷과 길이를 바꾸는 여섯은 **한 칸도 겹치지 않는다** ★★★
@@ -578,3 +566,16 @@ document.write('<script src="' + location.search.slice(1) + '"><\/script>');
 - ★★★ **3번 `[4]` 과 8번 전부** — 엔진의 정렬 구현이 바뀌면 **결과가 바뀔 수 있고, 바뀌어도 명세 위반이 아니다.**
 - ★★ **예외 문구 전부.**
 - ★ 나머지(격자 · 반환값 · 안정성 · 구멍의 자리)는 **바뀌면 명세 위반**이다 — 다시 돌려 같은지 확인만 한다.
+
+## 실행 환경
+
+이 파일의 모든 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
+
+★★ **예외는 `e.constructor.name` 과 `e.message` 로만 찍었다** — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★★★ **이 주제의 탐침은 두 node 판에서 한 글자도 같았다** — 판 대조기의 집계 줄은 [2-summary.md](2-summary.md) 맨 위 부분에 있다.
+★★ **8번의 둘째 블록(난수 비교 함수)은 분포를 찍지 않는다** — 가짓수만 찍어 흔들리지 않게 만들었다.
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(7·8·10번의 소스만 여기 싣는다).
+`js24b-24a-mutation-grid.js`(1번) · `js24b-24b-return-values.js`(2번) · `js24b-24c-default-order.js`(3번) · `js24b-24g-undefined-and-holes.js`(4번) ·
+`js24b-24h-same-array.js`(5번) · `js24b-24i-frozen-target.js`(6번) · `js24b-24d-equal-keys.js`(7번) · `js24b-24e-inconsistent-fixed.js` · `js24b-24f-inconsistent-random.js`(8번) · `js24b-24j-frozen-sloppy.js`(10번).

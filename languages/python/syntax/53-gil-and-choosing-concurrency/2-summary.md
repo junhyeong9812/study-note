@@ -1,39 +1,5 @@
 # python/syntax/53-gil-and-choosing-concurrency — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
-> - [용어집 — global interpreter lock(3.12)](https://docs.python.org/3.12/glossary.html#term-global-interpreter-lock) — *"The mechanism used by the CPython interpreter to assure that only one thread executes Python bytecode at a time."* ·
->   *"some extension modules, either standard or third-party, are designed so as to release the GIL when doing computationally intensive tasks such as compression or hashing. Also, the GIL is always released when doing I/O."*
-> - [`threading`(3.12)](https://docs.python.org/3.12/library/threading.html) 의 CPython 구현 세부 상자 — *"In CPython, due to the Global Interpreter Lock, only one thread can execute Python code at once"* · *"you are advised to use multiprocessing or concurrent.futures.ProcessPoolExecutor."*
-> - [`hashlib`(3.12)](https://docs.python.org/3.12/library/hashlib.html) — *"the Python GIL is released while computing a hash supplied more than 2047 bytes of data at once"*
-> - [`sys.setswitchinterval`(3.12)](https://docs.python.org/3.12/library/sys.html#sys.setswitchinterval) — *"This floating-point value determines the ideal duration of the "timeslices" allocated to concurrently running Python threads."* · *"which thread becomes scheduled at the end of the interval is the operating system's decision. The interpreter doesn't have its own scheduler."*
-> - [`multiprocessing` — Contexts and start methods(3.12)](https://docs.python.org/3.12/library/multiprocessing.html#contexts-and-start-methods) — *spawn* 은 *"The parent process starts a fresh Python interpreter process."* · *fork* 는 *"The child process, when it begins, is effectively identical to the parent process."* · 3.12 의 *"will raise a DeprecationWarning"* ·
->   *"Functionality within this package requires that the `__main__` module be importable by the children."*
-> - [`multiprocessing`(3.14)](https://docs.python.org/3.14/library/multiprocessing.html#contexts-and-start-methods) · [What's New 3.14](https://docs.python.org/3.14/whatsnew/3.14.html) — *"On POSIX platforms the default start method was changed from fork to forkserver"* · *"The free-threaded build of Python is now supported and no longer experimental."* ★ **3.14 는 이 머신에 없다 — 문서 인용만.**
-> - [What's New 3.13 — Free-threaded CPython](https://docs.python.org/3.13/whatsnew/3.13.html#free-threaded-cpython) — *"This is an experimental feature and therefore is not enabled by default."* · [free threading HOWTO(3.14)](https://docs.python.org/3.14/howto/free-threading-python.html) — *"The `sysconfig.get_config_var("Py_GIL_DISABLED")` configuration variable can be used to determine whether the build supports free threading."*
-> - [`sys._is_gil_enabled`(3.14 문서)](https://docs.python.org/3.14/library/sys.html#sys._is_gil_enabled) — *"versionadded:: 3.13"* · *"It is not guaranteed to exist in all implementations of Python."*
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신(Linux, 24 논리 코어)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 같은 탐침을 다시 던졌다(잃은 갱신 격자 · `dis` · 시작 방식 · 판별 블록).\
-> ★★★ **이 문서는 경과 시간을 한 줄도 싣지 않는다.** 시간은 **판정에만** 쓰고(두 구간이 겹쳤나 · CPU 시간 합이 벽시계 구간보다 컸나) 출력은 **참/거짓**으로만 냈다. 「몇 배 빠르다」는 없다.\
-> ★★ `multiprocessing` 탐침은 **파일로 던졌다**(`python3 e53_x.py` — 트리 실험). 표준 입력으로 던지면 `spawn` 이 안 되는 것은 동작 5 가 따로 보인다.\
-> **버전** — `concurrent.futures`·`sys.setswitchinterval` **3.2** · `fork` + 여러 스레드 `DeprecationWarning` **3.12** · free-threaded 빌드(실험)·`sys._is_gil_enabled` **3.13** · free-threaded 공식 지원(PEP 779)·POSIX 기본 시작 방식 `forkserver` **3.14**(문서만).\
-> ★ **구현 대 언어 보장 한 줄** — ★★★ **GIL 은 언어 보장이 아니라 CPython 구현이다**(용어집 문장이 주어를 *"the CPython interpreter"* 로 둔다 · `threading` 의 문장은 **impl-detail 상자** 안에 있다). `+=` 가 원자가 아니라는 것도, 원자처럼 보이는 것도 **보장이 아니다.** 겹침 격자의 참/거짓은 **이 판·이 머신의 관찰**이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | 경과 시간 · 각 판에서 잃은 갱신의 **개수**(그래서 한 번도 안 찍었다) | ★★ 격자 마지막 줄 **「… N / M」** · 칸마다의 참/거짓(판 N 번을 모아 한 값으로 낸 것) |
-> | ★ 잃는 본문에서 **몇 판이 잃었나** — ★ 처음엔 「모든 판에서 잃었나」 칸도 냈는데 `PYTHONHASHSEED` 재캡처에서 기본 간격 칸이 `False` → `True` 로 뒤집혀(판 차이가 `0 / 8` → `1 / 8`) **그 칸을 뺐다.** 남긴 것은 「10판 중 한 판이라도 잃었나」뿐이다 | `dis` 의 명령 이름과 순서 · 시작 방식별 자식의 `__name__`·전역 값 · 예외 **타입** |
-> | 기계의 부하(다른 작업이 코어를 다 쓰면 「CPU 시간 합 > 1.5 × 벽시계」 칸이 뒤집힐 수 있다 — 판정 문턱을 1.5 로 둔 까닭) | `sys.getswitchinterval()` 의 값 `0.005`(CPython 기본값 — 판마다 같았다) |
-> | 경고 문구의 PID(스크립트가 `pid=<pid>` 로 바꿔 찍었다 — 소스에 보인다) · 주소(`at 0x…` 를 스크립트가 지웠다) | `(exit N)` · 자식의 표준 오류에서 센 예외 줄 수 |
->
-> **선행** — [52-asyncio-concurrency-structure](../52-asyncio-concurrency-structure/2-summary.md)(★★★ **블로킹 호출이 루프를 멈추는 것은 그쪽이 정본** — 여기는 「그럼 무엇을 고르나」) ·
-> [51-asyncio-coroutine-basics](../51-asyncio-coroutine-basics/2-summary.md)(코루틴은 `await` 에서 멈췄다가 이어진다 — 그쪽 동작 5 가 `send` 로 손으로 돌려 보였다).
-> 원리 쪽 정본 — [프로세스와 스레드](../../../../cs/foundations/process-thread/README.md)(§8 멀티 프로세스 대 멀티 스레드 · §10 경쟁 조건 · §12 GIL) · [history/python — 핵심 개념의 진화](../../../../history/python/06-핵심-개념-진화.md)(§1 GIL 의 연혁 · PEP 703).
-
 ## 한눈에 — 쉽게 말하면
 
 **CPython 은 칼이 하나뿐인 부엌이다.** 요리사(스레드)를 여럿 불러도 **칼질(파이썬 바이트코드)은 한 번에 한 명만** 한다.
@@ -626,7 +592,7 @@ cells that differ between 3.11 and 3.12: 0 / 8
 * ★★★ **`plain`(`n += 1`)과 `split`(`t = n; t += 1; n = t`)은 두 간격 × 두 판 × 10판에서 한 번도 안 잃었다.** 간격을 `1e-06` 으로 줄여도 그랬다.
   ★★★ **그런데 이건 「원자적이다」가 아니다** — **안 터진 판은 안전의 근거가 아니다.** 문서 어디에도 `+=` 가 원자라는 문장은 없다(이번에 연 용어집·`threading`·`sys` 절에서 찾지 못했다).
 * ★★★ **`call_between` 은 잃었다** — 두 간격 다, 10판 중 **한 판 이상**. 읽기와 쓰기 사이에 **파이썬 함수 호출 하나**를 끼운 것뿐이다.
-  ★ 몇 판이 잃었는지는 흔들린다 — 「모든 판에서 잃었나」 칸은 재캡처에서 뒤집혀 뺐다(머리말의 흔들리는 칸).
+  ★ 몇 판이 잃었는지는 흔들린다 — 「모든 판에서 잃었나」 칸은 재캡처에서 뒤집혀 뺐다(「실행 환경」의 흔들리는 칸).
   ★ 명령 **개수**(`split` 도 읽기·쓰기가 떨어져 있다)가 아니라 **그 사이에 무엇이 끼느냐**가 갈랐다. 왜 `CALL` 에서는 전환이 일어나고 `STORE_FAST` 사이에서는 안 일어났는지는 **인터프리터 소스의 영역**이다 — 이 문서는 읽지 않았다.
 * ★★ **`call_between_locked`(`with LOCK:`)는 여덟 칸 다 안 잃었다** — 읽기\~쓰기를 락이 한 덩어리로 묶었다. **이것이 보장이다**(`threading.Lock` 의 뜻).
 * ★ **마지막 두 줄** — 3.12 에서 잃은 칸 **`2 / 8`** · 3.11 과 3.12 가 갈린 칸 **`0 / 8`**. 두 판의 **바이트코드는 다르다**(3.11 은 `CALL` 앞에 `PRECALL` 이 있다 — 정답 3번) — 그런데 격자는 한 칸도 안 갈렸다.
@@ -1109,3 +1075,36 @@ which python3.14: False
 * ★ **3.14 를 설치하게 되면 다시 돌릴 것** — 동작 5 의 시작 방식 창. 기본이 `forkserver` 가 되면 **아무 문맥도 안 준** `Process` 가 `spawn` 칸과 같은 값(`'value at import'`)을 낼 것이다 — 문서의 *"No unnecessary resources are inherited"* 에서 온 예측이다.
 * ★ **왜 `CALL` 에서는 잃고 `STORE_FAST` 사이에서는 안 잃나** — CPython 인터프리터가 **전환 요청을 확인하는 자리**의 문제다. 이 문서는 소스를 읽지 않았다 — 판이 바뀌면 그 자리도 바뀔 수 있으므로 **이 관찰 위에 설계를 세우지 마라.**
 * ★ **서브인터프리터(PEP 684 · 3.14 의 `concurrent.interpreters`)** — 인터프리터마다 GIL 을 두는 길이다. 이 머신에 3.14 가 없어 재지 않았다. 연혁은 [history/python §1.4](../../../../history/python/06-핵심-개념-진화.md).
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
+- [용어집 — global interpreter lock(3.12)](https://docs.python.org/3.12/glossary.html#term-global-interpreter-lock) — *"The mechanism used by the CPython interpreter to assure that only one thread executes Python bytecode at a time."* ·
+  *"some extension modules, either standard or third-party, are designed so as to release the GIL when doing computationally intensive tasks such as compression or hashing. Also, the GIL is always released when doing I/O."*
+- [`threading`(3.12)](https://docs.python.org/3.12/library/threading.html) 의 CPython 구현 세부 상자 — *"In CPython, due to the Global Interpreter Lock, only one thread can execute Python code at once"* · *"you are advised to use multiprocessing or concurrent.futures.ProcessPoolExecutor."*
+- [`hashlib`(3.12)](https://docs.python.org/3.12/library/hashlib.html) — *"the Python GIL is released while computing a hash supplied more than 2047 bytes of data at once"*
+- [`sys.setswitchinterval`(3.12)](https://docs.python.org/3.12/library/sys.html#sys.setswitchinterval) — *"This floating-point value determines the ideal duration of the "timeslices" allocated to concurrently running Python threads."* · *"which thread becomes scheduled at the end of the interval is the operating system's decision. The interpreter doesn't have its own scheduler."*
+- [`multiprocessing` — Contexts and start methods(3.12)](https://docs.python.org/3.12/library/multiprocessing.html#contexts-and-start-methods) — *spawn* 은 *"The parent process starts a fresh Python interpreter process."* · *fork* 는 *"The child process, when it begins, is effectively identical to the parent process."* · 3.12 의 *"will raise a DeprecationWarning"* ·
+  *"Functionality within this package requires that the `__main__` module be importable by the children."*
+- [`multiprocessing`(3.14)](https://docs.python.org/3.14/library/multiprocessing.html#contexts-and-start-methods) · [What's New 3.14](https://docs.python.org/3.14/whatsnew/3.14.html) — *"On POSIX platforms the default start method was changed from fork to forkserver"* · *"The free-threaded build of Python is now supported and no longer experimental."* ★ **3.14 는 이 머신에 없다 — 문서 인용만.**
+- [What's New 3.13 — Free-threaded CPython](https://docs.python.org/3.13/whatsnew/3.13.html#free-threaded-cpython) — *"This is an experimental feature and therefore is not enabled by default."* · [free threading HOWTO(3.14)](https://docs.python.org/3.14/howto/free-threading-python.html) — *"The `sysconfig.get_config_var("Py_GIL_DISABLED")` configuration variable can be used to determine whether the build supports free threading."*
+- [`sys._is_gil_enabled`(3.14 문서)](https://docs.python.org/3.14/library/sys.html#sys._is_gil_enabled) — *"versionadded:: 3.13"* · *"It is not guaranteed to exist in all implementations of Python."*
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신(Linux, 24 논리 코어)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 같은 탐침을 다시 던졌다(잃은 갱신 격자 · `dis` · 시작 방식 · 판별 블록).\
+★★★ **이 문서는 경과 시간을 한 줄도 싣지 않는다.** 시간은 **판정에만** 쓰고(두 구간이 겹쳤나 · CPU 시간 합이 벽시계 구간보다 컸나) 출력은 **참/거짓**으로만 냈다. 「몇 배 빠르다」는 없다.\
+★★ `multiprocessing` 탐침은 **파일로 던졌다**(`python3 e53_x.py` — 트리 실험). 표준 입력으로 던지면 `spawn` 이 안 되는 것은 동작 5 가 따로 보인다.\
+**버전** — `concurrent.futures`·`sys.setswitchinterval` **3.2** · `fork` + 여러 스레드 `DeprecationWarning` **3.12** · free-threaded 빌드(실험)·`sys._is_gil_enabled` **3.13** · free-threaded 공식 지원(PEP 779)·POSIX 기본 시작 방식 `forkserver` **3.14**(문서만).\
+★ **구현 대 언어 보장 한 줄** — ★★★ **GIL 은 언어 보장이 아니라 CPython 구현이다**(용어집 문장이 주어를 *"the CPython interpreter"* 로 둔다 · `threading` 의 문장은 **impl-detail 상자** 안에 있다). `+=` 가 원자가 아니라는 것도, 원자처럼 보이는 것도 **보장이 아니다.** 겹침 격자의 참/거짓은 **이 판·이 머신의 관찰**이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| 경과 시간 · 각 판에서 잃은 갱신의 **개수**(그래서 한 번도 안 찍었다) | ★★ 격자 마지막 줄 **「… N / M」** · 칸마다의 참/거짓(판 N 번을 모아 한 값으로 낸 것) |
+| ★ 잃는 본문에서 **몇 판이 잃었나** — ★ 처음엔 「모든 판에서 잃었나」 칸도 냈는데 `PYTHONHASHSEED` 재캡처에서 기본 간격 칸이 `False` → `True` 로 뒤집혀(판 차이가 `0 / 8` → `1 / 8`) **그 칸을 뺐다.** 남긴 것은 「10판 중 한 판이라도 잃었나」뿐이다 | `dis` 의 명령 이름과 순서 · 시작 방식별 자식의 `__name__`·전역 값 · 예외 **타입** |
+| 기계의 부하(다른 작업이 코어를 다 쓰면 「CPU 시간 합 > 1.5 × 벽시계」 칸이 뒤집힐 수 있다 — 판정 문턱을 1.5 로 둔 까닭) | `sys.getswitchinterval()` 의 값 `0.005`(CPython 기본값 — 판마다 같았다) |
+| 경고 문구의 PID(스크립트가 `pid=<pid>` 로 바꿔 찍었다 — 소스에 보인다) · 주소(`at 0x…` 를 스크립트가 지웠다) | `(exit N)` · 자식의 표준 오류에서 센 예외 줄 수 |
+
+**선행** — [52-asyncio-concurrency-structure](../52-asyncio-concurrency-structure/2-summary.md)(★★★ **블로킹 호출이 루프를 멈추는 것은 그쪽이 정본** — 여기는 「그럼 무엇을 고르나」) ·
+[51-asyncio-coroutine-basics](../51-asyncio-coroutine-basics/2-summary.md)(코루틴은 `await` 에서 멈췄다가 이어진다 — 그쪽 동작 5 가 `send` 로 손으로 돌려 보였다).
+원리 쪽 정본 — [프로세스와 스레드](../../../../cs/foundations/process-thread/README.md)(§8 멀티 프로세스 대 멀티 스레드 · §10 경쟁 조건 · §12 GIL) · [history/python — 핵심 개념의 진화](../../../../history/python/06-핵심-개념-진화.md)(§1 GIL 의 연혁 · PEP 703).

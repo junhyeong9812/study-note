@@ -1,24 +1,5 @@
 # java/syntax/39 — 컬렉션 프레임워크 지도: 인터페이스 계층과 구현체 선택 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../17-generic-declarations/`](../17-generic-declarations/). 컬렉션은 전부 제네릭 타입이라 `List<String>` 의 `<String>` 이 무엇인지가 전제다.
-> **기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc 과 구현이다.\
-> `java.base/java/util/Collection.java` — 「Unmodifiable Collections」·「View Collections」·`optional-restrictions` 절.\
-> `java.base/java/util/Map.java` — 클래스 javadoc(컬렉션 뷰 셋·가변 키 경고)·`get` 의 `null` 모호성 서술.\
-> `java.base/java/util/SequencedCollection.java` — `@since 21` 과 encounter order 정의.\
-> 인용은 **그 파일에서 복사한 것만** 옮겼다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 Temurin JDK 에서 **실제로 돌려** 얻은 것이다.\
-> 도는 프로그램 4개 + 컴파일 에러용 1개. `SequencedCollection` 을 쓰는 하나만 **21.0.5 · 25.0.1** 에서,\
-> 나머지 셋은 **17.0.13 · 21.0.5 · 25.0.1** 셋 다에서 돌렸다.\
-> 세 버전의 출력 차이는 [`3-answer.md`](3-answer.md) 의 「실행 검증」 표에 적었다.
-> **버전** — `Collection`·`Map`·`List`·`Set` 은 **Java 1.2**. `Deque` 는 **6**. `removeIf`·`stream()` 은 **8**.\
-> `List.of`·`Set.of`·`Map.of` 는 **9**, `copyOf` 는 **10**, `SequencedCollection` 은 **21**(`@since` 를 `src.zip` 에서 직접 읽었다).
-> **범위** — **자료구조의 원리는 여기가 아니다.**\
-> 해시 테이블이 어떻게 동작하나, 적흑 트리가 어떻게 회전하나, 동적 배열의 상각 분석은
-> [`../../../../cs/data-structure/`](../../../../cs/data-structure/) 35편이 정본이다.\
-> 그쪽은 **자료구조가 어떻게 만들어져 있나**까지, 여기는 **자바가 그것을 어떤 인터페이스로 노출하고 어느 구현체를 왜 고르나**부터다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **컬렉션 프레임워크는 창고의 「보관 방식 카탈로그」다.**
@@ -801,3 +782,22 @@ put/get 은 락을 잡는다. 하지만 아래 두 줄 사이에는 락이 없�
 - **`getInterfaces()` 는 선언에 적힌 것만 돌려준다.**\
   `PriorityQueue -> [Serializable]` 이 `Queue` 가 아니라는 뜻이 아니다 — `AbstractQueue` 가 들고 있다.\
   전부 보려면 상위 클래스를 타고 올라가야 한다. **`instanceof` 가 더 정직한 질문이다.**
+
+## 실행 환경
+
+**선행** — [`../17-generic-declarations/`](../17-generic-declarations/). 컬렉션은 전부 제네릭 타입이라 `List<String>` 의 `<String>` 이 무엇인지가 전제다.
+**기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc 과 구현이다.\
+`java.base/java/util/Collection.java` — 「Unmodifiable Collections」·「View Collections」·`optional-restrictions` 절.\
+`java.base/java/util/Map.java` — 클래스 javadoc(컬렉션 뷰 셋·가변 키 경고)·`get` 의 `null` 모호성 서술.\
+`java.base/java/util/SequencedCollection.java` — `@since 21` 과 encounter order 정의.\
+인용은 **그 파일에서 복사한 것만** 옮겼다.
+**실행 검증** — 이 문서의 모든 출력·에러는 Temurin JDK 에서 **실제로 돌려** 얻은 것이다.\
+도는 프로그램 4개 + 컴파일 에러용 1개. `SequencedCollection` 을 쓰는 하나만 **21.0.5 · 25.0.1** 에서,\
+나머지 셋은 **17.0.13 · 21.0.5 · 25.0.1** 셋 다에서 돌렸다.\
+세 버전의 출력 차이는 [`3-answer.md`](3-answer.md) 의 「실행 검증」 표에 적었다.
+**버전** — `Collection`·`Map`·`List`·`Set` 은 **Java 1.2**. `Deque` 는 **6**. `removeIf`·`stream()` 은 **8**.\
+`List.of`·`Set.of`·`Map.of` 는 **9**, `copyOf` 는 **10**, `SequencedCollection` 은 **21**(`@since` 를 `src.zip` 에서 직접 읽었다).
+**범위** — **자료구조의 원리는 여기가 아니다.**\
+해시 테이블이 어떻게 동작하나, 적흑 트리가 어떻게 회전하나, 동적 배열의 상각 분석은
+[`../../../../cs/data-structure/`](../../../../cs/data-structure/) 35편이 정본이다.\
+그쪽은 **자료구조가 어떻게 만들어져 있나**까지, 여기는 **자바가 그것을 어떤 인터페이스로 노출하고 어느 구현체를 왜 고르나**부터다.

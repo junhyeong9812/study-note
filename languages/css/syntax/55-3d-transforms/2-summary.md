@@ -1,13 +1,5 @@
 # css/syntax/55 — 3D 변환: `perspective`·`transform-style`·`backface-visibility` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Transforms Level 2](https://drafts.csswg.org/css-transforms-2/) (3D 함수·`perspective`·`transform-style`·`backface-visibility`·**평탄화 조건**). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 본문 실험 **7벌**을 **Google Chrome 151.0.7922.173** headless 에 CDP 로 붙여 돌렸다.\
-> ★ 평탄화 실험은 **`getComputedStyle(el).transformStyle` 로는 판정할 수 없었다** — 평평해진 경우에도 계속 `preserve-3d` 를 돌려준다((5)). 그래서 **손자의 `getBoundingClientRect()` 크기**를 판정 기준으로 썼고, 앞뒤 관계는 **스크린샷 픽셀**로 읽었다.\
-> **엔진은 Chrome 하나다** — 크로스 브라우저는 Baseline 으로만 접지했다.
-> **버전** — CSS 에 언어 버전은 없다. 3D transforms 는 Baseline **widely**(newly 2022-03-14 → widely 2024-09-14) — `api.webstatus.dev` 조회 결과.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **3D 변환은 「납작한 무대에 깊이를 주고, 관객을 어디에 앉힐지 정하는 것」이다.**
@@ -535,3 +527,11 @@ transform: rotateY(45deg) perspective(400px);   /* 회전한 뒤에 원근이 �
 - 3D 로 짠 구조는 **합성 레이어를 많이 만든다.** 비용과 `will-change` 의 대가는 [56번](../56-rendering-pipeline-and-will-change/2-summary.md)에서 다룬다.
 - 평탄화 목록을 외우는 대신 **한 문장으로 기억하는 편이 낫다** — 「**안쪽을 한 장의 이미지로 합성해야 하는 선언은 전부 3D 를 깨뜨린다**」. 실측 결과가 그 문장과 어긋난 것은 `contain: paint` 하나였다(자르는데도 안 깨뜨렸다).
 - 모션이 큰 3D 연출은 전정기관에 민감한 사용자에게 특히 문제가 된다 — 정본은 [목록의 **60번 주제**](../60-prefers-reduced-motion/)다. 이 문서의 demo 에는 일부러 넣지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Transforms Level 2](https://drafts.csswg.org/css-transforms-2/) (3D 함수·`perspective`·`transform-style`·`backface-visibility`·**평탄화 조건**). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 본문 실험 **7벌**을 **Google Chrome 151.0.7922.173** headless 에 CDP 로 붙여 돌렸다.\
+★ 평탄화 실험은 **`getComputedStyle(el).transformStyle` 로는 판정할 수 없었다** — 평평해진 경우에도 계속 `preserve-3d` 를 돌려준다((5)). 그래서 **손자의 `getBoundingClientRect()` 크기**를 판정 기준으로 썼고, 앞뒤 관계는 **스크린샷 픽셀**로 읽었다.\
+**엔진은 Chrome 하나다** — 크로스 브라우저는 Baseline 으로만 접지했다.
+**버전** — CSS 에 언어 버전은 없다. 3D transforms 는 Baseline **widely**(newly 2022-03-14 → widely 2024-09-14) — `api.webstatus.dev` 조회 결과.

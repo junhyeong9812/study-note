@@ -1,15 +1,5 @@
 # sql/54-RETURNING 과 변경문을 품은 CTE — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> ★ **한쪽에서만 결론이 서는 주제다.** MySQL 쪽 출력은 **`ERROR 1064` 세 개와 「읽기 CTE 는 된다」는 통과 하나**뿐이고,\
-> 동작 근거는 전부 **PostgreSQL 18.6** 이다.\
-> **버전** — `OLD`/`NEW` 별칭은 **PG 18 부터**다([18.0 릴리스 노트](https://www.postgresql.org/docs/release/18.0/)).\
-> 이 편이 만든 표(`t54_a`·`t54_log`)는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> ★ **이 파일 끝에 DML 묶음 다섯 편(49·50·51·53·54)의 최종 뒷정리 출력**이 있다.\
-> 문서 근거는 [PG 18 RETURNING](https://www.postgresql.org/docs/18/dml-returning.html) · [PG 18 WITH Queries](https://www.postgresql.org/docs/18/queries-with.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -669,3 +659,14 @@ SELECT * FROM emp ORDER BY id;           SELECT * FROM dept ORDER BY id;
 ★ **삭제 방식** — PG 는 `DROP TABLE IF EXISTS … CASCADE` 한 문,\
 MySQL 은 **DDL 이 암묵 커밋이라 롤백이 안 되므로**([51 번 2절](../51-delete-and-truncate/))\
 `SET FOREIGN_KEY_CHECKS=0` → `DROP TABLE IF EXISTS …` → `SET FOREIGN_KEY_CHECKS=1` 로 직접 지웠다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+★ **한쪽에서만 결론이 서는 주제다.** MySQL 쪽 출력은 **`ERROR 1064` 세 개와 「읽기 CTE 는 된다」는 통과 하나**뿐이고,\
+동작 근거는 전부 **PostgreSQL 18.6** 이다.\
+**버전** — `OLD`/`NEW` 별칭은 **PG 18 부터**다([18.0 릴리스 노트](https://www.postgresql.org/docs/release/18.0/)).\
+이 편이 만든 표(`t54_a`·`t54_log`)는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+★ **이 파일 끝에 DML 묶음 다섯 편(49·50·51·53·54)의 최종 뒷정리 출력**이 있다.\
+문서 근거는 [PG 18 RETURNING](https://www.postgresql.org/docs/18/dml-returning.html) · [PG 18 WITH Queries](https://www.postgresql.org/docs/18/queries-with.html).

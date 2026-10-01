@@ -1,16 +1,5 @@
 # sql/46-인덱스 정의 (복합·부분·표현식·커버링) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · CREATE INDEX](https://www.postgresql.org/docs/18/sql-createindex.html) · [PostgreSQL 18 · Indexes](https://www.postgresql.org/docs/18/indexes.html) · [MySQL 8.4 · CREATE INDEX](https://dev.mysql.com/doc/refman/8.4/en/create-index.html) · [MySQL 8.4 · Optimization and Indexes](https://dev.mysql.com/doc/refman/8.4/en/optimization-indexes.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — MySQL 의 함수 인덱스(`((expr))`)는 8.0.13 부터다. ★ PG 18 의 **가상 생성 열에는 인덱스를 못 건다**(아래 7번에서 던져 확인).\
-> ★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 20,000행짜리 `t46` 을 만들어 인덱스를 얹고 **지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> **선행** — [42 테이블 정의와 변경](../42-create-alter-drop-table/) · [43 기본키·UNIQUE](../43-primary-key-unique-and-null/) · **이어지는 것은 [47 인덱스를 언제 타고 언제 안 타나](../47-when-indexes-are-used/)** 다.\
-> ★ **범위 선언** — 이 편은 「**인덱스를 어떻게 정의하나**」까지다. **「그래서 탈까 안 탈까」는 [47번](../47-when-indexes-are-used/)이 정본**이고, **자료구조 자체는 [`15-b-tree`]**(../../../../../data-structure/15-b-tree/)다.
-
 ## 한눈에 — 쉽게 말하면
 
 **인덱스 = 「이 순서로 정렬한 사본」을 따로 만들어 두는 것.**
@@ -648,3 +637,13 @@ SELECT indexdef FROM pg_indexes WHERE indexname='t46_hash2_idx';
   **이 실험에서 실패 상황을 만들어 보지는 않았다.**
 - **MySQL 의 접두 길이는 「길이 제한」 때문에 강제되기도 한다.** utf8mb4 에서 한 글자가 최대 4바이트라\
   `varchar(1000)` 전체에는 인덱스를 못 건다. **이 실험의 `varchar(20)` 에서는 그 제한에 걸리지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · CREATE INDEX](https://www.postgresql.org/docs/18/sql-createindex.html) · [PostgreSQL 18 · Indexes](https://www.postgresql.org/docs/18/indexes.html) · [MySQL 8.4 · CREATE INDEX](https://dev.mysql.com/doc/refman/8.4/en/create-index.html) · [MySQL 8.4 · Optimization and Indexes](https://dev.mysql.com/doc/refman/8.4/en/optimization-indexes.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — MySQL 의 함수 인덱스(`((expr))`)는 8.0.13 부터다. ★ PG 18 의 **가상 생성 열에는 인덱스를 못 건다**(본문 7번에서 던져 확인).\
+★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 20,000행짜리 `t46` 을 만들어 인덱스를 얹고 **지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+**선행** — [42 테이블 정의와 변경](../42-create-alter-drop-table/) · [43 기본키·UNIQUE](../43-primary-key-unique-and-null/) · **이어지는 것은 [47 인덱스를 언제 타고 언제 안 타나](../47-when-indexes-are-used/)** 다.\
+★ **범위 선언** — 이 편은 「**인덱스를 어떻게 정의하나**」까지다. **「그래서 탈까 안 탈까」는 [47번](../47-when-indexes-are-used/)이 정본**이고, **자료구조 자체는 [`15-b-tree`]**(../../../../../data-structure/15-b-tree/)다.

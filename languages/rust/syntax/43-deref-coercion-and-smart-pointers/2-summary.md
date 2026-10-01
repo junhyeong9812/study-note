@@ -1,16 +1,5 @@
 # rust/syntax/43 — `Deref` 강제와 스마트 포인터를 쓰는 감각 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Reference — Type coercions](https://doc.rust-lang.org/reference/type-coercions.html)(강제 지점 · 강제 종류 — `&T`/`&mut T` → `&U` · `&mut T` → `&T` · 크기 지우기) ·
-> [std — `Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html)(Deref coercion · **When to implement `Deref` or `DerefMut`**) ·
-> [Rust API Guidelines — C-DEREF](https://rust-lang.github.io/api-guidelines/predictability.html#only-smart-pointers-implement-deref-and-derefmut-c-deref)(「Only smart pointers implement `Deref` and `DerefMut`」).
-> ★ Reference·std 는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. API Guidelines 는 웹에서 제목·첫 문장을 확인했다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> **`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(격자는 `--emit=metadata` — 컴파일 통과만 본다).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★ **실행 시간은 재지 않았다.** `deref` 가 **몇 번 불리나**는 [30번 주제](../30-operator-overloading-std-ops-index-and-deref/) (7)이 **세었다**(`deref 호출 횟수 3`) — 인용만 한다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체 창 — ① 강제 격자(받는 자리 × 넘기는 것 → 컴파일되나)다.** 강제는 **실행 결과에 아무 흔적도 안 남기므로** 컴파일러의 통과/거절로만 본다.
 
 ## 흔들리는 칸 / 안 흔들리는 칸
@@ -629,3 +618,14 @@ For more information about this error, try `rustc --explain E0596`.
 
 - 강제가 **전파**되는 자리 — 배열 리터럴 · 튜플 · 괄호식 · 블록의 꼬리식(Reference 「coercion-propagating expressions」). **이 문서는 던지지 않았다.**
 - 메서드 해석의 정확한 순서(수신자 후보 목록 · 인허런트 먼저 · `&`·`&mut` 순) — Reference 「Method-call expressions」.
+
+## 실행 환경
+
+**기준 소스** — [Reference — Type coercions](https://doc.rust-lang.org/reference/type-coercions.html)(강제 지점 · 강제 종류 — `&T`/`&mut T` → `&U` · `&mut T` → `&T` · 크기 지우기) ·
+[std — `Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html)(Deref coercion · **When to implement `Deref` or `DerefMut`**) ·
+[Rust API Guidelines — C-DEREF](https://rust-lang.github.io/api-guidelines/predictability.html#only-smart-pointers-implement-deref-and-derefmut-c-deref)(「Only smart pointers implement `Deref` and `DerefMut`」).
+★ Reference·std 는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. API Guidelines 는 웹에서 제목·첫 문장을 확인했다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+**`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(격자는 `--emit=metadata` — 컴파일 통과만 본다).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★ **실행 시간은 재지 않았다.** `deref` 가 **몇 번 불리나**는 [30번 주제](../30-operator-overloading-std-ops-index-and-deref/) (7)이 **세었다**(`deref 호출 횟수 3`) — 인용만 한다.

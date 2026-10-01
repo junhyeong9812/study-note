@@ -1,22 +1,5 @@
 # rust/syntax/25 — 트레이트 정의·구현·기본 메서드·연관 타입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Reference — Traits](https://doc.rust-lang.org/reference/items/traits.html) ·
-> [Reference — dyn compatibility](https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility) ·
-> [Reference — `impl Trait`](https://doc.rust-lang.org/reference/types/impl-trait.html) ·
-> [std — `trait Iterator`](https://doc.rust-lang.org/std/iter/trait.Iterator.html).
-> ★ `rustc --explain E0038` · `E0119` · `E0283` · `E0308` 은 **확인용으로만 열었고 본문에 옮기지 않았다.**
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
-> **버전** — 트레이트·연관 타입·기본 메서드는 **1.0.0**, 인자 자리 `impl Trait` 는 **1.26.0**,
-> 반환 자리 `impl Trait` 도 **1.26.0** 부터다. **전부 에디션과 무관하다.**\
-> ★ **이 판의 말버릇** — rustc 는 **1.83 부터 「object safe」를 「dyn compatible」로 바꿔 부른다.**
-> 그래서 아래 E0038 전문에는 「객체 안전성」이라는 말이 **한 번도 안 나온다**((5)).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 흔들리는 칸 / 안 흔들리는 칸
 
 | | 칸 | 왜 |
@@ -949,3 +932,20 @@ sum      Won(123)
 - **포괄 구현(blanket impl)** — `impl<T: Display> MyTrait for T` 처럼 **조건에 맞는 모든 타입**에 한 번에 거는 것.
   [**26번 주제**](../26-orphan-rule-and-newtype/)의 고아 규칙과 맞물린다.
 - **`Rhs = Self` 같은 기본 타입 파라미터** — 제네릭 파라미터 판에 기본값을 주는 문법([목록의 **30번 주제**](../30-operator-overloading-std-ops-index-and-deref/)).
+
+## 실행 환경
+
+**기준 소스** — [Reference — Traits](https://doc.rust-lang.org/reference/items/traits.html) ·
+[Reference — dyn compatibility](https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility) ·
+[Reference — `impl Trait`](https://doc.rust-lang.org/reference/types/impl-trait.html) ·
+[std — `trait Iterator`](https://doc.rust-lang.org/std/iter/trait.Iterator.html).
+★ `rustc --explain E0038` · `E0119` · `E0283` · `E0308` 은 **확인용으로만 열었고 본문에 옮기지 않았다.**
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
+★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
+**버전** — 트레이트·연관 타입·기본 메서드는 **1.0.0**, 인자 자리 `impl Trait` 는 **1.26.0**,
+반환 자리 `impl Trait` 도 **1.26.0** 부터다. **전부 에디션과 무관하다.**\
+★ **이 판의 말버릇** — rustc 는 **1.83 부터 「object safe」를 「dyn compatible」로 바꿔 부른다.**
+그래서 본문의 E0038 전문에는 「객체 안전성」이라는 말이 **한 번도 안 나온다**((5)).

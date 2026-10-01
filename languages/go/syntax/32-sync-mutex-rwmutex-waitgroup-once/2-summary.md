@@ -1,15 +1,5 @@
 # go/syntax/32 — `sync`: `Mutex`·`RWMutex`·`WaitGroup`·`Once` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [`sync`](https://pkg.go.dev/sync) 문서 · [Go 메모리 모델](https://go.dev/ref/mem) ·
-> [`go vet` 의 `copylocks`·`waitgroup` 분석기](https://pkg.go.dev/cmd/vet) · [Data Race Detector](https://go.dev/doc/articles/race_detector).
-> 문서는 **이 툴체인의 `go doc`·`go tool vet help`** 에서 직접 떴다(웹의 race detector 글은 **안 열었다**).\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> ★ **버전** — `sync.OnceValue` 가 **1.21** · `WaitGroup.Go` 가 **1.25**(`api/go1.25.txt:96` — [28번 주제](../28-goroutines-go-statement-cost-and-termination/) (2)절이 이미 판별했다, 다시 재지 않았다) ·
-> `go vet` 의 **`waitgroup` 분석기**가 이 판에 있다((4)절 — 이 판의 `go tool vet help` 에 **있다는 것**만 확인했다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**`-race`(데이터 경쟁 검출기)의 `WARNING: DATA RACE` 보고**」.
 「안 터졌다」는 동시성에서 **가장 약한 근거**다 — 동기화 없는 코드도 대개 맞는 값을 낸다((1)절의 `1`).
 **검출기가 「이 두 접근 사이에 순서가 없다」를 줄 번호째** 짚어야 비로소 근거가 된다.
@@ -252,7 +242,7 @@ Found 1 data race(s)
 - ★★★ 둘 사이에 **순서를 세우는 것(동기화)이 없다** — `time.Sleep(50ms)` 는 **동기화가 아니다.** 실제로는 거의 늘 쓰기가 먼저 끝나지만, **메모리 모델은 그것을 약속하지 않는다.**
 - ★★ **`Goroutine N (finished) created at: main.main() ex/t32race.go:10`** — 쓴 고루틴은 **이미 끝났는데도** 잡혔다. 검출기는 **「동시에 일어났나」가 아니라 「순서가 세워졌나」를** 본다.
 - ★ `Found 1 data race(s)` · **exit 66** — 프로그램은 정상으로 끝났는데 **종료 코드가 66** 이다. 검출기가 보고를 남기면 종료 코드를 바꾼다(이 문서는 `GORACE` 설정을 **안 건드렸다** — 그 설정은 [목록의 **35번 주제**](../35-data-races-and-the-race-detector/)).
-- ★ 주소·고루틴 id 는 흔들린다 — 머리말의 정규화 칸. **줄 번호와 `Read`/`Previous write` 의 짝은 안 흔들렸다.**
+- ★ 주소·고루틴 id 는 흔들린다 — 맨 위 부분의 정규화 칸. **줄 번호와 `Read`/`Previous write` 의 짝은 안 흔들렸다.**
 
 같은 파일에 `vet` 은 —
 
@@ -1533,3 +1523,13 @@ func main() {
 - ★ **`Mutex` 의 기아 모드**(오래 기다린 고루틴에게 넘기는 구현)는 **구현**이고 **안 열었다.**
 - ★★ 락·채널의 **시간 비용**은 **안 쟀다.**
 - ★ `vet` 이 `ch <- a` 를 놓친 것이 **의도된 한계인지 버그인지**는 **확인 못 했다** — 분석기 소스를 안 열었다.
+
+## 실행 환경
+
+**기준 소스** — [`sync`](https://pkg.go.dev/sync) 문서 · [Go 메모리 모델](https://go.dev/ref/mem) ·
+[`go vet` 의 `copylocks`·`waitgroup` 분석기](https://pkg.go.dev/cmd/vet) · [Data Race Detector](https://go.dev/doc/articles/race_detector).
+문서는 **이 툴체인의 `go doc`·`go tool vet help`** 에서 직접 떴다(웹의 race detector 글은 **안 열었다**).\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+★ **버전** — `sync.OnceValue` 가 **1.21** · `WaitGroup.Go` 가 **1.25**(`api/go1.25.txt:96` — [28번 주제](../28-goroutines-go-statement-cost-and-termination/) (2)절이 이미 판별했다, 다시 재지 않았다) ·
+`go vet` 의 **`waitgroup` 분석기**가 이 판에 있다((4)절 — 이 판의 `go tool vet help` 에 **있다는 것**만 확인했다).

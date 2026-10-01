@@ -1,11 +1,5 @@
 # domain-modeling-basic/12-game-buff — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 — `impl/com/domain/buff/BuffBoard.java`, `Buff.java`, `BuffTest.java`, README 측정표.
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 README·impl·테스트 근거로 작성. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
@@ -493,3 +487,7 @@
   impl의 `active`·`activeOf`는 시각으로 거르므로 합계와 IGNORE 판정은 맞고 `stored()`만 다음 `apply`까지 부푼다. 하지만 목록을 시각 필터 없이 읽는 코드가 있으면 만료 버프가 살아 보이거나 IGNORE 종류의 새 버프를 막는다.\
   `now`를 인자로 받는 설계 덕에 복원 시각을 넣어 `expire(now)`를 한 번 돌리면 되고, 테스트에서도 시간을 흘려 재현할 수 있다.\
   README "생각해볼 것"의 질문이며, 복원 테스트에 과거 만료 버프를 섞어 두면 회귀를 막는다.
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 — `impl/com/domain/buff/BuffBoard.java`, `Buff.java`, `BuffTest.java`, README 측정표.

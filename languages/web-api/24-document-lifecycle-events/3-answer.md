@@ -1,10 +1,5 @@
 # web-api/24 — 문서 수명주기 이벤트: `DOMContentLoaded`/`load`·`visibilitychange`·`pagehide`/`pageshow` 와 bfcache — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 페이지는 로컬 서버 A 에서 열었고, 링크는 **CDP 로 넣은 진짜 마우스**로 눌렀다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG HTML — Document lifecycle](https://html.spec.whatwg.org/multipage/document-lifecycle.html) 의 unload a document 와 [Chrome 의 unload 폐기 문서](https://developer.chrome.com/docs/web-platform/deprecating-unload)로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
 |---|---|
 | 「떠날 때」 격자 전 칸 · CDP 이유 · 문서별 순서 · 이미지 순서 | **안 실었다** — 두 문서가 섞인 순서(렌더러가 다르다) |
@@ -206,3 +201,9 @@ python3 wa24b-net.py page wa24b-24-order.html
 | `Target.closeTarget` 의 `beforeunload` | 없음 | 도구의 성질 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② iframe 안의 `unload`. ③ `beforeunload` 확인 창. ④ 모바일 백그라운드·탭 폐기.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 페이지는 로컬 서버 A 에서 열었고, 링크는 **CDP 로 넣은 진짜 마우스**로 눌렀다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG HTML — Document lifecycle](https://html.spec.whatwg.org/multipage/document-lifecycle.html) 의 unload a document 와 [Chrome 의 unload 폐기 문서](https://developer.chrome.com/docs/web-platform/deprecating-unload)로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

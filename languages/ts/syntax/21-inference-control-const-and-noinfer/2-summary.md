@@ -1,12 +1,5 @@
 # ts/syntax/21 — 추론 제어 — `const` 타입 매개변수·`NoInfer` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [TypeScript 5.0 릴리스 노트 — `const` Type Parameters](https://devblogs.microsoft.com/typescript/announcing-typescript-5-0/#const-type-parameters) ·
-> [TypeScript 5.4 릴리스 노트 — The `NoInfer` Utility Type](https://devblogs.microsoft.com/typescript/announcing-typescript-5-4/#the-noinfer-utility-type) ·
-> [Handbook — Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html).
-> 릴리스 노트는 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version (sh exit=0) =====
 Version 7.0.2
@@ -16,7 +9,6 @@ v18.19.1
 > ★★★ 「**`tsc` 가 7.0.2 다 — 5.x 가 아니다.**」 **5.0·5.4 기능이 7.0 에서 도는가는 외우지 않고 던져서 확인했다** — 1·2절이 그 결과다.
 > 블록은 **옵션을 배너에 적힌 것만** 준 결과이고 `-t es2022 --strict` 를 **전부 명시**했다.
 > **버전** — `const` 타입 매개변수는 **TS 5.0**, `NoInfer<T>` 는 **TS 5.4** 다. `as const` 는 TS 3.4 다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## ★★★ 이 배치가 쓰는 탐침 — 「컴파일러가 타입을 말하게 하는 법」
 
@@ -732,3 +724,11 @@ ex.21f.ts(28,7): error TS2322: Type 'readonly ["가", "나"]' is not assignable 
 - **6절 5행이 왜 에러가 아닌가** — `const T extends string[]` 에서 `readonly ["가","나"]` 는 제약 `string[]` 을 **만족하지 못한다**(가변 배열이 아니다). 그때 컴파일러는 **에러를 내는 대신 `const` 의 효과를 부분적으로 물린다** — 리터럴 원소는 남기고 `readonly` 만 뺀다. 결과가 `["가", "나"]` 다. ★★ **이 동작은 릴리스 노트의 한 줄보다 던져 보는 쪽이 빠르고, `--strict` 를 끄면 또 달라진다**(8절). **「tsc 가 이렇게 한다」이지 「명세가 보장한다」가 아니다.**
 - **추론 우선순위를 외울 수 있나** — 5절의 표는 **이 판의 관찰**이다. TS 컴파일러 안에는 추론 후보마다 **우선순위 값**이 있고 그 목록은 공개 문서에 정리돼 있지 않다. 실무에서 쓸 수 있는 규칙은 둘뿐이다 — ① **명시가 모든 것을 이긴다** ② **모르겠으면 탐침을 한 줄 던진다.** 나머지는 자리마다 확인한다.
 - **`const` 와 `satisfies` 를 같이** — 4절에서 둘이 **하는 일이 다르다**는 것을 봤다. 실제 라이브러리에서는 `<const T extends Config>` 로 받고 호출자가 `satisfies` 없이 리터럴을 적는 꼴이 흔하다 — **정의자가 둘 다 책임지는 설계**다. 그 설계의 대가(호출자가 넓히지 못함)는 3절 비용 줄에 있다.
+
+## 실행 환경
+
+**기준 소스** — [TypeScript 5.0 릴리스 노트 — `const` Type Parameters](https://devblogs.microsoft.com/typescript/announcing-typescript-5-0/#const-type-parameters) ·
+[TypeScript 5.4 릴리스 노트 — The `NoInfer` Utility Type](https://devblogs.microsoft.com/typescript/announcing-typescript-5-4/#the-noinfer-utility-type) ·
+[Handbook — Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html).
+릴리스 노트는 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

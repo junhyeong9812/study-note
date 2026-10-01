@@ -1,13 +1,5 @@
 # css/syntax/36 — 사용자 정의 속성: 선언·`var()`·대체값·상속 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Custom Properties for Cascading Variables Level 1](https://drafts.csswg.org/css-variables-1/) 의 「Defining Custom Properties」·「Using Cascading Variables」·「Invalid Variables」 절과 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「invalid at computed-value time」 정의. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 띄워 **네 창**으로 읽은 것이다 — `cssRules[i].style`(**무엇이 담겼나**) · `cssRules[i].style.getPropertyValue('--x')`(**변수에 무엇이 담겼나**) · `getComputedStyle(el).getPropertyValue('--x')`(**변수의 계산값**) · `getComputedStyle(el).color`(**쓰는 쪽이 무엇이 됐나**). **넷이 다른 자리가 이 주제의 값이다.** **손으로 계산해 유도한 수치는 없다.**\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — CSS 에 언어 버전은 없다. 커스텀 속성은 오래전에 자리잡아 [목록 README](../README.md) 의 지원 표에 별도 행이 없을 만큼 보편적이다. 도입 경위는 [`history/web/03-HTML-CSS-진화.md`](../../../../history/web/03-HTML-CSS-진화.md) §2.7 이 정본이다.
-> **여기서 다루지 않는 것** — **`@property` 로 등록했을 때 달라지는 것**(타입·초기값·상속 여부·애니메이션 가능성)은 [목록의 **37번 주제**](../37-at-property/)가 정본이다. 여기는 **등록하지 않은 커스텀 속성**까지다. 상속 일반은 [03번](../03-inheritance-and-global-keywords/2-summary.md), 무효한 선언이 버려지는 규칙은 [07번](../07-syntax-and-error-recovery/2-summary.md)이 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **커스텀 속성은 「값」이 아니라 「봉투에 든 쪽지」다.**
@@ -745,3 +737,11 @@ Chrome 151 실측 — 10초 linear 애니메이션을 네 시점에서 샘플링
   생성 콘텐츠의 정본은 [13번](../13-pseudo-elements-and-generated-content/2-summary.md)이다.
 - **성능은 「무엇이 다시 도는가」의 문제다.** 루트 변수 하나를 바꾸면 그 변수를 쓰는 모든 요소가 다시 계산된다.\
   드래그처럼 초당 수십 번 바꾸는 자리에서는 **가장 가까운 조상**에 써서 범위를 좁힌다. 파이프라인의 정본은 [목록의 **56번 주제**](../56-rendering-pipeline-and-will-change/).
+
+## 실행 환경
+
+**기준 소스** — [CSS Custom Properties for Cascading Variables Level 1](https://drafts.csswg.org/css-variables-1/) 의 「Defining Custom Properties」·「Using Cascading Variables」·「Invalid Variables」 절과 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「invalid at computed-value time」 정의. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 띄워 **네 창**으로 읽은 것이다 — `cssRules[i].style`(**무엇이 담겼나**) · `cssRules[i].style.getPropertyValue('--x')`(**변수에 무엇이 담겼나**) · `getComputedStyle(el).getPropertyValue('--x')`(**변수의 계산값**) · `getComputedStyle(el).color`(**쓰는 쪽이 무엇이 됐나**). **넷이 다른 자리가 이 주제의 값이다.** **손으로 계산해 유도한 수치는 없다.**\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — CSS 에 언어 버전은 없다. 커스텀 속성은 오래전에 자리잡아 [목록 README](../README.md) 의 지원 표에 별도 행이 없을 만큼 보편적이다. 도입 경위는 [`history/web/03-HTML-CSS-진화.md`](../../../../history/web/03-HTML-CSS-진화.md) §2.7 이 정본이다.
+**여기서 다루지 않는 것** — **`@property` 로 등록했을 때 달라지는 것**(타입·초기값·상속 여부·애니메이션 가능성)은 [목록의 **37번 주제**](../37-at-property/)가 정본이다. 여기는 **등록하지 않은 커스텀 속성**까지다. 상속 일반은 [03번](../03-inheritance-and-global-keywords/2-summary.md), 무효한 선언이 버려지는 규칙은 [07번](../07-syntax-and-error-recovery/2-summary.md)이 정본이다.

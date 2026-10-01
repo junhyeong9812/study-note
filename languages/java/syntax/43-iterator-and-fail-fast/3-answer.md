@@ -1,10 +1,5 @@
 # java/syntax/43 — `Iterator`·`ListIterator`·fail-fast 와 `ConcurrentModificationException` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·에러는 **Temurin JDK 에서 실제로 돌려 얻은 것**이다.\
-> javadoc·소스 인용은 JDK 21.0.5 의 `lib/src.zip` 을 풀어 읽은 원문이다.\
-> 43-a·43-b 는 **17.0.13 · 21.0.5 · 25.0.1** 셋 다에서 돌렸고 출력이 같았다(11번).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -580,3 +575,9 @@ ConcurrentHashMap    : 예외 없음 / 결과 {k0=0, k2=2, k3=3, k4=4} / 돈 키
 - `ArrayList.replaceAll` 이 `modCount` 를 올리는 것 — 소스에 `// TODO(8203662)` 가 달려 있어 **바뀔 수 있다고 예고된 자리**다.
 - `ConcurrentHashMap` 순회가 보는 상태 — 약한 일관성이라 원래 약속이 약하다.
 - **Java 8 은 안 돌려 봄** — 이 머신에 8이 없다. 다만 `Iterator`·`ListIterator` 는 1.2 부터라 계약 자체는 같다.
+
+## 실행 환경
+
+이 파일의 모든 출력·에러는 **Temurin JDK 에서 실제로 돌려 얻은 것**이다.\
+javadoc·소스 인용은 JDK 21.0.5 의 `lib/src.zip` 을 풀어 읽은 원문이다.\
+43-a·43-b 는 **17.0.13 · 21.0.5 · 25.0.1** 셋 다에서 돌렸고 출력이 같았다(11번).

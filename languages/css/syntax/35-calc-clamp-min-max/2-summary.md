@@ -1,13 +1,5 @@
 # css/syntax/35 — `calc()`·`clamp()`·`min()`/`max()` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Values and Units Level 4](https://drafts.csswg.org/css-values-4/) 의 「Mathematical Expressions」 절(`calc()`·`min()`/`max()`/`clamp()` 의 문법·타입 검사·직렬화). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 띄워 **두 창**으로 읽은 것이다 — `document.styleSheets[0].cssRules[i].style`(**무엇이 담겼나**)와 `getComputedStyle`(**무엇으로 계산됐나**). 둘이 다른 자리가 이 주제의 값이다. **손으로 계산해 유도한 수치는 없다.**\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — CSS 에 언어 버전은 없다. `calc()` 는 CSS Values 3, `min()`/`max()`/`clamp()` 는 Baseline **widely**(newly 2020-07-28 · widely 2023-01-28)다. 근거는 [목록 README](../README.md) 의 지원 표다.
-> **여기서 다루지 않는 것** — **계산이 어느 단계에서 끝나는가**는 [04번](../04-value-processing-stages/2-summary.md)이 정본이다. 여기는 **그 단계에 무엇을 넘겨주는가**까지다. 단위 자체는 [33번](../33-length-units/2-summary.md)·[34번](../34-viewport-and-container-units/2-summary.md), 무효한 선언이 버려지는 규칙은 [07번](../07-syntax-and-error-recovery/2-summary.md)이 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **수학 함수 = 「단위가 다른 자 여러 개를 한 줄에서 섞어 쓰는 법」이다.**
@@ -561,3 +553,11 @@ Chrome 151 실측
   성능 문제가 되는 쪽은 계산 자체가 아니라 **값이 바뀔 때 무엇이 다시 도는가**다 — 정본은 [목록의 **56번 주제**](../56-rendering-pipeline-and-will-change/).
 - **`clamp()` 의 가운데 인자를 직선식으로 설계하는 법**이 따로 있다 — 두 중단점 `(w1, s1)`·`(w2, s2)` 를 지나는 직선을 `vw` + `rem` 으로 적는 것.\
   자주 쓰이지만 **수식을 손으로 유도한 값이라 이 문서에서는 재지 않았고, 수치를 싣지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [CSS Values and Units Level 4](https://drafts.csswg.org/css-values-4/) 의 「Mathematical Expressions」 절(`calc()`·`min()`/`max()`/`clamp()` 의 문법·타입 검사·직렬화). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 띄워 **두 창**으로 읽은 것이다 — `document.styleSheets[0].cssRules[i].style`(**무엇이 담겼나**)와 `getComputedStyle`(**무엇으로 계산됐나**). 둘이 다른 자리가 이 주제의 값이다. **손으로 계산해 유도한 수치는 없다.**\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — CSS 에 언어 버전은 없다. `calc()` 는 CSS Values 3, `min()`/`max()`/`clamp()` 는 Baseline **widely**(newly 2020-07-28 · widely 2023-01-28)다. 근거는 [목록 README](../README.md) 의 지원 표다.
+**여기서 다루지 않는 것** — **계산이 어느 단계에서 끝나는가**는 [04번](../04-value-processing-stages/2-summary.md)이 정본이다. 여기는 **그 단계에 무엇을 넘겨주는가**까지다. 단위 자체는 [33번](../33-length-units/2-summary.md)·[34번](../34-viewport-and-container-units/2-summary.md), 무효한 선언이 버려지는 규칙은 [07번](../07-syntax-and-error-recovery/2-summary.md)이 정본이다.

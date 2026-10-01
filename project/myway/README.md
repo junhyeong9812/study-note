@@ -1,8 +1,5 @@
 # myway — 연습 프로젝트 진행 기록
 
-> `/home/jun/project/myway/` 의 연습 프로젝트와 study-note cs 노트의 **1:1 대응표와 진도**다. 2026-09-28 cs 재편에서 cs 쪽 index의 원본 경로·진도 칸을 여기로 옮겼다.
-> 노트 본문은 cs에 그대로 있다 — 이 문서는 진행 기록만 담는다. 커리큘럼상 위치는 각 cs 영역 README(또는 `curriculum.md`)의 노트 링크 칸이 대응을 맡는다.
-
 | 프로젝트 | 원본 | cs 노트 |
 |---|---|---|
 | algorithm | `/home/jun/project/myway/algorithm/` | [cs/algorithm](../../cs/algorithm/) |

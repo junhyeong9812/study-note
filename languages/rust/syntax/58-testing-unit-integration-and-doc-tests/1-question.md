@@ -1,12 +1,5 @@
 # rust/syntax/58 — 테스트: `#[test]` · 통합 테스트 · 문서 테스트 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ 던지는 법 — 패키지는 아래 `r58_pkg.sh` 로 만든다(`bash r58_pkg.sh <이름> <파일>=<패키지 안 경로> …`). 그다음 `cd pkg && cargo test --offline`. 격자는 `bash r58_grid.sh`. **외부 의존성이 하나도 없다.**
-> ★★★ **테스트 파일을 보면 먼저 물어라** — 「**이것은 내 크레이트 안인가, 밖인가**」와 「**이것을 돌리는 명령은 무엇인가**」.
-> ★ **문항 12개 중 코드가 붙은 예측형은 6개**다. 소스 펜스는 캡처가 실파일에서 찍었다(`check-source-fences.py` 대조).
-
 ```bash
 # r58_pkg.sh
 # Lay out a one-crate package in ./pkg from the given files (an empty src/lib.rs if no crate root is given).
@@ -326,6 +319,11 @@ fn b_sets_flag() {
 ### 12. ★ 정렬해서 실은 블록 (경계)
 
 - 서머리 (6)의 첫 블록은 왜 `grep '^test ' | sort` 를 거쳐 실렸나? 그 대신 무엇을 결론의 근거로 삼았나(제5의 상태)?
+
+## 실행 환경
+
+★ 던지는 법 — 패키지는 맨 위 `r58_pkg.sh` 로 만든다(`bash r58_pkg.sh <이름> <파일>=<패키지 안 경로> …`). 그다음 `cd pkg && cargo test --offline`. 격자는 `bash r58_grid.sh`. **외부 의존성이 하나도 없다.**
+★★★ **테스트 파일을 보면 먼저 물어라** — 「**이것은 내 크레이트 안인가, 밖인가**」와 「**이것을 돌리는 명령은 무엇인가**」.
 
 ## 복습 기록
 

@@ -1,9 +1,5 @@
 # kotlin/syntax/57 — Java 코드를 Kotlin 답게 — 식으로서의 `if`/`when`·엘비스 조기 반환 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.
-> ★★ 아래 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -487,3 +483,8 @@ public actual inline fun String.uppercase(): String = (this as java.lang.String)
 1. ★★★ **두 판을 갈라놓은 것은 입력이 아니라 로케일이었다** — 1번에서 0 칸이던 격자가 JVM 플래그 하나로 1 칸이 됐다. 그리고 **뜻을 바꾼 쪽은 Kotlin 판**이었다(`toUpperCase` 를 글자 그대로 옮기면 컴파일 오류라 `uppercase` 로 바꿀 수밖에 없다).
 2. ★★ **`when` + `else` 가 Java `else throw` 보다 더 조용했다** — 「Kotlin 이 더 안전하다」가 `else` 한 줄로 뒤집힌다.
 3. ★ **Java 21 패턴 `switch` 도 같은 자리에서 막았다** — 「컴파일러가 새 하위 타입을 잡아 준다」는 Kotlin 고유가 아니었다.
+
+## 실행 환경
+
+모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.
+★★ 본문의 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.

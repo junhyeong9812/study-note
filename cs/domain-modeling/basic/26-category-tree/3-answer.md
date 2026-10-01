@@ -1,11 +1,5 @@
 # domain-modeling-basic/26-category-tree — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 — `impl/com/domain/catalog/CategoryTree.java`, `CategoryTreeTest`, `MeasurementTest`.
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 수치 근거. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
@@ -487,3 +481,7 @@
   A: 경로는 부모 포인터뿐 아니라 **이름**의 파생값인데, 무효화를 이동(`move`)에만 걸었다.\
   이름 변경도 "그 칸 + 밑 전부"의 경로를 바꾸는, 이동과 같은 크기의 사건이다.\
   고치는 법: 파생값을 바꾸는 원인(부모 변경·이름 변경)을 모두 열거해 같은 재작성 함수(`{id} ∪ descendants(id)` 다시 쓰기)를 부르게 한다. 이동과 취급이 달라야 할 이유가 없다.
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 — `impl/com/domain/catalog/CategoryTree.java`, `CategoryTreeTest`, `MeasurementTest`.

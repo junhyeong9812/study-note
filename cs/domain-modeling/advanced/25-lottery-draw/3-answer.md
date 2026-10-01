@@ -1,11 +1,5 @@
 # domain-modeling-advanced/25-lottery-draw — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/25-lottery-draw/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -490,3 +484,7 @@ break;
 - 문제 원문: `/home/jun/project/myway/domain-modeling-advanced/25-lottery-draw/src/main/java/com/domain/lottery/Draw.java`(TODO 1~4 javadoc, `SumKey`·`DuplicateRule`·`Pick`·`Applicant`·`Winner`·`Prize`), `/home/jun/project/myway/domain-modeling-advanced/25-lottery-draw/src/main/java/com/domain/lottery/Entry.java`(계약·검증), `/home/jun/project/myway/domain-modeling-advanced/25-lottery-draw/README.md`(규칙·함정·측정이 알려준 것·변종 검증·생각해볼 것)
 - 계약·수치: `/home/jun/project/myway/domain-modeling-advanced/25-lottery-draw/src/test/java/com/domain/lottery/DrawTest.java` — MEMBER 2명/각 2장 · IDENTITY 1명/4장 · ORDER 4명 · 총합 4장 · 구분자 없으면 충돌(aggregate 2명) · 입력 순서 무관 · `byTicket > 850` · `byPerson` 400~600 · 빈 후보 `null` · seed 42 동일 / 43 상이 · 상품 하나면 세 규칙 동일(seed 7) · PER_EVENT 2건(1등 a, 2등 ≠ a) · 응모자 2명에 1등 3명 → 2건 `[a, b]` · a 하나에 1등1+2등1 → 1 / 2 / 2건 · a 하나에 1등 3명 → PER_PRIZE 1건 · NONE 3건 · `winsByKey("a") == 3` · 응모권 0·인원 0·빈 이름·빈 회원번호 → `IllegalArgumentException`
 - 측정 수치: `/home/jun/project/myway/domain-modeling-advanced/25-lottery-draw/src/test/java/com/domain/lottery/MeasurementTest.java` — 응모자 102,000 / 100,000 / 140,184 · 응모권 총합 640,656 · 최다 보유 9,970 / 10,186 / 4,997 · 당첨 건수 5,600 · 큰손 당첨 3,019 / 531 · 당첨자 응모권 합 142,409 / 145,687 / 157,113 · 버려진 응모권 136,809 / 0 / 0 · 여섯 조합 어긋남 900(/1,500) · 중복 규칙만 어긋남 0(/200) · 서로 다른 당첨자 5,600 / 5,469 / 5,026
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/25-lottery-draw/impl/`).

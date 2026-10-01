@@ -1,11 +1,5 @@
 # html/syntax/14 — 인용·편집·시각: `blockquote`/`q`/`cite`·`ins`/`del`·`time` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스(`html13b-cdp.py`·`capture.sh`)는 [13번 주제의 3-answer.md](../13-phrasing-semantics/3-answer.md) `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **따옴표는 창 ⑦ 에만 있고, `datetime` 은 어느 창에서도 검사되지 않는다**(A2·A4).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -319,3 +313,10 @@ $ echo "콘솔 줄 수 = $(google-chrome --headless --disable-gpu --no-sandbox -
 - **datetime 값** — `datetime` 속성, 없으면 내용 글자. `.dateTime` 과 같지 않다.
 - **검증자(validator)** — 마크업이 명세 형식에 맞는지 검사하는 도구. 브라우저는 이 일을 안 한다.
 - **제3의 상태(못 잰 것) · 제4의 상태(잴 것이 없다)** — 동작은 있는데 도구가 없는 것 / 동작 자체가 없는 것.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스(`html13b-cdp.py`·`capture.sh`)는 [13번 주제의 3-answer.md](../13-phrasing-semantics/3-answer.md) `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **따옴표는 창 ⑦ 에만 있고, `datetime` 은 어느 창에서도 검사되지 않는다**(A2·A4).

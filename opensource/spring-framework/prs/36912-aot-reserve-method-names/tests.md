@@ -1,7 +1,5 @@
 # PR #36912 — 테스트 해설 (테스트 하나하나)
 
-> PR #36912 테스트 해설. 형식·개념은 ../37153/tests.md, ../37153/guard-tests.md 참조.
-
 이 PR이 추가한 테스트는 `GeneratedClassTests`에 한 건이다.\
 프로덕션 diff가 한 글자(`reservedMethodNames` -> `reservedMethodName`)인 만큼 테스트도 한 건인데, 그 한 건이 4년 가까이 아무도 실행한 적 없던 경로 — 이름을 둘 이상 넘기는 varargs 경로 — 를 처음으로 밟는다.
 

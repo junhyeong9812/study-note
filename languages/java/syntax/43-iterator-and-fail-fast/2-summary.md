@@ -1,25 +1,5 @@
 # java/syntax/43 — `Iterator`·`ListIterator`·fail-fast 와 `ConcurrentModificationException` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/). `Collection` 이 `Iterable` 이라는 것이 전제다.
-> **기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc 과 구현이다.\
-> `java.base/java/util/Iterator.java` — 세 메서드의 계약과 `remove()` 의 기본 구현.\
-> `java.base/java/util/ConcurrentModificationException.java` — 클래스 javadoc(`best-effort basis` 문단).\
-> `java.base/java/util/AbstractList.java` — `protected transient int modCount` 의 javadoc.\
-> `java.base/java/util/ArrayList.java` — `Itr`·`ListItr` 의 `hasNext`/`next`/`remove`/`add`, `forEach`, `removeIf` 구현.\
-> 인용은 **그 파일에서 복사한 것만** 옮겼다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 Temurin JDK 에서 **실제로 돌려** 얻은 것이다.\
-> 프로그램 3개. 둘은 **17.0.13 · 21.0.5 · 25.0.1** 셋 다에서 돌려 `diff` 했고(출력 동일),
-> `ListIterator` 쪽은 21·25 에서 돌렸다.
-> **버전** — `Iterator`·`ListIterator` 는 **Java 1.2**. `Iterator.remove()` 의 `default` 구현은 **Java 8**.\
-> `Collection.removeIf` 는 **Java 8**. `@since` 는 `src.zip` 에서 직접 읽었다. 21·25 에 새로 생긴 것은 없다.
-> **범위** — **향상된 `for` 라는 문법**(무엇 위에서 도나·배열과의 차이·레이블 `break`)은
-> [`../20-control-flow-statements/`](../20-control-flow-statements/) 가 정본이다.\
-> 그쪽은 **향상된 `for` 를 설명하는 데 필요한 만큼**(`hasNext`/`next`/`remove` 셋)까지,\
-> 여기는 **`Iterator` 인터페이스 자체의 계약·`ListIterator`·안전한 삭제 셋·fail-fast 의 구현과 그 한계**부터다.\
-> 자료구조의 순회 비용(연결 리스트 대 배열)은 [`../../../../cs/data-structure/`](../../../../cs/data-structure/) 가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **이터레이터는 책에 끼운 책갈피다.**
@@ -858,3 +838,23 @@ for (String s : l) { }              // 이 안에서 l.set(0, "z") 는 CME 가 �
 - **`Spliterator`(8+)는 이터레이터의 병렬 버전이다.**\
   `trySplit()` 으로 반씩 쪼개며, `IMMUTABLE`·`CONCURRENT` 같은 특성 비트로 **fail-fast 여부를 선언**한다.\
   스트림이 이것 위에서 돈다 — [`../49-parallel-streams/`](../49-parallel-streams/)가 그 이야기다.
+
+## 실행 환경
+
+**선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/). `Collection` 이 `Iterable` 이라는 것이 전제다.
+**기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc 과 구현이다.\
+`java.base/java/util/Iterator.java` — 세 메서드의 계약과 `remove()` 의 기본 구현.\
+`java.base/java/util/ConcurrentModificationException.java` — 클래스 javadoc(`best-effort basis` 문단).\
+`java.base/java/util/AbstractList.java` — `protected transient int modCount` 의 javadoc.\
+`java.base/java/util/ArrayList.java` — `Itr`·`ListItr` 의 `hasNext`/`next`/`remove`/`add`, `forEach`, `removeIf` 구현.\
+인용은 **그 파일에서 복사한 것만** 옮겼다.
+**실행 검증** — 이 문서의 모든 출력·에러는 Temurin JDK 에서 **실제로 돌려** 얻은 것이다.\
+프로그램 3개. 둘은 **17.0.13 · 21.0.5 · 25.0.1** 셋 다에서 돌려 `diff` 했고(출력 동일),
+`ListIterator` 쪽은 21·25 에서 돌렸다.
+**버전** — `Iterator`·`ListIterator` 는 **Java 1.2**. `Iterator.remove()` 의 `default` 구현은 **Java 8**.\
+`Collection.removeIf` 는 **Java 8**. `@since` 는 `src.zip` 에서 직접 읽었다. 21·25 에 새로 생긴 것은 없다.
+**범위** — **향상된 `for` 라는 문법**(무엇 위에서 도나·배열과의 차이·레이블 `break`)은
+[`../20-control-flow-statements/`](../20-control-flow-statements/) 가 정본이다.\
+그쪽은 **향상된 `for` 를 설명하는 데 필요한 만큼**(`hasNext`/`next`/`remove` 셋)까지,\
+여기는 **`Iterator` 인터페이스 자체의 계약·`ListIterator`·안전한 삭제 셋·fail-fast 의 구현과 그 한계**부터다.\
+자료구조의 순회 비용(연결 리스트 대 배열)은 [`../../../../cs/data-structure/`](../../../../cs/data-structure/) 가 정본이다.

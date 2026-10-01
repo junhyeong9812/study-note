@@ -1,14 +1,5 @@
 # html/syntax/15 — 목록: `ul`/`ol`(`start`·`reversed`·`value`)/`dl` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The `ol` element」](https://html.spec.whatwg.org/multipage/grouping-content.html#the-ol-element)·[「The `li` element」](https://html.spec.whatwg.org/multipage/grouping-content.html#the-li-element)(서수 값 알고리즘)·[「The `dl` element」](https://html.spec.whatwg.org/multipage/grouping-content.html#the-dl-element) 절, [렌더링 절 「Lists」](https://html.spec.whatwg.org/multipage/rendering.html#lists), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 하네스는 [13번 주제의 3-answer.md](../13-phrasing-semantics/3-answer.md) `## 실행 검증` 절에 있다(이 배치가 공유한다).\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.** ★ 특히 **「`list-style: none` 이 목록 역할을 지운다」는 WebKit(Safari)의 동작으로 알려져 있는데 WebKit 이 이 머신에 없다 — 「미실행」이다.**
-> **버전** — HTML 에는 언어 버전이 없다. `ol`·`ul`·`li`·`dl` 은 오래된 표면이다. `reversed` 와 `dl` 안의 `div` 묶음도 **이 판에서 동작한다**(아래 실측) — 들어온 시기는 이 문서가 확인하지 않았다.
-> **선행** — [05번 주제](../05-content-categories-and-models/2-summary.md)(`ul` 의 콘텐츠 모델 — 「`li` 와 스크립트 지원 요소만」).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑦ 대 창 ②·③ 이다 — 번호는 접근성 트리(`ListMarker`)에만 있고, DOM 프로퍼티(`li.value`·`ol.start`)와 `innerText` 에는 없다.** 거기에 `dl` 의 묶음은 **창 ①(파서)** 이 본다.
-
 **이 판의 Chrome**
 
 ```text
@@ -583,3 +574,13 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 번호를 DOM 에 안 두나** — 번호는 **렌더의 결과**다. CSS 로 `list-style: none` 을 주면 없어지고, `counter-reset` 으로 바꿀 수도 있다. DOM 에 박으면 **스타일이 바꾼 번호와 DOM 의 번호가 어긋난다.** 그래서 DOM 은 **입력(`start`·`value`)만** 들고, 번호는 렌더가 센다.
 - **WebKit 의 `list-style: none`** — 「표지를 지우면 목록 역할이 사라진다」는 **이 배치의 브리핑이 알려진 사례로 준 것**이다. 이 머신에 WebKit 이 없어 **그 동작도 그 이유도 확인하지 못했다.** 확인한 것은 **Chrome 151 이 역할을 남긴다**는 반대쪽 한 엔진뿐이다 — 어느 쪽도 명세가 정한 것이 아니다.
 - **`dl` 에 `div` 가 허용된 까닭** — 스타일링(한 묶음에 배경·테두리) 때문이다. 접근성 트리에서 사라지는 것은 **그 목적과 맞다** — 묶음은 **보이게 하려는 것**이지 **뜻을 더하려는 것**이 아니다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The `ol` element」](https://html.spec.whatwg.org/multipage/grouping-content.html#the-ol-element)·[「The `li` element」](https://html.spec.whatwg.org/multipage/grouping-content.html#the-li-element)(서수 값 알고리즘)·[「The `dl` element」](https://html.spec.whatwg.org/multipage/grouping-content.html#the-dl-element) 절, [렌더링 절 「Lists」](https://html.spec.whatwg.org/multipage/rendering.html#lists), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 하네스는 [13번 주제의 3-answer.md](../13-phrasing-semantics/3-answer.md) `## 실행 검증` 절에 있다(이 배치가 공유한다).\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.** ★ 특히 **「`list-style: none` 이 목록 역할을 지운다」는 WebKit(Safari)의 동작으로 알려져 있는데 WebKit 이 이 머신에 없다 — 「미실행」이다.**
+**버전** — HTML 에는 언어 버전이 없다. `ol`·`ul`·`li`·`dl` 은 오래된 표면이다. `reversed` 와 `dl` 안의 `div` 묶음도 **이 판에서 동작한다**(본문 실측) — 들어온 시기는 이 문서가 확인하지 않았다.
+**선행** — [05번 주제](../05-content-categories-and-models/2-summary.md)(`ul` 의 콘텐츠 모델 — 「`li` 와 스크립트 지원 요소만」).
+
+★★★ **이 주제의 본체는 창 ⑦ 대 창 ②·③ 이다 — 번호는 접근성 트리(`ListMarker`)에만 있고, DOM 프로퍼티(`li.value`·`ol.start`)와 `innerText` 에는 없다.** 거기에 `dl` 의 묶음은 **창 ①(파서)** 이 본다.

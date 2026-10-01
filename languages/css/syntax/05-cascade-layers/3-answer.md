@@ -1,10 +1,5 @@
 # css/syntax/05 — `@layer` 캐스케이드 레이어: 선언 순서와 레이어 밖의 위치 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 색은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 `getComputedStyle` 로 읽은 것**이다.\
-> 규칙은 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 「Cascade Layers」로 접지했다.\
-> **엔진은 Chrome 하나다.** `@import` 실험만 로컬 HTTP 서버로 띄웠다(A7 참고).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -414,3 +409,9 @@ google-chrome --headless --disable-gpu --no-sandbox --dump-dom /tmp/doc.html 2>/
 - **명시도(specificity)** — 5단계. 정본은 02번.
 - **등장 순서(order of appearance)** — 6단계. 마지막 기준.
 - **근접성(proximity)** — `@scope` 가 끼워 넣는 기준. 명시도 뒤·순서 앞. 정본은 06번.
+
+## 실행 환경
+
+이 파일의 **모든 색은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 `getComputedStyle` 로 읽은 것**이다.\
+규칙은 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 「Cascade Layers」로 접지했다.\
+**엔진은 Chrome 하나다.** `@import` 실험만 로컬 HTTP 서버로 띄웠다(A7 참고).

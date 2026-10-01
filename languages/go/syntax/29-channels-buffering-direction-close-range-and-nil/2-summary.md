@@ -1,15 +1,5 @@
 # go/syntax/29 — 채널: 버퍼·방향·`close`·`range`·`nil` 채널 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세 — Channel types · Send statements · Receive operator · Close](https://go.dev/ref/spec#Channel_types) ·
-> [Go 메모리 모델 — Channel communication](https://go.dev/ref/mem#chan) · [`runtime`](https://pkg.go.dev/runtime) 소스(`proc.go` 의 `checkdead`).
-> 명세·메모리 모델·`runtime` 소스는 **이 툴체인의 `$(go env GOROOT)` 에서 직접 떴다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> ★ **버전** — 채널의 차단 규칙·닫힌 채널·`nil` 채널 동작은 **이 판(`go1.27`) 명세의 문장으로** 적었다. 이 문서는 **옛 판과 견주지 않았다**(판 격자 없음) — 판 경계가 있다는 근거도, 없다는 근거도 **이 문서에는 없다.**
-> 이 문서에서 판이 걸린 것은 정수 `range`(1.22)·`WaitGroup.Go`(1.25) 같은 **곁다리 문법**뿐이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**런타임의 교착 탐지(`all goroutines are asleep - deadlock!`)를 「막혔다」의 증인으로 세우는 창**」.
 「막힌다」는 원래 **아무 일도 안 일어나는 것**이라 출력으로 보이지 않는다. 그런데 **모든 고루틴이 막히면** 런타임이
 `fatal error` 로 프로세스를 죽이고 **종료 코드 2** 를 낸다. 그래서 **버퍼 × 송신 횟수** 격자를 돌려
@@ -735,7 +725,7 @@ created by main.main in goroutine 1
 (exit 2)
 ```
 
-  ★★ **`goroutine N [chan receive]:` · `created by main.main in goroutine 1`** — 런타임이 **막힌 고루틴 전부**를 보여 준다. (N 은 흔들린다 — 머리말의 정규화 칸.)
+  ★★ **`goroutine N [chan receive]:` · `created by main.main in goroutine 1`** — 런타임이 **막힌 고루틴 전부**를 보여 준다. (N 은 흔들린다 — 맨 위 부분의 정규화 칸.)
 - ★★★ **왜 `sleeper` 는 탐지가 안 되나** — 런타임 소스가 답한다:
 
 ```text
@@ -1013,3 +1003,13 @@ func main() {
 - ★ **`select` 로 막히지 않고 보내기·받기**는 [30번 주제](../30-select-default-and-timeouts/)다.
 - ★ **닫힌 채널에 보내는 패닉을 `recover` 로 받는 것**은 **안 던졌다** — 할 수는 있지만(`panic` 이니까) 설계가 틀린 신호다.
 - ★★ 채널 연산의 **시간 비용**은 **안 쟀다.**
+
+## 실행 환경
+
+**기준 소스** — [Go 명세 — Channel types · Send statements · Receive operator · Close](https://go.dev/ref/spec#Channel_types) ·
+[Go 메모리 모델 — Channel communication](https://go.dev/ref/mem#chan) · [`runtime`](https://pkg.go.dev/runtime) 소스(`proc.go` 의 `checkdead`).
+명세·메모리 모델·`runtime` 소스는 **이 툴체인의 `$(go env GOROOT)` 에서 직접 떴다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+★ **버전** — 채널의 차단 규칙·닫힌 채널·`nil` 채널 동작은 **이 판(`go1.27`) 명세의 문장으로** 적었다. 이 문서는 **옛 판과 견주지 않았다**(판 격자 없음) — 판 경계가 있다는 근거도, 없다는 근거도 **이 문서에는 없다.**
+이 문서에서 판이 걸린 것은 정수 `range`(1.22)·`WaitGroup.Go`(1.25) 같은 **곁다리 문법**뿐이다.

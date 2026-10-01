@@ -1,11 +1,5 @@
 # css/syntax/25 — `flex` 단축의 세 값(`grow`/`shrink`/`basis`)과 크기 해결 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getBoundingClientRect()` 로 잰 값**이고,
-> **계산값은 `getComputedStyle` 로 따로 읽어 구분해 적었다**(8번이 그 이유다). 단위는 px 다.\
-> 규칙은 [CSS Flexible Box Layout Level 1](https://drafts.csswg.org/css-flexbox-1/) §7·§9.7·§4.5 와
-> [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/) 으로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -431,3 +425,10 @@ overflow 만 바꾼 판 (5번과 같은 문서, 컨테이너 300 / side 100)
 - **단축(shorthand)** — 여러 롱핸드를 한 줄로 쓰는 속성. 생략 자리에 채워지는 값이 롱핸드 초기값과 다를 수 있다.
 - **계산값(computed value) / 사용값(used value)** — 상속에 쓰이는 값 / 레이아웃이 끝난 뒤 확정된 값. `flex-basis` 는 앞엣것만 읽히고 크기는 뒤엣것이다.
 - **진단 3창** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 10번은 **셋 다 통과하고도 결과가 갈리는** 제4의 자리다.
+
+## 실행 환경
+
+이 파일의 **모든 치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getBoundingClientRect()` 로 잰 값**이고,
+**계산값은 `getComputedStyle` 로 따로 읽어 구분해 적었다**(8번이 그 이유다). 단위는 px 다.\
+규칙은 [CSS Flexible Box Layout Level 1](https://drafts.csswg.org/css-flexbox-1/) §7·§9.7·§4.5 와
+[CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/) 으로 접지했다.

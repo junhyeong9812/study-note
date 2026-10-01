@@ -1,14 +1,5 @@
 # kotlin/syntax/27 — 중첩 클래스와 `inner` — 기본값이 뒤집힌 또 한 곳 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다. [19번 주제](../19-inheritance-open-final-override/)(`final` 기본값)를 먼저 보면 「뒤집힌 기본값」의 결이 보인다.
-> ★ Java 쪽 짝은 [`../../../java/syntax/12-nested-classes/`](../../../java/syntax/12-nested-classes/)다 — 이 주제는 **Java 를 같은 모양으로 짜서 나란히** 던졌다.
-> 문항 10개 중 코드블록이 붙는 예측형은 5개다.
-> 바이트코드를 묻는 문항은 **kotlinc 기본 `-jvm-target` 1.8 · javac 기본 `--release` 21** 기준이다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · JDK 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -178,6 +169,14 @@ fun main() {
 
 - 오래 사는 이벤트 버스에 등록할 콜백을 만들 때 어느 꼴을 고르고 무엇을 인자로 넘기는가?
 - [25번 주제](../25-object-declaration-companion-and-object-expression/)의 `Outer$Companion` 은 이 주제의 어느 칸에 들어가는가?
+
+## 실행 환경
+
+선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다. [19번 주제](../19-inheritance-open-final-override/)(`final` 기본값)를 먼저 보면 「뒤집힌 기본값」의 결이 보인다.
+★ Java 쪽 짝은 [`../../../java/syntax/12-nested-classes/`](../../../java/syntax/12-nested-classes/)다 — 이 주제는 **Java 를 같은 모양으로 짜서 나란히** 던졌다.
+
+바이트코드를 묻는 문항은 **kotlinc 기본 `-jvm-target` 1.8 · javac 기본 `--release` 21** 기준이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JDK 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

@@ -1,17 +1,5 @@
 # sql/59-스캔·조인·정렬 연산자 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 계획은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 계획은 없다.\
-> **측정 조건** — `study` 안에 만든 `t59_big`(20만 행) · `t59_mid`(5만 행) · `t59_small`(10행).\
-> PG 계획은 전부 **`max_parallel_workers_per_gather = 0`**(병렬 끔)에서, **한 트랜잭션 안에서 한 번에** 찍었다 —
-> `ANALYZE` 의 표본이 판마다 달라 숫자가 흔들리기 때문이다(6·7번).\
-> PG 는 `BEGIN … ROLLBACK`, MySQL 은 `DROP TABLE IF EXISTS` 로 지웠다. **`emp`·`dept` 는 건드리지 않았다.**\
-> 문서 근거는 [PG 18 Using EXPLAIN](https://www.postgresql.org/docs/18/using-explain.html) · [MySQL 8.4 EXPLAIN Join Types](https://dev.mysql.com/doc/refman/8.4/en/explain-output.html#explain-join-types) · [MySQL 8.4 Hash Join](https://dev.mysql.com/doc/refman/8.4/en/hash-joins.html).
-
-> **표 테두리를 지웠다.** 이 파일의 MySQL `EXPLAIN` 블록은 12칸 표에서 그 절에 필요 없는 칸과
-> `+---+` 테두리를 지운 것이다. **남긴 칸의 값은 원본 그대로다.**
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -713,3 +701,16 @@ PG 에도 비슷한 성격의 최적화가 있지만 **이 데이터·이 계획
 
 **버전** — MySQL 의 해시 조인은 **8.0.18 부터**다. 그 이전 버전에서는 13번의 마지막 줄이 `Block Nested Loop` 가 된다.\
 `EXPLAIN FORMAT=TREE` 는 8.0.16 부터다. 버전이 오르면 **4·9·13·16·17번**을 다시 돌린다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 계획은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 계획은 없다.\
+**측정 조건** — `study` 안에 만든 `t59_big`(20만 행) · `t59_mid`(5만 행) · `t59_small`(10행).\
+PG 계획은 전부 **`max_parallel_workers_per_gather = 0`**(병렬 끔)에서, **한 트랜잭션 안에서 한 번에** 찍었다 —
+`ANALYZE` 의 표본이 판마다 달라 숫자가 흔들리기 때문이다(6·7번).\
+PG 는 `BEGIN … ROLLBACK`, MySQL 은 `DROP TABLE IF EXISTS` 로 지웠다. **`emp`·`dept` 는 건드리지 않았다.**\
+문서 근거는 [PG 18 Using EXPLAIN](https://www.postgresql.org/docs/18/using-explain.html) · [MySQL 8.4 EXPLAIN Join Types](https://dev.mysql.com/doc/refman/8.4/en/explain-output.html#explain-join-types) · [MySQL 8.4 Hash Join](https://dev.mysql.com/doc/refman/8.4/en/hash-joins.html).
+
+**표 테두리를 지웠다.** 이 파일의 MySQL `EXPLAIN` 블록은 12칸 표에서 그 절에 필요 없는 칸과
+`+---+` 테두리를 지운 것이다. **남긴 칸의 값은 원본 그대로다.**

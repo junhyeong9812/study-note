@@ -1,18 +1,5 @@
 # kotlin/syntax/21 — 클래스 위임 (`by`): 상속 대신 합성 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Delegation](https://kotlinlang.org/docs/delegation.html) · [Interfaces](https://kotlinlang.org/docs/interfaces.html) · [Delegated properties](https://kotlinlang.org/docs/delegated-properties.html).
-> **실행 검증** — 이 문서의 모든 출력·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
-> `kotlinc` 8회(컴파일 실패 1벌) · `java` 6회 · `javap` 7회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
-> **버전** — `class A(b: B) : B by b` 는 **1.0** 이다. 그 뒤로 바뀐 적이 없다.
-> ★★ **경계 — `by` 라는 같은 낱말이 두 곳에 쓰인다.**\
-> **프로퍼티 위임**(`val x: String by lazy { … }`)은 [17번 주제](../17-delegated-properties/)가 **정본**이고 여기서 다시 쓰지 않는다.\
-> 여기는 **클래스 위임**(`class A : B by b`)만 다룬다 — 앞엣것은 `getValue`/`setValue` **규약**으로 풀리고, 뒤엣것은 **포워딩 메서드**로 풀린다.
-> 인터페이스와 그 기본 구현은 [20번 주제](../20-interfaces-default-impl-and-super/), `open`/`override` 는 [19번 주제](../19-inheritance-open-final-override/)가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다.
 
 | 흔들린다 | 안 흔들린다 |
@@ -675,3 +662,16 @@ class Car(n: NotEngine) : Engine by n
   ★ 대신 확장 함수는 **오버라이드가 아예 안 되므로** 문제를 없앤 것이 아니라 **다른 쪽으로 옮긴 것**이다.
 - **`by` 라는 낱말을 두 문법이 공유하는 것**이 Kotlin 의 드문 선택이다. 「이 일을 남에게 맡긴다」는 **뜻**이 같을 뿐,\
   푸는 기계는 전혀 다르다 — 한쪽은 **연산자 규약**([17번 주제](../17-delegated-properties/)), 한쪽은 **포워딩 메서드 생성**이다.
+
+## 실행 환경
+
+**기준 소스** — [Delegation](https://kotlinlang.org/docs/delegation.html) · [Interfaces](https://kotlinlang.org/docs/interfaces.html) · [Delegated properties](https://kotlinlang.org/docs/delegated-properties.html).
+**실행 검증** — 이 문서의 모든 출력·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
+`kotlinc` 8회(컴파일 실패 1벌) · `java` 6회 · `javap` 7회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
+**버전** — `class A(b: B) : B by b` 는 **1.0** 이다. 그 뒤로 바뀐 적이 없다.
+★★ **경계 — `by` 라는 같은 낱말이 두 곳에 쓰인다.**\
+**프로퍼티 위임**(`val x: String by lazy { … }`)은 [17번 주제](../17-delegated-properties/)가 **정본**이고 여기서 다시 쓰지 않는다.\
+여기는 **클래스 위임**(`class A : B by b`)만 다룬다 — 앞엣것은 `getValue`/`setValue` **규약**으로 풀리고, 뒤엣것은 **포워딩 메서드**로 풀린다.
+인터페이스와 그 기본 구현은 [20번 주제](../20-interfaces-default-impl-and-super/), `open`/`override` 는 [19번 주제](../19-inheritance-open-final-override/)가 정본이다.

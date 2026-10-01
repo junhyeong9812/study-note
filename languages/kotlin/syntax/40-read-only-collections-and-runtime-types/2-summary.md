@@ -1,17 +1,5 @@
 # kotlin/syntax/40 — 컬렉션 — 읽기 전용 인터페이스와 실제 런타임 타입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Collections overview](https://kotlinlang.org/docs/collections-overview.html)(읽기 전용 인터페이스와 가변 인터페이스의 분리 · 「Write operations with a mutable collection are still possible even if it is assigned to a `val`」) · [Collections in Java and Kotlin](https://kotlinlang.org/docs/java-to-kotlin-collections-guide.html) — 둘 다 [`../../언어-특성/README.md`](../../언어-특성/README.md) §5 가 인용한 문장을 거기서 **다시 옮기지 않고** 가리킨다.
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다. 대비 셋은 **.NET 10.0.401 의 csc** · **rustc 1.92.0** · **Python 3.12.3** 이다.\
-> `kotlinc` 4회(컴파일 실패 1벌) · `javac` 1회 · `java` 3회 · `javap` 3회 · stdlib 소스 jar 1곳 · `csc`·`dotnet` 1회씩 · `rustc` 1회(실패가 결과) · `python3` 1회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
-> **버전** — 읽기 전용/가변 인터페이스 분리는 **1.0**. 이 판에서 버전에 갈리는 칸은 없다.
-> **경계** — ★★★ **런타임 클래스 실측표는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §5 에 있다 — 여기서 다시 재지 않는다.** 그 표가 이미 말한 것: `listOf()` → `EmptyList` · `listOf("a")` → `Collections$SingletonList` · `listOf("a","b")` → `Arrays$ArrayList`(Java 에서 `add` 예외 · **`set` 성공**) · `mutableListOf(…)` 를 `List` 로 노출 → `java.util.ArrayList`(Java 에서 `add`·`set` **성공**) · Java `List.of` → `ImmutableCollections$List12`(둘 다 예외).\
-> 여기는 그 표 위에서 **「구멍을 코드로 재현하고, 연산 API 를 고르는 법」** 이다 — `언어-특성/README.md` 의 목록 표가 이 주제에 준 지시 그대로다.\
-> `List<out E>` 와 `MutableList<E>` 의 **stdlib 선언**은 [28번 주제](../28-generics-variance-in-out-star-where/) (3)이 소스 jar 에서 뽑았다. `as` 캐스트의 일반 규칙은 [33번 주제](../33-type-checks-and-casts-is-as/), `val` 이 참조만 잠그는 것은 [01번 주제](../01-val-var-and-basic-types/)가 정본이다. 자료구조 내부는 [`cs/data-structure/`](../../../../cs/data-structure/) 다.
-> ★ **짝 — Java 갈래 [40번](../../../java/syntax/40-list-set-and-immutable-factories/)**(`List.of`·`unmodifiableList`·`Arrays.asList`) — 「읽기 전용 **뷰**」(Kotlin)와 「진짜 불변 **객체**」(Java `List.of`)의 차이.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**뷰 구멍 재현 — `List` 로 받은 것을 고쳐서 원본이 바뀌나**」. 읽기 전용은 **타입의 성질**이라 컴파일러가 `add` 를 막아 주지만, 그 **밑의 객체**는 여전히 가변이다. 그 사실은 **실행으로만** 보인다 — 컴파일 에러 창(둘째)은 「막아 준 쪽」만 보여 준다.
 
 ## 이 주제가 쓰는 세 층
@@ -566,3 +554,15 @@ except TypeError as e:
 - **Set·Map 도 같은가** — 이 문서는 `List` 만 던졌다. `setOf`·`mapOf` 의 런타임 클래스는 §5 표에도 없다 — 같은 창((1)의 `is`/`as` + Java 쪽)으로 재 볼 다음 자리다.
 - **진짜 불변 컬렉션** — `kotlinx.collections.immutable` 은 stdlib 밖이고 Alpha 라는 것이 §5 의 결론이다. 이 문서는 **설치하지 않았다.**
 - **`asReversed` 에 대한 쓰기** — `MutableList.asReversed()` 는 **`MutableList`** 를 돌려준다(소스). 그 뷰에 **쓰면** 원본이 어떻게 되는지는 이 문서가 **던지지 않았다** — 읽기 쪽만 봤다.
+
+## 실행 환경
+
+**기준 소스** — [Collections overview](https://kotlinlang.org/docs/collections-overview.html)(읽기 전용 인터페이스와 가변 인터페이스의 분리 · 「Write operations with a mutable collection are still possible even if it is assigned to a `val`」) · [Collections in Java and Kotlin](https://kotlinlang.org/docs/java-to-kotlin-collections-guide.html) — 둘 다 [`../../언어-특성/README.md`](../../언어-특성/README.md) §5 가 인용한 문장을 거기서 **다시 옮기지 않고** 가리킨다.
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다. 대비 셋은 **.NET 10.0.401 의 csc** · **rustc 1.92.0** · **Python 3.12.3** 이다.\
+`kotlinc` 4회(컴파일 실패 1벌) · `javac` 1회 · `java` 3회 · `javap` 3회 · stdlib 소스 jar 1곳 · `csc`·`dotnet` 1회씩 · `rustc` 1회(실패가 결과) · `python3` 1회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
+**버전** — 읽기 전용/가변 인터페이스 분리는 **1.0**. 이 판에서 버전에 갈리는 칸은 없다.
+**경계** — ★★★ **런타임 클래스 실측표는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §5 에 있다 — 여기서 다시 재지 않는다.** 그 표가 이미 말한 것: `listOf()` → `EmptyList` · `listOf("a")` → `Collections$SingletonList` · `listOf("a","b")` → `Arrays$ArrayList`(Java 에서 `add` 예외 · **`set` 성공**) · `mutableListOf(…)` 를 `List` 로 노출 → `java.util.ArrayList`(Java 에서 `add`·`set` **성공**) · Java `List.of` → `ImmutableCollections$List12`(둘 다 예외).\
+여기는 그 표 위에서 **「구멍을 코드로 재현하고, 연산 API 를 고르는 법」** 이다 — `언어-특성/README.md` 의 목록 표가 이 주제에 준 지시 그대로다.\
+`List<out E>` 와 `MutableList<E>` 의 **stdlib 선언**은 [28번 주제](../28-generics-variance-in-out-star-where/) (3)이 소스 jar 에서 뽑았다. `as` 캐스트의 일반 규칙은 [33번 주제](../33-type-checks-and-casts-is-as/), `val` 이 참조만 잠그는 것은 [01번 주제](../01-val-var-and-basic-types/)가 정본이다. 자료구조 내부는 [`cs/data-structure/`](../../../../cs/data-structure/) 다.
+★ **짝 — Java 갈래 [40번](../../../java/syntax/40-list-set-and-immutable-factories/)**(`List.of`·`unmodifiableList`·`Arrays.asList`) — 「읽기 전용 **뷰**」(Kotlin)와 「진짜 불변 **객체**」(Java `List.of`)의 차이.

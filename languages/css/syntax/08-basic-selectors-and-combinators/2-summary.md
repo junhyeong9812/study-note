@@ -1,12 +1,5 @@
 # css/syntax/08 — 기본 선택자·조합자·속성 선택자 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Selectors Level 4](https://drafts.csswg.org/selectors-4/) 의 [§타입·전체 선택자](https://drafts.csswg.org/selectors-4/#type-selectors) · [§속성 선택자](https://drafts.csswg.org/selectors-4/#attribute-selectors) · [§조합자](https://drafts.csswg.org/selectors-4/#combinators) · [§대소문자](https://drafts.csswg.org/selectors-4/#attribute-case). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 매치 수는 **Google Chrome 151.0.7922.173** headless 에서 `document.querySelectorAll(...).length` 로 실제로 센 값이고, 규칙이 살아남았는지는 `document.styleSheets[0].cssRules` 로 확인했다. `demo` 블록 1개와 그 「바꿔 볼 것」도 브라우저에 띄워 확인했다.\
-> **WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다. **엔진은 Chrome 하나**이므로 크로스 브라우저는 Baseline 데이터로만 접지한다.
-> **버전** — CSS 에 언어 버전은 없다. Baseline(2026-09-23 에 `api.webstatus.dev` 조회): 선택자 코어 **widely**(2015-07-29 → 2018-01-29) · 속성 선택자의 `i` 플래그 **widely**(2020-01-15 → 2022-07-15) · **`s` 플래그는 limited** — Firefox 66 만 구현했고 Chrome·Safari·Edge 에는 없다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 숫자는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **선택자는 「그물」이고 명시도는 「그 그물의 힘」이다. 저울이 둘이다.**
@@ -480,3 +473,10 @@ Baseline 도 **limited**(Firefox 만)다. 값 구분이 필요하면 **속성 �
 - **`|` 하나짜리 네임스페이스 구분자**(`svg|circle`)는 `@namespace` 를 선언해야 쓸 수 있다. HTML 문서만 다루면 만날 일이 거의 없다.
 - 속성 선택자로 **폼 상태**를 고르려 하면 대개 틀린다 — `[checked]` 는 **HTML 속성**(초기값)이고, 사용자가 켠 상태는 `:checked`(프로퍼티)다.\
   *(Chrome 151 headless 실측: `checked` 를 달고 뜬 체크박스를 사용자가 끄면 `[checked]` 는 **계속 맞고** `:checked` 만 꺼진다 — [10번 주제](../10-state-and-form-pseudo-classes/2-summary.md)에 전체 출력이 있다.)*
+
+## 실행 환경
+
+**기준 소스** — [Selectors Level 4](https://drafts.csswg.org/selectors-4/) 의 [§타입·전체 선택자](https://drafts.csswg.org/selectors-4/#type-selectors) · [§속성 선택자](https://drafts.csswg.org/selectors-4/#attribute-selectors) · [§조합자](https://drafts.csswg.org/selectors-4/#combinators) · [§대소문자](https://drafts.csswg.org/selectors-4/#attribute-case). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 매치 수는 **Google Chrome 151.0.7922.173** headless 에서 `document.querySelectorAll(...).length` 로 실제로 센 값이고, 규칙이 살아남았는지는 `document.styleSheets[0].cssRules` 로 확인했다. `demo` 블록 1개와 그 「바꿔 볼 것」도 브라우저에 띄워 확인했다.\
+**WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다. **엔진은 Chrome 하나**이므로 크로스 브라우저는 Baseline 데이터로만 접지한다.
+**버전** — CSS 에 언어 버전은 없다. Baseline(2026-09-23 에 `api.webstatus.dev` 조회): 선택자 코어 **widely**(2015-07-29 → 2018-01-29) · 속성 선택자의 `i` 플래그 **widely**(2020-01-15 → 2022-07-15) · **`s` 플래그는 limited** — Firefox 66 만 구현했고 Chrome·Safari·Edge 에는 없다.

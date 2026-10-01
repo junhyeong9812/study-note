@@ -1,12 +1,5 @@
 # java/syntax/51 — `java.time` — `Instant`·`LocalDate`/`LocalDateTime`·`ZonedDateTime` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **선행** — 없다. 이어지는 주제는 [`../52-duration-period-formatter/`](../52-duration-period-formatter/)다.
-> 예측형 문항의 출력은 **Temurin JDK 21.0.5** 기준이다. 17·25 에서 갈린 것은 그 문항에 표시돼 있다.
-> 이 머신의 기본 시간대는 `Asia/Seoul`, 기본 `Locale` 은 `ko_KR` 이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -210,6 +203,12 @@ ZoneId.of("America/Asuncion").getRules().nextTransition(Instant.parse("2025-01-0
 - "매일 오전 7시" 알람을 저장한다 — 무엇을 쓰는가?
 - 6개월 뒤 뉴욕에서 열리는 회의를 저장한다 — 무엇을 쓰는가, `Instant` 로 저장하면 무엇이 위험한가?
 - `java.util.Date`·`SimpleDateFormat` 를 쓰면 안 되는 이유를 둘 들어라.
+
+## 실행 환경
+
+**선행** — 없다. 이어지는 주제는 [`../52-duration-period-formatter/`](../52-duration-period-formatter/)다.
+예측형 문항의 출력은 **Temurin JDK 21.0.5** 기준이다. 17·25 에서 갈린 것은 그 문항에 표시돼 있다.
+이 머신의 기본 시간대는 `Asia/Seoul`, 기본 `Locale` 은 `ko_KR` 이다.
 
 ## 복습 기록
 

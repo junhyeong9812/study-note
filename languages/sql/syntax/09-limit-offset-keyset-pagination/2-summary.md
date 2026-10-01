@@ -1,16 +1,5 @@
 # sql/09-LIMIT·OFFSET·FETCH FIRST 와 키셋 페이지네이션 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · SELECT · LIMIT Clause](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · LIMIT Optimization](https://dev.mysql.com/doc/refman/8.4/en/limit-optimization.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **측정 조건** — 비용 비교(3절)는 **20만 행 세션 임시 표**에 기본키 인덱스를 걸고 `EXPLAIN ANALYZE` 를 **각 3회** 돌린 것이다.\
-> 도커 컨테이너 안의 단발 측정이라 **절댓값이 아니라 자릿수와 `actual rows` 를 본다.** 임시 표는 롤백·삭제해 잔재가 없다.\
-> **버전** — `FETCH FIRST` 는 PG 에 있고 MySQL 8.4.10 에는 문법이 없다(`ERROR 1064`).\
-> **선행** — [08 ORDER BY](../08-order-by-null-position-stability/). **정렬이 결정적이지 않으면 페이지네이션은 성립하지 않는다.**
-
 ## 한눈에 — 쉽게 말하면
 
 **`OFFSET` 은 「앞의 N개를 건너뛰라」가 아니라 「앞의 N개를 만들어 놓고 버리라」다.**
@@ -635,3 +624,13 @@ SELECT ... ORDER BY <결정적 정렬 키> LIMIT <개수> [OFFSET <건너뛸 수
 - **`OFFSET` 비용의 정확한 모양은 O(offset + limit) 이다.** 페이지 번호에 비례해 선형으로 늘고, **전체를 순회하면 O(n²)** 이 된다. 「마지막 페이지가 유독 느리다」가 아니라 「페이지 번호에 비례해 느려진다」가 맞는 서술이고, 그래서 **중간 페이지에서도 이미 느리다.**
 - **키셋은 인덱스가 정렬 순서를 그대로 갖고 있어야 값이 나온다.** `ORDER BY created_at DESC, id DESC` 로 페이지를 넘긴다면 `(created_at DESC, id DESC)` 복합 인덱스가 있어야 한다. 인덱스 열 순서와 방향이 안 맞으면 **키셋을 써도 전체를 훑는다** — 계획을 한 번은 찍어 봐야 하는 이유다(목록의 [**46**](../46-index-definition-composite-partial-expression/)·[**47**](../47-when-indexes-are-used/)·[**58**](../58-explain-plan-tree/)번 주제).
 - **커서 토큰을 노출할 때의 주의** — 키셋의 「마지막 키」를 그대로 URL 에 실으면 내부 식별자가 새어 나간다. 실무에서는 정렬 키 값을 인코딩해 불투명한 커서 문자열로 만든다. **암호화가 아니라 난독화라는 점**은 분명히 해 둬야 한다 — 권한 검사는 여전히 서버가 한다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · SELECT · LIMIT Clause](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · LIMIT Optimization](https://dev.mysql.com/doc/refman/8.4/en/limit-optimization.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**측정 조건** — 비용 비교(3절)는 **20만 행 세션 임시 표**에 기본키 인덱스를 걸고 `EXPLAIN ANALYZE` 를 **각 3회** 돌린 것이다.\
+도커 컨테이너 안의 단발 측정이라 **절댓값이 아니라 자릿수와 `actual rows` 를 본다.** 임시 표는 롤백·삭제해 잔재가 없다.\
+**버전** — `FETCH FIRST` 는 PG 에 있고 MySQL 8.4.10 에는 문법이 없다(`ERROR 1064`).\
+**선행** — [08 ORDER BY](../08-order-by-null-position-stability/). **정렬이 결정적이지 않으면 페이지네이션은 성립하지 않는다.**

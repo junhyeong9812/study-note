@@ -1,12 +1,5 @@
 # js/syntax/49 — `Date` 와 Temporal: 「날짜만 쓰면 UTC, 시각을 쓰면 로컬 — 세 판은 한 글자도 같았지만 셋 다 V8 이다 · Temporal 은 Chrome 151 에만 제대로 있다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 출력은 **node v18.19.1 · v20.19.6 · Google Chrome 151** · x86-64 Linux 에서 실제로 돌려 얻은 것이고, 블록은 **전부 캡처 파일에서 조립**했다. 모든 실행은 `TZ` 를 배너나 스크립트에 **명시**했다.
-> ★★★ **세 판이 같았다는 것은 「V8 셋이 같았다」 이다** — 다른 엔진(SpiderMonkey · JavaScriptCore)은 이 머신에 없어 **못 쟀다**(9번).
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
-> `js48b-49a-parse-cell.js` + `js48b-49a-parse-grid.sh`(1번 · 8번 · 9번) · `js48b-49b-iso-looking.js` + `js48b-49z-three-runtimes.sh`(2번 · 9번) · `js48b-49c-month-numbers.js`(3번) · `js48b-49d-shared-date.js`(4번 · 11번) · `js48b-49e-new-york-transitions.js`(5번 · 10번) · `js48b-49f-temporal-presence.js` + `.sh`(6번) · `js48b-49g-temporal-behaviour.js` + `js48b-49g-temporal-compare.sh`(7번 · 10번 · 11번).
-
 ## 정답
 
 ### 1. `"2026-09-26"` 만 세 `TZ` 모두 `+0h` · `T00:00`·슬래시·영문 월·한 자리 월 넷은 **`+0h` · `-9h` · `+4h`** · `"26/09/2026"` 은 세 칸 다 `Invalid Date` · **`4 / 6`**(세 판 다) · **`0 / 18`** ★★★
@@ -258,7 +251,7 @@ lines where node20 --harmony-temporal differs from Chrome 151: 6 / 31
 ### 9. **답할 수 없다** — 세 판이 **모두 V8** 이라 「엔진마다 다른 휴리스틱」이 원리상 안 보인다 · 대신 **명세 문장**(ISO 형식 밖은 implementation-specific)과 **ISO 처럼 생긴 규격 밖 문자열을 V8 이 어떻게 받나**(2번)로 물었다 ★★★
 
 - ★★★ `0 / 18` 은 「V8 10.2 · 11.3 · Chrome 151 이 같다」까지다. 다른 엔진은 이 머신에 없어 **못 쟀다** — 그래서 2번의 `02-30 → 03-02` 같은 값은 **다른 엔진에서 `Invalid Date` 여도 명세 위반이 아니다**(명세가 may 로 열어 둔 자리). 이 문장은 명세에서 끌어낸 것이지 다른 엔진을 돌려 본 것이 아니다.
-- ★ 이것이 머리말의 「창을 바꿔 물었다」(제5의 상태)다 — 바꾼 창은 **다른 엔진의 실제 답**을 못 본다.
+- ★ 이것이 2-summary 「실행 환경」의 「창을 바꿔 물었다」(제5의 상태)다 — 바꾼 창은 **다른 엔진의 실제 답**을 못 본다.
 
 ### 10. Python `02:30;0` — **`-0500` · UTC `07:30` · 돌아오면 `03:30 EDT`** · `Date` 도 **`07:30Z` → `03:30`** · Temporal `(no option)` 도 **`03:30-04:00`** — 세 답이 같다 · 경로 — **파이썬은 값을 그대로 두고 UTC 로 갈 때** 드러나고, **`Date` 는 만드는 순간** 순간값으로 굳고, **Temporal 은 선택지(`disambiguation`)로 드러내 놓고 고르게** 한다 ★★
 
@@ -283,3 +276,11 @@ lines where node20 --harmony-temporal differs from Chrome 151: 6 / 31
 | `js48b-49h-v8-flags.sh` | ★ 플래그 설명 문자열(`in progress`) | node18 · node20 |
 
 **구현 의존 항목 — 판이 오르면 다시 돌릴 것** — ★★★ **1번의 휴리스틱 행 넷과 `Invalid Date` 행 · 2번의 규격 밖 다섯 줄**(엔진이 정한다) · **5번의 전이 시각**(tzdata 판 — 규칙이 바뀌면 칸이 움직인다) · **6번 전체**(node 가 Temporal 을 싣는 판이 오면 바뀐다) · 7번의 예외 **문구**. 명세 보장 칸(1번의 `"2026-09-26"`·`T00:00` 행 · 3번 · 4번 · 5번의 「전이 앞 오프셋」 규칙)은 판이 올라도 같아야 한다.
+
+## 실행 환경
+
+이 파일의 출력은 **node v18.19.1 · v20.19.6 · Google Chrome 151** · x86-64 Linux 에서 실제로 돌려 얻은 것이고, 블록은 **전부 캡처 파일에서 조립**했다. 모든 실행은 `TZ` 를 배너나 스크립트에 **명시**했다.
+★★★ **세 판이 같았다는 것은 「V8 셋이 같았다」 이다** — 다른 엔진(SpiderMonkey · JavaScriptCore)은 이 머신에 없어 **못 쟀다**(9번).
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
+`js48b-49a-parse-cell.js` + `js48b-49a-parse-grid.sh`(1번 · 8번 · 9번) · `js48b-49b-iso-looking.js` + `js48b-49z-three-runtimes.sh`(2번 · 9번) · `js48b-49c-month-numbers.js`(3번) · `js48b-49d-shared-date.js`(4번 · 11번) · `js48b-49e-new-york-transitions.js`(5번 · 10번) · `js48b-49f-temporal-presence.js` + `.sh`(6번) · `js48b-49g-temporal-behaviour.js` + `js48b-49g-temporal-compare.sh`(7번 · 10번 · 11번).

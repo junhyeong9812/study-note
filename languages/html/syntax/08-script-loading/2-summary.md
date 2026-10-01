@@ -1,14 +1,5 @@
 # html/syntax/08 — 스크립트 로딩: `defer`/`async`/`type=module`/`nomodule`·배치 위치 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The `script` element」](https://html.spec.whatwg.org/multipage/scripting.html#the-script-element)·[「Scripts that will execute when the document has finished parsing」](https://html.spec.whatwg.org/multipage/scripting.html#the-script-element:attr-script-defer)·[「document.write()」](https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#document.write()) 절. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **「이식성」을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. `defer` 는 20년 넘었고 `type=module`/`nomodule` 은 2017\~2018 에 자리 잡았다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★ **이 주제의 본체는 창 ② (프로브)다** — 실행 순서는 트리에도 렌더에도 안 나타나고 **로그 배열로만** 보인다. 여기에 이 주제는 **「서버 요청 로그」를 창 하나로 더 쓴다** — 「실행 안 됐다」와 「**받아 오지도 않았다**」가 그것으로만 갈린다. 창 넷의 정의는 [01번](../01-document-skeleton/2-summary.md) 의 「이 갈래의 창」 절에 있다.
-> ★★★ **이 주제에는 관찰 한계가 있다** — `--dump-dom` 이 기다려 주는 범위가 곧 이 문서가 볼 수 있는 범위다. 아래 (6) 이 그 한계를 잰다.
-
 **이 판의 Chrome**
 
 ```text
@@ -646,3 +637,13 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 `async` 에 순서를 안 주었나** — `async` 의 목적이 「**기다리지 않는 것**」이기 때문이다. 순서를 보장하려면 먼저 온 것을 **붙들고 있어야** 하는데, 그러면 `defer` 와 같아진다.
 - **`nomodule` 이 왜 필요했나** — 2017\~2018 무렵 **모듈을 아는 브라우저와 모르는 브라우저가 공존**했다. 모르는 쪽은 `type="module"` 을 **모르는 타입이라 건너뛰고**, 아는 쪽은 `nomodule` 을 건너뛴다 — **한 문서로 두 벌을 배달하는 장치**였다.
 - **`document.write` 를 왜 아예 없애지 않았나** — 옛 문서가 그것으로 돌아가기 때문이다. [03번 주제](../03-parser-and-error-recovery/2-summary.md)의 「절대 멈추지 않는다」와 같은 집안의 결정이다. 대신 **위험한 자리에서만 무시**하도록 좁혔다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The `script` element」](https://html.spec.whatwg.org/multipage/scripting.html#the-script-element)·[「Scripts that will execute when the document has finished parsing」](https://html.spec.whatwg.org/multipage/scripting.html#the-script-element:attr-script-defer)·[「document.write()」](https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#document.write()) 절. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **「이식성」을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. `defer` 는 20년 넘었고 `type=module`/`nomodule` 은 2017\~2018 에 자리 잡았다.
+
+★★ **이 주제의 본체는 창 ② (프로브)다** — 실행 순서는 트리에도 렌더에도 안 나타나고 **로그 배열로만** 보인다. 여기에 이 주제는 **「서버 요청 로그」를 창 하나로 더 쓴다** — 「실행 안 됐다」와 「**받아 오지도 않았다**」가 그것으로만 갈린다. 창 넷의 정의는 [01번](../01-document-skeleton/2-summary.md) 의 「이 갈래의 창」 절에 있다.
+★★★ **이 주제에는 관찰 한계가 있다** — `--dump-dom` 이 기다려 주는 범위가 곧 이 문서가 볼 수 있는 범위다. 본문 (6) 이 그 한계를 잰다.

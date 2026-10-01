@@ -1,12 +1,5 @@
 # go/syntax/51 — `os/signal`과 정상 종료 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [`os/signal`](https://pkg.go.dev/os/signal) 패키지 문서(「Default behavior of signals in Go programs」 · `NotifyContext`) · [`net/http.Server.Shutdown`](https://pkg.go.dev/net/http#Server.Shutdown) · `Server.Close`. **이 툴체인에서 직접 떴다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
-> ★★ 서버는 **`httptest` 가 아니라 실제 자식 프로세스**다 — 구동기(`drive.go`)가 `./server` 를 띄우고, 느린 요청(2초)이 **핸들러에 들어간 것을 서버 로그로 확인한 뒤** 신호를 보낸다. 시간으로 맞추지 않고 **로그 줄로 맞췄다.**\
-> **버전** — `Server.Shutdown`·`ErrServerClosed` 는 1.8 · `signal.NotifyContext` 는 1.16(이 툴체인의 `api/go1*.txt` — [49번 주제](../49-testing-table-driven-t-run-cleanup-and-parallel/) 「이 판」의 `tapi`) · 신호가 `context.Cause` 로 보이는 것은 이 판의 `NotifyContext` 문서가 적는다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**종료 경로 격자** — 서버 종료 방식 8(`NotifyContext`→`Shutdown(5s)` · `Shutdown(100ms)` · `Close()` · 신호 처리 없음 · `Shutdown` 을 고루틴에서 부르고 `main` 은 `Serve` 반환에서 끝냄 · `stop()` 뒤 두 번째 신호 · `stop()` 없이 두 번째 신호 · `SIGKILL`) × 관찰 4(느린 요청이 받은 것 · 종료 중 새 요청 · 서버 종료 상태 · 서버 로그 순서)」.
 마지막 줄 「**진행 중 요청이 끝까지 간 칸 2 / 8**」((1)절). ★★★ **여덟 중 둘만 `200 done` 을 받았다 — 둘 다 `main` 이 `Shutdown` 의 반환을 기다린 칸이다.**
 ★★ 짝이 되는 창은 「**셸이 본 종료 상태**」 — `143` · `0` · `137`((3)절). Go 프로그램이 돌려준 것과 셸이 **보고한** 것은 층이 다르다.
@@ -137,7 +130,7 @@ SIGINT, or SIGTERM signal causes the program to exit. A SIGQUIT, SIGILL,
 | ★★★ **종료 경로 격자 — 방식 8 × 관찰 4** | 진행 중 요청이 **끝까지 갔나** · 새 요청은 · 프로세스는 어떻게 끝났나 | ★ 본체 창 · 구동기가 자식 프로세스를 띄우고 **탭 6칸**을 찍고, 스크립트가 칸 수를 검사해 `200` 칸을 센다 |
 | ★★ **서버 로그 순서** | `Shutdown` 이 **언제 돌아오나** · `Serve` 가 **언제 돌아오나** | 격자의 마지막 칸 |
 | ★★ **셸이 본 종료 상태** | `143`·`0`·`137` | (3)절 `t51shell` |
-| ★ **문서** | 계약의 문장 | 머리말 `t51doc` |
+| ★ **문서** | 계약의 문장 | 「이 판」 절 `t51doc` |
 | ★★ **제5의 상태 — 「기준만 다른 것」** | ★★★ **`E` 칸의 서버 종료는 `exit 0`** 이고 로그도 `Serve returned: http: Server closed` 로 **정상처럼 끝난다** — 틀린 게 없어 보인다. 그런데 **느린 요청은 `EOF`** 다. 「정상 종료했나」를 **서버의 종료 코드로 물으면 예**, **요청의 운명으로 물으면 아니오**다. ★ `B` 칸은 반대로 `exit 1` 로 **실패를 드러낸다** — 기한을 넘긴 걸 알린다 | (1)절 |
 | **대신 쓴 창 — 연결 상태 훅** | 47번은 서버의 `ConnState` 로 연결을 셌다. 여기서는 **클라이언트가 받은 본문(`200 done`)과 서버 로그의 `handler: end`** 두 창으로 「끝까지 갔나」를 물었다 — 둘이 **여덟 칸 모두 일치**했다(`200` 인 칸에만 `handler: end` 가 있다) | (1)절 |
 | **부적용 — 시간** | ★★ **종료에 몇 ms 걸렸나는 재지 않았다** — 순서만 | 규칙 4 · 기한 잡기는 ops-patterns 19 |
@@ -533,3 +526,10 @@ H	-mode shutdown	EOF	-	신호로 죽음(killed)	handler: start
 - ★ **`Server.RegisterOnShutdown`** — `Shutdown` 때 부를 함수를 건다(하이재킹 연결 알림용). 돌리지 않았다.
 - ★ **`BaseContext`** — 모든 요청 `ctx` 의 부모를 정한다. 여기에 신호 `ctx` 를 주면 신호가 **핸들러의 `r.Context()` 까지** 취소한다 — 대신 진행 중 요청이 **취소 신호를 받는다**(마무리와 반대 방향). 돌리지 않았다.
 - ★ C 의 시그널 핸들러는 **async-signal-safe 함수만** 부를 수 있다 — Go 는 런타임이 신호를 받아 **채널로** 넘기므로(`signal.Notify` 문서) 사용자 코드가 핸들러 문맥에서 돌지 않는다 — 이 문서는 C 쪽을 돌리지 않았다. C 갈래에는 시그널 주제 폴더가 아직 없다.
+
+## 실행 환경
+
+**기준 소스** — [`os/signal`](https://pkg.go.dev/os/signal) 패키지 문서(「Default behavior of signals in Go programs」 · `NotifyContext`) · [`net/http.Server.Shutdown`](https://pkg.go.dev/net/http#Server.Shutdown) · `Server.Close`. **이 툴체인에서 직접 떴다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
+★★ 서버는 **`httptest` 가 아니라 실제 자식 프로세스**다 — 구동기(`drive.go`)가 `./server` 를 띄우고, 느린 요청(2초)이 **핸들러에 들어간 것을 서버 로그로 확인한 뒤** 신호를 보낸다. 시간으로 맞추지 않고 **로그 줄로 맞췄다.**\
+**버전** — `Server.Shutdown`·`ErrServerClosed` 는 1.8 · `signal.NotifyContext` 는 1.16(이 툴체인의 `api/go1*.txt` — [49번 주제](../49-testing-table-driven-t-run-cleanup-and-parallel/) 「이 판」의 `tapi`) · 신호가 `context.Cause` 로 보이는 것은 이 판의 `NotifyContext` 문서가 적는다.

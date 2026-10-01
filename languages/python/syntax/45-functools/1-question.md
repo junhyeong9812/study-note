@@ -1,17 +1,5 @@
 # python/syntax/45-functools — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★★★ 2번은 **줄마다 `True`/`False`** 와 `cache_info()` 의 네 수까지 적어야 맞은 것이다.
-> ★★ 이 주제는 **속도·메모리 바이트를 묻지 않는다** — 한 번도 재지 않았다. 묻는 것은 **몸통 실행 수·적중 수·회수 여부**다.
->
-> 실행 환경: `python3` **3.12.3** · Linux(9번은 `python3.11` 3.11.15 도 함께). 던지는 형태는 `python3 - <파일` 로 고정했다.
-> ★ 선행 — [24](../24-decorators/1-question.md)(데코레이터·`wraps`) · [30](../30-repr-eq-hash-contracts/1-question.md)(해시 계약) · [12](../12-dict-and-key-requirements/1-question.md)(사전 키) · [33](../33-property-descriptor-slots/1-question.md)(디스크립터).
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -400,6 +388,14 @@ except TypeError as ex:
 
 * ★ [12번](../12-dict-and-key-requirements/2-summary.md)의 「`1`·`1.0`·`True` 는 한 칸」과 3번의 결과는 **어디서 갈리나** — 둘 다 사전을 쓰는데 왜 다른가?
 * ★ [24번](../24-decorators/2-summary.md)의 `__wrapped__` 는 1번 `[4]` 에서 **몸통을 몇 번** 돌렸나 — 캐시를 완전히 건너뛰었다고 말할 수 있나?
+
+## 실행 환경
+
+★★★ 2번은 **줄마다 `True`/`False`** 와 `cache_info()` 의 네 수까지 적어야 맞은 것이다.
+★★ 이 주제는 **속도·메모리 바이트를 묻지 않는다** — 한 번도 재지 않았다. 묻는 것은 **몸통 실행 수·적중 수·회수 여부**다.
+
+실행 환경: `python3` **3.12.3** · Linux(9번은 `python3.11` 3.11.15 도 함께). 던지는 형태는 `python3 - <파일` 로 고정했다.
+★ 선행 — [24](../24-decorators/1-question.md)(데코레이터·`wraps`) · [30](../30-repr-eq-hash-contracts/1-question.md)(해시 계약) · [12](../12-dict-and-key-requirements/1-question.md)(사전 키) · [33](../33-property-descriptor-slots/1-question.md)(디스크립터).
 
 ## 복습 기록
 

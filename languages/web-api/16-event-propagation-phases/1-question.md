@@ -1,12 +1,5 @@
 # web-api/16 — 전파 3단계: 캡처·타깃·버블과 `target` 대 `currentTarget` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 리스너를 달고 떼는 한 줄은 [15번 주제](../15-listener-registration/1-question.md), 전파를 **멈추는 것**은 [17번 주제](../17-stoppropagation-vs-preventdefault/1-question.md), 그림자 경계의 재타기팅은 [12번 주제](../12-shadow-dom/1-question.md)가 정본이다. 여기는 **경로와 세 단계**만 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 DOM·HTML 명세 문장이다. 이식성은 주장 범위 밖이다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -156,6 +149,12 @@ const 아이 = document.createElement('span');
 - [17번 주제](../17-stoppropagation-vs-preventdefault/1-question.md)의 `stopPropagation` 은 이 편의 경로에서 **무엇을 끊나**?
 - [18번 주제](../18-event-delegation/1-question.md)의 위임은 이 편의 어느 단계에 기대나? 문항 4의 격자가 위임에 무엇을 경고하나?
 - 리스너의 `this` 는 JS 갈래 [07번 주제](../../js/syntax/07-this-binding-four-rules/1-question.md)의 네 규칙 중 **어디에** 속하나?
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — 리스너를 달고 떼는 한 줄은 [15번 주제](../15-listener-registration/1-question.md), 전파를 **멈추는 것**은 [17번 주제](../17-stoppropagation-vs-preventdefault/1-question.md), 그림자 경계의 재타기팅은 [12번 주제](../12-shadow-dom/1-question.md)가 정본이다. 여기는 **경로와 세 단계**만 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 DOM·HTML 명세 문장이다. 이식성은 주장 범위 밖이다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

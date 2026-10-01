@@ -1,14 +1,5 @@
 # js/syntax/39 — `async`/`await`: 「늘 프라미스 · 첫 `await` 까지 지금 · `await` 마다 틱 · 시작 순서가 병렬을 정한다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · Python 3.12 · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다.
-> ★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical` · 4번의 `2 / 2`).
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(7번 · 8번 · 9번은 [2-summary.md](2-summary.md) 동작 (7)·(8)·(9)).
-> `js36b-39a-async-basics.js`(1번 · 2번 · 10번) · `js36b-39b-seq-vs-par.js`(3번 · 11번) · `js36b-39-h-early-reject.js` + `js36b-39c-early-reject.sh`(4번) ·
-> `js36b-39d-foreach.js`(5번) · `js36b-39e-return-await.js`(6번) · `js36b-39-h-tla.mjs` + `js36b-39f-top-level-await.sh`(7번) · `js36b-39g-generator-runner.js`(8번) · `js36b-39h-python-contrast.sh`(9번).
-
 ## 정답
 
 ### 1. 넷 다 **`returned` · `a Promise` · `inner` 와 다른 객체** — `throw` 도 **거부된 프라미스** · `[2]` 는 **`f: line 1 > f: line 2` 가 `caller: after f()` 앞** ★★★
@@ -273,3 +264,13 @@ node18 vs node20: identical 13 · differs 0   ·   node20 vs Chrome 151: identic
 - ★★ **4번의 보고와 종료 코드** — node 의 모드(37번). 판이 오르면 다시 돌린다.
 - ★★ **모듈 판정**(`--input-type` · `.mjs`) — node 의 것이다. node 판이 모듈 판정 규칙을 바꾸면 7번을 다시 돌린다.
 - ★ 예외 문구 — `await is only valid in async functions and the top level bodies of modules`.
+
+## 실행 환경
+
+이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · Python 3.12 · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다.
+★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical` · 4번의 `2 / 2`).
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(7번 · 8번 · 9번은 [2-summary.md](2-summary.md) 동작 (7)·(8)·(9)).
+`js36b-39a-async-basics.js`(1번 · 2번 · 10번) · `js36b-39b-seq-vs-par.js`(3번 · 11번) · `js36b-39-h-early-reject.js` + `js36b-39c-early-reject.sh`(4번) ·
+`js36b-39d-foreach.js`(5번) · `js36b-39e-return-await.js`(6번) · `js36b-39-h-tla.mjs` + `js36b-39f-top-level-await.sh`(7번) · `js36b-39g-generator-runner.js`(8번) · `js36b-39h-python-contrast.sh`(9번).

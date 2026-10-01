@@ -1,11 +1,5 @@
 # ts/syntax/40 — `strictNullChecks` 의 파급 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [TSConfig — `strictNullChecks`](https://www.typescriptlang.org/tsconfig/#strictNullChecks)(「When `strictNullChecks` is `false`, `null` and `undefined` are effectively ignored by the language. This can lead to unexpected errors at runtime.」 · 「When … `true`, `null` and `undefined` have their own distinct types」).
-> 위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다.
-> ★ 레퍼런스의 「unexpected errors at runtime」을 **이 문서가 격자로 셌다**(1절) — 여섯 탐침 중 몇이 실제로 터지나.
-> **실행 검증** — 본판은 아래다.
-
 ```text
 ===== tsc --version · node --version · "$NODE20" --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -20,7 +14,6 @@ Python 3.12.3
 > ★★★ **40 은 12 와 39 에서 온다.** [**12번 주제**](../12-narrowing/) 5절이 「`--strict false` 로 좁히기 탐침 네 파일 중 셋이 갈린다」 · 「끄면 진단이 줄 뿐 버그가 주는 것은 아니다」를 **이미 쟀다.** [**39번 주제**](../39-strict-bundle/)가 `strictNullChecks` 를 **다른 하위 플래그가 기대는 축**으로 세웠다. [**30번 주제**](../30-type-assertions-and-non-null/) 2절이 **`!` 가 방출에서 지워지는 것**을 쟀다 — 인용한다.
 > ★ 소스 펜스 첫 줄 `// 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -322,7 +315,7 @@ absorb40.ts(8,7): error TS2322: Type 'number' is not assignable to type 'symbol'
 - ★★★ **켬** — 1·2·3행의 대입이 **`TS2322` 넷**(「Type 'null' is not assignable to type 'number'.」 · `'undefined'` → `'string'` · 배열 원소 둘).
 - ★★★ **끔** — 1·2·3행이 **통과**했다. `null`·`undefined` 가 `number`·`string` 에 **들어간다.** 레퍼런스의 「effectively ignored by the language」다.
 - ★★★ **`symbol` 탐침**(6·7·8행) — 켬 **`number | null`** · **`string | undefined`** · **`number | undefined`** → 끔 **`number`** · **`string`** · **`number`**. 유니온의 `null`·`undefined` 가 **흡수되어 사라졌다.** 12편 5절의 「`object | null` 이 그냥 `object`」와 같은 칸이다.
-- ★★★ **10행 `const p4: null = u`**(`u: undefined`) — 켬 `TS2322`, 끔 **진단 없음.** 끈 판에서 `null` 타입이 `undefined` 를 **받아 버린다** — 그래서 이 문서는 `null` 탐침 대신 **`symbol` 탐침**을 쓴다(머리말의 제5의 상태).
+- ★★★ **10행 `const p4: null = u`**(`u: undefined`) — 켬 `TS2322`, 끔 **진단 없음.** 끈 판에서 `null` 타입이 `undefined` 를 **받아 버린다** — 그래서 이 문서는 `null` 탐침 대신 **`symbol` 탐침**을 쓴다(맨 위 부분의 제5의 상태).
 
 ```text
   한 타입의 원소 — 스위치 두 판
@@ -542,3 +535,10 @@ catch (e) {
 - **진짜 브라우저의 `querySelector`** — 이 문서는 대역으로 돌렸다. 헤드리스 브라우저로 **던지지 않았다.**
 - **`strictNullChecks` 를 끈 채 쓴 `.d.ts` 를 켠 프로젝트가 읽으면** — `null` 을 적지 않은 선언이 켠 판에서 「비어 있을 수 없음」으로 읽힌다. 37편 2절의 거짓말과 같은 모양일 것으로 읽히지만 **던지지 않았다.**
 - **`NonNullable<T>`·타입 술어로 좁히기** — [**13번 주제**](../13-type-guards-and-predicates/)(타입 가드)가 정본이다.
+
+## 실행 환경
+
+**기준 소스** — [TSConfig — `strictNullChecks`](https://www.typescriptlang.org/tsconfig/#strictNullChecks)(「When `strictNullChecks` is `false`, `null` and `undefined` are effectively ignored by the language. This can lead to unexpected errors at runtime.」 · 「When … `true`, `null` and `undefined` have their own distinct types」).
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다.
+★ 레퍼런스의 「unexpected errors at runtime」을 **이 문서가 격자로 셌다**(1절) — 여섯 탐침 중 몇이 실제로 터지나.
+**실행 검증** — 본판은 맨 위 블록이다.

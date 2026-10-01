@@ -1,8 +1,5 @@
 # 컴파일 타임과 두 개의 런타임 — 제네릭 정보는 어디에 살아 있는가
 
-> 이 3층 구분을 실제로 구현하는 스프링 실구조(ResolvableType·SerializableTypeWrapper·
-> TypeDescriptor)는 [reflection-type-metadata-layer.md](../reflection-type-metadata-layer/reflection-type-metadata-layer.md) 참조.
-
 ## 0. 정향
 
 이 문서는 PR #36913(Optional 변환 판별) 작업 중에 드러난 개념 공백을 메우기 위해 쓴다.

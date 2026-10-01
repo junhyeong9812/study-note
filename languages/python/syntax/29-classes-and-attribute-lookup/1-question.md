@@ -1,22 +1,5 @@
 # python/syntax/29-classes-and-attribute-lookup — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★★ 이 주제에서는 **「어느 칸에서 나온 답인가」가 물음의 전부다.**
-> 값만 맞히고 칸을 못 대면 반만 맞은 것이다 — `vars(obj)` 와 `Cls.__dict__` 를 **갈라서** 적어라.
-> ★ 이 주제의 블록에는 **트레이스백이 한 줄도 없다.** 던진 예외 셋을 전부 `except` 로 잡아
-> **타입과 메시지만** 찍었기 때문이다. 그래서 줄 번호를 외울 필요가 없다.
-> ★ **주소(`0x…`)와 `id()` 는 한 번도 안 찍었다.** 예측에 주소가 필요한 문항은 없다.
->
-> 실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
-> ★ **이 주제는 [01번](../01-object-and-name-binding/1-question.md)·[03번](../03-mutability-and-copying/1-question.md)·[20번](../20-mutable-default-args/1-question.md)·[21번](../21-scope-legb-global-nonlocal/1-question.md)을 쓴다.**
-> 막히면 그 넷 중 어느 것이 안 잡힌 것인지부터 짚어라.
-> ★ **이 사슬은 29 → [30](../30-repr-eq-hash-contracts/1-question.md) → [31](../31-comparison-protocol-and-sortability/1-question.md) → [32](../32-container-protocol/1-question.md)** 로 이어지고, **여기가 첫째**다.
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -365,6 +348,17 @@ print("   Child.extra ->", c.extra)
 - `property`·디스크립터·`__slots__` 의 **정본**은 어느 주제인가? 여기서는 왜 그 일부만 다루나?
 - ★ 이 주제의 「**특수 메서드는 클래스 칸에서 찾는다**」가 사슬의 다음 셋에서 각각 무엇으로 이어지는가?
 
+## 실행 환경
+
+★★ 이 주제에서는 **「어느 칸에서 나온 답인가」가 물음의 전부다.**
+값만 맞히고 칸을 못 대면 반만 맞은 것이다 — `vars(obj)` 와 `Cls.__dict__` 를 **갈라서** 적어라.
+★ 이 주제의 블록에는 **트레이스백이 한 줄도 없다.** 던진 예외 셋을 전부 `except` 로 잡아
+**타입과 메시지만** 찍었기 때문이다. 그래서 줄 번호를 외울 필요가 없다.
+★ **주소(`0x…`)와 `id()` 는 한 번도 안 찍었다.** 예측에 주소가 필요한 문항은 없다.
+
+실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
+★ **이 주제는 [01번](../01-object-and-name-binding/1-question.md)·[03번](../03-mutability-and-copying/1-question.md)·[20번](../20-mutable-default-args/1-question.md)·[21번](../21-scope-legb-global-nonlocal/1-question.md)을 쓴다.**
+
 ## 복습 기록
 
 | 날짜 | 결과 | 틀린 질문 | 다음 복습 |
@@ -375,3 +369,7 @@ print("   Child.extra ->", c.extra)
 
 > 채점 기준 — **값을 맞혔더라도 「어느 칸에서 나온 답인가」를 못 대면 틀린 것으로 적는다.**
 > 이 주제의 인출 목표가 값이 아니라 **경로**이기 때문이다.
+
+---
+
+★ **이 사슬은 29 → [30](../30-repr-eq-hash-contracts/1-question.md) → [31](../31-comparison-protocol-and-sortability/1-question.md) → [32](../32-container-protocol/1-question.md)** 로 이어지고, **여기가 첫째**다.

@@ -1,15 +1,5 @@
 # css/syntax/49 — `clip-path` 와 `mask` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Masking Module Level 1](https://drafts.csswg.org/css-masking-1/) (`clip-path`·`mask-*`·`<geometry-box>` 의 정본) · [CSS Shapes Level 1](https://drafts.csswg.org/css-shapes-1/#basic-shape-functions) (`inset`·`circle`·`ellipse`·`polygon`·`path` 도형 함수). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 모든 수치를 **Google Chrome 151.0.7922.173** headless 에서 실제로 렌더해 확인했다.\
-> ★ **이 주제는 `getComputedStyle` 로 거의 아무것도 증명하지 못한다.** `mask-image: url(#nope)` 는 계산값이 멀쩡한데 **요소가 통째로 사라진다**(아래 「진단 3창」).\
-> 그래서 **스크린샷 PNG 를 파이썬 표준 라이브러리(`zlib`)로 디코드해 좌표별 `(r,g,b)` 를 읽는 것**이 주 근거다 — **잘린 자리가 페이지 배경색으로 돌아오는지**로 판정한다. 이벤트는 `document.elementFromPoint()` 로 확인했다.
-> **버전** — CSS 에 언어 버전이 없으므로 Baseline 으로 읽는다. webstatus.dev 조회(2026-09-23): `clip-path` **widely**(2021-01-21 → 2023-07-21) · `masks`(Masks) **widely**(2023-12-07 → 2026-06-07, Chrome 120·Firefox 53·Safari 15.4).
-> **여기서 다루지 않는 것** — **모서리 넷을 깎는 것**(`border-radius`)은 [46번](../46-borders-radius-outline-shadow/2-summary.md)이 정본이다. 여기는 그것을 **임의의 도형으로 일반화한 것**부터다.\
-> 그라디언트 자체는 [목록의 **45번 주제**](../45-gradients-and-interpolation/), 배경 레이어 규칙(`mask-size`·`mask-repeat` 이 그대로 따르는 것)은 **44번 주제**, 쌓임 맥락은 **22번 주제**, `filter` 는 [47번](../47-filter-and-backdrop-filter/2-summary.md), 혼합·격리는 [48번](../48-blend-modes-and-isolation/2-summary.md)이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **둘 다 「어디를 보이게 할지」를 정하는 도구인데, 가위와 스텐실로 갈린다.**
@@ -546,3 +536,13 @@
 - **`clip-path` 애니메이션** — 같은 함수·같은 꼭짓점 수끼리만 보간된다. `polygon` 끼리 꼭짓점 수가 다르면 전환이 안 된다([52번](../52-transition/2-summary.md)).
 - **`clip` 속성(옛것)** — `rect()` 만 되고 `position: absolute` 에만 걸리던 폐기 대상. 오늘은 `clip-path` 를 쓴다.
 - **성능** — 마스크는 별도 레이어와 알파 합성을 부른다. 큰 면적에 애니메이션과 함께 쓰면 비싸다. 이 문서는 성능을 측정하지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Masking Module Level 1](https://drafts.csswg.org/css-masking-1/) (`clip-path`·`mask-*`·`<geometry-box>` 의 정본) · [CSS Shapes Level 1](https://drafts.csswg.org/css-shapes-1/#basic-shape-functions) (`inset`·`circle`·`ellipse`·`polygon`·`path` 도형 함수). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 모든 수치를 **Google Chrome 151.0.7922.173** headless 에서 실제로 렌더해 확인했다.\
+★ **이 주제는 `getComputedStyle` 로 거의 아무것도 증명하지 못한다.** `mask-image: url(#nope)` 는 계산값이 멀쩡한데 **요소가 통째로 사라진다**(본문 「진단 3창」).\
+그래서 **스크린샷 PNG 를 파이썬 표준 라이브러리(`zlib`)로 디코드해 좌표별 `(r,g,b)` 를 읽는 것**이 주 근거다 — **잘린 자리가 페이지 배경색으로 돌아오는지**로 판정한다. 이벤트는 `document.elementFromPoint()` 로 확인했다.
+**버전** — CSS 에 언어 버전이 없으므로 Baseline 으로 읽는다. webstatus.dev 조회(2026-09-23): `clip-path` **widely**(2021-01-21 → 2023-07-21) · `masks`(Masks) **widely**(2023-12-07 → 2026-06-07, Chrome 120·Firefox 53·Safari 15.4).
+**여기서 다루지 않는 것** — **모서리 넷을 깎는 것**(`border-radius`)은 [46번](../46-borders-radius-outline-shadow/2-summary.md)이 정본이다. 여기는 그것을 **임의의 도형으로 일반화한 것**부터다.\
+그라디언트 자체는 [목록의 **45번 주제**](../45-gradients-and-interpolation/), 배경 레이어 규칙(`mask-size`·`mask-repeat` 이 그대로 따르는 것)은 **44번 주제**, 쌓임 맥락은 **22번 주제**, `filter` 는 [47번](../47-filter-and-backdrop-filter/2-summary.md), 혼합·격리는 [48번](../48-blend-modes-and-isolation/2-summary.md)이다.

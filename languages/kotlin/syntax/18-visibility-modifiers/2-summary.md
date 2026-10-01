@@ -1,17 +1,5 @@
 # kotlin/syntax/18 — 가시성 수식어: `internal` 이 Java 에 없는 이유 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Visibility modifiers](https://kotlinlang.org/docs/visibility-modifiers.html) · [Calling Kotlin from Java — Name mangling](https://kotlinlang.org/docs/java-to-kotlin-interop.html) · [Kotlin compiler options](https://kotlinlang.org/docs/compiler-reference.html).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
-> `kotlinc` 13회(컴파일 실패 6벌) · `javac` 1회 · `java` 5회 · `javap` 3회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
-> **버전** — `public`·`private`·`protected`·`internal` 네 수식어와 이름 뭉개기는 전부 **1.0** 이다. 그 뒤로 바뀐 적이 없다.
-> **경계** — 클래스 선언·생성자는 [15번 주제](../15-class-declaration-constructors-and-init/), 프로퍼티의 backing field 는 [16번 주제](../16-properties-backing-field-lateinit-const/),\
-> `open`/`override` 는 [19번 주제](../19-inheritance-open-final-override/), Java 상호운용 애너테이션 전반은 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이다.\
-> Java 쪽 짝은 [`../../../java/syntax/10-access-modifiers/`](../../../java/syntax/10-access-modifiers/) — 거기는 **네 단계(`public`/`protected`/package-private/`private`)**, 여기는 **그 자리에 `internal` 을 끼운 결과**다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다.
 
 | 흔들린다 | 안 흔들린다 |
@@ -530,3 +518,15 @@ fun outside(b: Box2) = b.hidden
 - **`internal` 을 Java 에서 못 부르게 하고 싶다면** 가시성으로는 안 된다. 모듈을 **JPMS(Java Platform Module System)** 로 나누거나, 아티팩트를 아예 분리하거나, `@RequiresOptIn` 으로 「**부르면 경고·에러가 나는 표식**」을 붙이는 쪽이 현실적이다.
 - **뭉개기가 하는 진짜 일은 「충돌 방지」에 가깝다.** 두 모듈이 같은 시그니처의 `internal` 멤버를 각각 상속 계층에 넣어도 이름이 달라 안 부딪친다.
 - **가시성은 오버라이드에서 한 방향으로만 움직인다** — 상위의 `protected` 를 하위에서 `public` 으로 넓히는 것은 되고, `public` 을 `protected` 로 좁히는 것은 안 된다(자세한 것은 [19번 주제](../19-inheritance-open-final-override/)).
+
+## 실행 환경
+
+**기준 소스** — [Visibility modifiers](https://kotlinlang.org/docs/visibility-modifiers.html) · [Calling Kotlin from Java — Name mangling](https://kotlinlang.org/docs/java-to-kotlin-interop.html) · [Kotlin compiler options](https://kotlinlang.org/docs/compiler-reference.html).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
+`kotlinc` 13회(컴파일 실패 6벌) · `javac` 1회 · `java` 5회 · `javap` 3회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
+**버전** — `public`·`private`·`protected`·`internal` 네 수식어와 이름 뭉개기는 전부 **1.0** 이다. 그 뒤로 바뀐 적이 없다.
+**경계** — 클래스 선언·생성자는 [15번 주제](../15-class-declaration-constructors-and-init/), 프로퍼티의 backing field 는 [16번 주제](../16-properties-backing-field-lateinit-const/),\
+`open`/`override` 는 [19번 주제](../19-inheritance-open-final-override/), Java 상호운용 애너테이션 전반은 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이다.\
+Java 쪽 짝은 [`../../../java/syntax/10-access-modifiers/`](../../../java/syntax/10-access-modifiers/) — 거기는 **네 단계(`public`/`protected`/package-private/`private`)**, 여기는 **그 자리에 `internal` 을 끼운 결과**다.

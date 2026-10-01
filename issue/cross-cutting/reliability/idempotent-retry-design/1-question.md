@@ -1,10 +1,5 @@
 # issue/cross-cutting/reliability/idempotent-retry-design — 재시도가 복구가 되려면: 멱등 연산과 성공 후 전진 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. 멱등(idempotent) 연산이란 무엇인가. 재생(replay)될 수 있는 입력을 "이벤트마다 append"로 저장하면 무엇이 깨지나. 같은 입력을 멱등하게 저장하는 방법 두 가지는?
 2. exactly-once 전달을 위해 원장(claim/release/축출)을 만들었더니 리뷰마다 새 경쟁 버그가 나왔다. 취소할 수 없는 부작용 위에 타임아웃 + 재시도를 얹으면 왜 exactly-once가 계속 깨지나. 어떤 조건이면 at-least-once로 요구를 낮추는 게 옳은가.

@@ -1,8 +1,5 @@
 # domain-modeling-basic 인덱스
 
-> myway 연습 프로젝트와 1:1 대응하는 노트 컬렉션이다. **진행 기록(원본 경로·진도)은 [project/myway/README.md](../../../project/myway/README.md)** 에 있고,
-> 커리큘럼상 위치·상태는 [domain-modeling 커리큘럼](../../domain-modeling/curriculum.md) 에서 본다(2026-09-28 cs 재편).
-
 | 챕터 |
 |------|
 | [01-parking-fee](01-parking-fee/) |
@@ -35,3 +32,8 @@
 | [28-friend-suggestion](28-friend-suggestion/) |
 | [29-transfer-fare](29-transfer-fare/) |
 | [30-dispatch](30-dispatch/) |
+
+---
+
+myway 연습 프로젝트와 1:1 대응하는 노트 컬렉션이다. **진행 기록(원본 경로·진도)은 [project/myway/README.md](../../../project/myway/README.md)** 에 있고,
+커리큘럼상 위치·상태는 [domain-modeling 커리큘럼](../../domain-modeling/curriculum.md) 에서 본다(2026-09-28 cs 재편).

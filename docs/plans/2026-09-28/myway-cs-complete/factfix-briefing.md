@@ -1,10 +1,5 @@
 # 사실 점검·수정 브리핑 — myway 5 cs 주제 (2026-09-28)
 
-> 배경: 150편에 통일 골격을 보강했다(`briefing.md`). 표본 24편을 사실 검증했더니 모든 컬렉션에서 같은 유형의 오류가 2건 이상 나왔다 → 명세 V5 규칙에 따라 **전수 점검**으로 승격했다.
-> 표본 검증 원문:
-> - `factcheck-codex-sample.md` — codex 12편
-> - `factcheck-opus-sample.md` — Opus 12편, 있으면 참고
-
 ## 1. 대상과 기준
 
 - 대상: 담당 범위 노트 폴더의 `2-summary.md`·`1-question.md`·`3-answer.md`

@@ -1,15 +1,5 @@
 # css/syntax/48 — 혼합 모드와 `isolation` — `mix-blend-mode`·`background-blend-mode` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Compositing and Blending Level 1](https://drafts.fxtf.org/compositing-1/) (`mix-blend-mode`·`background-blend-mode`·`isolation` 과 **혼합 공식**의 정본). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 본문의 모든 수치를 **Google Chrome 151.0.7922.173** headless 에서 실제로 렌더해 확인했다.\
-> ★ **이 주제는 `getComputedStyle` 로 아무것도 증명하지 못한다.** `mix-blend-mode: multiply` 가 계산값으로 돌아와도 **실제로 섞였는지**는 다른 이야기다(격리되면 안 섞인다).\
-> 그래서 **스크린샷 PNG 를 파이썬 표준 라이브러리(`zlib`)로 디코드해 좌표별 `(r,g,b)` 를 읽고, 그 값을 명세의 공식과 대조하는 것**이 주 근거다.
-> **버전** — CSS 에 언어 버전이 없으므로 Baseline 으로 읽는다. webstatus.dev 조회(2026-09-23): `mix-blend-mode`·`background-blend-mode`·`isolation` 셋 다 **widely**(2020-01-15 → 2022-07-15).
-> **여기서 다루지 않는 것** — **쌓임 맥락 자체**는 [목록의 **22번 주제**](../22-stacking-context-and-z-index/)가 정본이다. 여기는 「쌓임 맥락을 만드는 것이 곧 격리다」까지만 쓴다.\
-> `filter` 가 쌓임 맥락과 backdrop root 를 만드는 것은 [47번](../47-filter-and-backdrop-filter/2-summary.md), 배경 레이어가 쌓이는 규칙은 [목록의 **44번 주제**](../44-backgrounds-and-object-fit/), 색 표기는 **42번 주제**, 그라디언트는 **45번 주제**, `transform` 은 **54번 주제**다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **투명 필름 두 장을 겹쳐 빛에 비춰 보는 것이다. 「어떻게 겹칠지」를 고르는 손잡이가 혼합 모드다.**
@@ -480,3 +470,13 @@ backdrop `#3399cc` = `(51,153,204)`, source `#cc6633` = `(204,102,51)` 로 12 �
 - **분리 불가 모드 넷** — `hue`·`saturation`·`color`·`luminosity`. 「원본의 밝기는 두고 색만 바꾸기」에 쓴다. 이 문서는 재지 않았다.
 - **혼합과 성능** — 혼합은 뒤쪽을 읽어야 하므로 별도 레이어와 읽기 비용이 생긴다. 큰 면적에 애니메이션과 함께 쓰면 비싸다. 이 문서는 성능을 측정하지 않았다.
 - **`color-interpolation`** — 혼합·보간이 어느 색 공간에서 일어나는지를 정하는 축. 이 문서는 기본값에서만 쟀다.
+
+## 실행 환경
+
+**기준 소스** — [Compositing and Blending Level 1](https://drafts.fxtf.org/compositing-1/) (`mix-blend-mode`·`background-blend-mode`·`isolation` 과 **혼합 공식**의 정본). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 본문의 모든 수치를 **Google Chrome 151.0.7922.173** headless 에서 실제로 렌더해 확인했다.\
+★ **이 주제는 `getComputedStyle` 로 아무것도 증명하지 못한다.** `mix-blend-mode: multiply` 가 계산값으로 돌아와도 **실제로 섞였는지**는 다른 이야기다(격리되면 안 섞인다).\
+그래서 **스크린샷 PNG 를 파이썬 표준 라이브러리(`zlib`)로 디코드해 좌표별 `(r,g,b)` 를 읽고, 그 값을 명세의 공식과 대조하는 것**이 주 근거다.
+**버전** — CSS 에 언어 버전이 없으므로 Baseline 으로 읽는다. webstatus.dev 조회(2026-09-23): `mix-blend-mode`·`background-blend-mode`·`isolation` 셋 다 **widely**(2020-01-15 → 2022-07-15).
+**여기서 다루지 않는 것** — **쌓임 맥락 자체**는 [목록의 **22번 주제**](../22-stacking-context-and-z-index/)가 정본이다. 여기는 「쌓임 맥락을 만드는 것이 곧 격리다」까지만 쓴다.\
+`filter` 가 쌓임 맥락과 backdrop root 를 만드는 것은 [47번](../47-filter-and-backdrop-filter/2-summary.md), 배경 레이어가 쌓이는 규칙은 [목록의 **44번 주제**](../44-backgrounds-and-object-fit/), 색 표기는 **42번 주제**, 그라디언트는 **45번 주제**, `transform` 은 **54번 주제**다.

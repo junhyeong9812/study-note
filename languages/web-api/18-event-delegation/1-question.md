@@ -1,12 +1,5 @@
 # web-api/18 — 이벤트 위임: 조상 하나로 자손 전체 받기·`closest()` 로 되찾기 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 버블 단계는 [16번 주제](../16-event-propagation-phases/1-question.md), `stopPropagation` 은 [17번 주제](../17-stoppropagation-vs-preventdefault/1-question.md), 재타기팅은 [12번 주제](../12-shadow-dom/1-question.md)가 정본이다. 여기는 **조상 하나로 받고 되찾는 것**만 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 DOM 명세 문장이다. 이식성은 주장 범위 밖이다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -149,6 +142,12 @@ for (const b of 목록.querySelectorAll('.지움')) b.addEventListener('click', 
 - [12번 주제](../12-shadow-dom/1-question.md)가 합성 이벤트로 잰 `composedPath()` 칸 수와 이 편의 진짜 클릭 칸 수가 **다른 이유**는? 빠진 칸의 **성질**은 같은가?
 - `closest()` 가 받는 인자의 문법은 CSS 갈래의 몇 번 주제가 정본인가?
 - 위임 리스너 하나를 **떼는** 법은 어느 주제에 있나?
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — 버블 단계는 [16번 주제](../16-event-propagation-phases/1-question.md), `stopPropagation` 은 [17번 주제](../17-stoppropagation-vs-preventdefault/1-question.md), 재타기팅은 [12번 주제](../12-shadow-dom/1-question.md)가 정본이다. 여기는 **조상 하나로 받고 되찾는 것**만 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 DOM 명세 문장이다. 이식성은 주장 범위 밖이다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

@@ -1,34 +1,5 @@
 # c/syntax/17 — 다차원 배열과 그 포인터 타입: 「**한 줄로 깔리고, 한 겹만 벗겨진다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — 열어서 확인한 URL만 적는다.\
-> [cppreference — Array declaration](https://en.cppreference.com/w/c/language/array) — **row-major layout** 이라는 표현과 `int (*p1)[3] = a;` 예를 직접 확인했다.\
-> [GCC 13.3.0 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) — **`-Warray-parameter=2` 가 `-Wall` 에 들어 있다**는 문장을 직접 확인했다.\
-> 표준 초안 목록은 [`../README.md`](../README.md) 가 선언한 것을 따르고 **이 문서는 초안 PDF 를 새로 열지 않았다.**
-> **실행 검증** — 이 문서의 모든 출력·경고·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> 작업 디렉터리는 `/tmp/c17b/17`, 소스는 `ex.c`\~`ex7.c` 다 — sanitizer 출력에 경로가 박히기 때문이다.\
-> ★★ **출력이 섞이는 프로그램에는 `setvbuf(stdout, NULL, _IONBF, 0)` 를 넣어 순서를 고정**했다.\
-> ASan 블록은 `| sed -n '1,/^SUMMARY/p'` 로 잘랐다 — **그 명령의 전체 출력**이라 다시 던질 수 있다.
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 순회 실험의 **초**(0.006\~0.188) · **배율**(3.82\~25.37) | ★ **행우선 < 열우선** 이라는 부등호 · **열우선 시간이 `-O0`\~`-O2` 에서 거의 안 변한다**는 성질 |
-> | `a[3][0]` 이 읽어 온 **쓰레기 값** — 평범한 실행과 UBSan 판이 서로 달랐다 | ★ 주소들 **사이의 차이**(44 · 16 · 4 · 48) |
-> | UBSan 의 **주소와 바이트 덤프** · ASan 의 `pc`/`bp`/`sp` · PID · `BuildId` | ★ **`sizeof` 값**(48 · 16 · 8 · 4) · `_Generic` 이 답한 **타입 이름** |
-> | — | **`파일:줄:칸`** · 진단 본문 · 플래그 이름 · **종료 코드**(`cc exit` · `run exit`) |
->
-> **버전** — **행 우선 연속 배치와 감쇠 결과 타입은 C89 이후 바뀐 적이 없다.**\
-> 타입을 찍는 데 쓴 `_Generic` 만 **C11부터**다(도구이지 주제가 아니다).\
-> ★ **C23 에서도 `int **` 로 받는 것은 여전히 경고이고 에러가 아니다** — gcc `-std=c2x`·clang `-std=c23` 으로 확인했다([3-answer.md](3-answer.md) 10번).
-> ★★ **경계** — 어느 주제가 정본인지 한 줄씩.\
-> ★ **`int (*)[N]` 이라는 선언을 어떻게 읽나**는 [01번 형제](../01-declaration-syntax-and-reading/)가 정본이다 — 여기서는 **결론만** 되짚는다.\
-> ★ **감쇠 일반 규칙과 `sizeof` 함정**은 [16번 형제](../16-array-pointer-decay-and-function-parameters/)가 정본이고, 여기는 **다차원에서만 일어나는 것**을 본다.\
-> **포인터 산술과 보폭**은 [15번 형제](../15-pointer-arithmetic-and-indexing/), **`sizeof` 일반 규칙**은 [08번 형제](../08-sizeof-alignment-and-offsetof/)가 정본이다.\
-> **VLA 매개변수**는 [목록의 **18번 주제**](../18-variable-length-arrays-vla/), **배열 밖 접근 자체**는 목록의 **56번 주제**가 정본이다.
-> 선행 — [16번 형제](../16-array-pointer-decay-and-function-parameters/) · [15번 형제](../15-pointer-arithmetic-and-indexing/) · [01번 형제](../01-declaration-syntax-and-reading/).
-
 ## 한눈에 — 쉽게 말하면
 
 **`int a[3][4]` 는 「상자 3개」가 아니라 「한 줄로 깔린 12칸」이고, 함수에 넘기면 한 겹만 벗겨진다.**
@@ -1000,3 +971,32 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★ **`int flat[12]` 로 처음부터 선언하는 대안**과 **`memcpy` 로 옮기는 대안**을 ★ **둘 다 던져 보지 않았다.**\
   (7-b)의 결론은 「관용구가 UB 다」까지이고 **대안의 실측은 없다.**
 
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 URL만 적는다.\
+[cppreference — Array declaration](https://en.cppreference.com/w/c/language/array) — **row-major layout** 이라는 표현과 `int (*p1)[3] = a;` 예를 직접 확인했다.\
+[GCC 13.3.0 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) — **`-Warray-parameter=2` 가 `-Wall` 에 들어 있다**는 문장을 직접 확인했다.\
+표준 초안 목록은 [`../README.md`](../README.md) 가 선언한 것을 따르고 **이 문서는 초안 PDF 를 새로 열지 않았다.**
+**실행 검증** — 이 문서의 모든 출력·경고·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+작업 디렉터리는 `/tmp/c17b/17`, 소스는 `ex.c`\~`ex7.c` 다 — sanitizer 출력에 경로가 박히기 때문이다.\
+★★ **출력이 섞이는 프로그램에는 `setvbuf(stdout, NULL, _IONBF, 0)` 를 넣어 순서를 고정**했다.\
+ASan 블록은 `| sed -n '1,/^SUMMARY/p'` 로 잘랐다 — **그 명령의 전체 출력**이라 다시 던질 수 있다.
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 순회 실험의 **초**(0.006\~0.188) · **배율**(3.82\~25.37) | ★ **행우선 < 열우선** 이라는 부등호 · **열우선 시간이 `-O0`\~`-O2` 에서 거의 안 변한다**는 성질 |
+| `a[3][0]` 이 읽어 온 **쓰레기 값** — 평범한 실행과 UBSan 판이 서로 달랐다 | ★ 주소들 **사이의 차이**(44 · 16 · 4 · 48) |
+| UBSan 의 **주소와 바이트 덤프** · ASan 의 `pc`/`bp`/`sp` · PID · `BuildId` | ★ **`sizeof` 값**(48 · 16 · 8 · 4) · `_Generic` 이 답한 **타입 이름** |
+| — | **`파일:줄:칸`** · 진단 본문 · 플래그 이름 · **종료 코드**(`cc exit` · `run exit`) |
+
+**버전** — **행 우선 연속 배치와 감쇠 결과 타입은 C89 이후 바뀐 적이 없다.**\
+타입을 찍는 데 쓴 `_Generic` 만 **C11부터**다(도구이지 주제가 아니다).\
+★ **C23 에서도 `int **` 로 받는 것은 여전히 경고이고 에러가 아니다** — gcc `-std=c2x`·clang `-std=c23` 으로 확인했다([3-answer.md](3-answer.md) 10번).
+★★ **경계** — 어느 주제가 정본인지 한 줄씩.\
+★ **`int (*)[N]` 이라는 선언을 어떻게 읽나**는 [01번 형제](../01-declaration-syntax-and-reading/)가 정본이다 — 여기서는 **결론만** 되짚는다.\
+★ **감쇠 일반 규칙과 `sizeof` 함정**은 [16번 형제](../16-array-pointer-decay-and-function-parameters/)가 정본이고, 여기는 **다차원에서만 일어나는 것**을 본다.\
+**포인터 산술과 보폭**은 [15번 형제](../15-pointer-arithmetic-and-indexing/), **`sizeof` 일반 규칙**은 [08번 형제](../08-sizeof-alignment-and-offsetof/)가 정본이다.\
+**VLA 매개변수**는 [목록의 **18번 주제**](../18-variable-length-arrays-vla/), **배열 밖 접근 자체**는 목록의 **56번 주제**가 정본이다.
+선행 — [16번 형제](../16-array-pointer-decay-and-function-parameters/) · [15번 형제](../15-pointer-arithmetic-and-indexing/) · [01번 형제](../01-declaration-syntax-and-reading/).

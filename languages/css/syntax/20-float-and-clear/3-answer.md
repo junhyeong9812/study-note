@@ -1,10 +1,5 @@
 # css/syntax/20 — 부동(float)과 해제(clear) — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 잰 값**이다. 단위는 px 다.\
-> ★ **상자는 `getBoundingClientRect()` 로, 행 상자는 `Range.getClientRects()` 로 따로 쟀다.** 이 주제에서는 둘이 다른 것을 말한다.\
-> **손으로 계산해 유도한 수치는 없다.** 규칙은 [CSS Display Level 3](https://drafts.csswg.org/css-display-3/) 과 [CSS Logical Properties Level 1](https://drafts.csswg.org/css-logical-1/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -308,3 +303,9 @@ float:right 를 하나 더:                   right (181,41)
 **구현 의존 항목** — ★ **`float` 의 계산값이 flex 항목에서 `left` 로 남는 것은 이 브라우저의 관찰**이다. 명세가 말하는 것은 「부동을 만들지 않는다」이지 「계산값이 `none` 이 된다」가 아니다.\
 **축소 맞춤이 몇 px 이 되느냐는 폰트가 정한다**(25.77·168 은 이 머신의 글꼴 값).\
 **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.**
+
+## 실행 환경
+
+이 파일의 **모든 치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 잰 값**이다. 단위는 px 다.\
+★ **상자는 `getBoundingClientRect()` 로, 행 상자는 `Range.getClientRects()` 로 따로 쟀다.** 이 주제에서는 둘이 다른 것을 말한다.\
+**손으로 계산해 유도한 수치는 없다.** 규칙은 [CSS Display Level 3](https://drafts.csswg.org/css-display-3/) 과 [CSS Logical Properties Level 1](https://drafts.csswg.org/css-logical-1/) 로 접지했다.

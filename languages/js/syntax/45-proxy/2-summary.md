@@ -1,52 +1,5 @@
 # js/syntax/45 — `Proxy`: 「트랩은 무엇이든 돌려줄 수 있지만, 대상이 굳혀 둔 사실과 어긋나면 엔진이 그 자리에서 `TypeError` 로 끊는다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다** — 트랩 **8개** × 대상 상태 **3개**(보통 · `x` 가 쓰기 불가+설정 불가 · `preventExtensions`) = **24칸**에서, 트랩이 **대상과 다른 답**을 돌려줄 때 **던진 칸 N / 24** 를 스크립트가 찍는다(동작 (1)의 `[1]`). 같은 24칸을 **`Reflect` 로 넘기는 트랩**으로 다시 돌려 「**맨 대상과 답이 다른 칸 N / 24**」도 찍는다(`[2]` — 46번이 이 줄을 인용한다).
-> ★★ 보조로 **④ 예외의 이름 + 문구**(불변식 위반 문구 12개 · 내부 슬롯 `Method Map.prototype.get called on incompatible receiver` — 동작 (1)의 `[3]` · (3)) · **③ 브랜드 태그**(`[object Map]` 인데 `Map` 메서드가 안 도는 것 — 동작 (4))를 쓴다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — Proxy Object Internal Methods and Internal Slots](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html) — 내부 메서드 13개(`[[GetPrototypeOf]]` · `[[SetPrototypeOf]]` · `[[IsExtensible]]` · `[[PreventExtensions]]` · `[[GetOwnProperty]]` · `[[DefineOwnProperty]]` · `[[HasProperty]]` · `[[Get]]` · `[[Set]]` · `[[Delete]]` · `[[OwnPropertyKeys]]` · `[[Call]]` · `[[Construct]]`)마다 붙은 note 「**… enforces the following invariants**」 · `[[Get]]` 은 트랩 결과를 받은 **뒤** 대상의 `[[GetOwnProperty]]` 를 읽어 「설정 불가 + 쓰기 불가 데이터 프로퍼티면 **`SameValue` 가 거짓일 때 `TypeError`**」 · `ProxyCreate` 는 **대상이 호출 가능할 때만 `[[Call]]` 을 단다** · 트랩이 없으면(`GetMethod` 가 `undefined`) **대상의 내부 메서드를 그대로** 부른다 · `ValidateNonRevokedProxy`
-> - [ECMA-262 — Reflection · `Proxy.revocable`](https://tc39.es/ecma262/multipage/reflection.html) — 취소 함수는 `[[ProxyTarget]]`·`[[ProxyHandler]]` 를 **`null` 로 비우고**, 두 번째 호출은 **그냥 `undefined`**
-> - ★ **`Proxy` 는 ES2015 본문**이다(TC39 finished proposals 표에 없다).
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **내부 메서드 이름**으로, 값·예외는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1 이다. 하네스(헤드리스 Chrome · 로컬 서버)의 소스는 [44번](../44-dynamic-import-top-level-await-and-import-attributes/2-summary.md) 머리말에 있다.
-> ★★★ **이 주제의 탐침 넷은 node 18 · node 20 · Chrome 151 에서 한 글자도 같았다** — 예외 **문구까지**(세 판 대조기 · 아래 집계 줄). 그래서 블록은 **node 20 판 하나씩**만 싣는다.
-> ★★★ **성능은 재지 않았다** — 「`Proxy` 는 느리다」를 **쓰지 않는다.**
->
-> **버전** — `Proxy` · `Proxy.revocable` · 트랩 13개 · 불변식 검사는 전부 **ES2015** 다. 판별 블록에서 세 판 다 있다.
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체) | 트랩 8 × 상태 3 — 거짓말하는 트랩 「`cells that threw: N / 24`」 · 넘기는 트랩 「`bare target gave a different answer: N / 24`」(동작 (1)) |
-> | ★★ **④ 예외의 이름 + 문구** | 불변식 위반 문구 12개 — **무엇을 어겼는지 문구가 말한다**(동작 (1)의 `[3]`) · 내부 슬롯 문구(동작 (3)) · 취소된 Proxy 문구(동작 (4)) |
-> | ★★ **엄격 / 비엄격 한 쌍** | `set`·`deleteProperty` 트랩의 `false` 가 **엄격에서만** `TypeError`(동작 (2)) |
-> | ★★ **③ 브랜드 태그** | `Object.prototype.toString` 이 `[object Map]` · `Array.isArray` 가 `true` — 그런데 `Map` 메서드는 `TypeError`(동작 (3)·(4)) |
-> | ★ **부적용 — 판 격자** | 세 판이 한 글자도 같아 **갈린 칸이 없다**(집계 줄) — 불변식 검사는 **언어**의 것이다 |
-> | ★ **안 쟀다 — 성능** | 트랩 한 번의 비용은 재지 않았다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 판별 블록의 판 문자열 | ★★★ 격자의 모든 칸과 두 집계 줄 · 예외의 **종류** · 로그 값 |
-> | ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | ★★ 예외 **문구** — 이 세 판에서는 같았지만 **엔진 판의 것**이다(규칙 27 — 칸이 근거, 문구는 보조) |
->
-> **층** — 트랩 이름 · 트랩이 불리는 조건 · **불변식 검사와 그 `TypeError`** 는 전부 **언어(ECMA-262)** 다. 문구만 **엔진(V8)** 의 것이다. 호스트는 끼지 않는다.
->
-> **선행** — [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)(직접 선행 — ★★★ **「막힌 것은 값이 아니라 플래그에 적혀 있다」** · 설정 불가 27칸 격자 · ★★ **비엄격에서는 막힌 쓰기가 조용히 버려진다**(거기 동작 (4)) — 이 문서의 「대상 상태」 세 가지가 거기서 온다) ·
-> [15 — 프로토타입 체인](../15-prototype-chain/2-summary.md)(★★ **`Proxy` 를 로그 도구로만** 썼다 — 거기 머리말이 「트랩의 계약과 불변식은 45번이 정본」이라고 적는다) ·
-> [35 — 엄격 모드](../35-strict-mode/2-summary.md) · [16 — `class` 문법](../16-class-syntax/2-summary.md)(프라이빗 `#x`).
->
-> ★★ **교차 갈래** — 파이썬은 가로채는 자리가 **클래스의 갈고리 메서드**다: [Python 29 — 클래스와 속성 조회](../../../python/syntax/29-classes-and-attribute-lookup/2-summary.md)의 **6절 「두 갈고리 — `__getattr__` 과 `__getattribute__`」**. JS 의 `Proxy` 는 **대상 객체를 감싼 별도 객체**이고, 파이썬의 갈고리는 **그 클래스 자신**에 붙는다. 파이썬 쪽에 이 문서의 「불변식 검사」에 해당하는 것이 있는지는 **여기서 돌리지 않았다.**
-> ★ Java 의 `java.lang.reflect.Proxy` 는 [Java 58 — 리플렉션](../../../java/syntax/58-reflection/2-summary.md)에 **절이 없다**(그 파일에서 `Proxy` 를 찾으면 0건).
-
 ```text
 ===== ./js44b-versions.sh (exit=0) =====
 node 18.19.1  v8 10.2.154.26-node.28
@@ -541,3 +494,49 @@ run("revoke() a second time", () => o.revoke());
 - **`apply`·`construct`·`setPrototypeOf`·`isExtensible`·`preventExtensions` 의 불변식** — 격자에 넣지 않았다. 명세 note 에 각각 있다(예: `[[Construct]]` 의 결과는 **객체**여야 한다).
 - **`receiver` 인자** — `get`/`set` 트랩의 셋째·넷째 인자. 46번 동작 (3)이 정본이다.
 - **막 쓰는 Proxy 의 비용·엔진 최적화** — 재지 않았다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 전수 격자다** — 트랩 **8개** × 대상 상태 **3개**(보통 · `x` 가 쓰기 불가+설정 불가 · `preventExtensions`) = **24칸**에서, 트랩이 **대상과 다른 답**을 돌려줄 때 **던진 칸 N / 24** 를 스크립트가 찍는다(동작 (1)의 `[1]`). 같은 24칸을 **`Reflect` 로 넘기는 트랩**으로 다시 돌려 「**맨 대상과 답이 다른 칸 N / 24**」도 찍는다(`[2]` — 46번이 이 줄을 인용한다).
+★★ 보조로 **④ 예외의 이름 + 문구**(불변식 위반 문구 12개 · 내부 슬롯 `Method Map.prototype.get called on incompatible receiver` — 동작 (1)의 `[3]` · (3)) · **③ 브랜드 태그**(`[object Map]` 인데 `Map` 메서드가 안 도는 것 — 동작 (4))를 쓴다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — Proxy Object Internal Methods and Internal Slots](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html) — 내부 메서드 13개(`[[GetPrototypeOf]]` · `[[SetPrototypeOf]]` · `[[IsExtensible]]` · `[[PreventExtensions]]` · `[[GetOwnProperty]]` · `[[DefineOwnProperty]]` · `[[HasProperty]]` · `[[Get]]` · `[[Set]]` · `[[Delete]]` · `[[OwnPropertyKeys]]` · `[[Call]]` · `[[Construct]]`)마다 붙은 note 「**… enforces the following invariants**」 · `[[Get]]` 은 트랩 결과를 받은 **뒤** 대상의 `[[GetOwnProperty]]` 를 읽어 「설정 불가 + 쓰기 불가 데이터 프로퍼티면 **`SameValue` 가 거짓일 때 `TypeError`**」 · `ProxyCreate` 는 **대상이 호출 가능할 때만 `[[Call]]` 을 단다** · 트랩이 없으면(`GetMethod` 가 `undefined`) **대상의 내부 메서드를 그대로** 부른다 · `ValidateNonRevokedProxy`
+- [ECMA-262 — Reflection · `Proxy.revocable`](https://tc39.es/ecma262/multipage/reflection.html) — 취소 함수는 `[[ProxyTarget]]`·`[[ProxyHandler]]` 를 **`null` 로 비우고**, 두 번째 호출은 **그냥 `undefined`**
+- ★ **`Proxy` 는 ES2015 본문**이다(TC39 finished proposals 표에 없다).
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **내부 메서드 이름**으로, 값·예외는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1 이다. 하네스(헤드리스 Chrome · 로컬 서버)의 소스는 [44번](../44-dynamic-import-top-level-await-and-import-attributes/2-summary.md) 맨 위 부분에 있다.
+★★★ **이 주제의 탐침 넷은 node 18 · node 20 · Chrome 151 에서 한 글자도 같았다** — 예외 **문구까지**(세 판 대조기 · 맨 위 집계 줄). 그래서 블록은 **node 20 판 하나씩**만 싣는다.
+★★★ **성능은 재지 않았다** — 「`Proxy` 는 느리다」를 **쓰지 않는다.**
+
+**버전** — `Proxy` · `Proxy.revocable` · 트랩 13개 · 불변식 검사는 전부 **ES2015** 다. 판별 블록에서 세 판 다 있다.
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체) | 트랩 8 × 상태 3 — 거짓말하는 트랩 「`cells that threw: N / 24`」 · 넘기는 트랩 「`bare target gave a different answer: N / 24`」(동작 (1)) |
+| ★★ **④ 예외의 이름 + 문구** | 불변식 위반 문구 12개 — **무엇을 어겼는지 문구가 말한다**(동작 (1)의 `[3]`) · 내부 슬롯 문구(동작 (3)) · 취소된 Proxy 문구(동작 (4)) |
+| ★★ **엄격 / 비엄격 한 쌍** | `set`·`deleteProperty` 트랩의 `false` 가 **엄격에서만** `TypeError`(동작 (2)) |
+| ★★ **③ 브랜드 태그** | `Object.prototype.toString` 이 `[object Map]` · `Array.isArray` 가 `true` — 그런데 `Map` 메서드는 `TypeError`(동작 (3)·(4)) |
+| ★ **부적용 — 판 격자** | 세 판이 한 글자도 같아 **갈린 칸이 없다**(집계 줄) — 불변식 검사는 **언어**의 것이다 |
+| ★ **안 쟀다 — 성능** | 트랩 한 번의 비용은 재지 않았다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 판별 블록의 판 문자열 | ★★★ 격자의 모든 칸과 두 집계 줄 · 예외의 **종류** · 로그 값 |
+| ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | ★★ 예외 **문구** — 이 세 판에서는 같았지만 **엔진 판의 것**이다(규칙 27 — 칸이 근거, 문구는 보조) |
+
+**층** — 트랩 이름 · 트랩이 불리는 조건 · **불변식 검사와 그 `TypeError`** 는 전부 **언어(ECMA-262)** 다. 문구만 **엔진(V8)** 의 것이다. 호스트는 끼지 않는다.
+
+**선행** — [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)(직접 선행 — ★★★ **「막힌 것은 값이 아니라 플래그에 적혀 있다」** · 설정 불가 27칸 격자 · ★★ **비엄격에서는 막힌 쓰기가 조용히 버려진다**(거기 동작 (4)) — 이 문서의 「대상 상태」 세 가지가 거기서 온다) ·
+[15 — 프로토타입 체인](../15-prototype-chain/2-summary.md)(★★ **`Proxy` 를 로그 도구로만** 썼다 — 거기 「실행 환경」이 「트랩의 계약과 불변식은 45번이 정본」이라고 적는다) ·
+[35 — 엄격 모드](../35-strict-mode/2-summary.md) · [16 — `class` 문법](../16-class-syntax/2-summary.md)(프라이빗 `#x`).
+
+★★ **교차 갈래** — 파이썬은 가로채는 자리가 **클래스의 갈고리 메서드**다: [Python 29 — 클래스와 속성 조회](../../../python/syntax/29-classes-and-attribute-lookup/2-summary.md)의 **6절 「두 갈고리 — `__getattr__` 과 `__getattribute__`」**. JS 의 `Proxy` 는 **대상 객체를 감싼 별도 객체**이고, 파이썬의 갈고리는 **그 클래스 자신**에 붙는다. 파이썬 쪽에 이 문서의 「불변식 검사」에 해당하는 것이 있는지는 **여기서 돌리지 않았다.**
+★ Java 의 `java.lang.reflect.Proxy` 는 [Java 58 — 리플렉션](../../../java/syntax/58-reflection/2-summary.md)에 **절이 없다**(그 파일에서 `Proxy` 를 찾으면 0건).

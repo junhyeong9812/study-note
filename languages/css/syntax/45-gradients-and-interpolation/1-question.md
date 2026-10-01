@@ -1,10 +1,5 @@
 # css/syntax/45 — 그라디언트와 보간 색 공간 — 질문
 
-> 먼저 답해 보고, 막히면 [2-summary.md](2-summary.md), 그래도 막히면 [3-answer.md](3-answer.md).
-> 예측형은 **출력을 먼저 적고** 이유를 적는다. 기준: **Google Chrome 151.0.7922.173** headless.
-> ★ **이 주제는 계산값으로 답할 수 없다.** 답에 **픽셀 RGB** 를 적는다 — 「보라색이 된다」는 답이 아니다.
-> 선행: [42번 색 표기와 색 공간](../42-color-notation-and-spaces/1-question.md) · [44번 배경과 대체 요소 맞춤](../44-backgrounds-and-object-fit/1-question.md).
-
 ### 1. 위치를 안 적으면 어디에 놓이나 (예측)
 
 ```css
@@ -109,6 +104,12 @@
 ### 12. `in <공간>` 을 못 읽는 브라우저에서는 (경계)
 
 `linear-gradient(in oklch 90deg, red, blue)` 의 Baseline 상태를 적고, **지원 안 하는 브라우저에서 무슨 일이 일어나는지** 답해라. 그림이 아예 안 나오나.
+
+## 실행 환경
+
+예측형은 **출력을 먼저 적고** 이유를 적는다. 기준: **Google Chrome 151.0.7922.173** headless.
+★ **이 주제는 계산값으로 답할 수 없다.** 답에 **픽셀 RGB** 를 적는다 — 「보라색이 된다」는 답이 아니다.
+선행: [42번 색 표기와 색 공간](../42-color-notation-and-spaces/1-question.md) · [44번 배경과 대체 요소 맞춤](../44-backgrounds-and-object-fit/1-question.md).
 
 ## 복습 기록
 

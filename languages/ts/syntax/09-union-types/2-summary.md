@@ -1,13 +1,5 @@
 # ts/syntax/09 — 유니온 타입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Everyday Types: Union Types](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#union-types) ·
-> [Handbook — Narrowing: Discriminated Unions](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions) ·
-> [Handbook — Narrowing: Exhaustiveness checking](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking) ·
-> [TSConfig — `strictNullChecks`](https://www.typescriptlang.org/tsconfig/#strictNullChecks).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -18,7 +10,6 @@ v18.19.1
 > 그때 `strict` 는 **켜져 있다**(7.0 기본 `true`) — 그 안의 `strictNullChecks` 때문에 `null`·`undefined` 가 **유니온 멤버로 분리**돼 보인다.
 > `tsc` 에 **파일을 직접 주면 `tsconfig.json` 을 무시**하므로 이 블록들은 설정 파일 없이도 그대로 재현된다.
 > **버전** — 유니온은 TS 1.4, 판별 유니온은 2.0, `never` 를 쓴 전수 검사는 2.0 부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -649,3 +640,12 @@ describe  : 문자열 3자 / 숫자 4.0
 - **판별 칸이 없으면** — `in` 연산자로 가르는 길이 있다(`"fly" in pet`). [목록의 **12번 주제**](../12-narrowing/)에서 던진다.
 - **리터럴 흡수를 피하는 법** — `"asc" | "desc" | (string & {})` 처럼 적으면 편집기 자동완성은 살리고 흡수는 막는 관용구가 있다. [목록의 **11번 주제**](../11-literal-types-and-as-const/)와 엮인다.
 - **유니온이 커지면 검사가 느려진다** — 멤버 수에 따라 할당 가능성 판정이 곱으로 늘어난다. 이 배치에서는 **재지 않았다** — [목록의 **45번 주제**](../45-type-level-performance/)에서 잰다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Everyday Types: Union Types](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#union-types) ·
+[Handbook — Narrowing: Discriminated Unions](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions) ·
+[Handbook — Narrowing: Exhaustiveness checking](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking) ·
+[TSConfig — `strictNullChecks`](https://www.typescriptlang.org/tsconfig/#strictNullChecks).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

@@ -1,10 +1,5 @@
 # kotlin/syntax/14 — scope function 5종: `let`/`run`/`with`/`apply`/`also` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> 역어셈블은 **기본 `-jvm-target`(1.8 · `major version: 52`)** 이 정본이고, 람다 전략은 **기본값과 `-Xlambdas=class` 둘 다** 찍었다.\
-> **stdlib 쪽 출력은 `kotlin-stdlib.jar` 를 풀어 직접 역어셈블한 것**이다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -571,3 +566,9 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 
 **안 걸린 것도 출력이다** — `unusedit.kt` 는 `also`/`let`/`apply` 안에서 `it` 을 한 번도 안 썼는데
 **경고도 에러도 없이 `exit 0`** 이었다. 컴파일러가 침묵한다는 것이 「그 코드가 읽기 쉽다」를 뜻하지 않는다.
+
+## 실행 환경
+
+모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+역어셈블은 **기본 `-jvm-target`(1.8 · `major version: 52`)** 이 정본이고, 람다 전략은 **기본값과 `-Xlambdas=class` 둘 다** 찍었다.\
+**stdlib 쪽 출력은 `kotlin-stdlib.jar` 를 풀어 직접 역어셈블한 것**이다.

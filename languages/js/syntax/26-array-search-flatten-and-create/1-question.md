@@ -1,27 +1,5 @@
 # js/syntax/26 — 배열 탐색·평탄화·생성: 「구멍을 누가 건너뛰고 누가 읽나 · 찾기는 무엇으로 비교하나 · 배열을 만드는 입구 넷」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151.0.7922.173(헤드리스) · x86-64 Linux.
-> 배너의 `node20` 은 v20.19.6 이다. ★ **8번(`Array.fromAsync`)은 Chrome 에서만** 돌렸다 — 두 node 판에서 되는지는 7번이 묻는다.
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다.**
-> 구멍 하나짜리 배열 `[, 1]` 을 **배열 연산 스물아홉 줄**에 들이대고, 「ES5 까지의 메서드는 건너뛰고 ES2015 부터는 `undefined` 로 읽는다」는 **통설과 어긋난 줄을 스크립트가 센다.** **1번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **구멍(프로퍼티가 없는 칸)을 누가 건너뛰고 누가 읽나**
-> ② **찾기 메서드가 무엇으로 비교하고 어디서 멈추나**(`NaN` · `-0` · 방문한 인덱스)
-> ③ **배열을 만드는 세 입구**(`Array(n)` · `Array.of` · `Array.from`)와 비동기 입구 `Array.fromAsync`.
->
-> ★★ **예외는 타입과 메시지로만 답한다.** ★ 메시지는 엔진의 문구다 — 종류만 명세가 정한다.
->
-> **선행** — [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(★★★ `indexOf` 와 `includes` 가 `NaN` 에서 갈리는 것은 거기서 이미 쟀다) ·
-> [21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md) · [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md) ·
-> [18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md) · [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md) ·
-> [24 — 배열 변형 메서드](../24-array-mutating-methods/2-summary.md).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 여섯 문항(1 · 2 · 3 · 4 · 5 · 6)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -447,6 +425,21 @@ const later = (ms, v, log, tag) => new Promise((res) => setTimeout(() => { log.p
 - ★★ 3번 `[1]` 의 `visited indexes` 와 21번의 **`find(x > 3)` 줄**은 같은 사실을 말하나?
 - ★★ `findLast` 가 어느 쪽 끝에서 도는지 로그의 어느 칸으로 판정하나?
 - ★ 「`find` 가 빠르다」는 이 문서에서 어느 칸에 들어가나?
+
+## 실행 환경
+
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151.0.7922.173(헤드리스) · x86-64 Linux.
+배너의 `node20` 은 v20.19.6 이다. ★ **8번(`Array.fromAsync`)은 Chrome 에서만** 돌렸다 — 두 node 판에서 되는지는 7번이 묻는다.
+
+★★★ **이 주제의 본체는 ② 전수 격자다.**
+구멍 하나짜리 배열 `[, 1]` 을 **배열 연산 스물아홉 줄**에 들이대고, 「ES5 까지의 메서드는 건너뛰고 ES2015 부터는 `undefined` 로 읽는다」는 **통설과 어긋난 줄을 스크립트가 센다.** **1번 문항이 이 주제의 중심이다.**
+
+★★ **예외는 타입과 메시지로만 답한다.** ★ 메시지는 엔진의 문구다 — 종류만 명세가 정한다.
+
+**선행** — [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(★★★ `indexOf` 와 `includes` 가 `NaN` 에서 갈리는 것은 거기서 이미 쟀다) ·
+[21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md) · [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md) ·
+[18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md) · [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md) ·
+[24 — 배열 변형 메서드](../24-array-mutating-methods/2-summary.md).
 
 ## 복습 기록
 

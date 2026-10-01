@@ -1,14 +1,5 @@
 # web-api/09 — 요소 기하: `getBoundingClientRect`·`offset*`/`client*`/`scroll*` 과 좌표계 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 갈래는 언어가 아니라 플랫폼이다.** 여기서 다루는 것은 「CSS 가 상자를 어떻게 정하나」가 아니라 「**스크립트가 그 상자를 어떻게 읽나**」다. 상자 모델 자체는 [CSS 15번 주제](../../css/syntax/15-box-model-and-box-sizing/2-summary.md)가, 스크롤 컨테이너는 [CSS 23번 주제](../../css/syntax/23-overflow-and-scroll-containers/2-summary.md)가, `transform` 은 [CSS 54번 주제](../../css/syntax/54-transform-2d-and-origin/2-summary.md)가 정본이고 여기서 다시 쓰지 않는다.\
-> **기준 소스** — [CSSOM View Module](https://drafts.csswg.org/cssom-view/) 의 「Extensions to the `Element` Interface」·「The `DOMRect` Interface」·「Extensions to the `Window` Interface」 절. 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 블록마다 명령이 배너로 실려 있고, 그 배너에는 **`--window-size=1000,800`** 이 들어 있다 — **좌표를 싣는 주제라 창 크기를 빼면 아무 수치도 재현되지 않는다.**\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **이식성을 주장하지 않는다.**\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `offsetWidth` 계열은 IE 시절의 사실상 표준이 CSSOM View 로 사후 명세화된 것이고, **Baseline 추적 대상이 아닐 만큼 오래됐다**(갈래 [`../README.md`](../README.md) 의 「확인하지 못한 것」).\
-> **선행** — [08번 주제](../08-getcomputedstyle/2-summary.md)(계산값 읽기)와 [CSS 15번 주제](../../css/syntax/15-box-model-and-box-sizing/2-summary.md)(박스 모델).\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -863,3 +854,12 @@ r.left;                                         // 옛 값이다
 - **`scrollTop` 이 소수를 받나** — [목록의 **11번 주제**](../11-scroll-control/)에서 실측했다. 이 주제에서는 **읽는 쪽만** 다뤘다.
 - **`visualViewport`** — 모바일에서 키보드가 올라오거나 핀치 줌을 하면 **레이아웃 뷰포트와 시각 뷰포트가 갈린다.** `rect` 는 레이아웃 뷰포트 기준이다. **이 판에서는 둘이 같아 갈라 볼 수 없었다**(못 잰 것).
 - **`offsetWidth` 가 IE 에서 왔다는 것** — CSSOM View 는 이미 퍼진 구현을 사후에 적어 놓은 명세다. 그래서 **`offset*` 만 정수**인 것 같은 어긋남이 남아 있다. 경위는 [`../../../history/web/04-브라우저-엔진.md`](../../../history/web/04-브라우저-엔진.md) 의 몫이다.
+
+## 실행 환경
+
+**이 갈래는 언어가 아니라 플랫폼이다.** 여기서 다루는 것은 「CSS 가 상자를 어떻게 정하나」가 아니라 「**스크립트가 그 상자를 어떻게 읽나**」다. 상자 모델 자체는 [CSS 15번 주제](../../css/syntax/15-box-model-and-box-sizing/2-summary.md)가, 스크롤 컨테이너는 [CSS 23번 주제](../../css/syntax/23-overflow-and-scroll-containers/2-summary.md)가, `transform` 은 [CSS 54번 주제](../../css/syntax/54-transform-2d-and-origin/2-summary.md)가 정본이고 여기서 다시 쓰지 않는다.\
+**기준 소스** — [CSSOM View Module](https://drafts.csswg.org/cssom-view/) 의 「Extensions to the `Element` Interface」·「The `DOMRect` Interface」·「Extensions to the `Window` Interface」 절. 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 블록마다 명령이 배너로 실려 있고, 그 배너에는 **`--window-size=1000,800`** 이 들어 있다 — **좌표를 싣는 주제라 창 크기를 빼면 아무 수치도 재현되지 않는다.**\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **이식성을 주장하지 않는다.**\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `offsetWidth` 계열은 IE 시절의 사실상 표준이 CSSOM View 로 사후 명세화된 것이고, **Baseline 추적 대상이 아닐 만큼 오래됐다**(갈래 [`../README.md`](../README.md) 의 「확인하지 못한 것」).\
+**선행** — [08번 주제](../08-getcomputedstyle/2-summary.md)(계산값 읽기)와 [CSS 15번 주제](../../css/syntax/15-box-model-and-box-sizing/2-summary.md)(박스 모델).

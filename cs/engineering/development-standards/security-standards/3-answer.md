@@ -1,9 +1,5 @@
 # cs/development-standards/security-standards — 보안 기준 (OWASP Top 10 · NIST SSDF · OWASP ASVS) — 정답
 
-> ⚠️ **Claude 초안(2026-08-24) — 본인 검토 후 삭제.**
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 기준 문서(원전)로 검증 → 틀린 부분만 수정.
-
 ## 정답
 
 1. **IDOR이 인가 실패인 이유.**

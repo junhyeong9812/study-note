@@ -1,16 +1,5 @@
 # sql/44-외래키와 참조 동작 (ON DELETE·ON UPDATE) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Constraints (Foreign Keys)](https://www.postgresql.org/docs/18/ddl-constraints.html#DDL-CONSTRAINTS-FK) · [PostgreSQL 18 · CREATE TABLE](https://www.postgresql.org/docs/18/sql-createtable.html) · [MySQL 8.4 · FOREIGN KEY Constraints](https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> ★ **환경 확인** — MySQL 의 `@@foreign_key_checks` 는 **`1`(켜짐)** 이었다. 이 값이 `0` 이면 아래 본문 전체가 성립하지 않으므로 먼저 밝힌다.\
-> **버전** — 이 주제의 동작에 「어느 버전부터」가 붙는 것을 두 매뉴얼에서 찾지 못해 **적지 않는다.**\
-> ★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t44_p`·`t44_c`·`t44_noaction`·`t44_restrict`·`t44_cascade`·`t44_setnull`·`t44_snn`·`t44_np`·`t44_up`·`t44_uc`·`t44_dp`·`t44_dna`·`t44_dre` 를 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> **선행** — [43 기본키·UNIQUE 제약과 NULL](../43-primary-key-unique-and-null/) — 외래키는 거기서 만든 키를 가리킨다.
-
 ## 한눈에 — 쉽게 말하면
 
 **외래키 = 「저쪽에 없는 것을 가리키지 않겠다」는 약속.**
@@ -721,3 +710,13 @@ ALTER TABLE c DROP FOREIGN KEY c_pid_fk;                -- MySQL
   그때는 **고아 행을 주기적으로 찾아내는 질의**가 FK 를 대신한다 —\
   `SELECT ... FROM c LEFT JOIN p ON c.pid=p.id WHERE c.pid IS NOT NULL AND p.id IS NULL`\
   ([19 SEMI·ANTI 조인](../19-semi-anti-join/)의 안티 조인이 그것이다).
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Constraints (Foreign Keys)](https://www.postgresql.org/docs/18/ddl-constraints.html#DDL-CONSTRAINTS-FK) · [PostgreSQL 18 · CREATE TABLE](https://www.postgresql.org/docs/18/sql-createtable.html) · [MySQL 8.4 · FOREIGN KEY Constraints](https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+★ **환경 확인** — MySQL 의 `@@foreign_key_checks` 는 **`1`(켜짐)** 이었다. 이 값이 `0` 이면 본문 전체가 성립하지 않으므로 먼저 밝힌다.\
+**버전** — 이 주제의 동작에 「어느 버전부터」가 붙는 것을 두 매뉴얼에서 찾지 못해 **적지 않는다.**\
+★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t44_p`·`t44_c`·`t44_noaction`·`t44_restrict`·`t44_cascade`·`t44_setnull`·`t44_snn`·`t44_np`·`t44_up`·`t44_uc`·`t44_dp`·`t44_dna`·`t44_dre` 를 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+**선행** — [43 기본키·UNIQUE 제약과 NULL](../43-primary-key-unique-and-null/) — 외래키는 거기서 만든 키를 가리킨다.

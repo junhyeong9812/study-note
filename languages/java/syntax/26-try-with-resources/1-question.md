@@ -1,11 +1,5 @@
 # java/syntax/26 — `try`-with-resources: `AutoCloseable`·suppressed·`finally` 순서 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **예측형 위주**다 — 아는지가 아니라 **출력·스택트레이스를 맞힐 수 있는지**를 묻는다.
-> 선행: [`../25-exceptions/`](../25-exceptions/) 의 `finally` 함정.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -133,6 +127,10 @@ static void work() {
 - 이 문법이 해결하는 `finally` 의 함정은 정확히 무엇이었나?
 - 자원 변수의 암묵적 `final` 과 9+ 형태의 effectively final 조건은 어느 주제와 이어지는가?
 - `ExecutorService` 를 `try`-with-resources 로 닫을 수 있는 JDK 는 어디부터인가, 그것을 어떻게 확인했는가?
+
+## 실행 환경
+
+선행: [`../25-exceptions/`](../25-exceptions/) 의 `finally` 함정.
 
 ## 복습 기록
 

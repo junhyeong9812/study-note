@@ -1,9 +1,5 @@
 # kotlin/syntax/42 — 변환 연산 — `map`/`flatMap`/`associate`/`zip` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.
-> ★★ 아래 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -401,3 +397,8 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 1. ★★ **`Map` 에는 `associate`·`associateBy`·`associateWith` 가 없었다** — 맵에서 맵을 새로 짜는 일은 `mapValues`·`mapKeys` 나 `entries` 를 거쳐야 한다(1번·5번).
 2. ★★ **`withIndex()` 가 `List` 가 아니었다** — `Iterable<IndexedValue<…>>` 라 인덱스 접근이 안 된다(1번).
 3. ★ **`Sequence.unzip()` 이 `Sequence` 가 아니었다** — 지연 사슬이 거기서 끝난다(2번).
+
+## 실행 환경
+
+모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.
+★★ 본문의 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.

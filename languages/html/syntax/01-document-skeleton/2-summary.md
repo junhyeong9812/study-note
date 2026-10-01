@@ -1,12 +1,5 @@
 # html/syntax/01 — HTML 문서의 뼈대: `<!DOCTYPE html>`·`<html lang>`·`<head>`/`<body>` 의 필수 요소 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The html element」](https://html.spec.whatwg.org/multipage/semantics.html#the-html-element)·[「Writing HTML documents」](https://html.spec.whatwg.org/multipage/syntax.html#writing)·[「Parsing HTML documents」](https://html.spec.whatwg.org/multipage/parsing.html) 절. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** Firefox 155.0.1 이 설치돼 있으나 이 환경에서 headless 산출이 **조용히 실패**하고 WebKit 은 없다. 그러므로 이 갈래는 **「이식성」을 주장하지 않는다** — 「두 엔진에서 확인했다」·「모든 브라우저가 이렇게 한다」고 적지 않는다.
-> **버전** — HTML 에는 언어 버전이 없다(「HTML5」는 더 이상 기준이 아니다). 지원 상태는 **Baseline** 으로 읽는다. 이 주제가 다루는 것은 전부 **20년 넘게 안정된 표면**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -680,3 +673,10 @@ DOCTYPE 앞에 무언가를 둔다        주석·BOM 아닌 글자 하나면 �
 - **`--dump-dom` 이 보여 주는 것은 「직렬화된 트리」이지 트리 자체가 아니다.** 직렬화는 되쓰기를 한 번 더 한다 — 그래서 소스에 없던 `&amp;` 가 생기거나, 내가 쓴 `<br/>` 이 `<br>` 이 되어 나온다([02번 주제](../02-elements-and-attributes/2-summary.md)·[04번 주제](../04-whitespace-and-character-references/2-summary.md)).
 - **「뼈대가 저절로 생긴다」와 「그래서 안 써도 된다」는 다른 말**이다. 프레임워크가 조각을 합칠 때 **조각 경계가 요소 경계와 어긋나면** 파서가 고친 결과가 사람의 의도와 달라진다. 03번 주제의 foster parenting 이 그 극단이다.
 - **DOM 조작 API 는 web-api 갈래가 정본**이다. 여기는 **파서가 만든 트리의 모양**까지다 — `createElement`·`appendChild` 로 트리를 바꾸는 이야기는 이 갈래 밖이다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The html element」](https://html.spec.whatwg.org/multipage/semantics.html#the-html-element)·[「Writing HTML documents」](https://html.spec.whatwg.org/multipage/syntax.html#writing)·[「Parsing HTML documents」](https://html.spec.whatwg.org/multipage/parsing.html) 절. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** Firefox 155.0.1 이 설치돼 있으나 이 환경에서 headless 산출이 **조용히 실패**하고 WebKit 은 없다. 그러므로 이 갈래는 **「이식성」을 주장하지 않는다** — 「두 엔진에서 확인했다」·「모든 브라우저가 이렇게 한다」고 적지 않는다.
+**버전** — HTML 에는 언어 버전이 없다(「HTML5」는 더 이상 기준이 아니다). 지원 상태는 **Baseline** 으로 읽는다. 이 주제가 다루는 것은 전부 **20년 넘게 안정된 표면**이다.

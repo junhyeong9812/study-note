@@ -1,11 +1,5 @@
 # domain-modeling-basic/11-delivery-tracking — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 — `impl/com/domain/delivery/Tracking.java`, `TrackingTest.java`, README 측정표.
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 README·impl·테스트 근거로 작성. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
@@ -444,3 +438,7 @@
   A: 모든 규칙이 **있는** 이벤트만 해석한다. `missingStages`는 최선 단계보다 앞의 빈 단계만 세므로 집화만 있으면 "빠진 것 없음"이고, `current`는 그냥 "집화"다 — 진행 중과 멈춤을 구별할 정보가 없다.\
   더 정할 것: 단계별 기대 소요 시간("집화 후 24시간 안에 간선상차")과 그것을 넘긴 송장을 세는 지표.\
   "언제까지 안 오면 이상한가"는 README "생각해볼 것"의 질문이고, 그 기준값도 정해야 하는 규칙이다.
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 — `impl/com/domain/delivery/Tracking.java`, `TrackingTest.java`, README 측정표.

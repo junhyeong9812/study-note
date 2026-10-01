@@ -1,15 +1,5 @@
 # css/syntax/47 — `filter` 와 `backdrop-filter` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Filter Effects Module Level 1](https://drafts.fxtf.org/filter-effects-1/) (`filter` 함수들의 정본) · [Filter Effects Module Level 2](https://drafts.fxtf.org/filter-effects-2/) (`backdrop-filter`·backdrop root). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 모든 수치를 **Google Chrome 151.0.7922.173** headless 에서 실제로 렌더해 확인했다.\
-> ★ **이 주제는 `getComputedStyle` 로 거의 아무것도 증명하지 못한다.** `filter: blur(4px)` 가 계산값으로 그대로 돌아와도 **실제로 흐려졌는지**는 다른 이야기다.\
-> 그래서 **스크린샷 PNG 를 파이썬 표준 라이브러리(`zlib`)로 디코드해 좌표별 `(r,g,b)` 를 읽는 것**이 주 근거다. 흐림은 **경계가 번진 띠의 폭(px)** 으로 잰다.
-> **버전** — CSS 에 언어 버전이 없으므로 Baseline 으로 읽는다. webstatus.dev 조회(2026-09-23): `filter` **widely**(2016-09-07 → 2019-03-07) · `backdrop-filter` **newly**(2024-09-16, 아직 widely 아님).
-> **여기서 다루지 않는 것** — **쌓임 맥락 자체**는 [목록의 **22번 주제**](../22-stacking-context-and-z-index/)가 정본이다. 여기는 「`filter` 가 그것을 만든다」까지만 쓴다.\
-> `box-shadow` 는 [46번](../46-borders-radius-outline-shadow/2-summary.md), **혼합 모드와 `isolation`** 은 [48번](../48-blend-modes-and-isolation/2-summary.md), 자르기·마스킹은 [49번](../49-clip-path-and-mask/2-summary.md)이 정본이다. `transform` 은 [목록의 **54번 주제**](../54-transform-2d-and-origin/), 색 표기는 **42번 주제**다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`filter` 는 다 그려 놓은 그림을 스캔해서 사진 보정을 거는 것이다.**
@@ -522,3 +512,13 @@
 - **합성 레이어와 비용** — `filter` 는 대개 별도 레이어를 만든다. 애니메이션에서 `blur` 값을 매 프레임 바꾸면 비싸다. 이 문서는 성능을 측정하지 않았다.
 - **`filter` 와 접근성** — `contrast()`·`grayscale()` 로 대비를 낮추면 읽기 어려워진다. 명도 대비는 필터 **적용 후** 값으로 따져야 한다.
 - **`backdrop-filter` 의 대체 경로** — `@supports (backdrop-filter: blur(1px))` 로 갈라 반투명 배경만 주는 방식. `@supports` 는 [목록의 **41번 주제**](../41-supports-feature-queries/)다.
+
+## 실행 환경
+
+**기준 소스** — [Filter Effects Module Level 1](https://drafts.fxtf.org/filter-effects-1/) (`filter` 함수들의 정본) · [Filter Effects Module Level 2](https://drafts.fxtf.org/filter-effects-2/) (`backdrop-filter`·backdrop root). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 모든 수치를 **Google Chrome 151.0.7922.173** headless 에서 실제로 렌더해 확인했다.\
+★ **이 주제는 `getComputedStyle` 로 거의 아무것도 증명하지 못한다.** `filter: blur(4px)` 가 계산값으로 그대로 돌아와도 **실제로 흐려졌는지**는 다른 이야기다.\
+그래서 **스크린샷 PNG 를 파이썬 표준 라이브러리(`zlib`)로 디코드해 좌표별 `(r,g,b)` 를 읽는 것**이 주 근거다. 흐림은 **경계가 번진 띠의 폭(px)** 으로 잰다.
+**버전** — CSS 에 언어 버전이 없으므로 Baseline 으로 읽는다. webstatus.dev 조회(2026-09-23): `filter` **widely**(2016-09-07 → 2019-03-07) · `backdrop-filter` **newly**(2024-09-16, 아직 widely 아님).
+**여기서 다루지 않는 것** — **쌓임 맥락 자체**는 [목록의 **22번 주제**](../22-stacking-context-and-z-index/)가 정본이다. 여기는 「`filter` 가 그것을 만든다」까지만 쓴다.\
+`box-shadow` 는 [46번](../46-borders-radius-outline-shadow/2-summary.md), **혼합 모드와 `isolation`** 은 [48번](../48-blend-modes-and-isolation/2-summary.md), 자르기·마스킹은 [49번](../49-clip-path-and-mask/2-summary.md)이 정본이다. `transform` 은 [목록의 **54번 주제**](../54-transform-2d-and-origin/), 색 표기는 **42번 주제**다.

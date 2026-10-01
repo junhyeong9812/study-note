@@ -1,10 +1,5 @@
 # css/syntax/03 — 상속: 상속되는 속성과 `inherit`/`initial`/`unset`/`revert`/`revert-layer` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 `getComputedStyle` 로 읽은 것**이다.\
-> 규칙은 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「Inheritance」·「Defaulting」 절로 접지했다.\
-> **엔진은 Chrome 하나다** — 다른 엔진에서 확인했다고 적지 않았다. UA 시트에 달린 값은 그 자리에 표시해 두었다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -455,3 +450,9 @@ google-chrome --headless --disable-gpu --no-sandbox --dump-dom /tmp/doc.html 2>/
 - **`currentColor`** — 그 요소의 `color` 계산값. `border-color`·`outline-color` 의 초기값.
 - **계산값(computed value)** — 상속되는 단위. `em` 은 여기서 이미 픽셀이 된다. 정본은 04번.
 - **해석값(resolved value)** — `getComputedStyle` 이 실제로 돌려주는 값. 계산값일 때도 사용값일 때도 있다. 정본은 04번.
+
+## 실행 환경
+
+이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 `getComputedStyle` 로 읽은 것**이다.\
+규칙은 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「Inheritance」·「Defaulting」 절로 접지했다.\
+**엔진은 Chrome 하나다** — 다른 엔진에서 확인했다고 적지 않았다. UA 시트에 달린 값은 그 자리에 표시해 두었다.

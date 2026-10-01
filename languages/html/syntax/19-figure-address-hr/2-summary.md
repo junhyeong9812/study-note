@@ -1,14 +1,5 @@
 # html/syntax/19 — `figure`/`figcaption`·`address`·`hr`·`details` 밖의 잡다한 구조 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [`figure`·`figcaption`](https://html.spec.whatwg.org/multipage/grouping-content.html#the-figure-element)(콘텐츠 모델 — 「`figcaption` 은 첫째 또는 마지막」)·[`hr`](https://html.spec.whatwg.org/multipage/grouping-content.html#the-hr-element)(「문단 수준의 주제 전환 — 또는 `select` 의 선택지 사이 구분선」)·[`address`](https://html.spec.whatwg.org/multipage/sections.html#the-address-element)(「가장 가까운 `article`·`body` 의 **연락처**」)와 [`select` 의 콘텐츠 모델](https://html.spec.whatwg.org/multipage/form-elements.html#the-select-element), [파싱 절의 `hr` 시작 태그 줄](https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-inbody), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/)(편집본 — `figure`·`figcaption`·`address`·`hr` 의 역할과 「figure 요소의 이름 계산」). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 블록마다 던진 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다(캡처 조립기). 하네스는 [17번 주제의 3-answer.md](../17-table-structure/3-answer.md) `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다** — 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — `api.webstatus.dev` 조회로 **`<figure>`·`<figcaption>`·`<address>`·`<hr>` 는 전부 Baseline widely**(2018-01-29). ★ **`select` 안의 `hr`** 은 명세가 최근에 콘텐츠 모델로 받아들인 자리다 — 관련 항목 **「Customizable `<select>`」 는 Baseline limited** 다(그 기능 전체가 limited 이지 `hr` 한 가지를 따로 잰 것은 아니다).
-> **선행** — [11번 주제](../11-sectioning-and-landmarks/2-summary.md)(구획 요소와 랜드마크 — 창 ⑦ 을 연 편. `address` 가 「가장 가까운 `article`·`body`」를 보는 것이 그쪽 구획 개념 위에 선다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **본체는 창 ⑦ 이다** — 이 주제의 요소들은 **모양으로는 거의 아무것도 안 한다**(`address` 는 기울임 하나, `figure` 는 여백 하나). 무엇이 **이름**이 되고 무엇이 **역할**이 되는지는 창 ⑦ 로만 보인다. 창 ① 은 「파서가 위치 위반을 고치나」 한 가지를 확인한다.
-
 ```text
 $ google-chrome --version
 Google Chrome 151.0.7922.173 
@@ -460,3 +451,13 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **HTML-AAM 의 판마다 이 규칙이 같았나** — 이 문서는 **편집본 하나만 열었다.** 옛 판의 문장은 확인하지 않았으므로, 편집본의 현재 문장과 이 판의 트리가 **같다**는 것까지만 적는다.
 - **`figure` 와 `aria-describedby`** — 캡션을 이름이 아니라 **설명**으로 잇고 싶으면 `aria-describedby` 다. 이 판에서 재지 않았다.
 - **`search`·`hgroup`** — 「잡다한 구조」의 이웃들. `search` 는 [11번 주제](../11-sectioning-and-landmarks/2-summary.md)가 랜드마크로 다뤘고, `hgroup` 은 [12번 주제](../12-heading-levels-and-outline/2-summary.md)의 제목 개요 쪽이다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [`figure`·`figcaption`](https://html.spec.whatwg.org/multipage/grouping-content.html#the-figure-element)(콘텐츠 모델 — 「`figcaption` 은 첫째 또는 마지막」)·[`hr`](https://html.spec.whatwg.org/multipage/grouping-content.html#the-hr-element)(「문단 수준의 주제 전환 — 또는 `select` 의 선택지 사이 구분선」)·[`address`](https://html.spec.whatwg.org/multipage/sections.html#the-address-element)(「가장 가까운 `article`·`body` 의 **연락처**」)와 [`select` 의 콘텐츠 모델](https://html.spec.whatwg.org/multipage/form-elements.html#the-select-element), [파싱 절의 `hr` 시작 태그 줄](https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-inbody), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/)(편집본 — `figure`·`figcaption`·`address`·`hr` 의 역할과 「figure 요소의 이름 계산」). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 블록마다 던진 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다(캡처 조립기). 하네스는 [17번 주제의 3-answer.md](../17-table-structure/3-answer.md) `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다** — 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — `api.webstatus.dev` 조회로 **`<figure>`·`<figcaption>`·`<address>`·`<hr>` 는 전부 Baseline widely**(2018-01-29). ★ **`select` 안의 `hr`** 은 명세가 최근에 콘텐츠 모델로 받아들인 자리다 — 관련 항목 **「Customizable `<select>`」 는 Baseline limited** 다(그 기능 전체가 limited 이지 `hr` 한 가지를 따로 잰 것은 아니다).
+**선행** — [11번 주제](../11-sectioning-and-landmarks/2-summary.md)(구획 요소와 랜드마크 — 창 ⑦ 을 연 편. `address` 가 「가장 가까운 `article`·`body`」를 보는 것이 그쪽 구획 개념 위에 선다).
+
+★★★ **본체는 창 ⑦ 이다** — 이 주제의 요소들은 **모양으로는 거의 아무것도 안 한다**(`address` 는 기울임 하나, `figure` 는 여백 하나). 무엇이 **이름**이 되고 무엇이 **역할**이 되는지는 창 ⑦ 로만 보인다. 창 ① 은 「파서가 위치 위반을 고치나」 한 가지를 확인한다.

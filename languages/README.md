@@ -1,7 +1,5 @@
 # languages — 언어
 
-> 위치: 최상위 `languages/` (2026-09-28 `cs/foundations/` 아래에서 이동 — 문법·API 레퍼런스는 CS 개념 트리 밖). 브라우저 호스트 API는 [web-api/](web-api/), 파이썬 기초 문법 노트는 [python/basics/](python/basics/).
-
 이 폴더는 언어를 **두 축**으로 다룬다. 축이 다르므로 폴더로 갈라 둔다.
 
 | 축 | 묻는 것 | 어디에 |
@@ -111,3 +109,7 @@
 
 각 언어의 주제 목록·우선순위는 `<언어>/syntax/README.md`에 있다.
 작업 기록: [`docs/plans/2026-09-20/언어-문법-API/`](../docs/plans/2026-09-20/언어-문법-API/)
+
+## 출처
+
+위치: 최상위 `languages/` (2026-09-28 `cs/foundations/` 아래에서 이동 — 문법·API 레퍼런스는 CS 개념 트리 밖). 브라우저 호스트 API는 [web-api/](web-api/), 파이썬 기초 문법 노트는 [python/basics/](python/basics/).

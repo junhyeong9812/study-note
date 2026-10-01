@@ -1,13 +1,5 @@
 # css/syntax/22 — 쌓임 맥락과 `z-index` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Positioned Layout Module Level 3](https://drafts.csswg.org/css-position-3/) 의 「Painting Order」·「Stacking Contexts」 절 (쌓임 맥락과 `z-index` 의 정본) · [CSS Compositing and Blending Level 1](https://drafts.csswg.org/css-compositing-1/) (`isolation`·`mix-blend-mode`). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 **쌓임 맥락을 만든다고 알려진 선언 15가지**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 판정했다.\
-> ★★ **이 주제는 `getBoundingClientRect()` 로 아무것도 알 수 없다.** 「누가 위에 있나」는 좌표가 아니라 **페인트**다. 그래서 **겹치는 지점의 스크린샷 픽셀 RGB 를 읽어** 판정했다 — 이 문서의 모든 ✓/✗ 는 그 픽셀 값이다.\
-> **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
-> **여기서 다루지 않는 것** — **어디에 놓이나(포함 블록)는 [21번](../21-position-and-containing-block/2-summary.md)이 정본**이고, 여기는 **누가 위에 그려지나**다. 두 주제의 「만드는 선언」 목록이 **겹치지만 같지 않다** — 그 대조표는 [21번](../21-position-and-containing-block/2-summary.md)에 있다. BFC 는 [17번](../17-block-formatting-context/2-summary.md)(**쌓임 맥락과 다른 것이다**), float 의 동작은 [20번](../20-float-and-clear/2-summary.md), 행 상자는 [19번](../19-inline-formatting-context/2-summary.md)이다. `mix-blend-mode`·`isolation` 의 **혼합 규칙 자체**는 [목록의 **48번 주제**](../48-blend-modes-and-isolation/), `filter` 는 **47번 주제**이고 여기서는 **쌓임 맥락을 만드느냐**만 본다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 판정은 픽셀로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **쌓임 맥락은 「같은 리그 안에서만 순위를 매긴다」는 규칙이다.**
@@ -399,3 +391,11 @@
 - **일곱 층은 재귀한다.** ②·⑥·⑦층에 들어가는 자손이 스스로 쌓임 맥락이면, 그 안에서 같은 일곱 층이 다시 돈다.
 - **`z-index` 에는 `auto` 와 `0` 이 다르다.** 둘 다 ⑥층에 놓이지만 **`0` 은 맥락을 만들고 `auto` 는 안 만든다.** 「`z-index: 0` 을 줬을 뿐인데 자식이 갇혔다」가 여기서 나온다.
 - **개발자 도구의 Layers 패널**을 쓰면 합성 레이어를 눈으로 볼 수 있다. 이 문서는 **헤드리스에서 픽셀로만** 접지했으므로 그 화면은 **안 돌려 봤다.**
+
+## 실행 환경
+
+**기준 소스** — [CSS Positioned Layout Module Level 3](https://drafts.csswg.org/css-position-3/) 의 「Painting Order」·「Stacking Contexts」 절 (쌓임 맥락과 `z-index` 의 정본) · [CSS Compositing and Blending Level 1](https://drafts.csswg.org/css-compositing-1/) (`isolation`·`mix-blend-mode`). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 **쌓임 맥락을 만든다고 알려진 선언 15가지**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 판정했다.\
+★★ **이 주제는 `getBoundingClientRect()` 로 아무것도 알 수 없다.** 「누가 위에 있나」는 좌표가 아니라 **페인트**다. 그래서 **겹치는 지점의 스크린샷 픽셀 RGB 를 읽어** 판정했다 — 이 문서의 모든 ✓/✗ 는 그 픽셀 값이다.\
+**WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
+**여기서 다루지 않는 것** — **어디에 놓이나(포함 블록)는 [21번](../21-position-and-containing-block/2-summary.md)이 정본**이고, 여기는 **누가 위에 그려지나**다. 두 주제의 「만드는 선언」 목록이 **겹치지만 같지 않다** — 그 대조표는 [21번](../21-position-and-containing-block/2-summary.md)에 있다. BFC 는 [17번](../17-block-formatting-context/2-summary.md)(**쌓임 맥락과 다른 것이다**), float 의 동작은 [20번](../20-float-and-clear/2-summary.md), 행 상자는 [19번](../19-inline-formatting-context/2-summary.md)이다. `mix-blend-mode`·`isolation` 의 **혼합 규칙 자체**는 [목록의 **48번 주제**](../48-blend-modes-and-isolation/), `filter` 는 **47번 주제**이고 여기서는 **쌓임 맥락을 만드느냐**만 본다.

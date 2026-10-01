@@ -1,20 +1,5 @@
 # python/syntax/31-comparison-protocol-and-sortability — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> 실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
->
-> ★★ 이 주제에서는 **「어느 메서드가 불렸나」가 답인 자리가 대부분이다.**
-> 결과값만 맞히고 **호출 로그를 못 맞혔으면 틀린 것**으로 센다.
-> ★ **호출 「횟수」는 채점 대상이 아니다** — TimSort 의 성질이라 판이 오르면 달라진다.
-> 채점하는 것은 **무엇이 불렸나**와 **순서**다.
-> ★ 이 주제는 [10번](../10-list-methods-and-sort-key/1-question.md)과 [30번](../30-repr-eq-hash-contracts/1-question.md)을 쓴다.
-> 막히면 그 둘 중 어느 것이 안 잡힌 것인지부터 짚어라.
-> ★ **이 사슬은 [29](../29-classes-and-attribute-lookup/1-question.md) → [30](../30-repr-eq-hash-contracts/1-question.md) → 31 → [32](../32-container-protocol/1-question.md)** 로 이어진다.
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -413,6 +398,16 @@ print("   key 로   ->", sorted([NoCompare(2), NoCompare(1)], key=lambda x: x.n)
 
 「`__lt__` 하나로 `sorted` 가 된다」·「`max` 가 `__gt__` 를 쓴다」·「세 원소에 `__lt__` 가 네 번 불린다」는 각각 **언어 보장**·**CPython 구현**·**이 판의 관찰** 중 어디인가?
 
+## 실행 환경
+
+실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
+
+★★ 이 주제에서는 **「어느 메서드가 불렸나」가 답인 자리가 대부분이다.**
+결과값만 맞히고 **호출 로그를 못 맞혔으면 틀린 것**으로 센다.
+★ **호출 「횟수」는 채점 대상이 아니다** — TimSort 의 성질이라 판이 오르면 달라진다.
+채점하는 것은 **무엇이 불렸나**와 **순서**다.
+★ 이 주제는 [10번](../10-list-methods-and-sort-key/1-question.md)과 [30번](../30-repr-eq-hash-contracts/1-question.md)을 쓴다.
+
 ## 복습 기록
 
 | 날짜 | 결과 | 틀린 질문 | 다음 복습 |
@@ -420,3 +415,7 @@ print("   key 로   ->", sorted([NoCompare(2), NoCompare(1)], key=lambda x: x.n)
 |  |  |  |  |
 |  |  |  |  |
 |  |  |  |  |
+
+---
+
+★ **이 사슬은 [29](../29-classes-and-attribute-lookup/1-question.md) → [30](../30-repr-eq-hash-contracts/1-question.md) → 31 → [32](../32-container-protocol/1-question.md)** 로 이어진다.

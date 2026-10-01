@@ -1,14 +1,5 @@
 # kotlin/syntax/28 — 제네릭: 선언 지점 변성 `in`/`out`·star projection·`where` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [20번 주제](../20-interfaces-default-impl-and-super/)다. [12번 주제](../12-reified-type-parameters/)(소거)를 먼저 보면 9·10번이 쉽다.
-> ★★★ Java 쪽 짝은 [`../../../java/syntax/18-wildcards-pecs/`](../../../java/syntax/18-wildcards-pecs/)다 — 같은 변성을 **쓰는 쪽**(Java)과 **선언하는 쪽**(Kotlin).
-> 문항 12개 중 코드블록이 붙는 예측형은 6개다.
-> ★ 이 주제의 본체는 **컴파일 진단**이다 — 예측형 대부분이 「무엇이 몇 줄 막히나」를 묻는다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · JDK 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -179,6 +170,14 @@ fun main() {
 
 - C# 도 `out T`·`in T` 를 쓴다. **어디에는 못 붙이는가?** Kotlin 과 무엇이 다른가?
 - TS 4.7 의 `in`/`out` 은 [TS 17번](../../../ts/syntax/17-variance-and-parameter-compatibility/)에서 무엇과 함께 다뤄지는가?
+
+## 실행 환경
+
+선행은 [20번 주제](../20-interfaces-default-impl-and-super/)다. [12번 주제](../12-reified-type-parameters/)(소거)를 먼저 보면 9·10번이 쉽다.
+★★★ Java 쪽 짝은 [`../../../java/syntax/18-wildcards-pecs/`](../../../java/syntax/18-wildcards-pecs/)다 — 같은 변성을 **쓰는 쪽**(Java)과 **선언하는 쪽**(Kotlin).
+
+★ 이 주제의 본체는 **컴파일 진단**이다 — 예측형 대부분이 「무엇이 몇 줄 막히나」를 묻는다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JDK 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

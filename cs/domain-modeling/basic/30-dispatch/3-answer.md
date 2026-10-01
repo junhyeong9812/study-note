@@ -1,11 +1,5 @@
 # domain-modeling-basic/30-dispatch — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/30-dispatch/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -507,3 +501,7 @@ private boolean tooFar(int distance) {
 - 문제 원문: `src/main/java/com/domain/dispatch/Dispatch.java`(TODO 1~3 javadoc), `Order.java`·`Driver.java`(계약 — 격자 거리, "기사 하나는 하나만"), `README.md`(함정·측정·변종 검증·생각해볼 것)
 - 측정 수치: `README.md` "측정이 알려준 것" 하나~넷 — 주문 20·기사 20·200회에서 총 거리 120,667 / 121,649 / 122,067 / 112,705, 최악 거리 평균 95.5 / 94.5 / 98.0 / 113.3, 총 거리조차 지는 것 47/200 / 네 방식 일치 0/200 / 주문 20·기사 8에서 최장 대기 1,660초 vs 1,013초, 총 거리 65,385 vs 65,391 / 거리 제한별 미배차 0·494·809·1,672(4,000건 중)와 총 거리 112,256·65,161·49,470·25,029, 건당 거리 28.1 → 10.8 / 변종 검증에서 `thenComparing(Order::id)` 누락이 안 잡혔던 사례
 - 계약 테스트: `src/test/java/com/domain/dispatch/DispatchTest.java` — 네 칸 예제(A 0,0 대기 10 / B 0,3 대기 100 / d1 0,2 / d2 0,10), 번호 순 `[A-d1(2), B-d2(7)]` 합 9·최악 7 vs 대기 순·기사 순·짧은 짝부터 `[A-d2(10), B-d1(1)]` 합 11·최악 10, 입력 순서 20회 셔플에도 세 전략 × 두 우선순위 동일, 대기 100초 동일 자료에서도 답 고정(= BY_ID 결과와 같음), 기사 1명·주문 3개에서 미배차 `[B,C]`/`[A,B]`와 최장 대기 300/100, 주문 1개·기사 3명이면 세 전략 다 d1, 빈 목록은 배차 0·지표 0·미배차 `[A,B]`, 제한 8에서 번호 순 2건·대기 순 1건(미배차 `[A]`), `new Dispatch(0)`·`(-1)`은 제한 없음·`(2)`는 1건, `GLOBAL_NEAREST`는 최단 짝이 제한 초과면 즉시 종료(`[A-d1(1)]`, 미배차 `[B]`), 격자 거리 0·7·7·1, 빈 번호·음수 대기는 `IllegalArgumentException`
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/30-dispatch/impl/`).

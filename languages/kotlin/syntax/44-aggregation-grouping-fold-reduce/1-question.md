@@ -1,12 +1,5 @@
 # kotlin/syntax/44 — 집계·그룹핑 — `groupBy`/`partition`/`fold`/`reduce`/`sumOf` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [42번 주제](../42-transformations-map-flatmap-associate-zip/)(`associateBy` 는 키가 겹치면 덮는다)다.
-> 문항 10개 중 예측형은 5개이고, 그중 코드블록이 붙는 것은 4개다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5**(대비 **rustc 1.92.0 · Python 3.12.3**)에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -134,6 +127,12 @@ fn main() {
 ### 10. 「`sumOf` 가 `fold` 보다 빠르다」 (왜)
 
 - stdlib 소스에서 `sumOf { Int }` 는 `for` 루프 하나다. 이것으로 **「`sumOf` 가 `fold` 보다 빠르다」** 를 말할 수 있는가? 무엇을 재야 하나?
+
+## 실행 환경
+
+선행은 [42번 주제](../42-transformations-map-flatmap-associate-zip/)(`associateBy` 는 키가 겹치면 덮는다)다.
+
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5**(대비 **rustc 1.92.0 · Python 3.12.3**)에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

@@ -1,27 +1,5 @@
 # cpp/syntax/39 — 람다와 캡처 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — Lambda expressions](https://en.cppreference.com/w/cpp/language/lambda)\
-> ★ 이 배치에서 **위 cppreference 쪽을 열어 확인했다** — 「**The implicit capture of `*this` when the capture default is `=` is deprecated.**」(C++20) · `mutable` 은 「**Allows body to modify the objects captured by copy**」 · 람다는 「**a prvalue expression of unique unnamed non-union non-aggregate class type, known as closure type**」 · 템플릿 매개변수 목록이 있는 람다는 **C++20** 이다.
-> **실행 검증** — 이 문서의 모든 출력·진단·리포트는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(★ clang 도 같은 라이브러리 — `std::function`·`std::move_only_function` 칸은 한 구현) · GNU nm 2.42 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`cap01.cpp`·`thiscap.cpp`·`mut01.cpp`·`mo01.cpp`·`gen01.cpp`·`type01.cpp`·`loop01.cpp`·`cap-grid.sh`·`this-grid.sh`).\
-> ★★ **ASan 블록은 `-O0 -fsanitize=address -g -ffile-prefix-map="$PWD"=.`** 로 빌드했고 **값·마커는 표준 오류로** 찍었다(sanitizer 가 `abort` 하면 표준 출력 버퍼가 사라진다 — 규칙 19-A). 블록은 캡처 스크립트가 받은 것이다 — 사람이 옮겨 적은 줄은 없다.
-> **버전** — 람다는 **C++11**, 제네릭 람다(`auto` 매개변수)·초기화 캡처는 **C++14**, `[*this]` 는 **C++17**, `[=]` 의 `this` 암묵 캡처 폐기·`[=, this]`·템플릿 람다는 **C++20**, `std::move_only_function` 은 **C++23** 이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★★ **[09번](../09-rvalue-references-move-and-forward/)과 [30번](../30-dangling-references-and-lifetime-extension/)에서 온다 — 앞 편이 잰 것은 다시 재지 않는다.**\
-> [30번](../30-dangling-references-and-lifetime-extension/) (1)(2) — **탐침 5(람다가 지역을 `[&]` 로 잡아 반환)는 `-O0` ASan 두 컴파일러 다 `stack-use-after-return`** · **`detect_stack_use_after_return` 은 이 판에서 기본으로 켜져 있었고 끄면 놓친다** · **clang 은 `-Wreturn-stack-address` 로 경고했다.**\
-> ★★ **여기서 새로 묻는 것은 「캡처 모양 일곱 × 부르는 때 셋」 전체**다 — 30편의 한 칸을 격자로 넓히고, **`[this]`·초기화 캡처·`std::function`** 을 더한다. [09번](../09-rvalue-references-move-and-forward/) — **`std::move` 는 캐스트이고 옮기는 것은 이동 생성자** — (4)의 `[p = std::move(p)]` 가 그 이동이다.
-> **경계** — 「`std::function` 의 타입 소거 비용」은 목록의 **40번 주제**, 「댕글링 일반과 수명 연장」은 [30번](../30-dangling-references-and-lifetime-extension/), 「`unique_ptr`」은 [26번](../26-unique-ptr-and-ownership-transfer/)이 정본이다.
-> ★★★ **「람다가 인라인된다」는 이 문서가 보이지 않았다** — 역어셈블로 확인하지 않은 인라인 주장은 싣지 않는다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ASan 리포트의 **PID · 주소 · `pc`/`bp`/`sp` · 프레임 오프셋** · 진단 **문구** | ★★★ **리포트 이름**(`stack-use-after-return`·`stack-use-after-scope`) · **`SUMMARY` 의 `파일:줄`** · **`run exit`** · **격자의 마지막 줄** |
-> | ★ `sizeof` 의 값 — **이 ABI 의 관찰**(표준은 클로저의 크기를 정하지 않는다) | ★★★ **`mutable` 없는 변경 · move-only 람다를 `std::function` 에 담기 · 템플릿 람다에 `int` 가 에러인가** |
-
 ## 한눈에 — 쉽게 말하면
 
 **람다는 「도시락」이다.** 만드는 자리에서 **반찬(캡처)** 을 싸서 들고 나간다.
@@ -835,3 +813,26 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **람다의 인라인** — 「람다는 인라인된다」는 **역어셈블로 확인하지 않았다.** 확인하려면 `-O2` 의 `objdump -d` 에서 `operator()` 호출이 사라졌는지 봐야 한다.
 - **`std::function` 의 할당과 크기** — 목록의 **40번 주제**.
 - **구조적 바인딩을 캡처하기(C++20)** — 이 편은 던지지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — Lambda expressions](https://en.cppreference.com/w/cpp/language/lambda)\
+★ 이 배치에서 **위 cppreference 쪽을 열어 확인했다** — 「**The implicit capture of `*this` when the capture default is `=` is deprecated.**」(C++20) · `mutable` 은 「**Allows body to modify the objects captured by copy**」 · 람다는 「**a prvalue expression of unique unnamed non-union non-aggregate class type, known as closure type**」 · 템플릿 매개변수 목록이 있는 람다는 **C++20** 이다.
+**실행 검증** — 이 문서의 모든 출력·진단·리포트는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(★ clang 도 같은 라이브러리 — `std::function`·`std::move_only_function` 칸은 한 구현) · GNU nm 2.42 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`cap01.cpp`·`thiscap.cpp`·`mut01.cpp`·`mo01.cpp`·`gen01.cpp`·`type01.cpp`·`loop01.cpp`·`cap-grid.sh`·`this-grid.sh`).\
+★★ **ASan 블록은 `-O0 -fsanitize=address -g -ffile-prefix-map="$PWD"=.`** 로 빌드했고 **값·마커는 표준 오류로** 찍었다(sanitizer 가 `abort` 하면 표준 출력 버퍼가 사라진다 — 규칙 19-A). 블록은 캡처 스크립트가 받은 것이다 — 사람이 옮겨 적은 줄은 없다.
+**버전** — 람다는 **C++11**, 제네릭 람다(`auto` 매개변수)·초기화 캡처는 **C++14**, `[*this]` 는 **C++17**, `[=]` 의 `this` 암묵 캡처 폐기·`[=, this]`·템플릿 람다는 **C++20**, `std::move_only_function` 은 **C++23** 이다.
+
+★★★ **[09번](../09-rvalue-references-move-and-forward/)과 [30번](../30-dangling-references-and-lifetime-extension/)에서 온다 — 앞 편이 잰 것은 다시 재지 않는다.**\
+[30번](../30-dangling-references-and-lifetime-extension/) (1)(2) — **탐침 5(람다가 지역을 `[&]` 로 잡아 반환)는 `-O0` ASan 두 컴파일러 다 `stack-use-after-return`** · **`detect_stack_use_after_return` 은 이 판에서 기본으로 켜져 있었고 끄면 놓친다** · **clang 은 `-Wreturn-stack-address` 로 경고했다.**\
+★★ **여기서 새로 묻는 것은 「캡처 모양 일곱 × 부르는 때 셋」 전체**다 — 30편의 한 칸을 격자로 넓히고, **`[this]`·초기화 캡처·`std::function`** 을 더한다. [09번](../09-rvalue-references-move-and-forward/) — **`std::move` 는 캐스트이고 옮기는 것은 이동 생성자** — (4)의 `[p = std::move(p)]` 가 그 이동이다.
+**경계** — 「`std::function` 의 타입 소거 비용」은 목록의 **40번 주제**, 「댕글링 일반과 수명 연장」은 [30번](../30-dangling-references-and-lifetime-extension/), 「`unique_ptr`」은 [26번](../26-unique-ptr-and-ownership-transfer/)이 정본이다.
+★★★ **「람다가 인라인된다」는 이 문서가 보이지 않았다** — 역어셈블로 확인하지 않은 인라인 주장은 싣지 않는다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ASan 리포트의 **PID · 주소 · `pc`/`bp`/`sp` · 프레임 오프셋** · 진단 **문구** | ★★★ **리포트 이름**(`stack-use-after-return`·`stack-use-after-scope`) · **`SUMMARY` 의 `파일:줄`** · **`run exit`** · **격자의 마지막 줄** |
+| ★ `sizeof` 의 값 — **이 ABI 의 관찰**(표준은 클로저의 크기를 정하지 않는다) | ★★★ **`mutable` 없는 변경 · move-only 람다를 `std::function` 에 담기 · 템플릿 람다에 `int` 가 에러인가** |

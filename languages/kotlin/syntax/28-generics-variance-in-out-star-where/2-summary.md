@@ -1,18 +1,5 @@
 # kotlin/syntax/28 — 제네릭: 선언 지점 변성 `in`/`out`·star projection·`where` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Generics: in, out, where](https://kotlinlang.org/docs/generics.html) · [Java 에서 Kotlin 호출하기 — Variant generics](https://kotlinlang.org/docs/java-to-kotlin-interop.html#variant-generics) · kotlin-stdlib **2.4.20 소스**(`kotlin-stdlib-sources.jar` 의 `commonMain/kotlin/Collections.kt` — (3)에서 직접 뽑았다).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 9회(컴파일 실패 5벌) · `javac` 3회(실패 2벌) · `java` 4회 · `javap` 3회 · `unzip` 1회 · `csc` 1회(실패가 결과).\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
-> ★ C# 블록의 `csc` 는 [C# 03번](../../../csharp/syntax/03-boxing-and-unboxing/) 머리말의 셸 함수와 같다(`.NET SDK 10.0.401` · `-preferreduilang:en-US`).
-> **버전** — `in`/`out`·`*`·`where`·`@UnsafeVariance` 는 전부 **1.0** 이다. 이 문서에 버전으로 갈리는 항목은 없다.
-> **경계** — `reified` 와 소거는 [12번 주제](../12-reified-type-parameters/)가 정본이다(여기는 **경계만** — 변성은 런타임에 아무것도 아니라는 것까지).\
-> 인터페이스 선언 자체는 [20번 주제](../20-interfaces-default-impl-and-super/), 컬렉션의 읽기 전용 뷰는 [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/)가 정본이다.
-> **대비** — ★★★ Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **18번**([`18-wildcards-pecs/`](../../../java/syntax/18-wildcards-pecs/)) — [README](../README.md) 가 짝으로 지정했다. **같은 변성을 쓰는 쪽(Java)과 선언하는 쪽(Kotlin)** 이다.\
-> TS 갈래 목록([`ts/syntax/README.md`](../../../ts/syntax/README.md))의 **17번**([`17-variance-and-parameter-compatibility/`](../../../ts/syntax/17-variance-and-parameter-compatibility/)) — TS 4.7 도 **`in`/`out`** 을 쓴다. C# 는 이 문서가 직접 던졌다((10)).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **본체는 둘째 창이다** — 「**변성 위반을 컴파일러가 말하게** 하는 창」.
 변성은 **컴파일 타임에만 있는 규칙**이다. 런타임에는 타입 인자가 지워지므로((9)) 실행 출력으로는 **원리상 못 본다** — 에러 문구가 곧 교재다.
 
@@ -816,3 +803,16 @@ X got pear
 - **「PECS」가 Kotlin 에서 사라지지 않은 자리** — Kotlin 에도 사용 지점 투영이 있는 이유는 **`Array` 와 `Mutable*` 이 무공변**이기 때문이다. 그런 타입을 받아 **한쪽으로만** 쓰는 함수(`copy(from, to)`)에서는 여전히 Java 와 **같은 판단**을 한다 — 다른 것은 **그런 함수가 드물어졌다**는 것이다((8)의 개수).
 - **왜 반환에는 와일드카드를 안 붙이나** — Java 호출자가 `List<? extends Number>` 를 받으면 **그 변수에 아무것도 못 넣고, 자기 API 에 다시 넘기기도 불편해진다.** 파라미터에는 붙여 **받는 폭을 넓히고**, 반환에는 안 붙여 **쓰는 쪽의 타입을 깨끗하게** 둔다 — 공식 문서의 번역 규칙이 그 균형이다((9)).
 - **private to this 가 막은 구멍** — (7)의 `poison` 이 통과했다면, `Cell<Int>` 를 `Cell<Any>` 로 올려(공변이라 된다) 문자열을 넣고, 원래 참조로 `Int` 를 꺼내다 **`ClassCastException`** 이 났을 것이다. 컴파일러는 `private` 을 **인스턴스 단위**로 좁혀 그 길을 막는다 — 이 문서는 그 예외를 **실제로 내지는 않았다**(컴파일이 막혀 낼 수 없다).
+
+## 실행 환경
+
+**기준 소스** — [Generics: in, out, where](https://kotlinlang.org/docs/generics.html) · [Java 에서 Kotlin 호출하기 — Variant generics](https://kotlinlang.org/docs/java-to-kotlin-interop.html#variant-generics) · kotlin-stdlib **2.4.20 소스**(`kotlin-stdlib-sources.jar` 의 `commonMain/kotlin/Collections.kt` — (3)에서 직접 뽑았다).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 9회(컴파일 실패 5벌) · `javac` 3회(실패 2벌) · `java` 4회 · `javap` 3회 · `unzip` 1회 · `csc` 1회(실패가 결과).\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
+★ C# 블록의 `csc` 는 [C# 03번](../../../csharp/syntax/03-boxing-and-unboxing/) 「실행 환경」의 셸 함수와 같다(`.NET SDK 10.0.401` · `-preferreduilang:en-US`).
+**버전** — `in`/`out`·`*`·`where`·`@UnsafeVariance` 는 전부 **1.0** 이다. 이 문서에 버전으로 갈리는 항목은 없다.
+**경계** — `reified` 와 소거는 [12번 주제](../12-reified-type-parameters/)가 정본이다(여기는 **경계만** — 변성은 런타임에 아무것도 아니라는 것까지).\
+인터페이스 선언 자체는 [20번 주제](../20-interfaces-default-impl-and-super/), 컬렉션의 읽기 전용 뷰는 [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/)가 정본이다.
+**대비** — ★★★ Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **18번**([`18-wildcards-pecs/`](../../../java/syntax/18-wildcards-pecs/)) — [README](../README.md) 가 짝으로 지정했다. **같은 변성을 쓰는 쪽(Java)과 선언하는 쪽(Kotlin)** 이다.\
+TS 갈래 목록([`ts/syntax/README.md`](../../../ts/syntax/README.md))의 **17번**([`17-variance-and-parameter-compatibility/`](../../../ts/syntax/17-variance-and-parameter-compatibility/)) — TS 4.7 도 **`in`/`out`** 을 쓴다. C# 는 이 문서가 직접 던졌다((10)).

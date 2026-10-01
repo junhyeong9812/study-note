@@ -1,10 +1,5 @@
 # ops-patterns/deadline-propagation — 정리 (힌트)
 
-> 복습은 [1-question.md](1-question.md)에서 시작하고, 막힐 때만 이 파일을 힌트로 연다.\
-> **이 본문은 Claude 작성이며 원고가 아니다** (2026-09-18). 원본 myway 챕터가 없는 개념 주제라 번호 없이 `deadline-propagation/` 에 둔다(`failure-modes/` 선례).\
-> 기준소스는 일반 지식 + 각 제품의 공식 문서다. 설정 이름·기본값·동작은 공식 문서로 대조한 것만 적었다.\
-> 이 문서는 [01-retry-backoff](../01-retry-backoff/)·[02-circuit-breaker](../02-circuit-breaker/)·[03-bulkhead](../03-bulkhead/)·[04-rate-limiter](../04-rate-limiter/)·[05-backpressure](../05-backpressure/)·[06-idempotency-store](../06-idempotency-store/)·[09-stampede](../09-stampede/)·[19-graceful-shutdown](../19-graceful-shutdown/) 을 다시 가르치지 않는다 — 그 패턴들이 **데드라인과 만나면 어떻게 어긋나는지**만 다룬다.
-
 이 문서의 한 문장은 이것이다.\
 **이 작업의 수명(lifetime)을 누가 소유하는가.**\
 클라이언트에만 타임아웃이 있으면 수명의 소유자가 아무도 없다 — 클라이언트는 포기했는데 서버는 모르고, DB는 더더욱 모른다.\
@@ -638,3 +633,7 @@ t=16  C 완료 -> 세 번째
 
 - **데드라인이 너무 짧을 때의 실패 모드** — 모든 요청이 예산 부족으로 입구에서 거절되면 서버는 한가한데 성공률은 0 이다.\
   §5 의 기록(남은 예산이 얼마일 때 취소됐나)이 이 상태를 "일이 느린 것"과 구별해 준다.
+
+## 실행 환경
+
+기준소스는 일반 지식 + 각 제품의 공식 문서다. 설정 이름·기본값·동작은 공식 문서로 대조한 것만 적었다.

@@ -1,7 +1,5 @@
 # api-design 공부 노트 — API 설계 — 요구사항 확정 체크리스트 훈련 (6)
 
-> 커리큘럼상 이 영역의 전체 주제·상태 = [curriculum.md](curriculum.md)(생성 문서) · 진행 기록(원본·진도) = [project/myway](../../project/myway/README.md) — 2026-09-28 cs 재편.
-
 원본: `/home/jun/project/myway/api-design` — 요구사항 지문에서 **확정해야 할 것(lost update·TOCTOU·멱등성 등)을 스스로 나열**하는 훈련. 여기서의 질문은 "이 문제에서 무엇을 확정했어야 했나"가 중심이다.
 공통 규칙·파일 형식은 상위 [cs/README.md](../README.md) 「작성 규칙」을 따른다(2026-09-28 — templates/는 cs에 적용하지 않음).
 
@@ -27,3 +25,7 @@
 ## 챕터 진행 현황
 
 전체 목록과 상태는 [index.md](index.md)에 기록한다. 상태가 바뀔 때마다 갱신한다.
+
+---
+
+커리큘럼상 이 영역의 전체 주제·상태 = [curriculum.md](curriculum.md)(생성 문서) · 진행 기록(원본·진도) = [project/myway](../../project/myway/README.md) — 2026-09-28 cs 재편.

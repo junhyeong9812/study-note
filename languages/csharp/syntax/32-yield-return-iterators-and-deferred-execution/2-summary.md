@@ -1,28 +1,5 @@
 # csharp/syntax/32 — `yield return` 반복자와 지연 실행 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) §13.15 「The yield statement」(Learn 의 명세 링크가 가리키는 절) ·
-> [Learn — `yield` 문](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/yield)(열어서 확인: 「**반복자를 부르면 바로 실행되지 않는다**」 · 「열거를 시작하면 **첫 `yield return` 까지** 실행되고 멈춘다 — 다음 반복마다 **멈춘 `yield return` 뒤에서** 이어진다」 ·\
-> 「`yield` 는 **`in`/`ref`/`out` 매개변수가 있는 메서드 · 람다와 익명 메서드 · `catch`·`finally` 블록 · `catch` 가 딸린 `try` 블록**에서 못 쓴다 — **`finally` 만 딸린 `try`** 에서는 된다」 ·\
-> 「`using` 으로 잡은 자원은 반복자가 끝나거나 **반복자 자체가 `Dispose` 될 때(호출자가 일찍 `break` 할 때 등)** 해제된다」) ·
-> [Learn — C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)(C# 2.0 「Iterators」 — ★ 이 판에서 `-langversion:1` 이 **`CS8022 … 'iterators' … 2 or greater`** 로 확인해 줬다 · (5)).
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. **대비는 실측이다** — **javac 21.0.5** 로 `yield return` 한 줄을 던졌다((5)).
-> **버전** — `yield return`·`yield break` **C# 2** · 지역 함수 **C# 7**(인자 검사를 나누는 관용구 · (2)) · LINQ **C# 3**.
-> **경계** — ★★★ **`foreach` 가 `MoveNext`/`Current`/`Dispose` 로 풀리는 것**은 [31번](../31-ienumerable-and-foreach/)이 정본이다 — 여기는 **그 셋을 컴파일러가 만들어 주는 쪽.**\
-> ★★ **「지역 변수가 컴파일러가 만든 클래스의 필드가 된다」** 는 [28번](../28-lambdas-and-closure-capture/) (1)의 디스플레이 클래스와 **같은 수법**이다 — 여기서는 상태 기계로.\
-> ★★★ **교차 갈래 대비는 인용한다** — [Python 17번](../../../python/syntax/17-generators-yield/) §1 「**호출해도 몸통이 안 돈다**」 · [JS 20번](../../../js/syntax/20-generators/) (1)(「본문은 안 돌지만 **매개변수 목록은 돈다**」)·(3)(`return()` 과 `finally` — **상태에 따라 다르다**) · [JS 19번](../../../js/syntax/19-iterable-protocol-and-for-of/)(소비자 17가지 중 `return()` 을 부르는 자리) · [Go 39번](../../../go/syntax/39-iter-and-custom-iterators/)(**push** 반복자) ·\
-> 게으름 로그 [JS 21번](../../../js/syntax/21-iterator-helpers/) · [Rust 36번](../../../rust/syntax/36-iterator-adapters-laziness-and-collect/) · [Python 44번](../../../python/syntax/44-itertools/) — 세 갈래가 같은 파이프라인으로 **`10 · 10` 대 `4 · 4`** 를 냈다. **C# LINQ 로 한 칸 더**((6)).
-> ★★★ **본체 창은 ③ 리플렉션 + ① IL 덤프다** — 「상태 기계」는 **컴파일러가 만든 클래스의 필드와 `MoveNext` 의 `switch`** 로만 보인다. 「언제 도나」는 **실행 로그**가 짝이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** · 진단 **순서**(배너에 `sort`) · IL **오프셋 폭** | ★★★ **진단 코드**(`CS1621`·`CS1622`·`CS1623`·`CS1624`·`CS1625`·`CS1626`·`CS1631`·`CS8022`) · **옵코드**(`newobj <Numbers>d__0` · `switch` · `stfld <>1__state`) |
-> | ★ 컴파일러가 지은 **이름의 숫자**(`d__0` · `<i>5__2`) — Roslyn 구현 | ★★★ 이름의 **모양**(`<메서드>d__N` · `<>1__state` · `<>2__current` · `<>3__매개변수`) · **상태 값**(`-2` · `0` · `1` · `-1`) |
-> | 증분의 절댓값 일부(규칙 24) | ★★★ **실행 로그의 줄 수와 순서** · **「finally 가 돈 소비자 N / M」** · 호출 수 **`4 · 4`** · **「네 판에서 갈린 줄 N / M」** |
-
 ## 이 판
 
 ```text
@@ -781,3 +758,27 @@ Console.WriteLine($"{string.Join(",", Evens(8))} · {string.Join(",", UntilNegat
 - ★ **`Reset()`** — 반복자의 `Reset` 은 `NotSupportedException` 을 던진다고 알려져 있다. **이 판에서 안 불렀다.**
 - ★ **여러 스레드에서 같은 반복자 결과를 동시에 `GetEnumerator`** — `<>l__initialThreadId` 가 그 판단에 쓰인다((3)). **스레드 실험은 안 돌렸다.**
 - ★ **Dispose 뒤 상태를 `-2` 로 되돌리는 것이 언제부터의 Roslyn 인가** — 옛 컴파일러는 확인하지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) §13.15 「The yield statement」(Learn 의 명세 링크가 가리키는 절) ·
+[Learn — `yield` 문](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/yield)(열어서 확인: 「**반복자를 부르면 바로 실행되지 않는다**」 · 「열거를 시작하면 **첫 `yield return` 까지** 실행되고 멈춘다 — 다음 반복마다 **멈춘 `yield return` 뒤에서** 이어진다」 ·\
+「`yield` 는 **`in`/`ref`/`out` 매개변수가 있는 메서드 · 람다와 익명 메서드 · `catch`·`finally` 블록 · `catch` 가 딸린 `try` 블록**에서 못 쓴다 — **`finally` 만 딸린 `try`** 에서는 된다」 ·\
+「`using` 으로 잡은 자원은 반복자가 끝나거나 **반복자 자체가 `Dispose` 될 때(호출자가 일찍 `break` 할 때 등)** 해제된다」) ·
+[Learn — C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)(C# 2.0 「Iterators」 — ★ 이 판에서 `-langversion:1` 이 **`CS8022 … 'iterators' … 2 or greater`** 로 확인해 줬다 · (5)).
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. **대비는 실측이다** — **javac 21.0.5** 로 `yield return` 한 줄을 던졌다((5)).
+**버전** — `yield return`·`yield break` **C# 2** · 지역 함수 **C# 7**(인자 검사를 나누는 관용구 · (2)) · LINQ **C# 3**.
+**경계** — ★★★ **`foreach` 가 `MoveNext`/`Current`/`Dispose` 로 풀리는 것**은 [31번](../31-ienumerable-and-foreach/)이 정본이다 — 여기는 **그 셋을 컴파일러가 만들어 주는 쪽.**\
+★★ **「지역 변수가 컴파일러가 만든 클래스의 필드가 된다」** 는 [28번](../28-lambdas-and-closure-capture/) (1)의 디스플레이 클래스와 **같은 수법**이다 — 여기서는 상태 기계로.\
+★★★ **교차 갈래 대비는 인용한다** — [Python 17번](../../../python/syntax/17-generators-yield/) §1 「**호출해도 몸통이 안 돈다**」 · [JS 20번](../../../js/syntax/20-generators/) (1)(「본문은 안 돌지만 **매개변수 목록은 돈다**」)·(3)(`return()` 과 `finally` — **상태에 따라 다르다**) · [JS 19번](../../../js/syntax/19-iterable-protocol-and-for-of/)(소비자 17가지 중 `return()` 을 부르는 자리) · [Go 39번](../../../go/syntax/39-iter-and-custom-iterators/)(**push** 반복자) ·\
+게으름 로그 [JS 21번](../../../js/syntax/21-iterator-helpers/) · [Rust 36번](../../../rust/syntax/36-iterator-adapters-laziness-and-collect/) · [Python 44번](../../../python/syntax/44-itertools/) — 세 갈래가 같은 파이프라인으로 **`10 · 10` 대 `4 · 4`** 를 냈다. **C# LINQ 로 한 칸 더**((6)).
+★★★ **본체 창은 ③ 리플렉션 + ① IL 덤프다** — 「상태 기계」는 **컴파일러가 만든 클래스의 필드와 `MoveNext` 의 `switch`** 로만 보인다. 「언제 도나」는 **실행 로그**가 짝이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** · 진단 **순서**(배너에 `sort`) · IL **오프셋 폭** | ★★★ **진단 코드**(`CS1621`·`CS1622`·`CS1623`·`CS1624`·`CS1625`·`CS1626`·`CS1631`·`CS8022`) · **옵코드**(`newobj <Numbers>d__0` · `switch` · `stfld <>1__state`) |
+| ★ 컴파일러가 지은 **이름의 숫자**(`d__0` · `<i>5__2`) — Roslyn 구현 | ★★★ 이름의 **모양**(`<메서드>d__N` · `<>1__state` · `<>2__current` · `<>3__매개변수`) · **상태 값**(`-2` · `0` · `1` · `-1`) |
+| 증분의 절댓값 일부(규칙 24) | ★★★ **실행 로그의 줄 수와 순서** · **「finally 가 돈 소비자 N / M」** · 호출 수 **`4 · 4`** · **「네 판에서 갈린 줄 N / M」** |

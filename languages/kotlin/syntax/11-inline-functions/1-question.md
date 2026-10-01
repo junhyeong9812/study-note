@@ -1,15 +1,5 @@
 # kotlin/syntax/11 — 인라인 함수: `noinline`/`crossinline`·비지역 `return` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ★★ **선행은 [10번 주제](../10-lambdas-and-higher-order-functions/)다** — 람다가 `Function1` 객체가 되고
-> 박싱이 어디서 나는지를 모르면 이 주제는 「무엇을 없애는지」가 안 보인다.
-> 이 주제는 [12번 주제](../12-reified-type-parameters/)의 **전제**이고, [목록의 **14번 주제**](../14-scope-functions/)의 뿌리다.
-> 라벨과 비지역 `break`/`continue` 는 [07번 주제](../07-loops-ranges-and-labels/)가 정본이다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다 — 10번만 타깃을 따로 묻는다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -162,6 +152,15 @@ internal inline fun internalOk(x: Int): Int = secret(x)     // [F]
 - 람다가 `invokedynamic` + `Function1` 이 되는 것의 정본은 어느 주제인가?
 - 인라인 람다 안에서 **바깥 루프**를 `break` 하는 것은 몇 버전부터이고 정본은 어디인가?
 - `let`/`run`/`with`/`apply`/`also` 는 이 주제와 무슨 관계인가?
+
+## 실행 환경
+
+★★ **선행은 [10번 주제](../10-lambdas-and-higher-order-functions/)다** — 람다가 `Function1` 객체가 되고
+박싱이 어디서 나는지를 모르면 이 주제는 「무엇을 없애는지」가 안 보인다.
+이 주제는 [12번 주제](../12-reified-type-parameters/)의 **전제**이고, [목록의 **14번 주제**](../14-scope-functions/)의 뿌리다.
+라벨과 비지역 `break`/`continue` 는 [07번 주제](../07-loops-ranges-and-labels/)가 정본이다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다 — 10번만 타깃을 따로 묻는다.
 
 ## 복습 기록
 

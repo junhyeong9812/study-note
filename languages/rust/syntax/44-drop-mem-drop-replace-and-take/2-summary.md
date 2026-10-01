@@ -1,17 +1,5 @@
 # rust/syntax/44 — `Drop` · `mem::drop` · `mem::replace`/`take` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Reference — Destructors](https://doc.rust-lang.org/reference/destructors.html)(drop 스코프 · 임시값 스코프 · 임시값 수명 연장 · 되감기 없는 종료) ·
-> [Reference — Wildcard pattern](https://doc.rust-lang.org/reference/patterns.html#wildcard-pattern)(「it does not copy, move or borrow the value it matches」) ·
-> [std — `Drop`](https://doc.rust-lang.org/std/ops/trait.Drop.html) · [std — `mem::take`](https://doc.rust-lang.org/std/mem/fn.take.html) · [std — `mem::forget`](https://doc.rust-lang.org/std/mem/fn.forget.html)(§Safety) ·
-> [cppreference — throw](https://en.cppreference.com/w/cpp/language/throw)(잡히지 않은 예외의 되감기는 **구현 정의**).
-> ★ Reference·std 는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. cppreference 는 웹에서 해당 문장을 확인했다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> **`rustc --edition 2021 <파일>.rs`** 로(`-C panic=abort` 판 하나) 돌려 받은 것이다. C++ 대비는 `g++ 13.3.0 -std=c++20 -Wall -Wextra -pedantic`.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★ **속도·메모리는 재지 않았다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체 창 — ① `Drop` 순서 로그의 격자(문장마다 「어디서 `drop` 줄이 찍히나」)다.** 해제 시점은 컴파일러가 말해 주지 않으므로 **출력 순서**로 본다(09번의 창).
 
 ## 흔들리는 칸 / 안 흔들리는 칸
@@ -85,7 +73,7 @@
 | ④ ★ **C++ `g++` 대비** | 잡히지 않은 예외에서 소멸자가 도나 | 쓴다((5)) |
 | 지역·필드·튜플·`Vec`·인자 순서 | — | ★ **이미 잰 것** — 09번 (6) |
 | `Copy` + `Drop` | — | ★ **이미 잰 것** — 09번 (3)의 E0184 |
-| 메모리가 반납됐나 | 「`forget` 은 샌다」의 바이트 | ★ **못 잰 것** — 메모리 도구가 없다(41번 머리말 블록). **`drop` 줄이 안 찍혔다**까지만 말한다 |
+| 메모리가 반납됐나 | 「`forget` 은 샌다」의 바이트 | ★ **못 잰 것** — 메모리 도구가 없다(41번 맨 위 부분 블록). **`drop` 줄이 안 찍혔다**까지만 말한다 |
 
 ★★ **제5의 상태 — 「같은 질문을 다른 창으로」.** 「`let _ = x` 는 `x` 를 버리나」를 `drop` 로그로만 물으면 **「블록 끝에 찍혔다」는 답이 `let _y = x`(이동)와 똑같다** — 로그가 둘을 못 가른다. 그래서 질문을 **「그 뒤에 `x` 를 쓸 수 있나」** 로 바꿔 **컴파일러**(②)에게 물었다((2)).
 
@@ -836,3 +824,15 @@ drop b
 - `ManuallyDrop<T>` — `forget` 을 값의 타입으로 옮긴 것(필드 단위로 소멸자를 끈다). **이 문서는 던지지 않았다.**
 - 패닉 중 `drop` 에서 **또 패닉하면** 프로세스가 abort 된다(std `Drop` 문서의 Panics 절). **던지지 않았다.**
 - 2024 에디션의 **꼬리식 임시값** 규칙 변화 — [42번](../42-refcell-cell-interior-mutability/) (2)와 [11번](../11-borrow-checker-rejections/) 10번.
+
+## 실행 환경
+
+**기준 소스** — [Reference — Destructors](https://doc.rust-lang.org/reference/destructors.html)(drop 스코프 · 임시값 스코프 · 임시값 수명 연장 · 되감기 없는 종료) ·
+[Reference — Wildcard pattern](https://doc.rust-lang.org/reference/patterns.html#wildcard-pattern)(「it does not copy, move or borrow the value it matches」) ·
+[std — `Drop`](https://doc.rust-lang.org/std/ops/trait.Drop.html) · [std — `mem::take`](https://doc.rust-lang.org/std/mem/fn.take.html) · [std — `mem::forget`](https://doc.rust-lang.org/std/mem/fn.forget.html)(§Safety) ·
+[cppreference — throw](https://en.cppreference.com/w/cpp/language/throw)(잡히지 않은 예외의 되감기는 **구현 정의**).
+★ Reference·std 는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. cppreference 는 웹에서 해당 문장을 확인했다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+**`rustc --edition 2021 <파일>.rs`** 로(`-C panic=abort` 판 하나) 돌려 받은 것이다. C++ 대비는 `g++ 13.3.0 -std=c++20 -Wall -Wextra -pedantic`.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★ **속도·메모리는 재지 않았다.**

@@ -1,10 +1,5 @@
 # web-api/04 — `textContent` 대 `innerHTML` 대 `innerText`: 파싱·비용·XSS — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 와 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** `innerText` 는 특히 엔진 차이가 남아 있을 수 있는 자리다.
-
 **★ 이 주제에는 흔들리는 칸이 있다.** 네 주제 중 여기만 그렇다.
 
 | 안 흔들리는 칸 | 흔들리는 칸 |
@@ -496,3 +491,9 @@ const med = a => a.slice().sort((x, y) => x - y)[(a.length - 1) >> 1];
 - **분해능(resolution)** — 측정 도구가 구분할 수 있는 최소 간격. 여기서는 100마이크로초.
 - **중앙값(median)** — 여러 판을 크기순으로 늘어놓았을 때 가운데 값.
 - **Baseline** — 웹 플랫폼 기능의 지원 상태 기준. `newly`·`widely`·`limited` 로 나뉜다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 와 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** `innerText` 는 특히 엔진 차이가 남아 있을 수 있는 자리다.

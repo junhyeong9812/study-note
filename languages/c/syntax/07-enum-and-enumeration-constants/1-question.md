@@ -1,15 +1,5 @@
 # c/syntax/07 — `enum` 과 열거 상수: 이름이 붙은 정수일 뿐이다 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **예측형 위주**다 — 아는지가 아니라 **출력을 맞힐 수 있는지**를 묻는다.
-> **환경** — gcc 13.3.0 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra`.\
-> 표준 버전이나 `-pedantic`·`-fshort-enums` 가 답을 바꾸는 문항은 **문항 안에 적었다.**
-> ★ **이 주제에는 UB 가 없다.** 그래서 sanitizer 가 할 일이 없고,
-> **「어느 플래그가 몇 건을 말하나」를 세는 것**이 유일한 검사다. 문항마다 그것을 묻는다.
-> 선행 — [`02-basic-types-sizes-and-fixed-width-integers/`](../02-basic-types-sizes-and-fixed-width-integers/).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -148,6 +138,14 @@ enum { BUFSZ = 256 };
 - 그 둘을 안 쓸 거면 `#define` 과 무엇이 다른가?
 - 크기·부호가 중요한 자리(파일 형식·구조체 멤버)에서는 무엇을 쓰는가?
 - 이 주제의 결론을 빌드 플래그 한 줄로 쓰면?
+
+## 실행 환경
+
+**환경** — gcc 13.3.0 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra`.\
+표준 버전이나 `-pedantic`·`-fshort-enums` 가 답을 바꾸는 문항은 **문항 안에 적었다.**
+★ **이 주제에는 UB 가 없다.** 그래서 sanitizer 가 할 일이 없고,
+**「어느 플래그가 몇 건을 말하나」를 세는 것**이 유일한 검사다. 문항마다 그것을 묻는다.
+선행 — [`02-basic-types-sizes-and-fixed-width-integers/`](../02-basic-types-sizes-and-fixed-width-integers/).
 
 ## 복습 기록
 

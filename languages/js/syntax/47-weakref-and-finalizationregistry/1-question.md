@@ -1,20 +1,5 @@
 # js/syntax/47 — `WeakRef`·`FinalizationRegistry`: 「약한 참조로 무엇이 보이나 — 그중 명세가 약속한 것은 어느 쪽인가」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1 · v20.19.6(`--expose-gc` 유무) · Google Chrome 151(`--js-flags=--expose-gc` 유무) · Python 3.12.3 · x86-64 Linux.
->
-> ★★★ **이 주제의 본체는 층 가르기다** — 같은 숫자가 **명세 보장 / 호스트 / 이 판의 관찰** 중 어디에 속하나. 도구는 관찰 격자(8칸 × 20판 × 판 넷). **1번 · 2번 · 5번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **`gc()` 가 있고 없음 · 부르고 안 부름 · 기다림의 종류마다 무엇이 보이나**
-> ② ★★★ **「동기 실행이 끝날 때까지 살려 둔다」 의 끝은 어디인가 · `deref()` 는 무엇을 하나**
-> ③ ★★ **`gc()` 없이 기대할 수 있는 것 · CPython 과의 차이.**
->
-> **선행** — [23](../23-map-set-and-weak-collections/2-summary.md) · [06](../06-scope-and-closures/2-summary.md) · [36](../36-event-loop-and-microtasks/2-summary.md).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 문항(1\~4)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -274,6 +259,14 @@ async function round(wait) {
 ### 9. 정리를 무엇에 맡기나 (연결) ★★
 
 - ★★ 4번의 CPython 결과와 1번의 결과를 견주면, 「객체가 사라질 때 자원을 닫는다」 는 설계는 두 언어에서 각각 무엇에 기대나? JS 에서는 무엇으로 대신하나?
+
+## 실행 환경
+
+**환경** — node v18.19.1 · v20.19.6(`--expose-gc` 유무) · Google Chrome 151(`--js-flags=--expose-gc` 유무) · Python 3.12.3 · x86-64 Linux.
+
+★★★ **이 주제의 본체는 층 가르기다** — 같은 숫자가 **명세 보장 / 호스트 / 이 판의 관찰** 중 어디에 속하나. 도구는 관찰 격자(8칸 × 20판 × 판 넷). **1번 · 2번 · 5번 문항이 이 주제의 중심이다.**
+
+**선행** — [23](../23-map-set-and-weak-collections/2-summary.md) · [06](../06-scope-and-closures/2-summary.md) · [36](../36-event-loop-and-microtasks/2-summary.md).
 
 ## 복습 기록
 

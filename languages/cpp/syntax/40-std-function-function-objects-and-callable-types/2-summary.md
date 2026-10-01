@@ -1,27 +1,5 @@
 # cpp/syntax/40 — `std::function`·함수 객체·호출 가능 타입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `std::function`](https://en.cppreference.com/w/cpp/utility/functional/function) · [`std::function` 생성자](https://en.cppreference.com/w/cpp/utility/functional/function/function) · [`std::bad_function_call`](https://en.cppreference.com/w/cpp/utility/functional/bad_function_call)\
-> ★ 이 배치에서 **위 cppreference 세 쪽을 열어 확인했다** — `std::function` 은 「**can store, copy, and invoke any CopyConstructible Callable target -- functions (via pointers thereto), lambda expressions, bind expressions, or other function objects, as well as pointers to member functions**」 · 「**Invoking the target of an empty std::function results in std::bad_function_call exception being thrown.**」 · 생성자 쪽의 「**When the target is a function pointer or a std::reference_wrapper, small object optimization is guaranteed … no dynamic allocation takes place.**」 · 「**Other large objects may be constructed in dynamic allocated storage**」(★ **「may」 — 어디서부터 힙인지는 적혀 있지 않다**).
-> **실행 검증** — 이 문서의 모든 출력·진단·역어셈블은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(★★ **clang 도 같은 라이브러리** — `std::function` 의 크기·할당 칸은 **한 구현**이다. `-stdlib=libc++` 는 이 머신에 libc++ 가 없어 링크에서 막힌다 — 두 번째 구현은 **못 잰 것**) · GNU objdump 2.42 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`hold01.cpp`·`sbo01.cpp`·`ind01.cpp`·`empty01.cpp`·`ctx01.cpp`·`hold-grid.sh`·`sbo-grid.sh`·`ind-grid.sh`). 블록은 캡처 스크립트가 받은 것이다 — 사람이 옮겨 적은 줄은 없다.
-> **버전** — `std::function`·`std::bind`·람다는 **C++11**, `std::invoke` 는 **C++17**, `std::move_only_function` 은 **C++23** 이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★★ **[39번](../39-lambdas-and-captures/)에서 온다 — 앞 편이 잰 것은 다시 재지 않는다.**\
-> [39번](../39-lambdas-and-captures/) (4)(6) — **람다 타입은 식마다 고유(`same type = 0`)** · **`sizeof` 가 캡처 크기**(`[]` 1 · `[x]` 4 · `[x, d]` 16) · **캡처 없는 람다는 함수 포인터로 바뀐다** · **move-only 람다는 `std::function` 에 못 담는다(`std::function target must be copy-constructible`) · C++23 `std::move_only_function` 은 담는다.**\
-> ★★ **여기서 새로 묻는 것은 셋이다** — ① **일곱 가지 호출 가능 × 받는 자리 넷** 전체 격자 · ② **담을 때 힙을 쓰나**(할당 횟수) · ③ **부를 때 간접 호출이 남나**(역어셈블).
-> **C 갈래와 잇기** — [C 갈래 35번](../../../c/syntax/35-function-pointers-and-callback-tables/)(함수 포인터와 콜백 테이블)이 **테이블 호출은 `-O2` 에서 `jmp [rdx+rax*8]` 한 줄**임을 보였다. 여기서는 **C 식 `void*` 문맥 콜백**과 `std::function` 을 나란히 놓는다((5)).
-> **경계** — 「람다의 캡처와 수명」은 [39번](../39-lambdas-and-captures/), 「템플릿 인자 추론」은 [31번](../31-function-templates-and-argument-deduction/), 「`unique_ptr` 의 복사 금지」는 [26번](../26-unique-ptr-and-ownership-transfer/)이 정본이다.
-> ★★★ **「`std::function` 은 느리다」는 이 문서가 싣지 않는다 — 시간을 재지 않았다.** 실은 것은 **할당 횟수 · `sizeof` · 역어셈블의 간접 분기 수**라는 **결정적 칸**뿐이다(규칙 24).
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** · 역어셈블의 **오프셋·명령 줄 수**(판마다 다르다) · 진단의 **총 줄 수** | ★★★ **담기 격자의 통과 칸** · **할당 횟수(네 판 동일)** · **간접 분기가 남았나(0 / 1)** · **`cc exit`/`run exit`** · **격자의 마지막 줄** |
-> | ★ `sizeof` 와 **힙으로 가는 문턱(16 바이트)** — **libstdc++ 13 의 관찰**(표준은 정하지 않는다) | ★★★ **함수 포인터·`std::reference_wrapper` 는 힙 0 회** — 이것만은 **cppreference 가 「guaranteed」** 라고 적는다 |
-
 ## 한눈에 — 쉽게 말하면
 
 **`std::function` 은 「만능 콘센트 어댑터」다.** 벽에 꽂는 쪽은 **모양이 하나**(`int(int)`)이고, 반대쪽에는 **어떤 플러그든** 꽂힌다.
@@ -794,3 +772,26 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **`std::move_only_function` 의 크기와 문턱** — 이 편은 **재지 않았다.** 같은 할당 계수기로 `-std=c++23` 을 던지면 된다.
 - **번역 단위를 넘은 호출** — `use_function` 을 다른 `.cpp` 에서 부르면 LTO 없이는 (4)의 `use_local` 같은 제거가 안 된다고 예상되지만 **던지지 않았다.**
 - **libc++ 의 SBO** — 이 머신에 libc++ 가 없어 **못 잰 것**이다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `std::function`](https://en.cppreference.com/w/cpp/utility/functional/function) · [`std::function` 생성자](https://en.cppreference.com/w/cpp/utility/functional/function/function) · [`std::bad_function_call`](https://en.cppreference.com/w/cpp/utility/functional/bad_function_call)\
+★ 이 배치에서 **위 cppreference 세 쪽을 열어 확인했다** — `std::function` 은 「**can store, copy, and invoke any CopyConstructible Callable target -- functions (via pointers thereto), lambda expressions, bind expressions, or other function objects, as well as pointers to member functions**」 · 「**Invoking the target of an empty std::function results in std::bad_function_call exception being thrown.**」 · 생성자 쪽의 「**When the target is a function pointer or a std::reference_wrapper, small object optimization is guaranteed … no dynamic allocation takes place.**」 · 「**Other large objects may be constructed in dynamic allocated storage**」(★ **「may」 — 어디서부터 힙인지는 적혀 있지 않다**).
+**실행 검증** — 이 문서의 모든 출력·진단·역어셈블은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(★★ **clang 도 같은 라이브러리** — `std::function` 의 크기·할당 칸은 **한 구현**이다. `-stdlib=libc++` 는 이 머신에 libc++ 가 없어 링크에서 막힌다 — 두 번째 구현은 **못 잰 것**) · GNU objdump 2.42 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`hold01.cpp`·`sbo01.cpp`·`ind01.cpp`·`empty01.cpp`·`ctx01.cpp`·`hold-grid.sh`·`sbo-grid.sh`·`ind-grid.sh`). 블록은 캡처 스크립트가 받은 것이다 — 사람이 옮겨 적은 줄은 없다.
+**버전** — `std::function`·`std::bind`·람다는 **C++11**, `std::invoke` 는 **C++17**, `std::move_only_function` 은 **C++23** 이다.
+
+★★★ **[39번](../39-lambdas-and-captures/)에서 온다 — 앞 편이 잰 것은 다시 재지 않는다.**\
+[39번](../39-lambdas-and-captures/) (4)(6) — **람다 타입은 식마다 고유(`same type = 0`)** · **`sizeof` 가 캡처 크기**(`[]` 1 · `[x]` 4 · `[x, d]` 16) · **캡처 없는 람다는 함수 포인터로 바뀐다** · **move-only 람다는 `std::function` 에 못 담는다(`std::function target must be copy-constructible`) · C++23 `std::move_only_function` 은 담는다.**\
+★★ **여기서 새로 묻는 것은 셋이다** — ① **일곱 가지 호출 가능 × 받는 자리 넷** 전체 격자 · ② **담을 때 힙을 쓰나**(할당 횟수) · ③ **부를 때 간접 호출이 남나**(역어셈블).
+**C 갈래와 잇기** — [C 갈래 35번](../../../c/syntax/35-function-pointers-and-callback-tables/)(함수 포인터와 콜백 테이블)이 **테이블 호출은 `-O2` 에서 `jmp [rdx+rax*8]` 한 줄**임을 보였다. 여기서는 **C 식 `void*` 문맥 콜백**과 `std::function` 을 나란히 놓는다((5)).
+**경계** — 「람다의 캡처와 수명」은 [39번](../39-lambdas-and-captures/), 「템플릿 인자 추론」은 [31번](../31-function-templates-and-argument-deduction/), 「`unique_ptr` 의 복사 금지」는 [26번](../26-unique-ptr-and-ownership-transfer/)이 정본이다.
+★★★ **「`std::function` 은 느리다」는 이 문서가 싣지 않는다 — 시간을 재지 않았다.** 실은 것은 **할당 횟수 · `sizeof` · 역어셈블의 간접 분기 수**라는 **결정적 칸**뿐이다(규칙 24).
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** · 역어셈블의 **오프셋·명령 줄 수**(판마다 다르다) · 진단의 **총 줄 수** | ★★★ **담기 격자의 통과 칸** · **할당 횟수(네 판 동일)** · **간접 분기가 남았나(0 / 1)** · **`cc exit`/`run exit`** · **격자의 마지막 줄** |
+| ★ `sizeof` 와 **힙으로 가는 문턱(16 바이트)** — **libstdc++ 13 의 관찰**(표준은 정하지 않는다) | ★★★ **함수 포인터·`std::reference_wrapper` 는 힙 0 회** — 이것만은 **cppreference 가 「guaranteed」** 라고 적는다 |

@@ -1,13 +1,5 @@
 # web-api/17 — `stopPropagation` 대 `preventDefault`: 전파를 멈추는 것과 기본 동작을 막는 것 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★ **이 편의 본체는 「멈춤 × 막음」 2×2 격자**다 — 창 ④(조상 리스너가 불렸나)와 창 ②(기본 동작이 일어났나)를 **한 표의 두 칸**으로 세우고, 그 표를 **진짜 입력**으로 채운다.\
-> **기준 소스** — [WHATWG DOM Standard — Events](https://dom.spec.whatwg.org/#events) 의 「`stopPropagation()`」·「`stopImmediatePropagation()`」·「set the canceled flag」·「dispatch」(activation behavior 부분) 절, [HTML Standard — `input` 요소](https://html.spec.whatwg.org/multipage/input.html) 의 「legacy-pre-activation behavior」·「legacy-canceled-activation behavior」, [HTML Standard — Links](https://html.spec.whatwg.org/multipage/links.html) 의 「`a` 요소의 activation behavior」. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **링크 이동·체크박스 토글·폼 제출은 CDP 로 넣은 진짜 클릭과 진짜 키**로 일으켰고, 같은 격자를 **합성 세 가지**로도 던져 견줬다. 하네스는 [16번 주제](../16-event-propagation-phases/2-summary.md)의 (1)에 있다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — [16번 주제](../16-event-propagation-phases/2-summary.md)(경로와 세 단계). 여기는 그 경로를 **어디서 끊나**와, 경로와 **상관없이 따로 도는** 기본 동작이다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -806,3 +798,11 @@ $ python3 wa16b-cdp.py page wa16b-17-more.html | sed -n '6,8p'
 - **`form.submit()` 은 `submit` 이벤트를 안 내고, `form.requestSubmit()` 은 낸다** — 폼 제출 모델의 몫이라 던지지 않았다.
 - **`on*` 속성 핸들러의 `return false` 가 취소가 되는 것**은 (6)에서 `onclick` 하나만 던졌다. 다른 이벤트 타입의 예외 규칙(반환값을 거꾸로 읽는 타입이 있다는 설명)은 **확인하지 않았다.**
 - **`passive` 리스너에서 `preventDefault()` 가 조용히 무시되는 것**과 **진짜 휠·터치에서 `cancelable` 자체가 `false` 가 되는 것**은 [19번 주제](../19-passive-and-scroll/2-summary.md)에서 진짜 입력으로 쟀다.
+
+## 실행 환경
+
+★ **이 편의 본체는 「멈춤 × 막음」 2×2 격자**다 — 창 ④(조상 리스너가 불렸나)와 창 ②(기본 동작이 일어났나)를 **한 표의 두 칸**으로 세우고, 그 표를 **진짜 입력**으로 채운다.\
+**기준 소스** — [WHATWG DOM Standard — Events](https://dom.spec.whatwg.org/#events) 의 「`stopPropagation()`」·「`stopImmediatePropagation()`」·「set the canceled flag」·「dispatch」(activation behavior 부분) 절, [HTML Standard — `input` 요소](https://html.spec.whatwg.org/multipage/input.html) 의 「legacy-pre-activation behavior」·「legacy-canceled-activation behavior」, [HTML Standard — Links](https://html.spec.whatwg.org/multipage/links.html) 의 「`a` 요소의 activation behavior」. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **링크 이동·체크박스 토글·폼 제출은 CDP 로 넣은 진짜 클릭과 진짜 키**로 일으켰고, 같은 격자를 **합성 세 가지**로도 던져 견줬다. 하네스는 [16번 주제](../16-event-propagation-phases/2-summary.md)의 (1)에 있다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — [16번 주제](../16-event-propagation-phases/2-summary.md)(경로와 세 단계). 여기는 그 경로를 **어디서 끊나**와, 경로와 **상관없이 따로 도는** 기본 동작이다.

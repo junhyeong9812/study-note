@@ -1,14 +1,5 @@
 # kotlin/syntax/08 — 함수 선언: 기본 인자·이름 붙인 인자·단일 표현식 함수 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [01번 주제](../01-val-var-and-basic-types/)다. 이 주제는 [09번](../09-varargs-spread-local-and-infix-functions/)의 뿌리다.
-> Java 쪽 짝은 [`../../../java/syntax/08-method-declaration-overloading/`](../../../java/syntax/08-method-declaration-overloading/),
-> 기본값 평가 시점의 반대편은 [`../../../python/syntax/20-mutable-default-args/`](../../../python/syntax/20-mutable-default-args/)다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -146,6 +137,14 @@ KKt.greet("준");       // ?
 - 생성자의 기본 인자는 어떤 마커 타입을 쓰며, 클래스 선언의 정본은 어느 주제인가?
 - `@JvmStatic`·`@JvmName` 까지 포함한 상호운용 애너테이션 전체의 정본은 어느 주제인가?
 - `data class` 의 어느 멤버가 기본 인자의 대표 사례인가?
+
+## 실행 환경
+
+선행은 [01번 주제](../01-val-var-and-basic-types/)다. 이 주제는 [09번](../09-varargs-spread-local-and-infix-functions/)의 뿌리다.
+Java 쪽 짝은 [`../../../java/syntax/08-method-declaration-overloading/`](../../../java/syntax/08-method-declaration-overloading/),
+기본값 평가 시점의 반대편은 [`../../../python/syntax/20-mutable-default-args/`](../../../python/syntax/20-mutable-default-args/)다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
 
 ## 복습 기록
 

@@ -1,16 +1,5 @@
 # sql/41-JSON 타입과 함수 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · JSON Types](https://www.postgresql.org/docs/18/datatype-json.html) · [PostgreSQL 18 · JSON Functions and Operators](https://www.postgresql.org/docs/18/functions-json.html) · [MySQL 8.4 · The JSON Data Type](https://dev.mysql.com/doc/refman/8.4/en/json.html) · [MySQL 8.4 · JSON Functions](https://dev.mysql.com/doc/refman/8.4/en/json-functions.html) · [MySQL 8.4 · CREATE INDEX](https://dev.mysql.com/doc/refman/8.4/en/create-index.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> 표는 기존 `emp`·`dept` 만 썼고 **JSON 문서는 CTE 안에서 리터럴로 만들었다.** **새로 만든 표가 없다.**\
-> ★ **딱 한 자리만 실행으로 확인하지 못했다** — **MySQL 의 인덱스 생성**(10번 절). 이 작업이 **표 생성 금지**라 `CREATE TABLE`·`ALTER TABLE` 을 던질 수 없었다. 그 자리는 **매뉴얼 인용으로만** 적었고 본문에 그렇게 밝혔다. PG 쪽 인덱스는 **카탈로그 조회로 실행 확인**했다.\
-> **버전** — PG 의 SQL/JSON 경로 언어(`jsonpath`·`@?`·`@@`)는 **12 부터**, `JSON_TABLE` 은 **17 부터**(릴리스 노트 확인). MySQL 의 `JSON_TABLE` 은 **8.0.4 부터**, `JSON_VALUE` 는 **8.0.21 부터**(릴리스 노트 확인).\
-> **선행** — [35 타입 체계와 캐스팅](../35-type-system-and-casting/). **이 주제는 그 편의 결론이 가장 크게 재현되는 자리다.**
-
 ## 한눈에 — 쉽게 말하면
 
 **JSON 열은 「한 칸 안에 서류 한 장을 통째로 넣는 것」이다. 엔진은 그 서류를 읽어 주지만, 서류의 내용은 보증하지 않는다.**
@@ -905,3 +894,13 @@ JSON_EXTRACT(doc, '$.a')
 - **PG 의 `jsonb` 부분 갱신은 문서 전체를 다시 쓴다.** 큰 문서에서 잦은 갱신은 비싸다 — 자주 바뀌는 값일수록 열로 빼는 이유가 하나 더 있다.
 - **JSON 을 키로 조인하면 팬아웃이 보이지 않는다** — 배열을 펴면 행이 불어난다([25번](../25-join-fan-out/)). 펴기 전후의 행 수를 세어 두라.
 - **`JSON_TABLE` 이 두 엔진에 다 있다는 것**이 이 주제에서 가장 쓸 만한 공통 지대다. 새 질의를 쓴다면 **여기서 출발**하는 편이 이식에 유리하다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · JSON Types](https://www.postgresql.org/docs/18/datatype-json.html) · [PostgreSQL 18 · JSON Functions and Operators](https://www.postgresql.org/docs/18/functions-json.html) · [MySQL 8.4 · The JSON Data Type](https://dev.mysql.com/doc/refman/8.4/en/json.html) · [MySQL 8.4 · JSON Functions](https://dev.mysql.com/doc/refman/8.4/en/json-functions.html) · [MySQL 8.4 · CREATE INDEX](https://dev.mysql.com/doc/refman/8.4/en/create-index.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+표는 기존 `emp`·`dept` 만 썼고 **JSON 문서는 CTE 안에서 리터럴로 만들었다.** **새로 만든 표가 없다.**\
+★ **딱 한 자리만 실행으로 확인하지 못했다** — **MySQL 의 인덱스 생성**(10번 절). 이 작업이 **표 생성 금지**라 `CREATE TABLE`·`ALTER TABLE` 을 던질 수 없었다. 그 자리는 **매뉴얼 인용으로만** 적었고 본문에 그렇게 밝혔다. PG 쪽 인덱스는 **카탈로그 조회로 실행 확인**했다.\
+**버전** — PG 의 SQL/JSON 경로 언어(`jsonpath`·`@?`·`@@`)는 **12 부터**, `JSON_TABLE` 은 **17 부터**(릴리스 노트 확인). MySQL 의 `JSON_TABLE` 은 **8.0.4 부터**, `JSON_VALUE` 는 **8.0.21 부터**(릴리스 노트 확인).\
+**선행** — [35 타입 체계와 캐스팅](../35-type-system-and-casting/). **이 주제는 그 편의 결론이 가장 크게 재현되는 자리다.**

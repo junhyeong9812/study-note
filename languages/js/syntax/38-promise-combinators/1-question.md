@@ -1,20 +1,5 @@
 # js/syntax/38 — Promise 조합기: 「무엇을 기다리고, 언제 끝나고, 나머지는 어떻게 되나」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
->
-> ★★★ **이 주제의 본체는 조합기 4 × 입력 모양 4 격자다** — **1번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **네 조합기는 각각 언제 끝나고 무엇을 돌려주나 — 빈 입력에서는?**
-> ② ★★ **조합기가 끝난 뒤 나머지 입력은 어떻게 되나**
-> ③ **`withResolvers`·`try` 는 무엇을 줄이고, 어느 판부터인가.**
->
-> **선행** — [37](../37-promise-state-model/2-summary.md) · [19](../19-iterable-protocol-and-for-of/2-summary.md) · [26](../26-array-search-flatten-and-create/2-summary.md) · [32](../32-error-handling-and-error/2-summary.md).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 다섯 문항(1\~4 · 7)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -231,6 +216,17 @@ if (returned) returned.then(
 
 - ★★ `allSettled`·`any`·`withResolvers`·`try` 는 각각 ES 몇 판인가? 두 node 판에 없는 것은?
 - ★ `any` 가 거부할 때 던지는 오류의 이름과 `errors` 의 순서는? 그 오류의 정본은 몇 번 주제인가?
+
+## 실행 환경
+
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
+
+★★★ **이 주제의 본체는 조합기 4 × 입력 모양 4 격자다** — **1번 문항이 이 주제의 중심이다.**
+
+② ★★ **조합기가 끝난 뒤 나머지 입력은 어떻게 되나**
+③ **`withResolvers`·`try` 는 무엇을 줄이고, 어느 판부터인가.**
+
+**선행** — [37](../37-promise-state-model/2-summary.md) · [19](../19-iterable-protocol-and-for-of/2-summary.md) · [26](../26-array-search-flatten-and-create/2-summary.md) · [32](../32-error-handling-and-error/2-summary.md).
 
 ## 복습 기록
 

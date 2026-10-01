@@ -1,10 +1,5 @@
 # issue/rust/language-semantics-traps — 직관과 다른 Rust 표준 동작 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. (예측) `for id in self.registry().ids() { self.kill(id); }` — `registry()`는 `Mutex`를 잠가 가드를 돌려주고, `kill()`도 같은 락을 잠근다. 이 코드는 무엇을 하는가? 가드 임시값은 언제 drop되는가? `match reg.lock().reserve(id) { ... sleep ... }`도 같은 문제를 갖는 이유는?
 2. (경계) 위 교착을 고치는 방법 두 가지를 쓰라. "가드를 이름 있는 변수로 묶기"와 "락 안에서 필요한 것만 `collect()`로 꺼내고 락 없이 순회"는 각각 락을 얼마나 오래 쥐는가?

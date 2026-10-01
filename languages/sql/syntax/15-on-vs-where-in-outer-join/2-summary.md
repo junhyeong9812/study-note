@@ -1,15 +1,5 @@
 # sql/15-OUTER JOIN 에서 ON 과 WHERE 의 차이 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
-> **버전** — 이 주제에서 버전에 갈리는 것은 없다. **두 엔진의 결과가 전부 같았다** — 갈린 것은 실행 계획뿐이다.\
-> **선행** — [03 WHERE 와 HAVING 의 차이](../03-where-vs-having/)(조건의 자리가 결과를 바꾼다는 감각) · [14 LEFT·RIGHT OUTER JOIN](../14-left-right-outer-join/)(보존 측이 무엇인가).\
-> **이 주제는 12~16 묶음의 정점이다** — [13번](../13-inner-join/)에서 「같다」고 배운 두 자리가 여기서 갈린다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`ON` 은 「누구와 짝지을까」이고 `WHERE` 는 「누구를 명단에 남길까」다. 내부 조인에서는 결과가 같고, 외부 조인에서는 갈린다.**
@@ -620,3 +610,12 @@ WHERE <결과 필터>              -- 2번 칸. 조인이 다 끝난 뒤. 무엇
   예: `WHERE` 를 붙인 순간 앞이 뒤로 바뀐다 — 옵티마이저가 무너짐을 알아본 증거다.
 - **조건 내리기(predicate pushdown)** — 옵티마이저가 조건을 더 이른 단계로 옮기는 최적화.\
   예: MySQL 이 `d.name='sales'` 를 `e.dept_id='10'` 으로 바꿔 `dept` 표를 없앴다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
+**버전** — 이 주제에서 버전에 갈리는 것은 없다. **두 엔진의 결과가 전부 같았다** — 갈린 것은 실행 계획뿐이다.\
+**선행** — [03 WHERE 와 HAVING 의 차이](../03-where-vs-having/)(조건의 자리가 결과를 바꾼다는 감각) · [14 LEFT·RIGHT OUTER JOIN](../14-left-right-outer-join/)(보존 측이 무엇인가).\
+**이 주제는 12~16 묶음의 정점이다** — [13번](../13-inner-join/)에서 「같다」고 배운 두 자리가 여기서 갈린다.

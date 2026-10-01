@@ -1,10 +1,5 @@
 # issue/reliability/closed-state-model — 상태 공간을 타입·전이 규칙으로 닫아라 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. `{ path?: string; files?: File[] }`처럼 "둘 중 하나"를 optional 두 개로 표현하면 타입이 허용하는 불법 상태는 무엇인가. 판별 유니온(discriminated union)은 이를 어떻게 없애는가. `kind: string`으로 풀어 두면 리네임 때 무슨 일이 조용히 생기는가.
 2. 프로토콜 v2에서 필수여야 할 필드를 `Option + default`로 두었다. v1 payload를 받으면 파서는 어떻게 동작하고, "구버전 거부" 계약은 어디서 깨지는가.

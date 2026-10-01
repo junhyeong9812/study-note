@@ -1,11 +1,5 @@
 # domain-modeling-advanced/24-shift-roster — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/24-shift-roster/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -534,3 +528,7 @@ public boolean crossesMidnight() {
   인용한 값 — `weekOf(3/29, MONDAY)=3/23` · `weekOf(3/29, SUNDAY)=3/29` · `weekOf(3/30, SUNDAY)=3/29` · 초과근무 `23*60` / `14*60` · `weeks.size()==2`(3/2, 3/16) · `{3/29:480}` / `{3/30:480}` / `{3/29:120, 3/30:360}` · 초과근무 `13*60` / `5*60` / `7*60` · `evening.endDate()==3/30(월)` 과 `{MONDAY:360}` 과 `longestRun==1` · BY_DATE 3 / BY_GAP 2(26시간) · 둘 다 4(밤 3연속) · 둘 다 1(하루 쉼) · BY_GAP 2 / BY_DATE 3(딱 24시간) · 빈 목록 0·0·빈 weeks · `IllegalArgumentException` 4종
 - 측정 수치: `/home/jun/project/myway/domain-modeling-advanced/24-shift-roster/src/test/java/com/domain/roster/MeasurementTest.java`\
   인용한 값 — 6일 초과자 `{182,6}·{293,49}·{300,215}·{300,299}` · 최장 연속 합계 `{2151,1239}·{3181,1647}·{5912,2187}·{25289,3437}` · 야간 비율별 초과근무 `3,024,000×3` / `2,896,260·2,886,180·2,888,700` / `2,638,380·2,602,860·2,611,740` / `1,728,000·1,602,720·1,634,040` · 어긋난 것 `900/1,500` 과 `0/600` · 여섯 조합 `2,638,380·2,602,860·2,611,740 / 2,501,880·2,509,980·2,501,340` 과 초과한 주 `3,600·3,599·3,600 / 3,600·3,438·3,442` · 차이 `137,040분` · 전제(주 상한 40시간, 12주, 300명, 주간 9시간·야간 8시간, 시드 83)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/24-shift-roster/impl/`).

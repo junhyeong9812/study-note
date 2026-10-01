@@ -1,10 +1,5 @@
 # css/syntax/42 — 색 표기와 색 공간 — 질문
 
-> 먼저 답해 보고, 막히면 [2-summary.md](2-summary.md), 그래도 막히면 [3-answer.md](3-answer.md).
-> 예측형은 **출력을 먼저 적고** 이유를 적는다. 기준: **Google Chrome 151.0.7922.173** headless.
-> 색은 눈으로 구분이 안 되므로 답에 **RGB 수치**를 적는다 — 「비슷한 파랑」은 답이 아니다.
-> 선행: 없음. 이 주제가 [43번](../43-color-mix-and-relative-color/1-question.md)·[45번](../45-gradients-and-interpolation/1-question.md)의 선행이다.
-
 ### 1. 다섯 표기는 같은 색인가 (예측)
 
 ```css
@@ -97,6 +92,12 @@
 ### 12. 접근성 대비를 `hsl` 의 `l` 로 맞추면 안 되는 이유 (왜)
 
 「본문 글자색은 전부 `l: 45%` 로 통일했으니 대비는 일정하다」는 주장의 어디가 틀렸는지, **4번에서 잰 수치를 근거로** 말해라.
+
+## 실행 환경
+
+예측형은 **출력을 먼저 적고** 이유를 적는다. 기준: **Google Chrome 151.0.7922.173** headless.
+색은 눈으로 구분이 안 되므로 답에 **RGB 수치**를 적는다 — 「비슷한 파랑」은 답이 아니다.
+선행: 없음. 이 주제가 [43번](../43-color-mix-and-relative-color/1-question.md)·[45번](../45-gradients-and-interpolation/1-question.md)의 선행이다.
 
 ## 복습 기록
 

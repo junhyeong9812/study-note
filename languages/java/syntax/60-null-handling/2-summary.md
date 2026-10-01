@@ -1,19 +1,5 @@
 # java/syntax/60 — `null` 다루기: `Objects.requireNonNull`·`Optional` 의 경계 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/Objects.java` 의 **javadoc·`@since`·구현 원문**(`lib/src.zip` 에서 직접 인용) · `java.base/java/util/Optional.java` · [JEP 358 Helpful NullPointerExceptions](https://openjdk.org/jeps/358).
-> **실행 검증** — 이 문서의 모든 출력·예외는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 실행 프로그램 셋(`Ex.java (60-a)`·`(60-b)`·`(60-c)`)을 **17.0.13 · 21.0.5 · 25.0.1** 세 곳에서 돌렸다.\
-> ★ **`60-a`·`60-c` 는 출력이 같았고, `60-b` 는 한 줄이 달랐다** — 애너테이션의 `toString` 이 17에서는 `@Ex$NonNull()`,
-> 21·25에서는 `@Ex.NonNull()` 이다(아래 「구현 세부사항 대 언어 보장」). **"세 곳에서 같았다"는 관찰이지 보장이 아니다.**
-> **버전** — `Objects` 는 **Java 7**. `isNull`·`nonNull`·`requireNonNull(obj, Supplier)` 는 **8**,\
-> `requireNonNullElse`·`requireNonNullElseGet`·`checkIndex`(`int` 판) 는 **9**, `checkIndex`(`long` 판) 는 **16**, `toIdentityString` 은 **19**(전부 `src.zip` 의 `@since` 확인).\
-> helpful NullPointerException 은 **Java 14**(JEP 358), **15부터 기본 켜짐**.
-> **범위** — `Optional` 이라는 **타입 하나**의 생성·소비·안티패턴은 [`../38-optional/`](../38-optional/) 가 정본이다.\
-> 여기는 **"어느 계층에서 무엇으로 막을 것인가"** 라는 배치 문제만 다룬다.\
-> NPE 메시지가 빌드 옵션·JVM 플래그에 갈린다는 실측은 [`../05-arrays/`](../05-arrays/) 가 정본이고, 여기서는 **결론만 받아 쓴다**((6)).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **`null` 방어는 "어디에 검문소를 세우나" 문제다. 도구를 고르는 문제가 아니다.**
@@ -717,3 +703,17 @@ JDK 25.0.1  : 메서드 파라미터의 애너테이션 : [@Ex.NonNull()]
 - **`Objects.requireNonNullElse` 는 `Optional.ofNullable(x).orElse(def)` 와 결과가 같지만 봉투를 안 만든다.**\
   한 번 쓰고 버릴 기본값 처리라면 `Objects` 쪽이 짧고 객체도 덜 만든다.\
   `Optional` 은 **여러 단계를 엮을 때**(map/filter/flatMap) 값어치가 나온다.
+
+## 실행 환경
+
+**기준 소스** — JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/Objects.java` 의 **javadoc·`@since`·구현 원문**(`lib/src.zip` 에서 직접 인용) · `java.base/java/util/Optional.java` · [JEP 358 Helpful NullPointerExceptions](https://openjdk.org/jeps/358).
+**실행 검증** — 이 문서의 모든 출력·예외는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+실행 프로그램 셋(`Ex.java (60-a)`·`(60-b)`·`(60-c)`)을 **17.0.13 · 21.0.5 · 25.0.1** 세 곳에서 돌렸다.\
+★ **`60-a`·`60-c` 는 출력이 같았고, `60-b` 는 한 줄이 달랐다** — 애너테이션의 `toString` 이 17에서는 `@Ex$NonNull()`,
+21·25에서는 `@Ex.NonNull()` 이다(본문 「구현 세부사항 대 언어 보장」). **"세 곳에서 같았다"는 관찰이지 보장이 아니다.**
+**버전** — `Objects` 는 **Java 7**. `isNull`·`nonNull`·`requireNonNull(obj, Supplier)` 는 **8**,\
+`requireNonNullElse`·`requireNonNullElseGet`·`checkIndex`(`int` 판) 는 **9**, `checkIndex`(`long` 판) 는 **16**, `toIdentityString` 은 **19**(전부 `src.zip` 의 `@since` 확인).\
+helpful NullPointerException 은 **Java 14**(JEP 358), **15부터 기본 켜짐**.
+**범위** — `Optional` 이라는 **타입 하나**의 생성·소비·안티패턴은 [`../38-optional/`](../38-optional/) 가 정본이다.\
+여기는 **"어느 계층에서 무엇으로 막을 것인가"** 라는 배치 문제만 다룬다.\
+NPE 메시지가 빌드 옵션·JVM 플래그에 갈린다는 실측은 [`../05-arrays/`](../05-arrays/) 가 정본이고, 여기서는 **결론만 받아 쓴다**((6)).

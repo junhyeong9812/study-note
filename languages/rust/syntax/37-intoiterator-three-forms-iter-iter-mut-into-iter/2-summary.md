@@ -1,20 +1,5 @@
 # rust/syntax/37 — `IntoIterator` 세 형태 — `iter`/`iter_mut`/`into_iter` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `std::iter` 모듈 문서](https://doc.rust-lang.org/std/iter/index.html)(for 의 탈당 · Iterating by reference) ·
-> [std — `std::collections` 모듈 문서](https://doc.rust-lang.org/std/collections/index.html)(Iterators 절 — 「세 가지 주 이터레이터 `iter`·`iter_mut`·`into_iter`」) ·
-> [std — `IntoIterator`](https://doc.rust-lang.org/std/iter/trait.IntoIterator.html) ·
-> [Edition Guide — 2021 `IntoIterator` for arrays](https://doc.rust-lang.org/edition-guide/rust-2021/IntoIterator-for-arrays.html) ·
-> [Edition Guide — 2024 `IntoIterator` for `Box<[T]>`](https://doc.rust-lang.org/edition-guide/rust-2024/intoiterator-box-slice.html) ·
-> [Reference — `for` 의 탈당](https://doc.rust-lang.org/reference/expressions/loop-expr.html#iterator-loops).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. std 소스의 `impl` 줄도 같은 사본의 소스 페이지에서 **스크립트로 뽑았다**((3)).
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> **블록마다 배너에 적은 `--edition`** 으로 돌려 받은 것이다(기본 2021, 에디션 격자는 2015·2018·2021·2024).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음). **속도는 한 번도 재지 않았다.**
-> **버전** — 배열의 `IntoIterator` 는 **1.53.0**, `Box<[T]>` 의 `IntoIterator` 는 **1.80.0**, 2021 에디션 **1.56.0**, 2024 에디션 **1.85.0**(아래 블록이 근거).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ```text
 ===== rustc --version =====
 rustc 1.92.0 (ded5c06cf 2025-12-08)
@@ -875,3 +860,18 @@ dune
 - **`IntoIterator` 를 인자 경계로** — `fn f(xs: impl IntoIterator<Item = i32>)` 로 받으면 `Vec`·배열·범위·이터레이터를 **다 받는다.** [**32번 주제**](../32-impl-trait-argument-return-position-and-2024-capture/)의 인자 위치 `impl Trait` 와 이어진다.
 - **`Iterator` 는 `IntoIterator` 다** — std 가 `impl<I: Iterator> IntoIterator for I` 를 둔다. 그래서 `for x in v.iter()` 가 된다(`into_iter` 가 자기 자신을 돌려준다).
 - **`drain(..)`** — 「옮겨 가지되 **`Vec` 은 남기는**」 넷째 길. [**38번 주제**](../38-vec-api-capacity-retain-and-drain/)에서 본다.
+
+## 실행 환경
+
+**기준 소스** — [std — `std::iter` 모듈 문서](https://doc.rust-lang.org/std/iter/index.html)(for 의 탈당 · Iterating by reference) ·
+[std — `std::collections` 모듈 문서](https://doc.rust-lang.org/std/collections/index.html)(Iterators 절 — 「세 가지 주 이터레이터 `iter`·`iter_mut`·`into_iter`」) ·
+[std — `IntoIterator`](https://doc.rust-lang.org/std/iter/trait.IntoIterator.html) ·
+[Edition Guide — 2021 `IntoIterator` for arrays](https://doc.rust-lang.org/edition-guide/rust-2021/IntoIterator-for-arrays.html) ·
+[Edition Guide — 2024 `IntoIterator` for `Box<[T]>`](https://doc.rust-lang.org/edition-guide/rust-2024/intoiterator-box-slice.html) ·
+[Reference — `for` 의 탈당](https://doc.rust-lang.org/reference/expressions/loop-expr.html#iterator-loops).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. std 소스의 `impl` 줄도 같은 사본의 소스 페이지에서 **스크립트로 뽑았다**((3)).
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+**블록마다 배너에 적은 `--edition`** 으로 돌려 받은 것이다(기본 2021, 에디션 격자는 2015·2018·2021·2024).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음). **속도는 한 번도 재지 않았다.**
+**버전** — 배열의 `IntoIterator` 는 **1.53.0**, `Box<[T]>` 의 `IntoIterator` 는 **1.80.0**, 2021 에디션 **1.56.0**, 2024 에디션 **1.85.0**(본문의 블록이 근거).

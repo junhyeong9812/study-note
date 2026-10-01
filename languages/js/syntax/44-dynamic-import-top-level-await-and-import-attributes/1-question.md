@@ -1,20 +1,5 @@
 # js/syntax/44 — 동적 `import`·최상위 `await`·import attributes: 「본문은 언제 도나, 누가 누구를 기다리나, 딱지는 어느 판에서 읽히나」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(로컬 HTTP 서버) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
->
-> ★★★ **이 주제의 본체는 평가 순서 로그다** — 모듈 본문 첫 줄에 로그를 심고 **줄의 순서**로 읽는다. 보조로 import attributes **판 격자** 12행 × 세 판. **1번 · 2번 · 4번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **`import()` 는 언제 상대 본문을 돌리나 · 두 번 부르면**
-> ② ★★★ **최상위 `await` 는 누구를 기다리게 하나**
-> ③ ★★★ **import attributes 는 세 판의 어느 칸에서 막히나 · 실패한 `import()` 는 무엇으로 거부되나.**
->
-> **선행** — [42](../42-esm-modules/2-summary.md) · [43](../43-cjs-and-esm-interop/2-summary.md) · [39](../39-async-await/2-summary.md) · [31](../31-json/2-summary.md).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 문항(1\~4)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -217,6 +202,14 @@ console.log("importer44b.mjs: body");
 
 - ★★ 42번이 이미 잰 `import()` 의 성질 둘은 무엇이고, 이 주제는 거기서 무엇을 넓혔나?
 - ★ 43번에서 최상위 `await` 가 든 ESM 을 CommonJS 가 `require` 하면 두 node 판은 각각 무엇을 냈나?
+
+## 실행 환경
+
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(로컬 HTTP 서버) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
+
+★★★ **이 주제의 본체는 평가 순서 로그다** — 모듈 본문 첫 줄에 로그를 심고 **줄의 순서**로 읽는다. 보조로 import attributes **판 격자** 12행 × 세 판. **1번 · 2번 · 4번 문항이 이 주제의 중심이다.**
+
+**선행** — [42](../42-esm-modules/2-summary.md) · [43](../43-cjs-and-esm-interop/2-summary.md) · [39](../39-async-await/2-summary.md) · [31](../31-json/2-summary.md).
 
 ## 복습 기록
 

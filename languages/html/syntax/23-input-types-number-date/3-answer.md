@@ -1,11 +1,5 @@
 # html/syntax/23 — `<input>` 타입 지도 ② 숫자·날짜: `number`/`range`/`date`/`time`/`datetime-local`/`month`/`week` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [21번 주제](../21-form-submission-model/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「The input element」 절로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **본체는 창 ⑤ 다** — 「로케일 무관」은 서버가 받은 글자로만 증명된다(A2).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -253,3 +247,10 @@ range 에서 .value 가 빈 문자열인 칸 = 0 / 7
 - **`badInput`** — 보이는 글자를 값으로 못 바꿀 때 참.
 - **스핀 박스** — 위아래 화살표. 값을 수로 다룬다.
 - **`LANGUAGE`** — 리눅스 프로그램이 읽는 선호 언어 환경 변수. 이 판의 Chrome 은 여기서 로케일을 골랐다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [21번 주제](../21-form-submission-model/3-answer.md)의 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「The input element」 절로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **본체는 창 ⑤ 다** — 「로케일 무관」은 서버가 받은 글자로만 증명된다(A2).

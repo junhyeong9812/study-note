@@ -1,10 +1,5 @@
 # kotlin/syntax/12 — `reified` 타입 파라미터: 소거를 뚫는 방법 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> 역어셈블은 **기본 `-jvm-target`(1.8 · `major version: 52`)** 이 정본이고, 12번에서만 `-jvm-target 21` 을 따로 찍었다.\
-> ★ **`typeOf<T>()` 를 쓰는 출력은 클래스패스에 `kotlin-reflect.jar` 가 있느냐로 달라진다** — 3번·12번에 양쪽을 다 실었다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -540,3 +535,9 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 **안 걸린 것도 출력이다** — `mk<NeedsArg>()` 는 **컴파일러가 아무 말도 하지 않는다.**
 생성자가 없다는 사실은 **실행해야만** `NoSuchMethodException` 으로 드러난다.
 **「컴파일이 통과했다」가 「타입이 맞다」를 뜻하지 않는** 전형적인 자리다.
+
+## 실행 환경
+
+모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+역어셈블은 **기본 `-jvm-target`(1.8 · `major version: 52`)** 이 정본이고, 12번에서만 `-jvm-target 21` 을 따로 찍었다.\
+★ **`typeOf<T>()` 를 쓰는 출력은 클래스패스에 `kotlin-reflect.jar` 가 있느냐로 달라진다** — 3번·12번에 양쪽을 다 실었다.

@@ -1,9 +1,5 @@
 # 02. 요청 경로 계층별 설계
 
-> 사용자의 요청이 지나가는 길을 순서대로 따라가며, **각 지점에서 무엇을 결정해야 하는가**를 정리한다.\
-> 출처: `jun-bank/docs/study/notes/server-design/02-request-path.md` · 이관일 2026-09-16.\
-> 원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식)만 입힘.
-
 ---
 
 ## 전체 흐름 — 요청이 지나가는 길
@@ -276,3 +272,8 @@ terminationGracePeriodSeconds: 60
 
 - 데이터 계층 확장 → [`03-data-layer.md`](./03-data-layer.md)
 - 캐시 설계 → [`04-caching.md`](./04-caching.md)
+
+## 출처
+
+출처: `jun-bank/docs/study/notes/server-design/02-request-path.md` · 이관일 2026-09-16.\
+원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식)만 입힘.

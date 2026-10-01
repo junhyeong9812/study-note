@@ -1,53 +1,5 @@
 # csharp/syntax/11 — 컬렉션 초기화와 컬렉션 식(C# 12) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — 객체·컬렉션 초기화자](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/object-and-collection-initializers) ·
-> [Learn — 컬렉션 식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/collection-expressions) ·
-> [.NET API — `Array.Empty<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.array.empty) ·
-> [.NET API — `CollectionsMarshal`](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.collectionsmarshal) ·
-> [.NET API — `GC.GetAllocatedBytesForCurrentThread`](https://learn.microsoft.com/en-us/dotnet/api/system.gc.getallocatedbytesforcurrentthread)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-25).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.\
-> ★★★ **진단 언어를 영어로 고정했다.** 안 그러면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
-> 환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`** 를 같이 건다.
-> **던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
-> 그래야 `bin/`·`obj/` 가 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
-> 배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
->
-> ```text
-> export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
-> export DOTNET_CLI_UI_LANGUAGE=en            # ★★★ 안 주면 진단이 한국어로 나온다
-> D=$(dirname "$(readlink -f "$(command -v dotnet)")")
-> ls "$D"/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/*.dll | sed 's/^/-r:/' > refs.rsp
-> echo '{"runtimeOptions":{"tfm":"net10.0","framework":{"name":"Microsoft.NETCore.App","version":"10.0.0"}}}' > ex.runtimeconfig.json
-> csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
->           -nologo -nostdlib -noconfig @refs.rsp \
->           -preferreduilang:en-US -langversion:latest -target:exe "$@"; }
-> ```
->
-> **`-debug` 를 안 줬다** — PDB 가 없으면 스택 트레이스에 **절대 경로와 줄 번호가 안 박힌다**.
-> **IL 은 외부 도구 없이 본다** — `ilspycmd`·`ildasm` 을 안 깔았다.
-> [03번](../03-boxing-and-unboxing/)의 (0)절에 있는 **`cs-il.cs` 전문**을 그대로 써서
-> `csc -target:library -out:il.dll cs-il.cs` 로 만들어 두고 `-r:il.dll` 로 참조한다.
-> **버전** — **객체·컬렉션 초기화자는 C# 3.0부터**, **인덱스 초기화자는 C# 6.0부터**,
-> **컬렉션 식 `[…]` 과 스프레드 `..` 는 C# 12부터**다. `-langversion:latest` 로 던졌다.
-> **경계** — **어떤 컬렉션을 고르나**는 [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/)이 정본이고, 여기는 **그것을 어떻게 채우나**만 본다.\
-> **박싱**은 [03번](../03-boxing-and-unboxing/), **배열과 `..` 범위 연산자**는 [09번](../09-arrays-index-and-range/), **타겟 타입 `new`** 는 [04번](../04-var-and-target-typed-new/)이 정본이다.\
-> **`Span<T>` 자체**는 목록의 **46번**, **`IEnumerable<T>` 와 `foreach`** 는 **31번**, **`required`** 는 **13번 주제**가 정본이다.\
-> ★ `Dictionary` 의 「넣는 법 셋」(`[k]=v`·`Add`·`TryAdd`)은 [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/)이 정본이고, 여기서는 **초기화자 두 꼴이 그중 앞의 둘로 갈리는 것**만 본다((3)).
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | `GC.GetAllocatedBytesForCurrentThread()` 의 **절댓값**(프로세스 누적이다) | ★★★ **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐** |
-> | ★★★ **증분의 절댓값 일부** — **판에 따라 움직인다**((6)에서 네 판을 나란히 놓았다) | ★★★ **대상 타입끼리의 대소 관계** — 네 판 전부에서 같았다 |
-> | 컴파일러가 만든 **`<PrivateImplementationDetails>` 필드 이름**(해시) | ★★★ **IL 명령어 열**(`newarr`·`stelem`·`ldtoken`·`ldsflda`·`InlineArray3`·`CreateSpan`) |
-> | 진단 문구가 판마다 다듬일 수 있다는 것 | ★★ **진단 코드**(`CS1061`·`CS1922`·`CS9176`·`CS9174`·`CS9212`)와 **`(행,열)`** |
-> | 실행 시간 | ★★ **`cc exit` 와 `run exit`**(갈라 적었다) · **`Capacity` 값** |
-
 ## 이 판
 
 ```text
@@ -1353,3 +1305,52 @@ cs11b-target.cs(6,12): error CS9174: Cannot initialize type 'object' with a coll
 - **`ImmutableArray<T>`** — (6)에서 **112바이트**였다. 정본은 별도 주제가 없어 **이 문서의 관찰까지**다.
 - **`<PrivateImplementationDetails>`** — 컴파일러가 상수 데이터를 모아 두는 숨은 타입.\
   필드 이름이 **내용의 해시**라 **흔들리는 칸**이다.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — 객체·컬렉션 초기화자](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/object-and-collection-initializers) ·
+[Learn — 컬렉션 식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/collection-expressions) ·
+[.NET API — `Array.Empty<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.array.empty) ·
+[.NET API — `CollectionsMarshal`](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.collectionsmarshal) ·
+[.NET API — `GC.GetAllocatedBytesForCurrentThread`](https://learn.microsoft.com/en-us/dotnet/api/system.gc.getallocatedbytesforcurrentthread)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-25).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.\
+★★★ **진단 언어를 영어로 고정했다.** 안 그러면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
+환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`** 를 같이 건다.
+**던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
+그래야 `bin/`·`obj/` 가 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
+배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
+
+```text
+export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
+export DOTNET_CLI_UI_LANGUAGE=en            # ★★★ 안 주면 진단이 한국어로 나온다
+D=$(dirname "$(readlink -f "$(command -v dotnet)")")
+ls "$D"/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/*.dll | sed 's/^/-r:/' > refs.rsp
+echo '{"runtimeOptions":{"tfm":"net10.0","framework":{"name":"Microsoft.NETCore.App","version":"10.0.0"}}}' > ex.runtimeconfig.json
+csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
+          -nologo -nostdlib -noconfig @refs.rsp \
+          -preferreduilang:en-US -langversion:latest -target:exe "$@"; }
+```
+
+**`-debug` 를 안 줬다** — PDB 가 없으면 스택 트레이스에 **절대 경로와 줄 번호가 안 박힌다**.
+**IL 은 외부 도구 없이 본다** — `ilspycmd`·`ildasm` 을 안 깔았다.
+[03번](../03-boxing-and-unboxing/)의 (0)절에 있는 **`cs-il.cs` 전문**을 그대로 써서
+`csc -target:library -out:il.dll cs-il.cs` 로 만들어 두고 `-r:il.dll` 로 참조한다.
+**버전** — **객체·컬렉션 초기화자는 C# 3.0부터**, **인덱스 초기화자는 C# 6.0부터**,
+**컬렉션 식 `[…]` 과 스프레드 `..` 는 C# 12부터**다. `-langversion:latest` 로 던졌다.
+**경계** — **어떤 컬렉션을 고르나**는 [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/)이 정본이고, 여기는 **그것을 어떻게 채우나**만 본다.\
+**박싱**은 [03번](../03-boxing-and-unboxing/), **배열과 `..` 범위 연산자**는 [09번](../09-arrays-index-and-range/), **타겟 타입 `new`** 는 [04번](../04-var-and-target-typed-new/)이 정본이다.\
+**`Span<T>` 자체**는 목록의 **46번**, **`IEnumerable<T>` 와 `foreach`** 는 **31번**, **`required`** 는 **13번 주제**가 정본이다.\
+★ `Dictionary` 의 「넣는 법 셋」(`[k]=v`·`Add`·`TryAdd`)은 [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/)이 정본이고, 여기서는 **초기화자 두 꼴이 그중 앞의 둘로 갈리는 것**만 본다((3)).
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| `GC.GetAllocatedBytesForCurrentThread()` 의 **절댓값**(프로세스 누적이다) | ★★★ **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐** |
+| ★★★ **증분의 절댓값 일부** — **판에 따라 움직인다**((6)에서 네 판을 나란히 놓았다) | ★★★ **대상 타입끼리의 대소 관계** — 네 판 전부에서 같았다 |
+| 컴파일러가 만든 **`<PrivateImplementationDetails>` 필드 이름**(해시) | ★★★ **IL 명령어 열**(`newarr`·`stelem`·`ldtoken`·`ldsflda`·`InlineArray3`·`CreateSpan`) |
+| 진단 문구가 판마다 다듬일 수 있다는 것 | ★★ **진단 코드**(`CS1061`·`CS1922`·`CS9176`·`CS9174`·`CS9212`)와 **`(행,열)`** |
+| 실행 시간 | ★★ **`cc exit` 와 `run exit`**(갈라 적었다) · **`Capacity` 값** |

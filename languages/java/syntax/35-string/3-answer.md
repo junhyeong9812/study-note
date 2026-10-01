@@ -1,11 +1,5 @@
 # java/syntax/35 — `String`: 불변성·상수 풀·자주 쓰는 메서드 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> 바이트코드는 `javap -c` 출력을, JDK 소스는 `lib/src.zip` 의 실파일을, JLS는 원문을 그대로 옮겼다.\
-> 실행 파일명은 전부 `Ex.java` 로 고정했다 — 예외 트레이스에 그 이름이 박힌다.\
-> 17.0.13 · 25.0.1 에서도 같은 프로그램을 돌렸다. **갈린 곳은 10번 하나**다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -669,3 +663,10 @@ substring(6)   -> java.lang.StringIndexOutOfBoundsException: begin 6, end 5, len
 - Java 21 `switch` 의 `case null` — [목록의 **23번 주제**](../23-switch-pattern-matching/)에서 다룬다.
 - `substring` 이 Java 6까지 배열을 공유했다는 연혁 — 기준 소스로 확인하지 않았다(**확인 필요**).
 - `String.format`·`join`·`repeat` — [`../36-stringbuilder-and-concat/`](../36-stringbuilder-and-concat/) 에서 돌렸다.
+
+## 실행 환경
+
+이 파일의 모든 출력은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+바이트코드는 `javap -c` 출력을, JDK 소스는 `lib/src.zip` 의 실파일을, JLS는 원문을 그대로 옮겼다.\
+실행 파일명은 전부 `Ex.java` 로 고정했다 — 예외 트레이스에 그 이름이 박힌다.\
+17.0.13 · 25.0.1 에서도 같은 프로그램을 돌렸다. **갈린 곳은 10번 하나**다.

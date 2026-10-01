@@ -1,8 +1,5 @@
 # network/32-mtls-and-cert-operations — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고, 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> ⚠️ 이 질문 목록은 Claude 초안(2026-09-30). 본인 검수 후 이 줄을 `✅ 검수 완료(날짜)`로 바꾼다.
-
 ## 질문
 
 1. (왜) API 키·bearer 토큰 대신 mTLS를 쓰면 무엇이 달라지나? 신원이 무엇에 묶이나?

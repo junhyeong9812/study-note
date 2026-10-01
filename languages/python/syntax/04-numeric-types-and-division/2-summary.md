@@ -1,19 +1,5 @@
 # python/syntax/04-numeric-types-and-division — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [3.2. The standard type hierarchy — Numbers](https://docs.python.org/3.12/reference/datamodel.html#the-standard-type-hierarchy) — `int`·`bool`·`float`·`complex` 의 정의
-> - [6.7. Binary arithmetic operations](https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations) — `/`·`//`·`%` 의 규정과 `math.fmod` 대비
-> - [`round()`](https://docs.python.org/3.12/library/functions.html#round) · [`divmod()`](https://docs.python.org/3.12/library/functions.html#divmod) · [`int()`](https://docs.python.org/3.12/library/functions.html#int)
-> - [Numeric Types — int, float, complex](https://docs.python.org/3.12/library/stdtypes.html#typesnumeric) — 「Integers have unlimited precision.」, `bool` 이 `int` 의 하위 클래스
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> ★ **손계산으로 유도한 수치는 하나도 없다.** `-7 // 2` 부터 `round(2.675, 2)` 까지 전부 던져서 받은 값이다.
-> **버전** — 연산자 의미는 Python 3 전체 공통. **정수 ↔ 문자열 변환 길이 제한은 3.11 부터**다(`-X int_max_str_digits`).
-> **부동소수** — 이 머신은 IEEE 754 배정밀도(`sys.float_info.mant_dig` 가 `53`)다. **언어가 보장하는 것이 아니라 이 머신의 사정**이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **나눗셈이 세 개인 이유는, 「나눈다」가 세 가지 질문이기 때문이다.**
@@ -912,3 +898,16 @@ math.fmod(1,0) -> ValueError: math domain error
 - **`float` 에도 `is_integer()`·`as_integer_ratio()`·`hex()`/`fromhex()` 가 있다.** 저장된 값을 **정확히** 들여다보는 세 창이다.
 - **`decimal` 의 컨텍스트는 스레드별이다.** `getcontext()` 가 돌려주는 것이 현재 스레드의 것이고, `localcontext()` 로 블록 단위 설정이 가능하다 — 정본은 [목록의 **50번 주제**](../50-decimal-float-precision-and-round/).
 - **`complex` 에는 순서 비교가 없다.** 정렬·`min`/`max` 에 넣으면 `TypeError` 가 난다. 정렬 가능성 일반은 [목록의 **31번 주제**](../31-comparison-protocol-and-sortability/).
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [3.2. The standard type hierarchy — Numbers](https://docs.python.org/3.12/reference/datamodel.html#the-standard-type-hierarchy) — `int`·`bool`·`float`·`complex` 의 정의
+- [6.7. Binary arithmetic operations](https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations) — `/`·`//`·`%` 의 규정과 `math.fmod` 대비
+- [`round()`](https://docs.python.org/3.12/library/functions.html#round) · [`divmod()`](https://docs.python.org/3.12/library/functions.html#divmod) · [`int()`](https://docs.python.org/3.12/library/functions.html#int)
+- [Numeric Types — int, float, complex](https://docs.python.org/3.12/library/stdtypes.html#typesnumeric) — 「Integers have unlimited precision.」, `bool` 이 `int` 의 하위 클래스
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+★ **손계산으로 유도한 수치는 하나도 없다.** `-7 // 2` 부터 `round(2.675, 2)` 까지 전부 던져서 받은 값이다.
+**버전** — 연산자 의미는 Python 3 전체 공통. **정수 ↔ 문자열 변환 길이 제한은 3.11 부터**다(`-X int_max_str_digits`).
+**부동소수** — 이 머신은 IEEE 754 배정밀도(`sys.float_info.mant_dig` 가 `53`)다. **언어가 보장하는 것이 아니라 이 머신의 사정**이다.

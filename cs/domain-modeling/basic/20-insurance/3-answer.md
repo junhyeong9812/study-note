@@ -1,11 +1,5 @@
 # domain-modeling-basic/20-insurance — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/20-insurance/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -444,3 +438,7 @@ public static BigDecimal jumpIfDelayedOneDay(
 - 계약(전부 주어짐): `src/main/java/com/domain/insurance/RateTable.java`(`Row`·이어짐 검증·`ratePermilleFor` 표 밖 예외·`standard()`)
 - 문제 원문: `src/main/java/com/domain/insurance/Insurance.java`(TODO 1~3 javadoc·`AgeBasis`), `README.md`(세 나이·함정 4·측정 5·생각해볼 것 4)
 - 수치 근거: `src/test/java/com/domain/insurance/MeasurementTest.java`(20,000 · 9,978/9,945 · 440/441 · 49%·2% · 2,926,180,000,000 / 2,951,930,000,000 / 2,951,790,000,000 · 천분율 8 · 절벽 3건·50,000,000 · 358 vs 0 · 440/978/2,011), `InsuranceTest.java`(39·40·40 · 만 나이 6/14·6/15·6/16 · 연 나이 12/31·1/1 · 보험 나이 12/14·12/15 · 태어난 날 0 · 생일 이전 예외 · 요율 800/1,000/1,000/1,500/2,500 · 이어짐·빈 표·표 밖 201 예외 · 만 30세 1억 · 절벽 50,000,000 / 0 · 가입 금액 0 예외)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/20-insurance/impl/`).

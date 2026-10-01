@@ -1,18 +1,5 @@
 # kotlin/syntax/09 — 가변 인자·spread 연산자·로컬 함수·중위 함수 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Functions](https://kotlinlang.org/docs/functions.html)(varargs · infix notation · local functions) · [Calling Kotlin from Java](https://kotlinlang.org/docs/java-to-kotlin-interop.html).
-> **실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> `kotlinc` 11회 · `java` 4회 · `javap` 5회. 컴파일 실패 시나리오 4벌.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다.
-> **버전** — `vararg`·spread·로컬 함수·`infix` 는 전부 1.0.
-> ★ **문서와 컴파일러가 어긋나는 자리를 하나 찾았다** — `infix` 의 「기본값 금지」 조항이다((8)).
-> **경계** — 기본 인자·이름 붙인 인자·`@JvmOverloads` 의 정본은 [08번 주제](../08-function-declaration-default-and-named-args/)다.\
-> 연산자 오버로딩 **전체**(`plus`·`get`·`invoke`·`iterator` 등 규약 표)는 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/)가 정본이다 —\
-> 여기서는 `infix` 라는 **호출 형태**만 다룬다. 람다·클로저 일반은 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/).\
-> **Java 쪽 정본은 [`../../../java/syntax/08-method-declaration-overloading/`](../../../java/syntax/08-method-declaration-overloading/)** 다(가변 인자가 거기 있다).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **`vararg` 는 문법이 아니라 「배열을 만들어 주는 설탕」이다.**
@@ -860,3 +847,16 @@ Money(1000) plus Money(500)
   (`prec3.kt` 가 그 줄에서는 에러를 내지 않았다). 다만 **왼쪽 피연산자로 줄을 끝내면** 다른 뜻이 된다.
 - 이 문서에서 **성능은 한 번도 재지 않았다.** `javap` 로 본 것은 **복사·할당·박싱의 유무**까지이고,\
   "그래서 어느 쪽이 빠르다" 는 하지 않은 주장이다.
+
+## 실행 환경
+
+**기준 소스** — [Functions](https://kotlinlang.org/docs/functions.html)(varargs · infix notation · local functions) · [Calling Kotlin from Java](https://kotlinlang.org/docs/java-to-kotlin-interop.html).
+**실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+`kotlinc` 11회 · `java` 4회 · `javap` 5회. 컴파일 실패 시나리오 4벌.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다.
+**버전** — `vararg`·spread·로컬 함수·`infix` 는 전부 1.0.
+★ **문서와 컴파일러가 어긋나는 자리를 하나 찾았다** — `infix` 의 「기본값 금지」 조항이다((8)).
+**경계** — 기본 인자·이름 붙인 인자·`@JvmOverloads` 의 정본은 [08번 주제](../08-function-declaration-default-and-named-args/)다.\
+연산자 오버로딩 **전체**(`plus`·`get`·`invoke`·`iterator` 등 규약 표)는 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/)가 정본이다 —\
+여기서는 `infix` 라는 **호출 형태**만 다룬다. 람다·클로저 일반은 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/).\
+**Java 쪽 정본은 [`../../../java/syntax/08-method-declaration-overloading/`](../../../java/syntax/08-method-declaration-overloading/)** 다(가변 인자가 거기 있다).

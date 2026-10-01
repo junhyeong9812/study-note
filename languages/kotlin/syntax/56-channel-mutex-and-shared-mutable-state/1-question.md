@@ -1,12 +1,5 @@
 # kotlin/syntax/56 — `Channel`·`Mutex` — 공유 가변 상태 다루기 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [54번 주제](../54-coroutine-context-dispatchers-and-withcontext/)(디스패처 · `withContext`)와 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)(`suspend` 호출 규칙)다.
-> 문항 11개 중 예측형은 6개이고, 여섯 모두 코드블록이 붙는다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -366,6 +359,12 @@ fun main() = runBlocking {
 ### 11. C# 의 `lock` 과 `await` · 가상 스레드 (연결)
 
 - C# 은 `lock` 몸통 안의 `await` 를 어떻게 다루나? [Java 56번](../../../java/syntax/56-virtual-threads/)의 「`synchronized` 가 캐리어를 붙잡는다」와 3번은 어떻게 같은 모양인가?
+
+## 실행 환경
+
+선행은 [54번 주제](../54-coroutine-context-dispatchers-and-withcontext/)(디스패처 · `withContext`)와 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)(`suspend` 호출 규칙)다.
+
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

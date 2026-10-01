@@ -1,19 +1,5 @@
 # rust/syntax/19 — 패턴 문법 전수 — 가드·`@`·or 패턴·구조 분해·매치 인체공학 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference — Patterns](https://doc.rust-lang.org/reference/patterns.html) ·
-> [Reference — `match` expressions](https://doc.rust-lang.org/reference/expressions/match-expr.html) ·
-> [Reference — Slice patterns](https://doc.rust-lang.org/reference/patterns.html#slice-patterns) ·
-> [Reference — Binding modes](https://doc.rust-lang.org/reference/patterns.html#binding-modes).
-> ★ `rustc --explain E0004` / `E0308` / `E0408` / `E0381` / `E0507` 는 **확인용으로만 열었고 본문에 옮기지 않았다.**
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다. **손으로 옮겨 적은 출력은 한 줄도 없다.**\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.
-> **버전** — 가드·`@`·구조 분해는 1.0.0부터다. **매치 인체공학**(RFC 2005)은 **1.26.0**부터이고 **에디션과 무관**하다.\
-> **슬라이스 패턴의 `rest @ ..`** 는 **1.42.0**부터, **중첩 or 패턴**(`Some(1 | 3)`)은 **1.53.0**부터,\
-> **`@` 가 or 패턴을 감싸는 것**(`v @ (1 | 3)`)은 **1.65.0**부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 흔들리는 칸 / 안 흔들리는 칸
 
 | | 칸 | 왜 |
@@ -1030,3 +1016,17 @@ match v { [] => …, [a] => …, [a, b] => … }
   전수는 [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)에서 본다.
 - **배타적 범위 패턴** `a..b` 는 1.80.0부터다. 이 문서는 전부 `..=` 를 썼다.
 - **`box` 패턴**은 아직 nightly 다. 이 목록 밖이다.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference — Patterns](https://doc.rust-lang.org/reference/patterns.html) ·
+[Reference — `match` expressions](https://doc.rust-lang.org/reference/expressions/match-expr.html) ·
+[Reference — Slice patterns](https://doc.rust-lang.org/reference/patterns.html#slice-patterns) ·
+[Reference — Binding modes](https://doc.rust-lang.org/reference/patterns.html#binding-modes).
+★ `rustc --explain E0004` / `E0308` / `E0408` / `E0381` / `E0507` 는 **확인용으로만 열었고 본문에 옮기지 않았다.**
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다. **손으로 옮겨 적은 출력은 한 줄도 없다.**\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.
+**버전** — 가드·`@`·구조 분해는 1.0.0부터다. **매치 인체공학**(RFC 2005)은 **1.26.0**부터이고 **에디션과 무관**하다.\
+**슬라이스 패턴의 `rest @ ..`** 는 **1.42.0**부터, **중첩 or 패턴**(`Some(1 | 3)`)은 **1.53.0**부터,\
+**`@` 가 or 패턴을 감싸는 것**(`v @ (1 | 3)`)은 **1.65.0**부터다.

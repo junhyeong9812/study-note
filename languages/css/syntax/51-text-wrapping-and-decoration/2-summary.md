@@ -1,13 +1,5 @@
 # css/syntax/51 — 텍스트 줄바꿈·서식·장식: `word-break`·`overflow-wrap`·`text-wrap`·`text-decoration` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Text Module Level 4](https://drafts.csswg.org/css-text-4/) (`white-space` 분해·`word-break`·`overflow-wrap`·`text-wrap`·`hyphens`) · [CSS Text Decoration Level 4](https://drafts.csswg.org/css-text-decor-4/) (`text-decoration-*`·`text-underline-offset`) · [CSS Overflow Level 3](https://drafts.csswg.org/css-overflow-3/) (`text-overflow`). 열어서 확인한 것만 적었다.
-> **실행 검증** — **Google Chrome 151.0.7922.173** headless · Linux. 이 문서의 **줄 수와 줄 폭은 전부 실측**이다 — `Range.selectNodeContents(el).getClientRects()` 로 행 상자를 세고, 눈으로 봐야 하는 것은 CDP 스크린샷으로 확인했다.\
-> **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다 — 크로스 브라우저 차이는 Baseline 데이터로만 접지했다.
-> **버전** — `word-break`·`overflow-wrap`·`white-space`·`text-overflow`·`text-decoration`·`hyphens` 는 Baseline **widely**. `text-wrap` 은 **newly**(2024-10-17), `text-wrap: balance` 는 **newly**(2024-05-13), `white-space-collapse` 는 **newly**(2024-03-19), **`text-wrap: pretty` 는 아직 Baseline 이 아니다(limited)**. `api.webstatus.dev` 조회 결과이고 아래 「구현 세부사항 대 언어 보장」에 다시 적었다.
-> ⚠️ **줄 수는 글꼴에 달려 있다.** 같은 문장도 글꼴이 다르면 글자 폭이 달라 줄 수가 달라진다 — 선행 주제가 [50번](../50-fonts-and-webfonts/2-summary.md)인 이유다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **줄바꿈은 「자를 위치를 고르는 것」이 아니라 「이미 있는 틈에서 고르는 것」이다.**
@@ -680,3 +672,11 @@ p { hyphens: auto; }                            /* lang 이 없으면(그리고 
 - **`text-decoration-skip-ink`** — 내려긋는 획(`g`·`y`·`p`)에서 밑줄을 끊는다. 기본값이 `auto` 라 이미 켜져 있다.
 - **`line-clamp`(구 `-webkit-line-clamp`)** — 여러 줄 말줄임. `text-overflow` 로 못 하는 것을 한다.
 - **`text-emphasis`** — 한중일 강조점. Baseline widely(2022-03-03 → 2024-09-03).
+
+## 실행 환경
+
+**기준 소스** — [CSS Text Module Level 4](https://drafts.csswg.org/css-text-4/) (`white-space` 분해·`word-break`·`overflow-wrap`·`text-wrap`·`hyphens`) · [CSS Text Decoration Level 4](https://drafts.csswg.org/css-text-decor-4/) (`text-decoration-*`·`text-underline-offset`) · [CSS Overflow Level 3](https://drafts.csswg.org/css-overflow-3/) (`text-overflow`). 열어서 확인한 것만 적었다.
+**실행 검증** — **Google Chrome 151.0.7922.173** headless · Linux. 이 문서의 **줄 수와 줄 폭은 전부 실측**이다 — `Range.selectNodeContents(el).getClientRects()` 로 행 상자를 세고, 눈으로 봐야 하는 것은 CDP 스크린샷으로 확인했다.\
+**엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다 — 크로스 브라우저 차이는 Baseline 데이터로만 접지했다.
+**버전** — `word-break`·`overflow-wrap`·`white-space`·`text-overflow`·`text-decoration`·`hyphens` 는 Baseline **widely**. `text-wrap` 은 **newly**(2024-10-17), `text-wrap: balance` 는 **newly**(2024-05-13), `white-space-collapse` 는 **newly**(2024-03-19), **`text-wrap: pretty` 는 아직 Baseline 이 아니다(limited)**. `api.webstatus.dev` 조회 결과이고 본문 「구현 세부사항 대 언어 보장」에 다시 적었다.
+⚠️ **줄 수는 글꼴에 달려 있다.** 같은 문장도 글꼴이 다르면 글자 폭이 달라 줄 수가 달라진다 — 선행 주제가 [50번](../50-fonts-and-webfonts/2-summary.md)인 이유다.

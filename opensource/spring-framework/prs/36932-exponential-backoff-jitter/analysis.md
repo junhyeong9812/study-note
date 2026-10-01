@@ -1,12 +1,5 @@
 # PR #36932 분석 — ExponentialBackOff 지터의 0 나눗셈
 
-> 기준: PR base = upstream `0c60266986`(수정 전) / 머지 커밋 = `924849f55b7`(수정) / 폴리시 = `0d706f8da60`.\
-> base와 머지 커밋은 한 줄만 다르므로 아래 줄번호는 두 커밋에서 동일하다.\
-> 현재 upstream/main은 후속 gh-36943 이후라 같은 코드가 :320에 있다(§6).
->
-> 중복 회피: 2층 구조와 스프링 전역 배치는 `structure.md` §1·§4, 서사형 설명과 머지 후 이력은 `README.md`, 테스트 해설은 `tests.md`.\
-> 이 문서는 이름표 사전(§2.5)과 단계별 값 추적(§3), 대안 기각 근거(§5)를 맡는다.
-
 ## 0. 결론
 
 **결함**: `applyJitter`가 "간격이 초기값의 몇 배까지 자랐는가"를 정수 나눗셈 `interval / initialInterval`로 재는데 분모를 검증하지 않아, `initialInterval = 0`과 양수 `jitter`를 함께 설정하면 첫 `nextBackOff()`가 `100 * (0 / 0)`을 평가해 `ArithmeticException: / by zero`를 던졌다.
@@ -325,3 +318,8 @@ GitHub PR 상태는 CLOSED지만 거절이 아니라 스프링 팀 관행이다 
 마지막 항목이 이 PR의 삼항 조건을 그대로 품고 있다는 점이 중요하다. §5.3에서 본 대로 double 나눗셈만으로는 `NaN -> 0`이 되어 지터가 조용히 사라지므로, 분모 가드는 double 전환 이후에도 여전히 필요하다. 현재 upstream/main의 `applyJitter`(:314)와 그 안의 :320이 두 수정의 합성 결과다.
 
 **범위 밖으로 남긴 것.** `setInitialInterval`·`setMaxInterval`·`setMaxElapsedTime`·`setMaxAttempts`의 검증 부재는 gh-35357의 영역으로 남겨 두었다. 이 PR은 "런타임 크래시만 좁게 막고 검증 설계와 직교한다"고 본문에 명시해 리뷰 범위를 한 줄로 좁혔고, 그 결과 파생 과제(정밀도·문서화)가 각자의 이슈로 분리되어 별도로 처리되었다.
+
+## 출처
+
+기준: PR base = upstream `0c60266986`(수정 전) / 머지 커밋 = `924849f55b7`(수정) / 폴리시 = `0d706f8da60`.\
+base와 머지 커밋은 한 줄만 다르므로 본문의 줄번호는 두 커밋에서 동일하다.

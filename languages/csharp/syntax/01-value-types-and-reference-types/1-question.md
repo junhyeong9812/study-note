@@ -1,15 +1,5 @@
 # csharp/syntax/01 — 값 타입과 참조 타입 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
-> 진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
-> 기본 명령은 `csc -out:ex.dll <파일>.cs && dotnet exec ex.dll` 이고, `csc` 는 Roslyn 을 직접 부르는 셸 함수다(서머리 머리말).
-> ★★★ **「값 타입은 스택에 있다」를 먼저 의심해라** — 7번에서 **할당 바이트**로 직접 잰다.
-> ★ **이 주제의 다섯 번째 창은 `GC.GetAllocatedBytesForCurrentThread()`** 다. 네 번째는 **IL** 이다(9번).
-> 선행 — 없음. 뒤따르는 것은 [02번](../02-struct-vs-class-choosing/)·[03번](../03-boxing-and-unboxing/)·[04번](../04-var-and-target-typed-new/)이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -261,6 +251,15 @@ class Node { public int X; public int Y; }
 - `ref`/`out`/`in` **자체**의 정본은 목록의 몇 번인가?
 - 「값이냐 참조냐」라는 **개념 자체**는 이 갈래 밖 어디가 정본인가?
 - C++ 의 참조/포인터와 **축이 어떻게 다른가** — 어느 갈래 몇 번인가?
+
+## 실행 환경
+
+**환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
+진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
+기본 명령은 `csc -out:ex.dll <파일>.cs && dotnet exec ex.dll` 이고, `csc` 는 Roslyn 을 직접 부르는 셸 함수다(서머리 「실행 환경」).
+★★★ **「값 타입은 스택에 있다」를 먼저 의심해라** — 7번에서 **할당 바이트**로 직접 잰다.
+★ **이 주제의 다섯 번째 창은 `GC.GetAllocatedBytesForCurrentThread()`** 다. 네 번째는 **IL** 이다(9번).
+선행 — 없음. 뒤따르는 것은 [02번](../02-struct-vs-class-choosing/)·[03번](../03-boxing-and-unboxing/)·[04번](../04-var-and-target-typed-new/)이다.
 
 ## 복습 기록
 

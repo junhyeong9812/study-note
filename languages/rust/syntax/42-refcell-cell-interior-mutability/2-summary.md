@@ -1,18 +1,5 @@
 # rust/syntax/42 — `RefCell`/`Cell` 내부 가변성 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `std::cell` 모듈 문서](https://doc.rust-lang.org/std/cell/index.html)(「dynamic borrowing」 · `Sync` 아님 · 대응하는 `Sync` 판) ·
-> [std — `RefCell`](https://doc.rust-lang.org/std/cell/struct.RefCell.html)(`borrow`·`borrow_mut` 의 §Panics · `try_borrow_mut`) ·
-> [std — `Cell`](https://doc.rust-lang.org/std/cell/struct.Cell.html)(`get` 은 `T: Copy`) ·
-> [Reference — Destructors · Temporary scopes](https://doc.rust-lang.org/reference/destructors.html#temporary-scopes)(2024 에디션의 `if let` 규칙) ·
-> std 소스 `core/src/cell.rs`(패닉 문구 — 로컬 `rust-docs` 의 `src/core/cell.rs.html`).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> **`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(에디션 격자는 2021·2024 둘).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★★ **속도·크기는 한 번도 재지 않았다** — 「`RefCell` 은 오버헤드가 있다」 류의 문장은 **근거가 없으므로 쓰지 않는다.** 이 문서가 보이는 「대가」는 **패닉이라는 실패 모드**뿐이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체 창 — ① 런타임 빌림 격자(조합마다 통과 / 패닉)다.** 컴파일러가 하던 판정을 **실행이** 한다 — 그래서 창도 컴파일 로그가 아니라 **실행 결과**다.
 
 ## 흔들리는 칸 / 안 흔들리는 칸
@@ -82,7 +69,7 @@
 | ④ ★★ **std 소스 grep** | 패닉 문구가 **어디서 오나** — 언어인가 std 인가 | 쓴다((4)) |
 | ⑤ **컴파일러 진단** E0599 · E0277 | `Cell::get` 의 `Copy` 요구 · `!Sync` | 쓴다((6)·(7)) |
 | 실행 시간 · `RefCell` 의 크기 | 「오버헤드가 있다」 | ★ **부적용 — 재지 않는다** |
-| Miri 로 빌림 위반 탐지 | — | ★ **못 잰 것**이자 **필요 없는 것** — `RefCell` 위반은 UB 가 아니라 **정의된 패닉**이다. 실행이 곧 판정이다(Miri 는 이 머신에 없다 — 41번 머리말 블록) |
+| Miri 로 빌림 위반 탐지 | — | ★ **못 잰 것**이자 **필요 없는 것** — `RefCell` 위반은 UB 가 아니라 **정의된 패닉**이다. 실행이 곧 판정이다(Miri 는 이 머신에 없다 — 41번 맨 위 부분 블록) |
 
 ★★ **제5의 상태 — 「같은 질문을 다른 창으로」.** 「이 두 빌림은 겹치나」는 원래 **컴파일러의 창**(E0502)이 답한다. `RefCell` 은 그 창을 **닫는다**(통과) — 그래서 같은 질문을 **실행 결과의 창**으로 옮겨 물었다((3)).
 ★ 바꾼 창이 **못 보는 것** — **안 지나간 경로**. 패닉하는 조합이 `if` 의 한 갈래에만 있으면 그 갈래를 실행하지 않는 한 **영영 모른다.** 컴파일 에러는 모든 경로를 보지만 런타임 검사는 **지나간 경로만** 본다.
@@ -652,3 +639,16 @@ strong 3  contents ["from a", "from b"]
 
 - `RefCell::borrow` 가 돌려주는 `Ref` 는 `Ref::map` 으로 **안쪽 필드만** 빌린 가드로 좁힐 수 있다. **이 문서는 던지지 않았다.**
 - `OnceCell`·`LazyCell` — 한 번만 쓰는 칸(대응하는 `Sync` 판은 `OnceLock`·`LazyLock` — std `cell` 모듈 문서). [목록의 **53번 주제**](../53-atomics-oncelock-and-lazylock/).
+
+## 실행 환경
+
+**기준 소스** — [std — `std::cell` 모듈 문서](https://doc.rust-lang.org/std/cell/index.html)(「dynamic borrowing」 · `Sync` 아님 · 대응하는 `Sync` 판) ·
+[std — `RefCell`](https://doc.rust-lang.org/std/cell/struct.RefCell.html)(`borrow`·`borrow_mut` 의 §Panics · `try_borrow_mut`) ·
+[std — `Cell`](https://doc.rust-lang.org/std/cell/struct.Cell.html)(`get` 은 `T: Copy`) ·
+[Reference — Destructors · Temporary scopes](https://doc.rust-lang.org/reference/destructors.html#temporary-scopes)(2024 에디션의 `if let` 규칙) ·
+std 소스 `core/src/cell.rs`(패닉 문구 — 로컬 `rust-docs` 의 `src/core/cell.rs.html`).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+**`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(에디션 격자는 2021·2024 둘).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★★ **속도·크기는 한 번도 재지 않았다** — 「`RefCell` 은 오버헤드가 있다」 류의 문장은 **근거가 없으므로 쓰지 않는다.** 이 문서가 보이는 「대가」는 **패닉이라는 실패 모드**뿐이다.

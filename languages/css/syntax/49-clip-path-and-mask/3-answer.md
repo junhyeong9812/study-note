@@ -1,11 +1,5 @@
 # css/syntax/49 — `clip-path` 와 `mask` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 색은 Google Chrome 151.0.7922.173 headless 로 렌더한 스크린샷 PNG 를 파이썬 표준 라이브러리(`zlib`)로 디코드해 그 좌표의 `(r,g,b)` 를 읽은 값**이고,
-> **좌표·계산값은 `getBoundingClientRect()`·`offsetParent`·`getComputedStyle()`·`document.elementFromPoint()` 로 읽은 값**이다.\
-> **손으로 계산해 유도한 수치는 없다.** 규칙은 [CSS Masking 1](https://drafts.csswg.org/css-masking-1/)·[CSS Shapes 1](https://drafts.csswg.org/css-shapes-1/#basic-shape-functions) 으로 접지했다.\
-> ★ 렌더는 `--disable-gpu` **소프트웨어 렌더링**이다. 정확한 픽셀 값을 「보장」으로 읽지 마라.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -371,3 +365,10 @@ linear-gradient(to right,transparent,#000)  (249,250,254) → … → (34,82,217
 
 **구현 의존 항목** — ①깨진 참조 마스크에서 **요소가 통째로 사라지는** 것 ②`-webkit-mask-*` 가 **별칭**이라 순서로 덮이는 것 ③`clip-path` 가 포함 블록을 안 가로채는 것(명세의 포함 블록 목록까지 대조하지는 않았다) ④각 픽셀의 정확한 값과 경계 안티앨리어싱 — `--disable-gpu` **소프트웨어 렌더링** 결과다.\
 **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.** 크로스 브라우저는 Baseline 데이터로만 접지했다(webstatus.dev 조회 2026-09-23: `clip-path` widely 2021-01-21/2023-07-21 · `masks` widely 2023-12-07/2026-06-07).
+
+## 실행 환경
+
+이 파일의 **모든 색은 Google Chrome 151.0.7922.173 headless 로 렌더한 스크린샷 PNG 를 파이썬 표준 라이브러리(`zlib`)로 디코드해 그 좌표의 `(r,g,b)` 를 읽은 값**이고,
+**좌표·계산값은 `getBoundingClientRect()`·`offsetParent`·`getComputedStyle()`·`document.elementFromPoint()` 로 읽은 값**이다.\
+**손으로 계산해 유도한 수치는 없다.** 규칙은 [CSS Masking 1](https://drafts.csswg.org/css-masking-1/)·[CSS Shapes 1](https://drafts.csswg.org/css-shapes-1/#basic-shape-functions) 으로 접지했다.\
+★ 렌더는 `--disable-gpu` **소프트웨어 렌더링**이다. 정확한 픽셀 값을 「보장」으로 읽지 마라.

@@ -1,11 +1,5 @@
 # api-design/06-refund — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 코드가 없는 문제집이므로 원본 REQUIREMENTS.md · solution/CHECKLIST.md · solution/REFERENCE.md 다.
-
-⚠️ 정답은 Claude 초안(2026-09-14) — 원본 CHECKLIST/REFERENCE 근거로 작성. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
@@ -455,3 +449,7 @@
 - 채점 기준: `/home/jun/project/myway/api-design/06-refund/solution/CHECKLIST.md` (A~J + 자가 채점)
 - 실사고 출처: `/home/jun/project/myway/api-design/06-refund/solution/REFERENCE.md` (Grab · Airbnb · 우아한형제들 · Shopify · Twilio · Slack · 올리브영 · Mercari · 토스페이먼츠 · Uber · Atlassian + 멱등 응답 계약 4사)
 - 공통 질문 3개: `/home/jun/project/myway/api-design/README.md` "매번 던지는 질문 세 개"
+
+## 실행 환경
+
+기준 소스는 코드가 없는 문제집이므로 원본 REQUIREMENTS.md · solution/CHECKLIST.md · solution/REFERENCE.md 다.

@@ -1,9 +1,5 @@
 # PR #37109 — 무대의 실구조와 워크플로우
 
-> PR #37109의 무대가 되는 실구조·워크플로우. 문제·수정은 [README.md](README.md), 테스트는 [tests.md](tests.md) 참조.
->
-> 기준: 로컬 HEAD `526c706d1c3`. 이 시점의 `TypeDescriptor.java`는 아직 PR #37109가 적용되지 않은 **수정 전** 상태이므로, 아래 file:line은 그대로 "수정 전 코드"의 좌표다.
-
 ## 1. 무대 — 실구조
 
 `TypeDescriptor`는 필드 넷을 가진 값 객체이고, 그중 애너테이션을 담당하는 둘이 이번 PR의 무대다.\
@@ -302,3 +298,7 @@ SerializableTypeWrapper.FieldTypeProvider     PR #37109 의 TypeDescriptor
 **싱글톤 정체성이 의미를 갖는 값 객체.**\
 `AnnotatedElementAdapter.EMPTY`(:40)는 `isEmpty()`(:110)가 `this == EMPTY`로 판정하기 때문에, 값이 같은 다른 인스턴스로 대체되면 조용히 성능 특성이 바뀐다(위 [분기 3]).\
 이런 타입에는 보통 `readResolve()`가 필요한데 이 어댑터에는 없고, 그래서 복원 책임이 소유자 쪽으로 넘어온다.
+
+## 출처
+
+기준: 로컬 HEAD `526c706d1c3`. 이 시점의 `TypeDescriptor.java`는 아직 PR #37109가 적용되지 않은 **수정 전** 상태이므로, 본문의 file:line은 그대로 "수정 전 코드"의 좌표다.

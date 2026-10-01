@@ -1,9 +1,5 @@
 # kotlin/syntax/46 — `Map` 조작 — `getOrPut`/`getOrElse`/`mapValues`/`filterKeys` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.
-> ★★ 아래 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -262,3 +258,8 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 1. ★★★ **2.4 stdlib 에 `getOrElseIfNull`·`getOrElseIfMissing`·`getOrPutIfNull`·`getOrPutIfMissing` 이 실험 API 로 들어와 있었다** — 옛 `getOrPut` KDoc 이 이제 그쪽을 쓰라고 가리킨다.
 2. ★★ **`ConcurrentHashMap.getOrPut` 은 「원자적이지 않다」가 아니라 「넣기는 한 번, 람다는 여러 번일 수 있다」였다** — 그리고 그 약속은 **`ConcurrentHashMap` 타입으로 받을 때만** 붙는다(`MutableMap` 이면 `put` 판).
 3. ★ **`getValue` 가 `{k=null}` 에서 던지지 않고 `null` 을 줬다** — 「`getValue` 는 값이 없으면 던진다」의 「없으면」은 **키**다.
+
+## 실행 환경
+
+모든 출력·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.
+★★ 본문의 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.

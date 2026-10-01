@@ -1,12 +1,5 @@
 # css/syntax/13 — 의사 요소와 생성 콘텐츠: `::before`/`::after`/`::marker`/`::selection` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 계산값 · 모든 「담김/버림」 판정 · 모든 치수 · 접근성 트리 덤프는 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 확인한 것**이다.\
-> 계산값은 전부 `getComputedStyle(el, '<의사 요소>')` 로 읽었다 — **두 번째 인자가 있다.**\
-> 명시도는 [02번 주제](../02-specificity/2-summary.md)의 두 판 방식(동점 경쟁자 · 한 칸 낮은 경쟁자)으로 고정했고, 경쟁자에도 같은 의사 요소를 붙였다.\
-> 접근성 트리는 CDP 의 `Accessibility.getFullAXTree` 로 덤프했다.\
-> 규칙은 [CSS Pseudo-Elements 4](https://drafts.csswg.org/css-pseudo-4/) · [CSS Lists 3](https://drafts.csswg.org/css-lists-3/) · [Selectors 4](https://drafts.csswg.org/selectors-4/) 로 접지했다. **엔진은 Chrome 하나다.**
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -474,3 +467,11 @@ Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않�
 - **`::before::marker` 의 동작.** 파싱되는 것만 확인했다.
 - **하이라이트의 캐스케이딩·상속 규칙**(css-pseudo-4 §3.5). 들어가지 않았다.
 - **성능.** 이 주제에서 성능 주장을 하나도 하지 않았다.
+
+## 실행 환경
+
+이 파일의 **모든 계산값 · 모든 「담김/버림」 판정 · 모든 치수 · 접근성 트리 덤프는 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 확인한 것**이다.\
+계산값은 전부 `getComputedStyle(el, '<의사 요소>')` 로 읽었다 — **두 번째 인자가 있다.**\
+명시도는 [02번 주제](../02-specificity/2-summary.md)의 두 판 방식(동점 경쟁자 · 한 칸 낮은 경쟁자)으로 고정했고, 경쟁자에도 같은 의사 요소를 붙였다.\
+접근성 트리는 CDP 의 `Accessibility.getFullAXTree` 로 덤프했다.\
+규칙은 [CSS Pseudo-Elements 4](https://drafts.csswg.org/css-pseudo-4/) · [CSS Lists 3](https://drafts.csswg.org/css-lists-3/) · [Selectors 4](https://drafts.csswg.org/selectors-4/) 로 접지했다. **엔진은 Chrome 하나다.**

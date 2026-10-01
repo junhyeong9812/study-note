@@ -1,12 +1,5 @@
 # kotlin/syntax/53 — 구조적 동시성 — `Job`·취소 전파·예외 전파·`supervisorScope` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)(코루틴 기초)다.
-> 문항 10개 중 예측형은 5개이고, 5개 모두 코드블록이 붙는다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -334,6 +327,12 @@ fun main() = runBlocking {
 ### 10. 운영 패턴과의 경계 (경계)
 
 - [`ops-patterns/19`](../../../../cs/ops-patterns/19-graceful-shutdown/)(graceful shutdown)에 쓸 것과 이 주제에 쓸 것을 한 줄씩 가르면? 3번의 결과는 종료 처리에서 무엇을 뜻하나?
+
+## 실행 환경
+
+선행은 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)(코루틴 기초)다.
+
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

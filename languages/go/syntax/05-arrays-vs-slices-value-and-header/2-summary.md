@@ -1,17 +1,5 @@
 # go/syntax/05 — 배열과 슬라이스는 무엇이 다른가 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Array types · Slice types ·
-> Slice expressions · Appending to and copying slices · Length and capacity · Comparison operators 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> **버전** — 배열·슬라이스·`append`·`copy`·3-인덱스 슬라이싱은 **1.2부터 지금까지 같다**
-> (3-인덱스 슬라이싱 `s[a:b:c]` 가 1.2에 들어왔고 나머지는 1.0부터다).
-> `unsafe.SliceData` 는 **1.20**부터, `slices` 패키지는 **1.21**부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 ## 이 갈래가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
@@ -1017,3 +1005,15 @@ func main() {
 - `unsafe.Sizeof` 가 재는 것은 **헤더의 크기**지 **가리키는 데이터의 크기**가 아니다.
   「슬라이스가 쓰는 메모리」를 재려면 다른 도구가 필요하다 — 이 문서에서는 **재지 않았다**(08번 주제가
   `runtime.MemStats` 로 한 자리만 재 본다).
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Array types · Slice types ·
+Slice expressions · Appending to and copying slices · Length and capacity · Comparison operators 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+**버전** — 배열·슬라이스·`append`·`copy`·3-인덱스 슬라이싱은 **1.2부터 지금까지 같다**
+(3-인덱스 슬라이싱 `s[a:b:c]` 가 1.2에 들어왔고 나머지는 1.0부터다).
+`unsafe.SliceData` 는 **1.20**부터, `slices` 패키지는 **1.21**부터다.

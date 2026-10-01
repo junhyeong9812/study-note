@@ -1,10 +1,5 @@
 # css/syntax/23 — 오버플로·스크롤 컨테이너·스크롤바 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해** `getComputedStyle`·`clientWidth`/`offsetWidth`/`scrollWidth`·`scrollTop` 대입으로 잰 값이다. 단위는 px 다.\
-> ★ **잘림 여부는 좌표로 안 나오므로 스크린샷 픽셀 RGB 로 판정했다.**\
-> **손으로 계산해 유도한 수치는 없다.** 규칙은 [CSS Overflow Level 3](https://drafts.csswg.org/css-overflow-3/)·[Level 4](https://drafts.csswg.org/css-overflow-4/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -321,3 +316,9 @@ overflow: clip; overflow-clip-margin:20px (124, 58,237)    (255,255,255)
 **구현 의존 항목** — ★ **스크롤바 폭 15px 은 이 플랫폼의 값**이다. 겹침 스크롤바를 쓰는 환경에서는 **0** 이 되고, 그러면 `scrollbar-gutter: stable` 도 아무 자리를 안 비운다. **이 문서의 185·170 은 전부 그 15 에서 나온 값**이다.\
 ★ **포커스 스크롤의 양(145)은 브라우저가 정한다.** 「스크롤이 일어난다」는 재현되지만 **얼마나 굴리느냐는 이 판의 결과**다.\
 **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.**
+
+## 실행 환경
+
+이 파일의 **모든 치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해** `getComputedStyle`·`clientWidth`/`offsetWidth`/`scrollWidth`·`scrollTop` 대입으로 잰 값이다. 단위는 px 다.\
+★ **잘림 여부는 좌표로 안 나오므로 스크린샷 픽셀 RGB 로 판정했다.**\
+**손으로 계산해 유도한 수치는 없다.** 규칙은 [CSS Overflow Level 3](https://drafts.csswg.org/css-overflow-3/)·[Level 4](https://drafts.csswg.org/css-overflow-4/) 로 접지했다.

@@ -1,35 +1,5 @@
 # csharp/syntax/19 — 동등성 규칙 — `Equals`/`GetHashCode`/`==` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [.NET API — `Object.GetHashCode`](https://learn.microsoft.com/en-us/dotnet/api/system.object.gethashcode)(열어서 확인: 「같은 두 객체는 같은 해시」 · 「역은 아니다」 ·\
-> 「해시를 **프로세스 밖으로 내보내거나 저장하지 마라**」 · 「값 타입이 `GetHashCode` 를 안 고치면 `ValueType.GetHashCode` 가 **리플렉션으로** 필드에서 계산한다」 · 「`GetHashCode` 를 고치면 `Equals` 도, 그 역도」)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).
-> **버전** — `Equals`/`GetHashCode`/연산자 오버로드는 **C# 1.0부터** · `IEquatable<T>` 는 **.NET 2.0(제네릭)부터** · `HashCode.Combine` 은 **.NET Core 2.1부터** 다.
-> **경계** — ★★★ **해시 테이블의 원리**(칸·충돌·재해싱)는 [`data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/)이 정본이다 —\
-> 그 문서의 「**사전 지식 — hashCode 와 equals 의 약속**」 절이 **계약 한 문장**(같으면 해시도 같다)을, 「**동작 — 조회**」 절이 **칸을 먼저 고르고 그 칸만 `equals` 로 본다**를 그린다.\
-> **여기서는** 그 계약을 **C# 에서 어겼을 때 무엇이 조용히 틀리나**만 센다.\
-> ★ [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/)이 이미 잰 것 — **`Equals` 만 고친 키로 `Count = 3`·`CS0659`** — 은 다시 재지 않는다(여기 격자의 `R2` 한 줄로만 잇는다).\
-> ★ [02번](../02-struct-vs-class-choosing/)이 이미 잰 것 — **`p1.Equals(p2)` 한 번에 +48 바이트 · `IEquatable<T>` 면 +0** — 은 **한 호출**이었다. 여기서는 **컬렉션 안에서** 다시 본다.\
-> ★★★ **앞 사슬** — [18번](../18-record-value-equality-and-with/)이 **record 가 만드는 `==`·`Equals`·`GetHashCode` 의 IL** 을 찍었다. **이 문서의 사고가 record 에서는 안 나는 이유**가 거기 있다.
-> ★★★ **대비 — 이 문서는 네 갈래 대비표의 네 번째 칸이다.**\
-> Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **30번**([`30-repr-eq-hash-contracts/`](../../../python/syntax/30-repr-eq-hash-contracts/)) ·\
-> Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **28번**([`28-partialeq-eq-partialord-ord-and-hash-contracts/`](../../../rust/syntax/28-partialeq-eq-partialord-ord-and-hash-contracts/)) ·\
-> Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **32번**([`32-equality-and-equals-contract/`](../../../kotlin/syntax/32-equality-and-equals-contract/)) —\
-> ★★★ **셋이 같은 실험(계약 위반 × 해시 컬렉션)을 했다.** 여기서는 **Kotlin 32 의 다섯 모양(`R1`\~`R5`)을 그대로 C# 에 던져 표를 잇는다.**
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★★★ **`GetHashCode()` 의 값** — 이 문서는 **한 번도 안 찍었다**((6)은 **가짓수**만 센다) | ★★★ 두 해시가 **같나 다르나** · 여러 판에서 **몇 가지가 나왔나** |
-> | ★ 격자 **`R2` 줄의 `Count=2`** — 기본 해시 둘이 **우연히 같으면** 답이 바뀐다(두 캡처에서 같았지만 **보장이 아니다**) | 격자의 나머지 칸 · **「갈린 칸 N / M」 줄** |
-> | 진단 **문구** | ★★★ **진단 코드**(`CS0659`·`CS0660`·`CS0661`·`CS0252`·`CS0253`·`CS0216`·`CS0019`)와 **`(행,열)`** |
-> | ★ **증분의 절댓값 일부** — 한 판에서 잰 바이트 | ★★★ **네 판에서 갈린 줄 수** · 네 판에서 다 같은 바이트 |
-> | **IL 오프셋 폭** | ★★ **옵코드**(`ceq` 대 `call String::op_Equality`) |
-
 ## 이 판
 
 ```text
@@ -822,3 +792,34 @@ True True True True 1
 - ★ **`IEqualityComparer<T>` 를 따로 넘기기** — 타입을 못 고칠 때 **컬렉션 쪽에 규칙을 준다.** `StringComparer.OrdinalIgnoreCase` 가 대표다. **안 던졌다.**
 - ★ **`HashSet` 내부의 비교 방향** — (1) `R5` 는 **결과로** 방향을 읽었다. **소스 코드는 읽지 않았다.**
 - ★ **`double` 의 `==` 대 `Equals`** — `NaN` 이 갈린다. [18번](../18-record-value-equality-and-with/) (8) 탐침 5 가 record 안에서 봤다.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[.NET API — `Object.GetHashCode`](https://learn.microsoft.com/en-us/dotnet/api/system.object.gethashcode)(열어서 확인: 「같은 두 객체는 같은 해시」 · 「역은 아니다」 ·\
+「해시를 **프로세스 밖으로 내보내거나 저장하지 마라**」 · 「값 타입이 `GetHashCode` 를 안 고치면 `ValueType.GetHashCode` 가 **리플렉션으로** 필드에서 계산한다」 · 「`GetHashCode` 를 고치면 `Equals` 도, 그 역도」)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).
+**버전** — `Equals`/`GetHashCode`/연산자 오버로드는 **C# 1.0부터** · `IEquatable<T>` 는 **.NET 2.0(제네릭)부터** · `HashCode.Combine` 은 **.NET Core 2.1부터** 다.
+**경계** — ★★★ **해시 테이블의 원리**(칸·충돌·재해싱)는 [`data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/)이 정본이다 —\
+그 문서의 「**사전 지식 — hashCode 와 equals 의 약속**」 절이 **계약 한 문장**(같으면 해시도 같다)을, 「**동작 — 조회**」 절이 **칸을 먼저 고르고 그 칸만 `equals` 로 본다**를 그린다.\
+**여기서는** 그 계약을 **C# 에서 어겼을 때 무엇이 조용히 틀리나**만 센다.\
+★ [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/)이 이미 잰 것 — **`Equals` 만 고친 키로 `Count = 3`·`CS0659`** — 은 다시 재지 않는다(여기 격자의 `R2` 한 줄로만 잇는다).\
+★ [02번](../02-struct-vs-class-choosing/)이 이미 잰 것 — **`p1.Equals(p2)` 한 번에 +48 바이트 · `IEquatable<T>` 면 +0** — 은 **한 호출**이었다. 여기서는 **컬렉션 안에서** 다시 본다.\
+★★★ **앞 사슬** — [18번](../18-record-value-equality-and-with/)이 **record 가 만드는 `==`·`Equals`·`GetHashCode` 의 IL** 을 찍었다. **이 문서의 사고가 record 에서는 안 나는 이유**가 거기 있다.
+★★★ **대비 — 이 문서는 네 갈래 대비표의 네 번째 칸이다.**\
+Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **30번**([`30-repr-eq-hash-contracts/`](../../../python/syntax/30-repr-eq-hash-contracts/)) ·\
+Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **28번**([`28-partialeq-eq-partialord-ord-and-hash-contracts/`](../../../rust/syntax/28-partialeq-eq-partialord-ord-and-hash-contracts/)) ·\
+Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **32번**([`32-equality-and-equals-contract/`](../../../kotlin/syntax/32-equality-and-equals-contract/)) —\
+★★★ **셋이 같은 실험(계약 위반 × 해시 컬렉션)을 했다.** 여기서는 **Kotlin 32 의 다섯 모양(`R1`\~`R5`)을 그대로 C# 에 던져 표를 잇는다.**
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★★★ **`GetHashCode()` 의 값** — 이 문서는 **한 번도 안 찍었다**((6)은 **가짓수**만 센다) | ★★★ 두 해시가 **같나 다르나** · 여러 판에서 **몇 가지가 나왔나** |
+| ★ 격자 **`R2` 줄의 `Count=2`** — 기본 해시 둘이 **우연히 같으면** 답이 바뀐다(두 캡처에서 같았지만 **보장이 아니다**) | 격자의 나머지 칸 · **「갈린 칸 N / M」 줄** |
+| 진단 **문구** | ★★★ **진단 코드**(`CS0659`·`CS0660`·`CS0661`·`CS0252`·`CS0253`·`CS0216`·`CS0019`)와 **`(행,열)`** |
+| ★ **증분의 절댓값 일부** — 한 판에서 잰 바이트 | ★★★ **네 판에서 갈린 줄 수** · 네 판에서 다 같은 바이트 |
+| **IL 오프셋 폭** | ★★ **옵코드**(`ceq` 대 `call String::op_Equality`) |

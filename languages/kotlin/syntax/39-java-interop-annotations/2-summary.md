@@ -1,19 +1,5 @@
 # kotlin/syntax/39 — Java 상호운용 애너테이션 — `@JvmStatic`/`@JvmOverloads`/`@JvmName`/`@JvmField`/`@Throws` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Calling Kotlin from Java](https://kotlinlang.org/docs/java-to-kotlin-interop.html)(`@JvmOverloads` — 「For every parameter with a default value, this generates one additional overload, which has this parameter and all parameters to the right of it in the parameter list removed.」 · `@JvmField` 를 달 수 있는 조건 — 「has a backing field · is not private · does not have `open`, `override` or `const` modifiers · is not a delegated property」 · `@JvmStatic` — 이름 있는 `object` 에서는 「doesn't generate a separate instance method」, `companion object` 에서는 바깥 클래스의 정적 메서드와 **동반 객체의 인스턴스 메서드를 둘 다** · 파일 facade 의 `@JvmName` · `@Throws`).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 6회(컴파일 실패 1벌) · `javac` 4회(실패가 결과인 것 2벌) + 격자 스크립트 안에서 2회 · `java` 3회 · `javap` 3회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 칸 N / M」은 스크립트가 스스로 센 것**이다.
-> **버전** — 다섯 애너테이션 전부 **1.0** 부터 있다. 이 판에서 버전에 갈리는 칸은 **없다**(격자는 한 판만 돌렸다).
-> **경계** — ★★★ **이미 잰 것은 다시 재지 않는다** —\
-> `@Throws` 는 [34번 주제](../34-exceptions-nothing-and-try-expression/) (2)가 쟀다 — 없으면 Java `catch` 가 「`exception IOException is never thrown in body`」로 막히고, 달면 `javap -v` 에 **`Exceptions:` 속성**이 생기며 이번엔 **안 잡으면** 「`unreported exception`」이다. 여기서는 **인용만** 한다.\
-> `value class` 를 받는 함수의 **뭉개진 이름을 `@JvmName` 으로 풀면** Java 가 `long` 을 직접 넘겨 `init` 의 `require` 가 **한 번도 안 도는 것**(`named#-1`)은 [26번 주제](../26-value-class-and-boxing/) (5)가 쟀다.\
-> `object` 가 `INSTANCE` 필드가 되고 `companion object` 가 `Outer$Companion` 클래스가 되는 것, Java 에서 부를 때의 `javac` 에러 두 종은 [25번 주제](../25-object-declaration-companion-and-object-expression/) (1)(3)이 정본이다 — 여기서는 그것을 **격자의 한 행**으로만 다시 놓는다.\
-> 애너테이션이 필드·게터·매개변수 중 **어디에 붙나**는 [35번 주제](../35-annotations-and-use-site-targets/)다.\
-> 상호운용의 **실제 비용**(JUnit5 `@MethodSource` 가 정적 팩토리를 요구하는 마찰 등)은 [`../../언어-특성/README.md`](../../언어-특성/README.md) §9 가, **Spring 맥락**(final 클래스와 all-open)은 [`history/spring/kotlin-and-spring.md`](../../../../history/spring/kotlin-and-spring.md) 가 정본이다. 여기는 **애너테이션 하나하나가 바이트코드에서 무엇을 바꾸나**다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**Java 에서 부르기 격자 — 같은 Java 소스를 애너테이션 없는 판 / 있는 판에 `javac` 로 던진다**」. 이 애너테이션들은 **Kotlin 쪽에서는 아무것도 안 바꾼다** — 차이는 **Java 가 컴파일되느냐**로만 보인다. 둘째 창(`javap -p`)이 **왜** 갈렸는지를 보인다.
 
 ## 이 주제가 쓰는 세 층
@@ -630,3 +616,17 @@ fun main() {
 - **`@JvmOverloads` 오버로드의 몸통** — 새 오버로드가 `$default` 를 부르는지, 값을 직접 채워 원래 메서드를 부르는지는 `javap -c` 로 **재지 않았다.** 개수와 서명만 봤다.
 - **`@JvmName` 으로 게터 이름 바꾸기**(`@get:JvmName("isOpen")`) · **`@JvmMultifileClass`** — 문서가 적는 형태다. 이 문서는 **던지지 않았다.**
 - **생성자의 `@JvmOverloads`**(`class A @JvmOverloads constructor(…)`) — 같은 규칙일 것으로 보이지만 **던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Calling Kotlin from Java](https://kotlinlang.org/docs/java-to-kotlin-interop.html)(`@JvmOverloads` — 「For every parameter with a default value, this generates one additional overload, which has this parameter and all parameters to the right of it in the parameter list removed.」 · `@JvmField` 를 달 수 있는 조건 — 「has a backing field · is not private · does not have `open`, `override` or `const` modifiers · is not a delegated property」 · `@JvmStatic` — 이름 있는 `object` 에서는 「doesn't generate a separate instance method」, `companion object` 에서는 바깥 클래스의 정적 메서드와 **동반 객체의 인스턴스 메서드를 둘 다** · 파일 facade 의 `@JvmName` · `@Throws`).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 6회(컴파일 실패 1벌) · `javac` 4회(실패가 결과인 것 2벌) + 격자 스크립트 안에서 2회 · `java` 3회 · `javap` 3회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 칸 N / M」은 스크립트가 스스로 센 것**이다.
+**버전** — 다섯 애너테이션 전부 **1.0** 부터 있다. 이 판에서 버전에 갈리는 칸은 **없다**(격자는 한 판만 돌렸다).
+**경계** — ★★★ **이미 잰 것은 다시 재지 않는다** —\
+`@Throws` 는 [34번 주제](../34-exceptions-nothing-and-try-expression/) (2)가 쟀다 — 없으면 Java `catch` 가 「`exception IOException is never thrown in body`」로 막히고, 달면 `javap -v` 에 **`Exceptions:` 속성**이 생기며 이번엔 **안 잡으면** 「`unreported exception`」이다. 여기서는 **인용만** 한다.\
+`value class` 를 받는 함수의 **뭉개진 이름을 `@JvmName` 으로 풀면** Java 가 `long` 을 직접 넘겨 `init` 의 `require` 가 **한 번도 안 도는 것**(`named#-1`)은 [26번 주제](../26-value-class-and-boxing/) (5)가 쟀다.\
+`object` 가 `INSTANCE` 필드가 되고 `companion object` 가 `Outer$Companion` 클래스가 되는 것, Java 에서 부를 때의 `javac` 에러 두 종은 [25번 주제](../25-object-declaration-companion-and-object-expression/) (1)(3)이 정본이다 — 여기서는 그것을 **격자의 한 행**으로만 다시 놓는다.\
+애너테이션이 필드·게터·매개변수 중 **어디에 붙나**는 [35번 주제](../35-annotations-and-use-site-targets/)다.\
+상호운용의 **실제 비용**(JUnit5 `@MethodSource` 가 정적 팩토리를 요구하는 마찰 등)은 [`../../언어-특성/README.md`](../../언어-특성/README.md) §9 가, **Spring 맥락**(final 클래스와 all-open)은 [`history/spring/kotlin-and-spring.md`](../../../../history/spring/kotlin-and-spring.md) 가 정본이다. 여기는 **애너테이션 하나하나가 바이트코드에서 무엇을 바꾸나**다.

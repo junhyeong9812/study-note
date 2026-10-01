@@ -1,22 +1,5 @@
 # java/syntax/31 — 함수형 인터페이스: `java.util.function` 지도·`@FunctionalInterface` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../29-lambda-expressions/`](../29-lambda-expressions/). 람다가 무엇인지 먼저 본다.
-> **기준 소스** — 이 머신의 `21.0.5-tem/lib/src.zip` · `25.0.1-tem/lib/src.zip` 에서 **직접 읽은**\
-> `java.base/java/util/function/*.java` 43개와 `java/lang/FunctionalInterface.java`, 그리고 `javac` 가 실제로 낸 에러 메시지.
-> **실행 검증** — 이 문서의 모든 출력·에러·역어셈블은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 프로그램 19개를 **17.0.13 · 21.0.5 · 25.0.1** 세 JDK 에서 각각 돌렸다.\
-> 43개 인터페이스 목록은 **리플렉션으로 뽑은 것**이며 세 버전에서 한 글자도 다르지 않았다.
-> **버전** — `java.util.function` 의 인터페이스 **43개 전부 `@since 1.8`** 이다(`src.zip` 의 `@since` 를 직접 읽었다).\
-> 이 패키지에서 8 이후에 추가된 것은 **메서드 하나뿐** — `Predicate.not` 이 `@since 11` 이다.\
-> **17 · 21 · 25 세 `src.zip` 모두** 파일 수가 44개(인터페이스 43 + `package-info`), `@since` 가 전부 `1.8`,
-> 그리고 `1.8` 이 아닌 `@since` 는 `Predicate.java:133` 의 `@since 11` 하나뿐이었다.
-> **범위** — 이 인터페이스들이 스트림에서 **어떻게 쓰이나**는 [`../44-stream-creation/`](../44-stream-creation/)\
-> 과 [`../45-intermediate-operations/`](../45-intermediate-operations/) 가 정본이다.\
-> 박싱 **비용이 실제로 얼마인가**는 [`../../언어-특성/README.md`](../../언어-특성/README.md) 의 영역이다(이 문서는 **측정하지 않았다**).\
-> 여기는 **이름 규칙으로 골라 쓰는 법과 못 하는 것**이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **`java.util.function` 은 연장통이 아니라 규격 이름표다.**
@@ -816,3 +799,20 @@ Ex.java:10: error: reference to run is ambiguous
   그 이름 붙이기 규칙이 25 에서 달라졌다 — 「구현 세부사항 대 언어 보장」 표 참조.
 - **`mapMulti` 가 `BiConsumer<T, Consumer<R>>` 를 받는 이유**도 이 지도로 읽힌다 —\
   「원소 하나와 `sink` 하나를 삼키고 아무것도 안 내놓는다」. 정본은 [`../45-intermediate-operations/`](../45-intermediate-operations/) 다.
+
+## 실행 환경
+
+**선행** — [`../29-lambda-expressions/`](../29-lambda-expressions/). 람다가 무엇인지 먼저 본다.
+**기준 소스** — 이 머신의 `21.0.5-tem/lib/src.zip` · `25.0.1-tem/lib/src.zip` 에서 **직접 읽은**\
+`java.base/java/util/function/*.java` 43개와 `java/lang/FunctionalInterface.java`, 그리고 `javac` 가 실제로 낸 에러 메시지.
+**실행 검증** — 이 문서의 모든 출력·에러·역어셈블은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+프로그램 19개를 **17.0.13 · 21.0.5 · 25.0.1** 세 JDK 에서 각각 돌렸다.\
+43개 인터페이스 목록은 **리플렉션으로 뽑은 것**이며 세 버전에서 한 글자도 다르지 않았다.
+**버전** — `java.util.function` 의 인터페이스 **43개 전부 `@since 1.8`** 이다(`src.zip` 의 `@since` 를 직접 읽었다).\
+이 패키지에서 8 이후에 추가된 것은 **메서드 하나뿐** — `Predicate.not` 이 `@since 11` 이다.\
+**17 · 21 · 25 세 `src.zip` 모두** 파일 수가 44개(인터페이스 43 + `package-info`), `@since` 가 전부 `1.8`,
+그리고 `1.8` 이 아닌 `@since` 는 `Predicate.java:133` 의 `@since 11` 하나뿐이었다.
+**범위** — 이 인터페이스들이 스트림에서 **어떻게 쓰이나**는 [`../44-stream-creation/`](../44-stream-creation/)\
+과 [`../45-intermediate-operations/`](../45-intermediate-operations/) 가 정본이다.\
+박싱 **비용이 실제로 얼마인가**는 [`../../언어-특성/README.md`](../../언어-특성/README.md) 의 영역이다(이 문서는 **측정하지 않았다**).\
+여기는 **이름 규칙으로 골라 쓰는 법과 못 하는 것**이다.

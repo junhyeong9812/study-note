@@ -1,19 +1,5 @@
 # java/syntax/50 — `Stream` Gatherers (24) — 커스텀 중간 연산 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../46-terminal-operations/`](../46-terminal-operations/). 「최종 연산이 당겨 온다」를 모르면 Gatherer 의 단락 평가가 안 읽힌다.\
-> 그 앞에 [`../45-intermediate-operations/`](../45-intermediate-operations/)(중간 연산이 무엇을 못 하나)·[`../44-stream-creation/`](../44-stream-creation/)(소스)이 있다.
-> **기준 소스** — Temurin **JDK 25.0.1** 표준 라이브러리 소스 `java.base/java/util/stream/Gatherer.java`·`Gatherers.java`·`Stream.java`(`lib/src.zip`) · [`Gatherer` javadoc (Java SE 24)](https://docs.oracle.com/en/java/javase/24/docs/api/java.base/java/util/stream/Gatherer.html) · [`Gatherers` javadoc (Java SE 24)](https://docs.oracle.com/en/java/javase/24/docs/api/java.base/java/util/stream/Gatherers.html)
-> **실행 검증** — 이 문서의 모든 출력은 실제로 돌려 얻은 것이다.\
-> Gatherers 를 쓰는 프로그램 셋(50-a·50-b·50-c)은 **25.0.1 에서만** 돌아간다 — 17·21 에서는 **컴파일이 안 된다**(아래 「구현 세부사항 대 언어 보장」에 두 판의 출력을 다 실었다).\
-> Gatherers 를 안 쓰는 프로그램 하나(50-d)는 17.0.13 · 21.0.5 · 25.0.1 **셋 다** 돌렸다.\
-> 최소 예제 둘(50-a-min·50-a-min2)은 **세 판에서 컴파일만** 했고, `--release 21/22/23/24` 도 25 의 `javac` 으로 걸어 봤다.
-> **버전** — `Gatherer`·`Gatherers`·`Stream.gather` 전부 `src.zip` 의 **`@since 24`**. 22·23 에서는 **프리뷰**였다(아래에서 `--release` 로 실증).\
-> **범위** — 스트림 파이프라인의 평가 시점·단락 평가는 [`../46-terminal-operations/`](../46-terminal-operations/) 가 정본이다.\
-> 그쪽은 **기존 연산이 언제 도느냐**까지, 여기는 **그 연산 목록에 내가 하나를 더 끼워 넣는 방법**부터다.\
-> Gatherers 가 **언제·왜 들어왔나**(JEP 번호·프리뷰 두 번)는 [`../../../../history/java/java-24.md`](../../../../history/java/java-24.md) 가 정본이다 — 여기는 **어떻게 쓰고 무엇을 못 하나**만 쓴다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **Gatherer 는 내가 직접 만들어 벨트에 끼우는 작업대다.**
@@ -828,3 +814,17 @@ parallel + scan (앞 4개)   : [1, 3, 6, 10]
   > @implSpec If a result of the function is to be pushed downstream but instead the function completed exceptionally then the corresponding exception will instead be **rethrown by this method as an instance of `RuntimeException`**, after which any remaining tasks are canceled.
 
   검사 예외를 던지는 매퍼는 `RuntimeException` 으로 감싸여 나온다. 이 문서의 (10) 예제도 `Thread.sleep` 의 `InterruptedException` 을 직접 감싸야 컴파일됐다.
+
+## 실행 환경
+
+**선행** — [`../46-terminal-operations/`](../46-terminal-operations/). 「최종 연산이 당겨 온다」를 모르면 Gatherer 의 단락 평가가 안 읽힌다.\
+그 앞에 [`../45-intermediate-operations/`](../45-intermediate-operations/)(중간 연산이 무엇을 못 하나)·[`../44-stream-creation/`](../44-stream-creation/)(소스)이 있다.
+**기준 소스** — Temurin **JDK 25.0.1** 표준 라이브러리 소스 `java.base/java/util/stream/Gatherer.java`·`Gatherers.java`·`Stream.java`(`lib/src.zip`) · [`Gatherer` javadoc (Java SE 24)](https://docs.oracle.com/en/java/javase/24/docs/api/java.base/java/util/stream/Gatherer.html) · [`Gatherers` javadoc (Java SE 24)](https://docs.oracle.com/en/java/javase/24/docs/api/java.base/java/util/stream/Gatherers.html)
+**실행 검증** — 이 문서의 모든 출력은 실제로 돌려 얻은 것이다.\
+Gatherers 를 쓰는 프로그램 셋(50-a·50-b·50-c)은 **25.0.1 에서만** 돌아간다 — 17·21 에서는 **컴파일이 안 된다**(본문 「구현 세부사항 대 언어 보장」에 두 판의 출력을 다 실었다).\
+Gatherers 를 안 쓰는 프로그램 하나(50-d)는 17.0.13 · 21.0.5 · 25.0.1 **셋 다** 돌렸다.\
+최소 예제 둘(50-a-min·50-a-min2)은 **세 판에서 컴파일만** 했고, `--release 21/22/23/24` 도 25 의 `javac` 으로 걸어 봤다.
+**버전** — `Gatherer`·`Gatherers`·`Stream.gather` 전부 `src.zip` 의 **`@since 24`**. 22·23 에서는 **프리뷰**였다(본문에서 `--release` 로 실증).\
+**범위** — 스트림 파이프라인의 평가 시점·단락 평가는 [`../46-terminal-operations/`](../46-terminal-operations/) 가 정본이다.\
+그쪽은 **기존 연산이 언제 도느냐**까지, 여기는 **그 연산 목록에 내가 하나를 더 끼워 넣는 방법**부터다.\
+Gatherers 가 **언제·왜 들어왔나**(JEP 번호·프리뷰 두 번)는 [`../../../../history/java/java-24.md`](../../../../history/java/java-24.md) 가 정본이다 — 여기는 **어떻게 쓰고 무엇을 못 하나**만 쓴다.

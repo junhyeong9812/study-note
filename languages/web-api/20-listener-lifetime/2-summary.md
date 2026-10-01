@@ -1,14 +1,5 @@
 # web-api/20 — 리스너 수명: `once`·`signal` 로 해제하기와 누수 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ⑥ 「GC 창」이다** — 떼어 낸 노드에 `FinalizationRegistry` 를 걸고 `gc()` 를 불러 **콜백이 불렸나(= 회수됐나)** 를 판마다 센다. 「리스너가 노드를 붙들고 있나」를 **힙 스냅샷이 아니라 회수 여부로** 물었다(제5의 상태 — 아래 창 표).\
-> ★★ **이 편은 바이트를 재지 않았다.** 「누수가 메모리를 얼마나 먹나」는 이 문서의 주장 범위 밖이다. 잰 것은 **회수됐나(참/거짓) × 10판**뿐이다.\
-> **기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「add an event listener」(이미 abort 된 signal 이면 그냥 돌아간다 · signal 에 「리스너를 지우는」 abort 단계를 단다) · 「signal abort」·「run the abort steps」(abort 알고리즘을 먼저 돌리고 **그다음** `abort` 이벤트) · `AbortSignal.timeout()`·`any()` · 「3.2.1 Garbage collection」 절. 회수 창의 명세 근거는 [JS 갈래 23번 주제](../../js/syntax/23-map-set-and-weak-collections/2-summary.md)의 (5)가 정본이다(ECMA-262 — 「어떤 객체가 회수된다는 보장을 하지 않는다」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. GC 격자만 Chrome 을 **`--js-flags=--expose-gc`** 로 띄워 페이지에 `gc()` 를 열었다. 하네스는 아래 (1)에 전문이 있다([16번 주제](../16-event-propagation-phases/2-summary.md)의 하네스에 단계 몇 개와 `--gc` 를 더한 판이다).\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — ★★★ [15번 주제](../15-listener-registration/2-summary.md)가 **이 편의 절반**이다 — 동일성 키(타입·콜백·`capture`)와 안 지워지는 4 / 14칸, `once` 가 **부르기 직전에** 지워지는 것, `signal` 하나로 세 자리를 떼는 것, 이미 abort 된 signal 로는 **등록이 안 되는 것(호출 0회)** 을 거기서 쟀다. 여기는 그것을 **다시 재지 않고 인용**하고, **「리스너가 무엇을 붙드나」** 를 GC 로 묻는다. `AbortController` 자체는 JS 갈래 목록([`js/syntax/README.md`](../../js/syntax/README.md))의 **41번**이 정본이다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -853,3 +844,12 @@ $ python3 wa20b-cdp.py page wa20b-20-signal.html | sed -n '22,24p'
 - **`handleEvent` 객체를 리스너로 단 경우**도 같은 그래프 규칙일 것이지만 **던지지 않았다.**
 - **`onclick` 같은 속성 핸들러**는 다른 표면이라 이 격자에 넣지 않았다.
 - **iframe·다른 문서로 옮긴 노드**의 수명은 이 편 밖이다.
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ⑥ 「GC 창」이다** — 떼어 낸 노드에 `FinalizationRegistry` 를 걸고 `gc()` 를 불러 **콜백이 불렸나(= 회수됐나)** 를 판마다 센다. 「리스너가 노드를 붙들고 있나」를 **힙 스냅샷이 아니라 회수 여부로** 물었다(제5의 상태 — 맨 위 창 표).\
+★★ **이 편은 바이트를 재지 않았다.** 「누수가 메모리를 얼마나 먹나」는 이 문서의 주장 범위 밖이다. 잰 것은 **회수됐나(참/거짓) × 10판**뿐이다.\
+**기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「add an event listener」(이미 abort 된 signal 이면 그냥 돌아간다 · signal 에 「리스너를 지우는」 abort 단계를 단다) · 「signal abort」·「run the abort steps」(abort 알고리즘을 먼저 돌리고 **그다음** `abort` 이벤트) · `AbortSignal.timeout()`·`any()` · 「3.2.1 Garbage collection」 절. 회수 창의 명세 근거는 [JS 갈래 23번 주제](../../js/syntax/23-map-set-and-weak-collections/2-summary.md)의 (5)가 정본이다(ECMA-262 — 「어떤 객체가 회수된다는 보장을 하지 않는다」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. GC 격자만 Chrome 을 **`--js-flags=--expose-gc`** 로 띄워 페이지에 `gc()` 를 열었다. 하네스는 본문 (1)에 전문이 있다([16번 주제](../16-event-propagation-phases/2-summary.md)의 하네스에 단계 몇 개와 `--gc` 를 더한 판이다).\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — ★★★ [15번 주제](../15-listener-registration/2-summary.md)가 **이 편의 절반**이다 — 동일성 키(타입·콜백·`capture`)와 안 지워지는 4 / 14칸, `once` 가 **부르기 직전에** 지워지는 것, `signal` 하나로 세 자리를 떼는 것, 이미 abort 된 signal 로는 **등록이 안 되는 것(호출 0회)** 을 거기서 쟀다. 여기는 그것을 **다시 재지 않고 인용**하고, **「리스너가 무엇을 붙드나」** 를 GC 로 묻는다. `AbortController` 자체는 JS 갈래 목록([`js/syntax/README.md`](../../js/syntax/README.md))의 **41번**이 정본이다.

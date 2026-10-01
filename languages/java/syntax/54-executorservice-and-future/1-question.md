@@ -1,12 +1,5 @@
 # java/syntax/54 — `java.util.concurrent`: `ExecutorService`·`Future`·`CompletableFuture` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **선행** — [`../25-exceptions/`](../25-exceptions/) · [`../31-functional-interfaces/`](../31-functional-interfaces/) · [`../26-try-with-resources/`](../26-try-with-resources/) 의 질문을 먼저 푼다.
-> ⚠️ 스레드 이름과 실행 순서는 **실행마다 다르다.** 순서를 묻는 문항은 "**정해져 있나 아닌가**"를 묻는 것이다.
-> 시간 수치를 묻는 문항은 **자릿수**만 맞히면 된다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -211,6 +204,12 @@ Future<String> outer = single.submit(() -> {
 - `inner.get()` 에 타임아웃이 없었다면 무엇이 달랐겠는가?
 - 스레드 2개짜리 풀에서 2건이 서로를 기다리면 통과하는가 — 그것이 왜 더 위험한가?
 - 스레드 2개를 막아 놓고 던진 3번째 작업은 몇 ms 를 기다리는가?
+
+## 실행 환경
+
+**선행** — [`../25-exceptions/`](../25-exceptions/) · [`../31-functional-interfaces/`](../31-functional-interfaces/) · [`../26-try-with-resources/`](../26-try-with-resources/) 의 질문을 먼저 푼다.
+⚠️ 스레드 이름과 실행 순서는 **실행마다 다르다.** 순서를 묻는 문항은 "**정해져 있나 아닌가**"를 묻는 것이다.
+시간 수치를 묻는 문항은 **자릿수**만 맞히면 된다.
 
 ## 복습 기록
 

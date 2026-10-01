@@ -1,21 +1,5 @@
 # cpp/syntax/19 — 상속·가상 함수·`override`/`final` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **「어느 쪽이 불리나」를 맞히는 것**이 절반이다 — 「파생 것이 불린다」로 뭉개지 말고
-> **정적 타입이 정하는 자리와 동적 타입이 정하는 자리**를 갈라야 한다.
-> **환경** — g++ 13.3.0 · clang 18.1.3 · javac 21.0.5 · x86-64 Linux.
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
-> ★★★ **이 주제의 본체는 「호출 로그 + `typeid`」다**(1번). 정적/동적 타입과 호출 결과를 **나란히** 찍는다.
-> ★★ **네 번째 창은 「vtable 덤프」다**(8번) — `-fdump-lang-class`(g++)·`-fdump-vtable-layouts`(clang).
-> ★ **「부적용인 창」이 있다** — `-O2` 어셈블리 세기.
-> **가상 호출 비용은 이 문서가 재지 않는다.** 간접 호출 하나를 세는 것으로는 인라인 불가·분기 예측·캐시가 빠져 근거가 안 선다.
-> **「안 쟀다」가 아니라 「여기서 잴 것이 아니다」다** — 정본은 [목록의 **21번 주제**](../21-abstract-classes-pure-virtual-and-vtable-cost/)다.
-> ★★★ **이 편은 16\~18 과 다른 축이다** — 저쪽이 「값이 어떻게 옮겨지나」라면 여기는 「호출이 어디로 가나」다.
-> 겹치는 자리는 6번 하나이고, **[14번](../14-destructors-and-deterministic-destruction/) (5)가 남긴 「경고 0건」의 정본이 그것**이다.
-> 대비 — ★★ C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **12번**([`12-class-fields-constructors-this-base/`](../../../csharp/syntax/12-class-fields-constructors-this-base/))과 Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **9번**([`09-inheritance-overriding/`](../../../java/syntax/09-inheritance-overriding/))을 7번·8번에서 던진다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -403,6 +387,21 @@ int main() {
 - ★★ **생성자 속 가상 호출**의 양쪽 실측은 어느 갈래 몇 번인가?
 - ★ **자바는 기본 가상이다** — 어느 갈래 몇 번인가? 그러면 **막는 낱말**은 무엇인가?
 - ★★ **가상 호출 비용**은 어느 주제에서 재야 하나?
+
+## 실행 환경
+
+이 주제의 질문은 **「어느 쪽이 불리나」를 맞히는 것**이 절반이다 — 「파생 것이 불린다」로 뭉개지 말고
+**정적 타입이 정하는 자리와 동적 타입이 정하는 자리**를 갈라야 한다.
+**환경** — g++ 13.3.0 · clang 18.1.3 · javac 21.0.5 · x86-64 Linux.
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
+★★★ **이 주제의 본체는 「호출 로그 + `typeid`」다**(1번). 정적/동적 타입과 호출 결과를 **나란히** 찍는다.
+★★ **네 번째 창은 「vtable 덤프」다**(8번) — `-fdump-lang-class`(g++)·`-fdump-vtable-layouts`(clang).
+★ **「부적용인 창」이 있다** — `-O2` 어셈블리 세기.
+**가상 호출 비용은 이 문서가 재지 않는다.** 간접 호출 하나를 세는 것으로는 인라인 불가·분기 예측·캐시가 빠져 근거가 안 선다.
+**「안 쟀다」가 아니라 「여기서 잴 것이 아니다」다** — 정본은 [목록의 **21번 주제**](../21-abstract-classes-pure-virtual-and-vtable-cost/)다.
+★★★ **이 편은 16\~18 과 다른 축이다** — 저쪽이 「값이 어떻게 옮겨지나」라면 여기는 「호출이 어디로 가나」다.
+겹치는 자리는 6번 하나이고, **[14번](../14-destructors-and-deterministic-destruction/) (5)가 남긴 「경고 0건」의 정본이 그것**이다.
+대비 — ★★ C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **12번**([`12-class-fields-constructors-this-base/`](../../../csharp/syntax/12-class-fields-constructors-this-base/))과 Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **9번**([`09-inheritance-overriding/`](../../../java/syntax/09-inheritance-overriding/))을 7번·8번에서 던진다.
 
 ## 복습 기록
 

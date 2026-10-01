@@ -1,18 +1,5 @@
 # python/syntax/17-generators-yield — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [6.2.9. Yield expressions](https://docs.python.org/3.12/reference/expressions.html#yield-expressions) — 중단·재개, `send`·`close`·`yield from`
-> - [`inspect.getgeneratorstate()`](https://docs.python.org/3.12/library/inspect.html#inspect.getgeneratorstate) — 제너레이터의 네 상태
-> - [`StopIteration`](https://docs.python.org/3.12/library/exceptions.html#StopIteration) — `value` 속성
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> **버전** — `yield` 는 Python 2.2+, `send`/`close` 는 2.5+, **`yield from` 은 3.3+**, `StopIteration.value` 는 3.3+.\
->   3.7 부터 제너레이터 안에서 새어 나온 `StopIteration` 은 `RuntimeError` 로 바뀐다(PEP 479).
-> **구현 대 명세** — 중단·재개·상태 전이는 **언어 보장**이다. `gi_frame`·`f_lineno` 같은 내부 들여다보기는 CPython 의 내성(introspection) 기능이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **읽다 만 책에 끼워 둔 책갈피.**
@@ -737,3 +724,15 @@ ValueError: generator already executing
   개수를 세거나 여러 번 순회하려면 필요하고, 그 순간 메모리 이점이 사라진다.
 - **소진(exhaustion)**: 제너레이터의 값을 끝까지 꺼내 더 낼 것이 없어진 상태.\
   다시 쓰면 에러가 아니라 **빈 결과**가 나온다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [6.2.9. Yield expressions](https://docs.python.org/3.12/reference/expressions.html#yield-expressions) — 중단·재개, `send`·`close`·`yield from`
+- [`inspect.getgeneratorstate()`](https://docs.python.org/3.12/library/inspect.html#inspect.getgeneratorstate) — 제너레이터의 네 상태
+- [`StopIteration`](https://docs.python.org/3.12/library/exceptions.html#StopIteration) — `value` 속성
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+**버전** — `yield` 는 Python 2.2+, `send`/`close` 는 2.5+, **`yield from` 은 3.3+**, `StopIteration.value` 는 3.3+.\
+  3.7 부터 제너레이터 안에서 새어 나온 `StopIteration` 은 `RuntimeError` 로 바뀐다(PEP 479).
+**구현 대 명세** — 중단·재개·상태 전이는 **언어 보장**이다. `gi_frame`·`f_lineno` 같은 내부 들여다보기는 CPython 의 내성(introspection) 기능이다.

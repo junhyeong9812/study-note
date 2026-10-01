@@ -1,17 +1,5 @@
 # sql/53-MERGE — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · MERGE](https://www.postgresql.org/docs/18/sql-merge.html) · [PostgreSQL 15 릴리스 노트](https://www.postgresql.org/docs/release/15.0/) · [PostgreSQL 17 릴리스 노트](https://www.postgresql.org/docs/release/17.0/) · [MySQL 8.4 · Data Manipulation Statements](https://dev.mysql.com/doc/refman/8.4/en/sql-data-manipulation-statements.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> ★ **한쪽에서만 결론이 서는 주제다.** MySQL 8.4.10 에는 `MERGE` 가 **없다** — MySQL 쪽 출력은 전부 `ERROR 1064` 하나이고, **동작에 관한 모든 근거는 PostgreSQL 18.6 뿐**이다.\
-> **버전** — `MERGE` 는 **PG 15 부터**, `WHEN NOT MATCHED BY SOURCE` 와 `RETURNING`·`merge_action()` 은 **PG 17 부터**다(릴리스 노트 확인). **PG 15·16·17 컨테이너가 없어 옛 버전에서의 거부는 직접 재현하지 못했다.**\
-> ★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t53_tgt`·`t53_src`·`t53_dup` 을 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> ★ **52 편과의 경계** — **「한 문으로 있으면 갱신, 없으면 삽입」은 [52 UPSERT](../52-upsert/)가 정본이다.** 이 편은 **그것으로 안 되는 것**(원본에 없는 행 지우기·조건별 분기·삭제)과 **그것만 되는 것**(충돌 대상 지목·동시 삽입 대응)의 경계만 다룬다.\
-> **선행** — [52 UPSERT](../52-upsert/) · [49 INSERT](../49-insert-multi-row-and-insert-select/) · [50 UPDATE](../50-update-with-join-and-subquery/) · [51 DELETE 와 TRUNCATE](../51-delete-and-truncate/).
-
 ## 한눈에 — 쉽게 말하면
 
 **`MERGE` 는 「대상 표를 원본 표에 맞춰라」를 한 문으로 시키는 것.**
@@ -640,3 +628,14 @@ ROLLBACK;
   **이 머신에 그 엔진이 없어 확인하지 않았다.** 이 편의 결론은 **PG 18.6 과 MySQL 8.4.10 에 한정**한다.
 - **`MERGE` 가 잡는 잠금**은 `UPDATE`/`DELETE` 와 같은 행 잠금이다. 경쟁이 몰리면 대기·교착이 생긴다 —\
   [57 명시적 잠금과 교착](../57-explicit-locking-and-deadlock/) 주제다. **이 편에서는 동시 세션 실험을 하지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · MERGE](https://www.postgresql.org/docs/18/sql-merge.html) · [PostgreSQL 15 릴리스 노트](https://www.postgresql.org/docs/release/15.0/) · [PostgreSQL 17 릴리스 노트](https://www.postgresql.org/docs/release/17.0/) · [MySQL 8.4 · Data Manipulation Statements](https://dev.mysql.com/doc/refman/8.4/en/sql-data-manipulation-statements.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+★ **한쪽에서만 결론이 서는 주제다.** MySQL 8.4.10 에는 `MERGE` 가 **없다** — MySQL 쪽 출력은 전부 `ERROR 1064` 하나이고, **동작에 관한 모든 근거는 PostgreSQL 18.6 뿐**이다.\
+**버전** — `MERGE` 는 **PG 15 부터**, `WHEN NOT MATCHED BY SOURCE` 와 `RETURNING`·`merge_action()` 은 **PG 17 부터**다(릴리스 노트 확인). **PG 15·16·17 컨테이너가 없어 옛 버전에서의 거부는 직접 재현하지 못했다.**\
+★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t53_tgt`·`t53_src`·`t53_dup` 을 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+★ **52 편과의 경계** — **「한 문으로 있으면 갱신, 없으면 삽입」은 [52 UPSERT](../52-upsert/)가 정본이다.** 이 편은 **그것으로 안 되는 것**(원본에 없는 행 지우기·조건별 분기·삭제)과 **그것만 되는 것**(충돌 대상 지목·동시 삽입 대응)의 경계만 다룬다.\
+**선행** — [52 UPSERT](../52-upsert/) · [49 INSERT](../49-insert-multi-row-and-insert-select/) · [50 UPDATE](../50-update-with-join-and-subquery/) · [51 DELETE 와 TRUNCATE](../51-delete-and-truncate/).

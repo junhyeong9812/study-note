@@ -1,21 +1,5 @@
 # kotlin/syntax/16 — 프로퍼티: backing field·커스텀 접근자·`lateinit`·`const` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Properties](https://kotlinlang.org/docs/properties.html) · [Classes](https://kotlinlang.org/docs/classes.html) · [Null safety](https://kotlinlang.org/docs/null-safety.html) · [언어 기능·제안 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html).
-> **실행 검증** — 이 문서의 모든 출력·에러·예외·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> `kotlinc` 15회(컴파일 실패 7벌) · `java` 5회 · `javap` 7회. **라이브러리와 앱을 따로 컴파일해 「라이브러리만 다시 빌드」를 실제로 재현했다.**
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
-> ⚠️ **다시 돌리면 달라지는 블록은 없다** — 예외는 잡아서 타입과 메시지만 찍었다. 재대조 근거는 3-answer 의 「흔들리는 칸」 표다.
-> **버전** — `field`·커스텀 접근자·`lateinit`(프로퍼티)·`const` 는 **1.0**, `lateinit` **지역 변수**는 **1.2**,\
-> ★ **explicit backing fields(`field = …`)는 이 판에서 확인했다 — `-language-version 2.3` 이 「only available since language version 2.4」로 거부한다.**\
-> 2.4.20 에서는 **플래그 없이·경고 없이** 컴파일된다.
-> **경계** — 초기화가 **언제** 도는지는 [15번 주제](../15-class-declaration-constructors-and-init/)가, 위임(`by lazy`·`observable`)은 [17번 주제](../17-delegated-properties/)가,\
-> 확장 프로퍼티에 backing field 가 **없다**는 사실은 [13번 주제](../13-extension-functions-and-properties/)가,\
-> 널 불가 타입의 보장은 [03번 주제](../03-null-safe-types/)가 정본이다.\
-> `@JvmField`·`@get:`/`@field:` 같은 상호운용·use-site target 은 [목록의 **35번 주제**](../35-annotations-and-use-site-targets/)·**39번 주제**다.\
-> 여기는 **프로퍼티 하나가 필드와 접근자로 어떻게 쪼개지나**만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **Kotlin 의 프로퍼티는 「필드」가 아니다. 접근자(게터·세터) 한 쌍이고, 필드는 필요할 때만 딸려 온다.**
@@ -787,3 +771,19 @@ val items: List<String>        // 2.4+ explicit backing field
   [`../../../java/syntax/06-initialization-order/`](../../../java/syntax/06-initialization-order/)의 「컴파일 타임 상수는 필드 읽기가 아니다」 절이 정본이다.
 - **위임 프로퍼티는 필드가 「값」이 아니라 「위임 객체」를 담는다** — `x$delegate` 다.\
   이 문서의 필드 목록 시각으로 [17번 주제](../17-delegated-properties/)를 읽으면 한 축으로 이어진다.
+
+## 실행 환경
+
+**기준 소스** — [Properties](https://kotlinlang.org/docs/properties.html) · [Classes](https://kotlinlang.org/docs/classes.html) · [Null safety](https://kotlinlang.org/docs/null-safety.html) · [언어 기능·제안 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html).
+**실행 검증** — 이 문서의 모든 출력·에러·예외·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+`kotlinc` 15회(컴파일 실패 7벌) · `java` 5회 · `javap` 7회. **라이브러리와 앱을 따로 컴파일해 「라이브러리만 다시 빌드」를 실제로 재현했다.**
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
+⚠️ **다시 돌리면 달라지는 블록은 없다** — 예외는 잡아서 타입과 메시지만 찍었다. 재대조 근거는 3-answer 의 「흔들리는 칸」 표다.
+**버전** — `field`·커스텀 접근자·`lateinit`(프로퍼티)·`const` 는 **1.0**, `lateinit` **지역 변수**는 **1.2**,\
+★ **explicit backing fields(`field = …`)는 이 판에서 확인했다 — `-language-version 2.3` 이 「only available since language version 2.4」로 거부한다.**\
+2.4.20 에서는 **플래그 없이·경고 없이** 컴파일된다.
+**경계** — 초기화가 **언제** 도는지는 [15번 주제](../15-class-declaration-constructors-and-init/)가, 위임(`by lazy`·`observable`)은 [17번 주제](../17-delegated-properties/)가,\
+확장 프로퍼티에 backing field 가 **없다**는 사실은 [13번 주제](../13-extension-functions-and-properties/)가,\
+널 불가 타입의 보장은 [03번 주제](../03-null-safe-types/)가 정본이다.\
+`@JvmField`·`@get:`/`@field:` 같은 상호운용·use-site target 은 [목록의 **35번 주제**](../35-annotations-and-use-site-targets/)·**39번 주제**다.\
+여기는 **프로퍼티 하나가 필드와 접근자로 어떻게 쪼개지나**만 다룬다.

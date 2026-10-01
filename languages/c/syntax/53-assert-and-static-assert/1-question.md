@@ -1,16 +1,5 @@
 # c/syntax/53 — `assert` 와 `static_assert`: 「**`assert` 는 `NDEBUG` 하나에 식째 사라지는 매크로이고, `static_assert` 는 컴파일러가 대신 멈춰 주는 선언이다**」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **환경** — gcc 13.3.0 · clang 18.1.3 · glibc 2.39 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic` · 캡처 셸 `LC_ALL=C`.
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① **`NDEBUG` 가 지우는 것**(식 전체 · 그 안의 부작용 · `__assert_fail` 호출) ② **실패했을 때 무엇이 나오나**(메시지의 칸 · 종료 코드)
-> ③ **`static_assert` 의 판 사이 차이**(C11 `_Static_assert` · `<assert.h>` 의 매크로 · C23 키워드와 메시지 생략).
-> ★★★ **본체 창은 `NDEBUG` 격자** — 1번은 **칸마다 `x` 의 값**을 적어야 답이다.
-> ★★ **전처리기 자체는 묻지 않는다** — [41번 형제](../41-preprocessor-directives-and-conditional-compilation/)가 정본이다.
-> 선행 — [41번 형제](../41-preprocessor-directives-and-conditional-compilation/).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 여섯 문항(1\~6)은 소스만 보고 적어 본 뒤** 답을 연다.
@@ -192,6 +181,14 @@ int main(void) {
 
 - 이 주제에서 **표준 / 구현 정의 / 컴파일러·glibc 구현 / 미명시 / UB** 칸에 각각 무엇이 들어가는가?
 - ★★★ 이 편의 **네 번째 창**은 무엇이고, 그 창이 **못 보는 것**은?
+
+## 실행 환경
+
+**환경** — gcc 13.3.0 · clang 18.1.3 · glibc 2.39 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic` · 캡처 셸 `LC_ALL=C`.
+
+★★★ **본체 창은 `NDEBUG` 격자** — 1번은 **칸마다 `x` 의 값**을 적어야 답이다.
+★★ **전처리기 자체는 묻지 않는다** — [41번 형제](../41-preprocessor-directives-and-conditional-compilation/)가 정본이다.
+선행 — [41번 형제](../41-preprocessor-directives-and-conditional-compilation/).
 
 ## 복습 기록
 

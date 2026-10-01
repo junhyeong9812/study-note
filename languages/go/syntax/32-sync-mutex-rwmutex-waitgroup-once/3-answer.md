@@ -1,11 +1,5 @@
 # go/syntax/32 — `sync`: `Mutex`·`RWMutex`·`WaitGroup`·`Once` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
-> **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
-> ★ **근거로 읽을 칸** — `WARNING: DATA RACE` 의 **줄 번호와 `Read`/`Previous write` 짝** · `exit 66` · `답한 탐침 13 / 18` · 20판 **참거짓** · 교착 상태 줄 · `TryLock` 값 · 컴파일 진단.
-> **근거로 읽지 않을 칸** — 주소 · `goroutine N`/`Goroutine N` 의 N · 교착 트레이스 프레임의 인자 값(머리말의 정규화 칸).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -906,3 +900,10 @@ func (m *Mutex) TryLock() bool
 | 락·채널의 **시간** | ★ **안 쟀다** |
 
 ★ **다시 찍는 법** — `capture.sh <디렉토리>` 를 그대로 돌리고 `normalize-shaky.py` 로 견준다.
+
+## 실행 환경
+
+이 파일의 모든 출력은 **`go version go1.27.1 linux/amd64`** 에서 실제로 돌려
+**파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다 — 손으로 옮겨 적은 블록은 없다.\
+★ **근거로 읽을 칸** — `WARNING: DATA RACE` 의 **줄 번호와 `Read`/`Previous write` 짝** · `exit 66` · `답한 탐침 13 / 18` · 20판 **참거짓** · 교착 상태 줄 · `TryLock` 값 · 컴파일 진단.
+**근거로 읽지 않을 칸** — 주소 · `goroutine N`/`Goroutine N` 의 N · 교착 트레이스 프레임의 인자 값(2-summary 맨 위 부분의 정규화 칸).

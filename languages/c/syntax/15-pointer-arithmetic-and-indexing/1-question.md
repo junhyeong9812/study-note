@@ -1,16 +1,5 @@
 # c/syntax/15 — 포인터 산술과 인덱싱: 「**`a[i]` 는 문법이 아니라 축약이다**」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **예측형 위주**다 — 아는지가 아니라 **출력을 맞힐 수 있는지**를 묻는다.
-> **환경** — gcc 13.3.0 · clang 18.1.3 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
-> ★★ **이 주제는 UB 가 본체**다. [13번 형제](../13-goto-cleanup-idiom/)가 **표준이 본체**였던 것과 정반대다 —
-> 그래서 「**무엇이 출력되나**」보다 「**어느 도구가 무엇이라 하나**」가 더 자주 답이 된다.
-> ★★★ **UB 가 걸린 문항에서는 「값」을 답으로 외우지 마라.** 값이 갈리는 것 자체가 답인 자리가 있다.
-> ★ **「경고 0건」은 종료 코드와 sanitizer 출력을 같이 봐야 뜻이 있다.**
-> 선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · [09번 형제](../09-operator-precedence-and-associativity/).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -154,6 +143,15 @@ printf("%ld\n", (long)((uintptr_t)v1 - (uintptr_t)vp));
 - **미명시** 칸에 들어가는 것 하나를 대면 — 그것이 왜 UB 가 아닌가?
 - [13번](../13-goto-cleanup-idiom/)·[14번 형제](../14-pointers-address-dereference-and-pointer-types/)와 견주면 층 분포가 어떻게 다른가?
 - ★ 이 주제의 **네 번째 창** 둘은 무엇이고 각각 무엇을 드러냈는가?
+
+## 실행 환경
+
+**환경** — gcc 13.3.0 · clang 18.1.3 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
+★★ **이 주제는 UB 가 본체**다. [13번 형제](../13-goto-cleanup-idiom/)가 **표준이 본체**였던 것과 정반대다 —
+그래서 「**무엇이 출력되나**」보다 「**어느 도구가 무엇이라 하나**」가 더 자주 답이 된다.
+★★★ **UB 가 걸린 문항에서는 「값」을 답으로 외우지 마라.** 값이 갈리는 것 자체가 답인 자리가 있다.
+★ **「경고 0건」은 종료 코드와 sanitizer 출력을 같이 봐야 뜻이 있다.**
+선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · [09번 형제](../09-operator-precedence-and-associativity/).
 
 ## 복습 기록
 

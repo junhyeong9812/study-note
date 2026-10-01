@@ -1,14 +1,5 @@
 # css/syntax/23 — 오버플로·스크롤 컨테이너·스크롤바 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Overflow Module Level 3](https://drafts.csswg.org/css-overflow-3/) (`overflow` 값·스크롤 컨테이너·`overflow-clip-margin` 의 정본) · [CSS Overflow Module Level 4](https://drafts.csswg.org/css-overflow-4/) (`scrollbar-gutter`). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 **`overflow` 값 조합 14가지**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle`·`clientWidth`/`offsetWidth`·`scrollTop` 대입으로 쟀고, 잘림 여부는 **스크린샷 픽셀**로 판정했다.\
-> ★ **이 주제의 핵심 측정은 「`scrollTop` 에 값을 넣어 보는 것」이다.** 값이 남아 있으면 스크롤 컨테이너, 0 으로 되돌아가면 아니다. **화면만 봐서는 `hidden` 과 `clip` 이 완전히 똑같다.**\
-> **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
-> **버전** — `overflow: clip` 은 Baseline **widely**, `scrollbar-gutter` 도 Baseline 에 들어 있다(목록 README 의 지원 표). 실행으로 확인한 것은 **이 Chrome 에서의 동작**이다.
-> **여기서 다루지 않는 것** — ★ **`overflow` 가 BFC 를 만드는지와 그 부작용 대조는 [17번](../17-block-formatting-context/2-summary.md)이 정본**이고(거기서 **`clip` 만 BFC 가 아님**을 실측했다), 여기는 **스크롤 컨테이너 쪽**이다. `position: sticky` 의 규칙 자체는 [21번](../21-position-and-containing-block/2-summary.md), 누가 위에 그려지나는 [22번](../22-stacking-context-and-z-index/2-summary.md), 상자의 네 겹 치수는 [15번](../15-box-model-and-box-sizing/2-summary.md)이다. **스크롤 스냅**(`scroll-snap-type`·`scroll-snap-align`)과 `overscroll-behavior` 는 이 편에서 **다루지 않는다** — 이름만 적고 넘긴다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 동작은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`overflow` 는 「상자보다 큰 내용을 어떻게 할까」에 대한 다섯 가지 대답이다.**
@@ -437,3 +428,12 @@
 - **스크롤 앵커링(scroll anchoring)** — 위쪽에 내용이 추가돼도 보고 있던 자리가 안 튀게 브라우저가 스크롤 위치를 보정하는 기능. **스크롤 컨테이너마다 따로 동작**하므로 `hidden` 상자에도 걸린다. `overflow-anchor: none` 으로 끈다(**안 돌려 봄**).
 - **`scrollbar-width: thin`/`none`** 으로 스크롤바 자체를 가늘게·없앨 수 있다. `none` 은 **스크롤 능력은 남기고 손잡이만 지운다** — `hidden` 과는 또 다른 조합이다(**안 돌려 봄**).
 - **스크롤 스냅**(`scroll-snap-type`·`scroll-snap-align`)과 **`overscroll-behavior`** 는 스크롤 컨테이너 위에 얹히는 층이다. [목록의 **59번 주제**](../59-view-transitions/) 쪽으로 넘긴다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Overflow Module Level 3](https://drafts.csswg.org/css-overflow-3/) (`overflow` 값·스크롤 컨테이너·`overflow-clip-margin` 의 정본) · [CSS Overflow Module Level 4](https://drafts.csswg.org/css-overflow-4/) (`scrollbar-gutter`). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 **`overflow` 값 조합 14가지**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle`·`clientWidth`/`offsetWidth`·`scrollTop` 대입으로 쟀고, 잘림 여부는 **스크린샷 픽셀**로 판정했다.\
+★ **이 주제의 핵심 측정은 「`scrollTop` 에 값을 넣어 보는 것」이다.** 값이 남아 있으면 스크롤 컨테이너, 0 으로 되돌아가면 아니다. **화면만 봐서는 `hidden` 과 `clip` 이 완전히 똑같다.**\
+**WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
+**버전** — `overflow: clip` 은 Baseline **widely**, `scrollbar-gutter` 도 Baseline 에 들어 있다(목록 README 의 지원 표). 실행으로 확인한 것은 **이 Chrome 에서의 동작**이다.
+**여기서 다루지 않는 것** — ★ **`overflow` 가 BFC 를 만드는지와 그 부작용 대조는 [17번](../17-block-formatting-context/2-summary.md)이 정본**이고(거기서 **`clip` 만 BFC 가 아님**을 실측했다), 여기는 **스크롤 컨테이너 쪽**이다. `position: sticky` 의 규칙 자체는 [21번](../21-position-and-containing-block/2-summary.md), 누가 위에 그려지나는 [22번](../22-stacking-context-and-z-index/2-summary.md), 상자의 네 겹 치수는 [15번](../15-box-model-and-box-sizing/2-summary.md)이다. **스크롤 스냅**(`scroll-snap-type`·`scroll-snap-align`)과 `overscroll-behavior` 는 이 편에서 **다루지 않는다** — 이름만 적고 넘긴다.

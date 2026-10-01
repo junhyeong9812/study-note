@@ -1,9 +1,5 @@
 # 오픈소스·웹 DB 시대 (1995~2010)
 
-> 원본: `~/project/database-history/02-오픈소스-웹-시대.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·논문명·표준번호·코드는 원문 그대로다. 더 압축된 원문이 필요하면 원본 문서를 보면 된다.\
-> 용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **오픈소스 DB = 회원비 수만 달러짜리 회원제 도서관만 있던 동네에, 무료 공공도서관이 생긴 것.**
@@ -389,3 +385,9 @@ MyISAM — 테이블 락                     InnoDB — 행 락
 - [Memcached - Wikipedia](https://en.wikipedia.org/wiki/Memcached)
 - [Inside LiveJournal's Backend (USENIX, 2004)](https://www.usenix.org/legacy/event/lisa04/tech/talks/livejournal.pdf)
 - [MySQL 8.0 Reference Manual — Using Replication for Scale-Out](https://dev.mysql.com/doc/refman/8.0/en/replication-solutions-scaleout.html)
+
+## 출처
+
+원본: `~/project/database-history/02-오픈소스-웹-시대.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·논문명·표준번호·코드는 원문 그대로다. 더 압축된 원문이 필요하면 원본 문서를 보면 된다.\
+용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.

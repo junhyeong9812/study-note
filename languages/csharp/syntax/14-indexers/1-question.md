@@ -1,20 +1,5 @@
 # csharp/syntax/14 — 인덱서 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
-> Roslyn `csc` 를 직접 부른다 · `-langversion:latest`(확장 인덱서만 `preview` 로도) · `-preferreduilang:en-US`.
-> ★★★ **본체 창은 ③ 리플렉션이다** — 인덱서의 IL 본문은 평범한 배열 접근이라 볼 것이 없고,
-> 갈리는 것은 **이름(`Item`)과 타입에 붙는 `DefaultMemberAttribute`** 다.
-> ★★ **① IL 덤프는 5번에서만 본체가 된다** — `^1` 이 **두 갈래로** 풀린다.
-> ★★ **④ 할당 바이트는 이 주제에서 쓴다**(9번) — 다만 **한 판의 절댓값은 근거가 아니므로**
-> `csc -optimize` × `DOTNET_TieredCompilation` **2×2 판 격자**를 돌려 「움직인 칸」을 세었다.
-> ★★★ **이 파일에는 시간을 잰 문장이 없다** — 「인덱서 호출이 메서드보다 느리다」는 **안 쟀다.**
-> 선행 — [13번](../13-properties-init-required-field/)(**한 사슬이다** — 인덱서는 인자를 받는 속성이다)·[03번](../03-boxing-and-unboxing/)(박싱).
-> 이어지는 것 — [16번](../16-inheritance-virtual-override-abstract-sealed-new/)(명시적 인터페이스 구현이 `private` 인 것).
-> 대비 — 파이썬 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **32번**([`32-container-protocol/`](../../../python/syntax/32-container-protocol/)).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (예측) / (왜) / (경계) / (연결) -->
@@ -234,6 +219,20 @@ class Program {
 - **인덱스 초기화 구문**과 **컬렉션 식**은 몇 번 주제인가 — 둘은 같은 기능인가?
 - **`^`·`..` 연산자 자체**는 몇 번 주제인가?
 - ★ 파이썬의 `__getitem__` 과 C# 인덱서가 갈리는 **한 칸**은 무엇인가?
+
+## 실행 환경
+
+**환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
+Roslyn `csc` 를 직접 부른다 · `-langversion:latest`(확장 인덱서만 `preview` 로도) · `-preferreduilang:en-US`.
+★★★ **본체 창은 ③ 리플렉션이다** — 인덱서의 IL 본문은 평범한 배열 접근이라 볼 것이 없고,
+갈리는 것은 **이름(`Item`)과 타입에 붙는 `DefaultMemberAttribute`** 다.
+★★ **① IL 덤프는 5번에서만 본체가 된다** — `^1` 이 **두 갈래로** 풀린다.
+★★ **④ 할당 바이트는 이 주제에서 쓴다**(9번) — 다만 **한 판의 절댓값은 근거가 아니므로**
+`csc -optimize` × `DOTNET_TieredCompilation` **2×2 판 격자**를 돌려 「움직인 칸」을 세었다.
+★★★ **이 파일에는 시간을 잰 문장이 없다** — 「인덱서 호출이 메서드보다 느리다」는 **안 쟀다.**
+선행 — [13번](../13-properties-init-required-field/)(**한 사슬이다** — 인덱서는 인자를 받는 속성이다)·[03번](../03-boxing-and-unboxing/)(박싱).
+이어지는 것 — [16번](../16-inheritance-virtual-override-abstract-sealed-new/)(명시적 인터페이스 구현이 `private` 인 것).
+대비 — 파이썬 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **32번**([`32-container-protocol/`](../../../python/syntax/32-container-protocol/)).
 
 ## 복습 기록
 

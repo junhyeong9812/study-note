@@ -1,31 +1,5 @@
 # csharp/syntax/24 — 제네릭과 타입 매개변수 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-335(CLI) 6판](https://ecma-international.org/publications-and-standards/standards/ecma-335/) · [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — 제네릭 타입과 메서드](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/generics)(열어서 확인: 「C# 제네릭은 Java 제네릭·C++ 템플릿과 비슷하지만 **런타임 타입 정보가 온전하고 타입 소거가 없다**」 ·\
-> 「제네릭 컬렉션은 값 타입의 **박싱을 피한다**」) ·
-> [Learn — 런타임의 제네릭](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/generics-in-the-run-time)(열어서 확인: 「값 타입으로 처음 구성되면 런타임이 **특수화된 타입을 만든다 — 값 타입마다 한 번**」 ·\
-> 「참조 타입이면 **처음 한 번만** 객체 참조를 넣은 특수화를 만들고, **어떤 참조 타입이든 그것을 재사용**한다 — 참조는 크기가 같으니까」 · 「리플렉션으로 **실제 타입과 타입 매개변수를 런타임에 알 수 있다**」)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`). **대비는 실측이다** — **javac 21.0.5** 로 같은 모양 8개를 던지고 Java 프로그램 하나를 돌렸다((3)).
-> **버전** — 제네릭 **C# 2.0 / CLR 2.0** · `where T : unmanaged` **C# 7.3** · `notnull` **C# 8**. ★ 이 문서는 판을 안 가렸다.
-> **경계** — ★★★ **제약 `where` 와 `default(T)` 의 전반**은 목록의 **25번 주제**가 정본이다 — 여기서는 **제약을 어기면 무엇이 나오나**((6))와 `new T()` 가 **런타임까지 남는 증거**로만 쓴다.\
-> ★ **공변·반변**은 목록의 **26번 주제** · **박싱 자체**는 [03번](../03-boxing-and-unboxing/) — 그 (4)가 `List<int>` 대 `ArrayList` 를 **한 판**에서 쟀고 「정본은 24번 주제」라고 넘겼다. 여기서는 **2×2 판 격자로 다시** 잰다((7)).
-> ★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **19번**([`19-type-erasure/`](../../../java/syntax/19-type-erasure/))·**17번**([`17-generic-declarations/`](../../../java/syntax/17-generic-declarations/)) ·\
-> Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **12번**([`12-reified-type-parameters/`](../../../kotlin/syntax/12-reified-type-parameters/)) — 소거를 `inline`+`reified` 로 **뚫는** 설계 ·\
-> Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **31번**([`31-generics-trait-bounds-where-and-monomorphization/`](../../../rust/syntax/31-generics-trait-bounds-where-and-monomorphization/)) — **단형화** ·\
-> Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **37번**(제네릭 — 폴더가 아직 없다). ★ Kotlin·Rust·Go 는 **대비만** 한다(이 판에서 던지지 않았다).
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★★★ **코드 주소·메서드 핸들의 값 자체**(실행마다 다르다 — 문서에 싣지 않았다) | ★★★ 그 값들이 **「같나 다르나」**((4) — 두 판에서 같았다) |
-> | 진단 **문구** · javac 의 `where T is a type-variable` 보충 줄 | ★★★ **진단 코드**(`CS0452`·`CS0453`·`CS0310`·`CS8377`·`CS8714`) · **javac `exit`** |
-> | **IL 오프셋 폭** | ★★★ **옵코드와 토큰**(`ldtoken T` · `newarr T` · `initobj T` · `isinst T` · `Activator::CreateInstance`) |
-> | 증분의 절댓값 일부(규칙 24) | ★★★ **「Java 에서 막히거나 소거되는 칸 N / M」 · 「네 판에서 갈린 줄 N / M」**(스크립트가 센 마지막 줄) |
-
 ## 이 판
 
 ```text
@@ -664,3 +638,30 @@ List`1<Int32>
 - ★ **공유 코드가 `T` 를 찾는 길**(사전·「generic dictionary」) — 객체의 타입 핸들이나 숨은 인자에서 찾는다고 알려져 있다. **이 판에서 안 찍었다.**
 - ★ **제네릭 메서드(`M<T>()`)의 공유** — 인스턴스화 스텁이 끼어 **코드 주소 비교가 달라질 수 있다**고 알려져 있다. 이 문서는 **클래스의 인스턴스 메서드**로만 쟀다.
 - ★ **NativeAOT 에서의 공유** — **안 던졌다.**
+
+## 실행 환경
+
+**기준 소스** — [ECMA-335(CLI) 6판](https://ecma-international.org/publications-and-standards/standards/ecma-335/) · [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — 제네릭 타입과 메서드](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/generics)(열어서 확인: 「C# 제네릭은 Java 제네릭·C++ 템플릿과 비슷하지만 **런타임 타입 정보가 온전하고 타입 소거가 없다**」 ·\
+「제네릭 컬렉션은 값 타입의 **박싱을 피한다**」) ·
+[Learn — 런타임의 제네릭](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/generics-in-the-run-time)(열어서 확인: 「값 타입으로 처음 구성되면 런타임이 **특수화된 타입을 만든다 — 값 타입마다 한 번**」 ·\
+「참조 타입이면 **처음 한 번만** 객체 참조를 넣은 특수화를 만들고, **어떤 참조 타입이든 그것을 재사용**한다 — 참조는 크기가 같으니까」 · 「리플렉션으로 **실제 타입과 타입 매개변수를 런타임에 알 수 있다**」)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`). **대비는 실측이다** — **javac 21.0.5** 로 같은 모양 8개를 던지고 Java 프로그램 하나를 돌렸다((3)).
+**버전** — 제네릭 **C# 2.0 / CLR 2.0** · `where T : unmanaged` **C# 7.3** · `notnull` **C# 8**. ★ 이 문서는 판을 안 가렸다.
+**경계** — ★★★ **제약 `where` 와 `default(T)` 의 전반**은 목록의 **25번 주제**가 정본이다 — 여기서는 **제약을 어기면 무엇이 나오나**((6))와 `new T()` 가 **런타임까지 남는 증거**로만 쓴다.\
+★ **공변·반변**은 목록의 **26번 주제** · **박싱 자체**는 [03번](../03-boxing-and-unboxing/) — 그 (4)가 `List<int>` 대 `ArrayList` 를 **한 판**에서 쟀고 「정본은 24번 주제」라고 넘겼다. 여기서는 **2×2 판 격자로 다시** 잰다((7)).
+★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **19번**([`19-type-erasure/`](../../../java/syntax/19-type-erasure/))·**17번**([`17-generic-declarations/`](../../../java/syntax/17-generic-declarations/)) ·\
+Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **12번**([`12-reified-type-parameters/`](../../../kotlin/syntax/12-reified-type-parameters/)) — 소거를 `inline`+`reified` 로 **뚫는** 설계 ·\
+Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **31번**([`31-generics-trait-bounds-where-and-monomorphization/`](../../../rust/syntax/31-generics-trait-bounds-where-and-monomorphization/)) — **단형화** ·\
+Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **37번**(제네릭 — 폴더가 아직 없다). ★ Kotlin·Rust·Go 는 **대비만** 한다(이 판에서 던지지 않았다).
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★★★ **코드 주소·메서드 핸들의 값 자체**(실행마다 다르다 — 문서에 싣지 않았다) | ★★★ 그 값들이 **「같나 다르나」**((4) — 두 판에서 같았다) |
+| 진단 **문구** · javac 의 `where T is a type-variable` 보충 줄 | ★★★ **진단 코드**(`CS0452`·`CS0453`·`CS0310`·`CS8377`·`CS8714`) · **javac `exit`** |
+| **IL 오프셋 폭** | ★★★ **옵코드와 토큰**(`ldtoken T` · `newarr T` · `initobj T` · `isinst T` · `Activator::CreateInstance`) |
+| 증분의 절댓값 일부(규칙 24) | ★★★ **「Java 에서 막히거나 소거되는 칸 N / M」 · 「네 판에서 갈린 줄 N / M」**(스크립트가 센 마지막 줄) |

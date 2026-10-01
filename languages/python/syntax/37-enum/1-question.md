@@ -1,18 +1,5 @@
 # python/syntax/37-enum — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★★★ 1번은 **격자의 칸을 하나씩** 채워야 한다. 마지막 줄의 숫자까지 적는다.
-> ★★ 예외가 나는 칸은 **예외 종류까지** 적어야 맞은 것이다. 「안 될 것 같다」로는 틀린 것이다.
->
-> 실행 환경: `python3` **3.12.3** · Linux(5번만 `python3.11` 3.11.15 도 함께). 던지는 형태는 `python3 - <파일` 로 고정했다.
-> ★ 선행 — [29](../29-classes-and-attribute-lookup/1-question.md)(속성 탐색) · [30](../30-repr-eq-hash-contracts/1-question.md)(`__eq__`/`__hash__`) ·
-> [31](../31-comparison-protocol-and-sortability/1-question.md)(정렬). 막히면 그중 무엇이 안 잡힌 것인지부터 짚어라.
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -318,6 +305,15 @@ print("'__getattr__' in vars(EnumType) :", "__getattr__" in vars(EnumType))
 * [30번](../30-repr-eq-hash-contracts/2-summary.md)의 `__eq__` 계약이 **다른 두 `IntEnum`** 의 비교에 어떻게 걸리는가?
 * ★ [자바 13번](../../../java/syntax/13-enum-classes/2-summary.md)의 `ordinal()` 경고와 이 주제의 **`auto()` 값을 저장하지 말라**는 경고는 어떻게 같은가?
 * ★ [39번](../39-match-statement/2-summary.md)에서 `case Color.RED:` 와 `case RED:` 는 어떻게 다른가?
+
+## 실행 환경
+
+★★★ 1번은 **격자의 칸을 하나씩** 채워야 한다. 마지막 줄의 숫자까지 적는다.
+★★ 예외가 나는 칸은 **예외 종류까지** 적어야 맞은 것이다. 「안 될 것 같다」로는 틀린 것이다.
+
+실행 환경: `python3` **3.12.3** · Linux(5번만 `python3.11` 3.11.15 도 함께). 던지는 형태는 `python3 - <파일` 로 고정했다.
+★ 선행 — [29](../29-classes-and-attribute-lookup/1-question.md)(속성 탐색) · [30](../30-repr-eq-hash-contracts/1-question.md)(`__eq__`/`__hash__`) ·
+[31](../31-comparison-protocol-and-sortability/1-question.md)(정렬).
 
 ## 복습 기록
 

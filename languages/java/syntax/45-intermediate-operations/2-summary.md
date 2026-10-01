@@ -1,16 +1,5 @@
 # java/syntax/45 — 중간 연산: `map`/`filter`/`flatMap`/`mapMulti` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../44-stream-creation/`](../44-stream-creation/). 스트림을 어떻게 만드는지와 **지연 평가**를 먼저 본다.
-> **기준 소스** — [`java.util.stream` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) · [`Stream` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/Stream.html)
-> **실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 같은 프로그램을 **17.0.13 · 25.0.1** 에서도 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.
-> **버전** — `map`·`filter`·`flatMap` 은 **Java 8**. `takeWhile`/`dropWhile` 은 **Java 9**. `mapMulti` 는 **Java 16**.\
-> 17·21·25 동작 동일.
-> **범위** — "무엇을 걸러 무엇을 만드는가"라는 **알고리즘**은 [`../../../../cs/algorithm/`](../../../../cs/algorithm/) 이 정본이다.\
-> 여기는 **연산의 타입 계약과 평가 시점**만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **중간 연산은 벨트 위에 늘어놓은 작업대다.**
@@ -513,3 +502,14 @@ MM3.java:5: error: incompatible types: bad return type in lambda expression
   그래서 개수가 대체로 0이나 1이면 `mapMulti`, 진짜로 여러 개로 펼칠 일이 많으면 `flatMap` 이 자연스럽다.
 - **Gatherers(24+)** 가 들어오면서 "중간 연산을 직접 만드는" 길이 열렸다.\
   슬라이딩 윈도·누적 스캔처럼 기존 넷으로 표현할 수 없던 것이 대상이다 — [목록의 **50번 주제**](../50-stream-gatherers/).
+
+## 실행 환경
+
+**선행** — [`../44-stream-creation/`](../44-stream-creation/). 스트림을 어떻게 만드는지와 **지연 평가**를 먼저 본다.
+**기준 소스** — [`java.util.stream` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) · [`Stream` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/Stream.html)
+**실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+같은 프로그램을 **17.0.13 · 25.0.1** 에서도 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.
+**버전** — `map`·`filter`·`flatMap` 은 **Java 8**. `takeWhile`/`dropWhile` 은 **Java 9**. `mapMulti` 는 **Java 16**.\
+17·21·25 동작 동일.
+**범위** — "무엇을 걸러 무엇을 만드는가"라는 **알고리즘**은 [`../../../../cs/algorithm/`](../../../../cs/algorithm/) 이 정본이다.\
+여기는 **연산의 타입 계약과 평가 시점**만 다룬다.

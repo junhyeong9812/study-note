@@ -1,35 +1,5 @@
 # python/syntax/18-loop-control-and-else — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [8.3. The `for` statement](https://docs.python.org/3.12/reference/compound_stmts.html#the-for-statement) — `else` 절과 `break`
-> - [4. More Control Flow Tools](https://docs.python.org/3.12/tutorial/controlflow.html) — **순회 중 변경에 대한 경고**(언어 레퍼런스가 아니라 튜토리얼에 있다)
-> - [8.2. The `while` statement](https://docs.python.org/3.12/reference/compound_stmts.html#the-while-statement) — `else` 가 도는 조건
-> - [`enumerate`](https://docs.python.org/3.12/library/functions.html#enumerate) · [`zip`](https://docs.python.org/3.12/library/functions.html#zip)(**`strict`**) · [`range`](https://docs.python.org/3.12/library/stdtypes.html#ranges)
-> - [`dis`](https://docs.python.org/3.12/library/dis.html) — 바이트코드
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
-> 그래서 **실행 중 예외에는 소스 줄과 캐럿이 안 나온다.**\
-> ★★ **`dis` 결과는 CPython 3.12.3 의 구현이지 언어 보장이 아니다.** 이 문서의 바이트코드 블록마다 그 표시를 달았다.\
-> **수치** — `range` 의 `in` 시간은 `timeit` **중앙값을 세 판** 냈다. 머신은 Linux x86_64.\
-> **버전** — `for`/`while`·`else`·`break`·`continue`·`enumerate`·`range` 는 이 노트 범위(3.10\~3.13)에서 안 바뀌었다.
-> 갈리는 것은 하나다 — **`zip(..., strict=True)` 가 3.10 부터**(PEP 618). 3.11.15 에서도 같은 문구가 나왔다(대조 확인).\
-> **★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | `range` 의 `in` **나노초 값** | 「크기를 100만 배로 해도 안 변한다」는 성질 |
-> | (판이 오르면) 바이트코드 **명령 이름·오프셋** | `else` 블록이 **정상 종료 경로에만** 놓인다는 배치 |
-> | (판이 오르면) `RuntimeError`·`ValueError` **문구** | 예외 **종류** · `File "<stdin>", line N` |
-> | (판이 오르면) `getsizeof(range(...))` = `48` | **순회 중 `remove` 의 결과 `['a','c','d','e']`** — 커서 규칙의 결과라 결정적이다 |
->
-> **선행** — [16-iterator-protocol](../16-iterator-protocol/2-summary.md)(**`for` 가 안에서 무엇을 부르나 — 정본**) ·
-> [09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md)(시퀀스와 슬라이싱) ·
-> [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)·[13-set-and-frozenset](../13-set-and-frozenset/2-summary.md)(순회 중 변경의 짝).
-
 ## 한눈에 — 쉽게 말하면
 
 **`else` 는 「아니면」이 아니라 「끝까지 갔으면」이다.**
@@ -536,7 +506,7 @@ ValueError: zip() argument 2 is longer than argument 1
 
 ### 6. `range` 가 시퀀스인 것 — 재 본 것
 
-★ 아래는 **이 머신에서 실제로 잰 값**이다(측정 조건은 머리말에 있다). **절댓값이 아니라 기울기를 읽는다.**
+★ 아래는 **이 머신에서 실제로 잰 값**이다(측정 조건은 「실행 환경」에 있다). **절댓값이 아니라 기울기를 읽는다.**
 
 ```text
 ===== 소스: ex.py =====
@@ -832,3 +802,32 @@ SyntaxError: 'continue' not properly in loop
 - **비동기 판**은 `async for` 이고 `else` 도 붙는다([목록의 **51번 주제**](../51-asyncio-coroutine-basics/)).
 - **순회 중 변경을 언어가 아예 막는 것이 옳은가**는 설계 논쟁이다 — dict·set 은 **해시 테이블 재배치**로 메모리 안전이 깨질 수 있어 막고,
   리스트는 인덱스 접근이라 **안전하긴 해서** 안 막는다. **「안전하다」와 「옳다」가 다른 자리**다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [8.3. The `for` statement](https://docs.python.org/3.12/reference/compound_stmts.html#the-for-statement) — `else` 절과 `break`
+- [4. More Control Flow Tools](https://docs.python.org/3.12/tutorial/controlflow.html) — **순회 중 변경에 대한 경고**(언어 레퍼런스가 아니라 튜토리얼에 있다)
+- [8.2. The `while` statement](https://docs.python.org/3.12/reference/compound_stmts.html#the-while-statement) — `else` 가 도는 조건
+- [`enumerate`](https://docs.python.org/3.12/library/functions.html#enumerate) · [`zip`](https://docs.python.org/3.12/library/functions.html#zip)(**`strict`**) · [`range`](https://docs.python.org/3.12/library/stdtypes.html#ranges)
+- [`dis`](https://docs.python.org/3.12/library/dis.html) — 바이트코드
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
+그래서 **실행 중 예외에는 소스 줄과 캐럿이 안 나온다.**\
+★★ **`dis` 결과는 CPython 3.12.3 의 구현이지 언어 보장이 아니다.** 이 문서의 바이트코드 블록마다 그 표시를 달았다.\
+**수치** — `range` 의 `in` 시간은 `timeit` **중앙값을 세 판** 냈다. 머신은 Linux x86_64.\
+**버전** — `for`/`while`·`else`·`break`·`continue`·`enumerate`·`range` 는 이 노트 범위(3.10\~3.13)에서 안 바뀌었다.
+갈리는 것은 하나다 — **`zip(..., strict=True)` 가 3.10 부터**(PEP 618). 3.11.15 에서도 같은 문구가 나왔다(대조 확인).\
+**★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| `range` 의 `in` **나노초 값** | 「크기를 100만 배로 해도 안 변한다」는 성질 |
+| (판이 오르면) 바이트코드 **명령 이름·오프셋** | `else` 블록이 **정상 종료 경로에만** 놓인다는 배치 |
+| (판이 오르면) `RuntimeError`·`ValueError` **문구** | 예외 **종류** · `File "<stdin>", line N` |
+| (판이 오르면) `getsizeof(range(...))` = `48` | **순회 중 `remove` 의 결과 `['a','c','d','e']`** — 커서 규칙의 결과라 결정적이다 |
+
+**선행** — [16-iterator-protocol](../16-iterator-protocol/2-summary.md)(**`for` 가 안에서 무엇을 부르나 — 정본**) ·
+[09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md)(시퀀스와 슬라이싱) ·
+[12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)·[13-set-and-frozenset](../13-set-and-frozenset/2-summary.md)(순회 중 변경의 짝).

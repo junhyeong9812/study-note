@@ -1,13 +1,5 @@
 # PR #36913 분석 — OptionalToObjectConverter.matches()의 canConvert 과대보고
 
-> 기준: 머지 커밋 `af466ccf63b` (2026-08-20, 마일스톤 7.1.0-M2, 라벨 type: bug / in: core).
-> 인용한 `OptionalToObjectConverter.java` 좌표는 머지 **후** 코드이며, 수정 전 코드는 diff의
-> `-` 쪽을 병기한다.
-> 근거: 실파일 정독 + `af466ccf63b` diff + `docs/plans/2026-08-14/pr36913-optional-wildcard-tests/`
-> + 이 문서 작성 중 실행한 실측(아래 3절 각주).
-> 같은 폴더의 README(서사)·structure(선택 파이프라인 구조)·tests(테스트별)·gates(이해 게이트)와
-> 중복을 피해, 이 문서는 **이름표 사전·단계 추적 표(실측값)·계약 대조·기각된 대안**을 맡는다.
-
 ## 0. 결론
 
 `OptionalToObjectConverter#matches()`는 원소 타입을 `TypeDescriptor#getElementTypeDescriptor()`로 꺼냈는데, 그 메서드는 javadoc상 **배열·Stream·Collection 전용**이라 `Optional`에 대해서는 언제나 `null`을 돌려준다.\
@@ -268,3 +260,11 @@ cs.convert(Optional.of(42), Optional<Integer>카드, LocalDate카드)           
   질의와 실행이 같은 `getConverter`를 공유한다는 점이 이 수정으로 "질의 = 실행" 일관성을 얻는 메커니즘이다.
 - **다루지 않은 것.** `convert()`가 `forObject(unwrappedSource)`(:72)로 값 카드를 만들어 재질의하는 구조 자체는 그대로다 — 즉 `Optional<Number>` 선언에 실제로 `Integer`가 담긴 경우처럼 선언과 값이 갈리는 상황의 근사는 남아 있다.\
   `Converters.find`의 계층 조합 탐색, `ConvertersForPair`의 2패스 폴백(:628-635), `addFirst` 등록 순서(:616-618)도 범위 밖이다.
+
+## 출처
+
+기준: 머지 커밋 `af466ccf63b` (2026-08-20, 마일스톤 7.1.0-M2, 라벨 type: bug / in: core).
+인용한 `OptionalToObjectConverter.java` 좌표는 머지 **후** 코드이며, 수정 전 코드는 diff의
+`-` 쪽을 병기한다.
+근거: 실파일 정독 + `af466ccf63b` diff + `docs/plans/2026-08-14/pr36913-optional-wildcard-tests/`
++ 이 문서 작성 중 실행한 실측(본문 3절 각주).

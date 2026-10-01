@@ -1,11 +1,5 @@
 # python/syntax/52-asyncio-concurrency-structure — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> [1-question.md](1-question.md)의 번호와 **1:1**로 대응한다. 질문 12개 = 답 12개.
->
-> 이 파일의 모든 출력은 `python3` **3.12.3** 과 `python3.11` **3.11.15**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> 던지는 형태는 `python3 - <파일` 로 고정했다. ★ **시간은 한 번도 찍지 않았다** — `sleep` 의 길이는 소스에만 있다.
-
 ## 정답
 
 ### 1. 갈린 칸 `4 / 9` — 예외 하나에 `gather` 는 형제 `finished`, `TaskGroup` 은 `cancelled` + `ExceptionGroup` · 자식 취소에 `gather` 는 `CancelledError`(`cancelling()` `0`) · 바깥 취소에는 둘 다 전부 `cancelled`
@@ -778,3 +772,8 @@ coroutine passed to wait(): TypeError Passing coroutines is forbidden, use tasks
 
 ★ **안 흔들리는 칸** — 격자의 **「4 / 9」** · `finished`/`cancelled`/`raised` · 예외 타입 · `cancelling()` 값 · 「N / M 판」 · `(exit N)`.
 ★★ **이 주제가 한 번도 안 찍은 것** — **경과 시간**(질문 밖 — 부적용) · **3.10 이하**(판 없음 — 못 잰 것).
+
+## 실행 환경
+
+이 파일의 모든 출력은 `python3` **3.12.3** 과 `python3.11` **3.11.15**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+던지는 형태는 `python3 - <파일` 로 고정했다. ★ **시간은 한 번도 찍지 않았다** — `sleep` 의 길이는 소스에만 있다.

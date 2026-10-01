@@ -1,15 +1,5 @@
 # java/syntax/08 — 메서드 선언: 오버로딩 해소·가변 인자 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §15.12.2 Compile-Time Step 2: Determine Method Signature](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · [§8.4.1 Formal Parameters](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§8.4.9 Overloading](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html)
-> **실행 검증** — 이 문서의 모든 출력·경고·에러 메시지는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 정상 실행되는 프로그램은 **17.0.13 · 21.0.5 · 25.0.1** 셋에서 다 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
-> 바이트코드는 `javap -c` 출력을 그대로 옮겼다.
-> **버전** — 3단계 해소 규칙은 **Java 5**(오토박싱·가변 인자 도입)부터 지금까지 같다.
-> **범위** — 기본형과 래퍼의 관계(`==`·`Integer` 캐시)는 [`../01-primitives-and-wrappers/`](../01-primitives-and-wrappers/) 가 정본이다.\
-> 여기는 **그 변환이 오버로딩 후보를 고르는 데 어떻게 쓰이나**만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **오버로딩 해소는 서류 전형 3라운드다 — 그리고 전부 컴파일 타임에 끝난다.**
@@ -452,3 +442,13 @@ Ex.java:3: error: cannot declare both f(int...) and f(int[]) in Ex
   이미 컴파일된 코드는 시그니처가 박혀 있어 안전하지만, 재컴파일하면 `ambiguous` 가 날 수 있다.
 - **`printf` 류는 3단계와 `Object...` 를 같이 쓴다.** `printf("%d", 1)` 은 `int` 를 박싱해 `Object[]` 에 담는다 —\
   한 호출에 박싱 하나와 배열 하나가 생긴다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §15.12.2 Compile-Time Step 2: Determine Method Signature](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · [§8.4.1 Formal Parameters](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§8.4.9 Overloading](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html)
+**실행 검증** — 이 문서의 모든 출력·경고·에러 메시지는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+정상 실행되는 프로그램은 **17.0.13 · 21.0.5 · 25.0.1** 셋에서 다 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
+바이트코드는 `javap -c` 출력을 그대로 옮겼다.
+**버전** — 3단계 해소 규칙은 **Java 5**(오토박싱·가변 인자 도입)부터 지금까지 같다.
+**범위** — 기본형과 래퍼의 관계(`==`·`Integer` 캐시)는 [`../01-primitives-and-wrappers/`](../01-primitives-and-wrappers/) 가 정본이다.\
+여기는 **그 변환이 오버로딩 후보를 고르는 데 어떻게 쓰이나**만 다룬다.

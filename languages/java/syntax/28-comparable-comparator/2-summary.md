@@ -1,18 +1,5 @@
 # java/syntax/28 — `Comparable`/`Comparator`: 전순서 계약과 조합 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/Comparable.java` · `java.base/java/util/Comparator.java` 의 **javadoc 원문**(`lib/src.zip` 에서 직접 인용) · `java.base/java/util/TimSort.java` · `java.base/java/util/ComparableTimSort.java`
-> **실행 검증** — 이 문서의 모든 출력·예외는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 실행 프로그램 다섯(`Ex.java (28-a2)`·`(28-a3)`·`(28-a4)`·`(28-b)`·`(28-c)`)을 **17.0.13 · 21.0.5 · 25.0.1** 세 곳에서 돌려 **출력이 한 글자도 다르지 않았다**.\
-> 계약 위반의 임계 원소 수(731·89)까지 세 JDK 에서 같았다. 다만 **"세 곳에서 같았다"는 관찰이지 보장이 아니다** —
-> 보장은 javadoc 인용으로만 적었고, **임계값은 데이터·씨앗에 따라 달라진다**(아래 실측 조건 명시).
-> **버전** — `Comparable` 은 **Java 1.2**, `Comparator` 도 **1.2**.\
-> `comparing`·`thenComparing`·`reversed`·`nullsFirst`·`naturalOrder` 등 조합 메서드는 전부 **Java 8**(`@since 1.8`, src.zip 확인).
-> **범위** — 정렬 **알고리즘**(병합·삽입·TimSort 의 run·gallop)은 이 문서가 다루지 않는다.\
-> 그쪽은 [`../../../../cs/algorithm/01-elementary-sort/`](../../../../cs/algorithm/01-elementary-sort/) 와 `cs/algorithm/` 이 정본이다.\
-> 여기는 「**비교자의 계약과 그것을 어겼을 때 관측되는 증상**」만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **비교자는 "키 재는 자"다. 자가 흔들리면 줄 세우기가 조용히 망가진다.**
@@ -724,3 +711,16 @@ NEVER_ZERO (0~9, seed 42) 가 처음 던진 n = -1
 - **`thenComparing` 은 오버로드가 셋이라 모호해질 수 있다.**\
   `Comparator<T>` 를 받는 것, 키 추출 함수를 받는 것, 키 추출 함수 + 비교자를 받는 것.\
   람다를 넘기면 어느 것인지 추론이 안 돼 컴파일 에러가 나기도 한다 — **메서드 참조를 쓰면 대개 풀린다.**
+
+## 실행 환경
+
+**기준 소스** — JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/Comparable.java` · `java.base/java/util/Comparator.java` 의 **javadoc 원문**(`lib/src.zip` 에서 직접 인용) · `java.base/java/util/TimSort.java` · `java.base/java/util/ComparableTimSort.java`
+**실행 검증** — 이 문서의 모든 출력·예외는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+실행 프로그램 다섯(`Ex.java (28-a2)`·`(28-a3)`·`(28-a4)`·`(28-b)`·`(28-c)`)을 **17.0.13 · 21.0.5 · 25.0.1** 세 곳에서 돌려 **출력이 한 글자도 다르지 않았다**.\
+계약 위반의 임계 원소 수(731·89)까지 세 JDK 에서 같았다. 다만 **"세 곳에서 같았다"는 관찰이지 보장이 아니다** —
+보장은 javadoc 인용으로만 적었고, **임계값은 데이터·씨앗에 따라 달라진다**(본문 실측 조건 명시).
+**버전** — `Comparable` 은 **Java 1.2**, `Comparator` 도 **1.2**.\
+`comparing`·`thenComparing`·`reversed`·`nullsFirst`·`naturalOrder` 등 조합 메서드는 전부 **Java 8**(`@since 1.8`, src.zip 확인).
+**범위** — 정렬 **알고리즘**(병합·삽입·TimSort 의 run·gallop)은 이 문서가 다루지 않는다.\
+그쪽은 [`../../../../cs/algorithm/01-elementary-sort/`](../../../../cs/algorithm/01-elementary-sort/) 와 `cs/algorithm/` 이 정본이다.\
+여기는 「**비교자의 계약과 그것을 어겼을 때 관측되는 증상**」만 다룬다.

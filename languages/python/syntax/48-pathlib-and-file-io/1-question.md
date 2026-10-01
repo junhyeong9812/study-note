@@ -1,17 +1,5 @@
 # python/syntax/48-pathlib-and-file-io — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★★★ 1번은 **스무 행을 전부** 적고, 마지막 줄의 수까지 세어야 맞은 것이다.
-> ★★ 이 주제는 **속도·처리량을 묻지 않는다** — 한 번도 재지 않았다.
->
-> 실행 환경: `python3` **3.12.3** · Linux · 이 머신의 로캘 `LANG=ko_KR.UTF-8`(3번은 `python3.11` 3.11.15 도 함께 — `env -i` 로 행마다 환경 전체를 준다). 던지는 형태는 `python3 - <파일` 이고, **스크립트마다 빈 디렉토리에서** 던졌다.
-> ★ 선행 — [06](../06-strings-bytes-unicode/1-question.md)(`encode`/`decode`) · [28](../28-context-managers-and-with/1-question.md)(`with`) · [26](../26-eafp-vs-lbyl/1-question.md)(경쟁 조건).
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -389,6 +377,14 @@ attempt("sorted(Path('d').glob('*.txt'))", lambda: [q.name for q in sorted(Path(
 
 * ★ [16번](../16-iterator-protocol/2-summary.md)의 「`iter(f) is f` · 두 번째 `for` 는 빈다」는 파일로 찍으면 어떻게 나오나 — `with` 를 나온 뒤 `read()` 는?
 * ★ 텍스트 모드가 **없는** 언어(Go)가 4번과 같은 바이트를 읽으면 `os.ReadFile` · `strings.Split` · `bufio.Scanner` 가 각각 무엇을 주나 — 파이썬의 어느 `newline` 칸과 같은 모양인가?
+
+## 실행 환경
+
+★★★ 1번은 **스무 행을 전부** 적고, 마지막 줄의 수까지 세어야 맞은 것이다.
+★★ 이 주제는 **속도·처리량을 묻지 않는다** — 한 번도 재지 않았다.
+
+실행 환경: `python3` **3.12.3** · Linux · 이 머신의 로캘 `LANG=ko_KR.UTF-8`(3번은 `python3.11` 3.11.15 도 함께 — `env -i` 로 행마다 환경 전체를 준다). 던지는 형태는 `python3 - <파일` 이고, **스크립트마다 빈 디렉토리에서** 던졌다.
+★ 선행 — [06](../06-strings-bytes-unicode/1-question.md)(`encode`/`decode`) · [28](../28-context-managers-and-with/1-question.md)(`with`) · [26](../26-eafp-vs-lbyl/1-question.md)(경쟁 조건).
 
 ## 복습 기록
 

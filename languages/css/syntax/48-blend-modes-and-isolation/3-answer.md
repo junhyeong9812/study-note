@@ -1,10 +1,5 @@
 # css/syntax/48 — 혼합 모드와 `isolation` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 색은 Google Chrome 151.0.7922.173 headless 로 렌더한 스크린샷 PNG 를 파이썬 표준 라이브러리(`zlib`)로 디코드해 그 좌표의 `(r,g,b)` 를 읽은 값**이다.\
-> **공식 값은 [Compositing and Blending Level 1](https://drafts.fxtf.org/compositing-1/) §blending 의 정의를 그대로 옮긴 파이썬 함수로 계산해 픽셀과 대조했다** — 손으로 유도한 수치는 없다.\
-> ★ 렌더는 `--disable-gpu` **소프트웨어 렌더링**이다. 정확한 픽셀 값을 「보장」으로 읽지 마라.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -326,3 +321,9 @@ hard-light   픽셀 (173,122, 82)   공식 (173,122, 82)   ○
 
 **구현 의존 항목** — ①**반올림**: `(102,204,51)×(204,102,51)` 의 B 채널이 공식 10.2 → 픽셀 11 로 **1 차이**가 났다(다른 채널은 전부 정확히 일치). ②각 픽셀의 정확한 값 — `--disable-gpu` **소프트웨어 렌더링** 결과다. ③`isolation` 이 backdrop root 를 안 만드는 것(47번의 관찰).\
 **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.** 크로스 브라우저는 Baseline 데이터로만 접지했다(webstatus.dev 조회 2026-09-23: `mix-blend-mode`·`background-blend-mode`·`isolation` 셋 다 widely 2020-01-15/2022-07-15).
+
+## 실행 환경
+
+이 파일의 **모든 색은 Google Chrome 151.0.7922.173 headless 로 렌더한 스크린샷 PNG 를 파이썬 표준 라이브러리(`zlib`)로 디코드해 그 좌표의 `(r,g,b)` 를 읽은 값**이다.\
+**공식 값은 [Compositing and Blending Level 1](https://drafts.fxtf.org/compositing-1/) §blending 의 정의를 그대로 옮긴 파이썬 함수로 계산해 픽셀과 대조했다** — 손으로 유도한 수치는 없다.\
+★ 렌더는 `--disable-gpu` **소프트웨어 렌더링**이다. 정확한 픽셀 값을 「보장」으로 읽지 마라.

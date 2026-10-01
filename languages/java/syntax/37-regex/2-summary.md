@@ -1,20 +1,5 @@
 # java/syntax/37 — 정규식: `Pattern`/`Matcher`·`String` 의 정규식 메서드 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Java SE 21 `Pattern` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/regex/Pattern.html) · [`Matcher`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/regex/Matcher.html) · JDK 17.0.13 / 21.0.5 / 25.0.1 표준 라이브러리 소스 `java.base/java/util/regex/Pattern.java` 의 **javadoc 과 구현 주석 원문**(`lib/src.zip` 에서 직접 읽음).
-> **실행 검증** — 이 문서의 모든 출력·에러는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 프로그램 7개를 **17.0.13 · 21.0.5 · 25.0.1** 에서 전부 돌렸다.\
-> **한 군데가 갈렸다** — `Matcher.start()` 를 매치 없이 부를 때의 예외 **메시지**가 17 과 21 에서 다르다(「어디서 틀리나」 4번).
-> **★ 측정 조건**(수치를 싣는 절 — 「동작 방식 (5)」·「(6)」) — **JMH 가 아니다.** 단순 `System.nanoTime()` 반복 측정이다.\
-> 머신: 13th Gen Intel Core i7-13700HX · 24 스레드 · Linux 7.0.0-31-generic. 각 측정은 한 JVM 안에서 3\~6 회 반복했다.\
-> **재현되는 것은 절댓값이 아니라 기울기와 자릿수다** — 파국적 백트래킹은 입력 +2 글자마다 시간이 약 4배가 되는 **모양**이,\
-> `Pattern` 재사용은 **3\~4배**라는 자릿수가 재현된다. 웜업 전 1\~2 회차는 JIT 때문에 느리므로 표에 함께 싣는다.
-> **버전** — `Pattern`/`Matcher` 는 **1.4**. `Pattern.quote`·`Matcher.quoteReplacement`·`usePattern` = **5** ·
-> 이름 있는 그룹 `(?<name>...)`·`group(String)` = **7** · `splitAsStream` = **8** ·
-> `Matcher.results()`·`replaceAll(Function)`·`appendReplacement(StringBuilder,...)` = **9** (전부 `src.zip` 의 `@since` 직접 확인).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> 선행: [35 `String`](../35-string/).
-
 ## 한눈에 — 쉽게 말하면
 
 **정규식은 "찾기 규칙을 미리 컴파일해 둔 기계(`Pattern`)"와 "그 기계를 입력 하나에 물려 돌리는 손잡이(`Matcher`)"다.**\
@@ -757,3 +742,19 @@ if (Pattern.compile("[0-9]+").matcher(input).matches()) { ... }
 - **JDK 소스를 읽는 것이 가장 빠른 답이 되는 주제다.**\
   이 문서의 (5) 는 실행만으로는 **"왜 안 터지지?"에서 막혔다.**\
   `src.zip` 의 `Pattern.java` 주석 한 문단을 읽고 나서야 역참조라는 스위치를 찾았다.
+
+## 실행 환경
+
+**기준 소스** — [Java SE 21 `Pattern` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/regex/Pattern.html) · [`Matcher`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/regex/Matcher.html) · JDK 17.0.13 / 21.0.5 / 25.0.1 표준 라이브러리 소스 `java.base/java/util/regex/Pattern.java` 의 **javadoc 과 구현 주석 원문**(`lib/src.zip` 에서 직접 읽음).
+**실행 검증** — 이 문서의 모든 출력·에러는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+프로그램 7개를 **17.0.13 · 21.0.5 · 25.0.1** 에서 전부 돌렸다.\
+**한 군데가 갈렸다** — `Matcher.start()` 를 매치 없이 부를 때의 예외 **메시지**가 17 과 21 에서 다르다(「어디서 틀리나」 4번).
+**★ 측정 조건**(수치를 싣는 절 — 「동작 방식 (5)」·「(6)」) — **JMH 가 아니다.** 단순 `System.nanoTime()` 반복 측정이다.\
+머신: 13th Gen Intel Core i7-13700HX · 24 스레드 · Linux 7.0.0-31-generic. 각 측정은 한 JVM 안에서 3\~6 회 반복했다.\
+**재현되는 것은 절댓값이 아니라 기울기와 자릿수다** — 파국적 백트래킹은 입력 +2 글자마다 시간이 약 4배가 되는 **모양**이,\
+`Pattern` 재사용은 **3\~4배**라는 자릿수가 재현된다. 웜업 전 1\~2 회차는 JIT 때문에 느리므로 표에 함께 싣는다.
+**버전** — `Pattern`/`Matcher` 는 **1.4**. `Pattern.quote`·`Matcher.quoteReplacement`·`usePattern` = **5** ·
+이름 있는 그룹 `(?<name>...)`·`group(String)` = **7** · `splitAsStream` = **8** ·
+`Matcher.results()`·`replaceAll(Function)`·`appendReplacement(StringBuilder,...)` = **9** (전부 `src.zip` 의 `@since` 직접 확인).
+
+선행: [35 `String`](../35-string/).

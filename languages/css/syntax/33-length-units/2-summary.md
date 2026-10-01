@@ -1,13 +1,5 @@
 # css/syntax/33 — 길이 단위: `px`·`em`·`rem`·`%`·`ch`·`ex` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Values and Units Level 4](https://drafts.csswg.org/css-values-4/) 의 「Distance Units」(`<length>`)·「Percentages」 절. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 픽셀 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle`·`getBoundingClientRect()` 로 읽은 것이다. **손으로 계산해 유도한 수치는 없다.** 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — CSS 에는 언어 버전이 없다. `px`·`em`·`%` 는 CSS1 부터, `rem` 은 CSS Values 3, `lh`/`rlh` 는 Values 4 의 것이다. 지원 상태는 [목록 README](../README.md) 의 Baseline 표로 읽는다.
-> **여기서 다루지 않는 것** — 단위가 **어느 단계에서 픽셀이 되는가**는 [04번](../04-value-processing-stages/2-summary.md)이 정본이다. 여기는 **그 단계에 들어가기 전에 무엇을 기준으로 재는가**까지다. 뷰포트·컨테이너 기준은 [34번](../34-viewport-and-container-units/2-summary.md), 단위를 섞어 계산하는 것은 [35번](../35-calc-clamp-min-max/2-summary.md)이 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **길이 단위 = 「자를 어디에 대고 재느냐」다.** 숫자가 아니라 **기준점**이 단위의 정체다.
@@ -530,3 +522,11 @@ font-size 를 20px 로 고정하고 글꼴만 바꿔 width:10ch / width:10ex 를
   `rem`·`em` 은 따라 커지고 `px` 은 안 커진다. 그래서 「`px` 로 고정한 본문 글꼴」이 접근성 지적을 받는다.
 - **`ch` 를 쓴 폭은 글꼴 로딩 전후로 달라진다.** 웹폰트를 쓰면 폭이 한 번 뛰는 것이 정상이고,\
   그 점프를 줄이는 수단은 `size-adjust`·`font-display` 쪽이다([목록의 **50번 주제**](../50-fonts-and-webfonts/)).
+
+## 실행 환경
+
+**기준 소스** — [CSS Values and Units Level 4](https://drafts.csswg.org/css-values-4/) 의 「Distance Units」(`<length>`)·「Percentages」 절. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 픽셀 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle`·`getBoundingClientRect()` 로 읽은 것이다. **손으로 계산해 유도한 수치는 없다.** 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — CSS 에는 언어 버전이 없다. `px`·`em`·`%` 는 CSS1 부터, `rem` 은 CSS Values 3, `lh`/`rlh` 는 Values 4 의 것이다. 지원 상태는 [목록 README](../README.md) 의 Baseline 표로 읽는다.
+**여기서 다루지 않는 것** — 단위가 **어느 단계에서 픽셀이 되는가**는 [04번](../04-value-processing-stages/2-summary.md)이 정본이다. 여기는 **그 단계에 들어가기 전에 무엇을 기준으로 재는가**까지다. 뷰포트·컨테이너 기준은 [34번](../34-viewport-and-container-units/2-summary.md), 단위를 섞어 계산하는 것은 [35번](../35-calc-clamp-min-max/2-summary.md)이 정본이다.

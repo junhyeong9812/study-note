@@ -1,18 +1,5 @@
 # rust/syntax/51 — `mpsc` 채널 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `std::sync::mpsc` 모듈](https://doc.rust-lang.org/std/sync/mpsc/index.html) ·
-> [std — `mpsc::channel`](https://doc.rust-lang.org/std/sync/mpsc/fn.channel.html)(「infinite buffer」 · 「at least one `Sender` alive (including clones)」) ·
-> [std — `mpsc::sync_channel`](https://doc.rust-lang.org/std/sync/mpsc/fn.sync_channel.html)(「buffer size of 0 is valid … rendezvous channel」) ·
-> [std — `Receiver`](https://doc.rust-lang.org/std/sync/mpsc/struct.Receiver.html)(`iter` 은 「channel has hung up」이면 `None`) ·
-> std 소스 `std/src/sync/mpsc.rs`(`TrySendError` 의 `Debug` — 로컬 `rust-docs` 의 `src/std/sync/mpsc.rs.html`).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> **`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★★ **속도·처리량은 한 번도 재지 않았다** — 「채널이 락보다 빠르다/느리다」 류의 문장은 **근거가 없으므로 쓰지 않는다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체 창 — ① 수신 루프 종료 격자(송신자 구성 × 드롭 방식 → `for msg in rx` 가 끝났나)다.** 「끝났나」를 **멈추지 않고** 판정하려고 수신 스레드가 루프를 빠져나오면 `done` 채널로 알리고, main 은 그것을 `recv_timeout(500ms)` 으로 기다린다.
 
 ## 흔들리는 칸 / 안 흔들리는 칸
@@ -541,3 +528,16 @@ owner exited, keys 3
 - `Receiver::recv_deadline` 은 1.92 문서의 메서드 목록에 있지만 **안정 판 표지(`Stable since`)가 붙어 있지 않다** — 이 문서는 쓰지 않았다.
 - 1.92 문서에는 `std::sync::mpmc` 모듈 페이지도 있다(여러 소비자). **안정 API 인지 확인하지 않았고 던지지 않았다.**
 - `select!` 처럼 여러 채널을 한꺼번에 기다리는 기능은 std `mpsc` 에 없다(Go 30번의 `select` 와 대비). **대안 크레이트는 다루지 않는다** — 외부 크레이트를 하나도 쓰지 않는 갈래다.
+
+## 실행 환경
+
+**기준 소스** — [std — `std::sync::mpsc` 모듈](https://doc.rust-lang.org/std/sync/mpsc/index.html) ·
+[std — `mpsc::channel`](https://doc.rust-lang.org/std/sync/mpsc/fn.channel.html)(「infinite buffer」 · 「at least one `Sender` alive (including clones)」) ·
+[std — `mpsc::sync_channel`](https://doc.rust-lang.org/std/sync/mpsc/fn.sync_channel.html)(「buffer size of 0 is valid … rendezvous channel」) ·
+[std — `Receiver`](https://doc.rust-lang.org/std/sync/mpsc/struct.Receiver.html)(`iter` 은 「channel has hung up」이면 `None`) ·
+std 소스 `std/src/sync/mpsc.rs`(`TrySendError` 의 `Debug` — 로컬 `rust-docs` 의 `src/std/sync/mpsc.rs.html`).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+**`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★★ **속도·처리량은 한 번도 재지 않았다** — 「채널이 락보다 빠르다/느리다」 류의 문장은 **근거가 없으므로 쓰지 않는다.**

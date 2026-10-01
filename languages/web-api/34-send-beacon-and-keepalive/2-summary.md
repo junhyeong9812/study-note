@@ -1,13 +1,5 @@
 # web-api/34 — `navigator.sendBeacon` 과 이탈 시점 전송: `fetch` 의 `keepalive` 와의 관계 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」로 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 「떠날 때」 격자에 열을 더한 「떠날 때 전송 격자」다.** 24편은 **떠날 때 어느 이벤트가 불리나**를 쟀다. 여기서는 그 이벤트 안에서 **한 번 보낸 요청이 서버에 닿았나**, 그리고 서버가 응답을 붙잡았다가 놓는 순간 **그 연결이 아직 살아 있었나**를 잰다. 전송 수단 5(`fetch` · `fetch keepalive` · `sendBeacon` · `img.src` · 동기 XHR) × 부르는 자리 4(`visibilitychange → hidden` · `pagehide` · `beforeunload` · `unload`) × 떠나는 방식 2(링크 · 탭 닫기) = **40칸을 5판** 돌려 **칸마다 「5판 중 몇 판」** 으로 적는다.\
-> **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/)(앞 배치가 받아 둔 사본에서 열었다) — request 의 **keepalive**(「요청이 **environment settings object 보다 오래 살게** 하는 데 쓸 수 있다 — 예: **`navigator.sendBeacon()` 과 HTML `img` 요소가 이것을 쓴다**」) · **fetch group 이 terminated 될 때**(「fetch record 마다 — controller 가 있고 **done 이 아니고 keepalive 가 false 면 그 controller 를 terminate 한다**」) · HTTP-network-or-cache fetch 의 **한도**(「contentLength 와 **아직 안 끝난 keepalive 요청들의 본문 길이 합**이 **64 kibibytes 보다 크면 network error**」) · 본문 추출(「본문이 `ReadableStream` 이고 **keepalive 가 true 면 `TypeError` 를 던진다**」). ★ **[W3C Beacon](https://w3c.github.io/beacon/) 과 HTML 명세의 「page dismissal 중 동기 XHR」 문장은 이 판에서 열지 못했다**(외부 네트워크를 쓰지 않았고 사본이 없다) — 그쪽 서술은 **관찰**로만 적는다. 열어서 확인한 것만 명세로 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 링크는 **CDP 로 넣은 진짜 마우스**로 누르고, 탭 닫기는 **`Page.close`** 다(24편 (3) — `Target.closeTarget` 은 `beforeunload` 를 안 부른다). 서버는 [32번 주제](../32-server-sent-events/2-summary.md)의 (1) `/beacon`·`/big` 이다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** ★★ **서버는 같은 기계(localhost)다** — 요청이 선에 오르는 데 걸리는 시간이 거의 0 이다. 먼 서버 · 느린 선에서의 「닿았나」는 이 판이 말하지 않는다.\
-> **선행** — ★★★ **[24번 주제](../24-document-lifecycle-events/2-summary.md)** — (2)의 「떠날 때」 격자(**`visibilitychange → hidden` 은 7행 전부**) · (3) 탭 닫기 두 명령 · (4) **`unload` 리스너 하나가 문서를 bfcache 에서 뺀다.** 여기서는 **다시 재지 않고 인용**한다. ★★ **[25번 주제](../25-fetch-request-response/2-summary.md)** — 서버 요청 로그 창. ★ **[27번 주제](../27-abort-and-timeout/2-summary.md)의 (4)** — **같은 잡에서 `abort()` 해도 요청이 서버에 닿은 판이 있었다.** 여기의 「잘리나」도 같은 모양일 수 있어 **판 수로** 적는다. ★ [31번 주제](../31-blob-file-and-object-url/2-summary.md)의 (5) — **「떠났다」와 「파괴됐다」가 bfcache 에서 갈린다.**\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -22,7 +14,7 @@ Google Chrome 151.0.7922.173
 |---|---|---|
 | **안 흔들린다** | 격자 40칸의 「닿은 판 / 5」와 「살아 있던 판」 · 동기 결과 · 64KiB 표 · `Content-Type` 표 · 콘솔 · 8 MiB 세 줄 | **판 안에서 5판**, 캡처 세 판이 **한 글자도 같았다** — 판마다 갈린 칸 `0 / 40` |
 | ★ **흔들리게 만들지 않았다** | 8 MiB 가 **얼마나** 올라갔나 | 바이트 수를 찍지 않고 **「끝까지 받았나」·「받은 것이 있나」** 만 찍었다 |
-| ★ **판에 매일 수 있는 칸** | 「닿았다」 전부 | **localhost** 라서 닿는 데 시간이 거의 안 든다(머리말). 27편에서 `abort()` 가 **따라잡지 못한 것**과 같은 성질일 수 있다 — 먼 서버라면 **안 닿는 판이 나올 수 있다** |
+| ★ **판에 매일 수 있는 칸** | 「닿았다」 전부 | **localhost** 라서 닿는 데 시간이 거의 안 든다(「실행 환경」). 27편에서 `abort()` 가 **따라잡지 못한 것**과 같은 성질일 수 있다 — 먼 서버라면 **안 닿는 판이 나올 수 있다** |
 | **흔들린다** | Chrome 판 번호 · 포트 · multipart 경계 | 포트는 출력에 안 나온다 · 경계는 뒤 16자를 가린다 |
 
 - 재대조에서 정규화하는 칸은 없다. **위 표에 없는 차이는 전부 고칠 것**이다.
@@ -43,7 +35,7 @@ Google Chrome 151.0.7922.173
 
 | 무엇을 | 왜 못 보나 |
 |---|---|
-| ★★ **먼 서버 · 느린 선에서 닿나** | localhost 뿐이다(머리말) |
+| ★★ **먼 서버 · 느린 선에서 닿나** | localhost 뿐이다(「실행 환경」) |
 | **모바일의 백그라운드 전환 · 프로세스 강제 종료** | 24편과 같다 — 헤드리스 데스크톱이다 |
 | **사용자가 창을 닫는 것** | `Page.close` 로 흉내 냈다(24편 (3)) |
 | **브라우저가 보내기를 미루다 언제 보냈나** | 서버가 받은 것만 본다 — 떠난 뒤 2초 안에 닿았나까지 |
@@ -504,7 +496,7 @@ B OPTIONS /beacon?body=keepalive-json  Origin=http://127.0.0.1:<A> · Access-Con
 
 ### 7. 「5판 모두 닿았다」를 「언제나 닿는다」로 읽는다
 
-**localhost 의 5판**이다(머리말). 27편은 `abort()` 가 요청을 **따라잡지 못한** 판을 봤다 — 선이 느리면 반대쪽 판이 나올 수 있다. **닿아야 하는 것은 서버 쪽 멱등성으로 지킨다.**
+**localhost 의 5판**이다(「실행 환경」). 27편은 `abort()` 가 요청을 **따라잡지 못한** 판을 봤다 — 선이 느리면 반대쪽 판이 나올 수 있다. **닿아야 하는 것은 서버 쪽 멱등성으로 지킨다.**
 
 ## 구현 세부사항 대 언어 보장
 
@@ -559,3 +551,11 @@ B OPTIONS /beacon?body=keepalive-json  Origin=http://127.0.0.1:<A> · Access-Con
 - **`fetchLater()`** — Fetch 의 deferred fetching(문서가 사라지거나 비활성이 될 때 **나중에** 보낼 요청을 미리 맡긴다). 명세 사본에 절이 있다 — 이 판의 Chrome 에서 던지지 않았다.
 - **Beacon 명세 · HTML 의 page dismissal 문장** — 열지 못했다.
 - **먼 서버 · 느린 선** — 이 격자를 네트워크 지연을 넣은 판(CDP `Network.emulateNetworkConditions`)으로 다시 돌리는 일이 남았다.
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」로 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 「떠날 때」 격자에 열을 더한 「떠날 때 전송 격자」다.** 24편은 **떠날 때 어느 이벤트가 불리나**를 쟀다. 여기서는 그 이벤트 안에서 **한 번 보낸 요청이 서버에 닿았나**, 그리고 서버가 응답을 붙잡았다가 놓는 순간 **그 연결이 아직 살아 있었나**를 잰다. 전송 수단 5(`fetch` · `fetch keepalive` · `sendBeacon` · `img.src` · 동기 XHR) × 부르는 자리 4(`visibilitychange → hidden` · `pagehide` · `beforeunload` · `unload`) × 떠나는 방식 2(링크 · 탭 닫기) = **40칸을 5판** 돌려 **칸마다 「5판 중 몇 판」** 으로 적는다.\
+**기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/)(앞 배치가 받아 둔 사본에서 열었다) — request 의 **keepalive**(「요청이 **environment settings object 보다 오래 살게** 하는 데 쓸 수 있다 — 예: **`navigator.sendBeacon()` 과 HTML `img` 요소가 이것을 쓴다**」) · **fetch group 이 terminated 될 때**(「fetch record 마다 — controller 가 있고 **done 이 아니고 keepalive 가 false 면 그 controller 를 terminate 한다**」) · HTTP-network-or-cache fetch 의 **한도**(「contentLength 와 **아직 안 끝난 keepalive 요청들의 본문 길이 합**이 **64 kibibytes 보다 크면 network error**」) · 본문 추출(「본문이 `ReadableStream` 이고 **keepalive 가 true 면 `TypeError` 를 던진다**」). ★ **[W3C Beacon](https://w3c.github.io/beacon/) 과 HTML 명세의 「page dismissal 중 동기 XHR」 문장은 이 판에서 열지 못했다**(외부 네트워크를 쓰지 않았고 사본이 없다) — 그쪽 서술은 **관찰**로만 적는다. 열어서 확인한 것만 명세로 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 링크는 **CDP 로 넣은 진짜 마우스**로 누르고, 탭 닫기는 **`Page.close`** 다(24편 (3) — `Target.closeTarget` 은 `beforeunload` 를 안 부른다). 서버는 [32번 주제](../32-server-sent-events/2-summary.md)의 (1) `/beacon`·`/big` 이다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** ★★ **서버는 같은 기계(localhost)다** — 요청이 선에 오르는 데 걸리는 시간이 거의 0 이다. 먼 서버 · 느린 선에서의 「닿았나」는 이 판이 말하지 않는다.\
+**선행** — ★★★ **[24번 주제](../24-document-lifecycle-events/2-summary.md)** — (2)의 「떠날 때」 격자(**`visibilitychange → hidden` 은 7행 전부**) · (3) 탭 닫기 두 명령 · (4) **`unload` 리스너 하나가 문서를 bfcache 에서 뺀다.** 여기서는 **다시 재지 않고 인용**한다. ★★ **[25번 주제](../25-fetch-request-response/2-summary.md)** — 서버 요청 로그 창. ★ **[27번 주제](../27-abort-and-timeout/2-summary.md)의 (4)** — **같은 잡에서 `abort()` 해도 요청이 서버에 닿은 판이 있었다.** 여기의 「잘리나」도 같은 모양일 수 있어 **판 수로** 적는다. ★ [31번 주제](../31-blob-file-and-object-url/2-summary.md)의 (5) — **「떠났다」와 「파괴됐다」가 bfcache 에서 갈린다.**

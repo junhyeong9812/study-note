@@ -1,18 +1,5 @@
 # java/syntax/48 — `Collectors` 그룹핑·분할·다운스트림 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../47-collectors-basics/`](../47-collectors-basics/). 기본 수집기와 `toMap` 을 먼저 본다.
-> **기준 소스** — [`Collectors` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/Collectors.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/stream/Collectors.java`(`lib/src.zip`)
-> **실행 검증** — 이 문서의 모든 출력·에러는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 같은 프로그램 3개를 **17.0.13 · 25.0.1** 에서도 돌려 **출력이 한 글자도 다르지 않음**을 확인했다(`HashMap` 의 키 순서까지 같았다).
-> **버전** — `groupingBy`·`partitioningBy`·`mapping` 은 **Java 8**. `filtering`·`flatMapping` 은 **Java 9**. `teeing` 은 **Java 12**.\
-> 17·21·25 동작 동일.
-> **범위** — 병렬에서 달라지는 것(`groupingByConcurrent`·결합 비용)은 [`../49-parallel-streams/`](../49-parallel-streams/) 이 정본이다.\
-> 그쪽은 **스레드와 결합 비용**까지, 여기는 **조합의 문법과 결과 모양**까지다.\
-> `HashMap` 이 키를 왜 그 순서로 도는지는 [`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 이 정본이다.\
-> 그쪽은 **버킷 배치**까지, 여기는 "**그래서 순서를 믿으면 안 된다**"부터다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **그룹핑은 그릇을 칸칸이 나누는 것이고, 다운스트림은 칸마다 또 그릇을 놓는 것이다.**
@@ -632,3 +619,16 @@ put(null) : java.lang.UnsupportedOperationException
 - **`teeing` 은 Java 12 에서 들어왔다.**\
   그 전에는 같은 데이터에 수집기 둘을 돌리려면 **컬렉션으로 한 번 받아 두고 스트림을 두 번 만들어야** 했다.\
   스트림이 일회용이기 때문이다(46번 6번). `teeing` 은 그 왕복을 없앤다.
+
+## 실행 환경
+
+**선행** — [`../47-collectors-basics/`](../47-collectors-basics/). 기본 수집기와 `toMap` 을 먼저 본다.
+**기준 소스** — [`Collectors` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/Collectors.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/stream/Collectors.java`(`lib/src.zip`)
+**실행 검증** — 이 문서의 모든 출력·에러는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+같은 프로그램 3개를 **17.0.13 · 25.0.1** 에서도 돌려 **출력이 한 글자도 다르지 않음**을 확인했다(`HashMap` 의 키 순서까지 같았다).
+**버전** — `groupingBy`·`partitioningBy`·`mapping` 은 **Java 8**. `filtering`·`flatMapping` 은 **Java 9**. `teeing` 은 **Java 12**.\
+17·21·25 동작 동일.
+**범위** — 병렬에서 달라지는 것(`groupingByConcurrent`·결합 비용)은 [`../49-parallel-streams/`](../49-parallel-streams/) 이 정본이다.\
+그쪽은 **스레드와 결합 비용**까지, 여기는 **조합의 문법과 결과 모양**까지다.\
+`HashMap` 이 키를 왜 그 순서로 도는지는 [`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 이 정본이다.\
+그쪽은 **버킷 배치**까지, 여기는 "**그래서 순서를 믿으면 안 된다**"부터다.

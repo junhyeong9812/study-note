@@ -1,19 +1,5 @@
 # sql/56-격리 수준과 읽기 이상 현상·MVCC — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Transaction Isolation](https://www.postgresql.org/docs/18/transaction-iso.html) · [SET TRANSACTION](https://www.postgresql.org/docs/18/sql-set-transaction.html) · [MySQL 8.4 · Transaction Isolation Levels](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html) · [SET TRANSACTION](https://dev.mysql.com/doc/refman/8.4/en/set-transaction.html) · [Consistent Nonlocking Reads](https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> ★ **이 주제는 설정에 달려 있다** — **두 엔진의 기본 격리 수준이 다르다.** 그래서 「환경 확인」이 본문 앞에 있다.\
-> ★ **읽기 이상 현상은 두 세션이 있어야 보인다.** 이름 붙인 FIFO 로 두 접속을 열어 두고 한 줄씩 먹였다(3-answer 의 「실행 검증」).\
-> ★ **정본 경계** — 격리 수준의 **개념·트레이드오프·도구 선택은 [`engineering-axes/concurrency.md`](../../../../cs/engineering/engineering-axes/concurrency.md) 가 정본**이다.\
-> **여기는 `SET TRANSACTION` 문법과 두 엔진의 기본값·실제 동작까지**다.\
-> **이 편이 만든 객체와 그 뒷정리** — 표 `t56_item`(3행) · `t56_duty`(2행). **끝나고 두 엔진에서 `DROP` 했다**(3-answer).\
-> ★ **기존 `emp`·`dept` 는 읽지도 잠그지도 않았다.**\
-> **선행** — [55 트랜잭션 경계](../55-transaction-boundaries-commit-rollback-savepoint/). 괄호가 있어야 「괄호 안에서 남의 것이 보이나」를 물을 수 있다.
-
 ## 한눈에 — 쉽게 말하면
 
 **격리 수준은 「내 트랜잭션이 남의 작업 중인 책상을 얼마나 들여다보나」의 눈금이다.**
@@ -656,3 +642,16 @@ UPDATE 1                                    (에러 없음)
   `BEGIN` 만 쳐 두고 그 사이에 남이 커밋한 뒤 처음 읽으면, **그 커밋된 값이 보인다.**
 - **긴 트랜잭션의 진짜 비용은 저장소다.** 아무도 안 보는 옛 버전을 엔진이 못 버린다 — PG 는 `VACUUM`, InnoDB 는 언두 로그가 커진다.\
   구조 자체는 [`data-structure/`](../../../../cs/data-structure/) 와 [`systems/`](../../../../cs/systems/) 의 몫이고, 여기서는 「**긴 괄호가 비싸다**」까지만 안다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Transaction Isolation](https://www.postgresql.org/docs/18/transaction-iso.html) · [SET TRANSACTION](https://www.postgresql.org/docs/18/sql-set-transaction.html) · [MySQL 8.4 · Transaction Isolation Levels](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html) · [SET TRANSACTION](https://dev.mysql.com/doc/refman/8.4/en/set-transaction.html) · [Consistent Nonlocking Reads](https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+★ **이 주제는 설정에 달려 있다** — **두 엔진의 기본 격리 수준이 다르다.** 그래서 「환경 확인」이 본문 앞에 있다.\
+★ **읽기 이상 현상은 두 세션이 있어야 보인다.** 이름 붙인 FIFO 로 두 접속을 열어 두고 한 줄씩 먹였다(3-answer 의 「실행 검증」).\
+★ **정본 경계** — 격리 수준의 **개념·트레이드오프·도구 선택은 [`engineering-axes/concurrency.md`](../../../../cs/engineering/engineering-axes/concurrency.md) 가 정본**이다.\
+**여기는 `SET TRANSACTION` 문법과 두 엔진의 기본값·실제 동작까지**다.\
+**이 편이 만든 객체와 그 뒷정리** — 표 `t56_item`(3행) · `t56_duty`(2행). **끝나고 두 엔진에서 `DROP` 했다**(3-answer).\
+★ **기존 `emp`·`dept` 는 읽지도 잠그지도 않았다.**\
+**선행** — [55 트랜잭션 경계](../55-transaction-boundaries-commit-rollback-savepoint/). 괄호가 있어야 「괄호 안에서 남의 것이 보이나」를 물을 수 있다.

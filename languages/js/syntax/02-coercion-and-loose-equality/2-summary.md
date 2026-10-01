@@ -1,19 +1,5 @@
 # js/syntax/02 — 강제 변환과 `==` 대 `===`: 「엔진이 무엇을 먼저 부르나」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 최신 초안](https://tc39.es/ecma262/) — 추상 연산 `ToPrimitive`·`ToNumber`·`ToString`·`ToBoolean` 과 느슨한 비교 표
-> - [ECMA-262 판별 아카이브](https://262.ecma-international.org/) — 판을 가려야 할 때
-> - [MDN — Equality comparisons and sameness](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness) · [MDN — `Symbol.toPrimitive`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toPrimitive)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·호출 순서·예외 타입과 메시지는 전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★ **`==` 격자는 손으로 채우지 않았다** — 15개 값을 서로 던져 **225칸**을 받았고, `===`·`Object.is` 까지 **675칸**이다.
-
 ```sh
 // js01b-versions.sh
 #!/usr/bin/env bash
@@ -1088,3 +1074,16 @@ a || "기본값";             // 모든 falsy 에서 기본값 — 0 과 "" 이 
   `0x`·`0o`·`0b` 접두와 지수 표기를 받고, **그 밖에 글자가 하나라도 남으면 `NaN`** 이다.
 - **린터의 `eqeqeq` 규칙에 `"smart"`·`"allow-null"` 옵션이 있다.** 이 주제의 6번 절이 그 옵션의 근거다.
   이 문서에서는 린터를 돌리지 않았다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 최신 초안](https://tc39.es/ecma262/) — 추상 연산 `ToPrimitive`·`ToNumber`·`ToString`·`ToBoolean` 과 느슨한 비교 표
+- [ECMA-262 판별 아카이브](https://262.ecma-international.org/) — 판을 가려야 할 때
+- [MDN — Equality comparisons and sameness](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness) · [MDN — `Symbol.toPrimitive`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toPrimitive)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·호출 순서·예외 타입과 메시지는 전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★ **`==` 격자는 손으로 채우지 않았다** — 15개 값을 서로 던져 **225칸**을 받았고, `===`·`Object.is` 까지 **675칸**이다.

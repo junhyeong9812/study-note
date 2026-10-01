@@ -1,23 +1,5 @@
 # java/syntax/54 — `java.util.concurrent`: `ExecutorService`·`Future`·`CompletableFuture` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../25-exceptions/`](../25-exceptions/) (예외 전파·삼키기) · [`../31-functional-interfaces/`](../31-functional-interfaces/) (`Runnable`·`Callable`·`Supplier` 의 시그니처) · [`../26-try-with-resources/`](../26-try-with-resources/) (`close()` 가 언제 불리나 — **`ExecutorService` 가 21에서 `AutoCloseable` 이다**).
-> **기준 소스** — [`java.util.concurrent` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/package-summary.html) · [`ExecutorService`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ExecutorService.html) · [`Future`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Future.html) · [`CompletableFuture`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/CompletableFuture.html) · [`ThreadPoolExecutor`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html) · 이 머신의 `lib/src.zip` 에서 **직접 읽은** `java.base/java/util/concurrent/Executors.java`·`ExecutorService.java`·`Future.java`.
-> **실행 검증** — 이 문서의 모든 출력·에러·스택트레이스·컴파일 에러는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> `ExecutorService` 의 `AutoCloseable` 여부는 **17.0.13 · 21.0.5 · 25.0.1** 과 `--release 17`/`--release 19` 로 각각 컴파일해 확인했다 — **17 에서는 컴파일 에러다.**
-> ⚠️ **측정 조건** — JMH 가 아니다. 벽시계(`System.nanoTime`) 이고, 시간 수치는 `sleep` 으로 만든 **작업 길이가 지배**한다.\
-> 머신 **24코어**(Linux x86-64). 스레드 이름·실행 순서는 **실행마다 다르다** — 이 문서의 출력은 한 번의 실행이고, 순서가 중요한 자리는 **반복 횟수**를 적었다.\
-> 「JVM 이 안 끝난다」류는 `timeout 6` 으로 감싸 **종료 코드 124**(= 6초에 강제 종료됨)로 판정했다.
-> **버전** — `ExecutorService`·`Future` 는 **`@since 1.5`**, `CompletableFuture` 는 **`@since 1.8`** 이다(`src.zip` 직접 확인).\
-> ★ **`ExecutorService extends AutoCloseable` 과 `close()` 는 `@since 19`** 다 — `src.zip` 에서 `@since 19` 를 직접 읽었고 17 에서 컴파일 에러를 확인했다.\
-> `Future.state()`·`resultNow()`·`exceptionNow()` 도 **`@since 19`**. `newVirtualThreadPerTaskExecutor` 는 **`@since 21`**.\
-> `StructuredTaskScope` 는 **21 과 25 모두 `@PreviewFeature`** 다(`src.zip` 의 애너테이션을 직접 읽었다).
-> **범위** — 스레드·스케줄링·컨텍스트 스위칭은 [`../../../../cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다.\
-> 그쪽은 **스레드가 무엇인가**까지, 여기는 **스레드를 직접 만들지 않고 일을 맡기는 API 의 형태**부터다.\
-> **공용 ForkJoinPool 의 경합**은 [`../49-parallel-streams/`](../49-parallel-streams/) 가 이미 실측했다 — **여기서 다시 재지 않고 결론만 받는다.**\
-> 락·`volatile` 의 문법은 [`../33-synchronized-and-volatile/`](../33-synchronized-and-volatile/) 가, 메모리 모델은 [`../../언어-특성/README.md`](../../언어-특성/README.md) §9 가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 javadoc·`src.zip` 으로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`ExecutorService` 는 "일을 창구에 맡기는 것"이고, `Future` 는 "찾아갈 때 내는 번호표"다.**
@@ -767,3 +749,21 @@ ThreadPoolExecutor pool = new ThreadPoolExecutor(
 - **`ForkJoinPool`** — 분할 정복용 풀. 병렬 스트림의 기본 실행기다. [`../49-parallel-streams/`](../49-parallel-streams/) 가 정본.
 - **스레드 풀 크기 산정** — CPU 바운드는 코어 수 근처, I/O 바운드는 `코어 수 × (1 + 대기시간/계산시간)` 이 고전적 공식이다.\
   **이 문서는 그 공식을 측정으로 검증하지 않았다.** 가상 스레드는 이 계산 자체를 없앤다.
+
+## 실행 환경
+
+**선행** — [`../25-exceptions/`](../25-exceptions/) (예외 전파·삼키기) · [`../31-functional-interfaces/`](../31-functional-interfaces/) (`Runnable`·`Callable`·`Supplier` 의 시그니처) · [`../26-try-with-resources/`](../26-try-with-resources/) (`close()` 가 언제 불리나 — **`ExecutorService` 가 21에서 `AutoCloseable` 이다**).
+**기준 소스** — [`java.util.concurrent` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/package-summary.html) · [`ExecutorService`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ExecutorService.html) · [`Future`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Future.html) · [`CompletableFuture`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/CompletableFuture.html) · [`ThreadPoolExecutor`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html) · 이 머신의 `lib/src.zip` 에서 **직접 읽은** `java.base/java/util/concurrent/Executors.java`·`ExecutorService.java`·`Future.java`.
+**실행 검증** — 이 문서의 모든 출력·에러·스택트레이스·컴파일 에러는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+`ExecutorService` 의 `AutoCloseable` 여부는 **17.0.13 · 21.0.5 · 25.0.1** 과 `--release 17`/`--release 19` 로 각각 컴파일해 확인했다 — **17 에서는 컴파일 에러다.**
+⚠️ **측정 조건** — JMH 가 아니다. 벽시계(`System.nanoTime`) 이고, 시간 수치는 `sleep` 으로 만든 **작업 길이가 지배**한다.\
+머신 **24코어**(Linux x86-64). 스레드 이름·실행 순서는 **실행마다 다르다** — 이 문서의 출력은 한 번의 실행이고, 순서가 중요한 자리는 **반복 횟수**를 적었다.\
+「JVM 이 안 끝난다」류는 `timeout 6` 으로 감싸 **종료 코드 124**(= 6초에 강제 종료됨)로 판정했다.
+**버전** — `ExecutorService`·`Future` 는 **`@since 1.5`**, `CompletableFuture` 는 **`@since 1.8`** 이다(`src.zip` 직접 확인).\
+★ **`ExecutorService extends AutoCloseable` 과 `close()` 는 `@since 19`** 다 — `src.zip` 에서 `@since 19` 를 직접 읽었고 17 에서 컴파일 에러를 확인했다.\
+`Future.state()`·`resultNow()`·`exceptionNow()` 도 **`@since 19`**. `newVirtualThreadPerTaskExecutor` 는 **`@since 21`**.\
+`StructuredTaskScope` 는 **21 과 25 모두 `@PreviewFeature`** 다(`src.zip` 의 애너테이션을 직접 읽었다).
+**범위** — 스레드·스케줄링·컨텍스트 스위칭은 [`../../../../cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다.\
+그쪽은 **스레드가 무엇인가**까지, 여기는 **스레드를 직접 만들지 않고 일을 맡기는 API 의 형태**부터다.\
+**공용 ForkJoinPool 의 경합**은 [`../49-parallel-streams/`](../49-parallel-streams/) 가 이미 실측했다 — **여기서 다시 재지 않고 결론만 받는다.**\
+락·`volatile` 의 문법은 [`../33-synchronized-and-volatile/`](../33-synchronized-and-volatile/) 가, 메모리 모델은 [`../../언어-특성/README.md`](../../언어-특성/README.md) §9 가 정본이다.

@@ -1,15 +1,5 @@
 # PR #37157 — 무대의 실구조와 워크플로우
 
-> PR #37157의 무대가 되는 실구조·워크플로우.\
-> 문제·수정은 [README.md](README.md), 테스트는 [tests.md](tests.md) 참조.
->
-> 기준: 로컬 HEAD `526c706d1c3`.\
-> 이 시점의 `AttributeMethods.java`는 **수정 전** 상태이므로, base 코드의 file:line은 그대로 쓰고 이 PR이 추가하는 요소는 diff 기준으로 표기한다.
->
-> 무대의 **기본 구조**(플래그 계산식, `canLoad`/`validate`의 뼈대, `AnnotationsScanner` 소비 사슬)는 [`../37153/structure.md`](../37153-enum-array-annotation-probe/structure.md)가 담당한다.\
-> 이 문서는 그 위에 재귀가 얹힌 뒤의 구조와, 재귀가 실제로 걸어 다니는 **nested 값 트리**의 워크플로우만 다룬다.\
-> probe 개념은 [probe-pattern.md](../37153-enum-array-annotation-probe/probe-pattern.md) 참조.
-
 ## 1. 무대 — 재귀 확장 후의 실구조
 
 이 PR이 만드는 구조적 변화는 셋이다.\
@@ -326,3 +316,8 @@ PR #37157 적용 시 (이 PR)
 **폭탄의 깊이가 fix의 모양을 결정한다.**\
 `Class`·`enum` 같은 스칼라 값은 폭탄이 첫 겹에 있어서 "플래그를 세워 한 번 호출해 보는" 것으로 충분하고(#37153이 한 줄로 끝난 이유), nested annotation은 폭탄이 둘째 겹 이상에 있어서 반환값을 받아 내려가는 순회가 필요하다.\
 같은 방어망의 같은 종류 구멍이라도, 값의 **형태**가 아니라 실패의 **위치**를 봐야 고치는 모양이 정해진다.
+
+## 출처
+
+기준: 로컬 HEAD `526c706d1c3`.\
+이 시점의 `AttributeMethods.java`는 **수정 전** 상태이므로, base 코드의 file:line은 그대로 쓰고 이 PR이 추가하는 요소는 diff 기준으로 표기한다.

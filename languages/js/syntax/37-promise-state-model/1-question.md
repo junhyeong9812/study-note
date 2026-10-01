@@ -1,20 +1,5 @@
 # js/syntax/37 — Promise 상태 모델: 「누가 상태를 정하고, 값과 거부는 어디로 흐르고, 아무도 안 받은 거부는 누가 알리나」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
->
-> ★★★ **이 주제의 본체는 전수 격자 셋과 틱 세기다** — **1번 · 2번 · 5번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **상태는 언제 정해지고, 정해진 뒤의 호출은 어떻게 되나 — thenable 은 틱이 몇 개 드나**
-> ② **`then` 사슬과 `.finally()` 에서 값·예외는 어디로 흐르나**
-> ③ ★★★ **거부를 아무도 안 받으면 언제, 누가 알리나 — 언어인가 호스트인가.**
->
-> **선행** — [36](../36-event-loop-and-microtasks/2-summary.md) · [32](../32-error-handling-and-error/2-summary.md) · [19](../19-iterable-protocol-and-for-of/2-summary.md).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 여섯 문항(1\~6)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -272,6 +257,14 @@ make("never", () => {});
 
 - ★★ HTML 의 `HostPromiseRejectionTracker` 첫 단계는 무엇을 보고 그냥 돌아가나?
 - ★ 「이벤트가 안 왔다」에서 「거부가 없었다」로 가면 왜 틀리나?
+
+## 실행 환경
+
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
+
+★★★ **이 주제의 본체는 전수 격자 셋과 틱 세기다** — **1번 · 2번 · 5번 문항이 이 주제의 중심이다.**
+
+**선행** — [36](../36-event-loop-and-microtasks/2-summary.md) · [32](../32-error-handling-and-error/2-summary.md) · [19](../19-iterable-protocol-and-for-of/2-summary.md).
 
 ## 복습 기록
 

@@ -1,20 +1,5 @@
 # js/syntax/41 — 취소와 타임아웃: 「`abort()` 는 무엇을 멈추고, 무엇을 전달하고, 어디까지 번지나」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
->
-> ★★★ **이 주제의 본체는 로그 심기다** — 작업의 걸음마다, `abort()` 를 부른 자리에, 호출자가 받은 것에 로그를 심었다. **1번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **`abort()` 를 부르면 이미 시작된 작업은 어떻게 되나 — 프라미스에는 무엇이 없나**
-> ② ★★★ **`reason` 은 무엇이 되나 — `AbortError` 와 `TimeoutError`, 그리고 판마다 다른 것**
-> ③ **취소는 어디까지 번지나 — `any` 로 세운 나무 · `fetch` 의 호출자와 서버.**
->
-> **선행** — [39](../39-async-await/2-summary.md) · [38](../38-promise-combinators/2-summary.md) · [32](../32-error-handling-and-error/2-summary.md) · [40](../40-async-iteration-and-for-await/2-summary.md).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 문항(1\~4)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -230,6 +215,14 @@ console.log("end of the script");
 ### 10. `{ signal }` 로 단 리스너 (연결) ★
 
 - ★ 2번 `[4]` 의 세 숫자는 web-api 20번이 Chrome 에서 잰 것과 같은가? 그래서 컨트롤러를 재사용하면 무엇이 되나?
+
+## 실행 환경
+
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
+
+★★★ **이 주제의 본체는 로그 심기다** — 작업의 걸음마다, `abort()` 를 부른 자리에, 호출자가 받은 것에 로그를 심었다. **1번 문항이 이 주제의 중심이다.**
+
+**선행** — [39](../39-async-await/2-summary.md) · [38](../38-promise-combinators/2-summary.md) · [32](../32-error-handling-and-error/2-summary.md) · [40](../40-async-iteration-and-for-await/2-summary.md).
 
 ## 복습 기록
 

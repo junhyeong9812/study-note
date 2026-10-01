@@ -1,11 +1,5 @@
 # domain-modeling-basic/10-payment — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/10-payment/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -285,3 +279,7 @@ return Outcome.CANCELLED;
 - 기준 소스: `/home/jun/project/myway/domain-modeling-basic/10-payment/impl/com/domain/payment/Payment.java`
 - 문제 원문: `src/main/java/com/domain/payment/Payment.java`(TODO 1~3 javadoc), `Money.java`·`PaymentStatus.java`(계약), `README.md`(함정·측정·생각해볼 것)
 - 수치 근거: `README.md` 측정 절 + `src/test/java/com/domain/payment/MeasurementTest.java`(0·2,470,000·7,560,000·12,510,000 / 650·420·2,800,995·230·1,115,370 / 멱등 10,000 vs 비멱등 6,000 / 909·612 / 1,000·23,905,000 / 3,140·5,423·1,437·10,000), `PaymentTest.java`(10,000−3,000=7,000·음수 거부, 3,000+7,000 상태 전이, 잔액 3,000에 5,000은 INSUFFICIENT 무변경, 0원·빈 키 거부, 같은 키 3회 → CANCELLED·DUPLICATE·DUPLICATE·반영 1건, 5,000+5,000 키 다르면 둘 다, 잔액 0에도 DUPLICATE, 비멱등 잔액 4,000)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/10-payment/impl/`).

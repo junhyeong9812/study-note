@@ -1,71 +1,5 @@
 # js/syntax/28 — `String` 메서드와 템플릿 리터럴: 「치환 문자열은 작은 언어다 · 태그는 같은 종이를 받는다 · 자르기 셋은 음수에서 갈린다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다.**
-> `replace` 의 두 번째 인자는 그냥 문자열이 아니다 — **`$` 로 시작하는 표기를 읽는 작은 언어**다.
-> 그 표기 열한 가지를 **네 가지 자리**(문자열 패턴 · 번호 그룹만 있는 정규식 · 명명 그룹이 있는 정규식 · 함수 치환)에 전부 넣어 보고,
-> **「표기가 글자 그대로 남지 않은 칸」을 스크립트가 마지막 줄로 센다**(동작 (1)).
-> ★★ 나머지 절은 창이 바뀐다 — 태그 템플릿은 **태그 함수가 받은 객체의 동일성**(`===`)으로, `replaceAll` 은 **콜백이 받은 인자 로그**로, 자르기 셋은 **같은 인자 격자**로 본다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — Text Processing: String Objects](https://tc39.es/ecma262/multipage/text-processing.html#sec-string-objects) —
->   `String.prototype.replace` · `replaceAll` · `split` · `slice` · `substring` · `at` · `padStart`/`padEnd` · `trim` · `includes` · `startsWith` · `String.raw` · 추상 연산 `GetSubstitution` · `IsRegExp`
-> - [ECMA-262 — Template Literals](https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html#sec-template-literals) — `GetTemplateObject` · `[[TemplateMap]]` · 태그 템플릿의 `NotEscapeSequence`
-> - [ECMA-262 — Annex B](https://tc39.es/ecma262/multipage/additional-ecmascript-features-for-web-browsers.html) — `String.prototype.substr`(부록이다 — 본문 기능이 아니다)
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md)(2026-09-26 받아 둔 사본) — 판 경계(String padding 2017 · Lifting template literal restriction 2018 · `trimStart`/`trimEnd` 2019 · `replaceAll` 2021 · `.at()` 2022 · Well-Formed Unicode Strings 2024)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★★ **이 주제의 node 탐침 여섯 개 중 두 판이 갈린 것은 하나**(`js28b-28d-slice-substring.js`)이고, 갈린 줄은 **`isWellFormed`(ES2024) 한 줄**이다 — node 18 에 그 메서드가 없다.
-> ★ 파이썬 대비(동작 (7))는 `python3 - <<'PY'` 꼴의 셸 탐침이다. 예외는 같은 꼴(`이름 「메시지」`)로 받아 트레이스백이 없다.
->
-> **버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `slice` · `substring` · `split` · `replace` · `indexOf` · `trim` | ES5 이하 | 세 판 다 있다 |
-> | `substr` | **부록 B**(웹 호환용) | 세 판 다 있다 — 명세 본문 기능이 아니다 |
-> | 템플릿 리터럴 · 태그 템플릿 · `String.raw` · `includes` · `startsWith` | **ES2015** | 세 판 다 있다 |
-> | `padStart` · `padEnd` | **ES2017** | 세 판 다 있다 |
-> | 태그 템플릿의 잘못된 이스케이프 허용(`cooked` 가 `undefined`) | **ES2018** | 세 판 다 있다 |
-> | `trimStart` · `trimEnd` | **ES2019** | 세 판 다 있다 |
-> | `replaceAll` | **ES2021** | 세 판 다 있다 |
-> | `at` | **ES2022** | 세 판 다 있다 |
-> | `isWellFormed` · `toWellFormed` | **ES2024** | ★ **node 18 에 없다** — 동작 (4)의 한 줄이 갈린다(정본은 [04번](../04-strings-and-utf16/2-summary.md)) |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체) | `$` 표기 **11가지** × 자리 **4가지** — 「표기가 글자 그대로 남지 않은 칸」을 스크립트가 센다(동작 (1)) · 자르기 셋 × 인자 열 벌 — `slice` 와 `substring` 이 **갈린 줄**을 센다(동작 (4)) |
-> | ★★ **① 추상 연산에 로그 심기** | `replaceAll` 콜백이 **몇 번 · 무슨 인자로** 불리나(동작 (2)) · 태그 함수가 **무엇을** 받나(동작 (3)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | `replaceAll` 에 `g` 없는 정규식 · `includes`/`startsWith` 에 정규식 · 태그 없는 템플릿의 잘못된 이스케이프(`SyntaxError`) · 얼린 `strings` 에 쓰기 |
-> | ★ **⑤ 두 판 대조기** | 이 주제의 node 탐침 중 **하나만** `DIFFERS` 이고, 그 차이는 **ES2024 메서드의 유무** 한 줄이다 |
-> | ★ **부적용 — ③ 브랜드 태그** | 이 주제에서 「이것이 무엇인가」를 태그로 물을 자리가 없다. 태그 함수가 받는 `strings` 는 `Array.isArray` 가 `true` 인 **평범한 배열**이다(동작 (3)) — **잴 것이 없다** |
-> | ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 는 한 번 나오지만(태그 없는 `\unicode`) 그 **위치**가 답을 바꾸는 성질이 아니다. `new Function` 으로 던져 **종류와 문구만** 본다 |
-> | ★ **안 쟀다 — 성능** | 「`replaceAll` 이 `split().join()` 보다 빠르다」·「템플릿 리터럴이 `+` 보다 빠르다」를 **한 줄도 쓰지 않는다.** 시간을 한 번도 안 쟀다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 예외 **문구** — V8 의 글자다(`String.prototype.replaceAll called with a non-global RegExp argument` · `Invalid Unicode escape sequence`). 다른 엔진은 다르게 적는다. **종류**(`TypeError`·`SyntaxError`)만 명세가 정한다 | ★★★ 격자의 칸 값과 「**N / M**」 · 콜백 인자의 **개수와 순서** · `===` 의 참/거짓 · 잘린 문자열 · 코드 유닛 16진 값 |
-> | 대조기 블록의 **다른 주제 줄**(같은 배치가 한 대조기를 공유한다) | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 하나도 없다**(재대조 동일) |
->
-> **선행** — [04 — 문자열과 UTF-16](../04-strings-and-utf16/2-summary.md)(★★★ 직접 선행 — **`length` 는 코드 유닛 수**이고 서로게이트 한 쌍을 가운데서 자르면 **예외 없이 반쪽이 남는다**. 거기서 쟀다) ·
-> [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md)(★★ **`` `${x}` `` 의 hint 는 `string`**, `x + ''` 는 `default` — 거기서 스물네 연산으로 쟀다) ·
-> [02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md)(`ToString` 이 `valueOf`/`toString` 을 고르는 순서).
-> **같은 배치** — [29 — 정규식 기본](../29-regexp-basics/2-summary.md) · [30 — 정규식 심화](../30-regexp-advanced/2-summary.md) · [31 — `JSON`](../31-json/2-summary.md).
->
-> ★★ **경계 — 정규식의 문법·플래그·`lastIndex` 는 29번이 정본이다.** 여기서는 **`replace`·`split` 이 정규식을 받았을 때 치환 문자열과 결과 배열이 어떻게 되나**까지만 본다.
-> ★★ **경계 — 코드 유닛·서로게이트·well-formed 는 04번이 정본이다.** 여기서는 **자르기 메서드가 그 위에서 무엇을 하나**만 한 블록으로 본다.
-> ★ **경계 — 템플릿 리터럴의 `${x}` 가 부르는 hint 는 22번이 정본이다.** 여기서는 **태그 템플릿**을 본다.
-
 ```sh
 # js28b-versions.sh
 #!/usr/bin/env bash
@@ -1120,3 +1054,68 @@ PY
 - **`$<이름>` 과 중복 명명 그룹**(ES2025) — 같은 이름이 두 갈래에 있으면 `$<이름>` 이 무엇을 채우나. 30번의 몫이고 이 문서는 **안 돌렸다.**
 - **`localeCompare`·`normalize`·`toLocaleUpperCase`** — 로케일과 유니코드 정규화는 04번과 [목록의 **50번 주제**](../50-intl-formatting/)(`Intl`)의 몫이다.
 - **태그 템플릿 캐시와 가비지 수집** — 템플릿 객체가 자리마다 영구히 사는가는 명세가 realm 의 `[[TemplateMap]]` 으로 정하지만, 메모리 동작은 **안 쟀다.**
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 전수 격자다.**
+`replace` 의 두 번째 인자는 그냥 문자열이 아니다 — **`$` 로 시작하는 표기를 읽는 작은 언어**다.
+그 표기 열한 가지를 **네 가지 자리**(문자열 패턴 · 번호 그룹만 있는 정규식 · 명명 그룹이 있는 정규식 · 함수 치환)에 전부 넣어 보고,
+**「표기가 글자 그대로 남지 않은 칸」을 스크립트가 마지막 줄로 센다**(동작 (1)).
+★★ 나머지 절은 창이 바뀐다 — 태그 템플릿은 **태그 함수가 받은 객체의 동일성**(`===`)으로, `replaceAll` 은 **콜백이 받은 인자 로그**로, 자르기 셋은 **같은 인자 격자**로 본다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — Text Processing: String Objects](https://tc39.es/ecma262/multipage/text-processing.html#sec-string-objects) —
+  `String.prototype.replace` · `replaceAll` · `split` · `slice` · `substring` · `at` · `padStart`/`padEnd` · `trim` · `includes` · `startsWith` · `String.raw` · 추상 연산 `GetSubstitution` · `IsRegExp`
+- [ECMA-262 — Template Literals](https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html#sec-template-literals) — `GetTemplateObject` · `[[TemplateMap]]` · 태그 템플릿의 `NotEscapeSequence`
+- [ECMA-262 — Annex B](https://tc39.es/ecma262/multipage/additional-ecmascript-features-for-web-browsers.html) — `String.prototype.substr`(부록이다 — 본문 기능이 아니다)
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md)(2026-09-26 받아 둔 사본) — 판 경계(String padding 2017 · Lifting template literal restriction 2018 · `trimStart`/`trimEnd` 2019 · `replaceAll` 2021 · `.at()` 2022 · Well-Formed Unicode Strings 2024)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★★ **이 주제의 node 탐침 여섯 개 중 두 판이 갈린 것은 하나**(`js28b-28d-slice-substring.js`)이고, 갈린 줄은 **`isWellFormed`(ES2024) 한 줄**이다 — node 18 에 그 메서드가 없다.
+★ 파이썬 대비(동작 (7))는 `python3 - <<'PY'` 꼴의 셸 탐침이다. 예외는 같은 꼴(`이름 「메시지」`)로 받아 트레이스백이 없다.
+
+**버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `slice` · `substring` · `split` · `replace` · `indexOf` · `trim` | ES5 이하 | 세 판 다 있다 |
+| `substr` | **부록 B**(웹 호환용) | 세 판 다 있다 — 명세 본문 기능이 아니다 |
+| 템플릿 리터럴 · 태그 템플릿 · `String.raw` · `includes` · `startsWith` | **ES2015** | 세 판 다 있다 |
+| `padStart` · `padEnd` | **ES2017** | 세 판 다 있다 |
+| 태그 템플릿의 잘못된 이스케이프 허용(`cooked` 가 `undefined`) | **ES2018** | 세 판 다 있다 |
+| `trimStart` · `trimEnd` | **ES2019** | 세 판 다 있다 |
+| `replaceAll` | **ES2021** | 세 판 다 있다 |
+| `at` | **ES2022** | 세 판 다 있다 |
+| `isWellFormed` · `toWellFormed` | **ES2024** | ★ **node 18 에 없다** — 동작 (4)의 한 줄이 갈린다(정본은 [04번](../04-strings-and-utf16/2-summary.md)) |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체) | `$` 표기 **11가지** × 자리 **4가지** — 「표기가 글자 그대로 남지 않은 칸」을 스크립트가 센다(동작 (1)) · 자르기 셋 × 인자 열 벌 — `slice` 와 `substring` 이 **갈린 줄**을 센다(동작 (4)) |
+| ★★ **① 추상 연산에 로그 심기** | `replaceAll` 콜백이 **몇 번 · 무슨 인자로** 불리나(동작 (2)) · 태그 함수가 **무엇을** 받나(동작 (3)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | `replaceAll` 에 `g` 없는 정규식 · `includes`/`startsWith` 에 정규식 · 태그 없는 템플릿의 잘못된 이스케이프(`SyntaxError`) · 얼린 `strings` 에 쓰기 |
+| ★ **⑤ 두 판 대조기** | 이 주제의 node 탐침 중 **하나만** `DIFFERS` 이고, 그 차이는 **ES2024 메서드의 유무** 한 줄이다 |
+| ★ **부적용 — ③ 브랜드 태그** | 이 주제에서 「이것이 무엇인가」를 태그로 물을 자리가 없다. 태그 함수가 받는 `strings` 는 `Array.isArray` 가 `true` 인 **평범한 배열**이다(동작 (3)) — **잴 것이 없다** |
+| ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 는 한 번 나오지만(태그 없는 `\unicode`) 그 **위치**가 답을 바꾸는 성질이 아니다. `new Function` 으로 던져 **종류와 문구만** 본다 |
+| ★ **안 쟀다 — 성능** | 「`replaceAll` 이 `split().join()` 보다 빠르다」·「템플릿 리터럴이 `+` 보다 빠르다」를 **한 줄도 쓰지 않는다.** 시간을 한 번도 안 쟀다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 예외 **문구** — V8 의 글자다(`String.prototype.replaceAll called with a non-global RegExp argument` · `Invalid Unicode escape sequence`). 다른 엔진은 다르게 적는다. **종류**(`TypeError`·`SyntaxError`)만 명세가 정한다 | ★★★ 격자의 칸 값과 「**N / M**」 · 콜백 인자의 **개수와 순서** · `===` 의 참/거짓 · 잘린 문자열 · 코드 유닛 16진 값 |
+| 대조기 블록의 **다른 주제 줄**(같은 배치가 한 대조기를 공유한다) | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 하나도 없다**(재대조 동일) |
+
+**선행** — [04 — 문자열과 UTF-16](../04-strings-and-utf16/2-summary.md)(★★★ 직접 선행 — **`length` 는 코드 유닛 수**이고 서로게이트 한 쌍을 가운데서 자르면 **예외 없이 반쪽이 남는다**. 거기서 쟀다) ·
+[22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md)(★★ **`` `${x}` `` 의 hint 는 `string`**, `x + ''` 는 `default` — 거기서 스물네 연산으로 쟀다) ·
+[02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md)(`ToString` 이 `valueOf`/`toString` 을 고르는 순서).
+**같은 배치** — [29 — 정규식 기본](../29-regexp-basics/2-summary.md) · [30 — 정규식 심화](../30-regexp-advanced/2-summary.md) · [31 — `JSON`](../31-json/2-summary.md).
+
+★★ **경계 — 정규식의 문법·플래그·`lastIndex` 는 29번이 정본이다.** 여기서는 **`replace`·`split` 이 정규식을 받았을 때 치환 문자열과 결과 배열이 어떻게 되나**까지만 본다.
+★★ **경계 — 코드 유닛·서로게이트·well-formed 는 04번이 정본이다.** 여기서는 **자르기 메서드가 그 위에서 무엇을 하나**만 한 블록으로 본다.
+★ **경계 — 템플릿 리터럴의 `${x}` 가 부르는 hint 는 22번이 정본이다.** 여기서는 **태그 템플릿**을 본다.

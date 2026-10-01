@@ -1,20 +1,5 @@
 # kotlin/syntax/10 — 람다와 고차 함수: `it`·마지막 인자 람다·클로저 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Lambdas and higher-order functions](https://kotlinlang.org/docs/lambdas.html) · [Function types](https://kotlinlang.org/docs/lambdas.html#function-types) · [Reflection — callable references](https://kotlinlang.org/docs/reflection.html#callable-references) · [SAM conversions](https://kotlinlang.org/docs/java-interop.html#sam-conversions) · [kotlin.Function API](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-function/).
-> **실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> `kotlinc` 13회 · `javac` 2회 · `java` 8회 · `javap` 9회. 컴파일 실패 시나리오 5벌.\
-> ★ **런타임 클래스 이름이 실행마다 바뀌는 항목이 있어 `ex.kt` 는 세 판을 돌려 대조했다**((4) 참고).
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다 —\
-> 그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).\
-> **람다가 `invokedynamic` 이 되는 것도 타깃에 걸린 선택이다** — 「언어가 그렇게 약속한다」가 아니다.
-> **버전** — 람다·고차 함수·`it`·마지막 인자 람다·`::` 참조·SAM 변환은 전부 1.0. `fun interface` 는 **1.4**.
-> **경계** — `vararg`·로컬 함수·`infix` 는 [09번 주제](../09-varargs-spread-local-and-infix-functions/)가, 기본 인자·이름 붙인 인자는 [08번 주제](../08-function-declaration-default-and-named-args/)가 정본이다.\
-> ★★ **비지역 `return` 과 `inline` 의 정본은 [11번 주제](../11-inline-functions/)** 다 — 여기서는 「비인라인 람다에서는 맨 `return` 이 거부된다」까지만 적는다.\
-> `fun interface`·SAM 변환 **전체**는 [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/), 확장 함수는 [13번 주제](../13-extension-functions-and-properties/), scope function 은 [목록의 **14번 주제**](../14-scope-functions/)가 정본이다.\
-> **Java 쪽 짝은 [`../../../java/syntax/29-lambda-expressions/`](../../../java/syntax/29-lambda-expressions/) · [`../../../java/syntax/30-method-references/`](../../../java/syntax/30-method-references/) · [`../../../java/syntax/31-functional-interfaces/`](../../../java/syntax/31-functional-interfaces/)** 다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **JVM 에는 "함수" 라는 값이 없다. 객체만 있다.**\
@@ -1140,3 +1125,18 @@ fun interface KInt { fun apply(x: Int): Int }
   "그래서 어느 쪽이 빠르다" 는 하지 않은 주장이다.
 - **못 잰 것** — `-jvm-target` 을 바꿔 가며 람다 생성 전략이 달라지는지는 **찍지 않았다**.\
   `-Xlambdas=class` 같은 플래그로 익명 클래스 전략을 강제할 수 있다고 알려져 있으나 **이 문서는 던져 보지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Lambdas and higher-order functions](https://kotlinlang.org/docs/lambdas.html) · [Function types](https://kotlinlang.org/docs/lambdas.html#function-types) · [Reflection — callable references](https://kotlinlang.org/docs/reflection.html#callable-references) · [SAM conversions](https://kotlinlang.org/docs/java-interop.html#sam-conversions) · [kotlin.Function API](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-function/).
+**실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+`kotlinc` 13회 · `javac` 2회 · `java` 8회 · `javap` 9회. 컴파일 실패 시나리오 5벌.\
+★ **런타임 클래스 이름이 실행마다 바뀌는 항목이 있어 `ex.kt` 는 세 판을 돌려 대조했다**((4) 참고).
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다 —\
+그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).\
+**람다가 `invokedynamic` 이 되는 것도 타깃에 걸린 선택이다** — 「언어가 그렇게 약속한다」가 아니다.
+**버전** — 람다·고차 함수·`it`·마지막 인자 람다·`::` 참조·SAM 변환은 전부 1.0. `fun interface` 는 **1.4**.
+**경계** — `vararg`·로컬 함수·`infix` 는 [09번 주제](../09-varargs-spread-local-and-infix-functions/)가, 기본 인자·이름 붙인 인자는 [08번 주제](../08-function-declaration-default-and-named-args/)가 정본이다.\
+★★ **비지역 `return` 과 `inline` 의 정본은 [11번 주제](../11-inline-functions/)** 다 — 여기서는 「비인라인 람다에서는 맨 `return` 이 거부된다」까지만 적는다.\
+`fun interface`·SAM 변환 **전체**는 [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/), 확장 함수는 [13번 주제](../13-extension-functions-and-properties/), scope function 은 [목록의 **14번 주제**](../14-scope-functions/)가 정본이다.\
+**Java 쪽 짝은 [`../../../java/syntax/29-lambda-expressions/`](../../../java/syntax/29-lambda-expressions/) · [`../../../java/syntax/30-method-references/`](../../../java/syntax/30-method-references/) · [`../../../java/syntax/31-functional-interfaces/`](../../../java/syntax/31-functional-interfaces/)** 다.

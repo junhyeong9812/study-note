@@ -1,27 +1,5 @@
 # csharp/syntax/23 — 튜플과 해체(deconstruction) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — 튜플 타입](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples)(열어서 확인: 「튜플 타입은 **값 타입**이고 원소는 **public 필드** — 그래서 **가변** 값 타입」 ·\
-> 「컴파일 때 기본 아닌 필드 이름을 **기본 이름(`Item1`…)으로 바꾼다** — 그래서 명시·추론된 이름은 **런타임에 없다**」 · 「튜플 대입과 `==` 는 **필드 이름을 안 본다**」 ·\
-> 「`==` 는 **원소를 차례로** 비교하고 **단락**하지만, 비교 전에 **모든 원소를 평가**한다」 · 「**공개 API 에서는 클래스나 구조체를 고려하라**」 · 「타입 안전이 필요하면 **위치 record**」)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).
-> **버전** — 값 튜플·해체 **C# 7.0** · 이름 추론(tuple projection) **C# 7.1** · 튜플 `==`/`!=` **C# 7.3** · 튜플 별칭 `using X = (int, int)` **C# 12**. ★ 이 문서는 판을 안 가렸다 — `-langversion:latest` 로만 던졌다.
-> **경계** — ★★★ **`record` 가 `Deconstruct` 를 생성하는 것**은 [18번](../18-record-value-equality-and-with/) (1)이 정본이다 — 여기서는 **해체가 그것을 부른다**는 것만 인용한다.\
-> ★ **`==` 가 원소 타입의 연산자를 부르는 것**의 뿌리는 [19번](../19-equality-equals-gethashcode-operator/) (3) · **위치 패턴이 `Deconstruct` 를 부르는 것**은 [21번](../21-pattern-matching-type-property-relational-list/) (4) ·\
-> **다른 어셈블리로 바꿔 끼우는 무대**는 [15번](../15-access-modifiers-and-assembly-boundary/)·[17번](../17-interfaces-default-members-explicit-implementation/)·[20번](../20-enum-and-flags/)과 같다.
-> ★ **대비** — Java 에는 튜플이 없다 — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **14번**([`14-records/`](../../../java/syntax/14-records/))이 「여러 값 반환」의 자리를 **record** 로 채운다(이 판에서 Java 는 안 던졌다).
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** · 예외 **메시지** | ★★★ **진단 코드**(`CS8123`·`CS1612`·`CS1061`)와 **`(행,열)`** · **예외 타입**(`RuntimeBinderException`·`MissingMethodException`) |
-> | **IL 오프셋 폭** | ★★★ **옵코드와 부른 멤버**(`ldfld Item1` · `bne.un.s` · `call String::op_Equality`) |
-> | 증분의 절댓값 일부(규칙 24) · JSON 직렬화기의 **기본 설정** | ★★★ **리플렉션이 보여 주는 이름**(`Item1`·`Item2` · `TransformNames`) · **네 판에서 갈린 줄 수** |
-
 ## 이 판
 
 ```text
@@ -631,3 +609,26 @@ kim 30
 - ★ **튜플 `==` 의 평가 순서** — Learn 은 「비교 전에 모든 원소를 평가」라고 적었다. **이 판에서 부작용 순서를 찍지 않았다.**
 - ★ **`using Pair = (int A, int B);`(C# 12 별칭)** — 새 타입이 아니다(Learn). **이 판에서 안 던졌다.**
 - ★ **ORM·다른 직렬화기(Newtonsoft 등)** 가 튜플 이름을 보는지 — **안 던졌다.**
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — 튜플 타입](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples)(열어서 확인: 「튜플 타입은 **값 타입**이고 원소는 **public 필드** — 그래서 **가변** 값 타입」 ·\
+「컴파일 때 기본 아닌 필드 이름을 **기본 이름(`Item1`…)으로 바꾼다** — 그래서 명시·추론된 이름은 **런타임에 없다**」 · 「튜플 대입과 `==` 는 **필드 이름을 안 본다**」 ·\
+「`==` 는 **원소를 차례로** 비교하고 **단락**하지만, 비교 전에 **모든 원소를 평가**한다」 · 「**공개 API 에서는 클래스나 구조체를 고려하라**」 · 「타입 안전이 필요하면 **위치 record**」)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).
+**버전** — 값 튜플·해체 **C# 7.0** · 이름 추론(tuple projection) **C# 7.1** · 튜플 `==`/`!=` **C# 7.3** · 튜플 별칭 `using X = (int, int)` **C# 12**. ★ 이 문서는 판을 안 가렸다 — `-langversion:latest` 로만 던졌다.
+**경계** — ★★★ **`record` 가 `Deconstruct` 를 생성하는 것**은 [18번](../18-record-value-equality-and-with/) (1)이 정본이다 — 여기서는 **해체가 그것을 부른다**는 것만 인용한다.\
+★ **`==` 가 원소 타입의 연산자를 부르는 것**의 뿌리는 [19번](../19-equality-equals-gethashcode-operator/) (3) · **위치 패턴이 `Deconstruct` 를 부르는 것**은 [21번](../21-pattern-matching-type-property-relational-list/) (4) ·\
+**다른 어셈블리로 바꿔 끼우는 무대**는 [15번](../15-access-modifiers-and-assembly-boundary/)·[17번](../17-interfaces-default-members-explicit-implementation/)·[20번](../20-enum-and-flags/)과 같다.
+★ **대비** — Java 에는 튜플이 없다 — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **14번**([`14-records/`](../../../java/syntax/14-records/))이 「여러 값 반환」의 자리를 **record** 로 채운다(이 판에서 Java 는 안 던졌다).
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** · 예외 **메시지** | ★★★ **진단 코드**(`CS8123`·`CS1612`·`CS1061`)와 **`(행,열)`** · **예외 타입**(`RuntimeBinderException`·`MissingMethodException`) |
+| **IL 오프셋 폭** | ★★★ **옵코드와 부른 멤버**(`ldfld Item1` · `bne.un.s` · `call String::op_Equality`) |
+| 증분의 절댓값 일부(규칙 24) · JSON 직렬화기의 **기본 설정** | ★★★ **리플렉션이 보여 주는 이름**(`Item1`·`Item2` · `TransformNames`) · **네 판에서 갈린 줄 수** |

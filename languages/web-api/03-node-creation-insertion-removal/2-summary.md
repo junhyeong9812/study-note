@@ -1,13 +1,5 @@
 # web-api/03 — 노드 생성·삽입·이동·제거: `createElement`·`append` 계열·`remove` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 갈래는 언어가 아니라 플랫폼이다.** 언어 문법은 [`../../`](../../) 에 있고, 여기는 **브라우저가 건네주는 객체와 그 계약**이다.\
-> **기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「Mutation algorithms」(pre-insert·insert·remove)·「Interface `ParentNode`」·「Interface `ChildNode`」·「`cloneNode`」 절. 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.**\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `append`·`prepend`·`before`·`after`·`replaceWith`·`remove` 는 DOM4 에서 들어온 것으로 오늘 모든 현행 엔진에 있다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 **근거로 쓸 칸을 미리 가른다.**
 
 | 안 흔들리는 칸 (근거로 쓴다) | 흔들리는 칸 (근거로 쓰지 않는다) |
@@ -791,3 +783,11 @@ const c = btn.cloneNode(true);           // 리스너는 안 온다
 - **`insertBefore(node, null)` 은 `appendChild` 와 같다.** 두 번째 인자가 `null` 이면 끝에 붙인다 — 옛 코드가 자주 쓰던 관용구다.
 - **위 (6)의 두 실측은 이 주제의 경계를 그리는 자리**다. 하나는 「삽입은 파서의 규칙을 안 따른다」이고, 다른 하나는 「이동이 공짜라는 일반 규칙의 예외」다. 둘 다 **에러 없이** 일어난다.
 - **`replaceChildren()` 은 2020 년 무렵 들어온 비교적 새 메서드**다. `innerHTML = ''` 의 대체로 권장되는 이유는 **파싱을 안 하기 때문**이고, 그 차이는 [04번 주제](../04-textcontent-innerhtml-innertext/2-summary.md)가 수치로 보여 준다.
+
+## 실행 환경
+
+**이 갈래는 언어가 아니라 플랫폼이다.** 언어 문법은 [`../../`](../../) 에 있고, 여기는 **브라우저가 건네주는 객체와 그 계약**이다.\
+**기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「Mutation algorithms」(pre-insert·insert·remove)·「Interface `ParentNode`」·「Interface `ChildNode`」·「`cloneNode`」 절. 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.**\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `append`·`prepend`·`before`·`after`·`replaceWith`·`remove` 는 DOM4 에서 들어온 것으로 오늘 모든 현행 엔진에 있다.

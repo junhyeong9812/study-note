@@ -1,10 +1,5 @@
 # issue/typescript/react/stale-render-state — 핸들러는 자기가 만들어진 렌더의 state를 본다 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 
 1. (왜) async 함수 안에서 `showLoader()`(state를 true로 바꿈)를 부른 뒤 같은 함수에서 `if (!isLoading) throw new Error("stop")`을 검사했더니 **항상** 실패했다. 함수 컴포넌트의 클로저와 렌더 스냅샷으로 설명하라. 왜 ref는 최신 값을 읽을 수 있는가?

@@ -1,10 +1,5 @@
 # ts/syntax/47 — 데코레이터 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [TypeScript 5.0 릴리스 노트 — Decorators](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-0.html) · [Handbook — Decorators](https://www.typescriptlang.org/docs/handbook/decorators.html) · [TC39 proposal-decorators](https://github.com/tc39/proposal-decorators).
-> ★ 위는 **자리 안내용 링크**다 — 이 배치는 외부 네트워크를 쓰지 않아 **열어서 문장을 대조하지 못했다.** 「JS 데코레이터 제안은 2026-09 기준 stage 3 이고 어느 ES 판에도 없다」는 **README 의 서술**이고, 이 문서가 직접 보인 것은 **이 머신의 세 엔진(node 18 · node 20 · Chrome 151)이 `@` 를 파싱하지 못한다**는 것까지다(4절).
-> **실행 검증** — 본판은 아래다. 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`** · node 20 은 **`NODE20`**. **라이브러리는 설치하지 않았다**(`reflect-metadata` 포함).
-
 ```text
 ===== tsc --version · "$TSC_OLD" · "$TSC_49" · "$TSC_39" --version · node · "$NODE20" --version · google-chrome --version (sh exit=0) =====
 Version 7.0.2
@@ -22,7 +17,6 @@ Google Chrome 151.0.7922.173
 > ★★ **47 은 32 에서 온다** — [**32번 주제**](../32-class-type-aspects/) 5절이 `useDefineForClassFields` 판 격자로 **필드 선언이 「정의」냐 「대입」이냐**를 쟀다. 여기서는 다시 재지 않고 **표준 필드 데코레이터가 그 세 설정에서 같은 값을 내나**만 본다(2절 끝).
 > ★★ 격자 스크립트는 **설정 진단이 칸에 들면 멈추고(`exit 4`), 방출 도우미가 한 종류뿐이면 멈춘다(`exit 5`).** 둘 다 제출 전에 가짜 판으로 **실제로 멈추는지** 돌렸다(1절 끝).
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -809,3 +803,9 @@ typeof Symbol.metadata — ok undefined
 - **`access` 객체와 `private` 멤버 데코레이터** — `context.access.get/set` 으로 `#x` 를 읽는 길. **재지 않았다.**
 - **`-t es2015` 이하의 표준 데코레이터 방출** — `static` 블록 없이 어떻게 풀어 쓰나. **재지 않았다.**
 - **Chrome 의 실험 플래그** — 탐색 중에 `--js-flags` 로 두 이름을 붙여 봤지만 결과가 같았고, **그 이름이 V8 에 실제로 있는지 확인할 길이 없어** 싣지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [TypeScript 5.0 릴리스 노트 — Decorators](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-0.html) · [Handbook — Decorators](https://www.typescriptlang.org/docs/handbook/decorators.html) · [TC39 proposal-decorators](https://github.com/tc39/proposal-decorators).
+★ 위는 **자리 안내용 링크**다 — 이 배치는 외부 네트워크를 쓰지 않아 **열어서 문장을 대조하지 못했다.** 「JS 데코레이터 제안은 2026-09 기준 stage 3 이고 어느 ES 판에도 없다」는 **README 의 서술**이고, 이 문서가 직접 보인 것은 **이 머신의 세 엔진(node 18 · node 20 · Chrome 151)이 `@` 를 파싱하지 못한다**는 것까지다(4절).
+**실행 검증** — 본판은 맨 위 블록이다. 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`** · node 20 은 **`NODE20`**. **라이브러리는 설치하지 않았다**(`reflect-metadata` 포함).

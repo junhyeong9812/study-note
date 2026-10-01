@@ -1,20 +1,5 @@
 # python/syntax/09-sequence-ops-and-slicing — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [Common Sequence Operations](https://docs.python.org/3.12/library/stdtypes.html#common-sequence-operations) — 공통 연산 표와 주
-> - [Mutable Sequence Types](https://docs.python.org/3.12/library/stdtypes.html#mutable-sequence-types) — 슬라이스 대입·`del`
-> - [Ranges](https://docs.python.org/3.12/library/stdtypes.html#ranges) — `range` 가 시퀀스인 것
-> - [6.3.3. Subscriptions](https://docs.python.org/3.12/reference/expressions.html#subscriptions) · [6.3.4. Slicings](https://docs.python.org/3.12/reference/expressions.html#slicings) — 언어 레퍼런스
-> - [`slice`](https://docs.python.org/3.12/library/functions.html#slice) — `slice` 객체와 `indices()`
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> **버전** — 공통 시퀀스 연산은 Python 3 전체 공통. 시간 측정값은 **이 머신의 관찰**이다.
-> **선행** — [01-object-and-name-binding](../01-object-and-name-binding/2-summary.md)(대입은 이름을 묶는 것) ·
-> [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md)(얕은 복사 정본).
-
 ## 한눈에 — 쉽게 말하면
 
 **인덱스는 「칸을 가리키고」 슬라이스는 「칸 사이의 금을 가리킨다」. 그래서 하나는 터지고 하나는 안 터진다.**
@@ -1218,3 +1203,17 @@ except ValueError as e:
 - **`list.insert(0, x)` 와 `del s[0]` 은 O(n)** 이다. 앞쪽이 잦으면 `collections.deque`([목록의 **43번 주제**](../43-collections/)).
 - **numpy 의 슬라이스는 뷰**다 — 파이썬 리스트의 슬라이스가 복사인 것과 정반대라, 옮겨 쓸 때 가장 크게 어긋나는 자리다(이 환경에 `numpy` 가 없어 **실행 검증하지 않았다**).
 - **`s[i:j]` 의 반환 타입을 사용자 클래스에서 정하려면** `__getitem__` 안에서 `isinstance(k, slice)` 를 갈라 처리한다([목록의 **32번 주제**](../32-container-protocol/)).
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [Common Sequence Operations](https://docs.python.org/3.12/library/stdtypes.html#common-sequence-operations) — 공통 연산 표와 주
+- [Mutable Sequence Types](https://docs.python.org/3.12/library/stdtypes.html#mutable-sequence-types) — 슬라이스 대입·`del`
+- [Ranges](https://docs.python.org/3.12/library/stdtypes.html#ranges) — `range` 가 시퀀스인 것
+- [6.3.3. Subscriptions](https://docs.python.org/3.12/reference/expressions.html#subscriptions) · [6.3.4. Slicings](https://docs.python.org/3.12/reference/expressions.html#slicings) — 언어 레퍼런스
+- [`slice`](https://docs.python.org/3.12/library/functions.html#slice) — `slice` 객체와 `indices()`
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+**버전** — 공통 시퀀스 연산은 Python 3 전체 공통. 시간 측정값은 **이 머신의 관찰**이다.
+**선행** — [01-object-and-name-binding](../01-object-and-name-binding/2-summary.md)(대입은 이름을 묶는 것) ·
+[03-mutability-and-copying](../03-mutability-and-copying/2-summary.md)(얕은 복사 정본).

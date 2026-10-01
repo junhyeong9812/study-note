@@ -1,10 +1,5 @@
 # ts/syntax/43 — `tsconfig` 의 나머지 선택 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [TSConfig — `target`](https://www.typescriptlang.org/tsconfig/#target) · [`incremental`](https://www.typescriptlang.org/tsconfig/#incremental) · [`useDefineForClassFields`](https://www.typescriptlang.org/tsconfig/#useDefineForClassFields) · [`downlevelIteration`](https://www.typescriptlang.org/tsconfig/#downlevelIteration).
-> ★ 위는 **자리 안내용 링크**다 — 이 배치는 외부 네트워크를 쓰지 않아 **열어서 문장을 대조하지 못했다.** README 의 「7.0 에서 `es5`·`downlevelIteration`·AMD/UMD 계열은 불가」도 **확인 대상**으로 받아 1절 격자로 던졌다.
-> **실행 검증** — 본판은 아래다. 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.
-
 ```text
 ===== tsc --version · "$TSC_OLD" · "$TSC_49" --version · node · "$NODE20" --version · nproc · CPU · PATH 의 tsc 첫 두 줄 (sh exit=0) =====
 Version 7.0.2
@@ -23,7 +18,6 @@ import "../lib/tsc.js";
 > ★★★ **43 은 39 에서 오고, 여기 적힌 옵션 절반은 이미 형제가 쟀다.** `lib`(38편) · `module`/`moduleResolution`(35편) · `isolatedModules`(02·36편) · `skipLibCheck`(37편) · `useDefineForClassFields` 의 전체 격자(32편 5절)는 **다시 재지 않고 5절 인용표 한 장**으로 묶는다. 여기서 새로 재는 것은 **막힌 값 · `target` 의 방출 · `target` 을 안 적었을 때 · `incremental`** 넷이다.
 > ★★ 명령줄 격자는 **`tsconfig.json` 이 없는 임시 디렉토리**에서 던졌다 — 7.0.2 는 위쪽에 설정이 있으면 파일을 직접 줘도 `TS5112` 로 거부한다(35편 6절). 스크립트는 **칸에 `TS5112` 가 들면 멈추고, 대조 행이 막히면 멈춘다.** ★ 제출 전에 **위쪽에 `tsconfig.json` 을 둔 판으로 실제로 멈추는지** 돌려 봤다(`exit 4`).
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -598,7 +592,7 @@ done
                         ★ 겉모습이 바뀌면(a = 2) 둘 다  [a.js b.js]
 ```
 
-비용 — **`.tsbuildinfo` 라는 파일이 하나 더 생긴다**(이 실험은 `dist/` 안에 두었다). 두 번째 빌드가 **얼마나 빠른지는 재지 않았다** — 이 절이 말하는 것은 「**무엇을 다시 방출하나**」뿐이다. 다시 **검사**한 파일 수는 이 창이 보여 주지 않는다(머리말의 제5의 상태).
+비용 — **`.tsbuildinfo` 라는 파일이 하나 더 생긴다**(이 실험은 `dist/` 안에 두었다). 두 번째 빌드가 **얼마나 빠른지는 재지 않았다** — 이 절이 말하는 것은 「**무엇을 다시 방출하나**」뿐이다. 다시 **검사**한 파일 수는 이 창이 보여 주지 않는다(맨 위 부분의 제5의 상태).
 
 ### (5) ★ 인용표 — 형제가 이미 잰 네 옵션과 하나
 
@@ -715,3 +709,9 @@ done
 - **`noCheck`·`isolatedDeclarations` 로 방출만 빠르게** — 44편이 `isolatedDeclarations` 를 본다. `noCheck` 는 **던지지 않았다.**
 - **7.0 에서 `es5` 가 필요할 때** — 방출을 tsc 밖의 변환기(Babel·SWC·esbuild)에 맡기는 길. **어느 것도 던지지 않았다.**
 - **`tsBuildInfoFile` 의 기본 자리** — 이 실험은 `dist/.tsbuildinfo` 로 **명시**했다. 안 적었을 때의 자리는 44편 3절(`composite` 에서 `tsconfig.tsbuildinfo`)에 한 번 나온다.
+
+## 실행 환경
+
+**기준 소스** — [TSConfig — `target`](https://www.typescriptlang.org/tsconfig/#target) · [`incremental`](https://www.typescriptlang.org/tsconfig/#incremental) · [`useDefineForClassFields`](https://www.typescriptlang.org/tsconfig/#useDefineForClassFields) · [`downlevelIteration`](https://www.typescriptlang.org/tsconfig/#downlevelIteration).
+★ 위는 **자리 안내용 링크**다 — 이 배치는 외부 네트워크를 쓰지 않아 **열어서 문장을 대조하지 못했다.** README 의 「7.0 에서 `es5`·`downlevelIteration`·AMD/UMD 계열은 불가」도 **확인 대상**으로 받아 1절 격자로 던졌다.
+**실행 검증** — 본판은 맨 위 블록이다. 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.

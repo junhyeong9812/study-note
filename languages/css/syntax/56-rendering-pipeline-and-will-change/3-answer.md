@@ -1,11 +1,5 @@
 # css/syntax/56 — 렌더링 파이프라인과 `will-change`: 무엇이 합성만으로 도는가 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 수치는 Google Chrome 151.0.7922.173 headless 에서 실제로 측정한 것**이다.\
-> 도구는 **CDP `Performance.getMetrics`**(`RecalcStyleCount`·`LayoutCount`·`LayoutDuration`)와 **CDP `Tracing` 도메인**(`devtools.timeline` 의 `UpdateLayoutTree`·`Layout`·`PrePaint`·`Paint`·`Commit`·`RasterTask`)이다.\
-> ★★ **못 잰 것이 있다** — **합성 레이어의 수와 메모리**는 이 환경에서 못 쟀다(문항 9). 그 대목은 「못 쟀다」로 적혀 있고, 관련 주장은 **명세의 서술**로만 인용한다.\
-> 규칙은 [CSS Containment Level 2](https://drafts.csswg.org/css-contain-2/) 와 [CSS Will Change Level 1](https://drafts.csswg.org/css-will-change-1/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -364,3 +358,10 @@ el.addEventListener('transitionend', () => { el.style.willChange = 'auto'; });
 - **`content-visibility: auto`** — 화면 밖인 동안 안쪽 렌더링을 건너뛴다. Baseline **newly**(2025-09-15).
 - **정지 대조군** — 값이 바뀌지 않는 애니메이션. **「120 이 잡음이 아니다」를 보이는 기준선.**
 - **`Performance.getMetrics` / `Tracing`** — CDP 의 누적 카운터 / 이벤트 수집. 페인트 층은 뒤엣것에서만 보인다.
+
+## 실행 환경
+
+이 파일의 **모든 수치는 Google Chrome 151.0.7922.173 headless 에서 실제로 측정한 것**이다.\
+도구는 **CDP `Performance.getMetrics`**(`RecalcStyleCount`·`LayoutCount`·`LayoutDuration`)와 **CDP `Tracing` 도메인**(`devtools.timeline` 의 `UpdateLayoutTree`·`Layout`·`PrePaint`·`Paint`·`Commit`·`RasterTask`)이다.\
+★★ **못 잰 것이 있다** — **합성 레이어의 수와 메모리**는 이 환경에서 못 쟀다(문항 9). 그 대목은 「못 쟀다」로 적혀 있고, 관련 주장은 **명세의 서술**로만 인용한다.\
+규칙은 [CSS Containment Level 2](https://drafts.csswg.org/css-contain-2/) 와 [CSS Will Change Level 1](https://drafts.csswg.org/css-will-change-1/) 로 접지했다.

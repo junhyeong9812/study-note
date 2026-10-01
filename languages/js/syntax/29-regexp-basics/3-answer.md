@@ -1,16 +1,5 @@
 # js/syntax/29 — 정규식 기본: 「`g` 정규식은 상태를 들고 다닌다 · `match` 는 `g` 로 모양이 바뀐다 · 리터럴은 평가마다 새 객체다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Python 3.12.3**(9번) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
->
-> ★★ **예외는 `e.constructor.name` 과 `e.message` 로만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★★ **두 node 판이 갈린 블록은 6번 하나**이고, 갈린 줄은 `v` 플래그(ES2024) 한 줄이다.
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
-> `js28b-29a-lastindex.js`(1번 · 7번) · `js28b-29b-match-shape.js`(2번) · `js28b-29c-matchall.js`(3번 · 10번) · `js28b-29d-replace-callback.js`(4번) ·
-> `js28b-29e-literal-identity.js`(5번 · 7번) · `js28b-29f-flags.js`(6번) · `js28b-29h-literal-vs-constructor.js`(8번) · `js28b-29g-python.sh`(9번).
-
 ## 정답
 
 ### 1. **`true false true false`** — 찾으면 `lastIndex` 가 끝 위치로, 못 찾으면 **0** 으로 · `g` 가 없으면 `lastIndex` 를 안 쓴다 ★★★
@@ -538,3 +527,15 @@ identical 19  ·  differs 6  ·  total 25
 
 - ★ **다시 돌릴 것** — node 판이 오르면 `js28b-29f-flags.js` 의 `v` 줄 · 예외 **문구** 전부(V8 의 글자). 파이썬 판이 오르면 `js28b-29g` 의 `error` 줄(예외 **이름**이 판에 매이는 칸이다).
 - ★ **흔들린 칸** — 이 주제의 블록에는 없다(재대조 동일).
+
+## 실행 환경
+
+이 파일의 모든 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Python 3.12.3**(9번) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
+
+★★ **예외는 `e.constructor.name` 과 `e.message` 로만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★★ **두 node 판이 갈린 블록은 6번 하나**이고, 갈린 줄은 `v` 플래그(ES2024) 한 줄이다.
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
+`js28b-29a-lastindex.js`(1번 · 7번) · `js28b-29b-match-shape.js`(2번) · `js28b-29c-matchall.js`(3번 · 10번) · `js28b-29d-replace-callback.js`(4번) ·
+`js28b-29e-literal-identity.js`(5번 · 7번) · `js28b-29f-flags.js`(6번) · `js28b-29h-literal-vs-constructor.js`(8번) · `js28b-29g-python.sh`(9번).

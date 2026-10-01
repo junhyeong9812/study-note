@@ -1,24 +1,5 @@
 # rust/syntax/17 — 열거형과 데이터를 담는 변형 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference — Enumerations](https://doc.rust-lang.org/reference/items/enumerations.html) ·
-> [Reference — Type layout](https://doc.rust-lang.org/reference/type-layout.html) ·
-> [Reference — Implementations](https://doc.rust-lang.org/reference/items/implementations.html) ·
-> [`std::mem::size_of`](https://doc.rust-lang.org/std/mem/fn.size_of.html) ·
-> [`std::mem::discriminant`](https://doc.rust-lang.org/std/mem/fn.discriminant.html) ·
-> [`std::option::Option`](https://doc.rust-lang.org/std/option/enum.Option.html).
-> ★ `rustc --explain E0559` / `E0605` / `E0732` / `E0204` / `E0665` / `E0072` 는 **확인용으로만 열었고 본문에 옮기지 않았다.**
-> 본문의 진단은 전부 내가 던져서 받은 것이다.
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다. **손으로 옮겨 적은 출력은 한 줄도 없다** —\
-> 캡처 스크립트가 블록을 파일로 받고 조립기가 원고에 끼워 넣었다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.\
-> 소스 파일 이름은 전부 `ex.rs` 로 고정했고 **진단의 줄 번호는 그 파일 기준**이다.
-> **버전** — 열거형·데이터를 담는 변형·`impl for enum` 은 전부 1.0.0부터다.\
-> **`#[derive(Default)]` + `#[default]` 변형 표시**는 **1.62.0**부터다. 연관 상수는 1.20.0부터다.\
-> 니치 최적화(`Option<Box<T>>` 가 `Box<T>` 와 같은 크기인 것)는 **언어 보장이 아니라 이 판의 관찰**이다(아래 표).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 흔들리는 칸 / 안 흔들리는 칸
 
 이 갈래에서 **다시 돌리면 달라지는 칸**을 미리 갈라 둔다. 제출 전 재대조를 한 줄에 판정하기 위해서다.
@@ -1005,3 +986,22 @@ enum Tree { Leaf(i32), Node(Tree, Tree) }
   **나중에 변형을 늘릴 자리를 열어 두려는 것**이다 — 그 설계의 대가는 18번 주제의 `#[non_exhaustive]` 에서 본다.
 - **크기를 줄이는 관용구** — 큰 변형만 `Box` 로 싸기, 판별값을 `#[repr(u8)]` 로 줄이기.
   둘 다 **재어 보고** 한다. 재는 법은 (7)에 있다.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference — Enumerations](https://doc.rust-lang.org/reference/items/enumerations.html) ·
+[Reference — Type layout](https://doc.rust-lang.org/reference/type-layout.html) ·
+[Reference — Implementations](https://doc.rust-lang.org/reference/items/implementations.html) ·
+[`std::mem::size_of`](https://doc.rust-lang.org/std/mem/fn.size_of.html) ·
+[`std::mem::discriminant`](https://doc.rust-lang.org/std/mem/fn.discriminant.html) ·
+[`std::option::Option`](https://doc.rust-lang.org/std/option/enum.Option.html).
+★ `rustc --explain E0559` / `E0605` / `E0732` / `E0204` / `E0665` / `E0072` 는 **확인용으로만 열었고 본문에 옮기지 않았다.**
+본문의 진단은 전부 내가 던져서 받은 것이다.
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다. **손으로 옮겨 적은 출력은 한 줄도 없다** —\
+캡처 스크립트가 블록을 파일로 받고 조립기가 원고에 끼워 넣었다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.\
+소스 파일 이름은 전부 `ex.rs` 로 고정했고 **진단의 줄 번호는 그 파일 기준**이다.
+**버전** — 열거형·데이터를 담는 변형·`impl for enum` 은 전부 1.0.0부터다.\
+**`#[derive(Default)]` + `#[default]` 변형 표시**는 **1.62.0**부터다. 연관 상수는 1.20.0부터다.\
+니치 최적화(`Option<Box<T>>` 가 `Box<T>` 와 같은 크기인 것)는 **언어 보장이 아니라 이 판의 관찰**이다(맨 위 표).

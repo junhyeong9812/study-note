@@ -1,11 +1,5 @@
 # PR #37109 분석 — TypeDescriptor 직렬화 회귀의 메서드 그래프와 이름표
 
-> 기준 커밋: 결함 상태 = `e8729d04388`(PR 베이스, upstream main), 수정 상태 = `f92313cc3e1`(PR head). 아래 file:line 은 별도 표기가 없으면 **결함 상태(베이스)** 좌표이고, 5절의 after 스니펫만 PR head 좌표다.
-> 이 문서의 역할: [README.md](README.md)가 서사를, [structure.md](structure.md)가 무대의 지도를, [tests.md](tests.md)가 테스트를 맡는다. 여기서는 **호출 그래프 위의 데이터 흐름**과 **이름표 하나하나의 정체**, 그리고 정상/결함 케이스의 **단계별 변수 값**만 다룬다.
-
-> **호출 그래프(call graph)** — 어느 메서드가 어느 메서드를 부르는지를 이어 놓은 지도.\
-> 예: 생성자 → 람다 생성 → `getAnnotatedElement()` → `supplier.get()`이 이 무대의 한 갈래다.
-
 ## 0. 결론
 
 **결함**: `TypeDescriptor`의 `annotatedElementSupplier` 필드가 `transient`가 아니라서, 기본 직렬화가 그 자리에 담긴 람다를 `SerializedLambda`로 바꾸며 **람다가 캡처한 `Field`/`MethodParameter`/`Property`까지 스트림에 쓰려 하고**, 셋 다 비직렬화라 `NotSerializableException`으로 끝난다(`TypeDescriptor.java:76`, 캡처는 `:87`·`:99`·`:111`).
@@ -295,3 +289,7 @@ transient   writeObject   readObject          결과
 
 > **백포트(backport)** — 최신 브랜치에 들어간 수정을 이전 버전 브랜치에도 옮겨 싣는 것.\
 > 예: 7.0 main에 머지된 이 수정을 6.2.x 유지보수 브랜치에도 반영할지는 아직 확인되지 않았다.
+
+## 출처
+
+기준 커밋: 결함 상태 = `e8729d04388`(PR 베이스, upstream main), 수정 상태 = `f92313cc3e1`(PR head). 본문의 file:line 은 별도 표기가 없으면 **결함 상태(베이스)** 좌표이고, 5절의 after 스니펫만 PR head 좌표다.

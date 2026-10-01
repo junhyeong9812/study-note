@@ -1,15 +1,5 @@
 # c/syntax/03 — 정수 승격과 통상 산술 변환: 말없이 일어나는 변환 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Implicit conversions (C)](https://en.cppreference.com/w/c/language/conversion) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [GCC 13 — Integers (구현 정의 동작)](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Integers-implementation.html)
-> **실행 검증** — 이 문서의 모든 출력·경고는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> **UB 가 걸린 블록은 예외 없이 `-O0`·`-O2`·sanitizer 셋으로 돌렸다.** 한 수준만 돌린 결과는 이 문서에 싣지 않는다.\
-> 대조용으로 `clang 18.1.3` 도 썼고, 그 자리는 블록마다 밝혔다.
-> **버전** — 승격·통상 산술 변환 규칙은 C89 부터 같다. C23 에서 부호 표현이 **2의 보수로 못박혔지만** 부호 있는 오버플로는 **여전히 UB** 다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> **경계** — 「C 의 미정의 동작이 왜 정합성 도메인에서 최악인가」는 [`../../../c-cpp-csharp.md`](../../../c-cpp-csharp.md) 가 정본이다.\
-> 여기는 **어떤 코드가 그것을 만드나**만 쓴다.
-
 ## 한눈에 — 쉽게 말하면
 
 **C 의 산술 연산자는 서로 다른 타입을 못 받는다. 그래서 연산 전에 몰래 둘을 같은 타입으로 맞춘다.**
@@ -777,3 +767,14 @@ AddressSanitizer: stack-buffer-overflow ex.c:8 in f6
   **`-fsanitize=undefined,float-cast-overflow` 로 명시**하는 편이 안전하다.
 - 부동소수 나누기 0 은 UBSan 이 `division by zero` 로 잡지만, **`__STDC_IEC_559__` 가 정의된 환경에서는 `inf` 로 정의된 동작**이다.\
   둘이 어긋나는 자리이고, [`04-floating-point-types-and-conversions/`](../04-floating-point-types-and-conversions/) 에서 다시 본다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Implicit conversions (C)](https://en.cppreference.com/w/c/language/conversion) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [GCC 13 — Integers (구현 정의 동작)](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Integers-implementation.html)
+**실행 검증** — 이 문서의 모든 출력·경고는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+**UB 가 걸린 블록은 예외 없이 `-O0`·`-O2`·sanitizer 셋으로 돌렸다.** 한 수준만 돌린 결과는 이 문서에 싣지 않는다.\
+대조용으로 `clang 18.1.3` 도 썼고, 그 자리는 블록마다 밝혔다.
+**버전** — 승격·통상 산술 변환 규칙은 C89 부터 같다. C23 에서 부호 표현이 **2의 보수로 못박혔지만** 부호 있는 오버플로는 **여전히 UB** 다.
+
+**경계** — 「C 의 미정의 동작이 왜 정합성 도메인에서 최악인가」는 [`../../../c-cpp-csharp.md`](../../../c-cpp-csharp.md) 가 정본이다.\
+여기는 **어떤 코드가 그것을 만드나**만 쓴다.

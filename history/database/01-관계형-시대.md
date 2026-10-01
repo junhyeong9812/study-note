@@ -1,9 +1,5 @@
 # 관계형 DB 시대 (1970s ~ 1990s)
 
-> 원본: `~/project/database-history/01-관계형-시대.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·논문명·표준번호·코드는 원문 그대로다. 더 압축된 원문이 필요하면 원본 문서를 보면 된다.\
-> 용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **관계형 DB = 창고에서 물건을 직접 찾아오는 대신, 주문서만 써서 넘기는 것.**
@@ -464,3 +460,9 @@ Oracle·DB2·SQL Server·PostgreSQL(Ingres/Postgres 계보)·MySQL은 모두 이
 - [Theo Härder & Andreas Reuter, "Principles of Transaction-Oriented Database Recovery" (ACM Computing Surveys, 1983) — ACID 명명](https://dl.acm.org/doi/10.1145/289.291)
 - [ACID — Wikipedia (Jim Gray, Härder/Reuter, 2PC)](https://en.wikipedia.org/wiki/ACID)
 - [Jim Gray (computer scientist) — Wikipedia (트랜잭션·2PC·튜링상)](https://en.wikipedia.org/wiki/Jim_Gray_(computer_scientist))
+
+## 출처
+
+원본: `~/project/database-history/01-관계형-시대.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·논문명·표준번호·코드는 원문 그대로다. 더 압축된 원문이 필요하면 원본 문서를 보면 된다.\
+용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.

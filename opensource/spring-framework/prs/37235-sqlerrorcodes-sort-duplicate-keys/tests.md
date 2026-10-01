@@ -1,11 +1,5 @@
 # PR #37235 - 테스트 해설 (테스트 하나하나)
 
-> `SQLErrorCodeSQLExceptionTranslatorTests`에 추가된 1건 + 기존 테스트가 맡은 가드
-> 역할. 각 테스트를 "무엇을 주장하나 / 왜 red 또는 가드인가 / 단언 하나하나의 의미"로
-> 해설한다. red와 가드의 역할 분담 개념은
-> [../37153/guard-tests.md](../37153-enum-array-annotation-probe/guard-tests.md), 형식 원본은
-> [../37153/tests.md](../37153-enum-array-annotation-probe/tests.md).
-
 배치 전체를 먼저 본다.\
 이 결함은 **한 프로퍼티의 저장 순서**가 원인이므로, 새 테스트 하나가 "미정렬 입력"을 맡고 기존 테스트가 "정렬 입력"을 맡는 구도로 짝이 지어진다.\
 그래야 fix가 "입력 순서를 무의미하게 만들었다"를 증명한다.

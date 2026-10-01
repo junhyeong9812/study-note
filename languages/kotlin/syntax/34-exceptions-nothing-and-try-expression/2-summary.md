@@ -1,18 +1,5 @@
 # kotlin/syntax/34 — 예외: 검사 예외 없음·`Nothing` 타입·`try` 가 식이라는 것 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Exceptions](https://kotlinlang.org/docs/exceptions.html)(「Kotlin treats all exceptions as unchecked by default」 · `@Throws` 는 Java 등 검사 예외를 가르는 언어와의 상호운용용 · `throw` 식의 타입이 **`Nothing`**, 「a subtype of all other types」 · `TODO()` 도 `Nothing` · `try` 는 식이고 「The `finally` block is always executed, but it doesn't change the result」).
-> **실행 검증** — 이 문서의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 15회(에러·경고 줄을 세는 3회 포함 · 컴파일 실패 2벌) · `javac` 7회(실패 2벌 · 경고 1벌) · `java` 8회 · `javap` 3회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.\
-> ★ 한 명령의 출력은 **한 흐름**뿐이다 — 컴파일러 진단은 전부 표준 오류, 프로그램 출력은 전부 표준 출력이라 한 명령 안에서 둘이 섞이는 자리가 없다(예외는 전부 잡아서 찍었다).
-> **버전** — 검사 예외 없음·`Nothing`·`try` 식·`@Throws` 는 1.0. ★ **「도달 불가 코드」 경고가 기본으로 안 나오는 것**은 이 판(K2 2.4.20)의 관찰이다((5)).
-> **경계** — ★★★ **검사 예외 폐지의 논지**(무엇을 얻고 무엇을 떠넘겼나)는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §8 이 정본이다 — 여기는 **그 결정이 코드에서 어떻게 보이나**(컴파일이 되나·클래스 파일에 무엇이 남나)만 다룬다.\
-> 짝은 Java 갈래 [`../../../java/syntax/25-exceptions/`](../../../java/syntax/25-exceptions/) — **검사 예외 규칙과 전파 문법의 Java 쪽 정본**이다. 거기서 본 `javac` 에러 두 문구를 여기서는 **Kotlin 과 한 쌍으로** 던졌다((1)(2)).\
-> `@Throws`·`@JvmStatic` 등 **Java 상호운용 애너테이션 하나하나의 바이트코드**는 [목록의 **39번 주제**](../39-java-interop-annotations/)가, `?:` 오른쪽의 `throw`·`return` 관용구는 [03번 주제](../03-null-safe-types/) (7)이, `when` 이 식일 때의 완결성은 [06번 주제](../06-when-expression/)가 정본이다.\
-> ★ **대비** — Rust 의 발산 타입 `!` 은 [`../../../rust/syntax/06-functions-and-never-type/`](../../../rust/syntax/06-functions-and-never-type/), TS 의 `never` 는 [`../../../ts/syntax/04-any-unknown-never-void/`](../../../ts/syntax/04-any-unknown-never-void/), 오류를 **값**으로 다루는 Go 는 [`../../../go/syntax/23-error-interface-and-errors-as-values/`](../../../go/syntax/23-error-interface-and-errors-as-values/), `finally` 격자의 JS 판은 [`../../../js/syntax/32-error-handling-and-error/`](../../../js/syntax/32-error-handling-and-error/)가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **본체는 둘째 창이다** — 「**같은 모양을 `javac` 와 `kotlinc` 에 던져 컴파일이 되나**」. 검사 예외 폐지는 **실행 결과가 아니라 컴파일러의 반응**으로만 보인다. 셋째 창(`javap` — `Exceptions:` 속성·`java/lang/Void`·`KotlinNothingValueException`)이 그 반응의 **흔적**을 클래스 파일에서 확인한다.
 
 ## 이 주제가 쓰는 세 층
@@ -762,3 +749,16 @@ B java.lang.IllegalArgumentException: port missing
 
 - **왜 `Void` 인가** — JVM 의 메서드는 반드시 무언가를 반환하는 서명을 가져야 한다(`V` 조차 「반환 없음」이지 「돌아오지 않음」이 아니다). `Nothing` 을 `V`(void)로 내리면 `?: die()` 같은 **식 자리**에 쓸 수 없으므로, **참조 타입이면서 값이 `null` 하나뿐인 `Void`** 가 가장 가까운 자리다. 그 `null` 이 실제로 흘러나오는 경우를 막는 것이 (7)의 검문이다.
 - **검사 예외가 있었다면 람다는 어떻게 되나** — `(Int) -> Int` 같은 함수 타입에는 **예외 목록을 적을 칸이 없다**([36번 주제](../36-function-types-fun-interface-and-sam-conversion/)의 `Function1`). Java 가 `Function<T,R>` 안에서 검사 예외를 던지지 못해 감싸기를 반복하는 것이 그 비용이고, 이 논점은 [`../../언어-특성/README.md`](../../언어-특성/README.md) §8 이 정본이다.
+
+## 실행 환경
+
+**기준 소스** — [Exceptions](https://kotlinlang.org/docs/exceptions.html)(「Kotlin treats all exceptions as unchecked by default」 · `@Throws` 는 Java 등 검사 예외를 가르는 언어와의 상호운용용 · `throw` 식의 타입이 **`Nothing`**, 「a subtype of all other types」 · `TODO()` 도 `Nothing` · `try` 는 식이고 「The `finally` block is always executed, but it doesn't change the result」).
+**실행 검증** — 이 문서의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 15회(에러·경고 줄을 세는 3회 포함 · 컴파일 실패 2벌) · `javac` 7회(실패 2벌 · 경고 1벌) · `java` 8회 · `javap` 3회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.\
+★ 한 명령의 출력은 **한 흐름**뿐이다 — 컴파일러 진단은 전부 표준 오류, 프로그램 출력은 전부 표준 출력이라 한 명령 안에서 둘이 섞이는 자리가 없다(예외는 전부 잡아서 찍었다).
+**버전** — 검사 예외 없음·`Nothing`·`try` 식·`@Throws` 는 1.0. ★ **「도달 불가 코드」 경고가 기본으로 안 나오는 것**은 이 판(K2 2.4.20)의 관찰이다((5)).
+**경계** — ★★★ **검사 예외 폐지의 논지**(무엇을 얻고 무엇을 떠넘겼나)는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §8 이 정본이다 — 여기는 **그 결정이 코드에서 어떻게 보이나**(컴파일이 되나·클래스 파일에 무엇이 남나)만 다룬다.\
+짝은 Java 갈래 [`../../../java/syntax/25-exceptions/`](../../../java/syntax/25-exceptions/) — **검사 예외 규칙과 전파 문법의 Java 쪽 정본**이다. 거기서 본 `javac` 에러 두 문구를 여기서는 **Kotlin 과 한 쌍으로** 던졌다((1)(2)).\
+`@Throws`·`@JvmStatic` 등 **Java 상호운용 애너테이션 하나하나의 바이트코드**는 [목록의 **39번 주제**](../39-java-interop-annotations/)가, `?:` 오른쪽의 `throw`·`return` 관용구는 [03번 주제](../03-null-safe-types/) (7)이, `when` 이 식일 때의 완결성은 [06번 주제](../06-when-expression/)가 정본이다.\
+★ **대비** — Rust 의 발산 타입 `!` 은 [`../../../rust/syntax/06-functions-and-never-type/`](../../../rust/syntax/06-functions-and-never-type/), TS 의 `never` 는 [`../../../ts/syntax/04-any-unknown-never-void/`](../../../ts/syntax/04-any-unknown-never-void/), 오류를 **값**으로 다루는 Go 는 [`../../../go/syntax/23-error-interface-and-errors-as-values/`](../../../go/syntax/23-error-interface-and-errors-as-values/), `finally` 격자의 JS 판은 [`../../../js/syntax/32-error-handling-and-error/`](../../../js/syntax/32-error-handling-and-error/)가 정본이다.

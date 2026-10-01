@@ -1,20 +1,5 @@
 # kotlin/syntax/15 — 클래스 선언: 주 생성자·부 생성자·`init` 블록 순서 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Classes](https://kotlinlang.org/docs/classes.html) · [Properties](https://kotlinlang.org/docs/properties.html) · [Inheritance](https://kotlinlang.org/docs/inheritance.html) · [Null safety](https://kotlinlang.org/docs/null-safety.html).
-> **실행 검증** — 이 문서의 모든 출력·에러·예외·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> `kotlinc` 11회(컴파일 실패 3벌) · `java` 6회(런타임 예외 1벌) · `javap` 6회.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다 —\
-> 그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).
-> ⚠️ **다시 돌리면 달라지는 블록은 없다** — 싣는 스택 트레이스도 사용자 프레임뿐이다. 재대조 근거는 3-answer 의 「흔들리는 칸」 표다.
-> **버전** — 주 생성자·부 생성자·`init` 의 규칙은 **1.0** 이래 같다. 이 문서에 버전으로 갈리는 항목은 없다.
-> **경계** — `open`/`final` 기본값과 `override` 규칙은 [목록의 **19번 주제**](../19-inheritance-open-final-override/), backing field·`lateinit`·`const` 는 [16번 주제](../16-properties-backing-field-lateinit-const/),\
-> `data class` 가 무엇을 만들어 주는지는 [목록의 **22번 주제**](../22-data-class-generated-members/), 기본 인자·이름 붙인 인자는 [08번 주제](../08-function-declaration-default-and-named-args/)가 정본이다.\
-> 여기는 **한 객체가 만들어질 때 무엇이 어느 순서로 도는가**만 다룬다.\
-> Java 쪽 짝은 [`../../../java/syntax/06-initialization-order/`](../../../java/syntax/06-initialization-order/)(순서)와\
-> [`../../../java/syntax/07-constructors/`](../../../java/syntax/07-constructors/)(`this()`/`super()`)다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **Kotlin 에서 클래스 이름 옆 괄호는 「파라미터 목록」이 아니라 생성자 그 자체다.**
@@ -906,3 +891,18 @@ class D private constructor(val x: Int)
   **`kotlinc` 자체는 이 문서의 두 프로그램에서 아무 경고도 내지 않았다.** 「IDE 가 잡아 주니 괜찮다」는 근거가 컴파일러에는 없다.
 - ★ **이 문서는 `-jvm-target` 을 바꿔 찍어 보지 않았다.** (2)의 명령 순서가 21 타깃에서도 같은지는 **확인하지 않았다** —\
   `StringBuilder` 가 `invokedynamic` 으로 바뀌는 것만큼은 [02번 주제](../02-string-templates-and-raw-strings/)에서 이미 확인된 사실이다.
+
+## 실행 환경
+
+**기준 소스** — [Classes](https://kotlinlang.org/docs/classes.html) · [Properties](https://kotlinlang.org/docs/properties.html) · [Inheritance](https://kotlinlang.org/docs/inheritance.html) · [Null safety](https://kotlinlang.org/docs/null-safety.html).
+**실행 검증** — 이 문서의 모든 출력·에러·예외·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+`kotlinc` 11회(컴파일 실패 3벌) · `java` 6회(런타임 예외 1벌) · `javap` 6회.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다 —\
+그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).
+⚠️ **다시 돌리면 달라지는 블록은 없다** — 싣는 스택 트레이스도 사용자 프레임뿐이다. 재대조 근거는 3-answer 의 「흔들리는 칸」 표다.
+**버전** — 주 생성자·부 생성자·`init` 의 규칙은 **1.0** 이래 같다. 이 문서에 버전으로 갈리는 항목은 없다.
+**경계** — `open`/`final` 기본값과 `override` 규칙은 [목록의 **19번 주제**](../19-inheritance-open-final-override/), backing field·`lateinit`·`const` 는 [16번 주제](../16-properties-backing-field-lateinit-const/),\
+`data class` 가 무엇을 만들어 주는지는 [목록의 **22번 주제**](../22-data-class-generated-members/), 기본 인자·이름 붙인 인자는 [08번 주제](../08-function-declaration-default-and-named-args/)가 정본이다.\
+여기는 **한 객체가 만들어질 때 무엇이 어느 순서로 도는가**만 다룬다.\
+Java 쪽 짝은 [`../../../java/syntax/06-initialization-order/`](../../../java/syntax/06-initialization-order/)(순서)와\
+[`../../../java/syntax/07-constructors/`](../../../java/syntax/07-constructors/)(`this()`/`super()`)다.

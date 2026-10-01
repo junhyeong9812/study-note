@@ -1,11 +1,5 @@
 # sql/28-프레임 — `ROWS`·`RANGE`·`GROUPS` 와 기본 프레임 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> 모든 질의는 [1-question.md](1-question.md) 머리의 `WITH emp8 AS (...)` CTE 를 앞에 붙여 돌렸다.\
-> 문서 근거는 [PG 18 Window Function Calls](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 Window Function Frame Specification](https://dev.mysql.com/doc/refman/8.4/en/window-functions-frames.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -608,3 +602,10 @@ PG 문서가 명시한다 — `row_number`·`rank`·`dense_rank`·`percent_rank`
 
 **재지 않은 것** — `ROWS` 와 `RANGE` 의 계산 비용 차이, 프레임 폭이 성능에 주는 영향. **측정하지 않았으므로 적지 않았다.**\
 **던져 보지 않은 것** — 7번에 적은 `DENSE_RANK` + `RANGE 1 PRECEDING` 우회(형태만 적었다)와 날짜 `INTERVAL` 프레임(날짜 열이 없다).
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+모든 질의는 [1-question.md](1-question.md) 머리의 `WITH emp8 AS (...)` CTE 를 앞에 붙여 돌렸다.\
+문서 근거는 [PG 18 Window Function Calls](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 Window Function Frame Specification](https://dev.mysql.com/doc/refman/8.4/en/window-functions-frames.html).

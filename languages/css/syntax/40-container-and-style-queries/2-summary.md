@@ -1,12 +1,5 @@
 # css/syntax/40 — 컨테이너 쿼리와 스타일 쿼리 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Containment Module Level 3](https://drafts.csswg.org/css-contain-3/) 의 「Container Queries」·「`container-type`」·「Style Queries」 절. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle`·`cssRules` 로 읽은 것이다. **컨테이너 쿼리가 뷰포트와 무관하다는 것은 `--window-size` 를 500·780·1400 으로 바꿔 같은 문서를 세 번 띄워** 확인했다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — CSS 에 언어 버전은 없다. 크기 컨테이너 쿼리는 Baseline **widely**(newly 2023-02-14 → widely 2025-08-14) · **스타일 쿼리는 newly**(2026-05-19, 아직 widely 아님) — `api.webstatus.dev` 조회 결과.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **컨테이너 쿼리는 「창밖」이 아니라 「내가 놓인 방」을 재는 자다.**
@@ -469,3 +462,10 @@ getComputedStyle(el).containerType     // "normal" 이면 크기 조회 대상�
   ★ 셋 다 `container-type` 계산값은 `inline-size` 였다 — **조용히 실패하는 네 번째 얼굴**이다.
 - **스타일 쿼리는 「상태를 DOM 대신 CSS 로 내려보내는」 길을 연다.** 지금까지는 부모의 상태를 자손이 알려면 클래스를 자손까지 붙여야 했는데, 커스텀 속성 하나면 상속으로 내려가고 자손이 그것을 읽는다. 다만 Baseline **newly** 이고 Chrome 151 에서도 **커스텀 속성만** 된다.
 - **구형 브라우저에서는 `@container` 블록이 통째로 사라진다**([07번 주제](../07-syntax-and-error-recovery/2-summary.md)). 그래서 **기본 배치는 at-rule 밖에 두고 향상만 안에** 담는 배치가 그대로 유효하다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Containment Module Level 3](https://drafts.csswg.org/css-contain-3/) 의 「Container Queries」·「`container-type`」·「Style Queries」 절. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle`·`cssRules` 로 읽은 것이다. **컨테이너 쿼리가 뷰포트와 무관하다는 것은 `--window-size` 를 500·780·1400 으로 바꿔 같은 문서를 세 번 띄워** 확인했다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — CSS 에 언어 버전은 없다. 크기 컨테이너 쿼리는 Baseline **widely**(newly 2023-02-14 → widely 2025-08-14) · **스타일 쿼리는 newly**(2026-05-19, 아직 widely 아님) — `api.webstatus.dev` 조회 결과.

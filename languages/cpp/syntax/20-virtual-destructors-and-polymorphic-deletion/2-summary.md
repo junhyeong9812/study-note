@@ -1,38 +1,5 @@
 # cpp/syntax/20 — 가상 소멸자와 다형적 삭제 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `delete` 식](https://en.cppreference.com/w/cpp/language/delete) · [cppreference — `shared_ptr` 생성자](https://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr) · [cppreference — 추상 클래스](https://en.cppreference.com/w/cpp/language/abstract_class) · [cppreference — `<type_traits>`](https://en.cppreference.com/w/cpp/header/type_traits) · [Itanium C++ ABI](https://itanium-cxx-abi.github.io/cxx-abi/abi.html)\
-> ★ cppreference 세 쪽은 2026-09-26 에 열어 **해당 문장을 확인했다**(`delete` 식의 「기반 소멸자가 가상이어야 한다」·「배열은 요소 타입이 비슷해야 한다」·「해제 함수는 동적 타입의 범위에서 찾는다」, `shared_ptr` 의 「`delete ptr` 를 삭제자로 쓴다」, 추상 클래스의 「순수 가상 소멸자는 정의가 반드시 있어야 한다」).
-> **실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`vdtor01.cpp` \~ `vdtor11.cpp`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
-> ★★★ **ASan 을 붙인 블록은 마커를 `stderr` 로 찍었다.** sanitizer 가 `abort()` 로 죽이면\
-> **버퍼에 남은 표준 출력이 통째로 사라지기 때문**이다((1)·(6)의 소스에 그렇게 적혀 있다).\
-> ★★ **리포트를 자른 블록은 자르는 명령을 배너에 적었다** — 실린 것이 「생략한 일부」가 아니라 「**그 명령의 전체 출력**」이다.
-> **버전** — 가상 소멸자·`protected` 소멸자·순수 가상 소멸자는 **C++98부터**. `shared_ptr`·`unique_ptr`·`final`·`= default` 는 **C++11부터**다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-> ★★★ **[19번](../19-inheritance-virtual-functions-override-final/)이 이 주제의 핵심을 이미 쟀다 — 다시 재지 않고 인용한다.**\
-> 그 편 (8)(11)(12)가 실측한 것 — **`~DerNV` 0회 · 128바이트가 샌다** · ASan **`new-delete-type-mismatch`(16 대 8)** ·\
-> `sizeof` **BaseNV 8 · DerNV 16 · BaseV 16 · DerV 24** · **경고의 스위치는 「기반이 다형적인가」** · vtable 의 **`[complete]`/`[deleting]` 두 칸**.\
-> ★★ **여기서 새로 묻는 것은 둘이다** — 「**무엇이 미정의인가**」의 층 분류와 「**언제 가상으로 둘까**」의 판단 규칙.
-> **경계** — 「소멸자가 언제 도나」는 [14번](../14-destructors-and-deterministic-destruction/)이, 「가상 디스패치 규칙」은 [19번](../19-inheritance-virtual-functions-override-final/)이,\
-> 「이동이 왜 사라지나」는 [18번](../18-rule-of-zero-three-five-default-delete/)이 정본이다. 「`shared_ptr` 의 제어 블록」은 [목록의 **27번 주제**](../27-shared-ptr-and-reference-counting/), 「추상 클래스와 vtable 비용」은 [21번](../21-abstract-classes-pure-virtual-and-vtable-cost/)이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ASan 리포트의 **PID**·주소 | ★★★ **어느 소멸자가 몇 번 불렸나**(호출 로그) — 이 주제의 답 자체다 |
-> | 두 컴파일러의 **진단 문구** | ★★★ **`<type_traits>` 격자의 0/1** · **`sizeof`** |
-> | UB 인 실행의 **결과 그 자체**(죽나 · 쓰레기 값이 무엇인가) | ★★ **`cc exit`/`run exit`** · **경고·에러 개수** · **진단의 `(행,열)`** |
-> | — | ★★ **어셈블리에서 무엇을 `call` 하나**(이름 · 간접 호출 여부) |
->
-> ★ **(6)의 clang 판은 쓰레기 값을 읽는다** — 주소일 수 있어 **값 대신 「0\~99 밖의 값」이라는 사실만** 찍게 했다(소스 주석).\
-> **흔들리는 것을 지운 게 아니라 안 흔들리는 형식으로 바꾼 것**이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **가상 소멸자는 「반납 창구가 짐을 열어 보고 처리하는 것」이다.**
@@ -1407,3 +1374,37 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **가상 상속에서 `D1` 과 `D2` 가 갈린다** — (7)에서 g++ 가 둘을 별칭으로 둔 것은 **가상 기반이 없어서**다. 가상 상속 판은 안 찍었다.
 - **`shared_ptr` 의 별칭 생성자(aliasing constructor)** — 제어 블록과 가리키는 포인터를 **따로 준다.** (1)의 「무엇을 기억하나」가 더 벌어지는 자리다. [목록의 **27번 주제**](../27-shared-ptr-and-reference-counting/)다.
 - **삭제 소멸자와 `delete this`** — 객체가 스스로 지우는 관용구에서 `D0` 이 불린다. 이 문서는 다루지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `delete` 식](https://en.cppreference.com/w/cpp/language/delete) · [cppreference — `shared_ptr` 생성자](https://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr) · [cppreference — 추상 클래스](https://en.cppreference.com/w/cpp/language/abstract_class) · [cppreference — `<type_traits>`](https://en.cppreference.com/w/cpp/header/type_traits) · [Itanium C++ ABI](https://itanium-cxx-abi.github.io/cxx-abi/abi.html)\
+★ cppreference 세 쪽은 2026-09-26 에 열어 **해당 문장을 확인했다**(`delete` 식의 「기반 소멸자가 가상이어야 한다」·「배열은 요소 타입이 비슷해야 한다」·「해제 함수는 동적 타입의 범위에서 찾는다」, `shared_ptr` 의 「`delete ptr` 를 삭제자로 쓴다」, 추상 클래스의 「순수 가상 소멸자는 정의가 반드시 있어야 한다」).
+**실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`vdtor01.cpp` \~ `vdtor11.cpp`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
+★★★ **ASan 을 붙인 블록은 마커를 `stderr` 로 찍었다.** sanitizer 가 `abort()` 로 죽이면\
+**버퍼에 남은 표준 출력이 통째로 사라지기 때문**이다((1)·(6)의 소스에 그렇게 적혀 있다).\
+★★ **리포트를 자른 블록은 자르는 명령을 배너에 적었다** — 실린 것이 「생략한 일부」가 아니라 「**그 명령의 전체 출력**」이다.
+**버전** — 가상 소멸자·`protected` 소멸자·순수 가상 소멸자는 **C++98부터**. `shared_ptr`·`unique_ptr`·`final`·`= default` 는 **C++11부터**다. 기준은 **C++20**이다.
+
+★★★ **[19번](../19-inheritance-virtual-functions-override-final/)이 이 주제의 핵심을 이미 쟀다 — 다시 재지 않고 인용한다.**\
+그 편 (8)(11)(12)가 실측한 것 — **`~DerNV` 0회 · 128바이트가 샌다** · ASan **`new-delete-type-mismatch`(16 대 8)** ·\
+`sizeof` **BaseNV 8 · DerNV 16 · BaseV 16 · DerV 24** · **경고의 스위치는 「기반이 다형적인가」** · vtable 의 **`[complete]`/`[deleting]` 두 칸**.\
+★★ **여기서 새로 묻는 것은 둘이다** — 「**무엇이 미정의인가**」의 층 분류와 「**언제 가상으로 둘까**」의 판단 규칙.
+**경계** — 「소멸자가 언제 도나」는 [14번](../14-destructors-and-deterministic-destruction/)이, 「가상 디스패치 규칙」은 [19번](../19-inheritance-virtual-functions-override-final/)이,\
+「이동이 왜 사라지나」는 [18번](../18-rule-of-zero-three-five-default-delete/)이 정본이다. 「`shared_ptr` 의 제어 블록」은 [목록의 **27번 주제**](../27-shared-ptr-and-reference-counting/), 「추상 클래스와 vtable 비용」은 [21번](../21-abstract-classes-pure-virtual-and-vtable-cost/)이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ASan 리포트의 **PID**·주소 | ★★★ **어느 소멸자가 몇 번 불렸나**(호출 로그) — 이 주제의 답 자체다 |
+| 두 컴파일러의 **진단 문구** | ★★★ **`<type_traits>` 격자의 0/1** · **`sizeof`** |
+| UB 인 실행의 **결과 그 자체**(죽나 · 쓰레기 값이 무엇인가) | ★★ **`cc exit`/`run exit`** · **경고·에러 개수** · **진단의 `(행,열)`** |
+| — | ★★ **어셈블리에서 무엇을 `call` 하나**(이름 · 간접 호출 여부) |
+
+★ **(6)의 clang 판은 쓰레기 값을 읽는다** — 주소일 수 있어 **값 대신 「0\~99 밖의 값」이라는 사실만** 찍게 했다(소스 주석).\
+**흔들리는 것을 지운 게 아니라 안 흔들리는 형식으로 바꾼 것**이다.

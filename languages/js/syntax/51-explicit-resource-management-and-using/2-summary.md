@@ -1,26 +1,5 @@
 # js/syntax/51 — 명시적 자원 관리 `using`: 「블록을 떠나는 모든 길에서 역순으로 치운다 — 그런데 node 18·20 에는 문법이 없고, 거기 있는 `Symbol.dispose` 는 node 자신의 심볼이다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 지원 판별 격자다** — 판 셋(node 18 · node 20 · Chrome 151) × 기능 일곱(`using` 문법 · `await using` 문법 · `Symbol.dispose` · `Symbol.asyncDispose` · `DisposableStack` · `AsyncDisposableStack` · `SuppressedError`) = **21칸**을 스크립트가 채우고 **「supported cells: N / M」** 을 마지막 줄로 찍는다(동작 (1)). 「이 코드가 이 런타임에서 도나」 가 이 주제의 첫 질문이기 때문이다.
-> ★★ 보조로 **① 로그 심기**(해제 순서 — 만들 때와 치울 때 한 줄씩 · 동작 (3)·(6)) · **④ 예외의 이름 + 문구**(`SyntaxError` 가 **선언이 설 수 없는 자리**를 가르는 것 · `SuppressedError` 의 모양 · 동작 (2)·(4))를 쓴다.
-> ★★★ **node 에는 문법이 없으므로 「node 에서 `using` 이 어떻게 도나」 는 그 창으로는 못 잰다** — 같은 질문을 **다른 창 둘**로 다시 물었다(제5의 상태 — 아래 창 표): **손으로 쓴 `try`/`finally`**(동작 (7)) 와 **tsc 7.0.2 가 낮춰 쓴 코드**(동작 (8)).
->
-> **기준 소스** — 열어서 확인한 것만. 이 배치가 앞서 받아 둔 **ECMA-262 초안 사본**(표제 「ECMAScript® 2027 Language Specification」, multipage)의 해당 절을 읽었다.
-> - [ECMA-262 — Abstract Operations 7.5 Operations on Disposable Objects](https://tc39.es/ecma262/multipage/abstract-operations.html) — `AddDisposableResource`: 「**If value is either null or undefined and kind is sync-dispose, return unused.**」 · NOTE 「null·undefined 이고 async-dispose 이면 **나중에 여전히 Await 하도록** 기록한다」 · `GetDisposeMethod`: 「**If value is not an Object, throw a TypeError exception.**」 · `DisposeResources`: 「**For each element resource of disposableResourceStack, in reverse List order**」 · 앞의 완료가 throw 인데 또 throw 면 「**Let error be a newly created SuppressedError object.** … `"error"` 에 새 오류, `"suppressed"` 에 앞의 것」 — ★ **이 단계에는 `message` 가 없다**
-> - [ECMA-262 — 14.3.1 Let, Const, Using, and Await Using Declarations](https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html) — 문법 `UsingDeclaration : using [no LineTerminator here] BindingList[…, ~Pattern] ;`(★ **구조 분해 패턴 없음**) · 「초기자가 없고 상수 선언이면 Syntax Error」 · 14.12.1 switch — 「**CaseClause : case Expression : StatementList — It is a Syntax Error if ContainsUsing of StatementList is true.**」(`DefaultClause` 도 같다)
-> - [ECMA-262 — 16.1.1 Scripts: Static Semantics: Early Errors](https://tc39.es/ecma262/multipage/ecmascript-language-scripts-and-modules.html) — `ScriptBody : StatementList` 「**It is a Syntax Error if ContainsUsing of StatementList is true.**」
-> - [ECMA-262 — 20.5.8 SuppressedError Objects](https://tc39.es/ecma262/multipage/fundamental-objects.html) — `SuppressedError ( error, suppressed, message )` — `message` 가 `undefined` 가 아니면 `"message"`, 그다음 `"error"`, `"suppressed"` 를 **열거 불가 데이터 속성**으로 만든다 · `[[Prototype]]` 은 `%Error%`
-> - [ECMA-262 — 27.3 DisposableStack Objects](https://tc39.es/ecma262/multipage/control-abstraction-objects.html) — 「**Resources are added in the order they are initialized, and are disposed in reverse order.**」 · `use`·`move` — **이미 disposed 면 `ReferenceError`**
-> - ★ **판 표기** — README 는 이 기능을 **ES2027** 로 적는다. 이 문서가 읽은 사본의 표제도 2027 초안이고, 같은 배치가 받아 둔 TC39 finished proposals 표의 이 행도 **2027** 이다. ★ **확정판 번호는 확인하지 않았다**(외부 네트워크를 쓰지 않았다).
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1(판별 블록). Chrome 은 `./js48b-browser.sh`(헤드리스 Chrome 151 · 소스는 아래) 로 돌렸다 — 페이지는 **고전 스크립트**로 탐침을 싣고, `.mjs` 만 `--http` 로 **모듈**로 싣는다. tsc 는 **7.0.2**.
-> ★★★ **성능·메모리는 재지 않았다.** 「`using` 이 `try`/`finally` 보다 느리다/빠르다」 는 이 문서에 없다.
->
-> **버전** — `using`·`await using`·`DisposableStack`·`SuppressedError` 는 README 표기 **ES2027** · **Chrome 151 에만 전부 있다** · node 18·20 에는 **문법이 없다**(동작 (1)).
-
 ```text
 ===== ./js48b-versions.sh (exit=0) =====
 node 18.19.1  v8 10.2.154.26-node.28  icu 74.2  tz 2023c  unicode 15.1  cldr 44.1
@@ -786,7 +765,7 @@ const part = async (title, f) => {
 ### (7) ★★ `using` 이 없는 판에서 — 손으로 쓴 `try`/`finally`
 
 **언제 쓰나** — node 18·20 처럼 문법이 없는 곳에서 같은 보장을 흉내 낼 때.
-★ 이 창은 **제5의 상태**다 — node 에서 `using` 을 못 재니, 같은 질문을 **손 코드**로 다시 물었다(머리말 창 표). 세 판에서 돌렸다.
+★ 이 창은 **제5의 상태**다 — node 에서 `using` 을 못 재니, 같은 질문을 **손 코드**로 다시 물었다(맨 위 부분 창 표). 세 판에서 돌렸다.
 
 ```js
 // js48b-51g-by-hand.js
@@ -1151,3 +1130,23 @@ node 에는 전역 `SuppressedError` 가 **없고**(동작 (8)의 `[3] typeof Su
 - **`AsyncDisposableStack`** — Chrome 151 에 있다(동작 (1)). 이 문서는 격자 한 칸으로만 확인했다.
 - **이터레이터 헬퍼의 `Iterator.prototype[Symbol.dispose]`** — 이 문서가 읽은 초안 목차(27.1.3.3.13)에 있다. 돌리지 않았다.
 - **node 가 문법을 받는 판** — 이 머신의 node 는 18·20 뿐이라 **확인하지 않았다.** 그 판의 `Symbol.dispose` 가 여전히 `nodejs.dispose` 인지도 다시 재야 할 칸이다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 지원 판별 격자다** — 판 셋(node 18 · node 20 · Chrome 151) × 기능 일곱(`using` 문법 · `await using` 문법 · `Symbol.dispose` · `Symbol.asyncDispose` · `DisposableStack` · `AsyncDisposableStack` · `SuppressedError`) = **21칸**을 스크립트가 채우고 **「supported cells: N / M」** 을 마지막 줄로 찍는다(동작 (1)). 「이 코드가 이 런타임에서 도나」 가 이 주제의 첫 질문이기 때문이다.
+★★ 보조로 **① 로그 심기**(해제 순서 — 만들 때와 치울 때 한 줄씩 · 동작 (3)·(6)) · **④ 예외의 이름 + 문구**(`SyntaxError` 가 **선언이 설 수 없는 자리**를 가르는 것 · `SuppressedError` 의 모양 · 동작 (2)·(4))를 쓴다.
+★★★ **node 에는 문법이 없으므로 「node 에서 `using` 이 어떻게 도나」 는 그 창으로는 못 잰다** — 같은 질문을 **다른 창 둘**로 다시 물었다(제5의 상태 — 맨 위 창 표): **손으로 쓴 `try`/`finally`**(동작 (7)) 와 **tsc 7.0.2 가 낮춰 쓴 코드**(동작 (8)).
+
+**기준 소스** — 열어서 확인한 것만. 이 배치가 앞서 받아 둔 **ECMA-262 초안 사본**(표제 「ECMAScript® 2027 Language Specification」, multipage)의 해당 절을 읽었다.
+- [ECMA-262 — Abstract Operations 7.5 Operations on Disposable Objects](https://tc39.es/ecma262/multipage/abstract-operations.html) — `AddDisposableResource`: 「**If value is either null or undefined and kind is sync-dispose, return unused.**」 · NOTE 「null·undefined 이고 async-dispose 이면 **나중에 여전히 Await 하도록** 기록한다」 · `GetDisposeMethod`: 「**If value is not an Object, throw a TypeError exception.**」 · `DisposeResources`: 「**For each element resource of disposableResourceStack, in reverse List order**」 · 앞의 완료가 throw 인데 또 throw 면 「**Let error be a newly created SuppressedError object.** … `"error"` 에 새 오류, `"suppressed"` 에 앞의 것」 — ★ **이 단계에는 `message` 가 없다**
+- [ECMA-262 — 14.3.1 Let, Const, Using, and Await Using Declarations](https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html) — 문법 `UsingDeclaration : using [no LineTerminator here] BindingList[…, ~Pattern] ;`(★ **구조 분해 패턴 없음**) · 「초기자가 없고 상수 선언이면 Syntax Error」 · 14.12.1 switch — 「**CaseClause : case Expression : StatementList — It is a Syntax Error if ContainsUsing of StatementList is true.**」(`DefaultClause` 도 같다)
+- [ECMA-262 — 16.1.1 Scripts: Static Semantics: Early Errors](https://tc39.es/ecma262/multipage/ecmascript-language-scripts-and-modules.html) — `ScriptBody : StatementList` 「**It is a Syntax Error if ContainsUsing of StatementList is true.**」
+- [ECMA-262 — 20.5.8 SuppressedError Objects](https://tc39.es/ecma262/multipage/fundamental-objects.html) — `SuppressedError ( error, suppressed, message )` — `message` 가 `undefined` 가 아니면 `"message"`, 그다음 `"error"`, `"suppressed"` 를 **열거 불가 데이터 속성**으로 만든다 · `[[Prototype]]` 은 `%Error%`
+- [ECMA-262 — 27.3 DisposableStack Objects](https://tc39.es/ecma262/multipage/control-abstraction-objects.html) — 「**Resources are added in the order they are initialized, and are disposed in reverse order.**」 · `use`·`move` — **이미 disposed 면 `ReferenceError`**
+- ★ **판 표기** — README 는 이 기능을 **ES2027** 로 적는다. 이 문서가 읽은 사본의 표제도 2027 초안이고, 같은 배치가 받아 둔 TC39 finished proposals 표의 이 행도 **2027** 이다. ★ **확정판 번호는 확인하지 않았다**(외부 네트워크를 쓰지 않았다).
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1(판별 블록). Chrome 은 `./js48b-browser.sh`(헤드리스 Chrome 151 · 소스는 맨 위) 로 돌렸다 — 페이지는 **고전 스크립트**로 탐침을 싣고, `.mjs` 만 `--http` 로 **모듈**로 싣는다. tsc 는 **7.0.2**.
+★★★ **성능·메모리는 재지 않았다.** 「`using` 이 `try`/`finally` 보다 느리다/빠르다」 는 이 문서에 없다.
+
+**버전** — `using`·`await using`·`DisposableStack`·`SuppressedError` 는 README 표기 **ES2027** · **Chrome 151 에만 전부 있다** · node 18·20 에는 **문법이 없다**(동작 (1)).

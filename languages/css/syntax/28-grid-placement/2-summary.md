@@ -1,14 +1,5 @@
 # css/syntax/28 — Grid 배치: 라인 번호·`span`·자동 배치 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Grid Layout Level 1](https://drafts.csswg.org/css-grid-1/) (격자 항목 배치 알고리즘·`grid-row`/`grid-column`/`grid-area`·`grid-auto-flow`). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 좌표를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 쟀다.\
-> **트랙은 `getComputedStyle(el).gridTemplateColumns`/`.gridTemplateRows` 로, 항목의 자리는 `getBoundingClientRect()` 로 따로** 잰다 — 둘은 다른 질문이다. 본문의 px 값은 전부 그 실측값이다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않았다.
-> **버전** — Grid 는 Baseline **widely**(newly 2017-10-17 → widely 2020-04-17).
-> **여기서 다루지 않는 것** — **트랙을 어떻게 만드는가**는 [**27번**](../27-grid-track-sizing/)이 정본이다(이 문서는 그 실측을 그대로 이어 쓴다). **이름으로 놓는 것**(`grid-template-areas`·이름 붙은 라인)은 [**29번**](../29-grid-template-areas/)이다. 정렬(`justify-*`/`align-*`)의 정본은 [**24번**](../24-flexbox-axes/)이고 여기서는 Grid 에서 갈리는 것만 쓴다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **라인 번호 = 주차장 바닥에 그어진 선의 번호. 항목은 「몇 번 선에서 몇 번 선까지」로 자리를 잡는다.**
@@ -490,3 +481,12 @@ grid-area:  row-start / column-start / row-end / column-end
 - **`grid-template-areas` 를 쓰면 라인 이름이 자동으로 생긴다** — 그때부터는 번호 대신 이름을 쓰는 것이 낫다([29번](../29-grid-template-areas/)).
 - **`order` 는 Grid 에서도 듣는다.** 자동 배치의 순서를 바꾸는데, `dense` 와 마찬가지로 **마크업 순서는 안 바꾼다.**\
   *(실측: `order: 2`/`order: 1` 을 준 두 항목의 x 가 102·2 로 뒤바뀌었다.)* 정본은 [목록의 **26번 주제**](../26-flex-wrap-gap-order/)다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Grid Layout Level 1](https://drafts.csswg.org/css-grid-1/) (격자 항목 배치 알고리즘·`grid-row`/`grid-column`/`grid-area`·`grid-auto-flow`). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 좌표를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 쟀다.\
+**트랙은 `getComputedStyle(el).gridTemplateColumns`/`.gridTemplateRows` 로, 항목의 자리는 `getBoundingClientRect()` 로 따로** 잰다 — 둘은 다른 질문이다. 본문의 px 값은 전부 그 실측값이다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않았다.
+**버전** — Grid 는 Baseline **widely**(newly 2017-10-17 → widely 2020-04-17).
+**여기서 다루지 않는 것** — **트랙을 어떻게 만드는가**는 [**27번**](../27-grid-track-sizing/)이 정본이다(이 문서는 그 실측을 그대로 이어 쓴다). **이름으로 놓는 것**(`grid-template-areas`·이름 붙은 라인)은 [**29번**](../29-grid-template-areas/)이다. 정렬(`justify-*`/`align-*`)의 정본은 [**24번**](../24-flexbox-axes/)이고 여기서는 Grid 에서 갈리는 것만 쓴다.

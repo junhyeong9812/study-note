@@ -1,9 +1,5 @@
 # 01. 확장의 기본 원리
 
-> 개별 기법을 외우기 전에, **왜 그 기법이 필요한가**를 만드는 원리 4개.\
-> 출처: `jun-bank/docs/study/notes/server-design/01-scaling-principles.md` · 이관일 2026-09-16.\
-> 원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식)만 입힘. 원고에 없던 지식은 `*(Claude 보강)*`·맨 끝 `[Claude 추가]`에만.
-
 ---
 
 ## 1. 확장은 병목을 없애는 게 아니라 옮기는 것이다
@@ -219,3 +215,8 @@ C(N) = ────────────────────────�
 
 - 요청 경로 계층별 설계 → [`02-request-path.md`](./02-request-path.md)
 - 데이터 계층 확장 → [`03-data-layer.md`](./03-data-layer.md)
+
+## 출처
+
+출처: `jun-bank/docs/study/notes/server-design/01-scaling-principles.md` · 이관일 2026-09-16.\
+원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식)만 입힘. 원고에 없던 지식은 `*(Claude 보강)*`·맨 끝 `[Claude 추가]`에만.

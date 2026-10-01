@@ -1,23 +1,5 @@
 # rust/syntax/28 — `PartialEq`/`Eq`/`PartialOrd`/`Ord`/`Hash` 의 계약 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `trait PartialEq`](https://doc.rust-lang.org/std/cmp/trait.PartialEq.html) ·
-> [`trait Eq`](https://doc.rust-lang.org/std/cmp/trait.Eq.html) ·
-> [`trait PartialOrd`](https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html) ·
-> [`trait Ord`](https://doc.rust-lang.org/std/cmp/trait.Ord.html) ·
-> [`trait Hash`](https://doc.rust-lang.org/std/hash/trait.Hash.html).
-> ★ 버전은 **이 머신에 설치된 `rust-docs` 의 `@since` 배지와 `releases.md` 를 직접 읽어** 확인했다(기억으로 쓰지 않았다).
-> ★ `rustc --explain E0277` · `E0369` · `E0407` 은 **확인용으로만 열었고 본문에 옮기지 않았다.**
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
-> **버전** — 다섯 트레이트는 전부 1.0.0 부터다. **`f64::total_cmp` 는 1.62.0 부터**이고
-> (같은 판에서 **`enum` 의 `#[derive(Default)]`** 도 들어왔다), `std::hash::DefaultHasher` 재수출은 1.76.0 부터다.
-> 이 문서는 **`std::collections::hash_map::DefaultHasher`** 쪽 경로를 쓴다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 흔들리는 칸 / 안 흔들리는 칸
 
 | | 칸 | 왜 |
@@ -1072,3 +1054,21 @@ For more information about this error, try `rustc --explain E0369`.
   그 대가가 **순회 순서의 비결정성**이다. 원리는 [`data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/).
 - **`Ordering` 의 조합** — `` cmp(a,b).then_with(|| …) `` 로 다단 정렬을 쓴다. 사전식을 손으로 쓰는 꼴이다.
 - **`Reverse`** — `` std::cmp::Reverse(x) `` 로 감싸면 순서가 뒤집힌다. **newtype 의 std 판 사례**다((26번 주제)).
+
+## 실행 환경
+
+**기준 소스** — [std — `trait PartialEq`](https://doc.rust-lang.org/std/cmp/trait.PartialEq.html) ·
+[`trait Eq`](https://doc.rust-lang.org/std/cmp/trait.Eq.html) ·
+[`trait PartialOrd`](https://doc.rust-lang.org/std/cmp/trait.PartialOrd.html) ·
+[`trait Ord`](https://doc.rust-lang.org/std/cmp/trait.Ord.html) ·
+[`trait Hash`](https://doc.rust-lang.org/std/hash/trait.Hash.html).
+★ 버전은 **이 머신에 설치된 `rust-docs` 의 `@since` 배지와 `releases.md` 를 직접 읽어** 확인했다(기억으로 쓰지 않았다).
+★ `rustc --explain E0277` · `E0369` · `E0407` 은 **확인용으로만 열었고 본문에 옮기지 않았다.**
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
+★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
+**버전** — 다섯 트레이트는 전부 1.0.0 부터다. **`f64::total_cmp` 는 1.62.0 부터**이고
+(같은 판에서 **`enum` 의 `#[derive(Default)]`** 도 들어왔다), `std::hash::DefaultHasher` 재수출은 1.76.0 부터다.
+이 문서는 **`std::collections::hash_map::DefaultHasher`** 쪽 경로를 쓴다.

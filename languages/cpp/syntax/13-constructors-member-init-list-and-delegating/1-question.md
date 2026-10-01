@@ -1,17 +1,5 @@
 # cpp/syntax/13 — 생성자·멤버 초기화 리스트·위임 생성자 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **세어서 답하는 것**이 절반이다 — 「어느 쪽이 나은가」를 **의견으로 답하지 마라.**
-> **생성자·대입 호출 횟수**를 숫자로 맞혀야 한다.
-> **환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux.
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
-> ★★ **네 번째 창은 「경고를 플래그·컴파일러별로 센 개수」다**(8번). 같은 사건에 개수가 다르다.
-> ★ **「부적용인 창」이 있다** — `sizeof`. 초기화 방식이 달라도 객체 크기는 같아 **잴 것이 없다**.
-> 선행 — [12번](../12-class-basics-members-access-and-this/)(클래스 기본)과 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/)·[`09번`](../09-rvalue-references-move-and-forward/)·[`11번`](../11-choosing-parameter-passing/)이 이 주제의 바로 앞이다.
-> 이어지는 것 — [14번](../14-destructors-and-deterministic-destruction/)이 **그 역순**을, [15번](../15-raii-resources-as-types/)이 **그 시점의 쓸모**를 답한다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -259,6 +247,17 @@ int main() {
 - `Probe` 로 **호출 횟수를 세는 방식**은 형제 몇 번에서 왔는가?
 - **0/3/5의 법칙**의 정본은 몇 번인가?
 - ★ 러스트에 **「초기화 순서」 함정이 없는 이유**는 무엇이며, 어느 갈래 어느 주제인가?
+
+## 실행 환경
+
+이 주제의 질문은 **세어서 답하는 것**이 절반이다 — 「어느 쪽이 나은가」를 **의견으로 답하지 마라.**
+**생성자·대입 호출 횟수**를 숫자로 맞혀야 한다.
+**환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux.
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
+★★ **네 번째 창은 「경고를 플래그·컴파일러별로 센 개수」다**(8번). 같은 사건에 개수가 다르다.
+★ **「부적용인 창」이 있다** — `sizeof`. 초기화 방식이 달라도 객체 크기는 같아 **잴 것이 없다**.
+선행 — [12번](../12-class-basics-members-access-and-this/)(클래스 기본)과 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/)·[`09번`](../09-rvalue-references-move-and-forward/)·[`11번`](../11-choosing-parameter-passing/)이 이 주제의 바로 앞이다.
+이어지는 것 — [14번](../14-destructors-and-deterministic-destruction/)이 **그 역순**을, [15번](../15-raii-resources-as-types/)이 **그 시점의 쓸모**를 답한다.
 
 ## 복습 기록
 

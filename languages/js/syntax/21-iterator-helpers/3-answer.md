@@ -1,17 +1,5 @@
 # js/syntax/21 — 이터레이터 헬퍼: 「배열 메서드는 단계마다 전부 돌고, 헬퍼는 한 값씩 끝까지 흘려보낸다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 출력은 **Google Chrome 151 헤드리스**(`.web.js` 탐침 — 배너가 `google-chrome --headless …`)와
-> **node v20.19.6**(기본 판) · **node v18.19.1**(대조)에서 실제로 돌려 얻은 것이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
->
-> ★★ **예외는 `이름 「메시지」` 꼴로만 찍었다** — 스택트레이스는 싣지 않는다.
-> ★★★ **헬퍼가 node 두 판에 없어서 본체는 브라우저 한 판뿐이다** — 두 판 대조기는 이 주제의 node 탐침 **하나**(`js20b-21x-node-absent.js`)만 대조한다(10번).
-> ★ **표준 출력과 표준 오류를 한 블록에도 안 섞었다.**
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
-> `js20b-21a-when.web.js`(1번) · `js20b-21b-grid.web.js`(2번) · `js20b-21g-close.web.js`(3번 · 9번) · `js20b-21f-consume.web.js`(4번) · `js20b-21h-args.web.js`(5번) ·
-> `js20b-21e-from.web.js`(6번) · `js20b-21d-chain.web.js`(7번) · `js20b-21c-endless.web.js`(8번) · `js20b-21x-node-absent.js` · `js20b-vdiff.sh`(10번) · `js20b-21i-concat.web.js`(12번).
-
 ## 정답
 
 ### 1. 두 벌의 콜백 로그 — **배열판 `10 / 10` 이 단계별로 뭉치고, 헬퍼판 `4 / 4` 가 값마다 번갈아 간다** ★★★
@@ -538,3 +526,16 @@ identical 18  ·  differs 6  ·  total 24
 - ★★★ **node 판이 ES2025 를 들이면** — 판별 블록부터 다시 찍고, `.web.js` 탐침을 node 에서도 돌려 Chrome 과 대조한다. 그때 두 판 대조기의 대상이 늘어난다.
 - ★★ **예외 문구 전부** — 특히 `flatMap` 의 문구(원인과 어긋나 있다).
 - **평가 순서 · 닫기 규칙 · 소비는 다시 돌릴 필요가 없다** — ES2025 의 계약이다.
+
+## 실행 환경
+
+이 파일의 출력은 **Google Chrome 151 헤드리스**(`.web.js` 탐침 — 배너가 `google-chrome --headless …`)와
+**node v20.19.6**(기본 판) · **node v18.19.1**(대조)에서 실제로 돌려 얻은 것이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
+
+★★ **예외는 `이름 「메시지」` 꼴로만 찍었다** — 스택트레이스는 싣지 않는다.
+★★★ **헬퍼가 node 두 판에 없어서 본체는 브라우저 한 판뿐이다** — 두 판 대조기는 이 주제의 node 탐침 **하나**(`js20b-21x-node-absent.js`)만 대조한다(10번).
+★ **표준 출력과 표준 오류를 한 블록에도 안 섞었다.**
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
+`js20b-21a-when.web.js`(1번) · `js20b-21b-grid.web.js`(2번) · `js20b-21g-close.web.js`(3번 · 9번) · `js20b-21f-consume.web.js`(4번) · `js20b-21h-args.web.js`(5번) ·
+`js20b-21e-from.web.js`(6번) · `js20b-21d-chain.web.js`(7번) · `js20b-21c-endless.web.js`(8번) · `js20b-21x-node-absent.js` · `js20b-vdiff.sh`(10번) · `js20b-21i-concat.web.js`(12번).

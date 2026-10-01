@@ -1,20 +1,5 @@
 # js/syntax/39 — `async`/`await`: 「부르면 어디까지 지금 돌고, `await` 는 어디서 멈추고, 둘을 언제 시작하나」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스) · Python 3.12 · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
->
-> ★★★ **이 주제의 본체는 로그 심기다** — 본문 줄 · 호출자의 다음 줄 · `await` 뒤에 로그를 심었다. **1번 · 3번 · 6번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **`async` 함수를 부르면 무엇이 돌아오고 본문은 어디까지 지금 도나 — `await` 는 몇 틱 쉬나**
-> ② ★★★ **순차와 병렬은 무엇으로 갈리나 — 시간이 아니라 시작 순서로**
-> ③ **`try` 안의 `return` · `forEach` · 최상위 `await` 에서 무엇이 기대와 다르게 도나.**
->
-> **선행** — [37](../37-promise-state-model/2-summary.md) · [36](../36-event-loop-and-microtasks/2-summary.md) · [20](../20-generators/2-summary.md) · [32](../32-error-handling-and-error/2-summary.md) · [38](../38-promise-combinators/2-summary.md).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 여섯 문항(1\~6)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -261,6 +246,14 @@ const variants = [
 
 - ★★ 3번의 `true` 를 만든 것은 `Promise.all` 인가, 다른 무엇인가?
 - ★ 이 문서가 「병렬이 빠르다」를 쓰지 않는 이유는? 연혁 문서의 그림은 가로 길이에 대해 스스로 무엇이라 적나?
+
+## 실행 환경
+
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스) · Python 3.12 · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
+
+★★★ **이 주제의 본체는 로그 심기다** — 본문 줄 · 호출자의 다음 줄 · `await` 뒤에 로그를 심었다. **1번 · 3번 · 6번 문항이 이 주제의 중심이다.**
+
+**선행** — [37](../37-promise-state-model/2-summary.md) · [36](../36-event-loop-and-microtasks/2-summary.md) · [20](../20-generators/2-summary.md) · [32](../32-error-handling-and-error/2-summary.md) · [38](../38-promise-combinators/2-summary.md).
 
 ## 복습 기록
 

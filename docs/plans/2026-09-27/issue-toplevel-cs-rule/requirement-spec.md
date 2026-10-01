@@ -1,8 +1,5 @@
 # 요구사항 명세서 (requirement-spec)
 
-> 작성일: 2026-09-27 · 작업 폴더: `docs/plans/2026-09-27/issue-toplevel-cs-rule/`
-> 상위 맥락: `docs/plans/2026-09-27/cs-fundamentals-roadmap/` (CS 재편 로드맵 — 이 작업은 그중 선행 조각)
-
 ---
 
 ## 0. 요구사항 원문 (인터뷰 기록)

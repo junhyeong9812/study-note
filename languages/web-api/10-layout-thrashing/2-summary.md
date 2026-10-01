@@ -1,14 +1,5 @@
 # web-api/10 — 레이아웃 스래싱: 읽기·쓰기 교차로 나는 강제 동기 레이아웃 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 주제는 이 갈래에서 유일하게 「API」가 아니라 「실패 모드」를 주제로 세운 자리다.** 그리고 **명세가 보장하지 않는 것이 본체**다 — 「언제 레이아웃이 도는가」를 정한 명세는 **없다.** 명세가 정한 것은 「**이 값은 최신이어야 한다**」이고, 그 요구를 지키느라 구현이 그 자리에서 레이아웃을 돌린다. **그 사실 자체가 이 주제의 축이다.**\
-> **기준 소스** — [CSSOM View Module](https://drafts.csswg.org/cssom-view/) 의 「**Web developers should be aware …**」 노트와 각 속성의 「run the update the rendering steps / flush layout」 요구, [HTML Living Standard — Event loop: 렌더링 단계](https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-processing-model). 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 블록마다 명령이 배너로 실려 있고, 그 배너에는 **`--window-size=1000,800`** 이 들어 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. **이식성을 주장하지 않는다.** 그리고 이 주제는 **원래부터 구현 이야기**라 다른 엔진에서 수치가 다른 것이 당연하다.\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. 여기서 다루는 속성은 전부 **Baseline 추적 대상이 아닐 만큼 오래된** 표면이다.\
-> **선행** — [08번 주제](../08-getcomputedstyle/2-summary.md)(계산값 읽기)와 [09번 주제](../09-element-geometry/2-summary.md)(기하 읽기). **둘이 이 주제의 방아쇠 목록이다.**\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -940,3 +931,12 @@ requestAnimationFrame(() => { for (const el of 목록) { el.style.top = …; sum
 - **개발자 도구의 Performance 패널**은 강제 레이아웃을 **`Recalculate Style` / `Layout` 막대와 경고 삼각형**으로 표시하고, **어느 줄이 방아쇠인지**까지 짚어 준다. 실무 진단은 이쪽이 정답이다. **헤드리스에서는 쓸 수 없어 이 문서에 싣지 못했다.**
 - **`LongAnimationFrame` API** 는 「이 프레임이 왜 길었나」를 스크립트로 물을 수 있게 한다. Baseline limited 라 이 목록에서는 뺐다(갈래 [`../README.md`](../README.md)).
 - **왜 브라우저가 미루나** — 미루면 **여러 변경을 한 번에** 계산할 수 있기 때문이다. 즉 **게으름이 최적화**다. 읽기는 그 최적화를 포기시키는 요청이다.
+
+## 실행 환경
+
+★★★ **이 주제는 이 갈래에서 유일하게 「API」가 아니라 「실패 모드」를 주제로 세운 자리다.** 그리고 **명세가 보장하지 않는 것이 본체**다 — 「언제 레이아웃이 도는가」를 정한 명세는 **없다.** 명세가 정한 것은 「**이 값은 최신이어야 한다**」이고, 그 요구를 지키느라 구현이 그 자리에서 레이아웃을 돌린다. **그 사실 자체가 이 주제의 축이다.**\
+**기준 소스** — [CSSOM View Module](https://drafts.csswg.org/cssom-view/) 의 「**Web developers should be aware …**」 노트와 각 속성의 「run the update the rendering steps / flush layout」 요구, [HTML Living Standard — Event loop: 렌더링 단계](https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-processing-model). 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 블록마다 명령이 배너로 실려 있고, 그 배너에는 **`--window-size=1000,800`** 이 들어 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. **이식성을 주장하지 않는다.** 그리고 이 주제는 **원래부터 구현 이야기**라 다른 엔진에서 수치가 다른 것이 당연하다.\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. 여기서 다루는 속성은 전부 **Baseline 추적 대상이 아닐 만큼 오래된** 표면이다.\
+**선행** — [08번 주제](../08-getcomputedstyle/2-summary.md)(계산값 읽기)와 [09번 주제](../09-element-geometry/2-summary.md)(기하 읽기). **둘이 이 주제의 방아쇠 목록이다.**

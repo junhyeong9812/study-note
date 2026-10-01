@@ -1,14 +1,5 @@
 # sql/52-UPSERT (ON CONFLICT · ON DUPLICATE KEY UPDATE) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · INSERT](https://www.postgresql.org/docs/18/sql-insert.html) · [MySQL 8.4 · INSERT ... ON DUPLICATE KEY UPDATE](https://dev.mysql.com/doc/refman/8.4/en/insert-on-duplicate.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — MySQL 의 행 별칭 문법(`VALUES (...) AS new`)은 **8.0.19 부터**다([8.0.19 릴리스 노트](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-19.html)). 구식 `VALUES()` 함수는 8.4.10 서버가 직접 deprecated 경고를 낸다(아래 출력).\
-> **선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/)(제약과 `NULL`) · [목록의 **43번 주제**](../43-primary-key-unique-and-null/)(기본키·UNIQUE) · 49번(INSERT).
-
 ## 한눈에 — 쉽게 말하면
 
 **upsert = 「있으면 고치고 없으면 넣어라」를 한 문장으로 시키는 것.**
@@ -631,3 +622,11 @@ MySQL *"a row to be inserted would cause a duplicate value in a `UNIQUE` index o
   예: 중복 키를 만나도 죽지 않고 경고 1062 만 남긴다.
 - **멱등(idempotent)** — 같은 요청을 여러 번 보내도 결과가 한 번 보낸 것과 같은 성질.\
   예: 같은 메시지를 두 번 적재해도 행이 하나만 남는 것.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · INSERT](https://www.postgresql.org/docs/18/sql-insert.html) · [MySQL 8.4 · INSERT ... ON DUPLICATE KEY UPDATE](https://dev.mysql.com/doc/refman/8.4/en/insert-on-duplicate.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — MySQL 의 행 별칭 문법(`VALUES (...) AS new`)은 **8.0.19 부터**다([8.0.19 릴리스 노트](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-19.html)). 구식 `VALUES()` 함수는 8.4.10 서버가 직접 deprecated 경고를 낸다(본문의 출력).\
+**선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/)(제약과 `NULL`) · [목록의 **43번 주제**](../43-primary-key-unique-and-null/)(기본키·UNIQUE) · 49번(INSERT).

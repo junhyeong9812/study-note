@@ -1,16 +1,5 @@
 # sql/21-집계 함수와 `COUNT` 의 세 형태 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Aggregate Functions](https://www.postgresql.org/docs/18/functions-aggregate.html) · [PostgreSQL 18 · Aggregate Expressions](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 · Aggregate Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/aggregate-functions.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — `COUNT`·`SUM`·`AVG`·`MIN`·`MAX` 와 `DISTINCT` 는 두 엔진 모두 오래전부터 있다.\
-> 갈리는 자리는 **`COUNT(DISTINCT 열1, 열2)` 하나**다(아래 6번) — 서로의 문법을 정확히 거부한다.\
-> **선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/). **집계 함수가 `NULL` 을 다루는 방식이 이 주제의 전부다.**\
-> **뒤 주제** — [22 GROUP BY 와 비집계 열 규칙](../22-group-by-nonaggregated-columns/) · [24 조건부 집계](../24-conditional-aggregation-filter-case/) · [25 조인 팬아웃](../25-join-fan-out/).
-
 ## 한눈에 — 쉽게 말하면
 
 **설문지를 상자에 모아 놓고 「몇 장인가」를 묻는 방법이 셋인데, 셋이 서로 다른 답을 낸다.**
@@ -618,3 +607,13 @@ SELECT d.name, COUNT(e.id) FROM dept d LEFT JOIN emp e ON e.dept_id = d.id GROUP
 - **`SUM(DISTINCT 식)`·`AVG(DISTINCT 식)` 도 두 엔진에 있다**(실행 확인 — `SUM(DISTINCT salary)`=1200 · `AVG(DISTINCT salary)`=400).\
   하지만 **거의 항상 함정**이다. 값이 같은 두 행을 한 번만 더하는 게 의도인 경우는 드물다 — [25번](../25-join-fan-out/)에 그 실측이 있다.
 - **「없음」을 어떻게 보일지는 집계가 아니라 표현의 문제다.** `COALESCE`·`NULLIF`·`CASE` 는 [목록의 **6번 주제**](../06-conditional-expressions-case-coalesce/)가 정본이다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Aggregate Functions](https://www.postgresql.org/docs/18/functions-aggregate.html) · [PostgreSQL 18 · Aggregate Expressions](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 · Aggregate Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/aggregate-functions.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — `COUNT`·`SUM`·`AVG`·`MIN`·`MAX` 와 `DISTINCT` 는 두 엔진 모두 오래전부터 있다.\
+갈리는 자리는 **`COUNT(DISTINCT 열1, 열2)` 하나**다(본문 6번) — 서로의 문법을 정확히 거부한다.\
+**선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/). **집계 함수가 `NULL` 을 다루는 방식이 이 주제의 전부다.**\
+**뒤 주제** — [22 GROUP BY 와 비집계 열 규칙](../22-group-by-nonaggregated-columns/) · [24 조건부 집계](../24-conditional-aggregation-filter-case/) · [25 조인 팬아웃](../25-join-fan-out/).

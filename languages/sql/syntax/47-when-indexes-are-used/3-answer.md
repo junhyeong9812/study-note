@@ -1,13 +1,5 @@
 # sql/47-인덱스를 언제 타고 언제 안 타나 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> ★ **측정 조건** — 20,000행 `t47`, **`ANALYZE`/`ANALYZE TABLE` 직후**, 기본 설정, 다른 부하 없음. 비실행 `EXPLAIN` 만 썼다.\
-> ★★ **계획은 관찰이지 보장이 아니다.** 제출 직전에 전부 다시 찍었고, **움직인 두 자리를 아래 「실행 검증」에 적었다.**\
-> 이 편이 만든 `t47` 과 인덱스는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> 문서 근거는 [PG 18 Using EXPLAIN](https://www.postgresql.org/docs/18/using-explain.html) · [MySQL 8.4 EXPLAIN Output Format](https://dev.mysql.com/doc/refman/8.4/en/explain-output.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -669,7 +661,7 @@ SQL 이 보장하는 것은 **결과**이지 **방법**이 아니다. 계획·�
 **「인덱스가 있든 없든 결과 집합은 같다」** 하나뿐이고, 그것은 계획 이야기가 아니다.
 
 **버전을 적지 않은 이유** — 이 주제의 동작에 「어느 버전부터」가 붙은 것을 두 매뉴얼에서 찾지 못했다.\
-다만 **비용 모델은 버전마다 바뀐다** — 그래서 머리말에 버전을 박았다.
+다만 **비용 모델은 버전마다 바뀐다** — 그래서 「실행 환경」에 버전을 박았다.
 
 ### ★ DB 뒷정리 확인
 
@@ -730,3 +722,12 @@ Did not find any sequences.
 (3 rows)                             | 30 | hr    |
                                      +----+-------+
 ```
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+★ **측정 조건** — 20,000행 `t47`, **`ANALYZE`/`ANALYZE TABLE` 직후**, 기본 설정, 다른 부하 없음. 비실행 `EXPLAIN` 만 썼다.\
+★★ **계획은 관찰이지 보장이 아니다.** 제출 직전에 전부 다시 찍었고, **움직인 두 자리를 위 「실행 검증」에 적었다.**\
+이 편이 만든 `t47` 과 인덱스는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+문서 근거는 [PG 18 Using EXPLAIN](https://www.postgresql.org/docs/18/using-explain.html) · [MySQL 8.4 EXPLAIN Output Format](https://dev.mysql.com/doc/refman/8.4/en/explain-output.html).

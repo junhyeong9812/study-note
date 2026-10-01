@@ -1,11 +1,5 @@
 # css/syntax/55 — 3D 변환: `perspective`·`transform-style`·`backface-visibility` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [54번 주제](../54-transform-2d-and-origin/2-summary.md)다 — 함수 순서와 `transform-origin` 은 거기서 온다.
-> 이 주제의 답에서 **계산값을 근거로 쓰면 틀린다.** 좌표나 픽셀로 답하라.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -121,6 +115,11 @@ transform: rotateY(45deg) perspective(400px);
 - 평탄화를 일으키는 선언 목록과 **쌓임 맥락을 만드는 선언 목록**은 얼마나 겹치는가?
 - 안쪽을 잘라야 하는 3D 카드를 만들려면 어떻게 해야 하는가?
 - 3D 연출에서 모션 접근성을 다루는 정본은 어느 주제인가?
+
+## 실행 환경
+
+선행은 [54번 주제](../54-transform-2d-and-origin/2-summary.md)다 — 함수 순서와 `transform-origin` 은 거기서 온다.
+이 주제의 답에서 **계산값을 근거로 쓰면 틀린다.** 좌표나 픽셀로 답하라.
 
 ## 복습 기록
 

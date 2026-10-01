@@ -1,10 +1,5 @@
 # web-api/17 — `stopPropagation` 대 `preventDefault`: 전파를 멈추는 것과 기본 동작을 막는 것 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 링크 이동·체크 토글·폼 제출은 **CDP 로 넣은 진짜 클릭과 진짜 키**로 일으켰다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG DOM Standard — Events](https://dom.spec.whatwg.org/#events) 와 [HTML Standard — `input`](https://html.spec.whatwg.org/multipage/input.html) 의 activation 절로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 **★ 이 편에는 흔들리는 칸이 없었다.**
 
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
@@ -233,3 +228,9 @@ python3 wa16b-cdp.py page wa16b-17-more.html
 | `onclick` 의 `return false` 가 취소가 되는 것 | `defaultPrevented = true` | 이벤트 핸들러 절을 열어 확인하지 않았다 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② **다른 문서로 떠나는 링크 이동** — 로그가 사라져 셀 수 없다. ③ **실제 네트워크 전송.** ④ `mousedown` 의 `preventDefault` · `label` 의 두 번째 click · `requestSubmit()` — 이 편의 대상 밖이다. ⑤ **리스너 안에서 `location.hash` 읽기** — 던지지 않았다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 링크 이동·체크 토글·폼 제출은 **CDP 로 넣은 진짜 클릭과 진짜 키**로 일으켰다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG DOM Standard — Events](https://dom.spec.whatwg.org/#events) 와 [HTML Standard — `input`](https://html.spec.whatwg.org/multipage/input.html) 의 activation 절로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

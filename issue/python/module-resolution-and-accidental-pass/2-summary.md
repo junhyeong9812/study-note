@@ -1,7 +1,5 @@
 # issue/python/module-resolution-and-accidental-pass — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-
 ## 전체 흐름
 
 **한 문장:** 파이썬의 import는 실행 시점의 `sys.path`에 의존하는데, `python -m pytest`와 `pytest`는 그 경로에 서로 다른 폴더를 넣기 때문에, 코드가 올바른지와 무관하게 **어떻게 실행했느냐가 초록불을 가른다** — 로컬의 우연한 통과가 CI의 실패를 가린다.

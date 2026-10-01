@@ -1,14 +1,5 @@
 # kotlin/syntax/51 — 계약 함수 — `require`/`check`/`error`/`TODO` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 `Preconditions.kt`·`Standard.kt`·`AssertionsJVM.kt`·`ContractBuilder.kt` — KDoc 과 구현((5)). ★ 공식 문서 페이지는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 9회(`-Xassertions` 격자 스크립트 안의 4회 · 계약 격자 스크립트 안의 1회 포함) · `java` 12회(두 격자 스크립트 안의 10회 포함) · `javap` 1회 · stdlib 소스 jar 발췌 6곳.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 행 N / M」·「던진 칸 N / M」·「막힌 탐침 N / M」은 스크립트가 스스로 센 것**이다.
-> **버전** — 이 판의 소스에서 `require`·`check`·`error`·`TODO` 는 `@kotlin.internal.InlineOnly` 인 **`inline fun`** 이고, 계약 표지 `ExperimentalContracts` 는 **`@SinceKotlin("1.3")` + `@RequiresOptIn`** 이다((5)) — ★★★ **2.4.20 에서도 직접 계약을 쓰려면 opt-in 이 필요하다**((3)).
-> **경계** — ★★★ **`Nothing` 타입**(`error()`·`TODO()` 가 돌아오지 않는다는 것 · `?:` 뒤에 쓸 수 있는 까닭)과 검사 예외가 없다는 것은 [34번 주제](../34-exceptions-nothing-and-try-expression/)가 정본이다. **`TODO()` 의 `NotImplementedError` 가 `catch (e: Exception)` 을 빠져나간다**는 것은 [49번 주제](../49-result-and-runcatching/) (4)가 이미 쟀다(다섯 중 둘이 `Error`) — 여기서는 다시 안 잰다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**던지는 예외 격자 — 계약 함수 열한 가지 × JVM 두 벌(`java` · `java -ea`) → 예외 클래스 · 기본 메시지**」. 이 주제는 **계약·규약형**이라(§2-1 규칙 6) 「어기면 무엇이 출력되나」를 전수로 찍는 것이 본체다.
 
 ## 이 주제가 쓰는 세 층
@@ -650,3 +641,12 @@ fee("gold") -> IllegalStateException: unknown kind: gold
 - **`callsInPlace` 계약** — `run { }`·`let { }` 이 람다를 「정확히 한 번 부른다」를 알려 `val` 초기화를 허용하는 계약. 이 판에서 돌리지 않았다.
 - **`ExperimentalExtendedContracts`** — (5)의 발췌에 선언만 있다. 무엇을 여는 표지인지(어느 계약 꼴이 그 뒤에 있나)는 **돌려 보지 않았다.**
 - **`-Xassertions` 가 바꾸는 바이트코드** — (2)는 행동만 봤다. `javap -c` 로 `legacy` 와 `jvm` 의 차이(`$assertionsDisabled` 필드 여부)를 보면 원인이 보일 것이다 — **확인하지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 `Preconditions.kt`·`Standard.kt`·`AssertionsJVM.kt`·`ContractBuilder.kt` — KDoc 과 구현((5)). ★ 공식 문서 페이지는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 9회(`-Xassertions` 격자 스크립트 안의 4회 · 계약 격자 스크립트 안의 1회 포함) · `java` 12회(두 격자 스크립트 안의 10회 포함) · `javap` 1회 · stdlib 소스 jar 발췌 6곳.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 행 N / M」·「던진 칸 N / M」·「막힌 탐침 N / M」은 스크립트가 스스로 센 것**이다.
+**버전** — 이 판의 소스에서 `require`·`check`·`error`·`TODO` 는 `@kotlin.internal.InlineOnly` 인 **`inline fun`** 이고, 계약 표지 `ExperimentalContracts` 는 **`@SinceKotlin("1.3")` + `@RequiresOptIn`** 이다((5)) — ★★★ **2.4.20 에서도 직접 계약을 쓰려면 opt-in 이 필요하다**((3)).
+**경계** — ★★★ **`Nothing` 타입**(`error()`·`TODO()` 가 돌아오지 않는다는 것 · `?:` 뒤에 쓸 수 있는 까닭)과 검사 예외가 없다는 것은 [34번 주제](../34-exceptions-nothing-and-try-expression/)가 정본이다. **`TODO()` 의 `NotImplementedError` 가 `catch (e: Exception)` 을 빠져나간다**는 것은 [49번 주제](../49-result-and-runcatching/) (4)가 이미 쟀다(다섯 중 둘이 `Error`) — 여기서는 다시 안 잰다.

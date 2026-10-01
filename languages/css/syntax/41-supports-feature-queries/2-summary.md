@@ -1,12 +1,5 @@
 # css/syntax/41 — `@supports` 기능 질의 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Conditional Rules Module Level 4](https://drafts.csswg.org/css-conditional-4/) 의 「`@supports`」·「Supports Queries」·「`CSS.supports()`」 절과 [CSS Conditional Rules 5](https://drafts.csswg.org/css-conditional-5/) 의 `font-format()`/`font-tech()`. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle`·`cssRules`·`CSS.supports()` 로 읽은 것이다. **질의 결과와 실제 규칙의 동작을 매번 둘 다 재서** 대조했다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — CSS 에 언어 버전은 없다. `@supports` 는 Baseline **widely**(2015-09-30 → 2018-03-30) · `CSS.supports()` 는 **widely**(2020-01-15) · **`at-rule()` 질의는 Baseline limited** 인데 **Chrome 151 은 지원한다**(실측) — `api.webstatus.dev` 조회 결과.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`@supports` 는 「이 브라우저가 이 문법을 아느냐」를 묻는 자다. 그런데 이 자가 때때로 거짓말을 한다.**
@@ -500,3 +493,10 @@ CSS.supports("at-rule(@container)")        // Baseline limited 인데 Chrome 151
   모르는 `format()` 을 만나면 그 항목을 건너뛴다 — **네트워크도 안 쓴다.**
   `font-format()` 질의는 **그보다 큰 덩어리**(폰트 종류를 통째로 갈아 끼우는 것)를 가를 때 쓴다.
 - **`at-rule()` 질의는 Baseline limited 인데 Chrome 151 은 지원한다**(실측: `at-rule(@container)` 가 `true`, `at-rule(@zzbogus)` 가 `false`). **「지원 여부를 묻는 기능 자체의 지원 여부」** 를 먼저 물어야 하는 순환이 있고, 그래서 널리 쓰기에는 아직 이르다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Conditional Rules Module Level 4](https://drafts.csswg.org/css-conditional-4/) 의 「`@supports`」·「Supports Queries」·「`CSS.supports()`」 절과 [CSS Conditional Rules 5](https://drafts.csswg.org/css-conditional-5/) 의 `font-format()`/`font-tech()`. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle`·`cssRules`·`CSS.supports()` 로 읽은 것이다. **질의 결과와 실제 규칙의 동작을 매번 둘 다 재서** 대조했다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — CSS 에 언어 버전은 없다. `@supports` 는 Baseline **widely**(2015-09-30 → 2018-03-30) · `CSS.supports()` 는 **widely**(2020-01-15) · **`at-rule()` 질의는 Baseline limited** 인데 **Chrome 151 은 지원한다**(실측) — `api.webstatus.dev` 조회 결과.

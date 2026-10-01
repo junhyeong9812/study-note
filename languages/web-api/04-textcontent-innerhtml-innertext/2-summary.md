@@ -1,13 +1,5 @@
 # web-api/04 — `textContent` 대 `innerHTML` 대 `innerText`: 파싱·비용·XSS — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 갈래는 언어가 아니라 플랫폼이다.** 언어 문법은 [`../../`](../../) 에 있고, 여기는 **브라우저가 건네주는 객체와 그 계약**이다.\
-> **기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「`textContent`」 절 · [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「`innerHTML`」(DOM Parsing)·「`innerText`」·「fragment parsing algorithm」 절. 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.** 특히 **`innerText` 는 원래 IE 의 확장**이었다가 뒤늦게 표준화된 것이라 엔진 차이가 남아 있을 수 있는 자리인데, 여기서는 **한 엔진의 관찰**만 싣는다.\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `Trusted Types` 는 Baseline **newly**(2026-02-24), Sanitizer API 는 **limited** 다([`../README.md`](../README.md)) — 그래서 이 문서는 둘을 **대안으로 확정해 적지 않는다.**\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 **★ 이 주제에는 흔들리는 칸이 있다.** 네 주제 중 여기만 그렇다 — 시간을 재기 때문이다.
 
 | 안 흔들리는 칸 (근거로 쓴다) | 흔들리는 칸 (근거로 쓰지 않는다) |
@@ -735,3 +727,11 @@ el.innerText === el.textContent           // 트리 밖에서는 늘 true — �
 - **Sanitizer API** 는 브라우저가 정화를 맡아 주는 방향인데 Baseline **limited** 다. 오늘 쓰는 것은 대개 라이브러리이고, **직접 만든 필터는 이 문서의 실측이 보여 준 이유로 권하지 않는다.**
 - **`innerHTML` 읽기도 싸지 않다.** 실측에서 `textContent` 읽기보다 컸다 — 트리를 문자열로 다시 만드는 직렬화이기 때문이다. 다만 `innerText` 와는 **자릿수가 달랐다.**
 - **「안 돈다」가 노드에 찍힌 플래그라는 것**은 위 (3)의 마지막 실측이 보여 준다 — 옮겨도 안 돌았다. 반면 `createElement('script')` 로 만든 것은 붙이자마자 돌았다. **막힌 것은 「파싱으로 만들어졌다」는 출처 하나**이고, 스크립트를 만들어 붙이는 정상 경로는 그대로다.
+
+## 실행 환경
+
+**이 갈래는 언어가 아니라 플랫폼이다.** 언어 문법은 [`../../`](../../) 에 있고, 여기는 **브라우저가 건네주는 객체와 그 계약**이다.\
+**기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「`textContent`」 절 · [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「`innerHTML`」(DOM Parsing)·「`innerText`」·「fragment parsing algorithm」 절. 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.** 특히 **`innerText` 는 원래 IE 의 확장**이었다가 뒤늦게 표준화된 것이라 엔진 차이가 남아 있을 수 있는 자리인데, 여기서는 **한 엔진의 관찰**만 싣는다.\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `Trusted Types` 는 Baseline **newly**(2026-02-24), Sanitizer API 는 **limited** 다([`../README.md`](../README.md)) — 그래서 이 문서는 둘을 **대안으로 확정해 적지 않는다.**

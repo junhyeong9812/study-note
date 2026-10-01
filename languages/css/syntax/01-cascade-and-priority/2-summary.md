@@ -1,12 +1,5 @@
 # css/syntax/01 — 캐스케이드와 우선순위 계산: 출처·`!important`·레이어·명시도·순서 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「Cascade Sorting Order」·「Cascading Origins」·「Cascade Layers」 절. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **3개 전부**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle` 로 확인했다(CDP `Runtime.evaluate`). 「보이는 것」에 적은 색은 전부 그 실측값이다.\
-> **WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다.
-> **버전** — CSS 에는 언어 버전이 없다. 이 주제의 두 축은 각각 Baseline **widely**: 캐스케이드·`!important` 는 CSS1 부터, `@layer` 는 newly 2022-03-14 / widely 2024-09-14(목록 README 의 지원 표).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 화면은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **캐스케이드 = 한 자리를 두고 후보가 여럿 붙었을 때, 심사위원 여섯이 순서대로 탈락시키는 토너먼트다.**
@@ -485,3 +478,10 @@ background-color 바구니              background-image 바구니
   방법론(BEM·ITCSS)이 아니라 언어 기능으로 푸는 쪽이다(목록 README 의 「뺀 것과 이유」 참고).
 - 전환·애니메이션 선언이 사다리에 **따로 칸을 갖는 이유**는, 그 값들이 스타일시트의 선언이 아니라 **시간에 따라 엔진이 만들어 내는 값**이기 때문이다.\
   그래서 전환이 도는 동안에는 `!important` 조차 그 값을 못 덮는다([목록의 **52번 주제**](../52-transition/)).
+
+## 실행 환경
+
+**기준 소스** — [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「Cascade Sorting Order」·「Cascading Origins」·「Cascade Layers」 절. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **3개 전부**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle` 로 확인했다(CDP `Runtime.evaluate`). 「보이는 것」에 적은 색은 전부 그 실측값이다.\
+**WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다.
+**버전** — CSS 에는 언어 버전이 없다. 이 주제의 두 축은 각각 Baseline **widely**: 캐스케이드·`!important` 는 CSS1 부터, `@layer` 는 newly 2022-03-14 / widely 2024-09-14(목록 README 의 지원 표).

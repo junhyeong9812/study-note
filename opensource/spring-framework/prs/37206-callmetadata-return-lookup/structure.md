@@ -1,11 +1,5 @@
 # PR #37206 — 무대의 실구조와 워크플로우
 
-> PR #37206의 무대가 되는 실구조·워크플로우.\
-> 문제와 수정은 [README.md](README.md), 테스트는 [tests.md](tests.md), 착수 시점 분석은 [analysis.md](analysis.md) 참조.
->
-> 기준: 로컬 HEAD `8f9027a995f`(브랜치 `fix/callmetadata-function-return-lookup` = upstream main `7daf1013aa8` 리베이스 + fix 커밋).\
-> **이 시점의 `CallMetaDataContext.java`에는 이미 수정이 반영돼 있다** — 아래 file:line은 "수정 후" 좌표이고, 2절의 수정 전 워크플로우는 커밋의 `-`쪽으로 재구성한 것이다.
-
 ## 1. 무대 — 실구조
 
 이 결함의 무대는 **`SimpleJdbcCall`이 컴파일될 때 딱 한 번 도는 대조 루프**다.\
@@ -302,3 +296,8 @@ actualFunctionReturnName = "RESULT"              ← [1]이 채택
   변형 B(스퓨리어스 예외) 갈래의 배경이자, `byPassReturnParameter`가 왜 provider마다 다른지의 근거.
 - [analysis.md](analysis.md) — 착수 시점에 작성한 전체 메서드 그래프와 이름표 사전.\
   "같은 이름이 네 가지 표기로 돌아다닌다"는 혼란을 표로 정리한 §2.5가 이 문서 4절의 전신이다.
+
+## 출처
+
+기준: 로컬 HEAD `8f9027a995f`(브랜치 `fix/callmetadata-function-return-lookup` = upstream main `7daf1013aa8` 리베이스 + fix 커밋).\
+**이 시점의 `CallMetaDataContext.java`에는 이미 수정이 반영돼 있다** — 본문의 file:line은 "수정 후" 좌표이고, 2절의 수정 전 워크플로우는 커밋의 `-`쪽으로 재구성한 것이다.

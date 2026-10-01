@@ -1,16 +1,5 @@
 # java/syntax/36 — `StringBuilder` 와 문자열 연결이 컴파일되는 방식 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §15.18.1 String Concatenation Operator +](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · [Java SE 21 `StringBuilder` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/StringBuilder.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/AbstractStringBuilder.java`(`lib/src.zip`).
-> **실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> `javap -c` · `javap -v` 로 **컴파일된 결과 자체**를 떴고, 성능은 **직접 재서** 표로 실었다.\
-> 바이트코드 형태는 **17.0.13 · 21.0.5 · 25.0.1 에서 모두 같았다**(셋 다 `invokedynamic`).
-> **버전** — ★ **JDK 9부터 `+` 는 `StringBuilder` 가 아니라 `invokedynamic` 으로 컴파일된다**(JEP 280).\
-> "루프 안 `+=` 는 반복마다 `StringBuilder` 를 새로 만든다"는 **Java 8까지의 설명**이다. 이 문서는 그것을 바이트코드로 반증한다.\
-> `String.join` 은 **8**, `String.repeat`·`lines` 는 **11**, `formatted` 는 **15**.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> 선행: [35 `String`](../35-string/).
-
 ## 한눈에 — 쉽게 말하면
 
 **문자열을 `+` 로 이어 붙이는 것은 새 종이에 처음부터 다시 옮겨 적는 것이고,\
@@ -644,3 +633,15 @@ public static Collector<CharSequence, ?, String> joining(CharSequence delimiter,
   즉 이어 붙이는 방식이 셋(`+`·`StringBuilder`·`StringJoiner`)이고, **셋 다 "매번 전체 복사"를 피한다**는 점만 같다.
 - **`String.repeat(0)` 이 `""` 와 `==` 인 것**은 구현 최적화다(실행으로 확인).\
   명세가 보장하는 것이 아니므로 코드가 의존하면 안 된다 — [`../35-string/`](../35-string/) 의 같은 교훈이다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §15.18.1 String Concatenation Operator +](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · [Java SE 21 `StringBuilder` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/StringBuilder.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/AbstractStringBuilder.java`(`lib/src.zip`).
+**실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+`javap -c` · `javap -v` 로 **컴파일된 결과 자체**를 떴고, 성능은 **직접 재서** 표로 실었다.\
+바이트코드 형태는 **17.0.13 · 21.0.5 · 25.0.1 에서 모두 같았다**(셋 다 `invokedynamic`).
+**버전** — ★ **JDK 9부터 `+` 는 `StringBuilder` 가 아니라 `invokedynamic` 으로 컴파일된다**(JEP 280).\
+"루프 안 `+=` 는 반복마다 `StringBuilder` 를 새로 만든다"는 **Java 8까지의 설명**이다. 이 문서는 그것을 바이트코드로 반증한다.\
+`String.join` 은 **8**, `String.repeat`·`lines` 는 **11**, `formatted` 는 **15**.
+
+선행: [35 `String`](../35-string/).

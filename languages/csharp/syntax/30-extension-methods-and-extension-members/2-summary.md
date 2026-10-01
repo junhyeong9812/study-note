@@ -1,26 +1,5 @@
 # csharp/syntax/30 — 확장 메서드와 확장 멤버(C# 14) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — 확장 멤버 선언(`extension`)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/extension)(열어서 확인: 「**C# 14 부터** 최상위 비제네릭 `static class` 가 `extension` 블록으로 확장 멤버를 선언할 수 있다」 ·\
-> 「`extension` 블록 안에 **메서드·속성·인덱서·연산자**를 선언할 수 있다」 · 「**두 형태의 확장 메서드는 같은 IL 을 만든다** — 호출자는 둘을 구별할 수 없다」 ·\
-> 「이름 없는 수신자 `extension(IEnumerable<int>)` 는 멤버가 전부 정적일 때」 · ★★★ 「**C# 15 부터** `extension` 블록에 **인덱서**를 선언할 수 있다」) ·
-> [Learn — 반복문(`foreach`)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/iteration-statements)(열어서 확인: 「`GetEnumerator` 는 **확장 메서드여도 된다**」).
-> **실행 검증** — 이 문서의 모든 출력·진단·IL 은 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. **대비는 실측이다** — **javac 21.0.5** 로 「없다」를 던졌다((5)).
-> **버전** — `this` 확장 메서드 **C# 3**(★ `-langversion:2` 에서 **`CS8023 … 3 or greater`** · (4)) · `extension` 블록 **C# 14** · 확장 인덱서 **C# 15 예정**(Learn · 이 판 `CS8652` preview).\
-> ★★★ **C# 13 은 `extension` 블록을 「판이 낮다」로 막지 않는다 — 파서가 못 읽는다**(`CS1513`·`CS1022`·`CS1001`). 「14 이상을 쓰라」는 안내가 **없다**((4)).
-> **경계** — ★★★ **확장 인덱서**는 [14번](../14-indexers/) (7)이 먼저 던졌다(`CS8652` · preview 에서 선언은 통과하는데 호출하면 **`CS0029`** — 후보에 안 올라온다) — **인용하고, 여기서는 같은 판 격자의 한 행으로만** 다시 찍는다.\
-> ★ 정적 메서드 그룹은 [27번](../27-delegates-and-func-action/) · `callvirt` 의 널 검사는 [16번](../16-inheritance-virtual-override-abstract-sealed-new/) · `foreach` 의 확장 `GetEnumerator` 는 [31번](../31-ienumerable-and-foreach/) (2).
-> ★★★ **본체 창은 ① IL 덤프다** — 「문법 설탕」은 **두 호출의 IL 이 한 글자도 같은 것**으로만 증명된다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** · IL **오프셋 폭** | ★★★ **진단 코드**(`CS8023` · `CS8652` · `CS0029` · `CS1513`) · **「된 칸 N / M」** |
-> | ★ 컴파일러가 지은 **표지 타입 이름의 해시**(`<G>$BA41…` · `<M>$DE9F…`) | ★★★ **옵코드**(`call Ext::Twice` 대 `callvirt Object::GetHashCode`) · `[Extension]` 이 **어디에 붙나** · 이름의 **모양**(`get_Square`) |
-
 ## 이 판
 
 ```text
@@ -463,3 +442,25 @@ HELLO! · h · ababab · 6
 - ★ **`ref` 수신자 확장**(`this ref int x`) · **구조체 수신자의 복사** — 안 던졌다.
 - ★ **확장 멤버 해석 순서가 여러 `using` 사이에서 겹칠 때**(모호성 `CS0121`) — 안 던졌다.
 - ★ **`<G>$…` 표지 타입의 정확한 구조** — 리플렉션으로 이름만 봤다. 메타데이터 명세는 **안 읽었다.**
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — 확장 멤버 선언(`extension`)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/extension)(열어서 확인: 「**C# 14 부터** 최상위 비제네릭 `static class` 가 `extension` 블록으로 확장 멤버를 선언할 수 있다」 ·\
+「`extension` 블록 안에 **메서드·속성·인덱서·연산자**를 선언할 수 있다」 · 「**두 형태의 확장 메서드는 같은 IL 을 만든다** — 호출자는 둘을 구별할 수 없다」 ·\
+「이름 없는 수신자 `extension(IEnumerable<int>)` 는 멤버가 전부 정적일 때」 · ★★★ 「**C# 15 부터** `extension` 블록에 **인덱서**를 선언할 수 있다」) ·
+[Learn — 반복문(`foreach`)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/iteration-statements)(열어서 확인: 「`GetEnumerator` 는 **확장 메서드여도 된다**」).
+**실행 검증** — 이 문서의 모든 출력·진단·IL 은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. **대비는 실측이다** — **javac 21.0.5** 로 「없다」를 던졌다((5)).
+**버전** — `this` 확장 메서드 **C# 3**(★ `-langversion:2` 에서 **`CS8023 … 3 or greater`** · (4)) · `extension` 블록 **C# 14** · 확장 인덱서 **C# 15 예정**(Learn · 이 판 `CS8652` preview).\
+★★★ **C# 13 은 `extension` 블록을 「판이 낮다」로 막지 않는다 — 파서가 못 읽는다**(`CS1513`·`CS1022`·`CS1001`). 「14 이상을 쓰라」는 안내가 **없다**((4)).
+**경계** — ★★★ **확장 인덱서**는 [14번](../14-indexers/) (7)이 먼저 던졌다(`CS8652` · preview 에서 선언은 통과하는데 호출하면 **`CS0029`** — 후보에 안 올라온다) — **인용하고, 여기서는 같은 판 격자의 한 행으로만** 다시 찍는다.\
+★ 정적 메서드 그룹은 [27번](../27-delegates-and-func-action/) · `callvirt` 의 널 검사는 [16번](../16-inheritance-virtual-override-abstract-sealed-new/) · `foreach` 의 확장 `GetEnumerator` 는 [31번](../31-ienumerable-and-foreach/) (2).
+★★★ **본체 창은 ① IL 덤프다** — 「문법 설탕」은 **두 호출의 IL 이 한 글자도 같은 것**으로만 증명된다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** · IL **오프셋 폭** | ★★★ **진단 코드**(`CS8023` · `CS8652` · `CS0029` · `CS1513`) · **「된 칸 N / M」** |
+| ★ 컴파일러가 지은 **표지 타입 이름의 해시**(`<G>$BA41…` · `<M>$DE9F…`) | ★★★ **옵코드**(`call Ext::Twice` 대 `callvirt Object::GetHashCode`) · `[Extension]` 이 **어디에 붙나** · 이름의 **모양**(`get_Square`) |

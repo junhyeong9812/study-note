@@ -1,18 +1,5 @@
 # csharp/syntax/06 — 널 허용 참조 타입(C# 8) — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> **환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
-> 진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
-> ★★★ **이 주제의 창은 컴파일 진단과 IL 둘이다.** 할당 바이트는 **쓸 일이 없다** — 왜인지가 3번의 답이다.
-> ★★★ **3번이 이 주제의 본체다.** 거기서 막히면 나머지가 전부 안 풀린다.
-> ★★ **「런타임이 막아 준다」로 답하지 마라** — 1번·4번이 그 전제를 직접 뒤집는다.
-> 선행 — [01번](../01-value-types-and-reference-types/)(참조 타입) ·
-> 짝 — [07번](../07-null-operators/)(연산자) · [08번](../08-nullable-value-types/)(값 타입의 `?`).
-> 대비 — Kotlin 의 [널 안전 타입 편](../../../kotlin/syntax/03-null-safe-types/) ·
-> TS 의 [`any`·`unknown`·`never`·`void` 편](../../../ts/syntax/04-any-unknown-never-void/).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -196,6 +183,17 @@ public static class Region {
 - TypeScript 의 `strictNullChecks` 와는 **어느 쪽이 더 가까운가** — 왜인가?
 - Java 의 `Optional` 이 C# 의 주석과 **할당 면에서** 어떻게 다른가?
 - C# 이 이것을 **에러가 아니라 경고로 만든 이유**는 기술인가 역사인가?
+
+## 실행 환경
+
+**환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
+진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
+★★★ **이 주제의 창은 컴파일 진단과 IL 둘이다.** 할당 바이트는 **쓸 일이 없다** — 왜인지가 3번의 답이다.
+★★ **「런타임이 막아 준다」로 답하지 마라** — 1번·4번이 그 전제를 직접 뒤집는다.
+선행 — [01번](../01-value-types-and-reference-types/)(참조 타입) ·
+짝 — [07번](../07-null-operators/)(연산자) · [08번](../08-nullable-value-types/)(값 타입의 `?`).
+대비 — Kotlin 의 [널 안전 타입 편](../../../kotlin/syntax/03-null-safe-types/) ·
+TS 의 [`any`·`unknown`·`never`·`void` 편](../../../ts/syntax/04-any-unknown-never-void/).
 
 ## 복습 기록
 

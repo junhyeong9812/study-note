@@ -1,20 +1,5 @@
 # python/syntax/38-namedtuple-and-typeddict — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★★★ 2번은 **격자의 칸을 하나씩** 채워야 한다. 마지막 줄의 숫자까지 적는다.
-> ★★ 예외가 나는 칸은 **예외 종류까지** 적어야 맞은 것이다.
-> ★★ 이 주제는 **「타입 검사기라면 무엇을 잡을까」를 묻지 않는다** — 이 머신에 검사기가 없어 정답을 확인할 수 없다.
-> 묻는 것은 전부 **파이썬이 실행 중에 무엇을 하나**다.
->
-> 실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
-> ★ 선행 — [11](../11-tuple-and-unpacking/1-question.md)(튜플) · [12](../12-dict-and-key-requirements/1-question.md)(`dict`) ·
-> [36](../36-dataclasses/1-question.md)(dataclass). 막히면 그중 무엇이 안 잡힌 것인지부터 짚어라.
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -333,6 +318,17 @@ except Exception as exc:
 * ★ [36번](../36-dataclasses/2-summary.md)의 dataclass 와 이 주제의 `NamedTuple` 은 **가변 기본값**에서 어떻게 다르게 구나?
 * ★ [37번](../37-enum/2-summary.md)의 `IntEnum` 과 이 주제의 `NamedTuple` 은 **어떤 함정을 공유**하나?
 * ★ [TS 01번](../../../ts/syntax/01-what-ts-adds-and-erases/2-summary.md)의 `interface` 와 `TypedDict` 는 「런타임에 남는가」에서 어떻게 다른가?
+
+## 실행 환경
+
+★★★ 2번은 **격자의 칸을 하나씩** 채워야 한다. 마지막 줄의 숫자까지 적는다.
+★★ 예외가 나는 칸은 **예외 종류까지** 적어야 맞은 것이다.
+★★ 이 주제는 **「타입 검사기라면 무엇을 잡을까」를 묻지 않는다** — 이 머신에 검사기가 없어 정답을 확인할 수 없다.
+묻는 것은 전부 **파이썬이 실행 중에 무엇을 하나**다.
+
+실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
+★ 선행 — [11](../11-tuple-and-unpacking/1-question.md)(튜플) · [12](../12-dict-and-key-requirements/1-question.md)(`dict`) ·
+[36](../36-dataclasses/1-question.md)(dataclass).
 
 ## 복습 기록
 

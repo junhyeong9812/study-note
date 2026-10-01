@@ -1,22 +1,5 @@
 # cpp/syntax/05 — `auto`·`decltype` 과 타입 추론 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **예측형 위주**다 — `auto` 가 **무엇을 떨어뜨리는지**,
-> `decltype` 이 **무엇을 그대로 베끼는지**를 맞힐 수 있는지 묻는다.
-> **환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux.
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
-> ★★★ **이 주제의 답은 「출력」이 아니라 「타입」이다.** 타입은 실행 출력으로 안 보인다 —
-> 그래서 **정의 없는 템플릿에 넣어 의도적으로 타입 에러를 받는다.**
-> ```text
-> template <class T> struct TypeOf;   // 선언만 — 정의가 없다
-> TypeOf<decltype(x)> probe;          // error: ... TypeOf<int> ... incomplete type
-> ```
-> 아래 블록들은 **전부 컴파일 에러가 나는 것이 정상**이다. 읽을 것은 **`TypeOf<...>` 의 꺾쇠 안**이다.
-> 선행 — 형제 [`07번`](../07-references-vs-pointers/)(참조와 포인터). `auto&`·`auto&&` 가 무엇인지가 거기서 온다.
-> 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/)의 `auto x{1}` 대 `auto x = {1}` 도 같이 본다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -262,6 +245,20 @@ int main() { return h(); }
 - `auto x = {1}` 이 `initializer_list` 가 되는 것의 정본은 형제 몇 번인가?
 - `decltype(auto)` 로 지역을 돌려주면 생기는 문제의 정본은 목록의 몇 번인가?
 - `auto` 로 받은 프록시가 무는 자리(`vector<bool>`)의 컨테이너 쪽 정본은 목록의 몇 번인가?
+
+## 실행 환경
+
+**환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux.
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
+★★★ **이 주제의 답은 「출력」이 아니라 「타입」이다.** 타입은 실행 출력으로 안 보인다 —
+그래서 **정의 없는 템플릿에 넣어 의도적으로 타입 에러를 받는다.**
+```text
+template <class T> struct TypeOf;   // 선언만 — 정의가 없다
+TypeOf<decltype(x)> probe;          // error: ... TypeOf<int> ... incomplete type
+```
+본문의 블록들은 **전부 컴파일 에러가 나는 것이 정상**이다. 읽을 것은 **`TypeOf<...>` 의 꺾쇠 안**이다.
+선행 — 형제 [`07번`](../07-references-vs-pointers/)(참조와 포인터). `auto&`·`auto&&` 가 무엇인지가 거기서 온다.
+형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/)의 `auto x{1}` 대 `auto x = {1}` 도 같이 본다.
 
 ## 복습 기록
 

@@ -1,10 +1,5 @@
 # issue/search-engine/multilingual-analysis-chain — 분석기 체인은 순서 있는 파이프라인이다 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. 분석기는 char_filter → tokenizer → token filter 순서로 돈다. `asciifolding`을 원문 문자에 의존하는 언어별 음차(transliteration) 필터 **앞에** 두면 `München`은 어떻게 색인되는가. 폴딩을 없애지 않고도 두 요구(폴딩 매칭·원문 기반 변환)를 함께 만족시키는 옵션은?
 2. 대문자 입력(`PH`)이 소문자 기준으로 짠 철자 정규화 char_filter 매핑(`ph => f`)에 걸리지 않았다. 왜 lowercase를 먼저 적용할 수 없었는가 — 그리고 선택한 해결은?

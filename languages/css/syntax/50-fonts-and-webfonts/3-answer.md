@@ -1,10 +1,5 @@
 # css/syntax/50 — 글꼴과 웹폰트: `font` 단축·`@font-face`·`font-display`·가변 폰트 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 px 수치와 시각별 값은 Google Chrome 151.0.7922.173 headless(Linux)에서 실제로 측정한 것**이다.\
-> ⚠️ **글꼴은 환경이다.** 숫자는 이 머신의 설치 글꼴에 달려 있다 — 재현되는 것은 숫자가 아니라 「**같으냐 다르냐**」다.\
-> 규칙은 [CSS Fonts 4](https://drafts.csswg.org/css-fonts-4/) · [CSS Fonts 5](https://drafts.csswg.org/css-fonts-5/) · [CSS Font Loading 3](https://drafts.csswg.org/css-font-loading/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -545,3 +540,9 @@ google-chrome --headless --disable-gpu --no-sandbox --dump-dom /tmp/doc.html 2>/
 - **이름 붙은 인스턴스** — 가변 폰트가 미리 이름을 붙여 둔 축 좌표.
 - **합성(synthesis)** — 굵은/기울인 face 가 없을 때 브라우저가 흉내 내는 것.
 - **CLS** — 페이지가 뜨는 동안 요소가 밀린 양을 합산한 지표. 글꼴 교체가 큰 원인이다.
+
+## 실행 환경
+
+이 파일의 **모든 px 수치와 시각별 값은 Google Chrome 151.0.7922.173 headless(Linux)에서 실제로 측정한 것**이다.\
+⚠️ **글꼴은 환경이다.** 숫자는 이 머신의 설치 글꼴에 달려 있다 — 재현되는 것은 숫자가 아니라 「**같으냐 다르냐**」다.\
+규칙은 [CSS Fonts 4](https://drafts.csswg.org/css-fonts-4/) · [CSS Fonts 5](https://drafts.csswg.org/css-fonts-5/) · [CSS Font Loading 3](https://drafts.csswg.org/css-font-loading/) 로 접지했다.

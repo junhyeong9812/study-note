@@ -1,8 +1,5 @@
 # network/15-tcp-handshake-and-backlog — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고, 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> ⚠️ 이 질문 목록은 Claude 초안(2026-09-30). 본인 검수 후 이 줄을 `✅ 검수 완료(날짜)`로 바꾼다.
-
 ## 질문
 
 1. (그림) 3-way handshake의 세 세그먼트를 SEQ·ACK 값과 함께 그리고, 각 단계에서 양쪽의 TCP 상태를 적어라.

@@ -1,11 +1,5 @@
 # PR #37259 - 테스트 해설 (테스트 하나하나)
 
-> `ReactiveAdapterRegistryTests`의 중첩 클래스 `Mutiny`에 추가된 2건 + 같은 그룹의
-> 기존 5건이 맡은 가드 역할. 각 테스트를 "무엇을 주장하나 / 왜 red 또는 가드인가 /
-> 단언 하나하나의 의미"로 해설한다. red와 가드의 역할 분담 개념은
-> [../37153/guard-tests.md](../37153-enum-array-annotation-probe/guard-tests.md), 형식 원본은
-> [../37153/tests.md](../37153-enum-array-annotation-probe/tests.md).
-
 배치 전체를 먼저 본다.\
 이 결함은 **어댑터의 한 방향(`toPublisher`)에서만, 그것도 소스가 `null`일 때만** 발화한다.\
 그래서 새 테스트 둘이 "null 소스"와 "역방향의 빈 입력"을 각각 맡고 기존 다섯이 "비-null 소스"와 "형제 타입"을 맡는 구도가 된다.\

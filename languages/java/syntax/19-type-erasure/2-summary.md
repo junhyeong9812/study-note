@@ -1,17 +1,5 @@
 # java/syntax/19 — 타입 소거: 런타임에 없는 것·제네릭 배열·브리지 메서드 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §4.6 Type Erasure](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [§4.8 Raw Types](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [§8.4.8.3 Requirements in Overriding and Hiding](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [JVMS SE 21 §4.7.9 The Signature Attribute](https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-4.html) · [JVMS §4.3 Descriptors](https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-4.html) · JDK 21.0.5 표준 라이브러리 소스(`lib/src.zip`).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> `Ex.java (19-b)` `(19-d)` `(19-e)` `(19-f)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 다 돌렸고 출력이 한 글자도 다르지 않았다.\
-> 컴파일 에러 `(19-c1)` `(19-c3)` 도 17 과 25 에서 `diff` 로 대조해 **문자 단위로 같았다.**\
-> **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·JVMS 인용으로만 적었다.
-> **버전** — 제네릭과 소거는 **Java 5**. `@SafeVarargs` 는 **7**(`src.zip` 의 `@since 1.7` 확인).
-> **범위** — 타입 파라미터를 **선언하는 것**은 [`../17-generic-declarations/`](../17-generic-declarations/) 가,\
-> `? extends`/`? super` 는 [`../18-wildcards-pecs/`](../18-wildcards-pecs/) 가 정본이다.\
-> 여기는 **컴파일 후에 무엇이 남고 무엇이 사라지나**만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 JLS·JVMS 로, 출력은 실행과 `javap` 로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **소거는 "실행에 쓰는 표에서는 타입 인자를 지우고, 설명서에는 남겨 두는 것"이다.**
@@ -940,3 +928,15 @@ $ javac (기본)  ->  LocalVariableTypeTable 이 0개
 - **소거를 택한 이유는 하위 호환이었다.** Java 5 가 제네릭을 넣을 때, 기존 `List` 를 쓰던 코드와 새 `List<String>` 코드가 **같은 JVM·같은 라이브러리에서 함께 돌아야** 했다.\
   타입 인자를 런타임에 남기는 방식(reification)이면 `java.util.List` 를 갈아엎어야 했다.\
   그 선택의 연혁은 [`../../../../history/java/java-5.md`](../../../../history/java/java-5.md) 가 정본이다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §4.6 Type Erasure](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [§4.8 Raw Types](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [§8.4.8.3 Requirements in Overriding and Hiding](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [JVMS SE 21 §4.7.9 The Signature Attribute](https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-4.html) · [JVMS §4.3 Descriptors](https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-4.html) · JDK 21.0.5 표준 라이브러리 소스(`lib/src.zip`).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+`Ex.java (19-b)` `(19-d)` `(19-e)` `(19-f)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 다 돌렸고 출력이 한 글자도 다르지 않았다.\
+컴파일 에러 `(19-c1)` `(19-c3)` 도 17 과 25 에서 `diff` 로 대조해 **문자 단위로 같았다.**\
+**"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·JVMS 인용으로만 적었다.
+**버전** — 제네릭과 소거는 **Java 5**. `@SafeVarargs` 는 **7**(`src.zip` 의 `@since 1.7` 확인).
+**범위** — 타입 파라미터를 **선언하는 것**은 [`../17-generic-declarations/`](../17-generic-declarations/) 가,\
+`? extends`/`? super` 는 [`../18-wildcards-pecs/`](../18-wildcards-pecs/) 가 정본이다.\
+여기는 **컴파일 후에 무엇이 남고 무엇이 사라지나**만 다룬다.

@@ -1,11 +1,5 @@
 # css/syntax/10 — 상태·폼 의사 클래스: `:hover`·`:focus-visible`·`:checked`·`:disabled` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 상태 목록과 모든 색은 Google Chrome 151.0.7922.173 에서 실제로 입력을 넣어 받은 것**이다.\
-> ★ 이 주제는 **스크린샷만으로는 검증되지 않는다.** `:hover`·`:active`·`:focus-visible` 은 입력이 있어야 켜진다.\
-> 그래서 Chrome 을 `--remote-debugging-port` 로 띄우고 **CDP 로 실제 마우스 이동·버튼 누름·Tab 키·문자 입력을 넣은 뒤** `element.matches(...)` 와 `getComputedStyle` 을 읽었다. 넣은 명령은 아래 **「실행 검증」** 절에 그대로 적었다.\
-> 규칙은 [Selectors Level 4](https://drafts.csswg.org/selectors-4/) 로, 지원 상태는 `api.webstatus.dev` 조회(2026-09-23)로 접지했다. **엔진은 Chrome 하나다.**
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -447,3 +441,10 @@ button:focus-visible { outline: 3px solid …; }
 | LVHA 가 순서로 갈리는 것 | 명시도가 같다는 **명세 보장**에서 나온다 | 다시 찍을 필요 없음 |
 
 **안 돌려 본 것** — **`:visited`**(headless 프로파일에 방문 기록이 없어 켜 볼 수 없었다. 프라이버시 제약으로 쓸 수 있는 속성이 제한된다는 것도 **미실행**이다) · **터치 기기의 `:hover`**(기기 없음) · **`:target`**(주소 프래그먼트가 스위치인 것) · **`:has(:focus-visible)` 과 `:focus-within` 이 버튼에서 갈리는지**(이 문서의 실험은 텍스트칸으로만 했다). 넷 다 이 문서에서 **결론으로 쓰지 않았고 「미실행」으로 표기했다.**
+
+## 실행 환경
+
+이 파일의 **모든 상태 목록과 모든 색은 Google Chrome 151.0.7922.173 에서 실제로 입력을 넣어 받은 것**이다.\
+★ 이 주제는 **스크린샷만으로는 검증되지 않는다.** `:hover`·`:active`·`:focus-visible` 은 입력이 있어야 켜진다.\
+그래서 Chrome 을 `--remote-debugging-port` 로 띄우고 **CDP 로 실제 마우스 이동·버튼 누름·Tab 키·문자 입력을 넣은 뒤** `element.matches(...)` 와 `getComputedStyle` 을 읽었다. 넣은 명령은 위 **「실행 검증」** 절에 그대로 적었다.\
+규칙은 [Selectors Level 4](https://drafts.csswg.org/selectors-4/) 로, 지원 상태는 `api.webstatus.dev` 조회(2026-09-23)로 접지했다. **엔진은 Chrome 하나다.**

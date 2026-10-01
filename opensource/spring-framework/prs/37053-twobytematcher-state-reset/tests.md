@@ -1,7 +1,5 @@
 # PR #37053 — 테스트 해설 (테스트 하나하나)
 
-> PR #37053 테스트 해설. 형식·개념은 ../37153/tests.md, ../37153/guard-tests.md 참조.
-
 이 PR의 테스트 다섯 건은 두 층으로 나뉜다.\
 `DataBufferUtilsTests`의 세 건은 매처 자체의 계약을 보고, `StringDecoderTests`의 두 건은 사용자가 실제로 겪는 증상을 본다.\
 결론부터 말하면 fix 전 결과 기준으로 **red 4건, 항상 green인 가드 1건**이다.\

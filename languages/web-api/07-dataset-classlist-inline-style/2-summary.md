@@ -1,14 +1,5 @@
 # web-api/07 — `dataset`·`classList`·인라인 `style`: 스크립트가 만지는 세 표면 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 갈래는 언어가 아니라 플랫폼이다.** 언어 문법은 [`../../`](../../) 에 있고, 여기는 **브라우저가 건네주는 객체와 그 계약**이다.\
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/dom.html#dom-dataset) 의 「`dataset`」 절과 [WHATWG DOM Standard](https://dom.spec.whatwg.org/#interface-domtokenlist) 의 「Interface `DOMTokenList`」 절, [CSSOM](https://drafts.csswg.org/cssom/#the-elementcssinlinestyle-interface) 의 「`ElementCSSInlineStyle`」·「`CSSStyleDeclaration`」 절. 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.**\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `classList` 와 `dataset` 은 HTML5 가 들여왔고 `el.style` 은 DOM Level 2 Style(2000) 부터 있었다.\
-> **선행** — [06번 주제](../06-attribute-vs-property/2-summary.md)(속성 대 성질). 거기서 「**`data-*` 와 `class` 는 반영이 아니다**」까지 봤고, 여기는 **그럼 무엇이냐**부터다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -824,3 +815,12 @@ if (getComputedStyle(el).color === 'rgb(255, 0, 0)') { }   // 08번 주제
 - **`el.attributeStyleMap`**(Typed OM)은 `el.style` 의 타입이 붙은 판이다 — `el.attributeStyleMap.set('width', CSS.px(10))` 처럼 **숫자와 단위를 객체로** 다룬다. Chromium 계열에만 있어 이 목록에서는 다루지 않는다.
 - **`classList` 는 라이브다** — 인덱스로 순회하며 `remove` 하면 [02번 주제](../02-element-queries-and-live-collections/2-summary.md)의 라이브 컬렉션 사고와 **같은 모양**이 된다. `[...el.classList]` 로 떠 놓고 돌리는 것이 안전하다. (**이 문서는 그 순회 사고를 `classList` 로 다시 던져 보지 않았다** — 라이브라는 것만 위 (5)에서 실측했다.)
 - **인라인 `style` 과 CSP** — CSP 명세는 `style-src` 의 검사 대상을 **마크업의 `style` 속성과 `<style>` 요소**로 두고, `el.style` 같은 **CSSOM 쓰기는 검사 대상에 넣지 않는다.** **이 문서는 CSP 를 건 문서를 던져 보지 않았다** — 명세를 읽은 것이다. 실측이 필요한 경계이고, 그 자리는 목록의 **58번 주제**다.
+
+## 실행 환경
+
+**이 갈래는 언어가 아니라 플랫폼이다.** 언어 문법은 [`../../`](../../) 에 있고, 여기는 **브라우저가 건네주는 객체와 그 계약**이다.\
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/dom.html#dom-dataset) 의 「`dataset`」 절과 [WHATWG DOM Standard](https://dom.spec.whatwg.org/#interface-domtokenlist) 의 「Interface `DOMTokenList`」 절, [CSSOM](https://drafts.csswg.org/cssom/#the-elementcssinlinestyle-interface) 의 「`ElementCSSInlineStyle`」·「`CSSStyleDeclaration`」 절. 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.**\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `classList` 와 `dataset` 은 HTML5 가 들여왔고 `el.style` 은 DOM Level 2 Style(2000) 부터 있었다.\
+**선행** — [06번 주제](../06-attribute-vs-property/2-summary.md)(속성 대 성질). 거기서 「**`data-*` 와 `class` 는 반영이 아니다**」까지 봤고, 여기는 **그럼 무엇이냐**부터다.

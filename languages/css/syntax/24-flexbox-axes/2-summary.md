@@ -1,13 +1,5 @@
 # css/syntax/24 — Flexbox: 주축·교차축과 정렬(`justify-*`/`align-*`) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Flexible Box Layout Level 1](https://drafts.csswg.org/css-flexbox-1/) (축과 방향·`justify-content`·`align-items`) · [CSS Box Alignment Level 3](https://drafts.csswg.org/css-align-3/) (정렬 키워드의 정본). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 좌표를 재고 스크린샷으로 눈으로 확인했다.\
-> 본문에 나오는 좌표·픽셀 값은 전부 그 실측값이다. **WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다.
-> **버전** — Flexbox 는 Baseline **widely**(newly 2015-09-30 → widely 2018-03-30). flex `gap` 은 **widely**(newly 2021-04-26 → widely 2023-10-26)로 더 늦다(목록 README 의 지원 표).
-> **여기서 다루지 않는 것** — 「언제 왜 들어왔나」는 [`history/web/03-HTML-CSS-진화.md`](../../../../history/web/03-HTML-CSS-진화.md) 의 몫이다. 아이템 크기 해결(`flex` 단축)은 [목록의 **25번**](../25-flex-shorthand-and-sizing/), 줄바꿈·`gap`·`order` 는 **26번**이 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 화면은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **flex 컨테이너 = 컨베이어 벨트. 주축은 벨트가 흐르는 방향, 교차축은 벨트의 폭 방향이다.**
@@ -504,3 +496,11 @@ flex-wrap: nowrap  -> 항목 y = 0    (계산값은 똑같이 center 인데 아�
   움직임이 필요하면 `transform` 쪽으로 옮긴다 — 어떤 속성이 어느 단계를 다시 돌리는지는 [목록의 **56번 주제**](../56-rendering-pipeline-and-will-change/).
 - `align-items: baseline` 은 글자 크기가 다른 아이템을 나란히 놓을 때 **글자 밑줄을 맞춰** 준다.\
   상자 위아래를 맞추는 `flex-start`·`center` 와 결과가 눈에 띄게 다르고, 라벨과 값을 나란히 놓는 UI 에서 쓸모가 크다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Flexible Box Layout Level 1](https://drafts.csswg.org/css-flexbox-1/) (축과 방향·`justify-content`·`align-items`) · [CSS Box Alignment Level 3](https://drafts.csswg.org/css-align-3/) (정렬 키워드의 정본). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **4개 전부**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 좌표를 재고 스크린샷으로 눈으로 확인했다.\
+본문에 나오는 좌표·픽셀 값은 전부 그 실측값이다. **WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다.
+**버전** — Flexbox 는 Baseline **widely**(newly 2015-09-30 → widely 2018-03-30). flex `gap` 은 **widely**(newly 2021-04-26 → widely 2023-10-26)로 더 늦다(목록 README 의 지원 표).
+**여기서 다루지 않는 것** — 「언제 왜 들어왔나」는 [`history/web/03-HTML-CSS-진화.md`](../../../../history/web/03-HTML-CSS-진화.md) 의 몫이다. 아이템 크기 해결(`flex` 단축)은 [목록의 **25번**](../25-flex-shorthand-and-sizing/), 줄바꿈·`gap`·`order` 는 **26번**이 정본이다.

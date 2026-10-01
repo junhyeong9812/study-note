@@ -1,12 +1,5 @@
 # sql/41-JSON 타입과 함수 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> 표는 기존 `emp`·`dept` 만 썼고 JSON 문서는 CTE 안의 리터럴이다 — **새로 만든 표가 없다.**\
-> ★ **13번 한 문항만 실행으로 확인하지 못했다**(표 생성 금지). 그 자리에 그렇게 적었다.\
-> 문서 근거는 [PG 18 JSON Types](https://www.postgresql.org/docs/18/datatype-json.html) · [PG 18 JSON Functions](https://www.postgresql.org/docs/18/functions-json.html) · [MySQL 8.4 JSON](https://dev.mysql.com/doc/refman/8.4/en/json.html) · [MySQL 8.4 CREATE INDEX](https://dev.mysql.com/doc/refman/8.4/en/create-index.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -665,10 +658,18 @@ PG 의 `NULL` 은 **"PG 의 `->` 오른쪽은 키 이름이다"의 근거**이�
 `SHOW WARNINGS` 를 따로 묻지 않으면 경고 1292 가 **보이지 않는다.** 애플리케이션은 대개 묻지 않는다.
 
 ★ **안 돌려 본 자리는 13번 하나다** — 이유는 **이 작업의 제약**(표 생성 금지)이고, 환경이 없어서가 아니다.\
-그 자리는 **매뉴얼 인용**으로 적었고 본문·머리말에도 밝혔다. **인덱스에 들어갈 표현식 자체는 돌려 봤다.**
+그 자리는 **매뉴얼 인용**으로 적었고 본문·「실행 환경」에도 밝혔다. **인덱스에 들어갈 표현식 자체는 돌려 봤다.**
 
 **언어 보장 항목** — 3·9번. `->`/`->>` 의 반환 타입 구분과 "없는 키는 `NULL`" 은 두 엔진에서 같았다.\
 **방언이 갈리는 항목** — 1(타입 이름·`json` 의 부재) · 4(타입 확인 수단) · 5(마지막 원소) · 6(펴는 도구, 단 `JSON_TABLE` 은 공통) · 7(경로 문법) · 8(`#` 주석) · 10(틀린 타입의 처리) · 11~13(인덱스 전략) · 14(배열 순서 지정 가능 여부).\
 **두 엔진이 같았던 것** — 정규화 결과(1·2), `->`/`->>` 의 의미(3), 없는 키(9), JSON 문법 검사(10), 만들기 함수의 결과(14).
 
 **순서 보장** — 없다. 14번의 `ORDER BY d.id` 는 그래서 붙였고, **배열 안의 순서**는 PG 만 `jsonb_agg(… ORDER BY …)` 로 지정할 수 있다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+표는 기존 `emp`·`dept` 만 썼고 JSON 문서는 CTE 안의 리터럴이다 — **새로 만든 표가 없다.**\
+★ **13번 한 문항만 실행으로 확인하지 못했다**(표 생성 금지). 그 자리에 그렇게 적었다.\
+문서 근거는 [PG 18 JSON Types](https://www.postgresql.org/docs/18/datatype-json.html) · [PG 18 JSON Functions](https://www.postgresql.org/docs/18/functions-json.html) · [MySQL 8.4 JSON](https://dev.mysql.com/doc/refman/8.4/en/json.html) · [MySQL 8.4 CREATE INDEX](https://dev.mysql.com/doc/refman/8.4/en/create-index.html).

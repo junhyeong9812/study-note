@@ -1,11 +1,5 @@
 # domain-modeling-advanced/26-photocard-set — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/26-photocard-set/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -409,3 +403,7 @@ return complete;
 - 문제 원문: `src/main/java/com/domain/photocard/Distributor.java`(TODO 1~4 javadoc·enum 설명), `src/main/java/com/domain/photocard/Stock.java`(계약), `README.md`(함정·측정이 알려준 것·변종 검증에서 고친 것·생각해볼 것)
 - 계약: `src/test/java/com/domain/photocard/DistributorTest.java`(5장×2인·AAAAA·8장 중복금지 shortage 3·tie-break A·같은 seed 동일)
 - 수치: `src/test/java/com/domain/photocard/MeasurementTest.java`(2,945 · 1,608 · 2,702 · 216 · 12,875 · 795/1,488 · 0/1,457 · 3,992 · 31,566 · 2,925)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/26-photocard-set/impl/`).

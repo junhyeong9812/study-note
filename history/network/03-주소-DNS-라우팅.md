@@ -1,9 +1,5 @@
 # 주소 체계·DNS·라우팅 (1983 ~ )
 
-> 원본: `~/project/network-history/03-주소-DNS-라우팅.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·RFC 번호·주소·수치·클래스 표·사설 대역 표, 그리고 원문의 코드블록 2개는 원문 그대로다.\
-> ASCII 도식 12개(그중 3개는 원문 mermaid 그림을 글자로 옮긴 것, 2개는 원문 코드블록을 그대로 둔 것)와 「한눈에」의 우편 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -574,3 +570,9 @@ IPv6는 이를 처음부터 주소 종류로 내장했다.
 - [RFC 4271: A Border Gateway Protocol 4 (BGP-4)](https://www.rfc-editor.org/rfc/rfc4271.html)
 - [Border Gateway Protocol — Wikipedia](https://en.wikipedia.org/wiki/Border_Gateway_Protocol)
 - [RFC 1546: Host Anycasting Service](https://www.rfc-editor.org/rfc/rfc1546.html)
+
+## 출처
+
+원본: `~/project/network-history/03-주소-DNS-라우팅.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·RFC 번호·주소·수치·클래스 표·사설 대역 표, 그리고 원문의 코드블록 2개는 원문 그대로다.\
+ASCII 도식 12개(그중 3개는 원문 mermaid 그림을 글자로 옮긴 것, 2개는 원문 코드블록을 그대로 둔 것)와 「한눈에」의 우편 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

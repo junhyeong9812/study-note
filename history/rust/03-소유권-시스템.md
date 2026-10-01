@@ -1,10 +1,5 @@
 # Rust 소유권 시스템의 진화 (2010 \~ 현재)
 
-> 원본: `~/project/rust-history/03-소유권-시스템.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
-> 연도·버전·RFC 번호·Rust 코드블록 12개·「한눈에 보기」 표·「소유권이 컴파일 타임에 푸는 결함들」 표는 원문 그대로다.\
-> 내가 새로 그린 ASCII 도식은 4개다 — 2개는 원문 mermaid 그림을 글자로 옮긴 것이고, 2개는 원문 문장·주석을 두 칸에 나눠 놓은 대비 그림이다.\
-> 「한눈에」의 공책 비유, 용어 블록의 「예:」와 「주의:」, 「용어 풀이」도 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -453,3 +448,10 @@ Linux 커널이 C가 아닌 두 번째 언어로 Rust를 받아들이고(2022\~)
 - [Stabilizable Polonius support on nightly — Rust Project Goals 2025 H2](https://rust-lang.github.io/rust-project-goals/2025h2/polonius.html)
 - [GitHub — rust-lang/polonius](https://github.com/rust-lang/polonius)
 - [Fearless Concurrency — The Rust Programming Language (ch.16)](https://doc.rust-lang.org/book/ch16-00-concurrency.html)
+
+## 출처
+
+원본: `~/project/rust-history/03-소유권-시스템.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
+연도·버전·RFC 번호·Rust 코드블록 12개·「한눈에 보기」 표·「소유권이 컴파일 타임에 푸는 결함들」 표는 원문 그대로다.\
+내가 새로 그린 ASCII 도식은 4개다 — 2개는 원문 mermaid 그림을 글자로 옮긴 것이고, 2개는 원문 문장·주석을 두 칸에 나눠 놓은 대비 그림이다.\
+「한눈에」의 공책 비유, 용어 블록의 「예:」와 「주의:」, 「용어 풀이」도 원문에 없는 보충이다.

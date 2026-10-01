@@ -1,34 +1,5 @@
 # python/syntax/50-decimal-float-precision-and-round — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
-> - [`round()`(3.12)](https://docs.python.org/3.12/library/functions.html#round) — *"if two multiples are equally close, rounding is done toward the even choice"* · note *"`round(2.675, 2)` gives `2.67` instead of the expected `2.68`. This is not a bug: it's a result of the fact that most decimal fractions can't be represented exactly as a float."*
-> - [Floating-Point Arithmetic: Issues and Limitations](https://docs.python.org/3.12/tutorial/floatingpoint.html) — *"almost all platforms map Python floats to IEEE 754 binary64 "double precision" values"* · *"Starting with Python 3.1, Python (on most systems) is now able to choose the shortest of these and simply display `0.1`."*
-> - [`decimal`(3.12)](https://docs.python.org/3.12/library/decimal.html) — *"The significance of a new Decimal is determined solely by the number of digits input. Context precision and rounding only come into play during arithmetic operations."* ·
->   `FloatOperation` 절 *"mixing floats and Decimals is permitted in the `Decimal` constructor, `create_decimal()` and all comparison operators. Both conversion and comparisons are exact."* · *"Otherwise (the signal is trapped), only equality comparisons and explicit conversions are silent. All other mixed operations raise `FloatOperation`."* ·
->   기본 컨텍스트 *"`Context.prec` = `28`"* · `MAX_PREC` 표(32비트 `425000000` · 64비트 `999999999999999999`)
-> - [`sum()`(3.12)](https://docs.python.org/3.12/library/functions.html#sum) — *"Summation of floats switched to an algorithm that gives higher accuracy on most builds."*(3.12) · [What's New 3.12](https://docs.python.org/3.12/whatsnew/3.12.html) — *"`sum()` now uses Neumaier summation to improve accuracy and commutativity when summing floats or mixed ints and floats."*
-> - [`sys.float_repr_style`](https://docs.python.org/3.12/library/sys.html#sys.float_repr_style) — *"If the string has value `'short'` then for a finite float `x`, `repr(x)` aims to produce a short string with the property that `float(repr(x)) == x`."*(3.1)
-> - [`fractions`](https://docs.python.org/3.12/library/fractions.html) · [`float.hex`](https://docs.python.org/3.12/library/stdtypes.html#float.hex)
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신(Linux x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 한 블록(`sum`)을 더 던졌다. 교차 갈래 대비로 `node` **v18.19.1** 한 블록.\
-> ★★★ **이 문서는 시간을 한 번도 재지 않았다** — 「`Decimal` 은 느리다」·「`float` 이 빠르다」 같은 말은 하지 않는다. 잰 것은 **값이 무엇이 되나**뿐이다.\
-> **버전** — `repr` 최단 표기 **3.1** · `Decimal` 과 수 타입의 섞어 비교 전면 지원 **3.2** · `FloatOperation`·C 구현(`_decimal`) **3.3** · `math.ulp`·`math.nextafter` **3.9** · `sum()` 의 Neumaier 합 **3.12**.\
-> ★ **구현 대 언어 보장 한 줄** — `round` 의 짝수 쪽 동점 처리와 `Decimal` 의 컨텍스트 규칙이 **라이브러리 보장**이고, **`float` 이 IEEE 754 binary64 인 것은 CPython 이 C `double` 을 쓰는 구현의 사정**(문서가 *"almost all platforms"* 라고 적는다)이다. 이 머신의 `mant_dig 53` 은 관찰이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | 판이 오르면 **예외 문구**(`unsupported operand type(s) for …`) · `libmpdec` 판 번호 · `node --version` | ★★ 격자 마지막 줄 **「… N / M」** · `Decimal(x)` 로 찍은 **저장값 전 자릿수** · `float.hex()` |
-> | ★ 판 경계 — **`sum()` 의 결과**(3.11 과 3.12 가 이미 다르다 — 동작 8) | 예외 **타입** · `(exit N)` · `round` 결과 |
-> | — (주소·시간·`set` 순서를 한 곳도 안 찍었다. `hash` 는 **같은가만** 찍었다 — 수의 해시는 `PYTHONHASHSEED` 를 안 탄다) | 컨텍스트 기본값(`prec 28`·`ROUND_HALF_EVEN`) |
->
-> **선행** — [04-numeric-types-and-division](../04-numeric-types-and-division/2-summary.md)(★★★ **`0.1 + 0.2`·`round` 기본·`Decimal(0.1)`·`Fraction` 첫 만남은 그쪽이 먼저 쟀다** — 동작 5·6 절. 여기는 그 위에 **원인을 가르는 격자 · 컨텍스트 · 섞기 · 금액**을 쌓는다) ·
-> [47-json](../47-json/2-summary.md)(★ float 왕복 **7 / 7** — `json` 은 float 을 잃지 않았다).
-
 ## 한눈에 — 쉽게 말하면
 
 **`float` 은 「눈금이 2진으로 새겨진 자」이고, `Decimal` 은 「10진 눈금 자」다.**
@@ -1062,3 +1033,31 @@ same answer for 1/7        : True
 * ★ **배정 알고리즘** — 3등분의 나머지 1센트를 **누구에게** 주나(첫째 · 큰 몫 · 무작위)는 회계 규정의 몫이다. 동작 7 은 「첫째부터」 하나만 보였다.
 * ★ **`numpy`·DB 의 `NUMERIC`** — 이 문서의 창 밖이다. DB 의 `NUMERIC(p, s)` 는 `Decimal` 로 오고 가는 것이 드라이버의 관용이다.
 * ★ **32비트 빌드에서 다시 돌릴 것** — `MAX_PREC` 이 `425000000` 이 될 것이라는 말은 **문서 표의 말**이다(이 머신은 64비트 — 못 잰 것).
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
+- [`round()`(3.12)](https://docs.python.org/3.12/library/functions.html#round) — *"if two multiples are equally close, rounding is done toward the even choice"* · note *"`round(2.675, 2)` gives `2.67` instead of the expected `2.68`. This is not a bug: it's a result of the fact that most decimal fractions can't be represented exactly as a float."*
+- [Floating-Point Arithmetic: Issues and Limitations](https://docs.python.org/3.12/tutorial/floatingpoint.html) — *"almost all platforms map Python floats to IEEE 754 binary64 "double precision" values"* · *"Starting with Python 3.1, Python (on most systems) is now able to choose the shortest of these and simply display `0.1`."*
+- [`decimal`(3.12)](https://docs.python.org/3.12/library/decimal.html) — *"The significance of a new Decimal is determined solely by the number of digits input. Context precision and rounding only come into play during arithmetic operations."* ·
+  `FloatOperation` 절 *"mixing floats and Decimals is permitted in the `Decimal` constructor, `create_decimal()` and all comparison operators. Both conversion and comparisons are exact."* · *"Otherwise (the signal is trapped), only equality comparisons and explicit conversions are silent. All other mixed operations raise `FloatOperation`."* ·
+  기본 컨텍스트 *"`Context.prec` = `28`"* · `MAX_PREC` 표(32비트 `425000000` · 64비트 `999999999999999999`)
+- [`sum()`(3.12)](https://docs.python.org/3.12/library/functions.html#sum) — *"Summation of floats switched to an algorithm that gives higher accuracy on most builds."*(3.12) · [What's New 3.12](https://docs.python.org/3.12/whatsnew/3.12.html) — *"`sum()` now uses Neumaier summation to improve accuracy and commutativity when summing floats or mixed ints and floats."*
+- [`sys.float_repr_style`](https://docs.python.org/3.12/library/sys.html#sys.float_repr_style) — *"If the string has value `'short'` then for a finite float `x`, `repr(x)` aims to produce a short string with the property that `float(repr(x)) == x`."*(3.1)
+- [`fractions`](https://docs.python.org/3.12/library/fractions.html) · [`float.hex`](https://docs.python.org/3.12/library/stdtypes.html#float.hex)
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신(Linux x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 한 블록(`sum`)을 더 던졌다. 교차 갈래 대비로 `node` **v18.19.1** 한 블록.\
+★★★ **이 문서는 시간을 한 번도 재지 않았다** — 「`Decimal` 은 느리다」·「`float` 이 빠르다」 같은 말은 하지 않는다. 잰 것은 **값이 무엇이 되나**뿐이다.\
+**버전** — `repr` 최단 표기 **3.1** · `Decimal` 과 수 타입의 섞어 비교 전면 지원 **3.2** · `FloatOperation`·C 구현(`_decimal`) **3.3** · `math.ulp`·`math.nextafter` **3.9** · `sum()` 의 Neumaier 합 **3.12**.\
+★ **구현 대 언어 보장 한 줄** — `round` 의 짝수 쪽 동점 처리와 `Decimal` 의 컨텍스트 규칙이 **라이브러리 보장**이고, **`float` 이 IEEE 754 binary64 인 것은 CPython 이 C `double` 을 쓰는 구현의 사정**(문서가 *"almost all platforms"* 라고 적는다)이다. 이 머신의 `mant_dig 53` 은 관찰이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| 판이 오르면 **예외 문구**(`unsupported operand type(s) for …`) · `libmpdec` 판 번호 · `node --version` | ★★ 격자 마지막 줄 **「… N / M」** · `Decimal(x)` 로 찍은 **저장값 전 자릿수** · `float.hex()` |
+| ★ 판 경계 — **`sum()` 의 결과**(3.11 과 3.12 가 이미 다르다 — 동작 8) | 예외 **타입** · `(exit N)` · `round` 결과 |
+| — (주소·시간·`set` 순서를 한 곳도 안 찍었다. `hash` 는 **같은가만** 찍었다 — 수의 해시는 `PYTHONHASHSEED` 를 안 탄다) | 컨텍스트 기본값(`prec 28`·`ROUND_HALF_EVEN`) |
+
+**선행** — [04-numeric-types-and-division](../04-numeric-types-and-division/2-summary.md)(★★★ **`0.1 + 0.2`·`round` 기본·`Decimal(0.1)`·`Fraction` 첫 만남은 그쪽이 먼저 쟀다** — 동작 5·6 절. 여기는 그 위에 **원인을 가르는 격자 · 컨텍스트 · 섞기 · 금액**을 쌓는다) ·
+[47-json](../47-json/2-summary.md)(★ float 왕복 **7 / 7** — `json` 은 float 을 잃지 않았다).

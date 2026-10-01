@@ -1,10 +1,5 @@
 # css/syntax/04 — 값 처리 단계: 지정값·계산값·사용값·실제값 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `getComputedStyle`·`getBoundingClientRect`·`offsetWidth`·`clientWidth` 로 읽은 것이다.\
-> 규칙은 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 「Value Processing」과 [CSSOM](https://drafts.csswg.org/cssom/) 「resolved values」로 접지했다.\
-> **엔진은 Chrome 하나이고 `devicePixelRatio` 는 1이다.** 실제값 단계의 수치는 그 자리에 「구현 세부」로 표시했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -422,3 +417,9 @@ google-chrome --headless --disable-gpu --no-sandbox --dump-dom /tmp/doc.html 2>/
 - **`getBoundingClientRect()`** — 변환까지 적용된 실제 상자. 소수.
 - **1/64px 격자** *(Chrome 구현 세부)* — 엔진이 길이를 저장하는 고정소수점 단위.
 - **layout thrashing** — 읽기와 쓰기를 번갈아 해서 레이아웃이 반복해 도는 것.
+
+## 실행 환경
+
+이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `getComputedStyle`·`getBoundingClientRect`·`offsetWidth`·`clientWidth` 로 읽은 것이다.\
+규칙은 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 「Value Processing」과 [CSSOM](https://drafts.csswg.org/cssom/) 「resolved values」로 접지했다.\
+**엔진은 Chrome 하나이고 `devicePixelRatio` 는 1이다.** 실제값 단계의 수치는 그 자리에 「구현 세부」로 표시했다.

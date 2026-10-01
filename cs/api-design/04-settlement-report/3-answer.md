@@ -1,11 +1,5 @@
 # api-design/04-settlement-report — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 코드가 없는 문제집이므로 원본 REQUIREMENTS.md · solution/CHECKLIST.md · solution/REFERENCE.md 다.
-
-⚠️ 정답은 Claude 초안(2026-09-14) — 원본 CHECKLIST/REFERENCE 근거로 작성. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
@@ -325,3 +319,7 @@
   A: slow query log에는 `ORDER BY settled_at LIMIT 50 OFFSET 950000`류가 페이지 수만큼 반복해 보인다 — 깊은 OFFSET마다 앞부분을 다시 읽고 버리므로 뒤로 갈수록 느려지고, 게이트웨이 타임아웃(504)에 걸린다. 사용자가 다시 누르면 같은 전체 훑기가 또 시작돼 부하가 누적된다.\
   바꿀 것: ① OFFSET을 커서(keyset)로 — `WHERE (settled_at, settlement_id) > (마지막 값) LIMIT 50`으로 스트리밍한다. ② 동기 응답을 비동기 작업으로 — `202 Accepted` + 작업 자원(진행 상태) + 완료 알림 + 파일 링크. ③ `size`와 기간에 상한, 큰 기간 합계는 사전 집계.\
   재시도가 같은 작업을 또 만들지 않게 작업 키를 멱등하게 두고, 다운로드 워커를 조회 워커와 분리해 스레드 고갈이 일반 조회로 번지지 않게 한다.
+
+## 실행 환경
+
+기준 소스는 코드가 없는 문제집이므로 원본 REQUIREMENTS.md · solution/CHECKLIST.md · solution/REFERENCE.md 다.

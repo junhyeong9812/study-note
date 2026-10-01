@@ -1,11 +1,5 @@
 # java/syntax/60 — `null` 다루기: `Objects.requireNonNull`·`Optional` 의 경계 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·예외는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> `60-a`·`60-c` 는 **17.0.13 · 25.0.1** 에서도 출력이 같았고, `60-b` 는 **한 줄이 달랐다**\
-> (애너테이션의 `toString` — 아래 7번). **관찰이지 보장이 아니다.**\
-> JDK 소스 인용은 `lib/src.zip` 의 `Objects.java`·`Collectors.java` 원문이다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -662,3 +656,10 @@ JDK 25.0.1  : [@Ex.NonNull()]
 반면 "`requireNonNull` 은 `null` 이면 NPE"·"`requireNonNullElse` 는 기본값이 `null` 이어도 NPE"·
 "`Map.of`/`List.of` 는 `null` 을 거부"·"`HashMap` 은 `null` 키 하나를 허용"은 **javadoc 의 계약**이고,
 "`Else` 의 인자가 항상 평가되는 것"은 **JLS 의 인자 평가 규칙**이라 버전과 무관하다.
+
+## 실행 환경
+
+이 파일의 모든 출력·예외는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+`60-a`·`60-c` 는 **17.0.13 · 25.0.1** 에서도 출력이 같았고, `60-b` 는 **한 줄이 달랐다**\
+(애너테이션의 `toString` — 본문 7번). **관찰이지 보장이 아니다.**\
+JDK 소스 인용은 `lib/src.zip` 의 `Objects.java`·`Collectors.java` 원문이다.

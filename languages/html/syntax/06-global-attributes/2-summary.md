@@ -1,13 +1,5 @@
 # html/syntax/06 — 전역 속성: `id`/`class`/`title`/`hidden`/`data-*`/`contenteditable`/`translate` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Global attributes」](https://html.spec.whatwg.org/multipage/dom.html#global-attributes)·[「Embedding custom non-visible data」](https://html.spec.whatwg.org/multipage/dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes)·[「Named access on the Window object」](https://html.spec.whatwg.org/multipage/nav-history-apis.html#named-access-on-the-window-object) 절. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **「이식성」을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. ★ 이 주제에서 **`hidden="until-found"` 와 `contenteditable="plaintext-only"` 둘만 최근 표면**이고 나머지는 20년 넘게 안정돼 있다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★ **이 주제의 본체는 창 ② (프로브)다** — 속성은 **트리에 담긴 이름·값**과 **IDL 프로퍼티가 답하는 값**이 갈리는 자리이고, 그 둘은 직렬화로는 안 보인다. 창 ① 은 「소스의 이름이 트리에서 어떻게 바뀌었나」를 보일 때만 쓴다. 창 넷의 정의는 [01번](../01-document-skeleton/2-summary.md) 의 「이 갈래의 창」 절에 있다.
-
 **이 판의 Chrome**
 
 ```text
@@ -911,3 +903,12 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 `hidden` 에 열거 값을 얹었나** — 접힌 아코디언 안의 글자를 브라우저 「페이지에서 찾기」가 찾아내 펼쳐 주게 하려면, **「숨었지만 찾기에는 보이는」 제3의 상태**가 필요했다. `display: none` 으로는 그 상태를 만들 수 없다.
 - **`data-*` 가 없던 시절에는** 사람들이 `<div rel="42">` 처럼 **다른 속성을 훔쳐 썼다.** 이 주제의 (6) 이 보여 주듯 트리는 그것도 담아 주므로 **동작은 했다** — 다만 검증기가 막았고 뜻이 충돌했다.
 - **이름 있는 접근은 왜 아직 있나** — 1990년대 문서가 `document.폼이름` 으로 돌아가고 있기 때문이다. 03번의 「절대 멈추지 않는다」와 같은 집안의 결정이다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Global attributes」](https://html.spec.whatwg.org/multipage/dom.html#global-attributes)·[「Embedding custom non-visible data」](https://html.spec.whatwg.org/multipage/dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes)·[「Named access on the Window object」](https://html.spec.whatwg.org/multipage/nav-history-apis.html#named-access-on-the-window-object) 절. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **「이식성」을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. ★ 이 주제에서 **`hidden="until-found"` 와 `contenteditable="plaintext-only"` 둘만 최근 표면**이고 나머지는 20년 넘게 안정돼 있다.
+
+★★ **이 주제의 본체는 창 ② (프로브)다** — 속성은 **트리에 담긴 이름·값**과 **IDL 프로퍼티가 답하는 값**이 갈리는 자리이고, 그 둘은 직렬화로는 안 보인다. 창 ① 은 「소스의 이름이 트리에서 어떻게 바뀌었나」를 보일 때만 쓴다. 창 넷의 정의는 [01번](../01-document-skeleton/2-summary.md) 의 「이 갈래의 창」 절에 있다.

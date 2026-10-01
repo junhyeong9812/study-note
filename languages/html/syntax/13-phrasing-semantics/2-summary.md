@@ -1,14 +1,5 @@
 # html/syntax/13 — 구절 시맨틱: `strong`/`em`/`b`/`i`/`mark`/`small`/`code`/`kbd`/`samp`/`abbr` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Text-level semantics」](https://html.spec.whatwg.org/multipage/text-level-semantics.html) 절(요소마다 「represents」 문장)과 [「Rendering — Phrasing content」](https://html.spec.whatwg.org/multipage/rendering.html#phrasing-content-3) 의 UA 스타일시트, 그리고 [HTML-AAM](https://w3c.github.io/html-aam/)(HTML Accessibility API Mappings — 요소가 **어느 역할에 대응하나**를 정한 명세). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 블록마다 던진 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다(캡처 조립기). 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다** — 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — HTML 에는 언어 버전이 없다. 열 요소 전부 **20년 넘게 안정된 표면**이다. ★ 다만 그 요소들이 **접근성 역할에 대응하게 된 것은 최근**이다 — `strong`·`emphasis`·`code`·`generic` 역할은 **WAI-ARIA 1.2 본문에는 있고 1.1 본문에는 없다**(두 판의 역할 앵커를 직접 대조했다). **`mark` 역할은 1.2 에도 없다** — HTML-AAM 편집본이 대응시키는 역할이다.
-> **선행** — [05번 주제](../05-content-categories-and-models/2-summary.md)(구절 콘텐츠라는 카테고리)와 [11번 주제](../11-sectioning-and-landmarks/2-summary.md)(창 ⑦ — 접근성 트리를 여는 법).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 두 창의 대조다 — 창 ②(`getComputedStyle`)가 「같다」고 답하는 자리에서 창 ⑦(접근성 트리)이 「다르다」고 답한다.** 「보이는 것은 같고 의미만 다르다」를 **한 창으로는 증명할 수 없다** — 모양은 창 ② 로, 의미는 창 ⑦ 로만 보인다.
-
 **이 판의 Chrome**
 
 ```text
@@ -682,3 +673,13 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 `<b>`·`<i>` 가 폐기되지 않았나** — 한때 「표현 태그」로 몰려 퇴출될 뻔했지만, 명세는 둘에게 **좁은 뜻**(주목·다른 목소리)을 새로 주어 살렸다. 그 좁은 뜻이 **역할로는 `generic`** 이라는 것이 이 주제의 실측이다. 연혁은 `history/web/03` 의 몫이다.
 - **왜 `kbd` 는 역할이 없나** — 「누를 키」라는 뜻을 담을 ARIA 역할이 없다. HTML-AAM 은 대신 **플랫폼 API 의 텍스트 속성**(`font-family: monospace`)으로 넘기라고 적는다 — 즉 **「모양」으로 넘긴다.** 이 판의 CDP 트리에는 그 층이 안 보인다.
 - **`strong` 역할이 생기기 전** — 역할 대응이 없던 시절에는 `<strong>` 도 트리에서 `<b>` 와 **구분되지 않았을 수 있다.** 이 판에서는 확인할 수 없는 연혁이다(옛 Chrome 판이 없다).
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Text-level semantics」](https://html.spec.whatwg.org/multipage/text-level-semantics.html) 절(요소마다 「represents」 문장)과 [「Rendering — Phrasing content」](https://html.spec.whatwg.org/multipage/rendering.html#phrasing-content-3) 의 UA 스타일시트, 그리고 [HTML-AAM](https://w3c.github.io/html-aam/)(HTML Accessibility API Mappings — 요소가 **어느 역할에 대응하나**를 정한 명세). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 블록마다 던진 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다(캡처 조립기). 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다** — 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — HTML 에는 언어 버전이 없다. 열 요소 전부 **20년 넘게 안정된 표면**이다. ★ 다만 그 요소들이 **접근성 역할에 대응하게 된 것은 최근**이다 — `strong`·`emphasis`·`code`·`generic` 역할은 **WAI-ARIA 1.2 본문에는 있고 1.1 본문에는 없다**(두 판의 역할 앵커를 직접 대조했다). **`mark` 역할은 1.2 에도 없다** — HTML-AAM 편집본이 대응시키는 역할이다.
+**선행** — [05번 주제](../05-content-categories-and-models/2-summary.md)(구절 콘텐츠라는 카테고리)와 [11번 주제](../11-sectioning-and-landmarks/2-summary.md)(창 ⑦ — 접근성 트리를 여는 법).
+
+★★★ **이 주제의 본체는 두 창의 대조다 — 창 ②(`getComputedStyle`)가 「같다」고 답하는 자리에서 창 ⑦(접근성 트리)이 「다르다」고 답한다.** 「보이는 것은 같고 의미만 다르다」를 **한 창으로는 증명할 수 없다** — 모양은 창 ② 로, 의미는 창 ⑦ 로만 보인다.

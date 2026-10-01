@@ -1,15 +1,5 @@
 # csharp/syntax/03 — 박싱과 언박싱 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
-> 진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
-> ★★★ **이 주제에는 컴파일 진단이 거의 없다** — 박싱은 합법적인 암묵 변환이라 **에러도 경고도 안 난다**.
-> 그래서 창이 둘이다 — ★★★ **할당 바이트**(`GC.GetAllocatedBytesForCurrentThread`)와 ★★ **IL**.
-> ★★ **8번을 외우려 하지 마라** — 「보간 문자열은 박싱한다」가 **이 판에서 뒤집힌다**. 던져서 확인하는 것이 답이다.
-> 선행 — [01번](../01-value-types-and-reference-types/)·[02번](../02-struct-vs-class-choosing/).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -316,6 +306,15 @@ static class Probe {
 - 「보간 문자열이 무엇으로 컴파일되나」의 정본은 목록의 몇 번인가?
 - `ReferenceEquals(5, 5)` 가 거짓인 것을 본 주제는?
 - `params ReadOnlySpan<T>` 는 목록의 몇 번과 이어지는가?
+
+## 실행 환경
+
+**환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
+진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
+★★★ **이 주제에는 컴파일 진단이 거의 없다** — 박싱은 합법적인 암묵 변환이라 **에러도 경고도 안 난다**.
+그래서 창이 둘이다 — ★★★ **할당 바이트**(`GC.GetAllocatedBytesForCurrentThread`)와 ★★ **IL**.
+★★ **8번을 외우려 하지 마라** — 「보간 문자열은 박싱한다」가 **이 판에서 뒤집힌다**. 던져서 확인하는 것이 답이다.
+선행 — [01번](../01-value-types-and-reference-types/)·[02번](../02-struct-vs-class-choosing/).
 
 ## 복습 기록
 

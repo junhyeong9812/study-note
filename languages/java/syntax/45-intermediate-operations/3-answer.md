@@ -1,10 +1,5 @@
 # java/syntax/45 — 중간 연산: `map`/`filter`/`flatMap`/`mapMulti` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> javadoc 인용은 `lib/src.zip` 의 `java.base/java/util/stream/Stream.java` 와 [패키지 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) 원문이다.\
-> 17.0.13 · 25.0.1 에서도 같은 프로그램을 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -525,3 +520,9 @@ distinct, hashCode 있음 : [W1]
 | `MM3` / `MM4` / `MM5` `javac` | `mapMulti` 의 출력 타입이 `Object` 로 추론됨, 입력은 정상 추론 | 21 |
 | `SortedInf` | `sorted` 뒤의 `limit` 는 OOM, 앞이면 정상 (44번과 공유) | 21 |
 | `src.zip` 열람 | `peek` 의 `@apiNote`, `flatMap` 계열의 "closed / null -> empty" | 21 |
+
+## 실행 환경
+
+이 파일의 모든 출력은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+javadoc 인용은 `lib/src.zip` 의 `java.base/java/util/stream/Stream.java` 와 [패키지 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) 원문이다.\
+17.0.13 · 25.0.1 에서도 같은 프로그램을 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.

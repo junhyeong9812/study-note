@@ -1,40 +1,5 @@
 # python/syntax/46-re — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
-> - [`re`(3.12)](https://docs.python.org/3.12/library/re.html) —
->   `$` 의 *"Matches the end of the string or just before the newline at the end of the string"* ·
->   `\Z` 의 *"Matches only at the end of the string."* ·
->   소유 수량자의 *"these do not allow back-tracking when the expression following it fails to match"* 와 *"versionadded 3.11"* ·
->   원자 그룹 `(?>...)` 의 *"versionadded 3.11"* ·
->   `\d` 의 *"Matches any Unicode decimal digit … This includes `[0-9]`, and also many other digit characters"* ·
->   *"Unicode strings and 8-bit strings cannot be mixed"* ·
->   `sub` 의 *"`\g<2>` is therefore equivalent to `\2`, but isn't ambiguous in a replacement such as `\g<2>0`"* · *"versionchanged 3.5: Unmatched groups are replaced with an empty string"* · *"versionchanged 3.12: Group id can only contain ASCII digits"* ·
->   컴파일 캐시의 *"The compiled versions of the most recent patterns passed to `re.compile` and the module-level matching functions are cached"* ·
->   `escape` 의 *"This function must not be used for the replacement string in `sub`"*
-> - [What's New 3.11](https://docs.python.org/3.12/whatsnew/3.11.html) — *"Atomic grouping (`(?>...)`) and possessive quantifiers (`*+`, `++`, `?+`, `{m,n}+`) are now supported in regular expressions."*
-> - [What's New 3.12](https://docs.python.org/3.12/whatsnew/3.12.html) — *"A backslash-character pair that is not a valid escape sequence now generates a `SyntaxWarning`, instead of `DeprecationWarning`. For example, `re.compile("\d+\.\d+")` now emits a `SyntaxWarning`"*
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 블록 셋(치환 격자 · 판 격자 · 폭발 격자)을 더 던졌다.\
-> ★★★ **이 문서는 시간을 한 번도 재지 않았다.** 백트래킹 폭발도 [JS 30번](../../../js/syntax/30-regexp-advanced/2-summary.md)이 쓴 방식 그대로 **「2초 안에 끝났나」 참/거짓**으로만 물었다.
-> 컴파일 캐시도 **「같은 객체가 돌아왔나」(`is`)** 로만 셌다 — 「`re.compile` 이 빠르다」는 이 문서가 **주장하지 않는다.**\
-> **버전**(문서 표기) — 소유 수량자·원자 그룹 **3.11** · 무효 이스케이프가 `SyntaxWarning` **3.12**(3.11 까지는 `DeprecationWarning`) · 치환의 그룹 번호는 ASCII 숫자만 **3.12** · 치환에서 참여 안 한 그룹이 빈 글자 **3.5** · `repl` 의 알 수 없는 `\` + 글자가 에러 **3.7**.\
-> ★ **구현 대 보장 한 줄** — 위 문서 문장들이 보장이고, **예외 문구**와 **캐시의 크기·정책**은 CPython 의 것이다(캐시 정책은 3.11 과 3.12 가 실제로 갈렸다 — 동작 5).\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | 판이 오르면 예외·경고 **문구** · 캐시 **정책**(동작 5 의 캐시 행) | ★★ 매치 결과·`span` · 마지막 줄 **「… N / M」** |
-> | 폭발 격자에서 **「끝나지 않은 칸」이 어느 n 부터인가**(머신·제한 시간에 달린다 — 이 문서는 `n = 30` 한 칸만 썼다) | 판 격자의 **경고 종류**(`DeprecationWarning` 대 `SyntaxWarning`) |
-> | — (주소·시간·`set` 출력을 한 곳도 안 찍었다) | `(exit N)` |
->
-> **선행** — [06-strings-bytes-unicode](../06-strings-bytes-unicode/2-summary.md)(★★ **`str` 과 `bytes` 는 다른 타입이다** — 패턴과 입력도 섞이지 않는다) ·
-> [07-string-methods](../07-string-methods/2-summary.md)(★ **정규식을 꺼내는 선** — 그쪽 표가 경계다) ·
-> [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md)(`SyntaxWarning` 이 컴파일 시점 경고라는 것).
-
 ## 한눈에 — 쉽게 말하면
 
 **정규식 엔진은 「갈림길마다 한쪽을 먼저 가 보는 탐험가」다.** 막히면 **마지막 갈림길로 돌아가**(되돌이) 다른 쪽을 가 본다.
@@ -1035,3 +1000,37 @@ re.search(r"\bcat\b", "a cat").span()        (2, 5)
 * **`re.VERBOSE`(`re.X`)** — 패턴 안의 공백·`#` 주석을 무시한다. 긴 패턴을 줄마다 나눠 적을 때 쓴다. 이 문서는 재지 않았다.
 * 표준 `re` 는 `\p{L}` 같은 유니코드 속성을 받지 않는다 — `bad escape \p`([JS 30번](../../../js/syntax/30-regexp-advanced/2-summary.md) 동작 (9)). 이 문서는 서드파티 모듈을 재지 않았다.
 * **선형 시간이 필요하면** 파이썬 표준에는 그런 엔진이 없다 — JS 30번이 Go RE2 로 보인 것이 그 설계다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
+- [`re`(3.12)](https://docs.python.org/3.12/library/re.html) —
+  `$` 의 *"Matches the end of the string or just before the newline at the end of the string"* ·
+  `\Z` 의 *"Matches only at the end of the string."* ·
+  소유 수량자의 *"these do not allow back-tracking when the expression following it fails to match"* 와 *"versionadded 3.11"* ·
+  원자 그룹 `(?>...)` 의 *"versionadded 3.11"* ·
+  `\d` 의 *"Matches any Unicode decimal digit … This includes `[0-9]`, and also many other digit characters"* ·
+  *"Unicode strings and 8-bit strings cannot be mixed"* ·
+  `sub` 의 *"`\g<2>` is therefore equivalent to `\2`, but isn't ambiguous in a replacement such as `\g<2>0`"* · *"versionchanged 3.5: Unmatched groups are replaced with an empty string"* · *"versionchanged 3.12: Group id can only contain ASCII digits"* ·
+  컴파일 캐시의 *"The compiled versions of the most recent patterns passed to `re.compile` and the module-level matching functions are cached"* ·
+  `escape` 의 *"This function must not be used for the replacement string in `sub`"*
+- [What's New 3.11](https://docs.python.org/3.12/whatsnew/3.11.html) — *"Atomic grouping (`(?>...)`) and possessive quantifiers (`*+`, `++`, `?+`, `{m,n}+`) are now supported in regular expressions."*
+- [What's New 3.12](https://docs.python.org/3.12/whatsnew/3.12.html) — *"A backslash-character pair that is not a valid escape sequence now generates a `SyntaxWarning`, instead of `DeprecationWarning`. For example, `re.compile("\d+\.\d+")` now emits a `SyntaxWarning`"*
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 블록 셋(치환 격자 · 판 격자 · 폭발 격자)을 더 던졌다.\
+★★★ **이 문서는 시간을 한 번도 재지 않았다.** 백트래킹 폭발도 [JS 30번](../../../js/syntax/30-regexp-advanced/2-summary.md)이 쓴 방식 그대로 **「2초 안에 끝났나」 참/거짓**으로만 물었다.
+컴파일 캐시도 **「같은 객체가 돌아왔나」(`is`)** 로만 셌다 — 「`re.compile` 이 빠르다」는 이 문서가 **주장하지 않는다.**\
+**버전**(문서 표기) — 소유 수량자·원자 그룹 **3.11** · 무효 이스케이프가 `SyntaxWarning` **3.12**(3.11 까지는 `DeprecationWarning`) · 치환의 그룹 번호는 ASCII 숫자만 **3.12** · 치환에서 참여 안 한 그룹이 빈 글자 **3.5** · `repl` 의 알 수 없는 `\` + 글자가 에러 **3.7**.\
+★ **구현 대 보장 한 줄** — 위 문서 문장들이 보장이고, **예외 문구**와 **캐시의 크기·정책**은 CPython 의 것이다(캐시 정책은 3.11 과 3.12 가 실제로 갈렸다 — 동작 5).\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| 판이 오르면 예외·경고 **문구** · 캐시 **정책**(동작 5 의 캐시 행) | ★★ 매치 결과·`span` · 마지막 줄 **「… N / M」** |
+| 폭발 격자에서 **「끝나지 않은 칸」이 어느 n 부터인가**(머신·제한 시간에 달린다 — 이 문서는 `n = 30` 한 칸만 썼다) | 판 격자의 **경고 종류**(`DeprecationWarning` 대 `SyntaxWarning`) |
+| — (주소·시간·`set` 출력을 한 곳도 안 찍었다) | `(exit N)` |
+
+**선행** — [06-strings-bytes-unicode](../06-strings-bytes-unicode/2-summary.md)(★★ **`str` 과 `bytes` 는 다른 타입이다** — 패턴과 입력도 섞이지 않는다) ·
+[07-string-methods](../07-string-methods/2-summary.md)(★ **정규식을 꺼내는 선** — 그쪽 표가 경계다) ·
+[02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md)(`SyntaxWarning` 이 컴파일 시점 경고라는 것).

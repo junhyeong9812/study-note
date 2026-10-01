@@ -1,20 +1,5 @@
 # js/syntax/40 — 비동기 이터레이션: 「`for await` 는 떠날 때 무엇을 부르고, 무엇을 기다리고, 동기 이터러블을 어떻게 쓰나」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
->
-> ★★★ **이 주제의 본체는 격자다** — 루프 셋 × 끝나는 법 다섯. **1번 · 2번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **`for await` 가 떠날 때 `return()` 과 `finally` 는 도나 — 동기 `for...of` 와 어느 칸이 다르나**
-> ② ★★★ **미리 만든 프라미스 배열을 `for await` 로 돌면 무엇이 위험한가**
-> ③ **어느 메서드를 찾나 · 몸통은 무엇을 받나 · `next()` 를 겹쳐 부르면.**
->
-> **선행** — [20](../20-generators/2-summary.md) · [19](../19-iterable-protocol-and-for-of/2-summary.md) · [39](../39-async-await/2-summary.md) · [37](../37-promise-state-model/2-summary.md).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 문항(1\~5)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -261,6 +246,14 @@ const measure = (label, loop) => new Promise((done) => {
 ### 10. `next()` 를 겹쳐 부르는 것과 20번의 재진입 (경계) ★
 
 - ★ async generator 에서 `next()` 를 세 번 겹쳐 불렀을 때와, 동기 제너레이터 본문에서 자기 `next()` 를 불렀을 때 각각 무엇이 되나?
+
+## 실행 환경
+
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
+
+★★★ **이 주제의 본체는 격자다** — 루프 셋 × 끝나는 법 다섯. **1번 · 2번 문항이 이 주제의 중심이다.**
+
+**선행** — [20](../20-generators/2-summary.md) · [19](../19-iterable-protocol-and-for-of/2-summary.md) · [39](../39-async-await/2-summary.md) · [37](../37-promise-state-model/2-summary.md).
 
 ## 복습 기록
 

@@ -1,11 +1,5 @@
 # web-api/22 — 입력 이벤트의 순서: `keydown`→`beforeinput`→`input`→`change` 와 IME 조합 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 키는 **CDP 로 넣은 진짜 입력**, 조합은 **CDP 의 흉내**(`Input.imeSetComposition`·`Input.insertText` — CDP 가 experimental 로 표시)다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [W3C UI Events](https://w3c.github.io/uievents/) 3.6.5 · 3.6.6 · 7.3.1 · [W3C Input Events Level 2](https://w3c.github.io/input-events/) 의 `inputType` 표 · [HTML — The input element](https://html.spec.whatwg.org/multipage/input.html) 의 Common event behaviors 로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> ★★★ **실제 입력기(한글·일본어 IME)의 이벤트 순서는 못 쟀다.**
-
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
 |---|---|
 | 다섯 시간선 · 12칸 격자 · 막기 네 칸 · Enter 처리기 네 칸 | ★★ **못 잰 것** — 실제 입력기의 순서 · 조합 중 `keydown` 의 `key`/`keyCode` |
@@ -315,3 +309,10 @@ python3 wa20b-cdp.py page wa20b-22-enter.html
 | `textInput` | 옴 | Chrome 의 비표준 이벤트다 |
 
 **안 돌려 본 것 · 못 잰 것** — ① Firefox·Safari(엔진이 없다). ② ★★ **실제 입력기**(못 잰다 — 도구가 입력기 아래로 넣는다). ③ 모바일 가상 키보드. ④ 실행 취소·맞춤법 고침의 `inputType`.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 키는 **CDP 로 넣은 진짜 입력**, 조합은 **CDP 의 흉내**(`Input.imeSetComposition`·`Input.insertText` — CDP 가 experimental 로 표시)다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [W3C UI Events](https://w3c.github.io/uievents/) 3.6.5 · 3.6.6 · 7.3.1 · [W3C Input Events Level 2](https://w3c.github.io/input-events/) 의 `inputType` 표 · [HTML — The input element](https://html.spec.whatwg.org/multipage/input.html) 의 Common event behaviors 로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+★★★ **실제 입력기(한글·일본어 IME)의 이벤트 순서는 못 쟀다.**

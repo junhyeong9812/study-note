@@ -1,19 +1,5 @@
 # c/syntax/30 — 초기화 규칙과 불확정 값: 「**0 은 누가 보장하고, 안 보장된 자리에서는 무엇이 읽히나**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — 「불확정 표현」·「비값 표현」의 정의, 주소를 안 잡은 자동 객체를 읽는 규칙, 패딩 바이트 규칙을 **본문에서 직접 찾아 읽었다**) · [cppreference — Initialization (C)](https://en.cppreference.com/w/c/language/initialization)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **섹션 크기·바이트·진단·종료 코드는 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> ★★ **최적화 수준이 결과를 바꾸는 자리는 전부 판 격자**로 돌렸다(컴파일러 2 × `-O0`/`-O2`, 탐침은 도구 6).\
-> ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
-> **버전** — 정적 객체의 0 초기화 · 부분 초기화의 나머지 0 은 **C89 부터**, 지정 초기자는 **C99 부터**, **빈 중괄호 `= {}` 는 C23 부터**다((3)).\
-> ★ C23 은 「트랩 표현」이라는 낱말을 「**비값 표현(non-value representation)**」으로 바꿨다. 이 문서는 새 이름을 쓰고 옛 이름을 괄호에 둔다.
-> ★★ **경계** — **저장 기간 자체**와 「정적은 0 · 자동은 불확정」의 **첫 관찰**은 [28번 형제](../28-choosing-among-four-storage-durations/)가 정본이다. 여기는 **그 이유와 경계선**을 판다.\
-> ★ **지정 초기자 문법**은 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/), **패딩이 어디 생기나**는 [22번 형제](../22-struct-padding-and-alignment/)가 정본이다.\
-> ★ **`malloc`/`calloc` 의 API 계약**은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/), **`memcmp` 의 계약**은 [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/), **sanitizer 사용법**은 목록의 **58번 주제**다.
-> 선행 — [28번 형제](../28-choosing-among-four-storage-durations/).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 둘째 창과 넷째 창이다.** ① **`readelf -S`·`size`** 가 「**0 은 파일에 싣지 않는다**」를 섹션 크기로 증명하고,
 ② **`-O0` 대 `-O2` 판 격자**(경고·어셈블리)가 「**불확정 값을 잡는 도구가 최적화 수준을 탄다**」를 증명한다.
 
@@ -1156,3 +1142,17 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★ **MSan 에 패딩 `memcmp` 를 주면** — 분기에 쓰이면 잡을 것이다. ★ **던지지 않았다.**
 - ★ **Valgrind 의 `--track-origins`** — ★ **못 잰 것**. 이 머신에 Valgrind 가 없다.
 - ★ **C23 의 `= {}` 가 패딩까지 0 을 보장하나** — cppreference 는 **빈 초기화(empty-initialization)** 에 패딩 비트 0 을 포함한다고 적는다. ★ 이 문서는 **그것을 실행으로 가르지 않았다**(관찰로는 `= {0}` 과 같은 `00` 이 나올 뿐이다).
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — 「불확정 표현」·「비값 표현」의 정의, 주소를 안 잡은 자동 객체를 읽는 규칙, 패딩 바이트 규칙을 **본문에서 직접 찾아 읽었다**) · [cppreference — Initialization (C)](https://en.cppreference.com/w/c/language/initialization)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **섹션 크기·바이트·진단·종료 코드는 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+★★ **최적화 수준이 결과를 바꾸는 자리는 전부 판 격자**로 돌렸다(컴파일러 2 × `-O0`/`-O2`, 탐침은 도구 6).\
+★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
+**버전** — 정적 객체의 0 초기화 · 부분 초기화의 나머지 0 은 **C89 부터**, 지정 초기자는 **C99 부터**, **빈 중괄호 `= {}` 는 C23 부터**다((3)).\
+★ C23 은 「트랩 표현」이라는 낱말을 「**비값 표현(non-value representation)**」으로 바꿨다. 이 문서는 새 이름을 쓰고 옛 이름을 괄호에 둔다.
+★★ **경계** — **저장 기간 자체**와 「정적은 0 · 자동은 불확정」의 **첫 관찰**은 [28번 형제](../28-choosing-among-four-storage-durations/)가 정본이다. 여기는 **그 이유와 경계선**을 판다.\
+★ **지정 초기자 문법**은 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/), **패딩이 어디 생기나**는 [22번 형제](../22-struct-padding-and-alignment/)가 정본이다.\
+★ **`malloc`/`calloc` 의 API 계약**은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/), **`memcmp` 의 계약**은 [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/), **sanitizer 사용법**은 목록의 **58번 주제**다.
+선행 — [28번 형제](../28-choosing-among-four-storage-durations/).

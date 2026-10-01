@@ -1,15 +1,5 @@
 # sql/34-집합 연산 — `UNION`·`INTERSECT`·`EXCEPT` 와 `ALL` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Combining Queries (UNION, INTERSECT, EXCEPT)](https://www.postgresql.org/docs/18/queries-union.html) · [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · Set Operations with UNION, INTERSECT, and EXCEPT](https://dev.mysql.com/doc/refman/8.4/en/set-operations.html) · [MySQL 8.0.31 릴리스 노트](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-31.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·실행 계획은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> 표는 기존 `emp`·`dept` 두 개만 썼다. **새로 만든 표가 없다.**\
-> **버전** — `UNION` 은 두 엔진 모두 오래전부터 있다. **`INTERSECT`/`EXCEPT` 는 MySQL 8.0.31 부터**다 — 매뉴얼에 도입 버전이 없어 **릴리스 노트로 접지**했다(아래 인용). PG 는 오래전부터 있다.\
-> **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/) · [07 DISTINCT 와 중복 제거](../07-distinct-and-duplicate-removal/).
-
 ## 한눈에 — 쉽게 말하면
 
 **집합 연산은 「두 결과를 세로로 쌓는 것」이고, `ALL` 이 없으면 쌓은 뒤 중복을 지운다.**
@@ -785,3 +775,12 @@ SELECT id FROM emp UNION SELECT name FROM dept;
 - **`UNION ALL` 은 정렬을 요구하지 않아 첫 행이 일찍 나온다**(MySQL 계획의 `Stream results`). 페이지네이션과 궁합이 좋다([09번](../09-limit-offset-keyset-pagination/)).
 - **집합 연산 결과에는 인덱스가 없다.** 큰 결과를 다시 조인할 거면 CTE 로 이름을 붙여 [32번](../32-cte-with-clause/)의 물질화 이야기로 넘어간다.
 - **`INTERSECT`/`EXCEPT` 에도 `ALL` 이 있다**는 것은 잘 안 알려져 있다. 두 엔진 다 지원하고(2번 절), 개수를 세는 의미가 된다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Combining Queries (UNION, INTERSECT, EXCEPT)](https://www.postgresql.org/docs/18/queries-union.html) · [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · Set Operations with UNION, INTERSECT, and EXCEPT](https://dev.mysql.com/doc/refman/8.4/en/set-operations.html) · [MySQL 8.0.31 릴리스 노트](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-31.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·실행 계획은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+표는 기존 `emp`·`dept` 두 개만 썼다. **새로 만든 표가 없다.**\
+**버전** — `UNION` 은 두 엔진 모두 오래전부터 있다. **`INTERSECT`/`EXCEPT` 는 MySQL 8.0.31 부터**다 — 매뉴얼에 도입 버전이 없어 **릴리스 노트로 접지**했다(본문 인용). PG 는 오래전부터 있다.\
+**선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/) · [07 DISTINCT 와 중복 제거](../07-distinct-and-duplicate-removal/).

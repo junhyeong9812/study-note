@@ -1,9 +1,5 @@
 # PR #37082 — 무대 구조와 워크플로우: ResolvableType의 타입 변수 해석
 
-> PR #37082의 무대가 되는 실구조·워크플로우. 문제·수정은 README.md, 테스트는 tests.md 참조.
->
-> 기준: upstream main `526c706d1c3`. `resolveVariable`의 이름 폴백(`ResolvableType.java:966-971`)은 아직 PR 이전 상태(조건 없는 폴백)다.
-
 ## 1. 무대 — 실구조
 
 이 PR의 무대는 자바 리플렉션의 `Type` 계층을 스프링이 감싼 `ResolvableType`, 그중에서도 **타입 변수를 실인자로 바꾸는 해석 경로**다.\
@@ -530,3 +526,7 @@ PR의 수정이 "틀린 답 대신 모름을 반환한다"는 말은 정확히 [
 
 > **타입 소거(type erasure)** — 컴파일이 끝나면 인스턴스가 들고 있던 제네릭 인자 정보가 사라지는 자바의 성질.\
 > 예: `new ArrayList<String>()`이 담긴 변수에서 런타임에 `String`을 꺼낼 수는 없지만, 필드 선언 `List<String> stringList`의 제네릭은 시그니처 속성으로 남아 읽을 수 있다.
+
+## 출처
+
+기준: upstream main `526c706d1c3`. `resolveVariable`의 이름 폴백(`ResolvableType.java:966-971`)은 아직 PR 이전 상태(조건 없는 폴백)다.

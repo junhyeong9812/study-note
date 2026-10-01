@@ -1,13 +1,5 @@
 # PR #37206 — 착수 분석: reconcileParameters의 함수 반환값 조회 결함
 
-> 원본: `docs/plans/2026-08-27/j5-callmetadata-return-reconcile/analysis.md`(착수 전 작성).\
-> 학습 문서로 옮기면서 작업 진행용 절(인터뷰 항목)을 덜어내고, 수정이 적용된 현재 시점에 맞춰 시제를 정리했다.\
-> 결론은 PR #37206으로 반영됐다(커밋 `8f9027a995f`).
->
-> **좌표 주의**: 본문의 `L3xx`는 **수정 전** 파일(upstream main `b28569119fe`) 기준이다.\
-> 수정 후 좌표와 분기도는 [structure.md](structure.md)를 본다.\
-> 문제·수정 요약은 [README.md](README.md), 테스트는 [tests.md](tests.md).
-
 ## 0. 결론 먼저
 
 `reconcileParameters()`는 선언 파라미터를 **정규화된 키**(`lowerCase(provider.parameterNameToUse(name))`)로 맵에 넣어 두고 메타데이터 파라미터와 대조한다.\
@@ -420,3 +412,12 @@ L374 진입 조건은 `declaredParams.containsKey(paramNameToCheck) || (meta.isR
   원인 지점이 다르고 실드라이버 확인 불가 -> PR 본문에 "인접 리포트"로만 언급 가능, 동일 결함 주장 금지.
 - **J13** SQL Server named binding의 `@` 소실 — 실드라이버 필요, 보류.
 - 선례: 같은 메서드의 반환 이름 처리를 손본 커밋 "Restore original 4.x behavior for initialization of function return name"(2020, gh-25707 계열) — 이 영역 수정이 수용된 이력.
+
+## 출처
+
+원본: `docs/plans/2026-08-27/j5-callmetadata-return-reconcile/analysis.md`(착수 전 작성).\
+학습 문서로 옮기면서 작업 진행용 절(인터뷰 항목)을 덜어내고, 수정이 적용된 현재 시점에 맞춰 시제를 정리했다.\
+결론은 PR #37206으로 반영됐다(커밋 `8f9027a995f`).
+
+**좌표 주의**: 본문의 `L3xx`는 **수정 전** 파일(upstream main `b28569119fe`) 기준이다.\
+수정 후 좌표와 분기도는 [structure.md](structure.md)를 본다.

@@ -1,10 +1,5 @@
 # sql/15-OUTER JOIN 에서 ON 과 WHERE 의 차이 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
-> 문서 근거는 [PG 18 Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -620,3 +615,9 @@ WHERE d.name = 'sales'        -- <- 여기. LEFT JOIN 의 상대 측이 WHERE �
 `WHERE` 가 `UNKNOWN` 을 버린다는 것은 전부 문서가 정한 것이고 두 엔진에서 같았다.
 
 **버전** — 이 주제에서 버전에 갈리는 것은 없다. 다음 버전에서도 **9번(계획)과 12번(대조)만 다시 돌리면 된다.**
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
+문서 근거는 [PG 18 Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html).

@@ -1,31 +1,5 @@
 # cpp/syntax/25 — 정적 멤버·`inline` 변수(C++17) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 정적 멤버](https://en.cppreference.com/w/cpp/language/static) · [cppreference — 정의와 ODR](https://en.cppreference.com/w/cpp/language/definition) · [cppreference — 정적 초기화 순서 문제](https://en.cppreference.com/w/cpp/language/siof) · [cppreference — `constinit`](https://en.cppreference.com/w/cpp/language/constinit)\
-> ★ **이 배치에서는 위 cppreference 네 쪽을 열지 못했다**(웹 도구 한도에 걸렸다). 그래서 이 문서는 **규칙을 한 줄도 문서에서 옮기지 않고**,\
-> **전부 두 컴파일러·링커·`nm` 에 던져 본 출력으로** 적었다. 「표준이 이렇게 말한다」라고 적은 곳은 **컴파일러 경고가 스스로 판을 밝힌 것**(`inline variables are a C++17 extension` 등)만이다.
-> **실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **GNU ld(binutils 2.42)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> ★ **이 주제는 번역 단위가 둘이어야 선다** — 블록마다 **`-c` 로 따로 컴파일한 뒤 `.o` 를 링크**했다. 한 줄로 `g++ a.cpp b.cpp` 를 하면\
-> 링커 진단에 **임시 파일 이름**(`ccXXXX.o`)이 박혀 재현이 안 되기 때문이다.\
-> ★ 표준 판이 결론을 가르는 블록은 **`-std=c++14` / `-std=c++17` 을 배너에 적었다.** 나머지는 `-std=c++20` 이다.\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
-> **버전** — 정적 데이터 멤버는 **C++98부터**. **`inline` 변수와 「`constexpr` 정적 멤버는 암묵 `inline`」은 C++17부터**, **`constinit` 은 C++20부터**다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 실행으로 접지했다.
-> ★★★ **이 편은 C 갈래와 한 문제를 나눠 쓴다** — C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **29번**([`29-scope-and-linkage-static-extern/`](../../../c/syntax/29-scope-and-linkage-static-extern/)) (5)(9)가\
-> **잠정 정의 `int t;` 를 두 파일에 두면 `-fcommon` 이면 합쳐지고(`nm` 의 `C`) 기본값이면 깨진다(`B`)** · **C++17 전역 `inline int` 는 g++ `u` · clang++ `V`** 를 이미 쟀다 — 다시 재지 않고 인용한다.\
-> ★★ **여기서 새로 묻는 것은 셋이다** — **클래스 안의 정적 데이터 멤버**가 같은 문제를 어떻게 겪나 · **ODR 사용**이면 정의가 왜 필요한가 · **정적 초기화 순서**.
-> **경계** — 「정적 멤버의 문법·`this` 가 없다」는 [12번](../12-class-basics-members-access-and-this/) (7)이, 「`static` 은 언제 죽나 · 함수 지역 `static`」은 [14번](../14-destructors-and-deterministic-destruction/) (3)이,\
-> 「단일 정의 규칙(ODR) 일반과 모듈」은 목록의 **55번 주제**가 정본이다. 「C 의 링크 셋과 `nm` 글자」는 C 29번이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** · 링커 진단의 **`.text+0x…` 오프셋** | ★★★ **링크가 되나(`cc exit`)** · **`multiple definition`/`undefined reference` 가 무엇의 이름인가** — 이 주제의 답 자체다 |
-> | `nm` 의 **주소 칸** | ★★★ **`nm` 의 글자**(`B`·`u`·`V`·`U`·`C`) · ★★ **초기화 로그의 순서** · **격자의 O/X** · **`__cxa_guard` 호출 수** |
-> | — | ★★ **링크 순서에 따른 값**(`0` 대 `42`) — **한 링커 판에서의 관찰**이지만 재실행으로는 안 흔들린다 |
-
 ## 한눈에 — 쉽게 말하면
 
 **정적 데이터 멤버는 「동네 게시판」이고, 정의는 「게시판을 세우는 일」이다.**
@@ -851,3 +825,30 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **`std::string` 을 생성 전에 쓰는 판** — (4)를 `int` 가 아니라 **비자명 생성자 타입**으로 하면 UB 가 된다. 그때는 ASan 창이 열린다 — 이 문서는 던지지 않았다.
 - **모듈(C++20)** — 헤더 대신 모듈을 쓰면 정의 위치 문제의 모양이 바뀐다. 목록의 **55번 주제**다.
 - **`-Wl,--warn-common`·`--no-undefined`** — 링커 쪽 경고 스위치들. 이 문서는 링커 기본값만 봤다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 정적 멤버](https://en.cppreference.com/w/cpp/language/static) · [cppreference — 정의와 ODR](https://en.cppreference.com/w/cpp/language/definition) · [cppreference — 정적 초기화 순서 문제](https://en.cppreference.com/w/cpp/language/siof) · [cppreference — `constinit`](https://en.cppreference.com/w/cpp/language/constinit)\
+★ **이 배치에서는 위 cppreference 네 쪽을 열지 못했다**(웹 도구 한도에 걸렸다). 그래서 이 문서는 **규칙을 한 줄도 문서에서 옮기지 않고**,\
+**전부 두 컴파일러·링커·`nm` 에 던져 본 출력으로** 적었다. 「표준이 이렇게 말한다」라고 적은 곳은 **컴파일러 경고가 스스로 판을 밝힌 것**(`inline variables are a C++17 extension` 등)만이다.
+**실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **GNU ld(binutils 2.42)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+★ **이 주제는 번역 단위가 둘이어야 선다** — 블록마다 **`-c` 로 따로 컴파일한 뒤 `.o` 를 링크**했다. 한 줄로 `g++ a.cpp b.cpp` 를 하면\
+링커 진단에 **임시 파일 이름**(`ccXXXX.o`)이 박혀 재현이 안 되기 때문이다.\
+★ 표준 판이 결론을 가르는 블록은 **`-std=c++14` / `-std=c++17` 을 배너에 적었다.** 나머지는 `-std=c++20` 이다.\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
+**버전** — 정적 데이터 멤버는 **C++98부터**. **`inline` 변수와 「`constexpr` 정적 멤버는 암묵 `inline`」은 C++17부터**, **`constinit` 은 C++20부터**다. 기준은 **C++20**이다.
+
+★★★ **이 편은 C 갈래와 한 문제를 나눠 쓴다** — C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **29번**([`29-scope-and-linkage-static-extern/`](../../../c/syntax/29-scope-and-linkage-static-extern/)) (5)(9)가\
+**잠정 정의 `int t;` 를 두 파일에 두면 `-fcommon` 이면 합쳐지고(`nm` 의 `C`) 기본값이면 깨진다(`B`)** · **C++17 전역 `inline int` 는 g++ `u` · clang++ `V`** 를 이미 쟀다 — 다시 재지 않고 인용한다.\
+★★ **여기서 새로 묻는 것은 셋이다** — **클래스 안의 정적 데이터 멤버**가 같은 문제를 어떻게 겪나 · **ODR 사용**이면 정의가 왜 필요한가 · **정적 초기화 순서**.
+**경계** — 「정적 멤버의 문법·`this` 가 없다」는 [12번](../12-class-basics-members-access-and-this/) (7)이, 「`static` 은 언제 죽나 · 함수 지역 `static`」은 [14번](../14-destructors-and-deterministic-destruction/) (3)이,\
+「단일 정의 규칙(ODR) 일반과 모듈」은 목록의 **55번 주제**가 정본이다. 「C 의 링크 셋과 `nm` 글자」는 C 29번이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** · 링커 진단의 **`.text+0x…` 오프셋** | ★★★ **링크가 되나(`cc exit`)** · **`multiple definition`/`undefined reference` 가 무엇의 이름인가** — 이 주제의 답 자체다 |
+| `nm` 의 **주소 칸** | ★★★ **`nm` 의 글자**(`B`·`u`·`V`·`U`·`C`) · ★★ **초기화 로그의 순서** · **격자의 O/X** · **`__cxa_guard` 호출 수** |
+| — | ★★ **링크 순서에 따른 값**(`0` 대 `42`) — **한 링커 판에서의 관찰**이지만 재실행으로는 안 흔들린다 |

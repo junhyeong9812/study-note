@@ -1,14 +1,5 @@
 # css/syntax/12 — `:has()`: 관계 선택자와 그 한계 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Selectors Level 4 §4.5 The Relational Pseudo-class: `:has()`](https://drafts.csswg.org/selectors-4/#relational) · [같은 문서 §3.9 Invalid Selectors and Error Handling](https://drafts.csswg.org/selectors-4/#invalid) · [같은 문서 §16.1 `<forgiving-selector-list>`](https://drafts.csswg.org/selectors-4/#forgiving-selector). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 매치 수·명시도·「버려졌나」 판정은 **Google Chrome 151.0.7922.173** headless 에서 실제로 돌렸다.\
-> 근거를 **세 층**으로 나눠 뽑았다 — ① `document.styleSheets[].cssRules` 로 **규칙이 담겼나** ② `querySelectorAll().length` 로 **무엇이 잡혔나** ③ `getComputedStyle` 로 **무엇이 이겼나**. 명시도 주장은 전부 ③ 으로만 확인했다.\
-> **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않으므로(목록 README 의 정정) **「두 엔진에서 확인했다」고 적지 않았다.** 크로스 브라우저는 Baseline 으로만 접지한다.\
-> **성능은 재지 않았다.** 아래 「구현 세부사항 대 언어 보장」에 그 사실을 그대로 남겼다.
-> **버전** — CSS 에 언어 버전은 없다. `:has()` 의 Baseline 은 **widely available**(newly 2023-12-19 → widely 2026-06-19). 2026-09-23 에 `api.webstatus.dev` 를 직접 조회한 값이고, 엔진별 최초 지원은 Chrome/Edge 105(2022-09) · Safari 15.4(2022-03) · Firefox 121(2023-12) 이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 숫자는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`:has()` 는 「고양이를 키우는 집 문에 스티커를 붙인다」이다. 스티커가 붙는 것은 고양이가 아니라 집이다.**
@@ -502,3 +493,12 @@ section:has(:not(h1, h2, h3))   /* 제목 아닌 것을 하나라도 가진 섹�
 - **`:has()` 는 `@supports selector()` 로 검사할 수 있다.** 다만 실측에서 `CSS.supports('selector(.card:has(:is(:has(p))))')` 가 **`false`** 였는데 같은 선택자의 규칙은 `cssRules` 에 **담겼다** — 두 검사의 기준이 다르다.\
   `@supports selector()` 는 「이 선택자를 전부 지원하나」를 묻고, 시트 파싱은 「버릴 것만 버리고 살릴 수 있나」를 본다. **기능 검사와 파싱 결과를 같은 것으로 보면 안 된다.**
 - **`:has()` 를 `:nth-child(… of S)` 의 `S` 에 넣는 것**은 Chrome 151 에서 담겼다(`li:nth-child(1 of :has(img))`). `of S` 는 복합 선택자만 받는데 `:has()` 자체가 복합 선택자라 어긋나지 않는다. **이 조합의 매치 동작은 확인하지 않았다** — 담겼다는 것만 봤다.
+
+## 실행 환경
+
+**기준 소스** — [Selectors Level 4 §4.5 The Relational Pseudo-class: `:has()`](https://drafts.csswg.org/selectors-4/#relational) · [같은 문서 §3.9 Invalid Selectors and Error Handling](https://drafts.csswg.org/selectors-4/#invalid) · [같은 문서 §16.1 `<forgiving-selector-list>`](https://drafts.csswg.org/selectors-4/#forgiving-selector). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 매치 수·명시도·「버려졌나」 판정은 **Google Chrome 151.0.7922.173** headless 에서 실제로 돌렸다.\
+근거를 **세 층**으로 나눠 뽑았다 — ① `document.styleSheets[].cssRules` 로 **규칙이 담겼나** ② `querySelectorAll().length` 로 **무엇이 잡혔나** ③ `getComputedStyle` 로 **무엇이 이겼나**. 명시도 주장은 전부 ③ 으로만 확인했다.\
+**엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않으므로(목록 README 의 정정) **「두 엔진에서 확인했다」고 적지 않았다.** 크로스 브라우저는 Baseline 으로만 접지한다.\
+**성능은 재지 않았다.** 본문 「구현 세부사항 대 언어 보장」에 그 사실을 그대로 남겼다.
+**버전** — CSS 에 언어 버전은 없다. `:has()` 의 Baseline 은 **widely available**(newly 2023-12-19 → widely 2026-06-19). 2026-09-23 에 `api.webstatus.dev` 를 직접 조회한 값이고, 엔진별 최초 지원은 Chrome/Edge 105(2022-09) · Safari 15.4(2022-03) · Firefox 121(2023-12) 이다.

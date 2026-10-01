@@ -1,9 +1,5 @@
 # Spring Boot 4.x (2025 ~)
 
-> 원본: `~/project/java-history/spring/boot-4.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·클래스/애너테이션 이름·모듈 및 스타터 이름·수치·코드블록 4개와 원문이 직접 그린 `text` 블록 1개는 원문 그대로다.\
-> ASCII 도식 2개(그중 1개는 원문의 mermaid 도식을 옮긴 것), 「한눈에」의 공구 가방 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -246,3 +242,9 @@ import org.jspecify.annotations.NullMarked;
 - [Null-safe applications with Spring Boot 4 (spring.io blog)](https://spring.io/blog/2025/11/12/null-safe-applications-with-spring-boot-4/)
 - [API Versioning in Spring (spring.io blog)](https://spring.io/blog/2025/09/16/api-versioning-in-spring/)
 - [Spring Boot 4 Modularization — 47 jars (danvega.dev, 2차 출처)](https://www.danvega.dev/blog/spring-boot-4-modularization)
+
+## 출처
+
+원본: `~/project/java-history/spring/boot-4.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·클래스/애너테이션 이름·모듈 및 스타터 이름·수치·코드블록 4개와 원문이 직접 그린 `text` 블록 1개는 원문 그대로다.\
+ASCII 도식 2개(그중 1개는 원문의 mermaid 도식을 옮긴 것), 「한눈에」의 공구 가방 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

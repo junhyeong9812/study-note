@@ -1,22 +1,5 @@
 # csharp/syntax/33 — LINQ 메서드 구문과 지연 실행 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — ★ **SDK 참조 팩의 XML 문서** `packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/System.Linq.xml`(로컬에서 열어 확인: `Enumerable.Where` 의 예외 조항 「`source` 또는 `predicate` 가 `null` 이면 **`ArgumentNullException`**」 · `Count` 의 조항 「`source` 가 `null` 이면 `ArgumentNullException` · 개수가 `Int32.MaxValue` 를 넘으면 `OverflowException`」 · `TryGetNonEnumeratedCount` 의 요약 「**열거를 강제하지 않고** 개수를 알아내려 시도한다」 · `AsEnumerable` 의 요약 「입력을 **`IEnumerable<T>` 타입으로** 돌려준다」).\
-> ★★★ **이 배치는 외부 네트워크를 쓰지 않았다** — Learn 의 「표준 쿼리 연산자의 실행 방식 분류」 표와 LINQ 개요는 **열어 보지 않았다.** 그 표를 인용하는 대신 **(1) 격자가 실측이다.** XML 문서에는 **「지연 실행」이라는 낱말이 한 번도 없다**((0) — `deferred 0 · lazy 0`) — 그래서 연산자마다 **즉시냐 지연이냐는 이 문서에서 전부 로그로** 가렸다.
-> **실행 검증** — 이 문서의 모든 출력은 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26). 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣었다 — 사람이 옮겨 적은 줄은 없다. **대비는 실측이다** — **javac/java 21.0.5** 로 Stream 을 두 번 썼다((5)).
-> **버전** — ★★ **언어 쪽 경계는 쟀다** — `-langversion:2` 가 **람다**와 **확장 메서드 선언**에 `CS8023 … 3 or greater` 를 냈고, **확장 메서드 호출 `xs.Where(delegate …)` 는 막지 않았다**((6)). ★ 라이브러리 쪽(`Chunk`·`TryGetNonEnumeratedCount` 가 들어온 .NET 판)은 이 머신에 참조 팩이 **10.0.12 하나뿐**이라 **확인하지 못했다.**
-> **경계** — ★★★ **「호출하면 0 줄 · `ToList()` 하면 돈다 · 사슬이 `4 · 4`」 는 [32번](../32-yield-return-iterators-and-deferred-execution/) (6)(7)이 이미 쟀다** — 여기서는 **다시 재지 않고 인용한다.** 여기는 그 다음 두 칸이다 — ① **연산자 16개를 「호출 즉시」와 「첫 `MoveNext`」 두 시점으로 가른 격자** · ② **「지연인데 한 개씩이 아닌」 연산자**(`OrderBy`·`Reverse`·`GroupBy`).\
-> ★★ LINQ 가 **`System.Linq.Enumerable` 의 확장 메서드 묶음**인 것은 [30번](../30-extension-methods-and-extension-members/) (1)이 정본이다(`Where` 오버로드 2개가 전부 `static` · `[Extension]`). ★★ 캡처한 변수를 고치면 양쪽이 본다는 것은 [28번](../28-lambdas-and-closure-capture/) (6)이 정본이다 — 여기서는 **그것이 쿼리에서 어떻게 보이나** 한 칸((3)).
-> ★★★ **본체 창은 ⑤ 실행 로그 격자다** — 「즉시냐 지연이냐」는 **소스가 로그를 몇 줄 남겼나**로만 보인다. 반환 타입으로는 안 보인다((1) — `ToList` 도 `IEnumerable<T>` 를 구현한다).
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★ **돌려준 타입의 이름**(``IEnumerableWhereIterator`1`` · ``OrderedIterator`2`` …) — BCL 내부 클래스라 **판마다 바뀔 수 있다** | ★★★ **로그 줄 수와 순서** · **「호출 즉시 소스를 건드린 칸 N / M」** · **「GetEnumerator 가 안 불린 칸 N / M」** |
-> | 예외 **문구**(Java 의 `stream has already been operated upon or closed`) | ★★★ 예외 **타입**(`ArgumentNullException` · `DivideByZeroException` · `IllegalStateException`) · **호출 때냐 열거 때냐** |
-> | — | 결과 값(`[5]` · `[3, 4, 5]` · `kim:31 park:31 lee:25`) |
-
 ## 이 판
 
 ```text
@@ -594,3 +577,21 @@ choi kim lee park
 
 - ★ **`OrderBy(…).Last()` · `ElementAt(k)`** — (1-b)처럼 정렬을 건너뛰는 지름길이 더 있는지는 **`First`·`Take(1)` 만 쟀다.**
 - ★ **판 경계** — `Distinct`·`Chunk` 의 당기는 개수가 옛 .NET 에서도 같았는지 **옛 판을 안 돌렸다.**
+
+## 실행 환경
+
+**기준 소스** — ★ **SDK 참조 팩의 XML 문서** `packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/System.Linq.xml`(로컬에서 열어 확인: `Enumerable.Where` 의 예외 조항 「`source` 또는 `predicate` 가 `null` 이면 **`ArgumentNullException`**」 · `Count` 의 조항 「`source` 가 `null` 이면 `ArgumentNullException` · 개수가 `Int32.MaxValue` 를 넘으면 `OverflowException`」 · `TryGetNonEnumeratedCount` 의 요약 「**열거를 강제하지 않고** 개수를 알아내려 시도한다」 · `AsEnumerable` 의 요약 「입력을 **`IEnumerable<T>` 타입으로** 돌려준다」).\
+★★★ **이 배치는 외부 네트워크를 쓰지 않았다** — Learn 의 「표준 쿼리 연산자의 실행 방식 분류」 표와 LINQ 개요는 **열어 보지 않았다.** 그 표를 인용하는 대신 **(1) 격자가 실측이다.** XML 문서에는 **「지연 실행」이라는 낱말이 한 번도 없다**((0) — `deferred 0 · lazy 0`) — 그래서 연산자마다 **즉시냐 지연이냐는 이 문서에서 전부 로그로** 가렸다.
+**실행 검증** — 이 문서의 모든 출력은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26). 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣었다 — 사람이 옮겨 적은 줄은 없다. **대비는 실측이다** — **javac/java 21.0.5** 로 Stream 을 두 번 썼다((5)).
+**버전** — ★★ **언어 쪽 경계는 쟀다** — `-langversion:2` 가 **람다**와 **확장 메서드 선언**에 `CS8023 … 3 or greater` 를 냈고, **확장 메서드 호출 `xs.Where(delegate …)` 는 막지 않았다**((6)). ★ 라이브러리 쪽(`Chunk`·`TryGetNonEnumeratedCount` 가 들어온 .NET 판)은 이 머신에 참조 팩이 **10.0.12 하나뿐**이라 **확인하지 못했다.**
+**경계** — ★★★ **「호출하면 0 줄 · `ToList()` 하면 돈다 · 사슬이 `4 · 4`」 는 [32번](../32-yield-return-iterators-and-deferred-execution/) (6)(7)이 이미 쟀다** — 여기서는 **다시 재지 않고 인용한다.** 여기는 그 다음 두 칸이다 — ① **연산자 16개를 「호출 즉시」와 「첫 `MoveNext`」 두 시점으로 가른 격자** · ② **「지연인데 한 개씩이 아닌」 연산자**(`OrderBy`·`Reverse`·`GroupBy`).\
+★★ LINQ 가 **`System.Linq.Enumerable` 의 확장 메서드 묶음**인 것은 [30번](../30-extension-methods-and-extension-members/) (1)이 정본이다(`Where` 오버로드 2개가 전부 `static` · `[Extension]`). ★★ 캡처한 변수를 고치면 양쪽이 본다는 것은 [28번](../28-lambdas-and-closure-capture/) (6)이 정본이다 — 여기서는 **그것이 쿼리에서 어떻게 보이나** 한 칸((3)).
+★★★ **본체 창은 ⑤ 실행 로그 격자다** — 「즉시냐 지연이냐」는 **소스가 로그를 몇 줄 남겼나**로만 보인다. 반환 타입으로는 안 보인다((1) — `ToList` 도 `IEnumerable<T>` 를 구현한다).
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★ **돌려준 타입의 이름**(``IEnumerableWhereIterator`1`` · ``OrderedIterator`2`` …) — BCL 내부 클래스라 **판마다 바뀔 수 있다** | ★★★ **로그 줄 수와 순서** · **「호출 즉시 소스를 건드린 칸 N / M」** · **「GetEnumerator 가 안 불린 칸 N / M」** |
+| 예외 **문구**(Java 의 `stream has already been operated upon or closed`) | ★★★ 예외 **타입**(`ArgumentNullException` · `DivideByZeroException` · `IllegalStateException`) · **호출 때냐 열거 때냐** |
+| — | 결과 값(`[5]` · `[3, 4, 5]` · `kim:31 park:31 lee:25`) |

@@ -1,20 +1,5 @@
 # js/syntax/42 — ESM 모듈: 「`import` 는 무엇을 받고, 언제 돌고, 순환에서 무엇을 보나」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스 · 로컬 HTTP 서버) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
->
-> ★★★ **이 주제의 본체는 순환 의존 격자다** — 내보내는 모양 × 가져오는 순서 × 읽는 때. **3번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **가져온 이름은 값인가 이름인가 — 바꾸면 보이나, 대입하면**
-> ② ★★★ **순환에서 무엇이 `ReferenceError` 이고 무엇이 `undefined` 이고 무엇이 멀쩡한가**
-> ③ **`import` 는 언제 도나 — 파일 중간 · 평가 순서 · 블록 안 · 없는 이름 · `import()`.**
->
-> **선행** — [35](../35-strict-mode/2-summary.md) · [05](../05-var-let-const-and-tdz/2-summary.md) · [36](../36-event-loop-and-microtasks/2-summary.md) · [Python 42](../../../python/syntax/42-modules-packages-and-import/2-summary.md).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 문항(1\~5)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -266,6 +251,14 @@ try { await import("./nothing-here42e.mjs"); } catch (e) { console.log("missing 
 ### 10. 층을 가른다 (경계) ★
 
 - ★ 「`./m.mjs` 가 어느 파일인가」·「이 파일이 모듈인가」·「없는 이름은 `SyntaxError`」·「가져온 이름은 불변」 — 각각 언어인가 호스트인가?
+
+## 실행 환경
+
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(헤드리스 · 로컬 HTTP 서버) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
+
+★★★ **이 주제의 본체는 순환 의존 격자다** — 내보내는 모양 × 가져오는 순서 × 읽는 때. **3번 문항이 이 주제의 중심이다.**
+
+**선행** — [35](../35-strict-mode/2-summary.md) · [05](../05-var-let-const-and-tdz/2-summary.md) · [36](../36-event-loop-and-microtasks/2-summary.md) · [Python 42](../../../python/syntax/42-modules-packages-and-import/2-summary.md).
 
 ## 복습 기록
 

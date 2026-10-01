@@ -1,11 +1,5 @@
 # sql/29-순위 함수 — `ROW_NUMBER`·`RANK`·`DENSE_RANK`·`NTILE` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> 모든 질의는 [1-question.md](1-question.md) 머리의 `WITH emp8 AS (...)` CTE 를 앞에 붙여 돌렸다.\
-> 문서 근거는 [PG 18 Window Functions](https://www.postgresql.org/docs/18/functions-window.html) · [MySQL 8.4 Window Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/window-function-descriptions.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -604,3 +598,10 @@ ROW_NUMBER : 피어여도 번호는 나눠야 한다 -> 1..8
 **버전** — 네 함수 모두 PG 8.4 · MySQL 8.0 부터다. 버전이 오르면 **8·9번**을 다시 찍는다.
 
 **재지 않은 것** — 순위 계산의 비용, 순위를 미리 저장하는 것과의 트레이드오프. **측정하지 않았으므로 적지 않았다.**
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+모든 질의는 [1-question.md](1-question.md) 머리의 `WITH emp8 AS (...)` CTE 를 앞에 붙여 돌렸다.\
+문서 근거는 [PG 18 Window Functions](https://www.postgresql.org/docs/18/functions-window.html) · [MySQL 8.4 Window Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/window-function-descriptions.html).

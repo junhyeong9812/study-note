@@ -1,13 +1,5 @@
 # html/syntax/05 — 콘텐츠 카테고리와 콘텐츠 모델: 어디에 무엇을 넣을 수 있나 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Kinds of content」](https://html.spec.whatwg.org/multipage/dom.html#kinds-of-content)·[「Transparent content models」](https://html.spec.whatwg.org/multipage/dom.html#transparent-content-models)·[「Parsing HTML documents」](https://html.spec.whatwg.org/multipage/parsing.html) 절. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** Firefox 155.0.1 이 설치돼 있으나 이 환경에서 headless 산출이 **조용히 실패**하고 WebKit 은 없다. 그러므로 이 갈래는 **「이식성」을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★ **이 주제의 본체는 창 ① (`--dump-dom`)이다** — 「내가 쓴 중첩이 트리에서 어떤 모양이 됐나」가 전부이기 때문이다. 창 ② 는 **75개를 한 번에 세는** 자리에서만 쓴다. 창 넷의 정의는 [01번](../01-document-skeleton/2-summary.md) 의 「이 갈래의 창」 절에 있다.
-
 **이 판의 Chrome**
 
 ```text
@@ -709,3 +701,12 @@ HTML 파서는 **절대 멈추지 않는다**([03번 주제](../03-parser-and-er
 - **명세의 콘텐츠 모델은 「저작 요건」이고 파싱 알고리즘은 「처리 요건」이다.** 앞엣것은 문서를 쓰는 사람에게, 뒤엣것은 브라우저에게 건 규칙이라 **둘이 어긋나는 자리가 생긴다** — 이 주제가 잰 「안 고침」 일곱이 전부 그 틈이다.
 - **`<p>` 를 닫는 태그 목록은 명세에 열거돼 있다.** 그래서 (2) 의 (A) 31개는 카테고리에서 유도한 것이 아니라 **목록을 실행으로 되찾은 것**이다.
 - **왜 파서에 「모든 콘텐츠 모델」을 안 넣었나** — 넣으면 기존 웹의 절반이 다른 트리가 된다. 03번이 다룬 「**절대 멈추지 않는다**」와 같은 이유의 결과다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Kinds of content」](https://html.spec.whatwg.org/multipage/dom.html#kinds-of-content)·[「Transparent content models」](https://html.spec.whatwg.org/multipage/dom.html#transparent-content-models)·[「Parsing HTML documents」](https://html.spec.whatwg.org/multipage/parsing.html) 절. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** Firefox 155.0.1 이 설치돼 있으나 이 환경에서 headless 산출이 **조용히 실패**하고 WebKit 은 없다. 그러므로 이 갈래는 **「이식성」을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다.
+
+★★ **이 주제의 본체는 창 ① (`--dump-dom`)이다** — 「내가 쓴 중첩이 트리에서 어떤 모양이 됐나」가 전부이기 때문이다. 창 ② 는 **75개를 한 번에 세는** 자리에서만 쓴다. 창 넷의 정의는 [01번](../01-document-skeleton/2-summary.md) 의 「이 갈래의 창」 절에 있다.

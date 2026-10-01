@@ -1,11 +1,5 @@
 # web-api/08 — `getComputedStyle`: 스크립트에서 계산값을 읽는다는 것 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [CSSOM](https://drafts.csswg.org/cssom/#dom-window-getcomputedstyle) 의 「`getComputedStyle()`」·「resolved values」 절로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> ★ **「CSS 가 무엇을 계산하나」는 이 문서가 아니다** — [CSS 04번 주제](../../css/syntax/04-value-processing-stages/2-summary.md)가 정본이다. 여기는 **스크립트가 그것을 어떻게 읽나**뿐이다.
-
 **★ 이 주제에는 흔들리는 칸이 있다** — 마지막 두 답에서 **읽기 비용을 재기 때문**이다.
 
 | 안 흔들리는 칸 | 흔들리는 칸 |
@@ -462,3 +456,10 @@ const padw = (s, n) => s + ' '.repeat(Math.max(0, n - W(s)));
 - **`min-width: auto`** — flex 항목에서 「내용보다 작아지지 마라」를 뜻하는 초깃값. `overflow` 가 `visible` 이 아니면 그 규칙이 꺼진다.
 - **분해능(resolution)** — 측정 도구가 구분할 수 있는 최소 간격. 여기서는 100마이크로초.
 - **중앙값(median)** — 여러 판을 크기순으로 늘어놓았을 때 가운데 값.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [CSSOM](https://drafts.csswg.org/cssom/#dom-window-getcomputedstyle) 의 「`getComputedStyle()`」·「resolved values」 절로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+★ **「CSS 가 무엇을 계산하나」는 이 문서가 아니다** — [CSS 04번 주제](../../css/syntax/04-value-processing-stages/2-summary.md)가 정본이다. 여기는 **스크립트가 그것을 어떻게 읽나**뿐이다.

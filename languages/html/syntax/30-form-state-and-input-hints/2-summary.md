@@ -1,15 +1,5 @@
 # html/syntax/30 — 폼 상태·입력 보조 속성: `disabled`/`readonly`/`autofocus`/`autocomplete`/`inputmode` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Enabling and disabling form controls」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#enabling-and-disabling-form-controls:-the-disabled-attribute)(★ **비활성이면 제약 검증에서 빠진다**), [「The readonly attribute」](https://html.spec.whatwg.org/multipage/input.html#the-readonly-attribute)(★ **「텍스트 컨트롤만 읽기 전용이 될 수 있다」** · 지정되면 제약 검증에서 빠진다), 상태마다의 **「지정하지 말아야 하고 적용되지 않는」 목록**(Checkbox·Range 등에 `readonly` 가 있다), [`required`](https://html.spec.whatwg.org/multipage/input.html#the-required-attribute)(★ **「요소가 mutable 이고」**), [「Constructing the entry list」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-form-data-set)(비활성은 건너뛴다), [「The autofocus attribute」](https://html.spec.whatwg.org/multipage/interaction.html#the-autofocus-attribute)(★ **autofocus 후보 목록** · **조각 대상이 있으면 비운다** · `dialog` 가 보일 때), [「Autofill processing model」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill-processing-model)(★ **IDL-exposed autofill value**), [「Input modalities: the inputmode attribute」](https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute)(★ **「가상 키보드를 … 보여야 한다(should)」** · IDL 은 알려진 값으로만). **명세 본문은 앞 배치가 2026-09-26 에 받아 둔 사본**으로 읽었다 — 이 배치는 네트워크를 쓰지 않았다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 포커스는 **CDP 의 진짜 Tab 키**, 편집은 **진짜 키**(`Input.dispatchKeyEvent`·`Input.insertText`)다. 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. ★ `inputmode` 는 명세의 브라우저 지원 표가 **Chrome 66+** 로 적는다(이 배치는 따로 조회하지 않았다).
-> **선행** — [24번 주제](../24-input-types-choice-special/2-summary.md)(★ `disabled` 칸은 **안 실리고** `readonly` 칸은 **실린다** — (1) 격자의 `text` 줄) · [27번 주제](../27-fieldset-and-legend/2-summary.md)(★ **비활성 묶음 안의 `required` 빈 칸이 제출을 막지 않았다** — `fieldset[disabled]` 는 거기서 쟀다).
-> **경계** — **포커스 순서·`tabindex`·`inert`** 는 목록의 **45번 주제**, **`dialog` 를 여는 동작과 포커스 트랩**은 목록의 **47번 주제**다 — 여기는 **`autofocus` 가 어느 칸을 고르나**까지. **`:disabled`·`:read-only` 로 칠하는 것**은 [CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md). **제약 검증 상태 자체**는 [29번](../29-constraint-validation/2-summary.md).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑤ + 창 ② + 진짜 Tab 의 「세 지점 격자」다** — 제출(서버가 받은 필드) · 포커스(Tab 이 닿은 곳) · 검증(`willValidate`). `autocomplete`·`inputmode` 는 **창 ② 의 IDL 값과 창 ⑦ 의 침묵**으로 묻는다.
-
 **이 판의 Chrome**
 
 ```text
@@ -636,3 +626,14 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 체크박스에는 `readonly` 가 없나** — 명세의 비규범 설명 — 「체크박스·단추 같은 컨트롤에는 **읽기 전용과 비활성 사이에 쓸모 있는 구별이 없다**」. 보내되 못 바꾸게 하려면 `disabled` + `hidden` 을 쓰는 것이 명세가 가정한 길로 읽힌다(해석이다).
 - **`autocomplete` 와 접근성** — 목록([`README.md`](../README.md))은 이 주제를 「`autocomplete` 토큰이 왜 접근성 항목인지」로 적었다. 이 판은 그 근거가 되는 **WCAG 원문을 열지 않았다** — 여기서는 「토큰이 틀리면 조용히 빈 값」까지만 쟀다.
 - **`enterkeyhint`** — 가상 키보드의 Enter 키 모양 힌트. 명세의 바로 다음 절이다. 이 판은 던지지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Enabling and disabling form controls」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#enabling-and-disabling-form-controls:-the-disabled-attribute)(★ **비활성이면 제약 검증에서 빠진다**), [「The readonly attribute」](https://html.spec.whatwg.org/multipage/input.html#the-readonly-attribute)(★ **「텍스트 컨트롤만 읽기 전용이 될 수 있다」** · 지정되면 제약 검증에서 빠진다), 상태마다의 **「지정하지 말아야 하고 적용되지 않는」 목록**(Checkbox·Range 등에 `readonly` 가 있다), [`required`](https://html.spec.whatwg.org/multipage/input.html#the-required-attribute)(★ **「요소가 mutable 이고」**), [「Constructing the entry list」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-form-data-set)(비활성은 건너뛴다), [「The autofocus attribute」](https://html.spec.whatwg.org/multipage/interaction.html#the-autofocus-attribute)(★ **autofocus 후보 목록** · **조각 대상이 있으면 비운다** · `dialog` 가 보일 때), [「Autofill processing model」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill-processing-model)(★ **IDL-exposed autofill value**), [「Input modalities: the inputmode attribute」](https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute)(★ **「가상 키보드를 … 보여야 한다(should)」** · IDL 은 알려진 값으로만). **명세 본문은 앞 배치가 2026-09-26 에 받아 둔 사본**으로 읽었다 — 이 배치는 네트워크를 쓰지 않았다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 포커스는 **CDP 의 진짜 Tab 키**, 편집은 **진짜 키**(`Input.dispatchKeyEvent`·`Input.insertText`)다. 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. ★ `inputmode` 는 명세의 브라우저 지원 표가 **Chrome 66+** 로 적는다(이 배치는 따로 조회하지 않았다).
+**선행** — [24번 주제](../24-input-types-choice-special/2-summary.md)(★ `disabled` 칸은 **안 실리고** `readonly` 칸은 **실린다** — (1) 격자의 `text` 줄) · [27번 주제](../27-fieldset-and-legend/2-summary.md)(★ **비활성 묶음 안의 `required` 빈 칸이 제출을 막지 않았다** — `fieldset[disabled]` 는 거기서 쟀다).
+**경계** — **포커스 순서·`tabindex`·`inert`** 는 목록의 **45번 주제**, **`dialog` 를 여는 동작과 포커스 트랩**은 목록의 **47번 주제**다 — 여기는 **`autofocus` 가 어느 칸을 고르나**까지. **`:disabled`·`:read-only` 로 칠하는 것**은 [CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md). **제약 검증 상태 자체**는 [29번](../29-constraint-validation/2-summary.md).
+
+★★★ **이 주제의 본체는 창 ⑤ + 창 ② + 진짜 Tab 의 「세 지점 격자」다** — 제출(서버가 받은 필드) · 포커스(Tab 이 닿은 곳) · 검증(`willValidate`). `autocomplete`·`inputmode` 는 **창 ② 의 IDL 값과 창 ⑦ 의 침묵**으로 묻는다.

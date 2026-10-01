@@ -1,19 +1,5 @@
 # rust/syntax/53 — `atomic`·`OnceLock`/`LazyLock` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `std::sync::atomic` 모듈 문서](https://doc.rust-lang.org/std/sync/atomic/index.html)(「Rust atomics currently follow the same rules as C++20 atomics」) ·
-> [std — `atomic::Ordering`](https://doc.rust-lang.org/std/sync/atomic/enum.Ordering.html)(`Relaxed` 「No ordering constraints, only atomic operations」 · `SeqCst` 「all threads see all sequentially consistent operations in the same order」) ·
-> [std — `AtomicUsize::fetch_add`](https://doc.rust-lang.org/std/sync/atomic/struct.AtomicUsize.html#method.fetch_add) ·
-> [std — `OnceLock`](https://doc.rust-lang.org/std/sync/struct.OnceLock.html)(`get_or_init` — 「it is guaranteed that only one function will be executed if the function doesn't panic」) ·
-> [std — `LazyLock`](https://doc.rust-lang.org/std/sync/struct.LazyLock.html)(「A value which is initialized on the first access」 · §Poisoning) ·
-> [std — `Mutex::new`](https://doc.rust-lang.org/std/sync/struct.Mutex.html#method.new)(`const` 표지).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. 「Stable since」 표지도 거기서 grep 했다((5)의 `r53_since`).
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64` · 논리 코어 24 에서
-> **`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(격자 둘은 **`-O`** · `static mut` 한 칸만 2024).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★★ **속도는 한 번도 재지 않았다** — 「atomic 이 `Mutex` 보다 빠르다」 류의 문장은 **근거가 없으므로 쓰지 않는다.** 이 문서가 보이는 것은 **값이 맞았나**와 **어떤 결과가 나올 수 있었나**뿐이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체 창 — ① 원자 연산 격자(카운터 `+1` 을 8 스레드 × 100000 번 × 방법 넷 × 20판 → 한 판이라도 잃었나)다.** 둘째 본체는 **② 메모리 순서 리트머스 격자**다 — 「순서가 다르면 무엇이 나올 수 있나」를 **실행으로** 물었다.
 
 ```text
@@ -96,7 +82,7 @@ x86_64
 | ④ ★★ **컴파일러 진단** E0010 · E0015 · `static_mut_refs` | `static` 에 무엇을 **못** 두나 · 컴파일러가 무엇을 권하나 | 쓴다((3)·(6)) |
 | ⑤ ★ **로컬 rust-docs grep** | 언제부터 Stable 인가 · `const` 표지 | 쓴다((5)) |
 | 실행 시간 · 경합 비용 | 「atomic 이 빠르다」 | ★ **부적용 — 재지 않는다** |
-| 약한 메모리 하드웨어(ARM·POWER)의 `mp` 재배치 | `Relaxed` MP 가 깨지는 판 | ★ **못 잰 것** — 이 머신이 x86_64 뿐이다((2)). Miri 도 없다(41번 머리말 블록) |
+| 약한 메모리 하드웨어(ARM·POWER)의 `mp` 재배치 | `Relaxed` MP 가 깨지는 판 | ★ **못 잰 것** — 이 머신이 x86_64 뿐이다((2)). Miri 도 없다(41번 맨 위 부분 블록) |
 
 ★★ **제5의 상태 — 「같은 질문을 다른 창으로」.** 「이 `Ordering` 으로 충분한가」는 원래 **명세**(C++20 메모리 모델)가 답하는 질문이고, 코드를 읽어서는 답이 안 나온다.
 그 질문을 **리트머스의 창**으로 옮겨 물었다((2)) — 「약한 순서가 허락하는 결과가 **이 머신에서 실제로 나오나**」.
@@ -693,3 +679,17 @@ error: aborting due to 1 previous error
 - **`AcqRel`** — RMW 에 Release 와 Acquire 를 함께 붙이는 순서. 리트머스에 넣지 않았다.
 - **약한 메모리 CPU 에서의 MP** — aarch64 머신에서 (2)의 `mp relaxed` 를 다시 돌리면 이 문서의 「못 잰 것」 칸이 채워진다.
 - **`LazyLock` 중독** — 초기화 클로저가 패닉하면 이후 접근도 패닉한다(docs §Poisoning). **던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [std — `std::sync::atomic` 모듈 문서](https://doc.rust-lang.org/std/sync/atomic/index.html)(「Rust atomics currently follow the same rules as C++20 atomics」) ·
+[std — `atomic::Ordering`](https://doc.rust-lang.org/std/sync/atomic/enum.Ordering.html)(`Relaxed` 「No ordering constraints, only atomic operations」 · `SeqCst` 「all threads see all sequentially consistent operations in the same order」) ·
+[std — `AtomicUsize::fetch_add`](https://doc.rust-lang.org/std/sync/atomic/struct.AtomicUsize.html#method.fetch_add) ·
+[std — `OnceLock`](https://doc.rust-lang.org/std/sync/struct.OnceLock.html)(`get_or_init` — 「it is guaranteed that only one function will be executed if the function doesn't panic」) ·
+[std — `LazyLock`](https://doc.rust-lang.org/std/sync/struct.LazyLock.html)(「A value which is initialized on the first access」 · §Poisoning) ·
+[std — `Mutex::new`](https://doc.rust-lang.org/std/sync/struct.Mutex.html#method.new)(`const` 표지).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. 「Stable since」 표지도 거기서 grep 했다((5)의 `r53_since`).
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64` · 논리 코어 24 에서
+**`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(격자 둘은 **`-O`** · `static mut` 한 칸만 2024).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★★ **속도는 한 번도 재지 않았다** — 「atomic 이 `Mutex` 보다 빠르다」 류의 문장은 **근거가 없으므로 쓰지 않는다.** 이 문서가 보이는 것은 **값이 맞았나**와 **어떤 결과가 나올 수 있었나**뿐이다.

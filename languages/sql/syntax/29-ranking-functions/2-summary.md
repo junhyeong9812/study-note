@@ -1,16 +1,5 @@
 # sql/29-순위 함수 — `ROW_NUMBER`·`RANK`·`DENSE_RANK`·`NTILE` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Window Functions](https://www.postgresql.org/docs/18/functions-window.html) · [MySQL 8.4 · Window Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/window-function-descriptions.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **반복 실행** — `ROW_NUMBER` 의 동률 순서는 **각 엔진에서 같은 질의를 10회씩** 돌려 확인했다. 결과는 3번에 있다.\
-> **버전** — 네 함수 모두 PG 8.4 · MySQL 8.0 부터. **갈리는 자리는 `NTILE` 의 인자 검사와 `NULL` 위치**다(4·6번).\
-> **선행** — [27 PARTITION BY 와 윈도우 ORDER BY](../27-partition-by-and-window-order-by/) · [08 ORDER BY — 정렬 키·NULL 위치·동률](../08-order-by-null-position-stability/).\
-> **뒤 주제** — [31 윈도우 함수의 평가 시점](../31-window-evaluation-timing/) — 「그룹별 1위 한 행」을 실제로 거르는 법.
-
 ## 한눈에 — 쉽게 말하면
 
 **달리기 시합에서 동시에 들어온 두 사람에게 번호를 어떻게 줄 것인가.**
@@ -723,3 +712,13 @@ NTILE(4) OVER (ORDER BY salary DESC)
 - **순위를 미리 저장할 것인가** 는 SQL 문법이 아니라 설계 문제다. 조회마다 정렬하면 데이터가 클수록 비싸지고,\
   저장하면 갱신이 늦는다. 그 트레이드오프는 [`advanced/19-leaderboard-recount`](../../../../cs/domain-modeling/advanced/19-leaderboard-recount/)가 다룬다.\
   **이 주제에서 비용을 측정하지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Window Functions](https://www.postgresql.org/docs/18/functions-window.html) · [MySQL 8.4 · Window Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/window-function-descriptions.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**반복 실행** — `ROW_NUMBER` 의 동률 순서는 **각 엔진에서 같은 질의를 10회씩** 돌려 확인했다. 결과는 3번에 있다.\
+**버전** — 네 함수 모두 PG 8.4 · MySQL 8.0 부터. **갈리는 자리는 `NTILE` 의 인자 검사와 `NULL` 위치**다(4·6번).\
+**선행** — [27 PARTITION BY 와 윈도우 ORDER BY](../27-partition-by-and-window-order-by/) · [08 ORDER BY — 정렬 키·NULL 위치·동률](../08-order-by-null-position-stability/).\
+**뒤 주제** — [31 윈도우 함수의 평가 시점](../31-window-evaluation-timing/) — 「그룹별 1위 한 행」을 실제로 거르는 법.

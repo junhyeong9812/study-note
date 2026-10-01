@@ -1,9 +1,5 @@
 # 개념: Uni와 Mono — "빈 값"을 서로 다르게 적는 두 개의 단일 값 타입
 
-> H3(Mutiny `Uni` 어댑터의 empty-value 결함) 작업의 배경 개념 문서.
-> 실증 기준: spring-framework-fork `main`, Mutiny 1.10.0(framework-platform 고정판),
-> Reactor 3.8.7.
-
 ## 한 줄 정의 — 둘 다 "값 하나"지만 없음의 표기법이 다르다
 
 Reactor `Mono`와 SmallRye Mutiny `Uni`는 모두 비동기 단일 값을 나타내지만, **값이 없다는
@@ -180,3 +176,8 @@ WebFlux 컨트롤러의 반환값 처리는 선언 타입으로 어댑터를 찾
 
 - `ReactiveAdapterRegistry.java:370-409` — MutinyRegistrar 전체(Mutiny 1/2 분기 포함)
 - `ReactiveTypeDescriptor.java:139-178` — descriptor 팩토리 다섯 종
+
+## 출처
+
+실증 기준: spring-framework-fork `main`, Mutiny 1.10.0(framework-platform 고정판),
+Reactor 3.8.7.

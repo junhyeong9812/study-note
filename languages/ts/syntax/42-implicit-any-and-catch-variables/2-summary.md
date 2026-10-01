@@ -1,10 +1,5 @@
 # ts/syntax/42 — 암시적 `any` 와 catch 변수 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [TSConfig — `noImplicitAny`](https://www.typescriptlang.org/tsconfig/#noImplicitAny) · [TSConfig — `useUnknownInCatchVariables`](https://www.typescriptlang.org/tsconfig/#useUnknownInCatchVariables).
-> ★ 위는 **자리 안내용 링크**다 — 이 배치는 외부 네트워크를 쓰지 않아 **열어서 문장을 대조하지 못했다.** 그래서 본문의 사실은 **전부 직접 던져 받은 진단·방출물·`node` 출력**에만 세운다.
-> **실행 검증** — 본판은 아래다. 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`** · node 20 은 **`NODE20`**.
-
 ```text
 ===== tsc --version · "$TSC_OLD" · "$TSC_49" --version · node · "$NODE20" --version · nproc · CPU · PATH 의 tsc 첫 두 줄 (sh exit=0) =====
 Version 7.0.2
@@ -24,7 +19,6 @@ import "../lib/tsc.js";
 > ★★ JS 쪽 사실 — **`throw` 는 아무 값이나 던지고 `stack` 은 `Error` 에만 있다 · 다른 realm 의 오류는 `instanceof Error` 가 `false`** — 는 JS 갈래 [32번](../../../js/syntax/32-error-handling-and-error/)이 쟀다. 여기서는 그 사실 위에서 **TS 의 좁히기 꼴이 무엇을 통과시키나**만 본다.
 > ★★ 설정 실험은 **칸마다 디렉토리를 따로** 만들었다 — 7.0.2 는 위쪽 디렉토리에 `tsconfig.json` 이 있으면 파일을 직접 줘도 `TS5112` 로 거부한다(35편 6절). 격자 스크립트는 **칸에 `TS5xxx` 가 들면 멈추고, 모든 칸이 같은 코드면 멈춘다.** ★ 제출 전에 **가짜 옵션을 끼운 판으로 스크립트가 실제로 멈추는지** 먼저 돌려 봤다(`exit 4`).
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -693,3 +687,9 @@ echo "켬/끔 × 판 여섯 줄에서 서로 다른 답 $(tr '|' '\n' <<< "$all"
 - **`Error.isError`(ES2026)** — realm 을 안 타는 판정이다. JS 32편 7절이 쟀다 — **이 편은 던지지 않았다.**
 - **`noImplicitAny` 와 JS 파일** — `checkJs` 에서 JSDoc 없는 매개변수가 어떻게 되는지는 [목록의 **48번 주제**](../48-js-file-type-checking/)(JS 파일 타입 검사)다. **던지지 않았다.**
 - **`@typescript-eslint/no-unsafe-*`** — 명시적 `any` 가 흐르는 자리를 잡는 린트 규칙. tsc 밖이라 **던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [TSConfig — `noImplicitAny`](https://www.typescriptlang.org/tsconfig/#noImplicitAny) · [TSConfig — `useUnknownInCatchVariables`](https://www.typescriptlang.org/tsconfig/#useUnknownInCatchVariables).
+★ 위는 **자리 안내용 링크**다 — 이 배치는 외부 네트워크를 쓰지 않아 **열어서 문장을 대조하지 못했다.** 그래서 본문의 사실은 **전부 직접 던져 받은 진단·방출물·`node` 출력**에만 세운다.
+**실행 검증** — 본판은 맨 위 블록이다. 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`** · node 20 은 **`NODE20`**.

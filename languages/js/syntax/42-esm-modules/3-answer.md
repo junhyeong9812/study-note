@@ -1,13 +1,5 @@
 # js/syntax/42 — ESM 모듈: 「이름을 빌려 오고(라이브·불변) · 연결이 평가보다 먼저 · 순환은 `6 / 32` — `var` 는 `undefined`, 함수 선언은 멀쩡」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스 · 로컬 HTTP 서버) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다.
-> ★★ **이 주제에서 두 node 판이 갈린 탐침은 없다.** Chrome 151 은 이름공간 쓰기 문구와 없는 파일의 거부 모양만 달랐다.
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(`dynamic42e.cjs` 와 Chrome 쪽 소스는 [2-summary.md](2-summary.md) 동작 (3)·(5)).
-> `js40b-42a/`(1번) · `js40b-42b/`(2번 · 10번) · `js40b-42c-cycle-grid.js`(3번 · 6번 · 7번 · 8번) · `js40b-42d/`(4번) · `js40b-42e/` + `js40b-42e-static.sh`(5번 · 9번).
-
 ## 정답
 
 ### 1. ESM — **`0 · 0` → `1 · 1` → `2 · 2`** · CommonJS — **세 줄 다 `0 · 0`** ★★★
@@ -284,3 +276,12 @@ node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identica
 
 - ★★ **없는 파일의 `import()` 거부 모양**(node `ERR_MODULE_NOT_FOUND` · Chrome `TypeError`) — 호스트의 것이다.
 - ★ 문구 — `Cannot access 'X' before initialization` · `Assignment to constant variable.` · 이름공간 쓰기 문구(Chrome 151 은 `Cannot assign to property …`).
+
+## 실행 환경
+
+이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스 · 로컬 HTTP 서버) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다.
+★★ **이 주제에서 두 node 판이 갈린 탐침은 없다.** Chrome 151 은 이름공간 쓰기 문구와 없는 파일의 거부 모양만 달랐다.
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(`dynamic42e.cjs` 와 Chrome 쪽 소스는 [2-summary.md](2-summary.md) 동작 (3)·(5)).
+`js40b-42a/`(1번) · `js40b-42b/`(2번 · 10번) · `js40b-42c-cycle-grid.js`(3번 · 6번 · 7번 · 8번) · `js40b-42d/`(4번) · `js40b-42e/` + `js40b-42e-static.sh`(5번 · 9번).

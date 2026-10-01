@@ -1,13 +1,5 @@
 # js/syntax/41 — 취소와 타임아웃: 「신호를 안 보는 작업은 끝까지 돈다 · 이유는 `AbortError`/`TimeoutError`/준 값 · 나무는 아래로만 · 서버는 이미 받았다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다.
-> ★★★ **판이 갈린 자리** — `message` 문구(node 대 Chrome) · node 18 `fetch` 의 `abort("mine")`(4번). 그 밖의 줄 순서·종류·숫자는 세 판이 같았다.
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(Chrome 의 `fetch` 소스는 [2-summary.md](2-summary.md) 동작 (4)).
-> `js40b-41a-abort-mid-job.js`(1번 · 5번) · `js40b-41b-reasons.js`(2번 · 6번 · 10번) · `js40b-41c-signal-tree.js`(3번 · 8번) · `js40b-41-h-fetch.js` + `js40b-41-h-timeout-alone.js` + `js40b-41d-node-fetch.sh`(4번 · 7번 · 9번) · `js40b-41e-fetch.web.js`(4번).
-
 ## 정답
 
 ### 1. `[1]` 은 **`job step 3 … job returns` 까지 가고 `fulfilled "job result"`** · `[2]` 는 **`step 3` 없이 `rejected AbortError`** · `[3]` 은 **호출자가 먼저 `rejected AbortError` 를 받고 그 뒤에 `job step 3 … job returns`** ★★★
@@ -228,3 +220,12 @@ node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identica
 - ★★★ **node 18 의 `abort("mine")` → `TypeError 「invalid_argument」`** — node 20 에서 사라졌다. 판이 오르면 4번을 다시 돌린다.
 - ★★ **`timeout` 이 프로세스를 붙잡지 않는 것** — node 의 성질이다.
 - ★ 문구 — `This operation was aborted` · `The operation was aborted due to timeout`(node) / `signal is aborted without reason` · `signal timed out`(Chrome 151).
+
+## 실행 환경
+
+이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다.
+★★★ **판이 갈린 자리** — `message` 문구(node 대 Chrome) · node 18 `fetch` 의 `abort("mine")`(4번). 그 밖의 줄 순서·종류·숫자는 세 판이 같았다.
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(Chrome 의 `fetch` 소스는 [2-summary.md](2-summary.md) 동작 (4)).
+`js40b-41a-abort-mid-job.js`(1번 · 5번) · `js40b-41b-reasons.js`(2번 · 6번 · 10번) · `js40b-41c-signal-tree.js`(3번 · 8번) · `js40b-41-h-fetch.js` + `js40b-41-h-timeout-alone.js` + `js40b-41d-node-fetch.sh`(4번 · 7번 · 9번) · `js40b-41e-fetch.web.js`(4번).

@@ -1,37 +1,5 @@
 # python/syntax/48-pathlib-and-file-io — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
-> - [`open()`(3.12)](https://docs.python.org/3.12/library/functions.html#open) — 모드 표 · *"`'w'` for writing (truncating the file if it already exists), `'x'` for exclusive creation, and `'a'` for appending (which on some Unix systems, means that all writes append to the end of the file regardless of the current seek position)"* ·
->   *"Modes `'w+'` and `'w+b'` open and truncate the file. Modes `'r+'` and `'r+b'` open the file with no truncation."* · `newline` 절 전문(읽기·쓰기 두 불릿) ·
->   *"Python doesn't depend on the underlying operating system's notion of text files; all the processing is done by Python itself, and is therefore platform-independent."*
-> - [`io` — Text Encoding](https://docs.python.org/3.12/library/io.html#text-encoding) · *Opt-in EncodingWarning*(3.10) · `TextIOWrapper` 의 *"The default encoding is now `locale.getpreferredencoding(False)`"*(3.3)
-> - [`os` — Python UTF-8 Mode](https://docs.python.org/3.12/library/os.html#utf8-mode) — *"The Python UTF-8 Mode is enabled if the LC_CTYPE locale is `C` or `POSIX` at Python startup"* · *"`open()`, `io.open()`, and `codecs.open()` use the UTF-8 encoding by default"*
-> - [`PYTHONCOERCECLOCALE`](https://docs.python.org/3.12/using/cmdline.html#envvar-PYTHONCOERCECLOCALE) — 강제 변환은 *"the `LC_ALL` locale override environment variable is also not set"* 일 때만
-> - [`locale.getencoding`](https://docs.python.org/3.12/library/locale.html#locale.getencoding) — *"except this function ignores the Python UTF-8 Mode"*(3.11)
-> - [`pathlib`(3.12)](https://docs.python.org/3.12/library/pathlib.html) — *"If a segment is an absolute path, all previous segments are ignored (like `os.path.join`)"* · `iterdir` 의 *"The children are yielded in arbitrary order"* · `relative_to` 의 `walk_up`(3.12)
-> - [PEP 686](https://peps.python.org/pep-0686/) · [What's New 3.15](https://docs.python.org/3.15/whatsnew/3.15.html) — *"Python now uses UTF-8 as the default encoding, independent of the system's environment."* ★ **3.15 는 이 머신에 없다 — 문서 인용만.**
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 두 블록(판 격자 · 환경 격자)을 더 던졌다. 교차 갈래 대비로 `go1.27.1` 한 블록.\
-> ★★ **파일은 전부 스크립트마다 새로 만든 빈 디렉토리 안에서** 만들었다 — 출력의 경로는 전부 그 디렉토리 기준 **상대 경로**다(`resolve()` 결과도 `relative_to(Path.cwd())` 로 찍었다).\
-> ★★★ **이 문서는 시간·바이트 처리량을 한 번도 재지 않았다** — 「바이너리 모드가 빠르다」 같은 말은 하지 않는다.\
-> **버전** — `EncodingWarning`·`encoding="locale"` **3.10** · `locale.getencoding` **3.11** · `Path.walk`·`relative_to(walk_up=)` **3.12** · UTF-8 모드 **3.7**(PEP 540) · UTF-8 기본 **3.15**(PEP 686 — 문서만).\
-> ★ **구현 대 언어 보장 한 줄** — 모드 표·`newline` 규칙·UTF-8 모드의 켜지는 조건이 **라이브러리 보장**이고, 예외 **문구**와 `tell()` 이 돌려주는 **숫자의 뜻**은 CPython 의 것이다. **로캘 환경**(이 머신 `LANG=ko_KR.UTF-8`)은 관찰이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | 머신의 로캘이 바뀌면 **아무 환경변수도 안 준 행**(그래서 환경 격자는 `env -i` 로 **행마다 환경 전체**를 적었다) | ★★ 격자 마지막 줄 **「… N / M」** · 디스크 바이트(`rb` 로 다시 읽은 것) |
-> | 판이 오르면 예외 **문구**(3.11 과 3.12 의 `relative_to` 문구가 이미 다르다 — 동작 8) | 예외 **타입** · `(exit N)` · 경로 문자열(상대) |
-> | — (주소·시간·`set` 출력·`iterdir` 날것의 순서를 한 곳도 안 찍었다 — `iterdir` 은 `sorted` 로 찍었다) | `errno` 는 **이름**(`EEXIST`)으로 찍었다 · `[Errno 17]` 은 문구 안의 것 |
->
-> **선행** — [06-strings-bytes-unicode](../06-strings-bytes-unicode/2-summary.md)(★★★ **텍스트 모드는 안에서 `decode`/`encode` 를 해 준다 — 그때 쓰는 인코딩이 이 주제의 절반이다**) ·
-> [28-context-managers-and-with](../28-context-managers-and-with/2-summary.md)(`with open(...)` — 닫는 것은 그쪽이 정본) ·
-> [16-iterator-protocol](../16-iterator-protocol/2-summary.md)(파일 객체는 자기 자신의 이터레이터).
-
 ## 한눈에 — 쉽게 말하면
 
 **파일을 여는 것은 「창고 출입증」을 받는 것이다.** 증의 종류(모드)가 **들어가자마자 무엇이 일어나는지**를 정한다.
@@ -1169,3 +1137,34 @@ p.mkdir(parents=True, exist_ok=True)
 * ★ **`encoding="locale"`**(3.10+) — 문서의 말로 *"can be used to specify the current locale's encoding explicitly"*. 「로캘 인코딩이 의도다」를 코드에 적는 값이다.
 * ★ **3.15 를 설치하게 되면 다시 돌릴 것** — 동작 4 의 환경 격자. 문서대로면 `LC_ALL=C PYTHONUTF8=0` 행만 깨지고 **아무것도 안 준 행의 기본이 UTF-8** 이 된다 — ★ **예측이지 측정이 아니다.**
 * ★ **윈도에서 다시 돌릴 것** — 동작 5 의 `[2]` `None` 칸이 `b'a\r\nb'` 가 **될 것이라는 말은 문서의 말**이다. 이 머신은 리눅스라 그 칸은 부적용이었다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
+- [`open()`(3.12)](https://docs.python.org/3.12/library/functions.html#open) — 모드 표 · *"`'w'` for writing (truncating the file if it already exists), `'x'` for exclusive creation, and `'a'` for appending (which on some Unix systems, means that all writes append to the end of the file regardless of the current seek position)"* ·
+  *"Modes `'w+'` and `'w+b'` open and truncate the file. Modes `'r+'` and `'r+b'` open the file with no truncation."* · `newline` 절 전문(읽기·쓰기 두 불릿) ·
+  *"Python doesn't depend on the underlying operating system's notion of text files; all the processing is done by Python itself, and is therefore platform-independent."*
+- [`io` — Text Encoding](https://docs.python.org/3.12/library/io.html#text-encoding) · *Opt-in EncodingWarning*(3.10) · `TextIOWrapper` 의 *"The default encoding is now `locale.getpreferredencoding(False)`"*(3.3)
+- [`os` — Python UTF-8 Mode](https://docs.python.org/3.12/library/os.html#utf8-mode) — *"The Python UTF-8 Mode is enabled if the LC_CTYPE locale is `C` or `POSIX` at Python startup"* · *"`open()`, `io.open()`, and `codecs.open()` use the UTF-8 encoding by default"*
+- [`PYTHONCOERCECLOCALE`](https://docs.python.org/3.12/using/cmdline.html#envvar-PYTHONCOERCECLOCALE) — 강제 변환은 *"the `LC_ALL` locale override environment variable is also not set"* 일 때만
+- [`locale.getencoding`](https://docs.python.org/3.12/library/locale.html#locale.getencoding) — *"except this function ignores the Python UTF-8 Mode"*(3.11)
+- [`pathlib`(3.12)](https://docs.python.org/3.12/library/pathlib.html) — *"If a segment is an absolute path, all previous segments are ignored (like `os.path.join`)"* · `iterdir` 의 *"The children are yielded in arbitrary order"* · `relative_to` 의 `walk_up`(3.12)
+- [PEP 686](https://peps.python.org/pep-0686/) · [What's New 3.15](https://docs.python.org/3.15/whatsnew/3.15.html) — *"Python now uses UTF-8 as the default encoding, independent of the system's environment."* ★ **3.15 는 이 머신에 없다 — 문서 인용만.**
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 두 블록(판 격자 · 환경 격자)을 더 던졌다. 교차 갈래 대비로 `go1.27.1` 한 블록.\
+★★ **파일은 전부 스크립트마다 새로 만든 빈 디렉토리 안에서** 만들었다 — 출력의 경로는 전부 그 디렉토리 기준 **상대 경로**다(`resolve()` 결과도 `relative_to(Path.cwd())` 로 찍었다).\
+★★★ **이 문서는 시간·바이트 처리량을 한 번도 재지 않았다** — 「바이너리 모드가 빠르다」 같은 말은 하지 않는다.\
+**버전** — `EncodingWarning`·`encoding="locale"` **3.10** · `locale.getencoding` **3.11** · `Path.walk`·`relative_to(walk_up=)` **3.12** · UTF-8 모드 **3.7**(PEP 540) · UTF-8 기본 **3.15**(PEP 686 — 문서만).\
+★ **구현 대 언어 보장 한 줄** — 모드 표·`newline` 규칙·UTF-8 모드의 켜지는 조건이 **라이브러리 보장**이고, 예외 **문구**와 `tell()` 이 돌려주는 **숫자의 뜻**은 CPython 의 것이다. **로캘 환경**(이 머신 `LANG=ko_KR.UTF-8`)은 관찰이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| 머신의 로캘이 바뀌면 **아무 환경변수도 안 준 행**(그래서 환경 격자는 `env -i` 로 **행마다 환경 전체**를 적었다) | ★★ 격자 마지막 줄 **「… N / M」** · 디스크 바이트(`rb` 로 다시 읽은 것) |
+| 판이 오르면 예외 **문구**(3.11 과 3.12 의 `relative_to` 문구가 이미 다르다 — 동작 8) | 예외 **타입** · `(exit N)` · 경로 문자열(상대) |
+| — (주소·시간·`set` 출력·`iterdir` 날것의 순서를 한 곳도 안 찍었다 — `iterdir` 은 `sorted` 로 찍었다) | `errno` 는 **이름**(`EEXIST`)으로 찍었다 · `[Errno 17]` 은 문구 안의 것 |
+
+**선행** — [06-strings-bytes-unicode](../06-strings-bytes-unicode/2-summary.md)(★★★ **텍스트 모드는 안에서 `decode`/`encode` 를 해 준다 — 그때 쓰는 인코딩이 이 주제의 절반이다**) ·
+[28-context-managers-and-with](../28-context-managers-and-with/2-summary.md)(`with open(...)` — 닫는 것은 그쪽이 정본) ·
+[16-iterator-protocol](../16-iterator-protocol/2-summary.md)(파일 객체는 자기 자신의 이터레이터).

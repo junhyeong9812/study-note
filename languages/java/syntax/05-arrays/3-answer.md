@@ -1,10 +1,5 @@
 # java/syntax/05 — 배열: 생성·기본값·공변성·`Arrays` 유틸 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·에러·바이트코드는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> 실행 프로그램은 **17.0.13 · 25.0.1** 에서도 돌렸고, 달라진 것은 **`Object.toString` 의 16진수와 `Arrays.hashCode(int[][])` 값뿐**이었다(둘 다 identity hash 기반).\
-> 바이트코드는 `javap -c -p` 출력을, javadoc 은 `lib/src.zip` 의 실파일을 그대로 옮겼다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -665,3 +660,9 @@ Ex.java:5: error: generic array creation
 **구현 의존 항목** — `Arrays$ArrayList`·`ImmutableCollections$List12` 라는 클래스 이름, `ArrayStoreException`·`AIOOBE` 의 메시지 형식, `Arrays.hashCode(int[][])` 의 값, NPE 메시지 문구는 **전부 구현 세부**다.\
 버전이 올랐을 때 다시 돌려 볼 것은 이 표의 **`(05-e)`·`(05-f)`·`(05-i)`** 셋이다 — 메시지와 해시값이 걸려 있다.\
 반면 공변성·`ArrayStoreException` 발생 조건·기본값·배열이 `Object` 를 상속한다는 것은 JLS 가 보장한다.
+
+## 실행 환경
+
+이 파일의 모든 출력·에러·바이트코드는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+실행 프로그램은 **17.0.13 · 25.0.1** 에서도 돌렸고, 달라진 것은 **`Object.toString` 의 16진수와 `Arrays.hashCode(int[][])` 값뿐**이었다(둘 다 identity hash 기반).\
+바이트코드는 `javap -c -p` 출력을, javadoc 은 `lib/src.zip` 의 실파일을 그대로 옮겼다.

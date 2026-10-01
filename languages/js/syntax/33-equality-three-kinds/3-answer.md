@@ -1,13 +1,5 @@
 # js/syntax/33 — 동등성 세 종류: 「`NaN` 과 `-0` 두 행 — 쓰는 곳마다 어느 알고리즘인지」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 새 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151.0.7922.173**(3번의 `.web.js`) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다. ★★ **1번의 답은 앞 편의 블록**이 근거다 — 링크의 동작 번호를 연다.
-> ★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical`).
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
-> `js32b-33-h-equality-core.js` + `js32b-33a-new-places.js`(2번) · `js32b-33-h-equality-core.js` + `js32b-33b-new-places.web.js`(3번 · 7번) · `js32b-33c-typed-and-string.js`(4번 · 6번 · 7번).
-
 ## 정답
 
 ### 1. `NaN` 은 `===`·`==`·`indexOf` 만 「다르다」, `-0` 은 `Object.is` 만 「다르다」 — `Map` 키와 여덟 답이 같은 열은 **`Set` 과 `includes`** ★★★
@@ -205,3 +197,12 @@ identical 12  ·  differs 0  ·  total 12
 
 - ★★ **`Map.groupBy`** — node 가 ES2024 를 받으면 2번의 `groupBy` 열이 채워질 것이다(`4 / 4` 가 기대값이지만 **돌려서 확인한다**).
 - ★ 재정의 실패 **문구** — V8 의 것이다.
+
+## 실행 환경
+
+이 파일의 새 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151.0.7922.173**(3번의 `.web.js`) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다. ★★ **1번의 답은 앞 편의 블록**이 근거다 — 링크의 동작 번호를 연다.
+★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical`).
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
+`js32b-33-h-equality-core.js` + `js32b-33a-new-places.js`(2번) · `js32b-33-h-equality-core.js` + `js32b-33b-new-places.web.js`(3번 · 7번) · `js32b-33c-typed-and-string.js`(4번 · 6번 · 7번).

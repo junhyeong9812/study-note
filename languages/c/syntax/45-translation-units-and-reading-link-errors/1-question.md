@@ -1,16 +1,5 @@
 # c/syntax/45 — 번역 단위와 링크 오류 읽기: 「**링크 에러는 「이 이름의 정의가 몇 개인가」에 대한 링커의 대답이다 — 문구에서 원인으로 거꾸로 걸어가는 길은 `nm` 이 깐다**」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **환경** — gcc 13.3.0 · clang 18.1.3 · g++ 13.3.0 · GNU ld 2.42(ld.bfd) · ld.gold · x86-64 Linux · glibc 2.39.
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① **링크 에러 두 종류**(`undefined reference` / `multiple definition`)가 **각각 어떤 원인 묶음**을 가리키나
-> ② **`nm` 의 글자**(`U` · `T` · `t` · `w` · `W`)로 원인을 **어느 파일의 무엇**까지 좁히나 ③ **순서·드라이버·약한 심볼**처럼 **소스가 같아도 링크가 갈리는 자리**.
-> ★★★ **본체 창은 넷째 창 — 링크 결과 + `nm`** 이다. 1번은 **칸마다 「링크 성공 / `undefined reference` / `multiple definition`」**, 2번은 **파일마다 글자**를 적어야 답이다.
-> ★★ **헤더에 무엇을 두면 깨지나**(헤더 내용 14 × 빌드 5 격자)는 [44번 형제](../44-headers-and-separate-compilation/)가 이미 쟀다 — 여기는 그 에러를 **받아서 거꾸로 읽는** 쪽이다.
-> 선행 — [44번 형제](../44-headers-and-separate-compilation/) · [29번 형제](../29-scope-and-linkage-static-extern/) · [34번 형제](../34-function-declarations-definitions-and-prototypes/).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 다섯 문항(1\~5)은 소스만 보고 적어 본 뒤** 답을 연다.
@@ -236,6 +225,14 @@ int hook(void) { return 5; }
 
 - **헤더에 무엇을 두나**(배치 격자) · **`inline` 의 링크** · **`static`/`extern` 링크 규칙** 은 각각 어디가 정본인가?
 - ★ C++ 의 **템플릿 인스턴스화 링크 에러**는 어느 갈래에서 다루나?
+
+## 실행 환경
+
+**환경** — gcc 13.3.0 · clang 18.1.3 · g++ 13.3.0 · GNU ld 2.42(ld.bfd) · ld.gold · x86-64 Linux · glibc 2.39.
+
+★★★ **본체 창은 넷째 창 — 링크 결과 + `nm`** 이다. 1번은 **칸마다 「링크 성공 / `undefined reference` / `multiple definition`」**, 2번은 **파일마다 글자**를 적어야 답이다.
+★★ **헤더에 무엇을 두면 깨지나**(헤더 내용 14 × 빌드 5 격자)는 [44번 형제](../44-headers-and-separate-compilation/)가 이미 쟀다 — 여기는 그 에러를 **받아서 거꾸로 읽는** 쪽이다.
+선행 — [44번 형제](../44-headers-and-separate-compilation/) · [29번 형제](../29-scope-and-linkage-static-extern/) · [34번 형제](../34-function-declarations-definitions-and-prototypes/).
 
 ## 복습 기록
 

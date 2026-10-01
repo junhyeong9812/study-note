@@ -1,16 +1,5 @@
 # html/syntax/36 — `picture`: 아트 디렉션과 포맷 대체 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The picture element」·「The source element」](https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element) 와 [「Images」 절](https://html.spec.whatwg.org/multipage/images.html)의 소스 고르기 — ★★★ **이 배치의 명세 사본에 이 절들이 없다**(네트워크를 쓰지 않는 배치라 새로 받지도 못했다). 그래서 **`source` 를 고르는 규칙의 명세층은 판정 보류**다. 사본에 있는 것 셋만 명세로 적는다 — [콘텐츠 카테고리의 「Embedded content」 목록](https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category)(★ **`picture` 가 들어 있다**) · [Rendering 「Attributes for embedded content and images」](https://html.spec.whatwg.org/multipage/rendering.html#attributes-for-embedded-content-and-images)(★ 「`img` 의 **dimension attribute source** 의 `width`·`height`」 — 그 말의 **정의**는 사본에 없다) · [HTML-AAM](https://w3c.github.io/html-aam/) 의 `picture`·`source` 대응(★ **「Not mapped」** — 뜻은 「노출할 **필요가 없다**」 · 「그려지면 **`generic` 으로 대응해야 한다(SHOULD)**」). 사본은 앞 배치가 2026-09-26 에 받아 둔 것이다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 하네스는 [33번 주제](../33-output-progress-meter/3-answer.md)의 `## 실행 검증` 에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> ★★ **「AVIF 가 작다」 같은 포맷 비교는 하지 않는다** — (B) 가 묻는 것은 **어느 `source` 를 골라 무엇을 받았나**뿐이다.
-> **버전** — HTML 에는 언어 버전이 없다. 이 배치는 지원 표를 따로 조회하지 않았다.
-> **선행** — [35번 주제](../35-srcset-and-sizes/2-summary.md)(★ `srcset` 만 쓰면 **DPR 과 캐시로 브라우저가 후보를 고른다** · 창을 줄여도 큰 것을 유지했다).
-> **경계** — **`video`/`audio` 의 `source` 목록**은 목록의 **37번 주제** · **`srcset`/`sizes` 의 계산**은 [35번](../35-srcset-and-sizes/2-summary.md) · **`width`/`height` 의 자리 예약**은 [34번](../34-img-alt-size-and-loading/2-summary.md) — 여기는 **`picture` 가 `srcset` 으로 안 되는 두 경우**까지.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다 — 「어느 `source` 의 파일을 받았나 · 몇 번 요청했나」.** 자리 예약은 레이아웃 창, 트리는 창 ⑦ 로.
-
 **이 판의 Chrome**
 
 ```text
@@ -527,3 +516,15 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **AVIF 를 받는 판** — 인코더(`avifenc`)가 생기면 `type="image/avif"` 칸을 **진짜 파일로** 다시 던진다. 지금 표의 (3) 은 「아는 포맷(WebP)」과 「모르는 포맷(없는 MIME)」의 두 극으로만 물었다.
 - **`source` 의 `sizes`** — `source` 도 `srcset` 에 `w` 서술자와 `sizes` 를 받는다. 이 판은 `source` 안의 `w` 계산을 던지지 않았다([35번](../35-srcset-and-sizes/2-summary.md)의 계산이 그대로일 것으로 보이지만 확인하지 않았다).
 - **`media` 와 `type` 을 한 `source` 에 같이** — 둘 다 맞아야 쓰일 것이다. 이 판은 던지지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The picture element」·「The source element」](https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element) 와 [「Images」 절](https://html.spec.whatwg.org/multipage/images.html)의 소스 고르기 — ★★★ **이 배치의 명세 사본에 이 절들이 없다**(네트워크를 쓰지 않는 배치라 새로 받지도 못했다). 그래서 **`source` 를 고르는 규칙의 명세층은 판정 보류**다. 사본에 있는 것 셋만 명세로 적는다 — [콘텐츠 카테고리의 「Embedded content」 목록](https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category)(★ **`picture` 가 들어 있다**) · [Rendering 「Attributes for embedded content and images」](https://html.spec.whatwg.org/multipage/rendering.html#attributes-for-embedded-content-and-images)(★ 「`img` 의 **dimension attribute source** 의 `width`·`height`」 — 그 말의 **정의**는 사본에 없다) · [HTML-AAM](https://w3c.github.io/html-aam/) 의 `picture`·`source` 대응(★ **「Not mapped」** — 뜻은 「노출할 **필요가 없다**」 · 「그려지면 **`generic` 으로 대응해야 한다(SHOULD)**」). 사본은 앞 배치가 2026-09-26 에 받아 둔 것이다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 하네스는 [33번 주제](../33-output-progress-meter/3-answer.md)의 `## 실행 검증` 에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+★★ **「AVIF 가 작다」 같은 포맷 비교는 하지 않는다** — (B) 가 묻는 것은 **어느 `source` 를 골라 무엇을 받았나**뿐이다.
+**버전** — HTML 에는 언어 버전이 없다. 이 배치는 지원 표를 따로 조회하지 않았다.
+**선행** — [35번 주제](../35-srcset-and-sizes/2-summary.md)(★ `srcset` 만 쓰면 **DPR 과 캐시로 브라우저가 후보를 고른다** · 창을 줄여도 큰 것을 유지했다).
+**경계** — **`video`/`audio` 의 `source` 목록**은 목록의 **37번 주제** · **`srcset`/`sizes` 의 계산**은 [35번](../35-srcset-and-sizes/2-summary.md) · **`width`/`height` 의 자리 예약**은 [34번](../34-img-alt-size-and-loading/2-summary.md) — 여기는 **`picture` 가 `srcset` 으로 안 되는 두 경우**까지.
+
+★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다 — 「어느 `source` 의 파일을 받았나 · 몇 번 요청했나」.** 자리 예약은 레이아웃 창, 트리는 창 ⑦ 로.

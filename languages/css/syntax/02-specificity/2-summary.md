@@ -1,13 +1,5 @@
 # css/syntax/02 — 명시도 계산: (ID, 클래스, 타입) 세 자리와 무엇이 어디에 기여하나 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Selectors Level 4 §Calculating a selector's specificity](https://drafts.csswg.org/selectors-4/#specificity-rules) · [CSS Cascade 5](https://drafts.csswg.org/css-cascade-5/) (명시도가 캐스케이드의 5단계라는 것). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 아래 「손으로 세어 보기」 표의 **16행 전부**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 확인했다.\
-> 표의 검증 방법은 그 절에 적어 두었다(동점 경쟁자 · 한 칸 낮은 경쟁자 양방향 대조).\
-> **WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다.
-> **버전** — CSS 에 언어 버전은 없다. 여기 나오는 선택자의 Baseline(목록 README 의 지원 표): `:where()` **widely**(2021-01-21 → 2023-07-21) · `:has()` **widely**(2023-12-19 → 2026-06-19) · `:nth-child(… of S)` **widely**(2023-05-09 → 2025-11-09).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 숫자는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **명시도 = 금화·은화·동화 세 종류로 받은 점수다. 그리고 환전소가 없다.**
@@ -472,3 +464,11 @@ h1, #x { color: red; }
 - `:has()` 안에 `:has()` 를 넣을 수 없는 것은 명시도 규칙이 아니라 매칭 제약이다([목록의 **12번 주제**](../12-has-relational-selector/)).
 - 명시도 전쟁을 언어 기능으로 끝내는 조합은 오늘 기준 **`@layer` + `:where()`** 다.\
   BEM·ITCSS 같은 명명 방법론은 같은 문제를 **관례**로 풀던 시절의 도구다(목록 README 의 「뺀 것과 이유」).
+
+## 실행 환경
+
+**기준 소스** — [Selectors Level 4 §Calculating a selector's specificity](https://drafts.csswg.org/selectors-4/#specificity-rules) · [CSS Cascade 5](https://drafts.csswg.org/css-cascade-5/) (명시도가 캐스케이드의 5단계라는 것). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 본문 「손으로 세어 보기」 표의 **16행 전부**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 확인했다.\
+표의 검증 방법은 그 절에 적어 두었다(동점 경쟁자 · 한 칸 낮은 경쟁자 양방향 대조).\
+**WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다.
+**버전** — CSS 에 언어 버전은 없다. 여기 나오는 선택자의 Baseline(목록 README 의 지원 표): `:where()` **widely**(2021-01-21 → 2023-07-21) · `:has()` **widely**(2023-12-19 → 2026-06-19) · `:nth-child(… of S)` **widely**(2023-05-09 → 2025-11-09).

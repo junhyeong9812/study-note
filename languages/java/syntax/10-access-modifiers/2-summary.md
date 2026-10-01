@@ -1,16 +1,5 @@
 # java/syntax/10 — 접근 제어자: package-private·`protected` 의 실제 경계 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §6.6 Access Control](https://docs.oracle.com/javase/specs/jls/se21/html/jls-6.html) · [§6.6.2 Details on protected Access](https://docs.oracle.com/javase/specs/jls/se21/html/jls-6.html) · [§8.1.1 Class Modifiers](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [JEP 181: Nest-Based Access Control](https://openjdk.org/jeps/181)
-> **실행 검증** — 이 문서의 모든 출력·에러 메시지는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 패키지 예제는 **17.0.13 · 21.0.5 · 25.0.1** 셋에서 다 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
-> 클래스 파일의 접근 플래그는 `javap -p` · `javap -v -p` 출력을 그대로 옮겼다.
-> **버전** — 네 수준의 규칙은 Java 1.0 이래 같다. **nest 기반 접근 제어는 Java 11**(JEP 181)부터.\
-> 모듈 시스템(JPMS, Java 9+)이 그 위에 한 층을 더 얹지만 **이 주제에서는 다루지 않는다**(목록에서 뺀 것이다).
-> **범위** — **정보 은닉이 왜 필요한가**는 [`../../../../cs/foundations/oop-basics/`](../../../../cs/foundations/oop-basics/) §10~12 가 정본이다.\
-> 여기는 **Java 의 네 수준이 각각 정확히 어디까지 열리나**만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **접근 제어는 문 네 개짜리 집이 아니라, 동심원 네 겹이다.**
@@ -503,3 +492,14 @@ farm/Use.java:6: error: Secret.value is defined in an inaccessible class or inte
 - **package-private 클래스는 라이브러리 내부 구현을 감추는 표준 수단**이다.\
   `java.util` 의 `Collections$UnmodifiableList` 가 그렇다 — `javap -p` 로 열어 보면 `public` 이 없는 package-private 클래스이고,\
   밖에서는 `List` 인터페이스로만 보인다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §6.6 Access Control](https://docs.oracle.com/javase/specs/jls/se21/html/jls-6.html) · [§6.6.2 Details on protected Access](https://docs.oracle.com/javase/specs/jls/se21/html/jls-6.html) · [§8.1.1 Class Modifiers](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [JEP 181: Nest-Based Access Control](https://openjdk.org/jeps/181)
+**실행 검증** — 이 문서의 모든 출력·에러 메시지는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+패키지 예제는 **17.0.13 · 21.0.5 · 25.0.1** 셋에서 다 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
+클래스 파일의 접근 플래그는 `javap -p` · `javap -v -p` 출력을 그대로 옮겼다.
+**버전** — 네 수준의 규칙은 Java 1.0 이래 같다. **nest 기반 접근 제어는 Java 11**(JEP 181)부터.\
+모듈 시스템(JPMS, Java 9+)이 그 위에 한 층을 더 얹지만 **이 주제에서는 다루지 않는다**(목록에서 뺀 것이다).
+**범위** — **정보 은닉이 왜 필요한가**는 [`../../../../cs/foundations/oop-basics/`](../../../../cs/foundations/oop-basics/) §10~12 가 정본이다.\
+여기는 **Java 의 네 수준이 각각 정확히 어디까지 열리나**만 다룬다.

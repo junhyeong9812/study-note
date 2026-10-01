@@ -1,14 +1,5 @@
 # sql/07-DISTINCT 와 중복 제거 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · SELECT · DISTINCT Clause](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · DISTINCT Optimization](https://dev.mysql.com/doc/refman/8.4/en/distinct-optimization.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — `DISTINCT` 자체는 두 엔진 모두 오래전부터 있다. `DISTINCT ON` 은 PG 전용이고 MySQL 에는 문법이 없다.\
-> **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/)(`DISTINCT` 가 6번 칸) · [04 NULL 의 3값 논리](../04-null-three-valued-logic/)(`NULL` 을 하나로 묶는 예외).
-
 ## 한눈에 — 쉽게 말하면
 
 **`DISTINCT` 는 「열 하나를 고유하게」가 아니라 「출력 행 전체가 같으면 하나로」다.**
@@ -587,3 +578,11 @@ SUM(DISTINCT <열>) · AVG(DISTINCT <열>)
 - **`DISTINCT` 는 「비용이 드는 정정」이다.** 중복이 나오는 자리를 고치는 대신 결과에서 지우는 것이라, 엔진은 **결과 전체를 모아 정렬하거나 해시**해야 한다. 스트리밍으로 흘려보낼 수 없다는 뜻이고, 그래서 큰 결과에서는 여기가 병목이 된다.
 - **`UNION` 이 조용히 `DISTINCT` 를 한다.** `UNION ALL` 과 달리 `UNION` 은 중복을 지운다 — [16번](../16-full-outer-join/)에서 MySQL 의 `FULL OUTER JOIN` 우회를 `UNION` 으로 짜면 값이 같은 행이 접혀 결과가 줄어드는 사고가 그것이다. 집합 연산의 정본은 [목록의 **34번 주제**](../34-set-operations-union-intersect-except/)다.
 - **`COUNT(DISTINCT)` 두 판의 답이 2와 4로 갈린 것**은 문법 차이가 아니라 **「`NULL` 이 든 조합을 셀 것인가」라는 설계 판단의 차이**다. 두 엔진 중 어느 쪽이 옳다기보다, 지표를 정의할 때 그 질문에 먼저 답해야 한다는 신호로 읽는 편이 낫다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · SELECT · DISTINCT Clause](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · DISTINCT Optimization](https://dev.mysql.com/doc/refman/8.4/en/distinct-optimization.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — `DISTINCT` 자체는 두 엔진 모두 오래전부터 있다. `DISTINCT ON` 은 PG 전용이고 MySQL 에는 문법이 없다.\
+**선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/)(`DISTINCT` 가 6번 칸) · [04 NULL 의 3값 논리](../04-null-three-valued-logic/)(`NULL` 을 하나로 묶는 예외).

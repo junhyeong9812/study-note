@@ -1,12 +1,5 @@
 # web-api/09 — 요소 기하: `getBoundingClientRect`·`offset*`/`client*`/`scroll*` 과 좌표계 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
-> ★ **배너의 `--window-size=1000,800` 이 이 문서의 전제다.** 창이 다르면 절대 좌표가 전부 달라진다 — 기본 창은 780×493 이다.\
-> 규칙은 [CSSOM View Module](https://drafts.csswg.org/cssom-view/) 로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> ★ **「CSS 가 상자를 어떻게 정하나」는 이 문서가 아니다** — [CSS 15번 주제](../../css/syntax/15-box-model-and-box-sizing/2-summary.md)가 정본이다.
-
 **★ 이 주제에는 흔들리는 칸이 거의 없다** — 시간이 아니라 좌표를 재기 때문이다.
 
 | 안 흔들리는 칸 | 흔들리는 칸 |
@@ -387,3 +380,11 @@ const padw = (s, n) => s + ' '.repeat(Math.max(0, n - W(s)));
 - **히트 테스트(hit testing)** — 어떤 점 위에 어느 요소가 있는지 찾는 일. `elementFromPoint` 가 한다.
 - **강제 동기 레이아웃(forced synchronous layout)** — 읽기가 그 자리에서 레이아웃을 다시 계산하게 만드는 것([10번 주제](../10-layout-thrashing/2-summary.md)).
 - **레이아웃 단위** — 엔진이 좌표를 셈하는 내부 눈금. Blink 는 1/64px 정수를 쓰고, 그래서 소수가 1/16 단위로 보인다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
+★ **배너의 `--window-size=1000,800` 이 이 문서의 전제다.** 창이 다르면 절대 좌표가 전부 달라진다 — 기본 창은 780×493 이다.\
+규칙은 [CSSOM View Module](https://drafts.csswg.org/cssom-view/) 로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+★ **「CSS 가 상자를 어떻게 정하나」는 이 문서가 아니다** — [CSS 15번 주제](../../css/syntax/15-box-model-and-box-sizing/2-summary.md)가 정본이다.

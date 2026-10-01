@@ -1,10 +1,5 @@
 # issue/python/module-resolution-and-accidental-pass — 실행 방식이 가르는 초록불 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-23).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 
 1. (왜) 똑같은 테스트 스위트가 `python -m pytest`로는 통과하고 `pytest`로는 import 에러로 죽었다. 두 실행 방식이 파이썬의 모듈 검색 경로(`sys.path`)에 각각 무엇을 다르게 넣기에 결과가 갈리는가?

@@ -1,9 +1,5 @@
 # PR #37082 분석 — ResolvableType 타입 변수 이름 폴백의 과잉 매칭
 
-> 작성일: 2026-08-27 · 기준: PR base `1502ab0b20b`, PR head `1633f41727c` (spring-core)
-> 목적: 착수 시점 관점의 설명 문서 — 전체 메서드 그래프, 이름표 사전, 결함 경로 단계 추적, 계약, 수정안.
-> 같은 폴더: [README](README.md) · [테스트 해설](tests.md) · [실구조](structure.md) · [이해 게이트](gates.md).
-
 ## 0. 결론 먼저
 
 `ResolvableType.resolveVariable()`의 마지막 폴백은 타입 변수를 **이름 문자열만으로** 매칭한다(base L966-971).\
@@ -369,3 +365,8 @@ PR이 추가한 긍정 테스트 `resolveTypeVariableByNameWhenNarrowingParamete
 - **인접 리포트.**\
   gh-36890 이슈 자체는 선행 커밋 `9130ded96f4`로 이미 닫혔다.\
   이 PR은 같은 이슈 번호를 참조하는 후속이며, 새 이슈를 열지 않고 "그 수정이 최상위 선언에서는 도달하지 못했다"는 범위 보완으로 제출됐다.
+
+## 출처
+
+작성일: 2026-08-27 · 기준: PR base `1502ab0b20b`, PR head `1633f41727c` (spring-core)
+목적: 착수 시점 관점의 설명 문서 — 전체 메서드 그래프, 이름표 사전, 결함 경로 단계 추적, 계약, 수정안.

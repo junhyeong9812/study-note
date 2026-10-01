@@ -1,15 +1,5 @@
 # web-api/15 — 리스너 등록과 해제: `addEventListener` 옵션 객체·`removeEventListener` 의 동일성 조건·`handleEvent` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 갈래는 언어가 아니라 플랫폼이다.** 여기서 다루는 것은 「이벤트가 어디로 흐르나」가 아니라 「**리스너를 어떻게 달고 어떻게 떼나**」다. 전파 3단계와 `stopPropagation` 은 [목록의 **16번 주제**](../16-event-propagation-phases/)·**17번 주제**가 정본이고 여기서 다시 쓰지 않는다.\
-> **기준 소스** — [WHATWG DOM Standard — Events](https://dom.spec.whatwg.org/#events) 의 「`EventTarget`」·「`AddEventListenerOptions`」·「add an event listener」·「remove an event listener」·「inner invoke」 절. 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 블록마다 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다.\
-> ★ **이 주제에는 「못 잰 것」이 많다** — `passive` 가 실제로 스크롤을 얼마나 빠르게 하는지, 리스너가 붙들고 있는 메모리가 얼마인지, 진짜 터치 입력에서 무엇이 달라지는지를 **하나도 재지 않았다**(아래 「도구가 못 보는 것」).\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. 옵션 객체 꼴은 DOM 표준으로 사후 명세화된 표면이고 `signal` 이 가장 늦게 들어왔다(갈래 [`../README.md`](../README.md) 의 지원 표).\
-> **선행** — [01번 주제](../01-document-and-node-tree/2-summary.md)(노드 트리)와 HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **41번**(네이티브 시맨틱이 무료로 주는 키보드 동작).\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -1150,3 +1140,13 @@ el.addEventListener('click', { handleevent(e) {} });
 - **`AbortSignal.timeout()`·`AbortSignal.any()`** 로 신호를 합칠 수 있다. **던져 보지 않았다** — [목록의 **27번 주제**](../27-abort-and-timeout/) 몫이다.
 - **`{ passive: true }` 가 실제로 얼마나 이득인가**는 **재지 않았다.** [목록의 **19번 주제**](../19-passive-and-scroll/)가 그 자리다.
 - **`el.addEventListener` 의 반환값은 `undefined`** 이고 **「등록됐나」를 알려 주지 않는다.** 그래서 창 ④ 가 필요하다.
+
+## 실행 환경
+
+**이 갈래는 언어가 아니라 플랫폼이다.** 여기서 다루는 것은 「이벤트가 어디로 흐르나」가 아니라 「**리스너를 어떻게 달고 어떻게 떼나**」다. 전파 3단계와 `stopPropagation` 은 [목록의 **16번 주제**](../16-event-propagation-phases/)·**17번 주제**가 정본이고 여기서 다시 쓰지 않는다.\
+**기준 소스** — [WHATWG DOM Standard — Events](https://dom.spec.whatwg.org/#events) 의 「`EventTarget`」·「`AddEventListenerOptions`」·「add an event listener」·「remove an event listener」·「inner invoke」 절. 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 블록마다 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다.\
+★ **이 주제에는 「못 잰 것」이 많다** — `passive` 가 실제로 스크롤을 얼마나 빠르게 하는지, 리스너가 붙들고 있는 메모리가 얼마인지, 진짜 터치 입력에서 무엇이 달라지는지를 **하나도 재지 않았다**(맨 위 「도구가 못 보는 것」).\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. 옵션 객체 꼴은 DOM 표준으로 사후 명세화된 표면이고 `signal` 이 가장 늦게 들어왔다(갈래 [`../README.md`](../README.md) 의 지원 표).\
+**선행** — [01번 주제](../01-document-and-node-tree/2-summary.md)(노드 트리)와 HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **41번**(네이티브 시맨틱이 무료로 주는 키보드 동작).

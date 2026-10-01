@@ -1,9 +1,5 @@
 # PR #37014 분석 — SimpleJdbcInsert가 선언된 generated key 컬럼을 제외하지 못하는 결함
 
-> 작성일: 2026-08-27 · 기준: PR base `1700fad16d2`, PR head `15d9e57760b` (spring-jdbc)
-> 목적: 착수 시점 관점의 설명 문서 — 전체 메서드 그래프, 이름표 사전, 결함 경로 단계 추적, 계약, 수정안.
-> 같은 폴더: [README](README.md) · [테스트 해설](tests.md) · [실구조](structure.md) · [이해 게이트](gates.md).
-
 ## 0. 결론 먼저
 
 `TableMetaDataContext.reconcileColumnsToUse()`는 사용자가 `usingColumns(...)`로 컬럼을 명시한 경우 그 목록을 **아무 필터 없이 그대로 반환**하고(L208-210), generated key 제외는 바로 아래 메타데이터 자동탐색 분기(L211-221)에만 존재한다.\
@@ -361,3 +357,8 @@ PR 본문은 이 점을 "Note on impact"로 분리해 밝히고 5.2의 대안도
 - **검증**: `TableMetaDataContextTests`에 부분 겹침·전체 겹침·대소문자 겹침 세 건이 추가됐다.\
   세 건 모두 수정 전 red이며, 각 테스트 안의 `insertString` 단언은 전후 모두 green이라 SQL 생성 쪽을 건드리지 않았음을 함께 고정한다.\
   상세는 [tests.md](tests.md).
+
+## 출처
+
+작성일: 2026-08-27 · 기준: PR base `1700fad16d2`, PR head `15d9e57760b` (spring-jdbc)
+목적: 착수 시점 관점의 설명 문서 — 전체 메서드 그래프, 이름표 사전, 결함 경로 단계 추적, 계약, 수정안.

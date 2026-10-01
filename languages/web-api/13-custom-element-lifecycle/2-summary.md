@@ -1,14 +1,5 @@
 # web-api/13 — 커스텀 요소 수명주기: `customElements.define`·`connected`/`disconnected`/`attributeChanged`·업그레이드 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★ **마크업 갈래와의 경계** — HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **10번** 이 커스텀 요소를 **맛보기로** 다룬다(파서가 만든 요소가 `define` 으로 살아나는 것까지). **여기는 그 수명주기 전부**다 — 넷의 순서, 업그레이드의 세 경로, 생성자 규칙, 이름 규칙.\
-> **기준 소스** — [WHATWG HTML Living Standard — Custom elements](https://html.spec.whatwg.org/multipage/custom-elements.html) 의 「Custom element conformance」·「`CustomElementRegistry`」·「Upgrades」·「Custom element reactions」 절과 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「Mutation algorithms」. 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. **콘솔 블록 하나만 `--enable-logging=stderr` 로 따로 받았다** — 이 주제의 가장 중요한 사실이 **콘솔에만** 남기 때문이다((6)).\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** 특히 **내장 요소 확장(`is=`)은 엔진마다 갈리는 표면**이다.\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `customElements` 는 오래된 표면이고 **`customElements.getName()`·`connectedMoveCallback`·`moveBefore()` 는 새 표면**이다(아래 「구현 세부사항 대 언어 보장」).\
-> **선행** — [12번 주제](../12-shadow-dom/2-summary.md)(그림자 경계)와 [03번 주제](../03-node-creation-insertion-removal/2-summary.md)(삽입·이동·제거가 무엇인가).\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -1210,3 +1201,12 @@ customElements.whenDefined('my-el').then(() => { });   // 이것이 맞다
 - **`customElements.whenDefined` 의 거절** — 이름이 유효하지 않으면 Promise 가 **거절**된다. 이 문서는 유효한 이름만 던졌다.
 - **`<template>` 의 `content` 안**은 다른 문서라 업그레이드 대상이 아니다. 꺼내 붙이는 순간 `adoptedCallback` 이 낄 수 있다 — **이 문서는 그 경로를 따로 찍지 않았다.**
 - **접근성** — 커스텀 요소는 기본 역할이 없다. `role` 을 주거나 `ElementInternals` 로 붙여야 한다. **스크린리더가 실제로 어떻게 읽는지는 이 도구로 못 본다.**
+
+## 실행 환경
+
+★ **마크업 갈래와의 경계** — HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **10번** 이 커스텀 요소를 **맛보기로** 다룬다(파서가 만든 요소가 `define` 으로 살아나는 것까지). **여기는 그 수명주기 전부**다 — 넷의 순서, 업그레이드의 세 경로, 생성자 규칙, 이름 규칙.\
+**기준 소스** — [WHATWG HTML Living Standard — Custom elements](https://html.spec.whatwg.org/multipage/custom-elements.html) 의 「Custom element conformance」·「`CustomElementRegistry`」·「Upgrades」·「Custom element reactions」 절과 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「Mutation algorithms」. 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. **콘솔 블록 하나만 `--enable-logging=stderr` 로 따로 받았다** — 이 주제의 가장 중요한 사실이 **콘솔에만** 남기 때문이다((6)).\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** 특히 **내장 요소 확장(`is=`)은 엔진마다 갈리는 표면**이다.\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `customElements` 는 오래된 표면이고 **`customElements.getName()`·`connectedMoveCallback`·`moveBefore()` 는 새 표면**이다(본문 「구현 세부사항 대 언어 보장」).\
+**선행** — [12번 주제](../12-shadow-dom/2-summary.md)(그림자 경계)와 [03번 주제](../03-node-creation-insertion-removal/2-summary.md)(삽입·이동·제거가 무엇인가).

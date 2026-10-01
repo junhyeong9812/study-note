@@ -1,17 +1,5 @@
 # c/syntax/36 — 가변 인자 함수 `<stdarg.h>`: 「**`...` 뒤에서는 타입이 사라지고, 승격된 것만 남는다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — 「**`...` 뒤의 인자에는 정수 승격과 `float` → `double` 을 건다(기본 인자 승격)**」, `va_arg` 의 「**꺼내는 타입이 승격된 실제 인자의 타입과 호환되지 않으면 UB — 부호만 다른 정수 등 예외 넷**」·「**다음 인자가 없으면 UB**」, `va_list` 를 다른 함수에 넘겨 그쪽이 `va_arg` 를 부르면 「**부른 쪽의 `ap` 는 불확정**」, 「**`va_end` 없이 돌아가면 UB**」, C23 의 **`void va_start(va_list ap, ...);`** 서명, 전처리기의 「**`...` 를 뺀 매개변수 수만큼만 인자가 있으면 된다**」(`...` 자리에 인자 0개가 합법)를 **본문에서 직접 찾아 읽었다**)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **진단·종료 코드·어셈블리는 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> ★★★ **본체는 승격 격자다** — 넘긴 타입 5 × 꺼낸 타입 2(승격 전 / 승격 후) × 컴파일러 2 × `-O0`/`-O2`, 칸마다 **경고 수 · 실행 종료 코드 · 값이 같나.**\
-> ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
-> **버전** — `<stdarg.h>` 는 **C89 부터**, **`va_copy` 는 C99 부터**다. ★ **C23** 이 `va_start` 의 두 번째 인자를 **없어도 되게** 하고, **이름 있는 매개변수가 없는 `f(...)`** 를 허락했다((8)의 판 격자).
-> ★★ **경계** — **정수 승격 규칙 자체**는 [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/), **`float` → `double`** 은 [04번 형제](../04-floating-point-types-and-conversions/)가 정본이다. **프로토타입이 없을 때의 승격**은 [34번 형제](../34-function-declarations-definitions-and-prototypes/)가 정본이다 — 이 편과 **한 사슬**이다.\
-> ★ **`printf` 계열의 형식 문자열**은 [목록의 **47번 주제**](../47-stdio-streams-buffering-and-formatted-output/)가 정본이다. 여기는 「**형식을 컴파일러가 검사하느냐**」만 본다.
-> 선행 — [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/) · [34번 형제](../34-function-declarations-definitions-and-prototypes/).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 둘째 창 — 실행 결과의 승격 격자다.** 승격되는 타입(`char`·`unsigned char`·`short`·`_Bool`·`float`)을 넘기고 **승격 전 타입 / 승격 후 타입**으로 꺼내, 칸마다 **경고 · 종료 코드 · 값**을 한 줄에 찍는다.
 ★★★ 그 격자에서 **두 컴파일러가 정반대로 갈렸다** — gcc 는 **프로그램을 죽이고**(`exit=132`), clang 은 **값을 낸다** — 그리고 그 값이 **대부분 맞아 보인다.**
 
@@ -955,3 +943,15 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★ **`vprintf` 에 넘긴 `ap` 를 다시 쓰기** — (6)과 같은 규칙이다. ★ **던지지 않았다.**
 - ★ **C23 `nullptr` 를 센티널로** — 표준 예외 목록에 `nullptr_t` 가 있다. ★ **던지지 않았다.**
 - ★ **gcc `-Wformat=2` · `-Wformat-nonliteral`** — 형식 문자열이 리터럴이 아닐 때. ★ **던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — 「**`...` 뒤의 인자에는 정수 승격과 `float` → `double` 을 건다(기본 인자 승격)**」, `va_arg` 의 「**꺼내는 타입이 승격된 실제 인자의 타입과 호환되지 않으면 UB — 부호만 다른 정수 등 예외 넷**」·「**다음 인자가 없으면 UB**」, `va_list` 를 다른 함수에 넘겨 그쪽이 `va_arg` 를 부르면 「**부른 쪽의 `ap` 는 불확정**」, 「**`va_end` 없이 돌아가면 UB**」, C23 의 **`void va_start(va_list ap, ...);`** 서명, 전처리기의 「**`...` 를 뺀 매개변수 수만큼만 인자가 있으면 된다**」(`...` 자리에 인자 0개가 합법)를 **본문에서 직접 찾아 읽었다**)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **진단·종료 코드·어셈블리는 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+★★★ **본체는 승격 격자다** — 넘긴 타입 5 × 꺼낸 타입 2(승격 전 / 승격 후) × 컴파일러 2 × `-O0`/`-O2`, 칸마다 **경고 수 · 실행 종료 코드 · 값이 같나.**\
+★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
+**버전** — `<stdarg.h>` 는 **C89 부터**, **`va_copy` 는 C99 부터**다. ★ **C23** 이 `va_start` 의 두 번째 인자를 **없어도 되게** 하고, **이름 있는 매개변수가 없는 `f(...)`** 를 허락했다((8)의 판 격자).
+★★ **경계** — **정수 승격 규칙 자체**는 [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/), **`float` → `double`** 은 [04번 형제](../04-floating-point-types-and-conversions/)가 정본이다. **프로토타입이 없을 때의 승격**은 [34번 형제](../34-function-declarations-definitions-and-prototypes/)가 정본이다 — 이 편과 **한 사슬**이다.\
+★ **`printf` 계열의 형식 문자열**은 [목록의 **47번 주제**](../47-stdio-streams-buffering-and-formatted-output/)가 정본이다. 여기는 「**형식을 컴파일러가 검사하느냐**」만 본다.
+선행 — [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/) · [34번 형제](../34-function-declarations-definitions-and-prototypes/).

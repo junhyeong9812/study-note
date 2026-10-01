@@ -1,10 +1,5 @@
 # C — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**(2026-09-24 기준 **28 / 58**). 나머지는 아직 없다.
-> 기준 소스: [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C17 대응 초안 **N2310**, C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf), 2024-02-22) · [cppreference C 레퍼런스](https://en.cppreference.com/w/c)
-> 실행 검증: **가능** — `gcc 13.3.0`(`-std=c17` 확인, `-std=c2x` 로 C23 일부) · `clang 18.1.3` · `gcc -fsanitize=address,undefined` 동작 확인 · `gdb` 있음. **`valgrind` 없음**(필요 시 설치 제안만 한다).
-> 기준일 2026-09-20.
-
 언어 선택의 축(“틀렸을 때 어떻게 틀리는가”)은 [`../../c-cpp-csharp.md`](../../c-cpp-csharp.md)에 있다.
 이 목록은 그 문서의 **논증이 아니라 “그래서 어떻게 쓰나**”를 자른다 — 같은 미정의 동작이라도 저기서는 *왜 은행 원장에서 최악인가*이고, 여기서는 *어떤 코드가 그것을 만드는가·어떻게 막고 어떻게 잡는가*다.
 
@@ -125,3 +120,9 @@ C17 은 C11 의 결함 수정판이라 새 기능이 없다 — 그래서 “C99
 | **C23부터** | 07 `enum` 고정 기반 타입 · 19 `nullptr` · 02 `bool`/`true`/`false` 키워드화 · 34 `f()` 가 `f(void)` 와 같아짐 · 08 `alignas`/`static_assert` 철자 정리 |
 
 C23 항목은 **`gcc 13` 의 `-std=c2x` 에서 지원 여부가 기능마다 다르다.** 3파일을 쓸 때 각 항목을 실제로 컴파일해 보고, 이 머신에서 확인되지 않는 것은 「미확인」으로 적는다.
+
+## 실행 환경
+
+기준 소스: [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C17 대응 초안 **N2310**, C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf), 2024-02-22) · [cppreference C 레퍼런스](https://en.cppreference.com/w/c)
+실행 검증: **가능** — `gcc 13.3.0`(`-std=c17` 확인, `-std=c2x` 로 C23 일부) · `clang 18.1.3` · `gcc -fsanitize=address,undefined` 동작 확인 · `gdb` 있음. **`valgrind` 없음**(필요 시 설치 제안만 한다).
+기준일 2026-09-20.

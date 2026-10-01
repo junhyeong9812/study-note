@@ -1,12 +1,5 @@
 # java/syntax/42 — `SequencedCollection` (21): 순서 있는 컬렉션의 공통 API — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/) 의 질문을 먼저 푼다.
-> **이 주제는 Java 21 부터다.** 17 에서는 전부 컴파일 에러가 난다 — 그것도 문항이다(9번).
-> **왜 21에 들어왔나**는 여기서 묻지 않는다 — [`../../../../history/java/java-21.md`](../../../../history/java/java-21.md) 의 영역이다.
-
 ## 예시 데이터
 
 여러 문항이 이 데이터를 쓴다.
@@ -173,6 +166,12 @@ static class MyList extends ArrayList<String> {
 - 원본의 변경이 뷰에 보인다는 것은?
 - `rev.reversed() == src` 는?
 - `TreeSet.reversed()` 가 `descendingSet()` 과 같은 것을 돌려준다는 것은?
+
+## 실행 환경
+
+**선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/) 의 질문을 먼저 푼다.
+**이 주제는 Java 21 부터다.** 17 에서는 전부 컴파일 에러가 난다 — 그것도 문항이다(9번).
+**왜 21에 들어왔나**는 여기서 묻지 않는다 — [`../../../../history/java/java-21.md`](../../../../history/java/java-21.md) 의 영역이다.
 
 ## 복습 기록
 

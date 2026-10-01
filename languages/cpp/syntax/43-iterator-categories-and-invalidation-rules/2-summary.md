@@ -1,25 +1,5 @@
 # cpp/syntax/43 — 이터레이터 범주와 무효화 규칙 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — Containers library 의 「Iterator invalidation」 표](https://en.cppreference.com/w/cpp/container) · [`std::vector::push_back`](https://en.cppreference.com/w/cpp/container/vector/push_back) · [`std::deque::push_front`](https://en.cppreference.com/w/cpp/container/deque/push_front) · [`std::unordered_map::rehash`](https://en.cppreference.com/w/cpp/container/unordered_map/rehash) · [`std::erase_if`(vector)](https://en.cppreference.com/w/cpp/container/vector/erase2)\
-> ★ 이 배치에서 **위 cppreference 쪽들을 열어 확인했다** — 무효화 표는 **(삽입 · 삭제) × (이터레이터 · 참조) × 조건**으로 적혀 있다: `vector` 삽입은 「**Insertion changed capacity**」면 전부 무효, 아니면 「**Before modified element(s)**」만 유효 · `deque` 삽입은 이터레이터 무효 · 참조는 「**Modified first or last element**」면 유효 · `list`·`forward_list`·정렬 연관 컨테이너는 삽입에 전부 유효 · 해시 쪽은 「**Insertion caused rehash**」면 이터레이터 무효 · 참조 유효. 그리고 「**clear invalidates all iterators and references.**」
-> **실행 검증** — 이 문서의 모든 출력·진단·리포트는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(★★ clang 도 같은 라이브러리 — **`_GLIBCXX_DEBUG`·`_GLIBCXX_SANITIZE_VECTOR` 는 libstdc++ 의 장치**라 두 컴파일러가 **같은 검사기**를 쓴다) · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`inv01.cpp`·`erase01.cpp`·`rfor01.cpp`·`cat01.cpp`·`sort01.cpp`·`inv-grid.sh`·`sort-grid.sh`).\
-> ★★ **ASan 블록은 `-O0 -fsanitize=address -g -ffile-prefix-map="$PWD"=.`** 로 빌드했고 **마커는 표준 오류로** 찍었다(규칙 19-A). **격자는 판마다 한 번 빌드하고 칸마다 돌렸다**(빌드 여섯 · 칸마다 바이너리 여섯을 한 번씩 — 실행 210). 블록은 캡처 스크립트가 받은 것이다 — 사람이 옮겨 적은 줄은 없다.
-> **버전** — 이터레이터 범주 태그는 **C++98**, 이터레이터 컨셉(`std::random_access_iterator` 등)·`std::ranges::sort`·`std::erase_if` 는 **C++20** 이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★★ **[41번](../41-choosing-sequence-containers/)에서 온다** — 41 (1)이 **「처음 원소 주소가 그대로인가」** 를 넣는 동안만 봤다. 여기서는 **연산 일곱 전부 · 이터레이터와 참조를 갈라서 · 쓰면 무엇이 나오나**까지 간다. [42번](../42-associative-containers-ordered-vs-hashed/) (5)의 **`bucket_count` 가 바뀌는 순간(rehash)** 이 격자의 `unordered_map` 행이다.\
-> [30번](../30-dangling-references-and-lifetime-extension/) — 댕글링 일반과 ASan 사용법. [36번](../36-concepts-and-requires/) · [35번](../35-instantiation-header-placement-and-reading-errors/) — **컨셉을 걸면 첫 에러가 호출 줄로** — (4)의 `std::ranges::sort(list)` 가 그 사례다.
-> ★★★ **무효가 된 이터레이터·참조를 쓰는 것은 UB 다 — 그 값은 싣지 않는다.** 결과는 **`_GLIBCXX_DEBUG` 가 잡았나 · ASan 리포트 이름**뿐이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ASan 의 **PID · 주소 · `pc`/`bp`/`sp`** · 디버그 모드 리포트의 **`@ 0x…`** · 진단 **문구와 총 줄 수** | ★★★ **격자의 칸(잡음 / 침묵 / 리포트 이름) · `Error:` 줄 · `SUMMARY` 의 `파일:줄` · `run exit` · 격자의 마지막 줄** |
-> | ★ **디버그 모드가 검사하는 자리** — libstdc++ 의 선택(표준 밖) | ★★★ **명세 칸** — cppreference 표를 옮긴 것 |
-
 ## 한눈에 — 쉽게 말하면
 
 **이터레이터는 「좌석 번호표」, 참조는 「그 사람의 손」이다.**
@@ -854,3 +834,24 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **`-O2` 의 무효화 격자** — 이 편은 `-O0` 만 던졌다. 30편이 **clang `-O2` + ASan 이 스택 탐침을 놓친** 사례를 보였다 — 힙 쪽은 **던지지 않았다.**
 - **`insert` 가 여러 개를 넣을 때 · `emplace` 의 인자가 같은 컨테이너의 원소일 때** — 이 편은 던지지 않았다.
 - **`std::string` 의 무효화(SSO)** — 목록 밖. 던지지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — Containers library 의 「Iterator invalidation」 표](https://en.cppreference.com/w/cpp/container) · [`std::vector::push_back`](https://en.cppreference.com/w/cpp/container/vector/push_back) · [`std::deque::push_front`](https://en.cppreference.com/w/cpp/container/deque/push_front) · [`std::unordered_map::rehash`](https://en.cppreference.com/w/cpp/container/unordered_map/rehash) · [`std::erase_if`(vector)](https://en.cppreference.com/w/cpp/container/vector/erase2)\
+★ 이 배치에서 **위 cppreference 쪽들을 열어 확인했다** — 무효화 표는 **(삽입 · 삭제) × (이터레이터 · 참조) × 조건**으로 적혀 있다: `vector` 삽입은 「**Insertion changed capacity**」면 전부 무효, 아니면 「**Before modified element(s)**」만 유효 · `deque` 삽입은 이터레이터 무효 · 참조는 「**Modified first or last element**」면 유효 · `list`·`forward_list`·정렬 연관 컨테이너는 삽입에 전부 유효 · 해시 쪽은 「**Insertion caused rehash**」면 이터레이터 무효 · 참조 유효. 그리고 「**clear invalidates all iterators and references.**」
+**실행 검증** — 이 문서의 모든 출력·진단·리포트는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(★★ clang 도 같은 라이브러리 — **`_GLIBCXX_DEBUG`·`_GLIBCXX_SANITIZE_VECTOR` 는 libstdc++ 의 장치**라 두 컴파일러가 **같은 검사기**를 쓴다) · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`inv01.cpp`·`erase01.cpp`·`rfor01.cpp`·`cat01.cpp`·`sort01.cpp`·`inv-grid.sh`·`sort-grid.sh`).\
+★★ **ASan 블록은 `-O0 -fsanitize=address -g -ffile-prefix-map="$PWD"=.`** 로 빌드했고 **마커는 표준 오류로** 찍었다(규칙 19-A). **격자는 판마다 한 번 빌드하고 칸마다 돌렸다**(빌드 여섯 · 칸마다 바이너리 여섯을 한 번씩 — 실행 210). 블록은 캡처 스크립트가 받은 것이다 — 사람이 옮겨 적은 줄은 없다.
+**버전** — 이터레이터 범주 태그는 **C++98**, 이터레이터 컨셉(`std::random_access_iterator` 등)·`std::ranges::sort`·`std::erase_if` 는 **C++20** 이다.
+
+★★★ **[41번](../41-choosing-sequence-containers/)에서 온다** — 41 (1)이 **「처음 원소 주소가 그대로인가」** 를 넣는 동안만 봤다. 여기서는 **연산 일곱 전부 · 이터레이터와 참조를 갈라서 · 쓰면 무엇이 나오나**까지 간다. [42번](../42-associative-containers-ordered-vs-hashed/) (5)의 **`bucket_count` 가 바뀌는 순간(rehash)** 이 격자의 `unordered_map` 행이다.\
+[30번](../30-dangling-references-and-lifetime-extension/) — 댕글링 일반과 ASan 사용법. [36번](../36-concepts-and-requires/) · [35번](../35-instantiation-header-placement-and-reading-errors/) — **컨셉을 걸면 첫 에러가 호출 줄로** — (4)의 `std::ranges::sort(list)` 가 그 사례다.
+★★★ **무효가 된 이터레이터·참조를 쓰는 것은 UB 다 — 그 값은 싣지 않는다.** 결과는 **`_GLIBCXX_DEBUG` 가 잡았나 · ASan 리포트 이름**뿐이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ASan 의 **PID · 주소 · `pc`/`bp`/`sp`** · 디버그 모드 리포트의 **`@ 0x…`** · 진단 **문구와 총 줄 수** | ★★★ **격자의 칸(잡음 / 침묵 / 리포트 이름) · `Error:` 줄 · `SUMMARY` 의 `파일:줄` · `run exit` · 격자의 마지막 줄** |
+| ★ **디버그 모드가 검사하는 자리** — libstdc++ 의 선택(표준 밖) | ★★★ **명세 칸** — cppreference 표를 옮긴 것 |

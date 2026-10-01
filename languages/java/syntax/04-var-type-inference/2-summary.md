@@ -1,17 +1,5 @@
 # java/syntax/04 — `var` 지역 변수 타입 추론 (10+) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §14.4 Local Variable Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html#jls-14.4) · [§4.10.4 Least Upper Bound](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html#jls-4.10.4) · [§6.1 Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-6.html#jls-6.1) · [JEP 286 Local-Variable Type Inference](https://openjdk.org/jeps/286) · [JEP 323 Local-Variable Syntax for Lambda Parameters](https://openjdk.org/jeps/323).
-> **실행 검증** — 이 문서의 모든 출력·컴파일 에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 실행 프로그램 `Ex.java (04-a)` 는 **17.0.13 · 21.0.5 · 25.0.1** 세 곳에서 돌려 **출력이 한 글자도 다르지 않았다**.\
-> 컴파일 에러 14종(`04-c1`·`04-c2`·`04-e1`~`04-e5`·`04-f1`·`04-f2`·`04-f4`·`04-h`·`04-i`·`04-j`·`04-k`)도 세 JDK 에서 **바이트 단위로 같았다**.\
-> 다만 **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·JEP 인용으로만 적었다.
-> **버전** — `var` 지역 변수는 **Java 10**(JEP 286). 람다 파라미터의 `var` 는 **Java 11**(JEP 323).\
-> 17·21·25 에서 규칙이 같았고, `--release 10` 으로 내리면 람다 파라미터 쪽만 거부됐다(실측, 「구현 세부사항 대 언어 보장」).
-> **범위** — 도입 맥락과 설계 논쟁은 [`../../../../history/java/java-10.md`](../../../../history/java/java-10.md) 가 정본이다.\
-> 여기는 「**그래서 어디에 쓰고 어디서 컴파일이 막히나**」만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **`var` 는 "이름표를 컴파일러에게 대신 쓰게 하는 것"이다. 이름표 자체를 떼는 게 아니다.**
@@ -814,3 +802,15 @@ $ javac --release 11 Ex.java
 - **`var` 를 쓰면 좁은 타입이 보존된다.**\
   `var b = (byte) 1;` 은 `byte` 이고, `int b = (byte) 1;` 로 적으면 `int` 로 넓어진다.\
   수치 타입을 다룰 때는 이 차이가 이후 연산의 승격 규칙에 영향을 준다([`../02-numeric-operations/`](../02-numeric-operations/)).
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §14.4 Local Variable Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html#jls-14.4) · [§4.10.4 Least Upper Bound](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html#jls-4.10.4) · [§6.1 Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-6.html#jls-6.1) · [JEP 286 Local-Variable Type Inference](https://openjdk.org/jeps/286) · [JEP 323 Local-Variable Syntax for Lambda Parameters](https://openjdk.org/jeps/323).
+**실행 검증** — 이 문서의 모든 출력·컴파일 에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+실행 프로그램 `Ex.java (04-a)` 는 **17.0.13 · 21.0.5 · 25.0.1** 세 곳에서 돌려 **출력이 한 글자도 다르지 않았다**.\
+컴파일 에러 14종(`04-c1`·`04-c2`·`04-e1`~`04-e5`·`04-f1`·`04-f2`·`04-f4`·`04-h`·`04-i`·`04-j`·`04-k`)도 세 JDK 에서 **바이트 단위로 같았다**.\
+다만 **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·JEP 인용으로만 적었다.
+**버전** — `var` 지역 변수는 **Java 10**(JEP 286). 람다 파라미터의 `var` 는 **Java 11**(JEP 323).\
+17·21·25 에서 규칙이 같았고, `--release 10` 으로 내리면 람다 파라미터 쪽만 거부됐다(실측, 「구현 세부사항 대 언어 보장」).
+**범위** — 도입 맥락과 설계 논쟁은 [`../../../../history/java/java-10.md`](../../../../history/java/java-10.md) 가 정본이다.\
+여기는 「**그래서 어디에 쓰고 어디서 컴파일이 막히나**」만 다룬다.

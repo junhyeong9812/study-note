@@ -1,28 +1,5 @@
 # js/syntax/22 — `Symbol` 과 잘 알려진 심볼: 「심볼은 이름이 겹칠 수 없는 키이고, 잘 알려진 심볼은 언어가 먼저 들여다보는 키다」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(headless) · x86-64 Linux.
-> 배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1 이다. 이 파일은 **소스만** 싣는다 — 출력은 정답 파일에 있다.
->
-> ★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
-> `+`·`instanceof`·`map` 이 **어떤 심볼 키를 읽고 무엇을 넘기는지**는 결과값에 흔적이 없다 — 그 키에 로그를 심어야 보인다.
-> **1번 문항(hint 로그)이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① **심볼 키가 누구에게 보이나**(그리고 그것이 「비공개」인가)
-> ② ★★★ **잘 알려진 심볼이 어느 연산에서 무엇을 가로채나**
-> ③ **심볼 자신의 변환과 같음**(`String()` · 템플릿 리터럴 · `Symbol.for`).
->
-> ★★ **예외는 타입과 메시지로만 답한다.** ★ 메시지는 판마다 다를 수 있다 — 종류가 먼저다.
->
-> **선행** — [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ 직접 선행) ·
-> [02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md) · [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md) ·
-> [15 — 프로토타입 체인](../15-prototype-chain/2-summary.md) · [17 — 상속과 `super`](../17-inheritance-and-super/2-summary.md) · [18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md).
-> ★★★ **02편 `[5]` 의 세 줄을 먼저 떠올려라** — `o + 1`·`` `${o}` ``·`o * 2` 가 각각 어떤 hint 를 받았나.
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 여섯 문항(1\~6)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -572,6 +549,21 @@ console.log("a `using` declaration: " + compiled);
 
 - 파이썬은 언어 동작을 바꾸는 훅을 **무엇으로** 부르고(Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **32번**), JS 는 무엇으로 부르나? 그 차이가 **이름 충돌**에 대해 무엇을 바꾸나?
 - 파이썬의 `__bool__`(파이썬 갈래 [**05번**](../../../python/syntax/05-truthiness-and-short-circuit/))에 해당하는 심볼이 JS 에 있나? 1번의 어느 줄이 그 답인가?
+
+## 실행 환경
+
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151(headless) · x86-64 Linux.
+배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1 이다. 이 파일은 **소스만** 싣는다 — 출력은 정답 파일에 있다.
+
+★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
+`+`·`instanceof`·`map` 이 **어떤 심볼 키를 읽고 무엇을 넘기는지**는 결과값에 흔적이 없다 — 그 키에 로그를 심어야 보인다.
+**1번 문항(hint 로그)이 이 주제의 중심이다.**
+
+★★ **예외는 타입과 메시지로만 답한다.** ★ 메시지는 판마다 다를 수 있다 — 종류가 먼저다.
+
+**선행** — [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ 직접 선행) ·
+[02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md) · [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md) ·
+[15 — 프로토타입 체인](../15-prototype-chain/2-summary.md) · [17 — 상속과 `super`](../17-inheritance-and-super/2-summary.md) · [18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md).
 
 ## 복습 기록
 

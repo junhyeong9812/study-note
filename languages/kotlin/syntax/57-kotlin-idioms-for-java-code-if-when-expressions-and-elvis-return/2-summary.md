@@ -1,16 +1,5 @@
 # kotlin/syntax/57 — Java 코드를 Kotlin 답게 — 식으로서의 `if`/`when`·엘비스 조기 반환 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — 공식 문서 페이지는 **이 작업에서 열지 않았다**(외부 네트워크를 쓰지 않았다). 근거는 **이 판의 컴파일러 진단 · `javap` · stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20 의 `StringsJVM.kt`)뿐이다.\
-> ★★ **「Kotlin 답게가 과하다」의 판단 근거로 삼으려던 [Coding conventions](https://kotlinlang.org/docs/coding-conventions.html) 는 받아 둔 사본이 이 머신에 없어 출처를 확인하지 못했다** — 그 자리의 문장은 전부 **이 문서의 권고**이고 규약 인용이 아니다((5)).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 7회 · `javac` 4회 · `java` 9회(로케일 확인 1회 포함) · `javap` 5회 + 명령 비교 스크립트 안의 12회 · stdlib 소스 jar 발췌 1곳.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 칸 N / M」·「같은 명령 줄 N / M」은 스크립트가 스스로 센 것**이다.
-> **버전** — `when` 의 봉인 완결성 검사가 **문에서도 오류**가 된 것은 1.7(정본 [23번 주제](../23-sealed-classes-and-when-exhaustiveness/)) · `String.uppercase()` 는 stdlib 소스에 **`@SinceKotlin("1.5")`**, 옛 `toUpperCase()` 는 **`@DeprecatedSinceKotlin(warningSince = "1.5", errorSince = "2.1")`**((4) — 이 판에서 읽었다). Java 쪽 `switch` 패턴 매칭은 **Java 21**.
-> **경계** — ★★★ 「**그래서 Kotlin 을 고를 것인가**」라는 논지(`when` 완결성이 유지보수 장치라는 것 · 컴파일러가 막는 것과 우리가 막아야 하는 것)는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §3·§11 이 정본이다. 문법 하나하나의 정본은 형제 편이다 — `when` 이 식이라는 것과 그 바이트코드는 [06번 주제](../06-when-expression/), **변형을 하나 늘렸을 때 깨지는 자리 전수**는 [23번 주제](../23-sealed-classes-and-when-exhaustiveness/) (3), `?: return` 이 서는 이유(`Nothing`)는 [03번 주제](../03-null-safe-types/) (7)·[34번 주제](../34-exceptions-nothing-and-try-expression/) (3), `sumOf` 가 조용히 넘치는 것은 [44번 주제](../44-aggregation-grouping-fold-reduce/) (2), `object` 가 `INSTANCE` 정적 필드가 되는 것은 [25번 주제](../25-object-declaration-companion-and-object-expression/) (1), `?.let { } ?:` 의 함정은 [14번 주제](../14-scope-functions/) (4). **여기는 「같은 로직을 두 판으로 써서 같은가를 잰다」 하나만 한다.**\
-> Java 쪽 — `switch` 식은 [Java 21번](../../../java/syntax/21-switch-statement-and-expression/), 패턴 `switch` 와 완결성은 [Java 23번](../../../java/syntax/23-switch-pattern-matching/), 봉인 클래스는 [Java 15번](../../../java/syntax/15-sealed-classes/), null 방어는 [Java 60번](../../../java/syntax/60-null-handling/)이 정본이다. null 을 **어느 계층에서** 막을지는 [58번 주제](../58-null-handling-idioms-let-requirenotnull-and-elvis-return/)다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**같은 로직 두 판 격자 — 사례 다섯(분기 대입 · 봉인 다중 분기 · null 조기 반환 · 루프 누적 · 싱글턴) × 입력 17개 → Java 원본(`javac` 로 돌림)과 Kotlin 관용구 판의 출력이 같은가**」. 「Kotlin 답게」를 **맛이나 속도로 재지 않는다** — 재는 것은 **같은 입력에 같은 출력인가**와 **컴파일러가 무엇을 막아 주나**뿐이다.
 
 ## 이 주제가 쓰는 네 층
@@ -954,3 +943,14 @@ cells that differ: 1 / 5
 - **`toLowerCase` → `lowercase`** — 같은 폐기 쌍으로 보이지만 **이 판에서 발췌하지 않았다.**
 - **`-jvm-target` 을 바꾸면** — 봉인 `when` 이 전혀 다른 코드가 되는 것은 [06번 주제](../06-when-expression/) (6)이 쟀다. (4)의 명령 비교는 기본 대상에서만 찍었다.
 - **JIT 뒤의 차이** — (4)의 명령 줄 차이가 기계어에서도 남는지는 재지 않았다.
+
+## 실행 환경
+
+**기준 소스** — 공식 문서 페이지는 **이 작업에서 열지 않았다**(외부 네트워크를 쓰지 않았다). 근거는 **이 판의 컴파일러 진단 · `javap` · stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20 의 `StringsJVM.kt`)뿐이다.\
+★★ **「Kotlin 답게가 과하다」의 판단 근거로 삼으려던 [Coding conventions](https://kotlinlang.org/docs/coding-conventions.html) 는 받아 둔 사본이 이 머신에 없어 출처를 확인하지 못했다** — 그 자리의 문장은 전부 **이 문서의 권고**이고 규약 인용이 아니다((5)).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 7회 · `javac` 4회 · `java` 9회(로케일 확인 1회 포함) · `javap` 5회 + 명령 비교 스크립트 안의 12회 · stdlib 소스 jar 발췌 1곳.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 칸 N / M」·「같은 명령 줄 N / M」은 스크립트가 스스로 센 것**이다.
+**버전** — `when` 의 봉인 완결성 검사가 **문에서도 오류**가 된 것은 1.7(정본 [23번 주제](../23-sealed-classes-and-when-exhaustiveness/)) · `String.uppercase()` 는 stdlib 소스에 **`@SinceKotlin("1.5")`**, 옛 `toUpperCase()` 는 **`@DeprecatedSinceKotlin(warningSince = "1.5", errorSince = "2.1")`**((4) — 이 판에서 읽었다). Java 쪽 `switch` 패턴 매칭은 **Java 21**.
+**경계** — ★★★ 「**그래서 Kotlin 을 고를 것인가**」라는 논지(`when` 완결성이 유지보수 장치라는 것 · 컴파일러가 막는 것과 우리가 막아야 하는 것)는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §3·§11 이 정본이다. 문법 하나하나의 정본은 형제 편이다 — `when` 이 식이라는 것과 그 바이트코드는 [06번 주제](../06-when-expression/), **변형을 하나 늘렸을 때 깨지는 자리 전수**는 [23번 주제](../23-sealed-classes-and-when-exhaustiveness/) (3), `?: return` 이 서는 이유(`Nothing`)는 [03번 주제](../03-null-safe-types/) (7)·[34번 주제](../34-exceptions-nothing-and-try-expression/) (3), `sumOf` 가 조용히 넘치는 것은 [44번 주제](../44-aggregation-grouping-fold-reduce/) (2), `object` 가 `INSTANCE` 정적 필드가 되는 것은 [25번 주제](../25-object-declaration-companion-and-object-expression/) (1), `?.let { } ?:` 의 함정은 [14번 주제](../14-scope-functions/) (4). **여기는 「같은 로직을 두 판으로 써서 같은가를 잰다」 하나만 한다.**\
+Java 쪽 — `switch` 식은 [Java 21번](../../../java/syntax/21-switch-statement-and-expression/), 패턴 `switch` 와 완결성은 [Java 23번](../../../java/syntax/23-switch-pattern-matching/), 봉인 클래스는 [Java 15번](../../../java/syntax/15-sealed-classes/), null 방어는 [Java 60번](../../../java/syntax/60-null-handling/)이 정본이다. null 을 **어느 계층에서** 막을지는 [58번 주제](../58-null-handling-idioms-let-requirenotnull-and-elvis-return/)다.

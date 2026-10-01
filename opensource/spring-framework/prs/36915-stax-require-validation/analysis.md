@@ -1,10 +1,5 @@
 # PR #36915 분석 — AbstractXMLStreamReader.require의 네임스페이스·로컬명 검증 누락
 
-> 기준: PR base `0c60266986` = 현재 `upstream/main` `7daf1013aa8` (`AbstractXMLStreamReader.java`·`XMLEventStreamReader.java`는 두 커밋 사이 무변경 — `git diff`로 확인).
-> PR head: `refs/pr/36915`. 상태 OPEN, 라벨 `status: waiting-for-triage` 하나, 코멘트 0건. 2026-06-13 생성.
-> 관련 작업 폴더: `docs/plans/2026-06-13/spring-core-bug-hunt/B8-xmlstreamreader-require/task.md`(발견·재현), `docs/plans/2026-08-06/pr36915-scope-hardening/`(경계 확정 계획 — 계획만 수립, 실행 보류).
-> README(서사)·structure.md(무대 지도)·tests.md(테스트 해설)와 중복을 피하고, 호출 그래프·이름표 사전·단계 추적·수정안 판단에 집중한다.
-
 ## 0. 결론
 
 `AbstractXMLStreamReader.require(int expectedType, String namespaceURI, String localName)`는 이벤트 타입만 비교하고 **나머지 두 파라미터를 본문에서 한 번도 읽지 않아**, JSR-173이 "비-null이면 반드시 대조하라"고 규정한 이름·네임스페이스 검증이 통째로 사라진 채 어서션이 항상 성공했다.\
@@ -287,3 +282,9 @@ base 기준 `require()`에 대한 테스트는 **0건**이었다.
 **계약 관점에서 남은 항목.**\
 `ENTITY_REFERENCE`의 로컬 이름 검증은 스펙이 허용하지만 이 어댑터가 관측할 수 없어 미구현이다.\
 이 경계가 코드나 javadoc이 아니라 **PR 본문에만** 적혀 있다는 점은 리뷰어가 매번 같은 판단을 반복하게 만드는 구조적 약점이며, 스코프 하드닝 계획이 javadoc으로 못 박으려던 항목이 바로 이것이다(미실행).
+
+## 출처
+
+기준: PR base `0c60266986` = 현재 `upstream/main` `7daf1013aa8` (`AbstractXMLStreamReader.java`·`XMLEventStreamReader.java`는 두 커밋 사이 무변경 — `git diff`로 확인).
+PR head: `refs/pr/36915`. 상태 OPEN, 라벨 `status: waiting-for-triage` 하나, 코멘트 0건. 2026-06-13 생성.
+관련 작업 폴더: `docs/plans/2026-06-13/spring-core-bug-hunt/B8-xmlstreamreader-require/task.md`(발견·재현), `docs/plans/2026-08-06/pr36915-scope-hardening/`(경계 확정 계획 — 계획만 수립, 실행 보류).

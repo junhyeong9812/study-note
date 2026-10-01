@@ -1,9 +1,5 @@
 # 03. 데이터 계층 확장
 
-> 확장의 최종 난이도는 항상 여기에 있다. 앱은 늘리면 되지만 **데이터는 나눠야 하고, 나누면 되돌리기 어렵다.**\
-> 출처: `jun-bank/docs/study/notes/server-design/03-data-layer.md` · 이관일 2026-09-16.\
-> 원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식)만 입힘.
-
 ---
 
 ## 확장 사다리 (순서대로 올라간다)
@@ -275,3 +271,8 @@ DB 커밋 성공
 
 - 캐시 설계 → [`04-caching.md`](./04-caching.md)
 - 고가용성 토폴로지 → [`05-ha-topology.md`](./05-ha-topology.md)
+
+## 출처
+
+출처: `jun-bank/docs/study/notes/server-design/03-data-layer.md` · 이관일 2026-09-16.\
+원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식)만 입힘.

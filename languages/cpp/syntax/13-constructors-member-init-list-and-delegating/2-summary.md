@@ -1,35 +1,5 @@
 # cpp/syntax/13 — 생성자·멤버 초기화 리스트·위임 생성자 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 생성자와 멤버 초기화 리스트](https://en.cppreference.com/w/cpp/language/constructor) · [기본 멤버 초기자](https://en.cppreference.com/w/cpp/language/data_members) · [`explicit`](https://en.cppreference.com/w/cpp/language/explicit) · [`=default`](https://en.cppreference.com/w/cpp/language/function#Function_definition) · [`=delete`](https://en.cppreference.com/w/cpp/language/function#Deleted_functions) · [GCC — `-fpermissive`](https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Dialect-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`ctor01.cpp` \~ `ctor13.cpp`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
-> **버전** — 초기화 리스트·`explicit` 은 **C++98부터**. **위임 생성자·기본 멤버 초기자·`=default`·`=delete` 는 C++11부터**,\
-> **`explicit` 을 `{}` 초기화에 적용하는 규칙(P0960 등)은 C++17\~20 에서 다듬였다.** 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-> ★★★ **12 → 13 → 14 → 15 는 한 사슬이다** — [12번](../12-class-basics-members-access-and-this/)이 **그릇**을 만들고,\
-> **여기 13 이 「그 그릇을 어떻게 채우나」에 답한다.** [14번](../14-destructors-and-deterministic-destruction/)이 **비우는 시점**을,\
-> [15번](../15-raii-resources-as-types/)이 **그 시점을 자원 관리에 쓰는 법**을 답한다.\
-> ★★ **[12번](../12-class-basics-members-access-and-this/) (6)의 `lazy` 가 여기서 풀린다** — 이름은 찾아졌는데 값이 없던 그 자리다.
-> **경계** — 「`{}` 초기화와 좁히기」는 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/),\
-> 「복사·이동이 무엇을 옮기나」는 형제 [`09번`](../09-rvalue-references-move-and-forward/)과 목록의 [**16**](../16-copy-constructor-and-copy-assignment/)·[**17**](../17-move-constructor-assignment-and-moved-from-state/)번 주제,\
-> 「어떤 매개변수로 받을까」는 형제 [`11번`](../11-choosing-parameter-passing/)이 정본이다.\
-> 「0/3/5의 법칙」은 [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/), 「`explicit` 과 변환 생성자」의 넓은 판은 [목록의 **24번 주제**](../24-explicit-and-converting-constructors/)가 정본이다.\
-> 여기서는 「**초기화가 언제 몇 번 일어나나**」만 센다.
-> ★★★ **이 문서는 시간을 재지 않았다.** 근거는 **생성자·대입 호출 횟수**와 **컴파일러 진단** 둘뿐이다.\
-> 「몇 배 빠르다」는 문장은 **한 줄도 없다**.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★★ **초기화되지 않은 멤버의 값**(`Trap::n`) — **-O0 과 -O2 에서 달랐다** | ★★★ **약속이 깨졌다는 비교 결과**(`n == m*2` 가 **0**) |
-> | 두 컴파일러의 **진단 문구**와 경고 이름 | ★★★ **생성자·대입 호출 횟수** — 이 주제의 답 자체다 |
-> | 객체의 주소값 | ★★ **로그가 찍힌 순서** · **에러냐 경고냐 통과냐** · **`cc exit`** · **경고 개수** |
-
 ## 한눈에 — 쉽게 말하면
 
 **초기화 리스트는 「처음부터 그 값으로 짓는 것」이고, 본문 대입은 「빈 것을 짓고 나서 덮어쓰는 것」이다.**
@@ -306,7 +276,7 @@ ctor03.cpp:7:36: warning: ‘*this.Trap::m’ is used uninitialized [-Wuninitial
 
 - ★★★ **`n` 이 먼저 선언됐으므로 `n(m * 2)` 가 먼저 돈다.** 그 시점에 `m` 은 **아직 초기화되지 않았다.**\
   그래서 **`n == m*2` 라는 약속이 깨진다**(출력 **0**).
-- ★★★ **값 자체는 싣지 않는다.** 미정(indeterminate)이고 **`-O0` 과 `-O2` 에서 달랐다** — 머리말의 「흔들리는 칸」이다.\
+- ★★★ **값 자체는 싣지 않는다.** 미정(indeterminate)이고 **`-O0` 과 `-O2` 에서 달랐다** — 「실행 환경」의 「흔들리는 칸」이다.\
   ★ **실을 수 있는 것은 「약속이 깨졌다」는 사실**뿐이고, 그것은 **두 최적화 수준에서 똑같이 0**이었다.
 - ★★ **g++ 가 `-Wuninitialized` 로 정확히 짚는다** — `member 'Trap::m' is used uninitialized`.\
   **`-Wreorder` 와 `-Wuninitialized` 가 함께 나오는 것**이 이 함정의 지문이다.
@@ -949,3 +919,34 @@ UB 는 **(3) 하나**뿐이다.
 - **복사 생략(copy elision)과 보장된 생략** — C++17 부터 prvalue 초기화에서 **복사·이동이 아예 일어나지 않는다.** 형제 [`08번`](../08-value-categories-lvalue-prvalue-xvalue/)이 그 정본이고, (1)의 계수가 그 영향을 받는다.
 - **집합체 초기화(aggregate initialization)** — 생성자를 하나도 안 적으면 `Widget w{1, 2}` 로 멤버를 직접 채울 수 있다. 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/).
 - **`constexpr` 생성자** — 컴파일 시간에 도는 생성자. 정본은 [목록의 **38번 주제**](../38-constexpr-consteval-and-constinit/).
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 생성자와 멤버 초기화 리스트](https://en.cppreference.com/w/cpp/language/constructor) · [기본 멤버 초기자](https://en.cppreference.com/w/cpp/language/data_members) · [`explicit`](https://en.cppreference.com/w/cpp/language/explicit) · [`=default`](https://en.cppreference.com/w/cpp/language/function#Function_definition) · [`=delete`](https://en.cppreference.com/w/cpp/language/function#Deleted_functions) · [GCC — `-fpermissive`](https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Dialect-Options.html)
+**실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`ctor01.cpp` \~ `ctor13.cpp`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
+**버전** — 초기화 리스트·`explicit` 은 **C++98부터**. **위임 생성자·기본 멤버 초기자·`=default`·`=delete` 는 C++11부터**,\
+**`explicit` 을 `{}` 초기화에 적용하는 규칙(P0960 등)은 C++17\~20 에서 다듬였다.** 기준은 **C++20**이다.
+
+★★★ **12 → 13 → 14 → 15 는 한 사슬이다** — [12번](../12-class-basics-members-access-and-this/)이 **그릇**을 만들고,\
+**여기 13 이 「그 그릇을 어떻게 채우나」에 답한다.** [14번](../14-destructors-and-deterministic-destruction/)이 **비우는 시점**을,\
+[15번](../15-raii-resources-as-types/)이 **그 시점을 자원 관리에 쓰는 법**을 답한다.\
+★★ **[12번](../12-class-basics-members-access-and-this/) (6)의 `lazy` 가 여기서 풀린다** — 이름은 찾아졌는데 값이 없던 그 자리다.
+**경계** — 「`{}` 초기화와 좁히기」는 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/),\
+「복사·이동이 무엇을 옮기나」는 형제 [`09번`](../09-rvalue-references-move-and-forward/)과 목록의 [**16**](../16-copy-constructor-and-copy-assignment/)·[**17**](../17-move-constructor-assignment-and-moved-from-state/)번 주제,\
+「어떤 매개변수로 받을까」는 형제 [`11번`](../11-choosing-parameter-passing/)이 정본이다.\
+「0/3/5의 법칙」은 [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/), 「`explicit` 과 변환 생성자」의 넓은 판은 [목록의 **24번 주제**](../24-explicit-and-converting-constructors/)가 정본이다.\
+여기서는 「**초기화가 언제 몇 번 일어나나**」만 센다.
+★★★ **이 문서는 시간을 재지 않았다.** 근거는 **생성자·대입 호출 횟수**와 **컴파일러 진단** 둘뿐이다.\
+「몇 배 빠르다」는 문장은 **한 줄도 없다**.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★★ **초기화되지 않은 멤버의 값**(`Trap::n`) — **-O0 과 -O2 에서 달랐다** | ★★★ **약속이 깨졌다는 비교 결과**(`n == m*2` 가 **0**) |
+| 두 컴파일러의 **진단 문구**와 경고 이름 | ★★★ **생성자·대입 호출 횟수** — 이 주제의 답 자체다 |
+| 객체의 주소값 | ★★ **로그가 찍힌 순서** · **에러냐 경고냐 통과냐** · **`cc exit`** · **경고 개수** |

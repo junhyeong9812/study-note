@@ -1,13 +1,5 @@
 # sql/53-MERGE — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> ★ **한쪽에서만 결론이 서는 주제다.** MySQL 쪽 출력은 **1번의 `ERROR 1064` 하나뿐**이고,\
-> 2~12번의 동작 근거는 **전부 PostgreSQL 18.6** 이다. 7번은 **실행이 아니라 문서 문장**이 근거다.\
-> 이 편이 만든 표(`t53_tgt`·`t53_src`·`t53_dup`)는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> 문서 근거는 [PG 18 MERGE](https://www.postgresql.org/docs/18/sql-merge.html) · [PG 15 릴리스 노트](https://www.postgresql.org/docs/release/15.0/) · [PG 17 릴리스 노트](https://www.postgresql.org/docs/release/17.0/).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -529,3 +521,12 @@ WHEN NOT MATCHED BY SOURCE AND t.updated_at < <이번 적재 시각> THEN DELETE
 6번에서 추가한 `t53_tgt_name_uq` 제약도 **실험 직후 `DROP CONSTRAINT` 로 되돌렸다.**\
 `emp`·`dept` 는 **읽지도 쓰지도 않았다.**\
 두 엔진의 최종 표 목록은 [54 편의 「실행 검증」](../54-returning-and-data-modifying-cte/3-answer.md)에 있다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+★ **한쪽에서만 결론이 서는 주제다.** MySQL 쪽 출력은 **1번의 `ERROR 1064` 하나뿐**이고,\
+2~12번의 동작 근거는 **전부 PostgreSQL 18.6** 이다. 7번은 **실행이 아니라 문서 문장**이 근거다.\
+이 편이 만든 표(`t53_tgt`·`t53_src`·`t53_dup`)는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+문서 근거는 [PG 18 MERGE](https://www.postgresql.org/docs/18/sql-merge.html) · [PG 15 릴리스 노트](https://www.postgresql.org/docs/release/15.0/) · [PG 17 릴리스 노트](https://www.postgresql.org/docs/release/17.0/).

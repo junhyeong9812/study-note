@@ -1,14 +1,5 @@
 # rust/syntax/01 — `cargo` 프로젝트 구조·`main`·크레이트·모듈 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Crates and source files · Modules · Visibility 절 ·
-> [The Cargo Book](https://doc.rust-lang.org/cargo/) 의 Package Layout · Manifest 절. 이 머신에 설치된 `rust-docs` 판(1.92.0)을 열어 확인했다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `cargo 1.92.0 (344c4567c 2025-10-21)` 에서\
-> 실제로 돌려 얻은 것이다. `x86_64-unknown-linux-gnu`. 이 주제만 `cargo` 가 필요하고, 02\~04는 `rustc` 단독으로 검증했다.
-> **버전** — 에디션 2024는 1.85.0(2025-02-20)부터 안정. **`cargo 1.92.0`의 `cargo new` 기본 에디션은 2024**이고\
-> **`rustc` 를 `--edition` 없이 부르면 2015**다(둘 다 실측). 이 묶음의 본문 기준 에디션은 **2021**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **크레이트는 책 한 권이고, 모듈은 그 책의 장·절이고, 패키지는 그 책을 내는 출판 계약서다.**
@@ -372,7 +363,7 @@ gen = 3
 | `Cargo.lock` 의 `version = 4` | **cargo 구현** | 포맷 판번호다. 손으로 고치지 않는다 |
 
 ★ **「내 머신에서 됐다」가 「에디션 무관하게 된다」가 아니다.**\
-이 묶음이 에디션을 머리말에 못박는 이유다. 에디션이 실제로 무엇을 바꾸는지는 [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)가 정본이다.
+이 묶음이 에디션을 「실행 환경」에 못박는 이유다. 에디션이 실제로 무엇을 바꾸는지는 [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)가 정본이다.
 
 ## 언제 쓰고 언제 안 쓰나
 
@@ -437,3 +428,12 @@ gen = 3
 - `mod` 는 파일 없이 중괄호로도 만든다 — `mod greet { pub fn hello() {} }`.\
   이때는 파일 탐색 자체가 일어나지 않으므로 E0583·E0761 이 성립하지 않는다.
 - `target/` 을 저장소에 넣지 않는 이유는 용량만이 아니다. 절대 경로와 툴체인 해시가 박혀 있어 **다른 머신에서 재사용되지 않는다**.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Crates and source files · Modules · Visibility 절 ·
+[The Cargo Book](https://doc.rust-lang.org/cargo/) 의 Package Layout · Manifest 절. 이 머신에 설치된 `rust-docs` 판(1.92.0)을 열어 확인했다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `cargo 1.92.0 (344c4567c 2025-10-21)` 에서\
+실제로 돌려 얻은 것이다. `x86_64-unknown-linux-gnu`. 이 주제만 `cargo` 가 필요하고, 02\~04는 `rustc` 단독으로 검증했다.
+**버전** — 에디션 2024는 1.85.0(2025-02-20)부터 안정. **`cargo 1.92.0`의 `cargo new` 기본 에디션은 2024**이고\
+**`rustc` 를 `--edition` 없이 부르면 2015**다(둘 다 실측). 이 묶음의 본문 기준 에디션은 **2021**이다.

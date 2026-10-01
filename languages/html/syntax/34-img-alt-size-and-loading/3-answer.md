@@ -1,11 +1,5 @@
 # html/syntax/34 — `img`: `alt`·`width`/`height`·`loading`/`decoding`/`fetchpriority` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [33번 주제](../33-output-progress-meter/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 렌더링 절(차원 속성 · `aspect-ratio` 번역 · 그림이 없을 때)과 [HTML-AAM](https://w3c.github.io/html-aam/) 의 `img` 대응·이름 계산으로 접지했다(앞 배치가 받아 둔 사본). ★ **`img` 요소 절 · 지연 로딩 · `fetchpriority` 절은 사본에 없다 — 그 셋의 명세층은 판정 보류.**\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다. ★ **시간은 재지 않았다.**
-> ★★★ **본체는 로드 전후 격자와 요청 순서다** — 「움직인 칸」·「`load` 전에 요청이 간 칸」·「명세 열과 갈린 칸」을 스크립트가 센다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -247,3 +241,10 @@ Google Chrome 151.0.7922.173
 - **붙잡기(`h/` 경로)** — 서버가 이미지 응답을 `/go` 까지 미루는 것. 「로드 전」을 확실히 잡으려고.
 - **표지(`/m?…`)** — 페이지가 서버 로그에 순서를 박으려고 보내는 빈 요청.
 - **처음 우선순위** — CDP `Network.requestWillBeSent` 의 `initialPriority`.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [33번 주제](../33-output-progress-meter/3-answer.md)의 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 렌더링 절(차원 속성 · `aspect-ratio` 번역 · 그림이 없을 때)과 [HTML-AAM](https://w3c.github.io/html-aam/) 의 `img` 대응·이름 계산으로 접지했다(앞 배치가 받아 둔 사본). ★ **`img` 요소 절 · 지연 로딩 · `fetchpriority` 절은 사본에 없다 — 그 셋의 명세층은 판정 보류.**\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다. ★ **시간은 재지 않았다.**
+★★★ **본체는 로드 전후 격자와 요청 순서다** — 「움직인 칸」·「`load` 전에 요청이 간 칸」·「명세 열과 갈린 칸」을 스크립트가 센다.

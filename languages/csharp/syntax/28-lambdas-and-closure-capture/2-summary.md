@@ -1,30 +1,5 @@
 # csharp/syntax/28 — 람다식과 클로저 캡처 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — 람다 식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)(열어서 확인: 「람다는 **바깥 변수**를 참조할 수 있다 — 캡처하면 **변수가 범위를 벗어나 보통은 회수될 때에도** 람다가 그것을 보관한다」 ·\
-> 「**캡처한 변수는 그것을 참조하는 델리게이트가 회수 대상이 될 때까지 회수되지 않는다**」 · 「**`static` 람다는 지역 변수나 인스턴스 상태를 캡처할 수 없지만 정적 멤버와 상수는 참조할 수 있다**」 ·\
-> 예제 출력 「Another lambda observes a new value of captured variable: True」) ·
-> [Eric Lippert — Closing over the loop variable considered harmful](https://ericlippert.com/2009/11/12/closing-over-the-loop-variable-considered-harmful-part-one/)(열어서 확인, 머리의 UPDATE: 「**C# 5 에서 `foreach` 의 반복 변수는 논리적으로 루프 안**에 있게 되어 클로저가 **매번 새 변수**를 닫는다. **`for` 루프는 바뀌지 않는다**」) ·
-> [Learn — C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)(열어서 확인: 3.0 「Lambda expressions」 · 9 「**`static` anonymous functions**」).
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트·GC 결과는 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. **대비는 실측이다** — **javac 21.0.5** 로 캡처 규칙 한 쌍 + 우회 하나를 던졌다((7)).
-> **버전** — 람다 **C# 3**(익명 메서드 C# 2) · `foreach` 캡처 의미 **C# 5** · `static` 람다 **C# 9**(★ `-langversion:8` 에서 `CS8400 … 9.0 or greater` 를 받았다 · (2)).\
-> ★★★ **`foreach` 의 C# 5 변화는 `-langversion` 으로 되살아나지 않는다** — `-langversion:3`·`4` 로 던져도 **`0 1 2`** 다((3)). 판 격자로 보일 수 없어 **손으로 옛 풀이를 적은 판**(`hand`)으로 쪼개 보였다.
-> **경계** — ★★★ **람다라는 개념**(이름 없는 함수 · 파이썬 `lambda`)은 [`variables-and-memory/`](../../../../cs/foundations/variables-and-memory/) §9 「람다 함수」 가 정본이다 — **그 절에는 캡처가 없다.** 여기는 **C# 의 캡처 의미론**만 쓴다.\
-> ★ **델리게이트 값 자체**(봉인 클래스 · 메서드 그룹 캐시)는 [27번](../27-delegates-and-func-action/) · **이벤트 구독 누수**는 목록의 **29번 주제**.\
-> ★★★ **반복 변수 캡처의 교차 갈래 대비는 인용한다** — [Go 13번](../../../go/syntax/13-closures-variable-capture-and-loop-variable-change/) (2)(`//go:build go1.21` 로 **한 빌드에서 `3 3 3` 대 `0 1 2`**) · [JS 05번](../../../js/syntax/05-var-let-const-and-tdz/) (4)(`var` `[3,3,3]` 대 `let` `[0,1,2]`) · [Python 22번](../../../python/syntax/22-closures-and-late-binding/)(늦은 바인딩 `[2, 2, 2]`).
-> ★★★ **본체 창은 ① IL 덤프와 ③ 리플렉션이다** — 「변수가 **필드가 된다**」는 **컴파일러가 만든 클래스를 열어 봐야** 보인다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** · 진단 **순서**(배너에 `sort`) · IL **오프셋 폭** | ★★★ **진단 코드**(`CS8820`·`CS8821`·`CS8400`) · **옵코드**(`newobj <>c__DisplayClass…` · `stfld`/`ldfld` · `ldsfld <>c::<>9`) |
-> | ★ 컴파일러가 지은 **이름의 숫자**(`DisplayClass0_0` · `<>9__1_0`) — Roslyn 구현 | ★★★ 이름의 **모양**(`<>c__DisplayClass` · `<>c`) · **필드가 생겼나** · `sealed` |
-> | GC 가 **언제** 도나 | ★★★ **「회수됐나」 참/거짓** · **「네 판에서 갈린 줄 N / M」** · **「판에 따라 갈린 칸 N / M」** |
-> | 증분의 절댓값 일부(규칙 24) | ★★ 할당 바이트의 **0 대 비(非)0** |
-
 ## 이 판
 
 ```text
@@ -717,3 +692,29 @@ Console.WriteLine($"{add5(10)} · {counted(1)}{counted(2)} · calls={calls} · {
 - ★ **로컬 함수의 캡처** — 델리게이트로 안 바꾸면 **구조체 디스플레이**로 할당 없이 캡처한다고 알려져 있다. **이 판에서 안 던졌다.**
 - ★ **`this` 만 캡처하는 람다** — 디스플레이 클래스 없이 **메서드가 그 클래스의 인스턴스 메서드**가 된다고 알려져 있다 — **안 찍었다.**
 - ★ **범위가 여럿인 캡처**(바깥 블록 변수 + 안쪽 블록 변수) — 디스플레이 객체가 **사슬**로 이어진다. **안 찍었다.**
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — 람다 식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)(열어서 확인: 「람다는 **바깥 변수**를 참조할 수 있다 — 캡처하면 **변수가 범위를 벗어나 보통은 회수될 때에도** 람다가 그것을 보관한다」 ·\
+「**캡처한 변수는 그것을 참조하는 델리게이트가 회수 대상이 될 때까지 회수되지 않는다**」 · 「**`static` 람다는 지역 변수나 인스턴스 상태를 캡처할 수 없지만 정적 멤버와 상수는 참조할 수 있다**」 ·\
+예제 출력 「Another lambda observes a new value of captured variable: True」) ·
+[Eric Lippert — Closing over the loop variable considered harmful](https://ericlippert.com/2009/11/12/closing-over-the-loop-variable-considered-harmful-part-one/)(열어서 확인, 머리의 UPDATE: 「**C# 5 에서 `foreach` 의 반복 변수는 논리적으로 루프 안**에 있게 되어 클로저가 **매번 새 변수**를 닫는다. **`for` 루프는 바뀌지 않는다**」) ·
+[Learn — C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)(열어서 확인: 3.0 「Lambda expressions」 · 9 「**`static` anonymous functions**」).
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트·GC 결과는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. **대비는 실측이다** — **javac 21.0.5** 로 캡처 규칙 한 쌍 + 우회 하나를 던졌다((7)).
+**버전** — 람다 **C# 3**(익명 메서드 C# 2) · `foreach` 캡처 의미 **C# 5** · `static` 람다 **C# 9**(★ `-langversion:8` 에서 `CS8400 … 9.0 or greater` 를 받았다 · (2)).\
+★★★ **`foreach` 의 C# 5 변화는 `-langversion` 으로 되살아나지 않는다** — `-langversion:3`·`4` 로 던져도 **`0 1 2`** 다((3)). 판 격자로 보일 수 없어 **손으로 옛 풀이를 적은 판**(`hand`)으로 쪼개 보였다.
+**경계** — ★★★ **람다라는 개념**(이름 없는 함수 · 파이썬 `lambda`)은 [`variables-and-memory/`](../../../../cs/foundations/variables-and-memory/) §9 「람다 함수」 가 정본이다 — **그 절에는 캡처가 없다.** 여기는 **C# 의 캡처 의미론**만 쓴다.\
+★ **델리게이트 값 자체**(봉인 클래스 · 메서드 그룹 캐시)는 [27번](../27-delegates-and-func-action/) · **이벤트 구독 누수**는 목록의 **29번 주제**.\
+★★★ **반복 변수 캡처의 교차 갈래 대비는 인용한다** — [Go 13번](../../../go/syntax/13-closures-variable-capture-and-loop-variable-change/) (2)(`//go:build go1.21` 로 **한 빌드에서 `3 3 3` 대 `0 1 2`**) · [JS 05번](../../../js/syntax/05-var-let-const-and-tdz/) (4)(`var` `[3,3,3]` 대 `let` `[0,1,2]`) · [Python 22번](../../../python/syntax/22-closures-and-late-binding/)(늦은 바인딩 `[2, 2, 2]`).
+★★★ **본체 창은 ① IL 덤프와 ③ 리플렉션이다** — 「변수가 **필드가 된다**」는 **컴파일러가 만든 클래스를 열어 봐야** 보인다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** · 진단 **순서**(배너에 `sort`) · IL **오프셋 폭** | ★★★ **진단 코드**(`CS8820`·`CS8821`·`CS8400`) · **옵코드**(`newobj <>c__DisplayClass…` · `stfld`/`ldfld` · `ldsfld <>c::<>9`) |
+| ★ 컴파일러가 지은 **이름의 숫자**(`DisplayClass0_0` · `<>9__1_0`) — Roslyn 구현 | ★★★ 이름의 **모양**(`<>c__DisplayClass` · `<>c`) · **필드가 생겼나** · `sealed` |
+| GC 가 **언제** 도나 | ★★★ **「회수됐나」 참/거짓** · **「네 판에서 갈린 줄 N / M」** · **「판에 따라 갈린 칸 N / M」** |
+| 증분의 절댓값 일부(규칙 24) | ★★ 할당 바이트의 **0 대 비(非)0** |

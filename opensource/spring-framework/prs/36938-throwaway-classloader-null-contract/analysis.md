@@ -1,8 +1,5 @@
 # PR #36938 분석 — ThrowawayClassLoader.loadClass가 null을 반환하는 계약 위반
 
-> 기준 상태. **수정 전** = `03d80feed0f`(= 이 PR의 base. 인접 PR #36933의 `try (inputStream)`이 이미 들어간 상태), **수정 커밋** = `233e7b91f9b`, **메인테이너 폴리시** = `7b31e0c2dcd`, **현재** = `upstream/main`(`7daf1013aa8`). 파일:줄 인용마다 어느 상태 기준인지 밝힌다.
-> 이 문서의 자리: README(서사)·structure(구조도)·tests(테스트 해설)와 겹치지 않게, "**null이라는 값이 어느 경계에서 의미를 바꾸는가**"를 이름표 단위로 추적하고 단계별 상태로 고정한다.
-
 ## 0. 결론
 
 `ThrowawayClassLoader.loadClass(name, resolve)`가 폴백 결과를 그대로 반환해(`catch { return loadClassFromResource(name); }`) **null을 밖으로 내보낼 수 있었다** — `java.lang.ClassLoader.loadClass`의 계약은 non-null `Class` 반환 또는 `ClassNotFoundException`이며, "찾지 못함"을 null로 표현하는 선택지는 그 계약에 없다.
@@ -208,3 +205,7 @@ after (`upstream/main` 기준 `ThrowawayClassLoader.java:56-62`):
 인접 PR과의 관계: #36933이 같은 메서드 `loadClassFromResource`의 **자원 수명**(`:68`의 `try (inputStream)`)을 다뤘고, 이 PR은 같은 흐름의 **실패 표현**을 다룬다. 두 변경은 닿는 줄이 달라 충돌 없이 순차 머지되었고, PR 본문에서도 "#36933이 이미 7.1.0-M1 마일스톤으로 트리아지되었으므로 그 PR을 확장하지 않고 분리했다"고 명시했다. 현재 `ThrowawayClassLoaderTests`에는 두 PR의 테스트가 나란히 들어 있다.
 
 이번에 손대지 않은, 확인은 되었으나 별건인 것들: `loadClass`가 `resolve` 인자를 무시하고 폴백으로 정의한 클래스에 `resolveClass`를 걸지 않는 점(기존 동작. `OverridingClassLoader`와 대비된다), `loadClassFromResource`에 `@Nullable` 표기가 없는 점(패키지가 `@NullUnmarked`라 표기의 효력이 없다).
+
+## 출처
+
+기준 상태. **수정 전** = `03d80feed0f`(= 이 PR의 base. 인접 PR #36933의 `try (inputStream)`이 이미 들어간 상태), **수정 커밋** = `233e7b91f9b`, **메인테이너 폴리시** = `7b31e0c2dcd`, **현재** = `upstream/main`(`7daf1013aa8`). 파일:줄 인용마다 어느 상태 기준인지 밝힌다.

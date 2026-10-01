@@ -1,12 +1,5 @@
 # PR #151154 - 무대의 실구조
 
-> `matrix_stats` 빌더가 놓인 계층과, 그 계층을 타고 흐르는 세 경로(동등성 위임·wire·
-> XContent 왕복).\
-> 문제와 수정은 [README.md](README.md), 착수 분석은 README 8절 부록, 테스트는 [tests.md](tests.md).
->
-> 기준: upstream `main`(2026-09-08).\
-> 이 시점의 파일에는 이미 수정이 반영돼 있으므로 아래 file:line은 "수정 후" 좌표다.
-
 ## 1. 계층 - 왜 두 층인가
 
 `matrix_stats`는 필드 하나가 아니라 **필드 목록**을 받는 집계다.\
@@ -210,3 +203,8 @@ ValuesSourceAggregationBuilder (server)        ArrayValuesSourceAggregationBuild
 > **BWC(backward compatibility, 하위 호환)** — 새 버전이 옛 버전과 계속 맞물려 돌아가는 성질.\
 > 예: 옛 노드가 보낸 바이트에 그 필드가 들어 있으므로, 파서가 더는 안 읽더라도 직렬화 목록에서는
 > 뺄 수 없다.
+
+## 출처
+
+기준: upstream `main`(2026-09-08).\
+이 시점의 파일에는 이미 수정이 반영돼 있으므로 본문의 file:line은 "수정 후" 좌표다.

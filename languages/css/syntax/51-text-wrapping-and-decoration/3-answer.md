@@ -1,11 +1,5 @@
 # css/syntax/51 — 텍스트 줄바꿈·서식·장식: `word-break`·`overflow-wrap`·`text-wrap`·`text-decoration` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 줄 수·줄 폭은 Google Chrome 151.0.7922.173 headless(Linux)에서 실제로 측정한 것**이다.\
-> 줄은 `Range.selectNodeContents(el).getClientRects()` 로 세고, 눈으로 봐야 하는 것은 CDP 스크린샷으로 확인했다.\
-> ⚠️ **줄 수는 글꼴에 달려 있다.** 재현되는 것은 3이냐 4냐가 아니라 **부등호**다 — 선행이 [50번](../50-fonts-and-webfonts/2-summary.md)인 이유다.\
-> 규칙은 [CSS Text 4](https://drafts.csswg.org/css-text-4/) · [CSS Text Decoration 4](https://drafts.csswg.org/css-text-decor-4/) · [CSS Overflow 3](https://drafts.csswg.org/css-overflow-3/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -447,3 +441,10 @@ google-chrome --headless --disable-gpu --no-sandbox --dump-dom /tmp/doc.html 2>/
 - **전파(propagation)** — 부모가 그린 장식선이 자손 위를 지나가는 것. **상속이 아니다.**
 - **원자 인라인(atomic inline)** — 통째로 한 글자처럼 취급되는 상자. 장식선이 관통하지 않는다.
 - **`text-underline-offset`** — 밑줄을 글자에서 떼는 거리. `text-decoration` 단축에 안 들어간다.
+
+## 실행 환경
+
+이 파일의 **모든 줄 수·줄 폭은 Google Chrome 151.0.7922.173 headless(Linux)에서 실제로 측정한 것**이다.\
+줄은 `Range.selectNodeContents(el).getClientRects()` 로 세고, 눈으로 봐야 하는 것은 CDP 스크린샷으로 확인했다.\
+⚠️ **줄 수는 글꼴에 달려 있다.** 재현되는 것은 3이냐 4냐가 아니라 **부등호**다 — 선행이 [50번](../50-fonts-and-webfonts/2-summary.md)인 이유다.\
+규칙은 [CSS Text 4](https://drafts.csswg.org/css-text-4/) · [CSS Text Decoration 4](https://drafts.csswg.org/css-text-decor-4/) · [CSS Overflow 3](https://drafts.csswg.org/css-overflow-3/) 로 접지했다.

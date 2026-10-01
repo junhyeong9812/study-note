@@ -1,9 +1,5 @@
 # PR #36916 분석 — SimpleAsyncTaskExecutor throttle permit 불균형
 
-> 기준: PR base = upstream `0c60266986`(수정 전) / PR head = `322ab59bb88`(수정 후).
-> 프로덕션 파일 `SimpleAsyncTaskExecutor.java`·`ConcurrencyThrottleSupport.java`는 base와 현재 upstream/main이 바이트 동일하므로, 아래 "수정 전" 줄번호는 지금 main을 열어도 그대로 맞는다.
-> 중복 회피: 무대 전경·스프링 전역 배치는 `structure.md` §1·§4, 테스트 해설은 `tests.md`, 서사형 설명은 `README.md`. 이 문서는 이름표 단위 사전(§2.5)과 단계별 값 추적(§3), 대안 기각 근거(§5)를 맡는다.
-
 ## 0. 결론
 
 **결함**: permit을 **획득하는 조건**(`execute`의 분기 1)과 **반납하는 조건**(`TaskTrackingRunnable.run()`의 `finally`)이 서로 다른 메서드에 흩어져 있고 둘을 잇는 정보가 없어서, 획득 없이 반납되거나(카운트 음수 -> 한도 무력화) 획득 후 반납되지 않는(permit 영구 누수 -> 데드락) 두 방향의 불균형이 동시에 성립했다.
@@ -426,3 +422,8 @@ ConcurrencyThrottleInterceptor          SimpleAsyncTaskExecutor
 `activeThreads`(:93)는 살아 있는 워커 집합을 실제로 들고 있지만 용도가 종료 대기와 인터럽트뿐이라 throttle 회계와 대조되지 않는다 — 정합성 검증 재료가 옆에 있는데도 쓰이지 않는다.\
 `cancelled`의 비-volatile 모니터 규약(:101)도 그대로 둔다(결함 B는 가시성이 아니라 `try` 범위 문제였다).\
 `execute(Runnable, long)`의 deprecation도 유지한다 — 결함 A의 입구가 deprecated API인데도 수정을 생략하지 않은 근거는, 같은 `run()` 코드가 결함 B에서 현행 API로 도달한다는 점이다.
+
+## 출처
+
+기준: PR base = upstream `0c60266986`(수정 전) / PR head = `322ab59bb88`(수정 후).
+프로덕션 파일 `SimpleAsyncTaskExecutor.java`·`ConcurrencyThrottleSupport.java`는 base와 현재 upstream/main이 바이트 동일하므로, 본문의 "수정 전" 줄번호는 지금 main을 열어도 그대로 맞는다.

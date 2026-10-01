@@ -1,17 +1,5 @@
 # go/syntax/04 — 수치 타입과 명시 변환·오버플로·정수 나눗셈 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Numeric types · Arithmetic operators ·
-> Integer overflow · Conversions(Conversions between numeric types) 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 손으로 옮겨 적은 블록은 없다.\
-> ★ **오버플로가 걸린 프로그램은 세 가지 빌드로 돌렸다** — 기본 · `-gcflags='all=-N -l'` · `-race`.
-> **한 글자도 다르지 않았다**((4)절). Rust 처럼 「디버그/릴리스 두 답」이 Go 에는 없다.
-> **버전** — 이 절의 규칙은 1.0부터 같다. `math.MaxInt`·`math.MinInt` 상수는 **1.17**부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 ## 이 갈래가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
@@ -1065,3 +1053,15 @@ Go 에서는 **전부 명세로 메워져 있다.**
   whether a run-time panic occurs is **implementation-specific**." 이 문서에서는 **안 던져 봤다.**
 - `go vet` 의 `stringintconv` 는 **`go test` 가 기본으로 돌리는 검사 묶음**에 들어 있다.
   그래서 테스트가 있는 프로젝트에서는 빌드보다 먼저 걸린다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Numeric types · Arithmetic operators ·
+Integer overflow · Conversions(Conversions between numeric types) 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+손으로 옮겨 적은 블록은 없다.\
+★ **오버플로가 걸린 프로그램은 세 가지 빌드로 돌렸다** — 기본 · `-gcflags='all=-N -l'` · `-race`.
+**한 글자도 다르지 않았다**((4)절). Rust 처럼 「디버그/릴리스 두 답」이 Go 에는 없다.
+**버전** — 이 절의 규칙은 1.0부터 같다. `math.MaxInt`·`math.MinInt` 상수는 **1.17**부터다.

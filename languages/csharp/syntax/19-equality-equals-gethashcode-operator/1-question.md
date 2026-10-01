@@ -1,17 +1,5 @@
 # csharp/syntax/19 — 동등성 규칙 — `Equals`/`GetHashCode`/`==` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ★★★ 이 주제는 **계약형**이다 — 「조항 세기」보다 「**어기면 무엇이 출력되나**」를 묻는다. 예외는 **안 난다** — 값만 틀린다.
-> **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
-> Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`.
-> ★★★ **본체 창은 실행 출력 격자다**(계약 위반 × 자료구조) — ② 진단이 짝이고, ① IL 이 `==` 의 정체를 보인다.
-> ★★ **④ 할당 바이트는 2×2 판 격자**로 쟀고 **시간은 안 쟀다.**
-> ★★ **해시 값은 한 번도 찍지 않았다** — 「같나 다르나」와 **가짓수**만 찍었다.
-> 선행 — [18번](../18-record-value-equality-and-with/)(★★★ record 가 만드는 `==`·`Equals` 의 IL)·[10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/)(`CS0659` · `Count = 3`)·[02번](../02-struct-vs-class-choosing/)(구조체 `Equals` 의 박싱).
-> 대비 — Python 갈래 **30번** · Rust 갈래 **28번** · Kotlin 갈래 **32번**(링크는 [2-summary.md](2-summary.md) 머리말).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (예측) / (왜) / (경계) / (연결) -->
@@ -278,6 +266,17 @@ class Program {
 - ★★★ record 에서 2번의 `[1]` 사고가 **안 나는 이유**를 IL 로 보인 것은 몇 번 주제인가?
 - ★★ `CS0659` 와 `Count = 3` 을 먼저 잰 것은? 구조체 `Equals` 한 호출의 **+48/+152/+0** 은?
 - ★ 1번 격자의 다섯 모양은 **어느 갈래 몇 번**에서 가져왔나?
+
+## 실행 환경
+
+★★★ 이 주제는 **계약형**이다 — 「조항 세기」보다 「**어기면 무엇이 출력되나**」를 묻는다. 예외는 **안 난다** — 값만 틀린다.
+**환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
+Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`.
+★★★ **본체 창은 실행 출력 격자다**(계약 위반 × 자료구조) — ② 진단이 짝이고, ① IL 이 `==` 의 정체를 보인다.
+★★ **④ 할당 바이트는 2×2 판 격자**로 쟀고 **시간은 안 쟀다.**
+★★ **해시 값은 한 번도 찍지 않았다** — 「같나 다르나」와 **가짓수**만 찍었다.
+선행 — [18번](../18-record-value-equality-and-with/)(★★★ record 가 만드는 `==`·`Equals` 의 IL)·[10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/)(`CS0659` · `Count = 3`)·[02번](../02-struct-vs-class-choosing/)(구조체 `Equals` 의 박싱).
+대비 — Python 갈래 **30번** · Rust 갈래 **28번** · Kotlin 갈래 **32번**(링크는 [2-summary.md](2-summary.md) 「실행 환경」).
 
 ## 복습 기록
 

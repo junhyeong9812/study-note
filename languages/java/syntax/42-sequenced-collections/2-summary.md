@@ -1,23 +1,5 @@
 # java/syntax/42 — `SequencedCollection` (21): 순서 있는 컬렉션의 공통 API — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/). 인터페이스 계층이 어떻게 생겼는지가 전제다.
-> **기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc 과 구현이다.\
-> `java.base/java/util/SequencedCollection.java` — `@since 21` · encounter order 정의 · 여섯 메서드의 `@implSpec`.\
-> `java.base/java/util/SequencedMap.java` · `SequencedSet.java` — 각각의 메서드 목록과 반환 타입.\
-> `java.base/java/util/LinkedHashMap.java` — 접근 순서 모드에서 `putFirst`·`lastEntry` 가 접근으로 안 세는 규칙.\
-> `java.base/java/util/Collection.java` — 「View Collections」 절(`reversed` 가 뷰 목록에 있다).\
-> 인용은 **그 파일에서 복사한 것만** 옮겼다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 Temurin JDK 에서 **실제로 돌려** 얻은 것이다.\
-> 도는 프로그램 4개를 **21.0.5 · 25.0.1** 에서 돌려 `diff` 했다(출력 동일).\
-> **17.0.13 에서는 컴파일 자체가 안 된다** — 그 에러도 본문에 실었다(컴파일 에러용 프로그램 4개).
-> **버전** — `SequencedCollection`·`SequencedSet`·`SequencedMap` 은 **Java 21**(JEP 431).\
-> `@since 21` 을 `src.zip` 에서 직접 읽었다. `List`·`Deque`·`SortedSet`·`SortedMap` 에 붙은 새 메서드들도 전부 `@since 21` 이다.
-> **범위** — **왜 21에 들어왔나·어떤 논쟁이 있었나**는 [`../../../../history/java/java-21.md`](../../../../history/java/java-21.md) 가 정본이다.\
-> 그쪽은 **언제·왜**까지, 여기는 **그래서 코드에서 어떻게 쓰고 무엇이 막히나**부터다.\
-> 이중 연결 리스트·균형 트리 같은 **자료구조 자체**는 [`../../../../cs/data-structure/`](../../../../cs/data-structure/) 가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **21 이전에는 「첫 번째를 꺼내라」를 컬렉션마다 다른 말로 해야 했다.**
@@ -794,3 +776,21 @@ Ex.java:6: error: cannot find symbol
   `ArrayList` 에서는 보였지만((4)) 그것이 계약은 아니다.
 - **17 타깃과 21 타깃을 같은 소스로 유지하려면** `getFirst()` 를 못 쓴다.\
   멀티릴리스 JAR 로 갈라 놓을 수는 있으나, 대개는 **`get(0)` 을 계속 쓰는 쪽**이 싸다.
+
+## 실행 환경
+
+**선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/). 인터페이스 계층이 어떻게 생겼는지가 전제다.
+**기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc 과 구현이다.\
+`java.base/java/util/SequencedCollection.java` — `@since 21` · encounter order 정의 · 여섯 메서드의 `@implSpec`.\
+`java.base/java/util/SequencedMap.java` · `SequencedSet.java` — 각각의 메서드 목록과 반환 타입.\
+`java.base/java/util/LinkedHashMap.java` — 접근 순서 모드에서 `putFirst`·`lastEntry` 가 접근으로 안 세는 규칙.\
+`java.base/java/util/Collection.java` — 「View Collections」 절(`reversed` 가 뷰 목록에 있다).\
+인용은 **그 파일에서 복사한 것만** 옮겼다.
+**실행 검증** — 이 문서의 모든 출력·에러는 Temurin JDK 에서 **실제로 돌려** 얻은 것이다.\
+도는 프로그램 4개를 **21.0.5 · 25.0.1** 에서 돌려 `diff` 했다(출력 동일).\
+**17.0.13 에서는 컴파일 자체가 안 된다** — 그 에러도 본문에 실었다(컴파일 에러용 프로그램 4개).
+**버전** — `SequencedCollection`·`SequencedSet`·`SequencedMap` 은 **Java 21**(JEP 431).\
+`@since 21` 을 `src.zip` 에서 직접 읽었다. `List`·`Deque`·`SortedSet`·`SortedMap` 에 붙은 새 메서드들도 전부 `@since 21` 이다.
+**범위** — **왜 21에 들어왔나·어떤 논쟁이 있었나**는 [`../../../../history/java/java-21.md`](../../../../history/java/java-21.md) 가 정본이다.\
+그쪽은 **언제·왜**까지, 여기는 **그래서 코드에서 어떻게 쓰고 무엇이 막히나**부터다.\
+이중 연결 리스트·균형 트리 같은 **자료구조 자체**는 [`../../../../cs/data-structure/`](../../../../cs/data-structure/) 가 정본이다.

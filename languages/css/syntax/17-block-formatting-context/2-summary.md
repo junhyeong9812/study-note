@@ -1,13 +1,5 @@
 # css/syntax/17 — 서식 문맥(BFC) — 생성 조건과 그 안에 갇히는 것 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Display Module Level 3](https://drafts.csswg.org/css-display-3/) (서식 문맥과 `flow-root` 의 정본) · [CSS Overflow Module Level 3](https://drafts.csswg.org/css-overflow-3/) (`overflow` 값과 스크롤 컨테이너). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 **BFC 를 만든다고 알려진 선언 13가지**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 재고 스크린샷으로 눈으로 확인했다.\
-> ★ **이 주제에서는 `rect` 와 화면이 서로 다른 것을 말한다.** 어느 쪽이 근거인지 자리마다 밝혔다.\
-> **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
-> **여기서 다루지 않는 것** — ★ **`float` 자체의 동작**(무엇을 밀어내고 어떻게 줄을 감싸며 `clear` 가 무엇을 하는가)은 [목록의 **20번 주제**](../20-float-and-clear/)가 정본이다. **여기는 「BFC 가 float 를 감싼다·피한다」는 효과까지다.** 마진 상쇄의 세 경우와 막는 법 전수는 [18번](../18-margin-collapsing/2-summary.md), `overflow` 와 스크롤 컨테이너 설계는 [목록의 **23번 주제**](../23-overflow-and-scroll-containers/), `position` 과 포함 블록은 [목록의 **21번 주제**](../21-position-and-containing-block/), `display` 값의 구조는 [16번](../16-display-inner-outer/2-summary.md)이다. **flex/grid 의 배치 규칙은** [24번](../24-flexbox-axes/2-summary.md)과 목록의 [27](../27-grid-track-sizing/)\~[29](../29-grid-template-areas/)번이고 여기서는 「그 항목이 BFC 를 연다」는 결론만 받아 온다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 동작은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **BFC 는 「안에서 일어난 일이 밖으로 안 새는 상자」다 — 방음실이다.**
@@ -358,3 +350,11 @@ BFC 는 **배치 규칙**이지 격리 최적화가 아니다. 렌더 비용을 
   「BFC 를 열려고 `absolute` 를 쓴다」는 선택은 거의 없다 — 목적이 전혀 다르기 때문이다([목록의 **21번 주제**](../21-position-and-containing-block/)).
 - **BFC 와 쌓임 맥락(stacking context)은 다른 것이다.** `opacity`·`transform` 은 쌓임 맥락을 만들지만 BFC 와는 무관하다.\
   둘을 섞으면 「`z-index` 가 안 먹는다」와 「마진이 샌다」를 같은 원인으로 오진하게 된다. 쌓임 맥락은 [목록의 **22번 주제**](../22-stacking-context-and-z-index/)다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Display Module Level 3](https://drafts.csswg.org/css-display-3/) (서식 문맥과 `flow-root` 의 정본) · [CSS Overflow Module Level 3](https://drafts.csswg.org/css-overflow-3/) (`overflow` 값과 스크롤 컨테이너). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 **BFC 를 만든다고 알려진 선언 13가지**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 재고 스크린샷으로 눈으로 확인했다.\
+★ **이 주제에서는 `rect` 와 화면이 서로 다른 것을 말한다.** 어느 쪽이 근거인지 자리마다 밝혔다.\
+**WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
+**여기서 다루지 않는 것** — ★ **`float` 자체의 동작**(무엇을 밀어내고 어떻게 줄을 감싸며 `clear` 가 무엇을 하는가)은 [목록의 **20번 주제**](../20-float-and-clear/)가 정본이다. **여기는 「BFC 가 float 를 감싼다·피한다」는 효과까지다.** 마진 상쇄의 세 경우와 막는 법 전수는 [18번](../18-margin-collapsing/2-summary.md), `overflow` 와 스크롤 컨테이너 설계는 [목록의 **23번 주제**](../23-overflow-and-scroll-containers/), `position` 과 포함 블록은 [목록의 **21번 주제**](../21-position-and-containing-block/), `display` 값의 구조는 [16번](../16-display-inner-outer/2-summary.md)이다. **flex/grid 의 배치 규칙은** [24번](../24-flexbox-axes/2-summary.md)과 목록의 [27](../27-grid-track-sizing/)\~[29](../29-grid-template-areas/)번이고 여기서는 「그 항목이 BFC 를 연다」는 결론만 받아 온다.

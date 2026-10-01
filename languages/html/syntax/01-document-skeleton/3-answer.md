@@ -1,10 +1,5 @@
 # html/syntax/01 — HTML 문서의 뼈대: `<!DOCTYPE html>`·`<html lang>`·`<head>`/`<body>` 의 필수 요소 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 「호환 모드에서 박스 모델이 안 바뀐다」 같은 관찰은 **이 엔진의 것**이고, 이 갈래는 이식성을 주장하지 않는다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -532,7 +527,7 @@ nojs()  { sed '/^<script>$/,$d'; }
 | `<meta charset>` 바이트 위치(16 대 1,252) | 2 | 동작 방식 (5) · A7 |
 | 선언 없이 UTF-8·EUC-KR 바이트를 던져 본 것 | 4 | A7 — **자동 감지로 못 잼** |
 | 뼈대 한 벌의 트리 | 2 | 동작 방식 (7) |
-| 캡처 전체 재대조(`capture.sh` 두 판 `diff`) | 2 | 머리말 「흔들리는 칸」 표 |
+| 캡처 전체 재대조(`capture.sh` 두 판 `diff`) | 2 | 2-summary 맨 위 부분 「흔들리는 칸」 표 |
 
 **구현에 달린 항목**
 
@@ -560,3 +555,9 @@ nojs()  { sed '/^<script>$/,$d'; }
 - **인코딩 바꾸기(change the encoding)** — 프리스캔을 넘긴 선언을 만났을 때 **파서를 다시 돌리는** 알고리즘.
 - **foster parenting** — 표 안에 올 수 없는 요소를 **표 앞으로 옮기는** 파서 동작([03번 주제](../03-parser-and-error-recovery/2-summary.md)).
 - **`--dump-dom`** — 파서가 만든 트리를 직렬화해 표준 출력으로 내놓는 Chrome 플래그. 이 갈래의 **창 ①**.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 로 접지했다.\
+★ **엔진은 Chrome 하나다** — 「호환 모드에서 박스 모델이 안 바뀐다」 같은 관찰은 **이 엔진의 것**이고, 이 갈래는 이식성을 주장하지 않는다.

@@ -1,16 +1,5 @@
 # go/syntax/13 — 클로저와 변수 캡처, 루프 변수 의미 변경(1.22) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Function literals · For statements with ForClause ·
-> For statements with range clause · Declarations and scope 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> **버전** — 클로저(함수 리터럴이 바깥 변수를 잡는 것)는 **1.0부터 지금까지 같다**.
-> **루프 변수가 회차마다 새로 생기는 것은 1.22부터**다. 그 앞에서는 루프 전체가 변수 하나를 나눠 썼다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 ## ★★ 이 갈래가 쓰는 층 — 이 주제만 넷이다
 
 다른 주제는 셋(명세 보장 / 구현 / 이 판의 관찰)인데, **이 주제는 명세 자체가 한 번 바뀌었다.**
@@ -944,3 +933,14 @@ func main() {
   `f := func(...) { f(...) }` 는 `f` 가 아직 스코프에 없어 컴파일 에러다. **여기서는 안 던졌다.**
 - 메서드 값(`x.M`)도 리시버를 **잡아 둔 함수 값**이라 클로저와 같은 집안이다
   ([12번 주제](../12-functions-multiple-returns-named-results-and-variadics/) (6)절).
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Function literals · For statements with ForClause ·
+For statements with range clause · Declarations and scope 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+**버전** — 클로저(함수 리터럴이 바깥 변수를 잡는 것)는 **1.0부터 지금까지 같다**.
+**루프 변수가 회차마다 새로 생기는 것은 1.22부터**다. 그 앞에서는 루프 전체가 변수 하나를 나눠 썼다.

@@ -1,12 +1,5 @@
 # go/syntax/41 — 모듈: `go.mod`·버전 선택·워크스페이스 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★★★ **모든 문제에서 「이 규칙은 명세인가, `go` 명령인가」를 먼저 적어라.**
-> ★★ 실험 환경 — 의존 모듈은 **로컬 파일 프록시**에서 온다(`GOPROXY=file://<프록시>` · `GOSUMDB=off` · `GOFLAGS=-mod=mod -modcacherw` · `GOTOOLCHAIN=local`). 블록마다 **모듈 캐시를 새로** 쓴다.
-> 프록시에 든 모듈과 각 `go.mod` 의 요구는 아래와 같다 — 문제마다 이것을 본다.
-
 ```text
 ===== 명령: find . -type f | sort; echo; grep -r "^require\|^replace" --include=go.mod . | sort =====
 ./example.com/a@v1.0.0/go.mod
@@ -279,6 +272,12 @@ const V = "c (작업 공간의 로컬 사본)"
 ### 11. 요구 그래프와 빌드 목록 (왜)
 
 - 1번 모듈에서 `go mod graph` 에 `example.com/b@v1.0.0 example.com/c@v1.0.0` 줄이 **있다**. 그런데 왜 `c v1.0.0` 은 빌드에 안 쓰이나? 두 출력은 각각 무엇을 말하나?
+
+## 실행 환경
+
+★★★ **모든 문제에서 「이 규칙은 명세인가, `go` 명령인가」를 먼저 적어라.**
+★★ 실험 환경 — 의존 모듈은 **로컬 파일 프록시**에서 온다(`GOPROXY=file://<프록시>` · `GOSUMDB=off` · `GOFLAGS=-mod=mod -modcacherw` · `GOTOOLCHAIN=local`). 블록마다 **모듈 캐시를 새로** 쓴다.
+프록시에 든 모듈과 각 `go.mod` 의 요구는 맨 위 블록과 같다 — 문제마다 이것을 본다.
 
 ## 복습 기록
 

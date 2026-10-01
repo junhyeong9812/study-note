@@ -1,10 +1,5 @@
 # 학습 문서 인덱스 — C4 작업에서 나온 Java/JVM 개념 정리
 
-> 출생지: `docs/plans/2026-08-04/c4-typedescriptor-serialization/`(C4=#37109 작업 학습문서)에서 2026-08-20 concepts로 이전. 사례 연구(09)는 #37109, 인접 후속은 R8 작업 폴더(`docs/plans/2026-08-20/r8-elementtype-serialization/`) 참조.
-
-> 2026-08-04, C4(`TypeDescriptor` 직렬화 회귀) 작업 중 대화에서 걸렸던 개념들을 주제별로 정리한 문서 묶음.
-> 이 폴더의 `requirement-spec.md`·`log.md`가 **작업 기록**이라면, 아래 문서들은 **학습용**이다. 손으로 따라 치며 확인하는 용도.
-
 ## 읽는 순서
 
 앞 문서가 세운 개념 위에 뒤 문서가 얹히므로 번호순으로 읽는 것이 기본이다.
@@ -44,3 +39,7 @@ java -cp "$CP:/tmp/study" Study
 ```
 
 각 문서의 코드 스니펫은 이 방식으로 바로 돌려볼 수 있게 작성했다.
+
+## 출처
+
+출생지: `docs/plans/2026-08-04/c4-typedescriptor-serialization/`(C4=#37109 작업 학습문서)에서 2026-08-20 concepts로 이전. 사례 연구(09)는 #37109, 인접 후속은 R8 작업 폴더(`docs/plans/2026-08-20/r8-elementtype-serialization/`) 참조.

@@ -1,16 +1,5 @@
 # html/syntax/29 — 제약 검증: 유효성 상태·`novalidate`·`:valid`/`:user-invalid` 의 관계 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Constraints」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constraints) 절 — 「statically validate the constraints」·「interactively validate the constraints」·**「Security」**(「서버는 클라이언트 쪽 검증에 기대면 안 된다」), [「A form control's value」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#a-form-control's-value)의 **user validity boolean**, [「Form submission algorithm」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-algorithm)(★ **검증보다 앞에서** user validity 를 참으로 둔다), [「Focus — processing model」](https://html.spec.whatwg.org/multipage/interaction.html#focus-update-steps)의 **focus update steps**(포커스를 떠날 때 값이 달라졌으면 user validity 를 참으로), 그리고 [Selectors Level 4 §12.3.4](https://drafts.csswg.org/selectors-4/#user-pseudos)(`:user-invalid` 는 **`:invalid` 인 것만**). **명세 본문은 앞 배치가 받아 둔 사본**(HTML 은 2026-09-26, Selectors 4 는 2026-09-23)으로 읽었다 — 이 배치는 네트워크를 쓰지 않았다.\
-> ★★ **HTML 이 `:user-valid`/`:user-invalid` 를 정의하는 절(「Pseudo-classes」)은 그 사본에 없다** — 그래서 이 문서의 명세층은 **user validity 가 서고 지는 문장들 + Selectors 4** 까지다. 그 절을 읽지 않은 채 「이탈」로 적지 않는다((1) 의 한 칸).
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 사용자 입력은 **CDP 의 진짜 키·마우스**(`Input.dispatchKeyEvent`·`Input.insertText`·`Input.dispatchMouseEvent`)이고, 스크립트 대입과 **가른다.** 하네스는 [25번 주제](../25-label-association/3-answer.md)의 판을 이어 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 실었다(30\~32번이 같은 하네스를 쓴다).\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. `:user-valid`/`:user-invalid` 의 Baseline 은 [CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md)이 조회한 값(widely 2026-05-02)을 인용한다 — 이 배치는 다시 조회하지 않았다.
-> **선행** — [28번 주제](../28-validation-attributes/2-summary.md)(속성이 **어느 깃발**을 켜나 — 이 편은 그 깃발을 **CSS·제출 쪽에서 읽는다**).
-> **경계** — ★★★ **속성 × 타입 격자와 `validity` 깃발**은 [28번](../28-validation-attributes/2-summary.md)이 쟀다 — 다시 재지 않는다. **검증이 언제 도나**(`form.submit()` 은 건너뛴다)와 **`curl` 우회**는 [21번](../21-form-submission-model/2-summary.md)의 (2)·(5) 다. **`:invalid` 가 로드 직후부터 켜지고 `:user-invalid` 는 blur 뒤에 켜지는 것**은 [CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md)의 (4)·(5) 가 **이메일 칸 하나**로 쟀다 — 여기는 그 열을 **칸 셋 × 시점 여섯**으로 늘리고 **제출 시도·`reset()`** 을 더한다. **스크립트로 읽고 덮어쓰는 표면**(`checkValidity`·`reportValidity`·`setCustomValidity`)의 정본은 web-api 갈래 목록([`web-api/README.md`](../../../web-api/README.md))의 **60번**이다 — 여기는 **그것이 제출·의사 클래스와 만나는 자리**만 (3) 에서 잰다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ②(노드 프로브)다 — `element.matches(':user-invalid')` 로 묻는 의사 클래스 격자.** 짝으로 **창 ⑤(서버 요청 로그)** 가 「검증을 건너면 서버가 무엇을 받나」를 한 쌍으로 보인다.
-
 **이 판의 Chrome**
 
 ```text
@@ -551,3 +540,15 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 제출 시도가 검증보다 먼저 도장을 찍나** — Selectors 4 가 「제출을 시도한 뒤에는 **반드시** 맞아야 한다」고 요구하므로, 검증이 멈추기 전에 도장이 있어야 멈춘 화면에 빨간 줄이 선다. `novalidate` 까지 찍히는 것은 **그 순서의 부수 효과**로 읽힌다(해석이다 — 명세의 비규범 설명은 이 사본에서 찾지 못했다).
 - **`:user-invalid` 이전의 관례** — blur 때 `.touched` 클래스를 붙이던 패턴([CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md)의 「더 들어가면」).
 - **`select` 의 도장** — 명세는 `select` 의 선택이 바뀌면 도장을 찍는 문장을 따로 둔다. 이 판은 `select` 를 던지지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Constraints」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constraints) 절 — 「statically validate the constraints」·「interactively validate the constraints」·**「Security」**(「서버는 클라이언트 쪽 검증에 기대면 안 된다」), [「A form control's value」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#a-form-control's-value)의 **user validity boolean**, [「Form submission algorithm」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-algorithm)(★ **검증보다 앞에서** user validity 를 참으로 둔다), [「Focus — processing model」](https://html.spec.whatwg.org/multipage/interaction.html#focus-update-steps)의 **focus update steps**(포커스를 떠날 때 값이 달라졌으면 user validity 를 참으로), 그리고 [Selectors Level 4 §12.3.4](https://drafts.csswg.org/selectors-4/#user-pseudos)(`:user-invalid` 는 **`:invalid` 인 것만**). **명세 본문은 앞 배치가 받아 둔 사본**(HTML 은 2026-09-26, Selectors 4 는 2026-09-23)으로 읽었다 — 이 배치는 네트워크를 쓰지 않았다.\
+★★ **HTML 이 `:user-valid`/`:user-invalid` 를 정의하는 절(「Pseudo-classes」)은 그 사본에 없다** — 그래서 이 문서의 명세층은 **user validity 가 서고 지는 문장들 + Selectors 4** 까지다. 그 절을 읽지 않은 채 「이탈」로 적지 않는다((1) 의 한 칸).
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 사용자 입력은 **CDP 의 진짜 키·마우스**(`Input.dispatchKeyEvent`·`Input.insertText`·`Input.dispatchMouseEvent`)이고, 스크립트 대입과 **가른다.** 하네스는 [25번 주제](../25-label-association/3-answer.md)의 판을 이어 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 실었다(30\~32번이 같은 하네스를 쓴다).\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. `:user-valid`/`:user-invalid` 의 Baseline 은 [CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md)이 조회한 값(widely 2026-05-02)을 인용한다 — 이 배치는 다시 조회하지 않았다.
+**선행** — [28번 주제](../28-validation-attributes/2-summary.md)(속성이 **어느 깃발**을 켜나 — 이 편은 그 깃발을 **CSS·제출 쪽에서 읽는다**).
+**경계** — ★★★ **속성 × 타입 격자와 `validity` 깃발**은 [28번](../28-validation-attributes/2-summary.md)이 쟀다 — 다시 재지 않는다. **검증이 언제 도나**(`form.submit()` 은 건너뛴다)와 **`curl` 우회**는 [21번](../21-form-submission-model/2-summary.md)의 (2)·(5) 다. **`:invalid` 가 로드 직후부터 켜지고 `:user-invalid` 는 blur 뒤에 켜지는 것**은 [CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md)의 (4)·(5) 가 **이메일 칸 하나**로 쟀다 — 여기는 그 열을 **칸 셋 × 시점 여섯**으로 늘리고 **제출 시도·`reset()`** 을 더한다. **스크립트로 읽고 덮어쓰는 표면**(`checkValidity`·`reportValidity`·`setCustomValidity`)의 정본은 web-api 갈래 목록([`web-api/README.md`](../../../web-api/README.md))의 **60번**이다 — 여기는 **그것이 제출·의사 클래스와 만나는 자리**만 (3) 에서 잰다.
+
+★★★ **이 주제의 본체는 창 ②(노드 프로브)다 — `element.matches(':user-invalid')` 로 묻는 의사 클래스 격자.** 짝으로 **창 ⑤(서버 요청 로그)** 가 「검증을 건너면 서버가 무엇을 받나」를 한 쌍으로 보인다.

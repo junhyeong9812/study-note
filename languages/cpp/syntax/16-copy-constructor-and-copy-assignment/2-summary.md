@@ -1,41 +1,5 @@
 # cpp/syntax/16 — 복사 생성자와 복사 대입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 복사 생성자](https://en.cppreference.com/w/cpp/language/copy_constructor) · [cppreference — 복사 대입 연산자](https://en.cppreference.com/w/cpp/language/copy_assignment) · [cppreference — 복사 생략](https://en.cppreference.com/w/cpp/language/copy_elision) · [GCC 13 C++ Dialect Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/C_002b_002b-Dialect-Options.html) · [AddressSanitizer](https://github.com/google/sanitizers/wiki/AddressSanitizer)
-> **실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`copy01.cpp` \~ `copy09.cpp`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
-> ★★★ **ASan 을 붙인 블록은 마커를 `stderr` 로 찍었다.** sanitizer 가 `abort()` 로 죽이면\
-> **버퍼에 남은 표준 출력이 통째로 사라지기 때문**이다((4)의 소스에 그렇게 적혀 있다).\
-> ★★ **리포트를 자른 블록은 자르는 명령을 배너에 적었다** — 실린 것이 「생략한 일부」가 아니라 「**그 명령의 전체 출력**」이다.
-> **버전** — 복사 생성자·복사 대입은 **C++98부터**. **`= delete` 는 C++11부터**,\
-> **prvalue 의 복사 생략이 의무가 된 것은 C++17부터**다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-> ★★★ **16 → 17 → 18 은 한 사슬이고 18 이 결론이다.** 여기 16 은 「**복사란 무엇을 부르는 것인가**」를 수로 고정하고,\
-> **17번**이 그 위에 「훔치기」를 얹고, **18번**이 「**그래서 다섯 중 무엇을 적을 것인가**」로 닫는다.
-> **경계** — 「**얕은 복사와 깊은 복사가 무엇인가**」라는 개념은 [`variables-and-memory/`](../../../../cs/foundations/variables-and-memory/) §2 가 정본이고,\
-> 여기는 **C++ 의 특수 멤버를 어떻게 구현하나**만 본다.\
-> 「값 범주」는 [8번](../08-value-categories-lvalue-prvalue-xvalue/), 「`std::move`」는 [9번](../09-rvalue-references-move-and-forward/),\
-> 「이동 연산」은 [목록의 **17번**](../17-move-constructor-assignment-and-moved-from-state/), 「0/3/5의 법칙」은 **18번**, 「예외 안전 보장 4단계」는 **52번 주제**가 정본이다.\
-> ★ (5)의 copy-and-swap 은 **자기 대입을 푸는 도구로서만** 다룬다 — 강한 보장의 전모는 52번이다.
-> **대비** — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **9번**([`09-copy-clone-and-drop/`](../../../rust/syntax/09-copy-clone-and-drop/)) — 러스트는 **복사가 기본이 아니고** `Clone` 을 손으로 부른다.\
-> C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **2번**([`02-struct-vs-class-choosing/`](../../../csharp/syntax/02-struct-vs-class-choosing/)) — 값 타입이냐 참조 타입이냐로 **복사의 뜻 자체가 갈리는** 판이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ASan 리포트의 **PID**(`==2613344==`)·주소·스택 프레임 줄 | ★★★ **어느 특수 멤버가 몇 번 불렸나**(계수 로그) — 이 주제의 답 자체다 |
-> | 두 컴파일러의 **진단 문구** · 실행 시간 | ★★★ **만들어진 객체 수**(`#N`) · **`malloc`/`free` 횟수** |
-> | 객체의 주소값 · 해제된 메모리에서 읽힌 값 | ★★ **`cc exit`/`run exit`** · **경고 개수** · **에러 개수** |
-> | — | ★ **진단의 `(행,열)`** · **ASan 이 붙인 사고 이름**(`heap-use-after-free`) |
->
-> ★ **(4)는 해제된 메모리를 읽는 판이라 「상한 값」이 판마다 다르다.**\
-> 그래서 소스가 **값을 아예 안 찍고** 「**아직 원래 값인가**」만 묻는다 — 그 답(`0`)은 15판을 돌려 전부 같았다.
-
 ## 한눈에 — 쉽게 말하면
 
 **복사는 「서류를 한 부 더 만드는 것」이다.** 문제는 **무엇을 한 부 더 만드느냐**다.
@@ -1054,3 +1018,40 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **`std::swap` 의 ADL 관용구**(`using std::swap; swap(a, b);`) — (5)의 `friend void swap` 이 그 관용구를 받으려고 있는 것이다([6번](../06-namespaces-and-adl/)).
 - **`-Wdeprecated-copy` 가 무엇을 deprecate 했나** — C++11 이 「복사 생성자를 쓰면 암묵 복사 대입을 deprecate」로 못 박았다. 정본은 [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/).
 - **복사 생략이 관찰 가능한 부작용을 지우는 것** — 생성자에 `printf` 를 넣은 이 문서의 예제가 바로 그 「관찰」이다. 표준이 **그 관찰의 소멸을 허용한다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 복사 생성자](https://en.cppreference.com/w/cpp/language/copy_constructor) · [cppreference — 복사 대입 연산자](https://en.cppreference.com/w/cpp/language/copy_assignment) · [cppreference — 복사 생략](https://en.cppreference.com/w/cpp/language/copy_elision) · [GCC 13 C++ Dialect Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/C_002b_002b-Dialect-Options.html) · [AddressSanitizer](https://github.com/google/sanitizers/wiki/AddressSanitizer)
+**실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`copy01.cpp` \~ `copy09.cpp`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
+★★★ **ASan 을 붙인 블록은 마커를 `stderr` 로 찍었다.** sanitizer 가 `abort()` 로 죽이면\
+**버퍼에 남은 표준 출력이 통째로 사라지기 때문**이다((4)의 소스에 그렇게 적혀 있다).\
+★★ **리포트를 자른 블록은 자르는 명령을 배너에 적었다** — 실린 것이 「생략한 일부」가 아니라 「**그 명령의 전체 출력**」이다.
+**버전** — 복사 생성자·복사 대입은 **C++98부터**. **`= delete` 는 C++11부터**,\
+**prvalue 의 복사 생략이 의무가 된 것은 C++17부터**다. 기준은 **C++20**이다.
+
+★★★ **16 → 17 → 18 은 한 사슬이고 18 이 결론이다.** 여기 16 은 「**복사란 무엇을 부르는 것인가**」를 수로 고정하고,\
+**17번**이 그 위에 「훔치기」를 얹고, **18번**이 「**그래서 다섯 중 무엇을 적을 것인가**」로 닫는다.
+**경계** — 「**얕은 복사와 깊은 복사가 무엇인가**」라는 개념은 [`variables-and-memory/`](../../../../cs/foundations/variables-and-memory/) §2 가 정본이고,\
+여기는 **C++ 의 특수 멤버를 어떻게 구현하나**만 본다.\
+「값 범주」는 [8번](../08-value-categories-lvalue-prvalue-xvalue/), 「`std::move`」는 [9번](../09-rvalue-references-move-and-forward/),\
+「이동 연산」은 [목록의 **17번**](../17-move-constructor-assignment-and-moved-from-state/), 「0/3/5의 법칙」은 **18번**, 「예외 안전 보장 4단계」는 **52번 주제**가 정본이다.\
+★ (5)의 copy-and-swap 은 **자기 대입을 푸는 도구로서만** 다룬다 — 강한 보장의 전모는 52번이다.
+**대비** — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **9번**([`09-copy-clone-and-drop/`](../../../rust/syntax/09-copy-clone-and-drop/)) — 러스트는 **복사가 기본이 아니고** `Clone` 을 손으로 부른다.\
+C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **2번**([`02-struct-vs-class-choosing/`](../../../csharp/syntax/02-struct-vs-class-choosing/)) — 값 타입이냐 참조 타입이냐로 **복사의 뜻 자체가 갈리는** 판이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ASan 리포트의 **PID**(`==2613344==`)·주소·스택 프레임 줄 | ★★★ **어느 특수 멤버가 몇 번 불렸나**(계수 로그) — 이 주제의 답 자체다 |
+| 두 컴파일러의 **진단 문구** · 실행 시간 | ★★★ **만들어진 객체 수**(`#N`) · **`malloc`/`free` 횟수** |
+| 객체의 주소값 · 해제된 메모리에서 읽힌 값 | ★★ **`cc exit`/`run exit`** · **경고 개수** · **에러 개수** |
+| — | ★ **진단의 `(행,열)`** · **ASan 이 붙인 사고 이름**(`heap-use-after-free`) |
+
+★ **(4)는 해제된 메모리를 읽는 판이라 「상한 값」이 판마다 다르다.**\
+그래서 소스가 **값을 아예 안 찍고** 「**아직 원래 값인가**」만 묻는다 — 그 답(`0`)은 15판을 돌려 전부 같았다.

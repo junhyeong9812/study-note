@@ -1,17 +1,5 @@
 # cpp/syntax/02 — `enum class` 와 범위 있는 열거형 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **예측형 위주**다 — **C 에서 통과하던 줄이 여기서 어떻게 되는지**,
-> 그리고 **어느 도구가 무엇을 말하는지**를 맞힐 수 있는지 묻는다.
-> **환경** — g++ 13.3.0 · clang 18.1.3 · gcc 13.3.0(C 대비) · x86-64 Linux.
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic ex.cpp -o ex && ./ex`,
-> C 쪽은 `gcc -std=c17 -Wall -Wextra -pedantic ex.c -o ex && ./ex`.
-> ★★ **이 주제에는 UB 가 하나 있다** — 그리고 **한쪽 sanitizer 만 그것을 말한다.**
-> 「도구가 조용하다」를 근거로 쓰지 않는 연습이 5번이다.
-> 선행 — C 갈래의 [`07-enum-and-enumeration-constants/`](../../../c/syntax/07-enum-and-enumeration-constants/)(C 의 `enum`).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -199,6 +187,15 @@ int main() { std::puts(name(Color::Green)); }
 - 「값까지 담는 열거형」이 필요하면 목록의 몇 번을 보나?
 - 비트 플래그를 `enum class` 로 하려면 목록의 몇 번이 필요한가?
 - C 의 `enum` 크기·부호·`-fshort-enums` 의 정본은 어느 갈래 어느 주제인가?
+
+## 실행 환경
+
+**환경** — g++ 13.3.0 · clang 18.1.3 · gcc 13.3.0(C 대비) · x86-64 Linux.
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic ex.cpp -o ex && ./ex`,
+C 쪽은 `gcc -std=c17 -Wall -Wextra -pedantic ex.c -o ex && ./ex`.
+★★ **이 주제에는 UB 가 하나 있다** — 그리고 **한쪽 sanitizer 만 그것을 말한다.**
+「도구가 조용하다」를 근거로 쓰지 않는 연습이 5번이다.
+선행 — C 갈래의 [`07-enum-and-enumeration-constants/`](../../../c/syntax/07-enum-and-enumeration-constants/)(C 의 `enum`).
 
 ## 복습 기록
 

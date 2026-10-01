@@ -1,16 +1,5 @@
 # html/syntax/31 — 파일 업로드: `accept`/`multiple`/`capture` 와 `enctype=multipart/form-data` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「File Upload state」](https://html.spec.whatwg.org/multipage/input.html#file-upload-state-(type=file))(★ `accept` — 「UA 는 받지 않는 파일을 **고르지 못하게 해야 한다(should)**」 · 파일 이름에 **경로 성분이 없어야 한다** · `multiple` 이 없으면 **파일은 하나 이하** · 끌어다 놓기로도 바꿀 수 있다), [「Constructing the entry list」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-form-data-set)(★ 고른 파일이 없으면 **이름 빈 `File`, `application/octet-stream`**), [「Converting an entry list to a list of name-value pairs」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#converting-an-entry-list-to-a-list-of-name-value-pairs)(★ **`File` 이면 그 이름을 값으로**), [「Multipart form data」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#multipart-form-data)(RFC 7578 · 같은 이름은 **별개의 필드**). **명세 본문은 앞 배치가 2026-09-26 에 받아 둔 사본**으로 읽었다 — 이 배치는 네트워크를 쓰지 않았다.\
-> ★★★ **`capture` 는 WHATWG HTML 에 없다** — 받아 둔 `input` 절 전문에서 `capture` 를 찾으면 **0 건**이다. 그 속성은 W3C 의 별도 문서(HTML Media Capture)가 정의하고, **이 배치는 그 문서를 열지 않았다.** 그래서 (3) 의 `capture` 줄에는 **명세층이 없다** — 「Chrome 이 이 판에서 그 속성을 무엇으로 다뤘나」만 적는다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 파일은 **세 길**로 넣었다 — CDP `DOM.setFileInputFiles`(스크립트 쪽 길) · CDP `Input.dispatchDragEvent`(끌어다 놓기를 흉내 낸 입력) · **파일 고르기 창 가로채기**(진짜 마우스로 칸을 누르고 열린 창에 파일을 넣는다). 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 파일 칸은 가장 오래된 표면이라 Baseline 조회 대상이 아니다.
-> **선행** — [21번 주제](../21-form-submission-model/2-summary.md)(★ **`enctype` × `method` 격자** — GET 은 `enctype` 을 안 본다) · [24번 주제](../24-input-types-choice-special/2-summary.md)(★ **고른 파일이 없는 파일 칸도 실린다** — urlencoded 는 `f1=` · multipart 는 `filename=「」` 부분 하나).
-> **경계** — ★★ **같은 본문을 스크립트로 만드는 쪽**(`FormData` 에 `Blob`·`File` 을 넣을 때 `filename`·`Content-Type` 이 어디서 오나)은 [web-api 30번](../../../web-api/30-request-body-and-content-type/2-summary.md)의 (3)·(4), **받은 `File` 을 읽고 미리보고 올리는 쪽**(`Blob`·`FileReader`·오브젝트 URL)은 [web-api 31번](../../../web-api/31-blob-file-and-object-url/2-summary.md)이다 — 여기는 **마크업의 파일 칸이 무엇을 받고 무엇을 보내나**까지. `enctype` 의 여섯 칸은 21번이 쟀다 — 여기는 **파일 칸이 있을 때** 세 `enctype` 만.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다** — 파일 칸이 무엇을 받아들였는지는 **서버가 받은 부분의 `filename`** 으로 판정한다. 짝으로 **창 ②**(`files.length` · `validity` · 파일 고르기 창의 `mode`)가 페이지 쪽을 본다.
-
 **이 판의 Chrome**
 
 ```text
@@ -347,7 +336,7 @@ $ python3 html29b-form.py 시도 html29b-31-multiple.html
 - ★★★ **`multiple` 은 고르기 창을 「여러 개」로 연다** — `m1` 을 누르니 **`chooser(selectMultiple)`**, `m2` 는 `selectSingle`. 파일 둘이 **`m1` 이름의 부분 둘**로 갔다(`부분 5개`). 명세 — 「같은 이름의 항목은 **별개의 필드**로 다룬다」.
 - ★★★ **`multiple` 없는 칸에 파일 둘 — 길마다 다르다.** **`setFileInputFiles`** 는 **첫째(`p1.png`) 하나**를 넣었고, **끌어다 놓기**는 **아무것도 안 넣었다**(`m2=0` · 빈 부분). `multiple` 칸(`m1`)에 끌어다 놓으면 **둘 다** 들어갔다. 명세 — 「`multiple` 이 없으면 목록에 파일이 **하나를 넘으면 안 된다(must)**」. 두 길 다 그 문장을 지켰고, **지키는 방법**(자르기 · 통째 거절)이 달랐다.
 - ★★ **고른 파일이 없는 칸은 빈 부분 하나씩** — `m3=「」 (filename=「」 · 부분 Content-Type: application/octet-stream)`. [24번](../24-input-types-choice-special/2-summary.md)의 (2) 와 같고, `multiple` 칸(`m1`)도 **하나**다. 명세 — 「고른 파일이 없으면 **이름 빈 `File`**, 형식 `application/octet-stream`, 빈 본문으로 항목 하나」.
-- ★★★ **`capture` 는 데스크톱 Chrome 에서 IDL 조차 없다** — `'capture' in HTMLInputElement.prototype` 이 **`false`** 이고 `m3.capture` 는 `undefined`, 속성 글자(`getAttribute`)만 `user` 로 남았다. 고르기 창도 `selectSingle` 로 **똑같이** 열렸다. ★ **이것은 「못 잰 것」과 다르다** — 휴대폰에서 카메라가 뜨나는 **못 쟀지만**, 이 판의 Chrome 이 **그 속성을 인식하지 않는다**는 것은 **잰 것**이다. 그리고 앞 머리말대로 **WHATWG HTML 에는 `capture` 가 없다.**
+- ★★★ **`capture` 는 데스크톱 Chrome 에서 IDL 조차 없다** — `'capture' in HTMLInputElement.prototype` 이 **`false`** 이고 `m3.capture` 는 `undefined`, 속성 글자(`getAttribute`)만 `user` 로 남았다. 고르기 창도 `selectSingle` 로 **똑같이** 열렸다. ★ **이것은 「못 잰 것」과 다르다** — 휴대폰에서 카메라가 뜨나는 **못 쟀지만**, 이 판의 Chrome 이 **그 속성을 인식하지 않는다**는 것은 **잰 것**이다. 그리고 앞 「실행 환경」대로 **WHATWG HTML 에는 `capture` 가 없다.**
 
 ```text
   파일 둘을 넣는 세 길 × multiple (이 판)
@@ -464,3 +453,15 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 `accept` 가 must 가 아니라 should 인가** — 명세의 예시가 답에 가깝다 — 확장자만 쓰는 플랫폼과 MIME 만 쓰는 플랫폼이 있어서 **UA 가 정확히 거를 수 없는 경우**가 있다(「확장자는 모호하다」는 문장이 이어진다). 그래서 명세는 **작성자에게 둘 다 적으라고** 권한다(해석이다).
 - **`webkitdirectory`** — 폴더째 고르기. 명세 밖의 속성이다. 이 판은 던지지 않았다.
 - **폼 제출 대신 `fetch`** — 같은 multipart 본문을 스크립트로 만드는 쪽은 [web-api 30번](../../../web-api/30-request-body-and-content-type/2-summary.md)의 (4).
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「File Upload state」](https://html.spec.whatwg.org/multipage/input.html#file-upload-state-(type=file))(★ `accept` — 「UA 는 받지 않는 파일을 **고르지 못하게 해야 한다(should)**」 · 파일 이름에 **경로 성분이 없어야 한다** · `multiple` 이 없으면 **파일은 하나 이하** · 끌어다 놓기로도 바꿀 수 있다), [「Constructing the entry list」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-form-data-set)(★ 고른 파일이 없으면 **이름 빈 `File`, `application/octet-stream`**), [「Converting an entry list to a list of name-value pairs」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#converting-an-entry-list-to-a-list-of-name-value-pairs)(★ **`File` 이면 그 이름을 값으로**), [「Multipart form data」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#multipart-form-data)(RFC 7578 · 같은 이름은 **별개의 필드**). **명세 본문은 앞 배치가 2026-09-26 에 받아 둔 사본**으로 읽었다 — 이 배치는 네트워크를 쓰지 않았다.\
+★★★ **`capture` 는 WHATWG HTML 에 없다** — 받아 둔 `input` 절 전문에서 `capture` 를 찾으면 **0 건**이다. 그 속성은 W3C 의 별도 문서(HTML Media Capture)가 정의하고, **이 배치는 그 문서를 열지 않았다.** 그래서 (3) 의 `capture` 줄에는 **명세층이 없다** — 「Chrome 이 이 판에서 그 속성을 무엇으로 다뤘나」만 적는다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 파일은 **세 길**로 넣었다 — CDP `DOM.setFileInputFiles`(스크립트 쪽 길) · CDP `Input.dispatchDragEvent`(끌어다 놓기를 흉내 낸 입력) · **파일 고르기 창 가로채기**(진짜 마우스로 칸을 누르고 열린 창에 파일을 넣는다). 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 파일 칸은 가장 오래된 표면이라 Baseline 조회 대상이 아니다.
+**선행** — [21번 주제](../21-form-submission-model/2-summary.md)(★ **`enctype` × `method` 격자** — GET 은 `enctype` 을 안 본다) · [24번 주제](../24-input-types-choice-special/2-summary.md)(★ **고른 파일이 없는 파일 칸도 실린다** — urlencoded 는 `f1=` · multipart 는 `filename=「」` 부분 하나).
+**경계** — ★★ **같은 본문을 스크립트로 만드는 쪽**(`FormData` 에 `Blob`·`File` 을 넣을 때 `filename`·`Content-Type` 이 어디서 오나)은 [web-api 30번](../../../web-api/30-request-body-and-content-type/2-summary.md)의 (3)·(4), **받은 `File` 을 읽고 미리보고 올리는 쪽**(`Blob`·`FileReader`·오브젝트 URL)은 [web-api 31번](../../../web-api/31-blob-file-and-object-url/2-summary.md)이다 — 여기는 **마크업의 파일 칸이 무엇을 받고 무엇을 보내나**까지. `enctype` 의 여섯 칸은 21번이 쟀다 — 여기는 **파일 칸이 있을 때** 세 `enctype` 만.
+
+★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다** — 파일 칸이 무엇을 받아들였는지는 **서버가 받은 부분의 `filename`** 으로 판정한다. 짝으로 **창 ②**(`files.length` · `validity` · 파일 고르기 창의 `mode`)가 페이지 쪽을 본다.

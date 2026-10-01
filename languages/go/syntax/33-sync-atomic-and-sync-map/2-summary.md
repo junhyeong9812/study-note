@@ -1,13 +1,5 @@
 # go/syntax/33 — `sync/atomic` 과 `sync.Map` 을 고르는 자리 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [`sync/atomic`](https://pkg.go.dev/sync/atomic) · [`sync.Map`](https://pkg.go.dev/sync#Map) 문서 · [Go 메모리 모델](https://go.dev/ref/mem) · [Go 1.19 릴리스 노트](https://go.dev/doc/go1.19)(원자 타입·정렬 — **웹에서 열어 확인했다**).
-> `go doc`·`api/go1NN.txt` 는 **이 툴체인의 `$(go env GOROOT)` 에서 직접 떴다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> ★ **버전** — `atomic.AddInt64` 같은 **함수**는 **1.0**(`api/go1.txt`), `atomic.Int64`·`atomic.Pointer[T]` **타입**은 **1.19**, `sync.Map` 은 **1.9**, `Swap`·`CompareAndSwap` **1.20**, `Clear` **1.23**((5)절 판 표).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**불변식을 셸이 참거짓으로 판정하고, 그 옆에 `-race` 보고를 나란히 적는 격자**」.
 [32번 주제](../32-sync-mutex-rwmutex-waitgroup-once/)는 `-race` 를 **「경쟁이 있나」의 창**으로 썼다. 여기서는 그 창이 **답을 못 주는 자리**가 본론이다 —
 ★★★ **원자 연산 둘로 두 값을 옮기면 `-race` 는 침묵하는데 불변식은 깨진다**((1)절 — `-race 가 침묵했는데 불변식이 깨진 칸 1 / 8`).
@@ -1031,7 +1023,7 @@ main.main()
 
 ### (5) ★ 판 경계 — `api/go1NN.txt`
 
-(머리말 「이 판」의 블록.)
+(맨 위 「이 판」의 블록.)
 
 | API | 판 | 근거 |
 |---|---|---|
@@ -1209,3 +1201,11 @@ func main() {
 - ★ `sync.Map` 의 **내부 구조**(이 판의 구현)는 **안 열었다.**
 - ★★ 모든 **시간·처리량** 비교는 **안 쟀다.**
 - ★ 386 을 **못 돌리는 환경**에서의 모습(`exec format error`)은 **확인 안 했다.**
+
+## 실행 환경
+
+**기준 소스** — [`sync/atomic`](https://pkg.go.dev/sync/atomic) · [`sync.Map`](https://pkg.go.dev/sync#Map) 문서 · [Go 메모리 모델](https://go.dev/ref/mem) · [Go 1.19 릴리스 노트](https://go.dev/doc/go1.19)(원자 타입·정렬 — **웹에서 열어 확인했다**).
+`go doc`·`api/go1NN.txt` 는 **이 툴체인의 `$(go env GOROOT)` 에서 직접 떴다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+★ **버전** — `atomic.AddInt64` 같은 **함수**는 **1.0**(`api/go1.txt`), `atomic.Int64`·`atomic.Pointer[T]` **타입**은 **1.19**, `sync.Map` 은 **1.9**, `Swap`·`CompareAndSwap` **1.20**, `Clear` **1.23**((5)절 판 표).

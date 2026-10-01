@@ -1,11 +1,5 @@
 # domain-modeling-advanced/19-leaderboard-recount — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/19-leaderboard-recount/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README·테스트 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -600,3 +594,7 @@ return List.copyOf(winners);
 - 계약 테스트: `/home/jun/project/myway/domain-modeling-advanced/19-leaderboard-recount/src/test/java/com/domain/board/LeaderboardTest.java` (정각 제외 · 종료 전 취소 일치 · 전부 취소 사라짐 · `[1,2,3]`/`[1,1,3]` · `[1,1,3,4]`/`[1,1,2,3]` · `[1,1,3,3,5]`/`[1,1,2,2,3]` · 4 명 vs 5 명 · 목록 순서 결정성 · 잘못된 입력 네 가지)
 - 측정 테스트: `/home/jun/project/myway/domain-modeling-advanced/19-leaderboard-recount/src/test/java/com/domain/board/MeasurementTest.java` (0/33/82/89 · 1 등 0/11/34/42 · 넘친 회차 0/3/10/52 · 초과 인원 0/3/13/97 · 동점 쌍 0/260/1,888/3,909 · 5 vs 82 · 300/301/305 · 1,100 비교에서 0 · `event()` 의 금액 깎기와 `new Random(31)`)
 - 이 노트의 서머리: `2-summary.md`
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/19-leaderboard-recount/impl/`).

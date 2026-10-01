@@ -1,24 +1,5 @@
 # java/syntax/40 — `List`·`Set` API 와 불변 팩토리: `List.of`·`copyOf`·`unmodifiable*` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/). 옵셔널 연산이 왜 존재하는지가 전제다.
-> **기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc 과 구현이다.\
-> `java.base/java/util/List.java` — 「Unmodifiable Lists」 절 · `subList` javadoc · `of`/`copyOf` 의 `@since`.\
-> `java.base/java/util/Collection.java` — 「Unmodifiable Collections」·「Unmodifiable View Collections」·「View Collections」 절.\
-> `java.base/java/util/ImmutableCollections.java` — `SALT32L`·`REVERSE` 필드와 그 주석.\
-> 인용은 **그 파일에서 복사한 것만** 옮겼다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 Temurin JDK 에서 **실제로 돌려** 얻은 것이다.\
-> 프로그램 5개. 넷(40-a·40-b·40-d·40-e)은 **17.0.13 · 21.0.5 · 25.0.1** 에서 돌렸고,
-> 나머지 하나(40-c)는 **같은 JVM 을 세 번 띄워** 실행마다 결과가 달라지는 것을 보였다.
-> **버전** — `Arrays.asList` 는 **Java 1.2**, `Collections.unmodifiableList` 도 **1.2**.\
-> `List.of`·`Set.of`·`Map.of` 는 **Java 9**, `List.copyOf`·`Set.copyOf`·`Map.copyOf` 는 **Java 10**.\
-> `removeIf` 는 **Java 8**. `@since` 는 전부 `src.zip` 에서 직접 읽었다.
-> **범위** — 동적 배열이라는 **자료구조**(2배 증폭·상각 분석)와 해시 집합의 내부는
-> [`../../../../cs/data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/)·[`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 가 정본이다.\
-> 그쪽은 **`ArrayList` 가 왜 2배씩 늘어나나**까지, 여기는 **그것을 어느 팩토리로 만들고 무엇이 막히나**부터다.\
-> `Set` 이 원소에 요구하는 계약은 [`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/) 가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **리스트를 만드는 세 가지는 「사진」·「창문」·「복사본」이다.**
@@ -775,3 +756,22 @@ assertEquals("[a, b, c, d, e]", Set.of("a","b","c","d","e").toString());   // �
 - **불변 컬렉션은 value-based 다.**\
   javadoc 이 "Programmers should treat instances that are equal as interchangeable and should not use them for synchronization" 라고 적는다.\
   `synchronized (List.of("a"))` 는 쓰지 않는다 — 나중 릴리스에서 인스턴스가 공유될 수 있다.
+
+## 실행 환경
+
+**선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/). 옵셔널 연산이 왜 존재하는지가 전제다.
+**기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc 과 구현이다.\
+`java.base/java/util/List.java` — 「Unmodifiable Lists」 절 · `subList` javadoc · `of`/`copyOf` 의 `@since`.\
+`java.base/java/util/Collection.java` — 「Unmodifiable Collections」·「Unmodifiable View Collections」·「View Collections」 절.\
+`java.base/java/util/ImmutableCollections.java` — `SALT32L`·`REVERSE` 필드와 그 주석.\
+인용은 **그 파일에서 복사한 것만** 옮겼다.
+**실행 검증** — 이 문서의 모든 출력·에러는 Temurin JDK 에서 **실제로 돌려** 얻은 것이다.\
+프로그램 5개. 넷(40-a·40-b·40-d·40-e)은 **17.0.13 · 21.0.5 · 25.0.1** 에서 돌렸고,
+나머지 하나(40-c)는 **같은 JVM 을 세 번 띄워** 실행마다 결과가 달라지는 것을 보였다.
+**버전** — `Arrays.asList` 는 **Java 1.2**, `Collections.unmodifiableList` 도 **1.2**.\
+`List.of`·`Set.of`·`Map.of` 는 **Java 9**, `List.copyOf`·`Set.copyOf`·`Map.copyOf` 는 **Java 10**.\
+`removeIf` 는 **Java 8**. `@since` 는 전부 `src.zip` 에서 직접 읽었다.
+**범위** — 동적 배열이라는 **자료구조**(2배 증폭·상각 분석)와 해시 집합의 내부는
+[`../../../../cs/data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/)·[`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 가 정본이다.\
+그쪽은 **`ArrayList` 가 왜 2배씩 늘어나나**까지, 여기는 **그것을 어느 팩토리로 만들고 무엇이 막히나**부터다.\
+`Set` 이 원소에 요구하는 계약은 [`../27-equals-hashcode-contract/`](../27-equals-hashcode-contract/) 가 정본이다.

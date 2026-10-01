@@ -1,11 +1,5 @@
 # html/syntax/27 — `fieldset`/`legend` 와 그룹 비활성화 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [25번 주제](../25-label-association/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 `fieldset`·「Enabling and disabling form controls」·「Constructing the entry list」·`click()` 절과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **본체는 퍼짐 격자다** — 칸마다 네 물음을 한 줄에 놓았고, **반쯤 막힌 줄이 하나도 없다**(A1).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -179,3 +173,10 @@ f9  그냥 div                              generic     ""                (없�
 - **첫 `legend` 자식** — 자식 `legend` 중 첫째.
 - **제약 검증에서 제외** — 검증 대상이 아닌 것. 비활성 칸이 여기 든다.
 - **`group` · `radiogroup`** — 묶음 역할. 앞은 `fieldset`, 뒤는 라디오 전용.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [25번 주제](../25-label-association/3-answer.md)의 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 `fieldset`·「Enabling and disabling form controls」·「Constructing the entry list」·`click()` 절과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **본체는 퍼짐 격자다** — 칸마다 네 물음을 한 줄에 놓았고, **반쯤 막힌 줄이 하나도 없다**(A1).

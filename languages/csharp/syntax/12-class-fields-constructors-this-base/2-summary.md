@@ -1,37 +1,5 @@
 # csharp/syntax/12 — 클래스·필드·생성자·`this`/`base` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — 생성자](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/constructors) ·
-> [Learn — 기본 생성자(primary constructor)](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/tutorials/primary-constructors) ·
-> [Learn — `required` 한정자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/required) ·
-> [Learn — `readonly`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/readonly) ·
-> [.NET API — `RuntimeHelpers.GetUninitializedObject`](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.runtimehelpers.getuninitializedobject)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL 은 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-25).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.\
-> ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).\
-> **던진 형태** — MSBuild 를 안 쓰고 Roslyn `csc` 를 직접 부른다(설정은 [11번](../11-collection-initializers-and-collection-expressions/) 머리말과 같다).\
-> **`-debug` 를 안 줬다** — 그래서 (4)의 스택 트레이스에 **절대 경로도 줄 번호도 안 박힌다.**
-> **버전** — 클래스·필드·생성자·`this`/`base` 는 **C# 1.0부터**. **`init` 은 C# 9**, **`required` 는 C# 11**,\
-> **기본 생성자(primary constructor)가 클래스에까지 온 것은 C# 12부터**다. `-langversion:latest` 로 던졌다.
-> **경계** — **상속과 `virtual`/`override` 의 설계 판**은 [목록의 **16번**](../16-inheritance-virtual-override-abstract-sealed-new/), **속성(property)의 전모**는 **13번**,\
-> **접근 한정자**는 **15번**, **`record`** 는 **18번**, **`IDisposable`/`using`** 은 **37번 주제**가 정본이다.\
-> 여기서는 「**객체가 만들어질 때 무엇이 어떤 순서로 도는가**」만 센다.\
-> ★ **클래스라는 개념 자체**는 [`oop-basics/`](../../../../cs/foundations/oop-basics/)가 정본이고, 여기는 **C# 문법**이다.
-> ★★★ **대비** — C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **13번**([`13-constructors-member-init-list-and-delegating/`](../../../cpp/syntax/13-constructors-member-init-list-and-delegating/))이 **직접 대비**다.\
-> (1)에서 **초기화 순서를 두 언어에서 나란히 찍어** 대비표를 만들고, (4)에서 **생성자 속 가상 호출**을 다시 나란히 놓는다.\
-> ★ **결정적 파괴 쪽 대비**는 C++ 갈래의 **14번**([`14-destructors-and-deterministic-destruction/`](../../../cpp/syntax/14-destructors-and-deterministic-destruction/))과 [01번](../01-value-types-and-reference-types/)이 맡는다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 객체 주소 · `GetHashCode()` · 실행 시간 | ★★★ **로그가 찍힌 순서와 번호** — 이 주제의 답 자체다 |
-> | 진단 문구가 판마다 다듬일 수 있다는 것 | ★★ **진단 코드**(`CS7036`·`CS0768`·`CS9035`·`CS0191`·`CS0649`)와 **`(행,열)`** |
-> | 컴파일러가 만든 **숨은 필드 이름의 형식**이 바뀔 수 있다는 것 | ★★★ **숨은 필드가 있다는 사실과 그 개수**(`<Auto>k__BackingField` 류) |
-> | — | ★★ **`cc exit` 와 `run exit`**(갈라 적었다) · **예외 타입과 스택 프레임 이름** |
-
 ## 이 판
 
 ```text
@@ -1014,3 +982,36 @@ cs12b-diag.cs(9,1): error CS0191: A readonly field cannot be assigned to (except
   이 문서는 **인스턴스 쪽만** 던졌다.
 - **`init` 전용 setter(C# 9)** — 객체 초기화자까지만 쓸 수 있는 setter. (5)의 `Owner` 가 그 예다.
 - **구조체의 생성자** — `struct` 는 규칙이 다르다(필드 초기자 제약·`default` 생성). 정본은 [02번](../02-struct-vs-class-choosing/).
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — 생성자](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/constructors) ·
+[Learn — 기본 생성자(primary constructor)](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/tutorials/primary-constructors) ·
+[Learn — `required` 한정자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/required) ·
+[Learn — `readonly`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/readonly) ·
+[.NET API — `RuntimeHelpers.GetUninitializedObject`](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.runtimehelpers.getuninitializedobject)
+**실행 검증** — 이 문서의 모든 출력·진단·IL 은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-25).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.\
+★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).\
+**던진 형태** — MSBuild 를 안 쓰고 Roslyn `csc` 를 직접 부른다(설정은 [11번](../11-collection-initializers-and-collection-expressions/) 「실행 환경」과 같다).\
+**`-debug` 를 안 줬다** — 그래서 (4)의 스택 트레이스에 **절대 경로도 줄 번호도 안 박힌다.**
+**버전** — 클래스·필드·생성자·`this`/`base` 는 **C# 1.0부터**. **`init` 은 C# 9**, **`required` 는 C# 11**,\
+**기본 생성자(primary constructor)가 클래스에까지 온 것은 C# 12부터**다. `-langversion:latest` 로 던졌다.
+**경계** — **상속과 `virtual`/`override` 의 설계 판**은 [목록의 **16번**](../16-inheritance-virtual-override-abstract-sealed-new/), **속성(property)의 전모**는 **13번**,\
+**접근 한정자**는 **15번**, **`record`** 는 **18번**, **`IDisposable`/`using`** 은 **37번 주제**가 정본이다.\
+여기서는 「**객체가 만들어질 때 무엇이 어떤 순서로 도는가**」만 센다.\
+★ **클래스라는 개념 자체**는 [`oop-basics/`](../../../../cs/foundations/oop-basics/)가 정본이고, 여기는 **C# 문법**이다.
+★★★ **대비** — C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **13번**([`13-constructors-member-init-list-and-delegating/`](../../../cpp/syntax/13-constructors-member-init-list-and-delegating/))이 **직접 대비**다.\
+(1)에서 **초기화 순서를 두 언어에서 나란히 찍어** 대비표를 만들고, (4)에서 **생성자 속 가상 호출**을 다시 나란히 놓는다.\
+★ **결정적 파괴 쪽 대비**는 C++ 갈래의 **14번**([`14-destructors-and-deterministic-destruction/`](../../../cpp/syntax/14-destructors-and-deterministic-destruction/))과 [01번](../01-value-types-and-reference-types/)이 맡는다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 객체 주소 · `GetHashCode()` · 실행 시간 | ★★★ **로그가 찍힌 순서와 번호** — 이 주제의 답 자체다 |
+| 진단 문구가 판마다 다듬일 수 있다는 것 | ★★ **진단 코드**(`CS7036`·`CS0768`·`CS9035`·`CS0191`·`CS0649`)와 **`(행,열)`** |
+| 컴파일러가 만든 **숨은 필드 이름의 형식**이 바뀔 수 있다는 것 | ★★★ **숨은 필드가 있다는 사실과 그 개수**(`<Auto>k__BackingField` 류) |
+| — | ★★ **`cc exit` 와 `run exit`**(갈라 적었다) · **예외 타입과 스택 프레임 이름** |

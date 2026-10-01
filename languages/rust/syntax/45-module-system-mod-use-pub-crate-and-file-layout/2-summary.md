@@ -1,15 +1,5 @@
 # rust/syntax/45 — 모듈 시스템 — `mod` · `use` · `pub(crate)` · 파일 배치 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Reference — Visibility and privacy](https://doc.rust-lang.org/reference/visibility-and-privacy.html)(「비공개 항목은 **현재 모듈과 그 자손**이 접근한다」 · 「`pub(in path)` 의 path 는 **그 항목의 조상 모듈**이어야 한다 · `crate`·`self`·`super` 로 시작해야 하고 2015 는 루트의 모듈로 시작해도 된다」) ·
-> [Reference — Modules](https://doc.rust-lang.org/reference/items/modules.html)(파일 모듈의 경로) · [Reference — Use declarations](https://doc.rust-lang.org/reference/items/use-declarations.html).
-> ★ Reference 는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> 블록 배너의 명령(기본 **`rustc --edition 2021`**, 에디션 비교는 `2015`·`2018`)으로 돌려 받은 것이다. **cargo 는 쓰지 않았다** — 모듈과 가시성은 **rustc 의 일**이라 rustc 만으로 전부 재현된다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★ **속도·메모리는 재지 않았다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체 창 — ② 컴파일러 진단의 격자(가시성 다섯 × 부르는 자리 여섯 → 통과인가, 막히면 무슨 번호인가)다.** 가시성은 실행 중에 아무것도 남기지 않으므로 **컴파일러가 막느냐**로만 보인다((0)의 부적용 창이 그 증명이다).
 
 ## 흔들리는 칸 / 안 흔들리는 칸
@@ -702,3 +692,13 @@ error: aborting due to 1 previous error
 - `#[path = "..."]` 속성 — `mod` 의 파일 위치를 직접 지정한다. **이 문서는 던지지 않았다.**
 - `pub(self)` — 「표시 없음」과 같다(Reference). **던지지 않았다.**
 - cargo 가 `src/bin/*.rs` 를 **자동으로 바이너리 크레이트**로 잡는 규칙 — 크레이트 자동 탐색은 cargo 의 일이고 모듈 탐색(이 편)과 다르다. **던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Reference — Visibility and privacy](https://doc.rust-lang.org/reference/visibility-and-privacy.html)(「비공개 항목은 **현재 모듈과 그 자손**이 접근한다」 · 「`pub(in path)` 의 path 는 **그 항목의 조상 모듈**이어야 한다 · `crate`·`self`·`super` 로 시작해야 하고 2015 는 루트의 모듈로 시작해도 된다」) ·
+[Reference — Modules](https://doc.rust-lang.org/reference/items/modules.html)(파일 모듈의 경로) · [Reference — Use declarations](https://doc.rust-lang.org/reference/items/use-declarations.html).
+★ Reference 는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+블록 배너의 명령(기본 **`rustc --edition 2021`**, 에디션 비교는 `2015`·`2018`)으로 돌려 받은 것이다. **cargo 는 쓰지 않았다** — 모듈과 가시성은 **rustc 의 일**이라 rustc 만으로 전부 재현된다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★ **속도·메모리는 재지 않았다.**

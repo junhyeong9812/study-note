@@ -1,11 +1,5 @@
 # domain-modeling-advanced/05-multi-currency — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/05-multi-currency/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -329,3 +323,7 @@ return lineSum - total(monies, target, order, path).minorUnits();
 - 기준 소스: `/home/jun/project/myway/domain-modeling-advanced/05-multi-currency/impl/com/domain/money/MoneyConverter.java`
 - 문제 원문: `src/main/java/com/domain/money/MoneyConverter.java`(TODO 1~4 javadoc·enum 둘), `Money.java`(최소 단위 정수), `Currency.java`(자릿수), `RateTable.java`(방향 있는 고시·`sample()`), `README.md`(함정·측정이 알려준 것·변종 검증·생각해볼 것)
 - 계약·수치: `src/test/java/com/domain/money/MoneyConverterTest.java`(14,178 · 730/9,857/143 · 327 · 9,050/9,049 · 146,280/146,273 · 905 · 4,420 · 1,005/2,009/3,014 · 6,028/6,027 · gap 0/1 · 93,128 · 1,005/1,005/1,004 · 91/90 · 453/452), `MeasurementTest.java`(1,856/5,000 · 2,095 · 3 · 63 · 0/382/710/882 · 4,764/5,000 · 3,725,298 · 3,606 · 239/5,000(−243) · 4,483/5,000(−13,707) · 131,150,151,592)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/05-multi-currency/impl/`).

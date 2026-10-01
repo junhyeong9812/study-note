@@ -1,15 +1,5 @@
 # html/syntax/22 — `<input>` 타입 지도 ① 텍스트 계열: `text`/`password`/`email`/`url`/`tel`/`search` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The input element」](https://html.spec.whatwg.org/multipage/input.html) 절 — Text·Search·Telephone·URL·Email·Password 상태의 **값 정화(value sanitization) 알고리즘**과 **제약 검증** 줄, 「valid email address」 정의, 그리고 [HTML-AAM](https://w3c.github.io/html-aam/)(타입별 역할). **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다.**
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 하네스는 [21번 주제](../21-form-submission-model/3-answer.md)의 `## 실행 검증` 절에 있다(같은 하네스다).\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 여섯 타입은 전부 오래된 표면이라 Baseline 조회 대상으로 따로 세지 않았다.
-> **선행** — [21번 주제](../21-form-submission-model/2-summary.md)(무엇이 서버에 실리나).
-> **경계** — **속성 대 프로퍼티**(`value` 속성과 `.value` 가 왜 갈리나)의 정본은 [web-api 06번](../../../web-api/06-attribute-vs-property/2-summary.md)이다 — 여기는 **타입마다 `.value` 가 어떻게 정화되나**까지. **`:invalid`·`:user-invalid` 로 칠하는 것**은 [CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md), **`pattern`·`minlength` 같은 검증 속성**은 목록의 **28번 주제**, **`autocomplete`·`inputmode`** 는 목록의 **30번 주제**다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ②(노드 프로브 — `validity`·`checkValidity()`·`.value`)다.** 타입이 바꾸는 것은 **화면이 아니라 「무엇을 유효로 치나」와 「값을 어떻게 다듬나」** 다. ★ 근거는 **`validity.typeMismatch` 불리언**이지 `validationMessage` 문구가 아니다 — **명세는 문구를 정하지 않는다**((2)).
-
 **이 판의 Chrome**
 
 ```text
@@ -502,3 +492,14 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 `email` 을 RFC 대로 하지 않았나** — 명세의 문장 그대로 「RFC 5322 는 @ 앞에서 너무 엄격하고, @ 뒤에서 너무 모호하며, 주석·공백·따옴표 문자열을 대부분의 사용자에게 낯선 방식으로 허용할 만큼 너무 관대하다」. 그래서 **실제로 쓰이는 모양**만 받는 정규식 하나를 명세에 박았다 — 브라우저마다 다르게 굴 여지를 없앤 것이다(이 판은 Chrome 하나라 「같다」를 확인하지 못했다).
 - **왜 `tel` 에 검사가 없나** — 명세의 문장이 곧 답이다 — 전화번호 형식이 나라마다 너무 달라 **어떤 문법을 넣어도 누군가의 진짜 번호를 막는다.** 대신 `pattern` 으로 **자기 시스템의 형식**을 적으라고 한다.
 - **`search` 의 `searchbox` 역할** — 보조 기술이 「검색 칸」이라고 알릴 수 있는 재료다. 검색 **영역** 전체는 `<search>` 랜드마크([11번](../11-sectioning-and-landmarks/2-summary.md))의 몫이다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The input element」](https://html.spec.whatwg.org/multipage/input.html) 절 — Text·Search·Telephone·URL·Email·Password 상태의 **값 정화(value sanitization) 알고리즘**과 **제약 검증** 줄, 「valid email address」 정의, 그리고 [HTML-AAM](https://w3c.github.io/html-aam/)(타입별 역할). **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다.**
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 하네스는 [21번 주제](../21-form-submission-model/3-answer.md)의 `## 실행 검증` 절에 있다(같은 하네스다).\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 여섯 타입은 전부 오래된 표면이라 Baseline 조회 대상으로 따로 세지 않았다.
+**선행** — [21번 주제](../21-form-submission-model/2-summary.md)(무엇이 서버에 실리나).
+**경계** — **속성 대 프로퍼티**(`value` 속성과 `.value` 가 왜 갈리나)의 정본은 [web-api 06번](../../../web-api/06-attribute-vs-property/2-summary.md)이다 — 여기는 **타입마다 `.value` 가 어떻게 정화되나**까지. **`:invalid`·`:user-invalid` 로 칠하는 것**은 [CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md), **`pattern`·`minlength` 같은 검증 속성**은 목록의 **28번 주제**, **`autocomplete`·`inputmode`** 는 목록의 **30번 주제**다.
+
+★★★ **이 주제의 본체는 창 ②(노드 프로브 — `validity`·`checkValidity()`·`.value`)다.** 타입이 바꾸는 것은 **화면이 아니라 「무엇을 유효로 치나」와 「값을 어떻게 다듬나」** 다. ★ 근거는 **`validity.typeMismatch` 불리언**이지 `validationMessage` 문구가 아니다 — **명세는 문구를 정하지 않는다**((2)).

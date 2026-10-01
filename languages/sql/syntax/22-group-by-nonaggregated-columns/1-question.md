@@ -1,9 +1,5 @@
 # sql/22-`GROUP BY` 와 비집계 열 규칙 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,\
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.\
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-
 예시 테이블은 이 폴더의 SQL 주제들이 공유한다.\
 `emp.id` 는 기본키, `dept.name` 은 `UNIQUE NOT NULL` 이다.
 

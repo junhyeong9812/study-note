@@ -1,14 +1,5 @@
 # sql/03-WHERE 와 HAVING 의 차이 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · SELECT Statement](https://dev.mysql.com/doc/refman/8.4/en/select.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
-> **버전** — `WHERE`·`HAVING` 두 절 자체는 두 엔진 모두 오래전부터 있다. 버전에 갈리는 것은 없다.\
-> **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/). **이 주제는 01 의 그림 하나로 전부 설명된다** — `WHERE` 는 2번 칸, `HAVING` 은 4번 칸이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`WHERE` 는 사람을 떨어뜨리고 `HAVING` 은 팀을 떨어뜨린다.**
@@ -547,3 +538,11 @@ ORDER BY <정렬 키>
   예: `Table scan on <temporary>` 가 계획에 뜨면 그룹을 **다 만든 뒤** 걸렀다는 뜻이다.
 - **`UNKNOWN`** — `TRUE`/`FALSE` 가 아닌 세 번째 진릿값. `NULL` 이 비교에 끼면 나온다.\
   예: `MAX(salary)` 가 `NULL` 인 그룹에서 `NULL >= 400` 은 `UNKNOWN` 이고, `HAVING` 은 그 그룹을 버린다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · SELECT Statement](https://dev.mysql.com/doc/refman/8.4/en/select.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
+**버전** — `WHERE`·`HAVING` 두 절 자체는 두 엔진 모두 오래전부터 있다. 버전에 갈리는 것은 없다.\
+**선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/). **이 주제는 01 의 그림 하나로 전부 설명된다** — `WHERE` 는 2번 칸, `HAVING` 은 4번 칸이다.

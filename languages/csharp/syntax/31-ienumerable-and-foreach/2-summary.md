@@ -1,25 +1,5 @@
 # csharp/syntax/31 — `IEnumerable<T>` 와 `foreach` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) §13.9.5 「The foreach statement」 ·
-> [Learn — 반복문(`foreach`)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/iteration-statements)(열어서 확인: 「`foreach` 는 `IEnumerable`·`IEnumerable<T>` 를 구현한 타입에 쓴다 — **그 타입들로 한정되지 않는다**」 ·\
-> 「타입에 **공개 매개변수 없는 `GetEnumerator`** 가 있고(**확장 메서드여도 된다**), 그 반환 타입에 **공개 `Current` 속성과 `bool` 을 돌려주는 매개변수 없는 `MoveNext`** 가 있으면 된다」 ·\
-> 「`Span<T>` 는 **아무 인터페이스도 구현하지 않는다**」 · 「`null` 에 `foreach` 하면 `NullReferenceException`」).
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. **대비는 실측이다** — **javac 21.0.5** 로 같은 수정 두 줄을 던졌다((6)).
-> **버전** — `foreach`·`IEnumerable` **C# 1** · `IEnumerable<T>` **C# 2** · **확장 `GetEnumerator` C# 9**(★ `-langversion:8` 에서 **`CS8400 … extension GetEnumerator … 9.0 or greater`** · (2)) · `foreach` 반복 변수 캡처 의미 **C# 5**([28번](../28-lambdas-and-closure-capture/) (3) — **판 플래그에 안 묶였다**).
-> **경계** — ★★★ **컬렉션을 무엇으로 고르나**는 [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/) 이 정본이다 — 여기는 **`foreach` 가 그 컬렉션을 어떻게 도나**만.\
-> ★★ **열거자를 손으로 안 쓰고 만드는 법(`yield return`)** 은 [32번](../32-yield-return-iterators-and-deferred-execution/) · ★ **목록 패턴 `[1, .., 3]`** 은 [21번](../21-pattern-matching-type-property-relational-list/) — 그쪽은 `GetEnumerator` 가 아니라 **`Length`/`Count` + 인덱서**를 찾는다(21번 (2)) — **`foreach` 와 무관**하다.\
-> ★★ **순회 중 수정의 교차 갈래 대비는 인용한다** — [Java 43번](../../../java/syntax/43-iterator-and-fail-fast/)(`ConcurrentModificationException` · **끝에서 두 번째를 지우면 안 터진다**) · [Rust 38번](../../../rust/syntax/38-vec-api-capacity-retain-and-drain/)(**`E0502` — 컴파일 에러**).
-> ★★★ **본체 창은 ① IL 덤프다** — 「패턴으로 풀린다」는 **`call Bag+Walker::MoveNext`**(인터페이스 호출이 아니다)로만 보인다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** · IL **오프셋 폭** | ★★★ **진단 코드**(`CS8400` · `CS1579`) · **옵코드**(`call …Walker::MoveNext` · `constrained.` + `callvirt IDisposable::Dispose` · `ldelem.i4`) · **`.try … finally` 가 있나** |
-> | ★ **증분의 절댓값 일부**(규칙 24 — 짧게 데운 판에서 한 칸이 움직였다 · (5)) | ★★★ 할당 바이트의 **0 대 비(非)0** · **「네 판에서 갈린 줄 N / M」** · 예외 **타입과 메시지** · `_version` 이 **움직였나** |
-
 ## 이 판
 
 ```text
@@ -644,3 +624,24 @@ bac · x=1 · bac
 - ★ **`Span<T>` 의 `foreach` · `foreach (ref var x in span)`** — Learn 예제가 있다. **안 던졌다.**
 - ★ **`await foreach`(C# 8)** — `GetAsyncEnumerator` 패턴. 비동기 묶음에서.
 - ★ **`IEnumerable<T>` 로 받은 `foreach` 를 JIT 이 탈가상화해 박싱을 없애는 판** — (5)의 흔들린 칸이 그 흔적일 수 있다. **확인하지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) §13.9.5 「The foreach statement」 ·
+[Learn — 반복문(`foreach`)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/iteration-statements)(열어서 확인: 「`foreach` 는 `IEnumerable`·`IEnumerable<T>` 를 구현한 타입에 쓴다 — **그 타입들로 한정되지 않는다**」 ·\
+「타입에 **공개 매개변수 없는 `GetEnumerator`** 가 있고(**확장 메서드여도 된다**), 그 반환 타입에 **공개 `Current` 속성과 `bool` 을 돌려주는 매개변수 없는 `MoveNext`** 가 있으면 된다」 ·\
+「`Span<T>` 는 **아무 인터페이스도 구현하지 않는다**」 · 「`null` 에 `foreach` 하면 `NullReferenceException`」).
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. **대비는 실측이다** — **javac 21.0.5** 로 같은 수정 두 줄을 던졌다((6)).
+**버전** — `foreach`·`IEnumerable` **C# 1** · `IEnumerable<T>` **C# 2** · **확장 `GetEnumerator` C# 9**(★ `-langversion:8` 에서 **`CS8400 … extension GetEnumerator … 9.0 or greater`** · (2)) · `foreach` 반복 변수 캡처 의미 **C# 5**([28번](../28-lambdas-and-closure-capture/) (3) — **판 플래그에 안 묶였다**).
+**경계** — ★★★ **컬렉션을 무엇으로 고르나**는 [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/) 이 정본이다 — 여기는 **`foreach` 가 그 컬렉션을 어떻게 도나**만.\
+★★ **열거자를 손으로 안 쓰고 만드는 법(`yield return`)** 은 [32번](../32-yield-return-iterators-and-deferred-execution/) · ★ **목록 패턴 `[1, .., 3]`** 은 [21번](../21-pattern-matching-type-property-relational-list/) — 그쪽은 `GetEnumerator` 가 아니라 **`Length`/`Count` + 인덱서**를 찾는다(21번 (2)) — **`foreach` 와 무관**하다.\
+★★ **순회 중 수정의 교차 갈래 대비는 인용한다** — [Java 43번](../../../java/syntax/43-iterator-and-fail-fast/)(`ConcurrentModificationException` · **끝에서 두 번째를 지우면 안 터진다**) · [Rust 38번](../../../rust/syntax/38-vec-api-capacity-retain-and-drain/)(**`E0502` — 컴파일 에러**).
+★★★ **본체 창은 ① IL 덤프다** — 「패턴으로 풀린다」는 **`call Bag+Walker::MoveNext`**(인터페이스 호출이 아니다)로만 보인다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** · IL **오프셋 폭** | ★★★ **진단 코드**(`CS8400` · `CS1579`) · **옵코드**(`call …Walker::MoveNext` · `constrained.` + `callvirt IDisposable::Dispose` · `ldelem.i4`) · **`.try … finally` 가 있나** |
+| ★ **증분의 절댓값 일부**(규칙 24 — 짧게 데운 판에서 한 칸이 움직였다 · (5)) | ★★★ 할당 바이트의 **0 대 비(非)0** · **「네 판에서 갈린 줄 N / M」** · 예외 **타입과 메시지** · `_version` 이 **움직였나** |

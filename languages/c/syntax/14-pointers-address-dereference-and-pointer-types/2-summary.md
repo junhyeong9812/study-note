@@ -1,27 +1,5 @@
 # c/syntax/14 — 포인터: 「**값이 주소인 변수**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Pointer declarators](https://en.cppreference.com/w/c/language/pointer) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
-> **실행 검증** — 이 문서의 모든 출력·경고·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> 작업 디렉터리는 `/tmp/c13`, 소스 파일명은 언제나 `ex.c` 다 — sanitizer 출력에 경로가 박히기 때문이다.\
-> ★★ **실행 블록은 `./x 2>&1 | cat` 로 받았다** — sanitizer 는 stderr, `printf` 는 stdout 이라\
-> **터미널과 파이프에서 순서가 달라진다.** 섞이는 프로그램에는 `setvbuf(stdout, NULL, _IONBF, 0)` 를 넣어 **순서를 고정**했다.
-> ★★ **흔들리는 칸 / 안 흔들리는 칸** — 이 주제는 **주소를 찍는 것이 본문**이라 이 선언이 특히 중요하다.
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | `%p` 가 찍는 **주소값**(ASLR) · 스택 주소 | ★ 주소들 **사이의 차이**(`4`·`8`·`8`) |
-> | ASan 의 PID·`BuildId`·모듈 오프셋 | ★ **등식**(`p==&x`·`pp==&p`·`*pp==p`) |
-> | — | **`파일:줄:칸`** · 진단 본문 · 플래그 이름 · **종료 코드** · `sizeof` 값 |
->
-> **버전** — 포인터의 기본 규칙은 **C89 이후 바뀐 적이 없다.** `nullptr`(C23)은 [목록의 **19번 주제**](../19-void-pointer-null-pointer-and-null/)의 몫이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★ **경계** — 선언을 **읽는 법**(`int *p[10]` 대 `int (*p)[10]`)은 [01번 형제](../01-declaration-syntax-and-reading/)가 정본이다.\
-> **주소 공간·스택 프레임·힙**은 [`foundations/memory-management/`](../../../../cs/foundations/memory-management/) 와 [`foundations/variables-and-memory/`](../../../../cs/foundations/variables-and-memory/) 가 정본이고,\
-> 여기는 「**C 문법으로 그것을 어떻게 쓰나**」만 본다. **포인터 산술**은 [15번 형제](../15-pointer-arithmetic-and-indexing/), **배열 감쇠**는 [16번 형제](../16-array-pointer-decay-and-function-parameters/)가 정본이다.
-> 선행 — [01번 형제](../01-declaration-syntax-and-reading/).
-
 ## 한눈에 — 쉽게 말하면
 
 **포인터는 「사물함 번호를 적은 쪽지」다.**
@@ -707,3 +685,26 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 
 - ★ **지역 변수의 스택 배치 순서**(차이 `4`·`8`·`8`)는 **관찰이지 보장이 아니다.**\
   최적화 수준을 바꿔 가며 확인하지는 않았고, `-O0` 한 벌에서 다섯 판을 돌린 것이 전부다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Pointer declarators](https://en.cppreference.com/w/c/language/pointer) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
+**실행 검증** — 이 문서의 모든 출력·경고·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+작업 디렉터리는 `/tmp/c13`, 소스 파일명은 언제나 `ex.c` 다 — sanitizer 출력에 경로가 박히기 때문이다.\
+★★ **실행 블록은 `./x 2>&1 | cat` 로 받았다** — sanitizer 는 stderr, `printf` 는 stdout 이라\
+**터미널과 파이프에서 순서가 달라진다.** 섞이는 프로그램에는 `setvbuf(stdout, NULL, _IONBF, 0)` 를 넣어 **순서를 고정**했다.
+★★ **흔들리는 칸 / 안 흔들리는 칸** — 이 주제는 **주소를 찍는 것이 본문**이라 이 선언이 특히 중요하다.
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| `%p` 가 찍는 **주소값**(ASLR) · 스택 주소 | ★ 주소들 **사이의 차이**(`4`·`8`·`8`) |
+| ASan 의 PID·`BuildId`·모듈 오프셋 | ★ **등식**(`p==&x`·`pp==&p`·`*pp==p`) |
+| — | **`파일:줄:칸`** · 진단 본문 · 플래그 이름 · **종료 코드** · `sizeof` 값 |
+
+**버전** — 포인터의 기본 규칙은 **C89 이후 바뀐 적이 없다.** `nullptr`(C23)은 [목록의 **19번 주제**](../19-void-pointer-null-pointer-and-null/)의 몫이다.
+
+★★ **경계** — 선언을 **읽는 법**(`int *p[10]` 대 `int (*p)[10]`)은 [01번 형제](../01-declaration-syntax-and-reading/)가 정본이다.\
+**주소 공간·스택 프레임·힙**은 [`foundations/memory-management/`](../../../../cs/foundations/memory-management/) 와 [`foundations/variables-and-memory/`](../../../../cs/foundations/variables-and-memory/) 가 정본이고,\
+여기는 「**C 문법으로 그것을 어떻게 쓰나**」만 본다. **포인터 산술**은 [15번 형제](../15-pointer-arithmetic-and-indexing/), **배열 감쇠**는 [16번 형제](../16-array-pointer-decay-and-function-parameters/)가 정본이다.
+선행 — [01번 형제](../01-declaration-syntax-and-reading/).

@@ -1,19 +1,5 @@
 # sql/30-오프셋·경계 함수 — `LAG`·`LEAD`·`FIRST_VALUE`·`LAST_VALUE` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Window Functions](https://www.postgresql.org/docs/18/functions-window.html) · [MySQL 8.4 · Window Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/window-function-descriptions.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·**경고**는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> MySQL 의 경고는 **`SHOW WARNINGS` 로 따로 물어서** 받았다(8번) — 안 물으면 안 보인다.\
-> **버전** — 네 함수 모두 PG 8.4 · MySQL 8.0 부터. `NTH_VALUE` 도 같다.\
-> **갈리는 자리는 인자 검사**다(2·8번) — `IGNORE NULLS` 는 **양쪽 다 거부**한다(6번).\
-> **목록 README 의 30번 행은 `LAG`·`LEAD`·`FIRST_VALUE`·`NTH_VALUE` 로 적혀 있다.**\
-> 이 문서는 **`LAST_VALUE` 를 포함해 다섯 함수**를 다룬다 — 이 갈래 최대 함정이 `LAST_VALUE` 에 있기 때문이다(3번).\
-> (README 의 「무엇을 인출하게 되나」 칸도 `LAST_VALUE` 를 든다. 제목 칸만 `NTH_VALUE` 다.)\
-> **선행** — [28 프레임 — ROWS·RANGE·GROUPS](../28-window-frames-rows-range-groups/). **이 주제의 함정 셋 중 둘이 프레임에서 나온다.**
-
 ## 한눈에 — 쉽게 말하면
 
 **줄 서 있는 사람에게 「앞사람 이름」·「맨 앞사람 이름」을 물어보는 함수들이다.**
@@ -751,3 +737,16 @@ ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the ma
   `FIRST_VALUE` 는 이름과 계약이 우연히 겹쳐서 안 틀린다 — **운이 좋은 것이지 더 잘 설계된 것이 아니다.**
 - **`LAG` 로 「구간 나누기」를 한다** — 이전 행과 값이 달라진 자리에 1을 세우고 그것을 누적합하면 구간 번호가 된다.\
   `IGNORE NULLS` 우회(6번)도 이 관용구를 쓴다. **이 주제에서 던져 보지 않았다** — 형태만 적는다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Window Functions](https://www.postgresql.org/docs/18/functions-window.html) · [MySQL 8.4 · Window Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/window-function-descriptions.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·**경고**는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+MySQL 의 경고는 **`SHOW WARNINGS` 로 따로 물어서** 받았다(8번) — 안 물으면 안 보인다.\
+**버전** — 네 함수 모두 PG 8.4 · MySQL 8.0 부터. `NTH_VALUE` 도 같다.\
+**갈리는 자리는 인자 검사**다(2·8번) — `IGNORE NULLS` 는 **양쪽 다 거부**한다(6번).\
+**목록 README 의 30번 행은 `LAG`·`LEAD`·`FIRST_VALUE`·`NTH_VALUE` 로 적혀 있다.**\
+이 문서는 **`LAST_VALUE` 를 포함해 다섯 함수**를 다룬다 — 이 갈래 최대 함정이 `LAST_VALUE` 에 있기 때문이다(3번).\
+(README 의 「무엇을 인출하게 되나」 칸도 `LAST_VALUE` 를 든다. 제목 칸만 `NTH_VALUE` 다.)\
+**선행** — [28 프레임 — ROWS·RANGE·GROUPS](../28-window-frames-rows-range-groups/). **이 주제의 함정 셋 중 둘이 프레임에서 나온다.**

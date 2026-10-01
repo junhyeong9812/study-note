@@ -1,11 +1,5 @@
 # css/syntax/39 — 사용자 선호와 다크 모드: `prefers-color-scheme`·`color-scheme` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 읽거나 스크린샷 픽셀을 표본한 것**이다.\
-> **선호를 바꾼 수단은 `--blink-settings=preferredColorScheme=0`(dark) / `=1`(light)** 이다 — 다른 플래그는 안 먹었다(A5).\
-> 규칙은 [CSS Color Adjustment 1](https://drafts.csswg.org/css-color-adjust-1/) · [Media Queries 5](https://drafts.csswg.org/mediaqueries-5/) · [CSS Color 5](https://drafts.csswg.org/css-color-5/) 로 접지했다.\
-> **엔진은 Chrome 하나다.**
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -425,3 +419,10 @@ python3 -c "from PIL import Image; im=Image.open('/tmp/o.png').convert('RGB'); p
 - **`forced-colors`** — OS 의 강제 색 모드. 묻기만 하는 게 아니라 **내 색 선언을 갈아치운다.**
 - **대비비(contrast ratio)** — 두 색의 밝기 차이 비율. 색을 뒤집어도 보존되지 않는다.
 - **`--blink-settings`** — Blink 내부 설정을 직접 주는 Chrome 플래그. 공개 API 가 아니다.
+
+## 실행 환경
+
+이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 읽거나 스크린샷 픽셀을 표본한 것**이다.\
+**선호를 바꾼 수단은 `--blink-settings=preferredColorScheme=0`(dark) / `=1`(light)** 이다 — 다른 플래그는 안 먹었다(A5).\
+규칙은 [CSS Color Adjustment 1](https://drafts.csswg.org/css-color-adjust-1/) · [Media Queries 5](https://drafts.csswg.org/mediaqueries-5/) · [CSS Color 5](https://drafts.csswg.org/css-color-5/) 로 접지했다.\
+**엔진은 Chrome 하나다.**

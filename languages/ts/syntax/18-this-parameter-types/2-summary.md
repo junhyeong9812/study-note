@@ -1,12 +1,5 @@
 # ts/syntax/18 — `this` 매개변수 타입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — More on Functions: Declaring `this` in a Function](https://www.typescriptlang.org/docs/handbook/2/functions.html#declaring-this-in-a-function) ·
-> [TSConfig — `strictBindCallApply`](https://www.typescriptlang.org/tsconfig/#strictBindCallApply) ·
-> [Handbook — Utility Types: `ThisParameterType`·`OmitThisParameter`](https://www.typescriptlang.org/docs/handbook/utility-types.html).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version (sh exit=0) =====
 Version 7.0.2
@@ -17,7 +10,6 @@ v18.19.1
 > 이 배치는 `-t es2022 --strict` 를 **전부 명시**했다 — 7.0 의 기본값에 기대지 않고 배너만 보고 다시 던질 수 있게 했다.
 > `tsc` 에 **파일을 직접 주면 `tsconfig.json` 을 무시**하므로 이 블록들은 설정 파일 없이 그대로 재현된다.
 > **버전** — `this` 매개변수는 TS 2.0, `strictBindCallApply` 는 TS 3.2, `ThisParameterType`·`OmitThisParameter` 는 TS 3.3 이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## ★★★ 이 배치가 쓰는 탐침 — 「컴파일러가 타입을 말하게 하는 법」
 
@@ -668,3 +660,11 @@ export const method = {
 - **`this: void` 가 「없음」이 아닌 이유** — 함수 타입의 `this` 칸은 **매개변수처럼 반공변**이다([**17번 주제**](../17-variance-and-parameter-compatibility/)). `this` 를 안 적은 함수는 「아무 `this` 나 받는다」에 가까워서 `void` 자리에 **들어갈 수 있다.** 반대로 `this: Tick` 은 더 좁은 요구라 못 들어간다 — 4절의 연쇄 설명 줄이 그 방향을 그대로 적어 준다.
 - **`this` 타입(`this` type)은 다른 것이다** — 클래스 안에서 반환 타입으로 쓰는 `: this`(다형 `this` 타입)는 **이 주제가 아니다.** 이 배치에서는 **안 던졌다.** [목록의 **32번 주제**](../32-class-type-aspects/)에서 볼 자리다.
 - **오버로드와 `this`** — 오버로드마다 `this` 칸을 다르게 적을 수 있는지, `ThisParameterType` 이 어느 시그니처를 잡는지는 **안 던졌다.** [**16번 주제**](../16-function-types-and-overloads/)와 함께 다시 볼 자리다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — More on Functions: Declaring `this` in a Function](https://www.typescriptlang.org/docs/handbook/2/functions.html#declaring-this-in-a-function) ·
+[TSConfig — `strictBindCallApply`](https://www.typescriptlang.org/tsconfig/#strictBindCallApply) ·
+[Handbook — Utility Types: `ThisParameterType`·`OmitThisParameter`](https://www.typescriptlang.org/docs/handbook/utility-types.html).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

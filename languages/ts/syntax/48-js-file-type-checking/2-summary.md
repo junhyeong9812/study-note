@@ -1,10 +1,5 @@
 # ts/syntax/48 — JS 파일 타입 검사 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [TSConfig — `allowJs`](https://www.typescriptlang.org/tsconfig/#allowJs) · [TSConfig — `checkJs`](https://www.typescriptlang.org/tsconfig/#checkJs) · [Handbook — JSDoc Reference](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html) · [typescript-go 의 변경 목록](https://github.com/microsoft/typescript-go).
-> ★ 위는 **자리 안내용 링크**다 — 이 배치는 외부 네트워크를 쓰지 않아 **열어서 문장을 대조하지 못했다.** 특히 **「7.0 에서 JSDoc 해석이 TS 문법과 정렬되며 사라진 특례」의 공식 목록은 출처 확인 못 함**이다. 이 문서의 목록은 **5.9.3 과 7.0.2 가 갈린 칸**으로만 세웠다(2절).
-> **실행 검증** — 본판은 아래다. 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3** 을 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`**.
-
 ```text
 ===== tsc --version · "$TSC_OLD" · "$TSC_49" · "$TSC_39" --version · node · "$NODE20" --version · google-chrome --version (sh exit=0) =====
 Version 7.0.2
@@ -21,7 +16,6 @@ Google Chrome 151.0.7922.173
 > ★★ **48 은 36 에서 온다** — README 는 [**36번 주제**](../36-type-only-imports-and-exports/)(타입 전용 import·방출)를 선행으로 적었다. 여기서는 그쪽의 방출 규칙을 다시 재지 않고 **JS 파일이 방출에 들어갈 때**(3절)만 본다. JSDoc 없는 매개변수는 [**42번 주제**](../42-implicit-any-and-catch-variables/)의 `noImplicitAny` 가, JS 에서 `.d.ts` 를 뽑는 것은 [**37번 주제**](../37-writing-declaration-files/)가 이어받는다.
 > ★★ 격자 스크립트 둘은 **설정 진단이 칸에 들면 멈추고**(`exit 4`), 한쪽은 **모든 칸이 같은 값이면**, 다른 쪽은 **전부 같거나 전부 갈리면** 멈춘다. 가짜 옵션을 끼운 판으로 실제로 멈추는지 돌렸다(1절 끝).
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다. 격자 칸의 파일 이름은 늘 `c.js` 다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -792,3 +786,9 @@ o48 의 파일:
 - **`@import` 태그(5.5)와 `@satisfies`(5.0)** — JS 에서 타입만 들여오기·`satisfies` 쓰기. `@satisfies` 는 두 판 같게 통과했다(탐색 중). **격자에 넣지 않았다.**
 - **여러 파일에 걸친 CommonJS** — `exports.x = …` 를 여러 파일이 `require` 하는 모양. 탐색에서 메시지에 **절대 경로가 박혀**(`typeof import("…")`) 싣지 않았다.
 - **대형 코드베이스에서 7.0 이행 시 진단 분포** — 재지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [TSConfig — `allowJs`](https://www.typescriptlang.org/tsconfig/#allowJs) · [TSConfig — `checkJs`](https://www.typescriptlang.org/tsconfig/#checkJs) · [Handbook — JSDoc Reference](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html) · [typescript-go 의 변경 목록](https://github.com/microsoft/typescript-go).
+★ 위는 **자리 안내용 링크**다 — 이 배치는 외부 네트워크를 쓰지 않아 **열어서 문장을 대조하지 못했다.** 특히 **「7.0 에서 JSDoc 해석이 TS 문법과 정렬되며 사라진 특례」의 공식 목록은 출처 확인 못 함**이다. 이 문서의 목록은 **5.9.3 과 7.0.2 가 갈린 칸**으로만 세웠다(2절).
+**실행 검증** — 본판은 맨 위 블록이다. 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3** 을 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`**.

@@ -1,12 +1,5 @@
 # css/syntax/52 — `transition`: 전환 가능한 속성·타이밍 함수·지연·`transition-behavior` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Transitions Level 1](https://drafts.csswg.org/css-transitions-1/) (시작 조건·되돌리기·단축 순서) · [CSS Transitions Level 2](https://drafts.csswg.org/css-transitions-2/) (`transition-behavior`·`@starting-style`) · [CSS Easing Functions Level 1](https://drafts.csswg.org/css-easing-1/) (타이밍 함수). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**를 **Google Chrome 151.0.7922.173** headless 에 띄우고, **CDP 로 실제 마우스를 움직여 `:hover` 를 발생시킨 뒤** 시간대별로 `getComputedStyle` 값을 샘플링했다.\
-> 본문에 나오는 모든 시각별 값은 그 실측값이다(샘플 시각은 ±10ms 오차가 있다). **WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다.
-> **버전** — 전환 자체는 Baseline **widely**(newly 2015-09-30 → widely 2018-03-30). `linear()` 이징은 **widely**(newly 2023-12-11 → widely 2026-06-11). `transition-behavior` 와 `@starting-style` 는 **newly**(둘 다 2024-08-06, 아직 widely 아님) — 목록 README 의 지원 표와 `api.webstatus.dev` 조회 결과.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **전환 = 값이 바뀔 때 '순간이동' 대신 '걸어가게' 만드는 것이다.**
@@ -543,3 +536,10 @@ box-shadow · filter        -> 페인트부터                   (중간)
   (캐스케이드 사다리에서 애니메이션 선언이 작성자 normal 보다 위에 있고, 전환 선언은 그 위에 있다 — 두 선언이 동시에 살아 있는 경우의 우선은 [목록의 **53번**](../53-keyframes-and-animation/)이 정본이다).
 - 전환 중인 요소의 값을 JS 로 읽으면 **그 순간의 중간값**이 나온다.\
   이 문서의 모든 실측값이 그렇게 얻은 것이다 — `getComputedStyle` 은 전환의 현재 값을 돌려준다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Transitions Level 1](https://drafts.csswg.org/css-transitions-1/) (시작 조건·되돌리기·단축 순서) · [CSS Transitions Level 2](https://drafts.csswg.org/css-transitions-2/) (`transition-behavior`·`@starting-style`) · [CSS Easing Functions Level 1](https://drafts.csswg.org/css-easing-1/) (타이밍 함수). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **4개 전부**를 **Google Chrome 151.0.7922.173** headless 에 띄우고, **CDP 로 실제 마우스를 움직여 `:hover` 를 발생시킨 뒤** 시간대별로 `getComputedStyle` 값을 샘플링했다.\
+본문에 나오는 모든 시각별 값은 그 실측값이다(샘플 시각은 ±10ms 오차가 있다). **WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다.
+**버전** — 전환 자체는 Baseline **widely**(newly 2015-09-30 → widely 2018-03-30). `linear()` 이징은 **widely**(newly 2023-12-11 → widely 2026-06-11). `transition-behavior` 와 `@starting-style` 는 **newly**(둘 다 2024-08-06, 아직 widely 아님) — 목록 README 의 지원 표와 `api.webstatus.dev` 조회 결과.

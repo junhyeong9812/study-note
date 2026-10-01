@@ -1,10 +1,5 @@
 # web-api/31 — `Blob`·`File`·`FileReader` 와 오브젝트 URL: 미리보기·업로드·저장 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버는 같은 기계의 로컬 서버(A·B)이고 **바깥 인터넷으로는 요청하지 않았다.** 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [W3C File API](https://w3c.github.io/FileAPI/) 의 `File`·`slice`·read operation·blob URL store·Lifetime of blob URLs·`revokeObjectURL`·접근 제한, [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 `blob` 스킴으로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** **메모리는 재지 않았다.**
-
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
 |---|---|
 | 들여다보기 · 미리보기 · 이벤트 순서 · 올리기 · 풀기 전·뒤 · 수명 표 · 내려받기 | ★ **판에 매일 수 있는 칸** — 떠난 뒤의 `then`(bfcache 에 들어갔기 때문) |
@@ -176,3 +171,9 @@ python3 wa28b-net.py blob wa28b-31-file.html wa28b-31-dot.png
 | `<a download>` 저장 | 이름·바이트 그대로 | CDP 로 허용한 내려받기 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② 워커가 만든 URL · `MediaSource`. ③ 최상위 문서로 `blob:` 열기.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버는 같은 기계의 로컬 서버(A·B)이고 **바깥 인터넷으로는 요청하지 않았다.** 명령은 블록마다 배너로 실려 있다.\
+규칙은 [W3C File API](https://w3c.github.io/FileAPI/) 의 `File`·`slice`·read operation·blob URL store·Lifetime of blob URLs·`revokeObjectURL`·접근 제한, [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 `blob` 스킴으로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** **메모리는 재지 않았다.**

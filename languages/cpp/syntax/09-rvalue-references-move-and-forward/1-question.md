@@ -1,17 +1,5 @@
 # cpp/syntax/09 — rvalue 참조·`std::move`·`std::forward` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **예측형 위주**다 — `std::move` 가 **무엇을 하고 무엇을 안 하는지**,
-> 그리고 **한 낱말이 빠졌을 때 무엇이 조용히 달라지는지**를 맞힐 수 있는지 묻는다.
-> **환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux · `objdump`/`nm`(GNU Binutils 2.42) · ASan.
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
-> ★★★ **「복사인가 이동인가」는 읽어서 답하지 말고 로그로 센다.** 이 문서의 근거가 전부 그것이다.
-> ★ **네 번째 창은 생성자·소멸자 로그**이고, 보조로 `objdump`·`nm`·ASan 을 쓴다.
-> 선행 — [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)(값 범주) · 형제 [`07번`](../07-references-vs-pointers/)(참조) · 형제 [`01번`](../01-function-overloading-and-overload-resolution/)(오버로드 해석).
-> 이 주제는 [목록의 **11번 주제**](../11-choosing-parameter-passing/)로 이어지는 사슬의 가운데 칸이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -349,6 +337,15 @@ int main() {
 - `noexcept` 가 **계약으로서** 무엇을 뜻하는지의 정본은 목록의 몇 번인가?
 - 「그래서 매개변수를 무엇으로 받나」의 정본은 목록의 몇 번인가?
 - Rust 에서 이동 후 원본을 쓰면 무슨 일이 나는가 — C++ 와 **무엇이 다른 층**인가?
+
+## 실행 환경
+
+**환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux · `objdump`/`nm`(GNU Binutils 2.42) · ASan.
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
+★★★ **「복사인가 이동인가」는 읽어서 답하지 말고 로그로 센다.** 이 문서의 근거가 전부 그것이다.
+★ **네 번째 창은 생성자·소멸자 로그**이고, 보조로 `objdump`·`nm`·ASan 을 쓴다.
+선행 — [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)(값 범주) · 형제 [`07번`](../07-references-vs-pointers/)(참조) · 형제 [`01번`](../01-function-overloading-and-overload-resolution/)(오버로드 해석).
+이 주제는 [목록의 **11번 주제**](../11-choosing-parameter-passing/)로 이어지는 사슬의 가운데 칸이다.
 
 ## 복습 기록
 

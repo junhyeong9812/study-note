@@ -1,12 +1,5 @@
 # kotlin/syntax/49 — `Result` 와 `runCatching` — 예외를 값으로 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [34번 주제](../34-exceptions-nothing-and-try-expression/)(검사 예외 없음·`Nothing`·`try` 식)다.
-> 문항 10개 중 예측형은 6개이고, 그중 코드블록이 붙는 것은 5개다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -214,6 +207,12 @@ fun main() {
 ### 10. Rust `Result<T, E>` · Go `(값, error)` 와 (연결)
 
 - [Rust 22번](../../../rust/syntax/22-result-question-mark-and-from/)·[Go 23번](../../../go/syntax/23-error-interface-and-errors-as-values/)의 오류 값과 Kotlin `Result<T>` 는 **서명이 말해 주는 것**과 **컴파일러가 강제하는 것**에서 어떻게 다른가?
+
+## 실행 환경
+
+선행은 [34번 주제](../34-exceptions-nothing-and-try-expression/)(검사 예외 없음·`Nothing`·`try` 식)다.
+
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

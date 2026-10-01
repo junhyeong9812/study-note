@@ -1,13 +1,5 @@
 # css/syntax/25 — `flex` 단축의 세 값(`grow`/`shrink`/`basis`)과 크기 해결 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Flexible Box Layout Level 1](https://drafts.csswg.org/css-flexbox-1/) (§7 `flex` 단축·§9.7 유연 길이 해결 알고리즘·§4.5 자동 최소 크기) · [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/) (`min-width: auto` 가 무엇으로 풀리나). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 픽셀 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 잰 값이다. 계산값은 `getComputedStyle` 로 따로 읽었고 **둘을 섞지 않았다**(왜 섞으면 안 되는지는 (9)).\
-> **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 엔진 차이는 주장하지 않는다.
-> **버전** — Flexbox 는 Baseline **widely**(newly 2015-09-30 → widely 2018-03-30). 이 문서가 쓰는 표면은 전부 그 안에 있다(목록 README 의 지원 표).
-> **여기서 다루지 않는 것** — 축·정렬(`justify-*`/`align-*`)의 정본은 [24번](../24-flexbox-axes/)이다. 줄바꿈·`gap`·`order` 는 [26번](../26-flex-wrap-gap-order/), 내재적 크기 키워드는 [31번](../31-intrinsic-sizing-and-aspect-ratio/), Grid 의 `fr`·`minmax()` 는 [목록의 **27번 주제**](../27-grid-track-sizing/)다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **flex 컨테이너 = 예산이 정해진 회의. `flex` 세 값은 「기본 배정액 · 남으면 얼마씩 더 · 모자라면 얼마씩 깎아」다.**
@@ -617,3 +609,11 @@ flex: <키워드>
   「담겼나·잡혔나·이겼나」의 세 창 어디에도 안 잡히고 **`getBoundingClientRect()` 로만 드러나는 자리**다.
   그래서 **`min-width: 0`을 안 썼는데 안 터지는 코드**가 있고, 나중에 누가 `overflow` 를 지우면 그때 터진다.
 - **`flex-basis` 에도 내재적 크기 키워드를 쓸 수 있다** — `flex: 1 1 min-content` 처럼. (9)의 항목4 가 그 판이고 계산값이 `min-content` 로 남았다. 키워드의 뜻은 [31번](../31-intrinsic-sizing-and-aspect-ratio/)이 정본이다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Flexible Box Layout Level 1](https://drafts.csswg.org/css-flexbox-1/) (§7 `flex` 단축·§9.7 유연 길이 해결 알고리즘·§4.5 자동 최소 크기) · [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/) (`min-width: auto` 가 무엇으로 풀리나). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 픽셀 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 잰 값이다. 계산값은 `getComputedStyle` 로 따로 읽었고 **둘을 섞지 않았다**(왜 섞으면 안 되는지는 (9)).\
+**WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 엔진 차이는 주장하지 않는다.
+**버전** — Flexbox 는 Baseline **widely**(newly 2015-09-30 → widely 2018-03-30). 이 문서가 쓰는 표면은 전부 그 안에 있다(목록 README 의 지원 표).
+**여기서 다루지 않는 것** — 축·정렬(`justify-*`/`align-*`)의 정본은 [24번](../24-flexbox-axes/)이다. 줄바꿈·`gap`·`order` 는 [26번](../26-flex-wrap-gap-order/), 내재적 크기 키워드는 [31번](../31-intrinsic-sizing-and-aspect-ratio/), Grid 의 `fr`·`minmax()` 는 [목록의 **27번 주제**](../27-grid-track-sizing/)다.

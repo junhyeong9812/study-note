@@ -1,12 +1,5 @@
 # css/syntax/39 — 사용자 선호와 다크 모드: `prefers-color-scheme`·`color-scheme` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Media Queries Level 5](https://drafts.csswg.org/mediaqueries-5/) 의 「User Preference Media Features」 절 · [CSS Color Adjustment Module Level 1](https://drafts.csswg.org/css-color-adjust-1/) 의 「`color-scheme`」·「System Colors 의 사용」 · [CSS Color Level 5](https://drafts.csswg.org/css-color-5/) 의 `light-dark()`. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle`·`matchMedia` 로 읽거나, **스크린샷을 찍어 픽셀을 표본한 것**이다. **선호를 바꾸는 플래그는 여러 개를 던져 보고 되는 것만 썼다** — 아래 「환경 확인」이 그 기록이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — CSS 에 언어 버전은 없다. `prefers-color-scheme` 은 Baseline **widely**(2020-01-15 → 2022-07-15) · `color-scheme` 은 **widely**(2022-02-03 → 2024-08-03) · `light-dark()` 는 **newly**(2024-05-13, 아직 widely 아님) — `api.webstatus.dev` 조회 결과.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 환경 확인 — 선호를 어떻게 바꿨나
 
 이 주제는 **환경을 바꿔 가며 재는 것이 본체**라 측정 수단부터 밝힌다. **플래그를 던져 보고 되는 것만 썼다.**
@@ -499,3 +492,10 @@ html { filter: invert(1); }
 - **사용자가 고른 테마를 저장하는 패턴**에서는 루트의 `color-scheme` 과 팔레트를 **같은 곳에서** 토글해야 한다. 실측이 보여 주듯 둘은 서로를 안 따라간다.
 - **`forced-colors` 는 「무시된다」가 무섭다.** 색만으로 상태를 구별한 UI(빨간 테두리 = 오류)가 그 모드에서 **완전히 사라진다.** 아이콘·글자를 함께 쓰는 설계가 필요하고, 그 이야기는 [목록의 **60번 주제**](../60-prefers-reduced-motion/)다.
 - **선호는 OS 가 정하고 브라우저가 옮긴다.** 그래서 같은 기계에서도 브라우저마다 답이 다를 수 있고, 헤드리스 자동화에서는 **기본값이 언제나 light** 였다(실측). 스냅샷 테스트를 짤 때 이것을 모르면 「우리 다크 모드는 테스트된 적이 없다」가 된다.
+
+## 실행 환경
+
+**기준 소스** — [Media Queries Level 5](https://drafts.csswg.org/mediaqueries-5/) 의 「User Preference Media Features」 절 · [CSS Color Adjustment Module Level 1](https://drafts.csswg.org/css-color-adjust-1/) 의 「`color-scheme`」·「System Colors 의 사용」 · [CSS Color Level 5](https://drafts.csswg.org/css-color-5/) 의 `light-dark()`. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle`·`matchMedia` 로 읽거나, **스크린샷을 찍어 픽셀을 표본한 것**이다. **선호를 바꾸는 플래그는 여러 개를 던져 보고 되는 것만 썼다** — 본문 「환경 확인」이 그 기록이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — CSS 에 언어 버전은 없다. `prefers-color-scheme` 은 Baseline **widely**(2020-01-15 → 2022-07-15) · `color-scheme` 은 **widely**(2022-02-03 → 2024-08-03) · `light-dark()` 는 **newly**(2024-05-13, 아직 widely 아님) — `api.webstatus.dev` 조회 결과.

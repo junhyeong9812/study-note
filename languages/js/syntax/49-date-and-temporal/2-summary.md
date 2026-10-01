@@ -1,59 +1,5 @@
 # js/syntax/49 — `Date` 와 Temporal: 「명세가 값을 정하는 것은 ISO 형식 안쪽뿐이다 — 날짜만 쓰면 UTC, 시각을 쓰면 로컬 · 그 밖은 엔진의 휴리스틱 · 전이 시각은 tzdata · Temporal 은 이 머신에서 Chrome 151 에만 있다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 파싱 격자다** — 문자열 여섯 × 판 셋(node 18 · node 20 · Chrome 151) × `TZ` 셋(`UTC` · `Asia/Seoul` · `America/New_York`) = **54 실행 · 18 칸**, 칸마다 `getTime()` 또는 `Invalid Date`(동작 (1)). 요약 줄 둘 — 「**`TZ` 에 따라 값이 움직인 문자열 N / 6**」 · 「**세 판이 갈린 칸 N / 18**」 — 은 스크립트가 센다.
-> ★★ 보조로 **① 값 읽기 로그**(0 기반 월 · 가변성 · 뉴욕 전이 — 동작 (2)\~(4)) · **판별 블록**(Temporal 이 어느 판에 있나 — 동작 (5)) · **④ 예외의 이름 + 문구**(Temporal 의 `RangeError`·`TypeError` — 동작 (6)) · **교차 갈래 한 쌍**(Python 49 의 갭 격자 — **다시 재지 않고 인용**, 동작 (4))을 쓴다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 2026 (17판)](https://262.ecma-international.org/17.0/) — 앞 배치가 받아 둔 사본에서 읽었다. 「21.4.1.32 **Date Time String Format**」 — 「a simplification of the ISO 8601 calendar date extended format」 · 날짜만의 꼴 `YYYY` · `YYYY-MM` · `YYYY-MM-DD` · 「**A string containing out-of-bounds or nonconforming elements is not a valid instance of this format.**」 · Note 1 — `00:00` 과 `24:00` 두 자정 · 「21.4.3.2 `Date.parse`」 — 「**If the String does not conform to that format the function may fall back to any implementation-specific heuristics or implementation-specific date formats.**」 · 「**When the UTC offset representation is absent, date-only forms are interpreted as a UTC time and date-time forms are interpreted as a local time.**」 · 「21.4.1.28 `MakeDay`」 — `ym = y + floor(m / 12)` · `mn = m modulo 12` · 그 달 1일에 `dt - 1` 일 · 「21.4.1.30 `MakeFullYear`」 — 0\~99 를 1900 년대로 · 「21.4.4 `setMonth`」 — 「**Set dateObject.[[DateValue]] to u**」 · 「21.4.1.26 `UTC(t)`」 — 반복되거나 건너뛴 로컬 시각은 「**t is interpreted using the time zone offset before the transition**」 · 그 Note 의 예시 「2:30 AM on 12 March 2017 in America/New_York does not exist, but it must be interpreted as 2:30 AM UTC-05 (equivalent to 3:30 AM UTC-04)」 · 「1:30 AM on 5 November 2017 … must be interpreted as 1:30 AM UTC-04」 · 「21.4.1.25 `LocalTime`」 Note 2 — 시간대 정보는 **IANA Time Zone Database** 를 쓰라(required for time zone aware implementations) · 부록 B.2.3.1 `getYear`.
-> - ★★ **ECMA-262 2026 에 `Temporal` 객체는 없다** — 같은 사본에서 `Temporal` 은 문법 기호 이름(`TemporalDecimalFraction` 등)으로만 나온다.
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 앞 배치가 받아 둔 사본(2026-09-26). **Temporal 행의 「Expected Publication Year」 가 `2027`** 이고, 회의록 링크에 `2026-03 … temporal-for-stage-4` 가 있다. README 의 「ES2027」 표기는 이 표와 맞는다. ★ 이 문서는 **ES2027 판 명세 자체는 열지 않았다**(네트워크 없이 확인할 수 있는 것은 여기까지다).
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다. 배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1. ★★ **모든 실행이 `TZ` 를 명시**한다(배너 또는 스크립트 안 — 이 머신의 기본은 `Asia/Seoul`). 브라우저 하네스는 `TZ`·`LANG` 을 **환경에서 그대로 받는다**(하네스 소스는 머리말 끝의 판 블록 다음). ★ **현재 시각을 읽는 칸은 없다** — `new Date()`(인자 없음)·`Date.now()`·`Temporal.Now` 를 한 번도 안 불렀다.
-> ★★★ **성능은 재지 않았다.**
->
-> **버전** — `Date` 의 도입 연혁은 [history/js](../../../../history/js/) 의 몫이다(이 문서는 **ES2026 사본만** 읽었다 — 이전 판의 문장은 확인하지 않았다) · **Temporal — README 는 ES2027**(위 표와 맞음) · 판별 — node 18 · 20 에는 **기본으로 없고** V8 플래그 `--harmony-temporal`(「in progress」)이 있으며, Chrome 151 에는 **있다**(동작 (5)).
->
-> ★ 판 블록(머리말 끝)이 보이는 대로 **node 18 은 tzdata 2023c · node 20 은 2025b** 다. Chrome 의 tzdata 판은 이 하네스로 **못 읽었다**(판 문자열을 내주는 창이 없다).
->
-> **★★★ 층 — 이 문서의 결론이 기대는 네 층**
->
-> | 층 | 무엇 | 어디서 |
-> |---|---|---|
-> | ★★★ **ECMA-262** | ISO 형식 안쪽의 값 — **날짜만은 UTC · 날짜-시각은 로컬** · `24:00` · 0 기반 월과 `MakeDay` 의 넘김 · `setMonth` 가 `[[DateValue]]` 를 바꾼다 · 전이에서 **「앞」 오프셋** | 동작 (1)의 `"2026-09-26"`·`T00:00` 행 · 동작 (2) · (3) · (4)의 규칙 |
-> | ★★ **엔진(V8)** | ISO 형식 **밖**의 문자열 — 슬래시 · 영문 월 · 한 자리 월 · `02-30` · 공백 판 · `"26/09/2026"` 의 `Invalid Date` | 동작 (1)의 네 행 · 동작 (1-b) |
-> | ★★ **tzdata(IANA)** | 어느 도시가 **몇 시에 몇 시간** 바뀌나 — 뉴욕 2026-03-08 · 11-01 · 서울 `+9` | 동작 (1)의 `-9h`·`+4h` · 동작 (4) |
-> | ★★ **제안 · 호스트의 판** | Temporal — ES2026 에 없음 · 제안 표의 발행 연도 2027 · Chrome 151 에 있음 · node 는 **개발 중 플래그** | 동작 (5)·(6) |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 파싱 격자**(본체의 도구) | 6 × 3 × 3 — 「`TZ` 로 움직인 문자열 N / 6」 · 「세 판이 갈린 칸 N / 18」(동작 (1)) |
-> | ★★ **① 값 읽기 로그** | 숫자 생성자 · 공유 참조 · 뉴욕 전이 열두 벽시계(동작 (2)\~(4)) — 세 판을 **한 글자 대조**해 끝에 `yes`/`no` 로 찍는다 |
-> | ★★ **판별 블록** | Temporal 다섯 실행 — 플래그 유무 × node 둘 + Chrome · **종료 코드까지**(동작 (5)) |
-> | ★ **④ 예외 문구** | Temporal 의 `RangeError` — Chrome 과 node 플래그 판의 문구가 갈렸다(동작 (6)) |
-> | ★★ **교차 갈래 한 쌍** | Python 49 의 갭 격자 `02:30;0` — **인용만** 한다(동작 (4)) |
-> | ★★★ **「못 잰 것」 이 아니라 「창을 바꿔 물었다」**(제5의 상태) | 「`Date` 파싱은 **엔진마다** 다르다」는 이 머신에서 **잴 수 없다** — 판 셋이 **전부 V8** 이다(SpiderMonkey · JavaScriptCore 없음). 그래서 같은 질문을 **명세 문장**(ISO 밖은 implementation-specific)과 **ISO 처럼 생긴 규격 밖 문자열을 V8 이 어떻게 받나**(동작 (1-b))로 다시 물었다 — ★ 바꾼 창이 못 보는 것: **다른 엔진이 실제로 무엇을 돌려주나.** 그 칸은 여전히 비어 있다 |
-> | ★ **부적용 — 성능 · 메모리** | 이 주제는 값의 의미만 본다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★★★ **tzdata 판** — 동작 (1)의 `-9h`·`+4h` 와 동작 (4)의 전이 시각은 **규칙이 바뀌면 답이 바뀌는 칸**이다. 이 문서의 두 판(2023c · 2025b)에서는 같았다 — **같았을 뿐 보장이 아니다** | ★★★ 동작 (1)의 **ISO 행 둘의 규칙**(날짜만 UTC · 날짜-시각 로컬) · 동작 (2) · (3) · 동작 (4)의 「앞 오프셋」 규칙 — 명세 |
-> | ★★ **엔진 판** — 동작 (1)의 휴리스틱 행 넷과 `Invalid Date` 행 · 동작 (1-b)의 규격 밖 다섯 줄 | ★★ 판별 블록의 **종료 코드**(`133`) · Temporal 의 **값**(동작 (6) — 두 구현이 값에서 한 줄도 안 갈렸다) |
-> | ★ **Temporal 의 예외 문구** · node 플래그 판의 함수 목록(개발 중 구현) · 판별 블록의 판 문자열 | ★ **재대조** — 이 문서의 블록은 두 번 캡처해 **한 글자도 같았다**(흔들리는 칸도 이 두 번 사이에서는 안 움직였다) |
->
-> **선행** — [01 — 값의 종류와 `typeof`](../01-value-types-and-typeof/2-summary.md)(`Date` 는 **객체**다 — `typeof` 가 `"object"` · 동작 (3)의 공유 참조가 그 결과다) · [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)(동결은 속성까지 — 동작 (3)의 `[5]`) · [33 — 동등성 세 종류](../33-equality-three-kinds/2-summary.md)(객체의 `===` 는 동일성 — 동작 (3)의 `[6]`).
-> 뒤따르는 주제 — [50 — `Intl` 국제화 포맷](../50-intl-formatting/2-summary.md)(`Intl` — 날짜를 **글자로 찍는** 쪽. 이 문서는 `toISOString()` 과 `getTime()` 만 찍어 **로케일 포맷을 한 줄도 안 쓴다**).
->
-> ★★ **경계** — 「언제 들어왔나」는 [history/js](../../../../history/js/) 의 몫이다. 이 문서는 **값의 의미**(어느 순간이 되나 · 누가 정하나)만 다룬다. 날짜 포맷(`toLocaleString`·`Intl.DateTimeFormat`)은 50번 주제로 넘긴다.
->
-> ★★ **교차 갈래** — [Python 49 — `datetime` 과 `zoneinfo`](../../../python/syntax/49-datetime-and-zoneinfo/2-summary.md)(naive/aware · **갭 격자** `2026-03-08 02:30 America/New_York` — 같은 날 같은 시각을 이미 쟀다) · [Java 51 — `java.time` 타입](../../../java/syntax/51-java-time-types/2-summary.md)(Python 49 가 인용한 대로 **같은 입력을 만드는 순간 `03:30` 으로 민다**). ★ 이 문서는 두 갈래를 **다시 돌리지 않았다** — 동작 (4)에서 결과만 한 쌍으로 놓는다.
-
 ```text
 ===== ./js48b-versions.sh (exit=0) =====
 node 18.19.1  v8 10.2.154.26-node.28  icu 74.2  tz 2023c  unicode 15.1  cldr 44.1
@@ -289,7 +235,7 @@ cells (string x TZ) where the three runtimes differ: 0 / 18
 - ★★★ **`"2026-09-26"` 만 세 `TZ` 모두 `+0h`** — 날짜만의 ISO 꼴은 **UTC** 로 읽는다(명세 「date-only forms are interpreted as a UTC time」). **`T00:00` 을 붙이는 순간 로컬**이 된다(「date-time forms are interpreted as a local time」) — 같은 「그날 자정」 이 서울에서 **9시간** 갈린다.
 - ★★★ **`strings whose value changes with TZ: … 4 / 6`**(세 판 다) — 움직이지 않은 둘은 `"2026-09-26"`(UTC 고정)과 `"26/09/2026"`(`Invalid Date`).
 - ★★ **ISO 가 아닌 셋**(`/` · 영문 월 · 한 자리 월 `9`)은 **명세가 값을 안 정한다** — 「may fall back to any implementation-specific heuristics」. V8 은 셋 다 **로컬 자정**으로 읽었다. ★ 특히 `"2026-9-26"` 은 ISO 꼴과 **한 글자** 차이인데 **UTC 가 아니라 로컬**이다 — 월을 두 자리로 안 쓰면 입구가 바뀐다.
-- ★★★ **`cells (string x TZ) where the three runtimes differ: 0 / 18`** — 그러나 이것은 「파싱이 안정적이다」의 근거가 아니다. **세 판 모두 V8** 이다(node 18 = V8 10.2 · node 20 = V8 11.3 · Chrome 151). 「엔진마다 다르다」는 이 격자로 **원리상 안 보인다** — 머리말의 제5의 상태.
+- ★★★ **`cells (string x TZ) where the three runtimes differ: 0 / 18`** — 그러나 이것은 「파싱이 안정적이다」의 근거가 아니다. **세 판 모두 V8** 이다(node 18 = V8 10.2 · node 20 = V8 11.3 · Chrome 151). 「엔진마다 다르다」는 이 격자로 **원리상 안 보인다** — 「실행 환경」의 제5의 상태.
 
 ### (1-b) ★★ ISO 처럼 생긴 규격 밖 문자열 — V8 은 어떻게 받나
 
@@ -923,3 +869,56 @@ node 18 판은 **엔진이 죽었고**, node 20 판은 문구에 V8 소스 줄 �
 - **`Date` 의 「전이 앞」 규칙이 들어온 판** — ES2026 사본의 문장만 확인했다. 이전 판은 열지 않았다.
 - **Temporal 의 달력(`calendar`)** — 이 문서는 ISO 달력만 썼다.
 - **폴리필** — npm 설치 금지라 돌리지 않았다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 파싱 격자다** — 문자열 여섯 × 판 셋(node 18 · node 20 · Chrome 151) × `TZ` 셋(`UTC` · `Asia/Seoul` · `America/New_York`) = **54 실행 · 18 칸**, 칸마다 `getTime()` 또는 `Invalid Date`(동작 (1)). 요약 줄 둘 — 「**`TZ` 에 따라 값이 움직인 문자열 N / 6**」 · 「**세 판이 갈린 칸 N / 18**」 — 은 스크립트가 센다.
+★★ 보조로 **① 값 읽기 로그**(0 기반 월 · 가변성 · 뉴욕 전이 — 동작 (2)\~(4)) · **판별 블록**(Temporal 이 어느 판에 있나 — 동작 (5)) · **④ 예외의 이름 + 문구**(Temporal 의 `RangeError`·`TypeError` — 동작 (6)) · **교차 갈래 한 쌍**(Python 49 의 갭 격자 — **다시 재지 않고 인용**, 동작 (4))을 쓴다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 2026 (17판)](https://262.ecma-international.org/17.0/) — 앞 배치가 받아 둔 사본에서 읽었다. 「21.4.1.32 **Date Time String Format**」 — 「a simplification of the ISO 8601 calendar date extended format」 · 날짜만의 꼴 `YYYY` · `YYYY-MM` · `YYYY-MM-DD` · 「**A string containing out-of-bounds or nonconforming elements is not a valid instance of this format.**」 · Note 1 — `00:00` 과 `24:00` 두 자정 · 「21.4.3.2 `Date.parse`」 — 「**If the String does not conform to that format the function may fall back to any implementation-specific heuristics or implementation-specific date formats.**」 · 「**When the UTC offset representation is absent, date-only forms are interpreted as a UTC time and date-time forms are interpreted as a local time.**」 · 「21.4.1.28 `MakeDay`」 — `ym = y + floor(m / 12)` · `mn = m modulo 12` · 그 달 1일에 `dt - 1` 일 · 「21.4.1.30 `MakeFullYear`」 — 0\~99 를 1900 년대로 · 「21.4.4 `setMonth`」 — 「**Set dateObject.[[DateValue]] to u**」 · 「21.4.1.26 `UTC(t)`」 — 반복되거나 건너뛴 로컬 시각은 「**t is interpreted using the time zone offset before the transition**」 · 그 Note 의 예시 「2:30 AM on 12 March 2017 in America/New_York does not exist, but it must be interpreted as 2:30 AM UTC-05 (equivalent to 3:30 AM UTC-04)」 · 「1:30 AM on 5 November 2017 … must be interpreted as 1:30 AM UTC-04」 · 「21.4.1.25 `LocalTime`」 Note 2 — 시간대 정보는 **IANA Time Zone Database** 를 쓰라(required for time zone aware implementations) · 부록 B.2.3.1 `getYear`.
+- ★★ **ECMA-262 2026 에 `Temporal` 객체는 없다** — 같은 사본에서 `Temporal` 은 문법 기호 이름(`TemporalDecimalFraction` 등)으로만 나온다.
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 앞 배치가 받아 둔 사본(2026-09-26). **Temporal 행의 「Expected Publication Year」 가 `2027`** 이고, 회의록 링크에 `2026-03 … temporal-for-stage-4` 가 있다. README 의 「ES2027」 표기는 이 표와 맞는다. ★ 이 문서는 **ES2027 판 명세 자체는 열지 않았다**(네트워크 없이 확인할 수 있는 것은 여기까지다).
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다. 배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1. ★★ **모든 실행이 `TZ` 를 명시**한다(배너 또는 스크립트 안 — 이 머신의 기본은 `Asia/Seoul`). 브라우저 하네스는 `TZ`·`LANG` 을 **환경에서 그대로 받는다**(하네스 소스는 맨 위 부분 끝의 판 블록 다음). ★ **현재 시각을 읽는 칸은 없다** — `new Date()`(인자 없음)·`Date.now()`·`Temporal.Now` 를 한 번도 안 불렀다.
+★★★ **성능은 재지 않았다.**
+
+**버전** — `Date` 의 도입 연혁은 [history/js](../../../../history/js/) 의 몫이다(이 문서는 **ES2026 사본만** 읽었다 — 이전 판의 문장은 확인하지 않았다) · **Temporal — README 는 ES2027**(위 표와 맞음) · 판별 — node 18 · 20 에는 **기본으로 없고** V8 플래그 `--harmony-temporal`(「in progress」)이 있으며, Chrome 151 에는 **있다**(동작 (5)).
+
+★ 판 블록(맨 위 부분 끝)이 보이는 대로 **node 18 은 tzdata 2023c · node 20 은 2025b** 다. Chrome 의 tzdata 판은 이 하네스로 **못 읽었다**(판 문자열을 내주는 창이 없다).
+
+**★★★ 층 — 이 문서의 결론이 기대는 네 층**
+
+| 층 | 무엇 | 어디서 |
+|---|---|---|
+| ★★★ **ECMA-262** | ISO 형식 안쪽의 값 — **날짜만은 UTC · 날짜-시각은 로컬** · `24:00` · 0 기반 월과 `MakeDay` 의 넘김 · `setMonth` 가 `[[DateValue]]` 를 바꾼다 · 전이에서 **「앞」 오프셋** | 동작 (1)의 `"2026-09-26"`·`T00:00` 행 · 동작 (2) · (3) · (4)의 규칙 |
+| ★★ **엔진(V8)** | ISO 형식 **밖**의 문자열 — 슬래시 · 영문 월 · 한 자리 월 · `02-30` · 공백 판 · `"26/09/2026"` 의 `Invalid Date` | 동작 (1)의 네 행 · 동작 (1-b) |
+| ★★ **tzdata(IANA)** | 어느 도시가 **몇 시에 몇 시간** 바뀌나 — 뉴욕 2026-03-08 · 11-01 · 서울 `+9` | 동작 (1)의 `-9h`·`+4h` · 동작 (4) |
+| ★★ **제안 · 호스트의 판** | Temporal — ES2026 에 없음 · 제안 표의 발행 연도 2027 · Chrome 151 에 있음 · node 는 **개발 중 플래그** | 동작 (5)·(6) |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 파싱 격자**(본체의 도구) | 6 × 3 × 3 — 「`TZ` 로 움직인 문자열 N / 6」 · 「세 판이 갈린 칸 N / 18」(동작 (1)) |
+| ★★ **① 값 읽기 로그** | 숫자 생성자 · 공유 참조 · 뉴욕 전이 열두 벽시계(동작 (2)\~(4)) — 세 판을 **한 글자 대조**해 끝에 `yes`/`no` 로 찍는다 |
+| ★★ **판별 블록** | Temporal 다섯 실행 — 플래그 유무 × node 둘 + Chrome · **종료 코드까지**(동작 (5)) |
+| ★ **④ 예외 문구** | Temporal 의 `RangeError` — Chrome 과 node 플래그 판의 문구가 갈렸다(동작 (6)) |
+| ★★ **교차 갈래 한 쌍** | Python 49 의 갭 격자 `02:30;0` — **인용만** 한다(동작 (4)) |
+| ★★★ **「못 잰 것」 이 아니라 「창을 바꿔 물었다」**(제5의 상태) | 「`Date` 파싱은 **엔진마다** 다르다」는 이 머신에서 **잴 수 없다** — 판 셋이 **전부 V8** 이다(SpiderMonkey · JavaScriptCore 없음). 그래서 같은 질문을 **명세 문장**(ISO 밖은 implementation-specific)과 **ISO 처럼 생긴 규격 밖 문자열을 V8 이 어떻게 받나**(동작 (1-b))로 다시 물었다 — ★ 바꾼 창이 못 보는 것: **다른 엔진이 실제로 무엇을 돌려주나.** 그 칸은 여전히 비어 있다 |
+| ★ **부적용 — 성능 · 메모리** | 이 주제는 값의 의미만 본다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★★★ **tzdata 판** — 동작 (1)의 `-9h`·`+4h` 와 동작 (4)의 전이 시각은 **규칙이 바뀌면 답이 바뀌는 칸**이다. 이 문서의 두 판(2023c · 2025b)에서는 같았다 — **같았을 뿐 보장이 아니다** | ★★★ 동작 (1)의 **ISO 행 둘의 규칙**(날짜만 UTC · 날짜-시각 로컬) · 동작 (2) · (3) · 동작 (4)의 「앞 오프셋」 규칙 — 명세 |
+| ★★ **엔진 판** — 동작 (1)의 휴리스틱 행 넷과 `Invalid Date` 행 · 동작 (1-b)의 규격 밖 다섯 줄 | ★★ 판별 블록의 **종료 코드**(`133`) · Temporal 의 **값**(동작 (6) — 두 구현이 값에서 한 줄도 안 갈렸다) |
+| ★ **Temporal 의 예외 문구** · node 플래그 판의 함수 목록(개발 중 구현) · 판별 블록의 판 문자열 | ★ **재대조** — 이 문서의 블록은 두 번 캡처해 **한 글자도 같았다**(흔들리는 칸도 이 두 번 사이에서는 안 움직였다) |
+
+**선행** — [01 — 값의 종류와 `typeof`](../01-value-types-and-typeof/2-summary.md)(`Date` 는 **객체**다 — `typeof` 가 `"object"` · 동작 (3)의 공유 참조가 그 결과다) · [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)(동결은 속성까지 — 동작 (3)의 `[5]`) · [33 — 동등성 세 종류](../33-equality-three-kinds/2-summary.md)(객체의 `===` 는 동일성 — 동작 (3)의 `[6]`).
+뒤따르는 주제 — [50 — `Intl` 국제화 포맷](../50-intl-formatting/2-summary.md)(`Intl` — 날짜를 **글자로 찍는** 쪽. 이 문서는 `toISOString()` 과 `getTime()` 만 찍어 **로케일 포맷을 한 줄도 안 쓴다**).
+
+★★ **경계** — 「언제 들어왔나」는 [history/js](../../../../history/js/) 의 몫이다. 이 문서는 **값의 의미**(어느 순간이 되나 · 누가 정하나)만 다룬다. 날짜 포맷(`toLocaleString`·`Intl.DateTimeFormat`)은 50번 주제로 넘긴다.
+
+★★ **교차 갈래** — [Python 49 — `datetime` 과 `zoneinfo`](../../../python/syntax/49-datetime-and-zoneinfo/2-summary.md)(naive/aware · **갭 격자** `2026-03-08 02:30 America/New_York` — 같은 날 같은 시각을 이미 쟀다) · [Java 51 — `java.time` 타입](../../../java/syntax/51-java-time-types/2-summary.md)(Python 49 가 인용한 대로 **같은 입력을 만드는 순간 `03:30` 으로 민다**). ★ 이 문서는 두 갈래를 **다시 돌리지 않았다** — 동작 (4)에서 결과만 한 쌍으로 놓는다.

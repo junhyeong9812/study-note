@@ -1,21 +1,5 @@
 # kotlin/syntax/26 — `value class`(인라인 클래스) — 언제 박싱되나 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Inline value classes](https://kotlinlang.org/docs/inline-classes.html) · [Java 에서 Kotlin 호출하기 — Inline value classes](https://kotlinlang.org/docs/java-to-kotlin-interop.html#inline-value-classes) · [KEEP — Inline classes](https://github.com/Kotlin/KEEP/blob/master/proposals/inline-classes.md).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 8회(컴파일 실패 2벌) · `javac` 2회(1벌은 실패가 결과) · `java` 5회 · `javap` 7회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
-> **버전** — `value class` 는 **Stable 1.5** 다(그 전 판의 `inline class` 가 개명된 것 — 1.4 이하는 `inline class` 로 적고 실험이었다). 이 판에서 버전으로 갈리는 항목은 **`@JvmExposeBoxed`** 하나다 — **2.4.20 에서도 옵트인이 필요하다**((5)).
-> **경계** — 「값을 값으로」라는 논지는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §4 가 정본이고, 여기는 **박싱이 사라지는 조건과 다시 살아나는 조건**만 본다.\
-> 생성되는 `equals`/`toString` 의 모양은 [22번 주제](../22-data-class-generated-members/)(`data class`)와 같은 집안이다 — 거기서 본 것은 결론만 쓴다.\
-> 제네릭이 `Object` 로 지워지는 원리는 [12번 주제](../12-reified-type-parameters/)가 정본이다. 여기서는 **그 소거가 박싱을 부르는 자리**만 센다.\
-> `@JvmName` 을 포함한 상호운용 애너테이션 전부는 [목록의 **39번 주제**](../39-java-interop-annotations/), `==`/`===` 규약은 [목록의 **32번 주제**](../32-equality-and-equals-contract/)다.\
-> ★ **29번과 짝이다** — `value class` 는 **새 타입을 만들고** [29번 주제](../29-type-aliases-and-nested-type-aliases/)(`typealias`)는 **안 만든다.**
-> **대비** — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **26번**([`26-orphan-rule-and-newtype/`](../../../rust/syntax/26-orphan-rule-and-newtype/)) — Rust 의 newtype 은 **박싱이라는 개념 자체가 없다**(그쪽 (3)이 `size_of` 로 잰 결론).\
-> C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **3번**([`03-boxing-and-unboxing/`](../../../csharp/syntax/03-boxing-and-unboxing/)) — C# `struct` 는 **제네릭에서는 박싱되지 않고** 인터페이스로 올릴 때 박싱된다(그쪽이 할당 바이트로 잰 결론).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **본체는 셋째 창이다** — 「`javap -c` 에서 **`box-impl` 호출이 나타나는가**를 자리마다 세는 창」.
 언어는 「`value class` 는 값처럼 동작한다」까지만 약속한다. **어디서 상자에 담기는가는 JVM 백엔드가 정하고**, 그것은 바이트코드에만 적혀 있다.
 
@@ -756,3 +740,19 @@ X [example.com, test.org]
 - **왜 해시를 붙였나** — (1)의 descriptor 가 답이다. 알맹이로 내리는 순간 `f(UserId)` 와 `f(Long)` 이 **JVM 에서 구별이 안 된다.** 이름을 안 바꾸면 두 메서드가 한 클래스 파일에 공존할 수 없다. 부수 효과로 Java 에서 못 부르게 되는데, (5)의 `named#-1` 이 보여 주듯 **그 부수 효과가 `init` 을 건너뛴 값이 들어오는 길을 막고 있었다.**
 - **C# `struct` 와 정반대 자리** — C# 는 제네릭이 **값 타입마다 코드를 따로 만들어** `List<int>` 에 박싱이 없다([C# 03번](../../../csharp/syntax/03-boxing-and-unboxing/)이 잰 결론). Kotlin(JVM)은 제네릭이 **`Object` 로 지워지므로** `List<Meters>` 가 **바로 박싱 자리**다((2)의 `site5`). **같은 「값 타입」이 제네릭에서 반대로 간다** — 차이는 언어가 아니라 **런타임의 제네릭 모델**에서 온다.
 - **Rust newtype 은 이 질문 자체가 없다** — 제네릭이 **단형화**(타입마다 코드 생성)되므로 `Vec<Meters>` 도 `f64` 를 그대로 담는다([Rust 26번](../../../rust/syntax/26-orphan-rule-and-newtype/)이 `size_of` 로 같은 크기임을 쟀다). Kotlin 의 `value class` 는 **JVM 위에서 newtype 을 흉내 낸 것**이라 **흉내가 벗겨지는 자리**가 생긴다 — 그것이 (2)의 네 자리다.
+
+## 실행 환경
+
+**기준 소스** — [Inline value classes](https://kotlinlang.org/docs/inline-classes.html) · [Java 에서 Kotlin 호출하기 — Inline value classes](https://kotlinlang.org/docs/java-to-kotlin-interop.html#inline-value-classes) · [KEEP — Inline classes](https://github.com/Kotlin/KEEP/blob/master/proposals/inline-classes.md).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 8회(컴파일 실패 2벌) · `javac` 2회(1벌은 실패가 결과) · `java` 5회 · `javap` 7회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
+**버전** — `value class` 는 **Stable 1.5** 다(그 전 판의 `inline class` 가 개명된 것 — 1.4 이하는 `inline class` 로 적고 실험이었다). 이 판에서 버전으로 갈리는 항목은 **`@JvmExposeBoxed`** 하나다 — **2.4.20 에서도 옵트인이 필요하다**((5)).
+**경계** — 「값을 값으로」라는 논지는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §4 가 정본이고, 여기는 **박싱이 사라지는 조건과 다시 살아나는 조건**만 본다.\
+생성되는 `equals`/`toString` 의 모양은 [22번 주제](../22-data-class-generated-members/)(`data class`)와 같은 집안이다 — 거기서 본 것은 결론만 쓴다.\
+제네릭이 `Object` 로 지워지는 원리는 [12번 주제](../12-reified-type-parameters/)가 정본이다. 여기서는 **그 소거가 박싱을 부르는 자리**만 센다.\
+`@JvmName` 을 포함한 상호운용 애너테이션 전부는 [목록의 **39번 주제**](../39-java-interop-annotations/), `==`/`===` 규약은 [목록의 **32번 주제**](../32-equality-and-equals-contract/)다.\
+★ **29번과 짝이다** — `value class` 는 **새 타입을 만들고** [29번 주제](../29-type-aliases-and-nested-type-aliases/)(`typealias`)는 **안 만든다.**
+**대비** — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **26번**([`26-orphan-rule-and-newtype/`](../../../rust/syntax/26-orphan-rule-and-newtype/)) — Rust 의 newtype 은 **박싱이라는 개념 자체가 없다**(그쪽 (3)이 `size_of` 로 잰 결론).\
+C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **3번**([`03-boxing-and-unboxing/`](../../../csharp/syntax/03-boxing-and-unboxing/)) — C# `struct` 는 **제네릭에서는 박싱되지 않고** 인터페이스로 올릴 때 박싱된다(그쪽이 할당 바이트로 잰 결론).

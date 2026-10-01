@@ -1,15 +1,5 @@
 # kotlin/syntax/47 — `Sequence` — 지연 평가, 언제 `List` 보다 싼가 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Sequences](https://kotlinlang.org/docs/sequences.html)(만들기 `sequenceOf`·`asSequence`·`generateSequence`·`sequence { }` · 연산의 **상태 없음/상태 있음 · 중간/끝** 분류 · 처리 순서) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((3)(5)).
-> **실행 검증** — 이 문서의 모든 출력·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 6회 · `java` 6회 · `javap` 1회 · stdlib 소스 jar 에서 발췌 16곳.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「호출을 줄인 칸 N / M」은 격자 프로그램이 스스로 센 것**이다.
-> **버전** — `Sequence`·`asSequence`·`generateSequence`·`constrainOnce` 는 **1.0**. `sequence { }` 빌더는 stdlib 소스에 **`@SinceKotlin("1.3")`**(이 판에서 읽었고 **발췌는 선언 한 줄만** — (5)).
-> **경계** — ★★ **결과 타입**(`Sequence` 의 연산이 대부분 `Sequence` 로 남고 `unzip`·`associate*` 에서 끝난다)은 [42번 주제](../42-transformations-map-flatmap-associate-zip/) (1)이 격자로 쟀다 — 여기서는 인용만 한다. `List.sorted()` 가 `Arrays$ArrayList` 인 것은 [45번 주제](../45-sorting-and-partial-operations/) (1), `toList()` 가 원소 수로 클래스를 고르는 것은 [41번 주제](../41-collection-creation-and-copying/) (2)가 정본이다.\
-> ★★ **같은 지연 평가의 Java 판**(`Stream` — 원소별 처리 · `sorted` 에서 막힘)은 [Java 45번](../../../java/syntax/45-intermediate-operations/)이, 만들기와 「한 번만 쓸 수 있다」는 [Java 44번](../../../java/syntax/44-stream-creation/)이, 끝 연산은 [Java 46번](../../../java/syntax/46-terminal-operations/)이 정본이다. **C# 의 지연 실행과 「두 번 열거하면 두 번 돈다」** 는 [C# 32번](../../../csharp/syntax/32-yield-return-iterators-and-deferred-execution/)이 쟀다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**호출 수 격자 — 사슬 다섯 × (`List` · `asSequence()`) × 입력 크기(10 · 1000) → 람다 호출 수 · 끝 단계 앞에서 만들어진 컬렉션 수**」. 「싸다」를 **시간으로 재지 않는다** — 시간은 판을 타고, **호출 수와 컬렉션 수는 결정적**이다.
 
 ## 이 주제가 쓰는 세 층
@@ -667,3 +657,13 @@ fib     [0, 1, 1, 2, 3, 5, 8, 13]
 - **할당 바이트** — 래퍼·반복자·중간 리스트의 바이트를 JFR 이나 할당 계수기로 세면 (4)의 저울을 수치로 볼 수 있다. 이 판은 **재지 않았다.**
 - **`sortedBy`·`sortedDescending` 의 `Sequence` 판** — 같은 `_stateful_` 이고 같은 방식으로 모을 것으로 보이지만 **발췌하지 않았다.**
 - **`Sequence.chunked`·`windowed`** — 상태 있음이면서 **창 크기만큼만** 모은다. [45번 주제](../45-sorting-and-partial-operations/)의 `List` 판과 견줄 자리 — 돌리지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [Sequences](https://kotlinlang.org/docs/sequences.html)(만들기 `sequenceOf`·`asSequence`·`generateSequence`·`sequence { }` · 연산의 **상태 없음/상태 있음 · 중간/끝** 분류 · 처리 순서) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((3)(5)).
+**실행 검증** — 이 문서의 모든 출력·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 6회 · `java` 6회 · `javap` 1회 · stdlib 소스 jar 에서 발췌 16곳.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「호출을 줄인 칸 N / M」은 격자 프로그램이 스스로 센 것**이다.
+**버전** — `Sequence`·`asSequence`·`generateSequence`·`constrainOnce` 는 **1.0**. `sequence { }` 빌더는 stdlib 소스에 **`@SinceKotlin("1.3")`**(이 판에서 읽었고 **발췌는 선언 한 줄만** — (5)).
+**경계** — ★★ **결과 타입**(`Sequence` 의 연산이 대부분 `Sequence` 로 남고 `unzip`·`associate*` 에서 끝난다)은 [42번 주제](../42-transformations-map-flatmap-associate-zip/) (1)이 격자로 쟀다 — 여기서는 인용만 한다. `List.sorted()` 가 `Arrays$ArrayList` 인 것은 [45번 주제](../45-sorting-and-partial-operations/) (1), `toList()` 가 원소 수로 클래스를 고르는 것은 [41번 주제](../41-collection-creation-and-copying/) (2)가 정본이다.\
+★★ **같은 지연 평가의 Java 판**(`Stream` — 원소별 처리 · `sorted` 에서 막힘)은 [Java 45번](../../../java/syntax/45-intermediate-operations/)이, 만들기와 「한 번만 쓸 수 있다」는 [Java 44번](../../../java/syntax/44-stream-creation/)이, 끝 연산은 [Java 46번](../../../java/syntax/46-terminal-operations/)이 정본이다. **C# 의 지연 실행과 「두 번 열거하면 두 번 돈다」** 는 [C# 32번](../../../csharp/syntax/32-yield-return-iterators-and-deferred-execution/)이 쟀다.

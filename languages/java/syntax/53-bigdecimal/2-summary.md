@@ -1,15 +1,5 @@
 # java/syntax/53 — `BigDecimal`: 스케일·반올림·`equals` vs `compareTo` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Java SE 21 `BigDecimal` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html) · [`RoundingMode`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/RoundingMode.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/math/BigDecimal.java`(`lib/src.zip`).
-> **실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 프로그램 5개를 **17.0.13 · 21.0.5 · 25.0.1** 에서 모두 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
-> 예외 메시지 여섯 가지는 **실제로 던져 보고** 그대로 옮겼다.
-> **버전** — `BigDecimal` 은 Java 1.1, `RoundingMode` enum 과 `divide(BigDecimal, RoundingMode)` 는 **5**부터.
-> 이 문서에서 버전에 갈리는 동작은 **찾지 못했다**(세 JDK 출력 동일).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> 선행: [02 수치 연산](../02-numeric-operations/).
-
 ## 한눈에 — 쉽게 말하면
 
 **`BigDecimal` 은 숫자가 아니라 「측정 기록」이다** — 잰 값과 **어느 눈금까지 쟀는지**를 함께 들고 다닌다.\
@@ -622,3 +612,14 @@ Long.MAX_VALUE       = 9223372036854775807
 
 - **`BigDecimal` 은 불변**이다. `setScale`·`add` 는 전부 새 객체를 반환한다 —\
   [35번 주제](../35-string/)의 `String` 과 같은 설계이고, 같은 실수(반환값을 안 받는 것)가 나온다.
+
+## 실행 환경
+
+**기준 소스** — [Java SE 21 `BigDecimal` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/BigDecimal.html) · [`RoundingMode`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/math/RoundingMode.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/math/BigDecimal.java`(`lib/src.zip`).
+**실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+프로그램 5개를 **17.0.13 · 21.0.5 · 25.0.1** 에서 모두 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
+예외 메시지 여섯 가지는 **실제로 던져 보고** 그대로 옮겼다.
+**버전** — `BigDecimal` 은 Java 1.1, `RoundingMode` enum 과 `divide(BigDecimal, RoundingMode)` 는 **5**부터.
+이 문서에서 버전에 갈리는 동작은 **찾지 못했다**(세 JDK 출력 동일).
+
+선행: [02 수치 연산](../02-numeric-operations/).

@@ -1,17 +1,5 @@
 # rust/syntax/38 — `Vec<T>` API와 용량·`retain`·`drain` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `Vec`](https://doc.rust-lang.org/std/vec/struct.Vec.html)(Guarantees 절 · `swap_remove`·`remove`·`retain`·`drain`·`extract_if`·`dedup`·`truncate`·`clear`·`split_off`·`reserve`·`reserve_exact`·`shrink_to_fit`) ·
-> [std — `std::collections` 모듈 문서](https://doc.rust-lang.org/std/collections/index.html)(Performance · Cost of Collection Operations).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> **`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다. C++ 대비는 `g++ 13.3.0`(`-std=c++20`, AddressSanitizer).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
-> ★★★ **이 문서는 속도를 한 번도 재지 않았다.** 센 것은 **`capacity()`·`len()`·`size_of`** 뿐이고, 복잡도(`O(1)`·`O(n)`)는 **std 문서의 문장을 인용**했을 뿐이다.
-> **버전** — `Vec::extract_if` 는 **1.87.0** 부터 안정이다(아래 블록). 나머지 메서드는 1.0 부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ```text
 ===== rustc --version =====
 rustc 1.92.0 (ded5c06cf 2025-12-08)
@@ -602,3 +590,15 @@ fn main() {
 - **`mem::take(&mut v)`** — 원본 자리에 빈 `Vec` 을 두고 **내용과 용량을 통째로** 가져간다(std 의 `split_off` 문서가 가리킨다). [목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/).
 - **`try_reserve`** — 할당 실패를 **패닉 대신 `Result`** 로 받는다(이 문서는 던지지 않았다).
 - **`splice`** — 범위를 떼어 내고 **다른 이터레이터로 채워 넣기.** `drain` 의 짝이다.
+
+## 실행 환경
+
+**기준 소스** — [std — `Vec`](https://doc.rust-lang.org/std/vec/struct.Vec.html)(Guarantees 절 · `swap_remove`·`remove`·`retain`·`drain`·`extract_if`·`dedup`·`truncate`·`clear`·`split_off`·`reserve`·`reserve_exact`·`shrink_to_fit`) ·
+[std — `std::collections` 모듈 문서](https://doc.rust-lang.org/std/collections/index.html)(Performance · Cost of Collection Operations).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+**`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다. C++ 대비는 `g++ 13.3.0`(`-std=c++20`, AddressSanitizer).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
+★★★ **이 문서는 속도를 한 번도 재지 않았다.** 센 것은 **`capacity()`·`len()`·`size_of`** 뿐이고, 복잡도(`O(1)`·`O(n)`)는 **std 문서의 문장을 인용**했을 뿐이다.
+**버전** — `Vec::extract_if` 는 **1.87.0** 부터 안정이다(본문의 블록). 나머지 메서드는 1.0 부터다.

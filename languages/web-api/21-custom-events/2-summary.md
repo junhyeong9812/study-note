@@ -1,13 +1,5 @@
 # web-api/21 — 커스텀 이벤트: `CustomEvent`·`dispatchEvent`·`detail`·`bubbles`/`composed` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ④ 를 늘린 「닿은 자리 격자」다** — 그림자 안에서 던진 `CustomEvent` 가 **어느 자리에서 불렸나**와 그 자리에서 본 **`target` · `composedPath().length`** 를 `bubbles` × `composed` × `open`/`closed` 로 센다. 여기에 **「디스패치가 동기」를 호출 순서 로그로** 얹는다.\
-> **기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 `CustomEvent`(「`detail` 은 초기화된 값을 돌려준다」) · `dispatchEvent()`(「dispatch flag 가 서 있거나 initialized flag 가 없으면 `InvalidStateError`」 · `isTrusted` 를 `false` 로) · 「dispatch」·「inner invoke」(리스너가 던지면 **report exception**) 절. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 대부분 스크립트가 던진 합성 이벤트이고, (5)의 견줌 한 줄만 **CDP 로 넣은 진짜 클릭**이다. 하네스는 [20번 주제](../20-listener-lifetime/2-summary.md)의 (1)에 있다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — ★★★ **[12번 주제](../12-shadow-dom/2-summary.md)의 (14)·(15)** 가 재타기팅과 **`bubbles`×`composed` 두 스위치**(`Event` 로 받은 자리만)를 이미 쟀고, `closed` 에서 `composedPath` 가 **7칸 → 5칸**이 되는 것도 거기서 봤다. **[18번 주제](../18-event-delegation/2-summary.md)의 (6)** 이 `composed:false` 합성 이벤트가 **위임 리스너에 안 닿는 것**을 쟀다. **[16번 주제](../16-event-propagation-phases/2-summary.md)의 (7)** 이 생성자의 `bubbles` 기본값이 `false` 인 것을, **[17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md)의 (6)** 이 `dispatchEvent` 의 반환값을 쟀다. 여기는 **그것을 인용하고**, `CustomEvent` 로 **격자를 채우고**, **동기성 · 예외 · `detail`** 을 잰다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -549,3 +541,11 @@ $ python3 wa20b-cdp.py page wa20b-21-sync.html | sed -n '32,33p'
 - **`Event` 를 상속한 클래스**(`class 내이벤트 extends Event`)로 `detail` 대신 필드를 싣는 형태는 던지지 않았다.
 - **슬롯에 배정된 자식에서 던진 커스텀 이벤트**의 경로는 [12번 주제](../12-shadow-dom/2-summary.md)의 (15)가 `Event` 로 봤다(재타기팅 없음 · 경로에 `<slot>`).
 - **`cancelable` 커스텀 이벤트로 「받는 쪽 거부권」을 설계하는 패턴**은 반환값까지만 봤다.
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ④ 를 늘린 「닿은 자리 격자」다** — 그림자 안에서 던진 `CustomEvent` 가 **어느 자리에서 불렸나**와 그 자리에서 본 **`target` · `composedPath().length`** 를 `bubbles` × `composed` × `open`/`closed` 로 센다. 여기에 **「디스패치가 동기」를 호출 순서 로그로** 얹는다.\
+**기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 `CustomEvent`(「`detail` 은 초기화된 값을 돌려준다」) · `dispatchEvent()`(「dispatch flag 가 서 있거나 initialized flag 가 없으면 `InvalidStateError`」 · `isTrusted` 를 `false` 로) · 「dispatch」·「inner invoke」(리스너가 던지면 **report exception**) 절. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 대부분 스크립트가 던진 합성 이벤트이고, (5)의 견줌 한 줄만 **CDP 로 넣은 진짜 클릭**이다. 하네스는 [20번 주제](../20-listener-lifetime/2-summary.md)의 (1)에 있다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — ★★★ **[12번 주제](../12-shadow-dom/2-summary.md)의 (14)·(15)** 가 재타기팅과 **`bubbles`×`composed` 두 스위치**(`Event` 로 받은 자리만)를 이미 쟀고, `closed` 에서 `composedPath` 가 **7칸 → 5칸**이 되는 것도 거기서 봤다. **[18번 주제](../18-event-delegation/2-summary.md)의 (6)** 이 `composed:false` 합성 이벤트가 **위임 리스너에 안 닿는 것**을 쟀다. **[16번 주제](../16-event-propagation-phases/2-summary.md)의 (7)** 이 생성자의 `bubbles` 기본값이 `false` 인 것을, **[17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md)의 (6)** 이 `dispatchEvent` 의 반환값을 쟀다. 여기는 **그것을 인용하고**, `CustomEvent` 로 **격자를 채우고**, **동기성 · 예외 · `detail`** 을 잰다.

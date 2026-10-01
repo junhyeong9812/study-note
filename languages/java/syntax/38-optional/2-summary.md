@@ -1,18 +1,5 @@
 # java/syntax/38 — `Optional`: 생성·소비·안티패턴 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/Optional.java` 의 **javadoc·`@since` 원문**(`lib/src.zip` 에서 직접 인용).
-> **실행 검증** — 이 문서의 모든 출력·예외는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 실행 프로그램 셋(`Ex.java (38-a)`·`(38-b)`·`(38-c)`)을 **17.0.13 · 21.0.5 · 25.0.1** 세 곳에서 돌려 **출력이 한 글자도 다르지 않았다**.\
-> 다만 **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 javadoc 인용으로만 적었다.
-> **버전** — `Optional` 자체는 **Java 8**(`@since 1.8`). 메서드마다 버전이 갈린다 —\
-> `ifPresentOrElse`·`or`·`stream` 은 **9**, `orElseThrow()`(인자 없는 것)는 **10**, `isEmpty` 는 **11**.\
-> ★ 전부 `src.zip` 의 `@since` 를 직접 읽고, `javac --release` 를 8~11로 바꿔 가며 **컴파일로 재확인**했다(아래 표).
-> **범위** — `null` 을 **어디서 어떻게 막을지**(생성자 검증·경계 방어·`Objects.requireNonNull`)는 이 문서가 다루지 않는다.\
-> 그쪽은 [`../60-null-handling/`](../60-null-handling/) 가 정본이다. 여기는 **`Optional` 이라는 타입 하나**만 다룬다.\
-> `findFirst`·`min`·`max` 가 왜 `Optional` 을 돌려주는지는 [`../46-terminal-operations/`](../46-terminal-operations/) 가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **`Optional` 은 "내용물이 있을 수도 없을 수도 있는 봉투"다. 반환값에 씌우라고 만든 것이다.**
@@ -788,3 +775,16 @@ IntStream.of(1, 2, 3).average();      // OptionalDouble  — Optional<Double> �
 - **`Optional` 은 `@jdk.internal.ValueBased` 다.**\
   `synchronized (opt)` 는 `-Xlint:synchronization` 에서 경고가 나고, javadoc 은 "in a future release, synchronization may fail" 이라고 적었다.\
   `==` 비교도 같은 이유로 금지다 — 실측에서 `Optional.empty() == Optional.empty()` 가 `true` 였지만 **보장이 아니다.**
+
+## 실행 환경
+
+**기준 소스** — JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/Optional.java` 의 **javadoc·`@since` 원문**(`lib/src.zip` 에서 직접 인용).
+**실행 검증** — 이 문서의 모든 출력·예외는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+실행 프로그램 셋(`Ex.java (38-a)`·`(38-b)`·`(38-c)`)을 **17.0.13 · 21.0.5 · 25.0.1** 세 곳에서 돌려 **출력이 한 글자도 다르지 않았다**.\
+다만 **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 javadoc 인용으로만 적었다.
+**버전** — `Optional` 자체는 **Java 8**(`@since 1.8`). 메서드마다 버전이 갈린다 —\
+`ifPresentOrElse`·`or`·`stream` 은 **9**, `orElseThrow()`(인자 없는 것)는 **10**, `isEmpty` 는 **11**.\
+★ 전부 `src.zip` 의 `@since` 를 직접 읽고, `javac --release` 를 8~11로 바꿔 가며 **컴파일로 재확인**했다(아래 표).
+**범위** — `null` 을 **어디서 어떻게 막을지**(생성자 검증·경계 방어·`Objects.requireNonNull`)는 이 문서가 다루지 않는다.\
+그쪽은 [`../60-null-handling/`](../60-null-handling/) 가 정본이다. 여기는 **`Optional` 이라는 타입 하나**만 다룬다.\
+`findFirst`·`min`·`max` 가 왜 `Optional` 을 돌려주는지는 [`../46-terminal-operations/`](../46-terminal-operations/) 가 정본이다.

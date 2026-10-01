@@ -1,23 +1,5 @@
 # python/syntax/30-repr-eq-hash-contracts — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> 실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
->
-> ★★ **이 주제에서는 「예외가 안 나는 것」이 답인 자리가 대부분이다.**
-> 「터진다」로 답하면 거의 다 틀린다 — **어느 조회가 실패하고 어느 것이 멀쩡한지**를 짚어야 맞은 것이다.\
-> ★★★ **해시값을 적지 마라.** `sys.flags.hash_randomization` 이 `True` 라 값은 실행마다 달라진다.
-> 답에 쓸 수 있는 것은 「**해시가 같은가 다른가**」뿐이다.\
-> ★ 트레이스백이 나오는 문항은 **세 줄**이다 — 실행 중 예외라 **소스 줄도 `^` 캐럿도 없다.**\
-> ★ 이 주제는 [12번](../12-dict-and-key-requirements/1-question.md)·[02번](../02-is-vs-eq-interning/1-question.md)·[29번](../29-classes-and-attribute-lookup/1-question.md)을 쓴다.
-> 막히면 그 셋 중 무엇이 안 잡힌 것인지부터 짚어라.\
-> ★ **이 사슬은 [29](../29-classes-and-attribute-lookup/1-question.md) → 30 → [31](../31-comparison-protocol-and-sortability/1-question.md) → [32](../32-container-protocol/1-question.md)** 로 이어진다.
-> 29 가 「속성이 어디서 오나」, 30 이 「같음」, 31 이 「순서」, 32 가 「담음」의 계약이다.
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -352,6 +334,19 @@ print("⑤ eq=False 인 D2 는 == 도 정체 기준이다 :", D2(1) == D2(1))
 - ★ 나머지 셋은 각각 **CPython 구현**인가 **이 판의 관찰**인가?
 - ★ 「계약을 어기면 키 개수가 2 가 된다」는 어느 층인가?
 
+## 실행 환경
+
+실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
+
+★★ **이 주제에서는 「예외가 안 나는 것」이 답인 자리가 대부분이다.**
+「터진다」로 답하면 거의 다 틀린다 — **어느 조회가 실패하고 어느 것이 멀쩡한지**를 짚어야 맞은 것이다.\
+★★★ **해시값을 적지 마라.** `sys.flags.hash_randomization` 이 `True` 라 값은 실행마다 달라진다.
+답에 쓸 수 있는 것은 「**해시가 같은가 다른가**」뿐이다.\
+★ 트레이스백이 나오는 문항은 **세 줄**이다 — 실행 중 예외라 **소스 줄도 `^` 캐럿도 없다.**\
+★ 이 주제는 [12번](../12-dict-and-key-requirements/1-question.md)·[02번](../02-is-vs-eq-interning/1-question.md)·[29번](../29-classes-and-attribute-lookup/1-question.md)을 쓴다.
+
+29 가 「속성이 어디서 오나」, 30 이 「같음」, 31 이 「순서」, 32 가 「담음」의 계약이다.
+
 ## 복습 기록
 
 | 날짜 | 결과 | 틀린 질문 | 다음 복습 |
@@ -359,3 +354,7 @@ print("⑤ eq=False 인 D2 는 == 도 정체 기준이다 :", D2(1) == D2(1))
 |  |  |  |  |
 |  |  |  |  |
 |  |  |  |  |
+
+---
+
+★ **이 사슬은 [29](../29-classes-and-attribute-lookup/1-question.md) → 30 → [31](../31-comparison-protocol-and-sortability/1-question.md) → [32](../32-container-protocol/1-question.md)** 로 이어진다.

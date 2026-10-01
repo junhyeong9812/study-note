@@ -1,33 +1,5 @@
 # cpp/syntax/30 — 댕글링 참조와 수명 연장 규칙 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 참조 초기화(임시의 수명)](https://en.cppreference.com/w/cpp/language/reference_initialization) · [cppreference — 범위 기반 `for`](https://en.cppreference.com/w/cpp/language/range-for) · [cppreference — C++23 컴파일러 지원표](https://en.cppreference.com/w/cpp/compiler_support/23)\
-> ★ **위 cppreference 세 쪽은 이 배치에서 열었다** — (4)의 「연장되지 않는 예외 넷」, (5)의 「`__cpp_range_based_for` 의 C++23 값 `202211L`」과 「P2718 을 구현한 판(GCC 15 · Clang 19)」이 거기서 왔다. **표준 원문은 열지 않았다.**
-> **실행 검증** — 이 문서의 모든 출력·리포트·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 대비 블록은 **rustc 1.92.0** · **go1.27.1** 이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`dang01.cpp` \~ `dang03.cpp` · `dang-grid.sh` · `dang-uar.sh` · `dang-values.sh` · `dangle.rs` · `esc.go`).\
-> ★★★ **이 주제는 UB 의 교과서다 — 댕글링을 읽은 값은 「이 판의 한 결과」이고, 이 문서는 그 값에서 아무 규칙도 끌어내지 않는다**(규칙 14). 그래서 탐침은 **값 대신 「42 였나」 한 비트**만 찍는다.\
-> ★★★ **ASan 블록은 마커를 `stderr` 로 찍었다** · 자른 블록은 **자르는 명령을 배너에** 적었다.\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
-> **버전** — 임시를 `const T&`·`T&&` 에 묶으면 늘어난다는 규칙은 **C++98/11부터** · **괄호 집합체 초기화(`H h(T{8})`)는 C++20부터이고 그 참조 멤버는 늘어나지 않는다** · **범위 `for` 의 임시 수명 연장은 C++23(P2718)** 이다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 실행으로 접지했다.
-> ★★★ **[07번](../07-references-vs-pointers/)·[14번](../14-destructors-and-deterministic-destruction/)에서 온다 — 앞 편들이 잰 것은 다시 재지 않고 인용한다.**\
-> [07번](../07-references-vs-pointers/) (5) — **`const Noisy& r = make(1);` 은 블록 끝까지 산다**(수명 연장의 기본형) · (7) — **지역 참조·포인터 반환은 g++ 에서 같은 `-Wreturn-local-addr` · `cc exit=0`**.\
-> [14번](../14-destructors-and-deterministic-destruction/) (4) — **임시는 전체 식의 끝에서 죽는다 · `std::string("…").c_str()` 는 g++ 침묵, clang 만 `-Wdangling-gsl`**.\
-> [08번](../08-value-categories-lvalue-prvalue-xvalue/) (7) — **`T&&` 도 prvalue 를 늘린다 · xvalue 는 늘 것이 없다**(`&r == &local`).\
-> [05번](../05-auto-and-decltype-type-deduction/) (6) — **`decltype(auto)` 의 `return (x);` 댕글링 — 두 컴파일러 경고 · `run exit=139`**.\
-> ★★ **여기서 새로 묻는 것은 셋이다** — **댕글링 일곱 모양 × 도구 여섯, 잡은 칸은 몇인가** · **수명 연장이 되는 것과 안 되는 것의 경계** · **범위 `for` 의 임시가 C++23 판에서 고쳐졌나(이 두 컴파일러에서)**.
-> **경계** — 「**누가 아직 보고 있는가**」의 **논증은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md) 의 「C++ — RAII는 해제를 잊는 실패를 지우고, 죽은 것을 가리키는 실패는 못 지운다」 절**이 정본이다(「지역 객체에 대한 포인터·참조 반환은 여전히 컴파일된다」). 여기는 **코드 패턴과 도구의 칸**이다.\
-> 「람다 캡처」 전반은 [목록의 **39번 주제**](../39-lambdas-and-captures/), 「`string_view`」는 **46번 주제**, 「이터레이터 무효화」는 **43번 주제**가 정본이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★★★ **도구 없이 돌린 댕글링 탐침이 42 를 읽었나**((3) — **UB 의 결과**다. 이 판에서는 세 번 돌려 같았지만 성질로 적지 않는다) | ★★★ **격자 칸마다 도구가 댄 이름 · 「잡은 칸 N / 42」**((1)) · **ASan 옵션을 바꿨을 때의 칸**((2)) |
-> | ASan 리포트의 **PID**·주소 · 스택 오프셋 | ★★★ **수명 연장 로그의 순서**(소멸자가 「다음 문장」 앞이냐 뒤냐 — (4)) — **표준이 정한 순서**다 |
-> | UB 로 죽을 때의 신호 번호(`rc=139`) | ★★ **`__cplusplus` · `__cpp_range_based_for` 값**((5)) · **Rust 에러 코드**((6)) · **Go 의 `moved to heap`**((7)) |
-
 ## 한눈에 — 쉽게 말하면
 
 **댕글링 참조는 「철거된 집의 주소가 적힌 명함」이다.**
@@ -848,3 +820,32 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **C++26 의 「`return` 에서 임시에 묶으면 ill-formed」** — cppreference 의 예외 목록 첫 항목에 **(until C++26)** 표지가 있다. 이 문서는 **그 판을 던지지 않았다**(컴파일러가 없다).
 - **GCC 15 · Clang 19 에서 (5)를 다시 던지기** — 이 머신에는 없다. 판이 오르면 **`__cpp_range_based_for` 와 `~Holder` 의 자리**를 다시 본다.
 - **`-fsanitize=address` 와 `-O1`** — 이 문서는 `-O0`·`-O2` 만 던졌다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 참조 초기화(임시의 수명)](https://en.cppreference.com/w/cpp/language/reference_initialization) · [cppreference — 범위 기반 `for`](https://en.cppreference.com/w/cpp/language/range-for) · [cppreference — C++23 컴파일러 지원표](https://en.cppreference.com/w/cpp/compiler_support/23)\
+★ **위 cppreference 세 쪽은 이 배치에서 열었다** — (4)의 「연장되지 않는 예외 넷」, (5)의 「`__cpp_range_based_for` 의 C++23 값 `202211L`」과 「P2718 을 구현한 판(GCC 15 · Clang 19)」이 거기서 왔다. **표준 원문은 열지 않았다.**
+**실행 검증** — 이 문서의 모든 출력·리포트·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 대비 블록은 **rustc 1.92.0** · **go1.27.1** 이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`dang01.cpp` \~ `dang03.cpp` · `dang-grid.sh` · `dang-uar.sh` · `dang-values.sh` · `dangle.rs` · `esc.go`).\
+★★★ **이 주제는 UB 의 교과서다 — 댕글링을 읽은 값은 「이 판의 한 결과」이고, 이 문서는 그 값에서 아무 규칙도 끌어내지 않는다**(규칙 14). 그래서 탐침은 **값 대신 「42 였나」 한 비트**만 찍는다.\
+★★★ **ASan 블록은 마커를 `stderr` 로 찍었다** · 자른 블록은 **자르는 명령을 배너에** 적었다.\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
+**버전** — 임시를 `const T&`·`T&&` 에 묶으면 늘어난다는 규칙은 **C++98/11부터** · **괄호 집합체 초기화(`H h(T{8})`)는 C++20부터이고 그 참조 멤버는 늘어나지 않는다** · **범위 `for` 의 임시 수명 연장은 C++23(P2718)** 이다. 기준은 **C++20**이다.
+
+★★★ **[07번](../07-references-vs-pointers/)·[14번](../14-destructors-and-deterministic-destruction/)에서 온다 — 앞 편들이 잰 것은 다시 재지 않고 인용한다.**\
+[07번](../07-references-vs-pointers/) (5) — **`const Noisy& r = make(1);` 은 블록 끝까지 산다**(수명 연장의 기본형) · (7) — **지역 참조·포인터 반환은 g++ 에서 같은 `-Wreturn-local-addr` · `cc exit=0`**.\
+[14번](../14-destructors-and-deterministic-destruction/) (4) — **임시는 전체 식의 끝에서 죽는다 · `std::string("…").c_str()` 는 g++ 침묵, clang 만 `-Wdangling-gsl`**.\
+[08번](../08-value-categories-lvalue-prvalue-xvalue/) (7) — **`T&&` 도 prvalue 를 늘린다 · xvalue 는 늘 것이 없다**(`&r == &local`).\
+[05번](../05-auto-and-decltype-type-deduction/) (6) — **`decltype(auto)` 의 `return (x);` 댕글링 — 두 컴파일러 경고 · `run exit=139`**.\
+★★ **여기서 새로 묻는 것은 셋이다** — **댕글링 일곱 모양 × 도구 여섯, 잡은 칸은 몇인가** · **수명 연장이 되는 것과 안 되는 것의 경계** · **범위 `for` 의 임시가 C++23 판에서 고쳐졌나(이 두 컴파일러에서)**.
+**경계** — 「**누가 아직 보고 있는가**」의 **논증은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md) 의 「C++ — RAII는 해제를 잊는 실패를 지우고, 죽은 것을 가리키는 실패는 못 지운다」 절**이 정본이다(「지역 객체에 대한 포인터·참조 반환은 여전히 컴파일된다」). 여기는 **코드 패턴과 도구의 칸**이다.\
+「람다 캡처」 전반은 [목록의 **39번 주제**](../39-lambdas-and-captures/), 「`string_view`」는 **46번 주제**, 「이터레이터 무효화」는 **43번 주제**가 정본이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★★★ **도구 없이 돌린 댕글링 탐침이 42 를 읽었나**((3) — **UB 의 결과**다. 이 판에서는 세 번 돌려 같았지만 성질로 적지 않는다) | ★★★ **격자 칸마다 도구가 댄 이름 · 「잡은 칸 N / 42」**((1)) · **ASan 옵션을 바꿨을 때의 칸**((2)) |
+| ASan 리포트의 **PID**·주소 · 스택 오프셋 | ★★★ **수명 연장 로그의 순서**(소멸자가 「다음 문장」 앞이냐 뒤냐 — (4)) — **표준이 정한 순서**다 |
+| UB 로 죽을 때의 신호 번호(`rc=139`) | ★★ **`__cplusplus` · `__cpp_range_based_for` 값**((5)) · **Rust 에러 코드**((6)) · **Go 의 `moved to heap`**((7)) |

@@ -1,23 +1,5 @@
 # c/syntax/26 — 유연 배열 멤버: 「**머리와 꼬리를 한 번에 잡는다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Struct declaration (C)](https://en.cppreference.com/w/c/language/struct) · [GCC 13 — Arrays of Length Zero](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Zero-Length.html) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·바이트·진단·종료 코드는 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
-> **버전** — 유연 배열 멤버는 **C99 부터**다. 그 이전에는 **「길이 1 배열」 관용구**를 썼고(아래 (6)),\
-> ★ 「**길이 0 배열**」(`char d[0];`)은 **표준이 아니라 gcc·clang 의 확장**이다 — `-pedantic` 이 잡는다.\
-> ★ **C23 에서도 규칙은 그대로**다. gcc 14 가 새로 넣은 `-Wflex-array-member-not-at-end` 는 **gcc 13 에 없다**(확인: 옵션 자체가 `cc exit=1`).\
-> ★★ **`-std=` 는 강제가 아니라 기본값 선택**이다 — 이 주제의 확장 세 가지는 **`-pedantic` 을 붙여야** 드러나고, 붙여도 **`cc exit=0`** 이다.
-> ★★ **경계** — **구조체 선언·초기화·지정 초기자**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/), **패딩·정렬**은 [22번 형제](../22-struct-padding-and-alignment/)가 정본이다.\
-> 여기는 「**마지막 멤버의 길이를 비워 두면 무엇이 달라지나**」만 본다 — ★ **꼬리 패딩이 할당 산술에 새어 드는 자리**가 이 편의 값이다.\
-> ★ **`sizeof`·`offsetof` 라는 도구**는 [8번 형제](../08-sizeof-alignment-and-offsetof/), **포인터 산술**은 [15번 형제](../15-pointer-arithmetic-and-indexing/)가 정본이다.\
-> ★ **배열이 포인터로 감쇠하는 규칙**은 [16번 형제](../16-array-pointer-decay-and-function-parameters/), **크기를 모르는 배열**은 [25번 형제](../25-incomplete-types-and-opaque-struct/)다.\
-> ★ **`malloc` 의 계약과 실패 처리**는 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/), **배열 밖 접근**은 목록의 **56번 주제**가 정본이다.
-> 선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [22번 형제](../22-struct-padding-and-alignment/) · [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **유연 배열 멤버는 「봉투와 편지지를 한 장으로 사는 것」이다.**
@@ -1064,3 +1046,21 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★ **`__builtin_object_size` 를 직접 불러 보는 것** — (7)에서 FORTIFY 가 쓰는 그 함수다.\
   ★ 이 문서는 **직접 부르지 않고** FORTIFY 를 통해서만 관찰했다.
 - ★ **C23 의 `memset_explicit`·`memccpy` 같은 새 함수가 FAM 과 어떻게 맞물리나** — ★ **던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Struct declaration (C)](https://en.cppreference.com/w/c/language/struct) · [GCC 13 — Arrays of Length Zero](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Zero-Length.html) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·바이트·진단·종료 코드는 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
+**버전** — 유연 배열 멤버는 **C99 부터**다. 그 이전에는 **「길이 1 배열」 관용구**를 썼고(본문 (6)),\
+★ 「**길이 0 배열**」(`char d[0];`)은 **표준이 아니라 gcc·clang 의 확장**이다 — `-pedantic` 이 잡는다.\
+★ **C23 에서도 규칙은 그대로**다. gcc 14 가 새로 넣은 `-Wflex-array-member-not-at-end` 는 **gcc 13 에 없다**(확인: 옵션 자체가 `cc exit=1`).\
+★★ **`-std=` 는 강제가 아니라 기본값 선택**이다 — 이 주제의 확장 세 가지는 **`-pedantic` 을 붙여야** 드러나고, 붙여도 **`cc exit=0`** 이다.
+★★ **경계** — **구조체 선언·초기화·지정 초기자**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/), **패딩·정렬**은 [22번 형제](../22-struct-padding-and-alignment/)가 정본이다.\
+여기는 「**마지막 멤버의 길이를 비워 두면 무엇이 달라지나**」만 본다 — ★ **꼬리 패딩이 할당 산술에 새어 드는 자리**가 이 편의 값이다.\
+★ **`sizeof`·`offsetof` 라는 도구**는 [8번 형제](../08-sizeof-alignment-and-offsetof/), **포인터 산술**은 [15번 형제](../15-pointer-arithmetic-and-indexing/)가 정본이다.\
+★ **배열이 포인터로 감쇠하는 규칙**은 [16번 형제](../16-array-pointer-decay-and-function-parameters/), **크기를 모르는 배열**은 [25번 형제](../25-incomplete-types-and-opaque-struct/)다.\
+★ **`malloc` 의 계약과 실패 처리**는 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/), **배열 밖 접근**은 목록의 **56번 주제**가 정본이다.
+선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [22번 형제](../22-struct-padding-and-alignment/) · [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).

@@ -1,22 +1,5 @@
 # java/syntax/41 — `Map` API: `merge`/`compute*`/`getOrDefault`/`putIfAbsent` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/). `Map` 이 `Collection` 이 아니라는 것과 뷰 셋이 전제다.
-> **기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc 과 구현이다.\
-> `java.base/java/util/Map.java` — `get`·`getOrDefault`·`computeIfAbsent`·`merge` 의 javadoc 과 `@implSpec` 기본 구현.\
-> `java.base/java/util/HashMap.java` — `computeIfAbsent` 구현(`modCount` 대조 두 줄·`oldValue != null` 검사).\
-> 인용은 **그 파일에서 복사한 것만** 옮겼다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 Temurin JDK 에서 **실제로 돌려** 얻은 것이다.\
-> 프로그램 4개를 **17.0.13 · 21.0.5 · 25.0.1** 셋 다에서 돌려 `diff` 했다 — 본문 출력은 전부 같고 스택트레이스 줄 번호만 달랐다.
-> **버전** — `getOrDefault`·`putIfAbsent`·`compute*`·`merge`·`replaceAll`·`forEach` 는 전부 **Java 8**.\
-> `Map.of`·`Map.entry`·`Map.ofEntries` 는 **Java 9**, `Map.copyOf` 는 **Java 10**.\
-> `@since` 는 전부 `src.zip` 에서 직접 읽었다.
-> **범위** — 해시 테이블이 어떻게 동작하나(버킷·충돌·리사이즈·트리화)는
-> [`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/)·[`../../../../cs/data-structure/29-open-addressing/`](../../../../cs/data-structure/29-open-addressing/) 가 정본이다.\
-> 그쪽은 **해시가 어떻게 자리를 찾나**까지, 여기는 **`java.util.Map` 이 그 위에 얹은 메서드들의 계약**부터다.\
-> `Collectors.toMap`·`groupingBy` 는 [`../47-collectors-basics/`](../47-collectors-basics/)·[`../48-collectors-grouping/`](../48-collectors-grouping/) 가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **`Map` 의 갱신 메서드 다섯은 「사물함에 짐을 넣는 다섯 가지 규칙」이다.**
@@ -816,3 +799,20 @@ m.merge(k, maybeNull, (a, b) -> b);     // NullPointerException
 - **`compute` 계열은 원자적이지 않다.**\
   javadoc 이 명시한다 — "The default implementation makes no guarantees about synchronization or atomicity properties of this method."\
   `HashMap` 에서 이것들은 **한 스레드 안에서만** 안전하다. 원자성이 필요하면 `ConcurrentHashMap` 이고, 그때는 계약이 다르다.
+
+## 실행 환경
+
+**선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/). `Map` 이 `Collection` 이 아니라는 것과 뷰 셋이 전제다.
+**기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc 과 구현이다.\
+`java.base/java/util/Map.java` — `get`·`getOrDefault`·`computeIfAbsent`·`merge` 의 javadoc 과 `@implSpec` 기본 구현.\
+`java.base/java/util/HashMap.java` — `computeIfAbsent` 구현(`modCount` 대조 두 줄·`oldValue != null` 검사).\
+인용은 **그 파일에서 복사한 것만** 옮겼다.
+**실행 검증** — 이 문서의 모든 출력·에러는 Temurin JDK 에서 **실제로 돌려** 얻은 것이다.\
+프로그램 4개를 **17.0.13 · 21.0.5 · 25.0.1** 셋 다에서 돌려 `diff` 했다 — 본문 출력은 전부 같고 스택트레이스 줄 번호만 달랐다.
+**버전** — `getOrDefault`·`putIfAbsent`·`compute*`·`merge`·`replaceAll`·`forEach` 는 전부 **Java 8**.\
+`Map.of`·`Map.entry`·`Map.ofEntries` 는 **Java 9**, `Map.copyOf` 는 **Java 10**.\
+`@since` 는 전부 `src.zip` 에서 직접 읽었다.
+**범위** — 해시 테이블이 어떻게 동작하나(버킷·충돌·리사이즈·트리화)는
+[`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/)·[`../../../../cs/data-structure/29-open-addressing/`](../../../../cs/data-structure/29-open-addressing/) 가 정본이다.\
+그쪽은 **해시가 어떻게 자리를 찾나**까지, 여기는 **`java.util.Map` 이 그 위에 얹은 메서드들의 계약**부터다.\
+`Collectors.toMap`·`groupingBy` 는 [`../47-collectors-basics/`](../47-collectors-basics/)·[`../48-collectors-grouping/`](../48-collectors-grouping/) 가 정본이다.

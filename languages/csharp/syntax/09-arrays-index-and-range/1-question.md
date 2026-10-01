@@ -1,19 +1,5 @@
 # csharp/syntax/09 — 배열과 인덱스·범위 연산자(C# 8) — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> **환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
-> 진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
-> ★★★ **4번이 이 주제의 중심이다** — **출력만 보면 두 답이 같다.** 갈라야 하는 것은 **바이트**다.
-> ★★ **9번은 값으로는 원리상 못 푼다** — **진단이 가리키는 열**을 읽어야 답이 나온다.
-> ★ **2번의 `^0` 을 「마지막 원소」로 답하면 3번이 안 풀린다.**
-> 선행 — [01번](../01-value-types-and-reference-types/)(배열이 참조 타입인 것) · [03번](../03-boxing-and-unboxing/)(할당 바이트를 재는 법).
-> 경계 — **동적 배열의 원리**는 [`data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/)가 정본이다.
-> 대비 — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **15번** ·
-> Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **9번** ·
-> Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **5번**.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -434,6 +420,19 @@ Console.WriteLine($"{a} {b} {c} {d} {e} {f}");
 - `Span<T>` 가 **구조체**인 것이 「+0바이트」와 무슨 상관인가?
 - ★ 이 주제에서 **박싱이 난 자리가 있는가** — 없다면 왜인가?
 - 할당 바이트를 **증분으로만** 읽는 이유는?
+
+## 실행 환경
+
+**환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
+진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
+★★★ **4번이 이 주제의 중심이다** — **출력만 보면 두 답이 같다.** 갈라야 하는 것은 **바이트**다.
+★★ **9번은 값으로는 원리상 못 푼다** — **진단이 가리키는 열**을 읽어야 답이 나온다.
+★ **2번의 `^0` 을 「마지막 원소」로 답하면 3번이 안 풀린다.**
+선행 — [01번](../01-value-types-and-reference-types/)(배열이 참조 타입인 것) · [03번](../03-boxing-and-unboxing/)(할당 바이트를 재는 법).
+경계 — **동적 배열의 원리**는 [`data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/)가 정본이다.
+대비 — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **15번** ·
+Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **9번** ·
+Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **5번**.
 
 ## 복습 기록
 

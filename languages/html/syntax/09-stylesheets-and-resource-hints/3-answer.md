@@ -1,12 +1,5 @@
 # html/syntax/09 — 스타일시트·리소스 힌트 연결: `<link rel>`·`media`·`preload`/`preconnect`/`modulepreload` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★ **「받나 · 막나 · 먹나」를 갈라 읽어라.** 이 파일의 절반이 그 구분이다.
-> ★★★ **네트워크가 없다.** `preconnect`·`dns-prefetch` 는 「**못 잰 것**」이고 A10 이 그 경계를 적는다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -753,3 +746,11 @@ window.__끝 = function () {
 - **`renderBlockingStatus`** — 받아 온 자원이 렌더를 막았는지를 `blocking`/`non-blocking` 으로 답하는 Resource Timing 항목.
 - **대체 스타일시트(alternate stylesheet)** — `rel="alternate stylesheet"` + `title` 로 여러 벌을 두던 옛 장치. **담기지만 안 먹는다.**
 - **무음 실패(silent failure)** — 예외도 화면 이상도 없이 결과만 다른 것. `as` 없는 `preload` 가 그것이다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★ **「받나 · 막나 · 먹나」를 갈라 읽어라.** 이 파일의 절반이 그 구분이다.
+★★★ **네트워크가 없다.** `preconnect`·`dns-prefetch` 는 「**못 잰 것**」이고 A10 이 그 경계를 적는다.

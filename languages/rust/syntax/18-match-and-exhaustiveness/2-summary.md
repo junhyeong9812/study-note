@@ -1,19 +1,5 @@
 # rust/syntax/18 — `match` 와 완전성 검사 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference — `match` expressions](https://doc.rust-lang.org/reference/expressions/match-expr.html) ·
-> [Reference — Patterns](https://doc.rust-lang.org/reference/patterns.html) ·
-> [Reference — Attributes: `non_exhaustive`](https://doc.rust-lang.org/reference/attributes/type_system.html) ·
-> [`std::matches!`](https://doc.rust-lang.org/std/macro.matches.html).
-> ★ `rustc --explain E0004` / `E0308` / `E0170` / `E0382` 는 **확인용으로만 열었고 본문에 옮기지 않았다.**
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다. **손으로 옮겨 적은 출력은 한 줄도 없다.**\
-> ★ 크레이트 둘이 필요한 실험((6))만 명령이 셋이다 — 배너에 전부 적혀 있다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.
-> **버전** — `match`·완전성 검사는 1.0.0부터다. **`#[non_exhaustive]`** 는 **1.40.0**부터,\
-> **`matches!`** 는 **1.42.0**부터다. 배타적 범위 패턴 `a..b` 는 **1.80.0**부터다(이 문서는 `..=` 만 쓴다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 흔들리는 칸 / 안 흔들리는 칸
 
 | | 칸 | 왜 |
@@ -1175,3 +1161,17 @@ match lvl { upstream::Level::Low => 1, upstream::Level::High => 2 }
 - **빈 타입**(`enum Never {}`)을 `match` 하면 **팔이 하나도 없어도 완전**하다 — 덮을 값이 없기 때문이다.
 - **`#[non_exhaustive]` 는 구조체와 변형에도 붙는다** — 그때는 `..` 를 강제한다. 이 목록 밖이다.
 - **배타적 범위 패턴** `a..b` 는 **1.80.0부터** 안정이다. 이 문서는 전부 `..=` 를 썼다.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference — `match` expressions](https://doc.rust-lang.org/reference/expressions/match-expr.html) ·
+[Reference — Patterns](https://doc.rust-lang.org/reference/patterns.html) ·
+[Reference — Attributes: `non_exhaustive`](https://doc.rust-lang.org/reference/attributes/type_system.html) ·
+[`std::matches!`](https://doc.rust-lang.org/std/macro.matches.html).
+★ `rustc --explain E0004` / `E0308` / `E0170` / `E0382` 는 **확인용으로만 열었고 본문에 옮기지 않았다.**
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다. **손으로 옮겨 적은 출력은 한 줄도 없다.**\
+★ 크레이트 둘이 필요한 실험((6))만 명령이 셋이다 — 배너에 전부 적혀 있다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.
+**버전** — `match`·완전성 검사는 1.0.0부터다. **`#[non_exhaustive]`** 는 **1.40.0**부터,\
+**`matches!`** 는 **1.42.0**부터다. 배타적 범위 패턴 `a..b` 는 **1.80.0**부터다(이 문서는 `..=` 만 쓴다).

@@ -1,10 +1,5 @@
 # css/syntax/60 — `prefers-reduced-motion` 과 모션 접근성 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 같은 문서를 두 판 띄워 측정한 것**이다.\
-> 선호는 **`--force-prefers-reduced-motion`** 으로 켰고, 매 판 **`matchMedia` 로 켜졌는지 먼저 확인한 뒤** 값을 읽었다.\
-> 규칙은 [Media Queries Level 5](https://drafts.csswg.org/mediaqueries-5/) §12.1 과 [WCAG 2.2](https://www.w3.org/TR/WCAG22/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -333,7 +328,7 @@ google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
 | demo 「바꿔 볼 것」 ① `no-preference` → `reduce` × 두 판 | 2 | demo |
 | 명세 원문 확인(mediaqueries-5 §12.1) | 1 | 한눈에 · A2 |
 | WCAG 2.3.3 · 2.2.2 원문 확인 | 1 | A8 |
-| Baseline 조회 | 1 | 머리말 |
+| Baseline 조회 | 1 | 「실행 환경」 |
 | **제출 직전 demo 재추출·재실행 대조** | 1 | 어긋남 0건 |
 
 **구현에 달린 항목**
@@ -367,3 +362,9 @@ google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
 - **`scroll-behavior: smooth`** — 스크롤 이동을 부드럽게 하는 속성. **선호를 켜도 자동으로 안 꺼진다.**
 - **`matchMedia()`** — 미디어 쿼리를 JS 로 읽는 함수. CSS 가 못 닿는 영상·GIF·JS 루프를 거를 때 쓴다.
 - **`Emulation.setEmulatedMedia`** — CDP 로 미디어 기능 값을 강제하는 명령. 한 브라우저 안에서 켜고 끌 수 있다.
+
+## 실행 환경
+
+이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 같은 문서를 두 판 띄워 측정한 것**이다.\
+선호는 **`--force-prefers-reduced-motion`** 으로 켰고, 매 판 **`matchMedia` 로 켜졌는지 먼저 확인한 뒤** 값을 읽었다.\
+규칙은 [Media Queries Level 5](https://drafts.csswg.org/mediaqueries-5/) §12.1 과 [WCAG 2.2](https://www.w3.org/TR/WCAG22/) 로 접지했다.

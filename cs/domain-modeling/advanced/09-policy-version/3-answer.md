@@ -1,11 +1,5 @@
 # domain-modeling-advanced/09-policy-version — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/09-policy-version/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -346,3 +340,7 @@ return Math.max(0, refunded - cancellationFee);
 - 기준 소스: `/home/jun/project/myway/domain-modeling-advanced/09-policy-version/impl/com/domain/policy/PolicyResolver.java`
 - 문제 원문: `src/main/java/com/domain/policy/PolicyResolver.java`(TODO 1~4 javadoc·enum 둘), `src/main/java/com/domain/policy/PolicyVersion.java`(계약·`effectiveOn`·`refundOf`), `src/main/java/com/domain/policy/CancelRequest.java`(날짜 셋·순서 강제), `README.md`(날짜 셋과 판 둘·함정 다섯·측정이 알려준 것·변종 검증·생각해볼 것)
 - 계약·수치: `src/test/java/com/domain/policy/PolicyResolverTest.java`(3/9→v1 · 3/10→v2 · 3/19→v2 · 3/20→v3 · 100,000/80,000/80,000 · 80,000 vs 45,000 · 35,000 · 45,000 vs 47,500 · 0원 하한 · 89,000), `src/test/java/com/domain/policy/MeasurementTest.java`(249 · 718 · 2,155 · 4,266 · 9,322 · 26,851 · 83,021 · 184,238 · 2,710,739,000 · 2,712,414,000 · 2,707,651,000 · 2,729,220,000 · 3,640,550,000 · 3,582,500,000 · 3,401,150,000 · 3,758,600,000 · 4.69% · 365)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/09-policy-version/impl/`).

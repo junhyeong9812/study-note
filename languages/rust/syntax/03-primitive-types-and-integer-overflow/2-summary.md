@@ -1,16 +1,5 @@
 # rust/syntax/03 — 기본 타입·정수 오버플로·`as` 캐스트 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Type cast expressions ·
-> Operator expressions(Overflow) · Behavior not considered `unsafe` 절 · [std 문서](https://doc.rust-lang.org/std/)의 `i32`/`u8`/`char`/`mem::size_of`.
-> 이 머신의 `rust-docs`(1.92.0)를 열어 확인했고, 인용은 그 판의 원문이다.
-> **실행 검증** — 이 문서의 모든 출력은 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서 돌렸다.\
-> ★ **오버플로가 걸린 프로그램은 전부 두 번 돌렸다** — `rustc --edition 2021 ex.rs`(디버그)와\
-> `rustc --edition 2021 -O ex.rs`(릴리스). **한쪽만 돌린 결과는 이 문서에 없다.**
-> **버전** — 정수 오버플로 정책은 1.0부터(RFC 560). `as` 로 부동소수를 정수로 바꿀 때의 **포화**는 **1.45.0**부터.\
-> `TryFrom`/`try_into` 는 **1.34.0**부터, `dbg!` 는 **1.32.0**부터, `type_name_of_val` 은 **1.76.0**부터.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **정수 타입은 자릿수가 고정된 주행거리계다. 끝까지 가면 000으로 돈다.**
@@ -703,3 +692,14 @@ attempt to add with overflow
 - `b'A'` 는 `u8` 리터럴이라 `65`다. 문자열 바이트를 다룰 때 쓴다.
 - `dbg!` 는 파일·줄·열과 식을 함께 찍는다(`[ex.rs:11:15] n = 300`). **표준 에러**로 나가므로 `2>/dev/null` 로 지워진다(실측).
 - `{:#?}` 는 중첩 구조를 들여쓰기해 준다. 구조체가 깊어질수록 `{:?}` 보다 훨씬 읽기 낫다.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Type cast expressions ·
+Operator expressions(Overflow) · Behavior not considered `unsafe` 절 · [std 문서](https://doc.rust-lang.org/std/)의 `i32`/`u8`/`char`/`mem::size_of`.
+이 머신의 `rust-docs`(1.92.0)를 열어 확인했고, 인용은 그 판의 원문이다.
+**실행 검증** — 이 문서의 모든 출력은 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서 돌렸다.\
+★ **오버플로가 걸린 프로그램은 전부 두 번 돌렸다** — `rustc --edition 2021 ex.rs`(디버그)와\
+`rustc --edition 2021 -O ex.rs`(릴리스). **한쪽만 돌린 결과는 이 문서에 없다.**
+**버전** — 정수 오버플로 정책은 1.0부터(RFC 560). `as` 로 부동소수를 정수로 바꿀 때의 **포화**는 **1.45.0**부터.\
+`TryFrom`/`try_into` 는 **1.34.0**부터, `dbg!` 는 **1.32.0**부터, `type_name_of_val` 은 **1.76.0**부터.

@@ -1,18 +1,5 @@
 # rust/syntax/49 — 스레드 `spawn`/`join` 과 `move` 클로저 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `thread::spawn`](https://doc.rust-lang.org/std/thread/fn.spawn.html)(시그니처 `F: FnOnce() -> T + Send + 'static, T: Send + 'static` · 「`'static` 제약」 절) ·
-> [std — `thread::scope`](https://doc.rust-lang.org/std/thread/fn.scope.html)(「자동으로 join 된다」 · §Panics) ·
-> [std — `JoinHandle`](https://doc.rust-lang.org/std/thread/struct.JoinHandle.html)(「버려지면 스레드를 detach 한다」 · `join` 의 `Result`) ·
-> [std — `std::thread` 모듈 문서](https://doc.rust-lang.org/std/thread/index.html)(「main 스레드가 끝나면 프로그램 전체가 끝난다」) ·
-> [Reference — Closure types · Capture precision](https://doc.rust-lang.org/reference/types/closure.html)(`[type.closure.capture.precision.dereference-shared]` 「Rightmost shared reference truncation」).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64` 에서
-> **`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(에디션 탐침 하나는 2018·2021·2024 셋).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★★ **스레드를 만드는 비용·속도는 한 번도 재지 않았다** — 「스레드는 무겁다」 류의 문장은 근거가 없으므로 쓰지 않는다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체 창 — ① `move` 필요 격자(스레드에 넘기는 값마다 컴파일되나 / 첫 진단 줄)다.** 스레드에 무엇을 넘길 수 있는가는 **실행이 아니라 컴파일러가** 판정한다 — 그래서 창도 컴파일 로그다.
 
 ## 흔들리는 칸 / 안 흔들리는 칸
@@ -349,7 +336,7 @@ main waits 300ms: runs with child line 20 / 20, runs with main line 20 / 20
 
 - ★★★ **`main waits 0ms` → `runs with child line 0 / 20`.** 자식은 50ms 잔 뒤 찍는데 main 은 바로 끝났다 — **20판 전부에서 자식 줄이 없다.** std 모듈 문서: 「**main 스레드가 끝나면 다른 스레드가 돌고 있어도 프로그램 전체가 끝난다**」.
 - ★★ **`main waits 300ms` → `20 / 20`.** 자식에게 시간이 남으면 찍힌다. **달라진 것은 main 이 기다린 시간뿐**이다 — 즉 detach 한 스레드의 출력은 **시간 여유에 기댄다.**
-- ★★★ **이 판 수는 「흔들릴 수 있는 칸」이다**(머리말 표). 50ms 대 300ms 는 여유가 커서 두 캡처가 같았지만, **순서를 정하는 것은 시계지 동기화가 아니다.** 반드시 찍혀야 하면 **`join` 하거나 `thread::scope` 를 쓴다.**
+- ★★★ **이 판 수는 「흔들릴 수 있는 칸」이다**(맨 위 부분 표). 50ms 대 300ms 는 여유가 커서 두 캡처가 같았지만, **순서를 정하는 것은 시계지 동기화가 아니다.** 반드시 찍혀야 하면 **`join` 하거나 `thread::scope` 를 쓴다.**
 - ★ std `JoinHandle`: 「**버려질 때 스레드를 detach 한다** — 더 이상 그 스레드를 join 할 방법이 없다」. 소스의 `let _ = thread::spawn(…)` 이 그 모양이다(44번의 `let _` 은 **바로 버린다** — 여기서도 핸들이 그 문장 끝에 버려진다).
 - ★ Go 는 `main` 이 반환하는 순간 고루틴을 기다리지 않는다([Go 28번 주제](../../../go/syntax/28-goroutines-go-statement-cost-and-termination/)) — 모양이 같다.
 
@@ -454,7 +441,7 @@ fn main() {
 
 - ★★ **`[1]` main 과 자식의 id 는 다르다 · `[2]` 핸들이 가리키는 id 와 자식이 스스로 본 id 는 같다.** `ThreadId` 는 **실행 중인 스레드마다 고유한 식별자**(std). 숫자 자체는 판마다 달라질 수 있어 **싣지 않았다.**
 - ★★ **`[3]` main 의 이름은 `Some("main")` · `[4]` 그냥 `spawn` 한 스레드는 `None` · `[5]` `Builder::name` 을 주면 `Some("worker-1")`.** (3)의 패닉 메시지에 `thread '<unnamed>'` 가 찍힌 까닭이 `[4]` 다 — 이름을 주면 패닉 메시지가 **그 이름을 찍는다**(이 편은 그 판을 던지지 않았다).
-- ★ 머리말의 「흔들리는 칸」이 가리키는 숫자는 **패닉 첫 줄 괄호 안의 OS 스레드 id** 다 — `ThreadId` 와 **다른 것**이다.
+- ★ 맨 위 부분의 「흔들리는 칸」이 가리키는 숫자는 **패닉 첫 줄 괄호 안의 OS 스레드 id** 다 — `ThreadId` 와 **다른 것**이다.
 
 ## 문법 — 형태와 규칙
 
@@ -570,3 +557,16 @@ fn main() {
 - `JoinHandle::is_finished`(1.61) — join 하지 않고 끝났는지 묻는다. 이 문서는 던지지 않았다.
 - 스레드 이름을 준 스레드가 패닉하면 메시지가 그 이름을 찍는다 — (6)에서 말했지만 **던지지 않았다.**
 - 스레드마다 따로 가지는 값(`thread_local!`)은 이 목록에 없다.
+
+## 실행 환경
+
+**기준 소스** — [std — `thread::spawn`](https://doc.rust-lang.org/std/thread/fn.spawn.html)(시그니처 `F: FnOnce() -> T + Send + 'static, T: Send + 'static` · 「`'static` 제약」 절) ·
+[std — `thread::scope`](https://doc.rust-lang.org/std/thread/fn.scope.html)(「자동으로 join 된다」 · §Panics) ·
+[std — `JoinHandle`](https://doc.rust-lang.org/std/thread/struct.JoinHandle.html)(「버려지면 스레드를 detach 한다」 · `join` 의 `Result`) ·
+[std — `std::thread` 모듈 문서](https://doc.rust-lang.org/std/thread/index.html)(「main 스레드가 끝나면 프로그램 전체가 끝난다」) ·
+[Reference — Closure types · Capture precision](https://doc.rust-lang.org/reference/types/closure.html)(`[type.closure.capture.precision.dereference-shared]` 「Rightmost shared reference truncation」).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64` 에서
+**`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(에디션 탐침 하나는 2018·2021·2024 셋).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★★ **스레드를 만드는 비용·속도는 한 번도 재지 않았다** — 「스레드는 무겁다」 류의 문장은 근거가 없으므로 쓰지 않는다.

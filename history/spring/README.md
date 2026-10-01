@@ -1,14 +1,5 @@
 # Spring 변천사 — 쉽게 다시 쓴 판
 
-> 원본: `~/project/java-history/spring/README.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·모듈 이름·표 4개·원문이 직접 그린 설정 스타일 블록·문서 링크는 원문 그대로다.\
-> ASCII 도식 4개(그중 3개는 원문의 mermaid 도식을 옮긴 것)와 「급하면 이렇게 골라 읽어도 된다」 길찾기는 원문 README에 없는 보충이다.\
-> H1만 다른 주제 README(`history/python/README.md` 등)와 형식을 맞춰 바꿨다 — 원문 H1은 「Spring 변천사 — Framework / Boot / Kotlin」이다. 나머지 절 제목은 원문 그대로다.\
-> 원문 README에는 「읽는 법」·「큰 줄기」 절이 없다. 그 자리를 대신하는 길찾기는 보충이고, 길찾기가 가리키는 절 제목은 각 편 원문에서 그대로 옮겼다.\
-> 목차의 「시기」는 열을 새로 만들지 않고 원문 「문서 목차」 표의 **「최초 출시」 칸**을 그대로 쓴다 — Framework 7편과 Boot 4편이 같은 기준으로 적혀 있어 통일이 가능했다.
-
-> Spring Framework와 Spring Boot의 역사를 대버전별로 정리한 "책". 설정 방식의 변천(XML → 어노테이션 → Java Config → 함수형 DSL)과 Kotlin의 도입사를 함께 다룬다.
-
 ## 한눈에 — 13편이 놓인 자리
 
 이 폴더는 **12편 + 이 README = 13편**이다. 두 갈래가 나란히 달린 역사라는 점이 이 책의 골격이다.
@@ -229,3 +220,12 @@ config.xml          @Autowired         @Bean             (auto-configuration)
 - `suspend`/`Flow`가 Reactor와 어떻게 이어지는지 알고 싶다 → **[kotlin-and-spring](kotlin-and-spring.md)의 「코루틴 지원 (suspend 함수, Spring 5.2+ / WebFlux 코루틴)」**
 - 같은 코드를 자바와 코틀린으로 나란히 보고 싶다 → **[kotlin-and-spring](kotlin-and-spring.md)의 「자바 vs 코틀린: 같은 Spring 코드 비교」**
 - 두 갈래 전체 지도를 한 번에 잡고 싶다 → **이 문서의 「전체 타임라인」 표 + 「한눈에」 도식**
+
+## 출처
+
+원본: `~/project/java-history/spring/README.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·모듈 이름·표 4개·원문이 직접 그린 설정 스타일 블록·문서 링크는 원문 그대로다.\
+ASCII 도식 4개(그중 3개는 원문의 mermaid 도식을 옮긴 것)와 「급하면 이렇게 골라 읽어도 된다」 길찾기는 원문 README에 없는 보충이다.\
+H1만 다른 주제 README(`history/python/README.md` 등)와 형식을 맞춰 바꿨다 — 원문 H1은 「Spring 변천사 — Framework / Boot / Kotlin」이다. 나머지 절 제목은 원문 그대로다.\
+원문 README에는 「읽는 법」·「큰 줄기」 절이 없다. 그 자리를 대신하는 길찾기는 보충이고, 길찾기가 가리키는 절 제목은 각 편 원문에서 그대로 옮겼다.\
+목차의 「시기」는 열을 새로 만들지 않고 원문 「문서 목차」 표의 **「최초 출시」 칸**을 그대로 쓴다 — Framework 7편과 Boot 4편이 같은 기준으로 적혀 있어 통일이 가능했다.

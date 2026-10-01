@@ -1,26 +1,5 @@
 # csharp/syntax/27 — 델리게이트와 `Func`/`Action` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-335(CLI) 6판](https://ecma-international.org/publications-and-standards/standards/ecma-335/) · [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — 람다 식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)(열어서 확인: 「람다는 **델리게이트 타입으로 변환**된다 — 값을 안 돌려주면 `Action`, 돌려주면 `Func`」 · 「오버로드가 **하나뿐인 메서드 그룹**은 자연 타입이 있다」) ·
-> [Learn — C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)(열어서 확인: C# 1.0 「**Delegates**」 · 2.0 「**Method group conversions (delegates)**」·「Anonymous methods」 · 11 「**Improved method group conversion to delegate**」) ·
-> [Learn — 제네릭의 공변성과 반공변성](https://learn.microsoft.com/en-us/dotnet/standard/generics/covariance-and-contravariance)(열어서 확인: 「`Func` 는 반환이 공변·인자가 반변」 · 「**델리게이트는 타입이 정확히 같아야 결합된다**」).
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. **대비는 실측이다** — **javac 21.0.5** 로 함수형 인터페이스 한 쌍을 던졌다((3)).
-> **버전** — 델리게이트 **C# 1** · 메서드 그룹 변환·익명 메서드 **C# 2** · 람다 **C# 3** · ★★★ **정적 메서드 그룹의 델리게이트 캐시 C# 11** — **`-langversion:10` 대 `11` 판 격자 × 2×2 로 확정했다**((6)(7)).
-> **경계** — ★★ **람다가 무엇을 캡처하나**는 [28번](../28-lambdas-and-closure-capture/)이 정본이다 — 여기서는 람다를 **「델리게이트 값을 만드는 한 방법」** 으로만 쓴다.\
-> ★ **`event` 가 델리게이트 필드에 거는 제한**은 목록의 **29번 주제** · **변성**(`Func<in T, out TResult>`)은 [26번](../26-covariance-and-contravariance-out-in/) ·\
-> ★★ **Java 쪽 정본** — 람다 = `invokedynamic` 은 [Java 29번](../../../java/syntax/29-lambda-expressions/) (2) · 함수형 인터페이스 지도는 [Java 31번](../../../java/syntax/31-functional-interfaces/) · Kotlin SAM 변환은 Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **36번**(폴더가 아직 없다).
-> ★★★ **본체 창은 ③ 리플렉션이다** — 「델리게이트는 **타입**이다」는 **런타임에게 그 타입을 물어서** 보인다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** · 진단 **순서**(배너에 `sort`) | ★★★ **진단 코드**(`CS0029` · `CS0030`) · javac `exit` |
-> | **IL 오프셋 폭** · 컴파일러가 지은 이름(`<>9__4_0` · `<0>__Twice`) | ★★★ **옵코드**(`ldftn` · `newobj …::.ctor` · `ldsfld`·`stsfld` 캐시 · `callvirt …::Invoke`) |
-> | 증분의 절댓값 일부(규칙 24) | ★★★ **「같은 판 안에서 갈린 줄 N / M」 · 「10 판과 11 판이 갈린 줄 N / M」** · 멀티캐스트 **실행 로그의 순서** |
-
 ## 이 판
 
 ```text
@@ -576,3 +555,25 @@ delegate string Transform(string s);
 - ★ **`BeginInvoke`/`EndInvoke`** — 선언에는 있지만(1) .NET Core 이후 **지원하지 않는다고 알려져 있다** — **이 판에서 안 불러 봤다.**
 - ★ **함수 포인터(`delegate*`, C# 9)** — 델리게이트 객체 없이 부르는 길(Learn 버전 이력 C# 9: 「델리게이트 객체를 만드는 데 필요한 **할당을 피한다**」). **안 던졌다.**
 - ★ **변성 델리게이트의 결합** — Learn: 「타입이 정확히 같아야 결합된다」. `Action<object>` 를 담은 `Action<string>` 변수에 `Action<string>` 을 `+=` 하면 — **안 던졌다.**
+
+## 실행 환경
+
+**기준 소스** — [ECMA-335(CLI) 6판](https://ecma-international.org/publications-and-standards/standards/ecma-335/) · [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — 람다 식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)(열어서 확인: 「람다는 **델리게이트 타입으로 변환**된다 — 값을 안 돌려주면 `Action`, 돌려주면 `Func`」 · 「오버로드가 **하나뿐인 메서드 그룹**은 자연 타입이 있다」) ·
+[Learn — C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)(열어서 확인: C# 1.0 「**Delegates**」 · 2.0 「**Method group conversions (delegates)**」·「Anonymous methods」 · 11 「**Improved method group conversion to delegate**」) ·
+[Learn — 제네릭의 공변성과 반공변성](https://learn.microsoft.com/en-us/dotnet/standard/generics/covariance-and-contravariance)(열어서 확인: 「`Func` 는 반환이 공변·인자가 반변」 · 「**델리게이트는 타입이 정확히 같아야 결합된다**」).
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. **대비는 실측이다** — **javac 21.0.5** 로 함수형 인터페이스 한 쌍을 던졌다((3)).
+**버전** — 델리게이트 **C# 1** · 메서드 그룹 변환·익명 메서드 **C# 2** · 람다 **C# 3** · ★★★ **정적 메서드 그룹의 델리게이트 캐시 C# 11** — **`-langversion:10` 대 `11` 판 격자 × 2×2 로 확정했다**((6)(7)).
+**경계** — ★★ **람다가 무엇을 캡처하나**는 [28번](../28-lambdas-and-closure-capture/)이 정본이다 — 여기서는 람다를 **「델리게이트 값을 만드는 한 방법」** 으로만 쓴다.\
+★ **`event` 가 델리게이트 필드에 거는 제한**은 목록의 **29번 주제** · **변성**(`Func<in T, out TResult>`)은 [26번](../26-covariance-and-contravariance-out-in/) ·\
+★★ **Java 쪽 정본** — 람다 = `invokedynamic` 은 [Java 29번](../../../java/syntax/29-lambda-expressions/) (2) · 함수형 인터페이스 지도는 [Java 31번](../../../java/syntax/31-functional-interfaces/) · Kotlin SAM 변환은 Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **36번**(폴더가 아직 없다).
+★★★ **본체 창은 ③ 리플렉션이다** — 「델리게이트는 **타입**이다」는 **런타임에게 그 타입을 물어서** 보인다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** · 진단 **순서**(배너에 `sort`) | ★★★ **진단 코드**(`CS0029` · `CS0030`) · javac `exit` |
+| **IL 오프셋 폭** · 컴파일러가 지은 이름(`<>9__4_0` · `<0>__Twice`) | ★★★ **옵코드**(`ldftn` · `newobj …::.ctor` · `ldsfld`·`stsfld` 캐시 · `callvirt …::Invoke`) |
+| 증분의 절댓값 일부(규칙 24) | ★★★ **「같은 판 안에서 갈린 줄 N / M」 · 「10 판과 11 판이 갈린 줄 N / M」** · 멀티캐스트 **실행 로그의 순서** |

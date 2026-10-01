@@ -1,14 +1,5 @@
 # web-api/28 — CORS: 단순 요청과 프리플라이트, 막는 것과 못 막는 것 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」 — 서버 B 가 받은 순서(OPTIONS 가 먼저 왔나)를 칸마다 서버에게 묻는 「프리플라이트 격자」다.** 메서드 4 × `Content-Type` 4 × 커스텀 헤더 2 = 32칸을 다른 출처로 던지고, 마지막 줄을 스크립트가 「OPTIONS 가 먼저 온 칸 N / 32」로 찍는다. 그 옆에 **프리플라이트가 거부되면 본 요청이 서버에 가나**를 서버 로그로 싣는다.\
-> **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 「CORS-safelisted method」(**`GET`·`HEAD`·`POST`**) · 「CORS-safelisted request-header」(값이 **128바이트를 넘으면 거짓** · `content-type` 은 파싱한 MIME 의 본질이 **`application/x-www-form-urlencoded`·`multipart/form-data`·`text/plain`** 일 때만) · main fetch 의 프리플라이트 조건(「**use-CORS-preflight flag** 가 켜졌거나, unsafe-request flag 가 켜졌고 메서드가 안전 목록이 아니거나 **CORS-unsafe request-header names 가 비지 않았을 때**」) · 요청 절(「use-CORS-preflight flag 는 … **`ReadableStream` 을 요청에 쓰면** 켜진다」) · HTTP fetch 의 「**If preflightResponse is a network error, then return** preflightResponse」 · CORS-preflight fetch(OPTIONS 에 `Access-Control-Request-Method`·`-Headers` 를 싣는다 · 「CORS check 가 성공하고 **status 가 ok status** 여야」 · 메서드·헤더 목록 검사) · CORS-preflight cache(「max-age 가 없으면 **5**」 · 「imposed limit」) · 「CORS-safelisted response-header name」 · 「opaque filtered response」(**status 0 · header list 비움 · body null**) · Request 생성자(「mode 가 `no-cors` 인데 메서드가 안전 목록이 아니면 **TypeError**」 · 스트림 본문에 「`duplex` 가 없으면 TypeError」·「mode 가 `same-origin`·`cors` 가 아니면 TypeError」) · 요청 출처 직렬화(「redirect-taint 가 `same-origin` 이 아니면 **`"null"`**」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 페이지는 **서버 A**(`http://127.0.0.1`)에서 열었고 다른 출처는 **같은 기계의 다른 포트인 서버 B** 다. **바깥 인터넷으로는 한 번도 요청하지 않았다.** 하네스의 Chrome·CDP 쪽은 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 (1)을 그대로 빌려 쓰고, **서버만 새로 세웠다**((1)).\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — ★★★ **[25번 주제](../25-fetch-request-response/2-summary.md)의 (1)·(2)가 「막는 것은 응답 읽기」를 한 칸 쟀다** — 허용 헤더 없는 다른 출처 `POST` 가 페이지에서는 `TypeError 「Failed to fetch」` 인데 **서버 B 로그에는 「주문을 처리했다 · 200 을 보냈다 · 허용 헤더 없음」**, 이유는 콘솔에만. 여기서는 **그 칸을 다시 재지 않고 인용**한다. 이 편은 그 칸이 **언제 성립하고 언제 안 성립하나** — 프리플라이트가 붙으면 본 요청은 서버에 **가지도 않는다** — 로 넓힌다.\
-> **경계** — ★ **보안 모델(CSRF 방어 설계·신뢰 경계)은 [`../../../cs/foundations/security/`](../../../cs/foundations/security/) 가 정본으로 걸려 있다.** 단 2026-09-26 현재 그 폴더는 해시·HMAC·OIDC·JWKS·신원·롤아웃 여섯 편이고 **CORS·CSRF 를 다루는 절은 없다**(`cors`·`csrf` 로 `grep` 해 0건). 그래서 여기는 **브라우저가 무엇을 막고 무엇을 못 막는지의 관찰**까지만 적고, 방어 설계는 그쪽이 생기면 넘긴다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome · Go**
 
 ```text
@@ -933,8 +924,8 @@ Max-Age 헤더 없음 — PUT 두 번 → B 가 받은 순서 = OPTIONS → PUT 
 ```
 
 - ★★ **세 판 모두 같다** — `600` 은 **OPTIONS 1번**(두 번째 PUT 은 캐시가 답했다), **`0` 은 2번**(매번 묻는다), **헤더 없음도 1번**.
-- ★★ **「헤더가 없으면 캐시 안 한다」가 아니다** — 명세는 **없으면 5초**다. 두 PUT 이 5초 안에 이어져서 1번이었다. **시간에 기댄 칸**이다(머리말 표).
-- ★ **캐시가 답한 두 번째 OPTIONS 는 서버에 흔적이 없다** — 서버 창은 「안 왔다」만 안다. 그것을 「캐시가 답했다」로 읽는 근거는 **같은 주소의 첫 PUT 에는 OPTIONS 가 왔다**는 것이다(머리말 창 표의 제5의 상태).
+- ★★ **「헤더가 없으면 캐시 안 한다」가 아니다** — 명세는 **없으면 5초**다. 두 PUT 이 5초 안에 이어져서 1번이었다. **시간에 기댄 칸**이다(맨 위 부분 표).
+- ★ **캐시가 답한 두 번째 OPTIONS 는 서버에 흔적이 없다** — 서버 창은 「안 왔다」만 안다. 그것을 「캐시가 답했다」로 읽는 근거는 **같은 주소의 첫 PUT 에는 OPTIONS 가 왔다**는 것이다(맨 위 부분 창 표의 제5의 상태).
 
 ```text
    같은 PUT 두 번 — 서버 B 가 받은 줄 (세 판 모두)
@@ -1270,4 +1261,13 @@ B POST /cors?acao=none&id=go  Origin=(없음) · Content-Type=text/plain · X-A=
 
 - **`Access-Control-Allow-Methods: *`·`Allow-Headers: *`** 는 자격 증명이 없을 때만 와일드카드로 읽힌다(명세의 메서드·헤더 검사 문장) — 던지지 않았다.
 - **`HEAD`** 는 안전 목록이지만 격자에 넣지 않았다.
-- **HTTP/2 서버에서의 스트림 업로드**와 **`Max-Age` 상한**은 이 판으로 못 본다(머리말 「도구가 못 보는 것」).
+- **HTTP/2 서버에서의 스트림 업로드**와 **`Max-Age` 상한**은 이 판으로 못 본다(맨 위 부분 「도구가 못 보는 것」).
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」 — 서버 B 가 받은 순서(OPTIONS 가 먼저 왔나)를 칸마다 서버에게 묻는 「프리플라이트 격자」다.** 메서드 4 × `Content-Type` 4 × 커스텀 헤더 2 = 32칸을 다른 출처로 던지고, 마지막 줄을 스크립트가 「OPTIONS 가 먼저 온 칸 N / 32」로 찍는다. 그 옆에 **프리플라이트가 거부되면 본 요청이 서버에 가나**를 서버 로그로 싣는다.\
+**기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 「CORS-safelisted method」(**`GET`·`HEAD`·`POST`**) · 「CORS-safelisted request-header」(값이 **128바이트를 넘으면 거짓** · `content-type` 은 파싱한 MIME 의 본질이 **`application/x-www-form-urlencoded`·`multipart/form-data`·`text/plain`** 일 때만) · main fetch 의 프리플라이트 조건(「**use-CORS-preflight flag** 가 켜졌거나, unsafe-request flag 가 켜졌고 메서드가 안전 목록이 아니거나 **CORS-unsafe request-header names 가 비지 않았을 때**」) · 요청 절(「use-CORS-preflight flag 는 … **`ReadableStream` 을 요청에 쓰면** 켜진다」) · HTTP fetch 의 「**If preflightResponse is a network error, then return** preflightResponse」 · CORS-preflight fetch(OPTIONS 에 `Access-Control-Request-Method`·`-Headers` 를 싣는다 · 「CORS check 가 성공하고 **status 가 ok status** 여야」 · 메서드·헤더 목록 검사) · CORS-preflight cache(「max-age 가 없으면 **5**」 · 「imposed limit」) · 「CORS-safelisted response-header name」 · 「opaque filtered response」(**status 0 · header list 비움 · body null**) · Request 생성자(「mode 가 `no-cors` 인데 메서드가 안전 목록이 아니면 **TypeError**」 · 스트림 본문에 「`duplex` 가 없으면 TypeError」·「mode 가 `same-origin`·`cors` 가 아니면 TypeError」) · 요청 출처 직렬화(「redirect-taint 가 `same-origin` 이 아니면 **`"null"`**」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 페이지는 **서버 A**(`http://127.0.0.1`)에서 열었고 다른 출처는 **같은 기계의 다른 포트인 서버 B** 다. **바깥 인터넷으로는 한 번도 요청하지 않았다.** 하네스의 Chrome·CDP 쪽은 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 (1)을 그대로 빌려 쓰고, **서버만 새로 세웠다**((1)).\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — ★★★ **[25번 주제](../25-fetch-request-response/2-summary.md)의 (1)·(2)가 「막는 것은 응답 읽기」를 한 칸 쟀다** — 허용 헤더 없는 다른 출처 `POST` 가 페이지에서는 `TypeError 「Failed to fetch」` 인데 **서버 B 로그에는 「주문을 처리했다 · 200 을 보냈다 · 허용 헤더 없음」**, 이유는 콘솔에만. 여기서는 **그 칸을 다시 재지 않고 인용**한다. 이 편은 그 칸이 **언제 성립하고 언제 안 성립하나** — 프리플라이트가 붙으면 본 요청은 서버에 **가지도 않는다** — 로 넓힌다.\
+**경계** — ★ **보안 모델(CSRF 방어 설계·신뢰 경계)은 [`../../../cs/foundations/security/`](../../../cs/foundations/security/) 가 정본으로 걸려 있다.** 단 2026-09-26 현재 그 폴더는 해시·HMAC·OIDC·JWKS·신원·롤아웃 여섯 편이고 **CORS·CSRF 를 다루는 절은 없다**(`cors`·`csrf` 로 `grep` 해 0건). 그래서 여기는 **브라우저가 무엇을 막고 무엇을 못 막는지의 관찰**까지만 적고, 방어 설계는 그쪽이 생기면 넘긴다.

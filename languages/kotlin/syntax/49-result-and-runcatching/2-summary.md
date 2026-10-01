@@ -1,17 +1,5 @@
 # kotlin/syntax/49 — `Result` 와 `runCatching` — 예외를 값으로 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Exceptions](https://kotlinlang.org/docs/exceptions.html) · [kotlin.Result API](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-result/) — 이 문서는 그 목록을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현, 그리고 **이 판의 컴파일러 jar**(`kotlin-compiler.jar`)에 남은 진단 문구·언어 기능 표를 근거로 삼는다((2)(5)).
-> ★★ **KEEP 문서와 1.5 릴리스 노트는 이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 「왜 제한했었나」의 **설계 논거**는 이 문서에 없다. 대신 **컴파일러가 스스로 남긴 기록**을 읽었다((2)).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 10회(격자 스크립트 안의 5회 포함 · 5회 모두 대조용 칸 하나 때문에 실패 — 그 실패가 결과다 · `-language-version 1.9` 거부 1회) · `java` 4회 · `javap` 5회(컴파일러 클래스 3 · 이 문서의 클래스 2) + stdlib `kotlin.Result` 1회 · stdlib 소스 jar 에서 발췌 3곳.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「막힌 칸 N / M」·「runCatching 만 잡은 행 N / M」은 스크립트·프로그램이 스스로 센 것**이다.
-> **버전** — `Result`·`runCatching`·`map`·`mapCatching`·`recover`·`fold`·`getOrThrow` 는 stdlib 소스에 **`@SinceKotlin("1.3")`**((5)). ★★★ **「`Result` 를 반환 타입으로 못 쓴다」는 제한은 1.5 에서 풀렸다** — 이 판의 컴파일러가 그 기능을 **`LanguageVersion.KOTLIN_1_5`** 로 적어 두었다((2)). 그 전 판에서 막히는 것은 **이 판에서 잴 수 없다** — `-language-version 1.9` 부터 거부한다((1)).
-> **경계** — ★★★ **검사 예외가 없다는 것**(그래서 `Result` 도 컴파일러가 강제하지 않는 관용구라는 것)은 [34번 주제](../34-exceptions-nothing-and-try-expression/)와 [`../../언어-특성/README.md`](../../언어-특성/README.md) §8 이 정본이다. `value class` 의 박싱·이름 뭉개기 규칙은 [26번 주제](../26-value-class-and-boxing/)가 정본이다 — 여기서는 **`Result` 가 그 규칙에서 벗어나는 한 자리**만 본다.\
-> 코루틴의 취소(`CancellationException`)가 **왜** 문제인지는 [목록의 **53번 주제**](../53-structured-concurrency-job-cancellation-exceptions/)(구조적 동시성)의 몫이다 — 여기서는 **`runCatching` 이 무엇을 잡는가**만 본다. `require`/`check`/`error`/`TODO` 가 던지는 것은 [목록의 **51번 주제**](../51-preconditions-require-check-error-todo/)다.\
-> ★ **대비** — 오류를 **타입이** 말하는 Rust `Result<T, E>` 는 [Rust 22번](../../../rust/syntax/22-result-question-mark-and-from/), 오류를 **다중 반환 값**으로 돌려주는 Go 는 [Go 23번](../../../go/syntax/23-error-interface-and-errors-as-values/)이 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**반환 타입 판별 격자 — `Result` 를 쓰는 자리 열 곳 × `-language-version` 2.0\~2.4 → 컴파일되나 · 진단**」. README 의 학습 목표는 「**왜 제한되는지**」인데, **이 판에서는 한 칸도 막히지 않는다.** 그래서 이 주제의 첫 결론은 「제한이 **지금은 없다**」이고, 「왜 있었나」는 **컴파일러에 남은 흔적**으로만 읽는다.
 
 ## 이 주제가 쓰는 세 층
@@ -544,3 +532,15 @@ valid  [80, 22]
 - **`Result` 가 이름 뭉개기에서 빠지는 까닭** — stdlib 쪽 표지인지 컴파일러의 특별 취급인지 **확인하지 않았다.** `javap -v` 로 메타데이터를 읽으면 단서가 있을 수 있다.
 - **K2 의 `Result` 검사** — `org.jetbrains.kotlin.fir` 아래에 같은 진단이 있는지 컴파일러 jar 를 더 뒤지면 알 수 있다. 이 판에서는 K1 계열 셋만 읽었다.
 - **`recoverCatching`·`onSuccess`·`onFailure`** — 선언은 읽었고 돌리지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [Exceptions](https://kotlinlang.org/docs/exceptions.html) · [kotlin.Result API](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-result/) — 이 문서는 그 목록을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현, 그리고 **이 판의 컴파일러 jar**(`kotlin-compiler.jar`)에 남은 진단 문구·언어 기능 표를 근거로 삼는다((2)(5)).
+★★ **KEEP 문서와 1.5 릴리스 노트는 이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 「왜 제한했었나」의 **설계 논거**는 이 문서에 없다. 대신 **컴파일러가 스스로 남긴 기록**을 읽었다((2)).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 10회(격자 스크립트 안의 5회 포함 · 5회 모두 대조용 칸 하나 때문에 실패 — 그 실패가 결과다 · `-language-version 1.9` 거부 1회) · `java` 4회 · `javap` 5회(컴파일러 클래스 3 · 이 문서의 클래스 2) + stdlib `kotlin.Result` 1회 · stdlib 소스 jar 에서 발췌 3곳.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「막힌 칸 N / M」·「runCatching 만 잡은 행 N / M」은 스크립트·프로그램이 스스로 센 것**이다.
+**버전** — `Result`·`runCatching`·`map`·`mapCatching`·`recover`·`fold`·`getOrThrow` 는 stdlib 소스에 **`@SinceKotlin("1.3")`**((5)). ★★★ **「`Result` 를 반환 타입으로 못 쓴다」는 제한은 1.5 에서 풀렸다** — 이 판의 컴파일러가 그 기능을 **`LanguageVersion.KOTLIN_1_5`** 로 적어 두었다((2)). 그 전 판에서 막히는 것은 **이 판에서 잴 수 없다** — `-language-version 1.9` 부터 거부한다((1)).
+**경계** — ★★★ **검사 예외가 없다는 것**(그래서 `Result` 도 컴파일러가 강제하지 않는 관용구라는 것)은 [34번 주제](../34-exceptions-nothing-and-try-expression/)와 [`../../언어-특성/README.md`](../../언어-특성/README.md) §8 이 정본이다. `value class` 의 박싱·이름 뭉개기 규칙은 [26번 주제](../26-value-class-and-boxing/)가 정본이다 — 여기서는 **`Result` 가 그 규칙에서 벗어나는 한 자리**만 본다.\
+코루틴의 취소(`CancellationException`)가 **왜** 문제인지는 [목록의 **53번 주제**](../53-structured-concurrency-job-cancellation-exceptions/)(구조적 동시성)의 몫이다 — 여기서는 **`runCatching` 이 무엇을 잡는가**만 본다. `require`/`check`/`error`/`TODO` 가 던지는 것은 [목록의 **51번 주제**](../51-preconditions-require-check-error-todo/)다.\
+★ **대비** — 오류를 **타입이** 말하는 Rust `Result<T, E>` 는 [Rust 22번](../../../rust/syntax/22-result-question-mark-and-from/), 오류를 **다중 반환 값**으로 돌려주는 Go 는 [Go 23번](../../../go/syntax/23-error-interface-and-errors-as-values/)이 정본이다.

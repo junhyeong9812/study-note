@@ -1,8 +1,5 @@
 # issue/cross-cutting/reliability/resource-bounding-last-defense — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다.
-> ⚠️ 이 정답은 Claude 초안(2026-09-23) — 이슈 README·코드 기준. 복습 전 읽지 말 것.
-
 태그: `resource-bounding`
 
 ## 정답

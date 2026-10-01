@@ -1,20 +1,5 @@
 # js/syntax/43 — CJS 와 ESM 상호운용: 「누가 누구를 부를 수 있고, 파일은 무엇으로 읽히고, 값은 복사되나 — 그리고 node 판은 어디서 갈리나」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다. **브라우저는 부적용**(CommonJS 가 없다).
->
-> ★★★ **이 주제의 본체는 격자 둘이다** — 누가 누구를 부르나 16행 · `"type"` × 확장자 × 내용 18칸, 각각 두 node 판. **1번 · 2번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **CommonJS 와 ESM 은 서로를 어떻게 부르고 어디서 막히나 — node 18 과 20 은 어느 행에서 갈리나**
-> ② ★★★ **파일은 무엇으로 읽히나 — 확장자 · `"type"` · 내용**
-> ③ **값은 복사되나 · ESM 에 없는 CommonJS 비품 · 막힐 때의 문구.**
->
-> **선행** — [42](../42-esm-modules/2-summary.md) · [36](../36-event-loop-and-microtasks/2-summary.md) · [39](../39-async-await/2-summary.md) · [35](../35-strict-mode/2-summary.md).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 문항(1\~5)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -248,6 +233,14 @@ console.log("after two bump() through import: import side count = " + count + " 
 
 - ★★ 36번에서 같은 파일의 `nextTick` 순위는 CommonJS 와 ES 모듈에서 각각 몇 위였나? 그것은 이 주제의 어느 규칙과 이어지나?
 - ★ 42번의 라이브 바인딩과 이 주제의 3번은 무엇이 한 쌍인가?
+
+## 실행 환경
+
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다. **브라우저는 부적용**(CommonJS 가 없다).
+
+★★★ **이 주제의 본체는 격자 둘이다** — 누가 누구를 부르나 16행 · `"type"` × 확장자 × 내용 18칸, 각각 두 node 판. **1번 · 2번 문항이 이 주제의 중심이다.**
+
+**선행** — [42](../42-esm-modules/2-summary.md) · [36](../36-event-loop-and-microtasks/2-summary.md) · [39](../39-async-await/2-summary.md) · [35](../35-strict-mode/2-summary.md).
 
 ## 복습 기록
 

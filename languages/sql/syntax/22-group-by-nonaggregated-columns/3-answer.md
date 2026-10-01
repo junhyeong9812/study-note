@@ -1,10 +1,5 @@
 # sql/22-`GROUP BY` 와 비집계 열 규칙 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> 문서 근거는 [PG 18 Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 Handling of GROUP BY](https://dev.mysql.com/doc/refman/8.4/en/group-by-handling.html) · [PG 16 릴리스 노트](https://www.postgresql.org/docs/release/16.0/).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -621,3 +616,9 @@ MySQL 이 별칭 `'c'` 로 부르는 것은 MySQL 이 `GROUP BY` 에서 **출력
 
 **버전** — `ANY_VALUE()` 는 **PG 16+**(릴리스 노트로 확인). MySQL 쪽 도입 버전은 **확인 못 해 적지 않았다.**\
 다음 버전에서 다시 볼 것 — **9번**(종속성 범위)과 **5번**(`sql_mode` 기본값)이다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+문서 근거는 [PG 18 Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 Handling of GROUP BY](https://dev.mysql.com/doc/refman/8.4/en/group-by-handling.html) · [PG 16 릴리스 노트](https://www.postgresql.org/docs/release/16.0/).

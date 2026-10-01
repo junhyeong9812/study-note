@@ -1,29 +1,5 @@
 # c/syntax/16 — 배열-포인터 감쇠와 함수 매개변수: 「**함수 문턱에서 길이를 잃는다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Array to pointer conversion](https://en.cppreference.com/w/c/language/conversion) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
-> **실행 검증** — 이 문서의 모든 출력·경고·sanitizer 진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> 작업 디렉터리는 `/tmp/c13`, 소스 파일명은 언제나 `ex.c` 다 — sanitizer 출력에 경로가 박히기 때문이다.\
-> ★★ **실행 블록은 `./x 2>&1 | cat`(또는 `| sed -n '1,/^SUMMARY/p'`)으로 받았다** —\
-> sanitizer 는 stderr, `printf` 는 stdout 이라 **터미널과 파이프에서 순서가 달라진다.**\
-> 섞이는 프로그램(16-c)에는 `setvbuf(stdout, NULL, _IONBF, 0)` 를 넣어 **순서를 고정**했다.
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | `%p` 주소값 · ASan 의 `pc`/`bp`/`sp` · PID · `BuildId` | ★ 주소들 **사이의 차이**(`+4` ↔ `+40`) |
-> | UB 가 만든 값(`sum10(small)` 의 `34`) | ★ **`sizeof` 값**(40 · 8 · 16 · 3) |
-> | — | **`파일:줄:칸`** · 진단 본문 · 플래그 이름 · **종료 코드** |
->
-> **버전** — 감쇠 규칙은 **C89 이후 바뀐 적이 없다.** **`int a[static 10]` 은 C99부터**다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★ **경계** — **동적 배열 자료구조**(용량·증가 전략)는 [`data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/)가 정본이고\
-> 여기는 **감쇠 규칙과 `sizeof` 가 달라지는 자리**만 본다.\
-> ★ **`int (*)[4]` 를 `int **` 와 혼동하는 것**은 [01번 형제](../01-declaration-syntax-and-reading/)가 정본이다 — 여기서는 **결론만** 되짚는다.\
-> **`sizeof` 의 일반 규칙**은 [08번 형제](../08-sizeof-alignment-and-offsetof/), **포인터 산술**은 [15번 형제](../15-pointer-arithmetic-and-indexing/)가 정본이다.
-> 선행 — [15번 형제](../15-pointer-arithmetic-and-indexing/) · [01번 형제](../01-declaration-syntax-and-reading/).
-
 ## 한눈에 — 쉽게 말하면
 
 **배열을 함수에 넘기면 「상자」가 아니라 「상자의 첫 칸 주소」만 간다.**
@@ -866,3 +842,28 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 
 - **`_Alignof(arr)`** 를 물을 때 이 문서는 **`_Alignof(int[10])` 이라는 타입 형태**로 던졌다.\
   ★ **식 형태(`_Alignof(arr)`)로는 던지지 않았다** — C 에서 `_Alignof` 의 피연산자는 **타입 이름**이기 때문이다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Array to pointer conversion](https://en.cppreference.com/w/c/language/conversion) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
+**실행 검증** — 이 문서의 모든 출력·경고·sanitizer 진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+작업 디렉터리는 `/tmp/c13`, 소스 파일명은 언제나 `ex.c` 다 — sanitizer 출력에 경로가 박히기 때문이다.\
+★★ **실행 블록은 `./x 2>&1 | cat`(또는 `| sed -n '1,/^SUMMARY/p'`)으로 받았다** —\
+sanitizer 는 stderr, `printf` 는 stdout 이라 **터미널과 파이프에서 순서가 달라진다.**\
+섞이는 프로그램(16-c)에는 `setvbuf(stdout, NULL, _IONBF, 0)` 를 넣어 **순서를 고정**했다.
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| `%p` 주소값 · ASan 의 `pc`/`bp`/`sp` · PID · `BuildId` | ★ 주소들 **사이의 차이**(`+4` ↔ `+40`) |
+| UB 가 만든 값(`sum10(small)` 의 `34`) | ★ **`sizeof` 값**(40 · 8 · 16 · 3) |
+| — | **`파일:줄:칸`** · 진단 본문 · 플래그 이름 · **종료 코드** |
+
+**버전** — 감쇠 규칙은 **C89 이후 바뀐 적이 없다.** **`int a[static 10]` 은 C99부터**다.
+
+★★ **경계** — **동적 배열 자료구조**(용량·증가 전략)는 [`data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/)가 정본이고\
+여기는 **감쇠 규칙과 `sizeof` 가 달라지는 자리**만 본다.\
+★ **`int (*)[4]` 를 `int **` 와 혼동하는 것**은 [01번 형제](../01-declaration-syntax-and-reading/)가 정본이다 — 여기서는 **결론만** 되짚는다.\
+**`sizeof` 의 일반 규칙**은 [08번 형제](../08-sizeof-alignment-and-offsetof/), **포인터 산술**은 [15번 형제](../15-pointer-arithmetic-and-indexing/)가 정본이다.
+선행 — [15번 형제](../15-pointer-arithmetic-and-indexing/) · [01번 형제](../01-declaration-syntax-and-reading/).

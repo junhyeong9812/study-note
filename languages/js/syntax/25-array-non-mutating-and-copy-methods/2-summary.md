@@ -1,67 +1,5 @@
 # js/syntax/25 — 배열 비변형·복사 메서드: 「원본에는 쓰기가 한 번도 안 닿는다 — 단 얕게, 그리고 콜백은 예외다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기 — `Proxy` 쓰기 트랩이다.**
-> 「이 메서드는 원본을 안 바꾼다」는 결과 배열을 봐서는 반만 증명된다 — **도중에 썼다가 되돌렸을 수도** 있기 때문이다.
-> 그래서 원본을 `Proxy` 로 감싸 **`set` · `defineProperty` · `deleteProperty` 트랩이 몇 번 불리나**를 메서드마다 세고,
-> 마지막 줄의 「쓰기 트랩 0 으로 돌아온 메서드 N / M」을 **스크립트가 직접 센다**(동작 (1)).
-> ★ **이 창 하나가 24편(변형)과 25편(복사)을 한 줄로 가른다** — 변형 메서드는 같은 격자에서 트랩이 불린다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 2025(16판)](https://262.ecma-international.org/16.0/) — `Array.prototype.sort` · `toSorted` · `toReversed` · `toSpliced` · `with` · `reduce` · `map` 의 단계와 note ·
->   `SortIndexedProperties`(`skip-holes` 대 `read-through-holes`) · `ToIntegerOrInfinity`
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(★ **Change Array by Copy 는 2023**)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **메서드와 추상 연산 이름**으로, 값·트랩 횟수·예외 타입과 메시지는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★ **이 문서는 BMP 밖 글자를 한 글자도 싣지 않는다.**
->
-> **버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `map` · `filter` · `reduce` · `reduceRight` · `slice` · `concat` | **ES2015 이전부터** | 세 판 다 있다 |
-> | `Symbol.species` · `Symbol.isConcatSpreadable` | **ES2015** | 세 판 다 있다 — [22번](../22-symbol-and-well-known-symbols/2-summary.md)이 정본 |
-> | ★★★ `toSorted` · `toReversed` · `toSpliced` · `with`(Change Array by Copy) | ★★★ **ES2023** — [README](../README.md) 는 「ES2024」라 적었다. **finished proposals 표가 2023 이다**(목록 쪽이 틀렸다 — 이 편은 고치지 않고 보고만 한다) | ★ **node 18 에 없고** node 20 · Chrome 에 있다 |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **① 추상 연산에 로그 심기**(본체) | 원본을 `Proxy` 로 감싸 메서드 **17개**의 `set` · `defineProperty` · `deleteProperty` · `get` 트랩 횟수(동작 (1)) · `map` 이 콜백에 넘기는 인자(동작 (5)) · `reduce` 콜백이 받는 `(acc, x, i)`(동작 (4)) · 비교 함수 호출 횟수(동작 (6)) |
-> | ★★★ **② 전수 격자** | 동작 (1)의 격자 자체 — **「쓰기 트랩 0 으로 돌아온 메서드 N / M」과 「던진 메서드 N / M」을 스크립트가 센다** · 인덱스 8개 × (`with` · 대입)(동작 (3)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | `with` 의 `RangeError` · 빈 배열 `reduce` 의 `TypeError` · 비교 함수 자리의 `TypeError` · ★ **node 18 에서 메서드가 없는 `TypeError`** |
-> | ★★ **⑤ 두 판 대조기** | 이 주제에서 갈린 탐침은 **넷**(`25a` · `25b` · `25c` · `25f`) — 전부 **복사 메서드 넷이 node 18 에 없어서**다 |
-> | ★ **부적용 — ③ 브랜드 태그** | 결과가 「배열인가」는 `Array.isArray` 로 충분했다. 「어느 클래스인가」(species)는 **22번이 이미 쟀다** — 인용만 한다(동작 (8)) |
-> | ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. 전부 런타임 의미다 — **잴 것이 없다** |
-> | ★★★ **안 쟀다 — 성능** | 「`toSorted` 는 복사라서 느리다」·「`slice().sort()` 가 더 빠르다」를 **한 줄도 쓰지 않는다.** 시간도 메모리도 안 쟀다. 센 것은 **트랩 횟수와 호출 횟수**뿐이다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 · 근거로 쓰지 않는다 | 안 흔들린다 · 근거로 쓴다 |
-> |---|---|
-> | 예외 **문구** — ★ **판마다 다르다**(node 18 의 `[3,(intermediate value),1].toSorted is not a function` 처럼 **소스 모양이 문구에 박힌다**) | ★★★ **쓰기 트랩 횟수**(`set`·`defineProperty`·`deleteProperty`)와 두 집계 줄 · 원본이 바뀌었나 · 돌려준 값이 원본과 `===` 인가 · 예외의 **종류** |
-> | ★ **`get` 트랩 횟수** — 명세 단계를 따르지만 이 문서의 주장은 여기에 기대지 않는다 | `with` 가 던지는 **인덱스 범위** · `reduce` 가 던지는 **조건**(원소가 하나도 없고 초기값이 없을 때) |
-> | ★ **비교 함수 호출 횟수**(`4` · `108`) — 재대조에서 같았지만 **호출 순서가 구현 정의**라 엔진이 바뀌면 움직일 수 있다 | ★★★ **비교 함수가 던지면 `sort` 의 원본이 그대로인 것** — 명세 단계가 그렇게 짜여 있다(동작 (6)) |
->
-> **선행** — [24 — 배열 변형 메서드](../24-array-mutating-methods/2-summary.md)(★★★ **직접 짝** — 변형 쪽의 반환값과 원본, 기본 `sort` 의 문자열 비교·안정 정렬은 거기가 정본) ·
-> [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md)(★★ `Symbol.species` 를 **읽는 메서드 7 / 14** · `isConcatSpreadable`) ·
-> [17 — 상속과 `super`](../17-inheritance-and-super/2-summary.md)(`extends Array` 의 `map`·`filter`·`slice` 결과가 자식 클래스) ·
-> [21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md)(배열 메서드 사슬이 **단계마다 전부 도는 것**) ·
-> [08 — 함수 정의 형태와 매개변수](../08-function-forms-and-parameters/2-summary.md)(`map(parseInt)` 의 이유 — 남는 인자와 `length`) ·
-> [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(얕은 복사).
-> **이어지는 곳** — [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(★ **구멍을 메서드마다 어떻게 보나**는 거기가 정본) · [목록의 **48번 주제**](../48-deep-copy-methods-compared/) 「깊은 복사 수단 비교」.
->
-> ★★ **경계 — 변형 메서드의 동작 자체는 24번이 정본이다.** 여기서는 **같은 일을 복사로 하면 무엇이 달라지나**만 본다. 격자에 변형 메서드가 들어간 것은 **대조군**이다.
-> ★★ **경계 — species 가 무엇을 바꾸나는 22번(읽는 메서드)·17번(결과 생성자)이 정본이다.** 여기서는 그 표를 인용해 **복사 메서드 넷이 species 를 안 읽는다**는 것만 잇는다.
-> ★ **경계 — 구멍 처리의 전수 격자는 26번이다.** 여기서는 **복사 메서드가 구멍을 `undefined` 로 채운다**는 한 줄만 본다(동작 (7)).
-> ★ **경계 — 깊은 복사(`structuredClone` 등)는 48번 주제다.** 여기서는 **복사가 한 겹이라는 사실**까지만.
-
 ```sh
 # js24b-versions.sh
 #!/usr/bin/env bash
@@ -307,7 +245,7 @@ methods that returned with zero write traps: 9 / 17
 - ★★ **변형 쪽의 쓰기 횟수가 곧 「몇 칸을 건드렸나」다** — `sort` 3(전부 되쓴다) · `reverse` 2(가운데는 제자리) · `push` 2(새 칸 + `length`) · `splice(0, 1)`·`shift` 는 **`set` 3 에 `delete` 1**(당기고 끝 칸을 지운다).
   각 메서드가 **무엇을 돌려주나**는 [24번](../24-array-mutating-methods/2-summary.md)이 정본이다.
 - ★ **`set` 과 `defineProperty` 가 늘 같은 수**다 — 동작 (2).
-- ★ **`get` 열은 근거로 쓰지 않는다**(머리말 표) — 비변형 쪽도 **읽기는 한다**는 것만 본다.
+- ★ **`get` 열은 근거로 쓰지 않는다**(「실행 환경」 표) — 비변형 쪽도 **읽기는 한다**는 것만 본다.
 
 ★★★ **같은 격자를 node 18 에 던지면 집계 줄이 달라진다** — `methods that threw: 4 / 17` · `methods that returned with zero write traps: 5 / 17`.
 복사 메서드 넷이 **없어서 `TypeError` 로 던지고**, 던진 행은 쓰기 트랩이 **0 인 채로** 끝난다.
@@ -1017,3 +955,64 @@ row("b.filter(() => false)", b.filter(() => false));
 - **`Set` 이 던지는 경우의 `sort`** — 되쓰는 도중 원본이 동결돼 있거나 setter 가 던지면 **그때는 일부만 쓰인 채** 끝날 수 있다(명세의 `?` 가 되쓰기 단계에도 붙어 있다). 이 문서는 **비교가 던지는 경우만** 쟀다. 동결 배열에 쓰는 쪽은 [24번](../24-array-mutating-methods/2-summary.md)과 [14번](../14-property-descriptors-and-freezing/2-summary.md)이다.
 - **`TypedArray` 의 복사 메서드** — 이 배치는 `TypedArray` 를 **한 줄도 안 돌렸다.** 어느 메서드가 거기에도 있는지는 이 문서가 말하지 않는다.
 - **`Proxy` 불변식** — 트랩이 거짓을 말할 수 있는 한계는 [목록의 **45번 주제**](../45-proxy/)다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기 — `Proxy` 쓰기 트랩이다.**
+「이 메서드는 원본을 안 바꾼다」는 결과 배열을 봐서는 반만 증명된다 — **도중에 썼다가 되돌렸을 수도** 있기 때문이다.
+그래서 원본을 `Proxy` 로 감싸 **`set` · `defineProperty` · `deleteProperty` 트랩이 몇 번 불리나**를 메서드마다 세고,
+마지막 줄의 「쓰기 트랩 0 으로 돌아온 메서드 N / M」을 **스크립트가 직접 센다**(동작 (1)).
+★ **이 창 하나가 24편(변형)과 25편(복사)을 한 줄로 가른다** — 변형 메서드는 같은 격자에서 트랩이 불린다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 2025(16판)](https://262.ecma-international.org/16.0/) — `Array.prototype.sort` · `toSorted` · `toReversed` · `toSpliced` · `with` · `reduce` · `map` 의 단계와 note ·
+  `SortIndexedProperties`(`skip-holes` 대 `read-through-holes`) · `ToIntegerOrInfinity`
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(★ **Change Array by Copy 는 2023**)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **메서드와 추상 연산 이름**으로, 값·트랩 횟수·예외 타입과 메시지는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★ **이 문서는 BMP 밖 글자를 한 글자도 싣지 않는다.**
+
+**버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `map` · `filter` · `reduce` · `reduceRight` · `slice` · `concat` | **ES2015 이전부터** | 세 판 다 있다 |
+| `Symbol.species` · `Symbol.isConcatSpreadable` | **ES2015** | 세 판 다 있다 — [22번](../22-symbol-and-well-known-symbols/2-summary.md)이 정본 |
+| ★★★ `toSorted` · `toReversed` · `toSpliced` · `with`(Change Array by Copy) | ★★★ **ES2023** — [README](../README.md) 는 「ES2024」라 적었다. **finished proposals 표가 2023 이다**(목록 쪽이 틀렸다 — 이 편은 고치지 않고 보고만 한다) | ★ **node 18 에 없고** node 20 · Chrome 에 있다 |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **① 추상 연산에 로그 심기**(본체) | 원본을 `Proxy` 로 감싸 메서드 **17개**의 `set` · `defineProperty` · `deleteProperty` · `get` 트랩 횟수(동작 (1)) · `map` 이 콜백에 넘기는 인자(동작 (5)) · `reduce` 콜백이 받는 `(acc, x, i)`(동작 (4)) · 비교 함수 호출 횟수(동작 (6)) |
+| ★★★ **② 전수 격자** | 동작 (1)의 격자 자체 — **「쓰기 트랩 0 으로 돌아온 메서드 N / M」과 「던진 메서드 N / M」을 스크립트가 센다** · 인덱스 8개 × (`with` · 대입)(동작 (3)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | `with` 의 `RangeError` · 빈 배열 `reduce` 의 `TypeError` · 비교 함수 자리의 `TypeError` · ★ **node 18 에서 메서드가 없는 `TypeError`** |
+| ★★ **⑤ 두 판 대조기** | 이 주제에서 갈린 탐침은 **넷**(`25a` · `25b` · `25c` · `25f`) — 전부 **복사 메서드 넷이 node 18 에 없어서**다 |
+| ★ **부적용 — ③ 브랜드 태그** | 결과가 「배열인가」는 `Array.isArray` 로 충분했다. 「어느 클래스인가」(species)는 **22번이 이미 쟀다** — 인용만 한다(동작 (8)) |
+| ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. 전부 런타임 의미다 — **잴 것이 없다** |
+| ★★★ **안 쟀다 — 성능** | 「`toSorted` 는 복사라서 느리다」·「`slice().sort()` 가 더 빠르다」를 **한 줄도 쓰지 않는다.** 시간도 메모리도 안 쟀다. 센 것은 **트랩 횟수와 호출 횟수**뿐이다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 · 근거로 쓰지 않는다 | 안 흔들린다 · 근거로 쓴다 |
+|---|---|
+| 예외 **문구** — ★ **판마다 다르다**(node 18 의 `[3,(intermediate value),1].toSorted is not a function` 처럼 **소스 모양이 문구에 박힌다**) | ★★★ **쓰기 트랩 횟수**(`set`·`defineProperty`·`deleteProperty`)와 두 집계 줄 · 원본이 바뀌었나 · 돌려준 값이 원본과 `===` 인가 · 예외의 **종류** |
+| ★ **`get` 트랩 횟수** — 명세 단계를 따르지만 이 문서의 주장은 여기에 기대지 않는다 | `with` 가 던지는 **인덱스 범위** · `reduce` 가 던지는 **조건**(원소가 하나도 없고 초기값이 없을 때) |
+| ★ **비교 함수 호출 횟수**(`4` · `108`) — 재대조에서 같았지만 **호출 순서가 구현 정의**라 엔진이 바뀌면 움직일 수 있다 | ★★★ **비교 함수가 던지면 `sort` 의 원본이 그대로인 것** — 명세 단계가 그렇게 짜여 있다(동작 (6)) |
+
+**선행** — [24 — 배열 변형 메서드](../24-array-mutating-methods/2-summary.md)(★★★ **직접 짝** — 변형 쪽의 반환값과 원본, 기본 `sort` 의 문자열 비교·안정 정렬은 거기가 정본) ·
+[22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md)(★★ `Symbol.species` 를 **읽는 메서드 7 / 14** · `isConcatSpreadable`) ·
+[17 — 상속과 `super`](../17-inheritance-and-super/2-summary.md)(`extends Array` 의 `map`·`filter`·`slice` 결과가 자식 클래스) ·
+[21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md)(배열 메서드 사슬이 **단계마다 전부 도는 것**) ·
+[08 — 함수 정의 형태와 매개변수](../08-function-forms-and-parameters/2-summary.md)(`map(parseInt)` 의 이유 — 남는 인자와 `length`) ·
+[11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(얕은 복사).
+**이어지는 곳** — [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(★ **구멍을 메서드마다 어떻게 보나**는 거기가 정본) · [목록의 **48번 주제**](../48-deep-copy-methods-compared/) 「깊은 복사 수단 비교」.
+
+★★ **경계 — 변형 메서드의 동작 자체는 24번이 정본이다.** 여기서는 **같은 일을 복사로 하면 무엇이 달라지나**만 본다. 격자에 변형 메서드가 들어간 것은 **대조군**이다.
+★★ **경계 — species 가 무엇을 바꾸나는 22번(읽는 메서드)·17번(결과 생성자)이 정본이다.** 여기서는 그 표를 인용해 **복사 메서드 넷이 species 를 안 읽는다**는 것만 잇는다.
+★ **경계 — 구멍 처리의 전수 격자는 26번이다.** 여기서는 **복사 메서드가 구멍을 `undefined` 로 채운다**는 한 줄만 본다(동작 (7)).
+★ **경계 — 깊은 복사(`structuredClone` 등)는 48번 주제다.** 여기서는 **복사가 한 겹이라는 사실**까지만.

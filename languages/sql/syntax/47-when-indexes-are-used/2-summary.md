@@ -1,17 +1,5 @@
 # sql/47-인덱스를 언제 타고 언제 안 타나 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Using EXPLAIN](https://www.postgresql.org/docs/18/using-explain.html) · [PostgreSQL 18 · Indexes](https://www.postgresql.org/docs/18/indexes.html) · [MySQL 8.4 · EXPLAIN Output Format](https://dev.mysql.com/doc/refman/8.4/en/explain-output.html) · [MySQL 8.4 · Optimization and Indexes](https://dev.mysql.com/doc/refman/8.4/en/optimization-indexes.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> ★ **측정 조건** — 20,000행 `t47`, **`ANALYZE`/`ANALYZE TABLE` 직후**, 기본 설정, 다른 부하 없음.\
-> ★★ **실행 계획은 관찰이지 보장이 아니다.** 아래 계획은 **제출 직전에 다시 찍어 대조했다** — 드리프트 여부는 [3-answer.md](3-answer.md) 의 「실행 검증」에 적었다.\
-> **버전** — 이 주제의 동작에 「어느 버전부터」가 붙는 것을 두 매뉴얼에서 찾지 못해 **적지 않는다.**\
-> ★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 20,000행짜리 `t47` 을 만들어 인덱스를 얹고 **지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> **선행** — [35 타입 체계와 캐스팅](../35-type-system-and-casting/) · [46 인덱스 정의](../46-index-definition-composite-partial-expression/).\
-> ★ **범위 선언** — **[46번](../46-index-definition-composite-partial-expression/)은 「어떻게 정의하나」, 여기는 「그래서 탈까 안 탈까」다.** 탐색 구조 자체는 [`15-b-tree`](../../../../cs/data-structure/15-b-tree/)가 정본이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **인덱스를 탄다 = 「정렬해 둔 순서로 답할 수 있는 질문」을 던졌다는 뜻.**
@@ -644,3 +632,14 @@ SQL 이 보장하는 것은 **결과**이지 **방법**이 아니다. 그래서 
   **이 실험에서는 강제하지 않았다** — 강제하면 「엔진이 무엇을 고르나」를 못 보게 된다.
 - **인덱스가 많을수록 옵티마이저의 선택지가 늘고, 잘못 고를 여지도 는다.**\
   [46 번 16번](../46-index-definition-composite-partial-expression/)의 「무엇을 안 만드나」와 이어진다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Using EXPLAIN](https://www.postgresql.org/docs/18/using-explain.html) · [PostgreSQL 18 · Indexes](https://www.postgresql.org/docs/18/indexes.html) · [MySQL 8.4 · EXPLAIN Output Format](https://dev.mysql.com/doc/refman/8.4/en/explain-output.html) · [MySQL 8.4 · Optimization and Indexes](https://dev.mysql.com/doc/refman/8.4/en/optimization-indexes.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+★ **측정 조건** — 20,000행 `t47`, **`ANALYZE`/`ANALYZE TABLE` 직후**, 기본 설정, 다른 부하 없음.\
+★★ **실행 계획은 관찰이지 보장이 아니다.** 본문의 계획은 **제출 직전에 다시 찍어 대조했다** — 드리프트 여부는 [3-answer.md](3-answer.md) 의 「실행 검증」에 적었다.\
+**버전** — 이 주제의 동작에 「어느 버전부터」가 붙는 것을 두 매뉴얼에서 찾지 못해 **적지 않는다.**\
+★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 20,000행짜리 `t47` 을 만들어 인덱스를 얹고 **지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+**선행** — [35 타입 체계와 캐스팅](../35-type-system-and-casting/) · [46 인덱스 정의](../46-index-definition-composite-partial-expression/).\
+★ **범위 선언** — **[46번](../46-index-definition-composite-partial-expression/)은 「어떻게 정의하나」, 여기는 「그래서 탈까 안 탈까」다.** 탐색 구조 자체는 [`15-b-tree`](../../../../cs/data-structure/15-b-tree/)가 정본이다.

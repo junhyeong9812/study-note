@@ -1,10 +1,5 @@
 # css/syntax/02 — 명시도 계산: (ID, 클래스, 타입) 세 자리와 무엇이 어디에 기여하나 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 색과 모든 `(A, B, C)` 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 확인한 것**이다.\
-> `(A, B, C)` 는 **동점 경쟁자 · 한 칸 낮은 경쟁자 두 판**으로 위아래를 고정했다(방법은 [2-summary.md](2-summary.md) 「손으로 세어 보기」).\
-> 규칙은 [Selectors Level 4 §Calculating a selector's specificity](https://drafts.csswg.org/selectors-4/#specificity-rules) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -340,7 +335,7 @@ section:is(div section) p
 | ★ `*` 행 | 아래쪽 경쟁자가 **존재하지 않아** 두 판을 못 만들었다. 동점 `:where(p)` 판 + `p`(0,0,1)를 **앞에 써도** 그쪽이 이기는 판으로 대신했다 | 두 판 통과 — 다만 **아래쪽은 못 고정했다**(아래 「못 잰 것」) |
 | 기준 소스 | drafts.csswg.org 의 Selectors 4 §15 원문과 대조 | A·B·C 정의 · `:is()`/`:not()`/`:has()` 치환 · `:where()` 0 · `of S` 규칙 · 선택자 목록 규칙 **전부 명세에 있다** |
 | ★ 목록 규칙의 정밀한 문구 | 같은 절 | 명세는 「매치되는 것 중 **가장 센 것**」이라고 적는다 — 본문의 「매치된 선택자별로 따로 센다」보다 한 걸음 더 정밀하다 |
-| Baseline | api.webstatus.dev 조회 2026-09-23 | `is`·`where`·`not` widely 2021-01-21 / 2023-07-21 · `has` widely 2023-12-19 / 2026-06-19 · `nth-child-of` widely 2023-05-09 / 2025-11-09 — 머리말과 일치 |
+| Baseline | api.webstatus.dev 조회 2026-09-23 | `is`·`where`·`not` widely 2021-01-21 / 2023-07-21 · `has` widely 2023-12-19 / 2026-06-19 · `nth-child-of` widely 2023-05-09 / 2025-11-09 — 「실행 환경」과 일치 |
 
 **못 잰 것(「안 돌려 본 것」과 다르다)**\
 ① **명시도 그 자체.** `getComputedStyle` 도 `cssRules` 도 명시도를 노출하지 않는다 — 이 문서의 모든 `(A, B, C)` 는 **승패로 되짚은 값**이다. 방법이 그것뿐이다.\
@@ -352,3 +347,9 @@ section:is(div section) p
 **구현 의존 항목** — ① 색이 `rgb(…)` 형식으로 직렬화되는 것 ② 개발자 도구가 명시도를 `(1,2,0)` 으로 띄워 주는 것. **언어의 보장이 아니다.**
 
 **엔진은 Chrome 151.0.7922.173 하나다.** Firefox 155 는 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.**
+
+## 실행 환경
+
+이 파일의 **모든 색과 모든 `(A, B, C)` 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 확인한 것**이다.\
+`(A, B, C)` 는 **동점 경쟁자 · 한 칸 낮은 경쟁자 두 판**으로 위아래를 고정했다(방법은 [2-summary.md](2-summary.md) 「손으로 세어 보기」).\
+규칙은 [Selectors Level 4 §Calculating a selector's specificity](https://drafts.csswg.org/selectors-4/#specificity-rules) 로 접지했다.

@@ -1,12 +1,5 @@
 # go/syntax/46 — `net/http` 서버: `ServeMux` 패턴(1.22)·`Handler`·미들웨어 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [`net/http`](https://pkg.go.dev/net/http) 패키지 문서(`go doc net/http.Handler` · `net/http.ServeMux`) · `net/http/server.go`·`servemux121.go` 소스(이 툴체인의 것). **이 툴체인에서 직접 떴다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
-> ★ **네트워크는 `localhost` 만** 썼다 — 서버는 `httptest.NewServer`(`127.0.0.1` 의 빈 포트)이고 외부로 나가는 요청은 없다.\
-> **버전** — 메서드·와일드카드 패턴은 **1.22** 부터다. **`go.mod` 의 `go` 줄이 1.21 이하면 옛 의미로 돈다**((2)절 — `httpmuxgo121`). `ResponseController` 는 1.20.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**라우팅 격자** — 패턴 7개(`GET /items/{id}` · `POST /items` · `/items/{$}` · `/files/{path...}` · `/lit/{id}` · `/static/` · `example.com/`)를 건 한 `ServeMux` 에 요청 14개를 보내 **클라이언트가 받은 상태 코드와 고른 핸들러**를 적고, 같은 소스를 **`go.mod` 의 `go 1.22` 줄과 `go 1.21` 줄로 두 번 빌드**해 견준 표」.
 마지막 줄 「**go 1.22 줄과 go 1.21 줄이 갈린 칸 10 / 14**」((2)절). ★★★ **소스는 한 글자도 같은데 `go` 한 줄이 라우팅을 바꾼다.**
 ★★ 짝이 되는 창은 「**미들웨어 사슬의 로그**」 — 바깥에서 들어가 **안쪽부터 나오고**, 상태 코드를 적는 감싸개는 **`WriteHeader` 가 안 불리면 `0` 을 본다**((4)절).
@@ -263,13 +256,13 @@ go 1.22 줄과 go 1.21 줄이 갈린 칸 10 / 14
 
 - ★★★ **첫 두 줄 — `go 1.22` 줄의 기본 GODEBUG 에는 `httpmuxgo121` 이 없고, `go 1.21` 줄에는 `httpmuxgo121=1` 이 들어간다.** 컴파일러도 소스도 같다 — **`go.mod` 한 줄**이 기본값을 바꿨다([41번 주제](../41-modules-go-mod-version-selection-and-workspaces/)의 `go` 줄).
 - ★★★ **1.22 — `GET /items/7` 은 `[GET /items/{id}] id="7"`**. 핸들러가 `r.PathValue("id")` 로 **이미 잘린 조각**을 받는다. `HEAD /items/7` 도 `200`(「GET matches both GET and HEAD」) — 본문은 비었다.
-- ★★★ **1.22 — `DELETE /items/7` 은 `405 Allow: GET, HEAD`** — 경로는 맞는데 메서드가 없다. **핸들러가 `if r.Method != …` 를 쓸 일이 사라졌다.** ★ 이 `405` 는 **`server.go` 의 한 줄**이다(머리말).
+- ★★★ **1.22 — `DELETE /items/7` 은 `405 Allow: GET, HEAD`** — 경로는 맞는데 메서드가 없다. **핸들러가 `if r.Method != …` 를 쓸 일이 사라졌다.** ★ 이 `405` 는 **`server.go` 의 한 줄**이다(「이 판」 절).
 - ★★ **`GET /items/7/`(끝 `/`)은 `404`** — `{id}` 는 **한 조각**만 받는다. **`/files/{path...}` 는 `a/b/c` 를 통째로** 받는다(나머지 전부).
 - ★★ **`GET /items/` 는 `/items/{$}`** — `{$}` 는 **「여기서 끝」** 이다. `/items/` 가 **하위 전부를 먹는 접두사**가 아니게 한다.
 - ★★ **`GET /items` 는 `307 → /items/`** — `/items/` 로 끝나는 **정확한 일치**(`{$}`)가 있어서 리다이렉트됐다. ★ **`POST /items` 가 같은 경로에 있는데도 `405` 가 아니다** — 소스(`matchOrRedirect`)가 **리다이렉트를 먼저** 본다.
 - ★★ **`GET /lit/{id}` 라는 글자 그대로의 경로도 `{id}` 에 맞는다** — `id="{id}"`. 와일드카드는 **어떤 한 조각**이든 받는다.
 - ★★★ **`Host: example.com` 인 `GET /items/7` 은 `[example.com/]`** — **호스트 있는 패턴이 이긴다**(문서의 「one exception」). 경로가 더 구체적인 `GET /items/{id}` 가 있는데도.
-- ★★★ **1.21 열 — 8칸이 `404` 로 바뀌었다.** `GET /items/{id}`·`POST /items` 는 `/` 로 시작하지 않아 **호스트 `GET `·`POST ` 의 패턴**이 됐고(머리말 `servemux121.go:75`), `/items/{$}`·`/files/{path...}`·`/lit/{id}` 는 **글자 그대로의 경로**가 됐다.
+- ★★★ **1.21 열 — 8칸이 `404` 로 바뀌었다.** `GET /items/{id}`·`POST /items` 는 `/` 로 시작하지 않아 **호스트 `GET `·`POST ` 의 패턴**이 됐고(「이 판」 절 `servemux121.go:75`), `/items/{$}`·`/files/{path...}`·`/lit/{id}` 는 **글자 그대로의 경로**가 됐다.
   **`GET /lit/{id}`(글자 그대로) 만 `200`** 이고 `id=""` — 문서 「the pattern "/{x}" will match only that path in 1.21」 그대로다.
 - ★★ **나머지 둘도 갈렸다** — `GET /lit/{id}` 는 둘 다 `200` 이지만 **`id` 가 `"{id}"` 대 `""`**, `GET /static` 은 둘 다 리다이렉트지만 **`307` 대 `301`**. 8 + 2 = **`10 / 14`**.
 - ★★ **안 갈린 넷** — `/static/x.css`(접두사 패턴은 옛날에도 있었다) · `example.com/` · `/items/7/`·`/nope`(둘 다 `404`).
@@ -798,3 +791,10 @@ func main() {
 - ★ **`recover` 로 500 을 주는 미들웨어** — 모양은 (5)절에서 추론했고 **안 던졌다.**
 - ★ **HTTP/2 에서의 panic**(`RST_STREAM`) — `httptest.NewServer` 가 HTTP/1.1 이라 **못 쟀다.**
 - ★ **경로 이스케이프(`%2F`)** — 문서가 1.21 과의 차이로 적는 자리다. 한 번 던졌다가 **클라이언트가 경로를 먼저 정리해** 서버가 무엇을 받았는지 가를 수 없어 **격자에서 뺐다.**
+
+## 실행 환경
+
+**기준 소스** — [`net/http`](https://pkg.go.dev/net/http) 패키지 문서(`go doc net/http.Handler` · `net/http.ServeMux`) · `net/http/server.go`·`servemux121.go` 소스(이 툴체인의 것). **이 툴체인에서 직접 떴다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
+★ **네트워크는 `localhost` 만** 썼다 — 서버는 `httptest.NewServer`(`127.0.0.1` 의 빈 포트)이고 외부로 나가는 요청은 없다.\
+**버전** — 메서드·와일드카드 패턴은 **1.22** 부터다. **`go.mod` 의 `go` 줄이 1.21 이하면 옛 의미로 돈다**((2)절 — `httpmuxgo121`). `ResponseController` 는 1.20.

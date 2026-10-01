@@ -1,38 +1,5 @@
 # cpp/syntax/21 — 추상 클래스·순수 가상·vtable 비용 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 추상 클래스](https://en.cppreference.com/w/cpp/language/abstract_class) · [cppreference — 가상 함수](https://en.cppreference.com/w/cpp/language/virtual) · [Itanium C++ ABI](https://itanium-cxx-abi.github.io/cxx-abi/abi.html) · [GCC 13 Optimize Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html)\
-> ★ cppreference 「추상 클래스」는 2026-09-26 에 열어 **세 문장을 확인했다** — 「순수 가상 함수에도 정의를 줄 수 있고 **클래스 밖에서** 준다」·\
-> 「**생성자·소멸자에서 순수 가상을 가상 호출하면 UB**(정의가 있든 없든)」·「순수 가상 소멸자는 정의가 반드시 필요하다」.
-> **실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **javac 21.0.5** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`abs01.cpp` \~ `abs07.cpp` · `devirt.cpp` · `devirt-grid.sh` · `Abs.java`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
-> ★★★ **`terminate` 로 끝나는 블록((3))은 마커를 `stderr` 로 찍었다.** `abort()` 로 죽으면 **버퍼에 남은 표준 출력이 통째로 사라지기 때문**이다.
-> **버전** — 순수 가상·추상 클래스는 **C++98부터**. `override`·`final` 은 **C++11부터**다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-> ★★★ **이 편은 「비용」을 시간이 아니라 명령으로 센다.** 벤치마크는 **하나도 없다.**\
-> 센 것은 **간접 `call`/`jmp` 가 있나 · 함수를 이름으로 부르나 · `call` 자체가 사라졌나** 셋이다.\
-> ★★★ **그래서 이 문서는 「가상 호출이 느리다」고 쓰지 않는다** — 잰 것은 「**간접 호출이 되고, 인라인이 막힌다**」까지다.\
-> 그것이 몇 나노초인지·분기 예측이 어떤지·캐시가 어떤지는 **이 문서가 재지 않았다.**
-> **경계** — 「가상 디스패치 규칙·vtable 의 배치」는 [19번](../19-inheritance-virtual-functions-override-final/)이 정본이다 — 19편 (11)이 vtable 을 두 도구로 찍었고,\
-> 「**가상 호출 비용은 21번이 정본**」으로 넘긴 창을 **여기서 이어받는다.** 「추상 클래스의 개념」은 [`oop-basics/`](../../../../cs/foundations/oop-basics/) §17 이 정본이다.\
-> 「순수 가상 **소멸자**」는 [20번](../20-virtual-destructors-and-polymorphic-deletion/) (8)이 정본이다.
-> **대비** — ★★ C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **16번**([`16-inheritance-virtual-override-abstract-sealed-new/`](../../../csharp/syntax/16-inheritance-virtual-override-abstract-sealed-new/)) —\
-> **`callvirt` 가 비가상에도 나오고(널 검사) `sealed` 여도 IL 은 `callvirt` 이며 디버추얼라이제이션은 JIT 몫**이라는 실측을 (7)에서 인용한다.\
-> Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **11번**([`11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/)) — (7)에서 `javap -c` 로 한 번 던진다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | **g++ 클래스 덤프의 주소**(`(0x0x…)`) | ★★★ **어셈블리의 `call *…`/`jmp *…` 유무 · 부르는 심볼 이름 · `call` 이 사라졌나** — 이 주제의 답 자체다 |
-> | 두 컴파일러의 **진단 문구** | ★★★ **디버추얼라이제이션 격자의 칸**(간접 · 직접 · 인라인) |
-> | 지역 레이블 이름(`.L8` · `.LBB0_3`) | ★★ **`sizeof`** · **vtable 항목 수와 그 자리의 이름** · **레이아웃의 오프셋** |
-> | ★★★ **실행 시간 — 아예 재지 않았다** | ★★ **`cc exit`/`run exit`** · **경고·에러 개수** · **javap 의 명령 이름** |
-
 ## 한눈에 — 쉽게 말하면
 
 **가상 호출은 「대표번호로 거는 전화」다.**
@@ -1116,3 +1083,37 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **`-fstrict-vtable-pointers`(clang)·`-fdevirtualize-at-ltrans`(g++)·LTO** — 번역 단위를 넘어 디버추얼라이제이션 재료를 늘리는 장치들. 이 문서는 **던지지 않았다.**
 - **가상 상속과 VTT** — (6)의 `offset_to_top` 에 **가상 기반 오프셋**이 더해지는 자리. 단일·다중 상속만 봤다.
 - **정적 다형성(CRTP)·`std::variant`+`std::visit`** — 가상 없이 다형성을 얻는 길. 목록의 템플릿 주제들에서 다룬다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 추상 클래스](https://en.cppreference.com/w/cpp/language/abstract_class) · [cppreference — 가상 함수](https://en.cppreference.com/w/cpp/language/virtual) · [Itanium C++ ABI](https://itanium-cxx-abi.github.io/cxx-abi/abi.html) · [GCC 13 Optimize Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html)\
+★ cppreference 「추상 클래스」는 2026-09-26 에 열어 **세 문장을 확인했다** — 「순수 가상 함수에도 정의를 줄 수 있고 **클래스 밖에서** 준다」·\
+「**생성자·소멸자에서 순수 가상을 가상 호출하면 UB**(정의가 있든 없든)」·「순수 가상 소멸자는 정의가 반드시 필요하다」.
+**실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **javac 21.0.5** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`abs01.cpp` \~ `abs07.cpp` · `devirt.cpp` · `devirt-grid.sh` · `Abs.java`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
+★★★ **`terminate` 로 끝나는 블록((3))은 마커를 `stderr` 로 찍었다.** `abort()` 로 죽으면 **버퍼에 남은 표준 출력이 통째로 사라지기 때문**이다.
+**버전** — 순수 가상·추상 클래스는 **C++98부터**. `override`·`final` 은 **C++11부터**다. 기준은 **C++20**이다.
+
+★★★ **이 편은 「비용」을 시간이 아니라 명령으로 센다.** 벤치마크는 **하나도 없다.**\
+센 것은 **간접 `call`/`jmp` 가 있나 · 함수를 이름으로 부르나 · `call` 자체가 사라졌나** 셋이다.\
+★★★ **그래서 이 문서는 「가상 호출이 느리다」고 쓰지 않는다** — 잰 것은 「**간접 호출이 되고, 인라인이 막힌다**」까지다.\
+그것이 몇 나노초인지·분기 예측이 어떤지·캐시가 어떤지는 **이 문서가 재지 않았다.**
+**경계** — 「가상 디스패치 규칙·vtable 의 배치」는 [19번](../19-inheritance-virtual-functions-override-final/)이 정본이다 — 19편 (11)이 vtable 을 두 도구로 찍었고,\
+「**가상 호출 비용은 21번이 정본**」으로 넘긴 창을 **여기서 이어받는다.** 「추상 클래스의 개념」은 [`oop-basics/`](../../../../cs/foundations/oop-basics/) §17 이 정본이다.\
+「순수 가상 **소멸자**」는 [20번](../20-virtual-destructors-and-polymorphic-deletion/) (8)이 정본이다.
+**대비** — ★★ C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **16번**([`16-inheritance-virtual-override-abstract-sealed-new/`](../../../csharp/syntax/16-inheritance-virtual-override-abstract-sealed-new/)) —\
+**`callvirt` 가 비가상에도 나오고(널 검사) `sealed` 여도 IL 은 `callvirt` 이며 디버추얼라이제이션은 JIT 몫**이라는 실측을 (7)에서 인용한다.\
+Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **11번**([`11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/)) — (7)에서 `javap -c` 로 한 번 던진다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| **g++ 클래스 덤프의 주소**(`(0x0x…)`) | ★★★ **어셈블리의 `call *…`/`jmp *…` 유무 · 부르는 심볼 이름 · `call` 이 사라졌나** — 이 주제의 답 자체다 |
+| 두 컴파일러의 **진단 문구** | ★★★ **디버추얼라이제이션 격자의 칸**(간접 · 직접 · 인라인) |
+| 지역 레이블 이름(`.L8` · `.LBB0_3`) | ★★ **`sizeof`** · **vtable 항목 수와 그 자리의 이름** · **레이아웃의 오프셋** |
+| ★★★ **실행 시간 — 아예 재지 않았다** | ★★ **`cc exit`/`run exit`** · **경고·에러 개수** · **javap 의 명령 이름** |

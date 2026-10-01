@@ -1,12 +1,5 @@
 # web-api/24 — 문서 수명주기 이벤트: `DOMContentLoaded`/`load`·`visibilitychange`·`pagehide`/`pageshow` 와 bfcache — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — `defer`·`async`·모듈과 `DOMContentLoaded` 의 순서는 [HTML 08번 주제](../../html/syntax/08-script-loading/1-question.md)가 정본이다. 여기는 **떠날 때와 돌아올 때**를 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 HTML 명세 문장이다. 이식성은 주장 범위 밖이다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -102,6 +95,12 @@ addEventListener("unload", () => 적기("unload"));
 
 - [HTML 08번 주제](../../html/syntax/08-script-loading/1-question.md)가 잰 순서와 문항 6은 어디서 만나나?
 - 이 편의 **도구가 못 보는 것** 두 가지를 대라 — 왜 못 보나?
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — `defer`·`async`·모듈과 `DOMContentLoaded` 의 순서는 [HTML 08번 주제](../../html/syntax/08-script-loading/1-question.md)가 정본이다. 여기는 **떠날 때와 돌아올 때**를 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 HTML 명세 문장이다. 이식성은 주장 범위 밖이다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

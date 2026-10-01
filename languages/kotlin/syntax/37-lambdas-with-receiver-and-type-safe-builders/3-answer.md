@@ -1,10 +1,5 @@
 # kotlin/syntax/37 — 리시버 지정 람다와 type-safe builder (DSL) — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
-> 역어셈블은 **기본 `-jvm-target`(1.8)** 이 정본이다.
-> ★★ 아래 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -456,3 +451,9 @@ javac 21.0.5
 
 1. ★★ **`@DslMarker` 의 에러 문구가 브리핑과 달랐다** — 「`can't be called in this context by implicit receiver`」가 아니라 **「`cannot be called in this context with an implicit receiver. Use an explicit receiver if necessary.`」**(2번). 진단 문구는 판에 매인다.
 2. ★ **사고가 자리만이 아니라 순서까지 바꿨다**(7번) — `head` 가 `html` 에 붙는 것은 예상했지만, **`body` 보다 앞**에 온 것은 `add` 의 한 줄 순서 때문이었다.
+
+## 실행 환경
+
+모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
+역어셈블은 **기본 `-jvm-target`(1.8)** 이 정본이다.
+★★ 본문의 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.

@@ -1,14 +1,5 @@
 # ts/syntax/02 — 타입 검사와 코드 방출의 분리 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [TSConfig — `noEmit`](https://www.typescriptlang.org/tsconfig/#noEmit) ·
-> [`noEmitOnError`](https://www.typescriptlang.org/tsconfig/#noEmitOnError) ·
-> [`isolatedModules`](https://www.typescriptlang.org/tsconfig/#isolatedModules) ·
-> [`verbatimModuleSyntax`](https://www.typescriptlang.org/tsconfig/#verbatimModuleSyntax) ·
-> [Handbook — The Basics: Emitting with Errors](https://www.typescriptlang.org/docs/handbook/2/basic-types.html).
-> 문서는 **규칙 확인용으로만** 열었다. 본문의 종료 코드·진단·산출물 유무는 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -21,7 +12,6 @@ v18.19.1
 > ★★ 그런데 **`tsc --help --all` 은 `outFile`·`downlevelIteration` 을 여전히 목록에 싣는다** — 도움말과 실제가 어긋나 있다.
 > **옵션 유무는 도움말이 아니라 던져서** 확인한다.
 > **버전** — `noEmitOnError`·`noEmit` 은 1.x, `isolatedModules` 는 1.5, `verbatimModuleSyntax` 는 5.0, `noCheck` 는 5.6 부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -578,3 +568,13 @@ ex.02e.js      생김
 - **번들러와 나누는 법** — 요즘은 `tsc --noEmit` 이 검사를, esbuild·SWC 가 방출을 맡는 구성이 흔하다. 그때 `isolatedModules` 는 **선택이 아니라 필수**가 된다.
 - **`--noCheck` 의 제자리** — 5.6 에서 들어왔고, 모노레포에서 **선언 파일을 빨리 뽑을 때** 쓴다. 검사는 다른 단계가 따로 한다는 전제가 있어야 한다.
 - **이 판에서 확인한 7.0 의 옵션 제거** — `outFile`·`downlevelIteration`(`TS5102`) · `target=es5`·`moduleResolution=node10`(`TS5108`) · `namespace` 의 `module` 표기(`TS1540`). ★ **도움말에는 아직 실려 있는 것이 있으므로 던져서 확인한다.**
+
+## 실행 환경
+
+**기준 소스** — [TSConfig — `noEmit`](https://www.typescriptlang.org/tsconfig/#noEmit) ·
+[`noEmitOnError`](https://www.typescriptlang.org/tsconfig/#noEmitOnError) ·
+[`isolatedModules`](https://www.typescriptlang.org/tsconfig/#isolatedModules) ·
+[`verbatimModuleSyntax`](https://www.typescriptlang.org/tsconfig/#verbatimModuleSyntax) ·
+[Handbook — The Basics: Emitting with Errors](https://www.typescriptlang.org/docs/handbook/2/basic-types.html).
+문서는 **규칙 확인용으로만** 열었다. 본문의 종료 코드·진단·산출물 유무는 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

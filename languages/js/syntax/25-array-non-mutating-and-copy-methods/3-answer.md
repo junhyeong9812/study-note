@@ -1,16 +1,5 @@
 # js/syntax/25 — 배열 비변형·복사 메서드: 「원본에는 쓰기가 한 번도 안 닿는다 — 단 얕게, 그리고 콜백은 예외다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
->
-> ★★ **예외는 `e.constructor.name` 과 `e.message` 로만 찍었다** — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★★★ **이 주제는 두 판이 갈린 블록을 넷 갖고 있다**(`25a` · `25b` · `25c` · `25f`) — 9번 답에 v18 판을 싣는다. 넷 다 **복사 메서드가 v18 에 없어서**다.
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(12번의 소스는 [2-summary.md](2-summary.md) 동작 (9)에 있다).
-> `js24b-25a-trap-grid.js`(1번 · 7번 · 9번) · `js24b-25b-pairs.js`(2번 · 10번) · `js24b-25c-index-range.js`(3번) · `js24b-25d-reduce.js`(4번) ·
-> `js24b-25e-map-parseint.js`(5번) · `js24b-25f-comparator-throws.js`(6번 · 11번) · `js24b-25g-shapes.js`(12번) · `js24b-vdiff.sh`(9번).
-
 ## 정답
 
 ### 1. 비변형 아홉은 쓰기 트랩 0, 변형 일곱과 「콜백이 쓰는 `map`」은 0 이 아니다 — `0 / 17` 던짐 · `9 / 17` ★★★
@@ -246,7 +235,7 @@ methods that returned with zero write traps: 9 / 17
   비교가 던지면 `SortIndexedProperties` 가 "stop before performing any further calls to SortCompare and return that Completion Record" 이고, `?` 가 그것을 전파해 **③ 에 오지 않는다.**
   ★★★ **명세 보장**이다 — V8 의 사정이 아니다.
 - ★★ **`[3]`** — `null`·`"desc"`·`1` 은 **두 메서드 다 `TypeError 「The comparison function must be either a function or undefined」`**, `undefined` 만 통과. 검사는 **원본을 읽기 전**(단계 ①).
-- ★ **`[0]` 의 `4` · `4` 와 `[2]` 의 `108` 은 명세가 정하지 않는다** — "implementation-defined sequence of calls to SortCompare". 근거로 안 쓴다(머리말 표).
+- ★ **`[0]` 의 `4` · `4` 와 `[2]` 의 `108` 은 명세가 정하지 않는다** — "implementation-defined sequence of calls to SortCompare". 근거로 안 쓴다(「실행 환경」 표).
 
 ### 7. 트랩이 `receiver`(= Proxy)를 `Reflect.set` 에 넘겨서 — 쓰기 하나가 `[[Set]]` 뒤 `[[DefineOwnProperty]]` 로 다시 Proxy 에 온다 ★★
 
@@ -266,7 +255,7 @@ methods that returned with zero write traps: 9 / 17
 ### 9. Change Array by Copy 는 **2023** — README 의 「ES2024」와 다르다 · 갈린 탐침 넷, 이유는 한 종류 ★★
 
 - ★★★ **finished proposals 표의 Change Array by Copy 줄이 `2023`** 이다. 목록 [README](../README.md) 25번 행은 「ES2024 `toSorted`·`toReversed`·`toSpliced`·`with`」라 적었다 — **목록 쪽 표기가 다르다**(이 편은 README 를 고치지 않는다).
-  [22번](../22-symbol-and-well-known-symbols/2-summary.md) 머리말 표도 이 넷을 **ES2023** 으로 적었다.
+  [22번](../22-symbol-and-well-known-symbols/2-summary.md) 「실행 환경」 표도 이 넷을 **ES2023** 으로 적었다.
 - ★★ **갈린 탐침은 넷**(`25a` · `25b` · `25c` · `25f`), **이유는 한 종류** — 복사 메서드가 v18 에 **없다**(`TypeError 「… is not a function」`). 비교·인덱스·`reduce` 처럼 v18 에도 있는 기능에서는 **한 줄도 안 갈렸다.**
 - ★★★ **node 18 의 1번 격자에서 `toSorted` · `toReversed` · `toSpliced` · `with` 네 행이 「쓰기 0」인 채 던졌다.** 격자가 **「던진 행」을 따로 세서** `methods that threw: 4 / 17` 로 갈라냈고, 쓰기 0 집계는 `5 / 17` 로 줄었다.
   ★ **던진 행을 따로 안 세면** 「없는 메서드」가 「원본을 안 바꾼 메서드」로 세어진다 — 그래서 격자에 `threw` 칸을 둔다(그 전 판의 출력은 캡처로 남기지 않았으므로 싣지 않는다).
@@ -670,3 +659,15 @@ document.write('<script src="' + location.search.slice(1) + '"><\/script>');
 
 - ★★ **비교 함수 호출 횟수**(6번 `[0]`·`[2]`) — 정렬 알고리즘이 바뀌면 움직인다. 움직여도 명세 위반이 아니다. **원본 그대로라는 결론은 안 움직여야 한다.**
 - ★ **예외 문구 전부.**
+
+## 실행 환경
+
+이 파일의 모든 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
+
+★★ **예외는 `e.constructor.name` 과 `e.message` 로만 찍었다** — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★★★ **이 주제는 두 판이 갈린 블록을 넷 갖고 있다**(`25a` · `25b` · `25c` · `25f`) — 9번 답에 v18 판을 싣는다. 넷 다 **복사 메서드가 v18 에 없어서**다.
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(12번의 소스는 [2-summary.md](2-summary.md) 동작 (9)에 있다).
+`js24b-25a-trap-grid.js`(1번 · 7번 · 9번) · `js24b-25b-pairs.js`(2번 · 10번) · `js24b-25c-index-range.js`(3번) · `js24b-25d-reduce.js`(4번) ·
+`js24b-25e-map-parseint.js`(5번) · `js24b-25f-comparator-throws.js`(6번 · 11번) · `js24b-25g-shapes.js`(12번) · `js24b-vdiff.sh`(9번).

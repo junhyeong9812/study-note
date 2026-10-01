@@ -1,16 +1,5 @@
 # js/syntax/26 — 배열 탐색·평탄화·생성: 「구멍을 누가 건너뛰고 누가 읽나 · 찾기는 무엇으로 비교하나 · 배열을 만드는 입구 넷」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151.0.7922.173**(8번) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
->
-> ★★ **예외는 `e.constructor.name` 과 `e.message` 로만 찍었다** — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★★★ **이 주제의 node 탐침은 두 판에서 한 글자도 같았다** — 판이 갈린 블록이 없다(7번의 대조기).
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(7번의 소스만 여기 싣는다).
-> `js24b-26a-hole-grid.js`(1번 · 9번 · 10번) · `js24b-26b-zero-and-nan.js`(2번 · 11번) · `js24b-26c-find-family.js`(3번 · 12번) · `js24b-26d-at.js`(4번) ·
-> `js24b-26e-flat.js`(5번) · `js24b-26f-create.js`(6번) · `js24b-26x-node-fromasync.js` · `js24b-versions.sh` · `js24b-vdiff.sh`(7번) · `js24b-26g-fromasync.web.js`(8번).
-
 ## 정답
 
 ### 1. `[, 1]` × 스물아홉 줄 — **통설과 어긋난 줄은 `copyWithin` · `flat` · `flatMap`, `3 / 27`** ★★★
@@ -633,3 +622,15 @@ document.write('<script src="' + location.search.slice(1) + '"><\/script>');
 - ★★★ **node 22 이후의 판** — `Array.fromAsync` 가 들어온 판에서는 **8번을 node 로도** 돌린다. 판별 블록의 `no` 가 `yes` 로 바뀌는지 먼저 본다.
 - ★★ **5번 `[5]`** — 스택 크기가 바뀌면 10만 겹이 통과할 수 있다. 통과해도 명세 위반이 아니다.
 - ★ **예외 문구 전부.**
+
+## 실행 환경
+
+이 파일의 모든 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151.0.7922.173**(8번) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
+
+★★ **예외는 `e.constructor.name` 과 `e.message` 로만 찍었다** — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★★★ **이 주제의 node 탐침은 두 판에서 한 글자도 같았다** — 판이 갈린 블록이 없다(7번의 대조기).
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(7번의 소스만 여기 싣는다).
+`js24b-26a-hole-grid.js`(1번 · 9번 · 10번) · `js24b-26b-zero-and-nan.js`(2번 · 11번) · `js24b-26c-find-family.js`(3번 · 12번) · `js24b-26d-at.js`(4번) ·
+`js24b-26e-flat.js`(5번) · `js24b-26f-create.js`(6번) · `js24b-26x-node-fromasync.js` · `js24b-versions.sh` · `js24b-vdiff.sh`(7번) · `js24b-26g-fromasync.web.js`(8번).

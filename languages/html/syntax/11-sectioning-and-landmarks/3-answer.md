@@ -1,12 +1,5 @@
 # html/syntax/11 — 구획 요소와 랜드마크: `main`/`header`/`footer`/`nav`/`aside`/`section`/`article`/`search` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [ARIA in HTML](https://www.w3.org/TR/html-aria/) 로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **이 주제는 접근성 트리를 직접 덤프한다.** CDP(`Accessibility.getFullAXTree`)로 Chrome 이 보조 기술에 넘기는 트리를 그대로 받았다 — **세 판을 돌려 md5 가 같았다.**
-> ★★ **그래도 스크린리더가 뭐라고 읽는지는 못 본다.** 접근성 트리는 **입력**이지 출력이 아니다(A8).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -601,3 +594,11 @@ window.addEventListener("load", function () {
 - **`HTMLUnknownElement`** — 파서가 모르는 요소의 클래스. **대시가 있는 이름은 여기 안 들어간다.**
 - **CDP(Chrome DevTools Protocol)** — 브라우저에 원격으로 붙어 내부 상태를 묻는 프로토콜.
 - **`--force-renderer-accessibility`** — 보조 기술이 안 붙어 있어도 접근성 트리를 만들게 하는 Chrome 플래그.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [ARIA in HTML](https://www.w3.org/TR/html-aria/) 로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **이 주제는 접근성 트리를 직접 덤프한다.** CDP(`Accessibility.getFullAXTree`)로 Chrome 이 보조 기술에 넘기는 트리를 그대로 받았다 — **세 판을 돌려 md5 가 같았다.**
+★★ **그래도 스크린리더가 뭐라고 읽는지는 못 본다.** 접근성 트리는 **입력**이지 출력이 아니다(A8).

@@ -1,10 +1,5 @@
 # html/syntax/03 — 파서와 오류 복구: 태그 수프가 트리가 되는 과정·암묵 태그 삽입 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 으로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「Parsing HTML documents」로 접지했다.\
-> ★ **엔진은 Chrome 하나다.** 다만 **이 주제의 트리 모양은 명세가 알고리즘째 규정**하므로 관찰이면서 동시에 명세 보장이다 — 예외는 XML `parsererror` 의 문구·`style` 과 stderr 동작뿐이다(A7).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -355,7 +350,7 @@ html01b-xml-bad.xhtml  마크업 관련 stderr 줄 수 = 0
 
 **메시지를 근거로 쓸 수 있는가**
 
-- ★ **부분적으로만.** 「**에러 요소가 끼워졌다**」는 사실은 근거가 되지만, **`parsererror` 라는 이름·문구·인라인 `style` 은 명세 밖**이라 흔들릴 수 있다. 머리말의 「흔들리는 칸」 표에 그렇게 선언해 뒀다.
+- ★ **부분적으로만.** 「**에러 요소가 끼워졌다**」는 사실은 근거가 되지만, **`parsererror` 라는 이름·문구·인라인 `style` 은 명세 밖**이라 흔들릴 수 있다. 「실행 환경」의 「흔들리는 칸」 표에 그렇게 선언해 뒀다.
 
 **설명하는 사건**
 
@@ -531,3 +526,9 @@ v2(</p> 를 지움)     p 개수 = 2   그중 빈 p = 0
 - **well-formed** — XML 이 요구하는 최소 조건. 어기면 **치명적 오류**이고 파싱이 멈춘다.
 - **`parsererror`** — Blink 가 XML 파싱 실패를 문서에 끼워 넣는 요소. ★ **구현이 정한 것**이다.
 - **fragment parsing** — `innerHTML` 처럼 조각을 파싱할 때 **문맥 요소에 맞춰** 삽입 모드를 정해 놓고 돌리는 것.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 으로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「Parsing HTML documents」로 접지했다.\
+★ **엔진은 Chrome 하나다.** 다만 **이 주제의 트리 모양은 명세가 알고리즘째 규정**하므로 관찰이면서 동시에 명세 보장이다 — 예외는 XML `parsererror` 의 문구·`style` 과 stderr 동작뿐이다(A7).

@@ -1,12 +1,5 @@
 # ts/syntax/23 — `typeof` 타입 연산자 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Typeof Type Operator](https://www.typescriptlang.org/docs/handbook/2/typeof-types.html) ·
-> [Handbook — Keyof Type Operator](https://www.typescriptlang.org/docs/handbook/2/keyof-types.html) ·
-> [Handbook — Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html).
-> 핸드북은 **규칙 확인용 링크**이고, 본문의 진단·방출 전문·실행 출력은 **전부 이 판에서 직접 던져서 받은 것**이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version · javac -version · rustc --version (sh exit=0) =====
 Version 7.0.2
@@ -31,7 +24,6 @@ rustc 1.92.0 (ded5c06cf 2025-12-08)
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
 > **버전** — 값에 `typeof` 를 쓰는 타입 질의는 **TS 1.0** 부터다. `typeof import(…)` 는 **TS 2.9**,
 > `InstanceType<T>` 는 **TS 2.8** 이다. **7.0 에서 도는지는 외우지 않고 던져서 확인했다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -933,3 +925,11 @@ ex.23e.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 - **`typeof` 가 `unique symbol` 과 만나는 자리** — `declare const s: unique symbol` 에서 `typeof s` 는 그 심볼 하나만 가리킨다.
   README 의 「뺀 것」에 `unique symbol` 이 있어 **안 던졌다.**
 - **모듈 보강에서 `typeof` 로 전역을 읽는 것** — [목록의 **33번 주제**](../33-declaration-merging/)·[목록의 **37번 주제**](../37-writing-declaration-files/)의 몫이다. **안 던졌다.**
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Typeof Type Operator](https://www.typescriptlang.org/docs/handbook/2/typeof-types.html) ·
+[Handbook — Keyof Type Operator](https://www.typescriptlang.org/docs/handbook/2/keyof-types.html) ·
+[Handbook — Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html).
+핸드북은 **규칙 확인용 링크**이고, 본문의 진단·방출 전문·실행 출력은 **전부 이 판에서 직접 던져서 받은 것**이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

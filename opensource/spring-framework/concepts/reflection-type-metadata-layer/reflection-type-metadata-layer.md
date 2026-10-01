@@ -1,10 +1,5 @@
 # 스프링의 타입 메타데이터 층 — 제네릭 정보는 어떻게 표현·해석·보존되는가
 
-> 기준 커밋: upstream `main` 526c706d1c3 (`Merge branch '7.0.x'`).
-> [컴파일 타임과 두 개의 런타임](../compile-runtime-layers/compile-runtime-layers.md)이 "층이 셋이고 스프링의 타입
-> 판별 코드는 2층에 있다"는 **개념**을 세운다면, 이 문서는 그 2층의 **실구조**를 읽는다.
-> 개념 정리가 필요하면 그 문서를 먼저 보고 오는 편이 낫다.
-
 ## 0. 한 문장으로
 
 스프링의 2층은 사실상 `ResolvableType` 하나로 이루어져 있고, 그 클래스는 **네 개의 필드**로
@@ -314,3 +309,7 @@ this.type = this.resolvableType.resolve(field.getType());   // 폴백 = 소거�
 `SerializableTypeWrapper`가 JDK `Type`을 "어느 선언에서 왔는가"라는 좌표로 바꿔 보존한다.
 `MethodParameter`는 그 좌표를 표현하는 객체이고, `TypeDescriptor`는 그 위에 annotation을 얹어
 변환 시스템에 건네는 카드다.
+
+## 출처
+
+기준 커밋: upstream `main` 526c706d1c3 (`Merge branch '7.0.x'`).

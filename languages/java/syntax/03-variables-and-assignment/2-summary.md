@@ -1,14 +1,5 @@
 # java/syntax/03 — 변수와 대입: 전부 값 전달·`final`·effectively final — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §4.12 Variables](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [§8.4.1 Formal Parameters](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§15.26 Assignment Operators](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · [§16 Definite Assignment](https://docs.oracle.com/javase/specs/jls/se21/html/jls-16.html).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 값 전달 실험(`Ex.java (03-a)`)과 `final` 실험(`03-b`)은 **17.0.13 · 21.0.5 · 25.0.1** 세 곳에서 돌려 **출력이 같았다**.\
-> 컴파일 에러 문구(`03-c2`·`03-c3`)도 세 JDK 에서 같았다. 다만 **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS 인용으로만 적었다.
-> **버전** — 값 전달 규칙과 `final` 은 **Java 1.0**부터. **effectively final** 은 **Java 8**(람다 도입)에 생긴 개념이다.\
-> `var` 지역 변수는 10부터이고 이 주제 밖이다([**04번 주제**](../04-var-type-inference/)).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 JLS 로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **변수는 "종이쪽지"다. 객체는 그 쪽지에 적힌 주소에 서 있는 "창고"다.**
@@ -673,3 +664,12 @@ Ex.java:4: error: cannot assign a value to final variable field
 - **캡처가 없는 람다는 인스턴스가 재사용될 수 있다.**\
   `() -> System.out.println("x")` 는 캡처가 없어 `invokedynamic` 의 시그니처가 `()` 이고, JVM 이 같은 인스턴스를 돌려줄 수 있다.\
   캡처가 있으면 매번 새 인스턴스가 필요하다 — 값이 다르기 때문이다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §4.12 Variables](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [§8.4.1 Formal Parameters](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§15.26 Assignment Operators](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · [§16 Definite Assignment](https://docs.oracle.com/javase/specs/jls/se21/html/jls-16.html).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+값 전달 실험(`Ex.java (03-a)`)과 `final` 실험(`03-b`)은 **17.0.13 · 21.0.5 · 25.0.1** 세 곳에서 돌려 **출력이 같았다**.\
+컴파일 에러 문구(`03-c2`·`03-c3`)도 세 JDK 에서 같았다. 다만 **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS 인용으로만 적었다.
+**버전** — 값 전달 규칙과 `final` 은 **Java 1.0**부터. **effectively final** 은 **Java 8**(람다 도입)에 생긴 개념이다.\
+`var` 지역 변수는 10부터이고 이 주제 밖이다([**04번 주제**](../04-var-type-inference/)).

@@ -1,9 +1,5 @@
 # kotlin/syntax/55 — `Flow` — 콜드 스트림·연산자·`collect` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** · Temurin **JDK 21.0.5** · **kotlinx-coroutines 1.11.0** 에서 실제로 얻었다.
-> ★★ 아래 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -492,3 +488,8 @@ Implementation-Version: 1.11.0
 1. ★★★ **`sequence { }` 안 `delay` 의 진단은 52번 주제의 호출 규칙 진단이 아니었다** — `@RestrictsSuspension` 에서 오는 **세 번째 문구**(「`restricted suspending functions …`」)였다.
 2. ★★ **상류가 `catch (e: Throwable)` 로 삼키면 예외 투명성 위반마저 바깥에 안 나왔다** — 라이브러리가 `IllegalStateException` 을 던지는 것까지는 예상대로였지만, 그것이 **같은 `catch` 로 다시 들어가** 흔적 없이 `[1]` 로 끝났다.
 3. ★ **`Flow` 와 `Sequence` 는 호출 수만이 아니라 순서까지 `0 / 4`** — 비동기라는 이름과 달리 이 격자(단일 스레드 `runBlocking`)에서는 **한 글자도 다르지 않았다.**
+
+## 실행 환경
+
+모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** · Temurin **JDK 21.0.5** · **kotlinx-coroutines 1.11.0** 에서 실제로 얻었다.
+★★ 본문의 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.

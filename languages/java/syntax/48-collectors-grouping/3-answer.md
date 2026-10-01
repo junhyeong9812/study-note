@@ -1,10 +1,5 @@
 # java/syntax/48 — `Collectors` 그룹핑·분할·다운스트림 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·에러는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> 소스·javadoc 인용은 `lib/src.zip` 의 `java.base/java/util/stream/Collectors.java` 원문이다.\
-> 프로그램 4개를 17.0.13 · 25.0.1 에서도 돌렸다 — **출력이 한 글자도 다르지 않았다**(2번).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -618,3 +613,9 @@ base.putAll(SRC.stream().collect(groupingBy(P::team, counting())));
 - 분류 함수 `null` 의 **메시지 문구**(`element cannot be mapped to a null key`).
 - `javac` 에러 메시지의 문구와 줄 번호 — 컴파일러 버전에 달려 있다.
 - **Java 8 의 동작은 안 돌려 봄** — 이 머신에 8이 없다. `filtering`·`flatMapping`(9+)·`teeing`(12+)은 애초에 8에 없다.
+
+## 실행 환경
+
+이 파일의 모든 출력·에러는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+소스·javadoc 인용은 `lib/src.zip` 의 `java.base/java/util/stream/Collectors.java` 원문이다.\
+프로그램 4개를 17.0.13 · 25.0.1 에서도 돌렸다 — **출력이 한 글자도 다르지 않았다**(2번).

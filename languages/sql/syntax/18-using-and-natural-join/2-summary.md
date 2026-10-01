@@ -1,16 +1,5 @@
 # sql/18-USING 과 NATURAL JOIN — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
-> 「열을 하나 추가했더니 결과가 바뀐다」 절의 `deptx` 표는 **기존 `dept` 에서 만들어 트랜잭션 안에서 쓰고 롤백**했다(MySQL 은 `CREATE` → 질의 → `DROP`).\
-> **`emp`·`dept` 는 한 행도 바꾸지 않았다.**\
-> **버전** — `USING`·`NATURAL JOIN` 모두 두 엔진에 오래전부터 있고, 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않는다.**\
-> **선행** — [13 INNER JOIN](../13-inner-join/). 13편이 보인 **`NATURAL JOIN` 의 0행**을 여기서 파고든다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`USING` = 「이 이름으로 붙여라」라고 **내가 지목**하는 것. `NATURAL JOIN` = 「이름이 같은 건 알아서 다 붙여라」라고 **엔진에 맡기는** 것.**
@@ -648,3 +637,13 @@ FROM 왼쪽 NATURAL LEFT JOIN 오른쪽             -- 외부 조인과도 조�
 - **`SELECT *` 를 쓰지 않으면 `USING` 의 열 합치기 효과가 대부분 사라진다.** 필요한 열을 적어 쓰는 코드에서는 `ON` 과 `USING` 의 실질 차이가 「모호성 해소」 하나로 줄어든다.
 - **`NATURAL JOIN` 을 막는 도구가 있다** — 대부분의 SQL 린터가 기본 경고 규칙으로 잡는다. 스키마 변경으로 깨지는 성질이라 **코드 리뷰로는 못 잡기 때문**이다.
 - **이름 규칙이 `NATURAL JOIN` 의 안전을 정한다.** 모든 표가 자기 기본키를 `id` 로 부르는 규칙이면 `NATURAL JOIN` 은 거의 항상 틀린다 — `emp.id`·`dept.id` 가 그 예다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
+「열을 하나 추가했더니 결과가 바뀐다」 절의 `deptx` 표는 **기존 `dept` 에서 만들어 트랜잭션 안에서 쓰고 롤백**했다(MySQL 은 `CREATE` → 질의 → `DROP`).\
+**`emp`·`dept` 는 한 행도 바꾸지 않았다.**\
+**버전** — `USING`·`NATURAL JOIN` 모두 두 엔진에 오래전부터 있고, 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않는다.**\
+**선행** — [13 INNER JOIN](../13-inner-join/). 13편이 보인 **`NATURAL JOIN` 의 0행**을 여기서 파고든다.

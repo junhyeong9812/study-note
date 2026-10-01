@@ -1,20 +1,5 @@
 # c/syntax/29 — 스코프와 링크(`static`·`extern`): 「**이 이름은 어디까지 보이고, 다른 파일의 같은 이름과 같은 것인가**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — 잠정 정의·링크 규칙·`inline` 정의·부록 J 의 「여러 외부 정의」 공통 확장을 **본문에서 직접 찾아 읽었다**) · [GCC 10 Porting — `-fno-common` 기본값](https://gcc.gnu.org/gcc-10/porting_to.html) · [Clang 11 Release Notes](https://releases.llvm.org/11.0.0/tools/clang/docs/ReleaseNotes.html)(「`-fno-common` has been enabled as the default」)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **심볼·진단·종료 코드는 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다. 소스 펜스도 같은 파일에서 떠 왔다.
-> **버전** — 스코프 넷·링크 셋·`static`/`extern` 은 **C89 부터**다. **`inline` 은 C99 부터**다((8)).\
-> ★★ **잠정 정의를 두 파일에 두면 링크가 깨지는 것**은 언어 규칙이 아니라 **컴파일러 기본값**이 바꾼 것이다 — **GCC 10 · Clang 11** 부터 `-fno-common` 이 기본이다((5)).
-> ★★ **경계** — **링커가 무엇을 하는가**(심볼 해석·재배치) 일반은 [`foundations/compiler-pipeline/`](../../../../cs/foundations/compiler-pipeline/)가 정본이다.\
-> 여기는 「**C 의 어떤 선언이 어떤 심볼을 만드나**」만 본다.\
-> ★ **저장 기간**은 [28번 형제](../28-choosing-among-four-storage-durations/)가 정본이다 — 여기서는 **링크와 갈라 세우는 데**만 쓴다.\
-> ★ **`inline` 의 규칙 전체**는 [목록의 **39번 주제**](../39-inline-and-c-inline-rules/), **헤더에 무엇을 두나**는 [목록의 **44번 주제**](../44-headers-and-separate-compilation/), **링크 오류를 거꾸로 읽는 법**은 [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/)가 정본이다.\
-> ★ **파일 스코프 `const` 의 링크**는 [31번 형제](../31-const-and-pointer-const-placement/)가 정본이다.
-> 선행 — [28번 형제](../28-choosing-among-four-storage-durations/) · [25번 형제](../25-incomplete-types-and-opaque-struct/)(두 번역 단위 실험).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 넷째 창 — `nm` 이다.** 링크는 **심볼의 글자 한 개**(`T`/`t`/`D`/`d`/`B`/`b`/`U`/`C`)로 오브젝트 파일에 박힌다.
 실행 출력은 링크가 **깨졌는지**만 말하고, `nm` 은 **왜 깨졌는지**를 말한다.
 
@@ -1021,3 +1006,18 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★ **GCC 9 이하에서의 (5)** — ★ **못 잰 것**. 이 머신에 없다. 문서로만 적었다.
 - ★ **`-flto` 에 구조체 레이아웃 불일치를 주면** — [25번 형제](../25-incomplete-types-and-opaque-struct/)가 이미 **못 잡는다**를 보였다. 여기서는 **다시 던지지 않았다.**
 - ★ **`extern inline` 의 gnu89 의미**(`-fgnu89-inline`) — C99 와 **정반대**다. ★ **던지지 않았다**([목록의 **39번 주제**](../39-inline-and-c-inline-rules/)).
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — 잠정 정의·링크 규칙·`inline` 정의·부록 J 의 「여러 외부 정의」 공통 확장을 **본문에서 직접 찾아 읽었다**) · [GCC 10 Porting — `-fno-common` 기본값](https://gcc.gnu.org/gcc-10/porting_to.html) · [Clang 11 Release Notes](https://releases.llvm.org/11.0.0/tools/clang/docs/ReleaseNotes.html)(「`-fno-common` has been enabled as the default」)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **심볼·진단·종료 코드는 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다. 소스 펜스도 같은 파일에서 떠 왔다.
+**버전** — 스코프 넷·링크 셋·`static`/`extern` 은 **C89 부터**다. **`inline` 은 C99 부터**다((8)).\
+★★ **잠정 정의를 두 파일에 두면 링크가 깨지는 것**은 언어 규칙이 아니라 **컴파일러 기본값**이 바꾼 것이다 — **GCC 10 · Clang 11** 부터 `-fno-common` 이 기본이다((5)).
+★★ **경계** — **링커가 무엇을 하는가**(심볼 해석·재배치) 일반은 [`foundations/compiler-pipeline/`](../../../../cs/foundations/compiler-pipeline/)가 정본이다.\
+여기는 「**C 의 어떤 선언이 어떤 심볼을 만드나**」만 본다.\
+★ **저장 기간**은 [28번 형제](../28-choosing-among-four-storage-durations/)가 정본이다 — 여기서는 **링크와 갈라 세우는 데**만 쓴다.\
+★ **`inline` 의 규칙 전체**는 [목록의 **39번 주제**](../39-inline-and-c-inline-rules/), **헤더에 무엇을 두나**는 [목록의 **44번 주제**](../44-headers-and-separate-compilation/), **링크 오류를 거꾸로 읽는 법**은 [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/)가 정본이다.\
+★ **파일 스코프 `const` 의 링크**는 [31번 형제](../31-const-and-pointer-const-placement/)가 정본이다.
+선행 — [28번 형제](../28-choosing-among-four-storage-durations/) · [25번 형제](../25-incomplete-types-and-opaque-struct/)(두 번역 단위 실험).

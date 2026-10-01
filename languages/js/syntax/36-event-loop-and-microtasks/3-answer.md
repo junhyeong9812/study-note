@@ -1,14 +1,5 @@
 # js/syntax/36 — 이벤트 루프와 마이크로태스크: 「동기 → 마이크로태스크 전부 → 매크로태스크 하나 · 순서의 층이 둘」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · Python 3.12 · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다.
-> ★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical`).
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
-> `js36b-36-h-order.js` + `js36b-36a-order-grid.sh`(1번 · 2번) · `js36b-36-h-main.js` · `js36b-36-h-io.js` + `js36b-36b-timeout-vs-immediate.sh`(3번) ·
-> `js36b-36c-starvation.js`(4번) · `js36b-36d-nexttick-starvation.js`(5번) · `js36b-36-h-onequeue.py` · `js36b-36-h-twoqueues.js` + `js36b-36e-python-contrast.sh`(6번).
-
 ## 정답
 
 ### 1. `S1 A1 S2 N1 P1 Q1 A2 P2 P3 T1 T2` ★★★
@@ -221,3 +212,13 @@ node18 vs node20: identical 13 · differs 0   ·   node20 vs Chrome 151: identic
 - ★★ **`nextTick` 의 자리**(CJS 4위 · ESM 9위) — node 의 것이다. node 가 모듈 적재 방식을 바꾸면 다시 돌린다.
 - ★★ **가짓수 `2`·`1`** — libuv 의 단계 순서와 기계 사정에 매인다.
 - ★ **Chrome 쪽 블록은 가상 시간 예산 아래에서** 떴다(`--virtual-time-budget=2000`) — 순서만 싣고 시간은 싣지 않은 이유다.
+
+## 실행 환경
+
+이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · Python 3.12 · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다.
+★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical`).
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
+`js36b-36-h-order.js` + `js36b-36a-order-grid.sh`(1번 · 2번) · `js36b-36-h-main.js` · `js36b-36-h-io.js` + `js36b-36b-timeout-vs-immediate.sh`(3번) ·
+`js36b-36c-starvation.js`(4번) · `js36b-36d-nexttick-starvation.js`(5번) · `js36b-36-h-onequeue.py` · `js36b-36-h-twoqueues.js` + `js36b-36e-python-contrast.sh`(6번).

@@ -1,13 +1,5 @@
 # web-api/30 — 요청 본문 만들기: `FormData`·`URLSearchParams`·JSON 과 `Content-Type` 자동 설정 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」 — 서버가 받은 `Content-Type` 과 **그것으로 고른 파서의 결과**를 칸마다 서버에게 묻는 「자동 `Content-Type` 격자」다.** 본문 일곱 × `Content-Type` 을 직접 쓰나(안 씀 / 씀) = 14칸, 마지막 줄을 스크립트가 **「직접 써서 서버 파싱이 깨진 본문 N / 7」** 로 찍는다. 그 옆에 **원문(본문 바이트)** 을 서버 로그째 싣는다.\
-> **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 「extract a body」(**`Blob` — `type` 이 빈 바이트열이 아니면 그 값** · `BufferSource` — 타입 없음 · **`FormData` — `multipart/form-data; boundary=` + multipart/form-data 인코딩 알고리즘이 만든 boundary 문자열** · **`URLSearchParams` — `application/x-www-form-urlencoded;charset=UTF-8`** · **문자열 — `text/plain;charset=UTF-8`**) · Request 생성자(「type 이 null 이 아니고 **headers 에 `Content-Type` 이 없으면** 그때만 붙인다」) · [WHATWG HTML](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html) 의 「create an entry」(**`File` 이 아닌 `Blob` 은 이름이 `"blob"` 인 새 `File` 로** · filename 을 주면 그 이름으로) · 「constructing the entry list」(**체크 안 된 체크박스는 건너뛴다**) · 「multipart/form-data encoding algorithm」(**RFC 7578** 을 따르고, **파일이 아닌 칸에는 `Content-Type` 을 붙이지 않는다** · boundary 는 알고리즘이 만든다) · [WHATWG XHR](https://xhr.spec.whatwg.org/) 의 `FormData(form)` 생성자(form 이 주어지면 **constructing the entry list** 의 결과를 쓴다). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 요청은 **같은 출처 A 의 `/echo`** 로 보냈다 — CORS 를 빼고 본문만 고립시키려고. 서버는 받은 **`Content-Type` · 원문 · 직접 짠 파서의 결과**를 적는다(파이썬 `email`·`cgi` 를 안 쓰고 **boundary 로 직접 가른다** — 파서가 대신 고쳐 주는 일을 없애려고). 하네스는 [28번 주제](../28-cors-simple-and-preflight/2-summary.md)의 (1)이다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — ★★ **[HTML 21번 주제](../../html/syntax/21-form-submission-model/2-summary.md)의 (1)이 폼 제출의 `method` × `enctype` 여섯 칸을 서버 로그로 쟀다** — 그쪽은 **마크업이 만드는 본문**, 여기는 **같은 본문을 스크립트로** 만든다((4)가 둘을 원문째 견준다). HTML 21편도 boundary 를 「(경계)」로 죽였다. ★ **[25번 주제](../25-fetch-request-response/2-summary.md)** — `fetch` 의 옵션 표면. ★ **[28번 주제](../28-cors-simple-and-preflight/2-summary.md)의 (2)** — `Content-Type` 값이 프리플라이트를 정한다((6)이 잇는다).\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -203,7 +195,7 @@ A POST /echo?id=f2&raw=1  Content-Type=multipart/form-data · 본문 133바이�
 
 - ★★★ **두 원문이 한 글자도 같다**(133바이트) — 브라우저는 **본문은 여전히 boundary 로 쌌다.** 달라진 것은 **`Content-Type` 에서 `; boundary=…` 가 빠진 것** 하나다.
 - ★★ **서버는 본문 안의 구분선이 무엇인지 알 길이 없다** — `Content-Type` 의 boundary 로 쪼개야 하는데 그 값이 없다. **예외도 경고도 브라우저 쪽에는 없다** — 요청은 `200` 으로 잘 끝났다.
-- ★ **처방은 한 줄을 지우는 것**이다 — `FormData` 에는 `Content-Type` 을 **안 쓴다.** boundary 는 **브라우저만 안다**(요청마다 새로 만든다 — 머리말 표).
+- ★ **처방은 한 줄을 지우는 것**이다 — `FormData` 에는 `Content-Type` 을 **안 쓴다.** boundary 는 **브라우저만 안다**(요청마다 새로 만든다 — 맨 위 부분 표).
 
 ```text
    FormData 한 칸의 원문 — 칸막이와 송장의 관계 (이 판)
@@ -478,3 +470,11 @@ A POST /echo?id=py  Content-Type=multipart/form-data · 본문 248바이트
 - **`text/plain` 폼 인코딩**과 **UTF-8 이 아닌 폼**은 HTML 21편 · 목록 밖이다.
 - **`FormData` 의 `filename` 에 `"` · 줄바꿈이 들어가면** `%22`·`%0A` 로 바뀐다(명세) — 던지지 않았다.
 - **업로드 진행률**은 `fetch` 로는 스트림 업로드가 필요하다(28편 (3) — HTTP/1.1 에서는 안 나갔다).
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」 — 서버가 받은 `Content-Type` 과 **그것으로 고른 파서의 결과**를 칸마다 서버에게 묻는 「자동 `Content-Type` 격자」다.** 본문 일곱 × `Content-Type` 을 직접 쓰나(안 씀 / 씀) = 14칸, 마지막 줄을 스크립트가 **「직접 써서 서버 파싱이 깨진 본문 N / 7」** 로 찍는다. 그 옆에 **원문(본문 바이트)** 을 서버 로그째 싣는다.\
+**기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 「extract a body」(**`Blob` — `type` 이 빈 바이트열이 아니면 그 값** · `BufferSource` — 타입 없음 · **`FormData` — `multipart/form-data; boundary=` + multipart/form-data 인코딩 알고리즘이 만든 boundary 문자열** · **`URLSearchParams` — `application/x-www-form-urlencoded;charset=UTF-8`** · **문자열 — `text/plain;charset=UTF-8`**) · Request 생성자(「type 이 null 이 아니고 **headers 에 `Content-Type` 이 없으면** 그때만 붙인다」) · [WHATWG HTML](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html) 의 「create an entry」(**`File` 이 아닌 `Blob` 은 이름이 `"blob"` 인 새 `File` 로** · filename 을 주면 그 이름으로) · 「constructing the entry list」(**체크 안 된 체크박스는 건너뛴다**) · 「multipart/form-data encoding algorithm」(**RFC 7578** 을 따르고, **파일이 아닌 칸에는 `Content-Type` 을 붙이지 않는다** · boundary 는 알고리즘이 만든다) · [WHATWG XHR](https://xhr.spec.whatwg.org/) 의 `FormData(form)` 생성자(form 이 주어지면 **constructing the entry list** 의 결과를 쓴다). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 요청은 **같은 출처 A 의 `/echo`** 로 보냈다 — CORS 를 빼고 본문만 고립시키려고. 서버는 받은 **`Content-Type` · 원문 · 직접 짠 파서의 결과**를 적는다(파이썬 `email`·`cgi` 를 안 쓰고 **boundary 로 직접 가른다** — 파서가 대신 고쳐 주는 일을 없애려고). 하네스는 [28번 주제](../28-cors-simple-and-preflight/2-summary.md)의 (1)이다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — ★★ **[HTML 21번 주제](../../html/syntax/21-form-submission-model/2-summary.md)의 (1)이 폼 제출의 `method` × `enctype` 여섯 칸을 서버 로그로 쟀다** — 그쪽은 **마크업이 만드는 본문**, 여기는 **같은 본문을 스크립트로** 만든다((4)가 둘을 원문째 견준다). HTML 21편도 boundary 를 「(경계)」로 죽였다. ★ **[25번 주제](../25-fetch-request-response/2-summary.md)** — `fetch` 의 옵션 표면. ★ **[28번 주제](../28-cors-simple-and-preflight/2-summary.md)의 (2)** — `Content-Type` 값이 프리플라이트를 정한다((6)이 잇는다).

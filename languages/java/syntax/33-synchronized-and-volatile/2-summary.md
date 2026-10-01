@@ -1,24 +1,5 @@
 # java/syntax/33 — `synchronized`·`volatile`: 문법과 그 보장이 끝나는 자리 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §8.4.3.6 `synchronized` 메서드](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§8.3.1.4 `volatile` 필드](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§14.19 `synchronized` 문](https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html) · [§17.7 `double`·`long` 의 비원자적 취급](https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html) · [`java.lang.Object#wait` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html) · 이 머신의 `javac`·`javap` 가 실제로 낸 출력.
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 프로그램 `(33-a)` `(33-b)` `(33-c)` `(33-e)` 는 **17.0.13 · 21.0.5 · 25.0.1** 세 JDK 에서 각각 돌렸다 — **세 곳에서 갈린 것이 둘 있다**(아래 「구현 세부사항 대 언어 보장」).
-> ⚠️ **측정 조건 — 이 주제의 수치는 전부 비결정적이다.**\
-> 도구: **JMH 가 아니다.** 스레드를 직접 띄워 같은 실험을 **N회 반복**하고 「정답이 나온 횟수 / N」과 「관측된 최솟값\~최댓값」으로 적는다.\
-> 머신: **CPU 24코어**(`availableProcessors` = 24), Linux x86-64.\
-> 반복: 경쟁 실험은 **각 20회 또는 10회**, 가시성 실험은 **5회**, 교착 실험은 **20회**.\
-> 흔들림: 같은 프로그램을 두 번 돌리면 「정답 횟수」가 **18/20 → 13/20** 처럼 바뀐다. **자릿수와 방향만 읽는다.**\
-> ★ **「안 터졌다」는 「안전하다」가 아니다.** 경쟁 조건은 **안 터지는 것이 기본값**이고, 터뜨리려면 스레드 수와 반복 수를 올려야 한다.\
-> 이 문서가 그 사실 자체를 실측으로 보인다 — JDK 25 에서 8스레드 × 10만 회 `int++` 이 **20/20회 전부 정답**이 나왔다.
-> **버전** — `synchronized`·`volatile` 은 **키워드**라 `src.zip` 에 `@since` 가 없다. JLS §3.9 의 키워드 목록에 Java 1.0 부터 들어 있고, 이 문서는 그 사실을 **실행으로 확인하지 않았다**(17 미만 JDK 가 이 머신에 없다).\
-> `Thread.holdsLock` 은 `src.zip` 에서 **`@since 1.4`** 를 직접 읽었다.\
-> **`Object.wait`·`notify`·`notifyAll` 에는 `@since` 태그가 아예 없다**(21 의 `Object.java` 를 직접 확인했다) — Java 1.0 부터 있었기 때문이다.
-> **범위** — **메모리 모델(happens-before)·재배치·JIT·GC 는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §4\~9 가 정본이다.**\
-> 그쪽은 **「동시성이 맞다」를 무엇으로 정의하나**까지, 여기는 「**그 정의를 만족시키려면 코드를 어떻게 쓰나**」부터다.\
-> OS 스레드·스케줄링은 [`../../../../cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다 — 그쪽은 **스레드가 무엇인가**까지, 여기는 **자바 키워드 둘의 문법과 사용 규칙**까지.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 JLS·javadoc 으로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`synchronized` 는 "이 방에는 한 번에 한 사람"이고, `volatile` 은 "칠판에 바로 쓰고 바로 읽어라"다.**
@@ -829,3 +810,22 @@ at java.lang.Object.wait    at java.lang.Object.wait0   at java.lang.Object.wait
   `volatile` 필드가 "항상 가장 센 모드"라면 이쪽은 **필요한 만큼만** 고르는 도구다.
 - **이중 검사 잠금(double-checked locking)** — `volatile` 없이 쓰면 깨진다는 고전적 예. 요즘은 **홀더 클래스 관용구**나 `enum` 싱글턴을 쓴다.
 - **`synchronized` 의 비용** — [`../../언어-특성/README.md`](../../언어-특성/README.md) §9 가 LMAX 측정을 인용한다. **그쪽이 정본이라 여기서 다시 재지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §8.4.3.6 `synchronized` 메서드](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§8.3.1.4 `volatile` 필드](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§14.19 `synchronized` 문](https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html) · [§17.7 `double`·`long` 의 비원자적 취급](https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html) · [`java.lang.Object#wait` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html) · 이 머신의 `javac`·`javap` 가 실제로 낸 출력.
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+프로그램 `(33-a)` `(33-b)` `(33-c)` `(33-e)` 는 **17.0.13 · 21.0.5 · 25.0.1** 세 JDK 에서 각각 돌렸다 — **세 곳에서 갈린 것이 둘 있다**(본문 「구현 세부사항 대 언어 보장」).
+⚠️ **측정 조건 — 이 주제의 수치는 전부 비결정적이다.**\
+도구: **JMH 가 아니다.** 스레드를 직접 띄워 같은 실험을 **N회 반복**하고 「정답이 나온 횟수 / N」과 「관측된 최솟값\~최댓값」으로 적는다.\
+머신: **CPU 24코어**(`availableProcessors` = 24), Linux x86-64.\
+반복: 경쟁 실험은 **각 20회 또는 10회**, 가시성 실험은 **5회**, 교착 실험은 **20회**.\
+흔들림: 같은 프로그램을 두 번 돌리면 「정답 횟수」가 **18/20 → 13/20** 처럼 바뀐다. **자릿수와 방향만 읽는다.**\
+★ **「안 터졌다」는 「안전하다」가 아니다.** 경쟁 조건은 **안 터지는 것이 기본값**이고, 터뜨리려면 스레드 수와 반복 수를 올려야 한다.\
+이 문서가 그 사실 자체를 실측으로 보인다 — JDK 25 에서 8스레드 × 10만 회 `int++` 이 **20/20회 전부 정답**이 나왔다.
+**버전** — `synchronized`·`volatile` 은 **키워드**라 `src.zip` 에 `@since` 가 없다. JLS §3.9 의 키워드 목록에 Java 1.0 부터 들어 있고, 이 문서는 그 사실을 **실행으로 확인하지 않았다**(17 미만 JDK 가 이 머신에 없다).\
+`Thread.holdsLock` 은 `src.zip` 에서 **`@since 1.4`** 를 직접 읽었다.\
+**`Object.wait`·`notify`·`notifyAll` 에는 `@since` 태그가 아예 없다**(21 의 `Object.java` 를 직접 확인했다) — Java 1.0 부터 있었기 때문이다.
+**범위** — **메모리 모델(happens-before)·재배치·JIT·GC 는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §4\~9 가 정본이다.**\
+그쪽은 **「동시성이 맞다」를 무엇으로 정의하나**까지, 여기는 「**그 정의를 만족시키려면 코드를 어떻게 쓰나**」부터다.\
+OS 스레드·스케줄링은 [`../../../../cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다 — 그쪽은 **스레드가 무엇인가**까지, 여기는 **자바 키워드 둘의 문법과 사용 규칙**까지.

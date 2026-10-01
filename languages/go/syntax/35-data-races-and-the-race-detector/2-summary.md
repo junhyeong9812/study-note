@@ -1,14 +1,5 @@
 # go/syntax/35 — 데이터 레이스와 `-race` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Data Race Detector](https://go.dev/doc/articles/race_detector)(★ **이번에는 웹에서 열어 문장을 확인했다** — 32편은 안 열었다) · [Go 1.19 릴리스 노트](https://go.dev/doc/go1.19)(검출기 v3) ·
-> [Go 메모리 모델](https://go.dev/ref/mem) · 이 툴체인의 `$(go env GOROOT)/src/runtime/race/`(README · `.syso` 의 문자열).\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> ★ **버전** — 검출기가 **ThreadSanitizer v3** 로 바뀌며 「**unlimited number of goroutines**」가 된 것이 **1.19**(릴리스 노트, 웹) — (3)절에서 **10만 고루틴으로 던졌다.**
-> ★ **`-race` 가 이 머신에서 열리는가**(cgo·gcc)는 [32번 주제](../32-sync-mutex-rwmutex-waitgroup-once/) (1)절이 판별했다 — **다시 판별하지 않았다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**경쟁 접근이 실제로 실행됐는지(설계로 안다)와 `-race` 가 보고했는지를 칸마다 나란히 찍는 격자**」.
 32편이 「검출기가 **무엇을 보나**」를 줄 번호째 보였다면, 이 편은 「**무엇을 못 보나**」를 칸 수로 센다 — 마지막 줄 **`경쟁이 실행됐는데 보고가 없던 칸 3 / 7`**((1)절).
 ★★★ **셋 다 cgo 칸**이다. 그리고 **「실행 안 된 경로」는 원리상 못 본다**(보고 없음 · 경쟁도 없었음 — 격자 밖으로 뺐다).
@@ -842,3 +833,12 @@ For more information about this error, try `rustc --explain E0277`.
 - ★ 검출기가 cgo 메모리를 안 보는 **구현 코드**(runtime 의 주소 범위 판정)는 **안 열었다** — 관찰만 적었다.
 - ★ `-race` 의 **시간·메모리 비용**은 **안 쟀다.**
 - ★ Rust 의 `unsafe` 로 같은 레이스를 **컴파일되게** 만드는 것은 **안 던졌다.**
+
+## 실행 환경
+
+**기준 소스** — [Data Race Detector](https://go.dev/doc/articles/race_detector)(★ **이번에는 웹에서 열어 문장을 확인했다** — 32편은 안 열었다) · [Go 1.19 릴리스 노트](https://go.dev/doc/go1.19)(검출기 v3) ·
+[Go 메모리 모델](https://go.dev/ref/mem) · 이 툴체인의 `$(go env GOROOT)/src/runtime/race/`(README · `.syso` 의 문자열).\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+★ **버전** — 검출기가 **ThreadSanitizer v3** 로 바뀌며 「**unlimited number of goroutines**」가 된 것이 **1.19**(릴리스 노트, 웹) — (3)절에서 **10만 고루틴으로 던졌다.**
+★ **`-race` 가 이 머신에서 열리는가**(cgo·gcc)는 [32번 주제](../32-sync-mutex-rwmutex-waitgroup-once/) (1)절이 판별했다 — **다시 판별하지 않았다.**

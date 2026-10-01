@@ -1,15 +1,5 @@
 # html/syntax/28 — 검증 속성: `required`/`pattern`/`min`/`max`/`step`/`minlength`/`maxlength` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The input element」](https://html.spec.whatwg.org/multipage/input.html) — 상태마다의 **「지정하지 말아야 하고 적용되지 않는(do not apply) 속성」 목록**, [`pattern`](https://html.spec.whatwg.org/multipage/input.html#the-pattern-attribute)(★ **컴파일된 패턴** — `RegExpCreate(…, "v")` · `^(?:` … `)$`), [`min`·`max`](https://html.spec.whatwg.org/multipage/input.html#the-min-and-max-attributes)(★ **`min` 이 눈금의 기준도 정한다**), [`step`](https://html.spec.whatwg.org/multipage/input.html#the-step-attribute)(★ **step base** 알고리즘 · 허용 눈금), Range 상태의 「눈금에 안 맞으면 **반올림해야 한다**」, 그리고 [「Limiting user input length」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#limiting-user-input-length:-the-maxlength-attribute)·`minlength`(★ **「값이 마지막으로 사용자 편집으로 바뀌었고」**). **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다.**
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 사용자 편집은 **CDP 의 진짜 키 입력**(`Input.dispatchKeyEvent`·`Input.insertText`)이다. 로케일은 **`ko-KR`**(환경 변수 `LANGUAGE`). 하네스는 [25번 주제](../25-label-association/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. ★ **`pattern` 을 `v` 플래그로 컴파일하는 것은 명세의 현재 판**이다(`v` 는 ES2024 — [JS 30번](../../../js/syntax/30-regexp-advanced/2-summary.md)). 언제 `u` 에서 바뀌었는지는 이 문서가 확인하지 않았다.
-> **선행** — [23번 주제](../23-input-types-number-date/2-summary.md)(`validity` 깃발 · `range` 의 값 고침) · [22번 주제](../22-input-types-text/2-summary.md)(`typeMismatch`).
-> **경계** — ★★★ **검증이 언제 도나**(단추 클릭·Enter·`requestSubmit()` 은 돌고, **`form.submit()` 은 건너뛴다**)와 **`curl` 로 우회하면 서버가 무효한 값을 그대로 받는 것**은 [21번 주제](../21-form-submission-model/2-summary.md)가 이미 쟀다 — 여기서 다시 재지 않는다. **유효성 상태를 CSS 가 읽는 경로**(`:invalid`·`:user-invalid`)와 **`novalidate`** 는 목록의 **29번 주제**와 [CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md), **스크립트로 읽고 덮어쓰는 표면**(`checkValidity`·`reportValidity`·`setCustomValidity`)은 web-api 갈래 목록([`web-api/README.md`](../../../web-api/README.md))의 **60번**이다 — 여기는 **속성이 어느 깃발을 켜나**까지.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ②(`validity` 불리언 깃발)다.** `validationMessage` 문구는 **구현**이라 근거로 쓰지 않는다([22번](../22-input-types-text/2-summary.md)). 「이 속성이 이 타입에서 **무시된다**」는 깃발이 **안 켜진 것**이라 침묵이 근거다 — 그래서 **칸 마흔둘을 미리 선언하고** 「무시된 칸 N / 42」를 스크립트가 센다.
-
 **이 판의 Chrome**
 
 ```text
@@ -662,3 +652,14 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 `maxlength` 는 사용자 편집만 보나** — 명세의 비규범 설명은 없다. 결과로 보면 **서버가 채운 옛 값**(규칙이 바뀌기 전에 저장된 긴 값)을 가진 폼이 **사용자가 손도 안 댔는데 제출이 막히는** 일을 피한다(해석이다).
 - **왜 `pattern` 을 `v` 로 바꿨나** — `v` 는 `u` 보다 엄격한 문법이라 **옛 패턴 일부가 무효가 된다**((3) 의 `[a-z-]`). 명세는 그 대가를 알고도 집합 연산·글자열 속성을 얻는 쪽을 택한 것으로 보인다 — 변경의 경위는 이 문서가 확인하지 않았다.
 - **`step="any"`** — 허용 눈금이 **없다**. `number` 에서 소수를 자유롭게 받으려면 이것을 준다(이 판은 던지지 않았다).
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The input element」](https://html.spec.whatwg.org/multipage/input.html) — 상태마다의 **「지정하지 말아야 하고 적용되지 않는(do not apply) 속성」 목록**, [`pattern`](https://html.spec.whatwg.org/multipage/input.html#the-pattern-attribute)(★ **컴파일된 패턴** — `RegExpCreate(…, "v")` · `^(?:` … `)$`), [`min`·`max`](https://html.spec.whatwg.org/multipage/input.html#the-min-and-max-attributes)(★ **`min` 이 눈금의 기준도 정한다**), [`step`](https://html.spec.whatwg.org/multipage/input.html#the-step-attribute)(★ **step base** 알고리즘 · 허용 눈금), Range 상태의 「눈금에 안 맞으면 **반올림해야 한다**」, 그리고 [「Limiting user input length」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#limiting-user-input-length:-the-maxlength-attribute)·`minlength`(★ **「값이 마지막으로 사용자 편집으로 바뀌었고」**). **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다.**
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 사용자 편집은 **CDP 의 진짜 키 입력**(`Input.dispatchKeyEvent`·`Input.insertText`)이다. 로케일은 **`ko-KR`**(환경 변수 `LANGUAGE`). 하네스는 [25번 주제](../25-label-association/3-answer.md)의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. ★ **`pattern` 을 `v` 플래그로 컴파일하는 것은 명세의 현재 판**이다(`v` 는 ES2024 — [JS 30번](../../../js/syntax/30-regexp-advanced/2-summary.md)). 언제 `u` 에서 바뀌었는지는 이 문서가 확인하지 않았다.
+**선행** — [23번 주제](../23-input-types-number-date/2-summary.md)(`validity` 깃발 · `range` 의 값 고침) · [22번 주제](../22-input-types-text/2-summary.md)(`typeMismatch`).
+**경계** — ★★★ **검증이 언제 도나**(단추 클릭·Enter·`requestSubmit()` 은 돌고, **`form.submit()` 은 건너뛴다**)와 **`curl` 로 우회하면 서버가 무효한 값을 그대로 받는 것**은 [21번 주제](../21-form-submission-model/2-summary.md)가 이미 쟀다 — 여기서 다시 재지 않는다. **유효성 상태를 CSS 가 읽는 경로**(`:invalid`·`:user-invalid`)와 **`novalidate`** 는 목록의 **29번 주제**와 [CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md), **스크립트로 읽고 덮어쓰는 표면**(`checkValidity`·`reportValidity`·`setCustomValidity`)은 web-api 갈래 목록([`web-api/README.md`](../../../web-api/README.md))의 **60번**이다 — 여기는 **속성이 어느 깃발을 켜나**까지.
+
+★★★ **이 주제의 본체는 창 ②(`validity` 불리언 깃발)다.** `validationMessage` 문구는 **구현**이라 근거로 쓰지 않는다([22번](../22-input-types-text/2-summary.md)). 「이 속성이 이 타입에서 **무시된다**」는 깃발이 **안 켜진 것**이라 침묵이 근거다 — 그래서 **칸 마흔둘을 미리 선언하고** 「무시된 칸 N / 42」를 스크립트가 센다.

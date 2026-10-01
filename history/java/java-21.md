@@ -1,11 +1,5 @@
 # Java 21 (2023년 9월, LTS)
 
-> 원본: `~/project/java-history/java/java-21.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JEP 번호·클래스/메서드 이름·자바 코드블록 9개·「릴리스 정보」와 「참고 출처」 목록은 원문 그대로다.\
-> ASCII 도식 2개는 원문 mermaid 도식 2개를 글자로 옮긴 것이고, 새로 그린 도식은 없다.\
-> 「한눈에」의 창구 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
-> 「미리보기에서 정식까지」 표의 「미리보기였던 편」 칸은 같은 시리즈의 다른 편(`java-17.md`~`java-20.md`)에서 끌어온 보충이고, 출처 편을 칸마다 적었다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -474,3 +468,11 @@ LTS라는 점에서 이 모든 기능이 기업 운영 환경의 "기본값"이 
 - [OpenJDK JDK 21 프로젝트 페이지](https://openjdk.org/projects/jdk/21/)
 - [InfoQ: Java 21, the Next LTS Release, Delivers Virtual Threads, Record Patterns and Pattern Matching](https://www.infoq.com/news/2023/09/java21-released/)
 - [Oracle Java Magazine: Java 21 is here](https://blogs.oracle.com/javamagazine/java-21-now-available/)
+
+## 출처
+
+원본: `~/project/java-history/java/java-21.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JEP 번호·클래스/메서드 이름·자바 코드블록 9개·「릴리스 정보」와 「참고 출처」 목록은 원문 그대로다.\
+ASCII 도식 2개는 원문 mermaid 도식 2개를 글자로 옮긴 것이고, 새로 그린 도식은 없다.\
+「한눈에」의 창구 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
+「미리보기에서 정식까지」 표의 「미리보기였던 편」 칸은 같은 시리즈의 다른 편(`java-17.md`~`java-20.md`)에서 끌어온 보충이고, 출처 편을 칸마다 적었다.

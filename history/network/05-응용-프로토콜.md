@@ -1,9 +1,5 @@
 # 응용 계층 프로토콜의 역사
 
-> 원본: `~/project/network-history/05-응용-프로토콜.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·논문명·RFC 번호·포트 번호·표준명·코드블록·표는 원문 그대로다.\
-> ASCII 도식 12개와 「한눈에」의 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 > 사람이 읽는 텍스트 명령으로 시작해, 암호화·구조화된 원격 호출과 실시간 양방향 통신으로 진화해 온 응용 계층(OSI 7계층 / TCP-IP 응용 계층)의 변천사. "언제, 왜 등장했고, 무엇을 대체했는가"를 축으로 정리한다.
@@ -783,3 +779,9 @@ protobuf(2008)       ○          빠름·작음      강제(.proto)
 - [RFC 4627: The application/json Media Type (2006)](https://www.rfc-editor.org/rfc/rfc4627.html)
 - [RFC 8259: The JavaScript Object Notation (JSON) (2017)](https://www.rfc-editor.org/rfc/rfc8259.html)
 - [Protocol Buffers (Google Developers)](https://protobuf.dev/)
+
+## 출처
+
+원본: `~/project/network-history/05-응용-프로토콜.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·논문명·RFC 번호·포트 번호·표준명·코드블록·표는 원문 그대로다.\
+ASCII 도식 12개와 「한눈에」의 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

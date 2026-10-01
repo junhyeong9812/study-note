@@ -1,15 +1,5 @@
 # sql/12-카티션곱과 CROSS JOIN — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
-> **버전** — `CROSS JOIN` 자체는 두 엔진 모두 오래전부터 있다. 아래 **`CROSS JOIN … ON`** 의 처리는 갈리는데, 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않는다.**\
-> **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/)(조인은 **1번 칸**에서 일어난다) · [10 FROM 절](../10-from-clause-aliases-derived-tables/)(별칭과 파생 테이블).\
-> **이 주제는 조인 전체의 밑동이다** — [13 INNER JOIN](../13-inner-join/) · [14 LEFT·RIGHT OUTER JOIN](../14-left-right-outer-join/) · [16 FULL OUTER JOIN](../16-full-outer-join/) 이 전부 여기서 시작한다.
-
 ## 한눈에 — 쉽게 말하면
 
 **카티션곱 = 「모든 짝을 다 만들어 본 것」. 조인은 그 짝 더미에서 조건에 맞는 것만 남긴 것이다.**
@@ -519,3 +509,12 @@ FULL  OUTER  + 양쪽 다 되살린다                        5       16번
   예: `generate_series(1,3)` 은 1·2·3 세 행. **MySQL 8.4.10 에는 없다.**
 - **팬아웃(fan-out)** — 조인 조건이 있는데도 1:N 관계 때문에 행이 불어나는 현상.\
   예: 사원 한 명이 프로젝트 둘에 속하면 그 사원의 행이 둘이 된다. [13번](../13-inner-join/)·[목록의 **25번 주제**](../25-join-fan-out/).
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
+**버전** — `CROSS JOIN` 자체는 두 엔진 모두 오래전부터 있다. 본문의 **`CROSS JOIN … ON`** 의 처리는 갈리는데, 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않는다.**\
+**선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/)(조인은 **1번 칸**에서 일어난다) · [10 FROM 절](../10-from-clause-aliases-derived-tables/)(별칭과 파생 테이블).\
+**이 주제는 조인 전체의 밑동이다** — [13 INNER JOIN](../13-inner-join/) · [14 LEFT·RIGHT OUTER JOIN](../14-left-right-outer-join/) · [16 FULL OUTER JOIN](../16-full-outer-join/) 이 전부 여기서 시작한다.

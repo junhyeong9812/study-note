@@ -1,45 +1,5 @@
 # python/syntax/26-eafp-vs-lbyl — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [glossary — EAFP](https://docs.python.org/3.12/glossary.html#term-EAFP) · [glossary — LBYL](https://docs.python.org/3.12/glossary.html#term-LBYL) — **두 낱말의 정의와 경쟁 조건 경고가 거기 있다**
-> - [`dict.get`](https://docs.python.org/3.12/library/stdtypes.html#dict.get) · [`dict.setdefault`](https://docs.python.org/3.12/library/stdtypes.html#dict.setdefault) · [`collections.defaultdict`](https://docs.python.org/3.12/library/collections.html#collections.defaultdict)
-> - [`hasattr`](https://docs.python.org/3.12/library/functions.html#hasattr) · [`getattr`](https://docs.python.org/3.12/library/functions.html#getattr) — `hasattr` 가 **`AttributeError` 만** 삼킨다는 문장
-> - [`str.isdigit`](https://docs.python.org/3.12/library/stdtypes.html#str.isdigit) · [`int`](https://docs.python.org/3.12/library/functions.html#int) — **두 판정 기준이 다르다**
-> - [`timeit`](https://docs.python.org/3.12/library/timeit.html) — 측정 도구
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
-> 이 주제의 예외는 전부 **실행 중 예외**라 소스 줄도 캐럿도 안 나온다.\
-> **수치** — `timeit` 으로 쟀다. **한 판 = `repeat` 11 회의 중앙값**이고 **판을 셋** 낸다.
-> 판마다 **버리는 예열 판**을 한 번 먼저 돌렸다. 머신은 Linux x86_64, 부하는 안 통제했다.\
-> ★★ **신호 대 잡음** — 「성공률 0%」 쪽은 신호가 **5배 이상**이라 판 사이 흔들림(±5%)보다 훨씬 크다.
-> 「성공률 100%」 쪽은 **0.75\~0.88배**라 신호가 작지만 **세 판 모두 1 미만**이었다.
-> **손익분기 스캔의 5% 칸은 세 판이 `0.88 / 1.05 / 0.98` 로 1 을 넘나든다** — 그 칸 위에 결론을 세우지 않는다.
-> ★★ **제출 직전 재측정에서는 맞붙는 칸이 10% 로 옮겨 갔다**(동작 5에 두 측정을 나란히 남겼다).\
-> **버전** — EAFP·LBYL 은 관용구라 버전이 없다. 갈리는 것 하나 — **`hasattr` 가 `AttributeError` 만 삼키는 것이 3.2 부터**다
-> (2.x 에서는 모든 예외를 삼켰다). 2.x 는 이 머신에 없어 **옛 동작은 안 돌려 봤다** — 문서 근거다.\
-> **구현 대 언어 보장 한 줄** — **「어느 쪽이 맞나」는 언어가 정해 주지 않는다.** 이 문서의 판정은 전부
-> **측정과 경쟁 조건 재현**에서 나온 것이고, **수치는 이 머신의 관찰**이다.\
-> **★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | `timeit` 의 **나노초·마이크로초 값** 전부 | **EAFP/LBYL 비의 부호**(성공률 100% 는 1 미만, 0% 는 4배 이상) |
-> | 손익분기 표의 **5% 칸과 10% 칸의 비** — ★ **둘 다 1 을 넘나들고, 맞붙는 칸이 실행마다 옮겨 간다** | **0%·20%·50%·100% 칸의 대소** · 손익분기가 **5\~10% 사이**라는 것 |
-> | (판이 오르면) 예외 **문구** | 예외 **종류** · `File "<stdin>", line N` · **종료 코드** |
-> | — | 경쟁 조건 블록의 **①②③④ 네 줄 결과** — 순서를 고정해 재현했다 |
->
-> ★ **대조할 것은 숫자가 아니라 성질이다** — `timeit` 두 블록은 다시 돌리면 또 달라진다.
-> 「**성공률이 높으면 EAFP 가 빠르고 낮으면 몇 배 느리다**」와 「**손익분기가 한 자릿수 %대에 있다**」가 대조 대상이다.\
-> **선행** — [25-exceptions-and-finally](../25-exceptions-and-finally/2-summary.md)(**예외 문법의 정본**) ·
-> [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(`get`·`setdefault`) ·
-> [05-truthiness-and-short-circuit](../05-truthiness-and-short-circuit/2-summary.md)(단축 평가).\
-> **이 사슬** — [25](../25-exceptions-and-finally/2-summary.md) → 26 → [27](../27-exception-groups-and-except-star/2-summary.md) → [28](../28-context-managers-and-with/2-summary.md).
-> 25 가 **문법**이라면 여기는 **고르는 법**이다. **문법을 한 줄도 다시 설명하지 않는다.**
-
 ## 한눈에 — 쉽게 말하면
 
 **LBYL 은 「손잡이를 만져 보고 문을 민다」이고, EAFP 는 「일단 밀고 안 열리면 그때 본다」이다.**
@@ -1006,3 +966,46 @@ def hot_loop(d, keys):
   그 이야기는 `[목록의 **40번 주제**](../40-type-hints-at-runtime/)`·`[목록의 **41번 주제**](../41-typing-and-generic-syntax/)` 다.
 - ★ **`contextlib.suppress` 는 EAFP 를 한 줄로 접은 것**이지만, **`try/except/pass` 보다 조금 느리다**고
   알려져 있다 — **이 문서에서는 안 쟀다.** 재지 않은 것은 적지 않는다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [glossary — EAFP](https://docs.python.org/3.12/glossary.html#term-EAFP) · [glossary — LBYL](https://docs.python.org/3.12/glossary.html#term-LBYL) — **두 낱말의 정의와 경쟁 조건 경고가 거기 있다**
+- [`dict.get`](https://docs.python.org/3.12/library/stdtypes.html#dict.get) · [`dict.setdefault`](https://docs.python.org/3.12/library/stdtypes.html#dict.setdefault) · [`collections.defaultdict`](https://docs.python.org/3.12/library/collections.html#collections.defaultdict)
+- [`hasattr`](https://docs.python.org/3.12/library/functions.html#hasattr) · [`getattr`](https://docs.python.org/3.12/library/functions.html#getattr) — `hasattr` 가 **`AttributeError` 만** 삼킨다는 문장
+- [`str.isdigit`](https://docs.python.org/3.12/library/stdtypes.html#str.isdigit) · [`int`](https://docs.python.org/3.12/library/functions.html#int) — **두 판정 기준이 다르다**
+- [`timeit`](https://docs.python.org/3.12/library/timeit.html) — 측정 도구
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
+이 주제의 예외는 전부 **실행 중 예외**라 소스 줄도 캐럿도 안 나온다.\
+**수치** — `timeit` 으로 쟀다. **한 판 = `repeat` 11 회의 중앙값**이고 **판을 셋** 낸다.
+판마다 **버리는 예열 판**을 한 번 먼저 돌렸다. 머신은 Linux x86_64, 부하는 안 통제했다.\
+★★ **신호 대 잡음** — 「성공률 0%」 쪽은 신호가 **5배 이상**이라 판 사이 흔들림(±5%)보다 훨씬 크다.
+「성공률 100%」 쪽은 **0.75\~0.88배**라 신호가 작지만 **세 판 모두 1 미만**이었다.
+**손익분기 스캔의 5% 칸은 세 판이 `0.88 / 1.05 / 0.98` 로 1 을 넘나든다** — 그 칸 위에 결론을 세우지 않는다.
+★★ **제출 직전 재측정에서는 맞붙는 칸이 10% 로 옮겨 갔다**(동작 5에 두 측정을 나란히 남겼다).\
+**버전** — EAFP·LBYL 은 관용구라 버전이 없다. 갈리는 것 하나 — **`hasattr` 가 `AttributeError` 만 삼키는 것이 3.2 부터**다
+(2.x 에서는 모든 예외를 삼켰다). 2.x 는 이 머신에 없어 **옛 동작은 안 돌려 봤다** — 문서 근거다.\
+**구현 대 언어 보장 한 줄** — **「어느 쪽이 맞나」는 언어가 정해 주지 않는다.** 이 문서의 판정은 전부
+**측정과 경쟁 조건 재현**에서 나온 것이고, **수치는 이 머신의 관찰**이다.\
+**★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| `timeit` 의 **나노초·마이크로초 값** 전부 | **EAFP/LBYL 비의 부호**(성공률 100% 는 1 미만, 0% 는 4배 이상) |
+| 손익분기 표의 **5% 칸과 10% 칸의 비** — ★ **둘 다 1 을 넘나들고, 맞붙는 칸이 실행마다 옮겨 간다** | **0%·20%·50%·100% 칸의 대소** · 손익분기가 **5\~10% 사이**라는 것 |
+| (판이 오르면) 예외 **문구** | 예외 **종류** · `File "<stdin>", line N` · **종료 코드** |
+| — | 경쟁 조건 블록의 **①②③④ 네 줄 결과** — 순서를 고정해 재현했다 |
+
+★ **대조할 것은 숫자가 아니라 성질이다** — `timeit` 두 블록은 다시 돌리면 또 달라진다.
+「**성공률이 높으면 EAFP 가 빠르고 낮으면 몇 배 느리다**」와 「**손익분기가 한 자릿수 %대에 있다**」가 대조 대상이다.\
+**선행** — [25-exceptions-and-finally](../25-exceptions-and-finally/2-summary.md)(**예외 문법의 정본**) ·
+[12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(`get`·`setdefault`) ·
+[05-truthiness-and-short-circuit](../05-truthiness-and-short-circuit/2-summary.md)(단축 평가).
+
+25 가 **문법**이라면 여기는 **고르는 법**이다. **문법을 한 줄도 다시 설명하지 않는다.**
+
+---
+
+**이 사슬** — [25](../25-exceptions-and-finally/2-summary.md) → 26 → [27](../27-exception-groups-and-except-star/2-summary.md) → [28](../28-context-managers-and-with/2-summary.md).

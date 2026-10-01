@@ -1,15 +1,5 @@
 # csharp/syntax/02 — `struct` 대 `class` 고르기 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) · [Learn — 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) · [.NET API — `GC.GetAllocatedBytesForCurrentThread`](https://learn.microsoft.com/en-us/dotnet/api/system.gc.getallocatedbytesforcurrentthread)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
-> 런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-24).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
-> **읽는 법** — 할당 바이트는 **증분만** 근거로 쓴다(절댓값은 프로세스 누적이라 흔들린다).\
-> `Stopwatch` 의 **ns 절댓값도 흔들리는 칸**이고, 근거로 쓰는 것은 **자릿수 차이**다.\
-> ★★★ **3번과 4번은 「출력이 없는 것」이 결론인 자리**다 — 경고가 0줄이라는 사실 자체를 근거로 쓴다.\
-> 자세한 환경은 [2-summary.md](2-summary.md) 머리말에 있다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -689,3 +679,14 @@ cs02b-record-mutate.cs(6,9): error CS8852: Init-only property or indexer 'Money.
 - ★ **5번의 IL**(`ldobj` 가 남아 있나).
 - ★ **7번의 48·152** · **8번의 배수** — 런타임 최적화가 바뀌면 움직인다.
 - **진단 문구와 진단 코드**(2·9번).
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) · [Learn — 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) · [.NET API — `GC.GetAllocatedBytesForCurrentThread`](https://learn.microsoft.com/en-us/dotnet/api/system.gc.getallocatedbytesforcurrentthread)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
+런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-24).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
+**읽는 법** — 할당 바이트는 **증분만** 근거로 쓴다(절댓값은 프로세스 누적이라 흔들린다).\
+`Stopwatch` 의 **ns 절댓값도 흔들리는 칸**이고, 근거로 쓰는 것은 **자릿수 차이**다.\
+★★★ **3번과 4번은 「출력이 없는 것」이 결론인 자리**다 — 경고가 0줄이라는 사실 자체를 근거로 쓴다.\
+자세한 환경은 [2-summary.md](2-summary.md) 「실행 환경」에 있다.

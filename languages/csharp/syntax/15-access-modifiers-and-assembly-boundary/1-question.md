@@ -1,22 +1,5 @@
 # csharp/syntax/15 — 접근 한정자와 어셈블리 경계 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 「**어느 멤버가 막히나**」가 절반이고 「**진단 코드가 무엇으로 바뀌나**」가 나머지 절반이다.
-> **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
-> Roslyn `csc` 를 직접 부른다 · `-preferreduilang:en-US` · Java 대비는 **javac 21.0.5**.
-> ★★★ **어셈블리를 둘 만들어 던졌다** — `liba.dll`(라이브러리)과 `appb.dll`(참조하는 쪽).
-> **한 파일로는 물을 수 없는 유일한 주제**다.
-> ★★★ **본체 창은 ② 진단 격자다.** 같은 소스를 **같은 어셈블리에 넣었을 때와 다른 어셈블리에서 참조할 때**
-> 진단이 달라지는 것이 이 주제의 답이다.
-> ★★ **짝이 되는 창은 ③ 리플렉션**(2번) — C# 낱말로는 못 읽히는 **`OR`/`AND`** 를 메타데이터가 적어 준다.
-> ★ **「부적용인 창」이 둘 있다** — **① IL 덤프**와 **④ 할당 바이트.**
-> 접근 한정자는 **멤버 본문을 한 글자도 안 바꾼다.** **「안 쟀다」가 아니라 「잴 것이 없다」다.**
-> 선행 — [12번](../12-class-fields-constructors-this-base/)(클래스 문법)·[13번](../13-properties-init-required-field/)(접근자 접근성).
-> 이어지는 것 — [16번](../16-inheritance-virtual-override-abstract-sealed-new/)(`protected` 를 설계로 쓰는 법).
-> 대비 — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **10번**([`10-access-modifiers/`](../../../java/syntax/10-access-modifiers/)).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (예측) / (왜) / (경계) / (연결) -->
@@ -218,6 +201,22 @@ public class Vault {
 - ★★ **`protected` 를 설계로 쓰는 법**과 **`virtual` 의 짝**은 몇 번 주제인가?
 - **명시적 인터페이스 구현이 `private` 인 것**은 몇 번 주제인가?
 - ★ C++ 에는 왜 이 주제의 **절반이 아예 없는가**?
+
+## 실행 환경
+
+이 주제의 질문은 「**어느 멤버가 막히나**」가 절반이고 「**진단 코드가 무엇으로 바뀌나**」가 나머지 절반이다.
+**환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
+Roslyn `csc` 를 직접 부른다 · `-preferreduilang:en-US` · Java 대비는 **javac 21.0.5**.
+★★★ **어셈블리를 둘 만들어 던졌다** — `liba.dll`(라이브러리)과 `appb.dll`(참조하는 쪽).
+**한 파일로는 물을 수 없는 유일한 주제**다.
+★★★ **본체 창은 ② 진단 격자다.** 같은 소스를 **같은 어셈블리에 넣었을 때와 다른 어셈블리에서 참조할 때**
+진단이 달라지는 것이 이 주제의 답이다.
+★★ **짝이 되는 창은 ③ 리플렉션**(2번) — C# 낱말로는 못 읽히는 **`OR`/`AND`** 를 메타데이터가 적어 준다.
+★ **「부적용인 창」이 둘 있다** — **① IL 덤프**와 **④ 할당 바이트.**
+접근 한정자는 **멤버 본문을 한 글자도 안 바꾼다.** **「안 쟀다」가 아니라 「잴 것이 없다」다.**
+선행 — [12번](../12-class-fields-constructors-this-base/)(클래스 문법)·[13번](../13-properties-init-required-field/)(접근자 접근성).
+이어지는 것 — [16번](../16-inheritance-virtual-override-abstract-sealed-new/)(`protected` 를 설계로 쓰는 법).
+대비 — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **10번**([`10-access-modifiers/`](../../../java/syntax/10-access-modifiers/)).
 
 ## 복습 기록
 

@@ -1,14 +1,5 @@
 # html/syntax/11 — 구획 요소와 랜드마크: `main`/`header`/`footer`/`nav`/`aside`/`section`/`article`/`search` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Sections」](https://html.spec.whatwg.org/multipage/sections.html) 절과 [ARIA in HTML](https://www.w3.org/TR/html-aria/)(요소별 암묵 역할 표)·[WAI-ARIA 1.2](https://www.w3.org/TR/wai-aria-1.2/). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. 구획 요소 일곱은 2010년대 초에, **`<search>` 는 2023년**에 들어왔다 — 이 목록에서 **가장 새 요소**다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑦(접근성 트리)이다 — 이 편이 새로 세운다.** 암묵 역할은 **DOM 어디에도 안 나온다**(아래 (1) 이 그 실측이다). 그래서 이 배치는 **CDP(`Accessibility.getFullAXTree`)로 Chrome 의 접근성 트리를 직접 덤프**했다. 창 ①\~④ 의 정의는 [01번 주제](../01-document-skeleton/2-summary.md)에, 창 ⑤(요청 로그)는 [08번 주제](../08-script-loading/2-summary.md)에, 창 ⑥(`renderBlockingStatus`)은 [09번 주제](../09-stylesheets-and-resource-hints/2-summary.md)에 있다.
-> ★★ **그래도 못 보는 것이 있다** — **스크린리더가 실제로 뭐라고 읽는지**는 이 판에 NVDA·VoiceOver 가 없어 **여전히 못 본다.** 접근성 트리는 **스크린리더의 입력**이지 **출력**이 아니다. 아래 「도구가 못 보는 것」이 그 선을 긋는다.
-
 **이 판의 Chrome**
 
 ```text
@@ -776,3 +767,13 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 구획 안의 `<header>` 를 랜드마크에서 뺐나** — 같은 이유다. 글 열 개짜리 목록 페이지에서 `<article>` 마다 `<header>` 가 있으면 **`banner` 가 열 개**가 된다. 「이 페이지의 머리말」이라는 뜻이 사라진다.
 - **`<search>` 가 왜 늦게 왔나** — `role="search"` 로 이미 되던 일이라 **요소가 필요한가**가 오래 논쟁이었다. 결국 「ARIA 없이 되게 하라」는 원칙(목록의 **42번 주제**)이 이겼다.
 - **접근성 트리가 DOM 과 갈리는 폭** — 이 주제에서만 **이름 없는 `<section>`·구획 안의 `<aside>`·`hidden` 인 `<main>`** 셋이 트리에서 빠졌다. ★ **「DOM 에 있다」가 「보조 기술에 보인다」를 뜻하지 않는다.**
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Sections」](https://html.spec.whatwg.org/multipage/sections.html) 절과 [ARIA in HTML](https://www.w3.org/TR/html-aria/)(요소별 암묵 역할 표)·[WAI-ARIA 1.2](https://www.w3.org/TR/wai-aria-1.2/). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. 구획 요소 일곱은 2010년대 초에, **`<search>` 는 2023년**에 들어왔다 — 이 목록에서 **가장 새 요소**다.
+
+★★★ **이 주제의 본체는 창 ⑦(접근성 트리)이다 — 이 편이 새로 세운다.** 암묵 역할은 **DOM 어디에도 안 나온다**(본문 (1) 이 그 실측이다). 그래서 이 배치는 **CDP(`Accessibility.getFullAXTree`)로 Chrome 의 접근성 트리를 직접 덤프**했다. 창 ①\~④ 의 정의는 [01번 주제](../01-document-skeleton/2-summary.md)에, 창 ⑤(요청 로그)는 [08번 주제](../08-script-loading/2-summary.md)에, 창 ⑥(`renderBlockingStatus`)은 [09번 주제](../09-stylesheets-and-resource-hints/2-summary.md)에 있다.
+★★ **그래도 못 보는 것이 있다** — **스크린리더가 실제로 뭐라고 읽는지**는 이 판에 NVDA·VoiceOver 가 없어 **여전히 못 본다.** 접근성 트리는 **스크린리더의 입력**이지 **출력**이 아니다. 맨 위 「도구가 못 보는 것」이 그 선을 긋는다.

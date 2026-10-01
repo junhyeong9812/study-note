@@ -1,9 +1,5 @@
 # Rust 생태계·도구·확산
 
-> 원본: `~/project/rust-history/05-생태계-도구.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
-> 연도·인명·버전·크레이트 이름·수치·기업 표는 원문 그대로다.\
-> ASCII 도식 5개(그중 1개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 공구 비유 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -423,3 +419,9 @@ Rust의 확산은 언어 문법만으로는 설명되지 않는다. "**처음부
 - [2025 Stack Overflow Developer Survey — Technology](https://survey.stackoverflow.co/2025/technology)
 - [astral-sh/uv (GitHub)](https://github.com/astral-sh/uv)
 - [ruff, uv, and Astral: Python tooling much faster, with Rust (Test & Code)](https://pythontest.com/testandcode/episodes/ruff-astral-uv-charlie-marsh/)
+
+## 출처
+
+원본: `~/project/rust-history/05-생태계-도구.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
+연도·인명·버전·크레이트 이름·수치·기업 표는 원문 그대로다.\
+ASCII 도식 5개(그중 1개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 공구 비유 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

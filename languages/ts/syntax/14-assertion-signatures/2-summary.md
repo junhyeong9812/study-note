@@ -1,12 +1,5 @@
 # ts/syntax/14 — 단언 시그니처 `asserts` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Narrowing: Assertion functions](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) ·
-> [TypeScript 3.7 릴리스 노트 — Assertion Functions](https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/) ·
-> [Node.js — `assert`](https://nodejs.org/docs/latest-v18.x/api/assert.html).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -19,7 +12,6 @@ v18.19.1
 > **버전** — `asserts x is T` 와 `asserts x` 는 둘 다 **TS 3.7** 에 들어왔다.
 > ★★ `@types/node` 는 **없다.** 7.0 의 `types` 기본값이 `[]` 이기도 하고, 이 배치는 `node_modules` 를 만들지 않았다 —
 > 그래서 6절은 **필요한 만큼만 직접 선언한 `.d.ts` 한 장**을 함께 던졌다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -837,3 +829,11 @@ ex.14e.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 - **단언을 안전하게 쓰는 수** — 몸통을 [**12번 주제**](../12-narrowing/)의 내장 가드만으로 짜고, **`throw` 가 모든 실패 경로를 덮는지** 눈으로 확인한다. 2절의 세 함수가 각각 그 확인을 빠뜨린 모습이다.
 - **왜 프로퍼티를 단언할 수 없나** — 좁히기의 대상은 **참조(reference)** 이고, `o.v` 같은 프로퍼티 참조는 **호출 사이에 바뀔 수 있다.** [**15번 주제**](../15-control-flow-analysis-limits/)가 그 자리를 전수로 잰다. 문법에서 막은 것은 그 어려움을 **시그니처 단계에서 잘라 낸** 것이다.
 - **`@types/node` 를 쓰면** — 6절의 선언 한 장 대신 진짜 정의가 붙고, `assert.ok`·`assert.strictEqual` 같은 멤버도 `asserts` 로 선언돼 있다. **이 배치에서는 안 던졌다** — `node_modules` 를 만들지 않았기 때문이다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Narrowing: Assertion functions](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) ·
+[TypeScript 3.7 릴리스 노트 — Assertion Functions](https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/) ·
+[Node.js — `assert`](https://nodejs.org/docs/latest-v18.x/api/assert.html).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

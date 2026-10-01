@@ -1,16 +1,5 @@
 # c/syntax/52 — `<ctype.h>` · `<math.h>` · `<time.h>` 핵심: 「**`isalpha` 는 `unsigned char` 의 값을 기다리고, NaN 검사는 옵션 하나에 지워지며, `localtime` 은 하나뿐인 칸을 돌려준다**」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **환경** — gcc 13.3.0 · clang 18.1.3 · glibc 2.39 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic` · 캡처 셸 `LC_ALL=C` · 시각은 **고정 `time_t`** 와 **`TZ=` 지정**으로만 찍었다.
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① **`<ctype.h>` 에 넘기는 값의 범위**(부호 있는 `char` · `EOF` · 로케일) ② **부동소수의 같음과 NaN**(절대 오차 · 상대 오차 · 옵션이 거두는 보장)
-> ③ **`<time.h>` 의 칸**(정적 버퍼 공유 · `mktime` 정규화 · 0 기반 월과 1900 기준 해).
-> ★★★ **본체 창은 ctype 격자** — 1번은 **로케일 × `char` 부호마다 두 호출이 갈리는지**를 적어야 답이다.
-> ★★ **`0.1 + 0.2` · `DBL_EPSILON` · `-ffast-math` 의 기본 사실은 묻지 않는다** — [04번 형제](../04-floating-point-types-and-conversions/)가 정본이다.
-> 선행 — [04번 형제](../04-floating-point-types-and-conversions/) · [20번 형제](../20-null-terminated-strings-and-string-literals/).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 여섯 문항(1\~6)은 소스만 보고 적어 본 뒤** 답을 연다.
@@ -236,6 +225,14 @@ int main(void) {
 
 - ★ JS 는 `case NaN:` 에서 어떻게 되는가([JS 갈래 52번](../../../js/syntax/52-switch-labels-and-control-flow/))? C 의 `x != x` 와 같은 뿌리인가?
 - ★ JS `Date` 의 월([JS 갈래 49번](../../../js/syntax/49-date-and-temporal/))과 C 의 `tm_mon` 은 같은가? 넘치는 날짜는?
+
+## 실행 환경
+
+**환경** — gcc 13.3.0 · clang 18.1.3 · glibc 2.39 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic` · 캡처 셸 `LC_ALL=C` · 시각은 **고정 `time_t`** 와 **`TZ=` 지정**으로만 찍었다.
+
+★★★ **본체 창은 ctype 격자** — 1번은 **로케일 × `char` 부호마다 두 호출이 갈리는지**를 적어야 답이다.
+★★ **`0.1 + 0.2` · `DBL_EPSILON` · `-ffast-math` 의 기본 사실은 묻지 않는다** — [04번 형제](../04-floating-point-types-and-conversions/)가 정본이다.
+선행 — [04번 형제](../04-floating-point-types-and-conversions/) · [20번 형제](../20-null-terminated-strings-and-string-literals/).
 
 ## 복습 기록
 

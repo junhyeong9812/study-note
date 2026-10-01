@@ -1,24 +1,5 @@
 # rust/syntax/15 — 슬라이스 `&[T]`·범위 문법·UTF-8 경계 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Reference — Array and slice types](https://doc.rust-lang.org/reference/types/slice.html) ·
-> [Reference — Range expressions](https://doc.rust-lang.org/reference/expressions/range-expr.html) ·
-> [std — `primitive.slice`](https://doc.rust-lang.org/std/primitive.slice.html) ·
-> [std — `primitive.str`](https://doc.rust-lang.org/std/primitive.str.html) ·
-> [std — `std::str::from_utf8`](https://doc.rust-lang.org/std/str/fn.from_utf8.html) ·
-> `rustc --explain E0308` / `E0277` / `E0502`.
-> ★ `--explain` 은 **확인용으로만 열었고 본문에 옮기지 않았다.** 본문의 진단은 전부 내가 던져서 받은 것이다.
-> **실행 검증** — 이 문서의 모든 출력·에러·경고·패닉은 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.\
-> 소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단·패닉의 줄 번호는 그 파일 기준**이다.
-> ★★ **패닉 블록에는 다시 돌리면 바뀌는 칸이 하나 있다.**\
-> 흔들리는 칸 — `thread 'main' (3085086)` 의 **괄호 안 숫자**(OS 스레드 id). 같은 바이너리를 3회 돌려 셋 다 달랐다.\
-> 안 흔들리는 칸 — `ex.rs:줄:칸` · 메시지 본문 · `note:` 줄 · **종료 코드 101**. **대조할 것은 이쪽이다.**
-> **버전** — 슬라이스·범위·`char_indices` 는 1.0.0부터다. `std::any::type_name_of_val`(아래 (2)에서 씀)과\
-> `str::floor_char_boundary`(아래 (3))는 **이 툴체인의 안정판에서 컴파일되는 것을 실측**했다(아래 「구현 세부사항 대 언어 보장」).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **슬라이스는 「잘라낸 조각」이 아니라 「창문」이다** — 원본을 복사하지 않고 **어디부터 몇 개인지**만 들고 있다.
@@ -1556,3 +1537,22 @@ let _ = std::str::from_utf8(s.as_bytes());
   `str::from_utf8`(빌림판)과 표면이 다르다.
 - ★ **바이트 격자는 다른 언어에서도 쓸 수 있는 도구다.** 「인덱스가 무엇의 번호인가」를 묻는 언어는 전부 이 그림이 필요하다 —\
   Java 의 `char` 가 UTF-16 코드 유닛이라 이모지 하나가 둘인 것도 같은 그림으로 읽힌다.
+
+## 실행 환경
+
+**기준 소스** — [Reference — Array and slice types](https://doc.rust-lang.org/reference/types/slice.html) ·
+[Reference — Range expressions](https://doc.rust-lang.org/reference/expressions/range-expr.html) ·
+[std — `primitive.slice`](https://doc.rust-lang.org/std/primitive.slice.html) ·
+[std — `primitive.str`](https://doc.rust-lang.org/std/primitive.str.html) ·
+[std — `std::str::from_utf8`](https://doc.rust-lang.org/std/str/fn.from_utf8.html) ·
+`rustc --explain E0308` / `E0277` / `E0502`.
+★ `--explain` 은 **확인용으로만 열었고 본문에 옮기지 않았다.** 본문의 진단은 전부 내가 던져서 받은 것이다.
+**실행 검증** — 이 문서의 모든 출력·에러·경고·패닉은 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.\
+소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단·패닉의 줄 번호는 그 파일 기준**이다.
+★★ **패닉 블록에는 다시 돌리면 바뀌는 칸이 하나 있다.**\
+흔들리는 칸 — `thread 'main' (3085086)` 의 **괄호 안 숫자**(OS 스레드 id). 같은 바이너리를 3회 돌려 셋 다 달랐다.\
+안 흔들리는 칸 — `ex.rs:줄:칸` · 메시지 본문 · `note:` 줄 · **종료 코드 101**. **대조할 것은 이쪽이다.**
+**버전** — 슬라이스·범위·`char_indices` 는 1.0.0부터다. `std::any::type_name_of_val`(본문 (2)에서 씀)과\
+`str::floor_char_boundary`(본문 (3))는 **이 툴체인의 안정판에서 컴파일되는 것을 실측**했다(본문 「구현 세부사항 대 언어 보장」).

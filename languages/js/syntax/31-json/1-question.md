@@ -1,26 +1,5 @@
 # js/syntax/31 — `JSON`: 「같은 값을 어디에 놓느냐가 무엇을 바꾸나」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151.0.7922.173(헤드리스) · python3 3.12.3 · x86-64 Linux.
-> 배너의 `node20` 은 v20.19.6 이다. ★ **6번의 둘째 소스(`.web.js`)는 Chrome 에서만** 돌렸다 — 첫째 소스가 두 node 판에 그 기능이 있는지를 묻는다.
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다.**
-> 값 하나를 **객체의 속성 · 배열의 원소 · 최상위** 세 자리에 놓고 `JSON.stringify` 한 결과를 칸마다 찍는다. **1번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **`JSON.stringify` 는 값을 무엇으로 바꾸나** — 그리고 자리가 그 답에 끼어드나
-> ② **`toJSON`·`replacer`·`reviver` 는 어떤 순서로, 누구를 `this` 로 불리나**
-> ③ **JSON 왕복을 깊은 복사로 쓰면 무엇이 남나.**
->
-> ★★ **예외는 타입과 메시지로만 답한다.** 여러 줄 메시지는 탐침이 줄마다 `| ` 를 붙여 찍는다.
->
-> **선행** — [27 — `Object` 정적 메서드](../27-object-static-methods/2-summary.md) · [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md) ·
-> [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md) · [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md) · [03 — 숫자와 `BigInt`](../03-numbers-and-bigint/2-summary.md).
-> ★★★ **27번 2번의 복사 격자를 먼저 떠올려라** — 복사 도구 넷은 어느 행에서 갈렸나.
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 여섯 문항(1 · 2 · 3 · 4 · 5 · 6)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -491,6 +470,19 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 - ★★ 깊은 복사 수단 비교는 목록의 몇 번 주제가 정본인가?
 - ★★★ `JSON.rawJSON`·`context.source` 는 몇 년 판인가? 이 머신의 세 엔진 중 어디에 있나?
 - ★ JSON 모듈(`import … with { type: "json" }`)은 어느 주제의 몫인가?
+
+## 실행 환경
+
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151.0.7922.173(헤드리스) · python3 3.12.3 · x86-64 Linux.
+배너의 `node20` 은 v20.19.6 이다. ★ **6번의 둘째 소스(`.web.js`)는 Chrome 에서만** 돌렸다 — 첫째 소스가 두 node 판에 그 기능이 있는지를 묻는다.
+
+★★★ **이 주제의 본체는 ② 전수 격자다.**
+값 하나를 **객체의 속성 · 배열의 원소 · 최상위** 세 자리에 놓고 `JSON.stringify` 한 결과를 칸마다 찍는다. **1번 문항이 이 주제의 중심이다.**
+
+★★ **예외는 타입과 메시지로만 답한다.** 여러 줄 메시지는 탐침이 줄마다 `| ` 를 붙여 찍는다.
+
+**선행** — [27 — `Object` 정적 메서드](../27-object-static-methods/2-summary.md) · [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md) ·
+[22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md) · [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md) · [03 — 숫자와 `BigInt`](../03-numbers-and-bigint/2-summary.md).
 
 ## 복습 기록
 

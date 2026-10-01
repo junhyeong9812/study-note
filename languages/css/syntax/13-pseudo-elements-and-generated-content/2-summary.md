@@ -1,14 +1,5 @@
 # css/syntax/13 — 의사 요소와 생성 콘텐츠: `::before`/`::after`/`::marker`/`::selection` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Pseudo-Elements Level 4](https://drafts.csswg.org/css-pseudo-4/) · [CSS Lists Level 3 §3.1.1 Properties Applying to `::marker`](https://drafts.csswg.org/css-lists-3/#marker-properties) · [Selectors Level 4 §3.6.3 Pseudo-classing Pseudo-elements](https://drafts.csswg.org/selectors-4/#pseudo-element-states) · [같은 문서 §16 Grammar](https://drafts.csswg.org/selectors-4/#grammar)(단일 콜론 레거시 조항). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 계산값·「담김/버림」 판정·접근성 트리는 **Google Chrome 151.0.7922.173** headless 에서 실제로 돌렸다.\
-> 근거를 **세 층**으로 나눠 뽑았다 — ① `cssRules` 로 **규칙이 담겼나** ② `getComputedStyle(el, '::before')` 로 **무엇으로 계산됐나**(★ 두 번째 인자가 있다) ③ `offsetWidth`·스크린샷으로 **상자가 실제로 생겼나**.\
-> 접근성 트리는 CDP 의 `Accessibility.getFullAXTree` 로 덤프했다.\
-> **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않으므로 **「두 엔진에서 확인했다」고 적지 않았다.** 크로스 브라우저는 Baseline 으로만 접지한다.
-> **버전** — CSS 에 언어 버전은 없다. 2026-09-23 에 `api.webstatus.dev` 를 직접 조회한 Baseline 은 아래 「구현 세부사항 대 언어 보장」의 표에 있다. **`::marker` 와 `::selection` 이 `limited` 로 나온다** — 그 이유도 거기 적었다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 숫자는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **의사 요소는 「대본에만 있는 배우」다. 대본 한 줄(`content`)을 주지 않으면 무대에 서지 않는다.**
@@ -636,3 +627,12 @@ li::marker { background: #00f; padding: 4px; }   /* 규칙은 살아 있다. 안
 - **의사 요소에도 의사 요소가 붙을 수 있다.** 실측에서 `p::before::marker` 와 `li::before::marker` 가 담겼다 — 명세가 `::before::marker`·`::after::marker` 를 유효로 만든 조항이 변경 이력에 있다. **동작은 확인하지 않았다.**
 - **`::selection` 은 상속이 특이하다.** 명세에 하이라이트의 캐스케이딩·상속 규칙이 따로 있다(§3.5). 이 문서는 **거기까지 들어가지 않았다.**
 - **`::marker` 의 Baseline 이 `limited` 인데 실무에서 널리 쓰이는 것**이 이 표의 한계를 보여 준다. Baseline 은 「**전 엔진에서 확인됐나**」이지 「쓸 만한가」가 아니다. 판단은 **내가 받쳐야 하는 브라우저 목록**으로 한다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Pseudo-Elements Level 4](https://drafts.csswg.org/css-pseudo-4/) · [CSS Lists Level 3 §3.1.1 Properties Applying to `::marker`](https://drafts.csswg.org/css-lists-3/#marker-properties) · [Selectors Level 4 §3.6.3 Pseudo-classing Pseudo-elements](https://drafts.csswg.org/selectors-4/#pseudo-element-states) · [같은 문서 §16 Grammar](https://drafts.csswg.org/selectors-4/#grammar)(단일 콜론 레거시 조항). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 계산값·「담김/버림」 판정·접근성 트리는 **Google Chrome 151.0.7922.173** headless 에서 실제로 돌렸다.\
+근거를 **세 층**으로 나눠 뽑았다 — ① `cssRules` 로 **규칙이 담겼나** ② `getComputedStyle(el, '::before')` 로 **무엇으로 계산됐나**(★ 두 번째 인자가 있다) ③ `offsetWidth`·스크린샷으로 **상자가 실제로 생겼나**.\
+접근성 트리는 CDP 의 `Accessibility.getFullAXTree` 로 덤프했다.\
+**엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않으므로 **「두 엔진에서 확인했다」고 적지 않았다.** 크로스 브라우저는 Baseline 으로만 접지한다.
+**버전** — CSS 에 언어 버전은 없다. 2026-09-23 에 `api.webstatus.dev` 를 직접 조회한 Baseline 은 본문 「구현 세부사항 대 언어 보장」의 표에 있다. **`::marker` 와 `::selection` 이 `limited` 로 나온다** — 그 이유도 거기 적었다.

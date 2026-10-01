@@ -1,43 +1,5 @@
 # python/syntax/45-functools — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
-> - [`functools`(3.12)](https://docs.python.org/3.12/library/functools.html) —
->   `lru_cache` 의 *"Since a dictionary is used to cache results, the positional and keyword arguments to the function must be hashable."* ·
->   *"The cache keeps references to the arguments and return values until they age out of the cache or until the cache is cleared."* ·
->   *"If a method is cached, the `self` instance argument is included in the cache."* ·
->   *"If typed is false, the implementation will usually regard them as equivalent calls and only cache a single result. (Some types such as str and int may be cached separately even when typed is false.)"* ·
->   *"`f(a=1, b=2)` and `f(b=2, a=1)` differ in their keyword argument order and may have two separate cache entries."*
-> - 같은 문서 `cached_property` 절 — *"The cached_property decorator only runs on lookups and only when an attribute of the same name doesn't exist."* ·
->   *"The cached value can be cleared by deleting the attribute."* · *"versionchanged 3.12: Prior to Python 3.12, cached_property included an undocumented lock … In Python 3.12+ this locking is removed."*
-> - 같은 문서 `singledispatch` 절 — *"the dispatch happens on the type of the first argument"* · *"its method resolution order is used to find a more generic implementation"* · *"versionchanged 3.11: The register() attribute now supports types.UnionType and typing.Union as type annotations."*
-> - 같은 문서 `partial` 객체 절 — *"They have three read-only attributes"* · *"the `__name__` and `__doc__` attributes are not created automatically."*
-> - 같은 문서 `reduce` 절 — *"If initializer is not given and iterable contains only one item, the first item is returned."*
-> - [FAQ — How do I cache method calls?](https://docs.python.org/3.12/faq/programming.html#faq-cache-method-calls) —
->   *"The disadvantage is that instances are kept alive until they age out of the cache or until the cache is cleared."*
-> - [What's New in 3.12](https://docs.python.org/3.12/whatsnew/3.12.html) — *"Exceptions raised in a class or type's `__set_name__` method are no longer wrapped by a RuntimeError. Context information is added to the exception as a PEP 678 note."*
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 두 블록을 더 던졌다.\
-> ★★★ **이 문서가 잰 것은 「몸통이 몇 번 돌았나」·`cache_info()` 의 적중·실패 수·「약한 참조가 아직 가리키나」(참/거짓)뿐이다** —
-> **시간·메모리 바이트는 한 번도 재지 않았다.** 「`lru_cache` 가 빠르게 한다」는 이 문서가 주장하지 않는다 — 잰 것은 **몸통 실행 수 21891 대 21** 이다.\
-> **버전**(문서의 `versionadded`·`versionchanged`) — `lru_cache` **3.2**(`typed` **3.3**) · `partial`·`reduce` 는 3.12 문서에 추가 판 표기가 없다 · `singledispatch` **3.4**(어노테이션 등록 **3.7**, 유니온 **3.11**) · `cached_property` **3.8**(잠금 제거 **3.12**) · `cache` **3.9**.\
-> ★ **구현 대 언어 보장 한 줄** — 위 문서 문장들이 보장이고, **「`int`·`str` 인자 하나는 따로 칸을 잡는다」는 CPython 의 키 함수가 정한 것**이다(문서는 「그럴 수 있다」고만 적는다). 예외 **문구**도 CPython 의 것이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | 판이 오르면 예외 **문구**(3.11 과 3.12 가 `__set_name__` 에서 이미 갈렸다 — 동작 10) | ★★ **몸통 실행 수** · `CacheInfo(...)` 의 네 수 · **살아 있나 `True`/`False`** |
-> | — (주소·시간·`set` 출력을 한 곳도 안 찍었다 · `registry` 는 이름순으로 정렬해 찍었다) | 격자 마지막 줄 **「… N / M」** · 불린 구현의 이름 |
->
-> **선행** — [24-decorators](../24-decorators/2-summary.md)(★★★ **`@` 는 이름에 결과를 다시 묶는다 · `functools.wraps` 가 옮기는 칸** — 그쪽이 정본) ·
-> [30-repr-eq-hash-contracts](../30-repr-eq-hash-contracts/2-summary.md)(★★ **`unhashable type`** — 캐시 키가 되려면 해시가 돼야 한다) ·
-> [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(★★ **`1`·`1.0`·`True` 가 한 칸** — 그런데 이 주제의 캐시는 그 규칙을 **그대로 따르지 않는다**) ·
-> [33-property-descriptor-slots](../33-property-descriptor-slots/2-summary.md)(`cached_property` 가 **비데이터 디스크립터**) ·
-> [40-type-hints-at-runtime](../40-type-hints-at-runtime/2-summary.md)(`singledispatch` 는 **힌트가 실행을 바꾸는 자리**).
-
 ## 한눈에 — 쉽게 말하면
 
 **`functools` 는 「함수에 덧대는 부품 상자」다.** 함수 몸통은 안 건드리고 **바깥에 무언가를 덧댄다.**
@@ -1203,3 +1165,40 @@ sorted(xs, key=cmp_to_key(cmp))
 * ★ **메서드 캐시를 인스턴스에 두는 법** — FAQ 는 `station_id` 가 바뀌는 경우 `__eq__`·`__hash__` 를 정의해 캐시가 변경을 알아채게 하는 예를 싣는다. 해시 계약은 [30번](../30-repr-eq-hash-contracts/2-summary.md)이 정본이다.
 * ★ **`singledispatchmethod`**(3.8) — 메서드판. 첫 인자가 아니라 **`self`·`cls` 다음 인자**의 타입으로 고른다(문서). 이 문서는 재지 않았다.
 * ★ **`total_ordering`** — 비교 메서드 하나로 나머지를 채운다. [31번](../31-comparison-protocol-and-sortability/2-summary.md)의 몫이다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
+- [`functools`(3.12)](https://docs.python.org/3.12/library/functools.html) —
+  `lru_cache` 의 *"Since a dictionary is used to cache results, the positional and keyword arguments to the function must be hashable."* ·
+  *"The cache keeps references to the arguments and return values until they age out of the cache or until the cache is cleared."* ·
+  *"If a method is cached, the `self` instance argument is included in the cache."* ·
+  *"If typed is false, the implementation will usually regard them as equivalent calls and only cache a single result. (Some types such as str and int may be cached separately even when typed is false.)"* ·
+  *"`f(a=1, b=2)` and `f(b=2, a=1)` differ in their keyword argument order and may have two separate cache entries."*
+- 같은 문서 `cached_property` 절 — *"The cached_property decorator only runs on lookups and only when an attribute of the same name doesn't exist."* ·
+  *"The cached value can be cleared by deleting the attribute."* · *"versionchanged 3.12: Prior to Python 3.12, cached_property included an undocumented lock … In Python 3.12+ this locking is removed."*
+- 같은 문서 `singledispatch` 절 — *"the dispatch happens on the type of the first argument"* · *"its method resolution order is used to find a more generic implementation"* · *"versionchanged 3.11: The register() attribute now supports types.UnionType and typing.Union as type annotations."*
+- 같은 문서 `partial` 객체 절 — *"They have three read-only attributes"* · *"the `__name__` and `__doc__` attributes are not created automatically."*
+- 같은 문서 `reduce` 절 — *"If initializer is not given and iterable contains only one item, the first item is returned."*
+- [FAQ — How do I cache method calls?](https://docs.python.org/3.12/faq/programming.html#faq-cache-method-calls) —
+  *"The disadvantage is that instances are kept alive until they age out of the cache or until the cache is cleared."*
+- [What's New in 3.12](https://docs.python.org/3.12/whatsnew/3.12.html) — *"Exceptions raised in a class or type's `__set_name__` method are no longer wrapped by a RuntimeError. Context information is added to the exception as a PEP 678 note."*
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 두 블록을 더 던졌다.\
+★★★ **이 문서가 잰 것은 「몸통이 몇 번 돌았나」·`cache_info()` 의 적중·실패 수·「약한 참조가 아직 가리키나」(참/거짓)뿐이다** —
+**시간·메모리 바이트는 한 번도 재지 않았다.** 「`lru_cache` 가 빠르게 한다」는 이 문서가 주장하지 않는다 — 잰 것은 **몸통 실행 수 21891 대 21** 이다.\
+**버전**(문서의 `versionadded`·`versionchanged`) — `lru_cache` **3.2**(`typed` **3.3**) · `partial`·`reduce` 는 3.12 문서에 추가 판 표기가 없다 · `singledispatch` **3.4**(어노테이션 등록 **3.7**, 유니온 **3.11**) · `cached_property` **3.8**(잠금 제거 **3.12**) · `cache` **3.9**.\
+★ **구현 대 언어 보장 한 줄** — 위 문서 문장들이 보장이고, **「`int`·`str` 인자 하나는 따로 칸을 잡는다」는 CPython 의 키 함수가 정한 것**이다(문서는 「그럴 수 있다」고만 적는다). 예외 **문구**도 CPython 의 것이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| 판이 오르면 예외 **문구**(3.11 과 3.12 가 `__set_name__` 에서 이미 갈렸다 — 동작 10) | ★★ **몸통 실행 수** · `CacheInfo(...)` 의 네 수 · **살아 있나 `True`/`False`** |
+| — (주소·시간·`set` 출력을 한 곳도 안 찍었다 · `registry` 는 이름순으로 정렬해 찍었다) | 격자 마지막 줄 **「… N / M」** · 불린 구현의 이름 |
+
+**선행** — [24-decorators](../24-decorators/2-summary.md)(★★★ **`@` 는 이름에 결과를 다시 묶는다 · `functools.wraps` 가 옮기는 칸** — 그쪽이 정본) ·
+[30-repr-eq-hash-contracts](../30-repr-eq-hash-contracts/2-summary.md)(★★ **`unhashable type`** — 캐시 키가 되려면 해시가 돼야 한다) ·
+[12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(★★ **`1`·`1.0`·`True` 가 한 칸** — 그런데 이 주제의 캐시는 그 규칙을 **그대로 따르지 않는다**) ·
+[33-property-descriptor-slots](../33-property-descriptor-slots/2-summary.md)(`cached_property` 가 **비데이터 디스크립터**) ·
+[40-type-hints-at-runtime](../40-type-hints-at-runtime/2-summary.md)(`singledispatch` 는 **힌트가 실행을 바꾸는 자리**).

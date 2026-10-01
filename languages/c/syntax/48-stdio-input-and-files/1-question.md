@@ -1,16 +1,5 @@
 # c/syntax/48 — `<stdio.h>` 입력과 파일: 「**읽기 함수의 반환값은 「멈췄다」만 말한다 — 끝이었는지 고장이었는지는 멈춘 뒤에 `feof`·`ferror` 에게 따로 물어야 한다**」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **환경** — gcc 13.3.0 · clang 18.1.3 · glibc 2.39 · x86-64 Linux · `-fsanitize=address`.
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① **EOF 와 읽기 오류는 반환값이 같다**(`NULL` · `EOF` · `0`) — `feof`/`ferror` 로 가른다 ② **`fgetc` 의 반환을 `char` 에 받으면** 한 바이트가 EOF 와 같아지거나 EOF 가 영영 안 온다
-> ③ **크기를 모르는 입력 함수**(`gets` · `scanf("%s")`)와 **반환값을 안 보는 `scanf`**.
-> ★★★ **본체 창은 둘째 창 — 실행 결과의 EOF 대 오류 격자**다. 1번은 **칸마다 「읽은 바이트 · `feof` · `ferror`」** 를 적어야 답이다.
-> ★ **출력 쪽 스트림 · 버퍼링**은 [47번 형제](../47-stdio-streams-buffering-and-formatted-output/)가 정본이다.
-> 선행 — [47번 형제](../47-stdio-streams-buffering-and-formatted-output/).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 여섯 문항(1\~6)은 소스만 보고 적어 본 뒤** 답을 연다.
@@ -225,6 +214,15 @@ int main(void) {
 
 - 이 주제에서 **표준 / 구현 정의 / glibc · POSIX / 컴파일러 구현** 칸에 각각 무엇이 들어가는가?
 - ★ **읽은 뒤의 문자열 다루기** · **숫자 파싱(`strtol`)** 은 어디가 정본인가?
+
+## 실행 환경
+
+**환경** — gcc 13.3.0 · clang 18.1.3 · glibc 2.39 · x86-64 Linux · `-fsanitize=address`.
+
+③ **크기를 모르는 입력 함수**(`gets` · `scanf("%s")`)와 **반환값을 안 보는 `scanf`**.
+★★★ **본체 창은 둘째 창 — 실행 결과의 EOF 대 오류 격자**다. 1번은 **칸마다 「읽은 바이트 · `feof` · `ferror`」** 를 적어야 답이다.
+★ **출력 쪽 스트림 · 버퍼링**은 [47번 형제](../47-stdio-streams-buffering-and-formatted-output/)가 정본이다.
+선행 — [47번 형제](../47-stdio-streams-buffering-and-formatted-output/).
 
 ## 복습 기록
 

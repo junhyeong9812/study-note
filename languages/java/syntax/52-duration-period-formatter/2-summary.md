@@ -1,18 +1,5 @@
 # java/syntax/52 — `Duration`·`Period`·`DateTimeFormatter` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../51-java-time-types/`](../51-java-time-types/). 갭·중복을 모르면 이 문서의 절반이 안 읽힌다.
-> **기준 소스** — Temurin **JDK 21.0.5** 표준 라이브러리 소스 `java.base/java/time/Duration.java`·`Period.java`·`format/DateTimeFormatter.java`·`format/DateTimeFormatterBuilder.java`·`temporal/ChronoUnit.java`(`lib/src.zip`) · [`DateTimeFormatter` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/format/DateTimeFormatter.html) · [`Duration` javadoc](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html) · [`Period` javadoc](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Period.html)
-> **실행 검증** — 이 문서의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 일곱(52-a\~52-g)을 **17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
-> ★ **세 판의 출력이 전부 같지는 않았다.** `DateTimeParseException` 의 메시지에 들어가는 **필드 나열 순서가 세 판에서 전부 달랐다**(아래 「구현 세부사항 대 언어 보장」이 정본).\
-> tzdb 판도 갈린다(17·21 = 2024a, 25 = 2025b). 이 주제의 출력 중 갈린 것은 그 줄에 표시했다.
-> **버전** — `Duration`·`Period`·`DateTimeFormatter` 전부 `src.zip` 의 **`@since 1.8`**.
-> **측정 조건** — 기본 시간대 `Asia/Seoul`, 기본 `Locale` `ko_KR`. `Locale` 에 따라 갈리는 출력은 그 사실이 붙어 있다.
-> **범위** — 시각 **한 점**을 어느 타입으로 적나는 [`../51-java-time-types/`](../51-java-time-types/) 가 정본이다.\
-> 그쪽은 **`Instant`/`LocalDateTime`/`ZonedDateTime` 의 선택**까지, 여기는 **두 점 사이의 간격과 문자열 변환**부터다.\
-> 로그 시각을 **어떻게 적재·집계하나**는 [`../../../../cs/ops-patterns/17-timeseries/`](../../../../cs/ops-patterns/17-timeseries/) 가 정본이다 — 여기는 **한 값을 문자열로 바꾸는 API 표면**까지만.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **`Duration` 은 초시계, `Period` 는 달력에 친 동그라미다.**
@@ -930,3 +917,16 @@ JDK 25.0.1
 - **`Duration` 의 최대 범위는 `long` 초다.**\
   약 292억 년이다. `Period` 는 세 필드가 각각 `int` 라 훨씬 좁고, `Period.ofDays(Integer.MAX_VALUE)` 를 `LocalDate` 에 더하면 넘친다.\
   넘침의 구체적 동작은 **안 돌려 봄**이다.
+
+## 실행 환경
+
+**선행** — [`../51-java-time-types/`](../51-java-time-types/). 갭·중복을 모르면 이 문서의 절반이 안 읽힌다.
+**기준 소스** — Temurin **JDK 21.0.5** 표준 라이브러리 소스 `java.base/java/time/Duration.java`·`Period.java`·`format/DateTimeFormatter.java`·`format/DateTimeFormatterBuilder.java`·`temporal/ChronoUnit.java`(`lib/src.zip`) · [`DateTimeFormatter` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/format/DateTimeFormatter.html) · [`Duration` javadoc](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html) · [`Period` javadoc](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Period.html)
+**실행 검증** — 이 문서의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 일곱(52-a\~52-g)을 **17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
+★ **세 판의 출력이 전부 같지는 않았다.** `DateTimeParseException` 의 메시지에 들어가는 **필드 나열 순서가 세 판에서 전부 달랐다**(본문 「구현 세부사항 대 언어 보장」이 정본).\
+tzdb 판도 갈린다(17·21 = 2024a, 25 = 2025b). 이 주제의 출력 중 갈린 것은 그 줄에 표시했다.
+**버전** — `Duration`·`Period`·`DateTimeFormatter` 전부 `src.zip` 의 **`@since 1.8`**.
+**측정 조건** — 기본 시간대 `Asia/Seoul`, 기본 `Locale` `ko_KR`. `Locale` 에 따라 갈리는 출력은 그 사실이 붙어 있다.
+**범위** — 시각 **한 점**을 어느 타입으로 적나는 [`../51-java-time-types/`](../51-java-time-types/) 가 정본이다.\
+그쪽은 **`Instant`/`LocalDateTime`/`ZonedDateTime` 의 선택**까지, 여기는 **두 점 사이의 간격과 문자열 변환**부터다.\
+로그 시각을 **어떻게 적재·집계하나**는 [`../../../../cs/ops-patterns/17-timeseries/`](../../../../cs/ops-patterns/17-timeseries/) 가 정본이다 — 여기는 **한 값을 문자열로 바꾸는 API 표면**까지만.

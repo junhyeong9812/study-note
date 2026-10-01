@@ -1,14 +1,5 @@
 # sql/16-FULL OUTER JOIN — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이다.\
-> **버전** — PG 는 오래전부터 지원한다. **MySQL 8.4.10 에는 `FULL OUTER JOIN` 이 없다** — 문법 오류가 난다(아래에 출력을 싣는다).\
-> **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/)(`FROM` 이 첫 칸이라는 것) · [04 NULL 의 3값 논리](../04-null-three-valued-logic/)(조인이 만들어 내는 `NULL`).
-
 ## 한눈에 — 쉽게 말하면
 
 **`FULL OUTER JOIN` = 두 명단을 맞춰 보되, 어느 쪽에서도 짝 못 찾은 사람을 버리지 않는 것.**
@@ -513,3 +504,11 @@ PG *"The result of `UNION` does not contain any duplicate rows unless the `ALL` 
   예: `COALESCE(d.id, e.dept_id)` 로 양쪽 키를 한 열로 합친다.
 - **`ERROR 1064`** — MySQL 의 문법 오류 코드. 파서가 그 단어를 모른다는 뜻이다.\
   예: `FULL OUTER JOIN` 을 던지면 이 번호가 온다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이다.\
+**버전** — PG 는 오래전부터 지원한다. **MySQL 8.4.10 에는 `FULL OUTER JOIN` 이 없다** — 문법 오류가 난다(본문에 출력을 싣는다).\
+**선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/)(`FROM` 이 첫 칸이라는 것) · [04 NULL 의 3값 논리](../04-null-three-valued-logic/)(조인이 만들어 내는 `NULL`).

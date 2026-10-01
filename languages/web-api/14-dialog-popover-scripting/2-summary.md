@@ -1,15 +1,5 @@
 # web-api/14 — `dialog`·`popover` 의 스크립트 제어: `showModal()`·`togglePopover()`·최상위 레이어·포커스 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 갈래는 언어가 아니라 플랫폼이다.** 여기서 다루는 것은 「`<dialog>` 를 어떻게 쓰나」가 아니라 「**스크립트가 그것을 어떻게 열고 닫고, 그때 포커스와 최상위 레이어가 어떻게 움직이나**」다. 마크업 표면(`open` 속성·`::backdrop` 선언·`popovertarget`)은 HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **47번** 과 **48번** 이 정본이고 여기서 다시 쓰지 않는다.\
-> **기준 소스** — [HTML Living Standard — The `dialog` element](https://html.spec.whatwg.org/multipage/interactive-elements.html#the-dialog-element) · [같은 표준 — Popover API](https://html.spec.whatwg.org/multipage/popover.html) · [같은 표준 — The top layer](https://html.spec.whatwg.org/multipage/interaction.html#the-top-layer) · [같은 표준 — `inert`](https://html.spec.whatwg.org/multipage/interaction.html#inert-subtrees) · [WHATWG Close Watcher API](https://wicg.github.io/close-watcher/) · [CSS Position Layout — `::backdrop`](https://drafts.csswg.org/css-position-4/#backdrop). 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 블록마다 명령이 배너로 실려 있고, 그 배너에는 **`--window-size=1000,800`** 이 들어 있다 — **좌표 탐침이 창 크기에 달려 있어 창을 빼면 재현되지 않는다.**\
-> ★★ **이 편에는 `--dump-dom` 말고 창이 하나 더 있다** — **CDP 로 진짜 키와 진짜 마우스를 넣었다**((12)). 가벼운 닫기와 `Esc` 는 **합성 이벤트로는 한 칸도 안 움직인다.**\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** `popover` 와 `dialog` 의 Baseline 상태는 갈래 [`../README.md`](../README.md) 의 지원 표를 따르고 **이 문서가 다시 재지 않았다**(미실행).\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `dialog` 는 오래된 표면이고 `popover`·`moveBefore` 쪽은 새 표면이다.\
-> **선행** — [03번 주제](../03-node-creation-insertion-removal/2-summary.md)(노드를 붙이고 떼는 것)와 [08번 주제](../08-getcomputedstyle/2-summary.md)(계산값을 읽는다는 것), 그리고 CSS 갈래의 [22번 주제](../../css/syntax/22-stacking-context-and-z-index/2-summary.md)(쌓임 맥락과 `z-index`).\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -1555,3 +1545,13 @@ document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
 - **`CloseWatcher` 를 직접 만드는 것**(`new CloseWatcher()`)도 가능하다 — 커스텀 UI 에 `Esc` 를 붙이는 길이다. **이 문서는 dialog 를 통해서만 관측했다.**
 - **접근성** — 모달 dialog 는 암묵 역할이 `dialog` 이고 `aria-modal` 이 함께 붙는다. **스크린리더가 실제로 무엇을 읽는지는 이 문서가 못 본다**(접근성 트리는 보조 기술의 **입력**이지 출력이 아니다). 역할·이름 쪽은 HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **41번** 과 **46번** 의 몫이다.
 - **모바일 가상 키보드** — 모달을 열면 키보드가 뜨고 뷰포트가 줄어든다. **headless 로는 관측하지 못했다.**
+
+## 실행 환경
+
+**이 갈래는 언어가 아니라 플랫폼이다.** 여기서 다루는 것은 「`<dialog>` 를 어떻게 쓰나」가 아니라 「**스크립트가 그것을 어떻게 열고 닫고, 그때 포커스와 최상위 레이어가 어떻게 움직이나**」다. 마크업 표면(`open` 속성·`::backdrop` 선언·`popovertarget`)은 HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **47번** 과 **48번** 이 정본이고 여기서 다시 쓰지 않는다.\
+**기준 소스** — [HTML Living Standard — The `dialog` element](https://html.spec.whatwg.org/multipage/interactive-elements.html#the-dialog-element) · [같은 표준 — Popover API](https://html.spec.whatwg.org/multipage/popover.html) · [같은 표준 — The top layer](https://html.spec.whatwg.org/multipage/interaction.html#the-top-layer) · [같은 표준 — `inert`](https://html.spec.whatwg.org/multipage/interaction.html#inert-subtrees) · [WHATWG Close Watcher API](https://wicg.github.io/close-watcher/) · [CSS Position Layout — `::backdrop`](https://drafts.csswg.org/css-position-4/#backdrop). 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 블록마다 명령이 배너로 실려 있고, 그 배너에는 **`--window-size=1000,800`** 이 들어 있다 — **좌표 탐침이 창 크기에 달려 있어 창을 빼면 재현되지 않는다.**\
+★★ **이 편에는 `--dump-dom` 말고 창이 하나 더 있다** — **CDP 로 진짜 키와 진짜 마우스를 넣었다**((12)). 가벼운 닫기와 `Esc` 는 **합성 이벤트로는 한 칸도 안 움직인다.**\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** `popover` 와 `dialog` 의 Baseline 상태는 갈래 [`../README.md`](../README.md) 의 지원 표를 따르고 **이 문서가 다시 재지 않았다**(미실행).\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `dialog` 는 오래된 표면이고 `popover`·`moveBefore` 쪽은 새 표면이다.\
+**선행** — [03번 주제](../03-node-creation-insertion-removal/2-summary.md)(노드를 붙이고 떼는 것)와 [08번 주제](../08-getcomputedstyle/2-summary.md)(계산값을 읽는다는 것), 그리고 CSS 갈래의 [22번 주제](../../css/syntax/22-stacking-context-and-z-index/2-summary.md)(쌓임 맥락과 `z-index`).

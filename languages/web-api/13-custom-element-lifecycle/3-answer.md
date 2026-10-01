@@ -1,11 +1,5 @@
 # web-api/13 — 커스텀 요소 수명주기: `customElements.define`·`connected`/`disconnected`/`attributeChanged`·업그레이드 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있고, **콘솔 블록 하나만 `--enable-logging=stderr` 로 따로** 받았다.\
-> 규칙은 [WHATWG HTML Living Standard — Custom elements](https://html.spec.whatwg.org/multipage/custom-elements.html) 로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** 특히 **내장 요소 확장(`is=`)은 엔진마다 갈린다.**\
-> ★ **못 잰 것이 둘 있다** — **페이지를 떠날 때의 `disconnectedCallback`** 과 **가비지 컬렉션**(A8·A10).
-
 **★ 이 주제에는 흔들리는 칸이 거의 없다** — 시간도 좌표도 안 재고 **순서만** 재기 때문이다.
 
 | 안 흔들리는 칸 | 흔들리는 칸 · 부적용인 칸 · 못 잰 칸 |
@@ -496,3 +490,10 @@ class L extends HTMLElement {
 - **부적용인 창** — 「재 봤더니 같았다」가 아니라 **잴 것이 없는** 창. 이 주제에서는 `--dump-dom` 트리가 그렇다.
 - **못 잰 것** — 도구가 그 순간을 볼 수 없어 확인하지 못한 것. 이 주제에서는 **페이지 이탈**과 **가비지 컬렉션**이 그렇다.
 - **조용한 실패(silent failure)** — 예외도 경고도 없이 아무 일도 안 일어나는 것. 이 주제에서는 생성자 규칙 위반이 대표다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있고, **콘솔 블록 하나만 `--enable-logging=stderr` 로 따로** 받았다.\
+규칙은 [WHATWG HTML Living Standard — Custom elements](https://html.spec.whatwg.org/multipage/custom-elements.html) 로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** 특히 **내장 요소 확장(`is=`)은 엔진마다 갈린다.**\
+★ **못 잰 것이 둘 있다** — **페이지를 떠날 때의 `disconnectedCallback`** 과 **가비지 컬렉션**(A8·A10).

@@ -1,13 +1,5 @@
 # js/syntax/34 — 타입 검사 관용구: 「족보는 realm 에서 끊기고, 출생 기록은 안 끊긴다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 새 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151.0.7922.173**(4번의 `.web.js`) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다. ★★ **1번의 답은 앞 편의 블록**이 근거다 — 링크의 동작 번호를 연다.
-> ★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical`).
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
-> `js32b-34-h-realm-core.js` + `js32b-34a-realm-grid.js`(2번 · 3번 · 6번 · 7번) · `js32b-34-h-realm-core.js` + `js32b-34b-realm-grid.web.js`(4번 · 9번) · `js32b-34c-array-edges.js`(5번).
-
 ## 정답
 
 ### 1. `instanceof` 는 **사슬**, `#x in` 은 **브랜드**, 브랜드 태그는 **`toStringTag` 로 `7 / 7` 바뀐다** ★★★
@@ -257,3 +249,12 @@ identical 12  ·  differs 0  ·  total 12
 
 - ★★ **`Error.isError`** — node 가 ES2026 을 받으면 node 판의 오류 슬롯 열을 `Error.isError` 로 바꿔 다시 돌린다(지금은 호스트 함수).
 - ★ **다른 realm 을 만드는 호스트 API** — `vm`·iframe 의 동작이 바뀌면 격자를 다시 돌린다.
+
+## 실행 환경
+
+이 파일의 새 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151.0.7922.173**(4번의 `.web.js`) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다. ★★ **1번의 답은 앞 편의 블록**이 근거다 — 링크의 동작 번호를 연다.
+★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical`).
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
+`js32b-34-h-realm-core.js` + `js32b-34a-realm-grid.js`(2번 · 3번 · 6번 · 7번) · `js32b-34-h-realm-core.js` + `js32b-34b-realm-grid.web.js`(4번 · 9번) · `js32b-34c-array-edges.js`(5번).

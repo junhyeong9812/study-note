@@ -1,19 +1,5 @@
 # java/syntax/58 — 리플렉션: `Class`·`getDeclared*`·접근 제어 우회의 경계 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Java SE 21 `Class` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html) · [`AccessibleObject.setAccessible`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/AccessibleObject.html) · [JEP 396: Strongly Encapsulate JDK Internals by Default](https://openjdk.org/jeps/396) · [JEP 403: Strongly Encapsulate JDK Internals](https://openjdk.org/jeps/403).
-> **실행 검증** — 이 문서의 모든 출력·예외는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 프로그램 7개를 돌렸고, 그중 넷은 **17.0.13 · 21.0.5 · 25.0.1** 에서 전부 돌려 **출력이 같은 것을 확인**했다.\
-> 모듈 경계 실험은 **플래그 없이 / `--add-opens` / `--add-exports`** 세 조건에서 각각 돌렸다.\
-> `javap -v -p` 로 `Signature` 속성을 읽어 **19번(타입 소거)과 잇는 근거**로 썼다.
-> **★ 측정 조건**(「동작 방식 (6)」) — **JMH 가 아니다.** `System.nanoTime()` 반복 측정이고,
-> 머신은 13th Gen Intel Core i7-13700HX · 24 스레드 · Linux 7.0.0-31-generic 이다.\
-> **재현되는 것은 절댓값이 아니라 자릿수(20~30배)다.** 웜업 전 회차를 함께 싣는다.
-> **버전** — 리플렉션 자체는 **1.1**. 제네릭 정보(`getGenericType`·`ParameterizedType`)는 **5**,
-> `InaccessibleObjectException` 과 모듈 경계는 **9**, **기본 강제 캡슐화는 16**(JEP 396)부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> 선행: [16 애너테이션](../16-annotations/) · [19 타입 소거](../19-type-erasure/).
-
 ## 한눈에 — 쉽게 말하면
 
 **리플렉션은 "건물 설계도를 런타임에 펼쳐 보고, 그 설계도로 문을 여는 것"이다.**\
@@ -654,3 +640,18 @@ module java.base does not "exports jdk.internal.misc" to unnamed   -> --add-expo
 - **`--add-opens` 를 붙여도 JDK 25 에서 경고가 나지 않았다**(돌려 확인).\
   다만 `sun.misc.Unsafe` 의 메모리 접근 메서드처럼 **별도 JEP 로 경고가 붙은 영역**이 따로 있다.\
   "플래그를 붙였으니 영구히 안전"은 아니라는 뜻이다 — 플래그 자체가 언젠가 사라질 수 있다.
+
+## 실행 환경
+
+**기준 소스** — [Java SE 21 `Class` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html) · [`AccessibleObject.setAccessible`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/AccessibleObject.html) · [JEP 396: Strongly Encapsulate JDK Internals by Default](https://openjdk.org/jeps/396) · [JEP 403: Strongly Encapsulate JDK Internals](https://openjdk.org/jeps/403).
+**실행 검증** — 이 문서의 모든 출력·예외는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+프로그램 7개를 돌렸고, 그중 넷은 **17.0.13 · 21.0.5 · 25.0.1** 에서 전부 돌려 **출력이 같은 것을 확인**했다.\
+모듈 경계 실험은 **플래그 없이 / `--add-opens` / `--add-exports`** 세 조건에서 각각 돌렸다.\
+`javap -v -p` 로 `Signature` 속성을 읽어 **19번(타입 소거)과 잇는 근거**로 썼다.
+**★ 측정 조건**(「동작 방식 (6)」) — **JMH 가 아니다.** `System.nanoTime()` 반복 측정이고,
+머신은 13th Gen Intel Core i7-13700HX · 24 스레드 · Linux 7.0.0-31-generic 이다.\
+**재현되는 것은 절댓값이 아니라 자릿수(20~30배)다.** 웜업 전 회차를 함께 싣는다.
+**버전** — 리플렉션 자체는 **1.1**. 제네릭 정보(`getGenericType`·`ParameterizedType`)는 **5**,
+`InaccessibleObjectException` 과 모듈 경계는 **9**, **기본 강제 캡슐화는 16**(JEP 396)부터다.
+
+선행: [16 애너테이션](../16-annotations/) · [19 타입 소거](../19-type-erasure/).

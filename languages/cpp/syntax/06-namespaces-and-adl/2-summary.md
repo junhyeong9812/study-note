@@ -1,33 +1,5 @@
 # cpp/syntax/06 — 네임스페이스와 ADL — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 인자 의존 탐색(ADL)](https://en.cppreference.com/w/cpp/language/adl) · [이름 없는 네임스페이스](https://en.cppreference.com/w/cpp/language/namespace) · [`using` 선언](https://en.cppreference.com/w/cpp/language/using_declaration) · [`using` 지시](https://en.cppreference.com/w/cpp/language/namespace#Using-directives) · [`std::ranges::swap`](https://en.cppreference.com/w/cpp/utility/ranges/swap) · [Itanium C++ ABI — Name mangling](https://itanium-cxx-abi.github.io/cxx-abi/abi.html#mangling)
-> **실행 검증** — 이 문서의 모든 출력·진단·심볼은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **GNU nm 2.42** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`ns01.cpp` \~ `ns12.cpp`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 표준 헤더가 끼어드는 진단은 **`#include` 사슬 줄만 지우는 필터**를 배너에 적어 두었다.\
-> 그러니 실린 것은 「생략한 일부」가 아니라 **그 명령의 전체 출력**이다.
-> **버전** — 네임스페이스·ADL·익명 네임스페이스는 **C++98부터**. **`inline namespace` 는 C++11부터**.\
-> **`std::ranges::swap` 같은 사용자 지정 지점 객체는 C++20부터**((9)).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「후보 중 누가 이기나」(정확 일치 → 승격 → 변환 → 모호)의 정본은\
-> 형제 [`01번`](../01-function-overloading-and-overload-resolution/)이다.\
-> 여기는 그 **앞 단계** — **후보 집합이 어떻게 만들어지나**만 쓴다((1)·(5)).\
-> 「번역 단위·내부 링크·ODR」은 목록의 **55번 주제**가 정본이고, C 쪽 `static` 의 정본은\
-> C 갈래 [29번 「스코프와 링크(`static`·`extern`)」](../../../c/syntax/29-scope-and-linkage-static-extern/2-summary.md)이다.\
-> 「`friend` 의 접근 제어 쪽 의미」는 [목록의 **12번 주제**](../12-class-basics-members-access-and-this/), 「연산자 오버로딩을 어디에 두나」는 [목록의 **22번 주제**](../22-operator-overloading/)다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 오브젝트 파일의 **심볼 주소**(`0000000000000021` 같은 것) | ★ **심볼 이름**과 **`T`/`t` 표시**(전역 대 내부 링크) |
-> | 표준 헤더의 **줄 번호**(`stl_algobase.h:257`) — 판마다 움직인다 | **진단 본문** · 내 파일의 `파일:줄:칸` |
-> | 컴파일 시간 | **`cc exit` 와 `run exit`**(갈라 적었다) · 프로그램 출력 전부 |
-> | — | **맹글링된 이름**(`_ZN3api2v26latestEv`) — ABI 가 고정한다 |
-
 ## 한눈에 — 쉽게 말하면
 
 **네임스페이스는 「이름을 넣어 두는 서랍」이고, ADL 은 「인자를 보고 서랍을 하나 더 열어 보는 규칙」이다.**
@@ -459,7 +431,7 @@ void use() { internal(); file_static(); api::latest(); api::v1::latest(); }
 - ★★ **익명 네임스페이스와 `static` 은 표시가 같다**(`t`). 다만 맹글링은 다르다 —\
   `_ZN12_GLOBAL__N_18internalEv` 대 `_ZL11file_staticv`.\
   ★ **C++ 에서는 익명 네임스페이스를 쓴다** — `static` 과 달리 **타입·템플릿에도 쓸 수 있기 때문**이다.
-- ★ **심볼 주소는 흔들리는 칸**이다(머리말 표). 근거로 쓰는 것은 **이름과 `T`/`t` 표시**다.
+- ★ **심볼 주소는 흔들리는 칸**이다(「실행 환경」 표). 근거로 쓰는 것은 **이름과 `T`/`t` 표시**다.
 - ★ C 쪽 `static`/`extern` 의 정본은 C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **30번**이다 — 아직 폴더가 없다.
 
 ### (7) `using namespace std;` 가 무는 자리
@@ -892,3 +864,32 @@ int main() {
 - **모듈(C++20)에서의 이름 탐색** — `export` 와 ADL 의 상호작용이 한 겹 더 있다.\
   g++ 13 의 모듈 지원이 제한적이라 **이 문서는 안 던졌다.** 정본은 목록의 **55번 주제**다.
 - **`inline namespace` + `__attribute__((abi_tag))`** 로 ABI 를 가르는 실무 관용구 — 이 문서는 안 던졌다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 인자 의존 탐색(ADL)](https://en.cppreference.com/w/cpp/language/adl) · [이름 없는 네임스페이스](https://en.cppreference.com/w/cpp/language/namespace) · [`using` 선언](https://en.cppreference.com/w/cpp/language/using_declaration) · [`using` 지시](https://en.cppreference.com/w/cpp/language/namespace#Using-directives) · [`std::ranges::swap`](https://en.cppreference.com/w/cpp/utility/ranges/swap) · [Itanium C++ ABI — Name mangling](https://itanium-cxx-abi.github.io/cxx-abi/abi.html#mangling)
+**실행 검증** — 이 문서의 모든 출력·진단·심볼은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **GNU nm 2.42** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`ns01.cpp` \~ `ns12.cpp`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 표준 헤더가 끼어드는 진단은 **`#include` 사슬 줄만 지우는 필터**를 배너에 적어 두었다.\
+그러니 실린 것은 「생략한 일부」가 아니라 **그 명령의 전체 출력**이다.
+**버전** — 네임스페이스·ADL·익명 네임스페이스는 **C++98부터**. **`inline namespace` 는 C++11부터**.\
+**`std::ranges::swap` 같은 사용자 지정 지점 객체는 C++20부터**((9)).
+
+**경계** — 「후보 중 누가 이기나」(정확 일치 → 승격 → 변환 → 모호)의 정본은\
+형제 [`01번`](../01-function-overloading-and-overload-resolution/)이다.\
+여기는 그 **앞 단계** — **후보 집합이 어떻게 만들어지나**만 쓴다((1)·(5)).\
+「번역 단위·내부 링크·ODR」은 목록의 **55번 주제**가 정본이고, C 쪽 `static` 의 정본은\
+C 갈래 [29번 「스코프와 링크(`static`·`extern`)」](../../../c/syntax/29-scope-and-linkage-static-extern/2-summary.md)이다.\
+「`friend` 의 접근 제어 쪽 의미」는 [목록의 **12번 주제**](../12-class-basics-members-access-and-this/), 「연산자 오버로딩을 어디에 두나」는 [목록의 **22번 주제**](../22-operator-overloading/)다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 오브젝트 파일의 **심볼 주소**(`0000000000000021` 같은 것) | ★ **심볼 이름**과 **`T`/`t` 표시**(전역 대 내부 링크) |
+| 표준 헤더의 **줄 번호**(`stl_algobase.h:257`) — 판마다 움직인다 | **진단 본문** · 내 파일의 `파일:줄:칸` |
+| 컴파일 시간 | **`cc exit` 와 `run exit`**(갈라 적었다) · 프로그램 출력 전부 |
+| — | **맹글링된 이름**(`_ZN3api2v26latestEv`) — ABI 가 고정한다 |

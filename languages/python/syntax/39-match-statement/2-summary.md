@@ -1,42 +1,5 @@
 # python/syntax/39-match-statement — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [언어 레퍼런스 — 복합문 · `match` 문(3.12)](https://docs.python.org/3.12/reference/compound_stmts.html#the-match-statement) —
->   *"A match statement may have at most one irrefutable case block, and it must be last."* ·
->   반박 불가(irrefutable) 패턴 목록 · *"A single underscore `_` is not a capture pattern"* ·
->   값 패턴의 *"compares equal to the subject value (using the `==` equality operator)"* ·
->   *"If the subject value is an instance of `str`, `bytes` or `bytearray` the sequence pattern fails."* ·
->   `None`·`True`·`False` 는 *"the `is` operator is used"* · 클래스 패턴의 `__match_args__` 와 **내장 타입 열한 개** 문단
-> - [PEP 634](https://peps.python.org/pep-0634/)(명세) · [PEP 636](https://peps.python.org/pep-0636/)(튜토리얼)
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ 던지는 형태는 `python3 - <파일` 하나로 고정했다 — 트레이스백이 `File "<stdin>", line N` 이 된다.\
-> ★★★ **이 주제는 `SyntaxError` 전문을 다섯 블록 싣는다(하나는 3.11 판).** `match` 의 규칙 위반은 **실행 전에** 잡히므로 스택이 없고,
-> **절대 경로도 안 박힌다.** 그래서 트레이스백을 **줄이지 않고 그대로** 실었다.\
-> ★★ **캐럿이 있는 것과 없는 것이 섞여 있다 — 옮겨 적은 실수가 아니다.**
-> 파서가 잡는 것(`**_`)은 **소스 줄 + 캐럿**이 나오고, 파서를 통과한 뒤 **컴파일 단계가 잡는 것**(캡처 뒤 도달 불가 ·
-> OR 의 이름 불일치)은 **`File … line N` 과 메시지 두 줄뿐**이다(동작 3).\
-> **버전** — `match` 문은 **3.10**(PEP 634) 부터다. 이 판은 3.12.3 이다.\
-> ★ **구현 대 언어 보장 한 줄** — **패턴 종류·매치 규칙·「반박 불가 case 는 마지막에만」까지가 언어 레퍼런스의 보장**이고,
-> **`SyntaxError` 의 문구와 캐럿 유무**는 CPython 쪽이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | 판이 오르면 `SyntaxError` 의 **문구**(`name capture 'red' makes remaining patterns unreachable`) | ★★ `SyntaxError` 의 **종류와 `line N`** · `(exit 1)` |
-> | ★ 판이 오르면 **캐럿이 붙느냐** — 이 판에서는 컴파일 단계 진단에 없다 | 어느 `case` 가 **골라졌나** · 캡처된 **값** |
-> | — (주소·시간·순서 비보장 출력을 한 곳도 안 찍었다) | 「잡힌 경고 수」 |
->
-> ★ **이 주제의 블록에는 주소도 시간도 절대 경로도 한 곳도 안 찍힌다.** 재대조 전부 동일.\
-> **선행** — [11-tuple-and-unpacking](../11-tuple-and-unpacking/2-summary.md)(★★ **시퀀스 패턴은 언패킹의 확장**) ·
-> [16-iterator-protocol](../16-iterator-protocol/2-summary.md)·[32-container-protocol](../32-container-protocol/2-summary.md)(★ **시퀀스 패턴이 요구하는 것은 프로토콜이 아니라 `Sequence` 인가**) ·
-> [21-scope-legb-global-nonlocal](../21-scope-legb-global-nonlocal/2-summary.md)(★ **캡처는 대입이다 — 지역 이름을 만든다**) ·
-> [36-dataclasses](../36-dataclasses/2-summary.md)(★ **`__match_args__` 를 자동으로 만든다**) ·
-> [37-enum](../37-enum/2-summary.md)(★ **`case Color.RED:` 의 그 멤버**).
-
 ## 한눈에 — 쉽게 말하면
 
 **`match` 는 「틀에 대어 보기」다.** 대상을 틀마다 차례로 대어 보고, **처음 맞는 틀**에서 멈춘다.
@@ -1073,3 +1036,39 @@ match subject:                          # match·case 는 소프트 키워드 (3
   **순서가 곧 계약**이다.
 * ★ **값 패턴의 비교는 `==`** 라 [30번](../30-repr-eq-hash-contracts/2-summary.md)의 `__eq__` 를 재정의한 객체는 **그 규칙대로** 맞는다.
   [37번](../37-enum/2-summary.md)의 `IntEnum` 멤버를 값 패턴에 쓰면 **정수 `1` 도 맞는다**(동작 6 의 ⑦) — 그 편의 격자가 말한 「`int` 로서 답한다」가 여기서도 선다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [언어 레퍼런스 — 복합문 · `match` 문(3.12)](https://docs.python.org/3.12/reference/compound_stmts.html#the-match-statement) —
+  *"A match statement may have at most one irrefutable case block, and it must be last."* ·
+  반박 불가(irrefutable) 패턴 목록 · *"A single underscore `_` is not a capture pattern"* ·
+  값 패턴의 *"compares equal to the subject value (using the `==` equality operator)"* ·
+  *"If the subject value is an instance of `str`, `bytes` or `bytearray` the sequence pattern fails."* ·
+  `None`·`True`·`False` 는 *"the `is` operator is used"* · 클래스 패턴의 `__match_args__` 와 **내장 타입 열한 개** 문단
+- [PEP 634](https://peps.python.org/pep-0634/)(명세) · [PEP 636](https://peps.python.org/pep-0636/)(튜토리얼)
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ 던지는 형태는 `python3 - <파일` 하나로 고정했다 — 트레이스백이 `File "<stdin>", line N` 이 된다.\
+★★★ **이 주제는 `SyntaxError` 전문을 다섯 블록 싣는다(하나는 3.11 판).** `match` 의 규칙 위반은 **실행 전에** 잡히므로 스택이 없고,
+**절대 경로도 안 박힌다.** 그래서 트레이스백을 **줄이지 않고 그대로** 실었다.\
+★★ **캐럿이 있는 것과 없는 것이 섞여 있다 — 옮겨 적은 실수가 아니다.**
+파서가 잡는 것(`**_`)은 **소스 줄 + 캐럿**이 나오고, 파서를 통과한 뒤 **컴파일 단계가 잡는 것**(캡처 뒤 도달 불가 ·
+OR 의 이름 불일치)은 **`File … line N` 과 메시지 두 줄뿐**이다(동작 3).\
+**버전** — `match` 문은 **3.10**(PEP 634) 부터다. 이 판은 3.12.3 이다.\
+★ **구현 대 언어 보장 한 줄** — **패턴 종류·매치 규칙·「반박 불가 case 는 마지막에만」까지가 언어 레퍼런스의 보장**이고,
+**`SyntaxError` 의 문구와 캐럿 유무**는 CPython 쪽이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| 판이 오르면 `SyntaxError` 의 **문구**(`name capture 'red' makes remaining patterns unreachable`) | ★★ `SyntaxError` 의 **종류와 `line N`** · `(exit 1)` |
+| ★ 판이 오르면 **캐럿이 붙느냐** — 이 판에서는 컴파일 단계 진단에 없다 | 어느 `case` 가 **골라졌나** · 캡처된 **값** |
+| — (주소·시간·순서 비보장 출력을 한 곳도 안 찍었다) | 「잡힌 경고 수」 |
+
+★ **이 주제의 블록에는 주소도 시간도 절대 경로도 한 곳도 안 찍힌다.** 재대조 전부 동일.\
+**선행** — [11-tuple-and-unpacking](../11-tuple-and-unpacking/2-summary.md)(★★ **시퀀스 패턴은 언패킹의 확장**) ·
+[16-iterator-protocol](../16-iterator-protocol/2-summary.md)·[32-container-protocol](../32-container-protocol/2-summary.md)(★ **시퀀스 패턴이 요구하는 것은 프로토콜이 아니라 `Sequence` 인가**) ·
+[21-scope-legb-global-nonlocal](../21-scope-legb-global-nonlocal/2-summary.md)(★ **캡처는 대입이다 — 지역 이름을 만든다**) ·
+[36-dataclasses](../36-dataclasses/2-summary.md)(★ **`__match_args__` 를 자동으로 만든다**) ·
+[37-enum](../37-enum/2-summary.md)(★ **`case Color.RED:` 의 그 멤버**).

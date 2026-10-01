@@ -1,25 +1,5 @@
 # python/syntax/13-set-and-frozenset — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [Set Types — set, frozenset](https://docs.python.org/3.12/library/stdtypes.html#set-types-set-frozenset) — 순서 없음 · 연산 · 부분 순서 · 섞었을 때의 타입
-> - [glossary — hashable](https://docs.python.org/3.12/glossary.html#term-hashable) — 원소 요건
-> - [PYTHONHASHSEED](https://docs.python.org/3.12/using/cmdline.html#envvar-PYTHONHASHSEED) · [`-R` 옵션](https://docs.python.org/3.12/using/cmdline.html#cmdoption-R) — **무엇이 무작위화되나**
-> - [Mapping Types — dict](https://docs.python.org/3.12/library/stdtypes.html#mapping-types-dict) — 대조군(삽입 순서)
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> ★ **순서에 관한 주장은 `PYTHONHASHSEED` 를 0·1·2 로 바꿔 던져 확인했다** — 「한 판에서 안 갈렸다」를 근거로 쓰지 않았다.
-> 일부는 **3.11.15** 로 한 번 더 돌려 대조했고, 그 사실을 그 자리에 적었다.
-> **수치** — 「비용」 절의 시간은 `timeit` 중앙값이 아니라 **`repeat=7` 의 최솟값**이고, 머신은 13th Gen Intel i7-13700HX 다.
-> **절댓값이 아니라 「n 이 100배가 되면 어떻게 되나」라는 기울기만** 재현된다고 읽어야 한다.
-> **버전** — `set`·`frozenset`·집합 리터럴·집합 컴프리헨션은 **이 노트가 다루는 범위(3.10\~3.13)에서 버전 차이가 없다.**
-> 버전이 걸리는 것은 하나뿐이다 — **해시 무작위화가 기본으로 켜진 것이 3.3**(3.3 릴리스 문서: *"Hash randomization is switched on by default."*).
-> **선행** — [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(**해시·키 요건의 정본**) ·
-> [11-tuple-and-unpacking](../11-tuple-and-unpacking/2-summary.md)(튜플이 원소가 되는 조건) ·
-> [10-list-methods-and-sort-key](../10-list-methods-and-sort-key/2-summary.md)(집합이 든 리스트를 정렬하는 것).
-
 ## 한눈에 — 쉽게 말하면
 
 **set 은 dict 에서 「값」과 「순서를 적어 두는 줄」을 뺀 것이다. 남은 건 해시 칸뿐이라 순서가 없다.**
@@ -552,7 +532,7 @@ set().pop()  -> KeyError: 'pop from an empty set'
 
 ### 9. 비용 — 재 본 것
 
-★ 아래는 **이 머신에서 실제로 잰 값**이다(측정 조건은 머리말에 있다). **절댓값이 아니라 기울기를 읽는다.**
+★ 아래는 **이 머신에서 실제로 잰 값**이다(측정 조건은 「실행 환경」에 있다). **절댓값이 아니라 기울기를 읽는다.**
 
 ```python
 import timeit
@@ -916,3 +896,22 @@ for seed in 0 1; do PYTHONHASHSEED=$seed python3.11 -c \
 - **`collections.abc.Set`** 은 「집합처럼 구는 것」의 프로토콜이다([목록의 **35번 주제**](../35-abc-and-protocol/)).
   `dict.keys()` 가 그 프로토콜을 따르기 때문에 `d.keys() & {...}` 가 되는 것이다([12번](../12-dict-and-key-requirements/2-summary.md)).
 - **집합에 순서를 주고 싶으면** 표준 라이브러리에 `OrderedSet` 이 없다 — `dict.fromkeys()` 가 관용구다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [Set Types — set, frozenset](https://docs.python.org/3.12/library/stdtypes.html#set-types-set-frozenset) — 순서 없음 · 연산 · 부분 순서 · 섞었을 때의 타입
+- [glossary — hashable](https://docs.python.org/3.12/glossary.html#term-hashable) — 원소 요건
+- [PYTHONHASHSEED](https://docs.python.org/3.12/using/cmdline.html#envvar-PYTHONHASHSEED) · [`-R` 옵션](https://docs.python.org/3.12/using/cmdline.html#cmdoption-R) — **무엇이 무작위화되나**
+- [Mapping Types — dict](https://docs.python.org/3.12/library/stdtypes.html#mapping-types-dict) — 대조군(삽입 순서)
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+★ **순서에 관한 주장은 `PYTHONHASHSEED` 를 0·1·2 로 바꿔 던져 확인했다** — 「한 판에서 안 갈렸다」를 근거로 쓰지 않았다.
+일부는 **3.11.15** 로 한 번 더 돌려 대조했고, 그 사실을 그 자리에 적었다.
+**수치** — 「비용」 절의 시간은 `timeit` 중앙값이 아니라 **`repeat=7` 의 최솟값**이고, 머신은 13th Gen Intel i7-13700HX 다.
+**절댓값이 아니라 「n 이 100배가 되면 어떻게 되나」라는 기울기만** 재현된다고 읽어야 한다.
+**버전** — `set`·`frozenset`·집합 리터럴·집합 컴프리헨션은 **이 노트가 다루는 범위(3.10\~3.13)에서 버전 차이가 없다.**
+버전이 걸리는 것은 하나뿐이다 — **해시 무작위화가 기본으로 켜진 것이 3.3**(3.3 릴리스 문서: *"Hash randomization is switched on by default."*).
+**선행** — [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(**해시·키 요건의 정본**) ·
+[11-tuple-and-unpacking](../11-tuple-and-unpacking/2-summary.md)(튜플이 원소가 되는 조건) ·
+[10-list-methods-and-sort-key](../10-list-methods-and-sort-key/2-summary.md)(집합이 든 리스트를 정렬하는 것).

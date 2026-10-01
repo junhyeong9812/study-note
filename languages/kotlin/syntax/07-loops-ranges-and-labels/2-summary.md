@@ -1,19 +1,5 @@
 # kotlin/syntax/07 — 반복문·`range`·progression·라벨·비지역 `break`/`continue` (2.2+) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Conditions and loops](https://kotlinlang.org/docs/control-flow.html) · [Ranges and progressions](https://kotlinlang.org/docs/ranges.html) · [Returns and jumps](https://kotlinlang.org/docs/returns.html) · [언어 기능·제안 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html).
-> **실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> `kotlinc` 12회 · `java` 2회 · `javap` 2회. 컴파일 실패 시나리오 4벌.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다.
-> **버전** — `for`/`while`/라벨은 1.0. **`..<`(rangeUntil)는 1.7.20 도입 · 1.8.0 Stable**(stdlib 의 open-ended range API 는 1.9.0).\
-> **비지역 `break`/`continue` 는 2.2.0** — 이 환경에서 `-language-version 2.1` 이 **거부하는 것을 실측**했다.\
-> ★ **못 잰 것** — kotlinc 2.4.20 은 `-language-version 1.9` 이하를 거부하므로 **`..<` 의 도입 경계는 이 환경에서 못 쟀다.**\
-> 그 값(1.7.20 도입 / 1.8.0 Stable)은 **공식 릴리스 노트를 열어 확인한 것**이지 실측이 아니다.
-> **경계** — 비지역 `return` 이 **왜 인라인 람다에서만 되는가**의 정본은 [목록의 **11번 주제**](../11-inline-functions/)(인라인 함수)다.\
-> 여기서는 **현상까지만** 쓰고 원리는 넘긴다. 컬렉션 연산(`forEach`·`map`)의 계약은 [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/)부터가 정본이다.\
-> **Java 쪽 정본은 [`../../../java/syntax/20-control-flow-statements/`](../../../java/syntax/20-control-flow-statements/)** 다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **Kotlin 의 `for` 는 「숫자를 세는 문법」이 아니라 「`iterator()` 를 가진 것이면 뭐든 도는 문법」이다.**
@@ -944,3 +930,17 @@ fun f() { for (i in 1..3) { i = i + 1; println(i) } }
   ① `..<` 의 도입·Stable 버전은 **공식 릴리스 노트를 읽은 것**이다. kotlinc 2.4.20 이 `-language-version 1.9` 이하를 거부해\
   **컴파일러에게 물을 수가 없었다**(`language version 1.9 is no longer supported; use version 2.0 or greater instead.`).\
   ② **성능은 재지 않았다.** 이 문서의 비용 주장은 전부 **`javap` 에 보이는 명령과 할당의 유무**까지다.
+
+## 실행 환경
+
+**기준 소스** — [Conditions and loops](https://kotlinlang.org/docs/control-flow.html) · [Ranges and progressions](https://kotlinlang.org/docs/ranges.html) · [Returns and jumps](https://kotlinlang.org/docs/returns.html) · [언어 기능·제안 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html).
+**실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+`kotlinc` 12회 · `java` 2회 · `javap` 2회. 컴파일 실패 시나리오 4벌.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다.
+**버전** — `for`/`while`/라벨은 1.0. **`..<`(rangeUntil)는 1.7.20 도입 · 1.8.0 Stable**(stdlib 의 open-ended range API 는 1.9.0).\
+**비지역 `break`/`continue` 는 2.2.0** — 이 환경에서 `-language-version 2.1` 이 **거부하는 것을 실측**했다.\
+★ **못 잰 것** — kotlinc 2.4.20 은 `-language-version 1.9` 이하를 거부하므로 **`..<` 의 도입 경계는 이 환경에서 못 쟀다.**\
+그 값(1.7.20 도입 / 1.8.0 Stable)은 **공식 릴리스 노트를 열어 확인한 것**이지 실측이 아니다.
+**경계** — 비지역 `return` 이 **왜 인라인 람다에서만 되는가**의 정본은 [목록의 **11번 주제**](../11-inline-functions/)(인라인 함수)다.\
+여기서는 **현상까지만** 쓰고 원리는 넘긴다. 컬렉션 연산(`forEach`·`map`)의 계약은 [목록의 **40번 주제**](../40-read-only-collections-and-runtime-types/)부터가 정본이다.\
+**Java 쪽 정본은 [`../../../java/syntax/20-control-flow-statements/`](../../../java/syntax/20-control-flow-statements/)** 다.

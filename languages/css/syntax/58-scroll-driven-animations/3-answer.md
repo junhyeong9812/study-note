@@ -1,11 +1,5 @@
 # css/syntax/58 — 스크롤 연동 애니메이션: `animation-timeline`·`scroll()`/`view()`·`timeline-scope` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 수치는 Google Chrome 151.0.7922.173 headless 에서 실제로 스크롤을 움직여 측정한 것**이다.\
-> `--virtual-time-budget` 은 쓰지 않았다. CDP 에 붙어 매 판 `Page.navigate` 로 다시 띄우고, 스크롤을 옮긴 뒤 **두 프레임을 기다렸다가** `getComputedStyle` 을 읽었다.\
-> 규칙은 [Scroll-driven Animations Level 1](https://drafts.csswg.org/scroll-animations-1/) 로 접지했다.
-> ⚠️ **이 기능은 Baseline `limited` 이고 Firefox 에 구현이 없다.** 아래 값은 전부 **Chrome 에서 그렇다**는 뜻이다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -355,7 +349,7 @@ google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
 | 이름 붙인 `view-timeline-inset` 대조 | 1 | 동작 방식 (6) · A4 |
 | demo — 스크롤 5지점 + 휠 3회 | 1 | demo |
 | demo 「바꿔 볼 것」 ① duration 10s / ② inline 축 | 2 | demo |
-| Baseline 조회 | 1 | 머리말 · A8 |
+| Baseline 조회 | 1 | 「실행 환경」 · A8 |
 | **제출 직전 demo 재추출·재실행 대조** | 1 | 어긋남 0건 |
 
 **구현에 달린 항목**
@@ -386,3 +380,10 @@ google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
 - **`view-timeline-inset`** — 뷰 구간을 안쪽으로 줄이는 값. **이름 붙인 형태에서만 먹는다.**
 - **비활성 타임라인** — 객체는 있는데 `currentTime` 이 `null` 인 상태. 애니메이션이 **적용되지 않는다.**
 - **null 타임라인** — 타임라인 객체 자체가 없는 상태. 애니메이션이 `finished` 가 되고 **fill 이 끝 값을 칠한다.**
+
+## 실행 환경
+
+이 파일의 **모든 수치는 Google Chrome 151.0.7922.173 headless 에서 실제로 스크롤을 움직여 측정한 것**이다.\
+`--virtual-time-budget` 은 쓰지 않았다. CDP 에 붙어 매 판 `Page.navigate` 로 다시 띄우고, 스크롤을 옮긴 뒤 **두 프레임을 기다렸다가** `getComputedStyle` 을 읽었다.\
+규칙은 [Scroll-driven Animations Level 1](https://drafts.csswg.org/scroll-animations-1/) 로 접지했다.
+⚠️ **이 기능은 Baseline `limited` 이고 Firefox 에 구현이 없다.** 본문의 값은 전부 **Chrome 에서 그렇다**는 뜻이다.

@@ -1,13 +1,5 @@
 # PR #37157 분석 — nested annotation 안의 지연 실패를 probe가 보지 못한다
 
-> 기준: PR 브랜치 `refs/pr/37157`, base = upstream main `a16509447075`(#37153 커밋을 포함하지 않는 독립 브랜치).\
-> file:line은 별도 표기가 없으면 **PR 적용 후** 좌표이고, "base:NN"은 수정 전 좌표다.\
-> 상태: OPEN (2026-08-19 제출, 라벨 `status: waiting-for-triage`, `in: core`).
->
-> 무대의 재귀 구조와 값 트리 워크플로우는 [structure.md](structure.md), 서술은 [README.md](README.md), 테스트 12건은 [tests.md](tests.md)가 담당한다.\
-> 이 문서는 그 위에 **진입 API에서 결함 지점까지의 호출 그래프, 이름표 사전, 프레임 단위 단계 추적, 계약과 대안 판단**을 얹는다.\
-> 앞선 PR의 기본 무대는 [`../37153/analysis.md`](../37153-enum-array-annotation-probe/analysis.md).
-
 ## 0. 결론
 
 **결함**: probe는 속성을 한 겹만 실호출하고 반환값을 버리는데, nested annotation 속성은 그 한 겹이 **성공한다**(JDK가 안쪽 프록시를 정상 반환).\
@@ -343,3 +335,9 @@ depth-2(`DeepNestedValue` -> `NestedValue` -> `EnumValueInner`)에서도 통과 
 
 > **warmup(예열)** — JVM이 코드를 기계어로 최적화할 시간을 주려고 측정 전에 미리 돌려 보는 단계.\
 > 예: 20만 회를 버리는 셈 치고 먼저 돌린 뒤부터 시간을 잰다.
+
+## 출처
+
+기준: PR 브랜치 `refs/pr/37157`, base = upstream main `a16509447075`(#37153 커밋을 포함하지 않는 독립 브랜치).\
+file:line은 별도 표기가 없으면 **PR 적용 후** 좌표이고, "base:NN"은 수정 전 좌표다.\
+상태: OPEN (2026-08-19 제출, 라벨 `status: waiting-for-triage`, `in: core`).

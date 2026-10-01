@@ -1,11 +1,5 @@
 # web-api/20 — 리스너 수명: `once`·`signal` 로 해제하기와 누수 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — GC 격자는 Chrome 을 `--js-flags=--expose-gc` 로 띄워 페이지의 `gc()` 를 불렀다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 add an event listener · signal abort · run the abort steps · `AbortSignal.timeout()`/`any()` 로 접지했다. 회수 보장의 정본은 [JS 갈래 23번 주제](../../js/syntax/23-map-set-and-weak-collections/3-answer.md)다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> ★★ **바이트는 재지 않았다.**
-
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
 |---|---|
 | `signal` 쪽 호출 횟수 · `reason` · `aborted` | ★ **흔들려도 되는 칸** — 「gc() 뒤 몇 번째 틱」 블록 |
@@ -234,3 +228,10 @@ python3 wa20b-cdp.py page wa20b-20-signal.html
 | `gc()` 의 존재 | `--expose-gc` 에서만 | V8 의 디버깅 표면이다 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② **바이트·시간**(힙 스냅샷·성능 추적). ③ `handleEvent` 객체 · `onclick` 속성 핸들러의 수명. ④ 전환이 안 일어나는 `transitionend` 에 단 `once`(문항 7은 「안 던진 `once`」 칸으로 대신했다).
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — GC 격자는 Chrome 을 `--js-flags=--expose-gc` 로 띄워 페이지의 `gc()` 를 불렀다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 add an event listener · signal abort · run the abort steps · `AbortSignal.timeout()`/`any()` 로 접지했다. 회수 보장의 정본은 [JS 갈래 23번 주제](../../js/syntax/23-map-set-and-weak-collections/3-answer.md)다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+★★ **바이트는 재지 않았다.**

@@ -1,11 +1,5 @@
 # css/syntax/55 — 3D 변환: `perspective`·`transform-style`·`backface-visibility` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 수치는 Google Chrome 151.0.7922.173 headless 에서 실제로 측정한 것**이다.\
-> ★ 평탄화 판정은 **계산값으로 할 수 없었다** — 깨진 경우에도 `getComputedStyle().transformStyle` 이 `preserve-3d` 를 돌려준다.\
-> 그래서 **손자의 `getBoundingClientRect()` 크기**로 판정했고, 앞뒤 관계는 **스크린샷 픽셀**로 읽었다.\
-> 규칙은 [CSS Transforms Level 2](https://drafts.csswg.org/css-transforms-2/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -367,3 +361,10 @@ transform: perspective(400px) rotateY(45deg);   /* 원근을 맨 앞에 */
 - **`matrix3d(…)`** — 3D 변환 행렬 열여섯 수. 원근이 걸리면 네 번째 열에 작은 수가 생긴다.
 - **z 위치** — `translateZ` 가 정하는 깊이. 3D 공간에서는 **이것이 앞뒤를 정하고 `z-index` 는 진다.**
 - **3D 렌더링 맥락** — `preserve-3d` 가 만든, 자손들이 같은 3D 공간을 공유하는 영역.
+
+## 실행 환경
+
+이 파일의 **모든 수치는 Google Chrome 151.0.7922.173 headless 에서 실제로 측정한 것**이다.\
+★ 평탄화 판정은 **계산값으로 할 수 없었다** — 깨진 경우에도 `getComputedStyle().transformStyle` 이 `preserve-3d` 를 돌려준다.\
+그래서 **손자의 `getBoundingClientRect()` 크기**로 판정했고, 앞뒤 관계는 **스크린샷 픽셀**로 읽었다.\
+규칙은 [CSS Transforms Level 2](https://drafts.csswg.org/css-transforms-2/) 로 접지했다.

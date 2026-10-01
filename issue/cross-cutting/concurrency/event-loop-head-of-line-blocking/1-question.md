@@ -1,10 +1,5 @@
 # issue/concurrency/event-loop-head-of-line-blocking — 수신 루프에서 await하면 가장 느린 일이 모두를 막는다 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. Head-of-line(HOL) blocking이란 무엇인가. 단일 WebSocket 수신 루프 `async for msg in ws: await handle(msg)`에서 `handle` 하나가 10분 걸리면 그 사이 도착한 다른 명령은 어떻게 되는가.
 2. 비동기(async)라서 동시에 처리된다고 생각하기 쉽다 — 왜 `await`한 줄이 그 루프를 사실상 직렬로 만드는가. 이벤트 루프 전체가 막힌 것과 이 루프만 막힌 것은 어떻게 다른가.

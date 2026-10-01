@@ -1,15 +1,5 @@
 # kotlin/syntax/25 — `object` 선언·`companion object`·`object` 식 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다. [13번 주제](../13-extension-functions-and-properties/)·[16번 주제](../16-properties-backing-field-lateinit-const/)도 먼저 보면 좋다.
-> ★ **`const val` 이 호출부에 박히는 것의 파급은 [16번 주제](../16-properties-backing-field-lateinit-const/)**, **상호운용 애너테이션 전부**는 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이라 여기서는 **결론만** 묻는다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-> ★★ 이 주제는 **Java 를 섞어 던진다** — `@JvmStatic` 은 Kotlin 쪽에서만 보면 아무것도 안 바뀐 것처럼 보이기 때문이다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -237,6 +227,15 @@ public class BadUse {
 - [24번 주제](../24-enum-class-vs-sealed/)의 `enum` 상수는 클래스 파일에서 무엇이었는가? `object` 와 무엇이 같은가?
 - [22번 주제](../22-data-class-generated-members/)의 `data object` 는 그냥 `object` 에 **무엇**을 더한 것인가?
 - [`../../../java/syntax/12-nested-classes/`](../../../java/syntax/12-nested-classes/)의 정적 중첩 클래스와 `Outer$Companion` 은 어떤 관계인가?
+
+## 실행 환경
+
+선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다. [13번 주제](../13-extension-functions-and-properties/)·[16번 주제](../16-properties-backing-field-lateinit-const/)도 먼저 보면 좋다.
+★ **`const val` 이 호출부에 박히는 것의 파급은 [16번 주제](../16-properties-backing-field-lateinit-const/)**, **상호운용 애너테이션 전부**는 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이라 여기서는 **결론만** 묻는다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
+★★ 이 주제는 **Java 를 섞어 던진다** — `@JvmStatic` 은 Kotlin 쪽에서만 보면 아무것도 안 바뀐 것처럼 보이기 때문이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

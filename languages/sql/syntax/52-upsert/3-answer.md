@@ -1,11 +1,5 @@
 # sql/52-UPSERT (ON CONFLICT · ON DUPLICATE KEY UPDATE) — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> 모든 실험은 `BEGIN`/`ROLLBACK`(MySQL 은 `START TRANSACTION`/`ROLLBACK`)으로 감쌌다 — 기준 상태는 매번 같다.\
-> 문서 근거는 [PG 18 INSERT](https://www.postgresql.org/docs/18/sql-insert.html) · [MySQL 8.4 ON DUPLICATE KEY UPDATE](https://dev.mysql.com/doc/refman/8.4/en/insert-on-duplicate.html) · [MySQL 8.0.19 릴리스 노트](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-19.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -530,3 +524,10 @@ SELECT * FROM dept WHERE id = 40;          <- 같은 트랜잭션이면 내 변�
 **방언이 갈리는 항목 — 버전이 오르면 다시 찍을 자리** — ① 충돌 대상 지목의 가능 여부(2번) ② 영향 행 수 체계(3번)\
 ③ `RETURNING` 의 유무(8번 — **MySQL 이 언젠가 넣으면 이 표가 먼저 틀린다**) ④ 갱신 조건(`WHERE` 대 식) ⑤ 한 문 안 중복 키의 처분(6번)\
 ⑥ 구식 `VALUES()` 의 deprecated 경고(**「제거 예정」이라 다음 메이저에서 에러가 될 수 있다**).
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+모든 실험은 `BEGIN`/`ROLLBACK`(MySQL 은 `START TRANSACTION`/`ROLLBACK`)으로 감쌌다 — 기준 상태는 매번 같다.\
+문서 근거는 [PG 18 INSERT](https://www.postgresql.org/docs/18/sql-insert.html) · [MySQL 8.4 ON DUPLICATE KEY UPDATE](https://dev.mysql.com/doc/refman/8.4/en/insert-on-duplicate.html) · [MySQL 8.0.19 릴리스 노트](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-19.html).

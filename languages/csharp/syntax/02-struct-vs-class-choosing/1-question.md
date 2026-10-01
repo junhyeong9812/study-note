@@ -1,14 +1,5 @@
 # csharp/syntax/02 — `struct` 대 `class` 고르기 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
-> 진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
-> ★★★ **3번이 이 주제의 이유다** — **경고 없이 복사가 생기는 자리**를 맞힐 수 있는지 묻는다.
-> ★★ 이 주제의 창은 여섯이다 — 실행 출력 · 컴파일 진단 · ★**「진단 0줄」** · IL · 할당 바이트 · 시간.
-> 선행 — [01번](../01-value-types-and-reference-types/). 뒤따르는 것은 [03번](../03-boxing-and-unboxing/)이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -285,6 +276,14 @@ readonly record struct Money(int Won, string Currency);
 - `ref`/`out`/`in` **자체**의 정본은 목록의 몇 번인가?
 - `record` 문법 전반과 `Equals`/`GetHashCode` 계약은 각각 목록의 몇 번인가?
 - 「값이냐 헤더냐」가 축인 **다른 언어 갈래**는 어디인가 — 거기에는 **없는** 함정이 무엇인가?
+
+## 실행 환경
+
+**환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
+진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
+★★★ **3번이 이 주제의 이유다** — **경고 없이 복사가 생기는 자리**를 맞힐 수 있는지 묻는다.
+★★ 이 주제의 창은 여섯이다 — 실행 출력 · 컴파일 진단 · ★**「진단 0줄」** · IL · 할당 바이트 · 시간.
+선행 — [01번](../01-value-types-and-reference-types/). 뒤따르는 것은 [03번](../03-boxing-and-unboxing/)이다.
 
 ## 복습 기록
 

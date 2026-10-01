@@ -1,18 +1,5 @@
 # rust/syntax/50 — `Send`/`Sync` 가 코드에 나타나는 방식 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `std::marker::Send`](https://doc.rust-lang.org/std/marker/trait.Send.html)(「Types that can be transferred across thread boundaries」 · 자동 구현 · 구현 목록) ·
-> [std — `std::marker::Sync`](https://doc.rust-lang.org/std/marker/trait.Sync.html)(「a type `T` is `Sync` if and only if `&T` is `Send`」) ·
-> [std — `MutexGuard`](https://doc.rust-lang.org/std/sync/struct.MutexGuard.html)(`!Send` · `T: Sync` 이면 `Sync`) ·
-> [Rustonomicon — Send and Sync](https://doc.rust-lang.org/nomicon/send-and-sync.html)(자동 트레이트 · `unsafe impl`) ·
-> [Reference — Closure types · Capture precision](https://doc.rust-lang.org/reference/types/closure.html)(2021 정밀 포착).
-> ★ std 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다 — 구현 목록은 (4)의 `r50_impls` 블록이 직접 grep 한다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> **`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(에디션 대조 한 곳은 2018·2021).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★ **속도는 한 번도 재지 않았다.** 이 주제는 **컴파일러가 막는가**만 다룬다 — 거의 모든 근거가 **컴파일 로그**다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체 창 — ① 경계 격자(타입 × 「보내기 / 함께 보기」 → 컴파일되나)다.** 두 마커는 실행 중에 아무 일도 하지 않는다 — **판정은 전부 컴파일 시점**이고, 그래서 창도 실행 결과가 아니라 **컴파일러 진단**이다.
 
 ## 흔들리는 칸 / 안 흔들리는 칸
@@ -695,3 +682,16 @@ For more information about this error, try `rustc --explain E0277`.
 - `Sync` 이지만 `Send` 가 아닌 타입이 `MutexGuard` 말고도 std 에 있다(구현 목록). **이 문서는 목록을 전수로 훑지 않았다.**
 - `Arc<T>: Send` 의 정확한 선언(`T: Sync + Send`)은 로컬 문서에서 태그가 쪼개져 grep 으로 못 읽었다 — 41번과 42번의 진단 두 조각으로 맞췄다((0)의 제5의 상태).
 - async 에서는 `Future` 가 `Send` 인지가 같은 사슬 모양의 에러로 나온다(`await` 를 가로지르는 `!Send` 값) — [목록의 **55번 주제**](../55-async-in-practice-runtime-send-and-pin/).
+
+## 실행 환경
+
+**기준 소스** — [std — `std::marker::Send`](https://doc.rust-lang.org/std/marker/trait.Send.html)(「Types that can be transferred across thread boundaries」 · 자동 구현 · 구현 목록) ·
+[std — `std::marker::Sync`](https://doc.rust-lang.org/std/marker/trait.Sync.html)(「a type `T` is `Sync` if and only if `&T` is `Send`」) ·
+[std — `MutexGuard`](https://doc.rust-lang.org/std/sync/struct.MutexGuard.html)(`!Send` · `T: Sync` 이면 `Sync`) ·
+[Rustonomicon — Send and Sync](https://doc.rust-lang.org/nomicon/send-and-sync.html)(자동 트레이트 · `unsafe impl`) ·
+[Reference — Closure types · Capture precision](https://doc.rust-lang.org/reference/types/closure.html)(2021 정밀 포착).
+★ std 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다 — 구현 목록은 (4)의 `r50_impls` 블록이 직접 grep 한다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+**`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(에디션 대조 한 곳은 2018·2021).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★ **속도는 한 번도 재지 않았다.** 이 주제는 **컴파일러가 막는가**만 다룬다 — 거의 모든 근거가 **컴파일 로그**다.

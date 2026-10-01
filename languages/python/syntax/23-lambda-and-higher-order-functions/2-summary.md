@@ -1,42 +1,5 @@
 # python/syntax/23-lambda-and-higher-order-functions — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [6.14. Lambdas](https://docs.python.org/3.12/reference/expressions.html#lambda) — `lambda` 가 무엇을 만들고 **무엇을 담을 수 없는가**
-> - [8.7. Function definitions](https://docs.python.org/3.12/reference/compound_stmts.html#function-definitions) — 파라미터 문법은 `def`와 공유한다
-> - [`map`](https://docs.python.org/3.12/library/functions.html#map) · [`filter`](https://docs.python.org/3.12/library/functions.html#filter) · [`sorted`](https://docs.python.org/3.12/library/functions.html#sorted)
-> - [`functools.partial`](https://docs.python.org/3.12/library/functools.html#functools.partial) · [`functools.cmp_to_key`](https://docs.python.org/3.12/library/functools.html#functools.cmp_to_key) · [`functools.reduce`](https://docs.python.org/3.12/library/functools.html#functools.reduce)
-> - [`inspect.signature`](https://docs.python.org/3.12/library/inspect.html#inspect.signature)
-> - [Sorting HOW TO](https://docs.python.org/3.12/howto/sorting.html) · [The standard type hierarchy](https://docs.python.org/3.12/reference/datamodel.html#the-standard-type-hierarchy) — 함수 객체의 `__name__`·`__qualname__`·`__closure__`
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
-> ★★ **이 주제의 `SyntaxError` 다섯 판은 전부 캐럿이 나온다** — 파서가 잡기 때문이다.
-> [21번](../21-scope-legb-global-nonlocal/2-summary.md)의 `nonlocal` 오류들은 **캐럿도 소스 줄도 없다**(심볼 테이블 단계가 잡는다).
-> 같은 `SyntaxError` 인데 **어느 단계가 잡았는지가 화면에 드러난다.**\
-> **버전** — `lambda` 자체는 Python 3 전체 공통이다. 몸통에 쓰는 `:=` 는 **3.8+**(PEP 572),
-> 파라미터의 위치 전용 `/` 는 **3.8+**(PEP 570). 이 노트 범위(3.10\~3.13)에서 `lambda` 문법은 안 바뀌었다.\
-> **★ 구현 대 언어 보장 한 줄** — 「`lambda`가 만드는 것은 `def`로 만든 함수 객체처럼 동작한다」는 **문서가 말하는 것**이고,
-> 「**바이트코드가 한 바이트도 같다**」는 **CPython 을 들여다본 관찰**이다. 둘을 같은 문장으로 적으면 틀린다.\
-> **★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | `<function … at 0x…>` 의 **주소**, `id()` 값 | 예외 **타입**, `File "<stdin>", line N`, `(exit N)` |
-> | (판이 오르면) `SyntaxError` **문구**와 **캐럿 폭** | **캐럿이 나온다는 사실**(이 다섯은 파서가 잡는다) |
-> | (판이 오르면) `dis` 의 **오프셋·명령 이름**, `co_flags` 값 | `co_code` 가 **같다**는 판정, `co_name` 이 **다르다**는 판정 |
-> | (판이 오르면) `cmp_to_key` 가 만드는 **타입 이름** | `key` 호출 **8회**(원소당 한 번 — 문서가 정한다) |
-> | (데이터가 바뀌면) `cmp` 호출 **16회** | `cmp` 쪽이 **원소 수보다 많이** 불린다는 사실 |
->
-> ★ **이 주제의 실행 출력은 주소를 하나도 안 찍는다** — 같은 판에서 다시 돌리면 한 글자도 안 변한다.\
-> **선행** — [19번](../19-function-argument-rules/2-summary.md)(인자 규칙) ·
-> [21번](../21-scope-legb-global-nonlocal/2-summary.md)(이름 해소) · [22번](../22-closures-and-late-binding/2-summary.md)(클로저).\
-> **정본 이웃** — [10번](../10-list-methods-and-sort-key/2-summary.md)이 **정렬 `key`의 정본**이고,
-> [16번](../16-iterator-protocol/2-summary.md)이 **이터레이터 계약의 정본**이다. 여기서는 **`lambda`가 그 자리에 들어가는 것**만 다룬다.\
-> **후행** — [24번](../24-decorators/2-summary.md)(데코레이터).
-
 ```python
 # v_version.py
 import sys
@@ -1244,3 +1207,39 @@ lambda x: int: x            # invalid syntax               ★ 애너테이션 �
   `lambda xs=[]: xs.append(1)` 은 `def`로 쓴 것과 똑같이 새어 흐른다. **몸통이 식이라고 예외가 아니다.**
 - ★ **`lambda` 는 디버거에서도 불편하다** — 한 줄에 여러 식이 겹쳐 있어 **중단점을 걸 단위가 없다.**
   트레이스백 모호성(동작 4)과 같은 뿌리다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [6.14. Lambdas](https://docs.python.org/3.12/reference/expressions.html#lambda) — `lambda` 가 무엇을 만들고 **무엇을 담을 수 없는가**
+- [8.7. Function definitions](https://docs.python.org/3.12/reference/compound_stmts.html#function-definitions) — 파라미터 문법은 `def`와 공유한다
+- [`map`](https://docs.python.org/3.12/library/functions.html#map) · [`filter`](https://docs.python.org/3.12/library/functions.html#filter) · [`sorted`](https://docs.python.org/3.12/library/functions.html#sorted)
+- [`functools.partial`](https://docs.python.org/3.12/library/functools.html#functools.partial) · [`functools.cmp_to_key`](https://docs.python.org/3.12/library/functools.html#functools.cmp_to_key) · [`functools.reduce`](https://docs.python.org/3.12/library/functools.html#functools.reduce)
+- [`inspect.signature`](https://docs.python.org/3.12/library/inspect.html#inspect.signature)
+- [Sorting HOW TO](https://docs.python.org/3.12/howto/sorting.html) · [The standard type hierarchy](https://docs.python.org/3.12/reference/datamodel.html#the-standard-type-hierarchy) — 함수 객체의 `__name__`·`__qualname__`·`__closure__`
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
+★★ **이 주제의 `SyntaxError` 다섯 판은 전부 캐럿이 나온다** — 파서가 잡기 때문이다.
+[21번](../21-scope-legb-global-nonlocal/2-summary.md)의 `nonlocal` 오류들은 **캐럿도 소스 줄도 없다**(심볼 테이블 단계가 잡는다).
+같은 `SyntaxError` 인데 **어느 단계가 잡았는지가 화면에 드러난다.**\
+**버전** — `lambda` 자체는 Python 3 전체 공통이다. 몸통에 쓰는 `:=` 는 **3.8+**(PEP 572),
+파라미터의 위치 전용 `/` 는 **3.8+**(PEP 570). 이 노트 범위(3.10\~3.13)에서 `lambda` 문법은 안 바뀌었다.\
+**★ 구현 대 언어 보장 한 줄** — 「`lambda`가 만드는 것은 `def`로 만든 함수 객체처럼 동작한다」는 **문서가 말하는 것**이고,
+「**바이트코드가 한 바이트도 같다**」는 **CPython 을 들여다본 관찰**이다. 둘을 같은 문장으로 적으면 틀린다.\
+**★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| `<function … at 0x…>` 의 **주소**, `id()` 값 | 예외 **타입**, `File "<stdin>", line N`, `(exit N)` |
+| (판이 오르면) `SyntaxError` **문구**와 **캐럿 폭** | **캐럿이 나온다는 사실**(이 다섯은 파서가 잡는다) |
+| (판이 오르면) `dis` 의 **오프셋·명령 이름**, `co_flags` 값 | `co_code` 가 **같다**는 판정, `co_name` 이 **다르다**는 판정 |
+| (판이 오르면) `cmp_to_key` 가 만드는 **타입 이름** | `key` 호출 **8회**(원소당 한 번 — 문서가 정한다) |
+| (데이터가 바뀌면) `cmp` 호출 **16회** | `cmp` 쪽이 **원소 수보다 많이** 불린다는 사실 |
+
+★ **이 주제의 실행 출력은 주소를 하나도 안 찍는다** — 같은 판에서 다시 돌리면 한 글자도 안 변한다.\
+**선행** — [19번](../19-function-argument-rules/2-summary.md)(인자 규칙) ·
+[21번](../21-scope-legb-global-nonlocal/2-summary.md)(이름 해소) · [22번](../22-closures-and-late-binding/2-summary.md)(클로저).\
+**정본 이웃** — [10번](../10-list-methods-and-sort-key/2-summary.md)이 **정렬 `key`의 정본**이고,
+[16번](../16-iterator-protocol/2-summary.md)이 **이터레이터 계약의 정본**이다. 여기서는 **`lambda`가 그 자리에 들어가는 것**만 다룬다.\
+**후행** — [24번](../24-decorators/2-summary.md)(데코레이터).

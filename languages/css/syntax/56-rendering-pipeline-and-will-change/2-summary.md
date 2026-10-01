@@ -1,14 +1,5 @@
 # css/syntax/56 — 렌더링 파이프라인과 `will-change`: 무엇이 합성만으로 도는가 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Containment Level 2](https://drafts.csswg.org/css-contain-2/) (`contain`·`content-visibility`) · [CSS Will Change Level 1](https://drafts.csswg.org/css-will-change-1/) (`will-change` 의 정의와 **남용 경고**). 열어서 확인한 것만 적었다.\
-> **파이프라인 단계의 이름과 순서는 명세가 아니라 구현의 것**이다 — 이 문서는 **측정한 것**과 **문서가 주장하는 것**을 갈라 적는다.
-> **실행 검증** — 이 문서의 `demo` 블록 **2개 전부**와 본문 실험 **5벌**을 **Google Chrome 151.0.7922.173** headless 에 CDP 로 붙여 돌렸다.\
-> ★★ **측정 도구를 먼저 밝힌다**((2)) — **CDP `Performance.getMetrics`** 의 `RecalcStyleCount`·`LayoutCount`·`LayoutDuration` 과 **CDP `Tracing` 도메인**(`devtools.timeline`)의 이벤트 수(`UpdateLayoutTree`·`Layout`·`PrePaint`·`Paint`·`Commit`·`RasterTask`)를 썼다. 속성별 표는 **2초 × 3판**을 돌려 흔들림을 같이 적었다.\
-> ★ **못 잰 것이 있다** — **합성 레이어의 수와 메모리는 이 환경에서 못 쟀다**((8)). 지어내지 않고 못 쟀다고 적는다.
-> **버전** — CSS 에 언어 버전은 없다. `will-change` 는 Baseline **widely**(newly 2020-01-15 → widely 2022-07-15), `contain` 은 **widely**(newly 2022-03-14 → widely 2024-09-14), `content-visibility` 는 **newly**(2025-09-15, 아직 widely 아님) — `api.webstatus.dev` 조회 결과.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **브라우저는 화면 한 장을 만들 때 공장 라인을 탄다. 문제는 「무엇을 바꾸면 라인의 어느 공정부터 다시 도느냐」다.**
@@ -537,3 +528,12 @@ el.style.willChange = 'transform';
 requestAnimationFrame(() => { /* 여기서 애니메이션 시작 */ });
 el.addEventListener('transitionend', () => { el.style.willChange = 'auto'; });
 ```
+
+## 실행 환경
+
+**기준 소스** — [CSS Containment Level 2](https://drafts.csswg.org/css-contain-2/) (`contain`·`content-visibility`) · [CSS Will Change Level 1](https://drafts.csswg.org/css-will-change-1/) (`will-change` 의 정의와 **남용 경고**). 열어서 확인한 것만 적었다.\
+**파이프라인 단계의 이름과 순서는 명세가 아니라 구현의 것**이다 — 이 문서는 **측정한 것**과 **문서가 주장하는 것**을 갈라 적는다.
+**실행 검증** — 이 문서의 `demo` 블록 **2개 전부**와 본문 실험 **5벌**을 **Google Chrome 151.0.7922.173** headless 에 CDP 로 붙여 돌렸다.\
+★★ **측정 도구를 먼저 밝힌다**((2)) — **CDP `Performance.getMetrics`** 의 `RecalcStyleCount`·`LayoutCount`·`LayoutDuration` 과 **CDP `Tracing` 도메인**(`devtools.timeline`)의 이벤트 수(`UpdateLayoutTree`·`Layout`·`PrePaint`·`Paint`·`Commit`·`RasterTask`)를 썼다. 속성별 표는 **2초 × 3판**을 돌려 흔들림을 같이 적었다.\
+★ **못 잰 것이 있다** — **합성 레이어의 수와 메모리는 이 환경에서 못 쟀다**((8)). 지어내지 않고 못 쟀다고 적는다.
+**버전** — CSS 에 언어 버전은 없다. `will-change` 는 Baseline **widely**(newly 2020-01-15 → widely 2022-07-15), `contain` 은 **widely**(newly 2022-03-14 → widely 2024-09-14), `content-visibility` 는 **newly**(2025-09-15, 아직 widely 아님) — `api.webstatus.dev` 조회 결과.

@@ -1,10 +1,5 @@
 # issue/kotlin/language-semantics-traps — Java 직관이 틀리는 Kotlin 언어 규칙 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. (왜) KDoc 주석 본문에 `/admin/**` 같은 경로 패턴을 적었더니 `Unclosed comment` 컴파일 오류가 났다. 같은 주석이 Java에서는 멀쩡한데 Kotlin에서만 깨지는 이유는 무엇인가? 같은 문자열이 `requestMatchers("/admin/**")` 안에 있을 때는 왜 안전한가?
 2. (예측) 테스트 함수 이름을 backtick으로 `` `Filter: age > 28` `` 처럼 지었다. 한글과 공백은 되는데 이 이름은 컴파일에 실패한다 — 왜 "backtick이면 아무 문자나 된다"가 틀렸는가? 어떤 층의 규칙이 끼어드는가?

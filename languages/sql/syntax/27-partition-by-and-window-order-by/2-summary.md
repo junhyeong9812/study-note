@@ -1,15 +1,5 @@
 # sql/27-`PARTITION BY` 와 윈도우 `ORDER BY` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Window Function Calls](https://www.postgresql.org/docs/18/sql-expressions.html) · [PostgreSQL 18 · Window Functions (튜토리얼)](https://www.postgresql.org/docs/18/tutorial-window.html) · [MySQL 8.4 · Window Function Concepts and Syntax](https://dev.mysql.com/doc/refman/8.4/en/window-functions-usage.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — `PARTITION BY`·윈도우 `ORDER BY` 는 윈도우 함수와 같이 들어왔다(PG 8.4 · MySQL 8.0).\
-> **갈리는 자리는 `NULL` 의 위치 하나**다(6번) — 그런데 그것 때문에 **값까지 달라진다.**\
-> **선행** — [26 윈도우 함수의 개념](../26-window-functions-vs-aggregates/). **뒤 주제** — [28 프레임](../28-window-frames-rows-range-groups/) · [29 순위 함수](../29-ranking-functions/) · [30 오프셋·경계 함수](../30-offset-and-boundary-functions/) · [31 평가 시점](../31-window-evaluation-timing/).
-
 ## 한눈에 — 쉽게 말하면
 
 **창문을 몇 개로 나누고, 그 안에서 사람을 어떻게 줄 세울 것인가.**
@@ -594,3 +584,12 @@ SELECT name, ROW_NUMBER() OVER (ORDER BY (salary IS NULL), salary) AS rn FROM em
   「부서가 바뀌어도 이어서 쌓이는 누적」이 필요하면 `PARTITION BY` 를 빼야 한다.
 - **`ORDER BY` 의 방향(`DESC`)도 프레임을 뒤집는다** — 「자기 앞」이 「나보다 큰 값」이 된다.\
   순위 함수에서 이 방향이 곧 1등의 정의가 된다([29번](../29-ranking-functions/)).
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Window Function Calls](https://www.postgresql.org/docs/18/sql-expressions.html) · [PostgreSQL 18 · Window Functions (튜토리얼)](https://www.postgresql.org/docs/18/tutorial-window.html) · [MySQL 8.4 · Window Function Concepts and Syntax](https://dev.mysql.com/doc/refman/8.4/en/window-functions-usage.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — `PARTITION BY`·윈도우 `ORDER BY` 는 윈도우 함수와 같이 들어왔다(PG 8.4 · MySQL 8.0).\
+**갈리는 자리는 `NULL` 의 위치 하나**다(6번) — 그런데 그것 때문에 **값까지 달라진다.**\
+**선행** — [26 윈도우 함수의 개념](../26-window-functions-vs-aggregates/). **뒤 주제** — [28 프레임](../28-window-frames-rows-range-groups/) · [29 순위 함수](../29-ranking-functions/) · [30 오프셋·경계 함수](../30-offset-and-boundary-functions/) · [31 평가 시점](../31-window-evaluation-timing/).

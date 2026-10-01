@@ -1,41 +1,5 @@
 # cpp/syntax/14 — 소멸자와 결정적 파괴 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 소멸자](https://en.cppreference.com/w/cpp/language/destructor) · [cppreference — 객체 수명](https://en.cppreference.com/w/cpp/language/lifetime) · [cppreference — `delete` 식](https://en.cppreference.com/w/cpp/language/delete) · [cppreference — 저장 기간](https://en.cppreference.com/w/cpp/language/storage_duration) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html) · [AddressSanitizer](https://github.com/google/sanitizers/wiki/AddressSanitizer)
-> **실행 검증** — 이 문서의 모든 출력·진단·sanitizer 리포트는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`dtor01.cpp` \~ `dtor13.cpp`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
-> ★★★ **표준 출력과 표준 오류를 한 블록에 섞지 않았다.** sanitizer 가 `abort()` 로 죽이면\
-> **버퍼에 남은 표준 출력이 통째로 사라지므로**, ASan 을 붙이는 판의 마커는 전부 `std::fprintf(stderr, …)` 로 찍었다\
-> ((5)(6)(7)의 소스에 그렇게 적혀 있다). ★ ASan 리포트를 자른 블록은 **자르는 명령을 배너에 적었다.**
-> **버전** — 소멸자 자체는 **C++98부터**. **소멸자가 기본으로 `noexcept` 인 것은 C++11부터**((7)) ·\
-> `= default`/`= delete` 도 **C++11부터** · `std::_Exit` 는 **C++11부터**다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-> ★★★ **12 → 13 → 14 → 15 는 한 사슬이다** — [12번](../12-class-basics-members-access-and-this/)이 **그릇**을,\
-> [13번](../13-constructors-member-init-list-and-delegating/)이 **채우는 법**을 답했다. **여기 14 가 「언제 비워지나」에 답하고**,\
-> [15번](../15-raii-resources-as-types/)이 **그 시점을 자원 관리에 쓰는 법**을 답한다.\
-> ★★ **[13번](../13-constructors-member-init-list-and-delegating/) (2)의 「선언 순서로 초기화된다」가 여기서 뒤집힌다** — 파괴는 그 **역순**이다((1)).
-> **경계** — 「**가상 소멸자를 언제 붙이나**」의 설계 판은 [목록의 **20번 주제**](../20-virtual-destructors-and-polymorphic-deletion/)가 정본이고,\
-> 여기서는 **안 붙였을 때 실제로 무엇이 일어나는가**만 던져 본다((5)).\
-> 「0/3/5의 법칙」은 **18번**, 「이동 후 상태」는 **17번**, 「`unique_ptr`」은 **26번**,\
-> 「예외와 스택 되감기」 자체는 **51번**, 「수명 연장 규칙의 전모」는 **30번 주제**가 정본이다.\
-> **대비** — C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **13번**([`13-goto-cleanup-idiom/`](../../../c/syntax/13-goto-cleanup-idiom/))은 **소멸자가 없는 언어**가 같은 문제를 라벨로 푸는 법이고,\
-> Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **9번**([`09-copy-clone-and-drop/`](../../../rust/syntax/09-copy-clone-and-drop/))의 `Drop` 은 **여기와 같은 결정적 파괴**다.\
-> C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **1번**([`01-value-types-and-reference-types/`](../../../csharp/syntax/01-value-types-and-reference-types/))은 **정반대** — GC 가 언제 치울지 프로그램이 모른다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ASan 리포트의 **PID**(`==1138999==`)·주소·`BuildId` | ★★★ **로그가 찍힌 순서** — 이 주제의 답 자체다 |
-> | 두 컴파일러의 **진단 문구**와 경고 이름 | ★★★ **소멸자가 몇 번 돌았나**(`[파괴]` 줄 수) |
-> | 객체의 주소값 · 실행 시간 | ★★ **`cc exit` 와 `run exit`**(갈라 적었다) · **경고 개수** |
-> | ★ **임시 객체가 만들어진 순서** — **g++ 와 clang 이 달랐다**((4)) | ★★ **ASan 이 뭐라고 부르는가**(`new-delete-type-mismatch`·`bad-free`·`double-free`) |
-> | — | ★ **임시 객체가 파괴된 순서** — 만든 순서의 역순이라는 **성질**은 두 컴파일러에서 같았다 |
-
 ## 한눈에 — 쉽게 말하면
 
 **C++ 의 파괴는 「스코프를 나가는 순간」이다.** 청소부를 기다리지 않는다.
@@ -1186,3 +1150,40 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
   정본은 목록의 **53번 주제**.
 - **`std::destroy_at`·`std::construct_at`(C++20)** — 수명을 손으로 여닫는 도구. 할당기·`optional` 구현이 쓴다.
 - **소멸 순서와 `static` 초기화 순서 문제** — 번역 단위가 둘 이상일 때의 미명시 구간. 정본은 [목록의 **25번 주제**](../25-static-members-and-inline-variables/).
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 소멸자](https://en.cppreference.com/w/cpp/language/destructor) · [cppreference — 객체 수명](https://en.cppreference.com/w/cpp/language/lifetime) · [cppreference — `delete` 식](https://en.cppreference.com/w/cpp/language/delete) · [cppreference — 저장 기간](https://en.cppreference.com/w/cpp/language/storage_duration) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html) · [AddressSanitizer](https://github.com/google/sanitizers/wiki/AddressSanitizer)
+**실행 검증** — 이 문서의 모든 출력·진단·sanitizer 리포트는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`dtor01.cpp` \~ `dtor13.cpp`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
+★★★ **표준 출력과 표준 오류를 한 블록에 섞지 않았다.** sanitizer 가 `abort()` 로 죽이면\
+**버퍼에 남은 표준 출력이 통째로 사라지므로**, ASan 을 붙이는 판의 마커는 전부 `std::fprintf(stderr, …)` 로 찍었다\
+((5)(6)(7)의 소스에 그렇게 적혀 있다). ★ ASan 리포트를 자른 블록은 **자르는 명령을 배너에 적었다.**
+**버전** — 소멸자 자체는 **C++98부터**. **소멸자가 기본으로 `noexcept` 인 것은 C++11부터**((7)) ·\
+`= default`/`= delete` 도 **C++11부터** · `std::_Exit` 는 **C++11부터**다. 기준은 **C++20**이다.
+
+★★★ **12 → 13 → 14 → 15 는 한 사슬이다** — [12번](../12-class-basics-members-access-and-this/)이 **그릇**을,\
+[13번](../13-constructors-member-init-list-and-delegating/)이 **채우는 법**을 답했다. **여기 14 가 「언제 비워지나」에 답하고**,\
+[15번](../15-raii-resources-as-types/)이 **그 시점을 자원 관리에 쓰는 법**을 답한다.\
+★★ **[13번](../13-constructors-member-init-list-and-delegating/) (2)의 「선언 순서로 초기화된다」가 여기서 뒤집힌다** — 파괴는 그 **역순**이다((1)).
+**경계** — 「**가상 소멸자를 언제 붙이나**」의 설계 판은 [목록의 **20번 주제**](../20-virtual-destructors-and-polymorphic-deletion/)가 정본이고,\
+여기서는 **안 붙였을 때 실제로 무엇이 일어나는가**만 던져 본다((5)).\
+「0/3/5의 법칙」은 **18번**, 「이동 후 상태」는 **17번**, 「`unique_ptr`」은 **26번**,\
+「예외와 스택 되감기」 자체는 **51번**, 「수명 연장 규칙의 전모」는 **30번 주제**가 정본이다.\
+**대비** — C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **13번**([`13-goto-cleanup-idiom/`](../../../c/syntax/13-goto-cleanup-idiom/))은 **소멸자가 없는 언어**가 같은 문제를 라벨로 푸는 법이고,\
+Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **9번**([`09-copy-clone-and-drop/`](../../../rust/syntax/09-copy-clone-and-drop/))의 `Drop` 은 **여기와 같은 결정적 파괴**다.\
+C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **1번**([`01-value-types-and-reference-types/`](../../../csharp/syntax/01-value-types-and-reference-types/))은 **정반대** — GC 가 언제 치울지 프로그램이 모른다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ASan 리포트의 **PID**(`==1138999==`)·주소·`BuildId` | ★★★ **로그가 찍힌 순서** — 이 주제의 답 자체다 |
+| 두 컴파일러의 **진단 문구**와 경고 이름 | ★★★ **소멸자가 몇 번 돌았나**(`[파괴]` 줄 수) |
+| 객체의 주소값 · 실행 시간 | ★★ **`cc exit` 와 `run exit`**(갈라 적었다) · **경고 개수** |
+| ★ **임시 객체가 만들어진 순서** — **g++ 와 clang 이 달랐다**((4)) | ★★ **ASan 이 뭐라고 부르는가**(`new-delete-type-mismatch`·`bad-free`·`double-free`) |
+| — | ★ **임시 객체가 파괴된 순서** — 만든 순서의 역순이라는 **성질**은 두 컴파일러에서 같았다 |

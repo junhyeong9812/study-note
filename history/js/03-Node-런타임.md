@@ -1,9 +1,5 @@
 # Node.js와 JS 런타임 (2009~)
 
-> 원본: `~/project/js-history/03-Node-런타임.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
-> 연도·인명·표준번호·코드·표는 원문 그대로다.\
-> ASCII 도식 5개와 「한눈에」의 식당 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -562,3 +558,9 @@ export default {
 - [Jarred Sumner, Bun's creator, talks tech, funding, and startups — InfoWorld](https://www.infoworld.com/article/2338698/interview-with-jarred-sumner-buns-creator-talks-tech-funding-and-startups.html)
 - [How Workers works — Cloudflare Workers docs](https://developers.cloudflare.com/workers/reference/how-workers-works/)
 - [Introducing workerd: the Open Source Workers runtime — Cloudflare Blog](https://blog.cloudflare.com/workerd-open-source-workers-runtime/)
+
+## 출처
+
+원본: `~/project/js-history/03-Node-런타임.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
+연도·인명·표준번호·코드·표는 원문 그대로다.\
+ASCII 도식 5개와 「한눈에」의 식당 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

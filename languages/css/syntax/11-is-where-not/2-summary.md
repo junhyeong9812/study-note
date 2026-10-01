@@ -1,12 +1,5 @@
 # css/syntax/11 — `:is()`·`:where()`·`:not()` 와 명시도 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Selectors Level 4](https://drafts.csswg.org/selectors-4/) 의 [`:is()`](https://drafts.csswg.org/selectors-4/#matches) · [`:where()`](https://drafts.csswg.org/selectors-4/#zero-matches) · [`:not()`](https://drafts.csswg.org/selectors-4/#negation) · [§명시도 계산](https://drafts.csswg.org/selectors-4/#specificity-rules) · [§무효 선택자와 관대한 목록](https://drafts.csswg.org/selectors-4/#invalid). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 명시도 값은 **Google Chrome 151.0.7922.173** headless 에서 **16개 선택자 × 두 판**(동점 경쟁자 / 한 칸 낮은 경쟁자)으로 위아래를 고정한 것이고, 매칭 개수는 같은 문서에서 `querySelectorAll().length` 로, 규칙이 살아남았는지는 `cssRules` 로 읽었다. `demo` 블록 **3개 전부**와 그 「바꿔 볼 것」도 돌려 확인했다.\
-> **WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다. **엔진은 Chrome 하나**다.
-> **버전** — CSS 에 언어 버전은 없다. Baseline(2026-09-23 에 `api.webstatus.dev` 조회): `:is()`·`:where()`·`:not()`(목록 인자) **전부 widely**(newly 2021-01-21 → widely 2023-07-21, Chrome 88 · Firefox 82\~84 · Safari 9\~14).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 숫자는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **셋 다 「선택자를 인자로 받는 괄호」인데, 값을 부르는 방식이 다르다.**
@@ -375,3 +368,10 @@ p:not(.a, .b)             { }   /* 둘 다 아닌 p — 인자 목록을 받는�
 - **중첩(nesting)에서 `& .x` 를 쓰면 부모 선택자가 `:is(...)` 로 감싸져 들어간다.** 부모 목록에 강한 것이 하나라도 있으면 중첩된 자식 규칙 전체의 명시도가 조용히 올라간다([목록의 **14번 주제**](../14-css-nesting/)). *(이 문서에서 중첩은 미실행.)*
 - **`:has()` 도 「가장 센 인자」 규칙을 쓴다** — `p:has(+ p#t2)` 는 `(1,0,2)` 다([02번](../02-specificity/2-summary.md) 실측). 하지만 **관대하지 않다**는 것이 이 문서 (4) 의 실측이다.
 - **명시도를 내리는 문법은 `:where()` 하나뿐이다.** `@layer`·`@scope` 는 명시도를 내리는 게 아니라 **명시도를 보기 전에 갈라 버리는** 장치다([목록의 **05번 주제**](../05-cascade-layers/)·**06번 주제**).
+
+## 실행 환경
+
+**기준 소스** — [Selectors Level 4](https://drafts.csswg.org/selectors-4/) 의 [`:is()`](https://drafts.csswg.org/selectors-4/#matches) · [`:where()`](https://drafts.csswg.org/selectors-4/#zero-matches) · [`:not()`](https://drafts.csswg.org/selectors-4/#negation) · [§명시도 계산](https://drafts.csswg.org/selectors-4/#specificity-rules) · [§무효 선택자와 관대한 목록](https://drafts.csswg.org/selectors-4/#invalid). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 명시도 값은 **Google Chrome 151.0.7922.173** headless 에서 **16개 선택자 × 두 판**(동점 경쟁자 / 한 칸 낮은 경쟁자)으로 위아래를 고정한 것이고, 매칭 개수는 같은 문서에서 `querySelectorAll().length` 로, 규칙이 살아남았는지는 `cssRules` 로 읽었다. `demo` 블록 **3개 전부**와 그 「바꿔 볼 것」도 돌려 확인했다.\
+**WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다. **엔진은 Chrome 하나**다.
+**버전** — CSS 에 언어 버전은 없다. Baseline(2026-09-23 에 `api.webstatus.dev` 조회): `:is()`·`:where()`·`:not()`(목록 인자) **전부 widely**(newly 2021-01-21 → widely 2023-07-21, Chrome 88 · Firefox 82\~84 · Safari 9\~14).

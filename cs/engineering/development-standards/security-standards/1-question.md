@@ -1,11 +1,5 @@
 # cs/development-standards/security-standards — 보안 기준 (OWASP Top 10 · NIST SSDF · OWASP ASVS) — 질문
 
-> ⚠️ **Claude 초안(2026-08-24) — 본인 검토 후 삭제.**
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 세부 암기 금지 — 왜(why) / 예측(what if) / 경계 / 연결 유형으로.
-
 ## 질문
 
 1. **(왜)** IDOR(`GET /api/orders/1337`로 남의 주문 조회)은 왜 "인증(Authentication)"이 아니라 "인가(Authorization)"의 실패로 분류되는가? 두 개념의 경계를 이 예로 설명해 보라.

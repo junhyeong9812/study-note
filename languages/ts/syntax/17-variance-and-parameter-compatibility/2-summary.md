@@ -1,12 +1,5 @@
 # ts/syntax/17 — 변성과 매개변수 양립성 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — More on Functions: Parameter type compatibility](https://www.typescriptlang.org/docs/handbook/2/functions.html) ·
-> [TSConfig — `strictFunctionTypes`](https://www.typescriptlang.org/tsconfig/#strictFunctionTypes) ·
-> [TypeScript 4.7 릴리스 노트 — Optional Variance Annotations](https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -18,7 +11,6 @@ v18.19.1
 > `tsc` 에 **파일을 직접 주면 `tsconfig.json` 을 무시**하므로 이 블록들은 설정 파일 없이도 그대로 재현된다.
 > **버전** — `strictFunctionTypes` 는 TS 2.6, **`in`/`out` 변성 표기는 TS 4.7** 이다.
 > ★★★ 「4.7 기능이 7.0 에서도 도는가」는 **외우지 않고 던져서 확인했다** — 3절이 그 결과다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -722,3 +714,11 @@ ex.17e.ts    exit 1 / exit 1 · ★ 다르다
 - **`readonly` 와 `in out` 의 분업** — `readonly T[]` 는 **그 참조로 넣는 것**을 막고, `in out` 표기는 **타입 자체의 대입 방향**을 막는다. 4절에서 `readonlyAnimals[1]` 이 이미 오염돼 있던 것이 전자의 한계이고, 5절 28행이 후자가 막는 자리다. **둘은 다른 문제를 푼다.**
 - **변성 표기의 원래 동기** — 4.7 의 `in`/`out` 은 안전보다 **성능**이 동기였다. 컴파일러가 구조를 훑어 변성을 계산하는 대신 **표기를 믿는다.** 그래서 표기가 거짓말이면 `TS2636` 으로 막는다 — 3절이 그 검사다. **깊은 제네릭 구조에서 검사 시간이 줄어든다고 알려져 있으나 이 배치에서는 재지 않았다.**
 - **판이 오르면** — 3절의 「메서드 문법이 `out` 을 빠져나간다」는 **이 판의 관찰**이다. 1절의 메서드 bivariance 는 오래된 설계라 잘 안 바뀌겠지만, **외우지 말고 다시 던져라.** 이 문서가 파일 다섯을 남겨 둔 이유다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — More on Functions: Parameter type compatibility](https://www.typescriptlang.org/docs/handbook/2/functions.html) ·
+[TSConfig — `strictFunctionTypes`](https://www.typescriptlang.org/tsconfig/#strictFunctionTypes) ·
+[TypeScript 4.7 릴리스 노트 — Optional Variance Annotations](https://devblogs.microsoft.com/typescript/announcing-typescript-4-7/).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

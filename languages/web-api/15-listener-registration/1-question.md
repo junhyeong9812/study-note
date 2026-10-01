@@ -1,13 +1,5 @@
 # web-api/15 — 리스너 등록과 해제: `addEventListener` 옵션 객체·`removeEventListener` 의 동일성 조건·`handleEvent` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 전파 3단계와 `capture` 가 무엇을 하는지는 [목록의 **16번 주제**](../16-event-propagation-phases/), `stopPropagation` 과 `preventDefault` 는 [목록의 **17번 주제**](../17-stoppropagation-vs-preventdefault/), `passive` 가 왜 생겼나는 [목록의 **19번 주제**](../19-passive-and-scroll/)가 정본이다. 여기는 **리스너를 다는 한 줄과 떼는 한 줄**만 다룬다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
-> ★ **재지 않은 것이 있다** — `passive` 의 성능 이득과 리스너가 붙드는 메모리는 **하나도 재지 않았다.**
-> ★ 선행은 [01번 주제](../01-document-and-node-tree/2-summary.md)(노드 트리)와 JS 갈래 목록([`js/syntax/README.md`](../../js/syntax/README.md))의 **07번**(`this` 네 규칙)이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -207,6 +199,13 @@ i.dispatchEvent(new Event('아'));          // 로그3 은?
 - [12번 주제](../12-shadow-dom/2-summary.md)에서 리스너를 **어디에 다느냐**가 무엇을 바꾸는가?
 - `signal` 로 떼는 관용구가 [목록의 **13번 주제**](../13-custom-element-lifecycle/)(커스텀 요소 수명주기)에서 특히 값어치를 내는 이유는?
 - 보통 함수의 `this` 규칙이 JS 갈래 목록([`js/syntax/README.md`](../../js/syntax/README.md))의 **07번** 중 어느 규칙인가?
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — 전파 3단계와 `capture` 가 무엇을 하는지는 [목록의 **16번 주제**](../16-event-propagation-phases/), `stopPropagation` 과 `preventDefault` 는 [목록의 **17번 주제**](../17-stoppropagation-vs-preventdefault/), `passive` 가 왜 생겼나는 [목록의 **19번 주제**](../19-passive-and-scroll/)가 정본이다. 여기는 **리스너를 다는 한 줄과 떼는 한 줄**만 다룬다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
+★ **재지 않은 것이 있다** — `passive` 의 성능 이득과 리스너가 붙드는 메모리는 **하나도 재지 않았다.**
+★ 선행은 [01번 주제](../01-document-and-node-tree/2-summary.md)(노드 트리)와 JS 갈래 목록([`js/syntax/README.md`](../../js/syntax/README.md))의 **07번**(`this` 네 규칙)이다.
 
 ## 복습 기록
 

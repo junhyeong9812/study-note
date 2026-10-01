@@ -1,13 +1,5 @@
 # web-api/26 — 응답 본문과 스트리밍: `json()`/`text()`/`blob()` 은 한 번만·`body` 와 `ReadableStream` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」를 페이지가 직접 묻는 판 — 청크를 받을 때마다 「이때 서버는 몇 개 보냈나 · 끝까지 다 썼나」를 서버에게 물어 한 줄로 나란히 적는 「청크 대조」다.** 서버는 헤더를 곧바로 보내고, 청크와 끝 표시는 **페이지가 `/go` 를 줄 때마다 하나씩** 보낸다 — 시간이 아니라 신호로 묶었으므로 「받았을 때 서버가 아직 다 안 보냈다」가 흔들리지 않는다.\
-> **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 Body 믹스인(「body 가 null 이 아니고 그 stream 이 **disturbed 또는 locked** 이면 **unusable**」 · 「consume body — **unusable 이면 TypeError 로 거부된 프라미스**」) · 「clone a body — 그 stream 을 **tee** 해서 하나는 자기가, 하나는 복사본이 갖는다」 · [WHATWG Streams](https://streams.spec.whatwg.org/) 의 `tee()`(「두 소비자가 **다른 속도로** 읽을 수 있게」 · 「**두 가지가 모두 안 읽힐 때에만** 원본에 배압 신호」) · 「lock 을 풀면 **안 읽은 청크는 큐에 남아 새 reader 로 읽을 수 있다**」. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 청크 서버는 로컬 서버 A 의 `/chunks` 다(`Transfer-Encoding: chunked`). 하네스는 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 (1)에 있다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — [25번 주제](../25-fetch-request-response/2-summary.md)(`fetch` 는 **응답 헤더가 오면** 이행한다 · 한 번 쓴 `Request` 는 다시 못 쓴다). `for await` 문법은 [JS 40번 주제](../../js/syntax/40-async-iteration-and-for-await/2-summary.md)가 정본이다 — 그 편은 비동기 이터레이터의 `return()`·거부를 쟀고, 이 편은 `ReadableStream` 을 **reader 로** 읽는다(`for await` 로 스트림을 도는 것은 던지지 않았다).\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -269,7 +261,7 @@ A   청크 5개와 끝 표시까지 썼다
 
 - ★★ **서버가 청크 1\~5 를 보낸 뒤마다 `text()` 는 정착하지 않았다**(다섯 번 전부 `false`). **끝 표시까지 보낸 뒤에야** 다섯 줄 전부를 한 번에 돌려줬다.
 - 그래서 **진행률 표시·첫 줄부터 그리기·조기 중단**은 `text()`/`json()` 으로는 안 된다 — **reader 로** 한다((2)).
-- ★ 이 블록이 말하는 것은 **순서**다. 「reader 가 더 빠르다」는 **재지 않았다**(머리말 표).
+- ★ 이 블록이 말하는 것은 **순서**다. 「reader 가 더 빠르다」는 **재지 않았다**(맨 위 부분 표).
 
 ```text
    같은 서버 · 소비자 둘 — 무엇을 언제 받나 (이 판)
@@ -472,3 +464,11 @@ A   청크 3개와 끝 표시까지 썼다
 - **`res.bytes()`·`formData()`** 는 던지지 않았다.
 - **`ReadableStream` 을 요청 본문으로 보내기**(`duplex: "half"`)는 던지지 않았다.
 - **BYOB reader**(`getReader({ mode: "byob" })`)는 던지지 않았다.
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」를 페이지가 직접 묻는 판 — 청크를 받을 때마다 「이때 서버는 몇 개 보냈나 · 끝까지 다 썼나」를 서버에게 물어 한 줄로 나란히 적는 「청크 대조」다.** 서버는 헤더를 곧바로 보내고, 청크와 끝 표시는 **페이지가 `/go` 를 줄 때마다 하나씩** 보낸다 — 시간이 아니라 신호로 묶었으므로 「받았을 때 서버가 아직 다 안 보냈다」가 흔들리지 않는다.\
+**기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 Body 믹스인(「body 가 null 이 아니고 그 stream 이 **disturbed 또는 locked** 이면 **unusable**」 · 「consume body — **unusable 이면 TypeError 로 거부된 프라미스**」) · 「clone a body — 그 stream 을 **tee** 해서 하나는 자기가, 하나는 복사본이 갖는다」 · [WHATWG Streams](https://streams.spec.whatwg.org/) 의 `tee()`(「두 소비자가 **다른 속도로** 읽을 수 있게」 · 「**두 가지가 모두 안 읽힐 때에만** 원본에 배압 신호」) · 「lock 을 풀면 **안 읽은 청크는 큐에 남아 새 reader 로 읽을 수 있다**」. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 청크 서버는 로컬 서버 A 의 `/chunks` 다(`Transfer-Encoding: chunked`). 하네스는 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 (1)에 있다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — [25번 주제](../25-fetch-request-response/2-summary.md)(`fetch` 는 **응답 헤더가 오면** 이행한다 · 한 번 쓴 `Request` 는 다시 못 쓴다). `for await` 문법은 [JS 40번 주제](../../js/syntax/40-async-iteration-and-for-await/2-summary.md)가 정본이다 — 그 편은 비동기 이터레이터의 `return()`·거부를 쟀고, 이 편은 `ReadableStream` 을 **reader 로** 읽는다(`for await` 로 스트림을 도는 것은 던지지 않았다).

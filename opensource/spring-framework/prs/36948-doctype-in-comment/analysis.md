@@ -1,10 +1,5 @@
 # PR #36948 분석 — XmlValidationModeDetector의 여러 줄 주석 본문 DOCTYPE 오탐
 
-> 기준: 수정 전 = `1277279527c^`(이 문서의 `XmlValidationModeDetector.java` 줄 번호는 이 커밋 기준), 수정 후·호출처 = `upstream/main` `7daf1013aa8`.
-> 머지: 커밋 `1277279527c`("Ignore DOCTYPE inside a multi-line comment body", `Closes gh-36948`)로 `main`·`7.0.x` 반영. GitHub PR 상태가 CLOSED·`mergeCommit: null`인 것은 메인테이너가 커밋을 직접 적용한 뒤 닫았기 때문이며, sbrannen이 머지 사실을 코멘트로 확인했다. 후속 `4074155d76a`("Polish contribution")가 픽스처 2개를 보강했다.
-> 관련 작업 폴더: `docs/plans/2026-06-16/spring-core-bug-hunt-round2/B11-xmlvalidation-doctype-in-comment/task.md`.
-> README(서사)·structure.md(무대 지도)·tests.md(테스트 해설)와 중복을 피하고, 호출 그래프·이름표 사전·단계 추적·수정안 판단에 집중한다.
-
 ## 0. 결론
 
 `consumeCommentTokens(String)`의 조기 반환 경로가 **`this.inComment` 상태를 확인하지 않아**, 주석 마커(`<!--`·`-->`)가 하나도 없는 여러 줄 주석의 본문 줄을 통째로 "내용"으로 돌려주었고, 그 결과 산문 속 `DOCTYPE`이라는 단어 하나가 XSD 문서를 DTD로 오판하게 만들었다.\
@@ -382,3 +377,9 @@ PR 본문에 `Note`로 제시하되 적용하지 않았다.\
 
 > **재진입 불가(non-reentrant)** — 한 실행이 끝나기 전에 같은 객체로 다시 들어오면 서로의 상태를 망가뜨리는 성질.\
 > 예: 두 스레드가 같은 검출기의 `detectValidationMode`를 동시에 부르면 `inComment` 하나를 서로 덮어쓴다.
+
+## 출처
+
+기준: 수정 전 = `1277279527c^`(이 문서의 `XmlValidationModeDetector.java` 줄 번호는 이 커밋 기준), 수정 후·호출처 = `upstream/main` `7daf1013aa8`.
+머지: 커밋 `1277279527c`("Ignore DOCTYPE inside a multi-line comment body", `Closes gh-36948`)로 `main`·`7.0.x` 반영. GitHub PR 상태가 CLOSED·`mergeCommit: null`인 것은 메인테이너가 커밋을 직접 적용한 뒤 닫았기 때문이며, sbrannen이 머지 사실을 코멘트로 확인했다. 후속 `4074155d76a`("Polish contribution")가 픽스처 2개를 보강했다.
+관련 작업 폴더: `docs/plans/2026-06-16/spring-core-bug-hunt-round2/B11-xmlvalidation-doctype-in-comment/task.md`.

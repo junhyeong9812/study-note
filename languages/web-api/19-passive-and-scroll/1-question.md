@@ -1,13 +1,5 @@
 # web-api/19 — `passive` 와 스크롤 성능: 기본값이 바뀐 이유 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 「`passive` 면 `preventDefault` 가 무시된다」는 규칙의 첫 측정은 [15번 주제](../15-listener-registration/1-question.md), `cancelable`·`defaultPrevented` 는 [17번 주제](../17-stoppropagation-vs-preventdefault/1-question.md)가 정본이다. 여기는 **기본값 · 진짜 입력 · 콘솔**을 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 DOM 명세 문장이다. 이식성은 주장 범위 밖이다.
-> ★★ **이 편은 시간도 프레임도 재지 않았다** — 「성능」을 묻는 문항은 명세 설명 절과 Chromium 기록으로만 답한다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -147,6 +139,13 @@ document.addEventListener('touchstart', 리스너, { passive: false });     // �
 - [15번 주제](../15-listener-registration/1-question.md)가 「여덟 번 부른 `preventDefault` 가 두 줄로만 남았다」고 적은 것을 이 편의 문항 6으로 다시 설명하라.
 - [17번 주제](../17-stoppropagation-vs-preventdefault/1-question.md)의 「막을 수 있나 / 막혔나」 두 속성이 이 편에서 어떻게 다시 쓰였나?
 - `passive` 가 **동일성 키가 아니라는** 것은 어느 주제에서 쟀나? 그것이 이 편의 문항 2와 어떻게 이어지나?
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — 「`passive` 면 `preventDefault` 가 무시된다」는 규칙의 첫 측정은 [15번 주제](../15-listener-registration/1-question.md), `cancelable`·`defaultPrevented` 는 [17번 주제](../17-stoppropagation-vs-preventdefault/1-question.md)가 정본이다. 여기는 **기본값 · 진짜 입력 · 콘솔**을 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 DOM 명세 문장이다. 이식성은 주장 범위 밖이다.
+★★ **이 편은 시간도 프레임도 재지 않았다** — 「성능」을 묻는 문항은 명세 설명 절과 Chromium 기록으로만 답한다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

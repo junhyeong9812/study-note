@@ -1,9 +1,5 @@
 # Java 5 (J2SE 5.0, Tiger, 2004년 9월)
 
-> 원본: `~/project/java-history/java/java-5.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JSR 번호·클래스/패키지 이름·코드블록 14개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
-> ASCII 도식 1개(원문 mermaid 그림을 글자로 옮긴 것이다)와 「한눈에」의 라벨 비유·대응표, 용어 블록의 「예:」, 「용어 풀이」, 다른 편을 가리키는 교차 주 4개는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -345,3 +341,9 @@ String line = sc.next();
 - [J2SE 5.0 — Oracle](https://www.oracle.com/java/technologies/javase/j2se-1-5.html)
 - [JSR 176: J2SE 5.0 Release Contents — JCP](https://jcp.org/en/jsr/detail?id=176)
 - [J2SE 5.0 (September 30, 2004) — Liquisearch](https://www.liquisearch.com/java_version_history/j2se_50_september_30_2004)
+
+## 출처
+
+원본: `~/project/java-history/java/java-5.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JSR 번호·클래스/패키지 이름·코드블록 14개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
+ASCII 도식 1개(원문 mermaid 그림을 글자로 옮긴 것이다)와 「한눈에」의 라벨 비유·대응표, 용어 블록의 「예:」, 「용어 풀이」, 다른 편을 가리키는 교차 주 4개는 원문에 없는 보충이다.

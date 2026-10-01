@@ -1,17 +1,5 @@
 # python/syntax/03-mutability-and-copying — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [3.1. Objects, values and types](https://docs.python.org/3.12/reference/datamodel.html) — 가변·불변의 정의, 「불변 컨테이너 안의 가변 객체」 단서
-> - [`copy` — Shallow and deep copy operations](https://docs.python.org/3.12/library/copy.html) — 얕은/깊은 복사의 정의, `memo`, 복사 안 되는 타입, `__copy__`/`__deepcopy__`
-> - [7.2.1. Augmented assignment statements](https://docs.python.org/3.12/reference/simple_stmts.html#augmented-assignment-statements) — `+=` 가 「먼저 계산하고 다시 대입한다」는 규정
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> **버전** — 가변·불변 모델과 `copy` 모듈은 Python 3 전체 공통. 바이트코드 명령 이름(`BINARY_OP 13` 등)은 **3.12 의 것**이다.
-> **선행** — [목록의 **01번 주제**](../01-object-and-name-binding/) 「객체와 이름 바인딩 모델」. **복사가 왜 얕은지는 바인딩 모델에서 곧바로 따라 나온다.**
-
 ## 한눈에 — 쉽게 말하면
 
 **복사는 바구니를 새로 만드는 것이지, 안에 든 물건을 새로 만드는 것이 아니다.**
@@ -890,3 +878,14 @@ print(u)            # ([1, 3], 'x')   이미 바뀌어 있다
 - **`copy` 는 클래스의 `__slots__`·`__getstate__`/`__setstate__` 도 존중한다.** 직렬화(`pickle`)와 규칙을 공유하기 때문이다.
 - **얕은 복사조차 안 되는 것이 있다.** `threading.Lock` 은 `copy.copy` 에서도 같은 `TypeError` 가 났다 — 훅이 없으면 얕은 복사도 `__reduce_ex__` 로 떨어지기 때문이다.
 - **불변 객체를 만들어 두는 쪽이 복사 문제를 설계 단계에서 없앤다.** `tuple`·`frozenset`·`dataclass(frozen=True)`·`types.MappingProxyType` 이 그 수단이다([목록의 **36번 주제**](../36-dataclasses/)).
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [3.1. Objects, values and types](https://docs.python.org/3.12/reference/datamodel.html) — 가변·불변의 정의, 「불변 컨테이너 안의 가변 객체」 단서
+- [`copy` — Shallow and deep copy operations](https://docs.python.org/3.12/library/copy.html) — 얕은/깊은 복사의 정의, `memo`, 복사 안 되는 타입, `__copy__`/`__deepcopy__`
+- [7.2.1. Augmented assignment statements](https://docs.python.org/3.12/reference/simple_stmts.html#augmented-assignment-statements) — `+=` 가 「먼저 계산하고 다시 대입한다」는 규정
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+**버전** — 가변·불변 모델과 `copy` 모듈은 Python 3 전체 공통. 바이트코드 명령 이름(`BINARY_OP 13` 등)은 **3.12 의 것**이다.
+**선행** — [목록의 **01번 주제**](../01-object-and-name-binding/) 「객체와 이름 바인딩 모델」. **복사가 왜 얕은지는 바인딩 모델에서 곧바로 따라 나온다.**

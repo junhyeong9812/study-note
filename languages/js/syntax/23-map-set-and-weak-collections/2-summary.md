@@ -1,74 +1,5 @@
 # js/syntax/23 — `Map`·`Set` 과 약한 컬렉션: 「키는 `-0` 을 `+0` 으로 접은 뒤 같은 값으로 찾고, 약한 쪽은 수명을 들여다볼 창을 아예 안 준다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다.**
-> 「두 값이 같은 키인가」는 **비교 자리마다 답이 다르다** — `Map` 키 · `Set` · `===` · `==` · `Object.is` · 객체 키 · `includes` · `indexOf`.
-> 규칙을 외워서 맞히는 자리가 아니라 **값의 짝 여덟 개를 여덟 자리에 전부 들이대 세는** 자리다.
-> 그래서 동작 (1)의 격자가 이 문서의 중심이고, 마지막 줄의 「갈린 칸 N / M」을 **스크립트가 직접 센다.**
-> ★★ 약한 컬렉션 쪽은 창이 바뀐다 — **값으로는 수명이 안 보이므로** `gc()` 를 부르고 `FinalizationRegistry` 콜백이 **불렸나**를 판마다 센다(동작 (5)).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 최신 초안 — Keyed Collections](https://tc39.es/ecma262/multipage/keyed-collections.html) —
->   `CanonicalizeKeyedCollectionKey` · `Map.prototype.set` · `Map.prototype.getOrInsertComputed` · `GetSetRecord` · `Set.prototype.intersection` · `WeakMap` 절 머리말
-> - [ECMA-262 최신 초안 — Executable Code and Execution Contexts](https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html) —
->   「Processing Model of WeakRef and FinalizationRegistry Targets」(Objectives · Liveness · Execution) · `ClearKeptObjects` · `AddToKeptObjects` · `CanBeHeldWeakly`
-> - [ECMA-262 최신 초안 — Managing Memory](https://tc39.es/ecma262/multipage/managing-memory.html) — `WeakRef` · `WeakRefDeref` · `FinalizationRegistry`
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(WeakRefs 2021 · Symbols as WeakMap keys 2023 · New Set methods 2025 · Upsert 2026)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★★ **집합 연산(ES2025)과 Upsert(ES2026)는 두 node 판에 없다**(아래 판별 블록). 그 두 탐침은 **Google Chrome 151 을 헤드리스로** 돌렸다 —
-> 배너가 `google-chrome --headless --dump-dom` 으로 시작하는 블록이 그것이다. 페이지는 `console.log` 를 가로채 줄을 모은다(`js20b-page.html`).
-> ★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★ **이 문서는 BMP 밖 글자를 한 글자도 싣지 않는다.**
->
-> **버전** — 이 주제는 **네 판에 걸쳐 들어왔다.** 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `Map` · `Set` · `WeakMap` · `WeakSet` · 삽입 순서 · SameValueZero 비교 | **ES2015** | 세 판 다 있다 |
-> | `WeakRef` · `FinalizationRegistry` | **ES2021** | 세 판 다 있다 |
-> | 심볼을 약한 키로(Symbols as WeakMap keys) | **ES2023** | ★ **node 18 에 없고** node 20 · Chrome 에 있다 — 동작 (4) |
-> | 집합 연산 일곱 개(`union` · `intersection` · `difference` · `symmetricDifference` · `isSubsetOf` · `isSupersetOf` · `isDisjointFrom`) | **ES2025** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
-> | Upsert(`getOrInsert` · `getOrInsertComputed`, `Map` 과 `WeakMap`) | **ES2026** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체) | 값의 짝 **8개** × 비교 자리 **8곳**. `Map` 키 열을 기준으로 **갈린 칸을 스크립트가 센다**(동작 (1)) · 약한 키 후보 **11개**(동작 (4)) · 수명 조건 **6개 × 20판**(동작 (5)) |
-> | ★★★ **① 추상 연산에 로그 심기** | 집합 연산이 인자의 `size` · `has` · `keys` 중 **무엇을 부르나**(동작 (7)) · `getOrInsertComputed` 가 콜백을 **언제 부르나**(동작 (8)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | 약한 키 거부 문구 · 집합 연산 인자 검사 · ★ **`getOrInsertComputed` 의 문구가 사실과 다른 자리**(동작 (8)의 `[4]`) |
-> | ★★ **⑤ 두 판 대조기** | 이 주제에서 갈린 탐침은 **`js20b-23d-weak-keys.js` 하나** — 심볼 키(ES2023)와 `WeakRef` 문구다 |
-> | ★★★ **창을 바꿔 물었다**(제5의 상태) | `WeakMap` 에는 **키를 꺼내 볼 창이 하나도 없다**(`size`·순회 없음 — 동작 (4)의 `[3]`). 그래서 「이 키가 아직 살아 있나」는 **`FinalizationRegistry` 콜백과 `WeakRef.deref()`** 로 바꿔 물었다. ★ 바꾼 창이 못 보는 것 — **`WeakMap` 안의 항목 자체**는 끝까지 못 본다. 대상 객체가 수거됐다는 것까지만 본다 |
-> | ★ **부적용 — ③ 브랜드 태그** | 「이것이 `Map` 인가」는 이 주제의 질문이 아니다. 집합 연산의 인자조차 **브랜드가 아니라 `size`·`has`·`keys` 세 프로퍼티**로 판정된다(동작 (7)의 `[2]` — `Map` 이 인자로 통과한다). **잴 것이 없다** |
-> | ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. 전부 런타임 의미다 — **잴 것이 없다** |
-> | ★ **안 쟀다 — 성능** | 「`Map` 이 객체보다 빠르다」·「`WeakMap` 이 메모리를 아낀다」를 **한 줄도 쓰지 않는다.** 시간도 바이트도 안 쟀다 |
-> | ★ **안 돌렸다 — 브라우저의 GC** | `FinalizationRegistry` 는 **node 에서만** 돌렸다. 페이지 하네스가 `setTimeout` 뒤의 출력을 못 받는다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★★★ **`FinalizationRegistry` 콜백이 「언제」 도나** — gc() 뒤 몇 번째 매크로태스크인가 · gc() 없이 도나. **명세가 묶지 않는다.** `js20b-23f-timing-gc.js` 한 블록에 몰아 두고 그 블록의 `ticks:` 줄을 흔들리는 칸으로 선언한다 | ★★★ **격자의 y/n 과 「갈린 칸 N / M」** · `Map`/`Set` 의 **삽입 순서** · 집합 연산 **결과의 순서** · 인자 로그의 **순서와 개수** · 예외의 **종류** |
-> | 예외 **문구** — ★ **이 주제 안에서 판마다 갈렸다**(`WeakRef: target must be an object` 대 `WeakRef: invalid target`) | ★★ **이 판에서** `gc()` 뒤 콜백이 **불렸나**(「20판 중 몇」) — 명세 보장이 아니라 **판의 관찰**이다. 흔들리지는 않았지만(재대조 동일) 성질의 근거로는 안 쓴다 |
-> | — | `KeptAlive` — **같은 잡 안에서는 `deref()` 가 살아 있다**(명세 보장, 20/20) |
->
-> **선행** — [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md)(직접 선행 — 심볼이 약한 키가 되는 조건) ·
-> [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ `Map`·`Set` 의 삽입 순서와 **순회 중 변경**은 거기서 이미 쟀다) ·
-> [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md)(★★ 정수 키가 앞서는 열거 순서 · `__proto__` 다섯 형태) ·
-> [02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md)(`==` 열) · [03 — 숫자와 `BigInt`](../03-numbers-and-bigint/2-summary.md)(`NaN` · `-0`).
-> **이어지는 곳** — [목록의 **24번 주제**](../24-array-mutating-methods/) 「배열 변형 메서드」 · [목록의 **25번 주제**](../25-array-non-mutating-and-copy-methods/) 「배열 비변형·복사 메서드」.
->
-> ★★ **경계 — 해시 테이블의 원리는 [`cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/2-summary.md) 이 정본이다.**
-> 그쪽은 **버킷·충돌 처리·재해싱·`LinkedHashMap` 이 삽입 순서를 옆 리스트로 기억하는 법**까지, 여기는 **JS 가 그 위에 약속한 관찰 가능한 의미**(무엇이 같은 키인가 · 어떤 순서로 나오나)부터다.
-> ★★ **경계 — 순회 프로토콜 자체는 19번이 정본이다.** 여기서는 `Map`·`Set` 이 **무엇을 같은 원소로 치나**만 본다.
-> ★ **경계 — 심볼 자체(설명 · 등록 · 잘 알려진 심볼)는 22번이 정본이다.** 여기서는 **어떤 심볼이 약한 키가 되나**만 본다.
-
 ```sh
 # js20b-versions.sh
 #!/usr/bin/env bash
@@ -719,7 +650,7 @@ unregistered before gc                        0/20      object 0/20    object 20
 
 - ★★★ **명세가 보장하는 쪽** — 「**강하게 붙잡힌 것은 수거되지 않는다**」(`keep` · `Map` 의 키 행 · KeptAlive 열). 이쪽은 **어느 엔진에서도 0/20 · 20/20** 이어야 한다.
 - ★★★ **명세가 보장하지 않는 쪽** — 「**안 붙잡힌 것은 수거된다**」(`20/20` 인 행들). 이 판의 V8 이 `gc()` 한 번에 거뒀을 뿐이다.
-  ★ 그래서 머리말 표에 이 칸을 **「안 흔들리지만 성질의 근거로 쓰지 않는 칸」** 으로 따로 적었다. **판의 관찰**이다.
+  ★ 그래서 「실행 환경」 표에 이 칸을 **「안 흔들리지만 성질의 근거로 쓰지 않는 칸」** 으로 따로 적었다. **판의 관찰**이다.
 
 ### (6) ★★ 「언제」 는 다른 블록에 — 흔들려도 되는 칸을 따로 둔다
 
@@ -765,7 +696,7 @@ async function round(callGc) {
 ```
 
 - ★★★ **이 블록과 동작 (5)의 블록을 일부러 쪼갰다**(규칙 11). **「불렸나」는 동작 (5)에, 「언제」는 여기에** 둔다.
-  `ticks:` 줄은 머리말 표의 **흔들리는 칸**이다 — 재대조에서 이 줄이 달라져도 「고칠 것」이 아니다.
+  `ticks:` 줄은 「실행 환경」 표의 **흔들리는 칸**이다 — 재대조에서 이 줄이 달라져도 「고칠 것」이 아니다.
 - ★★ **`[1]` 이 판에서는 `gc()` 뒤 첫 매크로태스크(`0`)에 20판 다 돌았다.** `gc()` 가 **돌아오기 전에는 한 번도 안 돌았다**(`0/20`) — 콜백은 **나중 잡으로 예약**된다.
   명세는 정리 작업을 **호스트가 잡으로 넣게** 한다 — `HostEnqueueFinalizationRegistryCleanupJob` 은 그 잡을 "at some future time, if possible" 에 돌린다.
   **몇 번째 틱인지는 호스트 몫**이고, "if possible" 이라 **돈다는 것조차** 약속이 아니다.
@@ -1224,3 +1155,71 @@ row("getOrInsert(...).push          -> calls", J(calls));
 - **`WeakMap` 으로 비공개 데이터를 흉내 내던 관용구** — `#private`([16번](../16-class-syntax/2-summary.md)) 이전의 방법이다. 지금도 **남의 객체**에 덧붙일 때는 이쪽이다.
 - **브라우저의 GC** — 이 배치는 `FinalizationRegistry` 를 Chrome 에서 돌리지 않았다. **안 돌렸다.**
 - **`Map.groupBy`(ES2024)** · **`WeakMap` 에 심볼 키를 넣는 실전 용도** — 이 문서 밖이다. 판별 블록에도 넣지 않았다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 전수 격자다.**
+「두 값이 같은 키인가」는 **비교 자리마다 답이 다르다** — `Map` 키 · `Set` · `===` · `==` · `Object.is` · 객체 키 · `includes` · `indexOf`.
+규칙을 외워서 맞히는 자리가 아니라 **값의 짝 여덟 개를 여덟 자리에 전부 들이대 세는** 자리다.
+그래서 동작 (1)의 격자가 이 문서의 중심이고, 마지막 줄의 「갈린 칸 N / M」을 **스크립트가 직접 센다.**
+★★ 약한 컬렉션 쪽은 창이 바뀐다 — **값으로는 수명이 안 보이므로** `gc()` 를 부르고 `FinalizationRegistry` 콜백이 **불렸나**를 판마다 센다(동작 (5)).
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 최신 초안 — Keyed Collections](https://tc39.es/ecma262/multipage/keyed-collections.html) —
+  `CanonicalizeKeyedCollectionKey` · `Map.prototype.set` · `Map.prototype.getOrInsertComputed` · `GetSetRecord` · `Set.prototype.intersection` · `WeakMap` 절 머리말
+- [ECMA-262 최신 초안 — Executable Code and Execution Contexts](https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html) —
+  「Processing Model of WeakRef and FinalizationRegistry Targets」(Objectives · Liveness · Execution) · `ClearKeptObjects` · `AddToKeptObjects` · `CanBeHeldWeakly`
+- [ECMA-262 최신 초안 — Managing Memory](https://tc39.es/ecma262/multipage/managing-memory.html) — `WeakRef` · `WeakRefDeref` · `FinalizationRegistry`
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(WeakRefs 2021 · Symbols as WeakMap keys 2023 · New Set methods 2025 · Upsert 2026)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★★ **집합 연산(ES2025)과 Upsert(ES2026)는 두 node 판에 없다**(맨 위 판별 블록). 그 두 탐침은 **Google Chrome 151 을 헤드리스로** 돌렸다 —
+배너가 `google-chrome --headless --dump-dom` 으로 시작하는 블록이 그것이다. 페이지는 `console.log` 를 가로채 줄을 모은다(`js20b-page.html`).
+★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★ **이 문서는 BMP 밖 글자를 한 글자도 싣지 않는다.**
+
+**버전** — 이 주제는 **네 판에 걸쳐 들어왔다.** 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `Map` · `Set` · `WeakMap` · `WeakSet` · 삽입 순서 · SameValueZero 비교 | **ES2015** | 세 판 다 있다 |
+| `WeakRef` · `FinalizationRegistry` | **ES2021** | 세 판 다 있다 |
+| 심볼을 약한 키로(Symbols as WeakMap keys) | **ES2023** | ★ **node 18 에 없고** node 20 · Chrome 에 있다 — 동작 (4) |
+| 집합 연산 일곱 개(`union` · `intersection` · `difference` · `symmetricDifference` · `isSubsetOf` · `isSupersetOf` · `isDisjointFrom`) | **ES2025** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
+| Upsert(`getOrInsert` · `getOrInsertComputed`, `Map` 과 `WeakMap`) | **ES2026** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체) | 값의 짝 **8개** × 비교 자리 **8곳**. `Map` 키 열을 기준으로 **갈린 칸을 스크립트가 센다**(동작 (1)) · 약한 키 후보 **11개**(동작 (4)) · 수명 조건 **6개 × 20판**(동작 (5)) |
+| ★★★ **① 추상 연산에 로그 심기** | 집합 연산이 인자의 `size` · `has` · `keys` 중 **무엇을 부르나**(동작 (7)) · `getOrInsertComputed` 가 콜백을 **언제 부르나**(동작 (8)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | 약한 키 거부 문구 · 집합 연산 인자 검사 · ★ **`getOrInsertComputed` 의 문구가 사실과 다른 자리**(동작 (8)의 `[4]`) |
+| ★★ **⑤ 두 판 대조기** | 이 주제에서 갈린 탐침은 **`js20b-23d-weak-keys.js` 하나** — 심볼 키(ES2023)와 `WeakRef` 문구다 |
+| ★★★ **창을 바꿔 물었다**(제5의 상태) | `WeakMap` 에는 **키를 꺼내 볼 창이 하나도 없다**(`size`·순회 없음 — 동작 (4)의 `[3]`). 그래서 「이 키가 아직 살아 있나」는 **`FinalizationRegistry` 콜백과 `WeakRef.deref()`** 로 바꿔 물었다. ★ 바꾼 창이 못 보는 것 — **`WeakMap` 안의 항목 자체**는 끝까지 못 본다. 대상 객체가 수거됐다는 것까지만 본다 |
+| ★ **부적용 — ③ 브랜드 태그** | 「이것이 `Map` 인가」는 이 주제의 질문이 아니다. 집합 연산의 인자조차 **브랜드가 아니라 `size`·`has`·`keys` 세 프로퍼티**로 판정된다(동작 (7)의 `[2]` — `Map` 이 인자로 통과한다). **잴 것이 없다** |
+| ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. 전부 런타임 의미다 — **잴 것이 없다** |
+| ★ **안 쟀다 — 성능** | 「`Map` 이 객체보다 빠르다」·「`WeakMap` 이 메모리를 아낀다」를 **한 줄도 쓰지 않는다.** 시간도 바이트도 안 쟀다 |
+| ★ **안 돌렸다 — 브라우저의 GC** | `FinalizationRegistry` 는 **node 에서만** 돌렸다. 페이지 하네스가 `setTimeout` 뒤의 출력을 못 받는다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★★★ **`FinalizationRegistry` 콜백이 「언제」 도나** — gc() 뒤 몇 번째 매크로태스크인가 · gc() 없이 도나. **명세가 묶지 않는다.** `js20b-23f-timing-gc.js` 한 블록에 몰아 두고 그 블록의 `ticks:` 줄을 흔들리는 칸으로 선언한다 | ★★★ **격자의 y/n 과 「갈린 칸 N / M」** · `Map`/`Set` 의 **삽입 순서** · 집합 연산 **결과의 순서** · 인자 로그의 **순서와 개수** · 예외의 **종류** |
+| 예외 **문구** — ★ **이 주제 안에서 판마다 갈렸다**(`WeakRef: target must be an object` 대 `WeakRef: invalid target`) | ★★ **이 판에서** `gc()` 뒤 콜백이 **불렸나**(「20판 중 몇」) — 명세 보장이 아니라 **판의 관찰**이다. 흔들리지는 않았지만(재대조 동일) 성질의 근거로는 안 쓴다 |
+| — | `KeptAlive` — **같은 잡 안에서는 `deref()` 가 살아 있다**(명세 보장, 20/20) |
+
+**선행** — [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md)(직접 선행 — 심볼이 약한 키가 되는 조건) ·
+[19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ `Map`·`Set` 의 삽입 순서와 **순회 중 변경**은 거기서 이미 쟀다) ·
+[13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md)(★★ 정수 키가 앞서는 열거 순서 · `__proto__` 다섯 형태) ·
+[02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md)(`==` 열) · [03 — 숫자와 `BigInt`](../03-numbers-and-bigint/2-summary.md)(`NaN` · `-0`).
+**이어지는 곳** — [목록의 **24번 주제**](../24-array-mutating-methods/) 「배열 변형 메서드」 · [목록의 **25번 주제**](../25-array-non-mutating-and-copy-methods/) 「배열 비변형·복사 메서드」.
+
+★★ **경계 — 해시 테이블의 원리는 [`cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/2-summary.md) 이 정본이다.**
+그쪽은 **버킷·충돌 처리·재해싱·`LinkedHashMap` 이 삽입 순서를 옆 리스트로 기억하는 법**까지, 여기는 **JS 가 그 위에 약속한 관찰 가능한 의미**(무엇이 같은 키인가 · 어떤 순서로 나오나)부터다.
+★★ **경계 — 순회 프로토콜 자체는 19번이 정본이다.** 여기서는 `Map`·`Set` 이 **무엇을 같은 원소로 치나**만 본다.
+★ **경계 — 심볼 자체(설명 · 등록 · 잘 알려진 심볼)는 22번이 정본이다.** 여기서는 **어떤 심볼이 약한 키가 되나**만 본다.

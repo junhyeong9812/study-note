@@ -1,19 +1,5 @@
 # rust/syntax/22 — `Result` 와 `?`·`From` 변환 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference — The question mark operator](https://doc.rust-lang.org/reference/expressions/operator-expr.html#the-question-mark-operator) ·
-> [std — `enum Result`](https://doc.rust-lang.org/std/result/enum.Result.html) ·
-> [std — `trait From`](https://doc.rust-lang.org/std/convert/trait.From.html) ·
-> [std — `trait Termination`](https://doc.rust-lang.org/std/process/trait.Termination.html).
-> ★ `rustc --explain E0277` · `E0271` 은 **확인용으로만 열었고 본문에 옮기지 않았다.**
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.
-> **버전** — `Result` 와 `?` 는 **1.0.0**(`?` 는 1.13.0 부터의 표기이고 그 전에는 `try!` 매크로였다).\
-> **`main` 이 `Result` 를 반환할 수 있는 것은 1.26.0** 부터다. `?` 가 `Option` 에도 되는 것은 1.22.0 부터다. **전부 에디션과 무관하다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 흔들리는 칸 / 안 흔들리는 칸
 
 | | 칸 | 왜 |
@@ -732,3 +718,17 @@ Err(MyError("port= 로 시작하지 않는다"))
 - **`Result` 의 조합 메서드** — `map`·`and_then`·`or_else`·`unwrap_or_else` 가 `Option` 과 같은 모양으로 있다(21번과 같은 규칙).
 - **`collect::<Result<Vec<_>, _>>()`** — 실패가 하나라도 있으면 전체가 `Err` 가 되는 관용구([목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/)).
 - **`?` 와 `async`** — `async fn` 안에서도 그대로 쓴다. 반환 타입이 `Result` 인 future 라야 한다([목록의 **54번 주제**](../54-async-await-and-future-state-machines/)).
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference — The question mark operator](https://doc.rust-lang.org/reference/expressions/operator-expr.html#the-question-mark-operator) ·
+[std — `enum Result`](https://doc.rust-lang.org/std/result/enum.Result.html) ·
+[std — `trait From`](https://doc.rust-lang.org/std/convert/trait.From.html) ·
+[std — `trait Termination`](https://doc.rust-lang.org/std/process/trait.Termination.html).
+★ `rustc --explain E0277` · `E0271` 은 **확인용으로만 열었고 본문에 옮기지 않았다.**
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.
+**버전** — `Result` 와 `?` 는 **1.0.0**(`?` 는 1.13.0 부터의 표기이고 그 전에는 `try!` 매크로였다).\
+**`main` 이 `Result` 를 반환할 수 있는 것은 1.26.0** 부터다. `?` 가 `Option` 에도 되는 것은 1.22.0 부터다. **전부 에디션과 무관하다.**

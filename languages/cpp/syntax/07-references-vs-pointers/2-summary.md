@@ -1,35 +1,5 @@
 # cpp/syntax/07 — 참조와 포인터의 차이 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 참조 선언](https://en.cppreference.com/w/cpp/language/reference) · [참조 초기화와 수명 연장](https://en.cppreference.com/w/cpp/language/reference_initialization) · [포인터 선언](https://en.cppreference.com/w/cpp/language/pointer) · [`std::reference_wrapper`](https://en.cppreference.com/w/cpp/utility/functional/reference_wrapper) · [`std::optional`](https://en.cppreference.com/w/cpp/utility/optional) · [GCC 13 Warning Options — `-Waddress`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·진단·기계어는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **GNU objdump/nm 2.42** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`ptr01.cpp` \~ `ptr10.cpp`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 긴 진단은 **거르는 명령을 배너에 적어 두었다**(`| grep -E 'error:|generated'`).\
-> 그러니 실린 것은 「생략한 일부」가 아니라 **그 명령의 전체 출력**이다.
-> **버전** — lvalue 참조는 **C++98부터**. rvalue 참조(`T&&`)는 **C++11부터**이고,\
-> **이 주제는 lvalue 참조만** 다룬다(그쪽 정본은 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「포인터가 무엇인가」(주소·역참조·포인터 타입)의 정본은 C 갈래\
-> [`14-pointers-address-dereference-and-pointer-types/`](../../../c/syntax/14-pointers-address-dereference-and-pointer-types/)다.\
-> 「포인터 산술·배열 감쇠」는 C 갈래 [`15번`](../../../c/syntax/15-pointer-arithmetic-and-indexing/)·[`16번`](../../../c/syntax/16-array-pointer-decay-and-function-parameters/),\
-> 「`void*`·널 포인터」는 C 갈래 [`19번`](../../../c/syntax/19-void-pointer-null-pointer-and-null/)이다.\
-> 여기는 **C 에 없는 쪽**만 쓴다 — **참조가 무엇을 못 하고, 그 「못 함」이 설계에서 무엇을 사는가.**\
-> 「값 범주(어떤 식에 참조가 묶이나)」는 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/), 「rvalue 참조·`move`」는 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/),\
-> 「`const` 정확성 설계」는 [목록의 **10번 주제**](../10-const-correctness/), 「매개변수 전달 방식 고르기」는 [목록의 **11번 주제**](../11-choosing-parameter-passing/),\
-> 「댕글링과 수명」은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)가 정본이다. 여기서는 **그 앞의 한 겹**까지만 판다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 기계어 덤프의 **주소·오프셋**(`0:` · `17:`) | ★ **명령어 열 자체**(`endbr64` · `mov (%rdi),%eax` · `add $0x1,%eax` · `ret`) |
-> | 댕글링 참조가 **읽은 값**(이 문서는 **싣지 않았다**) | **진단 본문** · `파일:줄:칸` · **경고 이름** |
-> | UB 로 죽을 때 셸이 찍는 신호 메시지 | **`cc exit` 와 `run exit`**(갈라 적었다 — 널 참조 판은 `run exit=139`) |
-> | — | `sizeof` 값 · 소멸자가 **언제** 불렸나 · **맹글링된 심볼**(`_Z6by_refRi` 대 `_Z6by_ptrPi`) |
-
 ## 한눈에 — 쉽게 말하면
 
 **포인터는 「주소가 적힌 쪽지」이고, 참조는 「그 사람에게 붙인 또 하나의 이름」이다.**
@@ -283,7 +253,7 @@ int by_ptr(int* x) { return *x + 1; }
 
 - ★★★ **두 함수의 명령어 열이 한 글자도 다르지 않다** — `-O0` 에서도, `-O2` 에서도.\
   **참조도 포인터도 `%rdi` 에 주소를 받아 `mov (%rdi),%eax` 로 읽는다.**\
-  ★ 주소·오프셋은 **흔들리는 칸**이라 근거로 쓰지 않는다(머리말 표). 근거는 **명령어 열**이다.
+  ★ 주소·오프셋은 **흔들리는 칸**이라 근거로 쓰지 않는다(「실행 환경」 표). 근거는 **명령어 열**이다.
 - ★★ 그러면 **무엇이 다른가** — 이름이다.
 
 ```text
@@ -909,3 +879,34 @@ int main() {
   `vector<bool>` 프록시와 **같은 집안**이다. ★ 이 문서는 안 던졌다.
 - **`-O1`·`-O3`·`-Os` 에서의 기계어** — (3)은 **`-O0` 과 `-O2` 두 수준만** 던졌다.\
   결론이 「같다」이므로 갈릴 자리를 일부러 찾자면 **더 큰 함수**로 가야 한다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 참조 선언](https://en.cppreference.com/w/cpp/language/reference) · [참조 초기화와 수명 연장](https://en.cppreference.com/w/cpp/language/reference_initialization) · [포인터 선언](https://en.cppreference.com/w/cpp/language/pointer) · [`std::reference_wrapper`](https://en.cppreference.com/w/cpp/utility/functional/reference_wrapper) · [`std::optional`](https://en.cppreference.com/w/cpp/utility/optional) · [GCC 13 Warning Options — `-Waddress`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
+**실행 검증** — 이 문서의 모든 출력·진단·기계어는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **GNU objdump/nm 2.42** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`ptr01.cpp` \~ `ptr10.cpp`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 긴 진단은 **거르는 명령을 배너에 적어 두었다**(`| grep -E 'error:|generated'`).\
+그러니 실린 것은 「생략한 일부」가 아니라 **그 명령의 전체 출력**이다.
+**버전** — lvalue 참조는 **C++98부터**. rvalue 참조(`T&&`)는 **C++11부터**이고,\
+**이 주제는 lvalue 참조만** 다룬다(그쪽 정본은 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)).
+
+**경계** — 「포인터가 무엇인가」(주소·역참조·포인터 타입)의 정본은 C 갈래\
+[`14-pointers-address-dereference-and-pointer-types/`](../../../c/syntax/14-pointers-address-dereference-and-pointer-types/)다.\
+「포인터 산술·배열 감쇠」는 C 갈래 [`15번`](../../../c/syntax/15-pointer-arithmetic-and-indexing/)·[`16번`](../../../c/syntax/16-array-pointer-decay-and-function-parameters/),\
+「`void*`·널 포인터」는 C 갈래 [`19번`](../../../c/syntax/19-void-pointer-null-pointer-and-null/)이다.\
+여기는 **C 에 없는 쪽**만 쓴다 — **참조가 무엇을 못 하고, 그 「못 함」이 설계에서 무엇을 사는가.**\
+「값 범주(어떤 식에 참조가 묶이나)」는 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/), 「rvalue 참조·`move`」는 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/),\
+「`const` 정확성 설계」는 [목록의 **10번 주제**](../10-const-correctness/), 「매개변수 전달 방식 고르기」는 [목록의 **11번 주제**](../11-choosing-parameter-passing/),\
+「댕글링과 수명」은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)가 정본이다. 여기서는 **그 앞의 한 겹**까지만 판다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 기계어 덤프의 **주소·오프셋**(`0:` · `17:`) | ★ **명령어 열 자체**(`endbr64` · `mov (%rdi),%eax` · `add $0x1,%eax` · `ret`) |
+| 댕글링 참조가 **읽은 값**(이 문서는 **싣지 않았다**) | **진단 본문** · `파일:줄:칸` · **경고 이름** |
+| UB 로 죽을 때 셸이 찍는 신호 메시지 | **`cc exit` 와 `run exit`**(갈라 적었다 — 널 참조 판은 `run exit=139`) |
+| — | `sizeof` 값 · 소멸자가 **언제** 불렸나 · **맹글링된 심볼**(`_Z6by_refRi` 대 `_Z6by_ptrPi`) |

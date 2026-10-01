@@ -1,9 +1,5 @@
 # Spring Framework 2.x (2006 ~)
 
-> 원본: `~/project/java-history/spring/framework-2.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·클래스/어노테이션 이름·코드블록 6개(XML 3 · Java 3)·「릴리스 정보」와 「마이너 버전별 변화」의 목록은 원문 그대로다.\
-> ASCII 도식 3개(그중 2개는 원문 mermaid 그림을 글자로 옮긴 것이다), 「한눈에」의 등록 서류·이름표 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -339,3 +335,9 @@ Java EE 5의 JPA(Java Persistence API)를 지원하는 `JpaTemplate`, `LocalCont
 - [Spring Framework 2.0.8 Reference (PDF)](https://docs.spring.io/spring-framework/docs/2.0.8/spring-reference.pdf)
 - [History of Spring Framework and Spring Boot](https://www.quickprogrammingtips.com/spring-boot/history-of-spring-framework-and-spring-boot.html)
 - [Spring Framework Versions: Feature list by version](https://bluebirdinternational.com/spring-framework-versions/)
+
+## 출처
+
+원본: `~/project/java-history/spring/framework-2.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·클래스/어노테이션 이름·코드블록 6개(XML 3 · Java 3)·「릴리스 정보」와 「마이너 버전별 변화」의 목록은 원문 그대로다.\
+ASCII 도식 3개(그중 2개는 원문 mermaid 그림을 글자로 옮긴 것이다), 「한눈에」의 등록 서류·이름표 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

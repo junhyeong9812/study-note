@@ -1,18 +1,5 @@
 # rust/syntax/09 — `Copy`와 `Clone`, 그리고 `Drop` 시점 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Destructors 절 ·
-> [std `Copy`](https://doc.rust-lang.org/std/marker/trait.Copy.html) · [std `Clone`](https://doc.rust-lang.org/std/clone/trait.Clone.html) ·
-> [std `Drop`](https://doc.rust-lang.org/std/ops/trait.Drop.html) · [std `mem::drop`](https://doc.rust-lang.org/std/mem/fn.drop.html) ·
-> `rustc --explain E0184` / `E0204` / `E0040` / `E0277` / `E0599`.
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
-> ★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.\
-> 소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단의 줄 번호는 그 파일 기준**이다.
-> **버전** — `Copy`·`Clone`·`Drop`·`mem::drop` 은 전부 1.0.0부터다(std 문서의 Stable since 확인).\
-> `dropping_copy_types` 린트만 이름이 바뀐 적이 있다(아래 「구현 세부사항 대 언어 보장」).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **베끼면 끝나는 물건과, 주인이 나갈 때 뒷정리가 필요한 물건은 다르게 다룬다.**
@@ -891,3 +878,16 @@ impl Drop for D {               // 소멸자 — derive 는 없다. 반드시 �
 - **필드 해제 순서를 바꾸려면 필드 선언 순서를 바꾼다.** 언어가 따로 지정 문법을 주지 않는다.\
   락 가드 두 개를 순서대로 풀어야 하면 그 순서가 **구조체 정의에 박힌다**.
 - ★ **`Copy` 를 뗐을 때 깨지는 곳이 많다는 것이 곧 설계 신호**다 — 값이 여기저기 복제돼 흩어져 있었다는 뜻이다.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Destructors 절 ·
+[std `Copy`](https://doc.rust-lang.org/std/marker/trait.Copy.html) · [std `Clone`](https://doc.rust-lang.org/std/clone/trait.Clone.html) ·
+[std `Drop`](https://doc.rust-lang.org/std/ops/trait.Drop.html) · [std `mem::drop`](https://doc.rust-lang.org/std/mem/fn.drop.html) ·
+`rustc --explain E0184` / `E0204` / `E0040` / `E0277` / `E0599`.
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
+★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.\
+소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단의 줄 번호는 그 파일 기준**이다.
+**버전** — `Copy`·`Clone`·`Drop`·`mem::drop` 은 전부 1.0.0부터다(std 문서의 Stable since 확인).\
+`dropping_copy_types` 린트만 이름이 바뀐 적이 있다(본문 「구현 세부사항 대 언어 보장」).

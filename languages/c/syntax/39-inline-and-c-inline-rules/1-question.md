@@ -1,16 +1,5 @@
 # c/syntax/39 — `inline` 과 C 의 인라인 규칙: 「**C 의 `inline` 은 「펼쳐라」가 아니라 「이 정의는 외부 정의가 아니다」다 — 그래서 헤더에 두면 링크가 판을 탄다**」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **환경** — gcc 13.3.0 · clang 18.1.3 · g++ 13.3.0 · clang++ 18.1.3 · x86-64 Linux.
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① **지정자별로 정의가 몇 개, 어떤 링크로 남나**(두 번역 단위 · 헤더) ② **판(C99 대 gnu89)과 언어(C 대 C++)가 무엇을 뒤집나**
-> ③ **`inline` 이 보장하지 않는 것**(펼침 · 주소 · 제약).
-> ★★★ **본체 창은 링크 격자** — 1번은 **칸마다 「링크 성공 / `undefined reference` / `multiple definition`」** 을 적어야 답이다.
-> ★★ **한 번역 단위 안의 세 형태**는 [29번 형제](../29-scope-and-linkage-static-extern/) (8)에서 이미 풀었다 — 여기는 **헤더를 두 파일이 include** 한다.
-> 선행 — [29번 형제](../29-scope-and-linkage-static-extern/) · [목록의 **44번 주제**](../44-headers-and-separate-compilation/).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 여섯 문항(1\~6)은 소스만 보고 적어 본 뒤** 답을 연다.
@@ -173,6 +162,14 @@ int use(void) { return count_calls() + read_hidden(); }
 - **한 번역 단위의 C99 `inline` 세 형태**와 **`static`/`extern` 링크 규칙**은 어느 형제가 정본인가?
 - **헤더에 무엇을 두나** · **링크 오류 거꾸로 읽기**는 목록의 몇 번 주제인가?
 - ★ 이 주제가 **끝까지 책임지는 것** 세 가지를 대면?
+
+## 실행 환경
+
+**환경** — gcc 13.3.0 · clang 18.1.3 · g++ 13.3.0 · clang++ 18.1.3 · x86-64 Linux.
+
+★★★ **본체 창은 링크 격자** — 1번은 **칸마다 「링크 성공 / `undefined reference` / `multiple definition`」** 을 적어야 답이다.
+★★ **한 번역 단위 안의 세 형태**는 [29번 형제](../29-scope-and-linkage-static-extern/) (8)에서 이미 풀었다 — 여기는 **헤더를 두 파일이 include** 한다.
+선행 — [29번 형제](../29-scope-and-linkage-static-extern/) · [목록의 **44번 주제**](../44-headers-and-separate-compilation/).
 
 ## 복습 기록
 

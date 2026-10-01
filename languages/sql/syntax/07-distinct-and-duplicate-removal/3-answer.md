@@ -1,10 +1,5 @@
 # sql/07-DISTINCT 와 중복 제거 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 출력은 없다.\
-> 문서 근거는 [PG 18 SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 DISTINCT Optimization](https://dev.mysql.com/doc/refman/8.4/en/distinct-optimization.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -573,3 +568,9 @@ DISTINCT 가 고쳐 주는 것     DISTINCT 가 못 고치는 것
 
 **버전** — `DISTINCT ON` 은 PG 전용이고 MySQL 8.4.10 에는 문법이 없다(`ERROR 1064`).\
 다음 버전에서는 **5·7·8번**(방언·계획)을 다시 돌린다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 출력은 없다.\
+문서 근거는 [PG 18 SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 DISTINCT Optimization](https://dev.mysql.com/doc/refman/8.4/en/distinct-optimization.html).

@@ -1,15 +1,5 @@
 # c/syntax/53 — `assert` 와 `static_assert`: 「**`assert` 는 `NDEBUG` 하나에 식째 사라지는 매크로이고, `static_assert` 는 컴파일러가 대신 멈춰 주는 선언이다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — `<assert.h>` 머리의 「**If NDEBUG is defined as a macro name at the point in the source file where <assert.h> is included, the assert macro is defined simply as `#define assert(...) ((void)0)`**」·「**The assert macro is redefined according to the current state of NDEBUG each time that <assert.h> is included**」·「**shall be implemented as a macro with an ellipsis parameter, not as an actual function. If the macro definition is suppressed to access an actual function, the behavior is undefined**」, `assert` 의 「**writes information about the particular invocation that failed (including the text of the argument, the name of the source file, the source line number, and the name of the enclosing function …) on the standard error stream in an implementation-defined format. It then calls the abort function**」를 **본문에서 직접 찾아 읽었다**) · glibc `/usr/include/assert.h`(이 머신)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **`x` 값 · 메시지 · 종료 코드 · 진단 · 재배치 · 전처리 결과는 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`, 캡처 셸은 `LC_ALL=C` · `ulimit -c 0`.\
-> ★★ **블록은 전부 캡처 파일에서 조립했다.** 이 편의 **그림 2 · 덤프(캡처 블록) 32**.
-> **버전** — `assert` 는 **C89 부터**. `_Static_assert` 는 **C11 부터**, `<assert.h>` 의 `static_assert` 매크로도 **C11 부터**. ★★ **C23** 이 `static_assert` 를 **키워드**로 만들고 **메시지를 생략**할 수 있게 했으며, `assert` 를 **가변 인자 매크로**(`assert(...)`)로 정의하라고 요구한다 — ★ 이 판의 glibc 는 **마지막 것을 아직 따르지 않는다**((5)).
-> ★★★ **경계** — **전처리기 · 조건부 컴파일 · `gcc -E` 읽기**는 [41번 형제](../41-preprocessor-directives-and-conditional-compilation/), **함수형 매크로가 인자를 글자로 받는 것**은 [42번 형제](../42-function-like-macro-pitfalls/), **`#` 문자열화**는 [43번 형제](../43-stringizing-and-token-pasting/)가 정본이다. **`offsetof`·패딩 계산 자체**는 [08번 형제](../08-sizeof-alignment-and-offsetof/)·[22번 형제](../22-struct-padding-and-alignment/). 여기는 **단언을 언제 쓰고, 무엇이 사라지고, 판마다 무엇이 되나**만 본다.
-> 선행 — [41번 형제](../41-preprocessor-directives-and-conditional-compilation/).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 둘째 창 — 실행 출력의 `NDEBUG` 격자다.** 부작용이 든 단언 `assert(x++ > 0)` 을 두 컴파일러 × 두 최적화 × `NDEBUG` 두 값으로 빌드해 **`x` 를 찍고, 스크립트가 「`x` 가 1 로 남은 칸」을 센다.**
 ★★★ 그 격자에서 **`x` 가 1 로 남은 칸 4 / 8** — 정확히 **`-DNDEBUG` 네 칸**이다. 최적화 수준은 한 칸도 바꾸지 않았다 — **지운 것은 컴파일러가 아니라 전처리기**다.
 
@@ -760,3 +750,13 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★★ **`static_assert` 를 블록 범위 · 구조체 안에서** — C 는 구조체 멤버 선언 자리에 `static_assert` 를 둘 수 있다(C11 문법의 `static_assert-declaration`). ★ **던지지 않았다.**
 - ★ **`assert` 의 `-Wunused-variable`** — `NDEBUG` 판에서 단언에만 쓰던 변수가 경고를 받는지. 표준 예제는 「구현은 경고하지 말라」고 권한다. ★ **던지지 않았다.**
 - ★ **glibc 가 C23 `assert(...)` 를 따라잡는 판** — 이 머신에는 2.39 뿐이다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — `<assert.h>` 머리의 「**If NDEBUG is defined as a macro name at the point in the source file where <assert.h> is included, the assert macro is defined simply as `#define assert(...) ((void)0)`**」·「**The assert macro is redefined according to the current state of NDEBUG each time that <assert.h> is included**」·「**shall be implemented as a macro with an ellipsis parameter, not as an actual function. If the macro definition is suppressed to access an actual function, the behavior is undefined**」, `assert` 의 「**writes information about the particular invocation that failed (including the text of the argument, the name of the source file, the source line number, and the name of the enclosing function …) on the standard error stream in an implementation-defined format. It then calls the abort function**」를 **본문에서 직접 찾아 읽었다**) · glibc `/usr/include/assert.h`(이 머신)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **`x` 값 · 메시지 · 종료 코드 · 진단 · 재배치 · 전처리 결과는 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`, 캡처 셸은 `LC_ALL=C` · `ulimit -c 0`.\
+★★ **블록은 전부 캡처 파일에서 조립했다.** 이 편의 **그림 2 · 덤프(캡처 블록) 32**.
+**버전** — `assert` 는 **C89 부터**. `_Static_assert` 는 **C11 부터**, `<assert.h>` 의 `static_assert` 매크로도 **C11 부터**. ★★ **C23** 이 `static_assert` 를 **키워드**로 만들고 **메시지를 생략**할 수 있게 했으며, `assert` 를 **가변 인자 매크로**(`assert(...)`)로 정의하라고 요구한다 — ★ 이 판의 glibc 는 **마지막 것을 아직 따르지 않는다**((5)).
+★★★ **경계** — **전처리기 · 조건부 컴파일 · `gcc -E` 읽기**는 [41번 형제](../41-preprocessor-directives-and-conditional-compilation/), **함수형 매크로가 인자를 글자로 받는 것**은 [42번 형제](../42-function-like-macro-pitfalls/), **`#` 문자열화**는 [43번 형제](../43-stringizing-and-token-pasting/)가 정본이다. **`offsetof`·패딩 계산 자체**는 [08번 형제](../08-sizeof-alignment-and-offsetof/)·[22번 형제](../22-struct-padding-and-alignment/). 여기는 **단언을 언제 쓰고, 무엇이 사라지고, 판마다 무엇이 되나**만 본다.
+선행 — [41번 형제](../41-preprocessor-directives-and-conditional-compilation/).

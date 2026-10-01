@@ -1,11 +1,5 @@
 # algorithm/29-bit-manipulation — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`impl/com/algo/bits/`).
-
-⚠️ 정답은 Claude 초안(2026-09-14) — impl 코드·README 기준으로 작성. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
@@ -356,3 +350,7 @@ public static int shortestTour(int[][] dist, CountedBits bits) {
   A: sub가 0(빈 집합)에 닿은 뒤다 — `(0 - 1) & mask`는 `-1 & mask == mask`라 처음으로 돌아간다.\
   빈 집합을 처리하고 나서 `break`로 끊어야 한다(원본 impl).\
   mask=0과 원소 하나짜리 mask를 테스트에 둔다.
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`impl/com/algo/bits/`).

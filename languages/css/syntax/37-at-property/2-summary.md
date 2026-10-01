@@ -1,12 +1,5 @@
 # css/syntax/37 — `@property`: 타입 등록·초기값·상속 여부 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Properties and Values API Level 1](https://drafts.csswg.org/css-properties-values-api-1/) 의 「The `@property` Rule」·「`registerProperty()`」·「Syntax Strings」 절. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `document.styleSheets[…].cssRules`·`getComputedStyle`·`CSS.registerProperty` 로 읽은 것이다. 애니메이션 중간값은 **음수 지연 + `paused`** 로 시각을 고정해 읽었고, 전환은 **CDP 로 실제 마우스를 움직여** `:hover` 를 발생시킨 뒤 샘플링했다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — CSS 에 언어 버전은 없다. 등록 커스텀 속성(registered custom properties)은 Baseline **newly**(2024-07-09, 아직 widely 아님) — `api.webstatus.dev` 의 `registered-custom-properties` 조회 결과.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`@property` 는 커스텀 속성을 「토큰 뭉치」에서 「타입 있는 값」으로 바꾸는 신고서다.**
@@ -490,3 +483,10 @@ CSS.registerProperty({
 - **`@property` 는 컨테이너 스타일 쿼리와 맞물린다.** 실측에서 `@container style(--ang: 45deg)` 가 등록한 `<angle>` 속성에 대해 정상 동작했다([40번 주제](../40-container-and-style-queries/2-summary.md)).
 - **왜 커스텀 속성이 처음부터 타입을 안 가졌나** — 설계 의도가 「**뜻은 쓰는 쪽이 정한다**」였기 때문이다. 토큰 뭉치로 두면 단축 속성 조각·조건부 값 같은 것도 담을 수 있다. `@property` 는 그 자유를 **버리는 대신** 타입을 얻는 선택지다.
 - **Houdini 의 일부로 시작했다.** Properties and Values API 는 Paint/Layout Worklet 과 같은 묶음에서 나왔고, 그중 **가장 먼저 널리 구현된 조각**이다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Properties and Values API Level 1](https://drafts.csswg.org/css-properties-values-api-1/) 의 「The `@property` Rule」·「`registerProperty()`」·「Syntax Strings」 절. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `document.styleSheets[…].cssRules`·`getComputedStyle`·`CSS.registerProperty` 로 읽은 것이다. 애니메이션 중간값은 **음수 지연 + `paused`** 로 시각을 고정해 읽었고, 전환은 **CDP 로 실제 마우스를 움직여** `:hover` 를 발생시킨 뒤 샘플링했다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — CSS 에 언어 버전은 없다. 등록 커스텀 속성(registered custom properties)은 Baseline **newly**(2024-07-09, 아직 widely 아님) — `api.webstatus.dev` 의 `registered-custom-properties` 조회 결과.

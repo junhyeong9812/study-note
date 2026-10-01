@@ -1,8 +1,5 @@
 # 컴파일 파이프라인 — 어휘 분석·AST·심벌 테이블·바이트코드/PVM (컴퓨터사이언스 부트캠프 with 파이썬 ch.10)
 
-> 원고: computer_science repo의 따라 친 노트를 구조만 잡아 이관(2026-09-05). 내용 보강 없음 — 원문 유지, 오탈자만 교정.
-> `chapter10.py`는 프로세스·스레드 원고와 컴파일 계열 원고가 한 파일에 섞여 있어, 컴파일 부분만 이곳에 두고 프로세스·스레드 부분은 [process-thread](../process-thread/)로 분리했다. COMFILER.md는 원본 구조를 유지해 이관.
-
 ## 목차
 
 | 원본 파일 | 절 |
@@ -992,3 +989,8 @@ INFO: Waiting for application startup
 미리 컴파일하면:
 요청 → 실행(즉시) → 응답
 ```
+
+## 출처
+
+원고: computer_science repo의 따라 친 노트를 구조만 잡아 이관(2026-09-05). 내용 보강 없음 — 원문 유지, 오탈자만 교정.
+`chapter10.py`는 프로세스·스레드 원고와 컴파일 계열 원고가 한 파일에 섞여 있어, 컴파일 부분만 이곳에 두고 프로세스·스레드 부분은 [process-thread](../process-thread/)로 분리했다. COMFILER.md는 원본 구조를 유지해 이관.

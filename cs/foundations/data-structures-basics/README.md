@@ -1,8 +1,5 @@
 # 자료구조 기초 (컴퓨터사이언스 부트캠프 with 파이썬 ch.11~13)
 
-> 원고: computer_science repo의 따라 친 노트를 구조만 잡아 이관(2026-09-05). 내용 보강 없음 — 원문 유지, 오탈자만 교정.
-> 심화판: [data-structure/](../../data-structure/) · [algorithm/](../../algorithm/) — 이 문서는 책 원고 이관본
-
 ## 목차 (파일→절 매핑)
 
 | 원본 파일 | 절 |
@@ -1049,3 +1046,11 @@ def insert_node(self, node):
                 parent.right = node
                 return
 ```
+
+## 출처
+
+원고: computer_science repo의 따라 친 노트를 구조만 잡아 이관(2026-09-05). 내용 보강 없음 — 원문 유지, 오탈자만 교정.
+
+---
+
+심화판: [data-structure/](../../data-structure/) · [algorithm/](../../algorithm/) — 이 문서는 책 원고 이관본

@@ -1,40 +1,5 @@
 # python/syntax/33-property-descriptor-slots — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [3.3.2.3. Invoking Descriptors](https://docs.python.org/3.12/reference/datamodel.html#invoking-descriptors) — 우선순위 네 층이 한 문장에 적혀 있다
-> - [3.3.2.2. Implementing Descriptors](https://docs.python.org/3.12/reference/datamodel.html#implementing-descriptors) — `__get__`·`__set__`·`__delete__` 의 서명
-> - [`object.__set_name__`](https://docs.python.org/3.12/reference/datamodel.html#object.__set_name__) — **클래스가 만들어질 때** 불린다
-> - [3.3.2.4. `__slots__`](https://docs.python.org/3.12/reference/datamodel.html#slots) — 없앤 것·생긴 것·상속 규칙
-> - [`property`](https://docs.python.org/3.12/library/functions.html#property) — 세 칸과 `getter`/`setter`/`deleter`
-> - [`inspect.getattr_static`](https://docs.python.org/3.12/library/inspect.html#inspect.getattr_static) — *"Retrieve attributes without triggering dynamic lookup via the descriptor protocol"*
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ 던지는 형태를 하나로 고정했다 — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
-> ★★ **캐럿은 예외 종류에 달렸다** — 실행 중 예외는 소스 줄도 `^` 캐럿도 안 나오고, `SyntaxError` 라야 둘 다 나온다.
-> 이 문서의 트레이스백은 **한 덩어리뿐이고 실행 중 예외**라 세 줄짜리다. 나머지 예외는 전부 `except` 로 받아 **타입과 메시지만** 찍었다.\
-> **버전** — 세 장치 전부 **새 스타일 클래스(2.2)** 와 함께 온 것이고 이 노트 범위(3.10\~3.13)에서 안 바뀌었다.
-> 하나만 나중이다 — **`__set_name__` 은 3.6** 부터다(PEP 487).\
-> **구현 대 언어 보장 한 줄** — **우선순위 네 층·`property` 의 세 칸·`__slots__` 가 `__dict__` 를 없앤다는 것까지가 언어 보장**이고,
-> ★★★ **`__slots__` 가 메모리를 얼마나 아끼는지는 CPython 구현**이다. 그 수치를 언어 사실로 적으면 틀린다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | ★★★ **`sys.getsizeof` 의 절댓값** — 판·빌드·플랫폼이 바꾼다 | ★ **어느 쪽이 작나**라는 대소 관계 |
-> | `id()` 와 `0x…` 주소 — **이 주제는 한 번도 안 찍었다** | 예외 **종류** · `File "<stdin>", line N` · `(exit N)` |
-> | 판이 오르면 예외 **문구**와 `member_descriptor` 같은 **내부 타입 이름** | **호출 로그의 순서** · 어느 갈고리가 **불렸나 안 불렸나** |
-> | — | `vars()` 의 **내용** · `fget`/`fset`/`fdel` 이 **찼나 비었나** |
->
-> ★ **이 주제의 블록에는 주소도 시간도 절대경로도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다**(재대조 34블록 전부 동일).\
-> **선행** — [29-classes-and-attribute-lookup](../29-classes-and-attribute-lookup/2-summary.md)(★★★ **우선순위 네 층의 정본**) ·
-> [24-decorators](../24-decorators/2-summary.md)(`@` 가 이름에 결과를 다시 묶는 것) ·
-> [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md)(고치기와 새로 묶기).\
-> **이 사슬** — [29](../29-classes-and-attribute-lookup/2-summary.md) → 33 → [34번](../34-inheritance-mro-super/2-summary.md) .
-> **29 가 「어느 칸에서 답이 나오나」였다면 33 은 「그 칸에 무엇을 앉혀 두나」다.**
-
 ## 한눈에 — 쉽게 말하면
 
 **세 장치는 전부 「클래스 칸에 앉아 대신 답하는 것」이고, 다른 것은 「누가 앉느냐」뿐이다.**
@@ -899,7 +864,7 @@ print("   안 잰 것 : 속도. 이 문서는 __slots__ 가 빠른지 느린지 
 * **②가 이유를 보인다.** `dict` 판은 `__dict__` 가 **옆에 따로 달려 있고** `slots` 판에는 그것이 없다.
 * ★ **③이 결론이다.** 합쳐 세면 **`slots` 쪽이 작다.**
   ★★★ **근거로 쓰는 것은 「어느 쪽이 작나」 한 줄뿐이다.** 수치 자체는 **이 판·이 머신의 것**이고,
-  정수 몫도 **판이 바뀌면 달라진다.** 머리말의 「흔들리는 칸」 표가 그것을 미리 선언해 둔 이유다.
+  정수 몫도 **판이 바뀌면 달라진다.** 「실행 환경」의 「흔들리는 칸」 표가 그것을 미리 선언해 둔 이유다.
 * ★ **④가 대소 관계가 유지되는지 한 번 더 본다.** 칸을 여덟으로 늘려도 **`slots` 쪽이 여전히 작다.**
   ★ 다만 `dict` 판의 합계가 두 경우에 **같은 수**로 나왔다 — `dict` 의 용량이 계단식이라 그렇다.
   **이것도 관찰이지 보장이 아니다.**
@@ -1547,3 +1512,41 @@ print("   ★ 칸이 인스턴스 안에 있어 합계가 같다 — 이 창으�
   배치 자체를 보려면 C 구조체를 들여다보는 다른 창이 필요하고, **그 창은 이 배치에서 안 열었다.**
 * ★ **메타클래스의 `__prepare__`** 로 클래스 칸 자체를 갈아끼우면 `__set_name__` 이 불리는 시점을 직접 볼 수 있다.
   ★ 이 주제에서는 **`class` 문이 끝나기 전**이라는 것만 로그로 확인했다(동작 3의 ①) — 메타클래스는 다루지 않았다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [3.3.2.3. Invoking Descriptors](https://docs.python.org/3.12/reference/datamodel.html#invoking-descriptors) — 우선순위 네 층이 한 문장에 적혀 있다
+- [3.3.2.2. Implementing Descriptors](https://docs.python.org/3.12/reference/datamodel.html#implementing-descriptors) — `__get__`·`__set__`·`__delete__` 의 서명
+- [`object.__set_name__`](https://docs.python.org/3.12/reference/datamodel.html#object.__set_name__) — **클래스가 만들어질 때** 불린다
+- [3.3.2.4. `__slots__`](https://docs.python.org/3.12/reference/datamodel.html#slots) — 없앤 것·생긴 것·상속 규칙
+- [`property`](https://docs.python.org/3.12/library/functions.html#property) — 세 칸과 `getter`/`setter`/`deleter`
+- [`inspect.getattr_static`](https://docs.python.org/3.12/library/inspect.html#inspect.getattr_static) — *"Retrieve attributes without triggering dynamic lookup via the descriptor protocol"*
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ 던지는 형태를 하나로 고정했다 — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
+★★ **캐럿은 예외 종류에 달렸다** — 실행 중 예외는 소스 줄도 `^` 캐럿도 안 나오고, `SyntaxError` 라야 둘 다 나온다.
+이 문서의 트레이스백은 **한 덩어리뿐이고 실행 중 예외**라 세 줄짜리다. 나머지 예외는 전부 `except` 로 받아 **타입과 메시지만** 찍었다.\
+**버전** — 세 장치 전부 **새 스타일 클래스(2.2)** 와 함께 온 것이고 이 노트 범위(3.10\~3.13)에서 안 바뀌었다.
+하나만 나중이다 — **`__set_name__` 은 3.6** 부터다(PEP 487).\
+**구현 대 언어 보장 한 줄** — **우선순위 네 층·`property` 의 세 칸·`__slots__` 가 `__dict__` 를 없앤다는 것까지가 언어 보장**이고,
+★★★ **`__slots__` 가 메모리를 얼마나 아끼는지는 CPython 구현**이다. 그 수치를 언어 사실로 적으면 틀린다.\
+★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| ★★★ **`sys.getsizeof` 의 절댓값** — 판·빌드·플랫폼이 바꾼다 | ★ **어느 쪽이 작나**라는 대소 관계 |
+| `id()` 와 `0x…` 주소 — **이 주제는 한 번도 안 찍었다** | 예외 **종류** · `File "<stdin>", line N` · `(exit N)` |
+| 판이 오르면 예외 **문구**와 `member_descriptor` 같은 **내부 타입 이름** | **호출 로그의 순서** · 어느 갈고리가 **불렸나 안 불렸나** |
+| — | `vars()` 의 **내용** · `fget`/`fset`/`fdel` 이 **찼나 비었나** |
+
+★ **이 주제의 블록에는 주소도 시간도 절대경로도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다**(재대조 34블록 전부 동일).\
+**선행** — [29-classes-and-attribute-lookup](../29-classes-and-attribute-lookup/2-summary.md)(★★★ **우선순위 네 층의 정본**) ·
+[24-decorators](../24-decorators/2-summary.md)(`@` 가 이름에 결과를 다시 묶는 것) ·
+[03-mutability-and-copying](../03-mutability-and-copying/2-summary.md)(고치기와 새로 묶기).
+
+**29 가 「어느 칸에서 답이 나오나」였다면 33 은 「그 칸에 무엇을 앉혀 두나」다.**
+
+---
+
+**이 사슬** — [29](../29-classes-and-attribute-lookup/2-summary.md) → 33 → [34번](../34-inheritance-mro-super/2-summary.md) .

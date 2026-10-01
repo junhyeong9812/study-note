@@ -1,31 +1,5 @@
 # cpp/syntax/28 — `weak_ptr` 와 순환 참조 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `std::weak_ptr`](https://en.cppreference.com/w/cpp/memory/weak_ptr) · [cppreference — `weak_ptr::lock`](https://en.cppreference.com/w/cpp/memory/weak_ptr/lock)\
-> ★ **이 배치에서는 위 cppreference 두 쪽을 열지 않았다** — 규칙은 **실행·ASan·TSan·`-O2` 어셈블리·`is_constructible` 격자**로 적었다.
-> **실행 검증** — 이 문서의 모든 출력·리포트·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 대비 블록은 **rustc 1.92.0** 이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`wptr01.cpp` \~ `wptr06.cpp` · `wptr-asm.sh` · `rcweak.rs`).\
-> ★★★ **ASan 블록은 마커를 `stderr` 로 찍었다** · 자른 블록은 **자르는 명령을 배너에** 적었다.\
-> ★★ **TSan 블록은 `setarch -R` 로 주소 무작위화를 끄고 돌렸다** — 이 머신에서 g++ 13 의 TSan 은 무작위화가 켜져 있으면 **`FATAL: ThreadSanitizer: unexpected memory mapping` 으로 시작도 못 하는 판**이 있었다(예행 5판 중 4판). 그 명령도 배너에 있다.\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다. **시간은 한 번도 재지 않았다.**
-> **버전** — `weak_ptr`·`lock()`·`expired()` 는 **C++11부터**다. 기준은 **C++20**이다(`std::erase_if` 가 C++20).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 실행으로 접지했다.
-> ★★★ **[27번](../27-shared-ptr-and-reference-counting/)의 직접 결론이다 — 27번이 잰 것은 다시 재지 않고 인용한다.**\
-> [27번](../27-shared-ptr-and-reference-counting/) (3) — **부모↔자식을 둘 다 `shared_ptr` 로 들면 g++ + ASan `Indirect leak` 2건(64바이트) 10 / 10 판 · `Direct leak` 0건** · **자식 → 부모를 `weak_ptr` 로 바꾸면 두 컴파일러 다 누수 0 · `~Parent → ~Child`** · ★★ **clang + ASan 은 그 순환 누수를 판마다 놓친다**(30판 중 14 · 10판 중 6).\
-> [27번](../27-shared-ptr-and-reference-counting/) (2)(6) — **`weak_ptr` 는 강한 계수를 안 올린다 · 만료된 `lock()` 은 `nullptr`** · **`make_shared` + `weak_ptr` 면 마지막 `shared_ptr` 가 죽을 때 `~Big` 은 돌지만 해제는 0회, `weak_ptr` 가 죽을 때 1016바이트가 한꺼번에** · (4) **안 맡긴 객체의 `shared_from_this` 는 `bad_weak_ptr`** · (7) **`shared_ptr` 복사 대입에 `lock` 접두 4개**.\
-> ★★ **여기서 새로 묻는 것은 다섯이다** — **`expired()` 와 `lock()` 사이의 틈(TOCTOU)** · **트리에서 어느 방향을 약하게 하나** · **캐시·관찰자가 만료를 알아채는 법** · **`weak_ptr` 의 크기와 무엇에서 만들 수 있나** · **`unique_ptr` 에는 `weak_ptr` 가 없다**.
-> **경계** — 「RAII 가 못 지우는 것 — `shared_ptr` 순환」의 **논증은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md) 의 「C++ — RAII는 해제를 잊는 실패를 지우고, 죽은 것을 가리키는 실패는 못 지운다」 절**이 정본이다. 「참조 계수 일반론」은 [`memory-management/`](../../../../cs/foundations/memory-management/) 쪽이다.\
-> 「제어 블록의 모양과 비용」은 [27번](../27-shared-ptr-and-reference-counting/), 「raw 포인터가 관찰자로 남는 자리」는 [목록의 **29번 주제**](../29-new-delete-and-where-raw-pointers-remain/)다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★★★ **TOCTOU 의 횟수** — 2만 판 중 「빈 `shared_ptr` 를 쥔 판」의 수((1) — 실행마다 바뀐다) | ★★★ **두 단계 판에서 그런 판이 「있었나」(참/거짓)** · **한 단계(`lock()`) 판에서 「값이 틀린 판」이 있었나** |
-> | ★★ 「10번 돌려 몇 번」의 비율((1)) — **자릿수만** 주장한다 | ★★★ **`lock` 접두 · `cmpxchg` 개수**((2)) · **소멸자 로그 순서**((3)(4)) · **`is_constructible` 0/1 · `sizeof`**((5)) |
-> | ASan 리포트의 **PID**·주소 · 어셈블리의 **레지스터·레이블 이름** | ★★ **에러가 나는 줄 · `cc exit`/`run exit`** · **예외 이름(`bad_weak_ptr`)** · **Rust 의 `strong`/`weak` 계수** |
-
 ## 한눈에 — 쉽게 말하면
 
 **`weak_ptr` 는 「도서관 대출 현황판을 볼 수 있는 출입증」이다.**
@@ -981,3 +955,30 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **`owner_before`·`owner_less`** — `weak_ptr` 를 **`map` 의 키**로 쓸 때의 비교. 만료돼도 순서가 안 바뀐다. 이 문서는 던지지 않았다.
 - **`enable_shared_from_this` 와 `weak_from_this`** — 27편 (4)가 `bad_weak_ptr` 와 `expired=1` 을 쟀다.
 - **캐시 청소의 시점** — 매 조회마다 · 주기적으로 · 크기가 넘칠 때. 이 문서는 **청소하지 않으면 쌓인다**까지만 보였다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `std::weak_ptr`](https://en.cppreference.com/w/cpp/memory/weak_ptr) · [cppreference — `weak_ptr::lock`](https://en.cppreference.com/w/cpp/memory/weak_ptr/lock)\
+★ **이 배치에서는 위 cppreference 두 쪽을 열지 않았다** — 규칙은 **실행·ASan·TSan·`-O2` 어셈블리·`is_constructible` 격자**로 적었다.
+**실행 검증** — 이 문서의 모든 출력·리포트·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 대비 블록은 **rustc 1.92.0** 이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`wptr01.cpp` \~ `wptr06.cpp` · `wptr-asm.sh` · `rcweak.rs`).\
+★★★ **ASan 블록은 마커를 `stderr` 로 찍었다** · 자른 블록은 **자르는 명령을 배너에** 적었다.\
+★★ **TSan 블록은 `setarch -R` 로 주소 무작위화를 끄고 돌렸다** — 이 머신에서 g++ 13 의 TSan 은 무작위화가 켜져 있으면 **`FATAL: ThreadSanitizer: unexpected memory mapping` 으로 시작도 못 하는 판**이 있었다(예행 5판 중 4판). 그 명령도 배너에 있다.\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다. **시간은 한 번도 재지 않았다.**
+**버전** — `weak_ptr`·`lock()`·`expired()` 는 **C++11부터**다. 기준은 **C++20**이다(`std::erase_if` 가 C++20).
+
+★★★ **[27번](../27-shared-ptr-and-reference-counting/)의 직접 결론이다 — 27번이 잰 것은 다시 재지 않고 인용한다.**\
+[27번](../27-shared-ptr-and-reference-counting/) (3) — **부모↔자식을 둘 다 `shared_ptr` 로 들면 g++ + ASan `Indirect leak` 2건(64바이트) 10 / 10 판 · `Direct leak` 0건** · **자식 → 부모를 `weak_ptr` 로 바꾸면 두 컴파일러 다 누수 0 · `~Parent → ~Child`** · ★★ **clang + ASan 은 그 순환 누수를 판마다 놓친다**(30판 중 14 · 10판 중 6).\
+[27번](../27-shared-ptr-and-reference-counting/) (2)(6) — **`weak_ptr` 는 강한 계수를 안 올린다 · 만료된 `lock()` 은 `nullptr`** · **`make_shared` + `weak_ptr` 면 마지막 `shared_ptr` 가 죽을 때 `~Big` 은 돌지만 해제는 0회, `weak_ptr` 가 죽을 때 1016바이트가 한꺼번에** · (4) **안 맡긴 객체의 `shared_from_this` 는 `bad_weak_ptr`** · (7) **`shared_ptr` 복사 대입에 `lock` 접두 4개**.\
+★★ **여기서 새로 묻는 것은 다섯이다** — **`expired()` 와 `lock()` 사이의 틈(TOCTOU)** · **트리에서 어느 방향을 약하게 하나** · **캐시·관찰자가 만료를 알아채는 법** · **`weak_ptr` 의 크기와 무엇에서 만들 수 있나** · **`unique_ptr` 에는 `weak_ptr` 가 없다**.
+**경계** — 「RAII 가 못 지우는 것 — `shared_ptr` 순환」의 **논증은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md) 의 「C++ — RAII는 해제를 잊는 실패를 지우고, 죽은 것을 가리키는 실패는 못 지운다」 절**이 정본이다. 「참조 계수 일반론」은 [`memory-management/`](../../../../cs/foundations/memory-management/) 쪽이다.\
+「제어 블록의 모양과 비용」은 [27번](../27-shared-ptr-and-reference-counting/), 「raw 포인터가 관찰자로 남는 자리」는 [목록의 **29번 주제**](../29-new-delete-and-where-raw-pointers-remain/)다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★★★ **TOCTOU 의 횟수** — 2만 판 중 「빈 `shared_ptr` 를 쥔 판」의 수((1) — 실행마다 바뀐다) | ★★★ **두 단계 판에서 그런 판이 「있었나」(참/거짓)** · **한 단계(`lock()`) 판에서 「값이 틀린 판」이 있었나** |
+| ★★ 「10번 돌려 몇 번」의 비율((1)) — **자릿수만** 주장한다 | ★★★ **`lock` 접두 · `cmpxchg` 개수**((2)) · **소멸자 로그 순서**((3)(4)) · **`is_constructible` 0/1 · `sizeof`**((5)) |
+| ASan 리포트의 **PID**·주소 · 어셈블리의 **레지스터·레이블 이름** | ★★ **에러가 나는 줄 · `cc exit`/`run exit`** · **예외 이름(`bad_weak_ptr`)** · **Rust 의 `strong`/`weak` 계수** |

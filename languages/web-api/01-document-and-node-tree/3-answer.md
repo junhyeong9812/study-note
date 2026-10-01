@@ -1,11 +1,5 @@
 # web-api/01 — 문서와 노드 트리: `Node`·`Element`·`Text`·`Comment` 와 두 컬렉션 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 로 접지했다.\
-> **엔진은 Chrome 하나다** — Firefox 는 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. **이식성을 주장하지 않는다.**\
-> **이 주제의 블록에는 흔들리는 칸이 없다** — 재는 수치가 없기 때문이다. 트리 문자열·노드 수·`nodeType`·API 반환값은 다시 돌려도 한 글자도 같아야 한다.
-
 ```text
 $ google-chrome --version
 Google Chrome 151.0.7922.173 
@@ -440,3 +434,10 @@ document.body.appendChild(Object.assign(document.createElement('script'),
 - **`isConnected`** — 이 노드가 지금 문서 트리에 이어져 있나. `ownerDocument` 와 다른 질문이다.
 - **`--dump-dom`** — Chrome 의 headless 스위치. **로드가 끝난 시점의 DOM 을 HTML 로 직렬화**해 표준 출력으로 뱉는다.
 - **직렬화(serialization)** — 나무를 다시 HTML 문자열로 그리는 것. `innerHTML` 읽기도 같은 알고리즘을 쓴다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 로 접지했다.\
+**엔진은 Chrome 하나다** — Firefox 는 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. **이식성을 주장하지 않는다.**\
+**이 주제의 블록에는 흔들리는 칸이 없다** — 재는 수치가 없기 때문이다. 트리 문자열·노드 수·`nodeType`·API 반환값은 다시 돌려도 한 글자도 같아야 한다.

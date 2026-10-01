@@ -1,15 +1,5 @@
 # kotlin/syntax/41 — 컬렉션 생성 — `listOf`/`mutableListOf`/`buildList`/`toList` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Constructing collections](https://kotlinlang.org/docs/constructing-collections.html)(요소로 만들기 `listOf`·`mutableListOf` · 빌더 함수 `buildList` · 복사 `toList()`·`toMutableList()` · 빈 컬렉션 `emptyList()`) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)를 근거로 삼는다((2)).
-> **실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.\
-> `kotlinc` 6회(컴파일 실패 1벌) · `java` 4회 + 격자 스크립트 안에서 1회 · stdlib 소스 jar 에서 4곳.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「복사된 칸 N / M」은 스크립트가 스스로 센 것**이다.
-> **버전** — `listOf`·`mutableListOf`·`toList`·`emptyList` 는 **1.0**. `buildList` 는 stdlib 소스에 **`@SinceKotlin("1.6")`**((2)) — ★ 그 전 판에서 실험 API 였는지는 **이 판에서 잴 수 없다**(컴파일러가 2.4.20 하나뿐이고 `-api-version` 격자는 돌리지 않았다).
-> **경계** — ★★★ **런타임 클래스는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §5 가 정본이다** — `listOf()`·`listOf("a")`·`listOf("a","b")`·`mutableListOf` 의 클래스는 거기 표에 있다. 여기 격자의 「런타임 클래스」 칸은 **짧게** 두고, 새로 잰 것은 **`===` 와 「원본을 고치면 따라 바뀌나」** 두 칸이다.\
-> `List` 가 읽기 전용 **뷰**라는 것, `as MutableList` 로 뚫리는 것은 [40번 주제](../40-read-only-collections-and-runtime-types/)가 정본이다. `*arr`(spread)가 **`Arrays.copyOf` 로 복사**한다는 것은 [09번 주제](../09-varargs-spread-local-and-infix-functions/) (2)가 바이트코드로 쟀다 — 여기서는 인용한다. `buildList` 가 받는 **수신자 람다**(`MutableList<E>.() -> Unit`)는 [37번 주제](../37-lambdas-with-receiver-and-type-safe-builders/)다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**복사 격자 — 만드는 꼴마다 원본과 같은 객체인가 · 원본을 고치면 따라 바뀌나**」. 복사 여부는 **타입에 안 나온다** — 전부 `List<Int>` 다. 실행해서 **원본을 고쳐 봐야** 보인다.
 
 ## 이 주제가 쓰는 세 층
@@ -507,3 +497,13 @@ built: [#, apple, pear]
 - **`Set`·`Map` 쪽** — `toSet()`·`buildMap`·`emptyMap()` 이 같은 모양인지 이 문서는 **던지지 않았다.** `toList()` 의 세 갈래와 같은 `when (size)` 가 있을 것으로 보이지만 소스를 **열지 않았다.**
 - **`optimizeReadOnlyList()`** — `Collection` 이 아닌 입력(`Sequence`)의 `toList()` 가 거치는 길이다((2)의 그림). 원소 둘에서 `ArrayList` 였다 — 0·1 에서 무엇이 되는지는 **던지지 않았다.**
 - **복사 비용** — 이 문서는 「복사가 일어나느냐」만 봤다. 원소 수에 따른 시간·할당은 **재지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Constructing collections](https://kotlinlang.org/docs/constructing-collections.html)(요소로 만들기 `listOf`·`mutableListOf` · 빌더 함수 `buildList` · 복사 `toList()`·`toMutableList()` · 빈 컬렉션 `emptyList()`) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)를 근거로 삼는다((2)).
+**실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.\
+`kotlinc` 6회(컴파일 실패 1벌) · `java` 4회 + 격자 스크립트 안에서 1회 · stdlib 소스 jar 에서 4곳.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「복사된 칸 N / M」은 스크립트가 스스로 센 것**이다.
+**버전** — `listOf`·`mutableListOf`·`toList`·`emptyList` 는 **1.0**. `buildList` 는 stdlib 소스에 **`@SinceKotlin("1.6")`**((2)) — ★ 그 전 판에서 실험 API 였는지는 **이 판에서 잴 수 없다**(컴파일러가 2.4.20 하나뿐이고 `-api-version` 격자는 돌리지 않았다).
+**경계** — ★★★ **런타임 클래스는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §5 가 정본이다** — `listOf()`·`listOf("a")`·`listOf("a","b")`·`mutableListOf` 의 클래스는 거기 표에 있다. 여기 격자의 「런타임 클래스」 칸은 **짧게** 두고, 새로 잰 것은 **`===` 와 「원본을 고치면 따라 바뀌나」** 두 칸이다.\
+`List` 가 읽기 전용 **뷰**라는 것, `as MutableList` 로 뚫리는 것은 [40번 주제](../40-read-only-collections-and-runtime-types/)가 정본이다. `*arr`(spread)가 **`Arrays.copyOf` 로 복사**한다는 것은 [09번 주제](../09-varargs-spread-local-and-infix-functions/) (2)가 바이트코드로 쟀다 — 여기서는 인용한다. `buildList` 가 받는 **수신자 람다**(`MutableList<E>.() -> Unit`)는 [37번 주제](../37-lambdas-with-receiver-and-type-safe-builders/)다.

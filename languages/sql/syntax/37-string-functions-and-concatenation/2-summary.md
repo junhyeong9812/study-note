@@ -1,16 +1,5 @@
 # sql/37-문자열 함수와 연결 연산 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · String Functions and Operators](https://www.postgresql.org/docs/18/functions-string.html) · [MySQL 8.4 · String Functions and Operators](https://dev.mysql.com/doc/refman/8.4/en/string-functions.html) · [MySQL 8.4 · Server SQL Modes](https://dev.mysql.com/doc/refman/8.4/en/sql-mode.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **설정 조건** — PG `server_encoding` = `UTF8` · MySQL `character_set_server` = `utf8mb4`, 클라이언트도 `--default-character-set=utf8mb4` 로 붙였다.\
-> MySQL `sql_mode` 는 기본값이고 **`PIPES_AS_CONCAT` 이 들어 있지 않다**(아래 1번에서 실제 값을 찍었다).\
-> **버전** — 도입 버전이 확인된 것은 없어 **버전을 적지 않는다.** 단 MySQL 이 `||` 에 대해 내는 **deprecated 경고는 그대로 싣는다.**\
-> **선행** — [35 타입 체계와 캐스팅](../35-type-system-and-casting/) · 이어지는 것은 [38 패턴 매칭](../38-pattern-matching-like-regex/) · [39 collation](../39-collation/)
-
 ## 한눈에 — 쉽게 말하면
 
 **문자열 연산에서 두 엔진이 갈리는 자리는 셋이다.**
@@ -655,3 +644,13 @@ SUBSTRING(s, p, n)          -- 양쪽 공통. 단 p < 1 의 해석이 갈린다
   멀티바이트가 기본이 된 지금도 이름이 남아 있는 것 — **이름은 바뀌지 않고 세상이 바뀐 사례**다.
 - **문자열 조립을 어디서 할 것인가**는 설계 결정이다. DB 에서 붙이면 인덱스를 못 쓰게 되기 쉽고,\
   애플리케이션에서 붙이면 왕복이 늘어난다. **필터에 쓰이는 문자열은 조립하지 않고 열로 저장하는 편**이 대개 낫다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · String Functions and Operators](https://www.postgresql.org/docs/18/functions-string.html) · [MySQL 8.4 · String Functions and Operators](https://dev.mysql.com/doc/refman/8.4/en/string-functions.html) · [MySQL 8.4 · Server SQL Modes](https://dev.mysql.com/doc/refman/8.4/en/sql-mode.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**설정 조건** — PG `server_encoding` = `UTF8` · MySQL `character_set_server` = `utf8mb4`, 클라이언트도 `--default-character-set=utf8mb4` 로 붙였다.\
+MySQL `sql_mode` 는 기본값이고 **`PIPES_AS_CONCAT` 이 들어 있지 않다**(본문 1번에서 실제 값을 찍었다).\
+**버전** — 도입 버전이 확인된 것은 없어 **버전을 적지 않는다.** 단 MySQL 이 `||` 에 대해 내는 **deprecated 경고는 그대로 싣는다.**\
+**선행** — [35 타입 체계와 캐스팅](../35-type-system-and-casting/) · 이어지는 것은 [38 패턴 매칭](../38-pattern-matching-like-regex/) · [39 collation](../39-collation/)

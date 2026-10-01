@@ -1,9 +1,5 @@
 # cs/partitioning-vs-sharding — Partitioning vs Sharding — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> 원고는 내가 직접 쓴 `db-engine-lab/docs/study/Partitioning.md` + `Sharding.md` 두 문서(2026-08-20)를 한 주제로 합친 것이다. 1\~2절은 원고 그대로(오탈자만 교정).
-> 「전체 흐름」「핵심 문장」은 원고를 압축한 것이고, 맨 아래 「[Claude 추가]」 절만 원고에 없던 내용이다.
-
 ## 전체 흐름
 
 ```text
@@ -117,3 +113,8 @@ Kafka의 "파티션"은 이름은 파티션이지만 동작은 샤딩에 가깝�
 - **MongoDB**: shard = 서버(레플리카 셋), 그 안의 데이터 조각은 chunk. chunk를 shard 사이로 옮기는 것이 balancer.
 - **Kafka**: partition이 곧 분산 단위(B절). "파티션"이라는 이름이지만 서버 간 분산이라 샤딩 성격.
 - 용어는 제품마다 다르니 "같은 인스턴스 안인가, 서버를 넘는가"로 번역해서 읽는 것이 안전하다.
+
+## 출처
+
+원고는 내가 직접 쓴 `db-engine-lab/docs/study/Partitioning.md` + `Sharding.md` 두 문서(2026-08-20)를 한 주제로 합친 것이다. 1\~2절은 원고 그대로(오탈자만 교정).
+「전체 흐름」「핵심 문장」은 원고를 압축한 것이고, 맨 아래 「[Claude 추가]」 절만 원고에 없던 내용이다.

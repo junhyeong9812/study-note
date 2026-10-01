@@ -1,20 +1,5 @@
 # js/syntax/46 — `Reflect`: 「트랩과 짝이 맞나, 옛 창구와 어디서 갈리나, `receiver` 는 무엇을 바꾸나」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v20.19.6(배너의 `node20`) · x86-64 Linux. ★ 이 주제의 탐침은 node 18 · Chrome 151 에서도 **한 글자도 같았다.**
->
-> ★★★ **이 주제의 본체는 격자 둘이다** — 대응 표 13행 · `Object` 대 `Reflect` 19행. **1번 · 2번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **`Reflect` 는 몇 개이고 트랩과 어떻게 짝이 맞나**
-> ② ★★★ **같은 요청을 `Object`/연산자와 `Reflect` 로 하면 어디서 갈리나**
-> ③ ★★ **`receiver` 가 바꾸는 것 — getter 의 `this` · 쓰기가 떨어지는 곳 · 트랩에서 넘길 때.**
->
-> **선행** — [45](../45-proxy/2-summary.md) · [09](../09-call-apply-bind/2-summary.md) · [14](../14-property-descriptors-and-freezing/2-summary.md) · [22](../22-symbol-and-well-known-symbols/2-summary.md).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 문항(1\~3)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -224,6 +209,14 @@ console.log("    Reflect.set(p, 'y', 1, {}) fired: " + fired.join(" -> "));
 ### 9. 14번 · 22번과 이어 보기 (연결) ★★
 
 - ★★ 2번 탐침이 엄격 모드여야 했던 이유를 14번으로, `keys` 대 `ownKeys` 행을 22번으로 설명하라.
+
+## 실행 환경
+
+**환경** — node v20.19.6(배너의 `node20`) · x86-64 Linux. ★ 이 주제의 탐침은 node 18 · Chrome 151 에서도 **한 글자도 같았다.**
+
+★★★ **이 주제의 본체는 격자 둘이다** — 대응 표 13행 · `Object` 대 `Reflect` 19행. **1번 · 2번 문항이 이 주제의 중심이다.**
+
+**선행** — [45](../45-proxy/2-summary.md) · [09](../09-call-apply-bind/2-summary.md) · [14](../14-property-descriptors-and-freezing/2-summary.md) · [22](../22-symbol-and-well-known-symbols/2-summary.md).
 
 ## 복습 기록
 

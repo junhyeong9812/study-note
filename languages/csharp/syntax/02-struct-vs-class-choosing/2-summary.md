@@ -1,51 +1,5 @@
 # csharp/syntax/02 — `struct` 대 `class` 고르기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) · [Learn — 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) · [.NET API — `GC.GetAllocatedBytesForCurrentThread`](https://learn.microsoft.com/en-us/dotnet/api/system.gc.getallocatedbytesforcurrentthread)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
-> 런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-24).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
-> ★★★ **진단 언어를 영어로 고정했다.** 안 그러면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
-> 실측으로 받은 한국어 판이 ``error CS0029: 암시적으로 'string' 형식을 'int' 형식으로 변환할 수 없습니다.`` 였다.\
-> 고정하는 법은 둘을 같이 거는 것이다 — 환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`**.
-> **던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
-> 그래야 `bin/`·`obj/` 가 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
-> 배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
->
-> ```text
-> export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
-> export DOTNET_CLI_UI_LANGUAGE=en            # ★★★ 안 주면 진단이 한국어로 나온다
-> D=$(dirname "$(readlink -f "$(command -v dotnet)")")
-> ls "$D"/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/*.dll | sed 's/^/-r:/' > refs.rsp
-> echo '{"runtimeOptions":{"tfm":"net10.0","framework":{"name":"Microsoft.NETCore.App","version":"10.0.0"}}}' > ex.runtimeconfig.json
-> csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
->           -nologo -nostdlib -noconfig @refs.rsp \
->           -preferreduilang:en-US -langversion:latest -target:exe "$@"; }
-> ```
->
-> **`-debug` 를 안 줬다** — PDB 가 없으면 스택 트레이스에 **절대 경로와 줄 번호가 안 박힌다**.\
-> 그래서 이 문서의 트레이스는 ``at Program.<Main>$(String[] args)`` 에서 끝나고, 어느 머신에서 돌려도 같다.
-> **버전** — `readonly struct` 는 **C# 7.2부터** · `in` 매개변수도 **C# 7.2부터** ·\
-> **구조체의 필드 초기자와 매개변수 없는 생성자는 C# 10부터** · `record struct` 도 **C# 10부터**다.\
-> ★ 「구조체에 기본 생성자를 못 쓴다」는 **C# 9 까지의 이야기**다 — (4)에서 던져 확인했다.
-> **경계** — 「값 타입이 무엇인가」의 정본은 [01번](../01-value-types-and-reference-types/)이다.\
-> 여기는 **그래서 무엇을 고르나** — 크기·불변성·복사 비용·동등성이다.\
-> **박싱**은 [03번](../03-boxing-and-unboxing/)이 정본이고, `record` 의 문법 전반은 목록의 **18번 주제**,\
-> `Equals`/`GetHashCode` 계약은 목록의 **19번 주제**, `ref struct`·`Span<T>` 는 목록의 **45**·**46번 주제**다.\
-> *「값 타입이 JVM 보다 20년 앞섰다」는 **논증**은* [`../../c-cpp-csharp.md`](../../../c-cpp-csharp.md) *에 있다 — 여기는 **선택 기준**이다.*\
-> Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **05번**이 **같은 집안의 질문**이다 —\
-> 거기도 「**값이냐 헤더냐**」가 축이고, 「대입이 무엇을 복사하나」로 갈린다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★ **`GC.GetAllocatedBytesForCurrentThread()` 의 절댓값**(프로세스 시작부터의 누적이다) | ★★★ **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐** |
-> | `Stopwatch` 로 잰 **ns 수치** · 그때의 CPU 상태 | **자릿수 차이**(10배·40배 같은 비율) |
-> | `GetHashCode()` 값 · 객체 주소 | **진단 코드**(`CS0029` 류) · **진단 문구** · **`(행,열)`** |
-> | 빌드 시간 · `dotnet` 패치 버전이 오르면 달라질 수 있는 것 | **`cc exit` 와 `run exit`**(갈라 적었다) |
-> | — | **IL 명령어 열**(`box` · `unbox.any` · `ldobj` · `initobj` · `newobj`) |
-
 ## 한눈에 — 쉽게 말하면
 
 **`class` 는 「사물함」이고 `struct` 는 「쪽지」다.** 그런데 **쪽지에는 조용한 대가가 둘** 있다.
@@ -613,7 +567,7 @@ struct Fast : IEquatable<Fast> {
   **신호 대 잡음**: 한 판 안의 다섯 줄이 15% 안쪽, 캡처를 다시 돌리면 20% 까지 움직이는데\
   **세 열의 차이는 10배와 40배**다. 신호가 잡음보다 훨씬 크다.
 - ★★★ **근거로 쓰는 것은 「약 10배·약 40배」이지 `4 ns` 나 `146 ns` 가 아니다.**\
-  ns 절댓값은 **흔들리는 칸**이다(머리말 표). 머신이 바뀌면 다 바뀐다.
+  ns 절댓값은 **흔들리는 칸**이다(「실행 환경」 표). 머신이 바뀌면 다 바뀐다.
 - ★ **측정 조건** — `Stopwatch` 로 **1,000,000회 반복의 평균**, **워밍업 3회**(JIT 계층 승격을 측정 밖으로 뺐다),\
   델리게이트를 안 끼우고 **루프를 각각 직접** 돌았다. 전용 벤치마크 도구(BenchmarkDotNet)는 **안 썼다.**
 - ★★ **그래서 「`struct` 가 `class` 보다 빠르다」를 이걸로 말하면 안 된다.** 잰 것은 **`Equals` 한 축**이다.
@@ -911,3 +865,50 @@ class Box {
 - **복사 비용 자체의 측정** — ★ **못 쟀다.** 크기를 바꿔 가며 대입·전달 횟수를 돌리는\
   **벤치마크 하네스가 따로 필요**하고, 이 문서에는 없다. (1)이 잰 것은 **할당**이지 복사가 아니다.
 - **`record struct`(`readonly` 없는 것)** — ★ 안 던졌다. 속성이 `get`/`set` 이라 (6)의 에러가 안 난다.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) · [Learn — 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) · [.NET API — `GC.GetAllocatedBytesForCurrentThread`](https://learn.microsoft.com/en-us/dotnet/api/system.gc.getallocatedbytesforcurrentthread)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
+런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-24).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
+★★★ **진단 언어를 영어로 고정했다.** 안 그러면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
+실측으로 받은 한국어 판이 ``error CS0029: 암시적으로 'string' 형식을 'int' 형식으로 변환할 수 없습니다.`` 였다.\
+고정하는 법은 둘을 같이 거는 것이다 — 환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`**.
+**던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
+그래야 `bin/`·`obj/` 가 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
+배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
+
+```text
+export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
+export DOTNET_CLI_UI_LANGUAGE=en            # ★★★ 안 주면 진단이 한국어로 나온다
+D=$(dirname "$(readlink -f "$(command -v dotnet)")")
+ls "$D"/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/*.dll | sed 's/^/-r:/' > refs.rsp
+echo '{"runtimeOptions":{"tfm":"net10.0","framework":{"name":"Microsoft.NETCore.App","version":"10.0.0"}}}' > ex.runtimeconfig.json
+csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
+          -nologo -nostdlib -noconfig @refs.rsp \
+          -preferreduilang:en-US -langversion:latest -target:exe "$@"; }
+```
+
+**`-debug` 를 안 줬다** — PDB 가 없으면 스택 트레이스에 **절대 경로와 줄 번호가 안 박힌다**.\
+그래서 이 문서의 트레이스는 ``at Program.<Main>$(String[] args)`` 에서 끝나고, 어느 머신에서 돌려도 같다.
+**버전** — `readonly struct` 는 **C# 7.2부터** · `in` 매개변수도 **C# 7.2부터** ·\
+**구조체의 필드 초기자와 매개변수 없는 생성자는 C# 10부터** · `record struct` 도 **C# 10부터**다.\
+★ 「구조체에 기본 생성자를 못 쓴다」는 **C# 9 까지의 이야기**다 — (4)에서 던져 확인했다.
+**경계** — 「값 타입이 무엇인가」의 정본은 [01번](../01-value-types-and-reference-types/)이다.\
+여기는 **그래서 무엇을 고르나** — 크기·불변성·복사 비용·동등성이다.\
+**박싱**은 [03번](../03-boxing-and-unboxing/)이 정본이고, `record` 의 문법 전반은 목록의 **18번 주제**,\
+`Equals`/`GetHashCode` 계약은 목록의 **19번 주제**, `ref struct`·`Span<T>` 는 목록의 **45**·**46번 주제**다.\
+*「값 타입이 JVM 보다 20년 앞섰다」는 **논증**은* [`../../c-cpp-csharp.md`](../../../c-cpp-csharp.md) *에 있다 — 여기는 **선택 기준**이다.*\
+Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **05번**이 **같은 집안의 질문**이다 —\
+거기도 「**값이냐 헤더냐**」가 축이고, 「대입이 무엇을 복사하나」로 갈린다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★ **`GC.GetAllocatedBytesForCurrentThread()` 의 절댓값**(프로세스 시작부터의 누적이다) | ★★★ **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐** |
+| `Stopwatch` 로 잰 **ns 수치** · 그때의 CPU 상태 | **자릿수 차이**(10배·40배 같은 비율) |
+| `GetHashCode()` 값 · 객체 주소 | **진단 코드**(`CS0029` 류) · **진단 문구** · **`(행,열)`** |
+| 빌드 시간 · `dotnet` 패치 버전이 오르면 달라질 수 있는 것 | **`cc exit` 와 `run exit`**(갈라 적었다) |
+| — | **IL 명령어 열**(`box` · `unbox.any` · `ldobj` · `initobj` · `newobj`) |
