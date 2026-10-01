@@ -1,16 +1,5 @@
 # html/syntax/33 — `output`·`progress`·`meter`: 계산 결과 / 진행 / 범위 안의 측정값 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The output element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-output-element)(★ **「요소의 값 자체는 폼을 제출할 때 제출되지 않는다」** · `for` 는 **순서 없는 고유 토큰 집합** · value/defaultValue 의 **default value override**), [「The progress element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-progress-element)(★ **`value` 가 없으면 불확정** · 「그냥 계기(gauge)에 `progress` 는 틀린 요소」), [「The meter element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-meter-element)(★ 여섯 점의 계산 순서 · **구역(region) 규칙** · 「UA 는 … 세 구역과의 관계를 **보여야 한다(should)**」), [Rendering 「The meter element」](https://html.spec.whatwg.org/multipage/rendering.html#the-meter-element-2)(「**플랫폼 관례**에 맞는 모양」 · 「원시 모양(primitive appearance)을 **자세히 적어야 한다**」는 명세 쪽 할 일 표시), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/) 의 요소 대응표(`output` → **status** · `progress` → **progressbar**(확정이면 valuemax·valuemin·valuenow) · `meter` → **meter**). **명세 본문은 앞 배치가 2026-09-26 에 받아 둔 사본**(`form-elements` · `rendering` · HTML-AAM)으로 읽었다 — 이 배치는 네트워크를 쓰지 않았다.\
-> ★★ **WAI-ARIA 사본은 없다** — `status` 역할이 **암묵 `aria-live=polite`·`aria-atomic=true`** 를 갖는다는 정의는 ARIA 쪽 문장이라 이 배치가 **열지 못했다.** 그래서 (1) 격자의 「라이브」 열은 **명세 열을 비워 두고 세지 않는다**(판정 보류).
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `html29b-form.py`·`html29b-cdp.py`·`html29b-rec.js` 를 `html33b-` 로 복사한 것이고, 이 묶음이 **실행기 하나**(`html33b-run.py`)를 더했다 — 전문과 29번 판과의 차이는 [정답 파일](3-answer.md)의 `## 실행 검증` 에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 명세 사본의 지원 표는 `output` 을 **Chrome 10+**, `progress`·`meter` 를 **Chrome 6+** 로 적는다(이 배치는 따로 조회하지 않았다).
-> **선행** — [25번 주제](../25-label-association/2-summary.md)(★ **`output`·`progress`·`meter` 는 셋 다 labelable** — 라벨의 `for` 로 이름을 받는다 · ★ **`output` 에도 `for` 가 있는데 뜻이 다르다** — (3)).
-> **경계** — **암묵 역할 일반**(`button` 이 무료로 주는 것)은 목록의 **41번 주제** · **제약 검증 API** 는 [29번](../29-constraint-validation/2-summary.md) · **라벨이 이름을 주는 규칙**은 [25번](../25-label-association/2-summary.md) — 여기는 **세 요소의 의미가 갈리는 자리와 `output` 의 라이브 성질**까지.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑦(접근성 트리) + 창 ⑤(서버 요청 로그)의 「역할 격자」다** — 역할 · 라이브 속성 · 제출에 실리나 · `labels` 를 한 표로 묻는다. `meter` 의 구역은 **새 창 하나**(UA 그림자 트리의 `pseudo` + 계산된 색)로 묻는다.
-
 **이 판의 Chrome**
 
 ```text
@@ -192,7 +181,7 @@ m1 meter · low/high/optimum meter        "측정"  —                    —  
 - ★★★ **명세 열과 갈린 칸 0 / 22** — 역할은 HTML-AAM 의 대응표 그대로(`status` · `progressbar` · `meter`), `labels` 는 **다섯 다 1**, `form.elements` 에는 **`input` 과 `output` 만** 있다.
 - ★★★ **`output` 은 `name="o"` 가 있는데 서버에 안 왔다** — 서버가 받은 필드는 **`i` 하나**. 명세 — 「`output` 이 폼과 연결되는 것은 **폼 컨트롤의 이벤트 처리기에서 쉽게 가리키려는** 것이다. **요소의 값 자체는 제출되지 않는다.**」 ★ `form.elements` 에는 **있다**(명세 카테고리 — listed) — **목록에는 오르는데 제출되지 않는** 유일한 쪽이다.
 - ★★ **`progress`·`meter` 에 단 `name` 은 아무것도 아니다** — 두 요소는 **폼 연관 요소가 아니라**(카테고리가 「labelable」 뿐) `form.elements` 에도 없고 제출에도 없다. 명세의 콘텐츠 속성 목록에 `name` 이 **없다.**
-- ★★★ **라이브 속성은 `output` 에만 있다** — `live=polite · atomic=true`. `progress`·`meter` 는 **값이 바뀌어도 라이브 영역이 아니다.** ★ 이 열의 **명세 쪽은 판정 보류**다(WAI-ARIA 사본 없음 — 머리말).
+- ★★★ **라이브 속성은 `output` 에만 있다** — `live=polite · atomic=true`. `progress`·`meter` 는 **값이 바뀌어도 라이브 영역이 아니다.** ★ 이 열의 **명세 쪽은 판정 보류**다(WAI-ARIA 사본 없음 — 「실행 환경」).
 - ★★ **접근성 값** — 확정 `progress` 는 **`30`**, 불확정 `progress` 는 **없음**(HTML-AAM — 「**확정이면** valuenow 를 현재 값으로」), `meter` 는 **`0.6000000238418579`**(32비트 부동소수를 거친 값 — 「흔들리는 칸」 표). `output` 에는 **접근성 값이 없다** — 그 글자는 **값이 아니라 자식 글자**다((3)).
 
 ```text
@@ -500,3 +489,15 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **`meter` 의 `title` 로 단위 주기** — 명세는 단위를 적는 속성이 없다며 **`title` 에 자유 글자로** 적으라 한다(「centimeters」 예). 이 판은 던지지 않았다.
 - **`progress` 의 `position`** — 확정이면 `값 ÷ 최댓값`, 불확정이면 **−1**(명세). 이 판은 IDL 로 찍지 않았다.
 - **`div role=status` 와의 비교** — 같은 역할을 ARIA 로 다는 판이다. 이 판은 **캡처하지 않았다** — `output` 의 이점을 「역할 + 폼 연결 + labelable 이 한 요소에」로 적는 것은 명세 문장에서 읽은 것이다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The output element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-output-element)(★ **「요소의 값 자체는 폼을 제출할 때 제출되지 않는다」** · `for` 는 **순서 없는 고유 토큰 집합** · value/defaultValue 의 **default value override**), [「The progress element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-progress-element)(★ **`value` 가 없으면 불확정** · 「그냥 계기(gauge)에 `progress` 는 틀린 요소」), [「The meter element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-meter-element)(★ 여섯 점의 계산 순서 · **구역(region) 규칙** · 「UA 는 … 세 구역과의 관계를 **보여야 한다(should)**」), [Rendering 「The meter element」](https://html.spec.whatwg.org/multipage/rendering.html#the-meter-element-2)(「**플랫폼 관례**에 맞는 모양」 · 「원시 모양(primitive appearance)을 **자세히 적어야 한다**」는 명세 쪽 할 일 표시), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/) 의 요소 대응표(`output` → **status** · `progress` → **progressbar**(확정이면 valuemax·valuemin·valuenow) · `meter` → **meter**). **명세 본문은 앞 배치가 2026-09-26 에 받아 둔 사본**(`form-elements` · `rendering` · HTML-AAM)으로 읽었다 — 이 배치는 네트워크를 쓰지 않았다.\
+★★ **WAI-ARIA 사본은 없다** — `status` 역할이 **암묵 `aria-live=polite`·`aria-atomic=true`** 를 갖는다는 정의는 ARIA 쪽 문장이라 이 배치가 **열지 못했다.** 그래서 (1) 격자의 「라이브」 열은 **명세 열을 비워 두고 세지 않는다**(판정 보류).
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `html29b-form.py`·`html29b-cdp.py`·`html29b-rec.js` 를 `html33b-` 로 복사한 것이고, 이 묶음이 **실행기 하나**(`html33b-run.py`)를 더했다 — 전문과 29번 판과의 차이는 [정답 파일](3-answer.md)의 `## 실행 검증` 에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 명세 사본의 지원 표는 `output` 을 **Chrome 10+**, `progress`·`meter` 를 **Chrome 6+** 로 적는다(이 배치는 따로 조회하지 않았다).
+**선행** — [25번 주제](../25-label-association/2-summary.md)(★ **`output`·`progress`·`meter` 는 셋 다 labelable** — 라벨의 `for` 로 이름을 받는다 · ★ **`output` 에도 `for` 가 있는데 뜻이 다르다** — (3)).
+**경계** — **암묵 역할 일반**(`button` 이 무료로 주는 것)은 목록의 **41번 주제** · **제약 검증 API** 는 [29번](../29-constraint-validation/2-summary.md) · **라벨이 이름을 주는 규칙**은 [25번](../25-label-association/2-summary.md) — 여기는 **세 요소의 의미가 갈리는 자리와 `output` 의 라이브 성질**까지.
+
+★★★ **이 주제의 본체는 창 ⑦(접근성 트리) + 창 ⑤(서버 요청 로그)의 「역할 격자」다** — 역할 · 라이브 속성 · 제출에 실리나 · `labels` 를 한 표로 묻는다. `meter` 의 구역은 **새 창 하나**(UA 그림자 트리의 `pseudo` + 계산된 색)로 묻는다.

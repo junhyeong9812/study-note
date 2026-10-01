@@ -1,10 +1,5 @@
 # PR #37157 — 테스트 해설 (테스트 하나하나)
 
-> `AttributeMethodsTests`에 추가된 12건.\
-> 형식·개념은 ../37153/tests.md, ../37153/guard-tests.md 참조.\
-> mock 구조가 #37153과 다른 핵심: **mock이 2겹**이다(outer mock의 `value()`가 inner mock을 반환, inner mock의 `value()`가 예외).\
-> 1겹으로 만들면 기존 직접-속성 probe 테스트가 될 뿐, 이 PR의 새 동작인 재귀 층을 검증하지 못한다.
-
 먼저 전체 배치.\
 red 6건이 결함 재현이고, 가드 6건이 보존 동작의 명세다.
 

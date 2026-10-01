@@ -1,20 +1,5 @@
 # java/syntax/49 — 병렬 스트림: 값이 나오는 조건 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../46-terminal-operations/`](../46-terminal-operations/). 최종 연산·단락 평가·`forEachOrdered` 를 먼저 본다.
-> **기준 소스** — [`java.util.stream` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) · [`Collectors` javadoc](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/Collectors.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/stream/package-info.java`·`Collectors.java`(`lib/src.zip`)
-> **실행 검증** — 이 문서의 모든 출력·에러·수치는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 측정 머신: **CPU 24코어**(`availableProcessors` = 24, 공용 풀 병렬도 23).\
-> 분할 특성과 수집기 특성은 **17.0.13 · 25.0.1** 에서도 돌렸다 — **한 곳에서 갈렸다**(아래 「구현 세부사항 대 언어 보장」).
-> ⚠️ **측정 방법** — JMH 가 아니다. 워밍업 5회 뒤 9회 측정의 **중앙값**이다.\
-> 같은 프로그램을 두 번 돌리면 배수가 3.9~5.1 배처럼 흔들린다. **배수의 자릿수만 읽는다.**
-> **버전** — `parallel()`·`parallelStream()` 은 **Java 8**. 17·21·25 동작 동일.
-> **범위** — 스레드·JIT·GC 의 **런타임 내부**는 [`../../언어-특성/README.md`](../../언어-특성/README.md) 와 [`../../../../cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다.\
-> 그쪽은 **OS 스레드와 JVM 이 무엇을 하나**까지, 여기는 **이 API 를 언제 쓰면 이득인가**부터다.\
-> 자료구조의 원리는 [`../../../../cs/data-structure/`](../../../../cs/data-structure/) 가 정본이다.\
-> 그쪽은 **`ArrayList`·`LinkedList` 가 어떻게 생겼나**까지, 여기는 **그 모양이 분할에 유리한가**까지만 본다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **병렬 스트림은 벨트를 여러 갈래로 쪼개 동시에 돌리는 것이다.**
@@ -747,3 +732,18 @@ list.stream().reduce("", (a, b) -> a + b.charAt(0)); // 타입이 달라 컴파�
 - **가상 스레드(21+)는 이 문제를 풀지 않는다.**\
   병렬 스트림은 CPU 바운드 작업을 코어 수만큼 나누는 도구이고, 가상 스레드는 블로킹 I/O 를 싸게 기다리는 도구다.\
   목적이 다르다 — [**56번 주제**](../56-virtual-threads/).
+
+## 실행 환경
+
+**선행** — [`../46-terminal-operations/`](../46-terminal-operations/). 최종 연산·단락 평가·`forEachOrdered` 를 먼저 본다.
+**기준 소스** — [`java.util.stream` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) · [`Collectors` javadoc](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/Collectors.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/stream/package-info.java`·`Collectors.java`(`lib/src.zip`)
+**실행 검증** — 이 문서의 모든 출력·에러·수치는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+측정 머신: **CPU 24코어**(`availableProcessors` = 24, 공용 풀 병렬도 23).\
+분할 특성과 수집기 특성은 **17.0.13 · 25.0.1** 에서도 돌렸다 — **한 곳에서 갈렸다**(본문 「구현 세부사항 대 언어 보장」).
+⚠️ **측정 방법** — JMH 가 아니다. 워밍업 5회 뒤 9회 측정의 **중앙값**이다.\
+같은 프로그램을 두 번 돌리면 배수가 3.9~5.1 배처럼 흔들린다. **배수의 자릿수만 읽는다.**
+**버전** — `parallel()`·`parallelStream()` 은 **Java 8**. 17·21·25 동작 동일.
+**범위** — 스레드·JIT·GC 의 **런타임 내부**는 [`../../언어-특성/README.md`](../../언어-특성/README.md) 와 [`../../../../cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다.\
+그쪽은 **OS 스레드와 JVM 이 무엇을 하나**까지, 여기는 **이 API 를 언제 쓰면 이득인가**부터다.\
+자료구조의 원리는 [`../../../../cs/data-structure/`](../../../../cs/data-structure/) 가 정본이다.\
+그쪽은 **`ArrayList`·`LinkedList` 가 어떻게 생겼나**까지, 여기는 **그 모양이 분할에 유리한가**까지만 본다.

@@ -1,10 +1,5 @@
 # web-api/25 — `fetch` 와 `Request`/`Response`: 옵션·헤더·상태 코드가 예외가 아니라는 것 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버 두 대(A·B)는 같은 기계의 로컬 서버이고 **바깥 인터넷으로는 요청하지 않았다.** 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 ok status · fetch() 메서드 단계 · CORS check · forbidden request-header / response-header name · clone 으로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
 |---|---|
 | 격자 · 콘솔 · 서버 로그 · 값 · 헤더 · `urllib` | **고쳤다** — 서버 로그의 마지막 줄이 빠지던 것(처리 중 요청이 0 이 될 때까지 기다린다) |
@@ -221,3 +216,9 @@ python3 wa24b-net.py urllib
 | 콘솔의 404 수준 | `error` | 개발자 도구의 성질 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② `mode: "no-cors"` · 리다이렉트 · 캐시. ③ 프리플라이트가 붙는 요청(28번 주제).
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버 두 대(A·B)는 같은 기계의 로컬 서버이고 **바깥 인터넷으로는 요청하지 않았다.** 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 ok status · fetch() 메서드 단계 · CORS check · forbidden request-header / response-header name · clone 으로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

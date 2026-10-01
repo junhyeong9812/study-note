@@ -1,12 +1,5 @@
 # go/syntax/52 — 도구: `gofmt`·`go vet`·빌드 태그·`go:embed`·탈출 분석 읽기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — `go doc cmd/vet` · `go help test` · `go help buildconstraint` · [`embed`](https://pkg.go.dev/embed) 패키지 문서 · `go tool compile -help`(`-m`·`-l`). **이 툴체인에서 직접 떴다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
-> ★ 탈출 분석의 판 대조에는 모듈 캐시의 **`go1.25.12`** 를 같이 썼다(명령에는 `"$GO125"` 로 찍힌다 — 그 블록의 `go.mod` 는 `go 1.25`).\
-> **버전** — `//go:build` 줄은 1.17 부터(문서 「Go versions 1.16 and earlier used a different syntax … "// +build"」) · `go:embed`(`embed.FS`)는 1.16([49번 주제](../49-testing-table-driven-t-run-cleanup-and-parallel/) 「이 판」의 `tapi`) · `for` 루프 변수 의미 변경은 1.22([13번 주제](../13-closures-variable-capture-and-loop-variable-change/)) · ★★ **`vet` 분석기 목록과 탈출 분석 결과는 명세가 아니라 툴체인 판의 성질**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이 둘이다** — 이 주제는 도구 다섯을 한 편에 묶었고, **판정이 걸린 격자가 둘**이다.
 ① 「**`vet` 격자** — 탐침 12(분석기 9 + 대조 3) × (`go vet` · `go test`)」 — 마지막 두 줄 「**go vet 이 짚은 칸 9 / 12**」·「**go test 가 막은 칸 1 / 12**」((2)절).
 ② 「**탈출 격자** — 탐침 9 × (`-gcflags='-m -l'` 의 말 · `testing.AllocsPerRun` 할당 수 · 인라인 켠 할당 수)」 — 「**-m 이 힙을 말한 칸 5 / 9**」·「**allocs 가 1 이상인 칸 6 / 9**」·「**둘이 어긋난 칸 1 / 9**」·「**인라인을 켜서 달라진 칸 1 / 9**」((5)절). ★★★ **`-m` 의 말과 실제 할당이 두 칸에서 갈린다 — 하나는 여기서, 하나는 [50번 주제](../50-benchmarks-testing-b-and-reading-profiles/) (3)절에서.**
@@ -859,3 +852,10 @@ go1.25.12 의 -m 출력과 다른 줄 0
 - ★ **`-gcflags='-m -m'`** — 탈출한 **이유의 사슬**까지 찍는다. 돌리지 않았다.
 - ★ **`go vet` 에 분석기 더하기** — `golang.org/x/tools/go/analysis` 로 자기 분석기를 만들 수 있다. 이 배치는 외부 모듈을 쓰지 않았다.
 - ★ **`//go:embed` 와 `go:generate`** — 생성한 파일을 묶는 조합. 돌리지 않았다.
+
+## 실행 환경
+
+**기준 소스** — `go doc cmd/vet` · `go help test` · `go help buildconstraint` · [`embed`](https://pkg.go.dev/embed) 패키지 문서 · `go tool compile -help`(`-m`·`-l`). **이 툴체인에서 직접 떴다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
+★ 탈출 분석의 판 대조에는 모듈 캐시의 **`go1.25.12`** 를 같이 썼다(명령에는 `"$GO125"` 로 찍힌다 — 그 블록의 `go.mod` 는 `go 1.25`).\
+**버전** — `//go:build` 줄은 1.17 부터(문서 「Go versions 1.16 and earlier used a different syntax … "// +build"」) · `go:embed`(`embed.FS`)는 1.16([49번 주제](../49-testing-table-driven-t-run-cleanup-and-parallel/) 「이 판」의 `tapi`) · `for` 루프 변수 의미 변경은 1.22([13번 주제](../13-closures-variable-capture-and-loop-variable-change/)) · ★★ **`vet` 분석기 목록과 탈출 분석 결과는 명세가 아니라 툴체인 판의 성질**이다.

@@ -1,13 +1,5 @@
 # css/syntax/30 — `subgrid`: 부모 트랙을 자식이 잇는 것 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Grid Layout Level 2](https://drafts.csswg.org/css-grid-2/) (`subgrid` 키워드·라인 이름 상속·`gap` 상속·서브그리드 항목이 부모 트랙 크기에 기여하는 규칙). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워, **트랙은 `getComputedStyle(el).gridTemplateColumns`/`.gridTemplateRows` 로, 항목 자리는 `getBoundingClientRect()` 로 따로** 쟀다. 본문의 px 값은 전부 그 실측값이다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않았다.
-> **버전** — `subgrid` 는 Baseline **widely**(newly **2023-09-15** → widely **2026-03-15**). 목록 README 의 지원 표를 확인했다. Grid 본체(widely 2020-04-17)보다 **6년 가까이 늦다** — 오래된 코드가 `subgrid` 를 안 쓰는 이유가 이것이다.
-> **여기서 다루지 않는 것** — **트랙을 만드는 것**은 [**27번**](../27-grid-track-sizing/), **번호로 놓는 것**은 [**28번**](../28-grid-placement/), **이름으로 놓는 것**은 [**29번**](../29-grid-template-areas/)이 정본이다(이 문서는 셋의 실측을 그대로 이어 쓴다). 정렬의 정본은 [**24번**](../24-flexbox-axes/), `gap` 의 정본은 [목록의 **26번 주제**](../26-flex-wrap-gap-order/)다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 `subgrid` = 자식이 자기 격자를 안 만들고 **부모의 격자선을 그대로 이어 쓰는 것**이다.
@@ -438,3 +430,11 @@ grid-template-columns: subgrid [p] [q];
   ② JS 로 높이를 재서 맞추거나, ③ 그냥 어긋난 채 두는 것으로 풀었다. 셋 다 대가가 있었다.
 - **`grid-template-areas` 는 서브그리드에서도 쓸 수 있다.** 다만 물려받은 트랙 수와 도면의 칸 수가 맞아야 하고,\
   안 맞으면 [29번](../29-grid-template-areas/)의 규칙대로 **조용히 버려진다.** 이 문서에서는 **안 돌려 봤다.**
+
+## 실행 환경
+
+**기준 소스** — [CSS Grid Layout Level 2](https://drafts.csswg.org/css-grid-2/) (`subgrid` 키워드·라인 이름 상속·`gap` 상속·서브그리드 항목이 부모 트랙 크기에 기여하는 규칙). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **4개 전부**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워, **트랙은 `getComputedStyle(el).gridTemplateColumns`/`.gridTemplateRows` 로, 항목 자리는 `getBoundingClientRect()` 로 따로** 쟀다. 본문의 px 값은 전부 그 실측값이다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않았다.
+**버전** — `subgrid` 는 Baseline **widely**(newly **2023-09-15** → widely **2026-03-15**). 목록 README 의 지원 표를 확인했다. Grid 본체(widely 2020-04-17)보다 **6년 가까이 늦다** — 오래된 코드가 `subgrid` 를 안 쓰는 이유가 이것이다.
+**여기서 다루지 않는 것** — **트랙을 만드는 것**은 [**27번**](../27-grid-track-sizing/), **번호로 놓는 것**은 [**28번**](../28-grid-placement/), **이름으로 놓는 것**은 [**29번**](../29-grid-template-areas/)이 정본이다(이 문서는 셋의 실측을 그대로 이어 쓴다). 정렬의 정본은 [**24번**](../24-flexbox-axes/), `gap` 의 정본은 [목록의 **26번 주제**](../26-flex-wrap-gap-order/)다.

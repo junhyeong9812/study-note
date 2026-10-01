@@ -1,70 +1,5 @@
 # js/syntax/27 — `Object` 정적 메서드: 「복사·나열·묶기 — 결과가 같아 보여도 부르는 것이 다르다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
-> `Object.assign({}, src)` 와 `{ ...src }` 는 결과 객체를 찍으면 **한 글자도 같다.** 갈리는 것은 **그 과정에서 무엇을 불렀나**다.
-> 그래서 원본에는 **getter**, 대상에는 **setter**, 뷰 쪽에는 **`Proxy` 트랩**을 심어 호출 순서와 횟수를 찍는다(동작 (1)·(4)).
-> ★★ 보조로 **② 전수 격자**(복사 도구 넷 × 성질 여섯 — 동작 (2))와 **④ 예외의 이름·문구**(동작 (3)·(5)·(6))를 쓴다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — Properties of the Object Constructor](https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-properties-of-the-object-constructor) —
->   `Object.assign` · `Object.keys`/`values`/`entries` · `Object.fromEntries` · `Object.groupBy`(와 그 note) · `Map.groupBy`
-> - [ECMA-262 — Abstract Operations](https://tc39.es/ecma262/multipage/abstract-operations.html) — `EnumerableOwnProperties` · `GroupBy` · `Set`
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(`Object.values`/`entries` 2017 · `Object.fromEntries` 2019 · Array Grouping 2024)
-> - 명세 문장은 이 배치가 받아 둔 **ES2025 판 HTML 에서 읽었다**(알고리즘 단계를 옮기지 않고 연산 이름과 짧은 인용만 싣는다).
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★★ **`Object.groupBy`·`Map.groupBy`(ES2024)는 두 node 판에 없다**(아래 판별 블록). 그 탐침은 **Google Chrome 151 을 헤드리스로** 돌렸다 —
-> 배너가 `google-chrome --headless` 로 시작하는 블록이 그것이다. 페이지는 `console.log` 를 가로채 줄을 모은다(`js24b-page.html`).
-> ★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★ **이 주제의 node 탐침 여섯 개는 두 판에서 한 글자도 같았다**(아래 대조기의 `identical` 줄들).
->
-> **버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `Object.keys` | ES5 | 세 판 다 있다 |
-> | `Object.assign` · own 키 순서(정수 키 먼저) | **ES2015** | 세 판 다 있다 |
-> | `Object.values` · `Object.entries` | **ES2017** | 세 판 다 있다 |
-> | `Object.fromEntries` | **ES2019** | 세 판 다 있다 |
-> | `Object.hasOwn` | ES2022 | 세 판 다 있다(탐침이 쓴다) |
-> | `Object.groupBy` · `Map.groupBy` | **ES2024** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **① 추상 연산에 로그 심기**(본체) | `assign` 이 원본 getter 와 대상 setter 를 **어떤 순서로 몇 번** 부르나(동작 (1)) · `keys`/`values`/`entries` 가 `Proxy` 에 무엇을 묻나(동작 (4)) · `groupBy` 콜백의 인자와 횟수(동작 (6)) |
-> | ★★ **② 전수 격자** | 복사 도구 **4개** × 성질 **6개** — `assign` 열과 **갈린 칸을 스크립트가 센다**(동작 (2)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | 읽기 전용 대상 · `fromEntries` 의 입력 검사 · ★ **`groupBy` 결과의 `toString`/`String()`**(동작 (6)) |
-> | ★ **③ 브랜드 태그** | `groupBy` 결과에 `Object.prototype.toString.call` 이 **`[object Object]`** 라고 답하는 한 줄뿐이다 — 15번에서 쓴 방식 그대로. 이 주제의 질문은 아니다 |
-> | ★ **⑤ 두 판 대조기** | 이 주제의 node 탐침은 **전부 `identical`** — 두 판이 갈릴 기능(`groupBy`)은 둘 다 없어서 Chrome 으로 창을 바꿨다 |
-> | ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. 전부 런타임 의미다 — **잴 것이 없다** |
-> | ★ **안 쟀다 — 성능** | 「`assign` 이 스프레드보다 빠르다」·「`structuredClone` 은 느리다」를 **한 줄도 쓰지 않는다.** 시간도 바이트도 안 쟀다. 센 것은 **호출 횟수**뿐이다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 예외 **문구** — V8 의 것이다(`Cannot assign to read only property 'a' of object '#<Object>'` 의 `#<Object>` 같은 표기). 다른 엔진은 다르게 적는다 | ★★★ **호출 로그의 순서와 개수** · 격자의 y/n 과 「갈린 칸 N / M」 · 키의 **순서** · 예외의 **종류**(`TypeError`) |
-> | 대조기 블록의 **다른 주제 줄**(같은 배치가 한 대조기를 공유한다) | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 하나도 없다**(재대조 동일) |
->
-> **선행** — [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md)(직접 선행 — ★★★ **정수 키가 앞서는 열거 순서와 「뷰 일곱 가지」 격자는 거기서 이미 쟀다**) ·
-> [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(★★★ **대상 setter 호출 0회 대 1회**는 거기서 쟀다) ·
-> [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)(`writable: false` · `freeze` 가 얕은 것) ·
-> [15 — 프로토타입 체인](../15-prototype-chain/2-summary.md)(`Object.create(null)`) · [18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md) ·
-> [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md)(심볼 키를 누가 보나) · [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(`Map` 키와 `-0`).
-> **같은 배치** — [24 — 배열 변형 메서드](../24-array-mutating-methods/2-summary.md) · [25 — 배열 비변형·복사 메서드](../25-array-non-mutating-and-copy-methods/2-summary.md) · [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md).
->
-> ★★ **경계 — 열거 순서와 뷰의 격자는 13번이 정본이다.** 여기서는 **그 순서를 `keys`·`entries`·`assign` 이 그대로 따른다는 것**과 **뷰가 무엇을 부르나**만 본다.
-> ★★ **경계 — 스프레드의 트랩 로그는 11번이 정본이다.** 여기서는 **`assign` 쪽의 getter·setter**를 잰다.
-> ★★ **경계 — 깊은 복사는** [목록의 **48번 주제**](../48-deep-copy-methods-compared/)가 정본이다. 여기서는 `structuredClone` 을 **격자의 한 열**로만 둔다.
-
 ```sh
 # js24b-versions.sh
 #!/usr/bin/env bash
@@ -1082,3 +1017,67 @@ Object.assign({}, words, numbers)  keys ["1","2","b"]
 - **getter 를 getter 째 복사하기** — `Object.defineProperties({}, Object.getOwnPropertyDescriptors(src))`. 이 문서는 격자에 넣지 않았다(**안 돌렸다**).
 - **`Object.groupBy` 가 `Array.prototype.group` 이 아닌 이유** — 제안 과정의 웹 호환성 논의다. 이 문서는 그 경위를 확인하지 않았다.
 - **깊은 병합** — 표준에 없다. [목록의 **48번 주제**](../48-deep-copy-methods-compared/)와 라이브러리의 몫이다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
+`Object.assign({}, src)` 와 `{ ...src }` 는 결과 객체를 찍으면 **한 글자도 같다.** 갈리는 것은 **그 과정에서 무엇을 불렀나**다.
+그래서 원본에는 **getter**, 대상에는 **setter**, 뷰 쪽에는 **`Proxy` 트랩**을 심어 호출 순서와 횟수를 찍는다(동작 (1)·(4)).
+★★ 보조로 **② 전수 격자**(복사 도구 넷 × 성질 여섯 — 동작 (2))와 **④ 예외의 이름·문구**(동작 (3)·(5)·(6))를 쓴다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — Properties of the Object Constructor](https://tc39.es/ecma262/multipage/fundamental-objects.html#sec-properties-of-the-object-constructor) —
+  `Object.assign` · `Object.keys`/`values`/`entries` · `Object.fromEntries` · `Object.groupBy`(와 그 note) · `Map.groupBy`
+- [ECMA-262 — Abstract Operations](https://tc39.es/ecma262/multipage/abstract-operations.html) — `EnumerableOwnProperties` · `GroupBy` · `Set`
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(`Object.values`/`entries` 2017 · `Object.fromEntries` 2019 · Array Grouping 2024)
+- 명세 문장은 이 배치가 받아 둔 **ES2025 판 HTML 에서 읽었다**(알고리즘 단계를 옮기지 않고 연산 이름과 짧은 인용만 싣는다).
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★★ **`Object.groupBy`·`Map.groupBy`(ES2024)는 두 node 판에 없다**(맨 위 판별 블록). 그 탐침은 **Google Chrome 151 을 헤드리스로** 돌렸다 —
+배너가 `google-chrome --headless` 로 시작하는 블록이 그것이다. 페이지는 `console.log` 를 가로채 줄을 모은다(`js24b-page.html`).
+★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★ **이 주제의 node 탐침 여섯 개는 두 판에서 한 글자도 같았다**(맨 위 대조기의 `identical` 줄들).
+
+**버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `Object.keys` | ES5 | 세 판 다 있다 |
+| `Object.assign` · own 키 순서(정수 키 먼저) | **ES2015** | 세 판 다 있다 |
+| `Object.values` · `Object.entries` | **ES2017** | 세 판 다 있다 |
+| `Object.fromEntries` | **ES2019** | 세 판 다 있다 |
+| `Object.hasOwn` | ES2022 | 세 판 다 있다(탐침이 쓴다) |
+| `Object.groupBy` · `Map.groupBy` | **ES2024** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **① 추상 연산에 로그 심기**(본체) | `assign` 이 원본 getter 와 대상 setter 를 **어떤 순서로 몇 번** 부르나(동작 (1)) · `keys`/`values`/`entries` 가 `Proxy` 에 무엇을 묻나(동작 (4)) · `groupBy` 콜백의 인자와 횟수(동작 (6)) |
+| ★★ **② 전수 격자** | 복사 도구 **4개** × 성질 **6개** — `assign` 열과 **갈린 칸을 스크립트가 센다**(동작 (2)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | 읽기 전용 대상 · `fromEntries` 의 입력 검사 · ★ **`groupBy` 결과의 `toString`/`String()`**(동작 (6)) |
+| ★ **③ 브랜드 태그** | `groupBy` 결과에 `Object.prototype.toString.call` 이 **`[object Object]`** 라고 답하는 한 줄뿐이다 — 15번에서 쓴 방식 그대로. 이 주제의 질문은 아니다 |
+| ★ **⑤ 두 판 대조기** | 이 주제의 node 탐침은 **전부 `identical`** — 두 판이 갈릴 기능(`groupBy`)은 둘 다 없어서 Chrome 으로 창을 바꿨다 |
+| ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. 전부 런타임 의미다 — **잴 것이 없다** |
+| ★ **안 쟀다 — 성능** | 「`assign` 이 스프레드보다 빠르다」·「`structuredClone` 은 느리다」를 **한 줄도 쓰지 않는다.** 시간도 바이트도 안 쟀다. 센 것은 **호출 횟수**뿐이다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 예외 **문구** — V8 의 것이다(`Cannot assign to read only property 'a' of object '#<Object>'` 의 `#<Object>` 같은 표기). 다른 엔진은 다르게 적는다 | ★★★ **호출 로그의 순서와 개수** · 격자의 y/n 과 「갈린 칸 N / M」 · 키의 **순서** · 예외의 **종류**(`TypeError`) |
+| 대조기 블록의 **다른 주제 줄**(같은 배치가 한 대조기를 공유한다) | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 하나도 없다**(재대조 동일) |
+
+**선행** — [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md)(직접 선행 — ★★★ **정수 키가 앞서는 열거 순서와 「뷰 일곱 가지」 격자는 거기서 이미 쟀다**) ·
+[11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(★★★ **대상 setter 호출 0회 대 1회**는 거기서 쟀다) ·
+[14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)(`writable: false` · `freeze` 가 얕은 것) ·
+[15 — 프로토타입 체인](../15-prototype-chain/2-summary.md)(`Object.create(null)`) · [18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md) ·
+[22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md)(심볼 키를 누가 보나) · [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(`Map` 키와 `-0`).
+**같은 배치** — [24 — 배열 변형 메서드](../24-array-mutating-methods/2-summary.md) · [25 — 배열 비변형·복사 메서드](../25-array-non-mutating-and-copy-methods/2-summary.md) · [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md).
+
+★★ **경계 — 열거 순서와 뷰의 격자는 13번이 정본이다.** 여기서는 **그 순서를 `keys`·`entries`·`assign` 이 그대로 따른다는 것**과 **뷰가 무엇을 부르나**만 본다.
+★★ **경계 — 스프레드의 트랩 로그는 11번이 정본이다.** 여기서는 **`assign` 쪽의 getter·setter**를 잰다.
+★★ **경계 — 깊은 복사는** [목록의 **48번 주제**](../48-deep-copy-methods-compared/)가 정본이다. 여기서는 `structuredClone` 을 **격자의 한 열**로만 둔다.

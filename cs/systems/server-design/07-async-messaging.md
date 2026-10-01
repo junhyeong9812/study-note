@@ -1,10 +1,5 @@
 # 07. 비동기 · 메시징 아키텍처
 
-> 비동기는 **결합도를 낮추고 부하를 평탄화**하지만, 대신 **순서·중복·지연·관측**이라는 새 문제를 산다.\
-> "비동기로 바꿨습니다"는 그 자체로 개선이 아니라 **교환**이다.\
-> 출처: `jun-bank/docs/study/notes/server-design/07-async-messaging.md` · 이관일 2026-09-16.\
-> 원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식)만 입힘.
-
 ---
 
 ## 1. 언제 비동기로 가는가
@@ -255,3 +250,8 @@ main-topic ─실패─▶ retry-1s ─▶ retry-10s ─▶ retry-1m ─▶ DLQ/
 
 - 배포와 운영 → [`08-deployment-ops.md`](./08-deployment-ops.md)
 - 용량 산정 · SLO → [`09-capacity-slo.md`](./09-capacity-slo.md)
+
+## 출처
+
+출처: `jun-bank/docs/study/notes/server-design/07-async-messaging.md` · 이관일 2026-09-16.\
+원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식)만 입힘.

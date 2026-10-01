@@ -1,11 +1,5 @@
 # html/syntax/21 — `<form>` 의 제출 모델: `action`/`method`/`enctype`·제출을 일으키는 것 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였고 사람이 옮겨 적지 않았다. 하네스는 맨 아래 `## 실행 검증` 절에 있다(22\~24번이 같은 하네스를 쓴다).\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「Form submission」 절과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **본체는 창 ⑤(서버 요청 로그)다** — 폼이 무엇을 보냈는지는 서버가 받은 줄로만 안다(A1\~A5).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -1226,3 +1220,10 @@ src_sh   capture-sh      ../capture.sh
 - **계획된 이동(planned navigation)** — 폼마다 하나씩 두는, 뒤로 미룬 이동 작업.
 - **DOM 조작 작업 원천** — 명세가 폼 제출 이동을 넣는 작업 줄. 하네스의 울타리가 여기에 섰다.
 - **제5의 상태** — 같은 질문을 다른 창으로 물은 것. 이 주제에서는 「검증이 돌았나」를 `invalid` 이벤트로 물었다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였고 사람이 옮겨 적지 않았다. 하네스는 맨 아래 `## 실행 검증` 절에 있다(22\~24번이 같은 하네스를 쓴다).\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「Form submission」 절과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **본체는 창 ⑤(서버 요청 로그)다** — 폼이 무엇을 보냈는지는 서버가 받은 줄로만 안다(A1\~A5).

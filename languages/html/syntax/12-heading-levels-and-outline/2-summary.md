@@ -1,14 +1,5 @@
 # html/syntax/12 — 제목 레벨과 문서 개요: `h1`\~`h6` 가 실제로 계산되는 방식 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Headings and outlines」](https://html.spec.whatwg.org/multipage/sections.html#headings-and-outlines)·[「The `hgroup` element」](https://html.spec.whatwg.org/multipage/sections.html#the-hgroup-element) 절과 [ARIA in HTML](https://www.w3.org/TR/html-aria/). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. ★ 이 주제의 핵심은 「**한때 명세에 있었다가 빠진 것**」이라 버전보다 **연혁**이 중요하다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑦(접근성 트리)이다** — [11번 주제](../11-sectioning-and-landmarks/2-summary.md)가 세운 창을 그대로 쓴다. 「제목 레벨」은 **화면 크기도 태그 이름도 아니고** 접근성 트리의 `level` 값이기 때문이다. 창 ①\~④ 의 정의는 [01번 주제](../01-document-skeleton/2-summary.md)에 있다.
-> ★★★ **이 주제는 「널리 퍼진 오해」를 깨뜨리는 것이 전부다.** 「`<section>` 을 중첩하면 `<h1>` 이 알아서 `<h2>` 처럼 된다」는 **명세에 한때 있었고 어느 브라우저도 구현하지 않았으며 지금은 빠졌다.** 아래 (1)·(2) 가 **두 창으로** 그것을 잰다.
-
 **이 판의 Chrome**
 
 ```text
@@ -688,3 +679,13 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **그래서 컴포넌트는 어떻게 하나** — 오늘의 답은 「**레벨을 속성으로 받아라**」다. 컴포넌트가 자기 깊이를 알 수 없으니 **바깥이 알려 주는 수밖에** 없다. 한때 제안됐던 `<h>` 요소(레벨 없는 제목)는 채택되지 않았다.
 - **`<h1>` 을 여럿 쓰면 안 되나** — **유효하다.** 다만 목차가 평평해진다. 블로그 목록처럼 **`<article>` 마다 독립된 글**인 경우에는 각 글의 제목을 `<h2>` 로 두고 페이지 제목을 `<h1>` 로 두는 편이 목차를 살린다.
 - **글꼴 크기 규칙이 언제 사라졌나** — 이 판(Chrome 151)에는 **없다**는 것만 실측했다. **언제 없어졌는지는 이 판에서 확인할 수 없다** — 옛 판이 없기 때문이다. ★ 「한때 있었다」는 **명세의 옛 UA 스타일시트 권고를 읽어 적은 것**이고, 이 문서의 실측은 **지금 없다**까지다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Headings and outlines」](https://html.spec.whatwg.org/multipage/sections.html#headings-and-outlines)·[「The `hgroup` element」](https://html.spec.whatwg.org/multipage/sections.html#the-hgroup-element) 절과 [ARIA in HTML](https://www.w3.org/TR/html-aria/). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. ★ 이 주제의 핵심은 「**한때 명세에 있었다가 빠진 것**」이라 버전보다 **연혁**이 중요하다.
+
+★★★ **이 주제의 본체는 창 ⑦(접근성 트리)이다** — [11번 주제](../11-sectioning-and-landmarks/2-summary.md)가 세운 창을 그대로 쓴다. 「제목 레벨」은 **화면 크기도 태그 이름도 아니고** 접근성 트리의 `level` 값이기 때문이다. 창 ①\~④ 의 정의는 [01번 주제](../01-document-skeleton/2-summary.md)에 있다.
+★★★ **이 주제는 「널리 퍼진 오해」를 깨뜨리는 것이 전부다.** 「`<section>` 을 중첩하면 `<h1>` 이 알아서 `<h2>` 처럼 된다」는 **명세에 한때 있었고 어느 브라우저도 구현하지 않았으며 지금은 빠졌다.** 본문 (1)·(2) 가 **두 창으로** 그것을 잰다.

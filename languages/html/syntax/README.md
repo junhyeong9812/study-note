@@ -1,13 +1,5 @@
 # HTML — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 아래 주제들의 3파일(질문·서머리·정답)은 **01\~12 만 있고 나머지는 아직 없다**(2026-09-25 첫 배치 01\~04 · 둘째 배치 05\~08 · 셋째 배치 09\~12).\
-> ★ 첫 네 편이 이 갈래의 **형식을 굳혔다** — 「흔들리는 칸 / 안 흔들리는 칸」 표 · **창 넷**(`--dump-dom` → 노드 프로브 → `innerText` 대 `textContent` → `compatMode`) · 캡처 조립기로 만든 블록. 뒤따르는 주제는 [01번](01-document-skeleton/2-summary.md)의 「이 갈래의 창」 절을 먼저 읽고 그 형식을 잇는다.\
-> ★★ **창은 그 뒤로 셋이 늘었다** — **창 ⑤ 서버 요청 로그**([08번](08-script-loading/2-summary.md)) · **창 ⑥ `renderBlockingStatus`**([09번](09-stylesheets-and-resource-hints/2-summary.md)) · **창 ⑦ 접근성 트리**([11번](11-sectioning-and-landmarks/2-summary.md) — CDP `Accessibility.getFullAXTree`). ★★★ 아래 「막히는 것」의 **접근성 트리 항목은 2026-09-26 에 풀렸다** — 헤드리스 Chrome 에 CDP 로 붙으면 **역할·접근 가능한 이름·제목 레벨을 그대로 덤프**할 수 있다. 다만 **스크린리더가 그것을 뭐라고 읽는지는 여전히 못 본다**(트리는 보조 기술의 **입력**이지 출력이 아니다).
-> 기준 소스: [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) (단일 기준 — 「HTML5」라는 버전은 더 이상 기준이 아니다) · [콘텐츠 카테고리 절](https://html.spec.whatwg.org/multipage/dom.html#kinds-of-content) · [WHATWG DOM Standard](https://dom.spec.whatwg.org/) (접근성·트리 규칙의 뿌리) · [WAI-ARIA 1.2](https://www.w3.org/TR/wai-aria-1.2/)·[ARIA in HTML](https://www.w3.org/TR/html-aria/) (접근성 갈래) · [MDN HTML 레퍼런스](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference) (표면 확인용) · 지원 상태는 [Web Platform Status(`webstatus.dev`)](https://webstatus.dev/) 의 Baseline 데이터를 API 로 조회해 확인했다.
-> 실행 검증: **가능**. 이 머신에 **Google Chrome 151.0.7922.173** 과 **Mozilla Firefox 155.0.1** 이 설치돼 있다. `google-chrome --headless --dump-dom` 으로 **파서가 만든 실제 DOM 트리**를, `--screenshot` 으로 렌더 결과를 뽑는 것을 실제로 돌려 확인했다. 파싱·오류 복구(`03`)와 콘텐츠 모델(`05`)은 `--dump-dom` 으로 눈에 보이게 검증할 수 있다. **막히는 것**: 스크린리더(NVDA·VoiceOver)가 없어 **접근성 트리가 실제로 어떻게 읽히는지는 실행 확인이 불가**하다 — Chrome 의 접근성 트리 덤프까지만 쓰고, 「스크린리더가 이렇게 읽는다」는 서술은 명세·ARIA 문서로만 접지하고 「미실행」으로 표기한다. WebKit(Safari)도 없다.\
-> ⚠️ **2026-09-21 정정 — 렌더 검증은 Chrome 단일 엔진이다.** Firefox 155.0.1 은 설치돼 있으나 이 환경에서 **headless 스크린샷이 산출되지 않는다** (전용 프로파일로도 `exit 0` 으로 끝나며 파일을 만들지 않는 **조용한 실패**). 따라서 크로스 브라우저 차이를 주장할 때는 Baseline 데이터로만 접지하고, 「두 엔진에서 확인했다」고 적지 않는다.
-> 기준일 2026-09-21.
-
 ## 이 언어에서 무엇을 자르는 축
 
 HTML 은 태그 목록이 아니다. 명세 자신이 태그를 「종류」로 묶지 않고 **콘텐츠 카테고리**(흐름·구절·구획·헤딩·임베드·대화형)로 묶어 「어느 요소 안에 어느 요소를 넣을 수 있는가」를 정의한다. 그래서 축의 첫째는 **문서 구조** — 문서의 뼈대, 파서가 태그 수프를 트리로 바꾸는 규칙, 그리고 콘텐츠 모델이다. `<p>` 안에 `<div>` 를 넣으면 왜 `<p>` 가 닫혀 버리는지는 태그를 외워서는 답할 수 없고, 콘텐츠 모델과 파서 규칙을 알아야 답할 수 있다.
@@ -176,3 +168,12 @@ HTML 에는 버전이 없다. WHATWG **Living Standard** 단일 기준이고, �
 | `referenceTarget` | **limited** | 웹 컴포넌트 접근성의 미해결 문제로 `10` 에서 한 줄 |
 
 **확인하지 못한 것** — **Open Graph(`52`)** 는 `webstatus.dev` 조회 대상이 아니다. OG 는 W3C/WHATWG 표준이 아니라 **Meta 가 정의한 프로토콜**(`ogp.me`)이고 각 플랫폼 크롤러가 제각기 해석하므로, Baseline 개념 자체가 적용되지 않는다. `52` 의 3파일에는 **「표준이 아니다」는 사실 자체**를 인출 대상으로 넣는다. 그 밖의 행은 모두 API 응답에서 직접 읽은 값이다. 다만 **`webstatus.dev` 는 2차 집계**이고, 「명세가 무엇을 요구하나」는 WHATWG 본문으로, 「내 브라우저에서 실제로 되나」는 이 머신의 Chrome 151 · Firefox 155 로 각각 다시 확인한다. **Safari/WebKit 은 없다.**
+
+## 실행 환경
+
+★ 첫 네 편이 이 갈래의 **형식을 굳혔다** — 「흔들리는 칸 / 안 흔들리는 칸」 표 · **창 넷**(`--dump-dom` → 노드 프로브 → `innerText` 대 `textContent` → `compatMode`) · 캡처 조립기로 만든 블록. 뒤따르는 주제는 [01번](01-document-skeleton/2-summary.md)의 「이 갈래의 창」 절을 먼저 읽고 그 형식을 잇는다.\
+★★ **창은 그 뒤로 셋이 늘었다** — **창 ⑤ 서버 요청 로그**([08번](08-script-loading/2-summary.md)) · **창 ⑥ `renderBlockingStatus`**([09번](09-stylesheets-and-resource-hints/2-summary.md)) · **창 ⑦ 접근성 트리**([11번](11-sectioning-and-landmarks/2-summary.md) — CDP `Accessibility.getFullAXTree`). ★★★ 아래 「막히는 것」의 **접근성 트리 항목은 2026-09-26 에 풀렸다** — 헤드리스 Chrome 에 CDP 로 붙으면 **역할·접근 가능한 이름·제목 레벨을 그대로 덤프**할 수 있다. 다만 **스크린리더가 그것을 뭐라고 읽는지는 여전히 못 본다**(트리는 보조 기술의 **입력**이지 출력이 아니다).
+기준 소스: [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) (단일 기준 — 「HTML5」라는 버전은 더 이상 기준이 아니다) · [콘텐츠 카테고리 절](https://html.spec.whatwg.org/multipage/dom.html#kinds-of-content) · [WHATWG DOM Standard](https://dom.spec.whatwg.org/) (접근성·트리 규칙의 뿌리) · [WAI-ARIA 1.2](https://www.w3.org/TR/wai-aria-1.2/)·[ARIA in HTML](https://www.w3.org/TR/html-aria/) (접근성 갈래) · [MDN HTML 레퍼런스](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference) (표면 확인용) · 지원 상태는 [Web Platform Status(`webstatus.dev`)](https://webstatus.dev/) 의 Baseline 데이터를 API 로 조회해 확인했다.
+실행 검증: **가능**. 이 머신에 **Google Chrome 151.0.7922.173** 과 **Mozilla Firefox 155.0.1** 이 설치돼 있다. `google-chrome --headless --dump-dom` 으로 **파서가 만든 실제 DOM 트리**를, `--screenshot` 으로 렌더 결과를 뽑는 것을 실제로 돌려 확인했다. 파싱·오류 복구(`03`)와 콘텐츠 모델(`05`)은 `--dump-dom` 으로 눈에 보이게 검증할 수 있다. **막히는 것**: 스크린리더(NVDA·VoiceOver)가 없어 **접근성 트리가 실제로 어떻게 읽히는지는 실행 확인이 불가**하다 — Chrome 의 접근성 트리 덤프까지만 쓰고, 「스크린리더가 이렇게 읽는다」는 서술은 명세·ARIA 문서로만 접지하고 「미실행」으로 표기한다. WebKit(Safari)도 없다.\
+⚠️ **2026-09-21 정정 — 렌더 검증은 Chrome 단일 엔진이다.** Firefox 155.0.1 은 설치돼 있으나 이 환경에서 **headless 스크린샷이 산출되지 않는다** (전용 프로파일로도 `exit 0` 으로 끝나며 파일을 만들지 않는 **조용한 실패**). 따라서 크로스 브라우저 차이를 주장할 때는 Baseline 데이터로만 접지하고, 「두 엔진에서 확인했다」고 적지 않는다.
+기준일 2026-09-21.

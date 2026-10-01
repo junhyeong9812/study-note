@@ -1,10 +1,5 @@
 # 네트워크 보안의 진화 — 평문 네트워크에서 제로트러스트까지
 
-> 원본: `~/project/network-history/04-네트워크-보안.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·표준번호(RFC·X.509·NIST SP)·코드블록·표는 원문 그대로다.\
-> ASCII 도식 13개와 「한눈에」의 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
-> (원문의 mermaid 타임라인을 옮긴 글자 도식 1개는 원문 내용이라 이 13개에 넣지 않았다.)
-
 ## 한눈에 — 쉽게 말하면
 
 > 초기 인터넷은 "연결되는 것" 자체가 목표였고, 보안은 나중 문제였다. 패킷은 평문으로 흘렀고, 네트워크는 "내부는 믿고 외부는 막는다"는 단순한 신뢰 모델 위에 세워졌다. 이 문서는 네트워크 보안이 **각 단계마다 직전 시대가 남긴 구멍을 메우는** 방향으로 어떻게 진화했는지를, 그 "왜 등장했나"를 중심으로 정리한다. HTTP/TLS의 *프로토콜 메시지* 상세(핸드셰이크 레코드·암호군 협상 등)는 web-history의 「HTTP 진화」 문서가 다루므로, 여기서는 **네트워크 계층 관점** — 회선 위의 패킷을 누가·어떻게 보호하고, 신뢰의 경계를 어디에 긋는가 — 에 집중한다.
@@ -769,3 +764,10 @@ PKI(인증서)·TLS(키 교환)라는 옛 부품이, 경계 없는 시대에 **�
 - [The Evolution of Zero Trust and the Frameworks that Guide It — IBM](https://www.ibm.com/think/insights/the-evolution-of-zero-trust-and-the-frameworks-that-guide-it)
 - [Why Mutual TLS (mTLS) Is Critical for Securing Microservices — AppViewX](https://www.appviewx.com/blogs/why-mutual-tls-mtls-is-critical-for-securing-microservices-communications-in-a-service-mesh/)
 - [What is mutual TLS (mTLS)? — Buoyant](https://www.buoyant.io/mtls-guide)
+
+## 출처
+
+원본: `~/project/network-history/04-네트워크-보안.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·표준번호(RFC·X.509·NIST SP)·코드블록·표는 원문 그대로다.\
+ASCII 도식 13개와 「한눈에」의 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
+(원문의 mermaid 타임라인을 옮긴 글자 도식 1개는 원문 내용이라 이 13개에 넣지 않았다.)

@@ -1,36 +1,5 @@
 # python/syntax/21-scope-legb-global-nonlocal — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★ **이 주제는 사슬의 첫 고리다.** [22번](../22-closures-and-late-binding/2-summary.md)(클로저)·[23번](../23-lambda-and-higher-order-functions/2-summary.md)(`lambda`)·[24번](../24-decorators/2-summary.md)(데코레이터)이 전부 **여기서 정한 「이름이 어디서 풀리나」 위에 선다.**
-> 여기가 흔들리면 그 셋이 전부 외우기가 된다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [4.2. Naming and binding](https://docs.python.org/3.12/reference/executionmodel.html#naming-and-binding) — 무엇이 이름을 묶나, 지역 변수 규칙
-> - [4.2.2. Resolution of names](https://docs.python.org/3.12/reference/executionmodel.html#resolution-of-names) — 이름 해소 순서 · `UnboundLocalError`
-> - [4.2.3. Builtins and restricted execution](https://docs.python.org/3.12/reference/executionmodel.html#builtins-and-restricted-execution) — 내장 스코프
-> - [7.12. The `global` statement](https://docs.python.org/3.12/reference/simple_stmts.html#the-global-statement) · [7.13. The `nonlocal` statement](https://docs.python.org/3.12/reference/simple_stmts.html#the-nonlocal-statement)
-> - [8.8. Class definitions](https://docs.python.org/3.12/reference/compound_stmts.html#class-definitions) — 클래스 블록의 스코프
-> - [PEP 227 — Statically Nested Scopes](https://peps.python.org/pep-0227/) · [PEP 3104 — Access to Names in Outer Scopes](https://peps.python.org/pep-3104/) · [PEP 709 — Inlined comprehensions](https://peps.python.org/pep-0709/)
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
-> ★ **소스 펜스의 첫 줄은 캡처가 붙인 파일명 주석**이다. 트레이스백의 줄 번호는 **그 주석을 뺀 실파일 기준**이라 펜스에서는 한 줄 아래를 보면 된다.\
-> **버전** — `nonlocal` 은 **3.0+**(PEP 3104), 중첩 스코프 자체는 **2.2+**(PEP 227).
-> 컴프리헨션이 자기 스코프를 갖는 것은 **Python 3 전체 공통**이고, 그 **인라인화는 3.12+**(PEP 709)다.
-> 바이트코드 명령 이름(`LOAD_FAST_CHECK` 등)은 **3.12 의 것**이라 판마다 다르다.\
-> **구현 대 언어 보장 한 줄** — **「블록 안 어디든 대입이 있으면 그 블록 안의 모든 사용이 지역 참조가 된다」는 언어 보장**이고,
-> **`LOAD_FAST_CHECK`·`co_varnames`·`dis` 출력은 CPython 구현**이다. 같은 사실을 둘이 다른 층에서 말한다.\
-> **★ 흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | | 무엇 |
-> |---|---|
-> | **흔들린다** | `<cell at 0x…>`·`<function … at 0x…>` 의 **주소**, `id()` 값 |
-> | **안 흔들린다** | 예외 **타입**과 **메시지 본문**, `File "<stdin>", line N`, **셀 개수**, `is` 판정, `co_freevars`·`co_varnames`, `__defaults__` 값, `(exit N)` |
->
-> ★ **이 주제의 블록에는 주소가 한 칸도 없다** — 전부 결정적이라 같은 판에서 다시 돌리면 한 글자도 안 변한다.
-
 ```python
 # v_version.py
 import sys
@@ -1625,3 +1594,33 @@ class D:
   여기서 본 `COPY_FREE_VARS`·`LOAD_DEREF` 가 그 입구다.
 </content>
 </invoke>
+
+## 실행 환경
+
+★★ **이 주제는 사슬의 첫 고리다.** [22번](../22-closures-and-late-binding/2-summary.md)(클로저)·[23번](../23-lambda-and-higher-order-functions/2-summary.md)(`lambda`)·[24번](../24-decorators/2-summary.md)(데코레이터)이 전부 **여기서 정한 「이름이 어디서 풀리나」 위에 선다.**
+여기가 흔들리면 그 셋이 전부 외우기가 된다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [4.2. Naming and binding](https://docs.python.org/3.12/reference/executionmodel.html#naming-and-binding) — 무엇이 이름을 묶나, 지역 변수 규칙
+- [4.2.2. Resolution of names](https://docs.python.org/3.12/reference/executionmodel.html#resolution-of-names) — 이름 해소 순서 · `UnboundLocalError`
+- [4.2.3. Builtins and restricted execution](https://docs.python.org/3.12/reference/executionmodel.html#builtins-and-restricted-execution) — 내장 스코프
+- [7.12. The `global` statement](https://docs.python.org/3.12/reference/simple_stmts.html#the-global-statement) · [7.13. The `nonlocal` statement](https://docs.python.org/3.12/reference/simple_stmts.html#the-nonlocal-statement)
+- [8.8. Class definitions](https://docs.python.org/3.12/reference/compound_stmts.html#class-definitions) — 클래스 블록의 스코프
+- [PEP 227 — Statically Nested Scopes](https://peps.python.org/pep-0227/) · [PEP 3104 — Access to Names in Outer Scopes](https://peps.python.org/pep-3104/) · [PEP 709 — Inlined comprehensions](https://peps.python.org/pep-0709/)
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
+★ **소스 펜스의 첫 줄은 캡처가 붙인 파일명 주석**이다. 트레이스백의 줄 번호는 **그 주석을 뺀 실파일 기준**이라 펜스에서는 한 줄 아래를 보면 된다.\
+**버전** — `nonlocal` 은 **3.0+**(PEP 3104), 중첩 스코프 자체는 **2.2+**(PEP 227).
+컴프리헨션이 자기 스코프를 갖는 것은 **Python 3 전체 공통**이고, 그 **인라인화는 3.12+**(PEP 709)다.
+바이트코드 명령 이름(`LOAD_FAST_CHECK` 등)은 **3.12 의 것**이라 판마다 다르다.\
+**구현 대 언어 보장 한 줄** — **「블록 안 어디든 대입이 있으면 그 블록 안의 모든 사용이 지역 참조가 된다」는 언어 보장**이고,
+**`LOAD_FAST_CHECK`·`co_varnames`·`dis` 출력은 CPython 구현**이다. 같은 사실을 둘이 다른 층에서 말한다.\
+**★ 흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| | 무엇 |
+|---|---|
+| **흔들린다** | `<cell at 0x…>`·`<function … at 0x…>` 의 **주소**, `id()` 값 |
+| **안 흔들린다** | 예외 **타입**과 **메시지 본문**, `File "<stdin>", line N`, **셀 개수**, `is` 판정, `co_freevars`·`co_varnames`, `__defaults__` 값, `(exit N)` |
+
+★ **이 주제의 블록에는 주소가 한 칸도 없다** — 전부 결정적이라 같은 판에서 다시 돌리면 한 글자도 안 변한다.

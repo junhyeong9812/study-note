@@ -1,24 +1,5 @@
 # csharp/syntax/16 — 상속·`virtual`/`override`/`abstract`/`sealed`/`new` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ★★★ 이 주제의 질문은 「**정적 타입 × 동적 타입 격자를 채울 수 있나**」가 절반이다 —
-> 「파생 것이 불린다」로 뭉개지 말고 **네 줄 각각에 무엇이 나오는지** 적어라.
-> **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
-> Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`.
-> 대비는 **javac 21.0.5** 와 **g++ 13.3.0 · `-std=c++20`** 이다.
-> ★★★ **본체 창은 ① IL 덤프다** — 4번의 「기본 비가상인데 왜 `callvirt` 인가」는
-> **덤프 없이는 물을 수조차 없다.**
-> ★★ **짝이 되는 것은 실행 출력 격자**다 — IL 만 보면 「`callvirt` 니까 다 가상」이라는 **틀린 결론**이 나온다.
-> ★ **「부적용인 창」이 있다** — **④ 할당 바이트.** `new` 로 숨기든 `override` 하든 **객체는 하나**이고
-> `virtual` 을 붙인다고 객체가 커지지도 않는다(메서드 테이블은 **타입당 하나**).
-> **「안 쟀다」가 아니라 「잴 것이 없다」다.**
-> ★★★ **이 파일에는 「가상 호출이 느리다」는 문장이 없다** — 이 판에서 **안 쟀다.**
-> 선행 — [12번](../12-class-fields-constructors-this-base/)(★ **생성자 속 가상 호출**이 거기 정본이다)·[15번](../15-access-modifiers-and-assembly-boundary/)(`protected`).
-> 대비 — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **09번**([`09-inheritance-overriding/`](../../../java/syntax/09-inheritance-overriding/))·**11번**([`11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/)) ·
-> C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **19번**.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (예측) / (왜) / (경계) / (연결) -->
@@ -271,6 +252,24 @@ public class Ex16 {
 - ★★ **명시적 구현 인덱서**가 이 주제의 규칙을 따르는 것은 몇 번 주제인가?
 - **`protected` 의 경계**와 **`sealed` 클래스의 `protected` 경고**는 몇 번 주제와 맞닿는가?
 - ★ 이 문서가 쓰는 **IL 디스어셈블러**는 어느 주제가 만들었나?
+
+## 실행 환경
+
+★★★ 이 주제의 질문은 「**정적 타입 × 동적 타입 격자를 채울 수 있나**」가 절반이다 —
+「파생 것이 불린다」로 뭉개지 말고 **네 줄 각각에 무엇이 나오는지** 적어라.
+**환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
+Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`.
+대비는 **javac 21.0.5** 와 **g++ 13.3.0 · `-std=c++20`** 이다.
+★★★ **본체 창은 ① IL 덤프다** — 4번의 「기본 비가상인데 왜 `callvirt` 인가」는
+**덤프 없이는 물을 수조차 없다.**
+★★ **짝이 되는 것은 실행 출력 격자**다 — IL 만 보면 「`callvirt` 니까 다 가상」이라는 **틀린 결론**이 나온다.
+★ **「부적용인 창」이 있다** — **④ 할당 바이트.** `new` 로 숨기든 `override` 하든 **객체는 하나**이고
+`virtual` 을 붙인다고 객체가 커지지도 않는다(메서드 테이블은 **타입당 하나**).
+**「안 쟀다」가 아니라 「잴 것이 없다」다.**
+★★★ **이 파일에는 「가상 호출이 느리다」는 문장이 없다** — 이 판에서 **안 쟀다.**
+선행 — [12번](../12-class-fields-constructors-this-base/)(★ **생성자 속 가상 호출**이 거기 정본이다)·[15번](../15-access-modifiers-and-assembly-boundary/)(`protected`).
+대비 — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **09번**([`09-inheritance-overriding/`](../../../java/syntax/09-inheritance-overriding/))·**11번**([`11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/)) ·
+C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **19번**.
 
 ## 복습 기록
 

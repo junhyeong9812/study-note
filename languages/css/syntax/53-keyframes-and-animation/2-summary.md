@@ -1,13 +1,5 @@
 # css/syntax/53 — `@keyframes` 와 `animation`: 단축·반복·채우기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Animations Level 1](https://drafts.csswg.org/css-animations-1/) (`@keyframes`·단축 순서·`fill-mode`·이름 충돌) · [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) (캐스케이드 사다리에서 애니메이션 선언의 자리). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 본문 실험 **13벌**을 **Google Chrome 151.0.7922.173** headless 에 CDP 로 붙여 돌렸다.\
-> 진행률을 고정할 때는 **`animation-play-state: paused` + 음수 `animation-delay`** 와 **`Element.getAnimations()` 의 `currentTime` 세팅**을 썼고, 두 방법이 벽시계 실측과 일치하는지 따로 대조했다((9) 참조). `demo` 블록은 `Input.dispatchMouseEvent` 로 실제 마우스를 올린 뒤 시각마다 `getComputedStyle` 을 읽었다(샘플 시각 ±20ms).\
-> **엔진은 Chrome 하나다** — 이 머신에서 Firefox headless 는 스크린샷이 산출되지 않고 WebKit 은 없다. 크로스 브라우저는 Baseline 으로만 접지했다.
-> **버전** — CSS 에 언어 버전은 없다. Animations (CSS) 는 Baseline **widely**(newly 2015-09-30 → widely 2018-03-30), `animation-composition` 은 **widely**(newly 2023-07-04 → widely 2026-01-04) — `api.webstatus.dev` 조회 결과.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **전환이 「A 에서 B 로 걸어가라」라면, 애니메이션은 「악보를 주고 연주시키는 것」이다.**
@@ -721,3 +713,11 @@ animation: pulse infinite;     /* duration 초기값 0s -> 아무 일도 안 난
   등록 안 한 것은 **이산 보간**이라 50% 지점에서 한 번 뒤집히는 계단이 된다.
 - 이 문서의 모든 진행률 고정 실측은 **`paused` + 음수 지연** 또는 **`currentTime` 세팅**으로 얻었다.\
   ★ 이 방법은 **`--virtual-time-budget` 과 다르다** — 가상 시간을 쓰면 「아무 일도 안 일어남」이 찍힌다. 시간 축이 실시간이어야 하는 실험은 CDP 로만 잰다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Animations Level 1](https://drafts.csswg.org/css-animations-1/) (`@keyframes`·단축 순서·`fill-mode`·이름 충돌) · [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) (캐스케이드 사다리에서 애니메이션 선언의 자리). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 본문 실험 **13벌**을 **Google Chrome 151.0.7922.173** headless 에 CDP 로 붙여 돌렸다.\
+진행률을 고정할 때는 **`animation-play-state: paused` + 음수 `animation-delay`** 와 **`Element.getAnimations()` 의 `currentTime` 세팅**을 썼고, 두 방법이 벽시계 실측과 일치하는지 따로 대조했다((9) 참조). `demo` 블록은 `Input.dispatchMouseEvent` 로 실제 마우스를 올린 뒤 시각마다 `getComputedStyle` 을 읽었다(샘플 시각 ±20ms).\
+**엔진은 Chrome 하나다** — 이 머신에서 Firefox headless 는 스크린샷이 산출되지 않고 WebKit 은 없다. 크로스 브라우저는 Baseline 으로만 접지했다.
+**버전** — CSS 에 언어 버전은 없다. Animations (CSS) 는 Baseline **widely**(newly 2015-09-30 → widely 2018-03-30), `animation-composition` 은 **widely**(newly 2023-07-04 → widely 2026-01-04) — `api.webstatus.dev` 조회 결과.

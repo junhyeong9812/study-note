@@ -1,50 +1,5 @@
 # python/syntax/31-comparison-protocol-and-sortability — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [3.3.1. Basic customization — rich comparison methods](https://docs.python.org/3.12/reference/datamodel.html#object.__lt__) — **반사 짝**과 **하위 클래스 우선권**의 정본
-> - [`NotImplemented`](https://docs.python.org/3.12/library/constants.html#NotImplemented) — 돌려주면 언어가 무엇을 하나 · 진릿값 평가는 **3.9 부터 폐기 예정**
-> - [`functools.total_ordering`](https://docs.python.org/3.12/library/functools.html#functools.total_ordering) — 무엇을 요구하고 무엇을 채우나
-> - [Sorting Techniques HOWTO](https://docs.python.org/3.12/howto/sorting.html) — *"The sort routines use `<` when comparing two objects."*
-> - [`list.sort` · `sorted`](https://docs.python.org/3.12/library/stdtypes.html#list.sort) — **안정 정렬 보장**
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ 던지는 형태를 하나로 고정했다 — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
-> ★★ **캐럿은 예외 종류에 달렸다** — 실행 중 예외는 소스 줄도 `^` 캐럿도 안 나오고, `SyntaxError` 라야 둘 다 나온다.
-> 이 주제는 예외를 전부 `except` 로 받아 **한 줄로 찍었으므로** 트레이스백이 한 블록도 없다.\
-> ★★ **`DeprecationWarning` 을 `warnings.catch_warnings` 로 잡아 찍었다.** 그냥 두면 그 한 줄이 **표준 오류로 새서**
-> 파이프에서 맨 앞으로 몰리고 **블록의 줄 순서가 뒤집힌다**(실측에서 그렇게 한 번 뒤집혔다).
-> 잡아서 **표준 출력에 목록으로 찍으면** 순서가 고정된다.\
-> **버전** — 이 주제의 규칙은 대부분 Python 3.0 이후 그대로다. 갈리는 것 둘 —
-> `functools.total_ordering` 이 **2.7 · 3.2 부터**이고, **`NotImplemented` 의 진릿값 평가가 3.9 부터 폐기 예정**이다
-> (지금은 `DeprecationWarning` 과 함께 참이고, 문서가 *"It will raise a `TypeError` in a future version of Python"* 이라고 적는다).\
-> **구현 대 언어 보장 한 줄** — **어느 특수 메서드가 불리는 규칙**(반사 짝·하위 클래스 우선·`NotImplemented` 처리)과
-> **안정 정렬**·**`key` 가 원소당 한 번**은 **언어 보장**이고,
-> **`__lt__` 가 몇 번 불렸는가**와 **`max` 가 `__gt__` 를 쓰는 것**은 **CPython 구현**이다.
-> ★★ **「계약 위반을 검사하지 않는다」도 보장이 아니라 관찰이다**((9)) — 문서는 검사한다고도 안 한다고도 적지 않았다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | `id()` 와 `0x…` 주소 — **그래서 이 배치는 한 번도 안 찍었다** | 예외 **종류** · `File "<stdin>", line N` · `(exit N)` |
-> | **해시값 자체**(`hash('key')` — 실행마다 다르다) | 해시가 **「같은가 다른가」** |
-> | 판이 오르면 예외 **문구**와 내부 타입 이름 | **호출 로그의 순서** · 어느 특수 메서드가 **불렸나 안 불렸나** |
-> | 판이 오르면 `__lt__` 호출 **횟수**(TimSort 의 성질) | `len()`·키 개수·`sorted()` 한 결과 |
-> | — | `set`·`dict` 를 **정렬해서 찍은** 것 |
-> | — | ★ (9)의 흔들리는 비교자도 **`random.seed(0)` 으로 고정**해 안 흔들리는 쪽에 둔다 |
->
-> ★★★ **이 주제에서 가장 조심할 칸이 「횟수」다.** 「세 원소에 `__lt__` 가 네 번」은 **이 판의 관찰**이고,
-> 「`sorted` 가 `<` 만 묻는다」는 **보장**이다. 둘을 같은 문장에 섞어 적으면 나중에 판이 오를 때 통째로 틀린다.\
-> **선행** — [10번](../10-list-methods-and-sort-key/2-summary.md)(**정렬 키의 정본** — `sort`/`sorted`·`key=`·`reverse=`·안정성의 쓰는 법) ·
-> [30번](../30-repr-eq-hash-contracts/2-summary.md)(**`__eq__` 를 정의하면 `__hash__` 가 꺼지는 것** — 여기서 그대로 물린다) ·
-> [02번](../02-is-vs-eq-interning/2-summary.md)(`True == 1` 이 되는 이유) ·
-> [04번](../04-numeric-types-and-division/2-summary.md)(`float` 의 성질).\
-> **이 사슬** — [29](../29-classes-and-attribute-lookup/2-summary.md) → [30](../30-repr-eq-hash-contracts/2-summary.md) → 31 → [32](../32-container-protocol/2-summary.md).
-> 29 가 **속성이 어디서 풀리나**, 30 이 **같음의 계약**, 31 이 **순서의 계약**, 32 가 **컨테이너의 계약**이다.
-> ★ **30 과 31 은 한 몸이다** — `__eq__` 를 정의한 클래스에 `total_ordering` 을 붙이면 **정렬은 되는데 dict 키는 못 되는** 물건이 나온다((5)).
-
 ## 한눈에 — 쉽게 말하면
 
 **비교 프로토콜은 「자 하나만 주면 줄을 세워 준다」는 거래다.**
@@ -1407,3 +1362,51 @@ Java 를 쓰다 온 사람이 「크면 `IllegalArgumentException` 이 나겠지
 - **`sorted` 에 `key` 와 `reverse` 를 같이 주면** — 이름표를 만든 뒤 그 이름표 비교를 뒤집는다.
   기준마다 방향이 다르면 **나눠 정렬**이 유일한 일반해이고, 그 세부는 [10번](../10-list-methods-and-sort-key/2-summary.md)이 정본이다.
 - **`Enum` 의 비교** — 기본 `Enum` 은 순서가 없고 `IntEnum` 은 `int` 라서 섞인다. [목록의 **37번 주제**](../37-enum/).
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [3.3.1. Basic customization — rich comparison methods](https://docs.python.org/3.12/reference/datamodel.html#object.__lt__) — **반사 짝**과 **하위 클래스 우선권**의 정본
+- [`NotImplemented`](https://docs.python.org/3.12/library/constants.html#NotImplemented) — 돌려주면 언어가 무엇을 하나 · 진릿값 평가는 **3.9 부터 폐기 예정**
+- [`functools.total_ordering`](https://docs.python.org/3.12/library/functools.html#functools.total_ordering) — 무엇을 요구하고 무엇을 채우나
+- [Sorting Techniques HOWTO](https://docs.python.org/3.12/howto/sorting.html) — *"The sort routines use `<` when comparing two objects."*
+- [`list.sort` · `sorted`](https://docs.python.org/3.12/library/stdtypes.html#list.sort) — **안정 정렬 보장**
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ 던지는 형태를 하나로 고정했다 — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
+★★ **캐럿은 예외 종류에 달렸다** — 실행 중 예외는 소스 줄도 `^` 캐럿도 안 나오고, `SyntaxError` 라야 둘 다 나온다.
+이 주제는 예외를 전부 `except` 로 받아 **한 줄로 찍었으므로** 트레이스백이 한 블록도 없다.\
+★★ **`DeprecationWarning` 을 `warnings.catch_warnings` 로 잡아 찍었다.** 그냥 두면 그 한 줄이 **표준 오류로 새서**
+파이프에서 맨 앞으로 몰리고 **블록의 줄 순서가 뒤집힌다**(실측에서 그렇게 한 번 뒤집혔다).
+잡아서 **표준 출력에 목록으로 찍으면** 순서가 고정된다.\
+**버전** — 이 주제의 규칙은 대부분 Python 3.0 이후 그대로다. 갈리는 것 둘 —
+`functools.total_ordering` 이 **2.7 · 3.2 부터**이고, **`NotImplemented` 의 진릿값 평가가 3.9 부터 폐기 예정**이다
+(지금은 `DeprecationWarning` 과 함께 참이고, 문서가 *"It will raise a `TypeError` in a future version of Python"* 이라고 적는다).\
+**구현 대 언어 보장 한 줄** — **어느 특수 메서드가 불리는 규칙**(반사 짝·하위 클래스 우선·`NotImplemented` 처리)과
+**안정 정렬**·**`key` 가 원소당 한 번**은 **언어 보장**이고,
+**`__lt__` 가 몇 번 불렸는가**와 **`max` 가 `__gt__` 를 쓰는 것**은 **CPython 구현**이다.
+★★ **「계약 위반을 검사하지 않는다」도 보장이 아니라 관찰이다**((9)) — 문서는 검사한다고도 안 한다고도 적지 않았다.\
+★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| `id()` 와 `0x…` 주소 — **그래서 이 배치는 한 번도 안 찍었다** | 예외 **종류** · `File "<stdin>", line N` · `(exit N)` |
+| **해시값 자체**(`hash('key')` — 실행마다 다르다) | 해시가 **「같은가 다른가」** |
+| 판이 오르면 예외 **문구**와 내부 타입 이름 | **호출 로그의 순서** · 어느 특수 메서드가 **불렸나 안 불렸나** |
+| 판이 오르면 `__lt__` 호출 **횟수**(TimSort 의 성질) | `len()`·키 개수·`sorted()` 한 결과 |
+| — | `set`·`dict` 를 **정렬해서 찍은** 것 |
+| — | ★ (9)의 흔들리는 비교자도 **`random.seed(0)` 으로 고정**해 안 흔들리는 쪽에 둔다 |
+
+★★★ **이 주제에서 가장 조심할 칸이 「횟수」다.** 「세 원소에 `__lt__` 가 네 번」은 **이 판의 관찰**이고,
+「`sorted` 가 `<` 만 묻는다」는 **보장**이다. 둘을 같은 문장에 섞어 적으면 나중에 판이 오를 때 통째로 틀린다.\
+**선행** — [10번](../10-list-methods-and-sort-key/2-summary.md)(**정렬 키의 정본** — `sort`/`sorted`·`key=`·`reverse=`·안정성의 쓰는 법) ·
+[30번](../30-repr-eq-hash-contracts/2-summary.md)(**`__eq__` 를 정의하면 `__hash__` 가 꺼지는 것** — 여기서 그대로 물린다) ·
+[02번](../02-is-vs-eq-interning/2-summary.md)(`True == 1` 이 되는 이유) ·
+[04번](../04-numeric-types-and-division/2-summary.md)(`float` 의 성질).
+
+29 가 **속성이 어디서 풀리나**, 30 이 **같음의 계약**, 31 이 **순서의 계약**, 32 가 **컨테이너의 계약**이다.
+★ **30 과 31 은 한 몸이다** — `__eq__` 를 정의한 클래스에 `total_ordering` 을 붙이면 **정렬은 되는데 dict 키는 못 되는** 물건이 나온다((5)).
+
+---
+
+**이 사슬** — [29](../29-classes-and-attribute-lookup/2-summary.md) → [30](../30-repr-eq-hash-contracts/2-summary.md) → 31 → [32](../32-container-protocol/2-summary.md).

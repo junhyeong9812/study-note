@@ -1,20 +1,5 @@
 # js/syntax/52 — `switch`·라벨·흐름 제어 세부: 「`case` 는 무엇으로 견주고, 몸통은 어떤 순서로 도나 — 라벨은 어디까지 뛰나」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1 · v20.19.6 · Google Chrome 151 · x86-64 Linux. 세 판의 출력이 한 글자도 같았다.
->
-> ★★★ **이 주제의 본체는 64칸 전수 격자다** — 판별식 여덟 × `case` 값 여덟을 `Object.is`·SameValueZero 와 견준다. **1번 · 2번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **`case` 의 비교 — 그리고 `case` 가 줄지어 있을 때 어느 것이 이기나**
-> ② ★★★ **`case` 식의 평가 순서 · 몸통의 순서 · `default` 의 자리**
-> ③ ★★ **`switch` 블록의 스코프 · 라벨이 뛸 수 있는 범위.**
->
-> **선행** — [32](../32-error-handling-and-error/2-summary.md) · [33](../33-equality-three-kinds/2-summary.md) · [05](../05-var-let-const-and-tdz/2-summary.md).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 문항(1\~5)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -287,6 +272,14 @@ compile("'use strict'; lbl: function f() {}", "'use strict'; lbl: function f() {
 ### 11. `finally` 와 라벨 (연결) ★
 
 - ★ 32번의 `out: { try { return "T"; } finally { break out; } }` 는 무엇을 돌려주었나? 이 문서의 라벨 블록 `break` 와 그 결과를 이어서 설명하라.
+
+## 실행 환경
+
+**환경** — node v18.19.1 · v20.19.6 · Google Chrome 151 · x86-64 Linux. 세 판의 출력이 한 글자도 같았다.
+
+★★★ **이 주제의 본체는 64칸 전수 격자다** — 판별식 여덟 × `case` 값 여덟을 `Object.is`·SameValueZero 와 견준다. **1번 · 2번 문항이 이 주제의 중심이다.**
+
+**선행** — [32](../32-error-handling-and-error/2-summary.md) · [33](../33-equality-three-kinds/2-summary.md) · [05](../05-var-let-const-and-tdz/2-summary.md).
 
 ## 복습 기록
 

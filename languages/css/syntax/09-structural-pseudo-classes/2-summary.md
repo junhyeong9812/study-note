@@ -1,12 +1,5 @@
 # css/syntax/09 — 구조적 의사 클래스: `:nth-child()`·`:nth-of-type()` 과 `of S` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Selectors Level 4 §Child-indexed pseudo-classes](https://drafts.csswg.org/selectors-4/#child-index) 와 그 안의 [`:nth-child()`](https://drafts.csswg.org/selectors-4/#the-nth-child-pseudo) · [`:nth-of-type()`](https://drafts.csswg.org/selectors-4/#the-nth-of-type-pseudo) · [`An+B` 표기](https://drafts.csswg.org/css-syntax-3/#anb-microsyntax). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 매치 수는 **Google Chrome 151.0.7922.173** headless 에서 `document.querySelectorAll(...).length` 로 실제로 센 값이다. 규칙이 스타일시트에 담겼는지는 `cssRules` 로, 화면에 무엇이 보이는지는 `getComputedStyle` + 스크린샷으로 확인했다. `demo` 블록 **2개 전부**와 그 「바꿔 볼 것」도 돌려 확인했다.\
-> **WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다. **엔진은 Chrome 하나**다.
-> **버전** — CSS 에 언어 버전은 없다. Baseline(2026-09-23 에 `api.webstatus.dev` 조회): `:nth-child()` **widely**(2015-07-29 → 2018-01-29) · **`:nth-child(… of S)` widely**(newly 2023-05-09 → widely 2025-11-09, Chrome 111 · Firefox 113 · Safari 9).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 숫자는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **세 가지 다른 줄서기다. 줄이 다르면 번호도 다르다.**
@@ -473,3 +466,10 @@ li:nth-of-type(2n)         /* li 줄 짝수 — of 는 못 붙인다 */
 - **`:nth-of-type` 은 네임스페이스까지 본다**(같은 로컬 이름이어도 네임스페이스가 다르면 다른 타입). HTML 문서만 다루면 만날 일이 없다. *(이 머신에서 미실행.)*
 - 트리 순서가 아니라 **화면에 그려진 순서**로 세고 싶다면 CSS 에는 방법이 없다. `order`(flex)는 **그림 순서만 바꾸고 선택자 번호는 안 바꾼다.**\
   *(Chrome 151 headless 실측: `display: flex` 안의 셋째 아이템에 `order: -1` 을 줘 **화면에서 맨 왼쪽**으로 보냈는데(x 좌표 8 로 가장 작다), `:nth-child(1)`·`:first-child` 는 여전히 **첫째 아이템**을 잡았다.)* grid 쪽(`grid-auto-flow`)은 미실행이다([목록의 **26번 주제**](../26-flex-wrap-gap-order/)·**28번 주제**).
+
+## 실행 환경
+
+**기준 소스** — [Selectors Level 4 §Child-indexed pseudo-classes](https://drafts.csswg.org/selectors-4/#child-index) 와 그 안의 [`:nth-child()`](https://drafts.csswg.org/selectors-4/#the-nth-child-pseudo) · [`:nth-of-type()`](https://drafts.csswg.org/selectors-4/#the-nth-of-type-pseudo) · [`An+B` 표기](https://drafts.csswg.org/css-syntax-3/#anb-microsyntax). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 매치 수는 **Google Chrome 151.0.7922.173** headless 에서 `document.querySelectorAll(...).length` 로 실제로 센 값이다. 규칙이 스타일시트에 담겼는지는 `cssRules` 로, 화면에 무엇이 보이는지는 `getComputedStyle` + 스크린샷으로 확인했다. `demo` 블록 **2개 전부**와 그 「바꿔 볼 것」도 돌려 확인했다.\
+**WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다. **엔진은 Chrome 하나**다.
+**버전** — CSS 에 언어 버전은 없다. Baseline(2026-09-23 에 `api.webstatus.dev` 조회): `:nth-child()` **widely**(2015-07-29 → 2018-01-29) · **`:nth-child(… of S)` widely**(newly 2023-05-09 → widely 2025-11-09, Chrome 111 · Firefox 113 · Safari 9).

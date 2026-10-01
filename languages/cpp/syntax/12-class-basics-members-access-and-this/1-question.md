@@ -1,16 +1,5 @@
 # cpp/syntax/12 — 클래스 기본: 멤버·접근 지정·`this` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **환경** — g++ 13.3.0 · clang 18.1.3 · GNU nm (binutils 2.42) · x86-64 Linux.
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
-> ★ 이 주제의 답은 **대부분 컴파일러 진단**이다 — 「막히나 통과하나」를 먼저 답하고, 그다음 **왜**를 답한다.
-> ★★ **네 번째 창은 `nm` 의 심볼 개수**다(3번). `sizeof` 가 못 끝내는 자리를 그것만 끝낸다.
-> ★ **「부적용인 창」이 있다** — 런타임 sanitizer. 접근 지정은 컴파일이 끝나면 사라져 **잴 것이 없다**.
-> 선행 — 형제 [`07번`](../07-references-vs-pointers/)(참조와 포인터)과 형제 [`10번`](../10-const-correctness/)(`const`)이 이 주제의 바로 옆이다.
-> 이어지는 것 — [13번](../13-constructors-member-init-list-and-delegating/) · [14번](../14-destructors-and-deterministic-destruction/) · [15번](../15-raii-resources-as-types/)이 한 사슬이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -222,6 +211,16 @@ int main() {
 - 멤버 **초기화 순서**의 정본은 몇 번인가?
 - 정적 멤버와 **`inline` 변수**의 정본은 몇 번인가?
 - ★ 러스트는 데이터와 코드를 **어떻게 갈라 적는가** — 어느 갈래 어느 주제인가?
+
+## 실행 환경
+
+**환경** — g++ 13.3.0 · clang 18.1.3 · GNU nm (binutils 2.42) · x86-64 Linux.
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
+★ 이 주제의 답은 **대부분 컴파일러 진단**이다 — 「막히나 통과하나」를 먼저 답하고, 그다음 **왜**를 답한다.
+★★ **네 번째 창은 `nm` 의 심볼 개수**다(3번). `sizeof` 가 못 끝내는 자리를 그것만 끝낸다.
+★ **「부적용인 창」이 있다** — 런타임 sanitizer. 접근 지정은 컴파일이 끝나면 사라져 **잴 것이 없다**.
+선행 — 형제 [`07번`](../07-references-vs-pointers/)(참조와 포인터)과 형제 [`10번`](../10-const-correctness/)(`const`)이 이 주제의 바로 옆이다.
+이어지는 것 — [13번](../13-constructors-member-init-list-and-delegating/) · [14번](../14-destructors-and-deterministic-destruction/) · [15번](../15-raii-resources-as-types/)이 한 사슬이다.
 
 ## 복습 기록
 

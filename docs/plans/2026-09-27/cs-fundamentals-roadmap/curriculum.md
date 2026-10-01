@@ -1,10 +1,5 @@
 # CS 기본기 커리큘럼 — 영역 → 단원 → 주제(leaf) (2026-09-27, L0 설계)
 
-> **용도**: study-note `cs/` 재편의 기준 트리. 1차 리서치 [`roadmap.md`](roadmap.md)를 출발점으로, 교수 관점에서 빈 곳을 채우고 기존 노트 전부를 새 트리에 매핑했다.
-> **상태**: 설계안(L0). 폴더 생성·이동·이관은 **하지 않았다** — 착수는 영역별로 별도 결정한다.
-> **표기**: `[?]` = 원문(목차·장 번호)을 이번 작업에서 직접 확인하지 못한 항목 — 노트 작성 시 재확인한다. 장 번호 없이 **장 제목만** 적은 근거는 제목 수준에서만 주장한다.
-> **갱신(2026-09-28)**: 갭 리서치 5편 — [`gap-practical.md`](gap-practical.md) · [`gap-performance.md`](gap-performance.md) · [`gap-data-trace-timeout.md`](gap-data-trace-timeout.md) · [`gap-design-patterns.md`](gap-design-patterns.md) · [`gap-maintainability.md`](gap-maintainability.md) — 을 병합했다. 영역 `data-engineering/`(§18a) 신설, §16을 프론트엔드 엔지니어링으로 확장, 성능·추적성 읽기 경로(§0.8·§0.9) 추가. 수치는 §20.
-
 ---
 
 ## 0. 설계 원칙

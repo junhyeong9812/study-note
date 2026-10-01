@@ -1,73 +1,5 @@
 # js/syntax/37 — Promise 상태 모델: 「한 번 정해지면 안 바뀐다 · `then` 은 새 프라미스를 만든다 · 거부를 아무도 안 받으면 호스트가 알린다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자 셋이다** — **상태 전이 11행**(나중 호출이 상태를 바꾼 행을 스크립트가 센다 — 동작 (1)) ·
-> **`finally` 8칸**(상류의 결과가 호출자에게 닿지 못한 칸을 센다 — 동작 (4)) · **미처리 거부 6행 × node 두 판**(두 판이 갈린 행을 센다 — 동작 (5)).
-> ★★★ **틱 수는 ① 추상 연산에 로그 심기로 센다** — 한 틱에 한 번씩 스스로 다시 걸리는 **계수 잡**을 돌리고, `then` 콜백이 **몇 틱째에** 돌았나를 찍는다(동작 (2)).
-> ★★ 보조로 **④ 예외의 `constructor.name` + `message`** — 자기 자신으로 `resolve` 한 프라미스의 `TypeError 「Chaining cycle detected for promise #<Promise>」`.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — Promise Objects](https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-promise-objects) — `CreateResolvingFunctions`(resolve·reject 가 **한 칸을 나눠 쓰는** 것) · `NewPromiseResolveThenableJob` · `HostPromiseRejectionTracker`(「`"reject"`」·「`"handle"`」) · `Promise.prototype.finally`
-> - [HTML — Unhandled promise rejections](https://html.spec.whatwg.org/multipage/webappapis.html#unhandled-promise-rejections) — HTML 의 `HostPromiseRejectionTracker` 구현(「**classic script 이고 muted errors 면 return**」) · `notify about rejected promises`(**태스크를 하나 큐에 넣어** 이벤트를 쏜다)
-> - [Node.js v20 — `--unhandled-rejections`](https://nodejs.org/docs/latest-v20.x/api/cli.html#--unhandled-rejectionsmode) — v15.0.0 에서 기본값이 `throw` · [process 의 `unhandledRejection`·`rejectionHandled` 이벤트](https://nodejs.org/docs/latest-v20.x/api/process.html#event-unhandledrejection)
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — `Promise.prototype.finally` **2018**
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 상태·틱 수·예외는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다. Chrome 151 은 헤드리스(`./js36b-browser.sh` — 소스는 [36번](../36-event-loop-and-microtasks/2-summary.md)에 있다).
-> ★★ **예외는 `이름 「메시지」` 꼴로** 찍었다. ★★★ **미처리 거부 경고는 표준 오류다** — 격자에서는 node 의 이벤트(`process.on`)로 받아 **표준 출력**에 찍었고, 표준 오류 그 자체는 **따로 한 블록**에 실었다(동작 (5)).
-> ★★ **이 주제의 node 탐침은 두 node 판과 Chrome 151 에서 한 글자도 같았다**(아래 대조기의 집계 줄).
->
-> **버전**
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `Promise` · `then` · `catch` · `Promise.resolve`/`reject` | ES2015 | 세 판 다 있다 |
-> | `Promise.prototype.finally` | **ES2018** | 세 판 다 있다 |
-> | `HostPromiseRejectionTracker`(명세의 호스트 훅) | — **이 문서는 들어온 판을 대조하지 않았다** | 훅 자체는 관찰할 수 없다 — 호스트의 보고로만 본다 |
-> | `unhandledrejection`·`rejectionhandled` 이벤트 | — **HTML** | Chrome 151 |
-> | `process.on('unhandledRejection')` · `--unhandled-rejections` | — **node**(기본 `throw` 는 v15.0.0 부터 — node 문서) | node 18 · 20 둘 다 `throw` 로 동작했다 |
->
-> ★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — `Promise.prototype.finally` 가 **2018**. README 37행은 판을 적지 않는다.
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체) | 상태 전이 **11행** · `finally` **8칸** · 미처리 거부 **6행 × 2판** — 셋 다 마지막 줄을 스크립트가 센다 |
-> | ★★★ **① 추상 연산에 로그 심기** | 계수 잡으로 **틱 수**를 센다 · thenable 의 **`then` 게터가 읽히는 때**와 **`then()` 이 불리는 때**를 찍는다(동작 (2)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | 자기 자신으로 `resolve` → `TypeError` · `then` 게터가 던진 `Error 「g」` 가 **그대로 거부 이유**가 되는 것 |
-> | ★ **부적용 — ③ 브랜드 태그** | 프라미스인지 가리는 판정은 34번이 정본이다. 여기서는 **thenable**(`then` 이 함수인 객체)이 판정 기준이다 |
-> | ★ **창을 바꿔 물었다**(제5의 상태) | 「이 거부가 보고됐나」를 node 에서는 **`process.on` 이벤트 + 종료 코드**로, Chrome 에서는 **`window` 의 이벤트**로 물었다 — ECMA-262 에는 보고하는 동작이 없다(훅뿐) |
-> | ★ **안 쟀다 — 시간** | 「`then` 은 느리다」를 쓰지 않는다. **틱 수는 세고 시간은 안 잰다** |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★★ **`--unhandled-rejections=warn` 블록의 `(node:PID)`** — 실행마다 바뀐다(재대조에서 정규화한다) | ★★★ 세 격자의 **칸 글자**와 마지막 줄 `0 / 5` · `4 / 8` · `0 / 6` |
-> | 기본 모드 표준 오류 블록의 **`node:internal/…:줄:칸`** — node **판마다** 바뀐다(판을 고정했으므로 재실행에서는 같다) | ★★★ **틱 수**(`@0`·`@1`·`@2`·`@3`) — 계수 잡이 틱을 세므로 기계 속도에 안 매인다 · 두 node 판과 Chrome 이 같았다 |
-> | 예외 **문구** — V8 의 글자다 | 종료 코드 `0`·`1` · Chrome 이벤트의 **순서** |
->
-> **★★★ 층 — 거부를 「보고하는」 것은 언어가 아니다**
->
-> | 층 | 무엇을 정하나 | 이 문서의 어디 |
-> |---|---|---|
-> | **언어 명세(ECMA-262)** | 상태 전이(한 번만) · `then` 의 전파 · thenable 을 **잡 하나로** 흡수 · 미처리 거부 때 **`HostPromiseRejectionTracker` 를 부르는 것까지** | 동작 (1)\~(4) |
-> | **호스트 — HTML** | 훅을 받아 **체크포인트 뒤 태스크 하나로** `unhandledrejection` 을 쏜다 · 나중에 달리면 `rejectionhandled` · **muted errors 면 아무것도 안 한다** | 동작 (5)의 Chrome |
-> | **호스트 — node** | 한 콜백 뒤의 비우기가 끝났을 때 **아직 처리기가 없으면** 보고 · 기본 모드 `throw` 면 **종료 코드 1** · `process.on` 이 있으면 그것만 부른다 | 동작 (5)의 node |
-> | **구현(V8)** | 예외 문구(`Chaining cycle detected …`) | 동작 (1) |
->
-> **선행** — [36 — 이벤트 루프와 마이크로태스크](../36-event-loop-and-microtasks/2-summary.md)(직접 선행 — ★★★ **틱**이 거기서 나온다: 마이크로태스크는 등록 순서대로 빌 때까지) ·
-> [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(★★★ **`try`/`finally` 격자 `6 / 9`** — 이 문서의 `.finally()` 격자와 **나란히** 읽는다. 동작 (4)) ·
-> [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★ **thenable 은 이터러블과 같은 「덕 타이핑 프로토콜」** 이다 — 이름이 `then` 인 함수가 있으면 된다).
->
-> ★★ **경계 — 연혁**(콜백 지옥 · 평탄화가 왜 필요했나)은 [`history/js/04-비동기-진화.md`](../../../../history/js/04-비동기-진화.md) 의 **「3단계 — Promise (ES2015): 미래의 값을 객체로」** 절이 정본이다. 여기서는 **그 규칙을 재고 틱을 센다.**
-> ★ **경계 — 조합기**(`all`·`race`…)는 [38번](../38-promise-combinators/2-summary.md), **`await` 로 거부를 받는 법**은 [39번](../39-async-await/2-summary.md), **순서 자체**는 36번.
-
 ```text
 ===== ./js36b-versions.sh (exit=0) =====
 node 18.19.1  v8 10.2.154.26-node.28
@@ -772,3 +704,70 @@ catch ran(setTimeout-0-twice)
 - **`--unhandled-rejections=strict`** — 훅이 있어도 죽인다고 node 문서가 적는다. **이 문서는 돌리지 않았다.**
 - **`Promise` 를 상속한 생성자**(`SpeciesConstructor`) — `then`·`finally` 가 새 프라미스를 **어느 생성자로** 만드나. 이 문서는 기본 `Promise` 만 봤다.
 - **가비지 컬렉션과 거부 추적** — 명세 노트는 `"handle"` 때 프라미스를 붙들지 말라고 적는다. 재지 않았다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 전수 격자 셋이다** — **상태 전이 11행**(나중 호출이 상태를 바꾼 행을 스크립트가 센다 — 동작 (1)) ·
+**`finally` 8칸**(상류의 결과가 호출자에게 닿지 못한 칸을 센다 — 동작 (4)) · **미처리 거부 6행 × node 두 판**(두 판이 갈린 행을 센다 — 동작 (5)).
+★★★ **틱 수는 ① 추상 연산에 로그 심기로 센다** — 한 틱에 한 번씩 스스로 다시 걸리는 **계수 잡**을 돌리고, `then` 콜백이 **몇 틱째에** 돌았나를 찍는다(동작 (2)).
+★★ 보조로 **④ 예외의 `constructor.name` + `message`** — 자기 자신으로 `resolve` 한 프라미스의 `TypeError 「Chaining cycle detected for promise #<Promise>」`.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — Promise Objects](https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-promise-objects) — `CreateResolvingFunctions`(resolve·reject 가 **한 칸을 나눠 쓰는** 것) · `NewPromiseResolveThenableJob` · `HostPromiseRejectionTracker`(「`"reject"`」·「`"handle"`」) · `Promise.prototype.finally`
+- [HTML — Unhandled promise rejections](https://html.spec.whatwg.org/multipage/webappapis.html#unhandled-promise-rejections) — HTML 의 `HostPromiseRejectionTracker` 구현(「**classic script 이고 muted errors 면 return**」) · `notify about rejected promises`(**태스크를 하나 큐에 넣어** 이벤트를 쏜다)
+- [Node.js v20 — `--unhandled-rejections`](https://nodejs.org/docs/latest-v20.x/api/cli.html#--unhandled-rejectionsmode) — v15.0.0 에서 기본값이 `throw` · [process 의 `unhandledRejection`·`rejectionHandled` 이벤트](https://nodejs.org/docs/latest-v20.x/api/process.html#event-unhandledrejection)
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — `Promise.prototype.finally` **2018**
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 상태·틱 수·예외는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다. Chrome 151 은 헤드리스(`./js36b-browser.sh` — 소스는 [36번](../36-event-loop-and-microtasks/2-summary.md)에 있다).
+★★ **예외는 `이름 「메시지」` 꼴로** 찍었다. ★★★ **미처리 거부 경고는 표준 오류다** — 격자에서는 node 의 이벤트(`process.on`)로 받아 **표준 출력**에 찍었고, 표준 오류 그 자체는 **따로 한 블록**에 실었다(동작 (5)).
+★★ **이 주제의 node 탐침은 두 node 판과 Chrome 151 에서 한 글자도 같았다**(맨 위 대조기의 집계 줄).
+
+**버전**
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `Promise` · `then` · `catch` · `Promise.resolve`/`reject` | ES2015 | 세 판 다 있다 |
+| `Promise.prototype.finally` | **ES2018** | 세 판 다 있다 |
+| `HostPromiseRejectionTracker`(명세의 호스트 훅) | — **이 문서는 들어온 판을 대조하지 않았다** | 훅 자체는 관찰할 수 없다 — 호스트의 보고로만 본다 |
+| `unhandledrejection`·`rejectionhandled` 이벤트 | — **HTML** | Chrome 151 |
+| `process.on('unhandledRejection')` · `--unhandled-rejections` | — **node**(기본 `throw` 는 v15.0.0 부터 — node 문서) | node 18 · 20 둘 다 `throw` 로 동작했다 |
+
+★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — `Promise.prototype.finally` 가 **2018**. README 37행은 판을 적지 않는다.
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체) | 상태 전이 **11행** · `finally` **8칸** · 미처리 거부 **6행 × 2판** — 셋 다 마지막 줄을 스크립트가 센다 |
+| ★★★ **① 추상 연산에 로그 심기** | 계수 잡으로 **틱 수**를 센다 · thenable 의 **`then` 게터가 읽히는 때**와 **`then()` 이 불리는 때**를 찍는다(동작 (2)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | 자기 자신으로 `resolve` → `TypeError` · `then` 게터가 던진 `Error 「g」` 가 **그대로 거부 이유**가 되는 것 |
+| ★ **부적용 — ③ 브랜드 태그** | 프라미스인지 가리는 판정은 34번이 정본이다. 여기서는 **thenable**(`then` 이 함수인 객체)이 판정 기준이다 |
+| ★ **창을 바꿔 물었다**(제5의 상태) | 「이 거부가 보고됐나」를 node 에서는 **`process.on` 이벤트 + 종료 코드**로, Chrome 에서는 **`window` 의 이벤트**로 물었다 — ECMA-262 에는 보고하는 동작이 없다(훅뿐) |
+| ★ **안 쟀다 — 시간** | 「`then` 은 느리다」를 쓰지 않는다. **틱 수는 세고 시간은 안 잰다** |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★★ **`--unhandled-rejections=warn` 블록의 `(node:PID)`** — 실행마다 바뀐다(재대조에서 정규화한다) | ★★★ 세 격자의 **칸 글자**와 마지막 줄 `0 / 5` · `4 / 8` · `0 / 6` |
+| 기본 모드 표준 오류 블록의 **`node:internal/…:줄:칸`** — node **판마다** 바뀐다(판을 고정했으므로 재실행에서는 같다) | ★★★ **틱 수**(`@0`·`@1`·`@2`·`@3`) — 계수 잡이 틱을 세므로 기계 속도에 안 매인다 · 두 node 판과 Chrome 이 같았다 |
+| 예외 **문구** — V8 의 글자다 | 종료 코드 `0`·`1` · Chrome 이벤트의 **순서** |
+
+**★★★ 층 — 거부를 「보고하는」 것은 언어가 아니다**
+
+| 층 | 무엇을 정하나 | 이 문서의 어디 |
+|---|---|---|
+| **언어 명세(ECMA-262)** | 상태 전이(한 번만) · `then` 의 전파 · thenable 을 **잡 하나로** 흡수 · 미처리 거부 때 **`HostPromiseRejectionTracker` 를 부르는 것까지** | 동작 (1)\~(4) |
+| **호스트 — HTML** | 훅을 받아 **체크포인트 뒤 태스크 하나로** `unhandledrejection` 을 쏜다 · 나중에 달리면 `rejectionhandled` · **muted errors 면 아무것도 안 한다** | 동작 (5)의 Chrome |
+| **호스트 — node** | 한 콜백 뒤의 비우기가 끝났을 때 **아직 처리기가 없으면** 보고 · 기본 모드 `throw` 면 **종료 코드 1** · `process.on` 이 있으면 그것만 부른다 | 동작 (5)의 node |
+| **구현(V8)** | 예외 문구(`Chaining cycle detected …`) | 동작 (1) |
+
+**선행** — [36 — 이벤트 루프와 마이크로태스크](../36-event-loop-and-microtasks/2-summary.md)(직접 선행 — ★★★ **틱**이 거기서 나온다: 마이크로태스크는 등록 순서대로 빌 때까지) ·
+[32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(★★★ **`try`/`finally` 격자 `6 / 9`** — 이 문서의 `.finally()` 격자와 **나란히** 읽는다. 동작 (4)) ·
+[19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★ **thenable 은 이터러블과 같은 「덕 타이핑 프로토콜」** 이다 — 이름이 `then` 인 함수가 있으면 된다).
+
+★★ **경계 — 연혁**(콜백 지옥 · 평탄화가 왜 필요했나)은 [`history/js/04-비동기-진화.md`](../../../../history/js/04-비동기-진화.md) 의 **「3단계 — Promise (ES2015): 미래의 값을 객체로」** 절이 정본이다. 여기서는 **그 규칙을 재고 틱을 센다.**
+★ **경계 — 조합기**(`all`·`race`…)는 [38번](../38-promise-combinators/2-summary.md), **`await` 로 거부를 받는 법**은 [39번](../39-async-await/2-summary.md), **순서 자체**는 36번.

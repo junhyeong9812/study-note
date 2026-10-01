@@ -1,18 +1,5 @@
 # java/syntax/57 — `Files`·`Path` — NIO.2 파일 API — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../26-try-with-resources/`](../26-try-with-resources/)(자원을 닫는 문법)과 [`../44-stream-creation/`](../44-stream-creation/)(스트림 소스). 이 문서의 절반이 그 둘이 만나는 자리다.
-> **기준 소스** — Temurin **JDK 21.0.5** 표준 라이브러리 소스 `java.base/java/nio/file/Files.java`·`Path.java`(`lib/src.zip`) · [`Files` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/nio/file/Files.html) · [`Path` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/nio/file/Path.html)
-> **실행 검증** — 이 문서의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 일곱(57-a~57-g)을 **17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
-> ★ **세 판의 출력이 전부 같지는 않았다.** `Files.createDirectories` 의 반환값이 **17 에서만 절대 경로**였다(아래 「구현 세부사항 대 언어 보장」이 정본).
-> **버전** — `Path` 인터페이스는 `@since 1.7`, `Path.of` 는 **11**, `Files.lines`·`walk`·`list`·`find`·`readAllLines` 는 **1.8**, `Files.readString`·`writeString` 은 **11**.
-> **측정 조건** — Linux · ext4 · `file.encoding=UTF-8` · 기본 `Locale` `ko_KR`. 실험은 전부 **임시 스크래치 디렉터리 안의 `sandbox/` 아래**에서 하고 매번 지웠다.\
-> 경로 구분자·권한·`probeContentType` 결과는 **OS 에 달렸다.** 그 줄에는 그 사실이 붙어 있다.
-> **범위** — 파일 시스템을 **자료구조로 구현하는 것**(트리·경로 정규화 알고리즘)은 [`../../../../cs/data-structure/33-filesystem/`](../../../../cs/data-structure/33-filesystem/) 가 정본이다.\
-> 그쪽은 **디렉터리 트리를 어떻게 만들고 탐색하나**까지, 여기는 **java.nio.file 이 그것을 어떤 API 로 노출하나**부터다.\
-> 스트림을 닫는 **문법**은 [`../26-try-with-resources/`](../26-try-with-resources/)가, 스트림 **소스 팩토리**는 [`../44-stream-creation/`](../44-stream-creation/)이 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **`Path` 는 주소지, `Files` 는 그 주소로 가는 심부름꾼이다.**
@@ -945,3 +932,16 @@ if (Files.exists(p)) {
   `path.register(watcher, ENTRY_CREATE, ENTRY_MODIFY)` 형태다. 이 문서 범위 밖이고 **안 돌려 봤다.**
 - **`Files.getFileStore(path).type()` 으로 파일시스템 종류를 알 수 있다.**\
   (10)에서 `ext4` 와 `tmpfs` 를 이것으로 확인했다. `ATOMIC_MOVE` 가능 여부를 미리 판단할 때 쓸 수 있지만, **같은 타입이라고 같은 파일시스템인 것은 아니다** — 확실한 방법은 `getFileStore` 두 개를 `equals` 로 비교하는 것이다(**안 돌려 봄**).
+
+## 실행 환경
+
+**선행** — [`../26-try-with-resources/`](../26-try-with-resources/)(자원을 닫는 문법)과 [`../44-stream-creation/`](../44-stream-creation/)(스트림 소스). 이 문서의 절반이 그 둘이 만나는 자리다.
+**기준 소스** — Temurin **JDK 21.0.5** 표준 라이브러리 소스 `java.base/java/nio/file/Files.java`·`Path.java`(`lib/src.zip`) · [`Files` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/nio/file/Files.html) · [`Path` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/nio/file/Path.html)
+**실행 검증** — 이 문서의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 일곱(57-a~57-g)을 **17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
+★ **세 판의 출력이 전부 같지는 않았다.** `Files.createDirectories` 의 반환값이 **17 에서만 절대 경로**였다(본문 「구현 세부사항 대 언어 보장」이 정본).
+**버전** — `Path` 인터페이스는 `@since 1.7`, `Path.of` 는 **11**, `Files.lines`·`walk`·`list`·`find`·`readAllLines` 는 **1.8**, `Files.readString`·`writeString` 은 **11**.
+**측정 조건** — Linux · ext4 · `file.encoding=UTF-8` · 기본 `Locale` `ko_KR`. 실험은 전부 **임시 스크래치 디렉터리 안의 `sandbox/` 아래**에서 하고 매번 지웠다.\
+경로 구분자·권한·`probeContentType` 결과는 **OS 에 달렸다.** 그 줄에는 그 사실이 붙어 있다.
+**범위** — 파일 시스템을 **자료구조로 구현하는 것**(트리·경로 정규화 알고리즘)은 [`../../../../cs/data-structure/33-filesystem/`](../../../../cs/data-structure/33-filesystem/) 가 정본이다.\
+그쪽은 **디렉터리 트리를 어떻게 만들고 탐색하나**까지, 여기는 **java.nio.file 이 그것을 어떤 API 로 노출하나**부터다.\
+스트림을 닫는 **문법**은 [`../26-try-with-resources/`](../26-try-with-resources/)가, 스트림 **소스 팩토리**는 [`../44-stream-creation/`](../44-stream-creation/)이 정본이다.

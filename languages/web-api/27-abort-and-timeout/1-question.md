@@ -1,12 +1,5 @@
 # web-api/27 — `AbortController` 로 취소와 타임아웃: `AbortSignal.timeout()`/`any()` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — `AbortSignal` 로 **리스너**를 떼는 것과 `any`·`timeout` 의 신호 쪽 성질은 [20번 주제](../20-listener-lifetime/1-question.md)가 정본이다. 여기는 **`fetch` 를 끊으면 페이지와 서버에서 각각 무엇이 남나**를 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 Fetch·DOM 명세 문장이다. 이식성은 주장 범위 밖이다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -82,6 +75,12 @@ for (let k = 0; k < 100; k++) {
 - [JS 41번 주제](../../js/syntax/41-cancellation-and-timeouts/1-question.md)가 node 안의 서버로 잰 것에 이 편이 더한 것은 무엇인가?
 - [Go 34번 주제](../../go/syntax/34-context-cancellation-deadlines-and-values/1-question.md)의 `context` 는 이 편의 서버에 없던 무엇을 주나?
 - 이 편의 **도구가 못 보는 것** 두 가지를 대라.
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — `AbortSignal` 로 **리스너**를 떼는 것과 `any`·`timeout` 의 신호 쪽 성질은 [20번 주제](../20-listener-lifetime/1-question.md)가 정본이다. 여기는 **`fetch` 를 끊으면 페이지와 서버에서 각각 무엇이 남나**를 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 Fetch·DOM 명세 문장이다. 이식성은 주장 범위 밖이다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

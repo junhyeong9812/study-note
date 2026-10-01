@@ -1,10 +1,5 @@
 # java/syntax/16 — 애너테이션: 선언·`@Retention`·`@Target`·메타 애너테이션 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·에러·클래스 파일 덤프는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> 실행 프로그램은 **17.0.13 · 25.0.1** 에서도 돌렸고, 달라진 것은 **`Annotation.toString()` 의 형식**뿐이었다(11번).\
-> 클래스 파일 덤프는 `javap -v -p` 출력을, javadoc 은 `lib/src.zip` 의 실파일을 그대로 옮겼다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -638,3 +633,9 @@ Ex.java:6: error: annotation interface Generic cannot be generic
 **구현 의존 항목** — `Annotation.toString()` 의 형식과 원소 순서, `getClass()` 가 `$Proxy1` 인 것, 같은 조회가 같은 객체를 주는 것, `javac` 에러 문구는 **전부 구현 세부**다.\
 버전이 올랐을 때 다시 돌려 볼 것은 이 표의 **`(16-b)`·`(16-c)`** 둘이다 — 에러 문구와 `toString` 형식이 걸려 있다.\
 반면 `@Retention` 세 값의 의미, `@Target` 이 자리를 막는 것, 원소 타입 제한, `@Inherited` 의 범위는 JLS·javadoc·JVMS 가 보장한다.
+
+## 실행 환경
+
+이 파일의 모든 출력·에러·클래스 파일 덤프는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+실행 프로그램은 **17.0.13 · 25.0.1** 에서도 돌렸고, 달라진 것은 **`Annotation.toString()` 의 형식**뿐이었다(11번).\
+클래스 파일 덤프는 `javap -v -p` 출력을, javadoc 은 `lib/src.zip` 의 실파일을 그대로 옮겼다.

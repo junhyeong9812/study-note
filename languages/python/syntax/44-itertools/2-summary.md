@@ -1,34 +1,5 @@
 # python/syntax/44-itertools — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
-> - [`itertools`(3.12)](https://docs.python.org/3.12/library/itertools.html) —
->   `groupby` 의 *"Generally, the iterable needs to already be sorted on the same key function"* · *"It generates a break or new group every time the value of the key function changes"* ·
->   *"That behavior differs from SQL's GROUP BY which aggregates common elements regardless of their input order"* ·
->   *"when the `groupby()` object is advanced, the previous group is no longer visible"* ·
->   `tee` 의 *"This itertool may require significant auxiliary storage"* 와 파이썬으로 적은 동등 코드
-> - `combinations`·`permutations` 의 *"Elements are treated as unique based on their position, not on their value"*
-> - [`itertools`(3.13)](https://docs.python.org/3.13/library/itertools.html) — `batched` 의 *"versionadded 3.12"* · *"versionchanged 3.13: Added the strict option"*. ★ **3.13 은 이 머신에 없다.**
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 한 블록을 더 던졌다.\
-> ★★★ **이 문서가 잰 것은 「원본을 당긴 수」·「콜백 호출 수」·「그룹 수」·「개수」뿐이다** — 시간·메모리는 한 번도 재지 않았다.
-> `tee` 가 「메모리에 쌓는다」는 것도 **바이트가 아니라 「원본을 다시 안 당겼는데 값이 나온다」로** 보였다.\
-> **버전**(문서의 `versionadded` 표기) — `combinations_with_replacement` **3.1**, `pairwise` **3.10**, `batched` **3.12**, `batched(strict=)` **3.13**. 이 문서가 쓴 나머지(`chain`·`islice`·`groupby`·`tee`·`product`·`combinations`·`permutations`)는 3.12 문서에 추가 판 표기가 없다.\
-> ★ **구현 대 언어 보장 한 줄** — 위 문서 문장들과 **「이터레이터를 돌려준다」** 가 보장이고, 예외 **문구**는 CPython 의 것이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | 판이 오르면 예외 **문구**(`batched(strict=True)` 가 3.13 에서 받아들여질 것 — 문서) | ★★ 호출 로그의 **수와 순서** · 마지막 줄 **「… N / M」** |
-> | — (주소·시간·`set` 출력을 한 곳도 안 찍었다) | 그룹의 키와 원소 · 개수 |
->
-> **선행** — [16-iterator-protocol](../16-iterator-protocol/2-summary.md)(★★★ **`itertools` 는 전부 이터레이터를 돌려준다 — 한 번 쓰면 끝이고, 소진된 것과 빈 것은 구분되지 않는다**) ·
-> [10-list-methods-and-sort-key](../10-list-methods-and-sort-key/2-summary.md)(★★ **`groupby` 앞의 정렬 — 안정 정렬 보장**) ·
-> [15-generator-expressions-lazy-eval](../15-generator-expressions-lazy-eval/2-summary.md)(게으른 평가).
-
 ## 한눈에 — 쉽게 말하면
 
 **`itertools` 는 「컨베이어 벨트 부품 상자」다.** 벨트(이터레이터) 위로 물건이 **하나씩** 흘러오고, 부품은 **흘러오는 대로** 처리한다 — 창고에 쌓아 두지 않는다.
@@ -692,3 +663,31 @@ batched(xs, n)                   # 3.12+.  strict= 는 3.13+
 * ★ **`accumulate`·`pairwise`(3.10)·`zip_longest`·`starmap`** — 이 문서는 재지 않았다. 문서 끝의 **레시피 절**이 조합 예를 싣는다.
 * ★ **`groupby` 와 `defaultdict` 의 선택** — 입력이 **이미 정렬된 거대한 스트림**이면 `groupby` 는 **한 그룹씩만** 들고 간다. 메모리 차이는 **재지 않았다.**
 * ★ **3.13 을 설치하게 되면 다시 돌릴 것** — 동작 6 의 판 격자. 문서대로면 `strict=True` 가 **짧은 마지막 묶음에서 `ValueError`** 를 낸다 — ★ **예측이지 측정이 아니다.**
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
+- [`itertools`(3.12)](https://docs.python.org/3.12/library/itertools.html) —
+  `groupby` 의 *"Generally, the iterable needs to already be sorted on the same key function"* · *"It generates a break or new group every time the value of the key function changes"* ·
+  *"That behavior differs from SQL's GROUP BY which aggregates common elements regardless of their input order"* ·
+  *"when the `groupby()` object is advanced, the previous group is no longer visible"* ·
+  `tee` 의 *"This itertool may require significant auxiliary storage"* 와 파이썬으로 적은 동등 코드
+- `combinations`·`permutations` 의 *"Elements are treated as unique based on their position, not on their value"*
+- [`itertools`(3.13)](https://docs.python.org/3.13/library/itertools.html) — `batched` 의 *"versionadded 3.12"* · *"versionchanged 3.13: Added the strict option"*. ★ **3.13 은 이 머신에 없다.**
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 한 블록을 더 던졌다.\
+★★★ **이 문서가 잰 것은 「원본을 당긴 수」·「콜백 호출 수」·「그룹 수」·「개수」뿐이다** — 시간·메모리는 한 번도 재지 않았다.
+`tee` 가 「메모리에 쌓는다」는 것도 **바이트가 아니라 「원본을 다시 안 당겼는데 값이 나온다」로** 보였다.\
+**버전**(문서의 `versionadded` 표기) — `combinations_with_replacement` **3.1**, `pairwise` **3.10**, `batched` **3.12**, `batched(strict=)` **3.13**. 이 문서가 쓴 나머지(`chain`·`islice`·`groupby`·`tee`·`product`·`combinations`·`permutations`)는 3.12 문서에 추가 판 표기가 없다.\
+★ **구현 대 언어 보장 한 줄** — 위 문서 문장들과 **「이터레이터를 돌려준다」** 가 보장이고, 예외 **문구**는 CPython 의 것이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| 판이 오르면 예외 **문구**(`batched(strict=True)` 가 3.13 에서 받아들여질 것 — 문서) | ★★ 호출 로그의 **수와 순서** · 마지막 줄 **「… N / M」** |
+| — (주소·시간·`set` 출력을 한 곳도 안 찍었다) | 그룹의 키와 원소 · 개수 |
+
+**선행** — [16-iterator-protocol](../16-iterator-protocol/2-summary.md)(★★★ **`itertools` 는 전부 이터레이터를 돌려준다 — 한 번 쓰면 끝이고, 소진된 것과 빈 것은 구분되지 않는다**) ·
+[10-list-methods-and-sort-key](../10-list-methods-and-sort-key/2-summary.md)(★★ **`groupby` 앞의 정렬 — 안정 정렬 보장**) ·
+[15-generator-expressions-lazy-eval](../15-generator-expressions-lazy-eval/2-summary.md)(게으른 평가).

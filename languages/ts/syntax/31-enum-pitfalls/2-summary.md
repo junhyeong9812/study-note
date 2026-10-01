@@ -1,13 +1,5 @@
 # ts/syntax/31 — 열거형의 함정 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Enums](https://www.typescriptlang.org/docs/handbook/enums.html) ·
-> [TypeScript 5.0 릴리스 노트 — All `enum`s Are Union `enum`s](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-0.html) ·
-> [TypeScript 5.8 릴리스 노트 — `--erasableSyntaxOnly`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-8.html).
-> 위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
-> **실행 검증** — 본판은 아래다. ★ 판 비교(3·5절)에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 —
-> 경로는 소스에 박지 않고 환경변수 **`TSC_OLD`(5.9.3) · `TSC_49`(4.9.5)** 로 준다.
-
 ```text
 ===== tsc --version · node --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -23,7 +15,6 @@ Python 3.12.3
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
 > **버전** — 「모든 enum 이 유니온 enum」은 **5.0**(릴리스 노트), `--erasableSyntaxOnly` 는 **5.8**(릴리스 노트). ★ **이 머신에서 판 경계를 던져 본 것은 4.9.5 · 5.9.3 · 7.0.2 세 판뿐이다** — 5.0 그 자체는 없다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -816,3 +807,12 @@ ex.31c.ts    exit 0 = exit 0 · 출력 한 글자도 같다
 - **`[4]` 의 `switch`** — 반환 누락을 잡고 싶으면 `default: { const never: never = d; throw … }` 꼴로 **빠짐없음을 런타임에도** 확인한다. [**12번 주제**](../12-narrowing/)의 `never` 소진 검사와 같은 모양이다. **여기서는 던지지 않았다.**
 - **`as const` 객체의 역매핑** — 필요하면 `Object.fromEntries(Object.entries(Dir).map(([k, v]) => [v, k]))` 로 **명시적으로** 만든다. 방출물에 **숨은 키가 안 생긴다.** 던지지 않았다.
 - **5.0 과 5.8 을 직접** — 이 머신에 그 판이 없다. 경계가 **4.9.5 와 5.9.3 사이**라는 것까지만 확인했다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Enums](https://www.typescriptlang.org/docs/handbook/enums.html) ·
+[TypeScript 5.0 릴리스 노트 — All `enum`s Are Union `enum`s](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-0.html) ·
+[TypeScript 5.8 릴리스 노트 — `--erasableSyntaxOnly`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-8.html).
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
+**실행 검증** — 본판은 맨 위 블록이다. ★ 판 비교(3·5절)에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 —
+경로는 소스에 박지 않고 환경변수 **`TSC_OLD`(5.9.3) · `TSC_49`(4.9.5)** 로 준다.

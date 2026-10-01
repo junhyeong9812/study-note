@@ -1,17 +1,5 @@
 # java/syntax/59 — 불변 객체 만들기: 방어적 복사·`record` 와의 조합 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §17.5 `final` Field Semantics](https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html) · [Java SE 21 `List.copyOf` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html) · [`Collections.unmodifiableList`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collections.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/List.java` · `Collections.java` 의 **javadoc 원문**(`lib/src.zip` 에서 직접 읽음).
-> **실행 검증** — 이 문서의 모든 출력·예외는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 프로그램 4개를 **17.0.13 · 21.0.5 · 25.0.1** 에서 전부 돌렸고 **세 버전의 출력이 한 글자도 다르지 않았다.**\
-> 다만 이것은 관찰이지 보장이 아니다.\
-> `javap -c -p` 로 「동작 방식 (4)」의 **컴파일 타임 상수 인라인**을 확인했다.
-> **버전** — 방어적 복사 관용구 자체는 Java 1.0 부터의 이야기다. 도구는 나중에 왔다 —
-> `Collections.unmodifiableList` = **1.2** · `Arrays.asList` = **1.2** · `Objects.requireNonNull` = **7** ·
-> `List.of` = **9** · **`List.copyOf` = 10** · `record` = **16**(`@since` 는 `src.zip` 직접 확인).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> 선행: [14 `record`](../14-records/) · [40 `List`·`Set` API 와 불변 팩토리](../40-list-set-and-immutable-factories/).
-
 ## 한눈에 — 쉽게 말하면
 
 **불변 객체는 "내용물을 봉인한 상자"다.**\
@@ -639,3 +627,16 @@ items.add("x");     // 잘 된다
 - **`Objects.requireNonNull` 은 조건 3 의 일부가 아니라 조건 0 에 가깝다.**\
   방어 복사는 "가변성"을 막고, `requireNonNull` 은 "없는 값"을 막는다. 둘은 다른 축이다 —\
   `null` 다루기의 정본은 [60 `null` 다루기](../60-null-handling/).
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §17.5 `final` Field Semantics](https://docs.oracle.com/javase/specs/jls/se21/html/jls-17.html) · [Java SE 21 `List.copyOf` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html) · [`Collections.unmodifiableList`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collections.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/List.java` · `Collections.java` 의 **javadoc 원문**(`lib/src.zip` 에서 직접 읽음).
+**실행 검증** — 이 문서의 모든 출력·예외는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+프로그램 4개를 **17.0.13 · 21.0.5 · 25.0.1** 에서 전부 돌렸고 **세 버전의 출력이 한 글자도 다르지 않았다.**\
+다만 이것은 관찰이지 보장이 아니다.\
+`javap -c -p` 로 「동작 방식 (4)」의 **컴파일 타임 상수 인라인**을 확인했다.
+**버전** — 방어적 복사 관용구 자체는 Java 1.0 부터의 이야기다. 도구는 나중에 왔다 —
+`Collections.unmodifiableList` = **1.2** · `Arrays.asList` = **1.2** · `Objects.requireNonNull` = **7** ·
+`List.of` = **9** · **`List.copyOf` = 10** · `record` = **16**(`@since` 는 `src.zip` 직접 확인).
+
+선행: [14 `record`](../14-records/) · [40 `List`·`Set` API 와 불변 팩토리](../40-list-set-and-immutable-factories/).

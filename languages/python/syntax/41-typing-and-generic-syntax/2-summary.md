@@ -1,42 +1,5 @@
 # python/syntax/41-typing-and-generic-syntax — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
-> - [`typing`(3.12)](https://docs.python.org/3.12/library/typing.html) — `TypeAlias` 의 *"Deprecated since version 3.12 … in favor of the `type` statement"* 문단 ·
->   `TypeAliasType.__value__` 가 *"lazily evaluated"* 라는 문단 · `Literal` 의 *"At runtime, an arbitrary value is allowed as type argument"* 문단 ·
->   `TypeVar` 절의 *"At runtime, `isinstance(x, T)` will raise `TypeError`"*
-> - [실행 모델 — Lazy evaluation(3.12)](https://docs.python.org/3.12/reference/executionmodel.html#lazy-evaluation) —
->   *"The values of type aliases created through the `type` statement are lazily evaluated. The same applies to the bounds and constraints of type variables"*
-> - [`typing`(3.13) — `TypeIs`](https://docs.python.org/3.13/library/typing.html#typing.TypeIs) · [What's New In Python 3.13](https://docs.python.org/3.13/whatsnew/3.13.html) —
->   *"PEP 696: Type parameters … now support defaults"* · *"PEP 742: `typing.TypeIs` provides more intuitive type narrowing behavior"*.
->   ★ **이 판은 이 머신에 없다 — 문서로만 적는다.**
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 **둘** — `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 넷을 더 던졌다(파일 이름에 `_py311` 이 붙은 것).\
-> ★★★ **3.13 은 이 머신에 없다** — 첫 블록이 `PATH` 에서 `python3.13` 을 찾아 **`None`** 을 받았고, `hasattr(typing, "TypeIs")` 가 **`False`** 였다.
-> 그래서 `TypeIs` 와 타입 매개변수 기본값의 **3.13 동작은 못 잰 것**이다.\
-> ★★★ **타입 검사기도 이 머신에 없다** — 첫 블록이 `mypy`·`pyright` 를 물어 **`None`**, [35번](../35-abc-and-protocol/2-summary.md)·[38번](../38-namedtuple-and-typeddict/2-summary.md)이 다섯 도구를 물어 **전부 `None`** 이었다.
-> 이 주제의 대부분은 **「검사기만 보는 것」** 이다 — 이 문서는 **런타임에 남는 것**만 재고, 검사기가 무엇을 잡는지는 **한 줄도 주장하지 않는다.**\
-> ★ 던지는 형태는 `python3 - <파일` 하나로 고정했다. 예외를 끝까지 흘린 블록은 넷뿐이고(`SyntaxError` 셋 · `TypeError` 하나), 나머지는 `except` 로 받아 **타입과 메시지만** 찍었다.\
-> **버전** — `X | Y` 는 **3.10**(PEP 604), `Literal` 은 **3.8**(PEP 586), `TypeAlias` 는 **3.10**(PEP 613, 3.12 에서 폐기 예고),
-> `type` 문과 `def f[T]`·`class C[T]` 는 **3.12**(PEP 695), 타입 매개변수 기본값은 **3.13**(PEP 696), `TypeIs` 는 **3.13**(PEP 742).\
-> ★ **구현 대 언어 보장 한 줄** — **`type` 문의 값이 늦게 평가된다 · `isinstance(x, T)` 가 `TypeError` 다**까지가 문서가 정한 것이고,
-> **`__value__` 가 한 번만 평가되고 기억된다 · 3.12 의 모든 클래스에 `__type_params__` 가 있다**는 이 판(CPython 3.12.3)에서 본 것이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | 판이 오르면 예외 **문구**(`TypeVar(default=)` 의 문구가 3.11 과 3.12 에서 **이미 다르다**) | ★★ 격자의 칸 · 마지막 줄 **「… N / M」** |
-> | ★ 판이 오르면 **3.13 칸 전부**(못 잰 것) | `<평가됨: …>` 줄이 **찍히느냐 안 찍히느냐**와 그 **순서** |
-> | — (주소·시간을 한 곳도 안 찍었다) | `SyntaxError` 의 줄·캐럿 위치 |
->
-> ★ **이 주제의 블록에는 주소도 시간도 절대 경로도 한 곳도 안 찍힌다.** 재대조 전부 동일.\
-> **선행** — [40-type-hints-at-runtime](../40-type-hints-at-runtime/2-summary.md)(★★★ **「힌트는 실행을 안 바꾸고 `__annotations__` 에 남는다」 — 이 주제는 그 위에 선다**) ·
-> [35-abc-and-protocol](../35-abc-and-protocol/2-summary.md)(★ `Protocol` 과 검사기 부재 판정) ·
-> [39-match-statement](../39-match-statement/2-summary.md)(★ `Literal` 값을 런타임에 가르는 쪽).
-
 ## 한눈에 — 쉽게 말하면
 
 **`typing` 의 문법들은 「설계도에 쓰는 기호」다.** 시공 현장(인터프리터)은 기호를 **해석하지 않고** 건물을 짓는다.
@@ -1003,3 +966,39 @@ def is_str(x) -> TypeIs[str]: ...    # ★ 3.13+ (PEP 742) — 3.12 typing 에�
 * ★ **변성(variance)** — PEP 695 는 `[T]` 의 공변·반변을 **검사기가 추론**하게 했다. 검사기가 없어 **이 문서의 창으로는 원리상 안 보인다.**
 * ★ **3.13 을 설치하게 되면 다시 돌릴 것** — 첫 블록(`hasattr`)과 동작 3 의 판 격자, 그리고 `e41_default.py`. 문서대로면 `[T = int]` 가 통과하고 `T.__default__` 가 `int` 가 된다 —
   ★ **이것은 예측이지 측정이 아니다.**
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
+- [`typing`(3.12)](https://docs.python.org/3.12/library/typing.html) — `TypeAlias` 의 *"Deprecated since version 3.12 … in favor of the `type` statement"* 문단 ·
+  `TypeAliasType.__value__` 가 *"lazily evaluated"* 라는 문단 · `Literal` 의 *"At runtime, an arbitrary value is allowed as type argument"* 문단 ·
+  `TypeVar` 절의 *"At runtime, `isinstance(x, T)` will raise `TypeError`"*
+- [실행 모델 — Lazy evaluation(3.12)](https://docs.python.org/3.12/reference/executionmodel.html#lazy-evaluation) —
+  *"The values of type aliases created through the `type` statement are lazily evaluated. The same applies to the bounds and constraints of type variables"*
+- [`typing`(3.13) — `TypeIs`](https://docs.python.org/3.13/library/typing.html#typing.TypeIs) · [What's New In Python 3.13](https://docs.python.org/3.13/whatsnew/3.13.html) —
+  *"PEP 696: Type parameters … now support defaults"* · *"PEP 742: `typing.TypeIs` provides more intuitive type narrowing behavior"*.
+  ★ **이 판은 이 머신에 없다 — 문서로만 적는다.**
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 **둘** — `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 넷을 더 던졌다(파일 이름에 `_py311` 이 붙은 것).\
+★★★ **3.13 은 이 머신에 없다** — 첫 블록이 `PATH` 에서 `python3.13` 을 찾아 **`None`** 을 받았고, `hasattr(typing, "TypeIs")` 가 **`False`** 였다.
+그래서 `TypeIs` 와 타입 매개변수 기본값의 **3.13 동작은 못 잰 것**이다.\
+★★★ **타입 검사기도 이 머신에 없다** — 첫 블록이 `mypy`·`pyright` 를 물어 **`None`**, [35번](../35-abc-and-protocol/2-summary.md)·[38번](../38-namedtuple-and-typeddict/2-summary.md)이 다섯 도구를 물어 **전부 `None`** 이었다.
+이 주제의 대부분은 **「검사기만 보는 것」** 이다 — 이 문서는 **런타임에 남는 것**만 재고, 검사기가 무엇을 잡는지는 **한 줄도 주장하지 않는다.**\
+★ 던지는 형태는 `python3 - <파일` 하나로 고정했다. 예외를 끝까지 흘린 블록은 넷뿐이고(`SyntaxError` 셋 · `TypeError` 하나), 나머지는 `except` 로 받아 **타입과 메시지만** 찍었다.\
+**버전** — `X | Y` 는 **3.10**(PEP 604), `Literal` 은 **3.8**(PEP 586), `TypeAlias` 는 **3.10**(PEP 613, 3.12 에서 폐기 예고),
+`type` 문과 `def f[T]`·`class C[T]` 는 **3.12**(PEP 695), 타입 매개변수 기본값은 **3.13**(PEP 696), `TypeIs` 는 **3.13**(PEP 742).\
+★ **구현 대 언어 보장 한 줄** — **`type` 문의 값이 늦게 평가된다 · `isinstance(x, T)` 가 `TypeError` 다**까지가 문서가 정한 것이고,
+**`__value__` 가 한 번만 평가되고 기억된다 · 3.12 의 모든 클래스에 `__type_params__` 가 있다**는 이 판(CPython 3.12.3)에서 본 것이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| 판이 오르면 예외 **문구**(`TypeVar(default=)` 의 문구가 3.11 과 3.12 에서 **이미 다르다**) | ★★ 격자의 칸 · 마지막 줄 **「… N / M」** |
+| ★ 판이 오르면 **3.13 칸 전부**(못 잰 것) | `<평가됨: …>` 줄이 **찍히느냐 안 찍히느냐**와 그 **순서** |
+| — (주소·시간을 한 곳도 안 찍었다) | `SyntaxError` 의 줄·캐럿 위치 |
+
+★ **이 주제의 블록에는 주소도 시간도 절대 경로도 한 곳도 안 찍힌다.** 재대조 전부 동일.\
+**선행** — [40-type-hints-at-runtime](../40-type-hints-at-runtime/2-summary.md)(★★★ **「힌트는 실행을 안 바꾸고 `__annotations__` 에 남는다」 — 이 주제는 그 위에 선다**) ·
+[35-abc-and-protocol](../35-abc-and-protocol/2-summary.md)(★ `Protocol` 과 검사기 부재 판정) ·
+[39-match-statement](../39-match-statement/2-summary.md)(★ `Literal` 값을 런타임에 가르는 쪽).

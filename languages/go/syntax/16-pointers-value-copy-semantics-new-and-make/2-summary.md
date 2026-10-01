@@ -1,16 +1,5 @@
 # go/syntax/16 — 포인터와 값 복사 의미론, `new` 와 `make` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Pointer types · Address operators ·
-> Selectors · Assignability · Calls · Allocation(`new`) · Making slices, maps and channels(`make`) ·
-> Method sets 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> **버전** — 이 주제의 규칙은 전부 **1.0부터 지금까지 같다.** 판 경계가 없다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 ## 이 갈래가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
@@ -1111,3 +1100,14 @@ func main() {
   「슬라이스·맵·채널은 참조 타입이다」는 흔한 설명인데 명세의 낱말이 아니다 —
   명세는 슬라이스를 **descriptor**, 맵을 **unordered group … of element types**,
   채널을 **conduit** 로 부른다. **정확히 말하면 「값인데 안에 포인터가 있다」** 다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Pointer types · Address operators ·
+Selectors · Assignability · Calls · Allocation(`new`) · Making slices, maps and channels(`make`) ·
+Method sets 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+**버전** — 이 주제의 규칙은 전부 **1.0부터 지금까지 같다.** 판 경계가 없다.

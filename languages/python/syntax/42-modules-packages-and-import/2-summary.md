@@ -1,38 +1,5 @@
 # python/syntax/42-modules-packages-and-import — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
-> - [언어 레퍼런스 — The import system(3.12)](https://docs.python.org/3.12/reference/import.html) —
->   *"The module will exist in `sys.modules` before the loader executes the module code. This is crucial because the module code may (directly or indirectly) import itself"* ·
->   *"If loading fails, the failing module – and only the failing module – gets removed from `sys.modules`"* ·
->   정규 패키지의 *"`__init__.py` file is implicitly executed"* · 이름 공간 패키지 절(*"a composite of various portions"*, `__path__` 가 *"custom iterable type"*)
-> - [튜토리얼 — Modules(3.12)](https://docs.python.org/3.12/tutorial/modules.html) — *"They are executed only the first time the module name is encountered in an import statement"* ·
->   *"Since the name of the main module is always `"__main__"`, modules intended for use as the main module of a Python application must always use absolute imports."*
-> - 대비용 Go 명세 문장은 이 문서가 열지 않았다 — [Go 01번](../../../go/syntax/01-packages-imports-main-and-init/2-summary.md)이 인용한 것을 가리킨다.
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 `python3` **3.12.3** 하나(이 주제는 3.11 과 갈리는 자리를 찾지 않았다). 대비로 **`go1.27.1`**·**node `v18.19.1`** 을 한 번씩 던졌다.\
-> ★★ **파일이 여럿인 실험은 실험마다 디렉토리를 새로 복사하고 `cd` 해서** `python3 -m …` 로 던졌다(배너의 `cd <실험> && …`).
-> 트레이스백에 **그 디렉토리의 절대 경로가 박히는 블록 셋**은 경로를 `.` 로 바꿨고, 배너에 그 `sed` 를 적었다 — **배너대로 던지면 같은 글자가 나온다.**\
-> ★ 파일 이름은 **실험마다 다르게** 지었다(`oa.py`·`pa.py`·`ca.py` …) — 같은 이름이 둘이면 소스 대조가 판정 불가가 된다.\
-> ★ 격자 하나(동작 2)는 파일을 **스크립트가 임시 디렉토리에 써 가며** 24번 던진다 — 그 스크립트의 전문이 곧 소스다.\
-> **버전** — 명시적 상대 import(`from . import x`)는 **2.5**(PEP 328), 이름 공간 패키지는 **3.3**(PEP 420).
-> 순환 import 예외 문구의 꼬리 `(most likely due to a circular import)` 는 **이 판(3.12.3)에서 본 문구**다 — 몇 판부터인지는 적지 않는다.\
-> ★ **구현 대 언어 보장 한 줄** — **「실행 전에 `sys.modules` 에 넣는다 · 실패한 모듈만 뺀다 · 몸통은 처음 import 때 한 번」** 이 레퍼런스의 보장이고,
-> **예외 문구**(`partially initialized module …`)는 CPython 의 것이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | ★ 실험 디렉토리의 **절대 경로** — 배너의 `sed` 로 `.` 가 된다 | ★★ 격자의 칸 · 마지막 줄 **「깨진 칸 N / M」** |
-> | ★ node 경고의 **PID**(`(node:NNN)`) — 재대조에서 정규화 규칙 하나로 뺐다 | 로그 줄의 **순서** |
-> | 판이 오르면 예외 **문구** | 예외 **종류** · `(exit N)` · `go build` 의 `import cycle not allowed` 경로 줄 |
->
-> **선행** — 목록의 선행 칸은 비어 있다. 가장 가까운 이웃은 [21-scope-legb-global-nonlocal](../21-scope-legb-global-nonlocal/2-summary.md)(★ **모듈 전역 스코프** —
-> 이 주제에서 그 전역은 **모듈 객체의 속성**으로 보이고, 반쯤 실행된 모듈은 **반쯤 찬 전역**이다).
-
 ## 한눈에 — 쉽게 말하면
 
 **`import` 는 「도서관 대출 대장」이다.** 책(모듈)을 처음 빌리러 오면 사서가 **대장에 이름부터 적고**(`sys.modules`) 그다음 **책을 인쇄한다**(몸통 실행).
@@ -847,3 +814,35 @@ python3 pkg/mod.py              # __name__ = '__main__', __package__ = None,  sy
 * ★ **`importlib.reload`** — 레퍼런스가 *"This contrasts with reloading where even the failing module is left in `sys.modules`"* 라고 적는다. 동작 3 의 반대편인데 **이 문서는 재지 않았다.**
 * ★ **`__getattr__` 모듈 함수(PEP 562)** — 반쯤 찬 모듈에서 없는 이름을 읽을 때 **끼어들 자리**가 있다. 순환을 푸는 도구로는 권하지 않는다(이 문서는 재지 않았다).
 * ★ **`python -m` 과 `sys.path[0]`** — 3.11 의 **`-P`/`PYTHONSAFEPATH`** 가 그 자리를 비운다. 동작 4 의 둘째 블록이 그 옵션으로 어떻게 바뀌는지는 **재지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
+- [언어 레퍼런스 — The import system(3.12)](https://docs.python.org/3.12/reference/import.html) —
+  *"The module will exist in `sys.modules` before the loader executes the module code. This is crucial because the module code may (directly or indirectly) import itself"* ·
+  *"If loading fails, the failing module – and only the failing module – gets removed from `sys.modules`"* ·
+  정규 패키지의 *"`__init__.py` file is implicitly executed"* · 이름 공간 패키지 절(*"a composite of various portions"*, `__path__` 가 *"custom iterable type"*)
+- [튜토리얼 — Modules(3.12)](https://docs.python.org/3.12/tutorial/modules.html) — *"They are executed only the first time the module name is encountered in an import statement"* ·
+  *"Since the name of the main module is always `"__main__"`, modules intended for use as the main module of a Python application must always use absolute imports."*
+- 대비용 Go 명세 문장은 이 문서가 열지 않았다 — [Go 01번](../../../go/syntax/01-packages-imports-main-and-init/2-summary.md)이 인용한 것을 가리킨다.
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 `python3` **3.12.3** 하나(이 주제는 3.11 과 갈리는 자리를 찾지 않았다). 대비로 **`go1.27.1`**·**node `v18.19.1`** 을 한 번씩 던졌다.\
+★★ **파일이 여럿인 실험은 실험마다 디렉토리를 새로 복사하고 `cd` 해서** `python3 -m …` 로 던졌다(배너의 `cd <실험> && …`).
+트레이스백에 **그 디렉토리의 절대 경로가 박히는 블록 셋**은 경로를 `.` 로 바꿨고, 배너에 그 `sed` 를 적었다 — **배너대로 던지면 같은 글자가 나온다.**\
+★ 파일 이름은 **실험마다 다르게** 지었다(`oa.py`·`pa.py`·`ca.py` …) — 같은 이름이 둘이면 소스 대조가 판정 불가가 된다.\
+★ 격자 하나(동작 2)는 파일을 **스크립트가 임시 디렉토리에 써 가며** 24번 던진다 — 그 스크립트의 전문이 곧 소스다.\
+**버전** — 명시적 상대 import(`from . import x`)는 **2.5**(PEP 328), 이름 공간 패키지는 **3.3**(PEP 420).
+순환 import 예외 문구의 꼬리 `(most likely due to a circular import)` 는 **이 판(3.12.3)에서 본 문구**다 — 몇 판부터인지는 적지 않는다.\
+★ **구현 대 언어 보장 한 줄** — **「실행 전에 `sys.modules` 에 넣는다 · 실패한 모듈만 뺀다 · 몸통은 처음 import 때 한 번」** 이 레퍼런스의 보장이고,
+**예외 문구**(`partially initialized module …`)는 CPython 의 것이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| ★ 실험 디렉토리의 **절대 경로** — 배너의 `sed` 로 `.` 가 된다 | ★★ 격자의 칸 · 마지막 줄 **「깨진 칸 N / M」** |
+| ★ node 경고의 **PID**(`(node:NNN)`) — 재대조에서 정규화 규칙 하나로 뺐다 | 로그 줄의 **순서** |
+| 판이 오르면 예외 **문구** | 예외 **종류** · `(exit N)` · `go build` 의 `import cycle not allowed` 경로 줄 |
+
+**선행** — 목록의 선행 칸은 비어 있다. 가장 가까운 이웃은 [21-scope-legb-global-nonlocal](../21-scope-legb-global-nonlocal/2-summary.md)(★ **모듈 전역 스코프** —
+이 주제에서 그 전역은 **모듈 객체의 속성**으로 보이고, 반쯤 실행된 모듈은 **반쯤 찬 전역**이다).

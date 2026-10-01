@@ -1,15 +1,5 @@
 # c/syntax/08 — `sizeof`·정렬·`offsetof`: 구조체에 난 구멍을 눈으로 본다 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **예측형 위주**다 — 아는지가 아니라 **출력을 맞힐 수 있는지**를 묻는다.
-> ★ **수치를 손으로 계산하지 말고 「무엇으로 재는가」까지 답하라.**
-> 이 주제의 절반은 `offsetof`·`_Alignof`·`_Static_assert` 라는 **재는 도구**에 대한 것이다.
-> **환경** — gcc 13.3.0 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra`.\
-> 최적화 수준이나 `-pedantic`·`-fshort-enums` 가 답을 바꾸는 문항은 **문항 안에 적었다.**
-> 선행 — [`02-basic-types-sizes-and-fixed-width-integers/`](../02-basic-types-sizes-and-fixed-width-integers/).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -154,6 +144,14 @@ printf("%d\n", memcmp(&x, &y, sizeof x));
 - 배치에 의존하는 코드를 쓸 때 반드시 같이 쓸 것은?
 - 파일 형식·네트워크 패킷을 다루는 이식 가능한 형태는?
 - 이 주제의 다섯 층 중 **도구가 원리상 못 잡는** 층은 어디이고, 거기 해당하는 것은 무엇인가?
+
+## 실행 환경
+
+★ **수치를 손으로 계산하지 말고 「무엇으로 재는가」까지 답하라.**
+이 주제의 절반은 `offsetof`·`_Alignof`·`_Static_assert` 라는 **재는 도구**에 대한 것이다.
+**환경** — gcc 13.3.0 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra`.\
+최적화 수준이나 `-pedantic`·`-fshort-enums` 가 답을 바꾸는 문항은 **문항 안에 적었다.**
+선행 — [`02-basic-types-sizes-and-fixed-width-integers/`](../02-basic-types-sizes-and-fixed-width-integers/).
 
 ## 복습 기록
 

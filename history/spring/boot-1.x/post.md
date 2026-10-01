@@ -1,9 +1,5 @@
 # Spring Boot 1.x (2014 ~)
 
-> 원본: `~/project/java-history/spring/boot-1.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·클래스/애너테이션 이름·코드블록 7개·의존성 좌표는 원문 그대로다.\
-> ASCII 도식 5개(그중 2개는 원문의 mermaid 도식을 옮긴 것), 「한눈에」의 신청서 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -336,3 +332,9 @@ spring run app.groovy
 - [Spring Boot version history (codejava.net)](https://www.codejava.net/frameworks/spring-boot/spring-boot-version-history)
 - [Creating Your Own Auto-configuration (Spring docs)](https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html)
 - [Spring Boot 1.0 — VersionLog](https://versionlog.com/spring-boot/1.0/)
+
+## 출처
+
+원본: `~/project/java-history/spring/boot-1.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·클래스/애너테이션 이름·코드블록 7개·의존성 좌표는 원문 그대로다.\
+ASCII 도식 5개(그중 2개는 원문의 mermaid 도식을 옮긴 것), 「한눈에」의 신청서 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

@@ -1,13 +1,5 @@
 # web-api/24 — 문서 수명주기 이벤트: `DOMContentLoaded`/`load`·`visibilitychange`·`pagehide`/`pageshow` 와 bfcache — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ④ 를 늘린 「떠날 때」 격자다** — 떠나는 방법 여덟 가지(링크 · 새로 고침 · 탭 닫기 두 가지 · 뒤로 · 앞으로 · 다른 탭이 앞으로 · 돌아옴) × 이벤트 여섯(`beforeunload` · `pagehide` · `unload` · `visibilitychange` · `pageshow` · `load`)을 **리스너 없는 쪽과 `unload` 리스너 하나 단 쪽** 두 판으로 채우고, bfcache 에 못 들어간 이유는 **CDP 의 `Page.backForwardCacheNotUsed`** 로 받는다.\
-> **기준 소스** — [WHATWG HTML — Document lifecycle](https://html.spec.whatwg.org/multipage/document-lifecycle.html) 의 「unload a document」(page showing 이면 **`pagehide`** → 가시성을 **`hidden` 으로** → salvageable 이 거짓이면 **`unload`**) · 크롬 쪽 설명은 [Deprecating the unload event](https://developer.chrome.com/docs/web-platform/deprecating-unload)(Chrome 115 부터 `Permissions-Policy: unload` · 2026 년 v146\~v154 사이 모든 출처로 단계적 확대). ★ **HTML 명세에서 「`unload` 리스너가 있으면 bfcache 에 못 들어간다」는 문장은 찾지 못했다** — 그 조건은 **브라우저 구현**이다(아래 「구현 세부사항 대 언어 보장」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 페이지는 **로컬 서버 A(`http://127.0.0.1`)** 에서 열었다(`file://` 는 오류가 muted 되고 `fetch` 가 막힌다). 링크는 **CDP 로 넣은 진짜 마우스**로 누르고, 뒤로·앞으로는 `Page.navigateToHistoryEntry`, 탭 닫기는 `Target.closeTarget` 과 `Page.close`, 탭 전환은 `Target.createTarget`·`Target.activateTarget` 로 했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — [16번 주제](../16-event-propagation-phases/2-summary.md)(전파 — `load` 는 `window` 에서 받는다). ★★ **`DOMContentLoaded` 와 `load` 의 순서, `defer`·모듈·`async` 가 어디에 끼는지는 [HTML 08번 주제](../../html/syntax/08-script-loading/2-summary.md)의 (1)·(2)가 쟀다** — 여기서는 **다시 재지 않고 인용**하고, **이미지 한 장을 서버가 붙잡았을 때** 한 칸만 더한다((6)).\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -23,7 +15,7 @@ Google Chrome 151.0.7922.173
 | **안 흔들린다** | 「떠날 때」 격자 전 칸 · CDP 이유 · 페이지가 받은 이유 · 문서별 순서 두 줄 · 이미지 순서 로그 | 캡처 세 판이 **한 글자도 같았다** |
 | ★ **흔들려서 안 실었다** | **두 문서가 섞인 순서** — 뒤로 갈 때 둘째쪽 `pagehide` 가 첫쪽 `pageshow` **뒤에** 적힌 판이 있었다 | 두 문서는 서로 다른 렌더러에서 돈다. 그래서 순서는 **한 문서 안에서만** 싣는다 |
 | ★ **흔들렸다가 고쳤다** | 떠난 문서의 **늦게 적힌 줄**이 빠지는 것 | 도착한 문서의 `pageshow` 만 기다리면 떠난 문서의 `pagehide` 를 놓친다. **기록이 animation frame 20장 연달아 그대로일 때까지** 기다리게 고쳤다 |
-| ★ **판에 따라 바뀔 수 있다** | `unload` 가 **불리나** | Chrome 이 `unload` 를 **페이지 로드 비율로** 끄는 중이다(위 기준 소스). 이 판에서는 세 판 모두 불렸다 |
+| ★ **판에 따라 바뀔 수 있다** | `unload` 가 **불리나** | Chrome 이 `unload` 를 **페이지 로드 비율로** 끄는 중이다(아래 「실행 환경」의 기준 소스). 이 판에서는 세 판 모두 불렸다 |
 
 ```text
    왜 두 문서가 섞인 순서는 안 싣나 — 뒤로 한 번 (시험판에서 본 모양)
@@ -837,7 +829,7 @@ $ python3 wa24b-net.py life wa24b-24-grid.html | sed -n '1,2p;5,6p;16,17p;20,21p
 ```
 
 - ★★ **`Target.closeTarget` 은 `beforeunload` 를 안 부르고, `Page.close` 는 부른다.** 나머지(`pagehide persisted=false` · `hidden` · `unload`)는 같다. CDP 설명이 `Page.close` 를 「beforeunload 훅이 있으면 돌리며 닫으려 한다」로 적는다.
-- ★ **그래서 「닫을 때 `beforeunload` 가 온다」는 이 판에서 닫는 방법에 달렸다.** 사용자가 창을 닫는 것이 어느 쪽과 같은지는 **이 도구가 못 본다**(머리말 표).
+- ★ **그래서 「닫을 때 `beforeunload` 가 온다」는 이 판에서 닫는 방법에 달렸다.** 사용자가 창을 닫는 것이 어느 쪽과 같은지는 **이 도구가 못 본다**(맨 위 부분 표).
 - **두 방법 다 `pagehide` 와 `visibilitychange → hidden` 은 났다.**
 
 ```text
@@ -1112,3 +1104,11 @@ A   go 를 받고 이미지를 보냈다
 - **iframe 안의 `unload`**(`UnloadHandlerExistsInSubFrame`)는 던지지 않았다.
 - **`beforeunload` 로 확인 창을 띄우는 것**(`preventDefault()`)은 헤드리스에서 대화 상자를 다뤄야 해서 던지지 않았다.
 - **Chrome 의 `unload` 기본값 변경**이 이 판에 걸렸는지는 페이지 로드마다 다를 수 있다 — 판이 오르면 (4)를 다시 찍는다.
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ④ 를 늘린 「떠날 때」 격자다** — 떠나는 방법 여덟 가지(링크 · 새로 고침 · 탭 닫기 두 가지 · 뒤로 · 앞으로 · 다른 탭이 앞으로 · 돌아옴) × 이벤트 여섯(`beforeunload` · `pagehide` · `unload` · `visibilitychange` · `pageshow` · `load`)을 **리스너 없는 쪽과 `unload` 리스너 하나 단 쪽** 두 판으로 채우고, bfcache 에 못 들어간 이유는 **CDP 의 `Page.backForwardCacheNotUsed`** 로 받는다.\
+**기준 소스** — [WHATWG HTML — Document lifecycle](https://html.spec.whatwg.org/multipage/document-lifecycle.html) 의 「unload a document」(page showing 이면 **`pagehide`** → 가시성을 **`hidden` 으로** → salvageable 이 거짓이면 **`unload`**) · 크롬 쪽 설명은 [Deprecating the unload event](https://developer.chrome.com/docs/web-platform/deprecating-unload)(Chrome 115 부터 `Permissions-Policy: unload` · 2026 년 v146\~v154 사이 모든 출처로 단계적 확대). ★ **HTML 명세에서 「`unload` 리스너가 있으면 bfcache 에 못 들어간다」는 문장은 찾지 못했다** — 그 조건은 **브라우저 구현**이다(본문 「구현 세부사항 대 언어 보장」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 페이지는 **로컬 서버 A(`http://127.0.0.1`)** 에서 열었다(`file://` 는 오류가 muted 되고 `fetch` 가 막힌다). 링크는 **CDP 로 넣은 진짜 마우스**로 누르고, 뒤로·앞으로는 `Page.navigateToHistoryEntry`, 탭 닫기는 `Target.closeTarget` 과 `Page.close`, 탭 전환은 `Target.createTarget`·`Target.activateTarget` 로 했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — [16번 주제](../16-event-propagation-phases/2-summary.md)(전파 — `load` 는 `window` 에서 받는다). ★★ **`DOMContentLoaded` 와 `load` 의 순서, `defer`·모듈·`async` 가 어디에 끼는지는 [HTML 08번 주제](../../html/syntax/08-script-loading/2-summary.md)의 (1)·(2)가 쟀다** — 여기서는 **다시 재지 않고 인용**하고, **이미지 한 장을 서버가 붙잡았을 때** 한 칸만 더한다((6)).

@@ -1,16 +1,5 @@
 # sql/22-`GROUP BY` 와 비집계 열 규칙 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · GROUP BY and HAVING Clauses](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · MySQL Handling of GROUP BY](https://dev.mysql.com/doc/refman/8.4/en/group-by-handling.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — `ANY_VALUE()` 는 PostgreSQL **16 부터**다([PG 16 릴리스 노트](https://www.postgresql.org/docs/release/16.0/)가 *"Add aggregate function `ANY_VALUE()`"* 로 적는다). MySQL 은 8.4 매뉴얼의 GROUP BY 처리 페이지에 있고 도입 버전은 확인하지 못해 적지 않는다.\
-> **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/) · [21 집계 함수와 COUNT 의 세 형태](../21-aggregate-functions-count-forms/).\
-> **바로 옆** — [03 WHERE 와 HAVING 의 차이](../03-where-vs-having/). **거기는 「어느 절에서 거르나」, 여기는 「그 절들이 보는 것이 왜 그룹인가」다.**\
-> **뒤 주제** — [23 GROUPING SETS·ROLLUP·CUBE](../23-grouping-sets-rollup-cube/) · [24 조건부 집계](../24-conditional-aggregation-filter-case/) · [25 조인 팬아웃](../25-join-fan-out/).
-
 ## 한눈에 — 쉽게 말하면
 
 **`GROUP BY` 는 명단을 반별로 접어 봉투에 넣는 것이다. 접고 나면 봉투 겉면만 보인다.**
@@ -659,3 +648,13 @@ SELECT dept_id, ANY_VALUE(name), COUNT(*) FROM emp GROUP BY dept_id;
 - **`GROUP BY` 의 계획은 두 갈래다** — 정렬 후 묶기(sort + group) 와 해시로 묶기(hash aggregate).\
   둘 중 무엇이 뽑히는지는 [목록의 **59번 주제**](../59-scan-join-sort-operators/), 그 판단을 읽는 법은 [**58번 주제**](../58-explain-plan-tree/)다. **여기서는 재지 않았다.**
 - **`GROUPING SETS` 를 쓰면 한 질의가 여러 그룹 집합을 동시에 낸다** — 그때 `NULL` 의 의미가 하나 더 생긴다([23번](../23-grouping-sets-rollup-cube/)).
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · GROUP BY and HAVING Clauses](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · MySQL Handling of GROUP BY](https://dev.mysql.com/doc/refman/8.4/en/group-by-handling.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — `ANY_VALUE()` 는 PostgreSQL **16 부터**다([PG 16 릴리스 노트](https://www.postgresql.org/docs/release/16.0/)가 *"Add aggregate function `ANY_VALUE()`"* 로 적는다). MySQL 은 8.4 매뉴얼의 GROUP BY 처리 페이지에 있고 도입 버전은 확인하지 못해 적지 않는다.\
+**선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/) · [21 집계 함수와 COUNT 의 세 형태](../21-aggregate-functions-count-forms/).\
+**바로 옆** — [03 WHERE 와 HAVING 의 차이](../03-where-vs-having/). **거기는 「어느 절에서 거르나」, 여기는 「그 절들이 보는 것이 왜 그룹인가」다.**\
+**뒤 주제** — [23 GROUPING SETS·ROLLUP·CUBE](../23-grouping-sets-rollup-cube/) · [24 조건부 집계](../24-conditional-aggregation-filter-case/) · [25 조인 팬아웃](../25-join-fan-out/).

@@ -1,41 +1,5 @@
 # python/syntax/22-closures-and-late-binding — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [4.2.1. Binding of names](https://docs.python.org/3.12/reference/executionmodel.html#naming-and-binding) — 자유 변수의 정의
-> - [4.2.2. Resolution of names](https://docs.python.org/3.12/reference/executionmodel.html#resolution-of-names) — 이름이 **쓰일 때** 풀린다 · `NameError` 와 `UnboundLocalError`
-> - [7.13. The `nonlocal` statement](https://docs.python.org/3.12/reference/simple_stmts.html#the-nonlocal-statement) — 바깥 함수 스코프의 이름에 다시 묶기
-> - [3.2. The standard type hierarchy](https://docs.python.org/3.12/reference/datamodel.html#the-standard-type-hierarchy) — 함수 객체의 `__closure__`·`__defaults__`
-> - [`functools.partial`](https://docs.python.org/3.12/library/functools.html#functools.partial) — 인자를 미리 붙여 둔 객체
-> - [PEP 227 — Statically Nested Scopes](https://peps.python.org/pep-0227/) — 중첩 스코프가 들어온 경위
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 던지는 형태는 `python3 - <파일` 로 고정했다 — 트레이스백이 `File "<stdin>", line N` 이 된다.\
-> **버전** — 중첩 스코프(클로저)는 **2.2+**(PEP 227), `nonlocal` 은 **3.0+**(PEP 3104).
-> 이 노트 범위(3.10\~3.13)에서 규칙은 안 바뀌었다. 다만 **예외 문구는 명세가 아니다** — 이 노트는 **3.12.3 한 판만** 돌렸다.\
-> **구현 대 언어 보장 한 줄** — 「클로저가 바깥 이름을 **부를 때** 본다」는 언어 보장이고,
-> 「그 이름이 `cell` 객체 하나로 실체화돼 `__closure__` 에 담긴다」는 **CPython 구현**이다.
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 불일치」를 기계로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | `<cell at 0x…>`·`<function … at 0x…>` 의 **주소** | 예외 **타입**과 **메시지 본문** |
-> | `id()` 가 내놓는 **숫자** | `File "<stdin>", line N` · `(exit N)` |
-> | | **셀 개수** · `is` 판정 |
-> | | `co_freevars`·`co_varnames` · `__defaults__` 값 |
->
-> ★ 이 주제에서 **주소가 박히는 블록은 `e22_loop_fn` 과 `e22_del_cell` 둘뿐이다.**
-> 그 두 자리에서 **대조할 것은 주소가 아니라 「셀이 하나라는 것」과 「셀이 비었다는 것」이다.**
-> 셀이 하나임을 주소로 말하지 않고 `is` 로 말하는 블록을 따로 두었다(동작 3).
->
-> **선행** — [21-scope-legb-global-nonlocal](../21-scope-legb-global-nonlocal/2-summary.md)(이름이 어느 스코프에서 풀리나).\
-> **정본 이웃** — [20-mutable-default-args](../20-mutable-default-args/2-summary.md)가 **기본값 쪽의 정본**이다.
-> 「기본값이 `def` 실행 때 한 번 만들어진다」와 그 함정·고침은 전부 그쪽이고,
-> 여기서는 그것과 **정확히 반대인 쪽**(부를 때마다 읽는다)만 세우고 **대비**한다.
-
 ## 한눈에 — 쉽게 말하면
 
 **함수가 들고 나오는 것은 값이 아니라 사물함 열쇠다.**
@@ -1042,3 +1006,38 @@ co_freevars — uses_free: ('y',)
   그 시절의 관용구가 바로 **기본 인자 트릭**이다 — 지금은 고침으로 쓰지만 원래는 **유일한 통로**였다.
 - **데코레이터는 이 문서의 전부를 쓴다** — 감싼 원본 함수가 래퍼의 셀에 들어 있다.\
   [24번](../24-decorators/2-summary.md)에서 `__closure__` 를 열어 원본을 꺼내 보는 대목이 정확히 동작 2의 창이다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [4.2.1. Binding of names](https://docs.python.org/3.12/reference/executionmodel.html#naming-and-binding) — 자유 변수의 정의
+- [4.2.2. Resolution of names](https://docs.python.org/3.12/reference/executionmodel.html#resolution-of-names) — 이름이 **쓰일 때** 풀린다 · `NameError` 와 `UnboundLocalError`
+- [7.13. The `nonlocal` statement](https://docs.python.org/3.12/reference/simple_stmts.html#the-nonlocal-statement) — 바깥 함수 스코프의 이름에 다시 묶기
+- [3.2. The standard type hierarchy](https://docs.python.org/3.12/reference/datamodel.html#the-standard-type-hierarchy) — 함수 객체의 `__closure__`·`__defaults__`
+- [`functools.partial`](https://docs.python.org/3.12/library/functools.html#functools.partial) — 인자를 미리 붙여 둔 객체
+- [PEP 227 — Statically Nested Scopes](https://peps.python.org/pep-0227/) — 중첩 스코프가 들어온 경위
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+던지는 형태는 `python3 - <파일` 로 고정했다 — 트레이스백이 `File "<stdin>", line N` 이 된다.\
+**버전** — 중첩 스코프(클로저)는 **2.2+**(PEP 227), `nonlocal` 은 **3.0+**(PEP 3104).
+이 노트 범위(3.10\~3.13)에서 규칙은 안 바뀌었다. 다만 **예외 문구는 명세가 아니다** — 이 노트는 **3.12.3 한 판만** 돌렸다.\
+**구현 대 언어 보장 한 줄** — 「클로저가 바깥 이름을 **부를 때** 본다」는 언어 보장이고,
+「그 이름이 `cell` 객체 하나로 실체화돼 `__closure__` 에 담긴다」는 **CPython 구현**이다.
+
+**★ 흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 불일치」를 기계로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| `<cell at 0x…>`·`<function … at 0x…>` 의 **주소** | 예외 **타입**과 **메시지 본문** |
+| `id()` 가 내놓는 **숫자** | `File "<stdin>", line N` · `(exit N)` |
+| | **셀 개수** · `is` 판정 |
+| | `co_freevars`·`co_varnames` · `__defaults__` 값 |
+
+★ 이 주제에서 **주소가 박히는 블록은 `e22_loop_fn` 과 `e22_del_cell` 둘뿐이다.**
+그 두 자리에서 **대조할 것은 주소가 아니라 「셀이 하나라는 것」과 「셀이 비었다는 것」이다.**
+셀이 하나임을 주소로 말하지 않고 `is` 로 말하는 블록을 따로 두었다(동작 3).
+
+**선행** — [21-scope-legb-global-nonlocal](../21-scope-legb-global-nonlocal/2-summary.md)(이름이 어느 스코프에서 풀리나).\
+**정본 이웃** — [20-mutable-default-args](../20-mutable-default-args/2-summary.md)가 **기본값 쪽의 정본**이다.
+「기본값이 `def` 실행 때 한 번 만들어진다」와 그 함정·고침은 전부 그쪽이고,
+여기서는 그것과 **정확히 반대인 쪽**(부를 때마다 읽는다)만 세우고 **대비**한다.

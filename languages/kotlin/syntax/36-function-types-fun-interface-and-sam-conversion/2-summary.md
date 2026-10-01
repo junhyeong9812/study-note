@@ -1,17 +1,5 @@
 # kotlin/syntax/36 — 함수 타입·`fun interface`·SAM 변환 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Functional (SAM) interfaces](https://kotlinlang.org/docs/fun-interfaces.html)(「An interface with only one abstract member function is called a functional interface, or a Single Abstract Method (SAM) interface」 · SAM 변환 · 「You can also use SAM conversions for Java interfaces」 · 함수 타입 별칭과의 비교표) · [Java interop — SAM conversions](https://kotlinlang.org/docs/java-interop.html#sam-conversions).
-> **실행 검증** — 이 문서의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 14회(`-X` 도움말 1회 · 실패 4벌 — 격자 2벌 포함) · `javac` 3회 · `java` 5회 · `javap` 2회 + 격자 스크립트 안에서 4회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다. 격자 두 장의 「N / M」은 **스크립트가 세어 마지막 줄로 찍었다.**
-> ⚠️ **바이트코드는 기본 `-jvm-target`(1.8)** 이다. ★★★ **람다를 무엇으로 내리나는 클래스 파일 개수로 가르지 않았다** — Kotlin 2.x 는 `invokedynamic` 이 기본이라 개수가 말해 주지 않는다([14번 주제](../14-scope-functions/) (6)). **`javap -c` 의 명령과 그 명령이 만드는 타입**으로 갈랐다.
-> **버전** — 함수 타입·람다·Java 인터페이스 SAM 변환은 1.0. **`fun interface` 는 1.4.** 기본 람다 전략 `indy` 는 **언어 판 2.0+**(`-X` 도움말) — ★ 이 판은 `-language-version 1.9` 이하를 **거부**하므로 그 경계는 **못 잰 것**이다((6)).
-> **경계** — ★★ **`(Int) -> Int` 가 `Function1` 이라는 것 · 22 → `FunctionN` · 람다가 `invokedynamic` 이 되는 것 · SAM 변환이 박싱을 없애는 자리**는 [10번 주제](../10-lambdas-and-higher-order-functions/) (1)(2)(7)이 정본이다 — 여기서는 **다시 재지 않고 인용**한다.\
-> `a(x)` 가 `a.invoke(x)` 로 풀리는 규약은 [31번 주제](../31-operator-overloading-infix-and-invoke/)가, 수신자 있는 함수 타입(`A.() -> Unit`)은 [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/)가, `suspend` 함수 타입의 의미는 코루틴 주제가 정본이다 — `suspend` 는 **서명 한 줄만** 경계로 본다((7)).\
-> **Java 쪽 짝** — [`../../../java/syntax/31-functional-interfaces/`](../../../java/syntax/31-functional-interfaces/)(함수형 인터페이스 지도) · [`../../../java/syntax/29-lambda-expressions/`](../../../java/syntax/29-lambda-expressions/)(Java 람다의 `invokedynamic`).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 둘째 창이다** — 「**세 인터페이스 × 일곱 가지 넘기는 법, 컴파일이 되나**」(21칸 격자). SAM 변환은 **실행이 아니라 컴파일러가 람다를 받아 주느냐**로 갈린다. 셋째 창(`javap -c`)이 받아 준 람다가 **무엇이 됐나**를, 넷째 창(판 격자)이 그것을 **어느 플래그가 움직이나**를 본다.
 
 ## 이 주제가 쓰는 세 층
@@ -88,7 +76,7 @@ javac 21.0.5
 | ★★★ **판 격자 — `-Xlambdas` × `-Xsam-conversions`** | 12칸 중 몇 칸이 움직이나((4)) | 규칙 24 |
 | ★ **진단 문구** | `fun interface` 의 제약((5)) | 이 갈래의 기본 창 |
 | **부적용 — 실행 시간** | 「`invokedynamic` 이 빠르다」·「클래스가 느리다」는 **재지 않았다** — 명령 **종류**만 본다 | — |
-| **부적용 — 클래스 파일 개수** | ★ 개수로 전략을 가르지 않는다(머리말) | [14번 주제](../14-scope-functions/) (6) |
+| **부적용 — 클래스 파일 개수** | ★ 개수로 전략을 가르지 않는다(「실행 환경」) | [14번 주제](../14-scope-functions/) (6) |
 
 ### (1) ★★★ SAM 격자 — 세 인터페이스 × 일곱 가지 넘기는 법
 
@@ -653,3 +641,15 @@ C true
 
 - **왜 Kotlin 은 일반 인터페이스에 SAM 변환을 안 하나** — Kotlin 에는 함수 타입이 있으므로, 「람다를 받고 싶다」는 뜻은 함수 타입으로 적으면 된다. 모든 단일 메서드 인터페이스에 변환을 허락하면 **인터페이스에 메서드를 하나 더하는 순간** 호출자의 람다가 전부 깨진다 — `fun` 도장은 「이 인터페이스는 **앞으로도 추상 메서드 하나**를 유지한다」는 **작성자의 약속**이다((5)의 제약이 그 약속을 컴파일러가 지키게 한다). Java 는 함수 타입이 없어 그 구분을 할 수 없었다.
 - **`viaValue` 의 어댑터** — 함수 타입 값 `f` 를 `JSam` 이 필요한 자리에 넘기면, kotlinc 는 `f` 를 필드로 쥔 **감싸는 객체**를 만든다(`-Xsam-conversions=class` 에서 `Lam36Kt$sam$JSam$0` 이라는 이름으로 드러났다). 같은 `f` 를 두 번 넘기면 감싸는 객체도 두 번 생길 수 있다 — 이 문서는 **개수를 세지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Functional (SAM) interfaces](https://kotlinlang.org/docs/fun-interfaces.html)(「An interface with only one abstract member function is called a functional interface, or a Single Abstract Method (SAM) interface」 · SAM 변환 · 「You can also use SAM conversions for Java interfaces」 · 함수 타입 별칭과의 비교표) · [Java interop — SAM conversions](https://kotlinlang.org/docs/java-interop.html#sam-conversions).
+**실행 검증** — 이 문서의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 14회(`-X` 도움말 1회 · 실패 4벌 — 격자 2벌 포함) · `javac` 3회 · `java` 5회 · `javap` 2회 + 격자 스크립트 안에서 4회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다. 격자 두 장의 「N / M」은 **스크립트가 세어 마지막 줄로 찍었다.**
+⚠️ **바이트코드는 기본 `-jvm-target`(1.8)** 이다. ★★★ **람다를 무엇으로 내리나는 클래스 파일 개수로 가르지 않았다** — Kotlin 2.x 는 `invokedynamic` 이 기본이라 개수가 말해 주지 않는다([14번 주제](../14-scope-functions/) (6)). **`javap -c` 의 명령과 그 명령이 만드는 타입**으로 갈랐다.
+**버전** — 함수 타입·람다·Java 인터페이스 SAM 변환은 1.0. **`fun interface` 는 1.4.** 기본 람다 전략 `indy` 는 **언어 판 2.0+**(`-X` 도움말) — ★ 이 판은 `-language-version 1.9` 이하를 **거부**하므로 그 경계는 **못 잰 것**이다((6)).
+**경계** — ★★ **`(Int) -> Int` 가 `Function1` 이라는 것 · 22 → `FunctionN` · 람다가 `invokedynamic` 이 되는 것 · SAM 변환이 박싱을 없애는 자리**는 [10번 주제](../10-lambdas-and-higher-order-functions/) (1)(2)(7)이 정본이다 — 여기서는 **다시 재지 않고 인용**한다.\
+`a(x)` 가 `a.invoke(x)` 로 풀리는 규약은 [31번 주제](../31-operator-overloading-infix-and-invoke/)가, 수신자 있는 함수 타입(`A.() -> Unit`)은 [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/)가, `suspend` 함수 타입의 의미는 코루틴 주제가 정본이다 — `suspend` 는 **서명 한 줄만** 경계로 본다((7)).\
+**Java 쪽 짝** — [`../../../java/syntax/31-functional-interfaces/`](../../../java/syntax/31-functional-interfaces/)(함수형 인터페이스 지도) · [`../../../java/syntax/29-lambda-expressions/`](../../../java/syntax/29-lambda-expressions/)(Java 람다의 `invokedynamic`).

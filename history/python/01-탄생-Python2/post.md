@@ -1,9 +1,5 @@
 # Python의 탄생부터 2.x까지 (1991 ~ 2008)
 
-> 원본: `~/project/python-history/01-탄생-Python2.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·인명·버전·PEP 번호·Python 코드블록 10개는 원문 그대로다.\
-> ASCII 도식 3개와 「한눈에」의 집·문 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -432,3 +428,9 @@ There should be one-- and preferably only one --obvious way to do it.
 - [PEP 343 – The "with" Statement](https://peps.python.org/pep-0343/)
 - [History and License — Python 공식 문서](https://docs.python.org/3/license.html)
 - [Python 3.0 Release — Python.org](https://www.python.org/download/releases/3.0/)
+
+## 출처
+
+원본: `~/project/python-history/01-탄생-Python2.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·인명·버전·PEP 번호·Python 코드블록 10개는 원문 그대로다.\
+ASCII 도식 3개와 「한눈에」의 집·문 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

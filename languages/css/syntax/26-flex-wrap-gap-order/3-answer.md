@@ -1,11 +1,5 @@
 # css/syntax/26 — flex 줄바꿈·`gap`·`order` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 좌표·치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getBoundingClientRect()` 로 잰 값**이다.\
-> 좌표는 별말이 없으면 **컨테이너의 바깥 왼쪽 위 모서리를 원점**으로 한 값이고 단위는 px 다.\
-> 8번의 탭 순서는 **CDP 로 실제 `Tab` 키를 넣어** 확인했다 — `Runtime.evaluate` 로 값을 넣는 것은 사용자 조작이 아니기 때문이다.\
-> 규칙은 [CSS Flexible Box Layout Level 1](https://drafts.csswg.org/css-flexbox-1/) 과 [CSS Box Alignment Level 3](https://drafts.csswg.org/css-align-3/) 으로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -371,3 +365,10 @@ Tab 키 3회 (CDP Input.dispatchKeyEvent) -> A -> B -> C
 - **순차 포커스 탐색(sequential focus navigation)** — `Tab` 키가 도는 순서. DOM 순서를 따르고 `order` 를 **보지 않는다**.
 - **자유 공간(free space)** — 컨테이너 크기 − (항목 크기 합 + `gap` + 마진). 줄바꿈이 켜지면 **줄마다 따로** 계산된다.
 - **진단 3창** — `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나). 4번은 **셋을 다 통과하고도 결과가 갈리는** 자리다.
+
+## 실행 환경
+
+이 파일의 **모든 좌표·치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getBoundingClientRect()` 로 잰 값**이다.\
+좌표는 별말이 없으면 **컨테이너의 바깥 왼쪽 위 모서리를 원점**으로 한 값이고 단위는 px 다.\
+8번의 탭 순서는 **CDP 로 실제 `Tab` 키를 넣어** 확인했다 — `Runtime.evaluate` 로 값을 넣는 것은 사용자 조작이 아니기 때문이다.\
+규칙은 [CSS Flexible Box Layout Level 1](https://drafts.csswg.org/css-flexbox-1/) 과 [CSS Box Alignment Level 3](https://drafts.csswg.org/css-align-3/) 으로 접지했다.

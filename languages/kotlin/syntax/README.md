@@ -1,15 +1,5 @@
 # Kotlin — 문법·API 주제 목록
 
-> 진행 — **25 / 58**(01 \~ 25). 「주제」 칸의 링크가 각 주제의 3파일 폴더다.
-> 기준 소스: [kotlinlang.org 언어 레퍼런스](https://kotlinlang.org/docs/home.html) · [kotlin-stdlib API](https://kotlinlang.org/api/core/kotlin-stdlib/) · [언어 기능·제안 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html)(기능이 Stable 이 된 버전 확인) · [릴리스 목록](https://kotlinlang.org/docs/releases.html)
-> 실행 검증: **가능**(2026-09-23 에 `sdk install kotlin` 으로 갖췄다). **kotlinc 2.4.20 · JRE 21.0.5.**
-> ★★ **이 갈래의 근거는 `javap` 다** — Kotlin 은 JVM 바이트코드로 컴파일되므로 「무엇으로 컴파일되나」를 지어낼 수 없다.
-> `?` 없는 파라미터에 컴파일러가 **`Intrinsics.checkNotNullParameter` 를 심는다**는 것이 그렇게 드러났다 —
-> null 안전은 타입 시스템만이 아니라 **런타임 코드**다.
-> ⚠️ **`kotlinc` 의 기본 `-jvm-target` 은 1.8 이다**(JRE 21 에서도 `major version: 52`).
-> 그래서 문자열 템플릿이 **`invokedynamic` 이 아니라 `StringBuilder`** 로 나온다 — **플래그를 밝히지 않은 바이트코드 주장은 반쪽이다.**
-> 기준일 2026-09-20. 최신 안정 버전 **Kotlin 2.4.20**(2026-09-07, 언어 릴리스는 2.4.0 / 2026-06-03).
-
 ## 이 언어에서 무엇을 자르는 축
 
 Kotlin 공식 레퍼런스는 **타입 → 클래스·객체 → 함수·람다 → null 안전 → 컬렉션 → 코루틴** 순의 평평한 페이지 묶음이다. 이 목록은 그 페이지 경계를 그대로 쓰지 않고, **「Java 의 기본값을 어디서 뒤집었나」** 를 뼈대로 다시 세웠다 — 그래야 JVM 을 이미 아는 사람에게 인출할 것이 생긴다.
@@ -169,3 +159,15 @@ Kotlin 은 Java 와 달리 LTS 개념이 없고 **6개월 언어 릴리스 + 중
 나머지 주제는 **2.0(K2) 이후 어느 버전에서도 같다.**
 3파일에는 **「kotlinc 2.4.20 · JRE 21.0.5 · `-jvm-target` 을 밝힌 실측」** 을 명시한다.
 ★ **못 잰 것도 적는다** — 예: `-language-version 1.9` 는 2.4.20 이 거부하므로 **K1 과의 비교는 이 환경에서 불가능**하다.
+
+## 실행 환경
+
+진행 — **25 / 58**(01 \~ 25). 「주제」 칸의 링크가 각 주제의 3파일 폴더다.
+기준 소스: [kotlinlang.org 언어 레퍼런스](https://kotlinlang.org/docs/home.html) · [kotlin-stdlib API](https://kotlinlang.org/api/core/kotlin-stdlib/) · [언어 기능·제안 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html)(기능이 Stable 이 된 버전 확인) · [릴리스 목록](https://kotlinlang.org/docs/releases.html)
+실행 검증: **가능**(2026-09-23 에 `sdk install kotlin` 으로 갖췄다). **kotlinc 2.4.20 · JRE 21.0.5.**
+★★ **이 갈래의 근거는 `javap` 다** — Kotlin 은 JVM 바이트코드로 컴파일되므로 「무엇으로 컴파일되나」를 지어낼 수 없다.
+`?` 없는 파라미터에 컴파일러가 **`Intrinsics.checkNotNullParameter` 를 심는다**는 것이 그렇게 드러났다 —
+null 안전은 타입 시스템만이 아니라 **런타임 코드**다.
+⚠️ **`kotlinc` 의 기본 `-jvm-target` 은 1.8 이다**(JRE 21 에서도 `major version: 52`).
+그래서 문자열 템플릿이 **`invokedynamic` 이 아니라 `StringBuilder`** 로 나온다 — **플래그를 밝히지 않은 바이트코드 주장은 반쪽이다.**
+기준일 2026-09-20. 최신 안정 버전 **Kotlin 2.4.20**(2026-09-07, 언어 릴리스는 2.4.0 / 2026-06-03).

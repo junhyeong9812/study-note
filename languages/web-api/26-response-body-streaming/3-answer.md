@@ -1,10 +1,5 @@
 # web-api/26 — 응답 본문과 스트리밍: `json()`/`text()`/`blob()` 은 한 번만·`body` 와 `ReadableStream` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 청크 서버는 로컬 서버 A 이고 **페이지가 `/go` 를 줄 때마다** 하나씩 보낸다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 Body 믹스인(unusable · consume body · clone a body)과 [WHATWG Streams](https://streams.spec.whatwg.org/) 의 `tee()`·`releaseLock()` 으로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
 |---|---|
 | 예외 전문 · 청크 대조 · `text()` 정착 · 쪼개진 한글 | **고쳤다** — 청크 대조의 첫 줄·끝 줄(청크를 전부 `/go` 뒤로 미뤘다) |
@@ -174,3 +169,9 @@ python3 wa24b-net.py page wa24b-26-decode.html
 | `TextDecoderStream` 의 빈 조각 | 안 냄 | 이 판의 관찰 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② BYOB reader · 요청 본문 스트림. ③ 압축(`Content-Encoding`)된 청크.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 청크 서버는 로컬 서버 A 이고 **페이지가 `/go` 를 줄 때마다** 하나씩 보낸다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 Body 믹스인(unusable · consume body · clone a body)과 [WHATWG Streams](https://streams.spec.whatwg.org/) 의 `tee()`·`releaseLock()` 으로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

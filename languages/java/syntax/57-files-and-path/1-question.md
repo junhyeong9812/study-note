@@ -1,12 +1,5 @@
 # java/syntax/57 — `Files`·`Path` — NIO.2 파일 API — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **선행** — [`../26-try-with-resources/`](../26-try-with-resources/)와 [`../44-stream-creation/`](../44-stream-creation/)의 질문을 먼저 푼다. 4~6번이 그 둘이 만나는 자리다.
-> 예측형 문항의 출력은 **Temurin JDK 21.0.5 · Linux · ext4** 기준이다. 세 판에서 갈린 것은 12번이 따로 묻는다.
-> 모든 실험은 임시 디렉터리 안의 `sandbox/` 아래에서 했다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -213,6 +206,12 @@ Files.createDirectories(Path.of("sandbox/p/q"));   // 여러 단계를 새로 �
 - 디렉터리에서 `*.log` 만 고른다 — 방법을 둘 대라.
 - 남이 만든 디렉터리를 훑는데 권한 없는 곳이 섞여 있다 — 무엇을 쓰는가?
 - `java.io.File` 의 `delete()`·`mkdirs()` 를 쓰면 안 되는 이유는 무엇인가?
+
+## 실행 환경
+
+**선행** — [`../26-try-with-resources/`](../26-try-with-resources/)와 [`../44-stream-creation/`](../44-stream-creation/)의 질문을 먼저 푼다. 4~6번이 그 둘이 만나는 자리다.
+예측형 문항의 출력은 **Temurin JDK 21.0.5 · Linux · ext4** 기준이다. 세 판에서 갈린 것은 12번이 따로 묻는다.
+모든 실험은 임시 디렉터리 안의 `sandbox/` 아래에서 했다.
 
 ## 복습 기록
 

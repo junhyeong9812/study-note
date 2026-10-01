@@ -1,11 +1,5 @@
 # api-design/03-stock-deduct — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 코드가 없는 문제집이므로 원본 REQUIREMENTS.md · solution/CHECKLIST.md · solution/REFERENCE.md 다.
-
-⚠️ 정답은 Claude 초안(2026-09-14) — 원본 CHECKLIST/REFERENCE 근거로 작성. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
@@ -312,3 +306,7 @@
   확인할 곳 ①: 예약 테이블 — 만료 시각이 없거나 회수되지 않은 오래된 hold가 재고를 잡고 있는가. 대처: 예약에 만료를 붙이고 sweeper 또는 lazy 정리로 회수한다.\
   확인할 곳 ②: 캐시와 DB의 재고 값 — Redis 차감은 성공하고 DB 쓰기가 실패해 Redis만 줄어 있는가. 대처: 정본을 하나(DB)로 정하고 캐시는 게이트로만 쓰며, 불일치 시 정본으로 덮는 대사를 둔다.\
   "품절 표시 vs 실재고" 대사를 주기 배치로 돌려 언더셀도 장애로 잡는다 — 품절이 아닌데 품절이라고 답하는 것도 장애다.
+
+## 실행 환경
+
+기준 소스는 코드가 없는 문제집이므로 원본 REQUIREMENTS.md · solution/CHECKLIST.md · solution/REFERENCE.md 다.

@@ -1,9 +1,5 @@
 # 개념: Mockito stubbing은 어떻게 기록되나 — UnfinishedStubbingException의 원리
 
-> F1(nested annotation probe) 테스트 작성 중 실제로 밟은 함정의 배경 문서. 핵심
-> 주장: `given(...)`은 마법 문법이 아니라 일반 Java 코드이고, stubbing 기록은
-> 스레드당 1칸짜리 "열림/닫힘" 상태 기계다.
-
 ## given()은 문법이 아니다
 
 ```java

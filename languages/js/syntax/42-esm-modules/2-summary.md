@@ -1,65 +1,5 @@
 # js/syntax/42 — ESM 모듈: 「`import` 는 값이 아니라 이름을 빌려 온다 — 실행 전에 연결되고, 순환에서는 『아직 초기화 전』이 보인다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다** — `a.mjs` ↔ `b.mjs` 순환에서 **`a` 가 내보내는 모양 8가지 × `main` 이 가져오는 순서 2 × `b` 가 읽는 때 2 = 32칸**을 칸마다 **새 디렉토리 · 새 프로세스**로 돌리고, 마지막 줄에 「**`"A"` 를 못 읽은 칸 N / M**」을 스크립트가 찍는다(동작 (3)).
-> ★★ 보조로 **① 추상 연산에 로그 심기**(모듈 본문의 첫 줄 · `import` 뒤의 줄 · 평가 순서 — 동작 (4)) · **③ 브랜드 태그**(모듈 이름공간 객체의 `[object Module]` — 동작 (2)) · **④ 예외의 `constructor.name` + `message`**(가져온 이름에 대입 → `TypeError` · 연결 단계의 `SyntaxError` — 동작 (2)·(5))를 쓴다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — Source Text Module Records · `InitializeEnvironment`](https://tc39.es/ecma262/multipage/ecmascript-language-scripts-and-modules.html) — 「가져온 이름마다 `ResolveExport` → **null 이거나 모호하면 `SyntaxError`** → `CreateImportBinding`」 · 「`var` 이름은 `CreateMutableBinding` + **`InitializeBinding(name, undefined)`**」 · 「렉시컬 선언은 바인딩만 만들고, **함수 선언이면 `InstantiateFunctionObject` 로 곧바로 초기화**한다」
-> - [ECMA-262 — `CreateImportBinding`](https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html) — 「**초기화된 불변 간접 바인딩**을 만든다 … 새 바인딩의 값에 접근하면 **대상 바인딩의 값을 간접으로** 읽는다」
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(`import()` **2020** · `import.meta` **2020** · Top-level `await` **2022**). `import`/`export` 문 자체는 **ES2015 본문**이다(제안 표에 없다).
-> - [Node.js v20 — Modules: Packages · 「Determining module system」](https://nodejs.org/docs/latest-v20.x/api/packages.html) — 「`.mjs` · `"type": "module"` 인 `.js` · `--input-type=module` 은 ES 모듈」
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 순서·값·예외는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다. `cd <디렉토리> && node20 <파일>` 꼴 배너는 **그 디렉토리 안에서 상대 경로로** 던졌다.
-> ★★★ **ES 모듈은 `file://` 페이지에서 CORS 로 막힌다 — Chrome 151 은 로컬 HTTP 서버로 띄웠다**(아래 하네스의 `--http` · `js40b-serve.py`). 이 묶음(40\~43)의 Chrome 블록은 전부 이 하네스에서 나왔다.
-> ★★ **node 의 에러에는 파일의 절대 경로가 박힌다** — 그 블록은 스크립트 안에서 **`sed "s#$PWD#<dir>#g"`** 로 지웠다(소스에 그 줄이 보인다).
-> ★★★ **성능은 재지 않았다** — 「ESM 이 빠르다」·「트리 셰이킹으로 작아진다」를 **쓰지 않는다.**
->
-> **버전**
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `import`/`export` 문 · 라이브 바인딩 · 모듈은 늘 엄격 | **ES2015** | 세 판 다 |
-> | 동적 `import()` | **ES2020** | 세 판 다(판별 블록 · 동작 (5)) |
-> | `import.meta` | **ES2020** | 세 판 다 — 그 **속성**은 호스트가 채운다(43번) |
-> | 최상위 `await` | **ES2022** | 39번 동작 (7) |
->
-> ★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다.** README 42행은 판을 적지 않는다.
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체) | 순환 32칸 — `A` / `undefined` / `ReferenceError` · 마지막 줄 「`did not read "A": N / 32`」(동작 (3)) |
-> | ★★ **① 추상 연산에 로그 심기** | 모듈 본문의 첫 줄 · `import` 뒤의 줄 · 여러 모듈의 평가 순서(동작 (4)) · 라이브 바인딩의 전후 값(동작 (1)) |
-> | ★★ **③ 브랜드 태그** | 이름공간 객체 — `Object.prototype.toString` 이 `[object Module]` · 프로토타입 `null` · 확장 불가(동작 (2)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | 가져온 이름에 대입 → `TypeError` · 블록 안 `import` · 없는 이름 `import` → `SyntaxError`(동작 (2)·(5)) |
-> | ★ **안 쟀다 — 성능·번들 크기** | 정적 구조가 **도구에게** 무엇을 허락하나는 연혁 문서의 몫이다. 이 문서는 **실행이 보이는 것**만 적는다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 판별 블록의 판 문자열 · 에러 첫 줄의 **절대 경로**(블록 안에서 `<dir>` 로 지웠다) | ★★★ 격자의 모든 칸 · 로그의 **줄 순서** · 종료 코드 · `standard output had N lines` · 에러의 **종류와 문구** |
-> | ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | ★★ **판 사이의 문구 차이**(Chrome 의 `Cannot assign to property …`)는 흔들림이 아니라 **판의 차이**다 |
->
-> **층** — `import`/`export` 의 **연결(Link)·평가(Evaluate)·바인딩 규칙**은 **언어(ECMA-262)** 다. **「이 글자가 어느 파일인가」(모듈 지정자 해석)·「어느 파일이 모듈인가」·파일을 읽어 오는 일은 호스트**(HTML · node)다 — 명세의 `HostLoadImportedModule` 이 그 문이다. CommonJS 는 **명세 밖**이다(43번).
->
-> **선행** — [35 — 엄격 모드](../35-strict-mode/2-summary.md)(직접 선행 — ★★★ **모듈은 늘 엄격**을 **`.mjs` 로 증명**했다 — 여기서 가져온 이름에 대입하면 `TypeError` 인 것이 그 엄격함 위에 선다) ·
-> [05 — `var`·`let`·`const` 와 TDZ](../05-var-let-const-and-tdz/2-summary.md)(★★★ **순환에서의 `ReferenceError` 는 TDZ 다** — 「줄이 아니라 시간」이 모듈 사이로 넓어진 것) ·
-> [36 — 이벤트 루프](../36-event-loop-and-microtasks/2-summary.md)(★★ **같은 파일이 ES 모듈이면 `nextTick` 이 4위에서 9위로** — 모듈 본문이 「이미 마이크로태스크를 비우는 중」에 돈다) ·
-> [39 — `async`/`await`](../39-async-await/2-summary.md)(최상위 `await` 는 **모듈 코드인가**가 기준 — 확장자가 아니다).
->
-> ★★★ **파이썬 42번과 나란히** — [Python 42 — 모듈·패키지·import](../../../python/syntax/42-modules-packages-and-import/2-summary.md)가 **순환 import 격자 `깨진 칸 7 / 24`** 를 쟀고, 그 편 7절이 node 18 로 **ESM 은 `ReferenceError: Cannot access 'TAG' before initialization`, CommonJS 는 조용히 `f>g>undefined` + 경고 한 줄**을 이미 던졌다. 여기서는 **그 JS 쪽을 격자로 전면에** 세운다(동작 (3)). **Go 는 순환 import 가 빌드에서 거부된다**([Go 01](../../../go/syntax/01-packages-imports-main-and-init/2-summary.md) — 파이썬 42번 7절의 `import cycle not allowed`).
->
-> ★★ **경계 — 연혁**(CommonJS·AMD 에서 ESM 표준으로)은 [`history/js/02-ES6-모던.md`](../../../../history/js/02-ES6-모던.md) 의 **「모듈 (import / export)」** 절이 정본이다. 그 절은 「**정적 구조라 빌드 도구가 트리 셰이킹을 할 수 있다**」를 원문의 인과로 적는다 — 이 문서는 **그 정적 구조가 실행에서 어떻게 보이나**(블록 안 `import` 는 문법 오류 · 없는 이름은 **본문이 한 줄도 돌기 전에** 막힌다)부터 쓰고, 크기·속도는 **재지 않았다.**
-> ★ **CommonJS 와 ESM 이 서로 부르는 것**은 [43번](../43-cjs-and-esm-interop/2-summary.md), **동적 `import`·최상위 `await` 의 평가 순서·import attributes** 는 [목록의 **44번 주제**](../44-dynamic-import-top-level-await-and-import-attributes/)다.
-
 **이 묶음(40\~43)의 Chrome 하네스** — 페이지 하나 · 셸 하나 · 로컬 서버 하나.
 
 ```html
@@ -973,3 +913,62 @@ missing file: rejected with TypeError · code undefined
 - **최상위 `await` 가 순환·평가 순서에 끼면** — [목록의 **44번 주제**](../44-dynamic-import-top-level-await-and-import-attributes/)다. 이 문서는 돌리지 않았다.
 - **`export * from` 의 이름 충돌(모호한 내보내기)** — `ResolveExport` 가 `ambiguous` 를 돌려주는 자리. 재지 않았다.
 - **브라우저의 import map** — 지정자 해석을 페이지가 정하는 장치. 호스트 쪽이라 이 문서 밖이다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 전수 격자다** — `a.mjs` ↔ `b.mjs` 순환에서 **`a` 가 내보내는 모양 8가지 × `main` 이 가져오는 순서 2 × `b` 가 읽는 때 2 = 32칸**을 칸마다 **새 디렉토리 · 새 프로세스**로 돌리고, 마지막 줄에 「**`"A"` 를 못 읽은 칸 N / M**」을 스크립트가 찍는다(동작 (3)).
+★★ 보조로 **① 추상 연산에 로그 심기**(모듈 본문의 첫 줄 · `import` 뒤의 줄 · 평가 순서 — 동작 (4)) · **③ 브랜드 태그**(모듈 이름공간 객체의 `[object Module]` — 동작 (2)) · **④ 예외의 `constructor.name` + `message`**(가져온 이름에 대입 → `TypeError` · 연결 단계의 `SyntaxError` — 동작 (2)·(5))를 쓴다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — Source Text Module Records · `InitializeEnvironment`](https://tc39.es/ecma262/multipage/ecmascript-language-scripts-and-modules.html) — 「가져온 이름마다 `ResolveExport` → **null 이거나 모호하면 `SyntaxError`** → `CreateImportBinding`」 · 「`var` 이름은 `CreateMutableBinding` + **`InitializeBinding(name, undefined)`**」 · 「렉시컬 선언은 바인딩만 만들고, **함수 선언이면 `InstantiateFunctionObject` 로 곧바로 초기화**한다」
+- [ECMA-262 — `CreateImportBinding`](https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html) — 「**초기화된 불변 간접 바인딩**을 만든다 … 새 바인딩의 값에 접근하면 **대상 바인딩의 값을 간접으로** 읽는다」
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(`import()` **2020** · `import.meta` **2020** · Top-level `await` **2022**). `import`/`export` 문 자체는 **ES2015 본문**이다(제안 표에 없다).
+- [Node.js v20 — Modules: Packages · 「Determining module system」](https://nodejs.org/docs/latest-v20.x/api/packages.html) — 「`.mjs` · `"type": "module"` 인 `.js` · `--input-type=module` 은 ES 모듈」
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 순서·값·예외는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다. `cd <디렉토리> && node20 <파일>` 꼴 배너는 **그 디렉토리 안에서 상대 경로로** 던졌다.
+★★★ **ES 모듈은 `file://` 페이지에서 CORS 로 막힌다 — Chrome 151 은 로컬 HTTP 서버로 띄웠다**(맨 위 하네스의 `--http` · `js40b-serve.py`). 이 묶음(40\~43)의 Chrome 블록은 전부 이 하네스에서 나왔다.
+★★ **node 의 에러에는 파일의 절대 경로가 박힌다** — 그 블록은 스크립트 안에서 **`sed "s#$PWD#<dir>#g"`** 로 지웠다(소스에 그 줄이 보인다).
+★★★ **성능은 재지 않았다** — 「ESM 이 빠르다」·「트리 셰이킹으로 작아진다」를 **쓰지 않는다.**
+
+**버전**
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `import`/`export` 문 · 라이브 바인딩 · 모듈은 늘 엄격 | **ES2015** | 세 판 다 |
+| 동적 `import()` | **ES2020** | 세 판 다(판별 블록 · 동작 (5)) |
+| `import.meta` | **ES2020** | 세 판 다 — 그 **속성**은 호스트가 채운다(43번) |
+| 최상위 `await` | **ES2022** | 39번 동작 (7) |
+
+★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다.** README 42행은 판을 적지 않는다.
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체) | 순환 32칸 — `A` / `undefined` / `ReferenceError` · 마지막 줄 「`did not read "A": N / 32`」(동작 (3)) |
+| ★★ **① 추상 연산에 로그 심기** | 모듈 본문의 첫 줄 · `import` 뒤의 줄 · 여러 모듈의 평가 순서(동작 (4)) · 라이브 바인딩의 전후 값(동작 (1)) |
+| ★★ **③ 브랜드 태그** | 이름공간 객체 — `Object.prototype.toString` 이 `[object Module]` · 프로토타입 `null` · 확장 불가(동작 (2)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | 가져온 이름에 대입 → `TypeError` · 블록 안 `import` · 없는 이름 `import` → `SyntaxError`(동작 (2)·(5)) |
+| ★ **안 쟀다 — 성능·번들 크기** | 정적 구조가 **도구에게** 무엇을 허락하나는 연혁 문서의 몫이다. 이 문서는 **실행이 보이는 것**만 적는다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 판별 블록의 판 문자열 · 에러 첫 줄의 **절대 경로**(블록 안에서 `<dir>` 로 지웠다) | ★★★ 격자의 모든 칸 · 로그의 **줄 순서** · 종료 코드 · `standard output had N lines` · 에러의 **종류와 문구** |
+| ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | ★★ **판 사이의 문구 차이**(Chrome 의 `Cannot assign to property …`)는 흔들림이 아니라 **판의 차이**다 |
+
+**층** — `import`/`export` 의 **연결(Link)·평가(Evaluate)·바인딩 규칙**은 **언어(ECMA-262)** 다. **「이 글자가 어느 파일인가」(모듈 지정자 해석)·「어느 파일이 모듈인가」·파일을 읽어 오는 일은 호스트**(HTML · node)다 — 명세의 `HostLoadImportedModule` 이 그 문이다. CommonJS 는 **명세 밖**이다(43번).
+
+**선행** — [35 — 엄격 모드](../35-strict-mode/2-summary.md)(직접 선행 — ★★★ **모듈은 늘 엄격**을 **`.mjs` 로 증명**했다 — 여기서 가져온 이름에 대입하면 `TypeError` 인 것이 그 엄격함 위에 선다) ·
+[05 — `var`·`let`·`const` 와 TDZ](../05-var-let-const-and-tdz/2-summary.md)(★★★ **순환에서의 `ReferenceError` 는 TDZ 다** — 「줄이 아니라 시간」이 모듈 사이로 넓어진 것) ·
+[36 — 이벤트 루프](../36-event-loop-and-microtasks/2-summary.md)(★★ **같은 파일이 ES 모듈이면 `nextTick` 이 4위에서 9위로** — 모듈 본문이 「이미 마이크로태스크를 비우는 중」에 돈다) ·
+[39 — `async`/`await`](../39-async-await/2-summary.md)(최상위 `await` 는 **모듈 코드인가**가 기준 — 확장자가 아니다).
+
+★★★ **파이썬 42번과 나란히** — [Python 42 — 모듈·패키지·import](../../../python/syntax/42-modules-packages-and-import/2-summary.md)가 **순환 import 격자 `깨진 칸 7 / 24`** 를 쟀고, 그 편 7절이 node 18 로 **ESM 은 `ReferenceError: Cannot access 'TAG' before initialization`, CommonJS 는 조용히 `f>g>undefined` + 경고 한 줄**을 이미 던졌다. 여기서는 **그 JS 쪽을 격자로 전면에** 세운다(동작 (3)). **Go 는 순환 import 가 빌드에서 거부된다**([Go 01](../../../go/syntax/01-packages-imports-main-and-init/2-summary.md) — 파이썬 42번 7절의 `import cycle not allowed`).
+
+★★ **경계 — 연혁**(CommonJS·AMD 에서 ESM 표준으로)은 [`history/js/02-ES6-모던.md`](../../../../history/js/02-ES6-모던.md) 의 **「모듈 (import / export)」** 절이 정본이다. 그 절은 「**정적 구조라 빌드 도구가 트리 셰이킹을 할 수 있다**」를 원문의 인과로 적는다 — 이 문서는 **그 정적 구조가 실행에서 어떻게 보이나**(블록 안 `import` 는 문법 오류 · 없는 이름은 **본문이 한 줄도 돌기 전에** 막힌다)부터 쓰고, 크기·속도는 **재지 않았다.**
+★ **CommonJS 와 ESM 이 서로 부르는 것**은 [43번](../43-cjs-and-esm-interop/2-summary.md), **동적 `import`·최상위 `await` 의 평가 순서·import attributes** 는 [목록의 **44번 주제**](../44-dynamic-import-top-level-await-and-import-attributes/)다.

@@ -1,29 +1,5 @@
 # csharp/syntax/25 — 제네릭 제약 `where` 와 `default(T)` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-335(CLI) 6판](https://ecma-international.org/publications-and-standards/standards/ecma-335/) · [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — `where`(제네릭 형식 제약)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/where-generic-type-constraint)(열어서 확인: 「`notnull` 을 어기면 **다른 제약과 달리** 컴파일러가 **에러 대신 경고**를 낸다」 ·\
-> 「nullable 문맥에서 `class` 제약은 **널 불가 참조 타입**을 요구한다 — 널 허용까지 받으려면 `class?`」 · 「`unmanaged` 제약은 형식이 **`struct` 여야 함을 강제**한다」 ·\
-> 「`T` 가 `struct` 면 `T?` 는 `Nullable<T>`, 참조 타입이면 `T?` 는 null 이 유효한 값이라는 뜻 — **`T?` 의 뜻이 모호해진다**」) ·
-> [Learn — C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)(열어서 확인: 7.3 「**더 많은 제네릭 제약**」 · 「**오버로드 해결의 모호한 경우가 줄었다**」 · 8.0 「unmanaged 구성 타입」).
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 진단은 영어로 고정했다(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).
-> **버전** — 제약 `class`·`struct`·`new()`·인터페이스·기반 클래스 **C# 2.0** · `Enum`·`Delegate`·`unmanaged` **C# 7.3** · `notnull`·`class?` **C# 8** · 제약 없는 `T?` **C# 9** — ★ **`-langversion` 판 격자로 직접 확인했다**((7)).
-> **경계** — ★★★ **[24번](../24-generics-and-type-parameters/)이 예고편으로 던진 제약 위반 여섯(`CS0452`·`CS0453`×2·`CS0310`·`CS8377`·`CS8714`)은 다시 싣지 않는다** — 그 여섯을 **80칸 격자의 일부로** 넓힌다((1)).\
-> ★ `new T()` 가 `Activator::CreateInstance` 라는 것도 24편 (2)가 먼저 찍었다 — 여기서는 **제약을 바꿔도 같은가 · 생성자가 던지면 무엇이 되나**만 더 묻는다((3)(4)).\
-> ★ `where T : class` 안의 `==` 가 `box`·`box`·`ceq` 로 **참조 비교**라는 것은 [19번](../19-equality-equals-gethashcode-operator/) (3)이 정본이다 — 인용만 한다.\
-> ★ `enum` 자체는 [20번](../20-enum-and-flags/) · 공변·반변은 [26번](../26-covariance-and-contravariance-out-in/).
-> ★★★ **본체 창은 ② 진단 격자다** — 제약 10 × 타입 인자 8 = **80칸**을 한 번에 컴파일해 **스크립트가 칸마다 되돌려 센다.**
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** · 진단 **순서**(그래서 `sort` 를 배너에 적었다) | ★★★ **진단 코드** · **`(행,열)`** · **`cc exit`** |
-> | **IL 오프셋 폭** | ★★★ **옵코드와 토큰**(`initobj T` · `call System.Activator::CreateInstance<T>`) |
-> | 증분의 절댓값 일부(규칙 24) | ★★★ **「막힌 칸 N / M」 · 「네 판에서 갈린 줄 N / M」**(스크립트가 센 마지막 줄) |
-> | — | ★★ 리플렉션 플래그 이름(`ReferenceTypeConstraint` 등) · 예외 **타입** |
-
 ## 이 판
 
 ```text
@@ -693,3 +669,28 @@ static int Sum<T>(T[] xs) where T : unmanaged, IConvertible {
 - ★ **`allows ref struct` 반(反)제약(C# 13)** — `ref struct` 를 타입 인자로 받게 한다(Learn). **이 판에서 안 던졌다.**
 - ★ **`where T : default`(C# 9)** — 재정의에서 `T?` 의 뜻을 고르는 제약. **안 던졌다.**
 - ★ **정적 추상 멤버 제약**(`where T : INumber<T>` — 제네릭 수학) — [17번](../17-interfaces-default-members-explicit-implementation/) (8)의 `static abstract` 가 뿌리다. 여기서는 안 다뤘다.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-335(CLI) 6판](https://ecma-international.org/publications-and-standards/standards/ecma-335/) · [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — `where`(제네릭 형식 제약)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/where-generic-type-constraint)(열어서 확인: 「`notnull` 을 어기면 **다른 제약과 달리** 컴파일러가 **에러 대신 경고**를 낸다」 ·\
+「nullable 문맥에서 `class` 제약은 **널 불가 참조 타입**을 요구한다 — 널 허용까지 받으려면 `class?`」 · 「`unmanaged` 제약은 형식이 **`struct` 여야 함을 강제**한다」 ·\
+「`T` 가 `struct` 면 `T?` 는 `Nullable<T>`, 참조 타입이면 `T?` 는 null 이 유효한 값이라는 뜻 — **`T?` 의 뜻이 모호해진다**」) ·
+[Learn — C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)(열어서 확인: 7.3 「**더 많은 제네릭 제약**」 · 「**오버로드 해결의 모호한 경우가 줄었다**」 · 8.0 「unmanaged 구성 타입」).
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 진단은 영어로 고정했다(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).
+**버전** — 제약 `class`·`struct`·`new()`·인터페이스·기반 클래스 **C# 2.0** · `Enum`·`Delegate`·`unmanaged` **C# 7.3** · `notnull`·`class?` **C# 8** · 제약 없는 `T?` **C# 9** — ★ **`-langversion` 판 격자로 직접 확인했다**((7)).
+**경계** — ★★★ **[24번](../24-generics-and-type-parameters/)이 예고편으로 던진 제약 위반 여섯(`CS0452`·`CS0453`×2·`CS0310`·`CS8377`·`CS8714`)은 다시 싣지 않는다** — 그 여섯을 **80칸 격자의 일부로** 넓힌다((1)).\
+★ `new T()` 가 `Activator::CreateInstance` 라는 것도 24편 (2)가 먼저 찍었다 — 여기서는 **제약을 바꿔도 같은가 · 생성자가 던지면 무엇이 되나**만 더 묻는다((3)(4)).\
+★ `where T : class` 안의 `==` 가 `box`·`box`·`ceq` 로 **참조 비교**라는 것은 [19번](../19-equality-equals-gethashcode-operator/) (3)이 정본이다 — 인용만 한다.\
+★ `enum` 자체는 [20번](../20-enum-and-flags/) · 공변·반변은 [26번](../26-covariance-and-contravariance-out-in/).
+★★★ **본체 창은 ② 진단 격자다** — 제약 10 × 타입 인자 8 = **80칸**을 한 번에 컴파일해 **스크립트가 칸마다 되돌려 센다.**
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** · 진단 **순서**(그래서 `sort` 를 배너에 적었다) | ★★★ **진단 코드** · **`(행,열)`** · **`cc exit`** |
+| **IL 오프셋 폭** | ★★★ **옵코드와 토큰**(`initobj T` · `call System.Activator::CreateInstance<T>`) |
+| 증분의 절댓값 일부(규칙 24) | ★★★ **「막힌 칸 N / M」 · 「네 판에서 갈린 줄 N / M」**(스크립트가 센 마지막 줄) |
+| — | ★★ 리플렉션 플래그 이름(`ReferenceTypeConstraint` 등) · 예외 **타입** |

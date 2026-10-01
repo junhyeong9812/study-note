@@ -1,36 +1,5 @@
 # csharp/syntax/13 — 속성(property)과 `init`·`required`·`field` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — 속성](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/properties) ·
-> [Learn — `init` 접근자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/init) ·
-> [Learn — `required` 한정자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/required) ·
-> [Learn — `field` 키워드(C# 14)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/field) ·
-> [.NET API — `IsExternalInit`](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.isexternalinit)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL 은 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.\
-> ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).\
-> **던진 형태** — MSBuild 를 안 쓰고 Roslyn `csc` 를 직접 부른다(설정은 [12번](../12-class-fields-constructors-this-base/) 머리말과 같다).
-> **버전** — 속성은 **C# 1.0부터** · 자동 구현 속성은 **C# 3** · 자동 속성 초기자와 getter-only 는 **C# 6** ·\
-> **`init` 은 C# 9** · **`required` 는 C# 11** · **`field` 키워드는 C# 14**다. `-langversion:latest` 로 던졌다.
-> **경계** — **필드·생성자·초기화 순서**는 [12번](../12-class-fields-constructors-this-base/), **인덱서**는 [14번](../14-indexers/),\
-> **접근 한정자의 전모**는 [15번](../15-access-modifiers-and-assembly-boundary/), **`record`** 는 목록의 **18번 주제**가 정본이다.\
-> 여기서는 「**속성이 무엇으로 번역되고, 컴파일러가 언제 말하는가**」만 센다.\
-> ★ **캡슐화라는 개념 자체**는 [`oop-basics/`](../../../../cs/foundations/oop-basics/)가 정본이고, 여기는 **C# 문법**이다.
-> ★★ **대비** — 파이썬 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **33번**(`property`·디스크립터)이 같은 질문을 다룬다.\
-> 파이썬의 `property` 는 **라이브러리 객체**이고 C# 의 속성은 **언어 문법**이라는 것이 갈림인데, **이 판에서 파이썬은 안 던졌다.**
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** — 판마다 다듬인다 | ★★★ **진단 코드**(`CS8852`·`CS9035`·`CS0273`·`CS9258`…)와 **`(행,열)`** |
-> | 컴파일러가 만든 **숨은 필드 이름의 형식** | ★★★ **숨은 필드가 있다는 사실과 그 개수** |
-> | **IL 오프셋 폭**(`IL_0006`)이 판마다 달라질 수 있다는 것 | ★★★ **옵코드 이름과 순서**(`ldfld`·`stfld`·`call`·`ldflda`) |
-> | ★ **증분의 절댓값 일부** — 이 주제는 그 칸을 **안 세웠다**(아래 (0)) | ★★ **`cc exit` 와 `run exit`**(갈라 적었다) · **`modreq` 목록** |
-> | 여러 진단이 나올 때 Roslyn 이 내는 **순서** — 그래서 `\| sort` 를 배너에 적었다 | ★ **`-warn:9` 에서 답한 탐침의 개수** |
-
 ## 이 판
 
 ```text
@@ -869,3 +838,35 @@ class Shape {
   **타입의 이름만 맞으면 됐다** — `modreq` 가 이름으로 맞춰지기 때문이다. **안 돌려 봤다**(이 판은 net10.0 뿐이다).
 - ★ **속성과 JIT 인라인** — 접근자가 `ldfld` 한 줄이면 JIT 이 인라인해 필드 접근과 같아지는 것이 통설이지만,\
   ★★★ **이 판에서 안 쟀다.** 재려면 인라인 여부를 직접 관찰하는 하네스가 필요하다 — **「안 돌려 본 것」으로 남긴다.**
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — 속성](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/properties) ·
+[Learn — `init` 접근자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/init) ·
+[Learn — `required` 한정자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/required) ·
+[Learn — `field` 키워드(C# 14)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/field) ·
+[.NET API — `IsExternalInit`](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.isexternalinit)
+**실행 검증** — 이 문서의 모든 출력·진단·IL 은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.\
+★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).\
+**던진 형태** — MSBuild 를 안 쓰고 Roslyn `csc` 를 직접 부른다(설정은 [12번](../12-class-fields-constructors-this-base/) 「실행 환경」과 같다).
+**버전** — 속성은 **C# 1.0부터** · 자동 구현 속성은 **C# 3** · 자동 속성 초기자와 getter-only 는 **C# 6** ·\
+**`init` 은 C# 9** · **`required` 는 C# 11** · **`field` 키워드는 C# 14**다. `-langversion:latest` 로 던졌다.
+**경계** — **필드·생성자·초기화 순서**는 [12번](../12-class-fields-constructors-this-base/), **인덱서**는 [14번](../14-indexers/),\
+**접근 한정자의 전모**는 [15번](../15-access-modifiers-and-assembly-boundary/), **`record`** 는 목록의 **18번 주제**가 정본이다.\
+여기서는 「**속성이 무엇으로 번역되고, 컴파일러가 언제 말하는가**」만 센다.\
+★ **캡슐화라는 개념 자체**는 [`oop-basics/`](../../../../cs/foundations/oop-basics/)가 정본이고, 여기는 **C# 문법**이다.
+★★ **대비** — 파이썬 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **33번**(`property`·디스크립터)이 같은 질문을 다룬다.\
+파이썬의 `property` 는 **라이브러리 객체**이고 C# 의 속성은 **언어 문법**이라는 것이 갈림인데, **이 판에서 파이썬은 안 던졌다.**
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** — 판마다 다듬인다 | ★★★ **진단 코드**(`CS8852`·`CS9035`·`CS0273`·`CS9258`…)와 **`(행,열)`** |
+| 컴파일러가 만든 **숨은 필드 이름의 형식** | ★★★ **숨은 필드가 있다는 사실과 그 개수** |
+| **IL 오프셋 폭**(`IL_0006`)이 판마다 달라질 수 있다는 것 | ★★★ **옵코드 이름과 순서**(`ldfld`·`stfld`·`call`·`ldflda`) |
+| ★ **증분의 절댓값 일부** — 이 주제는 그 칸을 **안 세웠다**(본문 (0)) | ★★ **`cc exit` 와 `run exit`**(갈라 적었다) · **`modreq` 목록** |
+| 여러 진단이 나올 때 Roslyn 이 내는 **순서** — 그래서 `\| sort` 를 배너에 적었다 | ★ **`-warn:9` 에서 답한 탐침의 개수** |

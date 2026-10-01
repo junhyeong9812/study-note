@@ -1,18 +1,5 @@
 # sql/50-UPDATE — 조인·서브쿼리를 쓰는 갱신 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · UPDATE](https://www.postgresql.org/docs/18/sql-update.html) · [MySQL 8.4 · UPDATE Statement](https://dev.mysql.com/doc/refman/8.4/en/update.html) · [MySQL 8.4 · mysql Client Options(`--safe-updates`)](https://dev.mysql.com/doc/refman/8.4/en/mysql-command-options.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> ★ **환경 확인** — MySQL 의 `sql_safe_updates` 기본값은 **`0`**(꺼짐)이다. 5번 절은 이 값을 세션에서 켜고 끈 결과다.\
-> `sql_mode` 는 `ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION`, `autocommit=1` 이다.\
-> ★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t50_emp`·`t50_dept`·`t50_map`·`t50_u` 를 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> ★ **`WHERE` 없는 `UPDATE` 가 이 주제의 절반이다 — 그 실험은 전부 `t50_emp` 에서만 했다.**\
-> **선행** — [11 서브쿼리 — 스칼라·상관·ANY/ALL](../11-subquery-scalar-correlated-any-all/)(3번 절의 뿌리) · [49 INSERT](../49-insert-multi-row-and-insert-select/)(원자성).\
-> **이어지는 것** — [51 DELETE 와 TRUNCATE](../51-delete-and-truncate/) 가 같은 위험을 삭제 쪽에서 다룬다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`UPDATE` 에서 어려운 것은 「무엇으로 바꾸나」가 아니라 「어느 행을 바꾸나」다.**
@@ -792,3 +779,15 @@ ERROR 1221 (HY000) at line 1: Incorrect usage of UPDATE and ORDER BY
   [44 번](../44-foreign-key-referential-actions/)이 정본이다.
 - **경쟁 상태에서 같은 행을 두 세션이 갱신하면** 나중 쪽이 대기하거나 교착이 난다.\
   **이 편에서는 동시 세션 실험을 하지 않았다** — [56 격리 수준](../56-isolation-levels-read-phenomena-mvcc/)·[57 명시적 잠금과 교착](../57-explicit-locking-and-deadlock/) 주제다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · UPDATE](https://www.postgresql.org/docs/18/sql-update.html) · [MySQL 8.4 · UPDATE Statement](https://dev.mysql.com/doc/refman/8.4/en/update.html) · [MySQL 8.4 · mysql Client Options(`--safe-updates`)](https://dev.mysql.com/doc/refman/8.4/en/mysql-command-options.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+★ **환경 확인** — MySQL 의 `sql_safe_updates` 기본값은 **`0`**(꺼짐)이다. 5번 절은 이 값을 세션에서 켜고 끈 결과다.\
+`sql_mode` 는 `ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION`, `autocommit=1` 이다.\
+★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t50_emp`·`t50_dept`·`t50_map`·`t50_u` 를 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+★ **`WHERE` 없는 `UPDATE` 가 이 주제의 절반이다 — 그 실험은 전부 `t50_emp` 에서만 했다.**\
+**선행** — [11 서브쿼리 — 스칼라·상관·ANY/ALL](../11-subquery-scalar-correlated-any-all/)(3번 절의 뿌리) · [49 INSERT](../49-insert-multi-row-and-insert-select/)(원자성).\
+**이어지는 것** — [51 DELETE 와 TRUNCATE](../51-delete-and-truncate/) 가 같은 위험을 삭제 쪽에서 다룬다.

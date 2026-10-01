@@ -1,8 +1,5 @@
 # os/33-data-integrity-checksums — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고, 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> ⚠️ 이 질문 목록은 Claude 초안(2026-09-30). 본인 검수 후 이 줄을 `✅ 검수 완료(날짜)`로 바꾼다.
-
 ## 질문
 
 1. (비교) fail-stop 모델과 fail-partial 모델은 무엇이 다른가? 잠재 섹터 오류(LSE)와 조용한 손상은 "디스크가 하는 말"에서 어떻게 다른가?

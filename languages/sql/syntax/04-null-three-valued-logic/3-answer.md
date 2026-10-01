@@ -1,10 +1,5 @@
 # sql/04-NULL 의 3값 논리 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 출력은 없다.\
-> 문서 근거는 [PG 18 비교 연산자](https://www.postgresql.org/docs/18/functions-comparison.html) · [MySQL 8.4 NULL 다루기](https://dev.mysql.com/doc/refman/8.4/en/working-with-null.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -532,3 +527,9 @@ MySQL 의 `ERROR 1064` 는 **`IS NOT DISTINCT FROM` 이 없다는 근거**일 �
 ③ `AVG` 의 결과 타입·자릿수 ④ 빈 결과의 출력 모양(PG 는 `(0 rows)`, MySQL 은 **아무것도 안 찍는다**).
 
 **DB 잔재** — 없다. 이 주제는 **`emp`·`dept` 를 읽기만 했다.** 두 엔진의 최종 표 목록은 [52 UPSERT](../52-upsert/)의 「실행 검증」에 있다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 출력은 없다.\
+문서 근거는 [PG 18 비교 연산자](https://www.postgresql.org/docs/18/functions-comparison.html) · [MySQL 8.4 NULL 다루기](https://dev.mysql.com/doc/refman/8.4/en/working-with-null.html).

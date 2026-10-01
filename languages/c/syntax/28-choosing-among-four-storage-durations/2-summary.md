@@ -1,24 +1,5 @@
 # c/syntax/28 — 저장 기간 4종을 고르는 법: 「**이 값은 언제 태어나 언제 죽나**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf)) · [cppreference — Storage duration (C)](https://en.cppreference.com/w/c/language/storage_duration) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html) · [`proc(5)` — `/proc/[pid]/maps`](https://man7.org/linux/man-pages/man5/proc.5.html)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **주소·값·진단·종료 코드는 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> ★★ **UB 가 걸린 실험은 「컴파일러 2 × 최적화 3」 여섯 벌**을 돌렸다 — 한 벌만 돌리면 **정반대 결론**이 난다(아래 (5)).\
-> ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
-> **버전** — 자동·정적·할당은 **C89 부터**다. **스레드 저장 기간은 C11 부터**(`_Thread_local`).\
-> ★ **`thread_local` 이라는 철자**는 **C11 에서는 `<threads.h>` 의 매크로**이고 **C23 부터 키워드**다 — 아래 (7).\
-> ★★ **`-std=` 는 강제가 아니라 기본값 선택**이다 — 표준 준수를 주장하는 자리에는 전부 `-pedantic` 을 붙였다.\
-> ★★★ 그런데 이 주제의 **UB 는 `-pedantic` 으로도 `-pedantic-errors` 로도 안 막힌다** — 경고를 안 내는 컴파일러가 있기 때문이다(아래 (5)).
-> ★★ **경계** — **스택 프레임·가상 메모리·힙의 구조**는 [`foundations/memory-management/`](../../../../cs/foundations/memory-management/)와 [`foundations/variables-and-memory/`](../../../../cs/foundations/variables-and-memory/)가 정본이다.\
-> 여기는 「**C 에서 이 값을 어느 저장 기간에 둘까**」라는 **선택**만 본다 — ★ 구조가 아니라 **고르는 법**이다.\
-> ★ **`static` 이 링크를 바꾸는 것**은 [목록의 **29번 주제**](../29-scope-and-linkage-static-extern/), **초기화 규칙과 불확정 값**은 [목록의 **30번 주제**](../30-initialization-rules-and-indeterminate-values/)가 정본이다.\
-> ★ **`malloc`/`free` 의 계약**은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/), **해제 후 사용·댕글링**은 목록의 **57번 주제**, **sanitizer** 는 목록의 **58번 주제**다.\
-> ★ **문자열 리터럴**은 [20번 형제](../20-null-terminated-strings-and-string-literals/), **VLA** 는 [18번 형제](../18-variable-length-arrays-vla/), **복합 리터럴**은 [27번 형제](../27-compound-literals/)가 정본이다.
-> 선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **저장 기간은 「물건을 어디에 두느냐」다.**
@@ -946,3 +927,22 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★ **정적 객체가 실제로 `.bss` 와 `.data` 중 어디에 가는지 `objdump` 로 확인하는 것** — ★ **던지지 않았다.**\
   ★ (1)은 `/proc/self/maps` 까지만 봤고, 그 안에서 `.bss` 와 `.data` 를 **가르지 않았다**(둘 다 `rw-p` 실행 파일 이미지로 나온다).
 - ★ **`-O3`·`-Os` 에서의 (5) 격자** — ★ **던지지 않았다**(`-O0`\~`-O2` 까지만 흔들었다).
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf)) · [cppreference — Storage duration (C)](https://en.cppreference.com/w/c/language/storage_duration) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html) · [`proc(5)` — `/proc/[pid]/maps`](https://man7.org/linux/man-pages/man5/proc.5.html)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **주소·값·진단·종료 코드는 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+★★ **UB 가 걸린 실험은 「컴파일러 2 × 최적화 3」 여섯 벌**을 돌렸다 — 한 벌만 돌리면 **정반대 결론**이 난다(본문 (5)).\
+★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
+**버전** — 자동·정적·할당은 **C89 부터**다. **스레드 저장 기간은 C11 부터**(`_Thread_local`).\
+★ **`thread_local` 이라는 철자**는 **C11 에서는 `<threads.h>` 의 매크로**이고 **C23 부터 키워드**다 — 본문 (7).\
+★★ **`-std=` 는 강제가 아니라 기본값 선택**이다 — 표준 준수를 주장하는 자리에는 전부 `-pedantic` 을 붙였다.\
+★★★ 그런데 이 주제의 **UB 는 `-pedantic` 으로도 `-pedantic-errors` 로도 안 막힌다** — 경고를 안 내는 컴파일러가 있기 때문이다(본문 (5)).
+★★ **경계** — **스택 프레임·가상 메모리·힙의 구조**는 [`foundations/memory-management/`](../../../../cs/foundations/memory-management/)와 [`foundations/variables-and-memory/`](../../../../cs/foundations/variables-and-memory/)가 정본이다.\
+여기는 「**C 에서 이 값을 어느 저장 기간에 둘까**」라는 **선택**만 본다 — ★ 구조가 아니라 **고르는 법**이다.\
+★ **`static` 이 링크를 바꾸는 것**은 [목록의 **29번 주제**](../29-scope-and-linkage-static-extern/), **초기화 규칙과 불확정 값**은 [목록의 **30번 주제**](../30-initialization-rules-and-indeterminate-values/)가 정본이다.\
+★ **`malloc`/`free` 의 계약**은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/), **해제 후 사용·댕글링**은 목록의 **57번 주제**, **sanitizer** 는 목록의 **58번 주제**다.\
+★ **문자열 리터럴**은 [20번 형제](../20-null-terminated-strings-and-string-literals/), **VLA** 는 [18번 형제](../18-variable-length-arrays-vla/), **복합 리터럴**은 [27번 형제](../27-compound-literals/)가 정본이다.
+선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).

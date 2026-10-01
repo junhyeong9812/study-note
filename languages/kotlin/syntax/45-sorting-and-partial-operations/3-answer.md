@@ -1,9 +1,5 @@
 # kotlin/syntax/45 — 정렬·부분 연산 — `sortedBy`/`take`/`drop`/`chunked`/`windowed` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.
-> ★★ 아래 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -496,3 +492,8 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 1. ★★ **`Array.shuffled` 가 없었다** — `Array` 는 제자리 다섯을 다 갖는데 새 리스트 쪽 `shuffled` 만 빠졌다(1번).
 2. ★★ **`sorted()` 의 결과가 `Arrays$ArrayList` 였다** — 「새 리스트」가 크기 고정 리스트다(3번).
 3. ★ **`windowed(0)` 과 `chunked(0)` 의 문장이 달랐다** — 같은 검사 함수가 `size != step` 으로 문장을 고른다(4번).
+
+## 실행 환경
+
+모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.
+★★ 본문의 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.

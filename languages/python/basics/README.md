@@ -1,7 +1,5 @@
 # 파이썬 기본 문법 — 자료구조·제어문·연산자 (컴퓨터사이언스 부트캠프 with 파이썬 보충 노트)
 
-> 원고: computer_science repo의 python_data_structures/ 따라 친 노트를 구조만 잡아 이관(2026-09-05). 내용 보강 없음 — 원문 유지, 오탈자만 교정.
-
 ## 목차
 
 | 원본 파일 | 절 |
@@ -279,3 +277,7 @@ while not player_num.isdigit():
 
 player_num = int(player_num)
 ```
+
+## 출처
+
+원고: computer_science repo의 python_data_structures/ 따라 친 노트를 구조만 잡아 이관(2026-09-05). 내용 보강 없음 — 원문 유지, 오탈자만 교정.

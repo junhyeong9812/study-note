@@ -1,11 +1,5 @@
 # domain-modeling-advanced/18-settlement-match — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/18-settlement-match/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README·테스트 assert 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -658,3 +652,7 @@ public boolean looksClean() {
 - 챕터 안내(함정·측정이 알려준 것·변종 검증·생각해볼 것): `/home/jun/project/myway/domain-modeling-advanced/18-settlement-match/README.md`
 - 계약 테스트(9,000 · 5,000 · +5,000/-3,000/8,000 · 169,750 · 30,000 예 · 50,000 부분 정산 · 창 앞뒤): `/home/jun/project/myway/domain-modeling-advanced/18-settlement-match/src/test/java/com/domain/settle/ReconcilerTest.java`
 - 측정 테스트(2,893/6,000 · 2,675/4,171 · 901·1,109·1,644·2,800 · 5,282,190 · 2,242/1,088 · 2,675/496 · 1,899/2,180/847 · 2,670/524/522 · 자료 생성 규칙 10,000~49,000·수수료 3%): `/home/jun/project/myway/domain-modeling-advanced/18-settlement-match/src/test/java/com/domain/settle/MeasurementTest.java`
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/18-settlement-match/impl/`).

@@ -1,17 +1,5 @@
 # kotlin/syntax/46 — `Map` 조작 — `getOrPut`/`getOrElse`/`mapValues`/`filterKeys` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Map-specific operations](https://kotlinlang.org/docs/map-operations.html)(키·값으로 꺼내기 `get`·`getValue`·`getOrElse`·`getOrDefault` · 거르기 `filterKeys`·`filterValues` · 쓰기) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((2)(3)(4)(5)).
-> **실행 검증** — 이 문서의 모든 출력·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 4회 · `java` 4회 · `javap` 1회 · stdlib 소스 jar 에서 발췌 10곳.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「결과가 같은 행 N / M」은 격자 프로그램이 스스로 센 것**이다.
-> **버전** — `getOrPut`·`getOrElse`·`filterKeys`·`filterValues`·`mapValues` 는 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**. `getValue` 는 **`@SinceKotlin("1.1")`**((3)) · `Map.getOrDefault` 는 **`@SinceKotlin("1.1")` + `@PlatformDependent`**(JDK 8 의 `Map.getOrDefault` 를 그대로 드러낸 것 — (2)).\
-> ★★★ **`getOrElseIfNull`·`getOrElseIfMissing`·`getOrPutIfNull`·`getOrPutIfMissing` 넷은 `@SinceKotlin("2.4")` + `@ExperimentalStdlibApi`**((4)) — 이 판에서 처음 들어온 **옵트인 API** 다. 격자는 `@file:OptIn(ExperimentalStdlibApi::class)` 로 불렀다.
-> **경계** — ★★★ **해시 테이블의 원리**(버킷·충돌·재해시)는 [`cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 이 정본이다 — 여기는 **stdlib 함수가 「키 없음」과 「값이 `null`」을 어떻게 다루나**만 본다.\
-> **Java 쪽 같은 격자**(`get`·`getOrDefault`·`putIfAbsent`·`computeIfAbsent`·`merge` × 세 상태)는 [Java 41번](../../../java/syntax/41-map-api-merge-compute/)이 이미 쟀다 — 여기서는 `getOrDefault` 한 행만 겹친다.\
-> `mapValues` 결과가 `LinkedHashMap` 이고 `Map.map` 이 `List` 라는 것은 [42번 주제](../42-transformations-map-flatmap-associate-zip/) (1)(2)가 쟀다 — 다시 재지 않는다. 결과가 **복사인가 창인가**는 [41번 주제](../41-collection-creation-and-copying/)가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**null 대 키 없음 격자 — 함수 13개 × 맵 상태 셋(키 없음 · 키가 있고 값이 `null` · 값이 있음) → 돌려준 값 · 맵이 바뀌었나 · 람다 호출 수**」. 두 상태는 `m["k"]` 로 보면 **둘 다 `null`** 이다. 함수마다 둘을 가르는지는 **맵을 셋 다 만들어 넣어 봐야** 보인다.
 
 ## 이 주제가 쓰는 세 층
@@ -536,3 +524,15 @@ missing  0
 - **`ConcurrentMap.getOrPutIfNull`/`…IfMissing`** — `MapsJVM.kt` 에 있고 `computeIfAbsent`·`putIfAbsent` 를 쓴다(소스를 읽었고 **돌리지 않았다**).
 - **위임 프로퍼티 `val name: String by map`** — `withDefault` 의 원래 자리다. [17번 주제](../17-delegated-properties/)가 `Map` 위임을 다룬다(이 문서는 돌리지 않았다).
 - **경쟁 중 람다 호출 수** — 여러 스레드로 N판을 돌려 「몇 판 중 몇 판에서 2번 이상」을 세면 성질로 말할 수 있다. 이 판은 **재지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Map-specific operations](https://kotlinlang.org/docs/map-operations.html)(키·값으로 꺼내기 `get`·`getValue`·`getOrElse`·`getOrDefault` · 거르기 `filterKeys`·`filterValues` · 쓰기) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((2)(3)(4)(5)).
+**실행 검증** — 이 문서의 모든 출력·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 4회 · `java` 4회 · `javap` 1회 · stdlib 소스 jar 에서 발췌 10곳.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「결과가 같은 행 N / M」은 격자 프로그램이 스스로 센 것**이다.
+**버전** — `getOrPut`·`getOrElse`·`filterKeys`·`filterValues`·`mapValues` 는 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**. `getValue` 는 **`@SinceKotlin("1.1")`**((3)) · `Map.getOrDefault` 는 **`@SinceKotlin("1.1")` + `@PlatformDependent`**(JDK 8 의 `Map.getOrDefault` 를 그대로 드러낸 것 — (2)).\
+★★★ **`getOrElseIfNull`·`getOrElseIfMissing`·`getOrPutIfNull`·`getOrPutIfMissing` 넷은 `@SinceKotlin("2.4")` + `@ExperimentalStdlibApi`**((4)) — 이 판에서 처음 들어온 **옵트인 API** 다. 격자는 `@file:OptIn(ExperimentalStdlibApi::class)` 로 불렀다.
+**경계** — ★★★ **해시 테이블의 원리**(버킷·충돌·재해시)는 [`cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 이 정본이다 — 여기는 **stdlib 함수가 「키 없음」과 「값이 `null`」을 어떻게 다루나**만 본다.\
+**Java 쪽 같은 격자**(`get`·`getOrDefault`·`putIfAbsent`·`computeIfAbsent`·`merge` × 세 상태)는 [Java 41번](../../../java/syntax/41-map-api-merge-compute/)이 이미 쟀다 — 여기서는 `getOrDefault` 한 행만 겹친다.\
+`mapValues` 결과가 `LinkedHashMap` 이고 `Map.map` 이 `List` 라는 것은 [42번 주제](../42-transformations-map-flatmap-associate-zip/) (1)(2)가 쟀다 — 다시 재지 않는다. 결과가 **복사인가 창인가**는 [41번 주제](../41-collection-creation-and-copying/)가 정본이다.

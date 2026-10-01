@@ -1,8 +1,5 @@
 # 개념: JLS와 annotation 멤버 타입 규칙 — 재귀 probe가 무한히 돌 수 없는 이유
 
-> F1(nested annotation 재귀 probe) 작업 중 나온 질문의 배경 문서. 핵심 주장:
-> "annotation 값 구조를 따라가는 재귀는 항상 유한하다 — JLS가 그렇게 만들었다."
-
 ## JLS란
 
 JLS(Java Language Specification)는 Java 언어의 공식 명세 — 언어의 헌법이다.

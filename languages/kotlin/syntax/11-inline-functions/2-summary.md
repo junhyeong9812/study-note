@@ -1,21 +1,5 @@
 # kotlin/syntax/11 — 인라인 함수: `noinline`/`crossinline`·비지역 `return` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Inline functions](https://kotlinlang.org/docs/inline-functions.html) · [Returns and jumps](https://kotlinlang.org/docs/returns.html) · [Higher-order functions and lambdas](https://kotlinlang.org/docs/lambdas.html) · [Visibility modifiers](https://kotlinlang.org/docs/visibility-modifiers.html).
-> **실행 검증** — 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> `kotlinc` 19회 · `javac` 1회 · `java` 4회 · `javap` 14회 · `ls -l` 2회. 컴파일 실패 시나리오 **7벌**, 경고 시나리오 **3벌**.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다.\
-> ★ 다만 이 주제의 결론은 **타깃에 안 흔들렸다** — 같은 두 파일을 `-jvm-target 21`(`major version: 65`)로 다시 찍어\
-> `javap -c -p` 출력을 `diff` 했더니 **한 글자도 다르지 않았다**((9)).
-> **버전** — `inline`·`noinline`·`crossinline`·비지역 `return` 은 전부 **1.0**. `@PublishedApi` 는 **1.2**.\
-> 인라인 람다 안에서 **바깥 루프를 `break`/`continue` 로 빠져나오는 것**은 **2.2.0** 부터다 — [07번 주제](../07-loops-ranges-and-labels/)가 정본이다.
-> ★★ **성능은 한 번도 재지 않았다.** `javap` 로 본 것은 **객체 생성·박싱·호출 명령의 유무**까지이고,\
-> 따로 잰 것은 **코드 크기**(바이트 수와 명령 줄 수)뿐이다((8)). **「그래서 어느 쪽이 빠르다」는 이 문서가 하지 않은 주장이다.**
-> **경계** — 람다가 **무엇이 되는가**(`invokedynamic`·`Function1`·박싱·객체 동일성)는 [10번 주제](../10-lambdas-and-higher-order-functions/)가 정본이다.\
-> `reified` 는 [12번 주제](../12-reified-type-parameters/)가 정본이다 — 여기서는 **`inline` 이 왜 그 전제인가**까지만 짚는다.\
-> 라벨과 `break`/`continue` 의 정본은 [07번 주제](../07-loops-ranges-and-labels/), `$default` 합성 메서드는 [08번 주제](../08-function-declaration-default-and-named-args/)다.\
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **`inline` 은 "이 함수를 부르지 말고, 몸통을 부르는 자리에 그대로 베껴 넣어라" 는 지시다.**
@@ -1045,3 +1029,19 @@ inline fun exposed(x: Int): Int = helper(x)
   (**안 찍어 봤다**).
 - 이 문서에서 **실행 시간은 한 번도 재지 않았다.** `javap` 로 본 것은 **객체 생성·박싱·호출 명령의 유무**,\
   따로 잰 것은 **코드 크기**뿐이다.
+
+## 실행 환경
+
+**기준 소스** — [Inline functions](https://kotlinlang.org/docs/inline-functions.html) · [Returns and jumps](https://kotlinlang.org/docs/returns.html) · [Higher-order functions and lambdas](https://kotlinlang.org/docs/lambdas.html) · [Visibility modifiers](https://kotlinlang.org/docs/visibility-modifiers.html).
+**실행 검증** — 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+`kotlinc` 19회 · `javac` 1회 · `java` 4회 · `javap` 14회 · `ls -l` 2회. 컴파일 실패 시나리오 **7벌**, 경고 시나리오 **3벌**.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다.\
+★ 다만 이 주제의 결론은 **타깃에 안 흔들렸다** — 같은 두 파일을 `-jvm-target 21`(`major version: 65`)로 다시 찍어\
+`javap -c -p` 출력을 `diff` 했더니 **한 글자도 다르지 않았다**((9)).
+**버전** — `inline`·`noinline`·`crossinline`·비지역 `return` 은 전부 **1.0**. `@PublishedApi` 는 **1.2**.\
+인라인 람다 안에서 **바깥 루프를 `break`/`continue` 로 빠져나오는 것**은 **2.2.0** 부터다 — [07번 주제](../07-loops-ranges-and-labels/)가 정본이다.
+★★ **성능은 한 번도 재지 않았다.** `javap` 로 본 것은 **객체 생성·박싱·호출 명령의 유무**까지이고,\
+따로 잰 것은 **코드 크기**(바이트 수와 명령 줄 수)뿐이다((8)). **「그래서 어느 쪽이 빠르다」는 이 문서가 하지 않은 주장이다.**
+**경계** — 람다가 **무엇이 되는가**(`invokedynamic`·`Function1`·박싱·객체 동일성)는 [10번 주제](../10-lambdas-and-higher-order-functions/)가 정본이다.\
+`reified` 는 [12번 주제](../12-reified-type-parameters/)가 정본이다 — 여기서는 **`inline` 이 왜 그 전제인가**까지만 짚는다.\
+라벨과 `break`/`continue` 의 정본은 [07번 주제](../07-loops-ranges-and-labels/), `$default` 합성 메서드는 [08번 주제](../08-function-declaration-default-and-named-args/)다.

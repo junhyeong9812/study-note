@@ -1,14 +1,5 @@
 # sql/05-NULL 비교 — IS NULL·IS DISTINCT FROM·NULL 안전 등호 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Comparison Functions and Operators](https://www.postgresql.org/docs/18/functions-comparison.html) · [MySQL 8.4 · Comparison Functions and Operators](https://dev.mysql.com/doc/refman/8.4/en/comparison-operators.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — 비교 연산자 자체는 두 엔진 모두 오래전부터 있다. 이 주제에서 버전에 갈리는 것은 없다.\
-> **선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/). 왜 `UNKNOWN` 이 생기는지는 그쪽이 정본이고, **여기는 그래서 무슨 연산자를 쓰나**를 다룬다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`= NULL` 은 「모르는 것과 같은가?」를 묻는 것이다. 답은 「예」도 「아니오」도 아니라 「모른다」다.**
@@ -640,3 +631,11 @@ WHERE NOT (v <=> 5)    ->  type=index  key=v      rows=100649  Using where; Usin
 - **왜 `NOT IN` 을 이렇게 정의했나.** `a NOT IN (S)` 는 정의상 `NOT (a = s1 OR a = s2 OR ...)` 이다. 이 전개를 알면 규칙을 외울 필요가 없다 — 3값 논리의 `OR` 표 한 장이면 결과가 따라 나온다([04번](../04-null-three-valued-logic/)).
 - **`NULL` 안전 등호를 왜 따로 두었나.** 표준은 「`NULL` 은 값이 아니다」를 일관되게 밀어붙였고, 그 결과 「두 행이 같은가」를 직접 물을 방법이 사라졌다. `IS DISTINCT FROM` 은 그 구멍을 메우려고 나중에 들어온 술어다.
 - **`GROUP BY`·`DISTINCT`·`UNION` 은 이 규칙을 안 따른다.** 그쪽은 「같다」가 아니라 「**구별할 수 없다**」를 기준으로 삼아 `NULL` 끼리를 한 덩어리로 묶는다([07번](../07-distinct-and-duplicate-removal/)). 같은 문서 안에 규칙이 둘 있는 셈이라 헷갈리는데, **비교는 `UNKNOWN`, 묶기는 같은 것 취급**으로 나눠 외우면 된다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Comparison Functions and Operators](https://www.postgresql.org/docs/18/functions-comparison.html) · [MySQL 8.4 · Comparison Functions and Operators](https://dev.mysql.com/doc/refman/8.4/en/comparison-operators.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — 비교 연산자 자체는 두 엔진 모두 오래전부터 있다. 이 주제에서 버전에 갈리는 것은 없다.\
+**선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/). 왜 `UNKNOWN` 이 생기는지는 그쪽이 정본이고, **여기는 그래서 무슨 연산자를 쓰나**를 다룬다.

@@ -1,12 +1,5 @@
 # web-api/31 — `Blob`·`File`·`FileReader` 와 오브젝트 URL: 미리보기·업로드·저장 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — `FormData` 의 파일 칸 규칙은 [30번 주제](../30-request-body-and-content-type/1-question.md), bfcache 는 [24번 주제](../24-document-lifecycle-events/1-question.md)가 물었다. 마크업 쪽 파일 입력(`accept`·`multiple`)은 **HTML 갈래 31번**(폴더는 아직 없다)이다. 여기는 **파일을 넘기는 길**과 **오브젝트 URL 이 언제까지 읽히나**를 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 File API·Fetch 명세 문장이다. **메모리는 재지 않았다.** 이식성은 주장 범위 밖이다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -114,6 +107,12 @@ document.body.append(a); a.click();
 
 - [30번 주제](../30-request-body-and-content-type/1-question.md) 문항 3의 `f.append("b", new Blob(["x"]))` 와 이 편의 `fd.append("f", f)` 는 원문의 `filename` 이 어떻게 다른가?
 - 이 편의 **도구가 못 보는 것** 두 가지를 대라.
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — `FormData` 의 파일 칸 규칙은 [30번 주제](../30-request-body-and-content-type/1-question.md), bfcache 는 [24번 주제](../24-document-lifecycle-events/1-question.md)가 물었다. 마크업 쪽 파일 입력(`accept`·`multiple`)은 **HTML 갈래 31번**(폴더는 아직 없다)이다. 여기는 **파일을 넘기는 길**과 **오브젝트 URL 이 언제까지 읽히나**를 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 File API·Fetch 명세 문장이다. **메모리는 재지 않았다.** 이식성은 주장 범위 밖이다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

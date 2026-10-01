@@ -1,40 +1,5 @@
 # cpp/syntax/12 — 클래스 기본: 멤버·접근 지정·`this` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 클래스](https://en.cppreference.com/w/cpp/language/classes) · [멤버 접근 지정자](https://en.cppreference.com/w/cpp/language/access) · [`this` 포인터](https://en.cppreference.com/w/cpp/language/this) · [정적 멤버](https://en.cppreference.com/w/cpp/language/static) · [friend 선언](https://en.cppreference.com/w/cpp/language/friend) · [GCC — 크기 0 배열 확장](https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html)
-> **실행 검증** — 이 문서의 모든 출력·진단·심볼은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **GNU nm (binutils 2.42)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`cls01.cpp` \~ `cls12.cpp`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ **소스 펜스의 첫 줄 `/* cls01.cpp */` 도 캡처가 찍은 것**이라 실파일과 한 글자씩 대조된다.
-> **버전** — `class`·`struct`·접근 지정자·`this`·`friend`·정적 멤버는 **C++98부터**다.\
-> **`static inline` 데이터 멤버는 C++17부터**이고, 그 앞에는 클래스 밖 정의가 필수였다([목록의 **25번 주제**](../25-static-members-and-inline-variables/)).\
-> 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-> ★★★ **12 → 13 → 14 → 15 는 한 사슬이다** — 여기 12 가 **클래스라는 그릇**을 만들고,\
-> [13번](../13-constructors-member-init-list-and-delegating/)이 **그 그릇을 채우는 법**을,\
-> [14번](../14-destructors-and-deterministic-destruction/)이 **언제 비워지는가**를,\
-> [15번](../15-raii-resources-as-types/)이 **그 시점을 자원 관리에 쓰는 법**을 답한다.
-> **경계** — 「캡슐화·정보 은닉이 왜 좋은가」는 [`foundations/oop-basics/`](../../../../cs/foundations/oop-basics/)가 정본이다.\
-> 여기서는 **C++ 문법이 그것을 어떻게 강제하나**만 쓴다.\
-> 「`const` 멤버 함수를 설계에 쓰는 법」은 형제 [`10번`](../10-const-correctness/), 「참조와 포인터」는 형제 [`07번`](../07-references-vs-pointers/),\
-> 「구조체 레이아웃·패딩」은 C 갈래 [`22-struct-padding-and-alignment/`](../../../c/syntax/22-struct-padding-and-alignment/)가 정본이다.\
-> 「상속·가상 함수」는 [목록의 **19번 주제**](../19-inheritance-virtual-functions-override-final/), 「정적 멤버와 `inline` 변수」는 [목록의 **25번 주제**](../25-static-members-and-inline-variables/),\
-> 「연산자 오버로딩」은 [목록의 **22번 주제**](../22-operator-overloading/)가 정본이다.
-> ★★★ **이 문서는 시간을 재지 않았다.** 근거는 **컴파일러 진단 · `sizeof` · 심볼 개수 · `static_assert`** 넷뿐이다.\
-> 「몇 배 빠르다」는 문장은 **한 줄도 없다**.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 객체의 **주소값** 자체(`&a` 가 몇인지) | ★★★ **주소가 서로 다른가**(`&a != &b`)라는 **비교 결과** |
-> | 두 컴파일러의 **진단 문구** | ★★★ **에러냐 경고냐 통과냐** · **진단이 가리킨 줄·열** · **`cc exit`** |
-> | `nm` 이 찍는 심볼의 **주소** | ★★ **심볼 개수**(`Counter::bump()` 가 **1개**) |
-> | 초기화되지 않은 멤버의 **값**(cls07 의 `lazy`) | ★★ **약속이 깨졌다는 사실**(`lazy == value_+1` 이 **0**) |
-> | — | ★★★ **`sizeof` 값**(이 ABI 에서 결정적이다) · **경고 개수** |
-
 ## 한눈에 — 쉽게 말하면
 
 **클래스는 「같이 다니는 값들」에 이름을 붙이고, 그 값에 손대는 문을 몇 개 낼지 정하는 것이다.**
@@ -305,7 +270,7 @@ sizeof(&Counter::bump)    = 16   (멤버 함수 포인터)
 - ★★ **`const` 멤버 함수에서 `this` 는 `const Counter*` 가 된다** — 이것이 `static_assert` 로 증명된다.\
   두 `static_assert` 가 통과했다는 것은 **컴파일러가 그렇게 보고 있다**는 뜻이다.
 - ★ **데이터 멤버 포인터는 8바이트, 멤버 함수 포인터는 16바이트**다 — **가상 함수 때문에** 뒤엣것이 두 칸이다(구현 정의).
-- ★ **객체 셋의 주소가 서로 다르다** — 이 문서는 **주소값을 싣지 않고 비교 결과만** 싣는다(머리말의 「흔들리는 칸」).
+- ★ **객체 셋의 주소가 서로 다르다** — 이 문서는 **주소값을 싣지 않고 비교 결과만** 싣는다(「실행 환경」의 「흔들리는 칸」).
 
 **비용** — `this` 는 **레지스터 하나**다(x86-64 SysV 에서 첫 인자 자리). 멤버 함수 호출이 자유 함수 호출보다 비싼 것이 아니다.
 
@@ -986,3 +951,39 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **`friend` 를 클래스 안에 정의하는 관용구**(hidden friend) — `operator<<` 를 클래스 안에 `friend` 로 **정의**하면 ADL 로만 찾아진다. 형제 [`06번`](../06-namespaces-and-adl/)과 [목록의 **22번 주제**](../22-operator-overloading/)가 만난다.
 - **`[[no_unique_address]]`(C++20)** — 비어 있는 **데이터 멤버**에도 빈 기반 최적화와 같은 일을 해 준다. (2)의 `EmptyBase` 가 4인 것과 짝이 되는 기능이다.
 - **명시적 객체 매개변수(C++23)** — `void f(this Self&& self)` 로 `this` 를 **보이는 인자**로 적는다. 이 문서의 기준(C++20)에서는 쓸 수 없다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 클래스](https://en.cppreference.com/w/cpp/language/classes) · [멤버 접근 지정자](https://en.cppreference.com/w/cpp/language/access) · [`this` 포인터](https://en.cppreference.com/w/cpp/language/this) · [정적 멤버](https://en.cppreference.com/w/cpp/language/static) · [friend 선언](https://en.cppreference.com/w/cpp/language/friend) · [GCC — 크기 0 배열 확장](https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html)
+**실행 검증** — 이 문서의 모든 출력·진단·심볼은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **GNU nm (binutils 2.42)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`cls01.cpp` \~ `cls12.cpp`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ **소스 펜스의 첫 줄 `/* cls01.cpp */` 도 캡처가 찍은 것**이라 실파일과 한 글자씩 대조된다.
+**버전** — `class`·`struct`·접근 지정자·`this`·`friend`·정적 멤버는 **C++98부터**다.\
+**`static inline` 데이터 멤버는 C++17부터**이고, 그 앞에는 클래스 밖 정의가 필수였다([목록의 **25번 주제**](../25-static-members-and-inline-variables/)).\
+기준은 **C++20**이다.
+
+★★★ **12 → 13 → 14 → 15 는 한 사슬이다** — 여기 12 가 **클래스라는 그릇**을 만들고,\
+[13번](../13-constructors-member-init-list-and-delegating/)이 **그 그릇을 채우는 법**을,\
+[14번](../14-destructors-and-deterministic-destruction/)이 **언제 비워지는가**를,\
+[15번](../15-raii-resources-as-types/)이 **그 시점을 자원 관리에 쓰는 법**을 답한다.
+**경계** — 「캡슐화·정보 은닉이 왜 좋은가」는 [`foundations/oop-basics/`](../../../../cs/foundations/oop-basics/)가 정본이다.\
+여기서는 **C++ 문법이 그것을 어떻게 강제하나**만 쓴다.\
+「`const` 멤버 함수를 설계에 쓰는 법」은 형제 [`10번`](../10-const-correctness/), 「참조와 포인터」는 형제 [`07번`](../07-references-vs-pointers/),\
+「구조체 레이아웃·패딩」은 C 갈래 [`22-struct-padding-and-alignment/`](../../../c/syntax/22-struct-padding-and-alignment/)가 정본이다.\
+「상속·가상 함수」는 [목록의 **19번 주제**](../19-inheritance-virtual-functions-override-final/), 「정적 멤버와 `inline` 변수」는 [목록의 **25번 주제**](../25-static-members-and-inline-variables/),\
+「연산자 오버로딩」은 [목록의 **22번 주제**](../22-operator-overloading/)가 정본이다.
+★★★ **이 문서는 시간을 재지 않았다.** 근거는 **컴파일러 진단 · `sizeof` · 심볼 개수 · `static_assert`** 넷뿐이다.\
+「몇 배 빠르다」는 문장은 **한 줄도 없다**.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 객체의 **주소값** 자체(`&a` 가 몇인지) | ★★★ **주소가 서로 다른가**(`&a != &b`)라는 **비교 결과** |
+| 두 컴파일러의 **진단 문구** | ★★★ **에러냐 경고냐 통과냐** · **진단이 가리킨 줄·열** · **`cc exit`** |
+| `nm` 이 찍는 심볼의 **주소** | ★★ **심볼 개수**(`Counter::bump()` 가 **1개**) |
+| 초기화되지 않은 멤버의 **값**(cls07 의 `lazy`) | ★★ **약속이 깨졌다는 사실**(`lazy == value_+1` 이 **0**) |
+| — | ★★★ **`sizeof` 값**(이 ABI 에서 결정적이다) · **경고 개수** |

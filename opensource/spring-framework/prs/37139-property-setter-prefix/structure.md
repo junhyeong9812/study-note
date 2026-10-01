@@ -1,11 +1,5 @@
 # PR #37139 — 무대의 실구조와 워크플로우
 
-> PR #37139의 무대가 되는 실구조·워크플로우. 문제·수정은 [README.md](README.md), 테스트는 [tests.md](tests.md) 참조.
->
-> 기준: 로컬 HEAD `526c706d1c3`. 이 시점의 `Property.java`에는 **이미 #36911과 #37139의 수정이 반영되어 있다**(각각 커밋 `f067d40f0a6`, `e8e293a7060`). 따라서 아래 file:line은 수정 후 좌표이며, "수정 전" 코드는 PR diff의 `-` 쪽으로 재구성해 별도 표기한다.
->
-> 이 문서는 `resolveName()`의 **write(setter) 분기**에 집중한다. 같은 메서드의 read 분기 구조와 `Property`의 전체 성격은 [`../36911/structure.md`](../36911-property-name-resolution/structure.md)와 [`../36911/README.md`](../36911-property-name-resolution/README.md)가 담당하므로 여기서는 다시 서술하지 않는다.
-
 ## 1. 무대 — 실구조
 
 `Property`는 `java.beans.PropertyDescriptor` 없이 "읽기 메서드 + 쓰기 메서드 + 선언 타입"을 한 장의 카드로 묶는 값 객체이고, 이번 PR의 무대는 그 카드가 **이름을 스스로 유도할 때 타는 write 가지 하나**다.
@@ -316,3 +310,7 @@ setter 규약은 `set` + 대문자로 시작하는 프로퍼티 이름이다.\
 
 > **파생 상태(derived state)** — 다른 입력으로부터 계산해 만들어 둔 값.\
 > 예: `name`은 write 메서드 이름에서 계산된 파생 상태이고, 생성자에서 한 번 굳으면 다시 계산되지 않는다.
+
+## 출처
+
+기준: 로컬 HEAD `526c706d1c3`. 이 시점의 `Property.java`에는 **이미 #36911과 #37139의 수정이 반영되어 있다**(각각 커밋 `f067d40f0a6`, `e8e293a7060`). 따라서 본문의 file:line은 수정 후 좌표이며, "수정 전" 코드는 PR diff의 `-` 쪽으로 재구성해 별도 표기한다.

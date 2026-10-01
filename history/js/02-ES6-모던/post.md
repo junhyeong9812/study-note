@@ -1,9 +1,5 @@
 # ES6 대변혁 ~ 현대 ECMAScript (2015~)
 
-> 원본: `~/project/js-history/02-ES6-모던.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
-> 연도·인명·표준번호·코드·표는 원문 그대로다.\
-> ASCII 도식 6개(그중 1개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 집 공사 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -597,3 +593,9 @@ ES4식 "혁명적 빅뱅"은 폐기됐고, 대신 작은 제안이 공개적으�
 - [ECMAScript® Language Specification (현행 드래프트, tc39.es)](https://tc39.es/ecma262/)
 - [Optional chaining and nullish coalescing in JavaScript (LogRocket)](https://blog.logrocket.com/optional-chaining-and-nullish-coalescing-in-javascript/)
 - [The Latest Features Added to JavaScript in ECMAScript 2020 (Telerik)](https://www.telerik.com/blogs/latest-features-javascript-ecmascript-2020)
+
+## 출처
+
+원본: `~/project/js-history/02-ES6-모던.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
+연도·인명·표준번호·코드·표는 원문 그대로다.\
+ASCII 도식 6개(그중 1개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 집 공사 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

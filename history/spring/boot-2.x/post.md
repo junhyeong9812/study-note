@@ -1,9 +1,5 @@
 # Spring Boot 2.x (2018 ~)
 
-> 원본: `~/project/java-history/spring/boot-2.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·클래스/애너테이션 이름·코드블록 5개·설정 키는 원문 그대로다.\
-> ASCII 도식 3개(그중 2개는 원문의 mermaid 도식을 옮긴 것), 「한눈에」의 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -302,3 +298,9 @@ public class AppProperties {
 - [Spring releases Spring Boot 2.0 (SD Times)](https://sdtimes.com/webdev/spring-releases-spring-boot-2-0/)
 - [Spring Boot 2.0 Goes GA — Phil Webb interview (InfoQ)](https://www.infoq.com/news/2018/03/spring-boot-2.0-release-ga-webb)
 - [Spring Boot version history (codejava.net)](https://www.codejava.net/frameworks/spring-boot/spring-boot-version-history)
+
+## 출처
+
+원본: `~/project/java-history/spring/boot-2.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·클래스/애너테이션 이름·코드블록 5개·설정 키는 원문 그대로다.\
+ASCII 도식 3개(그중 2개는 원문의 mermaid 도식을 옮긴 것), 「한눈에」의 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

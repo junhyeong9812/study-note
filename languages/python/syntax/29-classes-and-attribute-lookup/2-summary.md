@@ -1,47 +1,5 @@
 # python/syntax/29-classes-and-attribute-lookup — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [3.2.10. Custom classes](https://docs.python.org/3.12/reference/datamodel.html#custom-classes) — 클래스 칸에서 못 찾으면 **조상으로 이어지는 것**, 그리고 그 순서가 **C3** 라는 것
-> - [3.2.11. Class instances](https://docs.python.org/3.12/reference/datamodel.html#class-instances) — *"A class instance has a namespace implemented as a dictionary which is the **first place** in which attribute references are searched."*
-> - [3.3.2. Customizing attribute access](https://docs.python.org/3.12/reference/datamodel.html#customizing-attribute-access) — `__getattr__` 은 **실패했을 때만**, `__getattribute__` 는 **무조건**
-> - [3.3.2.3. Invoking Descriptors](https://docs.python.org/3.12/reference/datamodel.html#invoking-descriptors) — **우선순위 네 층**이 한 문장에 적혀 있다
-> - [3.3.2.4. `__slots__`](https://docs.python.org/3.12/reference/datamodel.html#slots) · [`super()`](https://docs.python.org/3.12/library/functions.html#super) — *"The search starts from the class right after the type."*
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ 던지는 형태를 하나로 고정했다 — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
-> ★★ **캐럿은 예외 종류에 달렸다** — 실행 중 예외는 소스 줄도 `^` 캐럿도 안 나오고, `SyntaxError` 라야 둘 다 나온다.
-> ★★ **다만 이 주제는 트레이스백을 한 블록도 싣지 않았다** — 던진 예외 셋을 전부 `except` 로 잡아
-> **타입과 메시지만** 찍었기 때문이다. 그래서 이 문서에는 **줄 번호에 기대는 칸이 하나도 없다.**
-> (사슬의 [30번](../30-repr-eq-hash-contracts/2-summary.md)·[32번](../32-container-protocol/2-summary.md)에는 트레이스백이 있다.)\
-> **버전** — 여기 나오는 장치는 전부 2.x 시절에 들어온 것이다.
-> 공식 문서가 C3 를 설명하며 가리키는 글의 제목이 **The Python 2.3 Method Resolution Order** 이고,
-> `__slots__`·디스크립터·`__getattribute__` 는 새 스타일 클래스(2.2)와 함께 왔다.
-> **3.10\~3.13 사이에서 갈리는지는 이번에 확인하지 않았다** — 이 머신에 3.12.3 한 판뿐이다.\
-> **구현 대 언어 보장 한 줄** — **탐색 순서(인스턴스 → 클래스 → MRO)와 디스크립터 우선순위와 C3 까지가 언어 보장**이고,
-> **그 칸들을 `vars()`·`__dict__`·`__mro__` 로 들여다볼 수 있다는 것과 거기 보이는 내부 타입 이름은 CPython 쪽**이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | `id()` 와 `0x…` 주소 — **그래서 이 배치는 한 번도 안 찍었다** | 예외 **종류** · `(exit N)` |
-> | 해시값 자체 — 이 주제는 해시를 안 쓴다 | `vars()` 와 `__dict__` 의 **내용** |
-> | 판이 오르면 예외 **문구**와 `member_descriptor` 같은 **내부 타입 이름** | **호출 로그의 순서** · 어느 갈고리가 **불렸나 안 불렸나** |
-> | — | `__mro__` 의 **순서** · 어느 칸에서 답이 나왔나 |
->
-> ★ **`sys.flags.hash_randomization` 이 `True` 다**(첫 블록에서 확인했다). 이 주제는 해시를 안 쓰지만
-> 사슬의 [30번](../30-repr-eq-hash-contracts/2-summary.md)이 그 사실 위에 서 있다.\
-> ★ **순서가 보장 안 되는 출력은 이 문서에 하나도 없다** — 찍은 `dict` 는 전부 삽입 순서가 보장되는 것이고
-> ([12번](../12-dict-and-key-requirements/2-summary.md)), `set` 은 한 번도 안 찍었다.\
-> **선행** — [01-object-and-name-binding](../01-object-and-name-binding/2-summary.md)(이름이 객체에 붙는 모델) ·
-> [21-scope-legb-global-nonlocal](../21-scope-legb-global-nonlocal/2-summary.md)(**이름** 탐색의 정본 — 여기는 **속성** 탐색이라 다른 것이다) ·
-> [20-mutable-default-args](../20-mutable-default-args/2-summary.md)(**클래스 변수 공유와 같은 집안**) ·
-> [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md)(고치기와 새로 묶기의 차이).\
-> **이 사슬** — 29 → [30](../30-repr-eq-hash-contracts/2-summary.md) → [31](../31-comparison-protocol-and-sortability/2-summary.md) → [32](../32-container-protocol/2-summary.md).
-> **여기가 사슬의 첫째다** — 「특수 메서드는 **클래스 칸**에서 찾는다」가 뒤의 셋을 전부 떠받친다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`obj.x` 는 「`obj` 안을 본다」가 아니라 「정해진 칸들을 정해진 순서로 훑는다」이다.**
@@ -1366,3 +1324,48 @@ class Cached:
   CPython 에서는 `Objects/object.c` 의 일반 속성 조회 함수가 그 자리이고,
   **거기서 데이터 디스크립터 검사가 인스턴스 칸 조회보다 먼저 온다**고 문서가 말한다.
   ★ **소스는 이번에 안 읽었다** — 읽은 것은 3.3.2.3 의 문장 하나뿐이다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [3.2.10. Custom classes](https://docs.python.org/3.12/reference/datamodel.html#custom-classes) — 클래스 칸에서 못 찾으면 **조상으로 이어지는 것**, 그리고 그 순서가 **C3** 라는 것
+- [3.2.11. Class instances](https://docs.python.org/3.12/reference/datamodel.html#class-instances) — *"A class instance has a namespace implemented as a dictionary which is the **first place** in which attribute references are searched."*
+- [3.3.2. Customizing attribute access](https://docs.python.org/3.12/reference/datamodel.html#customizing-attribute-access) — `__getattr__` 은 **실패했을 때만**, `__getattribute__` 는 **무조건**
+- [3.3.2.3. Invoking Descriptors](https://docs.python.org/3.12/reference/datamodel.html#invoking-descriptors) — **우선순위 네 층**이 한 문장에 적혀 있다
+- [3.3.2.4. `__slots__`](https://docs.python.org/3.12/reference/datamodel.html#slots) · [`super()`](https://docs.python.org/3.12/library/functions.html#super) — *"The search starts from the class right after the type."*
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ 던지는 형태를 하나로 고정했다 — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
+★★ **캐럿은 예외 종류에 달렸다** — 실행 중 예외는 소스 줄도 `^` 캐럿도 안 나오고, `SyntaxError` 라야 둘 다 나온다.
+★★ **다만 이 주제는 트레이스백을 한 블록도 싣지 않았다** — 던진 예외 셋을 전부 `except` 로 잡아
+**타입과 메시지만** 찍었기 때문이다. 그래서 이 문서에는 **줄 번호에 기대는 칸이 하나도 없다.**
+(사슬의 [30번](../30-repr-eq-hash-contracts/2-summary.md)·[32번](../32-container-protocol/2-summary.md)에는 트레이스백이 있다.)\
+**버전** — 여기 나오는 장치는 전부 2.x 시절에 들어온 것이다.
+공식 문서가 C3 를 설명하며 가리키는 글의 제목이 **The Python 2.3 Method Resolution Order** 이고,
+`__slots__`·디스크립터·`__getattribute__` 는 새 스타일 클래스(2.2)와 함께 왔다.
+**3.10\~3.13 사이에서 갈리는지는 이번에 확인하지 않았다** — 이 머신에 3.12.3 한 판뿐이다.\
+**구현 대 언어 보장 한 줄** — **탐색 순서(인스턴스 → 클래스 → MRO)와 디스크립터 우선순위와 C3 까지가 언어 보장**이고,
+**그 칸들을 `vars()`·`__dict__`·`__mro__` 로 들여다볼 수 있다는 것과 거기 보이는 내부 타입 이름은 CPython 쪽**이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| `id()` 와 `0x…` 주소 — **그래서 이 배치는 한 번도 안 찍었다** | 예외 **종류** · `(exit N)` |
+| 해시값 자체 — 이 주제는 해시를 안 쓴다 | `vars()` 와 `__dict__` 의 **내용** |
+| 판이 오르면 예외 **문구**와 `member_descriptor` 같은 **내부 타입 이름** | **호출 로그의 순서** · 어느 갈고리가 **불렸나 안 불렸나** |
+| — | `__mro__` 의 **순서** · 어느 칸에서 답이 나왔나 |
+
+★ **`sys.flags.hash_randomization` 이 `True` 다**(첫 블록에서 확인했다). 이 주제는 해시를 안 쓰지만
+사슬의 [30번](../30-repr-eq-hash-contracts/2-summary.md)이 그 사실 위에 서 있다.\
+★ **순서가 보장 안 되는 출력은 이 문서에 하나도 없다** — 찍은 `dict` 는 전부 삽입 순서가 보장되는 것이고
+([12번](../12-dict-and-key-requirements/2-summary.md)), `set` 은 한 번도 안 찍었다.\
+**선행** — [01-object-and-name-binding](../01-object-and-name-binding/2-summary.md)(이름이 객체에 붙는 모델) ·
+[21-scope-legb-global-nonlocal](../21-scope-legb-global-nonlocal/2-summary.md)(**이름** 탐색의 정본 — 여기는 **속성** 탐색이라 다른 것이다) ·
+[20-mutable-default-args](../20-mutable-default-args/2-summary.md)(**클래스 변수 공유와 같은 집안**) ·
+[03-mutability-and-copying](../03-mutability-and-copying/2-summary.md)(고치기와 새로 묶기의 차이).
+
+**여기가 사슬의 첫째다** — 「특수 메서드는 **클래스 칸**에서 찾는다」가 뒤의 셋을 전부 떠받친다.
+
+---
+
+**이 사슬** — 29 → [30](../30-repr-eq-hash-contracts/2-summary.md) → [31](../31-comparison-protocol-and-sortability/2-summary.md) → [32](../32-container-protocol/2-summary.md).

@@ -1,12 +1,5 @@
 # rust/syntax/57 — 매크로: `macro_rules!` 맛보기와 절차 매크로의 자리 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ 던지는 법 — 선언 매크로는 `rustc --edition 2021 <파일>.rs`, 격자는 `bash r57_grid.sh`, 절차 매크로는 `rustc --edition 2021 --crate-type proc-macro --extern proc_macro <매크로>.rs` 뒤 `rustc --edition 2021 --extern <이름>=lib<이름>.so <쓰는쪽>.rs`. C 는 `gcc -std=gnu17 -Wall -Wextra`. **외부 크레이트를 하나도 쓰지 않는다.**
-> ★★★ **매크로를 보면 먼저 물어라** — 「**이것은 값을 받나, 토큰을 받나**」와 「**이 이름은 누구 쪽 이름인가**」.
-> ★ **문항 12개 중 코드가 붙은 예측형은 6개**다. 소스 펜스는 캡처가 실파일에서 찍었다(`check-source-fences.py` 대조).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -302,6 +295,11 @@ pub fn derive_hello(_input: TokenStream) -> TokenStream {
 ### 12. ★ 두 부류의 편집자 (연결)
 
 - 선언 매크로와 절차 매크로를 「받는 것 · 만드는 법 · 놓이는 곳 · 확장을 보는 법」 네 칸으로 비교하라. `#[tokio::main]`([55번 주제](../55-async-in-practice-runtime-send-and-pin/))은 어느 쪽인가?
+
+## 실행 환경
+
+★ 던지는 법 — 선언 매크로는 `rustc --edition 2021 <파일>.rs`, 격자는 `bash r57_grid.sh`, 절차 매크로는 `rustc --edition 2021 --crate-type proc-macro --extern proc_macro <매크로>.rs` 뒤 `rustc --edition 2021 --extern <이름>=lib<이름>.so <쓰는쪽>.rs`. C 는 `gcc -std=gnu17 -Wall -Wextra`. **외부 크레이트를 하나도 쓰지 않는다.**
+★★★ **매크로를 보면 먼저 물어라** — 「**이것은 값을 받나, 토큰을 받나**」와 「**이 이름은 누구 쪽 이름인가**」.
 
 ## 복습 기록
 

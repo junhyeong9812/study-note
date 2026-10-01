@@ -1,19 +1,5 @@
 # go/syntax/08 — `copy`·3-인덱스 슬라이스·재슬라이싱의 메모리 유지 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Appending to and copying slices ·
-> Full slice expressions · Simple slice expressions · Clear 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> ★ **메모리 수치를 싣는 절이 하나 있다**((5)절). 재는 법은 `runtime.GC()` 뒤
-> `runtime.ReadMemStats` 의 `HeapAlloc` 을 **MiB 로 반올림**한 것이고,
-> **같은 바이너리를 5회 돌려 md5 가 같았다.** 읽을 것은 절댓값이 아니라 「**64가 남아 있나 사라졌나**」다.
-> **버전** — `copy`·재슬라이싱은 1.0부터, **3-인덱스 슬라이싱은 1.2**부터,
-> `clear`·`slices.Clone`·`slices.Clip` 은 **1.21**부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 ## 이 갈래가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
@@ -945,3 +931,17 @@ func main() {
   맵은 **비우고**, 슬라이스는 **제로값으로 민다.** 정본은 [목록의 **09번 주제**](../09-maps-declaration-comma-ok-delete-and-iteration-order/)다.
 - 「`copy` 가 `memmove` 로 내려가는가」는 **확인하지 않았다.**
   (9)절 같은 어셈블리 창으로 볼 수는 있지만 이 문서의 범위 밖이다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Appending to and copying slices ·
+Full slice expressions · Simple slice expressions · Clear 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+★ **메모리 수치를 싣는 절이 하나 있다**((5)절). 재는 법은 `runtime.GC()` 뒤
+`runtime.ReadMemStats` 의 `HeapAlloc` 을 **MiB 로 반올림**한 것이고,
+**같은 바이너리를 5회 돌려 md5 가 같았다.** 읽을 것은 절댓값이 아니라 「**64가 남아 있나 사라졌나**」다.
+**버전** — `copy`·재슬라이싱은 1.0부터, **3-인덱스 슬라이싱은 1.2**부터,
+`clear`·`slices.Clone`·`slices.Clip` 은 **1.21**부터다.

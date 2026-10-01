@@ -1,10 +1,5 @@
 # web-api/34 — `navigator.sendBeacon` 과 이탈 시점 전송: `fetch` 의 `keepalive` 와의 관계 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버는 같은 기계의 로컬 서버(A·B)이고 **바깥 인터넷으로는 요청하지 않았다.** 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 keepalive · fetch group terminated · 64 kibibytes 한도 · 본문 추출(앞 배치의 사본)로 접지했다. **Beacon 명세와 HTML 의 page dismissal 문장은 열지 못했다.**\
-> **엔진은 Chrome 하나 · 서버는 localhost 다** — **이식성과 먼 서버의 결과를 주장하지 않는다.**
-
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
 |---|---|
 | 격자 40칸(5판) · 동기 결과 · 64KiB · `Content-Type` · 8 MiB | ★ **판에 매일 수 있는 칸** — 「닿았다」 전부(localhost) |
@@ -246,3 +241,9 @@ python3 wa32b-net.py console wa32b-34-types.html
 | `sendBeacon` 의 한도 · `false` | 합 64KiB | Beacon 명세는 열지 못했다 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② 먼 서버 · 지연을 넣은 선. ③ `fetchLater()`. ④ 모바일 백그라운드 전환.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버는 같은 기계의 로컬 서버(A·B)이고 **바깥 인터넷으로는 요청하지 않았다.** 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 keepalive · fetch group terminated · 64 kibibytes 한도 · 본문 추출(앞 배치의 사본)로 접지했다. **Beacon 명세와 HTML 의 page dismissal 문장은 열지 못했다.**\
+**엔진은 Chrome 하나 · 서버는 localhost 다** — **이식성과 먼 서버의 결과를 주장하지 않는다.**

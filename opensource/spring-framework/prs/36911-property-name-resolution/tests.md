@@ -1,7 +1,5 @@
 # PR #36911 — 테스트 해설 (테스트 하나하나)
 
-> PR #36911 테스트 해설. 형식·개념은 ../37153/tests.md, ../37153/guard-tests.md 참조.
-
 이 PR은 `PropertyTests`를 **새 파일로** 만들어 18건을 넣었다.\
 판별 기준은 수정 전 `resolveName()`의 `indexOf` 기반 코드다.
 

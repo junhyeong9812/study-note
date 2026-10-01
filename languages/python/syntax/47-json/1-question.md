@@ -1,17 +1,5 @@
 # python/syntax/47-json — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★★★ 1번은 **행마다 네 칸**(나간 글자 · 되읽은 타입 · 왕복 · `allow_nan=False`)과 **마지막 세 줄의 수**까지 적어야 맞은 것이다.
-> ★★ 이 주제는 **속도·메모리 바이트를 묻지 않는다** — 한 번도 재지 않았다.
->
-> 실행 환경: `python3` **3.12.3** · Linux(1번·10번은 `python3.11` 3.11.15 도 함께). 던지는 형태는 `python3 - <파일` 로 고정했다.
-> ★ 선행 — [12](../12-dict-and-key-requirements/1-question.md)(dict 키 요건) · [13](../13-set-and-frozenset/1-question.md)(set) · [06](../06-strings-bytes-unicode/1-question.md)(인코딩).
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -384,6 +372,14 @@ show("default=lambda o: [o]", lambda: json.dumps(Box(), default=lambda o: [o]))
 
 * ★ [JS 31번](../../../js/syntax/31-json/2-summary.md)의 `reviver` 와 4번의 `object_hook` 은 **순서의 어느 점이 같고 어느 점이 다른가**?
 * ★ 같은 순환을 JS 와 파이썬에 주면 **예외가 말해 주는 것**이 어떻게 다른가 — 그리고 5번의 큰 정수를 JS 가 읽으면?
+
+## 실행 환경
+
+★★★ 1번은 **행마다 네 칸**(나간 글자 · 되읽은 타입 · 왕복 · `allow_nan=False`)과 **마지막 세 줄의 수**까지 적어야 맞은 것이다.
+★★ 이 주제는 **속도·메모리 바이트를 묻지 않는다** — 한 번도 재지 않았다.
+
+실행 환경: `python3` **3.12.3** · Linux(1번·10번은 `python3.11` 3.11.15 도 함께). 던지는 형태는 `python3 - <파일` 로 고정했다.
+★ 선행 — [12](../12-dict-and-key-requirements/1-question.md)(dict 키 요건) · [13](../13-set-and-frozenset/1-question.md)(set) · [06](../06-strings-bytes-unicode/1-question.md)(인코딩).
 
 ## 복습 기록
 

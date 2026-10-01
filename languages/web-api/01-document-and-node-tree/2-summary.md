@@ -1,13 +1,5 @@
 # web-api/01 — 문서와 노드 트리: `Node`·`Element`·`Text`·`Comment` 와 두 컬렉션 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 갈래는 언어가 아니라 플랫폼이다.** 언어 문법은 [`../../`](../../) 에 있고, 여기는 **브라우저가 건네주는 객체와 그 계약**이다.\
-> **기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「Node tree」·「Interface Node」·「Interface ParentNode」 절. 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.** 「두 엔진에서 확인했다」고 적지 않는다.\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. 기준은 **Baseline** 하나이고, 이 주제의 표면(`Node`·`childNodes`·`children`)은 **Baseline 추적 대상 자체가 아닐 만큼 오래된 것**이다([`../README.md`](../README.md) 의 「확인하지 못한 것」).\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 **근거로 쓸 칸을 미리 가른다.**
 
 | 안 흔들리는 칸 (근거로 쓴다) | 흔들리는 칸 (근거로 쓰지 않는다) |
@@ -628,3 +620,11 @@ HTML 문서의 HTML 요소는 **대문자**다. `n.nodeName === 'p'` 는 영원�
 - **`children` 은 원래 IE 의 확장**이었다. 표준이 아니었는데 실무에서 너무 많이 쓰여 DOM4 가 `ParentNode` 로 받아들였다 — 웹 표준이 「이미 쓰이는 것을 사후에 규정」하는 전형적인 모양이다.
 - **공백 텍스트 노드를 없애는 표준 수단은 없다.** `normalize()` 는 인접한 텍스트 노드를 합칠 뿐 지우지 않는다. 빌드 단계에서 마크업을 줄여 없애거나, 읽는 쪽에서 `children` 을 쓰는 것이 유일한 대처다.
 - **`Node` 는 `EventTarget` 을 상속한다.** 그래서 텍스트 노드에도 `addEventListener` 가 있다 — 쓰는 일은 거의 없지만, **이벤트 전파가 노드 사슬을 탄다**는 사실의 뿌리가 여기다([목록의 **16번 주제**](../16-event-propagation-phases/)).
+
+## 실행 환경
+
+**이 갈래는 언어가 아니라 플랫폼이다.** 언어 문법은 [`../../`](../../) 에 있고, 여기는 **브라우저가 건네주는 객체와 그 계약**이다.\
+**기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「Node tree」·「Interface Node」·「Interface ParentNode」 절. 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.** 「두 엔진에서 확인했다」고 적지 않는다.\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. 기준은 **Baseline** 하나이고, 이 주제의 표면(`Node`·`childNodes`·`children`)은 **Baseline 추적 대상 자체가 아닐 만큼 오래된 것**이다([`../README.md`](../README.md) 의 「확인하지 못한 것」).

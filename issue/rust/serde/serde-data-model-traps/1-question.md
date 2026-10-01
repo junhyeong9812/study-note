@@ -1,10 +1,5 @@
 # issue/rust/serde/serde-data-model-traps — 쓰기는 되는데 읽기가 실패한다: internally-tagged enum의 버퍼링 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. (예측) `#[serde(tag = "event")] enum Event { Delta { entries: BTreeMap<u64, String> } }`를 JSON으로 직렬화하면 성공한다. 같은 JSON을 다시 역직렬화하면? 에러 메시지는 무엇이라고 말할까?
 2. (왜) 같은 `BTreeMap<u64, String>`을 enum 밖의 평범한 struct 필드로 두면 역직렬화가 된다. internally tagged enum 안에서만 실패하는 이유를 "태그를 찾기 위한 버퍼링"으로 설명하라.

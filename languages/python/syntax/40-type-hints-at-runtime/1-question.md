@@ -1,19 +1,5 @@
 # python/syntax/40-type-hints-at-runtime — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★★★ 1번은 **`<평가됨: …>` 줄이 어디에 몇 줄 찍히나**까지 적어야 맞은 것이다 — 순서가 답이다.
-> ★★★ 3번은 **격자의 칸을 하나씩** 채우고 마지막 줄의 숫자까지 적는다.
-> ★★ 이 주제는 **「타입 검사기라면」·「3.14 라면」을 묻지 않는다** — 둘 다 이 머신에 없어 정답을 확인할 수 없다.
->
-> 실행 환경: `python3` **3.12.3** · Linux(3번은 `python3.11` 3.11.15 도 함께). 던지는 형태는 `python3 - <파일` 로 고정했다.
-> ★ 선행 — [19](../19-function-argument-rules/1-question.md)(매개변수) · [36](../36-dataclasses/1-question.md)(dataclass) ·
-> [38](../38-namedtuple-and-typeddict/1-question.md)(`NamedTuple`·`TypedDict`).
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -420,6 +406,16 @@ print("    broken('아무거나') ->", broken("아무거나"))
 * ★ [TS 01번](../../../ts/syntax/01-what-ts-adds-and-erases/2-summary.md)의 방출물과 파이썬의 `__annotations__` — **사라지나 남나**, 그리고 **실행이 바뀌나**?
 * ★ [36번](../36-dataclasses/2-summary.md)이 「절반만 예외」라 부른 것은 이 주제의 **어느 격자 어느 행**인가?
 * ★ [38번](../38-namedtuple-and-typeddict/2-summary.md)의 「쓴다 / 들고만 있다 / 검사기만 쓴다」 세 칸에 **`singledispatch`** 는 어디에 들어가나?
+
+## 실행 환경
+
+★★★ 1번은 **`<평가됨: …>` 줄이 어디에 몇 줄 찍히나**까지 적어야 맞은 것이다 — 순서가 답이다.
+★★★ 3번은 **격자의 칸을 하나씩** 채우고 마지막 줄의 숫자까지 적는다.
+★★ 이 주제는 **「타입 검사기라면」·「3.14 라면」을 묻지 않는다** — 둘 다 이 머신에 없어 정답을 확인할 수 없다.
+
+실행 환경: `python3` **3.12.3** · Linux(3번은 `python3.11` 3.11.15 도 함께). 던지는 형태는 `python3 - <파일` 로 고정했다.
+★ 선행 — [19](../19-function-argument-rules/1-question.md)(매개변수) · [36](../36-dataclasses/1-question.md)(dataclass) ·
+[38](../38-namedtuple-and-typeddict/1-question.md)(`NamedTuple`·`TypedDict`).
 
 ## 복습 기록
 

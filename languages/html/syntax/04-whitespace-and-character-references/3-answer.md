@@ -1,11 +1,5 @@
 # html/syntax/04 — 공백·텍스트·문자 참조: 공백 축약·엔티티·`<pre>` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [CSS Text Level 3](https://drafts.csswg.org/css-text-3/#white-space-processing) 두 명세로 접지했다 — **이 주제는 두 명세에 걸쳐 있다.**\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★ **글자 대신 코드포인트로 읽는다.** 직렬화가 되쓰기를 한 번 더 하기 때문이다(A8).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -654,3 +648,10 @@ v2 높이 = 34
 - **`textContent`** — 아래 모든 텍스트 노드를 **그대로** 이은 것. **트리를 본다.**
 - **`innerText`** — **렌더된 결과**의 글자. 축약·숨김이 반영된다. **화면을 본다.**
 - **직렬화(serialization)** — 트리를 다시 글자열로 되쓰는 것. **이스케이프를 새로 만든다.**
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [CSS Text Level 3](https://drafts.csswg.org/css-text-3/#white-space-processing) 두 명세로 접지했다 — **이 주제는 두 명세에 걸쳐 있다.**\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★ **글자 대신 코드포인트로 읽는다.** 직렬화가 되쓰기를 한 번 더 하기 때문이다(A8).

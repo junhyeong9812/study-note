@@ -1,11 +1,5 @@
 # ts/syntax/33 — 선언 병합 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Declaration Merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html)(인터페이스 멤버의 병합 순서 · 단일 문자열 리터럴 매개변수의 예외 · namespace 가 합쳐지는 짝 · 「클래스는 다른 클래스·변수와 합쳐지지 않는다」 · 보강의 두 제약) ·
-> [TypeScript 5.8 릴리스 노트 — `--erasableSyntaxOnly`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-8.html).
-> 위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
-> **실행 검증** — 본판은 아래다. ★ 2절의 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.
-
 ```text
 ===== tsc --version · node --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -21,7 +15,6 @@ Python 3.12.3
 > ★★★ **이 주제는 파일이 여럿이다** — 실험마다 파일 이름을 다르게 지었고(`aug33`·`set33a`…), **배너에 함께 컴파일한 파일 목록**을 적었다. **그 목록이 답을 바꾼다.**
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -787,3 +780,10 @@ ex.33b.ts    exit 0 = exit 0 · 출력 한 글자도 같다
 - **스크립트 파일에서 `interface Array<T> { … }` 만 적으면** — `declare global` 없이도 전역 `Array` 가 보강된다(5절과 같은 기제로 **읽히지만 던지지 않았다**).
 - **보강 파일 안의 `import` 의 역할** — 6절의 `aug33a`·`aug33b` 는 `lib33` 을 **import 한 모듈**이다. import 없이 `declare module "./lib33.mjs"` 만 적으면 보강이 아니라 **앰비언트 모듈 선언**이 될 수 있다 — [목록의 **37번 주제**](../37-writing-declaration-files/). **여기서는 안 던졌다.**
 - **default export 는 보강할 수 없다** — 핸드북의 둘째 제약. **던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Declaration Merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html)(인터페이스 멤버의 병합 순서 · 단일 문자열 리터럴 매개변수의 예외 · namespace 가 합쳐지는 짝 · 「클래스는 다른 클래스·변수와 합쳐지지 않는다」 · 보강의 두 제약) ·
+[TypeScript 5.8 릴리스 노트 — `--erasableSyntaxOnly`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-8.html).
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
+**실행 검증** — 본판은 맨 위 블록이다. ★ 2절의 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.

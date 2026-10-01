@@ -1,11 +1,5 @@
 # PR #36989 — 무대 구조와 워크플로우
 
-> PR #36989의 무대가 되는 실구조·워크플로우. 문제·수정은 README.md, 테스트는 tests.md 참조.
-> 기준: upstream main `526c706d1c3`.\
-> 이 PR은 이미 반영되었으므로 `NativeConfigurationWriter.java:49`의 lambda 검사는 "수정 후" 코드다.\
-> 수정 전 형태가 필요한 곳은 그때마다 명시한다.\
-> 나머지 인용은 이 PR로 바뀌지 않았으므로 수정 전후가 동일하다.
-
 이 문서가 다루는 것은 Spring AOT가 수집한 힌트를 네이티브 설정 파일로 내보낼지 말지 정하는 관문의 실구조다.\
 힌트를 모으는 쪽과 직렬화하는 쪽 두 패키지의 소유 그래프에서 출발해, 게이트를 통과하는 경로와 끊기는 경로를 나란히 따라가고, 분기도로 결함이 살던 자리를 짚은 뒤, 이 관문이 AOT 파이프라인 전체에서 차지하는 자리와 배경 개념을 정리한다.
 
@@ -563,3 +557,10 @@ gh-36339이 `LambdaHint`·`ReflectionHints`·`ReflectionHintsAttributes`를 확�
 [#36972](../36972-native-config-utf8/structure.md)는 이 게이트를 통과한 뒤 파일을 실제로 쓰는 층 — `FileNativeConfigurationWriter.writeTo`의 `FileWriter` charset — 을 다루며, `BasicJsonWriter`·`IndentingWriter`까지 내려가는 직렬화 스택 전체를 그 문서가 상세히 그린다.\
 [#36965](../36965-valuecodegen-nonfinite-doubles/structure.md)는 같은 AOT 파이프라인의 다른 줄기, 즉 생성 Java 소스 쪽의 `ValueCodeGenerator`를 다룬다.\
 4장의 파이프라인 그림에서 세 PR의 자리를 함께 확인할 수 있다.
+
+## 출처
+
+기준: upstream main `526c706d1c3`.\
+이 PR은 이미 반영되었으므로 `NativeConfigurationWriter.java:49`의 lambda 검사는 "수정 후" 코드다.\
+수정 전 형태가 필요한 곳은 그때마다 명시한다.\
+나머지 인용은 이 PR로 바뀌지 않았으므로 수정 전후가 동일하다.

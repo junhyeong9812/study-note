@@ -1,10 +1,5 @@
 # css/syntax/59 — 뷰 전환: `view-transition-name`·`::view-transition-*` 의사 요소 트리 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 전환을 돌려 측정한 것**이다.\
-> `document.startViewTransition()` 이 **headless 에서 실제로 실행됐다** — `ready`·`finished` 가 resolve 됐고 의사 요소의 계산값이 읽혔다.\
-> 규칙은 [CSS View Transitions Level 1](https://drafts.csswg.org/css-view-transitions-1/) · [Level 2](https://drafts.csswg.org/css-view-transitions-2/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -344,7 +339,7 @@ google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
 | `view-transition-name: none` 일 때 의사 요소 목록 | 2 | 동작 방식 (3) · A1 |
 | 단계별 시각 + 전환 중 진짜 요소 읽기 | 1 | 동작 방식 (5) · A7 · A8 |
 | demo 본판 + 「바꿔 볼 것」 ① 4s ② 이름 제거 | 3 | demo |
-| Baseline 조회(같은 문서 · 문서 간) | 1 | 머리말 · A9 |
+| Baseline 조회(같은 문서 · 문서 간) | 1 | 「실행 환경」 · A9 |
 | **제출 직전 demo 재추출·재실행 대조** | 1 | 어긋남 0건 |
 
 **구현에 달린 항목**
@@ -375,3 +370,9 @@ google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
 - **`ready`** — 의사 요소 트리가 준비됐을 때 resolve 되는 프라미스. **실패가 드러나는 유일한 창.**
 - **`InvalidStateError` / `AbortError`** — 이름 충돌로 죽은 경우 / `skipTransition()` 으로 건너뛴 경우.
 - **`@view-transition`** — 문서 간 전환을 켜는 규칙. Baseline limited, Firefox 없음.
+
+## 실행 환경
+
+이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 전환을 돌려 측정한 것**이다.\
+`document.startViewTransition()` 이 **headless 에서 실제로 실행됐다** — `ready`·`finished` 가 resolve 됐고 의사 요소의 계산값이 읽혔다.\
+규칙은 [CSS View Transitions Level 1](https://drafts.csswg.org/css-view-transitions-1/) · [Level 2](https://drafts.csswg.org/css-view-transitions-2/) 로 접지했다.

@@ -1,16 +1,5 @@
 # rust/syntax/46 — 크레이트 · `Cargo.toml` · feature · 워크스페이스 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Cargo Book — Features](https://doc.rust-lang.org/cargo/reference/features.html)(「**feature 는 가산적이어야 한다** — 켜는 것이 기능을 끄면 안 된다」 · Feature unification · 「`no_std` feature 대신 `std` feature」 · 배타적 feature 는 `compile_error!`) ·
-> [Cargo Book — Resolver](https://doc.rust-lang.org/cargo/reference/resolver.html)(「`"1"`(기본) · `"2"`(edition 2021 기본) · `"3"`(edition 2024 기본)」 · 「resolver 는 워크스페이스 전체의 전역 옵션」) ·
-> [Cargo Book — Workspaces](https://doc.rust-lang.org/cargo/reference/workspaces.html)(「루트의 `Cargo.lock` 하나 · `target` 하나를 공유」) ·
-> [Cargo Book — Specifying Dependencies](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html)(기본 요구 = 캐럿).
-> ★ Cargo Book 은 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `cargo 1.92.0 (344c4567c 2025-10-21)` · `rustc 1.92.0` · `x86_64-unknown-linux-gnu` 에서
-> 블록 배너의 명령으로 돌려 받은 것이다. ★★★ **네트워크 없이** — `CARGO_NET_OFFLINE=true` · `CARGO_HOME` 을 작업 디렉토리 안에 두고, **의존성은 전부 로컬 경로(`path = …`)** 다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★ **속도·메모리는 재지 않았다.** 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체 창 — ⑤ cargo 가 고른 feature 를 「실행 파일이 스스로 말하게」 하는 창**(`cfg!(feature = "…")` 를 찍는 라이브러리 + `cargo tree -e features`)이다. feature 통합은 컴파일러가 아니라 **cargo 가 rustc 에 넘기는 `--cfg` 의 차이**라 소스·진단 어디에도 안 보이고, **만들어진 바이너리의 동작으로만** 보인다.
 
 ## 흔들리는 칸 / 안 흔들리는 칸
@@ -693,3 +682,15 @@ warning: ./ws/app3/Cargo.toml: `default-features` is ignored for gear, since `de
 - `cargo build --features app1/x` 처럼 명령행에서 멤버의 feature 를 켜는 것(resolver 2 에서 넓어졌다 — cargo 문서) — **던지지 않았다.**
 - `[patch]` 로 의존성을 로컬 경로로 갈아 끼우기 — **던지지 않았다.**
 - 레지스트리의 판 선택과 `cargo update` — Go 41번 (8)의 디렉토리 레지스트리 방법이면 **네트워크 없이** 잴 수 있다.
+
+## 실행 환경
+
+**기준 소스** — [Cargo Book — Features](https://doc.rust-lang.org/cargo/reference/features.html)(「**feature 는 가산적이어야 한다** — 켜는 것이 기능을 끄면 안 된다」 · Feature unification · 「`no_std` feature 대신 `std` feature」 · 배타적 feature 는 `compile_error!`) ·
+[Cargo Book — Resolver](https://doc.rust-lang.org/cargo/reference/resolver.html)(「`"1"`(기본) · `"2"`(edition 2021 기본) · `"3"`(edition 2024 기본)」 · 「resolver 는 워크스페이스 전체의 전역 옵션」) ·
+[Cargo Book — Workspaces](https://doc.rust-lang.org/cargo/reference/workspaces.html)(「루트의 `Cargo.lock` 하나 · `target` 하나를 공유」) ·
+[Cargo Book — Specifying Dependencies](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html)(기본 요구 = 캐럿).
+★ Cargo Book 은 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `cargo 1.92.0 (344c4567c 2025-10-21)` · `rustc 1.92.0` · `x86_64-unknown-linux-gnu` 에서
+블록 배너의 명령으로 돌려 받은 것이다. ★★★ **네트워크 없이** — `CARGO_NET_OFFLINE=true` · `CARGO_HOME` 을 작업 디렉토리 안에 두고, **의존성은 전부 로컬 경로(`path = …`)** 다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★ **속도·메모리는 재지 않았다.**

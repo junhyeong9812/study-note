@@ -1,36 +1,5 @@
 # cpp/syntax/23 — 3방향 비교 `<=>`(C++20) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 기본 비교(default comparisons)](https://en.cppreference.com/w/cpp/language/default_comparisons) · [cppreference — 연산자 오버로딩](https://en.cppreference.com/w/cpp/language/operators) · [cppreference — `<compare>`](https://en.cppreference.com/w/cpp/header/compare)\
-> ★ cppreference 「기본 비교」는 2026-09-26 에 열어 **다섯 문장을 확인했다** —\
-> ① 「클래스가 `operator==` 를 **명시적으로 선언하지 않았으면**, **`= default` 로 정의된 `operator<=>` 마다** `operator==` 가 암묵 선언된다」 ·\
-> ② 그래서 **`= default` 가 아닌 `<=>` 는 `==` 를 주지 않는다** · ③ `auto` 반환은 **`common_comparison_category_t`**(멤버 결과 중 가장 약한 것) ·\
-> ④ 비교 순서는 **기반 → 멤버, 선언 순서** · ⑤ 반환 타입이 범주 타입이고 `<=>` 가 없으면 **`==` 와 `<` 로 합성**한다.
-> **실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`cmp01.cpp` \~ `cmp12.cpp` · `cmp-asm.sh`). ★ (8)만 **`-std=c++17`** 이고, **배너에 적었다.**\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
-> **버전** — `<=>`·기본 비교·재작성 후보는 **C++20부터**다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-> ★★★ **이 편은 [22번](../22-operator-overloading/)과 한 사슬이다** — 그 편 (1)의 「**멤버 연산자로는 `1 + a` 가 막힌다**」를\
-> 이 편 (6)이 **비교 연산자에서는 재작성 후보가 푼다**로 닫는다.
-> **경계** — 「연산자 오버로딩 일반」은 [22번](../22-operator-overloading/)이, 「오버로드 해결」은 [1번](../01-function-overloading-and-overload-resolution/)이 정본이다.\
-> 「비교 계약의 일반론(반사·대칭·추이)」은 Rust·Python 갈래가 계약 위반까지 실측했다 — 여기서는 **C++20 이 무엇을 생성하나**만 본다.
-> **대비** — ★★★ Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **28번**([`28-partialeq-eq-partialord-ord-and-hash-contracts/`](../../../rust/syntax/28-partialeq-eq-partialord-ord-and-hash-contracts/)) —\
-> **`derive(PartialOrd, Ord)` 가 필드 순서 사전식**이고 **대칭은 자동으로 안 생긴다**((10) E0369)는 실측을 (5)(6)에서 인용한다.\
-> ★★ Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **31번**([`31-comparison-protocol-and-sortability/`](../../../python/syntax/31-comparison-protocol-and-sortability/)) —\
-> **`__lt__` 하나로 `sorted` 가 되고 `total_ordering` 이 나머지를 채우며, `max` 는 `__gt__` 를 부른다**는 실측을 (2)에서 인용한다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 두 컴파일러의 **진단 문구** | ★★★ **어느 연산자 함수가 불렸나**(`<=>` 인가 `==` 인가 · 인자 순서) — 이 주제의 답 자체다 |
-> | 지역 레이블 이름(`.L9` · `.LBB0_3`) | ★★★ **`static_assert` 가 통과하나** · **비교 결과 0/1** |
-> | — | ★★ **어셈블리 명령 수 · 두 판이 글자로 같은가** · **`cc exit`/`run exit`** · **에러 개수** |
-
 ## 한눈에 — 쉽게 말하면
 
 **`<=>` 는 「저울 하나」이고, 여섯 비교 연산자는 그 저울의 눈금을 읽는 법이다.**
@@ -1203,3 +1172,35 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **`std::compare_three_way`·`std::strong_order`(전순서 `double`)** — Rust 28편 (7)의 `total_cmp` 와 짝이 되는 도구. 이 문서는 **던지지 않았다.**
 - **`std::sort` 에 NaN 을 넣으면** — `partial_ordering` 을 돌려주는 타입은 **정렬의 요구 조건(엄격 약순서)** 을 못 지킨다. 결과는 이 문서가 **재지 않았다.**
 - **기반 클래스가 있을 때의 `= default`** — 기준 소스 ④의 「**기반 먼저**」 순서. 이 문서는 **멤버만** 봤다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 기본 비교(default comparisons)](https://en.cppreference.com/w/cpp/language/default_comparisons) · [cppreference — 연산자 오버로딩](https://en.cppreference.com/w/cpp/language/operators) · [cppreference — `<compare>`](https://en.cppreference.com/w/cpp/header/compare)\
+★ cppreference 「기본 비교」는 2026-09-26 에 열어 **다섯 문장을 확인했다** —\
+① 「클래스가 `operator==` 를 **명시적으로 선언하지 않았으면**, **`= default` 로 정의된 `operator<=>` 마다** `operator==` 가 암묵 선언된다」 ·\
+② 그래서 **`= default` 가 아닌 `<=>` 는 `==` 를 주지 않는다** · ③ `auto` 반환은 **`common_comparison_category_t`**(멤버 결과 중 가장 약한 것) ·\
+④ 비교 순서는 **기반 → 멤버, 선언 순서** · ⑤ 반환 타입이 범주 타입이고 `<=>` 가 없으면 **`==` 와 `<` 로 합성**한다.
+**실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`cmp01.cpp` \~ `cmp12.cpp` · `cmp-asm.sh`). ★ (8)만 **`-std=c++17`** 이고, **배너에 적었다.**\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
+**버전** — `<=>`·기본 비교·재작성 후보는 **C++20부터**다. 기준은 **C++20**이다.
+
+★★★ **이 편은 [22번](../22-operator-overloading/)과 한 사슬이다** — 그 편 (1)의 「**멤버 연산자로는 `1 + a` 가 막힌다**」를\
+이 편 (6)이 **비교 연산자에서는 재작성 후보가 푼다**로 닫는다.
+**경계** — 「연산자 오버로딩 일반」은 [22번](../22-operator-overloading/)이, 「오버로드 해결」은 [1번](../01-function-overloading-and-overload-resolution/)이 정본이다.\
+「비교 계약의 일반론(반사·대칭·추이)」은 Rust·Python 갈래가 계약 위반까지 실측했다 — 여기서는 **C++20 이 무엇을 생성하나**만 본다.
+**대비** — ★★★ Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **28번**([`28-partialeq-eq-partialord-ord-and-hash-contracts/`](../../../rust/syntax/28-partialeq-eq-partialord-ord-and-hash-contracts/)) —\
+**`derive(PartialOrd, Ord)` 가 필드 순서 사전식**이고 **대칭은 자동으로 안 생긴다**((10) E0369)는 실측을 (5)(6)에서 인용한다.\
+★★ Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **31번**([`31-comparison-protocol-and-sortability/`](../../../python/syntax/31-comparison-protocol-and-sortability/)) —\
+**`__lt__` 하나로 `sorted` 가 되고 `total_ordering` 이 나머지를 채우며, `max` 는 `__gt__` 를 부른다**는 실측을 (2)에서 인용한다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 두 컴파일러의 **진단 문구** | ★★★ **어느 연산자 함수가 불렸나**(`<=>` 인가 `==` 인가 · 인자 순서) — 이 주제의 답 자체다 |
+| 지역 레이블 이름(`.L9` · `.LBB0_3`) | ★★★ **`static_assert` 가 통과하나** · **비교 결과 0/1** |
+| — | ★★ **어셈블리 명령 수 · 두 판이 글자로 같은가** · **`cc exit`/`run exit`** · **에러 개수** |

@@ -1,17 +1,5 @@
 # go/syntax/19 — ★ 메서드 집합: 값 리시버 대 포인터 리시버 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Method sets · Method declarations ·
-> Calls · Selectors · Method values · Method expressions · Implementing an interface 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> **버전** — 이 주제의 규칙은 전부 **1.0부터 지금까지 같다.** 판 경계가 없다.
-> ★★★ 그리고 이 주제는 **명세가 규칙을 못 박은 자리**다 — 메서드 집합도 인터페이스 만족도
-> **구현 사정이 아니다.** 어느 Go 컴파일러에서도 같은 답이 나온다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 ## 이 갈래가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
@@ -958,3 +946,15 @@ func(main.T) int func(*main.T) 3
   이 문서는 **안 던졌다** — 컴파일 에러가 더 이른 답이기 때문이다.
 - 제네릭의 타입 파라미터에서는 **메서드 집합 규칙이 한 번 더 걸린다** —
   `[T Speaker]` 에 값 타입을 넘기면 같은 에러가 난다. 정본은 [목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Method sets · Method declarations ·
+Calls · Selectors · Method values · Method expressions · Implementing an interface 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+**버전** — 이 주제의 규칙은 전부 **1.0부터 지금까지 같다.** 판 경계가 없다.
+★★★ 그리고 이 주제는 **명세가 규칙을 못 박은 자리**다 — 메서드 집합도 인터페이스 만족도
+**구현 사정이 아니다.** 어느 Go 컴파일러에서도 같은 답이 나온다.

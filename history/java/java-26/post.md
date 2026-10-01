@@ -1,12 +1,5 @@
 # Java 26 (2026.03) — non-LTS
 
-> 원본: `~/project/java-history/java/java-26.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JEP 번호·클래스/메서드 이름·자바 코드블록 4개·「릴리스 정보」의 JEP 목록·「참고 출처」는 원문 그대로다.\
-> ASCII 도식 1개는 원문 mermaid 도식 1개를 글자로 옮긴 것이고, 새로 그린 도식은 없다.\
-> 「한눈에」의 지름길 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
-> 「이 편의 기능은 지금 어디쯤인가」 표의 「그 앞」 칸은 같은 시리즈의 다른 편(`java-21.md`~`java-25.md`)에서 끌어온 보충이고, 출처 편을 칸마다 적었다.\
-> 「head-of-line blocking」 풀이 한 줄은 이 저장소의 다른 주제(`history/network/02-프로토콜-스택.md`)에 이미 있는 것을 그대로 가져왔다 — 이 편 원문은 이름만 들고 풀지 않는다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -234,3 +227,12 @@ Java 26은 LTS 사이를 잇는 전형적인 비-LTS 릴리스다. 당장 프로
 - [JEP 530: Primitive Types in Patterns, instanceof, and switch (Fourth Preview)](https://openjdk.org/jeps/530)
 - [JEP 500: Prepare to Make Final Mean Final](https://openjdk.org/jeps/500)
 - [Java version history - Wikipedia](https://en.wikipedia.org/wiki/Java_version_history)
+
+## 출처
+
+원본: `~/project/java-history/java/java-26.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JEP 번호·클래스/메서드 이름·자바 코드블록 4개·「릴리스 정보」의 JEP 목록·「참고 출처」는 원문 그대로다.\
+ASCII 도식 1개는 원문 mermaid 도식 1개를 글자로 옮긴 것이고, 새로 그린 도식은 없다.\
+「한눈에」의 지름길 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
+「이 편의 기능은 지금 어디쯤인가」 표의 「그 앞」 칸은 같은 시리즈의 다른 편(`java-21.md`~`java-25.md`)에서 끌어온 보충이고, 출처 편을 칸마다 적었다.\
+「head-of-line blocking」 풀이 한 줄은 이 저장소의 다른 주제(`history/network/02-프로토콜-스택.md`)에 이미 있는 것을 그대로 가져왔다 — 이 편 원문은 이름만 들고 풀지 않는다.

@@ -1,9 +1,5 @@
 # 09. 용량 산정 · SLO · 오토스케일링
 
-> "얼마나 필요한가"에 답하지 못하면, 확장 설계는 전부 추측이 된다.\
-> 출처: `jun-bank/docs/study/notes/server-design/09-capacity-slo.md` · 이관일 2026-09-16.\
-> 원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식)만 입힘. 아래 수치는 원본의 예시 밴드를 그대로 옮긴 것(§6 날조 금지).
-
 ---
 
 ## 1. SLI / SLO / 에러 버짓
@@ -231,3 +227,8 @@
 
 - 상황별 플레이북 → [`10-playbook-by-symptom.md`](./10-playbook-by-symptom.md)
 - 안티패턴 모음 → [`11-antipatterns.md`](./11-antipatterns.md)
+
+## 출처
+
+출처: `jun-bank/docs/study/notes/server-design/09-capacity-slo.md` · 이관일 2026-09-16.\
+원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식)만 입힘. 본문 수치는 원본의 예시 밴드를 그대로 옮긴 것(§6 날조 금지).

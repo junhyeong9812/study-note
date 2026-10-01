@@ -1,24 +1,5 @@
 # csharp/syntax/10 — 컬렉션 선택: `List`·`Dictionary`·`HashSet`·`Queue`/`Stack` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> **환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
-> 진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
-> ★★★ **3·4·5번이 이 주제의 축이다** — **셋을 따로 답하면 안 된다.**
-> 3번은 「안 갈렸다」를, 4번은 **그것을 어떻게 갈랐나**를, 5번은 **그래서 몇 판이 근거가 되나**를 묻는다.
-> ★★ **4번을 먼저 보면 3번이 안 풀린다** — 순서대로 답하라.
-> ★ **8번은 「경고가 안 났다」가 답이다** — 무엇을 물었는지까지 답해야 한다.
-> 선행 — [03번](../03-boxing-and-unboxing/)(박싱과 할당 바이트 재는 법) ·
-> [01번](../01-value-types-and-reference-types/)(값 타입과 참조 타입).
-> 경계 — **자료구조의 원리**는 [`data-structure/01`](../../../../cs/data-structure/01-dynamic-array/) ·
-> [`03`](../../../../cs/data-structure/03-stack/) ·
-> [`04`](../../../../cs/data-structure/04-queue-deque/) ·
-> [`05`](../../../../cs/data-structure/05-hashmap/)가 정본이다. 여기는 **.NET 에서 무엇을 고르나**다.
-> 대비 — Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **9번** ·
-> Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **12번** ·
-> Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **28번**.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -443,6 +424,24 @@ public class HashOnly { public override int GetHashCode() => 1; }
 - Rust 는 `Hash` 를 안 단 타입을 키로 쓰면 **어느 단계**에서 막는가?
 - 제네릭 컬렉션이 박싱을 없애는 것은 **담을 때인가 찾을 때인가**([03번](../03-boxing-and-unboxing/))?
 - `List<T>` 가 안쪽에 들고 있는 것은 무엇인가([09번](../09-arrays-index-and-range/))?
+
+## 실행 환경
+
+**환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
+진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
+★★★ **3·4·5번이 이 주제의 축이다** — **셋을 따로 답하면 안 된다.**
+3번은 「안 갈렸다」를, 4번은 **그것을 어떻게 갈랐나**를, 5번은 **그래서 몇 판이 근거가 되나**를 묻는다.
+★★ **4번을 먼저 보면 3번이 안 풀린다** — 순서대로 답하라.
+★ **8번은 「경고가 안 났다」가 답이다** — 무엇을 물었는지까지 답해야 한다.
+선행 — [03번](../03-boxing-and-unboxing/)(박싱과 할당 바이트 재는 법) ·
+[01번](../01-value-types-and-reference-types/)(값 타입과 참조 타입).
+경계 — **자료구조의 원리**는 [`data-structure/01`](../../../../cs/data-structure/01-dynamic-array/) ·
+[`03`](../../../../cs/data-structure/03-stack/) ·
+[`04`](../../../../cs/data-structure/04-queue-deque/) ·
+[`05`](../../../../cs/data-structure/05-hashmap/)가 정본이다. 여기는 **.NET 에서 무엇을 고르나**다.
+대비 — Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **9번** ·
+Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **12번** ·
+Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **28번**.
 
 ## 복습 기록
 

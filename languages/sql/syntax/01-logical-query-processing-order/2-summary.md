@@ -1,14 +1,5 @@
 # sql/01-논리적 질의 처리 순서 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · SELECT Statement](https://dev.mysql.com/doc/refman/8.4/en/select.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — 여덟 절 자체는 두 엔진 모두 오래전부터 있다. 이 주제에서 버전에 갈리는 것은 없다.\
-> 방언 차이가 나는 자리는 「PG / MySQL」 두 칸을 나란히 두고, **양쪽 실제 출력을 같이 싣는다.**
-
 ## 한눈에 — 쉽게 말하면
 
 **SQL 질의 = 여덟 칸짜리 컨베이어 벨트. 적는 순서와 일하는 순서가 다르다.**
@@ -686,3 +677,11 @@ PG 쪽은 그런 손잡이 자체가 없다 — **「그런 설정이 없다」�
   예: `only_full_group_by` 가 켜져 있어야 묶이지 않은 열을 거부한다. 8.4 기본값에는 들어 있다.
 - **`OFFSET`** — 정렬된 결과에서 앞의 n 행을 건너뛰는 지시.\
   예: `LIMIT 2 OFFSET 1` 은 2번째·3번째 행을 준다. 1번째도 만들긴 만든다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · SELECT](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · SELECT Statement](https://dev.mysql.com/doc/refman/8.4/en/select.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — 여덟 절 자체는 두 엔진 모두 오래전부터 있다. 이 주제에서 버전에 갈리는 것은 없다.\
+방언 차이가 나는 자리는 「PG / MySQL」 두 칸을 나란히 두고, **양쪽 실제 출력을 같이 싣는다.**

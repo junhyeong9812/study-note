@@ -1,14 +1,5 @@
 # ts/syntax/32 — 클래스의 타입 측면 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Classes](https://www.typescriptlang.org/docs/handbook/2/classes.html)(`private` 의 「soft private」·괄호 접근 · `implements` 는 검사일 뿐 · 매개변수 프로퍼티 · `abstract`) ·
-> [TSConfig — `useDefineForClassFields`](https://www.typescriptlang.org/tsconfig/useDefineForClassFields.html) ·
-> [TypeScript 3.7 릴리스 노트 — `useDefineForClassFields` 와 `declare` 프로퍼티](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html) ·
-> [TypeScript 5.8 릴리스 노트 — `--erasableSyntaxOnly`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-8.html).
-> 위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
-> ★ TSConfig 페이지 본문에는 **기본값 문장이 없었다** — 기본값은 5절에서 **던져서** 얻었다.
-> **실행 검증** — 본판은 아래다. ★ 5절의 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 4.9.5** 를 **읽기만** 해서 썼다(환경변수 **`TSC_49`**).
-
 ```text
 ===== tsc --version · node --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -24,7 +15,6 @@ Python 3.12.3
 > ★ 클래스가 **값이자 타입**이라는 것(`typeof Class` 는 생성자)은 [**23번 주제**](../23-typeof-type-operator/) 3절이 정본이다.
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > **버전** — `#private` 는 **ES2022**(JS 쪽), `useDefineForClassFields` 는 **TS 3.7**(릴리스 노트), `--erasableSyntaxOnly` 는 **5.8**. ★ **7.0.2 에서 도는지는 던져서 확인했다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -966,3 +956,13 @@ ex.32d.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 - **`declare` 필드** — 3.7 릴리스 노트는 `declare resident: Dog;` 가 **출력 코드를 만들지 않는다**고 적는다. 5절 `[2]` 의 `name!` 을 `declare name` 으로 바꾸면 `"base"` 가 남을 것 — **던지지 않았다.**
 - **`protected` 와 구조적 타이핑** — `private`·`protected` 멤버가 있는 클래스는 **모양이 같아도** 다른 클래스와 호환되지 않는다(명목적으로 군다). 05편의 브랜드 타입과 같은 효과다 — **여기서는 안 던졌다.**
 - **`accessor` 키워드·데코레이터** — [목록의 **47번 주제**](../47-decorators/).
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Classes](https://www.typescriptlang.org/docs/handbook/2/classes.html)(`private` 의 「soft private」·괄호 접근 · `implements` 는 검사일 뿐 · 매개변수 프로퍼티 · `abstract`) ·
+[TSConfig — `useDefineForClassFields`](https://www.typescriptlang.org/tsconfig/useDefineForClassFields.html) ·
+[TypeScript 3.7 릴리스 노트 — `useDefineForClassFields` 와 `declare` 프로퍼티](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html) ·
+[TypeScript 5.8 릴리스 노트 — `--erasableSyntaxOnly`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-8.html).
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
+★ TSConfig 페이지 본문에는 **기본값 문장이 없었다** — 기본값은 5절에서 **던져서** 얻었다.
+**실행 검증** — 본판은 맨 위 블록이다. ★ 5절의 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 4.9.5** 를 **읽기만** 해서 썼다(환경변수 **`TSC_49`**).

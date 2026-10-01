@@ -1,11 +1,5 @@
 # ts/syntax/35 — 모듈 해석 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Modules Reference](https://www.typescriptlang.org/docs/handbook/modules/reference.html)(`node16`/`nodenext` 의 상대 ESM import 는 **확장자가 필요** · `bundler` 는 확장자 없는 경로와 디렉토리 모듈을 받는다 · **`paths` 는 방출물의 import 경로를 바꾸지 않는다** · `exports` 의 `types` 조건) ·
-> [Announcing TypeScript 6.0](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/)(`--moduleResolution node`·`classic` 과 `baseUrl` 의 deprecation — 「`node` 를 쓰던 사용자는 대개 `nodenext` 로, 번들러는 `bundler` 로」 · 「`baseUrl` 은 더 이상 해석의 조회 루트가 아니다 — `paths` 항목에 접두를 직접 넣어라」).
-> 위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·추적·실행 출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
-> **실행 검증** — 본판은 아래다. ★ 판 격자에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**. **6.0 은 이 머신에 없다.**
-
 ```text
 ===== tsc --version · node --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -20,7 +14,6 @@ Python 3.12.3
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ JSON(`package.json`·`tsconfig.json`)은 주석을 달 수 없어 **캡처가 `===== 소스: 경로 =====` 배너를 찍어** 싣는다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -792,3 +785,10 @@ imp35g.ts(1,27): error TS2307: Cannot find module '@src/util35g.js' or its corre
 - **`package.json` 의 `imports`(`#` 별칭)** — node 도 아는 별칭이라 `paths` 의 런타임 문제가 없다. **던지지 않았다.**
 - **`bundler` 의 「CJS mode」** — 3절의 문구. 해석 모드와 조건 이름의 관계는 **확인하지 못했다.**
 - **새 node(v20+)에서 5절** — `require(esm)` 이 되는 node 라면 `nodenext` 의 판정이 맞는다. 이 머신에 없다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Modules Reference](https://www.typescriptlang.org/docs/handbook/modules/reference.html)(`node16`/`nodenext` 의 상대 ESM import 는 **확장자가 필요** · `bundler` 는 확장자 없는 경로와 디렉토리 모듈을 받는다 · **`paths` 는 방출물의 import 경로를 바꾸지 않는다** · `exports` 의 `types` 조건) ·
+[Announcing TypeScript 6.0](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/)(`--moduleResolution node`·`classic` 과 `baseUrl` 의 deprecation — 「`node` 를 쓰던 사용자는 대개 `nodenext` 로, 번들러는 `bundler` 로」 · 「`baseUrl` 은 더 이상 해석의 조회 루트가 아니다 — `paths` 항목에 접두를 직접 넣어라」).
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·추적·실행 출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
+**실행 검증** — 본판은 맨 위 블록이다. ★ 판 격자에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**. **6.0 은 이 머신에 없다.**

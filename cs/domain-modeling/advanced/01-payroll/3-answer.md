@@ -1,11 +1,5 @@
 # domain-modeling-advanced/01-payroll — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/01-payroll/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -418,3 +412,7 @@ return switch (premiumRule) {
 - 기준 소스: `/home/jun/project/myway/domain-modeling-advanced/01-payroll/impl/com/domain/payroll/Payroll.java`
 - 문제 원문: `src/main/java/com/domain/payroll/Payroll.java`(TODO 1~3 javadoc), `PayRule.java`(규칙 네 줄·야간 구간), `Shift.java`(자정 넘김), `README.md`(함정·측정이 알려준 것·변종 검증·생각해볼 것)
 - 계약·수치: `src/test/java/com/domain/payroll/PayrollTest.java`(80,000 · 80,250 · 95,000 · 120,000 · 110,000/120,000/125,000 · 160,000 · 60,000/70,000/75,000 · 420,000/430,000 · 440,000/400,000 · 520,000/560,000 · 80,167), `MeasurementTest.java`(715,200/5,373,180 · 1,781 · 192,500 · 1.32/1.39/1.42 · 1,738 · 400,000 · 490,000/495,000/497,500)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/01-payroll/impl/`).

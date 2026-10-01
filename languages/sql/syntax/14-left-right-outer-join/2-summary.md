@@ -1,15 +1,5 @@
 # sql/14-LEFT·RIGHT OUTER JOIN — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — `LEFT`·`RIGHT [OUTER] JOIN` 은 두 엔진 모두 오래전부터 있고, **이 주제에서 갈리는 것은 없다.** 아래 모든 출력이 양쪽에서 같았다.\
-> **선행** — [13 INNER JOIN](../13-inner-join/). **13번이 버린 행을 되살리는 것이 이 주제다.**\
-> **뒤 주제** — [15 ON 과 WHERE 의 차이](../15-on-vs-where-in-outer-join/)(같은 조건의 자리가 여기서 결과를 바꾼다) · [16 FULL OUTER JOIN](../16-full-outer-join/)(양쪽 다 되살린다).
-
 ## 한눈에 — 쉽게 말하면
 
 **`LEFT JOIN` = 「왼쪽 명단은 한 명도 빼지 않는다」는 약속. 짝을 못 찾은 사람은 오른쪽 칸을 빈칸으로 둔 채 남는다.**
@@ -463,3 +453,12 @@ SELECT d.name, COUNT(e.id) FROM dept d LEFT JOIN emp e ON e.dept_id = d.id GROUP
   예: `sales` 부서에 사원이 둘이라 `dept LEFT JOIN emp` 에서 두 줄이 됐다.
 - **`COUNT(*)` 과 `COUNT(열)`** — 앞은 행을 세고 뒤는 **`NULL` 이 아닌 값**을 센다.\
   예: `hr` 행에서 `COUNT(*)`=1, `COUNT(e.id)`=0.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — `LEFT`·`RIGHT [OUTER] JOIN` 은 두 엔진 모두 오래전부터 있고, **이 주제에서 갈리는 것은 없다.** 본문의 모든 출력이 양쪽에서 같았다.\
+**선행** — [13 INNER JOIN](../13-inner-join/). **13번이 버린 행을 되살리는 것이 이 주제다.**\
+**뒤 주제** — [15 ON 과 WHERE 의 차이](../15-on-vs-where-in-outer-join/)(같은 조건의 자리가 여기서 결과를 바꾼다) · [16 FULL OUTER JOIN](../16-full-outer-join/)(양쪽 다 되살린다).

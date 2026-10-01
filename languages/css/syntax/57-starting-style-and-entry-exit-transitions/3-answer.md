@@ -1,10 +1,5 @@
 # css/syntax/57 — `@starting-style` 과 진입·퇴장 전환: `display`/`overlay` 를 전환에 태우기 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 측정한 것**이다.\
-> CDP 로 `Input.dispatchMouseEvent` 를 던져 실제 마우스를 움직이고, `requestAnimationFrame` 마다 `getComputedStyle` 과 `getAnimations()` 를 읽었다(샘플 시각은 ±1프레임 오차).\
-> 규칙은 [CSS Transitions Level 2](https://drafts.csswg.org/css-transitions-2/) · [CSS Position Level 4](https://drafts.csswg.org/css-position-4/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -334,7 +329,7 @@ google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
 | demo 진입·퇴장 (CDP 실제 마우스 이동) | 1 | demo · A1 |
 | demo 「바꿔 볼 것」 ① `@starting-style` 을 앞으로 | 1 | demo |
 | demo 「바꿔 볼 것」 ② `allow-discrete` 제거 | 1 | demo · A6 |
-| Baseline 조회(`@starting-style`·`transition-behavior`·`overlay`) | 1 | 머리말 · A9 |
+| Baseline 조회(`@starting-style`·`transition-behavior`·`overlay`) | 1 | 「실행 환경」 · A9 |
 | **제출 직전 demo 재추출·재실행 대조** | 1 | 어긋남 0건 |
 
 **구현에 달린 항목**
@@ -367,3 +362,9 @@ google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
 - **`getKeyframes()`** — 전환 객체가 실제로 쓰는 시작·끝 값. 시작 스타일을 잡는 창.
 - **`CSSStartingStyleRule`** — 바깥 형태 `@starting-style` 의 CSSOM 타입.
 - **팝오버(popover)** — HTML `popover` 속성으로 최상위 레이어에 띄우는 요소. `popover=manual` 은 자동으로 안 닫힌다.
+
+## 실행 환경
+
+이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 측정한 것**이다.\
+CDP 로 `Input.dispatchMouseEvent` 를 던져 실제 마우스를 움직이고, `requestAnimationFrame` 마다 `getComputedStyle` 과 `getAnimations()` 를 읽었다(샘플 시각은 ±1프레임 오차).\
+규칙은 [CSS Transitions Level 2](https://drafts.csswg.org/css-transitions-2/) · [CSS Position Level 4](https://drafts.csswg.org/css-position-4/) 로 접지했다.

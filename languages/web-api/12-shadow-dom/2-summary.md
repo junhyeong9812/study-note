@@ -1,14 +1,5 @@
 # web-api/12 — Shadow DOM: `attachShadow`·캡슐화 경계·슬롯 할당·`::part` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★ **마크업 갈래와의 경계** — HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **10번** 이 `template`·`slot`·선언적 Shadow DOM 을 **마크업으로** 다룬다. 거기가 「파서가 무엇을 만드나」의 정본이고, **여기는 「그것을 스크립트로 만들고 들여다보는 API」** 다. 그 편이 이미 보인 것(`<template>` 이 왜 안 사나 · `shadowrootmode` 의 세 값 · `getHTML` 의 `serializableShadowRoots`)은 **다시 쓰지 않고 인용만** 한다.\
-> **기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「Interface `ShadowRoot`」·「`attachShadow`」·「Signal slots」·「Dispatching events」(재타기팅) 절과 [CSS Scoping Module Level 1](https://drafts.csswg.org/css-scoping/) 의 `:host`·`:host-context`·`::part`·`exportparts` 절. 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 블록마다 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다.\
-> **엔진은 Chrome 하나다** — Firefox 는 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. **이식성을 주장하지 않는다.**\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `attachShadow` 는 오래된 표면이고, **`slotAssignment: 'manual'`·`serializable`·`getHTML()` 은 새 표면**이다(아래 「구현 세부사항 대 언어 보장」).\
-> **선행** — [01번 주제](../01-document-and-node-tree/2-summary.md)(노드 트리)와 [05번 주제](../05-documentfragment-and-template/2-summary.md)(`DocumentFragment` 와 `<template>`).\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -1483,3 +1474,12 @@ slot.assignedNodes().length === 0;               // 공백 텍스트까지 없�
 - **`adoptedStyleSheets`** 로 여러 그림자가 시트 하나를 공유할 수 있다. **던지지 않았다.**
 - **`ElementInternals`·폼 참여**(`formAssociated`)는 그림자 안 입력을 바깥 폼에 잇는다. **던지지 않았다.**
 - **접근성** — 슬롯된 내용이 접근성 트리에서 어디에 놓이는지는 CDP 로 뜰 수 있지만, **스크린리더가 그것을 어떻게 읽는지는 여전히 못 본다.** 트리는 보조 기술의 **입력**이다.
+
+## 실행 환경
+
+★ **마크업 갈래와의 경계** — HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **10번** 이 `template`·`slot`·선언적 Shadow DOM 을 **마크업으로** 다룬다. 거기가 「파서가 무엇을 만드나」의 정본이고, **여기는 「그것을 스크립트로 만들고 들여다보는 API」** 다. 그 편이 이미 보인 것(`<template>` 이 왜 안 사나 · `shadowrootmode` 의 세 값 · `getHTML` 의 `serializableShadowRoots`)은 **다시 쓰지 않고 인용만** 한다.\
+**기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「Interface `ShadowRoot`」·「`attachShadow`」·「Signal slots」·「Dispatching events」(재타기팅) 절과 [CSS Scoping Module Level 1](https://drafts.csswg.org/css-scoping/) 의 `:host`·`:host-context`·`::part`·`exportparts` 절. 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 블록마다 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다.\
+**엔진은 Chrome 하나다** — Firefox 는 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. **이식성을 주장하지 않는다.**\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `attachShadow` 는 오래된 표면이고, **`slotAssignment: 'manual'`·`serializable`·`getHTML()` 은 새 표면**이다(본문 「구현 세부사항 대 언어 보장」).\
+**선행** — [01번 주제](../01-document-and-node-tree/2-summary.md)(노드 트리)와 [05번 주제](../05-documentfragment-and-template/2-summary.md)(`DocumentFragment` 와 `<template>`).

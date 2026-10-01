@@ -1,34 +1,5 @@
 # csharp/syntax/15 — 접근 한정자와 어셈블리 경계 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — 접근 한정자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/access-modifiers) ·
-> [Learn — 접근성 수준](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/accessibility-levels) ·
-> [.NET API — `InternalsVisibleToAttribute`](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.internalsvisibletoattribute) ·
-> [Learn — `file` 한정 타입(C# 11)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/file)
-> **실행 검증** — 이 문서의 모든 출력·진단은 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★★★ **이 주제는 어셈블리를 둘 만들어 던졌다** — `liba.dll`(라이브러리)과 `appb.dll`(그것을 참조하는 쪽).\
-> **한 파일로는 물을 수 없는 유일한 주제**라서 캡처 스크립트가 **컴파일을 두 번** 돌린다.\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).
-> **버전** — 여섯 한정자 중 `private protected` 는 **C# 7.2**, `file` 은 **C# 11** 이다. 나머지는 **C# 1.0부터**.
-> **경계** — **접근자 접근성**(`{ get; private set; }`)은 [13번](../13-properties-init-required-field/) (6)이 정본이고,\
-> **`protected` 가 상속에서 하는 일**은 [16번](../16-inheritance-virtual-override-abstract-sealed-new/), **클래스 문법 자체**는 [12번](../12-class-fields-constructors-this-base/)이다.\
-> 여기서는 「**어디까지 보이나**」만 센다.
-> ★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **10번**([`10-access-modifiers/`](../../../java/syntax/10-access-modifiers/))이 **직접 대비**다.\
-> **javac 21.0.5 로 같은 모양의 프로그램을 던져 (8)에 나란히 놓았다.**\
-> ★ C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **12번**([`12-class-basics-members-access-and-this/`](../../../cpp/syntax/12-class-basics-members-access-and-this/))은 세 단계뿐이라 **어셈블리 축이 아예 없다.**
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** — 판마다 다듬인다 | ★★★ **진단 코드**(`CS0122`·`CS1061`·`CS0103`·`CS0281`·`CS0050`…)와 **`(행,열)`** |
-> | `CS0281` 문구에 박힌 **어셈블리 버전·`PublicKeyToken` 표기** | ★★★ **어느 멤버가 막히고 어느 멤버가 통과했나** — 이 주제의 답 자체다 |
-> | ★ **증분의 절댓값 일부** — 이 주제는 그 칸을 **안 세웠다**(아래 (0)) | ★★ **`cc exit`**(0 인가 1 인가) · **막힌 건수** |
-> | 여러 진단이 나올 때 Roslyn 이 내는 **순서** — 배너에 `\| sort` 를 적었다 | ★★ **`FieldAttributes` 의 이름**(`FamORAssem`·`FamANDAssem`) |
-> | javac 가 에러를 내는 **순서** | ★★ **javac 의 에러 개수와 어느 필드에 붙었나** |
-
 ## 이 판
 
 ```text
@@ -706,3 +677,33 @@ public class Vault {
 - ★ **`CS0281` 의 문구 문제**((4))는 **이 판의 관찰**이다 — Roslyn 이 친구 어셈블리 경로에서 실패했을 때\
   같은 진단으로 뭉뚱그리는 것으로 보인다. ★★★ **원인을 추정했을 뿐 Roslyn 소스를 읽지 않았다.**\
   근거로 쓴 것은 **`cc exit` 가 갈렸다는 사실**뿐이다.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — 접근 한정자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/access-modifiers) ·
+[Learn — 접근성 수준](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/accessibility-levels) ·
+[.NET API — `InternalsVisibleToAttribute`](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.internalsvisibletoattribute) ·
+[Learn — `file` 한정 타입(C# 11)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/file)
+**실행 검증** — 이 문서의 모든 출력·진단은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★★★ **이 주제는 어셈블리를 둘 만들어 던졌다** — `liba.dll`(라이브러리)과 `appb.dll`(그것을 참조하는 쪽).\
+**한 파일로는 물을 수 없는 유일한 주제**라서 캡처 스크립트가 **컴파일을 두 번** 돌린다.\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).
+**버전** — 여섯 한정자 중 `private protected` 는 **C# 7.2**, `file` 은 **C# 11** 이다. 나머지는 **C# 1.0부터**.
+**경계** — **접근자 접근성**(`{ get; private set; }`)은 [13번](../13-properties-init-required-field/) (6)이 정본이고,\
+**`protected` 가 상속에서 하는 일**은 [16번](../16-inheritance-virtual-override-abstract-sealed-new/), **클래스 문법 자체**는 [12번](../12-class-fields-constructors-this-base/)이다.\
+여기서는 「**어디까지 보이나**」만 센다.
+★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **10번**([`10-access-modifiers/`](../../../java/syntax/10-access-modifiers/))이 **직접 대비**다.\
+**javac 21.0.5 로 같은 모양의 프로그램을 던져 (8)에 나란히 놓았다.**\
+★ C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **12번**([`12-class-basics-members-access-and-this/`](../../../cpp/syntax/12-class-basics-members-access-and-this/))은 세 단계뿐이라 **어셈블리 축이 아예 없다.**
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** — 판마다 다듬인다 | ★★★ **진단 코드**(`CS0122`·`CS1061`·`CS0103`·`CS0281`·`CS0050`…)와 **`(행,열)`** |
+| `CS0281` 문구에 박힌 **어셈블리 버전·`PublicKeyToken` 표기** | ★★★ **어느 멤버가 막히고 어느 멤버가 통과했나** — 이 주제의 답 자체다 |
+| ★ **증분의 절댓값 일부** — 이 주제는 그 칸을 **안 세웠다**(본문 (0)) | ★★ **`cc exit`**(0 인가 1 인가) · **막힌 건수** |
+| 여러 진단이 나올 때 Roslyn 이 내는 **순서** — 배너에 `\| sort` 를 적었다 | ★★ **`FieldAttributes` 의 이름**(`FamORAssem`·`FamANDAssem`) |
+| javac 가 에러를 내는 **순서** | ★★ **javac 의 에러 개수와 어느 필드에 붙었나** |

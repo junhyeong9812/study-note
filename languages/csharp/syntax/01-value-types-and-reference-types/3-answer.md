@@ -1,15 +1,5 @@
 # csharp/syntax/01 — 값 타입과 참조 타입 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) · [Learn — 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) · [.NET API — `GC.GetAllocatedBytesForCurrentThread`](https://learn.microsoft.com/en-us/dotnet/api/system.gc.getallocatedbytesforcurrentthread)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
-> 런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-24).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
-> **읽는 법** — `GC.GetAllocatedBytesForCurrentThread()` 의 **절댓값은 흔들리는 칸**이다.\
-> 근거로 쓰는 것은 **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐**다.\
-> 진단을 싣는 블록에는 **그 진단을 낸 소스를 같은 자리에** 뒀다 — 줄 번호가 발췌와 어긋나지 않게 하기 위해서다.\
-> **`-debug` 를 안 줘서** 예외 트레이스에 절대 경로가 없다. 자세한 환경은 [2-summary.md](2-summary.md) 머리말에 있다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -650,3 +640,14 @@ class Node { public int X; public int Y; }
 - ★ **할당 증분 24·8024·24000**(7번) — 객체 헤더 크기가 바뀌면 움직인다. **증분이 0 이냐 아니냐**는 안 움직인다.
 - **진단 문구와 진단 코드**(3·4·8번).
 - ★ **`Unsafe.SizeOf<string>()`** — 참조 크기라 32비트에서 4 가 된다.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) · [Learn — 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) · [.NET API — `GC.GetAllocatedBytesForCurrentThread`](https://learn.microsoft.com/en-us/dotnet/api/system.gc.getallocatedbytesforcurrentthread)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
+런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-24).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
+**읽는 법** — `GC.GetAllocatedBytesForCurrentThread()` 의 **절댓값은 흔들리는 칸**이다.\
+근거로 쓰는 것은 **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐**다.\
+진단을 싣는 블록에는 **그 진단을 낸 소스를 같은 자리에** 뒀다 — 줄 번호가 발췌와 어긋나지 않게 하기 위해서다.\
+**`-debug` 를 안 줘서** 예외 트레이스에 절대 경로가 없다. 자세한 환경은 [2-summary.md](2-summary.md) 「실행 환경」에 있다.

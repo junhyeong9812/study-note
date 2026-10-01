@@ -1,13 +1,5 @@
 # css/syntax/45 — 그라디언트와 보간 색 공간 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Images Module Level 3](https://drafts.csswg.org/css-images-3/) (`linear-gradient`·`radial-gradient`·반복형·색 정지점 규칙의 정본) · [CSS Images Module Level 4](https://drafts.csswg.org/css-images-4/) (`conic-gradient`·보간 색 공간 지정) · [CSS Color Module Level 4](https://drafts.csswg.org/css-color-4/) (알파가 있는 색의 보간). 열어서 확인한 것만 적었다.
-> **실행 검증** — **Google Chrome 151.0.7922.173** headless 하나. 그라디언트 **46종**을 렌더해 **PNG 픽셀의 `(r,g,b)` 를 파이썬으로 읽었다.** 중간점 색은 전부 그 픽셀값이고, **계산값만으로는 이 주제를 검증할 수 없다**((2) 참고).
-> **엔진은 Chrome 하나다** — Firefox 155 는 이 환경에서 headless 스크린샷이 산출되지 않는다. 크로스 브라우저는 **Baseline 데이터로만** 접지했고 「두 엔진에서 확인했다」고 적지 않았다.
-> **버전** — `Gradients` = **widely**(low 2015-07-29 · high 2018-01-29) · `Conic gradients` = **widely**(low 2020-11-17 · high 2023-05-17) · ★ `Gradient interpolation`(`in oklab` 등을 그라디언트에 지정하는 것) = **newly**(low 2024-06-11, Chrome 111 / Firefox 127 / Safari 16.2). `webstatus.dev` API 로 조회한 값이다(2026-09-23).
-> **여기서 다루지 않는 것** — 색 **표기와 색 공간 자체**는 [42번](../42-color-notation-and-spaces/2-summary.md), 색 **둘을 한 점으로 섞는 것**은 [43번](../43-color-mix-and-relative-color/2-summary.md)이 정본이다. 그라디언트를 **배경 레이어로 배치하는 것**(`background-size`·`repeat`·`origin`/`clip`·레이어 순서)은 [44번](../44-backgrounds-and-object-fit/2-summary.md)이 정본이고, 여기는 **그라디언트 이미지 자체**만 다룬다. **혼합 모드·`filter`** 는 목록의 [**47**](../47-filter-and-backdrop-filter/)·[**48**](../48-blend-modes-and-isolation/)번 주제, **`clip-path`·`mask`** 는 [목록의 **49번 주제**](../49-clip-path-and-mask/)다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **그라디언트는 색이 아니라 「이미지」다. 브라우저가 그 자리에서 그려 내는 그림이다.**
@@ -586,3 +578,11 @@ background: linear-gradient(90deg, red, 30%, 60%, blue);
 - **`radial-gradient` 의 크기 키워드는 넷이다** — `closest-side`·`closest-corner`·`farthest-side`·`farthest-corner`(기본). 실측에서 `closest-side at 50px 50px` 은 중심에서 50px 만에 끝나 상자 대부분이 끝 색이었다.
 - **`in oklch longer hue` 한 줄로 무지개가 나온다** — 정지점을 손으로 여섯 개 나열할 필요가 없다((6) 실측).
 - **그라디언트는 `mask-image` 에도 쓴다** — [목록의 **49번 주제**](../49-clip-path-and-mask/)가 정본이다. 거기서는 알파만 읽힌다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Images Module Level 3](https://drafts.csswg.org/css-images-3/) (`linear-gradient`·`radial-gradient`·반복형·색 정지점 규칙의 정본) · [CSS Images Module Level 4](https://drafts.csswg.org/css-images-4/) (`conic-gradient`·보간 색 공간 지정) · [CSS Color Module Level 4](https://drafts.csswg.org/css-color-4/) (알파가 있는 색의 보간). 열어서 확인한 것만 적었다.
+**실행 검증** — **Google Chrome 151.0.7922.173** headless 하나. 그라디언트 **46종**을 렌더해 **PNG 픽셀의 `(r,g,b)` 를 파이썬으로 읽었다.** 중간점 색은 전부 그 픽셀값이고, **계산값만으로는 이 주제를 검증할 수 없다**((2) 참고).
+**엔진은 Chrome 하나다** — Firefox 155 는 이 환경에서 headless 스크린샷이 산출되지 않는다. 크로스 브라우저는 **Baseline 데이터로만** 접지했고 「두 엔진에서 확인했다」고 적지 않았다.
+**버전** — `Gradients` = **widely**(low 2015-07-29 · high 2018-01-29) · `Conic gradients` = **widely**(low 2020-11-17 · high 2023-05-17) · ★ `Gradient interpolation`(`in oklab` 등을 그라디언트에 지정하는 것) = **newly**(low 2024-06-11, Chrome 111 / Firefox 127 / Safari 16.2). `webstatus.dev` API 로 조회한 값이다(2026-09-23).
+**여기서 다루지 않는 것** — 색 **표기와 색 공간 자체**는 [42번](../42-color-notation-and-spaces/2-summary.md), 색 **둘을 한 점으로 섞는 것**은 [43번](../43-color-mix-and-relative-color/2-summary.md)이 정본이다. 그라디언트를 **배경 레이어로 배치하는 것**(`background-size`·`repeat`·`origin`/`clip`·레이어 순서)은 [44번](../44-backgrounds-and-object-fit/2-summary.md)이 정본이고, 여기는 **그라디언트 이미지 자체**만 다룬다. **혼합 모드·`filter`** 는 목록의 [**47**](../47-filter-and-backdrop-filter/)·[**48**](../48-blend-modes-and-isolation/)번 주제, **`clip-path`·`mask`** 는 [목록의 **49번 주제**](../49-clip-path-and-mask/)다.

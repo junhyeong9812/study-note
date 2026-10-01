@@ -1,10 +1,5 @@
 # css/syntax/01 — 캐스케이드와 우선순위 계산: 출처·`!important`·레이어·명시도·순서 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일에 적힌 **모든 색·계산값은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 `getComputedStyle` 로 읽은 값**이다.\
-> 규칙은 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 로 접지했다.\
-> 사다리 1·2·3번 칸(전환 선언 · user-agent/사용자 `!important`)은 **돌려 보지 않았다** — 명세 기술만 옮겼고 그 자리에 표시해 두었다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -358,7 +353,7 @@ background-color 바구니                 background-image 바구니
 | 레이어 밖 대 레이어 안 (6번 문항) | `#app` 조상 아래 `.x`(양쪽 normal)·`.y`(양쪽 important) · 1판 | `rgb(255, 0, 0)` / `rgb(0, 128, 0)` |
 | 기준 소스 인용 2건 | drafts.csswg.org 의 css-cascade-5 원문과 대조 | 레이어 뒤집힘·레이어 밖 두 문장 **정본 그대로** |
 | 여덟 칸 사다리 | 같은 원문의 「Cascade Sorting Order」 목록과 대조 | 본문의 8줄과 **순서·이름이 같다** |
-| Baseline | api.webstatus.dev 조회 2026-09-23 | `cascade-layers` **widely** 2022-03-14 → 2024-09-14 — 머리말과 일치 |
+| Baseline | api.webstatus.dev 조회 2026-09-23 | `cascade-layers` **widely** 2022-03-14 → 2024-09-14 — 「실행 환경」과 일치 |
 
 **돌리지 않은 것** — 사다리 **1·2·3번 칸**(전환 선언 · UA `!important` · 사용자 `!important`). 본문에도 그렇게 표시돼 있고 재검증에서도 그대로 두었다.\
 2·3번은 headless 에 사용자 스타일시트를 넣을 경로가 없어 **이 환경에서 만들 수 없다**(「못 잰 것」). 1번은 **만들 수 있는데 안 잰 것**이므로 다음 판에서 돌릴 자리다.
@@ -366,3 +361,9 @@ background-color 바구니                 background-image 바구니
 **구현 의존 항목** — ① **UA 기본 시트의 값**(문단 마진 20px 등)은 명세가 정하지 않는다 ② `cssRules` 의 `cssText` 가 네 표기를 한 모양으로 직렬화하는 것 ③ 색이 `rgb(…)` 형식으로 보이는 것 ④ 개발자 도구의 줄 긋기. 넷 다 **Chrome 151 에서 관찰한 것**이고 브라우저가 바뀌면 다시 찍어야 한다.
 
 **엔진은 Chrome 151.0.7922.173 하나다.** Firefox 155 는 이 환경에서 headless 산출이 조용히 실패하고(`exit 0` 인데 파일이 없다) WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.**
+
+## 실행 환경
+
+이 파일에 적힌 **모든 색·계산값은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 `getComputedStyle` 로 읽은 값**이다.\
+규칙은 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 로 접지했다.\
+사다리 1·2·3번 칸(전환 선언 · user-agent/사용자 `!important`)은 **돌려 보지 않았다** — 명세 기술만 옮겼고 그 자리에 표시해 두었다.

@@ -1,9 +1,5 @@
 # PR #37206 — 테스트 해설 (테스트 하나하나)
 
-> `SimpleJdbcCallTests`에 추가된 4건 + 목 헬퍼 2개.\
-> 각 테스트를 "무엇을 주장하나 / 왜 red 또는 가드인가 / 단언 하나하나의 의미"로 해설한다.\
-> red와 가드의 역할 분담 개념은 [../37153/guard-tests.md](../37153-enum-array-annotation-probe/guard-tests.md), 형식 원본은 [../37153/tests.md](../37153-enum-array-annotation-probe/tests.md).
-
 배치 전체를 먼저 본다.\
 이 결함은 **선언 순서 의존**이므로, 재현과 가드가 정확히 "같은 선언을 순서만 바꾼 쌍"으로 짝지어진다.\
 그래야 fix가 "순서를 무의미하게 만들었다"를 증명한다.

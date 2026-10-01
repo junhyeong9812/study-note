@@ -1,9 +1,5 @@
 # Spring Framework 6.x (2022 ~)
 
-> 원본: `~/project/java-history/spring/framework-6.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·패키지/클래스/어노테이션 이름·RFC 번호·코드블록 6개(모두 Java)·「릴리스 정보」와 「마이너 버전별 변화」의 목록은 원문 그대로다.\
-> ASCII 도식 2개(모두 원문 mermaid 그림을 글자로 옮긴 것이다), 「한눈에」의 주소 개편 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -276,3 +272,9 @@ Java 21의 가상 스레드(Project Loom)를 지원.\
 - [Spring Boot 3.2 and Spring Framework 6.1 Add Java 21, Virtual Threads, and CRaC (InfoQ)](https://www.infoq.com/articles/spring-boot-3-2-spring-6-1/)
 - [Observability Support :: Spring Framework (docs)](https://docs.spring.io/spring-framework/reference/integration/observability.html)
 - [Spring Framework - Wikipedia](https://en.wikipedia.org/wiki/Spring_Framework)
+
+## 출처
+
+원본: `~/project/java-history/spring/framework-6.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·패키지/클래스/어노테이션 이름·RFC 번호·코드블록 6개(모두 Java)·「릴리스 정보」와 「마이너 버전별 변화」의 목록은 원문 그대로다.\
+ASCII 도식 2개(모두 원문 mermaid 그림을 글자로 옮긴 것이다), 「한눈에」의 주소 개편 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

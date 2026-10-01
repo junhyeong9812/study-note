@@ -1,15 +1,5 @@
 # html/syntax/21 — `<form>` 의 제출 모델: `action`/`method`/`enctype`·제출을 일으키는 것 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Form submission」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-2) 절 — 「Implicit submission」·「Form submission algorithm」·「Constructing the entry list」·「Plain text form data」, 그리고 [「Form submission attributes」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-attributes)(`method`·`formmethod`·`enctype` 의 기본값), [「The button element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-button-element)(`type` 의 기본 상태), [HTML-AAM](https://w3c.github.io/html-aam/)(`form` 의 역할). **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다** — 아래 인용은 전부 그 판의 문장이다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 제출은 **CDP 의 실제 마우스·키 입력**으로 일으켰고(스크립트의 `click()` 이 아니다), 요청은 **하네스 프로세스 안에 띄운 서버**가 받아 적었다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다(22\~24번이 같은 하네스를 쓴다).\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 폼 제출은 가장 오래된 표면이라 Baseline 조회 대상이 아니다. 다만 ★ **`requestSubmit()`·`SubmitEvent.submitter` 는 뒤에 들어온 것**이다(명세의 브라우저 지원 표 — SubmitEvent Chrome 81+). 이 문서는 **그 시점을 따로 재지 않았다.**
-> **선행** — [05번 주제](../05-content-categories-and-models/2-summary.md)(`form` 안의 `form` 을 파서가 버린다) · [17번 주제](../17-table-structure/2-summary.md)(표 안의 `form` 이 빈 채로 남는다).
-> **경계** — **HTTP 메서드·헤더의 연혁은 [`history/web/02-HTTP-진화.md`](../../../../history/web/02-HTTP-진화.md) 의 몫이고, 여기는 마크업이 그 요청을 어떻게 만드느냐**다. ★ 그 문서에 **폼과 닿는 자리는 두 줄뿐**이다 — HTTP/1.0 절의 「`GET`에 더해 `HEAD`, `POST`가 들어와 폼 전송 … 이 가능해졌다」와 `Content-Type` 의 뜻. **`application/x-www-form-urlencoded`·`multipart/form-data`·질의 문자열·`Referer` 는 한 줄도 없다**(네 낱말로 `grep` 해 확인했다). 그래서 이 주제가 싣는 **본문 형식은 전부 서버 로그로 본 관찰 + HTML 명세의 인코딩 절**까지다. **`FormData`·`fetch` 로 같은 본문을 스크립트로 만드는 일**은 웹 API 갈래 목록([`web-api/README.md`](../../../web-api/README.md))의 **30번**이다(폴더는 아직 없다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다.** 폼이 **무엇을 보내는지는 서버가 받은 요청으로만 안다** — 화면에도 DOM 에도 흔적이 없다. 짝으로 **창 ②(페이지가 받은 `click`·`submit`·`invalid` 이벤트)** 가 「제출이 **어디까지** 갔나」를 말한다.
-
 **이 판의 Chrome**
 
 ```text
@@ -921,3 +911,14 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 GET 에 `enctype` 이 없나** — GET 에는 본문이 없고 URL 은 글자 줄이라, 싣는 방법이 urlencoded 하나뿐이다. 명세가 `data:` 스킴의 POST·`mailto:` 스킴까지 표로 나눠 두는 것을 보면(**`mailto:` + POST 는 「Mail as body」**), 「메서드 × 스킴」이 먼저 갈리고 `enctype` 은 **본문이 있는 칸 안에서만** 쓰인다.
 - **왜 `text/plain` 이 남아 있나** — 명세가 「사람이 읽으라고 만든 형식」이라고 적고, `mailto:` 로 메일 본문을 채우는 옛 용도가 있다(「Mail as body」 칸이 `text/plain` 을 따로 다룬다). 이 배치는 `mailto:` 제출을 던지지 않았다.
 - **이동을 작업으로 미루는 이유** — 명세는 폼마다 「계획된 이동(planned navigation)」을 하나만 두고, 새 제출이 오면 **앞의 작업을 지우고** 새로 넣는다. 한 번의 조작에서 제출이 여러 번 일어나도 **마지막 하나만** 간다는 뜻이다. 이 배치는 그 경합을 던지지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Form submission」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-2) 절 — 「Implicit submission」·「Form submission algorithm」·「Constructing the entry list」·「Plain text form data」, 그리고 [「Form submission attributes」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-attributes)(`method`·`formmethod`·`enctype` 의 기본값), [「The button element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-button-element)(`type` 의 기본 상태), [HTML-AAM](https://w3c.github.io/html-aam/)(`form` 의 역할). **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다** — 본문 인용은 전부 그 판의 문장이다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 제출은 **CDP 의 실제 마우스·키 입력**으로 일으켰고(스크립트의 `click()` 이 아니다), 요청은 **하네스 프로세스 안에 띄운 서버**가 받아 적었다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다(22\~24번이 같은 하네스를 쓴다).\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 폼 제출은 가장 오래된 표면이라 Baseline 조회 대상이 아니다. 다만 ★ **`requestSubmit()`·`SubmitEvent.submitter` 는 뒤에 들어온 것**이다(명세의 브라우저 지원 표 — SubmitEvent Chrome 81+). 이 문서는 **그 시점을 따로 재지 않았다.**
+**선행** — [05번 주제](../05-content-categories-and-models/2-summary.md)(`form` 안의 `form` 을 파서가 버린다) · [17번 주제](../17-table-structure/2-summary.md)(표 안의 `form` 이 빈 채로 남는다).
+**경계** — **HTTP 메서드·헤더의 연혁은 [`history/web/02-HTTP-진화.md`](../../../../history/web/02-HTTP-진화.md) 의 몫이고, 여기는 마크업이 그 요청을 어떻게 만드느냐**다. ★ 그 문서에 **폼과 닿는 자리는 두 줄뿐**이다 — HTTP/1.0 절의 「`GET`에 더해 `HEAD`, `POST`가 들어와 폼 전송 … 이 가능해졌다」와 `Content-Type` 의 뜻. **`application/x-www-form-urlencoded`·`multipart/form-data`·질의 문자열·`Referer` 는 한 줄도 없다**(네 낱말로 `grep` 해 확인했다). 그래서 이 주제가 싣는 **본문 형식은 전부 서버 로그로 본 관찰 + HTML 명세의 인코딩 절**까지다. **`FormData`·`fetch` 로 같은 본문을 스크립트로 만드는 일**은 웹 API 갈래 목록([`web-api/README.md`](../../../web-api/README.md))의 **30번**이다(폴더는 아직 없다).
+
+★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다.** 폼이 **무엇을 보내는지는 서버가 받은 요청으로만 안다** — 화면에도 DOM 에도 흔적이 없다. 짝으로 **창 ②(페이지가 받은 `click`·`submit`·`invalid` 이벤트)** 가 「제출이 **어디까지** 갔나」를 말한다.

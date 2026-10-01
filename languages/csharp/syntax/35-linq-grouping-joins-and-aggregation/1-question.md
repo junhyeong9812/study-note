@@ -1,14 +1,5 @@
 # csharp/syntax/35 — LINQ 그룹·조인·집계 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ★★★ 이 주제의 질문은 「**`GroupBy` 는 묶는 방법이고 `ToLookup` 은 묶어 놓은 것이다 · 시작값이 없는 집계는 빈 입력에서 설 곳이 없다**」 한 줄로 거의 다 풀린다. **원본을 몇 번 읽나 · 비었을 때 무엇이 나오나**를 세라.
-> **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
-> Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`.
-> ★★★ **본체 창은 ⑤ 실행 로그 + ② 빈 입력 결과 격자다.**
-> 선행 — [33번](../33-linq-method-syntax-and-deferred-execution/)(즉시와 지연 · `GroupBy` 칸).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (예측) / (왜) / (경계) / (연결) -->
@@ -228,6 +219,14 @@ Console.WriteLine(string.Join(" ", byParity));
 
 - 시드 없는 접기를 빈 입력에 하면 Java 는 무엇을 주나([Java 46번](../../../java/syntax/46-terminal-operations/)) — C# 과 무엇이 다른가?
 - ★ 2번의 `GroupBy` 줄은 [33번](../33-linq-method-syntax-and-deferred-execution/) (1) 격자의 어느 칸과 같은 이야기인가?
+
+## 실행 환경
+
+★★★ 이 주제의 질문은 「**`GroupBy` 는 묶는 방법이고 `ToLookup` 은 묶어 놓은 것이다 · 시작값이 없는 집계는 빈 입력에서 설 곳이 없다**」 한 줄로 거의 다 풀린다. **원본을 몇 번 읽나 · 비었을 때 무엇이 나오나**를 세라.
+**환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
+Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`.
+★★★ **본체 창은 ⑤ 실행 로그 + ② 빈 입력 결과 격자다.**
+선행 — [33번](../33-linq-method-syntax-and-deferred-execution/)(즉시와 지연 · `GroupBy` 칸).
 
 ## 복습 기록
 

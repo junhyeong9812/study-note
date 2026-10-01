@@ -1,12 +1,5 @@
 # web-api/37 — `MutationObserver`: 관측 옵션 · 레코드 묶음 · 마이크로태스크 타이밍 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 노드를 넣고 옮기는 법은 [03번 주제](../03-node-creation-insertion-removal/1-question.md), 조각과 레코드 수는 [05번 주제](../05-documentfragment-and-template/1-question.md), 마이크로태스크 줄 자체는 [JS 갈래 36번](../../js/syntax/36-event-loop-and-microtasks/1-question.md)이 물었다. 여기는 **MO 가 언제 · 무엇을 묶어 오나**와 **옵션이 무엇을 가르나**를 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이고, 규칙은 **DOM 명세 §4.3 을 받아 읽어** 맞대었다. **비용은 재지 않았다.**
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -112,6 +105,12 @@ const 셋 = div(".ad", "③"); slot.append(셋); 셋.remove();
 
 - [03번 주제](../03-node-creation-insertion-removal/1-question.md)의 「삽입이 곧 이동」은 MO 에게 몇 개의 사건으로 보이나 — 문항 6 의 어느 줄이 근거인가?
 - [05번 주제](../05-documentfragment-and-template/1-question.md)의 「조각 한 번 = 레코드 1개」와 문항 6 의 (나)는 같은 성질의 어느 두 얼굴인가?
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — 노드를 넣고 옮기는 법은 [03번 주제](../03-node-creation-insertion-removal/1-question.md), 조각과 레코드 수는 [05번 주제](../05-documentfragment-and-template/1-question.md), 마이크로태스크 줄 자체는 [JS 갈래 36번](../../js/syntax/36-event-loop-and-microtasks/1-question.md)이 물었다. 여기는 **MO 가 언제 · 무엇을 묶어 오나**와 **옵션이 무엇을 가르나**를 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이고, 규칙은 **DOM 명세 §4.3 을 받아 읽어** 맞대었다. **비용은 재지 않았다.**
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

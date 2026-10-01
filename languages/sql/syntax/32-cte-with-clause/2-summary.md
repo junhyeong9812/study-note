@@ -1,16 +1,5 @@
 # sql/32-CTE(`WITH`) — 이름 붙인 서브질의와 가시성 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · WITH Queries (CTE)](https://www.postgresql.org/docs/18/queries-with.html) · [PostgreSQL 12 릴리스 노트](https://www.postgresql.org/docs/release/12.0/) · [MySQL 8.4 · WITH (Common Table Expressions)](https://dev.mysql.com/doc/refman/8.4/en/with.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·실행 계획은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> 표는 기존 `emp`·`dept` 두 개만 썼다. **새로 만든 표가 없다.**\
-> **버전** — `WITH` 자체는 두 엔진 모두 오래전부터 있다. 갈리는 것은 **`MATERIALIZED`/`NOT MATERIALIZED`** 로, PG 는 **12 부터**다(릴리스 노트 확인). MySQL 매뉴얼에는 이 문법이 없고 **실제로 `ERROR 1064`** 다.\
-> **선행** — [11 서브쿼리 — 스칼라·상관·ANY/ALL](../11-subquery-scalar-correlated-any-all/) · [10 FROM 절 — 테이블 별칭·파생 테이블](../10-from-clause-aliases-derived-tables/).\
-> **이어지는 것** — [33 재귀 CTE](../33-recursive-cte/)가 같은 `WITH` 에 `RECURSIVE` 를 붙인 것이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **CTE 는 서브질의에 「이름」을 붙이는 것뿐이다. 새 표를 만드는 것도, 결과를 어딘가에 저장하는 것도 아니다.**
@@ -646,3 +635,13 @@ SELECT /*+ NO_MERGE(c) */ ... FROM c;
 - **`WITH` 는 `SELECT` 앞에만 붙는 게 아니다** — `INSERT`/`UPDATE`/`DELETE` 앞에도 붙는다. 같은 54번 주제.
 - **PG 14 부터 `SEARCH`/`CYCLE` 이 붙는다** — 재귀 CTE 전용 문법이라 [33번](../33-recursive-cte/)에서 실행 결과와 함께 본다.
 - **CTE 가 물질화되면 그 중간 결과에는 인덱스가 없다.** 큰 CTE 를 반복 조인하면 매번 전체를 훑는다 — 그때는 실제 임시 표를 만들고 인덱스를 거는 편이 빠를 수 있다([46번 주제](../46-index-definition-composite-partial-expression/)).
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · WITH Queries (CTE)](https://www.postgresql.org/docs/18/queries-with.html) · [PostgreSQL 12 릴리스 노트](https://www.postgresql.org/docs/release/12.0/) · [MySQL 8.4 · WITH (Common Table Expressions)](https://dev.mysql.com/doc/refman/8.4/en/with.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·실행 계획은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+표는 기존 `emp`·`dept` 두 개만 썼다. **새로 만든 표가 없다.**\
+**버전** — `WITH` 자체는 두 엔진 모두 오래전부터 있다. 갈리는 것은 **`MATERIALIZED`/`NOT MATERIALIZED`** 로, PG 는 **12 부터**다(릴리스 노트 확인). MySQL 매뉴얼에는 이 문법이 없고 **실제로 `ERROR 1064`** 다.\
+**선행** — [11 서브쿼리 — 스칼라·상관·ANY/ALL](../11-subquery-scalar-correlated-any-all/) · [10 FROM 절 — 테이블 별칭·파생 테이블](../10-from-clause-aliases-derived-tables/).\
+**이어지는 것** — [33 재귀 CTE](../33-recursive-cte/)가 같은 `WITH` 에 `RECURSIVE` 를 붙인 것이다.

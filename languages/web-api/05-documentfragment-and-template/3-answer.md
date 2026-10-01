@@ -1,10 +1,5 @@
 # web-api/05 — `DocumentFragment` 와 `<template>` 복제: 일괄 삽입 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 와 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/scripting.html#the-template-element) 로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 **★ 이 주제에는 흔들리는 칸이 있다** — 삽입 비용을 재기 때문이다.
 
 | 안 흔들리는 칸 | 흔들리는 칸 |
@@ -421,3 +416,9 @@ new MutationObserver(rs => { for (const r of rs) rec.push(r.addedNodes.length); 
 - **`complete`(이미지)** — 「할 일이 남았나」를 답하는 플래그. 「받아졌나」가 아니다.
 - **분해능(resolution)** — 측정 도구가 구분할 수 있는 최소 간격. 여기서는 100마이크로초.
 - **중앙값(median)** — 여러 판을 크기순으로 늘어놓았을 때 가운데 값.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 와 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/scripting.html#the-template-element) 로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

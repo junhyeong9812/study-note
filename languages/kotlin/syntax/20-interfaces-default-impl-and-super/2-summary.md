@@ -1,19 +1,5 @@
 # kotlin/syntax/20 — 인터페이스: 기본 구현·프로퍼티 선언·충돌 해소(`super<T>`) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Interfaces](https://kotlinlang.org/docs/interfaces.html) · [Inheritance — Overriding rules](https://kotlinlang.org/docs/inheritance.html) · [Java interop — Default methods](https://kotlinlang.org/docs/java-to-kotlin-interop.html) · [Compiler options — `-jvm-default`](https://kotlinlang.org/docs/compiler-reference.html).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
-> `kotlinc` 11회(컴파일 실패 5벌) · `javac` 3회(실패 1벌) · `java` 6회 · `javap` 7회 · `ls` 3회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이고,\
-> ★★★ **`-jvm-default` 도 같이 밝혀야 한다** — 이 플래그 하나로 인터페이스의 클래스 파일 **모양이 통째로 달라진다**((5)).
-> **버전** — 인터페이스의 기본 구현·프로퍼티 선언·`super<T>` 는 전부 **1.0** 이다.\
-> ★ 그러나 **그것이 바이트코드로 내려가는 방식은 2.2 에서 바뀌었다** — `-jvm-default` 의 기본값이 `enable` 이 되어 **진짜 JVM `default` 메서드**가 나온다((5)).
-> **경계** — `open`/`override` 규칙은 [19번 주제](../19-inheritance-open-final-override/), 프로퍼티의 backing field 는 [16번 주제](../16-properties-backing-field-lateinit-const/),\
-> 위임으로 계층을 피하는 길은 [21번 주제](../21-class-delegation-by/), `sealed interface` 와 `when` 완결성은 [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/)가 정본이다.\
-> Java 쪽 짝은 [`../../../java/syntax/11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/) — 거기는 **Java 8 이 왜 `default` 를 들였나**, 여기는 **Kotlin 이 그 위에서 무엇을 더 했나**.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다.
 
 | 흔들린다 | 안 흔들린다 |
@@ -794,3 +780,17 @@ forbid20.kt:12:27: error: multiple supertypes available. Specify the intended su
   `no-compatibility` 는 「내가 그 호환을 포기한다」는 선언이고, 라이브러리를 내놓는 쪽은 **함부로 쓰면 안 된다.**
 - **인터페이스에 상태를 흉내 내는 관용구**가 있다 — 추상 프로퍼티를 선언해 두고 **구현 클래스가 서랍을 갖게** 하는 것이다((1)의 `name`).\
   「인터페이스가 상태를 가진 것처럼 보이지만 서랍은 언제나 구현 클래스에 있다」가 정확한 그림이다.
+
+## 실행 환경
+
+**기준 소스** — [Interfaces](https://kotlinlang.org/docs/interfaces.html) · [Inheritance — Overriding rules](https://kotlinlang.org/docs/inheritance.html) · [Java interop — Default methods](https://kotlinlang.org/docs/java-to-kotlin-interop.html) · [Compiler options — `-jvm-default`](https://kotlinlang.org/docs/compiler-reference.html).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
+`kotlinc` 11회(컴파일 실패 5벌) · `javac` 3회(실패 1벌) · `java` 6회 · `javap` 7회 · `ls` 3회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이고,\
+★★★ **`-jvm-default` 도 같이 밝혀야 한다** — 이 플래그 하나로 인터페이스의 클래스 파일 **모양이 통째로 달라진다**((5)).
+**버전** — 인터페이스의 기본 구현·프로퍼티 선언·`super<T>` 는 전부 **1.0** 이다.\
+★ 그러나 **그것이 바이트코드로 내려가는 방식은 2.2 에서 바뀌었다** — `-jvm-default` 의 기본값이 `enable` 이 되어 **진짜 JVM `default` 메서드**가 나온다((5)).
+**경계** — `open`/`override` 규칙은 [19번 주제](../19-inheritance-open-final-override/), 프로퍼티의 backing field 는 [16번 주제](../16-properties-backing-field-lateinit-const/),\
+위임으로 계층을 피하는 길은 [21번 주제](../21-class-delegation-by/), `sealed interface` 와 `when` 완결성은 [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/)가 정본이다.\
+Java 쪽 짝은 [`../../../java/syntax/11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/) — 거기는 **Java 8 이 왜 `default` 를 들였나**, 여기는 **Kotlin 이 그 위에서 무엇을 더 했나**.

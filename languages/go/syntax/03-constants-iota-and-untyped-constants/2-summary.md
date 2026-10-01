@@ -1,15 +1,5 @@
 # go/syntax/03 — 상수·`iota`·타입 없는 상수 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Constants · Constant declarations · Iota ·
-> Constant expressions · Conversions 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 손으로 옮겨 적은 블록은 없다.
-> **버전** — 이 절의 규칙은 1.0부터 같다. `min`/`max` 가 상수식에 쓰이는 것은 **1.21**부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 ## 이 갈래가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
@@ -823,3 +813,13 @@ func main() {
   `^uint8(1)` 은 `0xFE` 로 다르다 — 마스크가 타입에 달렸다.
 - (7)절의 `LEAQ (BX)(AX*2), AX` 는 x86 의 주소 계산 명령을 산술에 쓴 것이다.
   곱셈기 없이 `×2 + kb` 를 한 번에 한다 — **최적화의 관찰**이지 언어의 성질이 아니다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Constants · Constant declarations · Iota ·
+Constant expressions · Conversions 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+손으로 옮겨 적은 블록은 없다.
+**버전** — 이 절의 규칙은 1.0부터 같다. `min`/`max` 가 상수식에 쓰이는 것은 **1.21**부터다.

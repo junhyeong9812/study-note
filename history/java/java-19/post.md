@@ -1,9 +1,5 @@
 # Java 19 (2022년 9월)
 
-> 원본: `~/project/java-history/java/java-19.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JEP 번호·클래스/API 이름·코드블록 4개(java 4)·「릴리스 정보」와 「그 외 변경」의 목록은 원문 그대로다.\
-> ASCII 도식 1개와 「한눈에」의 좌석 비유와 대응표, 「이 편에서 미리보기인가 정식인가」 표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -227,3 +223,9 @@ Java 19는 **"Loom의 시대"를 연 릴리스**로 기억된다.
 - [JEP 422: Linux/RISC-V Port](https://openjdk.org/jeps/422)
 - [OpenJDK JDK 19 프로젝트 페이지](https://openjdk.org/projects/jdk/19/)
 - [InfoQ: Java 19 Delivers Features for Projects Loom, Panama and Amber](https://www.infoq.com/news/2022/09/java19-released/)
+
+## 출처
+
+원본: `~/project/java-history/java/java-19.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JEP 번호·클래스/API 이름·코드블록 4개(java 4)·「릴리스 정보」와 「그 외 변경」의 목록은 원문 그대로다.\
+ASCII 도식 1개와 「한눈에」의 좌석 비유와 대응표, 「이 편에서 미리보기인가 정식인가」 표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

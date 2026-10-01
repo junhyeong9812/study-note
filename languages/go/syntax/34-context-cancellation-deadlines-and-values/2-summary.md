@@ -1,13 +1,5 @@
 # go/syntax/34 — ★ `context`: 취소·데드라인·값 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [`context`](https://pkg.go.dev/context) 문서 · [`go vet` 의 `lostcancel`·`stdversion` 분석기](https://pkg.go.dev/cmd/vet).
-> 문서·`api/go1NN.txt`·분석기 소스는 **이 툴체인의 `$(go env GOROOT)` 에서 직접 떴다.** 문서가 가리키는 블로그 글(context-and-structs)은 **안 열었다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> ★★ **버전** — `context` 패키지가 **1.7** · `WithCancelCause`·`Cause` 가 **1.20** · `AfterFunc`·`WithoutCancel`·`WithDeadlineCause`·`WithTimeoutCause` 가 **1.21**((6)절 판 표 — `api/go1NN.txt` 에서 뗐다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**취소 전파 나무의 노드마다 `Done` 을 받았나를 참거짓으로 찍는 로그**」.
 **누가 먼저 받나**(도착 순서)는 실행마다 흔들린다 — 그래서 순서는 「**두 가지 이상 나왔나**」 로만 적고,
 「**누가 받았나 / 안 받았나**」 를 근거로 쓴다. 부모를 끊으면 **7 / 7**, 자식 하나를 끊으면 **2 / 7**((1)절).
@@ -1100,7 +1092,7 @@ p11 (줄 81) : 침묵
 
 ### (6) ★★ 판 경계 — `api/go1NN.txt` 와 `go.mod` 가 막아 주나
 
-| API | 판 | 근거(머리말 블록) |
+| API | 판 | 근거(「이 판」 절 블록) |
 |---|---|---|
 | `Background`·`TODO`·`WithCancel`·`WithDeadline`·`WithTimeout`·`WithValue` | **1.7** | `go1.7.txt:6-11` |
 | **`WithCancelCause`·`Cause`** | **1.20** | `go1.20.txt:6-7` |
@@ -1346,3 +1338,11 @@ func main() {
 - ★ 문서가 가리키는 블로그 글(context-and-structs)은 **안 열었다.**
 - ★ 취소 전파가 **자식 수에 따라 어떻게 비용이 드나**(구현 — 자식 맵)는 **안 열었다.**
 - ★ `staticcheck` 등 **외부 린터**가 문자열 키를 잡는지는 **이 머신에서 확인 못 했다.**
+
+## 실행 환경
+
+**기준 소스** — [`context`](https://pkg.go.dev/context) 문서 · [`go vet` 의 `lostcancel`·`stdversion` 분석기](https://pkg.go.dev/cmd/vet).
+문서·`api/go1NN.txt`·분석기 소스는 **이 툴체인의 `$(go env GOROOT)` 에서 직접 떴다.** 문서가 가리키는 블로그 글(context-and-structs)은 **안 열었다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+★★ **버전** — `context` 패키지가 **1.7** · `WithCancelCause`·`Cause` 가 **1.20** · `AfterFunc`·`WithoutCancel`·`WithDeadlineCause`·`WithTimeoutCause` 가 **1.21**((6)절 판 표 — `api/go1NN.txt` 에서 뗐다).

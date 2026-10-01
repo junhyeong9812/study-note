@@ -1,10 +1,5 @@
 # sql/05-NULL 비교 — IS NULL·IS DISTINCT FROM·NULL 안전 등호 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 출력은 없다.\
-> 문서 근거는 [PG 18 Comparison Operators](https://www.postgresql.org/docs/18/functions-comparison.html) · [MySQL 8.4 Comparison Operators](https://dev.mysql.com/doc/refman/8.4/en/comparison-operators.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -582,3 +577,9 @@ NULL = NULL  ->  UNKNOWN          NULL 과 NULL  ->  구별할 수 없다  ->  �
 `NOT IN` 목록에 `NULL` 이 있으면 `TRUE` 가 안 나오는 것, `EXISTS` 에 `UNKNOWN` 이 없는 것은 **두 엔진에서 같았다.**
 
 **버전** — 이 주제에서 버전에 갈리는 것은 없다. 다음 버전에서는 **11번(계획)만** 다시 돌리면 된다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 출력은 없다.\
+문서 근거는 [PG 18 Comparison Operators](https://www.postgresql.org/docs/18/functions-comparison.html) · [MySQL 8.4 Comparison Operators](https://dev.mysql.com/doc/refman/8.4/en/comparison-operators.html).

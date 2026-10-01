@@ -1,12 +1,5 @@
 # ts/syntax/27 — 템플릿 리터럴 타입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Template Literal Types](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html) ·
-> [TypeScript 4.1 릴리스 노트 — Template Literal Types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-1.html) ·
-> [Announcing TypeScript 7.0](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/)(2026-07-08 게시).
-> 위는 **규칙 확인용 링크**이고, 본문의 진단·출력은 **전부 이 판에서 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다. ★ 비교용 **5.9.3** 은 이 머신의 **다른 프로젝트에 이미 깔려 있던 것을 읽기만** 했다(4절).
-
 ```text
 ===== tsc --version · node --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -24,7 +17,6 @@ Python 3.12.3
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
 > ★★ **이 문서에 이모지 글자 자체는 한 번도 안 나온다** — 소스는 전부 `\u{…}` 이스케이프로 적었고, 탐침도 글자를 찍지 않고 `"same"`/`"different"` 로 답하게 했다.
 > **버전** — 템플릿 리터럴 타입과 `Uppercase`·`Lowercase`·`Capitalize`·`Uncapitalize` 는 **TS 4.1**, 코드 포인트 단위 추론은 **TS 7.0** 이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## ★★★ README 의 과녁 — 「7.0 에서 유니코드 코드 포인트 취급이 바뀐 점」을 먼저 확인했다
 
@@ -719,3 +711,11 @@ ex.28b.ts    5회 md5 가짓수 1
   JS 의 `.length` 와 맞춰야 하면 **타입 수준에서 코드 유닛을 세는 방법이 7.0 에는 없다**고 읽힌다 — **확인은 안 했다.**
 - **대소문자 변환이 JS 와 어긋나는 글자가 있나** — 2절은 **두 글자**를 견줬을 뿐이다. 로케일에 따라 갈리는 글자(터키어의 점 있는 I 등)는
   JS 의 `toUpperCase` 자체가 **로케일을 안 받는다**는 점까지만 알고, **타입 쪽은 안 던졌다.**
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Template Literal Types](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html) ·
+[TypeScript 4.1 릴리스 노트 — Template Literal Types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-1.html) ·
+[Announcing TypeScript 7.0](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/)(2026-07-08 게시).
+위는 **규칙 확인용 링크**이고, 본문의 진단·출력은 **전부 이 판에서 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다. ★ 비교용 **5.9.3** 은 이 머신의 **다른 프로젝트에 이미 깔려 있던 것을 읽기만** 했다(4절).

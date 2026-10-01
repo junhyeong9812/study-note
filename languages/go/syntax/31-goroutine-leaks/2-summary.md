@@ -1,16 +1,5 @@
 # go/syntax/31 — ★ 고루틴 누수 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [`runtime/pprof`](https://pkg.go.dev/runtime/pprof)(`goroutineleak` 프로파일) · [`testing/synctest`](https://pkg.go.dev/testing/synctest) ·
-> [`context`](https://pkg.go.dev/context) · [`time.After`](https://pkg.go.dev/time#After) · [GODEBUG](https://go.dev/doc/godebug) 문서 · `runtime/mgc.go` 소스.
-> 문서·소스·`api/go1NN.txt` 는 **이 툴체인의 `$(go env GOROOT)` 에서 직접 떴다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> ★★ **버전** — `testing/synctest` 의 `Test`·`Wait` 가 **1.25**(`api/go1.25.txt:107-108`), `Sleep` 이 **1.27**(`api/go1.27.txt:288`) ·
-> `time.After` 의 타이머를 **GC 가 회수하는 것이 1.23** · 그것을 되돌리던 **`asynctimerchan` 설정이 1.27 에서 제거**((7)절 — ★ **그래서 이 툴체인으로는 판 격자를 못 돌린다**, 제3의 상태) ·
-> ★★★ **`goroutineleak` 프로파일이 이 판의 `runtime/pprof` 에 기본으로 들어 있다**((2)절 — 이 판에 **있다는 것**만 확인했다. **몇 판부터인지는 못 확인했다** — `api/` 에 새 식별자가 없는 이름 문자열이라서다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**`NumGoroutine` 이 1초 안에 시작 값으로 「돌아왔나」를 참거짓으로 남기는 창**」.
 「몇 개가 샜나」의 절댓값보다 **「줄었나 / 안 줄었나」가 안 흔들린다** — 누수는 **안 줄어드는 것**이다.
 누수 네 모양 × 처방을 이 창 하나로 가른다((1)·(3)절).
@@ -417,7 +406,7 @@ created by main.sendKept in goroutine 1
   둘 다 **똑같이 보내다 막혔다.** 차이는 **채널에 닿을 수 있나** 하나다 — `kept` 는 **전역 변수**라 「언젠가 누가 받을 수도 있다」.
   ★★★ **그래서 이 프로파일은 전역·필드에 붙은 채널의 누수를 못 본다** — 바꾼 창의 한계다(규칙 18-B 의 「바꾼 창이 무엇을 못 보는지」).
 - ★★ 판정 뒤에도 **고루틴은 치워지지 않는다** — 표시만 한다(`(leaked)` 상태로 남는다). `NumGoroutine` 은 그대로 센다((1)절의 `11`).
-- ★ 고루틴 id 는 흔들린다 — 머리말의 정규화 칸.
+- ★ 고루틴 id 는 흔들린다 — 맨 위 부분의 정규화 칸.
 
 비용 — **프로파일을 쓸 때 GC 를 한 번 돈다**(위 주석 — 이 문서는 그 시간을 **안 쟀다**).
 
@@ -755,7 +744,7 @@ When every goroutine in a bubble is durably blocked:
   ★★ 「**durably blocked … can only be unblocked by another goroutine in the same bubble**」 — 버블 **밖에서는 깨울 수 없는** 막힘이다.
   그리고 전부가 그렇게 막히면 **① `Wait` 가 돌아오거나 ② 시계가 다음 타이머로 건너뛰거나 ③ 「there is a deadlock and Test panics」** — 위 실패가 ③ 이다.
 - ★★ **`[recovered, repanicked]`** — `testing` 이 패닉을 받아 **다시 던졌다**([27번 주제](../27-panic-recover-and-where-to-use-them/) (6)절의 표시). 그래서 **이 테스트 바이너리의 나머지 테스트는 안 돈다** — 아래 블록을 **따로** 돌렸다.
-- ★ 고루틴 id·인자 주소·시간은 흔들린다 — 머리말의 정규화 칸.
+- ★ 고루틴 id·인자 주소·시간은 흔들린다 — 맨 위 부분의 정규화 칸.
 
 고친 코드와 **가짜 시계** —
 
@@ -1274,3 +1263,14 @@ cancel 뒤 NumGoroutine: 1
 - ★ **병렬 테스트(`t.Parallel`)에서 전후 비교가 틀리는 것**은 **안 던졌다.**
 - ★★ 샌 고루틴의 **메모리·시간 비용**은 **안 쟀다.**
 - ★ **`goroutineleak` 프로파일이 몇 판부터 기본인지**는 이 툴체인 하나로 **확인 못 했다** — 이름 문자열이라 `api/` 파일에 안 남는다.
+
+## 실행 환경
+
+**기준 소스** — [`runtime/pprof`](https://pkg.go.dev/runtime/pprof)(`goroutineleak` 프로파일) · [`testing/synctest`](https://pkg.go.dev/testing/synctest) ·
+[`context`](https://pkg.go.dev/context) · [`time.After`](https://pkg.go.dev/time#After) · [GODEBUG](https://go.dev/doc/godebug) 문서 · `runtime/mgc.go` 소스.
+문서·소스·`api/go1NN.txt` 는 **이 툴체인의 `$(go env GOROOT)` 에서 직접 떴다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+★★ **버전** — `testing/synctest` 의 `Test`·`Wait` 가 **1.25**(`api/go1.25.txt:107-108`), `Sleep` 이 **1.27**(`api/go1.27.txt:288`) ·
+`time.After` 의 타이머를 **GC 가 회수하는 것이 1.23** · 그것을 되돌리던 **`asynctimerchan` 설정이 1.27 에서 제거**((7)절 — ★ **그래서 이 툴체인으로는 판 격자를 못 돌린다**, 제3의 상태) ·
+★★★ **`goroutineleak` 프로파일이 이 판의 `runtime/pprof` 에 기본으로 들어 있다**((2)절 — 이 판에 **있다는 것**만 확인했다. **몇 판부터인지는 못 확인했다** — `api/` 에 새 식별자가 없는 이름 문자열이라서다).

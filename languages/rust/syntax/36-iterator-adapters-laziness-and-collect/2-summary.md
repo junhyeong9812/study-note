@@ -1,19 +1,5 @@
 # rust/syntax/36 — `Iterator`와 어댑터·게으름·`collect` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `std::iter` 모듈 문서](https://doc.rust-lang.org/std/iter/index.html)(Laziness · Infinity · for 의 탈당 · Iterating by reference) ·
-> [std — `Iterator`](https://doc.rust-lang.org/std/iter/trait.Iterator.html) ·
-> [std — `Result` 의 `FromIterator`](https://doc.rust-lang.org/std/result/enum.Result.html) · [std — `Option` 의 `FromIterator`](https://doc.rust-lang.org/std/option/enum.Option.html) ·
-> [Reference — `for` 의 탈당](https://doc.rust-lang.org/reference/expressions/loop-expr.html#iterator-loops).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> **`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(「더 들어가면」의 한 쌍만 2018). 파이썬 대비는 `Python 3.12.3`.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
-> ★★★ **이 문서는 속도를 한 번도 재지 않았다.** 「이터레이터는 제로 코스트다」는 **이 문서의 주장이 아니다** — 센 것은 **콜백 호출 횟수와 순서**뿐이다.
-> 제로 코스트 논증의 정본은 [`언어-특성/README.md`](../../언어-특성/README.md) §6 이다(그 절이 Book 의 벤치마크를 인용한다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ```text
 ===== rustc --version =====
 rustc 1.92.0 (ded5c06cf 2025-12-08)
@@ -886,3 +872,17 @@ i32
 - **`DoubleEndedIterator`·`ExactSizeIterator`** — `rev`·`len` 을 주는 추가 트레이트. 1.66 릴리스 노트가 `impl ExactSizeIterator` 에도 `#[must_use]` 가 먹게 했다고 적는다(이 문서는 던지지 않았다).
 - **`try_fold`·`try_for_each`** — `Result`/`Option` 을 돌려주는 클로저로 **도중에 멈추는** 소비자. (4)의 조기 종료를 직접 쓰는 길이다.
 - **어댑터가 패닉하면** — std 문서 「이터레이터는 **지정되지 않은(하지만 메모리 안전한) 상태**가 된다」. 패닉 뒤의 값에 기대지 마라.
+
+## 실행 환경
+
+**기준 소스** — [std — `std::iter` 모듈 문서](https://doc.rust-lang.org/std/iter/index.html)(Laziness · Infinity · for 의 탈당 · Iterating by reference) ·
+[std — `Iterator`](https://doc.rust-lang.org/std/iter/trait.Iterator.html) ·
+[std — `Result` 의 `FromIterator`](https://doc.rust-lang.org/std/result/enum.Result.html) · [std — `Option` 의 `FromIterator`](https://doc.rust-lang.org/std/option/enum.Option.html) ·
+[Reference — `for` 의 탈당](https://doc.rust-lang.org/reference/expressions/loop-expr.html#iterator-loops).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+**`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(「더 들어가면」의 한 쌍만 2018). 파이썬 대비는 `Python 3.12.3`.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
+★★★ **이 문서는 속도를 한 번도 재지 않았다.** 「이터레이터는 제로 코스트다」는 **이 문서의 주장이 아니다** — 센 것은 **콜백 호출 횟수와 순서**뿐이다.
+제로 코스트 논증의 정본은 [`언어-특성/README.md`](../../언어-특성/README.md) §6 이다(그 절이 Book 의 벤치마크를 인용한다).

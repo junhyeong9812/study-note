@@ -1,12 +1,5 @@
 # web-api/35 — `IntersectionObserver`: 루트·`rootMargin`·`threshold` 와 지연 로딩 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — `getBoundingClientRect()` 로 「화면 안에 있나」를 직접 재는 것은 [09번 주제](../09-element-geometry/1-question.md), `scroll` 리스너와 passive 는 [19번 주제](../19-passive-and-scroll/1-question.md)가 물었다. 마크업 쪽 `loading="lazy"` 는 **HTML 갈래 34번**(폴더는 아직 없다)이다. 여기는 **콜백이 언제 · 무엇을 들고 오나**와 **root·여백이 무엇을 바꾸나**를 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다(`innerHeight` 713). **명세 원문은 이 판에서 열지 못했다. 비용은 재지 않았다.** 이식성은 주장 범위 밖이다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -110,6 +103,12 @@ new IntersectionObserver(첫알림, { rootMargin: "200px" }).observe(요소);
 
 - [09번 주제](../09-element-geometry/1-question.md) (10)의 「`scroll` 마다 `getBoundingClientRect()`」 방식과 IO 는 **언제 알려 주나**가 어떻게 다른가? 매 프레임 값이 필요한 일(패럴랙스)에는 어느 쪽인가?
 - 무한 스크롤 목록이 스크롤 상자 안에 있을 때 root 를 무엇으로 주나 — 문항 5의 어느 줄이 근거인가?
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — `getBoundingClientRect()` 로 「화면 안에 있나」를 직접 재는 것은 [09번 주제](../09-element-geometry/1-question.md), `scroll` 리스너와 passive 는 [19번 주제](../19-passive-and-scroll/1-question.md)가 물었다. 마크업 쪽 `loading="lazy"` 는 **HTML 갈래 34번**(폴더는 아직 없다)이다. 여기는 **콜백이 언제 · 무엇을 들고 오나**와 **root·여백이 무엇을 바꾸나**를 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다(`innerHeight` 713). **명세 원문은 이 판에서 열지 못했다. 비용은 재지 않았다.** 이식성은 주장 범위 밖이다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

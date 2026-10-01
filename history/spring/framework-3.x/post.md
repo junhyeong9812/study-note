@@ -1,9 +1,5 @@
 # Spring Framework 3.x (2009 ~)
 
-> 원본: `~/project/java-history/spring/framework-3.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·클래스/어노테이션 이름·JSR 번호·코드블록 8개(XML 1 · Java 7)·「릴리스 정보」와 「마이너 버전별 변화」의 목록은 원문 그대로다.\
-> ASCII 도식 1개(원문 mermaid 시퀀스 그림을 글자로 옮긴 것이다), 「한눈에」의 노트·부록 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 「재서술자 주」 1개는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -338,3 +334,9 @@ public class BookService {
 - [Spring framework version history - codejava.net](https://www.codejava.net/frameworks/spring/spring-framework-version-history)
 - [New Features and Enhancements in Spring Framework 4.0 (docs)](https://docs.spring.io/spring-framework/docs/4.2.x/spring-framework-reference/html/new-in-4.0.html)
 - [Spring Framework Versions: Feature list by version](https://bluebirdinternational.com/spring-framework-versions/)
+
+## 출처
+
+원본: `~/project/java-history/spring/framework-3.x.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·클래스/어노테이션 이름·JSR 번호·코드블록 8개(XML 1 · Java 7)·「릴리스 정보」와 「마이너 버전별 변화」의 목록은 원문 그대로다.\
+ASCII 도식 1개(원문 mermaid 시퀀스 그림을 글자로 옮긴 것이다), 「한눈에」의 노트·부록 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 「재서술자 주」 1개는 원문에 없는 보충이다.

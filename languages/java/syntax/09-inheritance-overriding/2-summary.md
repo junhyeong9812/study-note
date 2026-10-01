@@ -1,16 +1,5 @@
 # java/syntax/09 — 상속과 오버라이딩: 동적 디스패치·공변 반환·필드 숨김 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §8.4.8 Inheritance, Overriding, and Hiding](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§8.3.1.1 Field Hiding](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§15.12.4 Run-Time Evaluation of Method Invocation](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · [JVMS SE 21 §6.5 invokevirtual](https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-6.html)
-> **실행 검증** — 이 문서의 모든 출력·에러 메시지는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 정상 실행되는 프로그램은 **17.0.13 · 21.0.5 · 25.0.1** 셋에서 다 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
-> 바이트코드는 `javap -c -p` · `javap -v -p` 출력을 그대로 옮겼다.
-> **버전** — 오버라이딩·필드 숨김 규칙은 Java 1.0 이래 같다. 공변 반환은 **Java 5** 부터.\
-> **`private` 메서드 호출 명령은 컴파일 대상 버전에 따라 갈린다**(아래 「구현 세부사항 대 언어 보장」).
-> **범위** — 다형성·상속이 **무엇인가**는 [`../../../../cs/foundations/oop-basics/`](../../../../cs/foundations/oop-basics/) 가 정본이다.\
-> 여기는 **Java 가 그것을 어떤 규칙으로 강제하고, 어디서 강제하지 않나**만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **메서드는 전화번호부이고, 필드는 문패다.**
@@ -535,3 +524,14 @@ $ javac --release 8 Ex.java
   그래서 `final` 을 성능 때문에 붙이는 것은 대개 근거가 약하다.
 - **인터페이스의 `default` 메서드도 오버라이딩 규칙을 따른다.** 다만 다중 상속이 가능해 충돌 규칙이 따로 있다 — 11번 주제.
 - **필드 숨김을 의도적으로 쓰는 경우는 사실상 없다.** JLS 가 허용하는 것과 쓸모가 있는 것은 다르다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §8.4.8 Inheritance, Overriding, and Hiding](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§8.3.1.1 Field Hiding](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§15.12.4 Run-Time Evaluation of Method Invocation](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · [JVMS SE 21 §6.5 invokevirtual](https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-6.html)
+**실행 검증** — 이 문서의 모든 출력·에러 메시지는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+정상 실행되는 프로그램은 **17.0.13 · 21.0.5 · 25.0.1** 셋에서 다 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
+바이트코드는 `javap -c -p` · `javap -v -p` 출력을 그대로 옮겼다.
+**버전** — 오버라이딩·필드 숨김 규칙은 Java 1.0 이래 같다. 공변 반환은 **Java 5** 부터.\
+**`private` 메서드 호출 명령은 컴파일 대상 버전에 따라 갈린다**(본문 「구현 세부사항 대 언어 보장」).
+**범위** — 다형성·상속이 **무엇인가**는 [`../../../../cs/foundations/oop-basics/`](../../../../cs/foundations/oop-basics/) 가 정본이다.\
+여기는 **Java 가 그것을 어떤 규칙으로 강제하고, 어디서 강제하지 않나**만 다룬다.

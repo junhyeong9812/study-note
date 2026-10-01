@@ -1,12 +1,5 @@
 # web-api/39 — 유휴 스케줄링: `requestIdleCallback` · `scheduler.postTask()`/`yield()` 와 긴 작업 쪼개기 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 렌더링 단계와 틀 박자는 [38번 주제](../38-request-animation-frame/1-question.md), 마이크로태스크로 쪼개기는 [JS 갈래 36번](../../js/syntax/36-event-loop-and-microtasks/1-question.md), 서버의 스케줄러는 [`ops-patterns/10-scheduler`](../../../cs/ops-patterns/10-scheduler/1-question.md)가 물었다. 여기는 **긴 작업이 입력을 어떻게 막나**와 **양보한 뒤 누가 먼저 도나**를 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다(node 는 지원 판별만). **Safari 는 미실행** — Baseline 날짜로만. **시간 · INP 는 재지 않았다.**
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -100,6 +93,12 @@ requestIdleCallback(d => 적기(d.timeRemaining()));
 
 - [JS 갈래 36번](../../js/syntax/36-event-loop-and-microtasks/1-question.md)의 「마이크로태스크로 잘게 쪼개 양보한다」가 틀린 이유를 문항 2 의 방식들과 견주어 말하라.
 - [`ops-patterns/10-scheduler`](../../../cs/ops-patterns/10-scheduler/1-question.md)의 스케줄러와 이 편의 스케줄러는 **무엇을 정하는 장치**인가 — 한 줄씩.
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — 렌더링 단계와 틀 박자는 [38번 주제](../38-request-animation-frame/1-question.md), 마이크로태스크로 쪼개기는 [JS 갈래 36번](../../js/syntax/36-event-loop-and-microtasks/1-question.md), 서버의 스케줄러는 [`ops-patterns/10-scheduler`](../../../cs/ops-patterns/10-scheduler/1-question.md)가 물었다. 여기는 **긴 작업이 입력을 어떻게 막나**와 **양보한 뒤 누가 먼저 도나**를 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다(node 는 지원 판별만). **Safari 는 미실행** — Baseline 날짜로만. **시간 · INP 는 재지 않았다.**
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

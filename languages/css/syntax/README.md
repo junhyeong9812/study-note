@@ -1,20 +1,5 @@
 # CSS — 문법·API 주제 목록
 
-> **60주제 전부 작성됐다(2026-09-23).** 「주제」 칸의 링크가 각 주제의 3파일 폴더다.
-> **본문의 모든 수치는 Chrome 151.0.7922.173 headless 실측이다.** CSS 는 SQL 과 근거의 성질이 정반대다 —
-> **에러가 없는 언어**라 무효한 선언·선택자가 조용히 버려진다. 그래서 「진단 3창」으로 잰다:
-> `cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나).
-> ★★ **그런데 셋으로 안 끝났다.** 주제마다 네 번째 창이 하나씩 더 필요했다 —
-> **`getAnimations()`**(애니메이션: `@keyframes` 이름 오타가 세 창을 전부 통과한다) ·
-> **`matchMedia`/`conditionText`**(at-rule: 「담겼는데 조건이 거짓」) ·
-> **`cssRules[i].style.getPropertyValue('--x')`**(커스텀 속성: 담긴 값과 계산값이 다르다) ·
-> **`getBoundingClientRect()`**(레이아웃·3D: `transform-style` 계산값이 34벌 전부 `preserve-3d` 인데 실제로 깨진 것이 12벌) ·
-> **스크린샷 픽셀**(색·필터·혼합: 계산값이 같고 픽셀만 다른 자리).
-> 기준 소스: [CSSWG 에디터 초안 색인](https://drafts.csswg.org/) (모듈별 최신 초안) · [CSS Snapshot 2026](https://drafts.csswg.org/css-2026/) (안정 집합) · [W3C TR CSS 목록](https://www.w3.org/TR/?filter-tr-name=css) (권고 단계) · [MDN CSS 레퍼런스](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference) (표면 확인용) · 지원 상태는 [Web Platform Status(`webstatus.dev`)](https://webstatus.dev/) 의 Baseline 데이터를 API 로 조회해 확인했다.
-> 실행 검증: **가능**. 이 머신에 **Google Chrome 151.0.7922.173** 과 **Mozilla Firefox 155.0.1** 이 설치돼 있다. `google-chrome --headless --dump-dom` 으로 DOM 을, `--screenshot` 으로 렌더 결과 PNG 를 뽑는 것을 실제로 돌려 확인했다(`:has()`·`@container`·`grid` 를 쓴 최소 문서로 스모크 통과). 계산값 확인은 headless 의 `getComputedStyle` 로, 눈으로 볼 것은 스크린샷으로 남긴다. **엔진은 Blink 와 Gecko 둘뿐이고 WebKit(Safari)은 이 머신에 없다** — Safari 전용 차이는 명세와 Baseline 데이터로만 접지하고 「미실행」으로 표기한다.\
-> ⚠️ **2026-09-21 정정 — 렌더 검증은 Chrome 단일 엔진이다.** Firefox 155.0.1 은 설치돼 있으나 이 환경에서 **headless 스크린샷이 산출되지 않는다** (전용 프로파일로도 `exit 0` 으로 끝나며 파일을 만들지 않는 **조용한 실패**). 따라서 크로스 브라우저 차이를 주장할 때는 Baseline 데이터로만 접지하고, 「두 엔진에서 확인했다」고 적지 않는다.
-> 기준일 2026-09-21.
-
 ## 이 언어에서 무엇을 자르는 축
 
 CSS 는 문법 언어가 아니다. 문법 표면은 「선택자 { 속성: 값 }」 한 줄로 끝나고, 실제로 배울 것은 **그 선언들이 어떤 순서로 이겨서 하나의 값이 되고, 그 값이 어떤 상자를 만들고, 그 상자가 어떤 파이프라인을 다시 돌게 하는가** — 곧 **계산 모델**이다. 그래서 축을 명세의 모듈 목록(cascade / selectors / box / flexbox / grid / color / transitions …)을 그대로 따르지 않고 **엔진이 값을 정하는 순서**로 세웠다.
@@ -198,3 +183,19 @@ CSS 에는 언어 버전이 없다(「CSS3」는 2000년대에 버려진 표현�
 | 커스터마이즈 가능 `select`(`::picker()`) | **limited** | HTML 26 에서 마크업만 |
 
 **확인하지 못한 것** — 없다. 위 표의 모든 행은 API 응답에서 직접 읽은 값이다. 다만 **`webstatus.dev` 자체가 2차 집계**라는 점은 남겨 둔다. 개별 기능의 「명세가 무엇을 요구하나」는 CSSWG 초안으로, 「내 브라우저에서 실제로 되나」는 이 머신의 Chrome 151 · Firefox 155 로 각각 다시 확인한다. **Safari/WebKit 은 이 머신에 없어 실행 확인이 불가**하므로, Safari 가 마지막으로 따라온 기능(`@scope`·`backdrop-filter`·뷰 전환)은 Baseline 날짜로만 접지한다.
+
+## 실행 환경
+
+**본문의 모든 수치는 Chrome 151.0.7922.173 headless 실측이다.** CSS 는 SQL 과 근거의 성질이 정반대다 —
+**에러가 없는 언어**라 무효한 선언·선택자가 조용히 버려진다. 그래서 「진단 3창」으로 잰다:
+`cssRules`(담겼나) → `querySelectorAll`(잡혔나) → `getComputedStyle`(이겼나).
+★★ **그런데 셋으로 안 끝났다.** 주제마다 네 번째 창이 하나씩 더 필요했다 —
+**`getAnimations()`**(애니메이션: `@keyframes` 이름 오타가 세 창을 전부 통과한다) ·
+**`matchMedia`/`conditionText`**(at-rule: 「담겼는데 조건이 거짓」) ·
+**`cssRules[i].style.getPropertyValue('--x')`**(커스텀 속성: 담긴 값과 계산값이 다르다) ·
+**`getBoundingClientRect()`**(레이아웃·3D: `transform-style` 계산값이 34벌 전부 `preserve-3d` 인데 실제로 깨진 것이 12벌) ·
+**스크린샷 픽셀**(색·필터·혼합: 계산값이 같고 픽셀만 다른 자리).
+기준 소스: [CSSWG 에디터 초안 색인](https://drafts.csswg.org/) (모듈별 최신 초안) · [CSS Snapshot 2026](https://drafts.csswg.org/css-2026/) (안정 집합) · [W3C TR CSS 목록](https://www.w3.org/TR/?filter-tr-name=css) (권고 단계) · [MDN CSS 레퍼런스](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference) (표면 확인용) · 지원 상태는 [Web Platform Status(`webstatus.dev`)](https://webstatus.dev/) 의 Baseline 데이터를 API 로 조회해 확인했다.
+실행 검증: **가능**. 이 머신에 **Google Chrome 151.0.7922.173** 과 **Mozilla Firefox 155.0.1** 이 설치돼 있다. `google-chrome --headless --dump-dom` 으로 DOM 을, `--screenshot` 으로 렌더 결과 PNG 를 뽑는 것을 실제로 돌려 확인했다(`:has()`·`@container`·`grid` 를 쓴 최소 문서로 스모크 통과). 계산값 확인은 headless 의 `getComputedStyle` 로, 눈으로 볼 것은 스크린샷으로 남긴다. **엔진은 Blink 와 Gecko 둘뿐이고 WebKit(Safari)은 이 머신에 없다** — Safari 전용 차이는 명세와 Baseline 데이터로만 접지하고 「미실행」으로 표기한다.\
+⚠️ **2026-09-21 정정 — 렌더 검증은 Chrome 단일 엔진이다.** Firefox 155.0.1 은 설치돼 있으나 이 환경에서 **headless 스크린샷이 산출되지 않는다** (전용 프로파일로도 `exit 0` 으로 끝나며 파일을 만들지 않는 **조용한 실패**). 따라서 크로스 브라우저 차이를 주장할 때는 Baseline 데이터로만 접지하고, 「두 엔진에서 확인했다」고 적지 않는다.
+기준일 2026-09-21.

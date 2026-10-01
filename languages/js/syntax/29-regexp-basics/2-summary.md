@@ -1,71 +1,5 @@
 # js/syntax/29 — 정규식 기본: 「`g` 정규식은 상태를 들고 다닌다 · `match` 는 `g` 로 모양이 바뀐다 · 리터럴은 평가마다 새 객체다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
-> `/a/g.test('a')` 를 **같은 입력에 네 번** 부르면 답이 `true` · `false` · `true` · `false` 로 번갈아 나온다. 입력도 정규식도 안 바꿨는데 답이 바뀐다 —
-> 그 이유는 **정규식 객체 안의 `lastIndex`** 다. 그래서 **호출 전과 후의 `lastIndex` 를 매번 찍는 로그**를 심었다(동작 (1)).
-> ★★ 보조로 **② 전수 격자**(`match` 의 반환 모양 — `g` 유무 · 명명 그룹 · 실패 × 속성 일곱 — 동작 (2))와 **③ 브랜드 태그**(`matchAll` 이 돌려주는 것 — 동작 (3)), **④ 예외의 이름·문구**(동작 (3)·(6)·(7))를 쓴다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — RegExp (Regular Expression) Objects](https://tc39.es/ecma262/multipage/text-processing.html#sec-regexp-regular-expression-objects) —
->   `RegExpBuiltinExec` · `RegExpExec` · `RegExp.prototype.test`/`exec` · `RegExp.prototype [ %Symbol.match% ]`/`[ %Symbol.matchAll% ]`/`[ %Symbol.replace% ]`/`[ %Symbol.search% ]` · `get RegExp.prototype.flags` · `RegExp ( pattern, flags )` · `%RegExpStringIteratorPrototype%`
-> - [ECMA-262 — String.prototype.match / matchAll / replace / search](https://tc39.es/ecma262/multipage/text-processing.html#sec-string.prototype.match)
-> - [ECMA-262 — Regular Expression Literals](https://tc39.es/ecma262/multipage/ecmascript-language-lexical-grammar.html#sec-literals-regular-expression-literals) — 리터럴의 조기 오류 · 평가마다 `RegExpCreate`
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md)(2026-09-26 받아 둔 사본) — 판 경계(`s` 플래그·명명 그룹 2018 · `matchAll` 2020 · `replaceAll` 2021 · Match Indices(`d`) 2022 · `v` 플래그 2024)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
-> ★★ **정규식의 매칭 알고리즘은 이 주제가 아니다** — 명세는 패턴이 **무엇과 맞는가(의미)** 를 정하고, 그것을 **어떻게 찾나**는 엔진(V8 은 Irregexp)의 몫이다. 알고리즘은 [`cs/algorithm/25-string-matching/`](../../../../cs/algorithm/25-string-matching/2-summary.md)과 30번이다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★★ **이 주제의 node 탐침 일곱 개 중 두 판이 갈린 것은 하나**(`js28b-29f-flags.js`)이고, 갈린 줄은 **`v` 플래그(ES2024) 한 줄**이다.
-> ★ 파이썬 대비(동작 (8))는 `python3 - <<'PY'` 꼴의 셸 탐침이다. 예외는 같은 꼴로 받아 트레이스백이 없다.
->
-> **버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | 리터럴 · `test` · `exec` · `match` · `replace` · `search` · 플래그 `g` `i` `m` | ES5 이하 | 세 판 다 있다 |
-> | ★ 리터럴이 **평가마다 새 객체** | **ES5** 부터(ES3 은 리터럴 하나에 객체 하나였다) | 세 판 다 그렇다(동작 (5)) |
-> | 플래그 `u` · `y` · `flags` 접근자 | **ES2015** | 세 판 다 있다 |
-> | 플래그 `s` · 명명 그룹 `(?<n>…)` | **ES2018** | 세 판 다 있다 |
-> | `matchAll` | **ES2020** | 세 판 다 있다 |
-> | `replaceAll` | **ES2021** | 세 판 다 있다(28번) |
-> | 플래그 `d`(`hasIndices`) | **ES2022** | 세 판 다 있다 |
-> | 플래그 `v`(`unicodeSets`) | **ES2024** | ★ **node 18 에 없다** — 동작 (6)의 한 줄이 갈린다(뜻은 30번) |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **① 추상 연산에 로그 심기**(본체) | 호출마다 **전과 후의 `lastIndex`**(동작 (1)) · `replace` 콜백이 받는 **인자의 개수와 순서**(동작 (4)) · `RegExp.prototype.exec` 을 감싸 **`matchAll` 이 언제 · 어느 객체로** 찾나(동작 (3)) |
-> | ★★ **② 전수 격자** | `match` 의 여섯 경우 × 속성 일곱 — `g` 짝과 **갈린 칸을 스크립트가 센다**(동작 (2)) |
-> | ★★ **③ 브랜드 태그** | `matchAll` 이 돌려준 것에 `Object.prototype.toString.call` 이 **`[object RegExp String Iterator]`** — 배열이 아니다(동작 (3)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | `g` 없는 `matchAll` 의 `TypeError` · 잘못된 플래그의 `SyntaxError` · 잘못된 패턴이 **리터럴이면 파싱 때** 나는 `SyntaxError`(동작 (6)·(7)) |
-> | ★ **⑤ 두 판 대조기** | 이 주제의 node 탐침 중 **하나만** `DIFFERS` 이고, 그 차이는 **`v` 플래그의 유무** 한 줄이다 |
-> | ★ **부적용 — 진단의 `(행,열)`**(18-C) | 리터럴의 조기 오류는 **「언제 났나」**(파싱 때, 죽은 코드 안에서도)가 요점이지 열이 요점이 아니다. `new Function` 으로 던져 **종류·문구·통과 여부**만 본다 |
-> | ★ **안 쟀다 — 성능** | 「리터럴을 함수 밖으로 빼면 빠르다」·「`test` 가 `match` 보다 빠르다」를 **한 줄도 쓰지 않는다.** 시간을 한 번도 안 쟀다 — 센 것은 **호출 횟수**뿐이다(동작 (3)의 `exec` 네 번) |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 예외 **문구** — V8 의 글자다(`String.prototype.matchAll called with a non-global RegExp argument` · `Invalid flags supplied to RegExp constructor 'gg'` · `Invalid regular expression: missing /`). **종류**(`TypeError`·`SyntaxError`)만 명세가 정한다 | ★★★ **`lastIndex` 의 값과 `test` 의 참/거짓 순서** · 격자의 칸과 「**N / M**」 · 콜백 인자의 **개수와 순서** · `exec` 호출 로그 · `flags` 의 **글자 순서** |
-> | 대조기 블록의 **다른 주제 줄**(같은 배치가 한 대조기를 공유한다) | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 하나도 없다**(재대조 동일) |
->
-> **선행** — [28 — `String` 메서드와 템플릿 리터럴](../28-string-methods-and-template-literals/2-summary.md)(★★★ 직접 선행 — **치환 문자열의 `$` 표기**와 `split` 이 `lastIndex` 를 안 쓰는 것은 거기서 쟀다) ·
-> [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★ 소비자가 **`return()` 을 부르는 자리**) ·
-> [20 — 제너레이터](../20-generators/2-summary.md) · [21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md)(★ 한 번 소비한 이터레이터는 다시 안 돈다) ·
-> [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md)(`Symbol.match`·`Symbol.replace` 가 문자열 메서드를 정규식에 넘기는 통로).
-> **같은 배치** — [30 — 정규식 심화](../30-regexp-advanced/2-summary.md) · [31 — `JSON`](../31-json/2-summary.md).
->
-> ★★ **경계 — 문자열 매칭 알고리즘은 [`cs/algorithm/25-string-matching/`](../../../../cs/algorithm/25-string-matching/2-summary.md)이 정본이다.** 그쪽은 **KMP 처럼 「어떻게 찾나」**, 여기는 **JS API 가 「무엇을 돌려주고 무슨 상태를 남기나」**.
-> ★★ **경계 — 캡처·명명 그룹의 문법·룩어라운드·`u`/`v`·`d`·백트래킹은 30번이 정본이다.** 여기서는 **명명 그룹이 반환 모양을 어떻게 바꾸나**만 본다.
-> ★ **경계 — 치환 문자열의 `$` 표기는 28번이 정본이다.** 여기서는 **치환 함수가 받는 인자**를 본다.
-
 ```sh
 # js28b-versions.sh
 #!/usr/bin/env bash
@@ -1169,3 +1103,68 @@ PY
 - **`@@match`·`@@replace` 가 「`g` 인가」를 `flags` 로 묻나 `global` 로 묻나** — 하위 클래스가 `flags` 접근자를 덮으면(동작 (6)의 `[5]`) 둘이 어긋난다. 이 문서는 그 자리의 명세 문장을 **확인하지 않았고** 실험도 **싣지 않았다.**
 - **`lastIndex` 가 쓰기 불가일 때** — `Object.freeze(/a/g).test('a')` 는 `lastIndex` 를 못 쓴다. 이 문서는 **안 돌렸다.**
 - **`d` 플래그의 `indices`** — 30번의 몫이다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
+`/a/g.test('a')` 를 **같은 입력에 네 번** 부르면 답이 `true` · `false` · `true` · `false` 로 번갈아 나온다. 입력도 정규식도 안 바꿨는데 답이 바뀐다 —
+그 이유는 **정규식 객체 안의 `lastIndex`** 다. 그래서 **호출 전과 후의 `lastIndex` 를 매번 찍는 로그**를 심었다(동작 (1)).
+★★ 보조로 **② 전수 격자**(`match` 의 반환 모양 — `g` 유무 · 명명 그룹 · 실패 × 속성 일곱 — 동작 (2))와 **③ 브랜드 태그**(`matchAll` 이 돌려주는 것 — 동작 (3)), **④ 예외의 이름·문구**(동작 (3)·(6)·(7))를 쓴다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — RegExp (Regular Expression) Objects](https://tc39.es/ecma262/multipage/text-processing.html#sec-regexp-regular-expression-objects) —
+  `RegExpBuiltinExec` · `RegExpExec` · `RegExp.prototype.test`/`exec` · `RegExp.prototype [ %Symbol.match% ]`/`[ %Symbol.matchAll% ]`/`[ %Symbol.replace% ]`/`[ %Symbol.search% ]` · `get RegExp.prototype.flags` · `RegExp ( pattern, flags )` · `%RegExpStringIteratorPrototype%`
+- [ECMA-262 — String.prototype.match / matchAll / replace / search](https://tc39.es/ecma262/multipage/text-processing.html#sec-string.prototype.match)
+- [ECMA-262 — Regular Expression Literals](https://tc39.es/ecma262/multipage/ecmascript-language-lexical-grammar.html#sec-literals-regular-expression-literals) — 리터럴의 조기 오류 · 평가마다 `RegExpCreate`
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md)(2026-09-26 받아 둔 사본) — 판 경계(`s` 플래그·명명 그룹 2018 · `matchAll` 2020 · `replaceAll` 2021 · Match Indices(`d`) 2022 · `v` 플래그 2024)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
+★★ **정규식의 매칭 알고리즘은 이 주제가 아니다** — 명세는 패턴이 **무엇과 맞는가(의미)** 를 정하고, 그것을 **어떻게 찾나**는 엔진(V8 은 Irregexp)의 몫이다. 알고리즘은 [`cs/algorithm/25-string-matching/`](../../../../cs/algorithm/25-string-matching/2-summary.md)과 30번이다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★★ **이 주제의 node 탐침 일곱 개 중 두 판이 갈린 것은 하나**(`js28b-29f-flags.js`)이고, 갈린 줄은 **`v` 플래그(ES2024) 한 줄**이다.
+★ 파이썬 대비(동작 (8))는 `python3 - <<'PY'` 꼴의 셸 탐침이다. 예외는 같은 꼴로 받아 트레이스백이 없다.
+
+**버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| 리터럴 · `test` · `exec` · `match` · `replace` · `search` · 플래그 `g` `i` `m` | ES5 이하 | 세 판 다 있다 |
+| ★ 리터럴이 **평가마다 새 객체** | **ES5** 부터(ES3 은 리터럴 하나에 객체 하나였다) | 세 판 다 그렇다(동작 (5)) |
+| 플래그 `u` · `y` · `flags` 접근자 | **ES2015** | 세 판 다 있다 |
+| 플래그 `s` · 명명 그룹 `(?<n>…)` | **ES2018** | 세 판 다 있다 |
+| `matchAll` | **ES2020** | 세 판 다 있다 |
+| `replaceAll` | **ES2021** | 세 판 다 있다(28번) |
+| 플래그 `d`(`hasIndices`) | **ES2022** | 세 판 다 있다 |
+| 플래그 `v`(`unicodeSets`) | **ES2024** | ★ **node 18 에 없다** — 동작 (6)의 한 줄이 갈린다(뜻은 30번) |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **① 추상 연산에 로그 심기**(본체) | 호출마다 **전과 후의 `lastIndex`**(동작 (1)) · `replace` 콜백이 받는 **인자의 개수와 순서**(동작 (4)) · `RegExp.prototype.exec` 을 감싸 **`matchAll` 이 언제 · 어느 객체로** 찾나(동작 (3)) |
+| ★★ **② 전수 격자** | `match` 의 여섯 경우 × 속성 일곱 — `g` 짝과 **갈린 칸을 스크립트가 센다**(동작 (2)) |
+| ★★ **③ 브랜드 태그** | `matchAll` 이 돌려준 것에 `Object.prototype.toString.call` 이 **`[object RegExp String Iterator]`** — 배열이 아니다(동작 (3)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | `g` 없는 `matchAll` 의 `TypeError` · 잘못된 플래그의 `SyntaxError` · 잘못된 패턴이 **리터럴이면 파싱 때** 나는 `SyntaxError`(동작 (6)·(7)) |
+| ★ **⑤ 두 판 대조기** | 이 주제의 node 탐침 중 **하나만** `DIFFERS` 이고, 그 차이는 **`v` 플래그의 유무** 한 줄이다 |
+| ★ **부적용 — 진단의 `(행,열)`**(18-C) | 리터럴의 조기 오류는 **「언제 났나」**(파싱 때, 죽은 코드 안에서도)가 요점이지 열이 요점이 아니다. `new Function` 으로 던져 **종류·문구·통과 여부**만 본다 |
+| ★ **안 쟀다 — 성능** | 「리터럴을 함수 밖으로 빼면 빠르다」·「`test` 가 `match` 보다 빠르다」를 **한 줄도 쓰지 않는다.** 시간을 한 번도 안 쟀다 — 센 것은 **호출 횟수**뿐이다(동작 (3)의 `exec` 네 번) |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 예외 **문구** — V8 의 글자다(`String.prototype.matchAll called with a non-global RegExp argument` · `Invalid flags supplied to RegExp constructor 'gg'` · `Invalid regular expression: missing /`). **종류**(`TypeError`·`SyntaxError`)만 명세가 정한다 | ★★★ **`lastIndex` 의 값과 `test` 의 참/거짓 순서** · 격자의 칸과 「**N / M**」 · 콜백 인자의 **개수와 순서** · `exec` 호출 로그 · `flags` 의 **글자 순서** |
+| 대조기 블록의 **다른 주제 줄**(같은 배치가 한 대조기를 공유한다) | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 하나도 없다**(재대조 동일) |
+
+**선행** — [28 — `String` 메서드와 템플릿 리터럴](../28-string-methods-and-template-literals/2-summary.md)(★★★ 직접 선행 — **치환 문자열의 `$` 표기**와 `split` 이 `lastIndex` 를 안 쓰는 것은 거기서 쟀다) ·
+[19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★ 소비자가 **`return()` 을 부르는 자리**) ·
+[20 — 제너레이터](../20-generators/2-summary.md) · [21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md)(★ 한 번 소비한 이터레이터는 다시 안 돈다) ·
+[22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md)(`Symbol.match`·`Symbol.replace` 가 문자열 메서드를 정규식에 넘기는 통로).
+**같은 배치** — [30 — 정규식 심화](../30-regexp-advanced/2-summary.md) · [31 — `JSON`](../31-json/2-summary.md).
+
+★★ **경계 — 문자열 매칭 알고리즘은 [`cs/algorithm/25-string-matching/`](../../../../cs/algorithm/25-string-matching/2-summary.md)이 정본이다.** 그쪽은 **KMP 처럼 「어떻게 찾나」**, 여기는 **JS API 가 「무엇을 돌려주고 무슨 상태를 남기나」**.
+★★ **경계 — 캡처·명명 그룹의 문법·룩어라운드·`u`/`v`·`d`·백트래킹은 30번이 정본이다.** 여기서는 **명명 그룹이 반환 모양을 어떻게 바꾸나**만 본다.
+★ **경계 — 치환 문자열의 `$` 표기는 28번이 정본이다.** 여기서는 **치환 함수가 받는 인자**를 본다.

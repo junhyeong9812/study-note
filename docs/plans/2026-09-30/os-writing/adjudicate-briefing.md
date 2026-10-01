@@ -1,8 +1,5 @@
 # 2차 리뷰 지적 판정·반영 브리핑 — 운영체제 새 노트 (2026-09-30)
 
-> 배경: Opus 전수 사실 점검 뒤 2차 리뷰어(codex high, 한도 시 Opus 적대 리뷰)가 편마다 남은 오류를 지적했다. 지적은 **주장**이지 사실이 아니다 — 판정자가 1차 출처로 확인한 것만 반영한다.
-> 집필 규칙: `docs/plans/2026-09-30/os-writing/briefing.md`(§3·§3-1·§4 원고 이어받기·§5 로컬 재현)를 먼저 읽는다.
-
 ## 1. 입력
 
 - 담당 노트마다 codex 지적 파일: `/tmp/claude-1000/-home-jun-project-study-note/16696510-853f-4d10-82ba-64d9eb37bcc8/scratchpad/os/codex/out-<NN>.md`

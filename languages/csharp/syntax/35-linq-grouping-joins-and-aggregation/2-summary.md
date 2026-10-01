@@ -1,26 +1,5 @@
 # csharp/syntax/35 — LINQ 그룹·조인·집계 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — ★ **SDK 참조 팩의 XML 문서** `System.Linq.xml`(로컬에서 열어 확인):\
-> `ToLookup` 의 반환 「**각 묶음 안의 값은 `source` 의 순서와 같다**」 · `Aggregate`(시드 없음)의 예외 「`source` 에 원소가 없으면 **`InvalidOperationException`**」 · `Average(int)`·`Max(int)` 도 같은 조항 · `First` 「원본 시퀀스가 비었으면 `InvalidOperationException`」 ·\
-> ★★ `MaxBy` 의 예외 「**`TSource` 가 기본형이고 원본이 비었으면** `InvalidOperationException`」 · `Average(int?)` 의 반환 「원본이 비었거나 전부 `null` 이면 **`null`**」 ·\
-> ★★★ **제네릭 `Max<T>` 는 빈 입력에 대해 아무 조항이 없다**(예외는 `ArgumentNullException` · `ArgumentException` 둘뿐) — (5)의 `string[] Max()` → `null` 은 **문서가 침묵하는 칸의 관찰**이다.\
-> `LeftJoin` 의 반환 「두 시퀀스에 **왼쪽 외부 조인**을 해서 얻은 원소」(이 판에서 호출해 확인 · 같은 XML 에 `RightJoin` 도 있다).
-> ★ **이 배치는 외부 네트워크를 쓰지 않았다** — Learn 의 개념 문서는 열지 않았다.
-> **실행 검증** — 이 문서의 모든 출력은 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26). 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣었다.
-> **버전** — ★ 이 머신의 참조 팩은 **10.0.12 하나뿐**이라 연산자마다 **언제 들어왔나는 확인하지 못했다**(못 잰 것). 이 문서가 말하는 것은 **이 판(.NET 10)에 전부 있다**까지다 — `CountBy`·`MaxBy`·`LeftJoin` 처럼 새로 보이는 것도 판 경계는 적지 않는다.
-> **경계** — ★★★ **「지연 쿼리를 두 번 열거하면 소스를 두 번 읽는다」 는 [32번](../32-yield-return-iterators-and-deferred-execution/) (7)이 쟀다** — 여기서는 **그룹 결과**에서 같은 일이 나는지, 그리고 **`ToLookup` 이 그것을 어떻게 막나**를 본다((2)).\
-> ★★ `GroupBy` 가 첫 `MoveNext` 에서 **끝까지** 읽는 것은 [33번](../33-linq-method-syntax-and-deferred-execution/) (1)이 정본이다. `group … by`·`join … into` 가 무엇으로 번역되나는 [34번](../34-linq-query-syntax/) (1)이다.\
-> ★ 집계의 **원리**(해시로 묶기)는 `cs/data-structure/` 쪽 몫이다. 여기는 **연산자가 무엇을 돌려주나**만 본다.
-> ★★★ **본체 창은 둘이다 — ⑤ 실행 로그(「언제 · 몇 번 읽나」)와 ② 빈 입력 결과 격자(「비었을 때 무엇을 주나」).** 둘 다 **값으로만** 보인다 — IL 은 아무 말도 안 한다(전부 보통의 메서드 호출이다).
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 예외 **문구**(`Sequence contains no elements` · `Index was out of range…`) — 판에 매인다 | ★★★ 예외 **타입** · **「던진 칸 N / M」** · 값(`0` · `null` · `[0]`) |
-> | — | ★★★ **로그의 줄 수와 순서**(`Load 본문 #N` · `O:start O:1 I:start …`) · 묶음의 **키 순서와 원소 순서** |
-
 ## 이 판
 
 ```text
@@ -477,3 +456,25 @@ Console.WriteLine(string.Join(" ", byParity));
 
 - ★ **`Join` 의 안쪽이 무한 시퀀스면** — 통째로 읽으니 끝나지 않는다고 (3)에서 **추론**된다. 돌리지 않았다(끝나지 않는 실험이다).
 - ★ **연산자마다 들어온 판** — 옛 참조 팩이 없어 확인하지 못했다. 옛 SDK 를 받을 수 있는 환경에서 `LeftJoin`·`CountBy` 의 유무를 찍을 자리다.
+
+## 실행 환경
+
+**기준 소스** — ★ **SDK 참조 팩의 XML 문서** `System.Linq.xml`(로컬에서 열어 확인):\
+`ToLookup` 의 반환 「**각 묶음 안의 값은 `source` 의 순서와 같다**」 · `Aggregate`(시드 없음)의 예외 「`source` 에 원소가 없으면 **`InvalidOperationException`**」 · `Average(int)`·`Max(int)` 도 같은 조항 · `First` 「원본 시퀀스가 비었으면 `InvalidOperationException`」 ·\
+★★ `MaxBy` 의 예외 「**`TSource` 가 기본형이고 원본이 비었으면** `InvalidOperationException`」 · `Average(int?)` 의 반환 「원본이 비었거나 전부 `null` 이면 **`null`**」 ·\
+★★★ **제네릭 `Max<T>` 는 빈 입력에 대해 아무 조항이 없다**(예외는 `ArgumentNullException` · `ArgumentException` 둘뿐) — (5)의 `string[] Max()` → `null` 은 **문서가 침묵하는 칸의 관찰**이다.\
+`LeftJoin` 의 반환 「두 시퀀스에 **왼쪽 외부 조인**을 해서 얻은 원소」(이 판에서 호출해 확인 · 같은 XML 에 `RightJoin` 도 있다).
+★ **이 배치는 외부 네트워크를 쓰지 않았다** — Learn 의 개념 문서는 열지 않았다.
+**실행 검증** — 이 문서의 모든 출력은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26). 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣었다.
+**버전** — ★ 이 머신의 참조 팩은 **10.0.12 하나뿐**이라 연산자마다 **언제 들어왔나는 확인하지 못했다**(못 잰 것). 이 문서가 말하는 것은 **이 판(.NET 10)에 전부 있다**까지다 — `CountBy`·`MaxBy`·`LeftJoin` 처럼 새로 보이는 것도 판 경계는 적지 않는다.
+**경계** — ★★★ **「지연 쿼리를 두 번 열거하면 소스를 두 번 읽는다」 는 [32번](../32-yield-return-iterators-and-deferred-execution/) (7)이 쟀다** — 여기서는 **그룹 결과**에서 같은 일이 나는지, 그리고 **`ToLookup` 이 그것을 어떻게 막나**를 본다((2)).\
+★★ `GroupBy` 가 첫 `MoveNext` 에서 **끝까지** 읽는 것은 [33번](../33-linq-method-syntax-and-deferred-execution/) (1)이 정본이다. `group … by`·`join … into` 가 무엇으로 번역되나는 [34번](../34-linq-query-syntax/) (1)이다.\
+★ 집계의 **원리**(해시로 묶기)는 `cs/data-structure/` 쪽 몫이다. 여기는 **연산자가 무엇을 돌려주나**만 본다.
+★★★ **본체 창은 둘이다 — ⑤ 실행 로그(「언제 · 몇 번 읽나」)와 ② 빈 입력 결과 격자(「비었을 때 무엇을 주나」).** 둘 다 **값으로만** 보인다 — IL 은 아무 말도 안 한다(전부 보통의 메서드 호출이다).
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 예외 **문구**(`Sequence contains no elements` · `Index was out of range…`) — 판에 매인다 | ★★★ 예외 **타입** · **「던진 칸 N / M」** · 값(`0` · `null` · `[0]`) |
+| — | ★★★ **로그의 줄 수와 순서**(`Load 본문 #N` · `O:start O:1 I:start …`) · 묶음의 **키 순서와 원소 순서** |

@@ -1,13 +1,5 @@
 # js/syntax/43 — CJS 와 ESM 상호운용: 「`require(esm)` 은 node 20.19 에서 열렸고 · 이름 있는 가져오기는 lexer 가 찾은 것만 · 확장자가 `type` 을 이기고 · CommonJS 쪽 값은 복사다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다.
-> ★★★ **이 주제는 두 node 판의 차이가 본체의 절반이다** — 상호운용 `2 / 16` · 판정 격자 `1 / 9` 행 · `import.meta.dirname` · `require(esm)` 의 문구.
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(두 판을 돌리는 `.sh` 는 [2-summary.md](2-summary.md) 동작 (1)·(2)·(5), `package.json` 과 두 카운터는 동작 (6)).
-> `js40b-43a-interop-grid.js` + `js40b-43a-interop.sh`(1번 · 7번) · `js40b-43b-type-grid.js` + `js40b-43b-type.sh`(2번 · 6번) · `js40b-43c/`(3번 · 7번 · 10번) · `js40b-43d/`(4번 · 8번) · `js40b-43e/` + `js40b-43e-messages.sh`(5번) · `js40b-43f/`(9번).
-
 ## 정답
 
 ### 1. node 20 — **막힌 행 `7 / 16`**(TLA 가 든 `require(esm)` · 이름 있는 가져오기 셋 · ESM 의 `require` · 확장자 없는 `import` · 디렉토리 `import`) · node 18 — **`8 / 16`**(`require(esm)` 도 막힘) · 갈린 행 **`2 / 16`** ★★★
@@ -305,3 +297,12 @@ node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identica
 - ★★★ `require(esm)` · 문법 감지 · `import.meta.dirname` — node 판마다 1번 · 2번 · 4번을 다시 돌린다. 22 계열은 이 머신에 없어 돌리지 않았다.
 - ★★ **lexer 가 알아보는 모양**(1번의 이름 있는 가져오기 다섯 행) — node 가 lexer 판을 올리면 바뀔 수 있는 자리다.
 - ★ 문구 — `Named export 'a' not found …` · `require is not defined in ES module scope …` · `require() of ES Module … not supported.`
+
+## 실행 환경
+
+이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다.
+★★★ **이 주제는 두 node 판의 차이가 본체의 절반이다** — 상호운용 `2 / 16` · 판정 격자 `1 / 9` 행 · `import.meta.dirname` · `require(esm)` 의 문구.
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(두 판을 돌리는 `.sh` 는 [2-summary.md](2-summary.md) 동작 (1)·(2)·(5), `package.json` 과 두 카운터는 동작 (6)).
+`js40b-43a-interop-grid.js` + `js40b-43a-interop.sh`(1번 · 7번) · `js40b-43b-type-grid.js` + `js40b-43b-type.sh`(2번 · 6번) · `js40b-43c/`(3번 · 7번 · 10번) · `js40b-43d/`(4번 · 8번) · `js40b-43e/` + `js40b-43e-messages.sh`(5번) · `js40b-43f/`(9번).

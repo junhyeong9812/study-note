@@ -1,16 +1,5 @@
 # go/syntax/18 — 임베딩과 필드·메서드 승격 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Struct types(Embedded field · Promoted) ·
-> Selectors(depth) · Composite literals(Struct literals) · Method sets · Interface types 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> **버전** — 승격 규칙 자체는 **1.0부터 같다.** 이 주제에 판 경계가 **하나** 있다 —
-> **승격된 필드 이름을 구조체 리터럴의 키로 쓰는 것이 1.27부터**다((8)절에서 `go.mod` 를 바꿔 증명한다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 ## 이 갈래가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
@@ -1241,3 +1230,14 @@ base G
 - 임베딩한 타입이 `String()` 을 가지면 **`fmt` 가 바깥 타입에도 그것을 쓴다** —
   승격이 `fmt.Stringer` 만족으로 이어지기 때문이다. 무한 재귀의 씨앗이 되는 자리이고,
   정본은 [목록의 **42번 주제**](../42-fmt-verbs-stringer-and-errorf/)다. 이 문서는 **안 던졌다.**
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Struct types(Embedded field · Promoted) ·
+Selectors(depth) · Composite literals(Struct literals) · Method sets · Interface types 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+**버전** — 승격 규칙 자체는 **1.0부터 같다.** 이 주제에 판 경계가 **하나** 있다 —
+**승격된 필드 이름을 구조체 리터럴의 키로 쓰는 것이 1.27부터**다((8)절에서 `go.mod` 를 바꿔 증명한다).

@@ -1,10 +1,5 @@
 # issue/infra/git-pitfalls — 배포·CI의 git 고전 함정 3종 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-23).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. (왜) dubious ownership — 컨테이너 안 root(uid 0)가 호스트 사용자(uid 1000) 소유의 repo에서 `git fetch`를 돌리면 `fatal: detected dubious ownership`가 난다. 이건 **도커가 막은 것**인가 **git 바이너리가 막은 것**인가, 왜 컨테이너 안에서도 이 비교가 성립하는가.
 2. (경계) CVE-2022-24765가 막으려던 **실제 위협**은 무엇인가(공유 머신·악성 `core.fsmonitor` 등). `safe.directory '*'`로 이 가드를 꺼도 되는지 판단하는 기준은? 이 배포 컨테이너에서 그 위협 전제가 성립하지 않은 근거 3가지는.

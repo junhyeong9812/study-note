@@ -1,13 +1,5 @@
 # ts/syntax/07 — 객체 타입 세부 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Object Types](https://www.typescriptlang.org/docs/handbook/2/objects.html) ·
-> [Handbook — Object Types: Index Signatures](https://www.typescriptlang.org/docs/handbook/2/objects.html#index-signatures) ·
-> [TSConfig — `exactOptionalPropertyTypes`](https://www.typescriptlang.org/tsconfig/#exactOptionalPropertyTypes) ·
-> [TSConfig — `noUncheckedIndexedAccess`](https://www.typescriptlang.org/tsconfig/#noUncheckedIndexedAccess).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문·방출 전문은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -19,7 +11,6 @@ v18.19.1
 > ★★ 반면 `exactOptionalPropertyTypes` 와 `noUncheckedIndexedAccess` 는 **`strict` 에 안 들어 있어 기본 `false`** 다
 > (`tsc --help --all` 의 `default: false` 를 확인했고, **켠 판을 따로 던져 두 결과를 나란히 실었다**).
 > **버전** — `readonly` 프로퍼티는 TS 2.0, `exactOptionalPropertyTypes` 는 4.4, `noUncheckedIndexedAccess` 는 4.1 부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -635,3 +626,12 @@ undefined 쪽  : undefined {"host":"b"} true
 - **`Object.freeze` 와의 관계** — `readonly` 는 검사 시각, `freeze` 는 실행 시각이다. 둘을 같이 쓰면 타입과 런타임이 맞는다. 이 판에서 `readonly` 만으로는 값이 바뀐 것을 확인했다.
 - **인덱스 시그니처 대신 `Record`** — `Record<string, number>` 는 매핑 타입으로 같은 것을 만든다. 차이는 **`interface` 안에서 다른 프로퍼티와 같이 쓸 수 있는가**뿐이다. [목록의 **26번 주제**](../26-mapped-types/).
 - **키가 정해져 있으면 유니온 키를 쓴다** — `Record<"a" \| "b", number>` 처럼 쓰면 없는 키 접근이 `TS2339` 로 잡힌다. 인덱스 시그니처는 그 검사를 **포기하는 대신** 확장성을 얻는 것이다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Object Types](https://www.typescriptlang.org/docs/handbook/2/objects.html) ·
+[Handbook — Object Types: Index Signatures](https://www.typescriptlang.org/docs/handbook/2/objects.html#index-signatures) ·
+[TSConfig — `exactOptionalPropertyTypes`](https://www.typescriptlang.org/tsconfig/#exactOptionalPropertyTypes) ·
+[TSConfig — `noUncheckedIndexedAccess`](https://www.typescriptlang.org/tsconfig/#noUncheckedIndexedAccess).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문·방출 전문은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

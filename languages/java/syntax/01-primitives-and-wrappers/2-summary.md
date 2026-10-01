@@ -1,14 +1,5 @@
 # java/syntax/01 — 기본형과 래퍼: 값 의미론·오토박싱·`Integer` 캐시 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §5.1.7 Boxing Conversion](https://docs.oracle.com/javase/specs/jls/se21/html/jls-5.html) · [§15.25 Conditional Operator](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/Integer.java`(`lib/src.zip`).
-> **실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 같은 프로그램을 **17.0.13 · 25.0.1** 에서도 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
-> 바이트코드는 `javap -c` 출력을 그대로 옮겼다.
-> **버전** — 오토박싱/언박싱과 `Integer` 캐시는 **Java 5**부터. 17·21·25 에서 동작이 같다.\
-> 단 `new Integer(int)` 의 **경고 문구**는 21과 25가 다르다(「어디서 틀리나」 4번).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **기본형은 종이에 적은 숫자, 래퍼는 그 숫자를 넣어 둔 사물함이다.**
@@ -422,3 +413,12 @@ NPE: Cannot invoke "java.lang.Integer.intValue()"
 - `-XX:AutoBoxCacheMax` 는 `Integer` 전용이다.\
   `Long.valueOf` 캐시도 `-128`~`127` 이지만 이 옵션으로는 안 늘어난다.
 - `==` 를 쓰지 않아도 되는 형태: `Objects.equals(a, b)` 는 양쪽 `null` 도 안전하게 처리한다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §5.1.7 Boxing Conversion](https://docs.oracle.com/javase/specs/jls/se21/html/jls-5.html) · [§15.25 Conditional Operator](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/Integer.java`(`lib/src.zip`).
+**실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+같은 프로그램을 **17.0.13 · 25.0.1** 에서도 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
+바이트코드는 `javap -c` 출력을 그대로 옮겼다.
+**버전** — 오토박싱/언박싱과 `Integer` 캐시는 **Java 5**부터. 17·21·25 에서 동작이 같다.\
+단 `new Integer(int)` 의 **경고 문구**는 21과 25가 다르다(「어디서 틀리나」 4번).

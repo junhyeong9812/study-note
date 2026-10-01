@@ -1,9 +1,5 @@
 # NoSQL 운동 (2004\~2015)
 
-> 원본: `~/project/database-history/03-NoSQL-운동.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·논문명·표준번호·코드는 원문 그대로다. 더 압축된 원문이 필요하면 원본 문서를 보면 된다.\
-> 용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **NoSQL = 모든 일을 다 하는 만능 공구 하나 대신, 일마다 전용 공구를 골라 쓰기 시작한 것.**
@@ -583,3 +579,9 @@ CAP가 강제하는 선택을 외면하지 않고, "이 워크로드에서 우�
 - [Apache HBase (Wikipedia)](https://en.wikipedia.org/wiki/Apache_HBase)
 - [Riak / Basho Technologies (Wikipedia)](https://en.wikipedia.org/wiki/Riak)
 - [Neo4j (Wikipedia)](https://en.wikipedia.org/wiki/Neo4j)
+
+## 출처
+
+원본: `~/project/database-history/03-NoSQL-운동.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·논문명·표준번호·코드는 원문 그대로다. 더 압축된 원문이 필요하면 원본 문서를 보면 된다.\
+용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.

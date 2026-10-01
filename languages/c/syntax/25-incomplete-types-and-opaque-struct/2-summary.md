@@ -1,23 +1,5 @@
 # c/syntax/25 — 불완전 타입과 opaque struct: 「**도면 없이 열쇠만 받은 방**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Incomplete type (C)](https://en.cppreference.com/w/c/language/type) · [cppreference — Struct declaration (C)](https://en.cppreference.com/w/c/language/struct) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [GCC 13 Optimize Options — `-flto`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·진단·종료 코드는 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
-> **버전** — 불완전 타입과 opaque struct 관용구는 **C89 부터** 있고 규칙이 바뀐 적이 없다.\
-> ★ **같은 `typedef` 를 두 번 쓰는 것**은 **C11 부터** 허용된다(아래 (9)). `-std=c99` 에서는 `-Wpedantic` 이 잡는다.\
-> ★ **`-std=` 는 강제가 아니라 기본값 선택**이다 — 표준 준수를 주장하는 자리에는 전부 `-pedantic` 을 붙였고,\
-> ★★ (5)에서는 **`-pedantic` 으로 모자라 `-pedantic-errors` 라야** 종료 코드가 움직였다.
-> ★★ **경계** — **`void *` 라는 「무엇이든 가리키는 포인터」**는 [19번 형제](../19-void-pointer-null-pointer-and-null/)가 정본이다.\
-> 여기서는 「**`void` 가 왜 불완전 타입인가**」만 본다 — 그쪽은 「**포인터**」, 여기는 「**타입의 완성 여부**」다.\
-> ★ **`sizeof`·`offsetof` 라는 도구**는 [8번 형제](../08-sizeof-alignment-and-offsetof/), **구조체 선언·초기화**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/)가 정본이다.\
-> ★ **포인터 문법 자체**는 [14번 형제](../14-pointers-address-dereference-and-pointer-types/), **배열이 포인터로 감쇠하는 규칙**은 [16번 형제](../16-array-pointer-decay-and-function-parameters/)가 정본이다.\
-> ★ **헤더를 어떻게 나누나**는 [목록의 **44번 주제**](../44-headers-and-separate-compilation/), **링크 오류 읽기**는 [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/), **`malloc` 의 계약**은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/)다.
-> 선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [목록의 **44번 주제**](../44-headers-and-separate-compilation/).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **불완전 타입은 「도면 없이 열쇠만 받은 방」이다.**
@@ -984,3 +966,21 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★ **`-fsanitize=cfi`·`-Wodr`** 같은 더 센 도구가 (6)을 잡는지 — ★ **확인하지 않았다.** gcc 13 에서 C 에 대한 지원 범위를 안 봤다.
 - ★ **오브젝트 파일에 디버그 정보(`-g`)를 넣으면** DWARF 에 구조체 레이아웃이 들어간다.\
   ★ 그것으로 (6)을 대조할 수 있는지는 **던지지 않았다** — 링커가 그 정보를 **검사에 쓰지는 않는다**는 것까지만 확인했다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Incomplete type (C)](https://en.cppreference.com/w/c/language/type) · [cppreference — Struct declaration (C)](https://en.cppreference.com/w/c/language/struct) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [GCC 13 Optimize Options — `-flto`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·진단·종료 코드는 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
+**버전** — 불완전 타입과 opaque struct 관용구는 **C89 부터** 있고 규칙이 바뀐 적이 없다.\
+★ **같은 `typedef` 를 두 번 쓰는 것**은 **C11 부터** 허용된다(본문 (9)). `-std=c99` 에서는 `-Wpedantic` 이 잡는다.\
+★ **`-std=` 는 강제가 아니라 기본값 선택**이다 — 표준 준수를 주장하는 자리에는 전부 `-pedantic` 을 붙였고,\
+★★ (5)에서는 **`-pedantic` 으로 모자라 `-pedantic-errors` 라야** 종료 코드가 움직였다.
+★★ **경계** — **`void *` 라는 「무엇이든 가리키는 포인터」**는 [19번 형제](../19-void-pointer-null-pointer-and-null/)가 정본이다.\
+여기서는 「**`void` 가 왜 불완전 타입인가**」만 본다 — 그쪽은 「**포인터**」, 여기는 「**타입의 완성 여부**」다.\
+★ **`sizeof`·`offsetof` 라는 도구**는 [8번 형제](../08-sizeof-alignment-and-offsetof/), **구조체 선언·초기화**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/)가 정본이다.\
+★ **포인터 문법 자체**는 [14번 형제](../14-pointers-address-dereference-and-pointer-types/), **배열이 포인터로 감쇠하는 규칙**은 [16번 형제](../16-array-pointer-decay-and-function-parameters/)가 정본이다.\
+★ **헤더를 어떻게 나누나**는 [목록의 **44번 주제**](../44-headers-and-separate-compilation/), **링크 오류 읽기**는 [목록의 **45번 주제**](../45-translation-units-and-reading-link-errors/), **`malloc` 의 계약**은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/)다.
+선행 — [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/) · [목록의 **44번 주제**](../44-headers-and-separate-compilation/).

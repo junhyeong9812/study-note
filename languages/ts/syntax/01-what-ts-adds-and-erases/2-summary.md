@@ -1,13 +1,5 @@
 # ts/syntax/01 — TS 가 더하는 것과 지우는 것 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [TypeScript Handbook — The Basics](https://www.typescriptlang.org/docs/handbook/2/basic-types.html) ·
-> [Handbook — Enums](https://www.typescriptlang.org/docs/handbook/enums.html) ·
-> [TSConfig — `erasableSyntaxOnly`](https://www.typescriptlang.org/tsconfig/#erasableSyntaxOnly) ·
-> [TSConfig — `experimentalDecorators`](https://www.typescriptlang.org/tsconfig/#experimentalDecorators).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 결과는 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 이 문서의 모든 진단·방출된 JS·실행 출력은 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -22,7 +14,6 @@ v18.19.1
 > ★ 진단이 **stdout 으로 나오는지 stderr 로 나오는지**는 [**02번 주제**](../02-type-checking-vs-emit/)에서 갈라 받아 확인했다 — **전부 stdout 이다**.
 > **버전** — `enum`·`namespace`·매개변수 프로퍼티는 TS 1.x 부터, `import type` 은 3.8 부터,
 > `erasableSyntaxOnly` 는 5.8 부터다. 7.0 에서 이 다섯 중 **사라진 것은 없다**(전부 이 판에서 돌아갔다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -688,3 +679,12 @@ export {};
 - **`--erasableSyntaxOnly` 는 팀 규약을 기계로 바꾼다.** 「`enum` 쓰지 말자」를 리뷰로 지키는 대신 플래그 하나로 `TS1294` 를 내게 할 수 있다.
 - **표준 데코레이터(TC39)는 소거 대상이 아니다.** `experimentalDecorators` 없이 쓰면 이 판이 `__esDecorate` 계열 헬퍼를 방출한다 — 레거시보다 **더 많은** 코드가 붙는다. 자세한 비교는 [목록의 **47번 주제**](../47-decorators/).
 - **`declare` 는 「값을 만들지 않는다」는 뜻이다.** 그래서 이 문서의 예제에서 `declare let a: any;` 로 선언한 변수는 방출에 없고, 실행하면 `ReferenceError` 가 난다 — **타입 실험 전용 도구**로만 쓴다.
+
+## 실행 환경
+
+**기준 소스** — [TypeScript Handbook — The Basics](https://www.typescriptlang.org/docs/handbook/2/basic-types.html) ·
+[Handbook — Enums](https://www.typescriptlang.org/docs/handbook/enums.html) ·
+[TSConfig — `erasableSyntaxOnly`](https://www.typescriptlang.org/tsconfig/#erasableSyntaxOnly) ·
+[TSConfig — `experimentalDecorators`](https://www.typescriptlang.org/tsconfig/#experimentalDecorators).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 결과는 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 이 문서의 모든 진단·방출된 JS·실행 출력은 맨 위 판에서 실제로 돌려 얻었다.

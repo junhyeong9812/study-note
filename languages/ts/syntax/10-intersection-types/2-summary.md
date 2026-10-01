@@ -1,12 +1,5 @@
 # ts/syntax/10 — 인터섹션 타입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Everyday Types: Intersection Types](https://www.typescriptlang.org/docs/handbook/2/objects.html#intersection-types) ·
-> [Handbook — Functions: Overload Signatures](https://www.typescriptlang.org/docs/handbook/2/functions.html#overload-signatures-and-the-implementation-signature) ·
-> [Handbook — Narrowing: Discriminated Unions](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -17,7 +10,6 @@ v18.19.1
 > 그때 `strict` 는 **켜져 있다**(7.0 기본 `true`). `tsc` 에 **파일을 직접 주면 `tsconfig.json` 을 무시**하므로
 > 이 블록들은 설정 파일 없이도 그대로 재현된다.
 > **버전** — 교차 타입은 TS 1.6, 「교차한 함수 타입이 오버로드처럼 해석되는 것」도 같은 계보다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -751,3 +743,11 @@ ex.10e.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 - **충돌을 미리 잡는 법** — 겹치기 전에 `interface X extends A` 로 한 번 받아 보면 `TS2430` 이 **선언 자리에서** 말한다([**08번 주제**](../08-interface-vs-type/)). 또는 `Omit` 으로 충돌 키를 먼저 뺀다.
 - **브랜드 타입** — `A & string` 이 줄지 않는다(3절의 30행)는 성질이 브랜드 타입의 토대다. `string & { __brand: "Id" }` 는 런타임에 그냥 문자열이면서 타입에서만 구분된다.
 - **조각이 늘면 검사가 느려진다** — 할당 가능성 판정이 조각 수에 따라 늘어난다. 이 배치에서는 **재지 않았다** — [목록의 **45번 주제**](../45-type-level-performance/)에서 잰다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Everyday Types: Intersection Types](https://www.typescriptlang.org/docs/handbook/2/objects.html#intersection-types) ·
+[Handbook — Functions: Overload Signatures](https://www.typescriptlang.org/docs/handbook/2/functions.html#overload-signatures-and-the-implementation-signature) ·
+[Handbook — Narrowing: Discriminated Unions](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

@@ -1,33 +1,5 @@
 # cpp/syntax/27 — `shared_ptr` 와 참조 계수 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `std::shared_ptr`](https://en.cppreference.com/w/cpp/memory/shared_ptr) · [cppreference — `std::make_shared`](https://en.cppreference.com/w/cpp/memory/shared_ptr/make_shared) · [cppreference — `std::enable_shared_from_this`](https://en.cppreference.com/w/cpp/memory/enable_shared_from_this) · [cppreference — `std::weak_ptr`](https://en.cppreference.com/w/cpp/memory/weak_ptr)\
-> ★ **이 배치에서는 위 cppreference 네 쪽을 열지 못했다**(웹 도구 한도). 규칙은 **전부 실행·ASan·`-O2` 어셈블리·libstdc++ 헤더 줄**로 적었다 —\
-> 제어 블록의 모양은 **헤더(`shared_ptr_base.h`)의 선언 줄**을, 판 경계는 **두 판에 던진 결과**를 근거로 쓴다.
-> **실행 검증** — 이 문서의 모든 출력·리포트·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 대비 블록은 **rustc 1.92.0** · **Python 3.12.3** 이다(`(8)` 에 버전 블록).\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`sptr01.cpp` \~ `sptr07.cpp` · `spthread.cpp` · `sptr-asm.sh` · `rcsend.rs` · `refcnt.py`).\
-> ★★★ **할당 횟수는 전역 `operator new` 를 가로채 셌다** — 표준이 허락하는 치환이다. **시간은 한 번도 재지 않았다.** 「느리다」·「빠르다」는 이 문서에 **없다** — 세는 것은 **할당 횟수 · 바이트 · `sizeof` · `lock` 접두 명령의 개수**뿐이다.\
-> ★★★ **ASan 블록은 마커를 `stderr` 로 찍었다** · 자른 블록은 **자르는 명령을 배너에** 적었다.\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
-> **버전** — `shared_ptr`·`weak_ptr`·`make_shared`·`enable_shared_from_this` 는 **C++11부터**, **`weak_from_this` 와 「안 맡긴 객체의 `shared_from_this` 는 `bad_weak_ptr`」는 C++17부터**다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 실행으로 접지했다.
-> ★★★ **[26번](../26-unique-ptr-and-ownership-transfer/)과 한 사슬이고, 이 편이 급소다.** 26번이 「소유자가 하나면 **타입**에 적힌다」를 보였다면, 이 편은 「소유자가 여럿이면 **제어 블록**이 생기고 그 값을 치른다」를 보인다.
-> ★★★ **앞 편들이 잰 것 — 다시 재지 않고 인용한다.**\
-> [20번](../20-virtual-destructors-and-polymorphic-deletion/) (1) — **`shared_ptr<Base>(new Derived)` 는 가상 소멸자 없이도 `~Derived` 를 부른다**(삭제자가 `Derived*` 를 기억) · `Base* raw` 를 거치면 `~Base` 만 · ASan 스택의 **`std::_Sp_counted_ptr<Base*>`** · ★★ **`sizeof` `shared_ptr` 16 · `unique_ptr` 8**.\
-> [15번](../15-raii-resources-as-types/) (5) — **`sizeof(shared_ptr<int>)` 16**(「제어 블록 포인터가 하나 더」) · 그리고 ★★ **ASan 은 메모리만 본다 — 파일 핸들·락은 못 본다.**
-> **경계** — 「`weak_ptr` 로 순환을 끊는 설계(부모↔자식 그림)」는 [목록의 **28번 주제**](../28-weak-ptr-and-reference-cycles/)가 정본이다 — 여기서는 **순환이 새는 것과 `weak_ptr` 로 0 이 되는 것**까지만 잰다.\
-> 「참조 계수 일반론」은 [`memory-management/`](../../../../cs/foundations/memory-management/) 쪽, 「RAII 가 못 지우는 것 — `shared_ptr` 순환」의 **논증**은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md)가 정본이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ASan 리포트의 **PID**·주소 | ★★★ **할당 횟수 · 바이트 · `use_count()` · 해제 횟수와 시점** — 이 주제의 답 자체다 |
-> | ★★ **clang + ASan 이 순환 누수를 보고한 판의 수**((3) — 10판 중 몇 판인지는 **실행마다 바뀐다**) | ★★★ **`lock` 접두 명령 개수** · **g++ + ASan 의 누수 종류(`Indirect leak` 2)** · **소멸자 로그** |
-> | 어셈블리의 **레지스터 이름·오프셋** | ★★ **예외 이름(`bad_weak_ptr`)** · **Rust 에러 코드 `E0277`** · **Python 의 `getrefcount`·회수 수** |
-
 ## 한눈에 — 쉽게 말하면
 
 **`shared_ptr` 는 「공동 명의 통장 + 은행 장부」다.**
@@ -1019,3 +991,32 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **`allocate_shared`** — 제어 블록을 **사용자 할당자**로 잡는다. 할당 계수기를 할당자로 옮겨 잴 수 있다.
 - **`std::make_shared<T[]>`(C++20)** — 배열판. 이 문서는 던지지 않았다.
 - **삭제자를 받는 `shared_ptr<T>(p, d)` 와 크기** — 삭제자는 **블록**에 들어가므로 `sizeof(shared_ptr)` 는 **16 그대로**다(26번의 `unique_ptr` 와 대비) — 이 문서는 **숫자를 찍지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `std::shared_ptr`](https://en.cppreference.com/w/cpp/memory/shared_ptr) · [cppreference — `std::make_shared`](https://en.cppreference.com/w/cpp/memory/shared_ptr/make_shared) · [cppreference — `std::enable_shared_from_this`](https://en.cppreference.com/w/cpp/memory/enable_shared_from_this) · [cppreference — `std::weak_ptr`](https://en.cppreference.com/w/cpp/memory/weak_ptr)\
+★ **이 배치에서는 위 cppreference 네 쪽을 열지 못했다**(웹 도구 한도). 규칙은 **전부 실행·ASan·`-O2` 어셈블리·libstdc++ 헤더 줄**로 적었다 —\
+제어 블록의 모양은 **헤더(`shared_ptr_base.h`)의 선언 줄**을, 판 경계는 **두 판에 던진 결과**를 근거로 쓴다.
+**실행 검증** — 이 문서의 모든 출력·리포트·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+대비 블록은 **rustc 1.92.0** · **Python 3.12.3** 이다(`(8)` 에 버전 블록).\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`sptr01.cpp` \~ `sptr07.cpp` · `spthread.cpp` · `sptr-asm.sh` · `rcsend.rs` · `refcnt.py`).\
+★★★ **할당 횟수는 전역 `operator new` 를 가로채 셌다** — 표준이 허락하는 치환이다. **시간은 한 번도 재지 않았다.** 「느리다」·「빠르다」는 이 문서에 **없다** — 세는 것은 **할당 횟수 · 바이트 · `sizeof` · `lock` 접두 명령의 개수**뿐이다.\
+★★★ **ASan 블록은 마커를 `stderr` 로 찍었다** · 자른 블록은 **자르는 명령을 배너에** 적었다.\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
+**버전** — `shared_ptr`·`weak_ptr`·`make_shared`·`enable_shared_from_this` 는 **C++11부터**, **`weak_from_this` 와 「안 맡긴 객체의 `shared_from_this` 는 `bad_weak_ptr`」는 C++17부터**다. 기준은 **C++20**이다.
+
+★★★ **[26번](../26-unique-ptr-and-ownership-transfer/)과 한 사슬이고, 이 편이 급소다.** 26번이 「소유자가 하나면 **타입**에 적힌다」를 보였다면, 이 편은 「소유자가 여럿이면 **제어 블록**이 생기고 그 값을 치른다」를 보인다.
+★★★ **앞 편들이 잰 것 — 다시 재지 않고 인용한다.**\
+[20번](../20-virtual-destructors-and-polymorphic-deletion/) (1) — **`shared_ptr<Base>(new Derived)` 는 가상 소멸자 없이도 `~Derived` 를 부른다**(삭제자가 `Derived*` 를 기억) · `Base* raw` 를 거치면 `~Base` 만 · ASan 스택의 **`std::_Sp_counted_ptr<Base*>`** · ★★ **`sizeof` `shared_ptr` 16 · `unique_ptr` 8**.\
+[15번](../15-raii-resources-as-types/) (5) — **`sizeof(shared_ptr<int>)` 16**(「제어 블록 포인터가 하나 더」) · 그리고 ★★ **ASan 은 메모리만 본다 — 파일 핸들·락은 못 본다.**
+**경계** — 「`weak_ptr` 로 순환을 끊는 설계(부모↔자식 그림)」는 [목록의 **28번 주제**](../28-weak-ptr-and-reference-cycles/)가 정본이다 — 여기서는 **순환이 새는 것과 `weak_ptr` 로 0 이 되는 것**까지만 잰다.\
+「참조 계수 일반론」은 [`memory-management/`](../../../../cs/foundations/memory-management/) 쪽, 「RAII 가 못 지우는 것 — `shared_ptr` 순환」의 **논증**은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md)가 정본이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ASan 리포트의 **PID**·주소 | ★★★ **할당 횟수 · 바이트 · `use_count()` · 해제 횟수와 시점** — 이 주제의 답 자체다 |
+| ★★ **clang + ASan 이 순환 누수를 보고한 판의 수**((3) — 10판 중 몇 판인지는 **실행마다 바뀐다**) | ★★★ **`lock` 접두 명령 개수** · **g++ + ASan 의 누수 종류(`Indirect leak` 2)** · **소멸자 로그** |
+| 어셈블리의 **레지스터 이름·오프셋** | ★★ **예외 이름(`bad_weak_ptr`)** · **Rust 에러 코드 `E0277`** · **Python 의 `getrefcount`·회수 수** |

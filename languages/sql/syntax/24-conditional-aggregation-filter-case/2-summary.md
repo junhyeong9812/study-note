@@ -1,16 +1,5 @@
 # sql/24-조건부 집계 — `FILTER` 와 `CASE` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Aggregate Expressions](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 · Aggregate Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/aggregate-functions.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — `FILTER` 는 **PostgreSQL 에만** 있다. MySQL 8.4.10 은 `ERROR 1064` 로 **파싱조차 못 한다**(3번). 도입 버전은 PG 매뉴얼에서 확인하지 못해 적지 않는다.\
-> **선행** — [22 GROUP BY 와 비집계 열 규칙](../22-group-by-nonaggregated-columns/) · [목록의 **6번 주제**](../06-conditional-expressions-case-coalesce/)(조건 식 — `CASE`·`COALESCE`·`NULLIF`).\
-> **바로 앞** — [21 집계 함수와 COUNT 의 세 형태](../21-aggregate-functions-count-forms/). **거기서 배운 「집계는 `NULL` 을 건너뛴다」가 여기서 세 형태를 가른다.**\
-> **뒤 주제** — [25 조인 팬아웃](../25-join-fan-out/).
-
 ## 한눈에 — 쉽게 말하면
 
 **한 번 훑으면서 손에 든 계수기 여러 개를 조건별로 따로 누르는 것.**
@@ -613,3 +602,13 @@ FROM emp GROUP BY dept_id;
   「행으로 낼까 열로 펼까」는 [23번](../23-grouping-sets-rollup-cube/)과 이 주제가 각각 한쪽을 맡는다.
 - **성능은 재지 않았다.** 「조건부 집계가 질의 N번보다 빠르다」는 **스캔 횟수의 이야기**이지 측정 결과가 아니다.\
   실제 계획과 비용은 [목록의 **58번 주제**](../58-explain-plan-tree/)에서 읽는다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Aggregate Expressions](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 · Aggregate Function Descriptions](https://dev.mysql.com/doc/refman/8.4/en/aggregate-functions.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — `FILTER` 는 **PostgreSQL 에만** 있다. MySQL 8.4.10 은 `ERROR 1064` 로 **파싱조차 못 한다**(3번). 도입 버전은 PG 매뉴얼에서 확인하지 못해 적지 않는다.\
+**선행** — [22 GROUP BY 와 비집계 열 규칙](../22-group-by-nonaggregated-columns/) · [목록의 **6번 주제**](../06-conditional-expressions-case-coalesce/)(조건 식 — `CASE`·`COALESCE`·`NULLIF`).\
+**바로 앞** — [21 집계 함수와 COUNT 의 세 형태](../21-aggregate-functions-count-forms/). **거기서 배운 「집계는 `NULL` 을 건너뛴다」가 여기서 세 형태를 가른다.**\
+**뒤 주제** — [25 조인 팬아웃](../25-join-fan-out/).

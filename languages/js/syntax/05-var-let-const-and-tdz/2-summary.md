@@ -1,19 +1,5 @@
 # js/syntax/05 — `var`·`let`·`const` 와 TDZ: 「이 이름은 언제부터 쓸 수 있나」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 최신 초안](https://tc39.es/ecma262/) — 선언과 스코프(Declarations and the Variable Statement)·환경 레코드·전역 환경
-> - [ECMA-262 판별 아카이브](https://262.ecma-international.org/) — `let`/`const` 가 들어온 판(ES2015)을 가릴 때
-> - [MDN — `let`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let) · [MDN — `const`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const) · [MDN — `var`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/var)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·예외 타입과 메시지는 전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> **어느 판에서 나왔는지는 아래 첫 블록**에 있다.
-
 ```sh
 // js05b-versions.sh
 #!/usr/bin/env bash
@@ -914,7 +900,7 @@ Object.freeze(o);          // 값을 고정하려면 이것 — 얕게만 먹는
 
 | 층 | 무엇인가 | 어떻게 확인했나 |
 |---|---|---|
-| **명세(ECMA-262) 보장** | 어느 엔진에서도 같아야 하는 것 | 위 기준 소스를 열어서 + 실행으로 재확인 |
+| **명세(ECMA-262) 보장** | 어느 엔진에서도 같아야 하는 것 | 아래 「실행 환경」의 기준 소스를 열어서 + 실행으로 재확인 |
 | **호스트(Node·브라우저)가 정하는 것** | 「최상위」가 무엇이냐 | 같은 코드를 Node `.js`·`vm`·브라우저 세 곳에 던져 대조 |
 | **엔진(V8) 구현** | V8 이 그렇게 하는 것 — 특히 **예외 문구** | 실행 + 두 판 대조 |
 | **이 판의 관찰** | node 20.19.6 / 18.19.1 / Chrome 151 에서 그랬을 뿐 | 「관찰」로 명기 |
@@ -1038,3 +1024,16 @@ Object.freeze(o);          // 값을 고정하려면 이것 — 얕게만 먹는
   이 문서의 `(0, eval)` 은 **전역 스코프에 닿기 위한 도구**로만 썼고 그 자체를 주제로 삼지 않았다.
 - **안 돌려 본 것** — ESM(`.mjs`) 최상위 · Web Worker · `vm.createContext` 로 만든 다른 realm ·
   Node 18 보다 낮은 판 · 다른 엔진(SpiderMonkey·JavaScriptCore) · `--frozen-intrinsics` 같은 플래그.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 최신 초안](https://tc39.es/ecma262/) — 선언과 스코프(Declarations and the Variable Statement)·환경 레코드·전역 환경
+- [ECMA-262 판별 아카이브](https://262.ecma-international.org/) — `let`/`const` 가 들어온 판(ES2015)을 가릴 때
+- [MDN — `let`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let) · [MDN — `const`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const) · [MDN — `var`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/var)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·예외 타입과 메시지는 전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+**어느 판에서 나왔는지는 본문의 첫 블록**에 있다.

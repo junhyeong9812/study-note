@@ -1,7 +1,5 @@
 # 요구사항 명세서 — integrate-deploy-archive
 
-> 작성일: 2026-09-28 · 작업 폴더: `docs/plans/2026-09-28/integrate-deploy-archive/`
-
 ## 0. 요구사항 원문
 
 - 원문: "배포는 진행, 이슈 기록, 그리고 배포사이트는 어차피 수정사항에 맞게 최신화되지 않아? mysql과 우선 워크트리들 전부 main에 머지해서 우선 통합 정리하자"

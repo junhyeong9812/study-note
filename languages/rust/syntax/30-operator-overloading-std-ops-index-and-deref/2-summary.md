@@ -1,25 +1,5 @@
 # rust/syntax/30 — 연산자 오버로딩(`std::ops`)·`Index`·`Deref` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `std::ops` 모듈](https://doc.rust-lang.org/std/ops/index.html) ·
-> [`trait Add`](https://doc.rust-lang.org/std/ops/trait.Add.html) ·
-> [`trait Index`](https://doc.rust-lang.org/std/ops/trait.Index.html) ·
-> [`trait Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html) ·
-> [`struct Rc`](https://doc.rust-lang.org/std/rc/struct.Rc.html) ·
-> [Reference — Operator expressions](https://doc.rust-lang.org/reference/expressions/operator-expr.html) ·
-> [Reference — Index expressions](https://doc.rust-lang.org/reference/expressions/array-expr.html#array-and-slice-indexing-expressions) ·
-> [Reference — Method-call expressions](https://doc.rust-lang.org/reference/expressions/method-call-expr.html).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. `std::ops` 의 트레이트 목록은 **그 사본의 파일 목록을 블록으로** 실었다((5)).
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 <파일>.rs`** 로 실제로 돌려 받은 것이다.\
-> ★★ **`--edition` 을 빼면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.
-> 소스 펜스도 캡처가 찍었다(첫 줄 `// <파일명>.rs` 가 실제로 컴파일한 파일 이름이다).\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
-> **버전** — `std::ops` 의 산술·`Index`·`Deref` 트레이트는 전부 **1.0.0** 이고, `AddAssign` 같은 복합 대입 트레이트는 **1.8.0** 부터다(std 문서의 배지).
-> **전부 에디션과 무관하다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ```text
 ===== rustc --version =====
 rustc 1.92.0 (ded5c06cf 2025-12-08)
@@ -1323,3 +1303,23 @@ d.size=3  a.size=2
 - **`RangeBounds`** — `a..b` 를 받는 API(`Vec::drain` 등)가 쓰는 트레이트. `..` 자체는 범위 **타입**을 만드는 문법이다.
 - **`Try`·`FromResidual`** — `?` 를 다른 타입에 열어 주는 트레이트. (5)의 목록에 있지만 **불안정**이다.
 - **`impl<'a> Add<&'a T> for &'a T` 의 수명** — 참조 판에 수명을 명시하는 꼴. (3)은 생략 규칙에 맡겼다([**12번 주제**](../12-lifetime-annotations-and-elision/)).
+
+## 실행 환경
+
+**기준 소스** — [std — `std::ops` 모듈](https://doc.rust-lang.org/std/ops/index.html) ·
+[`trait Add`](https://doc.rust-lang.org/std/ops/trait.Add.html) ·
+[`trait Index`](https://doc.rust-lang.org/std/ops/trait.Index.html) ·
+[`trait Deref`](https://doc.rust-lang.org/std/ops/trait.Deref.html) ·
+[`struct Rc`](https://doc.rust-lang.org/std/rc/struct.Rc.html) ·
+[Reference — Operator expressions](https://doc.rust-lang.org/reference/expressions/operator-expr.html) ·
+[Reference — Index expressions](https://doc.rust-lang.org/reference/expressions/array-expr.html#array-and-slice-indexing-expressions) ·
+[Reference — Method-call expressions](https://doc.rust-lang.org/reference/expressions/method-call-expr.html).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. `std::ops` 의 트레이트 목록은 **그 사본의 파일 목록을 블록으로** 실었다((5)).
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 <파일>.rs`** 로 실제로 돌려 받은 것이다.\
+★★ **`--edition` 을 빼면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.
+소스 펜스도 캡처가 찍었다(첫 줄 `// <파일명>.rs` 가 실제로 컴파일한 파일 이름이다).\
+★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
+**버전** — `std::ops` 의 산술·`Index`·`Deref` 트레이트는 전부 **1.0.0** 이고, `AddAssign` 같은 복합 대입 트레이트는 **1.8.0** 부터다(std 문서의 배지).
+**전부 에디션과 무관하다.**

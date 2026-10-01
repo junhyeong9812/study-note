@@ -1,22 +1,5 @@
 # rust/syntax/05 — 제어 흐름: `loop`·`while`·`for`·라벨 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Loop expressions
-> (`loop`/`while`/`for`/Labelled block expressions/`break`/`continue`) 절 ·
-> [std 문서](https://doc.rust-lang.org/std/)의 `primitive.array`(Editions 절) ·
-> `rustc --explain E0571` / `E0268` / `E0382` / `E0308`.
-> 이 머신의 `rust-docs`(1.92.0)를 열어 확인했고, 인용은 그 판의 원문이다.
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
-> ★ **에디션이 답을 바꾸는 실험 한 건**(`a.into_iter()`)은 **2018 과 2021 을 둘 다** 돌렸다.
-> **버전** — `loop`/`while`/`for`/라벨은 1.0부터. 아래 셋은 이 머신의 `rust-docs` 안\
-> `html/releases.md`(공식 릴리스 노트)에서 **해당 절을 찾아 확인한 것**이다.\
-> **라벨 있는 블록**(`'blk: { ... }`)은 **1.65.0 (2022-11-03)** — 「Stabilize `break`ing from arbitrary labeled blocks」.\
-> **배열의 `IntoIterator`** 는 **1.53.0 (2021-06-17)** — 「Arrays of any length now implement `IntoIterator`」.\
-> 단 **2015·2018 에디션에는 적용되지 않는다**(std 문서 `primitive.array` Editions 절).\
-> **`unused_labels` 경고**는 **1.41.0 (2020-01-30)** — 「Rustc will now warn if you have unused loop `'label`s」.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **세 반복문은 「누가 멈추라고 말하나」가 다르고, 그중 하나만 결과물을 들고 나온다.**
@@ -1081,3 +1064,20 @@ For more information about this error, try `rustc --explain E0696`.
   둘 중 무엇을 쓸지는 취향이지만, **`for` 에서는 `&v` 가 짧고 체인에서는 `.iter()` 가 이어 쓰기 좋다.**
 - `for` 의 왼쪽은 이름이 아니라 **패턴**이다 — `for (i, x) in v.iter().enumerate()` 가 그래서 된다.\
   패턴 문법의 정본은 [목록의 **19번 주제**](../19-pattern-syntax-guards-bindings-and-match-ergonomics/)다.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Loop expressions
+(`loop`/`while`/`for`/Labelled block expressions/`break`/`continue`) 절 ·
+[std 문서](https://doc.rust-lang.org/std/)의 `primitive.array`(Editions 절) ·
+`rustc --explain E0571` / `E0268` / `E0382` / `E0308`.
+이 머신의 `rust-docs`(1.92.0)를 열어 확인했고, 인용은 그 판의 원문이다.
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
+★ **에디션이 답을 바꾸는 실험 한 건**(`a.into_iter()`)은 **2018 과 2021 을 둘 다** 돌렸다.
+**버전** — `loop`/`while`/`for`/라벨은 1.0부터. 아래 셋은 이 머신의 `rust-docs` 안\
+`html/releases.md`(공식 릴리스 노트)에서 **해당 절을 찾아 확인한 것**이다.\
+**라벨 있는 블록**(`'blk: { ... }`)은 **1.65.0 (2022-11-03)** — 「Stabilize `break`ing from arbitrary labeled blocks」.\
+**배열의 `IntoIterator`** 는 **1.53.0 (2021-06-17)** — 「Arrays of any length now implement `IntoIterator`」.\
+단 **2015·2018 에디션에는 적용되지 않는다**(std 문서 `primitive.array` Editions 절).\
+**`unused_labels` 경고**는 **1.41.0 (2020-01-30)** — 「Rustc will now warn if you have unused loop `'label`s」.

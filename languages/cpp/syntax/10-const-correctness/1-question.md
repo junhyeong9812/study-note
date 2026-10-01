@@ -1,18 +1,5 @@
 # cpp/syntax/10 — `const` 정확성 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **「`const` 가 무엇을 안 막나」에 몰려 있다** — 막는 쪽은 에러가 알려 주지만
-> **안 막는 쪽은 경고 한 줄도 안 나오기** 때문이다.
-> **환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux · `nm`(GNU Binutils 2.42).
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
-> ★★★ **「`const` 니까 안 바뀐다」를 먼저 의심해라** — 3번과 4번이 그 반례다.
-> ★ **네 번째 창**은 「**같은 UB 를 네 판으로 돌리는 것**」이다(4번) — 최적화 수준·컴파일러·UBSan 을 갈라 본다.
-> 선행 — 형제 [`03번`](../03-four-cast-operators/)(`const_cast`) · [`07번`](../07-references-vs-pointers/)(참조) ·
-> C 갈래 [`14번`](../../../c/syntax/14-pointers-address-dereference-and-pointer-types/)(포인터) ·
-> C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **31번**(`const` 위치를 읽는 순서).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -300,6 +287,18 @@ int main() {
 - 매개변수를 값·`const&`·`&&` 중 무엇으로 받을지의 정본은 목록의 몇 번인가?
 - `const char*` / `char* const` 를 **읽는 순서**는 **어느 갈래 몇 번**인가?
 - Rust 의 `&` 와 C++ 의 `const` 는 **무엇이 다른가** — 한 문장으로.
+
+## 실행 환경
+
+이 주제의 질문은 **「`const` 가 무엇을 안 막나」에 몰려 있다** — 막는 쪽은 에러가 알려 주지만
+**안 막는 쪽은 경고 한 줄도 안 나오기** 때문이다.
+**환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux · `nm`(GNU Binutils 2.42).
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
+★★★ **「`const` 니까 안 바뀐다」를 먼저 의심해라** — 3번과 4번이 그 반례다.
+★ **네 번째 창**은 「**같은 UB 를 네 판으로 돌리는 것**」이다(4번) — 최적화 수준·컴파일러·UBSan 을 갈라 본다.
+선행 — 형제 [`03번`](../03-four-cast-operators/)(`const_cast`) · [`07번`](../07-references-vs-pointers/)(참조) ·
+C 갈래 [`14번`](../../../c/syntax/14-pointers-address-dereference-and-pointer-types/)(포인터) ·
+C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **31번**(`const` 위치를 읽는 순서).
 
 ## 복습 기록
 

@@ -1,11 +1,5 @@
 # domain-modeling-basic/17-cart-discount — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/17-cart-discount/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -367,3 +361,7 @@ RUNNING   6,000 깎고 잔액 4,000 → 4,000 의 60% = 2,400  →  결제 1,600
   A: 환불 시점에 할인을 다시 계산했기 때문이다.\
   정률끼리는 합계가 같아도 내역 줄(1,000+1,800 vs 2,000+800)이 다르고, 정책이 그 사이 바뀌면 합계도 달라진다.\
   결제 시점의 `List<Applied>`를 저장하고 환불은 저장된 줄을 읽어 되돌린다. 상품별로 나눠 붙일 때의 1원 잔돈 규칙은 22번 정산과 같은 문제다.
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/17-cart-discount/impl/`).

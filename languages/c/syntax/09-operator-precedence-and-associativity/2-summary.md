@@ -1,16 +1,5 @@
 # c/syntax/09 — 연산자 우선순위와 결합성: 무엇이 먼저 **묶이나** — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Operator precedence (C)](https://en.cppreference.com/w/c/language/operator_precedence) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·경고는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 플래그는 `-std=c17 -Wall -Wextra -pedantic`. **경고는 플래그 조합별로 세었고 종료 코드까지 확인했다.**\
-> `clang 18.1.3` 을 쓴 자리는 그 자리에 밝혔다.
-> **버전** — 우선순위·결합성 표는 **C89 이후 바뀐 적이 없다.** C23 도 이 주제를 건드리지 않았다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★ **경계 — 이 주제는 「무엇이 먼저 **묶이나**」만 다룬다.**\
-> 「무엇이 먼저 **도나**」는 [10번 형제](../10-evaluation-order-and-sequence-points/)가 정본이다. **둘은 다른 이야기다**(아래 (6)).\
-> 비트 연산자 자체는 [11번 형제](../11-bitwise-operations-and-shifts/), `?:` 가 시퀀스 포인트인 것은 10번이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **우선순위는 「누가 누구를 먼저 데려가나」이고, 결합성은 「같은 힘끼리 마주쳤을 때 어느 쪽이 먼저 데려가나」다.**
@@ -772,3 +761,15 @@ C 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다�
 - **매크로 안에서 우선순위가 어떻게 무너지나**는 [목록의 **42번 주제**](../42-function-like-macro-pitfalls/)가 정본이다.\
   `#define SQ(x) x*x` 에 `SQ(1+1)` 을 넣으면 `1+1*1+1 = 3` 이 되는 그 이야기다.\
   이 문서에서는 **매크로를 던져 보지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Operator precedence (C)](https://en.cppreference.com/w/c/language/operator_precedence) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
+**실행 검증** — 이 문서의 모든 출력·경고는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 플래그는 `-std=c17 -Wall -Wextra -pedantic`. **경고는 플래그 조합별로 세었고 종료 코드까지 확인했다.**\
+`clang 18.1.3` 을 쓴 자리는 그 자리에 밝혔다.
+**버전** — 우선순위·결합성 표는 **C89 이후 바뀐 적이 없다.** C23 도 이 주제를 건드리지 않았다.
+
+★★ **경계 — 이 주제는 「무엇이 먼저 **묶이나**」만 다룬다.**\
+「무엇이 먼저 **도나**」는 [10번 형제](../10-evaluation-order-and-sequence-points/)가 정본이다. **둘은 다른 이야기다**(본문 (6)).\
+비트 연산자 자체는 [11번 형제](../11-bitwise-operations-and-shifts/), `?:` 가 시퀀스 포인트인 것은 10번이다.

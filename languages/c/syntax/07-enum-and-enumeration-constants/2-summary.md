@@ -1,17 +1,5 @@
 # c/syntax/07 — `enum` 과 열거 상수: 이름이 붙은 정수일 뿐이다 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Enumerations (C)](https://en.cppreference.com/w/c/language/enum) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [GCC 13 Code Gen Options — `-fshort-enums`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Code-Gen-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·경고·에러는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> **표준 버전이 갈리는 자리는 `-std=c17`·`-std=c2x` 로 나눠 돌렸고, `-pedantic` 유무까지 나눠 세었다.**\
-> `gdb`·`clang 18.1.3` 을 쓴 자리는 그 자리에 밝혔다. 기본 플래그는 `-std=c17 -Wall -Wextra`.
-> **버전** — `enum` 은 C89 부터 있다. **열거 상수가 `int` 범위를 넘어도 되는 것**과\
-> **고정 기반 타입**(`enum E : unsigned char`)은 **C23부터**다.\
-> ★ **이 gcc 에 `-std=c23` 은 없다** — `-std=c2x` 뿐이고 그때 `__STDC_VERSION__` 이 `202000L` 이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「정수 승격·부호 비교」의 정본은 [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/)다.\
-> 여기는 **`enum` 이 그 규칙에 어떻게 걸리나**까지만 쓴다. 「`switch` 문법」은 [목록의 **12번 주제**](../12-control-flow-and-switch/)가 정본이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`enum` 은 이름이 붙은 정수 상수 묶음이다. 「그 값들만 들어간다」는 보장은 어디에도 없다.**
@@ -655,3 +643,16 @@ sizeof(enum Small)=1 Neg=1 Big=4 Huge=4 Tiny=1  (int=4)
 
 - **`enum` 이름을 문자열로 얻는 방법**은 C 에 없다. `X-매크로` 관용구로 이름 배열을 같이 만드는 것이 관례인데,\
   그것은 [목록의 **43번 주제**](../43-stringizing-and-token-pasting/)(`#`·`##`)의 몫이다. 이 문서에서는 **안 다뤘다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Enumerations (C)](https://en.cppreference.com/w/c/language/enum) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [GCC 13 Code Gen Options — `-fshort-enums`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Code-Gen-Options.html)
+**실행 검증** — 이 문서의 모든 출력·경고·에러는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+**표준 버전이 갈리는 자리는 `-std=c17`·`-std=c2x` 로 나눠 돌렸고, `-pedantic` 유무까지 나눠 세었다.**\
+`gdb`·`clang 18.1.3` 을 쓴 자리는 그 자리에 밝혔다. 기본 플래그는 `-std=c17 -Wall -Wextra`.
+**버전** — `enum` 은 C89 부터 있다. **열거 상수가 `int` 범위를 넘어도 되는 것**과\
+**고정 기반 타입**(`enum E : unsigned char`)은 **C23부터**다.\
+★ **이 gcc 에 `-std=c23` 은 없다** — `-std=c2x` 뿐이고 그때 `__STDC_VERSION__` 이 `202000L` 이다.
+
+**경계** — 「정수 승격·부호 비교」의 정본은 [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/)다.\
+여기는 **`enum` 이 그 규칙에 어떻게 걸리나**까지만 쓴다. 「`switch` 문법」은 [목록의 **12번 주제**](../12-control-flow-and-switch/)가 정본이다.

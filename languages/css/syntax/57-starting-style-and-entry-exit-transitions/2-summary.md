@@ -1,12 +1,5 @@
 # css/syntax/57 — `@starting-style` 과 진입·퇴장 전환: `display`/`overlay` 를 전환에 태우기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Transitions Level 2](https://drafts.csswg.org/css-transitions-2/) (`@starting-style`·`transition-behavior`·discrete 전환) · [CSS Position Level 4](https://drafts.csswg.org/css-position-4/) (`overlay`·최상위 레이어). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 띄우고 **CDP 로 `Input.dispatchMouseEvent` 를 던져 실제 마우스를 움직인 뒤**, `requestAnimationFrame` 마다 `getComputedStyle` 과 **`element.getAnimations()`** 를 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — CSS 에 언어 버전은 없다. `@starting-style` 과 `transition-behavior` 는 Baseline **newly**(둘 다 2024-08-06, 아직 widely 아님). **`overlay` 는 Baseline `limited`** — Chromium 계열(Chrome/Edge 2023-09)뿐이고 Firefox·Safari 에 없다. `api.webstatus.dev` 를 **2026-09-23 에 직접 조회**한 값이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **전환은 「어디서 어디까지」를 알아야 걸린다. 처음 나타나는 요소에는 「어디서」가 없다.**
@@ -460,3 +453,10 @@ overlay: auto;            /* 저자 스타일에서는 무시된다 */
 - **`content-visibility` 도 이산 속성**이라 `allow-discrete` 로 태울 수 있다. 「접힌 영역을 부드럽게 펴는」 패턴에 쓰인다.
 - `@starting-style` 은 **애니메이션(`@keyframes`)에는 쓸모가 없다.** 애니메이션은 시작값을 키프레임이 직접 들고 있어서 앞값이 필요 없다.
 - `transitionstart` 이벤트가 나는지로도 「전환이 걸렸나」를 알 수 있지만, **안 걸렸을 때 아무 이벤트도 안 나므로** 「없음」을 증명하려면 타임아웃이 필요하다. `getAnimations()` 는 **동기적으로 없음을 보여 준다.**
+
+## 실행 환경
+
+**기준 소스** — [CSS Transitions Level 2](https://drafts.csswg.org/css-transitions-2/) (`@starting-style`·`transition-behavior`·discrete 전환) · [CSS Position Level 4](https://drafts.csswg.org/css-position-4/) (`overlay`·최상위 레이어). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 값은 **Google Chrome 151.0.7922.173** headless 에 띄우고 **CDP 로 `Input.dispatchMouseEvent` 를 던져 실제 마우스를 움직인 뒤**, `requestAnimationFrame` 마다 `getComputedStyle` 과 **`element.getAnimations()`** 를 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — CSS 에 언어 버전은 없다. `@starting-style` 과 `transition-behavior` 는 Baseline **newly**(둘 다 2024-08-06, 아직 widely 아님). **`overlay` 는 Baseline `limited`** — Chromium 계열(Chrome/Edge 2023-09)뿐이고 Firefox·Safari 에 없다. `api.webstatus.dev` 를 **2026-09-23 에 직접 조회**한 값이다.

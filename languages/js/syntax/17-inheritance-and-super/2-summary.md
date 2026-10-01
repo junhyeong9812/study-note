@@ -1,61 +1,5 @@
 # js/syntax/17 — 상속과 `super`: 「`super` 는 정의된 자리를 기억하고, `this` 는 부른 자리를 따른다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
-> `super.who()` 의 **값**은 `Animal.who` 라고만 답한다 — 그 값이 **누구의 윗집에서 왔는지, 누구를 수신자로 넘겼는지**는 한 글자도 말하지 않는다.
-> 그래서 부모 칸을 `Proxy` 로 감싸 트랩 로그를 찍었다 — `guest.m()` 은 **윗집 관계가 전혀 없는** 부모 칸에 `get(who)` 를 묻고, 수신자로 **`guest`** 를 넘긴다.
-> 부모 생성자 안에서 자식 메서드가 **무엇을 보나**도 같은 창이다 — 생성 순서를 **번호 붙은 로그**로 찍었다(동작 (4)).
-> ③ 브랜드 태그가 **내장 객체 상속의 판정 창**이고(`[object Array]` 대 `[object Object]`), ④ 예외 문구가 `super()` 규칙 셋을 가른다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 최신 초안](https://tc39.es/ecma262/) — `ClassDefinitionEvaluation`(부모 칸 두 개를 고르는 자리) · 기본 생성자의 동작 · `MakeMethod` · `DefineField`.
->   ★ 멀티페이지의 함수·클래스 절([ecmascript-language-functions-and-classes](https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html))을 받아 **문장을 grep 해서** 확인했다.
->   `GetSuperBase`·`MakeSuperPropertyReference`·`GetSuperConstructor` 는 **이름만** 목차에서 확인했다(본문은 열지 않았다).
-> - [ECMA-262 판별 아카이브](https://262.ecma-international.org/) — `class`·`extends`·`super`·`new.target`·`Symbol.species` 가 ES2015, 필드·`Error` `cause` 가 ES2022 인 것을 가릴 때
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 클래스 필드·`#private`·`Error` `cause` 의 판
-> - [MDN — `super`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/super) · [MDN — `extends`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/extends) · [MDN — `new.target`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/new.target)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·로그·예외 타입과 메시지는 전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★ 예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만 찍는다 — 스택트레이스는 한 줄도 없다. 모든 블록은 표준 출력뿐이다.
->
-> **버전** — 판 경계는 아래 표 하나다. 첫 블록이 **두 판 모두 ES2022 클래스 문법과 `Error` `cause` 를 갖고 있음**을 찍는다.
->
-> | 무엇 | 판 |
-> |---|---|
-> | `class` · `extends` · `super` · `new.target` · `Symbol.species` | **ES2015** |
-> | 공개/`#private` 필드 · `#x in obj` · `Object.hasOwn` · `Error` 의 `cause` 옵션 | **ES2022** |
-> | `__proto__:` 리터럴(동작 (3)의 객체 리터럴 예) | **Annex B**([13번](../13-object-literals-and-properties/2-summary.md)이 정본) |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **① 추상 연산에 로그 심기**(본체) | 부모 칸의 `get` 트랩이 `super.who()` 의 **질문 상대와 수신자**를 찍는다 · 부모 생성자 안의 가상 호출을 **번호 붙은 생성 로그**로 찍는다 |
-> | ★★★ **③ 브랜드 태그** `Object.prototype.toString.call` | **내장 상속의 판정 창이다.** `class extends Array` 는 `[object Array]`, 옛 방식은 `[object Object]` — 그런데 옛 방식도 `instanceof Array` 는 `true` 다. **`instanceof` 가 속는 자리에서 브랜드만 바른 답을 한다** |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | `ReferenceError` 두 문구(`super()` 전 `this` · 두 번 호출) · `TypeError` 넷(원시 반환 · `extends null` · `#private` 미설치 · 추상 클래스 흉내) · `SyntaxError` 한 문구(`super` 를 못 쓰는 자리) |
-> | ★ **② 전수 격자** | 작게만 쓴다 — `super()` 를 **전에 / 안 / 두 번** 부르는 것과 **무엇을 반환하나** 의 칸을 한 블록에 모았다 |
-> | ★ **⑤ 두 판 대조기** | 이 주제의 블록은 **두 판에서 전부 identical** 이다 |
-> | ★★ **창을 바꿔 물었다**(제5의 상태) | 부모 생성자 안에서 자식의 `#label` 을 읽으면 **값 창이 `TypeError` 로 닫힌다.** 그래서 [16번](../16-class-syntax/2-summary.md)의 브랜드 검사 `#label in this` 로 바꿔 물었다 — `false`, 즉 「`undefined` 인 칸」이 아니라 「**칸이 아직 없다**」 |
-> | ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 는 두 줄 있지만 묻는 것이 「**어디에 묶이나**」가 아니라 「**컴파일되나**」다. `compiles` 와 `SyntaxError` 한 단어로 답이 나서 **가를 열이 없다** |
-> | ★ **부적용 — 파이썬 MRO 창** | JS 는 **단일 상속**이다. 조상을 한 줄로 세울 일이 없어 `__mro__` 에 해당하는 물건이 **없다** — 잴 것이 없다(동작 (6)) |
-> | ★ **안 쟀다 — 성능** | 「`super` 호출은 느리다」·「내장 상속은 느리다」 같은 말을 **한 줄도 쓰지 않는다** |
-> | ★ **안 돌렸다 — 브라우저** | 이 배치는 Node 두 판만 돌렸다 |
-> | ★ **안 돌렸다 — 두 번 컴파일**(엄격/비엄격) | 클래스 몸통은 **언제나 엄격**이라(16번) 클래스 쪽에는 비엄격 판이 없다. 객체 리터럴 메서드의 `super` 는 비엄격 파일에서만 돌렸다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 예외 **문구**(V8 — 판이 오르면 바뀐다) | ★★★ **예외의 종류** · 트랩 로그의 **질문 상대와 수신자** |
-> | ★★ `e.stack` 의 **존재와 첫 줄** — **ECMA-262 에 없다** | ★★★ **생성 로그의 순서** · 체인을 글자로 찍은 줄 |
-> | `own keys of e2` 에 `stack` 이 끼는 것(엔진) | ★★ **브랜드 태그** `[object Array]` · `[object Error]` · `[object Map]` |
->
-> ★★ **주소도 시간도 난수도 한 곳도 안 찍힌다.** 두 판 대조기의 마지막 줄 —
 `identical 22  ·  differs 1  ·  total 23`
 > ★ 갈린 한 블록은 [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)의 것이다. 이 주제의 블록은 **전부 identical** 이다.
 >
@@ -1032,3 +976,59 @@ Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.m
   동작 (3)의 「윗집은 호출 시점 조회」와 같은 성질일 것으로 보이지만, ★ **`setPrototypeOf(B, X)` 뒤 `new B()` 를 던져 보지 않았다.**
 - **`Symbol.species` 는 `Promise`·`RegExp`·`ArrayBuffer`·TypedArray 에도 있다**(명세 목차에 `get … [ %Symbol.species% ]` 항목이 있다). 그쪽 동작은 22번과 각 주제의 몫이다.
 - **`Object.setPrototypeOf(o1, P2)` 로 `super` 의 답이 바뀐 것**은 「HomeObject 의 윗집을 바꾸는 코드」가 곧 「그 메서드를 가진 모든 객체의 `super` 를 바꾸는 코드」라는 뜻이다. 실무에서 할 일은 아니다 — **의미가 그렇다는 것**까지만 적는다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
+`super.who()` 의 **값**은 `Animal.who` 라고만 답한다 — 그 값이 **누구의 윗집에서 왔는지, 누구를 수신자로 넘겼는지**는 한 글자도 말하지 않는다.
+그래서 부모 칸을 `Proxy` 로 감싸 트랩 로그를 찍었다 — `guest.m()` 은 **윗집 관계가 전혀 없는** 부모 칸에 `get(who)` 를 묻고, 수신자로 **`guest`** 를 넘긴다.
+부모 생성자 안에서 자식 메서드가 **무엇을 보나**도 같은 창이다 — 생성 순서를 **번호 붙은 로그**로 찍었다(동작 (4)).
+③ 브랜드 태그가 **내장 객체 상속의 판정 창**이고(`[object Array]` 대 `[object Object]`), ④ 예외 문구가 `super()` 규칙 셋을 가른다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 최신 초안](https://tc39.es/ecma262/) — `ClassDefinitionEvaluation`(부모 칸 두 개를 고르는 자리) · 기본 생성자의 동작 · `MakeMethod` · `DefineField`.
+  ★ 멀티페이지의 함수·클래스 절([ecmascript-language-functions-and-classes](https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html))을 받아 **문장을 grep 해서** 확인했다.
+  `GetSuperBase`·`MakeSuperPropertyReference`·`GetSuperConstructor` 는 **이름만** 목차에서 확인했다(본문은 열지 않았다).
+- [ECMA-262 판별 아카이브](https://262.ecma-international.org/) — `class`·`extends`·`super`·`new.target`·`Symbol.species` 가 ES2015, 필드·`Error` `cause` 가 ES2022 인 것을 가릴 때
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 클래스 필드·`#private`·`Error` `cause` 의 판
+- [MDN — `super`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/super) · [MDN — `extends`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/extends) · [MDN — `new.target`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/new.target)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·로그·예외 타입과 메시지는 전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★ 예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만 찍는다 — 스택트레이스는 한 줄도 없다. 모든 블록은 표준 출력뿐이다.
+
+**버전** — 판 경계는 아래 표 하나다. 첫 블록이 **두 판 모두 ES2022 클래스 문법과 `Error` `cause` 를 갖고 있음**을 찍는다.
+
+| 무엇 | 판 |
+|---|---|
+| `class` · `extends` · `super` · `new.target` · `Symbol.species` | **ES2015** |
+| 공개/`#private` 필드 · `#x in obj` · `Object.hasOwn` · `Error` 의 `cause` 옵션 | **ES2022** |
+| `__proto__:` 리터럴(동작 (3)의 객체 리터럴 예) | **Annex B**([13번](../13-object-literals-and-properties/2-summary.md)이 정본) |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **① 추상 연산에 로그 심기**(본체) | 부모 칸의 `get` 트랩이 `super.who()` 의 **질문 상대와 수신자**를 찍는다 · 부모 생성자 안의 가상 호출을 **번호 붙은 생성 로그**로 찍는다 |
+| ★★★ **③ 브랜드 태그** `Object.prototype.toString.call` | **내장 상속의 판정 창이다.** `class extends Array` 는 `[object Array]`, 옛 방식은 `[object Object]` — 그런데 옛 방식도 `instanceof Array` 는 `true` 다. **`instanceof` 가 속는 자리에서 브랜드만 바른 답을 한다** |
+| ★★ **④ 예외의 `constructor.name` + `message`** | `ReferenceError` 두 문구(`super()` 전 `this` · 두 번 호출) · `TypeError` 넷(원시 반환 · `extends null` · `#private` 미설치 · 추상 클래스 흉내) · `SyntaxError` 한 문구(`super` 를 못 쓰는 자리) |
+| ★ **② 전수 격자** | 작게만 쓴다 — `super()` 를 **전에 / 안 / 두 번** 부르는 것과 **무엇을 반환하나** 의 칸을 한 블록에 모았다 |
+| ★ **⑤ 두 판 대조기** | 이 주제의 블록은 **두 판에서 전부 identical** 이다 |
+| ★★ **창을 바꿔 물었다**(제5의 상태) | 부모 생성자 안에서 자식의 `#label` 을 읽으면 **값 창이 `TypeError` 로 닫힌다.** 그래서 [16번](../16-class-syntax/2-summary.md)의 브랜드 검사 `#label in this` 로 바꿔 물었다 — `false`, 즉 「`undefined` 인 칸」이 아니라 「**칸이 아직 없다**」 |
+| ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 는 두 줄 있지만 묻는 것이 「**어디에 묶이나**」가 아니라 「**컴파일되나**」다. `compiles` 와 `SyntaxError` 한 단어로 답이 나서 **가를 열이 없다** |
+| ★ **부적용 — 파이썬 MRO 창** | JS 는 **단일 상속**이다. 조상을 한 줄로 세울 일이 없어 `__mro__` 에 해당하는 물건이 **없다** — 잴 것이 없다(동작 (6)) |
+| ★ **안 쟀다 — 성능** | 「`super` 호출은 느리다」·「내장 상속은 느리다」 같은 말을 **한 줄도 쓰지 않는다** |
+| ★ **안 돌렸다 — 브라우저** | 이 배치는 Node 두 판만 돌렸다 |
+| ★ **안 돌렸다 — 두 번 컴파일**(엄격/비엄격) | 클래스 몸통은 **언제나 엄격**이라(16번) 클래스 쪽에는 비엄격 판이 없다. 객체 리터럴 메서드의 `super` 는 비엄격 파일에서만 돌렸다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 예외 **문구**(V8 — 판이 오르면 바뀐다) | ★★★ **예외의 종류** · 트랩 로그의 **질문 상대와 수신자** |
+| ★★ `e.stack` 의 **존재와 첫 줄** — **ECMA-262 에 없다** | ★★★ **생성 로그의 순서** · 체인을 글자로 찍은 줄 |
+| `own keys of e2` 에 `stack` 이 끼는 것(엔진) | ★★ **브랜드 태그** `[object Array]` · `[object Error]` · `[object Map]` |
+
+★★ **주소도 시간도 난수도 한 곳도 안 찍힌다.** 두 판 대조기의 마지막 줄 —

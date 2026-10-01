@@ -1,15 +1,5 @@
 # java/syntax/16 — 애너테이션: 선언·`@Retention`·`@Target`·메타 애너테이션 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §9.6 Annotation Interfaces](https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html) · [§9.7 Annotations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html) · [JVMS SE 21 §4.7.16~4.7.20 (애너테이션 속성)](https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-4.html) · [`java.lang.annotation` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/annotation/package-summary.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/annotation/*.java`(`lib/src.zip`).
-> **실행 검증** — 이 문서의 모든 출력·에러·클래스 파일 덤프는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> `Ex.java (16-a)` `(16-c)` `(16-e)` `(16-f)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 다 돌렸다.\
-> 세 JDK 에서 **`Annotation.toString()` 의 형식이 두 번 바뀌었다**(아래 「구현 세부사항 대 언어 보장」). 나머지 출력은 같았다.\
-> **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·javadoc 인용으로만 적었다.
-> **버전** — 애너테이션 자체는 **Java 5**. `@Repeatable` · `ElementType.TYPE_USE` · `TYPE_PARAMETER` 는 **8**,
-> `ElementType.MODULE` 은 **9**, `ElementType.RECORD_COMPONENT` 는 **16** 부터다(`src.zip` 의 `@since` 를 직접 읽었다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 JLS·JVMS·javadoc 으로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **애너테이션은 "코드에 붙이는 포스트잇"이고, `@Retention` 은 그 포스트잇이 언제 떨어지는지를 정한다.**
@@ -857,3 +847,13 @@ Ex.java:9: error: annotation interface not applicable to this kind of declaratio
 
   **기본값을 바꾸면 쓰는 쪽을 다시 컴파일하지 않아도 반영된다.**\
   라이브러리가 애너테이션의 기본값을 바꾸면 **재컴파일 없이 동작이 달라진다**는 뜻이기도 하다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §9.6 Annotation Interfaces](https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html) · [§9.7 Annotations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html) · [JVMS SE 21 §4.7.16~4.7.20 (애너테이션 속성)](https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-4.html) · [`java.lang.annotation` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/annotation/package-summary.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/annotation/*.java`(`lib/src.zip`).
+**실행 검증** — 이 문서의 모든 출력·에러·클래스 파일 덤프는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+`Ex.java (16-a)` `(16-c)` `(16-e)` `(16-f)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 다 돌렸다.\
+세 JDK 에서 **`Annotation.toString()` 의 형식이 두 번 바뀌었다**(본문 「구현 세부사항 대 언어 보장」). 나머지 출력은 같았다.\
+**"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·javadoc 인용으로만 적었다.
+**버전** — 애너테이션 자체는 **Java 5**. `@Repeatable` · `ElementType.TYPE_USE` · `TYPE_PARAMETER` 는 **8**,
+`ElementType.MODULE` 은 **9**, `ElementType.RECORD_COMPONENT` 는 **16** 부터다(`src.zip` 의 `@since` 를 직접 읽었다).

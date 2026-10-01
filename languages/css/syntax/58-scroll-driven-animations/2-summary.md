@@ -1,13 +1,5 @@
 # css/syntax/58 — 스크롤 연동 애니메이션: `animation-timeline`·`scroll()`/`view()`·`timeline-scope` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Scroll-driven Animations Level 1](https://drafts.csswg.org/scroll-animations-1/) (`scroll()`·`view()`·진행률 정의·이름 조회) · [CSS Animations Level 2](https://drafts.csswg.org/css-animations-2/) (`animation-timeline`). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 수치는 **Google Chrome 151.0.7922.173** headless 에 띄우고 **CDP 로 실제로 스크롤을 움직여** 잰 것이다. `Runtime.evaluate` 의 `scrollTo`/`scrollTop` 대입과 `Input.dispatchMouseEvent(type:"mouseWheel")` **둘 다 던져 봤고 둘 다 작동했다**(휠은 한 번에 정확히 지정한 px 만큼 움직였다). 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> ⚠️ **버전 — Baseline `limited` 다.** `api.webstatus.dev` 를 **2026-09-23 에 직접 조회**한 값: Chrome 2023-07-18 · Edge 2023-07-21 · Safari 2025-09-15 · **Firefox 미구현.**\
-> 그래서 이 문서는 「이렇게 쓰면 된다」로 쓰지 않았다. 「**Chrome 에서는 이렇게 된다 + 어디까지 믿을 수 있나**」로 읽는다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **애니메이션의 시계를 떼어 내고 그 자리에 스크롤 막대를 꽂는 것이다.**
@@ -491,3 +483,11 @@ animation-timeline: --scrol;        /* --scroll 의 오타 */
 - **`animation-range`**(`entry`·`exit`·`cover`·`contain` 같은 이름 있는 구간)로 「0\~100% 중 어디를 쓸지」를 좁힐 수 있다. 속도를 바꾸는 실질적인 수단이 이쪽이다. **이 문서에서는 재지 않았다.**
 - Web Animations API 쪽에는 `new ScrollTimeline({ source, axis })`·`new ViewTimeline({ subject })` 가 있다. CSS 로 이름을 붙이지 않고 JS 에서 직접 만들 수 있다.
 - `view()` 의 명세에는 `cover` 말고도 `contain`·`entry`·`exit` 이라는 **이름 있는 구간**이 정의돼 있다. 이 문서의 표는 전부 기본 구간(`cover`)이다.
+
+## 실행 환경
+
+**기준 소스** — [Scroll-driven Animations Level 1](https://drafts.csswg.org/scroll-animations-1/) (`scroll()`·`view()`·진행률 정의·이름 조회) · [CSS Animations Level 2](https://drafts.csswg.org/css-animations-2/) (`animation-timeline`). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 수치는 **Google Chrome 151.0.7922.173** headless 에 띄우고 **CDP 로 실제로 스크롤을 움직여** 잰 것이다. `Runtime.evaluate` 의 `scrollTo`/`scrollTop` 대입과 `Input.dispatchMouseEvent(type:"mouseWheel")` **둘 다 던져 봤고 둘 다 작동했다**(휠은 한 번에 정확히 지정한 px 만큼 움직였다). 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+⚠️ **버전 — Baseline `limited` 다.** `api.webstatus.dev` 를 **2026-09-23 에 직접 조회**한 값: Chrome 2023-07-18 · Edge 2023-07-21 · Safari 2025-09-15 · **Firefox 미구현.**\
+그래서 이 문서는 「이렇게 쓰면 된다」로 쓰지 않았다. 「**Chrome 에서는 이렇게 된다 + 어디까지 믿을 수 있나**」로 읽는다.

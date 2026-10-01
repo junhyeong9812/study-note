@@ -1,12 +1,5 @@
 # PR #37053 분석 — TwoByteMatcher의 부분 일치 상태가 풀리지 않는 결함
 
-> 기준: 머지 커밋 `7f1966f5f57`(upstream merge `4b5c92703c6`, 2026-08-05 Brian Clozel).
-> 이하 `DataBufferUtils.java:NNN`·`AbstractCharSequenceDecoder.java:NNN`은 이 커밋 기준이며,
-> `TwoByteMatcher.match(byte)`(`:921-927`)만 **수정 후**에 존재하는 블록이다. "수정 전"은 그 블록이 없던 상태를 뜻한다.
->
-> 이 문서는 결함의 인과 사슬만 다룬다. 서사 해설은 README.md, 무대 지도는 structure.md, 테스트별 해설은 tests.md,
-> 이해 게이트 문답은 gates.md가 소유한다.
-
 ## 0. 결론
 
 **결함**: `DataBufferUtils.TwoByteMatcher`가 `AbstractNestedMatcher.match(byte)`를 그대로 물려받았는데, 그 기본 구현은 **불일치 시 부분 일치 카운터를 되돌리지 않는다**(되감기를 하위 클래스에 위임하는 설계).\
@@ -463,3 +456,9 @@ private static class TwoByteMatcher extends AbstractNestedMatcher {
 
 > **노출면(exposure surface)** — 결함이 실제로 드러날 수 있는 조건의 범위.\
 > 예: 여기서는 "WebFlux 텍스트 디코딩 + 본문에 홀로 있는 `\r`"이라는 두 조건이 겹칠 때만 드러난다.
+
+## 출처
+
+기준: 머지 커밋 `7f1966f5f57`(upstream merge `4b5c92703c6`, 2026-08-05 Brian Clozel).
+이하 `DataBufferUtils.java:NNN`·`AbstractCharSequenceDecoder.java:NNN`은 이 커밋 기준이며,
+`TwoByteMatcher.match(byte)`(`:921-927`)만 **수정 후**에 존재하는 블록이다. "수정 전"은 그 블록이 없던 상태를 뜻한다.

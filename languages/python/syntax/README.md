@@ -1,11 +1,5 @@
 # Python — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**
-> (2026-09-24 기준 **28 / 53** — 01\~28). 나머지는 아직 없다.
-> 기준 소스: [Python 3.12 언어 레퍼런스](https://docs.python.org/3.12/reference/index.html) · [표준 라이브러리 3.12](https://docs.python.org/3.12/library/index.html) · [PEP 인덱스](https://peps.python.org/)
-> 실행 검증: **가능**. 이 머신에 `python3` 3.12.3 이 있어 3.12 까지의 예시는 실제로 돌려 출력을 확인한다. 3.13 전용 동작(PEP 696 기본값·`TypeIs`·free-threaded)은 설치본이 없어 문서·PEP 로만 접지하고 「미실행」으로 표기한다.
-> 기준일 2026-09-20.
-
 ## 이 언어에서 무엇을 자르는 축
 
 Python 은 **모든 것이 객체**이고 이름은 그 객체에 붙는 꼬리표라는 한 가지 모델 위에 문법이 얹혀 있다.
@@ -102,3 +96,10 @@ JS 와 대비가 값을 내는 자리(동적 타입·컴프리헨션·이터레�
 | 3.11 | `ExceptionGroup`·`except*`(PEP 654), `asyncio.TaskGroup`, `StrEnum` (#27, #52, #37) |
 | 3.12 | PEP 695 타입 매개변수 문법, PEP 701 f-string 형식화 (#41, #8) |
 | 3.13 | 타입 매개변수 기본값(PEP 696), `TypeIs`(PEP 742), `ReadOnly`(PEP 705), free-threaded 실험 빌드(PEP 703) (#41, #53) — **이 머신에서 실행 검증 불가** |
+
+## 실행 환경
+
+(2026-09-24 기준 **28 / 53** — 01\~28). 나머지는 아직 없다.
+기준 소스: [Python 3.12 언어 레퍼런스](https://docs.python.org/3.12/reference/index.html) · [표준 라이브러리 3.12](https://docs.python.org/3.12/library/index.html) · [PEP 인덱스](https://peps.python.org/)
+실행 검증: **가능**. 이 머신에 `python3` 3.12.3 이 있어 3.12 까지의 예시는 실제로 돌려 출력을 확인한다. 3.13 전용 동작(PEP 696 기본값·`TypeIs`·free-threaded)은 설치본이 없어 문서·PEP 로만 접지하고 「미실행」으로 표기한다.
+기준일 2026-09-20.

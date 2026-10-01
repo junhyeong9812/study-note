@@ -1,21 +1,5 @@
 # rust/syntax/20 — `if let`·`while let`·`let else`(1.65)·`let` 체인(2024 에디션·1.88) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference — `if let` expressions](https://doc.rust-lang.org/reference/expressions/if-expr.html) ·
-> [Reference — `let` statements](https://doc.rust-lang.org/reference/statements.html#let-statements) ·
-> [Reference — Destructors (temporary scopes)](https://doc.rust-lang.org/reference/destructors.html) ·
-> [Edition Guide — Rust 2024](https://doc.rust-lang.org/edition-guide/rust-2024/).
-> ★ `rustc --explain E0308` 은 **확인용으로만 열었고 본문에 옮기지 않았다.**
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 또는 **`rustc --edition 2024 ex.rs -o ex`** 로 실제로 돌려 받은 것이다.\
-> **손으로 옮겨 적은 출력은 한 줄도 없다.**\
-> ★★★ **이 주제는 에디션이 본체다.** 에디션을 안 밝힌 결과는 이 주제에서 아무 뜻이 없다.\
-> 두 에디션을 비교한 자리는 **표준 배너로 한 판씩 따로** 실었다 — 배너의 `--edition` 숫자가 유일한 차이다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 이 주제의 절반이 안 돌아간다.
-> **버전** — `if let`·`while let` 은 1.0.0부터다. **`let else` 는 1.65.0**부터이고 **에디션과 무관**하다.\
-> **`let` 체인은 1.88.0 + 2024 에디션**이라야 한다. **`if let` 임시값 스코프 변경은 2024 에디션**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 흔들리는 칸 / 안 흔들리는 칸
 
 | | 칸 | 왜 |
@@ -899,3 +883,19 @@ if let Event::Click = e { … } else if let Event::Key = e { … } else { … }
 - **2024 의 임시값 변경은 `if let` 에만** 적용된다. `match`·`while let` 의 규칙은 그대로다 —
   전수는 [목록의 **47번 주제**](../47-editions-2021-vs-2024-and-cargo-fix/)에서 확인한다.
 - **`let else` 에 `if let` 처럼 `else if` 를 붙일 수 없다.** 발산해야 하므로 붙일 자리가 없다.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference — `if let` expressions](https://doc.rust-lang.org/reference/expressions/if-expr.html) ·
+[Reference — `let` statements](https://doc.rust-lang.org/reference/statements.html#let-statements) ·
+[Reference — Destructors (temporary scopes)](https://doc.rust-lang.org/reference/destructors.html) ·
+[Edition Guide — Rust 2024](https://doc.rust-lang.org/edition-guide/rust-2024/).
+★ `rustc --explain E0308` 은 **확인용으로만 열었고 본문에 옮기지 않았다.**
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 또는 **`rustc --edition 2024 ex.rs -o ex`** 로 실제로 돌려 받은 것이다.\
+**손으로 옮겨 적은 출력은 한 줄도 없다.**\
+★★★ **이 주제는 에디션이 본체다.** 에디션을 안 밝힌 결과는 이 주제에서 아무 뜻이 없다.\
+두 에디션을 비교한 자리는 **표준 배너로 한 판씩 따로** 실었다 — 배너의 `--edition` 숫자가 유일한 차이다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 이 주제의 절반이 안 돌아간다.
+**버전** — `if let`·`while let` 은 1.0.0부터다. **`let else` 는 1.65.0**부터이고 **에디션과 무관**하다.\
+**`let` 체인은 1.88.0 + 2024 에디션**이라야 한다. **`if let` 임시값 스코프 변경은 2024 에디션**이다.

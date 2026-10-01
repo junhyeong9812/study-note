@@ -1,21 +1,5 @@
 # sql/57-명시적 잠금과 교착 — `FOR UPDATE`·`SKIP LOCKED`·`NOWAIT` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · SELECT — The Locking Clause](https://www.postgresql.org/docs/18/sql-select.html#SQL-FOR-UPDATE-SHARE) · [Explicit Locking](https://www.postgresql.org/docs/18/explicit-locking.html) · [MySQL 8.4 · Locking Reads](https://dev.mysql.com/doc/refman/8.4/en/innodb-locking-reads.html) · [InnoDB Locking](https://dev.mysql.com/doc/refman/8.4/en/innodb-locking.html) · [Deadlocks in InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-deadlocks.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> ★ **이 주제는 설정에 달려 있다** — 잠금 대기 제한과 교착 감지가 전부 설정이다. 그래서 「환경 확인」이 본문 앞에 있다.\
-> ★★ **대기·교착은 반드시 타임아웃을 먼저 걸고 시험했다.** 두 접속 모두 `lock_timeout = '3s'` / `innodb_lock_wait_timeout = 3` 을 첫 줄로 깔았다.\
-> **맨몸으로 무한 대기를 걸지 않았고, 강제로 끊은 세션도 없다**(3-answer 의 「실행 검증」).\
-> ★ **정본 경계** — 여러 인스턴스를 조율하는 **분산 락은 [`ops-patterns/11-distributed-lock`](../../../../cs/ops-patterns/11-distributed-lock/) 이 정본**이다.\
-> **여기는 한 DB 안의 행 잠금 문법과 그 잠금이 실제로 어디에 걸리는가까지**다.\
-> **이 편이 만든 객체와 그 뒷정리** — 표 `t57_q`(4행) · `t57_lk`(3행, 인덱스 없음) · `t57_ix`(3행, `grp` 에 인덱스).\
-> **끝나고 두 엔진에서 `DROP` 했다**(3-answer).\
-> ★ **기존 `emp`·`dept` 는 읽지도 잠그지도 않았다.** 다른 사람이 쓰는 표를 잠그면 그 사람이 멈춘다.\
-> **선행** — [56 격리 수준과 읽기 이상 현상·MVCC](../56-isolation-levels-read-phenomena-mvcc/). 잠금 읽기가 스냅샷과 다르게 도는 이유가 거기 있다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`FOR UPDATE` 는 「이 줄 내가 고칠 거니까 손대지 마」라고 읽으면서 표시해 두는 것이다.**
@@ -700,3 +684,18 @@ MySQL 의 갭 락은 그 틈을 일부 메우지만, **엔진과 격리 수준�
   「이 배치는 한 번에 하나만」 같은 조율에 쓰이고, 분산 환경의 한계는 [`ops-patterns/11-distributed-lock`](../../../../cs/ops-patterns/11-distributed-lock/) 이 다룬다.
 - **교착은 `UPDATE` 만으로도 난다.** 이 편은 `FOR UPDATE` 로 만들었지만, `UPDATE` 두 문이 순서만 엇갈려도 같은 사이클이 생긴다.\
   실제로 [56번](../56-isolation-levels-read-phenomena-mvcc/)의 MySQL `SERIALIZABLE` 실험에서는 **일반 `SELECT` 가 교착의 한 변**이 됐다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · SELECT — The Locking Clause](https://www.postgresql.org/docs/18/sql-select.html#SQL-FOR-UPDATE-SHARE) · [Explicit Locking](https://www.postgresql.org/docs/18/explicit-locking.html) · [MySQL 8.4 · Locking Reads](https://dev.mysql.com/doc/refman/8.4/en/innodb-locking-reads.html) · [InnoDB Locking](https://dev.mysql.com/doc/refman/8.4/en/innodb-locking.html) · [Deadlocks in InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-deadlocks.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+★ **이 주제는 설정에 달려 있다** — 잠금 대기 제한과 교착 감지가 전부 설정이다. 그래서 「환경 확인」이 본문 앞에 있다.\
+★★ **대기·교착은 반드시 타임아웃을 먼저 걸고 시험했다.** 두 접속 모두 `lock_timeout = '3s'` / `innodb_lock_wait_timeout = 3` 을 첫 줄로 깔았다.\
+**맨몸으로 무한 대기를 걸지 않았고, 강제로 끊은 세션도 없다**(3-answer 의 「실행 검증」).\
+★ **정본 경계** — 여러 인스턴스를 조율하는 **분산 락은 [`ops-patterns/11-distributed-lock`](../../../../cs/ops-patterns/11-distributed-lock/) 이 정본**이다.\
+**여기는 한 DB 안의 행 잠금 문법과 그 잠금이 실제로 어디에 걸리는가까지**다.\
+**이 편이 만든 객체와 그 뒷정리** — 표 `t57_q`(4행) · `t57_lk`(3행, 인덱스 없음) · `t57_ix`(3행, `grp` 에 인덱스).\
+**끝나고 두 엔진에서 `DROP` 했다**(3-answer).\
+★ **기존 `emp`·`dept` 는 읽지도 잠그지도 않았다.** 다른 사람이 쓰는 표를 잠그면 그 사람이 멈춘다.\
+**선행** — [56 격리 수준과 읽기 이상 현상·MVCC](../56-isolation-levels-read-phenomena-mvcc/). 잠금 읽기가 스냅샷과 다르게 도는 이유가 거기 있다.

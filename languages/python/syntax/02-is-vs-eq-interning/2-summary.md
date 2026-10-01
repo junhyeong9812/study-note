@@ -1,19 +1,5 @@
 # python/syntax/02-is-vs-eq-interning — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [6.10.3. Identity comparisons](https://docs.python.org/3.12/reference/expressions.html#is-not) — `is` 의 정의
-> - [6.10.2. Membership test operations](https://docs.python.org/3.12/reference/expressions.html#membership-test-operations) — `in` 이 `is` 를 먼저 본다는 규정
-> - [`id()`](https://docs.python.org/3.12/library/functions.html#id) — 정체의 정의와 CPython 구현 주석
-> - [`PyLong_FromLong()`](https://docs.python.org/3.12/c-api/long.html) — 작은 정수 캐시(구현 주석)
-> - [`sys.intern()`](https://docs.python.org/3.12/library/sys.html#sys.intern) — 문자열 인터닝
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> **버전** — `is`/`==` 자체는 Python 3 전체 공통. 리터럴에 `is` 를 쓸 때 나는 `SyntaxWarning` 은 3.8+.
-> **구현 대 명세** — 이 주제의 절반은 **CPython 구현 세부사항**이다. 「구현 세부사항 대 언어 보장」 절에서 선을 긋는다.
-
 ## 한눈에 — 쉽게 말하면
 
 **이름표와 상자.**
@@ -578,3 +564,16 @@ True
   버전·구현이 바뀌면 달라질 수 있으므로 코드가 여기에 기대면 안 된다.
 - **`SyntaxWarning`**: 문법상 틀리지는 않았지만 의도와 다를 가능성이 큰 코드에 컴파일 시점에 나오는 경고.\
   리터럴에 `is` 를 쓰면 3.8부터 이 경고가 난다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [6.10.3. Identity comparisons](https://docs.python.org/3.12/reference/expressions.html#is-not) — `is` 의 정의
+- [6.10.2. Membership test operations](https://docs.python.org/3.12/reference/expressions.html#membership-test-operations) — `in` 이 `is` 를 먼저 본다는 규정
+- [`id()`](https://docs.python.org/3.12/library/functions.html#id) — 정체의 정의와 CPython 구현 주석
+- [`PyLong_FromLong()`](https://docs.python.org/3.12/c-api/long.html) — 작은 정수 캐시(구현 주석)
+- [`sys.intern()`](https://docs.python.org/3.12/library/sys.html#sys.intern) — 문자열 인터닝
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+**버전** — `is`/`==` 자체는 Python 3 전체 공통. 리터럴에 `is` 를 쓸 때 나는 `SyntaxWarning` 은 3.8+.
+**구현 대 명세** — 이 주제의 절반은 **CPython 구현 세부사항**이다. 「구현 세부사항 대 언어 보장」 절에서 선을 긋는다.

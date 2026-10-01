@@ -1,18 +1,5 @@
 # csharp/syntax/08 — 널 허용 값 타입 `Nullable<T>` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> **환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
-> 진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
-> ★★★ **4번이 이 주제의 중심이다** — [03번](../03-boxing-and-unboxing/)의 규칙이 **거기서만 깨진다.**
-> 03번의 「+24바이트」를 기억해 두고 오라. **같은 자로 잰다.**
-> ★★ **6번을 「둘 중 하나는 참이겠지」로 답하지 마라** — 거기서 직관이 깨진다.
-> ★ **8번은 IL 을 믿으면 틀린다** — 이 배치에서 **IL 이 근거로 지는 유일한 자리**다.
-> 선행 — [01번](../01-value-types-and-reference-types/)(값 타입) · [03번](../03-boxing-and-unboxing/)(박싱) ·
-> [06번](../06-nullable-reference-types/)(참조 타입의 `?`) · [07번](../07-null-operators/)(연산자).
-> 대비 — Java 의 [원시 타입과 래퍼 편](../../../java/syntax/01-primitives-and-wrappers/).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -305,6 +292,18 @@ Console.WriteLine($"{plain} {nested.HasValue} {refType.HasValue}");
 - Java 의 `Integer` 와 C# 의 `int?` 가 **메모리에서 어떻게 다른가**?
 - 널인 채로 꺼내면 **각각 무슨 예외**인가?
 - Java 의 `Integer` 에 있는 **`==` 함정**이 C# 의 `int?` 에도 있는가 — 왜인가?
+
+## 실행 환경
+
+**환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
+진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
+★★★ **4번이 이 주제의 중심이다** — [03번](../03-boxing-and-unboxing/)의 규칙이 **거기서만 깨진다.**
+03번의 「+24바이트」를 기억해 두고 오라. **같은 자로 잰다.**
+★★ **6번을 「둘 중 하나는 참이겠지」로 답하지 마라** — 거기서 직관이 깨진다.
+★ **8번은 IL 을 믿으면 틀린다** — 이 배치에서 **IL 이 근거로 지는 유일한 자리**다.
+선행 — [01번](../01-value-types-and-reference-types/)(값 타입) · [03번](../03-boxing-and-unboxing/)(박싱) ·
+[06번](../06-nullable-reference-types/)(참조 타입의 `?`) · [07번](../07-null-operators/)(연산자).
+대비 — Java 의 [원시 타입과 래퍼 편](../../../java/syntax/01-primitives-and-wrappers/).
 
 ## 복습 기록
 

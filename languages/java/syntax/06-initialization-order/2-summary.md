@@ -1,14 +1,5 @@
 # java/syntax/06 — 클래스 멤버와 초기화 순서: static/인스턴스 초기화 블록 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §12.4.1 When Initialization Occurs](https://docs.oracle.com/javase/specs/jls/se21/html/jls-12.html) · [§12.5 Creation of New Class Instances](https://docs.oracle.com/javase/specs/jls/se21/html/jls-12.html) · [§4.12.4 final Variables (constant variable)](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html)
-> **실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 같은 프로그램을 **17.0.13 · 25.0.1** 에서도 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
-> 바이트코드는 `javap -c -p` 출력을 그대로 옮겼다.
-> **버전** — 초기화 순서 규칙 자체는 Java 1.0 이래 바뀌지 않았다. 17·21·25 동작 동일.\
-> 단 **25의 유연한 생성자 본문**(JEP 513)은 `super()` **앞**에 쓸 수 있는 문장을 넓혔다 — [목록의 **07번 주제**](../07-constructors/).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 JLS 로, 순서는 실행 트레이스로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **객체 하나가 만들어지는 것은 공장에서 차 한 대가 조립되는 것과 같다.**
@@ -523,3 +514,12 @@ new Point()  -> Point() -> this(0,0) -> Point(int,int)
 - **인터페이스의 `static` 필드도 같은 규칙을 따르지만**, 인터페이스 초기화는 상위 인터페이스를 초기화하지 않는다(JLS §12.4.1).
 - **이중 중괄호 초기화**(`new ArrayList<>() {{ add("a"); }}`)는 이 주제의 인스턴스 초기화 블록을 익명 클래스에 쓴 것이다.\
   편해 보이지만 익명 클래스가 **바깥 인스턴스를 붙잡아** 누수를 만들고, 직렬화·`equals` 도 깨진다. 쓰지 않는다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §12.4.1 When Initialization Occurs](https://docs.oracle.com/javase/specs/jls/se21/html/jls-12.html) · [§12.5 Creation of New Class Instances](https://docs.oracle.com/javase/specs/jls/se21/html/jls-12.html) · [§4.12.4 final Variables (constant variable)](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html)
+**실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+같은 프로그램을 **17.0.13 · 25.0.1** 에서도 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
+바이트코드는 `javap -c -p` 출력을 그대로 옮겼다.
+**버전** — 초기화 순서 규칙 자체는 Java 1.0 이래 바뀌지 않았다. 17·21·25 동작 동일.\
+단 **25의 유연한 생성자 본문**(JEP 513)은 `super()` **앞**에 쓸 수 있는 문장을 넓혔다 — [목록의 **07번 주제**](../07-constructors/).

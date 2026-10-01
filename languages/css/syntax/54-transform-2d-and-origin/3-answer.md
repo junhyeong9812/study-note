@@ -1,10 +1,5 @@
 # css/syntax/54 — `transform` 2D·`transform-origin`·개별 변환 속성 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 좌표는 Google Chrome 151.0.7922.173 headless 에서 실제로 측정한 것**이다.\
-> ★ 이 주제는 계산값이 전부 `matrix(…)` 로 나와 **계산값만으로는 아무것도 못 읽는다** — 그래서 `getBoundingClientRect()` 좌표를 같이 쟀고, 필요하면 스크린샷 픽셀을 읽었다.\
-> 규칙은 [CSS Transforms Level 1](https://drafts.csswg.org/css-transforms-1/) 과 [Level 2](https://drafts.csswg.org/css-transforms-2/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -384,3 +379,9 @@
 - **대체 요소(replaced element)** — 내용을 외부 자원이 채우는 요소(`<img>` 등). 인라인이어도 변환이 먹는다.
 - **외접 상자** — `getBoundingClientRect()` 가 돌려주는, 회전한 도형을 감싸는 축 정렬 사각형.
 - **쌓임 맥락 / 포함 블록 / BFC** — `transform` 은 앞의 둘은 만들고 **BFC 는 안 만든다.** 서로 다른 축이다.
+
+## 실행 환경
+
+이 파일의 **모든 좌표는 Google Chrome 151.0.7922.173 headless 에서 실제로 측정한 것**이다.\
+★ 이 주제는 계산값이 전부 `matrix(…)` 로 나와 **계산값만으로는 아무것도 못 읽는다** — 그래서 `getBoundingClientRect()` 좌표를 같이 쟀고, 필요하면 스크린샷 픽셀을 읽었다.\
+규칙은 [CSS Transforms Level 1](https://drafts.csswg.org/css-transforms-1/) 과 [Level 2](https://drafts.csswg.org/css-transforms-2/) 로 접지했다.

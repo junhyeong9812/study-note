@@ -1,15 +1,5 @@
 # kotlin/syntax/22 — `data class`: 무엇이 생성되고 무엇이 안 되나 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다. 이 주제는 [23번 주제](../23-sealed-classes-and-when-exhaustiveness/)·[목록의 **26번 주제**](../26-value-class-and-boxing/)와 [목록의 **30번 주제**](../30-destructuring-declarations-and-componentn/)의 뿌리다.
-> ★ **backing field 와 `const` 는 [16번 주제](../16-properties-backing-field-lateinit-const/)**, **`final` 기본값은 [19번 주제](../19-inheritance-open-final-override/)** 가 정본이라 여기서는 **결론만** 묻는다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-> ★★ 이 주제의 `hashCode` 는 **값이 아니라 「같나 다르나」로만** 묻는다 — 값은 실행마다 바뀌기 때문이다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -204,6 +194,15 @@ fun main() {
 - [`../../../java/syntax/14-records/`](../../../java/syntax/14-records/)의 `record` 는 본문에 **인스턴스 필드**를 둘 수 있는가?
 - 그 차이가 1번의 사고를 Java 쪽에서 어떻게 바꾸는가?
 - 「방어선의 위치가 다르다」를 두 언어의 문법으로 각각 설명해 보라.
+
+## 실행 환경
+
+선행은 [15번 주제](../15-class-declaration-constructors-and-init/)다. 이 주제는 [23번 주제](../23-sealed-classes-and-when-exhaustiveness/)·[목록의 **26번 주제**](../26-value-class-and-boxing/)와 [목록의 **30번 주제**](../30-destructuring-declarations-and-componentn/)의 뿌리다.
+★ **backing field 와 `const` 는 [16번 주제](../16-properties-backing-field-lateinit-const/)**, **`final` 기본값은 [19번 주제](../19-inheritance-open-final-override/)** 가 정본이라 여기서는 **결론만** 묻는다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
+★★ 이 주제의 `hashCode` 는 **값이 아니라 「같나 다르나」로만** 묻는다 — 값은 실행마다 바뀌기 때문이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

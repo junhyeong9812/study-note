@@ -1,12 +1,5 @@
 # web-api/38 — `requestAnimationFrame` 과 프레임 예산 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 읽기 · 쓰기 교차의 비용은 [10번 주제](../10-layout-thrashing/1-question.md), 파이프라인 네 공정은 [CSS 갈래 56번](../../css/syntax/56-rendering-pipeline-and-will-change/1-question.md), 마이크로태스크 줄은 [JS 갈래 36번](../../js/syntax/36-event-loop-and-microtasks/1-question.md)이 물었다. 여기는 **rAF 가 렌더링 단계의 어디에 끼나**와 **틀을 넘기면 무엇이 보이나**를 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 헤드리스 단일 엔진**의 관찰이다(모니터가 없다 — 간격은 헤드리스의 박자다). **시간은 찍지 않았다** — 간격은 범주로만.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -93,6 +86,12 @@ for (const b of bs) b.style.width = w + "px";                          // (다) 
 ### 10. 관찰자 둘과 이 줄 (연결)
 
 - [35번 주제](../35-intersection-observer/1-question.md) (4)의 `scroll → rAF → IO` 와 [36번 주제](../36-resize-observer/1-question.md) (4)의 「틀 번호는 rAF 가 올린다」는 문항 1 의 줄 어디에 놓이나? IO 알림이 페인트 **뒤**인 이유는?
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — 읽기 · 쓰기 교차의 비용은 [10번 주제](../10-layout-thrashing/1-question.md), 파이프라인 네 공정은 [CSS 갈래 56번](../../css/syntax/56-rendering-pipeline-and-will-change/1-question.md), 마이크로태스크 줄은 [JS 갈래 36번](../../js/syntax/36-event-loop-and-microtasks/1-question.md)이 물었다. 여기는 **rAF 가 렌더링 단계의 어디에 끼나**와 **틀을 넘기면 무엇이 보이나**를 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 헤드리스 단일 엔진**의 관찰이다(모니터가 없다 — 간격은 헤드리스의 박자다). **시간은 찍지 않았다** — 간격은 범주로만.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

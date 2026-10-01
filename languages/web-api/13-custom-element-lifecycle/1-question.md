@@ -1,12 +1,5 @@
 # web-api/13 — 커스텀 요소 수명주기: `customElements.define`·`connected`/`disconnected`/`attributeChanged`·업그레이드 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **마크업 갈래와의 경계** — HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **10번** 은 커스텀 요소를 **맛보기로** 다루고, 여기는 **수명주기 전부**다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
-> ★ 선행은 [12번 주제](../12-shadow-dom/2-summary.md)(그림자 경계)와 [03번 주제](../03-node-creation-insertion-removal/2-summary.md)(삽입이 이동이라는 것)다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -158,6 +151,12 @@ customElements.define('plain-el', class {});                      //  ?
 - [03번 주제](../03-node-creation-insertion-removal/2-summary.md)의 어느 사실이 **콜백이 한 쌍으로 나는 이유**인가?
 - [06번 주제](../06-attribute-vs-property/2-summary.md)의 구분이 `attributeChangedCallback` 에 어떻게 걸리는가?
 - 「떠날 때」를 잡는 정본은 어느 주제인가?
+
+## 실행 환경
+
+★ **마크업 갈래와의 경계** — HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **10번** 은 커스텀 요소를 **맛보기로** 다루고, 여기는 **수명주기 전부**다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
+★ 선행은 [12번 주제](../12-shadow-dom/2-summary.md)(그림자 경계)와 [03번 주제](../03-node-creation-insertion-removal/2-summary.md)(삽입이 이동이라는 것)다.
 
 ## 복습 기록
 

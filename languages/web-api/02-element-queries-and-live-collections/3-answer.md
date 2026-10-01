@@ -1,11 +1,5 @@
 # web-api/02 — 요소 조회: `querySelector` 계열과 `getElementsBy*`·라이브 대 정적 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **이 주제의 블록에는 흔들리는 칸이 없다** — 컬렉션의 `length`·예외 이름·트리 문자열은 다시 돌려도 한 글자도 같아야 한다.
-
 ```text
 $ google-chrome --version
 Google Chrome 151.0.7922.173 
@@ -461,3 +455,10 @@ row('li 하나 추가');                                   // t2 다시 읽는�
 - **`DOMException`** — 플랫폼이 던지는 예외 타입. `name` 이 `'SyntaxError'` 여도 JS 의 `SyntaxError` 가 아니다.
 - **너그러운 선택자 목록(forgiving selector list)** — `:is()`·`:where()` 의 인자 목록. 무효한 인자만 빼고 쓴다.
 - **id 색인** — 문서가 `id` 별로 들고 있는 조회표. `getElementById` 가 이것을 본다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**이 주제의 블록에는 흔들리는 칸이 없다** — 컬렉션의 `length`·예외 이름·트리 문자열은 다시 돌려도 한 글자도 같아야 한다.

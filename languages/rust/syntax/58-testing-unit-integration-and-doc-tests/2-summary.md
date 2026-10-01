@@ -1,15 +1,5 @@
 # rust/syntax/58 — 테스트: `#[test]` · 통합 테스트 · 문서 테스트 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Book — 11.2 Running Tests](https://doc.rust-lang.org/book/ch11-02-running-tests.html)(「by default they run in parallel using threads」 · `--test-threads`) ·
-> [The Book — 11.3 Test Organization](https://doc.rust-lang.org/book/ch11-03-test-organization.html)(단위 테스트는 비공개를 시험할 수 있다 · 「If our project is a binary crate that only contains a `src/main.rs` file … we can't create integration tests in the `tests` directory and bring functions defined in the `src/main.rs` file into scope」) ·
-> [rustdoc — Documentation tests](https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html)(`ignore` · `should_panic` · `no_run` · `compile_fail` · 「`extern crate <mycrate>;` is inserted」).
-> ★ 전부 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> **실행 검증** — `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `cargo 1.92.0 (344c4567c 2025-10-21)` · `x86_64-unknown-linux-gnu` 에서 **`cargo test --offline`**(외부 의존성 0 — 네트워크를 안 쓴다).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 패키지는 스크립트(`r58_pkg.sh`)가 **파일을 제자리에 복사해** 매번 새로 만든다.\
-> ★ **테스트 실행 시간은 재지 않았다** — `finished in 0.00s` 같은 숫자는 흔들리는 칸이다(아래 표).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체 창 — ① 배치 격자다** — 「테스트를 **어디에** 두었나(단위 · 통합 · 문서 · `examples/`)」 × 「**어떤 명령이** 그것을 돌리나 · **비공개 함수에** 닿나」. 스크립트가 마지막 두 줄로 **「필터가 전체와 갈린 칸 N / M」** 과 **「비공개에 닿은 자리 N / 4」** 를 센다.
 
 ```bash
@@ -718,7 +708,7 @@ error: test failed, to rerun pass `--test par`
 |---|---|---|
 | 기본 | ★★ **병렬**(스레드 — Book 11.2) | **`t.Parallel()` 을 부른 테스트만** 서로 병렬 |
 | 끄기 / 켜기 | `-- --test-threads=1` 로 **끈다** | `t.Parallel()` 로 **켠다** |
-| 근거 | 이 편 (6) | [Go 49번](../../../go/syntax/49-testing-table-driven-t-run-cleanup-and-parallel/) 머리말 블록의 `go doc` — `Parallel` 은 「this test is to be run in parallel with (**and only with**) other parallel tests」 · `Run` 은 「blocks until f returns **or calls t.Parallel**」 |
+| 근거 | 이 편 (6) | [Go 49번](../../../go/syntax/49-testing-table-driven-t-run-cleanup-and-parallel/) 「이 판」 절 블록의 `go doc` — `Parallel` 은 「this test is to be run in parallel with (**and only with**) other parallel tests」 · `Run` 은 「blocks until f returns **or calls t.Parallel**」 |
 
 - ★★ **기본값이 반대다** — Rust 는 **쓰는 쪽이 끄고**, Go 는 **쓰는 쪽이 켠다.** 그래서 Rust 에서 **전역 상태를 쓰는 테스트**는 아무 표시 없이 병렬로 섞인다((6)의 두 테스트가 그 모양). ★ Go 쪽 칸은 Go 49 의 블록을 인용한 것이고 **이 편은 Go 를 돌리지 않았다.**
 
@@ -825,3 +815,13 @@ error: test failed, to rerun pass `--test par`
 - `tests/common/mod.rs` — 통합 테스트끼리 도우미를 나누는 관용구(파일 하나 = 크레이트 하나라서 생기는 문제). **던지지 않았다.**
 - `cargo test --no-fail-fast` — 실패한 테스트 실행 파일 뒤의 것도 돌리라는 옵션. **던지지 않았다.**
 - 문서 테스트의 `#` 숨김 줄 · `edition2024` 표시 — rustdoc 문서.
+
+## 실행 환경
+
+**기준 소스** — [The Book — 11.2 Running Tests](https://doc.rust-lang.org/book/ch11-02-running-tests.html)(「by default they run in parallel using threads」 · `--test-threads`) ·
+[The Book — 11.3 Test Organization](https://doc.rust-lang.org/book/ch11-03-test-organization.html)(단위 테스트는 비공개를 시험할 수 있다 · 「If our project is a binary crate that only contains a `src/main.rs` file … we can't create integration tests in the `tests` directory and bring functions defined in the `src/main.rs` file into scope」) ·
+[rustdoc — Documentation tests](https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html)(`ignore` · `should_panic` · `no_run` · `compile_fail` · 「`extern crate <mycrate>;` is inserted」).
+★ 전부 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+**실행 검증** — `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `cargo 1.92.0 (344c4567c 2025-10-21)` · `x86_64-unknown-linux-gnu` 에서 **`cargo test --offline`**(외부 의존성 0 — 네트워크를 안 쓴다).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 패키지는 스크립트(`r58_pkg.sh`)가 **파일을 제자리에 복사해** 매번 새로 만든다.\
+★ **테스트 실행 시간은 재지 않았다** — `finished in 0.00s` 같은 숫자는 흔들리는 칸이다(맨 위 표).

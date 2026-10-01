@@ -1,15 +1,5 @@
 # PR #37268 - 착수 분석: ConcurrentLruCache의 이중 size 감산
 
-> 착수 시점(2026-09-10)에 작성한 분석을 학습용으로 다듬은 것이다. 기준
-> upstream/main `572850bdcf1`. 결함 위치는
-> `spring-core/src/main/java/org/springframework/util/ConcurrentLruCache.java`의
-> `markAsRemoved`(수정 전 좌표 L203-212).
->
-> 이 문서는 "무엇을 읽고 어떤 순서로 결함을 확정했는가"의 기록이므로, 완성된 해설인
-> [README.md](README.md)와 겹치는 부분이 있다. 여기에만 있는 것은 **이름표 사전**(2절),
-> **계약과 기원의 추적**(5절), **검토했으나 기각한 대안**(7.2절), 그리고 착수 시점에
-> 열려 있던 결정과 그 해소 방식(8절)이다.
-
 ## 0. 결론 먼저
 
 `markAsRemoved`에 상태 가드가 없어, 같은 노드가 두 정리 경로를 차례로 지나면 `currentSize`가 두 번 감산된다.\
@@ -423,3 +413,10 @@ A안을 독립 하네스로 실측하니 20/20 red가 나와 채택했고, B안�
 
 > **백포트(backport)** — 새 버전에서 고친 것을 옛 버전 브랜치에도 옮겨 넣는 일.\
 > 예: main에 머지된 수정을 유지보수 중인 이전 릴리스 줄기에도 반영할지는 메인테이너가 정한다.
+
+## 출처
+
+착수 시점(2026-09-10)에 작성한 분석을 학습용으로 다듬은 것이다. 기준
+upstream/main `572850bdcf1`. 결함 위치는
+`spring-core/src/main/java/org/springframework/util/ConcurrentLruCache.java`의
+`markAsRemoved`(수정 전 좌표 L203-212).

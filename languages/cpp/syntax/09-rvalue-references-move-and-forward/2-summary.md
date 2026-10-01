@@ -1,34 +1,5 @@
 # cpp/syntax/09 — rvalue 참조·`std::move`·`std::forward` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `std::move`](https://en.cppreference.com/w/cpp/utility/move) · [`std::forward`](https://en.cppreference.com/w/cpp/utility/forward) · [참조 선언과 참조 축약](https://en.cppreference.com/w/cpp/language/reference) · [`std::move_if_noexcept`](https://en.cppreference.com/w/cpp/utility/move_if_noexcept) · [`std::vector::push_back`](https://en.cppreference.com/w/cpp/container/vector/push_back) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·진단·기계어는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **GNU objdump/nm 2.42** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`mvsem01.cpp` \~ `mvsem10.cpp`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 긴 출력은 **거르는 명령을 배너에 적어 두었다.** 실린 것은 「생략한 일부」가 아니라 **그 명령의 전체 출력**이다.\
-> ★★ ASan 블록의 마커는 **표준 오류**로 찍었다 — sanitizer 가 죽이면 **버퍼에 남은 표준 출력이 통째로 사라지기** 때문이다.
-> **버전** — rvalue 참조(`T&&`)·`std::move`·`std::forward`·참조 축약은 전부 **C++11부터**다.\
-> `-Wpessimizing-move`·`-Wredundant-move` 는 **컴파일러의 것**이지 표준이 아니다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「어떤 식이 xvalue 인가」의 정본은 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)다 — 여기서는 **그 범주를 만드는 법**부터 쓴다.\
-> 「이동 생성자를 어떻게 구현하나」와 「이동 후 상태라는 계약」의 정본은 [목록의 **17번 주제**](../17-move-constructor-assignment-and-moved-from-state/),\
-> 「`noexcept` 가 무엇을 계약하나」는 목록의 **53번 주제**, 「그래서 매개변수를 무엇으로 받나」는 [목록의 **11번 주제**](../11-choosing-parameter-passing/),\
-> 「가변 인자 템플릿에서의 완벽 전달」은 [목록의 **34번 주제**](../34-variadic-templates-and-pack-expansion/), 「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/)이 정본이다.\
-> 여기는 **`std::move`·`std::forward` 라는 두 함수가 실제로 무엇을 하나**까지다.
-> ★★★ **08 → 09 → 11 은 한 사슬이다** — 08 이 **범주**를 정하고, 여기가 **그 범주를 만드는 법**을 주고,\
-> 11 이 **그래서 무엇으로 받을지**를 고른다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 기계어 덤프의 **주소·오프셋**(`0:` · `17:`) | ★ **명령어 열 자체**(`mov %rdi,%rax` · `call` 이 있나 없나) |
-> | ASan 리포트의 **PID·주소·`pc`/`bp`/`sp`** | **`SEGV` 라는 종류** · `mvsem10.cpp:13` · **`run exit`** |
-> | 진단 문구 · 두 컴파일러의 **열 번호** | **경고 이름**(`-Wpessimizing-move` · `-Wredundant-move`) |
-> | ★ **이동 후 `std::string`·`vector` 의 상태** — ★★ **미명시**다 | ★ **생성자·소멸자 호출 횟수**(`copy 3 · move 4`) · `unique_ptr` 이 **널**인 것 |
-
 ## 한눈에 — 쉽게 말하면
 
 **`std::move` 는 짐을 옮기는 사람이 아니라, 짐에 「가져가도 됩니다」라고 써 붙이는 쪽지다.**
@@ -1018,3 +989,33 @@ bits/move.h 가 전처리 결과에 들어온 횟수: 6
 - ★ **`const` 를 돌려주는 함수** — `const Widget f();` 는 호출 쪽의 이동을 **전부 복사로** 만든다((5)와 같은 집안). 안 던졌다.
 - ★ **이 문서가 안 던진 것** — 가변 인자 팩의 `forward`([목록의 **34번 주제**](../34-variadic-templates-and-pack-expansion/)) · 람다 초기화 캡처 `[p = std::move(p)]`([목록의 **39번 주제**](../39-lambdas-and-captures/)) ·
   `std::forward` 를 잘못 써서 두 번 이동하는 것 · **C++11\~14 판에서의 동작**(여기는 `-std=c++20` 한 판이다).
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `std::move`](https://en.cppreference.com/w/cpp/utility/move) · [`std::forward`](https://en.cppreference.com/w/cpp/utility/forward) · [참조 선언과 참조 축약](https://en.cppreference.com/w/cpp/language/reference) · [`std::move_if_noexcept`](https://en.cppreference.com/w/cpp/utility/move_if_noexcept) · [`std::vector::push_back`](https://en.cppreference.com/w/cpp/container/vector/push_back) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
+**실행 검증** — 이 문서의 모든 출력·진단·기계어는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **GNU objdump/nm 2.42** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`mvsem01.cpp` \~ `mvsem10.cpp`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 긴 출력은 **거르는 명령을 배너에 적어 두었다.** 실린 것은 「생략한 일부」가 아니라 **그 명령의 전체 출력**이다.\
+★★ ASan 블록의 마커는 **표준 오류**로 찍었다 — sanitizer 가 죽이면 **버퍼에 남은 표준 출력이 통째로 사라지기** 때문이다.
+**버전** — rvalue 참조(`T&&`)·`std::move`·`std::forward`·참조 축약은 전부 **C++11부터**다.\
+`-Wpessimizing-move`·`-Wredundant-move` 는 **컴파일러의 것**이지 표준이 아니다. 기준은 **C++20**이다.
+
+**경계** — 「어떤 식이 xvalue 인가」의 정본은 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)다 — 여기서는 **그 범주를 만드는 법**부터 쓴다.\
+「이동 생성자를 어떻게 구현하나」와 「이동 후 상태라는 계약」의 정본은 [목록의 **17번 주제**](../17-move-constructor-assignment-and-moved-from-state/),\
+「`noexcept` 가 무엇을 계약하나」는 목록의 **53번 주제**, 「그래서 매개변수를 무엇으로 받나」는 [목록의 **11번 주제**](../11-choosing-parameter-passing/),\
+「가변 인자 템플릿에서의 완벽 전달」은 [목록의 **34번 주제**](../34-variadic-templates-and-pack-expansion/), 「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/)이 정본이다.\
+여기는 **`std::move`·`std::forward` 라는 두 함수가 실제로 무엇을 하나**까지다.
+★★★ **08 → 09 → 11 은 한 사슬이다** — 08 이 **범주**를 정하고, 여기가 **그 범주를 만드는 법**을 주고,\
+11 이 **그래서 무엇으로 받을지**를 고른다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 기계어 덤프의 **주소·오프셋**(`0:` · `17:`) | ★ **명령어 열 자체**(`mov %rdi,%rax` · `call` 이 있나 없나) |
+| ASan 리포트의 **PID·주소·`pc`/`bp`/`sp`** | **`SEGV` 라는 종류** · `mvsem10.cpp:13` · **`run exit`** |
+| 진단 문구 · 두 컴파일러의 **열 번호** | **경고 이름**(`-Wpessimizing-move` · `-Wredundant-move`) |
+| ★ **이동 후 `std::string`·`vector` 의 상태** — ★★ **미명시**다 | ★ **생성자·소멸자 호출 횟수**(`copy 3 · move 4`) · `unique_ptr` 이 **널**인 것 |

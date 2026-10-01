@@ -1,11 +1,5 @@
 # api-design/02-coupon-issue — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 코드가 없는 문제집이므로 원본 REQUIREMENTS.md · solution/CHECKLIST.md · solution/REFERENCE.md 다.
-
-⚠️ 정답은 Claude 초안(2026-09-14) — 원본 CHECKLIST/REFERENCE 근거로 작성. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 절·번호와 1:1 대응. 질문 하나 = A 하나. -->
@@ -320,3 +314,7 @@
   A: 01-order-point에서 원자 차감 · UNIQUE · 원장이라는 무기를 가져오고, 이 노트는 거기에 "성공 응답의 의미"와 트래픽 축을 얹는다.\
   03-stock-deduct로 가면 수량 복원의 멱등성이 "차감보다 위험한" 축으로 커지고, 여러 행 잠금 순서가 새로 들어온다.\
   ops-patterns에서는 01-retry-backoff(재시도 예산 · jitter)와 09-stampede(캐시 붕괴 → 자기 유지 과부하)가 D(트래픽) 축의 일반론이고, 06-idempotency-store가 복원 멱등의 일반형이다.
+
+## 실행 환경
+
+기준 소스는 코드가 없는 문제집이므로 원본 REQUIREMENTS.md · solution/CHECKLIST.md · solution/REFERENCE.md 다.

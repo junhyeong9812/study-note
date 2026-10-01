@@ -1,13 +1,5 @@
 # ts/syntax/28 — 유틸리티 타입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html) ·
-> [TypeScript 3.5 릴리스 노트 — The `Omit` helper type](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-5.html) ·
-> [TypeScript 4.5 릴리스 노트 — The `Awaited` Type](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-5.html) ·
-> 그리고 ★★ **tsc 패키지가 싣고 다니는 `lib.es5.d.ts` 그 자체**(3절 — `grep` 으로 직접 읽었다).
-> 위는 **규칙 확인용 링크**이고, 본문의 진단·출력은 **전부 이 판에서 직접 던져 받은 것**이다. 핸드북 표를 옮기지 않았다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -25,7 +17,6 @@ Python 3.12.3
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
 > **버전** — `Partial`·`Readonly`·`Pick`·`Record` 는 **TS 2.1**, `Required` 는 **2.8**, `Exclude`·`Extract`·`ReturnType` 은 **2.8**,
 > `Parameters` 는 **3.1**, `Omit` 은 **3.5**, `Awaited` 는 **4.5** 다. ★ **7.0.2 에서 도는지는 던져서 확인했다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## ★★★ 이 주제가 쓰는 탐침 — 두 조수
 
@@ -847,3 +838,12 @@ ex.28b.ts    5회 md5 가짓수 1
   분배형과 엄격형을 **둘 다** 원하면 `T extends unknown ? Omit<T, K> : never` 에 `K extends keyof T` 를 **따로** 걸어야 하는데, 그 조합은 **안 던졌다.**
 - **`Readonly` 를 깊게** — 재귀 매핑이 흔한 답이다. [**26번 주제**](../26-mapped-types/) 「더 들어가면」에 형태만 적었고, **안 던졌다.**
 - **`Parameters` 가 레이블을 살리는 것** — 2절 격자에서 `[x: number, y: string]` 처럼 **이름이 남았다.** [**25번 주제**](../25-infer-and-recursive-conditional-types/) 1절 12행과 같은 현상이다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html) ·
+[TypeScript 3.5 릴리스 노트 — The `Omit` helper type](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-5.html) ·
+[TypeScript 4.5 릴리스 노트 — The `Awaited` Type](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-5.html) ·
+그리고 ★★ **tsc 패키지가 싣고 다니는 `lib.es5.d.ts` 그 자체**(3절 — `grep` 으로 직접 읽었다).
+위는 **규칙 확인용 링크**이고, 본문의 진단·출력은 **전부 이 판에서 직접 던져 받은 것**이다. 핸드북 표를 옮기지 않았다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

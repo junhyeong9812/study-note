@@ -1,11 +1,5 @@
 # domain-modeling-advanced/23-warehouse-pick — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/23-warehouse-pick/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -543,3 +537,7 @@ return taken;
 - 문제 원문: `/home/jun/project/myway/domain-modeling-advanced/23-warehouse-pick/src/main/java/com/domain/pick/Picker.java`(클래스 javadoc의 세 갈래 · TODO 1~4 javadoc · `fillableNow`), `/home/jun/project/myway/domain-modeling-advanced/23-warehouse-pick/src/main/java/com/domain/pick/Warehouse.java`(`take`·`copy`·`Site` 검증), `/home/jun/project/myway/domain-modeling-advanced/23-warehouse-pick/src/main/java/com/domain/pick/PickOrder.java`(주문 검증), `/home/jun/project/myway/domain-modeling-advanced/23-warehouse-pick/README.md`(함정 넷 · 측정 여섯 · 변종 검증 둘 · 생각해볼 것 넷)
 - 계약·수치(테스트): `/home/jun/project/myway/domain-modeling-advanced/23-warehouse-pick/src/test/java/com/domain/pick/PickerTest.java` — 거리 10 / 400 · 재고 0 창고 제외 · `[가, 나, 다]` · 상자 2 거리 410 · `unfilled == {앨범 1, 포카 1}` · 서울 앨범 3·부산 포카 5 그대로 · `[서울, 대전]` 거리 160 · 충족 0건 vs 2건 · 처리 순서 `[o2, o3, o1]` · `[o1, o2]` 상자 1 · `[o2, o1]` · 잘못된 입력 5종 예외
 - 측정 수치: `/home/jun/project/myway/domain-modeling-advanced/23-warehouse-pick/src/test/java/com/domain/pick/MeasurementTest.java` — 4,135 / 8,367 / 1,296,710 / 4,553 · 3,646 / 3,646 / 451,830 / 12,385 · 8,307 / 1,346,190 · 흩어짐 4,147·4,150·4,135·4,146 대 3,055·3,335·3,646·3,938 · 4,505 · 940 → 807 · 평균 순번 931 → 985(×100) · 2,100 비교 중 0
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/23-warehouse-pick/impl/`).

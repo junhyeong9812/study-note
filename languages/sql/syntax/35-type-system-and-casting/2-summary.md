@@ -1,14 +1,5 @@
 # sql/35-타입 체계와 캐스팅 (명시 변환·암시 변환) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Type Conversion](https://www.postgresql.org/docs/18/typeconv.html) · [PostgreSQL 18 · Data Types](https://www.postgresql.org/docs/18/datatype.html) · [MySQL 8.4 · Type Conversion in Expression Evaluation](https://dev.mysql.com/doc/refman/8.4/en/type-conversion.html) · [MySQL 8.4 · Cast Functions and Operators](https://dev.mysql.com/doc/refman/8.4/en/cast-functions.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — 이 주제에서 다루는 동작에 「어느 버전부터」가 붙는 것은 없다. 두 매뉴얼에도 릴리스 노트에도 도입 버전이 없어 **버전을 적지 않는다.**\
-> **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/) · 이어지는 것은 [36 수치](../36-numeric-types-and-functions/) · [37 문자열](../37-string-functions-and-concatenation/) · [40 날짜·시간](../40-date-time-types-and-functions/) 이고, 인덱스 쪽 귀결은 [목록의 **47번 주제**](../47-when-indexes-are-used/)다.
-
 ## 한눈에 — 쉽게 말하면
 
 **타입 변환 = 엔진이 「이 둘을 같은 자로 재겠다」고 정하는 것.**
@@ -804,3 +795,11 @@ expr::type
   그래서 `'10' > '9'` 는 거짓이고 `'10' > 9` 는 참이다 — **같은 두 값이 따옴표 하나로 뒤집힌다.**
 - **인덱스를 살리는 일반 처방은 「열을 건드리지 않는 것**」이다. 함수든 암시 변환이든 collation 이든,\
   열이 원래 모습 그대로 비교되면 산다. 39번의 `COLLATE` 사고도 정확히 같은 모양이다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Type Conversion](https://www.postgresql.org/docs/18/typeconv.html) · [PostgreSQL 18 · Data Types](https://www.postgresql.org/docs/18/datatype.html) · [MySQL 8.4 · Type Conversion in Expression Evaluation](https://dev.mysql.com/doc/refman/8.4/en/type-conversion.html) · [MySQL 8.4 · Cast Functions and Operators](https://dev.mysql.com/doc/refman/8.4/en/cast-functions.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — 이 주제에서 다루는 동작에 「어느 버전부터」가 붙는 것은 없다. 두 매뉴얼에도 릴리스 노트에도 도입 버전이 없어 **버전을 적지 않는다.**\
+**선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/) · 이어지는 것은 [36 수치](../36-numeric-types-and-functions/) · [37 문자열](../37-string-functions-and-concatenation/) · [40 날짜·시간](../40-date-time-types-and-functions/) 이고, 인덱스 쪽 귀결은 [목록의 **47번 주제**](../47-when-indexes-are-used/)다.

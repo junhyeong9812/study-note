@@ -1,17 +1,5 @@
 # sql/54-RETURNING 과 변경문을 품은 CTE — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Returning Data from Modified Rows](https://www.postgresql.org/docs/18/dml-returning.html) · [PostgreSQL 18 · WITH Queries (CTE)](https://www.postgresql.org/docs/18/queries-with.html) · [PostgreSQL 18.0 릴리스 노트](https://www.postgresql.org/docs/release/18.0/) · [MySQL 8.4 · WITH](https://dev.mysql.com/doc/refman/8.4/en/with.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> ★ **한쪽에서만 결론이 서는 주제다.** MySQL 8.4.10 에는 `RETURNING` 도, 변경문을 품은 CTE 도 **없다** —\
-> MySQL 쪽 출력은 **`ERROR 1064` 세 개와 「읽기 전용 CTE 는 된다」는 통과 하나**가 전부이고, 동작 근거는 **PostgreSQL 18.6** 이다.\
-> **버전** — `RETURNING` 자체는 PG 에 오래전부터 있다. ★ **`OLD`/`NEW` 별칭은 PG 18 부터**다([18.0 릴리스 노트](https://www.postgresql.org/docs/release/18.0/)). `MERGE` 에 `RETURNING` 이 붙은 것은 17 부터다([53번](../53-merge/)).\
-> ★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t54_a`·`t54_log` 를 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> **선행** — [32 CTE(`WITH`)](../32-cte-with-clause/)(이름·가시성·최적화 장벽의 정본) · [49 INSERT](../49-insert-multi-row-and-insert-select/).
-
 ## 한눈에 — 쉽게 말하면
 
 **`RETURNING` = 「고친 행을 그 자리에서 돌려받는 것」.**
@@ -676,3 +664,14 @@ WITH x AS (SELECT ...) DELETE FROM t WHERE id IN (SELECT id FROM x);   -- ★ �
   **이 편에서는 던져 보지 않았다.**
 - **다른 엔진의 대응물** — SQL Server 의 `OUTPUT`, Oracle 의 `RETURNING INTO`, MariaDB 의 `RETURNING`.\
   **이 머신에 그 엔진들이 없어 확인하지 않았다.** 이 편의 결론은 **PG 18.6 과 MySQL 8.4.10 에 한정**한다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Returning Data from Modified Rows](https://www.postgresql.org/docs/18/dml-returning.html) · [PostgreSQL 18 · WITH Queries (CTE)](https://www.postgresql.org/docs/18/queries-with.html) · [PostgreSQL 18.0 릴리스 노트](https://www.postgresql.org/docs/release/18.0/) · [MySQL 8.4 · WITH](https://dev.mysql.com/doc/refman/8.4/en/with.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+★ **한쪽에서만 결론이 서는 주제다.** MySQL 8.4.10 에는 `RETURNING` 도, 변경문을 품은 CTE 도 **없다** —\
+MySQL 쪽 출력은 **`ERROR 1064` 세 개와 「읽기 전용 CTE 는 된다」는 통과 하나**가 전부이고, 동작 근거는 **PostgreSQL 18.6** 이다.\
+**버전** — `RETURNING` 자체는 PG 에 오래전부터 있다. ★ **`OLD`/`NEW` 별칭은 PG 18 부터**다([18.0 릴리스 노트](https://www.postgresql.org/docs/release/18.0/)). `MERGE` 에 `RETURNING` 이 붙은 것은 17 부터다([53번](../53-merge/)).\
+★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t54_a`·`t54_log` 를 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+**선행** — [32 CTE(`WITH`)](../32-cte-with-clause/)(이름·가시성·최적화 장벽의 정본) · [49 INSERT](../49-insert-multi-row-and-insert-select/).

@@ -1,8 +1,5 @@
 # domain-modeling-advanced 인덱스
 
-> myway 연습 프로젝트와 1:1 대응하는 노트 컬렉션이다. **진행 기록(원본 경로·진도)은 [project/myway/README.md](../../../project/myway/README.md)** 에 있고,
-> 커리큘럼상 위치·상태는 [domain-modeling 커리큘럼](../../domain-modeling/curriculum.md) 에서 본다(2026-09-28 cs 재편).
-
 | 챕터 |
 |------|
 | [01-payroll](01-payroll/) |
@@ -35,3 +32,8 @@
 | [28-authorization](28-authorization/) |
 | [29-customs-clearance](29-customs-clearance/) |
 | [30-b2b-tier](30-b2b-tier/) |
+
+---
+
+myway 연습 프로젝트와 1:1 대응하는 노트 컬렉션이다. **진행 기록(원본 경로·진도)은 [project/myway/README.md](../../../project/myway/README.md)** 에 있고,
+커리큘럼상 위치·상태는 [domain-modeling 커리큘럼](../../domain-modeling/curriculum.md) 에서 본다(2026-09-28 cs 재편).

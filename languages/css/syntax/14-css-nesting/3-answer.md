@@ -1,11 +1,5 @@
 # css/syntax/14 — 중첩(nesting): `&` 의 의미와 중첩 명시도 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 `(A, B, C)` 값 · 모든 `selectorText` · 모든 순서 판정은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 확인한 것**이다.\
-> 근거를 두 층으로 나눠 뽑았다 — `cssRules` 를 재귀로 훑어 **브라우저가 무엇으로 파싱했나**, `getComputedStyle` 로 **무엇이 이겼나**.\
-> **명시도 값은 전부 두 번째 층으로만** 확인했다(동점 경쟁자 · 한 칸 낮은 경쟁자 두 판 — 방법은 [02번 주제](../02-specificity/2-summary.md)).\
-> 규칙은 [CSS Nesting Module Level 1](https://drafts.csswg.org/css-nesting-1/) 로 접지했다. **엔진은 Chrome 하나다.**
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -445,3 +439,10 @@ Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않�
 - **`.card:has(&)` 의 매치 동작.** 파싱되는 것만 봤다.
 - **전처리기(Sass)와의 결과 차이.** 명세 서술로만 접지했고, 실제로 빌드해 대조하지 않았다.
 - **성능.** 이 주제에서 성능 주장을 하나도 하지 않았다.
+
+## 실행 환경
+
+이 파일의 **모든 `(A, B, C)` 값 · 모든 `selectorText` · 모든 순서 판정은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 확인한 것**이다.\
+근거를 두 층으로 나눠 뽑았다 — `cssRules` 를 재귀로 훑어 **브라우저가 무엇으로 파싱했나**, `getComputedStyle` 로 **무엇이 이겼나**.\
+**명시도 값은 전부 두 번째 층으로만** 확인했다(동점 경쟁자 · 한 칸 낮은 경쟁자 두 판 — 방법은 [02번 주제](../02-specificity/2-summary.md)).\
+규칙은 [CSS Nesting Module Level 1](https://drafts.csswg.org/css-nesting-1/) 로 접지했다. **엔진은 Chrome 하나다.**

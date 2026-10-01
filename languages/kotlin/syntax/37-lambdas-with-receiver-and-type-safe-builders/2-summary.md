@@ -1,16 +1,5 @@
 # kotlin/syntax/37 — 리시버 지정 람다와 type-safe builder (DSL) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Type-safe builders](https://kotlinlang.org/docs/type-safe-builders.html)(「The type of the function is `HTML.() -> Unit`, which is a function type with receiver」 · Scope control: `@DslMarker` — 「a member of outer receiver」 호출을 에러로 · 「`this@html.head { }` // possible」) · [Function literals with receiver](https://kotlinlang.org/docs/lambdas.html#function-literals-with-receiver).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 6회(컴파일 실패 2벌) · `javac` 1회 · `java` 5회 · `javap` 2회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「수신자가 누구인가」는 전부 프로그램이 스스로 찍은 로그**다.
-> **버전** — 수신자 있는 함수 타입·type-safe builder 는 1.0, `@DslMarker` 의 **도입 판은 확인하지 않았다**(이 판은 `-language-version 2.0` 미만을 거부해 잴 수도 없다 — [36번 주제](../36-function-types-fun-interface-and-sam-conversion/) (6)). ★ `@DslMarker` 의 진단 문구는 **이 판(K2)의 것**이다((2)).
-> **경계** — ★★ **`T.() -> R` 과 `(T) -> R` 이 JVM 에서 둘 다 `Function1` 이고 디스크립터가 같다**는 것은 [14번 주제](../14-scope-functions/) (2)가 stdlib 의 `run`/`with` 로 이미 보였고, 「수신자가 **첫 파라미터**로 내려간다」는 [10번 주제](../10-lambdas-and-higher-order-functions/) (1)이 `fRecv` 로 보였다 — 여기서는 **다시 재지 않고**, **호출 자리**(`a.block()` 대 `block(a)`)와 **Java 쪽**만 더한다((4)(5)).\
-> 확장 함수의 정적 디스패치는 [13번 주제](../13-extension-functions-and-properties/)가, `apply`/`with` 의 고르는 법은 [14번 주제](../14-scope-functions/)가, 함수 타입과 `Function1` 은 [36번 주제](../36-function-types-fun-interface-and-sam-conversion/)가 정본이다. **DSL 이 왜 Kotlin 의 강점인가**라는 논지는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이다. 암묵 인자를 **타입으로** 넘기는 다음 단계(context parameters)는 [**38번 주제**](../38-context-parameters/)다.\
-> ★ **대비** — JS 의 `this` 는 **호출 방식**이 정한다([`../../../js/syntax/07-this-binding-four-rules/`](../../../js/syntax/07-this-binding-four-rules/)) — Kotlin 수신자는 **타입과 호출자가 넘긴 값**이 정한다((4)).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**빌더가 스스로 찍은 로그 — `head()` 가 어느 수신자 위에서 불렸나**」. 중첩 DSL 의 사고는 **컴파일도 되고 예외도 안 나서** 출력의 **트리 모양**으로만 드러난다. 둘째 창(`@DslMarker` 의 컴파일 에러)이 그것을 **막는 장치**다.
 
 ## 이 주제가 쓰는 세 층
@@ -566,3 +555,14 @@ fun main() {
 
 - **왜 바깥 수신자가 보이게 설계됐나** — 수신자 람다는 **익명 확장 함수**이고, 확장 함수 안에서도 바깥 스코프의 `this` 들이 보인다. 이것은 `apply { }` 안에서 **바깥 클래스의 멤버를 이름만으로** 부르는 편리함의 근원이다 — 같은 규칙이 DSL 에서는 사고가 된다. 그래서 Kotlin 은 규칙을 바꾸지 않고 **DSL 작성자가 켜는 스위치**(`@DslMarker`)를 따로 뒀다.
 - **`@DslMarker` 가 모르는 것** — 문서는 마커가 **표시된 타입의 수신자**에 대해 동작한다고 적는다. 빌더 안에 **표시 안 된 수신자**(예: `with(someList) { … }`)를 끼웠을 때 어디까지 막히는지는 이 문서가 **던지지 않았다** — 다음에 격자로 재 볼 자리다.
+
+## 실행 환경
+
+**기준 소스** — [Type-safe builders](https://kotlinlang.org/docs/type-safe-builders.html)(「The type of the function is `HTML.() -> Unit`, which is a function type with receiver」 · Scope control: `@DslMarker` — 「a member of outer receiver」 호출을 에러로 · 「`this@html.head { }` // possible」) · [Function literals with receiver](https://kotlinlang.org/docs/lambdas.html#function-literals-with-receiver).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 6회(컴파일 실패 2벌) · `javac` 1회 · `java` 5회 · `javap` 2회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「수신자가 누구인가」는 전부 프로그램이 스스로 찍은 로그**다.
+**버전** — 수신자 있는 함수 타입·type-safe builder 는 1.0, `@DslMarker` 의 **도입 판은 확인하지 않았다**(이 판은 `-language-version 2.0` 미만을 거부해 잴 수도 없다 — [36번 주제](../36-function-types-fun-interface-and-sam-conversion/) (6)). ★ `@DslMarker` 의 진단 문구는 **이 판(K2)의 것**이다((2)).
+**경계** — ★★ **`T.() -> R` 과 `(T) -> R` 이 JVM 에서 둘 다 `Function1` 이고 디스크립터가 같다**는 것은 [14번 주제](../14-scope-functions/) (2)가 stdlib 의 `run`/`with` 로 이미 보였고, 「수신자가 **첫 파라미터**로 내려간다」는 [10번 주제](../10-lambdas-and-higher-order-functions/) (1)이 `fRecv` 로 보였다 — 여기서는 **다시 재지 않고**, **호출 자리**(`a.block()` 대 `block(a)`)와 **Java 쪽**만 더한다((4)(5)).\
+확장 함수의 정적 디스패치는 [13번 주제](../13-extension-functions-and-properties/)가, `apply`/`with` 의 고르는 법은 [14번 주제](../14-scope-functions/)가, 함수 타입과 `Function1` 은 [36번 주제](../36-function-types-fun-interface-and-sam-conversion/)가 정본이다. **DSL 이 왜 Kotlin 의 강점인가**라는 논지는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이다. 암묵 인자를 **타입으로** 넘기는 다음 단계(context parameters)는 [**38번 주제**](../38-context-parameters/)다.\
+★ **대비** — JS 의 `this` 는 **호출 방식**이 정한다([`../../../js/syntax/07-this-binding-four-rules/`](../../../js/syntax/07-this-binding-four-rules/)) — Kotlin 수신자는 **타입과 호출자가 넘긴 값**이 정한다((4)).

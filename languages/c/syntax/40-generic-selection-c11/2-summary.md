@@ -1,16 +1,5 @@
 # c/syntax/40 — `_Generic` 타입 제네릭 선택 (C11): 「**`_Generic` 은 식을 평가하지 않고 타입만 본다 — 그 타입은 한정자를 벗고 배열을 포인터로 바꾼 뒤의 것이다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) 제네릭 선택 절 — 「**제어식의 타입은 lvalue 변환 · 배열→포인터 · 함수→포인터 변환을 거친 것처럼 본다**」·각주 「**lvalue 변환은 타입 한정자를 떨어뜨린다**」·「**`default` 가 없으면 제어식의 타입이 목록의 정확히 하나와 호환되어야 한다(제약)**」·「**두 연관이 호환 타입을 지정하면 안 된다**」·「**제어식은 평가되지 않는다 · 고르지 않은 연관의 식도 평가되지 않는다**」, 예제 `#define cbrt(X) _Generic((X), long double: cbrtl, default: cbrt, float: cbrtf)(X)` 를 **본문에서 직접 찾아 읽었다**)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **고른 분기 · 진단 · 헤더 내용은 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> ★★★ **본체는 선택 격자다** — 인자 14 × 컴파일러 3(gcc · gcc-12 · clang) × 판 2(`-std=c11`/`c17`), 칸마다 **고른 분기의 이름**.\
-> ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
-> **버전** — `_Generic` 은 **C11 부터**다.
-> ★★ **경계** — **`typedef` 가 새 타입을 안 만든다**(`two compatible types` 에러)는 [06번 형제](../06-typedef-and-type-aliases/), **`NULL`·`0`·`nullptr` 의 타입**을 `_Generic` 으로 가른 것은 [19번 형제](../19-void-pointer-null-pointer-and-null/)가 이미 보였다 — 이 편은 그 결과를 **다시 재지 않는다.** **매크로 자체의 규칙**은 [목록의 **41번 주제**](../41-preprocessor-directives-and-conditional-compilation/)(전처리기)와 [목록의 **42번 주제**](../42-function-like-macro-pitfalls/)(함수형 매크로의 함정)가 정본이다. `<tgmath.h>` 의 수학 함수 목록은 이 목록이 **뺀** 영역이다(README 「뺀 것과 이유」) — 여기는 **그 헤더가 무엇으로 만들어졌나**만 본다.
-> 선행 — [목록의 **41번 주제**](../41-preprocessor-directives-and-conditional-compilation/).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 둘째 창 — 실행이 찍은 「고른 분기의 이름」이다.** `_Generic` 은 **컴파일 때 끝나는** 일이라 값이 곧 증거다 — 고른 분기의 문자열 리터럴을 찍었다.
 ★★★ 그 격자에서 **갈린 칸 0 / 70** — 세 컴파일러 · 두 판이 **한 칸도 안 갈렸다.** 갈린 것은 **경고**뿐이다(gcc 두 판 0 · clang 14).
 
@@ -647,3 +636,14 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 
 - ★★ **C23 `typeof` 와 `_Generic` 을 같이** — `typeof_unqual` 로 한정자를 벗기는 자리. ★ **던지지 않았다.**
 - ★ **glibc `tgmath.h` 의 `_Generic` 4 줄이 쓰이는 갈래** — 헤더를 끝까지 읽지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) 제네릭 선택 절 — 「**제어식의 타입은 lvalue 변환 · 배열→포인터 · 함수→포인터 변환을 거친 것처럼 본다**」·각주 「**lvalue 변환은 타입 한정자를 떨어뜨린다**」·「**`default` 가 없으면 제어식의 타입이 목록의 정확히 하나와 호환되어야 한다(제약)**」·「**두 연관이 호환 타입을 지정하면 안 된다**」·「**제어식은 평가되지 않는다 · 고르지 않은 연관의 식도 평가되지 않는다**」, 예제 `#define cbrt(X) _Generic((X), long double: cbrtl, default: cbrt, float: cbrtf)(X)` 를 **본문에서 직접 찾아 읽었다**)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **고른 분기 · 진단 · 헤더 내용은 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+★★★ **본체는 선택 격자다** — 인자 14 × 컴파일러 3(gcc · gcc-12 · clang) × 판 2(`-std=c11`/`c17`), 칸마다 **고른 분기의 이름**.\
+★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
+**버전** — `_Generic` 은 **C11 부터**다.
+★★ **경계** — **`typedef` 가 새 타입을 안 만든다**(`two compatible types` 에러)는 [06번 형제](../06-typedef-and-type-aliases/), **`NULL`·`0`·`nullptr` 의 타입**을 `_Generic` 으로 가른 것은 [19번 형제](../19-void-pointer-null-pointer-and-null/)가 이미 보였다 — 이 편은 그 결과를 **다시 재지 않는다.** **매크로 자체의 규칙**은 [목록의 **41번 주제**](../41-preprocessor-directives-and-conditional-compilation/)(전처리기)와 [목록의 **42번 주제**](../42-function-like-macro-pitfalls/)(함수형 매크로의 함정)가 정본이다. `<tgmath.h>` 의 수학 함수 목록은 이 목록이 **뺀** 영역이다(README 「뺀 것과 이유」) — 여기는 **그 헤더가 무엇으로 만들어졌나**만 본다.
+선행 — [목록의 **41번 주제**](../41-preprocessor-directives-and-conditional-compilation/).

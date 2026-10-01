@@ -1,16 +1,5 @@
 # c/syntax/08 — `sizeof`·정렬·`offsetof`: 구조체에 난 구멍을 눈으로 본다 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — sizeof](https://en.cppreference.com/w/c/language/sizeof) · [cppreference — _Alignof / _Alignas](https://en.cppreference.com/w/c/language/_Alignof) · [cppreference — offsetof](https://en.cppreference.com/w/c/types/offsetof) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
-> **실행 검증** — 이 문서의 모든 수치·출력·에러는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> **구조체 배치는 `offsetof` 로 재고, 그 위에 실제 바이트 덤프로 한 번 더 대조했다** — 손으로 계산한 수치는 하나도 없다.\
-> UB 가 걸린 블록(`#pragma pack` 역참조)은 `-O0`·`-O2`·sanitizer 로 돌렸다. 기본 플래그는 `-std=c17 -Wall -Wextra`.
-> **버전** — `sizeof`·`offsetof` 는 C89 부터. **`_Alignof`/`_Alignas`/`_Static_assert` 는 C11부터**,\
-> **`alignof`/`alignas`/`static_assert` 철자는 C23부터**(C11\~C17 은 `<stdalign.h>`/`<assert.h>` 가 필요하다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「구조체 패딩·정렬」의 정본은 [목록의 **22번 주제**](../22-struct-padding-and-alignment/)다. 여기는 **`sizeof`·`_Alignof`·`offsetof` 라는 도구**로 그것을 재는 쪽이다.\
-> 「배열 감쇠」는 [목록의 **16번 주제**](../16-array-pointer-decay-and-function-parameters/), 「VLA」는 [목록의 **18번 주제**](../18-variable-length-arrays-vla/), 「유연 배열 멤버」는 [목록의 **26번 주제**](../26-flexible-array-members/)가 정본이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **구조체는 멤버를 붙여 놓은 것이 아니다. 중간중간 구멍이 뚫려 있다.**
@@ -754,3 +743,15 @@ pad.c:5:8: warning: padding struct size to alignment boundary with 2 bytes [-Wpa
   ★ **그런데 이것은 관찰이지 보장이 아니다.** 표준은 대입이 패딩을 어떻게 하는지 정하지 않는다\
   (「미명시」 층이다). **두 수준에서 같았다는 것이 오히려 함정**이다 — [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/)의 「여러 판에서 같았다는 것이 보장이 아니다」와 같은 자리다.\
   안전한 답은 여전히 **멤버끼리 비교하는 것**이다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — sizeof](https://en.cppreference.com/w/c/language/sizeof) · [cppreference — _Alignof / _Alignas](https://en.cppreference.com/w/c/language/_Alignof) · [cppreference — offsetof](https://en.cppreference.com/w/c/types/offsetof) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
+**실행 검증** — 이 문서의 모든 수치·출력·에러는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+**구조체 배치는 `offsetof` 로 재고, 그 위에 실제 바이트 덤프로 한 번 더 대조했다** — 손으로 계산한 수치는 하나도 없다.\
+UB 가 걸린 블록(`#pragma pack` 역참조)은 `-O0`·`-O2`·sanitizer 로 돌렸다. 기본 플래그는 `-std=c17 -Wall -Wextra`.
+**버전** — `sizeof`·`offsetof` 는 C89 부터. **`_Alignof`/`_Alignas`/`_Static_assert` 는 C11부터**,\
+**`alignof`/`alignas`/`static_assert` 철자는 C23부터**(C11\~C17 은 `<stdalign.h>`/`<assert.h>` 가 필요하다).
+
+**경계** — 「구조체 패딩·정렬」의 정본은 [목록의 **22번 주제**](../22-struct-padding-and-alignment/)다. 여기는 **`sizeof`·`_Alignof`·`offsetof` 라는 도구**로 그것을 재는 쪽이다.\
+「배열 감쇠」는 [목록의 **16번 주제**](../16-array-pointer-decay-and-function-parameters/), 「VLA」는 [목록의 **18번 주제**](../18-variable-length-arrays-vla/), 「유연 배열 멤버」는 [목록의 **26번 주제**](../26-flexible-array-members/)가 정본이다.

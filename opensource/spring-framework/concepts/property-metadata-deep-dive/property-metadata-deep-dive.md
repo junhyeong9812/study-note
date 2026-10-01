@@ -1,11 +1,5 @@
 # Property 개념 해설 — "프로퍼티 메타데이터"란 무엇인가
 
-> 대상: `org.springframework.core.convert.Property` (spring-core)
-> 목적: 이 객체가 **무엇이고, 언제 태어나고, 누가 왜 쓰는지**를 개념부터 잡는다.
-> 출생지: `docs/plans/2026-08-14/pr36911-plain-accessor-review/`(작업 문서)에서
-> 2026-08-20 concepts로 이전. 관련: [property-accessor-conventions.md](../property-accessor-conventions/property-accessor-conventions.md)(관례 일반론),
-> `../../prs/36911-property-name-resolution/README.md`·`../../prs/37139-property-setter-prefix/README.md`(버그·수정 서사).
-
 ---
 
 ## 1. "프로퍼티"라는 추상부터
@@ -159,3 +153,9 @@ data class·커스텀 데이터 클래스가 모두 이 모양이다.
 메서드를 포장해 태어나며, 이름이 없을 때만 메서드 이름의 문자열 규약(+plain
 accessor 필드 확인)으로 논리 이름을 유도한다 — 이번 두 PR은 그 이름 유도 규칙을
 고친 것이다.
+
+## 출처
+
+출생지: `docs/plans/2026-08-14/pr36911-plain-accessor-review/`(작업 문서)에서
+2026-08-20 concepts로 이전. 관련: [property-accessor-conventions.md](../property-accessor-conventions/property-accessor-conventions.md)(관례 일반론),
+`../../prs/36911-property-name-resolution/README.md`·`../../prs/37139-property-setter-prefix/README.md`(버그·수정 서사).

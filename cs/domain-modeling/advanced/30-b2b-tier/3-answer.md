@@ -1,11 +1,5 @@
 # domain-modeling-advanced/30-b2b-tier — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/30-b2b-tier/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -399,3 +393,7 @@ return List.copyOf(grades);
 - 문제 원문: `src/main/java/com/domain/tier/TierPolicy.java`(TODO 1~4 javadoc·enum·문턱), `src/main/java/com/domain/tier/Purchase.java`(계약·미수 예), `README.md`(함정·측정이 알려준 것·변종 검증에서 고친 것·생각해볼 것)
 - 계약: `src/test/java/com/domain/tier/TierPolicyTest.java`(세 창 3,000만/3,000만/6,000만 · 산정 달 포함 · 미래 제외 · 문턱 `>=` · 미수 골드/브론즈 · 3월 주문 5월 입금 · 다른 거래처 제외 · 브론즈/골드/플래티넘 셋 · 상승은 즉시 · 한 달 봐주기 변경 0·부양 1 · 누적 변경 0 · `down()`)
 - 수치: `src/test/java/com/domain/tier/MeasurementTest.java`(98/98/45 · 부양 51 · 0 · 206 · 26/44/98/282 · 24/17/20/24 · 3,574~2,840 · 3,568 · 159/108/0 · 600번 0 · 900번 0)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/30-b2b-tier/impl/`).

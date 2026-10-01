@@ -1,13 +1,5 @@
 # PR #19337 - 착수 분석: changePassword의 소문자화 누락
 
-> 원본: fork repo의 `analyze-docs/plans/2026-06-14/spring-security-core-bug-hunt/`
-> `C-10-inmemoryusermanager-changepassword-case/`(task.md·해설.md·changelog.md·review-log.md).
-> 학습 문서로 옮기면서 작업 진행용 절을 덜어내고 실측 근거를 절로 승격했다.
-> 결론은 PR #19337로 반영됐다(커밋 `02e7f1537b`, 머지 `9fdd2dc6758`).
->
-> **좌표 주의**: 본문의 file:line은 **수정 전** 파일 기준이다.
-> 문제와 수정 요약은 [README.md](README.md), 실구조는 [structure.md](structure.md), 테스트는 [tests.md](tests.md).
-
 ## 0. 결론 먼저
 
 `InMemoryUserDetailsManager`가 `users` 맵을 만지는 여덟 자리 중 일곱은 `username.toLowerCase(Locale.ROOT)`로 키를 정규화하는데 `changePassword`만 원본 철자로 조회했다(`:153`).
@@ -170,3 +162,12 @@ getName() 이 null 인 별난 구현
 
 > **중복 리서치** — 같은 문제를 이미 누가 보고했는지 착수 전에 훑어보는 절차.\
 > 예: 여기서는 검색 결과 때문에 후보 둘이 실제로 취소됐으므로, 형식적인 단계가 아니었다.
+
+## 출처
+
+원본: fork repo의 `analyze-docs/plans/2026-06-14/spring-security-core-bug-hunt/`
+`C-10-inmemoryusermanager-changepassword-case/`(task.md·해설.md·changelog.md·review-log.md).
+학습 문서로 옮기면서 작업 진행용 절을 덜어내고 실측 근거를 절로 승격했다.
+결론은 PR #19337로 반영됐다(커밋 `02e7f1537b`, 머지 `9fdd2dc6758`).
+
+**좌표 주의**: 본문의 file:line은 **수정 전** 파일 기준이다.

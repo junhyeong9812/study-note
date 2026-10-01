@@ -1,9 +1,5 @@
 # css/syntax/44 — 배경과 대체 요소 맞춤 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 질문 → 서머리 → 여기 순서다.
-> 번호는 [1-question.md](1-question.md)와 1:1 이다. **출력을 먼저, 해설은 그 뒤.**
-> 모든 계산값은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이고, 모든 좌표·RGB 는 **스크린샷 PNG 의 픽셀을 파이썬으로 읽어 뽑은 값**이다.
-
 ### 1. 단축이 푸는 아홉 가지
 
 **출력**
@@ -327,7 +323,7 @@ background-position: 10px 10px               10px 10px
 | `background-clip: text` | 흰색 아닌 픽셀 수를 셌다 | 1 | 7번 표 |
 | `background-attachment` 3값 | 픽셀 | 1 | 10번 표 |
 | `background-position` 4형태 | 계산값 + 타일 좌표 | 1 | 11번 표 |
-| Baseline 조회 | `webstatus.dev` API | 1 | 머리말 |
+| Baseline 조회 | `webstatus.dev` API | 1 | 「실행 환경」 |
 | demo 블록 3개 | 완성된 문서에서 다시 뽑아 재렌더 + 픽셀 대조 | 2 | 1차에서 **거짓 1건**을 잡았다(아래) |
 
 ★ **demo 재실행에서 잡힌 거짓 1건** — 「`origin: border-box` + `clip: content-box`」 조합으로 짠 셋째 상자에서 **주황 점이 칠 영역 밖이라 아예 안 보였는데**, 「보이는 것」에는 「점은 첫째와 같은 자리」라고 적혀 있었다. **화면을 눈으로 봐도 「점이 없네」 정도로만 보여 잡기 어려운 종류**였다. 조합을 `origin: content-box + clip: content-box` 로 바꿔 둘째와 짝이 되게 고쳤다.
@@ -356,3 +352,8 @@ print(min(xs), max(xs))
 | `background-clip: text` 를 쓸 수 있는가 | Baseline `limited` |
 | `background-attachment` 의 지원 | Baseline `limited`. **모바일 동작은 확인하지 못했다** |
 | `scroll` 과 `local` 의 차이 | **못 잰 것** — 한 장면 스크린샷으로는 측정 방법이 성립하지 않는다 |
+
+## 실행 환경
+
+번호는 [1-question.md](1-question.md)와 1:1 이다. **출력을 먼저, 해설은 그 뒤.**
+모든 계산값은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이고, 모든 좌표·RGB 는 **스크린샷 PNG 의 픽셀을 파이썬으로 읽어 뽑은 값**이다.

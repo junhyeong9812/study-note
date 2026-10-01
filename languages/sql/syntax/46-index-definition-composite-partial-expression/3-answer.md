@@ -1,12 +1,5 @@
 # sql/46-인덱스 정의 (복합·부분·표현식·커버링) — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> 20,000행짜리 `t46` 과 그 위의 인덱스는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> ★ **범위** — 여기는 **정의**까지다. **「탈까 안 탈까」는 [47번]**(../47-when-indexes-are-used/)이 정본이다.\
-> 문서 근거는 [PG 18 CREATE INDEX](https://www.postgresql.org/docs/18/sql-createindex.html) · [MySQL 8.4 CREATE INDEX](https://dev.mysql.com/doc/refman/8.4/en/create-index.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -658,3 +651,11 @@ PG 에서 제약이 인덱스를 받친다는 것은 두 매뉴얼의 `CREATE IN
 **DB 잔재** — 없다. `t46` 과 그 위의 인덱스 전부, `t46_full_idx`·`t46_cc_idx`·`t46_hash_idx`·`t46_hash2_idx` 까지\
 표를 지우면서 함께 사라졌다. `emp`·`dept` 는 **읽지도 쓰지도 않았다.**\
 두 엔진의 최종 표 목록 출력은 [47번](../47-when-indexes-are-used/)의 「실행 검증」에 있다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+20,000행짜리 `t46` 과 그 위의 인덱스는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+★ **범위** — 여기는 **정의**까지다. **「탈까 안 탈까」는 [47번]**(../47-when-indexes-are-used/)이 정본이다.\
+문서 근거는 [PG 18 CREATE INDEX](https://www.postgresql.org/docs/18/sql-createindex.html) · [MySQL 8.4 CREATE INDEX](https://dev.mysql.com/doc/refman/8.4/en/create-index.html).

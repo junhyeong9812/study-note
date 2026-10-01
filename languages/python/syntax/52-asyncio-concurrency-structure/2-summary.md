@@ -1,42 +1,5 @@
 # python/syntax/52-asyncio-concurrency-structure — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
-> - [`asyncio.gather`(3.12)](https://docs.python.org/3.12/library/asyncio-task.html#asyncio.gather) — *"If return_exceptions is `False` (default), the first raised exception is immediately propagated to the task that awaits on `gather()`. Other awaitables in the aws sequence **won't be cancelled** and will continue to run."* ·
->   *"If `gather()` is cancelled, all submitted awaitables (that have not completed yet) are also cancelled."* ·
->   *"If any Task or Future from the aws sequence is cancelled, it is treated as if it raised `CancelledError` -- the `gather()` call is **not** cancelled in this case."*
-> - [Task Groups](https://docs.python.org/3.12/library/asyncio-task.html#task-groups)(3.11) — *"The first time any of the tasks belonging to the group fails with an exception other than `asyncio.CancelledError`, the remaining tasks in the group are cancelled."* ·
->   *"those exceptions are combined in an `ExceptionGroup` or `BaseExceptionGroup` (as appropriate; see their documentation) which is then raised."*
-> - [Task Cancellation](https://docs.python.org/3.12/library/asyncio-task.html#task-cancellation) — *"The asyncio components that enable structured concurrency, like `asyncio.TaskGroup` and `asyncio.timeout`, are implemented using cancellation internally and might misbehave if a coroutine swallows `asyncio.CancelledError`."*
-> - [`asyncio.timeout`](https://docs.python.org/3.12/library/asyncio-task.html#asyncio.timeout)(3.11) — *"the context manager will cancel the current task and handle the resulting `asyncio.CancelledError` internally, transforming it into a `TimeoutError` which can be caught and handled."* · *"the `TimeoutError` can only be caught *outside* of the context manager."*
-> - [`asyncio.wait_for`](https://docs.python.org/3.12/library/asyncio-task.html#asyncio.wait_for) — *"If a timeout occurs, it cancels the task and raises `TimeoutError`."* · 3.11 판 변경 *"Raises `TimeoutError` instead of `asyncio.TimeoutError`."*
-> - [`asyncio.TimeoutError`](https://docs.python.org/3.12/library/asyncio-exceptions.html#asyncio.TimeoutError) — *"A deprecated alias of `TimeoutError`"* · *"This class was made an alias of `TimeoutError`."*(3.11) · `CancelledError` — *"`CancelledError` is now a subclass of `BaseException` rather than `Exception`."*(3.8)
-> - [`asyncio.wait`](https://docs.python.org/3.12/library/asyncio-task.html#asyncio.wait) — *"Note that this function does not raise `TimeoutError`."* · *"Unlike `wait_for()`, `wait()` does not cancel the futures when a timeout occurs."* · 3.11 *"Passing coroutine objects to `wait()` directly is forbidden."*
-> - [`asyncio.create_task`](https://docs.python.org/3.12/library/asyncio-task.html#asyncio.create_task) 의 **Important** — *"Save a reference to the result of this function, to avoid a task disappearing mid-execution. The event loop only keeps weak references to tasks. A task that isn't referenced elsewhere may get garbage collected at any time, even before it's done."*
-> - [`asyncio.to_thread`](https://docs.python.org/3.12/library/asyncio-task.html#asyncio.to_thread)(3.9) · [Developing with asyncio — Running Blocking Code](https://docs.python.org/3.12/library/asyncio-dev.html#running-blocking-code) — *"Blocking (CPU-bound) code should not be called directly."* ·
->   *"While a Task is running in the event loop, no other Tasks can run in the same thread."*
-> - [What's New 3.11 — asyncio](https://docs.python.org/3.12/whatsnew/3.11.html#asyncio) — `TaskGroup` *"For new code this is recommended over using `create_task()` and `gather()` directly."* · `timeout` *"recommended over using `wait_for()` directly."*
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 취소 전파 격자(동작 2 — **한 글자도 같았다**)와 「더 들어가면」의 블록 하나를 더 던졌다.\
-> ★★★ **이 문서는 시간을 한 번도 출력하지 않는다.** `sleep` 의 길이는 소스에만 있고, 출력은 전부 **순서 · 참/거짓 · 「N / M 판」** 이다. 「몇 배 빠르다」는 한 줄도 없다.\
-> ★★ **격자·태스크 순서 탐침은 시간을 아예 안 쓴다** — 한 걸음을 `await asyncio.sleep(0)`(루프에 한 차례 양보)로 셌다. 그래서 순서가 타이머에 안 흔들린다.\
-> **버전** — `asyncio.to_thread` **3.9** · `TaskGroup`·`asyncio.timeout`·`ExceptionGroup`·`except*`·`Task.cancelling()` **3.11** · `asyncio.TimeoutError` 가 내장 `TimeoutError` 의 별칭 **3.11** · `wait()` 에 코루틴을 직접 주면 거절 **3.11** · `CancelledError` 가 `BaseException` 하위 **3.8**.\
-> ★ **구현 대 언어 보장 한 줄** — `gather`·`TaskGroup`·`timeout`·`wait` 의 취소 규칙과 예외 모양은 **라이브러리 보장**이고, 한 걸음(`sleep(0)`)이 몇 번 돌았나 · `Task was destroyed but it is pending!` 문구 · 「혼자 기다리는 퓨처」 태스크가 수거되는 것은 **CPython 구현**이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | ★ 머신이 아주 바쁘면 **타이머를 쓰는 세 탐침**(동작 4·5·8)의 「끼어들었나」 칸이 움직일 수 있다 — 틈을 크게 벌려 두었고(소스의 `sleep` 길이) **세 번 캡처에서 한 번도 안 움직였다** | ★★★ 격자 마지막 줄 **「… 4 / 9」** · 칸마다 `finished`/`cancelled`/`raised` · 예외 **타입** |
-> | 판이 오르면 예외 **문구**(`Passing coroutines is forbidden, use tasks explicitly.`) | `sleep(0)` 걸음으로 센 순서(동작 1·2·3) — 타이머가 없다 |
-> | 걸음 수 칸(`A steps at that moment`)은 **구현이 콜백을 몇 차례에 나눠 돌리나**에 달렸다 — 3.11·3.12 는 같았다 | 「N / M 판」의 **N 과 M** · `(exit N)` |
-> | — (주소·시간·`set` 순서를 한 곳도 안 찍었다 — `done`/`pending` 은 `sorted` 로 찍었다) | `is`·`issubclass` 의 참/거짓 |
->
-> **선행** — [51-asyncio-coroutine-basics](../51-asyncio-coroutine-basics/2-summary.md)(★★★ **51 이 보인 것** — 코루틴 함수를 **부르기만 하면 한 줄도 안 돈다**(`coroutine … was never awaited`) · `asyncio.run` 이 루프를 **만들고 닫는다** · `await` 는 그 자리에서 **한 코루틴을 끝까지 기다린다**. 이 문서는 그 위에서 **「여럿을 동시에 걸어 두면 누가 누구를 취소하나」** 부터 시작한다) ·
-> [17-generators-yield](../17-generators-yield/2-summary.md)(코루틴이 멈췄다 이어지는 자리 — `yield` 의 후손).
-
 ## 한눈에 — 쉽게 말하면
 
 **이벤트 루프는 「요리사가 한 명뿐인 주방」이다.** 요리사는 한 번에 **한 냄비만** 젓는다.
@@ -1246,3 +1209,39 @@ loop exception handler got: ['Task exception was never retrieved ; ValueError']
 * ★★ **아무도 `await` 안 한 태스크의 예외는 루프의 예외 처리기로 간다** — `Task exception was never retrieved ; ValueError`. **호출한 코드는 모른다**(두 판 같다). 동작 1 의 「비용」이 이것이다.
 * ★ **3.12 의 `eager_task_factory` 를 켜면 `create_task` 가 그 자리에서 첫 `await` 까지 돈다** — `a start | b start | main: both tasks created`. 기본(`default`)과 **순서가 뒤집힌다.** 3.11 에는 그 이름이 없다(`has eager_task_factory: False`).
   ★ 이 칸은 **태스크 팩토리 설정**이 바꾼 것이다 — 동작 1 의 「걸어 두면 예약만 한다」는 **기본 팩토리**의 말이다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
+- [`asyncio.gather`(3.12)](https://docs.python.org/3.12/library/asyncio-task.html#asyncio.gather) — *"If return_exceptions is `False` (default), the first raised exception is immediately propagated to the task that awaits on `gather()`. Other awaitables in the aws sequence **won't be cancelled** and will continue to run."* ·
+  *"If `gather()` is cancelled, all submitted awaitables (that have not completed yet) are also cancelled."* ·
+  *"If any Task or Future from the aws sequence is cancelled, it is treated as if it raised `CancelledError` -- the `gather()` call is **not** cancelled in this case."*
+- [Task Groups](https://docs.python.org/3.12/library/asyncio-task.html#task-groups)(3.11) — *"The first time any of the tasks belonging to the group fails with an exception other than `asyncio.CancelledError`, the remaining tasks in the group are cancelled."* ·
+  *"those exceptions are combined in an `ExceptionGroup` or `BaseExceptionGroup` (as appropriate; see their documentation) which is then raised."*
+- [Task Cancellation](https://docs.python.org/3.12/library/asyncio-task.html#task-cancellation) — *"The asyncio components that enable structured concurrency, like `asyncio.TaskGroup` and `asyncio.timeout`, are implemented using cancellation internally and might misbehave if a coroutine swallows `asyncio.CancelledError`."*
+- [`asyncio.timeout`](https://docs.python.org/3.12/library/asyncio-task.html#asyncio.timeout)(3.11) — *"the context manager will cancel the current task and handle the resulting `asyncio.CancelledError` internally, transforming it into a `TimeoutError` which can be caught and handled."* · *"the `TimeoutError` can only be caught *outside* of the context manager."*
+- [`asyncio.wait_for`](https://docs.python.org/3.12/library/asyncio-task.html#asyncio.wait_for) — *"If a timeout occurs, it cancels the task and raises `TimeoutError`."* · 3.11 판 변경 *"Raises `TimeoutError` instead of `asyncio.TimeoutError`."*
+- [`asyncio.TimeoutError`](https://docs.python.org/3.12/library/asyncio-exceptions.html#asyncio.TimeoutError) — *"A deprecated alias of `TimeoutError`"* · *"This class was made an alias of `TimeoutError`."*(3.11) · `CancelledError` — *"`CancelledError` is now a subclass of `BaseException` rather than `Exception`."*(3.8)
+- [`asyncio.wait`](https://docs.python.org/3.12/library/asyncio-task.html#asyncio.wait) — *"Note that this function does not raise `TimeoutError`."* · *"Unlike `wait_for()`, `wait()` does not cancel the futures when a timeout occurs."* · 3.11 *"Passing coroutine objects to `wait()` directly is forbidden."*
+- [`asyncio.create_task`](https://docs.python.org/3.12/library/asyncio-task.html#asyncio.create_task) 의 **Important** — *"Save a reference to the result of this function, to avoid a task disappearing mid-execution. The event loop only keeps weak references to tasks. A task that isn't referenced elsewhere may get garbage collected at any time, even before it's done."*
+- [`asyncio.to_thread`](https://docs.python.org/3.12/library/asyncio-task.html#asyncio.to_thread)(3.9) · [Developing with asyncio — Running Blocking Code](https://docs.python.org/3.12/library/asyncio-dev.html#running-blocking-code) — *"Blocking (CPU-bound) code should not be called directly."* ·
+  *"While a Task is running in the event loop, no other Tasks can run in the same thread."*
+- [What's New 3.11 — asyncio](https://docs.python.org/3.12/whatsnew/3.11.html#asyncio) — `TaskGroup` *"For new code this is recommended over using `create_task()` and `gather()` directly."* · `timeout` *"recommended over using `wait_for()` directly."*
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 취소 전파 격자(동작 2 — **한 글자도 같았다**)와 「더 들어가면」의 블록 하나를 더 던졌다.\
+★★★ **이 문서는 시간을 한 번도 출력하지 않는다.** `sleep` 의 길이는 소스에만 있고, 출력은 전부 **순서 · 참/거짓 · 「N / M 판」** 이다. 「몇 배 빠르다」는 한 줄도 없다.\
+★★ **격자·태스크 순서 탐침은 시간을 아예 안 쓴다** — 한 걸음을 `await asyncio.sleep(0)`(루프에 한 차례 양보)로 셌다. 그래서 순서가 타이머에 안 흔들린다.\
+**버전** — `asyncio.to_thread` **3.9** · `TaskGroup`·`asyncio.timeout`·`ExceptionGroup`·`except*`·`Task.cancelling()` **3.11** · `asyncio.TimeoutError` 가 내장 `TimeoutError` 의 별칭 **3.11** · `wait()` 에 코루틴을 직접 주면 거절 **3.11** · `CancelledError` 가 `BaseException` 하위 **3.8**.\
+★ **구현 대 언어 보장 한 줄** — `gather`·`TaskGroup`·`timeout`·`wait` 의 취소 규칙과 예외 모양은 **라이브러리 보장**이고, 한 걸음(`sleep(0)`)이 몇 번 돌았나 · `Task was destroyed but it is pending!` 문구 · 「혼자 기다리는 퓨처」 태스크가 수거되는 것은 **CPython 구현**이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| ★ 머신이 아주 바쁘면 **타이머를 쓰는 세 탐침**(동작 4·5·8)의 「끼어들었나」 칸이 움직일 수 있다 — 틈을 크게 벌려 두었고(소스의 `sleep` 길이) **세 번 캡처에서 한 번도 안 움직였다** | ★★★ 격자 마지막 줄 **「… 4 / 9」** · 칸마다 `finished`/`cancelled`/`raised` · 예외 **타입** |
+| 판이 오르면 예외 **문구**(`Passing coroutines is forbidden, use tasks explicitly.`) | `sleep(0)` 걸음으로 센 순서(동작 1·2·3) — 타이머가 없다 |
+| 걸음 수 칸(`A steps at that moment`)은 **구현이 콜백을 몇 차례에 나눠 돌리나**에 달렸다 — 3.11·3.12 는 같았다 | 「N / M 판」의 **N 과 M** · `(exit N)` |
+| — (주소·시간·`set` 순서를 한 곳도 안 찍었다 — `done`/`pending` 은 `sorted` 로 찍었다) | `is`·`issubclass` 의 참/거짓 |
+
+**선행** — [51-asyncio-coroutine-basics](../51-asyncio-coroutine-basics/2-summary.md)(★★★ **51 이 보인 것** — 코루틴 함수를 **부르기만 하면 한 줄도 안 돈다**(`coroutine … was never awaited`) · `asyncio.run` 이 루프를 **만들고 닫는다** · `await` 는 그 자리에서 **한 코루틴을 끝까지 기다린다**. 이 문서는 그 위에서 **「여럿을 동시에 걸어 두면 누가 누구를 취소하나」** 부터 시작한다) ·
+[17-generators-yield](../17-generators-yield/2-summary.md)(코루틴이 멈췄다 이어지는 자리 — `yield` 의 후손).

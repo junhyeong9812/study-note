@@ -1,30 +1,5 @@
 # java/syntax/56 — 가상 스레드 (21): 쓰는 법과 막히는 자리 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../54-executorservice-and-future/`](../54-executorservice-and-future/) (`ExecutorService`·`Future`·풀 크기 — **가상 스레드는 그 질문 자체를 없앤다**) · [`../33-synchronized-and-volatile/`](../33-synchronized-and-volatile/) (`synchronized` 의 문법 — **여기서 그 키워드가 버전에 따라 다르게 동작한다**).
-> **기준 소스** — [`java.lang.Thread` API 문서 (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html) · [`Executors`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Executors.html) · [JEP 444 — Virtual Threads](https://openjdk.org/jeps/444) · [JEP 491 — Synchronize Virtual Threads without Pinning](https://openjdk.org/jeps/491) · 이 머신의 `lib/src.zip` 에서 **직접 읽은** `java.base/java/lang/Thread.java`·`java/util/concurrent/Executors.java`·`StructuredTaskScope.java`.
-> **실행 검증** — 이 문서의 모든 출력·에러·수치는 Temurin **21.0.5** 와 **25.0.1** 에서 실제로 돌려 얻은 것이다.\
-> ★ **고정(pinning) 실험은 21 과 25 에서 각각 돌렸고 결과가 갈렸다** — 아래 (5).\
-> 17 에서는 **컴파일부터 안 된다**(`cannot find symbol: method ofVirtual()`) — 그 에러도 실었다.
-> ⚠️ **측정 조건**\
-> 도구: **JMH 가 아니다.** 벽시계(`System.nanoTime`)이고 **워밍업 1\~2회 + 측정 3\~5회의 중앙값**이다(실험마다 본문에 적었다).\
-> 머신: **CPU 24코어**(`availableProcessors` = 24), Linux x86-64, `ulimit -n` = 1,048,576.\
-> 흔들림: 소켓 실험이 **183\~326 ms** 로 1.8배 흔들렸다. 고정 실험은 흔들림이 거의 없었다(1601\~1605 ms).\
-> 고정 실험은 **캐리어를 1개로 묶어**(`-Djdk.virtualThreadScheduler.parallelism=1 -Djdk.virtualThreadScheduler.maxPoolSize=1`)\
-> **"줄서면 1600ms, 안 줄서면 200ms"** 라는 **두 자리로 갈리게** 설계했다. 그래서 이 실험만은 흔들림이 결론을 안 흔든다.\
-> 힙 사용량은 `System.gc()` 두 번 뒤 `totalMemory - freeMemory` 다 — **정확한 측정이 아니라 자릿수용**이다.
-> **버전** — `Thread.ofVirtual()`·`Thread.startVirtualThread()`·`Thread.isVirtual()` 은 **`@since 21`**,\
-> `Executors.newVirtualThreadPerTaskExecutor()` 도 **`@since 21`** 이다(`src.zip` 의 `@since` 를 직접 읽었다).\
-> `ExecutorService.close()` 는 **`@since 19`** 라 가상 스레드보다 먼저 들어왔다([`../54-executorservice-and-future/`](../54-executorservice-and-future/)).\
-> ★ **`StructuredTaskScope` 는 21 과 25 모두 `@PreviewFeature`** 다(`src.zip` 의 애너테이션을 직접 읽었다).\
-> **`ScopedValue` 는 21 에서 `@PreviewFeature` + `@since 21`, 25 에서는 `@PreviewFeature` 가 없고 `@since 25`** 다 — 확정됐다.
-> **범위** — OS 스레드·컨텍스트 스위칭·스케줄링은 [`../../../../cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다.\
-> 그쪽은 **스레드가 무엇이고 OS 가 무엇을 하나**까지, 여기는 **이 API 를 어떻게 쓰고 어디서 막히나**부터다.\
-> **JIT·GC·런타임 내부**는 [`../../언어-특성/README.md`](../../언어-특성/README.md) 가 정본이다.\
-> **가상 스레드가 왜 들어왔나**(JEP 논쟁·설계 역사)는 [`../../../../history/java/java-21.md`](../../../../history/java/java-21.md) 가 정본이다.\
-> **공용 ForkJoinPool 경합**은 [`../49-parallel-streams/`](../49-parallel-streams/) 가 정본이다 — 가상 스레드 스케줄러는 **별도의 `ForkJoinPool`** 이다(실측 스레드 이름으로 확인).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 javadoc·`src.zip`·JEP 로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **가상 스레드는 "직원을 늘리는 대신, 기다리는 동안 자리를 비켜 주게 만든 것"이다.**
@@ -845,3 +820,28 @@ JDK 25 : java -XX:StartFlightRecording=filename=p.jfr,settings=profile ...
   **설계 논쟁은 [`../../../../history/java/java-21.md`](../../../../history/java/java-21.md) 와 JEP 본문이 정본이다.**
 - **스레드 덤프** — `jcmd <pid> Thread.dump_to_file -format=json out.json` 이 가상 스레드까지 찍는다.\
   이 문서는 **그 출력을 확인하지 않았다.**
+
+## 실행 환경
+
+**선행** — [`../54-executorservice-and-future/`](../54-executorservice-and-future/) (`ExecutorService`·`Future`·풀 크기 — **가상 스레드는 그 질문 자체를 없앤다**) · [`../33-synchronized-and-volatile/`](../33-synchronized-and-volatile/) (`synchronized` 의 문법 — **여기서 그 키워드가 버전에 따라 다르게 동작한다**).
+**기준 소스** — [`java.lang.Thread` API 문서 (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html) · [`Executors`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Executors.html) · [JEP 444 — Virtual Threads](https://openjdk.org/jeps/444) · [JEP 491 — Synchronize Virtual Threads without Pinning](https://openjdk.org/jeps/491) · 이 머신의 `lib/src.zip` 에서 **직접 읽은** `java.base/java/lang/Thread.java`·`java/util/concurrent/Executors.java`·`StructuredTaskScope.java`.
+**실행 검증** — 이 문서의 모든 출력·에러·수치는 Temurin **21.0.5** 와 **25.0.1** 에서 실제로 돌려 얻은 것이다.\
+★ **고정(pinning) 실험은 21 과 25 에서 각각 돌렸고 결과가 갈렸다** — 본문 (5).\
+17 에서는 **컴파일부터 안 된다**(`cannot find symbol: method ofVirtual()`) — 그 에러도 실었다.
+⚠️ **측정 조건**\
+도구: **JMH 가 아니다.** 벽시계(`System.nanoTime`)이고 **워밍업 1\~2회 + 측정 3\~5회의 중앙값**이다(실험마다 본문에 적었다).\
+머신: **CPU 24코어**(`availableProcessors` = 24), Linux x86-64, `ulimit -n` = 1,048,576.\
+흔들림: 소켓 실험이 **183\~326 ms** 로 1.8배 흔들렸다. 고정 실험은 흔들림이 거의 없었다(1601\~1605 ms).\
+고정 실험은 **캐리어를 1개로 묶어**(`-Djdk.virtualThreadScheduler.parallelism=1 -Djdk.virtualThreadScheduler.maxPoolSize=1`)\
+**"줄서면 1600ms, 안 줄서면 200ms"** 라는 **두 자리로 갈리게** 설계했다. 그래서 이 실험만은 흔들림이 결론을 안 흔든다.\
+힙 사용량은 `System.gc()` 두 번 뒤 `totalMemory - freeMemory` 다 — **정확한 측정이 아니라 자릿수용**이다.
+**버전** — `Thread.ofVirtual()`·`Thread.startVirtualThread()`·`Thread.isVirtual()` 은 **`@since 21`**,\
+`Executors.newVirtualThreadPerTaskExecutor()` 도 **`@since 21`** 이다(`src.zip` 의 `@since` 를 직접 읽었다).\
+`ExecutorService.close()` 는 **`@since 19`** 라 가상 스레드보다 먼저 들어왔다([`../54-executorservice-and-future/`](../54-executorservice-and-future/)).\
+★ **`StructuredTaskScope` 는 21 과 25 모두 `@PreviewFeature`** 다(`src.zip` 의 애너테이션을 직접 읽었다).\
+**`ScopedValue` 는 21 에서 `@PreviewFeature` + `@since 21`, 25 에서는 `@PreviewFeature` 가 없고 `@since 25`** 다 — 확정됐다.
+**범위** — OS 스레드·컨텍스트 스위칭·스케줄링은 [`../../../../cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다.\
+그쪽은 **스레드가 무엇이고 OS 가 무엇을 하나**까지, 여기는 **이 API 를 어떻게 쓰고 어디서 막히나**부터다.\
+**JIT·GC·런타임 내부**는 [`../../언어-특성/README.md`](../../언어-특성/README.md) 가 정본이다.\
+**가상 스레드가 왜 들어왔나**(JEP 논쟁·설계 역사)는 [`../../../../history/java/java-21.md`](../../../../history/java/java-21.md) 가 정본이다.\
+**공용 ForkJoinPool 경합**은 [`../49-parallel-streams/`](../49-parallel-streams/) 가 정본이다 — 가상 스레드 스케줄러는 **별도의 `ForkJoinPool`** 이다(실측 스레드 이름으로 확인).

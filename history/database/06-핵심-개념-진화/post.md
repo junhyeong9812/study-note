@@ -1,9 +1,5 @@
 # DB 핵심 개념의 진화 (개념사)
 
-> 원본: `~/project/database-history/06-핵심-개념-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·논문명·표준번호·코드는 원문 그대로다.\
-> 용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **개념사 = 제품이 아니라 "부품의 역사".**
@@ -701,3 +697,9 @@ SI가 남긴 write skew를 다시 막으려는 SSI(2008 Cahill 외)가 그렇고
 **WAL·복구 (ARIES)**
 - [Mohan et al., *ARIES: A Transaction Recovery Method ... Using Write-Ahead Logging* (ACM TODS 17:1, 1992)](https://dl.acm.org/doi/10.1145/128765.128770)
 - [Write-ahead logging (Wikipedia)](https://en.wikipedia.org/wiki/Write-ahead_logging)
+
+## 출처
+
+원본: `~/project/database-history/06-핵심-개념-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·논문명·표준번호·코드는 원문 그대로다.\
+용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """curriculum.md → cs/<area>/README.md (또는 기존 컬렉션과 이름이 겹치면 cs/<area>/curriculum.md) 생성.
 생성물은 직접 고치지 않는다 — curriculum.md를 고친 뒤 재실행한다. (cs-restructure 2026-09-28)"""
-import os, re, glob
+import os, re, glob, sys
 R = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../..'))
 CUR = os.path.join(R, 'docs/plans/2026-09-27/cs-fundamentals-roadmap/curriculum.md')
 COLLIDE = {'algorithm', 'data-structure', 'domain-modeling', 'api-design'}   # 기존 컬렉션 README 보존
@@ -41,12 +41,24 @@ def notes(exist):
             res.append(x)
     return res
 
+STAGE = re.compile(r'^\| 단계 \| (\S+) \|', flags=re.M)
+
+def stage_of(dd):
+    """노트 폴더의 metadata.md 「단계」 칸 → 원고·초안·검수·학습. 없으면 None (header-cleanup 2026-10-01)."""
+    m = os.path.join(dd, 'metadata.md')
+    if not os.path.exists(m):
+        return None
+    rows = STAGE.findall(open(m, encoding='utf-8').read())
+    if len(rows) != 1 or rows[0] not in ('원고', '초안', '검수', '학습'):
+        raise SystemExit(f'metadata.md 단계 칸 오류: {m} → {rows}')   # 조용한 폴백 금지
+    return rows[0]
+
 def status(paths):
-    """노트 폴더의 1-question.md·3-answer.md 전문을 본다(질문·정답 모두 Claude 초안일 수 있음).
-    `✅ 검수 완료` 표식 → 검수 완료 · `Claude 초안` 표기 → 초안(Claude) · 둘 다 없으면 원고 있음."""
+    """노트 폴더마다 metadata.md의 단계를 읽는다: 검수·학습 → 검수 완료 · 초안 → 초안(Claude) · 원고 → 원고 있음.
+    metadata.md가 없는 폴더는 예전 표식 규칙(1-question·3-answer 본문의 `✅ 검수 완료`·`Claude 초안`)으로 판정한다."""
     if not paths:
         return '미작성'
-    texts, reviewed = [], []
+    reviewed, drafts = [], []
     DONE = re.compile(r'^✅ 검수 완료\(\d{4}-\d{2}-\d{2}\)', flags=re.M)
     for p in paths:
         d = os.path.join(R, p)
@@ -55,15 +67,21 @@ def status(paths):
         dirs = [d] if os.path.exists(os.path.join(d, '1-question.md')) else sorted(
             os.path.dirname(x) for x in glob.glob(os.path.join(d, '*', '1-question.md')))   # 컬렉션 폴더
         for dd in dirs:
+            st = stage_of(dd)
+            if st is not None:
+                reviewed.append(st in ('검수', '학습'))
+                drafts.append(st == '초안')
+                continue
+            print(f'경고: metadata.md 없음 — 예전 표식 규칙으로 판정: {os.path.relpath(dd, R)}', file=sys.stderr)
             pair = [os.path.join(dd, f) for f in ('1-question.md', '3-answer.md')]
             ts = [open(q, encoding='utf-8').read() if os.path.exists(q) else '' for q in pair]
-            texts += ts
             # 검수 완료 = 두 파일 모두 존재 + 각 파일 상단 15줄 안에 날짜 포함 표식 줄
             reviewed.append(all(os.path.exists(q) for q in pair) and
                             all(DONE.search('\n'.join(t.split('\n')[:15])) for t in ts))
+            drafts.append(any('Claude 초안' in t for t in ts))
     if reviewed and all(reviewed):
         return '검수 완료'
-    if any('Claude 초안' in t for t in texts):
+    if any(drafts):
         return '초안(Claude)'
     return '원고 있음'
 

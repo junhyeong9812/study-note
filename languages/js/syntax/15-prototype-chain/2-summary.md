@@ -1,81 +1,5 @@
 # js/syntax/15 — 프로토타입 체인: 「읽기는 체인을 타고, 쓰기는 수신자에 내려앉는다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
-> 프로퍼티 조회는 **어느 칸에서 답이 나와도 같은 값**을 내놓는다 — `C.fromA` 가 `'a'` 인 것은
-> 그 값이 **첫 칸에 있었는지 셋째 칸에 있었는지 한 글자도 말해 주지 않는다.**
-> ★★★ **값으로는 원리상 못 가른다.** 그래서 체인의 **각 칸에 `Proxy` 를 씌워** 트랩 로그로 경로를 찍었다 —
-> `C.fromC` 는 로그 **1줄**, `C.fromB` 는 **2줄**, `C.fromA` 와 `C.nope` 는 **3줄**이다.
-> **이 문서의 결론은 전부 그 로그에서 나온다.**
-> ② 전수 격자가 체인 **19종**과 생성자 **5종**을 글자로 찍고,
-> ③ 브랜드 태그(`Object.prototype.toString.call`)가 **다른 창이 전부 닫힌 자리**에서 홀로 답한다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 최신 초안](https://tc39.es/ecma262/) — `OrdinaryGet` · `OrdinarySet` · `OrdinarySetWithOwnDescriptor` ·
->   `OrdinaryHasInstance` · `Object.create` · `Object.getPrototypeOf` / `setPrototypeOf` · `__proto__` 의 Annex B
-> - [ECMA-262 판별 아카이브](https://262.ecma-international.org/) — `Object.create` 가 ES5, `setPrototypeOf`·`Symbol.hasInstance` 가 ES2015, `Object.hasOwn` 이 ES2022 인 것을 가릴 때
-> - [MDN — Inheritance and the prototype chain](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain) · [MDN — `Object.getPrototypeOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·경로·예외 타입과 메시지는 전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
->
-> ★★ **던지는 형태를 하나로 고정했다** — 예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만 찍는다.
-> Node 의 스택트레이스에는 **절대 경로**가 박혀 다른 머신에서 재현이 안 되기 때문이다.
-> ★★ **이 문서의 모든 블록은 표준 출력뿐이다** — 표준 오류와 섞은 블록이 하나도 없다.
-> ★★★ **엄격 블록과 비엄격 블록을 섞지 않았다** — `js12b-15c-shadow.js` 와 `js12b-15e-pycontrast.js` 는
-> 첫 줄이 `"use strict"` 이고, 나머지 셋은 **모드와 무관한 것만** 묻는다.
->
-> **버전** — 프로토타입 체인 자체는 **초판부터**다.
-> **`Object.create` 는 ES5**, **`Object.getPrototypeOf` 도 ES5**,
-> **`Object.setPrototypeOf`·`Symbol.hasInstance`·`class` 는 ES2015**,
-> **`Object.hasOwn` 은 ES2022**, **`__proto__`(접근자와 리터럴 문법 둘 다)는 Annex B** 다.
-> ★ Annex B 는 **웹 호환을 위한 규범적 선택 사항**이지만 **모든 웹 엔진이 구현한다.**
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **① 추상 연산에 로그 심기**(본체) | 체인의 각 칸을 `Proxy` 로 감싸 `get`·`set`·`has`·`gopd`·`getPrototypeOf` 트랩을 찍는다. **조회가 어디서 멈추나**는 **오직 이것으로만** 보인다 |
-> | ★★★ **② 전수 격자** | 체인 **19종** · 생성자 자신의 체인 **5종** · 「있나」를 묻는 뷰 **4종** · 프로토타입 쪽 프로퍼티 **3종**(데이터 / 접근자 / 비쓰기) |
-> | ★★★ **③ 브랜드 태그** `Object.prototype.toString.call` | **창을 바꿔 물은 자리다**(제5의 상태) — `Object.create(null)` 은 `toString` 도 없고 `String()` 이 `TypeError` 라 **평소 창이 전부 닫힌다.** 브랜드 태그만 `[object Object]` 라고 답한다 |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | `TypeError` **여섯 종** — 비쓰기 · getter-only · 원시값 변환 · 프로토타입 인자 · `instanceof` 우변 두 가지 |
-> | ★ **⑤ 두 판 대조기 + 브라우저** | 판이 갈린 칸 · 호스트가 정하는 칸 — **이 주제에서 갈린 블록 0개** |
-> | ★ **부적용 — 진단의 `(행,열)`**(18-C) | 이 주제에는 **`SyntaxError` 가 한 줄도 없다.** 체인은 전부 런타임 의미라 파서가 볼 것이 없다 — **잴 것이 없다** |
-> | ★ **안 쟀다 — 성능** | ★★★ 「`setPrototypeOf` 가 느리다」·「체인이 길면 조회가 느리다」는 **흔한 말이지만 여기서 한 줄도 쓰지 않는다.** **안 쟀다** |
-> | ★ **안 돌렸다 — 두 번 컴파일**(엄격/비엄격) | 모드가 답을 바꾸는 칸은 **체인 위의 실패한 쓰기** 두 줄뿐이고, 그 격자는 [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)의 `proto has non-writable a` 줄이 이미 갖고 있다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | Node 스택트레이스의 **절대 경로** — 한 줄도 싣지 않았다 | ★★★ **트랩 로그의 개수와 순서** |
-> | 예외 **문구**(판이 오르면 바뀐다) | ★★★ **예외의 종류** · **own 키 목록** |
-> | 브라우저 UA 문자열의 뒷자리 | ★★★ **체인을 글자로 찍은 줄** · 격자의 `true`/`false` |
-> | `console.log(bare)` 가 찍는 **표기 형식**(Node 의 `util.inspect` — 호스트가 정한다) | ★★ **브랜드 태그** `[object Object]`(명세가 정한다) |
->
-> ★★ **이 주제의 블록에는 주소도 시간도 난수도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다.**
-> ★★★ **두 판이 갈린 블록은 이 주제에 0개다**(전체 19블록 중 갈린 것은 14번 주제의 `toSorted` 한 블록뿐이다).
->
-> **선행** — [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md) · [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md) · [07 — `this` 바인딩 네 규칙](../07-this-binding-four-rules/2-summary.md) · [01 — 값의 종류와 `typeof`](../01-value-types-and-typeof/2-summary.md).
-> ★★★ **07번이 이 주제의 setter 절을 떠받친다.** 체인 위의 setter 가 불릴 때 그 안의 `this` 는
-> **setter 가 사는 객체가 아니라 점 왼쪽의 객체**다 — 07번의 **암시적 바인딩** 그대로다.
-> 그래서 `this._store = v` 가 **자식에** own 프로퍼티를 만든다. 07번을 안 읽으면 이 줄이 마술로 보인다.
-> ★★★ **14번이 「무엇이 쓰기를 막나」의 정본**이다. 여기서는 **그 막는 것이 체인 위에 있을 때** 무슨 일이 나는지만 본다.
-> ★★ **13번이 `__proto__:` 리터럴 문법을 이미 갈랐다** — 다섯 형태 중 둘만 프로토타입을 바꾼다는 실측이 거기 있다.
-> 여기서는 **`__proto__` 의 다른 얼굴**, 즉 `Object.prototype` 에 사는 **접근자** 쪽을 본다. **둘은 다른 물건이다.**
-> **이어지는 곳** — [목록의 **16번 주제**](../16-class-syntax/) 「`class` 문법」 · [목록의 **17번 주제**](../17-inheritance-and-super/) 「상속과 `super`」 ·
-> [목록의 **18번 주제**](../18-for-in-and-enumeration/) 「`for...in` 과 열거」 · [목록의 **34번 주제**](../34-type-checking-idioms/) 「타입 검사 관용구」 · [목록의 **45번 주제**](../45-proxy/) 「`Proxy`」
->
-> ★★ **경계 — `class` 가 무엇을 어디에 붙이나는 16번이 정본이다.** 여기서는 **`class B extends A` 가 체인을 두 줄 만든다**는 사실까지다.
-> ★★ **경계 — `extends`·`super`·내장 객체 상속의 제약은 17번이 정본이다.**
-> ★★ **경계 — 체인을 타는 열거(`for...in`)는 18번이 정본이다.** 여기서는 **조회가 체인을 탄다**는 사실까지다.
-> ★★ **경계 — `instanceof` 를 실무에서 어느 검사와 견주나는 34번이 정본이다.** 여기서는 **`instanceof` 가 무엇을 보나**까지다.
-> ★★ **경계 — `Proxy` 트랩의 계약과 불변식은 45번이 정본이다.** 여기서는 **로그를 심는 도구로만** 쓴다.
-
 ```sh
 # js12b-versions.sh
 #!/usr/bin/env bash
@@ -1515,3 +1439,78 @@ leaf.v through a Proxy with a get trap            from the trap
 - **`class` 가 만드는 체인 두 줄은 16·17번의 출발점이다.**
   `B.prototype -> A.prototype`(인스턴스 메서드)와 `B -> A`(정적 멤버)를 갈라 두지 않으면
   「정적 메서드가 왜 상속되지?」에서 막힌다. 이 문서는 **그 두 줄이 있다는 것**까지만 책임진다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
+프로퍼티 조회는 **어느 칸에서 답이 나와도 같은 값**을 내놓는다 — `C.fromA` 가 `'a'` 인 것은
+그 값이 **첫 칸에 있었는지 셋째 칸에 있었는지 한 글자도 말해 주지 않는다.**
+★★★ **값으로는 원리상 못 가른다.** 그래서 체인의 **각 칸에 `Proxy` 를 씌워** 트랩 로그로 경로를 찍었다 —
+`C.fromC` 는 로그 **1줄**, `C.fromB` 는 **2줄**, `C.fromA` 와 `C.nope` 는 **3줄**이다.
+**이 문서의 결론은 전부 그 로그에서 나온다.**
+② 전수 격자가 체인 **19종**과 생성자 **5종**을 글자로 찍고,
+③ 브랜드 태그(`Object.prototype.toString.call`)가 **다른 창이 전부 닫힌 자리**에서 홀로 답한다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 최신 초안](https://tc39.es/ecma262/) — `OrdinaryGet` · `OrdinarySet` · `OrdinarySetWithOwnDescriptor` ·
+  `OrdinaryHasInstance` · `Object.create` · `Object.getPrototypeOf` / `setPrototypeOf` · `__proto__` 의 Annex B
+- [ECMA-262 판별 아카이브](https://262.ecma-international.org/) — `Object.create` 가 ES5, `setPrototypeOf`·`Symbol.hasInstance` 가 ES2015, `Object.hasOwn` 이 ES2022 인 것을 가릴 때
+- [MDN — Inheritance and the prototype chain](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain) · [MDN — `Object.getPrototypeOf`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·경로·예외 타입과 메시지는 전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+
+★★ **던지는 형태를 하나로 고정했다** — 예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만 찍는다.
+Node 의 스택트레이스에는 **절대 경로**가 박혀 다른 머신에서 재현이 안 되기 때문이다.
+★★ **이 문서의 모든 블록은 표준 출력뿐이다** — 표준 오류와 섞은 블록이 하나도 없다.
+★★★ **엄격 블록과 비엄격 블록을 섞지 않았다** — `js12b-15c-shadow.js` 와 `js12b-15e-pycontrast.js` 는
+첫 줄이 `"use strict"` 이고, 나머지 셋은 **모드와 무관한 것만** 묻는다.
+
+**버전** — 프로토타입 체인 자체는 **초판부터**다.
+**`Object.create` 는 ES5**, **`Object.getPrototypeOf` 도 ES5**,
+**`Object.setPrototypeOf`·`Symbol.hasInstance`·`class` 는 ES2015**,
+**`Object.hasOwn` 은 ES2022**, **`__proto__`(접근자와 리터럴 문법 둘 다)는 Annex B** 다.
+★ Annex B 는 **웹 호환을 위한 규범적 선택 사항**이지만 **모든 웹 엔진이 구현한다.**
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **① 추상 연산에 로그 심기**(본체) | 체인의 각 칸을 `Proxy` 로 감싸 `get`·`set`·`has`·`gopd`·`getPrototypeOf` 트랩을 찍는다. **조회가 어디서 멈추나**는 **오직 이것으로만** 보인다 |
+| ★★★ **② 전수 격자** | 체인 **19종** · 생성자 자신의 체인 **5종** · 「있나」를 묻는 뷰 **4종** · 프로토타입 쪽 프로퍼티 **3종**(데이터 / 접근자 / 비쓰기) |
+| ★★★ **③ 브랜드 태그** `Object.prototype.toString.call` | **창을 바꿔 물은 자리다**(제5의 상태) — `Object.create(null)` 은 `toString` 도 없고 `String()` 이 `TypeError` 라 **평소 창이 전부 닫힌다.** 브랜드 태그만 `[object Object]` 라고 답한다 |
+| ★★ **④ 예외의 `constructor.name` + `message`** | `TypeError` **여섯 종** — 비쓰기 · getter-only · 원시값 변환 · 프로토타입 인자 · `instanceof` 우변 두 가지 |
+| ★ **⑤ 두 판 대조기 + 브라우저** | 판이 갈린 칸 · 호스트가 정하는 칸 — **이 주제에서 갈린 블록 0개** |
+| ★ **부적용 — 진단의 `(행,열)`**(18-C) | 이 주제에는 **`SyntaxError` 가 한 줄도 없다.** 체인은 전부 런타임 의미라 파서가 볼 것이 없다 — **잴 것이 없다** |
+| ★ **안 쟀다 — 성능** | ★★★ 「`setPrototypeOf` 가 느리다」·「체인이 길면 조회가 느리다」는 **흔한 말이지만 여기서 한 줄도 쓰지 않는다.** **안 쟀다** |
+| ★ **안 돌렸다 — 두 번 컴파일**(엄격/비엄격) | 모드가 답을 바꾸는 칸은 **체인 위의 실패한 쓰기** 두 줄뿐이고, 그 격자는 [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)의 `proto has non-writable a` 줄이 이미 갖고 있다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| Node 스택트레이스의 **절대 경로** — 한 줄도 싣지 않았다 | ★★★ **트랩 로그의 개수와 순서** |
+| 예외 **문구**(판이 오르면 바뀐다) | ★★★ **예외의 종류** · **own 키 목록** |
+| 브라우저 UA 문자열의 뒷자리 | ★★★ **체인을 글자로 찍은 줄** · 격자의 `true`/`false` |
+| `console.log(bare)` 가 찍는 **표기 형식**(Node 의 `util.inspect` — 호스트가 정한다) | ★★ **브랜드 태그** `[object Object]`(명세가 정한다) |
+
+★★ **이 주제의 블록에는 주소도 시간도 난수도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다.**
+★★★ **두 판이 갈린 블록은 이 주제에 0개다**(전체 19블록 중 갈린 것은 14번 주제의 `toSorted` 한 블록뿐이다).
+
+**선행** — [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md) · [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md) · [07 — `this` 바인딩 네 규칙](../07-this-binding-four-rules/2-summary.md) · [01 — 값의 종류와 `typeof`](../01-value-types-and-typeof/2-summary.md).
+★★★ **07번이 이 주제의 setter 절을 떠받친다.** 체인 위의 setter 가 불릴 때 그 안의 `this` 는
+**setter 가 사는 객체가 아니라 점 왼쪽의 객체**다 — 07번의 **암시적 바인딩** 그대로다.
+그래서 `this._store = v` 가 **자식에** own 프로퍼티를 만든다. 07번을 안 읽으면 이 줄이 마술로 보인다.
+★★★ **14번이 「무엇이 쓰기를 막나」의 정본**이다. 여기서는 **그 막는 것이 체인 위에 있을 때** 무슨 일이 나는지만 본다.
+★★ **13번이 `__proto__:` 리터럴 문법을 이미 갈랐다** — 다섯 형태 중 둘만 프로토타입을 바꾼다는 실측이 거기 있다.
+여기서는 **`__proto__` 의 다른 얼굴**, 즉 `Object.prototype` 에 사는 **접근자** 쪽을 본다. **둘은 다른 물건이다.**
+**이어지는 곳** — [목록의 **16번 주제**](../16-class-syntax/) 「`class` 문법」 · [목록의 **17번 주제**](../17-inheritance-and-super/) 「상속과 `super`」 ·
+[목록의 **18번 주제**](../18-for-in-and-enumeration/) 「`for...in` 과 열거」 · [목록의 **34번 주제**](../34-type-checking-idioms/) 「타입 검사 관용구」 · [목록의 **45번 주제**](../45-proxy/) 「`Proxy`」
+
+★★ **경계 — `class` 가 무엇을 어디에 붙이나는 16번이 정본이다.** 여기서는 **`class B extends A` 가 체인을 두 줄 만든다**는 사실까지다.
+★★ **경계 — `extends`·`super`·내장 객체 상속의 제약은 17번이 정본이다.**
+★★ **경계 — 체인을 타는 열거(`for...in`)는 18번이 정본이다.** 여기서는 **조회가 체인을 탄다**는 사실까지다.
+★★ **경계 — `instanceof` 를 실무에서 어느 검사와 견주나는 34번이 정본이다.** 여기서는 **`instanceof` 가 무엇을 보나**까지다.
+★★ **경계 — `Proxy` 트랩의 계약과 불변식은 45번이 정본이다.** 여기서는 **로그를 심는 도구로만** 쓴다.

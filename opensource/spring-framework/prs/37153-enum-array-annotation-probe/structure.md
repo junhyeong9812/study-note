@@ -1,15 +1,5 @@
 # PR #37153 — 무대의 실구조와 워크플로우
 
-> PR #37153의 무대가 되는 실구조·워크플로우.\
-> 문제·수정은 [README.md](README.md), 테스트는 [tests.md](tests.md), 리뷰 과정은 [review.md](review.md) 참조.
->
-> 기준: 로컬 HEAD `526c706d1c3`.\
-> 이 시점의 `AttributeMethods.java`는 **수정 전** 상태이므로(플래그 계산식 :84가 base 그대로), 아래 file:line은 그대로 "수정 전 코드"의 좌표다.
->
-> 이 문서는 `AttributeMethods`의 **기본 구조** — 플래그 계산, `canLoad`/`validate`, `AnnotationsScanner` 소비처 — 를 담당한다.\
-> 같은 무대에 재귀가 얹힌 뒤의 구조와 nested 값 트리 워크플로우는 [`../37157/structure.md`](../37157-nested-annotation-probe/structure.md)를 보라.\
-> probe라는 장치 자체의 개념은 [probe-pattern.md](probe-pattern.md)에 있으므로 여기서는 반복하지 않는다.
-
 ## 1. 무대 — 실구조
 
 `AttributeMethods`는 annotation 타입 하나당 하나씩 만들어져 캐시되는 **속성 메서드 목록 + 사전 계산된 성질 플래그** 묶음이다.\
@@ -293,3 +283,8 @@ hasDefaultValueMethod() :237 ─→ AnnotationUtils.java:913        기본값이
 ```
 
 `AttributeMethods.cache`(:47)가 전자를, `AnnotationsScanner.declaredAnnotationCache`(:55)가 후자를 각각 제한한다 — 캐시 두 개가 서로 다른 축을 맡고 있다.
+
+## 출처
+
+기준: 로컬 HEAD `526c706d1c3`.\
+이 시점의 `AttributeMethods.java`는 **수정 전** 상태이므로(플래그 계산식 :84가 base 그대로), 본문의 file:line은 그대로 "수정 전 코드"의 좌표다.

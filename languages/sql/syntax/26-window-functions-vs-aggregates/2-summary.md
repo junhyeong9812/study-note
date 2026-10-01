@@ -1,17 +1,5 @@
 # sql/26-윈도우 함수의 개념 — 집계와 무엇이 다른가 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Window Functions (튜토리얼)](https://www.postgresql.org/docs/18/tutorial-window.html) · [PostgreSQL 18 · Window Function Calls](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 · Window Functions](https://dev.mysql.com/doc/refman/8.4/en/window-functions.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — 윈도우 함수는 **PG 8.4 부터** · **MySQL 8.0 부터**다(MySQL 5.7 에는 없다).\
-> 이 주제에서 두 엔진의 **결과가 갈린 자리는 없다** — 갈린 것은 에러 메시지뿐이다(6번).\
-> **선행** — [21 집계 함수와 `COUNT` 의 세 형태](../21-aggregate-functions-count-forms/) · [22 GROUP BY 와 비집계 열 규칙](../22-group-by-nonaggregated-columns/).\
-> **이 주제는 그 둘과의 대비가 본문이다** — 「접는다」와 「안 접는다」.\
-> **뒤 주제** — [27 PARTITION BY 와 윈도우 ORDER BY](../27-partition-by-and-window-order-by/) · [28 프레임](../28-window-frames-rows-range-groups/) · [29 순위 함수](../29-ranking-functions/) · [30 오프셋·경계 함수](../30-offset-and-boundary-functions/) · [31 평가 시점](../31-window-evaluation-timing/).
-
 ## 한눈에 — 쉽게 말하면
 
 **성적표를 걷어서 반 평균을 구하는 두 가지 방법이 있다.**
@@ -595,3 +583,14 @@ ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the ma
 
   `2200` 은 `300` 인 두 명을 뺀 합이다. MySQL 은 `FILTER` 자체가 없어 **`CASE` 로 쓴다** —\
   그 대비는 [24번](../24-conditional-aggregation-filter-case/)이 정본이고, 여기서는 **`OVER` 와 같이 쓸 수 있다는 사실만** 본다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Window Functions (튜토리얼)](https://www.postgresql.org/docs/18/tutorial-window.html) · [PostgreSQL 18 · Window Function Calls](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 · Window Functions](https://dev.mysql.com/doc/refman/8.4/en/window-functions.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — 윈도우 함수는 **PG 8.4 부터** · **MySQL 8.0 부터**다(MySQL 5.7 에는 없다).\
+이 주제에서 두 엔진의 **결과가 갈린 자리는 없다** — 갈린 것은 에러 메시지뿐이다(6번).\
+**선행** — [21 집계 함수와 `COUNT` 의 세 형태](../21-aggregate-functions-count-forms/) · [22 GROUP BY 와 비집계 열 규칙](../22-group-by-nonaggregated-columns/).\
+**이 주제는 그 둘과의 대비가 본문이다** — 「접는다」와 「안 접는다」.\
+**뒤 주제** — [27 PARTITION BY 와 윈도우 ORDER BY](../27-partition-by-and-window-order-by/) · [28 프레임](../28-window-frames-rows-range-groups/) · [29 순위 함수](../29-ranking-functions/) · [30 오프셋·경계 함수](../30-offset-and-boundary-functions/) · [31 평가 시점](../31-window-evaluation-timing/).

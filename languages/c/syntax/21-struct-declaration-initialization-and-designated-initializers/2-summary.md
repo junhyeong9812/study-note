@@ -1,17 +1,5 @@
 # c/syntax/21 — 구조체 선언·초기화·지정 초기자: 「**구조체는 값이고, 배열은 값이 아니다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — struct](https://en.cppreference.com/w/c/language/struct) · [cppreference — struct initialization](https://en.cppreference.com/w/c/language/struct_initialization) · [cppreference — compound literals](https://en.cppreference.com/w/c/language/compound_literal) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·진단·sanitizer 리포트는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과 **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 플래그는 `-std=c17 -Wall -Wextra -pedantic` 이고, 갈리는 자리는 **`-O0`\~`-O3` 를 따로 돌렸다.**\
-> 소스는 `s21a.c`\~`s21h.c` 와 `s21g.cpp` 다. **손으로 옮겨 적은 수치는 하나도 없다.**
-> **버전** — 구조체 자체는 **C89부터**. **지정 초기자와 복합 리터럴은 C99부터**,\
-> **익명 구조체 멤버는 C11부터**, **빈 중괄호 `= {}` 는 C23부터**다(이 머신의 gcc 13 은 `-std=c2x` 로 확인했다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「**구조체 패딩·정렬**」의 정본은 [22번 형제](../22-struct-padding-and-alignment/)다. 여기는 **선언·초기화·대입**까지다.\
-> 「`sizeof`·`_Alignof`·`offsetof` 라는 도구」는 [08번 형제](../08-sizeof-alignment-and-offsetof/), 「`union`」은 [23번 형제](../23-union-and-the-boundary-of-type-punning/)가 정본이다.\
-> 「복합 리터럴」의 정본은 [목록의 **27번 주제**](../27-compound-literals/)다 — 여기서는 **저장 기간만** 본다.
-
 ## 한눈에 — 쉽게 말하면
 
 **구조체는 「서류 양식 한 장」이다.** 칸이 여럿이지만 **들고 다닐 때는 한 장으로 다닌다.**
@@ -1008,3 +996,16 @@ C 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다�
   ★ 얕아지는 자리는 **포인터가 나오는 자리 하나**뿐이다.
 - **`static` 구조체의 초기화** — 정적 저장 기간이면 초기자가 없어도 **전부 0** 이다.\
   ★ 자동 저장 기간과 **여기서 갈린다**([목록의 **28번 주제**](../28-choosing-among-four-storage-durations/)·**30번 주제**).
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — struct](https://en.cppreference.com/w/c/language/struct) · [cppreference — struct initialization](https://en.cppreference.com/w/c/language/struct_initialization) · [cppreference — compound literals](https://en.cppreference.com/w/c/language/compound_literal) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
+**실행 검증** — 이 문서의 모든 출력·진단·sanitizer 리포트는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과 **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 플래그는 `-std=c17 -Wall -Wextra -pedantic` 이고, 갈리는 자리는 **`-O0`\~`-O3` 를 따로 돌렸다.**\
+소스는 `s21a.c`\~`s21h.c` 와 `s21g.cpp` 다. **손으로 옮겨 적은 수치는 하나도 없다.**
+**버전** — 구조체 자체는 **C89부터**. **지정 초기자와 복합 리터럴은 C99부터**,\
+**익명 구조체 멤버는 C11부터**, **빈 중괄호 `= {}` 는 C23부터**다(이 머신의 gcc 13 은 `-std=c2x` 로 확인했다).
+
+**경계** — 「**구조체 패딩·정렬**」의 정본은 [22번 형제](../22-struct-padding-and-alignment/)다. 여기는 **선언·초기화·대입**까지다.\
+「`sizeof`·`_Alignof`·`offsetof` 라는 도구」는 [08번 형제](../08-sizeof-alignment-and-offsetof/), 「`union`」은 [23번 형제](../23-union-and-the-boundary-of-type-punning/)가 정본이다.\
+「복합 리터럴」의 정본은 [목록의 **27번 주제**](../27-compound-literals/)다 — 여기서는 **저장 기간만** 본다.

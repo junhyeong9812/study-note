@@ -1,10 +1,5 @@
 # PR #36965 분석 — ValueCodeGenerator가 NaN·Infinity에서 컴파일 불가 코드를 생성하는 결함
 
-> 기준: PR 머지베이스 `a077324670693187ea98c33591e90831e5da12c9` 대비 `refs/pr/36965`.
-> 이 문서는 결함의 경로 추적과 계약 분석에 집중한다. 배경과 교훈은 README.md,
-> 무대의 소유 관계도와 AOT 파이프라인 지도는 structure.md, 테스트 여섯 건의 해설은
-> tests.md가 각각 맡는다.
-
 ## 0. 결론
 
 `ValueCodeGeneratorDelegates.PrimitiveDelegate`의 `Float`·`Double` 분기는 JavaPoet의 `$L`(리터럴) 플레이스홀더로 값의 `toString()`을 그대로 소스에 찍는다.\
@@ -361,3 +356,7 @@ diff만 커져 기각.\
 (1) `BigDecimal`·`BigInteger` 등은 어느 위임자도 지원하지 않아 `UnsupportedTypeValueCodeGenerationException`으로 떨어진다 — 시끄러운 실패이므로 이 결함과 성격이 다르다.\
 (2) 채택된 `CodeBlock`이 유효한 Java 식인지 진입점이 확인하지 않는다는 구조적 공백 — 이 PR은 한 위임자의 출력을 고칠 뿐 그 공백은 남긴다.\
 다른 위임자에도 같은 질문을 던져 볼 수 있으나 범위 밖이다.
+
+## 출처
+
+기준: PR 머지베이스 `a077324670693187ea98c33591e90831e5da12c9` 대비 `refs/pr/36965`.

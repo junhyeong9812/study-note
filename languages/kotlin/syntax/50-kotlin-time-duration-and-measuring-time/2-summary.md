@@ -1,16 +1,5 @@
 # kotlin/syntax/50 — `kotlin.time` — `Duration`·시간 측정 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 선언(`Duration.kt`·`Instant.kt`·`Clock.kt`·`MonoTimeSource.kt`)((5)). ★ 공식 문서 페이지([Time measurement](https://kotlinlang.org/docs/time-measurement.html))는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 문장을 인용하지 않는다.
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 17회(단위 격자 스크립트 안의 2회 · 판 격자 스크립트 안의 10회 포함) · `java` 5회 · `javap` 2회 · stdlib 소스 jar 발췌 5곳 · JDK `src.zip` 발췌 1곳.\
-> ★ 단위 격자의 `delay` 두 칸만 **kotlinx-coroutines 1.11.0** 을 쓴다(gradle 캐시에 있던 판 — [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/)까지 이 판을 쓴다). 그 밖은 stdlib 만 쓴다.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「막은 칸 N / M」은 스크립트가 스스로 센 것**이다.
-> **버전** — `Duration` 은 stdlib 소스에 **`@SinceKotlin("1.6")`** · 단조 시계 `MonotonicTimeSource` 는 **`@SinceKotlin("1.3")`**((5)). ★★★ **`kotlin.time.Instant`·`Clock` 은 소스에 `@SinceKotlin("2.3")` + `@WasExperimental(ExperimentalTime::class)`** 이다 — README 의 「2.1.0 도입」은 **이 소스에서 안 보인다**(4).
-> **경계** — `Int` 를 `Long` 에 그냥 못 넣는 **암묵 변환 없음**은 [01번 주제](../01-val-var-and-basic-types/)가 정본이다. `value class` 의 박싱·이름 뭉개기 규칙은 [26번 주제](../26-value-class-and-boxing/)가 정본이다 — 여기서는 **`Duration` 이 그 규칙대로 도는지**만 본다. 코루틴의 `delay` 는 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)의 몫이다 — 여기서는 **인자의 단위**만 본다.\
-> ★ **대비** — 단조 시계가 벽시계 값 **안에** 숨어 있는 Go(`m=`)는 [Go 48번](../../../go/syntax/48-time-monotonic-clock-duration-timer-and-ticker/)이 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**단위 실수 격자 — 단위를 `Long` 으로 받는 API 와 `Duration` 으로 받는 API 에 같은 실수를 던져 → 컴파일되나 · 값**」. 이 주제의 결론은 값이 아니라 **「어느 칸에서 컴파일러가 막았나」** 다.
 
 ## 이 주제가 쓰는 세 층
@@ -664,3 +653,14 @@ polled until the deadline: true, elapsed >= 250ms: true
 - **`Duration` 의 알맹이 한 비트** — `rawValue` 의 **맨 아래 비트가 단위(나노초/밀리초)를 가른다**(`unitDiscriminator` — 소스 41행). (1)의 「밀리초로 옮겨 탄다」의 실체일 것이다 — **돌려서 확인하지는 않았다.**
 - **`TestTimeSource`** — 테스트에서 시간을 손으로 흘리는 `TimeSource`. 이 판의 소스에 있으나 돌리지 않았다.
 - **`kotlinx-datetime`** — 달력 계산(날짜·시간대)은 stdlib 밖 라이브러리의 몫이다. 이 머신에 없어 보지 않았다.
+
+## 실행 환경
+
+**기준 소스** — **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 선언(`Duration.kt`·`Instant.kt`·`Clock.kt`·`MonoTimeSource.kt`)((5)). ★ 공식 문서 페이지([Time measurement](https://kotlinlang.org/docs/time-measurement.html))는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 문장을 인용하지 않는다.
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 17회(단위 격자 스크립트 안의 2회 · 판 격자 스크립트 안의 10회 포함) · `java` 5회 · `javap` 2회 · stdlib 소스 jar 발췌 5곳 · JDK `src.zip` 발췌 1곳.\
+★ 단위 격자의 `delay` 두 칸만 **kotlinx-coroutines 1.11.0** 을 쓴다(gradle 캐시에 있던 판 — [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/)까지 이 판을 쓴다). 그 밖은 stdlib 만 쓴다.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「막은 칸 N / M」은 스크립트가 스스로 센 것**이다.
+**버전** — `Duration` 은 stdlib 소스에 **`@SinceKotlin("1.6")`** · 단조 시계 `MonotonicTimeSource` 는 **`@SinceKotlin("1.3")`**((5)). ★★★ **`kotlin.time.Instant`·`Clock` 은 소스에 `@SinceKotlin("2.3")` + `@WasExperimental(ExperimentalTime::class)`** 이다 — README 의 「2.1.0 도입」은 **이 소스에서 안 보인다**(4).
+**경계** — `Int` 를 `Long` 에 그냥 못 넣는 **암묵 변환 없음**은 [01번 주제](../01-val-var-and-basic-types/)가 정본이다. `value class` 의 박싱·이름 뭉개기 규칙은 [26번 주제](../26-value-class-and-boxing/)가 정본이다 — 여기서는 **`Duration` 이 그 규칙대로 도는지**만 본다. 코루틴의 `delay` 는 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)의 몫이다 — 여기서는 **인자의 단위**만 본다.\
+★ **대비** — 단조 시계가 벽시계 값 **안에** 숨어 있는 Go(`m=`)는 [Go 48번](../../../go/syntax/48-time-monotonic-clock-duration-timer-and-ticker/)이 정본이다.

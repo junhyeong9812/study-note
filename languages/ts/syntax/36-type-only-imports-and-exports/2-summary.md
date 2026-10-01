@@ -1,12 +1,5 @@
 # ts/syntax/36 — 타입 전용 import·export — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [TSConfig — `verbatimModuleSyntax`](https://www.typescriptlang.org/tsconfig/#verbatimModuleSyntax)(타입 전용 import 는 지우고 값 import 는 그대로 둔다 · `import { type A } from "a"` 는 **`import {} from "a"`** 로 다시 쓰인다 · `importsNotUsedAsValues`·`preserveValueImports` 를 대체) ·
-> [TypeScript 5.8 릴리스 노트 — `--erasableSyntaxOnly`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-8.html).
-> 위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
-> **실행 검증** — 본판은 아래다. ★ 판 격자에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.
-> **버전** — `import { type T }`(이름 앞 `type`)는 **4.5**, `verbatimModuleSyntax` 는 **5.0**, `erasableSyntaxOnly` 는 **5.8**(각 릴리스 노트). ★ 이 머신에서 판 경계를 던져 본 것은 **4.9.5 · 5.9.3 · 7.0.2 세 판뿐이다** — 4.5·5.0·5.8 그 자체는 없다.
-
 ```text
 ===== tsc --version · node --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -21,7 +14,6 @@ Python 3.12.3
 > [**31번 주제**](../31-enum-pitfalls/) 4절은 두 플래그가 **`const enum`** 을 인라인 대신 참조로 바꾸는 것을, 3절은 `erasableSyntaxOnly` 의 판 격자(7.0.2·5.9.3 `TS1294`, 4.9.5 `TS5023`)를 쟀다. **여기서는 import/export 쪽 칸만** 센다.
 > ★ 소스 펜스 첫 줄 `// 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -594,3 +586,11 @@ error TS5102: Option 'importsNotUsedAsValues' has been removed. Please remove it
 - **`import { type T }` 의 빈 import 를 막고 싶을 때** — `import type { T }` 로 줄 전체에 딱지를 붙이면 된다(1절 `i36b`). 린터 규칙으로 강제하는 방법은 **던지지 않았다.**
 - **CJS 출력에서의 `verbatimModuleSyntax`** — 이 문서는 `.mts`(ESM) 로만 격자를 돌렸다. CJS 파일에서 이 플래그가 `import … from` 을 어떻게 다루는지는 **던지지 않았다.**
 - **번들러가 빈 import 를 어떻게 다루나** — 번들러마다 부작용 판정(`sideEffects` 필드 등)이 따로 있다. **재지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [TSConfig — `verbatimModuleSyntax`](https://www.typescriptlang.org/tsconfig/#verbatimModuleSyntax)(타입 전용 import 는 지우고 값 import 는 그대로 둔다 · `import { type A } from "a"` 는 **`import {} from "a"`** 로 다시 쓰인다 · `importsNotUsedAsValues`·`preserveValueImports` 를 대체) ·
+[TypeScript 5.8 릴리스 노트 — `--erasableSyntaxOnly`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-8.html).
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
+**실행 검증** — 본판은 맨 위 블록이다. ★ 판 격자에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.
+**버전** — `import { type T }`(이름 앞 `type`)는 **4.5**, `verbatimModuleSyntax` 는 **5.0**, `erasableSyntaxOnly` 는 **5.8**(각 릴리스 노트). ★ 이 머신에서 판 경계를 던져 본 것은 **4.9.5 · 5.9.3 · 7.0.2 세 판뿐이다** — 4.5·5.0·5.8 그 자체는 없다.

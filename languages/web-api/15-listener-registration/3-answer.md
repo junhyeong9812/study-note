@@ -1,11 +1,5 @@
 # web-api/15 — 리스너 등록과 해제: `addEventListener` 옵션 객체·`removeEventListener` 의 동일성 조건·`handleEvent` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG DOM Standard — Events](https://dom.spec.whatwg.org/#events) 의 「add an event listener」·「remove an event listener」·「inner invoke」 절로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> ★ **재지 않은 것** — `passive` 의 성능 이득과 리스너가 붙드는 메모리(A8·A11).
-
 **★ 이 주제에는 흔들리는 칸이 거의 없다** — 세는 것이 전부 호출 횟수이고 시간을 안 재기 때문이다.
 
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
@@ -432,3 +426,10 @@ const padw = (s, n) => s + ' '.repeat(Math.max(0, n - W(s)));
 - **조용한 실패(silent failure)** — 예외도 경고도 없이 아무 일도 안 일어나는 것. 이 주제에 네 가지가 있다.
 - **창 ④ (디스패치 계수기)** — 이벤트를 던져 몇 번 불렸나를 세는 관측. 이 주제의 본체다.
 - **제5의 상태** — 같은 질문을 **다른 창으로 바꿔** 물은 것. 이 주제의 창 ③ 이 그렇다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG DOM Standard — Events](https://dom.spec.whatwg.org/#events) 의 「add an event listener」·「remove an event listener」·「inner invoke」 절로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+★ **재지 않은 것** — `passive` 의 성능 이득과 리스너가 붙드는 메모리(A8·A11).

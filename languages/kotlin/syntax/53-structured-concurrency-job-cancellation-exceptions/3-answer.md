@@ -1,9 +1,5 @@
 # kotlin/syntax/53 — 구조적 동시성 — `Job`·취소 전파·예외 전파·`supervisorScope` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·경고는 **kotlinc 2.4.20 (JRE 21.0.5)** · Temurin **JDK 21.0.5** · **kotlinx-coroutines-core-jvm 1.11.0** 에서 실제로 얻었다.
-> ★★ 아래 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -510,3 +506,8 @@ Implementation-Version: 1.11.0
 1. ★★★ **`launch(SupervisorJob())` 는 「효과가 없는」 정도가 아니었다** — 형제 감독은 없고 **바깥 취소까지 끊겼다**(`outer cancelled` 에서 A·B·C `completed`).
 2. ★★ **라이브러리 판을 바꾸니 동작은 같고 경고만 달랐다** — 1.11.0 이 그 꼴을 deprecated 로 선언했다.
 3. ★★ **`supervisorScope` 안 `async` 의 실패는 핸들러에도 안 갔다** — `await` 을 안 부르면 흔적이 없다.
+
+## 실행 환경
+
+모든 출력·경고는 **kotlinc 2.4.20 (JRE 21.0.5)** · Temurin **JDK 21.0.5** · **kotlinx-coroutines-core-jvm 1.11.0** 에서 실제로 얻었다.
+★★ 본문의 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.

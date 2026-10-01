@@ -1,51 +1,5 @@
 # csharp/syntax/09 — 배열과 인덱스·범위 연산자(C# 8) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — 배열](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/arrays) · [Learn — 멤버 접근 연산자와 식(`^`·`..`)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators) · [Learn — 연산자 우선순위](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/) · [.NET API — `System.Index`](https://learn.microsoft.com/en-us/dotnet/api/system.index) · [.NET API — `System.Range`](https://learn.microsoft.com/en-us/dotnet/api/system.range)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
-> 런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-25).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
-> ★★★ **진단 언어를 영어로 고정했다.** 안 그러면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
-> 환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`** 를 같이 건다.
-> **던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
-> 그래야 `bin/`·`obj/` 가 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
-> 배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
->
-> ```text
-> export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
-> export DOTNET_CLI_UI_LANGUAGE=en            # ★★★ 안 주면 진단이 한국어로 나온다
-> D=$(dirname "$(readlink -f "$(command -v dotnet)")")
-> ls "$D"/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/*.dll | sed 's/^/-r:/' > refs.rsp
-> echo '{"runtimeOptions":{"tfm":"net10.0","framework":{"name":"Microsoft.NETCore.App","version":"10.0.0"}}}' > ex.runtimeconfig.json
-> csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
->           -nologo -nostdlib -noconfig @refs.rsp \
->           -preferreduilang:en-US -langversion:latest -target:exe "$@"; }
-> ```
->
-> **`-debug` 를 안 줬다** — PDB 가 없으면 스택 트레이스에 **절대 경로와 줄 번호가 안 박힌다**.\
-> 그래서 이 문서의 트레이스는 ``at Program.<Main>$(String[] args)`` 에서 끝나고, 어느 머신에서 돌려도 같다.
-> **버전** — 배열은 **C# 1.0부터**. **인덱스 연산자 `^` 와 범위 연산자 `..` 는 C# 8부터**이고,\
-> 그것을 받는 **`System.Index`·`System.Range` 타입은 .NET Core 3.0 / .NET Standard 2.1 부터**다.\
-> `List<T>.Slice` 는 **.NET 8부터**라 그 판 이후에서만 `list[1..^1]` 이 컴파일된다((5)).
-> **경계** — **동적 배열의 원리**(왜 두 배로 늘리나·상환 O(1))는 [`data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/)가 정본이다.\
-> 여기는 **.NET 에서 무엇이 무엇으로 풀리고 무엇이 할당을 내나**만 본다.\
-> **값 타입과 참조 타입**은 [01번](../01-value-types-and-reference-types/), **박싱**은 [03번](../03-boxing-and-unboxing/)이 정본이다.\
-> **컬렉션 선택**은 [목록의 **10번 주제**](../10-collection-choosing-list-dictionary-hashset-queue-stack/), **컬렉션 식 `[1, 2, ..other]`** 는 **11번 주제**,\
-> **`Span<T>`·`Memory<T>` 자체**는 **46번 주제**, **인덱서 설계**는 **14번 주제**가 정본이다.
-> **대비** — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **15번**([`15-slices-ranges-and-utf8-boundaries/`](../../../rust/syntax/15-slices-ranges-and-utf8-boundaries/)) ·
-> Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **9번**([`09-sequence-ops-and-slicing/`](../../../python/syntax/09-sequence-ops-and-slicing/)) ·
-> Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **5번**([`05-arrays-vs-slices-value-and-header/`](../../../go/syntax/05-arrays-vs-slices-value-and-header/)).
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★ `GC.GetAllocatedBytesForCurrentThread()` 의 **절댓값**(프로세스 시작부터의 누적이다) | ★★★ **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐** |
-> | 객체 주소 · `GetHashCode()` 값 · 빌드 시간 | **진단 코드**(`CS0019` 류) · **진단 문구** · ★★ **`(행,열)`** |
-> | `dotnet` 패치 버전이 오르면 달라질 수 있는 바이트 수(40·48·72·88·168) | **`cc exit` 과 `run exit`**(갈라 적었다) |
-> | — | ★★★ **IL 명령어 열**(`ldelem.i4` · `GetSubArray` · `Slice` · `Substring`) |
-
 ## 한눈에 — 쉽게 말하면
 
 **배열을 `..` 로 자르는 것은 복사기로 그 대목을 뽑는 것**이고,\
@@ -959,3 +913,50 @@ cs09b-prec.cs(11,13): error CS0019: Operator '-' cannot be applied to operands o
 - ★ **`ReadOnlySpan<char>` 로 파싱하기** — `int.Parse(s.AsSpan()[1..^1])` 처럼 **문자열을 안 만들고** 파싱하는 관용구.
 - ★ **`System.Runtime.CompilerServices.RuntimeHelpers`** — `GetSubArray` 말고도 컴파일러가 부르는 헬퍼가 여럿 있다.\
   **「소스에 없는 호출」을 찾을 때 IL 에서 이 이름이 자주 보인다.**
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — 배열](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/arrays) · [Learn — 멤버 접근 연산자와 식(`^`·`..`)](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators) · [Learn — 연산자 우선순위](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/) · [.NET API — `System.Index`](https://learn.microsoft.com/en-us/dotnet/api/system.index) · [.NET API — `System.Range`](https://learn.microsoft.com/en-us/dotnet/api/system.range)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
+런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-25).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
+★★★ **진단 언어를 영어로 고정했다.** 안 그러면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
+환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`** 를 같이 건다.
+**던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
+그래야 `bin/`·`obj/` 가 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
+배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
+
+```text
+export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
+export DOTNET_CLI_UI_LANGUAGE=en            # ★★★ 안 주면 진단이 한국어로 나온다
+D=$(dirname "$(readlink -f "$(command -v dotnet)")")
+ls "$D"/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/*.dll | sed 's/^/-r:/' > refs.rsp
+echo '{"runtimeOptions":{"tfm":"net10.0","framework":{"name":"Microsoft.NETCore.App","version":"10.0.0"}}}' > ex.runtimeconfig.json
+csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
+          -nologo -nostdlib -noconfig @refs.rsp \
+          -preferreduilang:en-US -langversion:latest -target:exe "$@"; }
+```
+
+**`-debug` 를 안 줬다** — PDB 가 없으면 스택 트레이스에 **절대 경로와 줄 번호가 안 박힌다**.\
+그래서 이 문서의 트레이스는 ``at Program.<Main>$(String[] args)`` 에서 끝나고, 어느 머신에서 돌려도 같다.
+**버전** — 배열은 **C# 1.0부터**. **인덱스 연산자 `^` 와 범위 연산자 `..` 는 C# 8부터**이고,\
+그것을 받는 **`System.Index`·`System.Range` 타입은 .NET Core 3.0 / .NET Standard 2.1 부터**다.\
+`List<T>.Slice` 는 **.NET 8부터**라 그 판 이후에서만 `list[1..^1]` 이 컴파일된다((5)).
+**경계** — **동적 배열의 원리**(왜 두 배로 늘리나·상환 O(1))는 [`data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/)가 정본이다.\
+여기는 **.NET 에서 무엇이 무엇으로 풀리고 무엇이 할당을 내나**만 본다.\
+**값 타입과 참조 타입**은 [01번](../01-value-types-and-reference-types/), **박싱**은 [03번](../03-boxing-and-unboxing/)이 정본이다.\
+**컬렉션 선택**은 [목록의 **10번 주제**](../10-collection-choosing-list-dictionary-hashset-queue-stack/), **컬렉션 식 `[1, 2, ..other]`** 는 **11번 주제**,\
+**`Span<T>`·`Memory<T>` 자체**는 **46번 주제**, **인덱서 설계**는 **14번 주제**가 정본이다.
+**대비** — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **15번**([`15-slices-ranges-and-utf8-boundaries/`](../../../rust/syntax/15-slices-ranges-and-utf8-boundaries/)) ·
+Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **9번**([`09-sequence-ops-and-slicing/`](../../../python/syntax/09-sequence-ops-and-slicing/)) ·
+Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **5번**([`05-arrays-vs-slices-value-and-header/`](../../../go/syntax/05-arrays-vs-slices-value-and-header/)).
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★ `GC.GetAllocatedBytesForCurrentThread()` 의 **절댓값**(프로세스 시작부터의 누적이다) | ★★★ **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐** |
+| 객체 주소 · `GetHashCode()` 값 · 빌드 시간 | **진단 코드**(`CS0019` 류) · **진단 문구** · ★★ **`(행,열)`** |
+| `dotnet` 패치 버전이 오르면 달라질 수 있는 바이트 수(40·48·72·88·168) | **`cc exit` 과 `run exit`**(갈라 적었다) |
+| — | ★★★ **IL 명령어 열**(`ldelem.i4` · `GetSubArray` · `Slice` · `Substring`) |

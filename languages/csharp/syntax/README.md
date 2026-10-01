@@ -1,13 +1,5 @@
 # C# — 문법·API 주제 목록
 
-> 1단계 리스트업이다. **01\~10 은 3파일이 있다**(아래 목록의 제목이 링크면 그 주제는 쓰여 있다). 나머지는 아직 없다.
-> 기준 소스: [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)
-> **실행 검증: 가능** — .NET SDK 가 깔렸다. `dotnet --version` → **`10.0.401`** · 타겟 **`net10.0`** · 런타임 **`Microsoft.NETCore.App 10.0.12`** · linux-x64 (**2026-09-24 실측**).
-> ★ **2026-09-20 에 적혀 있던 「실행 검증: 불가 — `dotnet`·`mono`·`csc` 가 모두 없다」는 이 날짜로 무효다.** 그 뒤 주제부터는 **돌려 본 것만** 적는다.
-> ★★★ **진단은 영어로 고정한다** — `DOTNET_CLI_UI_LANGUAGE=en` 을 안 주면 로캘을 따라 한국어로 나온다\
-> (실측: `error CS0029: 암시적으로 'string' 형식을 'int' 형식으로 변환할 수 없습니다.`). 3파일의 캡처 스크립트가 그 변수를 걸고 `csc` 에 `-preferreduilang:en-US` 도 함께 준다.
-> 기준일 2026-09-24(01\~04 실행 검증) · 목록 자체의 기준일 2026-09-20.
-
 언어 선택의 축(“C# 은 기술이 아니라 생태계에서 갈린다 · 실행 모형이 JVM 과 동형이다”)은 [`../../c-cpp-csharp.md`](../../c-cpp-csharp.md)에 있다.
 이 목록은 그 논증이 아니라 “**그래서 어떻게 쓰나**”다 — 저기서 *`struct`·`ref struct` 가 JVM 에 없는 값 타입이라는 사실*을 읽었다면, 여기서는 *`struct` 를 언제 고르고 박싱을 어디서 잃는가*를 인출한다.
 
@@ -134,4 +126,13 @@
 **이 머신에서 컴파일해 확인할 수 있다**(2026-09-24 부터). 3파일을 쓸 때 각 예시는 **실제로 돌려 얻은 출력**을 싣고, 버전 표기는 위 공식 버전 이력 문서로 대조한다.
 
 던지는 방법은 01\~04 가 굳힌 것을 따른다 — **MSBuild 를 거치지 않고 Roslyn `csc` 를 직접 부른다**(`bin/`·`obj/` 가 안 생기고, 진단 경로가 상대 경로로 나오며, 한 판이 0.3초 이내다).
-자세한 형태는 [`01-value-types-and-reference-types/2-summary.md`](01-value-types-and-reference-types/2-summary.md) 머리말에 있다.
+자세한 형태는 [`01-value-types-and-reference-types/2-summary.md`](01-value-types-and-reference-types/2-summary.md) 「실행 환경」에 있다.
+
+## 실행 환경
+
+기준 소스: [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)
+**실행 검증: 가능** — .NET SDK 가 깔렸다. `dotnet --version` → **`10.0.401`** · 타겟 **`net10.0`** · 런타임 **`Microsoft.NETCore.App 10.0.12`** · linux-x64 (**2026-09-24 실측**).
+★ **2026-09-20 에 적혀 있던 「실행 검증: 불가 — `dotnet`·`mono`·`csc` 가 모두 없다」는 이 날짜로 무효다.** 그 뒤 주제부터는 **돌려 본 것만** 적는다.
+★★★ **진단은 영어로 고정한다** — `DOTNET_CLI_UI_LANGUAGE=en` 을 안 주면 로캘을 따라 한국어로 나온다\
+(실측: `error CS0029: 암시적으로 'string' 형식을 'int' 형식으로 변환할 수 없습니다.`). 3파일의 캡처 스크립트가 그 변수를 걸고 `csc` 에 `-preferreduilang:en-US` 도 함께 준다.
+기준일 2026-09-24(01\~04 실행 검증) · 목록 자체의 기준일 2026-09-20.

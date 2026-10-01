@@ -1,14 +1,5 @@
 # js/syntax/37 — Promise 상태 모델: 「처음 것만 · thenable 은 잡으로 · `.finally()` 는 통과 · 보고는 호스트」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다.
-> ★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical` · 5번의 `0 / 6`).
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
-> `js36b-37a-transitions.js`(1번 · 7번) · `js36b-37b-ticks.js`(2번 · 8번) · `js36b-37c-chain.js`(3번 · 4번 · 9번) ·
-> `js36b-37-h-late-catch.js` + `js36b-37d-unhandled-node.sh` · `js36b-37e-unhandled-stderr.sh`(5번 · 10번) · `js36b-37f-unhandled.web.js`(6번 · 11번).
-
 ## 정답
 
 ### 1. 첫 호출이 전부 이긴다(`0 / 5`) — `resolve(p)` 직후는 **`pending`**, 나중에 **`fulfilled "c"`** ★★★
@@ -297,3 +288,13 @@ node18 vs node20: identical 13 · differs 0   ·   node20 vs Chrome 151: identic
 - ★★★ **미처리 거부의 보고 시점과 종료 코드** — node 의 모드와 Chrome 의 태스크 순서. 판이 오르면 5번·6번을 다시 돌린다.
 - ★★ `--unhandled-rejections=warn` 블록의 **`(node:PID)`** 는 실행마다 바뀐다 — 재대조에서 정규화한 유일한 칸이다.
 - ★ 예외 문구(`Chaining cycle detected …`)와 node 의 경고 문구.
+
+## 실행 환경
+
+이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다.
+★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기의 `identical` · 5번의 `0 / 6`).
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
+`js36b-37a-transitions.js`(1번 · 7번) · `js36b-37b-ticks.js`(2번 · 8번) · `js36b-37c-chain.js`(3번 · 4번 · 9번) ·
+`js36b-37-h-late-catch.js` + `js36b-37d-unhandled-node.sh` · `js36b-37e-unhandled-stderr.sh`(5번 · 10번) · `js36b-37f-unhandled.web.js`(6번 · 11번).

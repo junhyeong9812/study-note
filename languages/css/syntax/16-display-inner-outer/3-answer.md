@@ -1,10 +1,5 @@
 # css/syntax/16 — `display` 의 내부/외부 값 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 계산값과 치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getComputedStyle`·`getBoundingClientRect()` 로 읽은 값**이다.\
-> 접근성 트리는 같은 Chrome 에 `--force-renderer-accessibility` 를 켜고 CDP `Accessibility.getFullAXTree` 로 덤프한 것이다.\
-> 규칙은 [CSS Display Module Level 3](https://drafts.csswg.org/css-display-3/) 과 [CSS Containment Level 2](https://drafts.csswg.org/css-contain-2/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -357,3 +352,9 @@ grid 자식에 display: inline        -> 계산값 block
 **구현 의존 항목** — **계산값 직렬화 형태**(어떤 조합이 접히고 어떤 것이 남는가)와 **`display: contents` 의 접근성 트리 노출**은 Chrome 151 에서 관찰한 것이다. 버전이 오르면 이 두 칸을 다시 찍는다.\
 `content-visibility` 는 Baseline **newly** 라 **더 오래된 브라우저에서는 선언 자체가 버려진다.**\
 **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.**
+
+## 실행 환경
+
+이 파일의 **모든 계산값과 치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getComputedStyle`·`getBoundingClientRect()` 로 읽은 값**이다.\
+접근성 트리는 같은 Chrome 에 `--force-renderer-accessibility` 를 켜고 CDP `Accessibility.getFullAXTree` 로 덤프한 것이다.\
+규칙은 [CSS Display Module Level 3](https://drafts.csswg.org/css-display-3/) 과 [CSS Containment Level 2](https://drafts.csswg.org/css-contain-2/) 로 접지했다.

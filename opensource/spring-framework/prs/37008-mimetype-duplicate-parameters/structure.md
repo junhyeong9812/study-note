@@ -1,9 +1,5 @@
 # PR #37008 — 무대 구조와 워크플로우: MIME 타입 파서
 
-> PR #37008의 무대가 되는 실구조·워크플로우. 문제·수정은 README.md, 테스트는 tests.md 참조.
->
-> 기준: upstream main `526c706d1c3`. 이하 file:line은 모두 이 커밋의 작업 트리 기준이며, `putParameter`의 누산 맵은 아직 PR 이전 상태(`LinkedHashMap`)다.
-
 ## 1. 무대 — 실구조
 
 이 PR의 무대는 세 덩어리다.\
@@ -554,3 +550,7 @@ PR #37008은 그 신호를 쓰는 첫 호출자를 만든 셈이다.\
 
 이 무대와 직접 겹치는 개념 문서는 아직 `../../concepts/`에 없다.\
 인접 문서로는 컴파일·런타임 층 구분을 다룬 [`../../concepts/compile-runtime-layers/compile-runtime-layers.md`](../../concepts/compile-runtime-layers/compile-runtime-layers.md)가 있으나 이 PR의 주제와는 무관하다.
+
+## 출처
+
+기준: upstream main `526c706d1c3`. 이하 file:line은 모두 이 커밋의 작업 트리 기준이며, `putParameter`의 누산 맵은 아직 PR 이전 상태(`LinkedHashMap`)다.

@@ -1,10 +1,5 @@
 # issue/java/language-semantics-traps — 컴파일은 통과하고 런타임에서 틀리는 Java 언어 규칙 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. 배치 잡 러너가 `catch (Exception e) { setFailed(); }`로 감싸져 있는데, 잡이 `RUNNING` 상태로 영원히 멈췄고 스레드 덤프에 그 스레드가 없다. 무슨 일이 일어났는가 — `Throwable`·`Error`·`Exception`의 계층으로 설명하고, `catch (Throwable)`로도 막을 수 없는 경우는 무엇인가.
 2. 예측: `static final X INSTANCE = new X();`가 `static final List<Rule> RULES = build();`보다 **위에** 선언돼 있고 생성자가 `super(RULES)`를 부르고, `Base` 생성자는 받은 목록을 순회한다. 클래스를 처음 쓰는 순간 무슨 예외가 나는가, 왜인가.

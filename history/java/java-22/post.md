@@ -1,11 +1,5 @@
 # Java 22 (2024.03)
 
-> 원본: `~/project/java-history/java/java-22.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JEP 번호·클래스/메서드 이름·자바 코드블록 5개와 셸 코드블록 1개·「릴리스 정보」의 JEP 목록·「참고 출처」는 원문 그대로다.\
-> 도식은 넣지 않았다 — 원문에 도식이 없고, 원문이 절차로 서술한 메커니즘도 없다.\
-> 「한눈에」의 창고 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
-> 「이 편의 기능은 지금 어디쯤인가」 표의 「그 뒤」 칸은 같은 시리즈의 다른 편(`java-23.md`~`java-26.md`)에서 끌어온 보충이고, 출처 편을 칸마다 적었다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -222,3 +216,11 @@ FFM API의 정식화는 자바 생태계에서 오랜 숙원이던 안전한 네
 - [The Arrival of Java 22! – Inside.java](https://inside.java/2024/03/19/the-arrival-of-java-22/)
 - [Consolidated JDK 22 Release Notes](https://www.oracle.com/java/technologies/javase/22all-relnotes.html)
 - [Java version history - Wikipedia](https://en.wikipedia.org/wiki/Java_version_history)
+
+## 출처
+
+원본: `~/project/java-history/java/java-22.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JEP 번호·클래스/메서드 이름·자바 코드블록 5개와 셸 코드블록 1개·「릴리스 정보」의 JEP 목록·「참고 출처」는 원문 그대로다.\
+도식은 넣지 않았다 — 원문에 도식이 없고, 원문이 절차로 서술한 메커니즘도 없다.\
+「한눈에」의 창고 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
+「이 편의 기능은 지금 어디쯤인가」 표의 「그 뒤」 칸은 같은 시리즈의 다른 편(`java-23.md`~`java-26.md`)에서 끌어온 보충이고, 출처 편을 칸마다 적었다.

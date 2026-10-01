@@ -1,11 +1,5 @@
 # domain-modeling-advanced/22-parcel-split — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/22-parcel-split/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -595,3 +589,7 @@ return total;
   — 앨범 11장 1/2/2상자 · 머그컵 5개 2/1상자와 6,000g · `exceeds` 4,000+1,000=false / +1,001=true / 29,000+1,000=false / +1,001=true · 8kg+앨범 둘 OWN_BOX 2상자(index 1 이 oversize) / REJECT 1상자+거부 1 · 40,000cm³ oversize WEIGHT false·VOLUME true, 거부 0 vs 1 · 요금 3,500 / 6,000 / 11,000 / 0 · 3000·2500·2000·2500 → 2/2/3상자 · `score` 2,666(머그컵)·1,600(앨범) · 동점 `[a, b, c]` · `AS_IS` 는 `[z, a, m]` 유지 · 상한 0·무게 0·부피 0·빈 id 거부
 - 측정 수치: `/home/jun/project/myway/domain-modeling-advanced/22-parcel-split/src/test/java/com/domain/parcel/MeasurementTest.java`
   — 상자 1,392 / 861 / 1,408, 요금 5,820,000 / 4,816,500 / 5,871,500, 5kg 초과 상자 0 / 483 / 0 · 큰 것 비율 0·30·50·100%의 2,174·1,690·1,392·528 등과 위반 수 · 주문 4·8·12·20건의 596/596/596 ~ 2,175/2,149/2,319 · 초과 0·5·20%의 5,871,500 / 8,882,500 vs 5,557,000(거부 297) / 18,271,500 vs 4,783,000(거부 1,200) · 두 건 주문 18조합 어긋남 0 (500 × 17 = 8,500 비교)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/22-parcel-split/impl/`).

@@ -1,7 +1,5 @@
 # NEXT — 다음 작업 전망 (프로젝트 롤링 단일 문서)
 
-> 착수는 새 작업 폴더 requirement-spec 생성부터(core §1) — 이 문서는 후보 목록이지 합의된 명세가 아니다.
-
 ## 기준
 
 - 마지막 갱신: 2026-09-30 os-writing 완료(OS 38편) · 직전: network-writing(51편) · 작업 폴더: `docs/plans/2026-09-30/os-writing/` · 작업 브랜치 docs/os-writing(main fb3bf94c)

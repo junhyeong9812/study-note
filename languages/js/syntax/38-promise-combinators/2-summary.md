@@ -1,64 +1,5 @@
 # js/syntax/38 — Promise 조합기: 「무엇을 기다리고, 언제 끝나고, 무엇을 버리나 — 그리고 아무것도 취소하지 않는다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다** — 조합기 4(`all`·`allSettled`·`race`·`any`) × 입력 모양 4(전부 이행 · 하나 거부 · 전부 거부 · **빈 배열**) = **16칸**.
-> 입력을 **한 단계에 하나씩 손으로** 확정하고(단계 = `setTimeout` 하나), 칸마다 **결과**와 **몇 단계째에 끝났나**를 찍는다.
-> 마지막 줄은 **「마지막 입력보다 먼저 끝난 칸 N / 16 · 끝내 안 끝난 칸 M / 16」**(동작 (1)).
-> ★★ 보조로 **① 추상 연산에 로그 심기**(입력 작업이 단계마다 찍는다 — 조합기가 끝난 **뒤에도** 찍히나 · 동작 (2))와
-> **④ 예외의 `constructor.name` + `message`**(`any` 가 던지는 `AggregateError 「All promises were rejected」` 와 `errors` 개수)를 쓴다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — Properties of the Promise Constructor](https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-properties-of-the-promise-constructor) — `Promise.all`·`allSettled`·`any`·`race`(「**iterable 이 값을 하나도 내지 않거나 … 끝내 확정되지 않으면, 이 메서드가 돌려준 pending 프라미스는 영원히 확정되지 않는다**」 — `race` 의 노트) · `Promise.try` · `Promise.withResolvers`
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(`allSettled` 2020 · `any` 2021 · `withResolvers` 2024 · `try` 2025)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **메서드·연산 이름**으로, 결과와 끝나는 단계는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다. Chrome 151 은 헤드리스(`./js36b-browser.sh` — 소스는 [36번](../36-event-loop-and-microtasks/2-summary.md)에 있다).
-> ★★★ **`Promise.withResolvers`(ES2024)·`Promise.try`(ES2025)는 두 node 판에 없다**(아래 판별 블록) — 그 탐침은 **Chrome 151 로만** 돌렸다.
-> ★★ **이 주제의 node 탐침은 두 node 판과 Chrome 151 에서 한 글자도 같았다**(아래 대조기의 집계 줄).
->
-> **버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `Promise.all` · `Promise.race` | ES2015 | 세 판 다 있다 |
-> | `Promise.allSettled` | **ES2020** | 세 판 다 있다 |
-> | `Promise.any` · `AggregateError` | **ES2021** | 세 판 다 있다 |
-> | `Promise.withResolvers` | **ES2024** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
-> | `Promise.try` | **ES2025** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
->
-> ★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — 38행의 `withResolvers`(ES2024)·`try`(ES2025)는 **표와 같다.** README 의 판 표(`ES2024`·`ES2025` 행)에도 같은 번호로 올라 있다. `allSettled`(2020)·`any`(2021)는 README 38행에 판이 없다.
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체) | 조합기 4 × 입력 모양 4 = **16칸** — 결과 · 끝난 단계 · 「`7 / 16` · `1 / 16`」(동작 (1)) |
-> | ★★ **① 추상 연산에 로그 심기** | 입력 작업이 단계마다 한 줄 — 조합기가 끝난 **뒤의 줄 수**를 센다(동작 (2)) · `Promise.try` 의 콜백이 **호출 안에서** 도나(동작 (4)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | `AggregateError 「All promises were rejected」` 와 `errors` 개수(3 · **0**) |
-> | ★ **`sort -u` 가짓수**(규칙 11) | 이미 확정된 두 입력의 `race` 를 200판 — **Go `select` 의 가짓수 격자와 나란히** 읽는다(동작 (3)) |
-> | ★ **부적용 — ③ 브랜드 태그** | 판정할 객체의 종류가 없다 |
-> | ★ **안 쟀다 — 시간** | ★★★ **「`Promise.all` 이 빠르다」를 쓰지 않는다.** 이 문서의 「단계」는 **내가 손으로 넘긴 순번**이지 시간이 아니다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 판별 블록의 판 문자열 — 머신에 매인다 | ★★★ 16칸의 **결과와 끝난 단계** · 마지막 줄 — 입력을 **손으로 한 단계씩** 확정했으므로 타이머 경쟁이 없다 |
-> | ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | ★★ 동작 (2)의 **줄 순서**와 `8` — 입력 작업이 **마이크로태스크로만** 걸음을 옮긴다(명세의 FIFO) · 동작 (3)의 가짓수 `1` |
->
-> **층** — 조합기는 **전부 언어(ECMA-262)의 것**이다. 호스트가 끼어드는 자리는 **입력을 확정하는 타이머뿐**이고, 그 타이머는 **한 번에 하나만** 걸었다.
->
-> **선행** — [37 — Promise 상태 모델](../37-promise-state-model/2-summary.md)(직접 선행 — ★★ 조합기는 결과 프라미스의 **resolve·reject 를 한 번만** 부르는 장치다. 처음 것만 효력이 있다는 규칙이 「`all` 은 첫 거부로 끝난다」의 뒷면이다) ·
-> [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ **`Promise.all` 은 이터러블을 호출 안에서 동기로 끝까지 읽는다** — 거기서 `next#4 done` 까지 찍었다) ·
-> [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(★★ **`Array.fromAsync` 는 `next` → settle 을 하나씩, `Promise.all([...gen()])` 은 `next` 셋을 먼저** — 동작 (2)의 「시작은 이미 끝났다」와 이어진다) ·
-> [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(★★ `AggregateError` 의 `errors` 는 **복사한 배열** — 거기가 정본이다).
->
-> ★ **경계 — 순서의 원리**는 [36번](../36-event-loop-and-microtasks/2-summary.md), **`await` 로 조합기를 받는 법과 순차 대 병렬**은 [39번](../39-async-await/2-summary.md), **취소(`AbortController`)** 는 [목록의 **41번 주제**](../41-cancellation-and-timeouts/)다.
-
 ```text
 ===== ./js36b-versions.sh (exit=0) =====
 node 18.19.1  v8 10.2.154.26-node.28
@@ -639,3 +580,61 @@ rejected with RangeError 「guard: stopped at next #100000」
 
 - **`Promise.all` 의 `this` 와 `resolve` 조회** — 명세는 `GetPromiseResolve` 로 **생성자의 `resolve`** 를 한 번 읽는다. 상속한 생성자에서 무엇이 달라지나는 이 문서가 돌리지 않았다.
 - **Promise 기반 취소 제안들** — 표준에 없다. 41번이 `AbortSignal` 을 다룬다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 전수 격자다** — 조합기 4(`all`·`allSettled`·`race`·`any`) × 입력 모양 4(전부 이행 · 하나 거부 · 전부 거부 · **빈 배열**) = **16칸**.
+입력을 **한 단계에 하나씩 손으로** 확정하고(단계 = `setTimeout` 하나), 칸마다 **결과**와 **몇 단계째에 끝났나**를 찍는다.
+마지막 줄은 **「마지막 입력보다 먼저 끝난 칸 N / 16 · 끝내 안 끝난 칸 M / 16」**(동작 (1)).
+★★ 보조로 **① 추상 연산에 로그 심기**(입력 작업이 단계마다 찍는다 — 조합기가 끝난 **뒤에도** 찍히나 · 동작 (2))와
+**④ 예외의 `constructor.name` + `message`**(`any` 가 던지는 `AggregateError 「All promises were rejected」` 와 `errors` 개수)를 쓴다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — Properties of the Promise Constructor](https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-properties-of-the-promise-constructor) — `Promise.all`·`allSettled`·`any`·`race`(「**iterable 이 값을 하나도 내지 않거나 … 끝내 확정되지 않으면, 이 메서드가 돌려준 pending 프라미스는 영원히 확정되지 않는다**」 — `race` 의 노트) · `Promise.try` · `Promise.withResolvers`
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(`allSettled` 2020 · `any` 2021 · `withResolvers` 2024 · `try` 2025)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **메서드·연산 이름**으로, 결과와 끝나는 단계는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다. Chrome 151 은 헤드리스(`./js36b-browser.sh` — 소스는 [36번](../36-event-loop-and-microtasks/2-summary.md)에 있다).
+★★★ **`Promise.withResolvers`(ES2024)·`Promise.try`(ES2025)는 두 node 판에 없다**(맨 위 판별 블록) — 그 탐침은 **Chrome 151 로만** 돌렸다.
+★★ **이 주제의 node 탐침은 두 node 판과 Chrome 151 에서 한 글자도 같았다**(맨 위 대조기의 집계 줄).
+
+**버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `Promise.all` · `Promise.race` | ES2015 | 세 판 다 있다 |
+| `Promise.allSettled` | **ES2020** | 세 판 다 있다 |
+| `Promise.any` · `AggregateError` | **ES2021** | 세 판 다 있다 |
+| `Promise.withResolvers` | **ES2024** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
+| `Promise.try` | **ES2025** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
+
+★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — 38행의 `withResolvers`(ES2024)·`try`(ES2025)는 **표와 같다.** README 의 판 표(`ES2024`·`ES2025` 행)에도 같은 번호로 올라 있다. `allSettled`(2020)·`any`(2021)는 README 38행에 판이 없다.
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체) | 조합기 4 × 입력 모양 4 = **16칸** — 결과 · 끝난 단계 · 「`7 / 16` · `1 / 16`」(동작 (1)) |
+| ★★ **① 추상 연산에 로그 심기** | 입력 작업이 단계마다 한 줄 — 조합기가 끝난 **뒤의 줄 수**를 센다(동작 (2)) · `Promise.try` 의 콜백이 **호출 안에서** 도나(동작 (4)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | `AggregateError 「All promises were rejected」` 와 `errors` 개수(3 · **0**) |
+| ★ **`sort -u` 가짓수**(규칙 11) | 이미 확정된 두 입력의 `race` 를 200판 — **Go `select` 의 가짓수 격자와 나란히** 읽는다(동작 (3)) |
+| ★ **부적용 — ③ 브랜드 태그** | 판정할 객체의 종류가 없다 |
+| ★ **안 쟀다 — 시간** | ★★★ **「`Promise.all` 이 빠르다」를 쓰지 않는다.** 이 문서의 「단계」는 **내가 손으로 넘긴 순번**이지 시간이 아니다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 판별 블록의 판 문자열 — 머신에 매인다 | ★★★ 16칸의 **결과와 끝난 단계** · 마지막 줄 — 입력을 **손으로 한 단계씩** 확정했으므로 타이머 경쟁이 없다 |
+| ★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) | ★★ 동작 (2)의 **줄 순서**와 `8` — 입력 작업이 **마이크로태스크로만** 걸음을 옮긴다(명세의 FIFO) · 동작 (3)의 가짓수 `1` |
+
+**층** — 조합기는 **전부 언어(ECMA-262)의 것**이다. 호스트가 끼어드는 자리는 **입력을 확정하는 타이머뿐**이고, 그 타이머는 **한 번에 하나만** 걸었다.
+
+**선행** — [37 — Promise 상태 모델](../37-promise-state-model/2-summary.md)(직접 선행 — ★★ 조합기는 결과 프라미스의 **resolve·reject 를 한 번만** 부르는 장치다. 처음 것만 효력이 있다는 규칙이 「`all` 은 첫 거부로 끝난다」의 뒷면이다) ·
+[19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ **`Promise.all` 은 이터러블을 호출 안에서 동기로 끝까지 읽는다** — 거기서 `next#4 done` 까지 찍었다) ·
+[26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(★★ **`Array.fromAsync` 는 `next` → settle 을 하나씩, `Promise.all([...gen()])` 은 `next` 셋을 먼저** — 동작 (2)의 「시작은 이미 끝났다」와 이어진다) ·
+[32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(★★ `AggregateError` 의 `errors` 는 **복사한 배열** — 거기가 정본이다).
+
+★ **경계 — 순서의 원리**는 [36번](../36-event-loop-and-microtasks/2-summary.md), **`await` 로 조합기를 받는 법과 순차 대 병렬**은 [39번](../39-async-await/2-summary.md), **취소(`AbortController`)** 는 [목록의 **41번 주제**](../41-cancellation-and-timeouts/)다.

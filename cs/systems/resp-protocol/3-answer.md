@@ -1,9 +1,5 @@
 # cs/resp-protocol — RESP: Redis 유선 프로토콜 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 기준 소스는 문서가 아니라 코드다 — ci-cd `internal/shared/logger.go`.
-> ⚠️ **이 정답은 Claude 초안이다(2026-09-23, 이관).** 복습 전에 읽지 말 것. 본인 답과 다르면 어느 쪽이 맞는지 코드로 확인하고 고친다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호와 1:1 대응. 질문 하나 = A 하나. -->
@@ -25,3 +21,7 @@
 ## 검증 기록
 
 - 2026-09-23: deploy-study-note/docs/cs/RESP.md에서 이관, cs/systems 1/2/3 포맷으로 승격 (Claude 초안). 기준 소스 = ci-cd `internal/shared/logger.go` — 본인 복습 시 실코드로 재확인 요망.
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 — ci-cd `internal/shared/logger.go`.

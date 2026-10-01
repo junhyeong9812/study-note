@@ -1,9 +1,5 @@
 # JPA와 Hibernate — 영속성 컨텍스트라는 아이디어와 그 청구서
 
-> 이 컬렉션의 인덱스는 [README.md](./README.md)에서 시작한다. 반대편 도구는 [spring-data-jdbc.md](./spring-data-jdbc.md), 둘의 축별 비교는 [comparison.md](./comparison.md)에 있다.\
-> 출처: `jun-bank/docs/study/tech/data-access/jpa.md` · 이관일 2026-09-16.\
-> 본문 절은 **원고**를 고쳐 쓴 것이다(문체·순서 유지, 특정 프로젝트 고유 상황을 일반 상황으로). 「한눈에」·「전체 흐름」의 비유·그림과 맨 끝 `[Claude 추가]`는 **Claude가 원고 이해를 돕기 위해 보탠 것**이다. 인용한 스펙 문장은 Jakarta Persistence 3.1, Hibernate 문장은 ORM 6.6 문서 기준이다.
-
 **한 줄로**: JPA는 "객체 그래프를 통째로 다루고 싶다"는 요구를 **영속성 컨텍스트** 하나로 풀었고, 더티체킹·flush·지연 로딩·N+1은 전부 그 하나의 결정에서 갈라져 나온 청구서다.
 
 ---
@@ -341,3 +337,8 @@ JPA는 "객체 그래프를 통째로 다루고 싶다"는 요구에 맞춰 설�
 - **2차 캐시(Second-level Cache)는 다른 층이다.** 본문의 1차 캐시는 트랜잭션(Session) 수명만큼 사는 반면, 2차 캐시는 SessionFactory 수준에서 여러 트랜잭션·여러 요청에 걸쳐 산다. 1차 캐시는 정확성(동일성)을 위한 장치이고 2차 캐시는 성능을 위한 선택 기능이라, 목적이 다르다.
 - **`merge` vs `persist`.** detached 객체를 다시 managed로 만들려면 `merge`를 쓰는데, `merge`는 인자 객체를 managed로 만드는 게 아니라 **managed 복사본을 새로 반환**한다. "왜 저장이 안 되지"의 흔한 원인 하나가 `merge` 반환값을 안 쓰고 원래 detached 객체를 계속 만지는 것이다.
 - **낙관적 잠금과 조건부 UPDATE는 겹치지만 다르다.** `@Version`은 "그사이 아무도 안 바꿨는가"만 검사한다. "점유자가 없을 때만", "토큰이 최대값 미만일 때만" 같은 **도메인 조건**은 버전으로 표현할 수 없어 결국 명시 쿼리의 WHERE 절로 내려간다 — 이 지점이 다음 문서의 출발점이다.
+
+## 출처
+
+출처: `jun-bank/docs/study/tech/data-access/jpa.md` · 이관일 2026-09-16.\
+본문 절은 **원고**를 고쳐 쓴 것이다(문체·순서 유지, 특정 프로젝트 고유 상황을 일반 상황으로). 「한눈에」·「전체 흐름」의 비유·그림과 맨 끝 `[Claude 추가]`는 **Claude가 원고 이해를 돕기 위해 보탠 것**이다. 인용한 스펙 문장은 Jakarta Persistence 3.1, Hibernate 문장은 ORM 6.6 문서 기준이다.

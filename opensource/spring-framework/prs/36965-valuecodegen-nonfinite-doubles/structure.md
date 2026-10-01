@@ -1,8 +1,5 @@
 # PR #36965 — 무대 구조와 워크플로우
 
-> PR #36965의 무대가 되는 실구조·워크플로우. 문제·수정은 README.md, 테스트는 tests.md 참조.
-> 기준: upstream main `526c706d1c3`. 이 PR은 아직 업스트림에 반영되지 않았으므로, 아래 file:line 인용은 그대로 "수정 전" 코드다.
-
 이 문서가 다루는 것은 Spring AOT가 값 하나를 Java 소스 조각으로 번역하는 지점의 실구조다.\
 진입점과 위임자 체인의 소유 관계에서 출발해, 수정 전 값이 소스 문자열이 되는 경로를 따라간다.\
 그다음 분기도로 결함이 살던 자리를 짚고, 이 코드가 AOT 파이프라인 전체에서 차지하는 자리와 배경 개념을 정리한다.
@@ -467,3 +464,7 @@ Spring AOT가 컨텍스트를 소스로 다시 써내는 이유는 GraalVM `nati
 
 관련 개념 문서로 [`../../concepts/compile-runtime-layers/compile-runtime-layers.md`](../../concepts/compile-runtime-layers/compile-runtime-layers.md)가 컴파일 타임과 런타임의 층 구분을 다룬다.\
 이 무대는 그 층 구분이 물리적으로 드러나는 곳이다 — 실행 중인 JVM의 값(런타임)이 다음 빌드 단계의 소스 텍스트(컴파일 타임 입력)로 옮겨 적히는 지점이기 때문이다.
+
+## 출처
+
+기준: upstream main `526c706d1c3`. 이 PR은 아직 업스트림에 반영되지 않았으므로, 본문의 file:line 인용은 그대로 "수정 전" 코드다.

@@ -1,17 +1,5 @@
 # cpp/syntax/01 — 함수 오버로딩과 오버로드 해석 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **예측형 위주**다 — 문법을 아는지가 아니라 **컴파일러가 어느 오버로드를 고르는지**,
-> 못 고를 때 **어느 문구로 거부하는지**를 맞힐 수 있는지 묻는다.
-> **환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux. 기본 명령은
-> `g++ -std=c++20 -Wall -Wextra -pedantic ex.cpp -o ex && ./ex`.
-> ★ 답을 모르겠으면 **던져 보라.** 이 주제는 **컴파일만 해도 절반이 나온다.**
-> ★★ **이 주제에는 UB 가 없다.** sanitizer 가 할 일이 없고, **경고도 한 건도 안 난다** —
-> 실패는 전부 `cc exit=1` 인 **에러**다. 그래서 「경고 0건」이 아무 뜻도 없는 주제다.
-> 선행 — C 갈래의 [`03-integer-promotion-and-usual-arithmetic-conversions/`](../../../c/syntax/03-integer-promotion-and-usual-arithmetic-conversions/)(정수 승격).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -209,6 +197,15 @@ int main() {
 - `enum class` 가 이 주제의 **후보 집합**에 하는 일은 무엇인가 — 형제 주제 몇 번인가?
 - `{}` 로 생성자를 부를 때 붙는 **특칙**은 형제 주제 몇 번에 있는가?
 - 이 주제에서 sanitizer 를 한 번도 안 쓴 이유는?
+
+## 실행 환경
+
+**환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux. 기본 명령은
+`g++ -std=c++20 -Wall -Wextra -pedantic ex.cpp -o ex && ./ex`.
+★ 답을 모르겠으면 **던져 보라.** 이 주제는 **컴파일만 해도 절반이 나온다.**
+★★ **이 주제에는 UB 가 없다.** sanitizer 가 할 일이 없고, **경고도 한 건도 안 난다** —
+실패는 전부 `cc exit=1` 인 **에러**다. 그래서 「경고 0건」이 아무 뜻도 없는 주제다.
+선행 — C 갈래의 [`03-integer-promotion-and-usual-arithmetic-conversions/`](../../../c/syntax/03-integer-promotion-and-usual-arithmetic-conversions/)(정수 승격).
 
 ## 복습 기록
 

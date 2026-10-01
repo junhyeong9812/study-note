@@ -1,13 +1,5 @@
 # css/syntax/16 — `display` 의 내부/외부 값 — `block flow`·`inline flow-root`·`flow-root`·`contents`·`none` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Display Module Level 3](https://drafts.csswg.org/css-display-3/) (외부/내부 display 타입과 두 값 문법·`contents`·`none` 의 정본) · [CSS Containment Level 2](https://drafts.csswg.org/css-contain-2/) (`content-visibility`). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 **두 값 문법을 포함한 `display` 값 40여 가지**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle(el).display` 와 `getBoundingClientRect()` 로 읽었다. 접근성 트리는 같은 Chrome 에 `--force-renderer-accessibility` 를 켜고 CDP 의 `Accessibility.getFullAXTree` 로 덤프해 확인했다.\
-> **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
-> **버전** — `content-visibility` 는 Baseline **newly**(2025-09-15, 아직 widely 아님 — 목록 README 의 지원 표). 나머지는 오래 자리잡은 값이다.
-> **여기서 다루지 않는 것** — 치수가 정해지는 규칙은 [15번](../15-box-model-and-box-sizing/2-summary.md), **`flow-root` 가 만드는 서식 문맥이 무엇을 가두는가**는 [17번](../17-block-formatting-context/2-summary.md), 마진 상쇄는 [18번](../18-margin-collapsing/2-summary.md)이다. **flex 의 축과 정렬은 [24번](../24-flexbox-axes/2-summary.md)이 정본**이고 여기서는 `display` 값으로만 언급한다. Grid 는 목록의 [**27**](../27-grid-track-sizing/)~[**29**](../29-grid-template-areas/)번 주제, 인라인 서식 문맥은 [목록의 **19번 주제**](../19-inline-formatting-context/)다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 동작은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`display` 는 한 값처럼 보이지만 질문 두 개에 동시에 답한다** — 「바깥에서 너는 어떻게 줄 서니」와 「안에 있는 애들은 어떻게 배치하니」.
@@ -412,3 +404,11 @@ CSS 는 무효한 선언을 **조용히 버리는** 언어이므로, 계산값�
   `inline-block` 을 줘도 `block` 이 된다. "flex 안에서는 `display` 가 안 먹는다"로 보이는 증상의 정체다.
 - **`display: contents` 와 표(`table`)** — 표의 행·셀에 `contents` 를 주면 표 구조가 깨진다.\
   표 레이아웃은 **부모-자식 관계 자체가 규칙**이라 중간을 없애면 성립하지 않는다. 이 목록은 표 레이아웃을 다루지 않는다(README 의 「뺀 것」).
+
+## 실행 환경
+
+**기준 소스** — [CSS Display Module Level 3](https://drafts.csswg.org/css-display-3/) (외부/내부 display 타입과 두 값 문법·`contents`·`none` 의 정본) · [CSS Containment Level 2](https://drafts.csswg.org/css-contain-2/) (`content-visibility`). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 **두 값 문법을 포함한 `display` 값 40여 가지**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle(el).display` 와 `getBoundingClientRect()` 로 읽었다. 접근성 트리는 같은 Chrome 에 `--force-renderer-accessibility` 를 켜고 CDP 의 `Accessibility.getFullAXTree` 로 덤프해 확인했다.\
+**WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
+**버전** — `content-visibility` 는 Baseline **newly**(2025-09-15, 아직 widely 아님 — 목록 README 의 지원 표). 나머지는 오래 자리잡은 값이다.
+**여기서 다루지 않는 것** — 치수가 정해지는 규칙은 [15번](../15-box-model-and-box-sizing/2-summary.md), **`flow-root` 가 만드는 서식 문맥이 무엇을 가두는가**는 [17번](../17-block-formatting-context/2-summary.md), 마진 상쇄는 [18번](../18-margin-collapsing/2-summary.md)이다. **flex 의 축과 정렬은 [24번](../24-flexbox-axes/2-summary.md)이 정본**이고 여기서는 `display` 값으로만 언급한다. Grid 는 목록의 [**27**](../27-grid-track-sizing/)~[**29**](../29-grid-template-areas/)번 주제, 인라인 서식 문맥은 [목록의 **19번 주제**](../19-inline-formatting-context/)다.

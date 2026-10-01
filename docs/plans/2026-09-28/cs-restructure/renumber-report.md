@@ -1,8 +1,5 @@
 # 재번호 보고서 — curriculum.md leaf 번호 = 권장 학습 순서 (3차, 원본 재생성)
 
-> 입력: `curriculum.pre-renumber.md`(644 leaf·19영역, scratchpad 사본) → 출력: `docs/plans/2026-09-27/cs-fundamentals-roadmap/curriculum.md` **원본에서 새로 생성**(2차 실패본 미참조).
-> 스크립트(scratchpad `rn/`): `common.py`(매핑·토큰 정규식·실존 판정) · `manual.py`(규칙 6 판정) · `transform.py`(변환) · `stats.py`(§20 재계산·기록) · `verify.py`(합격 기준 A~E).
-
 ## 1. 변환 규칙 (구현 그대로)
 
 | # | 대상 | 처리 |

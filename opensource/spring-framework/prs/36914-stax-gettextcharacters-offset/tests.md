@@ -1,7 +1,5 @@
 # PR #36914 — 테스트 해설 (테스트 하나하나)
 
-> PR #36914 테스트 해설. 형식·개념은 ../37153/tests.md, ../37153/guard-tests.md 참조.
-
 이 PR이 추가한 테스트는 `XMLEventStreamReaderTests`에 회귀 테스트 하나와 그 헬퍼 하나다.\
 프로덕션 diff가 상한 계산 한 줄(`Math.min(length, source.length)` -> `Math.min(length, source.length - sourceStart)`)이므로, 테스트도 그 한 줄이 만드는 차이만 정확히 겨눈다.
 

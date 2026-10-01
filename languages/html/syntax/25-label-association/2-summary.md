@@ -1,15 +1,5 @@
 # html/syntax/25 — `label` 연결과 폼 필드 이름: `for`/`id`·감싸기·클릭 위임 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The label element」](https://html.spec.whatwg.org/multipage/forms.html#the-label-element)(★ **연결된 컨트롤(labeled control)** 의 정의 · 활성화 동작), [「Categories — labelable elements」](https://html.spec.whatwg.org/multipage/forms.html#category-label), [「Interactive content」](https://html.spec.whatwg.org/multipage/dom.html#interactive-content), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/) 의 「4.1.1 텍스트 칸의 이름 계산」·「4.1.7 그 밖의 폼 요소의 이름 계산」·`label` 역할 줄. **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다.**
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 클릭은 전부 **CDP 의 진짜 마우스**로 눌렀다(스크립트의 `click()` 이 아니다). 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다(26\~28번이 같은 하네스를 쓴다 — [21번](../21-form-submission-model/3-answer.md)의 하네스를 이었다).\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. `label` 은 가장 오래된 폼 표면이라 Baseline 조회 대상으로 삼지 않았다.
-> **선행** — [22번 주제](../22-input-types-text/2-summary.md)(입력 칸의 역할) · [24번 주제](../24-input-types-choice-special/2-summary.md)(체크박스의 `click` 이 상태를 뒤집는다).
-> **경계** — **이벤트가 경로를 도는 순서**는 [web-api 16번](../../../web-api/16-event-propagation-phases/2-summary.md), **`preventDefault` 가 기본 동작을 막는 것**과 체크박스가 **리스너 안에서 이미 뒤집혀 있는 것**은 [web-api 17번](../../../web-api/17-stoppropagation-vs-preventdefault/2-summary.md)이 정본이다 — 여기는 **라벨이 두 번째 `click` 을 만드는 것**까지. **이름 출처가 여럿일 때 어느 것이 이기나**(순서 전체)는 목록의 **43번 주제**, **묶음(`fieldset`)의 이름**은 [27번 주제](../27-fieldset-and-legend/2-summary.md)다 — 여기는 **라벨이 이름이 되나**까지만.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑦(접근성 트리)과 창 ②(페이지가 받은 `click`)의 짝이다.** 라벨이 끊기면 **두 가지가 함께 사라진다** — 글자를 눌러도 칸이 안 켜지고(창 ②), 칸의 **접근 가능한 이름**이 빈다(창 ⑦). 둘을 한 표에 놓고 「끊긴 칸 N / M」을 스크립트가 센다.
-
 **이 판의 Chrome**
 
 ```text
@@ -719,3 +709,14 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 명세는 라벨의 동작을 플랫폼에 맡기나** — 운영체제마다 「이름표를 누르면」의 관습이 달라서다. 명세의 예시 문장 그대로 「어떤 플랫폼에서는 칸에 `click` 을 보내고, 다른 플랫폼에서는 **포커스만 주거나 아무것도 안 할 수도** 있다」. 그래서 **두 번째 `click` 에 기대는 코드는 이식성이 없다**는 것이 명세에서 곧장 나오는 결론이다 — 이 판은 Chrome 하나라 다른 플랫폼을 재지 못했다.
 - **`for` 가 이기는 이유** — 명세가 이유를 적지는 않는다. 결과만 보면 `for` 는 **명시적**이고 감싸기는 **구조에서 추론**하는 것이라, 둘이 다를 때 명시적인 쪽을 믿는 셈이다(해석이다).
 - **Shadow DOM 을 건너는 라벨** — 명세의 조건은 「**같은 트리**의 labelable 요소」다. 그림자 트리 안의 칸을 바깥 라벨의 `for` 로는 못 가리킨다 — 이 배치는 던지지 않았다(그림자 트리는 [10번 주제](../10-template-slot-shadow-dom/2-summary.md)가 다룬다).
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The label element」](https://html.spec.whatwg.org/multipage/forms.html#the-label-element)(★ **연결된 컨트롤(labeled control)** 의 정의 · 활성화 동작), [「Categories — labelable elements」](https://html.spec.whatwg.org/multipage/forms.html#category-label), [「Interactive content」](https://html.spec.whatwg.org/multipage/dom.html#interactive-content), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/) 의 「4.1.1 텍스트 칸의 이름 계산」·「4.1.7 그 밖의 폼 요소의 이름 계산」·`label` 역할 줄. **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다.**
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 클릭은 전부 **CDP 의 진짜 마우스**로 눌렀다(스크립트의 `click()` 이 아니다). 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다(26\~28번이 같은 하네스를 쓴다 — [21번](../21-form-submission-model/3-answer.md)의 하네스를 이었다).\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. `label` 은 가장 오래된 폼 표면이라 Baseline 조회 대상으로 삼지 않았다.
+**선행** — [22번 주제](../22-input-types-text/2-summary.md)(입력 칸의 역할) · [24번 주제](../24-input-types-choice-special/2-summary.md)(체크박스의 `click` 이 상태를 뒤집는다).
+**경계** — **이벤트가 경로를 도는 순서**는 [web-api 16번](../../../web-api/16-event-propagation-phases/2-summary.md), **`preventDefault` 가 기본 동작을 막는 것**과 체크박스가 **리스너 안에서 이미 뒤집혀 있는 것**은 [web-api 17번](../../../web-api/17-stoppropagation-vs-preventdefault/2-summary.md)이 정본이다 — 여기는 **라벨이 두 번째 `click` 을 만드는 것**까지. **이름 출처가 여럿일 때 어느 것이 이기나**(순서 전체)는 목록의 **43번 주제**, **묶음(`fieldset`)의 이름**은 [27번 주제](../27-fieldset-and-legend/2-summary.md)다 — 여기는 **라벨이 이름이 되나**까지만.
+
+★★★ **이 주제의 본체는 창 ⑦(접근성 트리)과 창 ②(페이지가 받은 `click`)의 짝이다.** 라벨이 끊기면 **두 가지가 함께 사라진다** — 글자를 눌러도 칸이 안 켜지고(창 ②), 칸의 **접근 가능한 이름**이 빈다(창 ⑦). 둘을 한 표에 놓고 「끊긴 칸 N / M」을 스크립트가 센다.

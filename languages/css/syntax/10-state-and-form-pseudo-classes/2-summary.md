@@ -1,12 +1,5 @@
 # css/syntax/10 — 상태·폼 의사 클래스: `:hover`·`:focus-visible`·`:checked`·`:disabled` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Selectors Level 4](https://drafts.csswg.org/selectors-4/) 의 [§사용자 동작](https://drafts.csswg.org/selectors-4/#useraction-pseudos) · [`:focus-visible`](https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo) · [§입력 의사 클래스](https://drafts.csswg.org/selectors-4/#input-pseudos) · [`:user-valid`/`:user-invalid`](https://drafts.csswg.org/selectors-4/#user-pseudos) · [§링크 의사 클래스](https://drafts.csswg.org/selectors-4/#location). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 주제는 **스크린샷만으로는 안 된다.** `:hover`·`:active`·`:focus-visible` 은 입력이 있어야 켜진다. 그래서 **Google Chrome 151.0.7922.173** 을 `--remote-debugging-port` 로 띄우고 **CDP 로 실제 마우스 이동·버튼 누름·Tab 키·문자 입력을 넣은 뒤** `element.matches(':hover')` 와 `getComputedStyle` 을 읽었다. 넣은 입력의 정확한 명령은 [3-answer.md](3-answer.md) 의 「실행 검증」 절에 그대로 적어 두었다.\
-> `demo` 블록 **2개 전부**와 그 「바꿔 볼 것」도 같은 방식으로 확인했다. **WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다. **엔진은 Chrome 하나**다.
-> **버전** — CSS 에 언어 버전은 없다. Baseline(2026-09-23 에 `api.webstatus.dev` 조회): `:checked`/`:disabled` 등 입력 의사 클래스 **widely**(2015-07-29 → 2018-01-29) · `:focus-within` **widely**(2020-01-15 → 2022-07-15) · `:placeholder-shown` **widely**(2020-01-15 → 2022-07-15) · `:focus-visible` **widely**(2022-03-14 → 2024-09-14) · **`:user-valid`/`:user-invalid` widely**(newly 2023-11-02 → widely 2026-05-02, Chrome 119 · Firefox 88 · Safari 16.5).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **여기 선택자들은 「켜졌다 꺼지는 그물」이다. 그리고 켜는 스위치가 저마다 다르다.**
@@ -432,3 +425,10 @@ a:link    { color: blue; }
 - **`:has(:focus-visible)`** 로 포커스 링을 **부모 카드**에 그리는 형태가 오늘 흔하다. `:focus-within` 은 `:focus` 기준이라 마우스 클릭에도 켜진다 — 둘은 다르다. *(이 문서에서 `:has(:focus-visible)` 은 미실행 — [목록의 **12번 주제**](../12-has-relational-selector/).)*
 - **`:indeterminate`** 는 HTML 속성으로는 못 만든다. 실측에서 `element.indeterminate = true` 를 **JS 로 준 뒤에야** 켜졌다. 「부분 선택」 체크박스의 스타일이 이것이다.
 - **`:target`** (URL 프래그먼트가 가리키는 요소)도 상태 의사 클래스이지만 사용자 입력이 아니라 **주소**가 스위치다. *(이 문서에서 미실행.)*
+
+## 실행 환경
+
+**기준 소스** — [Selectors Level 4](https://drafts.csswg.org/selectors-4/) 의 [§사용자 동작](https://drafts.csswg.org/selectors-4/#useraction-pseudos) · [`:focus-visible`](https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo) · [§입력 의사 클래스](https://drafts.csswg.org/selectors-4/#input-pseudos) · [`:user-valid`/`:user-invalid`](https://drafts.csswg.org/selectors-4/#user-pseudos) · [§링크 의사 클래스](https://drafts.csswg.org/selectors-4/#location). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 주제는 **스크린샷만으로는 안 된다.** `:hover`·`:active`·`:focus-visible` 은 입력이 있어야 켜진다. 그래서 **Google Chrome 151.0.7922.173** 을 `--remote-debugging-port` 로 띄우고 **CDP 로 실제 마우스 이동·버튼 누름·Tab 키·문자 입력을 넣은 뒤** `element.matches(':hover')` 와 `getComputedStyle` 을 읽었다. 넣은 입력의 정확한 명령은 [3-answer.md](3-answer.md) 의 「실행 검증」 절에 그대로 적어 두었다.\
+`demo` 블록 **2개 전부**와 그 「바꿔 볼 것」도 같은 방식으로 확인했다. **WebKit(Safari)은 이 머신에 없다** — Safari 관련 서술은 하지 않았다. **엔진은 Chrome 하나**다.
+**버전** — CSS 에 언어 버전은 없다. Baseline(2026-09-23 에 `api.webstatus.dev` 조회): `:checked`/`:disabled` 등 입력 의사 클래스 **widely**(2015-07-29 → 2018-01-29) · `:focus-within` **widely**(2020-01-15 → 2022-07-15) · `:placeholder-shown` **widely**(2020-01-15 → 2022-07-15) · `:focus-visible` **widely**(2022-03-14 → 2024-09-14) · **`:user-valid`/`:user-invalid` widely**(newly 2023-11-02 → widely 2026-05-02, Chrome 119 · Firefox 88 · Safari 16.5).

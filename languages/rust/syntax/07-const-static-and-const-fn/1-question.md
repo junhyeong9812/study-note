@@ -1,13 +1,5 @@
 # rust/syntax/07 — 상수·`static`·`const fn` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **예측형 위주**다 — 아는지가 아니라 **`const` 와 `static` 이 어디서 답을 갈라놓는지**를 맞힐 수 있는지 묻는다.
-> ★ 답을 모르겠으면 **던져 보라.** `rustc --edition 2021 ex.rs -o /tmp/ex && /tmp/ex`.
-> ★ **이 주제는 한 번 돌려서는 안 된다.** 디버그(`rustc --edition 2021 ex.rs`)와 릴리스(`rustc --edition 2021 -O ex.rs`)를
-> 둘 다 돌리고, `static mut` 이 나오면 `--edition 2024` 로 한 번 더 돌린다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -235,6 +227,12 @@ const CACHE: RefCell<i32> = RefCell::new(0);
 - 에디션 변경 전수를 다루는 주제는 몇 번인가?
 - 해제 시점 일반론과 `Drop` 의 정본은 각각 어디인가?
 - 이 주제에서 **`rustc` 는 침묵하고 다른 도구만 말하는** 자리는 어디였는가?
+
+## 실행 환경
+
+★ 답을 모르겠으면 **던져 보라.** `rustc --edition 2021 ex.rs -o /tmp/ex && /tmp/ex`.
+★ **이 주제는 한 번 돌려서는 안 된다.** 디버그(`rustc --edition 2021 ex.rs`)와 릴리스(`rustc --edition 2021 -O ex.rs`)를
+둘 다 돌리고, `static mut` 이 나오면 `--edition 2024` 로 한 번 더 돌린다.
 
 ## 복습 기록
 

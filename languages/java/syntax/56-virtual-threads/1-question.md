@@ -1,13 +1,5 @@
 # java/syntax/56 — 가상 스레드 (21): 쓰는 법과 막히는 자리 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **선행** — [`../54-executorservice-and-future/`](../54-executorservice-and-future/) 의 질문을 먼저 푼다. 풀 크기·`close()`·`Future` 가 전제다.
-> ★ [`../33-synchronized-and-volatile/`](../33-synchronized-and-volatile/) 의 `synchronized` 도 전제다 — **그 키워드가 여기서 버전에 따라 다르게 동작한다.**
-> ⚠️ 이 주제는 **JDK 판에 따라 답이 갈린다.** "몇 버전에서는?"을 항상 같이 묻는다.
-> 시간 수치를 묻는 문항은 **자릿수**만 맞히면 된다. 이 문서의 수치는 24코어 머신의 한 측정이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -143,6 +135,13 @@ static class C0 { static { Thread.sleep(200); } }   // 클래스 초기화 블�
 - **CPU 바운드 실험에서 21 과 25 의 승패가 같은가?**
 - 승패가 뒤집혔다면 그 사실에서 무엇을 결론으로 삼아야 하는가?
 - 가상 스레드 100만 개 생성 시간의 자릿수는 두 버전에서 같은가?
+
+## 실행 환경
+
+**선행** — [`../54-executorservice-and-future/`](../54-executorservice-and-future/) 의 질문을 먼저 푼다. 풀 크기·`close()`·`Future` 가 전제다.
+★ [`../33-synchronized-and-volatile/`](../33-synchronized-and-volatile/) 의 `synchronized` 도 전제다 — **그 키워드가 여기서 버전에 따라 다르게 동작한다.**
+⚠️ 이 주제는 **JDK 판에 따라 답이 갈린다.** "몇 버전에서는?"을 항상 같이 묻는다.
+시간 수치를 묻는 문항은 **자릿수**만 맞히면 된다. 이 문서의 수치는 24코어 머신의 한 측정이다.
 
 ## 복습 기록
 

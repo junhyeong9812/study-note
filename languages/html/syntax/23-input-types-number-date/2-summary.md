@@ -1,15 +1,5 @@
 # html/syntax/23 — `<input>` 타입 지도 ② 숫자·날짜: `number`/`range`/`date`/`time`/`datetime-local`/`month`/`week` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The input element」](https://html.spec.whatwg.org/multipage/input.html) 절 — Date·Month·Week·Time·Local Date and Time·Number·Range 상태의 **값 정화 알고리즘**·「문자열을 수로 바꾸는 알고리즘」·`valueAsNumber`/`valueAsDate`, 「Implementation notes regarding localization of form controls」(비규범), 제약 검증의 step mismatch 줄, 그리고 [HTML-AAM](https://w3c.github.io/html-aam/). **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다.**
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 하네스는 [21번 주제](../21-form-submission-model/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — Baseline(목록 README 의 2026-09-21 조회): **날짜·시간 `<input>` 타입 widely**(newly 2021-10-05 → widely 2024-04-05). `number`·`range` 는 따로 조회하지 않았다.
-> **선행** — [22번 주제](../22-input-types-text/2-summary.md)(값 정화 · `validity` 깃발).
-> **경계** — **`min`/`max`/`step` 이 눈금을 만드는 규칙**의 정본은 [28번 주제](../28-validation-attributes/2-summary.md)다 — 여기는 그 깃발과 문구가 **어떻게 보이나**까지만. **`time` 요소의 `datetime`** 은 [14번 주제](../14-quotation-edits-and-time/2-summary.md)의 몫이다 — 여기는 그것과 **`input type=date` 가 어떻게 다른가**만 대비한다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다** — 「값은 로케일 무관 형식」은 **서버가 받은 글자**로만 증명된다. 짝으로 **창 ⑦(접근성 트리의 글자)** 이 「화면에는 로케일 형식으로 보인다」를 맡는다.
-
 **이 판의 Chrome**
 
 ```text
@@ -663,3 +653,14 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 표시와 값을 갈랐나** — 명세의 비규범 절이 이유를 짧게 댄다 — **페이지의 로케일을 쓰면 페이지가 제공한 데이터와 표시가 일관된다.** 그러나 **제출 형식은 하나**여야 서버가 로케일마다 분기하지 않는다. 이 판은 **사용자 로케일**을 따랐다.
 - **`week` 의 주 번호** — `2026-W53` 이 유효했다. 명세 — 「주 연도는 **1월 1일이 목요일인 해**(또는 1월 1일이 수요일인 윤년)면 **53주**, 나머지는 52주」 · 「주 연도 y 의 첫 주는 그레고리력 y 년의 **첫 목요일이 든 주**」 · 「오늘날의 쓰임에서 ISO 8601 의 주와 같다」. 이 판은 2026 년이 53주 해임을 **값이 정화되지 않은 것**으로 보였다(빈 문자열이 되지 않았다).
 - **`datetime-local` 에 `valueAsDate` 가 없는 이유** — 시간대가 없는 값을 `Date`(시점)로 바꾸려면 **시간대를 골라야** 한다. 명세는 그 선택을 하지 않고 속성 자체를 **적용하지 않았다** — 이 문장은 해석이다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The input element」](https://html.spec.whatwg.org/multipage/input.html) 절 — Date·Month·Week·Time·Local Date and Time·Number·Range 상태의 **값 정화 알고리즘**·「문자열을 수로 바꾸는 알고리즘」·`valueAsNumber`/`valueAsDate`, 「Implementation notes regarding localization of form controls」(비규범), 제약 검증의 step mismatch 줄, 그리고 [HTML-AAM](https://w3c.github.io/html-aam/). **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다.**
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 하네스는 [21번 주제](../21-form-submission-model/3-answer.md)의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — Baseline(목록 README 의 2026-09-21 조회): **날짜·시간 `<input>` 타입 widely**(newly 2021-10-05 → widely 2024-04-05). `number`·`range` 는 따로 조회하지 않았다.
+**선행** — [22번 주제](../22-input-types-text/2-summary.md)(값 정화 · `validity` 깃발).
+**경계** — **`min`/`max`/`step` 이 눈금을 만드는 규칙**의 정본은 [28번 주제](../28-validation-attributes/2-summary.md)다 — 여기는 그 깃발과 문구가 **어떻게 보이나**까지만. **`time` 요소의 `datetime`** 은 [14번 주제](../14-quotation-edits-and-time/2-summary.md)의 몫이다 — 여기는 그것과 **`input type=date` 가 어떻게 다른가**만 대비한다.
+
+★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다** — 「값은 로케일 무관 형식」은 **서버가 받은 글자**로만 증명된다. 짝으로 **창 ⑦(접근성 트리의 글자)** 이 「화면에는 로케일 형식으로 보인다」를 맡는다.

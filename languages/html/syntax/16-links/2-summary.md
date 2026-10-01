@@ -1,15 +1,5 @@
 # html/syntax/16 — 링크: `href` 의 형태·`target`·`rel`(`noopener`/`noreferrer`/`nofollow`)·`download` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Links」](https://html.spec.whatwg.org/multipage/links.html) 절 — 「Following hyperlinks」(★ **「요소의 noopener 구하기」 알고리즘**)·「Downloading resources」·「Link types」(`nofollow`·`noopener`·`noreferrer`·`opener`), 그리고 [Referrer Policy](https://w3c.github.io/webappsec-referrer-policy/)(기본 정책), [HTML-AAM](https://w3c.github.io/html-aam/). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 링크는 **CDP 의 실제 마우스 입력**으로 눌렀고(스크립트의 `a.click()` 이 아니다), 요청은 **같은 프로세스 안에 띄운 서버 둘**이 받아 적었다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.** 「`_blank` 가 기본으로 `noopener`」는 **명세 알고리즘**이고, **다른 엔진이 그것을 구현했는지는 미실행**이다.
-> **버전** — HTML 에는 언어 버전이 없다. ★ 이 주제의 핵심인 **「`target="_blank"` 가 `rel="opener"` 없이는 `noopener` 로 동작한다」는 명세가 나중에 바꾼 규칙**이다 — 한때는 `_blank` 로 연 창이 `window.opener` 로 원래 창을 쥐었다. 바뀐 시점은 이 문서가 확인하지 않았다.
-> **선행** — [07번 주제](../07-id-and-fragments/2-summary.md)(`#fragment` 가 무엇을 찾나).
-> **경계** — **프로토콜은 [`history/web/02-HTTP-진화.md`](../../../../history/web/02-HTTP-진화.md) 의 몫이고, 여기는 마크업이 그 요청을 어떻게 만드느냐**다. ★ 다만 그 문서에는 **`Referer` 헤더·Referrer-Policy 절이 없다**(두 낱말로 grep 해 확인했다) — 이 주제가 싣는 `Referer` 는 **서버 로그로 본 관찰**과 **Referrer Policy 명세의 기본값 한 줄**까지다. `window.opener` 를 스크립트로 다루는 일은 웹 API 쪽인데, **웹 API 갈래 목록([`web-api/README.md`](../../../web-api/README.md))에 `window.open`·`opener` 주제는 없다**(확인).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다.** `rel` 이 바꾸는 것은 **화면이 아니라 요청과 새 창의 관계**라, 서버가 받은 `Referer` 헤더와 새 창 쪽에서 찍은 `window.opener` 로만 보인다. `href` 쪽은 **창 ②(`a.href` 가 해석한 값)** 가 본체다.
-
 **이 판의 Chrome**
 
 ```text
@@ -645,3 +635,14 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 `_blank` 의 기본이 바뀌었나** — ★ 이 단락은 **널리 알려진 경위를 옮긴 것이고 이 배치가 원문을 확인하지 않았다.** 새 창이 `window.opener.location` 을 바꿔 **원래 탭을 가짜 로그인 화면으로 갈아 끼우는** 공격(tabnabbing)이 알려졌고, `rel="noopener"` 를 **모두가 붙이게 하는 것**보다 **기본을 뒤집는 쪽**이 확실했다. 그 대가로 **정말 opener 가 필요한 곳**을 위해 `rel="opener"` 가 생겼다. ★ 이 문서는 공격 자체는 던지지 않았다.
 - **`noreferrer` 가 왜 `noopener` 를 함의하나** — opener 가 있으면 새 창이 **`opener.location` 으로 원래 창의 URL 을 읽을 수 있어** 「보낸 곳을 숨긴다」가 무너진다(같은 출처일 때). 그래서 둘을 묶었다 — 명세가 「함의한다」고 적은 까닭으로 읽힌다(이 문장은 해석이다).
 - **`Referer` 의 철자** — HTTP 초기 명세의 오타가 굳은 것으로 널리 알려져 있다(이 배치가 원문을 확인하지 않았다). 연혁은 HTTP 쪽 이야기지만 `history/web/02` 에는 아직 없다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Links」](https://html.spec.whatwg.org/multipage/links.html) 절 — 「Following hyperlinks」(★ **「요소의 noopener 구하기」 알고리즘**)·「Downloading resources」·「Link types」(`nofollow`·`noopener`·`noreferrer`·`opener`), 그리고 [Referrer Policy](https://w3c.github.io/webappsec-referrer-policy/)(기본 정책), [HTML-AAM](https://w3c.github.io/html-aam/). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 링크는 **CDP 의 실제 마우스 입력**으로 눌렀고(스크립트의 `a.click()` 이 아니다), 요청은 **같은 프로세스 안에 띄운 서버 둘**이 받아 적었다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.** 「`_blank` 가 기본으로 `noopener`」는 **명세 알고리즘**이고, **다른 엔진이 그것을 구현했는지는 미실행**이다.
+**버전** — HTML 에는 언어 버전이 없다. ★ 이 주제의 핵심인 **「`target="_blank"` 가 `rel="opener"` 없이는 `noopener` 로 동작한다」는 명세가 나중에 바꾼 규칙**이다 — 한때는 `_blank` 로 연 창이 `window.opener` 로 원래 창을 쥐었다. 바뀐 시점은 이 문서가 확인하지 않았다.
+**선행** — [07번 주제](../07-id-and-fragments/2-summary.md)(`#fragment` 가 무엇을 찾나).
+**경계** — **프로토콜은 [`history/web/02-HTTP-진화.md`](../../../../history/web/02-HTTP-진화.md) 의 몫이고, 여기는 마크업이 그 요청을 어떻게 만드느냐**다. ★ 다만 그 문서에는 **`Referer` 헤더·Referrer-Policy 절이 없다**(두 낱말로 grep 해 확인했다) — 이 주제가 싣는 `Referer` 는 **서버 로그로 본 관찰**과 **Referrer Policy 명세의 기본값 한 줄**까지다. `window.opener` 를 스크립트로 다루는 일은 웹 API 쪽인데, **웹 API 갈래 목록([`web-api/README.md`](../../../web-api/README.md))에 `window.open`·`opener` 주제는 없다**(확인).
+
+★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다.** `rel` 이 바꾸는 것은 **화면이 아니라 요청과 새 창의 관계**라, 서버가 받은 `Referer` 헤더와 새 창 쪽에서 찍은 `window.opener` 로만 보인다. `href` 쪽은 **창 ②(`a.href` 가 해석한 값)** 가 본체다.

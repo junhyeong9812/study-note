@@ -1,16 +1,5 @@
 # kotlin/syntax/01 — `val`/`var` 와 기본 타입: 암묵 수치 변환이 없다 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Basic types](https://kotlinlang.org/docs/basic-types.html) · [Numbers](https://kotlinlang.org/docs/numbers.html) · [Properties](https://kotlinlang.org/docs/properties.html) · [Unsigned integer types](https://kotlinlang.org/docs/unsigned-integer-types.html).
-> **실행 검증** — 이 문서의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 에서 실제로 돌려 얻었다.\
-> 바이트코드는 Temurin **JDK 21.0.5** 의 `javap` 출력이다. 버전 확인 명령은 「실행 검증」 절에 있다.
-> **버전** — `val`/`var` 와 여덟 기본 타입은 1.0 부터. **`UInt` 등 부호 없는 정수는 1.5 Stable.**\
-> 컴파일러는 **K2**(2.0 이후 기본)다 — 이 문서의 에러 문구는 K2 프런트엔드가 낸 것이다.
-> **경계** — [`../../언어-특성/README.md`](../../언어-특성/README.md) §5 는 **「왜 가변성을 이름에 적는 언어를 고르나」** 를 답한다(읽기 전용 컬렉션 실측표가 거기 정본).\
-> 여기는 **「이 문법이 JVM 위에서 무엇으로 내려앉나」** 만 다룬다 — `val` 이 만드는 필드, `Int` 와 `Int?` 의 디스크립터.\
-> **박싱 캐시(`-128\~127`)의 정본은 [`../../../java/syntax/01-primitives-and-wrappers/`](../../../java/syntax/01-primitives-and-wrappers/)** 다. 여기서는 **결론만 받아 쓰고 재서술하지 않는다.**
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **`val` 은 「이 이름표를 다른 상자에 다시 못 붙인다」는 뜻이지 「상자 안이 안 바뀐다」는 뜻이 아니다.**\
@@ -545,3 +534,14 @@ Boolean (SIZE_BITS 없음)
 - `val` 프로퍼티는 `final` 필드가 되지만 **`open val` 은 게터가 오버라이드 가능**해져서 성질이 완전히 달라진다.\
   그 차이가 [04번 주제](../04-smart-casts/)(스마트 캐스트)에서 그대로 실패 모드가 된다 — 「커스텀 getter」 항목이다.
 - `0x`·`0b` 는 있는데 **8진 리터럴은 없다.** Java 의 `010 == 8` 같은 함정을 통째로 없앤 것이다.
+
+## 실행 환경
+
+**기준 소스** — [Basic types](https://kotlinlang.org/docs/basic-types.html) · [Numbers](https://kotlinlang.org/docs/numbers.html) · [Properties](https://kotlinlang.org/docs/properties.html) · [Unsigned integer types](https://kotlinlang.org/docs/unsigned-integer-types.html).
+**실행 검증** — 이 문서의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 에서 실제로 돌려 얻었다.\
+바이트코드는 Temurin **JDK 21.0.5** 의 `javap` 출력이다. 버전 확인 명령은 「실행 검증」 절에 있다.
+**버전** — `val`/`var` 와 여덟 기본 타입은 1.0 부터. **`UInt` 등 부호 없는 정수는 1.5 Stable.**\
+컴파일러는 **K2**(2.0 이후 기본)다 — 이 문서의 에러 문구는 K2 프런트엔드가 낸 것이다.
+**경계** — [`../../언어-특성/README.md`](../../언어-특성/README.md) §5 는 **「왜 가변성을 이름에 적는 언어를 고르나」** 를 답한다(읽기 전용 컬렉션 실측표가 거기 정본).\
+여기는 **「이 문법이 JVM 위에서 무엇으로 내려앉나」** 만 다룬다 — `val` 이 만드는 필드, `Int` 와 `Int?` 의 디스크립터.\
+**박싱 캐시(`-128\~127`)의 정본은 [`../../../java/syntax/01-primitives-and-wrappers/`](../../../java/syntax/01-primitives-and-wrappers/)** 다. 여기서는 **결론만 받아 쓰고 재서술하지 않는다.**

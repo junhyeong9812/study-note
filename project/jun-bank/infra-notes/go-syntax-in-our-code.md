@@ -1,7 +1,5 @@
 # Go 문법 — 우리 infra 코드를 읽는 데 필요한 만큼만
 
-> 학습 노트다. Go 문법 전체 튜토리얼이 아니라, **이 저장소의 infra 코드에 실제로 나온 문법만** 골라 "이 줄이 무슨 일을 하는가"까지 설명한다. "Go를 왜 여기 쓰는가"는 다른 문서가 소유한다([`go.md`](go.md) — 런타임·GC·단일 바이너리, 그리고 언어 결정 정본 [`ADR-028`](../../../architecture/adr/ADR-028-language-selection.md)).
-
 읽는 대상 코드는 네 파일이다: 게이트 1 검증기 [`internal/auth/auth.go`](../../../../infra/internal/auth/auth.go), HTTP 진입 미들웨어 [`internal/httpentry/httpentry.go`](../../../../infra/internal/httpentry/httpentry.go), 배포 스키마 관문 [`internal/store/store.go`](../../../../infra/internal/store/store.go), 단일 바이너리 진입점 [`cmd/agent/main.go`](../../../../infra/cmd/agent/main.go). 인용한 코드 줄은 전부 이 네 파일에서 그대로 복사한 것이고, 문법 근거는 Go 공식 명세([go.dev/ref/spec](https://go.dev/ref/spec))와 Effective Go([go.dev/doc/effective_go](https://go.dev/doc/effective_go))를 인라인으로 단다.
 
 순서는 하나의 동선을 따른다. 파일을 여는 순간 보이는 뼈대(선언 키워드)에서 시작해, 타입과 메서드, 그다음 Go 초심자가 가장 헷갈리는 자리인 에러와 `nil`을 지나, 마지막으로 슬라이스·context·미들웨어·고루틴 같은 우리 코드의 실제 관용구로 내려간다. 헷갈리는 두 지점(`return nil`이 성공이라는 것, `jtiArg`가 NULL이 되는 것)은 5절에 모아 두었다.

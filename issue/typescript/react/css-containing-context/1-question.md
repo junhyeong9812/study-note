@@ -1,10 +1,5 @@
 # issue/typescript/react/css-containing-context — 크기·스크롤·클리핑·위치는 조상이 정한다 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 
 1. (왜) `flex: 1`을 준 자식이 컨테이너가 좁아져도 줄지 않고 이웃 패널을 덮는다. flex 아이템의 `min-width`/`min-height` 기본값은 무엇이고, 왜 `min-width: 0`을 줘야 줄어드는가? CSS grid의 `1fr`이 `minmax(0, 1fr)`과 다른 점도 같은 원리로 설명하라.

@@ -1,15 +1,5 @@
 # sql/08-ORDER BY — 정렬 키·NULL 위치·정렬 안정성 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · SELECT · ORDER BY Clause](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · ORDER BY Optimization](https://dev.mysql.com/doc/refman/8.4/en/order-by-optimization.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **반복 실행** — 동률 순서는 **각 엔진에서 같은 질의를 10회씩** 돌려 확인했다. 결과는 5절에 있다.\
-> **버전** — `NULLS FIRST`/`NULLS LAST` 는 PG 에 있고 MySQL 8.4.10 에는 문법이 없다(`ERROR 1064`).\
-> **선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/)(`ORDER BY` 가 7번 칸) · [04 NULL 의 3값 논리](../04-null-three-valued-logic/).
-
 ## 한눈에 — 쉽게 말하면
 
 **`ORDER BY` 는 「줄을 세우는 규칙」이다. 규칙이 정하지 않은 것은 아무렇게나 된다.**
@@ -603,3 +593,12 @@ ORDER BY CASE WHEN salary IS NULL THEN 0 ELSE 1 END, salary DESC
 - **왜 표준이 동률 순서를 정하지 않았나.** 정하면 엔진이 **정렬 알고리즘을 자유롭게 고를 수 없다.** 병렬 정렬·해시 집계·인덱스 스캔은 모두 입력 순서를 흩뜨리고, 안정성을 요구하면 그중 상당수를 못 쓴다. **자유를 준 대가를 질의문이 치르는 구조**이고, 그래서 고유 키를 하나 더 적는 것이 계약을 완성하는 일이 된다.
 - **PG 에서 `UPDATE` 후 순서가 바뀌는 것은 MVCC 의 부산물이다.** 갱신은 제자리 수정이 아니라 **새 판본을 쓰고 옛 판본을 죽은 것으로 표시**하는 일이라 새 위치가 생긴다. 순서가 바뀐 것은 버그가 아니라 저장 구조가 드러난 것이다. MVCC 의 정본은 [목록의 **56번 주제**](../56-isolation-levels-read-phenomena-mvcc/)다.
 - **정렬은 조기 종료가 안 된다.** 「가장 큰 것 하나」를 알려면 전부 봐야 한다 — 그래서 `ORDER BY ... LIMIT 1` 도 정렬 자체는 다 한다. 예외는 **정렬 키에 인덱스가 있어서 이미 순서대로 읽을 수 있을 때**뿐이고, 그것이 [09번](../09-limit-offset-keyset-pagination/)의 키셋 페이지네이션이 서는 토대다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · SELECT · ORDER BY Clause](https://www.postgresql.org/docs/18/sql-select.html) · [MySQL 8.4 · ORDER BY Optimization](https://dev.mysql.com/doc/refman/8.4/en/order-by-optimization.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**반복 실행** — 동률 순서는 **각 엔진에서 같은 질의를 10회씩** 돌려 확인했다. 결과는 5절에 있다.\
+**버전** — `NULLS FIRST`/`NULLS LAST` 는 PG 에 있고 MySQL 8.4.10 에는 문법이 없다(`ERROR 1064`).\
+**선행** — [01 논리적 질의 처리 순서](../01-logical-query-processing-order/)(`ORDER BY` 가 7번 칸) · [04 NULL 의 3값 논리](../04-null-three-valued-logic/).

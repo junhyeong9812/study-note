@@ -1,12 +1,5 @@
 # sql/18-USING 과 NATURAL JOIN — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
-> 10·11번의 `deptx` 는 **기존 `dept` 에서 만들어** 트랜잭션 안에서 쓰고 롤백했다(MySQL 은 `CREATE` → 질의 → `DROP`).\
-> **`emp`·`dept` 는 한 행도 바꾸지 않았다.**\
-> 문서 근거는 [PG 18 Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -593,3 +586,11 @@ ERROR 1054 (42S22) at line 7: Unknown column 'dept_id' in 'from clause'
 **`emp`·`dept` 변경** — 없다. `deptx` 만 만들었고 실험 뒤 남아 있지 않다.
 
 **11번도 실측이다** — 같은 `deptx` 에 열 추가·열 이름 변경을 차례로 걸고 `USING (dept_id)` 를 세 번 돌렸다(3 → 3 → 에러).
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
+10·11번의 `deptx` 는 **기존 `dept` 에서 만들어** 트랜잭션 안에서 쓰고 롤백했다(MySQL 은 `CREATE` → 질의 → `DROP`).\
+**`emp`·`dept` 는 한 행도 바꾸지 않았다.**\
+문서 근거는 [PG 18 Table Expressions](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html).

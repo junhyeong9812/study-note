@@ -1,13 +1,5 @@
 # web-api/12 — Shadow DOM: `attachShadow`·캡슐화 경계·슬롯 할당·`::part` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **마크업 갈래와의 경계** — HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **10번** 은 `template`·`slot`·선언적 Shadow DOM 을 **마크업으로** 다루고, 여기는 **그것을 만들고 들여다보는 API** 다.
-> ★ 이 파일의 코드 블록은 **질문용 스텁**이다 — 실행 대상이 아니며, 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
-> ★ 선행은 [01번 주제](../01-document-and-node-tree/2-summary.md)(노드 트리)와 [05번 주제](../05-documentfragment-and-template/2-summary.md)(`<template>`)다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -194,6 +186,13 @@ document.styleSheets[0].cssRules          //  ::part 규칙이 담겨 있는가?
 - 이벤트의 `e.target` 이 호스트로 오는 현상의 이름은? **정본은 어느 주제인가**?
 - [10번 주제](../10-layout-thrashing/2-summary.md)와 견주면 이 주제는 **명세 쪽인가 구현 쪽인가**?
 - [05번 주제](../05-documentfragment-and-template/2-summary.md)의 `DocumentFragment` 와 `ShadowRoot` 는 어떤 관계인가?
+
+## 실행 환경
+
+★ **마크업 갈래와의 경계** — HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **10번** 은 `template`·`slot`·선언적 Shadow DOM 을 **마크업으로** 다루고, 여기는 **그것을 만들고 들여다보는 API** 다.
+★ 이 파일의 코드 블록은 **질문용 스텁**이다 — 실행 대상이 아니며, 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 이식성은 주장 범위 밖이다.
+★ 선행은 [01번 주제](../01-document-and-node-tree/2-summary.md)(노드 트리)와 [05번 주제](../05-documentfragment-and-template/2-summary.md)(`<template>`)다.
 
 ## 복습 기록
 

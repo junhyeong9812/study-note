@@ -1,40 +1,5 @@
 # python/syntax/16-iterator-protocol — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [Iterator Types](https://docs.python.org/3.12/library/stdtypes.html#iterator-types) — **두 메서드 계약**과 `__iter__` 가 자기를 돌려줘야 한다는 요구
-> - [`iter()`](https://docs.python.org/3.12/library/functions.html#iter) — 한 인자 꼴 · **두 인자 꼴** · `__getitem__` 대체 경로
-> - [`next()`](https://docs.python.org/3.12/library/functions.html#next) · [`StopIteration`](https://docs.python.org/3.12/library/exceptions.html#StopIteration)
-> - [PEP 479 — Change StopIteration handling inside generators](https://peps.python.org/pep-0479/)
-> - [`operator.length_hint`](https://docs.python.org/3.12/library/operator.html#operator.length_hint) · [glossary — iterable / iterator](https://docs.python.org/3.12/glossary.html#term-iterable)
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
-> 그래서 **실행 중 예외에는 소스 줄과 캐럿이 안 나온다.**\
-> **버전** — 이터레이터 프로토콜 자체는 **2.2+**(PEP 234)이고 이 노트 범위(3.10\~3.13)에서 안 바뀌었다.
-> 갈리는 것은 하나다 — **`StopIteration` 이 제너레이터 밖으로 새면 `RuntimeError` 가 되는 것이 3.7 부터**다(PEP 479).
-> 3.5\~3.6 에서는 `from __future__ import generator_stop` 로 켜는 선택이었다.
-> `gi_suspended` 속성은 3.11.15 에도 있었다(대조 확인).\
-> **★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | (판이 오르면) **타입 이름** `list_iterator`·`callable_iterator`·`iterator` | `iter(x) is x` 의 참·거짓 · `__next__` 유무 |
-> | (판이 오르면) **예외 문구** 전부 | 예외 **종류**(`StopIteration`·`RuntimeError`·`TypeError`) |
-> | (판이 오르면) `gi_*` 속성의 있고 없음 | **소진 여부**와 「소진과 공집합이 구분 안 된다」는 사실 |
-> | — | `File "<stdin>", line N` · `__getitem__` 이 **몇 번** 불렸나 |
->
-> ★ **이 주제의 실행 출력은 전부 결정적이다** — 같은 판에서 다시 돌리면 한 글자도 안 변한다(수치·주소를 안 찍는다).\
-> ★ **단 한 블록만 stdout 과 stderr 가 섞인다**(PEP 479 — `[1, 2]` 다음에 트레이스백).
-> 파이프로 받아 **세 판을 md5 로 대조해 순서가 같음을 확인**했다 — CPython 이 트레이스백을 찍기 전에 stdout 을 flush 하기 때문이다.
->
-> **선행** — [15-generator-expressions-lazy-eval](../15-generator-expressions-lazy-eval/2-summary.md)(지연의 값어치) ·
-> [09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md)(시퀀스가 무엇인가).\
-> **정본 이웃** — [17-generators-yield](../17-generators-yield/2-summary.md)가 **제너레이터의 정본**이다.
-> `yield`·프레임·`send`·`close`·`yield from` 은 전부 그쪽이고, 여기는 **「제너레이터가 아닌 것까지 포함한 계약」** 만 다룬다.
-
 ## 한눈에 — 쉽게 말하면
 
 **이터러블은 「번호표 뽑는 기계」이고, 이터레이터는 「뽑아 든 번호표」다.**
@@ -776,3 +741,37 @@ iter([1,2])[0]   -> TypeError: 'list_iterator' object is not subscriptable
   `f.seek(0)` 이 되감기다([목록의 **48번 주제**](../48-pathlib-and-file-io/)).
 - **언패킹도 이 프로토콜을 쓴다** — `a, b = it` 이 `next` 를 두 번 부르고 세 번째로 끝을 확인한다([11번](../11-tuple-and-unpacking/2-summary.md)).
 - **비동기 판**은 `__aiter__`/`__anext__` 와 `StopAsyncIteration` 이다(PEP 492). 구조가 그대로 대응된다([목록의 **51번 주제**](../51-asyncio-coroutine-basics/)).
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [Iterator Types](https://docs.python.org/3.12/library/stdtypes.html#iterator-types) — **두 메서드 계약**과 `__iter__` 가 자기를 돌려줘야 한다는 요구
+- [`iter()`](https://docs.python.org/3.12/library/functions.html#iter) — 한 인자 꼴 · **두 인자 꼴** · `__getitem__` 대체 경로
+- [`next()`](https://docs.python.org/3.12/library/functions.html#next) · [`StopIteration`](https://docs.python.org/3.12/library/exceptions.html#StopIteration)
+- [PEP 479 — Change StopIteration handling inside generators](https://peps.python.org/pep-0479/)
+- [`operator.length_hint`](https://docs.python.org/3.12/library/operator.html#operator.length_hint) · [glossary — iterable / iterator](https://docs.python.org/3.12/glossary.html#term-iterable)
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
+그래서 **실행 중 예외에는 소스 줄과 캐럿이 안 나온다.**\
+**버전** — 이터레이터 프로토콜 자체는 **2.2+**(PEP 234)이고 이 노트 범위(3.10\~3.13)에서 안 바뀌었다.
+갈리는 것은 하나다 — **`StopIteration` 이 제너레이터 밖으로 새면 `RuntimeError` 가 되는 것이 3.7 부터**다(PEP 479).
+3.5\~3.6 에서는 `from __future__ import generator_stop` 로 켜는 선택이었다.
+`gi_suspended` 속성은 3.11.15 에도 있었다(대조 확인).\
+**★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| (판이 오르면) **타입 이름** `list_iterator`·`callable_iterator`·`iterator` | `iter(x) is x` 의 참·거짓 · `__next__` 유무 |
+| (판이 오르면) **예외 문구** 전부 | 예외 **종류**(`StopIteration`·`RuntimeError`·`TypeError`) |
+| (판이 오르면) `gi_*` 속성의 있고 없음 | **소진 여부**와 「소진과 공집합이 구분 안 된다」는 사실 |
+| — | `File "<stdin>", line N` · `__getitem__` 이 **몇 번** 불렸나 |
+
+★ **이 주제의 실행 출력은 전부 결정적이다** — 같은 판에서 다시 돌리면 한 글자도 안 변한다(수치·주소를 안 찍는다).\
+★ **단 한 블록만 stdout 과 stderr 가 섞인다**(PEP 479 — `[1, 2]` 다음에 트레이스백).
+파이프로 받아 **세 판을 md5 로 대조해 순서가 같음을 확인**했다 — CPython 이 트레이스백을 찍기 전에 stdout 을 flush 하기 때문이다.
+
+**선행** — [15-generator-expressions-lazy-eval](../15-generator-expressions-lazy-eval/2-summary.md)(지연의 값어치) ·
+[09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md)(시퀀스가 무엇인가).\
+**정본 이웃** — [17-generators-yield](../17-generators-yield/2-summary.md)가 **제너레이터의 정본**이다.
+`yield`·프레임·`send`·`close`·`yield from` 은 전부 그쪽이고, 여기는 **「제너레이터가 아닌 것까지 포함한 계약」** 만 다룬다.

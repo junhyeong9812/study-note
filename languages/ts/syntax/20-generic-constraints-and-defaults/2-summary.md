@@ -1,12 +1,5 @@
 # ts/syntax/20 — 제네릭 제약과 기본 타입 인자 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Generics: Generic Constraints](https://www.typescriptlang.org/docs/handbook/2/generics.html#generic-constraints) ·
-> [Handbook — More on Functions: Constraints](https://www.typescriptlang.org/docs/handbook/2/functions.html#constraints) ·
-> [Handbook — Generics: Generic Parameter Defaults](https://www.typescriptlang.org/docs/handbook/2/generics.html#generic-parameter-defaults).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단 전문은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version (sh exit=0) =====
 Version 7.0.2
@@ -17,7 +10,6 @@ v18.19.1
 > 이 배치는 `-t es2022 --strict` 를 **전부 명시**했다.
 > ★★ 6절은 **Rust** 로 같은 질문을 던졌다 — `rustc` 는 **1.92.0 (ded5c06cf 2025-12-08)** 이다(블록 배너 참조).
 > **버전** — `extends` 제약은 TS **1.x**, **기본 타입 인자는 TS 2.3** 이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## ★★★ 이 배치가 쓰는 탐침 — 「컴파일러가 타입을 말하게 하는 법」
 
@@ -742,3 +734,11 @@ ex.20d.ts(34,25): error TS2744: Type parameter defaults can only reference previ
 - **와일드카드가 없는 대신** — Java 의 `? extends T`·`? super T` 에 해당하는 표기가 TS 에는 없다. 대신 ① **제약**(`<T extends U>`)으로 읽기 쪽을, ② **변성**([**17번 주제**](../17-variance-and-parameter-compatibility/))과 `readonly` 로 쓰기 쪽을 가른다. 어느 쪽이 나은지는 이 배치에서 **논증하지 않았다** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **18번** 과 나란히 읽을 자리다.
 - **재귀 제약의 한계** — `T extends Record<string, T>` 가 실제로 도는 것은 5절에서 봤지만 **깊이 한계와 검사 시간은 안 쟀다.** 조건부 타입의 재귀 한계는 [목록의 **25번 주제**](../25-infer-and-recursive-conditional-types/), 타입 수준 성능은 [목록의 **45번 주제**](../45-type-level-performance/)다.
 - **명목 구분이 필요할 때** — 1절 22행처럼 **우연히 모양이 맞는 것**까지 통과시키는 것이 곤란하면 브랜드 타입을 쓴다([**05번 주제**](../05-structural-typing/)). Rust 처럼 「선언이 있어야 한다」를 흉내 내는 수다 — **이 배치에서는 안 던졌다.**
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Generics: Generic Constraints](https://www.typescriptlang.org/docs/handbook/2/generics.html#generic-constraints) ·
+[Handbook — More on Functions: Constraints](https://www.typescriptlang.org/docs/handbook/2/functions.html#constraints) ·
+[Handbook — Generics: Generic Parameter Defaults](https://www.typescriptlang.org/docs/handbook/2/generics.html#generic-parameter-defaults).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단 전문은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

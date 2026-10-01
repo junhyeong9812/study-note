@@ -1,12 +1,5 @@
 # java/syntax/41 — `Map` API: `merge`/`compute*`/`getOrDefault`/`putIfAbsent` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/) 의 질문을 먼저 푼다.
-> 해시 테이블의 **내부**(버킷·충돌·리사이즈)는 여기서 묻지 않는다 — [`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 의 질문이다.
-> `Collectors.toMap` 은 [`../47-collectors-basics/`](../47-collectors-basics/) 의 질문이다.
-
 ## 예시 데이터
 
 여러 문항이 **키 하나짜리 맵의 세 상태**를 쓴다.
@@ -190,6 +183,12 @@ counts.put(w, old == null ? 1 : old + 1);
 - 「`LinkedHashMap.firstEntry`·`putFirst`」는 어디인가?
 - 「`modCount` 가 무엇이고 fail-fast 가 왜 best-effort 인가」는 어디인가?
 - 「키가 `equals` 계약을 어기면」은 어디인가?
+
+## 실행 환경
+
+**선행** — [`../39-collections-framework-map/`](../39-collections-framework-map/) 의 질문을 먼저 푼다.
+해시 테이블의 **내부**(버킷·충돌·리사이즈)는 여기서 묻지 않는다 — [`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 의 질문이다.
+`Collectors.toMap` 은 [`../47-collectors-basics/`](../47-collectors-basics/) 의 질문이다.
 
 ## 복습 기록
 

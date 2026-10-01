@@ -1,15 +1,5 @@
 # css/syntax/46 — 테두리·`border-radius`·`outline`·`box-shadow` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Backgrounds and Borders Level 3](https://drafts.csswg.org/css-backgrounds-3/) (`border-*`·`border-radius`·`box-shadow` 의 정본) · [CSS Basic User Interface Level 4](https://drafts.csswg.org/css-ui-4/#outline) (`outline`·`outline-offset`). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 본문의 모든 수치를 **Google Chrome 151.0.7922.173** headless 에서 실제로 렌더해 확인했다.\
-> 치수는 `getBoundingClientRect()`·`getComputedStyle()` 로, **모양은 스크린샷 PNG 를 파이썬 표준 라이브러리로 디코드해 좌표별 `(r,g,b)` 를 읽어서** 잰다.\
-> ★ **이 주제는 계산값으로 거의 아무것도 증명하지 못한다** — `border-radius: 150px` 은 계산값이 `150px` 인데 **화면에 그려진 반지름은 100px** 이다(아래 (4)). 그래서 픽셀이 주 근거다.
-> **버전** — CSS 에 언어 버전이 없으므로 Baseline 으로 읽는다. webstatus.dev 조회(2026-09-23): `border-radius`·`box-shadow` **widely**(2015-07-29 → 2018-01-29) · `outline`(CSS UI 4 §outline) **widely**(2023-03-27 → 2025-09-27).
-> **여기서 다루지 않는 것** — 이 네 가지가 어느 상자 위에 그려지는지, 곧 **네 겹 상자 자체**는 [15번](../15-box-model-and-box-sizing/2-summary.md)이 정본이다. 여기는 「그 네 겹 중 `border` 겹에 무엇을 그리고, 상자 **밖에** 무엇을 더 그리는가」부터다.\
-> 색 표기(`oklch`·알파)는 [목록의 **42번 주제**](../42-color-notation-and-spaces/), 그라디언트는 **45번 주제**, 배경 속성은 **44번 주제**, **임의의 모양으로 자르는 것**은 [49번](../49-clip-path-and-mask/2-summary.md)이 정본이다. `filter: drop-shadow` 와 `box-shadow` 의 차이는 [47번](../47-filter-and-backdrop-filter/2-summary.md)에 있다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **액자 가게에 갔다고 하자. 붙일 수 있는 장식이 네 가지다.**
@@ -520,3 +510,13 @@
 - **`box-shadow` 와 성능** — `blur` 가 큰 그림자를 많이 쌓으면 합성 비용이 커진다. 같은 모양을 반복할 때는 그림자 대신 미리 그린 이미지를 쓰는 쪽이 쌀 수 있다. 이 문서는 성능을 측정하지 않았다.
 - **`outline-style: auto`** — UA 가 자기 포커스 링 모양을 그리도록 맡기는 값. 플랫폼마다 그림이 다르다.
 - **`corner-shape`** — 모서리를 원 말고 다른 곡선으로 깎으려는 최신 제안. 이 배치에서는 다루지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Backgrounds and Borders Level 3](https://drafts.csswg.org/css-backgrounds-3/) (`border-*`·`border-radius`·`box-shadow` 의 정본) · [CSS Basic User Interface Level 4](https://drafts.csswg.org/css-ui-4/#outline) (`outline`·`outline-offset`). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 본문의 모든 수치를 **Google Chrome 151.0.7922.173** headless 에서 실제로 렌더해 확인했다.\
+치수는 `getBoundingClientRect()`·`getComputedStyle()` 로, **모양은 스크린샷 PNG 를 파이썬 표준 라이브러리로 디코드해 좌표별 `(r,g,b)` 를 읽어서** 잰다.\
+★ **이 주제는 계산값으로 거의 아무것도 증명하지 못한다** — `border-radius: 150px` 은 계산값이 `150px` 인데 **화면에 그려진 반지름은 100px** 이다(본문 (4)). 그래서 픽셀이 주 근거다.
+**버전** — CSS 에 언어 버전이 없으므로 Baseline 으로 읽는다. webstatus.dev 조회(2026-09-23): `border-radius`·`box-shadow` **widely**(2015-07-29 → 2018-01-29) · `outline`(CSS UI 4 §outline) **widely**(2023-03-27 → 2025-09-27).
+**여기서 다루지 않는 것** — 이 네 가지가 어느 상자 위에 그려지는지, 곧 **네 겹 상자 자체**는 [15번](../15-box-model-and-box-sizing/2-summary.md)이 정본이다. 여기는 「그 네 겹 중 `border` 겹에 무엇을 그리고, 상자 **밖에** 무엇을 더 그리는가」부터다.\
+색 표기(`oklch`·알파)는 [목록의 **42번 주제**](../42-color-notation-and-spaces/), 그라디언트는 **45번 주제**, 배경 속성은 **44번 주제**, **임의의 모양으로 자르는 것**은 [49번](../49-clip-path-and-mask/2-summary.md)이 정본이다. `filter: drop-shadow` 와 `box-shadow` 의 차이는 [47번](../47-filter-and-backdrop-filter/2-summary.md)에 있다.

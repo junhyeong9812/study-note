@@ -1,17 +1,5 @@
 # kotlin/syntax/03 — null 안전 타입: `?`·`?.`·`?:`·`!!` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Null safety](https://kotlinlang.org/docs/null-safety.html) · [Type checks and casts](https://kotlinlang.org/docs/typecasts.html) · [kotlin-stdlib `let`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/let.html).
-> **실행 검증** — 모든 출력·예외·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> Java 쪽 호출은 같은 JDK 의 `javac` 로 컴파일해 **실제로 섞어 돌렸다.**
-> **버전** — `?`·`?.`·`?:`·`!!` 는 1.0. 컴파일러는 **K2**(2.0 이후 기본).
-> **경계** — [`../../언어-특성/README.md`](../../언어-특성/README.md) §2 는 **「왜 null 을 타입에 넣은 언어를 고르나」** 와\
-> 그 방어선이 끝나는 자리라는 **설계 논증**이 정본이다.\
-> 여기는 **「그 문법이 JVM 위에서 무엇으로 내려앉나」** 만 다룬다 — `?.` 가 만드는 분기, `!!` 가 부르는 함수, 컴파일러가 심는 검사.\
-> **Java 쪽 대응(`Objects.requireNonNull`·`Optional`)의 정본은 [`../../../java/syntax/60-null-handling/`](../../../java/syntax/60-null-handling/)** 다.\
-> **Java 경계에서 이 보장이 사라지는 것은 [05번 주제](../05-platform-types/)** 가 정본이다 — 여기서는 문법만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **Kotlin 의 null 안전은 "`null` 을 조심하는 규율" 이 아니라 "`null` 이 들어갈 수 있는 타입과 없는 타입을 아예 나눈 것" 이다.**\
@@ -611,3 +599,15 @@ $ javap -cp kotlin-stdlib.jar -p kotlin.jvm.internal.Intrinsics | grep -iE 'chec
 - `?.` 사슬 중간에 `?.also { }` 를 끼우면 **어디서 끊겼는지** 로그로 남길 수 있다. 다만 `also` 는 `null` 이면 안 돈다.
 - `!!` 를 금지하는 팀 규약은 **정적 분석 도구의 규칙**으로 강제하는 것이 보통이다(이 문서에서 도구를 돌려 보지는 않았다).\
   언어가 안 막는 것을 도구가 막는 형태다 — Java 의 `@Nullable` 과 **방향이 반대**다.
+
+## 실행 환경
+
+**기준 소스** — [Null safety](https://kotlinlang.org/docs/null-safety.html) · [Type checks and casts](https://kotlinlang.org/docs/typecasts.html) · [kotlin-stdlib `let`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/let.html).
+**실행 검증** — 모든 출력·예외·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+Java 쪽 호출은 같은 JDK 의 `javac` 로 컴파일해 **실제로 섞어 돌렸다.**
+**버전** — `?`·`?.`·`?:`·`!!` 는 1.0. 컴파일러는 **K2**(2.0 이후 기본).
+**경계** — [`../../언어-특성/README.md`](../../언어-특성/README.md) §2 는 **「왜 null 을 타입에 넣은 언어를 고르나」** 와\
+그 방어선이 끝나는 자리라는 **설계 논증**이 정본이다.\
+여기는 **「그 문법이 JVM 위에서 무엇으로 내려앉나」** 만 다룬다 — `?.` 가 만드는 분기, `!!` 가 부르는 함수, 컴파일러가 심는 검사.\
+**Java 쪽 대응(`Objects.requireNonNull`·`Optional`)의 정본은 [`../../../java/syntax/60-null-handling/`](../../../java/syntax/60-null-handling/)** 다.\
+**Java 경계에서 이 보장이 사라지는 것은 [05번 주제](../05-platform-types/)** 가 정본이다 — 여기서는 문법만 다룬다.

@@ -1,12 +1,5 @@
 # ts/syntax/12 — 좁히기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Narrowing](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) ·
-> [Handbook — Narrowing: `typeof` type guards](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#typeof-type-guards) ·
-> [TSConfig — `strictNullChecks`](https://www.typescriptlang.org/tsconfig/#strictNullChecks).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -20,7 +13,6 @@ v18.19.1
 > 네 파일 중 **셋이 `--strict false` 에서 답이 갈렸고**, 그 세 자리는 **양쪽 판을 다 실었다.**
 > **버전** — `typeof`·`instanceof` 좁히기는 TS 1.x, `in` 좁히기는 2.0, 판별 유니온은 2.0,
 > **조건을 `const` 에 담아도 좁혀지는 것**(별칭 조건)은 **4.4** 부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -805,3 +797,11 @@ typeof null: object
 - **왜 함수 호출 뒤에는 안 풀리나** — 풀면 실무 코드의 대부분이 에러가 난다. **편의를 위해 일부러 낮춘 안전선**이고, 실제로 `touch()` 가 `b.v` 를 지우면 런타임에 깨진다. 「보장」이 아니라 「믿어 준다」로 읽어야 한다.
 - **`in` 의 함정** — `in` 은 프로토타입 체인까지 보는 JS 연산자다(`"toString" in obj`). **이 배치에서 던지지 않았으므로** 성질만 적어 둔다 — 판별 칸을 따로 두는 편이 안전하다([**09번 주제**](../09-union-types/)).
 - **분기가 많을 때의 검사 시간** — 제어 흐름 분석은 분기마다 타입을 다시 계산한다. 이 배치에서는 **재지 않았다** — [목록의 **45번 주제**](../45-type-level-performance/)에서 잰다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Narrowing](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) ·
+[Handbook — Narrowing: `typeof` type guards](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#typeof-type-guards) ·
+[TSConfig — `strictNullChecks`](https://www.typescriptlang.org/tsconfig/#strictNullChecks).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

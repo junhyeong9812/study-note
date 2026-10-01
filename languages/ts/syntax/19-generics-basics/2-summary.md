@@ -1,12 +1,5 @@
 # ts/syntax/19 — 제네릭 기본 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Generics](https://www.typescriptlang.org/docs/handbook/2/generics.html) ·
-> [Handbook — More on Functions: Generic Functions](https://www.typescriptlang.org/docs/handbook/2/functions.html#generic-functions) ·
-> [Handbook — Type Inference](https://www.typescriptlang.org/docs/handbook/type-inference.html).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·`.d.ts` 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version (sh exit=0) =====
 Version 7.0.2
@@ -17,7 +10,6 @@ v18.19.1
 > 이 배치는 `-t es2022 --strict` 를 **전부 명시**했다 — 7.0 의 기본값에 기대지 않고 배너만 보고 다시 던질 수 있게 했다.
 > **버전** — 제네릭은 TS **초판(1.0)** 부터다. 이 주제에는 최신 기능이 없다 —
 > 다만 **8절의 `--strict` 대조**는 이 판의 기본값(`true`)을 전제로 읽는다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## ★★★ 이 배치가 쓰는 탐침 — 「컴파일러가 타입을 말하게 하는 법」
 
@@ -704,3 +696,11 @@ ex.19e.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 - **`any` 와 제네릭의 진짜 차이** — 1절 16행이 보여 주듯 `any` 는 **탐침조차 통과한다.** 즉 `any` 를 반환하는 함수를 쓰면 **그 뒤로 검사가 전부 꺼진다.** 제네릭은 반대로 **호출 지점의 타입을 그대로 들고 나온다.** 「타입을 모르겠으면 `any`」가 아니라 「**타입을 모르겠으면 `T`, 진짜 모르면 `unknown`**」이다([**04번 주제**](../04-any-unknown-never-void/)).
 - **소거를 뚫는 세 가지 우회로** — TS 에는 `reified` 가 없으므로 ① **값을 하나 더 받는다**(생성자 `new () => T`·태그 문자열) ② **타입 술어를 쓴다**([**13번 주제**](../13-type-guards-and-predicates/)) ③ **판별 필드를 둔 유니온**([**09번 주제**](../09-union-types/))이다. 이 배치에서는 **셋 다 안 던졌다.**
 - **제네릭 오버로드** — 오버로드 시그니처에 타입 매개변수를 다는 꼴은 [**16번 주제**](../16-function-types-and-overloads/)에서도 **안 던졌고** 여기서도 **안 던졌다.**
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Generics](https://www.typescriptlang.org/docs/handbook/2/generics.html) ·
+[Handbook — More on Functions: Generic Functions](https://www.typescriptlang.org/docs/handbook/2/functions.html#generic-functions) ·
+[Handbook — Type Inference](https://www.typescriptlang.org/docs/handbook/type-inference.html).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·`.d.ts` 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

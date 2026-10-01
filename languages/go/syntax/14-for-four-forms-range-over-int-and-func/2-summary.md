@@ -1,18 +1,5 @@
 # go/syntax/14 — `for` 의 네 형태 · 정수 range(1.22) · 함수 range(1.23) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 For statements · For statements with ForClause ·
-> For statements with range clause · Break statements · Continue statements 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> **버전** — `for` 의 세 꼴(3절·조건만·무한)과 배열·슬라이스·맵·문자열·채널 `range` 는 **1.0부터** 같다.
-> **정수 `range`(`for i := range 5`)는 1.22부터**, **함수 `range`(반복자)는 1.23부터**,
-> `iter` 패키지와 `slices.Collect`·`maps.Keys` 의 반복자 판도 **1.23부터**다.
-> **루프 변수가 회차마다 새로 생기는 것도 1.22부터**다 — 그 축의 정본은 [13번 주제](../13-closures-variable-capture-and-loop-variable-change/)다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 ## ★★ 이 갈래가 쓰는 층 — 이 주제도 넷이다
 
 Go 에 반복문은 `for` 하나뿐인데, **그 하나에 최근 두 판이 꼴을 둘 더 보탰다.**
@@ -1067,3 +1054,16 @@ cannot range over seq (value of type func(yield func(int) bool)): requires go1.2
   the same underlying type …" — 37번 주제의 영역이다. **여기서는 안 던졌다.**
 - `for` 의 세 절은 **전부 단순문(SimpleStmt)** 이라 `i, j = i+1, j-1` 같은 다중 대입도 들어간다.
   선언은 init 자리에서만 된다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 For statements · For statements with ForClause ·
+For statements with range clause · Break statements · Continue statements 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+**버전** — `for` 의 세 꼴(3절·조건만·무한)과 배열·슬라이스·맵·문자열·채널 `range` 는 **1.0부터** 같다.
+**정수 `range`(`for i := range 5`)는 1.22부터**, **함수 `range`(반복자)는 1.23부터**,
+`iter` 패키지와 `slices.Collect`·`maps.Keys` 의 반복자 판도 **1.23부터**다.
+**루프 변수가 회차마다 새로 생기는 것도 1.22부터**다 — 그 축의 정본은 [13번 주제](../13-closures-variable-capture-and-loop-variable-change/)다.

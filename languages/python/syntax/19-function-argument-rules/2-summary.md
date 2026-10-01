@@ -1,41 +1,5 @@
 # python/syntax/19-function-argument-rules — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [8.7. Function definitions](https://docs.python.org/3.12/reference/compound_stmts.html#function-definitions) — 파라미터 문법 · `/` · `*`
-> - [6.3.4. Calls](https://docs.python.org/3.12/reference/expressions.html#calls) — 인자 붙이기 규칙 · `*`·`**` 풀기
-> - [`inspect.signature`](https://docs.python.org/3.12/library/inspect.html#inspect.signature) · [`Signature.bind`](https://docs.python.org/3.12/library/inspect.html#inspect.Signature.bind) · [`Parameter.kind`](https://docs.python.org/3.12/library/inspect.html#inspect.Parameter.kind)
-> - [PEP 570 — Positional-Only Parameters](https://peps.python.org/pep-0570/) · [PEP 3102 — Keyword-Only Arguments](https://peps.python.org/pep-3102/)
-> - [`inspect` — Types and members](https://docs.python.org/3.12/library/inspect.html#types-and-members) — `__defaults__`·`__kwdefaults__`·`co_flags`
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
-> ★★ **그래서 실행 중 예외에는 소스 줄과 캐럿이 없고, `SyntaxError` 에는 있다** —
-> 이 주제는 그 두 층이 **본체**라 그 차이가 그대로 교재가 된다. 다만 `SyntaxError` 중에도 **캐럿이 안 나오는 것**이 있다(동작 3).\
-> **버전** — 키워드 전용(`*`)은 **3.0+**(PEP 3102), **위치 전용(`/`)은 3.8+**(PEP 570).
-> 그 밖의 인자 규칙은 이 노트 범위(3.10\~3.13)에서 안 바뀌었다.
-> 다만 **예외 문구는 판마다 손본다** — 3.11.15 와 대조해 갈린 자리를 아래에 적었다.\
-> **★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | (판이 오르면) `SyntaxError`·`TypeError` **문구** | 예외 **종류**와 **어느 층에서 나나** |
-> | (판이 오르면) `__main__.` **접두**가 붙는 줄 | 「푸는 단계와 앉히는 단계가 다르다」는 사실 |
-> | (판이 오르면) **캐럿 줄의 유무** | `File "<stdin>", line N` |
-> | (판이 오르면) `co_flags` = `15`·`3` · `co_varnames` 배치 | `co_argcount`·`co_posonlyargcount`·`co_kwonlyargcount` 가 **세는 대상** |
->
-> ★ **이 주제의 실행 출력은 전부 결정적이다** — 같은 판에서 다시 돌리면 한 글자도 안 변한다(수치·주소를 안 찍는다).\
-> ★ **stdout 과 stderr 가 섞인 블록은 없다** — 잡은 `TypeError` 는 전부 `print` 로 stdout 에 찍고,
-> `SyntaxError` 블록은 **stderr 한 줄기뿐**이라 순서가 실행 환경을 안 탄다.
->
-> **선행** — [11-tuple-and-unpacking](../11-tuple-and-unpacking/2-summary.md)(별표 언패킹) ·
-> [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(`**` 가 푸는 것).\
-> **정본 이웃** — [20-mutable-default-args](../20-mutable-default-args/2-summary.md)가 **기본값의 정본**이다.
-> 「기본값이 `def` 실행 때 한 번 만들어진다」와 그 함정·고침(`None` 센티널)은 전부 그쪽이고,
-> 여기는 **「어떤 호출이 되고 안 되나」** 만 다룬다.
-
 ## 한눈에 — 쉽게 말하면
 
 **시그니처는 「좌석표」이고 호출은 「입장」이다. 그리고 검사가 두 번, 다른 문지기에게 일어난다.**
@@ -904,3 +868,38 @@ SyntaxError: iterable argument unpacking follows keyword argument unpacking
   반대로 **처음부터 `*` 를 넣어 두면** 나중에 파라미터를 추가·재배치해도 안 깨진다.
 - **데코레이터가 시그니처를 가린다** — `functools.wraps` 가 `__wrapped__` 를 남기고,
   `inspect.signature` 는 그것을 따라가 **원래 시그니처**를 보여 준다([목록의 **24번 주제**](../24-decorators/)).
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [8.7. Function definitions](https://docs.python.org/3.12/reference/compound_stmts.html#function-definitions) — 파라미터 문법 · `/` · `*`
+- [6.3.4. Calls](https://docs.python.org/3.12/reference/expressions.html#calls) — 인자 붙이기 규칙 · `*`·`**` 풀기
+- [`inspect.signature`](https://docs.python.org/3.12/library/inspect.html#inspect.signature) · [`Signature.bind`](https://docs.python.org/3.12/library/inspect.html#inspect.Signature.bind) · [`Parameter.kind`](https://docs.python.org/3.12/library/inspect.html#inspect.Parameter.kind)
+- [PEP 570 — Positional-Only Parameters](https://peps.python.org/pep-0570/) · [PEP 3102 — Keyword-Only Arguments](https://peps.python.org/pep-3102/)
+- [`inspect` — Types and members](https://docs.python.org/3.12/library/inspect.html#types-and-members) — `__defaults__`·`__kwdefaults__`·`co_flags`
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
+★★ **그래서 실행 중 예외에는 소스 줄과 캐럿이 없고, `SyntaxError` 에는 있다** —
+이 주제는 그 두 층이 **본체**라 그 차이가 그대로 교재가 된다. 다만 `SyntaxError` 중에도 **캐럿이 안 나오는 것**이 있다(동작 3).\
+**버전** — 키워드 전용(`*`)은 **3.0+**(PEP 3102), **위치 전용(`/`)은 3.8+**(PEP 570).
+그 밖의 인자 규칙은 이 노트 범위(3.10\~3.13)에서 안 바뀌었다.
+다만 **예외 문구는 판마다 손본다** — 3.11.15 와 대조해 갈린 자리를 아래에 적었다.\
+**★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| (판이 오르면) `SyntaxError`·`TypeError` **문구** | 예외 **종류**와 **어느 층에서 나나** |
+| (판이 오르면) `__main__.` **접두**가 붙는 줄 | 「푸는 단계와 앉히는 단계가 다르다」는 사실 |
+| (판이 오르면) **캐럿 줄의 유무** | `File "<stdin>", line N` |
+| (판이 오르면) `co_flags` = `15`·`3` · `co_varnames` 배치 | `co_argcount`·`co_posonlyargcount`·`co_kwonlyargcount` 가 **세는 대상** |
+
+★ **이 주제의 실행 출력은 전부 결정적이다** — 같은 판에서 다시 돌리면 한 글자도 안 변한다(수치·주소를 안 찍는다).\
+★ **stdout 과 stderr 가 섞인 블록은 없다** — 잡은 `TypeError` 는 전부 `print` 로 stdout 에 찍고,
+`SyntaxError` 블록은 **stderr 한 줄기뿐**이라 순서가 실행 환경을 안 탄다.
+
+**선행** — [11-tuple-and-unpacking](../11-tuple-and-unpacking/2-summary.md)(별표 언패킹) ·
+[12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(`**` 가 푸는 것).\
+**정본 이웃** — [20-mutable-default-args](../20-mutable-default-args/2-summary.md)가 **기본값의 정본**이다.
+「기본값이 `def` 실행 때 한 번 만들어진다」와 그 함정·고침(`None` 센티널)은 전부 그쪽이고,
+여기는 **「어떤 호출이 되고 안 되나」** 만 다룬다.

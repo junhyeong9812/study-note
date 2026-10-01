@@ -1,27 +1,5 @@
 # cpp/syntax/34 — 가변 인자 템플릿과 팩 확장 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 폴드 식](https://en.cppreference.com/w/cpp/language/fold) · [cppreference — 파라미터 팩](https://en.cppreference.com/w/cpp/language/parameter_pack)\
-> ★ 이 배치에서 **폴드 식 쪽만 열어 확인했다** — 「네 꼴의 전개(단항 우 `(E op ...)` → `(E1 op (... op (EN-1 op EN)))` 등)」 · 「**빈 팩의 단항 폴드는 `&&`(→ `true`) · `||`(→ `false`) · `,`(→ `void()`) 만 된다**」 두 문장이다. 파라미터 팩 쪽은 **열지 않았다** — 팩 확장 규칙은 **두 컴파일러의 실행 출력**으로만 적었다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · libstdc++ 13 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++17 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`pack01.cpp` \~ `pack05.cpp` · `fold-grid.sh`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
-> **버전** — 가변 인자 템플릿·파라미터 팩·`sizeof...`·`std::forward` 는 **C++11부터**, **폴드 식은 C++17부터**다. 기준은 **C++17**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★★ **[09번](../09-rvalue-references-move-and-forward/)·[31번](../31-function-templates-and-argument-deduction/)에서 온다 — 앞 편들이 잰 것은 다시 재지 않고 인용한다.**\
-> [09번](../09-rvalue-references-move-and-forward/) (3) — **복사와 이동을 로그로 센다**(`Noisy`) · (6) — **`T&&` 에 lvalue 면 `T = int&`, prvalue·xvalue 면 `T = int`** · **이름이 있는 `x` 는 언제나 lvalue — 그래서 `forward` 를 한 번 더 써야 한다.**\
-> [31번](../31-function-templates-and-argument-deduction/) (2) — **`T&&` 열은 인자마다 `T` 가 참조가 된다** · (5) — **`T` 가 같으면 인스턴스는 하나.**\
-> ★★ **여기서 새로 묻는 것은 넷이다** — **폴드 식 격자(연산자 5 × 꼴 4 × 팩 2 × 컴파일러 2)** · **완벽 전달 팩토리를 `forward` 있고/없고로** · **`...` 을 붙이는 자리** · **팩이 타입을 보존한다는 것(C `stdarg` 대비).**
-> **경계** — 「`std::forward` 가 무엇을 하는 캐스트인가」는 [09번](../09-rvalue-references-move-and-forward/)이, 「C 의 `...`」은 C 갈래 [36번](../../../c/syntax/36-variadic-functions-stdarg/)이, 「팩을 컨셉으로 제약하기」는 [목록의 **36번 주제**](../36-concepts-and-requires/)가 정본이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단의 **문구** · g++ 가 진단 위치를 **`<command-line>`** 으로 적는 것((2) 빈 팩 — 식을 `-D` 로 넣었기 때문) | ★★★ **격자 칸의 값·`error`·`void`** · **「갈린 칸 N / M」** · **`cc exit`** |
-> | ★★★ **(4)의 `g(1)` · `g(2)` · `g(3)` 이 찍히는 순서** — g++ 는 3·2·1, clang 은 1·2·3 — **미명시**다 | ★★★ **복사·이동 로그의 종류와 개수**((3)) · **`f got N args`** · **타입 이름**(`char` · `short` · `float` · `bool`) |
-
 ## 한눈에 — 쉽게 말하면
 
 **파라미터 팩은 「이름표가 붙은 채로 한 줄로 선 손님들」이다.**
@@ -714,3 +692,26 @@ pack02.cpp:12:17: error: pack fold expression is a C++17 extension [-Werror,-Wc+
 - **팩의 N 번째 원소 꺼내기** — 이 문서는 `std::tuple` 이나 재귀 없이 꺼내는 법을 던지지 않았다.
 - **람다의 팩 캡처(C++20)** — `[...xs = std::move(xs)]`. 이 문서는 던지지 않았다.
 - **`std::tuple` 로 팩 보관하기 · `std::apply`** — 팩을 값으로 들고 다니는 법. 목록의 **48번 주제** 쪽이다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 폴드 식](https://en.cppreference.com/w/cpp/language/fold) · [cppreference — 파라미터 팩](https://en.cppreference.com/w/cpp/language/parameter_pack)\
+★ 이 배치에서 **폴드 식 쪽만 열어 확인했다** — 「네 꼴의 전개(단항 우 `(E op ...)` → `(E1 op (... op (EN-1 op EN)))` 등)」 · 「**빈 팩의 단항 폴드는 `&&`(→ `true`) · `||`(→ `false`) · `,`(→ `void()`) 만 된다**」 두 문장이다. 파라미터 팩 쪽은 **열지 않았다** — 팩 확장 규칙은 **두 컴파일러의 실행 출력**으로만 적었다.
+**실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · libstdc++ 13 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++17 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`pack01.cpp` \~ `pack05.cpp` · `fold-grid.sh`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
+**버전** — 가변 인자 템플릿·파라미터 팩·`sizeof...`·`std::forward` 는 **C++11부터**, **폴드 식은 C++17부터**다. 기준은 **C++17**이다.
+
+★★★ **[09번](../09-rvalue-references-move-and-forward/)·[31번](../31-function-templates-and-argument-deduction/)에서 온다 — 앞 편들이 잰 것은 다시 재지 않고 인용한다.**\
+[09번](../09-rvalue-references-move-and-forward/) (3) — **복사와 이동을 로그로 센다**(`Noisy`) · (6) — **`T&&` 에 lvalue 면 `T = int&`, prvalue·xvalue 면 `T = int`** · **이름이 있는 `x` 는 언제나 lvalue — 그래서 `forward` 를 한 번 더 써야 한다.**\
+[31번](../31-function-templates-and-argument-deduction/) (2) — **`T&&` 열은 인자마다 `T` 가 참조가 된다** · (5) — **`T` 가 같으면 인스턴스는 하나.**\
+★★ **여기서 새로 묻는 것은 넷이다** — **폴드 식 격자(연산자 5 × 꼴 4 × 팩 2 × 컴파일러 2)** · **완벽 전달 팩토리를 `forward` 있고/없고로** · **`...` 을 붙이는 자리** · **팩이 타입을 보존한다는 것(C `stdarg` 대비).**
+**경계** — 「`std::forward` 가 무엇을 하는 캐스트인가」는 [09번](../09-rvalue-references-move-and-forward/)이, 「C 의 `...`」은 C 갈래 [36번](../../../c/syntax/36-variadic-functions-stdarg/)이, 「팩을 컨셉으로 제약하기」는 [목록의 **36번 주제**](../36-concepts-and-requires/)가 정본이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단의 **문구** · g++ 가 진단 위치를 **`<command-line>`** 으로 적는 것((2) 빈 팩 — 식을 `-D` 로 넣었기 때문) | ★★★ **격자 칸의 값·`error`·`void`** · **「갈린 칸 N / M」** · **`cc exit`** |
+| ★★★ **(4)의 `g(1)` · `g(2)` · `g(3)` 이 찍히는 순서** — g++ 는 3·2·1, clang 은 1·2·3 — **미명시**다 | ★★★ **복사·이동 로그의 종류와 개수**((3)) · **`f got N args`** · **타입 이름**(`char` · `short` · `float` · `bool`) |

@@ -1,22 +1,5 @@
 # js/syntax/35 — 엄격 모드: 「무엇을 바꾸고, 어디서 켜지나」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
->
-> ★★★ **이 편은 정본 모음 편이다.** 1번은 **앞 편들에서 잰 것을 떠올리는** 문항이고, 2\~4번이 **이 편이 새로 잰 칸**이다.
-> ★★★ **이 주제의 본체는 두 번 컴파일 격자다** — 엄격을 먼저 · 탐침마다 고유 전역 · 끝에 누수 확인. **2번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **엄격이 바꾸는 규칙은 무엇이고, 각각 컴파일에서 거절하나 실행에서 거절하나**
-> ② **`"use strict"` 는 어디에 어떻게 써야 효력이 있나**
-> ③ **늘 엄격인 곳은 어디이고, 그 경계는 어디까지인가.**
->
-> **선행** — [05](../05-var-let-const-and-tdz/2-summary.md) · [07](../07-this-binding-four-rules/2-summary.md) · [08](../08-function-forms-and-parameters/2-summary.md) · [10](../10-destructuring-assignment/2-summary.md) · [12](../12-optional-chaining-nullish-and-logical-assignment/2-summary.md) · [14](../14-property-descriptors-and-freezing/2-summary.md) · [16](../16-class-syntax/2-summary.md) · [24](../24-array-mutating-methods/2-summary.md).
-> ★★★ **10번에서 거짓 `0 / 12` 가 나온 이유를 먼저 떠올려라** — 무엇을 먼저 돌렸나.
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 세 문항(2 · 3 · 4)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -191,6 +174,15 @@ echo "(exit $?)"
 - ★★ 어느 파일이 모듈인지는 누가 정하나 — 명세인가 호스트인가?
 - ★★ `import`/`export` 와 CJS 상호운용은 목록의 몇 번 주제가 정본인가?
 - ★ Annex C 의 항목 중 이 편이 재지 않은 것이 있나?
+
+## 실행 환경
+
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · x86-64 Linux. 배너의 `node20` 은 v20.19.6 이다.
+
+★★★ **이 편은 정본 모음 편이다.** 1번은 **앞 편들에서 잰 것을 떠올리는** 문항이고, 2\~4번이 **이 편이 새로 잰 칸**이다.
+★★★ **이 주제의 본체는 두 번 컴파일 격자다** — 엄격을 먼저 · 탐침마다 고유 전역 · 끝에 누수 확인. **2번 문항이 이 주제의 중심이다.**
+
+**선행** — [05](../05-var-let-const-and-tdz/2-summary.md) · [07](../07-this-binding-four-rules/2-summary.md) · [08](../08-function-forms-and-parameters/2-summary.md) · [10](../10-destructuring-assignment/2-summary.md) · [12](../12-optional-chaining-nullish-and-logical-assignment/2-summary.md) · [14](../14-property-descriptors-and-freezing/2-summary.md) · [16](../16-class-syntax/2-summary.md) · [24](../24-array-mutating-methods/2-summary.md).
 
 ## 복습 기록
 

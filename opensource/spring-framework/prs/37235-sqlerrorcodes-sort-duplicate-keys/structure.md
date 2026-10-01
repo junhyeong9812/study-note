@@ -1,13 +1,5 @@
 # PR #37235 - 무대의 실구조와 워크플로우
 
-> PR #37235의 무대가 되는 실구조와 워크플로우. 문제와 수정은 [README.md](README.md),
-> 테스트는 [tests.md](tests.md), 착수 시점 분석은 [analysis.md](analysis.md) 참조.
->
-> 기준: 로컬 HEAD `e0704925b9a`(브랜치 `fix/sqlerrorcodes-sort-duplicate-key-codes` =
-> upstream main `136dddb67d1` 리베이스 + fix 커밋). **이 시점의 `SQLErrorCodes.java`에는
-> 이미 수정이 반영돼 있다** - 아래 file:line은 "수정 후" 좌표이고, 2절의 수정 전
-> 동작은 커밋의 `-`쪽으로 재구성한 것이다.
-
 ## 1. 무대 - 실구조
 
 이 결함의 무대는 **JDBC 벤더 에러코드를 Spring의 `DataAccessException` 계층으로 번역하는 파이프라인**이다.\
@@ -366,3 +358,10 @@ private static final Set<Integer> DUPLICATE_KEY_ERROR_CODES = Set.of(
 - [Java varargs 실체](../../concepts/java-varargs-mechanics/java-varargs-mechanics.md) - `String...`이 바이트코드에서 무엇인지, 값 나열 호출과 배열 전달 호출이 왜 갈리는지.\
   이 setter가 받는 배열의 **주인이 누구인가**와, `sortStringArray`의 제자리 정렬이 호출자에게 보이는 조건이 여기서 나온다.\
   이 PR의 이해 게이트에서 파생된 문서다.
+
+## 출처
+
+기준: 로컬 HEAD `e0704925b9a`(브랜치 `fix/sqlerrorcodes-sort-duplicate-key-codes` =
+upstream main `136dddb67d1` 리베이스 + fix 커밋). **이 시점의 `SQLErrorCodes.java`에는
+이미 수정이 반영돼 있다** - 본문의 file:line은 "수정 후" 좌표이고, 2절의 수정 전
+동작은 커밋의 `-`쪽으로 재구성한 것이다.

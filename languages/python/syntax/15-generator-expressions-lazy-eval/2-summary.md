@@ -1,36 +1,5 @@
 # python/syntax/15-generator-expressions-lazy-eval — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [6.2.8. Generator expressions](https://docs.python.org/3.12/reference/expressions.html#generator-expressions) — 괄호 규칙 · **즉시 평가되는 부분**
-> - [6.2.4. Displays for lists, sets and dictionaries](https://docs.python.org/3.12/reference/expressions.html#displays-for-lists-sets-and-dictionaries) — 감춰진 스코프
-> - [`sys.getsizeof`](https://docs.python.org/3.12/library/sys.html#sys.getsizeof) — **무엇을 세고 무엇을 안 세나**
-> - [`tracemalloc`](https://docs.python.org/3.12/library/tracemalloc.html) · [`get_traced_memory`](https://docs.python.org/3.12/library/tracemalloc.html#tracemalloc.get_traced_memory) — 실제로 잡힌 바이트
-> - [`itertools.islice`](https://docs.python.org/3.12/library/itertools.html#itertools.islice)
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ **던지는 형태를 하나로 고정했다** — 이 갈래는 `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 되게 했다.
-> 그래서 **실행 중 예외에는 소스 줄과 캐럿이 안 나온다.** 반대로 **`SyntaxError` 에는 나온다**(컴파일러가 아직 소스를 들고 있어서다 — 그대로 실었다).\
-> **수치** — 메모리는 `sys.getsizeof` 와 `tracemalloc.get_traced_memory()` 두 창으로 쟀고, 시간은 `timeit` **중앙값을 세 판** 냈다.
-> 머신은 Linux x86_64. **대조할 것은 숫자가 아니라 「원소 수를 늘려도 한쪽만 안 변한다」는 성질이다.**\
-> **버전** — 제너레이터 표현식 자체는 **2.4+** 이고 이 노트가 다루는 범위(3.10\~3.13)에서 문법이 안 바뀌었다.
-> 갈리는 것은 **바이트코드**다 — 리스트 컴프리헨션이 **3.12 부터 인라인**되고(PEP 709) 제너레이터 표현식은 **안 된다.** 3.11.15 로 대조했다.\
-> **★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다(다시 돌리면 값이 달라진다) | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | `getsizeof`·`tracemalloc` 의 **절댓값** · 배수 `42243` | **대소 관계와 자릿수** · 「`N` 에 비례하나 안 하나」 |
-> | `timeit` 의 마이크로초와 비 | 「앞 1개만」 쪽의 **100배 자릿수** |
-> | 코드 객체 주소 `0x740a5cf4eb10` | **코드 객체가 따로 있다/없다** 는 사실 |
-> | (판이 오르면) 바이트코드 **명령 이름·오프셋** | 예외 **종류** · `File "<stdin>", line N` · **소진 여부** |
->
-> **선행** — [14-comprehensions](../14-comprehensions/2-summary.md)(**괄호 하나 차이의 정본** — 평가 시점·감춰진 스코프) ·
-> [09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md)(리스트가 무엇을 들고 있나).\
-> **정본 이웃** — [17-generators-yield](../17-generators-yield/2-summary.md)가 **제너레이터 객체 자체의 정본**이다.
-> `yield`·프레임·`send`·`close`·상태 전이는 전부 그쪽이고, 여기는 **「표현식 꼴로 만든 것이 메모리에서 무엇을 하나」** 만 다룬다.
-
 ## 한눈에 — 쉽게 말하면
 
 **리스트 컴프리헨션은 장을 다 봐서 냉장고에 채우는 것이고, 제너레이터 표현식은 장보기 목록만 들고 있는 것이다.**
@@ -406,7 +375,7 @@ sorted 는 되나 : [1, 2, 3]  <- 속으로 리스트를 만든다
 
 ### 7. 비용 — 재 본 것
 
-★ 아래는 **이 머신에서 실제로 잰 값**이다(측정 조건은 머리말에 있다). **절댓값이 아니라 기울기를 읽는다.**
+★ 아래는 **이 머신에서 실제로 잰 값**이다(측정 조건은 「실행 환경」에 있다). **절댓값이 아니라 기울기를 읽는다.**
 
 ```text
 ===== 소스: ex.py =====
@@ -477,7 +446,7 @@ gen[0]                          # TypeError — 첨자가 없다
 list(무한_제너레이터)             # 에러가 아니다 — 영영 안 끝난다
 ```
 
-★ **`SyntaxError` 만은 소스 줄과 캐럿이 나온다**(머리말의 던지는 형태 참고).
+★ **`SyntaxError` 만은 소스 줄과 캐럿이 나온다**(「실행 환경」의 던지는 형태 참고).
 
 ```text
 ===== 소스: ex.py =====
@@ -789,3 +758,33 @@ Disassembly of <code object <listcomp> at 0x773d92d1ef50, file "<lc>", line 1>:
   그래서 `f.read().split("\n")` 대신 `f` 를 그냥 도는 것이 10GB 파일의 정답이다([목록의 **48번 주제**](../48-pathlib-and-file-io/)).
 - **비동기 판이 따로 있다** — `(x async for x in agen)` 은 **비동기 제너레이터**를 만든다(3.6+, PEP 530). [목록의 **51번 주제**](../51-asyncio-coroutine-basics/).
 - **개수를 세는 관용구**는 `sum(1 for _ in it)` 이다. `len(list(it))` 보다 메모리를 안 쓰지만 **둘 다 소진시킨다.**
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [6.2.8. Generator expressions](https://docs.python.org/3.12/reference/expressions.html#generator-expressions) — 괄호 규칙 · **즉시 평가되는 부분**
+- [6.2.4. Displays for lists, sets and dictionaries](https://docs.python.org/3.12/reference/expressions.html#displays-for-lists-sets-and-dictionaries) — 감춰진 스코프
+- [`sys.getsizeof`](https://docs.python.org/3.12/library/sys.html#sys.getsizeof) — **무엇을 세고 무엇을 안 세나**
+- [`tracemalloc`](https://docs.python.org/3.12/library/tracemalloc.html) · [`get_traced_memory`](https://docs.python.org/3.12/library/tracemalloc.html#tracemalloc.get_traced_memory) — 실제로 잡힌 바이트
+- [`itertools.islice`](https://docs.python.org/3.12/library/itertools.html#itertools.islice)
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ **던지는 형태를 하나로 고정했다** — 이 갈래는 `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 되게 했다.
+그래서 **실행 중 예외에는 소스 줄과 캐럿이 안 나온다.** 반대로 **`SyntaxError` 에는 나온다**(컴파일러가 아직 소스를 들고 있어서다 — 그대로 실었다).\
+**수치** — 메모리는 `sys.getsizeof` 와 `tracemalloc.get_traced_memory()` 두 창으로 쟀고, 시간은 `timeit` **중앙값을 세 판** 냈다.
+머신은 Linux x86_64. **대조할 것은 숫자가 아니라 「원소 수를 늘려도 한쪽만 안 변한다」는 성질이다.**\
+**버전** — 제너레이터 표현식 자체는 **2.4+** 이고 이 노트가 다루는 범위(3.10\~3.13)에서 문법이 안 바뀌었다.
+갈리는 것은 **바이트코드**다 — 리스트 컴프리헨션이 **3.12 부터 인라인**되고(PEP 709) 제너레이터 표현식은 **안 된다.** 3.11.15 로 대조했다.\
+**★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다(다시 돌리면 값이 달라진다) | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| `getsizeof`·`tracemalloc` 의 **절댓값** · 배수 `42243` | **대소 관계와 자릿수** · 「`N` 에 비례하나 안 하나」 |
+| `timeit` 의 마이크로초와 비 | 「앞 1개만」 쪽의 **100배 자릿수** |
+| 코드 객체 주소 `0x740a5cf4eb10` | **코드 객체가 따로 있다/없다** 는 사실 |
+| (판이 오르면) 바이트코드 **명령 이름·오프셋** | 예외 **종류** · `File "<stdin>", line N` · **소진 여부** |
+
+**선행** — [14-comprehensions](../14-comprehensions/2-summary.md)(**괄호 하나 차이의 정본** — 평가 시점·감춰진 스코프) ·
+[09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md)(리스트가 무엇을 들고 있나).\
+**정본 이웃** — [17-generators-yield](../17-generators-yield/2-summary.md)가 **제너레이터 객체 자체의 정본**이다.
+`yield`·프레임·`send`·`close`·상태 전이는 전부 그쪽이고, 여기는 **「표현식 꼴로 만든 것이 메모리에서 무엇을 하나」** 만 다룬다.

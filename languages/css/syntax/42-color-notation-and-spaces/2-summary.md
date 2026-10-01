@@ -1,14 +1,5 @@
 # css/syntax/42 — 색 표기와 색 공간 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Color Module Level 4](https://drafts.csswg.org/css-color-4/) (`rgb()`·`hsl()`·`hwb()`·`lab()`·`lch()`·`oklab()`·`oklch()`·`color()`·`currentColor`·`transparent` 의 정본) · [CSS Color Level 5](https://drafts.csswg.org/css-color-5/) (`none` 성분·누락 성분 규칙). 열어서 확인한 것만 적었다.
-> **실행 검증** — **Google Chrome 151.0.7922.173** headless 하나. 표기 **28개**를 한 문서에 던져 `cssRules`·`getComputedStyle` 을 받았고, 색 견본 **14장**을 스크린샷으로 찍어 **PNG 픽셀의 `(r,g,b)` 를 파이썬으로 읽었다.** 본문의 RGB 는 전부 그 픽셀값이다.
-> ★ **휘도(Y) 수치만은 그 픽셀값에서 WCAG 상대 휘도 식으로 계산한 파생값**이며, 그 사실을 해당 자리에 다시 적었다.
-> **엔진은 Chrome 하나다** — Firefox 155 는 이 환경에서 headless 스크린샷이 산출되지 않는다. 크로스 브라우저는 **Baseline 데이터로만** 접지했고 「두 엔진에서 확인했다」고 적지 않았다.
-> **버전** — CSS 에는 언어 버전이 없으므로 Baseline 으로 읽는다. `rgb`/`hsl` = widely(2020-01-15) · `Oklab and OkLCh` = widely(2023-05-09) · `Lab and LCH` = widely(2023-05-09) · `color()` = widely(2023-05-09) · `HWB` = widely(2022-04-28) · `color-gamut` 미디어 질의 = widely(2023-02-14). `webstatus.dev` API 로 조회한 값이다(2026-09-23).
-> **여기서 다루지 않는 것** — 색 **둘을 섞는 것**과 **한 색에서 다른 색을 뽑는 것**은 [43번](../43-color-mix-and-relative-color/2-summary.md), 색이 **면을 따라 변하는 것**은 [45번](../45-gradients-and-interpolation/2-summary.md)이 정본이다. `getComputedStyle` 이 **어느 단계의 값을 주느냐**는 [04번](../04-value-processing-stages/2-summary.md)이 정본이고, 여기서는 **색이라는 한 갈래에서 그 규칙이 어떻게 갈라지나**만 잰다. `currentColor` 가 **상속을 타고 내려가는 규칙**은 [03번](../03-inheritance-and-global-keywords/2-summary.md)이 정본이다. 색을 **나중에 가공하는 것**(`filter`)은 [목록의 **47번 주제**](../47-filter-and-backdrop-filter/), **아래 것과 섞는 것**(`mix-blend-mode`)은 [목록의 **48번 주제**](../48-blend-modes-and-isolation/)다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **색 표기는 주소 체계다. 같은 집 한 채를 지번으로도, 도로명으로도, 위경도로도 부를 수 있다.**
@@ -576,3 +567,12 @@ color: #ff88;              /* 4자리는 유효(=#ff8888) — 「자리 수가 �
 - **`lab`/`lch` 와 `oklab`/`oklch` 는 형제 관계**다. 앞엣것은 CIELAB(1976), 뒤엣것은 Oklab(2020) 기반이다. Baseline 은 둘 다 2023-05-09 `widely` 로 같다.
 - **`color(srgb 1 0.533 0)` 은 `rgb(255 136 0)` 과 같은 색인데 계산값이 안 접힌다**(실측). 같은 공간을 가리켜도 **함수가 다르면 직렬화가 다르다.**
 - **`rebeccapurple` 은 cssText 에 이름 그대로 남고 계산값에서 `rgb(102, 51, 153)` 이 된다**(실측). 이름 있는 색은 **지정값 단계까지 이름으로 산다.**
+
+## 실행 환경
+
+**기준 소스** — [CSS Color Module Level 4](https://drafts.csswg.org/css-color-4/) (`rgb()`·`hsl()`·`hwb()`·`lab()`·`lch()`·`oklab()`·`oklch()`·`color()`·`currentColor`·`transparent` 의 정본) · [CSS Color Level 5](https://drafts.csswg.org/css-color-5/) (`none` 성분·누락 성분 규칙). 열어서 확인한 것만 적었다.
+**실행 검증** — **Google Chrome 151.0.7922.173** headless 하나. 표기 **28개**를 한 문서에 던져 `cssRules`·`getComputedStyle` 을 받았고, 색 견본 **14장**을 스크린샷으로 찍어 **PNG 픽셀의 `(r,g,b)` 를 파이썬으로 읽었다.** 본문의 RGB 는 전부 그 픽셀값이다.
+★ **휘도(Y) 수치만은 그 픽셀값에서 WCAG 상대 휘도 식으로 계산한 파생값**이며, 그 사실을 해당 자리에 다시 적었다.
+**엔진은 Chrome 하나다** — Firefox 155 는 이 환경에서 headless 스크린샷이 산출되지 않는다. 크로스 브라우저는 **Baseline 데이터로만** 접지했고 「두 엔진에서 확인했다」고 적지 않았다.
+**버전** — CSS 에는 언어 버전이 없으므로 Baseline 으로 읽는다. `rgb`/`hsl` = widely(2020-01-15) · `Oklab and OkLCh` = widely(2023-05-09) · `Lab and LCH` = widely(2023-05-09) · `color()` = widely(2023-05-09) · `HWB` = widely(2022-04-28) · `color-gamut` 미디어 질의 = widely(2023-02-14). `webstatus.dev` API 로 조회한 값이다(2026-09-23).
+**여기서 다루지 않는 것** — 색 **둘을 섞는 것**과 **한 색에서 다른 색을 뽑는 것**은 [43번](../43-color-mix-and-relative-color/2-summary.md), 색이 **면을 따라 변하는 것**은 [45번](../45-gradients-and-interpolation/2-summary.md)이 정본이다. `getComputedStyle` 이 **어느 단계의 값을 주느냐**는 [04번](../04-value-processing-stages/2-summary.md)이 정본이고, 여기서는 **색이라는 한 갈래에서 그 규칙이 어떻게 갈라지나**만 잰다. `currentColor` 가 **상속을 타고 내려가는 규칙**은 [03번](../03-inheritance-and-global-keywords/2-summary.md)이 정본이다. 색을 **나중에 가공하는 것**(`filter`)은 [목록의 **47번 주제**](../47-filter-and-backdrop-filter/), **아래 것과 섞는 것**(`mix-blend-mode`)은 [목록의 **48번 주제**](../48-blend-modes-and-isolation/)다.

@@ -1,19 +1,5 @@
 # sql/59-스캔·조인·정렬 연산자 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Planner Method Configuration](https://www.postgresql.org/docs/18/runtime-config-query.html) · [PostgreSQL 18 · Using EXPLAIN](https://www.postgresql.org/docs/18/using-explain.html) · [MySQL 8.4 · EXPLAIN Join Types](https://dev.mysql.com/doc/refman/8.4/en/explain-output.html#explain-join-types) · [MySQL 8.4 · Hash Join Optimization](https://dev.mysql.com/doc/refman/8.4/en/hash-joins.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 계획은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 계획은 없다.\
-> **이 편이 만든 객체와 그 뒷정리** — 표 `t59_big`(20만 행) · `t59_mid`(5만 행) · `t59_small`(10행).
-> PG 는 `BEGIN … ROLLBACK` 안에서 만들었고, MySQL 은 DDL 이 암묵 커밋이라 `DROP TABLE IF EXISTS` 로 직접 지웠다.
-> **기존 `emp`·`dept` 는 건드리지 않았다** — 4행·3행으로는 어떤 조건에서도 전체 스캔만 나와 이 주제가 성립하지 않는다.\
-> **측정 조건** — PG 계획은 전부 `max_parallel_workers_per_gather = 0`(병렬 끔)에서 찍었다. 켜면 노드가 두 겹 늘어 읽기가 나빠진다.
-> **PG 의 계획은 한 트랜잭션 안에서 한 번에 찍은 것**이다 — `ANALYZE` 의 표본이 판마다 달라 숫자가 흔들리기 때문이다(3절).\
-> ★ **실행 계획은 관찰이지 보장이 아니다.** 이 편은 **같은 스크립트를 8판 돌려 연산자가 갈리는 것을 실제로 관찰했다**(3절).\
-> **선행** — [58 `EXPLAIN` 읽기](../58-explain-plan-tree/) · [46 인덱스 정의](../46-index-definition-composite-partial-expression/). **46 은 이 배치 작업 중에 폴더가 생겨 링크로 전환했다.**
-
 ## 한눈에 — 쉽게 말하면
 
 **연산자는 「엔진이 쓸 수 있는 도구」이고, 어느 도구를 쓸지는 데이터 크기가 정한다.**
@@ -684,3 +670,16 @@ EXPLAIN FORMAT=TREE SELECT …;                               -- 연산자 이�
 - **`Materialize`** — 중첩 루프의 안쪽을 한 번만 만들어 재사용하는 노드. 안쪽이 인덱스 없는 작은 표일 때 뜬다.
 - **다중 인덱스 비트맵 `AND`/`OR`**(PG) — 인덱스 둘의 비트맵을 겹쳐 쓰는 `BitmapAnd`·`BitmapOr` 노드가 있다.
   「인덱스를 두 개 걸면 둘 다 쓰나?」의 답이 여기 있다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Planner Method Configuration](https://www.postgresql.org/docs/18/runtime-config-query.html) · [PostgreSQL 18 · Using EXPLAIN](https://www.postgresql.org/docs/18/using-explain.html) · [MySQL 8.4 · EXPLAIN Join Types](https://dev.mysql.com/doc/refman/8.4/en/explain-output.html#explain-join-types) · [MySQL 8.4 · Hash Join Optimization](https://dev.mysql.com/doc/refman/8.4/en/hash-joins.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 계획은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 계획은 없다.\
+**이 편이 만든 객체와 그 뒷정리** — 표 `t59_big`(20만 행) · `t59_mid`(5만 행) · `t59_small`(10행).
+PG 는 `BEGIN … ROLLBACK` 안에서 만들었고, MySQL 은 DDL 이 암묵 커밋이라 `DROP TABLE IF EXISTS` 로 직접 지웠다.
+**기존 `emp`·`dept` 는 건드리지 않았다** — 4행·3행으로는 어떤 조건에서도 전체 스캔만 나와 이 주제가 성립하지 않는다.\
+**측정 조건** — PG 계획은 전부 `max_parallel_workers_per_gather = 0`(병렬 끔)에서 찍었다. 켜면 노드가 두 겹 늘어 읽기가 나빠진다.
+**PG 의 계획은 한 트랜잭션 안에서 한 번에 찍은 것**이다 — `ANALYZE` 의 표본이 판마다 달라 숫자가 흔들리기 때문이다(3절).\
+★ **실행 계획은 관찰이지 보장이 아니다.** 이 편은 **같은 스크립트를 8판 돌려 연산자가 갈리는 것을 실제로 관찰했다**(3절).\
+**선행** — [58 `EXPLAIN` 읽기](../58-explain-plan-tree/) · [46 인덱스 정의](../46-index-definition-composite-partial-expression/). **46 은 이 배치 작업 중에 폴더가 생겨 링크로 전환했다.**

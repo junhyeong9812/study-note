@@ -1,13 +1,5 @@
 # css/syntax/15 — 박스 모델과 `box-sizing` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Box Model Level 3](https://drafts.csswg.org/css-box-3/) (네 겹 상자와 `margin`·`padding` 의 정본) · [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/) (`box-sizing`·`width`·`min-width`/`max-width`). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **3개 전부**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 치수를 재고 스크린샷으로 눈으로 확인했다.\
-> 본문의 픽셀 값은 전부 그 실측값이다. **손으로 계산해 적은 수치는 없다.** **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
-> **버전** — `box-sizing` 은 CSS 에 언어 버전이 없으므로 Baseline 으로 읽는다. `border-box` 는 오래전에 자리잡아 목록 README 의 지원 표에 별도 행이 없을 만큼 보편적이다.
-> **여기서 다루지 않는 것** — 이 상자가 **어떤 배치 규칙 안에 놓이는가**는 [16번](../16-display-inner-outer/2-summary.md)·[17번](../17-block-formatting-context/2-summary.md), **마진이 서로 합쳐지는 규칙**은 [18번](../18-margin-collapsing/2-summary.md)이 정본이다. `min-content`/`fit-content`·`aspect-ratio` 같은 내재적 크기는 [목록의 **31번 주제**](../31-intrinsic-sizing-and-aspect-ratio/), 단위(`%`·`em`)는 [목록의 **33번 주제**](../33-length-units/)다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 치수는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **상자 하나는 액자다. 그림·매트·액자틀·벽과의 거리, 네 겹이다.**
@@ -380,3 +372,11 @@ CSS 는 문법 표면이 단순하므로 여기서는 **형태보다 헷갈리�
   `box-sizing` 은 그대로 적용되고, 글쓰기 방향이 바뀌면 **어느 축이 `inline-size` 인지**만 따라 돈다. 정본은 [목록의 **32번 주제**](../32-logical-properties-and-writing-mode/).
 - `outline` 은 **네 겹 어디에도 속하지 않는다** — 레이아웃 공간을 전혀 차지하지 않고 상자 위에 그려진다.\
   포커스 링을 `border` 로 만들면 상자 치수가 흔들리는 이유가 이것이다. 정본은 [목록의 **46번 주제**](../46-borders-radius-outline-shadow/).
+
+## 실행 환경
+
+**기준 소스** — [CSS Box Model Level 3](https://drafts.csswg.org/css-box-3/) (네 겹 상자와 `margin`·`padding` 의 정본) · [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/) (`box-sizing`·`width`·`min-width`/`max-width`). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **3개 전부**를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 치수를 재고 스크린샷으로 눈으로 확인했다.\
+본문의 픽셀 값은 전부 그 실측값이다. **손으로 계산해 적은 수치는 없다.** **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
+**버전** — `box-sizing` 은 CSS 에 언어 버전이 없으므로 Baseline 으로 읽는다. `border-box` 는 오래전에 자리잡아 목록 README 의 지원 표에 별도 행이 없을 만큼 보편적이다.
+**여기서 다루지 않는 것** — 이 상자가 **어떤 배치 규칙 안에 놓이는가**는 [16번](../16-display-inner-outer/2-summary.md)·[17번](../17-block-formatting-context/2-summary.md), **마진이 서로 합쳐지는 규칙**은 [18번](../18-margin-collapsing/2-summary.md)이 정본이다. `min-content`/`fit-content`·`aspect-ratio` 같은 내재적 크기는 [목록의 **31번 주제**](../31-intrinsic-sizing-and-aspect-ratio/), 단위(`%`·`em`)는 [목록의 **33번 주제**](../33-length-units/)다.

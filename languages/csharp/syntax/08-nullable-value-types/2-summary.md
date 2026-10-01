@@ -1,54 +1,5 @@
 # csharp/syntax/08 — 널 허용 값 타입 `Nullable<T>` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — `checked`/`unchecked`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/checked-and-unchecked) · [Learn — 널 허용 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types) · [Learn — 널 허용 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-reference-types) · [Learn — 멤버 접근·널 조건 연산자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
-> 런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-25).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 첫 줄(`// cs0Nb-….cs` 꼴)도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
-> ★★★ **진단 언어를 영어로 고정했다.** 안 주면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
-> 01\~04 가 실측으로 받은 한국어 판이 ``error CS0029: 암시적으로 'string' 형식을 'int' 형식으로 변환할 수 없습니다.`` 였다.\
-> 고정하는 법은 둘을 같이 거는 것이다 — 환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`**.
-> **던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
-> 그래야 `bin/`·`obj/` 가 원리상 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
-> 배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
->
-> ```text
-> export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
-> export DOTNET_CLI_UI_LANGUAGE=en            # ★★★ 안 주면 진단이 한국어로 나온다
-> D=$(dirname "$(readlink -f "$(command -v dotnet)")")
-> ls "$D"/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/*.dll | sed 's/^/-r:/' > refs.rsp
-> echo '{"runtimeOptions":{"tfm":"net10.0","framework":{"name":"Microsoft.NETCore.App","version":"10.0.0"}}}' > ex.runtimeconfig.json
-> csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
->           -nologo -nostdlib -noconfig @refs.rsp \
->           -preferreduilang:en-US -langversion:latest "$@"; }
-> ```
->
-> **`-debug` 를 안 줬다** — PDB 가 없으면 스택 트레이스에 **절대 경로와 줄 번호가 안 박힌다**.\
-> 그래서 이 문서의 트레이스는 ``at Program.<Main>$(String[] args)`` 에서 끝나고, 어느 머신에서 돌려도 같다.\
-> **IL 덤프는 `-optimize` 없이**(기본 디버그) 낸 것이라 `nop` 이 섞여 있고 소스 구조가 그대로 보인다.\
-> IL 을 찍는 `cs-il.cs`(82줄, 외부 도구 없이 BCL 만 쓴다)의 전문은 [03번](../03-boxing-and-unboxing/2-summary.md)의 (0)절에 있다.
-> **버전** — `Nullable<T>` 와 `T?` 문법은 **C# 2부터**. 리프티드 연산자·3값 비교도 그때부터다.\
-> ★ **[06번](../06-nullable-reference-types/)의 `string?` 보다 여섯 판 먼저 나왔다**(C# 2 대 C# 8) — **같은 기호인데 나이가 다르다.**\
-> `is` 패턴으로 꺼내기(`x is int v`)는 **C# 7부터**, `where T : struct` 에서 `T?` 의 해석은 **C# 8부터** 널 맥락과 얽힌다.
-> **경계** — `Nullable<T>` 가 **구조체**라는 사실이 이 주제의 토대이고, **값 타입이 무엇인가**는 [01번](../01-value-types-and-reference-types/)이 정본이다.\
-> ★★★ **박싱의 정본은 [03번](../03-boxing-and-unboxing/)** 이다 — 여기서는 **그 규칙이 `Nullable<T>` 에서만 예외가 되는 것**만 다룬다((5)).\
-> `?.`·`??`·`??=` 는 [07번](../07-null-operators/)이 정본이다 — 여기는 **타입 쪽**이다.\
-> 참조 타입의 `?` 는 [06번](../06-nullable-reference-types/)이 정본이고, **완전히 다른 기능**이다((1)).\
-> `struct` 를 언제 고르나는 [02번](../02-struct-vs-class-choosing/), 제네릭 제약은 목록의 **25번 주제**,\
-> 동등성 규칙은 목록의 **19번 주제**, 패턴 매칭은 목록의 **21번 주제**다.\
-> 대비 — Java 의 [원시 타입과 래퍼 편](../../../java/syntax/01-primitives-and-wrappers/).\
-> ★★ **거기서는 「널을 담는 정수」가 `Integer` 라는 객체**다 — **힙을 쓴다.** 여기는 **구조체**라 안 쓴다((2)·(5)).
-> ★★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조는 이 표를 기준으로 판정한다.
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★ **`GC.GetAllocatedBytesForCurrentThread()` 의 절댓값**(프로세스 시작부터의 누적이다) | ★★★ **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐** |
-> | 시간·CPU 상태 — 이 문서는 **시간을 한 번도 안 쟀다** | **진단 코드**(`CS0220`·`CS8602` 류) · **진단 문구** · **`(행,열)`** |
-> | 객체 주소 · `GetHashCode()` 의 참조형 값 | **`cc exit` 와 `run exit`**(갈라 적었다) |
-> | `dotnet` 패치 버전이 오르면 달라질 수 있는 것 | **IL 명령어 열**(`add` · `add.ovf` · `box` · `brtrue.s` · `initobj`) |
-> | — | **할당 바이트의 증분값**(24 · 32 · 0) · **타입 크기**(`Unsafe.SizeOf`) |
-
 ## 한눈에 — 쉽게 말하면
 
 **`int?` 는 「숫자 칸 하나 + 「썼음/안 썼음」 체크박스 하나」가 붙은 서식이다.**
@@ -792,3 +743,53 @@ cs08b-forbid.cs(6,10): error CS0453: The type 'string' must be a non-nullable va
   두 겹을 허용하면 「널인데 어느 층의 널인가」가 생긴다 — **[06번](../06-nullable-reference-types/)의 `string??` 이 없는 것과 같은 이유**다.
 - ★★ **`int?` 의 `Equals` 가 기반 타입에 위임한다** — 그래서 `((int?)5).Equals(5)` 가 `True` 다.\
   **박싱 규칙((5))과 같은 설계 방향**이다 — 「겉보기에 `int` 처럼 굴게 한다」.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — `checked`/`unchecked`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/checked-and-unchecked) · [Learn — 널 허용 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types) · [Learn — 널 허용 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-reference-types) · [Learn — 멤버 접근·널 조건 연산자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
+런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-25).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 첫 줄(`// cs0Nb-….cs` 꼴)도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
+★★★ **진단 언어를 영어로 고정했다.** 안 주면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
+01\~04 가 실측으로 받은 한국어 판이 ``error CS0029: 암시적으로 'string' 형식을 'int' 형식으로 변환할 수 없습니다.`` 였다.\
+고정하는 법은 둘을 같이 거는 것이다 — 환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`**.
+**던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
+그래야 `bin/`·`obj/` 가 원리상 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
+배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
+
+```text
+export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
+export DOTNET_CLI_UI_LANGUAGE=en            # ★★★ 안 주면 진단이 한국어로 나온다
+D=$(dirname "$(readlink -f "$(command -v dotnet)")")
+ls "$D"/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/*.dll | sed 's/^/-r:/' > refs.rsp
+echo '{"runtimeOptions":{"tfm":"net10.0","framework":{"name":"Microsoft.NETCore.App","version":"10.0.0"}}}' > ex.runtimeconfig.json
+csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
+          -nologo -nostdlib -noconfig @refs.rsp \
+          -preferreduilang:en-US -langversion:latest "$@"; }
+```
+
+**`-debug` 를 안 줬다** — PDB 가 없으면 스택 트레이스에 **절대 경로와 줄 번호가 안 박힌다**.\
+그래서 이 문서의 트레이스는 ``at Program.<Main>$(String[] args)`` 에서 끝나고, 어느 머신에서 돌려도 같다.\
+**IL 덤프는 `-optimize` 없이**(기본 디버그) 낸 것이라 `nop` 이 섞여 있고 소스 구조가 그대로 보인다.\
+IL 을 찍는 `cs-il.cs`(82줄, 외부 도구 없이 BCL 만 쓴다)의 전문은 [03번](../03-boxing-and-unboxing/2-summary.md)의 (0)절에 있다.
+**버전** — `Nullable<T>` 와 `T?` 문법은 **C# 2부터**. 리프티드 연산자·3값 비교도 그때부터다.\
+★ **[06번](../06-nullable-reference-types/)의 `string?` 보다 여섯 판 먼저 나왔다**(C# 2 대 C# 8) — **같은 기호인데 나이가 다르다.**\
+`is` 패턴으로 꺼내기(`x is int v`)는 **C# 7부터**, `where T : struct` 에서 `T?` 의 해석은 **C# 8부터** 널 맥락과 얽힌다.
+**경계** — `Nullable<T>` 가 **구조체**라는 사실이 이 주제의 토대이고, **값 타입이 무엇인가**는 [01번](../01-value-types-and-reference-types/)이 정본이다.\
+★★★ **박싱의 정본은 [03번](../03-boxing-and-unboxing/)** 이다 — 여기서는 **그 규칙이 `Nullable<T>` 에서만 예외가 되는 것**만 다룬다((5)).\
+`?.`·`??`·`??=` 는 [07번](../07-null-operators/)이 정본이다 — 여기는 **타입 쪽**이다.\
+참조 타입의 `?` 는 [06번](../06-nullable-reference-types/)이 정본이고, **완전히 다른 기능**이다((1)).\
+`struct` 를 언제 고르나는 [02번](../02-struct-vs-class-choosing/), 제네릭 제약은 목록의 **25번 주제**,\
+동등성 규칙은 목록의 **19번 주제**, 패턴 매칭은 목록의 **21번 주제**다.\
+대비 — Java 의 [원시 타입과 래퍼 편](../../../java/syntax/01-primitives-and-wrappers/).\
+★★ **거기서는 「널을 담는 정수」가 `Integer` 라는 객체**다 — **힙을 쓴다.** 여기는 **구조체**라 안 쓴다((2)·(5)).
+★★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조는 이 표를 기준으로 판정한다.
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★ **`GC.GetAllocatedBytesForCurrentThread()` 의 절댓값**(프로세스 시작부터의 누적이다) | ★★★ **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐** |
+| 시간·CPU 상태 — 이 문서는 **시간을 한 번도 안 쟀다** | **진단 코드**(`CS0220`·`CS8602` 류) · **진단 문구** · **`(행,열)`** |
+| 객체 주소 · `GetHashCode()` 의 참조형 값 | **`cc exit` 와 `run exit`**(갈라 적었다) |
+| `dotnet` 패치 버전이 오르면 달라질 수 있는 것 | **IL 명령어 열**(`add` · `add.ovf` · `box` · `brtrue.s` · `initobj`) |
+| — | **할당 바이트의 증분값**(24 · 32 · 0) · **타입 크기**(`Unsafe.SizeOf`) |

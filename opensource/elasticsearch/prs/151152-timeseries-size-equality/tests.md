@@ -1,10 +1,5 @@
 # PR #151152 - 테스트 해설
 
-> `TimeSeriesAggregationBuilderTests`에 추가된 한 건과, 이 파일이 상속하는 프레임워크
-> 테스트가 왜 가드 역할을 못 하는지.\
-> 문제와 수정은 [README.md](README.md), 공통 배경은
-> [개념 문서](../../concepts/serialized-state-equality-contract/serialized-state-equality-contract.md).
-
 배치를 먼저 본다.\
 이 결함은 **equals가 필드 하나를 안 본다**는 것이므로, 테스트는 그 필드만 다른 쌍과 그 필드까지 같은 쌍을 나란히 세워야 한다.\
 앞쪽이 결함을 red로 만들고, 뒤쪽이 hashCode 계약의 강제 방향을 지킨다.

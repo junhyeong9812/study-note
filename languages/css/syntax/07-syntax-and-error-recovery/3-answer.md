@@ -1,10 +1,5 @@
 # css/syntax/07 — CSS 구문과 오류 복구: 선언·규칙·at-rule 단위로 버리는 규칙 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `document.styleSheets[…].cssRules`·`CSS.supports()`·`getComputedStyle`·`matchMedia` 로 읽은 것이다.\
-> 규칙은 [CSS Syntax Level 3](https://drafts.csswg.org/css-syntax-3/) 「Error Handling」과 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 로 접지했다.\
-> **엔진은 Chrome 하나다** — 「콘솔에 아무것도 안 찍힌다」 같은 관찰은 이 엔진의 것이다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -477,3 +472,9 @@ google-chrome --headless --disable-gpu --no-sandbox --enable-logging=stderr \
 - **`CSS.supports()`** — 파싱 가능 여부를 묻는 API. **너그럽지 않은 파싱**을 쓴다.
 - **`cssRules`** — 시트가 실제로 담은 규칙 목록. 「파서가 담았나」의 정답지.
 - **`cssText`** — 파서가 이해한 형태를 정규화해 직렬화한 문자열. 내가 쓴 형태와 다를 수 있다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `document.styleSheets[…].cssRules`·`CSS.supports()`·`getComputedStyle`·`matchMedia` 로 읽은 것이다.\
+규칙은 [CSS Syntax Level 3](https://drafts.csswg.org/css-syntax-3/) 「Error Handling」과 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 로 접지했다.\
+**엔진은 Chrome 하나다** — 「콘솔에 아무것도 안 찍힌다」 같은 관찰은 이 엔진의 것이다.

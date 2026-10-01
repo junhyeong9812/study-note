@@ -1,17 +1,5 @@
 # go/syntax/15 — `switch`·타입 스위치·`fallthrough`·라벨·`goto` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Switch statements(Expression switches ·
-> Type switches) · Fallthrough statements · Break statements · Continue statements ·
-> Goto statements · Labeled statements 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> **버전** — 이 주제의 규칙은 전부 **1.0부터 지금까지 같다.**
-> 13·14번과 달리 여기에는 **판 경계가 없다** — 그래서 층이 다시 셋으로 돌아온다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 ## 이 갈래가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
@@ -1191,3 +1179,15 @@ string : 3
 - C 의 `switch` 가 「점프」라는 것의 가장 강한 증거는 **Duff's device** 다 —
   `do { } while` 의 몸통 **안쪽에 `case` 라벨이 박힌다.** Go 에서는 문법적으로 불가능하다
   (가지는 `switch` 의 직계 자식이어야 한다). 실측은 C 쪽 (4)절에 있다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Switch statements(Expression switches ·
+Type switches) · Fallthrough statements · Break statements · Continue statements ·
+Goto statements · Labeled statements 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+**버전** — 이 주제의 규칙은 전부 **1.0부터 지금까지 같다.**
+13·14번과 달리 여기에는 **판 경계가 없다** — 그래서 층이 다시 셋으로 돌아온다.

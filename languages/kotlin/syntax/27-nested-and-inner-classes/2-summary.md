@@ -1,19 +1,5 @@
 # kotlin/syntax/27 — 중첩 클래스와 `inner` — 기본값이 뒤집힌 또 한 곳 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Nested and inner classes](https://kotlinlang.org/docs/nested-classes.html) · [This expressions](https://kotlinlang.org/docs/this-expressions.html)(`this@Outer`) · [Object expressions](https://kotlinlang.org/docs/object-declarations.html#object-expressions).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 8회(컴파일 실패 2벌) · `javac` 3회(`--release 17` 1벌 포함) · `java` 6회 · `javap` 4회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
-> ★★ **Java 를 같은 모양으로 짜서 나란히 던졌다** — 이 주제는 「Java 와 **반대**」가 전부라 한쪽만 보면 반이다.
-> ⚠️ 이 문서의 역어셈블은 전부 kotlinc **기본 `-jvm-target` 1.8**, javac **기본 `--release` 21** 이다. javac 는 **`--release 17` 을 한 번 더** 찍었다((3)).
-> **버전** — 중첩 클래스·`inner`·`this@Outer` 는 전부 **1.0** 이다. 이 문서에서 판으로 갈리는 것은 **javac 쪽**(안 쓰는 바깥 참조를 버리는가)뿐이다((3)).
-> **경계** — 클래스 선언·`init` 순서는 [15번 주제](../15-class-declaration-constructors-and-init/), `object` 식(익명 객체)의 **타입이 어디까지 보이나**는 [25번 주제](../25-object-declaration-companion-and-object-expression/) (4),\
-> 람다가 바깥 변수를 잡는 규칙은 [10번 주제](../10-lambdas-and-higher-order-functions/)가 정본이다. 여기는 **「바깥 인스턴스를 잡느냐」** 하나만 본다.\
-> ★ `companion object` 에 `inner` 를 못 붙이는 것은 [25번 주제](../25-object-declaration-companion-and-object-expression/) (5)에서 이미 실측했다.
-> **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **12번**([`12-nested-classes/`](../../../java/syntax/12-nested-classes/)) — **같은 JVM 구조(`this$0`)를 기본값만 반대로** 쓴다. 누수 관찰(GC 수거)은 그쪽 (6)이 **JDK 셋으로** 했다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **본체는 셋째 창이다** — 「`javap -p` 로 **`this$0` 필드가 있는가**를 네 칸(Kotlin 두 꼴 × Java 두 꼴)에서 보는 창」.
 언어는 「`inner` 는 바깥 인스턴스를 **참조한다**」까지만 약속한다. **그 참조가 `this$0` 이라는 필드로 사는 것은 구현**이고, 필드는 `javap` 에만 보인다.
 
@@ -657,3 +643,17 @@ X 9
 
 - **기본값을 뒤집은 값어치** — Java 에서는 `static` 을 **빠뜨리면 아무 말 없이** 바깥을 잡는다((1)의 격자 · 컴파일러가 침묵한다). Kotlin 은 **적지 않으면 안 잡는 쪽**을 골라, 바깥이 필요한데 빠뜨린 경우를 **컴파일 에러로** 드러낸다 — (2)의 첫 에러가 그것이다. 실수의 방향이 「조용히 붙잡는다」에서 「시끄럽게 막힌다」로 바뀐 것이다. 필요하면 `inner` 한 낱말이면 된다.
 - **(3)의 갈림이 알려 주는 것** — javac 는 「안 쓰는 참조는 버려도 된다」고 판단해 **최적화**했고(목표 릴리스에 매여), kotlinc 는 **적은 것을 그대로** 내렸다. 둘 다 언어 규칙을 어긴 것이 아니다 — 언어는 「참조한다」만 약속하므로 **안 쓰는 참조를 버리는 것도, 남기는 것도 합법**이다. **그래서 둘 다 근거로 삼으면 안 된다.**
+
+## 실행 환경
+
+**기준 소스** — [Nested and inner classes](https://kotlinlang.org/docs/nested-classes.html) · [This expressions](https://kotlinlang.org/docs/this-expressions.html)(`this@Outer`) · [Object expressions](https://kotlinlang.org/docs/object-declarations.html#object-expressions).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 8회(컴파일 실패 2벌) · `javac` 3회(`--release 17` 1벌 포함) · `java` 6회 · `javap` 4회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
+★★ **Java 를 같은 모양으로 짜서 나란히 던졌다** — 이 주제는 「Java 와 **반대**」가 전부라 한쪽만 보면 반이다.
+⚠️ 이 문서의 역어셈블은 전부 kotlinc **기본 `-jvm-target` 1.8**, javac **기본 `--release` 21** 이다. javac 는 **`--release 17` 을 한 번 더** 찍었다((3)).
+**버전** — 중첩 클래스·`inner`·`this@Outer` 는 전부 **1.0** 이다. 이 문서에서 판으로 갈리는 것은 **javac 쪽**(안 쓰는 바깥 참조를 버리는가)뿐이다((3)).
+**경계** — 클래스 선언·`init` 순서는 [15번 주제](../15-class-declaration-constructors-and-init/), `object` 식(익명 객체)의 **타입이 어디까지 보이나**는 [25번 주제](../25-object-declaration-companion-and-object-expression/) (4),\
+람다가 바깥 변수를 잡는 규칙은 [10번 주제](../10-lambdas-and-higher-order-functions/)가 정본이다. 여기는 **「바깥 인스턴스를 잡느냐」** 하나만 본다.\
+★ `companion object` 에 `inner` 를 못 붙이는 것은 [25번 주제](../25-object-declaration-companion-and-object-expression/) (5)에서 이미 실측했다.
+**대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **12번**([`12-nested-classes/`](../../../java/syntax/12-nested-classes/)) — **같은 JVM 구조(`this$0`)를 기본값만 반대로** 쓴다. 누수 관찰(GC 수거)은 그쪽 (6)이 **JDK 셋으로** 했다.

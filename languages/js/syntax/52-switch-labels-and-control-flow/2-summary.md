@@ -1,55 +1,5 @@
 # js/syntax/52 — `switch`·라벨·흐름 제어 세부: 「`case` 는 `===` 로 견주고, 한 번 들어가면 `break` 를 만날 때까지 아래로 흐른다 — `default` 는 자리가 아니라 『다 떨어진 뒤』 의 입구다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다** — 판별식 여덟 개(`1` · `'1'` · `NaN` · `-0` · `0` · 객체 · `null` · `undefined`) × `case` 값 여덟 개 = **64칸**마다 「그 `case` 가 골라지나」 를 찍고, 같은 칸을 **`Object.is` · SameValueZero** 로 물은 답과 **스크립트가 견줘** 마지막 줄에 「**갈린 칸 N / 64**」 를 찍는다(동작 (1)).
-> ★★ 보조로 **① 로그 심기**(`case` 식이 **언제·몇 개** 평가되나 · 몸통이 어떤 순서로 도나 — 동작 (2)) · **④ 예외의 이름 + 문구**(`let` 중복 · TDZ · 없는 라벨 — 동작 (3)·(4)) · **판 대조기**(node 18 · node 20 · Chrome 151 — 동작 (5))를 쓴다.
-> ★★ **`switch` 가 `===` 를 쓴다는 것 자체는 [33번](../33-equality-three-kinds/2-summary.md)이 이미 쟀다**(서명 `nynynnny` — 짝 여덟 개를 `case b:` 한 칸짜리 `switch` 로). **그 서명을 다시 재지 않는다.** 이 문서가 더한 것은 **여러 `case` 가 줄지어 있을 때 어느 것에 들어가나**(순서가 답을 바꾸는 `-0`) · 64칸 전수 · 흐름(fallthrough · `default` 의 자리 · 평가 순서) · 스코프 · 라벨이다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — The switch Statement](https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-switch-statement) — `CaseClauseIsSelected` 「**Let exprRef be ? Evaluation of the Expression of C** … **Return IsStrictlyEqual(input, clauseSelector)**」 · note 「This operation does not execute C's StatementList」 · `CaseBlockEvaluation` — `default` 가 있는 꼴은 **앞 `CaseClauses` → 뒤 `CaseClauses` 를 차례로 시험**하고, 둘 다 안 걸리면 **`DefaultClause` 를 평가한 뒤** 「**NOTE: The following is another complete iteration of the second CaseClauses**」 로 뒤쪽 몸통을 **시험 없이** 돈다 · Early Errors — 「**It is a Syntax Error if the LexicallyDeclaredNames of CaseBlock contains any duplicate entries**, unless the host is a web browser or otherwise supports Block-Level Function Declarations Web Legacy Compatibility Semantics」(비엄격 + **함수 선언끼리만** 예외) · 「**LexicallyDeclaredNames … also occurs in the VarDeclaredNames**」 도 Syntax Error
-> - [ECMA-262 — The continue Statement](https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-continue-statement) — 「**not nested, directly or indirectly (but not crossing function or static initialization block boundaries), within an IterationStatement**」 이면 Syntax Error
-> - [ECMA-262 — Labelled Statements](https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-labelled-statements) — `LabelledItem : FunctionDeclaration` 은 Syntax Error — 「**unless that source text is non-strict code and the host is a web browser or otherwise supports Labelled Function Declarations**」(Annex B.3.1) · `ContainsDuplicateLabels` · `ContainsUndefinedBreakTarget` · `ContainsUndefinedContinueTarget`
-> - 명세 문장은 이 배치가 받아 둔 **ES2026 판 HTML** 에서 읽었다(연산 이름과 짧은 인용만 싣는다).
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1(판별 블록). ★★★ **네 탐침 모두 세 판(node 18 · node 20 · Chrome 151)이 한 글자도 같았다**(동작 (5)의 대조기 `8 / 8`) — 그래서 블록은 node 20 판 하나씩만 싣는다(규칙 10). **예외 문구까지 같았다** — ★ 문구는 판에 매이는 칸이라 **근거로는 예외의 종류(`SyntaxError`/`ReferenceError`)와 「컴파일 때냐 실행 때냐」 만** 쓴다(규칙 27).
-> ★★ **이 주제는 시간·주소·순서가 흔들리는 칸이 없다** — 성능은 **재지 않았다**(아래 창 표).
->
-> **버전** — `switch`·라벨 `break`/`continue` 는 **ES3**, `let`/`const` 와 그 TDZ 는 **ES2015** · 세 판 다 있다. 이 주제에서 판이 갈린 문법은 **없다.**
->
-> **★★ 층 — 이 문서의 결론이 기대는 세 층**
->
-> | 층 | 무엇 | 어디서 |
-> |---|---|---|
-> | ★★★ **ECMA-262 본문** | `case` 는 `IsStrictlyEqual` · `case` 식은 **골라질 때까지만** 평가 · fallthrough · `default` 의 순서 · 한 `CaseBlock` = 한 스코프 · 라벨의 Early Errors | 동작 (1)\~(4) |
-> | ★★ **Annex B(웹 호환 — 호스트가 지원하면)** | 비엄격 코드에서 **`case` 사이의 같은 이름 함수 선언** 허용 · **라벨 붙은 함수 선언** 허용 | 동작 (3)의 `h` 두 줄 · 동작 (4)의 `lbl:` 두 줄 |
-> | ★ **엔진(V8 판)** | 예외 **문구** — 이 세 판은 같았다 | 동작 (5) |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체의 도구) | 64칸 × 「골라지나」 — 기준 두 자(`Object.is` · SameValueZero)와 **스크립트가 견준** 「갈린 칸 N / 64」(동작 (1)) |
-> | ★★★ **「창을 바꿔 물었다」**(제5의 상태) | 「`case` 가 **무슨 비교**를 쓰나」 는 직접 볼 창이 없다(`IsStrictlyEqual` 에 끼어들 훅이 없다). 그래서 **「어느 몸통이 돌았나」 를 세고, 같은 칸을 알려진 자로 물은 답과 겹쳐 보는** 것으로 물었다. ★ 바꾼 창이 못 보는 것 — **`==`·`===` 처럼 64칸에서 답이 같은 두 자**는 이 격자로 못 가른다(그래서 판별식에 `'1'`·`null`/`undefined` 짝을 넣어 `==` 와는 갈리게 했다 — `'1'`·`1` 칸이 `.`) |
-> | ★★ **① 로그 심기** | `case` 식에 부작용(`test(name, v)`)을 심어 **평가 순서·개수**와 **몸통 순서**를 한 줄로(동작 (2)) |
-> | ★★ **④ 예외의 이름 + 문구** | `new Function` 으로 **컴파일 때(`SyntaxError`)** 와 **실행 때(`ReferenceError`)** 를 갈라 찍는다(동작 (3)·(4)) |
-> | ★ **판 대조기** | 네 탐침 × (node 18 · Chrome 151) 대 node 20 — `8 / 8`(동작 (5)) |
-> | ★ **부적용 — 성능** | V8 에는 `--switch-table-min-cases`(「Smi 정수 `case` 가 몇 개 이상이면 점프 테이블」) 같은 선택지가 **있다**(`node --v8-options` 에서 봤다). **이 문서는 재지 않았다** — 「`switch` 가 `if` 사슬보다 빠르다」 는 **한 줄도 쓰지 않는다** |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 판별 블록의 판 문자열 · ★ 예외 **문구**(이 세 판은 같았지만 판에 매인다 — 규칙 27) | 동작 (1)의 64칸과 요약 줄 · 동작 (2)의 로그 줄 전부 · 동작 (3)·(4)의 **예외 종류**와 「compile / run」 · 대조기 `8 / 8` — **재대조 동일** |
->
-> **선행** — [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(직접 선행 — ★★★ **이미 쟀다**: `finally` 안의 `break`/`continue` 가 **던져지던 예외를 삼킨다**(`for: try throw; finally break → "after loop"`) · **라벨 블록에서 `finally { break out; }` 이 `return "T"` 를 지운다**(`label: try return; finally break out → "after block"`) — 거기 동작 (2). ★ 이 문서는 **그 조합을 다시 재지 않는다** — 라벨과 `break` 의 **기본 동작**만 잰다) ·
-> [33 — 동등성 세 종류](../33-equality-three-kinds/2-summary.md)(★★★ `switch` = `===` 의 서명 `nynynnny` · 「`case NaN:` 은 절대 안 걸린다」) ·
-> [05 — `var`·`let`·`const` 와 TDZ](../05-var-let-const-and-tdz/2-summary.md)(TDZ 의 정본) · [02 — 강제 변환과 `==`](../02-coercion-and-loose-equality/2-summary.md)(`'1' == 1` 이 참인 이유).
->
-> ★★ **교차 갈래** — [Go 15 — `switch`·타입 스위치·`fallthrough`·라벨·`goto`](../../../go/syntax/15-switch-type-switch-fallthrough-labels-and-goto/2-summary.md)(★★★ **기본은 안 흘러내리고**, `fallthrough` 라고 적어야 내려가며 **다음 `case` 의 조건을 안 본다** — 거기 동작 (1)) · [Java 21 — `switch` 문과 `switch` 식](../../../java/syntax/21-switch-statement-and-expression/2-summary.md)(옛 `case 1:` 은 JS 와 같이 흘러내리고, 화살표 `case 1 ->` 는 안 흘러내린다 · `-Xlint:fallthrough` 로 경고를 받는다) · [Python 39 — `match` 문](../../../python/syntax/39-match-statement/2-summary.md)(흘러내림 자체가 없다).
-
 ```text
 ===== ./js48b-versions.sh (exit=0) =====
 node 18.19.1  v8 10.2.154.26-node.28  icu 74.2  tz 2023c  unicode 15.1  cldr 44.1
@@ -664,3 +614,52 @@ comparisons identical to node20: 8 / 8
 - **흘러내림 경고** — JS 엔진은 안 낸다. 린터(ESLint 의 `no-fallthrough`)가 그 몫인데 **이 머신에 없어 돌리지 않았다**(npm 설치 금지 배치).
 - **`switch` 의 완료 값** — `eval("switch (1) { case 1: 'a'; }")` 가 무엇을 돌려주나(`UpdateEmpty`). 이 문서는 재지 않았다.
 - **점프 테이블 최적화** — V8 의 `--switch-table-min-cases`. 성능은 재지 않았다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 전수 격자다** — 판별식 여덟 개(`1` · `'1'` · `NaN` · `-0` · `0` · 객체 · `null` · `undefined`) × `case` 값 여덟 개 = **64칸**마다 「그 `case` 가 골라지나」 를 찍고, 같은 칸을 **`Object.is` · SameValueZero** 로 물은 답과 **스크립트가 견줘** 마지막 줄에 「**갈린 칸 N / 64**」 를 찍는다(동작 (1)).
+★★ 보조로 **① 로그 심기**(`case` 식이 **언제·몇 개** 평가되나 · 몸통이 어떤 순서로 도나 — 동작 (2)) · **④ 예외의 이름 + 문구**(`let` 중복 · TDZ · 없는 라벨 — 동작 (3)·(4)) · **판 대조기**(node 18 · node 20 · Chrome 151 — 동작 (5))를 쓴다.
+★★ **`switch` 가 `===` 를 쓴다는 것 자체는 [33번](../33-equality-three-kinds/2-summary.md)이 이미 쟀다**(서명 `nynynnny` — 짝 여덟 개를 `case b:` 한 칸짜리 `switch` 로). **그 서명을 다시 재지 않는다.** 이 문서가 더한 것은 **여러 `case` 가 줄지어 있을 때 어느 것에 들어가나**(순서가 답을 바꾸는 `-0`) · 64칸 전수 · 흐름(fallthrough · `default` 의 자리 · 평가 순서) · 스코프 · 라벨이다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — The switch Statement](https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-switch-statement) — `CaseClauseIsSelected` 「**Let exprRef be ? Evaluation of the Expression of C** … **Return IsStrictlyEqual(input, clauseSelector)**」 · note 「This operation does not execute C's StatementList」 · `CaseBlockEvaluation` — `default` 가 있는 꼴은 **앞 `CaseClauses` → 뒤 `CaseClauses` 를 차례로 시험**하고, 둘 다 안 걸리면 **`DefaultClause` 를 평가한 뒤** 「**NOTE: The following is another complete iteration of the second CaseClauses**」 로 뒤쪽 몸통을 **시험 없이** 돈다 · Early Errors — 「**It is a Syntax Error if the LexicallyDeclaredNames of CaseBlock contains any duplicate entries**, unless the host is a web browser or otherwise supports Block-Level Function Declarations Web Legacy Compatibility Semantics」(비엄격 + **함수 선언끼리만** 예외) · 「**LexicallyDeclaredNames … also occurs in the VarDeclaredNames**」 도 Syntax Error
+- [ECMA-262 — The continue Statement](https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-continue-statement) — 「**not nested, directly or indirectly (but not crossing function or static initialization block boundaries), within an IterationStatement**」 이면 Syntax Error
+- [ECMA-262 — Labelled Statements](https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html#sec-labelled-statements) — `LabelledItem : FunctionDeclaration` 은 Syntax Error — 「**unless that source text is non-strict code and the host is a web browser or otherwise supports Labelled Function Declarations**」(Annex B.3.1) · `ContainsDuplicateLabels` · `ContainsUndefinedBreakTarget` · `ContainsUndefinedContinueTarget`
+- 명세 문장은 이 배치가 받아 둔 **ES2026 판 HTML** 에서 읽었다(연산 이름과 짧은 인용만 싣는다).
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1(판별 블록). ★★★ **네 탐침 모두 세 판(node 18 · node 20 · Chrome 151)이 한 글자도 같았다**(동작 (5)의 대조기 `8 / 8`) — 그래서 블록은 node 20 판 하나씩만 싣는다(규칙 10). **예외 문구까지 같았다** — ★ 문구는 판에 매이는 칸이라 **근거로는 예외의 종류(`SyntaxError`/`ReferenceError`)와 「컴파일 때냐 실행 때냐」 만** 쓴다(규칙 27).
+★★ **이 주제는 시간·주소·순서가 흔들리는 칸이 없다** — 성능은 **재지 않았다**(아래 창 표).
+
+**버전** — `switch`·라벨 `break`/`continue` 는 **ES3**, `let`/`const` 와 그 TDZ 는 **ES2015** · 세 판 다 있다. 이 주제에서 판이 갈린 문법은 **없다.**
+
+**★★ 층 — 이 문서의 결론이 기대는 세 층**
+
+| 층 | 무엇 | 어디서 |
+|---|---|---|
+| ★★★ **ECMA-262 본문** | `case` 는 `IsStrictlyEqual` · `case` 식은 **골라질 때까지만** 평가 · fallthrough · `default` 의 순서 · 한 `CaseBlock` = 한 스코프 · 라벨의 Early Errors | 동작 (1)\~(4) |
+| ★★ **Annex B(웹 호환 — 호스트가 지원하면)** | 비엄격 코드에서 **`case` 사이의 같은 이름 함수 선언** 허용 · **라벨 붙은 함수 선언** 허용 | 동작 (3)의 `h` 두 줄 · 동작 (4)의 `lbl:` 두 줄 |
+| ★ **엔진(V8 판)** | 예외 **문구** — 이 세 판은 같았다 | 동작 (5) |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체의 도구) | 64칸 × 「골라지나」 — 기준 두 자(`Object.is` · SameValueZero)와 **스크립트가 견준** 「갈린 칸 N / 64」(동작 (1)) |
+| ★★★ **「창을 바꿔 물었다」**(제5의 상태) | 「`case` 가 **무슨 비교**를 쓰나」 는 직접 볼 창이 없다(`IsStrictlyEqual` 에 끼어들 훅이 없다). 그래서 **「어느 몸통이 돌았나」 를 세고, 같은 칸을 알려진 자로 물은 답과 겹쳐 보는** 것으로 물었다. ★ 바꾼 창이 못 보는 것 — **`==`·`===` 처럼 64칸에서 답이 같은 두 자**는 이 격자로 못 가른다(그래서 판별식에 `'1'`·`null`/`undefined` 짝을 넣어 `==` 와는 갈리게 했다 — `'1'`·`1` 칸이 `.`) |
+| ★★ **① 로그 심기** | `case` 식에 부작용(`test(name, v)`)을 심어 **평가 순서·개수**와 **몸통 순서**를 한 줄로(동작 (2)) |
+| ★★ **④ 예외의 이름 + 문구** | `new Function` 으로 **컴파일 때(`SyntaxError`)** 와 **실행 때(`ReferenceError`)** 를 갈라 찍는다(동작 (3)·(4)) |
+| ★ **판 대조기** | 네 탐침 × (node 18 · Chrome 151) 대 node 20 — `8 / 8`(동작 (5)) |
+| ★ **부적용 — 성능** | V8 에는 `--switch-table-min-cases`(「Smi 정수 `case` 가 몇 개 이상이면 점프 테이블」) 같은 선택지가 **있다**(`node --v8-options` 에서 봤다). **이 문서는 재지 않았다** — 「`switch` 가 `if` 사슬보다 빠르다」 는 **한 줄도 쓰지 않는다** |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 판별 블록의 판 문자열 · ★ 예외 **문구**(이 세 판은 같았지만 판에 매인다 — 규칙 27) | 동작 (1)의 64칸과 요약 줄 · 동작 (2)의 로그 줄 전부 · 동작 (3)·(4)의 **예외 종류**와 「compile / run」 · 대조기 `8 / 8` — **재대조 동일** |
+
+**선행** — [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(직접 선행 — ★★★ **이미 쟀다**: `finally` 안의 `break`/`continue` 가 **던져지던 예외를 삼킨다**(`for: try throw; finally break → "after loop"`) · **라벨 블록에서 `finally { break out; }` 이 `return "T"` 를 지운다**(`label: try return; finally break out → "after block"`) — 거기 동작 (2). ★ 이 문서는 **그 조합을 다시 재지 않는다** — 라벨과 `break` 의 **기본 동작**만 잰다) ·
+[33 — 동등성 세 종류](../33-equality-three-kinds/2-summary.md)(★★★ `switch` = `===` 의 서명 `nynynnny` · 「`case NaN:` 은 절대 안 걸린다」) ·
+[05 — `var`·`let`·`const` 와 TDZ](../05-var-let-const-and-tdz/2-summary.md)(TDZ 의 정본) · [02 — 강제 변환과 `==`](../02-coercion-and-loose-equality/2-summary.md)(`'1' == 1` 이 참인 이유).
+
+★★ **교차 갈래** — [Go 15 — `switch`·타입 스위치·`fallthrough`·라벨·`goto`](../../../go/syntax/15-switch-type-switch-fallthrough-labels-and-goto/2-summary.md)(★★★ **기본은 안 흘러내리고**, `fallthrough` 라고 적어야 내려가며 **다음 `case` 의 조건을 안 본다** — 거기 동작 (1)) · [Java 21 — `switch` 문과 `switch` 식](../../../java/syntax/21-switch-statement-and-expression/2-summary.md)(옛 `case 1:` 은 JS 와 같이 흘러내리고, 화살표 `case 1 ->` 는 안 흘러내린다 · `-Xlint:fallthrough` 로 경고를 받는다) · [Python 39 — `match` 문](../../../python/syntax/39-match-statement/2-summary.md)(흘러내림 자체가 없다).

@@ -1,9 +1,5 @@
 # HTML·CSS의 진화
 
-> 원본: `~/project/web-history/03-HTML-CSS-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·논문명·표준번호·코드·표는 원문 그대로다.\
-> ASCII 도식 18개와 「한눈에」의 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 > 문서를 기술하던 마크업 언어가 어떻게 애플리케이션 플랫폼의 구조 언어가 되었는가 — 그리고 표현(presentation)이 어떻게 HTML에서 떨어져 나와 CSS라는 독립된 레이어로 성숙했는가. 각 변화가 **언제·왜** 일어났는지를 따라간다.
@@ -990,3 +986,9 @@ CSS2를 하나의 문서로 묶었더니 안정된 부분과 실험적 부분이
 - [CSS Zen Garden](https://www.csszengarden.com/)
 - [WCAG 2 Overview (W3C WAI)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 - [ARIA — Accessibility (MDN Web Docs)](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA)
+
+## 출처
+
+원본: `~/project/web-history/03-HTML-CSS-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·논문명·표준번호·코드·표는 원문 그대로다.\
+ASCII 도식 18개와 「한눈에」의 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

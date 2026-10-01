@@ -1,14 +1,5 @@
 # csharp/syntax/32 — `yield return` 반복자와 지연 실행 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ★★★ 이 주제의 질문은 「**`yield` 메서드를 부르면 본문 대신 상태 기계 객체가 돌아오고, 본문은 `MoveNext` 가 한 토막씩 돌린다**」 한 줄로 거의 다 풀린다. **본문의 어느 줄이 언제 도나**를 세라.
-> **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
-> Roslyn `csc` 를 직접 부른다 · `-langversion:latest`(판 문항만 판을 바꾼다) · `-preferreduilang:en-US`. 대비는 **javac 21.0.5** 다.
-> ★★★ **본체 창은 ③ 리플렉션 + ① IL 덤프다**(상태 기계). 「언제 도나」는 **실행 로그**로 물었다.
-> 선행 — [31번](../31-ienumerable-and-foreach/)(`foreach` 가 `MoveNext`/`Current`/`Dispose` 로 풀린다) · [28번](../28-lambdas-and-closure-capture/)(지역 변수가 필드가 된다).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (예측) / (왜) / (경계) / (연결) -->
@@ -258,6 +249,14 @@ class Program {
 
 - 「부르기만 하면 본문이 안 돈다」는 Python·JS 에서도 같은가? Go 의 `iter.Seq` 는 **당기는(pull)** 쪽인가 **미는(push)** 쪽인가 — C# 은?
 - ★ 5번의 두 수는 JS 21번 · Rust 36번 · Python 44번의 표와 같은가?
+
+## 실행 환경
+
+★★★ 이 주제의 질문은 「**`yield` 메서드를 부르면 본문 대신 상태 기계 객체가 돌아오고, 본문은 `MoveNext` 가 한 토막씩 돌린다**」 한 줄로 거의 다 풀린다. **본문의 어느 줄이 언제 도나**를 세라.
+**환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
+Roslyn `csc` 를 직접 부른다 · `-langversion:latest`(판 문항만 판을 바꾼다) · `-preferreduilang:en-US`. 대비는 **javac 21.0.5** 다.
+★★★ **본체 창은 ③ 리플렉션 + ① IL 덤프다**(상태 기계). 「언제 도나」는 **실행 로그**로 물었다.
+선행 — [31번](../31-ienumerable-and-foreach/)(`foreach` 가 `MoveNext`/`Current`/`Dispose` 로 풀린다) · [28번](../28-lambdas-and-closure-capture/)(지역 변수가 필드가 된다).
 
 ## 복습 기록
 

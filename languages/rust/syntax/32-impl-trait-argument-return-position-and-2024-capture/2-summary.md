@@ -1,21 +1,5 @@
 # rust/syntax/32 — `impl Trait` — 인자 위치·반환 위치와 2024의 수명 포착 변화 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Reference — Impl trait type](https://doc.rust-lang.org/reference/types/impl-trait.html) ·
-> [Edition Guide — RPIT lifetime capture rules (2024)](https://doc.rust-lang.org/edition-guide/rust-2024/rpit-lifetime-capture.html) ·
-> [Reference — dyn compatibility](https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility) ·
-> [std — `type_name_of_val`](https://doc.rust-lang.org/std/any/fn.type_name_of_val.html).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. 버전은 **그 사본의 `releases.md` 를 블록으로** 실었다((0)).
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> ★★★ **`rustc --edition 2021 <파일>.rs` 와 `rustc --edition 2024 <파일>.rs` 를 블록마다 배너에 갈라 적어** 돌려 받은 것이다.
-> **같은 소스를 두 에디션으로 던진 블록은 한 배너에 묶지 않고 두 블록으로 실었다**(규칙 10).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
-> **버전** — 인자·반환 위치 `impl Trait` **1.26.0** · 인자 위치에 터보피시 금지 **1.26.1** · 명시 제네릭 인자와 인자 위치 `impl Trait` 공존 **1.63.0** ·
-> 트레이트 안의 반환 위치 `impl Trait`(RPITIT) **1.75.0** · `use<..>` 정밀 포착 **1.82.0** · **2024 에디션 1.85.0**. 전부 아래 (0)의 블록이 근거다.
-> ★ **에디션이 넷째 축**이다 — 이 주제의 결론 하나는 **언어 판(에디션)** 에 매여 있다((5)). 나머지는 **에디션과 무관**하다(블록마다 2021 판으로 확인했다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ```text
 ===== rustc --version =====
 rustc 1.92.0 (ded5c06cf 2025-12-08)
@@ -1047,3 +1031,19 @@ For more information about this error, try `rustc --explain E0562`.
 - **`async fn` 의 반환** — `async fn` 은 **`impl Future` 를 돌려주는 설탕**이고, Edition Guide 가 적는 대로 **모든 에디션에서 전부 포착**한다([목록의 **54번 주제**](../54-async-await-and-future-state-machines/)).
 - **`Captures` 트릭** — 2021 에서 `use<..>` 없이 수명을 포착시키려고 쓰던 빈 트레이트 기법. Edition Guide 가 「`use<..>` 로 바꾸거나 2024 에서는 지우라」고 적는다.
 - **트레이트 안의 `use<..>`** — RPITIT 에 `use<..>` 를 쓰는 것은 **1.87** 에 안정됐다((0)의 버전 블록 첫 줄). 이 판(1.92)에 들어 있지만 **이 문서는 그 문법을 던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Reference — Impl trait type](https://doc.rust-lang.org/reference/types/impl-trait.html) ·
+[Edition Guide — RPIT lifetime capture rules (2024)](https://doc.rust-lang.org/edition-guide/rust-2024/rpit-lifetime-capture.html) ·
+[Reference — dyn compatibility](https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility) ·
+[std — `type_name_of_val`](https://doc.rust-lang.org/std/any/fn.type_name_of_val.html).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. 버전은 **그 사본의 `releases.md` 를 블록으로** 실었다((0)).
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+★★★ **`rustc --edition 2021 <파일>.rs` 와 `rustc --edition 2024 <파일>.rs` 를 블록마다 배너에 갈라 적어** 돌려 받은 것이다.
+**같은 소스를 두 에디션으로 던진 블록은 한 배너에 묶지 않고 두 블록으로 실었다**(규칙 10).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음).
+**버전** — 인자·반환 위치 `impl Trait` **1.26.0** · 인자 위치에 터보피시 금지 **1.26.1** · 명시 제네릭 인자와 인자 위치 `impl Trait` 공존 **1.63.0** ·
+트레이트 안의 반환 위치 `impl Trait`(RPITIT) **1.75.0** · `use<..>` 정밀 포착 **1.82.0** · **2024 에디션 1.85.0**. 전부 본문 (0)의 블록이 근거다.
+★ **에디션이 넷째 축**이다 — 이 주제의 결론 하나는 **언어 판(에디션)** 에 매여 있다((5)). 나머지는 **에디션과 무관**하다(블록마다 2021 판으로 확인했다).

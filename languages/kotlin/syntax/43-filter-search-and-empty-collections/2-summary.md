@@ -1,14 +1,5 @@
 # kotlin/syntax/43 — 필터·검색 — `filter`/`find`/`first`/`any`/`all`/`none` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Filtering collections](https://kotlinlang.org/docs/collection-filtering.html)(`filter` · 검사 술어 `any`·`none`·`all`) · [Retrieve single elements](https://kotlinlang.org/docs/collection-elements.html)(`first`·`last`·`elementAt`·`find`·`random`·`…OrNull`) — 이 문서는 그 페이지들의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((3)(4)).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 5회(컴파일 실패 1벌 — `-api-version 1.6` 거부) · `java` 3회 + 격자 스크립트 안에서 1회 · `javap` 2회 · stdlib 소스 jar 에서 3곳.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「던진 칸 N / M」은 스크립트가 스스로 센 것**이다.
-> **버전** — `first`·`single`·`find`·`any`·`all`·`none`·`filter`·`elementAt` 은 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). ★★ **`max()` 는 판에 따라 뜻이 바뀌었다** — stdlib 소스에 옛 `max(): T?` 가 **`warningSince = "1.4", errorSince = "1.5", hiddenSince = "1.6"`**, 새 `max(): T` 가 **`@SinceKotlin("1.7")`** 로 남아 있다((4)). 그 판들에서 **직접 컴파일해 보는 것은 못 했다**(아래).
-> **경계** — `emptyList()` 가 **싱글턴 `EmptyList`** 라는 것은 [41번 주제](../41-collection-creation-and-copying/) (4)가 정본이다 — 여기서는 그 객체가 **던지는 메시지**만 본다. `?:` 와 `firstOrNull` 을 잇는 null 안전 연산자는 [03번 주제](../03-null-safe-types/)다. 예외 계층·`Nothing` 은 [34번 주제](../34-exceptions-nothing-and-try-expression/)다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**빈 입력 격자 — 연산 × (빈 · 하나 · 맞는 것 없음 · 둘 이상 맞음) → 값 / 던진 예외**」. 어느 연산이 던지는지는 **타입에 안 나온다** — `first()` 도 `firstOrNull()` 도 컴파일은 똑같이 된다. **빈 것을 넣어 봐야** 보인다.
 
 ## 이 주제가 쓰는 세 층
@@ -481,3 +472,12 @@ fun main() {
 - **`last{}`·`lastOrNull{}`·`findLast{}`** — 격자에 넣지 않았다. `first` 쪽과 같은 모양일 것으로 보이지만 **던지지 않았다.**
 - **`Sequence` 의 `single()`** — (2)에서 `Sequence.first()` 가 `Sequence is empty.` 였다. `single()` 의 「둘 이상」 문구가 무엇인지는 **던지지 않았다.**
 - **`randomOrNull`** — 이름만 적었다. 돌리지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [Filtering collections](https://kotlinlang.org/docs/collection-filtering.html)(`filter` · 검사 술어 `any`·`none`·`all`) · [Retrieve single elements](https://kotlinlang.org/docs/collection-elements.html)(`first`·`last`·`elementAt`·`find`·`random`·`…OrNull`) — 이 문서는 그 페이지들의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((3)(4)).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 5회(컴파일 실패 1벌 — `-api-version 1.6` 거부) · `java` 3회 + 격자 스크립트 안에서 1회 · `javap` 2회 · stdlib 소스 jar 에서 3곳.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「던진 칸 N / M」은 스크립트가 스스로 센 것**이다.
+**버전** — `first`·`single`·`find`·`any`·`all`·`none`·`filter`·`elementAt` 은 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). ★★ **`max()` 는 판에 따라 뜻이 바뀌었다** — stdlib 소스에 옛 `max(): T?` 가 **`warningSince = "1.4", errorSince = "1.5", hiddenSince = "1.6"`**, 새 `max(): T` 가 **`@SinceKotlin("1.7")`** 로 남아 있다((4)). 그 판들에서 **직접 컴파일해 보는 것은 못 했다**(아래).
+**경계** — `emptyList()` 가 **싱글턴 `EmptyList`** 라는 것은 [41번 주제](../41-collection-creation-and-copying/) (4)가 정본이다 — 여기서는 그 객체가 **던지는 메시지**만 본다. `?:` 와 `firstOrNull` 을 잇는 null 안전 연산자는 [03번 주제](../03-null-safe-types/)다. 예외 계층·`Nothing` 은 [34번 주제](../34-exceptions-nothing-and-try-expression/)다.

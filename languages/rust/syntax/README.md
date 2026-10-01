@@ -1,10 +1,5 @@
 # Rust — 문법·API 주제 목록
 
-> 1단계 리스트업이다. 3파일(질문·서머리·정답)이 **있는 주제는 제목에 링크가 걸려 있다**(2026-09-25 기준 **28 / 58**). 나머지는 아직 없다.
-> 기준 소스: [The Rust Reference](https://doc.rust-lang.org/reference/) · [std 문서](https://doc.rust-lang.org/std/) · [The Rust Book](https://doc.rust-lang.org/book/) · 에디션 차이는 [Edition Guide](https://doc.rust-lang.org/edition-guide/rust-2024/)
-> 실행 검증: **가능.** 이 머신에 `rustc 1.92.0` + `cargo 1.92.0`가 있다(2026-09-20 확인). 3파일의 코드 예시는 **전부 `cargo` 로 실제 컴파일·실행하고 출력을 옮긴다** — 컴파일 에러를 보여 주는 예시는 **에러 메시지도 실제 출력**을 쓴다(Rust는 "컴파일이 거부한다"가 곧 학습 내용이라 이게 특히 중요하다). 에디션은 `Cargo.toml`의 `edition` 을 바꿔 가며 2021·2024를 둘 다 돌린다.
-> 기준일 2026-09-20.
-
 ## 이 언어에서 무엇을 자르는 축
 
 Rust의 문법 주제는 **컴파일러가 거부하는 자리를 중심으로** 잘린다.
@@ -136,3 +131,9 @@ Rust의 문법 주제는 **컴파일러가 거부하는 자리를 중심으로**
 
 - 2024 에디션의 나머지 변경(`unsafe` 관련 규칙, 예약 키워드, prelude 추가 등)은 **47번 주제를 쓸 때 [Edition Guide](https://doc.rust-lang.org/edition-guide/rust-2024/)를 직접 열어 전수 확인**한 뒤 적는다. 이 목록에는 확인한 것만 올렸다.
 - 버전 의존 API(`OnceLock`·`LazyLock`·스코프 스레드 등)는 3파일 작성 시 std 문서의 "Stable since" 표기를 확인해 적는다.
+
+## 실행 환경
+
+기준 소스: [The Rust Reference](https://doc.rust-lang.org/reference/) · [std 문서](https://doc.rust-lang.org/std/) · [The Rust Book](https://doc.rust-lang.org/book/) · 에디션 차이는 [Edition Guide](https://doc.rust-lang.org/edition-guide/rust-2024/)
+실행 검증: **가능.** 이 머신에 `rustc 1.92.0` + `cargo 1.92.0`가 있다(2026-09-20 확인). 3파일의 코드 예시는 **전부 `cargo` 로 실제 컴파일·실행하고 출력을 옮긴다** — 컴파일 에러를 보여 주는 예시는 **에러 메시지도 실제 출력**을 쓴다(Rust는 "컴파일이 거부한다"가 곧 학습 내용이라 이게 특히 중요하다). 에디션은 `Cargo.toml`의 `edition` 을 바꿔 가며 2021·2024를 둘 다 돌린다.
+기준일 2026-09-20.

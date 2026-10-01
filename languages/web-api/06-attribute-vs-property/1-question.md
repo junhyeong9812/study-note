@@ -1,12 +1,5 @@
 # web-api/06 — 속성(attribute) 대 성질(property): `getAttribute`/`setAttribute` 와 IDL 프로퍼티의 반영 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이 주제에는 흔들리는 칸이 없다.** 수치를 재지 않으므로 **답은 전부 한 글자까지 고정**이다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 다만 이 주제의 결론은 **명세가 속성마다 못 박은 계약**이라 이식성보다 계약을 먼저 읽는다.
-> ★ 선행은 [01번 주제](../01-document-and-node-tree/2-summary.md)와 HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **02번**([요소와 속성 문법](../../html/syntax/02-elements-and-attributes/2-summary.md))이다. 「속성이 트리에 어떤 글자로 담기는지」는 안다고 본다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -144,6 +137,12 @@ const c3 = document.importNode(fm, true);
 - [05번 주제](../05-documentfragment-and-template/2-summary.md)의 `cloneNode`·`importNode` 에 이 주제가 무엇을 덧붙였는가?
 - [02번 주제](../02-element-queries-and-live-collections/2-summary.md)의 「라이브 컬렉션」이 이 주제의 어느 표면에 그대로 걸리는가?
 - [07번 주제](../07-dataset-classlist-inline-style/2-summary.md)가 이 주제에서 **넘겨받는 것**은 무엇인가?
+
+## 실행 환경
+
+★ **이 주제에는 흔들리는 칸이 없다.** 수치를 재지 않으므로 **답은 전부 한 글자까지 고정**이다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. 다만 이 주제의 결론은 **명세가 속성마다 못 박은 계약**이라 이식성보다 계약을 먼저 읽는다.
+★ 선행은 [01번 주제](../01-document-and-node-tree/2-summary.md)와 HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **02번**([요소와 속성 문법](../../html/syntax/02-elements-and-attributes/2-summary.md))이다. 「속성이 트리에 어떤 글자로 담기는지」는 안다고 본다.
 
 ## 복습 기록
 

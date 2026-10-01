@@ -1,36 +1,5 @@
 # cpp/syntax/18 — 0/3/5의 법칙 · `=default`/`=delete` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 특수 멤버 함수 규칙](https://en.cppreference.com/w/cpp/language/rule_of_three) · [cppreference — `= default`](https://en.cppreference.com/w/cpp/language/function#Deleted_functions) · [cppreference — `<type_traits>`](https://en.cppreference.com/w/cpp/header/type_traits) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [AddressSanitizer](https://github.com/google/sanitizers/wiki/AddressSanitizer)
-> **실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`rule01.cpp` \~ `rule09.cpp`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
-> **버전** — 3의 법칙은 **C++98부터**. **`= default`·`= delete`·이동 연산·5의 법칙은 C++11부터**,\
-> **0의 법칙은 C++11 의 스마트 포인터와 함께** 실용이 됐다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-> ★★★ **16 → 17 → 18 은 한 사슬이고 이 편이 결론이다.** [16번](../16-copy-constructor-and-copy-assignment/)이 「복사가 무엇을 부르나」를,\
-> [17번](../17-move-constructor-assignment-and-moved-from-state/)이 「이동이 무엇을 훔치나」를 수로 고정했다.\
-> **여기 18 은 「그래서 다섯 중 무엇을 적을 것인가」에 답한다** — 그리고 답은 대개 「**하나도 안 적는다**」다.
-> **경계** — 「복사의 구현」은 [16번](../16-copy-constructor-and-copy-assignment/), 「이동의 구현」은 [17번](../17-move-constructor-assignment-and-moved-from-state/)이 정본이다.\
-> 「RAII 래퍼를 만드는 법」은 [15번](../15-raii-resources-as-types/), 「`unique_ptr` 의 API」는 [목록의 **26번**](../26-unique-ptr-and-ownership-transfer/),\
-> 「예외 안전 보장 4단계」는 **52번**, 「`noexcept` 의 전모」는 **53번 주제**가 정본이다.\
-> ★ 여기서는 「**무엇이 자동 생성되고 무엇이 조용히 사라지나**」만 본다.
-> **대비** — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **9번**([`09-copy-clone-and-drop/`](../../../rust/syntax/09-copy-clone-and-drop/)) — 러스트는 **`derive(Clone)` 을 적어야 복사가 생기고**,\
-> `Drop` 을 구현하면 **그 타입을 통째로 옮기는 것만** 남는다. 기본값이 「**아무것도 안 준다**」다.\
-> C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **37번 주제**(`IDisposable`/`using`) — GC 가 있는 언어의 「소멸자 자리」다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ASan 리포트의 **PID**·주소 · 두 컴파일러의 **진단 문구** | ★★★ **`<type_traits>` 격자의 0/1** — 이 주제의 답 자체다 |
-> | 객체의 주소값 · 실행 시간 | ★★★ **어느 특수 멤버가 불렸나**(계수 로그) · **`new`/`delete` 횟수** |
-> | — | ★★ **`cc exit`/`run exit`** · **경고 개수** · **에러 개수** · **`sizeof`** |
-> | — | ★ **진단의 `(행,열)`** · **ASan 이 샌 바이트 수와 할당 수** |
-
 ## 한눈에 — 쉽게 말하면
 
 **특수 멤버 다섯은 「집에 딸려 오는 기본 옵션」이다.** 하나를 직접 고르면 **몇 개가 조용히 빠진다.**
@@ -1095,3 +1064,35 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **할당자 인식 타입의 특수 멤버** — `propagate_on_container_*` 가 **복사·이동의 뜻을 바꾼다.** 표준 컨테이너의 층이다.
 - **`=delete("이유")`(C++26)** — 지운 이유를 진단에 싣는 문법. 이 머신의 컴파일러 판에서는 **안 던졌다.**
 - **`std::exchange` 로 쓰는 5의 법칙** — (문법)의 `Five` 를 더 짧게 쓰는 관용구. [17번](../17-move-constructor-assignment-and-moved-from-state/)의 「더 들어가면」과 같은 항목이다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 특수 멤버 함수 규칙](https://en.cppreference.com/w/cpp/language/rule_of_three) · [cppreference — `= default`](https://en.cppreference.com/w/cpp/language/function#Deleted_functions) · [cppreference — `<type_traits>`](https://en.cppreference.com/w/cpp/header/type_traits) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [AddressSanitizer](https://github.com/google/sanitizers/wiki/AddressSanitizer)
+**실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`rule01.cpp` \~ `rule09.cpp`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
+**버전** — 3의 법칙은 **C++98부터**. **`= default`·`= delete`·이동 연산·5의 법칙은 C++11부터**,\
+**0의 법칙은 C++11 의 스마트 포인터와 함께** 실용이 됐다. 기준은 **C++20**이다.
+
+★★★ **16 → 17 → 18 은 한 사슬이고 이 편이 결론이다.** [16번](../16-copy-constructor-and-copy-assignment/)이 「복사가 무엇을 부르나」를,\
+[17번](../17-move-constructor-assignment-and-moved-from-state/)이 「이동이 무엇을 훔치나」를 수로 고정했다.\
+**여기 18 은 「그래서 다섯 중 무엇을 적을 것인가」에 답한다** — 그리고 답은 대개 「**하나도 안 적는다**」다.
+**경계** — 「복사의 구현」은 [16번](../16-copy-constructor-and-copy-assignment/), 「이동의 구현」은 [17번](../17-move-constructor-assignment-and-moved-from-state/)이 정본이다.\
+「RAII 래퍼를 만드는 법」은 [15번](../15-raii-resources-as-types/), 「`unique_ptr` 의 API」는 [목록의 **26번**](../26-unique-ptr-and-ownership-transfer/),\
+「예외 안전 보장 4단계」는 **52번**, 「`noexcept` 의 전모」는 **53번 주제**가 정본이다.\
+★ 여기서는 「**무엇이 자동 생성되고 무엇이 조용히 사라지나**」만 본다.
+**대비** — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **9번**([`09-copy-clone-and-drop/`](../../../rust/syntax/09-copy-clone-and-drop/)) — 러스트는 **`derive(Clone)` 을 적어야 복사가 생기고**,\
+`Drop` 을 구현하면 **그 타입을 통째로 옮기는 것만** 남는다. 기본값이 「**아무것도 안 준다**」다.\
+C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **37번 주제**(`IDisposable`/`using`) — GC 가 있는 언어의 「소멸자 자리」다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ASan 리포트의 **PID**·주소 · 두 컴파일러의 **진단 문구** | ★★★ **`<type_traits>` 격자의 0/1** — 이 주제의 답 자체다 |
+| 객체의 주소값 · 실행 시간 | ★★★ **어느 특수 멤버가 불렸나**(계수 로그) · **`new`/`delete` 횟수** |
+| — | ★★ **`cc exit`/`run exit`** · **경고 개수** · **에러 개수** · **`sizeof`** |
+| — | ★ **진단의 `(행,열)`** · **ASan 이 샌 바이트 수와 할당 수** |

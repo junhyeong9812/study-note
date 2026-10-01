@@ -1,15 +1,5 @@
 # java/syntax/13 — `enum` 클래스: 상수별 본문·`EnumSet`/`EnumMap` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §8.9 Enum Classes](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) (§8.9.1 상수 본문 · §8.9.2 생성자 제약 · §8.9.3 암묵 멤버) · [§14.11.1 Switch Blocks](https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html) (case 라벨·완결성). **둘 다 열어서 해당 절을 읽고 인용했다.**\
-> 그리고 **JDK 21.0.5 의 `lib/src.zip`** 을 직접 풀어 읽은 `java/lang/Enum.java` · `java/util/EnumSet.java` · `java/util/RegularEnumSet.java` · `java/util/EnumMap.java` — 인용한 구현 코드와 javadoc 은 전부 그 파일에서 복사했다.
-> **실행 검증** — 이 문서의 모든 출력·에러·역어셈블은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> `case` 라벨의 한정 이름만 `--release 17 · 20 · 21` 과 Temurin **JDK 25.0.1** 넷에서 돌려 비교했다.\
-> 바이트코드는 `javap -c -p` · `javap -v -p` 출력을 그대로 옮겼다.
-> **버전** — `enum` 은 **Java 5**(JSR 201)에서 들어왔다. `EnumSet` · `EnumMap` 은 `@since 1.5`(src.zip 에서 직접 확인).\
-> `case` 라벨에 **한정 이름**(`case Day.SAT:`)을 쓸 수 있게 된 것은 **21**(JEP 441)이다 — 아래 「어디서 틀리나」 6번.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 JLS 와 `src.zip` 으로, 동작은 실행 트레이스와 바이트코드로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`enum` 은 학교 복도에 붙박이로 시공해 둔 사물함 줄이다.**
@@ -1055,3 +1045,13 @@ valueOf(name())    = PLUS
   실행으로도 확인했다 (`Ex.java (13-h)`) — `MON.compareTo(SUN)` 이 `-6`, `SUN.compareTo(MON)` 이 `6`.\
   즉 **`TreeSet<Day>` 의 정렬 순서도 선언 순서**다. 정렬 계약 쪽은 [**28번 주제**](../28-comparable-comparator/)가 정본이다.
 - **`enum` 은 제네릭이 될 수 없다** — `EnumDeclaration` 문법에 `TypeParameters` 자리가 아예 없다(JLS §8.9). 상수마다 다른 타입을 다뤄야 하면 `sealed` 계층을 쓴다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §8.9 Enum Classes](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) (§8.9.1 상수 본문 · §8.9.2 생성자 제약 · §8.9.3 암묵 멤버) · [§14.11.1 Switch Blocks](https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html) (case 라벨·완결성). **둘 다 열어서 해당 절을 읽고 인용했다.**\
+그리고 **JDK 21.0.5 의 `lib/src.zip`** 을 직접 풀어 읽은 `java/lang/Enum.java` · `java/util/EnumSet.java` · `java/util/RegularEnumSet.java` · `java/util/EnumMap.java` — 인용한 구현 코드와 javadoc 은 전부 그 파일에서 복사했다.
+**실행 검증** — 이 문서의 모든 출력·에러·역어셈블은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+`case` 라벨의 한정 이름만 `--release 17 · 20 · 21` 과 Temurin **JDK 25.0.1** 넷에서 돌려 비교했다.\
+바이트코드는 `javap -c -p` · `javap -v -p` 출력을 그대로 옮겼다.
+**버전** — `enum` 은 **Java 5**(JSR 201)에서 들어왔다. `EnumSet` · `EnumMap` 은 `@since 1.5`(src.zip 에서 직접 확인).\
+`case` 라벨에 **한정 이름**(`case Day.SAT:`)을 쓸 수 있게 된 것은 **21**(JEP 441)이다 — 본문 「어디서 틀리나」 6번.

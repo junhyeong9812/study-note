@@ -1,10 +1,5 @@
 # web-api/39 — 유휴 스케줄링: `requestIdleCallback` · `scheduler.postTask()`/`yield()` 와 긴 작업 쪼개기 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 와 node v18.19.1 · v20.19.6 에서 실제로 받은 것**이다 — 페이지는 같은 기계의 로컬 서버(A)에서 열었고 **실제 시간**으로 돌렸다. 클릭은 CDP `Input.dispatchMouseEvent` 다.\
-> ★ 명세는 **HTML(유휴 단계) · W3C requestIdleCallback · WICG Prioritized Task Scheduling** 을 받아 읽었다. **시간 · INP 는 재지 않았다.** Safari 는 미실행이다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
 |---|---|
 | 지원 판별 · 입력 막힘 판 · 이어가기 순서 · 유휴 가 \~ 라 | ★★ **흔들렸다** — 유휴 마(바쁜 동안의 열 판) 두 수 |
@@ -221,3 +216,9 @@ python3 wa36b-net.py page wa36b-39-idle.html
 | 바쁜 동안의 유휴 콜백 | 판마다 다름 | 유휴 기간은 user agent defined |
 
 **안 돌려 본 것** — ① Firefox·Safari(Safari 는 없다 · Firefox 는 이 환경에서 헤드리스 산출이 조용히 실패한다 — README). ② INP · 지연 ms. ③ 숨은 탭의 유휴 기간. ④ `postTask` 의 `delay` · `prioritychange`.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 와 node v18.19.1 · v20.19.6 에서 실제로 받은 것**이다 — 페이지는 같은 기계의 로컬 서버(A)에서 열었고 **실제 시간**으로 돌렸다. 클릭은 CDP `Input.dispatchMouseEvent` 다.\
+★ 명세는 **HTML(유휴 단계) · W3C requestIdleCallback · WICG Prioritized Task Scheduling** 을 받아 읽었다. **시간 · INP 는 재지 않았다.** Safari 는 미실행이다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

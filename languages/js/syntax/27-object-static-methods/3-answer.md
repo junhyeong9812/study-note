@@ -1,16 +1,5 @@
 # js/syntax/27 — `Object` 정적 메서드: 「복사·나열·묶기 — 결과가 같아 보여도 부르는 것이 다르다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151.0.7922.173**(6번) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
->
-> ★★ **예외는 `e.constructor.name` 과 `e.message` 로만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★★ **이 주제의 node 탐침은 두 판에서 전부 같았다** — 판이 갈린 블록이 없다.
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(10번의 소스만 여기 싣는다).
-> `js24b-27a-assign-log.js`(1번 · 8번) · `js24b-27b-copy-grid.js`(2번 · 11번) · `js24b-27c-readonly-target.js`(3번 · 7번 · 11번) · `js24b-27d-keys-values-entries.js`(4번) ·
-> `js24b-27e-fromentries.js`(5번) · `js24b-27f-groupby.web.js`(6번 · 9번) · `js24b-27g-merge-order.js`(10번).
-
 ## 정답
 
 ### 1. `assign` 은 **원본 getter 를 키마다 한 번 부르고 대상에 대입한다 — 대상 setter 가 불리고, 비열거 키는 값도 안 읽는다** ★★★
@@ -559,3 +548,15 @@ document.write('<script src="' + location.search.slice(1) + '"><\/script>');
 
 - ★★★ **node 22 이후의 판** — `Object.groupBy`·`Map.groupBy`(ES2024)가 들어온 판에서는 **6번을 node 로도** 돌린다. 판별 블록의 `no` 가 `yes` 로 바뀌는지 먼저 본다.
 - ★★ **예외 문구 전부**.
+
+## 실행 환경
+
+이 파일의 모든 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Google Chrome 151.0.7922.173**(6번) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다(손으로 옮긴 출력이 하나도 없다).
+
+★★ **예외는 `e.constructor.name` 과 `e.message` 로만** `이름 「메시지」` 꼴로 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★★ **이 주제의 node 탐침은 두 판에서 전부 같았다** — 판이 갈린 블록이 없다.
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다(10번의 소스만 여기 싣는다).
+`js24b-27a-assign-log.js`(1번 · 8번) · `js24b-27b-copy-grid.js`(2번 · 11번) · `js24b-27c-readonly-target.js`(3번 · 7번 · 11번) · `js24b-27d-keys-values-entries.js`(4번) ·
+`js24b-27e-fromentries.js`(5번) · `js24b-27f-groupby.web.js`(6번 · 9번) · `js24b-27g-merge-order.js`(10번).

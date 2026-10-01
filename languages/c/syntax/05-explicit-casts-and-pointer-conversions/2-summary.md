@@ -1,15 +1,5 @@
 # c/syntax/05 — 명시 캐스트와 포인터 변환: 내가 대놓고 바꾸는 것 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Cast operator (C)](https://en.cppreference.com/w/c/language/cast) · [cppreference — Pointer conversions](https://en.cppreference.com/w/c/language/conversion) · [GCC 13 Optimize Options — `-fstrict-aliasing`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·경고·어셈블리는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> **UB 가 걸린 블록은 `-O0`·`-O1`·`-O2`·`-O3`·`-Os` 다섯 수준 + sanitizer 로 돌렸다.** 한 수준만 돌린 결과는 싣지 않는다.\
-> 대조용으로 `clang 18.1.3` 을 쓴 자리는 그 자리에 밝혔다. 기본 플래그는 `-std=c17 -Wall -Wextra`.
-> **버전** — 캐스트·포인터 변환 규칙은 C89 부터 같다. `intptr_t`/`uintptr_t` 는 **C99부터**이고 **선택 사항**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「엄격한 앨리어싱 규칙 자체」는 목록의 **55번 주제**가 정본이다. 여기서는 **캐스트가 그 규칙을 어기는 자리**까지만 쓴다.\
-> 「`void *`·`NULL`」의 정본은 [목록의 **19번 주제**](../19-void-pointer-null-pointer-and-null/), 「`const` 의 계약」은 [목록의 **31번 주제**](../31-const-and-pointer-const-placement/)다.
-
 ## 한눈에 — 쉽게 말하면
 
 **캐스트에는 두 종류가 있다. 값을 바꾸는 것과, 값은 그대로 두고 「이렇게 읽어라」고 말하는 것.**
@@ -805,3 +795,14 @@ gcc 가 **오른쪽부터 평가**해서 「호출 수가 안 늘었다」는 **
 - **32비트에서는 `(int)p` 가 안 잘린다.** 그래서 「32비트에서 돌던 코드가 64비트에서 깨진다」는 고전이 나온다.\
   이 머신에는 32비트 헤더가 없어 **확인하지 못했다**(04번 형제가 같은 자리에서 막혔다 —\
   `bits/libc-header-start.h` 가 없다). `gcc-multilib` 를 설치하면 잴 수 있다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Cast operator (C)](https://en.cppreference.com/w/c/language/cast) · [cppreference — Pointer conversions](https://en.cppreference.com/w/c/language/conversion) · [GCC 13 Optimize Options — `-fstrict-aliasing`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
+**실행 검증** — 이 문서의 모든 출력·경고·어셈블리는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+**UB 가 걸린 블록은 `-O0`·`-O1`·`-O2`·`-O3`·`-Os` 다섯 수준 + sanitizer 로 돌렸다.** 한 수준만 돌린 결과는 싣지 않는다.\
+대조용으로 `clang 18.1.3` 을 쓴 자리는 그 자리에 밝혔다. 기본 플래그는 `-std=c17 -Wall -Wextra`.
+**버전** — 캐스트·포인터 변환 규칙은 C89 부터 같다. `intptr_t`/`uintptr_t` 는 **C99부터**이고 **선택 사항**이다.
+
+**경계** — 「엄격한 앨리어싱 규칙 자체」는 목록의 **55번 주제**가 정본이다. 여기서는 **캐스트가 그 규칙을 어기는 자리**까지만 쓴다.\
+「`void *`·`NULL`」의 정본은 [목록의 **19번 주제**](../19-void-pointer-null-pointer-and-null/), 「`const` 의 계약」은 [목록의 **31번 주제**](../31-const-and-pointer-const-placement/)다.

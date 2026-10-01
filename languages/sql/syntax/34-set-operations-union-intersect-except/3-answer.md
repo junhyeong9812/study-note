@@ -1,11 +1,5 @@
 # sql/34-집합 연산 — `UNION`·`INTERSECT`·`EXCEPT` 와 `ALL` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러·실행 계획은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> 표는 기존 `emp`·`dept` 만 썼다 — **새로 만든 표가 없다.**\
-> 문서 근거는 [PG 18 Combining Queries](https://www.postgresql.org/docs/18/queries-union.html) · [MySQL 8.4 Set Operations](https://dev.mysql.com/doc/refman/8.4/en/set-operations.html) · [MySQL 8.0.31 릴리스 노트](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-31.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -641,3 +635,10 @@ PG 의 `UNION types integer and text cannot be matched` 는 **"PG 가 막는다"
 **방언이 갈리는 항목** — 6번(타입 불일치)과 12번(도입 버전) **둘뿐이다.** 그중 6번은 **에러가 아니라 조용한 차이**라 더 위험하다.
 
 **순서 보장** — 없다. 위 출력에 `ORDER BY` 를 붙이지 **않은** 것들은 **순서를 근거로 쓰지 않는 자리**이고, 순서가 논점인 8번에는 붙였다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러·실행 계획은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+표는 기존 `emp`·`dept` 만 썼다 — **새로 만든 표가 없다.**\
+문서 근거는 [PG 18 Combining Queries](https://www.postgresql.org/docs/18/queries-union.html) · [MySQL 8.4 Set Operations](https://dev.mysql.com/doc/refman/8.4/en/set-operations.html) · [MySQL 8.0.31 릴리스 노트](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-31.html).

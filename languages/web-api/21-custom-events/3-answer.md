@@ -1,10 +1,5 @@
 # web-api/21 — 커스텀 이벤트: `CustomEvent`·`dispatchEvent`·`detail`·`bubbles`/`composed` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 합성 이벤트가 대부분이고, 문항 6의 ①만 **CDP 로 넣은 진짜 클릭**이다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 `CustomEvent` · `dispatchEvent()` · dispatch · inner invoke · retarget · `composedPath()` 로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 | 안 흔들리는 칸 | 흔들리는 칸 |
 |---|---|
 | 닿은 자리 격자 · 호출 순서 · 반환값 · `detail` 의 동일성 · 예외 **이름** | 예외 **문구** · Chrome 판 번호 |
@@ -205,3 +200,9 @@ python3 wa20b-cdp.py page wa20b-21-sync.html      # 바. 만 진짜 클릭(CDP)
 | 진짜 클릭에서 마이크로태스크의 자리 | 리스너 사이 | 이 문서는 관찰로만 적었다 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② `Event` 를 상속한 클래스. ③ 얼린 `detail`(`Object.freeze`)을 리스너가 고치려 할 때. ④ 슬롯 자식에서 던진 `CustomEvent`(12편이 `Event` 로 봤다).
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 합성 이벤트가 대부분이고, 문항 6의 ①만 **CDP 로 넣은 진짜 클릭**이다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 `CustomEvent` · `dispatchEvent()` · dispatch · inner invoke · retarget · `composedPath()` 로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

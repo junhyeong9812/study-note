@@ -1,42 +1,5 @@
 # cpp/syntax/10 — `const` 정확성 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — cv 한정자](https://en.cppreference.com/w/cpp/language/cv) · [const 멤버 함수](https://en.cppreference.com/w/cpp/language/member_functions) · [`mutable` 지정자](https://en.cppreference.com/w/cpp/language/cv#mutable) · [`const_cast`](https://en.cppreference.com/w/cpp/language/const_cast) · [저장 기간과 링크](https://en.cppreference.com/w/cpp/language/storage_duration) · [GCC 13 Warning Options — `-Wwrite-strings`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·진단·심볼은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **GNU nm 2.42** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`cnst01.cpp` \~ `cnst08.cpp`, 링크 편은 `cnst05a`·`cnst05b`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 긴 진단은 **거르는 명령을 배너에 적어 두었다**(`| grep 'error:'`).\
-> 그러니 실린 것은 「생략한 일부」가 아니라 **그 명령의 전체 출력**이다.\
-> ★ **UB 를 한 최적화 수준으로만 단정하지 않았다** — `const_cast` 편은 **`-O0`·`-O2`·clang `-O2`·UBSan 네 판**을 던졌다((6)).
-> **버전** — `const` 자체는 **C++98부터**. `constexpr` 는 **C++11부터**,\
-> ★ **문자열 리터럴을 `char*` 에 넣는 것이 ill-formed 가 된 것은 C++11부터**다((10)). 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「`const char *` / `char * const` 를 **읽는 순서**」의 정본은\
-> C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **31번**이다 — 여기서는 **에러 한 줄씩만** 보고 넘어간다((9)).\
-> 「포인터가 무엇인가」는 C 갈래 [`14번`](../../../c/syntax/14-pointers-address-dereference-and-pointer-types/),\
-> 「문자열 리터럴의 저장 기간」은 C 갈래 [`20번`](../../../c/syntax/20-null-terminated-strings-and-string-literals/),\
-> 「스코프와 링크 일반」은 C 갈래 목록의 **29번**이 정본이다.\
-> 「캐스트 4종을 어떻게 고르나」의 정본은 형제 [`03번`](../03-four-cast-operators/)이다 —\
-> 여기서는 **`const_cast` 가 무엇을 사고 무엇을 잃는가**만 본다((6)).\
-> 「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/), 「값 범주」는 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/),\
-> 「`const` 객체를 `move` 하면 무슨 일이 나나」는 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/),\
-> 「그래서 매개변수를 `const&` 로 받나」는 [목록의 **11번 주제**](../11-choosing-parameter-passing/),\
-> 「`constexpr`·`consteval` 자체」는 [목록의 **38번 주제**](../38-constexpr-consteval-and-constinit/)가 정본이다.
-> ★★★ **이 주제는 「금지 목록」이 아니라 「계약」이다** — `const` 가 **무엇을 막고 무엇을 안 막는지**가 값의 전부다.\
-> 안 막는 쪽이 (4)·(6)·(10) 셋이고, **셋 다 진단이 0건**이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 두 컴파일러의 **에러 문구**와 **열 번호** | ★ **에러가 난 줄 번호와 개수**(g++ 7 · clang 7) |
-> | `nm` 출력의 **주소·오프셋**(`0000...0f`) | ★★ **심볼 종류 문자**(`r` 는 내부 · `R` 는 외부 · `U` 는 미정의) |
-> | UB 판에서 **죽는 신호**(이 문서는 `run exit` 만 싣는다) | ★ **`cc exit` 와 `run exit`**(갈라 적었다) |
-> | 경고 이름(`-Wwrite-strings` 대 `-Wwritable-strings`) | ★★ **생성자·호출 횟수**(`hits` 1·2·3) · `sizeof` 값 |
-> | — | ★★★ **`k=10 *p=20 &k==p:1`** — 네 판이 전부 같았다((6)) |
-
 ## 한눈에 — 쉽게 말하면
 
 **`const` 는 자물쇠가 아니라 「내가 안 고치겠다」고 적어 둔 각서다.**
@@ -1029,3 +992,41 @@ int main() {
 - **`const` 멤버 함수의 `&`·`&&` 한정자** — `void f() const&` 같은 것. `operator=` 쪽 실측은 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/)에 있다.
 - **`const` 이터레이터** — 표준 라이브러리 쪽이라 목록의 **43번 주제**로 넘긴다. `std::as_const` 도 던지지 않았다.
 - **`const` 를 `constexpr` 로 올릴 때의 ABI 영향** — 재 보지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — cv 한정자](https://en.cppreference.com/w/cpp/language/cv) · [const 멤버 함수](https://en.cppreference.com/w/cpp/language/member_functions) · [`mutable` 지정자](https://en.cppreference.com/w/cpp/language/cv#mutable) · [`const_cast`](https://en.cppreference.com/w/cpp/language/const_cast) · [저장 기간과 링크](https://en.cppreference.com/w/cpp/language/storage_duration) · [GCC 13 Warning Options — `-Wwrite-strings`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
+**실행 검증** — 이 문서의 모든 출력·진단·심볼은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **GNU nm 2.42** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`cnst01.cpp` \~ `cnst08.cpp`, 링크 편은 `cnst05a`·`cnst05b`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 긴 진단은 **거르는 명령을 배너에 적어 두었다**(`| grep 'error:'`).\
+그러니 실린 것은 「생략한 일부」가 아니라 **그 명령의 전체 출력**이다.\
+★ **UB 를 한 최적화 수준으로만 단정하지 않았다** — `const_cast` 편은 **`-O0`·`-O2`·clang `-O2`·UBSan 네 판**을 던졌다((6)).
+**버전** — `const` 자체는 **C++98부터**. `constexpr` 는 **C++11부터**,\
+★ **문자열 리터럴을 `char*` 에 넣는 것이 ill-formed 가 된 것은 C++11부터**다((10)). 기준은 **C++20**이다.
+
+**경계** — 「`const char *` / `char * const` 를 **읽는 순서**」의 정본은\
+C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **31번**이다 — 여기서는 **에러 한 줄씩만** 보고 넘어간다((9)).\
+「포인터가 무엇인가」는 C 갈래 [`14번`](../../../c/syntax/14-pointers-address-dereference-and-pointer-types/),\
+「문자열 리터럴의 저장 기간」은 C 갈래 [`20번`](../../../c/syntax/20-null-terminated-strings-and-string-literals/),\
+「스코프와 링크 일반」은 C 갈래 목록의 **29번**이 정본이다.\
+「캐스트 4종을 어떻게 고르나」의 정본은 형제 [`03번`](../03-four-cast-operators/)이다 —\
+여기서는 **`const_cast` 가 무엇을 사고 무엇을 잃는가**만 본다((6)).\
+「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/), 「값 범주」는 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/),\
+「`const` 객체를 `move` 하면 무슨 일이 나나」는 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/),\
+「그래서 매개변수를 `const&` 로 받나」는 [목록의 **11번 주제**](../11-choosing-parameter-passing/),\
+「`constexpr`·`consteval` 자체」는 [목록의 **38번 주제**](../38-constexpr-consteval-and-constinit/)가 정본이다.
+★★★ **이 주제는 「금지 목록」이 아니라 「계약」이다** — `const` 가 **무엇을 막고 무엇을 안 막는지**가 값의 전부다.\
+안 막는 쪽이 (4)·(6)·(10) 셋이고, **셋 다 진단이 0건**이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 두 컴파일러의 **에러 문구**와 **열 번호** | ★ **에러가 난 줄 번호와 개수**(g++ 7 · clang 7) |
+| `nm` 출력의 **주소·오프셋**(`0000...0f`) | ★★ **심볼 종류 문자**(`r` 는 내부 · `R` 는 외부 · `U` 는 미정의) |
+| UB 판에서 **죽는 신호**(이 문서는 `run exit` 만 싣는다) | ★ **`cc exit` 와 `run exit`**(갈라 적었다) |
+| 경고 이름(`-Wwrite-strings` 대 `-Wwritable-strings`) | ★★ **생성자·호출 횟수**(`hits` 1·2·3) · `sizeof` 값 |
+| — | ★★★ **`k=10 *p=20 &k==p:1`** — 네 판이 전부 같았다((6)) |

@@ -1,75 +1,5 @@
 # js/syntax/21 — 이터레이터 헬퍼: 「배열 메서드는 단계마다 전부 돌고, 헬퍼는 한 값씩 끝까지 흘려보낸다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다** — 여기서는 **콜백과 원본 `next`/`return` 에 심은 로그**다.
-> `arr.map(f).filter(g).slice(0, 2)` 와 `arr.values().map(f).filter(g).take(2).toArray()` 는 **결과가 한 글자도 같다**(`[20,40]`).
-> 그런데 `f` 와 `g` 가 **몇 번, 어떤 순서로** 불렸는지는 결과에 흔적이 없다. ★★★ **값으로는 원리상 못 가른다.**
-> 그래서 콜백마다 로그를 남기게 하고, 원본 이터레이터의 `next`·`return` 에도 로그를 심었다.
-> **이 문서의 결론은 전부 그 로그와, 그 로그를 센 격자에서 나온다.**
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 2025 (16판)](https://262.ecma-international.org/16.0/) — `Iterator` 생성자 · `Iterator.from` · `Iterator.prototype` 의 `map`·`filter`·`take`·`drop`·`flatMap`·`reduce`·`toArray`·`forEach`·`some`·`every`·`find` · 추상 연산 `GetIteratorDirect` · `IteratorClose`. ★ **이 판에는 `Iterator.concat` 이 없다**(본문에서 그 이름을 찾아 0건).
-> - [ECMA-262 2026 (17판)](https://262.ecma-international.org/17.0/) — `Iterator.concat` 이 **이 판에서 처음 나온다**(같은 검색 2건).
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 「Sync Iterator helpers」 **2025** · 「Iterator Sequencing」 **2026** · 「Explicit Resource Management」 **2027**
->
-> ★ 명세 문장을 인용하는 곳은 딱 한 군데다 — `Iterator.prototype.take` 의 단계 가운데
-> 「`If numLimit is NaN, then … Return ? IteratorClose(iterated, error).`」(16판). 나머지 규칙 진술은 **추상 연산 이름**으로만 하고,
-> **값·호출 로그·예외 타입과 메시지는 전부 실행으로** 접지했다. 명세 조항 번호는 인용하지 않는다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> ★★★ **헬퍼는 이 머신의 node 두 판(v18.19.1 · v20.19.6)에 없다** — 아래 판별 블록이 그 근거다.
-> 그래서 **본체 탐침은 전부 Google Chrome 151 의 헤드리스 모드**에서 돌렸다. 탐침 파일 하나를 `js20b-page.html?<파일>` 로 열고,
-> 페이지가 `console.log` 를 가로채 모은 줄을 `--dump-dom` 으로 받는다(페이지 소스도 아래에 싣는다).
-> 배너가 `google-chrome --headless …` 인 블록이 그것이고, `node20` 배너는 `~/.nvm/versions/node/v20.19.6/bin/node` 다.
-> ★★ **예외는 `try`/`catch` 로 받아 `이름 「메시지」` 꼴로만** 찍었다 — 스택트레이스는 한 줄도 싣지 않는다.
-> ★ **이 주제의 블록에는 주소도 시간도 난수도 없다.** 같은 판에서 다시 돌리면 한 글자도 안 변한다.
->
-> **버전** — 이 주제는 **한 판(ES2025)에 들어왔다.** 그 위에 얹힌 것 하나가 다음 판이다.
->
-> | 무엇 | 판 | node 18 / 20 | Chrome 151 |
-> |---|---|---|---|
-> | 이터레이터 프로토콜 · 제너레이터 · 배열 메서드 `map`/`filter`/`slice` | **ES2015** 이전\~ES2015 | 있다 | 있다 |
-> | 전역 `Iterator` · `Iterator.from` · `Iterator.prototype.map`/`take`/… | **ES2025** | **없다** | 있다 |
-> | `Iterator.concat` | **ES2026** | 없다(안 물었다 — 헬퍼 자체가 없다) | 있다 |
-> | `Iterator.prototype[Symbol.dispose]` | ES2027 쪽(finished proposals 의 해) — ★ 이 문서는 **쓰지 않는다** | — | 있다(동작 (4)의 `[3]`) |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **① 추상 연산에 로그 심기**(본체) | 콜백 `map(x)` · `filter(x)` 로그 → **몇 번 · 어떤 순서로** · 원본의 `next#N` · `return()` 로그 → **원본을 몇 번 당기고 언제 닫나** |
-> | ★★★ **② 전수 격자** | 파이프라인 열 벌을 배열판/헬퍼판으로 → **값이 갈린 칸 / 호출 수가 갈린 칸**을 스크립트가 센다 · 헬퍼·종단 메서드 14가지의 `return()` 요약 표 |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | 인자 검사가 **만드는 순간**에 던지나 **첫 `next()`** 에 던지나 — 그리고 그때 원본을 닫나. ★ **문구가 원인을 가리키지 않는 자리가 하나 있다**(`flatMap` — 어디서 틀리나 (6)) |
-> | ★★ **판별 블록** | 이 기능이 **판마다 있나** — node 두 판과 Chrome 을 같은 스크립트로 |
-> | ★★ **창을 바꿔 물었다**(제5의 상태) | node 에는 헬퍼가 없어 **같은 질문(「한 값씩 흐르나」)을 제너레이터 함수로 손수 만든 파이프라인**에 던졌다(동작 (7)) — 로그가 헬퍼판과 **한 글자도 같다** |
-> | ★ **부적용 — ③ 브랜드 태그** | 헬퍼가 붙느냐는 **내부 슬롯이 아니라 프로토타입 사슬**이 정한다(동작 (4)) — `Object.prototype.toString` 이 답할 질문이 없다. **잴 것이 없다** |
-> | ★ **부적용 — 진단의 `(행,열)`**(18-C) | 이 주제에는 `SyntaxError` 가 한 줄도 없다. 헬퍼는 전부 런타임 메서드다 — **잴 것이 없다** |
-> | ★★★ **안 쟀다 — 시간 · 메모리** | 「헬퍼는 메모리를 아낀다」·「헬퍼가 배열보다 빠르다」를 **한 줄도 쓰지 않는다.** 센 것은 **콜백 호출 수와 원본을 당긴 수**뿐이다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 예외 **문구**(V8 의 표현 — 판이 오르면 바뀔 수 있다) | ★★★ **콜백 로그의 개수와 순서** · 원본 `next`/`return` 로그 |
-> | Chrome 의 **판 번호**(판별 블록 첫 줄) | ★★★ **예외의 종류**(`TypeError`/`RangeError`)와 **던진 시점**(만들 때 / 첫 `next()`) |
-> | 스택트레이스 — 한 줄도 싣지 않았다 | ★★ 격자의 **「갈린 칸 N / M」** 집계 줄 · 결과 값 |
->
-> 이 주제의 탐침 가운데 **node 에서 도는 것은 `js20b-21x-node-absent.js` 하나**다 — 두 판 대조기는 그 줄을 `identical` 로 세었다.
-> 배치 전체의 집계 줄은 판별 블록 바로 아래에 싣는다(대조기 전문은 3-answer 의 10번).
->
-> **선행** — [20 — 제너레이터](../20-generators/2-summary.md)(★★★ 직접 선행) · [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ `return()` 의 규칙) ·
-> [15 — 프로토타입 체인](../15-prototype-chain/2-summary.md)(헬퍼가 **어디에** 붙어 있나).
-> ★★★ **19번이 이미 잰 것을 다시 재지 않는다** — 소비자 17가지 중 `return()` 이 불린 자리는 **8가지**였고(`return() was called in 8 of 17 probes`),
-> `const [a, b, c] = it` 이 값이 딱 셋인데도 닫는다는 것, `next()` 자체가 던지면 닫지 않는다는 것도 거기서 봤다.
-> 그리고 19번 `js16b-19f-close-and-helpers.js` 의 `[4]` 가 **node20 에 `typeof globalThis.Iterator` 가 `undefined`** 임을 이미 찍었다.
-> **이어지는 곳** — [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md) · [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md) · [목록의 **40번 주제**](../40-async-iteration-and-for-await/) 「비동기 이터레이션」
->
-> ★★ **경계 — `return()` 이 언제 불리나의 규칙은 19번이 정본이다.** 여기서는 **헬퍼·종단 메서드가 그 규칙 위에서 원본을 언제 닫나**만 본다.
-> ★★ **경계 — 제너레이터의 내부 흐름(`yield`·`next(값)`·`yield*`)은 20번이 정본이다.** 여기서 제너레이터는 **끝없는 원본**과 **손수 만든 파이프라인**으로만 쓴다.
-> ★ **경계 — 배열 메서드 자체(`map`·`filter`·`slice` 의 비변형 계약)는** [목록의 **25번 주제**](../25-array-non-mutating-and-copy-methods/) 「배열 비변형·복사 메서드」**가 정본이다.** 여기서는 **평가 시점의 대비 상대**로만 쓴다.
-
 ```sh
 # js20b-versions.sh
 #!/usr/bin/env bash
@@ -1019,3 +949,72 @@ console.log("  order  " + L.join(" "));
 - ★ **`Iterator.concat`** — 인자를 **이터러블로만** 받고 이터레이터 프로토콜만 가진 `{ next }` 는 거절한다. 각 인자의 `Symbol.iterator` 는 **그 차례가 올 때** 부른다(3-answer 의 12번). ES2026.
 - ★ **비동기 쪽** — `AsyncIterator.prototype` 의 헬퍼는 ES2025 에 **없다**(finished proposals 의 「Sync Iterator helpers」 가 그 이름대로 동기만이다). [목록의 **40번 주제**](../40-async-iteration-and-for-await/)의 몫이다.
 - ★ **`Iterator.prototype[Symbol.dispose]`** — `using` 선언과 함께 쓰는 자원 정리 규약. Chrome 151 에 있고 finished proposals 에서 2027 이다. 이 문서는 다루지 않는다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다** — 여기서는 **콜백과 원본 `next`/`return` 에 심은 로그**다.
+`arr.map(f).filter(g).slice(0, 2)` 와 `arr.values().map(f).filter(g).take(2).toArray()` 는 **결과가 한 글자도 같다**(`[20,40]`).
+그런데 `f` 와 `g` 가 **몇 번, 어떤 순서로** 불렸는지는 결과에 흔적이 없다. ★★★ **값으로는 원리상 못 가른다.**
+그래서 콜백마다 로그를 남기게 하고, 원본 이터레이터의 `next`·`return` 에도 로그를 심었다.
+**이 문서의 결론은 전부 그 로그와, 그 로그를 센 격자에서 나온다.**
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 2025 (16판)](https://262.ecma-international.org/16.0/) — `Iterator` 생성자 · `Iterator.from` · `Iterator.prototype` 의 `map`·`filter`·`take`·`drop`·`flatMap`·`reduce`·`toArray`·`forEach`·`some`·`every`·`find` · 추상 연산 `GetIteratorDirect` · `IteratorClose`. ★ **이 판에는 `Iterator.concat` 이 없다**(본문에서 그 이름을 찾아 0건).
+- [ECMA-262 2026 (17판)](https://262.ecma-international.org/17.0/) — `Iterator.concat` 이 **이 판에서 처음 나온다**(같은 검색 2건).
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 「Sync Iterator helpers」 **2025** · 「Iterator Sequencing」 **2026** · 「Explicit Resource Management」 **2027**
+
+★ 명세 문장을 인용하는 곳은 딱 한 군데다 — `Iterator.prototype.take` 의 단계 가운데
+「`If numLimit is NaN, then … Return ? IteratorClose(iterated, error).`」(16판). 나머지 규칙 진술은 **추상 연산 이름**으로만 하고,
+**값·호출 로그·예외 타입과 메시지는 전부 실행으로** 접지했다. 명세 조항 번호는 인용하지 않는다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+★★★ **헬퍼는 이 머신의 node 두 판(v18.19.1 · v20.19.6)에 없다** — 맨 위 판별 블록이 그 근거다.
+그래서 **본체 탐침은 전부 Google Chrome 151 의 헤드리스 모드**에서 돌렸다. 탐침 파일 하나를 `js20b-page.html?<파일>` 로 열고,
+페이지가 `console.log` 를 가로채 모은 줄을 `--dump-dom` 으로 받는다(페이지 소스도 맨 위에 싣는다).
+배너가 `google-chrome --headless …` 인 블록이 그것이고, `node20` 배너는 `~/.nvm/versions/node/v20.19.6/bin/node` 다.
+★★ **예외는 `try`/`catch` 로 받아 `이름 「메시지」` 꼴로만** 찍었다 — 스택트레이스는 한 줄도 싣지 않는다.
+★ **이 주제의 블록에는 주소도 시간도 난수도 없다.** 같은 판에서 다시 돌리면 한 글자도 안 변한다.
+
+**버전** — 이 주제는 **한 판(ES2025)에 들어왔다.** 그 위에 얹힌 것 하나가 다음 판이다.
+
+| 무엇 | 판 | node 18 / 20 | Chrome 151 |
+|---|---|---|---|
+| 이터레이터 프로토콜 · 제너레이터 · 배열 메서드 `map`/`filter`/`slice` | **ES2015** 이전\~ES2015 | 있다 | 있다 |
+| 전역 `Iterator` · `Iterator.from` · `Iterator.prototype.map`/`take`/… | **ES2025** | **없다** | 있다 |
+| `Iterator.concat` | **ES2026** | 없다(안 물었다 — 헬퍼 자체가 없다) | 있다 |
+| `Iterator.prototype[Symbol.dispose]` | ES2027 쪽(finished proposals 의 해) — ★ 이 문서는 **쓰지 않는다** | — | 있다(동작 (4)의 `[3]`) |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **① 추상 연산에 로그 심기**(본체) | 콜백 `map(x)` · `filter(x)` 로그 → **몇 번 · 어떤 순서로** · 원본의 `next#N` · `return()` 로그 → **원본을 몇 번 당기고 언제 닫나** |
+| ★★★ **② 전수 격자** | 파이프라인 열 벌을 배열판/헬퍼판으로 → **값이 갈린 칸 / 호출 수가 갈린 칸**을 스크립트가 센다 · 헬퍼·종단 메서드 14가지의 `return()` 요약 표 |
+| ★★ **④ 예외의 `constructor.name` + `message`** | 인자 검사가 **만드는 순간**에 던지나 **첫 `next()`** 에 던지나 — 그리고 그때 원본을 닫나. ★ **문구가 원인을 가리키지 않는 자리가 하나 있다**(`flatMap` — 어디서 틀리나 (6)) |
+| ★★ **판별 블록** | 이 기능이 **판마다 있나** — node 두 판과 Chrome 을 같은 스크립트로 |
+| ★★ **창을 바꿔 물었다**(제5의 상태) | node 에는 헬퍼가 없어 **같은 질문(「한 값씩 흐르나」)을 제너레이터 함수로 손수 만든 파이프라인**에 던졌다(동작 (7)) — 로그가 헬퍼판과 **한 글자도 같다** |
+| ★ **부적용 — ③ 브랜드 태그** | 헬퍼가 붙느냐는 **내부 슬롯이 아니라 프로토타입 사슬**이 정한다(동작 (4)) — `Object.prototype.toString` 이 답할 질문이 없다. **잴 것이 없다** |
+| ★ **부적용 — 진단의 `(행,열)`**(18-C) | 이 주제에는 `SyntaxError` 가 한 줄도 없다. 헬퍼는 전부 런타임 메서드다 — **잴 것이 없다** |
+| ★★★ **안 쟀다 — 시간 · 메모리** | 「헬퍼는 메모리를 아낀다」·「헬퍼가 배열보다 빠르다」를 **한 줄도 쓰지 않는다.** 센 것은 **콜백 호출 수와 원본을 당긴 수**뿐이다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 예외 **문구**(V8 의 표현 — 판이 오르면 바뀔 수 있다) | ★★★ **콜백 로그의 개수와 순서** · 원본 `next`/`return` 로그 |
+| Chrome 의 **판 번호**(판별 블록 첫 줄) | ★★★ **예외의 종류**(`TypeError`/`RangeError`)와 **던진 시점**(만들 때 / 첫 `next()`) |
+| 스택트레이스 — 한 줄도 싣지 않았다 | ★★ 격자의 **「갈린 칸 N / M」** 집계 줄 · 결과 값 |
+
+이 주제의 탐침 가운데 **node 에서 도는 것은 `js20b-21x-node-absent.js` 하나**다 — 두 판 대조기는 그 줄을 `identical` 로 세었다.
+배치 전체의 집계 줄은 판별 블록 바로 아래에 싣는다(대조기 전문은 3-answer 의 10번).
+
+**선행** — [20 — 제너레이터](../20-generators/2-summary.md)(★★★ 직접 선행) · [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ `return()` 의 규칙) ·
+[15 — 프로토타입 체인](../15-prototype-chain/2-summary.md)(헬퍼가 **어디에** 붙어 있나).
+★★★ **19번이 이미 잰 것을 다시 재지 않는다** — 소비자 17가지 중 `return()` 이 불린 자리는 **8가지**였고(`return() was called in 8 of 17 probes`),
+`const [a, b, c] = it` 이 값이 딱 셋인데도 닫는다는 것, `next()` 자체가 던지면 닫지 않는다는 것도 거기서 봤다.
+그리고 19번 `js16b-19f-close-and-helpers.js` 의 `[4]` 가 **node20 에 `typeof globalThis.Iterator` 가 `undefined`** 임을 이미 찍었다.
+**이어지는 곳** — [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md) · [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md) · [목록의 **40번 주제**](../40-async-iteration-and-for-await/) 「비동기 이터레이션」
+
+★★ **경계 — `return()` 이 언제 불리나의 규칙은 19번이 정본이다.** 여기서는 **헬퍼·종단 메서드가 그 규칙 위에서 원본을 언제 닫나**만 본다.
+★★ **경계 — 제너레이터의 내부 흐름(`yield`·`next(값)`·`yield*`)은 20번이 정본이다.** 여기서 제너레이터는 **끝없는 원본**과 **손수 만든 파이프라인**으로만 쓴다.
+★ **경계 — 배열 메서드 자체(`map`·`filter`·`slice` 의 비변형 계약)는** [목록의 **25번 주제**](../25-array-non-mutating-and-copy-methods/) 「배열 비변형·복사 메서드」**가 정본이다.** 여기서는 **평가 시점의 대비 상대**로만 쓴다.

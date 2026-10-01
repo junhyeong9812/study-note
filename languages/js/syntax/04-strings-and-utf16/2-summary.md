@@ -1,20 +1,5 @@
 # js/syntax/04 — 문자열과 UTF-16: 「`length` 가 세는 것은 글자가 아니다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 최신 초안](https://tc39.es/ecma262/) — String 타입(UTF-16 코드 유닛의 열)·`codePointAt`·`normalize`·well-formed 메서드
-> - [ECMA-262 판별 아카이브](https://262.ecma-international.org/) — `isWellFormed`/`toWellFormed` 가 들어온 판(ES2024)을 가릴 때
-> - [ECMA-402 (Intl)](https://tc39.es/ecma402/) — `Intl.Segmenter`
-> - [MDN — `String.prototype.length`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length) · [MDN — `Intl.Segmenter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·예외 타입과 메시지는 전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> **어느 판에서 나왔는지는 아래 첫 블록**에 있다.
-
 ```sh
 // js01b-versions.sh
 #!/usr/bin/env bash
@@ -1252,3 +1237,17 @@ DB 칼럼 크기에 필요한 것은 `Buffer.byteLength` 나 `TextEncoder().enco
   「안 돌려 본 것」이 아니라 「**표준으로는 잴 방법이 없는 것**」이라 따로 적는다.
 - **`Buffer` 는 Node 의 API** 다. 같은 답을 **표준 `TextEncoder`** 로도 확인해 두었으므로
   이 문서의 UTF-8 관련 결론은 Node 에만 매인 것이 아니다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 최신 초안](https://tc39.es/ecma262/) — String 타입(UTF-16 코드 유닛의 열)·`codePointAt`·`normalize`·well-formed 메서드
+- [ECMA-262 판별 아카이브](https://262.ecma-international.org/) — `isWellFormed`/`toWellFormed` 가 들어온 판(ES2024)을 가릴 때
+- [ECMA-402 (Intl)](https://tc39.es/ecma402/) — `Intl.Segmenter`
+- [MDN — `String.prototype.length`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length) · [MDN — `Intl.Segmenter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·예외 타입과 메시지는 전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+**어느 판에서 나왔는지는 본문의 첫 블록**에 있다.

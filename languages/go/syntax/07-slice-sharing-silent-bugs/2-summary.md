@@ -1,19 +1,5 @@
 # go/syntax/07 — 슬라이스 공유로 조용히 틀리는 자리 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Slice types ·
-> Appending to and copying slices · Slice expressions · Comparison operators 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> ★★ **이 주제의 버그는 전부 「컴파일도 되고 `go vet` 도 조용하고 테스트도 통과하는」 것**이다.
-> (5)절에서 **`go build` · `go vet` · `go test` · `go test -race` 넷이 전부 통과하는데
-> 데이터가 짓이겨진** 프로그램을 던진다.
-> **버전** — 여기 나오는 모든 동작은 1.0부터 같다(3-인덱스 슬라이싱만 **1.2**부터).
-> `clear` 는 **1.21**, `slices.Clone`·`slices.Equal` 도 **1.21**부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 ## 이 갈래가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
@@ -861,3 +847,17 @@ func main() {
   다만 이것은 추정이고, **이 문서는 vet 의 소스를 읽어 확인하지 않았다.**
 - 이 주제의 모든 예제는 **한 고루틴**이다. 고루틴 둘이 같은 배열을 만지면 그때는 **진짜 레이스**이고
   `-race` 가 잡는다. 정본은 [목록의 **35번 주제**](../35-data-races-and-the-race-detector/)다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Slice types ·
+Appending to and copying slices · Slice expressions · Comparison operators 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+★★ **이 주제의 버그는 전부 「컴파일도 되고 `go vet` 도 조용하고 테스트도 통과하는」 것**이다.
+(5)절에서 **`go build` · `go vet` · `go test` · `go test -race` 넷이 전부 통과하는데
+데이터가 짓이겨진** 프로그램을 던진다.
+**버전** — 여기 나오는 모든 동작은 1.0부터 같다(3-인덱스 슬라이싱만 **1.2**부터).
+`clear` 는 **1.21**, `slices.Clone`·`slices.Equal` 도 **1.21**부터다.

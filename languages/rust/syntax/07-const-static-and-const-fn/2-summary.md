@@ -1,18 +1,5 @@
 # rust/syntax/07 — 상수·`static`·`const fn` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Constant items ·
-> Static items · Constant evaluation 절 · [Edition Guide](https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html) 의
-> Disallow references to `static mut` · `rustc --explain E0005` / `E0015` / `E0080` / `E0133` / `E0428`.
-> 이 머신의 `rust-docs`(1.92.0)를 열어 확인했고, 인용은 그 판의 원문이다.
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서 돌렸다.\
-> ★ **상수 평가·주소·해제 시점이 걸린 프로그램은 전부 두 번 돌렸다** — `rustc --edition 2021 ex.rs`(디버그)와\
-> `rustc --edition 2021 -O ex.rs`(릴리스). 에디션이 갈리는 자리는 **`rustc --edition 2024`** 로 한 번 더 돌렸다.
-> **버전** — `const`·`static`·`const fn` 문법은 이 문서가 쓰는 범위 안에서 전부 안정판이다.\
-> **2024 에디션은 1.85.0(2025-02-20)에 안정화**되었다(목록 [README](../README.md) 가 고정한 사실).\
-> `clippy` 출력은 `clippy 0.1.92` 다. `!` 타입 표기처럼 **안정판에서 못 쓰는 것은 이 문서에 쓰지 않았다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`const` 는 도장이고 `static` 은 게시판에 붙은 한 장이다.**
@@ -977,3 +964,16 @@ error[E0080]: attempt to divide `100_i32` by zero
 - **`const` 는 함수 안·블록 안에도 둘 수 있다.** 안쪽 블록의 같은 이름 `const` 는 **별개 항목**이라 바깥 것을 가리지 않는다(블록을 나오면 바깥 값이 그대로 보인다 — 실측).
 - **`&raw const` 가 2024 의 권고 형태다.** `static mut` 에 접근해야 하면 참조 대신 원시 포인터를 만든다 — 진단의 `help` 가 그것을 직접 제시한다(`use &raw const instead to create a raw pointer`).
 - **`static mut` 은 읽기만 해도 `unsafe`** 다. 「쓸 때만 위험하다」가 아니다 — E0133 의 note 가 `aliasing violations or data races` 를 이유로 든다.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Constant items ·
+Static items · Constant evaluation 절 · [Edition Guide](https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html) 의
+Disallow references to `static mut` · `rustc --explain E0005` / `E0015` / `E0080` / `E0133` / `E0428`.
+이 머신의 `rust-docs`(1.92.0)를 열어 확인했고, 인용은 그 판의 원문이다.
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서 돌렸다.\
+★ **상수 평가·주소·해제 시점이 걸린 프로그램은 전부 두 번 돌렸다** — `rustc --edition 2021 ex.rs`(디버그)와\
+`rustc --edition 2021 -O ex.rs`(릴리스). 에디션이 갈리는 자리는 **`rustc --edition 2024`** 로 한 번 더 돌렸다.
+**버전** — `const`·`static`·`const fn` 문법은 이 문서가 쓰는 범위 안에서 전부 안정판이다.\
+**2024 에디션은 1.85.0(2025-02-20)에 안정화**되었다(목록 [README](../README.md) 가 고정한 사실).\
+`clippy` 출력은 `clippy 0.1.92` 다. `!` 타입 표기처럼 **안정판에서 못 쓰는 것은 이 문서에 쓰지 않았다.**

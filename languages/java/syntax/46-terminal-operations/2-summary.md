@@ -1,16 +1,5 @@
 # java/syntax/46 — 최종 연산과 지연 평가·단락 평가 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../45-intermediate-operations/`](../45-intermediate-operations/). 중간 연산이 원소별로 흐른다는 것을 먼저 본다.
-> **기준 소스** — [`java.util.stream` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) · [`Stream` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/Stream.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/stream/Stream.java`·`package-info.java`(`lib/src.zip`)
-> **실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 같은 프로그램 6개를 **17.0.13 · 25.0.1** 에서도 돌렸다. **스택트레이스의 줄 번호 말고는 출력이 전부 같았다**(아래 「구현 세부사항 대 언어 보장」).
-> **버전** — 최종 연산은 전부 **Java 8**. `Stream.toList()` 만 **Java 16**. 17·21·25 동작 동일.
-> **범위** — "무엇을 세고 무엇을 찾는가"라는 **알고리즘**은 [`../../../../cs/algorithm/`](../../../../cs/algorithm/) 이 정본이다.\
-> 그쪽은 **탐색·집계를 어떤 절차로 하느냐**까지, 여기는 **그 절차를 스트림이 언제 실제로 돌리느냐**부터다.
-> 병렬에서 달라지는 것은 [`../49-parallel-streams/`](../49-parallel-streams/) 가 정본이다 — 여기는 **순차 기준**으로 읽는다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **최종 연산은 벨트 끝의 시동 스위치다.**
@@ -588,3 +577,14 @@ JDK 21.0.5                                          JDK 25.0.1
 
   **순서는 보장하지만 스레드는 보장하지 않는다.** 실측에서도 `forEachOrdered` 의 액션이 워커 스레드에서 돌았고, 실행마다 1~2개 스레드가 관여했다(`main` 이 될 때도 있었다).
 - **`collect` 는 최종 연산 하나일 뿐이다.** 그 안에서 무엇을 어떻게 모으는지는 `Collector` 가 정한다 — 47·48번이 그 이야기다.
+
+## 실행 환경
+
+**선행** — [`../45-intermediate-operations/`](../45-intermediate-operations/). 중간 연산이 원소별로 흐른다는 것을 먼저 본다.
+**기준 소스** — [`java.util.stream` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) · [`Stream` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/Stream.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/stream/Stream.java`·`package-info.java`(`lib/src.zip`)
+**실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+같은 프로그램 6개를 **17.0.13 · 25.0.1** 에서도 돌렸다. **스택트레이스의 줄 번호 말고는 출력이 전부 같았다**(본문 「구현 세부사항 대 언어 보장」).
+**버전** — 최종 연산은 전부 **Java 8**. `Stream.toList()` 만 **Java 16**. 17·21·25 동작 동일.
+**범위** — "무엇을 세고 무엇을 찾는가"라는 **알고리즘**은 [`../../../../cs/algorithm/`](../../../../cs/algorithm/) 이 정본이다.\
+그쪽은 **탐색·집계를 어떤 절차로 하느냐**까지, 여기는 **그 절차를 스트림이 언제 실제로 돌리느냐**부터다.
+병렬에서 달라지는 것은 [`../49-parallel-streams/`](../49-parallel-streams/) 가 정본이다 — 여기는 **순차 기준**으로 읽는다.

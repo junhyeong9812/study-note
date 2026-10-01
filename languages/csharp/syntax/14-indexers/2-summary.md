@@ -1,35 +1,5 @@
 # csharp/syntax/14 — 인덱서 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — 인덱서](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/indexers/) ·
-> [Learn — 인덱스와 범위](https://learn.microsoft.com/en-us/dotnet/csharp/tutorials/ranges-indexes) ·
-> [.NET API — `IndexerNameAttribute`](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.indexernameattribute) ·
-> [.NET API — `DefaultMemberAttribute`](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.defaultmemberattribute)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL 은 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.\
-> ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).
-> **버전** — 인덱서는 **C# 1.0부터** · `Index`/`Range`(`^1`·`..`)는 **C# 8** · 확장 멤버는 **C# 14**다.\
-> `-langversion:latest` 로 던졌고, 확장 인덱서만 `-langversion:preview` 로도 한 번 더 던졌다((7)).
-> **경계** — **속성의 전모**는 [13번](../13-properties-init-required-field/), **배열과 `^`·`..` 연산자 자체**는 [09번](../09-arrays-index-and-range/),\
-> **컬렉션 고르기**는 [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/)이 정본이다.\
-> 여기서는 「**내 타입에 대괄호를 붙이면 무엇이 생기나**」만 센다.
-> ★★★ **[13번](../13-properties-init-required-field/)과 한 사슬이다.** 둘 다 「**메서드로 컴파일되는 문법**」이고,\
-> 인덱서는 한마디로 **인자를 받는 속성**이다. 13편의 `get_X`/`set_X` 가 여기서 `get_Item`/`set_Item` 이 된다.
-> ★★ **대비** — 파이썬 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **32번**([`32-container-protocol/`](../../../python/syntax/32-container-protocol/))이 같은 자리다 —\
-> 파이썬은 `__getitem__` 이라는 **약속된 이름**을 찾고, C# 은 **`DefaultMemberAttribute` 라는 메타데이터**를 남긴다((1)).\
-> ★ C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **22번**(연산자 오버로딩)이 `operator[]` 쪽인데 **이 판에서 C++ 은 안 던졌다.**
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** — 판마다 다듬인다 | ★★★ **진단 코드**(`CS0111`·`CS0106`·`CS8652`·`CS9303`…)와 **`(행,열)`** |
-> | **IL 오프셋 폭**(`IL_000d`)이 판마다 달라질 수 있다는 것 | ★★★ **옵코드 이름과 순서**(`callvirt`·`newobj`·`dup`·`sub`) |
-> | ★ **증분의 절댓값 일부** — 아래 (9)에서 **2×2 판 격자**로 갈랐다 | ★★★ **할당이 0 인 칸과 0 이 아닌 칸**(네 판에서 한 글자도 안 움직였다) |
-> | 여러 진단이 나올 때 Roslyn 이 내는 **순서** — 배너에 `\| sort` 를 적었다 | ★★ **`cc exit` 와 `run exit`**(갈라 적었다) · **`DefaultMember` 이름** |
-
 ## 이 판
 
 ```text
@@ -723,3 +693,34 @@ class Table {
   ★★★ **이 판에서 `Slice` 패턴은 안 던졌다** — `this[Range]` 를 직접 선언한 판만 봤다((3)).
 - ★ **인덱서에 `ref` 반환을 붙일 수 있나** — `List<T>` 에는 없지만 `Span<T>` 에는 있다.\
   ★★★ **이 판에서 안 던졌다.** [13번](../13-properties-init-required-field/) (8)의 `ref` 반환 속성 규칙이 어떻게 이어지는지는 확인 안 했다.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — 인덱서](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/indexers/) ·
+[Learn — 인덱스와 범위](https://learn.microsoft.com/en-us/dotnet/csharp/tutorials/ranges-indexes) ·
+[.NET API — `IndexerNameAttribute`](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.indexernameattribute) ·
+[.NET API — `DefaultMemberAttribute`](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.defaultmemberattribute)
+**실행 검증** — 이 문서의 모든 출력·진단·IL 은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.\
+★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).
+**버전** — 인덱서는 **C# 1.0부터** · `Index`/`Range`(`^1`·`..`)는 **C# 8** · 확장 멤버는 **C# 14**다.\
+`-langversion:latest` 로 던졌고, 확장 인덱서만 `-langversion:preview` 로도 한 번 더 던졌다((7)).
+**경계** — **속성의 전모**는 [13번](../13-properties-init-required-field/), **배열과 `^`·`..` 연산자 자체**는 [09번](../09-arrays-index-and-range/),\
+**컬렉션 고르기**는 [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/)이 정본이다.\
+여기서는 「**내 타입에 대괄호를 붙이면 무엇이 생기나**」만 센다.
+★★★ **[13번](../13-properties-init-required-field/)과 한 사슬이다.** 둘 다 「**메서드로 컴파일되는 문법**」이고,\
+인덱서는 한마디로 **인자를 받는 속성**이다. 13편의 `get_X`/`set_X` 가 여기서 `get_Item`/`set_Item` 이 된다.
+★★ **대비** — 파이썬 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **32번**([`32-container-protocol/`](../../../python/syntax/32-container-protocol/))이 같은 자리다 —\
+파이썬은 `__getitem__` 이라는 **약속된 이름**을 찾고, C# 은 **`DefaultMemberAttribute` 라는 메타데이터**를 남긴다((1)).\
+★ C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **22번**(연산자 오버로딩)이 `operator[]` 쪽인데 **이 판에서 C++ 은 안 던졌다.**
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** — 판마다 다듬인다 | ★★★ **진단 코드**(`CS0111`·`CS0106`·`CS8652`·`CS9303`…)와 **`(행,열)`** |
+| **IL 오프셋 폭**(`IL_000d`)이 판마다 달라질 수 있다는 것 | ★★★ **옵코드 이름과 순서**(`callvirt`·`newobj`·`dup`·`sub`) |
+| ★ **증분의 절댓값 일부** — 본문 (9)에서 **2×2 판 격자**로 갈랐다 | ★★★ **할당이 0 인 칸과 0 이 아닌 칸**(네 판에서 한 글자도 안 움직였다) |
+| 여러 진단이 나올 때 Roslyn 이 내는 **순서** — 배너에 `\| sort` 를 적었다 | ★★ **`cc exit` 와 `run exit`**(갈라 적었다) · **`DefaultMember` 이름** |

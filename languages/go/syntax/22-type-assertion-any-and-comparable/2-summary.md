@@ -1,17 +1,5 @@
 # go/syntax/22 — 타입 단언·`any`·`comparable` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Type assertions · Type switches ·
-> Comparison operators · General interfaces · Satisfying a type constraint 절.
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했고,
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> **버전** — 단언과 타입 스위치는 **1.0부터 같다.** 판 경계는 둘이다 —
-> **`any` 라는 이름이 1.18부터**이고, **`comparable` 도 1.18부터**다.
-> ★★★ 그리고 **「인터페이스가 `comparable` 을 만족하는 것」이 1.20부터**인데,
-> 그 판 경계를 **컴파일러가 `go.mod` 의 `go` 한 줄을 보고 직접 말해 준다**((7)절).
-
 ★ **본체는 셋째 창이다** — 「같은 질문을 컴파일 타임과 런타임에 각각 던져 답이 어디서 오나를 보는 창」.
 `any` 를 `==` 하면 **런타임 패닉**이고 `comparable` 을 걸면 **컴파일 에러**다. 그 대비가 이 주제의 급소다.
 
@@ -1382,3 +1370,16 @@ func eq[T comparable](a, b T) bool { return a == b }
 - ★★ **`comparable` 이 아닌 다른 미리 선언된 제약**(`cmp.Ordered` 등)은 **안 던졌다**([목록의 **38번 주제**](../38-slices-maps-and-cmp/)).
 - ★ **1.19 이하에서 `any` 를 `comparable` 에 주는 것 말고 다른 판 경계**
   (예: 1.18에서 `comparable` 자체가 없던 것)는 **안 던졌다** — `go.mod` 를 1.17 로 낮추는 판을 안 만들었다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Type assertions · Type switches ·
+Comparison operators · General interfaces · Satisfying a type constraint 절.
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했고,
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+**버전** — 단언과 타입 스위치는 **1.0부터 같다.** 판 경계는 둘이다 —
+**`any` 라는 이름이 1.18부터**이고, **`comparable` 도 1.18부터**다.
+★★★ 그리고 **「인터페이스가 `comparable` 을 만족하는 것」이 1.20부터**인데,
+그 판 경계를 **컴파일러가 `go.mod` 의 `go` 한 줄을 보고 직접 말해 준다**((7)절).

@@ -1,10 +1,5 @@
 # java/syntax/26 — `try`-with-resources: `AutoCloseable`·suppressed·`finally` 순서 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·스택트레이스·컴파일 에러·바이트코드는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> 실행 프로그램 넷은 **17.0.13 · 25.0.1** 에서도 돌렸다. `Ex.java (26-h)` 만 결과가 갈렸고(`ExecutorService`) 나머지는 같았다.\
-> 바이트코드는 `javap -c -p` 출력을, javadoc 은 `lib/src.zip` 의 실파일을 그대로 옮겼다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -695,3 +690,9 @@ try (var ex = Executors.newFixedThreadPool(4)) {
 **구현 의존 항목** — 펼쳐진 바이트코드의 오프셋·명령 순서, `Suppressed:` 출력의 들여쓰기와 `... N more`, 컴파일 에러 문구 전문은 **구현 세부**다.\
 버전이 올랐을 때 다시 돌려 볼 것은 **`(26-f)`·`(26-g)` 의 `javap` 와 `(26-h)` 의 인터페이스 표**다 — 표준 타입이 `AutoCloseable` 로 바뀌는 일이 실제로 있었다(`ExecutorService`).\
 반면 역순 close·suppressed 규칙·`null` 자원 처리·자원 변수의 `final` 성은 JLS 가 보장한다.
+
+## 실행 환경
+
+이 파일의 모든 출력·스택트레이스·컴파일 에러·바이트코드는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+실행 프로그램 넷은 **17.0.13 · 25.0.1** 에서도 돌렸다. `Ex.java (26-h)` 만 결과가 갈렸고(`ExecutorService`) 나머지는 같았다.\
+바이트코드는 `javap -c -p` 출력을, javadoc 은 `lib/src.zip` 의 실파일을 그대로 옮겼다.

@@ -1,49 +1,5 @@
 # python/syntax/30-repr-eq-hash-contracts — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [3.3.1. Basic customization — `object.__hash__`](https://docs.python.org/3.12/reference/datamodel.html#object.__hash__) — **`__eq__` 만 정의하면 `__hash__` 가 `None` 이 되는 규칙**과 되살리는 법
-> - [`object.__repr__`](https://docs.python.org/3.12/reference/datamodel.html#object.__repr__) · [`object.__str__`](https://docs.python.org/3.12/reference/datamodel.html#object.__str__) — 「공식」과 「비공식」 표현, 그리고 **한쪽이 다른 쪽을 대신하는 방향**
-> - [`object.__eq__`](https://docs.python.org/3.12/reference/datamodel.html#object.__eq__) — 사용자 정의 클래스의 기본 동작
-> - [glossary — hashable](https://docs.python.org/3.12/glossary.html#term-hashable) — 해시 가능의 정의 세 조각
-> - **이 머신의 표준 라이브러리 소스** `/usr/lib/python3.12/dataclasses.py` — `_hash_action` 표(8행)를 **직접 읽었다.** `dataclass` 절의 근거는 문서가 아니라 이 표다.
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ 던지는 형태를 하나로 고정했다 — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
-> ★★ **캐럿은 예외 종류에 달렸다** — 실행 중 예외는 소스 줄도 `^` 캐럿도 안 나오고, `SyntaxError` 라야 둘 다 나온다.
-> 이 문서의 트레이스백 두 벌은 전부 **실행 중 예외**라 **세 줄짜리**다.\
-> ★ **`dataclass` 의 `FrozenInstanceError` 는 트레이스백 대신 타입·메시지로 찍었다** —
-> 그 예외는 스택이 `dataclasses.py` 를 지나 **절대경로가 박히므로** 다른 머신에서 재현이 안 된다.\
-> **버전** — 세 메서드의 계약 자체는 Python 3 내내 같다. 갈리는 것은 둘이다 —
-> `dataclasses` 가 **3.7+**, `str`·`bytes` 해시 무작위화가 **기본 켜짐은 3.3+**(PEP 456 이전에는 `-R` 옵션이었다).\
-> **구현 대 언어 보장 한 줄** — **「`==` 면 해시도 같아야 한다」는 계약과 `__eq__` 만 정의했을 때 `__hash__` 가 `None` 이 되는 것까지가 언어 보장**이고,
-> **계약을 어겼을 때 정확히 무엇이 나오나(키 개수·어느 조회가 실패하나)와 `dict`·`set`·`list` 의 정체 지름길은 CPython 구현**이다.
->
-> ★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | `id()` 와 `0x…` 주소 — **그래서 이 주제는 한 번도 안 찍었다** | 예외 **종류** · `File "<stdin>", line N` · `(exit N)` |
-> | **해시값 자체**(`hash('key')` — 실행마다 다르다) | 해시가 **「같은가 다른가」** |
-> | 판이 오르면 예외 **문구**와 내부 타입 이름 | **호출 로그의 순서** · `__eq__` 가 **불렸나 안 불렸나** |
-> | — | `len()` · **키 개수** · `sorted()` 한 결과 |
-> | — | `dict` 의 **삽입 순서**(3.7+ 언어 보장) |
->
-> ★★★ **이 주제는 해시값을 찍고 싶어지는 주제다.** 그런데 첫 블록이 `sys.flags.hash_randomization` 을 `True` 로 답했다 —
-> **문자열 해시는 프로세스마다 소금이 다르다.** 그래서 이 문서는 값 대신 「**같은가 다른가**」만 근거로 쓴다.
-> 예외는 **정수의 해시**뿐인데, 그것도 **CPython 구현**으로 따로 분류했다(동작 6).\
-> ★ **순서가 보장 안 되는 출력은 한 곳도 없다** — `set` 을 찍은 자리는 전부 `len()` 이고, `dict` 의 키는 `sorted()` 를 거쳤다.
->
-> **선행** — [12번](../12-dict-and-key-requirements/2-summary.md)(★★★ **키 요건의 정본.** 여기는 그 위에서 **클래스 쪽 계약**만) ·
-> [02번](../02-is-vs-eq-interning/2-summary.md)(**`is` 와 `==` 의 정본** — 정체 지름길을 읽으려면 필요하다) ·
-> [29번](../29-classes-and-attribute-lookup/2-summary.md)(**클래스 칸에 `__hash__` 가 `None` 으로 박힌다**는 것을 보려면 속성 탐색을 알아야 한다) ·
-> [13번](../13-set-and-frozenset/2-summary.md)(같은 해시 기계의 「순서 없는」 쪽).\
-> **이 사슬** — [29](../29-classes-and-attribute-lookup/2-summary.md) → 30 → [31](../31-comparison-protocol-and-sortability/2-summary.md) → [32](../32-container-protocol/2-summary.md).
-> 29 가 「속성이 어디서 오나」를 깔고, 30 이 **「같음」의 계약**을, 31 이 **「순서」의 계약**을, 32 가 **「담음」의 계약**을 잇는다.\
-> ★★★ **30·31·32 는 「프로토콜이 곧 계약」인 주제다** — 어기면 컴파일러가 아니라 **자료구조가 조용히 틀린다.** 그 점이 정적 언어와의 대비다.
-
 ## 한눈에 — 쉽게 말하면
 
 **세 메서드는 하는 일이 다르고, 그중 둘만 한 몸이다.**
@@ -1401,3 +1357,50 @@ Rust 는 `f64` 에 `Eq` 를 안 줘서 **키가 되는 것 자체를 막았다**
   ★ 정적 검사기가 잡아 주는 범위는 **안 확인했다**. 정본은 `[목록의 **35번 주제**](../35-abc-and-protocol/)`다.
 - **`set` 의 순회 순서는 `PYTHONHASHSEED` 에 흔들린다** — 그래서 이 문서는 `set` 을 **`len()` 으로만** 찍었다.
   실측은 [13번](../13-set-and-frozenset/2-summary.md)에 있다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [3.3.1. Basic customization — `object.__hash__`](https://docs.python.org/3.12/reference/datamodel.html#object.__hash__) — **`__eq__` 만 정의하면 `__hash__` 가 `None` 이 되는 규칙**과 되살리는 법
+- [`object.__repr__`](https://docs.python.org/3.12/reference/datamodel.html#object.__repr__) · [`object.__str__`](https://docs.python.org/3.12/reference/datamodel.html#object.__str__) — 「공식」과 「비공식」 표현, 그리고 **한쪽이 다른 쪽을 대신하는 방향**
+- [`object.__eq__`](https://docs.python.org/3.12/reference/datamodel.html#object.__eq__) — 사용자 정의 클래스의 기본 동작
+- [glossary — hashable](https://docs.python.org/3.12/glossary.html#term-hashable) — 해시 가능의 정의 세 조각
+- **이 머신의 표준 라이브러리 소스** `/usr/lib/python3.12/dataclasses.py` — `_hash_action` 표(8행)를 **직접 읽었다.** `dataclass` 절의 근거는 문서가 아니라 이 표다.
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ 던지는 형태를 하나로 고정했다 — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
+★★ **캐럿은 예외 종류에 달렸다** — 실행 중 예외는 소스 줄도 `^` 캐럿도 안 나오고, `SyntaxError` 라야 둘 다 나온다.
+이 문서의 트레이스백 두 벌은 전부 **실행 중 예외**라 **세 줄짜리**다.\
+★ **`dataclass` 의 `FrozenInstanceError` 는 트레이스백 대신 타입·메시지로 찍었다** —
+그 예외는 스택이 `dataclasses.py` 를 지나 **절대경로가 박히므로** 다른 머신에서 재현이 안 된다.\
+**버전** — 세 메서드의 계약 자체는 Python 3 내내 같다. 갈리는 것은 둘이다 —
+`dataclasses` 가 **3.7+**, `str`·`bytes` 해시 무작위화가 **기본 켜짐은 3.3+**(PEP 456 이전에는 `-R` 옵션이었다).\
+**구현 대 언어 보장 한 줄** — **「`==` 면 해시도 같아야 한다」는 계약과 `__eq__` 만 정의했을 때 `__hash__` 가 `None` 이 되는 것까지가 언어 보장**이고,
+**계약을 어겼을 때 정확히 무엇이 나오나(키 개수·어느 조회가 실패하나)와 `dict`·`set`·`list` 의 정체 지름길은 CPython 구현**이다.
+
+★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| `id()` 와 `0x…` 주소 — **그래서 이 주제는 한 번도 안 찍었다** | 예외 **종류** · `File "<stdin>", line N` · `(exit N)` |
+| **해시값 자체**(`hash('key')` — 실행마다 다르다) | 해시가 **「같은가 다른가」** |
+| 판이 오르면 예외 **문구**와 내부 타입 이름 | **호출 로그의 순서** · `__eq__` 가 **불렸나 안 불렸나** |
+| — | `len()` · **키 개수** · `sorted()` 한 결과 |
+| — | `dict` 의 **삽입 순서**(3.7+ 언어 보장) |
+
+★★★ **이 주제는 해시값을 찍고 싶어지는 주제다.** 그런데 첫 블록이 `sys.flags.hash_randomization` 을 `True` 로 답했다 —
+**문자열 해시는 프로세스마다 소금이 다르다.** 그래서 이 문서는 값 대신 「**같은가 다른가**」만 근거로 쓴다.
+예외는 **정수의 해시**뿐인데, 그것도 **CPython 구현**으로 따로 분류했다(동작 6).\
+★ **순서가 보장 안 되는 출력은 한 곳도 없다** — `set` 을 찍은 자리는 전부 `len()` 이고, `dict` 의 키는 `sorted()` 를 거쳤다.
+
+**선행** — [12번](../12-dict-and-key-requirements/2-summary.md)(★★★ **키 요건의 정본.** 여기는 그 위에서 **클래스 쪽 계약**만) ·
+[02번](../02-is-vs-eq-interning/2-summary.md)(**`is` 와 `==` 의 정본** — 정체 지름길을 읽으려면 필요하다) ·
+[29번](../29-classes-and-attribute-lookup/2-summary.md)(**클래스 칸에 `__hash__` 가 `None` 으로 박힌다**는 것을 보려면 속성 탐색을 알아야 한다) ·
+[13번](../13-set-and-frozenset/2-summary.md)(같은 해시 기계의 「순서 없는」 쪽).
+
+29 가 「속성이 어디서 오나」를 깔고, 30 이 **「같음」의 계약**을, 31 이 **「순서」의 계약**을, 32 가 **「담음」의 계약**을 잇는다.\
+★★★ **30·31·32 는 「프로토콜이 곧 계약」인 주제다** — 어기면 컴파일러가 아니라 **자료구조가 조용히 틀린다.** 그 점이 정적 언어와의 대비다.
+
+---
+
+**이 사슬** — [29](../29-classes-and-attribute-lookup/2-summary.md) → 30 → [31](../31-comparison-protocol-and-sortability/2-summary.md) → [32](../32-container-protocol/2-summary.md).

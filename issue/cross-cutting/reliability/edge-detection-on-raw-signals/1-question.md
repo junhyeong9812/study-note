@@ -1,10 +1,5 @@
 # issue/cross-cutting/reliability/edge-detection-on-raw-signals — 사건은 값이 아니라 전이다: 접기·덮어쓰기·샘플링이 edge를 지운다 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. "상태(level)"와 "사건(edge)"은 무엇이 다른가. 알림·통지가 level이 아니라 edge(진입 전이)에 걸려야 하는 이유는 무엇인가.
 2. 예측: 두 신호 `blocked`(우선순위 3)·`doneUnseen`(우선순위 2)를 우선순위 스칼라(`max()`)로 접고, 스칼라 값이 바뀌면 새 값의 종류로 알림을 낸다. `doneUnseen → blocked → blocked 해제` 순서로 흐르면 어떤 알림이 한 번 더 나가는가. 왜 스칼라만으로는 막을 수 없는가.

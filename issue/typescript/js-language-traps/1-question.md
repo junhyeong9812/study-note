@@ -1,10 +1,5 @@
 # issue/typescript/js-language-traps — 직관과 다른 JS 언어 규칙이 조용히 오동작한다 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. (예측) 컴포넌트 안에서 `useEffect(..., [items, locale])`가 먼저 나오고, 두 줄 아래에 `const { locale } = useRouter();`가 있다. `const`는 호이스팅되는데 왜 렌더 시 ReferenceError가 나는가? TDZ를 설명하라.
 2. (왜) `return { [A]: <CompA label={t("a")}/>, [B]: <CompB/> }[step];` — switch처럼 보이지만 선택되지 않은 분기의 `t()` 호출과 엘리먼트 생성이 매 렌더 실행된다. 객체 리터럴의 평가 순서로 설명하라. 어떻게 하면 선택된 것만 평가되는가?

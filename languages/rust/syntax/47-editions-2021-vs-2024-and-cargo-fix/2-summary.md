@@ -1,15 +1,5 @@
 # rust/syntax/47 — 에디션 2021 대 2024 — 같은 코드가 다르게 컴파일되는 자리 · `cargo fix --edition` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Edition Guide — Rust 2024](https://doc.rust-lang.org/edition-guide/rust-2024/)(항목별 페이지 — `if let` 임시값 · 꼬리식 임시값 · RPIT 포착 · `!` 폴백 · `unsafe extern` · unsafe 속성 · `expr` 조각 · `gen` · `Box<[T]>` · 새로 unsafe 가 된 함수 · `static mut` 참조 · `unsafe_op_in_unsafe_fn`) ·
-> [Cargo Book — `cargo fix`](https://doc.rust-lang.org/cargo/commands/cargo-fix.html)(「`--edition` 은 매니페스트의 `edition` 을 **갱신하지 않는다**」 · 절차 ① fix ② `edition` 수정 ③ **테스트**).
-> ★ 두 문서 모두 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `cargo 1.92.0` · `x86_64-unknown-linux-gnu` 에서
-> 블록 배너의 **`rustc --edition 2021` / `--edition 2024`** · cargo 명령으로 돌려 받은 것이다(cargo 는 `CARGO_NET_OFFLINE=true`, 의존성 0개).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★ **버전** — 2021 에디션은 **1.56.0**, 2024 에디션은 **1.85.0** 에 안정화됐다(아래 `tools` 블록 — 로컬 `releases.md`). ★ **속도·메모리는 재지 않았다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체 창 — ⑧ 에디션 판 격자(같은 소스 × `--edition 2021` / `2024` → 컴파일되나 · 출력이 같은가 · 경고 수)다.** 컴파일러 하나로 두 규칙을 내므로 **차이가 컴파일러 판도 최적화도 아닌 「에디션 그 자체」** 임이 한 줄마다 증명된다.
 
 ```text
@@ -1080,3 +1070,13 @@ For more information about this error, try `rustc --explain E0277`.
 - 예약 구문 `#"…"#`(guarded string) · rustfmt 의 스타일 에디션 · rustdoc 의 doctest 병합 — **던지지 않았다.**
 - 꼬리식 임시값의 **`Drop` 순서** 변화(`tail_expr_drop_order` 린트) — 격자의 `tail_temp` 는 **빌림 쪽**만 봤다. **던지지 않았다.**
 - `cargo fix --edition-idioms` — 새 에디션의 관용 표기로 바꾸기. **던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Edition Guide — Rust 2024](https://doc.rust-lang.org/edition-guide/rust-2024/)(항목별 페이지 — `if let` 임시값 · 꼬리식 임시값 · RPIT 포착 · `!` 폴백 · `unsafe extern` · unsafe 속성 · `expr` 조각 · `gen` · `Box<[T]>` · 새로 unsafe 가 된 함수 · `static mut` 참조 · `unsafe_op_in_unsafe_fn`) ·
+[Cargo Book — `cargo fix`](https://doc.rust-lang.org/cargo/commands/cargo-fix.html)(「`--edition` 은 매니페스트의 `edition` 을 **갱신하지 않는다**」 · 절차 ① fix ② `edition` 수정 ③ **테스트**).
+★ 두 문서 모두 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `cargo 1.92.0` · `x86_64-unknown-linux-gnu` 에서
+블록 배너의 **`rustc --edition 2021` / `--edition 2024`** · cargo 명령으로 돌려 받은 것이다(cargo 는 `CARGO_NET_OFFLINE=true`, 의존성 0개).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★ **버전** — 2021 에디션은 **1.56.0**, 2024 에디션은 **1.85.0** 에 안정화됐다(맨 위 `tools` 블록 — 로컬 `releases.md`). ★ **속도·메모리는 재지 않았다.**

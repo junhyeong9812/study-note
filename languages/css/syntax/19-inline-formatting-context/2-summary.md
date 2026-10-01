@@ -1,14 +1,5 @@
 # css/syntax/19 — 인라인 서식 문맥 — 행 상자·`vertical-align`·`line-height` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Inline Layout Module Level 3](https://drafts.csswg.org/css-inline-3/) (행 상자·기준선 정렬·`line-height` 의 정본) · [CSS Display Module Level 3](https://drafts.csswg.org/css-display-3/) (인라인 서식 문맥이 어느 안쪽 값에서 열리나). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 모든 치수를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()`·`Range.getClientRects()`·`getComputedStyle` 로 쟀다.\
-> ★ **이 주제의 수치는 폰트에 달려 있다.** 이 머신의 `system-ui` 는 **Noto Sans CJK JP** 로 해석됐고(`fc-match` 로 확인), 치수 칸마다 그 사실을 적었다.\
-> **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
-> **버전** — CSS 에는 언어 버전이 없다. 행 상자·`vertical-align`·`line-height` 는 CSS2 부터 있던 오래된 규칙이다.
-> **여기서 다루지 않는 것** — `display` 의 바깥/안쪽 값 구조는 [16번](../16-display-inner-outer/2-summary.md)이 정본이고, 여기는 **그 안쪽 값이 `flow` 일 때 줄 안에서 무슨 일이 일어나는가**다. 상자의 네 겹 치수는 [15번](../15-box-model-and-box-sizing/2-summary.md), BFC 는 [17번](../17-block-formatting-context/2-summary.md), 마진 상쇄는 [18번](../18-margin-collapsing/2-summary.md), 계산값이 상속된다는 규칙 자체는 [04번](../04-value-processing-stages/2-summary.md)이다. **줄을 미는 `float` 는 [20번](../20-float-and-clear/2-summary.md)**, 가운데 정렬의 오늘날 답인 flex 축은 [24번](../24-flexbox-axes/2-summary.md)이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **인라인 서식 문맥(IFC)은 「공책의 줄 위에 글자를 세우는 규칙」이다.**
@@ -433,3 +424,12 @@ span  { height: 40px; }                /* 아무 일도 안 일어난다 (4) */
 - **`vertical-align` 은 상속되지 않는다.** 그래서 부모에 걸어도 자식 아이콘이 안 움직인다. `line-height` 와 헷갈리기 쉽다.
 - **기준선은 블록에도 있다.** `inline-block` 상자의 기준선은 **그 안 마지막 행 상자의 기준선**이고, 안에 줄이 없거나 `overflow` 가 `visible` 이 아니면 **자기 아래 margin 끝**이 기준선이 된다. 그래서 [23번](../23-overflow-and-scroll-containers/2-summary.md)의 `overflow` 하나가 줄 정렬을 바꿔 놓는 자리가 있다.
 - **`text-align` 은 행 상자 안의 가로 배치**다. 이 문서가 다룬 세로 배치와 축이 다르다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Inline Layout Module Level 3](https://drafts.csswg.org/css-inline-3/) (행 상자·기준선 정렬·`line-height` 의 정본) · [CSS Display Module Level 3](https://drafts.csswg.org/css-display-3/) (인라인 서식 문맥이 어느 안쪽 값에서 열리나). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 모든 치수를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()`·`Range.getClientRects()`·`getComputedStyle` 로 쟀다.\
+★ **이 주제의 수치는 폰트에 달려 있다.** 이 머신의 `system-ui` 는 **Noto Sans CJK JP** 로 해석됐고(`fc-match` 로 확인), 치수 칸마다 그 사실을 적었다.\
+**WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
+**버전** — CSS 에는 언어 버전이 없다. 행 상자·`vertical-align`·`line-height` 는 CSS2 부터 있던 오래된 규칙이다.
+**여기서 다루지 않는 것** — `display` 의 바깥/안쪽 값 구조는 [16번](../16-display-inner-outer/2-summary.md)이 정본이고, 여기는 **그 안쪽 값이 `flow` 일 때 줄 안에서 무슨 일이 일어나는가**다. 상자의 네 겹 치수는 [15번](../15-box-model-and-box-sizing/2-summary.md), BFC 는 [17번](../17-block-formatting-context/2-summary.md), 마진 상쇄는 [18번](../18-margin-collapsing/2-summary.md), 계산값이 상속된다는 규칙 자체는 [04번](../04-value-processing-stages/2-summary.md)이다. **줄을 미는 `float` 는 [20번](../20-float-and-clear/2-summary.md)**, 가운데 정렬의 오늘날 답인 flex 축은 [24번](../24-flexbox-axes/2-summary.md)이다.

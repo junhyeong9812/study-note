@@ -1,11 +1,5 @@
 # domain-modeling-advanced/07-installment — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/07-installment/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -335,3 +329,7 @@ if (method == Method.ADD_ON) {
 - 기준 소스: `/home/jun/project/myway/domain-modeling-advanced/07-installment/impl/com/domain/installment/InstallmentPlan.java`
 - 문제 원문: `src/main/java/com/domain/installment/InstallmentPlan.java`(TODO 1~3 javadoc·enum 둘), `src/main/java/com/domain/installment/Loan.java`(계약·`monthlyRate`·`interestFree`), `README.md`(나눗셈 한 줄·함정 넷·측정이 알려준 것·변종 검증·생각해볼 것)
 - 계약·수치: `src/test/java/com/domain/installment/InstallmentPlanTest.java`(83,333/83,337/83,334 · 66,186 vs 66,185 · 65,000 · 120,000 · 1.81 · 폭 8 vs 9,163 · 78,848 · 93,333 · 84,170 · 88,848 · 88,856), `src/test/java/com/domain/installment/MeasurementTest.java`(3,517 · 1,483 · 6.14 · 32 · 1,144,524,816 · 1,144,527,151 · 1,144,534,418 · 9,602 · 1,087,450,425 · 2,044,957,850 · 1.79 · 4,836 · 18,000), `README.md` 표(기간별 배수 1.49~1.85)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/07-installment/impl/`).

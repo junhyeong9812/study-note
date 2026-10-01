@@ -1,15 +1,5 @@
 # c/syntax/04 — 부동소수점 타입과 변환: 무엇이 보장이고 무엇이 UB 인가 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Floating types (C)](https://en.cppreference.com/w/c/language/arithmetic_types) · [GCC 13 Optimize Options — `-ffast-math`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html)
-> **실행 검증** — 이 문서의 모든 수치·출력은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> **UB 가 걸린 블록(부동→정수 변환)은 `-O0`·`-O2`·sanitizer 셋으로 돌렸다.**\
-> `-ffast-math` 를 쓴 블록은 그 자리에 밝혔다. 기본 플래그는 `-std=c17 -Wall -Wextra`.
-> **버전** — 부동소수 타입·변환 규칙은 C89 부터 같다. IEEE 754 준수는 **`__STDC_IEC_559__` 가 정의될 때만** 보장된다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「IEEE 754 의 비트 표현·지수·가수 구조」는 [`../../../../cs/foundations/data-representation/`](../../../../cs/foundations/data-representation/) 가 정본이다.\
-> 여기는 **C 의 타입 선택과 변환 규칙**만 쓴다.
-
 ## 한눈에 — 쉽게 말하면
 
 **부동소수점은 「자릿수가 정해진 계산기」다. 자릿수가 모자라면 말없이 반올림한다.**
@@ -670,3 +660,14 @@ inf -nan                       (아무 말 없음)
 
 - `%a` 서식은 부동소수를 **16진 부동소수**로 찍는다. `%.17g` 보다 짧고 정확히 왕복하지만\
   사람이 읽기 어렵다. 이 문서에서는 **안 써 봤다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Floating types (C)](https://en.cppreference.com/w/c/language/arithmetic_types) · [GCC 13 Optimize Options — `-ffast-math`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html)
+**실행 검증** — 이 문서의 모든 수치·출력은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+**UB 가 걸린 블록(부동→정수 변환)은 `-O0`·`-O2`·sanitizer 셋으로 돌렸다.**\
+`-ffast-math` 를 쓴 블록은 그 자리에 밝혔다. 기본 플래그는 `-std=c17 -Wall -Wextra`.
+**버전** — 부동소수 타입·변환 규칙은 C89 부터 같다. IEEE 754 준수는 **`__STDC_IEC_559__` 가 정의될 때만** 보장된다.
+
+**경계** — 「IEEE 754 의 비트 표현·지수·가수 구조」는 [`../../../../cs/foundations/data-representation/`](../../../../cs/foundations/data-representation/) 가 정본이다.\
+여기는 **C 의 타입 선택과 변환 규칙**만 쓴다.

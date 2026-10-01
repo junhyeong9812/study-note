@@ -1,11 +1,5 @@
 # css/syntax/38 — 미디어 쿼리: 문법·범위 구문·논리 연산 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 읽은 것**이다.\
-> **뷰포트 폭은 `--window-size=W,H` 로 바꿔 가며 잰다** — 경계값은 599·600·601 을 **각각 따로 띄워** 찍었다.\
-> 규칙은 [Media Queries Level 4](https://drafts.csswg.org/mediaqueries-4/) 로 접지했다.\
-> **엔진은 Chrome 하나다.** `@import`·`<link>` 실험만 로컬 HTTP 서버로 띄웠다(A9 참고).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -430,3 +424,10 @@ google-chrome --headless --disable-gpu --no-sandbox --dump-dom http://127.0.0.1:
 - **`conditionText` / `media.mediaText`** — 파서가 이해한 조건 문자열.
 - **등장 순서** — 캐스케이드 6단계의 마지막. `@media` 가 작용하는 유일한 자리(정본은 01번).
 - **너그러운 목록** — 한 항이 무효여도 나머지가 사는 목록. 미디어 쿼리의 쉼표가 그렇고, 선택자의 쉼표는 **반대**다.
+
+## 실행 환경
+
+이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 읽은 것**이다.\
+**뷰포트 폭은 `--window-size=W,H` 로 바꿔 가며 잰다** — 경계값은 599·600·601 을 **각각 따로 띄워** 찍었다.\
+규칙은 [Media Queries Level 4](https://drafts.csswg.org/mediaqueries-4/) 로 접지했다.\
+**엔진은 Chrome 하나다.** `@import`·`<link>` 실험만 로컬 HTTP 서버로 띄웠다(A9 참고).

@@ -1,18 +1,5 @@
 # rust/syntax/55 — async 실전: 런타임 선택 · `Send` 경계 · `Pin` 맛보기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Reference — Await expressions](https://doc.rust-lang.org/reference/expressions/await-expr.html)(「Await expressions are legal only within an async context」) ·
-> [Reference — Crates and source files §main](https://doc.rust-lang.org/reference/crates-and-source-files.html)(`main` 의 제약) ·
-> [std — `MutexGuard`](https://doc.rust-lang.org/std/sync/struct.MutexGuard.html)(`impl !Send` 와 그 이유) · [std — `pin`](https://doc.rust-lang.org/std/pin/index.html) · [std — `Future::poll`](https://doc.rust-lang.org/std/future/trait.Future.html) ·
-> std `task`·`future` 모듈의 **항목 목록 자체**((1)의 블록이 로컬 문서에서 뽑았다).
-> ★ 전부 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. tokio 는 **로컬 cargo 캐시의 소스**를 컴파일했다(문서는 안 읽었다).
-> **실행 검증** — `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `cargo 1.92.0 (344c4567c 2025-10-21)` · `x86_64-unknown-linux-gnu`.
-> 표준 라이브러리만 쓰는 블록은 **`rustc --edition 2021 <파일>.rs`**, tokio 블록은 **`cargo … --offline`**(네트워크 없이 캐시만) 이다.\
-> ★★★ **tokio 판별** — 이 머신의 `~/.cargo/registry` 에 **tokio 1.52.3 이 캐시돼 있었고 `--offline` 으로 빌드됐다**(아래 도구 블록 · (5)). 그래서 「런타임 선택」 한 칸만 tokio 로 쟀다. 나머지는 전부 표준 라이브러리다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
-> ★ **속도·메모리·스레드 비용은 재지 않았다.** `unsafe` 코드는 0줄이다(자기 참조 구조체는 **개념 도식 + 명세 인용**으로만 다룬다 — `unsafe` 는 목록의 **56번 주제** 몫).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ```text
 ===== rustc --version =====
 rustc 1.92.0 (ded5c06cf 2025-12-08)
@@ -207,7 +194,7 @@ For more information about this error, try `rustc --explain E0752`.
 (exit 0)
 ````
 
-- ★★ **`async fn main` 이 보통 `fn main` + 런타임 생성 + `block_on` 으로 바뀐다** — 54번에서 손으로 쓴 `block_on` 의 자리를 런타임이 채운다. ★ 이 블록은 **캐시에 있는 tokio-macros 2.7.2 의 소스 주석**이다(매크로 확장 결과를 직접 본 것이 아니다 — `cargo expand` 도 `-Zunpretty` 도 이 머신에서 못 쓴다 · [57번](../57-macros-macro-rules-and-procedural-macros/) 머리말).
+- ★★ **`async fn main` 이 보통 `fn main` + 런타임 생성 + `block_on` 으로 바뀐다** — 54번에서 손으로 쓴 `block_on` 의 자리를 런타임이 채운다. ★ 이 블록은 **캐시에 있는 tokio-macros 2.7.2 의 소스 주석**이다(매크로 확장 결과를 직접 본 것이 아니다 — `cargo expand` 도 `-Zunpretty` 도 이 머신에서 못 쓴다 · [57번](../57-macros-macro-rules-and-procedural-macros/) 맨 위 부분).
 
 **std 의 `task`·`future` 에 무엇이 있나.**
 
@@ -993,3 +980,16 @@ error: could not compile `r55tk` (bin "rc_spawn_ct") due to 1 previous error
 - `tokio::task::spawn_blocking` — 막는 호출을 전용 스레드로. **던지지 않았다.**
 - 트레이트 안의 `async fn`(history 문서 기준 1.75)과 반환 future 의 `Send` 를 호출하는 쪽이 못 정하는 문제 — [`history/rust/04-비동기-동시성.md`](../../../../history/rust/04-비동기-동시성.md) 5부.
 - 자기 참조 구조체를 직접 만들어 `Pin` 없이 옮겨 보기 — `unsafe` 가 필요하다. 목록의 **56번 주제**.
+
+## 실행 환경
+
+**기준 소스** — [Reference — Await expressions](https://doc.rust-lang.org/reference/expressions/await-expr.html)(「Await expressions are legal only within an async context」) ·
+[Reference — Crates and source files §main](https://doc.rust-lang.org/reference/crates-and-source-files.html)(`main` 의 제약) ·
+[std — `MutexGuard`](https://doc.rust-lang.org/std/sync/struct.MutexGuard.html)(`impl !Send` 와 그 이유) · [std — `pin`](https://doc.rust-lang.org/std/pin/index.html) · [std — `Future::poll`](https://doc.rust-lang.org/std/future/trait.Future.html) ·
+std `task`·`future` 모듈의 **항목 목록 자체**((1)의 블록이 로컬 문서에서 뽑았다).
+★ 전부 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. tokio 는 **로컬 cargo 캐시의 소스**를 컴파일했다(문서는 안 읽었다).
+**실행 검증** — `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `cargo 1.92.0 (344c4567c 2025-10-21)` · `x86_64-unknown-linux-gnu`.
+표준 라이브러리만 쓰는 블록은 **`rustc --edition 2021 <파일>.rs`**, tokio 블록은 **`cargo … --offline`**(네트워크 없이 캐시만) 이다.\
+★★★ **tokio 판별** — 이 머신의 `~/.cargo/registry` 에 **tokio 1.52.3 이 캐시돼 있었고 `--offline` 으로 빌드됐다**(맨 위 도구 블록 · (5)). 그래서 「런타임 선택」 한 칸만 tokio 로 쟀다. 나머지는 전부 표준 라이브러리다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
+★ **속도·메모리·스레드 비용은 재지 않았다.** `unsafe` 코드는 0줄이다(자기 참조 구조체는 **개념 도식 + 명세 인용**으로만 다룬다 — `unsafe` 는 목록의 **56번 주제** 몫).

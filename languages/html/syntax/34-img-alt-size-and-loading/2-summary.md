@@ -1,17 +1,5 @@
 # html/syntax/34 — `img`: `alt`·`width`/`height`·`loading`/`decoding`/`fetchpriority` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [Rendering 「Attributes for embedded content and images」](https://html.spec.whatwg.org/multipage/rendering.html#attributes-for-embedded-content-and-images)(★ **`width`·`height` 는 차원 속성 `width`·`height` 로, 그리고 둘 다 있으면 `aspect-ratio: auto w / h` 로 번역된다** — 「map to the aspect-ratio property (using dimension rules)」), [Rendering 「Images」](https://html.spec.whatwg.org/multipage/rendering.html#images-3)(★ 그림이 없을 때 — **`alt` 가 없으면 아이콘 · 글자를 나타내면 글자 · 아무것도 안 나타내면 크기 0**), [HTML-AAM](https://w3c.github.io/html-aam/) 의 `img` 대응(★ **`alt` 가 공백뿐이면 `none`/`presentation`**)과 「img 의 이름 계산」(★ **`alt` → `title` → figcaption 조건 → 이름 없음** — 파일 이름은 없다). **명세 본문은 앞 배치가 2026-09-26 에 받아 둔 사본**(`rendering` · HTML-AAM)으로 읽었다 — 이 배치는 네트워크를 쓰지 않았다.\
-> ★★ **`img` 요소 절 · `loading` 속성(지연 로딩) 절 · `fetchpriority` 절은 이 배치의 사본에 없다** — 그래서 `loading`·`decoding`·`fetchpriority` 의 **명세층은 판정 보류**이고, 이 편은 그 셋을 **요청 순서·시점 참/거짓과 CDP 의 우선순위**로만 적는다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 하네스는 [33번 주제](../33-output-progress-meter/3-answer.md)의 `## 실행 검증` 에 있다(29번 하네스 + 이 묶음의 실행기).\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> ★★★ **성능 수치는 없다** — 「`lazy` 가 LCP 를 나쁘게 한다」·「`fetchpriority` 가 빨리 받는다」 같은 **시간 주장을 하지 않는다.** 이 편이 재는 것은 **요청이 갔나 · 무엇보다 먼저 갔나 · 우선순위 이름** 셋뿐이다.
-> **버전** — HTML 에는 언어 버전이 없다. 이 배치는 지원 표를 따로 조회하지 않았다.
-> **선행** — [05번 주제](../05-content-categories-and-models/2-summary.md)(★ `img` 는 **흐름·구절·임베디드** — 문단 안에 섞인다).
-> **경계** — **`aspect-ratio` 속성 자체**는 [CSS 31번](../../../css/syntax/31-intrinsic-sizing-and-aspect-ratio/2-summary.md)(★ 「`auto <ratio>` — 원래 비율이 있으면 그것을, 없으면 이 비율을」), **`object-fit` 으로 상자 안에 맞추기**는 [CSS 44번](../../../css/syntax/44-backgrounds-and-object-fit/2-summary.md) · **`srcset`/`sizes`** 는 [35번 주제](../35-srcset-and-sizes/2-summary.md) · **`DOMContentLoaded`/`load` 의 정의**는 [08번](../08-script-loading/2-summary.md) · **`IntersectionObserver` 로 직접 지연 로딩하기**는 [web-api 35번](../../../web-api/35-intersection-observer/2-summary.md) — 여기는 **`img` 속성이 상자와 요청에 무엇을 하나**까지.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)와 레이아웃 창(`getBoundingClientRect`)이다** — 이미지를 서버가 **`/go` 까지 붙잡아 두고** 로드 **전**과 **뒤**를 같은 탭에서 잰다. `alt` 는 창 ⑦ 로.
-
 **이 판의 Chrome**
 
 ```text
@@ -597,3 +585,16 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **`loading=lazy` 와 스크립트** — 지연 로딩은 스크립트가 꺼진 문서에서 달라진다는 설명이 흔하다. 이 판은 **스크립트를 끈 판을 던지지 않았고** 명세 절도 사본에 없다.
 - **`fetchpriority` 가 `link rel=preload`·`fetch()` 에도 있다** — 같은 이름의 힌트다. 이 판은 `img` 만 쟀다.
 - **`object-fit: cover` 로 D 를 고치기** — 찌그러짐 대신 잘라 채운다([CSS 44번](../../../css/syntax/44-backgrounds-and-object-fit/2-summary.md)). 자리 예약은 그대로다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [Rendering 「Attributes for embedded content and images」](https://html.spec.whatwg.org/multipage/rendering.html#attributes-for-embedded-content-and-images)(★ **`width`·`height` 는 차원 속성 `width`·`height` 로, 그리고 둘 다 있으면 `aspect-ratio: auto w / h` 로 번역된다** — 「map to the aspect-ratio property (using dimension rules)」), [Rendering 「Images」](https://html.spec.whatwg.org/multipage/rendering.html#images-3)(★ 그림이 없을 때 — **`alt` 가 없으면 아이콘 · 글자를 나타내면 글자 · 아무것도 안 나타내면 크기 0**), [HTML-AAM](https://w3c.github.io/html-aam/) 의 `img` 대응(★ **`alt` 가 공백뿐이면 `none`/`presentation`**)과 「img 의 이름 계산」(★ **`alt` → `title` → figcaption 조건 → 이름 없음** — 파일 이름은 없다). **명세 본문은 앞 배치가 2026-09-26 에 받아 둔 사본**(`rendering` · HTML-AAM)으로 읽었다 — 이 배치는 네트워크를 쓰지 않았다.\
+★★ **`img` 요소 절 · `loading` 속성(지연 로딩) 절 · `fetchpriority` 절은 이 배치의 사본에 없다** — 그래서 `loading`·`decoding`·`fetchpriority` 의 **명세층은 판정 보류**이고, 이 편은 그 셋을 **요청 순서·시점 참/거짓과 CDP 의 우선순위**로만 적는다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 하네스는 [33번 주제](../33-output-progress-meter/3-answer.md)의 `## 실행 검증` 에 있다(29번 하네스 + 이 묶음의 실행기).\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+★★★ **성능 수치는 없다** — 「`lazy` 가 LCP 를 나쁘게 한다」·「`fetchpriority` 가 빨리 받는다」 같은 **시간 주장을 하지 않는다.** 이 편이 재는 것은 **요청이 갔나 · 무엇보다 먼저 갔나 · 우선순위 이름** 셋뿐이다.
+**버전** — HTML 에는 언어 버전이 없다. 이 배치는 지원 표를 따로 조회하지 않았다.
+**선행** — [05번 주제](../05-content-categories-and-models/2-summary.md)(★ `img` 는 **흐름·구절·임베디드** — 문단 안에 섞인다).
+**경계** — **`aspect-ratio` 속성 자체**는 [CSS 31번](../../../css/syntax/31-intrinsic-sizing-and-aspect-ratio/2-summary.md)(★ 「`auto <ratio>` — 원래 비율이 있으면 그것을, 없으면 이 비율을」), **`object-fit` 으로 상자 안에 맞추기**는 [CSS 44번](../../../css/syntax/44-backgrounds-and-object-fit/2-summary.md) · **`srcset`/`sizes`** 는 [35번 주제](../35-srcset-and-sizes/2-summary.md) · **`DOMContentLoaded`/`load` 의 정의**는 [08번](../08-script-loading/2-summary.md) · **`IntersectionObserver` 로 직접 지연 로딩하기**는 [web-api 35번](../../../web-api/35-intersection-observer/2-summary.md) — 여기는 **`img` 속성이 상자와 요청에 무엇을 하나**까지.
+
+★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)와 레이아웃 창(`getBoundingClientRect`)이다** — 이미지를 서버가 **`/go` 까지 붙잡아 두고** 로드 **전**과 **뒤**를 같은 탭에서 잰다. `alt` 는 창 ⑦ 로.

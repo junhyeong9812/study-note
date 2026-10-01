@@ -1,12 +1,5 @@
 # sql/33-재귀 CTE — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> ★ **무한 재귀는 전부 안전장치를 걸고 돌렸다** — MySQL `cte_max_recursion_depth = 5`, PG `statement_timeout = '300ms'`.\
-> 표는 기존 `emp` 만 썼다 — **새로 만든 표가 없다.** 계층은 CTE 안에서 만들었다.\
-> 문서 근거는 [PG 18 WITH Queries](https://www.postgresql.org/docs/18/queries-with.html) · [MySQL 8.4 WITH](https://dev.mysql.com/doc/refman/8.4/en/with.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -563,3 +556,11 @@ MySQL 은 `cte_max_recursion_depth = 5`(4번) / 기본 1000(8번), PG 는 `state
 **방언이 갈리는 항목** — 5·8·10·11번. 깊이 제한 설정의 유무, `LIMIT` 의 위치, 열 폭 확정 규칙, `SEARCH`/`CYCLE` 이다.
 
 **순서 보장** — 없다. 재귀 CTE 의 출력 순서도 보장되지 않는다. 위 출력에 `ORDER BY` 를 붙인 것은 그 때문이고, **깊이 순서가 필요하면 `lvl` 로 정렬**한다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+★ **무한 재귀는 전부 안전장치를 걸고 돌렸다** — MySQL `cte_max_recursion_depth = 5`, PG `statement_timeout = '300ms'`.\
+표는 기존 `emp` 만 썼다 — **새로 만든 표가 없다.** 계층은 CTE 안에서 만들었다.\
+문서 근거는 [PG 18 WITH Queries](https://www.postgresql.org/docs/18/queries-with.html) · [MySQL 8.4 WITH](https://dev.mysql.com/doc/refman/8.4/en/with.html).

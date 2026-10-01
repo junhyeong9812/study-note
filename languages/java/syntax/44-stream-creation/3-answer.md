@@ -1,10 +1,5 @@
 # java/syntax/44 — `Stream` 생성: 소스별·기본형 스트림 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> javadoc 인용은 [Java SE 21 `java.util.stream` 패키지 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) 원문이다.\
-> 17.0.13 · 25.0.1 에서도 같은 프로그램을 돌려 출력이 동일함을 확인했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -451,3 +446,9 @@ toUnmodifiableList + null : NPE
 | `Infinite` | 무한 스트림 + `toList()` -> `OutOfMemoryError` (`-Xmx64m`) | 21 |
 | `SortedInf` | `limit` 를 `sorted` 뒤에 두면 OOM, 앞에 두면 정상 | 21 |
 | `src.zip` 열람 | `IntPipeline.boxed`, `Collection.stream` 의 기본 구현 | 21 |
+
+## 실행 환경
+
+이 파일의 모든 출력은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+javadoc 인용은 [Java SE 21 `java.util.stream` 패키지 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html) 원문이다.\
+17.0.13 · 25.0.1 에서도 같은 프로그램을 돌려 출력이 동일함을 확인했다.

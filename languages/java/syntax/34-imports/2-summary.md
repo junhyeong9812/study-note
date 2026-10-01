@@ -1,18 +1,5 @@
 # java/syntax/34 — `import`·static import·(25) 모듈 import 선언 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §7.5 Import Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-7.html) · [§6.4.1 Shadowing](https://docs.oracle.com/javase/specs/jls/se21/html/jls-6.html) · [JEP 511: Module Import Declarations](https://openjdk.org/jeps/511).
-> **실행 검증** — 이 문서의 모든 출력·에러는 실제로 돌려 얻은 것이다.\
-> 일반 `import` 는 Temurin **JDK 21.0.5**, **모듈 import 선언은 JDK 25.0.1** 에서 돌렸다.\
-> **21 에서 나는 에러와 25 에서 나는 결과를 둘 다 실었다**(「동작 방식 (5)」).\
-> 프로그램 9개를 돌렸고, `javap -c`·`javap -l`·`javap -v`·`cmp` 로 클래스 파일을 대조했다.
-> **버전** — 단일 타입/온디맨드 `import` 는 **1.0**, `static import` 는 **5**,
-> **모듈 import 선언은 25 정식(JEP 511)** 이다. 23 에서 1차 preview(JEP 476), 24 에서 2차(JEP 494)를 거쳤다.\
-> 정식인지 프리뷰인지는 기억이 아니라 **직접 확인했다** — JDK 25 에서 `--enable-preview` 없이 컴파일·실행이 됐고,
-> `javac -Xlint:preview` 도 경고를 내지 않았다(「동작 방식 (5)」).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> 선행 없음. 이어지는 주제: [58 리플렉션](../58-reflection/)(`Class.forName` 은 `import` 와 무관하다).
-
 ## 한눈에 — 쉽게 말하면
 
 **`import` 는 "이 파일 안에서만 쓰는 약칭 사전"이다.**\
@@ -587,3 +574,17 @@ Ex.java:5: error: incompatible types: Target cannot be converted to Annotation
 
 - **`javap -v` 로 상수 풀을 세는 법**: `javap -v Ex.class | grep -c '^ *#'`.\
   (4) 에서 두 파일이 **69 로 같았다**. 절대값보다 "같다"가 근거다 — 컴파일러가 바뀌면 값은 변한다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §7.5 Import Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-7.html) · [§6.4.1 Shadowing](https://docs.oracle.com/javase/specs/jls/se21/html/jls-6.html) · [JEP 511: Module Import Declarations](https://openjdk.org/jeps/511).
+**실행 검증** — 이 문서의 모든 출력·에러는 실제로 돌려 얻은 것이다.\
+일반 `import` 는 Temurin **JDK 21.0.5**, **모듈 import 선언은 JDK 25.0.1** 에서 돌렸다.\
+**21 에서 나는 에러와 25 에서 나는 결과를 둘 다 실었다**(「동작 방식 (5)」).\
+프로그램 9개를 돌렸고, `javap -c`·`javap -l`·`javap -v`·`cmp` 로 클래스 파일을 대조했다.
+**버전** — 단일 타입/온디맨드 `import` 는 **1.0**, `static import` 는 **5**,
+**모듈 import 선언은 25 정식(JEP 511)** 이다. 23 에서 1차 preview(JEP 476), 24 에서 2차(JEP 494)를 거쳤다.\
+정식인지 프리뷰인지는 기억이 아니라 **직접 확인했다** — JDK 25 에서 `--enable-preview` 없이 컴파일·실행이 됐고,
+`javac -Xlint:preview` 도 경고를 내지 않았다(「동작 방식 (5)」).
+
+선행 없음. 이어지는 주제: [58 리플렉션](../58-reflection/)(`Class.forName` 은 `import` 와 무관하다).

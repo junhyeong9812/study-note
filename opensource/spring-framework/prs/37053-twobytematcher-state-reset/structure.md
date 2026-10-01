@@ -1,9 +1,5 @@
 # PR #37053 — 무대 구조와 워크플로우: DataBufferUtils 구분자 매처 계층
 
-> PR #37053의 무대가 되는 실구조·워크플로우. 문제·수정은 README.md, 테스트는 tests.md 참조.
->
-> 기준: upstream main `526c706d1c3`. 이 PR은 이미 머지됐으므로(`7f1966f5f57`), 아래 file:line 중 `TwoByteMatcher.match(byte)`(`DataBufferUtils.java:922-928`)는 **수정 후** 코드다. "수정 전"이라고 표시한 곳은 그 블록이 없던 상태를 뜻한다.
-
 ## 1. 무대 — 실구조
 
 이 PR의 무대는 `DataBufferUtils` 안쪽에 숨어 있는 **구분자 매처 계층**과, 그것을 소비하는 **문자열 디코더**다.\
@@ -525,3 +521,7 @@ KMP는 부분 일치가 깨졌을 때 처음으로 돌아가는 대신, 이미 �
 
 이 무대와 직접 겹치는 개념 문서는 아직 `../../concepts/`에 없다.\
 매처 계층과 스트리밍 상태 유지는 이 문서 안에서 자기완결로 다뤘다.
+
+## 출처
+
+기준: upstream main `526c706d1c3`. 이 PR은 이미 머지됐으므로(`7f1966f5f57`), 본문의 file:line 중 `TwoByteMatcher.match(byte)`(`DataBufferUtils.java:922-928`)는 **수정 후** 코드다. "수정 전"이라고 표시한 곳은 그 블록이 없던 상태를 뜻한다.

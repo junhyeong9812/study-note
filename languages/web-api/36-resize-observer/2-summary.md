@@ -1,14 +1,5 @@
 # web-api/36 — `ResizeObserver`: 관측 상자 세 종류와 무한 루프 경고 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ④ 「디스패치 계수기」([24번 주제](../24-document-lifecycle-events/2-summary.md)의 창 ④)를 변화마다 돌린 「상자 격자」다** — 관측 상자(`content-box` · `border-box` · `device-pixel-content-box`) × 변화 일곱(`width` · `padding` · `border` · `transform: scale` · 부모 폭 · 뷰포트 폭 · `devicePixelRatio`) = **21칸**마다 **콜백이 불렸나 · 받은 크기**를 적고, 같은 변화에서 **`window` 의 `resize` 이벤트 수**를 옆줄에 센다. 스크립트가 **「콜백이 불린 칸 N / M」** 을 마지막 줄로 찍는다.\
-> **기준 소스** — ① [W3C Resize Observer](https://www.w3.org/TR/resize-observer/) — **받은 사본은 2020-02-11 First Public Working Draft** 다(「Latest published version」이 그 판이다). §3.1 `ResizeObservation`(`lastReportedSizes` 를 `[(0,0)]` 으로 시작) · §3.4.6 「Deliver Resize Loop Error」(메시지 문자열) · §3.6.1 깊이로 루프를 끊는 단계. ② [HTML — update the rendering](https://html.spec.whatwg.org/multipage/webappapis.html#update-the-rendering) — 지금은 **HTML 쪽이** 「Gather active resize observations at depth」 · 「deliver resize loop error」를 렌더링 단계 안에 직접 적는다. ③ HTML 「report an exception」 — 콘솔은 「**may** report exception to a developer console」. 받아서 읽은 것만 적었다(기준일 2026-09-26). ★ **편집자 초안(drafts.csswg.org)은 받지 않았다** — 이번 배치가 받기로 한 곳(WHATWG · w3c.github.io · wicg.github.io · W3C TR)에 없다. 그래서 **(3)의 이탈은 「2020 WD 사본과 다르다」까지만 말한다.**\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless(`--window-size=1000,800`)에서 받은 것이다. 하네스는 [32번 주제](../32-server-sent-events/2-summary.md)가 빌려 쓴 24편의 `wa24b-net.py` 에 **「페이지가 CDP 일을 부탁하는 창구」** 하나를 더한 `wa36b-net.py` 다(전문은 [3-answer.md](3-answer.md)의 `## 실행 검증`). 뷰포트 폭과 `devicePixelRatio` 는 그 창구로 **CDP `Emulation.setDeviceMetricsOverride`** 를 불러 바꿨다. `--virtual-time-budget` 은 쓰지 않았다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — ★★ **[09번 주제](../09-element-geometry/2-summary.md)** — 세 계열(`offset*`·`client*`·`getBoundingClientRect`)이 **테두리 · 스크롤바 · `transform`** 을 각각 포함하나. 여기서는 그것을 **읽는** 대신 **바뀌면 알려 달라고** 한다. 그리고 (9)의 「`transform` 은 한쪽에만 섞인다」가 여기 격자의 `transform` 열로 다시 나온다.\
-> **경계** — ★★★ **「RO 가 `resize` 이벤트보다 싸다」는 이 편이 주장하지 않는다 — 재지 않았다**(가이드 규칙 4). 센 것은 **불렸나 · 몇 번**이다. ★ 렌더링 단계 안에서 RO 가 **어디에 끼나**는 [38번 주제](../38-request-animation-frame/2-summary.md)의 (1)이 Tracing 으로 잰다 — 여기서는 루프 경고에 필요한 만큼만 쓴다.\
-> 이 본문은 Claude 작성이다(원고 없음). 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -42,8 +33,8 @@ Google Chrome 151.0.7922.173
 
 | 무엇을 | 왜 못 보나 |
 |---|---|
-| ★★★ **비용 — 시간 · 메인 스레드 점유** | **재지 않았다**(머리말) |
-| ★★ **편집자 초안의 알고리즘** | 받지 않았다(머리말) — (3)의 판정이 거기서 멈춘다 |
+| ★★★ **비용 — 시간 · 메인 스레드 점유** | **재지 않았다**(「실행 환경」) |
+| ★★ **편집자 초안의 알고리즘** | 받지 않았다(「실행 환경」) — (3)의 판정이 거기서 멈춘다 |
 | **살아 있는 문서에서 실제 배율이 바뀌는 순간** | 헤드리스에 모니터가 없다 — 배율은 띄울 때 정했다 |
 | **SVG 요소 · `display: contents` · 인라인 요소** | 던지지 않았다 — 받은 사본은 SVG 를 「bounding box」로 따로 잰다고 적는다 |
 
@@ -182,7 +173,7 @@ device-pixel-content-box	○ 240×100	—	—	—	○ 160×100	○ 160×100	—
 - ★★★ **배율 2 로 띄운 판에서는 `device-pixel-content-box` 가 `240×100`**(CSS 픽셀 120×50 의 두 배)이다. **배율 1 판은 `120×50`** 이었다((1)). 상자는 **실제 화면 배율**을 따른다.
 - ★★★ **그런데 두 판 모두 `devicePixelRatio 1→2` 열은 `—`** 이고, 배율 2 판의 `뷰포트 폭` 열 아래 `devicePixelRatio` 는 **`1`** 이다(뷰포트 에뮬레이션이 배율을 1 로 덮었다) — **그 칸의 장치 픽셀 상자는 여전히 `160×100`**(두 배)이다.
 - ★★ **CDP 의 `devicePixelRatio` 에뮬레이션은 스크립트가 읽는 값만 바꾸고 장치 픽셀 격자는 안 바꿨다.** 에러도 경고도 없다 — 값(`devicePixelRatio = 2`)도 그럴듯하다. **틀린 것은 값이 아니라 그 값이 무엇을 기준으로 한 것이냐**다(가이드 규칙 3 의 제5의 상태).
-- ★ 그래서 이 편은 「RO 는 배율 변화를 못 잡는다」고 **적지 않는다** — 잰 것은 「**에뮬레이션한 배율 변화는** 장치 픽셀 상자를 안 움직였다」이다. 살아 있는 문서에서 실제 배율이 바뀌는 순간은 **못 쟀다**(머리말).
+- ★ 그래서 이 편은 「RO 는 배율 변화를 못 잡는다」고 **적지 않는다** — 잰 것은 「**에뮬레이션한 배율 변화는** 장치 픽셀 상자를 안 움직였다」이다. 살아 있는 문서에서 실제 배율이 바뀌는 순간은 **못 쟀다**(맨 위 부분).
 
 ```text
    같은 요소 · 같은 격자 — 브라우저 둘 (이 판)
@@ -241,7 +232,7 @@ display: none	○ 0×0	○ isIntersecting=false
 
 - ★★★ **네 대상 전부 RO 첫 통지가 왔다** — 크기 `0×0` 인 셋(폭·높이 0 · `display: none` · 문서에 안 붙인 요소)까지. IO 도 넷 다 왔다(35편 (1)의 「관찰 시작 한 번」과 같은 모양).
 - ★★ **받은 사본(2020 WD)과 다르다.** §3.1 은 `ResizeObservation` 을 만들 때 `lastReportedSizes` 를 **`[(0,0)]`** 으로 두고, `isActive()` 는 「지금 크기가 **그것과 다르면** 참」이다. 그대로 읽으면 **0×0 인 대상은 첫 통지가 없어야 한다.** Chrome 151 은 보냈다.
-- ★ **이것을 「Chrome 의 이탈」로 판정하지 않는다** — 받은 사본이 **2020 년 초안**이고 편집자 초안은 받지 않았다(머리말). **말할 수 있는 것은 「이 사본의 알고리즘과 Chrome 151 이 다르다」까지**다. 코드에서는 **첫 통지가 0×0 으로도 온다고 보고** 받는다 — 「보이게 됐다」로 읽지 않는다.
+- ★ **이것을 「Chrome 의 이탈」로 판정하지 않는다** — 받은 사본이 **2020 년 초안**이고 편집자 초안은 받지 않았다(「실행 환경」). **말할 수 있는 것은 「이 사본의 알고리즘과 Chrome 151 이 다르다」까지**다. 코드에서는 **첫 통지가 0×0 으로도 온다고 보고** 받는다 — 「보이게 됐다」로 읽지 않는다.
 - ★ IO 쪽 — `width 0 · height 0` 은 `isIntersecting=true`, `display: none` 과 문서 밖은 `false` 였다. 면적이 0 이어도 **뷰포트 안에 자리가 있으면** 교차로 쳤다(이 판의 관찰 · IO 의 몫은 35편).
 
 ### (4) ★★★ 루프 경고 — 콜백 안에서 크기를 바꾸면
@@ -444,3 +435,12 @@ Runtime.exceptionThrown · Uncaught · Error: 대조용 예외
 - ★★ **편집자 초안 대조** — 0×0 대상의 첫 통지가 초안에서 어떻게 정해졌는지 맞대는 일이 남았다((3)).
 - **조각난 상자**(다단 · 페이지 나눔)에서 크기 배열이 둘 이상이 되는가 — 던지지 않았다.
 - **SVG 요소** — 사본은 bounding box 로 잰다고 적는다. 던지지 않았다.
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ④ 「디스패치 계수기」([24번 주제](../24-document-lifecycle-events/2-summary.md)의 창 ④)를 변화마다 돌린 「상자 격자」다** — 관측 상자(`content-box` · `border-box` · `device-pixel-content-box`) × 변화 일곱(`width` · `padding` · `border` · `transform: scale` · 부모 폭 · 뷰포트 폭 · `devicePixelRatio`) = **21칸**마다 **콜백이 불렸나 · 받은 크기**를 적고, 같은 변화에서 **`window` 의 `resize` 이벤트 수**를 옆줄에 센다. 스크립트가 **「콜백이 불린 칸 N / M」** 을 마지막 줄로 찍는다.\
+**기준 소스** — ① [W3C Resize Observer](https://www.w3.org/TR/resize-observer/) — **받은 사본은 2020-02-11 First Public Working Draft** 다(「Latest published version」이 그 판이다). §3.1 `ResizeObservation`(`lastReportedSizes` 를 `[(0,0)]` 으로 시작) · §3.4.6 「Deliver Resize Loop Error」(메시지 문자열) · §3.6.1 깊이로 루프를 끊는 단계. ② [HTML — update the rendering](https://html.spec.whatwg.org/multipage/webappapis.html#update-the-rendering) — 지금은 **HTML 쪽이** 「Gather active resize observations at depth」 · 「deliver resize loop error」를 렌더링 단계 안에 직접 적는다. ③ HTML 「report an exception」 — 콘솔은 「**may** report exception to a developer console」. 받아서 읽은 것만 적었다(기준일 2026-09-26). ★ **편집자 초안(drafts.csswg.org)은 받지 않았다** — 이번 배치가 받기로 한 곳(WHATWG · w3c.github.io · wicg.github.io · W3C TR)에 없다. 그래서 **(3)의 이탈은 「2020 WD 사본과 다르다」까지만 말한다.**\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless(`--window-size=1000,800`)에서 받은 것이다. 하네스는 [32번 주제](../32-server-sent-events/2-summary.md)가 빌려 쓴 24편의 `wa24b-net.py` 에 **「페이지가 CDP 일을 부탁하는 창구」** 하나를 더한 `wa36b-net.py` 다(전문은 [3-answer.md](3-answer.md)의 `## 실행 검증`). 뷰포트 폭과 `devicePixelRatio` 는 그 창구로 **CDP `Emulation.setDeviceMetricsOverride`** 를 불러 바꿨다. `--virtual-time-budget` 은 쓰지 않았다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — ★★ **[09번 주제](../09-element-geometry/2-summary.md)** — 세 계열(`offset*`·`client*`·`getBoundingClientRect`)이 **테두리 · 스크롤바 · `transform`** 을 각각 포함하나. 여기서는 그것을 **읽는** 대신 **바뀌면 알려 달라고** 한다. 그리고 (9)의 「`transform` 은 한쪽에만 섞인다」가 여기 격자의 `transform` 열로 다시 나온다.\
+**경계** — ★★★ **「RO 가 `resize` 이벤트보다 싸다」는 이 편이 주장하지 않는다 — 재지 않았다**(가이드 규칙 4). 센 것은 **불렸나 · 몇 번**이다. ★ 렌더링 단계 안에서 RO 가 **어디에 끼나**는 [38번 주제](../38-request-animation-frame/2-summary.md)의 (1)이 Tracing 으로 잰다 — 여기서는 루프 경고에 필요한 만큼만 쓴다.

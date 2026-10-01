@@ -1,9 +1,5 @@
 # JDK 1.1 (1997년 2월)
 
-> 원본: `~/project/java-history/java/jdk-1.1.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·클래스/패키지 이름·코드블록 6개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
-> ASCII 도식 1개와 「한눈에」의 창구 비유·대응표, 용어 블록의 「예:」, 「용어 풀이」, 다른 편을 가리키는 교차 주 2개는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -217,3 +213,9 @@ for (int i = 0; i < methods.length; i++) {   // for-each도 5.0부터
 - [Java version history - Wikipedia](https://en.wikipedia.org/wiki/Java_version_history)
 - [Java 1.1 - javaalmanac.io](https://javaalmanac.io/jdk/1.1/)
 - [JDK release dates - Java Glossary (mindprod)](https://www.mindprod.com/jgloss/jdkreleasedates.html)
+
+## 출처
+
+원본: `~/project/java-history/java/jdk-1.1.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·클래스/패키지 이름·코드블록 6개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
+ASCII 도식 1개와 「한눈에」의 창구 비유·대응표, 용어 블록의 「예:」, 「용어 풀이」, 다른 편을 가리키는 교차 주 2개는 원문에 없는 보충이다.

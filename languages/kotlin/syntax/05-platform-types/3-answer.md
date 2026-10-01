@@ -1,10 +1,5 @@
 # kotlin/syntax/05 — 플랫폼 타입: Java 경계에서 null 보장이 사라지는 것 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
-> Java 는 같은 JDK 의 `javac` 로 컴파일해 **한 클래스패스에 섞어 돌렸다.**\
-> 애너테이션 실험에 쓴 jar — `annotations-13.0.jar`(kotlinc 동봉) · `jsr305-3.0.2.jar` · `jspecify-1.0.0.jar`.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -495,3 +490,9 @@ OpenJDK Runtime Environment Temurin-21.0.5+11 (build 21.0.5+11-LTS)
 
 **「없다」도 출력으로 확인한 것** — 7번 4의 경고는 `kotlinc -Werror` 가 **아무것도 출력하지 않는 것**이 근거다.
 "경고가 안 나오더라" 가 아니라 **경고를 에러로 승격시켜도 통과한다**는 출력이다.
+
+## 실행 환경
+
+모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
+Java 는 같은 JDK 의 `javac` 로 컴파일해 **한 클래스패스에 섞어 돌렸다.**\
+애너테이션 실험에 쓴 jar — `annotations-13.0.jar`(kotlinc 동봉) · `jsr305-3.0.2.jar` · `jspecify-1.0.0.jar`.

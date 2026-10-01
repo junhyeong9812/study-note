@@ -1,9 +1,5 @@
 # 웹의 탄생 (1989~1999)
 
-> 원본: `~/project/web-history/01-웹-탄생-HTML.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·논문명·표준번호·코드는 원문 그대로다.\
-> ASCII 도식 7개와 「한눈에」의 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 > 인터넷이라는 물리적 네트워크 위에 "하이퍼텍스트"라는 발상을 얹어, 누구나 문서를 링크로 연결하고 따라갈 수 있게 만든 시대다. 한 사람의 사내 제안서에서 시작해 10년 만에 전 세계의 정보 공유 방식을 바꿔 놓았다.
@@ -374,3 +370,9 @@ CERN은 1993년 4월 웹의 바탕 코드를 영구히 로열티 없이 공개�
 - [History | About us – W3C](https://www.w3.org/about/history/)
 - [World Wide Web Consortium – Wikipedia](https://en.wikipedia.org/wiki/World_Wide_Web_Consortium)
 - [HTML – Wikipedia](https://en.wikipedia.org/wiki/HTML)
+
+## 출처
+
+원본: `~/project/web-history/01-웹-탄생-HTML.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·논문명·표준번호·코드는 원문 그대로다.\
+ASCII 도식 7개와 「한눈에」의 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

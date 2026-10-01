@@ -1,12 +1,5 @@
 # web-api/29 — 자격 증명과 `credentials`: 쿠키가 실리는 조건·와일드카드 금지 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 프리플라이트의 조건은 [28번 주제](../28-cors-simple-and-preflight/1-question.md), 헤더로 넣은 `Cookie` 가 지워지는 것은 [25번 주제](../25-fetch-request-response/1-question.md)의 문항 5가 물었다. 여기는 **다른 출처 요청에 쿠키가 언제 실리고, 실린 응답을 언제 읽나**를 묻는다. CSRF 방어 설계는 [`../../../cs/foundations/security/`](../../../cs/foundations/security/) 의 몫이다(절은 아직 없다).
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 Fetch 명세 문장이다. 쿠키 속성의 규칙은 **관찰로만** 다룬다. 이식성은 주장 범위 밖이다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -96,6 +89,12 @@ await fetch(B + 길, { credentials: "include", headers: { "X-A": "1" } });
 
 - [25번 주제](../25-fetch-request-response/1-question.md)의 문항 5에서 `headers: { Cookie: "evil=1" }` 은 어떻게 됐나? 그것과 이 편의 `credentials` 는 어떻게 이어지나?
 - 이 편의 **도구가 못 보는 것** 두 가지를 대라.
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — 프리플라이트의 조건은 [28번 주제](../28-cors-simple-and-preflight/1-question.md), 헤더로 넣은 `Cookie` 가 지워지는 것은 [25번 주제](../25-fetch-request-response/1-question.md)의 문항 5가 물었다. 여기는 **다른 출처 요청에 쿠키가 언제 실리고, 실린 응답을 언제 읽나**를 묻는다. CSRF 방어 설계는 [`../../../cs/foundations/security/`](../../../cs/foundations/security/) 의 몫이다(절은 아직 없다).
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 Fetch 명세 문장이다. 쿠키 속성의 규칙은 **관찰로만** 다룬다. 이식성은 주장 범위 밖이다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

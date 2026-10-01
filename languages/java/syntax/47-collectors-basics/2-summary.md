@@ -1,18 +1,5 @@
 # java/syntax/47 — `Collectors`: 기본 수집기와 `toMap` 의 함정 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../46-terminal-operations/`](../46-terminal-operations/). `collect` 가 최종 연산이라는 것을 먼저 본다.
-> **기준 소스** — [`Collectors` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/Collectors.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/stream/Collectors.java`(`lib/src.zip`)
-> **실행 검증** — 이 문서의 모든 출력·에러는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 같은 프로그램 5개를 **17.0.13 · 25.0.1** 에서도 돌렸다. **예외 메시지는 같고 스택트레이스 줄 번호만 달랐다.**
-> **버전** — `Collectors` 는 **Java 8**. `toUnmodifiableList`/`Set`/`Map` 은 **Java 10**. `Stream.toList()` 는 **Java 16**.\
-> 17·21·25 동작 동일.
-> **범위** — 그룹핑·분할·다운스트림 조합은 [`../48-collectors-grouping/`](../48-collectors-grouping/) 이 정본이다.\
-> 그쪽은 **키로 나누는 것**부터, 여기는 **나누지 않고 하나로 모으는 것**까지다.\
-> `HashMap` 의 내부(버킷·충돌)는 [`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 이 정본이다.\
-> 그쪽은 **해시가 어떻게 자리를 찾나**까지, 여기는 **`Collectors` 가 그 위에 무엇을 얹었나**부터다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **수집기는 벨트 끝에 놓는 그릇이다.**
@@ -647,3 +634,16 @@ summingLong 으로   : 2147483648
   다만 필요한 경우는 드물다. `collectingAndThen` + 기존 수집기 조합으로 대개 풀린다.
 - **수집기의 `characteristics()`** 는 병렬 동작을 정한다 — `CONCURRENT`·`UNORDERED`·`IDENTITY_FINISH`.\
   `toMap` 은 `[IDENTITY_FINISH]` 뿐이라 **병렬에서 맵을 조각마다 만들어 합친다.** 그 비용과 대안은 49번이 정본이다.
+
+## 실행 환경
+
+**선행** — [`../46-terminal-operations/`](../46-terminal-operations/). `collect` 가 최종 연산이라는 것을 먼저 본다.
+**기준 소스** — [`Collectors` javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/Collectors.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/stream/Collectors.java`(`lib/src.zip`)
+**실행 검증** — 이 문서의 모든 출력·에러는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+같은 프로그램 5개를 **17.0.13 · 25.0.1** 에서도 돌렸다. **예외 메시지는 같고 스택트레이스 줄 번호만 달랐다.**
+**버전** — `Collectors` 는 **Java 8**. `toUnmodifiableList`/`Set`/`Map` 은 **Java 10**. `Stream.toList()` 는 **Java 16**.\
+17·21·25 동작 동일.
+**범위** — 그룹핑·분할·다운스트림 조합은 [`../48-collectors-grouping/`](../48-collectors-grouping/) 이 정본이다.\
+그쪽은 **키로 나누는 것**부터, 여기는 **나누지 않고 하나로 모으는 것**까지다.\
+`HashMap` 의 내부(버킷·충돌)는 [`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 이 정본이다.\
+그쪽은 **해시가 어떻게 자리를 찾나**까지, 여기는 **`Collectors` 가 그 위에 무엇을 얹었나**부터다.

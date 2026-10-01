@@ -1,10 +1,5 @@
 # Rust 에디션 (2015 / 2018 / 2021 / 2024)
 
-> 원본: `~/project/rust-history/02-에디션.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
-> 연도·버전·RFC 번호·Rust 코드블록 12개·원문이 직접 그린 `text` 도식 1개·「에디션 비교 한눈에」 표는 원문 그대로다.\
-> 내가 새로 그린 ASCII 도식은 3개다 — 2개는 원문 mermaid 그림을 글자로 옮긴 것이고, 1개는 원문이 「① → ② → ③」으로 적은 3단계를 세로로 편 것이다.\
-> 「한눈에」의 방언 비유, 용어 블록의 「예:」, 「용어 풀이」도 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -511,3 +506,10 @@ Rust는 ① 깨는 변화를 에디션에 격리하고, ② 크레이트 단위 
 - [Never type fallback change — Rust 2024](https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html)
 - [Cargo: Rust-version aware resolver — Rust 2024](https://doc.rust-lang.org/edition-guide/rust-2024/cargo-resolver.html)
 - [Announcing Rust 1.85.0 and Rust 2024 — Rust Blog](https://blog.rust-lang.org/2025/02/20/Rust-1.85.0/)
+
+## 출처
+
+원본: `~/project/rust-history/02-에디션.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
+연도·버전·RFC 번호·Rust 코드블록 12개·원문이 직접 그린 `text` 도식 1개·「에디션 비교 한눈에」 표는 원문 그대로다.\
+내가 새로 그린 ASCII 도식은 3개다 — 2개는 원문 mermaid 그림을 글자로 옮긴 것이고, 1개는 원문이 「① → ② → ③」으로 적은 3단계를 세로로 편 것이다.\
+「한눈에」의 방언 비유, 용어 블록의 「예:」, 「용어 풀이」도 원문에 없는 보충이다.

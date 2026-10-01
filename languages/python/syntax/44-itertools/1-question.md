@@ -1,17 +1,5 @@
 # python/syntax/44-itertools — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★★★ 3번은 **콜백 로그의 순서와 `next` 마다 한 일**까지 적어야 맞은 것이다.
-> ★★ 이 주제는 **속도·메모리 바이트를 묻지 않는다** — 한 번도 재지 않았다.
->
-> 실행 환경: `python3` **3.12.3** · Linux(5번은 `python3.11` 3.11.15 도 함께). 던지는 형태는 `python3 - <파일` 로 고정했다.
-> ★ 선행 — [16](../16-iterator-protocol/1-question.md)(이터레이터 프로토콜) · [10](../10-list-methods-and-sort-key/1-question.md)(안정 정렬).
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -212,6 +200,14 @@ except ValueError as exc:
 
 * ★ [JS 21번](../../../js/syntax/21-iterator-helpers/2-summary.md)·[Rust 36번](../../../rust/syntax/36-iterator-adapters-laziness-and-collect/2-summary.md)과 3번을 나란히 놓으면 **어느 칸이 같고**, 이 주제가 **한 칸 더** 간 것은 무엇인가?
 * ★ [16번](../16-iterator-protocol/2-summary.md)의 「소진된 것과 빈 것은 구분되지 않는다」는 이 주제의 **어느 두 블록**에서 다시 나오나?
+
+## 실행 환경
+
+★★★ 3번은 **콜백 로그의 순서와 `next` 마다 한 일**까지 적어야 맞은 것이다.
+★★ 이 주제는 **속도·메모리 바이트를 묻지 않는다** — 한 번도 재지 않았다.
+
+실행 환경: `python3` **3.12.3** · Linux(5번은 `python3.11` 3.11.15 도 함께). 던지는 형태는 `python3 - <파일` 로 고정했다.
+★ 선행 — [16](../16-iterator-protocol/1-question.md)(이터레이터 프로토콜) · [10](../10-list-methods-and-sort-key/1-question.md)(안정 정렬).
 
 ## 복습 기록
 

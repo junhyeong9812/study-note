@@ -1,18 +1,5 @@
 # go/syntax/06 — `len`/`cap`과 `append`의 재할당 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Length and capacity ·
-> Appending to and copying slices · Making slices, maps and channels · Slice expressions 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> ★★ **이 주제의 `cap` 수치는 전부 「이 판의 관찰」이다.** 명세는 `append` 가 얼마나 늘리는지
-> **한 글자도 정하지 않는다.** 수치를 규칙처럼 외우면 그것이 이 주제에서 가장 크게 틀리는 자리다.
-> **버전** — `append`·`cap` 은 1.0부터, 3-인덱스 슬라이싱은 1.2부터,
-> `unsafe.SliceData` 는 **1.20**, `slices.Grow` 는 **1.21**부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 수치는 실행으로 접지했다.
-
 ## 이 갈래가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
@@ -868,3 +855,16 @@ func main() {
   **이 문서에서는 상한 자체를 재지 않았다.**
 - 「`append` 가 여러 개를 한 번에 받으면 딱 맞게 잡는가」는 (5)절에서 **6(5개인데 6)** 이 나와
   「딱 맞게」도 아니었다. 이것도 구현이다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Length and capacity ·
+Appending to and copying slices · Making slices, maps and channels · Slice expressions 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+★★ **이 주제의 `cap` 수치는 전부 「이 판의 관찰」이다.** 명세는 `append` 가 얼마나 늘리는지
+**한 글자도 정하지 않는다.** 수치를 규칙처럼 외우면 그것이 이 주제에서 가장 크게 틀리는 자리다.
+**버전** — `append`·`cap` 은 1.0부터, 3-인덱스 슬라이싱은 1.2부터,
+`unsafe.SliceData` 는 **1.20**, `slices.Grow` 는 **1.21**부터다.

@@ -1,13 +1,5 @@
 # java/syntax/54 — `java.util.concurrent`: `ExecutorService`·`Future`·`CompletableFuture` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·에러·스택트레이스·컴파일 에러는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> ⚠️ **측정 조건** — JMH 가 아니다. 벽시계(`System.nanoTime`) 이고 시간은 `sleep` 이 지배한다. 머신 **24코어**(Linux x86-64).\
-> 스레드 이름·완료 순서는 **실행마다 다르다.** 순서가 문제가 되는 자리는 **30회 반복**해 분포로 확인했다.\
-> 「JVM 이 안 끝난다」류는 `timeout 6` 으로 감싸 **종료 코드 124**로 판정했다.\
-> `AutoCloseable` 여부는 **17.0.13 · 21.0.5 · 25.0.1** 과 `--release 17`/`19` 로 각각 컴파일해 확인했다.
-> javadoc 인용은 `lib/src.zip` 의 `java.base/java/util/concurrent/*.java` 원문이다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -611,3 +603,12 @@ submit(task)                               execute(task)
 - `shutdownNow()` 가 돌려주는 객체의 구체 타입(`FutureTask`) — javadoc 은 `Runnable` 만 약속한다.
 - `thenApply` 의 실행 스레드 — **javadoc 이 "any other caller" 도 허용한다.** 30회 관측은 보장이 아니다.
 - **Java 8 의 동작은 안 돌려 봄** — 이 머신에 8이 없다.
+
+## 실행 환경
+
+이 파일의 모든 출력·에러·스택트레이스·컴파일 에러는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+⚠️ **측정 조건** — JMH 가 아니다. 벽시계(`System.nanoTime`) 이고 시간은 `sleep` 이 지배한다. 머신 **24코어**(Linux x86-64).\
+스레드 이름·완료 순서는 **실행마다 다르다.** 순서가 문제가 되는 자리는 **30회 반복**해 분포로 확인했다.\
+「JVM 이 안 끝난다」류는 `timeout 6` 으로 감싸 **종료 코드 124**로 판정했다.\
+`AutoCloseable` 여부는 **17.0.13 · 21.0.5 · 25.0.1** 과 `--release 17`/`19` 로 각각 컴파일해 확인했다.
+javadoc 인용은 `lib/src.zip` 의 `java.base/java/util/concurrent/*.java` 원문이다.

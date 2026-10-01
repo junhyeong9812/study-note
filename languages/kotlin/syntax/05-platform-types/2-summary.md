@@ -1,18 +1,5 @@
 # kotlin/syntax/05 — 플랫폼 타입: Java 경계에서 null 보장이 사라지는 것 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Calling Java from Kotlin — Null-safety and platform types](https://kotlinlang.org/docs/java-interop.html#null-safety-and-platform-types) · [Nullability annotations](https://kotlinlang.org/docs/java-interop.html#nullability-annotations) · [Null safety](https://kotlinlang.org/docs/null-safety.html).
-> **실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
-> Java 는 같은 JDK 의 `javac` 로 컴파일해 **한 클래스패스에 섞어 돌렸다.**\
-> 애너테이션 실험에는 실제 jar 셋을 썼다 — `annotations-13.0.jar`(kotlinc 동봉) · `jsr305-3.0.2.jar` · `jspecify-1.0.0.jar`(로컬 저장소).
-> **버전** — 플랫폼 타입은 1.0 부터. **JSpecify 위반이 경고가 아니라 오류가 된 것은 2.1.0.**
-> **경계** — [03번 주제](../03-null-safe-types/)는 **`?`·`?.`·`?:`·`!!` 문법**이 정본이고,\
-> [04번 주제](../04-smart-casts/)는 **컴파일러가 좁혀 주는 범위**가 정본이다.\
-> 여기는 **「그 둘이 통째로 안 걸리는 구간」** 하나만 다룬다.\
-> [`../../언어-특성/README.md`](../../언어-특성/README.md) §2·§9 는 **「그래서 이 언어를 고를 것인가」** 라는 설계 논증이 정본이다.\
-> Java 쪽 방어(`Objects.requireNonNull`·경계 검증)는 [`../../../java/syntax/60-null-handling/`](../../../java/syntax/60-null-handling/) 가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **Kotlin 의 null 검사는 「타입을 적은 자리」에서 일어난다.**\
@@ -629,3 +616,16 @@ probe2.kt:4:16: error: initializer type mismatch: expected 'Int', actual 'String
   1.4 이전에 컴파일된 코드가 부르던 것이고, **stdlib 는 옛 바이너리를 위해 계속 들고 있다**([03번](../03-null-safe-types/)의 「더 들어가면」에 전수 출력이 있다).
 - 이 사슬의 요약 한 줄 — **[03번](../03-null-safe-types/)이 문을 만들고, [04번](../04-smart-casts/)이 문을 자동으로 열어 주며,\
   05번은 그 문이 아예 없는 구간이다.** 셋을 따로 외우면 "왜 Kotlin 에서 NPE 가 나지" 를 못 푼다.
+
+## 실행 환경
+
+**기준 소스** — [Calling Java from Kotlin — Null-safety and platform types](https://kotlinlang.org/docs/java-interop.html#null-safety-and-platform-types) · [Nullability annotations](https://kotlinlang.org/docs/java-interop.html#nullability-annotations) · [Null safety](https://kotlinlang.org/docs/null-safety.html).
+**실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
+Java 는 같은 JDK 의 `javac` 로 컴파일해 **한 클래스패스에 섞어 돌렸다.**\
+애너테이션 실험에는 실제 jar 셋을 썼다 — `annotations-13.0.jar`(kotlinc 동봉) · `jsr305-3.0.2.jar` · `jspecify-1.0.0.jar`(로컬 저장소).
+**버전** — 플랫폼 타입은 1.0 부터. **JSpecify 위반이 경고가 아니라 오류가 된 것은 2.1.0.**
+**경계** — [03번 주제](../03-null-safe-types/)는 **`?`·`?.`·`?:`·`!!` 문법**이 정본이고,\
+[04번 주제](../04-smart-casts/)는 **컴파일러가 좁혀 주는 범위**가 정본이다.\
+여기는 **「그 둘이 통째로 안 걸리는 구간」** 하나만 다룬다.\
+[`../../언어-특성/README.md`](../../언어-특성/README.md) §2·§9 는 **「그래서 이 언어를 고를 것인가」** 라는 설계 논증이 정본이다.\
+Java 쪽 방어(`Objects.requireNonNull`·경계 검증)는 [`../../../java/syntax/60-null-handling/`](../../../java/syntax/60-null-handling/) 가 정본이다.

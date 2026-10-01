@@ -1,12 +1,5 @@
 # kotlin/syntax/52 — 코루틴 기초 — `suspend`·`CoroutineScope`·`launch`/`async`/`await` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [10번 주제](../10-lambdas-and-higher-order-functions/)(람다와 고차 함수)와 [34번 주제](../34-exceptions-nothing-and-try-expression/)(예외)다.
-> 문항 10개 중 예측형은 6개이고, 6개 모두 코드블록이 붙는다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -272,6 +265,12 @@ fun main() {
 ### 10. 언어와 라이브러리의 경계 (경계)
 
 - 이 주제에서 본 것 중 **컴파일러가 하는 것**과 **kotlinx-coroutines 가 하는 것**을 가르면? [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 의 어느 문장이 그 경계를 말하나?
+
+## 실행 환경
+
+선행은 [10번 주제](../10-lambdas-and-higher-order-functions/)(람다와 고차 함수)와 [34번 주제](../34-exceptions-nothing-and-try-expression/)(예외)다.
+
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

@@ -1,11 +1,5 @@
 # ts/syntax/29 — `satisfies` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [TypeScript 4.9 릴리스 노트 — The `satisfies` Operator](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html) ·
-> [Handbook — Everyday Types (Type Assertions)](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html).
-> 위는 **규칙 확인용 링크**이고, 본문의 진단·출력은 **전부 이 판에서 직접 던져 받은 것**이다. 릴리스 노트 예제를 옮기지 않았다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -22,7 +16,6 @@ Python 3.12.3
 > ★ 소스 펜스 첫 줄 `// 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
 > **버전** — `satisfies` 는 **TS 4.9** 다. `as const` 는 **3.4**, `const` 타입 매개변수는 **5.0** 이다. ★ **7.0.2 에서 도는지는 던져서 확인했다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## ★★★ 이 주제가 쓰는 탐침 — 그리고 칸을 파일로 쪼갠 이유
 
@@ -578,3 +571,10 @@ ex.29c.ts    exit 1 = exit 1 · 출력 한 글자도 같다
   **15 / 21 이라는 수는 이 객체의 것**이지 `satisfies` 의 성질이 아니다. 성질은 「**검사 칸은 주석과 같고, 추론 칸은 값 쪽**」이다.
 - **`satisfies` 를 함수 인자에 쓰면** — 21편 4절이 `takePlain({…} satisfies Config)` 로 던졌다 — 인자의 추론은 **함수의 타입 매개변수**가 정한다.
 - **`as` 의 겹침 검사를 우회하는 `as unknown as T`** — [목록의 **30번 주제**](../30-type-assertions-and-non-null/)가 정본이다. **여기서는 안 던졌다.**
+
+## 실행 환경
+
+**기준 소스** — [TypeScript 4.9 릴리스 노트 — The `satisfies` Operator](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html) ·
+[Handbook — Everyday Types (Type Assertions)](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html).
+위는 **규칙 확인용 링크**이고, 본문의 진단·출력은 **전부 이 판에서 직접 던져 받은 것**이다. 릴리스 노트 예제를 옮기지 않았다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

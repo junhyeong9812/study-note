@@ -1,11 +1,5 @@
 # html/syntax/30 — 폼 상태·입력 보조 속성: `disabled`/`readonly`/`autofocus`/`autocomplete`/`inputmode` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 disabled·readonly·required·entry list·`requestSubmit`·autofocus·autofill 처리 모델·inputmode 절로 접지했다(앞 배치가 받아 둔 사본).\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **본체는 세 지점 격자다** — 45 칸을 미리 선언하고 「「없음」과 갈린 칸」·「명세 열과 갈린 칸」을 스크립트가 센다(A1).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -271,3 +265,10 @@ m7   (속성 없음) · type=number         ""                            ""    
 - **mutable** — 사용자가 값을 바꿀 수 있는 상태.
 - **autofocus 후보 목록** — 앞에서부터 한 번 쓰고 끝나는 목록.
 - **IDL-exposed autofill value** — `element.autocomplete` 의 값.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 disabled·readonly·required·entry list·`requestSubmit`·autofocus·autofill 처리 모델·inputmode 절로 접지했다(앞 배치가 받아 둔 사본).\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **본체는 세 지점 격자다** — 45 칸을 미리 선언하고 「「없음」과 갈린 칸」·「명세 열과 갈린 칸」을 스크립트가 센다(A1).

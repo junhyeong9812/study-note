@@ -1,7 +1,5 @@
 # PR #37014 — 테스트 해설 (테스트 하나하나)
 
-> PR #37014 테스트 해설. 형식·개념은 ../37153/tests.md, ../37153/guard-tests.md 참조.
-
 `spring-jdbc/src/test/java/org/springframework/jdbc/core/simple/TableMetaDataContextTests.java`에 세 건이 추가됐다.\
 세 건 모두 수정 전에 실패하는 red이며, 서로 다른 겹침 형태(부분 겹침, 완전 겹침, 대소문자 다른 겹침)를 하나씩 맡는다.\
 아래 red/green 판별은 실행 결과가 아니라 diff 논리 — 수정 전 `reconcileColumnsToUse`가 선언 컬럼을 무필터로 반환한다는 사실 — 에서 유도한 것이다.

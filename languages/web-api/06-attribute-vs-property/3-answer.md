@@ -1,10 +1,5 @@
 # web-api/06 — 속성(attribute) 대 성질(property): `getAttribute`/`setAttribute` 와 IDL 프로퍼티의 반영 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 와 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflecting-content-attributes-in-idl-attributes) 의 「Reflecting content attributes in IDL attributes」 절로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** 다만 이 주제의 결론은 **계약**이라 명세 문장이 근거의 중심이다.
-
 **★ 이 주제에는 흔들리는 칸이 없다.** 시간도 크기도 재지 않는다.
 
 | 안 흔들리는 칸 | 흔들리는 칸 |
@@ -368,3 +363,9 @@ const padw = (s, n) => s + ' '.repeat(Math.max(0, n - W(s)));
 - **cloning steps** — 요소를 복제할 때 추가로 밟으라고 명세가 요소별로 정해 둔 절차. `input` 의 값 복사가 여기 있다.
 - **직렬화(serialize)** — 노드 트리를 HTML 글자열로 뽑는 것.
 - **base URL** — 상대 URL 을 절대 URL 로 풀 때의 기준. `document.baseURI` 로 읽는다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 와 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflecting-content-attributes-in-idl-attributes) 의 「Reflecting content attributes in IDL attributes」 절로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** 다만 이 주제의 결론은 **계약**이라 명세 문장이 근거의 중심이다.

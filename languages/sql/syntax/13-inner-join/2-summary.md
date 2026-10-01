@@ -1,16 +1,5 @@
 # sql/13-INNER JOIN — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
-> 팬아웃 절의 `proj`·`emp_proj` 두 표는 **트랜잭션 안에서 만들고 롤백**했다 — DB 에 남기지 않았다. 만드는 문은 그 절에 적어 두었다.\
-> **버전** — `INNER JOIN` 자체는 두 엔진 모두 오래전부터 있다. 아래 **`JOIN` 에 `ON` 을 빠뜨렸을 때**의 처리가 갈리는데, 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않는다.**\
-> **선행** — [12 카티션곱과 CROSS JOIN](../12-cartesian-product-cross-join/). **12행을 거르는 것이 이 주제다.**\
-> **복선** — `ON` 과 `WHERE` 가 **여기서는 결과가 같다.** 그것이 왜 [15번](../15-on-vs-where-in-outer-join/)에서 달라지는지가 이 묶음의 정점이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`INNER JOIN` = 소개팅 12쌍 중 「양쪽 다 맞는」 쌍만 남긴 것. 맞는 짝이 없는 사람은 명단에서 통째로 사라진다.**
@@ -559,3 +548,13 @@ FROM 왼쪽표, 오른쪽표 WHERE <조건>               -- 옛 표기. 결과�
   예: `NULL = 10`. `ON` 은 이것을 `FALSE` 와 똑같이 버린다.
 - **중첩 루프 / 해시 조인** — 왼쪽 행마다 오른쪽을 훑거나, 해시 표를 만들어 맞추는 조인 알고리즘.\
   예: 등호 조건이면 해시를 쓸 수 있고, 부등호면 못 쓴다. [목록의 **59번 주제**](../59-scan-join-sort-operators/).
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Table Expressions (Joined Tables)](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 에러 메시지도 실제로 받은 것이고, 지어낸 출력은 없다.\
+팬아웃 절의 `proj`·`emp_proj` 두 표는 **트랜잭션 안에서 만들고 롤백**했다 — DB 에 남기지 않았다. 만드는 문은 그 절에 적어 두었다.\
+**버전** — `INNER JOIN` 자체는 두 엔진 모두 오래전부터 있다. 본문의 **`JOIN` 에 `ON` 을 빠뜨렸을 때**의 처리가 갈리는데, 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않는다.**\
+**선행** — [12 카티션곱과 CROSS JOIN](../12-cartesian-product-cross-join/). **12행을 거르는 것이 이 주제다.**\
+**복선** — `ON` 과 `WHERE` 가 **여기서는 결과가 같다.** 그것이 왜 [15번](../15-on-vs-where-in-outer-join/)에서 달라지는지가 이 묶음의 정점이다.

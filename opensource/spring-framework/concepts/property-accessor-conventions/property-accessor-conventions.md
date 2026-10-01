@@ -1,9 +1,5 @@
 # 개념: 자바 프로퍼티 접근자 관례 — JavaBeans, record, 그리고 이름이 계약인 이유
 
-> PR #36911(이름 해석)·#37139(setter 판별)의 무대가 되는 개념 묶음. PR별 상세는
-> `../../prs/36911-property-name-resolution/README.md`·`../../prs/37139-property-setter-prefix/README.md`, 구조·워크플로우는 각 폴더의
-> structure.md 참조.
-
 ## 프로퍼티 = 필드·읽기·쓰기 메서드의 "묶음"이라는 약속
 
 자바에서 프로퍼티는 언어 기능이 아니라 **관례**다. JavaBeans 명세가 정한 묶음 —

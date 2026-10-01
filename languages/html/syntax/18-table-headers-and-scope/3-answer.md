@@ -1,11 +1,5 @@
 # html/syntax/18 — 표 머리 연결: `th`·`scope`·`headers`/`id`·`rowspan`/`colspan` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스(`html17b-cdp.py`·`capture.sh`)는 [17번 주제의 3-answer.md](../17-table-structure/3-answer.md) `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/tables.html#table-processing-model) 의 표 처리 모델과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **명세 쪽 답은 모델 스크립트의 계산이고, Chrome 쪽 답은 트리의 좌표·역할이다.** 「이 칸의 머리」를 트리가 보고하지는 않는다(A7).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -330,3 +324,10 @@ $ python3 html17b-cdp.py page html17b-18-grid.html | sed -n '66,69p'
 - **닻 내린 칸** — 칸이 덮는 슬롯 중 왼쪽 위. 열 묶음 단계는 이 슬롯의 열 묶음만 본다.
 - **단순 규칙** — 이 문서가 트리 재료로 센 「같은 행의 `rowheader` + 같은 열의 `columnheader`」. **트리가 보고한 머리가 아니다.**
 - **제5의 상태** — 같은 질문을 **다른 창으로 물은 것**. 이 주제는 명세 계산과 트리 재료, 둘로 물었다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스(`html17b-cdp.py`·`capture.sh`)는 [17번 주제의 3-answer.md](../17-table-structure/3-answer.md) `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/tables.html#table-processing-model) 의 표 처리 모델과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **명세 쪽 답은 모델 스크립트의 계산이고, Chrome 쪽 답은 트리의 좌표·역할이다.** 「이 칸의 머리」를 트리가 보고하지는 않는다(A7).

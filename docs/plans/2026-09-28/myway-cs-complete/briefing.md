@@ -1,9 +1,5 @@
 # 워커 공통 브리핑 — myway 5 cs 주제 완성 (2026-09-28)
 
-> 명세: `docs/plans/2026-09-28/myway-cs-complete/requirement-spec.md` — 먼저 읽는다.
-> 문서 규칙 정본: `cs/README.md` 「작성 규칙」(§3 통일 골격, 코드 스니펫 언어).
-> 쉽게 쓰기 기준(아래 §4)은 이 저장소 사용자와 합의된 것이다.
-
 ## 1. 목표
 
 담당 노트 폴더마다 `2-summary.md`·`1-question.md`·`3-answer.md` 세 파일을 다음 상태로 만든다.

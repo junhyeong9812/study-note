@@ -1,13 +1,5 @@
 # html/syntax/07 — `id` 와 조각 식별자: 문서 내 링크·`:target`·스크롤 앵커 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Navigating to a fragment」](https://html.spec.whatwg.org/multipage/browsing-the-web.html#scrolling-to-a-fragment)·[「The `id` attribute」](https://html.spec.whatwg.org/multipage/dom.html#the-id-attribute) 절과 [WHATWG URL Standard](https://url.spec.whatwg.org/#concept-url-fragment). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **「이식성」을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. 이 주제가 다루는 것은 전부 **20년 넘게 안정된 표면**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★ **이 주제의 본체는 창 ② (프로브)다.** 다만 창 ② 만으로는 절반밖에 못 본다 — 조각 식별자가 하는 일의 절반이 **스크롤**이고 그것은 트리에도 IDL 반영에도 안 나타난다. 그래서 이 주제는 **`window.scrollY` 를 창 하나로 더 쓴다.** 창 넷의 정의는 [01번](../01-document-skeleton/2-summary.md) 의 「이 갈래의 창」 절에 있다.
-
 **이 판의 Chrome**
 
 ```text
@@ -513,3 +505,12 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 `#top` 만 특별한가** — 아주 오래된 문서들이 `<a href="#top">` 를 「맨 위로」로 써 왔기 때문이다. 명세는 그 관용을 **찾는 절차의 마지막 단계**로 못 박았다. [03번 주제](../03-parser-and-error-recovery/2-summary.md)의 「절대 멈추지 않는다」와 같은 집안의 결정이다.
 - **왜 없는 조각에서 안 움직이나** — 「가리키는 부분이 없으면 **스크롤 위치를 바꾸지 않는다**」가 명세의 처리다. 「맨 위로」로 처리했다면 링크 하나 잘못 눌러 읽던 자리를 잃게 된다.
 - **`:target` 이 하나뿐인 이유** — 「가리키는 부분」이 하나이기 때문이다. 그래서 여러 칸을 동시에 켜는 UI 는 `:target` 으로 못 만든다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Navigating to a fragment」](https://html.spec.whatwg.org/multipage/browsing-the-web.html#scrolling-to-a-fragment)·[「The `id` attribute」](https://html.spec.whatwg.org/multipage/dom.html#the-id-attribute) 절과 [WHATWG URL Standard](https://url.spec.whatwg.org/#concept-url-fragment). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **「이식성」을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 지원 상태는 **Baseline** 으로 읽는다. 이 주제가 다루는 것은 전부 **20년 넘게 안정된 표면**이다.
+
+★★ **이 주제의 본체는 창 ② (프로브)다.** 다만 창 ② 만으로는 절반밖에 못 본다 — 조각 식별자가 하는 일의 절반이 **스크롤**이고 그것은 트리에도 IDL 반영에도 안 나타난다. 그래서 이 주제는 **`window.scrollY` 를 창 하나로 더 쓴다.** 창 넷의 정의는 [01번](../01-document-skeleton/2-summary.md) 의 「이 갈래의 창」 절에 있다.

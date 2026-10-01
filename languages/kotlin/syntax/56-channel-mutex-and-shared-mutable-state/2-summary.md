@@ -1,16 +1,5 @@
 # kotlin/syntax/56 — `Channel`·`Mutex` — 공유 가변 상태 다루기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — **`kotlinx-coroutines-core-jvm` 1.11.0 의 소스 jar** — `commonMain/sync/Mutex.kt`(`Mutex` KDoc · `withLock`) · `commonMain/channels/Channel.kt`(용량 상수와 그 KDoc) · **kotlinc 2.4.20 의 `kotlin-compiler.jar`** 안의 검사기 클래스 하나(`javap`). ★ 공식 문서 페이지(「Shared mutable state and concurrency」·「Channels」)는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 문장은 인용하지 않는다.
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 9회(진단 격자 스크립트 안의 1회 포함) · `java` 7회 + 격자와 스레드 상태 로그를 세 판씩 되풀이한 6회 · `javap` 1회(검사기) · 라이브러리 소스 jar 발췌 2곳 · C# `csc` 1회(.NET SDK 10.0.401).\
-> ★★★ **라이브러리 판 — `kotlinx-coroutines-core-jvm` 1.11.0**(이 머신의 gradle 캐시에 있던 판 중 가장 새 것 · 매니페스트 `Implementation-Version: 1.11.0`). `Mutex`·`Channel`·`withTimeout`·`limitedParallelism` 은 **이 라이브러리의 것**이다 — 언어가 아니다.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「잃은 칸 N / M」·「막힌 탐침 N / M」은 프로그램이 스스로 센 것**이다.
-> **버전** — `synchronized` 안의 중단점을 막는 진단이 **어느 판부터인지는 확인하지 못했다**(옛 컴파일러 판이 이 머신에 없다). `Mutex`·`Channel` 도 **1.11.0 한 판에서만** 쟀다.
-> **경계** — ★★★ 「코루틴은 스레드가 아니라 컴파일러 변환이다」라는 **논지**는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 정본이다. `suspend` 함수를 **어디서 부를 수 있나**는 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/), 취소·예외가 부모와 형제로 번지는 규칙은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/), 디스패처와 `limitedParallelism` 자체는 [54번 주제](../54-coroutine-context-dispatchers-and-withcontext/)가 정본이다 — 여기서는 **공유 상태를 지키는 수단의 선택**만 본다.\
-> 스레드 쪽 원리 — **`int++` 이 왜 깨지나 · `synchronized` 의 재진입**은 [Java 33번](../../../java/syntax/33-synchronized-and-volatile/)이, **`AtomicInteger`** 는 [Java 55번](../../../java/syntax/55-atomics-and-concurrent-collections/)이, **`synchronized` 가 가상 스레드를 캐리어에 묶는 것(JDK 21)** 은 [Java 56번](../../../java/syntax/56-virtual-threads/)이 정본이다. **Go 의 채널과 뮤텍스**는 [Go 29번](../../../go/syntax/29-channels-buffering-direction-close-range-and-nil/)·[Go 32번](../../../go/syntax/32-sync-mutex-rwmutex-waitgroup-once/)이 쟀다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**공유 상태 격자 — 카운터 `plain++` 을 코루틴 1000개 × 100번 × 방법 여섯 × `Dispatchers.Default` × 20판 → 한 판이라도 잃었나**」. 둘째 본체는 **중단점 진단 격자**(`synchronized` 안에서 무엇을 부르면 컴파일이 막히나)다. 「쓰면 안 되는 이유」는 **컴파일러 진단 + 스레드 상태 로그 + 소유 로그** 세 창으로 말한다 — 느리다·빠르다는 재지 않았다.
 
 ## 이 주제가 쓰는 세 층
@@ -890,3 +879,14 @@ counter = 100
 - **`produce { }`·`actor { }` 빌더** — 채널 생산자·액터를 한 줄로 만든다. 이 판에서 **선언의 표지(실험적 등)를 확인하지 않았다** — 그래서 (문법)의 형태는 `Channel` + `launch` 로만 썼다.
 - **성능 비교** — `Mutex`·`synchronized`·`AtomicInteger`·액터의 처리량은 **JMH 판 격자**가 있어야 말할 수 있다(규칙 24). 이 문서는 재지 않았다.
 - **`-Dkotlinx.coroutines.channels.defaultBuffer`** — `BUFFERED` 의 64 를 바꾸는 JVM 속성((6) 발췌 마지막 줄의 `DEFAULT_BUFFER_PROPERTY_NAME`). 바꿔 돌리지 않았다.
+
+## 실행 환경
+
+**기준 소스** — **`kotlinx-coroutines-core-jvm` 1.11.0 의 소스 jar** — `commonMain/sync/Mutex.kt`(`Mutex` KDoc · `withLock`) · `commonMain/channels/Channel.kt`(용량 상수와 그 KDoc) · **kotlinc 2.4.20 의 `kotlin-compiler.jar`** 안의 검사기 클래스 하나(`javap`). ★ 공식 문서 페이지(「Shared mutable state and concurrency」·「Channels」)는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 문장은 인용하지 않는다.
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 9회(진단 격자 스크립트 안의 1회 포함) · `java` 7회 + 격자와 스레드 상태 로그를 세 판씩 되풀이한 6회 · `javap` 1회(검사기) · 라이브러리 소스 jar 발췌 2곳 · C# `csc` 1회(.NET SDK 10.0.401).\
+★★★ **라이브러리 판 — `kotlinx-coroutines-core-jvm` 1.11.0**(이 머신의 gradle 캐시에 있던 판 중 가장 새 것 · 매니페스트 `Implementation-Version: 1.11.0`). `Mutex`·`Channel`·`withTimeout`·`limitedParallelism` 은 **이 라이브러리의 것**이다 — 언어가 아니다.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「잃은 칸 N / M」·「막힌 탐침 N / M」은 프로그램이 스스로 센 것**이다.
+**버전** — `synchronized` 안의 중단점을 막는 진단이 **어느 판부터인지는 확인하지 못했다**(옛 컴파일러 판이 이 머신에 없다). `Mutex`·`Channel` 도 **1.11.0 한 판에서만** 쟀다.
+**경계** — ★★★ 「코루틴은 스레드가 아니라 컴파일러 변환이다」라는 **논지**는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 정본이다. `suspend` 함수를 **어디서 부를 수 있나**는 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/), 취소·예외가 부모와 형제로 번지는 규칙은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/), 디스패처와 `limitedParallelism` 자체는 [54번 주제](../54-coroutine-context-dispatchers-and-withcontext/)가 정본이다 — 여기서는 **공유 상태를 지키는 수단의 선택**만 본다.\
+스레드 쪽 원리 — **`int++` 이 왜 깨지나 · `synchronized` 의 재진입**은 [Java 33번](../../../java/syntax/33-synchronized-and-volatile/)이, **`AtomicInteger`** 는 [Java 55번](../../../java/syntax/55-atomics-and-concurrent-collections/)이, **`synchronized` 가 가상 스레드를 캐리어에 묶는 것(JDK 21)** 은 [Java 56번](../../../java/syntax/56-virtual-threads/)이 정본이다. **Go 의 채널과 뮤텍스**는 [Go 29번](../../../go/syntax/29-channels-buffering-direction-close-range-and-nil/)·[Go 32번](../../../go/syntax/32-sync-mutex-rwmutex-waitgroup-once/)이 쟀다.

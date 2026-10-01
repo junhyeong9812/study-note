@@ -1,12 +1,5 @@
 # kotlin/syntax/55 — `Flow` — 콜드 스트림·연산자·`collect` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/)(구조적 동시성 — 취소와 예외 전파)이고, 짝은 [47번 주제](../47-sequences-lazy-evaluation/)(`Sequence` — 같은 지연 평가의 동기판)다.
-> 문항 11개 중 예측형은 6개이고, 여섯 모두 코드블록이 붙는다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -276,6 +269,12 @@ fun main() = runBlocking {
 ### 11. `Sequence`·Python 제너레이터·Java `Stream` 과 (연결)
 
 - 호출 수와 순서에서 `Flow` 는 [47번 주제](../47-sequences-lazy-evaluation/)의 `Sequence` 와 무엇이 같은가? 두 번째로 모을 때 `Flow` 와 Python 제너레이터 객체·Java `Stream` 은 각각 어떻게 되나?
+
+## 실행 환경
+
+선행은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/)(구조적 동시성 — 취소와 예외 전파)이고, 짝은 [47번 주제](../47-sequences-lazy-evaluation/)(`Sequence` — 같은 지연 평가의 동기판)다.
+
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5 · kotlinx-coroutines 1.11.0** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

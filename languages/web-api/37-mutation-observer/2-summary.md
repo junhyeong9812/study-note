@@ -1,15 +1,5 @@
 # web-api/37 — `MutationObserver`: 관측 옵션 · 레코드 묶음 · 마이크로태스크 타이밍 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ④ 「디스패치 계수기」를 두 방향으로 돌린 것이다** — ① **묶음 · 타이밍 로그**(한 동기 블록의 변경 다섯 번이 콜백 몇 번 · 레코드 몇 개로 오나, `then` · `setTimeout` 과 어느 순서인가 — `then` 을 거는 자리만 바꾼 세 판)와 ② **옵션 격자**(옵션 아홉 벌 × 변경 일곱 가지 = 63칸 — 칸마다 레코드가 왔나). 스크립트가 **「레코드가 온 칸 N / M」 · 「subtree 가 바꾼 칸 N / M」** 을 마지막 줄로 찍는다.\
-> **기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/#mutation-observers) §4.3 — 「queue a mutation observer microtask」(**이미 걸려 있으면 그냥 돌아간다**) · 「notify mutation observers」(레코드가 **비어 있지 않을 때만** 콜백) · `observe(target, options)` 의 단계(`TypeError` 넷) · `disconnect()`(레코드 큐를 비운다) · 「queue a mutation record」(`subtree` · `attributeFilter` 판정) · §4.9 「change an attribute」(값을 비교하지 않는다). 받아서 읽은 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 하네스는 [36번 주제](../36-resize-observer/3-answer.md)의 `wa36b-net.py` 다(이 편은 부탁 창구를 안 쓴다 — 페이지가 돌려준 글만 찍는다).\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** 이 편의 관찰은 **명세 알고리즘과 전부 맞았다**(이탈 0).\
-> **선행** — ★★ **[03번 주제](../03-node-creation-insertion-removal/2-summary.md)** — 노드를 넣는 법 다섯과 **「삽입이 곧 이동」**. 여기서는 그 삽입 · 이동이 **레코드 몇 개로 보이나**를 센다((5)). ★ [05번 주제](../05-documentfragment-and-template/2-summary.md)가 이미 이 관찰자로 **조각 한 번 = 레코드 1개 대 반복 세 번 = 레코드 3개**를 쟀다 — 다시 재지 않는다.\
-> ★ **JS 쪽 선행** — [JS 갈래 36번](../../js/syntax/36-event-loop-and-microtasks/2-summary.md) (1)이 「**마이크로태스크는 등록한 순서대로**」(`P1 → Q1 → A2 → P2`)를 이미 쟀다. 이 편은 **MO 콜백이 그 줄의 어디에 서나**만 잰다.\
-> **경계** — 「마이크로태스크 대 태스크 대 렌더」의 브라우저 전체 순서는 목록의 **40번 주제**(폴더는 아직 없다)의 몫이다. 옛 **Mutation events**(`DOMNodeInserted` 등)는 「MO 가 대체한 것」으로만 둔다 — 던지지 않았다. ★ 「남의 스크립트가 만든 노드에 반응하기」((6))는 **설계 권고층**이다.\
-> 이 본문은 Claude 작성이다(원고 없음). 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -128,7 +118,7 @@ $ python3 wa36b-net.py page wa36b-37-batch.html
 
 ### (2) ★★★ 옵션 격자
 
-**칸마다 새 나무**(`host > [글 「처음」 , child > 글 「처음」]`)를 만들고 **host** 를 관찰한다. 변경 한 번 뒤 **`takeRecords()`** 로 큐를 읽는다(제5의 상태 — 머리말).
+**칸마다 새 나무**(`host > [글 「처음」 , child > 글 「처음」]`)를 만들고 **host** 를 관찰한다. 변경 한 번 뒤 **`takeRecords()`** 로 큐를 읽는다(제5의 상태 — 맨 위 부분).
 
 ```html
 <!-- wa36b-37-grid.html -->
@@ -488,3 +478,13 @@ $ python3 wa36b-net.py page wa36b-37-watch.html
 - **그림자 트리 안의 변경 · `slotchange`** — 같은 알림 마이크로태스크에서 쏜다(명세). 던지지 않았다.
 - **옛 Mutation events** — 변경마다 **동기로** 쏘던 것이 MO 로 바뀐 이유(묶음 · 마이크로태스크). 던지지 않았다.
 - **같은 대상 재관찰 · 일시 등록 관찰자(transient)** — 자손을 떼어 낸 뒤에도 그 안의 변경을 잠깐 따라가는 장치. 던지지 않았다.
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ④ 「디스패치 계수기」를 두 방향으로 돌린 것이다** — ① **묶음 · 타이밍 로그**(한 동기 블록의 변경 다섯 번이 콜백 몇 번 · 레코드 몇 개로 오나, `then` · `setTimeout` 과 어느 순서인가 — `then` 을 거는 자리만 바꾼 세 판)와 ② **옵션 격자**(옵션 아홉 벌 × 변경 일곱 가지 = 63칸 — 칸마다 레코드가 왔나). 스크립트가 **「레코드가 온 칸 N / M」 · 「subtree 가 바꾼 칸 N / M」** 을 마지막 줄로 찍는다.\
+**기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/#mutation-observers) §4.3 — 「queue a mutation observer microtask」(**이미 걸려 있으면 그냥 돌아간다**) · 「notify mutation observers」(레코드가 **비어 있지 않을 때만** 콜백) · `observe(target, options)` 의 단계(`TypeError` 넷) · `disconnect()`(레코드 큐를 비운다) · 「queue a mutation record」(`subtree` · `attributeFilter` 판정) · §4.9 「change an attribute」(값을 비교하지 않는다). 받아서 읽은 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 하네스는 [36번 주제](../36-resize-observer/3-answer.md)의 `wa36b-net.py` 다(이 편은 부탁 창구를 안 쓴다 — 페이지가 돌려준 글만 찍는다).\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** 이 편의 관찰은 **명세 알고리즘과 전부 맞았다**(이탈 0).\
+**선행** — ★★ **[03번 주제](../03-node-creation-insertion-removal/2-summary.md)** — 노드를 넣는 법 다섯과 **「삽입이 곧 이동」**. 여기서는 그 삽입 · 이동이 **레코드 몇 개로 보이나**를 센다((5)). ★ [05번 주제](../05-documentfragment-and-template/2-summary.md)가 이미 이 관찰자로 **조각 한 번 = 레코드 1개 대 반복 세 번 = 레코드 3개**를 쟀다 — 다시 재지 않는다.\
+★ **JS 쪽 선행** — [JS 갈래 36번](../../js/syntax/36-event-loop-and-microtasks/2-summary.md) (1)이 「**마이크로태스크는 등록한 순서대로**」(`P1 → Q1 → A2 → P2`)를 이미 쟀다. 이 편은 **MO 콜백이 그 줄의 어디에 서나**만 잰다.\
+**경계** — 「마이크로태스크 대 태스크 대 렌더」의 브라우저 전체 순서는 목록의 **40번 주제**(폴더는 아직 없다)의 몫이다. 옛 **Mutation events**(`DOMNodeInserted` 등)는 「MO 가 대체한 것」으로만 둔다 — 던지지 않았다. ★ 「남의 스크립트가 만든 노드에 반응하기」((6))는 **설계 권고층**이다.

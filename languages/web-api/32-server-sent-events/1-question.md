@@ -1,12 +1,5 @@
 # web-api/32 — 서버 보내기 이벤트: `EventSource`·자동 재연결·`Last-Event-ID` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — `fetch` 의 상태 코드와 서버 요청 로그는 [25번 주제](../25-fetch-request-response/1-question.md), 응답 본문을 직접 청크로 읽는 쪽은 [26번 주제](../26-response-body-streaming/1-question.md)가 물었다. 교차 출처 · 쿠키는 [28번 주제](../28-cors-simple-and-preflight/1-question.md) · [29번 주제](../29-credentials-and-cookies/1-question.md)다. 여기는 **끊겼을 때 누가 다시 붙고, 무엇이 남고 무엇이 사라지나**를 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. **명세 원문은 이 판에서 열지 못했다** — 그래서 정답도 「명세대로」를 판정하지 않는다. 이식성은 주장 범위 밖이다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -131,6 +124,12 @@ es.onerror = () => 상태.push(es.readyState);
 
 - [26번 주제](../26-response-body-streaming/1-question.md)의 `fetch` 스트리밍으로 같은 알림을 받으면 **앱이 직접 해야 하는 일** 두 가지는?
 - [33번 주제](../33-websocket/1-question.md)의 WebSocket 대신 이것을 고를 근거로 이 편이 **댈 수 있는 것과 댈 수 없는 것**은?
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — `fetch` 의 상태 코드와 서버 요청 로그는 [25번 주제](../25-fetch-request-response/1-question.md), 응답 본문을 직접 청크로 읽는 쪽은 [26번 주제](../26-response-body-streaming/1-question.md)가 물었다. 교차 출처 · 쿠키는 [28번 주제](../28-cors-simple-and-preflight/1-question.md) · [29번 주제](../29-credentials-and-cookies/1-question.md)다. 여기는 **끊겼을 때 누가 다시 붙고, 무엇이 남고 무엇이 사라지나**를 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰이다. **명세 원문은 이 판에서 열지 못했다** — 그래서 정답도 「명세대로」를 판정하지 않는다. 이식성은 주장 범위 밖이다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

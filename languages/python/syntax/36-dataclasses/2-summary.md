@@ -1,45 +1,5 @@
 # python/syntax/36-dataclasses — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [`dataclasses`](https://docs.python.org/3.12/library/dataclasses.html) — `@dataclass` 의 옵션 전부·`field`·`InitVar`·`__post_init__`
-> - 같은 문서의 **mutable default** 문단 — *"will raise a ValueError if it detects an unhashable default parameter …
->   Unhashability is used to approximate mutability."* · *"This is a partial solution, but it does protect against many common errors."*
-> - 같은 문서의 `kw_only`·`slots`(둘 다 **3.10** 신설) · `frozen` 이 `__setattr__`·`__delattr__` 를 더한다는 문단
-> - [`inspect.signature`](https://docs.python.org/3.12/library/inspect.html#inspect.signature) — 생성된 `__init__` 을 **손으로 안 세고** 읽는 창
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ 던지는 형태를 하나로 고정했다 — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
-> ★★★ **이 주제는 트레이스백을 한 블록도 싣지 않았다.** 던진 예외가 전부 `dataclasses.py` 를 지나
-> **절대 경로가 박히기** 때문이다(직접 확인했다 — 프레임이 다섯이고 `/usr/lib/python3.12/dataclasses.py` 가 네 줄 박힌다).
-> 전부 `except` 로 받아 **타입과 메시지만** 찍었다([30번](../30-repr-eq-hash-contracts/2-summary.md)이 같은 처방을 썼다).
-> 그래서 이 문서에는 **줄 번호에 기대는 칸이 하나도 없다.**\
-> **버전** — `dataclasses` 는 **3.7**(PEP 557)부터, **`kw_only`·`slots` 는 3.10** 부터다.
-> 가변 기본값 판별 기준이 **3.11 에서 「`list`·`dict`·`set` 목록」에서 「해시 가능성」으로 바뀌었다**([20번](../20-mutable-default-args/2-summary.md)의 관찰).\
-> ★ **구현 대 언어 보장 한 줄** — **무엇을 만들어 내는가와 옵션의 효과까지가 언어 보장**이고,
-> **`_field_type` 같은 내부 이름·예외 문구·`<factory>` 라는 표기**는 CPython 쪽이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | ★ `MISSING` 의 기본 `repr` 에 **주소가 박힌다** — 그래서 **이름으로 바꿔 찍었다** | ★★ **`__dataclass_fields__` 의 순서** — `dict` 라 삽입 순서가 보장된다 |
-> | `id()` 와 `0x…` 주소 — 그 한 자리를 죽여 **한 번도 안 찍었다** | `inspect.signature` 가 만든 **서명 문자열** |
-> | 판이 오르면 예외 **문구**와 `_FIELD_INITVAR` 같은 **내부 이름** | 어느 던더가 **클래스 칸에 생겼나 안 생겼나** |
-> | `getsizeof` 의 **바이트 수**(동작 8) — [33번](../33-property-descriptor-slots/2-summary.md)과 같은 규칙 | ★ **어느 쪽이 작나**라는 대소 관계 |
->
-> ★ **이 주제의 블록에는 주소도 시간도 절대경로도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다**(재대조 전부 동일).\
-> ★★ **순서가 보장 안 되는 출력은 하나도 없다** — 클래스 칸 비교는 전부 `sorted()` 로 찍었고,
-> `__dataclass_fields__` 와 `fields()` 는 **원래 순서가 보장되는 것**이라 그대로 실었다.\
-> **선행** — [20-mutable-default-args](../20-mutable-default-args/2-summary.md)(★★★ **가변 기본값의 정본**) ·
-> [30-repr-eq-hash-contracts](../30-repr-eq-hash-contracts/2-summary.md)(★★★ **`__hash__` 가 어떻게 갈리는지의 정본**) ·
-> [31-comparison-protocol-and-sortability](../31-comparison-protocol-and-sortability/2-summary.md)(`order=True` 가 만드는 넷과 대비) ·
-> [33-property-descriptor-slots](../33-property-descriptor-slots/2-summary.md)(`slots=True` 가 만드는 것) ·
-> [34-inheritance-mro-super](../34-inheritance-mro-super/2-summary.md)(상속한 필드가 줄을 서는 순서).\
-> **이 사슬** — [20](../20-mutable-default-args/2-summary.md)·[30](../30-repr-eq-hash-contracts/2-summary.md)·[31](../31-comparison-protocol-and-sortability/2-summary.md)·[33](../33-property-descriptor-slots/2-summary.md)·[34](../34-inheritance-mro-super/2-summary.md)이 **전부 여기로 모인다.**
-> **`dataclasses` 는 새 규칙이 아니라 앞 주제들의 결론을 자동으로 써 주는 장치다.**
-
 ## 한눈에 — 쉽게 말하면
 
 **`@dataclass` 는 「내가 적은 필드 목록을 읽어 던더를 대신 써 주는 코드 생성기」다.**
@@ -288,7 +248,7 @@ print("   replace(p, y=99)           :", dataclasses.replace(p, y=99))
   ★ `inspect.signature(Point)` 는 `self` 를 뺀 **부르는 쪽 서명**을 준다.
 * ★★ **③이 창 ③이다.** 필드마다 옵션이 전수로 나온다.
   ★ `MISSING` 은 **「기본값 없음」의 표식**이고, **그 기본 `repr` 에는 주소가 박히므로 이름으로 바꿔 찍었다.**
-  머리말의 「흔들리는 칸」 표가 그것을 미리 선언한 자리다.
+  「실행 환경」의 「흔들리는 칸」 표가 그것을 미리 선언한 자리다.
 * **④ — `fields()` 로도 같은 것을 읽는다.** `MISSING` 과의 `is` 비교가 「기본값 없음」의 정확한 판정식이다.
 * ★ **⑤ — `p == (1, 2)` 가 거짓**이다. 생성된 `__eq__` 는 **`other.__class__` 가 같을 때만** 비교하고
   아니면 `NotImplemented` 를 준다([31번](../31-comparison-protocol-and-sortability/2-summary.md)의 반사 연산 규칙을 탄다).
@@ -1740,3 +1700,46 @@ class SomeClass: ...
 * ★★ **`dataclass` 는 검증을 하지 않는다.** 타입 어노테이션을 **읽기는 하는데 값이 그 타입인지는 안 본다** —
   동작 6의 ⑦이 그 실측이다. `n: int` 자리에 문자열이, `xs: list` 자리에 실수가 그냥 들어간다.
   ★ 그 자리가 [35번](../35-abc-and-protocol/2-summary.md) 과 같은 축이다 — **런타임이 안 보는 것**이고, 보려면 `__post_init__` 에 직접 쓴다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [`dataclasses`](https://docs.python.org/3.12/library/dataclasses.html) — `@dataclass` 의 옵션 전부·`field`·`InitVar`·`__post_init__`
+- 같은 문서의 **mutable default** 문단 — *"will raise a ValueError if it detects an unhashable default parameter …
+  Unhashability is used to approximate mutability."* · *"This is a partial solution, but it does protect against many common errors."*
+- 같은 문서의 `kw_only`·`slots`(둘 다 **3.10** 신설) · `frozen` 이 `__setattr__`·`__delattr__` 를 더한다는 문단
+- [`inspect.signature`](https://docs.python.org/3.12/library/inspect.html#inspect.signature) — 생성된 `__init__` 을 **손으로 안 세고** 읽는 창
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ 던지는 형태를 하나로 고정했다 — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
+★★★ **이 주제는 트레이스백을 한 블록도 싣지 않았다.** 던진 예외가 전부 `dataclasses.py` 를 지나
+**절대 경로가 박히기** 때문이다(직접 확인했다 — 프레임이 다섯이고 `/usr/lib/python3.12/dataclasses.py` 가 네 줄 박힌다).
+전부 `except` 로 받아 **타입과 메시지만** 찍었다([30번](../30-repr-eq-hash-contracts/2-summary.md)이 같은 처방을 썼다).
+그래서 이 문서에는 **줄 번호에 기대는 칸이 하나도 없다.**\
+**버전** — `dataclasses` 는 **3.7**(PEP 557)부터, **`kw_only`·`slots` 는 3.10** 부터다.
+가변 기본값 판별 기준이 **3.11 에서 「`list`·`dict`·`set` 목록」에서 「해시 가능성」으로 바뀌었다**([20번](../20-mutable-default-args/2-summary.md)의 관찰).\
+★ **구현 대 언어 보장 한 줄** — **무엇을 만들어 내는가와 옵션의 효과까지가 언어 보장**이고,
+**`_field_type` 같은 내부 이름·예외 문구·`<factory>` 라는 표기**는 CPython 쪽이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| ★ `MISSING` 의 기본 `repr` 에 **주소가 박힌다** — 그래서 **이름으로 바꿔 찍었다** | ★★ **`__dataclass_fields__` 의 순서** — `dict` 라 삽입 순서가 보장된다 |
+| `id()` 와 `0x…` 주소 — 그 한 자리를 죽여 **한 번도 안 찍었다** | `inspect.signature` 가 만든 **서명 문자열** |
+| 판이 오르면 예외 **문구**와 `_FIELD_INITVAR` 같은 **내부 이름** | 어느 던더가 **클래스 칸에 생겼나 안 생겼나** |
+| `getsizeof` 의 **바이트 수**(동작 8) — [33번](../33-property-descriptor-slots/2-summary.md)과 같은 규칙 | ★ **어느 쪽이 작나**라는 대소 관계 |
+
+★ **이 주제의 블록에는 주소도 시간도 절대경로도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다**(재대조 전부 동일).\
+★★ **순서가 보장 안 되는 출력은 하나도 없다** — 클래스 칸 비교는 전부 `sorted()` 로 찍었고,
+`__dataclass_fields__` 와 `fields()` 는 **원래 순서가 보장되는 것**이라 그대로 실었다.\
+**선행** — [20-mutable-default-args](../20-mutable-default-args/2-summary.md)(★★★ **가변 기본값의 정본**) ·
+[30-repr-eq-hash-contracts](../30-repr-eq-hash-contracts/2-summary.md)(★★★ **`__hash__` 가 어떻게 갈리는지의 정본**) ·
+[31-comparison-protocol-and-sortability](../31-comparison-protocol-and-sortability/2-summary.md)(`order=True` 가 만드는 넷과 대비) ·
+[33-property-descriptor-slots](../33-property-descriptor-slots/2-summary.md)(`slots=True` 가 만드는 것) ·
+[34-inheritance-mro-super](../34-inheritance-mro-super/2-summary.md)(상속한 필드가 줄을 서는 순서).
+
+**`dataclasses` 는 새 규칙이 아니라 앞 주제들의 결론을 자동으로 써 주는 장치다.**
+
+---
+
+**이 사슬** — [20](../20-mutable-default-args/2-summary.md)·[30](../30-repr-eq-hash-contracts/2-summary.md)·[31](../31-comparison-protocol-and-sortability/2-summary.md)·[33](../33-property-descriptor-slots/2-summary.md)·[34](../34-inheritance-mro-super/2-summary.md)이 **전부 여기로 모인다.**

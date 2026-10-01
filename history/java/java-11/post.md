@@ -1,10 +1,5 @@
 # Java 11 (2018년 9월) — LTS
 
-> 원본: `~/project/java-history/java/java-11.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JEP 번호·클래스/패키지/메서드 이름·코드블록 4개(java 3 · bash 1)·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
-> ASCII 도식 1개는 원문의 mermaid 시퀀스 그림을 글자로 옮긴 것이고, 「한눈에」의 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 교차 주 1개는 원문에 없는 보충이다.\
-> 원문에 없는 도식은 새로 그리지 않았다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -217,3 +212,10 @@ Files.writeString(Path.of("out.txt"), "Hello, Java 11");
 - [JDK 11 Release Notes — Oracle](https://www.oracle.com/java/technologies/javase/11-relnote-issues.html)
 - [Java version history — Wikipedia](https://en.wikipedia.org/wiki/Java_version_history)
 - [90 New Features and APIs in JDK 11 — Azul](https://www.azul.com/blog/90-new-features-and-apis-in-jdk-11/)
+
+## 출처
+
+원본: `~/project/java-history/java/java-11.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JEP 번호·클래스/패키지/메서드 이름·코드블록 4개(java 3 · bash 1)·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
+ASCII 도식 1개는 원문의 mermaid 시퀀스 그림을 글자로 옮긴 것이고, 「한눈에」의 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 교차 주 1개는 원문에 없는 보충이다.\
+원문에 없는 도식은 새로 그리지 않았다.

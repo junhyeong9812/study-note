@@ -1,9 +1,5 @@
 # PR #151156 - 테스트 해설
 
-> `AutoDateHistogramAggregationBuilderTests`에 추가된 한 건.\
-> 문제와 수정은 [README.md](README.md), 공통 배경은
-> [개념 문서](../../concepts/serialized-state-equality-contract/serialized-state-equality-contract.md).
-
 배치가 형제 PR과 다르다.\
 이 결함은 **누락 필드가 둘**이므로 한 테스트 안에서 기준 인스턴스 하나와 변형 둘을 세우고, 각 변형이 한 필드씩만 다르게 만든다.\
 그래야 어느 필드 때문에 실패했는지가 단언 단위로 갈린다.

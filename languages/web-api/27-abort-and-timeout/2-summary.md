@@ -1,13 +1,5 @@
 # web-api/27 — `AbortController` 로 취소와 타임아웃: `AbortSignal.timeout()`/`any()` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」 — 페이지가 받은 것과 서버가 한 일을 칸마다 나란히 놓는 「취소 격자」다.** 서버의 `/work` 는 도착하면 「처리 시작」, 페이지가 `/go` 를 줄 때 「처리 끝(주문을 기록했다)」, 그다음 응답을 쓴다. 페이지는 **취소를 받은 뒤 서버가 연결 닫힘을 알아챌 때까지 기다렸다가** `/go` 를 준다 — 그래서 「취소한 뒤에도 서버는 처리를 끝냈나」가 시간 없이 칸마다 갈린다.\
-> **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 fetch() 메서드 단계(「signal 이 이미 abort 됐으면 **abort the fetch() call** … signal 의 abort reason 으로」 · signal 에 다는 abort 단계 — 「**controller 를 abort** 하고 **abort the fetch() call**」) · 「To abort a fetch() call」(**① 프라미스를 error 로 거부** · 요청 본문이 읽히는 중이면 취소 · **응답 본문이 읽히는 중이면 error 로 error**) · [WHATWG DOM](https://dom.spec.whatwg.org/) 의 `abort(reason)`(「reason 이 없으면 **`AbortError` DOMException**」) · `AbortSignal.timeout()`(「타이머 태스크로 **`TimeoutError` DOMException**」) · `AbortSignal.any()`(「dependent abort signal — **원인이 된 신호의 reason**」). ★ **명세 어디에도 「서버에게 취소를 알린다」는 단계는 없다** — 페이지 쪽 프라미스와 스트림만 끝낸다. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 서버는 로컬 서버 A 다. 하네스는 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 (1)에 있다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — ★★★ **[20번 주제](../20-listener-lifetime/2-summary.md)의 (5)\~(7)이 이 편의 절반을 리스너 쪽에서 쟀다** — `signal` 하나로 리스너 다섯을 떼는 것 · **이미 abort 된 `signal` 로 등록하면 예외 없이 `undefined` · 호출 0회** · `abort()` 인자 없음의 reason 이 `AbortError 「signal is aborted without reason」` · **`AbortSignal.any` 의 reason 은 원본과 같은 객체** · **`timeout(0)` 도 같은 잡 안에서는 아직 `aborted=false`**. 여기서는 **다시 재지 않고 인용**하고 **`fetch` 쪽**으로 간다. [25번 주제](../25-fetch-request-response/2-summary.md)(거부는 `catch` 로) · [26번 주제](../26-response-body-streaming/2-summary.md)(본문 스트림). ★★★ **[JS 41번 주제](../../js/syntax/41-cancellation-and-timeouts/2-summary.md)가 나머지 절반을 node 안의 서버로 쟀다** — (1) 「프라미스에는 취소가 없다」 · (2) `reason` 7행과 **`AbortError` 대 `TimeoutError`**(문구가 node 와 Chrome 에서 다르다) · (4) **이미 abort 된 신호는 요청 0 · 처리 중 abort 는 서버가 이미 받았고 연결만 끊긴다** · `abort("mine")` 이 **Chrome 151 에서 `"mine"` 그대로**. 여기서는 그것을 **인용**하고, **브라우저 페이지 대 서버**로 넓혀 **「서버는 처리를 끝냈나 · 응답 쓰기는 어떻게 됐나 · 본문을 읽는 중이면 · 같은 잡에서 끊으면」** 을 더한다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -528,3 +520,11 @@ AbortError 로 거부된 판 = 100 / 100
 - **업로드 중 취소**(요청 본문 스트림)는 던지지 않았다 — 명세는 「요청 본문이 readable 이면 취소」라고 적는다.
 - **`keepalive: true` 요청의 취소**는 던지지 않았다.
 - **서비스 워커가 가로챈 요청의 취소**는 던지지 않았다.
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」 — 페이지가 받은 것과 서버가 한 일을 칸마다 나란히 놓는 「취소 격자」다.** 서버의 `/work` 는 도착하면 「처리 시작」, 페이지가 `/go` 를 줄 때 「처리 끝(주문을 기록했다)」, 그다음 응답을 쓴다. 페이지는 **취소를 받은 뒤 서버가 연결 닫힘을 알아챌 때까지 기다렸다가** `/go` 를 준다 — 그래서 「취소한 뒤에도 서버는 처리를 끝냈나」가 시간 없이 칸마다 갈린다.\
+**기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 fetch() 메서드 단계(「signal 이 이미 abort 됐으면 **abort the fetch() call** … signal 의 abort reason 으로」 · signal 에 다는 abort 단계 — 「**controller 를 abort** 하고 **abort the fetch() call**」) · 「To abort a fetch() call」(**① 프라미스를 error 로 거부** · 요청 본문이 읽히는 중이면 취소 · **응답 본문이 읽히는 중이면 error 로 error**) · [WHATWG DOM](https://dom.spec.whatwg.org/) 의 `abort(reason)`(「reason 이 없으면 **`AbortError` DOMException**」) · `AbortSignal.timeout()`(「타이머 태스크로 **`TimeoutError` DOMException**」) · `AbortSignal.any()`(「dependent abort signal — **원인이 된 신호의 reason**」). ★ **명세 어디에도 「서버에게 취소를 알린다」는 단계는 없다** — 페이지 쪽 프라미스와 스트림만 끝낸다. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 서버는 로컬 서버 A 다. 하네스는 [24번 주제](../24-document-lifecycle-events/2-summary.md)의 (1)에 있다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — ★★★ **[20번 주제](../20-listener-lifetime/2-summary.md)의 (5)\~(7)이 이 편의 절반을 리스너 쪽에서 쟀다** — `signal` 하나로 리스너 다섯을 떼는 것 · **이미 abort 된 `signal` 로 등록하면 예외 없이 `undefined` · 호출 0회** · `abort()` 인자 없음의 reason 이 `AbortError 「signal is aborted without reason」` · **`AbortSignal.any` 의 reason 은 원본과 같은 객체** · **`timeout(0)` 도 같은 잡 안에서는 아직 `aborted=false`**. 여기서는 **다시 재지 않고 인용**하고 **`fetch` 쪽**으로 간다. [25번 주제](../25-fetch-request-response/2-summary.md)(거부는 `catch` 로) · [26번 주제](../26-response-body-streaming/2-summary.md)(본문 스트림). ★★★ **[JS 41번 주제](../../js/syntax/41-cancellation-and-timeouts/2-summary.md)가 나머지 절반을 node 안의 서버로 쟀다** — (1) 「프라미스에는 취소가 없다」 · (2) `reason` 7행과 **`AbortError` 대 `TimeoutError`**(문구가 node 와 Chrome 에서 다르다) · (4) **이미 abort 된 신호는 요청 0 · 처리 중 abort 는 서버가 이미 받았고 연결만 끊긴다** · `abort("mine")` 이 **Chrome 151 에서 `"mine"` 그대로**. 여기서는 그것을 **인용**하고, **브라우저 페이지 대 서버**로 넓혀 **「서버는 처리를 끝냈나 · 응답 쓰기는 어떻게 됐나 · 본문을 읽는 중이면 · 같은 잡에서 끊으면」** 을 더한다.

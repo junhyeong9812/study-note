@@ -1,14 +1,5 @@
 # kotlin/syntax/09 — 가변 인자·spread 연산자·로컬 함수·중위 함수 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [08번 주제](../08-function-declaration-default-and-named-args/)다.
-> 연산자 오버로딩 **전체**는 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/), 람다·클로저 일반은 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/)가 정본이다.
-> Java 쪽 짝은 [`../../../java/syntax/08-method-declaration-overloading/`](../../../java/syntax/08-method-declaration-overloading/)다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -176,6 +167,14 @@ infix fun Int.x(o: Int) = this * o
 - 연산자 규약 표 전체(`plus`·`get`·`invoke`·`iterator`)의 정본은 어느 주제인가?
 - 람다가 바깥 `var` 를 잡는 것의 정본은 어느 주제인가?
 - `step`·`downTo` 가 중위 함수라는 것은 어느 주제에서 쓰였는가?
+
+## 실행 환경
+
+선행은 [08번 주제](../08-function-declaration-default-and-named-args/)다.
+연산자 오버로딩 **전체**는 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/), 람다·클로저 일반은 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/)가 정본이다.
+Java 쪽 짝은 [`../../../java/syntax/08-method-declaration-overloading/`](../../../java/syntax/08-method-declaration-overloading/)다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
 
 ## 복습 기록
 

@@ -1,15 +1,5 @@
 # sql/25-조인 팬아웃 — 행 수와 집계가 틀어지는 자리 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Joined Tables](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — 이 주제에서 버전·방언에 갈리는 것은 **없다.** 세 처방(선집계·`COUNT(DISTINCT)`·`LATERAL`)이 **두 엔진에서 같은 답을 냈다.**\
-> **선행** — [14 LEFT·RIGHT OUTER JOIN](../14-left-right-outer-join/) · [22 GROUP BY 와 비집계 열 규칙](../22-group-by-nonaggregated-columns/).\
-> **이 묶음의 정점이다** — [21](../21-aggregate-functions-count-forms/)·[22](../22-group-by-nonaggregated-columns/)에서 배운 것이 [13](../13-inner-join/)·[14](../14-left-right-outer-join/)의 조인 위에서 어떻게 틀어지나.
-
 ## 한눈에 — 쉽게 말하면
 
 **사원 명단에 「참여 프로젝트」 표를 붙이면, 두 프로젝트에 낀 사람은 명단에 **두 줄**이 된다.\
@@ -673,3 +663,12 @@ FROM emp e LEFT JOIN LATERAL (SELECT COUNT(*) AS n FROM asg a WHERE a.emp_id = e
   실제 비교는 `EXPLAIN ANALYZE` 로 하고, 읽는 법은 목록의 [**58**](../58-explain-plan-tree/)·[**60**](../60-explain-analyze-estimates-vs-actuals/)번 주제다.
 - **`GROUP BY` 를 쓰지 않고 행마다 값을 붙이는 길**이 윈도우 함수다([목록의 **26번 주제**](../26-window-functions-vs-aggregates/)).\
   팬아웃 위에서는 윈도우 함수도 똑같이 부푼다 — **먼저 행을 바로잡는 것이 순서다.**
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Joined Tables](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — 이 주제에서 버전·방언에 갈리는 것은 **없다.** 세 처방(선집계·`COUNT(DISTINCT)`·`LATERAL`)이 **두 엔진에서 같은 답을 냈다.**\
+**선행** — [14 LEFT·RIGHT OUTER JOIN](../14-left-right-outer-join/) · [22 GROUP BY 와 비집계 열 규칙](../22-group-by-nonaggregated-columns/).\
+**이 묶음의 정점이다** — [21](../21-aggregate-functions-count-forms/)·[22](../22-group-by-nonaggregated-columns/)에서 배운 것이 [13](../13-inner-join/)·[14](../14-left-right-outer-join/)의 조인 위에서 어떻게 틀어지나.

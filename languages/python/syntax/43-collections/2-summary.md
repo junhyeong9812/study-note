@@ -1,35 +1,5 @@
 # python/syntax/43-collections — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
-> - [`collections`(3.12)](https://docs.python.org/3.12/library/collections.html) —
->   `defaultdict.__missing__` 의 *"this value is inserted in the dictionary for the key, and returned"* · *"`__missing__()` is not called for any operations besides `__getitem__()`"* ·
->   `Counter` 의 *"return a zero count for missing items instead of raising a KeyError"* · *"the output will exclude results with counts of zero or less"* ·
->   `most_common` 의 *"Elements with equal counts are ordered in the order first encountered"* ·
->   `ChainMap` 의 *"writes, updates, and deletions only operate on the first mapping"* ·
->   `deque` 의 *"approximately the same O(1) performance in either direction"* · *"Indexed access is O(1) at both ends but slows to O(n) in the middle"* ·
->   `OrderedDict` 절의 *"The equality operation for OrderedDict checks for matching order"* 와 `dict` 와의 차이 목록
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 `python3` **3.12.3** 하나. 던지는 형태는 `python3 - <파일` 로 고정했고, 예외는 `except` 로 받아 **타입과 메시지만** 찍었다.\
-> ★★★ **복잡도는 문서의 말이다** — 「`deque` 양끝 O(1)·가운데 O(n)」은 위 문장을 옮긴 것이고 **이 문서는 시간을 한 번도 재지 않았다.**
-> 이 머신에서 잰 것은 **`len`·호출 횟수·출력 값**뿐이다. 「`deque` 가 `list` 보다 빠르다」는 **한 줄도 쓰지 않는다.**\
-> **버전**(문서의 `versionadded` 표기) — `OrderedDict`·`Counter` **3.1**, `ChainMap` **3.3**, `deque.maxlen` 속성 **3.1**, `Counter` 의 단항 `+`·`-` **3.3**, `Counter.total()` **3.10**,
-> `Counter` 의 `==` 가 **없는 원소를 0 으로 보는 것**은 **3.10** 부터(문서의 *"In equality tests, missing elements are treated as having zero counts"* 와 그 버전 표기). `dict` 의 삽입 순서 보장은 **3.7**.\
-> ★ **구현 대 언어 보장 한 줄** — 위 문서 문장들이 보장이다. **`most_common` 의 동률 순서도 문서가 보장한다**(「처음 만난 순서」).
-> 예외 **문구**(`deque already at its maximum size` 따위)는 CPython 의 것이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | 판이 오르면 예외 **문구** | ★★ 격자의 칸 · 마지막 줄 **「… N / M」** · `len` 전→후 · factory 호출 수 |
-> | — (주소·시간·`set` 출력을 한 곳도 안 찍었다) | `dict`·`Counter` 의 **출력 순서** — 삽입 순서가 **3.7+ 언어 보장**이고 `most_common` 동률 순서도 문서 보장 |
->
-> ★ `PYTHONHASHSEED` 를 바꿔 한 번 더 캡처해도 **한 글자도 같았다** — 순서가 해시에 기대는 출력이 없다는 뜻이다.\
-> **선행** — [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(★★★ **동작 6 이 「`defaultdict` 는 조회만 해도 키를 만든다」까지를 먼저 보였다 — 이 주제는 그 위에서 「어느 조회가, 몇 번, 무엇을 부르나」를 센다**).
-
 ## 한눈에 — 쉽게 말하면
 
 **`collections` 는 「특수 용도 서랍장」 다섯 개다.** 기본 서랍장(`dict`·`list`)으로도 되지만, 서랍마다 **한 가지 버릇**이 붙어 있다.
@@ -666,3 +636,32 @@ q = deque(maxlen=3)              # append / appendleft / pop / popleft / rotate
 * ★ **`dict` 하위 클래스에 `__missing__` 만 정의**해도 `defaultdict` 와 같은 갈래가 생긴다 — `Counter` 가 바로 그렇게 만들어져 있다(**넣지 않는 쪽**). 이 문서는 직접 하위 클래스를 쓰지는 않았다.
 * ★ **`Counter` 의 `&`(교집합 = 최솟값) · `|`(합집합 = 최댓값)** — 문서가 적고, 결과가 **양수만**인 것은 `+`·`-` 와 같다. 이 문서는 `+`·`-` 만 쟀다.
 * ★ **스레드와 `deque`** — 문서가 *"thread-safe, memory efficient appends and pops"* 라 적는다. 동시성은 [목록의 **53번 주제**](../53-gil-and-choosing-concurrency/)에서 다룬다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
+- [`collections`(3.12)](https://docs.python.org/3.12/library/collections.html) —
+  `defaultdict.__missing__` 의 *"this value is inserted in the dictionary for the key, and returned"* · *"`__missing__()` is not called for any operations besides `__getitem__()`"* ·
+  `Counter` 의 *"return a zero count for missing items instead of raising a KeyError"* · *"the output will exclude results with counts of zero or less"* ·
+  `most_common` 의 *"Elements with equal counts are ordered in the order first encountered"* ·
+  `ChainMap` 의 *"writes, updates, and deletions only operate on the first mapping"* ·
+  `deque` 의 *"approximately the same O(1) performance in either direction"* · *"Indexed access is O(1) at both ends but slows to O(n) in the middle"* ·
+  `OrderedDict` 절의 *"The equality operation for OrderedDict checks for matching order"* 와 `dict` 와의 차이 목록
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 `python3` **3.12.3** 하나. 던지는 형태는 `python3 - <파일` 로 고정했고, 예외는 `except` 로 받아 **타입과 메시지만** 찍었다.\
+★★★ **복잡도는 문서의 말이다** — 「`deque` 양끝 O(1)·가운데 O(n)」은 위 문장을 옮긴 것이고 **이 문서는 시간을 한 번도 재지 않았다.**
+이 머신에서 잰 것은 **`len`·호출 횟수·출력 값**뿐이다. 「`deque` 가 `list` 보다 빠르다」는 **한 줄도 쓰지 않는다.**\
+**버전**(문서의 `versionadded` 표기) — `OrderedDict`·`Counter` **3.1**, `ChainMap` **3.3**, `deque.maxlen` 속성 **3.1**, `Counter` 의 단항 `+`·`-` **3.3**, `Counter.total()` **3.10**,
+`Counter` 의 `==` 가 **없는 원소를 0 으로 보는 것**은 **3.10** 부터(문서의 *"In equality tests, missing elements are treated as having zero counts"* 와 그 버전 표기). `dict` 의 삽입 순서 보장은 **3.7**.\
+★ **구현 대 언어 보장 한 줄** — 위 문서 문장들이 보장이다. **`most_common` 의 동률 순서도 문서가 보장한다**(「처음 만난 순서」).
+예외 **문구**(`deque already at its maximum size` 따위)는 CPython 의 것이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| 판이 오르면 예외 **문구** | ★★ 격자의 칸 · 마지막 줄 **「… N / M」** · `len` 전→후 · factory 호출 수 |
+| — (주소·시간·`set` 출력을 한 곳도 안 찍었다) | `dict`·`Counter` 의 **출력 순서** — 삽입 순서가 **3.7+ 언어 보장**이고 `most_common` 동률 순서도 문서 보장 |
+
+★ `PYTHONHASHSEED` 를 바꿔 한 번 더 캡처해도 **한 글자도 같았다** — 순서가 해시에 기대는 출력이 없다는 뜻이다.\
+**선행** — [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(★★★ **동작 6 이 「`defaultdict` 는 조회만 해도 키를 만든다」까지를 먼저 보였다 — 이 주제는 그 위에서 「어느 조회가, 몇 번, 무엇을 부르나」를 센다**).

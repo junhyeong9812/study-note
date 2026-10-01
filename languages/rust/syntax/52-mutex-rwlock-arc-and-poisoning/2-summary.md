@@ -1,18 +1,5 @@
 # rust/syntax/52 — `Mutex`/`RwLock` 과 `Arc<Mutex<T>>` · 중독 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `Mutex`](https://doc.rust-lang.org/std/sync/struct.Mutex.html)(`lock` 의 같은 스레드 재잠금 문단 · §Errors · `try_lock` · `into_inner` · `clear_poison`) ·
-> [std — `RwLock`](https://doc.rust-lang.org/std/sync/struct.RwLock.html) ·
-> [std — `PoisonError`](https://doc.rust-lang.org/std/sync/struct.PoisonError.html) ·
-> [std — `MutexGuard`](https://doc.rust-lang.org/std/sync/struct.MutexGuard.html) ·
-> [Reference — Destructors · Temporary scopes](https://doc.rust-lang.org/reference/destructors.html#temporary-scopes)(`match`·`if`·`if let`·`while let` 의 임시값).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. 판 표지(`clear_poison` 1.77.0 · `Mutex::new` 의 const 1.63.0)는 로컬 문서에서 grep 했다((6)의 `r53_since`).
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> **`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(가드 격자만 2021·2024 둘).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★★ **속도는 한 번도 재지 않았다** — 「`RwLock` 이 `Mutex` 보다 빠르다」·「락은 느리다」 류의 문장은 **근거가 없으므로 쓰지 않는다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체 창 — ① 가드 해제 격자(모양마다 두 번째 잠금이 막히나)다.** 판정은 **`try_lock` 한 번**으로 한다 — `lock` 을 두 번 부르면 교착으로 멈추므로((7)), 멈추지 않는 물음으로 바꿔 물었다.
 
 ## 흔들리는 칸 / 안 흔들리는 칸
@@ -606,3 +593,16 @@ fn main() {
 - `Condvar` — 가드를 넘겨주며 기다리기. **이 문서는 던지지 않았다.**
 - `MutexGuard::map`(`MappedMutexGuard`) — 1.92 문서 목록에 있다. 안정화 여부는 **확인하지 않았다.**
 - std 에 `sync::nonpoison` 모듈이 1.92 문서에 보인다 — **안정 여부를 확인하지 않았고 던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [std — `Mutex`](https://doc.rust-lang.org/std/sync/struct.Mutex.html)(`lock` 의 같은 스레드 재잠금 문단 · §Errors · `try_lock` · `into_inner` · `clear_poison`) ·
+[std — `RwLock`](https://doc.rust-lang.org/std/sync/struct.RwLock.html) ·
+[std — `PoisonError`](https://doc.rust-lang.org/std/sync/struct.PoisonError.html) ·
+[std — `MutexGuard`](https://doc.rust-lang.org/std/sync/struct.MutexGuard.html) ·
+[Reference — Destructors · Temporary scopes](https://doc.rust-lang.org/reference/destructors.html#temporary-scopes)(`match`·`if`·`if let`·`while let` 의 임시값).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. 판 표지(`clear_poison` 1.77.0 · `Mutex::new` 의 const 1.63.0)는 로컬 문서에서 grep 했다((6)의 `r53_since`).
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+**`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(가드 격자만 2021·2024 둘).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★★ **속도는 한 번도 재지 않았다** — 「`RwLock` 이 `Mutex` 보다 빠르다」·「락은 느리다」 류의 문장은 **근거가 없으므로 쓰지 않는다.**

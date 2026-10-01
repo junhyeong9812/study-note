@@ -1,11 +1,5 @@
 # html/syntax/26 — `select`/`option`/`optgroup`·`datalist`·`textarea` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [25번 주제](../25-label-association/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 `select`·`option`·`datalist`·`textarea`·「Constructing the entry list」·파싱·직렬화 절과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **본체는 창 ⑤ 다** — 「안 실린다」는 열네 칸의 필드 이름을 먼저 선언하고 서버가 받은 목록에서 **찾아보고 없었다**로 선다(A2).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -267,3 +261,10 @@ RootWebArea    이름='26 트리'
 - **원 값 · API 값 · 값** — `textarea` 의 세 정규화.
 - **더러움 표시** — 값이 사용자·스크립트로 바뀌었다는 표시. 자식 변경이 값에 번지나를 정한다.
 - **CRLF** — `\r\n`. 제출의 줄 끝.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [25번 주제](../25-label-association/3-answer.md)의 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 `select`·`option`·`datalist`·`textarea`·「Constructing the entry list」·파싱·직렬화 절과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **본체는 창 ⑤ 다** — 「안 실린다」는 열네 칸의 필드 이름을 먼저 선언하고 서버가 받은 목록에서 **찾아보고 없었다**로 선다(A2).

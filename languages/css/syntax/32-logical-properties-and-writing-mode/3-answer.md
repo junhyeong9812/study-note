@@ -1,11 +1,5 @@
 # css/syntax/32 — 논리 속성과 글쓰기 방향(`writing-mode`·`direction`·`inline-size`) — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 좌표·치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getBoundingClientRect()` 로 잰 값**이고,
-> **논리 속성이 어느 물리 속성으로 풀렸는지는 `getComputedStyle` 로 따로 읽었다.** 단위는 px 다.\
-> 좌표는 별말이 없으면 **부모의 바깥 왼쪽 위 모서리를 원점**으로 한 값이다.\
-> 규칙은 [CSS Logical Properties and Values Level 1](https://drafts.csswg.org/css-logical-1/) 과 [CSS Writing Modes Level 4](https://drafts.csswg.org/css-writing-modes-4/) 로, 지원 상태는 `api.webstatus.dev` 의 Baseline 데이터로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -391,3 +385,10 @@ transitionProperty = "writing-mode, width"     <- 선언은 받아들여진다
 - **`text-align: start`/`end`** — **값 쪽에만 논리판이 있는** 드문 경우. 계산값이 안 풀려서 좌표로만 진단된다.
 - **RTL(right-to-left)** — 오른쪽에서 왼쪽으로 쓰는 문자 체계. 실무에서는 `<html dir="rtl">` 로 켠다.
 - **Baseline widely** — 주요 엔진에 들어간 지 충분히 오래돼 조건 없이 써도 되는 상태. 논리 속성은 2024-03-20 부터다.
+
+## 실행 환경
+
+이 파일의 **모든 좌표·치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getBoundingClientRect()` 로 잰 값**이고,
+**논리 속성이 어느 물리 속성으로 풀렸는지는 `getComputedStyle` 로 따로 읽었다.** 단위는 px 다.\
+좌표는 별말이 없으면 **부모의 바깥 왼쪽 위 모서리를 원점**으로 한 값이다.\
+규칙은 [CSS Logical Properties and Values Level 1](https://drafts.csswg.org/css-logical-1/) 과 [CSS Writing Modes Level 4](https://drafts.csswg.org/css-writing-modes-4/) 로, 지원 상태는 `api.webstatus.dev` 의 Baseline 데이터로 접지했다.

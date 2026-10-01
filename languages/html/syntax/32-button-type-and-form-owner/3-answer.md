@@ -1,11 +1,5 @@
 # html/syntax/32 — `button` 의 `type` 과 폼 소유권: `form` 속성·`formaction`/`formmethod` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 `button` 요소·Implicit submission·폼 소유자·제출 알고리즘·`requestSubmit`/`submit` 절로 접지했다(앞 배치가 받아 둔 사본).\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **본체는 서버 요청 로그다** — Enter 격자는 14 칸을 미리 선언하고 「제출된 칸」·「명세 열과 갈린 칸」을 스크립트가 센다(A2).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -251,3 +245,10 @@ requestSubmit(남의 폼 단추)       —      —       없음       —      
 - **Auto 상태** — `type` 이 없거나 무효한 `button` 의 상태.
 - **기본 단추** — 소유한 트리 순서의 첫 제출 단추.
 - **제출자** — 제출을 일으킨 단추 또는 폼.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 `button` 요소·Implicit submission·폼 소유자·제출 알고리즘·`requestSubmit`/`submit` 절로 접지했다(앞 배치가 받아 둔 사본).\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **본체는 서버 요청 로그다** — Enter 격자는 14 칸을 미리 선언하고 「제출된 칸」·「명세 열과 갈린 칸」을 스크립트가 센다(A2).

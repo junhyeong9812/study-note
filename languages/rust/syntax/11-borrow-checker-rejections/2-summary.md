@@ -1,24 +1,5 @@
 # rust/syntax/11 — 빌림 검사기가 거부하는 전형 코드와 고치는 법 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std `mem::take`](https://doc.rust-lang.org/std/mem/fn.take.html) ·
-> [std `mem::replace`](https://doc.rust-lang.org/std/mem/fn.replace.html) ·
-> [std `slice::split_at_mut`](https://doc.rust-lang.org/std/primitive.slice.html#method.split_at_mut) ·
-> [std `HashMap::entry`](https://doc.rust-lang.org/std/collections/struct.HashMap.html#method.entry) ·
-> [std `Vec::retain`](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.retain) ·
-> [std `RefCell`](https://doc.rust-lang.org/std/cell/struct.RefCell.html) ·
-> [Reference — Destructors(임시값 수명 연장)](https://doc.rust-lang.org/reference/destructors.html) ·
-> `rustc --explain E0499` / `E0502` / `E0505` / `E0506` / `E0507` / `E0716`.
-> ★ `--explain` 은 **확인용으로만 열었고 본문에 옮기지 않았다.** 본문의 진단은 전부 내가 던져서 받은 것이다.
-> **실행 검증** — 이 문서의 모든 출력·에러·경고·패닉은 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다 —\
-> 이 주제에는 **2021 에서 거부되고 2024 에서 통과해 실행되는 파일**이 실제로 있다(아래 (11)).\
-> 소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단의 줄 번호는 그 파일 기준**이다.
-> **버전** — `mem::take` 는 **1.40.0**, `mem::replace`·`split_at_mut`·`HashMap::entry`·`Vec::retain`·`RefCell` 은 **1.0.0** 부터다(std 문서의 Stable since 확인).\
-> `RefCell` 의 **패닉 문구**는 rustc·std 판에 달렸다(아래 「구현 세부사항 대 언어 보장」).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **막히는 자리는 몇 개 안 된다. 그리고 자리마다 정해진 열쇠가 있다.**
@@ -1297,3 +1278,22 @@ if let Ok(mut g) = c.try_borrow_mut() { g.push(5); }
   `Mutex` 는 `try_lock` 이 `try_borrow_mut` 과 같은 자리를 맡는다([목록의 **52번 주제**](../52-mutex-rwlock-arc-and-poisoning/)).
 - ★ **막혔을 때 가장 싼 진단은 「마지막 사용이 어디인가」를 보는 것**이다(10번).\
   이 문서의 열쇠 여섯 중 첫 번째가 그것이고, 실측에서도 **가장 자주 통했다.**
+
+## 실행 환경
+
+**기준 소스** — [std `mem::take`](https://doc.rust-lang.org/std/mem/fn.take.html) ·
+[std `mem::replace`](https://doc.rust-lang.org/std/mem/fn.replace.html) ·
+[std `slice::split_at_mut`](https://doc.rust-lang.org/std/primitive.slice.html#method.split_at_mut) ·
+[std `HashMap::entry`](https://doc.rust-lang.org/std/collections/struct.HashMap.html#method.entry) ·
+[std `Vec::retain`](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.retain) ·
+[std `RefCell`](https://doc.rust-lang.org/std/cell/struct.RefCell.html) ·
+[Reference — Destructors(임시값 수명 연장)](https://doc.rust-lang.org/reference/destructors.html) ·
+`rustc --explain E0499` / `E0502` / `E0505` / `E0506` / `E0507` / `E0716`.
+★ `--explain` 은 **확인용으로만 열었고 본문에 옮기지 않았다.** 본문의 진단은 전부 내가 던져서 받은 것이다.
+**실행 검증** — 이 문서의 모든 출력·에러·경고·패닉은 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다 —\
+이 주제에는 **2021 에서 거부되고 2024 에서 통과해 실행되는 파일**이 실제로 있다(본문 (11)).\
+소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단의 줄 번호는 그 파일 기준**이다.
+**버전** — `mem::take` 는 **1.40.0**, `mem::replace`·`split_at_mut`·`HashMap::entry`·`Vec::retain`·`RefCell` 은 **1.0.0** 부터다(std 문서의 Stable since 확인).\
+`RefCell` 의 **패닉 문구**는 rustc·std 판에 달렸다(본문 「구현 세부사항 대 언어 보장」).

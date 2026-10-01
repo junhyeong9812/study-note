@@ -1,21 +1,5 @@
 # python/syntax/10-list-methods-and-sort-key — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [Lists — `list.sort`](https://docs.python.org/3.12/library/stdtypes.html#list.sort) — `key`·`reverse`·안정성·CPython 주
-> - [`sorted`](https://docs.python.org/3.12/library/functions.html#sorted) — 새 리스트를 돌려주는 쪽
-> - [Mutable Sequence Types](https://docs.python.org/3.12/library/stdtypes.html#mutable-sequence-types) — `append`·`extend`·`remove`·`pop`·`+=` 의 정의
-> - [Sorting Techniques](https://docs.python.org/3.12/howto/sorting.html) — 정렬 HOW TO
-> - [Set Types](https://docs.python.org/3.12/library/stdtypes.html#set-types-set-frozenset) — 「집합 리스트의 `sort` 결과는 정의되지 않는다」
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> **버전** — `sort`/`sorted` 의 `key`·`reverse`·안정성은 Python 3 전체 공통. 비교 횟수·`getsizeof` 값은 **이 판의 관찰**이다.
-> **선행** — [09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md)(슬라이스·`[:]`·`*`·`+` 의 정본) ·
-> [01-object-and-name-binding](../01-object-and-name-binding/2-summary.md)(`+=` 가 같은 객체를 바꾼다는 것) ·
-> [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md)(얕은 복사).
-
 ## 한눈에 — 쉽게 말하면
 
 **`sort` 는 「방을 치우는 것」이고 `sorted` 는 「치운 사진을 새로 찍는 것」이다.**\
@@ -871,3 +855,18 @@ list(range(17)) : 200
 - **`sorted` 의 `key` 에 `str.casefold`** 를 쓰면 `str.lower` 보다 넓은 대소문자 동일시가 된다([07번](../07-string-methods/2-summary.md)).
 - **`heapq.nsmallest`/`nlargest`** 는 전체 정렬 없이 상위 k 개를 뽑는다 — 비용 비교는 여기서 **재지 않았다.**
 - **`list.sort` 의 알고리즘 이름과 복잡도**는 이 문서의 범위가 아니다: [`cs/algorithm/`](../../../../cs/algorithm/)
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [Lists — `list.sort`](https://docs.python.org/3.12/library/stdtypes.html#list.sort) — `key`·`reverse`·안정성·CPython 주
+- [`sorted`](https://docs.python.org/3.12/library/functions.html#sorted) — 새 리스트를 돌려주는 쪽
+- [Mutable Sequence Types](https://docs.python.org/3.12/library/stdtypes.html#mutable-sequence-types) — `append`·`extend`·`remove`·`pop`·`+=` 의 정의
+- [Sorting Techniques](https://docs.python.org/3.12/howto/sorting.html) — 정렬 HOW TO
+- [Set Types](https://docs.python.org/3.12/library/stdtypes.html#set-types-set-frozenset) — 「집합 리스트의 `sort` 결과는 정의되지 않는다」
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+**버전** — `sort`/`sorted` 의 `key`·`reverse`·안정성은 Python 3 전체 공통. 비교 횟수·`getsizeof` 값은 **이 판의 관찰**이다.
+**선행** — [09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md)(슬라이스·`[:]`·`*`·`+` 의 정본) ·
+[01-object-and-name-binding](../01-object-and-name-binding/2-summary.md)(`+=` 가 같은 객체를 바꾼다는 것) ·
+[03-mutability-and-copying](../03-mutability-and-copying/2-summary.md)(얕은 복사).

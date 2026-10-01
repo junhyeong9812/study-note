@@ -1,20 +1,5 @@
 # kotlin/syntax/17 — 위임 프로퍼티: `by lazy`·`observable`·`Map` 위임 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Delegated properties](https://kotlinlang.org/docs/delegated-properties.html) · [`kotlin.Lazy` / `lazy()`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-lazy/) · [`kotlin.properties.Delegates`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.properties/-delegates/) · [Properties](https://kotlinlang.org/docs/properties.html).
-> **실행 검증** — 이 문서의 모든 출력·에러·예외·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> `kotlinc` 9회(컴파일 실패 2벌) · `java` 17회(그중 **12회는 같은 프로그램을 되풀이 돌린 것**) · `javap` 8회.\
-> **stdlib 의 `Lazy` 구현 세 벌은 `kotlin-stdlib.jar` 를 풀어 직접 역어셈블했다.**
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
-> ⚠️ **되풀이 돌리면 달라지는 블록이 하나 있다**((4)의 스레드 실험). 그 자리에 **대조할 것이 무엇인지** 적어 두었고,
-> 전체 선언표는 3-answer 의 「흔들리는 칸 / 안 흔들리는 칸」이다.
-> **버전** — `by`·`lazy`·`Delegates.observable`/`vetoable`/`notNull`·`Map` 위임은 전부 **1.0** 이다.\
-> `LazyThreadSafetyMode` 도 1.0 이고, 그 뒤로 기본값이 바뀐 적이 없다(이 문서는 **2.4.20 에서 직접 확인**했다).
-> **경계** — backing field 와 커스텀 접근자는 [16번 주제](../16-properties-backing-field-lateinit-const/)가, 초기화 시점은 [15번 주제](../15-class-declaration-constructors-and-init/)가,\
-> `inline` 이 무엇을 없애는지는 [11번 주제](../11-inline-functions/)가, 연산자 규약 전반은 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/),\
-> **클래스** 위임(`class A : B by b`)은 [목록의 **21번 주제**](../21-class-delegation-by/)가 정본이다 — 여기는 **프로퍼티** 위임만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **`by` 는 「이 프로퍼티를 읽고 쓰는 일을 저 객체에게 맡긴다」는 선언이다.**
@@ -885,3 +870,18 @@ class Loud(private var stored: String) {
 - ★ **위임을 `Serializable` 로 쓰는 문제** — 세 `Lazy` 구현이 전부 `java.io.Serializable` 을 구현하고\
   `writeReplace` 를 갖고 있다((4)의 역어셈블). 직렬화하면 **초기화된 값만** 남는 설계인데,\
   ★ **실제로 직렬화해 보지는 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Delegated properties](https://kotlinlang.org/docs/delegated-properties.html) · [`kotlin.Lazy` / `lazy()`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-lazy/) · [`kotlin.properties.Delegates`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.properties/-delegates/) · [Properties](https://kotlinlang.org/docs/properties.html).
+**실행 검증** — 이 문서의 모든 출력·에러·예외·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+`kotlinc` 9회(컴파일 실패 2벌) · `java` 17회(그중 **12회는 같은 프로그램을 되풀이 돌린 것**) · `javap` 8회.\
+**stdlib 의 `Lazy` 구현 세 벌은 `kotlin-stdlib.jar` 를 풀어 직접 역어셈블했다.**
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.
+⚠️ **되풀이 돌리면 달라지는 블록이 하나 있다**((4)의 스레드 실험). 그 자리에 **대조할 것이 무엇인지** 적어 두었고,
+전체 선언표는 3-answer 의 「흔들리는 칸 / 안 흔들리는 칸」이다.
+**버전** — `by`·`lazy`·`Delegates.observable`/`vetoable`/`notNull`·`Map` 위임은 전부 **1.0** 이다.\
+`LazyThreadSafetyMode` 도 1.0 이고, 그 뒤로 기본값이 바뀐 적이 없다(이 문서는 **2.4.20 에서 직접 확인**했다).
+**경계** — backing field 와 커스텀 접근자는 [16번 주제](../16-properties-backing-field-lateinit-const/)가, 초기화 시점은 [15번 주제](../15-class-declaration-constructors-and-init/)가,\
+`inline` 이 무엇을 없애는지는 [11번 주제](../11-inline-functions/)가, 연산자 규약 전반은 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/),\
+**클래스** 위임(`class A : B by b`)은 [목록의 **21번 주제**](../21-class-delegation-by/)가 정본이다 — 여기는 **프로퍼티** 위임만 다룬다.

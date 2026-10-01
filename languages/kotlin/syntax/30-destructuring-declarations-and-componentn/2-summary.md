@@ -1,18 +1,5 @@
 # kotlin/syntax/30 — 구조 분해 선언: `componentN` 과 그 한계 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Destructuring declarations](https://kotlinlang.org/docs/destructuring-declarations.html)(`operator` 요구·`_` 는 `componentN` 을 **안 부른다**·람다 괄호의 차이·이름 기반 분해가 **Experimental**) · [Data classes](https://kotlinlang.org/docs/data-classes.html).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 21회(컴파일 실패 4벌 · 경고 2벌) · `java` 15회 · `javac` 2회 · `javap` 5회 · `unzip` 1회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
-> **버전** — 구조 분해 선언 자체는 1.0 부터다. ★★ **이름 기반 분해는 이 판에서 실험 플래그 `-Xname-based-destructuring` 뒤에 있고, 새 문법은 「language version 2.5」부터라고 컴파일러가 스스로 말했다**((6)).\
-> README 의 「뺀 것」 표는 이것을 **2.3.20 실험 기능**으로 적었다 — 도입 판(2.3.20)은 **이 문서가 직접 재지 않았다**(그 판의 컴파일러가 없다).
-> **경계** — `data class` 가 `componentN` 을 **만든다는 것**과 「선언 쪽 순서를 바꾸면 뒤집힌다」의 **한 파일 실측**은 [22번 주제](../22-data-class-generated-members/) (4)가 정본이다.\
-> 여기는 그 결론에서 출발해 **같은 호출부를 두 판의 선언에 붙여** 돌리고((1)), **호출부를 다시 컴파일하지 않은 경우**((3))와 **이름 기반 분해가 그것을 막는가**((6))까지 간다.\
-> `operator` 규약 일반은 [31번 주제](../31-operator-overloading-infix-and-invoke/), `==` 는 [32번 주제](../32-equality-and-equals-contract/)가 정본이다.
-> **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **24번**([`24-record-patterns/`](../../../java/syntax/24-record-patterns/)) — ★ **Java 의 record 패턴도 위치 기반이다.** 같은 실험을 `javac` 로 던졌다((7)).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **본체는 첫째 창이다** — 「**같은 호출부를 두 판의 선언에 붙여 돌린 실행 출력**」.
 위치 기반 분해가 위험하다는 것은 **에러가 안 나는 것**으로 드러난다. 그래서 가장 강한 근거는 **`(exit 0)` 두 번과 뒤바뀐 한 줄**이다.
 
@@ -737,3 +724,16 @@ Z s-1 3 5 [s-1:3, s-2:5]
 
 - **왜 처음부터 위치 기반이었나** — `componentN` 은 **`Pair`·`Triple`·`Map.Entry` 처럼 위치가 곧 뜻인 타입**을 위해 규약 하나로 모든 타입에 열어 둔 것이다. 이름이 없는 타입(일반 클래스의 `operator fun component1`)에도 되려면 **이름이 아니라 번호**여야 했다. 그 대가가 (1)이다 — **이름이 있는 `data class` 에서도 이름을 버린다.**
 - **이름 기반으로 옮겨 가는 길** — 경고 문구가 세 갈래를 권한다: `(val first = last, …)`(온전한 이름 꼴) · `[first, …]`(새 위치 꼴) · **이름을 맞추기.** 짧은 꼴의 뜻이 **위치 → 이름**으로 바뀌는 것이므로, 지금 짧은 꼴을 **이름과 다르게** 쓰는 코드는 전환 때 **조용히 다른 값**을 받게 된다 — 「`this code will change its meaning`」이 그 예고다. 이 문서는 전환이 **언제 기본값이 되는지**는 모른다(재지 않았다).
+
+## 실행 환경
+
+**기준 소스** — [Destructuring declarations](https://kotlinlang.org/docs/destructuring-declarations.html)(`operator` 요구·`_` 는 `componentN` 을 **안 부른다**·람다 괄호의 차이·이름 기반 분해가 **Experimental**) · [Data classes](https://kotlinlang.org/docs/data-classes.html).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 21회(컴파일 실패 4벌 · 경고 2벌) · `java` 15회 · `javac` 2회 · `javap` 5회 · `unzip` 1회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
+**버전** — 구조 분해 선언 자체는 1.0 부터다. ★★ **이름 기반 분해는 이 판에서 실험 플래그 `-Xname-based-destructuring` 뒤에 있고, 새 문법은 「language version 2.5」부터라고 컴파일러가 스스로 말했다**((6)).\
+README 의 「뺀 것」 표는 이것을 **2.3.20 실험 기능**으로 적었다 — 도입 판(2.3.20)은 **이 문서가 직접 재지 않았다**(그 판의 컴파일러가 없다).
+**경계** — `data class` 가 `componentN` 을 **만든다는 것**과 「선언 쪽 순서를 바꾸면 뒤집힌다」의 **한 파일 실측**은 [22번 주제](../22-data-class-generated-members/) (4)가 정본이다.\
+여기는 그 결론에서 출발해 **같은 호출부를 두 판의 선언에 붙여** 돌리고((1)), **호출부를 다시 컴파일하지 않은 경우**((3))와 **이름 기반 분해가 그것을 막는가**((6))까지 간다.\
+`operator` 규약 일반은 [31번 주제](../31-operator-overloading-infix-and-invoke/), `==` 는 [32번 주제](../32-equality-and-equals-contract/)가 정본이다.
+**대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **24번**([`24-record-patterns/`](../../../java/syntax/24-record-patterns/)) — ★ **Java 의 record 패턴도 위치 기반이다.** 같은 실험을 `javac` 로 던졌다((7)).

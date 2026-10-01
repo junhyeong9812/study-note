@@ -1,15 +1,5 @@
 # html/syntax/24 — `<input>` 타입 지도 ③ 선택·특수: `checkbox`/`radio`/`file`/`color`/`hidden`/`submit`/`image` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Constructing the entry list」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-form-data-set)(무엇을 **건너뛰나**), [「The input element」](https://html.spec.whatwg.org/multipage/input.html) 의 Checkbox·Radio Button(★ **라디오 단추 그룹** 정의)·File Upload·Color(「색 칸의 색 갱신」)·Hidden(`_charset_`)·Image Button 상태, [「The form element」](https://html.spec.whatwg.org/multipage/forms.html#the-form-element)(`elements`), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/). **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다.**
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 단추·그림 단추·라디오는 **CDP 의 진짜 마우스**로 눌렀다. 하네스는 [21번 주제](../21-form-submission-model/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. ★ **`color` 칸이 CSS 색 이름(`red`)을 받는 것은 명세의 현재 판**이다(「CSS 색을 파싱한다」 — `alpha`·`colorspace` 속성과 함께 들어온 규칙). 언제 바뀌었는지는 이 문서가 확인하지 않았다.
-> **선행** — [22번 주제](../22-input-types-text/2-summary.md) · [21번 주제](../21-form-submission-model/2-summary.md)(무엇이 서버에 실리나).
-> **경계** — **`disabled` 와 `readonly` 가 포커스·검증에서 갈리는 것**은 목록의 **30번 주제**, **파일 업로드의 `accept`·`multiple`** 은 목록의 **31번 주제**, **`fieldset` 으로 라디오 그룹에 이름을 주는 것**은 목록의 **27번 주제**다 — 여기는 **제출에 실리나**까지. 체크박스의 `click` 이 **먼저 뒤집히고 막으면 되돌아가는 것**은 [web-api 17번](../../../web-api/17-stoppropagation-vs-preventdefault/2-summary.md)이 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다.** 「체크 안 된 체크박스는 **안 실린다**」는 **없는 것**을 증명하는 일이라 서버가 받은 필드 목록으로만 선다. 스크립트는 **실리는 칸 목록을 따로 들고** 칸마다 「실림 / —」을 세어 마지막 줄로 찍는다.
-
 **이 판의 Chrome**
 
 ```text
@@ -581,3 +571,14 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 체크 안 된 칸을 안 보내나** — 명세가 이유를 적지 않는다. 결과만 보면, 폼 인코딩에는 **「거짓」을 적는 칸이 없다** — 체크박스는 `value` 라는 **글자 하나**를 보내거나 **안 보내거나** 둘 중 하나다. 이 문단은 해석이다.
 - **`elements` 가 그림 단추를 빼는 「역사적 이유」** — 명세는 그 이유를 풀어 쓰지 않는다. 이 배치는 확인하지 않았다.
 - **`_charset_` 의 쓸모** — 서버가 **본문의 인코딩을 모를 때** 폼이 스스로 알려 주는 옛 수단이다. 이 페이지는 UTF-8 이라 `UTF-8` 이 실렸다 — 다른 인코딩 문서는 던지지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Constructing the entry list」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-form-data-set)(무엇을 **건너뛰나**), [「The input element」](https://html.spec.whatwg.org/multipage/input.html) 의 Checkbox·Radio Button(★ **라디오 단추 그룹** 정의)·File Upload·Color(「색 칸의 색 갱신」)·Hidden(`_charset_`)·Image Button 상태, [「The form element」](https://html.spec.whatwg.org/multipage/forms.html#the-form-element)(`elements`), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/). **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다.**
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 단추·그림 단추·라디오는 **CDP 의 진짜 마우스**로 눌렀다. 하네스는 [21번 주제](../21-form-submission-model/3-answer.md)의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. ★ **`color` 칸이 CSS 색 이름(`red`)을 받는 것은 명세의 현재 판**이다(「CSS 색을 파싱한다」 — `alpha`·`colorspace` 속성과 함께 들어온 규칙). 언제 바뀌었는지는 이 문서가 확인하지 않았다.
+**선행** — [22번 주제](../22-input-types-text/2-summary.md) · [21번 주제](../21-form-submission-model/2-summary.md)(무엇이 서버에 실리나).
+**경계** — **`disabled` 와 `readonly` 가 포커스·검증에서 갈리는 것**은 목록의 **30번 주제**, **파일 업로드의 `accept`·`multiple`** 은 목록의 **31번 주제**, **`fieldset` 으로 라디오 그룹에 이름을 주는 것**은 목록의 **27번 주제**다 — 여기는 **제출에 실리나**까지. 체크박스의 `click` 이 **먼저 뒤집히고 막으면 되돌아가는 것**은 [web-api 17번](../../../web-api/17-stoppropagation-vs-preventdefault/2-summary.md)이 정본이다.
+
+★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다.** 「체크 안 된 체크박스는 **안 실린다**」는 **없는 것**을 증명하는 일이라 서버가 받은 필드 목록으로만 선다. 스크립트는 **실리는 칸 목록을 따로 들고** 칸마다 「실림 / —」을 세어 마지막 줄로 찍는다.

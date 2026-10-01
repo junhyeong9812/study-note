@@ -1,13 +1,5 @@
 # ts/syntax/08 — `interface` 대 `type` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Everyday Types: Differences Between Type Aliases and Interfaces](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#differences-between-type-aliases-and-interfaces) ·
-> [Handbook — Object Types: Extending Types](https://www.typescriptlang.org/docs/handbook/2/objects.html#extending-types) ·
-> [Handbook — Declaration Merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html) ·
-> [TSConfig — `declaration`](https://www.typescriptlang.org/tsconfig/#declaration).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문·방출 전문은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -18,7 +10,6 @@ v18.19.1
 > 그때 `strict` 는 **켜져 있다**(7.0 기본 `true`). `tsc` 에 **파일을 직접 주면 `tsconfig.json` 을 무시**한다.
 > ★★ 「어느 쪽이 빠른가」는 **이 배치에서 재지 않았다** — 재는 방법 자체가 전제를 요구한다(맨 아래 「안 잰 것」).
 > **버전** — `interface` 와 선언 병합은 TS 1.0, `type` 별칭의 객체 타입은 1.0, **별칭의 재귀 참조는 3.7** 부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -600,3 +591,12 @@ console.log(exports.asInterface.area(), exports.asAlias.area());
 - **모듈 보강은 `interface` 만 된다** — 남의 라이브러리 타입에 칸을 더하는 유일한 길이다. 그래서 **공개 API 는 `interface` 로** 내는 관행이 있다. [목록의 **33번 주제**](../33-declaration-merging/).
 - **교차의 `never` 를 미리 잡는 법** — 조각을 겹치기 전에 `Omit` 으로 충돌 키를 빼거나, `extends` 로 한 번 받아 보면 `TS2430` 이 먼저 말한다.
 - **`Record` 벽을 넘는 제대로 된 길** — `as unknown as` 대신 ① `interface` 에 `[k: string]: unknown` 을 직접 적거나 ② 그 자리만 `type` 으로 바꾼다. 단언은 검사를 끄는 것이라 다른 실수까지 덮는다([**01번 주제**](../01-what-ts-adds-and-erases/)).
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Everyday Types: Differences Between Type Aliases and Interfaces](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#differences-between-type-aliases-and-interfaces) ·
+[Handbook — Object Types: Extending Types](https://www.typescriptlang.org/docs/handbook/2/objects.html#extending-types) ·
+[Handbook — Declaration Merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html) ·
+[TSConfig — `declaration`](https://www.typescriptlang.org/tsconfig/#declaration).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문·방출 전문은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

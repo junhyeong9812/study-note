@@ -1,22 +1,5 @@
 # kotlin/syntax/13 — 확장 함수·확장 프로퍼티: 정적 디스패치 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Extensions](https://kotlinlang.org/docs/extensions.html) · [Calling Kotlin from Java](https://kotlinlang.org/docs/java-to-kotlin-interop.html) · [Null safety](https://kotlinlang.org/docs/null-safety.html) · [Visibility modifiers](https://kotlinlang.org/docs/visibility-modifiers.html).
-> **실행 검증** — 이 문서의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> **Java 쪽 호출은 같은 JDK 의 `javac` 로 컴파일해 실제로 섞어 돌렸다.**\
-> `kotlinc` 14회 · `javac` 1회 · `java` 8회 · `javap` 8회. 컴파일 실패 시나리오 5벌 · 경고 시나리오 3벌.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다 —\
-> 그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).
-> **버전** — 확장 함수·확장 프로퍼티·`@JvmName` 은 전부 **1.0**. 이 문서에 버전으로 갈리는 항목은 없다.
-> **경계** — ★ **「정적 디스패치라는 천장」이 무엇을 뜻하는지, 왜 그 대가를 치르고도 쓰는지는\
-> [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이 정본이다.** 여기는 **선언 문법 · 해소 순서 · 멤버와 충돌할 때의 규칙**만 다룬다.\
-> 수신자 지정 람다(`A.() -> Unit`)와 DSL 은 [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/), `infix` 확장은 [09번 주제](../09-varargs-spread-local-and-infix-functions/),\
-> scope function 은 [목록의 **14번 주제**](../14-scope-functions/), `operator` 확장은 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/),\
-> `@JvmName` 을 포함한 상호운용 애너테이션 **전체**는 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이다 —\
-> 여기서는 `@JvmName` 을 **디스크립터 충돌을 푸는 도구로만** 쓴다.\
-> `Intrinsics.checkNotNullParameter` 의 정본은 [03번 주제](../03-null-safe-types/)다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **확장 함수는 클래스에 메서드를 넣는 것이 아니다. 점 찍고 부를 수 있게 생긴 `static` 함수다.**
@@ -1195,3 +1178,20 @@ V ext on Any vs String, literal String  : String
   "그래서 어느 쪽이 빠르다" 는 하지 않은 주장이다.
 - **못 잰 것** — 「라이브러리가 나중에 같은 이름의 멤버를 추가하면 내 확장이 죽는다」는 (3)의 경고로 **성질만 확인**했고,\
   **실제로 버전을 올려 재현하지는 않았다**(그러려면 같은 라이브러리의 두 판본이 필요하다).
+
+## 실행 환경
+
+**기준 소스** — [Extensions](https://kotlinlang.org/docs/extensions.html) · [Calling Kotlin from Java](https://kotlinlang.org/docs/java-to-kotlin-interop.html) · [Null safety](https://kotlinlang.org/docs/null-safety.html) · [Visibility modifiers](https://kotlinlang.org/docs/visibility-modifiers.html).
+**실행 검증** — 이 문서의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+**Java 쪽 호출은 같은 JDK 의 `javac` 로 컴파일해 실제로 섞어 돌렸다.**\
+`kotlinc` 14회 · `javac` 1회 · `java` 8회 · `javap` 8회. 컴파일 실패 시나리오 5벌 · 경고 시나리오 3벌.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다 —\
+그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).
+**버전** — 확장 함수·확장 프로퍼티·`@JvmName` 은 전부 **1.0**. 이 문서에 버전으로 갈리는 항목은 없다.
+**경계** — ★ **「정적 디스패치라는 천장」이 무엇을 뜻하는지, 왜 그 대가를 치르고도 쓰는지는\
+[`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이 정본이다.** 여기는 **선언 문법 · 해소 순서 · 멤버와 충돌할 때의 규칙**만 다룬다.\
+수신자 지정 람다(`A.() -> Unit`)와 DSL 은 [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/), `infix` 확장은 [09번 주제](../09-varargs-spread-local-and-infix-functions/),\
+scope function 은 [목록의 **14번 주제**](../14-scope-functions/), `operator` 확장은 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/),\
+`@JvmName` 을 포함한 상호운용 애너테이션 **전체**는 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이다 —\
+여기서는 `@JvmName` 을 **디스크립터 충돌을 푸는 도구로만** 쓴다.\
+`Intrinsics.checkNotNullParameter` 의 정본은 [03번 주제](../03-null-safe-types/)다.

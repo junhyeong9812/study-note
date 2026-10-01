@@ -1,14 +1,5 @@
 # css/syntax/34 — 뷰포트 단위와 컨테이너 단위: `vh`/`svh`/`lvh`/`dvh`·`cqw`/`cqi` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Values and Units Level 4](https://drafts.csswg.org/css-values-4/) 의 「Viewport-percentage Lengths」 절(`vw`/`vh`/`vmin`/`vmax` 와 `sv*`/`lv*`/`dv*`)과 [CSS Containment Level 3](https://drafts.csswg.org/css-contain-3/) 의 「Container Relative Lengths」 절(`cqw`/`cqi`/`cqb`/`cqmin`/`cqmax`). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 픽셀 값은 **Google Chrome 151.0.7922.173** headless 에 띄워 `getBoundingClientRect()`·`getComputedStyle` 로 읽은 것이다. **뷰포트가 주제이므로 `--window-size` 를 바꿔 가며 세 판을 쟀다**(800×600 · 375×667 · 1200×400). **손으로 계산해 유도한 수치는 없다.**\
-> ★ **`svh`/`lvh`/`dvh` 는 headless 에서 세 값이 같게 나왔다** — 주소창이 없기 때문이다. 아래 (4) 에 그대로 적고, **갈리는 상황은 재지 못했음을 명시**했다. 지어내지 않았다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — CSS 에 언어 버전은 없다. `vw`/`vh` 는 CSS Values 3, `sv*`/`lv*`/`dv*` 는 Baseline **widely**(newly 2022-12-05 · widely 2025-06-05), 컨테이너 쿼리 단위는 컨테이너 쿼리와 함께 **widely**(newly 2023-02-14 · widely 2025-08-14)다. 근거는 [목록 README](../README.md) 의 지원 표다.
-> **여기서 다루지 않는 것** — **`@container` 질의 자체**(`container-type` 의 대가·이름·스타일 쿼리)는 [목록의 **40번 주제**](../40-container-and-style-queries/)가 정본이다. 여기는 **단위까지**다. 미디어 쿼리는 [목록의 **38번 주제**](../38-media-queries/), 단위 일반은 [33번](../33-length-units/2-summary.md)이 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **뷰포트 단위 = 「창을 100칸으로 나눈 자」, 컨테이너 단위 = 「이 상자를 100칸으로 나눈 자」다.**
@@ -484,3 +475,12 @@
   실무에서는 **단위만 써도 절반은 해결**된다 — 글꼴·패딩이 칸에 따라 부드럽게 따라온다. 질의는 **배치가 통째로 바뀌어야 할 때** 꺼낸다([목록의 **40번 주제**](../40-container-and-style-queries/)).
 - **`cqmin`/`cqmax` 가 축을 섞는 것**은 `inline-size` 컨테이너에서만 관찰된다 — 한 축은 컨테이너, 한 축은 뷰포트를 보기 때문이다.\
   `container-type: size` 로 올리면 둘 다 컨테이너 안에서 정해져 직관대로 돈다(실측: `cqmin` 75 · `cqmax` 150).
+
+## 실행 환경
+
+**기준 소스** — [CSS Values and Units Level 4](https://drafts.csswg.org/css-values-4/) 의 「Viewport-percentage Lengths」 절(`vw`/`vh`/`vmin`/`vmax` 와 `sv*`/`lv*`/`dv*`)과 [CSS Containment Level 3](https://drafts.csswg.org/css-contain-3/) 의 「Container Relative Lengths」 절(`cqw`/`cqi`/`cqb`/`cqmin`/`cqmax`). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 픽셀 값은 **Google Chrome 151.0.7922.173** headless 에 띄워 `getBoundingClientRect()`·`getComputedStyle` 로 읽은 것이다. **뷰포트가 주제이므로 `--window-size` 를 바꿔 가며 세 판을 쟀다**(800×600 · 375×667 · 1200×400). **손으로 계산해 유도한 수치는 없다.**\
+★ **`svh`/`lvh`/`dvh` 는 headless 에서 세 값이 같게 나왔다** — 주소창이 없기 때문이다. 본문 (4) 에 그대로 적고, **갈리는 상황은 재지 못했음을 명시**했다. 지어내지 않았다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — CSS 에 언어 버전은 없다. `vw`/`vh` 는 CSS Values 3, `sv*`/`lv*`/`dv*` 는 Baseline **widely**(newly 2022-12-05 · widely 2025-06-05), 컨테이너 쿼리 단위는 컨테이너 쿼리와 함께 **widely**(newly 2023-02-14 · widely 2025-08-14)다. 근거는 [목록 README](../README.md) 의 지원 표다.
+**여기서 다루지 않는 것** — **`@container` 질의 자체**(`container-type` 의 대가·이름·스타일 쿼리)는 [목록의 **40번 주제**](../40-container-and-style-queries/)가 정본이다. 여기는 **단위까지**다. 미디어 쿼리는 [목록의 **38번 주제**](../38-media-queries/), 단위 일반은 [33번](../33-length-units/2-summary.md)이 정본이다.

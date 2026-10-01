@@ -1,10 +1,5 @@
 # ts/syntax/44 — 프로젝트 참조와 선언 방출 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Project References](https://www.typescriptlang.org/docs/handbook/project-references.html) · [TSConfig — `composite`](https://www.typescriptlang.org/tsconfig/#composite) · [`isolatedDeclarations`](https://www.typescriptlang.org/tsconfig/#isolatedDeclarations).
-> ★ 위는 **자리 안내용 링크**다 — 이 배치는 외부 네트워크를 쓰지 않아 **열어서 문장을 대조하지 못했다.** 본문의 사실은 **전부 직접 던져 받은 진단·빌드 로그·생긴 파일 목록**에만 세운다. `isolatedDeclarations` 가 **5.5** 부터라는 README 의 문장은 「4.9.5 에 없다 · 5.9.3 에 있다」까지만 확인했다(4절).
-> **실행 검증** — 본판은 아래다. 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.
-
 ```text
 ===== tsc --version · "$TSC_OLD" · "$TSC_49" --version · node · "$NODE20" --version · nproc · CPU · PATH 의 tsc 첫 두 줄 (sh exit=0) =====
 Version 7.0.2
@@ -25,7 +20,6 @@ import "../lib/tsc.js";
 > ★★ 빌드 로그(3절)는 **mtime 을 비교해 판정**한다(로그의 「is older than」). 그래서 스크립트는 빌드마다 **`core` 는 2분 전 · `app` 은 1분 전으로 mtime 을 고정**한다 — 안 그러면 같은 초 안의 수정이 판정을 흔든다. ★ 이 고정이 **실험의 일부**다(3절 스크립트 첫머리).
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다. `tsconfig.json` 은 두 개라 **경로째**(`===== 소스: p44/core/tsconfig.json =====`) 싣는다.
 > ★ 진단 문구에 박히는 절대 경로는 스크립트가 **작업 디렉토리 기준으로 줄인다**(`sed`) — 그 줄이 스크립트 소스에 보인다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -495,7 +489,7 @@ echo "두 판의 판정 줄이 한 글자도 같은 단계 $same / 6"
   --clean 뒤            일지 없음 ─> 전부 다시
 ```
 
-비용 — **출력 폴더를 손으로 지우는 청소**는 `tsc -b` 에게 **보이지 않는다.** 일지와 출력을 같이 지우는 **`tsc -b --clean`** 을 쓴다. 이 로그는 **mtime 을 고정한 판**이다(머리말) — 판정이 mtime 에 기대므로 고정 없이 돌리면 같은 단계가 다른 문구를 냈다.
+비용 — **출력 폴더를 손으로 지우는 청소**는 `tsc -b` 에게 **보이지 않는다.** 일지와 출력을 같이 지우는 **`tsc -b --clean`** 을 쓴다. 이 로그는 **mtime 을 고정한 판**이다(맨 위 부분) — 판정이 mtime 에 기대므로 고정 없이 돌리면 같은 단계가 다른 문구를 냈다.
 
 ### (4) ★★★ `isolatedDeclarations`(5.5) — 파일 하나만 보고 `.d.ts` 를 쓸 수 있게
 
@@ -790,3 +784,9 @@ export declare function f(n: number): number;
 - **병렬 빌드** — 여러 프로젝트를 동시에 짓는 쪽은 **던지지 않았다.**
 - **`prepend`·`outFile` 참조** — 43편 1절에서 `outFile` 이 7.0.2 `TS5102` 다. 이 문서는 **다루지 않는다.**
 - **런타임** — `app/dist/main.js` 를 `node` 로 돌리는 것은 **던지지 않았다.** 참조가 방출물의 import 경로를 어떻게 다루는지도 이 문서는 **묻지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Project References](https://www.typescriptlang.org/docs/handbook/project-references.html) · [TSConfig — `composite`](https://www.typescriptlang.org/tsconfig/#composite) · [`isolatedDeclarations`](https://www.typescriptlang.org/tsconfig/#isolatedDeclarations).
+★ 위는 **자리 안내용 링크**다 — 이 배치는 외부 네트워크를 쓰지 않아 **열어서 문장을 대조하지 못했다.** 본문의 사실은 **전부 직접 던져 받은 진단·빌드 로그·생긴 파일 목록**에만 세운다. `isolatedDeclarations` 가 **5.5** 부터라는 README 의 문장은 「4.9.5 에 없다 · 5.9.3 에 있다」까지만 확인했다(4절).
+**실행 검증** — 본판은 맨 위 블록이다. 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.

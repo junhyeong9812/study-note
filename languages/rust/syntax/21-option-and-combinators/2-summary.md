@@ -1,19 +1,5 @@
 # rust/syntax/21 — `Option` 과 조합 메서드 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `enum Option`](https://doc.rust-lang.org/std/option/enum.Option.html) ·
-> [std — `Option::map`](https://doc.rust-lang.org/std/option/enum.Option.html#method.map) ·
-> [std — `Option::as_ref`](https://doc.rust-lang.org/std/option/enum.Option.html#method.as_ref) ·
-> [The Rust Reference — The question mark operator](https://doc.rust-lang.org/reference/expressions/operator-expr.html#the-question-mark-operator).
-> ★ `rustc --explain E0382` · `E0507` 은 **확인용으로만 열었고 본문에 옮기지 않았다.**
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.
-> **버전** — `Option` 과 `map`·`and_then`·`unwrap_or_else`·`take`·`replace`·`as_ref` 는 **1.0.0** 부터다.\
-> **`?` 가 `Option` 에도 되는 것은 1.22.0** 부터이고 에디션과 무관하다. `Option::replace` 는 1.31.0 부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 흔들리는 칸 / 안 흔들리는 칸
 
 | | 칸 | 왜 |
@@ -703,3 +689,17 @@ gopher:알수없음 | gopher:알수없음 | gopher:알수없음 | gopher:알수�
 - **`iter()`/`into_iter()`** — `Option` 은 원소가 0개 또는 1개인 이터레이터다. `Vec<Option<T>>` 를 `flatten()` 하면 `None` 이 사라진다.
 - **`Option<T>` 를 반환하는 트레이트 메서드** — `Iterator::next` 가 대표다([목록의 **36번 주제**](../36-iterator-adapters-laziness-and-collect/)).
 - **`matches!` 매크로** — `matches!(opt, Some(x) if x > 3)` 으로 조건까지 한 줄에 판정한다.
+
+## 실행 환경
+
+**기준 소스** — [std — `enum Option`](https://doc.rust-lang.org/std/option/enum.Option.html) ·
+[std — `Option::map`](https://doc.rust-lang.org/std/option/enum.Option.html#method.map) ·
+[std — `Option::as_ref`](https://doc.rust-lang.org/std/option/enum.Option.html#method.as_ref) ·
+[The Rust Reference — The question mark operator](https://doc.rust-lang.org/reference/expressions/operator-expr.html#the-question-mark-operator).
+★ `rustc --explain E0382` · `E0507` 은 **확인용으로만 열었고 본문에 옮기지 않았다.**
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.
+**버전** — `Option` 과 `map`·`and_then`·`unwrap_or_else`·`take`·`replace`·`as_ref` 는 **1.0.0** 부터다.\
+**`?` 가 `Option` 에도 되는 것은 1.22.0** 부터이고 에디션과 무관하다. `Option::replace` 는 1.31.0 부터다.

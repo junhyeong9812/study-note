@@ -1,16 +1,5 @@
 # java/syntax/02 — 수치 연산: 이항 승격·정수 오버플로·`Math.*Exact` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §4.2.2 Integer Operations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [§5.6 Numeric Contexts](https://docs.oracle.com/javase/specs/jls/se21/html/jls-5.html) · [§15.17 Multiplicative Operators](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · [§15.19 Shift Operators](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/Math.java`(`lib/src.zip`).
-> **실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 프로그램 11개를 돌렸고, 그중 **정수 연산 5개**(승격·오버플로·나눗셈·시프트·복합 대입)는
-> **17.0.13 · 21.0.5 · 25.0.1** 세 버전에서 모두 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
-> 단 `Math.ceilDiv`·`divideExact`·`floorDivExact` 는 **17에서 컴파일되지 않는다**(「구현 세부사항 대 언어 보장」).
-> **버전** — 정수 연산 규칙 자체는 Java 1.0부터 같다. 아래 `@since` 는 JDK 21 `src.zip` 의 `Math.java` 에서 직접 읽은 것이다.\
-> `addExact`·`multiplyExact`·`floorDiv`·`floorMod`·`toIntExact` = **1.8** · `absExact` = **15** ·
-> `ceilDiv`·`divideExact`·`floorDivExact` = **18**(실행으로도 17에 없고 21·25에 있음을 확인).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **계산은 넓은 작업대에서 하고, 결과는 정해진 크기의 서랍에 넣는다.**\
@@ -650,3 +639,14 @@ Ex.java:3: error: cannot find symbol
   실행으로 확인: `Integer.MIN_VALUE / -1 = -2147483648`, `Integer.MIN_VALUE % -1 = 0`.
 - **오버플로를 검사 없이 감지하는 관용구**로 `if (((x ^ r) & (y ^ r)) < 0)` 이 있다 —
   `Math.addExact` 의 JDK 구현이 실제로 이 형태다. 직접 쓸 이유는 없고, **`Math.addExact` 를 읽을 때 알아보면 된다.**
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §4.2.2 Integer Operations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [§5.6 Numeric Contexts](https://docs.oracle.com/javase/specs/jls/se21/html/jls-5.html) · [§15.17 Multiplicative Operators](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · [§15.19 Shift Operators](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/Math.java`(`lib/src.zip`).
+**실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+프로그램 11개를 돌렸고, 그중 **정수 연산 5개**(승격·오버플로·나눗셈·시프트·복합 대입)는
+**17.0.13 · 21.0.5 · 25.0.1** 세 버전에서 모두 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
+단 `Math.ceilDiv`·`divideExact`·`floorDivExact` 는 **17에서 컴파일되지 않는다**(「구현 세부사항 대 언어 보장」).
+**버전** — 정수 연산 규칙 자체는 Java 1.0부터 같다. 아래 `@since` 는 JDK 21 `src.zip` 의 `Math.java` 에서 직접 읽은 것이다.\
+`addExact`·`multiplyExact`·`floorDiv`·`floorMod`·`toIntExact` = **1.8** · `absExact` = **15** ·
+`ceilDiv`·`divideExact`·`floorDivExact` = **18**(실행으로도 17에 없고 21·25에 있음을 확인).

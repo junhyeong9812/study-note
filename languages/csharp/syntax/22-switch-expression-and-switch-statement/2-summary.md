@@ -1,30 +1,5 @@
 # csharp/syntax/22 — `switch` 식과 `switch` 문 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — `switch` 식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/switch-expression)(열어서 확인: 「팔은 **글 순서대로** 평가된다」 · 「아래 팔이 위 팔에 **다 가려지면 컴파일러가 에러**」 ·\
-> 「어느 팔도 안 맞으면 런타임이 예외를 던진다 — .NET Core 3.0 이후 **`SwitchExpressionException`**」 · 「**대부분의 경우** 모든 입력을 다루지 않으면 경고」 · 「**목록 패턴은 경고를 안 낸다**」) ·\
-> [Learn — 선택문](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/selection-statements)(열어서 확인: 「**한 구역에서 다음 구역으로 흘러 내려갈 수 없다**」 · 「흉내 내려면 `goto`」 ·\
-> 「레이블 여럿을 한 구역에 달 수 있다」 · 「어느 case 도 안 맞고 `default` 가 없으면 **제어가 `switch` 문을 빠져나간다**」) ·\
-> [Learn — 패턴 · Closed hierarchy patterns](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/patterns)(열어서 확인: 「**C# 15 부터** `closed` 클래스를 받는 `switch` 식은 **직접 파생을 다 다루면 완전하다**」)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL 은 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`). **대비는 실측이다** — **javac 21.0.5** 로 `sealed` 인터페이스의 `switch` 를 던졌다((3)).
-> **버전** — `switch` 문 **C# 1.0**(패턴 `case` 는 **C# 7**) · **`switch` 식 C# 8** · 관계·`and`/`or` 팔 **C# 9** · 목록 팔 **C# 11** · ★★ **`closed` 클래스는 C# 15 미리보기**((3) — 이 판에서는 `-langversion:preview` + 특성 직접 정의로만 돌았다).
-> **경계** — ★★★ **`enum` 에서의 완전성**(`CS8509`·`CS8524` · 이름을 다 적어도 경고 · 실행하면 `SwitchExpressionException` · `switch` 문은 완전성을 안 본다)은 [20번](../20-enum-and-flags/) (4)(7)이 **이미 쟀다** — 여기서는 **인용만** 하고 **`enum` 밖**(`bool`·정수 범위·`double`·타입 계층·`null`·튜플·목록)으로 간다.\
-> ★ **패턴 하나가 IL 로 무엇이 되나**는 [21번](../21-pattern-matching-type-property-relational-list/)이 정본이다. 여기는 **팔 여럿의 집합** — 완전성과 도달 불가.
-> ★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **21번**([`21-switch-statement-and-expression/`](../../../java/syntax/21-switch-statement-and-expression/))·**15번**([`15-sealed-classes/`](../../../java/syntax/15-sealed-classes/)) ·\
-> Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **23번**([`23-sealed-classes-and-when-exhaustiveness/`](../../../kotlin/syntax/23-sealed-classes-and-when-exhaustiveness/)) ·\
-> Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **18번**([`18-match-and-exhaustiveness/`](../../../rust/syntax/18-match-and-exhaustiveness/)) — ★ Kotlin·Rust 는 **각 갈래의 실측을 인용**한다(이 판에서 던지지 않았다).
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** — 특히 「For example, the pattern '…'」 속의 **예시 패턴**(컴파일러가 하나를 골라 보여 준다) | ★★★ **진단 코드**(`CS8509`·`CS8655`·`CS8510`·`CS8120`·`CS0163`·`CS8070`·`CS0161`·`CS8652`·`CS0656`)와 **`(행,열)`** |
-> | **IL 오프셋 폭** | ★★★ **옵코드와 부른 멤버**(`box` · `ThrowSwitchExpressionException`) — **완전하면 그 팔이 없다는 것** |
-> | ★ 미리보기 기능의 **동작 전부**((3) `closed`) — 판이 오르면 바뀔 수 있다 | ★★★ **「완전성 진단이 붙은 칸 N / M」**(스크립트가 센 마지막 줄) · `cc exit` |
-
 ## 이 판
 
 ```text
@@ -633,3 +608,29 @@ ArgumentOutOfRangeException
 - ★ **`-warnaserror:CS8509`·`.editorconfig` 로 경고를 에러로** — **이 판에서 안 던졌다.**
 - ★ **`closed` 의 다른 어셈블리 규칙** — Learn 은 「직접 파생이 `internal` 이면 다른 어셈블리의 `switch` 는 완전하지 않다」고 적었다. **이 판에서 안 던졌다**(미리보기 · 특성을 흉내 낸 판이라 판이 오르면 다시).
 - ★ **`switch` 문의 IL(점프 표 `switch` 옵코드)** — 조밀한 정수 case 는 `switch` 옵코드로, 성긴 case 는 비교 사슬로 풀린다고 알려져 있으나 **이 판에서 찍지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — `switch` 식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/switch-expression)(열어서 확인: 「팔은 **글 순서대로** 평가된다」 · 「아래 팔이 위 팔에 **다 가려지면 컴파일러가 에러**」 ·\
+「어느 팔도 안 맞으면 런타임이 예외를 던진다 — .NET Core 3.0 이후 **`SwitchExpressionException`**」 · 「**대부분의 경우** 모든 입력을 다루지 않으면 경고」 · 「**목록 패턴은 경고를 안 낸다**」) ·\
+[Learn — 선택문](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/selection-statements)(열어서 확인: 「**한 구역에서 다음 구역으로 흘러 내려갈 수 없다**」 · 「흉내 내려면 `goto`」 ·\
+「레이블 여럿을 한 구역에 달 수 있다」 · 「어느 case 도 안 맞고 `default` 가 없으면 **제어가 `switch` 문을 빠져나간다**」) ·\
+[Learn — 패턴 · Closed hierarchy patterns](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/patterns)(열어서 확인: 「**C# 15 부터** `closed` 클래스를 받는 `switch` 식은 **직접 파생을 다 다루면 완전하다**」)
+**실행 검증** — 이 문서의 모든 출력·진단·IL 은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`). **대비는 실측이다** — **javac 21.0.5** 로 `sealed` 인터페이스의 `switch` 를 던졌다((3)).
+**버전** — `switch` 문 **C# 1.0**(패턴 `case` 는 **C# 7**) · **`switch` 식 C# 8** · 관계·`and`/`or` 팔 **C# 9** · 목록 팔 **C# 11** · ★★ **`closed` 클래스는 C# 15 미리보기**((3) — 이 판에서는 `-langversion:preview` + 특성 직접 정의로만 돌았다).
+**경계** — ★★★ **`enum` 에서의 완전성**(`CS8509`·`CS8524` · 이름을 다 적어도 경고 · 실행하면 `SwitchExpressionException` · `switch` 문은 완전성을 안 본다)은 [20번](../20-enum-and-flags/) (4)(7)이 **이미 쟀다** — 여기서는 **인용만** 하고 **`enum` 밖**(`bool`·정수 범위·`double`·타입 계층·`null`·튜플·목록)으로 간다.\
+★ **패턴 하나가 IL 로 무엇이 되나**는 [21번](../21-pattern-matching-type-property-relational-list/)이 정본이다. 여기는 **팔 여럿의 집합** — 완전성과 도달 불가.
+★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **21번**([`21-switch-statement-and-expression/`](../../../java/syntax/21-switch-statement-and-expression/))·**15번**([`15-sealed-classes/`](../../../java/syntax/15-sealed-classes/)) ·\
+Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **23번**([`23-sealed-classes-and-when-exhaustiveness/`](../../../kotlin/syntax/23-sealed-classes-and-when-exhaustiveness/)) ·\
+Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **18번**([`18-match-and-exhaustiveness/`](../../../rust/syntax/18-match-and-exhaustiveness/)) — ★ Kotlin·Rust 는 **각 갈래의 실측을 인용**한다(이 판에서 던지지 않았다).
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** — 특히 「For example, the pattern '…'」 속의 **예시 패턴**(컴파일러가 하나를 골라 보여 준다) | ★★★ **진단 코드**(`CS8509`·`CS8655`·`CS8510`·`CS8120`·`CS0163`·`CS8070`·`CS0161`·`CS8652`·`CS0656`)와 **`(행,열)`** |
+| **IL 오프셋 폭** | ★★★ **옵코드와 부른 멤버**(`box` · `ThrowSwitchExpressionException`) — **완전하면 그 팔이 없다는 것** |
+| ★ 미리보기 기능의 **동작 전부**((3) `closed`) — 판이 오르면 바뀔 수 있다 | ★★★ **「완전성 진단이 붙은 칸 N / M」**(스크립트가 센 마지막 줄) · `cc exit` |

@@ -1,10 +1,5 @@
 # css/syntax/24 — Flexbox: 주축·교차축과 정렬(`justify-*`/`align-*`) — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 좌표·치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getBoundingClientRect()` 로 잰 값**이다.\
-> 좌표는 별말이 없으면 **컨테이너의 바깥 왼쪽 위 모서리를 원점**으로 한 값이고, 단위는 px 다.\
-> 규칙은 [CSS Flexible Box Layout Level 1](https://drafts.csswg.org/css-flexbox-1/) 과 [CSS Box Alignment Level 3](https://drafts.csswg.org/css-align-3/) 으로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -327,7 +322,7 @@ writing-mode: vertical-rl + row          1: T1     2: T16     (세로로 쌓인�
 | `justify-content: stretch` | 계산값 + 아이템 rect · 1판 | 계산값 `stretch` · 아이템은 `left 0` 으로 `flex-start` 와 같고 **안 늘어났다**(버려지지 않았다) |
 | 초기값 | 아무 정렬도 안 준 `display: flex` 의 계산값 · 1판 | `align-items: normal` · `justify-content: normal` · `align-content: normal` |
 | 기준 소스 | drafts.csswg.org 의 css-flexbox-1 §6·§8.4 와 css-align-3 §5.1.3·§6.1·§6.2 원문 대조 | **「single-line flex container (i.e. one with `flex-wrap: nowrap`) … align-content has no effect」** · **「stretch behaves as flex-start」** · `justify-self` 의 Applies to 에 flex item 이 **없다** |
-| Baseline | api.webstatus.dev 조회 2026-09-23 | `flexbox` widely 2015-09-30 / 2018-03-30 · `flexbox-gap` widely 2021-04-26 / 2023-10-26 — 머리말과 일치 |
+| Baseline | api.webstatus.dev 조회 2026-09-23 | `flexbox` widely 2015-09-30 / 2018-03-30 · `flexbox-gap` widely 2021-04-26 / 2023-10-26 — 「실행 환경」과 일치 |
 
 **다시 던지지 못한 것** — 본문 (7)·(8)절과 이 파일 4·7번의 **200px 컨테이너 실험 세 건**(`margin-left: auto` 의 `1 → 186` · `direction: rtl` 의 `L186`·`L172` · `writing-mode: vertical-rl` 의 `T1`·`T16`).\
 **그 실험의 마크업이 문서에 없다** — demo 블록이 아니라 문서 밖에서 돌린 것이라 추출기가 볼 수 없고, 아이템 치수를 복원할 수 없어 절댓값을 재현하지 못했다.\
@@ -336,3 +331,9 @@ writing-mode: vertical-rl + row          1: T1     2: T16     (세로로 쌓인�
 **구현 의존 항목** — ① 본문의 **모든 절대 좌표**는 창 폭 804 에서만 재현된다 ② `W41`·`W32` 같은 치수는 `system-ui` 가 이 머신에서 무엇으로 풀리느냐에 달렸다. **둘 다 Chrome 151 의 이 환경에서 관찰한 것**이다.
 
 **엔진은 Chrome 151.0.7922.173 하나다.** Firefox 155 는 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.**
+
+## 실행 환경
+
+이 파일의 **모든 좌표·치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getBoundingClientRect()` 로 잰 값**이다.\
+좌표는 별말이 없으면 **컨테이너의 바깥 왼쪽 위 모서리를 원점**으로 한 값이고, 단위는 px 다.\
+규칙은 [CSS Flexible Box Layout Level 1](https://drafts.csswg.org/css-flexbox-1/) 과 [CSS Box Alignment Level 3](https://drafts.csswg.org/css-align-3/) 으로 접지했다.

@@ -1,9 +1,5 @@
 # kotlin/syntax/54 — `CoroutineContext` 와 디스패처 · `withContext` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`, 그리고 **kotlinx-coroutines-core-jvm 1.11.0** 에서 실제로 얻었다(이 머신은 코어 24개).
-> ★★ 아래 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -268,3 +264,8 @@ availableProcessors = 24
 1. ★★★ **`withContext` 는 「새 코루틴이 아니다」가 아니었다** — 안쪽 `Job` 은 바깥의 **자식인 다른 객체**였고, KDoc 도 「`new *lexically scoped child coroutine*`」라 적는다. 디스패처가 같아도 `UndispatchedCoroutine` 이 생긴다.
 2. ★★ **디스패처 둘을 `+` 하면 경고가 아니라 에러였다** — 라이브러리의 `@Deprecated(level = ERROR)` 오버로드 때문이다.
 3. ★★ **`IO` 에도 줄이 섰다** — `ioLimit + 1` 개를 걸자 `most at once = ioLimit`. 「IO 로 옮기면 겹친다」는 **상한 안에서만** 맞다.
+
+## 실행 환경
+
+모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`, 그리고 **kotlinx-coroutines-core-jvm 1.11.0** 에서 실제로 얻었다(이 머신은 코어 24개).
+★★ 본문의 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.

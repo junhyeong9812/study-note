@@ -1,13 +1,5 @@
 # sql/37-문자열 함수와 연결 연산 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> **환경 조건** — PG `server_encoding` = `UTF8` · MySQL `character_set_server` = `utf8mb4`, 클라이언트도 `--default-character-set=utf8mb4`.\
-> MySQL `sql_mode` 는 기본값이고 **`PIPES_AS_CONCAT` 이 없다**(8번에서 실제 값을 찍었다).\
-> `emp`·`dept` 는 읽기만 했고 바꾸지 않았다.\
-> 문서 근거는 [PG 18 String Functions](https://www.postgresql.org/docs/18/functions-string.html) · [MySQL 8.4 String Functions](https://dev.mysql.com/doc/refman/8.4/en/string-functions.html) · [MySQL 8.4 Server SQL Modes](https://dev.mysql.com/doc/refman/8.4/en/sql-mode.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -667,7 +659,7 @@ EXPLAIN (COSTS OFF) SELECT * FROM t35 WHERE substr(code,2)::int = 123;
 | `EXPLAIN` 의 `Filter` (11번) | PG 18.6 | 1회 | 35번의 `t35` 표 — **실험 후 삭제** |
 
 **설정 의존 항목** — 1·8번(`sql_mode` 의 `PIPES_AS_CONCAT`) · 4번(문자셋이 `utf8mb4`/`UTF8`).\
-**인코딩이 다르면 4번의 `9` 가 달라진다.** 머리말에 적은 환경에서 나온 결과다.
+**인코딩이 다르면 4번의 `9` 가 달라진다.** 「실행 환경」에 적은 환경에서 나온 결과다.
 
 **collation 의존 항목** — 6번. 이 서버의 MySQL 기본 collation 은 `utf8mb4_0900_ai_ci` 이고,\
 PG 는 `en_US.utf8`(결정적)이다. 근거와 확인 방법은 [39 collation](../39-collation/)에 있다.
@@ -682,3 +674,12 @@ PG 는 `en_US.utf8`(결정적)이다. 근거와 확인 방법은 [39 collation](
 MySQL 이 `||` 를 **deprecated** 로 표시한다는 사실은 서버가 직접 낸 경고 1287 로만 적었고, **제거 예정 버전은 적지 않았다**(서버도 말하지 않는다).
 
 **DB 잔재** — 없다. 이 주제는 `emp`·`dept` 를 읽기만 했고, 11번에서 쓴 `t35` 는 35번의 실험 표로 **작업 후 삭제**했다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+**환경 조건** — PG `server_encoding` = `UTF8` · MySQL `character_set_server` = `utf8mb4`, 클라이언트도 `--default-character-set=utf8mb4`.\
+MySQL `sql_mode` 는 기본값이고 **`PIPES_AS_CONCAT` 이 없다**(8번에서 실제 값을 찍었다).\
+`emp`·`dept` 는 읽기만 했고 바꾸지 않았다.\
+문서 근거는 [PG 18 String Functions](https://www.postgresql.org/docs/18/functions-string.html) · [MySQL 8.4 String Functions](https://dev.mysql.com/doc/refman/8.4/en/string-functions.html) · [MySQL 8.4 Server SQL Modes](https://dev.mysql.com/doc/refman/8.4/en/sql-mode.html).

@@ -1,9 +1,5 @@
 # PR #36914 분석 — AbstractXMLStreamReader.getTextCharacters의 sourceStart 무시
 
-> 기준: PR base `0c60266986` = 현재 `upstream/main` `7daf1013aa8` (두 커밋 사이에 `AbstractXMLStreamReader.java`·`XMLEventStreamReader.java` 변경 없음 — `git diff`로 확인).
-> PR head: `refs/pr/36914`. 상태 OPEN, 라벨 `status: waiting-for-triage` 하나, 코멘트 1건.
-> 이 문서는 README(서사)·structure.md(무대 지도)·tests.md(테스트 해설)와 중복을 피하고, 호출 그래프·이름표 사전·단계 추적·수정안 판단에 집중한다.
-
 ## 0. 결론
 
 `AbstractXMLStreamReader.getTextCharacters(int sourceStart, char[] target, int targetStart, int length)`는 복사 상한을 `Math.min(length, source.length)`로 계산해 **복사 시작점 `sourceStart`를 계산에서 빠뜨렸고**, 그 결과 StAX javadoc이 예제로 싣고 있는 조각 읽기 루프의 두 번째 반복에서 `System.arraycopy`가 원본 배열 끝을 넘겨 읽으며 `ArrayIndexOutOfBoundsException`을 던졌다.\
@@ -265,3 +261,8 @@ in-tree 소비자(`StaxStreamXMLReader:214`·`:224`)는 이 오버로드를 아�
 조각 읽기 루프는 조각 수에 비례해 `getText().toCharArray()`를 반복하므로 전체 텍스트를 조각 수만큼 재복사한다.\
 이번 PR은 손대지 않았다.\
 실제 영향 규모는 미확인이며, 캐싱을 도입하려면 5절 셋째 대안에서 적은 대로 무상태 설계를 바꿔야 한다.
+
+## 출처
+
+기준: PR base `0c60266986` = 현재 `upstream/main` `7daf1013aa8` (두 커밋 사이에 `AbstractXMLStreamReader.java`·`XMLEventStreamReader.java` 변경 없음 — `git diff`로 확인).
+PR head: `refs/pr/36914`. 상태 OPEN, 라벨 `status: waiting-for-triage` 하나, 코멘트 1건.

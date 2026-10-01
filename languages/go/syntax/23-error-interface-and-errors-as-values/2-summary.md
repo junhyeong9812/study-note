@@ -1,18 +1,5 @@
 # go/syntax/23 — `error` 인터페이스와 값으로서의 오류 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Errors 절 ·
-> [`errors`](https://pkg.go.dev/errors) · [`fmt`](https://pkg.go.dev/fmt) 문서.
-> 인터페이스 선언은 웹이 아니라 **이 툴체인에게 `go doc builtin.error` 로 직접 물었다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
-> ★★ **대비를 위해 Rust 와 자바도 같은 프로그램으로 돌렸다** —
-> `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `javac 21.0.5`(Temurin, `openjdk 21.0.5 2024-10-15 LTS`).
-> 세 판 다 같은 머신에서 같은 파일 네 개를 읽혔다.\
-> **버전** — `error` 인터페이스와 `errors.New` 는 **1.0부터 같다.**
-> `errors.Is`/`As`/`Unwrap` 은 1.13, `errors.Join` 은 1.20 — 그쪽 정본은 [24번 주제](../24-error-wrapping-and-errors-is-as-join/)다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★ **본체는 넷째 창이다** — 「같은 프로그램을 세 언어로 써서 **호출부 코드 모양**을 나란히 놓고
 **줄 수와 오류 경로 수를 기계가 세게 하는 창**」. ★★ **세는 것은 줄 수와 분기 수지 속도가 아니다.**
 
@@ -1145,3 +1132,16 @@ func main() {
   이 문서는 (2)절에서 **`Is` 를 한 번 부르고** 넘겼다.
 - ★ **자바의 `finally`·try-with-resources**, **Rust 의 `Drop`** 같은 정리 경로는 **안 던졌다** —
   Go 의 짝은 `defer` 이고 그쪽 정본은 [목록의 **26번 주제**](../26-defer-evaluation-lifo-named-results-and-loops/)다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Errors 절 ·
+[`errors`](https://pkg.go.dev/errors) · [`fmt`](https://pkg.go.dev/fmt) 문서.
+인터페이스 선언은 웹이 아니라 **이 툴체인에게 `go doc builtin.error` 로 직접 물었다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
+★★ **대비를 위해 Rust 와 자바도 같은 프로그램으로 돌렸다** —
+`rustc 1.92.0 (ded5c06cf 2025-12-08)` · `javac 21.0.5`(Temurin, `openjdk 21.0.5 2024-10-15 LTS`).
+세 판 다 같은 머신에서 같은 파일 네 개를 읽혔다.\
+**버전** — `error` 인터페이스와 `errors.New` 는 **1.0부터 같다.**
+`errors.Is`/`As`/`Unwrap` 은 1.13, `errors.Join` 은 1.20 — 그쪽 정본은 [24번 주제](../24-error-wrapping-and-errors-is-as-join/)다.

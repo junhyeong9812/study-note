@@ -1,16 +1,5 @@
 # sql/39-collation (문자열 비교와 정렬의 기준) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Collation Support](https://www.postgresql.org/docs/18/collation.html) · [PostgreSQL 18 · CREATE COLLATION](https://www.postgresql.org/docs/18/sql-createcollation.html) · [MySQL 8.4 · Character Sets and Collations](https://dev.mysql.com/doc/refman/8.4/en/charset.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·계획은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> ★ **이 주제는 환경이 곧 답이다.** 아래 「환경 확인」 절에 두 서버의 설정을 **직접 찍은 출력**으로 실었다.\
-> 다른 설정의 서버에서는 **같은 질의가 다른 답을 낸다** — 그것이 이 주제의 요점이다.\
-> **버전** — 도입 버전이 확인된 것은 없어 **버전을 적지 않는다.**\
-> **선행** — [37 문자열 함수와 연결 연산](../37-string-functions-and-concatenation/) · 짝이 되는 주제는 [38 패턴 매칭](../38-pattern-matching-like-regex/)
-
 ## 한눈에 — 쉽게 말하면
 
 **collation = 「두 문자열 중 어느 것이 먼저인가, 그리고 둘이 같은가」를 정하는 규칙집.**
@@ -684,3 +673,13 @@ CREATE INDEX i ON t (v COLLATE "C");                       -- PG
 - **collation 은 인덱스의 일부다.** 이것이 6번의 모든 현상을 설명한다 —\
   인덱스는 「어떤 순서로 정렬해 저장했나」이고, 질의가 다른 순서를 요구하면 **그 정렬은 쓸모가 없다.**\
   38번에서 PG 가 접두사 `LIKE` 를 못 탄 것도, 35번에서 타입 변환으로 인덱스를 잃은 것도 **같은 한 문장**이다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Collation Support](https://www.postgresql.org/docs/18/collation.html) · [PostgreSQL 18 · CREATE COLLATION](https://www.postgresql.org/docs/18/sql-createcollation.html) · [MySQL 8.4 · Character Sets and Collations](https://dev.mysql.com/doc/refman/8.4/en/charset.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·계획은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+★ **이 주제는 환경이 곧 답이다.** 본문 「환경 확인」 절에 두 서버의 설정을 **직접 찍은 출력**으로 실었다.\
+다른 설정의 서버에서는 **같은 질의가 다른 답을 낸다** — 그것이 이 주제의 요점이다.\
+**버전** — 도입 버전이 확인된 것은 없어 **버전을 적지 않는다.**\
+**선행** — [37 문자열 함수와 연결 연산](../37-string-functions-and-concatenation/) · 짝이 되는 주제는 [38 패턴 매칭](../38-pattern-matching-like-regex/)

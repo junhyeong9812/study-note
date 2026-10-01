@@ -1,10 +1,5 @@
 # issue/database/sql-dialect-and-driver-traps — 실제 엔진에서만 드러나는 것: SQL 방언·드라이버·엔진 설정 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. `UNIQUE (parent_id, name)` 제약을 걸었는데 `parent_id` 가 NULL 인 루트 행은 같은 이름으로 여러 개 들어간다(이 사례: MySQL). SQL 에서 NULL 끼리의 비교는 어떤 결과이며, 그래서 이 엔진의 UNIQUE 가 무엇을 못 막는가. 모든 엔진이 똑같이 동작하는가, 대안은?
 2. 단위 테스트(대체 DB·ORM 매핑)는 모두 통과했는데 실제 MySQL 에 마이그레이션을 적용하자 문법 오류·잘림이 났다. `DROP COLUMN IF EXISTS`, `INSERT…SELECT…JOIN…ON … ON DUPLICATE KEY UPDATE`, 예약어 컬럼명은 각각 왜 실제 엔진에서만 드러나는가.

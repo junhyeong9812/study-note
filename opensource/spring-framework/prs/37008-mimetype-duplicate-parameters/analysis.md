@@ -1,12 +1,5 @@
 # PR #37008 분석 — MIME 파라미터 대소문자 중복이 검사망을 빠져나가는 결함
 
-> 기준: PR head `019c822ff69`(base `68e6acd37ed`). 이하 `MimeTypeUtils.java:NNN`은 **PR head 기준**이며,
-> 수정으로 주석 2줄이 늘었으므로 base에서는 `:440` 이후가 2씩 작다. `MimeType.java`·`LinkedCaseInsensitiveMap.java`는
-> 이 PR이 건드리지 않아 base와 동일하다.
->
-> 이 문서는 결함의 인과 사슬만 다룬다. 서사 해설은 README.md, 무대 지도는 structure.md, 테스트별 해설은 tests.md,
-> 이해 게이트 문답은 gates.md가 소유한다.
-
 ## 0. 결론
 
 **결함**: `MimeTypeParser`가 파라미터를 모으는 누산 맵이 `LinkedHashMap`이라 `dupe`와 `DUPE`를 다른 키로 보고,
@@ -495,3 +488,9 @@ while (index < mimeType.length());
 
 > **rebase(리베이스)** — 내 커밋들을 최신 기준 커밋 위로 옮겨 다시 쌓는 git 조작.\
 > 예: 여기서는 대상 메서드가 통째로 사라진 뒤라 rebase만으로는 수정을 옮길 수 없었다.
+
+## 출처
+
+기준: PR head `019c822ff69`(base `68e6acd37ed`). 이하 `MimeTypeUtils.java:NNN`은 **PR head 기준**이며,
+수정으로 주석 2줄이 늘었으므로 base에서는 `:440` 이후가 2씩 작다. `MimeType.java`·`LinkedCaseInsensitiveMap.java`는
+이 PR이 건드리지 않아 base와 동일하다.

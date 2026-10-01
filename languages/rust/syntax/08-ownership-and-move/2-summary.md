@@ -1,17 +1,5 @@
 # rust/syntax/08 — 소유권과 이동(move) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Destructors · Ownership and moves 관련 절 ·
-> [The Rust Book ch.4.1](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html) ·
-> `rustc --explain E0382` / `E0509` / `E0507` / `E0204`. 이 머신의 `rust-docs`(1.92.0)를 열어 확인했다.
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
-> 주소를 찍는 프로그램은 **디버그와 릴리스를 둘 다** 돌렸다(`rustc --edition 2021 -O ex.rs`).
-> **버전** — 여기 나오는 문법은 전부 1.0부터다. `Copy`·`Drop`·`mem::drop` 은 이 머신의 std 문서에서\
-> 「Stable since Rust version **1.0.0**」을 직접 확인했다. `let_underscore_lock` 린트만 **1.65.0**부터다\
-> (이 툴체인의 `releases.md` 에서 1.65.0 항목을 직접 확인했다 — 아래 「더 들어가면」·정답 4번).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **값 하나에 주인은 한 명이고, 주인이 방을 나갈 때 값도 같이 사라진다.**
@@ -940,3 +928,15 @@ cond = true
   `--explain E0382` 도 같은 말을 한다 — `outside of workarounds like Rc`.
 - **소유권을 안 넘기고 알맹이만 바꾸는 관용구**가 `mem::replace`/`mem::take` 다([목록의 **44번 주제**](../44-drop-mem-drop-replace-and-take/)).\
   E0509 로 막힌 자리가 정확히 그 도구의 자리다.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Destructors · Ownership and moves 관련 절 ·
+[The Rust Book ch.4.1](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html) ·
+`rustc --explain E0382` / `E0509` / `E0507` / `E0204`. 이 머신의 `rust-docs`(1.92.0)를 열어 확인했다.
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
+주소를 찍는 프로그램은 **디버그와 릴리스를 둘 다** 돌렸다(`rustc --edition 2021 -O ex.rs`).
+**버전** — 여기 나오는 문법은 전부 1.0부터다. `Copy`·`Drop`·`mem::drop` 은 이 머신의 std 문서에서\
+「Stable since Rust version **1.0.0**」을 직접 확인했다. `let_underscore_lock` 린트만 **1.65.0**부터다\
+(이 툴체인의 `releases.md` 에서 1.65.0 항목을 직접 확인했다 — 본문 「더 들어가면」·정답 4번).

@@ -1,14 +1,5 @@
 # csharp/syntax/23 — 튜플과 해체(deconstruction) — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ★★★ 이 주제의 질문은 「**튜플 원소의 이름은 어디에 사나**」 하나로 거의 다 풀린다 — 답이 막히면 **값·메서드 서명·컴파일러** 중 어디를 보는지 떠올려라.
-> **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
-> Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`.
-> ★★★ **본체 창은 ③ 리플렉션이다.** 「이름이 경계를 넘나」는 **다른 어셈블리·`dynamic`·JSON 에게 이름을 불러 보게** 해서 물었다(제5의 상태).
-> 선행 — [18번](../18-record-value-equality-and-with/)(`record` 와 생성되는 `Deconstruct`).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (예측) / (왜) / (경계) / (연결) -->
@@ -258,6 +249,13 @@ class Program {
 - ★★★ record 가 `Deconstruct` 를 생성한다는 것의 정본은?
 - ★★ 2번 `[3]`·`[4]` 가 갈린 뿌리는 몇 번 주제의 무엇인가?
 - ★ 위치 패턴이 `Deconstruct` 를 부르는 것은 몇 번 주제에서 로그로 봤나?
+
+## 실행 환경
+
+**환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
+Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`.
+★★★ **본체 창은 ③ 리플렉션이다.** 「이름이 경계를 넘나」는 **다른 어셈블리·`dynamic`·JSON 에게 이름을 불러 보게** 해서 물었다(제5의 상태).
+선행 — [18번](../18-record-value-equality-and-with/)(`record` 와 생성되는 `Deconstruct`).
 
 ## 복습 기록
 

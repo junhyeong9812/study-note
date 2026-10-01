@@ -1,12 +1,5 @@
 # css/syntax/05 — `@layer` 캐스케이드 레이어: 선언 순서와 레이어 밖의 위치 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「Cascade Layers」·「Cascade Sorting Order」 절. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 색은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle` 로 읽은 것이다. `@import` 를 쓴 실험만 **로컬 HTTP 서버**로 띄웠다(이유는 「어디서 틀리나」 7). 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — CSS 에는 언어 버전이 없다. `@layer` 는 Baseline **widely available**(newly 2022-03-14 · widely 2024-09-14 — [목록 README](../README.md) 의 지원 표).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`@layer` = 선언들을 미리 서랍에 나눠 넣어 두고, 서랍 순서로 먼저 승부를 내는 것이다.**
@@ -459,3 +452,10 @@ file:// 로 연 문서            http://127.0.0.1 로 연 같은 문서
 - **레이어 순서를 한 파일에 모으는 관례**가 오늘의 표준 해법이다. `main.css` 맨 위에 `@layer reset, vendor, base, layout, components, utilities;` 한 줄을 두고, 나머지 파일은 그 이름만 쓴다.
 - **BEM·ITCSS 같은 명명 방법론이 하던 일을 언어 기능이 가져간 것**이 이 기능의 뜻이다. 「명시도를 관리하려고 이름을 길게 짓는」 관행 자체가 필요 없어진다(목록 README 의 「뺀 것과 이유」).
 - **`@scope` 와는 층이 다르다.** 레이어는 4단계, 스코프 근접성은 명시도 **뒤**에 끼어든다 — 둘을 같이 쓰면 「레이어 → 명시도 → 근접성 → 순서」 넷을 순서대로 읽어야 한다([06번 주제](../06-scope/2-summary.md)).
+
+## 실행 환경
+
+**기준 소스** — [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 의 「Cascade Layers」·「Cascade Sorting Order」 절. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 색은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle` 로 읽은 것이다. `@import` 를 쓴 실험만 **로컬 HTTP 서버**로 띄웠다(이유는 「어디서 틀리나」 7). 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — CSS 에는 언어 버전이 없다. `@layer` 는 Baseline **widely available**(newly 2022-03-14 · widely 2024-09-14 — [목록 README](../README.md) 의 지원 표).

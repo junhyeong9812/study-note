@@ -1,14 +1,5 @@
 # css/syntax/50 — 글꼴과 웹폰트: `font` 단축·`@font-face`·`font-display`·가변 폰트 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Fonts Module Level 4](https://drafts.csswg.org/css-fonts-4/) (`font` 단축·매칭 알고리즘·`@font-face` 기술자·`font-display`) · [CSS Fonts Module Level 5](https://drafts.csswg.org/css-fonts-5/) (`src` 의 `tech()`·`font-palette`) · [CSS Font Loading Module Level 3](https://drafts.csswg.org/css-font-loading/) (`document.fonts`·`FontFaceSet.check()`). 열어서 확인한 것만 적었다.
-> **실행 검증** — **Google Chrome 151.0.7922.173** headless · Linux · `devicePixelRatio = 1`. 이 문서의 폭 수치는 전부 그 환경의 `getBoundingClientRect().width` 실측이다.\
-> 웹폰트 실험에는 **직접 만든 740바이트짜리 최소 TTF** 를 `data:` URI 로 넣어 썼다(외부 URL 은 쓰지 않았다). `font-display` 다섯 값만 **응답을 일부러 늦추는 로컬 HTTP 서버**로 쟀다.\
-> **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다 — 크로스 브라우저 차이는 Baseline 데이터로만 접지했다.
-> **버전** — `font-family`·`@font-face`·`font-display`·`font-variation-settings` 는 전부 Baseline **widely**. `font-size-adjust` 만 **newly**(2024-07-25). 날짜는 `api.webstatus.dev` 조회 결과이고 아래 「구현 세부사항 대 언어 보장」에 다시 적었다.
-> ⚠️ **글꼴은 환경이다.** 여기 적힌 폭 수치는 **이 머신에 설치된 글꼴에 달려 있다.** 다른 머신에서는 숫자가 달라진다 — 재현되는 것은 숫자가 아니라 **「같으냐 다르냐」라는 판정**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`font-family` 는 글꼴이 아니라 「글꼴을 찾아 달라는 쪽지」다.**
@@ -777,3 +768,12 @@ font-family: "Pretendard", "Apple SD Gothic Neo";   /* 둘 다 없으면 UA 기�
 - **`font-palette`** — 컬러 폰트의 색 조합을 고른다. Baseline widely(2022-11-15 → 2025-05-15).
 - **`@font-feature-values`** — `font-variant-alternates` 에서 쓸 이름을 글꼴별로 정의한다.
 - **Local Font Access API** — 설치된 글꼴을 JS 로 나열하는 API. 권한이 필요하고 Baseline 이 아니다. 이 문서의 「환경 확인」을 브라우저 안에서 하는 방법이 될 수 있다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Fonts Module Level 4](https://drafts.csswg.org/css-fonts-4/) (`font` 단축·매칭 알고리즘·`@font-face` 기술자·`font-display`) · [CSS Fonts Module Level 5](https://drafts.csswg.org/css-fonts-5/) (`src` 의 `tech()`·`font-palette`) · [CSS Font Loading Module Level 3](https://drafts.csswg.org/css-font-loading/) (`document.fonts`·`FontFaceSet.check()`). 열어서 확인한 것만 적었다.
+**실행 검증** — **Google Chrome 151.0.7922.173** headless · Linux · `devicePixelRatio = 1`. 이 문서의 폭 수치는 전부 그 환경의 `getBoundingClientRect().width` 실측이다.\
+웹폰트 실험에는 **직접 만든 740바이트짜리 최소 TTF** 를 `data:` URI 로 넣어 썼다(외부 URL 은 쓰지 않았다). `font-display` 다섯 값만 **응답을 일부러 늦추는 로컬 HTTP 서버**로 쟀다.\
+**엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다 — 크로스 브라우저 차이는 Baseline 데이터로만 접지했다.
+**버전** — `font-family`·`@font-face`·`font-display`·`font-variation-settings` 는 전부 Baseline **widely**. `font-size-adjust` 만 **newly**(2024-07-25). 날짜는 `api.webstatus.dev` 조회 결과이고 본문 「구현 세부사항 대 언어 보장」에 다시 적었다.
+⚠️ **글꼴은 환경이다.** 여기 적힌 폭 수치는 **이 머신에 설치된 글꼴에 달려 있다.** 다른 머신에서는 숫자가 달라진다 — 재현되는 것은 숫자가 아니라 **「같으냐 다르냐」라는 판정**이다.

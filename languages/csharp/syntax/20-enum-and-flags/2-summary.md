@@ -1,30 +1,5 @@
 # csharp/syntax/20 — `enum` 과 `[Flags]` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — 열거형](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum)(열어서 확인: 「열거형은 **기반 정수 타입의 이름 붙은 상수**로 정의되는 **값 타입**」 ·\
-> 「`E` 의 기본값은 **`(E)0`** — 0 에 해당하는 멤버가 **없어도**」 · 「리터럴 `0` 은 **어느 열거형으로든 암시적 변환**된다」 · 「`(Season)4` 는 **`4`** 를 찍는다」 · 「`Enum.IsDefined` 로 확인하라」)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).\
-> **대비는 실측이다** — **javac 21.0.5** 로 같은 캐스트를 던졌다((8)).
-> **버전** — `enum`·`[Flags]` 는 **C# 1.0부터** · 제네릭 `Enum.IsDefined<T>`·`Enum.Parse<T>` 는 **.NET 5 / .NET Core 2.0 계열 API** 다(이 문서는 판을 안 가렸다 — .NET 10 에서만 던졌다).
-> **경계** — **정수 타입·`checked`** 는 [05번](../05-numeric-types-checked-decimal/)이 정본이다 — `enum` 은 **그 정수 위의 껍데기**다.\
-> ★ **`switch` 식의 완결성 검사 전반**은 목록의 **22번 주제**가 정본이다 — 여기서는 **`enum` 에서 그것이 어떻게 새나**만 본다.\
-> ★ **박싱 자체**는 [03번](../03-boxing-and-unboxing/)이 정본이다.
-> ★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **13번**([`13-enum-classes/`](../../../java/syntax/13-enum-classes/)) — Java `enum` 은 **진짜 클래스**다.\
-> Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **26번**([`26-value-class-and-boxing/`](../../../kotlin/syntax/26-value-class-and-boxing/)) — 「**값 하나를 감싼 껍데기**」의 다른 설계 ·\
-> Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **17번**([`17-enums-and-data-carrying-variants/`](../../../rust/syntax/17-enums-and-data-carrying-variants/)) — **데이터를 싣는 변형**. ★ 둘은 **대비만** 한다(이 판에서 던지지 않았다).
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** | ★★★ **진단 코드**(`CS8509`·`CS8524`·`CS0019`·`CS0221`·`CS0266`)와 **`(행,열)`** |
-> | **IL 오프셋 폭** | ★★★ **옵코드**(`ldc.i4.s 99` · `ceq` · `box Perm`) — **변환 명령이 없다는 것** |
-> | ★★★ **증분의 절댓값 일부** — 특히 **`HasFlag` 의 48 바이트는 판에 따라 0 이 된다**((6)) | ★★★ **네 판에서 갈린 줄 수**(스크립트가 센 마지막 줄) · **어느 판에서 갈렸나** |
-> | 「데운 정도」 — 티어 1 로 올라가는 시점은 **시간에 달린다**((6)의 긴 데우기 판) | ★★ `IsJITOptimizerDisabled` 의 **`True`/`False`** |
-
 ## 이 판
 
 ```text
@@ -507,7 +482,7 @@ p.ToString()                 1000회 : 72000 바이트
 - ★★ **「어느 판이 진짜인가」가 아니다** — 셋 다 진짜다. **어느 조건에서 무엇이 되나**가 결론이다.
 - ★★★ **시간은 안 쟀다.** 「`HasFlag` 가 느리다」는 문장이 이 문서에 없다.
 - ★ **「티어 0 코드를 재고 있었다」는 해석**이다 — 티어링 상태를 **직접 찍지 않았고**, **데우는 양을 바꿨을 때 칸이 움직인 것**만 실측이다.\
-  ★ 「0.5초」는 티어링이 **시간에 기대어** 올라가기 때문에 넣었다 — 그래서 이 칸은 **머리말에서** 「**흔들리는 칸**」으로 선언했다.
+  ★ 「0.5초」는 티어링이 **시간에 기대어** 올라가기 때문에 넣었다 — 그래서 이 칸은 **「실행 환경」에서** 「**흔들리는 칸**」으로 선언했다.
 
 ### (7) ★★ 컴파일러가 무엇을 안 보나 — 탐침 열
 
@@ -788,3 +763,29 @@ Read, Write · 3 · True · True · 3
 - ★ **`Enum.GetValues`·`GetNames` 의 할당** · **제네릭 `Enum` 제약(`where T : struct, Enum`)** — **이 판에서 안 던졌다.**
 - ★ **`HasFlag` 의 티어링 상태를 직접 보기** — `DOTNET_JitStdOutFile`·ETW 로 티어 전환을 찍을 수 있다고 알려져 있으나 **이 판에서 안 썼다.** (6)의 「티어 0 을 재고 있었다」는 **데우는 양을 바꿔 본 간접 증거**다.
 - ★ **이 발견이 앞 주제들의 2×2 격자에 주는 뜻** — `csc` 기본 두 칸은 **「최적화가 꺼진 JIT」** 이었다. 그 칸들이 안 움직였다면 **최적화가 결과에 상관없는 계수**였다는 뜻이고, 움직였다면 **JIT 최적화가 그 차이**다.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — 열거형](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/enum)(열어서 확인: 「열거형은 **기반 정수 타입의 이름 붙은 상수**로 정의되는 **값 타입**」 ·\
+「`E` 의 기본값은 **`(E)0`** — 0 에 해당하는 멤버가 **없어도**」 · 「리터럴 `0` 은 **어느 열거형으로든 암시적 변환**된다」 · 「`(Season)4` 는 **`4`** 를 찍는다」 · 「`Enum.IsDefined` 로 확인하라」)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).\
+**대비는 실측이다** — **javac 21.0.5** 로 같은 캐스트를 던졌다((8)).
+**버전** — `enum`·`[Flags]` 는 **C# 1.0부터** · 제네릭 `Enum.IsDefined<T>`·`Enum.Parse<T>` 는 **.NET 5 / .NET Core 2.0 계열 API** 다(이 문서는 판을 안 가렸다 — .NET 10 에서만 던졌다).
+**경계** — **정수 타입·`checked`** 는 [05번](../05-numeric-types-checked-decimal/)이 정본이다 — `enum` 은 **그 정수 위의 껍데기**다.\
+★ **`switch` 식의 완결성 검사 전반**은 목록의 **22번 주제**가 정본이다 — 여기서는 **`enum` 에서 그것이 어떻게 새나**만 본다.\
+★ **박싱 자체**는 [03번](../03-boxing-and-unboxing/)이 정본이다.
+★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **13번**([`13-enum-classes/`](../../../java/syntax/13-enum-classes/)) — Java `enum` 은 **진짜 클래스**다.\
+Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **26번**([`26-value-class-and-boxing/`](../../../kotlin/syntax/26-value-class-and-boxing/)) — 「**값 하나를 감싼 껍데기**」의 다른 설계 ·\
+Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **17번**([`17-enums-and-data-carrying-variants/`](../../../rust/syntax/17-enums-and-data-carrying-variants/)) — **데이터를 싣는 변형**. ★ 둘은 **대비만** 한다(이 판에서 던지지 않았다).
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** | ★★★ **진단 코드**(`CS8509`·`CS8524`·`CS0019`·`CS0221`·`CS0266`)와 **`(행,열)`** |
+| **IL 오프셋 폭** | ★★★ **옵코드**(`ldc.i4.s 99` · `ceq` · `box Perm`) — **변환 명령이 없다는 것** |
+| ★★★ **증분의 절댓값 일부** — 특히 **`HasFlag` 의 48 바이트는 판에 따라 0 이 된다**((6)) | ★★★ **네 판에서 갈린 줄 수**(스크립트가 센 마지막 줄) · **어느 판에서 갈렸나** |
+| 「데운 정도」 — 티어 1 로 올라가는 시점은 **시간에 달린다**((6)의 긴 데우기 판) | ★★ `IsJITOptimizerDisabled` 의 **`True`/`False`** |

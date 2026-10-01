@@ -1,19 +1,5 @@
 # rust/syntax/35 — 함수 포인터와 클로저를 반환하기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Reference — Function item types](https://doc.rust-lang.org/reference/types/function-item.html) ·
-> [Reference — Function pointer types](https://doc.rust-lang.org/reference/types/function-pointer.html) ·
-> [Reference — Closure types(non-capturing)](https://doc.rust-lang.org/reference/types/closure.html) ·
-> [Reference — Type coercions](https://doc.rust-lang.org/reference/type-coercions.html)(함수 항목 → fn 포인터 · 비포착 클로저 → fn 포인터 · LUB) ·
-> [std — primitive `fn`](https://doc.rust-lang.org/std/primitive.fn.html).
-> ★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. 버전은 **그 사본의 `releases.md` 를 블록으로** 실었다((0)).
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
-> **`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(C++ 대비 블록은 `g++ 13.3.0` · `clang++ 18.1.3`).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음). ★ **시간은 한 번도 재지 않았다** — 간접 호출 비용은 이 문서의 주장이 아니다.
-> **버전** — 비포착 클로저 → `fn` 강제 **1.19.0**((0)). `impl Fn` 반환은 **1.26.0**([32번 주제](../32-impl-trait-argument-return-position-and-2024-capture/) (0)의 블록).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ```text
 ===== rustc --version =====
 rustc 1.92.0 (ded5c06cf 2025-12-08)
@@ -840,3 +826,17 @@ r35_lambda_cap.cpp:5:11: error: no viable conversion from '(lambda at r35_lambda
 - **`extern "C" fn`·`unsafe fn` 포인터** — FFI 콜백의 타입. 1.35 에서 **클로저를 `unsafe fn` 포인터로 강제**할 수 있게 됐다(릴리스 노트 — 이 문서는 던지지 않았다). 목록의 **56번 주제**(`unsafe`) 근처.
 - **`fn` 포인터의 비교·주소** — 이 문서는 주소를 한 번도 찍지 않았다(찍으면 흔들리는 칸이 된다).
 - **`impl Fn` 을 돌려주는 함수는 호출마다 같은 타입** — (4)의 `a`·`b` 가 그렇다. **다른 함수가 돌려준 클로저**와는 한 컨테이너에 섞을 수 없다(그때가 `Box<dyn>`) — 이 문서는 그 컨테이너 판을 던지지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [Reference — Function item types](https://doc.rust-lang.org/reference/types/function-item.html) ·
+[Reference — Function pointer types](https://doc.rust-lang.org/reference/types/function-pointer.html) ·
+[Reference — Closure types(non-capturing)](https://doc.rust-lang.org/reference/types/closure.html) ·
+[Reference — Type coercions](https://doc.rust-lang.org/reference/type-coercions.html)(함수 항목 → fn 포인터 · 비포착 클로저 → fn 포인터 · LUB) ·
+[std — primitive `fn`](https://doc.rust-lang.org/std/primitive.fn.html).
+★ 위 문서는 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다. 버전은 **그 사본의 `releases.md` 를 블록으로** 실었다((0)).
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서
+**`rustc --edition 2021 <파일>.rs`** 로 돌려 받은 것이다(C++ 대비 블록은 `g++ 13.3.0` · `clang++ 18.1.3`).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다. 소스 펜스도 캡처가 찍었다.\
+★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음). ★ **시간은 한 번도 재지 않았다** — 간접 호출 비용은 이 문서의 주장이 아니다.
+**버전** — 비포착 클로저 → `fn` 강제 **1.19.0**((0)). `impl Fn` 반환은 **1.26.0**([32번 주제](../32-impl-trait-argument-return-position-and-2024-capture/) (0)의 블록).

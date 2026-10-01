@@ -1,23 +1,5 @@
 # csharp/syntax/36 — `IQueryable` 과 식 트리 맛보기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — ★ **SDK 참조 팩의 XML 문서**(로컬에서 열어 확인) — `System.Linq.Expressions.xml`: `Expression<TDelegate>` 「강하게 타입이 붙은 람다 식을 **식 트리 형태의 자료 구조**로 나타낸다」 · `Compile` 「식 트리가 묘사하는 람다 식을 **실행 가능한 코드로 컴파일**해 델리게이트를 만든다」 · `IQueryable.Expression` 「이 인스턴스에 딸린 식 트리를 얻는다」 · `IQueryProvider` 「`IQueryable` 이 묘사하는 쿼리를 **만들고 실행하는** 메서드를 정의한다」 · `CreateQuery<T>` 「식 트리가 나타내는 쿼리를 **평가할 수 있는** `IQueryable<T>` 를 만든다」 · `Execute<TResult>` 「식 트리가 나타내는 쿼리를 **실행한다**」 ·\
-> `System.Linq.Queryable.xml`: `EnumerableQuery<T>` 「`IEnumerable<T>` 컬렉션을 `IQueryable<T>` 데이터 원본으로 나타낸다」.
-> ★★★ **ORM 은 설치하지 않았다**(NuGet 없음 · 외부 네트워크 없음). EF Core 의 문서도 **열지 않았다.** 그래서 이 문서의 「ORM 에서 쿼리가 나가는 지점」은 **직접 짠 장난감 공급자**로 보인 **모양**이다((3)) — EF Core 가 그 지점에서 무엇을 하는지는 **재지도 인용하지도 않는다.**
-> **실행 검증** — 이 문서의 모든 출력·진단·IL 은 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26). 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣었다.
-> **버전** — 식 트리로 바꿀 **람다 자체가 C# 3** 이다([33번](../33-linq-method-syntax-and-deferred-execution/) (6) — `-langversion:2` 의 람다 `CS8023`). ★ 식 트리 변환만 따로 판 경계를 재지는 않았다 · 라이브러리 쪽 판은 참조 팩이 10.0.12 하나뿐이라 **확인 못 함.**
-> **경계** — ★★★ **`Enumerable` 쪽 연산자가 즉시냐 지연이냐는 [33번](../33-linq-method-syntax-and-deferred-execution/)** 이 정본이다. 여기는 **같은 모양의 쿼리가 `Queryable` 쪽에 도착하면 무엇이 다른가** 하나다.\
-> ★★ 람다가 **델리게이트**가 되는 IL(`ldftn` · `newobj Func`)은 [27번](../27-delegates-and-func-action/) · [28번](../28-lambdas-and-closure-capture/) (1)이 정본이다 — 여기서는 **같은 람다가 식 트리가 되면 IL 이 어떻게 달라지나**만 본다.\
-> ★ 「`OrderBy(…).First()` 가 정렬을 건너뛴다」([33번](../33-linq-method-syntax-and-deferred-execution/) (1-b))처럼 **연산자가 뒤에 붙은 것을 알아보는** 일을, `IQueryable` 은 **식 트리 전체를 공급자에게 넘기는** 방식으로 일반화한다 — (3)이 그 모양이다.
-> ★★★ **본체 창은 둘이다 — ① IL(「같은 람다가 무엇으로 컴파일되나」)과 ⑤ 장난감 공급자의 로그(「번역·실행은 언제 불리나」).**
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | IL **오프셋** · 컴파일러가 지은 이름(`<>9__0_0` · `<AsFunc>b__0_0`) · 진단 **문구** · 진단 **순서**(배너에 `sort`) | ★★★ **옵코드와 호출 대상**(`ldftn` · `newobj Func` 대 `call Expression::Parameter` · `Expression::GreaterThan` · `Expression::Lambda` · `Enumerable::Where` 대 `Queryable::Where`) · **진단 코드** |
-> | 식 트리 노드의 **내부 클래스 이름**(찍지 않았다 — `NodeType` 만 찍었다) | ★★★ **`NodeType`**(`Lambda` · `GreaterThan` · `Call` · `Quote` …) · `ToString()` · **공급자 로그의 `CreateQuery`/`Execute` 수 · 「Execute 가 불린 단계 N / M」 · 「막힌 칸 N / M」** |
-
 ## 이 판
 
 ```text
@@ -602,3 +584,22 @@ x => (x > 2) · True
 - ★ **실제 ORM(EF Core)** — 설치하지 않았고 문서도 열지 않았다. 번역 실패를 **어느 지점에서 어떤 예외로** 알리는지, 어떤 메서드를 번역하는지는 **확인할 것**으로 남긴다(★ 「`Execute` 에서 거부한다」는 장난감의 규칙이다).
 - ★ **`ExpressionVisitor`** — 식 트리를 **바꿔 쓰는** 표준 도구. 장난감은 손으로 재귀했다.
 - ★ **식 트리의 할당·`Compile()` 비용** — (1)에서 캐시가 없는 것을 봤지만 **바이트·시간은 재지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — ★ **SDK 참조 팩의 XML 문서**(로컬에서 열어 확인) — `System.Linq.Expressions.xml`: `Expression<TDelegate>` 「강하게 타입이 붙은 람다 식을 **식 트리 형태의 자료 구조**로 나타낸다」 · `Compile` 「식 트리가 묘사하는 람다 식을 **실행 가능한 코드로 컴파일**해 델리게이트를 만든다」 · `IQueryable.Expression` 「이 인스턴스에 딸린 식 트리를 얻는다」 · `IQueryProvider` 「`IQueryable` 이 묘사하는 쿼리를 **만들고 실행하는** 메서드를 정의한다」 · `CreateQuery<T>` 「식 트리가 나타내는 쿼리를 **평가할 수 있는** `IQueryable<T>` 를 만든다」 · `Execute<TResult>` 「식 트리가 나타내는 쿼리를 **실행한다**」 ·\
+`System.Linq.Queryable.xml`: `EnumerableQuery<T>` 「`IEnumerable<T>` 컬렉션을 `IQueryable<T>` 데이터 원본으로 나타낸다」.
+★★★ **ORM 은 설치하지 않았다**(NuGet 없음 · 외부 네트워크 없음). EF Core 의 문서도 **열지 않았다.** 그래서 이 문서의 「ORM 에서 쿼리가 나가는 지점」은 **직접 짠 장난감 공급자**로 보인 **모양**이다((3)) — EF Core 가 그 지점에서 무엇을 하는지는 **재지도 인용하지도 않는다.**
+**실행 검증** — 이 문서의 모든 출력·진단·IL 은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26). 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣었다.
+**버전** — 식 트리로 바꿀 **람다 자체가 C# 3** 이다([33번](../33-linq-method-syntax-and-deferred-execution/) (6) — `-langversion:2` 의 람다 `CS8023`). ★ 식 트리 변환만 따로 판 경계를 재지는 않았다 · 라이브러리 쪽 판은 참조 팩이 10.0.12 하나뿐이라 **확인 못 함.**
+**경계** — ★★★ **`Enumerable` 쪽 연산자가 즉시냐 지연이냐는 [33번](../33-linq-method-syntax-and-deferred-execution/)** 이 정본이다. 여기는 **같은 모양의 쿼리가 `Queryable` 쪽에 도착하면 무엇이 다른가** 하나다.\
+★★ 람다가 **델리게이트**가 되는 IL(`ldftn` · `newobj Func`)은 [27번](../27-delegates-and-func-action/) · [28번](../28-lambdas-and-closure-capture/) (1)이 정본이다 — 여기서는 **같은 람다가 식 트리가 되면 IL 이 어떻게 달라지나**만 본다.\
+★ 「`OrderBy(…).First()` 가 정렬을 건너뛴다」([33번](../33-linq-method-syntax-and-deferred-execution/) (1-b))처럼 **연산자가 뒤에 붙은 것을 알아보는** 일을, `IQueryable` 은 **식 트리 전체를 공급자에게 넘기는** 방식으로 일반화한다 — (3)이 그 모양이다.
+★★★ **본체 창은 둘이다 — ① IL(「같은 람다가 무엇으로 컴파일되나」)과 ⑤ 장난감 공급자의 로그(「번역·실행은 언제 불리나」).**
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| IL **오프셋** · 컴파일러가 지은 이름(`<>9__0_0` · `<AsFunc>b__0_0`) · 진단 **문구** · 진단 **순서**(배너에 `sort`) | ★★★ **옵코드와 호출 대상**(`ldftn` · `newobj Func` 대 `call Expression::Parameter` · `Expression::GreaterThan` · `Expression::Lambda` · `Enumerable::Where` 대 `Queryable::Where`) · **진단 코드** |
+| 식 트리 노드의 **내부 클래스 이름**(찍지 않았다 — `NodeType` 만 찍었다) | ★★★ **`NodeType`**(`Lambda` · `GreaterThan` · `Call` · `Quote` …) · `ToString()` · **공급자 로그의 `CreateQuery`/`Execute` 수 · 「Execute 가 불린 단계 N / M」 · 「막힌 칸 N / M」** |

@@ -1,9 +1,5 @@
 # Python 데이터·ML 생태계의 부상
 
-> 원본: `~/project/python-history/05-데이터-ML-생태계.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·인명·버전·수치·코드블록·표는 원문 그대로다.\
-> ASCII 도식 8개(그중 3개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 조립식 선반 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -478,3 +474,9 @@ NumPy 배열이라는 공통 데이터 구조 위에 SciPy·pandas·scikit-learn
 - [François Chollet — Wikipedia](https://en.wikipedia.org/wiki/Fran%C3%A7ois_Chollet)
 - [A Brief History of Deep Learning Frameworks (Towards Data Science)](https://towardsdatascience.com/a-brief-history-of-deep-learning-frameworks-8debf3ba6607/)
 - [Why is Python such a popular choice in data science and ML? (Institute of Data)](https://www.institutedata.com/blog/why-is-python-programming-such-a-popular-choice-in-data-science-and-machine-learning/)
+
+## 출처
+
+원본: `~/project/python-history/05-데이터-ML-생태계.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·인명·버전·수치·코드블록·표는 원문 그대로다.\
+ASCII 도식 8개(그중 3개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 조립식 선반 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

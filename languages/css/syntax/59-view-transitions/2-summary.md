@@ -1,13 +1,5 @@
 # css/syntax/59 — 뷰 전환: `view-transition-name`·`::view-transition-*` 의사 요소 트리 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS View Transitions Level 1](https://drafts.csswg.org/css-view-transitions-1/) (의사 요소 트리·이름·스냅숏) · [CSS View Transitions Level 2](https://drafts.csswg.org/css-view-transitions-2/) (`@view-transition`, 문서 간 전환). 열어서 확인한 것만 적었다.
-> **실행 검증** — **돌았다.** `document.startViewTransition()` 이 **Google Chrome 151.0.7922.173 headless 에서 실제로 실행**되고 `ready`/`finished` 가 모두 resolve 됐다. 의사 요소 트리는 **`document.getAnimations()` 로 UA 가 만든 애니메이션을 읽어** 확인했고, 계산값은 `getComputedStyle(document.documentElement, '::view-transition-…')` 로 읽었다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — `api.webstatus.dev` 를 **2026-09-23 에 직접 조회**한 결과 **같은 문서 뷰 전환은 Baseline `newly`**(저변 도달 2025-10-14)다 — Chrome 2023-03-07 · Safari 2024-09-16 · **Firefox 2025-10-14**. **문서 간 전환은 아직 `limited`**(Firefox 미구현)이고 이 편은 같은 문서 전환까지만 다룬다.\
-> **문서 간 전환(`@view-transition`)은 여전히 `limited`** — Chrome 2024-06-11 · Safari 2024-12-11 · Firefox 없음. 이 문서는 **같은 문서 전환까지만** 다루고 문서 간은 존재와 Baseline 만 적는다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **바뀌기 직전 화면을 사진으로 찍어 두고, 바뀐 뒤 화면과 겹쳐 놓은 다음, 그 사진 둘을 애니메이션한다.**
@@ -433,3 +425,11 @@ vt.skipTransition()    // 건너뛰기 (ready 가 AbortError 로 reject)
 - `view-transition-class`(Level 2)로 여러 이름에 **같은 연출을 묶어** 주는 방법이 있다. **이 문서에서는 다루지 않았다.**
 - 전환 중의 겹침 순서는 **`::view-transition-group` 들의 생성 순서**로 정해지며, `z-index` 를 그 의사 요소에 직접 주어 바꿀 수 있다.
 - 콜백이 프라미스를 돌려주면 **그것이 resolve 될 때까지 화면이 멈춘다.** 서버 왕복을 콜백 안에 넣지 않는 이유다.
+
+## 실행 환경
+
+**기준 소스** — [CSS View Transitions Level 1](https://drafts.csswg.org/css-view-transitions-1/) (의사 요소 트리·이름·스냅숏) · [CSS View Transitions Level 2](https://drafts.csswg.org/css-view-transitions-2/) (`@view-transition`, 문서 간 전환). 열어서 확인한 것만 적었다.
+**실행 검증** — **돌았다.** `document.startViewTransition()` 이 **Google Chrome 151.0.7922.173 headless 에서 실제로 실행**되고 `ready`/`finished` 가 모두 resolve 됐다. 의사 요소 트리는 **`document.getAnimations()` 로 UA 가 만든 애니메이션을 읽어** 확인했고, 계산값은 `getComputedStyle(document.documentElement, '::view-transition-…')` 로 읽었다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — `api.webstatus.dev` 를 **2026-09-23 에 직접 조회**한 결과 **같은 문서 뷰 전환은 Baseline `newly`**(저변 도달 2025-10-14)다 — Chrome 2023-03-07 · Safari 2024-09-16 · **Firefox 2025-10-14**. **문서 간 전환은 아직 `limited`**(Firefox 미구현)이고 이 편은 같은 문서 전환까지만 다룬다.\
+**문서 간 전환(`@view-transition`)은 여전히 `limited`** — Chrome 2024-06-11 · Safari 2024-12-11 · Firefox 없음. 이 문서는 **같은 문서 전환까지만** 다루고 문서 간은 존재와 Baseline 만 적는다.

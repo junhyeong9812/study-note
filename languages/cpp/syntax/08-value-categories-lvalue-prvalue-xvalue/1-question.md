@@ -1,18 +1,5 @@
 # cpp/syntax/08 — 값 범주 — lvalue·prvalue·xvalue — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **예측형 위주**다 — 어떤 식이 **어느 칸에 들어가는지**,
-> 그리고 그 칸이 **무엇을 가르는지**를 맞힐 수 있는지 묻는다.
-> **환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux.
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
-> ★★★ **범주는 셋이다** — lvalue · prvalue · xvalue. 답을 적을 때 **셋 중 하나로** 적어라.
-> ★ **네 번째 창은 `decltype((식))` 을 정의 없는 템플릿에 넣어 타입으로 찍는 것**이다.
-> 그 창의 원리(이름 대 식)는 형제 [`05번`](../05-auto-and-decltype-type-deduction/)에 있다 — 여기서는 **창만 쓴다**.
-> 선행 — 형제 [`07번`](../07-references-vs-pointers/)(참조) · 형제 [`01번`](../01-function-overloading-and-overload-resolution/)(오버로드 해석).
-> 이 주제는 목록의 [**09**](../09-rvalue-references-move-and-forward/)·[**11**](../11-choosing-parameter-passing/)번 주제로 이어지는 사슬의 첫 칸이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -381,6 +368,16 @@ int main() {
 - 「그래서 매개변수를 무엇으로 받나」의 정본은 목록의 몇 번인가?
 - 임시의 수명 연장이 **안 되는** 자리(댕글링)의 정본은 목록의 몇 번인가?
 - Rust 에는 왜 「이 식이 rvalue 인가」라는 질문이 **없는가**?
+
+## 실행 환경
+
+**환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux.
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
+★★★ **범주는 셋이다** — lvalue · prvalue · xvalue. 답을 적을 때 **셋 중 하나로** 적어라.
+★ **네 번째 창은 `decltype((식))` 을 정의 없는 템플릿에 넣어 타입으로 찍는 것**이다.
+그 창의 원리(이름 대 식)는 형제 [`05번`](../05-auto-and-decltype-type-deduction/)에 있다 — 여기서는 **창만 쓴다**.
+선행 — 형제 [`07번`](../07-references-vs-pointers/)(참조) · 형제 [`01번`](../01-function-overloading-and-overload-resolution/)(오버로드 해석).
+이 주제는 목록의 [**09**](../09-rvalue-references-move-and-forward/)·[**11**](../11-choosing-parameter-passing/)번 주제로 이어지는 사슬의 첫 칸이다.
 
 ## 복습 기록
 

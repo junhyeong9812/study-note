@@ -1,69 +1,5 @@
 # js/syntax/31 — `JSON`: 「같은 값도 놓인 자리에 따라 다른 글자가 된다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다.**
-> `JSON.stringify` 가 값을 무엇으로 바꾸는지는 **값만 보고는 답이 안 나온다** — 같은 `undefined` 가 **객체의 속성이면 키째 사라지고, 배열의 원소면 `null` 이 되고, 맨 위면 문자열조차 아닌 `undefined`** 가 된다.
-> 그래서 값 **14종** × 자리 **셋**(속성 · 배열 원소 · 최상위)을 스크립트가 전부 찍고, **세 자리가 갈린 행을 스크립트가 센다**(동작 (1)).
-> ★★ 보조로 **① 추상 연산에 로그 심기**(`toJSON`·`replacer`·`reviver` 가 **어떤 순서로 누구에게** 불리나 — 동작 (3)·(4))와 **④ 예외의 이름·문구**(순환 참조 · `BigInt` · 파싱 실패 — 동작 (2)·(4))를 쓴다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — The JSON Object](https://tc39.es/ecma262/multipage/structured-data.html#sec-json-object) —
->   `JSON.parse` · `InternalizeJSONProperty` · `JSON.stringify` · `SerializeJSONProperty` · `SerializeJSONObject` · `SerializeJSONArray` · `JSON.rawJSON`
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(Well-formed `JSON.stringify` 2019 · JSON superset 2019 · **JSON.parse source text access 2026**)
-> - 명세 문장은 이 배치가 받아 둔 **ES2026 판 HTML 에서 읽었다**(알고리즘 단계를 옮기지 않고 연산 이름과 짧은 인용만 싣는다).
-> - `structuredClone` 은 ECMA-262 가 아니라 **HTML 표준의 호스트 API** 다. 이 문서는 그 명세를 읽지 않았고 **node 20 에서 비교 열 하나**로만 돌렸다.
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★★ **순환 참조 메시지는 여러 줄**이라, 탐침이 **줄마다 `| ` 를 앞에 붙여** 한 줄도 자르지 않고 찍는다(동작 (2)).
-> ★★★ **`JSON.rawJSON` 과 `reviver` 의 셋째 인자(ES2026)는 두 node 판에 없다**(아래 판별 블록). 그 탐침은 **Google Chrome 151 을 헤드리스로** 돌렸다 — 배너가 `google-chrome --headless` 로 시작하는 블록이다.
-> ★★ **이 주제에서 두 node 판이 갈린 탐침은 하나다** — `JSON.parse` 의 **실패 문구**(동작 (4)의 `[4]`). 값·순서·예외 종류는 전부 같았다.
->
-> **버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `JSON.parse` · `JSON.stringify` · `toJSON` · `replacer` · `reviver` · `space` | ES5 | 세 판 다 있다 |
-> | 짝 없는 서로게이트를 `\ud800` 으로 이스케이프(Well-formed `JSON.stringify`) | **ES2019** | 세 판 다 있다 |
-> | JSON superset(문자열 안의 U+2028·U+2029 를 JS 도 받는다) | ES2019 | 이 문서는 돌리지 않았다 |
-> | `structuredClone` | — **호스트 API**(HTML) | 세 판 다 있다 |
-> | `JSON.rawJSON` · `JSON.isRawJSON` · `reviver` 의 `context.source`(JSON.parse source text access) | **ES2026** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체) | 값 **14종** × 자리 **3** — 세 자리가 **갈린 행을 스크립트가 센다**(동작 (1)) · 깊은 복사 대용 두 가지 × 값 **13종** — 두 열이 **갈린 행**(동작 (5)) |
-> | ★★ **① 추상 연산에 로그 심기** | `toJSON` 과 `replacer` 가 **어느 쪽이 먼저, 어떤 `this` 로** 불리나(동작 (3)) · `reviver` 가 **어느 키부터** 불리나(동작 (4)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | 순환 참조의 **여러 줄 메시지** · `BigInt` · `JSON.parse` 의 실패 문구(★ 두 node 판이 **갈린** 유일한 자리) · `structuredClone` 의 `DOMException` |
-> | ★ **③ 브랜드 태그** | **부적용** — 이 주제는 `Object.prototype.toString` 으로 가를 것이 없다. 결과가 **글자**라 글자 자체가 답이다 |
-> | ★ **⑤ 두 판 대조기** | 이 주제의 node 탐침 가운데 **`JSON.parse` 실패 문구 하나만** `DIFFERS` — 그 블록만 node18 판을 따로 실었다 |
-> | ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 **코드의 문법 오류가 아니라 입력 글자의 오류**다. 위치는 메시지 안의 `position N` 으로만 나오고 그것도 node18/20 에서 표기가 다르다 |
-> | ★ **안 쟀다 — 성능** | 「JSON 왕복이 `structuredClone` 보다 빠르다」를 **한 줄도 쓰지 않는다.** 시간도 바이트도 안 쟀다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★★ **`JSON.parse` 실패 문구** — node18(V8 10.2)과 node20(V8 11.3)이 **실제로 다르다**(동작 (4)의 `[4]`). 다른 엔진은 또 다르게 적는다 | ★★★ 격자의 **칸 글자**와 「갈린 행 N / M」 · 호출 로그의 **순서와 개수** · 예외의 **종류**(`TypeError`·`SyntaxError`) |
-> | 순환 참조 메시지의 **모양**(`-->`·`\|`·`---` 로 경로를 그리는 것) — V8 의 것이다. 명세는 「`TypeError` 를 던진다」까지만 정한다 | 순환 참조가 **`TypeError`** 인 것 · `BigInt` 가 **`TypeError`** 인 것(명세) |
-> | 대조기 블록의 **다른 주제 줄**(같은 배치가 한 대조기를 공유한다) | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) |
->
-> **선행** — [27 — `Object` 정적 메서드](../27-object-static-methods/2-summary.md)(직접 선행 — ★★★ **복사 도구 격자 `3 / 18` 과 `"__proto__"` 를 `fromEntries`·`assign` 에 넣는 실험은 거기서 쟀다**) ·
-> [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(★★ **`JSON.stringify(map)` 이 `{}`** 인 것과 `[...map]` 으로 우회하는 것은 거기가 정본) ·
-> [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md)(★ **`JSON.stringify(x)` 는 `Symbol.toPrimitive` 를 안 부른다** — 그 표의 `(no call)` 줄) ·
-> [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md)(리터럴 `__proto__:` 의 다섯 형태 · 정수 키 순서) ·
-> [03 — 숫자와 `BigInt`](../03-numbers-and-bigint/2-summary.md)(`NaN`·`-0`·안전 정수 한계) · [04 — 문자열과 UTF-16](../04-strings-and-utf16/2-summary.md)(짝 없는 서로게이트).
-> **같은 배치** — [28 — `String` 메서드와 템플릿 리터럴](../28-string-methods-and-template-literals/2-summary.md) · [29 — 정규식 기본](../29-regexp-basics/2-summary.md) · [30 — 정규식 심화](../30-regexp-advanced/2-summary.md).
->
-> ★★ **경계 — 깊은 복사는** [목록의 **48번 주제**](../48-deep-copy-methods-compared/)가 정본이다. 여기서는 `structuredClone` 을 **격자의 비교 열 하나**로만 둔다.
-> ★★ **경계 — `Map` 을 JSON 으로 옮기는 법은 23번이 정본이다.** 여기서는 격자의 **한 행**으로만 둔다.
-
 ```sh
 # js28b-versions.sh
 #!/usr/bin/env bash
@@ -1220,3 +1156,66 @@ show("json.loads('[1,]')", lambda: json.loads("[1,]"))
 - **JSON superset(ES2019)** — 문자열 안의 U+2028·U+2029 가 JS 문자열 리터럴에서도 허용된 변화. 이 문서는 **돌리지 않았다.**
 - **Well-formed `JSON.stringify`(ES2019)** — 짝 없는 서로게이트를 `\ud800` 으로 이스케이프. 판별 블록에 한 줄로만 있다(04번의 주제).
 - **JSON 모듈(`import … with { type: "json" }`, ES2025)** — [목록의 **44번 주제**](../44-dynamic-import-top-level-await-and-import-attributes/)의 몫이다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 전수 격자다.**
+`JSON.stringify` 가 값을 무엇으로 바꾸는지는 **값만 보고는 답이 안 나온다** — 같은 `undefined` 가 **객체의 속성이면 키째 사라지고, 배열의 원소면 `null` 이 되고, 맨 위면 문자열조차 아닌 `undefined`** 가 된다.
+그래서 값 **14종** × 자리 **셋**(속성 · 배열 원소 · 최상위)을 스크립트가 전부 찍고, **세 자리가 갈린 행을 스크립트가 센다**(동작 (1)).
+★★ 보조로 **① 추상 연산에 로그 심기**(`toJSON`·`replacer`·`reviver` 가 **어떤 순서로 누구에게** 불리나 — 동작 (3)·(4))와 **④ 예외의 이름·문구**(순환 참조 · `BigInt` · 파싱 실패 — 동작 (2)·(4))를 쓴다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — The JSON Object](https://tc39.es/ecma262/multipage/structured-data.html#sec-json-object) —
+  `JSON.parse` · `InternalizeJSONProperty` · `JSON.stringify` · `SerializeJSONProperty` · `SerializeJSONObject` · `SerializeJSONArray` · `JSON.rawJSON`
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계(Well-formed `JSON.stringify` 2019 · JSON superset 2019 · **JSON.parse source text access 2026**)
+- 명세 문장은 이 배치가 받아 둔 **ES2026 판 HTML 에서 읽었다**(알고리즘 단계를 옮기지 않고 연산 이름과 짧은 인용만 싣는다).
+- `structuredClone` 은 ECMA-262 가 아니라 **HTML 표준의 호스트 API** 다. 이 문서는 그 명세를 읽지 않았고 **node 20 에서 비교 열 하나**로만 돌렸다.
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★★ **순환 참조 메시지는 여러 줄**이라, 탐침이 **줄마다 `| ` 를 앞에 붙여** 한 줄도 자르지 않고 찍는다(동작 (2)).
+★★★ **`JSON.rawJSON` 과 `reviver` 의 셋째 인자(ES2026)는 두 node 판에 없다**(맨 위 판별 블록). 그 탐침은 **Google Chrome 151 을 헤드리스로** 돌렸다 — 배너가 `google-chrome --headless` 로 시작하는 블록이다.
+★★ **이 주제에서 두 node 판이 갈린 탐침은 하나다** — `JSON.parse` 의 **실패 문구**(동작 (4)의 `[4]`). 값·순서·예외 종류는 전부 같았다.
+
+**버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `JSON.parse` · `JSON.stringify` · `toJSON` · `replacer` · `reviver` · `space` | ES5 | 세 판 다 있다 |
+| 짝 없는 서로게이트를 `\ud800` 으로 이스케이프(Well-formed `JSON.stringify`) | **ES2019** | 세 판 다 있다 |
+| JSON superset(문자열 안의 U+2028·U+2029 를 JS 도 받는다) | ES2019 | 이 문서는 돌리지 않았다 |
+| `structuredClone` | — **호스트 API**(HTML) | 세 판 다 있다 |
+| `JSON.rawJSON` · `JSON.isRawJSON` · `reviver` 의 `context.source`(JSON.parse source text access) | **ES2026** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체) | 값 **14종** × 자리 **3** — 세 자리가 **갈린 행을 스크립트가 센다**(동작 (1)) · 깊은 복사 대용 두 가지 × 값 **13종** — 두 열이 **갈린 행**(동작 (5)) |
+| ★★ **① 추상 연산에 로그 심기** | `toJSON` 과 `replacer` 가 **어느 쪽이 먼저, 어떤 `this` 로** 불리나(동작 (3)) · `reviver` 가 **어느 키부터** 불리나(동작 (4)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | 순환 참조의 **여러 줄 메시지** · `BigInt` · `JSON.parse` 의 실패 문구(★ 두 node 판이 **갈린** 유일한 자리) · `structuredClone` 의 `DOMException` |
+| ★ **③ 브랜드 태그** | **부적용** — 이 주제는 `Object.prototype.toString` 으로 가를 것이 없다. 결과가 **글자**라 글자 자체가 답이다 |
+| ★ **⑤ 두 판 대조기** | 이 주제의 node 탐침 가운데 **`JSON.parse` 실패 문구 하나만** `DIFFERS` — 그 블록만 node18 판을 따로 실었다 |
+| ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 **코드의 문법 오류가 아니라 입력 글자의 오류**다. 위치는 메시지 안의 `position N` 으로만 나오고 그것도 node18/20 에서 표기가 다르다 |
+| ★ **안 쟀다 — 성능** | 「JSON 왕복이 `structuredClone` 보다 빠르다」를 **한 줄도 쓰지 않는다.** 시간도 바이트도 안 쟀다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★★ **`JSON.parse` 실패 문구** — node18(V8 10.2)과 node20(V8 11.3)이 **실제로 다르다**(동작 (4)의 `[4]`). 다른 엔진은 또 다르게 적는다 | ★★★ 격자의 **칸 글자**와 「갈린 행 N / M」 · 호출 로그의 **순서와 개수** · 예외의 **종류**(`TypeError`·`SyntaxError`) |
+| 순환 참조 메시지의 **모양**(`-->`·`\|`·`---` 로 경로를 그리는 것) — V8 의 것이다. 명세는 「`TypeError` 를 던진다」까지만 정한다 | 순환 참조가 **`TypeError`** 인 것 · `BigInt` 가 **`TypeError`** 인 것(명세) |
+| 대조기 블록의 **다른 주제 줄**(같은 배치가 한 대조기를 공유한다) | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) |
+
+**선행** — [27 — `Object` 정적 메서드](../27-object-static-methods/2-summary.md)(직접 선행 — ★★★ **복사 도구 격자 `3 / 18` 과 `"__proto__"` 를 `fromEntries`·`assign` 에 넣는 실험은 거기서 쟀다**) ·
+[23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(★★ **`JSON.stringify(map)` 이 `{}`** 인 것과 `[...map]` 으로 우회하는 것은 거기가 정본) ·
+[22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md)(★ **`JSON.stringify(x)` 는 `Symbol.toPrimitive` 를 안 부른다** — 그 표의 `(no call)` 줄) ·
+[13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md)(리터럴 `__proto__:` 의 다섯 형태 · 정수 키 순서) ·
+[03 — 숫자와 `BigInt`](../03-numbers-and-bigint/2-summary.md)(`NaN`·`-0`·안전 정수 한계) · [04 — 문자열과 UTF-16](../04-strings-and-utf16/2-summary.md)(짝 없는 서로게이트).
+**같은 배치** — [28 — `String` 메서드와 템플릿 리터럴](../28-string-methods-and-template-literals/2-summary.md) · [29 — 정규식 기본](../29-regexp-basics/2-summary.md) · [30 — 정규식 심화](../30-regexp-advanced/2-summary.md).
+
+★★ **경계 — 깊은 복사는** [목록의 **48번 주제**](../48-deep-copy-methods-compared/)가 정본이다. 여기서는 `structuredClone` 을 **격자의 비교 열 하나**로만 둔다.
+★★ **경계 — `Map` 을 JSON 으로 옮기는 법은 23번이 정본이다.** 여기서는 격자의 **한 행**으로만 둔다.

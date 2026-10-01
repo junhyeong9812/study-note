@@ -1,23 +1,5 @@
 # python/syntax/08-fstrings-and-format-spec — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [2.4.3. f-strings](https://docs.python.org/3.12/reference/lexical_analysis.html#f-strings) — 언어 레퍼런스의 정의와 문법
-> - [Format Specification Mini-Language](https://docs.python.org/3.12/library/string.html#format-specification-mini-language) — 포맷 스펙 문법(EBNF)
-> - [Format String Syntax](https://docs.python.org/3.12/library/string.html#format-string-syntax) — `str.format` 의 치환 필드
-> - [printf-style String Formatting](https://docs.python.org/3.12/library/stdtypes.html#printf-style-string-formatting) — `%` 포맷
-> - [PEP 701 — Syntactic formalization of f-strings](https://peps.python.org/pep-0701/) (3.12)
-> - [`dis`](https://docs.python.org/3.12/library/dis.html) — 바이트코드 명령
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> **버전** — f-string 자체는 3.6+. **`=` 디버그 표기는 3.8+**, **`z` 옵션은 3.11+**,
-> **PEP 701(중첩 따옴표·백슬래시·주석 허용)은 3.12+**.
-> 바이트코드 명령 이름(`FORMAT_VALUE`·`BUILD_STRING`)은 **3.12 의 것**이다.
-> **선행** — [06-strings-bytes-unicode](../06-strings-bytes-unicode/2-summary.md)(만들어지는 것이 `str` 이다) ·
-> [01-object-and-name-binding](../01-object-and-name-binding/2-summary.md)(평가 시점과 이름 바인딩).
-
 ## 한눈에 — 쉽게 말하면
 
 **f-string 은 「문자열」이 아니라 「문자열을 만드는 식」이다. 소스에 적힌 모양과 컴파일된 것이 다르다.**
@@ -1230,3 +1212,20 @@ print(f"{name=!s}")     # name=값
 - **`reprlib.repr`** 은 긴 컨테이너를 잘라서 보여 준다. 로그에 큰 리스트를 `!r` 로 찍는 사고를 막는다.
 - **3.14 의 t-string(PEP 750)** 은 「구워 내지 않은 f-string」을 만드는 문법이다 — 이 주제의 8번 절이 그 제안의 동기다. 이 머신에는 3.14 가 없어 **실행 검증하지 않았다.**
 - **`logging` 의 `style="{"`/`style="$"`** 로 포맷 스타일을 바꿀 수 있지만, 그것은 **로거의 포맷 문자열**에만 적용되고 `log.debug()` 의 인자 처리는 여전히 `%` 스타일이다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [2.4.3. f-strings](https://docs.python.org/3.12/reference/lexical_analysis.html#f-strings) — 언어 레퍼런스의 정의와 문법
+- [Format Specification Mini-Language](https://docs.python.org/3.12/library/string.html#format-specification-mini-language) — 포맷 스펙 문법(EBNF)
+- [Format String Syntax](https://docs.python.org/3.12/library/string.html#format-string-syntax) — `str.format` 의 치환 필드
+- [printf-style String Formatting](https://docs.python.org/3.12/library/stdtypes.html#printf-style-string-formatting) — `%` 포맷
+- [PEP 701 — Syntactic formalization of f-strings](https://peps.python.org/pep-0701/) (3.12)
+- [`dis`](https://docs.python.org/3.12/library/dis.html) — 바이트코드 명령
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+**버전** — f-string 자체는 3.6+. **`=` 디버그 표기는 3.8+**, **`z` 옵션은 3.11+**,
+**PEP 701(중첩 따옴표·백슬래시·주석 허용)은 3.12+**.
+바이트코드 명령 이름(`FORMAT_VALUE`·`BUILD_STRING`)은 **3.12 의 것**이다.
+**선행** — [06-strings-bytes-unicode](../06-strings-bytes-unicode/2-summary.md)(만들어지는 것이 `str` 이다) ·
+[01-object-and-name-binding](../01-object-and-name-binding/2-summary.md)(평가 시점과 이름 바인딩).

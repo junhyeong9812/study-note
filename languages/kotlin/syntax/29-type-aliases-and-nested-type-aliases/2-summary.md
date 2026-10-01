@@ -1,17 +1,5 @@
 # kotlin/syntax/29 — 타입 별칭·중첩 타입 별칭 (2.2+) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Type aliases](https://kotlinlang.org/docs/type-aliases.html) · [What's new in Kotlin 2.2.0](https://kotlinlang.org/docs/whatsnew22.html)(중첩 타입 별칭 도입) · [What's new in Kotlin 2.3.0](https://kotlinlang.org/docs/whatsnew23.html)(Stable).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> `kotlinc` 10회(컴파일 실패 4벌 — `-language-version 2.2` 1벌 포함) · `java` 5회 · `javap` 4회 · `go build` 1회 · `tsc` 1회(둘 다 실패가 결과).\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
-> **버전** — 최상위 `typealias` 는 **1.1** 부터다. ★★ **중첩 타입 별칭은 2.2.0 도입 · 2.3.0 Stable** 이다([README](../README.md) 버전표) — (5)에서 **이 판의 컴파일러에게 직접 물어** 확인했다.
-> **경계** — 새 타입을 **만드는** 쪽은 [26번 주제](../26-value-class-and-boxing/)(`value class`)가 정본이고, 여기는 **안 만드는** 쪽이다 — ★ **둘이 짝이다**((7)).\
-> 함수 타입 자체는 [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/), 제네릭 변성은 [28번 주제](../28-generics-variance-in-out-star-where/)가 정본이다.
-> **대비** — Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **22번**([`22-type-assertion-any-and-comparable/`](../../../go/syntax/22-type-assertion-any-and-comparable/)) — `any` 가 `interface{}` 의 **별칭**이라는 것을 거기서 봤다. Go 는 **`type A = B`(별칭)와 `type A B`(새 타입)가 두 꼴로 갈린다** — 이 문서가 직접 던졌다((8)).\
-> TS 갈래 목록([`ts/syntax/README.md`](../../../ts/syntax/README.md))의 **5번**([`05-structural-typing/`](../../../ts/syntax/05-structural-typing/))·**8번**([`08-interface-vs-type/`](../../../ts/syntax/08-interface-vs-type/)) — TS 의 `type` 도 **새 타입을 안 만든다.** 브랜드 타입은 5번이 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **본체는 첫째 창이다** — 「**섞어 넣었는데 대입이 된다**」를 실행 출력으로 보는 창.
 별칭이 새 타입을 안 만든다는 것은 **에러가 안 나는 것**으로 드러난다. 그래서 이 주제의 가장 강한 근거는 **통과한 컴파일과 뒤바뀐 출력**이다.
 
@@ -631,3 +619,15 @@ X [(name, kim)]
 
 - **왜 별칭에 검사를 안 붙였나** — 별칭의 본래 목적은 **긴 타입을 줄이는 것**((4))이다. `Table<Int>` 가 `MutableMap<Int, MutableList<String>>` 과 **대입되지 않으면** 별칭을 쓰는 코드와 안 쓰는 코드가 섞일 때마다 변환이 필요해진다. 「이름만 바꾼다」는 약속이 있어야 **아무 비용 없이** 도입할 수 있다 — 검사가 필요한 자리는 **다른 도구**(`value class`)의 몫으로 떼어 냈다.
 - **Go 와의 차이가 말하는 것** — Go 는 1.9 에서 별칭(`type A = B`)을 들이며 **기존의 새 타입 문법과 `=` 로** 갈랐고, 두 꼴 모두 런타임 표현이 같다. Kotlin 은 JVM 이 **값 타입을 따로 갖지 않으므로** 「새 타입인데 비용은 없는 것」을 만들려면 `value class` 라는 **따로 된 장치**와 그 대가(박싱 자리·이름 뭉개기)가 필요했다. **두 꼴이 한 문법으로 갈리느냐, 두 문법으로 갈리느냐**는 런타임이 무엇을 주느냐에 달렸다.
+
+## 실행 환경
+
+**기준 소스** — [Type aliases](https://kotlinlang.org/docs/type-aliases.html) · [What's new in Kotlin 2.2.0](https://kotlinlang.org/docs/whatsnew22.html)(중첩 타입 별칭 도입) · [What's new in Kotlin 2.3.0](https://kotlinlang.org/docs/whatsnew23.html)(Stable).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+`kotlinc` 10회(컴파일 실패 4벌 — `-language-version 2.2` 1벌 포함) · `java` 5회 · `javap` 4회 · `go build` 1회 · `tsc` 1회(둘 다 실패가 결과).\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
+**버전** — 최상위 `typealias` 는 **1.1** 부터다. ★★ **중첩 타입 별칭은 2.2.0 도입 · 2.3.0 Stable** 이다([README](../README.md) 버전표) — (5)에서 **이 판의 컴파일러에게 직접 물어** 확인했다.
+**경계** — 새 타입을 **만드는** 쪽은 [26번 주제](../26-value-class-and-boxing/)(`value class`)가 정본이고, 여기는 **안 만드는** 쪽이다 — ★ **둘이 짝이다**((7)).\
+함수 타입 자체는 [목록의 **36번 주제**](../36-function-types-fun-interface-and-sam-conversion/), 제네릭 변성은 [28번 주제](../28-generics-variance-in-out-star-where/)가 정본이다.
+**대비** — Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **22번**([`22-type-assertion-any-and-comparable/`](../../../go/syntax/22-type-assertion-any-and-comparable/)) — `any` 가 `interface{}` 의 **별칭**이라는 것을 거기서 봤다. Go 는 **`type A = B`(별칭)와 `type A B`(새 타입)가 두 꼴로 갈린다** — 이 문서가 직접 던졌다((8)).\
+TS 갈래 목록([`ts/syntax/README.md`](../../../ts/syntax/README.md))의 **5번**([`05-structural-typing/`](../../../ts/syntax/05-structural-typing/))·**8번**([`08-interface-vs-type/`](../../../ts/syntax/08-interface-vs-type/)) — TS 의 `type` 도 **새 타입을 안 만든다.** 브랜드 타입은 5번이 정본이다.

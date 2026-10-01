@@ -1,80 +1,5 @@
 # js/syntax/19 — 이터러블 프로토콜과 `for...of`: 「소비자는 전부 같은 계약을 부르고, 다 못 읽으면 `return()` 으로 닫는다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
-> `for...of`·스프레드·`Array.from`·`new Set`·배열 구조 분해·`Promise.all` 은 **결과만 보면 「값을 차례로 꺼냈다」로 똑같다.**
-> 그런데 그 안에서 `Symbol.iterator` 를 **몇 번 읽고**, `next()` 를 **몇 번 부르고**, `return()` 을 **부르나 안 부르나**는
-> 결과 값에 한 글자도 안 남는다. ★★★ **값으로는 원리상 못 가른다.**
-> 그래서 이터러블의 세 자리(`get [Symbol.iterator]` · `next` · `return`)에 **로그를 심고** 소비자 17가지를 차례로 들이댔다.
-> **이 문서의 결론은 전부 그 로그에서 나온다.**
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 최신 초안 — Abstract Operations](https://tc39.es/ecma262/multipage/abstract-operations.html) —
->   `GetIterator` · `GetIteratorFromMethod` · `IteratorNext` · `IteratorComplete` · `IteratorStep` · `IteratorClose`
-> - [ECMA-262 최신 초안 — Statements and Declarations](https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html) —
->   `ForIn/OfHeadEvaluation` · `ForIn/OfBodyEvaluation`
-> - [ECMA-262 최신 초안 — Keyed Collections](https://tc39.es/ecma262/multipage/keyed-collections.html) — `Map`/`Set` 의 `forEach` note(삽입 순서 · 순회 중 추가)
-> - [ECMA-262 판별 아카이브](https://262.ecma-international.org/) · [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계를 가릴 때
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서의 **추상 연산 이름**으로, **값·호출 로그·예외 타입과 메시지는 전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★ **이 주제의 블록에는 주소도 시간도 난수도 없다.** 같은 판에서 다시 돌리면 한 글자도 안 변한다.
-> ★ **이 문서는 BMP 밖 글자(이모지 따위)를 한 글자도 싣지 않는다** — 문자열 탐침은 그 글자를 `String.fromCodePoint(0x1F600)` 로 **만들어서** 쓰고, 출력도 16진 코드 포인트로만 찍는다.
->
-> **버전** — 이 주제의 거의 전부가 **한 판에 들어왔다.**
->
-> | 무엇 | 판 |
-> |---|---|
-> | `Symbol.iterator` · 이터레이터 프로토콜(`next`/`return`) · `for...of` | **ES2015** |
-> | 스프레드 · 배열 구조 분해가 이 프로토콜을 쓰는 것 | **ES2015** (11번·10번 주제) |
-> | `Map` · `Set` · 제너레이터 · `Array.from` · 문자열 이터레이터(코드 포인트 단위) | **ES2015** |
-> | `Promise.all` 이 이터러블을 받는 것 | **ES2015** |
-> | 이터레이터 헬퍼(`Iterator.prototype.map` 등) | **ES2025** — ★ 이 두 판에는 **없다**(동작 (2)의 `[4]`, 두 판 identical) |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **① 추상 연산에 로그 심기**(본체) | `get @@iterator` · `@@iterator()` · `next#N` · `return()` 을 찍는 이터러블 하나로 **소비자 17가지**를 돌린다. `return()` 이 **언제 불리나**는 오직 이것으로만 보인다 |
-> | ★★★ **② 전수 격자** | 그 17가지의 **요약 표**(`next` 횟수 · `return` 횟수) · 이터러블이 아닌 것을 **여섯 자리**에 · 깨진 프로토콜 **다섯 가지** |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | 같은 「이터러블이 아니다」가 **자리마다 문구가 다르다** — 네 가지 문구가 나온다 |
-> | ★★ **⑤ 두 판 대조기** | ★★★ **이 배치에서 두 판이 갈린 유일한 블록이 이 주제의 것이다** — 호출 스프레드 `id(...plain)` 의 문구. 11번 주제의 `f(...obj)` 와 **같은 자리**다 |
-> | ★★ **창을 바꿔 물었다**(제5의 상태) | `done: true` 와 함께 온 값 — **소비자 창은 전부 그것을 버려 닫혀 있다.** 수동 `next()` 로 바꿔 물어야 보인다(동작 (3)의 `[4]`) |
-> | ★ **부적용 — ③ 브랜드 태그** | 「이것이 이터러블인가」는 **내부 슬롯(브랜드)이 아니라 프로퍼티 하나의 계약**이다. 유사 배열에 `Symbol.iterator` 하나를 붙이자 이터러블이 된 줄(동작 (4)의 `[2]`)이 그 증거다. 브랜드가 답할 질문이 없다 — **잴 것이 없다** |
-> | ★ **부적용 — 진단의 `(행,열)`**(18-C) | 이 주제에는 `SyntaxError` 가 한 줄도 없다. 프로토콜은 전부 런타임 의미다 — **잴 것이 없다** |
-> | ★ **쟀다 — 「없다」**: 파이썬식 `__getitem__` 대체 경로 | 파이썬은 `__getitem__` 만 있어도 `for` 가 돈다. JS 에 그 경로가 있나를 **유사 배열로 실제로 물었고** `for...of` 는 `TypeError` 였다(동작 (4)의 `[2]`). ★ 「잴 것이 없다」가 아니라 「**재 봤더니 없다**」다 |
-> | ★ **안 쟀다 — 성능** | 「`for...of` 는 인덱스 `for` 보다 느리다」류의 말을 **한 줄도 쓰지 않는다.** 안 쟀다 |
-> | ★ **안 돌렸다 — 브라우저 · 두 번 컴파일**(엄격/비엄격) | 이 배치는 Chrome 을 돌리지 않았다. 탐침은 전부 비엄격 스크립트 한 벌이다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 예외 **문구** — ★ **이 주제에서 실제로 판마다 갈렸다** | ★★★ **호출 로그의 개수와 순서** · `return()` 이 불렸나 |
-> | `{(intermediate value)}` 같은 V8 의 표현 조각 | ★★★ **예외의 종류**(`TypeError`) |
-> | Node 스택트레이스의 절대 경로 — 한 줄도 싣지 않았다 | ★★ `Map`/`Set` 의 **삽입 순서** · 문자열의 **코드 포인트 개수** |
->
-> 두 판 대조기가 **갈렸다고 세는 블록은 이 주제의 `js16b-19c-errors.js` 하나**다 — 집계 줄은 동작 (4)의 끝에 있다.
->
-> **선행** — [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(★★★ 직접 선행) · [10 — 구조 분해 할당](../10-destructuring-assignment/2-summary.md) ·
-> [04 — 문자열과 UTF-16](../04-strings-and-utf16/2-summary.md) · [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md).
-> ★★★ **11번이 「세 자리의 문」을 이미 갈랐다** — `apply` 는 **유사 배열만**, 스프레드는 **이터러블만**, `Array.from` 은 **둘 다** 연다.
-> 그리고 그 트랩 로그 `[...tracedIterable(2)]` 가 `read Symbol.iterator, next 0, next 1, next 2` 였다.
-> ★★ **이 주제는 그 격자를 다시 만들지 않는다.** 11번이 「어느 자리가 이 프로토콜을 쓰나」까지였다면,
-> 여기는 **프로토콜 자체** — 무엇을 몇 번 부르고, 언제 닫고, 어디서 깨지나 — 부터다.
-> **이어지는 곳** — [목록의 **20번 주제**](../20-generators/) 「제너레이터」 · [목록의 **21번 주제**](../21-iterator-helpers/) 「이터레이터 헬퍼」 · [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) 「`Symbol` 과 잘 알려진 심볼」 ·
-> [목록의 **23번 주제**](../23-map-set-and-weak-collections/) 「`Map`·`Set` 과 약한 컬렉션」 · [목록의 **40번 주제**](../40-async-iteration-and-for-await/) 「비동기 이터레이션」
->
-> ★★ **경계 — 11번이 「세 자리의 문」의 정본이다.** 여기서는 그 문 뒤에서 **무엇이 불리나**만 본다.
-> ★★ **경계 — 제너레이터 내부 흐름(`yield`·`next(값)`·`yield*`)은 20번이 정본이다.** 여기서는 **제너레이터가 「자기 자신을 돌려주는 이터레이터」라는 사실**까지다.
-> ★★ **경계 — `for await...of` 와 `Symbol.asyncIterator` 는 40번이 정본이다.** 여기서 `Promise.all` 은 **동기 이터러블을 받는 소비자 하나**로만 쓴다.
-> ★ **경계 — `for...in` 은 [18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md)가 정본이다.** 여기서는 `null` 앞에서 둘이 **반대로 군다**는 대비만 쓴다.
-
 ```sh
 # js16b-versions.sh
 #!/usr/bin/env bash
@@ -1116,3 +1041,77 @@ BMP 밖 글자 하나가 **`length` 로는 2, `for...of` 로는 1** 이다. 잘�
 - **`Promise.all` 이 동기로 다 읽는다는 사실은 「지연 시퀀스」와 부딪친다.** 끝없는 제너레이터를 넘기면 **호출이 돌아오지 않는다**는 결론이 따라 나오지만,
   **돌려 보지 않았다.** 지연 시퀀스는 [목록의 **20번 주제**](../20-generators/), 스트림 소비는 **40번 주제** 쪽이다.
 - **이터레이터 헬퍼(ES2025)** 는 이 계약 위에 `map`·`filter`·`take` 를 **지연으로** 얹는다. 이 두 판에는 없어서 **이 문서가 아무것도 말하지 않는다**([목록의 **21번 주제**](../21-iterator-helpers/)).
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
+`for...of`·스프레드·`Array.from`·`new Set`·배열 구조 분해·`Promise.all` 은 **결과만 보면 「값을 차례로 꺼냈다」로 똑같다.**
+그런데 그 안에서 `Symbol.iterator` 를 **몇 번 읽고**, `next()` 를 **몇 번 부르고**, `return()` 을 **부르나 안 부르나**는
+결과 값에 한 글자도 안 남는다. ★★★ **값으로는 원리상 못 가른다.**
+그래서 이터러블의 세 자리(`get [Symbol.iterator]` · `next` · `return`)에 **로그를 심고** 소비자 17가지를 차례로 들이댔다.
+**이 문서의 결론은 전부 그 로그에서 나온다.**
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 최신 초안 — Abstract Operations](https://tc39.es/ecma262/multipage/abstract-operations.html) —
+  `GetIterator` · `GetIteratorFromMethod` · `IteratorNext` · `IteratorComplete` · `IteratorStep` · `IteratorClose`
+- [ECMA-262 최신 초안 — Statements and Declarations](https://tc39.es/ecma262/multipage/ecmascript-language-statements-and-declarations.html) —
+  `ForIn/OfHeadEvaluation` · `ForIn/OfBodyEvaluation`
+- [ECMA-262 최신 초안 — Keyed Collections](https://tc39.es/ecma262/multipage/keyed-collections.html) — `Map`/`Set` 의 `forEach` note(삽입 순서 · 순회 중 추가)
+- [ECMA-262 판별 아카이브](https://262.ecma-international.org/) · [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계를 가릴 때
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서의 **추상 연산 이름**으로, **값·호출 로그·예외 타입과 메시지는 전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★ **이 주제의 블록에는 주소도 시간도 난수도 없다.** 같은 판에서 다시 돌리면 한 글자도 안 변한다.
+★ **이 문서는 BMP 밖 글자(이모지 따위)를 한 글자도 싣지 않는다** — 문자열 탐침은 그 글자를 `String.fromCodePoint(0x1F600)` 로 **만들어서** 쓰고, 출력도 16진 코드 포인트로만 찍는다.
+
+**버전** — 이 주제의 거의 전부가 **한 판에 들어왔다.**
+
+| 무엇 | 판 |
+|---|---|
+| `Symbol.iterator` · 이터레이터 프로토콜(`next`/`return`) · `for...of` | **ES2015** |
+| 스프레드 · 배열 구조 분해가 이 프로토콜을 쓰는 것 | **ES2015** (11번·10번 주제) |
+| `Map` · `Set` · 제너레이터 · `Array.from` · 문자열 이터레이터(코드 포인트 단위) | **ES2015** |
+| `Promise.all` 이 이터러블을 받는 것 | **ES2015** |
+| 이터레이터 헬퍼(`Iterator.prototype.map` 등) | **ES2025** — ★ 이 두 판에는 **없다**(동작 (2)의 `[4]`, 두 판 identical) |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **① 추상 연산에 로그 심기**(본체) | `get @@iterator` · `@@iterator()` · `next#N` · `return()` 을 찍는 이터러블 하나로 **소비자 17가지**를 돌린다. `return()` 이 **언제 불리나**는 오직 이것으로만 보인다 |
+| ★★★ **② 전수 격자** | 그 17가지의 **요약 표**(`next` 횟수 · `return` 횟수) · 이터러블이 아닌 것을 **여섯 자리**에 · 깨진 프로토콜 **다섯 가지** |
+| ★★ **④ 예외의 `constructor.name` + `message`** | 같은 「이터러블이 아니다」가 **자리마다 문구가 다르다** — 네 가지 문구가 나온다 |
+| ★★ **⑤ 두 판 대조기** | ★★★ **이 배치에서 두 판이 갈린 유일한 블록이 이 주제의 것이다** — 호출 스프레드 `id(...plain)` 의 문구. 11번 주제의 `f(...obj)` 와 **같은 자리**다 |
+| ★★ **창을 바꿔 물었다**(제5의 상태) | `done: true` 와 함께 온 값 — **소비자 창은 전부 그것을 버려 닫혀 있다.** 수동 `next()` 로 바꿔 물어야 보인다(동작 (3)의 `[4]`) |
+| ★ **부적용 — ③ 브랜드 태그** | 「이것이 이터러블인가」는 **내부 슬롯(브랜드)이 아니라 프로퍼티 하나의 계약**이다. 유사 배열에 `Symbol.iterator` 하나를 붙이자 이터러블이 된 줄(동작 (4)의 `[2]`)이 그 증거다. 브랜드가 답할 질문이 없다 — **잴 것이 없다** |
+| ★ **부적용 — 진단의 `(행,열)`**(18-C) | 이 주제에는 `SyntaxError` 가 한 줄도 없다. 프로토콜은 전부 런타임 의미다 — **잴 것이 없다** |
+| ★ **쟀다 — 「없다」**: 파이썬식 `__getitem__` 대체 경로 | 파이썬은 `__getitem__` 만 있어도 `for` 가 돈다. JS 에 그 경로가 있나를 **유사 배열로 실제로 물었고** `for...of` 는 `TypeError` 였다(동작 (4)의 `[2]`). ★ 「잴 것이 없다」가 아니라 「**재 봤더니 없다**」다 |
+| ★ **안 쟀다 — 성능** | 「`for...of` 는 인덱스 `for` 보다 느리다」류의 말을 **한 줄도 쓰지 않는다.** 안 쟀다 |
+| ★ **안 돌렸다 — 브라우저 · 두 번 컴파일**(엄격/비엄격) | 이 배치는 Chrome 을 돌리지 않았다. 탐침은 전부 비엄격 스크립트 한 벌이다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 예외 **문구** — ★ **이 주제에서 실제로 판마다 갈렸다** | ★★★ **호출 로그의 개수와 순서** · `return()` 이 불렸나 |
+| `{(intermediate value)}` 같은 V8 의 표현 조각 | ★★★ **예외의 종류**(`TypeError`) |
+| Node 스택트레이스의 절대 경로 — 한 줄도 싣지 않았다 | ★★ `Map`/`Set` 의 **삽입 순서** · 문자열의 **코드 포인트 개수** |
+
+두 판 대조기가 **갈렸다고 세는 블록은 이 주제의 `js16b-19c-errors.js` 하나**다 — 집계 줄은 동작 (4)의 끝에 있다.
+
+**선행** — [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(★★★ 직접 선행) · [10 — 구조 분해 할당](../10-destructuring-assignment/2-summary.md) ·
+[04 — 문자열과 UTF-16](../04-strings-and-utf16/2-summary.md) · [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md).
+★★★ **11번이 「세 자리의 문」을 이미 갈랐다** — `apply` 는 **유사 배열만**, 스프레드는 **이터러블만**, `Array.from` 은 **둘 다** 연다.
+그리고 그 트랩 로그 `[...tracedIterable(2)]` 가 `read Symbol.iterator, next 0, next 1, next 2` 였다.
+★★ **이 주제는 그 격자를 다시 만들지 않는다.** 11번이 「어느 자리가 이 프로토콜을 쓰나」까지였다면,
+여기는 **프로토콜 자체** — 무엇을 몇 번 부르고, 언제 닫고, 어디서 깨지나 — 부터다.
+**이어지는 곳** — [목록의 **20번 주제**](../20-generators/) 「제너레이터」 · [목록의 **21번 주제**](../21-iterator-helpers/) 「이터레이터 헬퍼」 · [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/) 「`Symbol` 과 잘 알려진 심볼」 ·
+[목록의 **23번 주제**](../23-map-set-and-weak-collections/) 「`Map`·`Set` 과 약한 컬렉션」 · [목록의 **40번 주제**](../40-async-iteration-and-for-await/) 「비동기 이터레이션」
+
+★★ **경계 — 11번이 「세 자리의 문」의 정본이다.** 여기서는 그 문 뒤에서 **무엇이 불리나**만 본다.
+★★ **경계 — 제너레이터 내부 흐름(`yield`·`next(값)`·`yield*`)은 20번이 정본이다.** 여기서는 **제너레이터가 「자기 자신을 돌려주는 이터레이터」라는 사실**까지다.
+★★ **경계 — `for await...of` 와 `Symbol.asyncIterator` 는 40번이 정본이다.** 여기서 `Promise.all` 은 **동기 이터러블을 받는 소비자 하나**로만 쓴다.
+★ **경계 — `for...in` 은 [18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md)가 정본이다.** 여기서는 `null` 앞에서 둘이 **반대로 군다**는 대비만 쓴다.

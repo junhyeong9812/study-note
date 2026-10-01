@@ -1,18 +1,5 @@
 # rust/syntax/57 — 매크로: `macro_rules!` 맛보기와 절차 매크로의 자리 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Reference — Macros By Example](https://doc.rust-lang.org/reference/macros-by-example.html)(§Hygiene 「Macros by example have mixed-site hygiene … local variables are looked up at the macro definition site while other symbols are looked up at the macro invocation site」 · 텍스트 스코프) ·
-> [Reference — Procedural Macros](https://doc.rust-lang.org/reference/procedural-macros.html)(「must be defined in the root of a crate with the crate type of `proc-macro`」 · 「may not be used from the crate where they are defined」 · Cargo 의 `[lib] proc-macro = true`) ·
-> [std — `proc_macro::TokenStream`](https://doc.rust-lang.org/proc_macro/struct.TokenStream.html).
-> ★ 전부 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
-> **실행 검증** — `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `cargo 1.92.0` · `x86_64-unknown-linux-gnu`.
-> 선언 매크로는 **`rustc --edition 2021 <파일>.rs`**, 절차 매크로는 **`rustc --crate-type proc-macro`** 로 직접 빌드한 판과 **`cargo --offline`**(`proc-macro = true`) 판 둘. C 대비는 `gcc 13.3.0 -std=gnu17 -Wall -Wextra`.\
-> ★★★ **외부 크레이트를 하나도 쓰지 않았다** — 절차 매크로는 `syn`/`quote` 없이 **`TokenStream` 을 문자열로 다루는 최소판**이다(그래서 한계가 보인다 — (5)).\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
-> ★ **컴파일 시간·바이너리 크기는 재지 않았다.**
-> **버전** — `macro_rules!` 는 1.0 · 파생 절차 매크로(「macros 1.1」)는 **1.15.0** · 함수형·속성형까지 「Procedural macros are now available」은 **1.30.0**([Rust `RELEASES.md`](https://github.com/rust-lang/rust/blob/master/RELEASES.md) — 스크래치패드에 받아 둔 사본에서 두 줄을 읽었다) · 로컬 std 문서의 `proc_macro::TokenStream` 「Stable since」 **1.15.0**.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ```text
 ===== rustc --version =====
 rustc 1.92.0 (ded5c06cf 2025-12-08)
@@ -980,3 +967,16 @@ hello from Color
 - 재귀 매크로와 `tt` 먹기(tt muncher) — 선언 매크로로 더 복잡한 입력을 받는 기법.
 - 속성형 절차 매크로가 **아이템을 바꿔 치우는** 것(`derive` 는 덧붙이기만 한다) — `#[tokio::main]` 이 `async fn main` 을 `fn main` 으로 바꾸는 그것.
 - 절차 매크로의 에러 보고(`compile_error!` · span) — (5)의 제네릭 판 에러가 전부 `#[derive(Hello)]` 자리를 짚은 이유.
+
+## 실행 환경
+
+**기준 소스** — [Reference — Macros By Example](https://doc.rust-lang.org/reference/macros-by-example.html)(§Hygiene 「Macros by example have mixed-site hygiene … local variables are looked up at the macro definition site while other symbols are looked up at the macro invocation site」 · 텍스트 스코프) ·
+[Reference — Procedural Macros](https://doc.rust-lang.org/reference/procedural-macros.html)(「must be defined in the root of a crate with the crate type of `proc-macro`」 · 「may not be used from the crate where they are defined」 · Cargo 의 `[lib] proc-macro = true`) ·
+[std — `proc_macro::TokenStream`](https://doc.rust-lang.org/proc_macro/struct.TokenStream.html).
+★ 전부 **이 머신의 `rust-docs`(1.92.0) 로컬 사본**을 열어 읽었다.
+**실행 검증** — `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `cargo 1.92.0` · `x86_64-unknown-linux-gnu`.
+선언 매크로는 **`rustc --edition 2021 <파일>.rs`**, 절차 매크로는 **`rustc --crate-type proc-macro`** 로 직접 빌드한 판과 **`cargo --offline`**(`proc-macro = true`) 판 둘. C 대비는 `gcc 13.3.0 -std=gnu17 -Wall -Wextra`.\
+★★★ **외부 크레이트를 하나도 쓰지 않았다** — 절차 매크로는 `syn`/`quote` 없이 **`TokenStream` 을 문자열로 다루는 최소판**이다(그래서 한계가 보인다 — (5)).\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
+★ **컴파일 시간·바이너리 크기는 재지 않았다.**
+**버전** — `macro_rules!` 는 1.0 · 파생 절차 매크로(「macros 1.1」)는 **1.15.0** · 함수형·속성형까지 「Procedural macros are now available」은 **1.30.0**([Rust `RELEASES.md`](https://github.com/rust-lang/rust/blob/master/RELEASES.md) — 스크래치패드에 받아 둔 사본에서 두 줄을 읽었다) · 로컬 std 문서의 `proc_macro::TokenStream` 「Stable since」 **1.15.0**.

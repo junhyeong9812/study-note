@@ -1,27 +1,5 @@
 # cpp/syntax/33 — 특수화와 부분 특수화 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 명시적(전체) 특수화](https://en.cppreference.com/w/cpp/language/template_specialization) · [cppreference — 부분 특수화](https://en.cppreference.com/w/cpp/language/partial_specialization) · [cppreference — 함수 템플릿](https://en.cppreference.com/w/cpp/language/function_template)\
-> ★ 이 배치에서 **위 cppreference 세 쪽을 열어 확인했다** — 「여러 부분 특수화가 맞으면 더 특수한 것, 유일하지 않으면 컴파일할 수 없다」 · 「부분 특수화는 클래스·변수 템플릿용」 · 「**오버로드 해석에는 비템플릿과 기본 템플릿만 참가하고, 특수화는 오버로드가 아니라 고려되지 않는다**」 세 문장이다. **값은 전부 두 컴파일러에게 던져 얻었다.**
-> **실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(두 컴파일러 공용) · GNU nm 2.42 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`spec01.cpp` \~ `spec06.cpp` · `spec-grid.sh` · `spec-nm.sh`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
-> **버전** — 클래스 템플릿의 전체·부분 특수화, 함수 템플릿의 전체 특수화는 **C++98부터**다. 기준은 **C++20**이다(이 편의 코드는 판에 따라 결론이 갈리지 않는다 — 판 격자는 돌리지 않았다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★★ **[32번](../32-class-templates-and-ctad/)에서 온다** — 32편 (1)의 클래스 템플릿 정의 · (6)의 「`nm -C` 의 `W` 는 암묵 인스턴스」를 그대로 쓴다.\
-> [31번](../31-function-templates-and-argument-deduction/) (2) — **`T*` 꼴은 `const int*` 를 받아 `T = const int`** 로 만든다(`T` 열·`T&` 열의 `const` 처리) · [01번](../01-function-overloading-and-overload-resolution/) — 오버로드 해석의 순서.\
-> ★★ **여기서 새로 묻는 것은 넷이다** — **어느 특수화가 골라지나 격자(인자 9 × 컴파일러 2)** · **함수 템플릿에 부분 특수화를 쓰면** · **특수화와 오버로드를 섞으면 선언 순서가 결과를 바꾸는 것** · **`std::vector<bool>` 이 특수화라서 생기는 일.**
-> **경계** — 「특수화를 고르는 부분 순서의 형식 규칙」은 이 편이 **격자로만** 보인다(조항을 옮기지 않았다). 「조건으로 오버로드를 끄는 법(SFINAE·컨셉)」은 [목록의 **37번 주제**](../37-sfinae-and-enable-if/)·[목록의 **36번 주제**](../36-concepts-and-requires/), 「`vector` 선택 기준」은 목록의 **41번 주제**가 정본이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단의 **문구**(`ambiguous template instantiation` 대 `ambiguous partial specializations`) · **열 번호** | ★★★ **`cc exit`** · **격자 칸에 찍힌 판 이름**(소스의 문자열이다) · **「갈린 칸 N / M」** |
-> | ★ **`std::_Bit_reference`** — libstdc++ 가 붙인 이름이다 | ★★★ **실행 출력 `(b)`·`(c)`** · **`nm` 의 글자**(`T`·`W`)와 **기호 이름**(`f<int>` 대 `f<int*>`) |
-> | — | ★★ **`is_reference` 가 0 인가 1 인가** |
-
 ## 한눈에 — 쉽게 말하면
 
 **특수화는 「기본 메뉴판 옆에 붙인 특별 메뉴」다.**
@@ -607,3 +585,26 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **변수 템플릿의 부분 특수화(C++14)** — `template <class T> constexpr bool is_ptr<T*> = true;`. 이 문서는 던지지 않았다.
 - **특수화를 첫 사용 뒤에 선언하면** — cppreference 는 「특수화는 **암묵 인스턴스화를 일으킬 첫 사용 전에** 선언해야 한다」고 적는다. 이 문서는 던지지 않았다.
 - **멤버 하나만 특수화** — `template <> int Box<int>::get() const { … }`. 클래스 전체를 다시 쓰지 않고 멤버만 바꾼다. 이 문서는 던지지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 명시적(전체) 특수화](https://en.cppreference.com/w/cpp/language/template_specialization) · [cppreference — 부분 특수화](https://en.cppreference.com/w/cpp/language/partial_specialization) · [cppreference — 함수 템플릿](https://en.cppreference.com/w/cpp/language/function_template)\
+★ 이 배치에서 **위 cppreference 세 쪽을 열어 확인했다** — 「여러 부분 특수화가 맞으면 더 특수한 것, 유일하지 않으면 컴파일할 수 없다」 · 「부분 특수화는 클래스·변수 템플릿용」 · 「**오버로드 해석에는 비템플릿과 기본 템플릿만 참가하고, 특수화는 오버로드가 아니라 고려되지 않는다**」 세 문장이다. **값은 전부 두 컴파일러에게 던져 얻었다.**
+**실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(두 컴파일러 공용) · GNU nm 2.42 · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`spec01.cpp` \~ `spec06.cpp` · `spec-grid.sh` · `spec-nm.sh`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
+**버전** — 클래스 템플릿의 전체·부분 특수화, 함수 템플릿의 전체 특수화는 **C++98부터**다. 기준은 **C++20**이다(이 편의 코드는 판에 따라 결론이 갈리지 않는다 — 판 격자는 돌리지 않았다).
+
+★★★ **[32번](../32-class-templates-and-ctad/)에서 온다** — 32편 (1)의 클래스 템플릿 정의 · (6)의 「`nm -C` 의 `W` 는 암묵 인스턴스」를 그대로 쓴다.\
+[31번](../31-function-templates-and-argument-deduction/) (2) — **`T*` 꼴은 `const int*` 를 받아 `T = const int`** 로 만든다(`T` 열·`T&` 열의 `const` 처리) · [01번](../01-function-overloading-and-overload-resolution/) — 오버로드 해석의 순서.\
+★★ **여기서 새로 묻는 것은 넷이다** — **어느 특수화가 골라지나 격자(인자 9 × 컴파일러 2)** · **함수 템플릿에 부분 특수화를 쓰면** · **특수화와 오버로드를 섞으면 선언 순서가 결과를 바꾸는 것** · **`std::vector<bool>` 이 특수화라서 생기는 일.**
+**경계** — 「특수화를 고르는 부분 순서의 형식 규칙」은 이 편이 **격자로만** 보인다(조항을 옮기지 않았다). 「조건으로 오버로드를 끄는 법(SFINAE·컨셉)」은 [목록의 **37번 주제**](../37-sfinae-and-enable-if/)·[목록의 **36번 주제**](../36-concepts-and-requires/), 「`vector` 선택 기준」은 목록의 **41번 주제**가 정본이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단의 **문구**(`ambiguous template instantiation` 대 `ambiguous partial specializations`) · **열 번호** | ★★★ **`cc exit`** · **격자 칸에 찍힌 판 이름**(소스의 문자열이다) · **「갈린 칸 N / M」** |
+| ★ **`std::_Bit_reference`** — libstdc++ 가 붙인 이름이다 | ★★★ **실행 출력 `(b)`·`(c)`** · **`nm` 의 글자**(`T`·`W`)와 **기호 이름**(`f<int>` 대 `f<int*>`) |
+| — | ★★ **`is_reference` 가 0 인가 1 인가** |

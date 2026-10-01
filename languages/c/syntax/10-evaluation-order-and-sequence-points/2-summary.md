@@ -1,18 +1,5 @@
 # c/syntax/10 — 평가 순서와 시퀀스 포인트: 무엇이 먼저 **도나** — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Order of evaluation (C)](https://en.cppreference.com/w/c/language/eval_order) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
-> **실행 검증** — 이 문서의 모든 출력·경고는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> ★ **이 주제는 컴파일러 한 대로는 아무것도 증명할 수 없다.** 그래서 **모든 실험을 둘 다에서** 돌렸고,\
-> 최적화 수준도 `-O0`·`-O1`·`-O2`·`-O3`·`-Os` 다섯 벌로 나눠 돌렸다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.
-> **버전** — C89\~C99 는 「**시퀀스 포인트**」로, **C11 부터는 「시퀀스 관계**」(sequenced before / indeterminately sequenced /\
-> unsequenced)로 같은 것을 더 정밀하게 말한다. **규칙이 바뀐 것이 아니라 말이 바뀐 것**이고,\
-> gcc 의 경고 이름은 아직 `-Wsequence-point` 다. C23 도 이 주제를 건드리지 않았다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★ **경계 — [09번 형제](../09-operator-precedence-and-associativity/)는 「무엇이 먼저 **묶이나**」(문법)이고 여기는 「무엇이 먼저 **도나**」(의미)다.**\
-> 승격·변환은 [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/), 부호 있는 오버플로 자체는 목록의 **54번 주제**가 정본이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **C 는 「한 문장 안에서 무엇을 먼저 할지」를 대부분 정해 주지 않는다. 그리고 그것을 어겨도 아무도 말해 주지 않는다.**
@@ -1017,3 +1004,17 @@ pop() 두 번을 한 printf 에 : 40 30
 
 - **평가 순서를 강제하는 표준적 방법은 없다.** 있는 것은 **문을 나누는 것**뿐이다.\
   시퀀스 포인트를 「만드는」 연산자(`,`·`&&`)로 우회하는 관용구가 있지만 **읽기가 나빠진다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Order of evaluation (C)](https://en.cppreference.com/w/c/language/eval_order) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
+**실행 검증** — 이 문서의 모든 출력·경고는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+★ **이 주제는 컴파일러 한 대로는 아무것도 증명할 수 없다.** 그래서 **모든 실험을 둘 다에서** 돌렸고,\
+최적화 수준도 `-O0`·`-O1`·`-O2`·`-O3`·`-Os` 다섯 벌로 나눠 돌렸다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.
+**버전** — C89\~C99 는 「**시퀀스 포인트**」로, **C11 부터는 「시퀀스 관계**」(sequenced before / indeterminately sequenced /\
+unsequenced)로 같은 것을 더 정밀하게 말한다. **규칙이 바뀐 것이 아니라 말이 바뀐 것**이고,\
+gcc 의 경고 이름은 아직 `-Wsequence-point` 다. C23 도 이 주제를 건드리지 않았다.
+
+★★ **경계 — [09번 형제](../09-operator-precedence-and-associativity/)는 「무엇이 먼저 **묶이나**」(문법)이고 여기는 「무엇이 먼저 **도나**」(의미)다.**\
+승격·변환은 [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/), 부호 있는 오버플로 자체는 목록의 **54번 주제**가 정본이다.

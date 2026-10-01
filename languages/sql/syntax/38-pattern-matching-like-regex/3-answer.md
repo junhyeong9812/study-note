@@ -1,13 +1,5 @@
 # sql/38-패턴 매칭 (LIKE·ESCAPE·정규식) — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러·계획은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> ★ **환경 조건** — PG 데이터베이스 collate = **`en_US.utf8`**(libc 제공자, 결정적) · MySQL 기본 collation = **`utf8mb4_0900_ai_ci`**.\
-> 이 설정이 1·3·4번의 답과 5번의 PG 계획을 정한다. 확인 방법은 [39 collation](../39-collation/)에 있다.\
-> 인덱스 실험용 표 `t38`(20,000행)은 두 엔진에 같은 모양으로 만들었다가 **작업 후 지웠다.** `emp`·`dept` 는 읽기만 했다.\
-> 문서 근거는 [PG 18 Pattern Matching](https://www.postgresql.org/docs/18/functions-matching.html) · [PG 18 Operator Classes](https://www.postgresql.org/docs/18/indexes-opclass.html) · [MySQL 8.4 String Comparison](https://dev.mysql.com/doc/refman/8.4/en/string-comparison-functions.html) · [MySQL 8.4 Regular Expressions](https://dev.mysql.com/doc/refman/8.4/en/regexp.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -660,7 +652,7 @@ WHERE code LIKE :pattern ESCAPE '!'
 | collation 별 `ORDER BY` (8번) | PG 18.6 | 2회 | 39번에서 쓴 것과 같은 실측 |
 
 **collation 의존 항목** — 1번의 `d` · 3번의 (c) · 4번 전부 · 5번의 PG 계획 · 8번.\
-**이 주제의 절반이 여기 걸려 있다.** 머리말의 환경(PG `en_US.utf8` / MySQL `utf8mb4_0900_ai_ci`)에서 나온 결과이고,\
+**이 주제의 절반이 여기 걸려 있다.** 「실행 환경」의 환경(PG `en_US.utf8` / MySQL `utf8mb4_0900_ai_ci`)에서 나온 결과이고,\
 설정이 다르면 **같은 엔진에서도 답이 달라진다.** 확인 방법과 정본은 [39 collation](../39-collation/)이다.
 
 **옵티마이저 의존 항목** — 5·7번의 `EXPLAIN` 출력 전부.\
@@ -676,3 +668,12 @@ WHERE code LIKE :pattern ESCAPE '!'
 **버전을 적지 않은 이유** — 이 주제의 동작에 「어느 버전부터」가 붙은 것을 **두 매뉴얼에서도 릴리스 노트에서도 찾지 못했다.**
 
 **DB 잔재** — 없다. `t38`(과 그 인덱스 둘)은 두 엔진에서 **작업 후 삭제**했고, `emp`·`dept` 는 읽기만 했다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러·계획은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+★ **환경 조건** — PG 데이터베이스 collate = **`en_US.utf8`**(libc 제공자, 결정적) · MySQL 기본 collation = **`utf8mb4_0900_ai_ci`**.\
+이 설정이 1·3·4번의 답과 5번의 PG 계획을 정한다. 확인 방법은 [39 collation](../39-collation/)에 있다.\
+인덱스 실험용 표 `t38`(20,000행)은 두 엔진에 같은 모양으로 만들었다가 **작업 후 지웠다.** `emp`·`dept` 는 읽기만 했다.\
+문서 근거는 [PG 18 Pattern Matching](https://www.postgresql.org/docs/18/functions-matching.html) · [PG 18 Operator Classes](https://www.postgresql.org/docs/18/indexes-opclass.html) · [MySQL 8.4 String Comparison](https://dev.mysql.com/doc/refman/8.4/en/string-comparison-functions.html) · [MySQL 8.4 Regular Expressions](https://dev.mysql.com/doc/refman/8.4/en/regexp.html).

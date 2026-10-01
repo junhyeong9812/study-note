@@ -1,12 +1,5 @@
 # css/syntax/06 — `@scope`: 스코프 루트·하한과 근접성(proximity) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Cascading and Inheritance Level 6](https://drafts.csswg.org/css-cascade-6/) 의 「Scoped Styles」·「Cascade Sorting Order」(Scope Proximity) 절. 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 색은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle` 로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — ★ `@scope` 는 Baseline **newly available**(2026-03-24 — Safari 26.4 가 마지막으로 따라왔다). **widely 는 아직 아니다.** 「그냥 써도 되는 것」 기준선(주요 엔진 30개월)에 못 미치므로, 쓸 때 대체 경로를 함께 생각한다. 출처는 [목록 README](../README.md) 의 지원 표(`webstatus.dev` API 조회, 2026-09-21).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`@scope` = 선택자에 「여기서부터 저기까지」라는 구역을 붙이는 것이다.**
@@ -407,3 +400,10 @@ CSS 는 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **`@scope` 는 그림자 DOM 의 대체가 아니다.** 그림자 DOM 은 캐스케이드 **2단계(문맥)** 에서 갈리는 진짜 격리이고, `@scope` 는 5.5단계에 끼는 **같은 문서 안의 우선 규칙**이다. 스코프 밖에서 `!important` 로 들어오면 그대로 뚫린다.
 - **`:scope` 는 `@scope` 전부터 있던 의사 클래스**다. `element.querySelector(':scope > li')` 처럼 DOM API 에서 「기준 요소」를 가리키는 데 쓰였고, `@scope` 가 그 의미를 CSS 쪽으로 가져온 것이다.
 - **근접성이 「무한」인 선언**이라는 개념 덕분에, `@scope` 를 한 곳에만 써도 **문서 전체의 판정에 새 칸이 생긴다.** 스코프를 안 쓴 규칙이 스코프 안 규칙에 지는 판(판 ⑤)이 그 결과다 — 도입할 때 예상 밖의 승패가 여기서 나온다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Cascading and Inheritance Level 6](https://drafts.csswg.org/css-cascade-6/) 의 「Scoped Styles」·「Cascade Sorting Order」(Scope Proximity) 절. 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 색은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle` 로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — ★ `@scope` 는 Baseline **newly available**(2026-03-24 — Safari 26.4 가 마지막으로 따라왔다). **widely 는 아직 아니다.** 「그냥 써도 되는 것」 기준선(주요 엔진 30개월)에 못 미치므로, 쓸 때 대체 경로를 함께 생각한다. 출처는 [목록 README](../README.md) 의 지원 표(`webstatus.dev` API 조회, 2026-09-21).

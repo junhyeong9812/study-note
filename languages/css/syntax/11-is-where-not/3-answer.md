@@ -1,11 +1,5 @@
 # css/syntax/11 — `:is()`·`:where()`·`:not()` 와 명시도 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 `(A, B, C)` 값과 모든 개수·색은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 받은 것**이다.\
-> 명시도는 **동점 경쟁자 · 한 칸 낮은 경쟁자 두 판**으로 위아래를 고정했고(방법은 [02번 2-summary](../02-specificity/2-summary.md) 「손으로 세어 보기」), 매칭은 `querySelectorAll().length`, 규칙 생존은 `cssRules` 로 읽었다.\
-> **명시도 계산 규칙 자체의 정본은 [02번 주제](../02-specificity/2-summary.md)** 다. 여기서는 **이 셋이 그 계산에 무엇을 넣는가**만 다룬다.\
-> 규칙은 [Selectors Level 4](https://drafts.csswg.org/selectors-4/) 로, 지원 상태는 `api.webstatus.dev` 조회(2026-09-23)로 접지했다. **엔진은 Chrome 하나다.**
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -436,3 +430,10 @@
 | 「가장 센 인자」·「`:where()` 는 0」·관대함의 범위 | **명세 보장** — 버전이 올라도 안 바뀐다 | 다시 찍을 필요 없음 |
 
 **안 돌려 본 것** — **중첩(nesting)에서 `&` 가 `:is()` 로 감싸지는 것**([목록의 **14번 주제**](../14-css-nesting/)) · **`:has()` 안에 `:has()` 를 못 넣는 제약**([목록의 **12번 주제**](../12-has-relational-selector/)) · **`@layer` 와 `:where()` 를 같이 썼을 때의 동작**([목록의 **05번 주제**](../05-cascade-layers/)). 셋 다 이 문서에서 **결론으로 쓰지 않았고 「미실행」으로 표기했다.**
+
+## 실행 환경
+
+이 파일의 **모든 `(A, B, C)` 값과 모든 개수·색은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 받은 것**이다.\
+명시도는 **동점 경쟁자 · 한 칸 낮은 경쟁자 두 판**으로 위아래를 고정했고(방법은 [02번 2-summary](../02-specificity/2-summary.md) 「손으로 세어 보기」), 매칭은 `querySelectorAll().length`, 규칙 생존은 `cssRules` 로 읽었다.\
+**명시도 계산 규칙 자체의 정본은 [02번 주제](../02-specificity/2-summary.md)** 다. 여기서는 **이 셋이 그 계산에 무엇을 넣는가**만 다룬다.\
+규칙은 [Selectors Level 4](https://drafts.csswg.org/selectors-4/) 로, 지원 상태는 `api.webstatus.dev` 조회(2026-09-23)로 접지했다. **엔진은 Chrome 하나다.**

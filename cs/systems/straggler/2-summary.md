@@ -1,9 +1,5 @@
 # cs/straggler — Straggler와 Tail Latency — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> 원고는 내가 직접 쓴 `db-engine-lab/docs/study/Straggler.md`(2026-08-20). 1~5절은 원고 그대로(골격·오탈자만 교정).
-> 「전체 흐름」「핵심 문장」은 원고를 압축한 것이고, 맨 아래 「[Claude 추가]」 절만 원고에 없던 내용이다.
-
 ## 전체 흐름
 
 ```text
@@ -154,3 +150,8 @@ SSD GC로 그 디스크만 잠깐 느려짐 / JVM Full GC로 그 브로커만 �
 - **gRPC**: 서비스 설정(service config)에 hedging policy(`hedgingDelay`, `maxAttempts`)와 retry policy를 선언할 수 있다. 멱등성은 사용자가 보장해야 한다.
 - **Envoy**: request hedging(`hedge_on_per_try_timeout`)과 outlier detection — 연속 5xx·지연 이상치를 보이는 호스트를 일시적으로 로드밸런싱 풀에서 빼낸다. straggler를 "기다리지 않기"가 아니라 "안 보내기"로 다루는 방식.
 - **Hadoop MapReduce / Spark speculative execution**: 같은 스테이지의 다른 태스크들 진행률 중앙값과 비교해 일정 비율 이상 느린 태스크(Spark 기본 `spark.speculation.multiplier` 1.5배, 최소 실행 시간 조건 포함 — 세부 기본값은 확인 필요)를 다른 노드에서 복제 실행하고 먼저 끝난 결과를 채택, 나머지는 kill한다. 출력이 멱등(원자적 커밋)이어야 하므로 태스크 출력은 임시 경로에 쓰고 성공 시 rename하는 커밋 프로토콜을 쓴다.
+
+## 출처
+
+원고는 내가 직접 쓴 `db-engine-lab/docs/study/Straggler.md`(2026-08-20). 1~5절은 원고 그대로(골격·오탈자만 교정).
+「전체 흐름」「핵심 문장」은 원고를 압축한 것이고, 맨 아래 「[Claude 추가]」 절만 원고에 없던 내용이다.

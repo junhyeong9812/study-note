@@ -1,8 +1,5 @@
 # network/25-kernel-network-stack — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고, 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> ⚠️ 이 질문 목록은 Claude 초안(2026-09-30). 본인 검수 후 이 줄을 `✅ 검수 완료(날짜)`로 바꾼다.
-
 ## 질문
 
 1. (그림) 패킷이 NIC에 도착해서 앱의 `recv()`로 돌아오기까지의 단계를 순서대로 적어라. DMA·IRQ·NAPI·softirq가 각각 어디에 들어가나?

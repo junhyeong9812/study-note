@@ -1,42 +1,5 @@
 # python/syntax/37-enum — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [`enum` 레퍼런스(3.12)](https://docs.python.org/3.12/library/enum.html) — `auto` 의 값 규칙 · `StrEnum`·`ReprEnum` 의 *Added in version 3.11* ·
->   `__contains__` 의 *Changed in version 3.12* · `@unique` · `IntEnum` 이 정수처럼 쓰인다는 문장
-> - [Enum HOWTO(3.12)](https://docs.python.org/3.12/howto/enum.html) — *"Enumeration members are compared by identity"* ·
->   *"Comparisons against non-enumeration values will always compare not equal"* · 별칭(alias) 문단 ·
->   `EnumType` 이 `__contains__`·`__dir__`·`__iter__` 를 준다는 문단 · 멤버가 싱글턴이라는 문단
-> - [`json`](https://docs.python.org/3.12/library/json.html) — `default=` 훅
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 **둘**이다 — `python3` **3.12.3** 이 본판이고, 판 경계를 보려고 **`python3.11` 3.11.15** 로 두 블록을 더 던졌다.\
-> ★ 던지는 형태는 `python3 - <파일` 하나로 고정했다(트레이스백이 `File "<stdin>", line N` 이 된다).\
-> ★★★ **이 주제도 트레이스백을 한 블록도 싣지 않았다.** 던진 예외가 전부 `enum.py`·`json` 을 지나
-> **절대 경로가 박히기** 때문이다. 전부 `except` 로 받아 **예외 타입과 메시지만** 찍었다
-> ([36번](../36-dataclasses/2-summary.md)과 같은 처방).
-> 3.11 의 `DeprecationWarning` 도 stderr 로 흘리지 않고 **`warnings.catch_warnings(record=True)` 로 잡아 stdout 에** 찍었다.\
-> **버전** — `enum` 은 **3.4**(PEP 435)부터다. **`StrEnum`·`ReprEnum` 은 3.11** 신설이다.
-> ★ `1 in Color` 처럼 **멤버가 아닌 값을 `in` 으로 묻는 것**이 **3.12 에서 바뀌었다**(동작 6 — 두 판을 실제로 돌렸다).\
-> ★ **구현 대 언어 보장 한 줄** — **싱글턴·정의 순서 순회·별칭·`auto` 의 값 규칙까지가 모듈 계약**이고,
-> **멤버가 클래스 `__dict__` 에 산다는 것·`hash(멤버) == hash(이름)`·예외 문구**는 CPython 쪽이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | ★ `hash()` 의 **숫자** — 문자열 해시는 실행마다 바뀐다. 그래서 **숫자를 한 번도 안 찍고 `==` 결과만** 찍었다 | ★★ 격자의 **참·거짓과 예외 종류** · 마지막 줄 **「갈린 칸 N / M」** |
-> | 판이 오르면 예외 **문구**와 `EnumType` 이 가진 **던더 목록** | ★ **순회 순서** — 모듈 계약이 **정의 순서**를 보장한다 |
-> | 판이 오르면 `DeprecationWarning` 의 **문구** | `auto()` 가 만든 **값** · `json.dumps` 의 결과 문자열 |
->
-> ★ **이 주제의 블록에는 주소도 시간도 절대 경로도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다**(재대조 전부 동일).\
-> ★★ **순서가 보장 안 되는 출력은 하나도 없다** — `set` 을 한 번도 찍지 않았고, 멤버 목록은 **정의 순서가 보장되는 순회**로 찍었다.\
-> **선행** — [29-classes-and-attribute-lookup](../29-classes-and-attribute-lookup/2-summary.md)(★★ **클래스 속성 탐색 — 멤버가 어디서 찾아지나**) ·
-> [30-repr-eq-hash-contracts](../30-repr-eq-hash-contracts/2-summary.md)(★★ **`__eq__`/`__hash__` 계약의 정본**) ·
-> [31-comparison-protocol-and-sortability](../31-comparison-protocol-and-sortability/2-summary.md)(정렬이 되는가) ·
-> [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md)(`is` 와 `==`).
-
 ## 한눈에 — 쉽게 말하면
 
 **`Enum` 은 「미리 찍어 둔 번호표 묶음」이다.** 번호표는 **딱 한 장씩만** 있고, 새로 찍을 수 없다.
@@ -983,3 +946,39 @@ m.name  m.value  list(Status)  Status.__members__        # 순회는 정의 순�
 * ★ **`enum.property`** — `name`·`value` 가 **쓰기 불가**인 이유다(동작 5 의 ④). 멤버 이름과 속성 이름이 겹칠 때도 이것이 처리한다.
 * ★ **`pickle` 은 기본이 「값으로」** 다 — HOWTO 가 *"The default method is by-value"* 라 적는다.
   **값을 바꾸면 옛 피클이 다른 멤버로 풀린다.** `enum.pickle_by_enum_name` 으로 이름 기준으로 바꿀 수 있다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [`enum` 레퍼런스(3.12)](https://docs.python.org/3.12/library/enum.html) — `auto` 의 값 규칙 · `StrEnum`·`ReprEnum` 의 *Added in version 3.11* ·
+  `__contains__` 의 *Changed in version 3.12* · `@unique` · `IntEnum` 이 정수처럼 쓰인다는 문장
+- [Enum HOWTO(3.12)](https://docs.python.org/3.12/howto/enum.html) — *"Enumeration members are compared by identity"* ·
+  *"Comparisons against non-enumeration values will always compare not equal"* · 별칭(alias) 문단 ·
+  `EnumType` 이 `__contains__`·`__dir__`·`__iter__` 를 준다는 문단 · 멤버가 싱글턴이라는 문단
+- [`json`](https://docs.python.org/3.12/library/json.html) — `default=` 훅
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 **둘**이다 — `python3` **3.12.3** 이 본판이고, 판 경계를 보려고 **`python3.11` 3.11.15** 로 두 블록을 더 던졌다.\
+★ 던지는 형태는 `python3 - <파일` 하나로 고정했다(트레이스백이 `File "<stdin>", line N` 이 된다).\
+★★★ **이 주제도 트레이스백을 한 블록도 싣지 않았다.** 던진 예외가 전부 `enum.py`·`json` 을 지나
+**절대 경로가 박히기** 때문이다. 전부 `except` 로 받아 **예외 타입과 메시지만** 찍었다
+([36번](../36-dataclasses/2-summary.md)과 같은 처방).
+3.11 의 `DeprecationWarning` 도 stderr 로 흘리지 않고 **`warnings.catch_warnings(record=True)` 로 잡아 stdout 에** 찍었다.\
+**버전** — `enum` 은 **3.4**(PEP 435)부터다. **`StrEnum`·`ReprEnum` 은 3.11** 신설이다.
+★ `1 in Color` 처럼 **멤버가 아닌 값을 `in` 으로 묻는 것**이 **3.12 에서 바뀌었다**(동작 6 — 두 판을 실제로 돌렸다).\
+★ **구현 대 언어 보장 한 줄** — **싱글턴·정의 순서 순회·별칭·`auto` 의 값 규칙까지가 모듈 계약**이고,
+**멤버가 클래스 `__dict__` 에 산다는 것·`hash(멤버) == hash(이름)`·예외 문구**는 CPython 쪽이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| ★ `hash()` 의 **숫자** — 문자열 해시는 실행마다 바뀐다. 그래서 **숫자를 한 번도 안 찍고 `==` 결과만** 찍었다 | ★★ 격자의 **참·거짓과 예외 종류** · 마지막 줄 **「갈린 칸 N / M」** |
+| 판이 오르면 예외 **문구**와 `EnumType` 이 가진 **던더 목록** | ★ **순회 순서** — 모듈 계약이 **정의 순서**를 보장한다 |
+| 판이 오르면 `DeprecationWarning` 의 **문구** | `auto()` 가 만든 **값** · `json.dumps` 의 결과 문자열 |
+
+★ **이 주제의 블록에는 주소도 시간도 절대 경로도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다**(재대조 전부 동일).\
+★★ **순서가 보장 안 되는 출력은 하나도 없다** — `set` 을 한 번도 찍지 않았고, 멤버 목록은 **정의 순서가 보장되는 순회**로 찍었다.\
+**선행** — [29-classes-and-attribute-lookup](../29-classes-and-attribute-lookup/2-summary.md)(★★ **클래스 속성 탐색 — 멤버가 어디서 찾아지나**) ·
+[30-repr-eq-hash-contracts](../30-repr-eq-hash-contracts/2-summary.md)(★★ **`__eq__`/`__hash__` 계약의 정본**) ·
+[31-comparison-protocol-and-sortability](../31-comparison-protocol-and-sortability/2-summary.md)(정렬이 되는가) ·
+[02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md)(`is` 와 `==`).

@@ -1,17 +1,5 @@
 # java/syntax/07 — 생성자: `this()`/`super()`·(25) 유연한 생성자 본문 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §8.8 Constructor Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§8.8.7 Constructor Body](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§12.5 Creation of New Class Instances](https://docs.oracle.com/javase/specs/jls/se21/html/jls-12.html) · [JEP 513: Flexible Constructor Bodies](https://openjdk.org/jeps/513)
-> **실행 검증** — 이 문서의 모든 출력과 에러 메시지는 Temurin **JDK 21.0.5** 와 **25.0.1** 에서 실제로 돌려 얻은 것이다.\
-> 21 에서 되는 것은 **17.0.13 · 21.0.5 · 25.0.1** 셋에서 다 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
-> **유연한 생성자 본문은 25.0.1 에서만** 컴파일된다 — 21·17 의 에러 메시지도 같이 실었다.\
-> 바이트코드는 `javap -c -p` 출력을 그대로 옮겼다.
-> **버전** — `this()`/`super()` 규칙 자체는 Java 1.0 이래 같다.\
-> **유연한 생성자 본문은 Java 25**(JEP 513) 부터다 — 22·23·24 에서 프리뷰였다.
-> **범위** — 필드·초기화 블록이 **어느 순서로 도는가**는 [`../06-initialization-order/`](../06-initialization-order/) 가 정본이다.\
-> 여기는 **`super()` 라는 한 줄의 앞뒤에 무엇을 쓸 수 있나**만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **생성자는 건물을 짓는 것이고, `super()` 는 "기초 공사 끝"이라고 찍는 도장이다.**
@@ -543,3 +531,15 @@ Ex.java:5: error: cannot assign initialized field 'v' before supertype construct
 - **프롤로그와 검사 예외** — 프롤로그에서 던진 예외는 상위 생성자를 아예 안 부른다.\
   객체가 만들어지다 만 상태로 새어 나가지 않는다는 뜻이라, **불변 객체의 검증 위치로는 프롤로그가 더 안전하다.**
 - **`this()` 위임 체인의 길이 제한은 없다.** 다만 순환은 컴파일러가 잡는다(`recursive constructor invocation`).
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §8.8 Constructor Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§8.8.7 Constructor Body](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§12.5 Creation of New Class Instances](https://docs.oracle.com/javase/specs/jls/se21/html/jls-12.html) · [JEP 513: Flexible Constructor Bodies](https://openjdk.org/jeps/513)
+**실행 검증** — 이 문서의 모든 출력과 에러 메시지는 Temurin **JDK 21.0.5** 와 **25.0.1** 에서 실제로 돌려 얻은 것이다.\
+21 에서 되는 것은 **17.0.13 · 21.0.5 · 25.0.1** 셋에서 다 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.\
+**유연한 생성자 본문은 25.0.1 에서만** 컴파일된다 — 21·17 의 에러 메시지도 같이 실었다.\
+바이트코드는 `javap -c -p` 출력을 그대로 옮겼다.
+**버전** — `this()`/`super()` 규칙 자체는 Java 1.0 이래 같다.\
+**유연한 생성자 본문은 Java 25**(JEP 513) 부터다 — 22·23·24 에서 프리뷰였다.
+**범위** — 필드·초기화 블록이 **어느 순서로 도는가**는 [`../06-initialization-order/`](../06-initialization-order/) 가 정본이다.\
+여기는 **`super()` 라는 한 줄의 앞뒤에 무엇을 쓸 수 있나**만 다룬다.

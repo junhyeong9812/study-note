@@ -1,54 +1,5 @@
 # csharp/syntax/10 — 컬렉션 선택: `List`·`Dictionary`·`HashSet`·`Queue`/`Stack` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [.NET API — `List<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1) ·
-> [.NET API — `Dictionary<TKey,TValue>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2) ·
-> [.NET API — `HashSet<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1) ·
-> [.NET API — `Queue<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.queue-1) ·
-> [.NET API — `Stack<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.stack-1) ·
-> [.NET API — `Object.GetHashCode`](https://learn.microsoft.com/en-us/dotnet/api/system.object.gethashcode)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-25).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.\
-> ★★★ **진단 언어를 영어로 고정했다.** 안 그러면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
-> 환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`** 를 같이 건다.
-> **던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
-> 그래야 `bin/`·`obj/` 가 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
-> 배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
->
-> ```text
-> export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
-> export DOTNET_CLI_UI_LANGUAGE=en            # ★★★ 안 주면 진단이 한국어로 나온다
-> D=$(dirname "$(readlink -f "$(command -v dotnet)")")
-> ls "$D"/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/*.dll | sed 's/^/-r:/' > refs.rsp
-> echo '{"runtimeOptions":{"tfm":"net10.0","framework":{"name":"Microsoft.NETCore.App","version":"10.0.0"}}}' > ex.runtimeconfig.json
-> csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
->           -nologo -nostdlib -noconfig @refs.rsp \
->           -preferreduilang:en-US -langversion:latest -target:exe "$@"; }
-> ```
->
-> **`-debug` 를 안 줬다** — PDB 가 없으면 스택 트레이스에 **절대 경로와 줄 번호가 안 박힌다**.
-> **IL 은 외부 도구 없이 본다** — `ilspycmd`·`ildasm` 을 안 깔았다.
-> [03번](../03-boxing-and-unboxing/)의 (0)절에 있는 **`cs-il.cs` 전문**을 그대로 써서
-> `csc -target:library -out:il.dll cs-il.cs` 로 만들어 두고 `-r:il.dll` 로 참조한다.
-> **버전** — 제네릭 컬렉션 넷은 **.NET Framework 2.0 / C# 2.0부터**.
-> `Dictionary.TryAdd`·`Queue.TryDequeue`·`Stack.TryPop` 은 **.NET Core 2.0부터**,
-> **순회 중 `Remove` 허용**은 **.NET Core 3.0부터**((9)), `HashSet.Capacity`·`Dictionary.Capacity` 는 **.NET 9부터**,
-> `PriorityQueue<TElement,TPriority>` 는 **.NET 6부터**다.
-> **경계** — **자료구조의 원리**(동적 배열이 왜 두 배로 늘리나 · 해시 표의 버킷·충돌·적재율 · 스택/큐의 정의)는
-> [`data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/) ·
-> [`03-stack/`](../../../../cs/data-structure/03-stack/) ·
-> [`04-queue-deque/`](../../../../cs/data-structure/04-queue-deque/) ·
-> [`05-hashmap/`](../../../../cs/data-structure/05-hashmap/)가 정본이다.\
-> ★ **그쪽은 「왜 그 구조인가」까지, 여기는 「.NET 에서 무엇을 고르고 무엇이 보장인가」부터**다.\
-> **박싱 자체**는 [03번](../03-boxing-and-unboxing/), **배열과 슬라이싱**은 [09번](../09-arrays-index-and-range/)이 정본이다.\
-> **컬렉션 초기화와 컬렉션 식**은 [목록의 **11번 주제**](../11-collection-initializers-and-collection-expressions/), **`Equals`/`GetHashCode` 계약의 설계**는 **19번 주제**,
-> **`IEnumerable<T>` 와 `foreach` 의 풀림**은 **31번 주제**, **제네릭 자체**는 **24번 주제**가 정본이다.
-> **대비** — Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **9번**([`09-maps-declaration-comma-ok-delete-and-iteration-order/`](../../../go/syntax/09-maps-declaration-comma-ok-delete-and-iteration-order/)) ·
-> Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **12번**([`12-dict-and-key-requirements/`](../../../python/syntax/12-dict-and-key-requirements/)) ·
-> Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **28번**([`28-partialeq-eq-partialord-ord-and-hash-contracts/`](../../../rust/syntax/28-partialeq-eq-partialord-ord-and-hash-contracts/)).
-
 ## 이 갈래가 쓰는 세 층
 
 | 층 | 뜻 | 이 주제에서 근거로 쓰는 것 |
@@ -1119,3 +1070,53 @@ int y = s[0];                    // CS0021 — 집합에도 없다
   들고 있는 동안 딕셔너리를 고치면 안 된다.
 - **동시성** — 이 넷은 **읽기만 동시에** 안전하다. 쓰기가 섞이면 `ConcurrentDictionary`·`ConcurrentQueue` 가 따로 있다.
   README 가 그 축을 이 목록에서 뺐다.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[.NET API — `List<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1) ·
+[.NET API — `Dictionary<TKey,TValue>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2) ·
+[.NET API — `HashSet<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.hashset-1) ·
+[.NET API — `Queue<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.queue-1) ·
+[.NET API — `Stack<T>`](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.stack-1) ·
+[.NET API — `Object.GetHashCode`](https://learn.microsoft.com/en-us/dotnet/api/system.object.gethashcode)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-25).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.\
+★★★ **진단 언어를 영어로 고정했다.** 안 그러면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
+환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`** 를 같이 건다.
+**던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
+그래야 `bin/`·`obj/` 가 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
+배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
+
+```text
+export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
+export DOTNET_CLI_UI_LANGUAGE=en            # ★★★ 안 주면 진단이 한국어로 나온다
+D=$(dirname "$(readlink -f "$(command -v dotnet)")")
+ls "$D"/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/*.dll | sed 's/^/-r:/' > refs.rsp
+echo '{"runtimeOptions":{"tfm":"net10.0","framework":{"name":"Microsoft.NETCore.App","version":"10.0.0"}}}' > ex.runtimeconfig.json
+csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
+          -nologo -nostdlib -noconfig @refs.rsp \
+          -preferreduilang:en-US -langversion:latest -target:exe "$@"; }
+```
+
+**`-debug` 를 안 줬다** — PDB 가 없으면 스택 트레이스에 **절대 경로와 줄 번호가 안 박힌다**.
+**IL 은 외부 도구 없이 본다** — `ilspycmd`·`ildasm` 을 안 깔았다.
+[03번](../03-boxing-and-unboxing/)의 (0)절에 있는 **`cs-il.cs` 전문**을 그대로 써서
+`csc -target:library -out:il.dll cs-il.cs` 로 만들어 두고 `-r:il.dll` 로 참조한다.
+**버전** — 제네릭 컬렉션 넷은 **.NET Framework 2.0 / C# 2.0부터**.
+`Dictionary.TryAdd`·`Queue.TryDequeue`·`Stack.TryPop` 은 **.NET Core 2.0부터**,
+**순회 중 `Remove` 허용**은 **.NET Core 3.0부터**((9)), `HashSet.Capacity`·`Dictionary.Capacity` 는 **.NET 9부터**,
+`PriorityQueue<TElement,TPriority>` 는 **.NET 6부터**다.
+**경계** — **자료구조의 원리**(동적 배열이 왜 두 배로 늘리나 · 해시 표의 버킷·충돌·적재율 · 스택/큐의 정의)는
+[`data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/) ·
+[`03-stack/`](../../../../cs/data-structure/03-stack/) ·
+[`04-queue-deque/`](../../../../cs/data-structure/04-queue-deque/) ·
+[`05-hashmap/`](../../../../cs/data-structure/05-hashmap/)가 정본이다.\
+★ **그쪽은 「왜 그 구조인가」까지, 여기는 「.NET 에서 무엇을 고르고 무엇이 보장인가」부터**다.\
+**박싱 자체**는 [03번](../03-boxing-and-unboxing/), **배열과 슬라이싱**은 [09번](../09-arrays-index-and-range/)이 정본이다.\
+**컬렉션 초기화와 컬렉션 식**은 [목록의 **11번 주제**](../11-collection-initializers-and-collection-expressions/), **`Equals`/`GetHashCode` 계약의 설계**는 **19번 주제**,
+**`IEnumerable<T>` 와 `foreach` 의 풀림**은 **31번 주제**, **제네릭 자체**는 **24번 주제**가 정본이다.
+**대비** — Go 갈래 목록([`go/syntax/README.md`](../../../go/syntax/README.md))의 **9번**([`09-maps-declaration-comma-ok-delete-and-iteration-order/`](../../../go/syntax/09-maps-declaration-comma-ok-delete-and-iteration-order/)) ·
+Python 갈래 목록([`python/syntax/README.md`](../../../python/syntax/README.md))의 **12번**([`12-dict-and-key-requirements/`](../../../python/syntax/12-dict-and-key-requirements/)) ·
+Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **28번**([`28-partialeq-eq-partialord-ord-and-hash-contracts/`](../../../rust/syntax/28-partialeq-eq-partialord-ord-and-hash-contracts/)).

@@ -1,9 +1,5 @@
 # 현대 Python (3.5 ~ 3.13)
 
-> 원본: `~/project/python-history/03-현대-Python.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·PEP 번호·Python 코드블록 23개와 「시대를 관통하는 흐름」의 표는 원문 그대로다.\
-> ASCII 도식 4개, 「한눈에」의 길·포장 비유(대응표 포함), 3.10 절의 `handle` 함수의 `case` 넷을 옮긴 표 1개, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -939,3 +935,9 @@ PyPy의 코드를 기반으로 REPL을 새로 썼다.\
 - [PEP 695 – Type Parameter Syntax](https://peps.python.org/pep-0695/)
 - [PEP 703 – Making the Global Interpreter Lock Optional in CPython](https://peps.python.org/pep-0703/)
 - [PEP 744 – JIT Compilation](https://peps.python.org/pep-0744/)
+
+## 출처
+
+원본: `~/project/python-history/03-현대-Python.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·PEP 번호·Python 코드블록 23개와 「시대를 관통하는 흐름」의 표는 원문 그대로다.\
+ASCII 도식 4개, 「한눈에」의 길·포장 비유(대응표 포함), 3.10 절의 `handle` 함수의 `case` 넷을 옮긴 표 1개, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

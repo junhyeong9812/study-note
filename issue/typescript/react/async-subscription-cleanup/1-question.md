@@ -1,10 +1,5 @@
 # issue/typescript/react/async-subscription-cleanup — 해제 핸들이 늦게 오는 구독: 비동기 등록과 cleanup의 경쟁 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 
 1. (왜) 구독 함수가 해제 함수를 **Promise로** 돌려준다(`listen(...)` → `Promise<unlisten>`). effect cleanup에서 `unlisten?.()`만 부르면 왜 리스너가 남을 수 있는가? cleanup과 resolve의 실행 순서로 설명하라.

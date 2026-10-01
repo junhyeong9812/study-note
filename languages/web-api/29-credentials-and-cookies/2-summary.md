@@ -1,14 +1,5 @@
 # web-api/29 — 자격 증명과 `credentials`: 쿠키가 실리는 조건·와일드카드 금지 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」 — 칸마다 「서버가 쿠키를 받았나」와 「페이지가 응답을 읽었나」를 나란히 놓는 「쿠키 실림 격자」다.** 받는 쪽 2(같은 사이트의 다른 출처 · 사이트 밖) × `credentials` 3 × 서버의 응답 헤더 4 = 24칸을 던지고, 마지막 줄을 스크립트가 **「서버는 쿠키를 받았는데 페이지는 못 읽은 칸 N / 24」** 로 찍는다.\
-> **기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 request 의 credentials mode(「`omit`·`same-origin`·`include` — **기본은 `same-origin`**」) · HTTP-network-or-cache fetch 의 includeCredentials(「**`include` 이거나, `same-origin` 이고 response tainting 이 `basic`** 이면 참」) · 「CORS check」(「credentials mode 가 `include` 가 아니고 `Access-Control-Allow-Origin` 이 `*` 면 성공 · 아니면 **요청 출처와 같아야** · `include` 면 **`Access-Control-Allow-Credentials` 가 `true` 여야**」) · CORS protocol 과 credentials 절(「**CORS-preflight request never includes credentials**」 · 허용·불허 조합 표). 열어서 확인한 것만 적었다(기준일 2026-09-26). ★ **쿠키 자체의 규칙(`SameSite`·`Secure`·서드파티 쿠키)은 HTTP 쿠키 명세(RFC 6265bis 초안)와 브라우저 정책의 몫이고 이 판에서 그 문서를 열지 않았다** — 그쪽 서술은 전부 **이 판의 관찰**로만 적는다.\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 페이지는 `http://127.0.0.1:<A>` 에서 열었고, 받는 쪽은 **같은 서버 B 를 두 이름으로** 부른다 — `http://127.0.0.1:<B>`(호스트가 같고 포트만 다름) · `http://localhost:<B>`(호스트가 다름). **바깥 인터넷으로는 한 번도 요청하지 않았다.** 하네스는 [28번 주제](../28-cors-simple-and-preflight/2-summary.md)의 (1)이다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — ★★★ **[28번 주제](../28-cors-simple-and-preflight/2-summary.md)** — 프리플라이트가 붙는 조건과 「거부되면 본 요청은 서버에 안 간다」. ★★ **[25번 주제](../25-fetch-request-response/2-summary.md)의 (5)가 쿠키 통을 이미 쟀다** — `fetch(…, { headers: { Cookie: "evil=1" } })` 의 `Cookie` 는 **예외 없이 지워지고 쿠키 통의 `jar=1` 이 갔다** · 응답의 `Set-Cookie` 는 `get()` 으로 `null` 인데 **쿠키 통에는 들어갔다**. 여기서는 그것을 **다시 재지 않고 인용**하고 — 쿠키는 헤더로 넣는 것이 아니라 **`credentials` 로 고르는 것** — **다른 출처로 언제 실리나**로 간다.\
-> **경계** — ★ **CSRF 의 위협 모델과 방어 설계는 [`../../../cs/foundations/security/`](../../../cs/foundations/security/) 가 정본으로 걸려 있다** — 단 2026-09-26 현재 그 폴더에 **CSRF 절은 없다**(`csrf` 로 `grep` 해 0건). 여기는 (7)에서 **「쿠키가 실린 요청이 서버에서 처리됐다」까지만** 관찰로 보이고 방어 설계로 넘어가지 않는다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -296,7 +287,7 @@ $ python3 wa28b-net.py cookie wa28b-29-grid.html compare
 ```
 
 - ★★ **바뀐 칸 4 / 24 — 전부 「사이트 밖 · `include`」.** 막으면 `none=1` 도 안 실린다. **같은 사이트 칸은 하나도 안 바뀌었다** — 포트만 다른 출처는 서드파티가 아니다.
-- ★★ **거꾸로 읽으면 — 이 판의 기본 프로필은 서드파티 쿠키를 막지 않았다.** 이 네 칸이 **판·설정에 매인 칸**이다(머리말 표).
+- ★★ **거꾸로 읽으면 — 이 판의 기본 프로필은 서드파티 쿠키를 막지 않았다.** 이 네 칸이 **판·설정에 매인 칸**이다(맨 위 부분 표).
 - ★ **「출처 + ACAC」 칸은 막아도 `읽음`** — 쿠키가 없을 뿐 응답은 읽힌다. **CORS 가 통과해도 쿠키가 안 실릴 수 있다** — 두 문이 따로라는 (2)의 그림 그대로다.
 
 ```text
@@ -481,4 +472,13 @@ B OPTIONS /c29?id=p2&acao=origin  Cookie=(쿠키 없음)
 
 - **`Partitioned`(CHIPS) 쿠키** · **`Strict`** · **HttpOnly** 는 던지지 않았다.
 - **응답의 `Set-Cookie` 가 다른 출처 `include` 요청에서 저장되나**는 재지 않았다(이 편은 「실리나」만 봤다).
-- **https 와 진짜 등록 도메인**은 이 판으로 못 본다(머리말 「도구가 못 보는 것」).
+- **https 와 진짜 등록 도메인**은 이 판으로 못 본다(맨 위 부분 「도구가 못 보는 것」).
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ④ 「서버 요청 로그」 — 칸마다 「서버가 쿠키를 받았나」와 「페이지가 응답을 읽었나」를 나란히 놓는 「쿠키 실림 격자」다.** 받는 쪽 2(같은 사이트의 다른 출처 · 사이트 밖) × `credentials` 3 × 서버의 응답 헤더 4 = 24칸을 던지고, 마지막 줄을 스크립트가 **「서버는 쿠키를 받았는데 페이지는 못 읽은 칸 N / 24」** 로 찍는다.\
+**기준 소스** — [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 request 의 credentials mode(「`omit`·`same-origin`·`include` — **기본은 `same-origin`**」) · HTTP-network-or-cache fetch 의 includeCredentials(「**`include` 이거나, `same-origin` 이고 response tainting 이 `basic`** 이면 참」) · 「CORS check」(「credentials mode 가 `include` 가 아니고 `Access-Control-Allow-Origin` 이 `*` 면 성공 · 아니면 **요청 출처와 같아야** · `include` 면 **`Access-Control-Allow-Credentials` 가 `true` 여야**」) · CORS protocol 과 credentials 절(「**CORS-preflight request never includes credentials**」 · 허용·불허 조합 표). 열어서 확인한 것만 적었다(기준일 2026-09-26). ★ **쿠키 자체의 규칙(`SameSite`·`Secure`·서드파티 쿠키)은 HTTP 쿠키 명세(RFC 6265bis 초안)와 브라우저 정책의 몫이고 이 판에서 그 문서를 열지 않았다** — 그쪽 서술은 전부 **이 판의 관찰**로만 적는다.\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 페이지는 `http://127.0.0.1:<A>` 에서 열었고, 받는 쪽은 **같은 서버 B 를 두 이름으로** 부른다 — `http://127.0.0.1:<B>`(호스트가 같고 포트만 다름) · `http://localhost:<B>`(호스트가 다름). **바깥 인터넷으로는 한 번도 요청하지 않았다.** 하네스는 [28번 주제](../28-cors-simple-and-preflight/2-summary.md)의 (1)이다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — ★★★ **[28번 주제](../28-cors-simple-and-preflight/2-summary.md)** — 프리플라이트가 붙는 조건과 「거부되면 본 요청은 서버에 안 간다」. ★★ **[25번 주제](../25-fetch-request-response/2-summary.md)의 (5)가 쿠키 통을 이미 쟀다** — `fetch(…, { headers: { Cookie: "evil=1" } })` 의 `Cookie` 는 **예외 없이 지워지고 쿠키 통의 `jar=1` 이 갔다** · 응답의 `Set-Cookie` 는 `get()` 으로 `null` 인데 **쿠키 통에는 들어갔다**. 여기서는 그것을 **다시 재지 않고 인용**하고 — 쿠키는 헤더로 넣는 것이 아니라 **`credentials` 로 고르는 것** — **다른 출처로 언제 실리나**로 간다.\
+**경계** — ★ **CSRF 의 위협 모델과 방어 설계는 [`../../../cs/foundations/security/`](../../../cs/foundations/security/) 가 정본으로 걸려 있다** — 단 2026-09-26 현재 그 폴더에 **CSRF 절은 없다**(`csrf` 로 `grep` 해 0건). 여기는 (7)에서 **「쿠키가 실린 요청이 서버에서 처리됐다」까지만** 관찰로 보이고 방어 설계로 넘어가지 않는다.

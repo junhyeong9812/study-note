@@ -1,14 +1,5 @@
 # rust/syntax/04 — 표현식 지향: 블록이 값·세미콜론의 의미 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Statements and expressions ·
-> Block expressions · `if`/`match`/`loop` expressions 절 · `rustc --explain E0308` / `E0317`.
-> 이 머신의 `rust-docs`(1.92.0)를 열어 확인했다.
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.
-> **버전** — 여기 나오는 문법은 전부 1.0부터다. 관찰용 `type_name_of_val` 만 **1.76.0**부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **세미콜론은 마침표가 아니라 「손에 든 것을 내려놓고 나와라」는 표시다.**
@@ -644,3 +635,12 @@ help: remove `return`
 - `if c { println!("참"); }` 처럼 **갈래 값이 원래 `()`** 면 `else` 가 없어도 값으로 쓸 수 있다(실측 — `x = ()`, 크기 0).\
   E0317 이 뜨는 것은 **`()` 아닌 타입을 기대할 때**뿐이다.
 - `let _: () = 식;` 수법은 제네릭 코드에서 특히 쓸모 있다 — 추론된 타입을 **에러 메시지로 뽑아내는** 방법이다.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/) 의 Statements and expressions ·
+Block expressions · `if`/`match`/`loop` expressions 절 · `rustc --explain E0308` / `E0317`.
+이 머신의 `rust-docs`(1.92.0)를 열어 확인했다.
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.
+**버전** — 여기 나오는 문법은 전부 1.0부터다. 관찰용 `type_name_of_val` 만 **1.76.0**부터다.

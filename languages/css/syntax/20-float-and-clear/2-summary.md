@@ -1,13 +1,5 @@
 # css/syntax/20 — 부동(float)과 해제(clear) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Logical Properties Level 1](https://drafts.csswg.org/css-logical-1/) (`float: inline-start`/`inline-end` 논리 값) · [CSS Display Module Level 3](https://drafts.csswg.org/css-display-3/) (부동이 상자를 블록으로 바꾸는 규정). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 모든 치수를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 쟀다.\
-> ★ **이 주제에서 「밀렸다」는 `getBoundingClientRect()` 로는 안 보인다.** 상자는 안 움직이고 **줄만** 움직이기 때문이다. 그래서 **`Range.getClientRects()` 로 행 상자를 직접 쟀다** — 자리마다 어느 쪽 값인지 밝혔다.\
-> **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
-> **여기서 다루지 않는 것** — ★ **높이 붕괴를 막는 법(BFC)은 [17번](../17-block-formatting-context/2-summary.md)이 정본이다.** 여기는 **왜 붕괴가 일어나는가** — float 가 높이 계산에 참여하지 않는다는 것까지이고, 고치는 법은 거기로 넘긴다. 마진 상쇄는 [18번](../18-margin-collapsing/2-summary.md), 행 상자 자체는 [19번](../19-inline-formatting-context/2-summary.md), 흐름에서 **완전히** 빠지는 `absolute` 는 [21번](../21-position-and-containing-block/2-summary.md), 1차원 배치의 오늘날 답은 [24번](../24-flexbox-axes/2-summary.md)이다. `shape-outside`(감싸는 모양을 사각형 말고 다른 도형으로 바꾸는 속성)는 **이름만 적고 다루지 않는다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **float 는 「흐름에서 빠지되 글줄은 미는」 반쯤 빠진 상자다.**
@@ -385,3 +377,11 @@
 - **float 는 마크업 순서보다 뒤로는 못 올라간다.** 자기 앞 형제들이 만든 줄 위로는 못 올라가므로, 「오른쪽 사진을 문단보다 먼저 쓰라」는 옛 관용구가 여기서 나왔다.
 - **float 는 float 를 피한다.** (3)에서 셋째가 내려간 것이 그 규칙이고, 그래서 float 끼리는 겹치지 않는다. 반면 `absolute` 끼리는 겹친다.
 - **`clear` 에도 논리 값이 있다**(`inline-start`/`inline-end`). `float` 와 짝을 맞춰 쓰면 글쓰기 방향이 바뀌어도 그대로 동작한다([목록의 **32번 주제**](../32-logical-properties-and-writing-mode/)).
+
+## 실행 환경
+
+**기준 소스** — [CSS Logical Properties Level 1](https://drafts.csswg.org/css-logical-1/) (`float: inline-start`/`inline-end` 논리 값) · [CSS Display Module Level 3](https://drafts.csswg.org/css-display-3/) (부동이 상자를 블록으로 바꾸는 규정). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 모든 치수를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 쟀다.\
+★ **이 주제에서 「밀렸다」는 `getBoundingClientRect()` 로는 안 보인다.** 상자는 안 움직이고 **줄만** 움직이기 때문이다. 그래서 **`Range.getClientRects()` 로 행 상자를 직접 쟀다** — 자리마다 어느 쪽 값인지 밝혔다.\
+**WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 크로스 브라우저 주장은 하지 않았다.
+**여기서 다루지 않는 것** — ★ **높이 붕괴를 막는 법(BFC)은 [17번](../17-block-formatting-context/2-summary.md)이 정본이다.** 여기는 **왜 붕괴가 일어나는가** — float 가 높이 계산에 참여하지 않는다는 것까지이고, 고치는 법은 거기로 넘긴다. 마진 상쇄는 [18번](../18-margin-collapsing/2-summary.md), 행 상자 자체는 [19번](../19-inline-formatting-context/2-summary.md), 흐름에서 **완전히** 빠지는 `absolute` 는 [21번](../21-position-and-containing-block/2-summary.md), 1차원 배치의 오늘날 답은 [24번](../24-flexbox-axes/2-summary.md)이다. `shape-outside`(감싸는 모양을 사각형 말고 다른 도형으로 바꾸는 속성)는 **이름만 적고 다루지 않는다.**

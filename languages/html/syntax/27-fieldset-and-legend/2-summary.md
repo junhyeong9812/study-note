@@ -1,15 +1,5 @@
 # html/syntax/27 — `fieldset`/`legend` 와 그룹 비활성화 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The fieldset element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-fieldset-element)(★ `disabled` 가 **첫 `legend` 자식의 자손을 빼고** 퍼진다 · 「비활성 fieldset」의 정의), [「The legend element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-legend-element), [「Enabling and disabling form controls」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#enabling-and-disabling-form-controls:-the-disabled-attribute)(★ 「폼 컨트롤이 **disabled** 인 조건」 · 비활성 컨트롤은 사용자 상호작용 작업의 `click` 을 **디스패치하지 않는다**), [「Constructing the entry list」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-form-data-set), [`click()`](https://html.spec.whatwg.org/multipage/interaction.html#dom-click), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/) 의 「4.1.5 fieldset 의 이름 계산」·`fieldset`/`legend` 역할 줄. **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다.**
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 클릭은 **CDP 의 진짜 마우스**다. 하네스는 [25번 주제](../25-label-association/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. `fieldset[disabled]` 는 명세의 브라우저 지원 표에 「Chrome 20+」로 적힌 오래된 표면이다(이 문서는 그 시점을 재지 않았다).
-> **선행** — [25번 주제](../25-label-association/2-summary.md)(칸 **하나**의 이름) · [24번 주제](../24-input-types-choice-special/2-summary.md)(`disabled` 는 안 실린다 · 라디오 그룹은 `name` 으로 묶인다).
-> **경계** — **`disabled` 와 `readonly` 가 제출·포커스·검증에서 갈리는 세 지점**은 목록의 **30번 주제**다 — 여기는 **`fieldset` 이 그 `disabled` 를 어디까지 퍼뜨리나**와 **묶음의 이름**까지. 이름 출처 순서 전체는 목록의 **43번 주제**, `:disabled` 의사 클래스의 선택자 쪽 이야기는 [CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md)이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 한 표에 모은 네 창이다** — 칸마다 **창 ②**(`:disabled` 매치 · `focus()` 가 가나 · 진짜 클릭을 받나)와 **창 ⑤**(서버에 실리나)를 한 줄로 놓고 「**퍼진 칸 N / M**」을 스크립트가 센다. 묶음의 이름은 **창 ⑦** 이 맡는다.
-
 **이 판의 Chrome**
 
 ```text
@@ -535,3 +525,14 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 
 - **왜 첫 `legend` 를 예외로 두나** — 명세가 이유를 적지는 않는다. 쓰임새로 보면 **묶음을 다시 켜는 스위치**를 둘 자리가 필요하다 — 끈 묶음 안에 스위치가 있으면 **다시 켤 방법이 없다**(해석이다).
 - **렌더된 `legend`** — 명세의 렌더링 절은 「`float` 도 절대 위치도 아닌 **첫 `legend` 자식**」을 테두리에 걸쳐 그린다. 이름·비활성 예외가 보는 「첫 `legend` 자식」과 **조건이 하나 더 많다** — 이 판은 떠 있는 `legend` 를 던지지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The fieldset element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-fieldset-element)(★ `disabled` 가 **첫 `legend` 자식의 자손을 빼고** 퍼진다 · 「비활성 fieldset」의 정의), [「The legend element」](https://html.spec.whatwg.org/multipage/form-elements.html#the-legend-element), [「Enabling and disabling form controls」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#enabling-and-disabling-form-controls:-the-disabled-attribute)(★ 「폼 컨트롤이 **disabled** 인 조건」 · 비활성 컨트롤은 사용자 상호작용 작업의 `click` 을 **디스패치하지 않는다**), [「Constructing the entry list」](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constructing-the-form-data-set), [`click()`](https://html.spec.whatwg.org/multipage/interaction.html#dom-click), 그리고 [HTML-AAM](https://w3c.github.io/html-aam/) 의 「4.1.5 fieldset 의 이름 계산」·`fieldset`/`legend` 역할 줄. **명세 본문은 2026-09-26 에 받아 해당 절을 직접 읽었다.**
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 클릭은 **CDP 의 진짜 마우스**다. 하네스는 [25번 주제](../25-label-association/3-answer.md)의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. `fieldset[disabled]` 는 명세의 브라우저 지원 표에 「Chrome 20+」로 적힌 오래된 표면이다(이 문서는 그 시점을 재지 않았다).
+**선행** — [25번 주제](../25-label-association/2-summary.md)(칸 **하나**의 이름) · [24번 주제](../24-input-types-choice-special/2-summary.md)(`disabled` 는 안 실린다 · 라디오 그룹은 `name` 으로 묶인다).
+**경계** — **`disabled` 와 `readonly` 가 제출·포커스·검증에서 갈리는 세 지점**은 목록의 **30번 주제**다 — 여기는 **`fieldset` 이 그 `disabled` 를 어디까지 퍼뜨리나**와 **묶음의 이름**까지. 이름 출처 순서 전체는 목록의 **43번 주제**, `:disabled` 의사 클래스의 선택자 쪽 이야기는 [CSS 10번](../../../css/syntax/10-state-and-form-pseudo-classes/2-summary.md)이다.
+
+★★★ **이 주제의 본체는 한 표에 모은 네 창이다** — 칸마다 **창 ②**(`:disabled` 매치 · `focus()` 가 가나 · 진짜 클릭을 받나)와 **창 ⑤**(서버에 실리나)를 한 줄로 놓고 「**퍼진 칸 N / M**」을 스크립트가 센다. 묶음의 이름은 **창 ⑦** 이 맡는다.

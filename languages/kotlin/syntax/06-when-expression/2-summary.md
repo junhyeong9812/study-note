@@ -1,17 +1,5 @@
 # kotlin/syntax/06 — `when` 식: 주체 있는/없는 형태·완전성·guard (2.2+) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Conditions and loops](https://kotlinlang.org/docs/control-flow.html) · [Sealed classes and interfaces](https://kotlinlang.org/docs/sealed-classes.html) · [언어 기능·제안 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html)(guard 조건의 Stable 버전 확인).
-> **실행 검증** — 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> `kotlinc` 18회 · `java` 3회 · `javap` 9회. 컴파일 실패 시나리오 7벌 + 분리 컴파일 시나리오 2벌.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** `kotlinc` 의 기본값은 **1.8**(`major version: 52`)이고,\
-> 이 문서의 역어셈블은 **기본값**이 정본이다. **`-jvm-target 21` 에서 `sealed` 쪽 한 자리가 통째로 달라진다** — 그 자리를 (6)에 따로 세웠다.
-> **버전** — `when` 자체는 1.0. **guard 조건(`is T if …`)은 2.2.0** — 이 환경에서 `-language-version 2.1` 로 **거부되는 것을 실측**했다.
-> **경계** — `sealed` 계층을 **어떻게 설계하나**의 정본은 [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/)(`sealed`+완결성)와 [`../../언어-특성/README.md`](../../언어-특성/README.md) §3 이다.\
-> 여기는 **「`when` 이 언제 `else` 를 요구하고 그것이 JVM 에서 무엇으로 내려앉나」** 만 다룬다.\
-> **Java `switch` 쪽 정본은 [`../../../java/syntax/21-switch-statement-and-expression/`](../../../java/syntax/21-switch-statement-and-expression/)** 다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **Java 의 `switch` 는 「어디로 뛰어들지 정하는 표지판」이고, Kotlin 의 `when` 은 「값을 하나 내놓는 자판기」다.**
@@ -973,3 +961,15 @@ val u = when (x) {
 - 이 문서에서 **못 잰 것** — `-language-version 1.9` 이하는 kotlinc 2.4.20 이 거부한다\
   (`language version 1.9 is no longer supported; use version 2.0 or greater instead.`).\
   그래서 **K1 컴파일러의 `when` 바이트코드와는 비교하지 못했다.**
+
+## 실행 환경
+
+**기준 소스** — [Conditions and loops](https://kotlinlang.org/docs/control-flow.html) · [Sealed classes and interfaces](https://kotlinlang.org/docs/sealed-classes.html) · [언어 기능·제안 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html)(guard 조건의 Stable 버전 확인).
+**실행 검증** — 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+`kotlinc` 18회 · `java` 3회 · `javap` 9회. 컴파일 실패 시나리오 7벌 + 분리 컴파일 시나리오 2벌.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** `kotlinc` 의 기본값은 **1.8**(`major version: 52`)이고,\
+이 문서의 역어셈블은 **기본값**이 정본이다. **`-jvm-target 21` 에서 `sealed` 쪽 한 자리가 통째로 달라진다** — 그 자리를 (6)에 따로 세웠다.
+**버전** — `when` 자체는 1.0. **guard 조건(`is T if …`)은 2.2.0** — 이 환경에서 `-language-version 2.1` 로 **거부되는 것을 실측**했다.
+**경계** — `sealed` 계층을 **어떻게 설계하나**의 정본은 [목록의 **23번 주제**](../23-sealed-classes-and-when-exhaustiveness/)(`sealed`+완결성)와 [`../../언어-특성/README.md`](../../언어-특성/README.md) §3 이다.\
+여기는 **「`when` 이 언제 `else` 를 요구하고 그것이 JVM 에서 무엇으로 내려앉나」** 만 다룬다.\
+**Java `switch` 쪽 정본은 [`../../../java/syntax/21-switch-statement-and-expression/`](../../../java/syntax/21-switch-statement-and-expression/)** 다.

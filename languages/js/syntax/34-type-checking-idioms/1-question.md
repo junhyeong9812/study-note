@@ -1,23 +1,5 @@
 # js/syntax/34 — 타입 검사 관용구: 「무엇을 보고 판정하나 · realm 을 넘으면 무엇이 남나」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
->
-> **환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151.0.7922.173(헤드리스) · x86-64 Linux.
-> 배너의 `node20` 은 v20.19.6 이다. ★ **4번의 소스(`.web.js`)는 Chrome 에서만** 돌렸다.
->
-> ★★★ **이 편은 정본 모음 편이다.** 1번은 **앞 편들에서 잰 것을 떠올리는** 문항이고, 2\~5번이 **이 편이 새로 잰 칸**(realm)이다.
-> ★★★ **이 주제의 본체는 ② 전수 격자다** — 내장 타입 5 × 조건 5 × 판정 방법 5. **2번 문항이 이 주제의 중심이다.**
->
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① ★★★ **판정 방법마다 무엇을 보나**(사슬 · 출생 기록 · 자칭 · 모양)
-> ② **realm · 프로토타입 조작 · 위조 앞에서 어느 방법이 틀리나**
-> ③ **묻고 싶은 것마다 무엇을 골라야 하나.**
->
-> **선행** — [15 — 프로토타입 체인](../15-prototype-chain/2-summary.md) · [16 — `class` 문법](../16-class-syntax/2-summary.md) · [17 — 상속과 `super`](../17-inheritance-and-super/2-summary.md) · [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md) · [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md).
-> ★★★ **22번 4번의 위조 격자를 먼저 떠올려라** — `Symbol.toStringTag` 하나로 무엇이 바뀌었나.
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 네 문항(2 · 3 · 4 · 5)은 소스만 보고 출력을 적어 본 뒤** 답을 연다.
@@ -199,6 +181,16 @@ for (const [label, v] of items) {
 - ★★ `vm.runInNewContext` 가 만든 것이 명세의 realm 과 같은 것인지 이 문서는 확인했나? 무엇을 관찰했나?
 - ★★ node 판의 오류 슬롯 열은 어느 함수로 물었고, 그것은 ECMA-262 인가?
 - ★ `Proxy` 자체 · 워커로 건너온 값은 목록의 몇 번 주제의 몫인가?
+
+## 실행 환경
+
+**환경** — node v18.19.1(기본 PATH) · v20.19.6(nvm) · Google Chrome 151.0.7922.173(헤드리스) · x86-64 Linux.
+배너의 `node20` 은 v20.19.6 이다. ★ **4번의 소스(`.web.js`)는 Chrome 에서만** 돌렸다.
+
+★★★ **이 편은 정본 모음 편이다.** 1번은 **앞 편들에서 잰 것을 떠올리는** 문항이고, 2\~5번이 **이 편이 새로 잰 칸**(realm)이다.
+★★★ **이 주제의 본체는 ② 전수 격자다** — 내장 타입 5 × 조건 5 × 판정 방법 5. **2번 문항이 이 주제의 중심이다.**
+
+**선행** — [15 — 프로토타입 체인](../15-prototype-chain/2-summary.md) · [16 — `class` 문법](../16-class-syntax/2-summary.md) · [17 — 상속과 `super`](../17-inheritance-and-super/2-summary.md) · [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md) · [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md).
 
 ## 복습 기록
 

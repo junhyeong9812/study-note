@@ -1,77 +1,5 @@
 # js/syntax/36 — 이벤트 루프와 마이크로태스크: 「동기 코드 → 마이크로태스크 전부 → 매크로태스크 하나」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다** — **한 파일**(콜백 열한 개)을 **세 호스트**(node CommonJS · node ES 모듈 · Chrome 151)에 던지고,
-> 라벨마다 **몇 번째로 찍혔나**를 칸에 적어 **「세 호스트에서 자리가 같지 않은 라벨 N / M」** 을 스크립트가 마지막 줄로 센다(동작 (1)).
-> 격자의 칸은 **① 추상 연산에 로그 심기**로 얻는다 — 콜백마다 **자기 라벨을 찍는 것**이 로그다.
-> ★★ 보조 창 하나 — **`sort -u` 가짓수**(규칙 11). 흔들리는 순서(`setTimeout` 0 대 `setImmediate`)는 **300판의 서로 다른 순서가 몇 가지인가**로만 싣는다(동작 (4)).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — Jobs and Host Operations to Enqueue Jobs](https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#sec-jobs) — 「**Jobs must run in the same order as the `HostEnqueuePromiseJob` invocations that scheduled them.**」 · `HostEnqueueTimeoutJob` 은 「**after at least milliseconds**」
-> - [HTML — Event loop processing model](https://html.spec.whatwg.org/multipage/webappapis.html#perform-a-microtask-checkpoint) — `perform a microtask checkpoint` 의 「**While the event loop's microtask queue is not empty**」
-> - [HTML — Timers](https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#timers) — 먼저 시작했고 시간이 같거나 짧은 타이머를 기다린다 · 중첩 수준이 5 를 넘으면 4ms 하한 · [Microtask queuing](https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#microtask-queuing)(`queueMicrotask`)
-> - [Node.js v20 — process: `queueMicrotask()` 대 `process.nextTick()`](https://nodejs.org/docs/latest-v20.x/api/process.html#when-to-use-queuemicrotask-vs-processnexttick) — 「CJS 에서는 `nextTick` 이 먼저, ESM 에서는 `queueMicrotask` 가 먼저」
-> - [Node.js — The Node.js Event Loop](https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick) — 「메인 모듈에서는 `setTimeout` 0 과 `setImmediate` 의 순서가 **non-deterministic**」
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **알고리즘·연산 이름**으로, 순서는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★ Chrome 151 은 **헤드리스로** 돌렸다 — 배너가 `./js36b-browser.sh` 로 시작하는 블록이다. 그 스크립트가 **가상 시간 예산**(`--virtual-time-budget=2000`)을 주고 페이지를 떠 온다(소스는 아래).
-> ★★ **이 묶음(36\~39)의 node 탐침은 두 node 판에서 한 글자도 같았고, 호스트 전용 API 를 안 쓰는 탐침은 Chrome 151 에서도 같았다**(아래 대조기의 집계 줄).
-> ★★★ **시간은 한 번도 재지 않았다.** 이 문서의 모든 근거는 **순서**와 **횟수**다.
->
-> **버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `Promise` · `then` | ES2015 | 세 판 다 있다 |
-> | `async` 함수 · `await` | ES2017 | 세 판 다 있다 |
-> | `queueMicrotask` | — **ECMA-262 밖**(HTML 의 API, node 도 구현한다) | 세 판 다 있다 |
-> | `setTimeout` | — **ECMA-262 밖**(HTML · node) | 세 판 다 있다 |
-> | `setImmediate` · `process.nextTick` | — **node 의 것** | ★ **Chrome 에 없다**(판별 블록의 `host` 줄) |
->
-> ★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — Async functions 가 **2017**. README 36행은 판을 적지 않는다(적을 것이 호스트 API 뿐이다).
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체) | 라벨 11 × 호스트 3 — 칸은 **찍힌 순위**, 마지막 줄은 **「세 호스트에서 자리가 같지 않은 라벨 N / M」**(동작 (1)) |
-> | ★★★ **① 추상 연산에 로그 심기** | 콜백마다 **자기 라벨**을 찍는다 · 기아 탐침은 **돈 횟수**를 센다(동작 (5)) |
-> | ★★ **`sort -u` 가짓수**(규칙 11) | 흔들리는 순서 하나(`setTimeout` 0 대 `setImmediate`)를 **300판의 서로 다른 순서 수**로 결정적으로 바꾼다(동작 (4)) |
-> | ★ **부적용 — ③ 브랜드 태그** | 이 주제에는 판정할 객체의 종류가 없다 |
-> | ★ **부적용 — ④ 예외의 `constructor.name` + `message`** | 이 주제의 탐침은 **아무것도 던지지 않는다.** 거부와 예외는 37번 |
-> | ★ **안 쟀다 — 시간** | 「`setTimeout(f, 0)` 은 몇 ms 뒤에 도나」를 **재지 않았다.** 「마이크로태스크가 빠르다」도 쓰지 않는다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★★★ **메인 모듈에서 `setTimeout` 0 과 `setImmediate` 중 누가 먼저냐** — **판마다** 바뀐다. 그래서 **어느 쪽이 몇 번**인지는 싣지 않고 **가짓수만** 실었다 | ★★★ 순서 퍼즐 격자의 **모든 칸**과 「`8 / 11`」 — 마이크로태스크끼리는 **언어 명세가**, 같은 지연의 타이머끼리는 **HTML 이** 순서를 정한다(node 쪽은 관찰) |
-> | 판별 블록의 판 문자열 — 머신에 매인다 | ★★ **가짓수** `2` 와 `1` — 300판이면 **두 순서가 다 나온다**(어느 쪽이 몇 번인지는 판마다 흔들려 싣지 않는다) |
-> | | 기아 탐침의 **돈 횟수**와 **타이머가 돈 횟수** — 가드가 횟수로 끊으므로 기계 속도에 안 매인다 |
->
-> **★★★ 층 — 이 묶음은 「언어」와 「호스트」가 갈리는 곳이다**
->
-> | 층 | 무엇을 정하나 | 이 문서의 어디 |
-> |---|---|---|
-> | **언어 명세(ECMA-262 Jobs)** | 프라미스 잡은 **등록한 순서대로**(FIFO) 돈다. 잡은 **다른 코드가 돌고 있지 않을 때만** 시작한다. **언제**·**무엇과 섞어** 돌리나는 정하지 않는다 | 동작 (1)의 `P1 → Q1 → A2 → P2 → P3` |
-> | **호스트 — HTML event loop** | 태스크 **하나** → 마이크로태스크 체크포인트(**빌 때까지**) → 다음 태스크 · `queueMicrotask` · `setTimeout` 의 순서와 4ms 하한 | 동작 (2)·(5) |
-> | **호스트 — node(libuv)** | `process.nextTick` 큐가 **프라미스 큐보다 먼저** 비워진다(**CJS 에서**) · `setImmediate` 와 libuv 의 단계(timers → poll → check) | 동작 (1)의 `N1` · 동작 (3)·(4) |
-> | **구현(V8)** | 이 주제에서는 **구현이 갈라 놓은 칸을 못 찾았다** — node 20 의 V8 과 Chrome 151 의 V8 이 같은 순서를 냈다 | 대조기 |
-> | **이 판의 관찰** | node 의 같은 지연 타이머끼리의 순서 · 가짓수 `2`·`1` | 동작 (1)·(4) |
->
-> **선행** — [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(목록의 선행. ★ 거기서 **동기 `throw`** 를 봤다 — 여기서부터 **같은 코드가 「나중에」 돈다**) ·
-> [20 — 제너레이터](../20-generators/2-summary.md)(★ **멈췄다 이어 도는 함수** — 동작 (1)의 `A1 → A2` 가 그 모양이다. 정본은 39번) ·
-> [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(`Array.fromAsync` 의 로그가 **이미 이 주제의 순서**를 쓰고 있었다).
->
-> ★★ **경계 — 연혁·「왜 단일 스레드인가」** 는 [`history/js/04-비동기-진화.md`](../../../../history/js/04-비동기-진화.md) 의 **「이벤트 루프 상세 — 매크로태스크 vs 마이크로태스크」** 절이 정본이다. 여기서는 **그 순서를 세 호스트에서 재고 층을 가른다.**
-> ★★★ 그 절의 Node 주석 「`process.nextTick` 이 마이크로태스크보다도 먼저」는 **CommonJS 에서만 맞았다** — **ES 모듈에서는 뒤집혔다**(동작 (3)). 그 문서는 고치지 않았다(이 배치의 범위 밖).
-> ★ **경계 — 프로세스·스레드 일반**은 [`process-thread/`](../../../../cs/foundations/process-thread/README.md)의 몫이다. ★ **경계 — 프라미스의 상태와 거부**는 [37번](../37-promise-state-model/2-summary.md), **`await` 의 틱 수**는 [39번](../39-async-await/2-summary.md).
-
 ```sh
 # js36b-versions.sh
 #!/usr/bin/env bash
@@ -459,7 +387,7 @@ done
 - ★★★ **메인 모듈 — 가짓수 `2`**(`immediate timeout` · `timeout immediate` 둘 다 나왔다). **I/O 콜백 안 — 가짓수 `1`**(`immediate timeout` 만).
   node 문서도 메인 모듈의 순서를 「**non-deterministic** — 프로세스의 성능에 매인다」고 적는다.
 - ★★ **I/O 콜백 안에서는 poll 다음이 check** 이므로 `setImmediate` 가 **다음 timers 단계보다 먼저** 온다. 이 순서는 **libuv 단계의 순서**에서 나온다 — 언어도 HTML 도 아니다.
-- ★ **어느 쪽이 몇 번 나왔는지는 싣지 않는다** — 그 비율은 **판마다 흔들린다**(머리말의 흔들리는 칸). 가짓수 `2` 와 `1` 만 근거다.
+- ★ **어느 쪽이 몇 번 나왔는지는 싣지 않는다** — 그 비율은 **판마다 흔들린다**(「실행 환경」의 흔들리는 칸). 가짓수 `2` 와 `1` 만 근거다.
 - ★ Go 의 `select` 가 준비된 가지를 **명세상 무작위로** 고르는 것과 성격이 다르다 — 여기는 **무작위가 아니라 경쟁**이다(누가 먼저 준비되나). Go 쪽 가짓수 격자는 [Go 30](../../../go/syntax/30-select-default-and-timeouts/2-summary.md) 동작 (1).
 
 ### (5) ★★★ 마이크로태스크 기아 — 타이머는 몇 번 돌았나
@@ -761,3 +689,74 @@ C2 setTimeout 0, scheduled second
 - **렌더링과 `requestAnimationFrame`** — HTML 의 한 바퀴에서 체크포인트 **뒤**에 온다. 이 문서는 **재지 않았다**(헤드리스 페이지에서 프레임을 세지 않았다).
 - **`MessageChannel` 을 이용한 양보** — 타이머의 4ms 하한을 피하는 방법으로 알려져 있다. **이 문서는 돌리지 않았다.**
 - **워커·`Atomics.wait`** — 스레드가 여럿이 되는 자리. 연혁 문서의 「동시성 — 진짜 병렬이 필요할 때」 절이 연혁 쪽 정본이다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 전수 격자다** — **한 파일**(콜백 열한 개)을 **세 호스트**(node CommonJS · node ES 모듈 · Chrome 151)에 던지고,
+라벨마다 **몇 번째로 찍혔나**를 칸에 적어 **「세 호스트에서 자리가 같지 않은 라벨 N / M」** 을 스크립트가 마지막 줄로 센다(동작 (1)).
+격자의 칸은 **① 추상 연산에 로그 심기**로 얻는다 — 콜백마다 **자기 라벨을 찍는 것**이 로그다.
+★★ 보조 창 하나 — **`sort -u` 가짓수**(규칙 11). 흔들리는 순서(`setTimeout` 0 대 `setImmediate`)는 **300판의 서로 다른 순서가 몇 가지인가**로만 싣는다(동작 (4)).
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — Jobs and Host Operations to Enqueue Jobs](https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#sec-jobs) — 「**Jobs must run in the same order as the `HostEnqueuePromiseJob` invocations that scheduled them.**」 · `HostEnqueueTimeoutJob` 은 「**after at least milliseconds**」
+- [HTML — Event loop processing model](https://html.spec.whatwg.org/multipage/webappapis.html#perform-a-microtask-checkpoint) — `perform a microtask checkpoint` 의 「**While the event loop's microtask queue is not empty**」
+- [HTML — Timers](https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#timers) — 먼저 시작했고 시간이 같거나 짧은 타이머를 기다린다 · 중첩 수준이 5 를 넘으면 4ms 하한 · [Microtask queuing](https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#microtask-queuing)(`queueMicrotask`)
+- [Node.js v20 — process: `queueMicrotask()` 대 `process.nextTick()`](https://nodejs.org/docs/latest-v20.x/api/process.html#when-to-use-queuemicrotask-vs-processnexttick) — 「CJS 에서는 `nextTick` 이 먼저, ESM 에서는 `queueMicrotask` 가 먼저」
+- [Node.js — The Node.js Event Loop](https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick) — 「메인 모듈에서는 `setTimeout` 0 과 `setImmediate` 의 순서가 **non-deterministic**」
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **알고리즘·연산 이름**으로, 순서는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★ Chrome 151 은 **헤드리스로** 돌렸다 — 배너가 `./js36b-browser.sh` 로 시작하는 블록이다. 그 스크립트가 **가상 시간 예산**(`--virtual-time-budget=2000`)을 주고 페이지를 떠 온다(소스는 맨 위).
+★★ **이 묶음(36\~39)의 node 탐침은 두 node 판에서 한 글자도 같았고, 호스트 전용 API 를 안 쓰는 탐침은 Chrome 151 에서도 같았다**(맨 위 대조기의 집계 줄).
+★★★ **시간은 한 번도 재지 않았다.** 이 문서의 모든 근거는 **순서**와 **횟수**다.
+
+**버전** — 판별 블록이 세 판(node 18 · node 20 · Chrome 151)에 같은 스크립트를 던진다.
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `Promise` · `then` | ES2015 | 세 판 다 있다 |
+| `async` 함수 · `await` | ES2017 | 세 판 다 있다 |
+| `queueMicrotask` | — **ECMA-262 밖**(HTML 의 API, node 도 구현한다) | 세 판 다 있다 |
+| `setTimeout` | — **ECMA-262 밖**(HTML · node) | 세 판 다 있다 |
+| `setImmediate` · `process.nextTick` | — **node 의 것** | ★ **Chrome 에 없다**(판별 블록의 `host` 줄) |
+
+★★ **판 경계는 TC39 finished proposals 표와 이 목록의 README 를 대조했다** — Async functions 가 **2017**. README 36행은 판을 적지 않는다(적을 것이 호스트 API 뿐이다).
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체) | 라벨 11 × 호스트 3 — 칸은 **찍힌 순위**, 마지막 줄은 **「세 호스트에서 자리가 같지 않은 라벨 N / M」**(동작 (1)) |
+| ★★★ **① 추상 연산에 로그 심기** | 콜백마다 **자기 라벨**을 찍는다 · 기아 탐침은 **돈 횟수**를 센다(동작 (5)) |
+| ★★ **`sort -u` 가짓수**(규칙 11) | 흔들리는 순서 하나(`setTimeout` 0 대 `setImmediate`)를 **300판의 서로 다른 순서 수**로 결정적으로 바꾼다(동작 (4)) |
+| ★ **부적용 — ③ 브랜드 태그** | 이 주제에는 판정할 객체의 종류가 없다 |
+| ★ **부적용 — ④ 예외의 `constructor.name` + `message`** | 이 주제의 탐침은 **아무것도 던지지 않는다.** 거부와 예외는 37번 |
+| ★ **안 쟀다 — 시간** | 「`setTimeout(f, 0)` 은 몇 ms 뒤에 도나」를 **재지 않았다.** 「마이크로태스크가 빠르다」도 쓰지 않는다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★★★ **메인 모듈에서 `setTimeout` 0 과 `setImmediate` 중 누가 먼저냐** — **판마다** 바뀐다. 그래서 **어느 쪽이 몇 번**인지는 싣지 않고 **가짓수만** 실었다 | ★★★ 순서 퍼즐 격자의 **모든 칸**과 「`8 / 11`」 — 마이크로태스크끼리는 **언어 명세가**, 같은 지연의 타이머끼리는 **HTML 이** 순서를 정한다(node 쪽은 관찰) |
+| 판별 블록의 판 문자열 — 머신에 매인다 | ★★ **가짓수** `2` 와 `1` — 300판이면 **두 순서가 다 나온다**(어느 쪽이 몇 번인지는 판마다 흔들려 싣지 않는다) |
+| | 기아 탐침의 **돈 횟수**와 **타이머가 돈 횟수** — 가드가 횟수로 끊으므로 기계 속도에 안 매인다 |
+
+**★★★ 층 — 이 묶음은 「언어」와 「호스트」가 갈리는 곳이다**
+
+| 층 | 무엇을 정하나 | 이 문서의 어디 |
+|---|---|---|
+| **언어 명세(ECMA-262 Jobs)** | 프라미스 잡은 **등록한 순서대로**(FIFO) 돈다. 잡은 **다른 코드가 돌고 있지 않을 때만** 시작한다. **언제**·**무엇과 섞어** 돌리나는 정하지 않는다 | 동작 (1)의 `P1 → Q1 → A2 → P2 → P3` |
+| **호스트 — HTML event loop** | 태스크 **하나** → 마이크로태스크 체크포인트(**빌 때까지**) → 다음 태스크 · `queueMicrotask` · `setTimeout` 의 순서와 4ms 하한 | 동작 (2)·(5) |
+| **호스트 — node(libuv)** | `process.nextTick` 큐가 **프라미스 큐보다 먼저** 비워진다(**CJS 에서**) · `setImmediate` 와 libuv 의 단계(timers → poll → check) | 동작 (1)의 `N1` · 동작 (3)·(4) |
+| **구현(V8)** | 이 주제에서는 **구현이 갈라 놓은 칸을 못 찾았다** — node 20 의 V8 과 Chrome 151 의 V8 이 같은 순서를 냈다 | 대조기 |
+| **이 판의 관찰** | node 의 같은 지연 타이머끼리의 순서 · 가짓수 `2`·`1` | 동작 (1)·(4) |
+
+**선행** — [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md)(목록의 선행. ★ 거기서 **동기 `throw`** 를 봤다 — 여기서부터 **같은 코드가 「나중에」 돈다**) ·
+[20 — 제너레이터](../20-generators/2-summary.md)(★ **멈췄다 이어 도는 함수** — 동작 (1)의 `A1 → A2` 가 그 모양이다. 정본은 39번) ·
+[26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(`Array.fromAsync` 의 로그가 **이미 이 주제의 순서**를 쓰고 있었다).
+
+★★ **경계 — 연혁·「왜 단일 스레드인가」** 는 [`history/js/04-비동기-진화.md`](../../../../history/js/04-비동기-진화.md) 의 **「이벤트 루프 상세 — 매크로태스크 vs 마이크로태스크」** 절이 정본이다. 여기서는 **그 순서를 세 호스트에서 재고 층을 가른다.**
+★★★ 그 절의 Node 주석 「`process.nextTick` 이 마이크로태스크보다도 먼저」는 **CommonJS 에서만 맞았다** — **ES 모듈에서는 뒤집혔다**(동작 (3)). 그 문서는 고치지 않았다(이 배치의 범위 밖).
+★ **경계 — 프로세스·스레드 일반**은 [`process-thread/`](../../../../cs/foundations/process-thread/README.md)의 몫이다. ★ **경계 — 프라미스의 상태와 거부**는 [37번](../37-promise-state-model/2-summary.md), **`await` 의 틱 수**는 [39번](../39-async-await/2-summary.md).

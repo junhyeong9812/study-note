@@ -1,10 +1,5 @@
 # JavaScript 비동기 모델의 진화 — 콜백에서 async/await, 그리고 멀티스레드까지
 
-> 원본: `~/project/js-history/04-비동기-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
-> 연도·표준 이름(ES2015·ES2017·ES2018·ES2020)·코드·표는 원문 그대로다.\
-> ASCII 도식 7개(그중 2개는 원문 그림을 글자로 옮긴 것)와 「한눈에」의 카페 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
-> corpus 문서를 가리키는 자리는 원문의 `[[위키링크]]`를 풀어 이름으로만 적고, 그 문서가 처음 나오는 한 곳에 실제 경로(`~/project/local-llm/corpus/…`)를 병기했다 — 코드블록 주석 안의 `[[동시성-제어]]`만 원문 코드 인용 층이라 원형 그대로 두었다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -588,3 +583,10 @@ corpus 「동시성-제어」(corpus 경로: `~/project/local-llm/corpus/backend
 - [Atomics — MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics)
 - [ECMAScript 2015 (ES6) — Promise / Generator / Iterator](https://262.ecma-international.org/6.0/)
 - [ECMAScript 2017 (ES8) — async functions](https://262.ecma-international.org/8.0/)
+
+## 출처
+
+원본: `~/project/js-history/04-비동기-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
+연도·표준 이름(ES2015·ES2017·ES2018·ES2020)·코드·표는 원문 그대로다.\
+ASCII 도식 7개(그중 2개는 원문 그림을 글자로 옮긴 것)와 「한눈에」의 카페 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
+corpus 문서를 가리키는 자리는 원문의 `[[위키링크]]`를 풀어 이름으로만 적고, 그 문서가 처음 나오는 한 곳에 실제 경로(`~/project/local-llm/corpus/…`)를 병기했다 — 코드블록 주석 안의 `[[동시성-제어]]`만 원문 코드 인용 층이라 원형 그대로 두었다.

@@ -1,40 +1,5 @@
 # python/syntax/38-namedtuple-and-typeddict — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [`typing`(3.12)](https://docs.python.org/3.12/library/typing.html) — 첫머리의 *"The Python runtime does not enforce function and variable type annotations."* ·
->   `NamedTuple` 이 *"Typed version of `collections.namedtuple()`"* 라는 문단 · `TypedDict` 가 런타임에 평범한 `dict` 이고
->   `isinstance()`·`issubclass()` 에 못 쓴다는 문단
-> - [`collections.namedtuple`](https://docs.python.org/3.12/library/collections.html#collections.namedtuple) — 필드 이름 규칙 · `rename` · `_replace`·`_asdict`·`_fields`·`_field_defaults`
-> - CPython 3.12 의 `typing.py`(설치본 `/usr/lib/python3.12/typing.py`) — `_TypedDictMeta` 의 `__call__ = dict` 한 줄과
->   `__instancecheck__` 가 무조건 `TypeError` 를 던지는 몸통. ★ **이것은 구현이지 계약이 아니다**(구현 세부사항 절).
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ 던지는 형태는 `python3 - <파일` 하나로 고정했다.\
-> ★★★ **트레이스백을 한 블록도 싣지 않았다.** `isinstance(x, Movie)` 의 `TypeError` 도 **`typing.py` 를 지나 절대 경로가 박히므로**
-> `except` 로 받아 **예외 타입과 메시지만** 찍었다.\
-> ★★★ **타입 검사기가 이 머신에 없다** — [35번](../35-abc-and-protocol/2-summary.md)이 `shutil.which` 로 다섯 도구를 물어 **전부 `None`** 을 받았고,
-> 이 문서도 **첫 블록에서 다시 물었다**(같은 답). 그래서 이 문서의 어떤 문장도 「검사기가 이렇게 잡아 준다」로 적지 않는다.\
-> **버전** — `collections.namedtuple` 은 **2.6**, 클래스 문법 `typing.NamedTuple` 은 **3.6**, `TypedDict` 는 **3.8**(PEP 589),
-> `NotRequired`/`Required` 는 **3.11**(PEP 655) 부터다.\
-> ★ **구현 대 언어 보장 한 줄** — **`NamedTuple` 이 튜플이고 `TypedDict` 인스턴스가 평범한 `dict` 라는 것까지가 문서의 계약**이고,
-> **`_TypedDictMeta` 라는 이름과 그 `__call__` 이 `dict` 라는 것**은 CPython 쪽이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | ★ `__orig_bases__` 의 `repr` — 함수 객체라 **주소가 박힌다**. 그래서 **이름만 찍었다**(동작 1 의 ③) | ★★ 격자의 **참·거짓과 예외 종류** · 마지막 줄 **「갈린 칸 N / M」** |
-> | ★ `frozenset` 의 `repr` 순서 — `__required_keys__` 는 **`sorted()` 로 찍었다** | `__mro__` 의 **이름 목록** · `_fields` 의 순서 |
-> | 판이 오르면 예외 **문구**와 **메타클래스 이름** | `==`·`hash` 비교의 **참·거짓**(해시 숫자는 안 찍었다) |
->
-> ★ **이 주제의 블록에는 주소도 시간도 절대 경로도 한 곳도 안 찍힌다.** 재대조 전부 동일.\
-> **선행** — [11-tuple-and-unpacking](../11-tuple-and-unpacking/2-summary.md)(★★ **튜플의 `==`·언패킹·불변**) ·
-> [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(★★ **`dict` 와 키 요건**) ·
-> [36-dataclasses](../36-dataclasses/2-summary.md)(★★ **격자의 넷째 열 — 보통 클래스 쪽 대비**) ·
-> [35-abc-and-protocol](../35-abc-and-protocol/2-summary.md)(★ **런타임이 안 막는 것 · 검사기 부재 판정**).
-
 ## 한눈에 — 쉽게 말하면
 
 **넷은 「라벨을 붙인 상자」인데 상자의 재질이 다르다.**
@@ -925,3 +890,37 @@ C._fields · C._field_defaults · C.__required_keys__ · C.__optional_keys__
   어노테이션을 되살려 읽는 함수의 정본은 [40번](../40-type-hints-at-runtime/2-summary.md)이다.
 * ★ **런타임에 모양을 검사해 주는 라이브러리**들은 전부 **어노테이션을 읽어 스스로 검사하는** 쪽이다 —
   「런타임은 안 본다」의 **예외가 아니라, 그 빈자리를 채우는 제3자**다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [`typing`(3.12)](https://docs.python.org/3.12/library/typing.html) — 첫머리의 *"The Python runtime does not enforce function and variable type annotations."* ·
+  `NamedTuple` 이 *"Typed version of `collections.namedtuple()`"* 라는 문단 · `TypedDict` 가 런타임에 평범한 `dict` 이고
+  `isinstance()`·`issubclass()` 에 못 쓴다는 문단
+- [`collections.namedtuple`](https://docs.python.org/3.12/library/collections.html#collections.namedtuple) — 필드 이름 규칙 · `rename` · `_replace`·`_asdict`·`_fields`·`_field_defaults`
+- CPython 3.12 의 `typing.py`(설치본 `/usr/lib/python3.12/typing.py`) — `_TypedDictMeta` 의 `__call__ = dict` 한 줄과
+  `__instancecheck__` 가 무조건 `TypeError` 를 던지는 몸통. ★ **이것은 구현이지 계약이 아니다**(구현 세부사항 절).
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ 던지는 형태는 `python3 - <파일` 하나로 고정했다.\
+★★★ **트레이스백을 한 블록도 싣지 않았다.** `isinstance(x, Movie)` 의 `TypeError` 도 **`typing.py` 를 지나 절대 경로가 박히므로**
+`except` 로 받아 **예외 타입과 메시지만** 찍었다.\
+★★★ **타입 검사기가 이 머신에 없다** — [35번](../35-abc-and-protocol/2-summary.md)이 `shutil.which` 로 다섯 도구를 물어 **전부 `None`** 을 받았고,
+이 문서도 **첫 블록에서 다시 물었다**(같은 답). 그래서 이 문서의 어떤 문장도 「검사기가 이렇게 잡아 준다」로 적지 않는다.\
+**버전** — `collections.namedtuple` 은 **2.6**, 클래스 문법 `typing.NamedTuple` 은 **3.6**, `TypedDict` 는 **3.8**(PEP 589),
+`NotRequired`/`Required` 는 **3.11**(PEP 655) 부터다.\
+★ **구현 대 언어 보장 한 줄** — **`NamedTuple` 이 튜플이고 `TypedDict` 인스턴스가 평범한 `dict` 라는 것까지가 문서의 계약**이고,
+**`_TypedDictMeta` 라는 이름과 그 `__call__` 이 `dict` 라는 것**은 CPython 쪽이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| ★ `__orig_bases__` 의 `repr` — 함수 객체라 **주소가 박힌다**. 그래서 **이름만 찍었다**(동작 1 의 ③) | ★★ 격자의 **참·거짓과 예외 종류** · 마지막 줄 **「갈린 칸 N / M」** |
+| ★ `frozenset` 의 `repr` 순서 — `__required_keys__` 는 **`sorted()` 로 찍었다** | `__mro__` 의 **이름 목록** · `_fields` 의 순서 |
+| 판이 오르면 예외 **문구**와 **메타클래스 이름** | `==`·`hash` 비교의 **참·거짓**(해시 숫자는 안 찍었다) |
+
+★ **이 주제의 블록에는 주소도 시간도 절대 경로도 한 곳도 안 찍힌다.** 재대조 전부 동일.\
+**선행** — [11-tuple-and-unpacking](../11-tuple-and-unpacking/2-summary.md)(★★ **튜플의 `==`·언패킹·불변**) ·
+[12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(★★ **`dict` 와 키 요건**) ·
+[36-dataclasses](../36-dataclasses/2-summary.md)(★★ **격자의 넷째 열 — 보통 클래스 쪽 대비**) ·
+[35-abc-and-protocol](../35-abc-and-protocol/2-summary.md)(★ **런타임이 안 막는 것 · 검사기 부재 판정**).

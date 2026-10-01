@@ -1,18 +1,5 @@
 # kotlin/syntax/17 — 위임 프로퍼티: `by lazy`·`observable`·`Map` 위임 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [16번 주제](../16-properties-backing-field-lateinit-const/)다.
-> ★ **backing field 와 `lateinit` 은 [16번 주제](../16-properties-backing-field-lateinit-const/)가 정본**이고,
-> `inline` 은 [11번 주제](../11-inline-functions/), 연산자 규약 전반은 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/),
-> **클래스** 위임(`class A : B by b`)은 [목록의 **21번 주제**](../21-class-delegation-by/)가 정본이다.
-> 여기는 **프로퍼티** 위임만 묻는다.
-> 이 주제는 [목록의 **21번 주제**](../21-class-delegation-by/)·**31번 주제**·**35번 주제**의 뿌리다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-> ⚠️ 8번은 **되풀이 돌리면 답이 달라지는** 문항이다 — 외울 것은 숫자가 아니라 성질이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -254,6 +241,18 @@ fun main() {
 - 그 필드에는 무엇이 들어 있는가 — 값인가?
 - `lateinit` 과 `Delegates.notNull()` 은 각각 어느 타입에 쓰는가, 예외는 어떻게 다른가?
 - `class A : B by b` 는 이 주제인가 다른 주제인가?
+
+## 실행 환경
+
+선행은 [16번 주제](../16-properties-backing-field-lateinit-const/)다.
+★ **backing field 와 `lateinit` 은 [16번 주제](../16-properties-backing-field-lateinit-const/)가 정본**이고,
+`inline` 은 [11번 주제](../11-inline-functions/), 연산자 규약 전반은 [목록의 **31번 주제**](../31-operator-overloading-infix-and-invoke/),
+**클래스** 위임(`class A : B by b`)은 [목록의 **21번 주제**](../21-class-delegation-by/)가 정본이다.
+여기는 **프로퍼티** 위임만 묻는다.
+이 주제는 [목록의 **21번 주제**](../21-class-delegation-by/)·**31번 주제**·**35번 주제**의 뿌리다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
+⚠️ 8번은 **되풀이 돌리면 답이 달라지는** 문항이다 — 외울 것은 숫자가 아니라 성질이다.
 
 ## 복습 기록
 

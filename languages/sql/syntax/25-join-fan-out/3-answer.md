@@ -1,11 +1,5 @@
 # sql/25-조인 팬아웃 — 행 수와 집계가 틀어지는 자리 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> 예시의 `asg`·`skl`·`two` 는 **전부 CTE** 다 — `study` DB 에는 표를 만들지 않았다.\
-> 문서 근거는 [PG 18 Joined Tables](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -634,3 +628,10 @@ FROM emp e LEFT JOIN asg a ON a.emp_id = e.id;
 **재지 않은 것** — 세 처방의 **비용 비교**. 스캔 구조만 적었고 **수치는 적지 않았다.**\
 **버전** — 갈리는 것이 없다. 다음 버전에서는 **9번(MySQL 의 `LATERAL`)만** 다시 확인하면 된다.\
 **DB 잔재** — `asg`·`skl`·`two` 는 전부 CTE 다. `study` 에는 여전히 `emp`·`dept` 둘뿐이다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+예시의 `asg`·`skl`·`two` 는 **전부 CTE** 다 — `study` DB 에는 표를 만들지 않았다.\
+문서 근거는 [PG 18 Joined Tables](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 JOIN Clause](https://dev.mysql.com/doc/refman/8.4/en/join.html).

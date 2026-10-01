@@ -1,36 +1,5 @@
 # cpp/syntax/04 — `{}` 균일 초기화·좁히기·`initializer_list` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 목록 초기화](https://en.cppreference.com/w/cpp/language/list_initialization) · [집합체 초기화](https://en.cppreference.com/w/cpp/language/aggregate_initialization) · [`std::initializer_list`](https://en.cppreference.com/w/cpp/utility/initializer_list) · [값 초기화](https://en.cppreference.com/w/cpp/language/value_initialization) · [`auto` 자리표시자](https://en.cppreference.com/w/cpp/language/auto) · [GCC 13 Warning Options — `-Wnarrowing`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic Reference — `-Wc++11-narrowing`](https://clang.llvm.org/docs/DiagnosticsReference.html)
-> **실행 검증** — 이 문서의 모든 출력·경고·에러는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **gcc 13.3.0**(C 대비용) · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`brace01.cpp` \~ `brace14.cpp` · `desig01.c`) — 그래야 기계가 소스와 진단을 짝지을 수 있다.\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 컴파일 진단과 실행 출력이 한 블록에 같이 있으면 **진단이 먼저, 실행 출력이 나중**이다(서로 다른 프로세스라 순서가 고정된다).
-> **버전** — `{}` 목록 초기화 · 좁히기 금지 · `std::initializer_list` 는 **C++11부터**.\
-> **`auto x{1}` 이 `int` 가 되는 것은 C++17부터**(그 전에는 `initializer_list<int>` 였다).\
-> **지정 초기자는 C++20부터**이고, **괄호로 하는 집합체 초기화도 C++20부터**다((11)).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「구조체 집합체 초기화와 C99 지정 초기자」의 정본은 C 갈래다.\
-> 아직 폴더가 없어 링크를 걸지 못한다 — C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **21번**\
-> (구조체 선언·초기화·지정 초기자)이 그 자리다. 여기서는 **C++ 가 C 와 갈리는 지점만** 쓴다((10)).\
-> 「정수 승격과 통상 산술 변환」은 C 갈래 [`03번`](../../../c/syntax/03-integer-promotion-and-usual-arithmetic-conversions/)이 정본이고,\
-> 좁히기 판정이 「**정수 승격 뒤의 값이 들어가는가**」를 묻는 자리에서 그 규칙을 쓴다((3)).\
-> 「`sizeof`·정렬」은 C 갈래 [`08번`](../../../c/syntax/08-sizeof-alignment-and-offsetof/)이다.\
-> 「오버로드 해석의 일반 규칙」은 형제 [`01번`](../01-function-overloading-and-overload-resolution/)이 정본이다 —\
-> 여기는 그 규칙 **위에 `initializer_list` 가 얹히는 한 겹**만 쓴다((6)).
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 컴파일 시간 · 실행 파일 크기 | **진단 본문** · `파일:줄:칸` · 캐럿 줄 |
-> | 초기화하지 않은 변수의 값(이 문서는 **싣지 않았다**) | **`cc exit` 와 `run exit`**(갈라 적었다) |
-> | — | **경고 이름**(`-Wnarrowing` · `-Wvexing-parse` · `-Wc++11-narrowing`) |
-> | — | **에러/경고 건수**(`grep -c 'warning:'` 로 세었다) |
-> | — | 프로그램 출력 전부 — 이 주제에는 미정의 동작이 **없다** |
-
 ## 한눈에 — 쉽게 말하면
 
 **C++11 이 중괄호를 「어디에나 쓸 수 있는 초기화 문법」으로 만들었다.
@@ -1211,3 +1180,35 @@ int main() {
   정본은 [목록의 **24번 주제**](../24-explicit-and-converting-constructors/)다.
 - **집합체의 조건이 판마다 바뀌었다** — C++11·14·17·20 에서 「집합체인가」의 기준이 계속 좁아졌다\
   (기본 멤버 초기자·상속·`explicit` 기본 생성자). ★ 이 문서는 **C++20 기준 한 판만** 던졌다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 목록 초기화](https://en.cppreference.com/w/cpp/language/list_initialization) · [집합체 초기화](https://en.cppreference.com/w/cpp/language/aggregate_initialization) · [`std::initializer_list`](https://en.cppreference.com/w/cpp/utility/initializer_list) · [값 초기화](https://en.cppreference.com/w/cpp/language/value_initialization) · [`auto` 자리표시자](https://en.cppreference.com/w/cpp/language/auto) · [GCC 13 Warning Options — `-Wnarrowing`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic Reference — `-Wc++11-narrowing`](https://clang.llvm.org/docs/DiagnosticsReference.html)
+**실행 검증** — 이 문서의 모든 출력·경고·에러는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **gcc 13.3.0**(C 대비용) · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`brace01.cpp` \~ `brace14.cpp` · `desig01.c`) — 그래야 기계가 소스와 진단을 짝지을 수 있다.\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 컴파일 진단과 실행 출력이 한 블록에 같이 있으면 **진단이 먼저, 실행 출력이 나중**이다(서로 다른 프로세스라 순서가 고정된다).
+**버전** — `{}` 목록 초기화 · 좁히기 금지 · `std::initializer_list` 는 **C++11부터**.\
+**`auto x{1}` 이 `int` 가 되는 것은 C++17부터**(그 전에는 `initializer_list<int>` 였다).\
+**지정 초기자는 C++20부터**이고, **괄호로 하는 집합체 초기화도 C++20부터**다((11)).
+
+**경계** — 「구조체 집합체 초기화와 C99 지정 초기자」의 정본은 C 갈래다.\
+아직 폴더가 없어 링크를 걸지 못한다 — C 갈래 목록([`c/syntax/README.md`](../../../c/syntax/README.md))의 **21번**\
+(구조체 선언·초기화·지정 초기자)이 그 자리다. 여기서는 **C++ 가 C 와 갈리는 지점만** 쓴다((10)).\
+「정수 승격과 통상 산술 변환」은 C 갈래 [`03번`](../../../c/syntax/03-integer-promotion-and-usual-arithmetic-conversions/)이 정본이고,\
+좁히기 판정이 「**정수 승격 뒤의 값이 들어가는가**」를 묻는 자리에서 그 규칙을 쓴다((3)).\
+「`sizeof`·정렬」은 C 갈래 [`08번`](../../../c/syntax/08-sizeof-alignment-and-offsetof/)이다.\
+「오버로드 해석의 일반 규칙」은 형제 [`01번`](../01-function-overloading-and-overload-resolution/)이 정본이다 —\
+여기는 그 규칙 **위에 `initializer_list` 가 얹히는 한 겹**만 쓴다((6)).
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 컴파일 시간 · 실행 파일 크기 | **진단 본문** · `파일:줄:칸` · 캐럿 줄 |
+| 초기화하지 않은 변수의 값(이 문서는 **싣지 않았다**) | **`cc exit` 와 `run exit`**(갈라 적었다) |
+| — | **경고 이름**(`-Wnarrowing` · `-Wvexing-parse` · `-Wc++11-narrowing`) |
+| — | **에러/경고 건수**(`grep -c 'warning:'` 로 세었다) |
+| — | 프로그램 출력 전부 — 이 주제에는 미정의 동작이 **없다** |

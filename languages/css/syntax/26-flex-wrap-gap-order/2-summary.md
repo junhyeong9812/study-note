@@ -1,13 +1,5 @@
 # css/syntax/26 — flex 줄바꿈·`gap`·`order` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Flexible Box Layout Level 1](https://drafts.csswg.org/css-flexbox-1/) (§5.2 `flex-wrap`·§5.4 `order`·§8.4 `align-content`) · [CSS Box Alignment Level 3](https://drafts.csswg.org/css-align-3/) (`gap` 과 정렬 키워드의 정본). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 좌표·치수는 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 잰 값이다. `order` 의 탭 순서는 **CDP 로 실제 `Tab` 키를 넣어** 확인했다(`Runtime.evaluate` 로 값을 넣는 것은 사용자 조작이 아니다).\
-> **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 엔진 차이는 주장하지 않는다.
-> **버전** — Flexbox 는 Baseline **widely**(newly 2015-09-30 → widely 2018-03-30). **flex 의 `gap` 은 더 늦다** — **widely**(newly 2021-04-26 → widely 2023-10-26). 옛 코드가 마진으로 간격을 준 이유가 이것이다.
-> **여기서 다루지 않는 것** — 축·정렬 키워드의 정본은 [24번](../24-flexbox-axes/), 항목 크기 해결은 [25번](../25-flex-shorthand-and-sizing/)이다. 2차원 배치는 목록의 [**27**](../27-grid-track-sizing/)~[**30**](../30-subgrid/)번 주제(Grid)다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **줄바꿈을 켜면 flex 컨테이너는 「한 줄짜리 벨트」에서 「여러 줄짜리 선반」이 된다.**
@@ -573,3 +565,11 @@ DOM·`:first-child`·`textContent`·Tab 순서는 **전부 그대로**다((9)).\
 - **같은 `order` 값끼리는 DOM 순서가 유지된다**(안정 정렬). 그래서 `order: 1` 을 여럿에 줘도 그들 사이 순서는 안 흔들린다.
 - **`flex-wrap: wrap` 은 그 자체로 `align-content` 를 켜는 스위치이기도 하다**((5)). 「줄바꿈만 켜려던 것」이 세로 배치를 바꾸는 부작용을 낸다 — `wrap` 을 추가한 뒤 세로가 달라졌다면 이것을 의심한다.
 - **줄마다 항목 수가 달라 마지막 줄이 이상해 보이는 문제**는 flex 로는 근본 해결이 안 된다. `flex-grow` 를 끄고 고정 폭을 쓰거나 Grid([목록의 **27번 주제**](../27-grid-track-sizing/))로 옮기는 것이 표준 처방이다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Flexible Box Layout Level 1](https://drafts.csswg.org/css-flexbox-1/) (§5.2 `flex-wrap`·§5.4 `order`·§8.4 `align-content`) · [CSS Box Alignment Level 3](https://drafts.csswg.org/css-align-3/) (`gap` 과 정렬 키워드의 정본). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 좌표·치수는 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 잰 값이다. `order` 의 탭 순서는 **CDP 로 실제 `Tab` 키를 넣어** 확인했다(`Runtime.evaluate` 로 값을 넣는 것은 사용자 조작이 아니다).\
+**WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 엔진 차이는 주장하지 않는다.
+**버전** — Flexbox 는 Baseline **widely**(newly 2015-09-30 → widely 2018-03-30). **flex 의 `gap` 은 더 늦다** — **widely**(newly 2021-04-26 → widely 2023-10-26). 옛 코드가 마진으로 간격을 준 이유가 이것이다.
+**여기서 다루지 않는 것** — 축·정렬 키워드의 정본은 [24번](../24-flexbox-axes/), 항목 크기 해결은 [25번](../25-flex-shorthand-and-sizing/)이다. 2차원 배치는 목록의 [**27**](../27-grid-track-sizing/)~[**30**](../30-subgrid/)번 주제(Grid)다.

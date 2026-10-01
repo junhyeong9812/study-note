@@ -1,21 +1,5 @@
 # rust/syntax/27 — `derive` 매크로(`Debug`·`Clone`·`PartialEq`·`Default`·`Hash`) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Reference — Derive macros](https://doc.rust-lang.org/reference/attributes/derive.html) ·
-> [std — `trait Debug`](https://doc.rust-lang.org/std/fmt/trait.Debug.html) ·
-> [std — `trait Default`](https://doc.rust-lang.org/std/default/trait.Default.html) ·
-> [std — `trait Hash`](https://doc.rust-lang.org/std/hash/trait.Hash.html).
-> ★ `rustc --explain E0277` · `E0369` · `E0407` · `E0599` · `E0665` 는 **확인용으로만 열었고 본문에 옮기지 않았다.**
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다(한 블록만 `--emit=mir` 을 쓴다 — 배너에 적혀 있다).\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
-> ★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음). **`cargo expand` 도 안 썼다** —
-> 대신 **안정판 rustc 의 `--emit=mir`** 로 생성된 코드를 직접 본다((4)).
-> **버전** — 다섯 `derive` 는 1.0.0 부터다. **`enum` 에 `#[derive(Default)]` 는 1.62.0 부터**(`#[default]` 어트리뷰트).
-> `let ... else` 처럼 에디션에 묶인 문법이 아니라 **라이브러리·매크로 기능**이므로 에디션과 무관하다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 흔들리는 칸 / 안 흔들리는 칸
 
 | | 칸 | 왜 |
@@ -1109,3 +1093,19 @@ For more information about this error, try `rustc --explain E0277`.
 - **`#[derive(Copy)]` 와 `Drop` 의 배타** — `Drop` 이 있으면 `Copy` 를 못 붙인다
   ([**9번 주제**](../09-copy-clone-and-drop/)).
 - **`Hash` 의 `hash_slice`** — `Hash` 에는 슬라이스 전용 기본 메서드가 하나 더 있다. 파생은 안 건드린다.
+
+## 실행 환경
+
+**기준 소스** — [Reference — Derive macros](https://doc.rust-lang.org/reference/attributes/derive.html) ·
+[std — `trait Debug`](https://doc.rust-lang.org/std/fmt/trait.Debug.html) ·
+[std — `trait Default`](https://doc.rust-lang.org/std/default/trait.Default.html) ·
+[std — `trait Hash`](https://doc.rust-lang.org/std/hash/trait.Hash.html).
+★ `rustc --explain E0277` · `E0369` · `E0407` · `E0599` · `E0665` 는 **확인용으로만 열었고 본문에 옮기지 않았다.**
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 받은 것이다(한 블록만 `--emit=mir` 을 쓴다 — 배너에 적혀 있다).\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
+★★ **외부 크레이트를 하나도 쓰지 않았다**(네트워크 없음). **`cargo expand` 도 안 썼다** —
+대신 **안정판 rustc 의 `--emit=mir`** 로 생성된 코드를 직접 본다((4)).
+**버전** — 다섯 `derive` 는 1.0.0 부터다. **`enum` 에 `#[derive(Default)]` 는 1.62.0 부터**(`#[default]` 어트리뷰트).
+`let ... else` 처럼 에디션에 묶인 문법이 아니라 **라이브러리·매크로 기능**이므로 에디션과 무관하다.

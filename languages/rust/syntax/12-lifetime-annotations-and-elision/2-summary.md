@@ -1,21 +1,5 @@
 # rust/syntax/12 — 수명 표기 `'a`와 생략 규칙 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference — Lifetime elision](https://doc.rust-lang.org/reference/lifetime-elision.html) ·
-> [Reference — Trait and lifetime bounds](https://doc.rust-lang.org/reference/trait-bounds.html) ·
-> [Reference — Destructors(임시값 수명 연장)](https://doc.rust-lang.org/reference/destructors.html) ·
-> [The Rust Book 10.3](https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html) ·
-> `rustc --explain E0106` / `E0597` / `E0505` / `E0499` / `E0515` / `E0716`.
-> ★ `--explain` 은 **확인용으로만 열었고 본문에 옮기지 않았다.** 본문의 진단은 전부 내가 던져서 받은 것이다.
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다 —\
-> 붙이지 않으면 **다른 언어를 컴파일하는 셈**이고, 이 주제에는 **2021 에서 거부되고 2024 에서 통과하는 파일**이 실제로 있다(아래 (8)).\
-> 소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단의 줄 번호는 그 파일 기준**이다.
-> **버전** — 수명 생략 규칙 세 개는 1.0.0부터다. `'_`(익명 수명)는 **2018 에디션**부터 쓸 수 있고,\
-> `mismatched_lifetime_syntaxes` 경고는 **이 툴체인에서 기본 켜져 있는 것을 실측**했다(rustc 판에 달렸다 — 아래 「구현 세부사항 대 언어 보장」).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **빌린 물건에는 「누구한테서 빌렸는지」가 적혀 있어야 반납할 자리를 안다.**
@@ -1323,3 +1307,19 @@ let g: fn(&str) -> &'static str = first_word;         // 틀리면 E0308 이 실
   `Box<dyn Error>` 가 왜 `'static` 을 기본으로 갖는지가 거기서 나온다 — [목록의 **24번 주제**](../24-error-type-design/)·**33번 주제**.
 - ★ **`'a` 를 읽는 요령** — 시그니처에서 **같은 이름이 몇 번 나오는지**만 센다.\
   두 번 이상 나오면 **그 자리들이 한 덩어리로 묶였다**는 뜻이고, 그것이 호출부가 지게 될 제약의 전부다.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference — Lifetime elision](https://doc.rust-lang.org/reference/lifetime-elision.html) ·
+[Reference — Trait and lifetime bounds](https://doc.rust-lang.org/reference/trait-bounds.html) ·
+[Reference — Destructors(임시값 수명 연장)](https://doc.rust-lang.org/reference/destructors.html) ·
+[The Rust Book 10.3](https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html) ·
+`rustc --explain E0106` / `E0597` / `E0505` / `E0499` / `E0515` / `E0716`.
+★ `--explain` 은 **확인용으로만 열었고 본문에 옮기지 않았다.** 본문의 진단은 전부 내가 던져서 받은 것이다.
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다 —\
+붙이지 않으면 **다른 언어를 컴파일하는 셈**이고, 이 주제에는 **2021 에서 거부되고 2024 에서 통과하는 파일**이 실제로 있다(본문 (8)).\
+소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단의 줄 번호는 그 파일 기준**이다.
+**버전** — 수명 생략 규칙 세 개는 1.0.0부터다. `'_`(익명 수명)는 **2018 에디션**부터 쓸 수 있고,\
+`mismatched_lifetime_syntaxes` 경고는 **이 툴체인에서 기본 켜져 있는 것을 실측**했다(rustc 판에 달렸다 — 본문 「구현 세부사항 대 언어 보장」).

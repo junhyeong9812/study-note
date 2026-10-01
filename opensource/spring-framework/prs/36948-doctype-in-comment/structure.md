@@ -1,9 +1,5 @@
 # PR #36948 — 무대의 실구조와 워크플로우
 
-> PR #36948의 무대가 되는 실구조·워크플로우. 문제·수정은 README.md, 테스트는 tests.md 참조.
->
-> 기준: upstream main 526c706d1c3. 이 문서의 `파일:줄` 인용은 모두 이 커밋 기준이며, PR 시점의 base 코드와 다른 곳은 본문에서 명시한다.
-
 이 문서가 다루는 것은 `XmlValidationModeDetector`가 XML 앞부분을 한 줄씩 훑으며 굴리는 **작은 상태 기계**의 실구조다.\
 상태는 `inComment` 필드 하나뿐이고, 전이를 일으키는 사건은 `<!--`와 `-->` 두 토큰뿐이다.\
 PR이 바꾼 줄은 한 줄이지만, 그 줄은 상태 기계의 한 전이 경로가 상태를 읽지 않고 있던 사각지대를 메운다.
@@ -568,3 +564,7 @@ PR이 추가한 픽스처의 "See the DOCTYPE notes for legacy configs"가 정�
 `inComment`(`:81`)는 인스턴스 필드이므로 검출기는 동시 호출에 안전하지 않다.\
 그러나 `detectValidationMode`가 진입 즉시 `false`로 리셋하므로(`:93`) 순차 재사용은 안전하다.\
 `XmlBeanDefinitionReader`가 검출기를 `final` 필드로 하나만 들고 모든 리소스에 재사용하는 배치(`XmlBeanDefinitionReader.java:136`)가 이 리셋에 기대고 있고, 테스트가 파라미터화 케이스들 사이에서 같은 인스턴스를 공유해도 오염되지 않는 이유도 같다.
+
+## 출처
+
+기준: upstream main 526c706d1c3. 이 문서의 `파일:줄` 인용은 모두 이 커밋 기준이며, PR 시점의 base 코드와 다른 곳은 본문에서 명시한다.

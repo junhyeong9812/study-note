@@ -1,11 +1,5 @@
 # TypeScript — 문법·API 주제 목록
 
-> 1단계 리스트업이다. **01\~17 은 3파일(질문·서머리·정답)이 있고** 제목에 링크를 걸어 뒀다. 나머지는 아직 없다.
-> 기준 소스: [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html) · [TSConfig 레퍼런스](https://www.typescriptlang.org/tsconfig/) · [공식 릴리스 노트/블로그](https://devblogs.microsoft.com/typescript/)
-> 실행 검증: **가능**(2026-09-24 갱신). 이 머신에 `tsc` 가 설치됐다 — `tsc --version` 이 `Version 7.0.2`, `node --version` 이 `v18.19.1` 이다. 01\~05 의 3파일은 전부 **직접 던져서 받은 진단·방출된 JS·`node` 실행 출력**으로 접지했고, 블록은 캡처 스크립트가 파일로 받아 조립했다(손으로 옮겨 적지 않았다). 앞으로의 주제도 같은 방식으로 쓴다 — **돌려 보지 않은 결과는 싣지 않는다**.
-> ★★ 실측에서 드러난 주의 셋 — ① **`tsc` 진단은 stdout 으로 나온다**(`2>` 로 받으면 빈 파일이 된다) ② **`--pretty` 기본값이 `true`** 라 터미널과 파이프의 출력이 다르다(문서는 전부 `--pretty false`) ③ **`tsc --help --all` 이 이미 제거된 옵션(`outFile`·`downlevelIteration`)을 아직 싣는다** — 옵션 유무는 도움말이 아니라 **던져서** 확인한다.
-> 기준일 2026-09-20 (실행 환경 갱신 2026-09-24).
-
 ## 이 언어에서 무엇을 자르는 축
 
 TS 는 **JS 문법에 타입 층을 덮고 실행 전에 지우는 언어**다. 그래서 이 목록은 **타입 시스템만** 다룬다 — JS 문법(구조 분해·클래스·모듈·`async`)은 [JS 목록](../../js/syntax/README.md)이 정본이고, 여기서는 필요한 자리에 **`JS n` 형식으로 선행을 건다**.
@@ -97,3 +91,10 @@ TS 는 **JS 문법에 타입 층을 덮고 실행 전에 지우는 언어**다. 
 | 7.0 | `strict` 기본 `true`, `module` 기본 `esnext`, `types` 기본 `[]`, `rootDir` 기본 `./`, `es5`·`downlevelIteration`·`baseUrl`·`moduleResolution: node10/classic`·AMD/UMD 제거, `namespace` 의 `module` 표기 금지, 템플릿 리터럴 타입의 유니코드 취급 변경, JSDoc 해석 정렬 (#39·#43·#38·#35·#34·#27·#48) |
 
 버전 의존 기능은 **행에 도입 버전을 적는 것을 원칙**으로 한다. 3파일 작성 시 `npx tsc --noEmit` 를 쓸 수 있게 되면, 각 주제의 정답 파일에 **어느 버전의 `tsc` 로 확인했는지**를 남긴다.
+
+## 실행 환경
+
+기준 소스: [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html) · [TSConfig 레퍼런스](https://www.typescriptlang.org/tsconfig/) · [공식 릴리스 노트/블로그](https://devblogs.microsoft.com/typescript/)
+실행 검증: **가능**(2026-09-24 갱신). 이 머신에 `tsc` 가 설치됐다 — `tsc --version` 이 `Version 7.0.2`, `node --version` 이 `v18.19.1` 이다. 01\~05 의 3파일은 전부 **직접 던져서 받은 진단·방출된 JS·`node` 실행 출력**으로 접지했고, 블록은 캡처 스크립트가 파일로 받아 조립했다(손으로 옮겨 적지 않았다). 앞으로의 주제도 같은 방식으로 쓴다 — **돌려 보지 않은 결과는 싣지 않는다**.
+★★ 실측에서 드러난 주의 셋 — ① **`tsc` 진단은 stdout 으로 나온다**(`2>` 로 받으면 빈 파일이 된다) ② **`--pretty` 기본값이 `true`** 라 터미널과 파이프의 출력이 다르다(문서는 전부 `--pretty false`) ③ **`tsc --help --all` 이 이미 제거된 옵션(`outFile`·`downlevelIteration`)을 아직 싣는다** — 옵션 유무는 도움말이 아니라 **던져서** 확인한다.
+기준일 2026-09-20 (실행 환경 갱신 2026-09-24).

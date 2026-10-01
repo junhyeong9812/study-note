@@ -1,14 +1,5 @@
 # web-api/31 — `Blob`·`File`·`FileReader` 와 오브젝트 URL: 미리보기·업로드·저장 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ③ 「같은 것을 두 번 읽기」 — 풀지 않은 오브젝트 URL 하나를 「누가 · 언제」 읽나로 바꿔 가며 `fetch` 하는 「URL 수명 표」다.** 풀기 전 · 푼 뒤 · 같은 출처의 다른 탭 · 다른 출처의 탭 · **만든 문서가 떠난 뒤 · 닫힌 뒤** · unload 리스너를 단 문서가 떠난 뒤. 그 옆에 **넘기는 길 셋**(미리보기 · 업로드 · 저장)을 서버 로그와 내려받은 파일로 싣는다.\
-> **기준 소스** — [W3C File API](https://w3c.github.io/FileAPI/) 의 `interface File : Blob` · `slice()`(「**새 `Blob`** 을 돌려준다」) · FileReader 의 read operation(「state 를 `loading` 으로 · **`loadstart` 를 태스크로** 큐에 · 대략 50ms 마다 `progress` · 끝나면 `load` → `loadend`」 · `LOADING = 1`) · blob URL store(「user agent 마다 **하나**」 · 항목 = 객체 + **만든 환경**) · 「**Lifetime of blob URLs** — unloading document cleanup steps 에서 **그 문서의 환경이 만든 항목을 지운다**」 · `revokeObjectURL`(「blob 이 아니거나 항목이 없거나 **다른 저장소 분할이면 조용히 끝난다**」 · 「풀린 뒤의 역참조는 **network error**」 · 「**풀기 전에 시작한 요청은 성공해야 한다**」) · 접근 제한(「**storage key 가 같은 환경에서만** fetch 할 수 있다」) · [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 scheme fetch `blob`(「메서드가 `GET` 이 아니거나 **blob URL entry 가 null 이면 network error**」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 파일은 **73바이트 PNG(3×2 빨강)** 하나를 CDP `DOM.setFileInputFiles` 로 파일 입력에 넣었고, 저장은 CDP `Browser.setDownloadBehavior` 로 받은 폴더에 **실제로 떨어진 파일**을 원본과 바이트째 견줬다. 하네스는 [28번 주제](../28-cors-simple-and-preflight/2-summary.md)의 (1)이다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — ★★ **[30번 주제](../30-request-body-and-content-type/2-summary.md)** — `FormData` 의 파일 칸(`filename`·`Content-Type`)과 폼 제출의 본문. 여기서는 **파일 입력의 `File`** 을 그대로 넘긴다. ★ **HTML 갈래 31번**(파일 업로드 — `accept`/`multiple`/`capture`)은 폴더가 아직 없다 — 마크업 쪽 파일 입력은 그쪽 몫이다. ★ **[24번 주제](../24-document-lifecycle-events/2-summary.md)의 (4)** — **`unload` 리스너 하나가 문서를 bfcache 에서 뺀다.** (5)에서 그것을 재지 않고 **스위치로** 쓴다.\
-> **경계** — ★ **메모리는 재지 않았다.** 「`revokeObjectURL` 을 안 하면 메모리가 샌다」는 이 편이 **주장하지 않는다** — 관찰한 것은 **「그 URL 이 아직 읽힌다」** 까지다. 힙·가비지 컬렉션의 원리는 [`../../memory-management/`](../../../cs/foundations/memory-management/README.md) 의 몫이다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -167,7 +158,7 @@ $ python3 wa28b-net.py blob wa28b-31-file.html wa28b-31-dot.png | sed -n '1,12p'
 (exit 0)
 ```
 
-- **가 — `File` 은 `Blob` 이다**(`instanceof` 둘 다 `true` — 명세의 `interface File : Blob`). ★ **`f.slice(0, 8)` 은 `File` 이 아니라 `Blob`** 이고(`size=8`), 바이트는 PNG 서명 `89 50 4e 47 0d 0a 1a 0a` 다. **복사를 하는지는 재지 않았다**(머리말).
+- **가 — `File` 은 `Blob` 이다**(`instanceof` 둘 다 `true` — 명세의 `interface File : Blob`). ★ **`f.slice(0, 8)` 은 `File` 이 아니라 `Blob`** 이고(`size=8`), 바이트는 PNG 서명 `89 50 4e 47 0d 0a 1a 0a` 다. **복사를 하는지는 재지 않았다**(맨 위 부분).
 - **나 — 오브젝트 URL 은 `blob:` + 이 문서의 출처 + `/` + 36자**(UUID)다 — 명세의 「generate a new blob URL」 그대로다. `<img>` 가 그대로 **3×2** 로 읽었다.
 - ★★ **다 — `FileReader` 는 이벤트형이다** — `readAsDataURL` 이 **돌아온 직후 `readyState=1`**(LOADING)이고 **그 뒤에** `loadstart → progress → load → loadend`. 명세 — `loadstart` 는 **태스크로 큐에** 넣는다. ★ 73바이트에도 **`progress` 가 한 번** 났다 — 명세 문장은 「대략 50ms 마다」라 이 칸은 **구현 관찰**이다. 결과는 **`data:image/png;base64,` 로 시작하는 122글자** — 바이트를 글자로 **바꿔 담은 사본**이다.
 - **라 — 올리기 둘**은 서버 로그로 본다((2)).
@@ -410,4 +401,13 @@ $ python3 wa28b-net.py blob wa28b-31-file.html wa28b-31-dot.png | sed -n '/^다�
 
 - **`MediaSource` 의 오브젝트 URL** · **워커가 만든 URL** 은 던지지 않았다(명세도 워커 훅을 숙제로 적었다).
 - **최상위 문서로 `blob:` URL 을 여는 것**(새 탭에서 바로 보기)은 접근 제한의 예외다(명세) — 던지지 않았다.
-- **메모리** — 힙 스냅숏·프로세스 메모리로 「남는 것」을 재는 일은 이 판의 몫이 아니다(머리말).
+- **메모리** — 힙 스냅숏·프로세스 메모리로 「남는 것」을 재는 일은 이 판의 몫이 아니다(「실행 환경」).
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ③ 「같은 것을 두 번 읽기」 — 풀지 않은 오브젝트 URL 하나를 「누가 · 언제」 읽나로 바꿔 가며 `fetch` 하는 「URL 수명 표」다.** 풀기 전 · 푼 뒤 · 같은 출처의 다른 탭 · 다른 출처의 탭 · **만든 문서가 떠난 뒤 · 닫힌 뒤** · unload 리스너를 단 문서가 떠난 뒤. 그 옆에 **넘기는 길 셋**(미리보기 · 업로드 · 저장)을 서버 로그와 내려받은 파일로 싣는다.\
+**기준 소스** — [W3C File API](https://w3c.github.io/FileAPI/) 의 `interface File : Blob` · `slice()`(「**새 `Blob`** 을 돌려준다」) · FileReader 의 read operation(「state 를 `loading` 으로 · **`loadstart` 를 태스크로** 큐에 · 대략 50ms 마다 `progress` · 끝나면 `load` → `loadend`」 · `LOADING = 1`) · blob URL store(「user agent 마다 **하나**」 · 항목 = 객체 + **만든 환경**) · 「**Lifetime of blob URLs** — unloading document cleanup steps 에서 **그 문서의 환경이 만든 항목을 지운다**」 · `revokeObjectURL`(「blob 이 아니거나 항목이 없거나 **다른 저장소 분할이면 조용히 끝난다**」 · 「풀린 뒤의 역참조는 **network error**」 · 「**풀기 전에 시작한 요청은 성공해야 한다**」) · 접근 제한(「**storage key 가 같은 환경에서만** fetch 할 수 있다」) · [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 scheme fetch `blob`(「메서드가 `GET` 이 아니거나 **blob URL entry 가 null 이면 network error**」). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. 파일은 **73바이트 PNG(3×2 빨강)** 하나를 CDP `DOM.setFileInputFiles` 로 파일 입력에 넣었고, 저장은 CDP `Browser.setDownloadBehavior` 로 받은 폴더에 **실제로 떨어진 파일**을 원본과 바이트째 견줬다. 하네스는 [28번 주제](../28-cors-simple-and-preflight/2-summary.md)의 (1)이다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — ★★ **[30번 주제](../30-request-body-and-content-type/2-summary.md)** — `FormData` 의 파일 칸(`filename`·`Content-Type`)과 폼 제출의 본문. 여기서는 **파일 입력의 `File`** 을 그대로 넘긴다. ★ **HTML 갈래 31번**(파일 업로드 — `accept`/`multiple`/`capture`)은 폴더가 아직 없다 — 마크업 쪽 파일 입력은 그쪽 몫이다. ★ **[24번 주제](../24-document-lifecycle-events/2-summary.md)의 (4)** — **`unload` 리스너 하나가 문서를 bfcache 에서 뺀다.** (5)에서 그것을 재지 않고 **스위치로** 쓴다.\
+**경계** — ★ **메모리는 재지 않았다.** 「`revokeObjectURL` 을 안 하면 메모리가 샌다」는 이 편이 **주장하지 않는다** — 관찰한 것은 **「그 URL 이 아직 읽힌다」** 까지다. 힙·가비지 컬렉션의 원리는 [`../../memory-management/`](../../../cs/foundations/memory-management/README.md) 의 몫이다.

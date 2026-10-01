@@ -1,14 +1,5 @@
 # sql/58-`EXPLAIN` 읽기 — 계획 트리의 구조 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 계획·출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 계획은 없다.\
-> **측정 조건** — 숫자 칸(3\~7·12\~14번)은 `study` 안의 **20만 행 표 `t58_big`**(`id` PK · `grp` 인덱스)에서 찍었다.\
-> PG 쪽은 `BEGIN … ROLLBACK` 안에서, MySQL 쪽은 `DROP TABLE IF EXISTS` 로 지웠다. **`emp`·`dept` 는 읽기만 했다.**\
-> PG 계획 중 `max_parallel_workers_per_gather = 0` 을 건 것은 그 블록에 적었다.\
-> ★ **모든 계획 블록은 제출 직전에 다시 찍어 대조했다** — 결과는 맨 끝 「실행 검증」에 있다.\
-> 문서 근거는 [PG 18 Using EXPLAIN](https://www.postgresql.org/docs/18/using-explain.html) · [MySQL 8.4 EXPLAIN Output Format](https://dev.mysql.com/doc/refman/8.4/en/explain-output.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -685,3 +676,13 @@ EXPLAIN ANALYZE SELECT …    실제로 돌린다.  actual rows= 가 붙는다
 
 **버전** — `EXPLAIN FORMAT=TREE` 는 MySQL 8.0.16 부터다. PG 18 은 `actual rows` 를 **소수 둘째 자리까지**\
 찍는데(예: `rows=10.00`), 이는 이전 버전과 표기가 다르다. 버전이 오르면 **1·8·12·13번**을 다시 돌린다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 계획·출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 계획은 없다.\
+**측정 조건** — 숫자 칸(3\~7·12\~14번)은 `study` 안의 **20만 행 표 `t58_big`**(`id` PK · `grp` 인덱스)에서 찍었다.\
+PG 쪽은 `BEGIN … ROLLBACK` 안에서, MySQL 쪽은 `DROP TABLE IF EXISTS` 로 지웠다. **`emp`·`dept` 는 읽기만 했다.**\
+PG 계획 중 `max_parallel_workers_per_gather = 0` 을 건 것은 그 블록에 적었다.\
+★ **모든 계획 블록은 제출 직전에 다시 찍어 대조했다** — 결과는 맨 끝 「실행 검증」에 있다.\
+문서 근거는 [PG 18 Using EXPLAIN](https://www.postgresql.org/docs/18/using-explain.html) · [MySQL 8.4 EXPLAIN Output Format](https://dev.mysql.com/doc/refman/8.4/en/explain-output.html).

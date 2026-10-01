@@ -1,16 +1,5 @@
 # go/syntax/17 — 구조체: 리터럴·비교 가능성·필드 태그·정렬 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Struct types · Composite literals ·
-> Comparison operators · Map types · Type identity · Conversions 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> **버전** — 비교 가능성·리터럴·태그 규칙은 **1.0부터 지금까지 같다.**
-> 이 주제에서 판 경계가 있는 것은 **태그를 무시하는 변환**(1.8)과 `slices`·`cmp` 패키지(1.21) 둘이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 ## 이 갈래가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
@@ -1325,3 +1314,14 @@ func main() {
   명세는 순서를 비교·정체성의 기준으로 쓰므로 컴파일러가 마음대로 못 바꾼다.
 - 제네릭의 **`comparable` 제약**(1.18)은 이 규칙을 타입 파라미터로 옮긴 것이다.
   1.20부터 **비교 가능한 인터페이스도 `comparable` 을 만족**하게 바뀌었다 — 정본은 [목록의 **37번 주제**](../37-generics-type-parameters-and-constraint-interfaces/)다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Struct types · Composite literals ·
+Comparison operators · Map types · Type identity · Conversions 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+**버전** — 비교 가능성·리터럴·태그 규칙은 **1.0부터 지금까지 같다.**
+이 주제에서 판 경계가 있는 것은 **태그를 무시하는 변환**(1.8)과 `slices`·`cmp` 패키지(1.21) 둘이다.

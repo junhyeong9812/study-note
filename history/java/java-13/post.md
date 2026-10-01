@@ -1,10 +1,5 @@
 # Java 13 (2019년 9월)
 
-> 원본: `~/project/java-history/java/java-13.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JEP 번호·클래스/메서드 이름·코드블록 2개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
-> 「한눈에」의 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 교차 주 1개는 원문에 없는 보충이다.\
-> 원문이 94줄이고 도식이 없어, 새 도식은 그리지 않았다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -180,3 +175,10 @@ int result = switch (code) {
 - [The arrival of Java 13! — Oracle Blog](https://blogs.oracle.com/java-platform-group/the-arrival-of-java-13)
 - [Significant Changes in JDK 13 Release — Oracle Docs](https://docs.oracle.com/en/java/javase/24/migrate/significant-changes-jdk-13.html)
 - [Java version history — Wikipedia](https://en.wikipedia.org/wiki/Java_version_history)
+
+## 출처
+
+원본: `~/project/java-history/java/java-13.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JEP 번호·클래스/메서드 이름·코드블록 2개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
+「한눈에」의 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 교차 주 1개는 원문에 없는 보충이다.\
+원문이 94줄이고 도식이 없어, 새 도식은 그리지 않았다.

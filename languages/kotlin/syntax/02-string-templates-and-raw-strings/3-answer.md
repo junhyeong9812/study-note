@@ -1,9 +1,5 @@
 # kotlin/syntax/02 — 문자열 템플릿·raw string·멀티라인 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> Java 텍스트 블록 출력은 같은 JDK 의 `javac`/`java` 결과이고, **그 주제의 정본은 [`../../../java/syntax/32-text-blocks/`](../../../java/syntax/32-text-blocks/)** 다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -422,3 +418,8 @@ OpenJDK Runtime Environment Temurin-21.0.5+11 (build 21.0.5+11-LTS)
 
 **세 번 찍은 것** — `cat.kt` 는 **기본·`-jvm-target 21`·`-Xstring-concat=inline` 세 조건**에서 각각 `javap` 를 찍었다.
 한 조건만 찍었으면 "Kotlin 템플릿은 `StringBuilder` 다" 라는 틀린 결론을 그대로 실었을 것이다.
+
+## 실행 환경
+
+모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+Java 텍스트 블록 출력은 같은 JDK 의 `javac`/`java` 결과이고, **그 주제의 정본은 [`../../../java/syntax/32-text-blocks/`](../../../java/syntax/32-text-blocks/)** 다.

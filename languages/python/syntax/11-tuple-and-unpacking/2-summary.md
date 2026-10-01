@@ -1,21 +1,5 @@
 # python/syntax/11-tuple-and-unpacking — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [6.2.3. Parenthesized forms](https://docs.python.org/3.12/reference/expressions.html#parenthesized-forms) — 「**괄호가 튜플을 만드는 게 아니다**」
-> - [6.15. Expression lists](https://docs.python.org/3.12/reference/expressions.html#expression-lists) — 쉼표가 튜플을 만든다 · 한 원소 튜플의 쉼표
-> - [7.2. Assignment statements](https://docs.python.org/3.12/reference/simple_stmts.html#assignment-statements) — 대상 목록·별표 대상의 규칙
-> - [Tuples](https://docs.python.org/3.12/library/stdtypes.html#tuples) — `tuple(iterable)` 이 이미 튜플이면 그대로 돌려준다
-> - [`collections.namedtuple`](https://docs.python.org/3.12/library/collections.html#collections.namedtuple) · [`typing.NamedTuple`](https://docs.python.org/3.12/library/typing.html#typing.NamedTuple)
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> **버전** — 별표 언패킹은 3.0(PEP 3132), 리터럴·호출 안의 `*`/`**` 확장은 3.5(PEP 448). `getsizeof`·바이트코드 명령 이름은 **이 판의 관찰**이다.
-> **선행** — [01-object-and-name-binding](../01-object-and-name-binding/2-summary.md)(스왑의 `dis` 정본) ·
-> [09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md)(시퀀스 공통 연산·`t[:]`) ·
-> [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md)(불변 안의 가변 정본).
-
 ## 한눈에 — 쉽게 말하면
 
 **튜플을 만드는 것은 괄호가 아니라 쉼표다. 괄호는 「묶어 읽어라」는 표시일 뿐이다.**
@@ -742,3 +726,18 @@ True True True True
 - **`operator.itemgetter`** 는 튜플 키를 만들어 준다([10번](../10-list-methods-and-sort-key/2-summary.md)).
 - **`(x for x in ...)`** 은 튜플 컴프리헨션이 아니라 **제너레이터 표현식**이다([목록의 **15번 주제**](../15-generator-expressions-lazy-eval/)) —
   튜플이 필요하면 `tuple(x for x in ...)`.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [6.2.3. Parenthesized forms](https://docs.python.org/3.12/reference/expressions.html#parenthesized-forms) — 「**괄호가 튜플을 만드는 게 아니다**」
+- [6.15. Expression lists](https://docs.python.org/3.12/reference/expressions.html#expression-lists) — 쉼표가 튜플을 만든다 · 한 원소 튜플의 쉼표
+- [7.2. Assignment statements](https://docs.python.org/3.12/reference/simple_stmts.html#assignment-statements) — 대상 목록·별표 대상의 규칙
+- [Tuples](https://docs.python.org/3.12/library/stdtypes.html#tuples) — `tuple(iterable)` 이 이미 튜플이면 그대로 돌려준다
+- [`collections.namedtuple`](https://docs.python.org/3.12/library/collections.html#collections.namedtuple) · [`typing.NamedTuple`](https://docs.python.org/3.12/library/typing.html#typing.NamedTuple)
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+**버전** — 별표 언패킹은 3.0(PEP 3132), 리터럴·호출 안의 `*`/`**` 확장은 3.5(PEP 448). `getsizeof`·바이트코드 명령 이름은 **이 판의 관찰**이다.
+**선행** — [01-object-and-name-binding](../01-object-and-name-binding/2-summary.md)(스왑의 `dis` 정본) ·
+[09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md)(시퀀스 공통 연산·`t[:]`) ·
+[03-mutability-and-copying](../03-mutability-and-copying/2-summary.md)(불변 안의 가변 정본).

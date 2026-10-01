@@ -1,26 +1,5 @@
 # cpp/syntax/41 — 순차 컨테이너 선택 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — Containers library](https://en.cppreference.com/w/cpp/container) · [`std::vector`](https://en.cppreference.com/w/cpp/container/vector) · [`std::vector::push_back`](https://en.cppreference.com/w/cpp/container/vector/push_back) · [`std::deque`](https://en.cppreference.com/w/cpp/container/deque) · [`std::deque::push_front`](https://en.cppreference.com/w/cpp/container/deque/push_front)\
-> ★ 이 배치에서 **위 cppreference 쪽들을 열어 확인했다** — `vector` 는 「**The elements are stored contiguously**」 · `push_back` 의 복잡도는 「**Amortized constant**」(★ **배수는 적혀 있지 않다**) · 「**If after the operation the new size() is greater than old capacity() a reallocation takes place, in which case all iterators … and all references to the elements are invalidated.**」 · `deque` 는 「**insertion and deletion at either end of a deque never invalidates pointers or references to the rest of the elements**」 · 「**the elements of a deque are not stored contiguously**」 · `push_front` 는 「**All iterators … are invalidated. No references are invalidated.**」
-> **실행 검증** — 이 문서의 모든 출력은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · **g++-12 (Ubuntu 12.4.0-2ubuntu1\~24.04.1) 12.4.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(★★ clang 도 같은 라이브러리 — 컨테이너의 `sizeof`·할당·증가 배수 칸은 **한 구현**이다. `g++-12` 만 **libstdc++ 12 헤더**다) · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`seq01.cpp`·`capseq01.cpp`·`mif01.cpp`·`seq-grid.sh`). 블록은 캡처 스크립트가 받은 것이다 — 사람이 옮겨 적은 줄은 없다.
-> **버전** — `vector`·`deque`·`list` 는 **C++98**, `array`·`forward_list`·`emplace_back`·`std::move_if_noexcept` 는 **C++11** 이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★★ **정본 경계** — **동적 배열과 연결 리스트의 원리**(2배 확장 · 분할 상환 O(1) · 캐시 지역성 · 노드 연결)는 [`data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/)·[`02-linked-list/`](../../../../cs/data-structure/02-linked-list/)·[`04-queue-deque/`](../../../../cs/data-structure/04-queue-deque/)가 정본이다(★ 그쪽은 **Java 로 직접 구현**한다). **여기는 표준 컨테이너의 선택과 계약** — 「무엇을 보장하고 무엇은 구현인가」만 본다.
-> ★★★ **[17번](../17-move-constructor-assignment-and-moved-from-state/)에서 온다 — 앞 편이 잰 것은 다시 재지 않는다.**\
-> [17번](../17-move-constructor-assignment-and-moved-from-state/) (3) — **이동 생성자에 `noexcept` 가 있으면 `vector` 재할당이 이동, 없으면 복사**(`is_nothrow_move_constructible` 1 대 0 · `capacity` 2 → 4 · 두 컴파일러 같음). 선행 [18번](../18-rule-of-zero-three-five-default-delete/) — 특수 멤버를 어떻게 적느냐가 여기서 **컨테이너의 행동**으로 돌아온다.\
-> ★★ **여기서 새로 묻는 것은 셋이다** — ① **다섯 컨테이너 × 결정적 칸 넷**(sizeof · 할당 횟수 · 연속인가 · 원소 주소가 그대로인가) · ② **`std::move_if_noexcept` 를 직접 불러 보기 + 셋째 타입(복사 없음 · 던지는 이동)** · ③ **`capacity` 수열**.
-> ★★★ **「`list` 는 캐시에 나쁘다」「`vector` 가 빠르다」는 이 문서가 싣지 않는다 — 시간을 재지 않았다.** 지역성은 **「연속인가」 참/거짓**으로만 적는다(규칙 24).
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★ **주소 자체**(격자에 찍지 않았다 — 「같은가 · 이웃인가」만 찍는다) | ★★★ **할당 횟수 · 연속인가 · 주소가 그대로인가 · `capacity` 수열 · 이동/복사 로그** — 네 판(컴파일러 2 × `-O0`/`-O2`) 동일 |
-> | ★ `sizeof`·**2 배**·`deque` 의 칸 크기 — **libstdc++ 의 관찰**(표준은 정하지 않는다) | ★★★ **`vector` 는 연속 · `deque` 는 끝 삽입에 참조 유지 · `list` 는 전부 유지** — 명세 |
-
 ## 한눈에 — 쉽게 말하면
 
 **컨테이너 고르기는 「원소를 어디에 세워 두나」 고르기다.**
@@ -496,3 +475,25 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **시간 격자** — 「연속이면 순회가 빠르다」는 **N 판 판 격자**로만 말할 수 있다. 이 편은 **돌리지 않았다.**
 - **던지는 이동으로 재할당하면** — `MoveOnlyThrowing` 의 이동이 **실제로 던지는 판**은 돌리지 않았다(목록의 **52번 주제** — 예외 안전 보장).
 - **`shrink_to_fit`·`insert` 가운데** — 이 편은 끝 추가만 봤다. 가운데 삽입의 무효화는 목록의 **43번 주제**.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — Containers library](https://en.cppreference.com/w/cpp/container) · [`std::vector`](https://en.cppreference.com/w/cpp/container/vector) · [`std::vector::push_back`](https://en.cppreference.com/w/cpp/container/vector/push_back) · [`std::deque`](https://en.cppreference.com/w/cpp/container/deque) · [`std::deque::push_front`](https://en.cppreference.com/w/cpp/container/deque/push_front)\
+★ 이 배치에서 **위 cppreference 쪽들을 열어 확인했다** — `vector` 는 「**The elements are stored contiguously**」 · `push_back` 의 복잡도는 「**Amortized constant**」(★ **배수는 적혀 있지 않다**) · 「**If after the operation the new size() is greater than old capacity() a reallocation takes place, in which case all iterators … and all references to the elements are invalidated.**」 · `deque` 는 「**insertion and deletion at either end of a deque never invalidates pointers or references to the rest of the elements**」 · 「**the elements of a deque are not stored contiguously**」 · `push_front` 는 「**All iterators … are invalidated. No references are invalidated.**」
+**실행 검증** — 이 문서의 모든 출력은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · **g++-12 (Ubuntu 12.4.0-2ubuntu1\~24.04.1) 12.4.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(★★ clang 도 같은 라이브러리 — 컨테이너의 `sizeof`·할당·증가 배수 칸은 **한 구현**이다. `g++-12` 만 **libstdc++ 12 헤더**다) · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`seq01.cpp`·`capseq01.cpp`·`mif01.cpp`·`seq-grid.sh`). 블록은 캡처 스크립트가 받은 것이다 — 사람이 옮겨 적은 줄은 없다.
+**버전** — `vector`·`deque`·`list` 는 **C++98**, `array`·`forward_list`·`emplace_back`·`std::move_if_noexcept` 는 **C++11** 이다.
+
+★★★ **정본 경계** — **동적 배열과 연결 리스트의 원리**(2배 확장 · 분할 상환 O(1) · 캐시 지역성 · 노드 연결)는 [`data-structure/01-dynamic-array/`](../../../../cs/data-structure/01-dynamic-array/)·[`02-linked-list/`](../../../../cs/data-structure/02-linked-list/)·[`04-queue-deque/`](../../../../cs/data-structure/04-queue-deque/)가 정본이다(★ 그쪽은 **Java 로 직접 구현**한다). **여기는 표준 컨테이너의 선택과 계약** — 「무엇을 보장하고 무엇은 구현인가」만 본다.
+★★★ **[17번](../17-move-constructor-assignment-and-moved-from-state/)에서 온다 — 앞 편이 잰 것은 다시 재지 않는다.**\
+[17번](../17-move-constructor-assignment-and-moved-from-state/) (3) — **이동 생성자에 `noexcept` 가 있으면 `vector` 재할당이 이동, 없으면 복사**(`is_nothrow_move_constructible` 1 대 0 · `capacity` 2 → 4 · 두 컴파일러 같음). 선행 [18번](../18-rule-of-zero-three-five-default-delete/) — 특수 멤버를 어떻게 적느냐가 여기서 **컨테이너의 행동**으로 돌아온다.\
+★★ **여기서 새로 묻는 것은 셋이다** — ① **다섯 컨테이너 × 결정적 칸 넷**(sizeof · 할당 횟수 · 연속인가 · 원소 주소가 그대로인가) · ② **`std::move_if_noexcept` 를 직접 불러 보기 + 셋째 타입(복사 없음 · 던지는 이동)** · ③ **`capacity` 수열**.
+★★★ **「`list` 는 캐시에 나쁘다」「`vector` 가 빠르다」는 이 문서가 싣지 않는다 — 시간을 재지 않았다.** 지역성은 **「연속인가」 참/거짓**으로만 적는다(규칙 24).
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★ **주소 자체**(격자에 찍지 않았다 — 「같은가 · 이웃인가」만 찍는다) | ★★★ **할당 횟수 · 연속인가 · 주소가 그대로인가 · `capacity` 수열 · 이동/복사 로그** — 네 판(컴파일러 2 × `-O0`/`-O2`) 동일 |
+| ★ `sizeof`·**2 배**·`deque` 의 칸 크기 — **libstdc++ 의 관찰**(표준은 정하지 않는다) | ★★★ **`vector` 는 연속 · `deque` 는 끝 삽입에 참조 유지 · `list` 는 전부 유지** — 명세 |

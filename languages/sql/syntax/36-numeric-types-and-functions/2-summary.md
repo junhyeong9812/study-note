@@ -1,15 +1,5 @@
 # sql/36-수치 타입과 수치 함수 (정수 나눗셈·반올림·정밀도) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Numeric Types](https://www.postgresql.org/docs/18/datatype-numeric.html) · [PostgreSQL 18 · Mathematical Functions](https://www.postgresql.org/docs/18/functions-math.html) · [MySQL 8.4 · Numeric Types](https://dev.mysql.com/doc/refman/8.4/en/numeric-types.html) · [MySQL 8.4 · Arithmetic Operators](https://dev.mysql.com/doc/refman/8.4/en/arithmetic-functions.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **설정 조건** — MySQL `sql_mode` = `ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION`(기본값) · `div_precision_increment` = 4(기본값).\
-> **버전** — 이 주제의 동작에 「어느 버전부터」가 붙은 것을 두 매뉴얼·릴리스 노트에서 찾지 못해 **버전을 적지 않는다.**\
-> **선행** — [35 타입 체계와 캐스팅](../35-type-system-and-casting/)
-
 ## 한눈에 — 쉽게 말하면
 
 **수치 타입은 「어디까지 정확할 것인가」를 미리 고르는 일이다.**
@@ -526,7 +516,7 @@ ERROR 1365 (22012) at line 3: Division by 0
 ```
 
 그림 해설 — `sql_mode` 에 `STRICT_TRANS_TABLES` 와 `ERROR_FOR_DIVISION_BY_ZERO` 가 **둘 다 켜져 있어야** 이렇게 된다.\
-이 서버의 기본 `sql_mode` 에 둘 다 있다(머리말 참조).\
+이 서버의 기본 `sql_mode` 에 둘 다 있다(「실행 환경」 참조).\
 대가 — **`SELECT` 에서는 통과하고 `INSERT` 에서는 죽는다.** 조회로 검증한 식이 적재에서 터진다.
 
 **양쪽 다 안전하게 쓰려면 분모를 `NULL` 로 만든다.**
@@ -638,7 +628,7 @@ DOUBLE PRECISION                      -- 양쪽 공통 (MySQL 은 DOUBLE 도 된
   `NUMERIC(p,s)` 의 자릿수 초과 거부, 0 나눗셈의 처리, `DIV` 의 존재 여부. 두 매뉴얼의 수치 타입 페이지가 정본이다.
 - **설정이 정하는 것** — **MySQL 나눗셈의 소수 자릿수**(`div_precision_increment`)와\
   **0 나눗셈이 에러가 되는지**(`sql_mode` 의 `STRICT_TRANS_TABLES`·`ERROR_FOR_DIVISION_BY_ZERO`).\
-  이 문서의 출력은 머리말에 적은 **기본 `sql_mode`** 에서 나온 것이다. 설정이 다르면 답도 다르다.
+  이 문서의 출력은 「실행 환경」에 적은 **기본 `sql_mode`** 에서 나온 것이다. 설정이 다르면 답도 다르다.
 - **하드웨어·표현이 정하는 것** — 부동소수의 자릿수와 짝수 반올림.\
   이것은 두 엔진의 선택이 아니라 **IEEE 754 배정밀도**의 성질이라, 두 엔진이 같은 값을 낸 것이 우연이 아니다.\
   표현 자체는 [`foundations/data-representation`](../../../../cs/foundations/data-representation/)이 정본이다.
@@ -710,3 +700,12 @@ DOUBLE PRECISION                      -- 양쪽 공통 (MySQL 은 DOUBLE 도 된
   `=` 대신 범위로, 합계 검증은 십진수 열을 따로 두고 대조한다.
 - **`ROUND` 이 아니라 「어디서 반올림할 것인가」가 진짜 설계 결정**이다.\
   행마다 반올림한 뒤 합치는 것과, 합친 뒤 한 번 반올림하는 것은 **결과가 다르다.** 요구사항이 정해야 할 자리다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Numeric Types](https://www.postgresql.org/docs/18/datatype-numeric.html) · [PostgreSQL 18 · Mathematical Functions](https://www.postgresql.org/docs/18/functions-math.html) · [MySQL 8.4 · Numeric Types](https://dev.mysql.com/doc/refman/8.4/en/numeric-types.html) · [MySQL 8.4 · Arithmetic Operators](https://dev.mysql.com/doc/refman/8.4/en/arithmetic-functions.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**설정 조건** — MySQL `sql_mode` = `ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION`(기본값) · `div_precision_increment` = 4(기본값).\
+**버전** — 이 주제의 동작에 「어느 버전부터」가 붙은 것을 두 매뉴얼·릴리스 노트에서 찾지 못해 **버전을 적지 않는다.**\
+**선행** — [35 타입 체계와 캐스팅](../35-type-system-and-casting/)

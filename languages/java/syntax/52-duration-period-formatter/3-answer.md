@@ -1,11 +1,5 @@
 # java/syntax/52 — `Duration`·`Period`·`DateTimeFormatter` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 일곱(52-a\~52-g)을 **Temurin 17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
-> ★ **세 판이 같았다고 적지 않는다.** 12번에서 실제로 갈렸다.\
-> javadoc 인용은 JDK 21.0.5 의 `lib/src.zip` — `java.base/java/time/Duration.java`·`Period.java`·`temporal/TemporalUnit.java`·`format/DateTimeFormatter.java`·`format/DateTimeFormatterBuilder.java` 원문이다.\
-> 측정 조건: 기본 시간대 `Asia/Seoul`, 기본 `Locale` `ko_KR`.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -788,3 +782,10 @@ assertThrows(DateTimeParseException.class, () -> LocalDate.parse(...));
 - `minimalDays=4` 인 `Locale` 에서 **1월 초가 전년도 주에 속하는지** — **안 돌려 봄.**
 - `Period`/`Duration` 의 오버플로 동작(`Period.ofDays(Integer.MAX_VALUE)` 를 더하기) — **안 돌려 봄.**
 - 13번 표의 3월·5월 만료일 — **안 돌려 봄**(1월 사례만 51번에서 실행으로 확인했다).
+
+## 실행 환경
+
+이 파일의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 일곱(52-a\~52-g)을 **Temurin 17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
+★ **세 판이 같았다고 적지 않는다.** 12번에서 실제로 갈렸다.\
+javadoc 인용은 JDK 21.0.5 의 `lib/src.zip` — `java.base/java/time/Duration.java`·`Period.java`·`temporal/TemporalUnit.java`·`format/DateTimeFormatter.java`·`format/DateTimeFormatterBuilder.java` 원문이다.\
+측정 조건: 기본 시간대 `Asia/Seoul`, 기본 `Locale` `ko_KR`.

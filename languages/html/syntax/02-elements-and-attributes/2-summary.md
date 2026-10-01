@@ -1,13 +1,5 @@
 # html/syntax/02 — 요소와 속성 문법: 빈 요소·태그 생략·불리언 속성·따옴표 규칙 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The HTML syntax」](https://html.spec.whatwg.org/multipage/syntax.html) 절 — 「Elements」·「Attributes」·「Optional tags」, 그리고 [「Tokenization」](https://html.spec.whatwg.org/multipage/parsing.html#tokenization). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 산출이 **조용히 실패**하고 WebKit 은 없다. 이 갈래는 **「이식성」을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 이 주제의 규칙은 **전부 HTML Living Standard 의 파싱 알고리즘**에 있고 20년 넘게 안정돼 있다.
-> **선행** — [01번 주제](../01-document-skeleton/2-summary.md)(문서의 뼈대). 거기서 세운 **창 넷**을 그대로 쓴다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -623,3 +615,11 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **「파스 오류」라는 이름이 오해를 부른다.** 명세는 `<div />`·중복 속성·따옴표 없는 값 안의 `"` 를 전부 **parse error** 로 규정하지만, 그 뜻은 「**유효하지 않다**」이지 「**파싱이 실패한다**」가 아니다. 실측에서 전부 `(exit 0)` 이었다([03번 주제](../03-parser-and-error-recovery/2-summary.md)).
 - **중복 속성이 보안 표면이 된 적이 있다.** 서버 쪽 정제기(sanitizer)와 브라우저가 **다른 쪽 속성을 채택**하면 필터를 우회할 수 있다 — 「첫 것이 이긴다」를 두 구현이 똑같이 지켜야 안전하다. 이 갈래에서 실측으로 확인한 것은 **Chrome 이 첫 것을 쓴다**는 사실 하나다.
 - **속성 순서는 트리에 보존된다.** 실측 프로브의 `[...el.attributes]` 가 소스 순서대로 나왔다. 다만 **의미는 없다** — CSS·선택자·접근성 어디도 속성 순서를 보지 않는다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「The HTML syntax」](https://html.spec.whatwg.org/multipage/syntax.html) 절 — 「Elements」·「Attributes」·「Optional tags」, 그리고 [「Tokenization」](https://html.spec.whatwg.org/multipage/parsing.html#tokenization). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 산출이 **조용히 실패**하고 WebKit 은 없다. 이 갈래는 **「이식성」을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 이 주제의 규칙은 **전부 HTML Living Standard 의 파싱 알고리즘**에 있고 20년 넘게 안정돼 있다.
+**선행** — [01번 주제](../01-document-skeleton/2-summary.md)(문서의 뼈대). 거기서 세운 **창 넷**을 그대로 쓴다.

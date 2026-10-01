@@ -1,23 +1,5 @@
 # c/syntax/24 — 비트필드: 「**폭은 내가 정하고 자리는 컴파일러가 정한다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Bit-fields (C)](https://en.cppreference.com/w/c/language/bit_field) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [GCC 13 Structure-Packing Pragmas / C Implementation-defined behavior](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Structures-unions-enumerations-and-bit-fields-implementation.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·바이트·진단·종료 코드는 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> ★★ **배치가 걸린 실험은 「컴파일러 2 × 최적화 3」 여섯 벌**을 돌렸다 — 한 벌만 돌리면 **반대 결론이 난다**(아래 (4)).
-> **버전** — 비트필드는 **C89 부터** 있고 규칙이 바뀐 적이 없다.\
-> ★ `_Bool` 비트필드는 **C99 부터**, `_Alignof` 는 **C11 부터**(철자 `alignof` 는 C23부터 — [08번 형제](../08-sizeof-alignment-and-offsetof/)가 정본).\
-> ★ **`-std=` 를 바꿔도 이 주제의 결론은 안 바뀐다.** 이 문서는 `-std=c17` 로 고정했다.
-> ★★ **경계** — **마스크와 시프트로 손수 비트를 다루는 법**은 [11번 형제](../11-bitwise-operations-and-shifts/)가 정본이다.\
-> 그쪽은 「**손으로**」, 여기는 「**선언으로**」다 — 같은 일을 문법이 대신해 주는 대신 **자리 보장을 잃는다.**\
-> ★ **정수 승격 규칙 자체**는 [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/)가 정본이다. 여기서는 「**비트필드도 승격을 받는다**」만.\
-> ★ **플래그를 담는 다른 방식**(열거 상수 + 마스크)은 [07번 형제](../07-enum-and-enumeration-constants/)가 정본이다.\
-> ★ **패딩·정렬 규칙**은 [22번 형제](../22-struct-padding-and-alignment/), **`sizeof`·`_Alignof`·`offsetof` 라는 도구**는 [08번 형제](../08-sizeof-alignment-and-offsetof/)가 정본이다.\
-> ★ **구조체 선언·초기화**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/), **`union`** 은 [23번 형제](../23-union-and-the-boundary-of-type-punning/).
-> 선행 — [11번 형제](../11-bitwise-operations-and-shifts/) · [22번 형제](../22-struct-padding-and-alignment/) · [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **비트필드는 「서랍 하나를 칸막이로 나눠 쓰는 것」이다.**
@@ -933,3 +915,21 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★ **폭이 `int` 보다 넓은 비트필드**(`unsigned long long x : 40;`)는 **확장**이다. 표준이 보장하는 것은 `int` 폭까지다.
 - ★ **C23** 은 비트필드 규칙을 바꾸지 않았다. `_BitInt(N)` 이라는 **다른 물건**이 생겼을 뿐이고,\
   ★ 이 문서는 `_BitInt` 를 **던지지 않았다**(gcc 13 지원 범위를 확인하지 않았다).
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Bit-fields (C)](https://en.cppreference.com/w/c/language/bit_field) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [GCC 13 Structure-Packing Pragmas / C Implementation-defined behavior](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Structures-unions-enumerations-and-bit-fields-implementation.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·바이트·진단·종료 코드는 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+★★ **배치가 걸린 실험은 「컴파일러 2 × 최적화 3」 여섯 벌**을 돌렸다 — 한 벌만 돌리면 **반대 결론이 난다**(본문 (4)).
+**버전** — 비트필드는 **C89 부터** 있고 규칙이 바뀐 적이 없다.\
+★ `_Bool` 비트필드는 **C99 부터**, `_Alignof` 는 **C11 부터**(철자 `alignof` 는 C23부터 — [08번 형제](../08-sizeof-alignment-and-offsetof/)가 정본).\
+★ **`-std=` 를 바꿔도 이 주제의 결론은 안 바뀐다.** 이 문서는 `-std=c17` 로 고정했다.
+★★ **경계** — **마스크와 시프트로 손수 비트를 다루는 법**은 [11번 형제](../11-bitwise-operations-and-shifts/)가 정본이다.\
+그쪽은 「**손으로**」, 여기는 「**선언으로**」다 — 같은 일을 문법이 대신해 주는 대신 **자리 보장을 잃는다.**\
+★ **정수 승격 규칙 자체**는 [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/)가 정본이다. 여기서는 「**비트필드도 승격을 받는다**」만.\
+★ **플래그를 담는 다른 방식**(열거 상수 + 마스크)은 [07번 형제](../07-enum-and-enumeration-constants/)가 정본이다.\
+★ **패딩·정렬 규칙**은 [22번 형제](../22-struct-padding-and-alignment/), **`sizeof`·`_Alignof`·`offsetof` 라는 도구**는 [08번 형제](../08-sizeof-alignment-and-offsetof/)가 정본이다.\
+★ **구조체 선언·초기화**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/), **`union`** 은 [23번 형제](../23-union-and-the-boundary-of-type-punning/).
+선행 — [11번 형제](../11-bitwise-operations-and-shifts/) · [22번 형제](../22-struct-padding-and-alignment/) · [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/).

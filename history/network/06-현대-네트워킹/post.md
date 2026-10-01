@@ -1,9 +1,5 @@
 # 현대 네트워킹 (CDN · 클라우드 · SDN)
 
-> 원본: `~/project/network-history/06-현대-네트워킹.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·RFC 번호·표준명·제품명·수치·코드블록은 원문 그대로다.\
-> ASCII 도식 11개와 「한눈에」의 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 > 네트워크가 "선을 깔고 패킷을 옮기는 일"에서 **소프트웨어로 정의되고, 전 지구에 분산되며, 애플리케이션 가까이로 끌려오는 일**로 바뀐 시대의 기록. 콘텐츠를 사용자 곁(엣지)으로 미는 CDN에서 시작해, 제어 평면을 데이터 평면에서 떼어낸 SDN/NFV, 데이터센터를 통째로 소프트웨어 오버레이로 추상화한 클라우드 네트워킹, TCP를 갈아엎은 QUIC, 그리고 컨테이너·서비스 메시·eBPF가 네트워크를 커널과 사이드카로 끌어내린 흐름까지를 "언제·왜"로 추적한다.
@@ -627,3 +623,9 @@ QUIC의 헤더 암호화가 네트워크 가시성을 줄였듯(5절), 소프트
 - [eBPF — The Future of Networking & Security (Cilium)](https://cilium.io/blog/2020/11/10/ebpf-future-of-networking/)
 - [Multi-access edge computing — Wikipedia](https://en.wikipedia.org/wiki/Multi-access_edge_computing)
 - [Introducing Cloudflare Workers / Workers history (Cloudflare)](https://blog.cloudflare.com/introducing-workers-unbound/)
+
+## 출처
+
+원본: `~/project/network-history/06-현대-네트워킹.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·RFC 번호·표준명·제품명·수치·코드블록은 원문 그대로다.\
+ASCII 도식 11개와 「한눈에」의 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

@@ -1,11 +1,5 @@
 # domain-modeling-advanced/10-price-history — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/10-price-history/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -332,3 +326,7 @@ return out;
 - 기준 소스: `/home/jun/project/myway/domain-modeling-advanced/10-price-history/impl/com/domain/price/PriceHistory.java`
 - 문제 원문: `src/main/java/com/domain/price/PriceHistory.java`(TODO 1~3 javadoc·`Tie` enum), `src/main/java/com/domain/price/PriceRecord.java`(계약·두 시간·`backdated()`), `README.md`(기록 세 줄·함정 넷·측정이 알려준 것·변종 검증·생각해볼 것)
 - 계약·수치: `src/test/java/com/domain/price/PriceHistoryTest.java`(10,000 vs 11,000 · 3/14 vs 3/15 · 28일 · 2/28 하루 · 13,000 vs 12,000 · -1 셋 · 품목 격리 · `records()` 순서), `src/test/java/com/domain/price/MeasurementTest.java`(0.0/23.9/76.3/128.8 · 최대 0/97/224/222 · 0.0/2.3/7.1/12.0 · 10,487,250,000 · 10,573,950,000 · +0.83% · 200/200 · 141 · 18.0)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/10-price-history/impl/`).

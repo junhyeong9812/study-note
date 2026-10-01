@@ -1,44 +1,5 @@
 # python/syntax/25-exceptions-and-finally — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [8.4. The `try` statement](https://docs.python.org/3.12/reference/compound_stmts.html#the-try-statement) — 네 절의 실행 순서, `finally` 의 `return`·`break`·`continue`
-> - [7.8. The `raise` statement](https://docs.python.org/3.12/reference/simple_stmts.html#the-raise-statement) — `from` 과 `__cause__`·`__context__`·`__suppress_context__`
-> - [Built-in Exceptions](https://docs.python.org/3.12/library/exceptions.html) — 예외 계층도와 `BaseException` 의 네 직속 자식
-> - [8.4.1. `except` clause](https://docs.python.org/3.12/reference/compound_stmts.html#except-clause) — `as` 로 받은 이름이 절 끝에서 **지워지는** 것
-> - [PEP 3134 — Exception Chaining and Embedded Tracebacks](https://peps.python.org/pep-3134/) · [PEP 479](https://peps.python.org/pep-0479/)
-> - [`dis`](https://docs.python.org/3.12/library/dis.html) — 바이트코드
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
-> 이 주제의 예외는 전부 **실행 중 예외**라 소스 줄도 캐럿도 안 나온다
-> (`SyntaxError` 는 둘 다 나오는데, 이 주제에는 하나도 없다 — [27번](../27-exception-groups-and-except-star/2-summary.md)에 둘 다 있다).\
-> ★★ **이 묶음은 트레이스백이 본체다.** 연쇄 블록의 **빈 줄까지** 출력 그대로다 — 손으로 옮긴 것이 한 글자도 없고,
-> 캡처 파일을 조립기로 끼워 넣었다.\
-> **버전** — `try`/`except`/`else`/`finally` 와 `raise ... from` 은 이 노트 범위(3.10\~3.13)에서 안 바뀌었다.
-> 갈리는 것 둘 — **`finally` 안의 `continue` 가 3.8 부터** 허용된다(그 전에는 `SyntaxError`) ·
-> **제너레이터 안에서 샌 `StopIteration` 이 `RuntimeError` 가 되는 것이 3.7 부터**(PEP 479).
-> 3.8 이전 판은 이 머신에 없어 **옛 동작은 직접 못 돌려 봤다** — 문서·PEP 근거다.\
-> **구현 대 언어 보장 한 줄** — **「네 절의 실행 순서와 `finally` 가 언제나 돈다」까지가 언어 보장**이고,
-> **`dis` 로 본 「`finally` 가 경로마다 복제된다」는 CPython 구현**이다. 두 층을 절마다 갈라 적었다.\
-> **★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | (판이 오르면) 바이트코드 **명령 이름·오프셋**·`ExceptionTable` 의 숫자 | `finally` 몸통의 **복제 개수 4** · 그것이 놓인 **경로의 종류** |
-> | (판이 오르면) 예외 **메시지 문구** | 예외 **종류** · 연쇄 두 문구 · `File "<stdin>", line N` |
-> | — | **실행 순서 마커**(①\~⑦) · `__cause__`·`__context__`·`__suppress_context__` 값 · **종료 코드** |
->
-> ★ **이 주제의 블록에는 주소도 시간도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다**
-> (`dis` 블록 하나만 판이 오르면 통째로 바뀐다).\
-> **선행** — [16-iterator-protocol](../16-iterator-protocol/2-summary.md)(`StopIteration` 이 정상 신호라는 것 — **PEP 479 의 정본**) ·
-> [18-loop-control-and-else](../18-loop-control-and-else/2-summary.md)(**`for` 의 `else` — 같은 「else」 개념**) ·
-> [05-truthiness-and-short-circuit](../05-truthiness-and-short-circuit/2-summary.md)(진릿값).\
-> **이 사슬** — 25 → [26](../26-eafp-vs-lbyl/2-summary.md) → [27](../27-exception-groups-and-except-star/2-summary.md) → [28](../28-context-managers-and-with/2-summary.md).
-> 여기가 **문법의 정본**이고, 26 은 **고르는 법**, 27 은 **여러 개를 함께 나르는 법**, 28 은 **`finally` 를 객체로 굳힌 것**이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`try` 문은 「불이 나도 가스 밸브는 잠그고 나간다」를 문법으로 만든 것이다.**
@@ -1445,3 +1406,45 @@ def uninterruptible(일):
   상속하면 남의 `except Exception` 에 안 걸려 **조용히 프로그램을 끝낸다.** 여기서는 안 돌려 봤다.
 - ★ **`try` 문이 도는 것 자체의 비용은 거의 0 이고, 비싼 것은 예외가 실제로 날 때**다.
   그 수치는 [26번](../26-eafp-vs-lbyl/2-summary.md)이 잰다 — **여기서 수치를 적지 않는다.**
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [8.4. The `try` statement](https://docs.python.org/3.12/reference/compound_stmts.html#the-try-statement) — 네 절의 실행 순서, `finally` 의 `return`·`break`·`continue`
+- [7.8. The `raise` statement](https://docs.python.org/3.12/reference/simple_stmts.html#the-raise-statement) — `from` 과 `__cause__`·`__context__`·`__suppress_context__`
+- [Built-in Exceptions](https://docs.python.org/3.12/library/exceptions.html) — 예외 계층도와 `BaseException` 의 네 직속 자식
+- [8.4.1. `except` clause](https://docs.python.org/3.12/reference/compound_stmts.html#except-clause) — `as` 로 받은 이름이 절 끝에서 **지워지는** 것
+- [PEP 3134 — Exception Chaining and Embedded Tracebacks](https://peps.python.org/pep-3134/) · [PEP 479](https://peps.python.org/pep-0479/)
+- [`dis`](https://docs.python.org/3.12/library/dis.html) — 바이트코드
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
+이 주제의 예외는 전부 **실행 중 예외**라 소스 줄도 캐럿도 안 나온다
+(`SyntaxError` 는 둘 다 나오는데, 이 주제에는 하나도 없다 — [27번](../27-exception-groups-and-except-star/2-summary.md)에 둘 다 있다).\
+★★ **이 묶음은 트레이스백이 본체다.** 연쇄 블록의 **빈 줄까지** 출력 그대로다 — 손으로 옮긴 것이 한 글자도 없고,
+캡처 파일을 조립기로 끼워 넣었다.\
+**버전** — `try`/`except`/`else`/`finally` 와 `raise ... from` 은 이 노트 범위(3.10\~3.13)에서 안 바뀌었다.
+갈리는 것 둘 — **`finally` 안의 `continue` 가 3.8 부터** 허용된다(그 전에는 `SyntaxError`) ·
+**제너레이터 안에서 샌 `StopIteration` 이 `RuntimeError` 가 되는 것이 3.7 부터**(PEP 479).
+3.8 이전 판은 이 머신에 없어 **옛 동작은 직접 못 돌려 봤다** — 문서·PEP 근거다.\
+**구현 대 언어 보장 한 줄** — **「네 절의 실행 순서와 `finally` 가 언제나 돈다」까지가 언어 보장**이고,
+**`dis` 로 본 「`finally` 가 경로마다 복제된다」는 CPython 구현**이다. 두 층을 절마다 갈라 적었다.\
+**★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| (판이 오르면) 바이트코드 **명령 이름·오프셋**·`ExceptionTable` 의 숫자 | `finally` 몸통의 **복제 개수 4** · 그것이 놓인 **경로의 종류** |
+| (판이 오르면) 예외 **메시지 문구** | 예외 **종류** · 연쇄 두 문구 · `File "<stdin>", line N` |
+| — | **실행 순서 마커**(①\~⑦) · `__cause__`·`__context__`·`__suppress_context__` 값 · **종료 코드** |
+
+★ **이 주제의 블록에는 주소도 시간도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다**
+(`dis` 블록 하나만 판이 오르면 통째로 바뀐다).\
+**선행** — [16-iterator-protocol](../16-iterator-protocol/2-summary.md)(`StopIteration` 이 정상 신호라는 것 — **PEP 479 의 정본**) ·
+[18-loop-control-and-else](../18-loop-control-and-else/2-summary.md)(**`for` 의 `else` — 같은 「else」 개념**) ·
+[05-truthiness-and-short-circuit](../05-truthiness-and-short-circuit/2-summary.md)(진릿값).
+
+여기가 **문법의 정본**이고, 26 은 **고르는 법**, 27 은 **여러 개를 함께 나르는 법**, 28 은 **`finally` 를 객체로 굳힌 것**이다.
+
+---
+
+**이 사슬** — 25 → [26](../26-eafp-vs-lbyl/2-summary.md) → [27](../27-exception-groups-and-except-star/2-summary.md) → [28](../28-context-managers-and-with/2-summary.md).

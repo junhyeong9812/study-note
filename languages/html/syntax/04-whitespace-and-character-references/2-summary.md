@@ -1,13 +1,5 @@
 # html/syntax/04 — 공백·텍스트·문자 참조: 공백 축약·엔티티·`<pre>` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Character references」](https://html.spec.whatwg.org/multipage/syntax.html#character-references)·[「Tokenizing character references」](https://html.spec.whatwg.org/multipage/parsing.html#tokenizing-character-references)·[「The pre element」](https://html.spec.whatwg.org/multipage/grouping-content.html#the-pre-element), 그리고 **공백 축약은 CSS 쪽**([CSS Text Level 3 의 `white-space` 처리 모델](https://drafts.csswg.org/css-text-3/#white-space-processing)). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 산출이 **조용히 실패**하고 WebKit 은 없다. 이 갈래는 **「이식성」을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 문자 참조의 이름 목록과 파싱 규칙은 **HTML5 이후 고정**돼 있다.
-> **선행** — [03번 주제](../03-parser-and-error-recovery/2-summary.md). 파서가 트리를 만드는 규칙 위에서 **텍스트 노드가 어떤 모양이 되는가**를 본다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -643,3 +635,11 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **`&nbsp;` 로 여백을 만드는 것은 접근성 문제**가 된다. 스크린리더가 그것을 글자로 읽거나 이상한 곳에서 끊을 수 있다. ★ **이 환경에서는 확인할 수 없다**(스크린리더가 없다) — **미실행**이다. 여백은 CSS 로 준다.
 - **인라인 요소 사이의 틈을 없애는 관용구**가 몇 개 있다 — 줄바꿈을 주석으로 삼키기(`</span><!--\n--><span>`), 닫는 꺾쇠를 다음 줄로 내리기, 부모에 `font-size: 0`, 그리고 오늘의 답인 **flex·grid**. 앞의 셋은 전부 **「공백 텍스트 노드를 안 만들거나 안 그리게」** 하는 것이다.
 - **`<textarea>` 의 값은 속성이 아니라 자식 텍스트**다. 그래서 첫 줄바꿈 삭제 규칙이 여기에도 적용된다. 그 요소의 정본은 목록의 **26번 주제**다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Character references」](https://html.spec.whatwg.org/multipage/syntax.html#character-references)·[「Tokenizing character references」](https://html.spec.whatwg.org/multipage/parsing.html#tokenizing-character-references)·[「The pre element」](https://html.spec.whatwg.org/multipage/grouping-content.html#the-pre-element), 그리고 **공백 축약은 CSS 쪽**([CSS Text Level 3 의 `white-space` 처리 모델](https://drafts.csswg.org/css-text-3/#white-space-processing)). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 산출이 **조용히 실패**하고 WebKit 은 없다. 이 갈래는 **「이식성」을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 문자 참조의 이름 목록과 파싱 규칙은 **HTML5 이후 고정**돼 있다.
+**선행** — [03번 주제](../03-parser-and-error-recovery/2-summary.md). 파서가 트리를 만드는 규칙 위에서 **텍스트 노드가 어떤 모양이 되는가**를 본다.

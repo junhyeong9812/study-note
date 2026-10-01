@@ -1,10 +1,5 @@
 # issue/infra/nginx-broadband-defense-friendly-fire — 광역 방어의 오사(self-DoS) — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-23).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. (왜) nginx에 `map $http_user_agent $bad_bot { ~*(…|curl/|…) 1; }` + `if ($bad_bot) { return 444; }`를 넣었더니 GitHub Actions의 배포/색인 curl이 끊겼다. Actions의 curl 기본 UA는 무엇이고, 왜 이 규칙에 걸렸는가(self-DoS).
 2. (예측) 끊긴 쪽 로그에 `http: 000`과 `HTTP/2 stream ... PROTOCOL_ERROR`가 찍혔다. 444(응답 없이 연결 종료)가 왜 403/429 같은 코드가 아니라 이렇게 보이는가.

@@ -1,16 +1,5 @@
 # csharp/syntax/18 — `record` 와 값 동등성·`with` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ★★★ 이 주제의 질문은 「**record class 와 record struct 를 갈라 답하라**」가 절반이다 — 「record 는 ~다」로 뭉개지 마라.
-> **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
-> Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`. 대비는 **javac 21.0.5 · 25.0.1** 이다.
-> ★★★ **본체 창은 ③ 리플렉션이다** — 생성 멤버는 **소스에 한 글자도 없다.** ① IL 이 짝이다(「무엇을 한다」).
-> ★★ **④ 할당 바이트는 적용이다** — 2×2 판 격자로 쟀고 **시간은 안 쟀다.**
-> ★★★ **생성 멤버의 목록은 명세, 그 IL 모양은 구현이다** — 답할 때 둘을 갈라라.
-> 선행 — [13번](../13-properties-init-required-field/)(`init`)·[02번](../02-struct-vs-class-choosing/)(`record struct` 고르기). 다음 — 목록의 **19번 주제**(동등성 규칙).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (예측) / (왜) / (경계) / (연결) -->
@@ -217,6 +206,16 @@ class Program {
 - ★★ `readonly record struct` 의 `CS8852` 를 먼저 찍은 것은 몇 번 주제이고, 이 문서가 **처음 찍은** 것은 무엇인가?
 - ★★★ 이 문서의 (3) IL 이 목록의 **19번 주제**의 **어떤 사고**가 record 에서 안 나는 이유가 되는가?
 - ★ Java record 의 **`invokedynamic` 동등성**은 어느 갈래 몇 번인가? Kotlin `copy` 가 **본문 프로퍼티를 되돌린다**는 것은?
+
+## 실행 환경
+
+★★★ 이 주제의 질문은 「**record class 와 record struct 를 갈라 답하라**」가 절반이다 — 「record 는 ~다」로 뭉개지 마라.
+**환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
+Roslyn `csc` 를 직접 부른다 · `-langversion:latest` · `-preferreduilang:en-US`. 대비는 **javac 21.0.5 · 25.0.1** 이다.
+★★★ **본체 창은 ③ 리플렉션이다** — 생성 멤버는 **소스에 한 글자도 없다.** ① IL 이 짝이다(「무엇을 한다」).
+★★ **④ 할당 바이트는 적용이다** — 2×2 판 격자로 쟀고 **시간은 안 쟀다.**
+★★★ **생성 멤버의 목록은 명세, 그 IL 모양은 구현이다** — 답할 때 둘을 갈라라.
+선행 — [13번](../13-properties-init-required-field/)(`init`)·[02번](../02-struct-vs-class-choosing/)(`record struct` 고르기). 다음 — 목록의 **19번 주제**(동등성 규칙).
 
 ## 복습 기록
 

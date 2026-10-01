@@ -1,19 +1,5 @@
 # java/syntax/20 — 제어문: 향상된 `for` · 레이블 `break`/`continue` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc·구현 셋이다.\
-> `java.base/java/util/AbstractList.java` — `protected transient int modCount` 의 javadoc(구조적 수정·fail-fast 정의).\
-> `java.base/java/util/ConcurrentModificationException.java` — 클래스 javadoc(`best-effort basis` · `should be used only to detect bugs`).\
-> `java.base/java/util/ArrayList.java` — `ArrayList.Itr` 의 `hasNext()` · `next()` · `checkForComodification()` 구현.\
-> 인용은 **그 파일에서 복사한 것만** 옮겼다. JLS 본문은 열지 않았다.
-> **실행 검증** — 이 문서의 모든 출력·에러 메시지는 Temurin JDK 에서 실제로 돌려 얻은 것이다.\
-> 프로그램 4개 + 컴파일 에러용 6개. `javac` 24회 · `java` 12회 · `javap` 2회.\
-> 도는 프로그램 4개는 **17.0.13 · 21.0.5 · 25.0.1 셋 다**에서 돌렸다 — 출력이 같았던 것과 갈린 것을 나눠 적었다.\
-> 역어셈블은 `javap -c -p` 출력을 **그대로** 옮겼다.
-> **버전** — 향상된 `for` 는 **Java 5**. 레이블 `break`/`continue` 와 세 칸 `for` 는 **Java 1.0** 부터 있다.\
-> 이 주제에는 21·25 에서 새로 생긴 것이 없다. 대신 **21 이후 주제 넷(21·22·23·24)이 전부 이 위에 얹힌다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 `javap` 출력·javac 에러 메시지·`src.zip` 구현으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **향상된 `for` 는 「컨베이어 벨트」다. 그런데 벨트가 두 종류다.**
@@ -1020,3 +1006,17 @@ for (int i = 0; i < names.length; i++) System.out.print(i + ":" + names[i] + " "
 - **`CopyOnWriteArrayList` 는 순회 중 수정이 예외가 아니다** — 이터레이터가 **스냅샷**을 들고 돌기 때문이다.\
   대신 순회 중에 추가한 원소는 **그 순회에서 보이지 않는다.** 예외 대신 **낡은 뷰**를 받는 거래다.\
   계약은 [**55번 주제**](../55-atomics-and-concurrent-collections/)가 정본이다 — 여기서는 "fail-fast 가 의무가 아니다"의 예로만 든다.
+
+## 실행 환경
+
+**기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc·구현 셋이다.\
+`java.base/java/util/AbstractList.java` — `protected transient int modCount` 의 javadoc(구조적 수정·fail-fast 정의).\
+`java.base/java/util/ConcurrentModificationException.java` — 클래스 javadoc(`best-effort basis` · `should be used only to detect bugs`).\
+`java.base/java/util/ArrayList.java` — `ArrayList.Itr` 의 `hasNext()` · `next()` · `checkForComodification()` 구현.\
+인용은 **그 파일에서 복사한 것만** 옮겼다. JLS 본문은 열지 않았다.
+**실행 검증** — 이 문서의 모든 출력·에러 메시지는 Temurin JDK 에서 실제로 돌려 얻은 것이다.\
+프로그램 4개 + 컴파일 에러용 6개. `javac` 24회 · `java` 12회 · `javap` 2회.\
+도는 프로그램 4개는 **17.0.13 · 21.0.5 · 25.0.1 셋 다**에서 돌렸다 — 출력이 같았던 것과 갈린 것을 나눠 적었다.\
+역어셈블은 `javap -c -p` 출력을 **그대로** 옮겼다.
+**버전** — 향상된 `for` 는 **Java 5**. 레이블 `break`/`continue` 와 세 칸 `for` 는 **Java 1.0** 부터 있다.\
+이 주제에는 21·25 에서 새로 생긴 것이 없다. 대신 **21 이후 주제 넷(21·22·23·24)이 전부 이 위에 얹힌다.**

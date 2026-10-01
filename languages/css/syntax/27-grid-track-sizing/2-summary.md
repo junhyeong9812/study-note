@@ -1,13 +1,5 @@
 # css/syntax/27 — Grid 트랙 정의: `fr`·`minmax()`·`repeat()`·`auto-fill`/`auto-fit` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Grid Layout Level 1](https://drafts.csswg.org/css-grid-1/) (트랙 크기 결정 알고리즘·`fr`·`minmax()`·`repeat()`) · [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/) (`min-content`/`max-content`/`fit-content()`). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 트랙 값 표를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle(el).gridTemplateColumns` 로 **엔진이 푼 트랙 값**을 읽고, 항목 자리는 `getBoundingClientRect()` 로 따로 쟀다.\
-> 본문의 px 값은 전부 그 실측값이다. **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않았다.
-> **버전** — Grid 는 Baseline **widely**(newly 2017-10-17 → widely 2020-04-17). `subgrid` 만 늦다(widely 2026-03-15 — 목록의 [**30번 주제**](../30-subgrid/)).
-> **여기서 다루지 않는 것** — 트랙에 **무엇을 놓는가**는 [**28번**](../28-grid-placement/), **이름으로** 놓는 것은 [**29번**](../29-grid-template-areas/)이다. `min-content`/`max-content` 자체의 정의는 [목록의 **31번 주제**](../31-intrinsic-sizing-and-aspect-ratio/)가 정본이고 여기서는 **트랙 값으로 쓰일 때**까지만 쓴다. 정렬(`justify-*`/`align-*`)의 정본은 [**24번**](../24-flexbox-axes/)이고, 여기서는 **Grid 에서 의미가 갈리는 것만** 쓴다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **트랙 정의 = 방에 칸막이를 미리 세우는 일. `fr` 은 「고정 가구를 들여놓고 남은 바닥」을 나눠 갖는 몫이다.**
@@ -562,3 +554,11 @@ grid-template-columns: 200px 1fr 1fr   (500px)
 - **`justify-content`/`align-content` 는 Grid 에서 「트랙 묶음 전체」를 움직인다.** 트랙 합이 컨테이너보다 작을 때만 의미가 있고,\
   `fr` 트랙이 하나라도 있으면 자유 공간이 0 이라 **아무 일도 하지 않는다.** 정렬 어휘의 정본은 [**24번**](../24-flexbox-axes/)이다.
 - 행 방향의 「들어가는 만큼」인 **Masonry**(`grid-template-rows: masonry`)는 Baseline **limited** 이고 문법이 아직 논쟁 중이라 이 목록에서 뺐다(목록 README 의 「뺀 것과 이유」).
+
+## 실행 환경
+
+**기준 소스** — [CSS Grid Layout Level 1](https://drafts.csswg.org/css-grid-1/) (트랙 크기 결정 알고리즘·`fr`·`minmax()`·`repeat()`) · [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/) (`min-content`/`max-content`/`fit-content()`). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **4개 전부**와 본문의 트랙 값 표를 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getComputedStyle(el).gridTemplateColumns` 로 **엔진이 푼 트랙 값**을 읽고, 항목 자리는 `getBoundingClientRect()` 로 따로 쟀다.\
+본문의 px 값은 전부 그 실측값이다. **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다. 「두 엔진에서 확인했다」고 적지 않았다.
+**버전** — Grid 는 Baseline **widely**(newly 2017-10-17 → widely 2020-04-17). `subgrid` 만 늦다(widely 2026-03-15 — 목록의 [**30번 주제**](../30-subgrid/)).
+**여기서 다루지 않는 것** — 트랙에 **무엇을 놓는가**는 [**28번**](../28-grid-placement/), **이름으로** 놓는 것은 [**29번**](../29-grid-template-areas/)이다. `min-content`/`max-content` 자체의 정의는 [목록의 **31번 주제**](../31-intrinsic-sizing-and-aspect-ratio/)가 정본이고 여기서는 **트랙 값으로 쓰일 때**까지만 쓴다. 정렬(`justify-*`/`align-*`)의 정본은 [**24번**](../24-flexbox-axes/)이고, 여기서는 **Grid 에서 의미가 갈리는 것만** 쓴다.

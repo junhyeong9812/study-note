@@ -1,11 +1,5 @@
 # Java 25 (2025.09) — LTS
 
-> 원본: `~/project/java-history/java/java-25.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JEP 번호·클래스/옵션 이름·수치·자바 코드블록 5개와 셸 코드블록 1개·「릴리스 정보」의 JEP 목록·「참고 출처」는 원문 그대로다.\
-> ASCII 도식 2개는 원문 mermaid 도식 2개를 글자로 옮긴 것이고, 새로 그린 도식은 없다.\
-> 「한눈에」의 손목 밴드 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
-> 「이 편의 기능은 지금 어디쯤인가」 표의 「그 앞」·「그 뒤」 칸은 같은 시리즈의 다른 편(`java-21.md`~`java-24.md`·`java-26.md`)에서 끌어온 보충이고, 출처 편을 칸마다 적었다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -266,3 +260,11 @@ Java 25는 Java 21 이후 2년간 축적된 차세대 기능들을 정식화해 
 - [New Features in Java 25 - Baeldung](https://www.baeldung.com/java-25-features)
 - [JDK 25 and JDK 26: What We Know So Far - InfoQ](https://www.infoq.com/news/2025/08/java-25-so-far/)
 - [Java version history - Wikipedia](https://en.wikipedia.org/wiki/Java_version_history)
+
+## 출처
+
+원본: `~/project/java-history/java/java-25.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JEP 번호·클래스/옵션 이름·수치·자바 코드블록 5개와 셸 코드블록 1개·「릴리스 정보」의 JEP 목록·「참고 출처」는 원문 그대로다.\
+ASCII 도식 2개는 원문 mermaid 도식 2개를 글자로 옮긴 것이고, 새로 그린 도식은 없다.\
+「한눈에」의 손목 밴드 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
+「이 편의 기능은 지금 어디쯤인가」 표의 「그 앞」·「그 뒤」 칸은 같은 시리즈의 다른 편(`java-21.md`~`java-24.md`·`java-26.md`)에서 끌어온 보충이고, 출처 편을 칸마다 적었다.

@@ -1,67 +1,5 @@
 # js/syntax/24 — 배열 변형 메서드: 「무엇이 원본을 바꾸고 무엇을 돌려주나 — 그리고 `sort` 는 무엇으로 비교하나」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다.**
-> 「이 메서드가 원본을 바꾸나」는 이름으로 외우면 **반환값 쪽에서** 틀린다 — `sort`·`reverse` 는 **원본 그 자체**를 돌려주고, `push`·`unshift` 는 **길이**를 돌려준다.
-> 그래서 메서드 **열다섯 개**에 「반환값이 원본인가 · 내용이 달라졌나 · `length` 가 달라졌나」 세 칸을 전부 묻고, **y 칸을 스크립트가 센다**(동작 (1)).
-> ★★ `sort` 쪽은 창이 하나 더 붙는다 — **비교 함수에 로그를 심어** 몇 번 · 무엇을 받고 불리나를 본다(동작 (5)·(6)).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 최신 초안 — Indexed Collections](https://tc39.es/ecma262/multipage/indexed-collections.html) —
->   `Array.prototype.sort` · `SortIndexedProperties` · `CompareArrayElements` · 「consistent comparator」 정의 · `Array.prototype.push`·`shift`·`splice`·`reverse`·`fill`·`copyWithin`
->   (ECMA-262 17판 = ES2026 HTML 을 내려받아 문장을 대조했다)
-> - [ECMA-262 9판(ES2018)](https://262.ecma-international.org/9.0/) · [10판(ES2019)](https://262.ecma-international.org/10.0/) — `Array.prototype.sort` 첫 문장(안정성의 판 경계)
-> - [ECMA-262 최신 초안 — Ordinary and Exotic Objects Behaviours](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html) — `ArraySetLength` · `ArrayCreate`
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, 대조한 `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★ **이 문서는 BMP 밖 글자를 한 글자도 싣지 않는다.**
->
-> **버전** — 이 주제의 메서드는 **전부 ES2015 이전부터** 있었다(`fill`·`copyWithin` 만 ES2015). ★★★ **판이 갈리는 것은 메서드가 아니라 「약속」이다.**
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `push`·`pop`·`shift`·`unshift`·`splice`·`sort`·`reverse` | ES1\~ES3 | 세 판 다 있다 |
-> | `fill`·`copyWithin` | **ES2015** | 세 판 다 있다(판별 블록) |
-> | ★★★ **`sort` 가 안정 정렬이어야 한다는 약속** | **ES2019** — 9판은 "The sort is not necessarily stable", 10판은 "The sort must be stable" | ★ **두 node 판 다 경계 뒤**다 — 판 차이로는 못 보이고 **같은 키 격자**로 보였다(동작 (4)) |
-> | 복사판(`toSorted`·`toReversed`·`toSpliced`·`with`) | **ES2023**(TC39 finished proposals — Change Array by Copy) | node 18 에 없고 node 20·Chrome 에 있다 — **이 주제 밖**, [25번](../25-array-non-mutating-and-copy-methods/2-summary.md) |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체) | 메서드 **15개** × 세 칸(반환값이 원본인가 · 내용 · `length`) — **y 칸을 스크립트가 센다**(동작 (1)) · 같은 키 정렬을 **길이 10가지**에서(동작 (4)) · 동결 배열 × 메서드 **11개** × 입력 셋(동작 (8)) |
-> | ★★ **① 추상 연산에 로그 심기** | 비교 함수가 **몇 번 불리고 무엇을 받나** — `undefined` 가 비교 함수에 **한 번도 안 간다**(동작 (6)의 `[2]`) · 규칙을 어긴 비교 함수의 호출 수(동작 (5)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | 동결 배열에 쓰기 · `sort(1)` · `length = -1` — ★ **던지는 기준이 「바꾸려 했나」가 아니라 「썼나」인 것**이 문구로 드러난다 · ★ **메서드는 비엄격 모드에서도 던지고 대입식만 조용한 것**(동작 (8)) |
-> | ★ **⑤ 두 판 대조기** | 이 주제의 탐침은 **두 판에서 한 글자도 같았다**(아래 집계 줄 — 갈린 것은 **다른 주제의 탐침**이다) |
-> | ★★ **창을 바꿔 물었다**(제5의 상태) | 「안정 정렬은 ES2019 부터」는 **판 대조로 물을 수 없다** — 이 머신에 ES2019 이전 엔진이 없다. 그래서 **명세 두 판의 문장**과 **같은 키 격자**로 바꿔 물었다. ★ 바꾼 창이 못 보는 것 — **옛 엔진이 실제로 불안정했나**는 못 본다 |
-> | ★ **미룬 창 — Proxy `set` 트랩** | 「원본에 **몇 번** 쓰나」를 트랩으로 세는 창은 [25번](../25-array-non-mutating-and-copy-methods/2-summary.md)의 본체다 — 여기서는 **「썼다는 것」만** 동결 배열의 예외로 본다 |
-> | ★ **부적용 — ③ 브랜드 태그** | 이 주제의 메서드는 전부 **「intentionally generic」**(명세 Note)이다 — `this` 가 배열인지 묻지 않는다. **잴 것이 없다** |
-> | ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. **잴 것이 없다** |
-> | ★ **안 쟀다 — 성능** | 「`push` 가 `concat` 보다 빠르다」·「`shift` 는 느리다」를 **한 줄도 쓰지 않는다.** 호출 횟수는 셌고 시간·메모리는 안 쟀다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★★★ **난수 비교 함수의 분포**(어느 순서가 몇 번 나오나) — 블록에 **아예 안 찍었다**. 대신 **가짓수**만 찍는다(동작 (5)의 둘째 블록) | ★★★ 격자의 y/n 과 집계 줄 · 반환값 · 원본의 모양 · 구멍의 자리 · 비교 함수의 호출 수와 인자 · 예외의 **종류** · 난수 비교 함수의 **가짓수** |
-> | ★★ **규칙을 어긴 비교 함수의 결과** — 흔들리지 않았다(50판 모두 한 가지). 그러나 명세가 **「implementation-defined」** 라 부르는 칸이다. **성질의 근거로 쓰지 않는다** | 예외 **문구** — V8 의 것이다. 두 판에서 같았지만 명세가 정하는 것은 종류뿐이다 |
-> | `localeCompare` 결과 — ECMA-402(`Intl`)와 ICU 데이터에 매인다. 동작 (3)의 한 줄뿐이다 | — |
->
-> **선행** — [01 — 값의 종류와 `typeof`](../01-value-types-and-typeof/2-summary.md)(직접 선행 — 배열도 객체라 **참조로 오간다**) ·
-> [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)(동작 (8) — `freeze` 가 무엇을 막나) ·
-> [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(`[...a]` 가 얕은 복사인 것 — 동작 (7)) · [04 — 문자열과 UTF-16](../04-strings-and-utf16/2-summary.md)(문자열 비교가 코드 유닛 순서).
-> **이어지는 곳** — [25 — 배열 비변형·복사 메서드](../25-array-non-mutating-and-copy-methods/2-summary.md)(★★★ **짝이다** — 같은 격자를 복사판으로 · `set` 트랩 0회) · [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(구멍 격자 · `Array.from`).
->
-> ★★ **경계 — 스택·큐의 원리는 [`cs/foundations/data-structures-basics/`](../../../../cs/foundations/data-structures-basics/README.md) 가 정본이다.**
-> 그쪽은 **스택(4절)·큐(5절)가 무엇이고 어디에 쓰나**까지, 여기는 **JS 배열의 네 메서드가 무엇을 돌려주고 원본을 어떻게 바꾸나**부터다.
-> ★ **경계 — 비변형·복사 메서드는 25번이 정본이다.** 동작 (1)의 격자에 `slice`·`concat`·`map`·`filter`·`join` 을 넣은 것은 **대조 행**일 뿐이다.
-
 ```sh
 # js24b-versions.sh
 #!/usr/bin/env bash
@@ -516,7 +454,7 @@ lengths answering y: 10 / 10
 - ★★ **`[3]` 두 번 나눠 정렬** — 등급으로 한 번, 부서로 한 번. 결과가 `dev` 무리 안에서 **등급 1 → 3** 이다. 두 번째 정렬이 첫 번째의 순서를 **동점 안에서 남겼기** 때문이다.
 - ★★★ **판 경계** — 명세 **9판(ES2018)** 은 "The sort is not necessarily stable", **10판(ES2019)** 은 "The sort must be stable".
   최신 초안은 그 문장을 `SortIndexedProperties` 의 조건으로 옮겼다 — "if ℝ(SortCompare(old[j], old[k])) = 0, then π(j) < π(k); i.e., the sort is stable."
-  ★★ **이 머신의 두 node 판은 둘 다 경계 뒤**다. 판 대조로는 이 경계를 **못 본다** — 그래서 **명세 두 판의 문장**과 **이 격자**로 바꿔 물었다(머리말의 「창을 바꿔 물었다」).
+  ★★ **이 머신의 두 node 판은 둘 다 경계 뒤**다. 판 대조로는 이 경계를 **못 본다** — 그래서 **명세 두 판의 문장**과 **이 격자**로 바꿔 물었다(「실행 환경」의 「창을 바꿔 물었다」).
   ★ **「y 10 / 10」은 보장의 증명이 아니다** — 보장은 명세 문장이고, 이 격자는 **이 판이 그 보장을 어기지 않았다는 관찰**이다.
 
 ### (5) ★★★ 비교 함수가 규칙을 어기면 — 명세는 「구현 정의」라 부른다
@@ -1134,3 +1072,64 @@ strict mode here? false
 - **`TypedArray.prototype.sort`** — 기본 비교가 **숫자**다(글자가 아니다). 이 문서 밖이다 — **안 돌렸다.**
 - **`sort` 의 `this` 가 배열이 아닐 때**(`Array.prototype.sort.call(arrayLike)`) — generic 이라 동작한다. 이 배치는 돌리지 않았다.
 - **ES2019 이전 엔진의 불안정 정렬** — 이 머신에 그 판이 없어 **못 쟀다.** 명세 문장으로만 경계를 적었다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 전수 격자다.**
+「이 메서드가 원본을 바꾸나」는 이름으로 외우면 **반환값 쪽에서** 틀린다 — `sort`·`reverse` 는 **원본 그 자체**를 돌려주고, `push`·`unshift` 는 **길이**를 돌려준다.
+그래서 메서드 **열다섯 개**에 「반환값이 원본인가 · 내용이 달라졌나 · `length` 가 달라졌나」 세 칸을 전부 묻고, **y 칸을 스크립트가 센다**(동작 (1)).
+★★ `sort` 쪽은 창이 하나 더 붙는다 — **비교 함수에 로그를 심어** 몇 번 · 무엇을 받고 불리나를 본다(동작 (5)·(6)).
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 최신 초안 — Indexed Collections](https://tc39.es/ecma262/multipage/indexed-collections.html) —
+  `Array.prototype.sort` · `SortIndexedProperties` · `CompareArrayElements` · 「consistent comparator」 정의 · `Array.prototype.push`·`shift`·`splice`·`reverse`·`fill`·`copyWithin`
+  (ECMA-262 17판 = ES2026 HTML 을 내려받아 문장을 대조했다)
+- [ECMA-262 9판(ES2018)](https://262.ecma-international.org/9.0/) · [10판(ES2019)](https://262.ecma-international.org/10.0/) — `Array.prototype.sort` 첫 문장(안정성의 판 경계)
+- [ECMA-262 최신 초안 — Ordinary and Exotic Objects Behaviours](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html) — `ArraySetLength` · `ArrayCreate`
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 **추상 연산 이름**으로, 값·호출 로그·예외 타입과 메시지는 **전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, 대조한 `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★ **예외는 `try`/`catch` 로 받아 `e.constructor.name` 과 `e.message` 만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★ **이 문서는 BMP 밖 글자를 한 글자도 싣지 않는다.**
+
+**버전** — 이 주제의 메서드는 **전부 ES2015 이전부터** 있었다(`fill`·`copyWithin` 만 ES2015). ★★★ **판이 갈리는 것은 메서드가 아니라 「약속」이다.**
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `push`·`pop`·`shift`·`unshift`·`splice`·`sort`·`reverse` | ES1\~ES3 | 세 판 다 있다 |
+| `fill`·`copyWithin` | **ES2015** | 세 판 다 있다(판별 블록) |
+| ★★★ **`sort` 가 안정 정렬이어야 한다는 약속** | **ES2019** — 9판은 "The sort is not necessarily stable", 10판은 "The sort must be stable" | ★ **두 node 판 다 경계 뒤**다 — 판 차이로는 못 보이고 **같은 키 격자**로 보였다(동작 (4)) |
+| 복사판(`toSorted`·`toReversed`·`toSpliced`·`with`) | **ES2023**(TC39 finished proposals — Change Array by Copy) | node 18 에 없고 node 20·Chrome 에 있다 — **이 주제 밖**, [25번](../25-array-non-mutating-and-copy-methods/2-summary.md) |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체) | 메서드 **15개** × 세 칸(반환값이 원본인가 · 내용 · `length`) — **y 칸을 스크립트가 센다**(동작 (1)) · 같은 키 정렬을 **길이 10가지**에서(동작 (4)) · 동결 배열 × 메서드 **11개** × 입력 셋(동작 (8)) |
+| ★★ **① 추상 연산에 로그 심기** | 비교 함수가 **몇 번 불리고 무엇을 받나** — `undefined` 가 비교 함수에 **한 번도 안 간다**(동작 (6)의 `[2]`) · 규칙을 어긴 비교 함수의 호출 수(동작 (5)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | 동결 배열에 쓰기 · `sort(1)` · `length = -1` — ★ **던지는 기준이 「바꾸려 했나」가 아니라 「썼나」인 것**이 문구로 드러난다 · ★ **메서드는 비엄격 모드에서도 던지고 대입식만 조용한 것**(동작 (8)) |
+| ★ **⑤ 두 판 대조기** | 이 주제의 탐침은 **두 판에서 한 글자도 같았다**(맨 위 집계 줄 — 갈린 것은 **다른 주제의 탐침**이다) |
+| ★★ **창을 바꿔 물었다**(제5의 상태) | 「안정 정렬은 ES2019 부터」는 **판 대조로 물을 수 없다** — 이 머신에 ES2019 이전 엔진이 없다. 그래서 **명세 두 판의 문장**과 **같은 키 격자**로 바꿔 물었다. ★ 바꾼 창이 못 보는 것 — **옛 엔진이 실제로 불안정했나**는 못 본다 |
+| ★ **미룬 창 — Proxy `set` 트랩** | 「원본에 **몇 번** 쓰나」를 트랩으로 세는 창은 [25번](../25-array-non-mutating-and-copy-methods/2-summary.md)의 본체다 — 여기서는 **「썼다는 것」만** 동결 배열의 예외로 본다 |
+| ★ **부적용 — ③ 브랜드 태그** | 이 주제의 메서드는 전부 **「intentionally generic」**(명세 Note)이다 — `this` 가 배열인지 묻지 않는다. **잴 것이 없다** |
+| ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 가 한 줄도 없다. **잴 것이 없다** |
+| ★ **안 쟀다 — 성능** | 「`push` 가 `concat` 보다 빠르다」·「`shift` 는 느리다」를 **한 줄도 쓰지 않는다.** 호출 횟수는 셌고 시간·메모리는 안 쟀다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★★★ **난수 비교 함수의 분포**(어느 순서가 몇 번 나오나) — 블록에 **아예 안 찍었다**. 대신 **가짓수**만 찍는다(동작 (5)의 둘째 블록) | ★★★ 격자의 y/n 과 집계 줄 · 반환값 · 원본의 모양 · 구멍의 자리 · 비교 함수의 호출 수와 인자 · 예외의 **종류** · 난수 비교 함수의 **가짓수** |
+| ★★ **규칙을 어긴 비교 함수의 결과** — 흔들리지 않았다(50판 모두 한 가지). 그러나 명세가 **「implementation-defined」** 라 부르는 칸이다. **성질의 근거로 쓰지 않는다** | 예외 **문구** — V8 의 것이다. 두 판에서 같았지만 명세가 정하는 것은 종류뿐이다 |
+| `localeCompare` 결과 — ECMA-402(`Intl`)와 ICU 데이터에 매인다. 동작 (3)의 한 줄뿐이다 | — |
+
+**선행** — [01 — 값의 종류와 `typeof`](../01-value-types-and-typeof/2-summary.md)(직접 선행 — 배열도 객체라 **참조로 오간다**) ·
+[14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)(동작 (8) — `freeze` 가 무엇을 막나) ·
+[11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(`[...a]` 가 얕은 복사인 것 — 동작 (7)) · [04 — 문자열과 UTF-16](../04-strings-and-utf16/2-summary.md)(문자열 비교가 코드 유닛 순서).
+**이어지는 곳** — [25 — 배열 비변형·복사 메서드](../25-array-non-mutating-and-copy-methods/2-summary.md)(★★★ **짝이다** — 같은 격자를 복사판으로 · `set` 트랩 0회) · [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(구멍 격자 · `Array.from`).
+
+★★ **경계 — 스택·큐의 원리는 [`cs/foundations/data-structures-basics/`](../../../../cs/foundations/data-structures-basics/README.md) 가 정본이다.**
+그쪽은 **스택(4절)·큐(5절)가 무엇이고 어디에 쓰나**까지, 여기는 **JS 배열의 네 메서드가 무엇을 돌려주고 원본을 어떻게 바꾸나**부터다.
+★ **경계 — 비변형·복사 메서드는 25번이 정본이다.** 동작 (1)의 격자에 `slice`·`concat`·`map`·`filter`·`join` 을 넣은 것은 **대조 행**일 뿐이다.

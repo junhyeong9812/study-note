@@ -1,11 +1,5 @@
 # html/syntax/07 — `id` 와 조각 식별자: 문서 내 링크·`:target`·스크롤 앵커 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [URL Standard](https://url.spec.whatwg.org/) 로 접지했다 — **이 주제는 두 명세에 걸쳐 있다.**\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★ **`scrollY` 의 절댓값은 흔들리는 칸이다.** 근거로 쓰는 것은 「**0 인가 · 앞 값과 같은가**」뿐이다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -427,3 +421,10 @@ document.body.appendChild(q);
 - **이름 있는 접근(named access on Window)** — `id` 와 **일부 요소의** `name` 이 `window` 의 이름이 되는 규칙. `<a>` 는 그 목록에 없다.
 - **퍼센트 인코딩(percent-encoding)** — URL 에서 ASCII 밖 글자를 `%XX` 로 적는 방식.
 - **CSS 이스케이프** — 선택자에서 문법에 안 맞는 글자를 `\` 로 적는 것. `#\33 a` 가 `id="3a"` 를 가리킨다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [URL Standard](https://url.spec.whatwg.org/) 로 접지했다 — **이 주제는 두 명세에 걸쳐 있다.**\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★ **`scrollY` 의 절댓값은 흔들리는 칸이다.** 근거로 쓰는 것은 「**0 인가 · 앞 값과 같은가**」뿐이다.

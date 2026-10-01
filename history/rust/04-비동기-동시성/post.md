@@ -1,9 +1,5 @@
 # Rust 비동기·동시성 (async/await · fearless concurrency)
 
-> 원본: `~/project/rust-history/04-비동기-동시성.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
-> 연도·인명·버전·RFC 번호·크레이트 이름·코드·타임라인 표·`Rc` vs `Arc` 표는 원문 그대로다.\
-> ASCII 도식 10개(그중 2개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 식당 비유 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -686,3 +682,9 @@ Rust 동시성의 유산은 "**안전을 런타임 비용 없이 타입으로 �
 - [async_trait crate (docs.rs)](https://docs.rs/async-trait)
 - [The State of Async Rust: Runtimes (corrode.dev)](https://corrode.dev/blog/async/)
 - [Rust Gets Zero-Cost Async/Await Support in Rust 1.39 (InfoQ, 2019-11)](https://www.infoq.com/news/2019/11/rust-async-await/)
+
+## 출처
+
+원본: `~/project/rust-history/04-비동기-동시성.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
+연도·인명·버전·RFC 번호·크레이트 이름·코드·타임라인 표·`Rc` vs `Arc` 표는 원문 그대로다.\
+ASCII 도식 10개(그중 2개는 원문 mermaid 그림을 글자로 옮긴 것)와 「한눈에」의 식당 비유 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

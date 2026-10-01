@@ -1,15 +1,5 @@
 # kotlin/syntax/42 — 변환 연산 — `map`/`flatMap`/`associate`/`zip` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Collection transformation operations](https://kotlinlang.org/docs/collection-transformations.html)(매핑 `map`·`mapNotNull`·`mapIndexed` · 지퍼 `zip`·`unzip` · 연관 `associateWith`·`associateBy`·`associate` · 평탄화 `flatten`·`flatMap`) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 선언을 근거로 삼는다((3)).
-> **실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.\
-> `kotlinc` 4회(같은 파일의 컴파일 실패 2벌 — 그 실패가 결과다) · `java` 2회 · stdlib 소스 jar 에서 4곳.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 칸 N / M」은 스크립트가 스스로 센 것**이다.
-> **버전** — `map`·`flatMap`·`associate`·`associateBy`·`zip` 의 기본형은 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). `flatMap` 에 **`Sequence` 를 돌려주는 람다**를 받는 오버로드는 stdlib 소스에 **`@SinceKotlin("1.4")`**((3)) — ★ 그 전 판에서 어땠는지는 **이 판에서 잴 수 없다**(`-api-version` 은 2.0 미만을 안 받는다 — [43번 주제](../43-filter-search-and-empty-collections/) (4)).
-> **경계** — 결과가 **새 리스트인가**(원본과 `===` 가 아닌가)는 [40번 주제](../40-read-only-collections-and-runtime-types/) (4)가 이미 쟀다 — `map`·`filter` 는 `=== src` 가 `false`. 여기서는 다시 재지 않고 **「어떤 모양(타입)으로 바꾸나」** 만 본다.\
-> 만든 결과가 **복사인가 창인가**는 [41번 주제](../41-collection-creation-and-copying/)가 정본이다. `Sequence` 가 **즉시 평가가 아니라 지연 평가**라는 것과 그 비용은 [목록의 **47번 주제**](../47-sequences-lazy-evaluation/)다 — 여기 격자의 `Sequence` 열은 **컴파일러가 붙인 타입**만 말한다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**결과 타입 격자 — 연산 × 입력 모양 → 컴파일러가 붙인 반환 타입**」. 타입은 **실행해서 찍으면 지워진다**(`List<Int>` 의 `<Int>` 는 런타임에 없다). 그래서 **일부러 타입이 안 맞는 자리에 넣고 컴파일러가 뭐라고 우기는지** 읽는다.
 
 ## 이 주제가 쓰는 세 층
@@ -520,3 +510,13 @@ labeled  [(1, a), (2, b), (3, c)]
 - **`Array` 전용 확장** — 격자는 `Array.map` 이 `List` 임을 보였을 뿐, `Array<T>.map` 선언이 `_Arrays.kt` 에 따로 있는지는 **소스를 열지 않았다.**
 - **`Sequence` 쪽 선언** — `Sequence.map` 이 `Sequence<R>` 인 것은 격자로만 봤다. `_Sequences.kt` 는 **열지 않았다.**
 - **`associate` 의 키 충돌** — `associateBy` 와 같은 KDoc 문장이 있을 것으로 보이지만 **발췌하지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Collection transformation operations](https://kotlinlang.org/docs/collection-transformations.html)(매핑 `map`·`mapNotNull`·`mapIndexed` · 지퍼 `zip`·`unzip` · 연관 `associateWith`·`associateBy`·`associate` · 평탄화 `flatten`·`flatMap`) — 이 문서는 그 페이지의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 선언을 근거로 삼는다((3)).
+**실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.\
+`kotlinc` 4회(같은 파일의 컴파일 실패 2벌 — 그 실패가 결과다) · `java` 2회 · stdlib 소스 jar 에서 4곳.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 칸 N / M」은 스크립트가 스스로 센 것**이다.
+**버전** — `map`·`flatMap`·`associate`·`associateBy`·`zip` 의 기본형은 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). `flatMap` 에 **`Sequence` 를 돌려주는 람다**를 받는 오버로드는 stdlib 소스에 **`@SinceKotlin("1.4")`**((3)) — ★ 그 전 판에서 어땠는지는 **이 판에서 잴 수 없다**(`-api-version` 은 2.0 미만을 안 받는다 — [43번 주제](../43-filter-search-and-empty-collections/) (4)).
+**경계** — 결과가 **새 리스트인가**(원본과 `===` 가 아닌가)는 [40번 주제](../40-read-only-collections-and-runtime-types/) (4)가 이미 쟀다 — `map`·`filter` 는 `=== src` 가 `false`. 여기서는 다시 재지 않고 **「어떤 모양(타입)으로 바꾸나」** 만 본다.\
+만든 결과가 **복사인가 창인가**는 [41번 주제](../41-collection-creation-and-copying/)가 정본이다. `Sequence` 가 **즉시 평가가 아니라 지연 평가**라는 것과 그 비용은 [목록의 **47번 주제**](../47-sequences-lazy-evaluation/)다 — 여기 격자의 `Sequence` 열은 **컴파일러가 붙인 타입**만 말한다.

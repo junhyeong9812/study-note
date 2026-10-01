@@ -1,15 +1,5 @@
 # kotlin/syntax/24 — `enum class` 와 `sealed` 선택 기준 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [23번 주제](../23-sealed-classes-and-when-exhaustiveness/)다. [6번 주제](../06-when-expression/)·[22번 주제](../22-data-class-generated-members/)도 먼저 보면 좋다.
-> ★ **`sealed` 의 완결성 규칙 자체는 [23번 주제](../23-sealed-classes-and-when-exhaustiveness/)**, **`when` 의 `enum` 주체 바이트코드는 [6번 주제](../06-when-expression/)** 가 정본이라 여기서는 **결론만** 묻는다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-> ★★ 리플렉션 문항의 **목록 순서**는 답이 아니다 — **집합과 개수**로 답하라.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -246,6 +236,15 @@ fun main() {
 - [`../../../java/syntax/13-enum-classes/`](../../../java/syntax/13-enum-classes/)가 센 「싱글턴을 지키는 잠금 넷」은 무엇이었는가?
 - `EnumSet`·`EnumMap` 을 `sealed` 로 옮기면 무엇이 달라지는가?
 - [`../../../java/syntax/15-sealed-classes/`](../../../java/syntax/15-sealed-classes/)와 견주면, Kotlin `sealed` 와 Java `sealed` 는 **명단을 어디에 적는가**?
+
+## 실행 환경
+
+선행은 [23번 주제](../23-sealed-classes-and-when-exhaustiveness/)다. [6번 주제](../06-when-expression/)·[22번 주제](../22-data-class-generated-members/)도 먼저 보면 좋다.
+★ **`sealed` 의 완결성 규칙 자체는 [23번 주제](../23-sealed-classes-and-when-exhaustiveness/)**, **`when` 의 `enum` 주체 바이트코드는 [6번 주제](../06-when-expression/)** 가 정본이라 여기서는 **결론만** 묻는다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
+★★ 리플렉션 문항의 **목록 순서**는 답이 아니다 — **집합과 개수**로 답하라.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

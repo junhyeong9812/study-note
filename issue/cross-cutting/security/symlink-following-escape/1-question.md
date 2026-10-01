@@ -1,10 +1,5 @@
 # issue/security/symlink-following-escape — 검사는 링크를 안 따라가고 쓰기는 따라간다: 심볼릭 링크 경계 탈출 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. `stat`과 `lstat`(Rust `metadata` vs `symlink_metadata`, Python `exists()` vs `is_symlink()`)의 차이는 무엇인가. 재귀 삭제 대상이 "디렉터리를 가리키는 심볼릭 링크"일 때 링크를 따라가는 판정을 쓰면 무엇이 지워지는가.
 2. 예측: 허용 루트 안에 대상이 없는(dangling) 심볼릭 링크 `new.txt -> /outside/new.txt`가 있다. "`exists()`가 False면 새로 만든다 → `write_text()`" 코드에 `new.txt`를 요청하면 무슨 일이 생기는가. 왜 "중복 검사"와 "경로 한정" 두 불변식이 한 번에 뚫리는가.

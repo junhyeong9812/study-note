@@ -1,12 +1,5 @@
 # ts/syntax/16 — 함수 타입과 오버로드 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — More on Functions: Function Overloads](https://www.typescriptlang.org/docs/handbook/2/functions.html#function-overloads) ·
-> [Handbook — More on Functions: Call Signatures](https://www.typescriptlang.org/docs/handbook/2/functions.html#call-signatures) ·
-> [Handbook — Declaration Files](https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -19,7 +12,6 @@ v18.19.1
 > ★★ 이 주제는 **네 파일 전부** `--strict false` 에서 **글자 하나까지 같다** — 7절의 대조가 그것이다.
 > ★★★ **`.d.ts` 는 타입 별칭을 정규화하지 않는다** — 적은 그대로 싣는다. 그래서 4절은 **「적은 것」의 창**이고,
 > 탐침은 **「계산된 것」의 창**이다. 둘이 다른 답을 주면 **어느 쪽이 계산된 것인지부터** 갈라야 한다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -666,3 +658,11 @@ ex.16e.ts    exit 1 = exit 1 · 출력 한 글자도 같다
 - **조건부 타입이라는 대안** — 「인자에 따라 반환이 갈린다」는 조건부 타입으로도 쓸 수 있다. 오버로드는 **읽기 쉽고 순서에 취약**하고, 조건부 타입은 **순서에 안 취약하고 읽기 어렵다.** [목록의 **24번 주제**](../24-conditional-types-and-distribution/)에서 다룬다 — **이 배치에서는 안 던졌다.**
 - **`.d.ts` 가 정규화하지 않는 것** — 4절의 `asCallSig` 가 `CallSignature` 라는 **이름 그대로** 남는다. 그래서 `.d.ts` 를 「컴파일러가 계산한 최종 타입」으로 읽으면 **틀린다.** 탐침이 뱉는 글자가 계산된 쪽이다 — **둘이 다르면 그 차이 자체가 정보**다.
 - **오버로드와 술어·단언의 조합** — `function f(x: string): x is "a";` 같은 모양은 **이 배치에서 안 던졌다.** [**13번 주제**](../13-type-guards-and-predicates/)·[**14번 주제**](../14-assertion-signatures/)와 함께 다시 볼 자리다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — More on Functions: Function Overloads](https://www.typescriptlang.org/docs/handbook/2/functions.html#function-overloads) ·
+[Handbook — More on Functions: Call Signatures](https://www.typescriptlang.org/docs/handbook/2/functions.html#call-signatures) ·
+[Handbook — Declaration Files](https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

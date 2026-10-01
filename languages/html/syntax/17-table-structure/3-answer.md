@@ -1,12 +1,5 @@
 # html/syntax/17 — 표 구조: `table`/`thead`/`tbody`/`tfoot`/`caption`/`colgroup` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였고 사람이 옮겨 적지 않았다. 하네스는 맨 아래 `## 실행 검증` 절에 있다(18\~20번이 같은 하네스를 쓴다).\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [HTML-AAM](https://w3c.github.io/html-aam/), [CSS 2.1 §17](https://www.w3.org/TR/CSS2/tables.html) 으로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **본체는 창 ① 이다** — 소스에 쓴 표와 DOM 에 생긴 표가 갈린다(A1·A2).
-> ★★ **스크린리더가 표를 어떻게 읽는지는 못 본다**(A10).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -803,3 +796,11 @@ DOM 순서      = tfoot · tbody · thead
 - **표 처리 모델** — 칸마다 좌표를 매기는 명세 알고리즘. 18번의 머리 칸 배정이 그 위에 선다.
 - **`nameFrom`** — 내부 덤프가 적는 이름의 출처.
 - **제5의 상태** — 같은 질문을 **다른 창으로 물어** 답을 얻은 것. 이 주제에서는 명세 표 모델을 스크립트로 계산했다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였고 사람이 옮겨 적지 않았다. 하네스는 맨 아래 `## 실행 검증` 절에 있다(18\~20번이 같은 하네스를 쓴다).\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [HTML-AAM](https://w3c.github.io/html-aam/), [CSS 2.1 §17](https://www.w3.org/TR/CSS2/tables.html) 으로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **본체는 창 ① 이다** — 소스에 쓴 표와 DOM 에 생긴 표가 갈린다(A1·A2).
+★★ **스크린리더가 표를 어떻게 읽는지는 못 본다**(A10).

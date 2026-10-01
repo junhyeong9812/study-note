@@ -1,13 +1,5 @@
 # css/syntax/43 — `color-mix()` 와 상대 색 구문 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Color Module Level 5](https://drafts.csswg.org/css-color-5/) (`color-mix()`·상대 색 구문·색상 보간법의 정본) · [CSS Color Module Level 4](https://drafts.csswg.org/css-color-4/) (색 공간과 보간 규칙). 열어서 확인한 것만 적었다.
-> **실행 검증** — **Google Chrome 151.0.7922.173** headless 하나. `color-mix()`·상대 색 구문 **48개 선언**을 던져 `cssRules`·`getComputedStyle` 을 받았고, 색 견본 **33장**을 스크린샷으로 찍어 **PNG 픽셀의 `(r,g,b)` 를 파이썬으로 읽었다.** 본문의 RGB 는 전부 그 픽셀값이다.
-> **엔진은 Chrome 하나다** — Firefox 155 는 이 환경에서 headless 스크린샷이 산출되지 않는다. 크로스 브라우저는 **Baseline 데이터로만** 접지했고 「두 엔진에서 확인했다」고 적지 않았다.
-> **버전** — `color-mix()` = **widely**(low 2023-05-09 · high 2025-11-09, Chrome 111 / Firefox 113 / Safari 16.2). 상대 색 구문(`Relative colors`) = **newly**(low 2024-09-16, Chrome 125 / Firefox 128 / Safari 18). `webstatus.dev` API 로 조회한 값이다(2026-09-23).
-> **여기서 다루지 않는 것** — 색 **하나를 적는 표기와 색 공간 자체**는 [42번](../42-color-notation-and-spaces/2-summary.md)이 정본이다. 색이 **면을 따라 변하는 것**(그라디언트의 보간)은 [45번](../45-gradients-and-interpolation/2-summary.md)이 정본이고, 여기는 **두 색의 한 점 결과**까지만 잰다. 색을 **다 칠한 뒤 가공하는 것**(`filter`)은 [목록의 **47번 주제**](../47-filter-and-backdrop-filter/), **아래 레이어와 섞는 것**(`mix-blend-mode`)은 [목록의 **48번 주제**](../48-blend-modes-and-isolation/)다 — 이름이 「섞는다」로 같지만 **섞는 시점이 완전히 다르다**((9) 참고).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`color-mix()` 는 물감 두 통을 섞는 것이고, 상대 색 구문은 한 통에서 물감을 떠다가 농도만 바꾸는 것이다.**
@@ -536,3 +528,11 @@ Baseline **`newly`**(2024-09-16)다. `color-mix()` 는 **`widely`**(2023-05-09, 
 - **`light-dark()`** 는 같은 Color 5 의 함수로 Baseline `newly`(2024-05-13)다. 다크 모드 대응은 [목록의 **39번 주제**](../39-color-scheme-and-preferences/)가 정본이다.
 - **`contrast-color()`** 는 「이 배경 위에서 읽히는 글자색」을 골라 주는 함수로 Baseline `newly`(2026-04-10)다 — 42번에서 본 「`l` 로는 대비를 못 맞춘다」 문제의 언어 차원 해법이다.
 - **`color-mix()` 의 결과는 계산값 단계에서 이미 확정된다**(실측 — `getComputedStyle` 에 섞인 결과가 나온다). 그래서 애니메이션의 중간 프레임에서도 다시 섞지 않는다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Color Module Level 5](https://drafts.csswg.org/css-color-5/) (`color-mix()`·상대 색 구문·색상 보간법의 정본) · [CSS Color Module Level 4](https://drafts.csswg.org/css-color-4/) (색 공간과 보간 규칙). 열어서 확인한 것만 적었다.
+**실행 검증** — **Google Chrome 151.0.7922.173** headless 하나. `color-mix()`·상대 색 구문 **48개 선언**을 던져 `cssRules`·`getComputedStyle` 을 받았고, 색 견본 **33장**을 스크린샷으로 찍어 **PNG 픽셀의 `(r,g,b)` 를 파이썬으로 읽었다.** 본문의 RGB 는 전부 그 픽셀값이다.
+**엔진은 Chrome 하나다** — Firefox 155 는 이 환경에서 headless 스크린샷이 산출되지 않는다. 크로스 브라우저는 **Baseline 데이터로만** 접지했고 「두 엔진에서 확인했다」고 적지 않았다.
+**버전** — `color-mix()` = **widely**(low 2023-05-09 · high 2025-11-09, Chrome 111 / Firefox 113 / Safari 16.2). 상대 색 구문(`Relative colors`) = **newly**(low 2024-09-16, Chrome 125 / Firefox 128 / Safari 18). `webstatus.dev` API 로 조회한 값이다(2026-09-23).
+**여기서 다루지 않는 것** — 색 **하나를 적는 표기와 색 공간 자체**는 [42번](../42-color-notation-and-spaces/2-summary.md)이 정본이다. 색이 **면을 따라 변하는 것**(그라디언트의 보간)은 [45번](../45-gradients-and-interpolation/2-summary.md)이 정본이고, 여기는 **두 색의 한 점 결과**까지만 잰다. 색을 **다 칠한 뒤 가공하는 것**(`filter`)은 [목록의 **47번 주제**](../47-filter-and-backdrop-filter/), **아래 레이어와 섞는 것**(`mix-blend-mode`)은 [목록의 **48번 주제**](../48-blend-modes-and-isolation/)다 — 이름이 「섞는다」로 같지만 **섞는 시점이 완전히 다르다**((9) 참고).

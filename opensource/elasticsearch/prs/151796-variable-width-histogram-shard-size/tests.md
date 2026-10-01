@@ -1,10 +1,5 @@
 # PR #151796 - 테스트 해설
 
-> 신규 파일 `VariableWidthHistogramTests` 하나. 프레임워크가 공짜로 주는 네 테스트와
-> 우리가 직접 쓴 한 건으로 나뉜다. 문제와 수정은 [README.md](README.md), 전파 경로는
-> [structure.md](structure.md), 공통 배경은
-> [개념 문서](../../concepts/serialized-state-equality-contract/serialized-state-equality-contract.md).
-
 배치를 먼저 본다.\
 이 결함은 **역방향**(동등성에는 있고 직렬화에 없는 경우)이라 형제 PR 셋과 정반대의
 테스트가 유효하다.\

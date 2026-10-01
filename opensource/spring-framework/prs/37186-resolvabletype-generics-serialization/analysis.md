@@ -1,12 +1,5 @@
 # PR #37186 분석 — forClassWithGenerics 직렬화 프록시의 메서드 그래프와 이름표
 
-> 기준 커밋: 수정 상태 = `3bb5ed1ae4f`(PR head, 로컬 브랜치 `fix/typedescriptor-derived-serialization`), 결함 상태 = `89047909ea4`(PR 베이스).\
-> 아래 file:line 은 별도 표기가 없으면 **수정 상태(head)** 좌표다 — 이 PR은 순수 추가(137줄 추가, 0줄 삭제)라 기존 코드의 줄번호는 프록시 블록 앞까지 두 상태가 같다.
->
-> 이 문서의 역할: [README.md](README.md)가 서사와 범위 판단을, [structure.md](structure.md)가 무대의 지도와 분기도를, [tests.md](tests.md)가 테스트를, [review.md](review.md)가 리뷰 과정을 맡는다.\
-> 여기서는 **생성부터 폭발까지의 호출 그래프**, **이름표 하나하나의 정체**, **정상/결함 케이스의 단계별 값**만 다룬다.\
-> 프록시 관용구 자체와 버전 스큐 일반론은 [개념 문서](../../concepts/serialization-proxy-and-version-skew/serialization-proxy-and-version-skew.md)와 [instance-stability](../../concepts/jdk-generic-info-instance-stability/jdk-generic-info-instance-stability.md)가 정본이다.
-
 ## 0. 결론
 
 **결함**: `ResolvableType.forClassWithGenerics()`가 만든 객체 그래프에는 JDK의 raw `TypeVariable`(비직렬화)이 두 자리에 실린다 — `TypeVariablesVariableResolver.variables`(:1615)와, 인자가 null이거나 미해석 변수일 때 재주입되는 `SyntheticParameterizedType.typeArguments`(:1693).\
@@ -366,3 +359,8 @@ arity 검사는 버전 스큐(송신 측과 수신 측의 타입 파라미터 �
 
 > **백포트(backport)** — 최신 브랜치에 들어간 수정을 이전 버전 브랜치에도 옮겨 적용하는 것.\
 > 예: main에 머지된 fix를 7.0.x 유지보수 브랜치에도 넣을지는 별도 판단이다.
+
+## 출처
+
+기준 커밋: 수정 상태 = `3bb5ed1ae4f`(PR head, 로컬 브랜치 `fix/typedescriptor-derived-serialization`), 결함 상태 = `89047909ea4`(PR 베이스).\
+본문의 file:line 은 별도 표기가 없으면 **수정 상태(head)** 좌표다 — 이 PR은 순수 추가(137줄 추가, 0줄 삭제)라 기존 코드의 줄번호는 프록시 블록 앞까지 두 상태가 같다.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """새 커리큘럼 노트 검증기 — 인자: 노트 폴더(여러 개).
-7절 골격 순서 · Q/A 번호 일치(6~10) · 빈 절/빈 불릿 0 · 새 상대 링크 실존 · 초안 표기 · 리프 md만."""
+7절 골격 순서 · Q/A 번호 일치(6~10) · 빈 절/빈 불릿 0 · 새 상대 링크 실존 · metadata.md 단계 · 제목 아래 머리말 없음 · 리프 md만."""
 import os, re, sys
 
 SK = ['해결하는 문제', '동작·원리', '쓰이는 자료구조·알고리즘', '적용 — 풀어나가는 법',
@@ -62,9 +62,28 @@ def check(folder):
     top = [re.sub(r'^## ', '', l).strip() for l in strip_fences(s).split('\n') if l.startswith('## ')]
     if top != SK:
         errs.append(f'2-summary 최상위 헤딩 {top} != {SK}')
+    # 2026-10-01 header-cleanup: 상태는 metadata.md, 제목 아래 인용문 머리말 금지
+    mp = os.path.join(folder, 'metadata.md')
+    if not os.path.exists(mp):
+        errs.append('metadata.md 없음')
+    else:
+        rows = re.findall(r'^\| 단계 \| (\S+) \|', open(mp, encoding='utf-8').read(), flags=re.M)   # 생성기와 같은 파서
+        if len(rows) != 1 or rows[0] not in ('원고', '초안', '검수', '학습'):
+            errs.append(f'metadata.md: 단계 칸은 원고·초안·검수·학습 중 정확히 하나 ({rows})')
     for f, t in files.items():
-        if 'Claude 초안' not in t and '✅ 검수 완료' not in t:
-            errs.append(f'{f}: 초안/검수 표기 없음')
+        L = t.split('\n')
+        s = 0
+        if L and L[0].strip() == '---':                     # YAML front matter 건너뛰기
+            s = next((i + 1 for i in range(1, len(L)) if L[i].strip() == '---'), 0)
+        h = next((i for i in range(s, len(L)) if L[i].strip()), None)   # 첫 비어 있지 않은 줄 = H1이어야 한다
+        if h is None or not L[h].startswith('# '):
+            errs.append(f'{f}: 첫 줄이 H1이 아님')
+        else:
+            j = h + 1
+            while j < len(L) and L[j].strip() == '':
+                j += 1
+            if j < len(L) and (L[j].startswith('>') or re.search(r'Claude 초안|✅ 검수 완료', L[j])):
+                errs.append(f'{f}: 제목 아래 머리말·표식')
         e = empty_sections(t)
         if e:
             errs.append(f'{f}: 빈 절 {e[:3]}')

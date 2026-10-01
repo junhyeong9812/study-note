@@ -1,35 +1,5 @@
 # cpp/syntax/08 — 값 범주 — lvalue·prvalue·xvalue — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 값 범주](https://en.cppreference.com/w/cpp/language/value_category) · [`decltype` 지정자](https://en.cppreference.com/w/cpp/language/decltype) · [임시 객체의 물질화](https://en.cppreference.com/w/cpp/language/implicit_conversion#Temporary_materialization) · [복사 생략](https://en.cppreference.com/w/cpp/language/copy_elision) · [GCC 13 — `-fpermissive`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/C_002b_002b-Dialect-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`vcat01.cpp` \~ `vcat10.cpp`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 긴 진단은 **거르는 명령을 배너에 적어 두었다**(`| grep 'incomplete type'`).\
-> 그러니 실린 것은 「생략한 일부」가 아니라 **그 명령의 전체 출력**이다.
-> **버전** — lvalue·rvalue 의 구분은 **C++98부터**. **xvalue 와 `T&&` 는 C++11부터**이고,\
-> **prvalue 가 「물질화」로 다시 정의된 것은 C++17부터**다(아래 (6)). 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「참조가 무엇인가」의 정본은 형제 [`07번`](../07-references-vs-pointers/),\
-> 「`decltype` 이 이름과 식을 어떻게 가르나」의 정본은 형제 [`05번`](../05-auto-and-decltype-type-deduction/)이다.\
-> 여기서는 **05 의 창(`decltype((식))`)을 빌려 쓰되 그 규칙을 다시 설명하지 않는다.**\
-> 「`std::move`·`std::forward`」는 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/), 「`const` 정확성」은 [목록의 **10번 주제**](../10-const-correctness/),\
-> 「매개변수를 무엇으로 받나」는 [목록의 **11번 주제**](../11-choosing-parameter-passing/), 「오버로드 해석의 전체 순서」는 형제 [`01번`](../01-function-overloading-and-overload-resolution/),\
-> 「임시의 수명 연장과 댕글링」은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)가 정본이다.
-> ★★★ **08 → 09 → 11 은 한 사슬이다** — 여기서 **범주**를 정하고, 09 가 **그 범주를 만드는 법**(`std::move`)을 주고,\
-> 11 이 **그래서 무엇으로 받을지**를 고른다. 세 문서는 같은 격자를 다시 쓴다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단의 **열 번호**(g++ 45 · clang 45 가 같은 자리를 다르게 센다) | ★ **`TypeOf<...>` 꺾쇠 안의 타입** — 이 주제의 답 자체다 |
-> | 두 컴파일러의 **에러 문구**와 **에러를 몇 개로 세는가** | **진단 이름**(`-fpermissive` · `-Wunevaluated-expression`) |
-> | 같은 리터럴이 합쳐졌는지(`a == b`) — ★ **미명시**다 | ★ **생성자·소멸자 호출 횟수와 순서** |
-> | 객체 주소·`%p` (이 문서는 **싣지 않았다**) | **`cc exit` 와 `run exit`**(갈라 적었다) · `sizeof` 값 |
-
 ## 한눈에 — 쉽게 말하면
 
 **모든 식에는 「이름이 있느냐」와 「훔쳐 가도 되느냐」 두 개의 표가 붙어 있다.**
@@ -1138,3 +1108,34 @@ C++17 부터 **안 난다**((6)의 `[1]`: `ctor` 하나).\
 - ★ **`decltype(auto)`** — 반환 타입에 범주를 그대로 실어 나르는 도구. 정본은 형제 [`05번`](../05-auto-and-decltype-type-deduction/).
 - ★ **비트필드는 격자 밖에서 한 번 더 막힌다**((9)) — 범주는 lvalue 인데 `int&` 에 못 묶는다. 정본은 C 갈래 [`24-bit-fields/`](../../../c/syntax/24-bit-fields/).
 - ★ **이 문서가 안 던진 것** — 람다 식의 범주 · `co_await`/`co_yield` 식 · 클래스 prvalue 를 `auto&&` 로 받는 것 · `std::forward` 의 범주([목록의 **09번 주제**](../09-rvalue-references-move-and-forward/)).
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 값 범주](https://en.cppreference.com/w/cpp/language/value_category) · [`decltype` 지정자](https://en.cppreference.com/w/cpp/language/decltype) · [임시 객체의 물질화](https://en.cppreference.com/w/cpp/language/implicit_conversion#Temporary_materialization) · [복사 생략](https://en.cppreference.com/w/cpp/language/copy_elision) · [GCC 13 — `-fpermissive`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/C_002b_002b-Dialect-Options.html)
+**실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`vcat01.cpp` \~ `vcat10.cpp`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 긴 진단은 **거르는 명령을 배너에 적어 두었다**(`| grep 'incomplete type'`).\
+그러니 실린 것은 「생략한 일부」가 아니라 **그 명령의 전체 출력**이다.
+**버전** — lvalue·rvalue 의 구분은 **C++98부터**. **xvalue 와 `T&&` 는 C++11부터**이고,\
+**prvalue 가 「물질화」로 다시 정의된 것은 C++17부터**다(본문 (6)). 기준은 **C++20**이다.
+
+**경계** — 「참조가 무엇인가」의 정본은 형제 [`07번`](../07-references-vs-pointers/),\
+「`decltype` 이 이름과 식을 어떻게 가르나」의 정본은 형제 [`05번`](../05-auto-and-decltype-type-deduction/)이다.\
+여기서는 **05 의 창(`decltype((식))`)을 빌려 쓰되 그 규칙을 다시 설명하지 않는다.**\
+「`std::move`·`std::forward`」는 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/), 「`const` 정확성」은 [목록의 **10번 주제**](../10-const-correctness/),\
+「매개변수를 무엇으로 받나」는 [목록의 **11번 주제**](../11-choosing-parameter-passing/), 「오버로드 해석의 전체 순서」는 형제 [`01번`](../01-function-overloading-and-overload-resolution/),\
+「임시의 수명 연장과 댕글링」은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)가 정본이다.
+★★★ **08 → 09 → 11 은 한 사슬이다** — 여기서 **범주**를 정하고, 09 가 **그 범주를 만드는 법**(`std::move`)을 주고,\
+11 이 **그래서 무엇으로 받을지**를 고른다. 세 문서는 같은 격자를 다시 쓴다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단의 **열 번호**(g++ 45 · clang 45 가 같은 자리를 다르게 센다) | ★ **`TypeOf<...>` 꺾쇠 안의 타입** — 이 주제의 답 자체다 |
+| 두 컴파일러의 **에러 문구**와 **에러를 몇 개로 세는가** | **진단 이름**(`-fpermissive` · `-Wunevaluated-expression`) |
+| 같은 리터럴이 합쳐졌는지(`a == b`) — ★ **미명시**다 | ★ **생성자·소멸자 호출 횟수와 순서** |
+| 객체 주소·`%p` (이 문서는 **싣지 않았다**) | **`cc exit` 와 `run exit`**(갈라 적었다) · `sizeof` 값 |

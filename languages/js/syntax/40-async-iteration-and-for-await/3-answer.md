@@ -1,13 +1,5 @@
 # js/syntax/40 — 비동기 이터레이션: 「떠날 때는 `return()` 을 기다리고 · 값은 기다린 뒤 받고 · 동기 이터러블은 감싼다 — 거부된 값을 닫는지는 판이 정한다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
-> 블록은 **전부 캡처 파일에서 조립**했다.
-> ★★★ **이 주제에서 판이 갈린 칸은 하나다** — 1번 격자 C 행 `rejects`(Chrome 151 만 닫았다). 두 node 판은 서로 한 글자도 같았다.
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
-> `js40b-40a-close-grid.js`(1번 · 2번 · 8번) · `js40b-40-h-premade.js` + `js40b-40b-premade.sh`(3번 · 9번) · `js40b-40c-which-protocol.js`(4번 · 6번) · `js40b-40d-yield-and-ticks.js`(5번 · 7번 · 10번).
-
 ## 정답
 
 ### 1. `break`·`return`·`throw` 는 세 행 모두 **`return() yes · finally yes`**, 끝까지는 **`no · yes`** — 갈린 칸 **`1 / 10`**(`rejects` 열의 C 행) ★★★
@@ -243,3 +235,12 @@ node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identica
 - ★★★ **C 행 `rejects` 칸** — node 가 ES2025 의 `closeOnRejection` 을 따르는 V8 로 오르면 `return() yes · finally yes` 로 바뀔 자리다. 판이 오르면 1번을 다시 돌린다.
 - ★★ **3번의 보고와 종료 코드** — node 의 모드(37번).
 - ★ 예외 문구 — `… is not a function or its return value is not iterable` · `… not async iterable`.
+
+## 실행 환경
+
+이 파일의 출력은 **node v20.19.6**(기본 판) · **node v18.19.1**(대조) · **Chrome 151**(헤드리스) · x86-64 Linux 에서 실제로 돌려 얻은 것이고,
+블록은 **전부 캡처 파일에서 조립**했다.
+★★★ **이 주제에서 판이 갈린 칸은 하나다** — 1번 격자 C 행 `rejects`(Chrome 151 만 닫았다). 두 node 판은 서로 한 글자도 같았다.
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
+`js40b-40a-close-grid.js`(1번 · 2번 · 8번) · `js40b-40-h-premade.js` + `js40b-40b-premade.sh`(3번 · 9번) · `js40b-40c-which-protocol.js`(4번 · 6번) · `js40b-40d-yield-and-ticks.js`(5번 · 7번 · 10번).

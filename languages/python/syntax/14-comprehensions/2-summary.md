@@ -1,22 +1,5 @@
 # python/syntax/14-comprehensions — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [6.2.4. Displays for lists, sets and dictionaries](https://docs.python.org/3.12/reference/expressions.html#displays-for-lists-sets-and-dictionaries) — 감춰진 스코프, 가장 왼쪽 `for` 의 iterable
-> - [6.2.8. Generator expressions](https://docs.python.org/3.12/reference/expressions.html#generator-expressions) — 지연 평가와 즉시 평가되는 부분
-> - [PEP 572 — Assignment Expressions](https://peps.python.org/pep-0572/) — 왈러스가 바깥 스코프에 바인딩된다
-> - [PEP 709 — Inlined comprehensions](https://peps.python.org/pep-0709/) — 3.12 의 인라인화
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> **버전** — 리스트 컴프리헨션은 2.0+, dict/set 컴프리헨션은 2.7/3.0+, 왈러스(`:=`)는 3.8+.\
->   **3.12 에서 list·dict·set 컴프리헨션이 인라인화됐다**(PEP 709) — 스택 트레이스에서 `<listcomp>` 프레임이 사라진다. 제너레이터 표현식은 인라인 대상이 아니다.
-> **구현 대 명세** — 스코프 규칙과 평가 시점은 **언어 보장**이다. PEP 709 의 속도 향상과 프레임 소멸은 **CPython 3.12 의 구현 변화**다.
->
-> **기존 노트와의 경계** — [`languages/python/basics/`](../../basics/README.md) 「1. 리스트」가 `[e for e in range(1, 101)]` 와 `if` 를 붙이는 **쓰는 법**을 이미 다룬다.\
->   이 주제는 그 위에서 「**무엇을 못 하고 어디서 틀리나**」만 간다 — 평가 시점, 스코프, 예외가 터지는 자리.
-
 ## 한눈에 — 쉽게 말하면
 
 **주문한 음식을 한꺼번에 받느냐, 나올 때마다 받느냐.**
@@ -688,3 +671,19 @@ $ python3 -m timeit -s "data=list(range(1000))" "(n*2 for n in data)"
   안에 든 객체들의 크기는 포함하지 않는다.
 - **조용한 실패(silent failure)**: 에러 없이 정상처럼 끝나는데 결과만 틀린 것.\
   dict 컴프리헨션의 키 중복과 소진된 제너레이터가 이 갈래다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [6.2.4. Displays for lists, sets and dictionaries](https://docs.python.org/3.12/reference/expressions.html#displays-for-lists-sets-and-dictionaries) — 감춰진 스코프, 가장 왼쪽 `for` 의 iterable
+- [6.2.8. Generator expressions](https://docs.python.org/3.12/reference/expressions.html#generator-expressions) — 지연 평가와 즉시 평가되는 부분
+- [PEP 572 — Assignment Expressions](https://peps.python.org/pep-0572/) — 왈러스가 바깥 스코프에 바인딩된다
+- [PEP 709 — Inlined comprehensions](https://peps.python.org/pep-0709/) — 3.12 의 인라인화
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+**버전** — 리스트 컴프리헨션은 2.0+, dict/set 컴프리헨션은 2.7/3.0+, 왈러스(`:=`)는 3.8+.\
+  **3.12 에서 list·dict·set 컴프리헨션이 인라인화됐다**(PEP 709) — 스택 트레이스에서 `<listcomp>` 프레임이 사라진다. 제너레이터 표현식은 인라인 대상이 아니다.
+**구현 대 명세** — 스코프 규칙과 평가 시점은 **언어 보장**이다. PEP 709 의 속도 향상과 프레임 소멸은 **CPython 3.12 의 구현 변화**다.
+
+**기존 노트와의 경계** — [`languages/python/basics/`](../../basics/README.md) 「1. 리스트」가 `[e for e in range(1, 101)]` 와 `if` 를 붙이는 **쓰는 법**을 이미 다룬다.\
+  이 주제는 그 위에서 「**무엇을 못 하고 어디서 틀리나**」만 간다 — 평가 시점, 스코프, 예외가 터지는 자리.

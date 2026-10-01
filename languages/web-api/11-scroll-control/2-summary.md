@@ -1,15 +1,5 @@
 # web-api/11 — 스크롤 제어: `scrollTo`/`scrollBy`/`scrollIntoView`·스크롤 컨테이너 찾기·위치 복원 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 갈래는 언어가 아니라 플랫폼이다.** 여기서 다루는 것은 「CSS 가 무엇을 스크롤 컨테이너로 만드나」가 아니라 「**스크립트가 그것을 어떻게 찾아 굴리나**」다. `overflow` 값별 판정과 스크롤바가 먹는 폭은 [CSS 23번 주제](../../css/syntax/23-overflow-and-scroll-containers/2-summary.md)가 정본이고 여기서 다시 쓰지 않는다.\
-> **기준 소스** — [CSSOM View Module](https://drafts.csswg.org/cssom-view/) 의 「Scrolling」·「`ScrollToOptions`」·「`scrollIntoView()`」·「`scrollingElement`」 절과 [HTML Living Standard — `history.scrollRestoration`](https://html.spec.whatwg.org/multipage/nav-history-apis.html#scroll-restoration-mode). 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 블록마다 명령이 배너로 실려 있고, 그 배너에는 **`--window-size=1000,800`** 이 들어 있다 — **스크롤 상한이 뷰포트 높이에 달려 있어 창 크기를 빼면 수치가 재현되지 않는다.**\
-> ★ **못 잰 것이 하나 있다** — `behavior: 'smooth'` 의 **도착**이다. 「부른 직후에는 안 움직인다」까지는 관측했고 **애니메이션이 끝나는 순간은 이 도구로 못 봤다**((9)).\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. **이식성을 주장하지 않는다.**\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `scrollIntoView` 의 옵션 객체와 `scrollingElement` 는 CSSOM View 로 사후 명세화된 표면이고 **Baseline 추적 대상이 아닐 만큼 오래됐다**(갈래 [`../README.md`](../README.md) 의 「확인하지 못한 것」).\
-> **선행** — [09번 주제](../09-element-geometry/2-summary.md)(`scrollTop` 을 **읽는** 쪽)와 [CSS 23번 주제](../../css/syntax/23-overflow-and-scroll-containers/2-summary.md)(무엇이 스크롤 컨테이너인가).\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -892,3 +882,13 @@ el.scrollIntoView();                                // 조상 스크롤러를 �
 - **`overscroll-behavior`** 는 끝까지 간 스크롤이 **바깥으로 전달되는 것**을 막는다((5)에서 본 「바깥이 대신 굴러가는」 일의 CSS 쪽 스위치다). **던져 보지 않았다.**
 - **`Element.scrollIntoViewIfNeeded()`** 는 `{block: 'nearest'}` 의 옛 비표준 판이다. **Chromium 한정**이라 이 목록에서는 다루지 않는다.
 - **가로 축**(`scrollLeft`·`inline`)은 이 문서가 **세로만큼 던지지 않았다.** 쓰기 방향이 오른쪽에서 왼쪽인 문서에서는 **`scrollLeft` 가 음수가 되는 판**이 있는데 **확인하지 않았다.**
+
+## 실행 환경
+
+**이 갈래는 언어가 아니라 플랫폼이다.** 여기서 다루는 것은 「CSS 가 무엇을 스크롤 컨테이너로 만드나」가 아니라 「**스크립트가 그것을 어떻게 찾아 굴리나**」다. `overflow` 값별 판정과 스크롤바가 먹는 폭은 [CSS 23번 주제](../../css/syntax/23-overflow-and-scroll-containers/2-summary.md)가 정본이고 여기서 다시 쓰지 않는다.\
+**기준 소스** — [CSSOM View Module](https://drafts.csswg.org/cssom-view/) 의 「Scrolling」·「`ScrollToOptions`」·「`scrollIntoView()`」·「`scrollingElement`」 절과 [HTML Living Standard — `history.scrollRestoration`](https://html.spec.whatwg.org/multipage/nav-history-apis.html#scroll-restoration-mode). 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 블록마다 명령이 배너로 실려 있고, 그 배너에는 **`--window-size=1000,800`** 이 들어 있다 — **스크롤 상한이 뷰포트 높이에 달려 있어 창 크기를 빼면 수치가 재현되지 않는다.**\
+★ **못 잰 것이 하나 있다** — `behavior: 'smooth'` 의 **도착**이다. 「부른 직후에는 안 움직인다」까지는 관측했고 **애니메이션이 끝나는 순간은 이 도구로 못 봤다**((9)).\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. **이식성을 주장하지 않는다.**\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `scrollIntoView` 의 옵션 객체와 `scrollingElement` 는 CSSOM View 로 사후 명세화된 표면이고 **Baseline 추적 대상이 아닐 만큼 오래됐다**(갈래 [`../README.md`](../README.md) 의 「확인하지 못한 것」).\
+**선행** — [09번 주제](../09-element-geometry/2-summary.md)(`scrollTop` 을 **읽는** 쪽)와 [CSS 23번 주제](../../css/syntax/23-overflow-and-scroll-containers/2-summary.md)(무엇이 스크롤 컨테이너인가).

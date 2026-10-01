@@ -1,13 +1,5 @@
 # sql/40-날짜·시간 타입과 함수 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> ★ **시간대 조건** — PG `TimeZone` = `Etc/UTC` · MySQL `time_zone` = `SYSTEM`(그 SYSTEM 이 `UTC`) · `mysql.time_zone_name` 1,795행 적재.\
-> MySQL `sql_mode` 는 기본값(`STRICT_TRANS_TABLES`·`NO_ZERO_DATE` 포함)이다.\
-> 표를 쓴 실험은 전부 임시 표이거나 트랜잭션 롤백이고, `emp`·`dept` 는 읽기만 했다.\
-> 문서 근거는 [PG 18 Date/Time Types](https://www.postgresql.org/docs/18/datatype-datetime.html) · [PG 18 Date/Time Functions](https://www.postgresql.org/docs/18/functions-datetime.html) · [MySQL 8.4 Date and Time Types](https://dev.mysql.com/doc/refman/8.4/en/date-and-time-types.html) · [MySQL 8.4 Date and Time Functions](https://dev.mysql.com/doc/refman/8.4/en/date-and-time-functions.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -921,7 +913,7 @@ end - start (일수)                  PG: end - start / MySQL: DATEDIFF(end, sta
 | `CONVERT_TZ` 이름·오프셋 (10번) | MySQL 8.4.10 | 2회 | **표 적재 확인 포함** |
 
 **★ 설정 의존 항목 — 5번 전부와 0번.**\
-머리말·0번에 적은 시간대(PG `Etc/UTC` / MySQL 실효 `UTC`)에서 나온 결과다.\
+「실행 환경」·0번에 적은 시간대(PG `Etc/UTC` / MySQL 실효 `UTC`)에서 나온 결과다.\
 **다른 시간대의 서버에서는 같은 질의가 다른 시각을 보여 준다.**
 
 **`sql_mode` 의존 항목** — 4번의 `INSERT`. `STRICT_TRANS_TABLES` 가 경고를 에러로 올린다.
@@ -942,3 +934,12 @@ end - start (일수)                  PG: end - start / MySQL: DATEDIFF(end, sta
 **버전을 적지 않은 이유** — 이 주제의 동작에 「어느 버전부터」가 붙은 것을 **두 매뉴얼에서도 릴리스 노트에서도 찾지 못했다.**
 
 **DB 잔재** — 없다. `t40`·`t40tz`·`t40e` 는 전부 임시 표이거나 트랜잭션 롤백이고, `emp`·`dept` 는 읽기만 했다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러·경고는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+★ **시간대 조건** — PG `TimeZone` = `Etc/UTC` · MySQL `time_zone` = `SYSTEM`(그 SYSTEM 이 `UTC`) · `mysql.time_zone_name` 1,795행 적재.\
+MySQL `sql_mode` 는 기본값(`STRICT_TRANS_TABLES`·`NO_ZERO_DATE` 포함)이다.\
+표를 쓴 실험은 전부 임시 표이거나 트랜잭션 롤백이고, `emp`·`dept` 는 읽기만 했다.\
+문서 근거는 [PG 18 Date/Time Types](https://www.postgresql.org/docs/18/datatype-datetime.html) · [PG 18 Date/Time Functions](https://www.postgresql.org/docs/18/functions-datetime.html) · [MySQL 8.4 Date and Time Types](https://dev.mysql.com/doc/refman/8.4/en/date-and-time-types.html) · [MySQL 8.4 Date and Time Functions](https://dev.mysql.com/doc/refman/8.4/en/date-and-time-functions.html).

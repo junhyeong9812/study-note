@@ -1,16 +1,5 @@
 # java/syntax/12 — 중첩 클래스: static nested·inner·지역·익명 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §8.1.3 Inner Classes and Enclosing Instances](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§8.1.1.4 `static` Classes](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§8.5 Member Class and Interface Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§14.3 Local Class and Interface Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html)
-> **실행 검증** — 이 문서의 모든 실행 출력·역어셈블 출력·컴파일 에러는 실제로 돌려 얻은 것이다.\
-> 기본 JDK 는 Temurin **21.0.5**. 캡처 발자국(12-c)과 수거 관찰(12-leak)은 **17.0.13 · 21.0.5 · 25.0.1** 세 개에서 돌렸다.\
-> 컴파일 에러는 `javac --release 8 / 15 / 16 / 21` 로 릴리스를 바꿔 가며 찍었다.\
-> 바이트코드는 `javap -c -p` · `javap -v -p` 출력을 그대로 옮겼다.
-> **버전** — 중첩 클래스 자체는 **JDK 1.1**에서 들어왔다(그 전에는 없었다 — [`../../../../history/java/jdk-1.1.md`](../../../../history/java/jdk-1.1.md)).\
-> 이 주제에서 버전이 갈리는 것은 둘이다. **inner 클래스 안의 `static` 멤버는 Java SE 16부터** 허용된다.\
-> **`private` 을 넘나드는 접근의 구현 방식은 JDK 11(JEP 181 nestmate)에서 바뀌었다** — 그 전에는 합성 브리지 메서드가 생겼다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 JLS 로, 동작은 실행·역어셈블 출력으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **중첩 클래스 네 종류는 "집 한 채에 딸린 공간" 네 가지와 같다.**
@@ -914,3 +903,14 @@ Map<String,String> m = new HashMap<>() {{ put("a", "1"); }};
   반대로 **`ArrayList` 의 이터레이터는 inner** 다 — 리스트의 `modCount` 를 실시간으로 봐야 하기 때문이다([**43번 주제**](../43-iterator-and-fail-fast/)).
 - **`this$0` 은 리플렉션에 그대로 보인다**((5)의 실행 출력이 그것이다). 프레임워크가 중첩 클래스를 인스턴스화하려다 실패하는 사고가 여기서 난다 — 인자 없어 보이는 생성자가 **실제로는 인자를 받기** 때문이다.
 - **지역 클래스 이름의 숫자**(`Ex$1Local`)는 같은 이름의 지역 클래스가 여러 메서드에 있을 수 있어 붙는다 — 12-st 의 `Ex$1L`·`Ex$2L` 이 소스에서는 둘 다 `class L` 이다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §8.1.3 Inner Classes and Enclosing Instances](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§8.1.1.4 `static` Classes](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§8.5 Member Class and Interface Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§14.3 Local Class and Interface Declarations](https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html)
+**실행 검증** — 이 문서의 모든 실행 출력·역어셈블 출력·컴파일 에러는 실제로 돌려 얻은 것이다.\
+기본 JDK 는 Temurin **21.0.5**. 캡처 발자국(12-c)과 수거 관찰(12-leak)은 **17.0.13 · 21.0.5 · 25.0.1** 세 개에서 돌렸다.\
+컴파일 에러는 `javac --release 8 / 15 / 16 / 21` 로 릴리스를 바꿔 가며 찍었다.\
+바이트코드는 `javap -c -p` · `javap -v -p` 출력을 그대로 옮겼다.
+**버전** — 중첩 클래스 자체는 **JDK 1.1**에서 들어왔다(그 전에는 없었다 — [`../../../../history/java/jdk-1.1.md`](../../../../history/java/jdk-1.1.md)).\
+이 주제에서 버전이 갈리는 것은 둘이다. **inner 클래스 안의 `static` 멤버는 Java SE 16부터** 허용된다.\
+**`private` 을 넘나드는 접근의 구현 방식은 JDK 11(JEP 181 nestmate)에서 바뀌었다** — 그 전에는 합성 브리지 메서드가 생겼다.

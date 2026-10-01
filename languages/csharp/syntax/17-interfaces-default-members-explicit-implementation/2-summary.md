@@ -1,33 +1,5 @@
 # csharp/syntax/17 — 인터페이스·기본 구현 멤버·명시적 구현 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — `interface` 키워드](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/interface)(열어서 확인: 「기본 구현 멤버는 **인터페이스 인스턴스로만** 접근된다」 · 「`static abstract` 호출은 **컴파일 시점 타입**으로 풀린다」) ·
-> [ECMA-335(CLI) — `constrained.` 접두](https://ecma-international.org/publications-and-standards/standards/ecma-335/)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).\
-> **대비는 실측이다** — **javac 21.0.5** 로 같은 모양을 던졌다((7)).
-> **버전** — 인터페이스·명시적 구현은 **C# 1.0부터** · **기본 구현 멤버는 C# 8** · **`static abstract` 멤버는 C# 11** 이다.\
-> `-langversion:latest` 로 던졌다.
-> **경계** — [16번](../16-inheritance-virtual-override-abstract-sealed-new/)이 **이미 잰 것은 다시 재지 않는다** —\
-> ★★★ 「기본 구현이 클래스로 **안 내려온다**(`CS1061`·리플렉션상 선언 메서드 0개)」·「`new` 로 숨긴 것을 인터페이스로 부르면 `Base.Go`」·\
-> 「명시적 구현이 `private=True final=True virtual=True`」·「`callvirt` 는 널 검사」는 **거기가 정본**이다.\
-> ★★★ **이 문서는 그 결론 위에 선다** — 과녁은 둘뿐이다. **기본 구현 멤버가 무엇을 푸나**(인터페이스 진화)와 **명시적 구현이 무엇을 푸나**(이름 충돌).\
-> ★ **박싱 자체**는 [03번](../03-boxing-and-unboxing/)이 정본이다.
-> ★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **11번**([`11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/))이\
-> `default` 메서드와 충돌 해소(`X.super.m()`)의 정본이다. 여기서는 **C# 과 갈리는 두 자리만** 다시 던졌다((7)).
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** — 판마다 다듬인다 | ★★★ **진단 코드**(`CS0535`·`CS0738`·`CS8705`·`CS0175`·`CS8926`·`CS8920`)와 **`(행,열)`** |
-> | **IL 오프셋 폭**(`IL_0008`) | ★★★ **옵코드 이름과 접두**(`constrained.` · `callvirt` 대 `call`) |
-> | ★ **증분의 절댓값 일부** — 한 판에서 잰 바이트 | ★★★ **네 판에서 갈린 줄 수**(스크립트가 센 마지막 줄) · 그 네 판에서 다 같은 바이트 |
-> | 예외 **메시지 문구**(`TypeLoadException` 의 영어 문장) | ★★★ **예외 타입 이름** · **`cc exit` 와 `run exit`**(갈라 적었다) |
-> | javac 의 진단 **표기 형식** | ★ **`-warn:9` 에서 답한 탐침의 개수** |
-
 ## 이 판
 
 ```text
@@ -912,3 +884,32 @@ True
 - ★ **`ref struct` 와 기본 구현** — Learn 은 「기본 구현 멤버를 더하면 그 인터페이스를 구현하는 `ref struct` 는 그 멤버를 **명시적으로 선언해야** 한다」고 적는다.\
   ★ `ref struct` 는 박싱될 수 없으니 (6)의 상자를 만들 수 없기 때문으로 읽힌다 — **이 판에서 던지지 않았다.**
 - ★ **(1)의 예외 시점** — 이 판에서는 `Run` 의 JIT 때 났다. **ReadyToRun·NativeAOT** 로 미리 컴파일하면 시점이 달라질 수 있다 — **안 쟀다.**
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — `interface` 키워드](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/interface)(열어서 확인: 「기본 구현 멤버는 **인터페이스 인스턴스로만** 접근된다」 · 「`static abstract` 호출은 **컴파일 시점 타입**으로 풀린다」) ·
+[ECMA-335(CLI) — `constrained.` 접두](https://ecma-international.org/publications-and-standards/standards/ecma-335/)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).\
+**대비는 실측이다** — **javac 21.0.5** 로 같은 모양을 던졌다((7)).
+**버전** — 인터페이스·명시적 구현은 **C# 1.0부터** · **기본 구현 멤버는 C# 8** · **`static abstract` 멤버는 C# 11** 이다.\
+`-langversion:latest` 로 던졌다.
+**경계** — [16번](../16-inheritance-virtual-override-abstract-sealed-new/)이 **이미 잰 것은 다시 재지 않는다** —\
+★★★ 「기본 구현이 클래스로 **안 내려온다**(`CS1061`·리플렉션상 선언 메서드 0개)」·「`new` 로 숨긴 것을 인터페이스로 부르면 `Base.Go`」·\
+「명시적 구현이 `private=True final=True virtual=True`」·「`callvirt` 는 널 검사」는 **거기가 정본**이다.\
+★★★ **이 문서는 그 결론 위에 선다** — 과녁은 둘뿐이다. **기본 구현 멤버가 무엇을 푸나**(인터페이스 진화)와 **명시적 구현이 무엇을 푸나**(이름 충돌).\
+★ **박싱 자체**는 [03번](../03-boxing-and-unboxing/)이 정본이다.
+★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **11번**([`11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/))이\
+`default` 메서드와 충돌 해소(`X.super.m()`)의 정본이다. 여기서는 **C# 과 갈리는 두 자리만** 다시 던졌다((7)).
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** — 판마다 다듬인다 | ★★★ **진단 코드**(`CS0535`·`CS0738`·`CS8705`·`CS0175`·`CS8926`·`CS8920`)와 **`(행,열)`** |
+| **IL 오프셋 폭**(`IL_0008`) | ★★★ **옵코드 이름과 접두**(`constrained.` · `callvirt` 대 `call`) |
+| ★ **증분의 절댓값 일부** — 한 판에서 잰 바이트 | ★★★ **네 판에서 갈린 줄 수**(스크립트가 센 마지막 줄) · 그 네 판에서 다 같은 바이트 |
+| 예외 **메시지 문구**(`TypeLoadException` 의 영어 문장) | ★★★ **예외 타입 이름** · **`cc exit` 와 `run exit`**(갈라 적었다) |
+| javac 의 진단 **표기 형식** | ★ **`-warn:9` 에서 답한 탐침의 개수** |

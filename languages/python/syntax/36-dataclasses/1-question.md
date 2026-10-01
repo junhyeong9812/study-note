@@ -1,22 +1,5 @@
 # python/syntax/36-dataclasses — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★★★ 이 주제의 1번은 **생성된 `__init__` 의 서명을 글자 그대로 적어야** 한다.
-> 「대충 이런 인자를 받는다」로는 맞은 것이 아니다.
-> ★★ 그리고 **「조용히 통과한다」가 정답인 문항이 셋**이다(2번·5번·6번).
-> 「막힐 것 같다」를 「막힌다」로 적으면 틀린다.
->
-> 실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
-> ★★★ **이 주제는 앞 주제 다섯을 전부 쓴다** —
-> [20](../20-mutable-default-args/1-question.md)(가변 기본값) · [30](../30-repr-eq-hash-contracts/1-question.md)(`__hash__`) ·
-> [31](../31-comparison-protocol-and-sortability/1-question.md)(순서) · [33](../33-property-descriptor-slots/1-question.md)(`__slots__`) ·
-> [34](../34-inheritance-mro-super/1-question.md)(MRO). 막히면 그중 무엇이 안 잡힌 것인지부터 짚어라.
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -744,6 +727,19 @@ print("   hasattr(f, '__dict__') :", hasattr(f, "__dict__"))
 * [20](../20-mutable-default-args/2-summary.md)·[30](../30-repr-eq-hash-contracts/2-summary.md)·[31](../31-comparison-protocol-and-sortability/2-summary.md)·[33](../33-property-descriptor-slots/2-summary.md)·[34](../34-inheritance-mro-super/2-summary.md) 가 이 주제에 **각각 무엇을 대 주는가** — 한 줄씩.
 * ★ Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **22번** 과 견주면 「비교에서 필드를 빼는 법」이 어떻게 다른가?
 * ★ [목록의 **40번 주제**](../40-type-hints-at-runtime/) 의 「힌트는 실행을 안 바꾼다」에 이 주제가 **어떤 예외**인가?
+
+## 실행 환경
+
+★★★ 이 주제의 1번은 **생성된 `__init__` 의 서명을 글자 그대로 적어야** 한다.
+「대충 이런 인자를 받는다」로는 맞은 것이 아니다.
+★★ 그리고 **「조용히 통과한다」가 정답인 문항이 셋**이다(2번·5번·6번).
+「막힐 것 같다」를 「막힌다」로 적으면 틀린다.
+
+실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
+★★★ **이 주제는 앞 주제 다섯을 전부 쓴다** —
+[20](../20-mutable-default-args/1-question.md)(가변 기본값) · [30](../30-repr-eq-hash-contracts/1-question.md)(`__hash__`) ·
+[31](../31-comparison-protocol-and-sortability/1-question.md)(순서) · [33](../33-property-descriptor-slots/1-question.md)(`__slots__`) ·
+[34](../34-inheritance-mro-super/1-question.md)(MRO).
 
 ## 복습 기록
 

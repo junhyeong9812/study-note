@@ -1,13 +1,5 @@
 # html/syntax/03 — 파서와 오류 복구: 태그 수프가 트리가 되는 과정·암묵 태그 삽입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Parsing HTML documents」](https://html.spec.whatwg.org/multipage/parsing.html) — 「Tree construction」·「The rules for parsing tokens in HTML content」·[「adoption agency algorithm」](https://html.spec.whatwg.org/multipage/parsing.html#adoption-agency-algorithm). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 으로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 산출이 **조용히 실패**하고 WebKit 은 없다. 이 갈래는 **「이식성」을 주장하지 않는다** — 다만 **이 주제만은 명세가 알고리즘째 규정**하므로, 아래 트리 모양은 **관찰이면서 동시에 명세 보장**이다(구현 정의 칸이 가장 작은 주제다).
-> **버전** — HTML 에는 언어 버전이 없다. 파싱 알고리즘은 **HTML5 표준화(2008\~2014)에서 처음 글로 적혔고** 그 뒤 크게 바뀌지 않았다.
-> **선행** — [02번 주제](../02-elements-and-attributes/2-summary.md). 거기는 **명세가 허용한 표기**까지, 여기는 **명세를 어겼을 때 파서가 만드는 트리**부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -608,3 +600,11 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **`</br>` 같은 화석이 명세에 몇 개 더 있다.** `<isindex>`(지금은 제거됨)·`<nobr>`·문서 끝의 `</body>` 뒤 텍스트 처리 등. 전부 **「웹에 이미 있는 문서를 깨지 않으려고」** 들어간 것이다.
 - **서버 쪽 파서와 브라우저 파서가 다르면 보안 문제가 된다.** 정제기가 「이 마크업은 안전」이라 판단한 트리와 브라우저가 만드는 트리가 다르면 필터를 우회할 수 있다 — [02번 주제](../02-elements-and-attributes/2-summary.md)의 중복 속성과 **같은 집안**이다. ★ 이 판에서는 정제기를 돌려 보지 않았다.
 - **DOM 조작 API 는 web-api 갈래가 정본**이다. `innerHTML` 에 넣은 조각도 **같은 파싱 알고리즘**(fragment parsing)을 거치지만, 그 API 표면은 이 갈래 밖이다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Parsing HTML documents」](https://html.spec.whatwg.org/multipage/parsing.html) — 「Tree construction」·「The rules for parsing tokens in HTML content」·[「adoption agency algorithm」](https://html.spec.whatwg.org/multipage/parsing.html#adoption-agency-algorithm). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `--dump-dom` 으로 읽은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 산출이 **조용히 실패**하고 WebKit 은 없다. 이 갈래는 **「이식성」을 주장하지 않는다** — 다만 **이 주제만은 명세가 알고리즘째 규정**하므로, 본문의 트리 모양은 **관찰이면서 동시에 명세 보장**이다(구현 정의 칸이 가장 작은 주제다).
+**버전** — HTML 에는 언어 버전이 없다. 파싱 알고리즘은 **HTML5 표준화(2008\~2014)에서 처음 글로 적혔고** 그 뒤 크게 바뀌지 않았다.
+**선행** — [02번 주제](../02-elements-and-attributes/2-summary.md). 거기는 **명세가 허용한 표기**까지, 여기는 **명세를 어겼을 때 파서가 만드는 트리**부터다.

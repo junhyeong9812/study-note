@@ -1,24 +1,5 @@
 # cpp/syntax/42 — 연관 컨테이너 — 정렬 vs 해시 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `std::map`](https://en.cppreference.com/w/cpp/container/map) · [`std::unordered_map`](https://en.cppreference.com/w/cpp/container/unordered_map) · [`std::hash`](https://en.cppreference.com/w/cpp/utility/hash) · [Compare 요구사항](https://en.cppreference.com/w/cpp/named_req/Compare) · [`map::operator[]`](https://en.cppreference.com/w/cpp/container/map/operator_at) · [`map::at`](https://en.cppreference.com/w/cpp/container/map/at)\
-> ★ 이 배치에서 **위 cppreference 쪽들을 열어 확인했다** — `map` 은 「**Keys are sorted by using the comparison function Compare. Search, removal, and insertion operations have logarithmic complexity.**」 · `unordered_map` 은 「**average constant-time complexity**」 · 「**Internally, the elements are not sorted in any particular order, but organized into buckets.**」 · `std::hash` 는 「**If std::hash<Key> is not provided by the program or the user, it is disabled.**」 · 「**Disabled specializations … `std::is_default_constructible<std::hash<Key>>::value` … false**」 · 「**If k1 == k2 is true, h(k1) == h(k2) is also true.**」 · Compare 는 「**Establishes strict weak ordering relation**」 · `operator[]` 는 「**Inserts value_type(key, T()) if the key does not exist.**」 · `at` 은 「**If no such element exists, an exception of type std::out_of_range is thrown.**」
-> **실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · **g++-12 (Ubuntu 12.4.0-2ubuntu1\~24.04.1) 12.4.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(★★ clang 도 같은 라이브러리 — 해시 순회 순서·버킷 수는 **한 구현 계열**이다. `g++-12` 만 libstdc++ 12 헤더) · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`key01.cpp`·`order01.cpp`·`sub01.cpp`·`swo01.cpp`·`hash01.cpp`·`bucket01.cpp`·`key-grid.sh`·`order-grid.sh`). 블록은 캡처 스크립트가 받은 것이다 — 사람이 옮겨 적은 줄은 없다.
-> **버전** — `map`·`set` 은 **C++98**, `unordered_*`·`std::hash` 는 **C++11**, `contains` 와 `operator<=>` 는 **C++20** 이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★★ **정본 경계** — **해시 테이블과 이진 탐색 트리의 원리**(버킷 · 체이닝 · 적재율 · 리사이즈 · 트리 탐색 · 균형)는 [`data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/)·[`06-binary-search-tree/`](../../../../cs/data-structure/06-binary-search-tree/)·[`16-red-black-tree/`](../../../../cs/data-structure/16-red-black-tree/)가 정본이다(★ 그쪽은 **Java 로 직접 구현** — `hashCode`/`equals` 의 약속까지). **여기는 표준 컨테이너가 키에게 요구하는 것** — 비교자 대 `hash`+`==` · 어기면 무엇이 나오나.
-> 선행 — [41번](../41-choosing-sequence-containers/)(컨테이너를 고르는 기준 — 할당·연속·주소). [23번](../23-three-way-comparison-spaceship/)(`<=>` `= default`)이 (1)의 여섯째 행으로 돌아온다. [35번](../35-instantiation-header-placement-and-reading-errors/)의 **「첫 에러가 내 파일을 가리키나(O/X)」** 를 (1)의 격자가 쓴다.
-> ★★★ **「`unordered_map` 이 `map` 보다 빠르다」는 이 문서가 싣지 않는다 — 시간을 재지 않았다.** 나쁜 해시도 **버킷 분포**로만 보인다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구와 총 줄 수** · `_GLIBCXX_DEBUG` 리포트의 **`@ 0x…` 주소** | ★★★ **통과 칸 · 첫 error 가 내 파일인가(O/X) · `cc exit`/`run exit` · 격자의 마지막 줄** · 리포트의 **`Error:` 줄** |
-> | ★ `unordered_map` 의 **순회 순서·`bucket_count` 수열** — **libstdc++ 의 관찰**(18 판 1 가지였지만 보장이 아니다) | ★★★ **`map` 은 키 순 · `operator[]` 는 넣는다 · `at` 은 `out_of_range`** — 명세 |
-
 ## 한눈에 — 쉽게 말하면
 
 **연관 컨테이너는 「사물함」이다 — 정렬 사물함과 해시 사물함 두 종류.**
@@ -759,3 +740,23 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **이질 탐색(`std::less<>`·`is_transparent`)** — `map<std::string, …>` 에 `const char*` 로 찾을 때 임시 문자열을 안 만드는 법. **던지지 않았다.**
 - **`try_emplace`·`insert_or_assign`(C++17)** — `operator[]` 의 대안. **던지지 않았다.**
 - **나쁜 해시의 비교 횟수** — `==` 를 세는 계수기로 물을 수 있다. 이 편은 **버킷 분포까지만** 봤다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `std::map`](https://en.cppreference.com/w/cpp/container/map) · [`std::unordered_map`](https://en.cppreference.com/w/cpp/container/unordered_map) · [`std::hash`](https://en.cppreference.com/w/cpp/utility/hash) · [Compare 요구사항](https://en.cppreference.com/w/cpp/named_req/Compare) · [`map::operator[]`](https://en.cppreference.com/w/cpp/container/map/operator_at) · [`map::at`](https://en.cppreference.com/w/cpp/container/map/at)\
+★ 이 배치에서 **위 cppreference 쪽들을 열어 확인했다** — `map` 은 「**Keys are sorted by using the comparison function Compare. Search, removal, and insertion operations have logarithmic complexity.**」 · `unordered_map` 은 「**average constant-time complexity**」 · 「**Internally, the elements are not sorted in any particular order, but organized into buckets.**」 · `std::hash` 는 「**If std::hash<Key> is not provided by the program or the user, it is disabled.**」 · 「**Disabled specializations … `std::is_default_constructible<std::hash<Key>>::value` … false**」 · 「**If k1 == k2 is true, h(k1) == h(k2) is also true.**」 · Compare 는 「**Establishes strict weak ordering relation**」 · `operator[]` 는 「**Inserts value_type(key, T()) if the key does not exist.**」 · `at` 은 「**If no such element exists, an exception of type std::out_of_range is thrown.**」
+**실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** · **g++-12 (Ubuntu 12.4.0-2ubuntu1\~24.04.1) 12.4.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(★★ clang 도 같은 라이브러리 — 해시 순회 순서·버킷 수는 **한 구현 계열**이다. `g++-12` 만 libstdc++ 12 헤더) · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`key01.cpp`·`order01.cpp`·`sub01.cpp`·`swo01.cpp`·`hash01.cpp`·`bucket01.cpp`·`key-grid.sh`·`order-grid.sh`). 블록은 캡처 스크립트가 받은 것이다 — 사람이 옮겨 적은 줄은 없다.
+**버전** — `map`·`set` 은 **C++98**, `unordered_*`·`std::hash` 는 **C++11**, `contains` 와 `operator<=>` 는 **C++20** 이다.
+
+★★★ **정본 경계** — **해시 테이블과 이진 탐색 트리의 원리**(버킷 · 체이닝 · 적재율 · 리사이즈 · 트리 탐색 · 균형)는 [`data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/)·[`06-binary-search-tree/`](../../../../cs/data-structure/06-binary-search-tree/)·[`16-red-black-tree/`](../../../../cs/data-structure/16-red-black-tree/)가 정본이다(★ 그쪽은 **Java 로 직접 구현** — `hashCode`/`equals` 의 약속까지). **여기는 표준 컨테이너가 키에게 요구하는 것** — 비교자 대 `hash`+`==` · 어기면 무엇이 나오나.
+선행 — [41번](../41-choosing-sequence-containers/)(컨테이너를 고르는 기준 — 할당·연속·주소). [23번](../23-three-way-comparison-spaceship/)(`<=>` `= default`)이 (1)의 여섯째 행으로 돌아온다. [35번](../35-instantiation-header-placement-and-reading-errors/)의 **「첫 에러가 내 파일을 가리키나(O/X)」** 를 (1)의 격자가 쓴다.
+★★★ **「`unordered_map` 이 `map` 보다 빠르다」는 이 문서가 싣지 않는다 — 시간을 재지 않았다.** 나쁜 해시도 **버킷 분포**로만 보인다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구와 총 줄 수** · `_GLIBCXX_DEBUG` 리포트의 **`@ 0x…` 주소** | ★★★ **통과 칸 · 첫 error 가 내 파일인가(O/X) · `cc exit`/`run exit` · 격자의 마지막 줄** · 리포트의 **`Error:` 줄** |
+| ★ `unordered_map` 의 **순회 순서·`bucket_count` 수열** — **libstdc++ 의 관찰**(18 판 1 가지였지만 보장이 아니다) | ★★★ **`map` 은 키 순 · `operator[]` 는 넣는다 · `at` 은 `out_of_range`** — 명세 |

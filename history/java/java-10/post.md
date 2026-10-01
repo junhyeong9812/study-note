@@ -1,10 +1,5 @@
 # Java 10 (2018년 3월)
 
-> 원본: `~/project/java-history/java/java-10.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JEP 번호·클래스/메서드 이름·코드블록 1개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
-> 「한눈에」의 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 교차 주 1개는 원문에 없는 보충이다.\
-> 원문이 69줄로 짧고 도식이 없어, 새 도식은 그리지 않았다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -140,3 +135,10 @@ try (var reader = Files.newBufferedReader(path)) {    // BufferedReader
 - [Java version history — Wikipedia](https://en.wikipedia.org/wiki/Java_version_history)
 - [Simplify Local Variable Type Definition Using the Java 10 var Keyword — Red Hat Developer](https://developers.redhat.com/blog/2018/05/25/simplify-local-variable-type-definition-using-the-java-10-var-keyword)
 - [Java 10 Features (with Examples) — HappyCoders](https://www.happycoders.eu/java/java-10-features/)
+
+## 출처
+
+원본: `~/project/java-history/java/java-10.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JEP 번호·클래스/메서드 이름·코드블록 1개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
+「한눈에」의 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 교차 주 1개는 원문에 없는 보충이다.\
+원문이 69줄로 짧고 도식이 없어, 새 도식은 그리지 않았다.

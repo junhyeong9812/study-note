@@ -1,11 +1,5 @@
 # css/syntax/41 — `@supports` 기능 질의 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 질문의 코드를 그대로 돌려 읽은 것**이다.\
-> **질의 결과와 실제 규칙의 동작을 매번 둘 다 재서** 대조했다.\
-> 규칙은 [CSS Conditional Rules 4](https://drafts.csswg.org/css-conditional-4/)·[5](https://drafts.csswg.org/css-conditional-5/) 로 접지했다.\
-> **엔진은 Chrome 하나다.** 웹폰트 실험만 로컬 HTTP 서버로 띄웠다(A9 참고).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -400,7 +394,7 @@ google-chrome --headless --disable-gpu --no-sandbox --dump-dom http://127.0.0.1:
 | `font-format`·`font-tech` 질의 4종 + 블록 적용 | 1 | 동작 방식 (6) · A9 |
 | `@font-face src` 폴백 (HTTP, 서버 로그) | 1 | A9 · 더 들어가면 |
 | `CSS.supports('bogus)(')` 예외 여부 | 1 | A8 |
-| Baseline 조회(`supports`·`css-supports`·`supports-at-rule`·`colrv1`) | 1 | 머리말 · A8 · A9 |
+| Baseline 조회(`supports`·`css-supports`·`supports-at-rule`·`colrv1`) | 1 | 「실행 환경」 · A8 · A9 |
 
 **구현에 달린 항목**
 
@@ -428,3 +422,10 @@ google-chrome --headless --disable-gpu --no-sandbox --dump-dom http://127.0.0.1:
 - **`font-format()` / `font-tech()`** — 폰트 파일 포맷 / 폰트 기술을 묻는 질의.
 - **`at-rule()`** — at-rule 지원을 묻는 질의. Baseline **limited**.
 - **Baseline** — 여러 브라우저의 지원 집계. 질의 결과와 다른 이야기다.
+
+## 실행 환경
+
+이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 질문의 코드를 그대로 돌려 읽은 것**이다.\
+**질의 결과와 실제 규칙의 동작을 매번 둘 다 재서** 대조했다.\
+규칙은 [CSS Conditional Rules 4](https://drafts.csswg.org/css-conditional-4/)·[5](https://drafts.csswg.org/css-conditional-5/) 로 접지했다.\
+**엔진은 Chrome 하나다.** 웹폰트 실험만 로컬 HTTP 서버로 띄웠다(A9 참고).

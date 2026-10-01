@@ -1,56 +1,5 @@
 # js/syntax/48 — 깊은 복사 수단 비교: 「넷 중 셋은 명세가 정한 얕은 길이고 하나만 호스트가 준 깊은 길이다 — 그 깊은 길도 프로토타입·getter·심볼 키는 못 옮긴다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 보존 격자다** — 값 **17행**(브리핑의 16종 + 「중첩 평범한 객체」) × 수단 **넷**(JSON 왕복 · 스프레드 `{ ...o }` · `Object.assign({}, o)` · `structuredClone`) = **68칸**을 칸마다 `kept`(새 값으로 보존) · `shared`(원본의 **그 객체**를 그대로 — `===`) · `-> 무엇`(변형) · `throws 생성자/이름`(던짐) 넷 중 하나로 찍고, **스크립트가 마지막 두 줄로 센다**(동작 (1)). 판은 **node 18 · node 20 · Chrome 151** 셋이다.
-> ★★ 보조로 **④ 예외의 이름 + 문구**(`DataCloneError` — 호스트마다 문구가 다르다 · 동작 (3)) · **① 로그 심기**(복사하는 동안 getter 를 몇 번 읽나 · 동작 (3)) · **교차 갈래 한 쌍**(CPython `copy.deepcopy` · 동작 (4))을 쓴다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - ★★★ **이 배치는 명세를 새로 열지 못했다**(외부 네트워크를 쓰지 않았다). 명세 층의 진술은 **형제 편이 연 판에서 확인한 연산 이름**을 인용한다 — [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(객체 스프레드 = `CopyDataProperties`) · [27 — `Object` 정적 메서드](../27-object-static-methods/2-summary.md)(`Object.assign`) · [31 — `JSON`](../31-json/2-summary.md)(`SerializeJSONProperty` 등).
-> - ★★ **`structuredClone` 은 ECMA-262 가 아니라 호스트 API 다** — 이 목록의 README 가 「MDN 은 호스트 API(`AbortController`·`structuredClone`)에서만 근거로 쓴다」고 적어 둔 그 API 다. ★ **HTML 표준의 해당 절(구조적 직렬화)은 이 문서가 읽지 않았다** — 그래서 `structuredClone` 칸은 전부 **세 호스트의 관찰**로만 적는다(아래 「창」 표의 제5의 상태).
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1, 파이썬은 `python3`(3.12.3). Chrome 은 아래 하네스(`--dump-dom`)로 돌렸다 — ★ **이 묶음(48\~52)의 하네스 소스는 이 머리말에 싣는다.**
-> ★★★ **성능은 재지 않았다** — 「`structuredClone` 이 JSON 왕복보다 빠르다/느리다」를 **한 줄도 쓰지 않는다**(31번 · 27번과 같은 선).
->
-> **버전** — 객체 스프레드 **ES2018** · `Object.assign` **ES2015** · `JSON` **ES5** · `Error` 의 `cause` **ES2022** · `structuredClone` 은 **언어 판이 없다**(호스트 API — 세 판 다 있다: 31번 판별 블록).
->
-> **★★★ 층 — 이 문서의 결론이 기대는 세 층**
->
-> | 층 | 무엇 | 어디서 |
-> |---|---|---|
-> | ★★★ **ECMA-262** | JSON 왕복 · 스프레드 · `Object.assign` 세 열 전부 — 얕다(`shared`) · getter 를 **읽어서** 데이터 속성으로 굳힌다 · 프로토타입을 안 옮긴다 · 심볼 키는 스프레드·`assign` 이 옮기고 JSON 은 뺀다 | 동작 (1)의 왼쪽 세 열 |
-> | ★★ **HTML(호스트 API)** | `structuredClone` 열 — 깊다 · 공유와 순환을 지킨다 · 함수·심볼 값·`WeakMap`·`Promise` 는 `DOMException`(이름 `DataCloneError`) · `transfer` 선택지 | 동작 (1)의 `clone` 열 · 동작 (3) |
-> | ★★ **구현(V8·호스트)의 관찰** | 예외 **문구**(Chrome 만 `Failed to execute 'structuredClone' on 'Window': ` 가 앞에 붙는다) · 복사본의 `stack` 이 원본과 같은 글자 · `Error` 하위 클래스가 `Error` 로 떨어지는 것 · `cause` 가 따라오는 것 | 동작 (3) |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 보존 격자**(본체의 도구) | 17행 × 4열 — 「`cells shared with the source (===): N / 68`」 · 「`cells not preserved (-> or throws): N / 68`」 · 열마다 센 줄 두 개 · 판 셋 비교 두 줄(동작 (1)) |
-> | ★★ **④ 예외의 이름 + 문구** | `structuredClone` 이 거절하는 다섯 값 — 생성자 · `name` · `code` · 문구(동작 (3) `[1]`) |
-> | ★ **① 로그 심기** | 복사하는 동안 getter 가 몇 번 불리나(`reads 1` — 동작 (3) `[3]`) |
-> | ★★ **교차 갈래 한 쌍** | CPython `copy.deepcopy` — 클래스 · 예외 · 함수(동작 (4)) |
-> | ★★★ **「못 잰 것」 이 아니라 「창을 바꿔 물었다」**(제5의 상태) | 「`structuredClone` 이 이 값을 어떻게 다뤄야 하나」는 원래 **HTML 명세를 읽어** 답할 질문인데 이 배치는 그 창을 못 열었다. 그래서 **같은 질문을 세 호스트에 던졌다**(node 18 · node 20 · Chrome 151 — 격자 68칸이 한 글자도 같았다). ★ **바꾼 창이 못 보는 것** — 세 호스트가 **모두 V8** 이라, 같은 답이 「HTML 이 그렇게 정했다」인지 「V8 이 그렇게 한다」인지는 **가르지 못한다**(특히 `Error` 의 `cause`·`stack` 칸) |
-> | ★ **부적용 — 성능** | 시간도 바이트도 안 쟀다. 이 주제의 질문(「무엇을 잃나」)에는 필요 없는 창이다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 판별 블록의 판 문자열 · `DataCloneError` 의 **문구**(호스트가 다르면 글자가 다르다 — node 와 Chrome 이 이미 달랐다) | ★★★ 격자 68칸 · 마지막 네 줄 · 판 비교 두 줄 · 동작 (3)의 생성자·`name`·`code`·참/거짓 · 동작 (4) — **재대조 동일** |
->
-> **선행** — [31 — `JSON`](../31-json/2-summary.md)(직접 선행 — ★★★ **이미 쟀다**: JSON 왕복 대 `structuredClone` 13행 · node 20 · 「`rows where the two columns differ: 11 / 13`」 — 거기 동작 (5). ★ 이 문서는 그 13행을 **다시 따로 싣지 않고** 두 열을 더해(스프레드·`assign`) · 네 행을 더해(심볼 키 · `Error` · `Uint8Array` · 중첩 객체) · 판을 셋으로 늘린 **한 격자**로 다시 묻는다) ·
-> [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(「**얕다**」 — 거기 동작 (3)) ·
-> [27 — `Object` 정적 메서드](../27-object-static-methods/2-summary.md)(★★ 복사 도구 넷 × 성질 여섯 격자 「`3 / 18`」 · **복사본의 `inner` 를 고치면 원본도 `99`** 가 거기 동작 (2) `[3]` 에 있다 — 이 문서는 그 쓰기 실험을 다시 하지 않는다) ·
-> [25 — 배열 비변경·복사 메서드](../25-array-non-mutating-and-copy-methods/2-summary.md)(배열 쪽 「한 겹」) ·
-> [16 — `class` 문법](../16-class-syntax/2-summary.md)(`structuredClone(inst)` 가 `#private` 필드를 안 옮긴다 — 거기 동작 (1) `[3]` 의 `{"field":"f"}`).
->
-> ★★ **경계** — 워커 `postMessage` 가 무엇을 넘길 수 있나는 web-api 갈래 목록([`web-api/README.md`](../../../web-api/README.md))의 **47번**, 전송(`Transferable`)과 공유 메모리는 같은 목록의 **48번**이 정본이다. 여기는 **한 스레드 안에서 복사본이 무엇을 잃나**만 다루고, `transfer` 는 동작 (3) `[4]` 의 세 줄로만 둔다.
->
-> ★★ **교차 갈래** — [Python 03 — 가변성과 복사](../../../python/syntax/03-mutability-and-copying/2-summary.md)(「6. 깊은 복사와 순환 참조 — `memo` 가 하는 일」 — `deepcopy` 도 **공유와 순환을 지킨다** · 함수는 `is` 원본). 동작 (4)는 그 편이 안 본 **클래스·예외** 두 행만 더한다.
-
 ```text
 ===== ./js48b-versions.sh (exit=0) =====
 node 18.19.1  v8 10.2.154.26-node.28  icu 74.2  tz 2023c  unicode 15.1  cldr 44.1
@@ -330,7 +279,7 @@ Chrome 151 prints the same as node20: yes
 ```
 
 - ★★★ **마지막 두 줄 — `cells shared with the source (===): 20 / 68` · `cells not preserved (-> or throws): 24 / 68`.** 그림의 세 열은 출력의 「per column」 세 줄을 그대로 옮긴 것이다(`kept` 1 · 5 · 5 · 13).
-- ★★★ **판 셋이 한 글자도 같았다** — `node18 prints the same as node20: yes` · `Chrome 151 prints the same as node20: yes`. ★ 「같았다」는 관찰이다 — 세 판이 **모두 V8** 이라는 점은 머리말 「창」 표에 적었다.
+- ★★★ **판 셋이 한 글자도 같았다** — `node18 prints the same as node20: yes` · `Chrome 151 prints the same as node20: yes`. ★ 「같았다」는 관찰이다 — 세 판이 **모두 V8** 이라는 점은 「실행 환경」 「창」 표에 적었다.
 - ★★★ **JSON 열 — 잃은 칸 16.** 보존은 `nested plain object` 한 칸뿐이다. 31번이 13행에서 본 손실(`Date` → 문자열 · `Map`/`Set`/`RegExp` → `{}` · `undefined` 속성 → 키가 사라짐 · `NaN` → `null` · `-0` → `0` · `BigInt`·순환 → `TypeError` · 공유 → 두 객체)이 그대로이고, 새로 넣은 행도 전부 잃었다 — **심볼 키 → 키가 사라짐 · `Error` → `plain {}` · `Uint8Array` → `plain {"0":1,"1":2}`**.
 - ★★★ **스프레드 · `assign` 열 — 한 칸도 서로 다르지 않다.** `NaN`·`-0`·`BigInt`·`undefined` 속성·심볼 키는 `kept`(값을 그대로 옮기니 당연하다), **객체가 든 열 칸은 전부 `shared`** 다 — 순환도 `shared (c.me === src)`, 즉 복사본의 `me` 가 **원본**을 가리킨다.
 - ★★★ **`clone` 열 — 잃은 칸 4.** 함수는 **던지고**(`throws DOMException/DataCloneError`), **심볼 키는 조용히 빠지고**, 클래스 인스턴스와 getter 는 **넷 다 잃는 행**이다. 대신 `Date`·`Map`·`Set`·`RegExp`·`Error`·`Uint8Array`·순환·「같은 객체 두 번」이 **새 객체로 보존**됐다.
@@ -479,9 +428,9 @@ Chrome 151 — `[1]` 의 문구만 다르다.
 - ★★ **문구는 호스트가 다르다** — node 18 · 20 은 `() => 1 could not be cloned.`, Chrome 151 은 앞에 `Failed to execute 'structuredClone' on 'Window': ` 가 붙는다. **문구를 문자열 비교하는 코드는 호스트를 옮기면 깨진다** — 가를 때는 `e.name === "DataCloneError"`.
 - ★★ **심볼 키는 조용히 빠지는데(동작 (1)) 심볼 값은 던진다(`[1]`)** — 같은 「심볼」이라도 **자리**에 따라 실패의 모양이 다르다.
 - ★★★ **`[2]` — `Error` 는 생성자가 표준 이름이면 그 생성자로 돌아온다**(`TypeError` · `RangeError`). **하위 클래스 `MyError` 는 `Error` 로 떨어지고**, 생성자에서 붙인 `name`(`MyError`)도 `extra`(`42`)도 **사라진다**. `cause` 는 **새 객체로** 따라왔고(`cause is a new object true`), `stack` 은 **원본과 같은 글자**였다.
-  ★★ 이 줄들은 **세 판의 관찰**이다 — 이 문서는 HTML 의 해당 절을 읽지 않았으므로 「`cause` 를 옮겨야 한다」·「`stack` 을 옮겨야 한다」를 **보장으로 적지 않는다**(머리말 「창」 표).
+  ★★ 이 줄들은 **세 판의 관찰**이다 — 이 문서는 HTML 의 해당 절을 읽지 않았으므로 「`cause` 를 옮겨야 한다」·「`stack` 을 옮겨야 한다」를 **보장으로 적지 않는다**(「실행 환경」 「창」 표).
 - ★★ **`[3]` — getter 는 복사하는 동안 한 번 읽혔다(`reads 1`)** — 격자의 `-> data property 1` 이 그 결과다. **비열거 속성은 안 오고**(`false`) · **얼린 원본의 복사본은 얼어 있지 않고**(`false`) · **`Date` 에 붙인 속성은 사라지고**(`undefined`) · **배열에 붙인 속성은 따라왔다**(`x`). ★ 「객체에 붙인 여분의 속성」도 **그 객체의 종류**에 따라 갈린다.
-- ★★ **`[4]` — `transfer` 에 넣은 `ArrayBuffer` 는 복사가 아니라 이동이다** — 원본 `byteLength` 가 `0`(떼어졌다), 복사본은 `8`. 넣지 않으면 원본은 그대로 `8`. 이 선택지의 쓰임새는 web-api 갈래 48번의 몫이다(머리말 경계).
+- ★★ **`[4]` — `transfer` 에 넣은 `ArrayBuffer` 는 복사가 아니라 이동이다** — 원본 `byteLength` 가 `0`(떼어졌다), 복사본은 `8`. 넣지 않으면 원본은 그대로 `8`. 이 선택지의 쓰임새는 web-api 갈래 48번의 몫이다(「실행 환경」 경계).
 
 ### (4) ★★ CPython 과 한 쌍 — `copy.deepcopy` 는 클래스를 지킨다
 
@@ -651,6 +600,56 @@ JS `structuredClone` 은 **하위 클래스와 여분 속성을 잃고**, 파이
 
 ## 더 들어가면
 
-- **HTML 의 구조적 직렬화 절** — 이 문서는 읽지 않았다. `Error` 의 `cause`·`stack` 이 명세의 요구인지 V8 의 선택인지는 **거기서** 갈린다(머리말 「창」 표).
+- **HTML 의 구조적 직렬화 절** — 이 문서는 읽지 않았다. `Error` 의 `cause`·`stack` 이 명세의 요구인지 V8 의 선택인지는 **거기서** 갈린다(「실행 환경」 「창」 표).
 - **V8 이 아닌 엔진** — 이 문서의 세 판은 모두 V8 이다. 다른 엔진에서 격자를 다시 돌리면 「HTML 층」과 「구현 층」이 조금 더 갈릴 것이다(돌리지 않았다).
 - **클래스 인스턴스의 깊은 복사** — 클래스가 복사 메서드를 갖는 설계 · `Object.create(Object.getPrototypeOf(o))` 에 속성을 옮기는 수작업 — 이 문서는 격자에 넣지 않았다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 보존 격자다** — 값 **17행**(브리핑의 16종 + 「중첩 평범한 객체」) × 수단 **넷**(JSON 왕복 · 스프레드 `{ ...o }` · `Object.assign({}, o)` · `structuredClone`) = **68칸**을 칸마다 `kept`(새 값으로 보존) · `shared`(원본의 **그 객체**를 그대로 — `===`) · `-> 무엇`(변형) · `throws 생성자/이름`(던짐) 넷 중 하나로 찍고, **스크립트가 마지막 두 줄로 센다**(동작 (1)). 판은 **node 18 · node 20 · Chrome 151** 셋이다.
+★★ 보조로 **④ 예외의 이름 + 문구**(`DataCloneError` — 호스트마다 문구가 다르다 · 동작 (3)) · **① 로그 심기**(복사하는 동안 getter 를 몇 번 읽나 · 동작 (3)) · **교차 갈래 한 쌍**(CPython `copy.deepcopy` · 동작 (4))을 쓴다.
+
+**기준 소스** — 열어서 확인한 것만.
+- ★★★ **이 배치는 명세를 새로 열지 못했다**(외부 네트워크를 쓰지 않았다). 명세 층의 진술은 **형제 편이 연 판에서 확인한 연산 이름**을 인용한다 — [11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(객체 스프레드 = `CopyDataProperties`) · [27 — `Object` 정적 메서드](../27-object-static-methods/2-summary.md)(`Object.assign`) · [31 — `JSON`](../31-json/2-summary.md)(`SerializeJSONProperty` 등).
+- ★★ **`structuredClone` 은 ECMA-262 가 아니라 호스트 API 다** — 이 목록의 README 가 「MDN 은 호스트 API(`AbortController`·`structuredClone`)에서만 근거로 쓴다」고 적어 둔 그 API 다. ★ **HTML 표준의 해당 절(구조적 직렬화)은 이 문서가 읽지 않았다** — 그래서 `structuredClone` 칸은 전부 **세 호스트의 관찰**로만 적는다(아래 「창」 표의 제5의 상태).
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1, 파이썬은 `python3`(3.12.3). Chrome 은 맨 위 하네스(`--dump-dom`)로 돌렸다 — ★ **이 묶음(48\~52)의 하네스 소스는 이 맨 위 부분에 싣는다.**
+★★★ **성능은 재지 않았다** — 「`structuredClone` 이 JSON 왕복보다 빠르다/느리다」를 **한 줄도 쓰지 않는다**(31번 · 27번과 같은 선).
+
+**버전** — 객체 스프레드 **ES2018** · `Object.assign` **ES2015** · `JSON` **ES5** · `Error` 의 `cause` **ES2022** · `structuredClone` 은 **언어 판이 없다**(호스트 API — 세 판 다 있다: 31번 판별 블록).
+
+**★★★ 층 — 이 문서의 결론이 기대는 세 층**
+
+| 층 | 무엇 | 어디서 |
+|---|---|---|
+| ★★★ **ECMA-262** | JSON 왕복 · 스프레드 · `Object.assign` 세 열 전부 — 얕다(`shared`) · getter 를 **읽어서** 데이터 속성으로 굳힌다 · 프로토타입을 안 옮긴다 · 심볼 키는 스프레드·`assign` 이 옮기고 JSON 은 뺀다 | 동작 (1)의 왼쪽 세 열 |
+| ★★ **HTML(호스트 API)** | `structuredClone` 열 — 깊다 · 공유와 순환을 지킨다 · 함수·심볼 값·`WeakMap`·`Promise` 는 `DOMException`(이름 `DataCloneError`) · `transfer` 선택지 | 동작 (1)의 `clone` 열 · 동작 (3) |
+| ★★ **구현(V8·호스트)의 관찰** | 예외 **문구**(Chrome 만 `Failed to execute 'structuredClone' on 'Window': ` 가 앞에 붙는다) · 복사본의 `stack` 이 원본과 같은 글자 · `Error` 하위 클래스가 `Error` 로 떨어지는 것 · `cause` 가 따라오는 것 | 동작 (3) |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 보존 격자**(본체의 도구) | 17행 × 4열 — 「`cells shared with the source (===): N / 68`」 · 「`cells not preserved (-> or throws): N / 68`」 · 열마다 센 줄 두 개 · 판 셋 비교 두 줄(동작 (1)) |
+| ★★ **④ 예외의 이름 + 문구** | `structuredClone` 이 거절하는 다섯 값 — 생성자 · `name` · `code` · 문구(동작 (3) `[1]`) |
+| ★ **① 로그 심기** | 복사하는 동안 getter 가 몇 번 불리나(`reads 1` — 동작 (3) `[3]`) |
+| ★★ **교차 갈래 한 쌍** | CPython `copy.deepcopy` — 클래스 · 예외 · 함수(동작 (4)) |
+| ★★★ **「못 잰 것」 이 아니라 「창을 바꿔 물었다」**(제5의 상태) | 「`structuredClone` 이 이 값을 어떻게 다뤄야 하나」는 원래 **HTML 명세를 읽어** 답할 질문인데 이 배치는 그 창을 못 열었다. 그래서 **같은 질문을 세 호스트에 던졌다**(node 18 · node 20 · Chrome 151 — 격자 68칸이 한 글자도 같았다). ★ **바꾼 창이 못 보는 것** — 세 호스트가 **모두 V8** 이라, 같은 답이 「HTML 이 그렇게 정했다」인지 「V8 이 그렇게 한다」인지는 **가르지 못한다**(특히 `Error` 의 `cause`·`stack` 칸) |
+| ★ **부적용 — 성능** | 시간도 바이트도 안 쟀다. 이 주제의 질문(「무엇을 잃나」)에는 필요 없는 창이다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 판별 블록의 판 문자열 · `DataCloneError` 의 **문구**(호스트가 다르면 글자가 다르다 — node 와 Chrome 이 이미 달랐다) | ★★★ 격자 68칸 · 마지막 네 줄 · 판 비교 두 줄 · 동작 (3)의 생성자·`name`·`code`·참/거짓 · 동작 (4) — **재대조 동일** |
+
+**선행** — [31 — `JSON`](../31-json/2-summary.md)(직접 선행 — ★★★ **이미 쟀다**: JSON 왕복 대 `structuredClone` 13행 · node 20 · 「`rows where the two columns differ: 11 / 13`」 — 거기 동작 (5). ★ 이 문서는 그 13행을 **다시 따로 싣지 않고** 두 열을 더해(스프레드·`assign`) · 네 행을 더해(심볼 키 · `Error` · `Uint8Array` · 중첩 객체) · 판을 셋으로 늘린 **한 격자**로 다시 묻는다) ·
+[11 — 스프레드와 나머지](../11-spread-and-rest/2-summary.md)(「**얕다**」 — 거기 동작 (3)) ·
+[27 — `Object` 정적 메서드](../27-object-static-methods/2-summary.md)(★★ 복사 도구 넷 × 성질 여섯 격자 「`3 / 18`」 · **복사본의 `inner` 를 고치면 원본도 `99`** 가 거기 동작 (2) `[3]` 에 있다 — 이 문서는 그 쓰기 실험을 다시 하지 않는다) ·
+[25 — 배열 비변경·복사 메서드](../25-array-non-mutating-and-copy-methods/2-summary.md)(배열 쪽 「한 겹」) ·
+[16 — `class` 문법](../16-class-syntax/2-summary.md)(`structuredClone(inst)` 가 `#private` 필드를 안 옮긴다 — 거기 동작 (1) `[3]` 의 `{"field":"f"}`).
+
+★★ **경계** — 워커 `postMessage` 가 무엇을 넘길 수 있나는 web-api 갈래 목록([`web-api/README.md`](../../../web-api/README.md))의 **47번**, 전송(`Transferable`)과 공유 메모리는 같은 목록의 **48번**이 정본이다. 여기는 **한 스레드 안에서 복사본이 무엇을 잃나**만 다루고, `transfer` 는 동작 (3) `[4]` 의 세 줄로만 둔다.
+
+★★ **교차 갈래** — [Python 03 — 가변성과 복사](../../../python/syntax/03-mutability-and-copying/2-summary.md)(「6. 깊은 복사와 순환 참조 — `memo` 가 하는 일」 — `deepcopy` 도 **공유와 순환을 지킨다** · 함수는 `is` 원본). 동작 (4)는 그 편이 안 본 **클래스·예외** 두 행만 더한다.

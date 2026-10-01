@@ -1,45 +1,5 @@
 # js/syntax/46 — `Reflect`: 「트랩 13개와 이름이 1:1 로 맞는 함수 13개 — 던지던 자리에서 `false` 를 돌려주고, 원시값을 감싸지 않고, `this` 로 누구를 볼지 `receiver` 로 고른다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자 둘이다** — ① **대응 표** — `Reflect` 의 함수 **13개**를 각각 「트랩 이름 13개를 **손으로 적은** handler」의 Proxy 에 불러 **어느 트랩이 불렸나**를 찍고, 「**같은 이름의 트랩 하나만 불린 함수 N / 13**」을 스크립트가 센다(동작 (1)). ② **`Object`/연산자 대 `Reflect` 격자 19행** — 「**한쪽만 던진 행 N / 19**」·「**둘 다 돌려줬는데 값이 다른 행 N / 19**」(동작 (2)).
-> ★★ 보조로 **① 로그 심기**(`receiver` — getter 가 `this` 로 누구를 보나 · `set` 을 넘기면 어느 트랩이 더 불리나 — 동작 (3))를 쓴다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — Reflection · The Reflect Object](https://tc39.es/ecma262/multipage/reflection.html) — 「**평범한 객체** · 함수가 아니다 · `[[Construct]]`·`[[Call]]` 이 없다」 · `Reflect.apply` 는 `IsCallable` 이 거짓이면 `TypeError`, 인자 목록은 **`CreateListFromArrayLike(args)`**(빼면 `undefined` 라 던진다) · `Reflect.construct(target, args [, newTarget])` · 나머지 11개는 **대상이 객체가 아니면 `TypeError`** 로 시작해 해당 내부 메서드를 그대로 부른다
-> - [ECMA-262 — Proxy Object Internal Methods](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html) — 트랩이 불리는 내부 메서드 13개(45번 머리말)
-> - ★ **`Reflect` 는 ES2015 본문**이다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 v20.19.6 이다. 하네스 소스는 [44번](../44-dynamic-import-top-level-await-and-import-attributes/2-summary.md) 머리말에 있다.
-> ★★★ **이 주제의 탐침 셋은 node 18 · node 20 · Chrome 151 에서 한 글자도 같았다**(세 판 대조기 · 아래 집계 줄) — 블록은 node 20 판 하나씩만 싣는다.
-> ★★ **탐침 파일 `js44b-46b-object-vs-reflect.js` 는 엄격 모드다** — 대입·`delete` 행이 비엄격이면 조용히 지나가 「같다」로 셀 것이기 때문이다(14번 동작 (4)).
-> ★★★ **성능은 재지 않았다.**
->
-> **버전** — `Reflect` 13개 함수 전부 **ES2015** · 세 판 다 있다(판별 블록).
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체) | 대응 표 13행 「`13 / 13`」(동작 (1)) · `Object` 대 `Reflect` 19행 「`only one side threw`」·「`both returned, different values`」(동작 (2)) |
-> | ★★ **① 로그 심기** | getter 의 `this` · 쓰기가 떨어진 객체 · `set` 트랩을 넘겼을 때 **더 불린 트랩**(동작 (3)) |
-> | ★ **45번 격자의 한 줄을 다시 쓴다** | `Reflect` 로 넘기는 트랩 24칸 — 「**맨 대상과 다른 칸 `0 / 24`**」(45번 동작 (1)의 `[2]`) |
-> | ★ **부적용 — ④ 예외 문구** | 격자 칸은 **예외의 이름**만 싣는다 — 이 주제의 질문은 「던지나 `false` 인가」라서 문구가 답을 바꾸지 않는다 |
-> | ★ **부적용 — 판 격자** | 세 판이 같아 **갈린 칸이 없다** |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 판별 블록의 판 문자열 · ★ `Object.getOwnPropertyNames(Reflect)` 의 **나열 순서**(명세가 정하지 않는다 — V8 이 정의 순서대로 준 것이다. 근거로는 **개수 13**만 쓴다) | ★★★ 두 격자의 모든 칸과 집계 줄 · 로그 값 · 예외의 **종류** |
-> | ★ **재실행에서 흔들린 칸은 없다**(재대조 동일) | — |
->
-> **선행** — [45 — `Proxy`](../45-proxy/2-summary.md)(직접 선행 — ★★★ **불변식 격자 24칸** · ★★ **`Reflect` 로 넘기는 트랩은 맨 대상과 `0 / 24` 다르다** · 트랩의 `false` 를 **엄격 대입이** `TypeError` 로 바꾼다) ·
-> [09 — `call`·`apply`·`bind`](../09-call-apply-bind/2-summary.md)(★★ **`apply(t, null)` 은 인자 0개로 조용히 부른다** · `Reflect.apply(f, t, 'ab')` 는 `CreateListFromArrayLike called on non-object` — 거기 동작 (1). 그 편은 「`Reflect` 전체는 46번이 정본」이라고 적는다) ·
-> [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md) · [22 — `Symbol`](../22-symbol-and-well-known-symbols/2-summary.md)(★ **`Reflect.ownKeys` 는 심볼 키를 본다** — 거기 동작의 격자) · [27 — `Object` 정적 메서드](../27-object-static-methods/2-summary.md).
-
 ```text
 ===== ./js44b-versions.sh (exit=0) =====
 node 18.19.1  v8 10.2.154.26-node.28
@@ -519,3 +479,42 @@ console.log("    Reflect.set(p, 'y', 1, {}) fired: " + fired.join(" -> "));
 
 - **`Reflect.construct` 의 `newTarget`** — 셋째 인자로 `new.target` 을 바꾼다(17번의 `new.target`). 이 문서는 두 인자 판만 돌렸다.
 - **`Object.hasOwn` 대 `Reflect.has`** — 자기 것만 대 체인 전체. 이 문서의 격자에 넣지 않았다(27번 · 15번).
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ② 전수 격자 둘이다** — ① **대응 표** — `Reflect` 의 함수 **13개**를 각각 「트랩 이름 13개를 **손으로 적은** handler」의 Proxy 에 불러 **어느 트랩이 불렸나**를 찍고, 「**같은 이름의 트랩 하나만 불린 함수 N / 13**」을 스크립트가 센다(동작 (1)). ② **`Object`/연산자 대 `Reflect` 격자 19행** — 「**한쪽만 던진 행 N / 19**」·「**둘 다 돌려줬는데 값이 다른 행 N / 19**」(동작 (2)).
+★★ 보조로 **① 로그 심기**(`receiver` — getter 가 `this` 로 누구를 보나 · `set` 을 넘기면 어느 트랩이 더 불리나 — 동작 (3))를 쓴다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — Reflection · The Reflect Object](https://tc39.es/ecma262/multipage/reflection.html) — 「**평범한 객체** · 함수가 아니다 · `[[Construct]]`·`[[Call]]` 이 없다」 · `Reflect.apply` 는 `IsCallable` 이 거짓이면 `TypeError`, 인자 목록은 **`CreateListFromArrayLike(args)`**(빼면 `undefined` 라 던진다) · `Reflect.construct(target, args [, newTarget])` · 나머지 11개는 **대상이 객체가 아니면 `TypeError`** 로 시작해 해당 내부 메서드를 그대로 부른다
+- [ECMA-262 — Proxy Object Internal Methods](https://tc39.es/ecma262/multipage/ordinary-and-exotic-objects-behaviours.html) — 트랩이 불리는 내부 메서드 13개(45번 「실행 환경」)
+- ★ **`Reflect` 는 ES2015 본문**이다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 v20.19.6 이다. 하네스 소스는 [44번](../44-dynamic-import-top-level-await-and-import-attributes/2-summary.md) 맨 위 부분에 있다.
+★★★ **이 주제의 탐침 셋은 node 18 · node 20 · Chrome 151 에서 한 글자도 같았다**(세 판 대조기 · 맨 위 집계 줄) — 블록은 node 20 판 하나씩만 싣는다.
+★★ **탐침 파일 `js44b-46b-object-vs-reflect.js` 는 엄격 모드다** — 대입·`delete` 행이 비엄격이면 조용히 지나가 「같다」로 셀 것이기 때문이다(14번 동작 (4)).
+★★★ **성능은 재지 않았다.**
+
+**버전** — `Reflect` 13개 함수 전부 **ES2015** · 세 판 다 있다(판별 블록).
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체) | 대응 표 13행 「`13 / 13`」(동작 (1)) · `Object` 대 `Reflect` 19행 「`only one side threw`」·「`both returned, different values`」(동작 (2)) |
+| ★★ **① 로그 심기** | getter 의 `this` · 쓰기가 떨어진 객체 · `set` 트랩을 넘겼을 때 **더 불린 트랩**(동작 (3)) |
+| ★ **45번 격자의 한 줄을 다시 쓴다** | `Reflect` 로 넘기는 트랩 24칸 — 「**맨 대상과 다른 칸 `0 / 24`**」(45번 동작 (1)의 `[2]`) |
+| ★ **부적용 — ④ 예외 문구** | 격자 칸은 **예외의 이름**만 싣는다 — 이 주제의 질문은 「던지나 `false` 인가」라서 문구가 답을 바꾸지 않는다 |
+| ★ **부적용 — 판 격자** | 세 판이 같아 **갈린 칸이 없다** |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 판별 블록의 판 문자열 · ★ `Object.getOwnPropertyNames(Reflect)` 의 **나열 순서**(명세가 정하지 않는다 — V8 이 정의 순서대로 준 것이다. 근거로는 **개수 13**만 쓴다) | ★★★ 두 격자의 모든 칸과 집계 줄 · 로그 값 · 예외의 **종류** |
+| ★ **재실행에서 흔들린 칸은 없다**(재대조 동일) | — |
+
+**선행** — [45 — `Proxy`](../45-proxy/2-summary.md)(직접 선행 — ★★★ **불변식 격자 24칸** · ★★ **`Reflect` 로 넘기는 트랩은 맨 대상과 `0 / 24` 다르다** · 트랩의 `false` 를 **엄격 대입이** `TypeError` 로 바꾼다) ·
+[09 — `call`·`apply`·`bind`](../09-call-apply-bind/2-summary.md)(★★ **`apply(t, null)` 은 인자 0개로 조용히 부른다** · `Reflect.apply(f, t, 'ab')` 는 `CreateListFromArrayLike called on non-object` — 거기 동작 (1). 그 편은 「`Reflect` 전체는 46번이 정본」이라고 적는다) ·
+[14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md) · [22 — `Symbol`](../22-symbol-and-well-known-symbols/2-summary.md)(★ **`Reflect.ownKeys` 는 심볼 키를 본다** — 거기 동작의 격자) · [27 — `Object` 정적 메서드](../27-object-static-methods/2-summary.md).

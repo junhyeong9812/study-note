@@ -1,19 +1,5 @@
 # kotlin/syntax/14 — scope function 5종: `let`/`run`/`with`/`apply`/`also` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Scope functions](https://kotlinlang.org/docs/scope-functions.html) · [kotlin-stdlib `kotlin` 패키지](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/) · [Null safety](https://kotlinlang.org/docs/null-safety.html) · [Inline functions](https://kotlinlang.org/docs/inline-functions.html).
-> **실행 검증** — 이 문서의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> `kotlinc` 10회(컴파일 실패 2벌 · 경고 1벌) · `java` 5회 · `javap` 6회. **stdlib 쪽은 `kotlin-stdlib.jar` 를 풀어 직접 역어셈블했다** — 내 코드만 찍은 것이 아니다.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.\
-> 람다를 어떻게 내릴지도 플래그에 달렸다 — 기본은 `invokedynamic` 이고 `-Xlambdas=class` 를 주면 클래스 파일이 따로 생긴다. **둘 다 찍어서 실었다.**
-> ⚠️ **다시 돌리면 달라지는 블록은 없다** — 스레드·시간·해시코드·순서 미정 출력을 싣지 않았다. 재대조 근거는 3-answer 의 「흔들리는 칸」 표다.
-> **버전** — `let`·`run`·`with`·`apply` 는 **1.0**, `also` 만 **1.1** 이다(`@SinceKotlin("1.1")` 이 바이트코드에 남아 있다). 그 뒤로 시그니처가 바뀐 적이 없다.
-> **경계** — 람다 문법·클로저·마지막 인자 람다는 [10번 주제](../10-lambdas-and-higher-order-functions/)가, `inline` 이 무엇을 없애고 무엇을 제약하는지는 [11번 주제](../11-inline-functions/)가,\
-> 다섯이 전부 **확장 함수**라는 사실과 그 디스패치는 [13번 주제](../13-extension-functions-and-properties/)가 정본이다.\
-> 여기는 **다섯을 어떻게 갈라서 고르나**만 다룬다. 수신자 지정 람다로 DSL 을 짜는 것은 [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/),\
-> `?.`·`?:` 자체의 의미는 [03번 주제](../03-null-safe-types/), null 처리 관용구 전체는 [목록의 **58번 주제**](../58-null-handling-idioms-let-requirenotnull-and-elvis-return/)다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **다섯은 기능이 다섯 가지인 게 아니다. 질문 두 개에 예/아니오로 답한 조합이 다섯일 뿐이다.**
@@ -830,3 +816,17 @@ run { R }            // 수신자 없는 여섯 번째 오버로드 — 지역 �
   `kotlin.Metadata` 의 문자열 배열에 `Lkotlin/ExtensionFunctionType;` 이 그대로 들어 있다.\
   **이 문서는 그 메타데이터 문자열을 찍어 보지는 않았다** — `javap -v` 의 상수 풀에서 본 것까지다.
 - **코루틴의 `suspend` 람다**도 수신자 지정 람다와 조합된다(`suspend T.() -> R`). 정본은 [목록의 **52번 주제**](../52-coroutine-basics-suspend-scope-launch-async/)다.
+
+## 실행 환경
+
+**기준 소스** — [Scope functions](https://kotlinlang.org/docs/scope-functions.html) · [kotlin-stdlib `kotlin` 패키지](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/) · [Null safety](https://kotlinlang.org/docs/null-safety.html) · [Inline functions](https://kotlinlang.org/docs/inline-functions.html).
+**실행 검증** — 이 문서의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+`kotlinc` 10회(컴파일 실패 2벌 · 경고 1벌) · `java` 5회 · `javap` 6회. **stdlib 쪽은 `kotlin-stdlib.jar` 를 풀어 직접 역어셈블했다** — 내 코드만 찍은 것이 아니다.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 전부 **기본값 1.8**(`major version: 52`)이다.\
+람다를 어떻게 내릴지도 플래그에 달렸다 — 기본은 `invokedynamic` 이고 `-Xlambdas=class` 를 주면 클래스 파일이 따로 생긴다. **둘 다 찍어서 실었다.**
+⚠️ **다시 돌리면 달라지는 블록은 없다** — 스레드·시간·해시코드·순서 미정 출력을 싣지 않았다. 재대조 근거는 3-answer 의 「흔들리는 칸」 표다.
+**버전** — `let`·`run`·`with`·`apply` 는 **1.0**, `also` 만 **1.1** 이다(`@SinceKotlin("1.1")` 이 바이트코드에 남아 있다). 그 뒤로 시그니처가 바뀐 적이 없다.
+**경계** — 람다 문법·클로저·마지막 인자 람다는 [10번 주제](../10-lambdas-and-higher-order-functions/)가, `inline` 이 무엇을 없애고 무엇을 제약하는지는 [11번 주제](../11-inline-functions/)가,\
+다섯이 전부 **확장 함수**라는 사실과 그 디스패치는 [13번 주제](../13-extension-functions-and-properties/)가 정본이다.\
+여기는 **다섯을 어떻게 갈라서 고르나**만 다룬다. 수신자 지정 람다로 DSL 을 짜는 것은 [목록의 **37번 주제**](../37-lambdas-with-receiver-and-type-safe-builders/),\
+`?.`·`?:` 자체의 의미는 [03번 주제](../03-null-safe-types/), null 처리 관용구 전체는 [목록의 **58번 주제**](../58-null-handling-idioms-let-requirenotnull-and-elvis-return/)다.

@@ -1,76 +1,5 @@
 # js/syntax/22 — `Symbol` 과 잘 알려진 심볼: 「심볼은 이름이 겹칠 수 없는 키이고, 잘 알려진 심볼은 언어가 먼저 들여다보는 키다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
-> `Symbol.toPrimitive`·`Symbol.hasInstance`·`Symbol.species` 는 **언어가 연산 도중에 몰래 읽는 키**다.
-> 연산의 결과(`8`·`true`·`Array`)만 보면 그 키가 **읽혔는지, 무슨 인자로 불렸는지** 한 글자도 안 남는다.
-> 그래서 세 자리에 로그를 심고 연산자·내장 메서드를 차례로 들이댔다. **hint 가 무엇으로 오나는 오직 그 로그로만 보인다.**
-> ★★ 거기에 **② 전수 격자**가 둘 붙는다 — 심볼 키 격자(18편 격자에 심볼 줄을 늘린 것)와 「브랜드 태그 대 내부 슬롯」 격자.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 2026 — multipage](https://tc39.es/ecma262/2026/multipage/) — 추상 연산 `ToPrimitive` · `OrdinaryToPrimitive` · `InstanceofOperator` ·
->   `ArraySpeciesCreate` · `CanBeHeldWeakly` · `SymbolDescriptiveString` · `IsRegExp` · 함수 `String ( value )` · `Symbol ( [ description ] )` ·
->   `Object.prototype.toString ( )` · `Date.prototype [ %Symbol.toPrimitive% ] ( hint )` · 잘 알려진 심볼 표(Well-known Symbols)
-> - [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — `Symbol.prototype.description`(2019) · Symbols as WeakMap keys(2023) · Explicit Resource Management(2027) 의 판을 가릴 때
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서의 **추상 연산 이름**으로, **값·호출 로그·예외 타입과 메시지는 전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> 브라우저 블록은 **Google Chrome 151** 의 `--headless --dump-dom` 으로 받았다(아래 판별 블록 끝).
-> ★★ **예외는 `try`/`catch` 로 받아 `이름 「메시지」` 꼴로만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★ **이 주제의 블록에는 주소도 시간도 난수도 없다.** 같은 판에서 다시 돌리면 한 글자도 안 변한다.
->
-> **버전 — 판 경계**
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `Symbol()` · `Symbol.for` · 잘 알려진 심볼(`iterator`·`toPrimitive`·`hasInstance`·`toStringTag`·`species`·`isConcatSpreadable`·`match`·`unscopables` …) | **ES2015** | 세 판 전부 있다 |
-> | `Symbol.prototype.description` | **ES2019** | 세 판 전부 있다 |
-> | 배열 복사 메서드(`toSorted`·`toReversed`·`with`·`toSpliced`) — species 를 **안 읽는** 쪽 | **ES2023** | ★ **node18 에 없다**(동작 (5)) |
-> | 심볼을 `WeakMap` 키·`WeakRef` 대상으로(Symbols as WeakMap keys) | **ES2023** | ★ **node18 에 없다**(판별 블록 · 동작 (6)) |
-> | `Symbol.dispose`·`Symbol.asyncDispose` · `using` 선언(Explicit Resource Management) | **ES2027**(finished proposals 표) | ★ 심볼은 **세 판 다** 있는데 `using` 문법은 **Chrome 151 만** 컴파일한다(더 들어가면) |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **① 추상 연산에 로그 심기**(본체) | `[Symbol.toPrimitive](hint)` 가 받는 **hint** 를 연산 24가지에서 · `static [Symbol.hasInstance](v)` 가 받는 인자 · `static get [Symbol.species]()` 를 **읽은 메서드** 14가지 · `Date` 의 자체 `toPrimitive` 를 감싸서 |
-> | ★★★ **② 전수 격자** | 키 종류 5 × 키를 늘어놓는 문법 10 — 「**갈린 칸 N / M**」을 스크립트가 센다 · 변환 여섯 가지 중 던지는 칸 · 「브랜드 태그 대 슬롯 판별」이 어긋나는 칸 |
-> | ★★★ **③ 브랜드 태그** — ★ **이 주제에서는 창 자체가 과녁이다** | `Object.prototype.toString.call(v)` 가 **`Symbol.toStringTag` 한 프로퍼티로 바꿔치기된다.** 이 창을 다른 편에서 판별 도구로 썼다면, 여기서 그 창이 **어디까지 믿을 만한지**를 잰다(동작 (4)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | 심볼의 암묵 변환 · `new Symbol` · `instanceof` 우변 · species 가 생성자가 아닐 때 · 레지스트리 심볼을 `WeakMap` 키로 |
-> | ★★ **⑤ 두 판 대조기** | 이 주제의 탐침 넷이 **두 판에서 갈린다** — 전부 **ES2023 기능의 유무**와 문구 한 줄이다(실행 검증 표) |
-> | ★ **창을 바꿔 물었다**(제5의 상태) | 「레지스트리 심볼은 판 경계를 넘나?」 — 브라우저 iframe 을 쓰는 대신 **`node:vm` 의 새 realm** 으로 물었다(동작 (6) `[3]`). ★ **`vm` 은 호스트 API** 라 ECMA-262 가 보장하는 「realm」 과 같은 것인지는 이 문서가 확인하지 않았다 |
-> | ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 는 두 줄(`with`·`using`)뿐이고 **어느 쪽으로 묶이나**를 가를 일이 없다 — 잴 것이 없다 |
-> | ★ **반쯤 부적용 — `Symbol.unscopables`** | 그 심볼이 바꾸는 것은 **`with` 문 하나**인데 `with` 는 **엄격 모드에서 컴파일조차 안 된다**(동작 (5) `[5]`). 비엄격 한 줄로 동작만 확인하고 문항은 (경계) 하나로 줄였다 |
-> | ★ **안 쟀다 — 성능** | 「심볼 키는 느리다/빠르다」류의 말을 **한 줄도 쓰지 않는다.** 안 쟀다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 예외 **문구** — `using` 의 `Unexpected identifier` 는 **판마다 실제로 갈렸다** | ★★★ **hint 문자열**(`default`·`number`·`string`)과 **불렸나/안 불렸나** |
-> | `unscopables` 객체의 **키 순서** — 판마다 다르다(두 판 대조기 참고) | ★★★ **예외의 종류**(`TypeError`·`SyntaxError`) |
-> | 판마다 있는 메서드가 달라지는 줄(ES2023 이전 판) | ★★ 격자의 `o`/`.` 과 「갈린 칸 N / M」 · `Reflect.ownKeys` 의 **순서** |
->
-> **선행** — [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ 직접 선행 — `Symbol.iterator` 하나의 계약) ·
-> [02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md)(★★ `ToPrimitive`) ·
-> [13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md)(심볼 키가 열거 순서의 셋째 덩어리) ·
-> [15 — 프로토타입 체인](../15-prototype-chain/2-summary.md)(`instanceof`) · [17 — 상속과 `super`](../17-inheritance-and-super/2-summary.md)(`Symbol.species`) ·
-> [18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md)(여섯 종 × 아홉 문법 격자).
-> **이어지는 곳** — [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md) · [목록의 **40번 주제**](../40-async-iteration-and-for-await/) 「비동기 이터레이션」(`Symbol.asyncIterator`) ·
-> [목록의 **45번 주제**](../45-proxy/) 「`Proxy`」 · [목록의 **51번 주제**](../51-explicit-resource-management-and-using/) 「명시적 자원 관리 `using`」(`Symbol.dispose`).
->
-> ★★★ **19편이 `Symbol.iterator` 하나를 끝까지 팠다.** 여기서는 그것을 **일반화**한다 —
-> 「언어가 **어떤 연산 도중에** 객체의 **어떤 심볼 키**를 읽고, 그 값으로 **무엇을 바꾸나**」.
-> ★★ **경계 — `Symbol.iterator` 의 호출 순서·`return()` 규칙은 19편이 정본이다.** 여기서는 그 키를 **지우거나 바꿨을 때 누가 따라 바뀌나**만 본다.
-> ★★ **경계 — `ToPrimitive` 가 `valueOf`/`toString` 을 고르는 순서는 02편이 정본이다.** 여기서는 **`Symbol.toPrimitive` 가 그 절차를 가로챌 때 받는 hint** 를 전수로 본다.
-> ★★ **경계 — `extends Array` 의 결과 생성자는 17편이 정본이다**(`map`·`filter`·`slice`·`from` 이 `Stack`, `static get [Symbol.species]() { return Array }` 로 되돌리기).
-> 여기서는 **species 를 읽는 메서드와 안 읽는 메서드**를 가른다.
-> ★ **경계 — 약한 컬렉션의 수명 의미는 23편이 정본이다.** 여기서는 「**어떤 심볼이 약한 키가 될 수 있나**」라는 심볼 쪽 성질만.
-
 ```sh
 # js20b-versions.sh
 #!/usr/bin/env bash
@@ -1364,3 +1293,73 @@ node20 에서 **`TypeError`** 다. 약한 키가 될 수 있는 심볼은 **장�
 **두 판 대조기** — 이 배치의 node 탐침이 두 판에서 갈렸나를 스크립트가 센다(전문은 [3-answer.md](3-answer.md) 의 실행 검증). 이 주제의 것은 `22f`·`22g`·`22h`·`22i` 넷이고, 배치 전체의 집계 줄은 다음과 같다.
 
 `identical 18  ·  differs 6  ·  total 24`
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기다.**
+`Symbol.toPrimitive`·`Symbol.hasInstance`·`Symbol.species` 는 **언어가 연산 도중에 몰래 읽는 키**다.
+연산의 결과(`8`·`true`·`Array`)만 보면 그 키가 **읽혔는지, 무슨 인자로 불렸는지** 한 글자도 안 남는다.
+그래서 세 자리에 로그를 심고 연산자·내장 메서드를 차례로 들이댔다. **hint 가 무엇으로 오나는 오직 그 로그로만 보인다.**
+★★ 거기에 **② 전수 격자**가 둘 붙는다 — 심볼 키 격자(18편 격자에 심볼 줄을 늘린 것)와 「브랜드 태그 대 내부 슬롯」 격자.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 2026 — multipage](https://tc39.es/ecma262/2026/multipage/) — 추상 연산 `ToPrimitive` · `OrdinaryToPrimitive` · `InstanceofOperator` ·
+  `ArraySpeciesCreate` · `CanBeHeldWeakly` · `SymbolDescriptiveString` · `IsRegExp` · 함수 `String ( value )` · `Symbol ( [ description ] )` ·
+  `Object.prototype.toString ( )` · `Date.prototype [ %Symbol.toPrimitive% ] ( hint )` · 잘 알려진 심볼 표(Well-known Symbols)
+- [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — `Symbol.prototype.description`(2019) · Symbols as WeakMap keys(2023) · Explicit Resource Management(2027) 의 판을 가릴 때
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서의 **추상 연산 이름**으로, **값·호출 로그·예외 타입과 메시지는 전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+브라우저 블록은 **Google Chrome 151** 의 `--headless --dump-dom` 으로 받았다(맨 위 판별 블록 끝).
+★★ **예외는 `try`/`catch` 로 받아 `이름 「메시지」` 꼴로만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★ **이 주제의 블록에는 주소도 시간도 난수도 없다.** 같은 판에서 다시 돌리면 한 글자도 안 변한다.
+
+**버전 — 판 경계**
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `Symbol()` · `Symbol.for` · 잘 알려진 심볼(`iterator`·`toPrimitive`·`hasInstance`·`toStringTag`·`species`·`isConcatSpreadable`·`match`·`unscopables` …) | **ES2015** | 세 판 전부 있다 |
+| `Symbol.prototype.description` | **ES2019** | 세 판 전부 있다 |
+| 배열 복사 메서드(`toSorted`·`toReversed`·`with`·`toSpliced`) — species 를 **안 읽는** 쪽 | **ES2023** | ★ **node18 에 없다**(동작 (5)) |
+| 심볼을 `WeakMap` 키·`WeakRef` 대상으로(Symbols as WeakMap keys) | **ES2023** | ★ **node18 에 없다**(판별 블록 · 동작 (6)) |
+| `Symbol.dispose`·`Symbol.asyncDispose` · `using` 선언(Explicit Resource Management) | **ES2027**(finished proposals 표) | ★ 심볼은 **세 판 다** 있는데 `using` 문법은 **Chrome 151 만** 컴파일한다(더 들어가면) |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **① 추상 연산에 로그 심기**(본체) | `[Symbol.toPrimitive](hint)` 가 받는 **hint** 를 연산 24가지에서 · `static [Symbol.hasInstance](v)` 가 받는 인자 · `static get [Symbol.species]()` 를 **읽은 메서드** 14가지 · `Date` 의 자체 `toPrimitive` 를 감싸서 |
+| ★★★ **② 전수 격자** | 키 종류 5 × 키를 늘어놓는 문법 10 — 「**갈린 칸 N / M**」을 스크립트가 센다 · 변환 여섯 가지 중 던지는 칸 · 「브랜드 태그 대 슬롯 판별」이 어긋나는 칸 |
+| ★★★ **③ 브랜드 태그** — ★ **이 주제에서는 창 자체가 과녁이다** | `Object.prototype.toString.call(v)` 가 **`Symbol.toStringTag` 한 프로퍼티로 바꿔치기된다.** 이 창을 다른 편에서 판별 도구로 썼다면, 여기서 그 창이 **어디까지 믿을 만한지**를 잰다(동작 (4)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | 심볼의 암묵 변환 · `new Symbol` · `instanceof` 우변 · species 가 생성자가 아닐 때 · 레지스트리 심볼을 `WeakMap` 키로 |
+| ★★ **⑤ 두 판 대조기** | 이 주제의 탐침 넷이 **두 판에서 갈린다** — 전부 **ES2023 기능의 유무**와 문구 한 줄이다(실행 검증 표) |
+| ★ **창을 바꿔 물었다**(제5의 상태) | 「레지스트리 심볼은 판 경계를 넘나?」 — 브라우저 iframe 을 쓰는 대신 **`node:vm` 의 새 realm** 으로 물었다(동작 (6) `[3]`). ★ **`vm` 은 호스트 API** 라 ECMA-262 가 보장하는 「realm」 과 같은 것인지는 이 문서가 확인하지 않았다 |
+| ★ **부적용 — 진단의 `(행,열)`**(18-C) | `SyntaxError` 는 두 줄(`with`·`using`)뿐이고 **어느 쪽으로 묶이나**를 가를 일이 없다 — 잴 것이 없다 |
+| ★ **반쯤 부적용 — `Symbol.unscopables`** | 그 심볼이 바꾸는 것은 **`with` 문 하나**인데 `with` 는 **엄격 모드에서 컴파일조차 안 된다**(동작 (5) `[5]`). 비엄격 한 줄로 동작만 확인하고 문항은 (경계) 하나로 줄였다 |
+| ★ **안 쟀다 — 성능** | 「심볼 키는 느리다/빠르다」류의 말을 **한 줄도 쓰지 않는다.** 안 쟀다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 예외 **문구** — `using` 의 `Unexpected identifier` 는 **판마다 실제로 갈렸다** | ★★★ **hint 문자열**(`default`·`number`·`string`)과 **불렸나/안 불렸나** |
+| `unscopables` 객체의 **키 순서** — 판마다 다르다(두 판 대조기 참고) | ★★★ **예외의 종류**(`TypeError`·`SyntaxError`) |
+| 판마다 있는 메서드가 달라지는 줄(ES2023 이전 판) | ★★ 격자의 `o`/`.` 과 「갈린 칸 N / M」 · `Reflect.ownKeys` 의 **순서** |
+
+**선행** — [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ 직접 선행 — `Symbol.iterator` 하나의 계약) ·
+[02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md)(★★ `ToPrimitive`) ·
+[13 — 객체 리터럴과 프로퍼티](../13-object-literals-and-properties/2-summary.md)(심볼 키가 열거 순서의 셋째 덩어리) ·
+[15 — 프로토타입 체인](../15-prototype-chain/2-summary.md)(`instanceof`) · [17 — 상속과 `super`](../17-inheritance-and-super/2-summary.md)(`Symbol.species`) ·
+[18 — `for...in` 과 열거](../18-for-in-and-enumeration/2-summary.md)(여섯 종 × 아홉 문법 격자).
+**이어지는 곳** — [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md) · [목록의 **40번 주제**](../40-async-iteration-and-for-await/) 「비동기 이터레이션」(`Symbol.asyncIterator`) ·
+[목록의 **45번 주제**](../45-proxy/) 「`Proxy`」 · [목록의 **51번 주제**](../51-explicit-resource-management-and-using/) 「명시적 자원 관리 `using`」(`Symbol.dispose`).
+
+★★★ **19편이 `Symbol.iterator` 하나를 끝까지 팠다.** 여기서는 그것을 **일반화**한다 —
+「언어가 **어떤 연산 도중에** 객체의 **어떤 심볼 키**를 읽고, 그 값으로 **무엇을 바꾸나**」.
+★★ **경계 — `Symbol.iterator` 의 호출 순서·`return()` 규칙은 19편이 정본이다.** 여기서는 그 키를 **지우거나 바꿨을 때 누가 따라 바뀌나**만 본다.
+★★ **경계 — `ToPrimitive` 가 `valueOf`/`toString` 을 고르는 순서는 02편이 정본이다.** 여기서는 **`Symbol.toPrimitive` 가 그 절차를 가로챌 때 받는 hint** 를 전수로 본다.
+★★ **경계 — `extends Array` 의 결과 생성자는 17편이 정본이다**(`map`·`filter`·`slice`·`from` 이 `Stack`, `static get [Symbol.species]() { return Array }` 로 되돌리기).
+여기서는 **species 를 읽는 메서드와 안 읽는 메서드**를 가른다.
+★ **경계 — 약한 컬렉션의 수명 의미는 23편이 정본이다.** 여기서는 「**어떤 심볼이 약한 키가 될 수 있나**」라는 심볼 쪽 성질만.

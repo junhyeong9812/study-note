@@ -1,42 +1,5 @@
 # python/syntax/27-exception-groups-and-except-star — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [PEP 654 — Exception Groups and `except*`](https://peps.python.org/pep-0654/) — **이 주제의 정본**
-> - [`ExceptionGroup`·`BaseExceptionGroup`](https://docs.python.org/3.12/library/exceptions.html#exception-groups) — `exceptions`·`subgroup`·`split`·`derive`
-> - [8.4.2. `except*` clause](https://docs.python.org/3.12/reference/compound_stmts.html#except-star) — 섞어 쓸 수 없는 것, `break`/`continue`/`return` 금지
-> - [`asyncio.TaskGroup`](https://docs.python.org/3.12/library/asyncio-task.html#task-groups) — **이 문법을 만든 동기**
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
-> ★★ **이 주제에는 `SyntaxError` 가 둘 있고, 둘의 모양이 다르다** — 이 사실 자체가 주제의 한 축이다.
-> **파서가 잡는 것은 소스 줄과 캐럿이 나오고**(`cannot have both 'except' and 'except*'`),
-> **심볼 테이블 단계가 잡는 것은 둘 다 안 나온다**(`'break', 'continue' and 'return' cannot appear in an except* block`).
-> **두 블록을 섞어 적지 않았다** — 각각 따로 던져 캡처했다.\
-> ★★ **묶음 트레이스백은 형태가 완전히 다르다** — `+`·`|`·`+-+----- 1 -----` 같은 **괘선**이 붙는다.
-> 연쇄가 그 안에 들어가면 **`| ` 만 있는 줄**까지 생긴다(동작 6). **한 글자도 손대지 않았다 — 캡처를 조립기로 끼웠다.**\
-> **버전** — **3.11 부터**다(PEP 654). `ExceptionGroup`·`BaseExceptionGroup`·`except*` 셋 다.
-> **3.10 이하는 이 머신에 없어 「그 판에서는 `SyntaxError`」를 직접 못 돌려 봤다** — PEP 근거다.
-> 표준 라이브러리에서 이것을 처음 크게 쓴 것이 **`asyncio.TaskGroup`(3.11)** 이다.\
-> **구현 대 언어 보장 한 줄** — **`exceptions` 튜플·`split`/`subgroup` 의 계약과 `except*` 의 분배 규칙까지가 언어 보장**이고,
-> **괘선 트레이스백의 생김새와 예외 문구는 CPython 구현**이다.\
-> **★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | (판이 오르면) 괘선 트레이스백의 **모양**과 `(N sub-exceptions)` 표기 | **트리의 구조** — 자식 수·중첩 깊이·어느 잎이 어느 갈래로 갔나 |
-> | (판이 오르면) `SyntaxError` **문구** | **캐럿이 있나 없나** — 파서 단계인가 심볼 테이블 단계인가 |
-> | (판이 오르면) 예외 **문구** 전부 | 예외 **종류** · `File "<stdin>", line N` · **종료 코드** |
-> | — | `except*` 갈래가 **몇 번 도나** · `split`/`subgroup` 이 **중첩을 보존하는 것** |
->
-> ★ **이 주제의 블록에는 주소도 시간도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다.**\
-> **선행** — [25-exceptions-and-finally](../25-exceptions-and-finally/2-summary.md)(**예외 계층과 연쇄의 정본**) ·
-> [26-eafp-vs-lbyl](../26-eafp-vs-lbyl/2-summary.md)(실패가 **하나**일 때의 선택).\
-> **이 사슬** — [25](../25-exceptions-and-finally/2-summary.md) → [26](../26-eafp-vs-lbyl/2-summary.md) → 27 → [28](../28-context-managers-and-with/2-summary.md).
-> 25·26 이 **실패 하나**를 다뤘다면 여기는 **실패 여럿을 잃지 않고 나르는 법**이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`ExceptionGroup` 은 「불평 여러 건을 한 봉투에 넣어 올려 보내는 것」이고, `except*` 는 「봉투를 열어 종류별로 나눠 주는 것」이다.**
@@ -1020,3 +983,43 @@ def empty_group():
   표준 라이브러리 밖이라 **이 노트 범위가 아니고, 안 돌려 봤다.**
 - ★ **`except*` 는 `try` 문의 모양을 바꾸는 유일한 문법**이다 — 절 하나가 **여러 번 도는** 자리가 파이썬에 달리 없다.
   루프의 몸통과는 다르다. 이 성질 때문에 `break`·`continue`·`return` 이 금지된 것이다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [PEP 654 — Exception Groups and `except*`](https://peps.python.org/pep-0654/) — **이 주제의 정본**
+- [`ExceptionGroup`·`BaseExceptionGroup`](https://docs.python.org/3.12/library/exceptions.html#exception-groups) — `exceptions`·`subgroup`·`split`·`derive`
+- [8.4.2. `except*` clause](https://docs.python.org/3.12/reference/compound_stmts.html#except-star) — 섞어 쓸 수 없는 것, `break`/`continue`/`return` 금지
+- [`asyncio.TaskGroup`](https://docs.python.org/3.12/library/asyncio-task.html#task-groups) — **이 문법을 만든 동기**
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
+★★ **이 주제에는 `SyntaxError` 가 둘 있고, 둘의 모양이 다르다** — 이 사실 자체가 주제의 한 축이다.
+**파서가 잡는 것은 소스 줄과 캐럿이 나오고**(`cannot have both 'except' and 'except*'`),
+**심볼 테이블 단계가 잡는 것은 둘 다 안 나온다**(`'break', 'continue' and 'return' cannot appear in an except* block`).
+**두 블록을 섞어 적지 않았다** — 각각 따로 던져 캡처했다.\
+★★ **묶음 트레이스백은 형태가 완전히 다르다** — `+`·`|`·`+-+----- 1 -----` 같은 **괘선**이 붙는다.
+연쇄가 그 안에 들어가면 **`| ` 만 있는 줄**까지 생긴다(동작 6). **한 글자도 손대지 않았다 — 캡처를 조립기로 끼웠다.**\
+**버전** — **3.11 부터**다(PEP 654). `ExceptionGroup`·`BaseExceptionGroup`·`except*` 셋 다.
+**3.10 이하는 이 머신에 없어 「그 판에서는 `SyntaxError`」를 직접 못 돌려 봤다** — PEP 근거다.
+표준 라이브러리에서 이것을 처음 크게 쓴 것이 **`asyncio.TaskGroup`(3.11)** 이다.\
+**구현 대 언어 보장 한 줄** — **`exceptions` 튜플·`split`/`subgroup` 의 계약과 `except*` 의 분배 규칙까지가 언어 보장**이고,
+**괘선 트레이스백의 생김새와 예외 문구는 CPython 구현**이다.\
+**★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| (판이 오르면) 괘선 트레이스백의 **모양**과 `(N sub-exceptions)` 표기 | **트리의 구조** — 자식 수·중첩 깊이·어느 잎이 어느 갈래로 갔나 |
+| (판이 오르면) `SyntaxError` **문구** | **캐럿이 있나 없나** — 파서 단계인가 심볼 테이블 단계인가 |
+| (판이 오르면) 예외 **문구** 전부 | 예외 **종류** · `File "<stdin>", line N` · **종료 코드** |
+| — | `except*` 갈래가 **몇 번 도나** · `split`/`subgroup` 이 **중첩을 보존하는 것** |
+
+★ **이 주제의 블록에는 주소도 시간도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다.**\
+**선행** — [25-exceptions-and-finally](../25-exceptions-and-finally/2-summary.md)(**예외 계층과 연쇄의 정본**) ·
+[26-eafp-vs-lbyl](../26-eafp-vs-lbyl/2-summary.md)(실패가 **하나**일 때의 선택).
+
+25·26 이 **실패 하나**를 다뤘다면 여기는 **실패 여럿을 잃지 않고 나르는 법**이다.
+
+---
+
+**이 사슬** — [25](../25-exceptions-and-finally/2-summary.md) → [26](../26-eafp-vs-lbyl/2-summary.md) → 27 → [28](../28-context-managers-and-with/2-summary.md).

@@ -1,15 +1,5 @@
 # go/syntax/02 — 변수 선언 세 형태와 제로값 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Variable declarations · Short variable declarations ·
-> The zero value · Comparison operators 절.\
-> 웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
-> 그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 손으로 옮겨 적은 블록은 없다.
-> **버전** — 이 절의 규칙은 1.0부터 같다. `any`(= `interface{}`)라는 이름만 **1.18**부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 ## 이 갈래가 쓰는 세 층
 
 | 층 | 뜻 | 근거로 쓰는 것 |
@@ -952,3 +942,13 @@ gc 는 그것을 **실제로 한다.** 즉 「Go 는 안 쓴 변수를 금지한
 - `gofmt` 는 `var ( … )` 블록 안의 `=` 를 세로로 맞춰 준다. 손으로 맞출 필요가 없다.
 - 패키지 수준의 `:=` 가 `syntax error` 인 것은 **`:=` 가 선언(declaration)이 아니라 문(statement)** 이기 때문이다.
   패키지 블록에는 선언만 올 수 있다.
+
+## 실행 환경
+
+**기준 소스** — [Go 명세](https://go.dev/ref/spec) 의 Variable declarations · Short variable declarations ·
+The zero value · Comparison operators 절.\
+웹이 아니라 **이 툴체인이 들고 있는 `$(go env GOROOT)/doc/go_spec.html` 을 열어** 인용했다.
+그 파일의 머리는 「**Language version go1.27 (May 26, 2026)**」이다.
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+손으로 옮겨 적은 블록은 없다.
+**버전** — 이 절의 규칙은 1.0부터 같다. `any`(= `interface{}`)라는 이름만 **1.18**부터다.

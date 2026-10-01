@@ -1,16 +1,5 @@
 # kotlin/syntax/02 — 문자열 템플릿·raw string·멀티라인 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Strings](https://kotlinlang.org/docs/strings.html) · [String templates](https://kotlinlang.org/docs/strings.html#string-templates) · [kotlin-stdlib `trimIndent`/`trimMargin`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.text/trim-indent.html).
-> **실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.
-> **버전** — 템플릿·raw string 은 1.0. `trimIndent`/`trimMargin` 은 1.0.\
-> **멀티달러 보간(`$$"…"`)은 2.2.0 Stable** — 2.1 이하에서는 `${'$'}` 관용구를 써야 한다.
-> **경계** — [`../../언어-특성/README.md`](../../언어-특성/README.md) 는 **「왜 이 언어인가」** 를 답한다.\
-> 여기는 **「이 문법이 무엇으로 컴파일되나」** 만 다룬다.\
-> **Java 의 텍스트 블록은 [`../../../java/syntax/32-text-blocks/`](../../../java/syntax/32-text-blocks/) 가 정본**이고, 여기서는 **대비만** 한다(재서술하지 않는다).\
-> 문자열 API(`split`·`Regex` 등)는 [목록의 **48번 주제**](../48-string-api-split-trim-pad-regex/)가 맡는다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **문자열 템플릿은 "따옴표 안에서 코드를 부르는 것" 이 아니라, 컴파일러가 따옴표를 뜯어 이어 붙이는 것이다.**\
@@ -567,3 +556,14 @@ const val C = """
 람다: ExtraKt$$Lambda/0x0000740304000dd8@511d50c0
 부르면: 1
 ```
+
+## 실행 환경
+
+**기준 소스** — [Strings](https://kotlinlang.org/docs/strings.html) · [String templates](https://kotlinlang.org/docs/strings.html#string-templates) · [kotlin-stdlib `trimIndent`/`trimMargin`](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.text/trim-indent.html).
+**실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.
+**버전** — 템플릿·raw string 은 1.0. `trimIndent`/`trimMargin` 은 1.0.\
+**멀티달러 보간(`$$"…"`)은 2.2.0 Stable** — 2.1 이하에서는 `${'$'}` 관용구를 써야 한다.
+**경계** — [`../../언어-특성/README.md`](../../언어-특성/README.md) 는 **「왜 이 언어인가」** 를 답한다.\
+여기는 **「이 문법이 무엇으로 컴파일되나」** 만 다룬다.\
+**Java 의 텍스트 블록은 [`../../../java/syntax/32-text-blocks/`](../../../java/syntax/32-text-blocks/) 가 정본**이고, 여기서는 **대비만** 한다(재서술하지 않는다).\
+문자열 API(`split`·`Regex` 등)는 [목록의 **48번 주제**](../48-string-api-split-trim-pad-regex/)가 맡는다.

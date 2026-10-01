@@ -1,10 +1,5 @@
 # 08. 배포와 운영
 
-> **가용성을 가장 많이 깎는 원인은 하드웨어 고장이 아니라 변경이다.**\
-> 장애의 대부분은 배포·설정 변경 직후에 발생한다. 그래서 배포 전략 자체가 가용성 설계다.\
-> 출처: `jun-bank/docs/study/notes/server-design/08-deployment-ops.md` · 이관일 2026-09-16.\
-> 원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식)만 입힘.
-
 ---
 
 ## 1. 무중단 배포 전략
@@ -226,3 +221,8 @@ Rolling·Canary는 **반드시 두 버전이 동시에 도는 시간**이 있다
 
 - 용량 산정 · SLO → [`09-capacity-slo.md`](./09-capacity-slo.md)
 - 상황별 플레이북 → [`10-playbook-by-symptom.md`](./10-playbook-by-symptom.md)
+
+## 출처
+
+출처: `jun-bank/docs/study/notes/server-design/08-deployment-ops.md` · 이관일 2026-09-16.\
+원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식)만 입힘.

@@ -1,9 +1,5 @@
 # Kotlin과 Spring: 도입사와 적용 방식
 
-> 원본: `~/project/java-history/spring/kotlin-and-spring.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·클래스/애너테이션 이름·플러그인 이름·표 2개·코드블록 14개는 원문 그대로다.\
-> ASCII 도식 3개(그중 2개는 원문의 mermaid 도식을 옮긴 것), 「한눈에」의 선로 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -464,3 +460,9 @@ class UserService(private val repo: UserRepository) {
 - [Kotlin — Wikipedia](https://en.wikipedia.org/wiki/Kotlin)
 - [Android Announces Support for Kotlin (Android Developers Blog, 2017-05)](https://android-developers.googleblog.com/2017/05/android-announces-support-for-kotlin.html)
 - [Spring Boot 2.0 goes GA (spring.io, 2018-03)](https://spring.io/blog/2018/03/01/spring-boot-2-0-goes-ga/)
+
+## 출처
+
+원본: `~/project/java-history/spring/kotlin-and-spring.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·클래스/애너테이션 이름·플러그인 이름·표 2개·코드블록 14개는 원문 그대로다.\
+ASCII 도식 3개(그중 2개는 원문의 mermaid 도식을 옮긴 것), 「한눈에」의 선로 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

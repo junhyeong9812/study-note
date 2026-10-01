@@ -1,16 +1,5 @@
 # kotlin/syntax/13 — 확장 함수·확장 프로퍼티: 정적 디스패치 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [08번 주제](../08-function-declaration-default-and-named-args/)다.
-> ★ **「정적 디스패치라는 천장」의 *의미* 는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이 정본**이고,
-> 여기는 **선언 문법·해소 순서·멤버 충돌 규칙**을 묻는다.
-> 이 주제는 [목록의 **14번 주제**](../14-scope-functions/)·**31번 주제**·**37번 주제**의 뿌리다.
-> Java 쪽 짝은 [`../../../java/syntax/11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/)다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -206,6 +195,16 @@ fun List<String>.describe(): String = "strings"
 - **디스패치**가 각각 무엇인가, 하위 타입이 바꿀 수 있는가?
 - 원 타입을 고쳐야 하는 쪽은 어디인가?
 - `let`/`run`/`apply`/`also` 는 이 주제와 무슨 관계이고 정본은 어디인가?
+
+## 실행 환경
+
+선행은 [08번 주제](../08-function-declaration-default-and-named-args/)다.
+★ **「정적 디스패치라는 천장」의 *의미* 는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이 정본**이고,
+여기는 **선언 문법·해소 순서·멤버 충돌 규칙**을 묻는다.
+이 주제는 [목록의 **14번 주제**](../14-scope-functions/)·**31번 주제**·**37번 주제**의 뿌리다.
+Java 쪽 짝은 [`../../../java/syntax/11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/)다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
 
 ## 복습 기록
 

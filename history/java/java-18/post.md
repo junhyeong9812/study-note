@@ -1,9 +1,5 @@
 # Java 18 (2022년 3월)
 
-> 원본: `~/project/java-history/java/java-18.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JEP 번호·클래스/옵션 이름·코드블록 5개(java 4 · bash 1)·「릴리스 정보」와 「그 외 변경」의 목록은 원문 그대로다.\
-> ASCII 도식 1개와 「한눈에」의 콘센트 규격 비유와 대응표, 「이 편에서 미리보기인가 정식인가」 표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -232,3 +228,9 @@ Java 18 자체는 "조용한" 릴리스에 가깝지만, 그 안에 담긴 변�
 - [JEP 418: Internet-Address Resolution SPI](https://openjdk.org/jeps/418)
 - [OpenJDK JDK 18 프로젝트 페이지](https://openjdk.org/projects/jdk/18/)
 - [InfoQ: Oracle Releases Java 18](https://www.infoq.com/news/2022/03/java-18-so-far/)
+
+## 출처
+
+원본: `~/project/java-history/java/java-18.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JEP 번호·클래스/옵션 이름·코드블록 5개(java 4 · bash 1)·「릴리스 정보」와 「그 외 변경」의 목록은 원문 그대로다.\
+ASCII 도식 1개와 「한눈에」의 콘센트 규격 비유와 대응표, 「이 편에서 미리보기인가 정식인가」 표, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

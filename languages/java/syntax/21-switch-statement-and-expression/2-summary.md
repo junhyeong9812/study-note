@@ -1,19 +1,5 @@
 # java/syntax/21 — `switch` 문과 `switch` 식 (14+): 화살표 · `yield` · 폴스루 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc 하나다.\
-> `java.base/java/lang/MatchException.java` — `@since 21`, `@jls 14.11.3` `@jls 14.30.2` `@jls 15.28.2`.\
-> JLS 절 번호는 **그 javadoc 의 `@jls` 태그에 적힌 것만** 옮겼다. JLS 본문은 열지 않았다.
-> **실행 검증** — 이 문서의 모든 출력·에러 메시지는 Temurin JDK 에서 실제로 돌려 얻은 것이다.\
-> 프로그램 5개 + 컴파일 에러용 9개 + 분리 컴파일 시나리오 3벌(17·21·25).\
-> `javac` 41회 · `java` 21회 · `javap` 6회 · `-Xlint:fallthrough` 1회. 도는 프로그램은 **17.0.13 · 21.0.5 · 25.0.1 셋 다**에서 돌렸다.\
-> ★ 이 주제는 **세 판에서 바이트코드가 갈렸다** — 그 자리를 따로 표시했다.\
-> 역어셈블은 `javap -c -p` 출력을 **그대로** 옮겼다.
-> **버전** — 화살표 `->` · `switch` **식** · `yield` 는 **Java 14** 정식(12·13 프리뷰).\
-> `case null` 과 타입 패턴은 **21** 이다 — 이 주제가 아니라 [**23번 주제**](../23-switch-pattern-matching/)다.\
-> `MatchException` 은 **21**. 그 전에는 같은 자리에 `IncompatibleClassChangeError` 가 들어갔다 — **돌려 확인했다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 javac 의 실제 에러 메시지와 `javap` 출력으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **옛 `switch` 는 「문이 없는 칸막이 방들」이다. 화살표 `switch` 는 「문이 달린 방들」이다.**
@@ -981,3 +967,17 @@ oldEnumSwitch(null)   -> 던짐: java.lang.NullPointerException: Cannot invoke "
 - **17 과 21 의 컴파일 전략 차이는 `enum` 상수 개수와 무관했다.**\
   네 상수짜리 같은 소스를 두 판의 javac 로 찍어 비교한 결과다 — 21 쪽이 `$SwitchMap` 을 **안 만든다.**\
   합성 클래스 하나가 줄어든 셈이지만, **그것을 근거로 성능을 말하지는 않는다**(측정하지 않았다).
+
+## 실행 환경
+
+**기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc 하나다.\
+`java.base/java/lang/MatchException.java` — `@since 21`, `@jls 14.11.3` `@jls 14.30.2` `@jls 15.28.2`.\
+JLS 절 번호는 **그 javadoc 의 `@jls` 태그에 적힌 것만** 옮겼다. JLS 본문은 열지 않았다.
+**실행 검증** — 이 문서의 모든 출력·에러 메시지는 Temurin JDK 에서 실제로 돌려 얻은 것이다.\
+프로그램 5개 + 컴파일 에러용 9개 + 분리 컴파일 시나리오 3벌(17·21·25).\
+`javac` 41회 · `java` 21회 · `javap` 6회 · `-Xlint:fallthrough` 1회. 도는 프로그램은 **17.0.13 · 21.0.5 · 25.0.1 셋 다**에서 돌렸다.\
+★ 이 주제는 **세 판에서 바이트코드가 갈렸다** — 그 자리를 따로 표시했다.\
+역어셈블은 `javap -c -p` 출력을 **그대로** 옮겼다.
+**버전** — 화살표 `->` · `switch` **식** · `yield` 는 **Java 14** 정식(12·13 프리뷰).\
+`case null` 과 타입 패턴은 **21** 이다 — 이 주제가 아니라 [**23번 주제**](../23-switch-pattern-matching/)다.\
+`MatchException` 은 **21**. 그 전에는 같은 자리에 `IncompatibleClassChangeError` 가 들어갔다 — **돌려 확인했다.**

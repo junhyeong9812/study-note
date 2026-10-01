@@ -1,18 +1,5 @@
 # csharp/syntax/05 — 기본 숫자 타입·`checked`/`unchecked`·`decimal` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> **환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
-> 진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
-> MSBuild 를 안 쓰고 Roslyn `csc` 를 직접 부른다(`-debug` 없음 — 트레이스에 줄 번호가 없다).
-> ★★ **이 주제에는 컴파일 진단이 세 자리에만 난다** — 3번(상수식) · 9번(같은 변수 비교 경고) · 문법 절의 금지 사례.
-> 나머지는 **실행 출력 · 예외 전문 · IL · 할당 바이트**가 근거다.
-> ★★★ **6번을 외우려 하지 마라** — 「`decimal` 이 더 정확하다」가 **거기서 뒤집힌다.** 던져서 확인하는 것이 답이다.
-> ★ **10번은 공식 문서와 이 판이 갈린 자리**다. 「문서에 적힌 값」을 답으로 쓰면 틀린다.
-> 선행 — [01번](../01-value-types-and-reference-types/) · [03번](../03-boxing-and-unboxing/) ·
-> [`foundations/data-representation/`](../../../../cs/foundations/data-representation/)(2진 표현 자체는 거기).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -294,6 +281,18 @@ Console.WriteLine($"(double)0.1f == 0.1 : {widened == 0.1}");
 - `System.Decimal::op_Addition` 이 무엇인지의 정본은 목록의 몇 번인가?
 - C 갈래에서 정수 오버플로가 이것과 **결정적으로 다른** 점은?
 - Java 에는 `checked` 에 해당하는 **문법이 있는가**?
+
+## 실행 환경
+
+**환경** — .NET SDK **10.0.401** · 런타임 **.NET 10.0.12** · 타겟 **`net10.0`** · linux-x64.
+진단은 **영어로 고정**했다(`DOTNET_CLI_UI_LANGUAGE=en` + `csc -preferreduilang:en-US`).
+MSBuild 를 안 쓰고 Roslyn `csc` 를 직접 부른다(`-debug` 없음 — 트레이스에 줄 번호가 없다).
+★★ **이 주제에는 컴파일 진단이 세 자리에만 난다** — 3번(상수식) · 9번(같은 변수 비교 경고) · 문법 절의 금지 사례.
+나머지는 **실행 출력 · 예외 전문 · IL · 할당 바이트**가 근거다.
+★★★ **6번을 외우려 하지 마라** — 「`decimal` 이 더 정확하다」가 **거기서 뒤집힌다.** 던져서 확인하는 것이 답이다.
+★ **10번은 공식 문서와 이 판이 갈린 자리**다. 「문서에 적힌 값」을 답으로 쓰면 틀린다.
+선행 — [01번](../01-value-types-and-reference-types/) · [03번](../03-boxing-and-unboxing/) ·
+[`foundations/data-representation/`](../../../../cs/foundations/data-representation/)(2진 표현 자체는 거기).
 
 ## 복습 기록
 

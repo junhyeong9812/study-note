@@ -1,16 +1,5 @@
 # html/syntax/35 — 반응형 이미지: `srcset`/`sizes` 의 두 서술자(`w`·`x`) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Images」 절](https://html.spec.whatwg.org/multipage/images.html)(`srcset` 파싱 · `sizes` 파싱 · 소스 선택) — ★★★ **이 배치의 명세 사본에 이 절이 없다.** 네트워크를 쓰지 않는 배치라 새로 받지도 못했다. 그래서 **후보를 고르는 규칙의 명세층은 전부 「사본에 절이 없어 판정 보류」다**. 이 편에서 「명세」로 적는 것은 사본에 있는 **렌더링 절의 `sizes=auto` 규칙 한 줄**뿐이다 — [Rendering 「Images」](https://html.spec.whatwg.org/multipage/rendering.html#images-3)의 `img:is([sizes="auto" i], [sizes^="auto," i]) { contain: size !important; contain-intrinsic-size: 300px 150px; }`.\
-> ★★ **그래서 이 편은 「명세 ↔ Chrome 이탈」을 한 건도 세지 않는다** — 후보 선택은 흔히 **「UA 재량」이 크다**고 설명되지만, 그것도 이 배치가 **문장으로 확인하지 못한** 말이다. 표의 「비교 열」은 **명세가 아니라** 흔히 쓰는 설명(「밀도가 DPR 이상인 가장 작은 후보」)을 옮긴 **기준선**이다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 뷰포트 폭과 DPR 은 **CDP `Emulation.setDeviceMetricsOverride`** 로 칸마다 걸었고, 칸마다 **새 탭 · 캐시 끔**이다. 하네스는 [33번 주제](../33-output-progress-meter/3-answer.md)의 `## 실행 검증` 에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
-> **버전** — HTML 에는 언어 버전이 없다. 이 배치는 지원 표를 따로 조회하지 않았다.
-> **선행** — [34번 주제](../34-img-alt-size-and-loading/2-summary.md)(★ `width`/`height` 가 로드 전 자리를 잡는다 · `loading=lazy`).
-> **경계** — **자르기가 다른 그림·다른 포맷을 고르는 것**은 [36번 주제](../36-picture-art-direction-and-format/2-summary.md)(`picture`) · **`video` 의 `source` 고르기**는 목록의 **37번 주제** · **`aspect-ratio`** 는 [CSS 31번](../../../css/syntax/31-intrinsic-sizing-and-aspect-ratio/2-summary.md) — 여기는 **한 `img` 가 후보 목록에서 무엇을 받나**까지.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다 — 「어느 후보 파일을 받았나」.** `currentSrc` 는 그 짝으로 같이 찍는다(함께 찍은 칸에서는 늘 같았다).
-
 **이 판의 Chrome**
 
 ```text
@@ -165,7 +154,7 @@ $ python3 html33b-run.py 격자 html33b-35-grid.html
 - ★★★ **비교 열과 갈린 칸 0 / 6** — 이 판의 Chrome 은 여섯 칸 모두 「**밀도가 DPR 이상인 가장 작은 후보**」를 받았다. 받은 파일은 **세 가지**다.
 - ★★★ **한 칸에 받은 파일은 하나다** — `src="i/a400.png"` 가 있어도 **따로 받지 않았다**(320·dpr 2 칸에서 `a800.png` 하나뿐).
 - ★★ **`naturalWidth` 는 파일 폭이 아니다** — `a800.png` 을 받은 800 칸은 **400**, 1400 칸은 **699**. **파일 폭 ÷ 밀도**다(`800 ÷ (800/700)`). 그래서 `width`/`height` 속성이 없으면 그림은 **슬롯 폭으로** 그려진다.
-- ★ **「기준선과 같았다」는 「명세가 그렇게 정한다」가 아니다** — 머리말대로 **선택 규칙의 명세층은 판정 보류**다. 이 판이 보인 것은 **이 판의 Chrome 이 여섯 칸에서 그렇게 골랐다**까지다.
+- ★ **「기준선과 같았다」는 「명세가 그렇게 정한다」가 아니다** — 「실행 환경」대로 **선택 규칙의 명세층은 판정 보류**다. 이 판이 보인 것은 **이 판의 Chrome 이 여섯 칸에서 그렇게 골랐다**까지다.
 
 ```text
   받은 파일 (이 판)
@@ -592,3 +581,15 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 
 - **명세의 「Images」 절을 받아 오면 다시 볼 것** — ① `sizes` 가 없을 때의 기본값 문장 · ② 같은 밀도 후보의 처리 · ③ 「환경이 바뀌면 다시 고른다」의 조건 · ④ 서술자를 섞는 것이 작성자 금지인지. 이 편의 표 「명세 — 판정 보류」 줄이 그 목록이다.
 - **`h` 서술자** — 콘솔 문구에 `'w'/'h'` 가 보인다. 이 판은 던지지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Images」 절](https://html.spec.whatwg.org/multipage/images.html)(`srcset` 파싱 · `sizes` 파싱 · 소스 선택) — ★★★ **이 배치의 명세 사본에 이 절이 없다.** 네트워크를 쓰지 않는 배치라 새로 받지도 못했다. 그래서 **후보를 고르는 규칙의 명세층은 전부 「사본에 절이 없어 판정 보류」다**. 이 편에서 「명세」로 적는 것은 사본에 있는 **렌더링 절의 `sizes=auto` 규칙 한 줄**뿐이다 — [Rendering 「Images」](https://html.spec.whatwg.org/multipage/rendering.html#images-3)의 `img:is([sizes="auto" i], [sizes^="auto," i]) { contain: size !important; contain-intrinsic-size: 300px 150px; }`.\
+★★ **그래서 이 편은 「명세 ↔ Chrome 이탈」을 한 건도 세지 않는다** — 후보 선택은 흔히 **「UA 재량」이 크다**고 설명되지만, 그것도 이 배치가 **문장으로 확인하지 못한** 말이다. 표의 「비교 열」은 **명세가 아니라** 흔히 쓰는 설명(「밀도가 DPR 이상인 가장 작은 후보」)을 옮긴 **기준선**이다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 뷰포트 폭과 DPR 은 **CDP `Emulation.setDeviceMetricsOverride`** 로 칸마다 걸었고, 칸마다 **새 탭 · 캐시 끔**이다. 하네스는 [33번 주제](../33-output-progress-meter/3-answer.md)의 `## 실행 검증` 에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다.**
+**버전** — HTML 에는 언어 버전이 없다. 이 배치는 지원 표를 따로 조회하지 않았다.
+**선행** — [34번 주제](../34-img-alt-size-and-loading/2-summary.md)(★ `width`/`height` 가 로드 전 자리를 잡는다 · `loading=lazy`).
+**경계** — **자르기가 다른 그림·다른 포맷을 고르는 것**은 [36번 주제](../36-picture-art-direction-and-format/2-summary.md)(`picture`) · **`video` 의 `source` 고르기**는 목록의 **37번 주제** · **`aspect-ratio`** 는 [CSS 31번](../../../css/syntax/31-intrinsic-sizing-and-aspect-ratio/2-summary.md) — 여기는 **한 `img` 가 후보 목록에서 무엇을 받나**까지.
+
+★★★ **이 주제의 본체는 창 ⑤(서버 요청 로그)다 — 「어느 후보 파일을 받았나」.** `currentSrc` 는 그 짝으로 같이 찍는다(함께 찍은 칸에서는 늘 같았다).

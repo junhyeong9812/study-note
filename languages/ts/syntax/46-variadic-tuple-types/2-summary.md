@@ -1,10 +1,5 @@
 # ts/syntax/46 — 가변 튜플 타입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [TypeScript 4.0 릴리스 노트 — Variadic Tuple Types · Labeled Tuple Elements](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html) · [4.2 릴리스 노트 — Leading/Middle Rest Elements](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-2.html).
-> ★ 위는 **자리 안내용 링크**다 — 이 배치는 외부 네트워크를 쓰지 않아 **열어서 문장을 대조하지 못했다.** 「4.0 에 들어왔다」·「4.2 에 들어왔다」는 **이 머신의 3.9.3 · 4.9.5 가 갈리는 모양**으로만 뒷받침한다(4.0·4.2 판 자체는 없다).
-> **실행 검증** — 본판은 아래다. 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5 · 3.9.3** 을 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`·`TSC_39`** · node 20 은 **`NODE20`**.
-
 ```text
 ===== tsc --version · "$TSC_OLD" · "$TSC_49" · "$TSC_39" --version · node · "$NODE20" --version · google-chrome --version (sh exit=0) =====
 Version 7.0.2
@@ -22,7 +17,6 @@ Google Chrome 151.0.7922.173
 > ★★ JS 쪽 사실 — **나머지 매개변수는 늘 진짜 배열이고 스프레드는 이터러블을 펼친다** — 는 JS 갈래 [11번](../../../js/syntax/11-spread-and-rest/)이 쟀다. 여기서는 그 위에서 「**펼친 것의 길이를 타입이 아나**」 만 본다.
 > ★★ 격자 스크립트는 **파일에 안 붙은 진단(`error TS5023` 같은 설정 진단)이 칸에 들면 멈추고, 한쪽 모양만 나오면 멈춘다.** ★ 제출 전에 **가짜 옵션을 끼운 판으로 실제로 멈추는지** 돌렸다(`exit 4`, 1절 끝).
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -528,3 +522,9 @@ console.log(JSON.stringify(r), r.length);
 
 - **`pipe`·`compose` 의 타입** — 가변 튜플을 재귀 조건부 타입과 엮는 길([25번 주제](../25-infer-and-recursive-conditional-types/)). 깊어지면 45편의 `TS2589` 벽에 닿는다 — **여기서는 재지 않았다.**
 - **4.0 · 4.2 바로 그 판** — 이 머신에 없어 경계 양쪽(3.9.3 · 4.9.5)만 쟀다.
+
+## 실행 환경
+
+**기준 소스** — [TypeScript 4.0 릴리스 노트 — Variadic Tuple Types · Labeled Tuple Elements](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html) · [4.2 릴리스 노트 — Leading/Middle Rest Elements](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-2.html).
+★ 위는 **자리 안내용 링크**다 — 이 배치는 외부 네트워크를 쓰지 않아 **열어서 문장을 대조하지 못했다.** 「4.0 에 들어왔다」·「4.2 에 들어왔다」는 **이 머신의 3.9.3 · 4.9.5 가 갈리는 모양**으로만 뒷받침한다(4.0·4.2 판 자체는 없다).
+**실행 검증** — 본판은 맨 위 블록이다. 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5 · 3.9.3** 을 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`·`TSC_39`** · node 20 은 **`NODE20`**.

@@ -1,42 +1,5 @@
 # python/syntax/32-container-protocol — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [3.3.7. Emulating container types](https://docs.python.org/3.12/reference/datamodel.html#emulating-container-types) — `__len__`·`__getitem__`·`__setitem__`·`__delitem__`·`__iter__`·`__contains__` 의 계약
-> - [6.10.2. Membership test operations](https://docs.python.org/3.12/reference/expressions.html#membership-test-operations) — ★ `in` 의 **대체 순서**가 여기 글자로 적혀 있다
-> - [Truth Value Testing](https://docs.python.org/3.12/library/stdtypes.html#truth-value-testing) · [`object.__bool__`](https://docs.python.org/3.12/reference/datamodel.html#object.__bool__) — `__len__` 이 `__bool__` 을 대신하는 규칙
-> - [`collections.abc`](https://docs.python.org/3.12/library/collections.abc.html) — 어느 추상 메서드를 주면 어느 믹스인이 따라오나
-> - [3.3.1. Special method lookup](https://docs.python.org/3.12/reference/datamodel.html#special-method-lookup) — 특수 메서드는 **인스턴스가 아니라 타입에서** 찾는다
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ 던지는 형태를 하나로 고정했다 — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
-> ★★ **캐럿은 예외 종류에 달렸다** — 실행 중 예외는 소스 줄도 `^` 캐럿도 안 나오고, `SyntaxError` 라야 둘 다 나온다.
-> 이 문서의 트레이스백은 **한 덩어리뿐이고 실행 중 예외**라 세 줄짜리다.\
-> **버전** — 여섯 특수 메서드는 전부 **Python 3 내내 있던 것**이고 이 노트 범위(3.10\~3.13)에서 안 바뀌었다.
-> 갈리는 것은 둘이다 — `collections.abc` 가 `collections` 에서 **3.3 에 갈라져 나온 것**(3.10 부터는 `collections` 에서 못 import 한다)과,
-> 추상 클래스 인스턴스화 실패 **문구**가 3.12 에서 `without an implementation for abstract methods` 꼴로 바뀐 것이다.\
-> **구현 대 언어 보장 한 줄** — **어느 메서드가 어느 메서드를 대신하는가의 순서까지가 언어 보장**이고,
-> **`list()` 가 길이를 미리 묻는 것·`2**63` 이 `OverflowError` 가 되는 것·예외 문구**는 CPython 쪽이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | `id()` 와 `0x…` 주소 — 그래서 이 주제는 한 번도 안 찍었다 | 예외 **종류** · `File "<stdin>", line N` · `(exit N)` |
-> | 판이 오르면 예외 **문구**와 내부 타입 이름 | **호출 로그의 순서** · 어느 특수 메서드가 **불렸나 안 불렸나** |
-> | 판이 오르면 `list()` 가 길이를 미리 묻는지 여부 | `len()` 값 · `in` 의 참·거짓 · `sorted()` 한 결과 |
-> | — | **여덟 조합의 격자 전체** — 대체 순서는 명세다 |
->
-> ★ **이 주제의 블록에는 주소도 시간도 절대경로도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다.**\
-> **선행** — [16-iterator-protocol](../16-iterator-protocol/2-summary.md)(★★★ **`__iter__`/`__next__`/`StopIteration` 과 `__getitem__` 낡은 프로토콜의 정본**) ·
-> [09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md)(내장 시퀀스의 슬라이싱) ·
-> [13-set-and-frozenset](../13-set-and-frozenset/2-summary.md)(내장 쪽 `in` 의 비용) ·
-> [29-classes-and-attribute-lookup](../29-classes-and-attribute-lookup/2-summary.md)(특수 메서드를 **어디서** 찾나).\
-> **이 사슬** — [29](../29-classes-and-attribute-lookup/2-summary.md) → [30](../30-repr-eq-hash-contracts/2-summary.md) → [31](../31-comparison-protocol-and-sortability/2-summary.md) → 32.
-> **여기가 사슬의 끝이다** — 29 가 「속성을 어디서 찾나」, 30·31 이 「계약을 어기면 자료구조가 조용히 틀린다」였다면,
-> 32 는 「**계약을 반만 지켜도 언어가 나머지를 대신 채워 준다**」다. 대신 채워 주는 그 자리가 이 주제의 값이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **컨테이너 프로토콜은 「내 객체에 붙일 수 있는 네 개의 창구」다.**
@@ -1211,3 +1174,43 @@ print("   그런데 for 는 돈다          :", [v for v in Old()])
   런타임 강제 여부가 갈리는 지점은 [목록의 **35번 주제**](../35-abc-and-protocol/)가 정본이다.
 - ★ **비동기 판**은 `__aiter__`/`__anext__` 이고 `async for` 가 그것을 쓴다(PEP 492, [목록의 **51번 주제**](../51-asyncio-coroutine-basics/)).
   ★ **비동기에는 `__getitem__` 대체 경로가 없다** — 낡은 프로토콜은 동기 쪽에만 남아 있는 유산이다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [3.3.7. Emulating container types](https://docs.python.org/3.12/reference/datamodel.html#emulating-container-types) — `__len__`·`__getitem__`·`__setitem__`·`__delitem__`·`__iter__`·`__contains__` 의 계약
+- [6.10.2. Membership test operations](https://docs.python.org/3.12/reference/expressions.html#membership-test-operations) — ★ `in` 의 **대체 순서**가 여기 글자로 적혀 있다
+- [Truth Value Testing](https://docs.python.org/3.12/library/stdtypes.html#truth-value-testing) · [`object.__bool__`](https://docs.python.org/3.12/reference/datamodel.html#object.__bool__) — `__len__` 이 `__bool__` 을 대신하는 규칙
+- [`collections.abc`](https://docs.python.org/3.12/library/collections.abc.html) — 어느 추상 메서드를 주면 어느 믹스인이 따라오나
+- [3.3.1. Special method lookup](https://docs.python.org/3.12/reference/datamodel.html#special-method-lookup) — 특수 메서드는 **인스턴스가 아니라 타입에서** 찾는다
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ 던지는 형태를 하나로 고정했다 — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.\
+★★ **캐럿은 예외 종류에 달렸다** — 실행 중 예외는 소스 줄도 `^` 캐럿도 안 나오고, `SyntaxError` 라야 둘 다 나온다.
+이 문서의 트레이스백은 **한 덩어리뿐이고 실행 중 예외**라 세 줄짜리다.\
+**버전** — 여섯 특수 메서드는 전부 **Python 3 내내 있던 것**이고 이 노트 범위(3.10\~3.13)에서 안 바뀌었다.
+갈리는 것은 둘이다 — `collections.abc` 가 `collections` 에서 **3.3 에 갈라져 나온 것**(3.10 부터는 `collections` 에서 못 import 한다)과,
+추상 클래스 인스턴스화 실패 **문구**가 3.12 에서 `without an implementation for abstract methods` 꼴로 바뀐 것이다.\
+**구현 대 언어 보장 한 줄** — **어느 메서드가 어느 메서드를 대신하는가의 순서까지가 언어 보장**이고,
+**`list()` 가 길이를 미리 묻는 것·`2**63` 이 `OverflowError` 가 되는 것·예외 문구**는 CPython 쪽이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| `id()` 와 `0x…` 주소 — 그래서 이 주제는 한 번도 안 찍었다 | 예외 **종류** · `File "<stdin>", line N` · `(exit N)` |
+| 판이 오르면 예외 **문구**와 내부 타입 이름 | **호출 로그의 순서** · 어느 특수 메서드가 **불렸나 안 불렸나** |
+| 판이 오르면 `list()` 가 길이를 미리 묻는지 여부 | `len()` 값 · `in` 의 참·거짓 · `sorted()` 한 결과 |
+| — | **여덟 조합의 격자 전체** — 대체 순서는 명세다 |
+
+★ **이 주제의 블록에는 주소도 시간도 절대경로도 한 곳도 안 찍힌다.** 같은 판에서 다시 돌리면 **한 글자도 안 변한다.**\
+**선행** — [16-iterator-protocol](../16-iterator-protocol/2-summary.md)(★★★ **`__iter__`/`__next__`/`StopIteration` 과 `__getitem__` 낡은 프로토콜의 정본**) ·
+[09-sequence-ops-and-slicing](../09-sequence-ops-and-slicing/2-summary.md)(내장 시퀀스의 슬라이싱) ·
+[13-set-and-frozenset](../13-set-and-frozenset/2-summary.md)(내장 쪽 `in` 의 비용) ·
+[29-classes-and-attribute-lookup](../29-classes-and-attribute-lookup/2-summary.md)(특수 메서드를 **어디서** 찾나).
+
+**여기가 사슬의 끝이다** — 29 가 「속성을 어디서 찾나」, 30·31 이 「계약을 어기면 자료구조가 조용히 틀린다」였다면,
+32 는 「**계약을 반만 지켜도 언어가 나머지를 대신 채워 준다**」다. 대신 채워 주는 그 자리가 이 주제의 값이다.
+
+---
+
+**이 사슬** — [29](../29-classes-and-attribute-lookup/2-summary.md) → [30](../30-repr-eq-hash-contracts/2-summary.md) → [31](../31-comparison-protocol-and-sortability/2-summary.md) → 32.

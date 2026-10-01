@@ -1,14 +1,5 @@
 # sql/06-조건 식 — CASE·COALESCE·NULLIF·GREATEST/LEAST — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Conditional Expressions](https://www.postgresql.org/docs/18/functions-conditional.html) · [MySQL 8.4 · Flow Control Functions](https://dev.mysql.com/doc/refman/8.4/en/flow-control-functions.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — 네 조건 식 자체는 두 엔진 모두 오래전부터 있다. 이 주제에서 버전에 갈리는 것은 없다.\
-> **선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/). `CASE` 의 조건이 `UNKNOWN` 이면 어떻게 되는지가 이 주제의 절반이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **조건 식은 「값을 고르는 식」이지 「실행을 가르는 문」이 아니다.**
@@ -678,3 +669,11 @@ LINE 1: SELECT CASE WHEN TRUE THEN 1 ELSE 'x' END AS r;
 - **`CASE` 로 정렬 순서를 만드는 것**은 이 식이 「값」이라는 성질을 가장 잘 쓰는 자리다. `ORDER BY CASE WHEN salary IS NULL THEN 0 ELSE 1 END, salary DESC` 는 두 엔진에서 **같은 순서**를 낸다 — `NULLS FIRST` 문법이 없는 MySQL 에서도 통한다([08번](../08-order-by-null-position-stability/)).
 - **`COALESCE` 를 어디에 두는가가 설계 결정이다.** 저장할 때 덮으면 원본이 사라지고, 질의 중간에 덮으면 집계가 틀어지고, 출력 직전에 덮으면 둘 다 피한다. **덮는 자리가 뒤로 갈수록 정보가 오래 남는다.**
 - **`GREATEST`/`LEAST` 의 두 철학 중 어느 쪽이 옳은가**는 답이 없다. PG 쪽은 「집계처럼 `NULL` 을 건너뛴다」, MySQL 쪽은 「비교 연산처럼 `NULL` 에 전염된다」로 각자 일관적이다. 외울 것은 어느 쪽이 맞느냐가 아니라 「**이 함수는 엔진마다 다르다**」는 사실 하나다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Conditional Expressions](https://www.postgresql.org/docs/18/functions-conditional.html) · [MySQL 8.4 · Flow Control Functions](https://dev.mysql.com/doc/refman/8.4/en/flow-control-functions.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — 네 조건 식 자체는 두 엔진 모두 오래전부터 있다. 이 주제에서 버전에 갈리는 것은 없다.\
+**선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/). `CASE` 의 조건이 `UNKNOWN` 이면 어떻게 되는지가 이 주제의 절반이다.

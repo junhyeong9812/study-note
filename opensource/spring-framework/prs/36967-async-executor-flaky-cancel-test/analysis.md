@@ -1,8 +1,5 @@
 # PR #36967 분석 — 즉시 취소 종료 테스트의 결정론화
 
-> 기준: 수정 전 = `0c60266986`의 `SimpleAsyncTaskExecutorTests.java:154-168` / 수정 후 = 머지 커밋 `bbfe6a04738`의 같은 파일 :155-170. 프로덕션 파일 `SimpleAsyncTaskExecutor.java`는 이 PR 전후로 바이트 동일하므로 프로덕션 줄번호는 현재 main에서도 그대로 유효하다.
-> 중복 회피: 무대 전경과 3분기 흐름은 `structure.md` §1-§3, 서사형 설명과 교훈은 `README.md`, 테스트 diff 해설은 `tests.md`. 이 문서는 이름표 사전(§2.5)과 race 단계 추적(§3), 대안 기각 근거(§5)를 맡는다.
-
 ## 0. 결론
 
 **결함**: `taskTerminationTimeoutWithImmediateCancel` 테스트는 `cancelled` 플래그의 **쓰기**(테스트 스레드의 `close()`)와 **읽기**(워커 스레드의 `checkCancelled`) 사이 순서를 강제하는 장치 없이 "쓰기가 먼저 이긴다"고 가정했다.\
@@ -368,3 +365,7 @@ newThread(Runnable task)                             :374
 - 이 테스트가 검증하는 프로덕션 코드에는 별개의 결함(취소 시 throttle permit 누수)이 남아 있다.\
   `checkCancelled`가 `try` 바깥에서 던지기 때문인데, 이 테스트는 throttle을 켜지 않으므로(`setConcurrencyLimit` 미호출) 그 경로에 닿지 않는다.\
   해당 결함은 #36916의 대상이다.
+
+## 출처
+
+기준: 수정 전 = `0c60266986`의 `SimpleAsyncTaskExecutorTests.java:154-168` / 수정 후 = 머지 커밋 `bbfe6a04738`의 같은 파일 :155-170. 프로덕션 파일 `SimpleAsyncTaskExecutor.java`는 이 PR 전후로 바이트 동일하므로 프로덕션 줄번호는 현재 main에서도 그대로 유효하다.

@@ -1,18 +1,5 @@
 # c/syntax/11 — 비트 연산과 시프트: 자리를 다루는 법과 **넘으면 안 되는 선** — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Bitwise arithmetic operators (C)](https://en.cppreference.com/w/c/language/operator_arithmetic) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
-> **실행 검증** — 이 문서의 모든 출력·경고·sanitizer 진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> ★ UB 가 걸린 실험은 **`-O0`·`-O1`·`-O2`·`-O3`·`-Os` 다섯 벌**을 전부 돌렸다.
-> **버전** — `& | ^ ~ << >>` 의 규칙은 **C89 이후 바뀐 적이 없다.** C23 이 2진 리터럴 `0b1011` 을 표준에 넣었다.\
-> ★ **gcc 13.3.0 에는 `-std=c23` 이 없다**(`-std=c2x` 뿐). clang 18 은 둘 다 받는다 — 아래 (10)에서 실측한다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★ **경계** — 비트 트릭·응용(popcount·비트마스크 DP 등)은 [`algorithm/29-bit-manipulation/`](../../../../cs/algorithm/29-bit-manipulation/)이 정본이다.\
-> 여기는 「**C 의 타입 규칙과 UB**」만 다룬다. 2진 표현·2의 보수 자체는 [`data-representation/`](../../../../cs/foundations/data-representation/)이 정본이다.\
-> 어떻게 **묶이나**는 [09번 형제](../09-operator-precedence-and-associativity/), 승격 규칙 자체는 [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/)가 정본이다.
-> 선행 — [02번 형제](../02-basic-types-sizes-and-fixed-width-integers/) · [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/).
-
 ## 한눈에 — 쉽게 말하면
 
 **비트 연산은 「스위치가 32개 달린 배전반」을 다루는 것이다.**
@@ -996,3 +983,17 @@ C 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다�
 
 - **`_BitInt(N)`(C23)** 은 임의 폭 정수를 준다. 시프트 규칙이 어떻게 적용되는지는\
   ★ **이 문서에서 던져 보지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Bitwise arithmetic operators (C)](https://en.cppreference.com/w/c/language/operator_arithmetic) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
+**실행 검증** — 이 문서의 모든 출력·경고·sanitizer 진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+★ UB 가 걸린 실험은 **`-O0`·`-O1`·`-O2`·`-O3`·`-Os` 다섯 벌**을 전부 돌렸다.
+**버전** — `& | ^ ~ << >>` 의 규칙은 **C89 이후 바뀐 적이 없다.** C23 이 2진 리터럴 `0b1011` 을 표준에 넣었다.\
+★ **gcc 13.3.0 에는 `-std=c23` 이 없다**(`-std=c2x` 뿐). clang 18 은 둘 다 받는다 — 본문 (10)에서 실측한다.
+
+★★ **경계** — 비트 트릭·응용(popcount·비트마스크 DP 등)은 [`algorithm/29-bit-manipulation/`](../../../../cs/algorithm/29-bit-manipulation/)이 정본이다.\
+여기는 「**C 의 타입 규칙과 UB**」만 다룬다. 2진 표현·2의 보수 자체는 [`data-representation/`](../../../../cs/foundations/data-representation/)이 정본이다.\
+어떻게 **묶이나**는 [09번 형제](../09-operator-precedence-and-associativity/), 승격 규칙 자체는 [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/)가 정본이다.
+선행 — [02번 형제](../02-basic-types-sizes-and-fixed-width-integers/) · [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/).

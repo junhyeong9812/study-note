@@ -1,11 +1,5 @@
 # domain-modeling-basic/07-notification — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/07-notification/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -341,3 +335,7 @@ return peak;
 - 기준 소스: `/home/jun/project/myway/domain-modeling-basic/07-notification/impl/com/domain/notify/Scheduler.java`
 - 문제 원문: `src/main/java/com/domain/notify/Scheduler.java`(TODO 1~4 javadoc), `QuietHours.java`(계약), `README.md`(함정·측정·변종 검증·생각해볼 것)
 - 수치 근거: `README.md` 측정 절 + `src/test/java/com/domain/notify/MeasurementTest.java`(5,000·2,926·2,074·41 / 7·724·7·103 / 간격표 7·7·8·8 과 08:02:33·08:12:45·08:25:30·10:33 / 4,615·3,479·1,949·61 / 순서 3,479·peak 504), `NotificationTest.java`(자정 걸침 경계, nextAllowed 3케이스, DROP·DEFER, 흩기 peak 3→1, dedupe 2건·키 분리·창 없음·순서 무관)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/07-notification/impl/`).

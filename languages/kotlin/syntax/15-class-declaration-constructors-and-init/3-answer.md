@@ -1,10 +1,5 @@
 # kotlin/syntax/15 — 클래스 선언: 주 생성자·부 생성자·`init` 블록 순서 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·에러·예외·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> 역어셈블은 **기본 `-jvm-target`(1.8 · `major version: 52`)** 이 정본이다 —\
-> 그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -607,3 +602,9 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 
 **안 걸린 것도 출력이다** — `leak.kt` 는 널 불가 프로퍼티에서 `null` 을 꺼내 찍는데도
 **경고 0건 · `exit 0`** 이었다. 이 갈래에서 「컴파일이 됐다」가 가장 약한 근거인 자리다.
+
+## 실행 환경
+
+모든 출력·에러·예외·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+역어셈블은 **기본 `-jvm-target`(1.8 · `major version: 52`)** 이 정본이다 —\
+그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).

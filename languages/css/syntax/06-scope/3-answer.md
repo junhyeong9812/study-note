@@ -1,10 +1,5 @@
 # css/syntax/06 — `@scope`: 스코프 루트·하한과 근접성(proximity) — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 색은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 `getComputedStyle` 로 읽은 것**이다.\
-> 규칙은 [CSS Cascading and Inheritance Level 6](https://drafts.csswg.org/css-cascade-6/) 「Scoped Styles」로 접지했다.\
-> **엔진은 Chrome 하나다.** `@scope` 는 Baseline **newly available**(2026-03-24)이고 widely 가 아니다 — A9 참고.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -371,7 +366,7 @@ google-chrome --headless --disable-gpu --no-sandbox --dump-dom /tmp/doc.html 2>/
 
 | 무엇을 | 몇 번 | 결과가 쓰인 곳 |
 |---|---|---|
-| `@scope` 지원 확인(`CSSScopeRule`·규칙 타입) | 1 | 머리말 · 동작 방식 (1) |
+| `@scope` 지원 확인(`CSSScopeRule`·규칙 타입) | 1 | 「실행 환경」 · 동작 방식 (1) |
 | 루트·하한·밖 세 자리의 색 | 1 | 동작 방식 (1) · A1 |
 | 하한 요소 자신의 `background-color` · `:scope` 의 `outline` | 1 | 동작 방식 (1) · A1 |
 | `to` 를 지운 판 | 1 | demo 의 「바꿔 볼 것」 · A1 |
@@ -409,3 +404,9 @@ google-chrome --headless --disable-gpu --no-sandbox --dump-dom /tmp/doc.html 2>/
 - **프렐류드(prelude)** — at-rule 이름 뒤 블록 앞. `@scope` 에서는 명시도에 **기여하지 않는다**.
 - **상대 선택자(relative selector)** — 기준 요소에 대한 상대 경로로 읽히는 선택자.
 - **Baseline newly available** — 주요 엔진 전부에 들어왔지만 저변 도달(30개월)은 아직인 상태.
+
+## 실행 환경
+
+이 파일의 **모든 색은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 `getComputedStyle` 로 읽은 것**이다.\
+규칙은 [CSS Cascading and Inheritance Level 6](https://drafts.csswg.org/css-cascade-6/) 「Scoped Styles」로 접지했다.\
+**엔진은 Chrome 하나다.** `@scope` 는 Baseline **newly available**(2026-03-24)이고 widely 가 아니다 — A9 참고.

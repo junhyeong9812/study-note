@@ -1,15 +1,5 @@
 # html/syntax/20 — `lang`·`dir` 과 양방향 텍스트: `dir=auto`·`bdi`/`bdo` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [`lang` 속성](https://html.spec.whatwg.org/multipage/dom.html#the-lang-and-xml:lang-attributes)(「빈 문자열은 **주 언어를 모른다**는 뜻」)·[`dir` 속성](https://html.spec.whatwg.org/multipage/dom.html#the-dir-attribute)(auto 방향성 — 「첫 L·AL·R 글자」 · `bdi`·`script`·`style`·`textarea`·`dir` 을 가진 요소는 건너뛴다 · 입력 요소는 값을 본다)와 [렌더링 절 15.3.5 「Bidirectional text」](https://html.spec.whatwg.org/multipage/rendering.html#bidirectional-text)(`[dir]`·`bdi` 의 `unicode-bidi: isolate` · `bdo` 의 `isolate-override`), [Unicode Standard Annex #9 「Unicode Bidirectional Algorithm」](https://www.unicode.org/reports/tr9/)(Revision 52, Unicode 18.0.0 — P2·W6·W7·N1·I1·L2), [HTML-AAM](https://w3c.github.io/html-aam/)(편집본 — `bdi`·`bdo` → `generic` · `lang`·`dir` 은 **텍스트 속성**으로). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 블록마다 던진 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다(캡처 조립기). 하네스는 [17번 주제의 3-answer.md](../17-table-structure/3-answer.md) `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다** — 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — `api.webstatus.dev` 조회로 **`<bdi>` 는 Baseline widely**(newly 2020-01-15 → widely 2022-07-15), **`<bdo>`·`:lang()` 은 widely**(2018-01-29), **`:dir()` 은 widely**(newly 2023-12-07 → widely 2026-06-07), **Hyphenation(`hyphens`) 은 widely**(newly 2023-09-18 → widely 2026-03-18), **`direction`·`unicode-bidi`(Layout direction override) 는 widely**(2022-07-15).
-> **선행** — [13번 주제](../13-phrasing-semantics/2-summary.md)(구절 시맨틱 — `bdi`·`bdo` 도 구절 요소다) · [14번 주제](../14-quotation-edits-and-time/2-summary.md)(`q` 의 따옴표 모양을 `lang` 이 고른 실측).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **본체는 창 ② 의 새 칸 — 「글자마다의 x 좌표」다.** 양방향 텍스트의 사고는 **글자 순서**에서 난다. 그런데 **DOM·`textContent`·`innerText` 는 전부 논리 순서(쓴 순서)** 라 **시각 순서가 어디에도 안 보인다.** 그래서 **`Range.getClientRects()` 로 글자 하나하나의 x 를 찍어 화면 순서를 복원**했다 — 창을 바꿔 물은 것이다(제5의 상태).
-> ★★★ **RTL 글자는 원고에 한 글자도 싣지 않았다.** 양방향 제어·RTL 글자가 마크다운 렌더와 터미널을 뒤섞기 때문이다. 소스에서는 `String.fromCodePoint(0x05E9, …)` 와 문자 참조 `&#x5E9;` 로 만들고, 출력에는 **코드 포인트 16진 값(`U+05E9`)과 좌표만** 찍었다. 원고의 「히브리」·「아랍」은 **한글 이름표**다.
-
 ```text
 $ google-chrome --version
 Google Chrome 151.0.7922.173 
@@ -759,3 +749,14 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **UAX #9 의 전체 단계** — 문단 방향(P), 명시적 수준(X), 약한 글자(W1\~W7), 중립(N0\~N2), 암묵 수준(I1·I2), 재배열(L1\~L4). 이 문서는 사고 하나를 설명하는 네 규칙만 불렀다.
 - **`dir=auto` 와 `unicode-bidi: plaintext`** — 렌더링 절은 `textarea`·`pre`·일부 `input` 의 `dir=auto` 에 `isolate` 대신 **`plaintext`** 를 준다 — 문단마다 방향을 따로 판정한다. 이 판에서 따로 재지 않았다.
 - **`dirname` 속성** — 폼 제출 때 입력칸의 판정된 방향을 같이 보내는 속성(Baseline widely). 목록의 **21번 주제**(폼 제출) 쪽이다.
+
+## 실행 환경
+
+**기준 소스** — [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [`lang` 속성](https://html.spec.whatwg.org/multipage/dom.html#the-lang-and-xml:lang-attributes)(「빈 문자열은 **주 언어를 모른다**는 뜻」)·[`dir` 속성](https://html.spec.whatwg.org/multipage/dom.html#the-dir-attribute)(auto 방향성 — 「첫 L·AL·R 글자」 · `bdi`·`script`·`style`·`textarea`·`dir` 을 가진 요소는 건너뛴다 · 입력 요소는 값을 본다)와 [렌더링 절 15.3.5 「Bidirectional text」](https://html.spec.whatwg.org/multipage/rendering.html#bidirectional-text)(`[dir]`·`bdi` 의 `unicode-bidi: isolate` · `bdo` 의 `isolate-override`), [Unicode Standard Annex #9 「Unicode Bidirectional Algorithm」](https://www.unicode.org/reports/tr9/)(Revision 52, Unicode 18.0.0 — P2·W6·W7·N1·I1·L2), [HTML-AAM](https://w3c.github.io/html-aam/)(편집본 — `bdi`·`bdo` → `generic` · `lang`·`dir` 은 **텍스트 속성**으로). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 블록마다 던진 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다(캡처 조립기). 하네스는 [17번 주제의 3-answer.md](../17-table-structure/3-answer.md) `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다** — 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — `api.webstatus.dev` 조회로 **`<bdi>` 는 Baseline widely**(newly 2020-01-15 → widely 2022-07-15), **`<bdo>`·`:lang()` 은 widely**(2018-01-29), **`:dir()` 은 widely**(newly 2023-12-07 → widely 2026-06-07), **Hyphenation(`hyphens`) 은 widely**(newly 2023-09-18 → widely 2026-03-18), **`direction`·`unicode-bidi`(Layout direction override) 는 widely**(2022-07-15).
+**선행** — [13번 주제](../13-phrasing-semantics/2-summary.md)(구절 시맨틱 — `bdi`·`bdo` 도 구절 요소다) · [14번 주제](../14-quotation-edits-and-time/2-summary.md)(`q` 의 따옴표 모양을 `lang` 이 고른 실측).
+
+★★★ **본체는 창 ② 의 새 칸 — 「글자마다의 x 좌표」다.** 양방향 텍스트의 사고는 **글자 순서**에서 난다. 그런데 **DOM·`textContent`·`innerText` 는 전부 논리 순서(쓴 순서)** 라 **시각 순서가 어디에도 안 보인다.** 그래서 **`Range.getClientRects()` 로 글자 하나하나의 x 를 찍어 화면 순서를 복원**했다 — 창을 바꿔 물은 것이다(제5의 상태).
+★★★ **RTL 글자는 원고에 한 글자도 싣지 않았다.** 양방향 제어·RTL 글자가 마크다운 렌더와 터미널을 뒤섞기 때문이다. 소스에서는 `String.fromCodePoint(0x05E9, …)` 와 문자 참조 `&#x5E9;` 로 만들고, 출력에는 **코드 포인트 16진 값(`U+05E9`)과 좌표만** 찍었다. 원고의 「히브리」·「아랍」은 **한글 이름표**다.

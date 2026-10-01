@@ -1,16 +1,5 @@
 # c/syntax/37 — `malloc`/`calloc`/`realloc`/`free`: 「**실패는 `NULL` 하나로 온다 — 그 `NULL` 을 받는 자리가 원본을 지키느냐를 가른다**」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **환경** — gcc 13.3.0 · gcc-12 12.4.0 · clang 18.1.3 · glibc 2.39 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
-> ★★ **이 주제의 인출 축은 셋**이다 —
-> ① **언제 `NULL` 이 오고 그때 무엇이 약속되나**(크기 0 · 거대한 크기 · 곱셈 넘침 · `errno`) ② **`realloc` 실패에서 원본을 지키는 호출 형태**(와 그것을 보는 도구)
-> ③ **해제 쪽 규칙**(`free(NULL)` · double free · 해제 후 사용 · C23).
-> ★★★ **본체 창은 실패 격자** — 1번은 **칸마다 「널인가 / `errno`」** 를 적어야 답이다.
-> ★★ **할당자 내부(빈 목록 · 분할 · 병합)는 묻지 않는다** — 그것은 [`data-structure/35-allocator/`](../../../../cs/data-structure/35-allocator/)가 정본이다.
-> 선행 — [28번 형제](../28-choosing-among-four-storage-durations/).
-
 ## 이 파일을 푸는 법
 
 - ★★ **예측형 여섯 문항(1\~6)은 소스만 보고 적어 본 뒤** 답을 연다.
@@ -247,6 +236,14 @@ int main(void) {
 - **빈 목록 · 분할 · 병합**은 어느 폴더의 어느 절이 정본인가?
 - **누가 해제하는가를 시그니처로 말하기**는 목록의 몇 번 주제인가?
 - ★ 이 주제가 **끝까지 책임지는 것** 세 가지를 대면?
+
+## 실행 환경
+
+**환경** — gcc 13.3.0 · gcc-12 12.4.0 · clang 18.1.3 · glibc 2.39 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
+
+★★★ **본체 창은 실패 격자** — 1번은 **칸마다 「널인가 / `errno`」** 를 적어야 답이다.
+★★ **할당자 내부(빈 목록 · 분할 · 병합)는 묻지 않는다** — 그것은 [`data-structure/35-allocator/`](../../../../cs/data-structure/35-allocator/)가 정본이다.
+선행 — [28번 형제](../28-choosing-among-four-storage-durations/).
 
 ## 복습 기록
 

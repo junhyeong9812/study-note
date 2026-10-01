@@ -1,21 +1,5 @@
 # c/syntax/22 — 구조체 패딩·정렬: 「**같은 멤버라도 순서가 크기를 바꾸고, 구멍의 값은 아무도 약속하지 않는다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — struct](https://en.cppreference.com/w/c/language/struct) · [cppreference — object representation](https://en.cppreference.com/w/c/language/object) · [cppreference — \_Alignas](https://en.cppreference.com/w/c/language/_Alignas) · [GCC 13 Structure-Layout Pragmas](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Structure-Layout-Pragmas.html)
-> **실행 검증** — 이 문서의 모든 수치·바이트 격자·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본 플래그는 `-std=c17 -Wall -Wextra -pedantic`.\
-> 패딩 값이 걸린 블록은 **gcc·clang × `-O0`/`-O1`/`-O2` 여섯 벌**을 돌리고 **한 벌을 20번씩** 반복했다.\
-> 손으로 계산한 수치는 하나도 없다 — 크기는 `sizeof`, 자리는 `offsetof`, 값은 **바이트 덤프**로 물어봤다.
-> **버전** — 패딩·정렬 규칙 자체는 **C89부터**. `_Alignas`/`_Alignof` 는 **C11부터**(`alignas`/`alignof` 철자는 C23부터),\
-> 유연 배열 멤버는 **C99부터**. `#pragma pack` 은 **어느 표준에도 없다** — 컴파일러 확장이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — [08번 형제](../08-sizeof-alignment-and-offsetof/)는 **도구**(`sizeof`·`_Alignof`·`offsetof`·`_Static_assert`)가 정본이고,\
-> 여기는 **규칙**이 정본이다 — 08 자신이 머리말에서 「패딩·정렬의 정본은 22번 주제」라고 선언해 두었다.\
-> 구조체의 **선언·초기화**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/),\
-> **`union` 의 크기·정렬**은 [23번 형제](../23-union-and-the-boundary-of-type-punning/),\
-> **유연 배열 멤버**는 [목록의 **26번 주제**](../26-flexible-array-members/), **`memcmp`/`memcpy` 의 계약**은 [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/),\
-> **엄격한 앨리어싱**은 목록의 **55번 주제**가 정본이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **구조체는 멤버를 이어 붙인 것이 아니다. 사이사이에 구멍이 있고, 그 구멍에 무엇이 들어 있는지는 아무도 약속하지 않았다.**
@@ -826,3 +810,20 @@ s22f.c   -Wall -Wextra 0건 · +pedantic 0건 · +UBSan 0건
   그 규율을 **컴파일러가 검사해 주지 않는다.** 실측에서 대입 한 번이 되돌렸다.
 - **다른 플랫폼에서는** — `_Alignof(double)` 가 4인 32비트 ABI 도 있다. 그러면 **여섯 순열의 크기가 전부 달라진다.**\
   ★ 이 문서의 16·24 는 **x86-64 Linux 의 수치**이지 C 의 수치가 아니다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — struct](https://en.cppreference.com/w/c/language/struct) · [cppreference — object representation](https://en.cppreference.com/w/c/language/object) · [cppreference — \_Alignas](https://en.cppreference.com/w/c/language/_Alignas) · [GCC 13 Structure-Layout Pragmas](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Structure-Layout-Pragmas.html)
+**실행 검증** — 이 문서의 모든 수치·바이트 격자·진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본 플래그는 `-std=c17 -Wall -Wextra -pedantic`.\
+패딩 값이 걸린 블록은 **gcc·clang × `-O0`/`-O1`/`-O2` 여섯 벌**을 돌리고 **한 벌을 20번씩** 반복했다.\
+손으로 계산한 수치는 하나도 없다 — 크기는 `sizeof`, 자리는 `offsetof`, 값은 **바이트 덤프**로 물어봤다.
+**버전** — 패딩·정렬 규칙 자체는 **C89부터**. `_Alignas`/`_Alignof` 는 **C11부터**(`alignas`/`alignof` 철자는 C23부터),\
+유연 배열 멤버는 **C99부터**. `#pragma pack` 은 **어느 표준에도 없다** — 컴파일러 확장이다.
+
+**경계** — [08번 형제](../08-sizeof-alignment-and-offsetof/)는 **도구**(`sizeof`·`_Alignof`·`offsetof`·`_Static_assert`)가 정본이고,\
+여기는 **규칙**이 정본이다 — 08 자신이 「실행 환경」에서 「패딩·정렬의 정본은 22번 주제」라고 선언해 두었다.\
+구조체의 **선언·초기화**는 [21번 형제](../21-struct-declaration-initialization-and-designated-initializers/),\
+**`union` 의 크기·정렬**은 [23번 형제](../23-union-and-the-boundary-of-type-punning/),\
+**유연 배열 멤버**는 [목록의 **26번 주제**](../26-flexible-array-members/), **`memcmp`/`memcpy` 의 계약**은 [목록의 **50번 주제**](../50-string-h-memory-functions-memcpy-memmove-memset-memcmp/),\
+**엄격한 앨리어싱**은 목록의 **55번 주제**가 정본이다.

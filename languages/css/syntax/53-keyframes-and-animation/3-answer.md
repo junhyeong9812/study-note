@@ -1,11 +1,5 @@
 # css/syntax/53 — `@keyframes` 와 `animation`: 단축·반복·채우기 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 수치는 Google Chrome 151.0.7922.173 headless 에서 실제로 측정한 것**이다.\
-> 진행률이 중요한 실험은 `animation-play-state: paused` + 음수 `animation-delay` 또는 `getAnimations().currentTime` 세팅으로 **시각을 고정해** 읽었고,\
-> `demo` 블록은 CDP 로 실제 마우스를 올린 뒤 벽시계 시각마다 `getComputedStyle` 을 읽었다(±20ms).\
-> 규칙은 [CSS Animations Level 1](https://drafts.csswg.org/css-animations-1/) 과 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -465,3 +459,10 @@
 - **`CSSKeyframesRule`** — `@keyframes` 의 CSSOM 객체. 같은 이름이 여럿이면 **전부 담기지만 마지막만 쓰인다.**
 - **캐스케이드 사다리** — 전환 > `!important` 무리 > 애니메이션 > 작성자 normal.
 - **이산 보간(discrete interpolation)** — 중간값을 못 만드는 타입의 기본 동작. 50% 에서 한 번 뒤집힌다.
+
+## 실행 환경
+
+이 파일의 **모든 수치는 Google Chrome 151.0.7922.173 headless 에서 실제로 측정한 것**이다.\
+진행률이 중요한 실험은 `animation-play-state: paused` + 음수 `animation-delay` 또는 `getAnimations().currentTime` 세팅으로 **시각을 고정해** 읽었고,\
+`demo` 블록은 CDP 로 실제 마우스를 올린 뒤 벽시계 시각마다 `getComputedStyle` 을 읽었다(±20ms).\
+규칙은 [CSS Animations Level 1](https://drafts.csswg.org/css-animations-1/) 과 [CSS Cascading and Inheritance Level 5](https://drafts.csswg.org/css-cascade-5/) 로 접지했다.

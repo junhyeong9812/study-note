@@ -1,12 +1,5 @@
 # rust/syntax/55 — async 실전: 런타임 선택 · `Send` 경계 · `Pin` 맛보기 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ 던지는 법 — `rustc --edition 2021 <파일>.rs`. `Box::pin` 문항은 같은 디렉토리에 [54번 주제](../54-async-await-and-future-state-machines/)의 `r54_exec.rs` 를 둔다. tokio 문항은 `cargo … --offline`(로컬 캐시의 tokio 1.52.3).
-> ★★★ **future 를 `spawn` 에 넘기기 전에 물어라** — 「**await 를 가로질러 무엇을 쥐고 있나**」와 「**그것은 다른 스레드로 넘겨도 되나**」.
-> ★ **문항 12개 중 코드가 붙은 예측형은 6개**다. 소스 펜스는 캡처가 실파일에서 찍었다(`check-source-fences.py` 대조).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -266,6 +259,12 @@ fn main() {
 ### 12. ★★ 54번 크기 격자와 4번 (연결)
 
 - [54번 주제](../54-async-await-and-future-state-machines/) (4)의 `b_used_before_only` 1032 대 `b2_indexed_before_only` 8 은 4번의 결과와 어떻게 같은 이야기인가? 이 판정은 언어가 보장하나?
+
+## 실행 환경
+
+★ 던지는 법 — `rustc --edition 2021 <파일>.rs`. `Box::pin` 문항은 같은 디렉토리에 [54번 주제](../54-async-await-and-future-state-machines/)의 `r54_exec.rs` 를 둔다. tokio 문항은 `cargo … --offline`(로컬 캐시의 tokio 1.52.3).
+★★★ **future 를 `spawn` 에 넘기기 전에 물어라** — 「**await 를 가로질러 무엇을 쥐고 있나**」와 「**그것은 다른 스레드로 넘겨도 되나**」.
+★ **문항 12개 중 코드가 붙은 예측형은 6개**다. 소스 펜스는 캡처가 실파일에서 찍었다(`check-source-fences.py` 대조).
 
 ## 복습 기록
 

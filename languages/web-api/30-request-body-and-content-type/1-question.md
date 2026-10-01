@@ -1,12 +1,5 @@
 # web-api/30 — 요청 본문 만들기: `FormData`·`URLSearchParams`·JSON 과 `Content-Type` 자동 설정 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 폼 마크업이 만드는 본문(`method` × `enctype`)은 [HTML 21번 주제](../../html/syntax/21-form-submission-model/1-question.md)가 물었다. 여기는 **스크립트가 본문을 만들 때 `Content-Type` 이 어떻게 정해지나**를 묻는다. 파일을 그대로 올리는 것은 [31번 주제](../31-blob-file-and-object-url/1-question.md)다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 Fetch·HTML 명세 문장이다. 이식성은 주장 범위 밖이다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -104,6 +97,12 @@ document.forms[0].requestSubmit();   // 같은 폼을 진짜로 제출
 
 - [28번 주제](../28-cors-simple-and-preflight/1-question.md)의 문항 1 격자에서, `JSON.stringify` 만 넘긴 `POST` 를 다른 출처로 보내면 어느 칸인가? 서버가 `Content-Type` 을 안 보고 JSON 으로 파싱하면?
 - 이 편의 **도구가 못 보는 것** 두 가지를 대라.
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — 폼 마크업이 만드는 본문(`method` × `enctype`)은 [HTML 21번 주제](../../html/syntax/21-form-submission-model/1-question.md)가 물었다. 여기는 **스크립트가 본문을 만들 때 `Content-Type` 이 어떻게 정해지나**를 묻는다. 파일을 그대로 올리는 것은 [31번 주제](../31-blob-file-and-object-url/1-question.md)다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 Fetch·HTML 명세 문장이다. 이식성은 주장 범위 밖이다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

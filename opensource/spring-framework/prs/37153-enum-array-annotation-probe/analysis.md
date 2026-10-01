@@ -1,12 +1,5 @@
 # PR #37153 분석 — AttributeMethods의 enum 배열 probe 누락
 
-> 기준: PR 브랜치 `refs/pr/37153`, base = upstream main `a16509447075`.\
-> 아래 file:line은 별도 표기가 없으면 **PR 적용 후** 파일의 좌표이고, "base:NN"은 수정 전 좌표다.\
-> 상태: OPEN (2026-08-19 제출, 라벨 `status: waiting-for-triage`, `in: core`).
->
-> 이 문서는 결함 한 건을 진입 API에서 결함 지점까지 **호출·데이터 흐름으로** 추적하고, 그 흐름에 등장하는 이름 하나하나의 역할을 사전으로 정리한다.\
-> 무대의 일반 구조와 워크플로우는 [structure.md](structure.md), 문제·수정의 서술은 [README.md](README.md), 테스트는 [tests.md](tests.md), 리뷰 판단은 [review.md](review.md)가 담당하므로 여기서는 반복하지 않고 링크한다.
-
 ## 0. 결론
 
 **결함**: `AttributeMethods` 생성자가 "값을 읽는 순간 터질 수 있는 속성"을 표시하는 플래그를 계산할 때 `Class`는 스칼라와 배열을 모두 세면서 enum은 스칼라(`type.isEnum()`)만 세어, **enum 배열 속성이 probe 대상에서 빠지고** 오염된 annotation이 스캔 필터를 무검사로 통과한다.
@@ -303,3 +296,9 @@ Spring이 그 위에 얹은 "로드 불가 annotation은 없는 것으로 취급
 
 > **마이크로벤치(microbenchmark)** — 아주 작은 코드 조각 하나의 실행 시간만 반복 측정하는 성능 실험.\
 > 예: probe 한 번에 25 ns가 걸린다는 식으로 나노초 단위 수치를 뽑는다.
+
+## 출처
+
+기준: PR 브랜치 `refs/pr/37153`, base = upstream main `a16509447075`.\
+본문의 file:line은 별도 표기가 없으면 **PR 적용 후** 파일의 좌표이고, "base:NN"은 수정 전 좌표다.\
+상태: OPEN (2026-08-19 제출, 라벨 `status: waiting-for-triage`, `in: core`).

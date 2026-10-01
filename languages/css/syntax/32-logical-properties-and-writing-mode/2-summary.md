@@ -1,13 +1,5 @@
 # css/syntax/32 — 논리 속성과 글쓰기 방향(`writing-mode`·`direction`·`inline-size`) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Logical Properties and Values Level 1](https://drafts.csswg.org/css-logical-1/) (논리 속성과 물리 속성의 대응·캐스케이드 규칙) · [CSS Writing Modes Level 4](https://drafts.csswg.org/css-writing-modes-4/) (`writing-mode`·`direction`·인라인/블록 축의 정의). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 좌표·치수는 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 잰 값이고, **논리 속성이 어느 물리 속성으로 풀렸는지는 `getComputedStyle` 로 따로 읽었다.**\
-> **WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 엔진 차이는 주장하지 않는다.
-> **버전** — 논리 속성은 Baseline **widely**(newly 2021-09-20 → widely 2024-03-20) · `writing-mode` 는 **widely**(2017-03-27 → 2019-09-27) · `text-align` 은 **widely**(2015-07-29 → 2018-01-29). 전부 `api.webstatus.dev` 조회값이다. ★ **이미 기본으로 쓸 수 있는 표면이다.**
-> **여기서 다루지 않는 것** — 유니코드·문자 인코딩은 [`foundations/data-representation/`](../../../../cs/foundations/data-representation/)이 정본이다. flex 의 축·정렬은 [24번](../24-flexbox-axes/), 박스 모델은 [15번](../15-box-model-and-box-sizing/)이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **「가로/세로」가 아니라 「글이 흐르는 쪽 / 줄이 쌓이는 쪽」이다.**
@@ -524,3 +516,11 @@ CSS 의 `direction` 은 **레이아웃만** 돌린다.
 - **`:dir()` 의사 클래스**(Baseline **widely**, 2023-12-07 → 2026-06-07)로 `dir` 값에 따라 스타일을 갈라 쓸 수 있다. 다만 **논리 속성으로 되는 일에는 쓰지 않는 것**이 요점이다 — 갈라 쓸수록 스타일시트가 두 벌이 된다.
 - ★ **`row-gap`/`column-gap` 은 이름이 물리인데 동작은 논리다**([26번](../26-flex-wrap-gap-order/)). `row-gap` 은 「가로줄 사이」가 아니라 **「블록 축 방향 간격」** 이다. 이름만 옛것이 남은 자리라 세로쓰기에서 헷갈린다.
 - **논리 속성이 `transition`/`animation` 에서 물리와 겹칠 때** 어느 쪽이 보간되는지는 (4)의 캐스케이드 규칙을 그대로 따른다 — **같은 물리 속성 하나**로 풀린 뒤 보간되기 때문이다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Logical Properties and Values Level 1](https://drafts.csswg.org/css-logical-1/) (논리 속성과 물리 속성의 대응·캐스케이드 규칙) · [CSS Writing Modes Level 4](https://drafts.csswg.org/css-writing-modes-4/) (`writing-mode`·`direction`·인라인/블록 축의 정의). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 좌표·치수는 **Google Chrome 151.0.7922.173** headless 에 실제로 띄워 `getBoundingClientRect()` 로 잰 값이고, **논리 속성이 어느 물리 속성으로 풀렸는지는 `getComputedStyle` 로 따로 읽었다.**\
+**WebKit(Safari)은 이 머신에 없고 Firefox 는 이 환경에서 headless 스크린샷이 산출되지 않는다** — 엔진 차이는 주장하지 않는다.
+**버전** — 논리 속성은 Baseline **widely**(newly 2021-09-20 → widely 2024-03-20) · `writing-mode` 는 **widely**(2017-03-27 → 2019-09-27) · `text-align` 은 **widely**(2015-07-29 → 2018-01-29). 전부 `api.webstatus.dev` 조회값이다. ★ **이미 기본으로 쓸 수 있는 표면이다.**
+**여기서 다루지 않는 것** — 유니코드·문자 인코딩은 [`foundations/data-representation/`](../../../../cs/foundations/data-representation/)이 정본이다. flex 의 축·정렬은 [24번](../24-flexbox-axes/), 박스 모델은 [15번](../15-box-model-and-box-sizing/)이다.

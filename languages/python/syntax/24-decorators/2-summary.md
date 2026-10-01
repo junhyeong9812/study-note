@@ -1,40 +1,5 @@
 # python/syntax/24-decorators — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [8.7. Function definitions](https://docs.python.org/3.12/reference/compound_stmts.html#function-definitions) — 데코레이터 문법과 **평가 시점**, 등가식
-> - [8.8. Class definitions](https://docs.python.org/3.12/reference/compound_stmts.html#class-definitions) — 클래스에도 같은 문법이 붙는다
-> - [`functools.wraps`](https://docs.python.org/3.12/library/functools.html#functools.wraps) · [`functools.update_wrapper`](https://docs.python.org/3.12/library/functools.html#functools.update_wrapper) — `WRAPPER_ASSIGNMENTS`·`WRAPPER_UPDATES`·`__wrapped__`
-> - [`inspect.signature`](https://docs.python.org/3.12/library/inspect.html#inspect.signature) · [`inspect.unwrap`](https://docs.python.org/3.12/library/inspect.html#inspect.unwrap)
-> - [3.2. The standard type hierarchy](https://docs.python.org/3.12/reference/datamodel.html#the-standard-type-hierarchy) — 함수 객체의 `__closure__`·`__dict__`
-> - [PEP 318 — Decorators for Functions and Methods](https://peps.python.org/pep-0318/)
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> ★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
-> 이 주제의 예외는 전부 **실행 중 예외**라 소스 줄도 캐럿도 안 나온다.\
-> **버전** — 함수 데코레이터는 **2.4+**(PEP 318), 클래스 데코레이터는 **2.6+**(PEP 3129).
-> `functools.wraps` 가 `__wrapped__` 를 붙이는 것은 **3.2+**.
-> ★ `WRAPPER_ASSIGNMENTS` 안의 `__type_params__` 는 **3.12 의 타입 파라미터 문법(PEP 695)이 붙인 이름**이다 —
-> **다른 판의 목록이 어떤지는 여기서 안 돌려 봤다.**\
-> **구현 대 언어 보장 한 줄** — **「`@deco` 가 `f = deco(f)` 이고 그것이 정의 시점에 돈다」까지가 언어 보장**이고,
-> `__closure__`·셀·`co_freevars` 로 그 속을 들여다본 것은 **CPython 구현**이다.\
-> **★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
->
-> | | 무엇 |
-> |---|---|
-> | **흔들린다** | `<cell at 0x…>`·`<function … at 0x…>` 의 **주소**, `id()` 값 |
-> | **안 흔들린다** | 예외 **타입**과 **메시지 본문**, `File "<stdin>", line N`, **셀 개수**, `is` 판정, `co_freevars`·`co_varnames`, `__defaults__` 값, `(exit N)` |
->
-> ★ **이 주제의 블록에는 주소가 한 곳도 안 찍힌다** — `is` 판정(`True`·`False`)과 이름·개수만 찍게 짰다.
-> 그래서 같은 판에서 다시 돌리면 **한 글자도 안 변한다.**\
-> **선행** — [19번](../19-function-argument-rules/2-summary.md)(`*args`·`**kwargs` 로 받는 법) ·
-> [21번](../21-scope-legb-global-nonlocal/2-summary.md)(이름이 어디서 풀리나) ·
-> [22번](../22-closures-and-late-binding/2-summary.md)(셀과 자유 변수) ·
-> [23번](../23-lambda-and-higher-order-functions/2-summary.md)(함수를 값으로 다루는 것).\
-> ★★ **이 넷이 전부 여기서 쓰인다.** 데코레이터는 **새 문법이 아니라 앞 넷의 합**이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **데코레이터는 「선물을 한 겹 더 포장하고, 이름표는 그대로 옮겨 붙이는 일」이다.**
@@ -1314,3 +1279,37 @@ TypeError: 'str' object is not callable
   **데코레이터 바깥에서 분기하면 정의 시점에 굳어** 나중에 못 바꾼다 — 정의 시점과 호출 시점의 차이가 그대로 설계가 된다.
 - **`__wrapped__` 를 손으로 붙여도 된다** — `signature` 는 그것만 보고 따라간다.
   `wraps` 를 안 쓰는 래퍼에도 이 한 줄을 붙이면 문서 도구가 원본을 찾는다. **이 주제에서 그렇게는 안 돌려 봤다.**
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [8.7. Function definitions](https://docs.python.org/3.12/reference/compound_stmts.html#function-definitions) — 데코레이터 문법과 **평가 시점**, 등가식
+- [8.8. Class definitions](https://docs.python.org/3.12/reference/compound_stmts.html#class-definitions) — 클래스에도 같은 문법이 붙는다
+- [`functools.wraps`](https://docs.python.org/3.12/library/functools.html#functools.wraps) · [`functools.update_wrapper`](https://docs.python.org/3.12/library/functools.html#functools.update_wrapper) — `WRAPPER_ASSIGNMENTS`·`WRAPPER_UPDATES`·`__wrapped__`
+- [`inspect.signature`](https://docs.python.org/3.12/library/inspect.html#inspect.signature) · [`inspect.unwrap`](https://docs.python.org/3.12/library/inspect.html#inspect.unwrap)
+- [3.2. The standard type hierarchy](https://docs.python.org/3.12/reference/datamodel.html#the-standard-type-hierarchy) — 함수 객체의 `__closure__`·`__dict__`
+- [PEP 318 — Decorators for Functions and Methods](https://peps.python.org/pep-0318/)
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+★ **던지는 형태를 하나로 고정했다** — `python3 - <파일` 로 던져 트레이스백이 `File "<stdin>", line N` 이 된다.
+이 주제의 예외는 전부 **실행 중 예외**라 소스 줄도 캐럿도 안 나온다.\
+**버전** — 함수 데코레이터는 **2.4+**(PEP 318), 클래스 데코레이터는 **2.6+**(PEP 3129).
+`functools.wraps` 가 `__wrapped__` 를 붙이는 것은 **3.2+**.
+★ `WRAPPER_ASSIGNMENTS` 안의 `__type_params__` 는 **3.12 의 타입 파라미터 문법(PEP 695)이 붙인 이름**이다 —
+**다른 판의 목록이 어떤지는 여기서 안 돌려 봤다.**\
+**구현 대 언어 보장 한 줄** — **「`@deco` 가 `f = deco(f)` 이고 그것이 정의 시점에 돈다」까지가 언어 보장**이고,
+`__closure__`·셀·`co_freevars` 로 그 속을 들여다본 것은 **CPython 구현**이다.\
+**★ 흔들리는 칸 / 안 흔들리는 칸** — 재대조에서 「고칠 것」과 「설계상 안 맞는 것」을 기계적으로 가르려고 미리 선언한다.
+
+| | 무엇 |
+|---|---|
+| **흔들린다** | `<cell at 0x…>`·`<function … at 0x…>` 의 **주소**, `id()` 값 |
+| **안 흔들린다** | 예외 **타입**과 **메시지 본문**, `File "<stdin>", line N`, **셀 개수**, `is` 판정, `co_freevars`·`co_varnames`, `__defaults__` 값, `(exit N)` |
+
+★ **이 주제의 블록에는 주소가 한 곳도 안 찍힌다** — `is` 판정(`True`·`False`)과 이름·개수만 찍게 짰다.
+그래서 같은 판에서 다시 돌리면 **한 글자도 안 변한다.**\
+**선행** — [19번](../19-function-argument-rules/2-summary.md)(`*args`·`**kwargs` 로 받는 법) ·
+[21번](../21-scope-legb-global-nonlocal/2-summary.md)(이름이 어디서 풀리나) ·
+[22번](../22-closures-and-late-binding/2-summary.md)(셀과 자유 변수) ·
+[23번](../23-lambda-and-higher-order-functions/2-summary.md)(함수를 값으로 다루는 것).\
+★★ **이 넷이 전부 여기서 쓰인다.** 데코레이터는 **새 문법이 아니라 앞 넷의 합**이다.

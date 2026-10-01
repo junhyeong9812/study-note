@@ -1,12 +1,5 @@
 # java/syntax/14 — `record` (16+): 컴팩트 생성자·불변 계약·못 하는 것 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·에러 메시지는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> 바이트코드는 `javap -c -p` · `javap -v -p` 출력을 그대로 옮겼다.\
-> 17.0.13 · 25.0.1 에서도 같은 프로그램을 돌려 **출력이 한 글자도 다르지 않음**을 확인했다\
-> (배열 `toString` 의 `[I@77459877` 같은 identity 해시만 실행마다 다르다).
-> 계약 인용은 JDK 21.0.5 `lib/src.zip` 의 `java/lang/Record.java` javadoc **원문**이다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -675,3 +668,11 @@ record  -> RecPoint[x=5]
 - `invokedynamic` + `ObjectMethods.bootstrap` — javac 구현 전략.
 - 컴포넌트 비교 순서 — `@implSpec` 이 명시적으로 보장하지 않는다.
 - 배열 `toString` 의 `[I@77459877` — identity 해시라 **실행마다 다르다**(버전 문제가 아니다).
+
+## 실행 환경
+
+이 파일의 모든 출력·에러 메시지는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+바이트코드는 `javap -c -p` · `javap -v -p` 출력을 그대로 옮겼다.\
+17.0.13 · 25.0.1 에서도 같은 프로그램을 돌려 **출력이 한 글자도 다르지 않음**을 확인했다\
+(배열 `toString` 의 `[I@77459877` 같은 identity 해시만 실행마다 다르다).
+계약 인용은 JDK 21.0.5 `lib/src.zip` 의 `java/lang/Record.java` javadoc **원문**이다.

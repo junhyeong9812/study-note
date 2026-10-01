@@ -1,31 +1,5 @@
 # c/syntax/15 — 포인터 산술과 인덱싱: 「**`a[i]` 는 문법이 아니라 축약이다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Array subscript / Pointer arithmetic](https://en.cppreference.com/w/c/language/operator_member_access) · [GCC 13 Instrumentation Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Instrumentation-Options.html) · [Clang UndefinedBehaviorSanitizer](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html)
-> **실행 검증** — 이 문서의 모든 출력·경고·sanitizer 진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> 작업 디렉터리는 `/tmp/c13`, 소스 파일명은 언제나 `ex.c` 다 — sanitizer 출력에 경로가 박히기 때문이다.\
-> ★★ **실행 블록은 `./x 2>&1 | cat` (또는 `| sed -n '1,/^SUMMARY/p'`) 으로 받았다** —\
-> sanitizer 는 stderr, `printf` 는 stdout 이라 **터미널과 파이프에서 순서가 달라진다.**\
-> 섞이는 프로그램에는 `setvbuf(stdout, NULL, _IONBF, 0)` 를 넣어 **순서를 고정**했고 소스에 그렇게 적혀 있다.\
-> ★ 그 한 줄이 없으면 **ASan 이 죽는 판에서 stdout 이 통째로 사라진다**(이 문서를 쓰며 실제로 그랬다).
-> ★★ **흔들리는 칸 / 안 흔들리는 칸** — 이 주제는 **UB 의 값이 본문에 실리므로** 이 선언이 특히 중요하다.
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | `%p` 주소값 · ASan 의 `pc`/`bp`/`sp` · PID · `BuildId` | 주소들 **사이의 차이** · `sizeof` 값 |
-> | ★ **UB 가 만든 값**(`*end` · `a[10]` · `NULL+1`) | ★ **그 값이 「갈린다」는 사실** |
-> | ASan 리포트의 **Shadow bytes** 와 메모리 덤프 | **`파일:줄:칸`** · 진단 본문 · 플래그 이름 |
-> | — | **종료 코드**(`cc exit` 과 `run exit` 을 갈라 적었다) |
->
-> **버전** — 포인터 산술과 인덱싱의 규칙은 **C89 이후 바뀐 적이 없다.**\
-> ★ **C23 이 하나 바꿨다** — `NULL + 0` 이 정의된 동작이 됐다. 아래 (5)에서 던져 본다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★ **경계** — 포인터의 **타입과 역참조**는 [14번 형제](../14-pointers-address-dereference-and-pointer-types/)가 정본이고 이 주제는 **그 위에 선다.**\
-> **배열이 포인터가 되는 자리**는 [16번 형제](../16-array-pointer-decay-and-function-parameters/), **`*p++` 의 우선순위**는 [09번 형제](../09-operator-precedence-and-associativity/)가 정본이다.\
-> **경계를 넘는 접근이 왜** 「**죽지 않을 수 있는가**」는 목록의 **56번 주제**가 정본이다.
-> 선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · [09번 형제](../09-operator-precedence-and-associativity/).
-
 ## 한눈에 — 쉽게 말하면
 
 **포인터 산술은 「몇 번째 칸」이지 「몇 바이트」가 아니다.**
@@ -994,3 +968,30 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 
 - ★ **`-fsanitize=pointer-overflow` 가 gcc 에서 정말 아무것도 안 잡는지**는 이 한 프로그램으로만 확인했다.\
   **다른 형태의 포인터 오버플로는 던져 보지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Array subscript / Pointer arithmetic](https://en.cppreference.com/w/c/language/operator_member_access) · [GCC 13 Instrumentation Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Instrumentation-Options.html) · [Clang UndefinedBehaviorSanitizer](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html)
+**실행 검증** — 이 문서의 모든 출력·경고·sanitizer 진단은 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+작업 디렉터리는 `/tmp/c13`, 소스 파일명은 언제나 `ex.c` 다 — sanitizer 출력에 경로가 박히기 때문이다.\
+★★ **실행 블록은 `./x 2>&1 | cat` (또는 `| sed -n '1,/^SUMMARY/p'`) 으로 받았다** —\
+sanitizer 는 stderr, `printf` 는 stdout 이라 **터미널과 파이프에서 순서가 달라진다.**\
+섞이는 프로그램에는 `setvbuf(stdout, NULL, _IONBF, 0)` 를 넣어 **순서를 고정**했고 소스에 그렇게 적혀 있다.\
+★ 그 한 줄이 없으면 **ASan 이 죽는 판에서 stdout 이 통째로 사라진다**(이 문서를 쓰며 실제로 그랬다).
+★★ **흔들리는 칸 / 안 흔들리는 칸** — 이 주제는 **UB 의 값이 본문에 실리므로** 이 선언이 특히 중요하다.
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| `%p` 주소값 · ASan 의 `pc`/`bp`/`sp` · PID · `BuildId` | 주소들 **사이의 차이** · `sizeof` 값 |
+| ★ **UB 가 만든 값**(`*end` · `a[10]` · `NULL+1`) | ★ **그 값이 「갈린다」는 사실** |
+| ASan 리포트의 **Shadow bytes** 와 메모리 덤프 | **`파일:줄:칸`** · 진단 본문 · 플래그 이름 |
+| — | **종료 코드**(`cc exit` 과 `run exit` 을 갈라 적었다) |
+
+**버전** — 포인터 산술과 인덱싱의 규칙은 **C89 이후 바뀐 적이 없다.**\
+★ **C23 이 하나 바꿨다** — `NULL + 0` 이 정의된 동작이 됐다. 본문 (5)에서 던져 본다.
+
+★★ **경계** — 포인터의 **타입과 역참조**는 [14번 형제](../14-pointers-address-dereference-and-pointer-types/)가 정본이고 이 주제는 **그 위에 선다.**\
+**배열이 포인터가 되는 자리**는 [16번 형제](../16-array-pointer-decay-and-function-parameters/), **`*p++` 의 우선순위**는 [09번 형제](../09-operator-precedence-and-associativity/)가 정본이다.\
+**경계를 넘는 접근이 왜** 「**죽지 않을 수 있는가**」는 목록의 **56번 주제**가 정본이다.
+선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · [09번 형제](../09-operator-precedence-and-associativity/).

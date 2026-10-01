@@ -1,35 +1,5 @@
 # cpp/syntax/26 — `unique_ptr` 와 소유권 이동 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `std::unique_ptr`](https://en.cppreference.com/w/cpp/memory/unique_ptr) · [cppreference — `std::make_unique`](https://en.cppreference.com/w/cpp/memory/unique_ptr/make_unique) · [cppreference — 복사 생략](https://en.cppreference.com/w/cpp/language/copy_elision)\
-> ★ **이 배치에서는 위 cppreference 세 쪽을 열지 못했다**(웹 도구 한도). 규칙은 **전부 두 컴파일러·ASan·libstdc++ 헤더의 진단 줄**로 적었다 —\
-> 진단이 **`unique_ptr.h:522` 의 `unique_ptr(const unique_ptr&) = delete;`** 를 직접 인용하므로, 「복사가 지워져 있다」는 **헤더 줄 자체가 근거**다.
-> **실행 검증** — 이 문서의 모든 출력·진단·리포트는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(두 컴파일러가 같은 것을 쓴다) · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`uptr01.cpp` \~ `uptr11.cpp`).\
-> ★ (3)(8)은 **`-std=c++14`/`-std=c++11`** 판을 더 던졌고, **배너에 적었다.**\
-> ★★★ **ASan 을 붙인 블록은 마커를 `stderr` 로 찍었다** — sanitizer 가 `abort()` 로 죽이면 **버퍼에 남은 표준 출력이 통째로 사라지기 때문**이다(소스 첫머리에 그렇게 적었다).\
-> ★★ **리포트를 자른 블록은 자르는 명령을 배너에 적었다** — 실린 것이 「생략한 일부」가 아니라 「**그 명령의 전체 출력**」이다.\
-> ★★ **clang + ASan 블록은 런타임 프레임의 절대 경로와 BuildId 를 `sed` 로 지웠다** — 그 `sed` 도 **배너에 있다.**\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
-> **버전** — `unique_ptr` 는 **C++11부터**, **`make_unique` 는 C++14부터**, **반환 prvalue 의 의무 생략·함수 인자 평가의 비끼워넣기는 C++17부터**다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 실행으로 접지했다.
-> ★★★ **앞 편들이 이 주제의 절반을 이미 쟀다 — 다시 재지 않고 인용한다.**\
-> [15번](../15-raii-resources-as-types/) (5) — **삭제자는 빈 것에는 0회 · `release()` 0회 · `reset()` 2회** · `sizeof` **상태 없는 함수 객체·람다 8 · 함수 포인터 16**.\
-> [17번](../17-move-constructor-assignment-and-moved-from-state/) (4) — **이동 후 `u1.get() == nullptr` 은 표준이 못 박은 것**이고 `string`·`vector` 는 「유효하되 미지정」 · (8) — **러스트는 이동 후 사용을 컴파일에서 막는다.**\
-> [18번](../18-rule-of-zero-three-five-default-delete/) (1)(5) — `unique_ptr` 멤버를 가진 타입이 **복사 `0` · 이동 `1`** 인 0의 법칙 격자.\
-> [20번](../20-virtual-destructors-and-polymorphic-deletion/) (1) — **`unique_ptr<Base>(new Derived)` 는 `~Base` 만**(삭제자가 `default_delete<Base>`) · `sizeof` **8** · **clang 18 + ASan 은 그 type-mismatch 를 크기 없는 `_ZdlPv` 때문에 못 본다.**\
-> ★★ **여기서 새로 묻는 것은 「소유권이 타입에 있다」는 한 문장이다** — **복사 불가를 에러 전문으로** · **팩토리 반환이 몇 번 옮기나** · **삭제자가 어디에 사나(크기 격자)** · **배열 판** · **함수에 넘기는 네 모양**.
-> **경계** — ★★★ 「**RAII·스마트 포인터가 무엇을 못 지우는가**」의 **논증은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md)가 정본**이다(「`unique_ptr` 은 소유권이 하나임을 타입으로 표현한다」 · 「누가 해제하는가에는 답하지만 누가 아직 보고 있는가에는 답하지 않는다」). 여기는 **API 사용**이다.\
-> 「공유 소유와 제어 블록」은 [27번](../27-shared-ptr-and-reference-counting/), 「`weak_ptr` 와 순환」은 [목록의 **28번 주제**](../28-weak-ptr-and-reference-cycles/), 「`new`/`delete` 와 raw 포인터가 남는 자리」는 [목록의 **29번 주제**](../29-new-delete-and-where-raw-pointers-remain/)다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ASan 리포트의 **PID**·주소 · 진단 **문구** | ★★★ **에러가 나는 줄 · 개수 · `cc exit`/`run exit`** · **삭제자가 몇 번 옮겨졌나** — 이 주제의 답 자체다 |
-> | — | ★★★ **`sizeof` 격자** · **타입 특성 0/1** · ★★ **ASan 오류의 종류**(`bad-free` · `alloc-dealloc-mismatch` · `Direct leak`) · **소멸자 로그** |
-
 ## 한눈에 — 쉽게 말하면
 
 **`unique_ptr` 는 「열쇠가 하나뿐인 금고」다.**
@@ -1113,3 +1083,34 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **`std::out_ptr`·`inout_ptr`(C++23)** — C API 가 `T**` 로 받는 자리에 `unique_ptr` 를 넘기는 어댑터. 이 문서는 던지지 않았다.
 - **`unique_ptr` 를 `shared_ptr` 로** — `shared_ptr<T>(std::move(up))` 이 된다. 할당이 **한 번 더** 생긴다 — [27번](../27-shared-ptr-and-reference-counting/) (1)의 `(4)`.
 - **pimpl 과 불완전 타입** — `unique_ptr<Impl>` 멤버는 **소멸자를 `.cpp` 에 정의**해야 한다(삭제자가 완전한 타입을 요구한다). 이 문서는 던지지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `std::unique_ptr`](https://en.cppreference.com/w/cpp/memory/unique_ptr) · [cppreference — `std::make_unique`](https://en.cppreference.com/w/cpp/memory/unique_ptr/make_unique) · [cppreference — 복사 생략](https://en.cppreference.com/w/cpp/language/copy_elision)\
+★ **이 배치에서는 위 cppreference 세 쪽을 열지 못했다**(웹 도구 한도). 규칙은 **전부 두 컴파일러·ASan·libstdc++ 헤더의 진단 줄**로 적었다 —\
+진단이 **`unique_ptr.h:522` 의 `unique_ptr(const unique_ptr&) = delete;`** 를 직접 인용하므로, 「복사가 지워져 있다」는 **헤더 줄 자체가 근거**다.
+**실행 검증** — 이 문서의 모든 출력·진단·리포트는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13**(두 컴파일러가 같은 것을 쓴다) · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`uptr01.cpp` \~ `uptr11.cpp`).\
+★ (3)(8)은 **`-std=c++14`/`-std=c++11`** 판을 더 던졌고, **배너에 적었다.**\
+★★★ **ASan 을 붙인 블록은 마커를 `stderr` 로 찍었다** — sanitizer 가 `abort()` 로 죽이면 **버퍼에 남은 표준 출력이 통째로 사라지기 때문**이다(소스 첫머리에 그렇게 적었다).\
+★★ **리포트를 자른 블록은 자르는 명령을 배너에 적었다** — 실린 것이 「생략한 일부」가 아니라 「**그 명령의 전체 출력**」이다.\
+★★ **clang + ASan 블록은 런타임 프레임의 절대 경로와 BuildId 를 `sed` 로 지웠다** — 그 `sed` 도 **배너에 있다.**\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
+**버전** — `unique_ptr` 는 **C++11부터**, **`make_unique` 는 C++14부터**, **반환 prvalue 의 의무 생략·함수 인자 평가의 비끼워넣기는 C++17부터**다. 기준은 **C++20**이다.
+
+★★★ **앞 편들이 이 주제의 절반을 이미 쟀다 — 다시 재지 않고 인용한다.**\
+[15번](../15-raii-resources-as-types/) (5) — **삭제자는 빈 것에는 0회 · `release()` 0회 · `reset()` 2회** · `sizeof` **상태 없는 함수 객체·람다 8 · 함수 포인터 16**.\
+[17번](../17-move-constructor-assignment-and-moved-from-state/) (4) — **이동 후 `u1.get() == nullptr` 은 표준이 못 박은 것**이고 `string`·`vector` 는 「유효하되 미지정」 · (8) — **러스트는 이동 후 사용을 컴파일에서 막는다.**\
+[18번](../18-rule-of-zero-three-five-default-delete/) (1)(5) — `unique_ptr` 멤버를 가진 타입이 **복사 `0` · 이동 `1`** 인 0의 법칙 격자.\
+[20번](../20-virtual-destructors-and-polymorphic-deletion/) (1) — **`unique_ptr<Base>(new Derived)` 는 `~Base` 만**(삭제자가 `default_delete<Base>`) · `sizeof` **8** · **clang 18 + ASan 은 그 type-mismatch 를 크기 없는 `_ZdlPv` 때문에 못 본다.**\
+★★ **여기서 새로 묻는 것은 「소유권이 타입에 있다」는 한 문장이다** — **복사 불가를 에러 전문으로** · **팩토리 반환이 몇 번 옮기나** · **삭제자가 어디에 사나(크기 격자)** · **배열 판** · **함수에 넘기는 네 모양**.
+**경계** — ★★★ 「**RAII·스마트 포인터가 무엇을 못 지우는가**」의 **논증은 [`c-cpp-csharp.md`](../../../c-cpp-csharp.md)가 정본**이다(「`unique_ptr` 은 소유권이 하나임을 타입으로 표현한다」 · 「누가 해제하는가에는 답하지만 누가 아직 보고 있는가에는 답하지 않는다」). 여기는 **API 사용**이다.\
+「공유 소유와 제어 블록」은 [27번](../27-shared-ptr-and-reference-counting/), 「`weak_ptr` 와 순환」은 [목록의 **28번 주제**](../28-weak-ptr-and-reference-cycles/), 「`new`/`delete` 와 raw 포인터가 남는 자리」는 [목록의 **29번 주제**](../29-new-delete-and-where-raw-pointers-remain/)다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ASan 리포트의 **PID**·주소 · 진단 **문구** | ★★★ **에러가 나는 줄 · 개수 · `cc exit`/`run exit`** · **삭제자가 몇 번 옮겨졌나** — 이 주제의 답 자체다 |
+| — | ★★★ **`sizeof` 격자** · **타입 특성 0/1** · ★★ **ASan 오류의 종류**(`bad-free` · `alloc-dealloc-mismatch` · `Direct leak`) · **소멸자 로그** |

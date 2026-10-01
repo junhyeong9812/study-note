@@ -1,11 +1,5 @@
 # PR #19339 - 무대의 실구조와 워크플로우
 
-> PR #19339의 무대가 되는 실구조와 워크플로우.
-> 문제와 수정은 [README.md](README.md), 테스트는 [tests.md](tests.md), 착수 시점 분석은 [analysis.md](analysis.md) 참조.
->
-> 기준: fork `main`(`ed7ae7969ed`) - **수정 전** 상태다.
-> 아래 file:line은 별도 표시가 없으면 수정 전 좌표이고, 수정은 `saveSessionInformation`(`:59-65`)과 `removeSessionInformation`(`:72-84`) 두 메서드다.
-
 ## 1. 무대 - 실구조
 
 이 결함의 무대는 **맵 두 개로 세션을 양방향 색인하는 레지스트리 하나**, 그리고 그것과 쌍둥이인 블로킹 구현 하나다.\
@@ -174,3 +168,8 @@ principal P가 세션 S1 하나를 가진 상태에서 두 요청이 동시에 �
 `SessionRegistryImpl`도 같은 맵 주입 생성자(`:66-70`)와 같은 compute 패턴을 쓰고 이미 출시돼 있다.\
 이 수정은 형제와의 동등성을 회복할 뿐 새 한계를 들여오지 않으며, 임의 `ConcurrentMap` 주입을 계약으로 지원할지는 두 클래스 모두에 대한 별개 논의다.\
 기본 생성자는 양쪽 다 `ConcurrentHashMap`이다.
+
+## 출처
+
+기준: fork `main`(`ed7ae7969ed`) - **수정 전** 상태다.
+본문의 file:line은 별도 표시가 없으면 수정 전 좌표이고, 수정은 `saveSessionInformation`(`:59-65`)과 `removeSessionInformation`(`:72-84`) 두 메서드다.

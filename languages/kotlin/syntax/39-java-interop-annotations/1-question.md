@@ -1,12 +1,5 @@
 # kotlin/syntax/39 — Java 상호운용 애너테이션 — `@JvmStatic`/`@JvmOverloads`/`@JvmName`/`@JvmField`/`@Throws` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [25번 주제](../25-object-declaration-companion-and-object-expression/)(`object`·`companion object` 가 JVM 에서 무엇인가)와 [34번 주제](../34-exceptions-nothing-and-try-expression/)(`@Throws`)다.
-> 문항 11개 중 예측형은 5개이고, 그중 코드블록이 붙는 것은 4개다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -134,6 +127,12 @@ interface I3 { @JvmOverloads fun f(x: Int = 1): Int }
 ### 11. `@JvmField` 와 게터 없는 프로퍼티 (경계)
 
 - 5번의 2번째 줄과 5번째 줄은 둘 다 커스텀 접근자인데 **에러 문구가 다르다.** 무엇이 둘을 갈랐나?
+
+## 실행 환경
+
+선행은 [25번 주제](../25-object-declaration-companion-and-object-expression/)(`object`·`companion object` 가 JVM 에서 무엇인가)와 [34번 주제](../34-exceptions-nothing-and-try-expression/)(`@Throws`)다.
+
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

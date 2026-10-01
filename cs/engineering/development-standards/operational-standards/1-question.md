@@ -1,12 +1,5 @@
 # cs/development-standards/operational-standards — 운영 기준 (ISO/IEC 20000-1 · Google SRE) — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 세부 암기 금지 — 왜(why) / 예측(what if) / 경계 / 연결 유형으로.
->
-> ⚠️ **아래 질문은 Claude 초안(2026-08-24) — 본인 검토 후 이 경고를 삭제할 것.**
-
 ## 질문
 
 1. [왜] 사고(incident) 관리와 문제(problem) 관리를 분리하지 않고 하나의 트랙으로 처리하면 실제로 무슨 일이 벌어지는가?

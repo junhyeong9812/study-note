@@ -1,17 +1,5 @@
 # python/syntax/20-mutable-default-args — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [8.8. Function definitions](https://docs.python.org/3.12/reference/compound_stmts.html#function-definitions) — 기본값 평가 시점과 가변 기본값 주의
-> - [`dataclasses.field`](https://docs.python.org/3.12/library/dataclasses.html#dataclasses.field) — `default_factory`
-> - [3.2. The standard type hierarchy — Callable types](https://docs.python.org/3.12/reference/datamodel.html#the-standard-type-hierarchy) — 함수 객체의 `__defaults__`·`__kwdefaults__`
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> **버전** — Python 3 전체 공통. `dataclasses` 의 가변 기본값 거부는 3.7+(dataclasses 도입 시점부터).
-> **구현 대 명세** — 이 주제는 **전부 언어 보장**이다. 언어 레퍼런스가 동작과 해법까지 명시한다(02번 주제와 대조적).
-
 ## 한눈에 — 쉽게 말하면
 
 **함수에 꿰매 붙은 주머니.**
@@ -546,3 +534,14 @@ print(len(fib.__defaults__[0]))
   `fib(n, memo={})` 가 기본 인자를 그 저장소로 (일부러) 쓴 예다.
 - **조용한 실패(silent failure)**: 에러 없이 정상처럼 끝나는데 결과만 틀린 것.\
   기본 인자에 쌓인 값은 예외를 내지 않고 결과만 오염시킨다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [8.8. Function definitions](https://docs.python.org/3.12/reference/compound_stmts.html#function-definitions) — 기본값 평가 시점과 가변 기본값 주의
+- [`dataclasses.field`](https://docs.python.org/3.12/library/dataclasses.html#dataclasses.field) — `default_factory`
+- [3.2. The standard type hierarchy — Callable types](https://docs.python.org/3.12/reference/datamodel.html#the-standard-type-hierarchy) — 함수 객체의 `__defaults__`·`__kwdefaults__`
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+**버전** — Python 3 전체 공통. `dataclasses` 의 가변 기본값 거부는 3.7+(dataclasses 도입 시점부터).
+**구현 대 명세** — 이 주제는 **전부 언어 보장**이다. 언어 레퍼런스가 동작과 해법까지 명시한다(02번 주제와 대조적).

@@ -1,15 +1,5 @@
 # java/syntax/27 — `equals`/`hashCode`/`toString` 계약 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/Object.java` 의 `equals`·`hashCode`·`toString` **javadoc 원문**(`lib/src.zip` 에서 직접 인용) · `java.base/java/util/HashMap.java`
-> **실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 같은 프로그램을 **17.0.13 · 25.0.1** 에서도 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.
-> **버전** — 세 메서드의 계약은 Java 1.0 이래 바뀌지 않았다. `record` 의 자동 구현은 **Java 16**부터.
-> **범위** — 해시 테이블이 **어떻게 동작하는가**(버킷·충돌·리사이즈·트리화)는 이 문서가 다루지 않는다.\
-> 그쪽은 [`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 과 [`29-open-addressing/`](../../../../cs/data-structure/29-open-addressing/) 이 정본이다.\
-> 여기는 「**계약을 어기면 어디서 조용히 틀리나**」만 다룬다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **`hashCode` 는 우편번호, `equals` 는 정확한 주소 대조다.**
@@ -491,3 +481,13 @@ OverrideCatch.java:4: error: method does not override or implement a method from
   `record` 는 암묵적으로 `final` 이라 하위 타입이 존재할 수 없기 때문이다.
 - **IDE 가 생성한 `equals` 는 보통 `getClass()` 비교를 쓴다.**\
   대칭성은 안전해지지만 프록시(하이버네이트·스프링 AOP)가 만든 하위 클래스와는 절대 같아지지 않는다. JPA 엔티티에서 자주 문제가 된다.
+
+## 실행 환경
+
+**기준 소스** — JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/Object.java` 의 `equals`·`hashCode`·`toString` **javadoc 원문**(`lib/src.zip` 에서 직접 인용) · `java.base/java/util/HashMap.java`
+**실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+같은 프로그램을 **17.0.13 · 25.0.1** 에서도 돌려 **출력이 한 글자도 다르지 않음**을 확인했다.
+**버전** — 세 메서드의 계약은 Java 1.0 이래 바뀌지 않았다. `record` 의 자동 구현은 **Java 16**부터.
+**범위** — 해시 테이블이 **어떻게 동작하는가**(버킷·충돌·리사이즈·트리화)는 이 문서가 다루지 않는다.\
+그쪽은 [`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 과 [`29-open-addressing/`](../../../../cs/data-structure/29-open-addressing/) 이 정본이다.\
+여기는 「**계약을 어기면 어디서 조용히 틀리나**」만 다룬다.

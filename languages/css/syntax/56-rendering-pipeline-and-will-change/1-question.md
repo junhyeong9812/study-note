@@ -1,11 +1,5 @@
 # css/syntax/56 — 렌더링 파이프라인과 `will-change`: 무엇이 합성만으로 도는가 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [53번](../53-keyframes-and-animation/2-summary.md)과 [54번](../54-transform-2d-and-origin/2-summary.md)이다.
-> ★ 이 주제에서는 **「무엇으로 쟀나」를 못 답하면 그 답은 근거가 없는 것**이다. 도구까지 같이 답하라.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -113,6 +107,11 @@ transform · opacity
 - `transform` 이 레이아웃을 안 바꾼다는 것을 좌표로 보인 주제는 어디인가?
 - `contain: paint` 와 `overflow: hidden` 은 같은 일을 하는데 3D 에서 결과가 달랐다 — 어떻게 달랐는가?
 - 이 주제의 표를 외우는 것과 재는 법을 외우는 것 중 어느 쪽이 나은가, 왜인가?
+
+## 실행 환경
+
+선행은 [53번](../53-keyframes-and-animation/2-summary.md)과 [54번](../54-transform-2d-and-origin/2-summary.md)이다.
+★ 이 주제에서는 **「무엇으로 쟀나」를 못 답하면 그 답은 근거가 없는 것**이다. 도구까지 같이 답하라.
 
 ## 복습 기록
 

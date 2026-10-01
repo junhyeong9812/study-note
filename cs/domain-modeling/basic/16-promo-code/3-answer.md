@@ -1,11 +1,5 @@
 # domain-modeling-basic/16-promo-code — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/16-promo-code/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -311,3 +305,7 @@ public static boolean isValid(String raw, Alphabet alphabet, int length, boolean
   A: 옛 코드 중 `0 O 1 I L`이 든 것은 문자 집합 검사에서, 나머지도 체크섬이 mod 36으로 만들어졌으므로 mod 31 검산에서 대부분 실패한다 — 배포 직후 거부율이 급등한다.\
   문자 집합과 글자 수는 코드 자체의 계약이라 규칙을 바꾸면 이미 발급된 코드의 검산 근거가 사라진다.\
   코드에 규칙 버전을 함께 저장하거나 옛 규칙으로도 검증하는 전환 기간을 두고, 새 규칙은 새로 발급하는 코드부터 적용한다.
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/16-promo-code/impl/`).

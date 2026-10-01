@@ -1,11 +1,5 @@
 # domain-modeling-basic/08-meeting-slot — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/08-meeting-slot/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -330,3 +324,7 @@ return total;
 - 기준 소스: `/home/jun/project/myway/domain-modeling-basic/08-meeting-slot/impl/com/domain/meeting/MeetingFinder.java`
 - 문제 원문: `src/main/java/com/domain/meeting/MeetingFinder.java`(TODO 1\~4 javadoc), `TimeSlot.java`(계약), `README.md`(함정·측정·변종 검증·생각해볼 것)
 - 수치 근거: `README.md` 측정 절 + `src/test/java/com/domain/meeting/MeasurementTest.java`(500·142,110·84,285·3,731·2,091 / 참석자 표 438·355·292·194·107·49 와 20·12·7·2·0·0 과 0·0·0·38·125·189 / 62 / 45분·30분 0개·15분 3개 / step 2·3·7), `MeetingTest.java`(맞닿음·padding 09:45-11:15·합치기 [10-13][14-15]·[10-15] 보존·[09:45-12:15]·[9-10][12-13][14-18]·[10-17]·[9-18]·후보 3개·45분 0개)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/08-meeting-slot/impl/`).

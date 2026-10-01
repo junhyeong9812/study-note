@@ -1,10 +1,5 @@
 # 11. 안티패턴 모음
 
-> "무엇을 해야 하나"만큼 "**무엇을 하면 안 되나**"가 중요하다.\
-> 아래는 대부분 **좋은 의도로 도입됐다가 문제를 키운** 것들이다.\
-> 출처: `jun-bank/docs/study/notes/server-design/11-antipatterns.md` · 이관일 2026-09-16.\
-> 원고 문체·순서 유지 + cs 형식(세로 도식)만 입힘. 각 항목은 "하면 벌어지는 일(실패) → 처방(방어)"으로 읽는다.
-
 ---
 
 ## 구조 안티패턴
@@ -289,3 +284,8 @@ readiness를 false로 바꾸자마자 프로세스 종료 → LB는 아직 모�
 
 - 개념으로 돌아가기 → [`README.md`](./README.md)
 - 증상별 플레이북 → [`10-playbook-by-symptom.md`](./10-playbook-by-symptom.md)
+
+## 출처
+
+출처: `jun-bank/docs/study/notes/server-design/11-antipatterns.md` · 이관일 2026-09-16.\
+원고 문체·순서 유지 + cs 형식(세로 도식)만 입힘. 각 항목은 "하면 벌어지는 일(실패) → 처방(방어)"으로 읽는다.

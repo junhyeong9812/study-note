@@ -1,11 +1,5 @@
 # html/syntax/20 — `lang`·`dir` 과 양방향 텍스트: `dir=auto`·`bdi`/`bdo` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스(`html17b-cdp.py`·`capture.sh`)는 [17번 주제의 3-answer.md](../17-table-structure/3-answer.md) `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/dom.html#the-dir-attribute) 와 [UAX #9](https://www.unicode.org/reports/tr9/), [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **본체는 창 ② 의 글자 x 좌표다**(A1·A7). ★★ **RTL 글자는 이 파일에 없다** — 출력은 코드 포인트 이름뿐이다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -315,3 +309,10 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 - **격리 / 재정의** — `bdi`·`[dir]` 의 `isolate` / `bdo` 의 `isolate-override`.
 - **하이픈 사전** — 언어별 끊는 자리 자료. 없으면 `hyphens: auto` 가 아무것도 안 한다.
 - **제5의 상태** — 같은 질문을 다른 창으로 물은 것. 이 주제는 글자 순서를 좌표로 물었다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스(`html17b-cdp.py`·`capture.sh`)는 [17번 주제의 3-answer.md](../17-table-structure/3-answer.md) `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/dom.html#the-dir-attribute) 와 [UAX #9](https://www.unicode.org/reports/tr9/), [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **본체는 창 ② 의 글자 x 좌표다**(A1·A7). ★★ **RTL 글자는 이 파일에 없다** — 출력은 코드 포인트 이름뿐이다.

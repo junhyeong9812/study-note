@@ -1,10 +1,5 @@
 # PR #36913 — 무대 구조와 수정 전 워크플로우
 
-> PR #36913의 무대가 되는 실구조·워크플로우. 문제·수정은 README.md, 테스트는 tests.md 참조.
->
-> 기준: upstream main `526c706d1c3`. 이 PR은 OPEN이므로 아래
-> `OptionalToObjectConverter.java` 인용은 **수정 전 코드 그대로**다.
-
 ## 1. 무대 — 실구조
 
 이 PR의 무대는 `ConversionService`가 "어떤 컨버터를 쓸까"를 고르는 선택 파이프라인이고, 그 파이프라인의 마지막 관문인 `matches()` 한 줄이 대상이다.\
@@ -563,3 +558,8 @@ PR 본문이 "Impact is bounded"라고 적은 근거가 이 구조다.
 하나는 필드·메서드 파라미터·`ResolvableType`처럼 **선언**에서 만드는 것(`TypeDescriptor.java:99`, `:111`, `:128`)이고, 다른 하나는 `TypeDescriptor.forObject(값)`처럼 **실제 객체의 런타임 클래스**에서 만드는 것이다.\
 전자는 제네릭이 살아 있고 후자는 지워져 있다.\
 `OptionalToObjectConverter.convert`가 내부 위임에서 `forObject(unwrappedSource)`를 쓰는 것(`OptionalToObjectConverter.java:64`)과 `matches()`가 선언 카드를 받는 것이 바로 이 두 세계의 만남이고, 두 세계가 서로 다른 답을 내는 것이 이 PR이 정렬하려는 어긋남이다.
+
+## 출처
+
+기준: upstream main `526c706d1c3`. 이 PR은 OPEN이므로 본문의
+`OptionalToObjectConverter.java` 인용은 **수정 전 코드 그대로**다.

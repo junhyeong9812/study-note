@@ -1,9 +1,5 @@
 # sql/45-CHECK·NOT NULL·DEFAULT·생성 열·자동 증가 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,\
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.\
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-
 대상은 **PostgreSQL 18.6** 과 **MySQL 8.4.10** 두 서버다. 「두 엔진에서」라고 물으면 **각각** 답한다.\
 MySQL 의 `sql_mode` 에는 `STRICT_TRANS_TABLES` 가 켜져 있다.
 

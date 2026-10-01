@@ -1,11 +1,5 @@
 # domain-modeling-advanced/04-refund — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/04-refund/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -318,3 +312,7 @@ return new Refund(returned, clawback, shipping, total, true, elapsed, window);
 - 기준 소스: `/home/jun/project/myway/domain-modeling-advanced/04-refund/impl/com/domain/refund/RefundPolicy.java`
 - 문제 원문: `src/main/java/com/domain/refund/RefundPolicy.java`(TODO 1~4 javadoc·enum 셋), `Order.java`(할인 한 줄이 셋으로), `ReturnRequest.java`(사유가 기간·배송비를 둘 다 바꾼다), `README.md`(함정·측정이 알려준 것·변종 검증·생각해볼 것)
 - 계약·수치: `src/test/java/com/domain/refund/RefundPolicyTest.java`(8일차/7일차 · 24,000 · 0원/30,000 · 61일차 · 아홉 조합 22,000~30,000 · 3,000/1,800/25,200 · 12,000/15,000 · 네 값 42,000/45,000/47,000/50,000 · −3,000), `MeasurementTest.java`(5,631 · 13,000 · 533/5,000 · 239,393,000(89.5%) / 248,420,104(92.9%) / 267,547,000 · 431/5,000 · 2,918/3,349 · 3,971/1,126 · 51,829,420 / 200,246,856 · 728)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/04-refund/impl/`).

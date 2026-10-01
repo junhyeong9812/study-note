@@ -1,8 +1,5 @@
 # 집필 브리핑 — 커리큘럼 leaf 새 노트 (운영체제, 2026-09-30)
 
-> 명세: 같은 폴더 `requirement-spec.md`. 문서 규칙 정본: `cs/README.md` 「작성 규칙」.
-> 형식 참고(내용 복사 금지): 네트워크 새 노트 `cs/network/15-tcp-handshake-and-backlog/`, `cs/network/19-tcp-termination-fin-rst-half-open/`
-
 ## 1. 입력
 
 - **커리큘럼 행**: `docs/plans/2026-09-27/cs-fundamentals-roadmap/curriculum.md` §5 운영체제 표에서 담당 slug를 찾는다.

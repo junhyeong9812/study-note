@@ -1,17 +1,5 @@
 # java/syntax/17 — 제네릭 선언: 타입 파라미터·바운드·제네릭 메서드 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §4.4 Type Variables](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [§8.1.2 Generic Classes and Type Parameters](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§8.4.4 Generic Methods](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§18 Type Inference](https://docs.oracle.com/javase/specs/jls/se21/html/jls-18.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/*.java`(`lib/src.zip`).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> `Ex.java (17-a)` `(17-h)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 다 돌렸고 출력이 한 글자도 다르지 않았다.\
-> 컴파일 에러 다섯 종류도 17 과 25 에서 **문자 단위로 같았다**(`diff` 로 확인).\
-> **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·javadoc 인용으로만 적었다.
-> **버전** — 제네릭은 **Java 5**. 다이아몬드 `<>` 는 **7**, 익명 클래스의 다이아몬드는 **9**,
-> `var` 와의 조합은 **10** 부터다.
-> **범위** — 타입 인자가 **런타임에 사라지는 것**은 [`../19-type-erasure/`](../19-type-erasure/) 가, `? extends`/`? super` 는 [`../18-wildcards-pecs/`](../18-wildcards-pecs/) 가 정본이다.\
-> 여기는 **타입 파라미터를 어디에 어떻게 선언하고 무엇으로 묶는가**까지다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 JLS 로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **타입 파라미터는 "나중에 채울 빈칸"이고, 바운드는 "그 빈칸에 들어올 수 있는 것의 조건"이다.**
@@ -810,3 +798,15 @@ Counter 의 타입 파라미터 = [T]
 ```
 
   이 비대칭(**이름은 남고 인자는 사라진다**)이 [`../19-type-erasure/`](../19-type-erasure/) 의 본문이다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §4.4 Type Variables](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [§8.1.2 Generic Classes and Type Parameters](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§8.4.4 Generic Methods](https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html) · [§18 Type Inference](https://docs.oracle.com/javase/specs/jls/se21/html/jls-18.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/*.java`(`lib/src.zip`).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+`Ex.java (17-a)` `(17-h)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 다 돌렸고 출력이 한 글자도 다르지 않았다.\
+컴파일 에러 다섯 종류도 17 과 25 에서 **문자 단위로 같았다**(`diff` 로 확인).\
+**"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·javadoc 인용으로만 적었다.
+**버전** — 제네릭은 **Java 5**. 다이아몬드 `<>` 는 **7**, 익명 클래스의 다이아몬드는 **9**,
+`var` 와의 조합은 **10** 부터다.
+**범위** — 타입 인자가 **런타임에 사라지는 것**은 [`../19-type-erasure/`](../19-type-erasure/) 가, `? extends`/`? super` 는 [`../18-wildcards-pecs/`](../18-wildcards-pecs/) 가 정본이다.\
+여기는 **타입 파라미터를 어디에 어떻게 선언하고 무엇으로 묶는가**까지다.

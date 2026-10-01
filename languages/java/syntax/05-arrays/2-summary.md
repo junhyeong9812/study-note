@@ -1,14 +1,5 @@
 # java/syntax/05 — 배열: 생성·기본값·공변성·`Arrays` 유틸 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §10 Arrays](https://docs.oracle.com/javase/specs/jls/se21/html/jls-10.html) · [§4.10.3 Subtyping among Array Types](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [`java.util.Arrays` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Arrays.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/Arrays.java`(`lib/src.zip`).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> `Ex.java (05-a)` `(05-d)` `(05-e)` `(05-h)` `(05-i)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 돌렸다.\
-> 세 JDK 에서 **달라진 것은 `Object.toString` 의 16진수와 `Arrays.hashCode(int[][])` 값뿐**이고(둘 다 identity hash 기반), 나머지는 같았다.\
-> **"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·javadoc 인용으로만 적었다.
-> **버전** — 배열 자체는 Java 1.0. `Arrays.deepEquals`/`deepToString` 은 **5**, `Arrays.copyOf`/`copyOfRange` 는 **6**, `Arrays.compare`/`mismatch` 는 **9** 부터다(`src.zip` 의 `@since` 를 직접 읽었다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 JLS·javadoc 으로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **배열은 "칸 수가 적힌 채 봉인된 사물함 줄"이다.**
@@ -787,3 +778,12 @@ new int[Integer.MAX_VALUE - 2] -> java.lang.OutOfMemoryError: Java heap space
   **두 메시지가 다르다는 것이 요점이다.** 앞은 *VM 의 구조적 한계*에 걸린 것이고(힙을 아무리 늘려도 안 된다),\
   뒤는 *힙이 모자란* 것이다(더 주면 된다). 정확한 경계는 JVM·헤더 크기에 따라 달라지며 이 문서에서 좁히지 않았다.\
   그래서 `Arrays.copyOf` 로 계속 늘리는 코드는 언젠가 앞의 에러를 만난다 — `ArrayList` 가 최대 크기를 따로 두는 이유다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §10 Arrays](https://docs.oracle.com/javase/specs/jls/se21/html/jls-10.html) · [§4.10.3 Subtyping among Array Types](https://docs.oracle.com/javase/specs/jls/se21/html/jls-4.html) · [`java.util.Arrays` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Arrays.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/util/Arrays.java`(`lib/src.zip`).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+`Ex.java (05-a)` `(05-d)` `(05-e)` `(05-h)` `(05-i)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 돌렸다.\
+세 JDK 에서 **달라진 것은 `Object.toString` 의 16진수와 `Arrays.hashCode(int[][])` 값뿐**이고(둘 다 identity hash 기반), 나머지는 같았다.\
+**"세 곳에서 같았다"는 관찰이지 보장이 아니다** — 보장은 JLS·javadoc 인용으로만 적었다.
+**버전** — 배열 자체는 Java 1.0. `Arrays.deepEquals`/`deepToString` 은 **5**, `Arrays.copyOf`/`copyOfRange` 는 **6**, `Arrays.compare`/`mismatch` 는 **9** 부터다(`src.zip` 의 `@since` 를 직접 읽었다).

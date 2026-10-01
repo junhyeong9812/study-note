@@ -1,26 +1,5 @@
 # cpp/syntax/37 — SFINAE 와 `enable_if` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — SFINAE](https://en.cppreference.com/w/cpp/language/sfinae) · [cppreference — `std::experimental::is_detected`](https://en.cppreference.com/w/cpp/experimental/is_detected)\
-> ★ 이 배치에서 **위 두 cppreference 쪽을 열어 확인했다** — 「**Only the failures in the types and expressions in the immediate context of the function type or its template parameter types … are SFINAE errors. If the evaluation of a substituted type/expression causes a side-effect such as instantiation of some template specialization … errors in those side-effects are treated as hard errors.**」 · `is_detected` 는 **`<experimental/type_traits>` · library fundamentals TS v2** 에 정의된다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> ★★ **clang 도 libstdc++ 13 을 쓴다** — `std::enable_if`·`std::void_t`·`<experimental/type_traits>` 는 **두 컴파일러가 같은 헤더**를 읽었다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`sf01.cpp`·`imm01.cpp`·`imm02.cpp`·`redecl.cpp`·`ifc01.cpp`·`ifc02.cpp`·`detect01.cpp`·`sf-grid.sh`).\
-> ★ **진단에 소스 경로가 박히지 않게 상대 경로로 컴파일**했다. 표준 헤더 경로(`/usr/include/c++/13/…`)는 그대로 남는다. 블록은 캡처 스크립트가 받은 것이다 — 사람이 옮겨 적은 줄은 없다.
-> **버전** — SFINAE 규칙은 **C++98부터**(표현식 SFINAE 는 **C++11부터**), `std::enable_if` 는 **C++11**, `enable_if_t` 는 **C++14**, `std::void_t` 는 **C++17**, `if constexpr` 는 **C++17**, 컨셉은 **C++20** 이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★★ **[36번](../36-concepts-and-requires/)에서 온다** — 거기서 **컨셉으로** 적은 「이 타입만 받는다」를 여기서는 **C++20 이전의 방법으로** 적고, **읽어 낸 뒤 컨셉으로 되돌려 쓴다.**\
-> [35번](../35-instantiation-header-placement-and-reading-errors/) (5)(7) — **제약 없는 템플릿은 첫 에러가 몸통, 컨셉이 걸리면 호출 줄.** 이 편의 격자 (1)은 **SFINAE 판도 그 「호출 줄」 쪽에 선다**는 것을 센다.
-> **경계** — 「컨셉 문법과 subsumption」은 [36번](../36-concepts-and-requires/)이, 「부분 특수화」(void_t 탐지가 기대는 장치)는 [33번](../33-template-specialization-and-partial-specialization/)이, 「오버로드 해석」은 [01번](../01-function-overloading-and-overload-resolution/)이 정본이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** · ★★ **진단의 줄 수**((1) 격자의 「N줄」 — 이 판의 관찰, 규칙 24) | ★★★ **통과 / 에러(`cc exit`)** · **골라진 오버로드의 출력**(`0` · `-1`) · ★★★ **첫 error 의 행 · 호출 줄인가(O/X)** |
-> | — | ★★★ **격자의 마지막 줄** — 「에러 칸 N / M · 호출 줄 N / M · 컴파일러 사이 N / M」 |
-
 ## 한눈에 — 쉽게 말하면
 
 **SFINAE 는 「지원서 서류 심사」다.** 지원서(함수 템플릿의 **선언** — 반환 타입·매개변수·템플릿 매개변수)에 **빈칸을 채울 수 없으면** 그 지원자는 **조용히 탈락**한다. 에러가 아니다.
@@ -744,3 +723,25 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 
 - **클래스 템플릿의 부분 특수화 SFINAE** — `has_size` 가 이미 그것이다. 여러 부분 특수화가 동시에 맞는 모호는 이 편이 던지지 않았다.
 - **C++20 에서 람다는 즉시 문맥이 아니다** — cppreference 가 「**A lambda expression is not considered part of the immediate context.(since C++20)**」라고 적는다. 이 편은 **던지지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — SFINAE](https://en.cppreference.com/w/cpp/language/sfinae) · [cppreference — `std::experimental::is_detected`](https://en.cppreference.com/w/cpp/experimental/is_detected)\
+★ 이 배치에서 **위 두 cppreference 쪽을 열어 확인했다** — 「**Only the failures in the types and expressions in the immediate context of the function type or its template parameter types … are SFINAE errors. If the evaluation of a substituted type/expression causes a side-effect such as instantiation of some template specialization … errors in those side-effects are treated as hard errors.**」 · `is_detected` 는 **`<experimental/type_traits>` · library fundamentals TS v2** 에 정의된다.
+**실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+★★ **clang 도 libstdc++ 13 을 쓴다** — `std::enable_if`·`std::void_t`·`<experimental/type_traits>` 는 **두 컴파일러가 같은 헤더**를 읽었다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`sf01.cpp`·`imm01.cpp`·`imm02.cpp`·`redecl.cpp`·`ifc01.cpp`·`ifc02.cpp`·`detect01.cpp`·`sf-grid.sh`).\
+★ **진단에 소스 경로가 박히지 않게 상대 경로로 컴파일**했다. 표준 헤더 경로(`/usr/include/c++/13/…`)는 그대로 남는다. 블록은 캡처 스크립트가 받은 것이다 — 사람이 옮겨 적은 줄은 없다.
+**버전** — SFINAE 규칙은 **C++98부터**(표현식 SFINAE 는 **C++11부터**), `std::enable_if` 는 **C++11**, `enable_if_t` 는 **C++14**, `std::void_t` 는 **C++17**, `if constexpr` 는 **C++17**, 컨셉은 **C++20** 이다.
+
+★★★ **[36번](../36-concepts-and-requires/)에서 온다** — 거기서 **컨셉으로** 적은 「이 타입만 받는다」를 여기서는 **C++20 이전의 방법으로** 적고, **읽어 낸 뒤 컨셉으로 되돌려 쓴다.**\
+[35번](../35-instantiation-header-placement-and-reading-errors/) (5)(7) — **제약 없는 템플릿은 첫 에러가 몸통, 컨셉이 걸리면 호출 줄.** 이 편의 격자 (1)은 **SFINAE 판도 그 「호출 줄」 쪽에 선다**는 것을 센다.
+**경계** — 「컨셉 문법과 subsumption」은 [36번](../36-concepts-and-requires/)이, 「부분 특수화」(void_t 탐지가 기대는 장치)는 [33번](../33-template-specialization-and-partial-specialization/)이, 「오버로드 해석」은 [01번](../01-function-overloading-and-overload-resolution/)이 정본이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** · ★★ **진단의 줄 수**((1) 격자의 「N줄」 — 이 판의 관찰, 규칙 24) | ★★★ **통과 / 에러(`cc exit`)** · **골라진 오버로드의 출력**(`0` · `-1`) · ★★★ **첫 error 의 행 · 호출 줄인가(O/X)** |
+| — | ★★★ **격자의 마지막 줄** — 「에러 칸 N / M · 호출 줄 N / M · 컴파일러 사이 N / M」 |

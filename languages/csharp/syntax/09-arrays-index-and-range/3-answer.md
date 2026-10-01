@@ -1,17 +1,5 @@
 # csharp/syntax/09 — 배열과 인덱스·범위 연산자(C# 8) — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — 배열](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/arrays) · [Learn — 멤버 접근 연산자와 식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators) · [Learn — 연산자 우선순위](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/) · [.NET API — `System.Index`](https://learn.microsoft.com/en-us/dotnet/api/system.index) · [.NET API — `System.Range`](https://learn.microsoft.com/en-us/dotnet/api/system.range)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
-> 런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-25).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너(`===== 소스: cs09b-….cs =====`)도 **캡처가 찍은 것**이다.
-> **읽는 법** — ★★★ **할당 바이트는 증분만 근거로 쓴다.** 절댓값(프로세스 누적)은 흔들리는 칸이라\
-> 이 문서는 **한 번도 싣지 않았다.** 더 중요한 것은 **0 이냐 아니냐**다 — 4번이 거기 달렸다.\
-> ★★ **9번은 출력이 근거가 아니다** — 근거는 **진단의 `(행,열)`** 이다.\
-> ★ **`cc exit` 과 `run exit` 을 갈라 적었다.**\
-> 자세한 환경과 던진 형태는 [2-summary.md](2-summary.md)의 머리말·(0)절에 있다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -841,3 +829,16 @@ cs09b-prec.cs(11,13): error CS0019: Operator '-' cannot be applied to operands o
   ★ **없어지지는 않는다**(호환성) — 그래서 **다시 돌릴 때 봐야 할 것은 「늘었나」다**.
 - ★ **8번의 IL** — Roslyn 이 바뀌면 명령이 움직인다. **세 메서드로 갈린다는 사실은 안 움직인다.**
 - ★ **9번** — 연산자 우선순위는 **언어 규칙**이라 안 움직인다. 움직이면 그것은 **언어가 바뀐 것**이다.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — 배열](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/arrays) · [Learn — 멤버 접근 연산자와 식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators) · [Learn — 연산자 우선순위](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/) · [.NET API — `System.Index`](https://learn.microsoft.com/en-us/dotnet/api/system.index) · [.NET API — `System.Range`](https://learn.microsoft.com/en-us/dotnet/api/system.range)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
+런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-25).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너(`===== 소스: cs09b-….cs =====`)도 **캡처가 찍은 것**이다.
+**읽는 법** — ★★★ **할당 바이트는 증분만 근거로 쓴다.** 절댓값(프로세스 누적)은 흔들리는 칸이라\
+이 문서는 **한 번도 싣지 않았다.** 더 중요한 것은 **0 이냐 아니냐**다 — 4번이 거기 달렸다.\
+★★ **9번은 출력이 근거가 아니다** — 근거는 **진단의 `(행,열)`** 이다.\
+★ **`cc exit` 과 `run exit` 을 갈라 적었다.**\
+자세한 환경과 던진 형태는 [2-summary.md](2-summary.md)의 「실행 환경」·(0)절에 있다.

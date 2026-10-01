@@ -1,11 +1,5 @@
 # html/syntax/06 — 전역 속성: `id`/`class`/`title`/`hidden`/`data-*`/`contenteditable`/`translate` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★ **이 주제의 본체는 창 ② (프로브)다.** 창 ① 은 「소스의 이름이 트리에서 어떻게 바뀌었나」를 보일 때만 쓴다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -821,3 +815,10 @@ hidden="until-fond" (오타)     .hidden = true     display = none   content-vis
 - **`content-visibility`** — 상자는 남기고 내용만 안 그리게 하는 CSS 속성.
 - **이름 있는 접근(named access on Window)** — `id`(와 일부 요소의 `name`)가 `window` 의 이름이 되는 규칙. **열거되지 않는다.**
 - **`HTMLCollection`** — 요소들의 라이브 목록. 중복 `id` 의 전역 접근이 이것을 준다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★ **이 주제의 본체는 창 ② (프로브)다.** 창 ① 은 「소스의 이름이 트리에서 어떻게 바뀌었나」를 보일 때만 쓴다.

@@ -1,16 +1,5 @@
 # sql/33-재귀 CTE — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · WITH Queries (Recursive Queries)](https://www.postgresql.org/docs/18/queries-with.html) · [MySQL 8.4 · WITH (Recursive CTEs)](https://dev.mysql.com/doc/refman/8.4/en/with.html) · [PostgreSQL 14 릴리스 노트](https://www.postgresql.org/docs/release/14.0/)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> ★ **무한 재귀 실험은 전부 안전장치를 걸고 돌렸다** — MySQL 은 `cte_max_recursion_depth` 를 5 로 낮추고, PG 는 `statement_timeout = '300ms'` 를 걸었다. **맨몸으로 돌린 무한 재귀는 하나도 없다.**\
-> 표는 기존 `emp` 만 썼다. **새로 만든 표가 없다** — 계층 데이터는 **CTE 안에서** 만들었다.\
-> **버전** — `WITH RECURSIVE` 자체는 두 엔진 모두 오래전부터 있다. PG 의 `SEARCH`/`CYCLE` 은 **14 부터**이고 MySQL 에는 **문법이 없다**(`ERROR 1064` 실행 확인).\
-> **선행** — [32 CTE(`WITH`)](../32-cte-with-clause/) · [34 집합 연산](../34-set-operations-union-intersect-except/)(`UNION` 과 `UNION ALL` 의 차이가 이 주제의 종료 조건을 만든다).
-
 ## 한눈에 — 쉽게 말하면
 
 **재귀 CTE = 「출발점 한 줄」 + 「이미 찾은 것에서 한 칸 더 가는 규칙」 + 「언제 멈추나」. 셋 중 셋째가 전부다.**
@@ -773,3 +762,13 @@ WITH t AS (... FROM t ...)
 - **깊이가 고정된 계층은 재귀가 필요 없다.** `LEFT JOIN` 을 깊이만큼 이어 붙이면 된다([17번](../17-self-join/)) — 계획이 단순하고 인덱스도 잘 탄다.
 - **MySQL 에서 수 목록이 필요하면** `WITH RECURSIVE seq(n) AS (SELECT 1 UNION ALL SELECT n+1 FROM seq WHERE n < 100)` 가 PG 의 `generate_series(1,100)` 자리를 대신한다.
 - **재귀 CTE 를 뷰에 넣을 수 있다** — 그러면 이름이 문장 하나를 넘어 산다. 뷰는 [48번 주제](../48-views-and-materialized-views/).
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · WITH Queries (Recursive Queries)](https://www.postgresql.org/docs/18/queries-with.html) · [MySQL 8.4 · WITH (Recursive CTEs)](https://dev.mysql.com/doc/refman/8.4/en/with.html) · [PostgreSQL 14 릴리스 노트](https://www.postgresql.org/docs/release/14.0/)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+★ **무한 재귀 실험은 전부 안전장치를 걸고 돌렸다** — MySQL 은 `cte_max_recursion_depth` 를 5 로 낮추고, PG 는 `statement_timeout = '300ms'` 를 걸었다. **맨몸으로 돌린 무한 재귀는 하나도 없다.**\
+표는 기존 `emp` 만 썼다. **새로 만든 표가 없다** — 계층 데이터는 **CTE 안에서** 만들었다.\
+**버전** — `WITH RECURSIVE` 자체는 두 엔진 모두 오래전부터 있다. PG 의 `SEARCH`/`CYCLE` 은 **14 부터**이고 MySQL 에는 **문법이 없다**(`ERROR 1064` 실행 확인).\
+**선행** — [32 CTE(`WITH`)](../32-cte-with-clause/) · [34 집합 연산](../34-set-operations-union-intersect-except/)(`UNION` 과 `UNION ALL` 의 차이가 이 주제의 종료 조건을 만든다).

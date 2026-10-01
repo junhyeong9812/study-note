@@ -1,12 +1,5 @@
 # sql/44-외래키와 참조 동작 (ON DELETE·ON UPDATE) — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> ★ **환경** — MySQL 의 `@@foreign_key_checks` 는 실험 내내 **`1`(켜짐)** 이었다.\
-> 이 편이 만든 표는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> 문서 근거는 [PG 18 Foreign Keys](https://www.postgresql.org/docs/18/ddl-constraints.html#DDL-CONSTRAINTS-FK) · [MySQL 8.4 FOREIGN KEY Constraints](https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -676,3 +669,11 @@ PG 에서만 동작하므로 같은 스키마가 엔진에 따라 다르게 행�
 
 **DB 잔재** — 없다. `t44_` 로 시작하는 표 13개를 전부 삭제했고 `emp`·`dept` 는 **읽지도 쓰지도 않았다.**\
 두 엔진의 최종 표 목록 출력은 [47 인덱스를 언제 타고 언제 안 타나](../47-when-indexes-are-used/)의 「실행 검증」에 있다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+★ **환경** — MySQL 의 `@@foreign_key_checks` 는 실험 내내 **`1`(켜짐)** 이었다.\
+이 편이 만든 표는 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+문서 근거는 [PG 18 Foreign Keys](https://www.postgresql.org/docs/18/ddl-constraints.html#DDL-CONSTRAINTS-FK) · [MySQL 8.4 FOREIGN KEY Constraints](https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html).

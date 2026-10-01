@@ -1,36 +1,5 @@
 # csharp/syntax/16 — 상속·`virtual`/`override`/`abstract`/`sealed`/`new` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — 상속](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/object-oriented/inheritance) ·
-> [Learn — `virtual`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/virtual) ·
-> [Learn — `new` 한정자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/new-modifier) ·
-> [Learn — 인터페이스의 기본 구현 멤버(C# 8)](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/tutorials/default-interface-methods-versions) ·
-> [ECMA-335(CLI) — `callvirt`](https://ecma-international.org/publications-and-standards/standards/ecma-335/)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL 은 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).\
-> **대비는 실측이다** — **javac 21.0.5** 와 **g++ 13.3.0 · `-std=c++20`** 으로 같은 모양을 던졌다((9)).
-> **버전** — 상속·`virtual`/`override`/`new`/`abstract`/`sealed` 는 **C# 1.0부터** ·\
-> **인터페이스 기본 구현 멤버는 C# 8** 이다. `-langversion:latest` 로 던졌다.
-> **경계** — **클래스·생성자·초기화 순서**는 [12번](../12-class-fields-constructors-this-base/), **속성**은 [13번](../13-properties-init-required-field/),\
-> **접근 한정자**는 [15번](../15-access-modifiers-and-assembly-boundary/), **인터페이스 설계 전반**은 목록의 **17번 주제**가 정본이다.\
-> 여기서는 「**어느 메서드가 불리나**」만 센다.\
-> ★ **상속·다형성 개념 자체**는 [`oop-basics/`](../../../../cs/foundations/oop-basics/)가 정본이고, 여기는 **C# 의 기본값**이다.
-> ★★★ **대비 둘** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **09번**([`09-inheritance-overriding/`](../../../java/syntax/09-inheritance-overriding/))은 **기본 가상**이고,\
-> C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **19번**은 **기본 비가상인데 `new` 같은 키워드가 없다.**\
-> ★ 인터페이스 기본 구현 쪽 대비는 Java 갈래 **11번**([`11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/))이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** — 판마다 다듬인다 | ★★★ **진단 코드**(`CS0506`·`CS0108`·`CS0114`·`CS0239`·`CS0144`…)와 **`(행,열)`** |
-> | **IL 오프셋 폭**(`IL_0006`)이 판마다 달라질 수 있다는 것 | ★★★ **옵코드 이름**(`callvirt` 대 `call`)과 **호출 대상의 타입 이름** |
-> | g++·javac 의 진단 **표기 형식** | ★★★ **격자의 아홉 칸** — 이 주제의 답 자체다 |
-> | ★ **증분의 절댓값 일부** — 이 주제는 그 칸을 **안 세웠다**(아래 (0)) | ★★ **`cc exit` 와 `run exit`**(갈라 적었다) · **`IsPrivate`/`IsFinal`/`IsVirtual`** |
-> | 여러 진단이 나올 때 Roslyn 이 내는 **순서** — 배너에 `\| sort` 를 적었다 | ★ **`-warn:9` 에서 답한 탐침의 개수** |
-
 ## 이 판
 
 ```text
@@ -967,3 +936,35 @@ class Circle(double r) : Shape {
 - ★ **`new` 가 붙은 멤버의 메타데이터** — IL 에는 `newslot` 이라는 플래그가 있다.\
   ★★★ **이 판에서 그 플래그를 직접 안 찍었다** — 리플렉션의 `MethodAttributes` 로 볼 수 있지만 (8)에서는\
   명시적 구현만 찍었다. **다음 판에서 물을 자리다.**
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — 상속](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/object-oriented/inheritance) ·
+[Learn — `virtual`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/virtual) ·
+[Learn — `new` 한정자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/new-modifier) ·
+[Learn — 인터페이스의 기본 구현 멤버(C# 8)](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/tutorials/default-interface-methods-versions) ·
+[ECMA-335(CLI) — `callvirt`](https://ecma-international.org/publications-and-standards/standards/ecma-335/)
+**실행 검증** — 이 문서의 모든 출력·진단·IL 은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).\
+**대비는 실측이다** — **javac 21.0.5** 와 **g++ 13.3.0 · `-std=c++20`** 으로 같은 모양을 던졌다((9)).
+**버전** — 상속·`virtual`/`override`/`new`/`abstract`/`sealed` 는 **C# 1.0부터** ·\
+**인터페이스 기본 구현 멤버는 C# 8** 이다. `-langversion:latest` 로 던졌다.
+**경계** — **클래스·생성자·초기화 순서**는 [12번](../12-class-fields-constructors-this-base/), **속성**은 [13번](../13-properties-init-required-field/),\
+**접근 한정자**는 [15번](../15-access-modifiers-and-assembly-boundary/), **인터페이스 설계 전반**은 목록의 **17번 주제**가 정본이다.\
+여기서는 「**어느 메서드가 불리나**」만 센다.\
+★ **상속·다형성 개념 자체**는 [`oop-basics/`](../../../../cs/foundations/oop-basics/)가 정본이고, 여기는 **C# 의 기본값**이다.
+★★★ **대비 둘** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **09번**([`09-inheritance-overriding/`](../../../java/syntax/09-inheritance-overriding/))은 **기본 가상**이고,\
+C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **19번**은 **기본 비가상인데 `new` 같은 키워드가 없다.**\
+★ 인터페이스 기본 구현 쪽 대비는 Java 갈래 **11번**([`11-interfaces-default-methods/`](../../../java/syntax/11-interfaces-default-methods/))이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** — 판마다 다듬인다 | ★★★ **진단 코드**(`CS0506`·`CS0108`·`CS0114`·`CS0239`·`CS0144`…)와 **`(행,열)`** |
+| **IL 오프셋 폭**(`IL_0006`)이 판마다 달라질 수 있다는 것 | ★★★ **옵코드 이름**(`callvirt` 대 `call`)과 **호출 대상의 타입 이름** |
+| g++·javac 의 진단 **표기 형식** | ★★★ **격자의 아홉 칸** — 이 주제의 답 자체다 |
+| ★ **증분의 절댓값 일부** — 이 주제는 그 칸을 **안 세웠다**(본문 (0)) | ★★ **`cc exit` 와 `run exit`**(갈라 적었다) · **`IsPrivate`/`IsFinal`/`IsVirtual`** |
+| 여러 진단이 나올 때 Roslyn 이 내는 **순서** — 배너에 `\| sort` 를 적었다 | ★ **`-warn:9` 에서 답한 탐침의 개수** |

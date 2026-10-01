@@ -1,14 +1,5 @@
 # java/syntax/37 — 정규식: `Pattern`/`Matcher`·`String` 의 정규식 메서드 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·예외는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> JDK 소스 인용은 `lib/src.zip` 의 `java.base/java/util/regex/Pattern.java` 실파일에서 그대로 옮겼다.\
-> 실행 파일명은 전부 `Ex.java` 로 고정했고, 프로그램이 여럿이라 `Ex.java (37-a)` 처럼 라벨로 구분한다.\
-> 17.0.13 · 25.0.1 에서도 같은 프로그램을 돌렸다. **갈린 곳은 2번 하나**다.
-> **★ 측정 조건**(9·10번) — **JMH 가 아니다.** `System.nanoTime()` 반복 측정이고,
-> 머신은 13th Gen Intel Core i7-13700HX · 24 스레드 · Linux 7.0.0-31-generic 이다.\
-> **재현되는 것은 절댓값이 아니라 기울기(+2 글자마다 약 4배)와 자릿수(3\~4배)다.**
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -571,3 +562,13 @@ private static final Pattern P = Pattern.compile("...");   // 클래스 로딩 �
 - `Pattern.CANON_EQ`·`UNICODE_CHARACTER_CLASS` 등 나머지 플래그.
 - `MatchResult` 인터페이스의 9 이후 확장 메서드들.
 - 정규식 **컴파일 시간** 자체의 분해(파싱 대 노드 조립) — 총량만 쟀다.
+
+## 실행 환경
+
+이 파일의 모든 출력·예외는 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+JDK 소스 인용은 `lib/src.zip` 의 `java.base/java/util/regex/Pattern.java` 실파일에서 그대로 옮겼다.\
+실행 파일명은 전부 `Ex.java` 로 고정했고, 프로그램이 여럿이라 `Ex.java (37-a)` 처럼 라벨로 구분한다.\
+17.0.13 · 25.0.1 에서도 같은 프로그램을 돌렸다. **갈린 곳은 2번 하나**다.
+**★ 측정 조건**(9·10번) — **JMH 가 아니다.** `System.nanoTime()` 반복 측정이고,
+머신은 13th Gen Intel Core i7-13700HX · 24 스레드 · Linux 7.0.0-31-generic 이다.\
+**재현되는 것은 절댓값이 아니라 기울기(+2 글자마다 약 4배)와 자릿수(3\~4배)다.**

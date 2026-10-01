@@ -1,11 +1,5 @@
 # kotlin/syntax/13 — 확장 함수·확장 프로퍼티: 정적 디스패치 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> **Java 쪽 호출은 같은 JDK 의 `javac` 로 컴파일해 실제로 섞어 돌렸다**(10번).\
-> 역어셈블은 **기본 `-jvm-target`(1.8 · `major version: 52`)** 이 정본이다 —\
-> 그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -625,3 +619,10 @@ OpenJDK 64-Bit Server VM Temurin-21.0.5+11 (build 21.0.5+11-LTS, mixed mode, sha
 **안 걸린 것도 출력이다** — `probe2.kt` 는 **경고도 에러도 없이** `exit 0` 이었다.
 수신자가 둘이 되는 가장 헷갈리는 형태인데 컴파일러가 **아무 말도 하지 않는다** —
 「경고가 없다」가 「읽기 쉽다」를 뜻하지 않는다.
+
+## 실행 환경
+
+모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+**Java 쪽 호출은 같은 JDK 의 `javac` 로 컴파일해 실제로 섞어 돌렸다**(10번).\
+역어셈블은 **기본 `-jvm-target`(1.8 · `major version: 52`)** 이 정본이다 —\
+그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).

@@ -1,28 +1,5 @@
 # cpp/syntax/31 — 함수 템플릿과 인자 추론 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 템플릿 인자 추론](https://en.cppreference.com/w/cpp/language/template_argument_deduction) · [cppreference — 함수 템플릿](https://en.cppreference.com/w/cpp/language/function_template)\
-> ★ **이 배치에서는 위 cppreference 두 쪽을 열지 않았다** — 규칙은 **전부 두 컴파일러가 스스로 말한 타입**(`static_assert` 진단 · `__PRETTY_FUNCTION__`)과 **기호표**로 적었다.
-> **실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 대비 블록은 **rustc 1.92.0** 이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`tmpl01.cpp` \~ `tmpl05.cpp` · `tmpl-grid.sh` · `tmpl-inst.sh` · `infer.rs`).\
-> ★★ **격자형 에러 블록은 `-fmax-errors=0` · `-ferror-limit=0` 을 배너에 적어** 던졌다 · ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
-> **버전** — 함수 템플릿과 인자 추론은 **C++98부터**, 전달 참조와 참조 축약은 **C++11부터**, **`std::type_identity_t` 는 C++20부터**다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 실행으로 접지했다.
-> ★★★ **[05번](../05-auto-and-decltype-type-deduction/)에서 온다 — 앞 편들이 잰 것은 다시 재지 않고 인용한다.**\
-> [05번](../05-auto-and-decltype-type-deduction/) (1)(4) — **`auto` 는 참조·최상위 `const` 를 떨어뜨리고, 배열·함수를 감쇠시킨다 · `auto&` 는 안 시킨다**(`int*` 대 `int (&)[3]`) · (9) — **`void show(auto x)` 는 `template <class T> void show(T x)` 의 다른 표기라 추론 규칙이 같다.**\
-> [09번](../09-rvalue-references-move-and-forward/) (6) — **`T&&` 에 lvalue 를 넘기면 `T = int&`, 축약해 `int&`** · **`probe(42)` 와 `probe(std::move(i))` 는 같은 인스턴스라 에러가 여섯 줄**.\
-> Rust 갈래 [31번](../../../rust/syntax/31-generics-trait-bounds-where-and-monomorphization/) (7)(8) — **C++ 템플릿의 몸통은 인스턴스화할 때 검사된다**(두 컴파일러 `exit 0`) · **단형화를 센다.**\
-> ★★ **여기서 새로 묻는 것은 넷이다** — **추론된 `T` 를 컴파일러가 말하게 하는 탐침** · **인자 여섯 × 매개변수 꼴 넷 = 24칸 격자** · **추론이 멈추는 다섯 자리** · **인스턴스가 몇 개 생기나**.
-> **경계** — 「클래스 템플릿과 CTAD」는 [목록의 **32번 주제**](../32-class-templates-and-ctad/), 「가변 인자 템플릿」은 **34번**, 「인스턴스화와 오류 읽기」는 **35번**, 「컨셉」은 **36번** 주제가 정본이다. 「컴파일 단계 일반」은 [`compiler-pipeline/`](../../../../cs/foundations/compiler-pipeline/) 쪽이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★★ **타입의 철자** — g++ 는 `int*`·`int [3]`·`long int`, clang 은 `int *`·`int[3]`·`long`((2)(4)) | ★★★ **공백을 지운 뒤의 타입** — 24칸 중 **다른 칸 0**((2)) · **`&`·`*` 가 든 칸의 수** |
-> | 진단의 **문구**(`couldn’t deduce` 대 `couldn't infer`) | ★★★ **에러가 나는 줄 · 개수 · `cc exit`** · **기호표의 인스턴스 수**((5)) · **Rust 에러 코드** |
-
 ## 한눈에 — 쉽게 말하면
 
 **함수 템플릿의 인자 추론은 「틀에 맞춰 반죽을 누르는 것」이다.**
@@ -738,3 +715,27 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **기본 템플릿 인자 · 매개변수 둘(`T`, `U`)** — `max_of` 를 `template <class T, class U>` 로 만들면 (3)의 1. 이 풀린다 — 대신 **반환 타입을 무엇으로 할지**가 새 문제가 된다. 이 문서는 던지지 않았다.
 - **C++17 CTAD** — 클래스 템플릿도 생성자 인자로 추론한다. [목록의 **32번 주제**](../32-class-templates-and-ctad/)의 정본.
 - **C++20 컨셉으로 추론 결과를 제약하기** — [목록의 **36번 주제**](../36-concepts-and-requires/).
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 템플릿 인자 추론](https://en.cppreference.com/w/cpp/language/template_argument_deduction) · [cppreference — 함수 템플릿](https://en.cppreference.com/w/cpp/language/function_template)\
+★ **이 배치에서는 위 cppreference 두 쪽을 열지 않았다** — 규칙은 **전부 두 컴파일러가 스스로 말한 타입**(`static_assert` 진단 · `__PRETTY_FUNCTION__`)과 **기호표**로 적었다.
+**실행 검증** — 이 문서의 모든 출력·진단·덤프는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 대비 블록은 **rustc 1.92.0** 이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`tmpl01.cpp` \~ `tmpl05.cpp` · `tmpl-grid.sh` · `tmpl-inst.sh` · `infer.rs`).\
+★★ **격자형 에러 블록은 `-fmax-errors=0` · `-ferror-limit=0` 을 배너에 적어** 던졌다 · ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
+**버전** — 함수 템플릿과 인자 추론은 **C++98부터**, 전달 참조와 참조 축약은 **C++11부터**, **`std::type_identity_t` 는 C++20부터**다. 기준은 **C++20**이다.
+
+★★★ **[05번](../05-auto-and-decltype-type-deduction/)에서 온다 — 앞 편들이 잰 것은 다시 재지 않고 인용한다.**\
+[05번](../05-auto-and-decltype-type-deduction/) (1)(4) — **`auto` 는 참조·최상위 `const` 를 떨어뜨리고, 배열·함수를 감쇠시킨다 · `auto&` 는 안 시킨다**(`int*` 대 `int (&)[3]`) · (9) — **`void show(auto x)` 는 `template <class T> void show(T x)` 의 다른 표기라 추론 규칙이 같다.**\
+[09번](../09-rvalue-references-move-and-forward/) (6) — **`T&&` 에 lvalue 를 넘기면 `T = int&`, 축약해 `int&`** · **`probe(42)` 와 `probe(std::move(i))` 는 같은 인스턴스라 에러가 여섯 줄**.\
+Rust 갈래 [31번](../../../rust/syntax/31-generics-trait-bounds-where-and-monomorphization/) (7)(8) — **C++ 템플릿의 몸통은 인스턴스화할 때 검사된다**(두 컴파일러 `exit 0`) · **단형화를 센다.**\
+★★ **여기서 새로 묻는 것은 넷이다** — **추론된 `T` 를 컴파일러가 말하게 하는 탐침** · **인자 여섯 × 매개변수 꼴 넷 = 24칸 격자** · **추론이 멈추는 다섯 자리** · **인스턴스가 몇 개 생기나**.
+**경계** — 「클래스 템플릿과 CTAD」는 [목록의 **32번 주제**](../32-class-templates-and-ctad/), 「가변 인자 템플릿」은 **34번**, 「인스턴스화와 오류 읽기」는 **35번**, 「컨셉」은 **36번** 주제가 정본이다. 「컴파일 단계 일반」은 [`compiler-pipeline/`](../../../../cs/foundations/compiler-pipeline/) 쪽이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★★ **타입의 철자** — g++ 는 `int*`·`int [3]`·`long int`, clang 은 `int *`·`int[3]`·`long`((2)(4)) | ★★★ **공백을 지운 뒤의 타입** — 24칸 중 **다른 칸 0**((2)) · **`&`·`*` 가 든 칸의 수** |
+| 진단의 **문구**(`couldn’t deduce` 대 `couldn't infer`) | ★★★ **에러가 나는 줄 · 개수 · `cc exit`** · **기호표의 인스턴스 수**((5)) · **Rust 에러 코드** |

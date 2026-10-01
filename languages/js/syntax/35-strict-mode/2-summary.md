@@ -1,57 +1,5 @@
 # js/syntax/35 — 엄격 모드: 「조용한 실패를 시끄럽게 만들고, 몇몇 문법을 닫는다 — 모듈과 클래스는 늘 엄격이다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 편은 「이미 곳곳에서 조각으로 잰 것을 한데 모으는 정본」 편이다.** 엄격 모드가 바꾸는 규칙의 절반 이상은 앞 편들이 **두 번 컴파일 격자**로 이미 쟀다 —
-> [07번](../07-this-binding-four-rules/2-summary.md) `this` 격자 `9 / 14` · [08번](../08-function-forms-and-parameters/2-summary.md) ★★ **`arguments` 연동 격자 `7 / 12`** 와 매개변수 형태 `7 / 20` · [10번](../10-destructuring-assignment/2-summary.md) `2 / 12` ·
-> [12번](../12-optional-chaining-nullish-and-logical-assignment/2-summary.md) `6 / 11`(★ **`??=` 는 두 모드 다 `ReferenceError`**) · [14번](../14-property-descriptors-and-freezing/2-summary.md) `9 / 13` ·
-> [24번](../24-array-mutating-methods/2-summary.md)(★ **변형 메서드는 비엄격에서도 던진다**) · [16번](../16-class-syntax/2-summary.md)(★ **클래스 몸통은 늘 엄격**).
-> ★★★ **다시 재지 않는다.** 동작 (1)의 **정본 표**가 그 조각들을 「**엄격이 바꾸는 규칙**」 한 장으로 모으고 **칸마다 어느 편에서 쟀나**를 단다.
-> **새로 잰 것은 그 표의 빈 칸뿐**이다 — `eval` 의 변수 누출 · `with` · 8진수 리터럴 · `delete 식별자` · 읽기 전용 전역 · 원시값에 쓰기 · 예약어 · **`"use strict"` 가 효력을 갖는 자리** · **모듈은 늘 엄격**.
->
-> ★★★ **이 주제의 본체는 「두 번 컴파일」 격자(② 전수 격자의 모드 판)다** — 같은 탐침 본문을 **`"use strict";` 를 붙여 한 번, 그대로 한 번** 컴파일한다.
-> ★★★ **규칙 22 를 지켰다** — ① **엄격을 먼저 전부** 돌리고 ② **탐침마다 고유한 전역 이름**(`js35_<번호>_<모드>`)을 주고 ③ **끝에 `globalThis` 에 남은 이름을 찍는다**(누수 확인).
-> 이 편이 그 격자의 본고장이다 — 앞 편들이 한 번씩 겪은 「비엄격을 먼저 돌려 거짓 `0 / 12` 가 나온」 사고(10번)가 여기서 정본 처방이 된다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — Strict Mode Code](https://tc39.es/ecma262/multipage/ecmascript-language-source-code.html#sec-strict-mode-code) — 「**Module code is always strict mode code.**」 · 「**All parts of a ClassDeclaration or a ClassExpression are strict mode code.**」 · eval 코드와 함수 코드가 엄격이 되는 조건
-> - 같은 명세의 **Directive Prologue**(「`"use strict"` 또는 `'use strict'` 의 **정확한 코드 포인트 열** — 이스케이프·줄 이음 불가」) · 함수 정의의 early error(「`FunctionBodyContainsUseStrict` 가 참이고 `IsSimpleParameterList` 가 거짓이면 Syntax Error」) · `PerformEval`(「`strictEval` 이면 `varEnv` 를 `lexEnv` 로」) · **Annex C — The Strict Mode of ECMAScript**(제한 목록)
-> - 명세 문장은 이 배치가 받아 둔 **ES2026 판 HTML** 에서 읽었다(연산 이름과 짧은 인용만 싣는다 — Annex C 를 옮기지 않는다).
->
-> **실행 검증** — 이 문서의 새 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★ 격자는 **`new Function(소스)` 로 두 번 컴파일**한다 — 파일로 던지면 진단에 경로가 박힌다(07·08번과 같은 방식). 컴파일 단계의 예외는 **`COMPILE`** 을 앞에 붙였다.
-> ★★ **모듈은 `.mjs` 로 증명했다** — 같은 파일을 **`.mjs`(모듈)** 로 한 번, **표준 입력 + `--input-type=commonjs`(스크립트)** 로 한 번 돌렸다. 한 글자도 다르지 않은 소스가 두 모드로 갈린다.
-> ★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기 — 이 배치 전체 `identical 12`).
->
-> **버전** — **엄격 모드는 ES5**. 모듈(ES2015)·클래스(ES2015)는 처음부터 엄격이다. `0o10` 같은 8진수 표기는 ES2015.
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **두 번 컴파일**(엄격 먼저 · 고유 전역 · 누수 확인 — 본체) | 새 탐침 **14개**에서 **설정에 달린 칸 N / M** 을 스크립트가 센다 · **`globalThis` 에 남은 이름**(동작 (2)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | **컴파일에서 던지나(`COMPILE SyntaxError`) · 실행에서 던지나(`TypeError`·`ReferenceError`)** 가 갈린다 — 엄격 모드가 바꾸는 것이 **문법**인지 **동작**인지가 여기서 보인다 |
-> | ★★ **판별 탐침**(전역을 안 건드리는 모드 판정) | `"use strict"` 가 효력을 갖나 — **안쪽 함수의 `this` 가 `undefined` 인가**로 묻는다(동작 (3)). 암시적 전역을 쓰지 않아 **누수가 원리상 없다** |
-> | ★ **③ 브랜드 태그** | **부적용** — 모드는 값의 종류를 안 바꾼다(`this` 의 박싱은 07·09번이 태그로 쟀다) |
-> | ★ **① 추상 연산에 로그 심기** | **부적용** — 모드가 바꾸는 것은 사용자 코드를 부르는 순서가 아니다 |
-> | ★ **안 쟀다 — 성능** | ★★★ **「엄격 모드가 빠르다」를 한 줄도 쓰지 않는다.** 시간을 안 쟀다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 예외 **문구**(`Octal literals are not allowed in strict mode.` 등) — V8 의 글자다 | ★★★ 「설정에 달린 칸 N / M」 · 칸마다 **값인가 / 실행 예외인가 / `COMPILE` 예외인가** · 남은 전역 이름 목록 |
-> | — | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) |
->
-> **선행** — [05 — `var`·`let`·`const` 와 TDZ](../05-var-let-const-and-tdz/2-summary.md)(직접 선행 — 중복 매개변수 · 동결의 조용한 실패가 처음 나온 곳. ★ **「ESM 최상위를 안 돌려 봤다」고 적어 둔 빈 칸**을 이 편이 채운다) ·
-> [06 — 스코프와 클로저](../06-scope-and-closures/2-summary.md)(`with` 와 직접 `eval` 이 스코프를 바꾸는 자리를 **35번에 미뤘다**) ·
-> [07](../07-this-binding-four-rules/2-summary.md) · [08](../08-function-forms-and-parameters/2-summary.md) · [09](../09-call-apply-bind/2-summary.md) · [10](../10-destructuring-assignment/2-summary.md) · [12](../12-optional-chaining-nullish-and-logical-assignment/2-summary.md) · [13](../13-object-literals-and-properties/2-summary.md) · [14](../14-property-descriptors-and-freezing/2-summary.md) · [16](../16-class-syntax/2-summary.md) · [24](../24-array-mutating-methods/2-summary.md) — 정본 표의 인용 행.
-> **같은 배치** — [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md) · [33 — 동등성 세 종류](../33-equality-three-kinds/2-summary.md) · [34 — 타입 검사 관용구](../34-type-checking-idioms/2-summary.md).
->
-> ★★ **경계 — 모듈 자체**(`import`/`export`·로딩·최상위 `await`)는 [목록의 **42번 주제**](../42-esm-modules/)(ESM)와 **43번 주제**(CJS 상호운용)의 몫이다. 여기서는 **「모듈 코드는 늘 엄격」** 한 줄을 잰다.
-
 ```sh
 # js32b-versions.sh
 #!/usr/bin/env bash
@@ -608,3 +556,54 @@ echo "(exit $?)"
 
 - **Annex C 의 나머지 항목** — `arguments`·`caller` 접근 제한 등. 정본 표에 없는 항목은 **이 문서가 재지 않았다.**
 - **브라우저의 `<script type="module">`** — 이 편은 node `.mjs` 로만 잰다. 명세 문장이 같으므로 같은 결과가 기대되지만 **돌리지 않았다.**
+
+## 실행 환경
+
+★★★ **이 편은 「이미 곳곳에서 조각으로 잰 것을 한데 모으는 정본」 편이다.** 엄격 모드가 바꾸는 규칙의 절반 이상은 앞 편들이 **두 번 컴파일 격자**로 이미 쟀다 —
+[07번](../07-this-binding-four-rules/2-summary.md) `this` 격자 `9 / 14` · [08번](../08-function-forms-and-parameters/2-summary.md) ★★ **`arguments` 연동 격자 `7 / 12`** 와 매개변수 형태 `7 / 20` · [10번](../10-destructuring-assignment/2-summary.md) `2 / 12` ·
+[12번](../12-optional-chaining-nullish-and-logical-assignment/2-summary.md) `6 / 11`(★ **`??=` 는 두 모드 다 `ReferenceError`**) · [14번](../14-property-descriptors-and-freezing/2-summary.md) `9 / 13` ·
+[24번](../24-array-mutating-methods/2-summary.md)(★ **변형 메서드는 비엄격에서도 던진다**) · [16번](../16-class-syntax/2-summary.md)(★ **클래스 몸통은 늘 엄격**).
+★★★ **다시 재지 않는다.** 동작 (1)의 **정본 표**가 그 조각들을 「**엄격이 바꾸는 규칙**」 한 장으로 모으고 **칸마다 어느 편에서 쟀나**를 단다.
+**새로 잰 것은 그 표의 빈 칸뿐**이다 — `eval` 의 변수 누출 · `with` · 8진수 리터럴 · `delete 식별자` · 읽기 전용 전역 · 원시값에 쓰기 · 예약어 · **`"use strict"` 가 효력을 갖는 자리** · **모듈은 늘 엄격**.
+
+★★★ **이 주제의 본체는 「두 번 컴파일」 격자(② 전수 격자의 모드 판)다** — 같은 탐침 본문을 **`"use strict";` 를 붙여 한 번, 그대로 한 번** 컴파일한다.
+★★★ **규칙 22 를 지켰다** — ① **엄격을 먼저 전부** 돌리고 ② **탐침마다 고유한 전역 이름**(`js35_<번호>_<모드>`)을 주고 ③ **끝에 `globalThis` 에 남은 이름을 찍는다**(누수 확인).
+이 편이 그 격자의 본고장이다 — 앞 편들이 한 번씩 겪은 「비엄격을 먼저 돌려 거짓 `0 / 12` 가 나온」 사고(10번)가 여기서 정본 처방이 된다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — Strict Mode Code](https://tc39.es/ecma262/multipage/ecmascript-language-source-code.html#sec-strict-mode-code) — 「**Module code is always strict mode code.**」 · 「**All parts of a ClassDeclaration or a ClassExpression are strict mode code.**」 · eval 코드와 함수 코드가 엄격이 되는 조건
+- 같은 명세의 **Directive Prologue**(「`"use strict"` 또는 `'use strict'` 의 **정확한 코드 포인트 열** — 이스케이프·줄 이음 불가」) · 함수 정의의 early error(「`FunctionBodyContainsUseStrict` 가 참이고 `IsSimpleParameterList` 가 거짓이면 Syntax Error」) · `PerformEval`(「`strictEval` 이면 `varEnv` 를 `lexEnv` 로」) · **Annex C — The Strict Mode of ECMAScript**(제한 목록)
+- 명세 문장은 이 배치가 받아 둔 **ES2026 판 HTML** 에서 읽었다(연산 이름과 짧은 인용만 싣는다 — Annex C 를 옮기지 않는다).
+
+**실행 검증** — 이 문서의 새 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★ 격자는 **`new Function(소스)` 로 두 번 컴파일**한다 — 파일로 던지면 진단에 경로가 박힌다(07·08번과 같은 방식). 컴파일 단계의 예외는 **`COMPILE`** 을 앞에 붙였다.
+★★ **모듈은 `.mjs` 로 증명했다** — 같은 파일을 **`.mjs`(모듈)** 로 한 번, **표준 입력 + `--input-type=commonjs`(스크립트)** 로 한 번 돌렸다. 한 글자도 다르지 않은 소스가 두 모드로 갈린다.
+★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기 — 이 배치 전체 `identical 12`).
+
+**버전** — **엄격 모드는 ES5**. 모듈(ES2015)·클래스(ES2015)는 처음부터 엄격이다. `0o10` 같은 8진수 표기는 ES2015.
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **두 번 컴파일**(엄격 먼저 · 고유 전역 · 누수 확인 — 본체) | 새 탐침 **14개**에서 **설정에 달린 칸 N / M** 을 스크립트가 센다 · **`globalThis` 에 남은 이름**(동작 (2)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | **컴파일에서 던지나(`COMPILE SyntaxError`) · 실행에서 던지나(`TypeError`·`ReferenceError`)** 가 갈린다 — 엄격 모드가 바꾸는 것이 **문법**인지 **동작**인지가 여기서 보인다 |
+| ★★ **판별 탐침**(전역을 안 건드리는 모드 판정) | `"use strict"` 가 효력을 갖나 — **안쪽 함수의 `this` 가 `undefined` 인가**로 묻는다(동작 (3)). 암시적 전역을 쓰지 않아 **누수가 원리상 없다** |
+| ★ **③ 브랜드 태그** | **부적용** — 모드는 값의 종류를 안 바꾼다(`this` 의 박싱은 07·09번이 태그로 쟀다) |
+| ★ **① 추상 연산에 로그 심기** | **부적용** — 모드가 바꾸는 것은 사용자 코드를 부르는 순서가 아니다 |
+| ★ **안 쟀다 — 성능** | ★★★ **「엄격 모드가 빠르다」를 한 줄도 쓰지 않는다.** 시간을 안 쟀다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 예외 **문구**(`Octal literals are not allowed in strict mode.` 등) — V8 의 글자다 | ★★★ 「설정에 달린 칸 N / M」 · 칸마다 **값인가 / 실행 예외인가 / `COMPILE` 예외인가** · 남은 전역 이름 목록 |
+| — | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) |
+
+**선행** — [05 — `var`·`let`·`const` 와 TDZ](../05-var-let-const-and-tdz/2-summary.md)(직접 선행 — 중복 매개변수 · 동결의 조용한 실패가 처음 나온 곳. ★ **「ESM 최상위를 안 돌려 봤다」고 적어 둔 빈 칸**을 이 편이 채운다) ·
+[06 — 스코프와 클로저](../06-scope-and-closures/2-summary.md)(`with` 와 직접 `eval` 이 스코프를 바꾸는 자리를 **35번에 미뤘다**) ·
+[07](../07-this-binding-four-rules/2-summary.md) · [08](../08-function-forms-and-parameters/2-summary.md) · [09](../09-call-apply-bind/2-summary.md) · [10](../10-destructuring-assignment/2-summary.md) · [12](../12-optional-chaining-nullish-and-logical-assignment/2-summary.md) · [13](../13-object-literals-and-properties/2-summary.md) · [14](../14-property-descriptors-and-freezing/2-summary.md) · [16](../16-class-syntax/2-summary.md) · [24](../24-array-mutating-methods/2-summary.md) — 정본 표의 인용 행.
+**같은 배치** — [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md) · [33 — 동등성 세 종류](../33-equality-three-kinds/2-summary.md) · [34 — 타입 검사 관용구](../34-type-checking-idioms/2-summary.md).
+
+★★ **경계 — 모듈 자체**(`import`/`export`·로딩·최상위 `await`)는 [목록의 **42번 주제**](../42-esm-modules/)(ESM)와 **43번 주제**(CJS 상호운용)의 몫이다. 여기서는 **「모듈 코드는 늘 엄격」** 한 줄을 잰다.

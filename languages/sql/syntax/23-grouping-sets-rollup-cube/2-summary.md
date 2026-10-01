@@ -1,15 +1,5 @@
 # sql/23-`GROUPING SETS`·`ROLLUP`·`CUBE` 와 `GROUPING()` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · GROUPING SETS, CUBE, and ROLLUP](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · GROUP BY Modifiers](https://dev.mysql.com/doc/refman/8.4/en/group-by-modifiers.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **버전** — PG 는 셋 다 있다. MySQL 8.4.10 은 **`ROLLUP` 만** 있고 `GROUPING SETS` 는 문법 오류, `CUBE` 는 **다른 이유로 거부**된다(5번). 도입 버전은 두 매뉴얼에서 확인하지 못해 적지 않는다.\
-> **선행** — [22 GROUP BY 와 비집계 열 규칙](../22-group-by-nonaggregated-columns/). **거기서 배운 「`NULL` 도 한 그룹」이 여기서 함정이 된다.**\
-> **뒤 주제** — [24 조건부 집계](../24-conditional-aggregation-filter-case/) · [25 조인 팬아웃](../25-join-fan-out/).
-
 ## 한눈에 — 쉽게 말하면
 
 **영수증 한 장에 「품목별 금액」과 「소계」와 「총계」가 같이 찍혀 나오는 것.**
@@ -610,3 +600,12 @@ SELECT dept_id, SUM(salary) FROM emp GROUP BY ROLLUP(dept_id) HAVING GROUPING(de
 - **`GROUPING_ID()` 같은 이름이 다른 엔진에도 있지만 여기서는 확인하지 않았다.** 두 매뉴얼에서 본 것만 적는다.
 - **`GROUPING()` 의 인자는 `GROUP BY` 에 나온 식이어야 한다.** 아무 열이나 넣으면 의미가 없다 — 접힌 적이 없으니 항상 0이다.\
   PG 가 `ROLLUP` 없는 질의에서 전부 0을 낸 것이 그 모습이다(5번 (마)).
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · GROUPING SETS, CUBE, and ROLLUP](https://www.postgresql.org/docs/18/queries-table-expressions.html) · [MySQL 8.4 · GROUP BY Modifiers](https://dev.mysql.com/doc/refman/8.4/en/group-by-modifiers.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**버전** — PG 는 셋 다 있다. MySQL 8.4.10 은 **`ROLLUP` 만** 있고 `GROUPING SETS` 는 문법 오류, `CUBE` 는 **다른 이유로 거부**된다(5번). 도입 버전은 두 매뉴얼에서 확인하지 못해 적지 않는다.\
+**선행** — [22 GROUP BY 와 비집계 열 규칙](../22-group-by-nonaggregated-columns/). **거기서 배운 「`NULL` 도 한 그룹」이 여기서 함정이 된다.**\
+**뒤 주제** — [24 조건부 집계](../24-conditional-aggregation-filter-case/) · [25 조인 팬아웃](../25-join-fan-out/).

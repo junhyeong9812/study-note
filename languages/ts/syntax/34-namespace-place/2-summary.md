@@ -1,13 +1,5 @@
 # ts/syntax/34 — `namespace` 의 자리 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Namespaces and Modules](https://www.typescriptlang.org/docs/handbook/namespaces-and-modules.html)(「새 프로젝트는 모듈이 권장되는 조직 방식」 · namespace 는 전역의 이름 붙은 객체라 `outFile` 로 이어 붙일 수 있다 · 모듈 파일을 `/// <reference>` 로 가리키는 것은 흔한 실수) ·
-> [Announcing TypeScript 6.0](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/)(「`namespace` 자리에 `module` 을 쓰는 것은 이제 **hard deprecation**」 · `outFile` 제거) ·
-> [TypeScript 5.8 릴리스 노트 — `--erasableSyntaxOnly`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-8.html).
-> 위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
-> **실행 검증** — 본판은 아래다. ★ 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.
-> ★ **6.0 은 이 머신에 없다** — 「6.0 에서 deprecation」은 릴리스 글의 문장이고, 던져서 본 것은 **5.9.3 은 받고 7.0.2 는 막는다**까지다.
-
 ```text
 ===== tsc --version · node --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -21,7 +13,6 @@ Python 3.12.3
 > ★ `--erasableSyntaxOnly` 가 enum 을 막는 판 격자는 [**31번 주제**](../31-enum-pitfalls/) 3절, 매개변수 프로퍼티는 [**32번 주제**](../32-class-type-aspects/) 3절이 정본이다. **여기서는 namespace 꼴 여섯 칸만** 더한다.
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -573,3 +564,12 @@ ReferenceError App is not defined
 - **6.0 의 모습** — 릴리스 글은 「hard deprecation」이라 적는다. 5.x 의 deprecation 관례대로라면 **경고를 끄는 설정**이 있었을 것으로 읽히지만, **6.0 이 이 머신에 없어 던지지 못했다.**
 - **`export namespace`** — 모듈 파일 안의 `export namespace N { … }` 는 모듈이면서 namespace 다. 그 꼴과 `export module N {}` 은 **캡처하지 않았다.**
 - **namespace 와 트리 셰이킹** — IIFE 안의 대입은 번들러가 떨어내기 어렵다고 흔히 말한다. **재지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Namespaces and Modules](https://www.typescriptlang.org/docs/handbook/namespaces-and-modules.html)(「새 프로젝트는 모듈이 권장되는 조직 방식」 · namespace 는 전역의 이름 붙은 객체라 `outFile` 로 이어 붙일 수 있다 · 모듈 파일을 `/// <reference>` 로 가리키는 것은 흔한 실수) ·
+[Announcing TypeScript 6.0](https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/)(「`namespace` 자리에 `module` 을 쓰는 것은 이제 **hard deprecation**」 · `outFile` 제거) ·
+[TypeScript 5.8 릴리스 노트 — `--erasableSyntaxOnly`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-8.html).
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
+**실행 검증** — 본판은 맨 위 블록이다. ★ 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.
+★ **6.0 은 이 머신에 없다** — 「6.0 에서 deprecation」은 릴리스 글의 문장이고, 던져서 본 것은 **5.9.3 은 받고 7.0.2 는 막는다**까지다.

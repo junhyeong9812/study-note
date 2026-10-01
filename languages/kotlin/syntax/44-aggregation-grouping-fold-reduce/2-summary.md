@@ -1,14 +1,5 @@
 # kotlin/syntax/44 — 집계·그룹핑 — `groupBy`/`partition`/`fold`/`reduce`/`sumOf` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Aggregate operations](https://kotlinlang.org/docs/collection-aggregate.html)(`sum`·`average`·`sumOf`·`maxBy` · `fold`·`reduce` · `runningFold`·`runningReduce` · `…OrNull`) · [Grouping](https://kotlinlang.org/docs/collection-grouping.html)(`groupBy`) · [Filtering](https://kotlinlang.org/docs/collection-filtering.html)(`partition`) — 이 문서는 그 페이지들의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((3)(4)).
-> **실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다. 대비 둘은 **rustc 1.92.0** · **Python 3.12.3** 이다.\
-> `kotlinc` 4회 · `java` 3회 + 격자 스크립트 안에서 1회 · stdlib 소스 jar 에서 5곳 · `rustc` 2회(최적화 끔/켬) + 실행 2회 · `python3` 1회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **격자 마지막 줄의 칸 수는 스크립트가 스스로 센 것**이다.
-> **버전** — `fold`·`reduce`·`groupBy`·`partition`·`sum`·`average` 는 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). `reduceOrNull`·`runningFold`·`runningReduce`·`maxByOrNull` 은 stdlib 소스에 **`@SinceKotlin("1.4")`**((3)) · `sumOf` 도 **1.4**((4)). ★ **새 `maxBy` 는 `@SinceKotlin("1.7")` · `@JvmName("maxByOrThrow")`**((3)) — [43번 주제](../43-filter-search-and-empty-collections/) (4)의 `max()` 와 같은 모양이다(옛 `maxBy` 의 애너테이션은 **발췌하지 않았다**).
-> **경계** — 빈 입력에서 **검색 연산**(`first`·`single`·`max`)이 던지는 것은 [43번 주제](../43-filter-search-and-empty-collections/)가 정본이다. 여기는 **접기(fold)와 묶기(group)** 다. `Int` 덧셈이 넘치면 **감긴다**는 언어 규칙은 [01번 주제](../01-val-var-and-basic-types/)가 정본이다 — 여기서는 `sumOf` 가 그 규칙을 **그대로 물려받는다**는 것만 본다. `partition` 결과를 `val (a, b) =` 로 받는 것은 [30번 주제](../30-destructuring-declarations-and-componentn/)다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**빈 입력 갈림 격자 — 집계 12연산 × (빈 · 하나 · 여럿) → 값 / 예외**」. `fold` 와 `reduce` 는 원소가 있을 때 **같은 답**을 준다(`5`·`10`). 둘이 갈리는 것은 **빈 입력 한 칸**이다 — 거기를 넣어 봐야 보인다.
 
 ## 이 주제가 쓰는 세 층
@@ -574,3 +565,12 @@ empty    max=null  fold=0
 - **`groupingBy { }.eachCount()`·`fold`** — 중간 리스트 없이 그룹별로 접는 `Grouping` API 는 **던지지 않았다.**
 - **`sumOf` 의 `Double`·`BigDecimal` 판** — 이 문서는 `Int`·`Long` 만 봤다.
 - **Kotlin 쪽 넘침 검사 옵션** — Kotlin 에 Rust 의 디버그 넘침 검사 같은 컴파일 옵션이 있는지 **찾아보지 않았다.** 바이트코드(`javap`)도 **찍지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Aggregate operations](https://kotlinlang.org/docs/collection-aggregate.html)(`sum`·`average`·`sumOf`·`maxBy` · `fold`·`reduce` · `runningFold`·`runningReduce` · `…OrNull`) · [Grouping](https://kotlinlang.org/docs/collection-grouping.html)(`groupBy`) · [Filtering](https://kotlinlang.org/docs/collection-filtering.html)(`partition`) — 이 문서는 그 페이지들의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((3)(4)).
+**실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다. 대비 둘은 **rustc 1.92.0** · **Python 3.12.3** 이다.\
+`kotlinc` 4회 · `java` 3회 + 격자 스크립트 안에서 1회 · stdlib 소스 jar 에서 5곳 · `rustc` 2회(최적화 끔/켬) + 실행 2회 · `python3` 1회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **격자 마지막 줄의 칸 수는 스크립트가 스스로 센 것**이다.
+**버전** — `fold`·`reduce`·`groupBy`·`partition`·`sum`·`average` 는 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). `reduceOrNull`·`runningFold`·`runningReduce`·`maxByOrNull` 은 stdlib 소스에 **`@SinceKotlin("1.4")`**((3)) · `sumOf` 도 **1.4**((4)). ★ **새 `maxBy` 는 `@SinceKotlin("1.7")` · `@JvmName("maxByOrThrow")`**((3)) — [43번 주제](../43-filter-search-and-empty-collections/) (4)의 `max()` 와 같은 모양이다(옛 `maxBy` 의 애너테이션은 **발췌하지 않았다**).
+**경계** — 빈 입력에서 **검색 연산**(`first`·`single`·`max`)이 던지는 것은 [43번 주제](../43-filter-search-and-empty-collections/)가 정본이다. 여기는 **접기(fold)와 묶기(group)** 다. `Int` 덧셈이 넘치면 **감긴다**는 언어 규칙은 [01번 주제](../01-val-var-and-basic-types/)가 정본이다 — 여기서는 `sumOf` 가 그 규칙을 **그대로 물려받는다**는 것만 본다. `partition` 결과를 `val (a, b) =` 로 받는 것은 [30번 주제](../30-destructuring-declarations-and-componentn/)다.

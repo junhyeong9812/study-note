@@ -1,19 +1,5 @@
 # java/syntax/15 — `sealed` (17+): `permits` 와 허용 계층의 조건 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc 둘이다.\
-> `java.base/java/lang/Class.java` — `isSealed()` · `getPermittedSubclasses()` (`@since 17`, `@jls 8.1` `@jls 9.1`).\
-> `java.base/java/lang/MatchException.java` — `@since 21`, `@jls 14.11.3` `@jls 14.30.2` `@jls 15.28.2`.\
-> JLS 절 번호는 **그 javadoc 의 `@jls` 태그에 적힌 것만** 옮겼다. JLS 본문은 열지 않았다.
-> **실행 검증** — 이 문서의 모든 출력·에러 메시지는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> `javac` 12회 · `java` 6회 · `javap` 6회. 프로그램 `15-a` 는 **25.0.1** 에서도 돌려 출력이 같았다.\
-> 버전 갈림(`--release 16` / `--release 17`)은 JDK 21 의 `javac --release` 로 찍은 것이다.\
-> 역어셈블은 `javap -v -p` · `javap -c -p` 출력을 **그대로** 옮겼다.
-> **버전** — `sealed` · `non-sealed` · `permits` 는 **Java 17** 정식(15·16 프리뷰).\
-> `Class.isSealed()` · `Class.getPermittedSubclasses()` 도 **17**.\
-> 다만 이 주제가 쓰는 **패턴 `switch` 는 21** 이다 — `MatchException` 도 21 이다. **둘은 같은 버전이 아니다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 javac 의 실제 에러 메시지와 클래스 파일 속성으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`sealed` 는 「문 앞에 가입 명단을 붙여 둔 회원제 클럽」이다.**
@@ -943,3 +929,17 @@ String.getPermittedSubclasses() = null
   ```
 
   컴파일러가 명단을 **재귀적으로 펼쳐** 판정하기 때문이다.
+
+## 실행 환경
+
+**기준 소스** — JDK 21.0.5 의 `lib/src.zip` 을 **직접 풀어 읽은** javadoc 둘이다.\
+`java.base/java/lang/Class.java` — `isSealed()` · `getPermittedSubclasses()` (`@since 17`, `@jls 8.1` `@jls 9.1`).\
+`java.base/java/lang/MatchException.java` — `@since 21`, `@jls 14.11.3` `@jls 14.30.2` `@jls 15.28.2`.\
+JLS 절 번호는 **그 javadoc 의 `@jls` 태그에 적힌 것만** 옮겼다. JLS 본문은 열지 않았다.
+**실행 검증** — 이 문서의 모든 출력·에러 메시지는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+`javac` 12회 · `java` 6회 · `javap` 6회. 프로그램 `15-a` 는 **25.0.1** 에서도 돌려 출력이 같았다.\
+버전 갈림(`--release 16` / `--release 17`)은 JDK 21 의 `javac --release` 로 찍은 것이다.\
+역어셈블은 `javap -v -p` · `javap -c -p` 출력을 **그대로** 옮겼다.
+**버전** — `sealed` · `non-sealed` · `permits` 는 **Java 17** 정식(15·16 프리뷰).\
+`Class.isSealed()` · `Class.getPermittedSubclasses()` 도 **17**.\
+다만 이 주제가 쓰는 **패턴 `switch` 는 21** 이다 — `MatchException` 도 21 이다. **둘은 같은 버전이 아니다.**

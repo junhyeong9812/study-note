@@ -1,13 +1,5 @@
 # PR #19335 - 착수 분석: anonymous()의 계약 위반
 
-> 원본: fork repo의 `analyze-docs/plans/2026-06-14/spring-security-core-bug-hunt/`
-> `C-05-authzfactory-anonymous-contract/`(task.md·해설.md·changelog.md·review-log.md).
-> 학습 문서로 옮기면서 작업 진행용 절을 덜어내고 실측 근거를 절로 승격했다.
-> 결론은 PR #19335로 반영됐다(커밋 `d73fa8d905`).
->
-> **좌표 주의**: 본문의 file:line은 **수정 전** 파일 기준이다.
-> 문제와 수정 요약은 [README.md](README.md), 실구조는 [structure.md](structure.md), 테스트는 [tests.md](tests.md).
-
 ## 0. 결론 먼저
 
 `DefaultAuthorizationManagerFactory.anonymous()`가 `authenticated()`·`fullyAuthenticated()`·`rememberMe()`와 같은 `createManager` 경로를 타고, 그 경로 끝의 `withAdditionalAuthorization`이 부가 인가를 씌운다(`:147-150` -> `:162-165` -> `:167-172`).\
@@ -173,3 +165,12 @@ MFA 켜기 전 (/login 은 anonymous() 로 보호)     MFA 켠 뒤 (수정 전 �
 
 > **stakes** — 이 변경이 틀렸을 때 잃는 것의 크기.\
 > 예: 되돌리기 쉽고 영향 범위가 좁으면 낮음, 데이터가 지워지거나 권한이 열리면 높음이다.
+
+## 출처
+
+원본: fork repo의 `analyze-docs/plans/2026-06-14/spring-security-core-bug-hunt/`
+`C-05-authzfactory-anonymous-contract/`(task.md·해설.md·changelog.md·review-log.md).
+학습 문서로 옮기면서 작업 진행용 절을 덜어내고 실측 근거를 절로 승격했다.
+결론은 PR #19335로 반영됐다(커밋 `d73fa8d905`).
+
+**좌표 주의**: 본문의 file:line은 **수정 전** 파일 기준이다.

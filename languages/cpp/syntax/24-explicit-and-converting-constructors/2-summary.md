@@ -1,34 +1,5 @@
 # cpp/syntax/24 — `explicit` 과 변환 생성자 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `explicit` 지정자](https://en.cppreference.com/w/cpp/language/explicit) · [cppreference — 암묵 변환](https://en.cppreference.com/w/cpp/language/implicit_conversion) · [cppreference — 변환 생성자](https://en.cppreference.com/w/cpp/language/converting_constructor)\
-> ★ cppreference 두 쪽은 2026-09-26 에 열어 **네 문장을 확인했다** — ① `explicit` 은 「**암묵 변환과 복사 초기화에 쓰일 수 없다**」 ·\
-> ② `explicit(식)` 은 C++20 이고 「**그 상수식이 `true` 일 때만 explicit**」 · ③ 암묵 변환 순서는 「**표준 변환 0\~1 → 사용자 정의 변환 0\~1 → 표준 변환 0\~1**」 ·\
-> ④ **문맥적 bool 변환**은 「`bool t(e);` 가 성립하면」 수행되고 그래서 **`explicit operator bool` 이 고려된다** — 자리는 `if`·`while`·`for` 의 조건, `!`·`&&`·`||` 의 피연산자, `?:` 의 첫 피연산자, `static_assert`, `noexcept`.\
-> 「변환 생성자」 쪽은 **이 배치에서 열지 못했다**(도구 한도) — 그 쪽 규칙은 이 문서가 **전부 컴파일러에 던져서** 확인했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`conv01.cpp` \~ `conv08.cpp` · `conv-grid.sh`). ★ (7)만 **`-std=c++17`** 판을 더 던졌고, **배너에 적었다.**\
-> ★ **한 소스를 매크로로 두 판에 던졌다** — `-DASK_EXPLICIT` 는 **같은 생성자에 `explicit` 을 붙이고**, `-DASK_IMPLICIT` 은 **`operator bool` 에서 뗀다.** 소스가 하나라 두 판의 차이가 **그 한 낱말**임이 보장된다.\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
-> **버전** — 변환 생성자·`explicit` 생성자는 **C++98부터**, **`explicit` 변환 함수(`explicit operator bool`)는 C++11부터**, **`explicit(bool)` 은 C++20부터**다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-> ★★★ **앞 편이 이 주제의 절반을 이미 쟀다 — 다시 재지 않고 인용한다.**\
-> [22번](../22-operator-overloading/) (1) — 「**`1 + a` 는 비멤버 × 암묵 변환일 때만 되고, 생성자에 `explicit` 을 붙이면 비멤버여도 에러 2 · 2**」.\
-> [13번](../13-constructors-member-init-list-and-delegating/) 「금지 사례」 — `explicit B(int)` 에 `takeB(3)` 을 넘기면 `could not convert '3' from 'int' to 'B'` · 「어디서 틀리나 6」 — **`Feet c{5}` 는 되고 `Feet b = {5}` 는 막힌다.**\
-> [4번](../04-brace-initialization-narrowing-and-initializer-list/) (4) — **비상수 좁히기를 g++ 는 경고로 통과시키고 clang 은 에러로 막는다.**\
-> ★★ **여기서 새로 묻는 것은 「암묵 변환이 만드는 사고」 쪽이다** — **어느 자리에서 몇 번 불리나(호출 로그)** · **`explicit` 이 어느 칸을 에러로 바꾸나(격자)** · **엉뚱한 오버로드가 불리는 자리** · **`explicit operator bool`**.
-> **경계** — 「생성자 문법 일반」은 [13번](../13-constructors-member-init-list-and-delegating/)이, 「대칭 변환과 연산자」는 [22번](../22-operator-overloading/)이,\
-> 「오버로드 해결의 순위」는 [1번](../01-function-overloading-and-overload-resolution/)이, 「중괄호 초기화와 좁히기」는 [4번](../04-brace-initialization-narrowing-and-initializer-list/)이 정본이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 두 컴파일러의 **진단 문구** · note 의 수 | ★★★ **생성자가 몇 번 불렸나**(호출 로그) · **어느 오버로드가 불렸나** — 이 주제의 답 자체다 |
-> | — | ★★★ **어느 줄이 에러인가 · 에러 개수 · `cc exit`** · ★★ **격자의 O/X** · **타입 특성의 0/1** · **경고 개수** |
-
 ## 한눈에 — 쉽게 말하면
 
 **인자 하나짜리 생성자는 「자동 환전기」다.**
@@ -1101,3 +1072,33 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **safe bool 관용구** — C++11 이전에는 `explicit operator bool` 이 없어 **멤버 포인터로 변환**하는 우회가 쓰였다. 지금은 필요 없다.
 - **CTAD 의 `explicit` 추론 가이드**(C++17) — 기준 소스 ①이 적는 세 번째 자리다. 템플릿 인자 추론 주제에서 다룬다.
 - **`std::pair`·`std::optional` 의 조건부 `explicit`** — (7)의 모양을 표준 라이브러리가 쓴다. 이 문서는 그 소스를 읽지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `explicit` 지정자](https://en.cppreference.com/w/cpp/language/explicit) · [cppreference — 암묵 변환](https://en.cppreference.com/w/cpp/language/implicit_conversion) · [cppreference — 변환 생성자](https://en.cppreference.com/w/cpp/language/converting_constructor)\
+★ cppreference 두 쪽은 2026-09-26 에 열어 **네 문장을 확인했다** — ① `explicit` 은 「**암묵 변환과 복사 초기화에 쓰일 수 없다**」 ·\
+② `explicit(식)` 은 C++20 이고 「**그 상수식이 `true` 일 때만 explicit**」 · ③ 암묵 변환 순서는 「**표준 변환 0\~1 → 사용자 정의 변환 0\~1 → 표준 변환 0\~1**」 ·\
+④ **문맥적 bool 변환**은 「`bool t(e);` 가 성립하면」 수행되고 그래서 **`explicit operator bool` 이 고려된다** — 자리는 `if`·`while`·`for` 의 조건, `!`·`&&`·`||` 의 피연산자, `?:` 의 첫 피연산자, `static_assert`, `noexcept`.\
+「변환 생성자」 쪽은 **이 배치에서 열지 못했다**(도구 한도) — 그 쪽 규칙은 이 문서가 **전부 컴파일러에 던져서** 확인했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`conv01.cpp` \~ `conv08.cpp` · `conv-grid.sh`). ★ (7)만 **`-std=c++17`** 판을 더 던졌고, **배너에 적었다.**\
+★ **한 소스를 매크로로 두 판에 던졌다** — `-DASK_EXPLICIT` 는 **같은 생성자에 `explicit` 을 붙이고**, `-DASK_IMPLICIT` 은 **`operator bool` 에서 뗀다.** 소스가 하나라 두 판의 차이가 **그 한 낱말**임이 보장된다.\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. 소스 펜스의 배너도 **캡처가 찍은 것**이다.
+**버전** — 변환 생성자·`explicit` 생성자는 **C++98부터**, **`explicit` 변환 함수(`explicit operator bool`)는 C++11부터**, **`explicit(bool)` 은 C++20부터**다. 기준은 **C++20**이다.
+
+★★★ **앞 편이 이 주제의 절반을 이미 쟀다 — 다시 재지 않고 인용한다.**\
+[22번](../22-operator-overloading/) (1) — 「**`1 + a` 는 비멤버 × 암묵 변환일 때만 되고, 생성자에 `explicit` 을 붙이면 비멤버여도 에러 2 · 2**」.\
+[13번](../13-constructors-member-init-list-and-delegating/) 「금지 사례」 — `explicit B(int)` 에 `takeB(3)` 을 넘기면 `could not convert '3' from 'int' to 'B'` · 「어디서 틀리나 6」 — **`Feet c{5}` 는 되고 `Feet b = {5}` 는 막힌다.**\
+[4번](../04-brace-initialization-narrowing-and-initializer-list/) (4) — **비상수 좁히기를 g++ 는 경고로 통과시키고 clang 은 에러로 막는다.**\
+★★ **여기서 새로 묻는 것은 「암묵 변환이 만드는 사고」 쪽이다** — **어느 자리에서 몇 번 불리나(호출 로그)** · **`explicit` 이 어느 칸을 에러로 바꾸나(격자)** · **엉뚱한 오버로드가 불리는 자리** · **`explicit operator bool`**.
+**경계** — 「생성자 문법 일반」은 [13번](../13-constructors-member-init-list-and-delegating/)이, 「대칭 변환과 연산자」는 [22번](../22-operator-overloading/)이,\
+「오버로드 해결의 순위」는 [1번](../01-function-overloading-and-overload-resolution/)이, 「중괄호 초기화와 좁히기」는 [4번](../04-brace-initialization-narrowing-and-initializer-list/)이 정본이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 두 컴파일러의 **진단 문구** · note 의 수 | ★★★ **생성자가 몇 번 불렸나**(호출 로그) · **어느 오버로드가 불렸나** — 이 주제의 답 자체다 |
+| — | ★★★ **어느 줄이 에러인가 · 에러 개수 · `cc exit`** · ★★ **격자의 O/X** · **타입 특성의 0/1** · **경고 개수** |

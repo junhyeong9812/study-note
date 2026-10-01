@@ -1,13 +1,5 @@
 # web-api/23 — 포인터 이벤트: `pointerdown` 계열·마우스/터치/펜 통합·`setPointerCapture` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ④ 를 늘린 「포인터 순서 로그」와 「받은 칸 격자」다** — 진짜 마우스·펜·터치 한 동작이 부르는 이벤트를 **생성자·`pointerType`·`isPrimary`·`button`·`buttons`** 와 함께 한 줄씩 적고, 드래그가 요소 밖으로 나갔을 때 **그 요소가 `pointermove` 를 받았나**를 장치 × 캡처 방식으로 센다.\
-> **기준 소스** — [W3C Pointer Events](https://w3c.github.io/pointerevents/) 의 「implicit pointer capture」(직접 조작 장치는 `pointerdown` 때 **스스로** 캡처) · 「PREVENT MOUSE EVENT flag」(`pointerdown` 을 막으면 호환 마우스 이벤트가 안 난다 — **단 `mouseover`/`out`/`enter`/`leave` 는 막지 않는다**) · 「`click`·`auxclick`·`contextmenu` 는 `PointerEvent` 이고 호환 마우스 이벤트가 아니다」 · 「Suppressing a pointer event stream」(뷰포트를 움직이는 데 쓰이거나 **드래그 조작이 시작되면** 스트림을 끊는다 → `pointercancel`) 절. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **마우스·펜은 CDP `Input.dispatchMouseEvent`**(펜은 `pointerType: "pen"`), **터치는 `Input.dispatchTouchEvent`** 로 넣은 진짜 입력이다. 하네스는 [20번 주제](../20-listener-lifetime/2-summary.md)의 (1)에 있다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — [17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md)(`preventDefault` 가 막는 것). ★★ **[19번 주제](../19-passive-and-scroll/2-summary.md)의 (5)** 가 **`touch-action: none` 이면 리스너 없이 터치 스크롤이 안 된다**를 쟀다 — 여기는 **그때 포인터 쪽에서 무엇이 나나(`pointercancel`)** 로 확장한다. [18번 주제](../18-event-delegation/2-summary.md)의 (7)이 `mouseenter` 와 `mouseover` 의 차이를 쟀다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -701,3 +693,11 @@ pointercancel 이 난 칸 = 6 / 10
 - **`getCoalescedEvents()`·`getPredictedEvents()`**(끌기의 부드러움)는 던지지 않았다.
 - **`pointerrawupdate`** 는 보안 문맥 전용이라 던지지 않았다.
 - **펜의 호버·지우개 버튼**은 CDP 의 펜으로는 재현되지 않는다.
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ④ 를 늘린 「포인터 순서 로그」와 「받은 칸 격자」다** — 진짜 마우스·펜·터치 한 동작이 부르는 이벤트를 **생성자·`pointerType`·`isPrimary`·`button`·`buttons`** 와 함께 한 줄씩 적고, 드래그가 요소 밖으로 나갔을 때 **그 요소가 `pointermove` 를 받았나**를 장치 × 캡처 방식으로 센다.\
+**기준 소스** — [W3C Pointer Events](https://w3c.github.io/pointerevents/) 의 「implicit pointer capture」(직접 조작 장치는 `pointerdown` 때 **스스로** 캡처) · 「PREVENT MOUSE EVENT flag」(`pointerdown` 을 막으면 호환 마우스 이벤트가 안 난다 — **단 `mouseover`/`out`/`enter`/`leave` 는 막지 않는다**) · 「`click`·`auxclick`·`contextmenu` 는 `PointerEvent` 이고 호환 마우스 이벤트가 아니다」 · 「Suppressing a pointer event stream」(뷰포트를 움직이는 데 쓰이거나 **드래그 조작이 시작되면** 스트림을 끊는다 → `pointercancel`) 절. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **마우스·펜은 CDP `Input.dispatchMouseEvent`**(펜은 `pointerType: "pen"`), **터치는 `Input.dispatchTouchEvent`** 로 넣은 진짜 입력이다. 하네스는 [20번 주제](../20-listener-lifetime/2-summary.md)의 (1)에 있다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — [17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md)(`preventDefault` 가 막는 것). ★★ **[19번 주제](../19-passive-and-scroll/2-summary.md)의 (5)** 가 **`touch-action: none` 이면 리스너 없이 터치 스크롤이 안 된다**를 쟀다 — 여기는 **그때 포인터 쪽에서 무엇이 나나(`pointercancel`)** 로 확장한다. [18번 주제](../18-event-delegation/2-summary.md)의 (7)이 `mouseenter` 와 `mouseover` 의 차이를 쟀다.

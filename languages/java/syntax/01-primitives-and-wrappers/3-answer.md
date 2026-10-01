@@ -1,10 +1,5 @@
 # java/syntax/01 — 기본형과 래퍼: 값 의미론·오토박싱·`Integer` 캐시 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
-> 바이트코드는 `javap -c` 출력을, JDK 소스는 `lib/src.zip` 의 실파일을 그대로 옮겼다.\
-> 17.0.13 · 25.0.1 에서도 같은 프로그램을 돌려 출력이 동일함을 확인했다(다른 점은 6번에 따로 적었다).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -492,3 +487,9 @@ public final Stream<Integer> boxed() {
 | `Box9` | `-128`/`-129` 경계, `IntegerCache.high` 프로퍼티 | 21 |
 | `BoxQ` | `sameRef(500)`, `pick(true,null)`, `getOrDefault` | 21 |
 | `src.zip` 열람 | `Integer.valueOf`·`IntegerCache`·`IntPipeline.boxed` 실소스 | 21 · 25 |
+
+## 실행 환경
+
+이 파일의 모든 출력은 **Temurin JDK 21.0.5 에서 실제로 돌려 얻은 것**이다.\
+바이트코드는 `javap -c` 출력을, JDK 소스는 `lib/src.zip` 의 실파일을 그대로 옮겼다.\
+17.0.13 · 25.0.1 에서도 같은 프로그램을 돌려 출력이 동일함을 확인했다(다른 점은 6번에 따로 적었다).

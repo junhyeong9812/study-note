@@ -1,8 +1,5 @@
 # 요구사항 명세서 (requirement-spec)
 
-> 작성일: 2026-09-28 · 작업 폴더: `docs/plans/2026-09-28/languages-toplevel/`
-> 상위 맥락: `docs/plans/2026-09-27/cs-fundamentals-roadmap/curriculum.md` §19 — 언어 문법·API 레퍼런스는 "CS 밖" 판정
-
 ---
 
 ## 0. 요구사항 원문 (인터뷰 기록)

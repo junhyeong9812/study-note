@@ -1,17 +1,5 @@
 # kotlin/syntax/48 — 문자열 API — `split`/`trim*`/`pad*`/`Regex` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Strings](https://kotlinlang.org/docs/strings.html) · [kotlin.text 패키지 API](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.text/)(`split`·`trim`·`padStart`·`Regex`) — 이 문서는 그 목록을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현, 그리고 **JDK 21.0.5 의 `src.zip`**(`String.java`)의 javadoc 을 근거로 삼는다((3)(6)).
-> **실행 검증** — 이 문서의 모든 출력·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 7회 · `javac` 3회 · `java` 8회 · `javap` 3회 · stdlib 소스 jar 에서 발췌 6곳 · JDK `src.zip` 에서 2곳.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 행 N / M」은 격자 프로그램이 스스로 센 것**이다.
-> ★★ 입력에 공백·제어문자·전각 공백이 들어가므로 격자는 **보이는 표기**로 찍는다 — 따옴표 안에서 `!`\~`~`(0x21\~0x7E) 밖의 글자는 전부 `<U+XXXX>`, `trim` 격자는 **코드포인트 덤프**(`U+0061` 꼴)다. 이 문서의 어떤 블록에도 **U+3000·U+00A0 글자 자체는 없다.**
-> **버전** — `split`·`trim`·`padStart`·`padEnd`·`Regex` 는 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). Java `String.strip()` 은 **Java 11**.
-> **경계** — ★★★ **문자열 매칭 알고리즘**(KMP·보이어-무어·정규식 엔진의 동작)은 [`cs/algorithm/25-string-matching/`](../../../../cs/algorithm/25-string-matching/) 이 정본이다 — 여기는 **stdlib 함수의 경계 동작**(빈 조각 · 공백의 정의 · 전체 일치 대 부분 일치)만 본다.\
-> **Java 쪽 `split` 함정**(`"a,b,,c,,".split(",")` · `split(".")`)은 [Java 35번](../../../java/syntax/35-string/)이, **정규식 문법**은 [Java 37번](../../../java/syntax/37-regex/)이 정본이다 — 여기서는 **같은 입력을 Kotlin 과 한 쌍으로** 던진다.\
-> **`$` 가 템플릿이 되는 조건**과 `trimIndent`/`trimMargin` 은 [02번 주제](../02-string-templates-and-raw-strings/) (1)(6)이 정본이다 — 여기서는 `Regex.replace` 의 그룹 참조와 부딪히는 자리만 본다. 확장 함수가 **정적 메서드**로 풀린다는 논지는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**Java 와 갈리는 격자 — 입력 다섯 × 쪼개는 꼴 다섯(Kotlin `split(d)` · Java `split(d)` · Kotlin `split(Regex(d))` · Kotlin `split(d, limit = 2)` · Java `split(d, -1)`) → 원소 수 · 원소**」. 두 언어 모두 `split` 이라는 **같은 이름**이 컴파일되고 에러도 없다 — 원소 수가 갈리는지는 **같은 입력을 양쪽에 넣어 봐야** 보인다.
 
 ## 이 주제가 쓰는 세 층
@@ -633,3 +621,15 @@ swap    26/09/2026
 - **`split` 의 `ignoreCase`** — 구분자를 대소문자 무시로 찾는다. 돌리지 않았다.
 - **`lines()`·`lineSequence()`** — 줄 끝 규칙과 [47번 주제](../47-sequences-lazy-evaluation/)의 `Sequence` 가 이어지는 자리. 돌리지 않았다.
 - **JS·Native 의 `isWhitespace`** — 플랫폼별 `actual` 이 따로 있다. 이 문서는 JVM 만 쟀다.
+
+## 실행 환경
+
+**기준 소스** — [Strings](https://kotlinlang.org/docs/strings.html) · [kotlin.text 패키지 API](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.text/)(`split`·`trim`·`padStart`·`Regex`) — 이 문서는 그 목록을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현, 그리고 **JDK 21.0.5 의 `src.zip`**(`String.java`)의 javadoc 을 근거로 삼는다((3)(6)).
+**실행 검증** — 이 문서의 모든 출력·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 7회 · `javac` 3회 · `java` 8회 · `javap` 3회 · stdlib 소스 jar 에서 발췌 6곳 · JDK `src.zip` 에서 2곳.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 행 N / M」은 격자 프로그램이 스스로 센 것**이다.
+★★ 입력에 공백·제어문자·전각 공백이 들어가므로 격자는 **보이는 표기**로 찍는다 — 따옴표 안에서 `!`\~`~`(0x21\~0x7E) 밖의 글자는 전부 `<U+XXXX>`, `trim` 격자는 **코드포인트 덤프**(`U+0061` 꼴)다. 이 문서의 어떤 블록에도 **U+3000·U+00A0 글자 자체는 없다.**
+**버전** — `split`·`trim`·`padStart`·`padEnd`·`Regex` 는 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). Java `String.strip()` 은 **Java 11**.
+**경계** — ★★★ **문자열 매칭 알고리즘**(KMP·보이어-무어·정규식 엔진의 동작)은 [`cs/algorithm/25-string-matching/`](../../../../cs/algorithm/25-string-matching/) 이 정본이다 — 여기는 **stdlib 함수의 경계 동작**(빈 조각 · 공백의 정의 · 전체 일치 대 부분 일치)만 본다.\
+**Java 쪽 `split` 함정**(`"a,b,,c,,".split(",")` · `split(".")`)은 [Java 35번](../../../java/syntax/35-string/)이, **정규식 문법**은 [Java 37번](../../../java/syntax/37-regex/)이 정본이다 — 여기서는 **같은 입력을 Kotlin 과 한 쌍으로** 던진다.\
+**`$` 가 템플릿이 되는 조건**과 `trimIndent`/`trimMargin` 은 [02번 주제](../02-string-templates-and-raw-strings/) (1)(6)이 정본이다 — 여기서는 `Regex.replace` 의 그룹 참조와 부딪히는 자리만 본다. 확장 함수가 **정적 메서드**로 풀린다는 논지는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §7 이다.

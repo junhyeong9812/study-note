@@ -1,16 +1,5 @@
 # sql/45-CHECK·NOT NULL·DEFAULT·생성 열·자동 증가 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Constraints](https://www.postgresql.org/docs/18/ddl-constraints.html) · [PostgreSQL 18 · Generated Columns](https://www.postgresql.org/docs/18/ddl-generated-columns.html) · [PostgreSQL 18.0 릴리스 노트](https://www.postgresql.org/docs/release/18.0/) · [MySQL 8.4 · CHECK Constraints](https://dev.mysql.com/doc/refman/8.4/en/create-table-check-constraints.html) · [MySQL 8.4 · CREATE TABLE and Generated Columns](https://dev.mysql.com/doc/refman/8.4/en/create-table-generated-columns.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> ★ **환경 확인** — MySQL 의 `sql_mode` 는 `ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION` 이다. `STRICT_TRANS_TABLES` 가 꺼지면 아래 `NOT NULL` 절의 결론이 달라지므로 먼저 밝힌다.\
-> **버전** — ★ **PostgreSQL 18 부터 생성 열의 기본이 `VIRTUAL` 이다**(그 전에는 `STORED` 만 있었다 — [18.0 릴리스 노트](https://www.postgresql.org/docs/release/18.0/)). MySQL 의 `CHECK` 강제는 8.0.16 부터다.\
-> ★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t45_chk`·`t45_def`·`t45_gs`·`t45_gv`·`t45_gd`·`t45_ai`·`t45_ai2`·`t45_ai3`·`t45_cn` 을 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> **선행** — [42 테이블 정의와 변경](../42-create-alter-drop-table/) · [04 NULL 의 3값 논리](../04-null-three-valued-logic/) 가 3번 절의 뿌리다.
-
 ## 한눈에 — 쉽게 말하면
 
 **이 주제는 「열 하나에 붙일 수 있는 것」의 목록이다.** 넷이 성질이 다르다.
@@ -623,3 +612,13 @@ ERROR 3819 (HY000) at line 1: Check constraint 't45_tc_range' is violated.
   생성 열은 **그 표의 일부라서 인덱스·제약을 걸 수 있다**는 점이 다르다(46번).
 - **`DEFAULT` 와 생성 열은 「안 주면 채운다」와 「줄 수 없다」로 갈린다.**\
   둘을 한 열에 같이 쓸 수는 없다 — 생성 열은 값의 출처가 이미 정해져 있다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Constraints](https://www.postgresql.org/docs/18/ddl-constraints.html) · [PostgreSQL 18 · Generated Columns](https://www.postgresql.org/docs/18/ddl-generated-columns.html) · [PostgreSQL 18.0 릴리스 노트](https://www.postgresql.org/docs/release/18.0/) · [MySQL 8.4 · CHECK Constraints](https://dev.mysql.com/doc/refman/8.4/en/create-table-check-constraints.html) · [MySQL 8.4 · CREATE TABLE and Generated Columns](https://dev.mysql.com/doc/refman/8.4/en/create-table-generated-columns.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+★ **환경 확인** — MySQL 의 `sql_mode` 는 `ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION` 이다. `STRICT_TRANS_TABLES` 가 꺼지면 본문 `NOT NULL` 절의 결론이 달라지므로 먼저 밝힌다.\
+**버전** — ★ **PostgreSQL 18 부터 생성 열의 기본이 `VIRTUAL` 이다**(그 전에는 `STORED` 만 있었다 — [18.0 릴리스 노트](https://www.postgresql.org/docs/release/18.0/)). MySQL 의 `CHECK` 강제는 8.0.16 부터다.\
+★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t45_chk`·`t45_def`·`t45_gs`·`t45_gv`·`t45_gd`·`t45_ai`·`t45_ai2`·`t45_ai3`·`t45_cn` 을 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+**선행** — [42 테이블 정의와 변경](../42-create-alter-drop-table/) · [04 NULL 의 3값 논리](../04-null-three-valued-logic/) 가 3번 절의 뿌리다.

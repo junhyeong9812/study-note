@@ -1,9 +1,5 @@
 # css/syntax/15 — 박스 모델과 `box-sizing` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getBoundingClientRect()`·`clientWidth` 로 잰 값**이다. 단위는 px 다.\
-> **손으로 계산해 유도한 수치는 없다.** 규칙은 [CSS Box Model Level 3](https://drafts.csswg.org/css-box-3/) 과 [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/) 으로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -264,3 +260,8 @@ inline 요소에 outline: 10px  rect.width = 9.2   · 다음 형제의 x = 전�
 
 **구현 의존 항목** — `getComputedStyle().width` 가 `box-sizing` 을 따라 달라지는 것은 **Chrome 151 에서 관찰한 것**이다. 브라우저가 바뀌면 이 칸을 다시 찍어야 한다.\
 **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.**
+
+## 실행 환경
+
+이 파일의 **모든 치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getBoundingClientRect()`·`clientWidth` 로 잰 값**이다. 단위는 px 다.\
+**손으로 계산해 유도한 수치는 없다.** 규칙은 [CSS Box Model Level 3](https://drafts.csswg.org/css-box-3/) 과 [CSS Box Sizing Level 3](https://drafts.csswg.org/css-sizing-3/) 으로 접지했다.

@@ -1,10 +1,5 @@
 # java/syntax/41 — `Map` API: `merge`/`compute*`/`getOrDefault`/`putIfAbsent` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·에러는 **Temurin JDK 에서 실제로 돌려 얻은 것**이다.\
-> javadoc·소스 인용은 JDK 21.0.5 의 `lib/src.zip` 을 풀어 읽은 원문이다.\
-> 프로그램 4개를 17.0.13 · 21.0.5 · 25.0.1 셋 다에서 돌렸다 — **본문 출력은 같고 스택트레이스만 달랐다**(11번).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -557,3 +552,9 @@ computeIfAbsent : {p=[pear], a=[apple, apple], f=[fig], d=[date]} / 만든 리�
 - 예외 **메시지 문구** — `not supported` · `remove` · helpful NullPointerException 의 문장.
 - `HashMap` 의 키 순회 순서 — 이 문서는 `LinkedHashMap` 을 써서 순서를 고정했다.
 - **Java 8 은 안 돌려 봄** — 이 머신에 8이 없다. `Map.of`·`Map.entry`(9+)는 애초에 8에 없다.
+
+## 실행 환경
+
+이 파일의 모든 출력·에러는 **Temurin JDK 에서 실제로 돌려 얻은 것**이다.\
+javadoc·소스 인용은 JDK 21.0.5 의 `lib/src.zip` 을 풀어 읽은 원문이다.\
+프로그램 4개를 17.0.13 · 21.0.5 · 25.0.1 셋 다에서 돌렸다 — **본문 출력은 같고 스택트레이스만 달랐다**(11번).

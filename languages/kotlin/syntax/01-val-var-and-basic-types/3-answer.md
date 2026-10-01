@@ -1,10 +1,5 @@
 # kotlin/syntax/01 — `val`/`var` 와 기본 타입: 암묵 수치 변환이 없다 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과
-> Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻은 것이다.\
-> 박싱 캐시 관련 결론은 [`../../../java/syntax/01-primitives-and-wrappers/`](../../../java/syntax/01-primitives-and-wrappers/) 에서 **받아 쓴 것**이고 여기서 재측정하지 않았다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -421,3 +416,9 @@ OpenJDK Runtime Environment Temurin-21.0.5+11 (build 21.0.5+11-LTS)
 **못 잰 것** — `-128\~127` 캐시 범위를 **Kotlin 쪽에서 다시 재지 않았다.**
 [`java/syntax/01`](../../../java/syntax/01-primitives-and-wrappers/) 이 정본이고 재측정은 그 문서의 규칙(중복 금지)에 어긋나므로,
 여기서는 `Int?` 에서 같은 경계가 관찰된다는 사실(`127` → `true`, `128` → `false`)만 확인했다.
+
+## 실행 환경
+
+이 파일의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과
+Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻은 것이다.\
+박싱 캐시 관련 결론은 [`../../../java/syntax/01-primitives-and-wrappers/`](../../../java/syntax/01-primitives-and-wrappers/) 에서 **받아 쓴 것**이고 여기서 재측정하지 않았다.

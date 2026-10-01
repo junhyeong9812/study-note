@@ -1,24 +1,5 @@
 # rust/syntax/16 — 구조체 세 종류·`impl`·연관 함수·`Self` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference — Structs](https://doc.rust-lang.org/reference/items/structs.html) ·
-> [Reference — Implementations](https://doc.rust-lang.org/reference/items/implementations.html) ·
-> [Reference — Associated Items](https://doc.rust-lang.org/reference/items/associated-items.html) ·
-> [Reference — Struct expressions](https://doc.rust-lang.org/reference/expressions/struct-expr.html) ·
-> [Reference — Type layout](https://doc.rust-lang.org/reference/type-layout.html) ·
-> [`std::mem::size_of`](https://doc.rust-lang.org/std/mem/fn.size_of.html) ·
-> `rustc --explain E0599` / `E0592` / `E0034` / `E0063` / `E0560` / `E0616` / `E0603` / `E0411` / `E0423`.
-> ★ `--explain` 은 **확인용으로만 열었고 본문에 옮기지 않았다.** 본문의 진단은 전부 내가 던져서 받은 것이다.
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다.\
-> ★ 단 **한 블록만 예외**다 — `cargo doc` 실험((7))은 `cargo 1.92.0 (344c4567c 2025-10-21)` 로 돌렸고,\
-> 그 블록의 소스는 임시 크레이트의 **`src/lib.rs`** 가 된다(배너에 그 변환까지 적어 뒀다).\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.\
-> 소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단의 줄 번호는 그 파일 기준**이다.
-> **버전** — 구조체 세 종류·`impl`·`Self` 는 전부 1.0.0부터다. **필드 초기화 축약**과 **구조체 갱신 문법**도 1.0.0부터다.\
-> **연관 상수**(`impl` 안의 `const`)는 **1.20.0**부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **구조체는 「서류 양식」이고, `impl` 은 「그 양식에 딸린 업무 매뉴얼」이다.**
@@ -1737,3 +1718,22 @@ pub struct Config { pub name: String, secret: u32 }
   `dyn Trait` 를 소비하는 메서드에서 쓰인다([목록의 **33번 주제**](../33-dyn-trait-objects-and-object-safety/)·**40번 주제**).
 - ★ **구조체에 참조를 담는 순간 이야기가 달라진다** — 수명 파라미터가 타입에 붙고 `impl<'a> X<'a>` 가 된다.\
   거기서부터는 [목록의 **13번 주제**](../13-struct-references-and-static/)가 정본이다. 이 주제의 예제는 **전부 소유한 값만** 담았다.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference — Structs](https://doc.rust-lang.org/reference/items/structs.html) ·
+[Reference — Implementations](https://doc.rust-lang.org/reference/items/implementations.html) ·
+[Reference — Associated Items](https://doc.rust-lang.org/reference/items/associated-items.html) ·
+[Reference — Struct expressions](https://doc.rust-lang.org/reference/expressions/struct-expr.html) ·
+[Reference — Type layout](https://doc.rust-lang.org/reference/type-layout.html) ·
+[`std::mem::size_of`](https://doc.rust-lang.org/std/mem/fn.size_of.html) ·
+`rustc --explain E0599` / `E0592` / `E0034` / `E0063` / `E0560` / `E0616` / `E0603` / `E0411` / `E0423`.
+★ `--explain` 은 **확인용으로만 열었고 본문에 옮기지 않았다.** 본문의 진단은 전부 내가 던져서 받은 것이다.
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다.\
+★ 단 **한 블록만 예외**다 — `cargo doc` 실험((7))은 `cargo 1.92.0 (344c4567c 2025-10-21)` 로 돌렸고,\
+그 블록의 소스는 임시 크레이트의 **`src/lib.rs`** 가 된다(배너에 그 변환까지 적어 뒀다).\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.\
+소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단의 줄 번호는 그 파일 기준**이다.
+**버전** — 구조체 세 종류·`impl`·`Self` 는 전부 1.0.0부터다. **필드 초기화 축약**과 **구조체 갱신 문법**도 1.0.0부터다.\
+**연관 상수**(`impl` 안의 `const`)는 **1.20.0**부터다.

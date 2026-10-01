@@ -1,12 +1,5 @@
 # go/syntax/44 — `os`·`bufio`·`io.Copy` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [`bufio`](https://pkg.go.dev/bufio) · [`os`](https://pkg.go.dev/os) · [`io`](https://pkg.go.dev/io) 패키지 문서(`go doc bufio.Writer` · `os.File.Close` · `io.Copy` · `io.CopyBuffer` · `bufio.MaxScanTokenSize`). **이 툴체인에서 직접 떴다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
-> 시스템 호출은 **`strace 6.8`** 로 셌고, C 대비는 **`gcc 13.3.0`** 이다(머리말 `tools`).\
-> **버전** — 이 문서가 쓰는 API 중 판을 가르는 것은 없다. 시스템 호출 이름(`copy_file_range`)은 **이 머신의 커널·파일 시스템의 관찰**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**데이터가 사라지는 격자** — 쓰는 법 4(`bufio` 없이 · `Flush` · `Flush` 없음 · `defer w.Flush()`) × 끝내는 법 4(`return` · `os.Exit(0)` · `log.Fatal` · `panic`)로 100 바이트를 쓰고 **파일 크기**를 재는 로그」.
 마지막 줄 「**사라진 칸 6 / 16**」((1)절). ★★★ **`defer w.Flush()` 는 `panic` 에서는 살고 `os.Exit`·`log.Fatal` 에서는 죽는다.**
 ★★ 짝이 되는 창은 「**`strace` 가 센 시스템 호출**」 — `fmt.Println` 세 번은 **`write` 세 번**, `bufio` 는 **한 번**, 파일 → 파일 `io.Copy` 는 **`read`/`write` 가 아니라 `copy_file_range`** 였다((3)·(5)절).
@@ -435,7 +428,7 @@ bufio.MaxScanTokenSize = 65536
 (exit 0)
 ```
 
-- ★★★ **`65535` 는 통과, `65536` 부터 `bufio.Scanner: token too long`** — `MaxScanTokenSize` 가 65536 인데 **줄바꿈 한 바이트가 버퍼에 같이 들어가야** 해서 한 바이트 모자란다(머리말 문장).
+- ★★★ **`65535` 는 통과, `65536` 부터 `bufio.Scanner: token too long`** — `MaxScanTokenSize` 가 65536 인데 **줄바꿈 한 바이트가 버퍼에 같이 들어가야** 해서 한 바이트 모자란다(「이 판」 절 문장).
 - ★★★ **`Scan 이 참이었던 횟수 0`** — 긴 줄 **뒤의 `다음 줄` 까지 못 읽었다.** 한도에 걸리면 **그 자리에서 멈추고**, `for sc.Scan()` 루프는 **그냥 끝난다** — **`sc.Err()` 를 안 보면 파일이 짧은 줄 알고 넘어간다.**
 - ★★ **`sc.Buffer(make([]byte, 0, 4096), 1<<20)`** 로 한도를 1 MiB 로 올리면 두 줄 다 읽었다.
 - ★ [43번 주제](../43-io-reader-writer-and-composition/) (1)절에서 `Scanner` 는 `Read` 계약을 **20 칸 다** 지켰다 — 그 도우미에도 **이런 한도가 따로 있다.**
@@ -720,3 +713,10 @@ func main() {
 - ★ **tty 로 돌렸을 때의 C stdio**(줄 버퍼) — 캡처가 파일로 받으므로 **안 쟀다.**
 - ★ **`sendfile`·`splice`**(소켓·파이프로 복사할 때) — `strace` 목록에 넣었지만 파일 → 파일에서는 **안 나왔다.** 다른 조합은 안 던졌다.
 - ★ Python 의 `print`·`open` 버퍼와 `os._exit` — **안 던졌다.**
+
+## 실행 환경
+
+**기준 소스** — [`bufio`](https://pkg.go.dev/bufio) · [`os`](https://pkg.go.dev/os) · [`io`](https://pkg.go.dev/io) 패키지 문서(`go doc bufio.Writer` · `os.File.Close` · `io.Copy` · `io.CopyBuffer` · `bufio.MaxScanTokenSize`). **이 툴체인에서 직접 떴다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.
+시스템 호출은 **`strace 6.8`** 로 셌고, C 대비는 **`gcc 13.3.0`** 이다(「이 판」 절 `tools`).\
+**버전** — 이 문서가 쓰는 API 중 판을 가르는 것은 없다. 시스템 호출 이름(`copy_file_range`)은 **이 머신의 커널·파일 시스템의 관찰**이다.

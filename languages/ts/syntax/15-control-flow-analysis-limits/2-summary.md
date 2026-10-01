@@ -1,12 +1,5 @@
 # ts/syntax/15 — 제어 흐름 분석의 한계 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Narrowing: Control flow analysis](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#control-flow-analysis) ·
-> [Handbook — Narrowing: Using type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) ·
-> [TypeScript 4.4 릴리스 노트 — Aliased conditions](https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -18,7 +11,6 @@ v18.19.1
 > 이 블록들은 설정 파일 없이도 그대로 재현된다.
 > ★★★ 이 주제의 격자는 **언어 명세가 아니라 이 판의 관찰**이다. 조건은 판마다 넓어질 수 있다 — **외우지 말고 다시 던져라.**
 > ★★ `exactOptionalPropertyTypes`·`noUncheckedIndexedAccess` 는 **`strict` 밖**이고 기본 `false` 다 — 이 문서는 **안 켰다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -941,3 +933,11 @@ ex.15e.ts(68,19): error TS2322: Type 'number' is not assignable to type 'null'.
 - **`noUncheckedIndexedAccess` 를 켜면** — 2절의 인덱스 칸이 전부 `| undefined` 를 달고 나온다. 검사 뒤 좁힘의 모양도 달라진다. **이 배치에서는 안 켰다** — [목록의 **41번 주제**](../41-index-and-optional-property-strict-flags/)다.
 - **게터를 안전하게 쓰는 수** — 한 번 읽어 지역 `const` 에 담는다. 4절의 `afterGetter` 가 터진 것은 **같은 표현식을 두 번 읽었기** 때문이다. 5절의 고침이 그대로 적용된다.
 - **판이 오르면** — 3절의 「대입이 없으면 산다」와 1절의 「즉시 실행 함수에서 산다」는 **구현의 경계**다. 넓어질 수도 좁아질 수도 있다 — **외우지 말고 다시 던져라.** 이 문서가 격자를 파일 셋으로 남겨 둔 이유다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Narrowing: Control flow analysis](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#control-flow-analysis) ·
+[Handbook — Narrowing: Using type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates) ·
+[TypeScript 4.4 릴리스 노트 — Aliased conditions](https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

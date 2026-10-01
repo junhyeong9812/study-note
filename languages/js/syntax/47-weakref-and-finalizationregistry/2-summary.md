@@ -1,60 +1,5 @@
 # js/syntax/47 — `WeakRef`·`FinalizationRegistry`: 「명세가 약속하는 것은 『살아 있는 동안은 돌려준다』 쪽뿐이다 — 『언젠가 비워진다』·『콜백이 불린다』는 이 판에서 `gc()` 를 불렀을 때의 관찰이다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 층 가르기다** — 같은 칸의 숫자라도 **명세가 보장한 것 / V8 이 그렇게 한 것 / 이 판에서 `gc()` 를 불렀을 때 본 것**이 섞여 있다. 문서의 모든 결론 줄에 **어느 층인지**를 붙인다(아래 「층」 표).
-> ★★★ 그 층을 가르는 도구가 **② 관찰 격자**다 — (`gc()` 있음/없음) × (`gc()` 부름/안 부름) × (기다림 넷: 없음 · `await null` 한 번 · 열 번 · `setTimeout` 한 번) 칸마다 **20판 중 몇 판**에서 `deref()` 가 `undefined` 였고 콜백이 불렸나를 센다(동작 (1)). 판 격자는 **node 20 · node 18 · Chrome 151**(`--js-flags=--expose-gc` 유무)이다. ★ **「모든 판에서」 라는 전칭 칸은 두지 않는다** — 칸은 「20판 중 N」, 요약 줄은 「**한 판이라도**」 로 센다(규칙 24).
-> ★★ 보조로 **① 로그 심기**(`deref()` 가 대상을 **다시 붙잡는** 것 — 동작 (2)) · **④ 예외의 이름 + 문구**(`unregister(1)` — 동작 (4)) · **교차 갈래 한 쌍**(CPython 은 `del` 직후 — 동작 (5))을 쓴다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — Processing Model of WeakRef and FinalizationRegistry Targets](https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html) — Objectives 첫 문장 「**This specification does not make any guarantees that any object or symbol will be garbage collected. Objects or symbols which are not live may be released after long periods of time, or never at all.**」 · 「`deref` 가 돌려준 대상은 **이어지는 동기 접근도 같은 값**을 받도록 살려 둔다 — 그 목록은 동기 작업이 끝나면 **`ClearKeptObjects`** 로 비운다」 · 「정리 콜백은 **may eventually be made, after synchronous ECMAScript execution completes**」 · 「**`ClearKeptObjects`·`CleanupFinalizationRegistry` 는 동기 실행을 끊지 못한다** … 그 일정은 **호스트**에 맡긴다」 · Execution 절 — 「살아 있지 않으면 구현은 **may** 비울 수 있다 … 정리 잡을 넣을지는 **implementation-defined choice**」 · `ClearKeptObjects` 는 「**when a synchronous sequence of ECMAScript executions completes**」 에 부르게 되어 있다(`[[KeptAlive]]` 를 빈 목록으로) · `AddToKeptObjects`
-> - [ECMA-262 — Managing Memory](https://tc39.es/ecma262/multipage/managing-memory.html) — `WeakRef.prototype.deref` 의 note 「첫 `deref` 가 `undefined` 가 아니었으면 **둘째도 그럴 수 없다**」 · `FinalizationRegistry.prototype.unregister` — **`CanBeHeldWeakly(unregisterToken)` 이 거짓이면 `TypeError`** · 지운 칸이 있으면 `true`
-> - [HTML — Perform a microtask checkpoint](https://html.spec.whatwg.org/multipage/webappapis.html) — 체크포인트의 끝에서 **「Perform ClearKeptObjects()」** · `HostEnqueueFinalizationRegistryCleanupJob` 절 「**The timing and occurrence of cleanup work is implementation-defined** … Authors would be best off **not depending on the timing details** of garbage collection implementations」
-> - ★ 명세의 이름은 **`AddToKeptObjects`/`ClearKeptObjects`/`[[KeptAlive]]`** 다. 제안 시절의 이름(`KeepDuringJob`)은 **지금 명세 텍스트에 없다** — 이 문서는 지금 이름을 쓴다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1, 파이썬은 `python3`(3.12.3). 하네스 소스는 [44번](../44-dynamic-import-top-level-await-and-import-attributes/2-summary.md) 머리말에 있다 — ★ **이 주제를 위해 `--gc` 선택지를 더했다**(`--js-flags=--expose-gc`). ★ Chrome 은 `--virtual-time-budget` 로 시간을 당겨 돌리므로 `setTimeout` 이 **실제 시간을 안 쓴다.**
-> ★★★ **`gc()` 는 ECMA-262 에 없다** — V8 플래그 `--expose-gc` 가 여는 전역 함수다(판별 블록 — 플래그 없이는 `undefined`). **「`gc()` 를 부르면 비워진다」 는 이 판의 관찰**이다.
-> ★★★ **성능·메모리 양은 재지 않았다.**
->
-> **버전** — `WeakRef`·`FinalizationRegistry` 는 **ES2021** · 세 판 다 있다(판별 블록). `cleanupSome` 은 **표준에 없고 세 판 다 없다.**
->
-> **★★★ 층 — 이 문서의 결론이 기대는 세 층**
->
-> | 층 | 무엇 | 어디서 |
-> |---|---|---|
-> | ★★★ **명세 보장** | 강하게 붙잡힌 것은 안 비워진다 · **`deref()` 가 대상을 돌려주면 그 동기 실행이 끝날 때까지 계속 돌려준다**(`[[KeptAlive]]`) · 콜백은 **동기 실행을 끊고 들어오지 않는다** · `unregister` 의 반환값과 `TypeError` | 동작 (1)의 `no wait` 행 · 동작 (2)의 `[1]`·`[4]` · 동작 (4) |
-> | ★★ **호스트** | `ClearKeptObjects` 를 **언제** 부르나(HTML 은 **마이크로태스크 체크포인트의 끝**) · 정리 잡을 **언제** 넣나 | 동작 (1)의 `await` 행 · 동작 (2)의 `[2]` |
-> | ★★★ **이 판의 관찰(V8 + `--expose-gc`)** | `gc()` 한 번에 **비워졌다**(20/20) · 콜백이 그 뒤 **불렸다**(20/20) · 할당 압력만으로는 `deref()` 가 **한 판도** `undefined` 가 안 됐고 콜백은 **판마다 달랐다** | 동작 (1)의 `setTimeout` 행 · 동작 (3) |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 관찰 격자**(본체의 도구) | 8칸 × 20판 × 판 넷 — 「`deref() undefined N/20`」 · 「`callback ran N/20`」 · 「**한 판이라도** 본 칸 N / M」(동작 (1)) |
-> | ★★ **① 로그 심기** | 한 판 안에서 다섯 지점의 `deref()` — `deref()` 자신이 대상을 **다시 붙잡는다**(동작 (2)) |
-> | ★★ **흔들리는 칸을 따로 센다** | 할당 압력 — 20판 × 다섯 벌 · 벌마다 다른 수(동작 (3)) |
-> | ★★ **교차 갈래 한 쌍** | CPython — `del` 다음 줄 전에 콜백 · 순환은 `gc.collect()` 뒤(동작 (5)) |
-> | ★ **④ 예외 문구** | `unregister(1)` — 판마다 문구가 달랐다(동작 (4)) |
-> | ★★★ **「못 잰 것」 이 아니라 「창을 바꿔 물었다」**(제5의 상태) | Chrome 에서 `gc()` 없이 「언제 비워지나」 는 **잴 수 없다**(비울 방아쇠가 없다). 그래서 **`--js-flags=--expose-gc` 로 같은 질문을 다시 물었다**(동작 (1)) — ★ 바꾼 창이 못 보는 것: 그 `gc()` 는 **평소에는 없는 방아쇠**라, 실제 페이지에서 **언제** 비워지는지는 여전히 말하지 않는다 |
-> | ★ **부적용 — 양** | 얼마나 붙드나(바이트)는 이 API 가 말하지 않는다 — 06번의 「못 잰 것」과 같다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★★★ **동작 (3) 할당 압력 블록의 `run N` 다섯 줄과 마지막 줄의 수**(node 20 은 콜백이 한 판이라도 온 벌이 다섯 중 `0\~1`, Chrome 은 칸마다 `3\~10 / 20` — 재실행마다 바뀌었다). 재대조는 이 줄들을 정규화한다 | ★★★ 동작 (1)의 **모든 칸**(`0/20` · `20/20`)과 요약 줄 · 동작 (2)의 다섯 줄 · 동작 (4) · 동작 (5) — **재대조 동일** |
-> | 판별 블록의 판 문자열 · `unregister(1)` 의 **문구**(node 18 과 20 이 달랐다 — 판의 차이) | ★★ 단 동작 (1)의 `20/20` 은 **안 흔들렸을 뿐 보장이 아니다**(층 표의 셋째 줄) |
->
-> **선행** — [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(직접 선행 — ★★★ **이미 쟀다**: 수명 조건 6개 × 20판(`Map` 의 키 `0/20` · `WeakMap` 의 키 `20/20` · 에피머론 · `unregister` 한 뒤 콜백 `0/20`) · **같은 잡 안에서 `gc()` 직후 `deref()` 는 6행 전부 `20/20`** · 콜백은 `gc()` 뒤 **첫 매크로태스크** · `gc()` 없이는 **20틱 안에 안 옴** · 약한 쪽에 넣을 수 있는 값(`CanBeHeldWeakly`) — 거기 동작 (4)\~(6). 그 편 머리말은 브라우저의 GC 를 **안 돌렸다**고 적었다(그 페이지 하네스가 `setTimeout` 뒤의 출력을 못 받아서) → 이 묶음의 하네스는 받는다. ★ 이 문서는 23번을 **다시 재지 않고** 「기다림의 종류」 축 · Chrome · 할당 압력 · `deref()` 가 다시 붙잡는 것 · 파이썬 대비만 더한다) ·
-> [06 — 스코프와 클로저](../06-scope-and-closures/2-summary.md)(★★ `WeakRef` + `--expose-gc` 를 **도구로** 썼다 — 거기 동작 (6) · 「형제 함수가 읽으면 살아 남는다」는 **V8 의 구현**이라고 적었다) ·
-> [22 — `Symbol`](../22-symbol-and-well-known-symbols/2-summary.md)(심볼을 약한 대상으로 — ES2023) · [36 — 이벤트 루프](../36-event-loop-and-microtasks/2-summary.md)(마이크로태스크 대 매크로태스크).
->
-> ★★★ **경계 — README 가 적은 정본 `cs/foundations/memory-management/`** — 그 폴더는 [`README.md`](../../../../cs/foundations/memory-management/README.md) **한 파일**이고, 절은 메모리 계층 · 스택 프레임 · 가상 메모리 · 페이징 · TLB · 힙 구조 · 엔디언이다. ★★ **GC 알고리즘(추적·참조 계수·세대) 절은 없다** — GC 는 「2. 캐시와 지역성」의 한 줄(「가비지 컬렉터: 객체 위치가 수시로 바뀐다」) · 「11. 페이지 폴트와 다이나믹 힙」의 Young/Old 세대 그림 한 개(「가비지 컬렉터가 객체 수명에 따라 자동 분리」) · 「14」의 「단점: GC 오버헤드」 로만 나온다. GC **전략**의 논증은 [Java 언어 특성](../../../java/언어-특성/README.md)(세대 가설 · G1 · ZGC)이 더 가깝다. **이 문서는 어느 쪽도 다시 쓰지 않는다** — 여기는 **「약한 참조로 프로그램이 무엇을 볼 수 있나」의 계약**만이다.
->
-> ★★ **교차 갈래** — [Python 01 — 객체와 이름 바인딩](../../../python/syntax/01-object-and-name-binding/2-summary.md)(「7. `del` 은 객체가 아니라 이름을 지운다」 · 「8. 참조를 세는 두 도구」 — CPython 의 **참조 계수**) · [C++ 27 — `shared_ptr` 와 참조 계수](../../../cpp/syntax/27-shared-ptr-and-reference-counting/2-summary.md) · [C++ 28 — `weak_ptr` 와 순환 참조](../../../cpp/syntax/28-weak-ptr-and-reference-cycles/2-summary.md)(`lock()` 은 **해지 직후** `nullptr` — 결정적). ★ Java 의 `WeakReference`·`Cleaner` 와 C# 의 `WeakReference<T>` 는 **각 갈래 목록에 주제가 없다**(Java 목록은 「JVM 내부(GC…)는 이 목록에서 다루지 않는다」 · C# 은 결정적 해제를 C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **37번**(`IDisposable`)으로 둔다) — 이 문서는 그 둘을 **돌리지 않았다.**
-
 ```text
 ===== ./js44b-versions.sh (exit=0) =====
 node 18.19.1  v8 10.2.154.26-node.28
@@ -357,7 +302,7 @@ typeof gc: function · 20 rounds
 ### (3) ★★ `gc()` 없이 할당 압력만 — 흔들리는 칸을 다섯 벌 센다
 
 **언제 쓰나** — 「실제 프로그램처럼 메모리를 쓰면 언젠가 비워지겠지」 를 확인하고 싶을 때.
-★★★ **이 블록은 흔들리는 칸으로 선언한다**(머리말 표). 한 판이 약 20만 개의 짧게 사는 객체를 만든다. 칸은 「`deref()` undefined / 콜백」 의 20판 중 수이고, 같은 격자를 **다섯 벌** 돌린다.
+★★★ **이 블록은 흔들리는 칸으로 선언한다**(「실행 환경」 표). 한 판이 약 20만 개의 짧게 사는 객체를 만든다. 칸은 「`deref()` undefined / 콜백」 의 20판 중 수이고, 같은 격자를 **다섯 벌** 돌린다.
 
 ```js
 // js44b-47b-pressure-grid.js
@@ -660,7 +605,7 @@ CPython 은 **참조 계수**라 즉시였다(동작 (5)) — JS 에는 그런 �
 
 - [ECMA-262 — Processing Model of WeakRef and FinalizationRegistry Targets](https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html) · [ECMA-262 — Managing Memory](https://tc39.es/ecma262/multipage/managing-memory.html) · [HTML — Event loops / microtask checkpoint](https://html.spec.whatwg.org/multipage/webappapis.html)
 - [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md) — ★ **경계**: 약한 쪽에 무엇을 넣나 · 수명 조건 6 × 20판 · 콜백의 「언제」 블록은 거기. 여기는 **기다림의 종류 · 브라우저 · 압력 · `deref()` 의 재붙잡기 · 층 가르기**.
-- [`cs/foundations/memory-management/README.md`](../../../../cs/foundations/memory-management/README.md) — README 가 가리키는 정본. ★ **경계**: 그쪽은 **메모리 계층·스택·가상 메모리·페이징**이고 GC 알고리즘 절은 없다(머리말). [Java 언어 특성](../../../java/언어-특성/README.md) — GC 전략의 논증.
+- [`cs/foundations/memory-management/README.md`](../../../../cs/foundations/memory-management/README.md) — README 가 가리키는 정본. ★ **경계**: 그쪽은 **메모리 계층·스택·가상 메모리·페이징**이고 GC 알고리즘 절은 없다(「실행 환경」). [Java 언어 특성](../../../java/언어-특성/README.md) — GC 전략의 논증.
 - [06 — 스코프와 클로저](../06-scope-and-closures/2-summary.md) · [36 — 이벤트 루프](../36-event-loop-and-microtasks/2-summary.md) · [Python 01](../../../python/syntax/01-object-and-name-binding/2-summary.md) · [C++ 28 — `weak_ptr`](../../../cpp/syntax/28-weak-ptr-and-reference-cycles/2-summary.md).
 
 ## 용어 풀이
@@ -678,4 +623,58 @@ CPython 은 **참조 계수**라 즉시였다(동작 (5)) — JS 에는 그런 �
 
 - **`cleanupSome`** — 제안 단계에서 빠진 메서드. 세 판 다 없다(판별 블록).
 - **node 의 `ClearKeptObjects` 호출 자리** — 관찰로는 HTML 과 같았다. node 소스는 읽지 않았다.
-- **GC 알고리즘 자체** — 이 목록의 몫이 아니다(머리말의 경계).
+- **GC 알고리즘 자체** — 이 목록의 몫이 아니다(「실행 환경」의 경계).
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 층 가르기다** — 같은 칸의 숫자라도 **명세가 보장한 것 / V8 이 그렇게 한 것 / 이 판에서 `gc()` 를 불렀을 때 본 것**이 섞여 있다. 문서의 모든 결론 줄에 **어느 층인지**를 붙인다(아래 「층」 표).
+★★★ 그 층을 가르는 도구가 **② 관찰 격자**다 — (`gc()` 있음/없음) × (`gc()` 부름/안 부름) × (기다림 넷: 없음 · `await null` 한 번 · 열 번 · `setTimeout` 한 번) 칸마다 **20판 중 몇 판**에서 `deref()` 가 `undefined` 였고 콜백이 불렸나를 센다(동작 (1)). 판 격자는 **node 20 · node 18 · Chrome 151**(`--js-flags=--expose-gc` 유무)이다. ★ **「모든 판에서」 라는 전칭 칸은 두지 않는다** — 칸은 「20판 중 N」, 요약 줄은 「**한 판이라도**」 로 센다(규칙 24).
+★★ 보조로 **① 로그 심기**(`deref()` 가 대상을 **다시 붙잡는** 것 — 동작 (2)) · **④ 예외의 이름 + 문구**(`unregister(1)` — 동작 (4)) · **교차 갈래 한 쌍**(CPython 은 `del` 직후 — 동작 (5))을 쓴다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — Processing Model of WeakRef and FinalizationRegistry Targets](https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html) — Objectives 첫 문장 「**This specification does not make any guarantees that any object or symbol will be garbage collected. Objects or symbols which are not live may be released after long periods of time, or never at all.**」 · 「`deref` 가 돌려준 대상은 **이어지는 동기 접근도 같은 값**을 받도록 살려 둔다 — 그 목록은 동기 작업이 끝나면 **`ClearKeptObjects`** 로 비운다」 · 「정리 콜백은 **may eventually be made, after synchronous ECMAScript execution completes**」 · 「**`ClearKeptObjects`·`CleanupFinalizationRegistry` 는 동기 실행을 끊지 못한다** … 그 일정은 **호스트**에 맡긴다」 · Execution 절 — 「살아 있지 않으면 구현은 **may** 비울 수 있다 … 정리 잡을 넣을지는 **implementation-defined choice**」 · `ClearKeptObjects` 는 「**when a synchronous sequence of ECMAScript executions completes**」 에 부르게 되어 있다(`[[KeptAlive]]` 를 빈 목록으로) · `AddToKeptObjects`
+- [ECMA-262 — Managing Memory](https://tc39.es/ecma262/multipage/managing-memory.html) — `WeakRef.prototype.deref` 의 note 「첫 `deref` 가 `undefined` 가 아니었으면 **둘째도 그럴 수 없다**」 · `FinalizationRegistry.prototype.unregister` — **`CanBeHeldWeakly(unregisterToken)` 이 거짓이면 `TypeError`** · 지운 칸이 있으면 `true`
+- [HTML — Perform a microtask checkpoint](https://html.spec.whatwg.org/multipage/webappapis.html) — 체크포인트의 끝에서 **「Perform ClearKeptObjects()」** · `HostEnqueueFinalizationRegistryCleanupJob` 절 「**The timing and occurrence of cleanup work is implementation-defined** … Authors would be best off **not depending on the timing details** of garbage collection implementations」
+- ★ 명세의 이름은 **`AddToKeptObjects`/`ClearKeptObjects`/`[[KeptAlive]]`** 다. 제안 시절의 이름(`KeepDuringJob`)은 **지금 명세 텍스트에 없다** — 이 문서는 지금 이름을 쓴다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 v20.19.6, `node18` 은 v18.19.1, 파이썬은 `python3`(3.12.3). 하네스 소스는 [44번](../44-dynamic-import-top-level-await-and-import-attributes/2-summary.md) 맨 위 부분에 있다 — ★ **이 주제를 위해 `--gc` 선택지를 더했다**(`--js-flags=--expose-gc`). ★ Chrome 은 `--virtual-time-budget` 로 시간을 당겨 돌리므로 `setTimeout` 이 **실제 시간을 안 쓴다.**
+★★★ **`gc()` 는 ECMA-262 에 없다** — V8 플래그 `--expose-gc` 가 여는 전역 함수다(판별 블록 — 플래그 없이는 `undefined`). **「`gc()` 를 부르면 비워진다」 는 이 판의 관찰**이다.
+★★★ **성능·메모리 양은 재지 않았다.**
+
+**버전** — `WeakRef`·`FinalizationRegistry` 는 **ES2021** · 세 판 다 있다(판별 블록). `cleanupSome` 은 **표준에 없고 세 판 다 없다.**
+
+**★★★ 층 — 이 문서의 결론이 기대는 세 층**
+
+| 층 | 무엇 | 어디서 |
+|---|---|---|
+| ★★★ **명세 보장** | 강하게 붙잡힌 것은 안 비워진다 · **`deref()` 가 대상을 돌려주면 그 동기 실행이 끝날 때까지 계속 돌려준다**(`[[KeptAlive]]`) · 콜백은 **동기 실행을 끊고 들어오지 않는다** · `unregister` 의 반환값과 `TypeError` | 동작 (1)의 `no wait` 행 · 동작 (2)의 `[1]`·`[4]` · 동작 (4) |
+| ★★ **호스트** | `ClearKeptObjects` 를 **언제** 부르나(HTML 은 **마이크로태스크 체크포인트의 끝**) · 정리 잡을 **언제** 넣나 | 동작 (1)의 `await` 행 · 동작 (2)의 `[2]` |
+| ★★★ **이 판의 관찰(V8 + `--expose-gc`)** | `gc()` 한 번에 **비워졌다**(20/20) · 콜백이 그 뒤 **불렸다**(20/20) · 할당 압력만으로는 `deref()` 가 **한 판도** `undefined` 가 안 됐고 콜백은 **판마다 달랐다** | 동작 (1)의 `setTimeout` 행 · 동작 (3) |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 관찰 격자**(본체의 도구) | 8칸 × 20판 × 판 넷 — 「`deref() undefined N/20`」 · 「`callback ran N/20`」 · 「**한 판이라도** 본 칸 N / M」(동작 (1)) |
+| ★★ **① 로그 심기** | 한 판 안에서 다섯 지점의 `deref()` — `deref()` 자신이 대상을 **다시 붙잡는다**(동작 (2)) |
+| ★★ **흔들리는 칸을 따로 센다** | 할당 압력 — 20판 × 다섯 벌 · 벌마다 다른 수(동작 (3)) |
+| ★★ **교차 갈래 한 쌍** | CPython — `del` 다음 줄 전에 콜백 · 순환은 `gc.collect()` 뒤(동작 (5)) |
+| ★ **④ 예외 문구** | `unregister(1)` — 판마다 문구가 달랐다(동작 (4)) |
+| ★★★ **「못 잰 것」 이 아니라 「창을 바꿔 물었다」**(제5의 상태) | Chrome 에서 `gc()` 없이 「언제 비워지나」 는 **잴 수 없다**(비울 방아쇠가 없다). 그래서 **`--js-flags=--expose-gc` 로 같은 질문을 다시 물었다**(동작 (1)) — ★ 바꾼 창이 못 보는 것: 그 `gc()` 는 **평소에는 없는 방아쇠**라, 실제 페이지에서 **언제** 비워지는지는 여전히 말하지 않는다 |
+| ★ **부적용 — 양** | 얼마나 붙드나(바이트)는 이 API 가 말하지 않는다 — 06번의 「못 잰 것」과 같다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★★★ **동작 (3) 할당 압력 블록의 `run N` 다섯 줄과 마지막 줄의 수**(node 20 은 콜백이 한 판이라도 온 벌이 다섯 중 `0\~1`, Chrome 은 칸마다 `3\~10 / 20` — 재실행마다 바뀌었다). 재대조는 이 줄들을 정규화한다 | ★★★ 동작 (1)의 **모든 칸**(`0/20` · `20/20`)과 요약 줄 · 동작 (2)의 다섯 줄 · 동작 (4) · 동작 (5) — **재대조 동일** |
+| 판별 블록의 판 문자열 · `unregister(1)` 의 **문구**(node 18 과 20 이 달랐다 — 판의 차이) | ★★ 단 동작 (1)의 `20/20` 은 **안 흔들렸을 뿐 보장이 아니다**(층 표의 셋째 줄) |
+
+**선행** — [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(직접 선행 — ★★★ **이미 쟀다**: 수명 조건 6개 × 20판(`Map` 의 키 `0/20` · `WeakMap` 의 키 `20/20` · 에피머론 · `unregister` 한 뒤 콜백 `0/20`) · **같은 잡 안에서 `gc()` 직후 `deref()` 는 6행 전부 `20/20`** · 콜백은 `gc()` 뒤 **첫 매크로태스크** · `gc()` 없이는 **20틱 안에 안 옴** · 약한 쪽에 넣을 수 있는 값(`CanBeHeldWeakly`) — 거기 동작 (4)\~(6). 그 편 「실행 환경」은 브라우저의 GC 를 **안 돌렸다**고 적었다(그 페이지 하네스가 `setTimeout` 뒤의 출력을 못 받아서) → 이 묶음의 하네스는 받는다. ★ 이 문서는 23번을 **다시 재지 않고** 「기다림의 종류」 축 · Chrome · 할당 압력 · `deref()` 가 다시 붙잡는 것 · 파이썬 대비만 더한다) ·
+[06 — 스코프와 클로저](../06-scope-and-closures/2-summary.md)(★★ `WeakRef` + `--expose-gc` 를 **도구로** 썼다 — 거기 동작 (6) · 「형제 함수가 읽으면 살아 남는다」는 **V8 의 구현**이라고 적었다) ·
+[22 — `Symbol`](../22-symbol-and-well-known-symbols/2-summary.md)(심볼을 약한 대상으로 — ES2023) · [36 — 이벤트 루프](../36-event-loop-and-microtasks/2-summary.md)(마이크로태스크 대 매크로태스크).
+
+★★★ **경계 — README 가 적은 정본 `cs/foundations/memory-management/`** — 그 폴더는 [`README.md`](../../../../cs/foundations/memory-management/README.md) **한 파일**이고, 절은 메모리 계층 · 스택 프레임 · 가상 메모리 · 페이징 · TLB · 힙 구조 · 엔디언이다. ★★ **GC 알고리즘(추적·참조 계수·세대) 절은 없다** — GC 는 「2. 캐시와 지역성」의 한 줄(「가비지 컬렉터: 객체 위치가 수시로 바뀐다」) · 「11. 페이지 폴트와 다이나믹 힙」의 Young/Old 세대 그림 한 개(「가비지 컬렉터가 객체 수명에 따라 자동 분리」) · 「14」의 「단점: GC 오버헤드」 로만 나온다. GC **전략**의 논증은 [Java 언어 특성](../../../java/언어-특성/README.md)(세대 가설 · G1 · ZGC)이 더 가깝다. **이 문서는 어느 쪽도 다시 쓰지 않는다** — 여기는 **「약한 참조로 프로그램이 무엇을 볼 수 있나」의 계약**만이다.
+
+★★ **교차 갈래** — [Python 01 — 객체와 이름 바인딩](../../../python/syntax/01-object-and-name-binding/2-summary.md)(「7. `del` 은 객체가 아니라 이름을 지운다」 · 「8. 참조를 세는 두 도구」 — CPython 의 **참조 계수**) · [C++ 27 — `shared_ptr` 와 참조 계수](../../../cpp/syntax/27-shared-ptr-and-reference-counting/2-summary.md) · [C++ 28 — `weak_ptr` 와 순환 참조](../../../cpp/syntax/28-weak-ptr-and-reference-cycles/2-summary.md)(`lock()` 은 **해지 직후** `nullptr` — 결정적). ★ Java 의 `WeakReference`·`Cleaner` 와 C# 의 `WeakReference<T>` 는 **각 갈래 목록에 주제가 없다**(Java 목록은 「JVM 내부(GC…)는 이 목록에서 다루지 않는다」 · C# 은 결정적 해제를 C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **37번**(`IDisposable`)으로 둔다) — 이 문서는 그 둘을 **돌리지 않았다.**

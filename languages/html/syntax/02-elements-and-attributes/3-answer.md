@@ -1,10 +1,5 @@
 # html/syntax/02 — 요소와 속성 문법: 빈 요소·태그 생략·불리언 속성·따옴표 규칙 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「The HTML syntax」·「Tokenization」으로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -615,3 +610,9 @@ p2 가 .v2 안인가 = true
 - **파스 오류(parse error)** — 명세가 무효라고 이름 붙인 입력. **트리를 바꾸지도, 파싱을 멈추지도 않는다.**
 - **직렬화(serialization)** — 트리를 다시 글자열로 되쓰는 것. `--dump-dom` 이 보여 주는 것.
 - **정제기(sanitizer)** — 신뢰할 수 없는 HTML 에서 위험한 것을 걸러 내는 서버·클라이언트 쪽 도구.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「The HTML syntax」·「Tokenization」으로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.

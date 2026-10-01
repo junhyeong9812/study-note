@@ -1,13 +1,5 @@
 # PR #19339 - 착수 분석: 비원자 save/remove와 세션 유실
 
-> 원본: fork repo의 `analyze-docs/plans/2026-06-14/spring-security-core-bug-hunt/`
-> `C-06-reactivesessionregistry-race/`(task.md·해설.md·changelog.md·review-log.md·codex-output.md).
-> 학습 문서로 옮기면서 작업 진행용 절을 덜어내고 실측 근거와 리뷰 대응을 절로 승격했다.
-> 결론은 PR #19339로 반영됐다(커밋 `fc4964f8d5`, 후속 `72feea0d33`).
->
-> **좌표 주의**: 본문의 file:line은 **수정 전** 파일 기준이다.
-> 문제와 수정 요약은 [README.md](README.md), 실구조는 [structure.md](structure.md), 테스트는 [tests.md](tests.md).
-
 ## 0. 결론 먼저
 
 `InMemoryReactiveSessionRegistry`의 두 갱신 메서드가 모두 원자 단위 밖에서 집합을 만졌다.\
@@ -235,3 +227,12 @@ S2의 세션 정보는 `sessionById`에 남아 있고 그 세션으로 요청을
 
 > **`--force-with-lease`** — 원격 브랜치가 내가 마지막으로 본 상태 그대로일 때만 강제 푸시를 허용하는 옵션.\
 > 예: 그냥 `--force`는 그사이 남이 올린 커밋을 지울 수 있지만, 이쪽은 그런 경우 푸시를 거부한다.
+
+## 출처
+
+원본: fork repo의 `analyze-docs/plans/2026-06-14/spring-security-core-bug-hunt/`
+`C-06-reactivesessionregistry-race/`(task.md·해설.md·changelog.md·review-log.md·codex-output.md).
+학습 문서로 옮기면서 작업 진행용 절을 덜어내고 실측 근거와 리뷰 대응을 절로 승격했다.
+결론은 PR #19339로 반영됐다(커밋 `fc4964f8d5`, 후속 `72feea0d33`).
+
+**좌표 주의**: 본문의 file:line은 **수정 전** 파일 기준이다.

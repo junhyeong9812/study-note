@@ -1,35 +1,5 @@
 # python/syntax/47-json — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
-> - [`json`(3.12)](https://docs.python.org/3.12/library/json.html) —
->   `dumps` 의 주석 *"Keys in key/value pairs of JSON are always of the type str. When a dictionary is converted into JSON, all the keys of the dictionary are coerced to strings. As a result of this, if a dictionary is converted into JSON and then back into a dictionary, the dictionary may not equal the original one."* ·
->   변환표 *"list, tuple"* → array · *"int, float, int- & float-derived Enums"* → number
-> - `allow_nan` — *"If True (the default), their JavaScript equivalents (NaN, Infinity, -Infinity) are used."* · `JSONEncoder` 절의 *"This behavior is not JSON specification compliant, but is consistent with most JavaScript based encoders and decoders."*
-> - `object_hook` — *"will be called with the result of every JSON object decoded and its return value will be used in place of the given dict"* · *"If object_hook is also defined, the object_pairs_hook takes priority."*
-> - 「Repeated Names Within an Object」 — *"By default, this module does not raise an exception; instead, it ignores all but the last name-value pair for a given name"*
-> - `check_circular` — *"If False, the circular reference check for container types is skipped and a circular reference will result in a RecursionError (or worse)."*
-> - `ensure_ascii` — *"If True (the default), the output is guaranteed to have all incoming non-ASCII characters escaped."* · `default` — *"A function that is called for objects that can't otherwise be serialized."*
-> - 「Implementation Limitations」 — *"it is common for JSON numbers to be deserialized into IEEE 754 double precision numbers and thus subject to that representation's range and precision limitations"*
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 두 블록을 더 던졌다.\
-> ★★★ **이 문서가 잰 것은 「글자」·「타입」·「같은가」·「호출 순서」·「개수」뿐이다** — 시간·메모리는 한 번도 재지 않았다. 「C 가속이 빠르다」도 **재지 않았다.**\
-> **버전**(문서의 `versionadded`·`versionchanged` 표기) — `object_pairs_hook` **3.1**, int·float 파생 `Enum` 지원 **3.4**, 선택 인자 전부 키워드 전용 **3.6**, 기본 `parse_int` 의 정수 글자 길이 한도 **3.11**.\
-> ★ **구현 대 언어 보장 한 줄** — 위 문서 문장들이 보장이고, **예외 문구**와 **C 가속 부품의 존재**는 CPython 의 것이다(동작 9 에서 3.11 과 3.12 의 문구가 실제로 갈렸다).\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | ★ 판이 오르면 **예외 문구** — `RecursionError` 문구가 3.11 과 3.12 에서 실제로 달랐다(동작 9) | ★★ 격자의 마지막 줄 **「… N / M」** · `dumps` 가 낸 **글자** |
-> | — (주소·시간을 한 곳도 안 찍었다 · `set` 은 **`sorted` 를 거쳐서만** 찍었다) | `loads` 뒤 **타입 이름** · 훅이 불린 **순서와 횟수** |
->
-> **선행** — [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(★★★ **키가 되는 조건과 「`1`·`1.0`·`True` 는 한 칸」** — 12편이 「dict 키가 문자열로 바뀌는 것」을 이 주제로 넘겼다) ·
-> [13-set-and-frozenset](../13-set-and-frozenset/2-summary.md)(「set 은 JSON 으로 못 나간다」를 이 주제로 넘겼다) ·
-> [06-strings-bytes-unicode](../06-strings-bytes-unicode/2-summary.md)(`ensure_ascii` 와 `backslashreplace` 를 이 주제로 넘겼다).
-
 ## 한눈에 — 쉽게 말하면
 
 **`json` 은 「규격 상자만 받는 택배」다.** 받는 쪽은 **상자 여섯 종류**(객체·배열·문자열·숫자·참거짓·`null`)만 안다.
@@ -1239,3 +1209,32 @@ json.loads(s, object_pairs_hook=검사함수)                 # 중복 키 거�
 * ★ **`loads` 는 `bytes` 도 받는다**(3.6+ — UTF-8·16·32 를 알아본다, 문서) — 재지 않았다. 파일에서 읽는 이야기는 [48번](../48-pathlib-and-file-io/2-summary.md).
 * ★ **`strict=False`** 는 문자열 안의 제어 문자(탭·줄바꿈)를 허락한다(문서) — 재지 않았다.
 * ★ **왕복을 지키는 약속**(`{"__type__": "tuple", …}` + `object_hook`)은 흔한 관용구지만 **표준이 아니다** — 받는 쪽이 같은 약속을 알아야 한다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
+- [`json`(3.12)](https://docs.python.org/3.12/library/json.html) —
+  `dumps` 의 주석 *"Keys in key/value pairs of JSON are always of the type str. When a dictionary is converted into JSON, all the keys of the dictionary are coerced to strings. As a result of this, if a dictionary is converted into JSON and then back into a dictionary, the dictionary may not equal the original one."* ·
+  변환표 *"list, tuple"* → array · *"int, float, int- & float-derived Enums"* → number
+- `allow_nan` — *"If True (the default), their JavaScript equivalents (NaN, Infinity, -Infinity) are used."* · `JSONEncoder` 절의 *"This behavior is not JSON specification compliant, but is consistent with most JavaScript based encoders and decoders."*
+- `object_hook` — *"will be called with the result of every JSON object decoded and its return value will be used in place of the given dict"* · *"If object_hook is also defined, the object_pairs_hook takes priority."*
+- 「Repeated Names Within an Object」 — *"By default, this module does not raise an exception; instead, it ignores all but the last name-value pair for a given name"*
+- `check_circular` — *"If False, the circular reference check for container types is skipped and a circular reference will result in a RecursionError (or worse)."*
+- `ensure_ascii` — *"If True (the default), the output is guaranteed to have all incoming non-ASCII characters escaped."* · `default` — *"A function that is called for objects that can't otherwise be serialized."*
+- 「Implementation Limitations」 — *"it is common for JSON numbers to be deserialized into IEEE 754 double precision numbers and thus subject to that representation's range and precision limitations"*
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 두 블록을 더 던졌다.\
+★★★ **이 문서가 잰 것은 「글자」·「타입」·「같은가」·「호출 순서」·「개수」뿐이다** — 시간·메모리는 한 번도 재지 않았다. 「C 가속이 빠르다」도 **재지 않았다.**\
+**버전**(문서의 `versionadded`·`versionchanged` 표기) — `object_pairs_hook` **3.1**, int·float 파생 `Enum` 지원 **3.4**, 선택 인자 전부 키워드 전용 **3.6**, 기본 `parse_int` 의 정수 글자 길이 한도 **3.11**.\
+★ **구현 대 언어 보장 한 줄** — 위 문서 문장들이 보장이고, **예외 문구**와 **C 가속 부품의 존재**는 CPython 의 것이다(동작 9 에서 3.11 과 3.12 의 문구가 실제로 갈렸다).\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| ★ 판이 오르면 **예외 문구** — `RecursionError` 문구가 3.11 과 3.12 에서 실제로 달랐다(동작 9) | ★★ 격자의 마지막 줄 **「… N / M」** · `dumps` 가 낸 **글자** |
+| — (주소·시간을 한 곳도 안 찍었다 · `set` 은 **`sorted` 를 거쳐서만** 찍었다) | `loads` 뒤 **타입 이름** · 훅이 불린 **순서와 횟수** |
+
+**선행** — [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(★★★ **키가 되는 조건과 「`1`·`1.0`·`True` 는 한 칸」** — 12편이 「dict 키가 문자열로 바뀌는 것」을 이 주제로 넘겼다) ·
+[13-set-and-frozenset](../13-set-and-frozenset/2-summary.md)(「set 은 JSON 으로 못 나간다」를 이 주제로 넘겼다) ·
+[06-strings-bytes-unicode](../06-strings-bytes-unicode/2-summary.md)(`ensure_ascii` 와 `backslashreplace` 를 이 주제로 넘겼다).

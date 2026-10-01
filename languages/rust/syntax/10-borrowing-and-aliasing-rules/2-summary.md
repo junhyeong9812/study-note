@@ -1,20 +1,5 @@
 # rust/syntax/10 — 빌림 `&`와 `&mut`, 별칭 규칙 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/types/pointer.html) 의 References 절 ·
-> [The Rust Book ch.4.2](https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html) ·
-> `rustc --explain E0499` / `E0502` / `E0503` / `E0596` / `E0382` / `E0204`.
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
-> ★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.\
-> 소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단의 줄 번호는 그 파일 기준**이다.
-> **버전** — `&`·`&mut` 문법은 1.0부터다. **NLL**(non-lexical lifetimes)에 관해 이 툴체인의\
-> `releases.html` 에서 직접 확인한 두 줄 — **1.36.0**(2019-07-04) 「Non-Lexical Lifetimes are now enabled\
-> on the 2015 edition.」 · **1.39.0**(2019-11-07) 「the NLL borrow checker is now a hard error in Rust 2018.」\
-> 실측으로도 확인했다 — (3)절의 통과하는 파일은 **`--edition 2015` 로도 통과**한다(1.92.0 기준).\
-> 본문 결과는 전부 **2021** 기준이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **잃지 않고 빌려주되, 고치는 사람은 한 번에 한 명이다.**
@@ -1058,3 +1043,18 @@ For more information about this error, try `rustc --explain E0308`.
   `Arc<Mutex<T>>` 가 「공유 다수」와 「가변 하나」를 **런타임 비용을 내고** 동시에 얻는 모양이다.
 - ★ **`&mut` 를 「mutable reference」가 아니라 「exclusive reference」로 읽으면 헷갈림이 줄어든다.**\
   중요한 성질은 「고칠 수 있다」가 아니라 「**나 말고 아무도 없다**」다.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference](https://doc.rust-lang.org/reference/types/pointer.html) 의 References 절 ·
+[The Rust Book ch.4.2](https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html) ·
+`rustc --explain E0499` / `E0502` / `E0503` / `E0596` / `E0382` / `E0204`.
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
+★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.\
+소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단의 줄 번호는 그 파일 기준**이다.
+**버전** — `&`·`&mut` 문법은 1.0부터다. **NLL**(non-lexical lifetimes)에 관해 이 툴체인의\
+`releases.html` 에서 직접 확인한 두 줄 — **1.36.0**(2019-07-04) 「Non-Lexical Lifetimes are now enabled\
+on the 2015 edition.」 · **1.39.0**(2019-11-07) 「the NLL borrow checker is now a hard error in Rust 2018.」\
+실측으로도 확인했다 — (3)절의 통과하는 파일은 **`--edition 2015` 로도 통과**한다(1.92.0 기준).\
+본문 결과는 전부 **2021** 기준이다.

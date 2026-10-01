@@ -1,11 +1,5 @@
 # PR #36911 분석 — Property.resolveName()의 접두사 부분일치
 
-> 기준: 머지 커밋 `f067d40f0a6` (2026-08-20, 마일스톤 7.1.0-M2, main 전용). 인용한
-> `Property.java` 좌표는 머지 **후** 코드이며, 수정 전 코드는 diff의 `-` 쪽을 병기한다.
-> 근거: 실파일 정독 + `f067d40f0a6` diff + 작업 폴더 `docs/plans/2026-08-14/pr36911-plain-accessor-review/`.
-> 같은 폴더의 README(서사)·structure(무대 구조)·tests(테스트별 해설)·gates(이해 게이트)와
-> 중복을 피해, 이 문서는 **이름표 사전·단계 추적 표·계약 대조·기각된 대안**을 맡는다.
-
 ## 0. 결론
 
 `Property#resolveName()`은 읽기 메서드 이름에서 `get`/`is` 접두사를 `String#indexOf`로 찾아 잘라냈는데, `indexOf`는 접두사를 이름 **어디서든** 찾으므로 접두사 글자를 우연히 품은 무접두사 접근자(`budget()`, `issue()`)가 엉뚱한 위치에서 잘려 빈 문자열이나 틀린 이름이 되고, 그 이름으로 backing field를 찾는 `getField()`가 실패해 필드 애노테이션이 **예외 없이** 탈락했다.\
@@ -302,3 +296,9 @@ read 분기 교체 — `Property.java:135-153`:
   즉 이 수정은 공개 API 표면의 정확성을 고치는 것이지, 내부 동작 경로를 바꾸는 것이 아니다.
 - **다루지 않은 것.**\
   `getField()`의 3변형 폴백(:246-253)이 만드는 관대함, `annotationCache`의 키 설계, `resolveMethodParameter()`의 read/write 타입 선택(:191-197)은 이 PR의 범위 밖이며 결함과도 무관하다.
+
+## 출처
+
+기준: 머지 커밋 `f067d40f0a6` (2026-08-20, 마일스톤 7.1.0-M2, main 전용). 인용한
+`Property.java` 좌표는 머지 **후** 코드이며, 수정 전 코드는 diff의 `-` 쪽을 병기한다.
+근거: 실파일 정독 + `f067d40f0a6` diff + 작업 폴더 `docs/plans/2026-08-14/pr36911-plain-accessor-review/`.

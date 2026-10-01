@@ -1,8 +1,5 @@
 # os/11-heap-allocation — malloc 뒤에서 일어나는 일: free list·단편화·buddy·slab — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> ⚠️ 이 서머리는 Claude 초안(2026-09-30) — 근거는 아래 「관련 주제·근거」. 본인 검수 후 이 줄을 `✅ 검수 완료(날짜)`로 바꾼다.
-
 ## 해결하는 문제
 
 기초는 원고 [memory-management §4·§11·§14](../../foundations/memory-management/README.md)다.\

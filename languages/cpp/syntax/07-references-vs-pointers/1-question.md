@@ -1,17 +1,5 @@
 # cpp/syntax/07 — 참조와 포인터의 차이 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **예측형 위주**다 — 참조가 **무엇을 못 하는지**,
-> 그리고 그 「못 함」이 **설계에서 무엇을 사는지**를 맞힐 수 있는지 묻는다.
-> **환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux · `objdump`/`nm`(GNU Binutils 2.42).
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
-> ★★★ **「참조는 포인터보다 빠르다/느리다」를 먼저 의심해라** — 3번에서 **기계어를 직접 대조**한다.
-> ★ **네 번째 창은 생성된 기계어**(`objdump -d`)다. 타입 체계와 코드 생성을 **갈라서** 본다.
-> 선행 — C 갈래 [`14-pointers-address-dereference-and-pointer-types/`](../../../c/syntax/14-pointers-address-dereference-and-pointer-types/)(포인터).
-> 형제 [`05번`](../05-auto-and-decltype-type-deduction/)의 `auto&`·`auto&&` 가 여기서 온다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -219,6 +207,15 @@ int main() {
 - `const T&` 매개변수 설계의 정본은 목록의 몇 번인가?
 - 댕글링 참조와 수명 연장의 정본은 목록의 몇 번인가?
 - 포인터 산술·배열 감쇠는 **어느 갈래 어느 주제**인가 — 참조에는 왜 그 이야기가 없는가?
+
+## 실행 환경
+
+**환경** — g++ 13.3.0 · clang 18.1.3 · x86-64 Linux · `objdump`/`nm`(GNU Binutils 2.42).
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex`.
+★★★ **「참조는 포인터보다 빠르다/느리다」를 먼저 의심해라** — 3번에서 **기계어를 직접 대조**한다.
+★ **네 번째 창은 생성된 기계어**(`objdump -d`)다. 타입 체계와 코드 생성을 **갈라서** 본다.
+선행 — C 갈래 [`14-pointers-address-dereference-and-pointer-types/`](../../../c/syntax/14-pointers-address-dereference-and-pointer-types/)(포인터).
+형제 [`05번`](../05-auto-and-decltype-type-deduction/)의 `auto&`·`auto&&` 가 여기서 온다.
 
 ## 복습 기록
 

@@ -1,14 +1,5 @@
 # PR #37259 - 무대의 실구조와 워크플로우
 
-> PR #37259의 무대가 되는 실구조와 워크플로우. 문제와 수정은 [README.md](README.md),
-> 테스트는 [tests.md](tests.md), 착수 시점 분석은 [analysis.md](analysis.md) 참조.
->
-> 기준: 로컬 HEAD `c57215898bb`(브랜치 `fix/mutiny-uni-empty-value` = upstream main
-> `572850bdcf1` 리베이스 + fix 커밋). **이 시점의 `ReactiveAdapterRegistry.java`에는
-> 이미 수정이 반영돼 있다** - 아래 file:line은 "수정 후" 좌표다. 다만 수정이 한 줄
-> 치환이라 줄 번호는 수정 전과 같다. Mutiny 쪽 좌표는 **Mutiny 1.10.0 sources jar**
-> 안의 파일이며 이 저장소에는 없다.
-
 ## 1. 무대 - 실구조
 
 이 결함의 무대는 **모든 비동기/리액티브 타입을 Reactive Streams `Publisher` 하나로 정규화하는 다리**이고, 그 다리의 각 칸이 `ReactiveAdapter`다.\
@@ -377,3 +368,11 @@ CompletableFuture     /                                  v
 
 - [Uni와 Mono - 빈 값을 서로 다르게 적는 두 단일 값 타입](../../concepts/uni-vs-mono-reactive-types/uni-vs-mono-reactive-types.md) - 두 타입의 신호 모델 대조, `ReactiveAdapter`가 두 세계를 잇는 방식, 그리고 이 결함의 실측 매트릭스.\
   이 PR의 이해 게이트에서 파생된 문서다.
+
+## 출처
+
+기준: 로컬 HEAD `c57215898bb`(브랜치 `fix/mutiny-uni-empty-value` = upstream main
+`572850bdcf1` 리베이스 + fix 커밋). **이 시점의 `ReactiveAdapterRegistry.java`에는
+이미 수정이 반영돼 있다** - 본문의 file:line은 "수정 후" 좌표다. 다만 수정이 한 줄
+치환이라 줄 번호는 수정 전과 같다. Mutiny 쪽 좌표는 **Mutiny 1.10.0 sources jar**
+안의 파일이며 이 저장소에는 없다.

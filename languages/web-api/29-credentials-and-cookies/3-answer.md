@@ -1,10 +1,5 @@
 # web-api/29 — 자격 증명과 `credentials`: 쿠키가 실리는 조건·와일드카드 금지 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버 두 대(A·B)는 같은 기계의 로컬 서버이고 **바깥 인터넷으로는 요청하지 않았다.** 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 credentials mode · includeCredentials · CORS check · CORS protocol and credentials 절로 접지했다. **쿠키 속성(`SameSite`·`Secure`)과 서드파티 쿠키는 이 판의 관찰**이다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
 |---|---|
 | 쿠키 통 · 격자 24칸 · 콘솔 · 서버 로그 · 프리플라이트 | ★ **판·설정에 매인 칸** — 사이트 밖 `include` 네 칸의 `none=1`(서드파티 쿠키 정책) |
@@ -206,3 +201,9 @@ python3 wa28b-net.py cookie wa28b-29-preflight.html
 | `SameSite` 안 적음 | `Lax` 처럼 | 쿠키 명세 초안·구현의 기본값 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② `Strict`·`Partitioned`·HttpOnly. ③ 다른 출처 응답의 `Set-Cookie` 저장.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버 두 대(A·B)는 같은 기계의 로컬 서버이고 **바깥 인터넷으로는 요청하지 않았다.** 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 credentials mode · includeCredentials · CORS check · CORS protocol and credentials 절로 접지했다. **쿠키 속성(`SameSite`·`Secure`)과 서드파티 쿠키는 이 판의 관찰**이다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

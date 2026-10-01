@@ -1,14 +1,5 @@
 # web-api/19 — `passive` 와 스크롤 성능: 기본값이 바뀐 이유 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★ **이 편의 본체는 「행동으로 묻는 passive 판정」이다** — 리스너의 `passive` 값을 **읽는 API 가 없으므로**, 리스너 안에서 `preventDefault()` 를 불러 **`defaultPrevented` 가 바뀌나**로 묻는다(제5의 상태). 여기에 **진짜 휠·진짜 터치에서 화면이 움직였나**를 한 칸 더 얹는다.\
-> ★★★ **제목에 「성능」이 있지만 이 편은 시간도 프레임도 재지 않았다.** 「합성 스레드가 리스너를 기다려야 하나」는 **DOM 표준의 설명 절과 Chromium 쪽 기록을 인용**할 뿐이고, **이 머신에서 잰 것은 「passive 인가」와 「움직였나」뿐**이다.\
-> **기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「2.8 Observing event listeners」·「default passive value」·「flatten more options」·「add an event listener」·「set the canceled flag」 절. Chromium 의 기록은 [chromestatus — Treat Document Level Touch Event Listeners as Passive](https://chromestatus.com/feature/5093566007214080) · [chromestatus — Treat Document Level Wheel/Mousewheel Event Listeners as Passive](https://chromestatus.com/feature/6662647093133312). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **휠과 터치는 CDP 로 넣은 진짜 입력**(`Input.dispatchMouseEvent` 의 `mouseWheel` · `Input.dispatchTouchEvent`)이고, 기본값 격자는 합성 이벤트로 물었다. 하네스는 [16번 주제](../16-event-propagation-phases/2-summary.md)의 (1)에 있다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — [17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md)(`preventDefault`·`cancelable`·`defaultPrevented`). **[15번 주제](../15-listener-registration/2-summary.md)의 (9)·(10)이 직접 선행**이다 — 그쪽이 합성 이벤트로 「`passive` 면 무시된다」와 기본값 10칸을 쟀고, 여기는 **나머지 칸 · 인자 꼴 · 진짜 입력 · 콘솔**을 잰다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -827,3 +818,12 @@ $ python3 wa16b-cdp.py page wa16b-19-more.html | sed -n '4,6p'
 - **`pointer` 이벤트와 `touch-action` 의 관계**(`pointercancel`)는 [목록의 **23번 주제**](../23-pointer-events/) 몫이다.
 - **`overscroll-behavior`**(당겨서 새로고침·스크롤 체이닝 막기)는 리스너 없이 스크롤의 **끝**을 다루는 CSS 다 — CSS 갈래 [23번 주제](../../css/syntax/23-overflow-and-scroll-containers/2-summary.md).
 - **`iframe` 안의 문서 수준 대상**이 같은 규칙인지는 던지지 않았다.
+
+## 실행 환경
+
+★ **이 편의 본체는 「행동으로 묻는 passive 판정」이다** — 리스너의 `passive` 값을 **읽는 API 가 없으므로**, 리스너 안에서 `preventDefault()` 를 불러 **`defaultPrevented` 가 바뀌나**로 묻는다(제5의 상태). 여기에 **진짜 휠·진짜 터치에서 화면이 움직였나**를 한 칸 더 얹는다.\
+★★★ **제목에 「성능」이 있지만 이 편은 시간도 프레임도 재지 않았다.** 「합성 스레드가 리스너를 기다려야 하나」는 **DOM 표준의 설명 절과 Chromium 쪽 기록을 인용**할 뿐이고, **이 머신에서 잰 것은 「passive 인가」와 「움직였나」뿐**이다.\
+**기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「2.8 Observing event listeners」·「default passive value」·「flatten more options」·「add an event listener」·「set the canceled flag」 절. Chromium 의 기록은 [chromestatus — Treat Document Level Touch Event Listeners as Passive](https://chromestatus.com/feature/5093566007214080) · [chromestatus — Treat Document Level Wheel/Mousewheel Event Listeners as Passive](https://chromestatus.com/feature/6662647093133312). 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **휠과 터치는 CDP 로 넣은 진짜 입력**(`Input.dispatchMouseEvent` 의 `mouseWheel` · `Input.dispatchTouchEvent`)이고, 기본값 격자는 합성 이벤트로 물었다. 하네스는 [16번 주제](../16-event-propagation-phases/2-summary.md)의 (1)에 있다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — [17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md)(`preventDefault`·`cancelable`·`defaultPrevented`). **[15번 주제](../15-listener-registration/2-summary.md)의 (9)·(10)이 직접 선행**이다 — 그쪽이 합성 이벤트로 「`passive` 면 무시된다」와 기본값 10칸을 쟀고, 여기는 **나머지 칸 · 인자 꼴 · 진짜 입력 · 콘솔**을 잰다.

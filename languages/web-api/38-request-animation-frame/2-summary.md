@@ -1,14 +1,5 @@
 # web-api/38 — `requestAnimationFrame` 과 프레임 예산 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★★★ **이 편의 본체는 창 ④ 「디스패치 계수기」를 시간 축에 세운 두 장이다** — ① **렌더 단계 안 위치 로그**(한 태스크에서 `scrollTo` · 폭 쓰기 · rAF 등록을 한꺼번에 하고, 다음 렌더링 단계에서 누가 어느 순서로 불리나를 **콜백의 `console.timeStamp` 자국 + CDP Tracing 이벤트 이름**을 한 줄에 섞어 읽는다)와 ② **rAF 간격 격자**(콜백 안의 바쁨 0 · 10 · 20 · 30 · 100ms × 다섯 판 — 칸 = 그 판에서 가장 많았던 **간격 범주**). ★ **시간은 찍지 않는다** — 간격은 「16.7ms 의 몇 배 근처였나」 범주로만, 나머지는 **순서 · 참/거짓 · 횟수**다(가이드 규칙 24).\
-> **기준 소스** — [HTML — update the rendering](https://html.spec.whatwg.org/multipage/webappapis.html#update-the-rendering)(렌더링 단계의 순서 · 「Filter non-renderable documents」 · 「rendering opportunity」 · 60Hz 예의 「about 16.7ms」) · [HTML — animation frames](https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#animation-frames)(「run the animation frame callbacks」 — **시작할 때의 핸들 목록**만 돈다) · [W3C Intersection Observer](https://w3c.github.io/IntersectionObserver/) §3.2.4(IO 알림은 **태스크**로 건다). 받아서 읽은 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless(`--window-size=1000,800`)에서 받은 것이다. 하네스는 [36번 주제](../36-resize-observer/3-answer.md)의 `wa36b-net.py` — 부탁 창구로 **Tracing**(`devtools.timeline`) · **`Performance.getMetrics`** · **새 탭 띄우기**를 불렀다. ★★★ **`--virtual-time-budget` 을 쓰지 않았다** — 가상 시간에서는 rAF 간격이 실제가 아니다. 이 판의 프레임은 **실제 시간**으로 돈다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** ★ **헤드리스에는 모니터가 없다** — 이 편의 프레임 간격은 **화면 주사율이 아니라 헤드리스 Chrome 이 스스로 만든 박자**다.\
-> **선행** — ★★ **[10번 주제](../10-layout-thrashing/2-summary.md)** — 읽기 · 쓰기 교차가 레이아웃을 강제한다. 그 편 (7)은 「**rAF 로 미루면? — 이 도구로는 못 잰다**」로 끝났다 — 여기서 그것을 **`LayoutCount`** 로 잰다((5)). ★★ [CSS 갈래 56번](../../css/syntax/56-rendering-pipeline-and-will-change/2-summary.md) — 스타일 → 레이아웃 → 페인트 → 합성 **네 공정**과 `LayoutCount` · Tracing 의 쓰는 법. 여기서는 그 공정들 **사이에 스크립트 콜백이 어디 끼나**를 본다.\
-> **경계** — ★★★ **「rAF 가 60fps 를 보장한다」는 이 편이 주장하지 않는다** — 명세도 「**does not mandate any particular model**」이라 적는다. ★★ [`history/web/04-브라우저-엔진.md`](../../../history/web/04-브라우저-엔진.md) 는 **엔진의 계보**(Trident · Gecko · WebKit · Blink)를 다루고 **렌더 파이프라인 절은 없다**(`grep` 으로 확인 — 「렌더링(레이아웃) 엔진」이라는 낱말 풀이까지다). 파이프라인의 공정은 CSS 56편, **그 안에서의 스크립트 자리**가 여기다. ★ `Promise.then` · `setTimeout(0)` · rAF 셋의 순서와 마이크로태스크가 렌더를 굶기는 자리는 목록의 **40번 주제**(폴더는 아직 없다)의 몫이다.\
-> 이 본문은 Claude 작성이다(원고 없음). 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -204,7 +195,7 @@ $ python3 wa36b-net.py page wa36b-38-gap.html | sed -n '1,6p'
 ```
 
 - ★★★ **보통 · 10ms — 다섯 판 다 `≈1`**, **30ms — 다섯 판 다 `≈2`**, **100ms — 다섯 판 다 `≥5`.** 콜백 안의 일이 길어지면 **다음 틀이 그만큼 늦게 온다.** 프레임 예산을 넘긴 증상이 **「간격이 늘어난다」** 로 보인다 — 에러도 경고도 없다.
-- ★★ **20ms 는 `≈1`** 이다 — 16.7ms 보다 길게 붙들었는데 간격은 **25ms 미만**이었다. 이 헤드리스는 **다음 틀을 16.7ms 의 배수(33.3ms)까지 미루지 않고** 일이 끝나는 대로 곧 다음 틀을 냈다는 뜻이다. ★ **실제 화면(주사율에 묶인 틀)에서도 그런지는 못 쟀다**(머리말) — 명세도 「30 으로 떨어뜨릴 **수도** 있다」고만 적는다.
+- ★★ **20ms 는 `≈1`** 이다 — 16.7ms 보다 길게 붙들었는데 간격은 **25ms 미만**이었다. 이 헤드리스는 **다음 틀을 16.7ms 의 배수(33.3ms)까지 미루지 않고** 일이 끝나는 대로 곧 다음 틀을 냈다는 뜻이다. ★ **실제 화면(주사율에 묶인 틀)에서도 그런지는 못 쟀다**(「실행 환경」) — 명세도 「30 으로 떨어뜨릴 **수도** 있다」고만 적는다.
 - ★ 이것은 **몇 fps 인가**가 아니다 — 범주는 「몇 배 근처였나」뿐이다. **「rAF 가 60fps 를 보장한다」는 이 격자로도 명세로도 서지 않는다.**
 
 ```text
@@ -338,7 +329,7 @@ rAF 는 **레이아웃 전**이다((1)). 앞 틀의 쓰기가 남아 있으면 *
 
 ### 6. `--virtual-time-budget` 으로 rAF 간격을 잰다
 
-가상 시간에서는 **틀 간격이 실제가 아니다**(머리말). 이 편은 가상 시간을 쓰지 않았다.
+가상 시간에서는 **틀 간격이 실제가 아니다**(「실행 환경」). 이 편은 가상 시간을 쓰지 않았다.
 
 ## 구현 세부사항 대 언어 보장
 
@@ -398,3 +389,12 @@ rAF 는 **레이아웃 전**이다((1)). 앞 틀의 쓰기가 남아 있으면 *
 - **실제 화면의 주사율과 틀 떨굼** — 헤드풀 · 모니터가 있어야 한다. 이 판은 못 쟀다.
 - **Long Animation Frames(LoAF)** — 긴 틀을 스크립트로 보고받는 API. 목록이 성능 측정 갈래로 보냈다.
 - **숨은 탭의 긴 경향** — 0.3초 너머 몇 분을 두면 타이머 쪽도 조절된다(이 판은 던지지 않았다).
+
+## 실행 환경
+
+★★★ **이 편의 본체는 창 ④ 「디스패치 계수기」를 시간 축에 세운 두 장이다** — ① **렌더 단계 안 위치 로그**(한 태스크에서 `scrollTo` · 폭 쓰기 · rAF 등록을 한꺼번에 하고, 다음 렌더링 단계에서 누가 어느 순서로 불리나를 **콜백의 `console.timeStamp` 자국 + CDP Tracing 이벤트 이름**을 한 줄에 섞어 읽는다)와 ② **rAF 간격 격자**(콜백 안의 바쁨 0 · 10 · 20 · 30 · 100ms × 다섯 판 — 칸 = 그 판에서 가장 많았던 **간격 범주**). ★ **시간은 찍지 않는다** — 간격은 「16.7ms 의 몇 배 근처였나」 범주로만, 나머지는 **순서 · 참/거짓 · 횟수**다(가이드 규칙 24).\
+**기준 소스** — [HTML — update the rendering](https://html.spec.whatwg.org/multipage/webappapis.html#update-the-rendering)(렌더링 단계의 순서 · 「Filter non-renderable documents」 · 「rendering opportunity」 · 60Hz 예의 「about 16.7ms」) · [HTML — animation frames](https://html.spec.whatwg.org/multipage/imagebitmap-and-animations.html#animation-frames)(「run the animation frame callbacks」 — **시작할 때의 핸들 목록**만 돈다) · [W3C Intersection Observer](https://w3c.github.io/IntersectionObserver/) §3.2.4(IO 알림은 **태스크**로 건다). 받아서 읽은 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless(`--window-size=1000,800`)에서 받은 것이다. 하네스는 [36번 주제](../36-resize-observer/3-answer.md)의 `wa36b-net.py` — 부탁 창구로 **Tracing**(`devtools.timeline`) · **`Performance.getMetrics`** · **새 탭 띄우기**를 불렀다. ★★★ **`--virtual-time-budget` 을 쓰지 않았다** — 가상 시간에서는 rAF 간격이 실제가 아니다. 이 판의 프레임은 **실제 시간**으로 돈다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.** ★ **헤드리스에는 모니터가 없다** — 이 편의 프레임 간격은 **화면 주사율이 아니라 헤드리스 Chrome 이 스스로 만든 박자**다.\
+**선행** — ★★ **[10번 주제](../10-layout-thrashing/2-summary.md)** — 읽기 · 쓰기 교차가 레이아웃을 강제한다. 그 편 (7)은 「**rAF 로 미루면? — 이 도구로는 못 잰다**」로 끝났다 — 여기서 그것을 **`LayoutCount`** 로 잰다((5)). ★★ [CSS 갈래 56번](../../css/syntax/56-rendering-pipeline-and-will-change/2-summary.md) — 스타일 → 레이아웃 → 페인트 → 합성 **네 공정**과 `LayoutCount` · Tracing 의 쓰는 법. 여기서는 그 공정들 **사이에 스크립트 콜백이 어디 끼나**를 본다.\
+**경계** — ★★★ **「rAF 가 60fps 를 보장한다」는 이 편이 주장하지 않는다** — 명세도 「**does not mandate any particular model**」이라 적는다. ★★ [`history/web/04-브라우저-엔진.md`](../../../history/web/04-브라우저-엔진.md) 는 **엔진의 계보**(Trident · Gecko · WebKit · Blink)를 다루고 **렌더 파이프라인 절은 없다**(`grep` 으로 확인 — 「렌더링(레이아웃) 엔진」이라는 낱말 풀이까지다). 파이프라인의 공정은 CSS 56편, **그 안에서의 스크립트 자리**가 여기다. ★ `Promise.then` · `setTimeout(0)` · rAF 셋의 순서와 마이크로태스크가 렌더를 굶기는 자리는 목록의 **40번 주제**(폴더는 아직 없다)의 몫이다.

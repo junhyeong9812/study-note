@@ -1,19 +1,5 @@
 # kotlin/syntax/08 — 함수 선언: 기본 인자·이름 붙인 인자·단일 표현식 함수 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Functions](https://kotlinlang.org/docs/functions.html) · [Calling Kotlin from Java](https://kotlinlang.org/docs/java-to-kotlin-interop.html) · [Returns and jumps](https://kotlinlang.org/docs/returns.html).
-> **실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> **Java 쪽 호출은 같은 JDK 의 `javac` 로 컴파일해 실제로 섞어 돌렸다.**\
-> `kotlinc` 7회 · `javac` 2회 · `java` 2회 · `javap` 6회. 컴파일 실패 시나리오 3벌.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다 —\
-> 그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).
-> **버전** — 기본 인자·이름 붙인 인자·단일 표현식 함수는 1.0. `@JvmOverloads` 도 1.0.
-> **경계** — `vararg`·`spread`·로컬 함수·`infix` 는 [09번 주제](../09-varargs-spread-local-and-infix-functions/)가 정본이다.\
-> 람다와 고차 함수는 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/), `@JvmStatic`/`@JvmName` 등 상호운용 애너테이션 **전체**는 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이다 —\
-> 여기서는 `@JvmOverloads` **하나만** 기본 인자의 짝으로 다룬다.\
-> **Java 쪽 정본은 [`../../../java/syntax/08-method-declaration-overloading/`](../../../java/syntax/08-method-declaration-overloading/)** 다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **Java 는 "인자를 덜 받는 버전" 을 만들려고 메서드를 여러 개 적는다. Kotlin 은 한 개만 적고 기본값을 붙인다.**
@@ -749,3 +735,17 @@ fun f(a: Int = b, b: Int = 1): Int = a + b
 
   메시지가 **`uninitialized`** 다 — "그런 이름이 없다" 가 아니라 **"아직 안 채워졌다"** 라고 말한다.
 - 이 문서에서 **성능은 재지 않았다.** "완전 호출은 `$default` 를 안 거친다" 는 **`javap` 로 본 호출 대상**이지 시간이 아니다.
+
+## 실행 환경
+
+**기준 소스** — [Functions](https://kotlinlang.org/docs/functions.html) · [Calling Kotlin from Java](https://kotlinlang.org/docs/java-to-kotlin-interop.html) · [Returns and jumps](https://kotlinlang.org/docs/returns.html).
+**실행 검증** — 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+**Java 쪽 호출은 같은 JDK 의 `javac` 로 컴파일해 실제로 섞어 돌렸다.**\
+`kotlinc` 7회 · `javac` 2회 · `java` 2회 · `javap` 6회. 컴파일 실패 시나리오 3벌.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 문서의 역어셈블은 **기본값 1.8**(`major version: 52`)이다 —\
+그래서 문자열 보간이 `StringBuilder` 로 보인다([02번 주제](../02-string-templates-and-raw-strings/)).
+**버전** — 기본 인자·이름 붙인 인자·단일 표현식 함수는 1.0. `@JvmOverloads` 도 1.0.
+**경계** — `vararg`·`spread`·로컬 함수·`infix` 는 [09번 주제](../09-varargs-spread-local-and-infix-functions/)가 정본이다.\
+람다와 고차 함수는 [목록의 **10번 주제**](../10-lambdas-and-higher-order-functions/), `@JvmStatic`/`@JvmName` 등 상호운용 애너테이션 **전체**는 [목록의 **39번 주제**](../39-java-interop-annotations/)가 정본이다 —\
+여기서는 `@JvmOverloads` **하나만** 기본 인자의 짝으로 다룬다.\
+**Java 쪽 정본은 [`../../../java/syntax/08-method-declaration-overloading/`](../../../java/syntax/08-method-declaration-overloading/)** 다.

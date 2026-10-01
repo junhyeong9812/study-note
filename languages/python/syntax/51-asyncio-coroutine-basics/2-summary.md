@@ -1,37 +1,5 @@
 # python/syntax/51-asyncio-coroutine-basics — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
-> - [데이터 모델 — Coroutines](https://docs.python.org/3.12/reference/datamodel.html#coroutines) — *"A coroutine's execution can be controlled by calling `__await__()` and iterating over the result. When the coroutine has finished executing and returns, the iterator raises `StopIteration`, and the exception's `value` attribute holds the return value."* ·
->   *"However, unlike generators, coroutines do not directly support iteration."* · *"It is a `RuntimeError` to await on a coroutine more than once."*(3.5.2) ·
->   `coroutine.send` — *"Starts or resumes execution of the coroutine. If value is `None`, this is equivalent to advancing the iterator returned by `__await__()`."* ·
->   `coroutine.close` — *"Coroutine objects are automatically closed using the above process when they are about to be destroyed."* ·
->   `__await__` 의 note — *"The language doesn't place any restriction on the type or value of the objects yielded by the iterator returned by `__await__`, as this is specific to the implementation of the asynchronous execution framework (e.g. `asyncio`)"*
-> - [식 — Await expression](https://docs.python.org/3.12/reference/expressions.html#await) — *"Suspend the execution of coroutine on an awaitable object. Can only be used inside a coroutine function."*
-> - [Coroutines and Tasks](https://docs.python.org/3.12/library/asyncio-task.html#coroutines) — *"Note that simply calling a coroutine will not schedule it to be executed"*
-> - [`asyncio.run`](https://docs.python.org/3.12/library/asyncio-runner.html#asyncio.run) — *"This function cannot be called when another asyncio event loop is running in the same thread."* · *"otherwise `asyncio.new_event_loop()` is used. The loop is closed at the end."* · *"should ideally only be called once"*
-> - [Developing with asyncio — Detect never-awaited coroutines](https://docs.python.org/3.12/library/asyncio-dev.html#detect-never-awaited-coroutines) — *"When a coroutine function is called, but not awaited … asyncio will emit a `RuntimeWarning`"* ★ **이 문장의 주어는 실행과 어긋난다** — 동작 1 은 `asyncio` 를 **가져오지도 않았는데** 경고가 났다(「구현 세부사항 대 언어 보장」).
-> - [용어집 — coroutine function](https://docs.python.org/3.12/glossary.html#term-coroutine-function) — *"A function which returns a coroutine object."*
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 `python3` **3.12.3** 이 본판이고, 판 격자 한 블록(동작 11)에서 `python3.11` **3.11.15** 를 함께 던졌다. 교차 갈래 대비로 `node` **v18.19.1** 두 블록.\
-> ★★ **표준 출력과 표준 오류를 한 블록에 섞지 않았다** — 「never awaited」 경고는 **표준 오류**라, 같은 파일을 `2>/dev/null`(출력만)과 `2>&1 >/dev/null`(오류만) **두 번 던져 두 블록**으로 실었다. 나머지는 `warnings.catch_warnings(record=True)` 로 받아 **표준 출력**에 찍었다.\
-> ★ **스택이 `asyncio` 를 지나는 예외는 트레이스백을 싣지 않았다**(절대 경로가 박힌다) — **예외 타입 + 메시지**만 찍었다.\
-> ★★★ **이 문서는 시간을 한 번도 재지 않았다** — `asyncio.sleep(0)` 은 「한 번 양보」로만 썼다.\
-> **버전** — `async def`/`await` **3.5**(PEP 492) · 비동기 제너레이터 **3.6**(PEP 525) · `asyncio.run` **3.7** · 「두 번 `await` 하면 `RuntimeError`」 **3.5.2**. 이 문서의 탐침 여덟 줄은 3.11 과 3.12 에서 **한 칸도 안 갈렸다**(`0 / 8`).\
-> ★ **구현 대 언어 보장 한 줄** — 「부르면 코루틴 객체만 돌려준다 · `send` 가 돌린다 · 끝나면 `StopIteration.value`」는 **언어 레퍼런스**, 「`asyncio.run` 은 새 루프를 만들고 닫는다 · 도는 루프 안에서는 못 부른다」는 **`asyncio` 문서**, 「never awaited 경고 · 그 경고가 **나오는 시점** · 예외 문구」는 **CPython** 이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | 판이 오르면 예외 **문구**와 경고 **문구**(CPython 의 것) | 예외 **타입** · `(exit N)` · 로그 줄의 **순서와 개수** · `inspect.getcoroutinestate` 의 상태 이름 |
-> | — (주소·시간을 한 곳도 안 찍었다 — `repr(코루틴)` 에는 주소가 들어가서 `type(c).__name__` 으로 찍었다) | ★★ 경고가 **몇 번째 줄에서** 기록됐나(`line 18` 등 — 소스 줄 번호) · 판 격자 마지막 줄 **「0 / 8」** |
->
-> **선행** — [17-generators-yield](../17-generators-yield/2-summary.md)(★★★ **「호출해도 몸통이 안 돈다」·`send`·`StopIteration.value` 는 그쪽이 정본** — 코루틴은 그 기계를 물려받았다) ·
-> [16-iterator-protocol](../16-iterator-protocol/2-summary.md)(`next`·`StopIteration` — 코루틴은 **이터레이터가 아니다**, 동작 4).
-
 ## 한눈에 — 쉽게 말하면
 
 **코루틴 함수를 부르는 것은 「주문서를 쓰는 것」이다.** 주문서를 써도 **부엌에서는 아무 일도 안 일어난다.**
@@ -1207,3 +1175,34 @@ rows that differ between the two versions: 0 / 8
 * ★ **디버그 모드**(`asyncio.run(main(), debug=True)` · `PYTHONASYNCIODEBUG=1`) — 문서(`asyncio-dev`)는 경고에 **「Coroutine created at」** 트레이스백이 붙는다고 적는다. 절대 경로가 박혀 이 문서는 싣지 않았다.
 * ★ **`types.coroutine`** — 제너레이터 함수에 붙여 **`await` 할 수 있게** 만드는 데코레이터. 데이터 모델 note — *"The generator iterator objects returned from generators decorated with `types.coroutine` are also awaitable, but they do not implement `__await__()`."* ★ 이 판 `asyncio/tasks.py` 의 `sleep(0)` 이 그 길이다 — `@types.coroutine` 을 붙인 `__sleep0` 이 **맨 `yield` 하나**를 하고, 그 docstring 이 *"It uses a bare 'yield' expression (which Task.__step knows how to handle) instead of creating a Future object."* 라고 적는다(동작 6 의 `yielded ['None']`).
 * ★ **비동기 제너레이터·`async for`·`async with`** — PEP 525·492. 이 주제는 **`async def` 가 코루틴이 되는 경우**까지다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
+- [데이터 모델 — Coroutines](https://docs.python.org/3.12/reference/datamodel.html#coroutines) — *"A coroutine's execution can be controlled by calling `__await__()` and iterating over the result. When the coroutine has finished executing and returns, the iterator raises `StopIteration`, and the exception's `value` attribute holds the return value."* ·
+  *"However, unlike generators, coroutines do not directly support iteration."* · *"It is a `RuntimeError` to await on a coroutine more than once."*(3.5.2) ·
+  `coroutine.send` — *"Starts or resumes execution of the coroutine. If value is `None`, this is equivalent to advancing the iterator returned by `__await__()`."* ·
+  `coroutine.close` — *"Coroutine objects are automatically closed using the above process when they are about to be destroyed."* ·
+  `__await__` 의 note — *"The language doesn't place any restriction on the type or value of the objects yielded by the iterator returned by `__await__`, as this is specific to the implementation of the asynchronous execution framework (e.g. `asyncio`)"*
+- [식 — Await expression](https://docs.python.org/3.12/reference/expressions.html#await) — *"Suspend the execution of coroutine on an awaitable object. Can only be used inside a coroutine function."*
+- [Coroutines and Tasks](https://docs.python.org/3.12/library/asyncio-task.html#coroutines) — *"Note that simply calling a coroutine will not schedule it to be executed"*
+- [`asyncio.run`](https://docs.python.org/3.12/library/asyncio-runner.html#asyncio.run) — *"This function cannot be called when another asyncio event loop is running in the same thread."* · *"otherwise `asyncio.new_event_loop()` is used. The loop is closed at the end."* · *"should ideally only be called once"*
+- [Developing with asyncio — Detect never-awaited coroutines](https://docs.python.org/3.12/library/asyncio-dev.html#detect-never-awaited-coroutines) — *"When a coroutine function is called, but not awaited … asyncio will emit a `RuntimeWarning`"* ★ **이 문장의 주어는 실행과 어긋난다** — 동작 1 은 `asyncio` 를 **가져오지도 않았는데** 경고가 났다(「구현 세부사항 대 언어 보장」).
+- [용어집 — coroutine function](https://docs.python.org/3.12/glossary.html#term-coroutine-function) — *"A function which returns a coroutine object."*
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 `python3` **3.12.3** 이 본판이고, 판 격자 한 블록(동작 11)에서 `python3.11` **3.11.15** 를 함께 던졌다. 교차 갈래 대비로 `node` **v18.19.1** 두 블록.\
+★★ **표준 출력과 표준 오류를 한 블록에 섞지 않았다** — 「never awaited」 경고는 **표준 오류**라, 같은 파일을 `2>/dev/null`(출력만)과 `2>&1 >/dev/null`(오류만) **두 번 던져 두 블록**으로 실었다. 나머지는 `warnings.catch_warnings(record=True)` 로 받아 **표준 출력**에 찍었다.\
+★ **스택이 `asyncio` 를 지나는 예외는 트레이스백을 싣지 않았다**(절대 경로가 박힌다) — **예외 타입 + 메시지**만 찍었다.\
+★★★ **이 문서는 시간을 한 번도 재지 않았다** — `asyncio.sleep(0)` 은 「한 번 양보」로만 썼다.\
+**버전** — `async def`/`await` **3.5**(PEP 492) · 비동기 제너레이터 **3.6**(PEP 525) · `asyncio.run` **3.7** · 「두 번 `await` 하면 `RuntimeError`」 **3.5.2**. 이 문서의 탐침 여덟 줄은 3.11 과 3.12 에서 **한 칸도 안 갈렸다**(`0 / 8`).\
+★ **구현 대 언어 보장 한 줄** — 「부르면 코루틴 객체만 돌려준다 · `send` 가 돌린다 · 끝나면 `StopIteration.value`」는 **언어 레퍼런스**, 「`asyncio.run` 은 새 루프를 만들고 닫는다 · 도는 루프 안에서는 못 부른다」는 **`asyncio` 문서**, 「never awaited 경고 · 그 경고가 **나오는 시점** · 예외 문구」는 **CPython** 이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| 판이 오르면 예외 **문구**와 경고 **문구**(CPython 의 것) | 예외 **타입** · `(exit N)` · 로그 줄의 **순서와 개수** · `inspect.getcoroutinestate` 의 상태 이름 |
+| — (주소·시간을 한 곳도 안 찍었다 — `repr(코루틴)` 에는 주소가 들어가서 `type(c).__name__` 으로 찍었다) | ★★ 경고가 **몇 번째 줄에서** 기록됐나(`line 18` 등 — 소스 줄 번호) · 판 격자 마지막 줄 **「0 / 8」** |
+
+**선행** — [17-generators-yield](../17-generators-yield/2-summary.md)(★★★ **「호출해도 몸통이 안 돈다」·`send`·`StopIteration.value` 는 그쪽이 정본** — 코루틴은 그 기계를 물려받았다) ·
+[16-iterator-protocol](../16-iterator-protocol/2-summary.md)(`next`·`StopIteration` — 코루틴은 **이터레이터가 아니다**, 동작 4).

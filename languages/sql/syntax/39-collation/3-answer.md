@@ -1,13 +1,5 @@
 # sql/39-collation (문자열 비교와 정렬의 기준) — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러·계획은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> ★ **환경 조건** — PG `datcollate` = `en_US.utf8`(`datlocprovider` = `c`, libc) · MySQL `collation_server`·`collation_connection` = `utf8mb4_0900_ai_ci`.\
-> **다른 설정의 서버에서는 같은 질의가 다른 답을 낸다.** 0번에 확인 방법과 실제 출력을 실었다.\
-> 실험 표 `t39` 와 임시 collation(`nd_ci`·`nd_ai`)은 **작업 후 전부 지웠다.** `emp`·`dept` 는 읽기만 했다.\
-> 문서 근거는 [PG 18 Collation Support](https://www.postgresql.org/docs/18/collation.html) · [PG 18 CREATE COLLATION](https://www.postgresql.org/docs/18/sql-createcollation.html) · [MySQL 8.4 Character Sets and Collations](https://dev.mysql.com/doc/refman/8.4/en/charset.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -763,7 +755,7 @@ EXPLAIN (COSTS OFF) SELECT * FROM t39c WHERE code LIKE 'C00012%';
 | `C` collation 열의 접두사 `LIKE` (11번) | PG 18.6 | 1회 | 38번의 반대 사례 — 표는 **실험 후 삭제** |
 
 **★ 설정 의존 항목 — 1·2·3·5·7번, 즉 이 주제의 거의 전부.**\
-머리말과 0번에 적은 환경에서 나온 결과다. **다른 설정의 서버에서는 같은 질의가 다른 답을 낸다.**\
+「실행 환경」과 0번에 적은 환경에서 나온 결과다. **다른 설정의 서버에서는 같은 질의가 다른 답을 낸다.**\
 그래서 0번을 첫 문항으로 두었다 — 환경을 안 찍고 collation 을 말하면 그 진술은 검증 불가능하다.
 
 **운영체제 의존 항목** — 2번의 PG 정렬. `datlocprovider = c`(libc)라 **OS 의 로케일 라이브러리**를 쓴다.\
@@ -780,3 +772,12 @@ MySQL 이 `ref` 를 포기하고도 `range` 를 쓴 것은 이 표·이 통계�
 
 **DB 잔재** — 없다. `t39`(와 인덱스 둘)·`t39c` 는 삭제했고, PG 에 만든 collation `nd_ci`·`nd_ai` 도 삭제했다.\
 `emp`·`dept` 는 읽기만 했다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러·계획은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+★ **환경 조건** — PG `datcollate` = `en_US.utf8`(`datlocprovider` = `c`, libc) · MySQL `collation_server`·`collation_connection` = `utf8mb4_0900_ai_ci`.\
+**다른 설정의 서버에서는 같은 질의가 다른 답을 낸다.** 0번에 확인 방법과 실제 출력을 실었다.\
+실험 표 `t39` 와 임시 collation(`nd_ci`·`nd_ai`)은 **작업 후 전부 지웠다.** `emp`·`dept` 는 읽기만 했다.\
+문서 근거는 [PG 18 Collation Support](https://www.postgresql.org/docs/18/collation.html) · [PG 18 CREATE COLLATION](https://www.postgresql.org/docs/18/sql-createcollation.html) · [MySQL 8.4 Character Sets and Collations](https://dev.mysql.com/doc/refman/8.4/en/charset.html).

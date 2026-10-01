@@ -1,12 +1,5 @@
 # ts/syntax/22 — `keyof` 와 인덱스 접근 타입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Keyof Type Operator](https://www.typescriptlang.org/docs/handbook/2/keyof-types.html) ·
-> [Handbook — Indexed Access Types](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html) ·
-> [Handbook — Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html).
-> 위 링크는 **규칙 확인용**이고, 본문의 모든 출력은 **이 판에서 직접 던져 받은 것**이다. 핸드북 문장을 옮기지 않았다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version · javac -version · rustc --version (sh exit=0) =====
 Version 7.0.2
@@ -24,7 +17,6 @@ rustc 1.92.0 (ded5c06cf 2025-12-08)
 > ★ 소스 펜스 첫 줄 `// 파일명` 은 **대조용 배너**다. 실파일에는 없고, **진단의 행 번호는 그 줄을 뺀 기준**이다.
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
 > **버전** — `keyof` 와 인덱스 접근 타입은 **TS 2.1** 부터다. 이 판은 **7.0.2** 다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -918,3 +910,11 @@ ex.25b.ts    5회 md5 가짓수 1
 - **`keyof` 로 만든 API 의 수명** — 5절의 관용구는 **타입의 `public` 표면을 계약으로 굳힌다.**
   그 표면이 바뀌면 호출부가 **전부 컴파일 에러**로 드러난다 — 그것이 값이자 대가다.
   ★ 그래서 **내부 구현 타입에 `keyof` 를 걸지 말고**, 공개 계약 타입에만 거는 편이 낫다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Keyof Type Operator](https://www.typescriptlang.org/docs/handbook/2/keyof-types.html) ·
+[Handbook — Indexed Access Types](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html) ·
+[Handbook — Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html).
+위 링크는 **규칙 확인용**이고, 본문의 모든 출력은 **이 판에서 직접 던져 받은 것**이다. 핸드북 문장을 옮기지 않았다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

@@ -1,18 +1,5 @@
 # kotlin/syntax/15 — 클래스 선언: 주 생성자·부 생성자·`init` 블록 순서 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [01번 주제](../01-val-var-and-basic-types/)다.
-> ★ **널 불가 타입의 보장 자체는 [03번 주제](../03-null-safe-types/)가 정본**이고,
-> `open`/`final` 기본값은 [목록의 **19번 주제**](../19-inheritance-open-final-override/), backing field·`lateinit` 은 [16번 주제](../16-properties-backing-field-lateinit-const/)가 정본이다.
-> 여기는 **한 객체가 만들어질 때 무엇이 어느 순서로 도는가**를 묻는다.
-> 이 주제는 [16번 주제](../16-properties-backing-field-lateinit-const/)·[목록의 **18번 주제**](../18-visibility-modifiers/)·**19번 주제**·**22번 주제**·**25번 주제**·**27번 주제**의 뿌리다.
-> Java 쪽 짝은 [`../../../java/syntax/06-initialization-order/`](../../../java/syntax/06-initialization-order/)와
-> [`../../../java/syntax/07-constructors/`](../../../java/syntax/07-constructors/)다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -231,6 +218,18 @@ fun main() {
 - Java 는 `super()` 를 생략하면 어떻게 되고 Kotlin 은 어떻게 되는가?
 - Java 에도 6번과 같은 함정이 있는가 — Kotlin 은 **무엇으로** 그 구멍을 좁혔는가?
 - Kotlin 에만 있는 것은 무엇인가 — 「주 생성자」라는 개념이 무엇을 바꾸는가?
+
+## 실행 환경
+
+선행은 [01번 주제](../01-val-var-and-basic-types/)다.
+★ **널 불가 타입의 보장 자체는 [03번 주제](../03-null-safe-types/)가 정본**이고,
+`open`/`final` 기본값은 [목록의 **19번 주제**](../19-inheritance-open-final-override/), backing field·`lateinit` 은 [16번 주제](../16-properties-backing-field-lateinit-const/)가 정본이다.
+여기는 **한 객체가 만들어질 때 무엇이 어느 순서로 도는가**를 묻는다.
+이 주제는 [16번 주제](../16-properties-backing-field-lateinit-const/)·[목록의 **18번 주제**](../18-visibility-modifiers/)·**19번 주제**·**22번 주제**·**25번 주제**·**27번 주제**의 뿌리다.
+Java 쪽 짝은 [`../../../java/syntax/06-initialization-order/`](../../../java/syntax/06-initialization-order/)와
+[`../../../java/syntax/07-constructors/`](../../../java/syntax/07-constructors/)다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
 
 ## 복습 기록
 

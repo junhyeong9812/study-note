@@ -1,15 +1,5 @@
 # kotlin/syntax/54 — `CoroutineContext` 와 디스패처 · `withContext` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — **`kotlinx-coroutines-core-jvm` 1.11.0 의 소스 jar**(같은 판)의 KDoc — `Dispatchers.Default`·`Dispatchers.Unconfined`(`Dispatchers.common.kt`) · `Dispatchers.IO`(`jvmMain/Dispatchers.kt`) · `limitedParallelism` 과 디스패처 `+` 의 폐기 선언(`CoroutineDispatcher.kt`) · `withContext`(`Builders.common.kt`)((5)). ★ 공식 문서 페이지는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 설계 논거는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 원고째 인용한다.
-> **실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.\
-> `kotlinc` 7회 · `java` 6회 + 순서 로그 셋을 세 판씩 되풀이한 9회 · 코루틴 소스 jar 발췌 8곳.\
-> ★★★ **라이브러리 판 — `kotlinx-coroutines-core-jvm` 1.11.0**(이 머신의 gradle 캐시에 있던 판 중 가장 새 것 · 매니페스트 `Implementation-Version: 1.11.0`). 디스패처·`withContext`·`CoroutineName` 은 전부 **이 라이브러리의 것**이고 언어에는 `CoroutineContext`·`ContinuationInterceptor` **인터페이스만** 있다.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「줄을 선 칸 N / M」은 격자 프로그램이 스스로 센 것**이다.
-> **버전** — `limitedParallelism(parallelism, name)` 의 `name` 인자 판은 이 판의 소스에 있다(도입 판은 **확인하지 않았다**). `Dispatchers.IO` 의 기본 상한은 KDoc 에 「64 또는 코어 수 중 큰 쪽」((5)).
-> **경계** — ★★★ 「코루틴은 스레드가 아니라 컴파일러 변환」이라는 **논지**와 「JDBC 는 결국 `withContext(IO)` 로 격리된다 · 가상 스레드와의 대비」는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 정본이다. **`suspend` 호출 규칙 · `runBlocking` 이 스레드 하나로 돈다 · `delay` 대 `Thread.sleep` 끼어들기**는 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)가 쟀다 — 여기서는 인용만 한다. **`Job` 트리에서 취소·예외가 번지는 규칙**은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/)다. 공유 가변 상태(`Mutex`·단일 스레드 한정)는 [56번 주제](../56-channel-mutex-and-shared-mutable-state/)다. 스레드 개념은 [`cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**디스패처 격자 — 디스패처 일곱 가지 × 블로킹 호출(`Thread.sleep(200)`) N 개 동시 → 스레드 이름이 하나뿐인가 · 전부 main 인가 · 가장 많이 겹친 순간 몇 개였나(구간 겹침) · 줄을 섰나**」. 시간은 **절댓값을 찍지 않는다** — 각 호출의 시작·끝 시각으로 **겹침 수**만 센다.
 
 ## 이 주제가 쓰는 세 층
@@ -696,3 +686,13 @@ CoroutineName(form54)
 - **`kotlinx.coroutines.io.parallelism` 시스템 속성** — 바꾸면 (1)의 `ioLimit` 칸이 따라 움직여야 한다. **돌리지 않았다.**
 - **`Default` 와 `IO` 의 스레드 공유** — KDoc 은 「`IO` 와 그 뷰는 `Default` 와 스레드를 공유해 `withContext` 가 실제로는 스레드를 안 바꾸는 경우가 있다」고 적는다. (2)의 `5`(`on main = false`)는 **main 에서 들어갔기 때문**이고, `Default` 에서 들어가 같은 스레드에 남는지는 **재지 않았다.**
 - **`ThreadContextElement`** — MDC·trace 처럼 `ThreadLocal` 을 문맥에 실어 스레드를 옮겨도 따라가게 하는 원소. [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 의 「MDC·trace 유실」이 이것으로 푼다 — **돌리지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — **`kotlinx-coroutines-core-jvm` 1.11.0 의 소스 jar**(같은 판)의 KDoc — `Dispatchers.Default`·`Dispatchers.Unconfined`(`Dispatchers.common.kt`) · `Dispatchers.IO`(`jvmMain/Dispatchers.kt`) · `limitedParallelism` 과 디스패처 `+` 의 폐기 선언(`CoroutineDispatcher.kt`) · `withContext`(`Builders.common.kt`)((5)). ★ 공식 문서 페이지는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — 설계 논거는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 원고째 인용한다.
+**실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.\
+`kotlinc` 7회 · `java` 6회 + 순서 로그 셋을 세 판씩 되풀이한 9회 · 코루틴 소스 jar 발췌 8곳.\
+★★★ **라이브러리 판 — `kotlinx-coroutines-core-jvm` 1.11.0**(이 머신의 gradle 캐시에 있던 판 중 가장 새 것 · 매니페스트 `Implementation-Version: 1.11.0`). 디스패처·`withContext`·`CoroutineName` 은 전부 **이 라이브러리의 것**이고 언어에는 `CoroutineContext`·`ContinuationInterceptor` **인터페이스만** 있다.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「줄을 선 칸 N / M」은 격자 프로그램이 스스로 센 것**이다.
+**버전** — `limitedParallelism(parallelism, name)` 의 `name` 인자 판은 이 판의 소스에 있다(도입 판은 **확인하지 않았다**). `Dispatchers.IO` 의 기본 상한은 KDoc 에 「64 또는 코어 수 중 큰 쪽」((5)).
+**경계** — ★★★ 「코루틴은 스레드가 아니라 컴파일러 변환」이라는 **논지**와 「JDBC 는 결국 `withContext(IO)` 로 격리된다 · 가상 스레드와의 대비」는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 정본이다. **`suspend` 호출 규칙 · `runBlocking` 이 스레드 하나로 돈다 · `delay` 대 `Thread.sleep` 끼어들기**는 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)가 쟀다 — 여기서는 인용만 한다. **`Job` 트리에서 취소·예외가 번지는 규칙**은 [53번 주제](../53-structured-concurrency-job-cancellation-exceptions/)다. 공유 가변 상태(`Mutex`·단일 스레드 한정)는 [56번 주제](../56-channel-mutex-and-shared-mutable-state/)다. 스레드 개념은 [`cs/foundations/process-thread/`](../../../../cs/foundations/process-thread/) 가 정본이다.

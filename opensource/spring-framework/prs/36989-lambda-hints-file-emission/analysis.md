@@ -1,10 +1,5 @@
 # PR #36989 분석 — lambda 힌트만 있을 때 네이티브 설정 파일이 생성되지 않는 문제
 
-> 기준 상태.\
-> **수정 전** = `d1470bbb259^`, **수정 커밋** = `d1470bbb259`, **현재** = `upstream/main`(`7daf1013aa8`).\
-> 파일:줄 인용마다 어느 상태 기준인지 밝힌다.\
-> 이 문서의 자리: README(서사)·structure(두 패키지의 대칭 구조도)·tests(테스트 해설)·gates(이해 게이트 기록)와 겹치지 않게, **게이트와 방출기가 각각 아는 "힌트 종류 목록"을 전수 대조**하고 이름표·단계 단위로 고정한다.
-
 ## 0. 결론
 
 `NativeConfigurationWriter.write(RuntimeHints)`는 `hasAnyHint(hints)`가 참일 때만 `reachability-metadata.json`을 쓰는데, 그 `hasAnyHint`가 힌트 종류를 손으로 나열한 OR 사슬이면서 **`ReflectionHints.lambdaHints()`를 목록에 빠뜨렸다**.\
@@ -336,3 +331,9 @@ OR 사슬에 항(disjunct)을 추가하면 결과가 false에서 true로 바뀌�
 
 인접 PR과의 관계: 같은 파일 계층의 한 층 아래, `FileNativeConfigurationWriter.writeTo`의 출력 인코딩 결함이 #36972로 먼저 처리되었다.\
 이 PR이 "쓸 것인가 말 것인가"라면 #36972는 "쓸 때 어떻게 쓰는가"이며, 두 결함은 같은 `write` 호출 사슬 위의 서로 다른 관문에 있었다.
+
+## 출처
+
+기준 상태.\
+**수정 전** = `d1470bbb259^`, **수정 커밋** = `d1470bbb259`, **현재** = `upstream/main`(`7daf1013aa8`).\
+파일:줄 인용마다 어느 상태 기준인지 밝힌다.

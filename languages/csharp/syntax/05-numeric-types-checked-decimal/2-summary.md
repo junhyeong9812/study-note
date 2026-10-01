@@ -1,53 +1,5 @@
 # csharp/syntax/05 — 기본 숫자 타입·`checked`/`unchecked`·`decimal` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — `checked`/`unchecked`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/checked-and-unchecked) · [Learn — 널 허용 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types) · [Learn — 널 허용 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-reference-types) · [Learn — 멤버 접근·널 조건 연산자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
-> 런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-25).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 첫 줄(`// cs0Nb-….cs` 꼴)도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
-> ★★★ **진단 언어를 영어로 고정했다.** 안 주면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
-> 01\~04 가 실측으로 받은 한국어 판이 ``error CS0029: 암시적으로 'string' 형식을 'int' 형식으로 변환할 수 없습니다.`` 였다.\
-> 고정하는 법은 둘을 같이 거는 것이다 — 환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`**.
-> **던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
-> 그래야 `bin/`·`obj/` 가 원리상 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
-> 배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
->
-> ```text
-> export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
-> export DOTNET_CLI_UI_LANGUAGE=en            # ★★★ 안 주면 진단이 한국어로 나온다
-> D=$(dirname "$(readlink -f "$(command -v dotnet)")")
-> ls "$D"/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/*.dll | sed 's/^/-r:/' > refs.rsp
-> echo '{"runtimeOptions":{"tfm":"net10.0","framework":{"name":"Microsoft.NETCore.App","version":"10.0.0"}}}' > ex.runtimeconfig.json
-> csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
->           -nologo -nostdlib -noconfig @refs.rsp \
->           -preferreduilang:en-US -langversion:latest "$@"; }
-> ```
->
-> **`-debug` 를 안 줬다** — PDB 가 없으면 스택 트레이스에 **절대 경로와 줄 번호가 안 박힌다**.\
-> 그래서 이 문서의 트레이스는 ``at Program.<Main>$(String[] args)`` 에서 끝나고, 어느 머신에서 돌려도 같다.\
-> **IL 덤프는 `-optimize` 없이**(기본 디버그) 낸 것이라 `nop` 이 섞여 있고 소스 구조가 그대로 보인다.\
-> IL 을 찍는 `cs-il.cs`(82줄, 외부 도구 없이 BCL 만 쓴다)의 전문은 [03번](../03-boxing-and-unboxing/2-summary.md)의 (0)절에 있다.
-> **버전** — 정수·부동소수점 타입과 `checked`/`unchecked` 는 **C# 1.0부터**. `decimal` 도 **C# 1.0부터**다.\
-> `nint`/`nuint`(네이티브 정수)는 **C# 9부터**, `Half` 는 **.NET 5부터**, 사용자 정의 `checked` 연산자는 **C# 11부터**다.\
-> 이 문서는 그중 **C# 1.0부터 있는 것만** 다룬다 — 20년 넘게 안 바뀐 기본값이라 오히려 잊기 쉽다.
-> **경계** — 「2진 표현이 어떻게 생겼나」·「IEEE 754 가 왜 0.1을 못 담나」의 정본은\
-> [`foundations/data-representation/`](../../../../cs/foundations/data-representation/)다. **여기는 그것이 아니라** 「**C# 에서 무엇을 고르나**」다 —\
-> 같은 사실 위에서 갈래가 다르다. 저기는 **비트가 어떻게 놓이나**, 여기는 **`double` 과 `decimal` 중 무엇을 쓰고 그 대가가 무엇인가**.\
-> 값 타입이 무엇인지는 [01번](../01-value-types-and-reference-types/), 박싱은 [03번](../03-boxing-and-unboxing/)이 정본이다.\
-> `enum` 이 정수 위의 껍데기라는 것은 목록의 **20번 주제**, 서식·문화권은 목록의 **48번 주제**다.\
-> C 의 정수 승격·미정의 동작과는 **축이 다르다** — 그쪽은 C 갈래의 [정수 승격 편](../../../c/syntax/03-integer-promotion-and-usual-arithmetic-conversions/)이고,\
-> 거기서는 **부호 있는 오버플로가 미정의 동작**인데 여기서는 **정의된 감김**이다.
-> ★★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조는 이 표를 기준으로 판정한다.
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★ **`GC.GetAllocatedBytesForCurrentThread()` 의 절댓값**(프로세스 시작부터의 누적이다) | ★★★ **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐** |
-> | 시간·CPU 상태 — 이 문서는 **시간을 한 번도 안 쟀다** | **진단 코드**(`CS0220`·`CS8602` 류) · **진단 문구** · **`(행,열)`** |
-> | 객체 주소 · `GetHashCode()` 의 참조형 값 | **`cc exit` 와 `run exit`**(갈라 적었다) |
-> | `dotnet` 패치 버전이 오르면 달라질 수 있는 것 | **IL 명령어 열**(`add` · `add.ovf` · `box` · `brtrue.s` · `initobj`) |
-> | — | **할당 바이트의 증분값**(24 · 32 · 0) · **타입 크기**(`Unsafe.SizeOf`) |
-
 ## 한눈에 — 쉽게 말하면
 
 **C# 의 숫자 타입은 「자동차 주행거리계」와 「금전출납부」 두 부류로 갈린다.**
@@ -946,3 +898,52 @@ float   : float.MaxValue * 2f = ∞
 - **`MidpointRounding`** — `decimal` 반올림 규칙. 금융에서 `ToEven`(은행가 반올림)과 `AwayFromZero` 가 갈린다.
 - ★ **왜 `decimal` 은 `float`/`double` 과 암묵 변환이 없나** — 언어 설계가 「섞이면 사고가 난다」를 **문법으로 막은** 것이다.\
   같은 결정을 `bool` 과 정수 사이에서도 했다(C 와 달리 `if (1)` 이 안 된다).
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — `checked`/`unchecked`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/checked-and-unchecked) · [Learn — 널 허용 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types) · [Learn — 널 허용 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-reference-types) · [Learn — 멤버 접근·널 조건 연산자](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/member-access-operators)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
+런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-25).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 첫 줄(`// cs0Nb-….cs` 꼴)도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
+★★★ **진단 언어를 영어로 고정했다.** 안 주면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
+01\~04 가 실측으로 받은 한국어 판이 ``error CS0029: 암시적으로 'string' 형식을 'int' 형식으로 변환할 수 없습니다.`` 였다.\
+고정하는 법은 둘을 같이 거는 것이다 — 환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`**.
+**던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
+그래야 `bin/`·`obj/` 가 원리상 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
+배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
+
+```text
+export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
+export DOTNET_CLI_UI_LANGUAGE=en            # ★★★ 안 주면 진단이 한국어로 나온다
+D=$(dirname "$(readlink -f "$(command -v dotnet)")")
+ls "$D"/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/*.dll | sed 's/^/-r:/' > refs.rsp
+echo '{"runtimeOptions":{"tfm":"net10.0","framework":{"name":"Microsoft.NETCore.App","version":"10.0.0"}}}' > ex.runtimeconfig.json
+csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
+          -nologo -nostdlib -noconfig @refs.rsp \
+          -preferreduilang:en-US -langversion:latest "$@"; }
+```
+
+**`-debug` 를 안 줬다** — PDB 가 없으면 스택 트레이스에 **절대 경로와 줄 번호가 안 박힌다**.\
+그래서 이 문서의 트레이스는 ``at Program.<Main>$(String[] args)`` 에서 끝나고, 어느 머신에서 돌려도 같다.\
+**IL 덤프는 `-optimize` 없이**(기본 디버그) 낸 것이라 `nop` 이 섞여 있고 소스 구조가 그대로 보인다.\
+IL 을 찍는 `cs-il.cs`(82줄, 외부 도구 없이 BCL 만 쓴다)의 전문은 [03번](../03-boxing-and-unboxing/2-summary.md)의 (0)절에 있다.
+**버전** — 정수·부동소수점 타입과 `checked`/`unchecked` 는 **C# 1.0부터**. `decimal` 도 **C# 1.0부터**다.\
+`nint`/`nuint`(네이티브 정수)는 **C# 9부터**, `Half` 는 **.NET 5부터**, 사용자 정의 `checked` 연산자는 **C# 11부터**다.\
+이 문서는 그중 **C# 1.0부터 있는 것만** 다룬다 — 20년 넘게 안 바뀐 기본값이라 오히려 잊기 쉽다.
+**경계** — 「2진 표현이 어떻게 생겼나」·「IEEE 754 가 왜 0.1을 못 담나」의 정본은\
+[`foundations/data-representation/`](../../../../cs/foundations/data-representation/)다. **여기는 그것이 아니라** 「**C# 에서 무엇을 고르나**」다 —\
+같은 사실 위에서 갈래가 다르다. 저기는 **비트가 어떻게 놓이나**, 여기는 **`double` 과 `decimal` 중 무엇을 쓰고 그 대가가 무엇인가**.\
+값 타입이 무엇인지는 [01번](../01-value-types-and-reference-types/), 박싱은 [03번](../03-boxing-and-unboxing/)이 정본이다.\
+`enum` 이 정수 위의 껍데기라는 것은 목록의 **20번 주제**, 서식·문화권은 목록의 **48번 주제**다.\
+C 의 정수 승격·미정의 동작과는 **축이 다르다** — 그쪽은 C 갈래의 [정수 승격 편](../../../c/syntax/03-integer-promotion-and-usual-arithmetic-conversions/)이고,\
+거기서는 **부호 있는 오버플로가 미정의 동작**인데 여기서는 **정의된 감김**이다.
+★★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조는 이 표를 기준으로 판정한다.
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★ **`GC.GetAllocatedBytesForCurrentThread()` 의 절댓값**(프로세스 시작부터의 누적이다) | ★★★ **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐** |
+| 시간·CPU 상태 — 이 문서는 **시간을 한 번도 안 쟀다** | **진단 코드**(`CS0220`·`CS8602` 류) · **진단 문구** · **`(행,열)`** |
+| 객체 주소 · `GetHashCode()` 의 참조형 값 | **`cc exit` 와 `run exit`**(갈라 적었다) |
+| `dotnet` 패치 버전이 오르면 달라질 수 있는 것 | **IL 명령어 열**(`add` · `add.ovf` · `box` · `brtrue.s` · `initobj`) |
+| — | **할당 바이트의 증분값**(24 · 32 · 0) · **타입 크기**(`Unsafe.SizeOf`) |

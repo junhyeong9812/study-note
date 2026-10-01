@@ -1,17 +1,5 @@
 # kotlin/syntax/04 — 스마트 캐스트와 그것이 깨지는 자리 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Type checks and casts — Smart casts](https://kotlinlang.org/docs/typecasts.html#smart-casts) · [Null safety](https://kotlinlang.org/docs/null-safety.html) · [What's new in Kotlin 2.0.0 — Smart cast improvements](https://kotlinlang.org/docs/whatsnew20.html).
-> **실행 검증** — 모든 에러·출력은 **kotlinc 2.4.20 (JRE 21.0.5)** 에서 실제로 얻었다.\
-> 「깨지는 자리」는 **아홉 가지를 따로 던져** 에러 메시지를 받은 것이고, 동시성 실험은 20만 회 × 5판을 돌렸다.
-> **버전** — 스마트 캐스트는 1.0. 이 문서의 **에러 문구와 통과 범위는 K2**(2.0 이후 기본) 기준이다.\
-> ★ **K1 과 비교하지 못했다** — 이 컴파일러는 `-language-version 1.9` 를 거부한다(아래 「실행 검증」).
-> **경계** — [03번 주제](../03-null-safe-types/)는 **`?`·`?.`·`?:`·`!!` 라는 문법**이 정본이다.\
-> 여기는 **「그 문법을 안 써도 되게 해 주는 것과, 그것이 안 되는 조건」** 만 다룬다.\
-> `is`/`as`/`as?` 라는 **연산자 자체**의 정본은 [목록의 **33번 주제**](../33-type-checks-and-casts-is-as/)다.\
-> Java 의 `instanceof` 패턴은 [`../../../java/syntax/22-instanceof-type-patterns/`](../../../java/syntax/22-instanceof-type-patterns/) 가 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ## 한눈에 — 쉽게 말하면
 
 **스마트 캐스트는 "컴파일러가 방금 읽은 검사를 기억해 주는 것" 이다.**\
@@ -508,3 +496,15 @@ x.length                      // ERROR — 밖에서는 다시 Any
   어느 쪽이 나은지는 취향이 아니라 **"어떤 실수를 막고 싶은가" 의 차이**다 — 정본은 [`../../../java/syntax/22-instanceof-type-patterns/`](../../../java/syntax/22-instanceof-type-patterns/).
 - 제네릭 프로퍼티(`class G<T>(val t: T)` 의 `g.t`)는 **좁혀진다**(실측). `T` 가 `String?` 으로 실체화돼도\
   `val` 이고 getter 가 없으므로 안정 값이기 때문이다.
+
+## 실행 환경
+
+**기준 소스** — [Type checks and casts — Smart casts](https://kotlinlang.org/docs/typecasts.html#smart-casts) · [Null safety](https://kotlinlang.org/docs/null-safety.html) · [What's new in Kotlin 2.0.0 — Smart cast improvements](https://kotlinlang.org/docs/whatsnew20.html).
+**실행 검증** — 모든 에러·출력은 **kotlinc 2.4.20 (JRE 21.0.5)** 에서 실제로 얻었다.\
+「깨지는 자리」는 **아홉 가지를 따로 던져** 에러 메시지를 받은 것이고, 동시성 실험은 20만 회 × 5판을 돌렸다.
+**버전** — 스마트 캐스트는 1.0. 이 문서의 **에러 문구와 통과 범위는 K2**(2.0 이후 기본) 기준이다.\
+★ **K1 과 비교하지 못했다** — 이 컴파일러는 `-language-version 1.9` 를 거부한다(「실행 환경」의 실행 검증).
+**경계** — [03번 주제](../03-null-safe-types/)는 **`?`·`?.`·`?:`·`!!` 라는 문법**이 정본이다.\
+여기는 **「그 문법을 안 써도 되게 해 주는 것과, 그것이 안 되는 조건」** 만 다룬다.\
+`is`/`as`/`as?` 라는 **연산자 자체**의 정본은 [목록의 **33번 주제**](../33-type-checks-and-casts-is-as/)다.\
+Java 의 `instanceof` 패턴은 [`../../../java/syntax/22-instanceof-type-patterns/`](../../../java/syntax/22-instanceof-type-patterns/) 가 정본이다.

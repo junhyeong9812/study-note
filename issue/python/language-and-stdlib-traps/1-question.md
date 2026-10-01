@@ -1,10 +1,5 @@
 # issue/python/language-and-stdlib-traps — 직관과 다른 Python 언어·표준 라이브러리 규칙 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. (예측) JSON 메시지 `{"cols": true, "rows": true}`가 "1~500 사이 정수" 검증 `isinstance(cols, int)`를 통과할까? 통과한다면 왜이고, 정수만 받으려면 무엇으로 검사해야 하는가? 같은 계열로 `nxt in "ei"`에서 `nxt == ""`이면 결과는?
 2. (왜) `self.index = read_index(new_path)` 한 줄로 수백 GB짜리 객체를 교체하다 메모리가 순간 2배가 됐다. 대입문의 평가 순서로 설명하라. 또 정리 코드를 `except` 블록 안에 두자 `del obj`가 효과가 없었다 — 무엇이 그 객체를 붙들고 있었는가?

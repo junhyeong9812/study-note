@@ -1,17 +1,5 @@
 # python/syntax/43-collections — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★★★ 1번은 **행마다 `len` 전→후와 factory 호출 수**까지 적고 마지막 줄의 숫자를 적는다.
-> ★★ 이 주제는 **속도를 묻지 않는다** — 시간을 한 번도 재지 않았다. 복잡도는 문서의 말이다.
->
-> 실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
-> ★ 선행 — [12](../12-dict-and-key-requirements/1-question.md)(`dict`·`get`·`setdefault`) · [10](../10-list-methods-and-sort-key/1-question.md)(안정 정렬).
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -228,6 +216,14 @@ except TypeError as exc:
 
 * ★ [12번](../12-dict-and-key-requirements/2-summary.md) 동작 6 이 이미 보인 것과 이 주제의 1번이 **새로 보인 것**을 갈라라.
 * ★ `move_to_end` 는 [자료구조 10번 LRU 캐시](../../../../cs/data-structure/10-lru-cache/2-summary.md)의 **어느 동작**에 해당하나? 그 편이 직접 만든 구조는 무엇이고, `OrderedDict` 는 그중 무엇을 대신하나?
+
+## 실행 환경
+
+★★★ 1번은 **행마다 `len` 전→후와 factory 호출 수**까지 적고 마지막 줄의 숫자를 적는다.
+★★ 이 주제는 **속도를 묻지 않는다** — 시간을 한 번도 재지 않았다. 복잡도는 문서의 말이다.
+
+실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
+★ 선행 — [12](../12-dict-and-key-requirements/1-question.md)(`dict`·`get`·`setdefault`) · [10](../10-list-methods-and-sort-key/1-question.md)(안정 정렬).
 
 ## 복습 기록
 

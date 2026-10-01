@@ -1,12 +1,5 @@
 # html/syntax/13 — 구절 시맨틱: `strong`/`em`/`b`/`i`/`mark`/`small`/`code`/`kbd`/`samp`/`abbr` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였고 사람이 옮겨 적지 않았다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **이 주제의 본체는 창 ② × 창 ⑦ 의 대조다.** 모양은 창 ② 로, 의미는 창 ⑦ 로만 보인다(A7).
-> ★★ **스크린리더가 역할을 받아 무엇을 하는지는 못 본다**(A9).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -582,3 +575,11 @@ $ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 --d
 - **`bolder` / `smaller`** — 부모 값에서 한 단계 굵게/작게. 겹치면 쌓인다.
 - **제5의 상태** — 같은 질문을 **다른 창으로 물어** 답을 얻은 것. 이 주제에서는 「같은가」를 창 ② 대신 창 ⑦ 로 물었다.
 - **제3의 상태(못 잰 것)** — 존재하는 동작인데 잴 도구가 없는 것. 이 주제의 스크린리더·검색 엔진이 그렇다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였고 사람이 옮겨 적지 않았다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **이 주제의 본체는 창 ② × 창 ⑦ 의 대조다.** 모양은 창 ② 로, 의미는 창 ⑦ 로만 보인다(A7).
+★★ **스크린리더가 역할을 받아 무엇을 하는지는 못 본다**(A9).

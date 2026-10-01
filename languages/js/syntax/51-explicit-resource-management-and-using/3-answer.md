@@ -1,12 +1,5 @@
 # js/syntax/51 — 명시적 자원 관리 `using`: 「Chrome 151 만 다 있고(`11 / 21`) · 역순으로 모든 길에서 치우며 · 치우다 던지면 본문 오류는 `.suppressed` 로 들어간다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 출력은 **node v20.19.6 · v18.19.1 · Google Chrome 151 · tsc 7.0.2** · x86-64 Linux 에서 실제로 돌려 얻은 것이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> ★★★ **`using` 의 동작을 확인한 엔진은 Chrome 151 하나다** — node 18·20 에는 문법이 없어, node 쪽 답은 **손으로 쓴 코드(7번)와 tsc 방출물(8번)** 로 다시 물은 것이다.
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
-> `js48b-51a-support.js` + `.sh`(1번 · 9번) · `js48b-51b-positions.js`(2번) · `js48b-51c-order.js`(3번 · 10번) · `js48b-51d-errors.js`(4번 · 11번) · `js48b-51e-stack.js`(5번 — 소스는 [2-summary.md](2-summary.md) 동작 (5)) · `js48b-51f-await-using.js`(6번) · `js48b-51g-by-hand.js`(7번) · `in51h.ts` + `tsconfig.json` + `js48b-51h-tsc.sh`(8번).
-
 ## 정답
 
 ### 1. Chrome 151 은 **일곱 칸 다 yes**, node 18·20 은 **`Symbol.dispose`·`Symbol.asyncDispose` 만 yes** · **`supported cells: 11 / 21`** · `#` 줄 — node 는 `Symbol(nodejs.dispose)` · `nodejs.dispose`, Chrome 은 `Symbol(Symbol.dispose)` · `undefined` ★★★
@@ -337,6 +330,14 @@ tsc -p . --target esnext --outDir out-esnext   exit=0
 | `js48b-51g-by-hand.js` | ★★ 손 코드의 역순 · 본문 오류 소실 | node20 · node18(같음) · Chrome 151(`[3]` 이름만 다름) |
 | `in51h.ts` + `tsconfig.json` + `js48b-51h-tsc.sh` | ★★ tsc 7.0.2 의 방출 · 방출물의 세 판 실행 | tsc 7.0.2 → node18 · node20 · Chrome 151 |
 
-- ★ 캡처를 두 번 돌려 정규화 대조했다 — 실행마다 바뀌는 칸이 **없었다**(머리말 흔들리는 칸 표).
+- ★ 캡처를 두 번 돌려 정규화 대조했다 — 실행마다 바뀌는 칸이 **없었다**(「실행 환경」 흔들리는 칸 표).
 
 **구현 의존 항목 — 판이 오르면 다시 돌릴 것** — ★★★ **1번 격자 전체**(node 가 문법을 받는 판이 오면 칸이 바뀐다 · 그때 `Symbol.keyFor(Symbol.dispose)` 도) · 2번 · 3번의 **문구** · 4번 `[6]` 의 `message` · **8번의 헬퍼 모양**(tsc 판). 순서와 중첩 모양(3번 · 4번 · 6번)은 명세 칸이라 판이 올라도 같아야 한다.
+
+## 실행 환경
+
+이 파일의 출력은 **node v20.19.6 · v18.19.1 · Google Chrome 151 · tsc 7.0.2** · x86-64 Linux 에서 실제로 돌려 얻은 것이고, 블록은 **전부 캡처 파일에서 조립**했다.
+★★★ **`using` 의 동작을 확인한 엔진은 Chrome 151 하나다** — node 18·20 에는 문법이 없어, node 쪽 답은 **손으로 쓴 코드(7번)와 tsc 방출물(8번)** 로 다시 물은 것이다.
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
+`js48b-51a-support.js` + `.sh`(1번 · 9번) · `js48b-51b-positions.js`(2번) · `js48b-51c-order.js`(3번 · 10번) · `js48b-51d-errors.js`(4번 · 11번) · `js48b-51e-stack.js`(5번 — 소스는 [2-summary.md](2-summary.md) 동작 (5)) · `js48b-51f-await-using.js`(6번) · `js48b-51g-by-hand.js`(7번) · `in51h.ts` + `tsconfig.json` + `js48b-51h-tsc.sh`(8번).

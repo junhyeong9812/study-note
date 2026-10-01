@@ -1,12 +1,5 @@
 # kotlin/syntax/51 — 계약 함수 — `require`/`check`/`error`/`TODO` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [34번 주제](../34-exceptions-nothing-and-try-expression/)(검사 예외 없음·`Nothing`·`try` 식)다.
-> 문항 10개 중 예측형은 5개이고, 5개 모두 코드블록이 붙는다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -288,6 +281,12 @@ fun main() {
 ### 10. `error()` 와 `TODO()` 의 반환 타입 (연결)
 
 - `val t = s ?: TODO()` 가 3번에서 통과한 까닭을 [34번 주제](../34-exceptions-nothing-and-try-expression/)의 어느 성질로 설명하나? `TODO()` 가 `catch (e: Exception)` 을 빠져나가는 것은 [49번 주제](../49-result-and-runcatching/)의 어느 격자에서 이미 봤나?
+
+## 실행 환경
+
+선행은 [34번 주제](../34-exceptions-nothing-and-try-expression/)(검사 예외 없음·`Nothing`·`try` 식)다.
+
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

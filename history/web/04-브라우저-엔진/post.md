@@ -1,9 +1,5 @@
 # 브라우저와 렌더링 엔진 전쟁
 
-> 원본: `~/project/web-history/04-브라우저-엔진.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·논문명·표준번호·코드는 원문 그대로다.\
-> 용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 이 편을 한 줄로 요약한 문장은 이렇다.
@@ -468,3 +464,9 @@ IE가 그랬듯, 한 엔진의 독점은 호환성이라는 편익과 혁신 정
 - [Chromium and the browser monoculture problem (DEV Community)](https://dev.to/kenbellows/chromium-and-the-browser-monoculture-problem-420n)
 - [Operation convergence: how the W3C and WHATWG fell out (Josh Tumath)](https://joshtumath.github.io/2013/07/16/operation-convergence-the-story-of-how-the-w3c-and-whatwg-fell-out.html)
 - [Browser History (Mozilla/Firefox.com)](https://www.mozilla.org/en-US/firefox/browsers/browser-history/)
+
+## 출처
+
+원본: `~/project/web-history/04-브라우저-엔진.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·논문명·표준번호·코드는 원문 그대로다.\
+용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.

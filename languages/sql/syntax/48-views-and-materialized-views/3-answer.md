@@ -1,12 +1,5 @@
 # sql/48-뷰와 구체화 뷰 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 출력은 없다.\
-> **이 편이 만든 객체** — `t48_emp`·`t48_high_snap`·`v48_high`·`v48_high_chk`·`v48_agg`·`v48_star`·`mv48_high`.\
-> PG 는 `BEGIN … ROLLBACK` 으로 감쌌고 MySQL 은 `DROP VIEW`/`DROP TABLE` 로 지웠다. **`emp`·`dept` 는 안 건드렸다.**\
-> 문서 근거는 [PG 18 CREATE VIEW](https://www.postgresql.org/docs/18/sql-createview.html) · [PG 18 CREATE MATERIALIZED VIEW](https://www.postgresql.org/docs/18/sql-creatematerializedview.html) · [MySQL 8.4 View Updatability](https://dev.mysql.com/doc/refman/8.4/en/view-updatability.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -628,3 +621,11 @@ HINT:  Create a unique index with no WHERE clause on one or more columns of the 
 
 **버전** — 구체화 뷰는 PG 9.3 부터, `WITH CHECK OPTION` 은 두 엔진에 오래 있었고 매뉴얼에 도입 버전이 없어 적지 않는다.\
 MySQL 에 구체화 뷰가 생기면 **5·6·11·12번**을 다시 돌린다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 출력은 없다.\
+**이 편이 만든 객체** — `t48_emp`·`t48_high_snap`·`v48_high`·`v48_high_chk`·`v48_agg`·`v48_star`·`mv48_high`.\
+PG 는 `BEGIN … ROLLBACK` 으로 감쌌고 MySQL 은 `DROP VIEW`/`DROP TABLE` 로 지웠다. **`emp`·`dept` 는 안 건드렸다.**\
+문서 근거는 [PG 18 CREATE VIEW](https://www.postgresql.org/docs/18/sql-createview.html) · [PG 18 CREATE MATERIALIZED VIEW](https://www.postgresql.org/docs/18/sql-creatematerializedview.html) · [MySQL 8.4 View Updatability](https://dev.mysql.com/doc/refman/8.4/en/view-updatability.html).

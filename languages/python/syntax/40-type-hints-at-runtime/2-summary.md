@@ -1,45 +1,5 @@
 # python/syntax/40-type-hints-at-runtime — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [`typing`(3.12)](https://docs.python.org/3.12/library/typing.html) — *"The Python runtime does not enforce function and variable type annotations."* ·
->   `get_type_hints` 가 문자열로 적힌 전방 참조를 평가한다는 문단
-> - [Annotations Best Practices(3.12)](https://docs.python.org/3.12/howto/annotations.html) — `from __future__ import annotations` 가 어노테이션을 **문자열로 바꾼다**(*"stringized"*)는 문단 ·
->   이미 문자열인 어노테이션은 *"quoted twice"* 가 된다는 예 · 3.10+ 에서는 `inspect.get_annotations()` 가 권장이라는 문단
-> - [What's New In Python 3.14](https://docs.python.org/3.14/whatsnew/3.14.html) — PEP 649·749 절:
->   *"annotations are no longer evaluated eagerly … evaluated only when necessary (except if `from __future__ import annotations` is used)"* ·
->   새 모듈 `annotationlib` 과 세 형식 `VALUE`·`FORWARDREF`·`STRING`. ★ **이 판은 이 머신에 없다 — 문서로만 적는다.**
-> - [`functools.singledispatch`](https://docs.python.org/3.12/library/functools.html#functools.singledispatch) — 첫 인자의 어노테이션으로 등록하는 `register`
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 **둘** — `python3` **3.12.3** 이 본판이고, **판 격자**를 위해 `python3.11` **3.11.15** 로 두 블록을 더 던졌다.\
-> ★★★ **3.14 는 이 머신에 없다** — 첫 블록이 `PATH` 에서 `python3.14` 를 찾아 **`None`** 을 받았고, **`import annotationlib` 이 `ModuleNotFoundError`** 였다.
-> 그래서 3.14 의 지연 평가는 **못 잰 것**이고, 판 격자의 3.14 열은 **문서 문장만** 싣는다.\
-> ★★★ **타입 검사기도 이 머신에 없다** — [35번](../35-abc-and-protocol/2-summary.md)과 [38번](../38-namedtuple-and-typeddict/2-summary.md)이 다섯 도구를 물어 **전부 `None`** 이었다.
-> 이 주제의 과녁은 **「검사기만 보는 것」과 「런타임이 보는 것」을 가르는 것**인데, 검사기 쪽은 **전부 못 잰 것**이다.\
-> ★ 던지는 형태는 `python3 - <파일` 하나로 고정했다. **`from __future__` 는 파일 맨 위에만 올 수 있으므로** 기본 판과 `__future__` 판을 **파일을 따로** 만들었다.
-> ★ 트레이스백은 한 블록도 안 실었다 — `NameError` 도 `except` 로 받아 **타입과 메시지만** 찍었다(`typing.py` 를 지나는 것이 있어 한 형식으로 맞췄다).\
-> **버전** — 함수 어노테이션은 **3.0**(PEP 3107), 변수 어노테이션은 **3.6**(PEP 526), `from __future__ import annotations` 는 **3.7**(PEP 563),
-> `inspect.get_annotations` 는 **3.10**, 지연 평가는 **3.14**(PEP 649·749) 부터다.\
-> ★ **구현 대 언어 보장 한 줄** — **「런타임은 어노테이션을 강제하지 않는다」·평가 시각·`__future__` 의 문자열화까지가 언어 보장**이고,
-> **`dataclass`·`NamedTuple`·`singledispatch` 가 어노테이션을 어떻게 읽느냐**는 각 모듈의 계약이며,
-> 그 모듈들이 `__future__` 아래에서 **무엇을 받느냐**(`'int'` 인가 `ForwardRef('int')` 인가)는 CPython 쪽이다.\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | ★ 판이 오르면 **`__annotations__` 가 담는 것 자체** — 3.14 에서 바뀐다고 문서가 적는다(못 잰 것) | ★★ 격자의 칸 · 마지막 줄 **「갈린 칸 N / M」** — **3.11 과 3.12 에서 한 글자도 같았다** |
-> | 판이 오르면 예외 **문구** | `<평가됨: …>` 줄이 **찍히느냐 안 찍히느냐**와 그 **순서** |
-> | — (주소·시간을 한 곳도 안 찍었다) | `get_type_hints` 가 되살린 값 |
->
-> ★ **이 주제의 블록에는 주소도 시간도 절대 경로도 한 곳도 안 찍힌다.** 재대조 전부 동일.\
-> **선행** — [19-function-argument-rules](../19-function-argument-rules/2-summary.md)(★ **매개변수 자리 — 어노테이션이 붙는 곳**) ·
-> [36-dataclasses](../36-dataclasses/2-summary.md)(★★★ **「어노테이션을 읽지만 값 타입은 안 본다」 — 이 주제의 예외 격자 첫 행**) ·
-> [38-namedtuple-and-typeddict](../38-namedtuple-and-typeddict/2-summary.md)(★★ **「런타임이 들고만 있다」**) ·
-> [35-abc-and-protocol](../35-abc-and-protocol/2-summary.md)(★ **검사기 부재 판정의 정본**).
-
 ## 한눈에 — 쉽게 말하면
 
 **타입 힌트는 「택배 상자에 붙인 내용물 메모」다.** 배송 기사(인터프리터)는 메모를 **읽지 않고** 상자를 나른다.
@@ -999,3 +959,42 @@ typing.get_type_hints(f)                  문자열 평가 + None -> NoneType ·
   「런타임은 안 본다」의 예외가 아니라 **그 빈자리를 채우는 제3자**다([38번](../38-namedtuple-and-typeddict/2-summary.md)과 같은 말).
 * ★ **3.14 를 설치하게 되면 다시 돌릴 것** — 동작 1 의 ③(평가 시각 창)과 동작 3 의 격자. 문서대로면 **기본 열의 `def` 때 평가 횟수가 0 이 되고 `NameError` 칸이 통과**가 된다 —
   ★ **이것은 예측이지 측정이 아니다.** 그때 이 절을 실측으로 바꾼다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [`typing`(3.12)](https://docs.python.org/3.12/library/typing.html) — *"The Python runtime does not enforce function and variable type annotations."* ·
+  `get_type_hints` 가 문자열로 적힌 전방 참조를 평가한다는 문단
+- [Annotations Best Practices(3.12)](https://docs.python.org/3.12/howto/annotations.html) — `from __future__ import annotations` 가 어노테이션을 **문자열로 바꾼다**(*"stringized"*)는 문단 ·
+  이미 문자열인 어노테이션은 *"quoted twice"* 가 된다는 예 · 3.10+ 에서는 `inspect.get_annotations()` 가 권장이라는 문단
+- [What's New In Python 3.14](https://docs.python.org/3.14/whatsnew/3.14.html) — PEP 649·749 절:
+  *"annotations are no longer evaluated eagerly … evaluated only when necessary (except if `from __future__ import annotations` is used)"* ·
+  새 모듈 `annotationlib` 과 세 형식 `VALUE`·`FORWARDREF`·`STRING`. ★ **이 판은 이 머신에 없다 — 문서로만 적는다.**
+- [`functools.singledispatch`](https://docs.python.org/3.12/library/functools.html#functools.singledispatch) — 첫 인자의 어노테이션으로 등록하는 `register`
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 **둘** — `python3` **3.12.3** 이 본판이고, **판 격자**를 위해 `python3.11` **3.11.15** 로 두 블록을 더 던졌다.\
+★★★ **3.14 는 이 머신에 없다** — 첫 블록이 `PATH` 에서 `python3.14` 를 찾아 **`None`** 을 받았고, **`import annotationlib` 이 `ModuleNotFoundError`** 였다.
+그래서 3.14 의 지연 평가는 **못 잰 것**이고, 판 격자의 3.14 열은 **문서 문장만** 싣는다.\
+★★★ **타입 검사기도 이 머신에 없다** — [35번](../35-abc-and-protocol/2-summary.md)과 [38번](../38-namedtuple-and-typeddict/2-summary.md)이 다섯 도구를 물어 **전부 `None`** 이었다.
+이 주제의 과녁은 **「검사기만 보는 것」과 「런타임이 보는 것」을 가르는 것**인데, 검사기 쪽은 **전부 못 잰 것**이다.\
+★ 던지는 형태는 `python3 - <파일` 하나로 고정했다. **`from __future__` 는 파일 맨 위에만 올 수 있으므로** 기본 판과 `__future__` 판을 **파일을 따로** 만들었다.
+★ 트레이스백은 한 블록도 안 실었다 — `NameError` 도 `except` 로 받아 **타입과 메시지만** 찍었다(`typing.py` 를 지나는 것이 있어 한 형식으로 맞췄다).\
+**버전** — 함수 어노테이션은 **3.0**(PEP 3107), 변수 어노테이션은 **3.6**(PEP 526), `from __future__ import annotations` 는 **3.7**(PEP 563),
+`inspect.get_annotations` 는 **3.10**, 지연 평가는 **3.14**(PEP 649·749) 부터다.\
+★ **구현 대 언어 보장 한 줄** — **「런타임은 어노테이션을 강제하지 않는다」·평가 시각·`__future__` 의 문자열화까지가 언어 보장**이고,
+**`dataclass`·`NamedTuple`·`singledispatch` 가 어노테이션을 어떻게 읽느냐**는 각 모듈의 계약이며,
+그 모듈들이 `__future__` 아래에서 **무엇을 받느냐**(`'int'` 인가 `ForwardRef('int')` 인가)는 CPython 쪽이다.\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| ★ 판이 오르면 **`__annotations__` 가 담는 것 자체** — 3.14 에서 바뀐다고 문서가 적는다(못 잰 것) | ★★ 격자의 칸 · 마지막 줄 **「갈린 칸 N / M」** — **3.11 과 3.12 에서 한 글자도 같았다** |
+| 판이 오르면 예외 **문구** | `<평가됨: …>` 줄이 **찍히느냐 안 찍히느냐**와 그 **순서** |
+| — (주소·시간을 한 곳도 안 찍었다) | `get_type_hints` 가 되살린 값 |
+
+★ **이 주제의 블록에는 주소도 시간도 절대 경로도 한 곳도 안 찍힌다.** 재대조 전부 동일.\
+**선행** — [19-function-argument-rules](../19-function-argument-rules/2-summary.md)(★ **매개변수 자리 — 어노테이션이 붙는 곳**) ·
+[36-dataclasses](../36-dataclasses/2-summary.md)(★★★ **「어노테이션을 읽지만 값 타입은 안 본다」 — 이 주제의 예외 격자 첫 행**) ·
+[38-namedtuple-and-typeddict](../38-namedtuple-and-typeddict/2-summary.md)(★★ **「런타임이 들고만 있다」**) ·
+[35-abc-and-protocol](../35-abc-and-protocol/2-summary.md)(★ **검사기 부재 판정의 정본**).

@@ -1,16 +1,5 @@
 # kotlin/syntax/31 — 연산자 오버로딩·중위 함수·`invoke` 규약 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Operator overloading](https://kotlinlang.org/docs/operator-overloading.html)(`operator` 수식어 · `+=` 의 모호성 규칙 · `==` 는 오버로드가 아니라 `equals` 재정의 · `..<` → `rangeUntil`) · [Functions — Infix notation](https://kotlinlang.org/docs/functions.html#infix-notation).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
-> `kotlinc` 6회(컴파일 실패 2벌) · `java` 4회 · `javap` 4회(하나는 `python3` 격자 스크립트로 셌다).\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
-> **버전** — `operator` 규약·`infix`·`invoke` 는 1.0. ★ **`..<`(`rangeUntil`)는 1.7.20 도입 · 1.8.0 Stable** 이다([07번 주제](../07-loops-ranges-and-labels/) 머리말) — **이 판은 `-language-version 1.9` 이하를 거부하므로 그 경계를 재지 못했다**(07번이 같은 이유로 못 잰 것을 인용한다).
-> **경계** — `infix` 라는 **호출 형태와 우선순위**(`1 shl 2 + 3` 이 `32`)는 [09번 주제](../09-varargs-spread-local-and-infix-functions/) (9)가 **이미 재 둔 정본**이다 — 여기서 다시 재지 않는다.\
-> **확장 함수 일반**은 [13번 주제](../13-extension-functions-and-properties/), `componentN` 은 [30번 주제](../30-destructuring-declarations-and-componentn/), `getValue`/`setValue` 는 [17번 주제](../17-delegated-properties/), `iterator()` 는 [07번 주제](../07-loops-ranges-and-labels/) (5), **`==`·`equals` 는 [32번 주제](../32-equality-and-equals-contract/)** 가 정본이다.
-> **대비** — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **30번**([`30-operator-overloading-std-ops-index-and-deref/`](../../../rust/syntax/30-operator-overloading-std-ops-index-and-deref/)) — 연산자가 **트레이트**이고 `a + b` 가 **`a` 를 옮긴다.** C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **22번**·**23번**(연산자 오버로딩·`<=>`)은 아직 폴더가 없다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **본체는 첫째 창이다** — 「**`javap -c` 가 기호 자리에 박은 메서드 호출**」. 기호가 **어느 이름으로 풀리는지**는 외우는 표가 아니라 바이트코드에 적혀 있다.
 
 ## 이 주제가 쓰는 세 층
@@ -666,3 +655,14 @@ Z Vec(x=4, y=6) Vec(x=-1, y=-2) 2 11
 
 - **왜 이름 기반 번역표인가** — Kotlin 은 C++ 처럼 `operator+` 라는 **기호 이름의 함수**를 두지 않고 **평범한 식별자**(`plus`)에 도장을 찍는다. 그래서 기호 호출과 이름 호출이 **같은 메서드**가 되고((1)의 `s01`·`s19`), 클래스 파일에는 **`plus` 라는 평범한 메서드**만 남는다(`javap` 가 `V.plus` 로 보였다) — JVM 에는 기호 이름의 메서드가 없으니 이 설계가 번역을 단순하게 만든다(이 문서는 **Java 에서 부르는 데까지는 안 던졌다**).
 - **왜 `==` 만 빠졌나** — `==` 는 `null` 을 **먼저 처리**해야 하고(`a?.equals(b) ?: (b === null)`), `equals(Any?)` 는 **`Any` 가 이미 가진 계약**(반사·대칭·추이)이 걸려 있다. 타입별 오버로드(`equals(Q)`)를 허용하면 **`Any?` 로 받은 자리와 `Q` 로 받은 자리에서 답이 갈린다** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **27번**([`27-equals-hashcode-contract/`](../../../java/syntax/27-equals-hashcode-contract/))이 「`equals(내타입)` 은 재정의가 아니라 오버로딩」 사고로 적은 그 자리다. Kotlin 은 그 문을 **문법으로 닫았다**((5)).
+
+## 실행 환경
+
+**기준 소스** — [Operator overloading](https://kotlinlang.org/docs/operator-overloading.html)(`operator` 수식어 · `+=` 의 모호성 규칙 · `==` 는 오버로드가 아니라 `equals` 재정의 · `..<` → `rangeUntil`) · [Functions — Infix notation](https://kotlinlang.org/docs/functions.html#infix-notation).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javap` 에서 실제로 얻었다.\
+`kotlinc` 6회(컴파일 실패 2벌) · `java` 4회 · `javap` 4회(하나는 `python3` 격자 스크립트로 셌다).\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
+**버전** — `operator` 규약·`infix`·`invoke` 는 1.0. ★ **`..<`(`rangeUntil`)는 1.7.20 도입 · 1.8.0 Stable** 이다([07번 주제](../07-loops-ranges-and-labels/) 「실행 환경」) — **이 판은 `-language-version 1.9` 이하를 거부하므로 그 경계를 재지 못했다**(07번이 같은 이유로 못 잰 것을 인용한다).
+**경계** — `infix` 라는 **호출 형태와 우선순위**(`1 shl 2 + 3` 이 `32`)는 [09번 주제](../09-varargs-spread-local-and-infix-functions/) (9)가 **이미 재 둔 정본**이다 — 여기서 다시 재지 않는다.\
+**확장 함수 일반**은 [13번 주제](../13-extension-functions-and-properties/), `componentN` 은 [30번 주제](../30-destructuring-declarations-and-componentn/), `getValue`/`setValue` 는 [17번 주제](../17-delegated-properties/), `iterator()` 는 [07번 주제](../07-loops-ranges-and-labels/) (5), **`==`·`equals` 는 [32번 주제](../32-equality-and-equals-contract/)** 가 정본이다.
+**대비** — Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **30번**([`30-operator-overloading-std-ops-index-and-deref/`](../../../rust/syntax/30-operator-overloading-std-ops-index-and-deref/)) — 연산자가 **트레이트**이고 `a + b` 가 **`a` 를 옮긴다.** C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **22번**·**23번**(연산자 오버로딩·`<=>`)은 아직 폴더가 없다.

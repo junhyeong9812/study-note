@@ -1,22 +1,5 @@
 # rust/syntax/14 — `String` 대 `&str` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `String`](https://doc.rust-lang.org/std/string/struct.String.html) ·
-> [std — `str`](https://doc.rust-lang.org/std/primitive.str.html) ·
-> [std — `Deref` 강제](https://doc.rust-lang.org/std/ops/trait.Deref.html) ·
-> [The Rust Reference — Type coercions](https://doc.rust-lang.org/reference/type-coercions.html) ·
-> [The Rust Book 4.3](https://doc.rust-lang.org/book/ch04-03-slices.html) ·
-> `rustc --explain E0308` / `E0382` / `E0277` / `E0515` / `E0599` / `E0631`.
-> ★ `--explain` 은 **확인용으로만 열었고 본문에 옮기지 않았다.** 본문의 진단은 전부 내가 던져서 받은 것이다.
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.\
-> 소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단의 줄 번호는 그 파일 기준**이다.\
-> ★ **크기·주소 실측은 `x86_64`(포인터 8바이트) 기준**이다. 32비트 대상에서는 숫자가 달라진다 — 그래서 **폭도 같이 찍었다**.
-> **버전** — `String`·`str`·`Deref` 강제는 전부 1.0.0부터다. `String::from`·`to_string`·`to_owned`·`format!` 도 1.0.0부터.\
-> `String::into_boxed_str` 는 1.4.0, `str::to_uppercase` 는 1.2.0이다(std 문서의 `since` 표기).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`String` 은 창고를 가진 주인이고, `&str` 은 그 창고를 들여다보는 창이다.**
@@ -1385,3 +1368,20 @@ let y = format!("{}{}", "가", "나");            // 아무것도 안 뺏는다
 - ★ **`&str` 인자를 더 열고 싶을 때의 세 단계** — `&str`(기본) → `impl AsRef<str>`(문자열 비슷한 것 전부) →\
   `impl Into<String>`(어차피 소유할 거면). **뒤로 갈수록 호출부가 넓어지고 코드 크기가 늘어난다**(단형화).\
   판단은 [목록의 **29번 주제**](../29-conversion-traits-from-into-tryfrom-asref-borrow/)·**31번 주제**다.
+
+## 실행 환경
+
+**기준 소스** — [std — `String`](https://doc.rust-lang.org/std/string/struct.String.html) ·
+[std — `str`](https://doc.rust-lang.org/std/primitive.str.html) ·
+[std — `Deref` 강제](https://doc.rust-lang.org/std/ops/trait.Deref.html) ·
+[The Rust Reference — Type coercions](https://doc.rust-lang.org/reference/type-coercions.html) ·
+[The Rust Book 4.3](https://doc.rust-lang.org/book/ch04-03-slices.html) ·
+`rustc --explain E0308` / `E0382` / `E0277` / `E0515` / `E0599` / `E0631`.
+★ `--explain` 은 **확인용으로만 열었고 본문에 옮기지 않았다.** 본문의 진단은 전부 내가 던져서 받은 것이다.
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.\
+소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단의 줄 번호는 그 파일 기준**이다.\
+★ **크기·주소 실측은 `x86_64`(포인터 8바이트) 기준**이다. 32비트 대상에서는 숫자가 달라진다 — 그래서 **폭도 같이 찍었다**.
+**버전** — `String`·`str`·`Deref` 강제는 전부 1.0.0부터다. `String::from`·`to_string`·`to_owned`·`format!` 도 1.0.0부터.\
+`String::into_boxed_str` 는 1.4.0, `str::to_uppercase` 는 1.2.0이다(std 문서의 `since` 표기).

@@ -1,12 +1,5 @@
 # web-api/14 — `dialog`·`popover` 의 스크립트 제어: `showModal()`·`togglePopover()`·최상위 레이어·포커스 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
-> ★ **배너의 `--window-size=1000,800` 이 이 문서의 전제다.** 좌표 탐침이 뷰포트에 달려 있어 창이 다르면 값이 달라진다.\
-> ★★ **A10 의 블록만 창이 다르다** — `--dump-dom` 이 아니라 **CDP 로 진짜 키와 진짜 마우스를 넣었다.** 가벼운 닫기는 합성 이벤트로 안 난다.\
-> 규칙은 [HTML Living Standard](https://html.spec.whatwg.org/multipage/interactive-elements.html#the-dialog-element) 의 `dialog`·[Popover API](https://html.spec.whatwg.org/multipage/popover.html)·[the top layer](https://html.spec.whatwg.org/multipage/interaction.html#the-top-layer) 절과 [Close Watcher API](https://wicg.github.io/close-watcher/) 로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 **★ 이 주제에는 흔들리는 칸이 거의 없다** — 상태를 묻지 시간을 안 재기 때문이다. 다만 **부적용인 창**이 하나 있다.
 
 | 안 흔들리는 칸 | 흔들리는 칸 · 부적용인 칸 |
@@ -569,3 +562,11 @@ const padw = (s, n) => s + ' '.repeat(Math.max(0, n - W(s)));
 - **`returnValue`** — dialog 가 닫히면서 남기는 문자열. **`close()` 가 지우지 않는다.**
 - **히트 테스트(hit test)** — 「이 좌표에 있는 요소가 누구인가」를 푸는 일. `elementFromPoint` 가 그 답을 준다.
 - **부적용인 창** — 재 봤더니 같은 것이 아니라 **잴 것이 없는** 관측 수단. 이 편에서는 `::backdrop` 의 계산값이 그렇다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
+★ **배너의 `--window-size=1000,800` 이 이 문서의 전제다.** 좌표 탐침이 뷰포트에 달려 있어 창이 다르면 값이 달라진다.\
+★★ **A10 의 블록만 창이 다르다** — `--dump-dom` 이 아니라 **CDP 로 진짜 키와 진짜 마우스를 넣었다.** 가벼운 닫기는 합성 이벤트로 안 난다.\
+규칙은 [HTML Living Standard](https://html.spec.whatwg.org/multipage/interactive-elements.html#the-dialog-element) 의 `dialog`·[Popover API](https://html.spec.whatwg.org/multipage/popover.html)·[the top layer](https://html.spec.whatwg.org/multipage/interaction.html#the-top-layer) 절과 [Close Watcher API](https://wicg.github.io/close-watcher/) 로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

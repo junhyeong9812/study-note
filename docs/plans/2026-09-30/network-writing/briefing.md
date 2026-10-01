@@ -1,8 +1,5 @@
 # 집필 브리핑 — 커리큘럼 leaf 새 노트 (네트워크, 2026-09-30)
 
-> 명세: 같은 폴더 `requirement-spec.md`. 문서 규칙 정본: `cs/README.md` 「작성 규칙」.
-> 모범 구성 참고(형식만 — 내용 복사 금지): `cs/data-structure/01-dynamic-array/`, `cs/ops-patterns/11-distributed-lock/`
-
 ## 1. 입력
 
 - 커리큘럼 행: `docs/plans/2026-09-27/cs-fundamentals-roadmap/curriculum.md`의 §7 네트워크 표에서 담당 slug를 찾는다. 요지·선행·⚠ 깨지면·🔧·📚 칸은 **모두 다뤄야 할 요구사항**이다.

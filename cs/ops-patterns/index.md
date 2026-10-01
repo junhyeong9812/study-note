@@ -1,8 +1,5 @@
 # ops-patterns 인덱스
 
-> myway 연습 프로젝트와 1:1 대응하는 노트 컬렉션이다. **진행 기록(원본 경로·진도)은 [project/myway/README.md](../../project/myway/README.md)** 에 있고,
-> 커리큘럼상 위치·상태는 [reliability](../reliability/README.md)·[distributed](../distributed/README.md) 영역 표에서 본다(2026-09-28 cs 재편).
-
 | 챕터 |
 |------|
 | [01-retry-backoff](01-retry-backoff/) |
@@ -33,3 +30,8 @@
 | [failure-modes](failure-modes/) | `jun-bank/docs/study/11-failure-modes/` 원고를 일반화 | 서머리 | 실패 유형 카탈로그 |
 | [failure-at-scale](failure-at-scale/) | 〃 | 서머리 | 규모에서 드러나는 실패 |
 | [deadline-propagation](deadline-propagation/) | 원고 없음 — 개념 정리(2026-09-18) | 질문/정답 | 클라이언트 타임아웃과 서버 데드라인. 위 19챕터가 데드라인과 만나 어긋나는 자리를 §8에 모았다 |
+
+---
+
+myway 연습 프로젝트와 1:1 대응하는 노트 컬렉션이다. **진행 기록(원본 경로·진도)은 [project/myway/README.md](../../project/myway/README.md)** 에 있고,
+커리큘럼상 위치·상태는 [reliability](../reliability/README.md)·[distributed](../distributed/README.md) 영역 표에서 본다(2026-09-28 cs 재편).

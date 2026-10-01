@@ -1,14 +1,5 @@
 # web-api/05 — `DocumentFragment` 와 `<template>` 복제: 일괄 삽입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 갈래는 언어가 아니라 플랫폼이다.** 언어 문법은 [`../../`](../../) 에 있고, 여기는 **브라우저가 건네주는 객체와 그 계약**이다.\
-> **기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「Interface `DocumentFragment`」·「Mutation algorithms」·「`cloneNode`」·「`importNode`」·「`adoptNode`」 절과 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/scripting.html#the-template-element) 의 「The `template` element」 절. 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.**\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `DocumentFragment` 는 DOM Level 1(1998) 부터 있었고 `<template>` 은 HTML5 후기에 들어와 오늘 모든 현행 엔진에 있다.\
-> **선행** — [03번 주제](../03-node-creation-insertion-removal/2-summary.md)(노드 생성·삽입·제거). 거기서 「조각은 넣으면 빈다」까지 봤고, 여기는 **묶음 삽입 설계와 `<template>`** 부터다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -913,3 +904,12 @@ tpl.innerHTML = '<li>x</li>';                     // content 에 들어간다 (�
 - **조각의 자식을 비우지 않고 쓰는 법** — `host.append(...frag.children)` 처럼 펼쳐 넘기면 조각은 비지만, `[...frag.children]` 으로 먼저 배열에 담아 두면 참조가 남는다. 다만 **삽입은 여전히 이동**이므로 조각에서는 빠진다([03번 주제](../03-node-creation-insertion-removal/2-summary.md)).
 - **선언적 Shadow DOM** 은 `<template shadowrootmode="open">` 으로 쓴다 — 그때는 파서가 **틀을 그림자 트리로 바꿔 버리므로** `content` 가 남지 않는다. 이 문서는 그 경우를 다루지 않았다([목록의 **12번 주제**](../12-shadow-dom/)).
 - ★ **(6)의 결과를 일반 규칙으로 읽지 마라.** 이 환경은 headless Chrome 한 대이고 항목이 2000개다. 말할 수 있는 것은 「**이 조건에서 조각의 이득이 잡음 아래였다**」까지다. 반대로 **읽기·쓰기 교차의 한 자릿수 차이**는 세 판 모두 같은 방향이었으므로 그쪽은 결론으로 쓴다.
+
+## 실행 환경
+
+**이 갈래는 언어가 아니라 플랫폼이다.** 언어 문법은 [`../../`](../../) 에 있고, 여기는 **브라우저가 건네주는 객체와 그 계약**이다.\
+**기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「Interface `DocumentFragment`」·「Mutation algorithms」·「`cloneNode`」·「`importNode`」·「`adoptNode`」 절과 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/scripting.html#the-template-element) 의 「The `template` element」 절. 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.**\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `DocumentFragment` 는 DOM Level 1(1998) 부터 있었고 `<template>` 은 HTML5 후기에 들어와 오늘 모든 현행 엔진에 있다.\
+**선행** — [03번 주제](../03-node-creation-insertion-removal/2-summary.md)(노드 생성·삽입·제거). 거기서 「조각은 넣으면 빈다」까지 봤고, 여기는 **묶음 삽입 설계와 `<template>`** 부터다.

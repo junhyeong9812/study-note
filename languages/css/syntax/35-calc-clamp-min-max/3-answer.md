@@ -1,10 +1,5 @@
 # css/syntax/35 — `calc()`·`clamp()`·`min()`/`max()` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 두 창으로 읽은 것**이다 —
-> `document.styleSheets[0].cssRules[i].style`(**담긴 것**)과 `getComputedStyle`(**계산된 것**).\
-> **손으로 계산해 유도한 수치는 없다.** 규칙은 [CSS Values and Units 4](https://drafts.csswg.org/css-values-4/) 로 접지했다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -264,3 +259,9 @@
 **구현 의존 항목** — ① `calc((100%-40px)/3)` 의 **소수 4자리 절단**과 계산값 119.984px ② `calc(100px/0)` 의 상한 **3.35544e+07px** ③ `clamp` 가 **`calc(300px)`** 로 접혀 담기는 범위. 셋 다 **Chrome 151 에서 관찰한 것**이고, 브라우저가 바뀌면 다시 찍어야 한다.\
 **재지 않은 것** — 삼각·지수 함수(`sin()`·`round()` 등) · `clamp()` 의 직선식 설계(수식을 손으로 유도해야 해서 수치를 싣지 않았다).\
 **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.**
+
+## 실행 환경
+
+이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 두 창으로 읽은 것**이다 —
+`document.styleSheets[0].cssRules[i].style`(**담긴 것**)과 `getComputedStyle`(**계산된 것**).\
+**손으로 계산해 유도한 수치는 없다.** 규칙은 [CSS Values and Units 4](https://drafts.csswg.org/css-values-4/) 로 접지했다.

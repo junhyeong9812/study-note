@@ -1,49 +1,5 @@
 # csharp/syntax/01 — 값 타입과 참조 타입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) · [Learn — 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) · [.NET API — `GC.GetAllocatedBytesForCurrentThread`](https://learn.microsoft.com/en-us/dotnet/api/system.gc.getallocatedbytesforcurrentthread)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
-> 런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-24).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
-> ★★★ **진단 언어를 영어로 고정했다.** 안 그러면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
-> 실측으로 받은 한국어 판이 ``error CS0029: 암시적으로 'string' 형식을 'int' 형식으로 변환할 수 없습니다.`` 였다.\
-> 고정하는 법은 둘을 같이 거는 것이다 — 환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`**.
-> **던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
-> 그래야 `bin/`·`obj/` 가 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
-> 배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
->
-> ```text
-> export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
-> export DOTNET_CLI_UI_LANGUAGE=en            # ★★★ 안 주면 진단이 한국어로 나온다
-> D=$(dirname "$(readlink -f "$(command -v dotnet)")")
-> ls "$D"/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/*.dll | sed 's/^/-r:/' > refs.rsp
-> echo '{"runtimeOptions":{"tfm":"net10.0","framework":{"name":"Microsoft.NETCore.App","version":"10.0.0"}}}' > ex.runtimeconfig.json
-> csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
->           -nologo -nostdlib -noconfig @refs.rsp \
->           -preferreduilang:en-US -langversion:latest -target:exe "$@"; }
-> ```
->
-> **`-debug` 를 안 줬다** — PDB 가 없으면 스택 트레이스에 **절대 경로와 줄 번호가 안 박힌다**.\
-> 그래서 이 문서의 트레이스는 ``at Program.<Main>$(String[] args)`` 에서 끝나고, 어느 머신에서 돌려도 같다.
-> **버전** — 값 타입/참조 타입의 이분은 **C# 1.0부터**. `in` 매개변수는 **C# 7.2부터**,\
-> `out` 변수 선언(`Out(out Point q)`)은 **C# 7.0부터**, 구조체의 필드 초기자·매개변수 없는 생성자는 **C# 10부터**다.
-> **경계** — 「값이냐 참조냐」라는 **개념 자체**의 정본은 [`foundations/variables-and-memory/`](../../../../cs/foundations/variables-and-memory/)다(거기는 파이썬으로 설명한다).\
-> 여기는 **C# 에만 있는 쪽** — **언어가 값 타입을 사용자에게 열어 줬다는 것**과 그것이 대입·전달·할당에서 무엇을 바꾸는가다.\
-> `struct` 와 `class` 중 **무엇을 고를까**는 [02번](../02-struct-vs-class-choosing/), **박싱**은 [03번](../03-boxing-and-unboxing/)이 정본이다.\
-> `ref` 지역·`ref` 반환·`ref struct` 는 목록의 **45번 주제**, `Span<T>` 는 목록의 **46번 주제**다.\
-> C++ 의 참조/포인터와는 **축이 다르다** — 그쪽은 C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **07번**이고,\
-> 거기서 갈리는 것은 「**이름이냐 쪽지냐**」인데 여기서 갈리는 것은 「**값이 들어 있냐 참조가 들어 있냐**」다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★ **`GC.GetAllocatedBytesForCurrentThread()` 의 절댓값**(프로세스 시작부터의 누적이다) | ★★★ **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐** |
-> | `Stopwatch` 로 잰 **ns 수치** · 그때의 CPU 상태 | **자릿수 차이**(10배·40배 같은 비율) |
-> | `GetHashCode()` 값 · 객체 주소 | **진단 코드**(`CS0029` 류) · **진단 문구** · **`(행,열)`** |
-> | 빌드 시간 · `dotnet` 패치 버전이 오르면 달라질 수 있는 것 | **`cc exit` 와 `run exit`**(갈라 적었다) |
-> | — | **IL 명령어 열**(`box` · `unbox.any` · `ldobj` · `initobj` · `newobj`) |
-
 ## 한눈에 — 쉽게 말하면
 
 **값 타입은 「쪽지에 숫자를 적어 둔 것」이고, 참조 타입은 「사물함 번호를 적어 둔 것」이다.**
@@ -482,7 +438,7 @@ p.X=1 n.X=1 arrS.Length=1000 arrC[0]!.X=0
   `Point` 가 **마침 참조 하나와 같은 8바이트**라서다. 뜻은 정반대다:\
   앞엣것은 **`Point` 1000개가 이미 다 들어 있고**, 뒤엣것은 **`null` 1000개**다.\
   ★ 뒤엣것을 실제로 쓰려면 **24000 바이트를 더** 내야 하고, 그것이 「값 타입 배열이 싸다」의 근거다.
-- ★★ **절댓값은 흔들리는 칸**이다(머리말 표). 근거로 쓰는 것은 **증분**과 **0 이냐 아니냐**다.\
+- ★★ **절댓값은 흔들리는 칸**이다(「실행 환경」 표). 근거로 쓰는 것은 **증분**과 **0 이냐 아니냐**다.\
   ★ 그래서 이 문서는 **누적값을 한 번도 싣지 않았다** — 두 번 찍어 뺀 값만 싣는다.
 - ★ **주의 — 「힙을 안 쓴다」는 「스택에 있다」와 같은 말이 아니다.** 구조체가 **클래스의 필드**이거나\
   **박싱**되면 힙에 있다(위 표의 마지막 줄이 그것이다). 「어디 사느냐」는 **그 값이 어디 담겼느냐**가 정한다.\
@@ -916,9 +872,54 @@ class Node { public int X; public int Y; }
 
 - **`ref` 지역·`ref` 반환** — 「참조를 값처럼 들고 다니기」. ★ 이 문서는 안 던졌다. 정본은 목록의 **45번 주제**.
 - **`ref struct`·`Span<T>`** — 힙으로 탈출할 수 없는 구조체. ★ 안 던졌다(목록의 **45**·**46번 주제**).
-- **32비트에서의 크기** — (5)·(8)의 숫자는 전부 **x64** 다. `IntPtr.Size == 8` 을 머리말에서 확인했다.\
+- **32비트에서의 크기** — (5)·(8)의 숫자는 전부 **x64** 다. `IntPtr.Size == 8` 을 「실행 환경」에서 확인했다.\
   ★ 32비트 런타임은 **안 돌려 봤다**(이 머신에 없다).
 - **서버 GC** — `GCSettings.IsServerGC` 가 **`False`**(워크스테이션 GC)인 판에서만 쟀다.\
   ★ 할당 **증분**은 GC 모드와 무관하지만, **안 돌려 봤다는 사실**을 적어 둔다.
 - **`Unsafe.As`·`MemoryMarshal`** — 값 타입의 비트를 직접 다루는 도구. ★ 안 던졌다.
 - **`record class` 와 `record struct`** — `record` 는 기본이 참조 타입이다. 정본은 [02번](../02-struct-vs-class-choosing/)과 목록의 **18번 주제**.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) · [Microsoft Learn — C# 언어 레퍼런스](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/) · [Learn — 값 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) · [Learn — 참조 형식](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) · [.NET API — `GC.GetAllocatedBytesForCurrentThread`](https://learn.microsoft.com/en-us/dotnet/api/system.gc.getallocatedbytesforcurrentthread)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 **.NET SDK 10.0.401** ·\
+런타임 **`.NET 10.0.12`**(`Microsoft.NETCore.App`) · 타겟 **`net10.0`** · **linux-x64** 에서 실제로 돌려 얻은 것이다(2026-09-24).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
+★★★ **진단 언어를 영어로 고정했다.** 안 그러면 **로캘을 따라 한국어로 나와 재현이 안 된다** —\
+실측으로 받은 한국어 판이 ``error CS0029: 암시적으로 'string' 형식을 'int' 형식으로 변환할 수 없습니다.`` 였다.\
+고정하는 법은 둘을 같이 거는 것이다 — 환경변수 **`DOTNET_CLI_UI_LANGUAGE=en`** 과 `csc` 플래그 **`-preferreduilang:en-US`**.
+**던진 형태** — MSBuild(`dotnet build`·`dotnet run`)를 **안 썼다.** Roslyn 컴파일러를 **직접** 부른다 —\
+그래야 `bin/`·`obj/` 가 안 생기고, 진단 경로가 **절대 경로가 아니라 파일명**으로 나오며, 한 판이 0.3초 안에 끝난다.\
+배너의 `csc` 는 아래 셸 함수이고, `ex.runtimeconfig.json` 은 아래 한 줄짜리 파일이다.
+
+```text
+export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
+export DOTNET_CLI_UI_LANGUAGE=en            # ★★★ 안 주면 진단이 한국어로 나온다
+D=$(dirname "$(readlink -f "$(command -v dotnet)")")
+ls "$D"/packs/Microsoft.NETCore.App.Ref/10.0.12/ref/net10.0/*.dll | sed 's/^/-r:/' > refs.rsp
+echo '{"runtimeOptions":{"tfm":"net10.0","framework":{"name":"Microsoft.NETCore.App","version":"10.0.0"}}}' > ex.runtimeconfig.json
+csc() { dotnet exec "$D/sdk/10.0.401/Roslyn/bincore/csc.dll" \
+          -nologo -nostdlib -noconfig @refs.rsp \
+          -preferreduilang:en-US -langversion:latest -target:exe "$@"; }
+```
+
+**`-debug` 를 안 줬다** — PDB 가 없으면 스택 트레이스에 **절대 경로와 줄 번호가 안 박힌다**.\
+그래서 이 문서의 트레이스는 ``at Program.<Main>$(String[] args)`` 에서 끝나고, 어느 머신에서 돌려도 같다.
+**버전** — 값 타입/참조 타입의 이분은 **C# 1.0부터**. `in` 매개변수는 **C# 7.2부터**,\
+`out` 변수 선언(`Out(out Point q)`)은 **C# 7.0부터**, 구조체의 필드 초기자·매개변수 없는 생성자는 **C# 10부터**다.
+**경계** — 「값이냐 참조냐」라는 **개념 자체**의 정본은 [`foundations/variables-and-memory/`](../../../../cs/foundations/variables-and-memory/)다(거기는 파이썬으로 설명한다).\
+여기는 **C# 에만 있는 쪽** — **언어가 값 타입을 사용자에게 열어 줬다는 것**과 그것이 대입·전달·할당에서 무엇을 바꾸는가다.\
+`struct` 와 `class` 중 **무엇을 고를까**는 [02번](../02-struct-vs-class-choosing/), **박싱**은 [03번](../03-boxing-and-unboxing/)이 정본이다.\
+`ref` 지역·`ref` 반환·`ref struct` 는 목록의 **45번 주제**, `Span<T>` 는 목록의 **46번 주제**다.\
+C++ 의 참조/포인터와는 **축이 다르다** — 그쪽은 C++ 갈래 목록([`cpp/syntax/README.md`](../../../cpp/syntax/README.md))의 **07번**이고,\
+거기서 갈리는 것은 「**이름이냐 쪽지냐**」인데 여기서 갈리는 것은 「**값이 들어 있냐 참조가 들어 있냐**」다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★ **`GC.GetAllocatedBytesForCurrentThread()` 의 절댓값**(프로세스 시작부터의 누적이다) | ★★★ **두 호출 사이의 증분**과 **그 증분이 0 이냐 아니냐** |
+| `Stopwatch` 로 잰 **ns 수치** · 그때의 CPU 상태 | **자릿수 차이**(10배·40배 같은 비율) |
+| `GetHashCode()` 값 · 객체 주소 | **진단 코드**(`CS0029` 류) · **진단 문구** · **`(행,열)`** |
+| 빌드 시간 · `dotnet` 패치 버전이 오르면 달라질 수 있는 것 | **`cc exit` 와 `run exit`**(갈라 적었다) |
+| — | **IL 명령어 열**(`box` · `unbox.any` · `ldobj` · `initobj` · `newobj`) |

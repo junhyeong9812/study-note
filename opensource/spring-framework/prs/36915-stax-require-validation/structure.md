@@ -1,10 +1,5 @@
 # PR #36915 — 무대의 실구조와 워크플로우
 
-> PR #36915의 무대가 되는 실구조·워크플로우. 문제·수정은 README.md, 테스트는 tests.md 참조.
->
-> 기준: upstream main `526c706d1c3`. 이 커밋에는 PR #36915가 아직 반영되지 않았으므로,
-> 아래 file:line 인용은 전부 **수정 전 코드**를 그대로 가리킨다.
-
 ## 1. 무대 — 실구조
 
 이 PR의 무대는 클래스 세 개와 인터페이스 두 개가 만드는 얇은 어댑터 층이다.\
@@ -467,3 +462,8 @@ getAttributeValue(i)                   getAttributeNamespace(i)
 관련해서 `../../concepts/`에는 이 주제를 다루는 문서가 아직 없다.\
 인접 개념으로 계약과 구현의 어긋남을 다루는 [`../../concepts/annotation-all-or-nothing-contract/annotation-all-or-nothing-contract.md`]
 (../../concepts/annotation-all-or-nothing-contract/annotation-all-or-nothing-contract.md)가 있으나, 대상 도메인이 달라 직접 연결되지는 않는다.
+
+## 출처
+
+기준: upstream main `526c706d1c3`. 이 커밋에는 PR #36915가 아직 반영되지 않았으므로,
+본문의 file:line 인용은 전부 **수정 전 코드**를 그대로 가리킨다.

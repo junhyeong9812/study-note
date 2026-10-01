@@ -2,7 +2,7 @@
 
 > **생성 문서** — `docs/plans/2026-09-27/cs-fundamentals-roadmap/curriculum.md` §11에서 `docs/plans/2026-09-28/cs-restructure/gen_area_readme.py`로 만든다. 직접 고치지 말고 커리큘럼을 고친 뒤 재실행한다.
 > 번호 = 권장 학습 순서. 상태: `미작성` · `원고 있음` · `초안(Claude)` · `검수 완료`. ⚠ 깨지면·🔧·📚 세부는 커리큘럼 본문에 있다.
-> 현황: 미작성 29 · 원고 있음 13 · 초안(Claude) 11 · 검수 완료 0
+> 현황: 미작성 29 · 원고 있음 12 · 초안(Claude) 12 · 검수 완료 0
 
 > "여러 대가 돌 때 어떻게 버티고, 어떻게 보고, 어떻게 바꾸나". 기존 ops-patterns(복원력 패턴)·server-design(컬렉션)·failure 노트가 주력이다. 신규는 **성능 측정·관측성·사고 대응**.
 > 뼈대: Google 『Site Reliability Engineering』(이하 SRE — 장 번호 3·4·6·21·22 외 `[?]`), Nygard 『Release It!』 [?], Gregg 『Systems Performance』 [?], Dean–Barroso 2013.
@@ -21,7 +21,7 @@
 
 | # | 주제 | 요지 | 등급 | 상태 | 노트 |
 |---|---|---|---|---|---|
-| 05 | `timeouts-and-deadline-propagation` | 타임아웃 계층 정렬·데드라인 전파. gRPC는 절대 시각 대신 경과 시간을 뺀 타임아웃으로 전파(시계 어긋남 회피)하고, 서버는 취소를 주기적으로 확인할 책임이 있다(심화는 08·09) | 필수 | 원고 있음 | [../ops-patterns/deadline-propagation](../ops-patterns/deadline-propagation/) · [../systems/server-design/06-resilience.md](../systems/server-design/06-resilience.md) |
+| 05 | `timeouts-and-deadline-propagation` | 타임아웃 계층 정렬·데드라인 전파. gRPC는 절대 시각 대신 경과 시간을 뺀 타임아웃으로 전파(시계 어긋남 회피)하고, 서버는 취소를 주기적으로 확인할 책임이 있다(심화는 08·09) | 필수 | 초안(Claude) | [../ops-patterns/deadline-propagation](../ops-patterns/deadline-propagation/) · [../systems/server-design/06-resilience.md](../systems/server-design/06-resilience.md) |
 | 06 | `retry-backoff-jitter` | 지수 백오프·지터·재시도 예산 — 구체형: Finagle 기본(요청의 20% + 초당 최소 10회, 토큰 10초 만료), gRPC `retryThrottling`(maxTokens·tokenRatio — 토큰이 절반 미만이면 재시도·헤지 중단) | 필수 | 초안(Claude) | [../ops-patterns/01-retry-backoff](../ops-patterns/01-retry-backoff/) |
 | 10 | `circuit-breaker` | 닫힘·열림·반열림 | 필수 | 초안(Claude) | [../ops-patterns/02-circuit-breaker](../ops-patterns/02-circuit-breaker/) |
 | 11 | `rate-limiter` | 토큰 버킷·리키 버킷·고정/슬라이딩 윈도·분산 제한 | 필수 | 초안(Claude) | [../ops-patterns/04-rate-limiter](../ops-patterns/04-rate-limiter/) |

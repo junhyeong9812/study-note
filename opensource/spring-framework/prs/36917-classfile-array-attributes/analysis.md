@@ -1,12 +1,5 @@
 # PR #36917 분석 — 원시 배열 어트리뷰트가 박싱되는 결함, 그리고 의도 vs 버그 판별
 
-> 기준: PR head `ec0df00afec`, PR base `0c60266986`. 2·3절의 "수정 전" file:line은 **PR base 기준**이다
-> (structure.md는 메인테이너 커밋의 부모 `7de2b24d81c^`를 base로 쓰므로 `resolveArrayElementType`이 `:145`로 표기된다 —
-> 같은 코드이고 앞쪽 5줄만큼 어긋난 것이다). "현재 HEAD"는 `upstream/main` `7daf1013aa8` 기준.
->
-> 이 문서는 결함의 인과 사슬과 거절의 성격만 다룬다. 서사 해설은 README.md, 무대 지도는 structure.md,
-> 테스트별 해설은 tests.md가 소유한다.
-
 ## 0. 결론
 
 **결함**: JDK 24 전용 소스셋의 `ClassFileAnnotationDelegate#parseArrayValue`가 원시 배열 어트리뷰트를 `int`/`double`/`long` 세 종류만 전용 분기로 처리하고, 나머지 다섯(`byte`/`short`/`char`/`boolean`/`float`)은 `default` 분기로 흘려보내 **박싱된 참조 배열**(`Byte[]`, `Short[]`, `Character[]`, `Boolean[]`, `Float[]`)로 만들어 돌려준다.\
@@ -422,3 +415,9 @@ sealed 계층에서 `default`를 지우는 선택이 정확히 그 질문에 대
 `AnnotationValue`가 sealed이고 `readAnnotationValue`가 이미 `default` 없는 exhaustive switch를 쓰고 있었다.
 
 채워 넣는 패치와 지우는 패치의 차이가 이 PR의 결말이었다.
+
+## 출처
+
+기준: PR head `ec0df00afec`, PR base `0c60266986`. 2·3절의 "수정 전" file:line은 **PR base 기준**이다
+(structure.md는 메인테이너 커밋의 부모 `7de2b24d81c^`를 base로 쓰므로 `resolveArrayElementType`이 `:145`로 표기된다 —
+같은 코드이고 앞쪽 5줄만큼 어긋난 것이다). "현재 HEAD"는 `upstream/main` `7daf1013aa8` 기준.

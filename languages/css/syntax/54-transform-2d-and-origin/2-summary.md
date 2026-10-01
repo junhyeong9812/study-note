@@ -1,13 +1,5 @@
 # css/syntax/54 — `transform` 2D·`transform-origin`·개별 변환 속성 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [CSS Transforms Level 1](https://drafts.csswg.org/css-transforms-1/) (함수 목록·`transform-origin`·인라인 요소 제외·쌓임 맥락과 포함 블록) · [CSS Transforms Level 2](https://drafts.csswg.org/css-transforms-2/) (개별 변환 속성과 합성 순서). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 본문 실험 **9벌**을 **Google Chrome 151.0.7922.173** headless 에 CDP 로 붙여 돌렸다.\
-> ★ 이 주제는 **계산값만으로는 아무것도 못 읽는다** — 계산값이 전부 `matrix(…)` 로 나오기 때문이다. 그래서 **`getBoundingClientRect()` 좌표**를 같이 재고, 필요하면 스크린샷 픽셀을 읽었다.\
-> **엔진은 Chrome 하나다** — 크로스 브라우저는 Baseline 으로만 접지했다.
-> **버전** — CSS 에 언어 버전은 없다. 2D transforms 는 Baseline **widely**(newly 2015-09-30 → widely 2018-03-30), 개별 변환 속성(`translate`/`rotate`/`scale`)은 **widely**(newly 2022-08-05 → widely 2025-02-05) — `api.webstatus.dev` 조회 결과.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **`transform` 은 「다 그려 놓은 그림을 오려서 옮겨 붙이는 것」이다.**
@@ -565,3 +557,11 @@ span { transform: rotate(10deg); }            /* display 를 바꿔야 한다 */
 - `matrix()` 로 직접 쓰면 **보간이 달라질 수 있다** — 두 `matrix` 사이는 행렬 분해 후 보간이고, 같은 함수 목록끼리는 함수별로 보간된다([52번](../52-transition/2-summary.md)의 「같은 함수 목록일 때」가 그 뜻이다).
 - 3D 함수(`rotateY`·`translateZ`·`perspective()`)를 하나라도 쓰면 계산값이 **`matrix3d(…)` 열여섯 수**로 바뀐다 — [55번](../55-3d-transforms/2-summary.md)에서 다룬다.
 - 이 문서의 모든 좌표는 `getBoundingClientRect()` 값이다. **변환된 요소의 rect 는 회전한 도형의 외접 상자**이지 도형 자체가 아니다 — 45도 돌린 `80×40` 상자의 rect 가 `84.85×84.85` 로 나오는 이유가 그것이다.
+
+## 실행 환경
+
+**기준 소스** — [CSS Transforms Level 1](https://drafts.csswg.org/css-transforms-1/) (함수 목록·`transform-origin`·인라인 요소 제외·쌓임 맥락과 포함 블록) · [CSS Transforms Level 2](https://drafts.csswg.org/css-transforms-2/) (개별 변환 속성과 합성 순서). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 `demo` 블록 **3개 전부**와 본문 실험 **9벌**을 **Google Chrome 151.0.7922.173** headless 에 CDP 로 붙여 돌렸다.\
+★ 이 주제는 **계산값만으로는 아무것도 못 읽는다** — 계산값이 전부 `matrix(…)` 로 나오기 때문이다. 그래서 **`getBoundingClientRect()` 좌표**를 같이 재고, 필요하면 스크린샷 픽셀을 읽었다.\
+**엔진은 Chrome 하나다** — 크로스 브라우저는 Baseline 으로만 접지했다.
+**버전** — CSS 에 언어 버전은 없다. 2D transforms 는 Baseline **widely**(newly 2015-09-30 → widely 2018-03-30), 개별 변환 속성(`translate`/`rotate`/`scale`)은 **widely**(newly 2022-08-05 → widely 2025-02-05) — `api.webstatus.dev` 조회 결과.

@@ -1,11 +1,5 @@
 # css/syntax/12 — `:has()`: 관계 선택자와 그 한계 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 매치 수 · 모든 `(A, B, C)` 값 · 모든 「담김/버림」 판정은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 확인한 것**이다.\
-> 근거를 세 층으로 나눠 뽑았다 — `cssRules`(규칙이 담겼나) · `querySelectorAll().length`(무엇이 잡혔나) · `getComputedStyle`(무엇이 이겼나).\
-> **명시도 값은 전부 세 번째 층으로만** 확인했다(동점 경쟁자 · 한 칸 낮은 경쟁자 두 판 — 방법은 [02번 주제](../02-specificity/2-summary.md)).\
-> 규칙은 [Selectors Level 4 §4.5](https://drafts.csswg.org/selectors-4/#relational) 로 접지했다. **엔진은 Chrome 하나이며, 성능은 재지 않았다.**
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -429,3 +423,10 @@ Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않�
 - **성능.** 명세가 요구하는 것이 없고, 이 문서는 재지 않았다. 「`:has()` 는 느리다」는 서술을 넣지 않았다.
 - **섀도 DOM 에서의 `:host:has()` 규칙.** 명세에 조항이 있으나 실행 확인하지 않았다.
 - **Safari/WebKit.** 이 머신에 없다. Baseline 날짜로만 접지했다.
+
+## 실행 환경
+
+이 파일의 **모든 매치 수 · 모든 `(A, B, C)` 값 · 모든 「담김/버림」 판정은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려 확인한 것**이다.\
+근거를 세 층으로 나눠 뽑았다 — `cssRules`(규칙이 담겼나) · `querySelectorAll().length`(무엇이 잡혔나) · `getComputedStyle`(무엇이 이겼나).\
+**명시도 값은 전부 세 번째 층으로만** 확인했다(동점 경쟁자 · 한 칸 낮은 경쟁자 두 판 — 방법은 [02번 주제](../02-specificity/2-summary.md)).\
+규칙은 [Selectors Level 4 §4.5](https://drafts.csswg.org/selectors-4/#relational) 로 접지했다. **엔진은 Chrome 하나이며, 성능은 재지 않았다.**

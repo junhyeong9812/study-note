@@ -1,12 +1,5 @@
 # rust/syntax/47 — 에디션 2021 대 2024 — 같은 코드가 다르게 컴파일되는 자리 · `cargo fix --edition` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ 던지는 법 — 격자는 `bash <파일>.sh`, 단일 소스는 `rustc --edition 2021|2024 <파일>.rs`. `cargo fix` 문항은 소스 둘(`main.rs` · `Cargo.toml`)을 **`src/main.rs` · `Cargo.toml` 로 복사한 작은 패키지**에서 친다. cargo 는 `CARGO_NET_OFFLINE=true`(의존성 없음).
-> ★★★ **소스를 보면 먼저 물어라** — 「**이 파일은 몇 년 판 말로 읽히나**」. 에디션은 소스 바깥(`Cargo.toml`·`--edition`)에 적힌다.
-> ★ **문항 10개 중 코드가 붙은 예측형은 4개**다. 소스 펜스는 캡처가 실파일에서 찍었다(`check-source-fences.py` 대조).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -382,6 +375,12 @@ fn main() {
 ### 10. ★ `go.mod` 의 `go` 줄 (연결)
 
 - Go 는 루프 변수의 뜻을 `go.mod` 의 `go` 줄이 정한다([Go 13번](../../../go/syntax/13-closures-variable-capture-and-loop-variable-change/)). Rust 의 `edition` 과 무엇이 같고 무엇이 다른가 — 단위(모듈 · 크레이트)와 **옛 판 코드와 섞여 링크되는가**를 기준으로.
+
+## 실행 환경
+
+★ 던지는 법 — 격자는 `bash <파일>.sh`, 단일 소스는 `rustc --edition 2021|2024 <파일>.rs`. `cargo fix` 문항은 소스 둘(`main.rs` · `Cargo.toml`)을 **`src/main.rs` · `Cargo.toml` 로 복사한 작은 패키지**에서 친다. cargo 는 `CARGO_NET_OFFLINE=true`(의존성 없음).
+★★★ **소스를 보면 먼저 물어라** — 「**이 파일은 몇 년 판 말로 읽히나**」. 에디션은 소스 바깥(`Cargo.toml`·`--edition`)에 적힌다.
+★ **문항 10개 중 코드가 붙은 예측형은 4개**다. 소스 펜스는 캡처가 실파일에서 찍었다(`check-source-fences.py` 대조).
 
 ## 복습 기록
 

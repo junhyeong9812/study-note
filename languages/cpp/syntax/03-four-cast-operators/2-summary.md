@@ -1,33 +1,5 @@
 # cpp/syntax/03 — 캐스트 4종 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `static_cast`](https://en.cppreference.com/w/cpp/language/static_cast) · [`const_cast`](https://en.cppreference.com/w/cpp/language/const_cast) · [`reinterpret_cast`](https://en.cppreference.com/w/cpp/language/reinterpret_cast) · [`dynamic_cast`](https://en.cppreference.com/w/cpp/language/dynamic_cast) · [explicit cast(C 스타일)](https://en.cppreference.com/w/cpp/language/explicit_cast) · [`std::bit_cast`](https://en.cppreference.com/w/cpp/numeric/bit_cast) · [GCC 13 Optimize Options — `-fstrict-aliasing`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html) · [GCC 13 C++ Dialect Options — `-fno-rtti`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/C_002b_002b-Dialect-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·경고·에러·심볼은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **gcc 13.3.0**(C 대비용) · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> **UB 가 걸린 블록은 `-O0`·`-O1`·`-O2`·`-O3`·`-Os` 다섯 수준 × 두 컴파일러로 돌렸다.** 한 수준만 돌린 결과는 싣지 않는다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic ex.cpp -o ex` 이고 파일 이름은 **`ex.cpp`·`ex.c`** 뿐이다.\
-> ★ 블록은 `capture.sh` 가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
-> **버전** — 캐스트 네 종류는 **C++98부터** 있고 규칙은 그때와 같다.\
-> **`std::bit_cast` 는 C++20부터**이고 이 g++ 에서 **된다**((7)).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> **경계** — 「C 스타일 캐스트가 무엇을 하나」의 정본은 C 갈래의\
-> [`05-explicit-casts-and-pointer-conversions/`](../../../c/syntax/05-explicit-casts-and-pointer-conversions/)다.\
-> 그쪽은 **값 변환 대 해석 변환의 어셈블리 증명 · 정렬 · 엄격한 앨리어싱 열 벌 실측 · `const` 벗기기 UB ·\
-> 함수 포인터 · 캐스트가 끄는 경고**까지 전부 결론지었다.\
-> 여기는 **C++ 가 새로 하는 것**만 쓴다 — **그 한 덩어리를 넷으로 쪼갠 것**, 그리고\
-> **`dynamic_cast` 라는 C 에 없는 다섯째**, 그리고 **`const` 객체에 쓰는 UB 가 C 와 갈리는 자리**((4)).\
-> 「정수 승격·산술 변환」은 C 갈래 [`03번`](../../../c/syntax/03-integer-promotion-and-usual-arithmetic-conversions/),\
-> 「가상 함수와 다형성」은 [목록의 **19번 주제**](../19-inheritance-virtual-functions-override-final/), 「`const` 정확성 설계」는 [목록의 **10번 주제**](../10-const-correctness/)가 정본이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸** — 이 주제는 **UB 가 만든 값이 본문에 실리므로** 이 선언이 특히 중요하다.
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | ★ **UB 가 만든 값 자체**(`punned=1` 대 `1073741824` · `k=7` 대 `99`) | ★ **그 값이 「갈린다」는 사실**과 **어느 플래그에서 갈렸나** |
-> | 컴파일 시간 · 오브젝트 파일의 타임스탬프 | **진단 본문** · `파일:줄:칸` · **종료 코드**(`cc exit`·`run exit` 을 갈라 적었다) |
-> | — | **오브젝트 파일의 미정의 심볼 목록**과 **바이트 크기**(같은 컴파일러·플래그에서 결정적이다) |
-> | — | `typeid(...).name()` 의 맹글링 문자열 · `bad_cast::what()` |
-
 ## 한눈에 — 쉽게 말하면
 
 **C++ 의 캐스트 넷은 「C 의 괄호 캐스트 하나를 네 개의 이름 붙은 도구로 쪼갠 것」이다.**
@@ -842,7 +814,7 @@ Derived* down(Base* b) { return static_cast<Derived*>(b); }
 - ★★ **`dynamic_cast` 판에는 셋이 생긴다** — `__dynamic_cast`(런타임 함수) ·\
   `vtable for __cxxabiv1::__class_type_info` · `vtable for __cxxabiv1::__si_class_type_info`(타입 정보 객체).
 - **오브젝트 크기가 1232 → 2704 바이트**다. 함수 한 줄 차이인데 **2배 이상**이다.\
-  ★ 이 수치는 **같은 컴파일러·플래그에서 결정적**이라 근거로 쓸 수 있다(머리말의 「안 흔들리는 칸」).
+  ★ 이 수치는 **같은 컴파일러·플래그에서 결정적**이라 근거로 쓸 수 있다(「실행 환경」의 「안 흔들리는 칸」).
 - ★ 이 창과 (9)의 `-fno-rtti` 에러는 **같은 사실의 양면**이다 — 있는 것을 보여 주기 / 없애서 비명을 듣기.
 
 ### (11) C 스타일 캐스트가 무엇으로 풀리나
@@ -1169,3 +1141,32 @@ C 갈래 [`05번`](../../../c/syntax/05-explicit-casts-and-pointer-conversions/)
 - **`union` 을 통한 타입 펀닝** — **C 에서는 허용되고 C++ 에서는 아니다.**\
   C 갈래 [`05번`](../../../c/syntax/05-explicit-casts-and-pointer-conversions/)이 그 차이를 적어 두고 **던져 보지는 않았다.**\
   ★ 이 문서도 안 던졌다 — `std::bit_cast` 가 C++20 의 답이라 그쪽을 실측했다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `static_cast`](https://en.cppreference.com/w/cpp/language/static_cast) · [`const_cast`](https://en.cppreference.com/w/cpp/language/const_cast) · [`reinterpret_cast`](https://en.cppreference.com/w/cpp/language/reinterpret_cast) · [`dynamic_cast`](https://en.cppreference.com/w/cpp/language/dynamic_cast) · [explicit cast(C 스타일)](https://en.cppreference.com/w/cpp/language/explicit_cast) · [`std::bit_cast`](https://en.cppreference.com/w/cpp/numeric/bit_cast) · [GCC 13 Optimize Options — `-fstrict-aliasing`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html) · [GCC 13 C++ Dialect Options — `-fno-rtti`](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/C_002b_002b-Dialect-Options.html)
+**실행 검증** — 이 문서의 모든 출력·경고·에러·심볼은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **gcc 13.3.0**(C 대비용) · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+**UB 가 걸린 블록은 `-O0`·`-O1`·`-O2`·`-O3`·`-Os` 다섯 수준 × 두 컴파일러로 돌렸다.** 한 수준만 돌린 결과는 싣지 않는다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic ex.cpp -o ex` 이고 파일 이름은 **`ex.cpp`·`ex.c`** 뿐이다.\
+★ 블록은 `capture.sh` 가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.
+**버전** — 캐스트 네 종류는 **C++98부터** 있고 규칙은 그때와 같다.\
+**`std::bit_cast` 는 C++20부터**이고 이 g++ 에서 **된다**((7)).
+
+**경계** — 「C 스타일 캐스트가 무엇을 하나」의 정본은 C 갈래의\
+[`05-explicit-casts-and-pointer-conversions/`](../../../c/syntax/05-explicit-casts-and-pointer-conversions/)다.\
+그쪽은 **값 변환 대 해석 변환의 어셈블리 증명 · 정렬 · 엄격한 앨리어싱 열 벌 실측 · `const` 벗기기 UB ·\
+함수 포인터 · 캐스트가 끄는 경고**까지 전부 결론지었다.\
+여기는 **C++ 가 새로 하는 것**만 쓴다 — **그 한 덩어리를 넷으로 쪼갠 것**, 그리고\
+**`dynamic_cast` 라는 C 에 없는 다섯째**, 그리고 **`const` 객체에 쓰는 UB 가 C 와 갈리는 자리**((4)).\
+「정수 승격·산술 변환」은 C 갈래 [`03번`](../../../c/syntax/03-integer-promotion-and-usual-arithmetic-conversions/),\
+「가상 함수와 다형성」은 [목록의 **19번 주제**](../19-inheritance-virtual-functions-override-final/), 「`const` 정확성 설계」는 [목록의 **10번 주제**](../10-const-correctness/)가 정본이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸** — 이 주제는 **UB 가 만든 값이 본문에 실리므로** 이 선언이 특히 중요하다.
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| ★ **UB 가 만든 값 자체**(`punned=1` 대 `1073741824` · `k=7` 대 `99`) | ★ **그 값이 「갈린다」는 사실**과 **어느 플래그에서 갈렸나** |
+| 컴파일 시간 · 오브젝트 파일의 타임스탬프 | **진단 본문** · `파일:줄:칸` · **종료 코드**(`cc exit`·`run exit` 을 갈라 적었다) |
+| — | **오브젝트 파일의 미정의 심볼 목록**과 **바이트 크기**(같은 컴파일러·플래그에서 결정적이다) |
+| — | `typeid(...).name()` 의 맹글링 문자열 · `bad_cast::what()` |

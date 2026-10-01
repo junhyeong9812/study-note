@@ -1,13 +1,5 @@
 # 스프링 annotation 파이프라인 — 표식 하나가 프레임워크 기능이 되기까지
 
-> 기준 커밋: upstream `main` 526c706d1c3 (`Merge branch '7.0.x'`).
-> 이 문서는 개별 PR이 아니라 **전역 동작**을 다룬다. 개별 주제는 다음 문서가 이미
-> 담당하므로 여기서는 재서술하지 않고 링크만 건다:
-> [probe(사전 시험 호출)](../../prs/37153-enum-array-annotation-probe/probe-pattern.md) ·
-> [JDK vs Spring annotation 처리](../../prs/37153-enum-array-annotation-probe/jdk-vs-spring-annotation-handling.md) ·
-> [JLS annotation 멤버 규칙](../jls-annotation-rules/jls-annotation-rules.md) ·
-> [격리의 all-or-nothing 계약](../annotation-all-or-nothing-contract/annotation-all-or-nothing-contract.md).
-
 ## 0. 한 문장으로
 
 `@RestController` 하나가 빈 등록과 URL 매핑으로 이어지는 과정은 **네 단계의 파이프라인**이다.
@@ -345,3 +337,7 @@ annotation, 별칭)을 보러 가는가? 그렇다면 매핑 축이고, `Annotat
 `@AliasFor`를 타입 단위로 평탄화해 두며(매핑 축), `MergedAnnotations`가 두 축의 좌표
 (aggregateIndex, distance)로 정렬된 결과를 하나의 질의 표면으로 노출하는 구조이고, 컴포넌트
 스캔의 ASM 경로는 검색 축만 바꿔 끼운 같은 파이프라인이다.
+
+## 출처
+
+기준 커밋: upstream `main` 526c706d1c3 (`Merge branch '7.0.x'`).

@@ -1,17 +1,5 @@
 # python/syntax/52-asyncio-concurrency-structure — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★★★ 1번은 **아홉 행을 전부** 적고, 마지막 줄의 수까지 세어야 맞은 것이다.
-> ★★ 이 주제는 **시간을 묻지 않는다** — 출력은 전부 순서 · 참/거짓 · 「N / M 판」이다.
->
-> 실행 환경: `python3` **3.12.3** · Linux(1번은 `python3.11` 3.11.15 로도 던졌다). 던지는 형태는 `python3 - <파일` 이다.
-> ★ 선행 — [51](../51-asyncio-coroutine-basics/1-question.md)(코루틴 · `asyncio.run` · `await`) · [27](../27-exception-groups-and-except-star/1-question.md)(`ExceptionGroup`·`except*`).
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -490,6 +478,14 @@ asyncio.run(main())
 
 * ★★ [Go 34번](../../../go/syntax/34-context-cancellation-deadlines-and-values/2-summary.md)의 취소 나무에서 **자식 하나를 끊으면 몇 노드가 받나** — `TaskGroup` 에서 자식 하나가 **실패**하면 취소는 어느 방향으로 번지나? 두 방향이 왜 다른가?
 * ★ `asyncio.wait(FIRST_COMPLETED)` 뒤의 느린 태스크는 [Go 30번](../../../go/syntax/30-select-default-and-timeouts/2-summary.md)의 어느 함정과 같은 모양인가 · [JS 38번](../../../js/syntax/38-promise-combinators/2-summary.md)의 `Promise.all` 은 1번 격자의 어느 행과 같은가?
+
+## 실행 환경
+
+★★★ 1번은 **아홉 행을 전부** 적고, 마지막 줄의 수까지 세어야 맞은 것이다.
+★★ 이 주제는 **시간을 묻지 않는다** — 출력은 전부 순서 · 참/거짓 · 「N / M 판」이다.
+
+실행 환경: `python3` **3.12.3** · Linux(1번은 `python3.11` 3.11.15 로도 던졌다). 던지는 형태는 `python3 - <파일` 이다.
+★ 선행 — [51](../51-asyncio-coroutine-basics/1-question.md)(코루틴 · `asyncio.run` · `await`) · [27](../27-exception-groups-and-except-star/1-question.md)(`ExceptionGroup`·`except*`).
 
 ## 복습 기록
 

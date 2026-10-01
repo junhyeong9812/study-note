@@ -1,20 +1,5 @@
 # python/syntax/01-object-and-name-binding — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [3.1. Objects, values and types](https://docs.python.org/3.12/reference/datamodel.html) — 객체·정체·타입·값의 정의
-> - [4.2. Naming and binding](https://docs.python.org/3.12/reference/executionmodel.html) — 무엇이 이름을 묶나, 지역 변수 규칙
-> - [7.2. Assignment statements](https://docs.python.org/3.12/reference/simple_stmts.html#assignment-statements) — 대입 대상의 처리 순서
-> - [7.5. The `del` statement](https://docs.python.org/3.12/reference/simple_stmts.html#the-del-statement) — `del` 이 무엇을 지우나
-> - [Programming FAQ — call by reference](https://docs.python.org/3.12/faq/programming.html) — 인자 전달을 뭐라 부르나
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> 문자열 공유 실험은 **파일 실행과 대화형 두 경로에서 각각** 돌렸다 — 결과가 갈린다.
-> **버전** — 이름 바인딩 모델 자체는 Python 3 전체 공통. 바이트코드 명령 이름(`LOAD_FAST_CHECK` 등)은 **3.12 의 것**이라 버전마다 다르다.
-> **구현 대 명세** — 「이름표」 모델은 언어 보장이고, 「같은 값이 같은 객체가 되는 것」은 구현 세부다. 「구현 세부사항 대 언어 보장」 절에서 선을 긋는다.
-
 ## 한눈에 — 쉽게 말하면
 
 **변수는 상자가 아니라 이름표다.**
@@ -907,3 +892,17 @@ def add(item, bag=[]):
 - **클래스 본문은 스코프가 특이하다.** 클래스 본문에서 만든 이름은 메서드의 Enclosing 스코프가 **되지 않는다** — 그래서 메서드 안에서 클래스 변수를 그냥 이름으로 못 읽고 `self.` 나 클래스 이름을 거쳐야 한다([목록의 **29번 주제**](../29-classes-and-attribute-lookup/)).
 - **컴프리헨션도 자기 스코프를 가진다**(Python 3 부터). 그래서 컴프리헨션 안에서 만든 이름이 바깥으로 새지 않는다([14-comprehensions](../14-comprehensions/2-summary.md)).
 - **순환 참조는 참조 카운팅만으로 못 푼다.** 그래서 CPython 에 세대별 가비지 컬렉터(`gc` 모듈)가 따로 있다 — 그쪽은 [`cs/foundations/memory-management/`](../../../../cs/foundations/memory-management/) 의 몫이다.
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [3.1. Objects, values and types](https://docs.python.org/3.12/reference/datamodel.html) — 객체·정체·타입·값의 정의
+- [4.2. Naming and binding](https://docs.python.org/3.12/reference/executionmodel.html) — 무엇이 이름을 묶나, 지역 변수 규칙
+- [7.2. Assignment statements](https://docs.python.org/3.12/reference/simple_stmts.html#assignment-statements) — 대입 대상의 처리 순서
+- [7.5. The `del` statement](https://docs.python.org/3.12/reference/simple_stmts.html#the-del-statement) — `del` 이 무엇을 지우나
+- [Programming FAQ — call by reference](https://docs.python.org/3.12/faq/programming.html) — 인자 전달을 뭐라 부르나
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+문자열 공유 실험은 **파일 실행과 대화형 두 경로에서 각각** 돌렸다 — 결과가 갈린다.
+**버전** — 이름 바인딩 모델 자체는 Python 3 전체 공통. 바이트코드 명령 이름(`LOAD_FAST_CHECK` 등)은 **3.12 의 것**이라 버전마다 다르다.
+**구현 대 명세** — 「이름표」 모델은 언어 보장이고, 「같은 값이 같은 객체가 되는 것」은 구현 세부다. 「구현 세부사항 대 언어 보장」 절에서 선을 긋는다.

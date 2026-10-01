@@ -1,9 +1,5 @@
 # Rust 탄생 ~ 1.0 (2006 ~ 2015)
 
-> 원본: `~/project/rust-history/01-탄생-1.0.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
-> 연도·인명·버전·원문 인용문은 원문 그대로다(원문에는 코드블록도 표도 없다).\
-> ASCII 도식 2개와 「한눈에」의 깎아내기 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -188,3 +184,9 @@ GC와 런타임과 특수 문법을 차례로 버리고 남은 **소유권·빌�
 - [Graydon Hoare Remembers the Early Days of Rust — The New Stack](https://thenewstack.io/graydon-hoare-remembers-the-early-days-of-rust/)
 - [rust-prehistory: historical archive of Rust pre-publication development — GitHub (graydon)](https://github.com/graydon/rust-prehistory)
 - [How Rust went from a side project to the world's most-loved programming language — MIT Technology Review](https://www.technologyreview.com/2023/02/14/1067869/rust-worlds-fastest-growing-programming-language/)
+
+## 출처
+
+원본: `~/project/rust-history/01-탄생-1.0.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
+연도·인명·버전·원문 인용문은 원문 그대로다(원문에는 코드블록도 표도 없다).\
+ASCII 도식 2개와 「한눈에」의 깎아내기 비유(대응표 포함), 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.

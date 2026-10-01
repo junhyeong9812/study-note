@@ -1,29 +1,5 @@
 # c/syntax/13 — `goto cleanup` 관용구: 「**분기가 아니라 중복을 줄인다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — `goto`](https://en.cppreference.com/w/c/language/goto) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
-> **실행 검증** — 이 문서의 모든 출력·경고·에러·어셈블리는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> 작업 디렉터리는 `/tmp/c13` 이고 소스 파일명은 언제나 `ex.c` 다 — sanitizer 출력에 경로가 박히기 때문이다.\
-> ★★ **실행 블록은 `./x 2>&1 | cat` 로 받았다** — sanitizer 는 stderr, `printf` 는 stdout 이라\
-> **터미널과 파이프에서 순서가 달라진다.** 섞이는 프로그램에는 `fflush(stdout)` 또는 `setvbuf(…, _IONBF, …)` 를 넣어 **순서를 고정**했고 소스에 그렇게 적혀 있다.
-> ★★ **흔들리는 칸 / 안 흔들리는 칸** — 다시 돌리면 바뀌는 것을 미리 선언한다.
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | `%p` 주소값 · 스택 주소 · ASan 의 `pc`/`bp`/`sp` | 주소들 **사이의 차이** |
-> | ASan 리포트의 **PID**(`==12345==`)·`BuildId`·모듈 오프셋 | **`파일:줄:칸`** · 진단 본문 · 프레임 **함수 이름** |
-> | 초기화 안 된 변수의 값 | **종료 코드** · 경고 건수 · 플래그 이름 |
-> | 어셈블리의 **레지스터 이름**(`r12` ↔ `r13`) | 어셈블리의 **명령·분기·`call` 개수** |
->
-> **버전** — `goto` 와 라벨의 규칙은 **C89 이후 바뀐 적이 없다.**\
-> **C23 이 둘을 바꿨다** — 「**라벨 뒤 선언**」과 「**블록 끝의 라벨**」이 허용됐다. 아래 (8)에서 실측한다.\
-> ★ **gcc 13.3.0 에는 `-std=c23` 이 없다**(`-std=c2x` 뿐) — 이 문서도 `-std=c2x` 로 던졌다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★ **경계** — `goto` 자체의 기본 동작과 VLA 스코프 금지는 [12번 형제](../12-control-flow-and-switch/)가 정본이다.\
-> 여기는 「**그것으로 다중 자원 해제를 어떻게 짜나**」만 본다. `malloc`/`free` 의 계약은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/)가 정본이다.
-> 선행 — [12번 형제](../12-control-flow-and-switch/) · [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).
-
 ## 한눈에 — 쉽게 말하면
 
 **`goto cleanup` 은 「등산의 하산길」이다.**
@@ -1003,3 +979,28 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 
 - **자원이 다섯·여섯으로 늘었을 때** 중첩 `if` 판의 들여쓰기가 어디서 깨지는지는 **재지 않았다.**\
   이 문서는 **자원 셋**에서만 세 판을 비교했다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — `goto`](https://en.cppreference.com/w/c/language/goto) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
+**실행 검증** — 이 문서의 모든 출력·경고·에러·어셈블리는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+작업 디렉터리는 `/tmp/c13` 이고 소스 파일명은 언제나 `ex.c` 다 — sanitizer 출력에 경로가 박히기 때문이다.\
+★★ **실행 블록은 `./x 2>&1 | cat` 로 받았다** — sanitizer 는 stderr, `printf` 는 stdout 이라\
+**터미널과 파이프에서 순서가 달라진다.** 섞이는 프로그램에는 `fflush(stdout)` 또는 `setvbuf(…, _IONBF, …)` 를 넣어 **순서를 고정**했고 소스에 그렇게 적혀 있다.
+★★ **흔들리는 칸 / 안 흔들리는 칸** — 다시 돌리면 바뀌는 것을 미리 선언한다.
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| `%p` 주소값 · 스택 주소 · ASan 의 `pc`/`bp`/`sp` | 주소들 **사이의 차이** |
+| ASan 리포트의 **PID**(`==12345==`)·`BuildId`·모듈 오프셋 | **`파일:줄:칸`** · 진단 본문 · 프레임 **함수 이름** |
+| 초기화 안 된 변수의 값 | **종료 코드** · 경고 건수 · 플래그 이름 |
+| 어셈블리의 **레지스터 이름**(`r12` ↔ `r13`) | 어셈블리의 **명령·분기·`call` 개수** |
+
+**버전** — `goto` 와 라벨의 규칙은 **C89 이후 바뀐 적이 없다.**\
+**C23 이 둘을 바꿨다** — 「**라벨 뒤 선언**」과 「**블록 끝의 라벨**」이 허용됐다. 본문 (8)에서 실측한다.\
+★ **gcc 13.3.0 에는 `-std=c23` 이 없다**(`-std=c2x` 뿐) — 이 문서도 `-std=c2x` 로 던졌다.
+
+★★ **경계** — `goto` 자체의 기본 동작과 VLA 스코프 금지는 [12번 형제](../12-control-flow-and-switch/)가 정본이다.\
+여기는 「**그것으로 다중 자원 해제를 어떻게 짜나**」만 본다. `malloc`/`free` 의 계약은 [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/)가 정본이다.
+선행 — [12번 형제](../12-control-flow-and-switch/) · [목록의 **37번 주제**](../37-malloc-calloc-realloc-free/).

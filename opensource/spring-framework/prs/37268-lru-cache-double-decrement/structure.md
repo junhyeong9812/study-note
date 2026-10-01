@@ -1,13 +1,5 @@
 # PR #37268 - 무대의 실구조와 워크플로우
 
-> PR #37268의 무대가 되는 실구조와 워크플로우. 문제와 수정은 [README.md](README.md),
-> 테스트는 [tests.md](tests.md), 착수 시점 분석은 [analysis.md](analysis.md) 참조.
->
-> 기준: 로컬 HEAD `ee7ed0093d6`(브랜치 `fix/lru-cache-double-decrement` = upstream main
-> `c1d4a766929` 리베이스 + fix 커밋). **이 시점의 `ConcurrentLruCache.java`에는 이미
-> 수정이 반영돼 있다** - 아래 file:line은 "수정 후" 좌표이며, 가드 세 줄과 주석 한 줄이
-> 늘어난 만큼 `markAsRemoved` 아래쪽 좌표가 수정 전보다 4씩 밀려 있다.
-
 ## 1. 무대 - 실구조
 
 이 결함의 무대는 **락 경합을 피하려고 작업을 버퍼에 적어 두었다가 나중에 한꺼번에 처리하는 캐시**다.\
@@ -407,3 +399,10 @@ remove(K) 를 부르나?      -- 아니오 -->  증상 없음 (read-through)
 
 > **false green / false red** — 결함이 있는데 통과하는 것(false green)과 결함이 없는데 실패하는 것(false red).\
 > 예: 동시성 테스트에서는 false green 이 훨씬 비싸다 - 조용히 회귀를 놓치기 때문이다.
+
+## 출처
+
+기준: 로컬 HEAD `ee7ed0093d6`(브랜치 `fix/lru-cache-double-decrement` = upstream main
+`c1d4a766929` 리베이스 + fix 커밋). **이 시점의 `ConcurrentLruCache.java`에는 이미
+수정이 반영돼 있다** - 본문의 file:line은 "수정 후" 좌표이며, 가드 세 줄과 주석 한 줄이
+늘어난 만큼 `markAsRemoved` 아래쪽 좌표가 수정 전보다 4씩 밀려 있다.

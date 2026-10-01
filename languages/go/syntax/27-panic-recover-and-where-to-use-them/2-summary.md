@@ -1,16 +1,5 @@
 # go/syntax/27 — `panic`·`recover` 와 쓰는 자리 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Go 명세 — Handling panics](https://go.dev/ref/spec#Handling_panics) ·
-> [`builtin.panic`/`recover`](https://pkg.go.dev/builtin) · [GODEBUG](https://go.dev/doc/godebug) ·
-> [Go 1.25 릴리스 노트](https://go.dev/doc/go1.25)(재패닉 표시 — **이것만 웹에서 열었다**).
-> 명세·`godebug.md`·표준 라이브러리 소스는 **이 툴체인의 `$(go env GOROOT)` 에서 직접 떴다.**\
-> **실행 검증** — 이 문서의 출력은 전부 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다.
-> 소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
-> ★★ **버전** — `panic(nil)` 이 **1.21**부터 `*runtime.PanicNilError`((7)절 — **`go.mod` 판 격자로 전후를 갈랐다**) ·
-> 재패닉 표시 `[recovered, repanicked]` 가 **1.25**부터(릴리스 노트 — 이 툴체인 하나로는 **판 격자를 못 돌린다**, 제3의 상태).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ★★★ **본체는 넷째 창이다** — 「**`recover` 를 부르는 자리를 여섯 가지로 바꿔 가며, 바깥의 직접 `recover` 가 「안쪽이 멈췄나」를 대신 증언하게 하는 창**」.
 `recover()` 가 `nil` 을 돌려주는 것만으로는 **「못 들었다」와 「들을 것이 없었다」가 구별되지 않는다.**
 **바깥 guard 가 그 패닉을 받았는가**로 가른다((3)절).
@@ -524,7 +513,7 @@ created by main.main in goroutine 1
   명세의 「**a panic occurs in a function on the same goroutine**」 — `recover` 는 **같은 고루틴**의 패닉만 본다.
   그리고 되감기가 **그 고루틴의 맨 위**(`main.main.func2`)에 닿으면 프로그램 전체가 끝난다.
 - ★★ **`created by main.main in goroutine 1`** — 트레이스가 그 고루틴을 **누가 만들었나**까지 찍는다.
-- ★★ **`goroutine N` 의 N 은 흔들린다**(같은 바이너리가 `7` 과 `19` 로 갈렸다) — 머리말의 유일한 비기본 정규화 칸이다.
+- ★★ **`goroutine N` 의 N 은 흔들린다**(같은 바이너리가 `7` 과 `19` 로 갈렸다) — 맨 위 부분의 유일한 비기본 정규화 칸이다.
 - ★ 그래서 **고루틴마다 자기 `recover`** 를 둔다. [28번 주제](../28-goroutines-go-statement-cost-and-termination/)의 `sync.WaitGroup.Go` 문서가 「**The function f must not panic.**」이라 적는 것도 같은 사정이다.
 
 **런타임 패닉은 무엇인가 — `recover` 로 받아 `%T`**
@@ -1303,3 +1292,14 @@ func main() {
 - ★ **`debug.SetPanicOnFault`**·시그널 패닉 세부는 **안 던졌다.**
 - ★ **트레이스 모양을 바꾸는 `GOTRACEBACK`** — (8)절에서 `none` 을 흔들림 제거용으로만 썼다. 다른 값은 **안 던졌다.**
 - ★★ `panic`/`recover` 의 **비용**은 **안 쟀다.**
+
+## 실행 환경
+
+**기준 소스** — [Go 명세 — Handling panics](https://go.dev/ref/spec#Handling_panics) ·
+[`builtin.panic`/`recover`](https://pkg.go.dev/builtin) · [GODEBUG](https://go.dev/doc/godebug) ·
+[Go 1.25 릴리스 노트](https://go.dev/doc/go1.25)(재패닉 표시 — **이것만 웹에서 열었다**).
+명세·`godebug.md`·표준 라이브러리 소스는 **이 툴체인의 `$(go env GOROOT)` 에서 직접 떴다.**\
+**실행 검증** — 이 문서의 출력은 전부 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다.
+소스 펜스도 같은 파일에서 떠 왔다. 손으로 옮겨 적은 블록은 없다.\
+★★ **버전** — `panic(nil)` 이 **1.21**부터 `*runtime.PanicNilError`((7)절 — **`go.mod` 판 격자로 전후를 갈랐다**) ·
+재패닉 표시 `[recovered, repanicked]` 가 **1.25**부터(릴리스 노트 — 이 툴체인 하나로는 **판 격자를 못 돌린다**, 제3의 상태).

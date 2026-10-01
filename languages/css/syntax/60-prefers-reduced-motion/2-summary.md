@@ -1,12 +1,5 @@
 # css/syntax/60 — `prefers-reduced-motion` 과 모션 접근성 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Media Queries Level 5](https://drafts.csswg.org/mediaqueries-5/) §12.1 「`prefers-reduced-motion`」 · [WCAG 2.2](https://www.w3.org/TR/WCAG22/) 의 2.3.3 Animation from Interactions(AAA)·2.2.2 Pause, Stop, Hide(A). 열어서 확인한 것만 적었다.
-> **실행 검증** — 같은 문서를 **선호를 끈 판과 켠 판 두 번** 띄워 값을 대조했다. 선호는 **`--force-prefers-reduced-motion`** 으로 켰고, **`matchMedia('(prefers-reduced-motion: reduce)').matches` 로 켜졌는지 먼저 확인한 뒤** 측정했다. 하네스와 **한 번 헛다리를 짚은 기록**은 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 151.0.7922.173 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — `prefers-reduced-motion` 은 Baseline **widely**(newly 2020-01-15 → widely 2022-07-15). 엔진별로는 Safari 2017-03 · Firefox 2018-10 · Chrome 2019-04 — **이 갈래에서 가장 오래된 기능**이다. `api.webstatus.dev` 를 2026-09-23 에 직접 조회했다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-
 ## 이 주제의 자리 — 이 갈래의 마무리
 
 52\~59 는 전부 **「어떻게 움직이나」** 였다. 이 주제만 **「움직이지 말아야 할 때」** 다.
@@ -452,3 +445,10 @@ WCAG 2.3.3 은 「**끌 수 있게 하라**」는 AAA 기준이고 **수단을 �
 - `prefers-reduced-motion` 은 **사용자를 식별하는 신호로 쓰일 수 있다**(핑거프린팅). 그래서 브라우저가 값을 제한하는 모드가 있을 수 있다 — **이 환경에서는 확인하지 않았다.**
 - 같은 가족의 다른 선호로 **`prefers-reduced-transparency`**(Baseline limited, 2026-09-23 조회 기준 Chromium 계열만)와 `prefers-reduced-data` 가 있다. **이 문서에서 값을 재지 않았다.**
 - 애니메이션을 **완전히 없애는 대신 지속을 0.01초로 만드는** 관용구(`animation-duration: 0.01ms !important`)가 있다. `animationend` 이벤트에 로직이 걸린 코드를 안 깨뜨리려는 꼼수다 — **의도를 알고 쓰면 유용하지만 전면 차단의 변형**이라는 점은 같다.
+
+## 실행 환경
+
+**기준 소스** — [Media Queries Level 5](https://drafts.csswg.org/mediaqueries-5/) §12.1 「`prefers-reduced-motion`」 · [WCAG 2.2](https://www.w3.org/TR/WCAG22/) 의 2.3.3 Animation from Interactions(AAA)·2.2.2 Pause, Stop, Hide(A). 열어서 확인한 것만 적었다.
+**실행 검증** — 같은 문서를 **선호를 끈 판과 켠 판 두 번** 띄워 값을 대조했다. 선호는 **`--force-prefers-reduced-motion`** 으로 켰고, **`matchMedia('(prefers-reduced-motion: reduce)').matches` 로 켜졌는지 먼저 확인한 뒤** 측정했다. 하네스와 **한 번 헛다리를 짚은 기록**은 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 151.0.7922.173 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — `prefers-reduced-motion` 은 Baseline **widely**(newly 2020-01-15 → widely 2022-07-15). 엔진별로는 Safari 2017-03 · Firefox 2018-10 · Chrome 2019-04 — **이 갈래에서 가장 오래된 기능**이다. `api.webstatus.dev` 를 2026-09-23 에 직접 조회했다.

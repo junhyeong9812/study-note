@@ -1,11 +1,5 @@
 # java/syntax/57 — `Files`·`Path` — NIO.2 파일 API — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 일곱(57-a~57-g)을 **Temurin 17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
-> ★ **세 판이 같았다고 적지 않는다.** 12번에서 실제로 갈렸고, fd 시작값도 17 만 하나 더 컸다.\
-> javadoc 인용은 JDK 21.0.5 의 `lib/src.zip` — `java.base/java/nio/file/Files.java`·`Path.java` 원문이다.\
-> 측정 조건: Linux · ext4 · `file.encoding=UTF-8` · 기본 `Locale` `ko_KR`. 실험은 전부 임시 스크래치 디렉터리 안의 `sandbox/` 아래에서 하고 매번 지웠다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -820,3 +814,10 @@ if (!file.delete()) {
 - **`/tmp` 와 홈이 같은 파일시스템인지** — 이 머신은 둘 다 ext4 라 같았고, `/dev/shm` 만 tmpfs 였다. 다른 머신에서는 다르다.
 - **윈도에서 "읽는 중 파일 삭제"** — POSIX 와 다를 것이다. **안 돌려 봄**(이 머신에 윈도가 없다).
 - **`WatchService`·`getPathMatcher("glob:**/*")`·`getFileStore` 비교** — **안 돌려 봄.** 이 문서 범위 밖이다.
+
+## 실행 환경
+
+이 파일의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 일곱(57-a~57-g)을 **Temurin 17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
+★ **세 판이 같았다고 적지 않는다.** 12번에서 실제로 갈렸고, fd 시작값도 17 만 하나 더 컸다.\
+javadoc 인용은 JDK 21.0.5 의 `lib/src.zip` — `java.base/java/nio/file/Files.java`·`Path.java` 원문이다.\
+측정 조건: Linux · ext4 · `file.encoding=UTF-8` · 기본 `Locale` `ko_KR`. 실험은 전부 임시 스크래치 디렉터리 안의 `sandbox/` 아래에서 하고 매번 지웠다.

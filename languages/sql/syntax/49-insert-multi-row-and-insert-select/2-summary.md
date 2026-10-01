@@ -1,17 +1,5 @@
 # sql/49-INSERT — 다중 행·INSERT SELECT·기본값 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · INSERT](https://www.postgresql.org/docs/18/sql-insert.html) · [MySQL 8.4 · INSERT Statement](https://dev.mysql.com/doc/refman/8.4/en/insert.html) · [MySQL 8.4 · INSERT ... SELECT](https://dev.mysql.com/doc/refman/8.4/en/insert-select.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> ★ **환경 확인** — MySQL 의 `sql_mode` 는 `ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION` 이고 `autocommit=1` 이다.\
-> **`STRICT_TRANS_TABLES` 가 꺼지면 7번 절의 결론이 통째로 달라지므로** 먼저 밝힌다.\
-> ★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t49_a`·`t49_src`·`t49_p`·`t49_c`·`t49_d`·`t49_ai` 를 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
-> **선행** — [45 CHECK·NOT NULL·DEFAULT·생성 열·자동 증가](../45-check-not-null-default-generated-columns/)가 **기본값과 생성 열의 정본**이다. 여기서는 그것이 `INSERT` 문에서 어떻게 나타나나만 쓴다.\
-> **이어지는 것** — [50 UPDATE](../50-update-with-join-and-subquery/) · [52 UPSERT](../52-upsert/) · [54 RETURNING](../54-returning-and-data-modifying-cte/).
-
 ## 한눈에 — 쉽게 말하면
 
 **`INSERT` 는 「행을 만들어 넣는 문」이지만, 값의 출처가 셋이다.**
@@ -536,7 +524,7 @@ ERROR:  value too long for type character varying(10)
 ERROR 1406 (22001) at line 1: Data too long for column 'name' at row 1
 ```
 
-★ **MySQL 이 막는 근거는 `sql_mode` 의 `STRICT_TRANS_TABLES` 다** — 머리말의 환경 확인이 여기서 쓰인다.\
+★ **MySQL 이 막는 근거는 `sql_mode` 의 `STRICT_TRANS_TABLES` 다** — 「실행 환경」의 환경 확인이 여기서 쓰인다.\
 그 모드가 꺼져 있으면 **이 문이 경고로 통과하며 문자열이 잘린다.**\
 (이 머신에서는 **모드를 끄고 확인하지는 않았다** — 서버 설정을 바꾸지 않기 위해서다. 대신 같은 결과를 내는 `IGNORE` 로 7번에서 확인했다.)
 
@@ -814,3 +802,14 @@ INSERT INTO t VALUES ROW(1,'x'), ROW(2,'y');   -- MySQL. PG 는 구문 오류
   `SELECT` 결과 자체의 순서는 표에 저장되지 않는다([08 번](../08-order-by-null-position-stability/)).
 - **PG 의 `OVERRIDING SYSTEM VALUE`** 는 `GENERATED ALWAYS AS IDENTITY` 열에 값을 강제로 넣는 절이다.\
   **이 편에서는 던져 보지 않았다** — 45 번이 자동 증가의 정본이라 그쪽으로 넘긴다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · INSERT](https://www.postgresql.org/docs/18/sql-insert.html) · [MySQL 8.4 · INSERT Statement](https://dev.mysql.com/doc/refman/8.4/en/insert.html) · [MySQL 8.4 · INSERT ... SELECT](https://dev.mysql.com/doc/refman/8.4/en/insert-select.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·경고는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+★ **환경 확인** — MySQL 의 `sql_mode` 는 `ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION` 이고 `autocommit=1` 이다.\
+**`STRICT_TRANS_TABLES` 가 꺼지면 7번 절의 결론이 통째로 달라지므로** 먼저 밝힌다.\
+★ **이 편이 만든 표와 그 뒷정리** — `study` DB 에 `t49_a`·`t49_src`·`t49_p`·`t49_c`·`t49_d`·`t49_ai` 를 만들었고 **전부 지웠다.** `emp`·`dept` 는 **읽지도 않았다.**\
+**선행** — [45 CHECK·NOT NULL·DEFAULT·생성 열·자동 증가](../45-check-not-null-default-generated-columns/)가 **기본값과 생성 열의 정본**이다. 여기서는 그것이 `INSERT` 문에서 어떻게 나타나나만 쓴다.\
+**이어지는 것** — [50 UPDATE](../50-update-with-join-and-subquery/) · [52 UPSERT](../52-upsert/) · [54 RETURNING](../54-returning-and-data-modifying-cte/).

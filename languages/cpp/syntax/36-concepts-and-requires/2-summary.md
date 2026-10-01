@@ -1,27 +1,5 @@
 # cpp/syntax/36 — 컨셉과 `requires`(C++20) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — Constraints and concepts](https://en.cppreference.com/w/cpp/language/constraints) · [cppreference — Requires expression](https://en.cppreference.com/w/cpp/language/requires)\
-> ★ 이 배치에서 **위 두 cppreference 쪽을 열어 확인했다** — 「**Two atomic constraints are considered identical if they are formed from the same expression at the source level and their parameter mappings are equivalent.**」 · 「`P` 가 `Q` 를 subsume 한다 = 원자 제약의 동일성까지만 따져 `P` 가 `Q` 를 함의한다 — **Types and expressions are not analyzed for equivalence**」 · 「**A simple requirement asserts that expression is valid. expression is an unevaluated operand.**」 세 문장이다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> ★★ **clang 도 libstdc++ 13 을 쓴다** — 그래서 **`std::integral` 같은 표준 컨셉의 표에서 두 컴파일러가 같은 줄을 낸 것은 「두 라이브러리 구현이 일치한다」의 근거가 아니다** — 같은 헤더를 읽었을 뿐이다((4)).\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`form01.cpp`·`form02.cpp`·`sub01.cpp`·`sub02.cpp`·`req01.cpp`·`stdc01.cpp`·`form-grid.sh`).\
-> ★ **진단에 소스 경로가 박히지 않게 상대 경로로 컴파일**했다. 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 없다.
-> **버전** — 컨셉·`requires` 절·`requires` 식·축약 함수 템플릿(`std::integral auto` 매개변수)은 전부 **C++20부터**, 표준 컨셉은 **`<concepts>`(C++20)** 다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★★ **[35번](../35-instantiation-header-placement-and-reading-errors/)에서 온다 — 35편이 잰 것은 다시 재지 않는다.**\
-> [35번](../35-instantiation-header-placement-and-reading-errors/) (7)(8) — **컨셉을 걸면 첫 에러가 호출 줄로 온다**(16칸 중 컨셉이 걸린 칸 전부) · **그런데 줄 수는 g++ `deep01` 8 → 직접 쓴 `Less` 17 → `std::totally_ordered` 29 로 오히려 늘었다** · **`totally_ordered` 는 `<` 가 아니라 `==` 를 탓했다** · 짧아진 것은 **`ranges::sort`** 쪽(78 → 34)뿐이다.\
-> ★★ **그래서 이 편은 오류의 길이·자리를 다시 세지 않는다.** 여기서 새로 묻는 것은 셋이다 — **제약을 적는 네 가지 표기가 같은 것을 뜻하나** · **두 제약 중 어느 쪽이 「더 제약된」 것인가(subsumption)** · **`requires` 식과 표준 컨셉을 고를 때 무엇이 걸리나.**
-> **경계** — 「인스턴스화 오류의 자리와 길이」는 [35번](../35-instantiation-header-placement-and-reading-errors/)이, 「컨셉 이전의 같은 의도(SFINAE)」는 [37번](../37-sfinae-and-enable-if/)이, 「오버로드 해석의 기본 순서」는 [01번](../01-function-overloading-and-overload-resolution/)이 정본이다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** · 진단의 **줄 수** | ★★★ **통과 / 에러(`cc exit`)** · **골라진 오버로드의 출력** · **표의 1/0** |
-> | ★ `char` 가 부호 있는 타입인가 — **이 ABI(x86-64 Linux)의 선택**이다((3)) | ★★★ **격자의 「갈린 묶음 N / M」** 줄 · **모호 에러가 나는가** |
-
 ## 한눈에 — 쉽게 말하면
 
 **컨셉은 「입장 조건」이 적힌 팻말이다.** 템플릿이 가게라면, 컨셉은 **문 앞에서 손님(타입)을 확인**한다.
@@ -688,3 +666,26 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **`||` 제약과 subsumption** — 이 편은 `&&` 만 던졌다. `||` 가 섞이면 정규형(DNF·CNF) 변환이 끼어든다(cppreference 의 정의).
 - **클래스 템플릿 멤버의 뒤 `requires` 절** — 이 편은 **던지지 않았다.** 32편의 클래스 템플릿 위에서 다음에 볼 자리다.
 - **libc++ 에서의 표준 컨셉 표** — 이 머신에 libc++ 가 없어 **못 쟀다**(제3의 상태 — `-stdlib=libc++` 가 링크에서 막혔다).
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — Constraints and concepts](https://en.cppreference.com/w/cpp/language/constraints) · [cppreference — Requires expression](https://en.cppreference.com/w/cpp/language/requires)\
+★ 이 배치에서 **위 두 cppreference 쪽을 열어 확인했다** — 「**Two atomic constraints are considered identical if they are formed from the same expression at the source level and their parameter mappings are equivalent.**」 · 「`P` 가 `Q` 를 subsume 한다 = 원자 제약의 동일성까지만 따져 `P` 가 `Q` 를 함의한다 — **Types and expressions are not analyzed for equivalence**」 · 「**A simple requirement asserts that expression is valid. expression is an unevaluated operand.**」 세 문장이다.
+**실행 검증** — 이 문서의 모든 출력·진단은 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **libstdc++ 13** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+★★ **clang 도 libstdc++ 13 을 쓴다** — 그래서 **`std::integral` 같은 표준 컨셉의 표에서 두 컴파일러가 같은 줄을 낸 것은 「두 라이브러리 구현이 일치한다」의 근거가 아니다** — 같은 헤더를 읽었을 뿐이다((4)).\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고, 블록마다 **소스 파일 이름이 다르다**(`form01.cpp`·`form02.cpp`·`sub01.cpp`·`sub02.cpp`·`req01.cpp`·`stdc01.cpp`·`form-grid.sh`).\
+★ **진단에 소스 경로가 박히지 않게 상대 경로로 컴파일**했다. 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 없다.
+**버전** — 컨셉·`requires` 절·`requires` 식·축약 함수 템플릿(`std::integral auto` 매개변수)은 전부 **C++20부터**, 표준 컨셉은 **`<concepts>`(C++20)** 다.
+
+★★★ **[35번](../35-instantiation-header-placement-and-reading-errors/)에서 온다 — 35편이 잰 것은 다시 재지 않는다.**\
+[35번](../35-instantiation-header-placement-and-reading-errors/) (7)(8) — **컨셉을 걸면 첫 에러가 호출 줄로 온다**(16칸 중 컨셉이 걸린 칸 전부) · **그런데 줄 수는 g++ `deep01` 8 → 직접 쓴 `Less` 17 → `std::totally_ordered` 29 로 오히려 늘었다** · **`totally_ordered` 는 `<` 가 아니라 `==` 를 탓했다** · 짧아진 것은 **`ranges::sort`** 쪽(78 → 34)뿐이다.\
+★★ **그래서 이 편은 오류의 길이·자리를 다시 세지 않는다.** 여기서 새로 묻는 것은 셋이다 — **제약을 적는 네 가지 표기가 같은 것을 뜻하나** · **두 제약 중 어느 쪽이 「더 제약된」 것인가(subsumption)** · **`requires` 식과 표준 컨셉을 고를 때 무엇이 걸리나.**
+**경계** — 「인스턴스화 오류의 자리와 길이」는 [35번](../35-instantiation-header-placement-and-reading-errors/)이, 「컨셉 이전의 같은 의도(SFINAE)」는 [37번](../37-sfinae-and-enable-if/)이, 「오버로드 해석의 기본 순서」는 [01번](../01-function-overloading-and-overload-resolution/)이 정본이다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** · 진단의 **줄 수** | ★★★ **통과 / 에러(`cc exit`)** · **골라진 오버로드의 출력** · **표의 1/0** |
+| ★ `char` 가 부호 있는 타입인가 — **이 ABI(x86-64 Linux)의 선택**이다((3)) | ★★★ **격자의 「갈린 묶음 N / M」** 줄 · **모호 에러가 나는가** |

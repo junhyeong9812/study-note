@@ -1,41 +1,5 @@
 # python/syntax/49-datetime-and-zoneinfo — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
-> - [`datetime` — Aware and Naive Objects(3.12)](https://docs.python.org/3.12/library/datetime.html#aware-and-naive-objects) — *"A **naive** object does not contain enough information to unambiguously locate itself relative to other date/time objects."*
-> - [`datetime` 객체의 연산 표(3.12)](https://docs.python.org/3.12/library/datetime.html#datetime-objects) — 덧셈 *"Note that no time zone adjustments are done even if the input is an aware object."* ·
->   뺄셈 *"If one is aware and the other is naive, `TypeError` is raised."* · *"If both are naive, or both are aware and have the same `tzinfo` attribute, the `tzinfo` attributes are ignored"* ·
->   같음 *"Naive and aware `datetime` objects are never equal."* · 순서 *"Order comparison between naive and aware `datetime` objects … raises `TypeError`."* ·
->   *"If both comparands are aware, and have the same `tzinfo` attribute, the `tzinfo` and `fold` attributes are ignored and the base datetimes are compared."* ·
->   *"`datetime` instances in a repeated interval are never equal to `datetime` instances in other time zone."* · *versionchanged 3.3* — *"Equality comparisons between aware and naive `datetime` instances don't raise `TypeError`."*
-> - [`datetime.fold`](https://docs.python.org/3.12/library/datetime.html#datetime.datetime.fold) — *"The values 0 and 1 represent, respectively, the earlier and later of the two moments with the same wall time representation."*(3.6)
-> - [`datetime.fromisoformat`](https://docs.python.org/3.12/library/datetime.html#datetime.datetime.fromisoformat) — *versionchanged 3.11* — *"Previously, this method only supported formats that could be emitted by `date.isoformat` or `datetime.isoformat`."*
-> - [`datetime.utcnow`](https://docs.python.org/3.12/library/datetime.html#datetime.datetime.utcnow) — *deprecated 3.12* — *"Use `datetime.now` with `UTC` instead."* · [`datetime.UTC`](https://docs.python.org/3.12/library/datetime.html#datetime.UTC)(3.11)
-> - [`timedelta`](https://docs.python.org/3.12/library/datetime.html#timedelta-objects) — *"Only days, seconds and microseconds are stored internally."* · *"… their sum is rounded to the nearest microsecond using round-half-to-even tiebreaker."*
-> - [`zoneinfo`(3.9+)](https://docs.python.org/3.12/library/zoneinfo.html) — *"By default, `zoneinfo` uses the system's time zone data if available; if no system time zone data is available, the library will fall back to using the first-party `tzdata` package"* ·
->   *"the offset from before the transition is used when `fold=0`, and the offset after the transition is used when `fold=1`"* · *"To set the system to ignore the system data and use the tzdata package instead, set `PYTHONTZPATH=""`."*
-> - [PEP 495 — Local Time Disambiguation](https://peps.python.org/pep-0495/) — *"If the `utcoffset()`, `tzname()` or `dst()` method is called on a local time that falls in a gap, the rules in effect before the transition should be used if `fold=0`."* · [PEP 615](https://peps.python.org/pep-0615/)(`zoneinfo`)
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 이 머신(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
-> 판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 판 격자 한 블록(동작 7)을 더 던졌다. 서드파티 대비로 `pytz` **2024.1** · `dateutil` **2.8.2** 한 블록(「더 들어가면」).\
-> ★★★ **「지금 시각」을 한 번도 찍지 않았다** — 모든 값은 `datetime(2026, 3, 8, 12, 0)` 처럼 **고정된 값을 만들어서** 계산했다. `utcnow()` 는 부르되 **경고와 `tzinfo` 만** 찍었다(동작 7).\
-> ★★ **시간대 자료는 이 머신의 시스템 tzdata(`/usr/share/zoneinfo`, 판 `2026c`)** 다 — `tzdata` 패키지는 깔려 있지 않다(동작 8).\
-> **버전** — `fold` **3.6**(PEP 495) · `zoneinfo` **3.9**(PEP 615) · `fromisoformat` 확장·`datetime.UTC` **3.11** · `utcnow`·`utcfromtimestamp` 폐기 경고 **3.12** · naive 대 aware `==` 가 에러 대신 `False` **3.3**.\
-> ★ **구현 대 언어 보장 한 줄** — naive/aware 연산 규칙·`fold` 의 뜻은 **라이브러리 보장**, 예외 **문구**는 CPython 의 것, **어느 지역이 어느 날 몇 시간 차이인가는 파이썬도 명세도 아니고 IANA tzdata 가 정한다**(이 머신의 판 `2026c` 의 관찰).\
-> ★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
-> |---|---|
-> | ★★ **tzdata 판이 바뀌면** — `available_timezones()` 개수 · 지역별 오프셋(동작 8 의 `America/Asuncion`·`America/Coyhaique` 행) | ★★ 격자 마지막 줄 **「… N / M」** 전부 |
-> | 머신의 `TZ`·`/etc/localtime` 이 바뀌면 **naive 를 지역 시각으로 읽는 칸**(그래서 동작 9 는 `TZ=` 를 **행마다 명시**했다) | 예외 **타입** · `(exit N)` · `fold` 값 |
-> | 판이 오르면 예외 **문구**와 폐기 경고 **메시지** | naive/aware 연산표의 칸(3.3 이후 문서가 정한 것) |
-> | — (주소·시간·「지금 시각」·`set` 출력을 한 곳도 안 찍었다) | 2026년 뉴욕 전이 시각(3월 8일 · 11월 1일) — ★ 단 이것도 tzdata 의 것이지 파이썬의 것이 아니다 |
->
-> **선행** — 없음(README 선행 칸 `—`). ★ 함께 보면 좋은 곳 — [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(키의 같음 — naive 와 aware 가 **dict 의 다른 키**가 되는 자리, 동작 2) ·
-> [50-decimal-float-precision-and-round](../50-decimal-float-precision-and-round/2-summary.md)(짝수 반올림 — `timedelta` 의 마이크로초 반올림이 같은 규칙이다, 동작 6).
-
 ## 한눈에 — 쉽게 말하면
 
 **`datetime` 은 「벽시계 사진」이고, `tzinfo` 는 그 사진 뒷면에 적힌 「어느 도시의 벽시계인가」 메모다.**
@@ -774,7 +738,7 @@ America/New_York : ZoneInfoNotFoundError - 'No time zone found with key America/
 
 그림 해설.
 
-* ★★★ **첫 블록의 위 네 줄이 이 문서 전체의 전제다** — 시스템 tzdata **`2026c`**, `tzdata` 패키지 **없음**(`ModuleNotFoundError`), 시간대 **498** 개. **이 칸들은 머신과 판이 바뀌면 흔들린다**(머리말 표).
+* ★★★ **첫 블록의 위 네 줄이 이 문서 전체의 전제다** — 시스템 tzdata **`2026c`**, `tzdata` 패키지 **없음**(`ModuleNotFoundError`), 시간대 **498** 개. **이 칸들은 머신과 판이 바뀌면 흔들린다**(「실행 환경」 표).
 * ★★ **둘째 블록 — `PYTHONTZPATH=` 로 시스템 자료를 끄면 `UTC` 조차 `ZoneInfoNotFoundError`.** 문서가 말한 「`tzdata` 패키지로 대신한다」는 **그 패키지가 있을 때의 이야기**이고, 이 머신에는 없으니 **아무것도 안 남는다.**
   ★ 윈도는 시스템에 IANA 자료가 없다 — 문서가 *"it is recommended to declare a dependency on tzdata"* 라고 적는 까닭(이 머신에서 못 잰다).
 * ★★ **`America/Asuncion` 의 1월·7월이 둘 다 `-0300`** — 이 판에서는 **서머타임 전이가 없다.** [Java 51번](../../../java/syntax/51-java-time-types/2-summary.md)의 「tzdb 판이 갈렸다」 절이 **`2024a` 에서는 2026년 전이 넷, `2025b` 에서는 없음**을 찍었다 — 같은 지역 이름에 **답만 바뀐** 사례다. 이 머신(`2026c`)은 뒤쪽과 같은 모양이다.
@@ -1168,3 +1132,38 @@ print("[5] date(2026,1,31) + relativedelta(months=2):", date(2026, 1, 31) + rela
 * ★ **없는 시각 검사 관용구** — `d.astimezone(timezone.utc).astimezone(d.tzinfo).replace(tzinfo=None) != d.replace(tzinfo=None)` 가 동작 3 의 판정 그대로다. 되풀이 구간 검사는 `d.replace(fold=0).utcoffset() != d.replace(fold=1).utcoffset()`.
 * ★ **단조 시계** — 경과 시간을 **재는** 일은 `datetime` 이 아니라 `time.monotonic()` 의 몫이다. 벽시계는 NTP·사람이 바꿀 수 있다. 이 문서는 그것을 재지 않았다.
 * ★ **tzdata 판이 오르면 다시 돌릴 것** — 동작 8 의 첫 블록 전체, 그리고 동작 3·4·5 의 뉴욕 전이일(미국이 규칙을 바꾸면 움직인다 — ★ **예측이지 측정이 아니다**).
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만(문서 원본 `.rst` 를 받아 문장을 찾았다).
+- [`datetime` — Aware and Naive Objects(3.12)](https://docs.python.org/3.12/library/datetime.html#aware-and-naive-objects) — *"A **naive** object does not contain enough information to unambiguously locate itself relative to other date/time objects."*
+- [`datetime` 객체의 연산 표(3.12)](https://docs.python.org/3.12/library/datetime.html#datetime-objects) — 덧셈 *"Note that no time zone adjustments are done even if the input is an aware object."* ·
+  뺄셈 *"If one is aware and the other is naive, `TypeError` is raised."* · *"If both are naive, or both are aware and have the same `tzinfo` attribute, the `tzinfo` attributes are ignored"* ·
+  같음 *"Naive and aware `datetime` objects are never equal."* · 순서 *"Order comparison between naive and aware `datetime` objects … raises `TypeError`."* ·
+  *"If both comparands are aware, and have the same `tzinfo` attribute, the `tzinfo` and `fold` attributes are ignored and the base datetimes are compared."* ·
+  *"`datetime` instances in a repeated interval are never equal to `datetime` instances in other time zone."* · *versionchanged 3.3* — *"Equality comparisons between aware and naive `datetime` instances don't raise `TypeError`."*
+- [`datetime.fold`](https://docs.python.org/3.12/library/datetime.html#datetime.datetime.fold) — *"The values 0 and 1 represent, respectively, the earlier and later of the two moments with the same wall time representation."*(3.6)
+- [`datetime.fromisoformat`](https://docs.python.org/3.12/library/datetime.html#datetime.datetime.fromisoformat) — *versionchanged 3.11* — *"Previously, this method only supported formats that could be emitted by `date.isoformat` or `datetime.isoformat`."*
+- [`datetime.utcnow`](https://docs.python.org/3.12/library/datetime.html#datetime.datetime.utcnow) — *deprecated 3.12* — *"Use `datetime.now` with `UTC` instead."* · [`datetime.UTC`](https://docs.python.org/3.12/library/datetime.html#datetime.UTC)(3.11)
+- [`timedelta`](https://docs.python.org/3.12/library/datetime.html#timedelta-objects) — *"Only days, seconds and microseconds are stored internally."* · *"… their sum is rounded to the nearest microsecond using round-half-to-even tiebreaker."*
+- [`zoneinfo`(3.9+)](https://docs.python.org/3.12/library/zoneinfo.html) — *"By default, `zoneinfo` uses the system's time zone data if available; if no system time zone data is available, the library will fall back to using the first-party `tzdata` package"* ·
+  *"the offset from before the transition is used when `fold=0`, and the offset after the transition is used when `fold=1`"* · *"To set the system to ignore the system data and use the tzdata package instead, set `PYTHONTZPATH=""`."*
+- [PEP 495 — Local Time Disambiguation](https://peps.python.org/pep-0495/) — *"If the `utcoffset()`, `tzname()` or `dst()` method is called on a local time that falls in a gap, the rules in effect before the transition should be used if `fold=0`."* · [PEP 615](https://peps.python.org/pep-0615/)(`zoneinfo`)
+
+**실행 검증** — 이 문서에 실린 출력은 전부 이 머신(Linux)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.\
+판은 `python3` **3.12.3** 이 본판이고, 판 경계를 위해 `python3.11` **3.11.15** 로 판 격자 한 블록(동작 7)을 더 던졌다. 서드파티 대비로 `pytz` **2024.1** · `dateutil` **2.8.2** 한 블록(「더 들어가면」).\
+★★★ **「지금 시각」을 한 번도 찍지 않았다** — 모든 값은 `datetime(2026, 3, 8, 12, 0)` 처럼 **고정된 값을 만들어서** 계산했다. `utcnow()` 는 부르되 **경고와 `tzinfo` 만** 찍었다(동작 7).\
+★★ **시간대 자료는 이 머신의 시스템 tzdata(`/usr/share/zoneinfo`, 판 `2026c`)** 다 — `tzdata` 패키지는 깔려 있지 않다(동작 8).\
+**버전** — `fold` **3.6**(PEP 495) · `zoneinfo` **3.9**(PEP 615) · `fromisoformat` 확장·`datetime.UTC` **3.11** · `utcnow`·`utcfromtimestamp` 폐기 경고 **3.12** · naive 대 aware `==` 가 에러 대신 `False` **3.3**.\
+★ **구현 대 언어 보장 한 줄** — naive/aware 연산 규칙·`fold` 의 뜻은 **라이브러리 보장**, 예외 **문구**는 CPython 의 것, **어느 지역이 어느 날 몇 시간 차이인가는 파이썬도 명세도 아니고 IANA tzdata 가 정한다**(이 머신의 판 `2026c` 의 관찰).\
+★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다 | 안 흔들린다(근거로 써도 되는 칸) |
+|---|---|
+| ★★ **tzdata 판이 바뀌면** — `available_timezones()` 개수 · 지역별 오프셋(동작 8 의 `America/Asuncion`·`America/Coyhaique` 행) | ★★ 격자 마지막 줄 **「… N / M」** 전부 |
+| 머신의 `TZ`·`/etc/localtime` 이 바뀌면 **naive 를 지역 시각으로 읽는 칸**(그래서 동작 9 는 `TZ=` 를 **행마다 명시**했다) | 예외 **타입** · `(exit N)` · `fold` 값 |
+| 판이 오르면 예외 **문구**와 폐기 경고 **메시지** | naive/aware 연산표의 칸(3.3 이후 문서가 정한 것) |
+| — (주소·시간·「지금 시각」·`set` 출력을 한 곳도 안 찍었다) | 2026년 뉴욕 전이 시각(3월 8일 · 11월 1일) — ★ 단 이것도 tzdata 의 것이지 파이썬의 것이 아니다 |
+
+**선행** — 없음(README 선행 칸 `—`). ★ 함께 보면 좋은 곳 — [12-dict-and-key-requirements](../12-dict-and-key-requirements/2-summary.md)(키의 같음 — naive 와 aware 가 **dict 의 다른 키**가 되는 자리, 동작 2) ·
+[50-decimal-float-precision-and-round](../50-decimal-float-precision-and-round/2-summary.md)(짝수 반올림 — `timedelta` 의 마이크로초 반올림이 같은 규칙이다, 동작 6).

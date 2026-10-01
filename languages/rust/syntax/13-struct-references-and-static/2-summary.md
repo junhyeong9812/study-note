@@ -1,25 +1,5 @@
 # rust/syntax/13 — 구조체에 참조 담기·`'static`의 두 의미 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [The Rust Reference — Lifetime elision](https://doc.rust-lang.org/reference/lifetime-elision.html) ·
-> [Reference — Generic parameters](https://doc.rust-lang.org/reference/items/generics.html) ·
-> [Reference — Destructors(드롭 순서·drop check)](https://doc.rust-lang.org/reference/destructors.html) ·
-> [The Rust Book 10.3](https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html) ·
-> `rustc --explain E0106` / `E0726` / `E0261` / `E0621` / `E0392` / `E0204` / `E0277` / `E0382` / `E0515` / `E0505` / `E0597`.
-> ★ `--explain` 은 **확인용으로만 열었고 본문에 옮기지 않았다.** 본문의 진단은 전부 내가 던져서 받은 것이다.
-> **실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.\
-> 소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단의 줄 번호는 그 파일 기준**이다.
-> **버전** — 구조체에 수명 파라미터를 다는 문법은 1.0.0부터다. `'_`(익명 수명)는 **2018 에디션**부터,\
-> `mismatched_lifetime_syntaxes` 경고는 **이 툴체인에서 기본 켜져 있는 것을 실측**했다(rustc 판에 달렸다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
->
-> ★★ **경계 선언** — `'static` 의 **두 뜻**(`&'static T` 대 `T: 'static`)은\
-> [**12번 주제**](../12-lifetime-annotations-and-elision/) **(4)절이 정본**이고, 여기서 다시 쓰지 않는다.\
-> 이 주제는 「**그것을 필드로 담을 때 무엇이 따라오나**」다 — 수명 파라미터가 **선언·`impl`·생성 함수·반환 타입·\
-> 그 타입을 품는 다른 구조체**까지 **어디까지 번지는가**가 본체다.
-
 ## 한눈에 — 쉽게 말하면
 
 **구조체에 남의 물건을 하나라도 넣으면, 그 상자 자체가 「남의 물건이 든 상자」로 이름이 바뀐다.**
@@ -1559,3 +1539,23 @@ struct Label { text: &'static str }
   감염은 그대로 남지만 **판 A/판 B 를 고르는 시점을 런타임으로 미루는** 수다.
 - ★ **감염을 세는 습관** — 리팩토링 전에 `grep -o "'a" src/**.rs | wc -l` 를 한 번 찍어 두면
   **소유로 바꿨을 때 지워질 줄 수**가 먼저 보인다. (6)이 그 눈금이다.
+
+## 실행 환경
+
+**기준 소스** — [The Rust Reference — Lifetime elision](https://doc.rust-lang.org/reference/lifetime-elision.html) ·
+[Reference — Generic parameters](https://doc.rust-lang.org/reference/items/generics.html) ·
+[Reference — Destructors(드롭 순서·drop check)](https://doc.rust-lang.org/reference/destructors.html) ·
+[The Rust Book 10.3](https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html) ·
+`rustc --explain E0106` / `E0726` / `E0261` / `E0621` / `E0392` / `E0204` / `E0277` / `E0382` / `E0515` / `E0505` / `E0597`.
+★ `--explain` 은 **확인용으로만 열었고 본문에 옮기지 않았다.** 본문의 진단은 전부 내가 던져서 받은 것이다.
+**실행 검증** — 이 문서의 모든 출력·에러·경고는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`** 로 실제로 돌려 얻은 것이다. `cargo` 는 쓰지 않았다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다.** 이 갈래는 `--edition 2021` 을 반드시 붙인다.\
+소스 파일 이름은 전부 `ex.rs` 로 고정했고, **진단의 줄 번호는 그 파일 기준**이다.
+**버전** — 구조체에 수명 파라미터를 다는 문법은 1.0.0부터다. `'_`(익명 수명)는 **2018 에디션**부터,\
+`mismatched_lifetime_syntaxes` 경고는 **이 툴체인에서 기본 켜져 있는 것을 실측**했다(rustc 판에 달렸다).
+
+★★ **경계 선언** — `'static` 의 **두 뜻**(`&'static T` 대 `T: 'static`)은\
+[**12번 주제**](../12-lifetime-annotations-and-elision/) **(4)절이 정본**이고, 여기서 다시 쓰지 않는다.\
+이 주제는 「**그것을 필드로 담을 때 무엇이 따라오나**」다 — 수명 파라미터가 **선언·`impl`·생성 함수·반환 타입·\
+그 타입을 품는 다른 구조체**까지 **어디까지 번지는가**가 본체다.

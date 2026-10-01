@@ -1,13 +1,5 @@
 # java/syntax/55 — 원자 변수와 동시 컬렉션: `Atomic*`·`ConcurrentHashMap` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> **선행** — [`../33-synchronized-and-volatile/`](../33-synchronized-and-volatile/) 의 질문을 먼저 푼다. `int++` 이 왜 세 동작인지가 전제다.
-> [`../41-map-api-merge-compute/`](../41-map-api-merge-compute/) 의 `merge`/`compute*` 를 알면 더 쉽다.
-> ⚠️ 이 주제의 수치는 두 종류다. **정답 횟수**(10회 중 몇 회)는 **0 인가 아닌가**만,
-> **ms 수치**는 **자릿수**만 맞히면 된다. 둘 다 24코어 머신의 한 측정이고 다른 머신에서 재현되지 않는다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -186,6 +178,13 @@ Iterator<Integer> it = cow.iterator(); cow.add(4); // (C)
 - 읽기 위주에서는 몇 배인가 — 차이가 더 커지는가 작아지는가? 왜?
 - `Collections.synchronizedMap(new HashMap<>())` 과 직접 `synchronized` 로 감싸는 것은 성능이 다른가?
 - 셋 중 **결과값이 틀리는 것**이 있는가?
+
+## 실행 환경
+
+**선행** — [`../33-synchronized-and-volatile/`](../33-synchronized-and-volatile/) 의 질문을 먼저 푼다. `int++` 이 왜 세 동작인지가 전제다.
+[`../41-map-api-merge-compute/`](../41-map-api-merge-compute/) 의 `merge`/`compute*` 를 알면 더 쉽다.
+⚠️ 이 주제의 수치는 두 종류다. **정답 횟수**(10회 중 몇 회)는 **0 인가 아닌가**만,
+**ms 수치**는 **자릿수**만 맞히면 된다. 둘 다 24코어 머신의 한 측정이고 다른 머신에서 재현되지 않는다.
 
 ## 복습 기록
 

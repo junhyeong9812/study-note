@@ -1,29 +1,5 @@
 # java/syntax/55 — 원자 변수와 동시 컬렉션: `Atomic*`·`ConcurrentHashMap` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **선행** — [`../33-synchronized-and-volatile/`](../33-synchronized-and-volatile/) (락의 문법과 `volatile` 의 경계 — **이 주제는 그 다음 칸이다**) · [`../41-map-api-merge-compute/`](../41-map-api-merge-compute/) (`Map` API 의 `merge`/`compute*`/`getOrDefault`).
-> **기준 소스** — [`java.util.concurrent.atomic` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/package-summary.html) · [`ConcurrentHashMap`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ConcurrentHashMap.html) · [`LongAdder`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/LongAdder.html) · [`CopyOnWriteArrayList`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/CopyOnWriteArrayList.html) · 이 머신의 `lib/src.zip` 에서 **직접 읽은** `java.base/java/util/concurrent/ConcurrentHashMap.java`·`CopyOnWriteArrayList.java`·`atomic/LongAdder.java`.
-> **실행 검증** — 이 문서의 모든 출력·에러·수치는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 정확성 실험 `(55-a)` `(55-c)` `(55-d)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다 —\
-> **정답/오답 패턴은 세 버전이 같았고**(`(55-d)` 는 출력이 한 글자도 안 달랐다), **수치는 전부 달랐다**(아래 「구현 세부사항」).\
-> 성능 실험 `(55-b)` `(55-e)` `(55-f)` 는 **21 에서만** 돌렸다.
-> ⚠️ **측정 조건 — 이 주제의 수치는 두 종류다. 섞어 읽으면 안 된다.**\
-> ① **정확성 실험**(정답 횟수) — 스레드를 직접 띄워 **각 10회 반복**하고 「정답 횟수 / 10」과 「관측 합의 최소\~최대」로 적는다.\
-> ② **성능 실험**(ms) — **JMH 가 아니다.** 워밍업 3회 뒤 **측정 7회의 중앙값**이고, 최소·최대를 함께 적었다.\
-> 머신: **CPU 24코어**(`availableProcessors` = 24), Linux x86-64.\
-> 흔들림: 성능 실험의 최소\~최대가 **`AtomicLong` 8스레드에서 377\~997 ms** 로 2.6배까지 벌어졌다. **자릿수만 읽는다.**\
-> ★ **「안 터졌다」는 「안전하다」가 아니다.** 아래 「어디서 틀리나」의 실패는 전부 **터지지 않고 조용히 값이 줄어드는** 형태다.
-> **버전** — `java.util.concurrent.atomic` 의 `AtomicInteger`·`AtomicLong`·`AtomicReference` 는 **`@since 1.5`**,\
-> **`LongAdder` 와 `ConcurrentHashMap.mappingCount` 는 `@since 1.8`** 이다(`src.zip` 직접 확인).\
-> `putIfAbsent`·`computeIfAbsent`·`merge` 는 `ConcurrentHashMap` 소스에 `@since` 가 없다 — **`java.util.Map` 의 디폴트 메서드 쪽이 `@since 1.8`** 이고 여기서는 그것을 재정의한다(`Map.java` 의 835·1058·1319 줄에서 직접 읽었다).\
-> `ConcurrentHashMap` 자체는 `@since 1.5`, `CopyOnWriteArrayList` 는 `@since 1.5` 다.
-> **범위** — **메모리 모델·happens-before 는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §9 가 정본이다.**\
-> 그쪽은 **CAS·`volatile` 쓰기가 무엇을 보장하나**까지, 여기는 **그 도구로 코드를 어떻게 쓰나**부터다.\
-> 해시맵의 내부 구조(버킷·충돌·트리화)는 [`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 이 정본이다.\
-> 그쪽은 **해시 테이블이 어떻게 생겼나**까지, 여기는 **그 위에 얹힌 동시성 계약**부터.\
-> 병렬 스트림에서 공유 컬렉션이 깨지는 모습과 공용 ForkJoinPool 경합은 [`../49-parallel-streams/`](../49-parallel-streams/) 가 정본이다 — **여기서 다시 재지 않는다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 javadoc·`src.zip` 으로, 출력은 실행으로 접지했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **CAS 는 "값이 아직 그대로면 바꿔라"를 한 번에 하는 것이고, 동시 컬렉션은 그 위에 지은 집이다.**
@@ -774,3 +750,27 @@ Recursive update 출력      동일         동일         동일    <- 한 글�
 - **`ConcurrentSkipListSet`·`ConcurrentLinkedQueue`·`LinkedBlockingQueue`** — 리스트·큐 쪽 동시 자료구조.\
   큐는 **54번 주제**([`../54-executorservice-and-future/`](../54-executorservice-and-future/))의 작업 큐와 같은 물건이다.\
   이 문서는 **큐를 측정하지 않았다.**
+
+## 실행 환경
+
+**선행** — [`../33-synchronized-and-volatile/`](../33-synchronized-and-volatile/) (락의 문법과 `volatile` 의 경계 — **이 주제는 그 다음 칸이다**) · [`../41-map-api-merge-compute/`](../41-map-api-merge-compute/) (`Map` API 의 `merge`/`compute*`/`getOrDefault`).
+**기준 소스** — [`java.util.concurrent.atomic` 패키지 javadoc (Java SE 21)](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/package-summary.html) · [`ConcurrentHashMap`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ConcurrentHashMap.html) · [`LongAdder`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/LongAdder.html) · [`CopyOnWriteArrayList`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/CopyOnWriteArrayList.html) · 이 머신의 `lib/src.zip` 에서 **직접 읽은** `java.base/java/util/concurrent/ConcurrentHashMap.java`·`CopyOnWriteArrayList.java`·`atomic/LongAdder.java`.
+**실행 검증** — 이 문서의 모든 출력·에러·수치는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+정확성 실험 `(55-a)` `(55-c)` `(55-d)` 는 **17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다 —\
+**정답/오답 패턴은 세 버전이 같았고**(`(55-d)` 는 출력이 한 글자도 안 달랐다), **수치는 전부 달랐다**(본문 「구현 세부사항」).\
+성능 실험 `(55-b)` `(55-e)` `(55-f)` 는 **21 에서만** 돌렸다.
+⚠️ **측정 조건 — 이 주제의 수치는 두 종류다. 섞어 읽으면 안 된다.**\
+① **정확성 실험**(정답 횟수) — 스레드를 직접 띄워 **각 10회 반복**하고 「정답 횟수 / 10」과 「관측 합의 최소\~최대」로 적는다.\
+② **성능 실험**(ms) — **JMH 가 아니다.** 워밍업 3회 뒤 **측정 7회의 중앙값**이고, 최소·최대를 함께 적었다.\
+머신: **CPU 24코어**(`availableProcessors` = 24), Linux x86-64.\
+흔들림: 성능 실험의 최소\~최대가 **`AtomicLong` 8스레드에서 377\~997 ms** 로 2.6배까지 벌어졌다. **자릿수만 읽는다.**\
+★ **「안 터졌다」는 「안전하다」가 아니다.** 본문 「어디서 틀리나」의 실패는 전부 **터지지 않고 조용히 값이 줄어드는** 형태다.
+**버전** — `java.util.concurrent.atomic` 의 `AtomicInteger`·`AtomicLong`·`AtomicReference` 는 **`@since 1.5`**,\
+**`LongAdder` 와 `ConcurrentHashMap.mappingCount` 는 `@since 1.8`** 이다(`src.zip` 직접 확인).\
+`putIfAbsent`·`computeIfAbsent`·`merge` 는 `ConcurrentHashMap` 소스에 `@since` 가 없다 — **`java.util.Map` 의 디폴트 메서드 쪽이 `@since 1.8`** 이고 여기서는 그것을 재정의한다(`Map.java` 의 835·1058·1319 줄에서 직접 읽었다).\
+`ConcurrentHashMap` 자체는 `@since 1.5`, `CopyOnWriteArrayList` 는 `@since 1.5` 다.
+**범위** — **메모리 모델·happens-before 는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §9 가 정본이다.**\
+그쪽은 **CAS·`volatile` 쓰기가 무엇을 보장하나**까지, 여기는 **그 도구로 코드를 어떻게 쓰나**부터다.\
+해시맵의 내부 구조(버킷·충돌·트리화)는 [`../../../../cs/data-structure/05-hashmap/`](../../../../cs/data-structure/05-hashmap/) 이 정본이다.\
+그쪽은 **해시 테이블이 어떻게 생겼나**까지, 여기는 **그 위에 얹힌 동시성 계약**부터.\
+병렬 스트림에서 공유 컬렉션이 깨지는 모습과 공용 ForkJoinPool 경합은 [`../49-parallel-streams/`](../49-parallel-streams/) 가 정본이다 — **여기서 다시 재지 않는다.**

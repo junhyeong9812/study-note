@@ -1,17 +1,5 @@
 # kotlin/syntax/33 — 타입 검사·캐스트: `is`/`as`/`as?` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Type checks and casts](https://kotlinlang.org/docs/typecasts.html)(`as` 실패는 `ClassCastException` · `as?` 는 `null` · `as String?` 도 실패하면 예외 · 스마트 캐스트의 전제 표) · [Generics — Type erasure and generic type checks](https://kotlinlang.org/docs/generics.html#type-erasure).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`javap` 에서 실제로 얻었다. C# 은 **.NET SDK 10.0.401** 의 Roslyn `csc` 를 직접 불렀다.\
-> `kotlinc` 11회(에러 줄을 세는 2회 포함 · 컴파일 실패 3벌 · 경고 2벌) · `java` 5회 · `javac` 1회 · `javap` 3회 · `csc` 2회(실패 1벌) · `dotnet` 1회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
-> **버전** — `is`/`as`/`as?` 와 스마트 캐스트는 1.0. 이 문서의 **스마트 캐스트 통과 범위와 진단 문구는 K2(2.4.20)** 의 것이다.
-> **경계** — ★★ **스마트 캐스트가 깨지는 자리 아홉**(`null` 검사 기준)은 [04번 주제](../04-smart-casts/) (2)가 정본이다 — 여기는 **`is` 로 물었을 때 같은 자리가 어떻게 답하나**와 `as` 뒤·`||` 같은 **새 자리**만 더한다((5)).\
-> 소거를 **뚫는** 방법(`reified`)은 [12번 주제](../12-reified-type-parameters/)가, 플랫폼 타입 일반은 [05번 주제](../05-platform-types/)가, 별칭이 새 타입이 아니라는 것은 [29번 주제](../29-type-aliases-and-nested-type-aliases/)가 정본이다.
-> **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **22번**([`22-instanceof-type-patterns/`](../../../java/syntax/22-instanceof-type-patterns/)) — `instanceof` 패턴 변수가 Kotlin 스마트 캐스트의 **Java 쪽 짝**이다.\
-> C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **21번**(패턴 매칭)은 아직 폴더가 없다 — ★ C# 의 `is`/`as` 는 **이 문서가 직접 던졌다**((8)).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **본체는 첫째 창이다** — 「**`javap -c` 가 `is`·`as`·`as?` 자리에 박은 명령**」(`instanceof`·`checkcast`·`Intrinsics.checkNotNull`). 세 연산자의 **실패 방식이 다른 이유**가 명령 몇 줄에 다 있다.
 
 ## 이 주제가 쓰는 세 층
@@ -649,3 +637,15 @@ Z [3.0, 6.0, -1.0] null 2.0
 
 - **왜 `null as String` 에 검사를 따로 심었나** — JVM 에서 `null` 은 **모든 참조 타입의 값**이라 `checkcast String` 은 `null` 을 **합격**시킨다. 그대로 두면 `x as String` 의 결과가 `String`(null 불가)인데 **실제로는 `null`** 인 값이 흘러나가 **먼 자리에서** NPE 가 난다. kotlinc 는 그 틈을 **캐스트 자리에서** 막으려고 `checkNotNull` 을 앞에 둔다 — 대가로 예외 종류가 `ClassCastException` 이 아니라 **`NullPointerException`** 이 된다. `catch` 를 CCE 로만 걸어 둔 코드는 이 경우를 **못 잡는다.**
 - **`as?` 를 기본으로 쓰면 안 되는 이유** — `as?` 는 실패를 **`null` 로 바꿔 버린다.** 「이 타입이 아니면 버그다」인 자리에서 `as?` 를 쓰면 버그가 **`null` 이라는 정상 값**으로 위장해 흐른다. 실패의 뜻이 「버그」면 `as`, 「있을 수 있는 경우」면 `as?` 다 — 연산자를 고르는 기준은 성능이 아니라 **실패의 뜻**이다.
+
+## 실행 환경
+
+**기준 소스** — [Type checks and casts](https://kotlinlang.org/docs/typecasts.html)(`as` 실패는 `ClassCastException` · `as?` 는 `null` · `as String?` 도 실패하면 예외 · 스마트 캐스트의 전제 표) · [Generics — Type erasure and generic type checks](https://kotlinlang.org/docs/generics.html#type-erasure).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`javap` 에서 실제로 얻었다. C# 은 **.NET SDK 10.0.401** 의 Roslyn `csc` 를 직접 불렀다.\
+`kotlinc` 11회(에러 줄을 세는 2회 포함 · 컴파일 실패 3벌 · 경고 2벌) · `java` 5회 · `javac` 1회 · `javap` 3회 · `csc` 2회(실패 1벌) · `dotnet` 1회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 소스 펜스의 첫 줄 배너도 캡처가 찍었다.
+**버전** — `is`/`as`/`as?` 와 스마트 캐스트는 1.0. 이 문서의 **스마트 캐스트 통과 범위와 진단 문구는 K2(2.4.20)** 의 것이다.
+**경계** — ★★ **스마트 캐스트가 깨지는 자리 아홉**(`null` 검사 기준)은 [04번 주제](../04-smart-casts/) (2)가 정본이다 — 여기는 **`is` 로 물었을 때 같은 자리가 어떻게 답하나**와 `as` 뒤·`||` 같은 **새 자리**만 더한다((5)).\
+소거를 **뚫는** 방법(`reified`)은 [12번 주제](../12-reified-type-parameters/)가, 플랫폼 타입 일반은 [05번 주제](../05-platform-types/)가, 별칭이 새 타입이 아니라는 것은 [29번 주제](../29-type-aliases-and-nested-type-aliases/)가 정본이다.
+**대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **22번**([`22-instanceof-type-patterns/`](../../../java/syntax/22-instanceof-type-patterns/)) — `instanceof` 패턴 변수가 Kotlin 스마트 캐스트의 **Java 쪽 짝**이다.\
+C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **21번**(패턴 매칭)은 아직 폴더가 없다 — ★ C# 의 `is`/`as` 는 **이 문서가 직접 던졌다**((8)).

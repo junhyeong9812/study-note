@@ -1,12 +1,5 @@
 # web-api/17 — `stopPropagation` 대 `preventDefault`: 전파를 멈추는 것과 기본 동작을 막는 것 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 「틀림」으로 표시한다.
-> ★ **이웃 주제와의 경계** — 경로와 세 단계는 [16번 주제](../16-event-propagation-phases/1-question.md), `passive` 에서 `preventDefault` 가 어떻게 되나는 [19번 주제](../19-passive-and-scroll/1-question.md)가 정본이다. 여기는 **멈추기와 막기**만 묻는다.
-> ★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 DOM·HTML 명세 문장이다. 이식성은 주장 범위 밖이다.
-> ★ 아래 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -151,6 +144,12 @@ for (const 표 of ['첫째', '둘째', '셋째']) {
 - [16번 주제](../16-event-propagation-phases/1-question.md)의 경로 그림에서 `stopPropagation` 은 **어디를** 끊나? capture 단계에서 부르면?
 - [18번 주제](../18-event-delegation/1-question.md)의 위임이 `stopPropagation` 한 자식 때문에 깨지는 모양을 이 편의 격자로 설명하라.
 - 막을 **기본 동작 자체**의 정본은 어디인가(HTML 갈래)?
+
+## 실행 환경
+
+★ **이웃 주제와의 경계** — 경로와 세 단계는 [16번 주제](../16-event-propagation-phases/1-question.md), `passive` 에서 `preventDefault` 가 어떻게 되나는 [19번 주제](../19-passive-and-scroll/1-question.md)가 정본이다. 여기는 **멈추기와 막기**만 묻는다.
+★ 이 문서의 모든 근거는 **Chrome 151 단일 엔진**의 관찰과 DOM·HTML 명세 문장이다. 이식성은 주장 범위 밖이다.
+★ 본문의 코드 조각은 **질문용 발췌**다 — 실제로 돌린 전문은 [2-summary.md](2-summary.md)에 있다.
 
 ## 복습 기록
 

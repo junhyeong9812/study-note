@@ -1,24 +1,5 @@
 # python/syntax/12-dict-and-key-requirements — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [Mapping Types — dict](https://docs.python.org/3.12/library/stdtypes.html#mapping-types-dict) — 키 요건 · 삽입 순서 · `|`/`|=` · 뷰
-> - [Dictionary view objects](https://docs.python.org/3.12/library/stdtypes.html#dict-views) — 「**동적 뷰**」와 순회 중 변경
-> - [glossary — hashable](https://docs.python.org/3.12/glossary.html#term-hashable) — 해시 가능의 정의
-> - [`object.__hash__`](https://docs.python.org/3.12/reference/datamodel.html#object.__hash__) — `__eq__` 를 재정의하면 `__hash__` 가 `None` 이 되는 규칙
-> - [What's New In Python 3.6 — New dict implementation](https://docs.python.org/3.12/whatsnew/3.6.html#new-dict-implementation) · [What's New In Python 3.7](https://docs.python.org/3.12/whatsnew/3.7.html) — ★ **순서 보장이 층을 옮긴 자리**
-> - [`collections.defaultdict`](https://docs.python.org/3.12/library/collections.html#collections.defaultdict) · [`collections.OrderedDict`](https://docs.python.org/3.12/library/collections.html#collections.OrderedDict)
-> - [PYTHONHASHSEED](https://docs.python.org/3.12/using/cmdline.html#envvar-PYTHONHASHSEED) — 무엇이 무작위화되나
->
-> **실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
-> 일부는 **3.11.15** 로 한 번 더 돌려 대조했고, 그 사실을 그 자리에 적었다.
-> **버전** — 삽입 순서 보장은 **3.7**(3.6 은 CPython 구현 세부) · 병합 연산자 `|`/`|=` 는 **3.9** · 뷰의 `reversed()` 는 **3.8**.
-> **선행** — [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md)(`is` 와 `==` 의 정본) ·
-> [11-tuple-and-unpacking](../11-tuple-and-unpacking/2-summary.md)(튜플이 키가 되는 조건) ·
-> [03-mutability-and-copying](../03-mutability-and-copying/2-summary.md)(불변 안의 가변).
-
 ## 한눈에 — 쉽게 말하면
 
 **dict 는 「이름표가 붙은 사물함」이다. 이름표를 거는 자리는 해시가 정하고, 순서는 「들어온 순서」로 따로 적어 둔다.**
@@ -1022,3 +1003,21 @@ n in dn          : True | float('nan') in dn : False
 - **`__slots__` 와 인스턴스 `__dict__`** 는 [목록의 **33번 주제**](../33-property-descriptor-slots/).
 - **키를 정규화하는 실무 패턴** — 들어오는 키를 `str()` 로 한 번 통일하거나, 「숫자 키 금지」를 계약으로 박는다.
   `1`·`True` 혼용은 **테스트가 `==` 로는 못 잡는다.**
+
+## 실행 환경
+
+**기준 소스** — 열어서 확인한 것만.
+- [Mapping Types — dict](https://docs.python.org/3.12/library/stdtypes.html#mapping-types-dict) — 키 요건 · 삽입 순서 · `|`/`|=` · 뷰
+- [Dictionary view objects](https://docs.python.org/3.12/library/stdtypes.html#dict-views) — 「**동적 뷰**」와 순회 중 변경
+- [glossary — hashable](https://docs.python.org/3.12/glossary.html#term-hashable) — 해시 가능의 정의
+- [`object.__hash__`](https://docs.python.org/3.12/reference/datamodel.html#object.__hash__) — `__eq__` 를 재정의하면 `__hash__` 가 `None` 이 되는 규칙
+- [What's New In Python 3.6 — New dict implementation](https://docs.python.org/3.12/whatsnew/3.6.html#new-dict-implementation) · [What's New In Python 3.7](https://docs.python.org/3.12/whatsnew/3.7.html) — ★ **순서 보장이 층을 옮긴 자리**
+- [`collections.defaultdict`](https://docs.python.org/3.12/library/collections.html#collections.defaultdict) · [`collections.OrderedDict`](https://docs.python.org/3.12/library/collections.html#collections.OrderedDict)
+- [PYTHONHASHSEED](https://docs.python.org/3.12/using/cmdline.html#envvar-PYTHONHASHSEED) — 무엇이 무작위화되나
+
+**실행 검증** — 이 문서에 실린 출력은 전부 `python3` **3.12.3**(Linux, x86_64)에서 실제로 돌려 나온 것이다. 지어낸 출력은 없다.
+일부는 **3.11.15** 로 한 번 더 돌려 대조했고, 그 사실을 그 자리에 적었다.
+**버전** — 삽입 순서 보장은 **3.7**(3.6 은 CPython 구현 세부) · 병합 연산자 `|`/`|=` 는 **3.9** · 뷰의 `reversed()` 는 **3.8**.
+**선행** — [02-is-vs-eq-interning](../02-is-vs-eq-interning/2-summary.md)(`is` 와 `==` 의 정본) ·
+[11-tuple-and-unpacking](../11-tuple-and-unpacking/2-summary.md)(튜플이 키가 되는 조건) ·
+[03-mutability-and-copying](../03-mutability-and-copying/2-summary.md)(불변 안의 가변).

@@ -1,13 +1,5 @@
 # ts/syntax/06 — 초과 프로퍼티 검사 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Object Types: Excess Property Checks](https://www.typescriptlang.org/docs/handbook/2/objects.html#excess-property-checks) ·
-> [Handbook — Type Compatibility](https://www.typescriptlang.org/docs/handbook/type-compatibility.html) ·
-> [Handbook — Everyday Types: Type Assertions](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions) ·
-> [TSConfig — `strict`](https://www.typescriptlang.org/tsconfig/#strict).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -19,7 +11,6 @@ v18.19.1
 > 이 블록들은 설정 파일 없이도 그대로 재현된다.
 > **버전** — 초과 프로퍼티 검사는 TS 1.6, 약한 타입 검사(`TS2559`)는 2.4, 오타 제안(`TS2561`)은 2.7,
 > `satisfies` 는 4.9 부터다. 7.0 에서 이 넷 중 **사라진 것은 없다**(전부 이 판에서 받았다).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -646,3 +637,12 @@ JSON        : {"x":1,"y":2,"z":3}
 - **왜 `satisfies` 에서는 도는가** — `satisfies` 의 설계 목적이 「**리터럴을 이 타입에 맞게 썼는지 확인**」이라서, 그 확인에 오타 잡이가 포함되는 것이 일관적이다. `as` 는 반대로 「내가 책임진다」는 선언이라 전부 끈다.
 - **약한 타입 검사의 한계** — 「공통 키 하나」가 기준이라 `{ colour, width }` 처럼 **반은 맞고 반은 오타**인 경우를 못 잡는다. 이 판에서 직접 확인했다(15행 통과).
 - **`Exact<T>` 가 없는 이유** — 「정확히 이 키들만」을 표현하는 타입 연산자는 TS 에 없다. 이 검사가 그 자리를 **문법 형태로** 메우고 있고, 그래서 구멍이 많다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Object Types: Excess Property Checks](https://www.typescriptlang.org/docs/handbook/2/objects.html#excess-property-checks) ·
+[Handbook — Type Compatibility](https://www.typescriptlang.org/docs/handbook/type-compatibility.html) ·
+[Handbook — Everyday Types: Type Assertions](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions) ·
+[TSConfig — `strict`](https://www.typescriptlang.org/tsconfig/#strict).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·방출 전문·실행 출력은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

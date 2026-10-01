@@ -1,14 +1,5 @@
 # web-api/06 — 속성(attribute) 대 성질(property): `getAttribute`/`setAttribute` 와 IDL 프로퍼티의 반영 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 갈래는 언어가 아니라 플랫폼이다.** 언어 문법은 [`../../`](../../) 에 있고, 여기는 **브라우저가 건네주는 객체와 그 계약**이다.\
-> **기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「Interface `Element`」·「Attr」 절과 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflecting-content-attributes-in-idl-attributes) 의 「Reflecting content attributes in IDL attributes」 절, 그리고 [`input` 요소](https://html.spec.whatwg.org/multipage/input.html#the-input-element)·[`a` 요소](https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element) 절. 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.** 다만 **이 주제의 핵심은 구현 사정이 아니라 명세가 속성마다 못 박은 계약**이라 명세 문장을 근거로 드는 자리가 유난히 많다.\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `getAttribute`/`setAttribute` 는 DOM Level 1(1998) 부터 있었고 「반영」이라는 말과 규칙 표는 HTML5 가 정리한 것이다.\
-> **선행** — [01번 주제](../01-document-and-node-tree/2-summary.md)(문서와 노드 트리). 그리고 **속성이 트리에 어떤 글자로 담기는지**는 HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **02번**([요소와 속성 문법](../../html/syntax/02-elements-and-attributes/2-summary.md))이 정본이다 — 소문자화·중복 버리기·따옴표 경계·불리언의 존재 판정은 거기서 이미 실측했다. **여기는 이미 담긴 그것을 두 API 표면으로 읽고 쓸 때 생기는 비대칭부터**다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -822,3 +813,12 @@ getAttribute('data-x')      null                    el.dataset.x = undefined
 - **`toggleAttribute(name, force)`** 는 [07번 주제](../07-dataset-classlist-inline-style/2-summary.md)의 `classList.toggle` 과 **같은 모양의 두 번째 인자**를 갖는다. 불리언 속성을 켜고 끌 때 `setAttribute`/`removeAttribute` 를 갈라 쓰는 것보다 짧다.
 - **커스텀 요소**는 반영을 **직접 구현**한다 — `observedAttributes` + `attributeChangedCallback` 으로 속성 쪽을, getter/setter 로 성질 쪽을 짜고 **두 방향이 무한히 되부르지 않게** 막아야 한다. 그 설계가 [목록의 **13번 주제**](../13-custom-element-lifecycle/)다.
 - **`el.attributes` 의 순서**는 「설정된 순서」다. 실측에서 나중에 `setAttribute` 한 것이 **뒤에 붙었다**(위 (6)의 `outerHTML`). 명세가 순서를 보장하지만 **의미 있는 정보로 쓰지는 마라** — 마크업 작성 순서와 스크립트 조작이 섞인다.
+
+## 실행 환경
+
+**이 갈래는 언어가 아니라 플랫폼이다.** 언어 문법은 [`../../`](../../) 에 있고, 여기는 **브라우저가 건네주는 객체와 그 계약**이다.\
+**기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「Interface `Element`」·「Attr」 절과 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflecting-content-attributes-in-idl-attributes) 의 「Reflecting content attributes in IDL attributes」 절, 그리고 [`input` 요소](https://html.spec.whatwg.org/multipage/input.html#the-input-element)·[`a` 요소](https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element) 절. 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.** 다만 **이 주제의 핵심은 구현 사정이 아니라 명세가 속성마다 못 박은 계약**이라 명세 문장을 근거로 드는 자리가 유난히 많다.\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. `getAttribute`/`setAttribute` 는 DOM Level 1(1998) 부터 있었고 「반영」이라는 말과 규칙 표는 HTML5 가 정리한 것이다.\
+**선행** — [01번 주제](../01-document-and-node-tree/2-summary.md)(문서와 노드 트리). 그리고 **속성이 트리에 어떤 글자로 담기는지**는 HTML 갈래 목록([`html/syntax/README.md`](../../html/syntax/README.md))의 **02번**([요소와 속성 문법](../../html/syntax/02-elements-and-attributes/2-summary.md))이 정본이다 — 소문자화·중복 버리기·따옴표 경계·불리언의 존재 판정은 거기서 이미 실측했다. **여기는 이미 담긴 그것을 두 API 표면으로 읽고 쓸 때 생기는 비대칭부터**다.

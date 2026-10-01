@@ -1,10 +1,5 @@
 # web-api/27 — `AbortController` 로 취소와 타임아웃: `AbortSignal.timeout()`/`any()` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버는 로컬 서버 A 이고, 「처리」는 **페이지가 `/go` 를 줄 때** 끝난다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 fetch() 메서드 단계 · To abort a fetch() call 과 [WHATWG DOM](https://dom.spec.whatwg.org/) 의 `abort()`·`AbortSignal.timeout()`·`any()` 로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
 |---|---|
 | 취소 격자 · 서버 로그 · 본문 쪽 넷 · 오류 이름과 문구 | ★★ **흔들린다** — 「부르자마자 취소」에서 서버에 도착한 판 수(캡처 여섯 판 5~6 / 100)와 번호 |
@@ -180,3 +175,9 @@ python3 wa24b-net.py quiet wa24b-27-race.html
 | 취소가 서버에 보이는 모양 | 연결 닫힘 | 프로토콜 판에 달렸다 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② 업로드 중 취소 · `keepalive`. ③ HTTP/2.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 서버는 로컬 서버 A 이고, 「처리」는 **페이지가 `/go` 를 줄 때** 끝난다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG Fetch](https://fetch.spec.whatwg.org/) 의 fetch() 메서드 단계 · To abort a fetch() call 과 [WHATWG DOM](https://dom.spec.whatwg.org/) 의 `abort()`·`AbortSignal.timeout()`·`any()` 로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

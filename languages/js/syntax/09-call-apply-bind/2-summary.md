@@ -1,22 +1,5 @@
 # js/syntax/09 — `call`·`apply`·`bind`: 「`this` 와 인자를 손으로 건넨다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ③ 브랜드 태그다.** 세 메서드가 하는 일은 「`this` 자리에 무엇을 넣었나」 하나인데,
-> **그 결과는 값으로는 안 갈리고 `Object.prototype.toString.call` 로만 갈린다**(원시값이 감싸졌는지, 전역이 들어갔는지).
-> ② 전수 격자가 그 태그를 담는 그릇이고, ④ 예외는 `bind` 가 만든 함수의 자격을 가를 때 쓴다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 최신 초안](https://tc39.es/ecma262/) — `Function.prototype.call`·`apply`·`bind` · bound function exotic object · `Reflect.apply`
-> - [ECMA-262 판별 아카이브](https://262.ecma-international.org/) — `bind` 와 `Reflect` 가 들어온 판을 가릴 때
-> - [MDN — `Function.prototype.call`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call) · [MDN — `Function.prototype.bind`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·예외 타입과 메시지는 전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-
 ```sh
 // js08b-versions.sh
 #!/usr/bin/env bash
@@ -1001,3 +984,19 @@ new BoundCtor();                       // new 는 bind 를 이긴다 -- this 만
 - **`Symbol.hasInstance`** — `instanceof` 의 판정을 가로채는 심볼. bound 함수의 `instanceof` 도 그 경로를 탄다. [목록의 **22번 주제**](../22-symbol-and-well-known-symbols/)가 정본이다.
 - **`bind` 의 폴리필이 못 흉내 내는 것** — 못질한 인자의 `length` 계산과 `new` 동작은 함수로 흉내 내기 어렵다.
   **재 본 적이 없으므로 「느리다」·「빠르다」는 이 문서에 없다.**
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ③ 브랜드 태그다.** 세 메서드가 하는 일은 「`this` 자리에 무엇을 넣었나」 하나인데,
+**그 결과는 값으로는 안 갈리고 `Object.prototype.toString.call` 로만 갈린다**(원시값이 감싸졌는지, 전역이 들어갔는지).
+② 전수 격자가 그 태그를 담는 그릇이고, ④ 예외는 `bind` 가 만든 함수의 자격을 가를 때 쓴다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 최신 초안](https://tc39.es/ecma262/) — `Function.prototype.call`·`apply`·`bind` · bound function exotic object · `Reflect.apply`
+- [ECMA-262 판별 아카이브](https://262.ecma-international.org/) — `bind` 와 `Reflect` 가 들어온 판을 가릴 때
+- [MDN — `Function.prototype.call`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call) · [MDN — `Function.prototype.bind`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **값·예외 타입과 메시지는 전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.

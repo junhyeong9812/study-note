@@ -1,14 +1,5 @@
 # kotlin/syntax/07 — 반복문·`range`·progression·라벨·비지역 `break`/`continue` (2.2+) — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [01번 주제](../01-val-var-and-basic-types/)와 [06번 주제](../06-when-expression/)다.
-> 비지역 `return` 의 **원리**는 [목록의 **11번 주제**](../11-inline-functions/)가 정본이다 — 여기서는 현상까지만 묻는다.
-> Java 쪽 짝은 [`../../../java/syntax/20-control-flow-statements/`](../../../java/syntax/20-control-flow-statements/)다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -161,6 +152,14 @@ fun c(n: Int): Int { val a = while (n > 0) { break }; return 0 }       // [C]
 - `for ((i, v) in xs.withIndex())` 의 구조 분해 정본은 어느 주제인가?
 - `iterator()`·`contains` 같은 규약 전체의 정본은 어느 주제인가?
 - Java 쪽 레이블 `break`/`continue` 의 정본은 어느 문서인가?
+
+## 실행 환경
+
+선행은 [01번 주제](../01-val-var-and-basic-types/)와 [06번 주제](../06-when-expression/)다.
+비지역 `return` 의 **원리**는 [목록의 **11번 주제**](../11-inline-functions/)가 정본이다 — 여기서는 현상까지만 묻는다.
+Java 쪽 짝은 [`../../../java/syntax/20-control-flow-statements/`](../../../java/syntax/20-control-flow-statements/)다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
 
 ## 복습 기록
 

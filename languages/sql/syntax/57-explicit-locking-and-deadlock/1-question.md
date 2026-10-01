@@ -1,11 +1,5 @@
 # sql/57-명시적 잠금과 교착 — `FOR UPDATE`·`SKIP LOCKED`·`NOWAIT` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,\
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.\
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.\
-> **엔진** — PostgreSQL 18.6 · MySQL 8.4.10. **두 엔진의 답이 다른 문항이 많다** — 양쪽을 다 말해야 정답이다.\
-> ★ **직접 돌려 볼 거면 먼저 타임아웃을 걸어라** — `SET lock_timeout='3s';` / `SET SESSION innodb_lock_wait_timeout=3;`
-
 ```text
 t57_q (큐 · 4행)                 t57_lk / t57_ix (3행씩 · 같은 데이터)
 +----+---------+-------+         +----+-----+------+
@@ -165,6 +159,11 @@ SELECT id FROM t57_lk LEFT JOIN t57_ix USING (id) FOR UPDATE;
 ### 22. 분산 락과의 경계 (연결)
 
 - 이 편의 행 잠금으로 해결되지 않는 자리는 어디이고, 그 자리의 정본은 어느 문서인가?
+
+## 실행 환경
+
+**엔진** — PostgreSQL 18.6 · MySQL 8.4.10. **두 엔진의 답이 다른 문항이 많다** — 양쪽을 다 말해야 정답이다.\
+★ **직접 돌려 볼 거면 먼저 타임아웃을 걸어라** — `SET lock_timeout='3s';` / `SET SESSION innodb_lock_wait_timeout=3;`
 
 ## 복습 기록
 

@@ -1,37 +1,5 @@
 # cpp/syntax/17 — 이동 생성자·이동 대입·이동 후 상태 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 이동 생성자](https://en.cppreference.com/w/cpp/language/move_constructor) · [cppreference — 이동 대입 연산자](https://en.cppreference.com/w/cpp/language/move_assignment) · [cppreference — `std::move`](https://en.cppreference.com/w/cpp/utility/move) · [cppreference — `std::vector::push_back`](https://en.cppreference.com/w/cpp/container/vector/push_back) · [GCC 13 Optimize Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html)
-> **실행 검증** — 이 문서의 모든 출력·진단·어셈블리는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · **rustc 1.92.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`move01.cpp` \~ `move11.cpp` · `movers.rs`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
-> **버전** — 이동 생성자·이동 대입·`std::move`·`noexcept` 는 전부 **C++11부터**다. 기준은 **C++20**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 수치는 실행으로 접지했다.
-> ★★★ **16 → 17 → 18 은 한 사슬이고 18 이 결론이다.** [16번](../16-copy-constructor-and-copy-assignment/)이 「복사가 무엇을 부르나」를 수로 고정했고,\
-> **여기 17 은 그 자리에 「훔치기」를 넣으면 수가 어떻게 바뀌는지**를 본다. 닫는 것은 [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/)다.
-> **경계** — 「**`std::move` 가 캐스트다**」의 정본은 [9번](../09-rvalue-references-move-and-forward/)이고,\
-> 여기는 **그 캐스트를 받는 쪽(이동 생성자·이동 대입)을 어떻게 쓰나**만 본다.\
-> 「값 범주」는 [8번](../08-value-categories-lvalue-prvalue-xvalue/), 「0/3/5의 법칙」은 [목록의 **18번**](../18-rule-of-zero-three-five-default-delete/),\
-> 「`noexcept` 의 전모」는 **53번**, 「`unique_ptr` 의 API」는 **26번 주제**가 정본이다.\
-> ★ (3)은 `noexcept` 를 **`vector` 재할당을 가르는 한 낱말로서만** 다룬다 — 계약·최적화 힌트의 전모는 53번이다.
-> **대비** — ★★★ Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **8번**([`08-ownership-and-move/`](../../../rust/syntax/08-ownership-and-move/))이 **직접 대비**다.\
-> **러스트는 이동이 기본이고, 이동당한 원본을 컴파일러가 막는다.** C++ 은 「유효하되 미지정」으로 두고 **안 막는다** — (8)에서 **양쪽에 같은 코드를 던진다.**
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 어셈블리의 **레지스터 이름**과 명령 배치 · 실행 시간 | ★★★ **어느 특수 멤버가 몇 번 불렸나**(계수 로그) — 이 주제의 답 자체다 |
-> | 객체의 주소값 | ★★★ **`malloc`/`free` 횟수** · **이동 뒤 원본 포인터가 널인가** |
-> | 두 컴파일러의 **진단 문구** | ★★ **어셈블리의 명령 개수와 `call` 개수** · **`capacity`** |
-> | ★ **libstdc++ 가 이동 후 원본에 남기는 값**(구현 층 — (4)) | ★★ **`cc exit`/`run exit`** · **경고 개수** · **`is_nothrow_move_constructible`** |
->
-> ★★★ **(4)의 「이동 후 상태」는 관찰로 결론이 안 나는 자리다.** 표준이 말한 것은 「유효하되 미지정」뿐이고,\
-> `size()=0` 이라는 **값 자체는 libstdc++ 의 선택**이다. 그 줄은 **구현 층**으로만 읽는다.
-
 ## 한눈에 — 쉽게 말하면
 
 **이동은 「이사」가 아니라 「명패 바꿔 달기」다.** 짐은 한 발짝도 안 움직인다.
@@ -1191,3 +1159,36 @@ C++ 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다
 - **이동 대입의 자기 이동(`a = std::move(a)`)** — 표준은 대부분의 타입에 **「유효하되 미지정」만** 보장한다. 이 문서는 안 던졌다.
 - **`push_back` 대 `emplace_back`** — (3)은 `emplace_back` 으로만 던졌다. 인자를 만드는 자리가 다르다.
 - **`noexcept(expr)` 연산자와 조건부 `noexcept`** — 멤버의 `noexcept` 여부를 물어 전파하는 형태. 정본은 목록의 **53번 주제**.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — 이동 생성자](https://en.cppreference.com/w/cpp/language/move_constructor) · [cppreference — 이동 대입 연산자](https://en.cppreference.com/w/cpp/language/move_assignment) · [cppreference — `std::move`](https://en.cppreference.com/w/cpp/utility/move) · [cppreference — `std::vector::push_back`](https://en.cppreference.com/w/cpp/container/vector/push_back) · [GCC 13 Optimize Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Optimize-Options.html)
+**실행 검증** — 이 문서의 모든 출력·진단·어셈블리는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · **rustc 1.92.0** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex && ./ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`move01.cpp` \~ `move11.cpp` · `movers.rs`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 소스 펜스의 배너도 **캡처가 찍은 것**이다. 원고에 손으로 쓴 배너는 없다.
+**버전** — 이동 생성자·이동 대입·`std::move`·`noexcept` 는 전부 **C++11부터**다. 기준은 **C++20**이다.
+
+★★★ **16 → 17 → 18 은 한 사슬이고 18 이 결론이다.** [16번](../16-copy-constructor-and-copy-assignment/)이 「복사가 무엇을 부르나」를 수로 고정했고,\
+**여기 17 은 그 자리에 「훔치기」를 넣으면 수가 어떻게 바뀌는지**를 본다. 닫는 것은 [목록의 **18번 주제**](../18-rule-of-zero-three-five-default-delete/)다.
+**경계** — 「**`std::move` 가 캐스트다**」의 정본은 [9번](../09-rvalue-references-move-and-forward/)이고,\
+여기는 **그 캐스트를 받는 쪽(이동 생성자·이동 대입)을 어떻게 쓰나**만 본다.\
+「값 범주」는 [8번](../08-value-categories-lvalue-prvalue-xvalue/), 「0/3/5의 법칙」은 [목록의 **18번**](../18-rule-of-zero-three-five-default-delete/),\
+「`noexcept` 의 전모」는 **53번**, 「`unique_ptr` 의 API」는 **26번 주제**가 정본이다.\
+★ (3)은 `noexcept` 를 **`vector` 재할당을 가르는 한 낱말로서만** 다룬다 — 계약·최적화 힌트의 전모는 53번이다.
+**대비** — ★★★ Rust 갈래 목록([`rust/syntax/README.md`](../../../rust/syntax/README.md))의 **8번**([`08-ownership-and-move/`](../../../rust/syntax/08-ownership-and-move/))이 **직접 대비**다.\
+**러스트는 이동이 기본이고, 이동당한 원본을 컴파일러가 막는다.** C++ 은 「유효하되 미지정」으로 두고 **안 막는다** — (8)에서 **양쪽에 같은 코드를 던진다.**
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 어셈블리의 **레지스터 이름**과 명령 배치 · 실행 시간 | ★★★ **어느 특수 멤버가 몇 번 불렸나**(계수 로그) — 이 주제의 답 자체다 |
+| 객체의 주소값 | ★★★ **`malloc`/`free` 횟수** · **이동 뒤 원본 포인터가 널인가** |
+| 두 컴파일러의 **진단 문구** | ★★ **어셈블리의 명령 개수와 `call` 개수** · **`capacity`** |
+| ★ **libstdc++ 가 이동 후 원본에 남기는 값**(구현 층 — (4)) | ★★ **`cc exit`/`run exit`** · **경고 개수** · **`is_nothrow_move_constructible`** |
+
+★★★ **(4)의 「이동 후 상태」는 관찰로 결론이 안 나는 자리다.** 표준이 말한 것은 「유효하되 미지정」뿐이고,\
+`size()=0` 이라는 **값 자체는 libstdc++ 의 선택**이다. 그 줄은 **구현 층**으로만 읽는다.

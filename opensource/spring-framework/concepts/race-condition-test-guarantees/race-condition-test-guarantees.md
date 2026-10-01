@@ -1,10 +1,5 @@
 # 개념: 동시성 버그 테스트의 "경합 보장"
 
-> U1(ConcurrentLruCache 이중 size 감산) 작업의 리뷰 지적 U1-R1을 계기로 쓴 배경 개념 문서.
-> 실증 기준: spring-framework-fork 워킹트리
-> `spring-core/src/test/java/org/springframework/util/ConcurrentLruCacheTests.java`,
-> 실측 수치는 `docs/plans/2026-09-10/u1-lru-double-decrement/log.md`.
-
 ## 한 줄 정의 — 경합의 발생이 아니라 결함 검출력의 보장이다
 
 "경합을 보장한다"는 말은 두 가지 중 하나를 뜻하는데, 실제로 지켜야 하는 것은 후자다. 전자는
@@ -241,3 +236,9 @@ green. (2) `remover.join()`이 무제한 대기. (3) 본 루프에서 예외가 
 - start() 뒤에는 latch를, join에는 타임아웃을, 정지 신호에는 finally를 붙인다. 셋 다 비용이 거의 없다.
 - 단언은 불변식(공개 표면)에, 경합 관측은 보조 단언에 둔다.
 - 누적형 결함의 최종 단언 전에는 드레인 수렴을 명시적으로 유도한다 — 읽기만으로는 드레인되지 않는다.
+
+## 출처
+
+실증 기준: spring-framework-fork 워킹트리
+`spring-core/src/test/java/org/springframework/util/ConcurrentLruCacheTests.java`,
+실측 수치는 `docs/plans/2026-09-10/u1-lru-double-decrement/log.md`.

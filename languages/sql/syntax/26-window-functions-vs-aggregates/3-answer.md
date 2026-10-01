@@ -1,11 +1,5 @@
 # sql/26-윈도우 함수의 개념 — 집계와 무엇이 다른가 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
-> 모든 질의는 [1-question.md](1-question.md) 머리의 `WITH emp8 AS (...)` CTE 를 앞에 붙여 돌렸다.\
-> 문서 근거는 [PG 18 Window Functions](https://www.postgresql.org/docs/18/tutorial-window.html) · [PG 18 Window Function Calls](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 Window Functions](https://dev.mysql.com/doc/refman/8.4/en/window-functions.html).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -457,3 +451,10 @@ MySQL 에는 `FILTER` 문법이 아예 없어 **파서 단계에서 `ERROR 1064`
 [28번](../28-window-frames-rows-range-groups/)·[30번](../30-offset-and-boundary-functions/)에서 MySQL 이 *"doesn't yet support"* 라고 답한 항목들이다 — **`yet` 이라는 낱말이 바뀔 여지를 말하고 있다.**
 
 **재지 않은 것** — 윈도우와 집계의 속도, 윈도우가 쓰는 정렬·해시의 비용. **측정하지 않았으므로 적지 않았다.**
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 출력·에러는 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 지어낸 출력은 없다.\
+모든 질의는 [1-question.md](1-question.md) 머리의 `WITH emp8 AS (...)` CTE 를 앞에 붙여 돌렸다.\
+문서 근거는 [PG 18 Window Functions](https://www.postgresql.org/docs/18/tutorial-window.html) · [PG 18 Window Function Calls](https://www.postgresql.org/docs/18/sql-expressions.html) · [MySQL 8.4 Window Functions](https://dev.mysql.com/doc/refman/8.4/en/window-functions.html).

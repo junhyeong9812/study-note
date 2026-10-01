@@ -1,17 +1,5 @@
 # kotlin/syntax/10 — 람다와 고차 함수: `it`·마지막 인자 람다·클로저 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [08번 주제](../08-function-declaration-default-and-named-args/)이고,
-> [09번 주제](../09-varargs-spread-local-and-infix-functions/)의 **로컬 함수**와 나란히 놓고 보면 대비가 선다.
-> 이 주제는 [11번 주제](../11-inline-functions/)·[12번 주제](../12-reified-type-parameters/)·
-> [13번 주제](../13-extension-functions-and-properties/)와 [목록의 **14번 주제**](../14-scope-functions/)·**36번 주제**의 뿌리다.
-> Java 쪽 짝은 [`../../../java/syntax/29-lambda-expressions/`](../../../java/syntax/29-lambda-expressions/)·
-> [`../../../java/syntax/31-functional-interfaces/`](../../../java/syntax/31-functional-interfaces/)다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -200,6 +188,17 @@ public static int countUp(int n) {
 - 로컬 함수가 **객체를 안 만드는 것**의 정본은 어느 주제인가 — 이 주제와 무엇이 다른가?
 - `let`/`run`/`apply`/`also` 가 전부 무엇인가, 그 정본은 어디인가?
 - `invoke(Object)Object` 라는 시그니처가 왜 그 모양인지의 정본은 어느 문서인가?
+
+## 실행 환경
+
+선행은 [08번 주제](../08-function-declaration-default-and-named-args/)이고,
+[09번 주제](../09-varargs-spread-local-and-infix-functions/)의 **로컬 함수**와 나란히 놓고 보면 대비가 선다.
+이 주제는 [11번 주제](../11-inline-functions/)·[12번 주제](../12-reified-type-parameters/)·
+[13번 주제](../13-extension-functions-and-properties/)와 [목록의 **14번 주제**](../14-scope-functions/)·**36번 주제**의 뿌리다.
+Java 쪽 짝은 [`../../../java/syntax/29-lambda-expressions/`](../../../java/syntax/29-lambda-expressions/)·
+[`../../../java/syntax/31-functional-interfaces/`](../../../java/syntax/31-functional-interfaces/)다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
 
 ## 복습 기록
 

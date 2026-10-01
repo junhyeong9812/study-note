@@ -1,19 +1,5 @@
 # python/syntax/24-decorators — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★ 이 주제에서는 **「무엇이 찍히나」보다 「몇 번, 어떤 차례로 찍히나」가 답인 자리가 많다.**
-> 줄의 내용만 맞히고 **차례**를 못 대면 반만 맞은 것이다.
->
-> 실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다 —
-> 트레이스백이 `File "<stdin>", line N` 으로 찍히고, **실행 중 예외에는 소스 줄도 캐럿도 안 나온다.**
-> ★ **이 주제는 [19번](../19-function-argument-rules/2-summary.md)·[21번](../21-scope-legb-global-nonlocal/2-summary.md)·[22번](../22-closures-and-late-binding/2-summary.md)·[23번](../23-lambda-and-higher-order-functions/2-summary.md)을 전부 쓴다.**
-> 막히면 그 넷 중 어느 것이 안 잡힌 것인지부터 짚어라.
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -286,6 +272,15 @@ hello("파이썬")()
 - 이 주제에서 **언어 보장** · **CPython 구현 세부사항** · **이 판(3.12.3)의 관찰**에 해당하는 것을 각각 둘 이상 댈 수 있는가?
 - **「`def` 문이 돌 때 한 번」이 어디까지 이 주제이고 어디부터 [20번](../20-mutable-default-args/2-summary.md)인지** 한 줄로 그을 수 있는가?
 - 클래스에 붙는 데코레이터는 **문법이 다른가**, 그리고 그 정본은 어디인가?
+
+## 실행 환경
+
+★ 이 주제에서는 **「무엇이 찍히나」보다 「몇 번, 어떤 차례로 찍히나」가 답인 자리가 많다.**
+줄의 내용만 맞히고 **차례**를 못 대면 반만 맞은 것이다.
+
+실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다 —
+트레이스백이 `File "<stdin>", line N` 으로 찍히고, **실행 중 예외에는 소스 줄도 캐럿도 안 나온다.**
+★ **이 주제는 [19번](../19-function-argument-rules/2-summary.md)·[21번](../21-scope-legb-global-nonlocal/2-summary.md)·[22번](../22-closures-and-late-binding/2-summary.md)·[23번](../23-lambda-and-higher-order-functions/2-summary.md)을 전부 쓴다.**
 
 ## 복습 기록
 

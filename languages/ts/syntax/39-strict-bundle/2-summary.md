@@ -1,12 +1,5 @@
 # ts/syntax/39 — `strict` 묶음 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [TSConfig — `strict`](https://www.typescriptlang.org/tsconfig/#strict)(「Default: `true`」 · Enables — `alwaysStrict`·`strictNullChecks`·`strictBindCallApply`·`strictBuiltinIteratorReturn`·`strictFunctionTypes`·`strictPropertyInitialization`·`noImplicitAny`·`noImplicitThis`·`useUnknownInCatchVariables`) ·
-> [`alwaysStrict`](https://www.typescriptlang.org/tsconfig/#alwaysStrict)(「Default: `true` if `strict` is enabled; `false` otherwise」).
-> 위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다.
-> ★★★ **레퍼런스와 7.0.2 가 어긋나는 칸이 하나 있다** — 레퍼런스는 `alwaysStrict` 를 `strict` 가 켜는 아홉 가운데 하나로 적지만, 7.0.2 에서는 **`strict: false` 로도 안 꺼지고 `alwaysStrict: false` 는 `TS5108`**(제거된 값)이다(4절).
-> **실행 검증** — 본판은 아래다. ★ 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.
-
 ```text
 ===== tsc --version · node --version · "$NODE20" --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -17,10 +10,9 @@ Python 3.12.3
 
 > ★★★ **본체 창 선언 — 이 주제의 본체는 「탐침 격자」(하위 플래그마다 하나씩 걸리는 탐침 아홉 × 설정 넷 × 세 판 — 칸마다 디렉토리와 `tsconfig.json` 을 따로)이다.**
 > ★★★ **제5의 상태 — 「`strict` 가 무엇을 켜나」를 도구로 뽑으려 했더니 `--showConfig` 가 5.9.3 에서만 펼쳐 적었다**(1절). 7.0.2·4.9.5 에서는 같은 질문을 **`--help --all` 의 기본값 문구**로 물었고, 그 문구도 믿지 않고 **탐침 격자로** 확인했다 — 4.9.5 의 도움말은 **실제와 한 칸 어긋났다**.
-> ★★ **39 는 02 에서 온다.** [**02번 주제**](../02-type-checking-vs-emit/)가 「7.0 의 `strict` 기본 `true`」를 머리말에 적었고 `--strict false` 로 판을 가르는 방식을 세웠다. 여기서는 **설정 없이 던지는 칸**을 새로 재서(3절) 그 문장을 다시 확인한다 — 02편은 고치지 않는다.
+> ★★ **39 는 02 에서 온다.** [**02번 주제**](../02-type-checking-vs-emit/)가 「7.0 의 `strict` 기본 `true`」를 맨 위 부분에 적었고 `--strict false` 로 판을 가르는 방식을 세웠다. 여기서는 **설정 없이 던지는 칸**을 새로 재서(3절) 그 문장을 다시 확인한다 — 02편은 고치지 않는다.
 > ★★ 설정 실험은 **칸마다 디렉토리를 따로** 만들었다 — 7.0.2 는 **위쪽 디렉토리에** `tsconfig.json` 이 있으면 파일을 직접 줘도 `TS5112` 로 검사를 거부한다(35편 6절). 격자 스크립트는 **칸에 `TS5112` 가 들면 멈추고, 모든 칸이 같은 코드면 멈춘다.**
 > ★ 소스 펜스 첫 줄 `// 파일명`·`# 파일명` 은 대조용 배너다 — 실파일에는 없다. **진단의 행 번호는 그 줄을 뺀 기준**이다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -411,7 +403,7 @@ pr39i.ts(1,5): error TS1212: Identifier expected. 'package' is a reserved word i
 (exit 0)
 ```
 
-- ★★★ **7.0.2** — `tsconfig.json` 도 플래그도 없이 **`TS2322`**(`null` → `string`)와 **`TS1212`**. 설정 없이도 `strictNullChecks` 와 엄격 모드가 **켜져 있다.** 02편 머리말의 「7.0 의 `strict` 기본 `true`」가 **설정 없는 칸에서도** 재현됐다.
+- ★★★ **7.0.2** — `tsconfig.json` 도 플래그도 없이 **`TS2322`**(`null` → `string`)와 **`TS1212`**. 설정 없이도 `strictNullChecks` 와 엄격 모드가 **켜져 있다.** 02편 맨 위 부분의 「7.0 의 `strict` 기본 `true`」가 **설정 없는 칸에서도** 재현됐다.
 - ★★ **5.9.3** — **`(exit 0)`**, 진단 0줄. 같은 명령이 **아무것도 안 잡는다.**
 - ★ 이 블록은 **`tsconfig.json` 이 위쪽 어디에도 없는** 디렉토리에서 던졌다 — 있었다면 7.0.2 는 `TS5112` 로 검사를 거부했다(35편 6절).
 
@@ -618,7 +610,7 @@ strictNullChecks+useUnknownInCatchVariables 3      3      13:TS2322 14:TS2322 35
 - ★★★ 「**`strict` 를 안 적었으니 느슨하다**」 — **5.9.3 까지**다. 7.0.2 는 **켜져 있다**(3절 — 설정 없이도 `TS2322`).
 - ★★★ 「**`strict: false` 면 엄격 모드 에러도 사라진다**」 — 7.0.2 에서 `alwaysStrict` 는 **안 꺼진다**(4절 `TS1212` · `"use strict"`).
 - ★★ 「**`--showConfig` 로 켜진 하위 플래그를 확인한다**」 — **5.9.3 에서만** 펼친다(1절).
-- ★★ 「**도움말의 기본값 문구가 진실이다**」 — 4.9.5 의 `useUnknownInCatchVariables` 「default: false」는 **틀렸다**(2절 `TS18046`). README 머리말의 「도움말과 실제가 어긋난다」와 같은 집안이다.
+- ★★ 「**도움말의 기본값 문구가 진실이다**」 — 4.9.5 의 `useUnknownInCatchVariables` 「default: false」는 **틀렸다**(2절 `TS18046`). README 「실행 환경」의 「도움말과 실제가 어긋난다」와 같은 집안이다.
 - ★★ 「**하위 플래그를 하나씩 켠 진단 수를 더하면 한 번에 켠 수다**」 — **11 ≠ 14**. 맞물린 진단이 있다(5절).
 - ★★ 「**`strictPropertyInitialization` 만 먼저 켜 보자**」 — `strictNullChecks` 없이는 **설정 에러**(`TS5052`)(5절).
 - ★ 「**`strict` 가 켜는 것은 아홉 — 레퍼런스에 그렇게 적혀 있다**」 — 7.0.2 에서 **끌 수 있는 것은 여덟**이다(4절).
@@ -656,7 +648,7 @@ strictNullChecks+useUnknownInCatchVariables 3      3      13:TS2322 14:TS2322 35
 
 ## 관련 자료
 
-- [**02번 주제** — 타입 검사와 코드 방출의 분리](../02-type-checking-vs-emit/) — ★★★ **README 의 선행.** 7.0 의 `strict` 기본 `true`·`TS5108`·`TS5102` 를 적은 머리말과 7절. **여기는 그 기본값이 무엇을 켜는지 — 하위 플래그 격자부터.**
+- [**02번 주제** — 타입 검사와 코드 방출의 분리](../02-type-checking-vs-emit/) — ★★★ **README 의 선행.** 7.0 의 `strict` 기본 `true`·`TS5108`·`TS5102` 를 적은 맨 위 부분과 7절. **여기는 그 기본값이 무엇을 켜는지 — 하위 플래그 격자부터.**
 - [**35번 주제** — 모듈 해석](../35-module-resolution/) — 판마다 다른 기본값을 세 판 격자로 본 방식 · `TS5112`.
 - [**12번 주제** — 좁히기](../12-narrowing/) 5절 · [**04번 주제**](../04-any-unknown-never-void/) — `--strict false` 로 같은 파일이 갈리는 칸.
 - [**17번 주제** — 변성과 매개변수 양립성](../17-variance-and-parameter-compatibility/) — `strictFunctionTypes` 의 범위.
@@ -692,3 +684,11 @@ strictNullChecks+useUnknownInCatchVariables 3      3      13:TS2322 14:TS2322 35
 - **`noImplicitOverride`·`noPropertyAccessFromIndexSignature`·`noFallthroughCasesInSwitch`** — 이름에 「엄격」이 들어도 **`strict` 묶음이 아니다.** 41편의 두 플래그와 같은 자리다 — 이 문서는 **던지지 않았다.**
 - **`// @ts-nocheck`·파일 단위 완화** — 단계적 전환에서 파일마다 끄는 길. **던지지 않았다.**
 - **6.x 판** — 레퍼런스가 「6.0 에서 바뀐」 기본값을 여럿 적는다. 이 머신에 6.x 가 없어 **7.0.2 와 5.9.3 사이**만 봤다.
+
+## 실행 환경
+
+**기준 소스** — [TSConfig — `strict`](https://www.typescriptlang.org/tsconfig/#strict)(「Default: `true`」 · Enables — `alwaysStrict`·`strictNullChecks`·`strictBindCallApply`·`strictBuiltinIteratorReturn`·`strictFunctionTypes`·`strictPropertyInitialization`·`noImplicitAny`·`noImplicitThis`·`useUnknownInCatchVariables`) ·
+[`alwaysStrict`](https://www.typescriptlang.org/tsconfig/#alwaysStrict)(「Default: `true` if `strict` is enabled; `false` otherwise」).
+위는 **규칙 확인용 링크**이고(열어서 문장을 확인했다), 본문의 진단·방출물·출력은 **전부 직접 던져 받은 것**이다.
+★★★ **레퍼런스와 7.0.2 가 어긋나는 칸이 하나 있다** — 레퍼런스는 `alwaysStrict` 를 `strict` 가 켜는 아홉 가운데 하나로 적지만, 7.0.2 에서는 **`strict: false` 로도 안 꺼지고 `alwaysStrict: false` 는 `TS5108`**(제거된 값)이다(4절).
+**실행 검증** — 본판은 맨 위 블록이다. ★ 판 비교에는 이 머신의 **다른 프로젝트에 깔린 `tsc` 5.9.3 · 4.9.5** 를 **읽기만** 해서 썼다 — 환경변수 **`TSC_OLD`·`TSC_49`**.

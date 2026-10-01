@@ -1,15 +1,5 @@
 # kotlin/syntax/26 — `value class`(인라인 클래스) — 언제 박싱되나 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [22번 주제](../22-data-class-generated-members/)다. [12번 주제](../12-reified-type-parameters/)(소거)를 먼저 보면 (2)가 쉽다.
-> ★ 이 주제는 [29번 주제](../29-type-aliases-and-nested-type-aliases/)(`typealias`)와 짝이다 — 여기는 **새 타입을 만드는 쪽**이다.
-> 문항 11개 중 코드블록이 붙는 예측형은 5개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-> ★★★ 이 주제는 **시간을 묻지 않는다** — 「상자에 담기는가」는 `box-impl` 호출의 **유무**로만 묻는다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -204,6 +194,15 @@ public class CallOk {
 - C# `struct` 는 `List<T>` 에서 박싱되는가? Kotlin `value class` 와 왜 반대인가?
 - Rust newtype 에는 왜 이 주제의 질문 자체가 없는가?
 - [29번 주제](../29-type-aliases-and-nested-type-aliases/) `typealias UserId = Long` 이라면 1번의 두 `lookup` 은 어떻게 되겠는가?
+
+## 실행 환경
+
+선행은 [22번 주제](../22-data-class-generated-members/)다. [12번 주제](../12-reified-type-parameters/)(소거)를 먼저 보면 (2)가 쉽다.
+★ 이 주제는 [29번 주제](../29-type-aliases-and-nested-type-aliases/)(`typealias`)와 짝이다 — 여기는 **새 타입을 만드는 쪽**이다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
+★★★ 이 주제는 **시간을 묻지 않는다** — 「상자에 담기는가」는 `box-impl` 호출의 **유무**로만 묻는다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · JRE 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

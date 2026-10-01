@@ -1,26 +1,5 @@
 # csharp/syntax/26 — 공변·반변 (`out`/`in`) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-335(CLI) 6판](https://ecma-international.org/publications-and-standards/standards/ecma-335/) · [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — 제네릭의 공변성과 반공변성](https://learn.microsoft.com/en-us/dotnet/standard/generics/covariance-and-contravariance)(열어서 확인: 「변성 타입 매개변수는 **제네릭 인터페이스와 제네릭 델리게이트에만**」 ·\
-> 「변성은 **참조 타입에만** 적용된다 — 변성 매개변수에 **값 타입을 주면 그 구성 타입에서는 불변**이다」 · 「변성은 **델리게이트 결합에는 적용되지 않는다**」 ·\
-> 「기본적으로 제네릭 타입 매개변수는 **불변** — `List<Derived>` 와 `List<Base>` 는 **관계가 없다**」) ·
-> [Learn — C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)(열어서 확인: C# 4.0 「**Generic covariant and contravariant**」).
-> **실행 검증** — 이 문서의 모든 출력·진단·IL 은 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. **대비는 실측이다** — **javac 21.0.5** 로 배열 공변 한 쌍과 불변 제네릭 하나를 던졌다((3)).
-> **버전** — 인터페이스·델리게이트 변성 **C# 4 / .NET Framework 4** — ★ `-langversion:3` 으로 던져 **`CS8024 … version 4 or greater`** 를 받았다((6)). **배열 공변은 C# 1 부터**(CLI 에 처음부터 있다).
-> **경계** — ★★★ **변성 위반 검사**(`out T` 를 인자 자리에 쓰면 `CS1961` · 클래스에 `out` 을 달면 `CS1960`)는 **Kotlin 28편이 C# 으로 직접 던졌다** — [Kotlin 28번](../../../kotlin/syntax/28-generics-variance-in-out-star-where/) 의 `variance28.cs` 블록을 인용하고 **다시 재지 않는다.**\
-> ★ **Java 와일드카드·PECS 의 정본**은 [Java 18번](../../../java/syntax/18-wildcards-pecs/) · **제네릭이 런타임까지 남는 것**은 [24번](../24-generics-and-type-parameters/) · **제약**은 [25번](../25-generic-constraints-where-and-default/) · **델리게이트 자체**는 [27번](../27-delegates-and-func-action/).
-> ★★★ **본체 창은 ② 진단 격자다** — 변환 16개를 한 파일에 적어 **스크립트가 진단의 줄 번호로 행을 되돌려 「막힌 칸 N / M」을 센다.**
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** · 진단 **순서**(배너에 `sort`) · 예외 **메시지** | ★★★ **진단 코드**(`CS0029` 대 `CS0266`) · **`cc exit`** · 예외 **타입** |
-> | **IL 오프셋 폭** | ★★★ **옵코드**(변환 자리에 **명령 없음** · `stelem.ref` · `castclass`) |
-> | — | ★★★ **「막힌 칸 N / M」**(스크립트가 센 마지막 줄) · 리플렉션 **`Covariant`/`Contravariant`/`None`** |
-
 ## 이 판
 
 ```text
@@ -520,3 +499,25 @@ made
 - ★ **변성 인터페이스의 모호한 구현** — 한 클래스가 `IEnumerable<A>` 와 `IEnumerable<B>` 를 둘 다 구현하면 `IEnumerable<object>` 로 볼 때 **어느 쪽인가** — **안 던졌다.**
 - ★ **델리게이트 결합과 변성** — Learn: 「변성은 **델리게이트 결합에는 적용되지 않는다**」. `+` 로 합치면 런타임 예외라고 알려져 있다 — **이 판에서 안 던졌다**(27번의 멀티캐스트와 잇는 자리).
 - ★ **공변 반환(C# 9)** — `override` 가 더 좁은 반환 타입을 쓰는 것. 이름은 같지만 **제네릭 변성과 다른 기능**이다.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-335(CLI) 6판](https://ecma-international.org/publications-and-standards/standards/ecma-335/) · [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — 제네릭의 공변성과 반공변성](https://learn.microsoft.com/en-us/dotnet/standard/generics/covariance-and-contravariance)(열어서 확인: 「변성 타입 매개변수는 **제네릭 인터페이스와 제네릭 델리게이트에만**」 ·\
+「변성은 **참조 타입에만** 적용된다 — 변성 매개변수에 **값 타입을 주면 그 구성 타입에서는 불변**이다」 · 「변성은 **델리게이트 결합에는 적용되지 않는다**」 ·\
+「기본적으로 제네릭 타입 매개변수는 **불변** — `List<Derived>` 와 `List<Base>` 는 **관계가 없다**」) ·
+[Learn — C# 버전 이력](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history)(열어서 확인: C# 4.0 「**Generic covariant and contravariant**」).
+**실행 검증** — 이 문서의 모든 출력·진단·IL 은 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다. **대비는 실측이다** — **javac 21.0.5** 로 배열 공변 한 쌍과 불변 제네릭 하나를 던졌다((3)).
+**버전** — 인터페이스·델리게이트 변성 **C# 4 / .NET Framework 4** — ★ `-langversion:3` 으로 던져 **`CS8024 … version 4 or greater`** 를 받았다((6)). **배열 공변은 C# 1 부터**(CLI 에 처음부터 있다).
+**경계** — ★★★ **변성 위반 검사**(`out T` 를 인자 자리에 쓰면 `CS1961` · 클래스에 `out` 을 달면 `CS1960`)는 **Kotlin 28편이 C# 으로 직접 던졌다** — [Kotlin 28번](../../../kotlin/syntax/28-generics-variance-in-out-star-where/) 의 `variance28.cs` 블록을 인용하고 **다시 재지 않는다.**\
+★ **Java 와일드카드·PECS 의 정본**은 [Java 18번](../../../java/syntax/18-wildcards-pecs/) · **제네릭이 런타임까지 남는 것**은 [24번](../24-generics-and-type-parameters/) · **제약**은 [25번](../25-generic-constraints-where-and-default/) · **델리게이트 자체**는 [27번](../27-delegates-and-func-action/).
+★★★ **본체 창은 ② 진단 격자다** — 변환 16개를 한 파일에 적어 **스크립트가 진단의 줄 번호로 행을 되돌려 「막힌 칸 N / M」을 센다.**
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** · 진단 **순서**(배너에 `sort`) · 예외 **메시지** | ★★★ **진단 코드**(`CS0029` 대 `CS0266`) · **`cc exit`** · 예외 **타입** |
+| **IL 오프셋 폭** | ★★★ **옵코드**(변환 자리에 **명령 없음** · `stelem.ref` · `castclass`) |
+| — | ★★★ **「막힌 칸 N / M」**(스크립트가 센 마지막 줄) · 리플렉션 **`Covariant`/`Contravariant`/`None`** |

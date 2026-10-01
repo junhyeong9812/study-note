@@ -1,19 +1,5 @@
 # c/syntax/32 — `volatile` 이 실제로 보장하는 것: 「**매번 가서 본다 — 그것뿐이다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — 「`volatile` 객체에 대한 **접근이 무엇인지는 구현 정의**」라는 문장, 데이터 경쟁의 UB, 시그널 핸들러와 `volatile sig_atomic_t`, `longjmp` 뒤 비-`volatile` 지역 변수의 불확정을 **본문에서 직접 찾아 읽었다**) · [cppreference — `volatile` type qualifier (C)](https://en.cppreference.com/w/c/language/volatile)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **어셈블리·종료 코드·센 수는 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> ★★ **최적화 수준이 결과를 바꾸는 자리는 전부 판 격자**(컴파일러 2 × `-O0`/`-O2`, `setjmp` 는 × 3)로 돌렸다.\
-> ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
-> **버전** — `volatile` 은 **C89 부터**, `_Atomic`/`<stdatomic.h>` 와 **메모리 모델(데이터 경쟁)은 C11 부터**다. ★ **C11 의 원자성은 선택 기능**이다(`__STDC_NO_ATOMICS__`) — 아래 다섯 층 표.
-> ★★★ **재지 않은 성능 주장은 하지 않는다.** 「`volatile` 은 느리다」는 **시간으로 재지 않았다** — 이 편은 **어셈블리의 명령 수**만 센다.
-> ★★ **경계** — **동시성 개념 자체**(경쟁·가시성·락)는 [`foundations/process-thread/`](../../../../cs/foundations/process-thread/)가 정본이다. 여기는 「**`volatile` 이라는 낱말이 무엇을 바꾸고 무엇을 안 바꾸나**」만 본다.\
-> ★ **`const`** 는 [31번 형제](../31-const-and-pointer-const-placement/)가 정본이다. **`setjmp`/`longjmp` 자체**는 이 목록에 주제가 없다 — 이 편은 **`volatile` 이 필요한 자리**만 본다. **sanitizer 사용법**은 목록의 **58번 주제**다.\
-> ★ 이 목록은 `<stdatomic.h>` 를 **주제로 세우지 않았다**(README 「뺀 것」) — 여기서는 **`volatile` 의 대조군**으로만 쓴다.
-> 선행 — [31번 형제](../31-const-and-pointer-const-placement/).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 넷째 창 — `-O2` 어셈블리다.** 같은 함수를 `volatile` 있이/없이 컴파일해 **로드·스토어가 몇 개 남는지**를 센다.
 ★★★ 그리고 **「못 막는 것」은 어셈블리로는 안 보인다** — 원자성과 하드웨어 순서는 **실행해서 센 수**(잃은 수 · 둘 다 0 을 본 판 수)로만 보인다.
 
@@ -1201,3 +1187,17 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★ **`volatile` 구조체의 멤버 접근이 명령 몇 개가 되나** — 구현 정의 칸의 더 깊은 자리. ★ **던지지 않았다.**
 - ★ **ARM 같은 약한 메모리 모델에서의 (5)** — x86 보다 더 많은 재배치가 허용된다. ★ **못 잰 것** — 이 머신은 x86-64 다.
 - ★ **Java 의 저장 버퍼 실험** — ★ **던지지 않았다**. [Java 33](../../../java/syntax/33-synchronized-and-volatile/)의 실측에 기댄다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — 「`volatile` 객체에 대한 **접근이 무엇인지는 구현 정의**」라는 문장, 데이터 경쟁의 UB, 시그널 핸들러와 `volatile sig_atomic_t`, `longjmp` 뒤 비-`volatile` 지역 변수의 불확정을 **본문에서 직접 찾아 읽었다**) · [cppreference — `volatile` type qualifier (C)](https://en.cppreference.com/w/c/language/volatile)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **어셈블리·종료 코드·센 수는 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+★★ **최적화 수준이 결과를 바꾸는 자리는 전부 판 격자**(컴파일러 2 × `-O0`/`-O2`, `setjmp` 는 × 3)로 돌렸다.\
+★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
+**버전** — `volatile` 은 **C89 부터**, `_Atomic`/`<stdatomic.h>` 와 **메모리 모델(데이터 경쟁)은 C11 부터**다. ★ **C11 의 원자성은 선택 기능**이다(`__STDC_NO_ATOMICS__`) — 본문의 다섯 층 표.
+★★★ **재지 않은 성능 주장은 하지 않는다.** 「`volatile` 은 느리다」는 **시간으로 재지 않았다** — 이 편은 **어셈블리의 명령 수**만 센다.
+★★ **경계** — **동시성 개념 자체**(경쟁·가시성·락)는 [`foundations/process-thread/`](../../../../cs/foundations/process-thread/)가 정본이다. 여기는 「**`volatile` 이라는 낱말이 무엇을 바꾸고 무엇을 안 바꾸나**」만 본다.\
+★ **`const`** 는 [31번 형제](../31-const-and-pointer-const-placement/)가 정본이다. **`setjmp`/`longjmp` 자체**는 이 목록에 주제가 없다 — 이 편은 **`volatile` 이 필요한 자리**만 본다. **sanitizer 사용법**은 목록의 **58번 주제**다.\
+★ 이 목록은 `<stdatomic.h>` 를 **주제로 세우지 않았다**(README 「뺀 것」) — 여기서는 **`volatile` 의 대조군**으로만 쓴다.
+선행 — [31번 형제](../31-const-and-pointer-const-placement/).

@@ -1,16 +1,5 @@
 # sql/38-패턴 매칭 (LIKE·ESCAPE·정규식) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Pattern Matching](https://www.postgresql.org/docs/18/functions-matching.html) · [PostgreSQL 18 · Operator Classes](https://www.postgresql.org/docs/18/indexes-opclass.html) · [MySQL 8.4 · String Comparison Functions](https://dev.mysql.com/doc/refman/8.4/en/string-comparison-functions.html) · [MySQL 8.4 · Regular Expressions](https://dev.mysql.com/doc/refman/8.4/en/regexp.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러·계획은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **환경 조건** — PG 데이터베이스 collate 는 **`en_US.utf8`**(libc 제공자) · MySQL 기본 collation 은 **`utf8mb4_0900_ai_ci`**.\
-> ★ **이 설정이 이 주제의 절반을 정한다** — 대소문자 판정도, `LIKE` 가 인덱스를 타는지도 여기서 갈린다(아래 4·5번).\
-> **버전** — 도입 버전이 확인된 것은 없어 **버전을 적지 않는다.**\
-> **선행** — [37 문자열 함수와 연결 연산](../37-string-functions-and-concatenation/) · 짝이 되는 주제는 [39 collation](../39-collation/)
-
 ## 한눈에 — 쉽게 말하면
 
 **`LIKE` = 「이런 모양이면 다 잡아라」.** 모양을 적는 기호가 둘뿐이다.
@@ -570,7 +559,7 @@ REGEXP_REPLACE(expr, pattern, repl)         -- 양쪽에 있다
 - **언어(문서)가 정한 것** — `%`·`_` 의 의미, `ESCAPE` 절의 동작, `NULL` 이 섞였을 때의 결과,\
   각 정규식 연산자가 어느 엔진에 있는지. 두 매뉴얼의 패턴 매칭 페이지가 정본이다.
 - **collation 이 정하는 것** — **대소문자 판정 전부.** `LIKE 'A%'` 도 `REGEXP_LIKE(...,'^A')` 도 여기서 갈린다.\
-  이 문서의 결과는 **PG `en_US.utf8`(결정적) · MySQL `utf8mb4_0900_ai_ci`** 에서 나온 것이다(머리말).\
+  이 문서의 결과는 **PG `en_US.utf8`(결정적) · MySQL `utf8mb4_0900_ai_ci`** 에서 나온 것이다(「실행 환경」).\
   설정이 다르면 **같은 서버에서도 답이 달라진다.** 정본은 [39 collation](../39-collation/)이다.
 - **옵티마이저가 정하는 것** — **`EXPLAIN` 출력 전부.**\
   20,000행·`ANALYZE` 직후·이 서버의 판단이다. 행 수가 적으면 인덱스가 있어도 순차 스캔이 뽑힌다.\
@@ -652,3 +641,13 @@ REGEXP_REPLACE(expr, pattern, repl)         -- 양쪽에 있다
 - **정규식을 옵티마이저가 분해하지 않는 것**은 게으름이 아니라 **비용 문제**다.\
   임의의 정규식에서 안전하게 접두사를 뽑아내는 것은 일반적으로 어렵고, 틀리면 **행을 빠뜨린다.**\
   인덱스 최적화는 **틀리면 안 되는 쪽**이라 보수적으로 포기한다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Pattern Matching](https://www.postgresql.org/docs/18/functions-matching.html) · [PostgreSQL 18 · Operator Classes](https://www.postgresql.org/docs/18/indexes-opclass.html) · [MySQL 8.4 · String Comparison Functions](https://dev.mysql.com/doc/refman/8.4/en/string-comparison-functions.html) · [MySQL 8.4 · Regular Expressions](https://dev.mysql.com/doc/refman/8.4/en/regexp.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러·계획은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**환경 조건** — PG 데이터베이스 collate 는 **`en_US.utf8`**(libc 제공자) · MySQL 기본 collation 은 **`utf8mb4_0900_ai_ci`**.\
+★ **이 설정이 이 주제의 절반을 정한다** — 대소문자 판정도, `LIKE` 가 인덱스를 타는지도 여기서 갈린다(본문 4·5번).\
+**버전** — 도입 버전이 확인된 것은 없어 **버전을 적지 않는다.**\
+**선행** — [37 문자열 함수와 연결 연산](../37-string-functions-and-concatenation/) · 짝이 되는 주제는 [39 collation](../39-collation/)

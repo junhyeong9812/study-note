@@ -1,16 +1,5 @@
 # sql/19-세미·안티 조인 — EXISTS·IN·NOT IN·NOT EXISTS — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · Subquery Expressions](https://www.postgresql.org/docs/18/functions-subquery.html) · [MySQL 8.4 · Subqueries with EXISTS or NOT EXISTS](https://dev.mysql.com/doc/refman/8.4/en/exists-and-not-exists-subqueries.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
-> 표는 기존 `emp`·`dept` 두 개만 썼다. **새로 만든 표가 없다.**\
-> **버전** — `EXISTS`·`IN`·`NOT IN`·`NOT EXISTS` 모두 두 엔진에 오래전부터 있고, 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않는다.**\
-> **선행** — [05번](../05-null-comparison-is-distinct-from/)(`NULL` 비교) · [11 서브쿼리](../11-subquery-scalar-correlated-any-all/) · [13 INNER JOIN](../13-inner-join/).\
-> **가장 중요한 선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/). **이 주제의 중심 사고가 거기서 시작한다.**
-
 ## 한눈에 — 쉽게 말하면
 
 **세미 조인 = 「저쪽에 짝이 있나?」만 묻고 **값은 안 가져오는** 조인. 안티 조인은 그 반대 — 「짝이 없는 것만」.**
@@ -795,3 +784,13 @@ FROM 왼쪽 LEFT JOIN 오른쪽 ON …  WHERE 오른쪽.NOT_NULL열 IS NULL
 - **`IS DISTINCT FROM`** 은 `NULL` 을 같은 값처럼 비교하는 연산자다. 안티 조인을 값 비교로 쓰고 싶을 때 쓰인다 — [05번](../05-null-comparison-is-distinct-from/).
 - **세미 조인은 `LIMIT 1` 과 의미가 같지 않다.** `EXISTS` 는 "하나라도 있나"를 묻고 멈추지만, 엔진이 실제로 첫 행에서 멈춘다는 보장은 계획에 달렸다.
 - **`NOT EXISTS` 의 상관 조건에 `NULL` 이 들어가도 안전한 이유**는 「안쪽 `WHERE` 가 먼저 `UNKNOWN` 을 버린다」다. 그래서 `NOT EXISTS` 는 사실상 「**짝이 확실히 있는 경우만 제외**」를 뜻한다 — 「짝이 있을지도 모르는 경우」는 제외하지 않는다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · Subquery Expressions](https://www.postgresql.org/docs/18/functions-subquery.html) · [MySQL 8.4 · Subqueries with EXISTS or NOT EXISTS](https://dev.mysql.com/doc/refman/8.4/en/exists-and-not-exists-subqueries.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력은 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 실행 계획도 실제로 받은 것이고, 지어낸 출력은 없다.\
+표는 기존 `emp`·`dept` 두 개만 썼다. **새로 만든 표가 없다.**\
+**버전** — `EXISTS`·`IN`·`NOT IN`·`NOT EXISTS` 모두 두 엔진에 오래전부터 있고, 두 매뉴얼에 도입 버전이 없어 **버전은 적지 않는다.**\
+**선행** — [05번](../05-null-comparison-is-distinct-from/)(`NULL` 비교) · [11 서브쿼리](../11-subquery-scalar-correlated-any-all/) · [13 INNER JOIN](../13-inner-join/).\
+**가장 중요한 선행** — [04 NULL 의 3값 논리](../04-null-three-valued-logic/). **이 주제의 중심 사고가 거기서 시작한다.**

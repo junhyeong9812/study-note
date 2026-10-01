@@ -1,11 +1,5 @@
 # java/syntax/51 — `java.time` — `Instant`·`LocalDate`/`LocalDateTime`·`ZonedDateTime` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 다섯(51-a~51-e)을 **Temurin 17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
-> ★ **세 판이 같았다고 적지 않는다.** 13번에서 실제로 갈렸고, 나머지 문항에는 "세 판 동일"을 관찰로만 적는다.\
-> javadoc 인용은 JDK 21.0.5 의 `lib/src.zip` — `java.base/java/time/*.java` 원문이다.\
-> 측정 조건: 기본 시간대 `Asia/Seoul`, 기본 `Locale` `ko_KR`.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -724,3 +718,10 @@ $ diff zones_21.0.5.txt zones_25.0.1.txt
 - 스택트레이스의 **줄 번호** — 51-a 를 처음 만들었을 때 `Instant.java:567`(17) 대 `:566`(21·25) 로 갈렸다.
 - **기본 시간대·Locale** — 이 머신은 `Asia/Seoul`·`ko_KR`. `TimeZone.getDefault()` 가 다른 머신에서는 (7)의 마지막 두 줄이 달라진다.
 - `atStartOfDay()` 가 자정이 아닌 값을 내는 지역이 현재 tzdb 에 남아 있는지 — **안 돌려 봄**(전 지역 전 날짜를 훑어야 한다).
+
+## 실행 환경
+
+이 파일의 모든 출력은 실제로 돌려 얻은 것이다. 프로그램 다섯(51-a~51-e)을 **Temurin 17.0.13 · 21.0.5 · 25.0.1** 에서 각각 돌렸다.\
+★ **세 판이 같았다고 적지 않는다.** 13번에서 실제로 갈렸고, 나머지 문항에는 "세 판 동일"을 관찰로만 적는다.\
+javadoc 인용은 JDK 21.0.5 의 `lib/src.zip` — `java.base/java/time/*.java` 원문이다.\
+측정 조건: 기본 시간대 `Asia/Seoul`, 기본 `Locale` `ko_KR`.

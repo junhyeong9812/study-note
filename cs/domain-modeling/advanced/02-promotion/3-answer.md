@@ -1,11 +1,5 @@
 # domain-modeling-advanced/02-promotion — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/02-promotion/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -341,3 +335,7 @@ return switch (exclusiveRule) {
 - 기준 소스: `/home/jun/project/myway/domain-modeling-advanced/02-promotion/impl/com/domain/promo/PromotionEngine.java`
 - 문제 원문: `src/main/java/com/domain/promo/PromotionEngine.java`(TODO 1~4 javadoc·enum 정의), `Promotion.java`(세 종류·생성 검증), `README.md`(함정·측정이 알려준 것·변종 검증·생각해볼 것)
 - 계약·수치: `src/test/java/com/domain/promo/PromotionEngineTest.java`(8,000/8,100 · 7,500 · 7,000 · 9,500 · 9,000 · 8,000 · 4,000 · 0원+배송비 3,000 · appliedIds), `MeasurementTest.java`(1,136 · 3,000 · 226,601,250 / 227,232,856 / 226,934,108 · 1,685 · 49,980 · 238,225,832(+4.98%) · 233,569,994(+2.92%) · 2,614 · 591/1,801 · 45,500/48,500)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/02-promotion/impl/`).

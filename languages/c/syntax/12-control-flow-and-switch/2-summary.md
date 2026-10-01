@@ -1,18 +1,5 @@
 # c/syntax/12 — 제어문과 `switch`: **점프이지 블록이 아니다** — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Statements (C)](https://en.cppreference.com/w/c/language/statements) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
-> **실행 검증** — 이 문서의 모든 출력·경고·에러·어셈블리는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
-> **clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> ★ **에러가 난 것도 출력이다** — 이 문서에는 **컴파일이 실패한 프로그램이 넷** 실려 있고 종료 코드를 같이 적었다.
-> **버전** — `if`/`while`/`for`/`switch`/`goto` 의 규칙은 **C89 이후 바뀐 적이 없다.**\
-> **C23 이 둘을 바꿨다** — `[[fallthrough]]` 속성과 **라벨 뒤 선언 허용**. 아래 (6)·(7)에서 실측한다.\
-> ★ **gcc 13.3.0 에는 `-std=c23` 이 없다**(`-std=c2x` 뿐) — [11번 형제](../11-bitwise-operations-and-shifts/)에서 실측했다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 값은 실행으로 접지했다.
-> ★★ **경계** — `?:` 가 시퀀스 포인트인 것과 단락 평가는 [10번 형제](../10-evaluation-order-and-sequence-points/)가 정본이다.\
-> `case` 라벨에 쓰는 **열거 상수**는 [07번 형제](../07-enum-and-enumeration-constants/), 제어식의 **승격 규칙**은 [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/)가 정본이다.
-> 선행 — [07번 형제](../07-enum-and-enumeration-constants/).
-
 ## 한눈에 — 쉽게 말하면
 
 **`if`·`while`·`for` 는 「상자」인데 `switch` 는 「상자가 아니라 문패 붙은 주소들」이다.**
@@ -1124,3 +1111,17 @@ C 에서는 **「돌아갔다」가 아무것도 증명하지 못한다.** 다�
 
 - ★ **「`switch` 가 `if` 사슬보다 빠른가」는 이 문서가 재지 않았다.** 어셈블리를 한 번 본 것이 전부이고,\
   **수치를 내려면 측정 조건 선언이 필요하다.** `for(;;)` ↔ `while(1)` 은 **기계어가 같아 잴 것이 없었다.**
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects) · [cppreference — Statements (C)](https://en.cppreference.com/w/c/language/statements) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html) · [Clang Diagnostic flags](https://clang.llvm.org/docs/DiagnosticsReference.html)
+**실행 검증** — 이 문서의 모든 출력·경고·에러·어셈블리는 **gcc (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** 과\
+**clang 18.1.3** · x86-64 Linux 에서 실제로 돌려 얻은 것이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+★ **에러가 난 것도 출력이다** — 이 문서에는 **컴파일이 실패한 프로그램이 넷** 실려 있고 종료 코드를 같이 적었다.
+**버전** — `if`/`while`/`for`/`switch`/`goto` 의 규칙은 **C89 이후 바뀐 적이 없다.**\
+**C23 이 둘을 바꿨다** — `[[fallthrough]]` 속성과 **라벨 뒤 선언 허용**. 본문 (6)·(7)에서 실측한다.\
+★ **gcc 13.3.0 에는 `-std=c23` 이 없다**(`-std=c2x` 뿐) — [11번 형제](../11-bitwise-operations-and-shifts/)에서 실측했다.
+
+★★ **경계** — `?:` 가 시퀀스 포인트인 것과 단락 평가는 [10번 형제](../10-evaluation-order-and-sequence-points/)가 정본이다.\
+`case` 라벨에 쓰는 **열거 상수**는 [07번 형제](../07-enum-and-enumeration-constants/), 제어식의 **승격 규칙**은 [03번 형제](../03-integer-promotion-and-usual-arithmetic-conversions/)가 정본이다.
+선행 — [07번 형제](../07-enum-and-enumeration-constants/).

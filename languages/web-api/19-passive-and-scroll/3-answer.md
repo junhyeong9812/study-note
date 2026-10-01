@@ -1,11 +1,5 @@
 # web-api/19 — `passive` 와 스크롤 성능: 기본값이 바뀐 이유 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 휠과 터치는 **CDP 로 넣은 진짜 입력**, 기본값 격자는 합성 이벤트다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 default passive value · flatten more options · set the canceled flag · 2.8 절로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> ★★ **시간·프레임은 재지 않았다.**
-
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
 |---|---|
 | 기본값 42칸 · 인자 꼴 9줄 · body 바꿔 끼우기 · 진짜 입력의 네 칸 · 콘솔 줄 수 | **안 실었다** — 스크롤한 거리(관성으로 흔들린다) |
@@ -288,3 +282,10 @@ google-chrome --headless --disable-gpu --no-sandbox --window-size=1000,800 \
 | `touch-action: none` 의 효과 | 리스너 없이 안 움직임 | 이 문서는 CSS·Pointer Events 명세를 열어 확인하지 않았다 |
 
 **안 돌려 본 것** — ① Firefox·Safari(엔진이 없다). ② **성능**(지연·프레임). ③ `iframe` 안의 문서 수준 대상. ④ 핀치·관성 같은 **여러 손가락·빠른 끌기.** ⑤ **스크롤이 실제로 얼마나 기다렸나** — 비passive 가 끼면 `cancelable` 이 `true` 가 되는 것까지만 봤다(요약의 (7)).
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 받은 것**이다 — 휠과 터치는 **CDP 로 넣은 진짜 입력**, 기본값 격자는 합성 이벤트다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 default passive value · flatten more options · set the canceled flag · 2.8 절로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+★★ **시간·프레임은 재지 않았다.**

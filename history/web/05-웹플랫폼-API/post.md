@@ -1,10 +1,5 @@
 # 웹 플랫폼 API의 확장 — 브라우저가 앱 플랫폼이 되다
 
-> 원본: `~/project/web-history/05-웹플랫폼-API.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·논문명·표준번호·코드는 원문 그대로다.\
-> 용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.\
-> 「대가는 무엇인가」는 원문에 그 서술이 있는 절에만 붙어 있다 — 없는 절은 비워 두었다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 이 편을 한 줄로 요약한 문장은 이렇다.
@@ -847,3 +842,10 @@ GPU                            WebGPU
 - [WebAssembly — Wikipedia](https://en.wikipedia.org/wiki/WebAssembly)
 - [WebAssembly consensus and end of Browser Preview (public-webassembly@w3.org, 2017-02)](https://lists.w3.org/Archives/Public/public-webassembly/2017Feb/0002.html)
 - [WebAssembly browser preview — V8 Blog](https://v8.dev/blog/webassembly-browser-preview)
+
+## 출처
+
+원본: `~/project/web-history/05-웹플랫폼-API.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·논문명·표준번호·코드는 원문 그대로다.\
+용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.\
+「대가는 무엇인가」는 원문에 그 서술이 있는 절에만 붙어 있다 — 없는 절은 비워 두었다.

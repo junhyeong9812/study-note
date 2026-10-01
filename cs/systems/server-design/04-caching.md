@@ -1,10 +1,5 @@
 # 04. 캐시 설계
 
-> 캐시는 가장 효과가 큰 최적화이자, **가장 많은 새 버그를 만드는 수단**이다.\
-> "캐시를 어떻게 넣을까"보다 "**언제 무효화할까**"가 설계의 90%다.\
-> 출처: `jun-bank/docs/study/notes/server-design/04-caching.md` · 이관일 2026-09-16.\
-> 원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식·실패→방어 대비)만 입힘.
-
 ---
 
 ## 1. 캐시 계층 — 뒤로 갈수록 비싸다
@@ -252,3 +247,8 @@ if (cached == null) {
 
 - 고가용성 토폴로지 → [`05-ha-topology.md`](./05-ha-topology.md)
 - 장애 격리와 복원력 → [`06-resilience.md`](./06-resilience.md)
+
+## 출처
+
+출처: `jun-bank/docs/study/notes/server-design/04-caching.md` · 이관일 2026-09-16.\
+원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식·실패→방어 대비)만 입힘.

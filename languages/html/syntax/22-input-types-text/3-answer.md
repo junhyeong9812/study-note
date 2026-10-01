@@ -1,11 +1,5 @@
 # html/syntax/22 — `<input>` 타입 지도 ① 텍스트 계열: `text`/`password`/`email`/`url`/`tel`/`search` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [21번 주제](../21-form-submission-model/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「The input element」 절과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **본체는 창 ② 다** — 근거는 `typeMismatch` 깃발이고 문구가 아니다(A1·A2).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -203,3 +197,10 @@ document.body.append(Object.assign(document.createElement("pre"), {
 - **valid email address** — 명세의 정규식. `@` 뒤에 점이 없어도 된다.
 - **절대 URL** — 스킴이 있는 URL. `javascript:` 도 해당한다.
 - **제3의 상태(못 잰 것)** — 층은 있는데 이 환경에 잴 도구·대상이 없는 것(모바일 자판).
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [21번 주제](../21-form-submission-model/3-answer.md)의 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「The input element」 절과 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **본체는 창 ② 다** — 근거는 `typeMismatch` 깃발이고 문구가 아니다(A1·A2).

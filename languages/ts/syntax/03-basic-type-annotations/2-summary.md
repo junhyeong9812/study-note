@@ -1,13 +1,5 @@
 # ts/syntax/03 — 기본 타입 표기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Everyday Types](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html) ·
-> [Handbook — Object Types](https://www.typescriptlang.org/docs/handbook/2/objects.html) ·
-> [Handbook — Type Inference](https://www.typescriptlang.org/docs/handbook/type-inference.html) ·
-> [TSConfig — `declaration`](https://www.typescriptlang.org/tsconfig/#declaration).
-> 핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문은 전부 이 판에서 직접 던져서 받은 것이다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version =====
 Version 7.0.2
@@ -18,7 +10,6 @@ v18.19.1
 > `--strict false` 로 던진 블록은 **배너에 그렇게 적혀 있다** — 옵션이 결과를 바꾸는 갈래라 배너를 반드시 같이 읽는다.
 > **버전** — 원시·배열·객체·함수 타입은 TS 1.x, 튜플의 **나머지 요소**는 3.0, **이름표 튜플**은 4.0,
 > `as const` 는 3.4, `readonly` 배열 표기는 3.4 부터다.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## 이 문서에서 흔들리는 칸과 안 흔들리는 칸
 
@@ -674,3 +665,12 @@ ex.03h.ts(6,10): error TS2339: Property 'click' does not exist on type '{}'.
 - **`satisfies`(4.9)는 이 주제의 다음 수다** — 표기는 추론을 **덮어쓰지만**, `satisfies` 는 검사만 하고 추론을 **살려 둔다**([목록의 **29번 주제**](../29-satisfies/)).
 - **`noUncheckedIndexedAccess`** 를 켜면 `arr[0]` 의 타입이 `number` 가 아니라 `number | undefined` 가 된다. 이 주제의 결과가 통째로 바뀌는 플래그다([목록의 **41번 주제**](../41-index-and-optional-property-strict-flags/)).
 - **`tsc --init` 이 권하는 기본값**에 `noUncheckedIndexedAccess` 와 `exactOptionalPropertyTypes` 가 **켜져 있다**(이 판에서 확인). 하지만 **명령줄에서 파일을 직접 주면 그 설정이 안 읽힌다** — 이 문서의 결과는 전부 그 상태다.
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Everyday Types](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html) ·
+[Handbook — Object Types](https://www.typescriptlang.org/docs/handbook/2/objects.html) ·
+[Handbook — Type Inference](https://www.typescriptlang.org/docs/handbook/type-inference.html) ·
+[TSConfig — `declaration`](https://www.typescriptlang.org/tsconfig/#declaration).
+핸드북은 **규칙 확인용으로만** 열었다. 본문의 진단·`.d.ts` 전문은 전부 이 판에서 직접 던져서 받은 것이다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

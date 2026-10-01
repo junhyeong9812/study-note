@@ -1,12 +1,5 @@
 # web-api/11 — 스크롤 제어: `scrollTo`/`scrollBy`/`scrollIntoView`·스크롤 컨테이너 찾기·위치 복원 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
-> ★ **배너의 `--window-size=1000,800` 이 이 문서의 전제다.** 스크롤 상한이 뷰포트 높이에 달려 있어 창이 다르면 수치가 달라진다.\
-> 규칙은 [CSSOM View Module](https://drafts.csswg.org/cssom-view/) 과 [HTML Living Standard](https://html.spec.whatwg.org/multipage/nav-history-apis.html#scroll-restoration-mode) 로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> ★ **못 잰 것이 하나 있다** — `behavior: 'smooth'` 의 **도착**이다(A9).
-
 **★ 이 주제에는 흔들리는 칸이 거의 없다** — 좌표를 재지만 시간을 안 재기 때문이다.
 
 | 안 흔들리는 칸 | 흔들리는 칸 · 못 잰 칸 |
@@ -375,3 +368,11 @@ const padw = (s, n) => s + ' '.repeat(Math.max(0, n - W(s)));
 - **`scrollRestoration`** — 뒤로 가기에서 브라우저가 위치를 복원할지 정하는 **스위치**.
 - **조용한 실패(silent failure)** — 예외도 경고도 없이 아무 일도 안 일어나는 것. 이 주제의 쓰기에 다섯 가지가 있다.
 - **못 잰 것** — 도구가 그 순간을 볼 수 없어 확인하지 못한 것. 「안 돌려 본 것」과 다르다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
+★ **배너의 `--window-size=1000,800` 이 이 문서의 전제다.** 스크롤 상한이 뷰포트 높이에 달려 있어 창이 다르면 수치가 달라진다.\
+규칙은 [CSSOM View Module](https://drafts.csswg.org/cssom-view/) 과 [HTML Living Standard](https://html.spec.whatwg.org/multipage/nav-history-apis.html#scroll-restoration-mode) 로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+★ **못 잰 것이 하나 있다** — `behavior: 'smooth'` 의 **도착**이다(A9).

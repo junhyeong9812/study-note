@@ -1,9 +1,5 @@
 # 05. 고가용성 토폴로지
 
-> 가용성은 "죽지 않게 만드는 것"이 아니라 "**죽는 걸 전제하고, 죽어도 서비스가 계속되게 만드는 것**"이다.\
-> 출처: `jun-bank/docs/study/notes/server-design/05-ha-topology.md` · 이관일 2026-09-16.\
-> 원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식·실패→방어 대비)만 입힘.
-
 ---
 
 ## 1. 먼저 목표를 숫자로 정한다
@@ -261,3 +257,8 @@
 
 - 장애 격리와 복원력 → [`06-resilience.md`](./06-resilience.md)
 - 배포와 운영 → [`08-deployment-ops.md`](./08-deployment-ops.md)
+
+## 출처
+
+출처: `jun-bank/docs/study/notes/server-design/05-ha-topology.md` · 이관일 2026-09-16.\
+원고 문체·순서 유지 + cs 형식(용어 풀이·세로 도식·실패→방어 대비)만 입힘.

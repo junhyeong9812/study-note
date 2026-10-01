@@ -1,10 +1,5 @@
 # Rust 핵심 개념의 진화 (개념사)
 
-> 원본: `~/project/rust-history/06-핵심-개념-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
-> 연도·인명·버전·RFC 번호·논문명·코드·표는 원문 그대로다.\
-> ASCII 도식 13개와 「한눈에」의 「싸고·빠르고·좋게」 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
-> corpus 문서를 가리키는 자리는 원문의 `[[위키링크]]`를 풀어 이름으로만 적고, 그 문서가 처음 나오는 한 곳에 실제 경로(`~/project/local-llm/corpus/…`)를 병기했다 — 「참고 출처」의 corpus 행만 원문 인용 층이라 그대로 두었다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -777,3 +772,10 @@ Rust의 핵심 개념들은 서로 독립적으로 보이지만, 하나의 설�
 **zero-cost abstraction**
 - [Without boats — Zero Cost Abstractions](https://without.boats/blog/zero-cost-abstractions/)
 - [The Rust Book ch.9-03 — To panic! or Not to panic!](https://doc.rust-lang.org/book/ch09-03-to-panic-or-not-to-panic.html)
+
+## 출처
+
+원본: `~/project/rust-history/06-핵심-개념-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-19).\
+연도·인명·버전·RFC 번호·논문명·코드·표는 원문 그대로다.\
+ASCII 도식 13개와 「한눈에」의 「싸고·빠르고·좋게」 비유, 용어 블록의 「예:」, 「용어 풀이」는 원문에 없는 보충이다.\
+corpus 문서를 가리키는 자리는 원문의 `[[위키링크]]`를 풀어 이름으로만 적고, 그 문서가 처음 나오는 한 곳에 실제 경로(`~/project/local-llm/corpus/…`)를 병기했다 — 「참고 출처」의 corpus 행만 원문 인용 층이라 그대로 두었다.

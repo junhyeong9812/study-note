@@ -1,18 +1,5 @@
 # kotlin/syntax/23 — `sealed class`/`sealed interface` 와 `when` 완결성 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Sealed classes and interfaces](https://kotlinlang.org/docs/sealed-classes.html) · [Conditions and loops — `when`](https://kotlinlang.org/docs/control-flow.html) · [언어 기능·제안 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html).
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
-> `kotlinc` 12회(컴파일 실패 5벌 · 그중 1벌은 `-jvm-target 17`) · `java` 5회 · `javac` 2회(둘 다 실패가 결과) · `javap` 4회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
-> ⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 주제는 **기본값 1.8 과 `-jvm-target 17` 이 서로 다른 클래스 파일을 낸다** — (6)이 그것이다.
-> **버전** — `sealed class` 는 **1.0**, **`sealed interface` 는 1.5**, **데이터 흐름 기반 완결성 검사는 2.3.0 Stable**(2.2.20 도입)이다. 뒤의 둘은 이 판에서 직접 던져 확인했다((2)·(5)).
-> **경계** — `when` 의 가지 형태·guard·바이트코드 분기는 [6번 주제](../06-when-expression/)가 정본이다. **거기는 「`when` 이 무엇으로 컴파일되나」까지, 여기는 「하위 타입을 늘렸을 때 어디가 깨지나」부터**다.\
-> 인터페이스의 기본 구현·충돌 해소는 [20번 주제](../20-interfaces-default-impl-and-super/), `data class` 가 변형이 되는 것은 [22번 주제](../22-data-class-generated-members/)가 정본이다.\
-> Java 쪽 짝은 [`../../../java/syntax/15-sealed-classes/`](../../../java/syntax/15-sealed-classes/)와 [`../../../java/syntax/23-switch-pattern-matching/`](../../../java/syntax/23-switch-pattern-matching/) — **Kotlin 이 먼저 한 것을 Java 가 어떻게 따라왔나**가 대비 축이다.\
-> Rust 쪽 짝은 [`../../../rust/syntax/18-match-and-exhaustiveness/`](../../../rust/syntax/18-match-and-exhaustiveness/) — **같은 실험을 같은 격자로** 했다((3)).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★ **흔들리는 칸 / 안 흔들리는 칸** — 제출 전 재대조에서 「고칠 것」과 「설계상 다른 것」을 가르는 선언이다.
 
 | 흔들린다 | 안 흔들린다 |
@@ -591,7 +578,7 @@ sealflowbad.kt:7:12: error: 'when' expression must be exhaustive. Add the 'Scrol
 - ★★ **같은 `when`, 같은 가지인데 앞줄 한 줄에 따라 통과와 에러가 갈린다.** 완결성 판정이 **가지 목록만 보는 것이 아니라 그 지점까지의 데이터 흐름을 본다**는 뜻이다.
 - ★ `Boolean` 주체도 같은 갈래다 — `flag(b)` 는 `true`/`false` **둘만 덮고 `else` 가 없는데** 통과한다(`C 켜짐 꺼짐`). **`Boolean` 의 값 공간이 둘뿐이라는 것을 컴파일러가 안다.**
 - ★★ **판 확인** — Kotlin 목록의 판 이력표가 「23 `when` 완결성 — 데이터 흐름 기반 검사 = Stable **2.3.0**(2.2.20 도입)」이라고 적어 뒀고, **2.4.20 에서 경고 한 줄 없이 통과**하는 것을 직접 던져 확인했다.\
-  ★ 다만 이 실행이 증명한 것은 「**2.4.20 에서는 된다**」뿐이다. 「2.2 이전에는 안 됐다」는 **이 환경에서 못 잰다** — `-language-version` 으로 옛 판을 되살리는 길이 2.4.20 에서 막혀 있기 때문이다(Kotlin 목록 머리말).
+  ★ 다만 이 실행이 증명한 것은 「**2.4.20 에서는 된다**」뿐이다. 「2.2 이전에는 안 됐다」는 **이 환경에서 못 잰다** — `-language-version` 으로 옛 판을 되살리는 길이 2.4.20 에서 막혀 있기 때문이다(Kotlin 목록 「실행 환경」).
 
 ### (6) ★★ 같은 모듈·같은 패키지 제약 — 그리고 JVM 에서 무엇이 되나
 
@@ -880,3 +867,16 @@ Z [ok:hi, err:404, empty] 3
 - **「`else` 를 쓰지 마라」는 반쪽이다.** 기준은 **명단의 소유자가 누구냐**다. 내 모듈의 `sealed` 면 `else` 를 빼서 안전망을 켜고, 남의 라이브러리 `sealed` 면 **`else` 가 오히려 옳다** — 그쪽이 변형을 늘려도 나는 컴파일조차 안 깨지는 편이 낫기 때문이다. Rust 의 `#[non_exhaustive]` 가 바로 그 경계를 **선언으로** 만든 것이고([`../../../rust/syntax/18-match-and-exhaustiveness/`](../../../rust/syntax/18-match-and-exhaustiveness/)), Kotlin 에는 **대응하는 표시가 없다.**
 - **`else` 대신 쉼표 나열**이 중간 답이다 — `Scroll, Drag -> "그 밖"` 이라고 적으면 지금은 `else` 처럼 동작하고, 변형이 늘면 **다시 깨진다.** 안전망을 끄지 않으면서 가지를 줄이는 유일한 방법이다.
 - **완결성은 컴파일 시점의 계약**이라는 것을 Java 쪽이 더 아프게 보여 준다 — Java 21 은 명단이 뒤에 늘면 런타임에 `MatchException` 을 던진다([`../../../java/syntax/23-switch-pattern-matching/`](../../../java/syntax/23-switch-pattern-matching/)). Kotlin 도 같은 성질이고 예외 이름만 다르다(`NoWhenBranchMatchedException` — [6번 주제](../06-when-expression/)).
+
+## 실행 환경
+
+**기준 소스** — [Sealed classes and interfaces](https://kotlinlang.org/docs/sealed-classes.html) · [Conditions and loops — `when`](https://kotlinlang.org/docs/control-flow.html) · [언어 기능·제안 상태표](https://kotlinlang.org/docs/kotlin-language-features-and-proposals.html).
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 에서 실제로 얻었다.\
+`kotlinc` 12회(컴파일 실패 5벌 · 그중 1벌은 `-jvm-target 17`) · `java` 5회 · `javac` 2회(둘 다 실패가 결과) · `javap` 4회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다.
+⚠️ **`-jvm-target` 을 밝히지 않은 바이트코드 주장은 반쪽이다.** 이 주제는 **기본값 1.8 과 `-jvm-target 17` 이 서로 다른 클래스 파일을 낸다** — (6)이 그것이다.
+**버전** — `sealed class` 는 **1.0**, **`sealed interface` 는 1.5**, **데이터 흐름 기반 완결성 검사는 2.3.0 Stable**(2.2.20 도입)이다. 뒤의 둘은 이 판에서 직접 던져 확인했다((2)·(5)).
+**경계** — `when` 의 가지 형태·guard·바이트코드 분기는 [6번 주제](../06-when-expression/)가 정본이다. **거기는 「`when` 이 무엇으로 컴파일되나」까지, 여기는 「하위 타입을 늘렸을 때 어디가 깨지나」부터**다.\
+인터페이스의 기본 구현·충돌 해소는 [20번 주제](../20-interfaces-default-impl-and-super/), `data class` 가 변형이 되는 것은 [22번 주제](../22-data-class-generated-members/)가 정본이다.\
+Java 쪽 짝은 [`../../../java/syntax/15-sealed-classes/`](../../../java/syntax/15-sealed-classes/)와 [`../../../java/syntax/23-switch-pattern-matching/`](../../../java/syntax/23-switch-pattern-matching/) — **Kotlin 이 먼저 한 것을 Java 가 어떻게 따라왔나**가 대비 축이다.\
+Rust 쪽 짝은 [`../../../rust/syntax/18-match-and-exhaustiveness/`](../../../rust/syntax/18-match-and-exhaustiveness/) — **같은 실험을 같은 격자로** 했다((3)).

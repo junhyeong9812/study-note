@@ -1,10 +1,5 @@
 # kotlin/syntax/33 — 타입 검사·캐스트: `is`/`as`/`as?` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`javap` 에서 실제로 얻었다(C# 은 **.NET SDK 10.0.401** 의 `csc`).\
-> 역어셈블은 **기본 `-jvm-target`(1.8 · `major version: 52`)** 이 정본이다.
-> ★★ 아래 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -492,3 +487,9 @@ javac 21.0.5
 1. ★★★ **`null as String` 이 `ClassCastException` 이 아니라 `NullPointerException` 이었다**(1·7번). 문서는 「`as` 가 실패하면 `ClassCastException`」이라고 적는데, `null` 의 경우는 kotlinc 가 심은 `checkNotNull` 이 **먼저** 터진다.
 2. ★★ **`as String?`·`as? String` 이 플랫폼 타입에서 「`cast is redundant`」 경고**를 받았다(6번). Java 에서 온 값을 「확정」하려는 캐스트를 컴파일러는 **할 일이 없는 것**으로 본다.
 3. ★ **`Collection<String> is List<String>` 은 통과했다**(2번). 「제네릭 타입 인자는 `is` 로 못 묻는다」를 넓게 외우면 틀린다 — 정적 타입이 이미 답한 인자는 **물을 필요가 없어서** 된다.
+
+## 실행 환경
+
+모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`javap` 에서 실제로 얻었다(C# 은 **.NET SDK 10.0.401** 의 `csc`).\
+역어셈블은 **기본 `-jvm-target`(1.8 · `major version: 52`)** 이 정본이다.
+★★ 본문의 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적은 자리가 없다.

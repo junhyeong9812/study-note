@@ -1,14 +1,5 @@
 # csharp/syntax/31 — `IEnumerable<T>` 와 `foreach` — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ★★★ 이 주제의 질문은 「**`foreach` 는 인터페이스가 아니라 `GetEnumerator`·`MoveNext`·`Current` 라는 이름을 찾고, 찾은 타입 그대로 부른다**」 한 줄로 거의 다 풀린다. **그 타입이 구조체인가 인터페이스인가**를 세라.
-> **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
-> Roslyn `csc` 를 직접 부른다 · `-langversion:latest`(판 문항만 판을 바꾼다) · `-preferreduilang:en-US`. 대비는 **javac 21.0.5** 다.
-> ★★★ **본체 창은 ① IL 덤프다**(「`foreach` 가 무엇으로 풀리나」). 할당은 **2×2 판 격자**로 쟀다.
-> 선행 — [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/)(컬렉션) · [24번](../24-generics-and-type-parameters/)(제네릭) · [30번](../30-extension-methods-and-extension-members/)(확장 메서드).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (예측) / (왜) / (경계) / (연결) -->
@@ -208,6 +199,14 @@ class Program {
 
 - ★★ `yield return` 으로 1번의 `Walker` 같은 열거자를 손으로 안 쓰고 만드는 주제는?
 - ★ 목록 패턴 `[1, .., 3]` 은 `foreach` 의 패턴과 같은 이름(`GetEnumerator`)을 쓰나?
+
+## 실행 환경
+
+★★★ 이 주제의 질문은 「**`foreach` 는 인터페이스가 아니라 `GetEnumerator`·`MoveNext`·`Current` 라는 이름을 찾고, 찾은 타입 그대로 부른다**」 한 줄로 거의 다 풀린다. **그 타입이 구조체인가 인터페이스인가**를 세라.
+**환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
+Roslyn `csc` 를 직접 부른다 · `-langversion:latest`(판 문항만 판을 바꾼다) · `-preferreduilang:en-US`. 대비는 **javac 21.0.5** 다.
+★★★ **본체 창은 ① IL 덤프다**(「`foreach` 가 무엇으로 풀리나」). 할당은 **2×2 판 격자**로 쟀다.
+선행 — [10번](../10-collection-choosing-list-dictionary-hashset-queue-stack/)(컬렉션) · [24번](../24-generics-and-type-parameters/)(제네릭) · [30번](../30-extension-methods-and-extension-members/)(확장 메서드).
 
 ## 복습 기록
 

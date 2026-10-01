@@ -1,11 +1,5 @@
 # html/syntax/28 — 검증 속성: `required`/`pattern`/`min`/`max`/`step`/`minlength`/`maxlength` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [25번 주제](../25-label-association/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「The input element」(상태별 적용 목록 · `pattern` · `min`/`max` · `step`)와 「Limiting user input length」 절로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **본체는 `validity` 깃발이다** — 「무시된다」는 마흔두 칸을 미리 선언하고 **깃발도 값도 안 움직인 곳**을 센 것이다(A1).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -248,3 +242,10 @@ m6  maxlength=3   "abcdef"  false    false    자식 텍스트 "abcdef"
 - **step base** — 눈금의 출발점. `min` → `value` 속성 → 기본 기준 → 0.
 - **컴파일된 패턴** — `^(?:…)$` 를 `v` 로 만든 정규식. 못 만들면 없음.
 - **사용자 편집** — 사용자가 직접 바꾼 값. `tooLong`·`tooShort` 의 조건.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [25번 주제](../25-label-association/3-answer.md)의 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 「The input element」(상태별 적용 목록 · `pattern` · `min`/`max` · `step`)와 「Limiting user input length」 절로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **본체는 `validity` 깃발이다** — 「무시된다」는 마흔두 칸을 미리 선언하고 **깃발도 값도 안 움직인 곳**을 센 것이다(A1).

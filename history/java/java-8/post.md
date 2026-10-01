@@ -1,10 +1,5 @@
 # Java SE 8 (2014년 3월)
 
-> 원본: `~/project/java-history/java/java-8.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JSR/JEP 번호·클래스/패키지/메서드 이름·자바 코드블록 13개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
-> ASCII 도식 2개는 원문의 mermaid 그림 2개를 글자로 옮긴 것이고, 「한눈에」의 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 교차 주 2개는 원문에 없는 보충이다.\
-> 원문에 없는 도식은 새로 그리지 않았다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -483,3 +478,10 @@ CompletableFuture.supplyAsync(() -> fetchUser(id))
 - [Where Has the Java PermGen Gone? (InfoQ)](https://www.infoq.com/articles/Java-PERMGEN-Removed/)
 - [JSR 308: Annotations on Java Types (JCP)](https://jcp.org/en/jsr/detail?id=308)
 - [Java version history (Wikipedia)](https://en.wikipedia.org/wiki/Java_version_history)
+
+## 출처
+
+원본: `~/project/java-history/java/java-8.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JSR/JEP 번호·클래스/패키지/메서드 이름·자바 코드블록 13개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
+ASCII 도식 2개는 원문의 mermaid 그림 2개를 글자로 옮긴 것이고, 「한눈에」의 비유와 대응표, 용어 블록의 「예:」, 「용어 풀이」, 교차 주 2개는 원문에 없는 보충이다.\
+원문에 없는 도식은 새로 그리지 않았다.

@@ -1,72 +1,5 @@
 # js/syntax/20 — 제너레이터: 「`next(값)` 은 대답을 넣고 다음 질문을 받는 무전이다 — 첫 무전은 아무도 안 듣는다」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기 — 그중에서도 「양방향 흐름」의 로그다.**
-> 제너레이터는 **값이 두 방향으로 흐른다** — `yield` 가 바깥으로 값을 내보내고, `next(값)` 이 안으로 값을 들여보낸다.
-> 그런데 결과 객체 `{ value, done }` 에는 **바깥으로 나간 쪽만** 찍힌다. 안으로 들어간 값이 **어디에 닿았나(또는 안 닿았나)** 는 결과에 한 글자도 안 남는다.
-> 그래서 제너레이터 본문 안에 「**`yield` 식이 무엇으로 평가됐나**」를 찍는 로그를 심고, 바깥에서 준 값과 **한 줄에 나란히** 찍었다.
-> **이 문서의 결론은 전부 그 나란한 두 줄에서 나온다.**
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 최신 초안 — Control Abstraction Objects](https://tc39.es/ecma262/multipage/control-abstraction-objects.html) —
->   Generator Objects · `GeneratorStart` · `GeneratorValidate` · `GeneratorResumeAbrupt` · `%GeneratorPrototype%` 의 `next`/`return`/`throw`
-> - [ECMA-262 최신 초안 — ECMAScript Language: Functions and Classes](https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html) —
->   Generator Function Definitions · `yield` · `yield*` 의 평가 규칙
-> - [ECMA-262 판별 아카이브](https://262.ecma-international.org/) · [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계를 가릴 때
->
-> ★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서의 **추상 연산 이름과 짧은 영문 인용**으로, **값·호출 로그·예외 타입과 메시지는 전부 실행으로** 접지했다.
->
-> **실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★ **예외는 `try`/`catch` 로 받아 `이름 「메시지」` 꼴로만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
-> ★ **이 주제의 블록에는 주소도 시간도 난수도 없다.** 같은 판에서 다시 돌리면 한 글자도 안 변한다.
->
-> **버전** — 이 주제의 거의 전부가 **한 판에 들어왔다.**
->
-> | 무엇 | 판 |
-> |---|---|
-> | `function*` · `yield` · `yield*` · `next`/`return`/`throw` | **ES2015** |
-> | 객체·클래스의 제너레이터 메서드(`*m() {}`) | **ES2015** |
-> | 이터레이터 헬퍼(제너레이터 객체에도 붙는 `map`·`take` 등) | **ES2025** — ★ 두 node 판에는 **없다**(아래 판별 블록). [목록의 **21번 주제**](../21-iterator-helpers/)가 정본 |
-> | `async function*` · `for await...of` | **ES2018** — 이 주제 밖([목록의 **40번 주제**](../40-async-iteration-and-for-await/)) |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **① 추상 연산에 로그 심기**(본체) | 본문 안에 「`yield` 식이 무엇으로 평가됐나」를 찍고, 바깥의 `next(값)` 과 **한 줄에 나란히** 찍는다. 첫 `next(값)` 이 **어디에도 안 닿는 것**은 오직 이것으로만 보인다 |
-> | ★★★ **② 전수 격자** | **세 메서드(`next`·`return`·`throw`) × 세 상태(시작 전 · `yield` 에서 멈춤 · 끝남)** 아홉 칸. 칸마다 결과와 본문 로그를 찍고, **본문 코드가 돈 칸 수**를 스크립트가 센다 |
-> | ★★ **③ 브랜드 태그** | `%GeneratorPrototype%.next` 를 평범한 객체에 빌려 부르면 **`incompatible receiver`** 로 막힌다 — 제너레이터인지는 **내부 슬롯**이 가른다. ★ `Object.prototype.toString` 이 `[object Generator]` 라고 답하는 것은 **프로퍼티(`Symbol.toStringTag`) 하나**라 브랜드가 아니다([목록의 **22번 주제**](../22-symbol-and-well-known-symbols/)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | `new gen()` · 화살표 제너레이터 · 콜백 안의 `yield` · 실행 중 재진입 · 배열을 `yield*` 하던 중의 `throw()` |
-> | ★★ **⑤ 두 판 대조기** | 두 판이 갈린 줄은 **`SyntaxError` 문구 한 줄**뿐이다(동작 (7)) |
-> | ★ **부적용 — 진단의 `(행,열)`**(18-C) | 이 주제의 `SyntaxError` 는 **값으로 가를 수 없는 문법 성질**을 증명하려는 것이 아니라 「안 된다」를 보이려는 것이다. `new Function` 으로 던져 **문구만** 받았다 — 열을 읽을 질문이 없다 |
-> | ★ **안 쟀다 — 성능·메모리** | 「제너레이터는 메모리를 아낀다」·「느리다」를 **한 줄도 쓰지 않는다.** 잰 것은 **몇 개를 만들었나(호출 횟수)** 뿐이다(동작 (8)) |
-> | ★ **안 돌렸다 — 파이썬 · 브라우저** | 파이썬 `send()` 대비는 **파이썬 17번 문서가 이미 실은 출력**을 인용했다(동작 (9)). 이 주제는 Chrome 을 판별 블록 말고는 돌리지 않았다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 예외 **문구** — ★ **이 주제에서 실제로 판마다 갈렸다**(`Unexpected identifier` 뒤의 `'x'`) | ★★★ **로그의 개수와 순서** · 결과 객체의 `value`/`done` |
-> | Node 스택트레이스의 절대 경로 — 한 줄도 싣지 않았다 | ★★★ **예외의 종류**(`TypeError`·`SyntaxError`) |
-> | | ★★ 격자의 **「본문 코드가 돈 칸」 수** |
->
-> 두 판 대조기가 **갈렸다고 세는 이 주제의 탐침은 `js20b-20f-errors.js` 하나**다 — 집계 줄은 동작 (7)의 끝에 있다.
->
-> **선행** — [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ 직접 선행) ·
-> [08 — 함수 정의 형태와 매개변수](../08-function-forms-and-parameters/2-summary.md)(제너레이터의 `prototype` 과 `new`) ·
-> [06 — 스코프와 클로저](../06-scope-and-closures/2-summary.md).
-> ★★★ **19번이 이미 잰 것은 다시 재지 않는다** — 소비자 17가지가 `return()` 을 부르는 자리(**8곳**), `next()` 가 던지면 닫기 0,
-> 제너레이터 객체가 **이터러블이자 이터레이터**(`g[Symbol.iterator]() === g`)라 두 번째 스프레드가 `[]` 인 것.
-> 여기는 그 「닫기」가 **제너레이터 안쪽에서 무엇을 일으키나**부터 본다.
-> **이어지는 곳** — [21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md) · [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md) · [목록의 **40번 주제**](../40-async-iteration-and-for-await/) 「비동기 이터레이션」
->
-> ★★ **경계 — 소비자 쪽 `return()` 호출표는 19번이 정본이다.** 여기서는 그 호출이 제너레이터의 `finally` 에서 **무엇을 돌리나**만 본다.
-> ★★ **경계 — 지연 파이프라인(`map`·`filter`·`take` 를 이어 붙이는 것)은 21번이 정본이다.** 여기서는 **손으로 짠 `take`/`map` 제너레이터**로 「당긴 만큼만 만든다」까지다.
-> ★ **경계 — `async function*` 은 40번이 정본이다.**
-
 ```sh
 # js20b-versions.sh
 #!/usr/bin/env bash
@@ -1164,3 +1097,69 @@ console.log("  log " + J(L)); L.length = 0;
 - **`finally` 가 `yield` 하는 제너레이터를 `for...of` + `break` 로 닫으면** 제너레이터가 `finally` 중간에 멈춘 채 남는다 — 동작 (3)에서 **두 출력을 이어 읽은 추론**이고 로그로는 안 돌렸다. 확인하려면 그 조합에 로그를 심어 `break` 뒤에 `g.next()` 를 한 번 더 불러 보라.
 - **`async function*`** 은 `next`/`return`/`throw` 가 전부 **프라미스를 돌려주고 요청을 큐에 쌓는다** — 명세의 `AsyncGeneratorEnqueue`. [목록의 **40번 주제**](../40-async-iteration-and-for-await/)가 정본이다.
 - **`yield` 의 우선순위** — `yield a, b` 가 무엇을 내보내나, `yield` 뒤 줄바꿈이 무엇을 하나(ASI)는 이 문서가 돌리지 않았다.
+
+## 실행 환경
+
+★★★ **이 주제의 본체는 ① 추상 연산에 로그 심기 — 그중에서도 「양방향 흐름」의 로그다.**
+제너레이터는 **값이 두 방향으로 흐른다** — `yield` 가 바깥으로 값을 내보내고, `next(값)` 이 안으로 값을 들여보낸다.
+그런데 결과 객체 `{ value, done }` 에는 **바깥으로 나간 쪽만** 찍힌다. 안으로 들어간 값이 **어디에 닿았나(또는 안 닿았나)** 는 결과에 한 글자도 안 남는다.
+그래서 제너레이터 본문 안에 「**`yield` 식이 무엇으로 평가됐나**」를 찍는 로그를 심고, 바깥에서 준 값과 **한 줄에 나란히** 찍었다.
+**이 문서의 결론은 전부 그 나란한 두 줄에서 나온다.**
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 최신 초안 — Control Abstraction Objects](https://tc39.es/ecma262/multipage/control-abstraction-objects.html) —
+  Generator Objects · `GeneratorStart` · `GeneratorValidate` · `GeneratorResumeAbrupt` · `%GeneratorPrototype%` 의 `next`/`return`/`throw`
+- [ECMA-262 최신 초안 — ECMAScript Language: Functions and Classes](https://tc39.es/ecma262/multipage/ecmascript-language-functions-and-classes.html) —
+  Generator Function Definitions · `yield` · `yield*` 의 평가 규칙
+- [ECMA-262 판별 아카이브](https://262.ecma-international.org/) · [TC39 finished proposals](https://github.com/tc39/proposals/blob/main/finished-proposals.md) — 판 경계를 가릴 때
+
+★★★ **명세 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서의 **추상 연산 이름과 짧은 영문 인용**으로, **값·호출 로그·예외 타입과 메시지는 전부 실행으로** 접지했다.
+
+**실행 검증** — 이 문서의 모든 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다(손으로 옮겨 적은 출력이 하나도 없다).
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★ **예외는 `try`/`catch` 로 받아 `이름 「메시지」` 꼴로만** 찍었다 — 스택트레이스에는 절대 경로가 박혀 재현이 안 된다.
+★ **이 주제의 블록에는 주소도 시간도 난수도 없다.** 같은 판에서 다시 돌리면 한 글자도 안 변한다.
+
+**버전** — 이 주제의 거의 전부가 **한 판에 들어왔다.**
+
+| 무엇 | 판 |
+|---|---|
+| `function*` · `yield` · `yield*` · `next`/`return`/`throw` | **ES2015** |
+| 객체·클래스의 제너레이터 메서드(`*m() {}`) | **ES2015** |
+| 이터레이터 헬퍼(제너레이터 객체에도 붙는 `map`·`take` 등) | **ES2025** — ★ 두 node 판에는 **없다**(맨 위 판별 블록). [목록의 **21번 주제**](../21-iterator-helpers/)가 정본 |
+| `async function*` · `for await...of` | **ES2018** — 이 주제 밖([목록의 **40번 주제**](../40-async-iteration-and-for-await/)) |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **① 추상 연산에 로그 심기**(본체) | 본문 안에 「`yield` 식이 무엇으로 평가됐나」를 찍고, 바깥의 `next(값)` 과 **한 줄에 나란히** 찍는다. 첫 `next(값)` 이 **어디에도 안 닿는 것**은 오직 이것으로만 보인다 |
+| ★★★ **② 전수 격자** | **세 메서드(`next`·`return`·`throw`) × 세 상태(시작 전 · `yield` 에서 멈춤 · 끝남)** 아홉 칸. 칸마다 결과와 본문 로그를 찍고, **본문 코드가 돈 칸 수**를 스크립트가 센다 |
+| ★★ **③ 브랜드 태그** | `%GeneratorPrototype%.next` 를 평범한 객체에 빌려 부르면 **`incompatible receiver`** 로 막힌다 — 제너레이터인지는 **내부 슬롯**이 가른다. ★ `Object.prototype.toString` 이 `[object Generator]` 라고 답하는 것은 **프로퍼티(`Symbol.toStringTag`) 하나**라 브랜드가 아니다([목록의 **22번 주제**](../22-symbol-and-well-known-symbols/)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | `new gen()` · 화살표 제너레이터 · 콜백 안의 `yield` · 실행 중 재진입 · 배열을 `yield*` 하던 중의 `throw()` |
+| ★★ **⑤ 두 판 대조기** | 두 판이 갈린 줄은 **`SyntaxError` 문구 한 줄**뿐이다(동작 (7)) |
+| ★ **부적용 — 진단의 `(행,열)`**(18-C) | 이 주제의 `SyntaxError` 는 **값으로 가를 수 없는 문법 성질**을 증명하려는 것이 아니라 「안 된다」를 보이려는 것이다. `new Function` 으로 던져 **문구만** 받았다 — 열을 읽을 질문이 없다 |
+| ★ **안 쟀다 — 성능·메모리** | 「제너레이터는 메모리를 아낀다」·「느리다」를 **한 줄도 쓰지 않는다.** 잰 것은 **몇 개를 만들었나(호출 횟수)** 뿐이다(동작 (8)) |
+| ★ **안 돌렸다 — 파이썬 · 브라우저** | 파이썬 `send()` 대비는 **파이썬 17번 문서가 이미 실은 출력**을 인용했다(동작 (9)). 이 주제는 Chrome 을 판별 블록 말고는 돌리지 않았다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 예외 **문구** — ★ **이 주제에서 실제로 판마다 갈렸다**(`Unexpected identifier` 뒤의 `'x'`) | ★★★ **로그의 개수와 순서** · 결과 객체의 `value`/`done` |
+| Node 스택트레이스의 절대 경로 — 한 줄도 싣지 않았다 | ★★★ **예외의 종류**(`TypeError`·`SyntaxError`) |
+| | ★★ 격자의 **「본문 코드가 돈 칸」 수** |
+
+두 판 대조기가 **갈렸다고 세는 이 주제의 탐침은 `js20b-20f-errors.js` 하나**다 — 집계 줄은 동작 (7)의 끝에 있다.
+
+**선행** — [19 — 이터러블 프로토콜과 `for...of`](../19-iterable-protocol-and-for-of/2-summary.md)(★★★ 직접 선행) ·
+[08 — 함수 정의 형태와 매개변수](../08-function-forms-and-parameters/2-summary.md)(제너레이터의 `prototype` 과 `new`) ·
+[06 — 스코프와 클로저](../06-scope-and-closures/2-summary.md).
+★★★ **19번이 이미 잰 것은 다시 재지 않는다** — 소비자 17가지가 `return()` 을 부르는 자리(**8곳**), `next()` 가 던지면 닫기 0,
+제너레이터 객체가 **이터러블이자 이터레이터**(`g[Symbol.iterator]() === g`)라 두 번째 스프레드가 `[]` 인 것.
+여기는 그 「닫기」가 **제너레이터 안쪽에서 무엇을 일으키나**부터 본다.
+**이어지는 곳** — [21 — 이터레이터 헬퍼](../21-iterator-helpers/2-summary.md) · [22 — `Symbol` 과 잘 알려진 심볼](../22-symbol-and-well-known-symbols/2-summary.md) · [목록의 **40번 주제**](../40-async-iteration-and-for-await/) 「비동기 이터레이션」
+
+★★ **경계 — 소비자 쪽 `return()` 호출표는 19번이 정본이다.** 여기서는 그 호출이 제너레이터의 `finally` 에서 **무엇을 돌리나**만 본다.
+★★ **경계 — 지연 파이프라인(`map`·`filter`·`take` 를 이어 붙이는 것)은 21번이 정본이다.** 여기서는 **손으로 짠 `take`/`map` 제너레이터**로 「당긴 만큼만 만든다」까지다.
+★ **경계 — `async function*` 은 40번이 정본이다.**

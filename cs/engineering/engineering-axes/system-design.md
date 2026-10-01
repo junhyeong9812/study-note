@@ -1,9 +1,5 @@
 # System Design (시스템 설계)
 
-> 이 컬렉션의 인덱스는 [README.md](./README.md)에서 시작한다.\
-> 출처: `jun-bank/docs/study/notes/axes/system-design.md` (본체) + `08-engineering-axes-deep.md` §6 · 이관일 2026-09-16.\
-> 본문 표·절은 **원고**를 고쳐 쓴 것이다. 「한눈에」의 비유·그림과 맨 끝 `[Claude 추가]`는 **Claude 보강**이다.
-
 **지키는 것: 변경 비용.** 한 줄 정의는 **어떻게 쪼개고, 경계를 어디에 긋는가.**
 
 ---
@@ -253,3 +249,8 @@
 - **콘웨이의 법칙(Conway's Law).** "시스템 구조는 그걸 만든 조직의 소통 구조를 닮는다." 원고가 "마이크로서비스는 조직 확장을 위한 것"이라고 못 박는 이유의 배경 — 서비스 경계는 사실상 팀 경계와 맞물린다.
 - **되돌리기 어려움 = one-way door.** "한번 지나면 못 되돌아오는 문(one-way door)"과 "언제든 되돌아올 수 있는 문(two-way door)"으로 결정을 나누는 널리 쓰는 표현. 원고의 "되돌릴 수 있는가?"와 같은 렌즈다. two-way door는 빨리, one-way door는 신중히.
 - **Expand-Contract(확장-수축) 마이그레이션.** "되돌리기 어려운" 데이터 모델·API 변경을 안전하게 하는 표준 절차. ①새 형태를 추가하되 옛 형태를 남기고(expand) ②양쪽을 함께 쓰다가 ③옛 형태를 제거(contract)한다. 배포 중 신·구가 공존한다는 §3 ④의 실행판이다. → [`./maintainability.md`](./maintainability.md)
+
+## 출처
+
+출처: `jun-bank/docs/study/notes/axes/system-design.md` (본체) + `08-engineering-axes-deep.md` §6 · 이관일 2026-09-16.\
+본문 표·절은 **원고**를 고쳐 쓴 것이다. 「한눈에」의 비유·그림과 맨 끝 `[Claude 추가]`는 **Claude 보강**이다.

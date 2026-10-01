@@ -1,10 +1,5 @@
 # 특화·클라우드 네이티브 DB (2015 ~ 현재)
 
-> 원본: `~/project/database-history/05-특화-현대-DB.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·논문명·표준번호·코드는 원문 그대로다.\
-> 용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.\
-> 원문이 절마다 반복해 쓴 소제목(「왜·언제 생겼나」·「주요 시스템」·「영향」)은 이 문서의 골격으로 대체했다.
-
 ## 한눈에 — 쉽게 말하면
 
 **특화 DB = 공구함에 드라이버만 있던 시절이 끝나고, 망치·렌치·핀셋이 생긴 것.**
@@ -667,3 +662,10 @@ HTAP는 ETL 제거와 실시간 분석이라는 매력적 약속에도 기대만
 - [DuckDB (Wikipedia)](https://en.wikipedia.org/wiki/DuckDB)
 - [In-Process Analytical Data Management with DuckDB (InfoQ)](https://www.infoq.com/articles/analytical-data-management-duckdb/)
 - [Database of Databases — DuckDB (dbdb.io)](https://dbdb.io/db/duckdb)
+
+## 출처
+
+원본: `~/project/database-history/05-특화-현대-DB.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·논문명·표준번호·코드는 원문 그대로다.\
+용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.\
+원문이 절마다 반복해 쓴 소제목(「왜·언제 생겼나」·「주요 시스템」·「영향」)은 이 문서의 골격으로 대체했다.

@@ -1,10 +1,5 @@
 # issue/cross-cutting/infra/client-api-version-floor — 클라이언트가 고정한 API 버전이 서버의 최소 버전 아래로 떨어지면 코드 변경 없이 깨진다 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-28).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 태그: `version-negotiation` · `environment-drift`
 
 ## 질문

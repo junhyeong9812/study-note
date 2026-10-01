@@ -1,11 +1,5 @@
 # domain-modeling-basic/25-org-chart — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/25-org-chart/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -509,3 +503,7 @@ return new OrgChart(next);
 - 문제 원문: `src/main/java/com/domain/org/OrgChart.java`(TODO 1~6 javadoc), `Employee.java`(계약 — 자기 자신 상사 거부), `README.md`(함정·측정·변종 검증·생각해볼 것)
 - 측정 수치: `README.md` "측정이 알려준 것" 하나~다섯 — 순환 이동 313·116·54 / 따라가는 인원 34.6·12.7·5.9(최대 100) / REPARENT 99.0 고정, CASCADE 54.9·83.0·90.6(최소 0) / 평균 단 33.2·10.3·4.1, 최대 단 74·29·12, 말단 25%·37%·49% / 중간 관리자 제거 100-21 → 97-20 → 93-19 → 88-18
 - 계약 테스트: `src/test/java/com/domain/org/OrgChartTest.java` — 6명 표본(c0·f0·t0·d1·d2·i1), `directReports("c0")`=[f0,t0], `allReports("c0")`=[f0,t0,d1,d2,i1], `chainOfCommand("i1")`=[d2,t0,c0], `depth("i1")`=3·`maxDepth()`=3·`subtreeSize("c0")`=6, `moveUnder("t0","d2")`·`("t0","i1")` 예외, `moveUnder("d2","f0")` 후 i1 사슬 [d2,f0,c0], `moveUnder("t0",null)` 후 roots [c0,t0], t0 제거 REPARENT 5명·CASCADE 2명·REJECT `IllegalStateException`, 말단 i1 제거는 세 규칙 동일, c0 REPARENT 제거 후 roots [f0,t0]·maxDepth 2, 빈 조직도 roots []·maxDepth 0
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-basic/25-org-chart/impl/`).

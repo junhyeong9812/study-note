@@ -1,14 +1,5 @@
 # html/syntax/17 — 표 구조: `table`/`thead`/`tbody`/`tfoot`/`caption`/`colgroup` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [HTML 4.01 §11.2.1](https://www.w3.org/TR/html401/struct/tables.html)(옛 `tfoot` 위치 규칙 — 대조용) · [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Tabular data」](https://html.spec.whatwg.org/multipage/tables.html) 절(요소마다의 콘텐츠 모델 · `HTMLTableElement` 의 `rows`·`insertRow()` 단계 · 4.9.12 「표 처리 모델」)과 [파싱 절의 「in table」 삽입 모드](https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-intable), [렌더링 절 15.3.8 Tables](https://html.spec.whatwg.org/multipage/rendering.html#tables-2), [HTML-AAM](https://w3c.github.io/html-aam/)(편집본 — `table`·`caption`·`tbody` 의 역할과 「table 요소의 접근 가능한 이름 계산」), [CSS 2.1 §17.3 Columns](https://www.w3.org/TR/CSS2/tables.html#columns)(열에 적용되는 속성 넷). 열어서 확인한 것만 적었다.
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 블록마다 던진 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다(캡처 조립기). 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> ★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다** — 「두 엔진에서 확인했다」고 적지 않는다.
-> **버전** — HTML 에는 언어 버전이 없다. `api.webstatus.dev` 조회로 **「Tables」(`table`) 는 Baseline widely**(newly 2015-07-29 → widely 2018-01-29), **`display: table` 도 widely** 다. 이 주제의 표면은 전부 오래된 것이다 — **바뀌는 것은 표면이 아니라 파서·트리가 그 표면으로 만드는 것**이다.
-> **선행** — [03번 주제](../03-parser-and-error-recovery/2-summary.md)(파서 오류 복구 — 이 주제의 `tbody` 삽입과 foster parenting 은 **그쪽 (2)·(3) 의 결론 위에 선다**)와 [05번 주제](../05-content-categories-and-models/2-summary.md)(콘텐츠 모델).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> ★★★ **본체는 창 ① `--dump-dom` 이다** — 표는 **소스에 쓴 것과 DOM 에 생긴 것이 가장 크게 갈리는 요소**다. 파서가 `tbody` 를 끼우고, 못 둘 것을 표 앞으로 빼낸다. 그 두 일은 **소스를 읽어서는 절대 안 보이고** 창 ① 로만 보인다. 창 ② 는 「그래서 화면 순서가 어떻게 되나」를, 창 ⑦ 은 「트리가 무엇을 남기나」를 잇는다.
-
 **이 판의 Chrome**
 
 ```text
@@ -850,3 +841,13 @@ HTML 은 문법 표면이 단순하므로 이 절은 「**형태 — 어디서 �
 - **왜 `tbody` 를 끼우나** — 표 처리 모델이 **행 묶음 단위로 좌표를 매기기** 때문이다. `tr` 이 표의 직속 자식이어도 모델은 돌지만, 파서가 DOM 을 **항상 같은 모양**(`table > tbody > tr`)으로 맞춰 두면 CSS 표 레이아웃과 스크립트가 한 경우만 다루면 된다. 연혁은 `history/web/03` 의 몫이다.
 - **foster parenting 의 이름** — 「수양 부모」. 표가 못 기르는 자식을 **표의 부모가 대신 맡는다** — 명세의 「알맞은 삽입 자리」 단계가 「마지막 표의 부모 안, 그 표 바로 앞」이다. 이 판의 표는 전부 `body` 의 자식이라 `body` 가 맡았다.
 - **`summary` 속성** — 옛 HTML 의 표 요약 속성은 **비준수**다. 명세는 「레이아웃 표로 분류하지 않았으면 그 값을 알려 줘도 된다(may)」고만 적는다. 이 판에서 재지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [HTML 4.01 §11.2.1](https://www.w3.org/TR/html401/struct/tables.html)(옛 `tfoot` 위치 규칙 — 대조용) · [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 [「Tabular data」](https://html.spec.whatwg.org/multipage/tables.html) 절(요소마다의 콘텐츠 모델 · `HTMLTableElement` 의 `rows`·`insertRow()` 단계 · 4.9.12 「표 처리 모델」)과 [파싱 절의 「in table」 삽입 모드](https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-intable), [렌더링 절 15.3.8 Tables](https://html.spec.whatwg.org/multipage/rendering.html#tables-2), [HTML-AAM](https://w3c.github.io/html-aam/)(편집본 — `table`·`caption`·`tbody` 의 역할과 「table 요소의 접근 가능한 이름 계산」), [CSS 2.1 §17.3 Columns](https://www.w3.org/TR/CSS2/tables.html#columns)(열에 적용되는 속성 넷). 열어서 확인한 것만 적었다.
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 실제로 받은 것이다. 블록마다 던진 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다(캡처 조립기). 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+★ **엔진은 Chrome 하나다.** 이 갈래는 **이식성을 주장하지 않는다** — 「두 엔진에서 확인했다」고 적지 않는다.
+**버전** — HTML 에는 언어 버전이 없다. `api.webstatus.dev` 조회로 **「Tables」(`table`) 는 Baseline widely**(newly 2015-07-29 → widely 2018-01-29), **`display: table` 도 widely** 다. 이 주제의 표면은 전부 오래된 것이다 — **바뀌는 것은 표면이 아니라 파서·트리가 그 표면으로 만드는 것**이다.
+**선행** — [03번 주제](../03-parser-and-error-recovery/2-summary.md)(파서 오류 복구 — 이 주제의 `tbody` 삽입과 foster parenting 은 **그쪽 (2)·(3) 의 결론 위에 선다**)와 [05번 주제](../05-content-categories-and-models/2-summary.md)(콘텐츠 모델).
+
+★★★ **본체는 창 ① `--dump-dom` 이다** — 표는 **소스에 쓴 것과 DOM 에 생긴 것이 가장 크게 갈리는 요소**다. 파서가 `tbody` 를 끼우고, 못 둘 것을 표 앞으로 빼낸다. 그 두 일은 **소스를 읽어서는 절대 안 보이고** 창 ① 로만 보인다. 창 ② 는 「그래서 화면 순서가 어떻게 되나」를, 창 ⑦ 은 「트리가 무엇을 남기나」를 잇는다.

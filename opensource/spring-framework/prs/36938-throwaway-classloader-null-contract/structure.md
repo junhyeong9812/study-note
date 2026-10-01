@@ -1,9 +1,5 @@
 # PR #36938 — 무대의 실구조와 워크플로우
 
-> PR #36938의 무대가 되는 실구조·워크플로우. 문제·수정은 README.md, 테스트는 tests.md 참조.
->
-> 기준: upstream main 526c706d1c3. 이 문서의 `파일:줄` 인용은 모두 이 커밋 기준이며, PR 시점의 base 코드와 다른 곳은 본문에서 명시한다.
-
 이 문서가 다루는 것은 `ThrowawayClassLoader#loadClass`의 3단 로딩 구조와, 그 3단이 전부 실패했을 때 무엇이 밖으로 나가는가다.\
 PR이 바꾼 것은 `catch` 블록 4줄이지만, 그 4줄이 결정하는 것은 이 클래스가 `java.lang.ClassLoader`라는 상위 타입과 맺은 계약을 지키는가 여부다.\
 인접 PR #36933이 같은 메서드의 자원 수명을 다뤘다면, 이 PR은 같은 메서드의 **실패 표현 방식**을 다룬다.
@@ -441,3 +437,7 @@ CGLIB 프록시, JDK 동적 프록시, 또는 `defineClass`로만 존재하는 �
 테스트 파일 `spring-core/src/test/java/org/springframework/aot/nativex/feature/ThrowawayClassLoaderTests.java`도 #36933이 새로 만든 것이고, 이 PR은 거기에 메서드 하나(`:60~77`)를 덧붙였다.\
 결과적으로 두 테스트가 폴백의 성공(`:37~58`)과 실패(`:60~77`)를 각각 하나씩 붙잡는 구조가 되었다.\
 그쪽 구조 설명은 `../36933/structure.md`에 있다.
+
+## 출처
+
+기준: upstream main 526c706d1c3. 이 문서의 `파일:줄` 인용은 모두 이 커밋 기준이며, PR 시점의 base 코드와 다른 곳은 본문에서 명시한다.

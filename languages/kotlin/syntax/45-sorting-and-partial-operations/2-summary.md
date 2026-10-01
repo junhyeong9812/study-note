@@ -1,15 +1,5 @@
 # kotlin/syntax/45 — 정렬·부분 연산 — `sortedBy`/`take`/`drop`/`chunked`/`windowed` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Ordering](https://kotlinlang.org/docs/collection-ordering.html)(`sorted`·`sortedBy`·`reversed`·`shuffled`) · [List-specific operations — Sort](https://kotlinlang.org/docs/list-operations.html)(제자리 `sort`·`sortBy`·`reverse`·`shuffle`) · [Retrieve collection parts](https://kotlinlang.org/docs/collection-parts.html)(`take`·`drop`·`chunked`·`windowed`·`zipWithNext`) — 이 문서는 그 페이지들의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((2)(3)(4)).
-> **실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.\
-> `kotlinc` 6회(컴파일 실패 2벌 — 같은 서명 탐침을 격자 스크립트 안과 밖에서, 실패가 결과다) · `java` 3회 + 격자 스크립트 안에서 1회 · stdlib 소스 jar 에서 3곳.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「제자리 칸 N / M」은 스크립트가 스스로 센 것**이다.
-> **버전** — `sort`·`sorted`·`sortBy`·`sortedBy`·`reverse`·`reversed`·`take`·`drop`·`takeLast`·`takeWhile` 은 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). `chunked`·`windowed` 는 **1.2**, `shuffle(random)`·`shuffled(random)` 은 **1.3** — 소스의 `@SinceKotlin` 을 읽었고 **발췌하지 않았다**.
-> **경계** — ★★★ **슬라이딩 윈도우 알고리즘은 [`cs/algorithm/09-sliding-window/`](../../../../cs/algorithm/09-sliding-window/) 가 정본이다** — 창을 밀며 합을 갱신하는 기법·시간 복잡도는 거기다. 여기는 **「stdlib 가 그 패턴을 이미 함수로 갖고 있다는 것과 그 경계 동작」** 뿐이다.\
-> **`sorted()`·`reversed()` 가 새 리스트**이고 **`sort()` 는 `MutableList` 에만 있어 `List` 에서 컴파일 에러**라는 것은 [40번 주제](../40-read-only-collections-and-runtime-types/) (2)(4)가 이미 쟀다 — 여기서는 그 한 쌍을 **아홉 연산 × 세 받는 쪽**으로 넓힌다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**제자리 대 새 리스트 격자 — 정렬 9연산 × (`MutableList` · `List` · `Array`) → 컴파일되나 · 반환 타입 · 원본이 바뀌나**」. 제자리인지는 **이름의 꼴**(`sort` 대 `sorted`)로 갈리는데, 그 규칙이 **정말 예외가 없는지**는 스물일곱 칸을 다 던져 봐야 안다.
 
 ## 이 주제가 쓰는 세 층
@@ -652,3 +642,13 @@ pairs    [1, -1, 1]
 - **`sortedArray()`·`sortedDescending()`·`sortWith`** — 격자에 넣지 않았다.
 - **`sortWith` 가 JVM 에서 무엇을 부르나** — 안정성을 실제로 주는 정렬 알고리즘을 **따라가지 않았다.**
 - **`windowed` 의 `transform` 판** — 창마다 리스트를 만들지 않고 변환하는 오버로드가 있다(소스 3804행). 던지지 않았다.
+
+## 실행 환경
+
+**기준 소스** — [Ordering](https://kotlinlang.org/docs/collection-ordering.html)(`sorted`·`sortedBy`·`reversed`·`shuffled`) · [List-specific operations — Sort](https://kotlinlang.org/docs/list-operations.html)(제자리 `sort`·`sortBy`·`reverse`·`shuffle`) · [Retrieve collection parts](https://kotlinlang.org/docs/collection-parts.html)(`take`·`drop`·`chunked`·`windowed`·`zipWithNext`) — 이 문서는 그 페이지들의 **목록**을 따르되, 문장은 인용하지 않고 **이 판의 stdlib 소스 jar**(`kotlin-stdlib-sources.jar` 2.4.20)의 KDoc 과 구현을 근거로 삼는다((2)(3)(4)).
+**실행 검증** — 이 문서의 모든 출력·에러는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java` 에서 실제로 얻었다.\
+`kotlinc` 6회(컴파일 실패 2벌 — 같은 서명 탐침을 격자 스크립트 안과 밖에서, 실패가 결과다) · `java` 3회 + 격자 스크립트 안에서 1회 · stdlib 소스 jar 에서 3곳.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「제자리 칸 N / M」은 스크립트가 스스로 센 것**이다.
+**버전** — `sort`·`sorted`·`sortBy`·`sortedBy`·`reverse`·`reversed`·`take`·`drop`·`takeLast`·`takeWhile` 은 **1.0** — 이 판의 소스에서 선언 위에 `@SinceKotlin` 이 **없다**(확인만 했고 발췌하지 않았다). `chunked`·`windowed` 는 **1.2**, `shuffle(random)`·`shuffled(random)` 은 **1.3** — 소스의 `@SinceKotlin` 을 읽었고 **발췌하지 않았다**.
+**경계** — ★★★ **슬라이딩 윈도우 알고리즘은 [`cs/algorithm/09-sliding-window/`](../../../../cs/algorithm/09-sliding-window/) 가 정본이다** — 창을 밀며 합을 갱신하는 기법·시간 복잡도는 거기다. 여기는 **「stdlib 가 그 패턴을 이미 함수로 갖고 있다는 것과 그 경계 동작」** 뿐이다.\
+**`sorted()`·`reversed()` 가 새 리스트**이고 **`sort()` 는 `MutableList` 에만 있어 `List` 에서 컴파일 에러**라는 것은 [40번 주제](../40-read-only-collections-and-runtime-types/) (2)(4)가 이미 쟀다 — 여기서는 그 한 쌍을 **아홉 연산 × 세 받는 쪽**으로 넓힌다.

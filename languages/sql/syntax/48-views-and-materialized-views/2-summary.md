@@ -1,17 +1,5 @@
 # sql/48-뷰와 구체화 뷰 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 본문은 Claude 작성이다 — 원고가 아니다.** SQL 은 원고 없이 공식 문서로 접지하는 문법 주제다([작성법 §2-1](../../../../reference/study-note-guide.md)).
->
-> **기준 소스** — [PostgreSQL 18 · CREATE VIEW](https://www.postgresql.org/docs/18/sql-createview.html) · [PostgreSQL 18 · CREATE MATERIALIZED VIEW](https://www.postgresql.org/docs/18/sql-creatematerializedview.html) · [MySQL 8.4 · CREATE VIEW](https://dev.mysql.com/doc/refman/8.4/en/create-view.html) · [MySQL 8.4 · Updatable and Insertable Views](https://dev.mysql.com/doc/refman/8.4/en/view-updatability.html)\
-> **실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
-> 아래에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
-> **이 편이 만든 객체와 그 뒷정리** — 표 `t48_emp`·`t48_high_snap`, 뷰 `v48_high`·`v48_high_chk`·`v48_agg`·`v48_star`,
-> 구체화 뷰 `mv48_high`. PG 는 전부 `BEGIN … ROLLBACK` 안에서 만들었고, MySQL 은 DDL 이 암묵 커밋이라
-> `DROP VIEW` / `DROP TABLE` 로 직접 지웠다. **기존 `emp`·`dept` 는 한 글자도 바꾸지 않았다.**\
-> **버전** — 구체화 뷰는 PG 9.3 부터 있고 **MySQL 8.4.10 에는 없다**(파서가 키워드를 모른다 — 2절에서 던져 본다).\
-> **선행** — [32 CTE(WITH)](../32-cte-with-clause/) · [42 CREATE·ALTER·DROP TABLE](../42-create-alter-drop-table/). **두 폴더 모두 이 배치 작업 중에 생겨 링크로 전환했다.**
-
 ## 한눈에 — 쉽게 말하면
 
 **뷰는 「저장된 질의」이고, 구체화 뷰는 「저장된 결과」다.**
@@ -680,3 +668,14 @@ CHECK TABLE v;
 - **증분 갱신(incremental / fast refresh)** — 「바뀐 부분만 다시 계산하기」는 PG 의 `REFRESH` 에 없다(전량 재계산이다). Oracle 의 fast refresh, 일부 확장·다른 엔진이 지원한다.
 - **`INSTEAD OF` 트리거** — 4절의 PG `HINT` 가 가리키는 길. 갱신 불가능한 뷰에도 「이 뷰에 `INSERT` 가 오면 실제로는 이렇게 하라」를 직접 쓸 수 있다.
 - **권한의 도구로서의 뷰** — 「급여 열은 빼고 나머지만」 같은 열 단위 접근 제어를 뷰로 만든다. MySQL 의 `SQL SECURITY DEFINER`(1절 출력에 보인다)가 그때 누구의 권한으로 읽을지를 정한다.
+
+## 실행 환경
+
+**기준 소스** — [PostgreSQL 18 · CREATE VIEW](https://www.postgresql.org/docs/18/sql-createview.html) · [PostgreSQL 18 · CREATE MATERIALIZED VIEW](https://www.postgresql.org/docs/18/sql-creatematerializedview.html) · [MySQL 8.4 · CREATE VIEW](https://dev.mysql.com/doc/refman/8.4/en/create-view.html) · [MySQL 8.4 · Updatable and Insertable Views](https://dev.mysql.com/doc/refman/8.4/en/view-updatability.html)\
+**실행 검증** — **PostgreSQL 18.6**(도커 `postgres:18`) · **MySQL 8.4.10**(도커 `mysql:8.4`), 2026-09-21.\
+본문에 실린 출력·에러는 **전부 이 두 서버에 실제로 던져서 받은 것**이다. 지어낸 출력은 없다.\
+**이 편이 만든 객체와 그 뒷정리** — 표 `t48_emp`·`t48_high_snap`, 뷰 `v48_high`·`v48_high_chk`·`v48_agg`·`v48_star`,
+구체화 뷰 `mv48_high`. PG 는 전부 `BEGIN … ROLLBACK` 안에서 만들었고, MySQL 은 DDL 이 암묵 커밋이라
+`DROP VIEW` / `DROP TABLE` 로 직접 지웠다. **기존 `emp`·`dept` 는 한 글자도 바꾸지 않았다.**\
+**버전** — 구체화 뷰는 PG 9.3 부터 있고 **MySQL 8.4.10 에는 없다**(파서가 키워드를 모른다 — 2절에서 던져 본다).\
+**선행** — [32 CTE(WITH)](../32-cte-with-clause/) · [42 CREATE·ALTER·DROP TABLE](../42-create-alter-drop-table/). **두 폴더 모두 이 배치 작업 중에 생겨 링크로 전환했다.**

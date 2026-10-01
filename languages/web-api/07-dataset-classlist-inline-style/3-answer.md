@@ -1,10 +1,5 @@
 # web-api/07 — `dataset`·`classList`·인라인 `style`: 스크립트가 만지는 세 표면 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/dom.html#dom-dataset)(`dataset`)·[WHATWG DOM Standard](https://dom.spec.whatwg.org/#interface-domtokenlist)(`DOMTokenList`)·[CSSOM](https://drafts.csswg.org/cssom/#the-elementcssinlinestyle-interface)(`CSSStyleDeclaration`)으로 접지했다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**
-
 **★ 이 주제에는 흔들리는 칸이 없다.** 시간도 크기도 재지 않는다.
 
 | 안 흔들리는 칸 | 흔들리는 칸 |
@@ -421,3 +416,9 @@ const padw = (s, n) => s + ' '.repeat(Math.max(0, n - W(s)));
 - **멱등(idempotent)** — 여러 번 해도 한 번 한 것과 같은 것. `toggle(name, true)` 가 그렇다.
 - **전방 호환(forward compatible)** — 모르는 것을 에러로 보지 않고 무시해서, 새 기능을 쓴 코드가 옛 구현에서도 나머지는 동작하게 하는 설계.
 - **expando** — 표준에 없는데 스크립트가 붙인 프로퍼티(정본: [06번 주제](../06-attribute-vs-property/2-summary.md)).
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 `--dump-dom` 으로 실제로 받은 것**이다. 명령은 블록마다 배너로 실려 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/dom.html#dom-dataset)(`dataset`)·[WHATWG DOM Standard](https://dom.spec.whatwg.org/#interface-domtokenlist)(`DOMTokenList`)·[CSSOM](https://drafts.csswg.org/cssom/#the-elementcssinlinestyle-interface)(`CSSStyleDeclaration`)으로 접지했다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**

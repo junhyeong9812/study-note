@@ -1,10 +1,5 @@
 # issue/rust/tokio/select-loop-semantics — select! 루프의 의미론: 굶김·자기 교착·영원히 준비된 채널 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ⚠️ **이 질문 목록은 Claude 초안이다(2026-09-24).** 읽고 본인 질문으로 교체한 뒤 이 줄을 지운다.
-
 ## 질문
 1. (예측) `loop { select! { Some(msg) = rx.recv() => ..., Some(inp) = input.recv() => ... } }`에서 원격이 채널을 닫아 `rx.recv()`가 `None`을 반환하면 루프는 끝나는가? 두 분기가 모두 `None`이 되면 무엇이 일어나는가?
 2. (왜) `watch::Receiver::changed()`는 송신측이 drop된 뒤 `Err`를 반환한다. 이 `Err`를 무시하고 루프를 계속 돌면 왜 CPU를 태우는 busy loop가 되는가? "닫힌 채널은 영원히 준비 상태"를 설명하라.

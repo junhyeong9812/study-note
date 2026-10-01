@@ -1,14 +1,5 @@
 # web-api/16 — 전파 3단계: 캡처·타깃·버블과 `target` 대 `currentTarget` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★ **이 편의 본체는 창 ④ 를 늘린 「호출 순서 로그」다** — 리스너가 **몇 번** 불렸나(15편)가 아니라 **어느 순서로, 어느 단계에서, 누구 앞에서** 불렸나를 한 줄씩 적는다.\
-> **기준 소스** — [WHATWG DOM Standard — Events](https://dom.spec.whatwg.org/#events) 의 「dispatch」·「invoke」·「inner invoke」 절과 [HTML Standard — The `Document` object](https://html.spec.whatwg.org/multipage/dom.html#the-document-object) 의 「`Document` 의 get the parent」 문장. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **클릭·포커스·마우스 이동은 CDP 로 넣은 진짜 입력**이고(아래 하네스), 같은 순서표를 **합성 이벤트로도 던져 견줬다.** 블록마다 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. 이 편이 다루는 디스패치 절차는 DOM 표준의 현재 본문으로 읽는다. ★ **「타깃에서는 등록 순서대로 부른다」는 옛 설명이 있다** — 지금 본문과 이 판은 그렇지 않다((3)). **언제 바뀌었는지는 확인하지 않았다.**\
-> **선행** — [15번 주제](../15-listener-registration/2-summary.md)(리스너 등록과 해제 — `capture` 가 **동일성 키**라는 것까지). 여기는 그 `capture` 가 **무엇을 하는지**의 정본이다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -1105,3 +1096,12 @@ $ python3 wa16b-cdp.py page wa16b-16-same.html | sed -n '10,11p'
 - **`mouseover` 가 자식 사이를 옮길 때마다 또 나는 것**과 그것을 `relatedTarget` 으로 거르는 것은 [18번 주제](../18-event-delegation/2-summary.md)에서 진짜 마우스로 쟀다.
 - **「타깃에서는 등록 순서」가 언제 바뀌었나**는 확인하지 않았다. 이 편은 **지금 명세 본문과 이 판의 결과**만 적는다.
 - **포인터 이벤트(`pointerdown` 등)의 경로와 `setPointerCapture`** 는 [목록의 **23번 주제**](../23-pointer-events/) 몫이라 던지지 않았다.
+
+## 실행 환경
+
+★ **이 편의 본체는 창 ④ 를 늘린 「호출 순서 로그」다** — 리스너가 **몇 번** 불렸나(15편)가 아니라 **어느 순서로, 어느 단계에서, 누구 앞에서** 불렸나를 한 줄씩 적는다.\
+**기준 소스** — [WHATWG DOM Standard — Events](https://dom.spec.whatwg.org/#events) 의 「dispatch」·「invoke」·「inner invoke」 절과 [HTML Standard — The `Document` object](https://html.spec.whatwg.org/multipage/dom.html#the-document-object) 의 「`Document` 의 get the parent」 문장. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **클릭·포커스·마우스 이동은 CDP 로 넣은 진짜 입력**이고(맨 위 하네스), 같은 순서표를 **합성 이벤트로도 던져 견줬다.** 블록마다 명령이 배너로 실려 있고 사람이 옮겨 적지 않았다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. 이 편이 다루는 디스패치 절차는 DOM 표준의 현재 본문으로 읽는다. ★ **「타깃에서는 등록 순서대로 부른다」는 옛 설명이 있다** — 지금 본문과 이 판은 그렇지 않다((3)). **언제 바뀌었는지는 확인하지 않았다.**\
+**선행** — [15번 주제](../15-listener-registration/2-summary.md)(리스너 등록과 해제 — `capture` 가 **동일성 키**라는 것까지). 여기는 그 `capture` 가 **무엇을 하는지**의 정본이다.

@@ -1,10 +1,5 @@
 # 웹 교차 표본 — 운영체제 새 노트 (V5, 2026-09-30)
 
-> 점검·판정 워커가 "원문으로 확인했다"고 보고한 외부 사실 가운데 24건을 뽑았다.
-> 뽑을 때는 버전 조건, 기본값, man 페이지와 소스가 어긋나는 곳, 사건 사실을 우선했다.
-> 교차 확인자는 점검자와 다른 컨텍스트에서 출처를 **직접 다시 열어** 판정한다. 노트 본문이 그 사실을 같은 뜻으로 적었는지도 대조한다.
-> 판정은 셋 중 하나다: 일치 / 불일치(무엇이) / 확인 불가(사유)
-
 | # | 노트 | 주장 | 출처 | 판정 |
 |---|---|---|---|---|
 | 1 | 05·10 | 리눅스 5.8부터 공유 anon THP에 쓰면 PMD를 쪼개 4KB만 복사(commit 3917c80280c9) | https://github.com/torvalds/linux/commit/3917c80280c93a7123f1a3a6dcdb10a3ea19737d | 일치 — 'For anon-THP we try to allocate huge page on the write fault, but on file-THP we split PMD and allocate 4k page.' + 패치 `fallback: __split_huge_pmd(...); return VM_FAULT_FALLBACK;`, branch_commits 최초 태그 v5.8-rc1 (note 05 2-summary.md:284, 10 2-summary.md:248) |

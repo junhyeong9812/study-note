@@ -1,20 +1,5 @@
 # python/syntax/32-container-protocol — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
->
-> 이 갈래는 **예측형**이다 — 「무엇을 아는가」가 아니라 「**이 코드의 출력을 예측할 수 있는가**」를 묻는다.
-> 코드가 있는 문항은 **돌려 보기 전에** 종이에 출력을 적고 시작한다.
-> ★★ 이 주제에서는 **「어느 메서드가 대신 불렸나」가 답인 자리가 대부분이다.**
-> 결과값만 맞히고 **호출 로그를 못 맞히면 틀린 것**으로 친다.
-> ★ 그리고 **「안 불린 줄」을 짚어야 맞은 것**인 문항이 둘 있다(1번의 슬라이스, 3번의 `__bool__`).
->
-> 실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
-> ★ **이 주제는 [16번](../16-iterator-protocol/1-question.md)을 전부 쓴다** — `__getitem__` 낡은 프로토콜이 거기 정본이다.
-> 막히면 그것이 안 잡힌 것인지부터 짚어라.
-> ★ **이 사슬은 [29](../29-classes-and-attribute-lookup/1-question.md) → [30](../30-repr-eq-hash-contracts/1-question.md) → [31](../31-comparison-protocol-and-sortability/1-question.md) → 32** 로 이어지고, **여기가 끝**이다.
-
 ## 질문
 
 <!-- 형식: 질문 하나 = "?" 하나 = 한 줄.
@@ -378,6 +363,15 @@ print("   그런데 for 는 돈다          :", [v for v in Old()])
 - ★ 「`for` 가 돈다」와 「`isinstance(o, Iterable)` 이 참이다」가 갈리는 객체는 어떤 것인가?
 - [30번](../30-repr-eq-hash-contracts/2-summary.md)의 `__eq__` 가 틀리면 이 주제의 무엇이 같이 틀리는가?
 
+## 실행 환경
+
+★★ 이 주제에서는 **「어느 메서드가 대신 불렸나」가 답인 자리가 대부분이다.**
+결과값만 맞히고 **호출 로그를 못 맞히면 틀린 것**으로 친다.
+★ 그리고 **「안 불린 줄」을 짚어야 맞은 것**인 문항이 둘 있다(1번의 슬라이스, 3번의 `__bool__`).
+
+실행 환경: `python3` **3.12.3** · Linux. 던지는 형태는 `python3 - <파일` 로 고정했다.
+★ **이 주제는 [16번](../16-iterator-protocol/1-question.md)을 전부 쓴다** — `__getitem__` 낡은 프로토콜이 거기 정본이다.
+
 ## 복습 기록
 
 | 날짜 | 결과 | 틀린 질문 | 다음 복습 |
@@ -385,3 +379,7 @@ print("   그런데 for 는 돈다          :", [v for v in Old()])
 |  |  |  |  |
 |  |  |  |  |
 |  |  |  |  |
+
+---
+
+★ **이 사슬은 [29](../29-classes-and-attribute-lookup/1-question.md) → [30](../30-repr-eq-hash-contracts/1-question.md) → [31](../31-comparison-protocol-and-sortability/1-question.md) → 32** 로 이어지고, **여기가 끝**이다.

@@ -1,11 +1,5 @@
 # PR #36972 — 무대 구조와 워크플로우
 
-> PR #36972의 무대가 되는 실구조·워크플로우. 문제·수정은 README.md, 테스트는 tests.md 참조.\
-> 기준: upstream main `526c706d1c3`.\
-> 이 PR은 이미 머지되었으므로 `FileNativeConfigurationWriter.java:63`의 현재 코드는 "수정 후"다.\
-> 수정 전 형태가 필요한 곳은 그때마다 명시한다.\
-> 나머지 인용은 이 PR로 바뀌지 않았으므로 수정 전후가 동일하다.
-
 이 문서가 다루는 것은 Spring AOT가 수집한 `RuntimeHints`를 GraalVM용 JSON 파일로 내려놓는 다섯 층짜리 직렬화 스택의 실구조다.\
 층별 소유 관계에서 출발해, 힌트 하나가 디스크 바이트가 되기까지의 경로를 따라간다.\
 그다음 세 층에 흩어진 분기로 결함이 성립하는 조건을 짚고, 이 스택이 AOT 파이프라인 전체에서 차지하는 자리와 배경 개념을 정리한다.
@@ -534,3 +528,10 @@ JSON 명세는 문자열 안의 비ASCII 문자를 그대로 두는 것도, `\uX
 `NativeConfigurationWriter.hasAnyHint`의 게이트에 lambda 힌트 검사를 추가한 [#36989](../36989-lambda-hints-file-emission/structure.md)가 3장 첫 분기도의 `:49`를 만들었다.\
 `ValueCodeGenerator`를 무대로 하는 [#36965](../36965-valuecodegen-nonfinite-doubles/structure.md)는 같은 AOT 파이프라인의 다른 줄기 — 생성 Java 소스 쪽 — 를 다룬다.\
 4장 파이프라인 그림에서 세 PR의 자리를 함께 확인할 수 있다.
+
+## 출처
+
+기준: upstream main `526c706d1c3`.\
+이 PR은 이미 머지되었으므로 `FileNativeConfigurationWriter.java:63`의 현재 코드는 "수정 후"다.\
+수정 전 형태가 필요한 곳은 그때마다 명시한다.\
+나머지 인용은 이 PR로 바뀌지 않았으므로 수정 전후가 동일하다.

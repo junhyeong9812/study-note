@@ -1,12 +1,5 @@
 # ts/syntax/26 — 매핑 타입 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Handbook — Mapped Types](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html) ·
-> [TypeScript 2.8 릴리스 노트 — Improved control over mapped type modifiers](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html) ·
-> [TypeScript 4.1 릴리스 노트 — Key Remapping in Mapped Types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-1.html).
-> 위는 **규칙 확인용 링크**이고, 본문의 진단·출력은 **전부 이 판에서 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
-> **실행 검증** — 아래 판에서 실제로 돌려 얻었다.
-
 ```text
 ===== tsc --version · node --version · python3 --version (sh exit=0) =====
 Version 7.0.2
@@ -24,7 +17,6 @@ Python 3.12.3
 > ★★ 표 안의 `\|` 는 이스케이프이고 **뜻은 `|` 다.**
 > **버전** — 매핑 타입은 **TS 2.1**, `+`/`-` 수정자는 **TS 2.8**, 튜플·배열에 걸린 매핑이 배열로 남는 것은 **TS 3.1**,
 > `as` 키 리매핑은 **TS 4.1** 이다. ★ **7.0.2 에서 도는지는 외우지 않고 던져서 확인했다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
 
 ## ★★★ 이 주제가 쓰는 탐침 — 그리고 조수를 바꾼 이유
 
@@ -726,3 +718,11 @@ ex.28b.ts    5회 md5 가짓수 1
   재귀의 한계는 [**25번 주제**](../25-infer-and-recursive-conditional-types/) 6절의 이야기와 같은 집안이다. **이 문서에서는 안 던졌다.**
 - **`as` 로 튜플 칸만 거르고 싶다면** — 4절이 보였듯 `as` 를 쓰면 튜플을 잃는다.
   튜플을 거를 때는 매핑 대신 **재귀 조건부로 튜플을 다시 쌓는** 쪽이 흔하다. **안 던졌다.**
+
+## 실행 환경
+
+**기준 소스** — [Handbook — Mapped Types](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html) ·
+[TypeScript 2.8 릴리스 노트 — Improved control over mapped type modifiers](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html) ·
+[TypeScript 4.1 릴리스 노트 — Key Remapping in Mapped Types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-1.html).
+위는 **규칙 확인용 링크**이고, 본문의 진단·출력은 **전부 이 판에서 직접 던져 받은 것**이다. 핸드북 예제를 옮기지 않았다.
+**실행 검증** — 맨 위 판에서 실제로 돌려 얻었다.

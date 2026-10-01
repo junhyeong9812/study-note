@@ -1,63 +1,5 @@
 # js/syntax/33 — 동등성 세 종류: 「`NaN` 과 `-0` 두 행만 가르면 된다 — 쓰는 곳마다 어느 알고리즘인지 한 장에」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **이 본문은 원고가 아니라 Claude 작성이다**(문법·API 갈래는 원고 없이 공식 문서로 접지한다).
->
-> ★★★ **이 편은 「이미 곳곳에서 조각으로 잰 것을 한데 모으는 정본」 편이다.** 격자의 대부분은 앞 편들이 이미 쟀다 —
-> [02번](../02-coercion-and-loose-equality/2-summary.md)의 `==`·`===`·`Object.is` **225칸 격자** · [23번](../23-map-set-and-weak-collections/2-summary.md)의 **비교 자리 여덟 곳 × 값의 짝 여덟 개(`9 / 56`)** 와 **`Map` 이 `-0` 을 `+0` 으로 바꿔 저장하는 것** ·
-> [26번](../26-array-search-flatten-and-create/2-summary.md)의 **`-0` 은 `indexOf`/`includes` 를 안 가른다**와 **구멍 격자**.
-> ★★★ **그래서 다시 재지 않는다.** 동작 (1)의 **정본 표**가 그 조각들을 「**알고리즘 × 쓰는 곳**」 한 장으로 묶고 **칸마다 어느 편에서 쟀나**를 단다.
-> **새로 잰 것은 그 표의 빈 칸뿐**이다 — `switch` · `findIndex(x => x === b)` · `Object.defineProperty` 의 재정의 · `Map.groupBy`(ES2024) · 형식화 배열(TypedArray) · `String.prototype.includes`(부적용).
->
-> ★★★ **이 주제의 본체는 ② 전수 격자다** — 다만 **새 열만** 돌린다. 23번과 **같은 짝 여덟 개**를 새 자리에 던지고, 열마다 여덟 답의 **서명**(`y`/`n` 여덟 글자)을 뽑아
-> **기준 비교 넷(`===` · `Object.is` · `includes` · `==`)의 서명과 같은지를 스크립트가 가른다**(동작 (2)). 사람이 「이것은 `===` 가족」이라고 손으로 분류하지 않는다.
->
-> **기준 소스** — 열어서 확인한 것만.
-> - [ECMA-262 — Testing and Comparison Operations](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-testing-and-comparison-operations) — `IsStrictlyEqual` · `IsLooselyEqual` · `SameValue` · `SameValueZero`
-> - 같은 명세의 `CaseClauseIsSelected`(`switch`) · `ValidateAndApplyPropertyDescriptor`(재정의) · `AddValueToKeyedGroup`(`Map.groupBy`) · `%TypedArray%.prototype.includes`/`indexOf` · `OrdinaryHasInstance`
-> - 명세 문장은 이 배치가 받아 둔 **ES2026 판 HTML** 에서 읽었다(연산 이름과 짧은 인용만 싣는다).
->
-> **실행 검증** — 이 문서의 새 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> 배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
-> ★★★ **`Map.groupBy`(ES2024)는 두 node 판에 없다**(판별 블록). 그래서 같은 격자 파일을 **Chrome 151 에서 한 번 더** 돌려 그 열을 채웠다.
-> ★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기 — 이 배치 전체 `identical 12`).
->
-> **버전**
->
-> | 무엇 | 판 | 이 머신에서 |
-> |---|---|---|
-> | `===` · `==` · `switch` · `indexOf` | ES1 · ES3 | 세 판 다 있다 |
-> | `Object.is` · `Map`/`Set` · TypedArray `indexOf` | ES2015 | 세 판 다 있다 |
-> | `Array.prototype.includes` · TypedArray `includes` | ES2016 | 세 판 다 있다 |
-> | `Map.groupBy` | **ES2024** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
->
-> **★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
->
-> | 창 | 이 주제에서 무엇을 보나 |
-> |---|---|
-> | ★★★ **② 전수 격자**(본체) | 새 자리 넷 × 값의 짝 8 — 열마다 서명을 뽑아 **기준 비교와 같은 열 N / M** 을 스크립트가 센다(동작 (2)) |
-> | ★★ **④ 예외의 `constructor.name` + `message`** | `Object.defineProperty` 재정의가 **값이 「다르다」고 판정되면** 던지는 `TypeError` — 그 판정이 곧 비교의 답이다(동작 (3)) |
-> | ★ **① 추상 연산에 로그 심기** | **부적용** — 네 비교 알고리즘은 사용자 코드를 한 번도 안 부른다(`==` 의 `ToPrimitive` 는 02번이 로그로 쟀다) |
-> | ★ **③ 브랜드 태그** | **부적용** — 비교는 값의 종류가 아니라 값 자체를 본다 |
-> | ★ **부적용 — 두 번 컴파일**(엄격/비엄격) | 비교 규칙은 모드를 안 탄다 |
-> | ★ **안 쟀다 — 성능** | 「`Object.is` 가 `===` 보다 느리다」 같은 문장을 쓰지 않는다 |
->
-> **★ 흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 예외 **문구**(`Cannot redefine property: k`) — V8 의 글자 | ★★★ 격자의 **`y`/`n`** 과 서명 · 「같은 열 N / M」 · 저장된 키가 `-0` 인가 |
-> | `Map.groupBy` 열이 **어느 엔진에 있나** — 판의 사정(node 두 판 `(absent)`) | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) |
->
-> **선행** — [02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md)(직접 선행 — ★★★ **`==`·`===`·`Object.is` 의 675칸**, `===` 와 `Object.is` 가 **정확히 두 칸**에서 갈린다) ·
-> [23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(★★★ **비교 자리 여덟 곳의 격자 `9 / 56`** · `-0` 을 `+0` 으로 **바꿔 저장** · 집합 연산과 Upsert 의 `-0`) ·
-> [26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(★★ **`-0` 은 `indexOf`/`includes` 를 안 가른다** · `lastIndexOf` · 구멍 · `findIndex(Number.isNaN)`) ·
-> [14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)(재정의가 막히는 27칸 — 동작 (3)의 무대).
-> **같은 배치** — [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md) · [34 — 타입 검사 관용구](../34-type-checking-idioms/2-summary.md) · [35 — 엄격 모드](../35-strict-mode/2-summary.md).
->
-> ★★ **경계 — `==` 의 강제 변환 표는 02번이 정본이다.** 여기서는 `==` 를 **기준 서명 하나**로만 쓴다.
-> ★★ **경계 — `switch` 의 나머지 규칙**(fall-through · 라벨)은 [목록의 **52번 주제**](../52-switch-labels-and-control-flow/)의 몫이다. 여기서는 **`case` 가 무엇으로 견주나**만 본다.
-
 ```sh
 # js32b-versions.sh
 #!/usr/bin/env bash
@@ -567,3 +509,60 @@ row("frozen { k: 0 }, redefine with -0", shot(() => (Object.defineProperty(Objec
 
 - **Record·Tuple 같은 「값으로 비교되는 복합 값」** — 제안 단계의 이야기다. 이 문서는 다루지 않는다.
 - **`NaN` 의 비트 패턴** — `NaN` 은 여러 비트 패턴이 있다. `defineProperty` 의 NOTE 가 그 사실을 언급한다. 이 문서는 비트를 찍지 않았다(`0/0` 과 리터럴 `NaN` 이 재정의에서 같다는 것만 봤다).
+
+## 실행 환경
+
+★★★ **이 편은 「이미 곳곳에서 조각으로 잰 것을 한데 모으는 정본」 편이다.** 격자의 대부분은 앞 편들이 이미 쟀다 —
+[02번](../02-coercion-and-loose-equality/2-summary.md)의 `==`·`===`·`Object.is` **225칸 격자** · [23번](../23-map-set-and-weak-collections/2-summary.md)의 **비교 자리 여덟 곳 × 값의 짝 여덟 개(`9 / 56`)** 와 **`Map` 이 `-0` 을 `+0` 으로 바꿔 저장하는 것** ·
+[26번](../26-array-search-flatten-and-create/2-summary.md)의 **`-0` 은 `indexOf`/`includes` 를 안 가른다**와 **구멍 격자**.
+★★★ **그래서 다시 재지 않는다.** 동작 (1)의 **정본 표**가 그 조각들을 「**알고리즘 × 쓰는 곳**」 한 장으로 묶고 **칸마다 어느 편에서 쟀나**를 단다.
+**새로 잰 것은 그 표의 빈 칸뿐**이다 — `switch` · `findIndex(x => x === b)` · `Object.defineProperty` 의 재정의 · `Map.groupBy`(ES2024) · 형식화 배열(TypedArray) · `String.prototype.includes`(부적용).
+
+★★★ **이 주제의 본체는 ② 전수 격자다** — 다만 **새 열만** 돌린다. 23번과 **같은 짝 여덟 개**를 새 자리에 던지고, 열마다 여덟 답의 **서명**(`y`/`n` 여덟 글자)을 뽑아
+**기준 비교 넷(`===` · `Object.is` · `includes` · `==`)의 서명과 같은지를 스크립트가 가른다**(동작 (2)). 사람이 「이것은 `===` 가족」이라고 손으로 분류하지 않는다.
+
+**기준 소스** — 열어서 확인한 것만.
+- [ECMA-262 — Testing and Comparison Operations](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-testing-and-comparison-operations) — `IsStrictlyEqual` · `IsLooselyEqual` · `SameValue` · `SameValueZero`
+- 같은 명세의 `CaseClauseIsSelected`(`switch`) · `ValidateAndApplyPropertyDescriptor`(재정의) · `AddValueToKeyedGroup`(`Map.groupBy`) · `%TypedArray%.prototype.includes`/`indexOf` · `OrdinaryHasInstance`
+- 명세 문장은 이 배치가 받아 둔 **ES2026 판 HTML** 에서 읽었다(연산 이름과 짧은 인용만 싣는다).
+
+**실행 검증** — 이 문서의 새 출력은 **실제로 돌려 받은 것**이고, 블록은 **전부 캡처 파일에서 조립**했다.
+배너의 `node20` 은 `~/.nvm/versions/node/v20.19.6/bin/node`, `node18` 은 기본 PATH 의 `node`(v18.19.1)다.
+★★★ **`Map.groupBy`(ES2024)는 두 node 판에 없다**(판별 블록). 그래서 같은 격자 파일을 **Chrome 151 에서 한 번 더** 돌려 그 열을 채웠다.
+★★ **이 주제에서 두 node 판이 갈린 탐침은 없다**(대조기 — 이 배치 전체 `identical 12`).
+
+**버전**
+
+| 무엇 | 판 | 이 머신에서 |
+|---|---|---|
+| `===` · `==` · `switch` · `indexOf` | ES1 · ES3 | 세 판 다 있다 |
+| `Object.is` · `Map`/`Set` · TypedArray `indexOf` | ES2015 | 세 판 다 있다 |
+| `Array.prototype.includes` · TypedArray `includes` | ES2016 | 세 판 다 있다 |
+| `Map.groupBy` | **ES2024** | ★ **두 node 판에 없다** — Chrome 151 로만 돌렸다 |
+
+**★★★ 이 주제가 쓰는 창 — 그리고 부적용인 창**
+
+| 창 | 이 주제에서 무엇을 보나 |
+|---|---|
+| ★★★ **② 전수 격자**(본체) | 새 자리 넷 × 값의 짝 8 — 열마다 서명을 뽑아 **기준 비교와 같은 열 N / M** 을 스크립트가 센다(동작 (2)) |
+| ★★ **④ 예외의 `constructor.name` + `message`** | `Object.defineProperty` 재정의가 **값이 「다르다」고 판정되면** 던지는 `TypeError` — 그 판정이 곧 비교의 답이다(동작 (3)) |
+| ★ **① 추상 연산에 로그 심기** | **부적용** — 네 비교 알고리즘은 사용자 코드를 한 번도 안 부른다(`==` 의 `ToPrimitive` 는 02번이 로그로 쟀다) |
+| ★ **③ 브랜드 태그** | **부적용** — 비교는 값의 종류가 아니라 값 자체를 본다 |
+| ★ **부적용 — 두 번 컴파일**(엄격/비엄격) | 비교 규칙은 모드를 안 탄다 |
+| ★ **안 쟀다 — 성능** | 「`Object.is` 가 `===` 보다 느리다」 같은 문장을 쓰지 않는다 |
+
+**★ 흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 예외 **문구**(`Cannot redefine property: k`) — V8 의 글자 | ★★★ 격자의 **`y`/`n`** 과 서명 · 「같은 열 N / M」 · 저장된 키가 `-0` 인가 |
+| `Map.groupBy` 열이 **어느 엔진에 있나** — 판의 사정(node 두 판 `(absent)`) | ★★ **이 주제의 탐침에는 재실행에서 흔들린 칸이 없다**(재대조 동일) |
+
+**선행** — [02 — 강제 변환과 `==` 대 `===`](../02-coercion-and-loose-equality/2-summary.md)(직접 선행 — ★★★ **`==`·`===`·`Object.is` 의 675칸**, `===` 와 `Object.is` 가 **정확히 두 칸**에서 갈린다) ·
+[23 — `Map`·`Set` 과 약한 컬렉션](../23-map-set-and-weak-collections/2-summary.md)(★★★ **비교 자리 여덟 곳의 격자 `9 / 56`** · `-0` 을 `+0` 으로 **바꿔 저장** · 집합 연산과 Upsert 의 `-0`) ·
+[26 — 배열 탐색·평탄화·생성](../26-array-search-flatten-and-create/2-summary.md)(★★ **`-0` 은 `indexOf`/`includes` 를 안 가른다** · `lastIndexOf` · 구멍 · `findIndex(Number.isNaN)`) ·
+[14 — 프로퍼티 디스크립터와 동결](../14-property-descriptors-and-freezing/2-summary.md)(재정의가 막히는 27칸 — 동작 (3)의 무대).
+**같은 배치** — [32 — 오류 처리와 `Error`](../32-error-handling-and-error/2-summary.md) · [34 — 타입 검사 관용구](../34-type-checking-idioms/2-summary.md) · [35 — 엄격 모드](../35-strict-mode/2-summary.md).
+
+★★ **경계 — `==` 의 강제 변환 표는 02번이 정본이다.** 여기서는 `==` 를 **기준 서명 하나**로만 쓴다.
+★★ **경계 — `switch` 의 나머지 규칙**(fall-through · 라벨)은 [목록의 **52번 주제**](../52-switch-labels-and-control-flow/)의 몫이다. 여기서는 **`case` 가 무엇으로 견주나**만 본다.

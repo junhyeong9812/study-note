@@ -1,15 +1,5 @@
 # kotlin/syntax/58 — null 처리 관용구 — `?.let`·`requireNotNull`·엘비스 + `return` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — 공식 문서 페이지([Null safety](https://kotlinlang.org/docs/null-safety.html) · [Coding conventions](https://kotlinlang.org/docs/coding-conventions.html))는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다). ★★ 그래서 「계층마다 무엇을 쓰라」는 권고의 **공식 출처는 확인 못 함**이다 — 이 문서의 권고는 전부 **이 문서의 판단**이고 그렇게 표시한다((5)). `requireNotNull`·`checkNotNull` 이 무엇을 던진다는 **계약(KDoc)** 은 [51번 주제](../51-preconditions-require-check-error-todo/)가 stdlib 소스 jar 에서 발췌했다 — 여기서는 인용만 한다.
-> **실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javac`·`javap` 에서 실제로 얻었다.\
-> `kotlinc` 6회 · `javac` 1회 · `java` 6회(`let58` 은 표준 출력·표준 오류를 따로 받아 2회) · `javap` 1회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「경계에 따라 결과가 갈린 수단 N / M」·「예외 없이 지나간 칸 N / M」은 격자 프로그램이 스스로 센 것**이다.
-> **버전** — `?.`·`?:`·`!!`·`let`·`requireNotNull`·`checkNotNull`·`error` 는 전부 **1.0** 부터 있다(판 경계가 없는 주제다). `requireNotNull`·`checkNotNull` 뒤의 스마트 캐스트를 만드는 **계약**(`contract { returns() implies … }`)은 [51번 주제](../51-preconditions-require-check-error-todo/) (3)이 정본이다.
-> **경계** — ★★ `?`·`?.`·`?:`·`!!` 의 **문법과 바이트코드**(`!!` = `Intrinsics.checkNotNull` · 메시지 없음 · `?:` 오른쪽의 `return`/`throw`)는 [03번 주제](../03-null-safe-types/) (3)(7)이, **스마트 캐스트가 깨지는 자리 아홉**은 [04번 주제](../04-smart-casts/) (2)가, **플랫폼 타입의 세 경우(A 쓰는 줄 · B 대입하는 줄 · C 안 터짐)** 는 [05번 주제](../05-platform-types/) (2)가, **`let` 이 무엇을 돌려주나**는 [14번 주제](../14-scope-functions/)가, `return`·`throw` 가 `Nothing` 이라 `?:` 오른쪽에 들어가는 것은 [34번 주제](../34-exceptions-nothing-and-try-expression/) (3)이, **어느 예외가 무엇을 뜻하나**(`require`=인자 · `check`=상태)는 [51번 주제](../51-preconditions-require-check-error-todo/) (1)이 정본이다. **여기는 「그 수단들을 어느 계층에 둘 것인가」와 「실패가 어디서 드러나나」만** 다룬다.\
-> 「경계에서 즉시 검증해 non-null 도메인 타입으로 바꾼다」는 **설계 논지**는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §2 가 원고째 적는다 — 여기서는 그 논지가 코드에서 어떤 모양인지만 본다. Java 쪽 방어(`Objects.requireNonNull`·`Optional`)는 [Java 60번](../../../java/syntax/60-null-handling/) · [Java 38번](../../../java/syntax/38-optional/)이, C# 의 같은 연산자들은 [C# 07번](../../../csharp/syntax/07-null-operators/)이 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**판별 격자 — 경계 넷(외부 입력 파싱 · 공개 API 인자 · 내부 불변식 · 표시 계층) × 수단 여섯(`?: return` · `?.let` · `requireNotNull` · `checkNotNull` · `!!` · `?: error()`) → 던진 예외 · 메시지 · 스택 첫 프레임의 줄 · 부른 쪽이 받은 것**」. 둘째 본체는 **Java 가 준 `null` 이 「태어난 줄」과 「터진 줄」**(javac 한 쌍)이다.
 
 ## 이 주제가 쓰는 세 층
@@ -656,3 +646,13 @@ caller error: qty must be positive: 0
 - **`Result`·봉인 클래스로 실패를 값으로** — 외부 입력 계층에서 `null` 대신 이유를 돌려주기. [49번 주제](../49-result-and-runcatching/)가 정본이다.
 - **JSpecify 가 붙은 Java 라이브러리** — 2.1.0 부터 위반이 오류라 (2)의 구멍이 그 표면에서 거의 닫힌다([`../../언어-특성/README.md`](../../언어-특성/README.md) §2 · [05번 주제](../05-platform-types/) (5)). 이 문서는 **애너테이션 없는** Java 만 돌렸다.
 - **`-Xno-param-assertions` 까지 함께 끄면** — (2) `B` 가 `greet` 안에서도 안 걸리고 `name.length` 를 쓰는 자리까지 흘러갈 것으로 보이지만 **이 문서는 돌리지 않았다**(두 플래그를 함께 끈 바이트코드는 [03번 주제](../03-null-safe-types/) (5)가 찍었다).
+
+## 실행 환경
+
+**기준 소스** — 공식 문서 페이지([Null safety](https://kotlinlang.org/docs/null-safety.html) · [Coding conventions](https://kotlinlang.org/docs/coding-conventions.html))는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다). ★★ 그래서 「계층마다 무엇을 쓰라」는 권고의 **공식 출처는 확인 못 함**이다 — 이 문서의 권고는 전부 **이 문서의 판단**이고 그렇게 표시한다((5)). `requireNotNull`·`checkNotNull` 이 무엇을 던진다는 **계약(KDoc)** 은 [51번 주제](../51-preconditions-require-check-error-todo/)가 stdlib 소스 jar 에서 발췌했다 — 여기서는 인용만 한다.
+**실행 검증** — 이 문서의 모든 출력·에러·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `java`·`javac`·`javap` 에서 실제로 얻었다.\
+`kotlinc` 6회 · `javac` 1회 · `java` 6회(`let58` 은 표준 출력·표준 오류를 따로 받아 2회) · `javap` 1회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「경계에 따라 결과가 갈린 수단 N / M」·「예외 없이 지나간 칸 N / M」은 격자 프로그램이 스스로 센 것**이다.
+**버전** — `?.`·`?:`·`!!`·`let`·`requireNotNull`·`checkNotNull`·`error` 는 전부 **1.0** 부터 있다(판 경계가 없는 주제다). `requireNotNull`·`checkNotNull` 뒤의 스마트 캐스트를 만드는 **계약**(`contract { returns() implies … }`)은 [51번 주제](../51-preconditions-require-check-error-todo/) (3)이 정본이다.
+**경계** — ★★ `?`·`?.`·`?:`·`!!` 의 **문법과 바이트코드**(`!!` = `Intrinsics.checkNotNull` · 메시지 없음 · `?:` 오른쪽의 `return`/`throw`)는 [03번 주제](../03-null-safe-types/) (3)(7)이, **스마트 캐스트가 깨지는 자리 아홉**은 [04번 주제](../04-smart-casts/) (2)가, **플랫폼 타입의 세 경우(A 쓰는 줄 · B 대입하는 줄 · C 안 터짐)** 는 [05번 주제](../05-platform-types/) (2)가, **`let` 이 무엇을 돌려주나**는 [14번 주제](../14-scope-functions/)가, `return`·`throw` 가 `Nothing` 이라 `?:` 오른쪽에 들어가는 것은 [34번 주제](../34-exceptions-nothing-and-try-expression/) (3)이, **어느 예외가 무엇을 뜻하나**(`require`=인자 · `check`=상태)는 [51번 주제](../51-preconditions-require-check-error-todo/) (1)이 정본이다. **여기는 「그 수단들을 어느 계층에 둘 것인가」와 「실패가 어디서 드러나나」만** 다룬다.\
+「경계에서 즉시 검증해 non-null 도메인 타입으로 바꾼다」는 **설계 논지**는 [`../../언어-특성/README.md`](../../언어-특성/README.md) §2 가 원고째 적는다 — 여기서는 그 논지가 코드에서 어떤 모양인지만 본다. Java 쪽 방어(`Objects.requireNonNull`·`Optional`)는 [Java 60번](../../../java/syntax/60-null-handling/) · [Java 38번](../../../java/syntax/38-optional/)이, C# 의 같은 연산자들은 [C# 07번](../../../csharp/syntax/07-null-operators/)이 정본이다.

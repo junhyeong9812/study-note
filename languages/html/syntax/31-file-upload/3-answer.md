@@ -1,11 +1,5 @@
 # html/syntax/31 — 파일 업로드: `accept`/`multiple`/`capture` 와 `enctype=multipart/form-data` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 File Upload 상태·항목 목록·이름·값 쌍 변환·multipart 절로 접지했다(앞 배치가 받아 둔 사본). **`capture` 는 그 명세에 없다.**\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★★ **본체는 서버가 받은 부분이다** — 27 칸을 미리 선언하고 「거부된 칸」을 스크립트가 센다(A1).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -210,3 +204,10 @@ $ python3 html29b-form.py 시도 html29b-31-multiple.html
 - **고르기 창(picker)** — 파일 칸이 여는 창. `multiple` 이면 여러 개 고르기로 열린다.
 - **이름·값 쌍으로 바꾸기** — urlencoded·`text/plain` 이 쓰는 변환. `File` 은 이름이 된다.
 - **부분 `Content-Type`** — multipart 의 파일 부분에 붙는 형식. 이 판은 확장자에서.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스는 [29번 주제](../29-constraint-validation/3-answer.md)의 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 의 File Upload 상태·항목 목록·이름·값 쌍 변환·multipart 절로 접지했다(앞 배치가 받아 둔 사본). **`capture` 는 그 명세에 없다.**\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★★ **본체는 서버가 받은 부분이다** — 27 칸을 미리 선언하고 「거부된 칸」을 스크립트가 센다(A1).

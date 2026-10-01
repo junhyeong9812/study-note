@@ -1,12 +1,5 @@
 # js/syntax/45 — `Proxy`: 「거짓말하는 트랩은 `12 / 24` 에서 던지고 · `Reflect` 로 넘기면 맨 대상과 `0 / 24` 다르고 · 내부 슬롯은 못 빌린다」 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 출력은 **node v20.19.6** · x86-64 Linux 에서 실제로 돌려 얻은 것이고, 블록은 **전부 캡처 파일에서 조립**했다.
-> ★★★ **node 18.19.1 · Chrome 151 도 네 탐침 전부 한 글자도 같았다**(아래 「실행 검증」의 세 판 대조기) — 예외 문구까지.
->
-> **이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
-> `js44b-45a-invariant-grid.js`(1번 · 5번 · 6번 · 7번) · `js44b-45c-falsish.js`(2번 · 6번 · 9번) · `js44b-45d-internal-slots.js`(3번 · 7번) · `js44b-45e-what-a-proxy-looks-like.js`(4번 · 7번 · 8번).
-
 ## 정답
 
 ### 1. 표 `[1]` — 보통 열 **전부 통과**, 설정 불가+쓰기 불가 열 **`getPrototypeOf` 만 통과**, `preventExtensions` 열은 **`get`·`set`·`defineProperty` 만 통과** — **`12 / 24`** · 표 `[2]` — 던진 칸 **1**(`defineProperty` / 설정 불가) · 맨 대상과 다른 칸 **`0 / 24`** ★★★
@@ -204,3 +197,11 @@ node18 vs node20: identical 7 · differs 2   ·   node20 vs Chrome 151: identica
 ```
 
 **구현 의존 항목 — 판이 오르면 다시 돌릴 것** — 격자의 칸은 **명세**가 정하므로 판이 올라도 같아야 한다. 다시 볼 것은 **문구**다(1번 `[3]`의 12줄 · 3번 · 4번의 `Cannot perform …`).
+
+## 실행 환경
+
+이 파일의 출력은 **node v20.19.6** · x86-64 Linux 에서 실제로 돌려 얻은 것이고, 블록은 **전부 캡처 파일에서 조립**했다.
+★★★ **node 18.19.1 · Chrome 151 도 네 탐침 전부 한 글자도 같았다**(위 「실행 검증」의 세 판 대조기) — 예외 문구까지.
+
+**이 파일이 인용하는 출력을 낸 소스** — 전문은 [1-question.md](1-question.md) 의 같은 번호 문항에 있다.
+`js44b-45a-invariant-grid.js`(1번 · 5번 · 6번 · 7번) · `js44b-45c-falsish.js`(2번 · 6번 · 9번) · `js44b-45d-internal-slots.js`(3번 · 7번) · `js44b-45e-what-a-proxy-looks-like.js`(4번 · 7번 · 8번).

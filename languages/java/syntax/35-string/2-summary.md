@@ -1,17 +1,5 @@
 # java/syntax/35 — `String`: 불변성·상수 풀·자주 쓰는 메서드 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §3.10.5 String Literals](https://docs.oracle.com/javase/specs/jls/se21/html/jls-3.html) · [§15.29 Constant Expressions](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · [Java SE 21 `String` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/String.java`(`lib/src.zip`).
-> **실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 프로그램 5개를 **17.0.13 · 21.0.5 · 25.0.1** 에서 모두 돌렸다.\
-> **한 군데가 갈렸다** — `substring` 의 예외 메시지가 17과 21에서 다르다(「어디서 틀리나」 3번).
-> **버전** — `String` 자체는 Java 1.0. 아래 `@since` 는 JDK 21 `src.zip` 에서 직접 읽은 것이다.\
-> `isBlank`·`strip`·`repeat`·`lines` = **11** · `formatted`·`stripIndent` = **15** ·
-> `chars`·`codePoints` = **`CharSequence` 의 default 로 1.8**(`String` 의 전용 재정의는 **9**) ·
-> `join` = **1.8**. 내부 표현(compact strings)은 **9**부터.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> 선행: [01 기본형과 래퍼](../01-primitives-and-wrappers/).
-
 ## 한눈에 — 쉽게 말하면
 
 **리터럴로 쓴 문자열은 도서관의 비치본이고, `new String` 은 내가 따로 찍은 복사본이다.**\
@@ -642,3 +630,16 @@ JDK 25: a=2060468723 b=2060468723 c=622488023 f=1933863327
   그래서 `"Aa"` 와 `"BB"` 의 해시가 둘 다 `2112` 로 같다(실행으로 확인) — 충돌은 정상이고, `equals` 가 최종 판정을 한다.
 - **`String` 은 `final` 클래스**다. 상속해서 `equals` 를 깨뜨릴 수 없게 막은 것이고,\
   그 덕에 상수 풀·해시 캐시 같은 최적화가 성립한다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §3.10.5 String Literals](https://docs.oracle.com/javase/specs/jls/se21/html/jls-3.html) · [§15.29 Constant Expressions](https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html) · [Java SE 21 `String` API 문서](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/String.java`(`lib/src.zip`).
+**실행 검증** — 이 문서의 모든 출력은 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+프로그램 5개를 **17.0.13 · 21.0.5 · 25.0.1** 에서 모두 돌렸다.\
+**한 군데가 갈렸다** — `substring` 의 예외 메시지가 17과 21에서 다르다(「어디서 틀리나」 3번).
+**버전** — `String` 자체는 Java 1.0. 아래 `@since` 는 JDK 21 `src.zip` 에서 직접 읽은 것이다.\
+`isBlank`·`strip`·`repeat`·`lines` = **11** · `formatted`·`stripIndent` = **15** ·
+`chars`·`codePoints` = **`CharSequence` 의 default 로 1.8**(`String` 의 전용 재정의는 **9**) ·
+`join` = **1.8**. 내부 표현(compact strings)은 **9**부터.
+
+선행: [01 기본형과 래퍼](../01-primitives-and-wrappers/).

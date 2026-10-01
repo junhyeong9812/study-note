@@ -1,31 +1,5 @@
 # csharp/syntax/18 — `record` 와 값 동등성·`with` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
-> [Learn — Records](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record)(열어서 확인: 합성 멤버 목록 · 「위치 속성은 `record class`·`readonly record struct` 에서 `init`, `record struct` 에서 읽기·쓰기」 ·\
-> 「`Equals(object)` 를 직접 선언하면 에러」 · 「`Equals(R)` 를 직접 쓰면 `GetHashCode` 도 써라」 · 「`with` 는 복제 메서드를 부른 뒤 속성을 설정한다」 · 「복제 메서드의 실제 이름은 컴파일러가 만든다」)
-> **실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 아래 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).\
-> **대비는 실측이다** — **javac 21.0.5 · 25.0.1** 로 `with` 를 던졌다((7)).
-> **버전** — **`record`(class) 는 C# 9** · **`record struct`·`readonly record struct` 는 C# 10** 이다. `-langversion:latest` 로 던졌다.
-> **경계** — **`init` 접근자와 `modreq(IsExternalInit)`** 는 [13번](../13-properties-init-required-field/)이 정본이다 — 여기서는 **record 가 그것을 만든다는 것**만 본다.\
-> ★ **`record struct` 를 고르는 기준·방어적 복사**는 [02번](../02-struct-vs-class-choosing/)이 정본이다.\
-> ★★★ **동등성 계약 자체**(`Equals`/`GetHashCode`/`==` 가 어긋날 때)는 목록의 **19번 주제**가 정본이다 — **18→19 는 한 사슬이다.**\
-> 여기서는 「**record 가 그 셋을 어떻게 만들어 주나**」까지만 본다.
-> ★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **14번**([`14-records/`](../../../java/syntax/14-records/)) ·\
-> Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **22번**([`22-data-class-generated-members/`](../../../kotlin/syntax/22-data-class-generated-members/)).
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 진단 **문구** | ★★★ **진단 코드**(`CS8852`·`CS0111`·`CS8851`)와 **`(행,열)`** |
-> | ★★★ **생성된 멤버의 IL 모양**(순서·상수 `-1521134295`·`EqualityComparer<T>` 경유) — **Roslyn 의 구현** | ★★★ **생성된 멤버의 목록**(이름·접근성·`virtual`) — **명세가 정한 것** |
-> | **IL 오프셋 폭** | ★★ **옵코드와 호출 대상**(`callvirt RC::<Clone>$`) |
-> | ★ **증분의 절댓값 일부** — 한 판에서 잰 바이트 | ★★★ **네 판에서 갈린 줄 수**(스크립트가 센 마지막 줄) |
-> | `GetHashCode()` 의 **값** — 이 문서는 **한 번도 안 찍었다** | 두 값의 해시가 **같나 다르나**(목록의 **19번 주제**에서) |
-
 ## 이 판
 
 ```text
@@ -855,3 +829,30 @@ Money { Won = 1000, Currency = KRW } / Money { Won = 2000, Currency = KRW }
 - ★ **사용자 정의 복사 생성자** — 직접 쓰면 컴파일러가 안 만든다(Learn). **깊은 복사**를 넣는 자리다. **안 던졌다.**
 - ★ **`record struct` 의 매개변수 없는 생성자** — 모든 필드를 기본값으로(Learn). **안 찍었다.**
 - ★ **C# 15 의 `closed` record** — Learn 이 「직접 파생을 선언 어셈블리로 제한한다」고 적는다. **이 판(`latest`)의 범위 밖**이다.
+
+## 실행 환경
+
+**기준 소스** — [ECMA-334 7판(2023-12)](https://ecma-international.org/publications-and-standards/standards/ecma-334/) ·
+[Learn — Records](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record)(열어서 확인: 합성 멤버 목록 · 「위치 속성은 `record class`·`readonly record struct` 에서 `init`, `record struct` 에서 읽기·쓰기」 ·\
+「`Equals(object)` 를 직접 선언하면 에러」 · 「`Equals(R)` 를 직접 쓰면 `GetHashCode` 도 써라」 · 「`with` 는 복제 메서드를 부른 뒤 속성을 설정한다」 · 「복제 메서드의 실제 이름은 컴파일러가 만든다」)
+**실행 검증** — 이 문서의 모든 출력·진단·IL·할당 바이트는 맨 위 「이 판」의 도구로 **실제로 돌려 얻은 것**이다(2026-09-26).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★★★ **진단 언어를 영어로 고정했다**(`DOTNET_CLI_UI_LANGUAGE=en` + `-preferreduilang:en-US`).\
+**대비는 실측이다** — **javac 21.0.5 · 25.0.1** 로 `with` 를 던졌다((7)).
+**버전** — **`record`(class) 는 C# 9** · **`record struct`·`readonly record struct` 는 C# 10** 이다. `-langversion:latest` 로 던졌다.
+**경계** — **`init` 접근자와 `modreq(IsExternalInit)`** 는 [13번](../13-properties-init-required-field/)이 정본이다 — 여기서는 **record 가 그것을 만든다는 것**만 본다.\
+★ **`record struct` 를 고르는 기준·방어적 복사**는 [02번](../02-struct-vs-class-choosing/)이 정본이다.\
+★★★ **동등성 계약 자체**(`Equals`/`GetHashCode`/`==` 가 어긋날 때)는 목록의 **19번 주제**가 정본이다 — **18→19 는 한 사슬이다.**\
+여기서는 「**record 가 그 셋을 어떻게 만들어 주나**」까지만 본다.
+★★★ **대비** — Java 갈래 목록([`java/syntax/README.md`](../../../java/syntax/README.md))의 **14번**([`14-records/`](../../../java/syntax/14-records/)) ·\
+Kotlin 갈래 목록([`kotlin/syntax/README.md`](../../../kotlin/syntax/README.md))의 **22번**([`22-data-class-generated-members/`](../../../kotlin/syntax/22-data-class-generated-members/)).
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 진단 **문구** | ★★★ **진단 코드**(`CS8852`·`CS0111`·`CS8851`)와 **`(행,열)`** |
+| ★★★ **생성된 멤버의 IL 모양**(순서·상수 `-1521134295`·`EqualityComparer<T>` 경유) — **Roslyn 의 구현** | ★★★ **생성된 멤버의 목록**(이름·접근성·`virtual`) — **명세가 정한 것** |
+| **IL 오프셋 폭** | ★★ **옵코드와 호출 대상**(`callvirt RC::<Clone>$`) |
+| ★ **증분의 절댓값 일부** — 한 판에서 잰 바이트 | ★★★ **네 판에서 갈린 줄 수**(스크립트가 센 마지막 줄) |
+| `GetHashCode()` 의 **값** — 이 문서는 **한 번도 안 찍었다** | 두 값의 해시가 **같나 다르나**(목록의 **19번 주제**에서) |

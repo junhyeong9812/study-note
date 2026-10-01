@@ -1,15 +1,5 @@
 # PR #36917 — 무대의 실구조와 워크플로우
 
-> PR #36917의 무대가 되는 실구조·워크플로우. 문제·수정은 README.md, 테스트는 tests.md 참조.
->
-> 기준: upstream main `526c706d1c3`.
->
-> **주의 — 이 PR의 무대는 현재 HEAD와 다르다.** PR은 `status: declined`로 닫혔고,
-> 같은 결함이 메인테이너 커밋 `7de2b24d81c`("Fix primitive array annotation attributes
-> on Java 24 class reading")에서 먼저 다르게 고쳐졌다. 따라서 2·3절의 "수정 전"은
-> 그 커밋의 부모(`7de2b24d81c^`) 코드를 기준으로 서술하고, 현재 HEAD 코드는 별도로
-> 표시한다. 1·4·5절의 file:line은 별도 표기가 없으면 HEAD 기준이다.
-
 ## 1. 무대 — 실구조
 
 무대는 JDK 24 전용 소스셋(`spring-core/src/main/java24/`)에 사는 클래스 다섯 개다.\
@@ -610,3 +600,13 @@ README가 지적하듯 이 사실은 테스트 배치에도 답을 준다.\
 
 관련 개념 문서로는 [`../../concepts/compile-runtime-layers/compile-runtime-layers.md`](../../concepts/compile-runtime-layers/compile-runtime-layers.md)가 컴파일 타임 정보와 런타임 정보가 어디에 남는지를 다룬다.\
 어노테이션 어트리뷰트가 클래스 파일에 남는 형태(5.3)와 그것을 읽는 세 경로의 관계를 이해하는 데 인접한 배경이다.
+
+## 출처
+
+기준: upstream main `526c706d1c3`.
+
+**주의 — 이 PR의 무대는 현재 HEAD와 다르다.** PR은 `status: declined`로 닫혔고,
+같은 결함이 메인테이너 커밋 `7de2b24d81c`("Fix primitive array annotation attributes
+on Java 24 class reading")에서 먼저 다르게 고쳐졌다. 따라서 2·3절의 "수정 전"은
+그 커밋의 부모(`7de2b24d81c^`) 코드를 기준으로 서술하고, 현재 HEAD 코드는 별도로
+표시한다. 1·4·5절의 file:line은 별도 표기가 없으면 HEAD 기준이다.

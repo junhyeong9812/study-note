@@ -1,11 +1,5 @@
 # css/syntax/46 — 테두리·`border-radius`·`outline`·`box-shadow` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getBoundingClientRect()`·`getComputedStyle()` 로 잰 값**이고,
-> **모든 색은 스크린샷 PNG 를 파이썬 표준 라이브러리(`zlib`)로 디코드해 그 좌표의 `(r,g,b)` 를 읽은 값**이다.\
-> **손으로 계산해 유도한 수치는 없다.** 규칙은 [CSS Backgrounds and Borders 3](https://drafts.csswg.org/css-backgrounds-3/) 과 [CSS UI 4 §outline](https://drafts.csswg.org/css-ui-4/#outline) 으로 접지했다.\
-> ★ 렌더는 `--disable-gpu` **소프트웨어 렌더링**이다. 곡선 경계의 중간색은 GPU 합성과 미세하게 다를 수 있다 — 값 하나가 아니라 **띠의 폭과 불투명 지점**으로 읽어라.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -348,3 +342,10 @@ border-right: 60px solid   260              260
 
 **구현 의존 항목** — ①`getComputedStyle().borderRadius` 가 축소 **전** 값을 돌려주는 것 ②`outline` 이 `border-radius` 를 따라 **둥글게** 도는 것 ③곡선 경계의 **정확한 중간색**. 셋 다 Chrome 151 에서 관찰한 것이고, 특히 ③은 `--disable-gpu` **소프트웨어 렌더링** 결과라 GPU 합성과 다를 수 있다.\
 **엔진은 Chrome 하나다.** Firefox 155.0.1 은 이 환경에서 headless 스크린샷이 산출되지 않고 WebKit 은 이 머신에 없다 — **「두 엔진에서 확인했다」고 적지 않았다.** 크로스 브라우저는 Baseline 데이터로만 접지했다(webstatus.dev 조회 2026-09-23: `border-radius`·`box-shadow` widely 2015-07-29/2018-01-29 · `outline` widely 2023-03-27/2025-09-27).
+
+## 실행 환경
+
+이 파일의 **모든 치수는 Google Chrome 151.0.7922.173 headless 에서 실제로 렌더해 `getBoundingClientRect()`·`getComputedStyle()` 로 잰 값**이고,
+**모든 색은 스크린샷 PNG 를 파이썬 표준 라이브러리(`zlib`)로 디코드해 그 좌표의 `(r,g,b)` 를 읽은 값**이다.\
+**손으로 계산해 유도한 수치는 없다.** 규칙은 [CSS Backgrounds and Borders 3](https://drafts.csswg.org/css-backgrounds-3/) 과 [CSS UI 4 §outline](https://drafts.csswg.org/css-ui-4/#outline) 으로 접지했다.\
+★ 렌더는 `--disable-gpu` **소프트웨어 렌더링**이다. 곡선 경계의 중간색은 GPU 합성과 미세하게 다를 수 있다 — 값 하나가 아니라 **띠의 폭과 불투명 지점**으로 읽어라.

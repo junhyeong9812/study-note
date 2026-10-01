@@ -1,11 +1,5 @@
 # domain-modeling-advanced/29-customs-clearance — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 작성 방식: **2-summary를 닫고 기억만으로** 쓴다 → 실제 코드/원전으로 검증 → 틀린 부분만 수정.
-> 기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/29-customs-clearance/impl/`).
-
-⚠️ 정답은 Claude 초안(2026-09-15) — 원본 impl 코드·README 측정 기준. 본인 검토 후 이 줄 삭제
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. -->
@@ -416,3 +410,7 @@ return List.copyOf(assessments);
 - 문제 원문: `src/main/java/com/domain/customs/Customs.java`(TODO 1\~4 javadoc·enum·상수), `src/main/java/com/domain/customs/Parcel.java`(계약·140/15/2 예), `README.md`(함정·측정이 알려준 것·변종 검증에서 고친 것·생각해볼 것)
 - 계약: `src/test/java/com/domain/customs/CustomsTest.java`(140 vs 157 · 150.00/150.01 · 미국 200 · 두 건 합산 · 하루 차이 · 낮은 한도 · 구분자 · 16배 · 62.50/187.50 · `taxOn(100_00)==18_80` · `taxOn(-100_00)==0`)
 - 수치: `src/test/java/com/domain/customs/MeasurementTest.java`(9,065,420\~178,179,457 · 19,381/68,678 · 63,829,820 고정 · 75,516,263\~146,967,890 · 85,792,932/144,580,697/201,694,874 · 30,562/62,009/96,661 · 60,417,300/61,960 · 0)
+
+## 실행 환경
+
+기준 소스는 문서가 아니라 코드다 (`/home/jun/project/myway/domain-modeling-advanced/29-customs-clearance/impl/`).

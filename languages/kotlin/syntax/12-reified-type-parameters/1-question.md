@@ -1,14 +1,5 @@
 # kotlin/syntax/12 — `reified` 타입 파라미터: 소거를 뚫는 방법 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ★★ **선행은 [11번 주제](../11-inline-functions/)다** — `inline` 이 몸통을 호출 자리에 복사한다는 것을 모르면
-> 이 주제는 통째로 외우기가 된다. [10번 주제](../10-lambdas-and-higher-order-functions/)도 같이 본다.
-> ★ **소거 자체의 정본은 [`../../../java/syntax/19-type-erasure/`](../../../java/syntax/19-type-erasure/)** 다.
-> 문항 12개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다 — 12번만 타깃을 따로 묻는다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -172,6 +163,14 @@ fun <T> inner(x: Any): Boolean = x is T
 - 이 주제의 바이트코드 결론은 `-jvm-target` 을 21 로 올리면 달라지는가 — 확인한 방법은 무엇인가?
 - `List<Int>.describe()` 와 `List<String>.describe()` 를 같이 선언하면 나는 에러는 무엇이고, 그 정본은 어느 주제인가?
 - "무엇이 지워지는가" 의 정본은 어느 문서인가?
+
+## 실행 환경
+
+★★ **선행은 [11번 주제](../11-inline-functions/)다** — `inline` 이 몸통을 호출 자리에 복사한다는 것을 모르면
+이 주제는 통째로 외우기가 된다. [10번 주제](../10-lambdas-and-higher-order-functions/)도 같이 본다.
+★ **소거 자체의 정본은 [`../../../java/syntax/19-type-erasure/`](../../../java/syntax/19-type-erasure/)** 다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다 — 12번만 타깃을 따로 묻는다.
 
 ## 복습 기록
 

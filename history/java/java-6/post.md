@@ -1,9 +1,5 @@
 # Java 6 (Java SE 6, Mustang, 2006년 12월)
 
-> 원본: `~/project/java-history/java/java-6.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
-> 연도·버전·JSR 번호·클래스/패키지 이름·코드블록 5개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
-> ASCII 도식 1개와 「한눈에」의 연식 변경 비유·대응표, 용어 블록의 「예:」, 「용어 풀이」, 다른 편을 가리키는 교차 주 4개는 원문에 없는 보충이다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 제목 아래에 적은 한 줄 요약은 이것이다.
@@ -204,3 +200,9 @@ public class Calculator {
 - [Java Platform, Standard Edition 6 — Oracle](https://www.oracle.com/java/technologies/se6-jsp.html)
 - [JSR 270: Java SE 6 Release Contents — JCP](https://jcp.org/en/jsr/detail?id=270)
 - [Java SE 6 (December 11, 2006) — Liquisearch](https://www.liquisearch.com/java_version_history/java_se_6_december_11_2006)
+
+## 출처
+
+원본: `~/project/java-history/java/java-6.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-20).\
+연도·버전·JSR 번호·클래스/패키지 이름·코드블록 5개·「릴리스 정보」와 「그 외 변경 / API 추가」의 목록은 원문 그대로다.\
+ASCII 도식 1개와 「한눈에」의 연식 변경 비유·대응표, 용어 블록의 「예:」, 「용어 풀이」, 다른 편을 가리키는 교차 주 4개는 원문에 없는 보충이다.

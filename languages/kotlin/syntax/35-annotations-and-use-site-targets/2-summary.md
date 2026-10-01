@@ -1,16 +1,5 @@
 # kotlin/syntax/35 — 애너테이션과 use-site target (`@field:`·`@get:`·`@param:`) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [Annotations — use-site targets](https://kotlinlang.org/docs/annotations.html#annotation-use-site-targets)(대상 목록 `file`·`field`·`property`·`get`·`set`·`all`·`receiver`·`param`·`setparam`·`delegate` · 「`property` (annotations with this target are not visible to Java)」 · 기본 규칙 「param → property → field(property 가 안 될 때)」) · [What's new in Kotlin 2.2.0](https://kotlinlang.org/docs/whatsnew22.html)(새 기본 규칙과 `@all` 이 **미리보기**로 들어온 판 · `-Xannotation-default-target=param-property`) · [What's new in Kotlin 2.4.0](https://kotlinlang.org/docs/whatsnew24.html)(「`@all` meta-target for properties」·「New defaulting rules for use-site annotation targets」가 **Stable**).
-> **실행 검증** — 이 문서의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다. C# 은 **.NET SDK 10.0.401** 의 Roslyn `csc` 를 직접 불렀다.\
-> `kotlinc` 14회(`-X` 도움말 1회 · 실패 1벌) · `javac` 10회 · `java` 7회 + 격자 스크립트 안에서 4회 · `javap` 3회 · `csc` 1회 · `dotnet` 1회.\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 격자의 「갈린 칸 N / M」도 **스크립트가 세어 마지막 줄로 찍었다.**
-> **버전** — ★★★ **이 주제의 답은 언어 판에 매인다.** target 없는 애너테이션의 기본 규칙이 **2.1 이하 `first-only` → 2.2·2.3 `first-only-warn` → 2.4 이상 `param-property`** 로 바뀌었다(`kotlinc -X` 의 문구 · (2)(6)). `@all:` 은 2.2 미리보기 → **2.4 Stable**((5)).
-> **경계** — 프로퍼티가 **필드·게터·매개변수로 쪼개지는 것 자체**는 [16번 주제](../16-properties-backing-field-lateinit-const/)가, 값 클래스의 **이름 뭉개기**는 [26번 주제](../26-value-class-and-boxing/)가, `@delegate:` 가 붙는 위임 필드는 [17번 주제](../17-delegated-properties/)가 정본이다.\
-> `@JvmField`·`@JvmName`·`@Throws` 같은 **상호운용 애너테이션**은 [목록의 **39번 주제**](../39-java-interop-annotations/)다 — 여기는 「어디에 붙나」를 **아무 애너테이션에 대해** 다룬다.\
-> ★ **대비** — C# 의 특성(attribute) 대상 지정자(`[field:]`·`[property:]`)는 C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **53번**이 정본인데 아직 폴더가 없다 — 이 문서가 **직접 던졌다**((7)).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 넷째 창이다** — 「**`javap -v` 의 `RuntimeVisibleAnnotations`/`RuntimeVisibleParameterAnnotations` 가 어느 멤버 아래에 있나**」. 애너테이션은 실행 결과를 바꾸지 않으므로 출력으로는 안 보이고, **클래스 파일의 자리**가 곧 답이다. 그 자리를 **Java 리플렉션으로 칸마다 물어 격자**로 만들었다((1)(2)).
 
 ## 이 주제가 쓰는 세 층
@@ -824,3 +813,14 @@ C null
 
 - **왜 `property` 는 메서드가 되나** — JVM 에는 「프로퍼티」라는 멤버가 없다. 필드·메서드·클래스·매개변수에만 애너테이션을 걸 수 있으므로, **Kotlin 프로퍼티에만 속한 애너테이션**을 담으려면 걸 자리를 **새로 만들어야** 한다. 그 자리가 몸통이 `return` 하나뿐인 `static` 합성 메서드다. `kotlin-reflect` 는 Kotlin 메타데이터로 프로퍼티를 찾은 뒤 **그 메서드의 애너테이션을 읽어** `KProperty.annotations` 로 돌려준다 — 그래서 (3)의 두 창이 같은 답을 냈다.
 - **2.4 가 규칙을 「둘을 고른다」로 바꾼 이유** — 옛 규칙에서 주 생성자 `val` 은 **거의 언제나 매개변수 하나**로 끝나, 필드·프로퍼티를 기대한 사용자가 (4)의 사고를 반복했다. 2.2·2.3 의 경고((6))가 그 전환의 예고였고, 경고 문구가 가리키는 이슈(`KT-73255`)가 논의의 자리다 — 이 문서는 그 이슈를 **열어 보지 않았다.**
+
+## 실행 환경
+
+**기준 소스** — [Annotations — use-site targets](https://kotlinlang.org/docs/annotations.html#annotation-use-site-targets)(대상 목록 `file`·`field`·`property`·`get`·`set`·`all`·`receiver`·`param`·`setparam`·`delegate` · 「`property` (annotations with this target are not visible to Java)」 · 기본 규칙 「param → property → field(property 가 안 될 때)」) · [What's new in Kotlin 2.2.0](https://kotlinlang.org/docs/whatsnew22.html)(새 기본 규칙과 `@all` 이 **미리보기**로 들어온 판 · `-Xannotation-default-target=param-property`) · [What's new in Kotlin 2.4.0](https://kotlinlang.org/docs/whatsnew24.html)(「`@all` meta-target for properties」·「New defaulting rules for use-site annotation targets」가 **Stable**).
+**실행 검증** — 이 문서의 모든 출력·에러·경고·바이트코드는 **kotlinc 2.4.20 (JRE 21.0.5)** 과 Temurin **JDK 21.0.5** 의 `javac`·`java`·`javap` 에서 실제로 얻었다. C# 은 **.NET SDK 10.0.401** 의 Roslyn `csc` 를 직접 불렀다.\
+`kotlinc` 14회(`-X` 도움말 1회 · 실패 1벌) · `javac` 10회 · `java` 7회 + 격자 스크립트 안에서 4회 · `javap` 3회 · `csc` 1회 · `dotnet` 1회.\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. 격자의 「갈린 칸 N / M」도 **스크립트가 세어 마지막 줄로 찍었다.**
+**버전** — ★★★ **이 주제의 답은 언어 판에 매인다.** target 없는 애너테이션의 기본 규칙이 **2.1 이하 `first-only` → 2.2·2.3 `first-only-warn` → 2.4 이상 `param-property`** 로 바뀌었다(`kotlinc -X` 의 문구 · (2)(6)). `@all:` 은 2.2 미리보기 → **2.4 Stable**((5)).
+**경계** — 프로퍼티가 **필드·게터·매개변수로 쪼개지는 것 자체**는 [16번 주제](../16-properties-backing-field-lateinit-const/)가, 값 클래스의 **이름 뭉개기**는 [26번 주제](../26-value-class-and-boxing/)가, `@delegate:` 가 붙는 위임 필드는 [17번 주제](../17-delegated-properties/)가 정본이다.\
+`@JvmField`·`@JvmName`·`@Throws` 같은 **상호운용 애너테이션**은 [목록의 **39번 주제**](../39-java-interop-annotations/)다 — 여기는 「어디에 붙나」를 **아무 애너테이션에 대해** 다룬다.\
+★ **대비** — C# 의 특성(attribute) 대상 지정자(`[field:]`·`[property:]`)는 C# 갈래 목록([`csharp/syntax/README.md`](../../../csharp/syntax/README.md))의 **53번**이 정본인데 아직 폴더가 없다 — 이 문서가 **직접 던졌다**((7)).

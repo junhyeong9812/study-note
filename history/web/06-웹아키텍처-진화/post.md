@@ -1,11 +1,5 @@
 # 웹 애플리케이션 아키텍처의 진화
 
-> 원본: `~/project/web-history/06-웹아키텍처-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·논문명·표준번호·코드는 원문 그대로다.\
-> 용어 블록의 「예:」와 비유 도식은 원문에 없는 보충 설명이다.\
-> 「트레이드오프」·「얻은 것/잃은 것」은 원문이 절마다 직접 적어 둔 내용을 옮긴 것이다.\
-> 원문이 절마다 반복해 쓴 소제목(「왜 이동했나」·「트레이드오프」)은 이 문서의 골격으로 대체했다.
-
 ## 한눈에 — 쉽게 말하면
 
 원문이 이 편을 한 줄로 요약한 문장은 이렇다.
@@ -598,3 +592,11 @@ corpus 「렌더링 전략」의 "HTML은 서버, hydration은 부분적으로" 
 - [Server and Client Components — Next.js Docs](https://nextjs.org/docs/app/getting-started/server-and-client-components)
 - [Astro vs Next.js: When SSG beats React for content sites — LogRocket](https://blog.logrocket.com/astro-vs-next-js-ssg-vs-react/)
 - corpus: 렌더링 전략 — CSR/SSR/SSG/ISR/스트리밍 (corpus 경로: `~/project/local-llm/corpus/frontend/렌더링-전략.md`)
+
+## 출처
+
+원본: `~/project/web-history/06-웹아키텍처-진화.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·논문명·표준번호·코드는 원문 그대로다.\
+용어 블록의 「예:」와 비유 도식은 원문에 없는 보충 설명이다.\
+「트레이드오프」·「얻은 것/잃은 것」은 원문이 절마다 직접 적어 둔 내용을 옮긴 것이다.\
+원문이 절마다 반복해 쓴 소제목(「왜 이동했나」·「트레이드오프」)은 이 문서의 골격으로 대체했다.

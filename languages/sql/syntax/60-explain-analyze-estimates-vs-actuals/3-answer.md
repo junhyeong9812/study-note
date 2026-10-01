@@ -1,14 +1,5 @@
 # sql/60-`EXPLAIN ANALYZE` — 추정과 실측의 어긋남 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.\
-> 근거는 **실행 결과**다 — 아래 계획·출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
-> 2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 숫자는 없다.\
-> **측정 조건** — PG 계획은 전부 `max_parallel_workers_per_gather = 0`(병렬 끔), 대부분 `TIMING OFF, SUMMARY OFF`.\
-> **시간은 근거로 쓰지 않는다** — 근거로 쓰는 칸은 `actual rows`·`loops`·`Rows Removed by Filter`·`Buffers` 다.\
-> ★ **12번은 기존 `emp` 에 `DELETE` 를 실제로 던진 실험이다.** `BEGIN … ROLLBACK` 으로 감쌌고,
-> **끝나고 `emp` 가 4행인 것을 확인했다**(맨 끝 「실행 검증」).\
-> 문서 근거는 [PG 18 EXPLAIN](https://www.postgresql.org/docs/18/sql-explain.html) · [PG 18 ANALYZE](https://www.postgresql.org/docs/18/sql-analyze.html) · [MySQL 8.4 EXPLAIN ANALYZE](https://dev.mysql.com/doc/refman/8.4/en/explain.html#explain-analyze).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -748,3 +739,13 @@ MySQL 의 `EXPLAIN ANALYZE` 출력에는 그 칸이 없다. **이 둘의 근거�
 **버전** — PG 18 은 `actual rows` 를 **소수 둘째 자리까지** 찍고(`rows=3.00`), `ANALYZE` 와 함께 **`BUFFERS` 가 기본으로 켜진다.**\
 둘 다 이전 버전과 표기가 다르다. MySQL 의 `EXPLAIN ANALYZE` 는 8.0.18 부터다.\
 버전이 오르면 **12·15·16번**(변경문 동작과 계측 칸)을 다시 돌린다.
+
+## 실행 환경
+
+근거는 **실행 결과**다 — 본문의 계획·출력은 PostgreSQL 18.6(도커 `postgres:18`) 과 MySQL 8.4.10(도커 `mysql:8.4`) 에\
+2026-09-21 에 실제로 던져 받은 것이다. 문서를 보고 적은 숫자는 없다.\
+**측정 조건** — PG 계획은 전부 `max_parallel_workers_per_gather = 0`(병렬 끔), 대부분 `TIMING OFF, SUMMARY OFF`.\
+**시간은 근거로 쓰지 않는다** — 근거로 쓰는 칸은 `actual rows`·`loops`·`Rows Removed by Filter`·`Buffers` 다.\
+★ **12번은 기존 `emp` 에 `DELETE` 를 실제로 던진 실험이다.** `BEGIN … ROLLBACK` 으로 감쌌고,
+**끝나고 `emp` 가 4행인 것을 확인했다**(맨 끝 「실행 검증」).\
+문서 근거는 [PG 18 EXPLAIN](https://www.postgresql.org/docs/18/sql-explain.html) · [PG 18 ANALYZE](https://www.postgresql.org/docs/18/sql-analyze.html) · [MySQL 8.4 EXPLAIN ANALYZE](https://dev.mysql.com/doc/refman/8.4/en/explain.html#explain-analyze).

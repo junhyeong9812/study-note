@@ -1,9 +1,5 @@
 # NewSQL · 분산 SQL (2012~)
 
-> 원본: `~/project/database-history/04-NewSQL-분산.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
-> 연도·인명·논문명·표준번호·코드는 원문 그대로다.\
-> 용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.
-
 ## 한눈에 — 쉽게 말하면
 
 **NewSQL = 은행 지점을 전국에 늘리면서도, 통장 잔액은 전 지점이 똑같이 보게 만든 것.**
@@ -446,3 +442,9 @@ NewSQL은 또한 데이터베이스 역사가 **순환**한다는 점을 보여�
 - [VoltDB — Wikipedia](https://en.wikipedia.org/wiki/VoltDB)
 - [The Vitess Docs — History](https://vitess.io/docs/20.0/overview/history/)
 - [CNCF to host Vitess (CNCF Blog, 2018)](https://www.cncf.io/blog/2018/02/05/cncf-host-vitess/)
+
+## 출처
+
+원본: `~/project/database-history/04-NewSQL-분산.md` — 이 문서는 그 내용을 초보자용으로 다시 쓴 것이다(2026-09-18).\
+연도·인명·논문명·표준번호·코드는 원문 그대로다.\
+용어 블록의 「예:」, 「대가는 무엇인가」, 트레이드오프 표는 원문에 없는 보충 설명이다.

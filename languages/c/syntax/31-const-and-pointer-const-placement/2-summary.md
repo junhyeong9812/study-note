@@ -1,19 +1,5 @@
 # c/syntax/31 — `const` 와 포인터 const 위치: 「**`const` 는 약속이지 보장이 아니다**」 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — 포인터 대입의 한정자 규칙, `const` 객체를 고치는 UB, 문자열 리터럴을 고치는 UB 를 **본문에서 직접 찾아 읽었다**)
-> ★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **진단·어셈블리·심볼·종료 코드는 전부 실행으로** 접지했다.
-> **실행 검증** — 이 문서의 모든 출력·진단은 아래 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
-> ★★ **UB 가 걸린 실험은 컴파일러 2 × `-O0`/`-O2` 네 벌**을 돌렸다 — 한 벌로는 **정반대 결론**이 난다((5)).\
-> ★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
-> **버전** — `const` 는 **C89 부터**다. 이 편의 규칙은 C89 이후 바뀌지 않았다(`char **` → `const char *const *` 를 C 가 막는 것도 **C23 까지 그대로**다 — `-std=c2x` 로 확인((3))).
-> ★★★ **재지 않은 성능 주장은 하지 않는다.** 「`const` 가 최적화를 돕는다」는 **시간으로 재지 않았다** — 이 편은 **어셈블리의 명령 수**만 센다.
-> ★★ **경계** — **선언을 오른쪽에서 왼쪽으로 읽는 법** 일반은 [01번 형제](../01-declaration-syntax-and-reading/), **포인터 자체**는 [14번 형제](../14-pointers-address-dereference-and-pointer-types/)가 정본이다.\
-> ★ **문자열 리터럴의 저장 기간**은 [20번 형제](../20-null-terminated-strings-and-string-literals/), **`restrict`** 는 [목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/), **엄격한 앨리어싱**은 목록의 **55번 주제**가 정본이다.\
-> ★ **`volatile`**(같은 한정자의 다른 짝)은 [32번 형제](../32-what-volatile-actually-guarantees/)로 이어진다.
-> 선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · [29번 형제](../29-scope-and-linkage-static-extern/)(링크와 `nm`).
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 넷째 창 — `-O2` 어셈블리다.** `const int *p` 를 받은 함수가 **`*p` 를 두 번 읽는 것**을 명령으로 본다.
 ★★ **둘째 본체는 `nm`** — 파일 스코프 `const` 의 링크를 **C 와 C++ 로 던져** 글자로 가른다.
 
@@ -1024,3 +1010,17 @@ C 에서는 「**돌아갔다**」가 아무것도 증명하지 못한다. 다�
 - ★ **`const` 가 붙은 구조체 멤버**와 구조체 대입 — ★ **던지지 않았다.**
 - ★ **같은 문자열 리터럴 둘이 같은 주소인가**(미명시) — ★ **던지지 않았다.**
 - ★ **gcc 의 더 새 판에서 이 경고의 기본값이 바뀌었는가** — 이 머신에는 gcc 12·13 만 있어 **확인하지 못했다.** ★ **못 잰 것**.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 9899 공개 작업 초안 — WG14 프로젝트 문서 목록](https://www.open-std.org/jtc1/sc22/wg14/www/projects)(C23 대응 초안 [**N3220**](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf) — 포인터 대입의 한정자 규칙, `const` 객체를 고치는 UB, 문자열 리터럴을 고치는 UB 를 **본문에서 직접 찾아 읽었다**)
+★ **표준 조항 번호는 인용하지 않는다.** 규칙 진술은 위 문서로, **진단·어셈블리·심볼·종료 코드는 전부 실행으로** 접지했다.
+**실행 검증** — 이 문서의 모든 출력·진단은 「이 판」 절의 판에서 실제로 돌려 **파일로 캡처한 것**이다. 기본은 `-std=c17 -Wall -Wextra -pedantic`.\
+★★ **UB 가 걸린 실험은 컴파일러 2 × `-O0`/`-O2` 네 벌**을 돌렸다 — 한 벌로는 **정반대 결론**이 난다((5)).\
+★★ **블록은 전부 캡처 파일에서 조립했다** — 손으로 옮겨 적은 출력이 하나도 없다.
+**버전** — `const` 는 **C89 부터**다. 이 편의 규칙은 C89 이후 바뀌지 않았다(`char **` → `const char *const *` 를 C 가 막는 것도 **C23 까지 그대로**다 — `-std=c2x` 로 확인((3))).
+★★★ **재지 않은 성능 주장은 하지 않는다.** 「`const` 가 최적화를 돕는다」는 **시간으로 재지 않았다** — 이 편은 **어셈블리의 명령 수**만 센다.
+★★ **경계** — **선언을 오른쪽에서 왼쪽으로 읽는 법** 일반은 [01번 형제](../01-declaration-syntax-and-reading/), **포인터 자체**는 [14번 형제](../14-pointers-address-dereference-and-pointer-types/)가 정본이다.\
+★ **문자열 리터럴의 저장 기간**은 [20번 형제](../20-null-terminated-strings-and-string-literals/), **`restrict`** 는 [목록의 **33번 주제**](../33-restrict-and-the-aliasing-contract/), **엄격한 앨리어싱**은 목록의 **55번 주제**가 정본이다.\
+★ **`volatile`**(같은 한정자의 다른 짝)은 [32번 형제](../32-what-volatile-actually-guarantees/)로 이어진다.
+선행 — [14번 형제](../14-pointers-address-dereference-and-pointer-types/) · [29번 형제](../29-scope-and-linkage-static-extern/)(링크와 `nm`).

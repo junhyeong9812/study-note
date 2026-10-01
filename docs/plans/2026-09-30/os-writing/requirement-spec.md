@@ -1,8 +1,5 @@
 # 요구사항 명세서 — os-writing
 
-> 작성일: 2026-09-30 · 작업 폴더: `docs/plans/2026-09-30/os-writing/` · 브랜치: `docs/os-writing`(main fb3bf94c)
-> 선행 작업: `docs/plans/2026-09-30/network-writing/`(네트워크 51편 — 도구·교훈 재사용)
-
 ## 0. 요구사항 원문 (인터뷰)
 
 - 원문: "다음 영역 OS 명세부터 작성해보자"

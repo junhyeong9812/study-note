@@ -1,13 +1,5 @@
 # web-api/02 — 요소 조회: `querySelector` 계열과 `getElementsBy*`·라이브 대 정적 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> **이 갈래는 언어가 아니라 플랫폼이다.** 언어 문법은 [`../../`](../../) 에 있고, 여기는 **브라우저가 건네주는 객체와 그 계약**이다.\
-> **기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「Interface `NodeList`」·「Interface `HTMLCollection`」·「Interface `ParentNode`」·「`getElementsByTagName`」 절. 열어서 확인한 것만 적었다.\
-> **실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
-> **엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.**\
-> **버전** — 웹 플랫폼 API 에는 언어 버전이 없다. 기준은 **Baseline** 하나이고, 이 주제의 표면은 전부 Baseline 추적 대상 자체가 아닐 만큼 오래된 것이다. 예외는 `:scope` 로, 오늘 모든 현행 엔진에 있다.\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 명세로, 출력은 실행으로 접지했다.
-
 **근거로 쓸 칸을 미리 가른다.**
 
 | 안 흔들리는 칸 (근거로 쓴다) | 흔들리는 칸 (근거로 쓰지 않는다) |
@@ -678,3 +670,11 @@ snap.forEach(...)                                         // 되지만 live.forE
 - **`querySelectorAll` 의 정적 `NodeList` 는 「배열 같은 것」이지 배열이 아니다.** `map` 이 없다. `forEach` 만 있는 이유는 DOM 명세가 그 하나만 넣었기 때문이다.
 - **선택자 매치를 문서 기준으로 하는 설계는 Selectors API 초안부터 논쟁**이었다. 「요소 안에서만 매치」가 직관적인데 **명시도·조합자 계산이 달라져** 그렇게 못 했고, 대신 `:scope` 가 들어왔다.
 - **Shadow DOM 경계를 넘는 조회는 없다.** `document.querySelector` 는 그림자 트리 안을 못 본다 — 그 규칙은 [목록의 **12번 주제**](../12-shadow-dom/)가 정본이다.
+
+## 실행 환경
+
+**이 갈래는 언어가 아니라 플랫폼이다.** 언어 문법은 [`../../`](../../) 에 있고, 여기는 **브라우저가 건네주는 객체와 그 계약**이다.\
+**기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「Interface `NodeList`」·「Interface `HTMLCollection`」·「Interface `ParentNode`」·「`getElementsByTagName`」 절. 열어서 확인한 것만 적었다.\
+**실행 검증** — 이 문서의 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 `--dump-dom` 으로 실제로 받은 것이다. 하네스는 [3-answer.md](3-answer.md) 의 `## 실행 검증` 절에 있다.\
+**엔진은 Chrome 하나다** — Firefox 155.0.1 은 이 환경에서 headless 산출이 조용히 실패하고 WebKit 은 없다. 그래서 이 문서는 **「이식성」을 주장하지 않는다.**\
+**버전** — 웹 플랫폼 API 에는 언어 버전이 없다. 기준은 **Baseline** 하나이고, 이 주제의 표면은 전부 Baseline 추적 대상 자체가 아닐 만큼 오래된 것이다. 예외는 `:scope` 로, 오늘 모든 현행 엔진에 있다.

@@ -1,13 +1,5 @@
 # kotlin/syntax/37 — 리시버 지정 람다와 type-safe builder (DSL) — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 선행은 [14번 주제](../14-scope-functions/)(`apply`·`with` 가 수신자 람다를 받는 것)와 [36번 주제](../36-function-types-fun-interface-and-sam-conversion/)(함수 타입이 `Function1` 인 것)다.
-> 문항 11개 중 코드블록이 붙는 예측형은 6개다.
-> 바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
-> 이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -232,6 +224,13 @@ public class JRecv {
 ### 11. 「DSL 은 비용이 없다」 (왜)
 
 - 이 문서가 그 말을 **뒷받침할 수 있는가**? 5번 바이트코드가 보여 주는 것과 보여 주지 않는 것을 가르면?
+
+## 실행 환경
+
+선행은 [14번 주제](../14-scope-functions/)(`apply`·`with` 가 수신자 람다를 받는 것)와 [36번 주제](../36-function-types-fun-interface-and-sam-conversion/)(함수 타입이 `Function1` 인 것)다.
+
+바이트코드를 묻는 문항은 **`kotlinc` 기본 `-jvm-target`(1.8)** 기준이다.
+이 주제의 모든 답은 **kotlinc 2.4.20 · Temurin JDK 21.0.5** 에서 실제로 던져 받은 것이다.
 
 ## 복습 기록
 

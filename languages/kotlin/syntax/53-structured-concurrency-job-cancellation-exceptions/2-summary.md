@@ -1,15 +1,5 @@
 # kotlin/syntax/53 — 구조적 동시성 — `Job`·취소 전파·예외 전파·`supervisorScope` — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — **`kotlinx-coroutines-core-jvm` 1.11.0 의 소스 jar**(`CoroutineScope.kt`·`Supervisor.kt`·`Guidance.kt`·`CoroutineExceptionHandler.kt`·`Yield.kt`·`NonCancellable.kt`)의 KDoc((6)). ★ 공식 문서 페이지는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 [Coroutines basics](https://kotlinlang.org/docs/coroutines-basics.html)·[Cancellation](https://kotlinlang.org/docs/coroutines-cancellation.html) 을 원고째 인용한다.
-> **실행 검증** — 이 문서의 모든 출력·경고는 **kotlinc 2.4.20 (JRE 21.0.5)** · Temurin **JDK 21.0.5** · **kotlinx-coroutines-core-jvm 1.11.0** 에서 실제로 얻었다.\
-> `kotlinc` 6회(대조용 1.10.2 로 1회 포함) · `java` 6회 + 대조 2회 + 되풀이 15회 · 소스 jar 발췌 7곳.\
-> ★★★ **라이브러리 판** — 이 주제의 규칙은 **전부 kotlinx-coroutines 의 문서 계약**이다(언어가 아니다). 판을 바꿔 본 대조 — 같은 격자를 **1.10.2**(gradle 배포본에 들어 있던 판 · 메타데이터 `mv=[2,1,0]`)로 컴파일·실행하니 **출력이 바이트까지 같았고, 경고만 달랐다**((1)).\
-> ★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 칸 N / M」은 프로그램이 스스로 센 것**이다.
-> **경계** — ★★★ `suspend`·`launch`·`async`·`await` 의 기초와 「`async` 예외는 `await` 에서 나오지만 부모는 이미 취소됐다」는 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)가 정본이다. **서버를 멈출 때 요청을 어떻게 흘려 보내나**(운영 패턴)는 [`cs/ops-patterns/19-graceful-shutdown/`](../../../../cs/ops-patterns/19-graceful-shutdown/) 가 정본이다 — 여기는 **`Job` 트리에서 취소·예외가 번지는 규칙**만 본다. `runCatching` 이 `CancellationException` 까지 잡는다는 것 자체는 [49번 주제](../49-result-and-runcatching/) (4)가 쟀다 — 여기서는 **그래서 무엇이 깨지나**를 본다.\
-> ★ **대비** — 같은 축의 Python 격자(`gather` 대 `TaskGroup`)는 [Python 52번](../../../python/syntax/52-asyncio-concurrency-structure/), Go 의 `context` 취소 나무는 [Go 34번](../../../go/syntax/34-context-cancellation-deadlines-and-values/), JS 의 `AbortSignal` 은 [JS 41번](../../../js/syntax/41-cancellation-and-timeouts/)이 정본이다.
-> 이 본문은 Claude 작성이다(원고 없음).
-
 ★★★ **본체는 첫째 창이다** — 「**전파 격자 — 구조 셋(`coroutineScope` · `supervisorScope` · `launch(SupervisorJob())`) × 사건 셋(자식 하나가 예외 · 자식 하나가 `cancel()` · 바깥이 취소) × 빌더 둘(`launch` · `async`) → 형제 A·C · 호출자가 본 것 · 핸들러가 본 것**」. 단일 스레드에서 `yield()` 걸음으로 **결정적으로** 만들었다(Python 52 의 `sleep(0)` 걸음과 같은 꾀).
 
 ## 이 주제가 쓰는 세 층
@@ -765,3 +755,13 @@ after the supervised block
 - **여러 자식이 동시에 실패하면** — 첫 예외 외의 것은 `suppressed` 로 붙는다고 알려져 있다. 이 문서는 **확인하지 않았다**(격자는 한 자식만 실패시켰다).
 - **`CoroutineStart.LAZY`·`ATOMIC`** — 시작 전에 취소되면 몸통이 도나. 돌리지 않았다.
 - **멀티스레드 디스패처에서의 격자** — 걸음 수가 흔들릴 것이다. [목록의 **54번 주제**](../54-coroutine-context-dispatchers-and-withcontext/)의 몫이다.
+
+## 실행 환경
+
+**기준 소스** — **`kotlinx-coroutines-core-jvm` 1.11.0 의 소스 jar**(`CoroutineScope.kt`·`Supervisor.kt`·`Guidance.kt`·`CoroutineExceptionHandler.kt`·`Yield.kt`·`NonCancellable.kt`)의 KDoc((6)). ★ 공식 문서 페이지는 **이 작업에서 열지 못했다**(외부 네트워크를 쓰지 않았다) — [`../../언어-특성/README.md`](../../언어-특성/README.md) §6 이 [Coroutines basics](https://kotlinlang.org/docs/coroutines-basics.html)·[Cancellation](https://kotlinlang.org/docs/coroutines-cancellation.html) 을 원고째 인용한다.
+**실행 검증** — 이 문서의 모든 출력·경고는 **kotlinc 2.4.20 (JRE 21.0.5)** · Temurin **JDK 21.0.5** · **kotlinx-coroutines-core-jvm 1.11.0** 에서 실제로 얻었다.\
+`kotlinc` 6회(대조용 1.10.2 로 1회 포함) · `java` 6회 + 대조 2회 + 되풀이 15회 · 소스 jar 발췌 7곳.\
+★★★ **라이브러리 판** — 이 주제의 규칙은 **전부 kotlinx-coroutines 의 문서 계약**이다(언어가 아니다). 판을 바꿔 본 대조 — 같은 격자를 **1.10.2**(gradle 배포본에 들어 있던 판 · 메타데이터 `mv=[2,1,0]`)로 컴파일·실행하니 **출력이 바이트까지 같았고, 경고만 달랐다**((1)).\
+★★ 블록은 전부 **캡처 스크립트가 파일로 받아** 조립한 것이다 — 사람이 옮겨 적지 않았다. **「갈린 칸 N / M」은 프로그램이 스스로 센 것**이다.
+**경계** — ★★★ `suspend`·`launch`·`async`·`await` 의 기초와 「`async` 예외는 `await` 에서 나오지만 부모는 이미 취소됐다」는 [52번 주제](../52-coroutine-basics-suspend-scope-launch-async/)가 정본이다. **서버를 멈출 때 요청을 어떻게 흘려 보내나**(운영 패턴)는 [`cs/ops-patterns/19-graceful-shutdown/`](../../../../cs/ops-patterns/19-graceful-shutdown/) 가 정본이다 — 여기는 **`Job` 트리에서 취소·예외가 번지는 규칙**만 본다. `runCatching` 이 `CancellationException` 까지 잡는다는 것 자체는 [49번 주제](../49-result-and-runcatching/) (4)가 쟀다 — 여기서는 **그래서 무엇이 깨지나**를 본다.\
+★ **대비** — 같은 축의 Python 격자(`gather` 대 `TaskGroup`)는 [Python 52번](../../../python/syntax/52-asyncio-concurrency-structure/), Go 의 `context` 취소 나무는 [Go 34번](../../../go/syntax/34-context-cancellation-deadlines-and-values/), JS 의 `AbortSignal` 은 [JS 41번](../../../js/syntax/41-cancellation-and-timeouts/)이 정본이다.

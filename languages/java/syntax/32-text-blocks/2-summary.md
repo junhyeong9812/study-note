@@ -1,16 +1,5 @@
 # java/syntax/32 — 텍스트 블록 (15+) — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [JLS SE 21 §3.10.6 Text Blocks](https://docs.oracle.com/javase/specs/jls/se21/html/jls-3.html) · [JEP 378: Text Blocks](https://openjdk.org/jeps/378) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/String.java` 의 `stripIndent()` javadoc 원문(`lib/src.zip` 에서 직접 읽음).
-> **실행 검증** — 이 문서의 모든 출력·에러는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
-> 프로그램 5개(`Ex.java (32-a)` ~ `(32-jv)`)를 **17.0.13 · 21.0.5 · 25.0.1** 에서 전부 돌렸고 **세 버전의 출력이 한 글자도 다르지 않았다.**\
-> 다만 이것은 관찰이지 보장이 아니다 — 보장은 JLS §3.10.6 이 한다.
-> **버전** — 텍스트 블록은 **15 정식**(JEP 378). 13 에서 1차 preview(JEP 355), 14 에서 2차 preview(JEP 368)를 거쳤다.\
-> 짝으로 들어온 `String` 메서드의 `@since` 는 `src.zip` 에서 직접 읽었다 —
-> `formatted`·`stripIndent`·`translateEscapes` = **15** · `strip`·`stripLeading`·`stripTrailing`·`lines`·`repeat`·`isBlank` = **11**.
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-> 선행 없음. 이어지는 주제: [35 `String`](../35-string/) · [37 정규식](../37-regex/).
-
 ## 한눈에 — 쉽게 말하면
 
 **텍스트 블록은 "들여쓴 문단을 통째로 집어 왼쪽 끝으로 미는 편집기 기능"이다.**\
@@ -619,3 +608,15 @@ String sql2 = """
 
 - **`indent(int)` 는 끝 개행을 보장한다**(javadoc `@apiNote` 가 아니라 실행으로 확인 — (17) 의 마지막 줄이 빈 줄이다).\
   `stripIndent` 는 반대로 *"If this string ends with a line terminator then the result will end with a line terminator"* 라서 원본을 따른다.
+
+## 실행 환경
+
+**기준 소스** — [JLS SE 21 §3.10.6 Text Blocks](https://docs.oracle.com/javase/specs/jls/se21/html/jls-3.html) · [JEP 378: Text Blocks](https://openjdk.org/jeps/378) · JDK 21.0.5 표준 라이브러리 소스 `java.base/java/lang/String.java` 의 `stripIndent()` javadoc 원문(`lib/src.zip` 에서 직접 읽음).
+**실행 검증** — 이 문서의 모든 출력·에러는 Temurin **JDK 21.0.5** 에서 실제로 돌려 얻은 것이다.\
+프로그램 5개(`Ex.java (32-a)` ~ `(32-jv)`)를 **17.0.13 · 21.0.5 · 25.0.1** 에서 전부 돌렸고 **세 버전의 출력이 한 글자도 다르지 않았다.**\
+다만 이것은 관찰이지 보장이 아니다 — 보장은 JLS §3.10.6 이 한다.
+**버전** — 텍스트 블록은 **15 정식**(JEP 378). 13 에서 1차 preview(JEP 355), 14 에서 2차 preview(JEP 368)를 거쳤다.\
+짝으로 들어온 `String` 메서드의 `@since` 는 `src.zip` 에서 직접 읽었다 —
+`formatted`·`stripIndent`·`translateEscapes` = **15** · `strip`·`stripLeading`·`stripTrailing`·`lines`·`repeat`·`isBlank` = **11**.
+
+선행 없음. 이어지는 주제: [35 `String`](../35-string/) · [37 정규식](../37-regex/).

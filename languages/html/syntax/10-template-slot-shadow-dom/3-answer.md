@@ -1,12 +1,5 @@
 # html/syntax/10 — `template`·`slot`·선언적 Shadow DOM·커스텀 요소 맛보기 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다. **선언적 Shadow DOM 은 이 묶음에서 가장 새 표면**이라 특히 그렇다.
-> ★★★ **이 주제에는 도구 한계가 있다** — `--dump-dom` 은 **섀도 트리를 못 본다**(A3). 그 자리에서는 창 ②로 갈아탔다.
-> ★ **경계** — Shadow DOM·커스텀 요소의 **API** 는 web-api 갈래 목록([`web-api/README.md`](../../../web-api/README.md))의 **12번**·**13번**이 정본이다(A10).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -663,3 +656,11 @@ shadowrootmode="zzz" 로 바꾸면
 - **슬롯 할당** — `slot` 속성 값과 `<slot name>` 을 맞춰 넣는 것. **공백 텍스트 노드도 이름 없는 칸을 채운다.**
 - **업그레이드(upgrade)** — 이미 트리에 있던 요소가 `customElements.define` 시점에 그 클래스로 바뀌는 것.
 - **`HTMLUnknownElement`** — 파서가 모르는 요소의 클래스. **대시가 있는 이름은 여기에 안 들어간다.**
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다. **선언적 Shadow DOM 은 이 묶음에서 가장 새 표면**이라 특히 그렇다.
+★★★ **이 주제에는 도구 한계가 있다** — `--dump-dom` 은 **섀도 트리를 못 본다**(A3). 그 자리에서는 창 ②로 갈아탔다.
+★ **경계** — Shadow DOM·커스텀 요소의 **API** 는 web-api 갈래 목록([`web-api/README.md`](../../../web-api/README.md))의 **12번**·**13번**이 정본이다(A10).

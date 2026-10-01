@@ -1,11 +1,5 @@
 # html/syntax/15 — 목록: `ul`/`ol`(`start`·`reversed`·`value`)/`dl` — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스(`html13b-cdp.py`·`capture.sh`)는 [13번 주제의 3-answer.md](../13-phrasing-semantics/3-answer.md) `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
-> ★ **엔진은 Chrome 하나다.** WebKit 은 **미실행**이다.
-> ★★★ **번호는 창 ⑦ 에만 있다**(A1·A2).
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -251,3 +245,10 @@ RootWebArea    이름=''
 - **`ReflectDefault=1`** — 속성이 없을 때 IDL 이 1 을 돌려주는 표기.
 - **`DescriptionList`** — Chrome 의 `dl` 내부 역할 이름.
 - **제3의 상태(못 잰 것)** — 동작은 있는데 이 머신에 잴 도구가 없는 것. 이 주제의 WebKit 이 그렇다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** 받은 것이다. 블록은 캡처 조립기로 붙였다. 하네스(`html13b-cdp.py`·`capture.sh`)는 [13번 주제의 3-answer.md](../13-phrasing-semantics/3-answer.md) `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 와 [HTML-AAM](https://w3c.github.io/html-aam/) 으로 접지했다.\
+★ **엔진은 Chrome 하나다.** WebKit 은 **미실행**이다.
+★★★ **번호는 창 ⑦ 에만 있다**(A1·A2).

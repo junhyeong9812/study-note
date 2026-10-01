@@ -1,12 +1,5 @@
 # html/syntax/08 — 스크립트 로딩: `defer`/`async`/`type=module`/`nomodule`·배치 위치 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
-> 규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 로 접지했다.\
-> ★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
-> ★★ **`async` 의 자리는 보장이 아니다.** 이 파일은 그것을 **가짓수**로 적는다(A2).
-> ★★★ **관찰 한계** — `--dump-dom` 은 `load` + 마이크로태스크 + `setTimeout(…, 0)` 까지만 기다린다(A6). 이 문서의 모든 출력이 그 안에서 읽은 것이다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -526,3 +519,11 @@ window.__L.push("html05b-once.js 의 본문이 평가됐다");
 - **모듈 맵(module map)** — URL 마다 모듈을 한 번만 올려 두는 표. 「한 번만 평가된다」의 근거.
 - **무음 실패(silent failure)** — 예외도 경고도 없이 결과만 다른 것. `defer`/`async` 의 `document.write` 가 그것이다.
 - **가짓수 세기** — 순서가 안 정해진 출력을 `sort -u` 로 모아 **서로 다른 줄이 몇 가지인지** 세는 것. 그 수는 흔들리지 않는다.
+
+## 실행 환경
+
+이 파일의 **모든 출력은 Google Chrome 151.0.7922.173 headless 에서 실제로 돌려** `--dump-dom` 과 DOM 프로브로 읽은 것이다. 하네스는 맨 아래 `## 실행 검증` 절에 있다.\
+규칙은 [WHATWG HTML Living Standard](https://html.spec.whatwg.org/multipage/) 로 접지했다.\
+★ **엔진은 Chrome 하나다** — 이 갈래는 이식성을 주장하지 않는다.
+★★ **`async` 의 자리는 보장이 아니다.** 이 파일은 그것을 **가짓수**로 적는다(A2).
+★★★ **관찰 한계** — `--dump-dom` 은 `load` + 마이크로태스크 + `setTimeout(…, 0)` 까지만 기다린다(A6). 이 문서의 모든 출력이 그 안에서 읽은 것이다.

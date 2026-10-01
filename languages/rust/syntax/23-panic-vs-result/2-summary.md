@@ -1,21 +1,5 @@
 # rust/syntax/23 — `panic!` 대 `Result` — 어디서 끝낼 것인가 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [std — `macro panic!`](https://doc.rust-lang.org/std/macro.panic.html) ·
-> [std — `panic::catch_unwind`](https://doc.rust-lang.org/std/panic/fn.catch_unwind.html) ·
-> [std — `process::exit`](https://doc.rust-lang.org/std/process/fn.exit.html) ·
-> [std — `trait Termination`](https://doc.rust-lang.org/std/process/trait.Termination.html) ·
-> [Cargo Book — `profile.panic`](https://doc.rust-lang.org/cargo/reference/profiles.html#panic) ·
-> [rustc Book — `-C panic`](https://doc.rust-lang.org/rustc/codegen-options/index.html#panic).
-> **실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
-> **`rustc --edition 2021 ex.rs -o ex`**(일부 블록은 `-C panic=abort` 또는 `-O` 를 더해) 실제로 돌려 받은 것이다.\
-> ★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
-> ★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
-> ★ **종료 코드는 `./ex` 의 것**이고 캡처가 `(종료 코드 N)` 으로 블록 끝에 적었다.
-> **버전** — `panic!`·`assert!`·`debug_assert!`·`process::exit` 는 **1.0.0** 부터.\
-> **`catch_unwind` 는 1.9.0**, **`main` 이 `Result` 를 반환할 수 있는 것은 1.26.0** 부터다. **전부 에디션과 무관하다.**
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 ## 흔들리는 칸 / 안 흔들리는 칸
 
 | | 칸 | 왜 |
@@ -197,7 +181,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
 
 - ★★ **종료 코드 101** 이다. 셸에서 `./ex; echo $?` 로 확인된다.
-- 첫 줄 `thread 'main' (…) panicked at ex.rs:5:9:` 의 **괄호 안 숫자만** 실행마다 바뀐다(머리말의 표).
+- 첫 줄 `thread 'main' (…) panicked at ex.rs:5:9:` 의 **괄호 안 숫자만** 실행마다 바뀐다(맨 위 부분의 표).
 - **`C 여기는 안 온다` 가 안 찍혔다** — 패닉은 그 스레드를 거기서 끝낸다.
 - ★ 마커를 `eprintln!` 으로 찍은 이유 — 패닉은 **표준 오류**로 나간다. 한 블록 안에서 스트림을 섞지 않는다.
 
@@ -651,3 +635,19 @@ fn main() {
 - **스레드 경계의 패닉** — 자식 스레드가 패닉해도 프로세스는 살고 `join` 이 `Err` 를 낸다([목록의 **49번 주제**](../49-threads-spawn-join-and-move-closures/)).
   ★ `Mutex` 는 그때 **중독(poisoned)** 된다([목록의 **52번 주제**](../52-mutex-rwlock-arc-and-poisoning/)).
 - **`#[should_panic]`** — 패닉을 기대하는 테스트([목록의 **58번 주제**](../58-testing-unit-integration-and-doc-tests/)).
+
+## 실행 환경
+
+**기준 소스** — [std — `macro panic!`](https://doc.rust-lang.org/std/macro.panic.html) ·
+[std — `panic::catch_unwind`](https://doc.rust-lang.org/std/panic/fn.catch_unwind.html) ·
+[std — `process::exit`](https://doc.rust-lang.org/std/process/fn.exit.html) ·
+[std — `trait Termination`](https://doc.rust-lang.org/std/process/trait.Termination.html) ·
+[Cargo Book — `profile.panic`](https://doc.rust-lang.org/cargo/reference/profiles.html#panic) ·
+[rustc Book — `-C panic`](https://doc.rust-lang.org/rustc/codegen-options/index.html#panic).
+**실행 검증** — 이 문서의 모든 출력·에러는 `rustc 1.92.0 (ded5c06cf 2025-12-08)` · `x86_64-unknown-linux-gnu` 에서\
+**`rustc --edition 2021 ex.rs -o ex`**(일부 블록은 `-C panic=abort` 또는 `-O` 를 더해) 실제로 돌려 받은 것이다.\
+★★ **`rustc ex.rs` 만 쓰면 에디션 2015 다** — 에디션을 안 밝힌 결과는 다른 언어를 컴파일한 것과 같다.\
+★★★ **손으로 옮겨 적은 출력은 한 줄도 없다** — 캡처가 블록을 파일로 받고 조립기가 끼워 넣었다.\
+★ **종료 코드는 `./ex` 의 것**이고 캡처가 `(종료 코드 N)` 으로 블록 끝에 적었다.
+**버전** — `panic!`·`assert!`·`debug_assert!`·`process::exit` 는 **1.0.0** 부터.\
+**`catch_unwind` 는 1.9.0**, **`main` 이 `Result` 를 반환할 수 있는 것은 1.26.0** 부터다. **전부 에디션과 무관하다.**

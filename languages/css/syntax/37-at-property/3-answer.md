@@ -1,10 +1,5 @@
 # css/syntax/37 — `@property`: 타입 등록·초기값·상속 여부 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 질문의 코드를 그대로 돌려 읽은 것**이다.\
-> 규칙은 [CSS Properties and Values API Level 1](https://drafts.csswg.org/css-properties-values-api-1/) 로 접지했다.\
-> **엔진은 Chrome 하나다.** 전환 실험만 CDP 로 실제 마우스 입력을 넣어 잰다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -376,3 +371,9 @@ google-chrome --headless --disable-gpu --no-sandbox --window-size="$W,$H" --dump
 - **`CSSPropertyRule`** — `@property` 의 CSSOM 타입. 등록 여부의 정답지.
 - **`CSS.registerProperty()`** — 같은 등록의 JS API. **예외를 던져서** 이유를 말해 준다.
 - **소급 적용** — 등록이 나중에 이뤄져도 이미 적용된 스타일·진행 중 애니메이션에 반영되는 것.
+
+## 실행 환경
+
+이 파일의 **모든 값은 Google Chrome 151.0.7922.173 headless 에서 질문의 코드를 그대로 돌려 읽은 것**이다.\
+규칙은 [CSS Properties and Values API Level 1](https://drafts.csswg.org/css-properties-values-api-1/) 로 접지했다.\
+**엔진은 Chrome 하나다.** 전환 실험만 CDP 로 실제 마우스 입력을 넣어 잰다.

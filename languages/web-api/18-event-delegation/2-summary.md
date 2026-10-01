@@ -1,13 +1,5 @@
 # web-api/18 — 이벤트 위임: 조상 하나로 자손 전체 받기·`closest()` 로 되찾기 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.\
-> ★ **이 편의 본체는 「되찾기 표」다** — 위임 리스너 안에서 **`e.target` · `closest()` · `contains` 가드**를 한 줄에 나란히 찍어, **조상 하나가 「누가 눌렸나」를 제대로 되찾았나**를 진짜 클릭마다 본다(창 ② 를 위임 리스너 안으로 옮긴 것).\
-> **기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「`Element.closest()`」·「`Node.contains()`」·「`Event.composedPath()`」·「dispatch」 절. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
-> **실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **클릭·포커스·마우스 이동은 CDP 로 넣은 진짜 입력**이다. 하네스는 [16번 주제](../16-event-propagation-phases/2-summary.md)의 (1)에 있다.\
-> **엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
-> **선행** — [16번 주제](../16-event-propagation-phases/2-summary.md)(버블 단계) · CSS 갈래 [08번 주제](../../css/syntax/08-basic-selectors-and-combinators/2-summary.md)(`closest()` 가 받는 선택자 문법). 위임이 **깨지는 자리** 셋은 [16번 주제](../16-event-propagation-phases/2-summary.md)(비버블) · [17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md)(`stopPropagation`) · [12번 주제](../12-shadow-dom/2-summary.md)(그림자 경계)에서 인용하고 **여기서 진짜 클릭으로 다시 확인했다.**\
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 출력은 실행으로 접지했다.
-
 **이 판의 Chrome**
 
 ```text
@@ -737,3 +729,11 @@ closest · matches · contains 가 자기 자신을 넣나 (li#항목1 에서)
 - **`slot` 에 배정된 라이트 DOM 자식**에서 난 이벤트는 재타기팅되지 않는다([12번 주제](../12-shadow-dom/2-summary.md)의 (15)) — 위임 리스너가 그 자식을 `closest()` 로 **그대로** 되찾을 수 있다. 이 편은 다시 던지지 않았다.
 - **포인터 이벤트(`pointerover` 등)의 위임**은 [목록의 **23번 주제**](../23-pointer-events/) 몫이다.
 - **`closest()` 에 복잡한 선택자(`:has()` 등)를 넣는 비용**은 재지 않았다.
+
+## 실행 환경
+
+★ **이 편의 본체는 「되찾기 표」다** — 위임 리스너 안에서 **`e.target` · `closest()` · `contains` 가드**를 한 줄에 나란히 찍어, **조상 하나가 「누가 눌렸나」를 제대로 되찾았나**를 진짜 클릭마다 본다(창 ② 를 위임 리스너 안으로 옮긴 것).\
+**기준 소스** — [WHATWG DOM Standard](https://dom.spec.whatwg.org/) 의 「`Element.closest()`」·「`Node.contains()`」·「`Event.composedPath()`」·「dispatch」 절. 열어서 확인한 것만 적었다(기준일 2026-09-26).\
+**실행 검증** — 모든 출력은 **Google Chrome 151.0.7922.173** headless 에서 받은 것이다. **클릭·포커스·마우스 이동은 CDP 로 넣은 진짜 입력**이다. 하네스는 [16번 주제](../16-event-propagation-phases/2-summary.md)의 (1)에 있다.\
+**엔진은 Chrome 하나다** — **이식성을 주장하지 않는다.**\
+**선행** — [16번 주제](../16-event-propagation-phases/2-summary.md)(버블 단계) · CSS 갈래 [08번 주제](../../css/syntax/08-basic-selectors-and-combinators/2-summary.md)(`closest()` 가 받는 선택자 문법). 위임이 **깨지는 자리** 셋은 [16번 주제](../16-event-propagation-phases/2-summary.md)(비버블) · [17번 주제](../17-stoppropagation-vs-preventdefault/2-summary.md)(`stopPropagation`) · [12번 주제](../12-shadow-dom/2-summary.md)(그림자 경계)에서 인용하고 **여기서 진짜 클릭으로 다시 확인했다.**

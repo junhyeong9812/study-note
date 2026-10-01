@@ -1,12 +1,5 @@
 # PR #36933 분석 — ThrowawayClassLoader의 클래스 리소스 스트림 미해제
 
-> 기준 상태 세 가지를 구분해 쓴다.\
-> **수정 전** = `03d80feed0f^`, **수정 커밋** = `03d80feed0f`, **현재** = `upstream/main`(`7daf1013aa8`, #36938까지 반영된 상태).\
-> 파일:줄 인용마다 어느 상태 기준인지 밝힌다.
->
-> 이 문서의 자리: README(왜 이런 물건인가의 서사)·structure(클래스 구조도)·tests(테스트 해설)와 겹치지 않게 잡았다.\
-> 호출 그래프 위에 놓인 **이름표 하나하나의 역할**과 **결함 경로의 단계별 상태**를 고정하는 데 집중한다.
-
 ## 0. 결론
 
 `ThrowawayClassLoader.loadClassFromResource`가 `getResourceAsStream(...)`으로 연 `InputStream`을 어느 출구에서도 닫지 않는다.\
@@ -315,3 +308,9 @@ after (`upstream/main` 기준 `ThrowawayClassLoader.java:72-77`):
 이 PR에서 손대지 않은, 확인은 되었으나 별건인 것들은 둘이다.\
 `loadClass(name, resolve)`가 `resolve` 인자를 무시하고 항상 `super.loadClass(name, true)`를 부르며, 폴백으로 정의한 클래스에는 `resolveClass`를 걸지 않는 점(기존 동작).\
 그리고 `loadClassFromResource`에 `@Nullable` 표기가 없는 점(패키지가 `@NullUnmarked`라 표기해도 검사되지 않는다).
+
+## 출처
+
+기준 상태 세 가지를 구분해 쓴다.\
+**수정 전** = `03d80feed0f^`, **수정 커밋** = `03d80feed0f`, **현재** = `upstream/main`(`7daf1013aa8`, #36938까지 반영된 상태).\
+파일:줄 인용마다 어느 상태 기준인지 밝힌다.

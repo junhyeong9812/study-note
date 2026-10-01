@@ -1,34 +1,5 @@
 # cpp/syntax/05 — `auto`·`decltype` 과 타입 추론 — 정리 (힌트)
 
-> 복습 시 이 파일은 **질문에 막혔을 때만** 연다. 먼저 읽고 답하면 인출이 아니라 받아쓰기다.
-> **기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `auto` 자리표시자](https://en.cppreference.com/w/cpp/language/auto) · [`decltype`](https://en.cppreference.com/w/cpp/language/decltype) · [템플릿 인자 추론](https://en.cppreference.com/w/cpp/language/template_argument_deduction) · [함수 반환 타입 추론](https://en.cppreference.com/w/cpp/language/function#Return_type_deduction) · [`std::vector<bool>`](https://en.cppreference.com/w/cpp/container/vector_bool) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
-> **실행 검증** — 이 문서의 모든 타입·출력·경고·에러는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
-> **Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
-> 기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
-> 블록마다 **소스 파일 이름이 다르다**(`dedu01.cpp` \~ `dedu10.cpp`).\
-> ★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
-> ★ 타입을 찍는 블록은 **긴 진단에서 타입 줄만 남기는 필터**를 배너에 적어 두었다(`| grep 'incomplete type'`).\
-> 그러니 실린 것은 「생략한 일부」가 아니라 **그 명령의 전체 출력**이다.
-> **버전** — `auto`·`decltype` 은 **C++11부터**. **`decltype(auto)` 와 일반 함수의 반환 타입 추론은 C++14부터**.\
-> **`auto x{1}` 이 `int` 인 것은 C++17부터**. **매개변수 `auto`(축약 템플릿)는 C++20부터**((10)).
-> 이 본문은 Claude 작성이다(원고 없음). 규칙은 위 기준 소스로, 타입은 컴파일러 진단으로 접지했다.
-> **경계** — 「템플릿 인자 추론」의 정본은 [목록의 **31번 주제**](../31-function-templates-and-argument-deduction/)다.\
-> `auto` 의 규칙은 그것과 **거의 같지만 한 곳이 다르고**(중괄호 목록), 여기서는 **`auto` 쪽만** 쓴다((2)).\
-> 「값 범주(lvalue·xvalue·prvalue)」는 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/), 「전달 참조와 `std::forward`」는 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/),\
-> 「댕글링과 수명」은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)가 정본이다.\
-> 「배열이 포인터로 감쇠하는 것」은 C 갈래 [`16번`](../../../c/syntax/16-array-pointer-decay-and-function-parameters/)이 정본이다((4)).\
-> 「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/)이다.\
-> 「`auto x{1}` 대 `auto x = {1}`」의 정본은 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/)이고 여기서는 **되짚기만** 한다.
->
-> ★★ **흔들리는 칸 / 안 흔들리는 칸**
->
-> | 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
-> |---|---|
-> | 컴파일 시간 | ★ **`TypeOf<...>` 꺾쇠 안의 타입 이름** — 이 주제의 답 자체다 |
-> | 댕글링 참조가 **읽은 값**(이 문서는 **싣지 않았다**) | **진단 본문** · `파일:줄:칸` · **경고 이름** |
-> | UB 로 죽을 때 셸이 찍는 신호 메시지 | **`cc exit` 와 `run exit`**(갈라 적었다 — 댕글링 판은 `run exit=139`) |
-> | — | `sizeof` 값 · 복사 생성자가 **몇 번** 불렸나 |
-
 ## 한눈에 — 쉽게 말하면
 
 **`auto` 는 「컴파일러야 타입 좀 적어 줘」가 아니다. 「이 값을 함수 매개변수처럼 받아라」다.**
@@ -908,3 +879,33 @@ int main() {
 - **`auto` 와 구조적 바인딩**(`auto [a, b] = pair;`) — 추론 규칙이 한 겹 더 있다. 정본은 목록의 **48번 주제**.
 - **프록시가 `auto` 를 무는 다른 사례** — 표현식 템플릿(Eigen 류)이 같은 모양이다.\
   ★ 이 문서는 **표준 라이브러리 안의 사례 하나만**(`vector<bool>`) 던졌다.
+
+## 실행 환경
+
+**기준 소스** — [ISO/IEC 14882 공개 작업 초안 — WG21 표준 문서 목록](https://www.open-std.org/jtc1/sc22/wg21/docs/standards) · [cppreference — `auto` 자리표시자](https://en.cppreference.com/w/cpp/language/auto) · [`decltype`](https://en.cppreference.com/w/cpp/language/decltype) · [템플릿 인자 추론](https://en.cppreference.com/w/cpp/language/template_argument_deduction) · [함수 반환 타입 추론](https://en.cppreference.com/w/cpp/language/function#Return_type_deduction) · [`std::vector<bool>`](https://en.cppreference.com/w/cpp/container/vector_bool) · [GCC 13 Warning Options](https://gcc.gnu.org/onlinedocs/gcc-13.3.0/gcc/Warning-Options.html)
+**실행 검증** — 이 문서의 모든 타입·출력·경고·에러는 **g++ (Ubuntu 13.3.0-6ubuntu2\~24.04.1) 13.3.0** ·\
+**Ubuntu clang version 18.1.3 (1ubuntu1)** · x86-64 Linux 에서 실제로 돌려 얻은 것이다.\
+기본 명령은 `g++ -std=c++20 -Wall -Wextra -pedantic <파일>.cpp -o ex` 이고,\
+블록마다 **소스 파일 이름이 다르다**(`dedu01.cpp` \~ `dedu10.cpp`).\
+★ 블록은 캡처 스크립트가 파일로 받아 조립기가 끼워 넣은 것이다 — 사람이 옮겨 적은 줄은 하나도 없다.\
+★ 타입을 찍는 블록은 **긴 진단에서 타입 줄만 남기는 필터**를 배너에 적어 두었다(`| grep 'incomplete type'`).\
+그러니 실린 것은 「생략한 일부」가 아니라 **그 명령의 전체 출력**이다.
+**버전** — `auto`·`decltype` 은 **C++11부터**. **`decltype(auto)` 와 일반 함수의 반환 타입 추론은 C++14부터**.\
+**`auto x{1}` 이 `int` 인 것은 C++17부터**. **매개변수 `auto`(축약 템플릿)는 C++20부터**((10)).
+
+**경계** — 「템플릿 인자 추론」의 정본은 [목록의 **31번 주제**](../31-function-templates-and-argument-deduction/)다.\
+`auto` 의 규칙은 그것과 **거의 같지만 한 곳이 다르고**(중괄호 목록), 여기서는 **`auto` 쪽만** 쓴다((2)).\
+「값 범주(lvalue·xvalue·prvalue)」는 [목록의 **08번 주제**](../08-value-categories-lvalue-prvalue-xvalue/), 「전달 참조와 `std::forward`」는 [목록의 **09번 주제**](../09-rvalue-references-move-and-forward/),\
+「댕글링과 수명」은 [목록의 **30번 주제**](../30-dangling-references-and-lifetime-extension/)가 정본이다.\
+「배열이 포인터로 감쇠하는 것」은 C 갈래 [`16번`](../../../c/syntax/16-array-pointer-decay-and-function-parameters/)이 정본이다((4)).\
+「참조가 무엇인가」는 형제 [`07번`](../07-references-vs-pointers/)이다.\
+「`auto x{1}` 대 `auto x = {1}`」의 정본은 형제 [`04번`](../04-brace-initialization-narrowing-and-initializer-list/)이고 여기서는 **되짚기만** 한다.
+
+★★ **흔들리는 칸 / 안 흔들리는 칸**
+
+| 흔들린다(근거로 쓰지 않는다) | 안 흔들린다(근거로 쓴다) |
+|---|---|
+| 컴파일 시간 | ★ **`TypeOf<...>` 꺾쇠 안의 타입 이름** — 이 주제의 답 자체다 |
+| 댕글링 참조가 **읽은 값**(이 문서는 **싣지 않았다**) | **진단 본문** · `파일:줄:칸` · **경고 이름** |
+| UB 로 죽을 때 셸이 찍는 신호 메시지 | **`cc exit` 와 `run exit`**(갈라 적었다 — 댕글링 판은 `run exit=139`) |
+| — | `sizeof` 값 · 복사 생성자가 **몇 번** 불렸나 |

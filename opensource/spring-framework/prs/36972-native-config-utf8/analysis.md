@@ -1,9 +1,5 @@
 # PR #36972 분석 — 네이티브 설정 파일의 인코딩이 플랫폼 기본값에 맡겨진 문제
 
-> 기준 상태. **수정 전** = `872b1addeb1^`, **수정 커밋** = `872b1addeb1`, **메인테이너 폴리시** = `78dcdab3fc8`, **현재** = `upstream/main`(`7daf1013aa8`).\
-> 파일:줄 인용마다 어느 상태 기준인지 밝힌다.\
-> 이 문서의 자리: README(서사)·structure(5층 스택 구조도)·tests(테스트 해설)와 겹치지 않게, **"문자가 바이트가 되는 단 한 지점"에 이르는 호출 사슬의 이름표**와 **바이트 수준의 단계 추적**을 고정한다.
-
 ## 0. 결론
 
 `FileNativeConfigurationWriter.writeTo`가 `new FileWriter(file)`를 써서 GraalVM 네이티브 이미지 설정 파일(`reachability-metadata.json`)을 **JVM 플랫폼 기본 charset**으로 기록했다.\
@@ -308,3 +304,8 @@ cglib 재패키징 사본의 `DebuggingClassWriter.java:99`도 charset 미지정
 
 인접 PR과의 관계: 같은 클래스 계층에서 **출력 여부를 결정하는 게이트**(`NativeConfigurationWriter.hasAnyHint`, `:46`)의 결함이 이후 #36989로 별도 처리되었다.\
 이 PR이 "쓸 때 어떻게 쓰는가"라면 #36989는 "쓸 것인가 말 것인가"이며, 무대는 같은 파일 계층이지만 층과 줄이 다르다.
+
+## 출처
+
+기준 상태. **수정 전** = `872b1addeb1^`, **수정 커밋** = `872b1addeb1`, **메인테이너 폴리시** = `78dcdab3fc8`, **현재** = `upstream/main`(`7daf1013aa8`).\
+파일:줄 인용마다 어느 상태 기준인지 밝힌다.

@@ -1,15 +1,5 @@
 # c/syntax/16 — 배열-포인터 감쇠와 함수 매개변수: 「**함수 문턱에서 길이를 잃는다**」 — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> 이 주제의 질문은 **예측형 위주**다 — 아는지가 아니라 **출력을 맞힐 수 있는지**를 묻는다.
-> **환경** — gcc 13.3.0 · clang 18.1.3 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
-> ★★ **이 주제의 답은 대부분 `sizeof` 의 숫자**다. **40 인가 8 인가 16 인가**를 맞히는 것이 인출이다.
-> ★ **경고는 몇 건이고 어느 플래그의 것인가**를 같이 답해라 —
-> ★★ **이 주제의 경고는 `-pedantic` 이 필요 없다.** [13번](../13-goto-cleanup-idiom/)·[14번](../14-pointers-address-dereference-and-pointer-types/)·[15번 형제](../15-pointer-arithmetic-and-indexing/)와 정반대다.
-> 선행 — [15번 형제](../15-pointer-arithmetic-and-indexing/) · [01번 형제](../01-declaration-syntax-and-reading/).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (왜) / (예측) / (경계) / (연결) -->
@@ -150,6 +140,14 @@ int main(void) {
 - 동적 배열의 **용량·증가 전략**은 어느 갈래가 정본인가?
 - `int (*)[4]` 를 `int **` 로 받았을 때 **무엇을 읽게 되는가**는 어느 주제가 정본인가?
 - `char *q = "hi"; q[0] = 'H';` 는 어느 주제가 정본인가?
+
+## 실행 환경
+
+**환경** — gcc 13.3.0 · clang 18.1.3 · x86-64 Linux · 기본 `-std=c17 -Wall -Wextra -pedantic`.
+★★ **이 주제의 답은 대부분 `sizeof` 의 숫자**다. **40 인가 8 인가 16 인가**를 맞히는 것이 인출이다.
+★ **경고는 몇 건이고 어느 플래그의 것인가**를 같이 답해라 —
+★★ **이 주제의 경고는 `-pedantic` 이 필요 없다.** [13번](../13-goto-cleanup-idiom/)·[14번](../14-pointers-address-dereference-and-pointer-types/)·[15번 형제](../15-pointer-arithmetic-and-indexing/)와 정반대다.
+선행 — [15번 형제](../15-pointer-arithmetic-and-indexing/) · [01번 형제](../01-declaration-syntax-and-reading/).
 
 ## 복습 기록
 

@@ -1,11 +1,5 @@
 # java/syntax/12 — 중첩 클래스: static nested·inner·지역·익명 — 정답
 
-> 복습 시 이 파일은 **최후에만** 연다. 정답을 봤으면 닫고 자기 말로 한 번 재산출한다.
-> 이 파일의 모든 출력·역어셈블 출력·컴파일 에러는 **실제로 돌려 얻은 것**이다.\
-> 기본은 Temurin **JDK 21.0.5**. 버전이 갈리는 항목은 **17.0.13 · 25.0.1** 도 함께 돌렸고 그 사실을 줄마다 적었다.\
-> 바이트코드는 `javap -c -p` · `javap -v -p` 출력을 그대로 옮겼다.\
-> 프로그램은 `Ex.java (12-a)` 처럼 **라벨로 식별**한다 — 맨 아래 「이 주제를 확인한 실행 목록」에 전부 있다.
-
 ## 정답
 
 <!-- 1-question.md 의 번호·문구와 1:1 대응. 질문 하나 = A 하나. -->
@@ -685,3 +679,10 @@ Map<String,String> m = new HashMap<>() {{ put("a", "1"); }};
 | `Ex.java (12-err1)` `javac` | `local variables referenced from an inner class must be final or effectively final` | 21 |
 | `Ex.java (12-err2)` `javac` | `non-static variable v` / `non-static variable this cannot be referenced from a static context` | 21 |
 | `Ex.java (12-err3)` `javac` | `Illegal static declaration in inner class` — 15 실패 / 16·21 성공 | 21 (`--release 15` / `16` / `21`) |
+
+## 실행 환경
+
+이 파일의 모든 출력·역어셈블 출력·컴파일 에러는 **실제로 돌려 얻은 것**이다.\
+기본은 Temurin **JDK 21.0.5**. 버전이 갈리는 항목은 **17.0.13 · 25.0.1** 도 함께 돌렸고 그 사실을 줄마다 적었다.\
+바이트코드는 `javap -c -p` · `javap -v -p` 출력을 그대로 옮겼다.\
+프로그램은 `Ex.java (12-a)` 처럼 **라벨로 식별**한다 — 맨 아래 「이 주제를 확인한 실행 목록」에 전부 있다.

@@ -1,14 +1,5 @@
 # csharp/syntax/26 — 공변·반변 (`out`/`in`) — 질문
 
-> 복습은 항상 이 파일에서 시작한다. **맨기억으로 답을 시도**하고,
-> 막히면 [2-summary.md](2-summary.md)를 힌트로, 최후에만 [3-answer.md](3-answer.md)를 연다.
-> 정답까지 봤던 질문은 아래 복습 기록에 "틀림"으로 표시한다.
-> ★★★ 이 주제의 질문은 「**그 `T` 로 넣나, 꺼내나, 둘 다인가**」와 「**`T` 가 참조 타입인가**」 두 줄로 거의 다 풀린다.
-> **환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
-> Roslyn `csc` 를 직접 부른다 · `-langversion:latest`(판 격자 문항만 `3`) · `-preferreduilang:en-US`. 대비는 **javac 21.0.5** 다.
-> ★★★ **본체 창은 ② 진단 격자다.** 변환 16개를 한 파일에 적고 스크립트가 줄 번호로 되돌려 센다.
-> 선행 — [24번](../24-generics-and-type-parameters/)(제네릭) · [25번](../25-generic-constraints-where-and-default/)(제약).
-
 ## 질문
 
 <!-- 질문 하나 = "?" 하나 = 한 줄. 유형: (예측) / (왜) / (경계) / (연결) -->
@@ -202,6 +193,14 @@ class Program {
 
 - ★★ Java 의 `? extends`·`? super` 정본은 어느 갈래 몇 번인가?
 - ★ 변환이 같은 참조라는 것이 **할당 바이트 창**에 무엇을 뜻하나?
+
+## 실행 환경
+
+★★★ 이 주제의 질문은 「**그 `T` 로 넣나, 꺼내나, 둘 다인가**」와 「**`T` 가 참조 타입인가**」 두 줄로 거의 다 풀린다.
+**환경** — .NET SDK 10.0.401 · 런타임 10.0.12 · `net10.0` · linux-x64 ·
+Roslyn `csc` 를 직접 부른다 · `-langversion:latest`(판 격자 문항만 `3`) · `-preferreduilang:en-US`. 대비는 **javac 21.0.5** 다.
+★★★ **본체 창은 ② 진단 격자다.** 변환 16개를 한 파일에 적고 스크립트가 줄 번호로 되돌려 센다.
+선행 — [24번](../24-generics-and-type-parameters/)(제네릭) · [25번](../25-generic-constraints-where-and-default/)(제약).
 
 ## 복습 기록
 

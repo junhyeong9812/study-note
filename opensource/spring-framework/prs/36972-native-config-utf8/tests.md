@@ -1,7 +1,5 @@
 # PR #36972 — 테스트 해설 (테스트 하나하나)
 
-> PR #36972 테스트 해설. 형식·개념은 ../37153/tests.md, ../37153/guard-tests.md 참조.
-
 이 PR이 추가한 테스트는 `FileNativeConfigurationWriterTests`의 한 건이고, 그 한 건은 red 테스트가 아니라 **플랫폼 조건부 가드**다.\
 기본 charset이 이미 UTF-8인 환경(CI와 대부분의 리눅스 개발 머신)에서는 수정 전에도 통과한다.\
 기본 charset이 UTF-8이 아닌 환경에서만 수정 전에 실패한다.\
