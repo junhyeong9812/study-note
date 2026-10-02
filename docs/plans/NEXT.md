@@ -2,7 +2,7 @@
 
 ## 기준
 
-- 마지막 갱신: 2026-10-01 distributed-writing 완료(분산 36편, 실험 근거) · 직전: db-writing(57편, push 69df46fb) · 진행 중: reliability-writing(53편) · 작업 폴더: `docs/plans/2026-10-01/distributed-writing/` · 브랜치: `docs/distributed-writing`
+- 마지막 갱신: 2026-10-02 reliability-writing 완료(운영·신뢰성 53편, 실험 근거) · 직전: distributed-writing(36편, push d2733634) · 진행 중: software-design-writing(56편, 검증 완료·커밋 대기) · 작업 폴더: `docs/plans/2026-10-01/reliability-writing/` · 브랜치: `docs/reliability-writing`
 
 ## 다음 작업 후보 (우선순위순)
 
@@ -17,6 +17,8 @@
 
 - **분산 관측(10-01)**: 사용자 요청으로 **실험 근거 우선(I7)** 도입 — 편당 실험 1개+, 사실 점검이 재실행(V1b). 재실행으로 중대 2건(15 출력 +94/+100 재현 불가 → 실측 교체, 30 Kafka Streams 늦은 레코드 WARN 로그 존재)을 잡았다. 재부팅(/tmp 소실)으로 실험 원본이 사라짐 → 이후 영역은 실험 코드 핵심을 노트에 싣고 scratchpad에도 둔다. codex 22편 + 한도 뒤 Opus 대체 14편.
 
+- **신뢰성 관측(10-02)**: codex 40편(편당 ~5건) + 한도 뒤 Opus 대체 13편(편당 ~1.6건) — 대체 리뷰가 덜 찾는 경향 재확인. **같은 세션의 두 실행이 병렬로 같은 영역을 진행**해 중복 워커·공용 헬퍼 덮어쓰기가 생겼고, 한쪽이 멈춘 뒤 인수 → 작업 폴더 log에 '소유 실행'을 적고 헬퍼는 실행별로 둔다. 외부 요청 UA에 사용자 이메일이 들어간 사고 1건 → 브리핑에 개인정보 금지 조항(유지).
+
 ### N0-e. 커리큘럼 본문 오기 4건 — 우선순위: 낮음(1행)
 
 - curriculum.md §7: 02행 "12로 이어짐" → 10(fragmentation-mtu-pmtud) · 44행 ⚠ "47의 사이드채널" → 43 · 08행 선행 `data-structure/13-radix-trie` → `20-radix-trie`. 고친 뒤 gen_area_readme.py 재실행.
@@ -30,6 +32,11 @@
 
 - 새 형식(metadata 단계 `초안`). `[?]` 잔여: 05 Fidge 1988·04 STEPT 실제 데몬·27 랙 배치·23 경험칙 2.
 - 영역 밖 후속: `cs/database/57-db-incidents/2-summary.md` 212·348행 "distributed 36(미작성)" → `../../distributed/36-distributed-incidents/2-summary.md` · `cs/distributed/03` 285행의 reliability 07·08 링크는 reliability 작업 후 재점검.
+
+### N0-j. 운영·신뢰성 53편 사용자 검수 + codex 재리뷰(선택) — 우선순위: 중간
+
+- 새 형식(metadata 단계 `초안`). codex 한도(10-04 20:53) 뒤 Opus 대체 13편(14·19·20·31·34·38·40·42·48·49·50·52·53)을 codex로 재리뷰하면 대체 리뷰 누락률을 잴 수 있다.
+- 원문 미열람 3건: 38 Georges 외 2007, 53 CrowdStrike CEO 7-25 게시물(TechTarget 인용), Knight SEC 34-70694(sec.gov curl 차단). 남은 미작성 링크 48(폴더 없는 영역) — 해당 영역 집필 때 링크.
 
 ### N0-h. DB 57편 사용자 검수 — 우선순위: 중간
 
