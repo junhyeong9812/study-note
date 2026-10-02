@@ -2,7 +2,7 @@
 
 ## 기준
 
-- 마지막 갱신: 2026-10-02 reliability-writing 완료(운영·신뢰성 53편, 실험 근거) · 직전: distributed-writing(36편, push d2733634) · 진행 중: software-design-writing(56편, 검증 완료·커밋 대기) · 작업 폴더: `docs/plans/2026-10-01/reliability-writing/` · 브랜치: `docs/reliability-writing`
+- 마지막 갱신: 2026-10-02 software-design-writing 완료(소프트웨어 설계 56편, 코드 비교 실험) · 직전: reliability-writing(53편, 커밋 32bbed78) · 작업 폴더: `docs/plans/2026-10-02/software-design-writing/` · 브랜치: `docs/software-design-writing`(docs/reliability-writing 위)
 
 ## 다음 작업 후보 (우선순위순)
 
@@ -37,6 +37,11 @@
 
 - 새 형식(metadata 단계 `초안`). codex 한도(10-04 20:53) 뒤 Opus 대체 13편(14·19·20·31·34·38·40·42·48·49·50·52·53)을 codex로 재리뷰하면 대체 리뷰 누락률을 잴 수 있다.
 - 원문 미열람 3건: 38 Georges 외 2007, 53 CrowdStrike CEO 7-25 게시물(TechTarget 인용), Knight SEC 34-70694(sec.gov curl 차단). 남은 미작성 링크 48(폴더 없는 영역) — 해당 영역 집필 때 링크.
+
+### N0-k. 소프트웨어 설계 56편 사용자 검수 + codex 재리뷰(선택) — 우선순위: 중간
+
+- 2차 리뷰가 전부 Opus 대체(codex 한도) — 한도 해제 후 표본(예: 10편)을 codex로 재리뷰하면 누락률을 잴 수 있다.
+- 영역 밖 후속: curriculum 56행 "GAO-14-694 [?]"는 원문 확인됨 → `[?]` 제거 후 gen_area_readme.py 재실행. 남은 미작성 링크 40(language·testing·domain-modeling·api-design 미작성 leaf) — 해당 영역 집필 때 링크.
 
 ### N0-h. DB 57편 사용자 검수 — 우선순위: 중간
 
