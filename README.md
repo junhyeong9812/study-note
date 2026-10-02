@@ -28,7 +28,7 @@ study-note/
 ├── reference/                 ← 작성 지침 (★ study-note-guide.md — 작성법 정본 · organize-guide.md · render-rules.md · writing/ — 문서 작성 근거 · learning/ — 공부 방법론 · tools/)
 ├── cs/                        ← 개념 지식(1/2/3): 커리큘럼 19영역 README(생성 문서) + 기존 컬렉션 제자리(myway 5종·foundations·systems·engineering) (작성 규칙 정본: cs/README.md)
 ├── languages/                 ← 언어 레퍼런스: <언어>/syntax(문법·API 3파일)·<언어>/언어-특성·web-api — 13개 언어 (cs 밖, 2026-09-28 이동)
-├── issue/                     ← 실전 이슈 → 재사용 CS 패턴 카드 156 (형식 정본: issue/authoring-guide.md)
+├── issue/                     ← 실전 이슈 → 재사용 CS 패턴 카드 160 (형식 정본: issue/authoring-guide.md)
 ├── practice/                  ← 훈련(문제→풀이): programmers
 ├── project/                   ← 만든 것의 기록: db-engine·study-note-deploy-system·jun-bank
 ├── lab/                       ← 실험 프로젝트 포트폴리오 9건 (프로젝트=폴더+README, 규칙: lab/README.md)
