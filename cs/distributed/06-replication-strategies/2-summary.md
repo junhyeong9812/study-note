@@ -138,7 +138,7 @@ OK
   - *충돌 회피*: 키마다 "홈 리더"를 하나 정해 그 키의 쓰기는 그 리더로만 보낸다. 그 키에 한해서는 단일 리더와 같다.
   - *수렴*: 모든 리더가 같은 규칙으로 같은 최종값에 도달하게 한다. 쓰기마다 ID·타임스탬프를 붙여 큰 쪽을 남기는 것이 *LWW(last write wins)*다. 간단하지만 진 쓰기는 **에러 없이 버려진다.**
   - *병합*: 값을 합친다(합집합, CRDT). 24번 주제.
-  - *앱에 맡기기*: 충돌한 판을 모두 보관했다가 읽을 때 앱이 고르거나 합친다. Dynamo 논문의 장바구니 앱은 판들을 **합친다**(§4.4·§5).
+  - *앱에 맡기기*: 충돌한 판을 모두 보관했다가 읽을 때 앱이 고르거나 합친다. Dynamo 논문의 장바구니 앱은 판들을 **합친다**(§4.4·§6).
 - 복제 경로(토폴로지): 원형·별형·전체 연결. 원형·별형은 노드 하나가 죽으면 경로가 끊긴다. 전체 연결은 경로가 여러 개라 메시지가 **순서를 바꿔** 도착할 수 있다(DDIA 5장 "Multi-Leader Replication Topologies").
 
 #### 실험(시뮬레이션): 다중 리더 LWW에서 조용히 사라지는 쓰기
@@ -284,7 +284,7 @@ void updateCart(String userId, CartChange c) {
 - **대처**
   - 키마다 홈 리더를 정해 충돌 자체를 피한다.
   - 버려도 되는 데이터에만 LWW를 쓴다. 합칠 수 있는 데이터는 병합(합집합·CRDT)으로 바꾼다.
-  - 충돌을 감지해 두 판을 다 남기고 앱이 고르게 한다(버전 벡터).
+  - 충돌을 감지해 두 판을 다 남기고 앱이 고르거나 합치게 한다(버전 벡터).
 
 ### 2. 리더리스 읽기 복구 누락 → 오래된 값
 
@@ -329,7 +329,7 @@ void updateCart(String userId, CartChange c) {
   - [database/33-partitioning-and-sharding](../../database/33-partitioning-and-sharding/2-summary.md) · [database/55-distributed-databases](../../database/55-distributed-databases/2-summary.md)
 - 교재·논문
   - DDIA 1판 5장 Replication — Leaders and Followers, Implementation of Replication Logs, Problems with Replication Lag, Multi-Leader Replication(Use Cases, Handling Write Conflicts, Topologies), Leaderless Replication(Read repair and anti-entropy)
-  - DeCandia 외, "Dynamo: Amazon's Highly Available Key-value Store", SOSP 2007 — §4.4 벡터 시계(장바구니), §4.5 R·W, §4.6 hinted handoff, §4.7 Merkle 트리 anti-entropy, §5 읽기 복구·장바구니 병합, §6 LWW를 쓰는 세션 서비스 <https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf>
+  - DeCandia 외, "Dynamo: Amazon's Highly Available Key-value Store", SOSP 2007 — §4.4 벡터 시계(장바구니), §4.5 R·W, §4.6 hinted handoff, §4.7 Merkle 트리 anti-entropy, §5 읽기 복구, §6 장바구니 병합(비즈니스 로직 조정)·LWW를 쓰는 세션 서비스 <https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf>
 - 제품 문서
   - Redis replication — 기본 비동기, `WAIT`는 CP로 바꾸지 않음, `min-replicas-to-write` <https://redis.io/docs/latest/operate/oss_and_stack/management/replication/> · `WAIT` 명령 — 승격은 최선 노력, 확인된 쓰기도 유실 가능 <https://redis.io/docs/latest/commands/wait/>
   - Apache Cassandra 5.0 — Dynamo(쓰기는 모든 복제본에, 일관성 수준, LWW), Hints(`max_hint_window` 3시간), Repair(Merkle 트리, gc grace 10일·7일 주기 권장) <https://cassandra.apache.org/doc/5.0/cassandra/architecture/dynamo.html>

@@ -276,7 +276,7 @@ nodetool getmaxhintwindow
   - DDIA 1판 5장 Leaderless Replication — Quorums for reading and writing, Limitations of Quorum Consistency, Sloppy Quorums and Hinted Handoff, Read repair and anti-entropy
   - Abadi 2012(R+W>N이어도 완전한 일관성 아님), Kleppmann 2015(정족수 + sloppy quorum·읽기 복구의 비선형화 경우)
 - 제품 문서
-  - Apache Cassandra Auto Repair(6.0에서 도입, 5.0.8로 백포트, 기본 꺼짐) <https://cassandra.apache.org/doc/latest/cassandra/managing/operating/auto_repair.html> · DataStax Java Driver 4.17 Retries(오류별 재시도, 쓰기 타임아웃만 멱등 조건) <https://docs.datastax.com/en/developer/java-driver/4.17/manual/core/retries/index.html>
+  - Apache Cassandra Auto Repair(6.0에서 도입, 5.0.8로 백포트, 기본 꺼짐) <https://cassandra.apache.org/doc/latest/cassandra/managing/operating/auto_repair.html> · DataStax Java Driver 4.17 Retries(오류별 재시도, 쓰기 타임아웃·요청 중단·오류 응답은 멱등 문장만 정책에 넘김) <https://docs.datastax.com/en/developer/java-driver/4.17/manual/core/retries/index.html>
   - Apache Cassandra 5.0 — Dynamo 절(Tunable Consistency, `ANY`, 쓰기는 모든 복제본에 전송, Merkle repair), Hints(`max_hint_window` 기본 3시간, 타임아웃 2초 예), Read repair(blocking 기본, monotonic quorum reads), Repair(증분·전체, gc grace 10일·7일 주기) <https://cassandra.apache.org/doc/5.0/cassandra/architecture/dynamo.html>
 - 실험 목록
   - Java 21 시뮬레이션 N=3: [A] R·W 6조합 옛 값 비율(2만 회), [B] 유실 10%에서 복구 없음·읽기 복구·anti-entropy, [C] sloppy quorum 시나리오, [D] Merkle 비교 해시 수
