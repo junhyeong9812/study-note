@@ -168,11 +168,11 @@ UPDATE orders
 ## 쓰이는 자료구조·알고리즘
 
 - **멱등 키 저장소** — 키(클라이언트 생성 `Idempotency-Key` 또는 entity 키) → 상태(진행 중 / 완료) + 결과. 환불 기록과 같은 ACID 단위에 쓴다 → [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md).
-- **조건부 UPDATE로 누적 상한** — `refunded_amount + :x <= paid_amount`를 한 문장에 넣는 원자 CAS. 01번의 잔액 차감과 같은 무기 → [01-order-point](../01-order-point/2-summary.md).
+- **조건부 UPDATE로 누적 상한** — `refunded_amount + :x <= paid_amount`를 한 문장에 넣는 원자 CAS. 01번의 잔액 차감과 같은 무기 → [01-order-point](../22-case-order-point/2-summary.md).
 - **사가(saga) / 3단 처리** — 의도 기록(내부 트랜잭션) → 외부 호출(불가역, 트랜잭션 밖) → 결과 기록 + 복원(내부 트랜잭션). 단계마다 별도 트랜잭션이고 셋 전체가 하나의 원자 트랜잭션은 아니다. 보상할 수 없는 단계를 뒤로 미루고, 실패 시 복구 배치가 이어서 처리한다 → [ops-patterns/08-saga](../../ops-patterns/08-saga/2-summary.md).
 - **상태 기계** — 커리큘럼 🔧: 주문 상태(`PAID → PARTIALLY_REFUNDED → REFUNDED` — `PARTIALLY_REFUNDED`는 원본 CHECKLIST G의 제안)와 환불 건별 진행 기록(설계 예시: `REQUESTED → PG_CANCELLED → RESTORED → NOTIFIED` — 원본에 없는 이름). 주문 상태 하나로는 여러 환불 건의 진행을 표현하기 어렵다 — 환불별 식별자와 영속적인 진행·결과 기록이 있어야 "반만 된 환불"을 찾기 쉽다(PG 대사로도 찾을 수 있다) → [domain-modeling/basic/09-order-state](../../domain-modeling/basic/09-order-state/2-summary.md) · [domain-modeling/advanced/04-refund](../../domain-modeling/advanced/04-refund/2-summary.md).
 - **정수 안분** — 비율 배분을 정수 나눗셈으로 하고 나머지를 규칙(첫/마지막 항목)으로 배정한다. 마지막 환불은 "원 사용액 − 지금까지 복원액"으로 총합을 맞춘다 → [domain-modeling/basic/17-cart-discount](../../domain-modeling/basic/17-cart-discount/2-summary.md).
-- **잠금 순서 정렬** — 포인트 · 쿠폰 · 재고 행을 고정 순서로 잠근다 → [03-stock-deduct](../03-stock-deduct/2-summary.md).
+- **잠금 순서 정렬** — 포인트 · 쿠폰 · 재고 행을 고정 순서로 잠근다 → [03-stock-deduct](../24-case-stock-deduct/2-summary.md).
 - **상쇄 엔트리 원장** — 환불은 원 결제를 지우지 않고 조정(반대 방향) 엔트리를 더한다. 복식부기는 이와 별개로 거래 하나마다 차변·대변이 균형을 이루게 적는 장부법이다(Uber는 둘을 함께 쓴다 — 원본 REFERENCE). 전액 환불이면 원 거래의 효과가 상쇄되지만, 부분 환불이면 원 결제와 환불 합이 0이 아니다 → [ops-patterns/16-event-sourcing](../../ops-patterns/16-event-sourcing/2-summary.md).
 - **대사 + 재시도 분류** — 우리 기록과 PG 기록의 병합 비교로 드리프트를 찾고, 에러를 retryable / non-retryable로 나눈다 → [ops-patterns/01-retry-backoff](../../ops-patterns/01-retry-backoff/2-summary.md).
 
@@ -290,7 +290,7 @@ UPDATE orders
 
 ## 관련 주제·근거
 
-- 선행 — [01-order-point](../01-order-point/2-summary.md)(멱등 · 원장 · 조건부 UPDATE) · [03-stock-deduct](../03-stock-deduct/2-summary.md)(복원 멱등 · 잠금 순서) · [05-delivery-webhook](../05-delivery-webhook/2-summary.md)(PG 통지 수신 · 재시도).
+- 선행 — [01-order-point](../22-case-order-point/2-summary.md)(멱등 · 원장 · 조건부 UPDATE) · [03-stock-deduct](../24-case-stock-deduct/2-summary.md)(복원 멱등 · 잠금 순서) · [05-delivery-webhook](../26-case-delivery-webhook/2-summary.md)(PG 통지 수신 · 재시도).
 - 패턴 — [ops-patterns/08-saga](../../ops-patterns/08-saga/2-summary.md) · [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md): 보상 불가 단계가 있는 다단계 트랜잭션과 멱등 키 저장소.
 - 도메인 — [domain-modeling/advanced/04-refund](../../domain-modeling/advanced/04-refund/2-summary.md) · [domain-modeling/basic/10-payment](../../domain-modeling/basic/10-payment/2-summary.md): 환불 · 결제 상태 모델.
 - 영역 표 — [api-design/curriculum.md](../curriculum.md) `27-case-refund` (선행 `05-idempotency-keys` · `distributed/15-saga` — 노트 미작성).

@@ -269,7 +269,7 @@ TTL + 주기적 청소:         보관 최대 198개, 유효 99개
 - 후속 — [07-outbox](../07-outbox/2-summary.md): 응답 저장과 실제 작업의 비원자성(한계 2)을 기록과 발행을 한 트랜잭션에 묶어 다룬다.
 - 후속 — [11-distributed-lock](../11-distributed-lock/2-summary.md): 소유권 토큰(펜싱 토큰)의 한계 1이 정면으로 나온다.
 - 곁 — [04-rate-limiter](../04-rate-limiter/2-summary.md): 분산 카운터의 get-후-INCR가 같은 TOCTOU다.
-- 곁 — [api-design/06-refund](../../api-design/06-refund/2-summary.md): 부분 환불 이중 처리 — 멱등 키가 필요한 자리의 실전 예.
+- 곁 — [api-design/06-refund](../../api-design/27-case-refund/2-summary.md): 부분 환불 이중 처리 — 멱등 키가 필요한 자리의 실전 예.
 - 영역 표 — [reliability/README.md](../../reliability/README.md) `13-idempotency`.
 - 근거 — Stripe 문서 "Idempotent requests" · IETF draft `draft-ietf-httpapi-idempotency-key-header`(초안 — 아직 RFC 아님).
 - myway 원본 — `/home/jun/project/myway/ops-patterns/06-idempotency-store/` (README.md · impl/InMemoryIdempotencyStore.java · impl/NonAtomicStore.java · impl/IdempotentExecutor.java · src/test/.../AtLeastOnceTest.java · StoreAtomicityTest.java).

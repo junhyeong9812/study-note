@@ -247,7 +247,7 @@ closeAll(거래들, 범위, Basis, LateRule)   ← 여러 달 + 늦은 거래 �
 - 대사·재현 — [18-settlement-match](../18-settlement-match/2-summary.md)(내부 vs 외부 기록 맞추기), [16-audit-replay](../16-audit-replay/2-summary.md)(그때 값으로 다시 돌리기).
 - 반열림·경계 — [13-contract-renewal](../13-contract-renewal/2-summary.md), [03-subscription-change](../03-subscription-change/2-summary.md).
 - 기초판 — [basic/22-settlement](../../basic/22-settlement/2-summary.md), [basic/23-sales-report](../../basic/23-sales-report/2-summary.md).
-- API 쪽 — [api-design/04-settlement-report](../../../api-design/04-settlement-report/2-summary.md): 정산 리포트의 집계·페이지·시간대.
+- API 쪽 — [api-design/04-settlement-report](../../../api-design/25-case-settlement-report/2-summary.md): 정산 리포트의 집계·페이지·시간대.
 - 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (관련 leaf `24-double-entry-ledger`·`25-reconciliation` — 노트 미작성).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/15-period-close/` (README.md · impl/com/domain/close/PeriodClose.java · src/test/java/com/domain/close/PeriodCloseTest.java · MeasurementTest.java).
 

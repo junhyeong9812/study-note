@@ -269,7 +269,7 @@ README가 미리 알려준 함정 5가지: ①중복 판정에 수신 시각을 
 - 같은 자리 — [09-order-state](../09-order-state/2-summary.md): 우리가 실행하는 전이 vs 남이 찍은 이벤트의 사후 해석. [07-notification](../07-notification/2-summary.md)·[10-payment](../10-payment/2-summary.md): "같은 것"의 키 정하기.
 - 같은 기법 — [03-waiting-queue](../03-waiting-queue/2-summary.md)·[14-points](../14-points/2-summary.md): 동점 처리로 결정적 결과. [05-attendance](../05-attendance/2-summary.md): 관측 지표 세기.
 - 운영 패턴 — [ops-patterns/14-logical-clock](../../../ops-patterns/14-logical-clock/2-summary.md): "일어난 순서"를 시각 없이 정하기.
-- 사례 — [api-design/05-delivery-webhook](../../../api-design/05-delivery-webhook/2-summary.md): 배송 웹훅의 중복·순서 역전.
+- 사례 — [api-design/05-delivery-webhook](../../../api-design/26-case-delivery-webhook/2-summary.md): 배송 웹훅의 중복·순서 역전.
 - 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises`.
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/11-delivery-tracking/` (README.md · impl/com/domain/delivery/Tracking.java · src/main/java/com/domain/delivery/ScanEvent.java).
 

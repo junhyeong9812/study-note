@@ -47,12 +47,12 @@
 
 | # | 주제 | 요지 | 등급 | 상태 | 노트 |
 |---|---|---|---|---|---|
-| 22 | `case-order-point` | 주문·포인트 API 사례 | 권장 | 초안(Claude) | [01-order-point](01-order-point/) |
-| 23 | `case-coupon-issue` | 선착순 쿠폰 발급 | 권장 | 초안(Claude) | [02-coupon-issue](02-coupon-issue/) |
-| 24 | `case-stock-deduct` | 재고 차감 | 권장 | 초안(Claude) | [03-stock-deduct](03-stock-deduct/) |
-| 25 | `case-settlement-report` | 정산 리포트 | 권장 | 초안(Claude) | [04-settlement-report](04-settlement-report/) |
-| 26 | `case-delivery-webhook` | 배송 웹훅 | 권장 | 초안(Claude) | [05-delivery-webhook](05-delivery-webhook/) |
-| 27 | `case-refund` | 환불 | 권장 | 초안(Claude) | [06-refund](06-refund/) |
+| 22 | `case-order-point` | 주문·포인트 API 사례 | 권장 | 초안(Claude) | [22-case-order-point](22-case-order-point/) |
+| 23 | `case-coupon-issue` | 선착순 쿠폰 발급 | 권장 | 초안(Claude) | [23-case-coupon-issue](23-case-coupon-issue/) |
+| 24 | `case-stock-deduct` | 재고 차감 | 권장 | 초안(Claude) | [24-case-stock-deduct](24-case-stock-deduct/) |
+| 25 | `case-settlement-report` | 정산 리포트 | 권장 | 초안(Claude) | [25-case-settlement-report](25-case-settlement-report/) |
+| 26 | `case-delivery-webhook` | 배송 웹훅 | 권장 | 초안(Claude) | [26-case-delivery-webhook](26-case-delivery-webhook/) |
+| 27 | `case-refund` | 환불 | 권장 | 초안(Claude) | [27-case-refund](27-case-refund/) |
 
 ## 15.5 영역 마감
 

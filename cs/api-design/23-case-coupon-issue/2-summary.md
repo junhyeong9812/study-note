@@ -271,8 +271,8 @@ INSERT ... → 충돌 잡히면 "이미 발급됨"으로 응답
 
 ## 관련 주제·근거
 
-- 선행 — [01-order-point](../01-order-point/2-summary.md): 조건부 UPDATE · UNIQUE · 원장이라는 기본 무기.
-- 후속 — [03-stock-deduct](../03-stock-deduct/2-summary.md): 수량 복원의 멱등성과 여러 행 잠금 순서.
+- 선행 — [01-order-point](../22-case-order-point/2-summary.md): 조건부 UPDATE · UNIQUE · 원장이라는 기본 무기.
+- 후속 — [03-stock-deduct](../24-case-stock-deduct/2-summary.md): 수량 복원의 멱등성과 여러 행 잠금 순서.
 - 패턴 — [ops-patterns/01-retry-backoff](../../ops-patterns/01-retry-backoff/2-summary.md) · [ops-patterns/09-stampede](../../ops-patterns/09-stampede/2-summary.md): 재시도 예산과 캐시 붕괴의 일반론.
 - 도메인 — [domain-modeling/basic/15-coupon](../../domain-modeling/basic/15-coupon/2-summary.md): 쿠폰 발급·사용·만료 모델.
 - 영역 표 — [api-design/curriculum.md](../curriculum.md) `23-case-coupon-issue` (선행 `05-idempotency-keys` · `database/18-app-level-concurrency-patterns` — 노트 미작성).

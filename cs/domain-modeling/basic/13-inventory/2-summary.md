@@ -250,7 +250,7 @@ README가 미리 알려준 함정: ①가용에서 예약도 빼기(안 빼면 �
 
 - 같은 자리 — [10-payment](../10-payment/2-summary.md): 멱등키·파생 상태·판정 순서의 돈 버전. [09-order-state](../09-order-state/2-summary.md): 예약 → 확정/해제의 전이 표.
 - 같은 계약 — [02-seat-reservation](../02-seat-reservation/2-summary.md): 전부 아니면 전무. [03-waiting-queue](../03-waiting-queue/2-summary.md): check-then-act 틈.
-- 사례 — [api-design/03-stock-deduct](../../../api-design/03-stock-deduct/2-summary.md): 재고 차감 API. [advanced/11-stock-reservation](../../advanced/11-stock-reservation/2-summary.md): 예약 시간 제한과 해제.
+- 사례 — [api-design/03-stock-deduct](../../../api-design/24-case-stock-deduct/2-summary.md): 재고 차감 API. [advanced/11-stock-reservation](../../advanced/11-stock-reservation/2-summary.md): 예약 시간 제한과 해제.
 - 운영 패턴 — [ops-patterns/11-distributed-lock](../../../ops-patterns/11-distributed-lock/2-summary.md): 여러 서버가 같은 재고를 만질 때. [ops-patterns/08-saga](../../../ops-patterns/08-saga/2-summary.md): 여러 상품·서비스에 걸친 예약의 보상.
 - 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises`.
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/13-inventory/` (README.md · impl/com/domain/inventory/Inventory.java · src/main/java/com/domain/inventory/StockResult.java).

@@ -218,7 +218,7 @@ Compensation 이 세 단계 날 수(raw → counted → chargeable)를 전부 �
 - 기간 세기의 이웃 — [04-refund](../04-refund/2-summary.md)(초일 산입), [13-contract-renewal](../13-contract-renewal/2-summary.md)(기한 당일 포함), [03-subscription-change](../03-subscription-change/2-summary.md)(반열림 구간).
 - 계산 근거 보존 — [16-audit-replay](../16-audit-replay/2-summary.md), [09-policy-version](../09-policy-version/2-summary.md)(면책 목록·정책이 바뀌면 어느 시점 기준인가).
 - 기초판 — [basic/11-delivery-tracking](../../basic/11-delivery-tracking/2-summary.md), [basic/18-shipping-fee](../../basic/18-shipping-fee/2-summary.md).
-- 배송 이벤트의 도착 — [api-design/05-delivery-webhook](../../../api-design/05-delivery-webhook/2-summary.md): 도착일이 어떻게 기록되나.
+- 배송 이벤트의 도착 — [api-design/05-delivery-webhook](../../../api-design/26-case-delivery-webhook/2-summary.md): 도착일이 어떻게 기록되나.
 - 구간 매칭 — [data-structure/30-interval-tree](../../../data-structure/30-interval-tree/2-summary.md).
 - 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises`.
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/08-delay-compensation/` (README.md · impl/com/domain/delay/DelayCompensation.java · src/test/java/com/domain/delay/DelayCompensationTest.java · MeasurementTest.java).

@@ -284,7 +284,7 @@ SELECT ENGINE_TRANSACTION_ID, INDEX_NAME, LOCK_MODE, LOCK_STATUS, LOCK_DATA FROM
   - [17-occ-and-timestamp-ordering](../17-occ-and-timestamp-ordering/2-summary.md) — 버전 컬럼과 경합 비용
 - 연결
   - [16-mvcc](../16-mvcc/2-summary.md) — RR에서도 막히지 않는 lost update
-  - [api-design/03-stock-deduct](../../api-design/03-stock-deduct/2-summary.md) — 재고 차감 설계(여러 상품 잠금 순서, 복원, 예약) · [api-design/02-coupon-issue](../../api-design/02-coupon-issue/2-summary.md)
+  - [api-design/03-stock-deduct](../../api-design/24-case-stock-deduct/2-summary.md) — 재고 차감 설계(여러 상품 잠금 순서, 복원, 예약) · [api-design/02-coupon-issue](../../api-design/23-case-coupon-issue/2-summary.md)
   - [ops-patterns/failure-modes](../../ops-patterns/failure-modes/2-summary.md) — F-01 lost update, F-02 데드락, F-05 롱 트랜잭션
   - [languages/sql/syntax/52-upsert](../../../languages/sql/syntax/52-upsert/2-summary.md) · [languages/sql/syntax/57](../../../languages/sql/syntax/57-explicit-locking-and-deadlock/2-summary.md) — upsert·잠금 문법과 재현
   - database [14-isolation-levels-and-anomalies](../14-isolation-levels-and-anomalies/2-summary.md)(write skew), [22-database-side-timeouts](../22-database-side-timeouts/2-summary.md), [24-transaction-boundaries-in-app-code](../24-transaction-boundaries-in-app-code/2-summary.md), [52-offline-concurrency-patterns](../52-offline-concurrency-patterns/2-summary.md)

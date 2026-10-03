@@ -238,7 +238,7 @@ apply(주문금액, 배송비, 프로모션들, order, exclusiveRule):
 - 후속 — [04-refund](../04-refund/2-summary.md): 집계된 "할인 5,000원 한 줄"을 품목으로 다시 나누는 문제 — 부분 취소 시 이 엔진의 결과를 어떻게 쪼개나.
 - 결과 스냅샷 — [09-policy-version](../09-policy-version/2-summary.md): 규칙이 바뀐 뒤 옛 주문의 금액을 어떻게 지키나(장애 1).
 - 기초판 — [basic/15-coupon](../../basic/15-coupon/2-summary.md), [basic/17-cart-discount](../../basic/17-cart-discount/2-summary.md): 쿠폰·장바구니 할인의 기초.
-- 발급 쪽 — [api-design/02-coupon-issue](../../../api-design/02-coupon-issue/2-summary.md): 쿠폰을 "쓰는" 이 노트의 앞단, 선착순 발급의 동시성.
+- 발급 쪽 — [api-design/02-coupon-issue](../../../api-design/23-case-coupon-issue/2-summary.md): 쿠폰을 "쓰는" 이 노트의 앞단, 선착순 발급의 동시성.
 - 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises`.
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/02-promotion/` (README.md · impl/com/domain/promo/PromotionEngine.java · src/test/java/com/domain/promo/PromotionEngineTest.java · MeasurementTest.java).
 

@@ -2,12 +2,12 @@
 
 | 챕터 |
 |------|
-| [01-order-point](01-order-point/) |
-| [02-coupon-issue](02-coupon-issue/) |
-| [03-stock-deduct](03-stock-deduct/) |
-| [04-settlement-report](04-settlement-report/) |
-| [05-delivery-webhook](05-delivery-webhook/) |
-| [06-refund](06-refund/) |
+| [01-order-point](22-case-order-point/) |
+| [02-coupon-issue](23-case-coupon-issue/) |
+| [03-stock-deduct](24-case-stock-deduct/) |
+| [04-settlement-report](25-case-settlement-report/) |
+| [05-delivery-webhook](26-case-delivery-webhook/) |
+| [06-refund](27-case-refund/) |
 
 ---
 

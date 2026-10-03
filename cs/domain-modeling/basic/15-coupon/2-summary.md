@@ -187,7 +187,7 @@ README가 미리 알려준 함정: ①빈 카테고리 집합은 제한 없음(*
 ## 관련 주제·근거
 
 - 같은 자리 — [09-order-state](../09-order-state/2-summary.md): 결과가 boolean이면 안 되는 같은 이유. [14-points](../14-points/2-summary.md)·[12-game-buff](../12-game-buff/2-summary.md): 종료일 미포함 규약, "갈리는 입력을 일부러 만든다".
-- 사례 — [api-design/02-coupon-issue](../../../api-design/02-coupon-issue/2-summary.md): 쿠폰 발급 API(선착순·초과 발급). [advanced/02-promotion](../../advanced/02-promotion/2-summary.md): 여러 할인의 조합과 순서.
+- 사례 — [api-design/02-coupon-issue](../../../api-design/23-case-coupon-issue/2-summary.md): 쿠폰 발급 API(선착순·초과 발급). [advanced/02-promotion](../../advanced/02-promotion/2-summary.md): 여러 할인의 조합과 순서.
 - 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises`.
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/15-coupon/` (README.md · impl/com/domain/coupon/Coupon.java · src/main/java/com/domain/coupon/Reason.java · Order.java).
 

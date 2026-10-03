@@ -253,7 +253,7 @@ DELETE FROM edit_lock WHERE expires_at < now() - interval '1 day';
   - [18-app-level-concurrency-patterns](../18-app-level-concurrency-patterns/2-summary.md) — 한 트랜잭션 안의 `FOR UPDATE`·조건부 UPDATE
   - [14-isolation-levels-and-anomalies](../14-isolation-levels-and-anomalies/2-summary.md) — lost update의 DB 안 버전
   - [domain-modeling/advanced/12-seat-hold](../../domain-modeling/advanced/12-seat-hold/2-summary.md) — 만료가 있는 좌석 홀드(리스)
-  - [api-design/03-stock-deduct](../../api-design/03-stock-deduct/2-summary.md) — 재고 차감의 동시성
+  - [api-design/03-stock-deduct](../../api-design/24-case-stock-deduct/2-summary.md) — 재고 차감의 동시성
 - 책·명세·RFC
   - Martin Fowler, 『Patterns of Enterprise Application Architecture』(2002), 16장 Offline Concurrency Patterns — Optimistic Offline Lock, Pessimistic Offline Lock, Coarse-Grained Lock, Implicit Lock. 온라인 카탈로그 요약 <https://martinfowler.com/eaaCatalog/> (본문은 카탈로그 요약 경유로만 확인)
   - Jakarta Persistence 3.1 — 3.4.2 Version Attributes(버전 검사 대상 = 비관계 필드 + 소유한 관계, 앱은 버전을 수정하지 않는다), 3.4.4.1 `OPTIMISTIC_FORCE_INCREMENT`, 3.4.5 `OptimisticLockException`(롤백 표시, flush로 앞당김) <https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html>

@@ -239,7 +239,7 @@ executed = [재고 차감, 결제 승인]      failedAt = 배송 예약
 - 선행 — [06-idempotency-store](../06-idempotency-store/2-summary.md): 보상의 멱등이 기대는 곳. [07-outbox](../07-outbox/2-summary.md): 걸음 안의 원자성.
 - 후속 — [09-stampede](../09-stampede/2-summary.md): "한 번만 실행되게"에서 "여럿이 같은 것을 원할 때"로.
 - 곁 — [systems/orchestration-choreography](../../systems/orchestration-choreography/2-summary.md): 조정자가 부르는가, 이벤트로 잇는가.
-- 곁 — [api-design/06-refund](../../api-design/06-refund/2-summary.md): 부분 환불 이중 처리 — 보상 멱등의 실전 예.
+- 곁 — [api-design/06-refund](../../api-design/27-case-refund/2-summary.md): 부분 환불 이중 처리 — 보상 멱등의 실전 예.
 - 영역 표 — [distributed/README.md](../../distributed/README.md) `15-saga`.
 - 교재 — Garcia-Molina & Salem, "Sagas"(SIGMOD 1987) · Richardson 『Microservices Patterns』(2018) 4장 "Managing transactions with sagas"(semantic lock 등 격리 부족 대책).
 - myway 원본 — `/home/jun/project/myway/ops-patterns/08-saga/` (README.md · impl/NaiveRunner.java · impl/Saga.java · src/main/.../SagaResult.java · src/test/.../SagaTest.java).

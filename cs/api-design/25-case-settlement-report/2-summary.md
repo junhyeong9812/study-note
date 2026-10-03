@@ -279,8 +279,8 @@
 
 ## 관련 주제·근거
 
-- 선행 — [01-order-point](../01-order-point/2-summary.md): 원장이 정본이고 잔액(합계)은 파생값이라는 원칙.
-- 후속 — [06-refund](../06-refund/2-summary.md): 환불 = 원 결제를 지우지 않고 반대 방향 엔트리를 더하는 것.
+- 선행 — [01-order-point](../22-case-order-point/2-summary.md): 원장이 정본이고 잔액(합계)은 파생값이라는 원칙.
+- 후속 — [06-refund](../27-case-refund/2-summary.md): 환불 = 원 결제를 지우지 않고 반대 방향 엔트리를 더하는 것.
 - 도메인 — [domain-modeling/basic/22-settlement](../../domain-modeling/basic/22-settlement/2-summary.md) · [domain-modeling/basic/23-sales-report](../../domain-modeling/basic/23-sales-report/2-summary.md) · [domain-modeling/advanced/18-settlement-match](../../domain-modeling/advanced/18-settlement-match/2-summary.md): 정산 계산 · 리포트 · 대사 모델.
 - 자료구조 — [data-structure/15-b-tree](../../data-structure/15-b-tree/2-summary.md): keyset 페이지네이션이 기대는 범위 스캔.
 - 영역 표 — [api-design/curriculum.md](../curriculum.md) `25-case-settlement-report` (선행 `06-pagination` · `13-long-running-operations` — 노트 미작성).

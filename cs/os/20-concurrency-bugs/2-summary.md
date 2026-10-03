@@ -293,7 +293,7 @@ strace -f -e trace=futex -p <pid>
   - [08-cpu-scheduling](../08-cpu-scheduling/2-summary.md) — 우선순위·nice·실시간 정책
   - [27-event-based-concurrency](../27-event-based-concurrency/2-summary.md) — 이벤트 루프에서의 원자성
   - [38-os-incidents](../38-os-incidents/2-summary.md) — Mars Pathfinder 등 실사건.
-  - [api-design/03-stock-deduct](../../api-design/03-stock-deduct/2-summary.md) — 재고 차감의 조건부 갱신
+  - [api-design/03-stock-deduct](../../api-design/24-case-stock-deduct/2-summary.md) — 재고 차감의 조건부 갱신
   - [ops-patterns/01-retry-backoff](../../ops-patterns/01-retry-backoff/2-summary.md) — 지터 백오프
 - 교재·논문
   - OSTEP 32장 "Common Concurrency Problems" — 32.1 Lu 외 연구 요약(그림 32.1), 32.2 원자성 위반(그림 32.2·32.3)·순서 위반(그림 32.4·32.5)·97%, 32.3 trylock과 라이브락 <https://pages.cs.wisc.edu/~remzi/OSTEP/threads-bugs.pdf>

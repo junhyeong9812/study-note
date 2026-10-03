@@ -178,7 +178,7 @@ FOR UPDATE는 읽고 검증하고 쓰는 복합 로직이 가능하지만 잠금
 - **멱등 키 저장소** — 키(`order_id`) → 결과(첫 응답)를 담는 맵. 재생 정책(Stripe식)을 택하면 이 맵이 응답 본문까지 보관한다 → [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md).
 - **append-only 로그 + 폴드** — 원장은 지우지 않는 로그, 잔액은 그 로그를 처음부터 합산(폴드)한 값. 불일치 시 로그로 다시 만들 수 있다 → [ops-patterns/16-event-sourcing](../../ops-patterns/16-event-sourcing/2-summary.md).
   - *폴드(fold)*: 목록을 앞에서부터 누적해 값 하나로 줄이는 연산. 여기서는 원장 합 = 잔액.
-- **행 잠금(`SELECT ... FOR UPDATE`)** — 읽는 순간 행에 쓰기 잠금을 걸고 트랜잭션 끝까지 쥐는 비관적 잠금. 여러 행을 잠글 때는 순서 고정이 필요하다 → [03-stock-deduct](../03-stock-deduct/2-summary.md)의 잠금 순서.
+- **행 잠금(`SELECT ... FOR UPDATE`)** — 읽는 순간 행에 쓰기 잠금을 걸고 트랜잭션 끝까지 쥐는 비관적 잠금. 여러 행을 잠글 때는 순서 고정이 필요하다 → [03-stock-deduct](../24-case-stock-deduct/2-summary.md)의 잠금 순서.
 - **트랜잭션(ACID)** — 원장 INSERT · 잔액 UPDATE · 주문 UPDATE 세 쓰기를 전부-아니면-전무로 묶는 단위.
 - **대사(reconciliation)** — 두 기록(원장 vs 잔액, 우리 vs PG)을 키로 정렬해 맞춰보는 병합 비교 → [algorithm/02-merge-sort](../../algorithm/02-merge-sort/2-summary.md)의 병합 단계와 같은 모양.
 
@@ -282,8 +282,8 @@ FOR UPDATE는 읽고 검증하고 쓰는 복합 로직이 가능하지만 잠금
 
 ## 관련 주제·근거
 
-- 후속 — [02-coupon-issue](../02-coupon-issue/2-summary.md): 같은 무기(원자 차감 · UNIQUE)에 "성공 응답의 의미"와 트래픽 축이 더해진다.
-- 후속 — [06-refund](../06-refund/2-summary.md): `order_id`가 멱등 키가 **못 되는** 경우(부분 환불)와 외부 불가역 호출.
+- 후속 — [02-coupon-issue](../23-case-coupon-issue/2-summary.md): 같은 무기(원자 차감 · UNIQUE)에 "성공 응답의 의미"와 트래픽 축이 더해진다.
+- 후속 — [06-refund](../27-case-refund/2-summary.md): `order_id`가 멱등 키가 **못 되는** 경우(부분 환불)와 외부 불가역 호출.
 - 패턴 — [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md): 멱등 키 저장소의 일반형(키 · 결과 · TTL).
 - 도메인 — [domain-modeling/basic/14-points](../../domain-modeling/basic/14-points/2-summary.md): 포인트 적립·사용·만료의 모델링.
 - 영역 표 — [api-design/curriculum.md](../curriculum.md) `22-case-order-point` (선행 `05-idempotency-keys` · `11-concurrency-control-in-apis` — 노트 미작성).

@@ -216,7 +216,7 @@ refund(order, request, dayCount, allocation, shippingRule):
 - 같은 경계 질문 — [basic/01-parking-fee](../../basic/01-parking-fee/2-summary.md): "10분까지"의 포함 여부. 여기서는 그 하루가 전액이냐 0이냐다.
 - 반올림·배분 — [06-tax](../06-tax/2-summary.md)(곱하기 먼저·마지막 몫은 빼기), [05-multi-currency](../05-multi-currency/2-summary.md)(부분 환불의 환율).
 - 기간 세기의 이웃 — [08-delay-compensation](../08-delay-compensation/2-summary.md): 약속일 다음 날부터 도착일까지 — 양끝 처리가 비대칭인 구간.
-- API 쪽 — [api-design/06-refund](../../../api-design/06-refund/2-summary.md): 환불 요청의 멱등성·상태 전이. 이 노트는 그 안의 "얼마를" 계산한다.
+- API 쪽 — [api-design/06-refund](../../../api-design/27-case-refund/2-summary.md): 환불 요청의 멱등성·상태 전이. 이 노트는 그 안의 "얼마를" 계산한다.
 - 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises`.
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/04-refund/` (README.md · impl/com/domain/refund/RefundPolicy.java · src/test/java/com/domain/refund/RefundPolicyTest.java · MeasurementTest.java).
 

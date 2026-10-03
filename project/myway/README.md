@@ -128,12 +128,12 @@
 
 | 챕터 | 상태 | 비고 |
 |------|------|------|
-| [01-order-point](../../cs/api-design/01-order-point/) | | |
-| [02-coupon-issue](../../cs/api-design/02-coupon-issue/) | | |
-| [03-stock-deduct](../../cs/api-design/03-stock-deduct/) | | |
-| [04-settlement-report](../../cs/api-design/04-settlement-report/) | | |
-| [05-delivery-webhook](../../cs/api-design/05-delivery-webhook/) | | |
-| [06-refund](../../cs/api-design/06-refund/) | | |
+| [01-order-point](../../cs/api-design/22-case-order-point/) | | |
+| [02-coupon-issue](../../cs/api-design/23-case-coupon-issue/) | | |
+| [03-stock-deduct](../../cs/api-design/24-case-stock-deduct/) | | |
+| [04-settlement-report](../../cs/api-design/25-case-settlement-report/) | | |
+| [05-delivery-webhook](../../cs/api-design/26-case-delivery-webhook/) | | |
+| [06-refund](../../cs/api-design/27-case-refund/) | | |
 
 
 ## domain-modeling-basic

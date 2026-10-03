@@ -278,7 +278,7 @@ FROM performance_schema.data_locks;
   - database `18-app-level-concurrency-patterns` → [../18-app-level-concurrency-patterns/2-summary.md](../18-app-level-concurrency-patterns/2-summary.md)
   - [engineering/engineering-axes/concurrency.md](../../engineering/engineering-axes/concurrency.md) — 동시성 도구 선택의 개념 정리
   - 문법 쪽: [sql/56 격리 수준·읽기 이상·MVCC](../../../languages/sql/syntax/56-isolation-levels-read-phenomena-mvcc/2-summary.md) · [sql/57 명시적 락·교착](../../../languages/sql/syntax/57-explicit-locking-and-deadlock/2-summary.md)
-  - [api-design/03-stock-deduct](../../api-design/03-stock-deduct/2-summary.md) — 재고 차감의 갱신 손실
+  - [api-design/03-stock-deduct](../../api-design/24-case-stock-deduct/2-summary.md) — 재고 차감의 갱신 손실
 - 논문·교재
   - H. Berenson, P. Bernstein, J. Gray, J. Melton, E. O'Neil, P. O'Neil, "A Critique of ANSI SQL Isolation Levels", SIGMOD 1995 — P0~P4, A5A 읽기 skew, A5B 쓰기 skew, Remark 3(P0는 모든 수준에서 금지), Remark 8·9(RC ≪ SI, RR »« SI)
   - M. Kleppmann, 『Designing Data-Intensive Applications』 1판 7장 "Weak Isolation Levels" — 당직 의사 예, 충돌 구체화

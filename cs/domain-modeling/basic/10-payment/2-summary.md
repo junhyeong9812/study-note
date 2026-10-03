@@ -276,7 +276,7 @@ cancel()의 판정 순서(계약): ① 멱등키 봤던 키인가 → DUPLICATE
 - 같은 자리 — [09-order-state](../09-order-state/2-summary.md): 3갈래 결과·파생 상태의 원형. [13-inventory](../13-inventory/2-summary.md): 중복을 재고보다 먼저 보는 같은 순서.
 - 같은 바닥 규칙 — [06-subscription](../06-subscription/2-summary.md): `BigDecimal` 돈 계산.
 - 운영 패턴 — [ops-patterns/06-idempotency-store](../../../ops-patterns/06-idempotency-store/2-summary.md): 키 저장·만료. [ops-patterns/01-retry-backoff](../../../ops-patterns/01-retry-backoff/2-summary.md): 재시도가 오는 이유.
-- 사례 — [api-design/06-refund](../../../api-design/06-refund/2-summary.md): 환불 API 설계. [advanced/04-refund](../../advanced/04-refund/2-summary.md): 환불 규칙 확장.
+- 사례 — [api-design/06-refund](../../../api-design/27-case-refund/2-summary.md): 환불 API 설계. [advanced/04-refund](../../advanced/04-refund/2-summary.md): 환불 규칙 확장.
 - 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · `14-money-arithmetic-rounding-allocation`(금액 산술 — 미작성).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/10-payment/` (README.md · impl/com/domain/payment/Payment.java · src/main/java/com/domain/payment/Money.java · PaymentStatus.java).
 

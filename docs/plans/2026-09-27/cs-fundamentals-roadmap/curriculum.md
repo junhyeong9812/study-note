@@ -812,7 +812,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 15-two-phase-locking-and-deadlock | 2PL·엄격 2PL·락 모드·DB 데드락 탐지 | 14, os/19-deadlock | `Lock wait timeout exceeded`(MySQL 1205); `deadlock detected`(PG 40P01 / MySQL 1213) | 락 테이블 해시, **wait-for 그래프** | L17 | 필수 | 신규 (연결: `languages/sql/syntax/57`) |
 | 16-mvcc | 버전 체인·스냅샷·가시성·가비지 수집(vacuum) | 14 | 장기 트랜잭션 → vacuum 불가 → 테이블 bloat; PG XID wraparound 임박 → 쓰기 중단 | 버전 체인(연결 리스트), 스냅샷 | L19 · PostgreSQL 문서 "Routine Vacuuming" | 필수 | 신규 |
 | 17-occ-and-timestamp-ordering | 낙관적 동시성·타임스탬프 순서·버전 컬럼 | 14 | 경합 높은 행에 OCC → `OptimisticLockException` 재시도 폭증 | 버전 번호 비교 | L18 · Kung–Robinson 1981 | 권장 | 신규 |
-| 18-app-level-concurrency-patterns | `SELECT … FOR UPDATE`·조건부 UPDATE·원자적 upsert·유니크 제약 활용 | 15, 17 | check-then-insert → 중복 행; 재고 음수; 트랜잭션 안 원격 호출 → 락 장기 보유 | — | DDIA 7장 · PostgreSQL 문서 "Explicit Locking" | 필수 | 신규 (연결: `api-design/03-stock-deduct`, `reliability/04-failure-modes-catalog` F-01~08) |
+| 18-app-level-concurrency-patterns | `SELECT … FOR UPDATE`·조건부 UPDATE·원자적 upsert·유니크 제약 활용 | 15, 17 | check-then-insert → 중복 행; 재고 음수; 트랜잭션 안 원격 호출 → 락 장기 보유 | — | DDIA 7장 · PostgreSQL 문서 "Explicit Locking" | 필수 | 신규 (연결: `api-design/24-case-stock-deduct`, `reliability/04-failure-modes-catalog` F-01~08) |
 
 ### 9.6 로깅·복구·백업
 
@@ -1316,7 +1316,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 12-filtering-sorting-search | 필터·정렬 파라미터 설계 | 06 | 임의 필드 정렬 허용 → 인덱스 없는 정렬 쿼리로 DB 과부하 | — | Google AIP-160 · AIP-132 | 권장 | 신규 |
 | 07-versioning-and-compatibility | 하위 호환 규칙·버저닝·폐기(Deprecation/Sunset) | 01 | 필드 삭제·의미 변경 → 구 클라이언트 파손; **enum 값 추가** → 엄격 역직렬화 클라이언트 실패 | — | Google AIP-180 · RFC 8594 · RFC 9745 [?] | 필수 | 신규 |
 | 08-schema-and-serialization | JSON·Protobuf·Avro, 스키마 진화 | 07 | 64비트 ID를 JSON 숫자로 → JS에서 2^53 초과 정밀도 손실; 필드 번호 재사용(Protobuf) → 조용한 오역 | 가변 길이 정수 인코딩(varint) | DDIA 4장 · RFC 8259 | 필수 | 신규 |
-| 09-async-apis-and-webhooks | 웹훅·콜백·재전송·서명 | 05, security/05-mac-and-hmac | 서명 검증 없음 → 위조 이벤트; 순서 역전·중복 전달 → 상태 역행 | 재시도 큐, 서명 | Standard Webhooks 명세 [?] | 필수 | 신규 (연결: `api-design/05-delivery-webhook` 사례) |
+| 09-async-apis-and-webhooks | 웹훅·콜백·재전송·서명 | 05, security/05-mac-and-hmac | 서명 검증 없음 → 위조 이벤트; 순서 역전·중복 전달 → 상태 역행 | 재시도 큐, 서명 | Standard Webhooks 명세 [?] | 필수 | 신규 (연결: `api-design/26-case-delivery-webhook` 사례) |
 | 11-concurrency-control-in-apis | ETag·`If-Match`·조건부 요청 | 07, database/17-occ-and-timestamp-ordering | 동시 편집 → **lost update**; `412 Precondition Failed` 처리 누락 | 버전 비교 | RFC 9110 13장 | 권장 | 신규 |
 | 13-long-running-operations | `202 Accepted` + 작업 자원·폴링 | 09 | 동기로 처리하다 LB 타임아웃 → 결과 불명 + 재시도 중복 | 작업 상태 기계 | Google AIP-151 | 권장 | 신규 |
 | 10-notification-delivery-pipeline | 이메일·SMS·푸시 발송 파이프라인: outbox → 큐 → 공급자, 멱등 발송 키, 재시도 vs 영구 실패 구분, 억제 목록(바운스·수신 거부), 사용자 선호·야간 발송 제한, 푸시 토큰 무효화 | 05-idempotency-keys, 09-async-apis-and-webhooks, distributed/18-consumer-failure-handling | 재시도로 같은 알림 3번 발송. 트랜잭션 롤백됐는데 "주문 완료" 메일은 발송됨. 하드 바운스 주소에 계속 발송 → 발송 평판 하락으로 전체 도달률 붕괴. 만료된 FCM/APNs 토큰 누적 → 발송 실패율 상승. 광고성 정보를 야간(21~08시)에 발송 → 정보통신망법 위반 [?] | 재시도 큐 + 지수 백오프, 억제 목록 해시 셋 | Standard Webhooks 명세 [?] · Firebase Cloud Messaging 문서 "Manage registration tokens" · 방송통신위원회 "불법 스팸 방지 안내서" [?] | 필수 | 신규 (연결: `api-design/26-case-delivery-webhook`, `network/51-email-delivery-and-authentication`) |
@@ -1338,12 +1338,12 @@ Part 6  판단하는 법             data-engineering → data-analysis
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 22-case-order-point | 주문·포인트 API 사례 | 05, 11 | (사례 본문 ⚠) | — | 기존 원고 | 권장 | `api-design/01-order-point` |
-| 23-case-coupon-issue | 선착순 쿠폰 발급 | 05, database/18-app-level-concurrency-patterns | 초과 발급 | 원자 카운터 | 기존 원고 | 권장 | `api-design/02-coupon-issue` |
-| 24-case-stock-deduct | 재고 차감 | database/18-app-level-concurrency-patterns | 재고 음수 | 조건부 UPDATE | 기존 원고 | 권장 | `api-design/03-stock-deduct` |
-| 25-case-settlement-report | 정산 리포트 | 13, 06 | 대용량 동기 조회 타임아웃 | 배치·스트리밍 | 기존 원고 | 권장 | `api-design/04-settlement-report` |
-| 26-case-delivery-webhook | 배송 웹훅 | 09 | 중복·순서 역전 | 재시도 큐 | 기존 원고 | 권장 | `api-design/05-delivery-webhook` |
-| 27-case-refund | 환불 | 05, distributed/15-saga | 부분 환불 이중 처리 | 상태 기계 | 기존 원고 | 권장 | `api-design/06-refund` |
+| 22-case-order-point | 주문·포인트 API 사례 | 05, 11 | (사례 본문 ⚠) | — | 기존 원고 | 권장 | `api-design/22-case-order-point` |
+| 23-case-coupon-issue | 선착순 쿠폰 발급 | 05, database/18-app-level-concurrency-patterns | 초과 발급 | 원자 카운터 | 기존 원고 | 권장 | `api-design/23-case-coupon-issue` |
+| 24-case-stock-deduct | 재고 차감 | database/18-app-level-concurrency-patterns | 재고 음수 | 조건부 UPDATE | 기존 원고 | 권장 | `api-design/24-case-stock-deduct` |
+| 25-case-settlement-report | 정산 리포트 | 13, 06 | 대용량 동기 조회 타임아웃 | 배치·스트리밍 | 기존 원고 | 권장 | `api-design/25-case-settlement-report` |
+| 26-case-delivery-webhook | 배송 웹훅 | 09 | 중복·순서 역전 | 재시도 큐 | 기존 원고 | 권장 | `api-design/26-case-delivery-webhook` |
+| 27-case-refund | 환불 | 05, distributed/15-saga | 부분 환불 이중 처리 | 상태 기계 | 기존 원고 | 권장 | `api-design/27-case-refund` |
 
 ### 15.5 영역 마감
 

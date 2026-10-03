@@ -236,7 +236,7 @@ for (int attempt = 1; ; attempt++) {
   - database [52-offline-concurrency-patterns](../52-offline-concurrency-patterns/2-summary.md)(여러 요청에 걸친 버전·aggregate 버전)
   - api-design `11-concurrency-control-in-apis`(ETag·`If-Match`·412) — 미작성, [api-design/curriculum](../../api-design/curriculum.md)
   - [ops-patterns/14-logical-clock](../../ops-patterns/14-logical-clock/2-summary.md) — 논리 시계
-  - [api-design/03-stock-deduct](../../api-design/03-stock-deduct/2-summary.md) — 재고 차감의 방식 비교
+  - [api-design/03-stock-deduct](../../api-design/24-case-stock-deduct/2-summary.md) — 재고 차감의 방식 비교
 - 논문·강의
   - H. T. Kung, J. T. Robinson, "On Optimistic Methods for Concurrency Control", ACM TODS 6(2), 1981 — 읽기·검증·쓰기 단계, 검증 조건 (1)~(3)
   - CMU 15-445/645 Fall 2024 Lecture #18 Timestamp Ordering Concurrency Control(OCC 세 단계, 전방·후방 검증, 약점) <https://15445.courses.cs.cmu.edu/fall2024/notes/18-timestampordering.pdf> · Fall 2023 Lecture #17 노트(Basic T/O, R-TS·W-TS, Thomas Write Rule) <https://15445.courses.cs.cmu.edu/fall2023/notes/17-timestampordering.pdf>

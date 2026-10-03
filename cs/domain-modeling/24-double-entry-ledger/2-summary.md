@@ -25,8 +25,8 @@
 
 실무 예:
 - 간편결제 지갑·포인트·선불 충전금 — 고객이 "내 잔액이 왜 이거냐"고 묻는다.
-- 판매자 정산 — 매출·수수료·환불·지급이 한 판매자의 지급 예정액을 만든다([api-design/04-settlement-report](../../api-design/04-settlement-report/2-summary.md)).
-- 부분 환불 — 환불이 원 결제를 고치는 게 아니라 새 이동으로 쌓인다([api-design/06-refund](../../api-design/06-refund/2-summary.md)).
+- 판매자 정산 — 매출·수수료·환불·지급이 한 판매자의 지급 예정액을 만든다([api-design/04-settlement-report](../../api-design/25-case-settlement-report/2-summary.md)).
+- 부분 환불 — 환불이 원 결제를 고치는 게 아니라 새 이동으로 쌓인다([api-design/06-refund](../../api-design/27-case-refund/2-summary.md)).
 - Square는 이 문제를 풀려고 "Books"라는 불변(immutable) 복식부기 원장 서비스를 만들었다(Square 개발자 블로그, 2019-10-16).
 
 ## 동작·원리
@@ -423,7 +423,7 @@ Time: 1.464 ms
 - 선행: [05-aggregates-and-invariants](../05-aggregates-and-invariants/2-summary.md) · [12-time-money-and-units](../12-time-money-and-units/2-summary.md) · [14-money-arithmetic-rounding-allocation](../14-money-arithmetic-rounding-allocation/2-summary.md) · [database/18-app-level-concurrency-patterns](../../database/18-app-level-concurrency-patterns/2-summary.md)
 - 후속: [25-reconciliation](../25-reconciliation/2-summary.md) · [22-decision-log-and-provenance](../22-decision-log-and-provenance/2-summary.md) · [23-versioned-rules-and-effective-dating](../23-versioned-rules-and-effective-dating/2-summary.md)
 - 다른 영역: [database/13-transactions-acid](../../database/13-transactions-acid/2-summary.md) · [database/16-mvcc](../../database/16-mvcc/2-summary.md)(스냅샷) · [database/17-occ-and-timestamp-ordering](../../database/17-occ-and-timestamp-ordering/2-summary.md) · [distributed/22-event-sourcing](../../distributed/22-event-sourcing/2-summary.md) · [reliability/13-idempotency](../../reliability/13-idempotency/2-summary.md) · [reliability/18-logs-traces-audit-roles](../../reliability/18-logs-traces-audit-roles/2-summary.md) · [reliability/04-failure-modes-catalog](../../reliability/04-failure-modes-catalog/2-summary.md)(F-22 초과 승인·F-23 전표 누락·중복)
-- 연결 사례(커리큘럼 `api-design/25-case-settlement-report`·`27-case-refund`): [api-design/04-settlement-report](../../api-design/04-settlement-report/2-summary.md)(상쇄 엔트리 추가로 정정) · [api-design/06-refund](../../api-design/06-refund/2-summary.md)(누적 환불 상한 조건부 UPDATE)
+- 연결 사례(커리큘럼 `api-design/25-case-settlement-report`·`27-case-refund`): [api-design/04-settlement-report](../../api-design/25-case-settlement-report/2-summary.md)(상쇄 엔트리 추가로 정정) · [api-design/06-refund](../../api-design/27-case-refund/2-summary.md)(누적 환불 상한 조건부 UPDATE)
 - 연습 문제: [basic/14-points](../basic/14-points/2-summary.md)(잔액 = 덩어리의 파생값, 사용 장부) · [basic/10-payment](../basic/10-payment/2-summary.md)(멱등키·파생 상태) · [advanced/16-audit-replay](../advanced/16-audit-replay/2-summary.md)(로그 재생·REVERSE) · [advanced/14-mileage-expiry](../advanced/14-mileage-expiry/2-summary.md)(사건 재생으로 잔액·소멸 계산)
 
 ### 근거

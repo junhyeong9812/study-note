@@ -354,7 +354,7 @@ kubectl get jobs -l <selector> --sort-by=.status.startTime   # 같은 회차 잡
   - [32-batch-and-job-time-bounds](../32-batch-and-job-time-bounds/2-summary.md) — 잡·단계 타임아웃, heartbeat
   - [14-graceful-shutdown](../14-graceful-shutdown/2-summary.md) — SIGTERM과 유예 시간
   - [distributed/12-coordination-and-fencing](../../distributed/12-coordination-and-fencing/2-summary.md) — 잡 단일 실행 락, lease, fencing
-  - api-design 25 case-settlement-report — 노트 [api-design/04-settlement-report](../../api-design/04-settlement-report/)
+  - api-design 25 case-settlement-report — 노트 [api-design/04-settlement-report](../../api-design/25-case-settlement-report/)
   - [database/27-temporal-types-and-session-timezone](../../database/27-temporal-types-and-session-timezone/2-summary.md) — 시간대
 - 문서·소스
   - Spring Batch 6.0 문서: "Configuring a Step for Restart"(startLimit·allowStartIfComplete), "Configuring Skip Logic"(11번째 스킵에서 실패), "Controlling Step Flow"(COMPLETED WITH SKIPS 리스너), "ItemStream"(update는 커밋 전), "The Domain Language of Batch"(JobInstance = Job + 식별 파라미터, ExecutionContext는 커밋마다 저장), "Advanced Metadata Usage"(STARTED 고착·recover·ABANDONED·JobExecutionShutdownHook 6.0+) <https://docs.spring.io/spring-batch/reference/>

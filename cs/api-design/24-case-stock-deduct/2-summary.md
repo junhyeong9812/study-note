@@ -174,7 +174,7 @@ UPDATE products
 
 ## 쓰이는 자료구조·알고리즘
 
-- **조건부 UPDATE** (`SET qty = qty - ? WHERE qty >= ?`) — 행 단위 원자 CAS. 커리큘럼이 이 사례의 🔧로 꼽는 장치 → [01-order-point](../01-order-point/2-summary.md)와 같은 무기.
+- **조건부 UPDATE** (`SET qty = qty - ? WHERE qty >= ?`) — 행 단위 원자 CAS. 커리큘럼이 이 사례의 🔧로 꼽는 장치 → [01-order-point](../22-case-order-point/2-summary.md)와 같은 무기.
 - **잠금 순서 고정 = 자원 ID 정렬(전순서)** — 모든 트랜잭션이 같은 순서로 잠그면 "누가 누구를 기다리나" 그래프에 순환이 생길 수 없다. 데드락 탐지는 이 대기 그래프의 사이클 탐지다 → [data-structure/08-graph](../../data-structure/08-graph/2-summary.md) · [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md).
   - *대기 그래프(wait-for graph)*: 트랜잭션을 점, "A가 B의 잠금을 기다림"을 화살표로 그린 그래프. 순환 = 데드락.
 - **행 잠금 · `SKIP LOCKED`** — `SKIP LOCKED`는 잠긴 행을 기다리지 않고 건너뛰어 다음 행을 잡는 옵션(MySQL 8.0 · PostgreSQL 9.5 이상). Shopify가 "판매 단위당 1행" 모델에서 경합을 줄이는 데 썼다.
@@ -278,8 +278,8 @@ UPDATE products
 
 ## 관련 주제·근거
 
-- 선행 — [01-order-point](../01-order-point/2-summary.md): 조건부 UPDATE · 원장 · `order_id` 자연 멱등 키.
-- 후속 — [06-refund](../06-refund/2-summary.md): 재고 복원이 포인트·쿠폰 복원과 함께 다시 나오고, 잠금 순서 축이 재등장한다.
+- 선행 — [01-order-point](../22-case-order-point/2-summary.md): 조건부 UPDATE · 원장 · `order_id` 자연 멱등 키.
+- 후속 — [06-refund](../27-case-refund/2-summary.md): 재고 복원이 포인트·쿠폰 복원과 함께 다시 나오고, 잠금 순서 축이 재등장한다.
 - 도메인 — [domain-modeling/basic/13-inventory](../../domain-modeling/basic/13-inventory/2-summary.md) · [domain-modeling/advanced/11-stock-reservation](../../domain-modeling/advanced/11-stock-reservation/2-summary.md): 재고 모델과 예약(만료 · 확정 · 회수).
 - 패턴 — [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md): 복원 멱등의 일반형.
 - 영역 표 — [api-design/curriculum.md](../curriculum.md) `24-case-stock-deduct` (선행 `database/18-app-level-concurrency-patterns` — 노트 미작성).

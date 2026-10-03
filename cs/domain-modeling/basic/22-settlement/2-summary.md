@@ -224,7 +224,7 @@ distribute(총액, 비중 목록, 잔돈 규칙)
 - 후속 — [advanced/18-settlement-match](../../advanced/18-settlement-match/2-summary.md): 배분한 결과를 외부 기록과 맞춰 보는 대사.
 - 후속 — [advanced/05-multi-currency](../../advanced/05-multi-currency/2-summary.md): 통화마다 소수 자릿수가 달라 "1원"의 크기가 달라진다.
 - 기법 — [algorithm/01-elementary-sort](../../../algorithm/01-elementary-sort/2-summary.md): 안정 정렬 — 동점 처리를 정렬 구현에 맡기지 않고 비교자에 명시하는 이유.
-- 실무 — [api-design/04-settlement-report](../../../api-design/04-settlement-report/2-summary.md): 정산 결과를 리포트로 내보내는 API.
+- 실무 — [api-design/04-settlement-report](../../../api-design/25-case-settlement-report/2-summary.md): 정산 결과를 리포트로 내보내는 API.
 - 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (관련 leaf `14-money-arithmetic-rounding-allocation` — 노트 미작성).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/22-settlement/` (README.md · impl/com/domain/settlement/Settlement.java · src/test/.../MeasurementTest.java).
 

@@ -264,8 +264,8 @@ DELIVERED면 주문을 배송완료로 바꾸고 구매확정 타이머를 시�
 
 ## 관련 주제·근거
 
-- 선행 — [02-coupon-issue](../02-coupon-issue/2-summary.md): "성공 응답의 의미"가 여기서는 "200의 의미"로 다시 나온다.
-- 후속 — [06-refund](../06-refund/2-summary.md): PG 취소 결과 통지를 수신하는 쪽이 이 노트의 구조다.
+- 선행 — [02-coupon-issue](../23-case-coupon-issue/2-summary.md): "성공 응답의 의미"가 여기서는 "200의 의미"로 다시 나온다.
+- 후속 — [06-refund](../27-case-refund/2-summary.md): PG 취소 결과 통지를 수신하는 쪽이 이 노트의 구조다.
 - 패턴 — [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md) · [ops-patterns/01-retry-backoff](../../ops-patterns/01-retry-backoff/2-summary.md) · [ops-patterns/07-outbox](../../ops-patterns/07-outbox/2-summary.md): dedup 저장소 · 재시도 큐 · (우리가 웹훅을 **보내는** 쪽이 될 때) 발신 보장.
 - 도메인 — [domain-modeling/basic/11-delivery-tracking](../../domain-modeling/basic/11-delivery-tracking/2-summary.md): 배송 상태 전이 모델.
 - 영역 표 — [api-design/curriculum.md](../curriculum.md) `26-case-delivery-webhook` (선행 `09-async-apis-and-webhooks` — 노트 미작성).
