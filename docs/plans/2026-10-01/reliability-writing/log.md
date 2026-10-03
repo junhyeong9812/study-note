@@ -55,6 +55,7 @@
 | 2026-10-02 | 웹 교차 표본 회수: 39건(짝수 23·홀수 16, 판정 중 7편 제외) — 일치 38·불일치 1·확인 불가 0 · 불일치: 01:93 '100x' 인용 위치 SRE 1장 → 3장 Managing Risk(메인이 embracing-risk 원문 curl로 확인 후 수정, 1 PASS) · 산출 web-cross-sample.md | 39/39 처리 |
 | 2026-10-02 | 정합 회수(01~53): 미작성→실링크 26행·31링크(software-design 2: 24→54, 51→49), 남은 미작성 48(폴더 없는 영역·번호 주제 불일치는 추측 링크 안 함) · 모순 4 정정: 52:201 HttpClient 조건(50 실험), 52 Logback 버린 수 직접 계측(15), 30 CronJob 100회 초과 문서 vs v1.34.0 소스 병기(31과 정합), 23 Knight '4억 6천만 달러 넘게'(04·SEC 'over'; sec.gov는 curl 차단 — 04 사실 점검 근거 유지) · 52·53 [NN-k] 472 오류 0 · 링크 1,455 깨짐 0 | 53 PASS |
 | 2026-10-02 | 마감: 노트 커밋 c228d690(docs/reliability-writing, 213파일 = 53×4 + README) · check 53 PASS · 컨테이너 sn-rl 0 · 루트 파일 0 · 완료 요약·생략한 검증·NEXT·측정로그 · 아카이브 0건 | 커밋 |
+| 2026-10-02 | 사용자 승인 → main fast-forward + push(d2733634..7aa0d0fd — software-design 커밋 포함) | 완료 |
 
 ## 리뷰 ledger
 

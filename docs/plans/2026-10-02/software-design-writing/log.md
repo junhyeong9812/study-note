@@ -56,6 +56,7 @@
 | 2026-10-02 | 판정 회수 55·56·25(Opus 지적 3+범위 밖 1): 채택 4·부분 0·기각 0 — 실험 E(Spring 6.2.11): 생성자 순환은 스위치 on/off 모두 BeanCurrentlyInCreationException, 필드 순환은 on에서만 성공, @Lazy는 off에서도 생성자 순환 기동 · 36 변형 B에 overriding=true 재실행해도 '2 were found' 실패 → 55 시나리오 3을 변형 C 기준으로, 25 장애 3·정답 4·10 범위 한정 · 56 계보 그림 6→{20,25} 독립·20→25 차용, 정답 7 주어 'CMS and contractors' · 컨테이너 sn-sd-a55 0 · **2차 리뷰 판정 56편 완료** | 3 PASS |
 | 2026-10-02 | 마감 점검: check 56 PASS · 링크 728 깨짐 0(47 인라인 코드 오탐 1) · README 재생성 초안(Claude) 56(생성기가 건드린 reliability README는 checkout으로 원복) · sn-sd 컨테이너 0 · 루트 파일 0 · 이미지: eclipse-temurin:21 태그 출처 미확인(이 작업 워커 보고 없음 — 유지) · reliability 미커밋이라 커밋 대기(명세 순서, 공유 작업 트리 브랜치 전환 충돌 회피) | 커밋 대기 |
 | 2026-10-02 | 마감: reliability 인수·커밋(c228d690·32bbed78) 뒤 docs/software-design-writing 생성 → 노트 커밋 e9e50f1f(225파일 = 56×4 + README) · check 56 PASS · 컨테이너 sn-sd 0 · 루트 파일 0 · 완료 요약·생략한 검증·NEXT·측정로그 · 아카이브 0건 | 커밋 |
+| 2026-10-02 | 사용자 승인 → main fast-forward + push(d2733634..7aa0d0fd — reliability 커밋 포함) | 완료 |
 
 ## 리뷰 ledger
 
