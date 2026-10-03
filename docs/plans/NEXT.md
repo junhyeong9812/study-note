@@ -2,11 +2,11 @@
 
 ## 기준
 
-- 마지막 갱신: 2026-10-03 testing-writing 완료(테스트 21편, 실험 근거) · 직전: domain-modeling-writing(28편, push 4cc9c096) · 작업 폴더: `docs/plans/2026-10-03/testing-writing/` · 브랜치: `docs/testing-writing`
+- 마지막 갱신: 2026-10-04 api-design-writing 완료(API 설계 23편 + 사례 6편 22~27로 이름 변경) · 직전: testing-writing(21편, push 8dfaf3c4) · 작업 폴더: `docs/plans/2026-10-04/api-design-writing/` · 브랜치: `docs/api-design-writing`
 
 ## 다음 작업 후보 (우선순위순)
 
-### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28·테스트 21 완료(10-03), 남은 영역: 보안·데이터 분석·웹 플랫폼·API 설계·언어·데이터 공학·엔지니어링 실천·수학·아키텍처·자료구조·알고리즘 잔여
+### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28·테스트 21(10-03)·API 설계 23(10-04) 완료, 남은 영역: 보안·데이터 분석·웹 플랫폼·언어·데이터 공학·엔지니어링 실천·수학·아키텍처·자료구조·알고리즘 잔여
 
 - **재사용 도구**: `docs/plans/2026-09-30/os-writing/`의 briefing(§3-1 교훈·§4 원고 이어받기·§5 로컬 재현)·factcheck·adjudicate 브리핑, network-writing의 check_new.py, 생성기(gen_area_readme.py — 새 leaf 폴더 우선 인식).
 - **관측(두 영역 실측)**: 1차 Opus 점검 뒤에도 codex가 편당 7~12건(OS)·9~11건(네트워크)을 더 찾았고 판정 기각은 거의 0 → **2차 리뷰는 필수**. Opus 대체 리뷰는 편당 ~1.6건으로 codex보다 적게 찾는다 — codex 한도가 병목.
@@ -38,6 +38,13 @@
 
 - 새 형식(metadata 단계 `초안`). codex 한도(10-04 20:53) 뒤 Opus 대체 13편(14·19·20·31·34·38·40·42·48·49·50·52·53)을 codex로 재리뷰하면 대체 리뷰 누락률을 잴 수 있다.
 - 원문 미열람 3건: 38 Georges 외 2007, 53 CrowdStrike CEO 7-25 게시물(TechTarget 인용), Knight SEC 34-70694(sec.gov curl 차단). 남은 미작성 링크 48(폴더 없는 영역) — 해당 영역 집필 때 링크.
+
+### N0-m. API 설계 23편 사용자 검수 + codex 재리뷰(선택) · 영역 밖 낡은 링크 — 우선순위: 중간
+
+- 2차 리뷰가 전부 Opus 대체 — codex 표본 재리뷰로 누락률 측정 가능. `[?]` 잔여: 29(8)·07(1)·05(2).
+- 영역 밖 후속(관측): 다른 영역 노트 20줄이 이제 실재하는 api-design 01~21을 "미작성"으로 가리킴 — network/36·51, distributed/19, reliability/11·13·35, database/10·17·28·31·52, software-design/16·17·43, domain-modeling/18·basic/07, testing/13. 사례 22·23·26·27의 "노트 미작성" 4줄(사례는 이번에 읽기만). `grep -rn "api-design.*미작성" cs/`로 재추출.
+- database/31:60 "FAIL_ON_UNKNOWN_PROPERTIES 기본 true"는 Jackson 2.x 한정 필요(3.0 기본 false).
+- 사례 22~27은 옛 형식(질문 A./B. 절)이라 check_new 불통과 · 제목 줄이 옛 번호(01~06) — 통일 골격 이관 여부는 사용자 결정. 커리큘럼 29행 "Optus 무인증 API 열거 [?]"는 원문 근거 약함(노트는 "인가 없는 API로 대량 조회").
 
 ### N0-l. 테스트 21편 사용자 검수 + codex 재리뷰(선택) · 영역 밖 낡은 링크 — 우선순위: 중간
 
