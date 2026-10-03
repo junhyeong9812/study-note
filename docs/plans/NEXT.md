@@ -6,7 +6,7 @@
 
 ## 다음 작업 후보 (우선순위순)
 
-### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38(09-30)·DB 57(10-01) 완료, 분산 36 진행 중(10-01, 실험 근거 우선)
+### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28 완료(10-03), 남은 영역: 보안·데이터 분석·웹 플랫폼·API 설계·테스트·언어·데이터 공학·엔지니어링 실천·수학·아키텍처·자료구조·알고리즘 잔여
 
 - **재사용 도구**: `docs/plans/2026-09-30/os-writing/`의 briefing(§3-1 교훈·§4 원고 이어받기·§5 로컬 재현)·factcheck·adjudicate 브리핑, network-writing의 check_new.py, 생성기(gen_area_readme.py — 새 leaf 폴더 우선 인식).
 - **관측(두 영역 실측)**: 1차 Opus 점검 뒤에도 codex가 편당 7~12건(OS)·9~11건(네트워크)을 더 찾았고 판정 기각은 거의 0 → **2차 리뷰는 필수**. Opus 대체 리뷰는 편당 ~1.6건으로 codex보다 적게 찾는다 — codex 한도가 병목.
@@ -23,6 +23,7 @@
 
 - curriculum.md §7: 02행 "12로 이어짐" → 10(fragmentation-mtu-pmtud) · 44행 ⚠ "47의 사이드채널" → 43 · 08행 선행 `data-structure/13-radix-trie` → `20-radix-trie`. 고친 뒤 gen_area_readme.py 재실행.
 - (10-01 분산) curriculum.md §10 33행 선행·데이터 구조 표 240행 `data-structure/41-rope` → 실제 노트 `28-rope`.
+- (10-03 도메인) curriculum.md §13 28행 Horizon "1999~" → 판결 [1] "introduced … in 2000" · §13 선행 `algorithm/04-binary-search` → 실제 `06-binary-search`.
 
 ### N0-f. 네트워크 51편 사용자 검수 — 우선순위: 중간
 
@@ -42,6 +43,12 @@
 
 - 2차 리뷰가 전부 Opus 대체(codex 한도) — 한도 해제 후 표본(예: 10편)을 codex로 재리뷰하면 누락률을 잴 수 있다.
 - 영역 밖 후속: curriculum 56행 "GAO-14-694 [?]"는 원문 확인됨 → `[?]` 제거 후 gen_area_readme.py 재실행. 남은 미작성 링크 40(language·testing·domain-modeling·api-design 미작성 leaf) — 해당 영역 집필 때 링크.
+
+### N0-i. 도메인 모델링 28편 — codex 표본 재리뷰(선택) · 노트 밖 정정 2건 — 우선순위: 낮음~중간
+
+- 2차 리뷰를 codex 한도로 Opus 적대 리뷰로 대체했다(10-03). 한도 해제(10-04 08:53) 뒤 codex로 표본 5~8편 재리뷰하면 대체 리뷰의 누락률을 잴 수 있다.
+- 노트 밖: `languages/java/syntax/51-java-time-types` 「tzdb 판이 갈렸다」의 "17·21 = 2024a"는 패치 번호(17.0.13·21.0.5) 한정 필요(21.0.12 = 2026b) · DDD Crew 저장소 README(CC BY 4.0)와 LICENCE(CC BY-SA 4.0)가 다름 — 다른 영역 노트에 같은 표기가 있으면 병기.
+- **관측(10-03)**: Opus 적대 리뷰 편당 ~1.3건(앞 영역 codex ~5건)이지만 이번엔 사실 점검이 편당 ~1.3 중간을 이미 잡았다. 재실행·실측으로 판정한 지적 비율이 높았다(12·13·05·10 등) — 실험 근거 우선 규칙이 리뷰 판정 품질을 올림.
 
 ### N0-h. DB 57편 사용자 검수 — 우선순위: 중간
 
