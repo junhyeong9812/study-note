@@ -32,6 +32,7 @@
 | 2026-10-03 | 정합 패스 발사(Opus): 낡은 미작성 링크 · 판정 미열람 원문 5건(Record.equals·Dynamic updates·RFC 9557 §4.1·PG B.2·Evans 14장) · 공통 사실 교차 대조 7군 · 웹 교차 표본 20+ 신설 · 28 PASS·링크 0 | 회수 대기 |
 | 2026-10-03 | 정합 패스 회수: 낡은 미작성 링크 6 → 실링크 · 미열람 원문 5건 대조(Record.equals·Dynamic updates·RFC 9557 일치, PG B.2는 "전이 직후 오프셋"으로 13 정밀화, Evans 14장 "One way" 문구) · 교차 정합 3(10↔05 원인, 04 프록시 equals 보강, 27↔25 분류 이름 대응) · 웹 표본 35행/26편 ✅33 ✗2(DDD Crew 라이선스 README CC BY vs LICENCE CC BY-SA → 17·18·20 병기) · 28 PASS · 링크 1070 깨짐 0 | |
 | 2026-10-03 | 마감: 생성 문서 cs/domain-modeling/curriculum.md 재생성(초안 28, 다른 영역 변화 없음) · 컨테이너 sn-dm-* 0 · 저장소 루트 잔여 파일 0 · 완료 요약·NEXT·측정로그 · 아카이브: CS 이슈 0건(발견 사실은 노트 본문에 반영, 루트 빈 파일·동시 실행은 도구 사정) | 커밋 |
+| 2026-10-03 18:58 | 사용자 승인(다른 실행 B가 대행) → main ff f4574554 + origin/main(issue 카드 8커밋, 겹치는 파일 0) 병합 4cc9c096 → push(1d0d8b13..4cc9c096) · 28 PASS 재확인 | 완료 |
 
 ## 리뷰 ledger
 
