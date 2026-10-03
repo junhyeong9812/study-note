@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 154개.
+현재 카드 160개.
 
 ## 분류 두 축
 
@@ -14,15 +14,15 @@
 
 | 태그 | 뜻 | 카드 수 |
 |------|----|---------|
-| [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 26 |
-| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 21 |
+| [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 27 |
+| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 22 |
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 3 |
-| [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 9 |
+| [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 10 |
 | [`contract-drift`](#contract-drift) | 선언한 계약과 실제 동작의 어긋남 | 5 |
 | [`test-reliability`](#test-reliability) | 초록불이 결함 유무를 말해 주는가 | 7 |
 | [`parser-differential`](#parser-differential) | 검사하는 쪽과 실행하는 쪽의 해석 차이 | 3 |
-| [`environment-drift`](#environment-drift) | 실행 환경·채널마다 값·동작이 달라짐 | 4 |
+| [`environment-drift`](#environment-drift) | 실행 환경·채널마다 값·동작이 달라짐 | 5 |
 | [`encoding`](#encoding) | 바이트·문자·인코딩 경계 | 3 |
 | [`identity`](#identity) | 같은 대상인가 — 식별자·정체성 판정 | 1 |
 | [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 | 2 |
@@ -42,26 +42,26 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (154)
-├─ cross-cutting/               112
+issue/  (160)
+├─ cross-cutting/               116
 │  ├─ concurrency/               10
 │  ├─ data/                      18
 │  ├─ database/                   3
 │  ├─ distributed/                2
 │  ├─ document-rendering/         2
 │  ├─ gui-platform/               2
-│  ├─ infra/                     10
+│  ├─ infra/                     11
 │  ├─ network/                   11
-│  ├─ os/                         6
-│  ├─ reliability/               23
+│  ├─ os/                         8
+│  ├─ reliability/               24
 │  ├─ search-engine/              8
 │  ├─ security/                  12
 │  └─ testing/                    5
 ├─ java/                          3
 │  ├─ spring/                     1
 │  └─ (언어 레벨 카드)            2
-├─ kotlin/                        6
-│  ├─ spring/                     4
+├─ kotlin/                        7
+│  ├─ spring/                     5
 │  └─ (언어 레벨 카드)            2
 ├─ python/                        6
 │  ├─ fastapi/                    4
@@ -72,7 +72,7 @@ issue/  (154)
 │  ├─ tauri/                      2
 │  ├─ tokio/                      1
 │  └─ (언어 레벨 카드)            1
-├─ shell/                         2
+├─ shell/                         3
 └─ typescript/                   19
    ├─ browser/                    1
    ├─ next/                       4
@@ -170,6 +170,7 @@ issue/  (154)
 #### [cross-cutting/os/](cross-cutting/os/) — 프로세스·경로·터미널
 
 - [execution-context-inheritance](cross-cutting/os/execution-context-inheritance/) — 자식 프로세스·서비스·훅은 실행 방식(셸·GUI 런처·systemd·영속 cd·플랫폼 주입)에 따라 env·PATH·cwd·TERM을 다르게 물려받는다 — 필요한 실행 문맥을 명시적으로 결정·정화한다.
+- [job-lifetime-bound-to-user-session](cross-cutting/os/job-lifetime-bound-to-user-session/) — 장기 작업의 수명·자원 단위는 띄운 곳의 cgroup·사용자 서비스 매니저에 묶인다 — oomd는 cgroup째 죽이고(setsid로 못 피함), 사용자 유닛은 linger 없이 로그아웃과 함께 정지한다, 별도 유닛·linger·Restart+멱등 재개로 떼어 낸다.
 - [nested-sandbox-capability](cross-cutting/os/nested-sandbox-capability/) — 샌드박스 안에서 자체 격리를 켜는 도구를 띄우면 상속된 실행 문맥이 내부 격리 초기화(루프백 설정 등)를 거부할 수 있다 — 파일 읽기 전면 실패가 exit 0 결과물로 포장되거나 호출마다 지연이 붙는다, 읽기 의존은 입력 인라인으로 우회하고 완료는 종료 코드·산출물·본문을 함께 보고 판정
 - [os-api-limits-and-semantics](cross-cutting/os/os-api-limits-and-semantics/) — OS API에는 고정 한계와 미정의 동작(UDS 경로 108바이트·소유하지 않은 디렉토리 chmod·순회 중 수정)이 있다 — 설계 전에 전제를 확인한다.
 - [path-canonical-identity](cross-cutting/os/path-canonical-identity/) — 같은 파일을 가리키는 경로 표기는 여러 개다(`./`·구분자·대소문자·빈 문자열=cwd) — 비교·키·잠금 전에 모든 진입점이 같은 정규형을 거쳐야 한다.
@@ -179,6 +180,7 @@ issue/  (154)
 
 #### [cross-cutting/reliability/](cross-cutting/reliability/) — 실패가 삼켜지는 곳
 
+- [abandoned-request-late-processing](cross-cutting/reliability/abandoned-request-late-processing/) — 클라이언트 타임아웃은 서버 작업을 취소하지 않는다 — 상한 없는 앞단 대기열에 남은 요청은 클라이언트가 포기한 뒤 처리돼 "응답은 실패, 상태는 변경"(유령 확정)이 된다, 응답과 저장소를 대조하고 실패를 오류 코드로 가른다.
 - [atomic-file-replace](cross-cutting/reliability/atomic-file-replace/) — 덮어쓰기는 원자적이지 않다 — 같은 파일시스템의 유니크 temp에 완성한 뒤 rename으로 게시하고(디렉토리는 displaced rename+복원), 교체 창의 동시 writer·옛 fd·내구성(fsync)까지 다룬다.
 - [change-detection-key-design](cross-cutting/reliability/change-detection-key-design/) — 변경 감지·캐시 키는 결과에 영향을 주는 입력 전부를 반영해야 하고(mtime·길이·합산값은 불완전), 잠금·정체성 키에는 가변값을 넣지 않는다 — 한쪽이면 갱신 누락, 반대면 무한 루프.
 - [cleanup-on-every-exit-path](cross-cutting/reliability/cleanup-on-every-exit-path/) — 종료 경로가 여럿이면 경로마다 정리를 흩어 두지 말고 스코프 소멸(RAII·try/finally·trap)에 묶어 모든 경로(에러·취소·spawn 실패·예외)에서 정확히 한 번 해제한다.
@@ -296,6 +298,7 @@ issue/  (154)
 
 - [exit-status-semantics](shell/exit-status-semantics/) — 파이프라인·그룹 리다이렉트·`&&`의 종료 코드는 마지막 명령의 것이고 errexit·명령별 비0 의미(grep 1·iconv)가 계약을 흔든다 — pipefail과 단계별 rc를 명시한다.
 - [quoting-expansion-layers](shell/quoting-expansion-layers/) — 셸은 텍스트를 인용·확장·word-split·glob·heredoc 계층마다 다시 해석한다 — 중첩 인용·dotenv source·빈 매칭 glob·heredoc 종료 태그가 의도와 다른 명령을 만든다.
+- [script-modified-while-running](shell/script-modified-while-running/) — bash는 스크립트를 실행하면서 읽는다 — 실행 중 제자리 편집은 어긋난 바이트 위치에서 다음 명령을 읽게 해 문법 오류·정리 누락을 만든다, 진입점·입력 전체를 동결 사본으로 실행하고 실행 코드 = 기록 커밋을 시작 시 한 번 확인한다.
 
 ### [typescript/](typescript/) — TS/JS·브라우저·React·Next
 
@@ -334,7 +337,7 @@ issue/  (154)
 
 ### silent-failure
 
-성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 — 26개
+성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 — 27개
 
 - [nested-sandbox-capability](cross-cutting/os/nested-sandbox-capability/) · `cross-cutting/os`
 - [single-slot-handoff-loss](cross-cutting/concurrency/single-slot-handoff-loss/) · `cross-cutting/concurrency`
@@ -350,6 +353,7 @@ issue/  (154)
 - [chunked-vs-content-length](cross-cutting/network/chunked-vs-content-length/) · `cross-cutting/network`
 - [half-open-liveness-watchdog](cross-cutting/network/half-open-liveness-watchdog/) · `cross-cutting/network`
 - [http-streaming-status-locked](cross-cutting/network/http-streaming-status-locked/) · `cross-cutting/network`
+- [job-lifetime-bound-to-user-session](cross-cutting/os/job-lifetime-bound-to-user-session/) · `cross-cutting/os`
 - [pty-semantics](cross-cutting/os/pty-semantics/) · `cross-cutting/os`
 - [change-detection-key-design](cross-cutting/reliability/change-detection-key-design/) · `cross-cutting/reliability`
 - [debounce-trailing-contract](cross-cutting/reliability/debounce-trailing-contract/) · `cross-cutting/reliability`
@@ -365,7 +369,7 @@ issue/  (154)
 
 ### resource-bounding
 
-입력에 비례해 커지는 자원의 상한 — 21개
+입력에 비례해 커지는 자원의 상한 — 22개
 
 - [cancellation-reachability](cross-cutting/concurrency/cancellation-reachability/) · `cross-cutting/concurrency`
 - [event-loop-head-of-line-blocking](cross-cutting/concurrency/event-loop-head-of-line-blocking/) · `cross-cutting/concurrency`
@@ -377,6 +381,7 @@ issue/  (154)
 - [payload-transfer-cost](cross-cutting/network/payload-transfer-cost/) · `cross-cutting/network`
 - [process-group-and-tree-termination](cross-cutting/os/process-group-and-tree-termination/) · `cross-cutting/os`
 - [subprocess-lifecycle-and-pipes](cross-cutting/os/subprocess-lifecycle-and-pipes/) · `cross-cutting/os`
+- [abandoned-request-late-processing](cross-cutting/reliability/abandoned-request-late-processing/) · `cross-cutting/reliability`
 - [cleanup-on-every-exit-path](cross-cutting/reliability/cleanup-on-every-exit-path/) · `cross-cutting/reliability`
 - [resource-bounding-last-defense](cross-cutting/reliability/resource-bounding-last-defense/) · `cross-cutting/reliability`
 - [retry-policy-design](cross-cutting/reliability/retry-policy-design/) · `cross-cutting/reliability`
@@ -418,7 +423,7 @@ issue/  (154)
 
 ### race-condition
 
-순서·동시성에 따라 결과가 달라짐 — 9개
+순서·동시성에 따라 결과가 달라짐 — 10개
 
 - [aba-reusable-identifier](cross-cutting/concurrency/aba-reusable-identifier/) · `cross-cutting/concurrency`
 - [capture-context-at-request-time](cross-cutting/concurrency/capture-context-at-request-time/) · `cross-cutting/concurrency`
@@ -428,6 +433,7 @@ issue/  (154)
 - [snapshot-stream-cursor](cross-cutting/concurrency/snapshot-stream-cursor/) · `cross-cutting/concurrency`
 - [thread-affine-object-confinement](cross-cutting/concurrency/thread-affine-object-confinement/) · `cross-cutting/concurrency`
 - [monotonic-fencing](cross-cutting/distributed/monotonic-fencing/) · `cross-cutting/distributed`
+- [script-modified-while-running](shell/script-modified-while-running/) · `shell`
 - [stale-render-state](typescript/react/stale-render-state/) · `typescript/react`
 
 ### contract-drift
@@ -462,10 +468,11 @@ issue/  (154)
 
 ### environment-drift
 
-실행 환경·채널마다 값·동작이 달라짐 — 4개
+실행 환경·채널마다 값·동작이 달라짐 — 5개
 
 - [compose-variable-resolution-timing](cross-cutting/infra/compose-variable-resolution-timing/) · `cross-cutting/infra`
 - [execution-context-inheritance](cross-cutting/os/execution-context-inheritance/) · `cross-cutting/os`
+- [job-lifetime-bound-to-user-session](cross-cutting/os/job-lifetime-bound-to-user-session/) · `cross-cutting/os`
 - [nested-sandbox-capability](cross-cutting/os/nested-sandbox-capability/) · `cross-cutting/os`
 - [value-binding-time](cross-cutting/reliability/value-binding-time/) · `cross-cutting/reliability`
 

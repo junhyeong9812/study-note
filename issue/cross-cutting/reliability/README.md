@@ -19,6 +19,7 @@
 
 ## 패턴 카드
 
+- [abandoned-request-late-processing](abandoned-request-late-processing/) — 클라이언트 타임아웃은 서버 작업을 취소하지 않는다 — 상한 없는 앞단 대기열에 남은 요청은 클라이언트가 포기한 뒤 처리돼 "응답은 실패, 상태는 변경"(유령 확정)이 된다, 응답과 저장소를 대조하고 실패를 오류 코드로 가른다.
 - [atomic-file-replace](atomic-file-replace/) — 덮어쓰기는 원자적이지 않다 — 같은 파일시스템의 유니크 temp에 완성한 뒤 rename으로 게시하고(디렉토리는 displaced rename+복원), 교체 창의 동시 writer·옛 fd·내구성(fsync)까지 다룬다.
 - [change-detection-key-design](change-detection-key-design/) — 변경 감지·캐시 키는 결과에 영향을 주는 입력 전부를 반영해야 하고(mtime·길이·합산값은 불완전), 잠금·정체성 키에는 가변값을 넣지 않는다 — 한쪽이면 갱신 누락, 반대면 무한 루프.
 - [cleanup-on-every-exit-path](cleanup-on-every-exit-path/) — 종료 경로가 여럿이면 경로마다 정리를 흩어 두지 말고 스코프 소멸(RAII·try/finally·trap)에 묶어 모든 경로(에러·취소·spawn 실패·예외)에서 정확히 한 번 해제한다.
@@ -43,4 +44,4 @@
 - [silent-truncation-marker](silent-truncation-marker/) — 상한·예산·링버퍼로 자른 결과를 완전한 결과와 같은 모양으로 반환하면 호출자는 절단을 모른다 — 절단 표식을 동반하고, 절단은 표시 경계에서만 하며, 단계 간 상한을 정렬한다.
 - [value-binding-time](value-binding-time/) — 값은 해석·고정되는 시점(빌드·import·컨테이너 생성·프로세스 기동·작업 생성)에 박제된다 — 이후 변경은 그 시점을 다시 거치지 않으면 반영되지 않는다.
 
-> 이 폴더의 메타 태그: `silent-failure`(7) · `resource-bounding`(5) · `fail-closed`(1) · `environment-drift`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `silent-failure`(7) · `resource-bounding`(6) · `fail-closed`(1) · `environment-drift`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).
