@@ -2,11 +2,11 @@
 
 ## 기준
 
-- 마지막 갱신: 2026-10-02 software-design-writing 완료(소프트웨어 설계 56편, 코드 비교 실험) · 직전: reliability-writing(53편, 커밋 32bbed78) · 작업 폴더: `docs/plans/2026-10-02/software-design-writing/` · 브랜치: `docs/software-design-writing`(docs/reliability-writing 위)
+- 마지막 갱신: 2026-10-03 testing-writing 완료(테스트 21편, 실험 근거) · 직전: domain-modeling-writing(28편, push 4cc9c096) · 작업 폴더: `docs/plans/2026-10-03/testing-writing/` · 브랜치: `docs/testing-writing`
 
 ## 다음 작업 후보 (우선순위순)
 
-### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28 완료(10-03), 남은 영역: 보안·데이터 분석·웹 플랫폼·API 설계·테스트·언어·데이터 공학·엔지니어링 실천·수학·아키텍처·자료구조·알고리즘 잔여
+### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28·테스트 21 완료(10-03), 남은 영역: 보안·데이터 분석·웹 플랫폼·API 설계·언어·데이터 공학·엔지니어링 실천·수학·아키텍처·자료구조·알고리즘 잔여
 
 - **재사용 도구**: `docs/plans/2026-09-30/os-writing/`의 briefing(§3-1 교훈·§4 원고 이어받기·§5 로컬 재현)·factcheck·adjudicate 브리핑, network-writing의 check_new.py, 생성기(gen_area_readme.py — 새 leaf 폴더 우선 인식).
 - **관측(두 영역 실측)**: 1차 Opus 점검 뒤에도 codex가 편당 7~12건(OS)·9~11건(네트워크)을 더 찾았고 판정 기각은 거의 0 → **2차 리뷰는 필수**. Opus 대체 리뷰는 편당 ~1.6건으로 codex보다 적게 찾는다 — codex 한도가 병목.
@@ -38,6 +38,12 @@
 
 - 새 형식(metadata 단계 `초안`). codex 한도(10-04 20:53) 뒤 Opus 대체 13편(14·19·20·31·34·38·40·42·48·49·50·52·53)을 codex로 재리뷰하면 대체 리뷰 누락률을 잴 수 있다.
 - 원문 미열람 3건: 38 Georges 외 2007, 53 CrowdStrike CEO 7-25 게시물(TechTarget 인용), Knight SEC 34-70694(sec.gov curl 차단). 남은 미작성 링크 48(폴더 없는 영역) — 해당 영역 집필 때 링크.
+
+### N0-l. 테스트 21편 사용자 검수 + codex 재리뷰(선택) · 영역 밖 낡은 링크 — 우선순위: 중간
+
+- 2차 리뷰가 전부 Opus 대체(codex 한도 10-04 08:53) — 한도 해제 후 표본 codex 재리뷰로 누락률 측정 가능. 남은 `[?]` 9(Khorikov·GOOS·TDDbE·WELC 본문 미열람).
+- 영역 밖 후속(관측): 다른 영역 노트의 "testing … 미작성" 표기 20곳이 이제 실재 노트를 가리킴 — software-design 12·13·25·26·50·51·52, os/15, reliability/53(227·367행), domain-modeling 13·advanced/27, data-analysis/README(목록: scratchpad/ts/cons/out-of-area-stale-testing-refs.txt — /tmp라 재부팅 시 소실, 필요하면 `grep -rn "testing.*미작성" cs/`로 재추출).
+- 도구 관측: jqwik 1.10 User Guide에 Anti-AI Usage Clause — AI 에이전트 작업에서는 실행하지 않는다(fast-check 등으로). Pact는 기본 사용 통계 전송 — `pact_do_not_track=true`. 기존 이미지에 C 컴파일러 없음.
 
 ### N0-k. 소프트웨어 설계 56편 사용자 검수 + codex 재리뷰(선택) — 우선순위: 중간
 
