@@ -2,11 +2,11 @@
 
 ## 기준
 
-- 마지막 갱신: 2026-10-04 api-design-writing 완료(API 설계 23편 + 사례 6편 22~27로 이름 변경) · 직전: testing-writing(21편, push 8dfaf3c4) · 작업 폴더: `docs/plans/2026-10-04/api-design-writing/` · 브랜치: `docs/api-design-writing`
+- 마지막 갱신: 2026-10-04 web-platform-writing 완료(프론트엔드 엔지니어링 24편) · 직전: api-design-writing(23편 + 사례 6편 이름 변경, push c79e2d8b) · 작업 폴더: `docs/plans/2026-10-04/web-platform-writing/` · 브랜치: `docs/web-platform-writing`
 
 ## 다음 작업 후보 (우선순위순)
 
-### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28·테스트 21(10-03)·API 설계 23(10-04) 완료, 남은 영역: 보안·데이터 분석·웹 플랫폼·언어·데이터 공학·엔지니어링 실천·수학·아키텍처·자료구조·알고리즘 잔여
+### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28·테스트 21(10-03)·API 설계 23·웹 플랫폼 24(10-04) 완료, 남은 영역: 보안·데이터 분석·언어·데이터 공학·엔지니어링 실천·수학·아키텍처·자료구조·알고리즘 잔여
 
 - **재사용 도구**: `docs/plans/2026-09-30/os-writing/`의 briefing(§3-1 교훈·§4 원고 이어받기·§5 로컬 재현)·factcheck·adjudicate 브리핑, network-writing의 check_new.py, 생성기(gen_area_readme.py — 새 leaf 폴더 우선 인식).
 - **관측(두 영역 실측)**: 1차 Opus 점검 뒤에도 codex가 편당 7~12건(OS)·9~11건(네트워크)을 더 찾았고 판정 기각은 거의 0 → **2차 리뷰는 필수**. Opus 대체 리뷰는 편당 ~1.6건으로 codex보다 적게 찾는다 — codex 한도가 병목.
@@ -19,10 +19,13 @@
 
 - **신뢰성 관측(10-02)**: codex 40편(편당 ~5건) + 한도 뒤 Opus 대체 13편(편당 ~1.6건) — 대체 리뷰가 덜 찾는 경향 재확인. **같은 세션의 두 실행이 병렬로 같은 영역을 진행**해 중복 워커·공용 헬퍼 덮어쓰기가 생겼고, 한쪽이 멈춘 뒤 인수 → 작업 폴더 log에 '소유 실행'을 적고 헬퍼는 실행별로 둔다. 외부 요청 UA에 사용자 이메일이 들어간 사고 1건 → 브리핑에 개인정보 금지 조항(유지).
 
+- **웹 플랫폼 관측(10-04)**: 실험 근거를 **실제 브라우저**(호스트 headless Chrome 151 + scratchpad playwright-core, Node 20)로 — 브라우저 다운로드 없이 가능. 측정 해석 오류(화면 밖 버튼·HTTP/1.1 6연결·preload 우선순위·INP 폴백·TBT 구간)가 재실행·2차 리뷰에서 5건 잡힘 → **수치는 맞아도 해석이 틀리는 것**이 웹 실험의 주 실패모드. codex 24편 전수(한도 미도달) 편당 ~5.6건, 기각 1 — codex가 가용하면 영역 전체를 codex로. 워커 하나가 `pkill -f`로 다른 워커의 브라우저를 죽임 → 브리핑에 "자기 PID만 종료" 명시 유지.
+
 ### N0-e. 커리큘럼 본문 오기 4건 — 우선순위: 낮음(1행)
 
 - curriculum.md §7: 02행 "12로 이어짐" → 10(fragmentation-mtu-pmtud) · 44행 ⚠ "47의 사이드채널" → 43 · 08행 선행 `data-structure/13-radix-trie` → `20-radix-trie`. 고친 뒤 gen_area_readme.py 재실행.
 - (10-01 분산) curriculum.md §10 33행 선행·데이터 구조 표 240행 `data-structure/41-rope` → 실제 노트 `28-rope`.
+- (10-04 웹) curriculum.md §16 06행(1373) 🔧 "B-트리(IndexedDB 구현)" → Chromium 구현은 LevelDB(LSM)에서 SQLite 이행 중(06 노트 근거) — 표현을 "구현은 브라우저마다(Chromium LevelDB→SQLite)"로.
 - (10-03 도메인) curriculum.md §13 28행 Horizon "1999~" → 판결 [1] "introduced … in 2000" · §13 선행 `algorithm/04-binary-search` → 실제 `06-binary-search`.
 
 ### N0-f. 네트워크 51편 사용자 검수 — 우선순위: 중간
@@ -38,6 +41,13 @@
 
 - 새 형식(metadata 단계 `초안`). codex 한도(10-04 20:53) 뒤 Opus 대체 13편(14·19·20·31·34·38·40·42·48·49·50·52·53)을 codex로 재리뷰하면 대체 리뷰 누락률을 잴 수 있다.
 - 원문 미열람 3건: 38 Georges 외 2007, 53 CrowdStrike CEO 7-25 게시물(TechTarget 인용), Knight SEC 34-70694(sec.gov curl 차단). 남은 미작성 링크 48(폴더 없는 영역) — 해당 영역 집필 때 링크.
+
+### N0-n. 웹 플랫폼 24편 사용자 검수 · 영역 밖 낡은 링크 — 우선순위: 중간
+
+- 새 형식(metadata 단계 `초안`). `[?]` 잔여 22(편당 0~3 — 23 저엔트로피 해석, 24 도메인 매각 당사자 성명·ICO 108,000 동일 집합·PCI 6.4.3 원문 등).
+- 측정 수치는 Chrome 151.0.7922.173·로컬 헤드리스·지정 스로틀 조건 값 — 브라우저 메이저가 바뀌면 08·13·14·15·16·19의 실험을 재실행해 범위만 갱신(코드는 scratchpad/wp/NN — /tmp라 재부팅 시 소실, 핵심 코드는 노트에 실림).
+- 영역 밖 "web-platform 미작성" 6줄 → 실경로로: network/49:387·415, network/33:352, network/34:333, database/47:312, testing/18:247.
+- 노트 안 남은 "미작성" 20곳은 폴더 없는 영역(security 11·17·19·21·24·25, language 19, data-analysis 04·05, engineering-practice 06, algorithm 33·34) — 해당 영역 집필 때 링크.
 
 ### N0-m. API 설계 23편 사용자 검수 + codex 재리뷰(선택) · 영역 밖 낡은 링크 — 우선순위: 중간
 
