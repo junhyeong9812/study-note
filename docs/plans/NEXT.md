@@ -2,11 +2,11 @@
 
 ## 기준
 
-- 마지막 갱신: 2026-10-04 web-platform-writing 완료(프론트엔드 엔지니어링 24편) · 직전: api-design-writing(23편 + 사례 6편 이름 변경, push c79e2d8b) · 작업 폴더: `docs/plans/2026-10-04/web-platform-writing/` · 브랜치: `docs/web-platform-writing`
+- 마지막 갱신: 2026-10-05 engineering-practice-writing 완료(엔지니어링 실천 20편, 원본 6편 보강) · 직전: web-platform-writing(24편, push 3b190e5e) · 작업 폴더: `docs/plans/2026-10-05/engineering-practice-writing/` · 브랜치: `docs/engineering-practice-writing`
 
 ## 다음 작업 후보 (우선순위순)
 
-### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28·테스트 21(10-03)·API 설계 23·웹 플랫폼 24(10-04) 완료, 남은 영역: 보안·데이터 분석·언어·데이터 공학·엔지니어링 실천·수학·아키텍처·자료구조·알고리즘 잔여
+### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28·테스트 21(10-03)·API 설계 23·웹 플랫폼 24(10-04)·엔지니어링 실천 20(10-05) 완료, 남은 영역: 보안·데이터 분석·언어·데이터 공학·수학·아키텍처·자료구조·알고리즘 잔여
 
 - **재사용 도구**: `docs/plans/2026-09-30/os-writing/`의 briefing(§3-1 교훈·§4 원고 이어받기·§5 로컬 재현)·factcheck·adjudicate 브리핑, network-writing의 check_new.py, 생성기(gen_area_readme.py — 새 leaf 폴더 우선 인식).
 - **관측(두 영역 실측)**: 1차 Opus 점검 뒤에도 codex가 편당 7~12건(OS)·9~11건(네트워크)을 더 찾았고 판정 기각은 거의 0 → **2차 리뷰는 필수**. Opus 대체 리뷰는 편당 ~1.6건으로 codex보다 적게 찾는다 — codex 한도가 병목.
@@ -20,6 +20,24 @@
 - **신뢰성 관측(10-02)**: codex 40편(편당 ~5건) + 한도 뒤 Opus 대체 13편(편당 ~1.6건) — 대체 리뷰가 덜 찾는 경향 재확인. **같은 세션의 두 실행이 병렬로 같은 영역을 진행**해 중복 워커·공용 헬퍼 덮어쓰기가 생겼고, 한쪽이 멈춘 뒤 인수 → 작업 폴더 log에 '소유 실행'을 적고 헬퍼는 실행별로 둔다. 외부 요청 UA에 사용자 이메일이 들어간 사고 1건 → 브리핑에 개인정보 금지 조항(유지).
 
 - **웹 플랫폼 관측(10-04)**: 실험 근거를 **실제 브라우저**(호스트 headless Chrome 151 + scratchpad playwright-core, Node 20)로 — 브라우저 다운로드 없이 가능. 측정 해석 오류(화면 밖 버튼·HTTP/1.1 6연결·preload 우선순위·INP 폴백·TBT 구간)가 재실행·2차 리뷰에서 5건 잡힘 → **수치는 맞아도 해석이 틀리는 것**이 웹 실험의 주 실패모드. codex 24편 전수(한도 미도달) 편당 ~5.6건, 기각 1 — codex가 가용하면 영역 전체를 codex로. 워커 하나가 `pkill -f`로 다른 워커의 브라우저를 죽임 → 브리핑에 "자기 PID만 종료" 명시 유지.
+
+### N0-o. 엔지니어링 실천 20편 사용자 검수 · 원본·영역 밖 후속 — 우선순위: 중간
+
+- 검수: metadata `초안`. `[?]` 잔여: 02 29148 5.2.5 conforming(본문 유료) · 17 FSF 원 페이지 미열람(gnu.org 시간 초과).
+- **원본 갱신(사용자 결정 필요 — 원본은 읽기 전용으로 둠)**: `cs/engineering/development-standards/legal-standards`·`provisions.md`가 2026-09-11 시행 개인정보 보호법 개정(법률 제21445호 — 제34조② 유출 가능성 통지, 시행령 72시간, 제64조의2② 10%) 전 상태 → 17 노트로 링크하거나 본문 갱신. 원본 operational-standards의 `../../straggler/` → `cs/systems/straggler`.
+- 영역 밖 낡은 표기: engineering-practice를 "미작성"으로 가리키는 곳 — os/28:355, reliability/24:235·238, reliability/44:233, software-design/14:166·211, software-design/53:206·257(+3-answer 77), web-platform/20:292. os/31:245의 `36-profiling`·`20-performance-method-and-amdahl` 소속 오기.
+- Knight 축약 "45분에 4.6억": reliability/04 2-summary 288·3-answer 55, ops-patterns/failure-modes 317 → SEC ¶1·¶17(45분 = 주문 송출, 4.6억 = 결국 실현된 손실; 보도자료 4.4억).
+- 관측: codex 20/20 가용, 지적 80 중 기각 1 — codex가 있으면 전량 codex 유지. 이미지 빌드 실험은 legacy builder + `--pull=false`/`--pull never`로 새 pull 없이 가능(08 워커가 실수 pull 시도 1회 — 실패, 받은 것 없음).
+
+### N0-p. 작성 규칙 ↔ 검사기 정비 — 우선순위: 중간 (근거 `docs/plans/2026-10-05/engineering-practice-writing/rules-vs-checker.md`)
+
+- ① `cs/README.md` §3을 7절로 고치고 브리핑에만 있는 형식 규칙을 「작성 규칙」으로 올려 정본 단일화(문서) ② 위반 0인 기계 규칙(언어 태그·제목 형식·metadata 날짜·생성 문서 `--check`)을 check_new error로 ③ warning 후보 ④ 검사기를 작업 폴더에서 고정 위치로 옮기고 훅·CI 자동 실행 여부 결정. ②·④는 L1(spec부터).
+
+### N0-q. AI 엔지니어링 영역 후보 (AIEFS 분석) — 우선순위: 낮음~중간
+
+- 근거 `docs/plans/2026-10-04/aie-analysis/report.md` §5b(26 leaf 안, 백엔드 우선 순서) · §6. 공부 우선순위상 reliability·api-design 검수 뒤에 열 것(링크 실재).
+- **결정 대기**: ANN 벡터 인덱스 leaf — math/13 🔧이 가리키나 받을 leaf 없음. 로컬에 pgvector 이미지 없음 → 이미지 받기 허용 또는 Java 단일 파일 HNSW 실험(사용자가 "나중에 정하기"로 보류, 10-05).
+- AIEFS는 "실습 참고" 링크로만(MIT), 근거는 1차 출처 직접 확인.
 
 ### N0-e. 커리큘럼 본문 오기 4건 — 우선순위: 낮음(1행)
 
