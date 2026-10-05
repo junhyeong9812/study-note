@@ -31,6 +31,7 @@
 | 2026-10-05 | 판정 + 정합 회수: 종합 4 codex 지적 18 채택 16·부분 2·기각 0(List.copyOf 비동기 복사·불변이면 미복사 실험·트리화 비Comparable tieBreakOrder·PEP 456 FNV 예외·PYTHONHASHSEED 0만 끔·두 배 실험 = 의심·8퀸 n!·midLong 조건·.NET \\s 집합·Bloch C 오타) · 정합: alg 01 2^30+1·alg 03 소스 실행기가 트레이스 끝을 잘라 1019(javac 1024, launcher Main.java invocationFrames)·ds 43 증가 배율 1.5배·alg 09 Contract2 값 범위 차이 명시 · 링크 업그레이드 3 · 상대 링크 745 깨짐 0 · 영역 밖 목록 22곳(보고만) | 21 PASS |
 | 2026-10-05 | 정정: 위 '집필 회수 종합 4편' 행의 '커리큘럼 28C3 제목 Efficient'는 틀린 서술 — 커리큘럼(263행)은 제목을 적지 않는다. 'Efficient'는 메인이 쓴 집필 브리핑 §1(SipHash 논문 참고문헌 [24]의 오인용을 옮김)에서 왔다 · 노트는 모두 'Effective'로 정정됨 | 기록 정정 |
 | 2026-10-05 | 메인 마감: 21 PASS · 정리 확인(sn-dsa 컨테이너 0·dangling 26·루트 새 파일 0·리프 md만) · 생성 문서 재생성(data-structure 초안 44·algorithm 초안 43, 두 curriculum.md만 변경) | 노트 커밋 d292d2d1 |
+| 2026-10-05 | 사용자 확인 "main 병합 + push" → main ff 0310d6cb..d9bc037c(cf3b4e73 포함), push | origin/main = d9bc037c |
 
 ## 리뷰 ledger
 
