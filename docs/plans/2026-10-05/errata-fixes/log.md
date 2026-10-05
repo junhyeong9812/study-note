@@ -7,6 +7,7 @@
 | 2026-10-05 | T2 사실 오류 회수: 7항목·10파일 — Knight(reliability/04 2곳·3-answer·ops-patterns) SEC ¶1·¶17 기준 · 03-stack 트레이스 1024(globals.hpp·실측 javac 1024/소스 실행기 1019) · foundations/data-structures-basics 정정 3줄 + 코드 3(후위 순회·insert 중복 return·remove None) · foundations/algorithm-basics 조건 3 + binary_search sort 제거·bubble 조기 종료(실행 확인) · lsm-merge-model run 1개·FTL 과장 · os/31 → reliability/36·20 실링크 · operational-standards straggler → systems/straggler · 링크 66 깨짐 0 · os/31:132 math/10은 대상 없음(math README뿐)이라 유지 | 완료 |
 | 2026-10-05 | T1 링크 회수: 검토 346곳 → 실재 대상 191곳 링크화(136파일, 링크 226 추가) · 남김 155(대상 없음 149·상태 어휘 5·애매 1 → 메인이 bloom-filter 07-hashmap = 05-hashmap으로 처리) · 링크 2,454 깨짐 0 · check FAIL 43은 HEAD와 동일(옛 형식) · T4 법령 회수: 법률 제21445호·시행령 제36671호 등 7개 원문(law.go.kr DRF API, OC=test)과 글자 단위 대조 — 2-summary 13곳·provisions.md 11곳 교체/신설(제26·29·30의3·34·64의2조, 시행령 39·39의2·39의3·40조), 일치 확인 조문 다수 · 메인: provisions.md 낡은 ※ 주기 정정 · codex 법령 리뷰 발사 | 진행 |
 | 2026-10-05 | codex(high) 법령 diff 리뷰: 원문 파일 9개(blk_law 26·29·30의3·34·64의2, blk_dec 39·39의2·39의3·40) 열람 확인 후 **no findings** · 메인 검증: 변경 파일 전체 상대 링크 2,602 깨짐 0 · T1 대상 파일의 삭제 줄 전부 "미작성" 포함(의도 외 변경 0) · 커밋 4(a3549a23 법령·d7fc2deb 사실·eb91962e 커리큘럼·5d86293b 링크) | 완료 |
+| 2026-10-05 | 사용자 확인 "main 병합 + push" → main ff d9bc037c..8121ff99, push | origin/main = 8121ff99 |
 
 ## 리뷰 ledger
 
