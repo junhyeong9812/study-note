@@ -2,11 +2,11 @@
 
 ## 기준
 
-- 마지막 갱신: 2026-10-05 engineering-practice-writing 완료(엔지니어링 실천 20편, 원본 6편 보강) · 직전: web-platform-writing(24편, push 3b190e5e) · 작업 폴더: `docs/plans/2026-10-05/engineering-practice-writing/` · 브랜치: `docs/engineering-practice-writing`
+- 마지막 갱신: 2026-10-05 dsa-remaining-writing 완료(자료구조 8·알고리즘 13 — 커리큘럼 §2·§3 미작성 0) · 직전: engineering-practice-writing(20편, push 0310d6cb) · 작업 폴더: `docs/plans/2026-10-05/dsa-remaining-writing/` · 브랜치: `docs/dsa-remaining-writing`
 
 ## 다음 작업 후보 (우선순위순)
 
-### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28·테스트 21(10-03)·API 설계 23·웹 플랫폼 24(10-04)·엔지니어링 실천 20(10-05) 완료, 남은 영역: 보안·데이터 분석·언어·데이터 공학·수학·아키텍처·자료구조·알고리즘 잔여
+### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28·테스트 21(10-03)·API 설계 23·웹 플랫폼 24(10-04)·엔지니어링 실천 20·자료구조·알고리즘 잔여 21(10-05) 완료, 남은 영역: 보안·데이터 분석·언어·데이터 공학·수학·아키텍처
 
 - **재사용 도구**: `docs/plans/2026-09-30/os-writing/`의 briefing(§3-1 교훈·§4 원고 이어받기·§5 로컬 재현)·factcheck·adjudicate 브리핑, network-writing의 check_new.py, 생성기(gen_area_readme.py — 새 leaf 폴더 우선 인식).
 - **관측(두 영역 실측)**: 1차 Opus 점검 뒤에도 codex가 편당 7~12건(OS)·9~11건(네트워크)을 더 찾았고 판정 기각은 거의 0 → **2차 리뷰는 필수**. Opus 대체 리뷰는 편당 ~1.6건으로 codex보다 적게 찾는다 — codex 한도가 병목.
@@ -33,6 +33,14 @@
 
 - ① `cs/README.md` §3을 7절로 고치고 브리핑에만 있는 형식 규칙을 「작성 규칙」으로 올려 정본 단일화(문서) ② 위반 0인 기계 규칙(언어 태그·제목 형식·metadata 날짜·생성 문서 `--check`)을 check_new error로 ③ warning 후보 ④ 검사기를 작업 폴더에서 고정 위치로 옮기고 훅·CI 자동 실행 여부 결정. ②·④는 L1(spec부터).
 
+### N0-r. 자료구조·알고리즘 잔여 21편 검수 · 영역 밖 후속 — 우선순위: 중간
+
+- 검수: metadata `초안`. `[?]` 잔여: Sipser 정리·문제 번호(40·41), Sedgewick 1.3 성능 목표(ds 02), GNU sort 기본값(alg 11), Cassandra 전략 전환 재병합(ds 19), TCP 버퍼 원형 여부·512칸 휠 흔들림·큐 처리량 원인·안전한 메모리 회수(ds 25·26·29), Java String.hashCode 비랜덤화 이유(ds 44), SO의 .NET 엔진 여부(alg 43), Brotli 서버 모듈 기본 품질(alg 34).
+- **영역 밖 낡은 "미작성" 표기 22곳**(이제 실재 — 링크로): network/16:210·17:169·20:175·21:171·25:162·38:251·39:146·305·43:130·301·44:290, reliability/05:177·07:163·40:208, database/22:207·41:158·277, domain-modeling/25:232, web-platform/14:47, engineering-practice/12:166·20:30·141·220·307·415, myway data-structure/01-dynamic-array:446·02-linked-list:833·04-queue-deque:996.
+- 오류(원본·myway 읽기 전용 — 사용자 결정): `data-structure/03-stack` 529행 "수천 줄 반복"(HotSpot MaxJavaStackTraceDepth 기본 1024) · `foundations/data-structures-basics` §7(531~532행) 탈출 없는 Python 재귀 "스택 오버플로" → CPython은 RecursionError · 원본 foundations 2편의 코드 버그 9건(새 노트 "참고:" 줄에 목록).
+- 관측: 폴더 번호 = 커리큘럼 번호 규칙으로 myway 폴더와 접두가 겹친다(02-linked-list / 02-adt-…) — 링크는 slug까지 써야 안전. codex 21/21 가용, 지적 94 기각 0. `java X.java` 소스 실행기는 스택 트레이스 끝을 실행기 프레임만큼 자른다(1019 vs 1024) — 실험 해석 주의.
+- 메인 실수 1: 지시문을 따옴표 없는 heredoc으로 생성 → 백틱 확장(부작용 없음). 지시문은 Write 또는 `<<'EOF'`.
+
 ### N0-q. AI 엔지니어링 영역 후보 (AIEFS 분석) — 우선순위: 낮음~중간
 
 - 근거 `docs/plans/2026-10-04/aie-analysis/report.md` §5b(26 leaf 안, 백엔드 우선 순서) · §6. 공부 우선순위상 reliability·api-design 검수 뒤에 열 것(링크 실재).
@@ -44,6 +52,7 @@
 - curriculum.md §7: 02행 "12로 이어짐" → 10(fragmentation-mtu-pmtud) · 44행 ⚠ "47의 사이드채널" → 43 · 08행 선행 `data-structure/13-radix-trie` → `20-radix-trie`. 고친 뒤 gen_area_readme.py 재실행.
 - (10-01 분산) curriculum.md §10 33행 선행·데이터 구조 표 240행 `data-structure/41-rope` → 실제 노트 `28-rope`.
 - (10-04 웹) curriculum.md §16 06행(1373) 🔧 "B-트리(IndexedDB 구현)" → Chromium 구현은 LevelDB(LSM)에서 SQLite 이행 중(06 노트 근거) — 표현을 "구현은 브라우저마다(Chromium LevelDB→SQLite)"로.
+- (10-05 DSA) curriculum.md §3 284행 alg 03 ⚠ "중복 부분문제 → 지수 시간" → "중복 부분문제가 지수적으로 쌓이면 지수 시간"(T(n)=2T(n/2)+O(1)은 선형).
 - (10-03 도메인) curriculum.md §13 28행 Horizon "1999~" → 판결 [1] "introduced … in 2000" · §13 선행 `algorithm/04-binary-search` → 실제 `06-binary-search`.
 
 ### N0-f. 네트워크 51편 사용자 검수 — 우선순위: 중간
