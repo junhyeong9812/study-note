@@ -32,6 +32,7 @@
 | 2026-10-05 | 웹 교차 표본 회수(01~18): 63건 — 일치 62·불일치 0·확인 불가 1(02:61 conforming이 인용한 2차 출처에 없음) · 관찰 3(06:352 seqNum=4·04:299 개정일·17:65 FSF는 apache.org로 대조) | web-cross-sample.md 저장 · 02·06은 정합 패스 회수 뒤 메인 반영 |
 | 2026-10-05 | 판정 19·20 + 정합 패스 회수: codex 8건 채택 7·부분 1·기각 0(19-2 VersionDrift 전원 실패 시 exit 0 → 재현 후 수정, 20 SEC PDF 18쪽·Cloudflare 승인 "또는"·경과 시간) · 정합: Knight 06 표현 SEC ¶1·¶17로 교정, git cherry 04·19 동기화, 나머지 축 일치 · "미작성"→링크 18 · 19 재대조(링크 149·누락 0) · 상대 링크 631 깨짐 0 · 영역 밖 목록 4종(보고만) | 20 PASS |
 | 2026-10-05 | 메인 반영: 02:61 conforming `[?]` 명시 · 06:352 InformIT seqNum=3·4 · check_new 20 PASS · 정리 확인(sn-ep 컨테이너 0·이미지 0·dangling 26·루트 새 파일 0) · 영역 표 재생성(초안 20, engineering-practice README만 변경) | 노트 커밋 e30d3726 |
+| 2026-10-05 | 사용자 확인 "main 병합 + push" → main ff 3b190e5e..0310d6cb, push | origin/main = 0310d6cb |
 
 ## 리뷰 ledger
 
