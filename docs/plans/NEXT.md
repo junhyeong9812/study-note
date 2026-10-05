@@ -2,7 +2,7 @@
 
 ## 기준
 
-- 마지막 갱신: 2026-10-05 dsa-remaining-writing 완료(자료구조 8·알고리즘 13 — 커리큘럼 §2·§3 미작성 0) · 직전: engineering-practice-writing(20편, push 0310d6cb) · 작업 폴더: `docs/plans/2026-10-05/dsa-remaining-writing/` · 브랜치: `docs/dsa-remaining-writing`
+- 마지막 갱신: 2026-10-05 errata-fixes 완료(낡은 미작성 링크 192·사실 오류 7항목·커리큘럼 오기 6·legal-standards 법령 갱신) · 직전: dsa-remaining-writing(21편, push d9bc037c) · 작업 폴더: `docs/plans/2026-10-05/errata-fixes/` · 브랜치: `docs/errata-fixes`
 
 ## 다음 작업 후보 (우선순위순)
 
@@ -24,20 +24,26 @@
 ### N0-o. 엔지니어링 실천 20편 사용자 검수 · 원본·영역 밖 후속 — 우선순위: 중간
 
 - 검수: metadata `초안`. `[?]` 잔여: 02 29148 5.2.5 conforming(본문 유료) · 17 FSF 원 페이지 미열람(gnu.org 시간 초과).
-- **원본 갱신(사용자 결정 필요 — 원본은 읽기 전용으로 둠)**: `cs/engineering/development-standards/legal-standards`·`provisions.md`가 2026-09-11 시행 개인정보 보호법 개정(법률 제21445호 — 제34조② 유출 가능성 통지, 시행령 72시간, 제64조의2② 10%) 전 상태 → 17 노트로 링크하거나 본문 갱신. 원본 operational-standards의 `../../straggler/` → `cs/systems/straggler`.
-- 영역 밖 낡은 표기: engineering-practice를 "미작성"으로 가리키는 곳 — os/28:355, reliability/24:235·238, reliability/44:233, software-design/14:166·211, software-design/53:206·257(+3-answer 77), web-platform/20:292. os/31:245의 `36-profiling`·`20-performance-method-and-amdahl` 소속 오기.
-- Knight 축약 "45분에 4.6억": reliability/04 2-summary 288·3-answer 55, ops-patterns/failure-modes 317 → SEC ¶1·¶17(45분 = 주문 송출, 4.6억 = 결국 실현된 손실; 보도자료 4.4억).
+- ~~**원본 갱신(사용자 결정 필요 — 원본은 읽기 전용으로 둠)**: `cs/engineering/development-standards/legal-standards`·`provisions.md`가 2026-09-11 시행 개인정보 보호법 개정(법률 제21445호 — 제34조② 유출 가능성 통지, 시행령 72시간, 제64조의2② 10%) 전 상태 → 17 노트로 링크하거나 본문 갱신. 원본 operational-standards의 `../../straggler/` → `cs/systems/straggler`.~~ → **해소(10-05 errata-fixes)**
+- ~~영역 밖 낡은 표기: engineering-practice를 "미작성"으로 가리키는 곳 — os/28:355, reliability/24:235·238, reliability/44:233, software-design/14:166·211, software-design/53:206·257(+3-answer 77), web-platform/20:292. os/31:245의 `36-profiling`·`20-performance-method-and-amdahl` 소속 오기.~~ → **해소(10-05 errata-fixes)**
+- ~~Knight 축약 "45분에 4.6억": reliability/04 2-summary 288·3-answer 55, ops-patterns/failure-modes 317 → SEC ¶1·¶17(45분 = 주문 송출, 4.6억 = 결국 실현된 손실; 보도자료 4.4억).~~ → **해소(10-05 errata-fixes)**
 - 관측: codex 20/20 가용, 지적 80 중 기각 1 — codex가 있으면 전량 codex 유지. 이미지 빌드 실험은 legacy builder + `--pull=false`/`--pull never`로 새 pull 없이 가능(08 워커가 실수 pull 시도 1회 — 실패, 받은 것 없음).
 
 ### N0-p. 작성 규칙 ↔ 검사기 정비 — 우선순위: 중간 (근거 `docs/plans/2026-10-05/engineering-practice-writing/rules-vs-checker.md`)
 
 - ① `cs/README.md` §3을 7절로 고치고 브리핑에만 있는 형식 규칙을 「작성 규칙」으로 올려 정본 단일화(문서) ② 위반 0인 기계 규칙(언어 태그·제목 형식·metadata 날짜·생성 문서 `--check`)을 check_new error로 ③ warning 후보 ④ 검사기를 작업 폴더에서 고정 위치로 옮기고 훅·CI 자동 실행 여부 결정. ②·④는 L1(spec부터).
 
+### N0-s. errata 잔여 — 우선순위: 낮음
+
+- 남은 "미작성" 149곳은 대상 영역 미작성(security·math·language·data-analysis·data-engineering·architecture, network/46 등) — 해당 영역 집필 때 링크(같은 방식: slug로 실재 확인 후 교체, 스크립트 `scratchpad/err/links/edits.py` 방식).
+- legal-standards provisions.md 새 앵커(`…제39조의3…ㆍ…`)는 ㆍ(U+318D)가 GitHub slug에 남는다는 가정 — 배포 사이트에서 앵커 클릭 확인.
+- 정보통신망법 제47조 ② 2026-03-31 개정(1호 정의어 "주요정보통신서비스 제공자")은 서술 유지 — 정의 범위 변화가 있으면 재검토.
+
 ### N0-r. 자료구조·알고리즘 잔여 21편 검수 · 영역 밖 후속 — 우선순위: 중간
 
 - 검수: metadata `초안`. `[?]` 잔여: Sipser 정리·문제 번호(40·41), Sedgewick 1.3 성능 목표(ds 02), GNU sort 기본값(alg 11), Cassandra 전략 전환 재병합(ds 19), TCP 버퍼 원형 여부·512칸 휠 흔들림·큐 처리량 원인·안전한 메모리 회수(ds 25·26·29), Java String.hashCode 비랜덤화 이유(ds 44), SO의 .NET 엔진 여부(alg 43), Brotli 서버 모듈 기본 품질(alg 34).
-- **영역 밖 낡은 "미작성" 표기 22곳**(이제 실재 — 링크로): network/16:210·17:169·20:175·21:171·25:162·38:251·39:146·305·43:130·301·44:290, reliability/05:177·07:163·40:208, database/22:207·41:158·277, domain-modeling/25:232, web-platform/14:47, engineering-practice/12:166·20:30·141·220·307·415, myway data-structure/01-dynamic-array:446·02-linked-list:833·04-queue-deque:996.
-- 오류(원본·myway 읽기 전용 — 사용자 결정): `data-structure/03-stack` 529행 "수천 줄 반복"(HotSpot MaxJavaStackTraceDepth 기본 1024) · `foundations/data-structures-basics` §7(531~532행) 탈출 없는 Python 재귀 "스택 오버플로" → CPython은 RecursionError · 원본 foundations 2편의 코드 버그 9건(새 노트 "참고:" 줄에 목록).
+- ~~**영역 밖 낡은 "미작성" 표기 22곳**(이제 실재 — 링크로): network/16:210·17:169·20:175·21:171·25:162·38:251·39:146·305·43:130·301·44:290, reliability/05:177·07:163·40:208, database/22:207·41:158·277, domain-modeling/25:232, web-platform/14:47, engineering-practice/12:166·20:30·141·220·307·415, myway data-structure/01-dynamic-array:446·02-linked-list:833·04-queue-deque:996.~~ → **해소(10-05 errata-fixes)**
+- ~~오류(원본·myway 읽기 전용 — 사용자 결정): `data-structure/03-stack` 529행 "수천 줄 반복"(HotSpot MaxJavaStackTraceDepth 기본 1024) · `foundations/data-structures-basics` §7(531~532행) 탈출 없는 Python 재귀 "스택 오버플로" → CPython은 RecursionError · 원본 foundations 2편의 코드 버그 9건(새 노트 "참고:" 줄에 목록).~~ → **해소(10-05 errata-fixes)**
 - 관측: 폴더 번호 = 커리큘럼 번호 규칙으로 myway 폴더와 접두가 겹친다(02-linked-list / 02-adt-…) — 링크는 slug까지 써야 안전. codex 21/21 가용, 지적 94 기각 0. `java X.java` 소스 실행기는 스택 트레이스 끝을 실행기 프레임만큼 자른다(1019 vs 1024) — 실험 해석 주의.
 - 메인 실수 1: 지시문을 따옴표 없는 heredoc으로 생성 → 백틱 확장(부작용 없음). 지시문은 Write 또는 `<<'EOF'`.
 
@@ -47,7 +53,7 @@
 - **결정 대기**: ANN 벡터 인덱스 leaf — math/13 🔧이 가리키나 받을 leaf 없음. 로컬에 pgvector 이미지 없음 → 이미지 받기 허용 또는 Java 단일 파일 HNSW 실험(사용자가 "나중에 정하기"로 보류, 10-05).
 - AIEFS는 "실습 참고" 링크로만(MIT), 근거는 1차 출처 직접 확인.
 
-### N0-e. 커리큘럼 본문 오기 4건 — 우선순위: 낮음(1행)
+### N0-e. 커리큘럼 본문 오기 — **해소(10-05 errata-fixes)**: 6건 정정, 3건(13-radix-trie·41-rope·04-binary-search)은 커리큘럼 번호 규칙상 맞는 참조라 기각 — 우선순위: 완료
 
 - curriculum.md §7: 02행 "12로 이어짐" → 10(fragmentation-mtu-pmtud) · 44행 ⚠ "47의 사이드채널" → 43 · 08행 선행 `data-structure/13-radix-trie` → `20-radix-trie`. 고친 뒤 gen_area_readme.py 재실행.
 - (10-01 분산) curriculum.md §10 33행 선행·데이터 구조 표 240행 `data-structure/41-rope` → 실제 노트 `28-rope`.
@@ -62,7 +68,7 @@
 ### N0-i. 분산 36편 사용자 검수 + 영역 밖 후속 — 우선순위: 중간
 
 - 새 형식(metadata 단계 `초안`). `[?]` 잔여: 05 Fidge 1988·04 STEPT 실제 데몬·27 랙 배치·23 경험칙 2.
-- 영역 밖 후속: `cs/database/57-db-incidents/2-summary.md` 212·348행 "distributed 36(미작성)" → `../../distributed/36-distributed-incidents/2-summary.md` · `cs/distributed/03` 285행의 reliability 07·08 링크는 reliability 작업 후 재점검.
+- ~~영역 밖 후속: `cs/database/57-db-incidents/2-summary.md` 212·348행 "distributed 36(미작성)" → `../../distributed/36-distributed-incidents/2-summary.md` · `cs/distributed/03` 285행의 reliability 07·08 링크는 reliability 작업 후 재점검.~~ → **해소(10-05 errata-fixes)**
 
 ### N0-j. 운영·신뢰성 53편 사용자 검수 + codex 재리뷰(선택) — 우선순위: 중간
 
@@ -73,26 +79,26 @@
 
 - 새 형식(metadata 단계 `초안`). `[?]` 잔여 22(편당 0~3 — 23 저엔트로피 해석, 24 도메인 매각 당사자 성명·ICO 108,000 동일 집합·PCI 6.4.3 원문 등).
 - 측정 수치는 Chrome 151.0.7922.173·로컬 헤드리스·지정 스로틀 조건 값 — 브라우저 메이저가 바뀌면 08·13·14·15·16·19의 실험을 재실행해 범위만 갱신(코드는 scratchpad/wp/NN — /tmp라 재부팅 시 소실, 핵심 코드는 노트에 실림).
-- 영역 밖 "web-platform 미작성" 6줄 → 실경로로: network/49:387·415, network/33:352, network/34:333, database/47:312, testing/18:247.
+- ~~영역 밖 "web-platform 미작성" 6줄 → 실경로로: network/49:387·415, network/33:352, network/34:333, database/47:312, testing/18:247.~~ → **해소(10-05 errata-fixes)**
 - 노트 안 남은 "미작성" 20곳은 폴더 없는 영역(security 11·17·19·21·24·25, language 19, data-analysis 04·05, engineering-practice 06, algorithm 33·34) — 해당 영역 집필 때 링크.
 
 ### N0-m. API 설계 23편 사용자 검수 + codex 재리뷰(선택) · 영역 밖 낡은 링크 — 우선순위: 중간
 
 - 2차 리뷰가 전부 Opus 대체 — codex 표본 재리뷰로 누락률 측정 가능. `[?]` 잔여: 29(8)·07(1)·05(2).
-- 영역 밖 후속(관측): 다른 영역 노트 20줄이 이제 실재하는 api-design 01~21을 "미작성"으로 가리킴 — network/36·51, distributed/19, reliability/11·13·35, database/10·17·28·31·52, software-design/16·17·43, domain-modeling/18·basic/07, testing/13. 사례 22·23·26·27의 "노트 미작성" 4줄(사례는 이번에 읽기만). `grep -rn "api-design.*미작성" cs/`로 재추출.
+- ~~영역 밖 후속(관측): 다른 영역 노트 20줄이 이제 실재하는 api-design 01~21을 "미작성"으로 가리킴 — network/36·51, distributed/19, reliability/11·13·35, database/10·17·28·31·52, software-design/16·17·43, domain-modeling/18·basic/07, testing/13. 사례 22·23·26·27의 "노트 미작성" 4줄(사례는 이번에 읽기만). `grep -rn "api-design.*미작성" cs/`로 재추출.~~ → **해소(10-05 errata-fixes)**
 - database/31:60 "FAIL_ON_UNKNOWN_PROPERTIES 기본 true"는 Jackson 2.x 한정 필요(3.0 기본 false).
 - 사례 22~27은 옛 형식(질문 A./B. 절)이라 check_new 불통과 · 제목 줄이 옛 번호(01~06) — 통일 골격 이관 여부는 사용자 결정. 커리큘럼 29행 "Optus 무인증 API 열거 [?]"는 원문 근거 약함(노트는 "인가 없는 API로 대량 조회").
 
 ### N0-l. 테스트 21편 사용자 검수 + codex 재리뷰(선택) · 영역 밖 낡은 링크 — 우선순위: 중간
 
 - 2차 리뷰가 전부 Opus 대체(codex 한도 10-04 08:53) — 한도 해제 후 표본 codex 재리뷰로 누락률 측정 가능. 남은 `[?]` 9(Khorikov·GOOS·TDDbE·WELC 본문 미열람).
-- 영역 밖 후속(관측): 다른 영역 노트의 "testing … 미작성" 표기 20곳이 이제 실재 노트를 가리킴 — software-design 12·13·25·26·50·51·52, os/15, reliability/53(227·367행), domain-modeling 13·advanced/27, data-analysis/README(목록: scratchpad/ts/cons/out-of-area-stale-testing-refs.txt — /tmp라 재부팅 시 소실, 필요하면 `grep -rn "testing.*미작성" cs/`로 재추출).
+- ~~영역 밖 후속(관측): 다른 영역 노트의 "testing … 미작성" 표기 20곳이 이제 실재 노트를 가리킴 — software-design 12·13·25·26·50·51·52, os/15, reliability/53(227·367행), domain-modeling 13·advanced/27, data-analysis/README(목록: scratchpad/ts/cons/out-of-area-stale-testing-refs.txt — /tmp라 재부팅 시 소실, 필요하면 `grep -rn "testing.*미작성" cs/`로 재추출).~~ → **해소(10-05 errata-fixes)**
 - 도구 관측: jqwik 1.10 User Guide에 Anti-AI Usage Clause — AI 에이전트 작업에서는 실행하지 않는다(fast-check 등으로). Pact는 기본 사용 통계 전송 — `pact_do_not_track=true`. 기존 이미지에 C 컴파일러 없음.
 
 ### N0-k. 소프트웨어 설계 56편 사용자 검수 + codex 재리뷰(선택) — 우선순위: 중간
 
 - 2차 리뷰가 전부 Opus 대체(codex 한도) — 한도 해제 후 표본(예: 10편)을 codex로 재리뷰하면 누락률을 잴 수 있다.
-- 영역 밖 후속: curriculum 56행 "GAO-14-694 [?]"는 원문 확인됨 → `[?]` 제거 후 gen_area_readme.py 재실행. 남은 미작성 링크 40(language·testing·domain-modeling·api-design 미작성 leaf) — 해당 영역 집필 때 링크.
+- ~~영역 밖 후속: curriculum 56행 "GAO-14-694 [?]"는 원문 확인됨 → `[?]` 제거 후 gen_area_readme.py 재실행. 남은 미작성 링크 40(language·testing·domain-modeling·api-design 미작성 leaf) — 해당 영역 집필 때 링크.~~ → **해소(10-05 errata-fixes)**
 
 ### N0-i. 도메인 모델링 28편 — codex 표본 재리뷰(선택) · 노트 밖 정정 2건 — 우선순위: 낮음~중간
 
