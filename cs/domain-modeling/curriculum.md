@@ -63,4 +63,4 @@
 | # | 주제 | 요지 | 등급 | 상태 | 노트 |
 |---|---|---|---|---|---|
 | 27 | `dm-symptom-index` | 역색인: 불법 상태 데이터, 1원 정산 차이, 같은 규칙 N벌, 거대 트랜잭션 락, 팀 간 모델 충돌, 미래 예약 1시간 어긋남·DST 알람 누락/중복, 1원 배분 소실, 과거 금액 재계산 불일치, 잔액 원인 불명, 504인데 결제됨(대사) | 필수 | 초안(Claude) | [27-dm-symptom-index](27-dm-symptom-index/) |
-| 28 | `dm-incidents` | 실사건: Mars Climate Orbiter 단위 불일치(1999, 파운드·초 vs 뉴턴·초) · 영국 Post Office Horizon 회계 불일치(1999~) | 권장 | 초안(Claude) | [28-dm-incidents](28-dm-incidents/) |
+| 28 | `dm-incidents` | 실사건: Mars Climate Orbiter 단위 불일치(1999, 파운드·초 vs 뉴턴·초) · 영국 Post Office Horizon 회계 불일치(2000~) | 권장 | 초안(Claude) | [28-dm-incidents](28-dm-incidents/) |

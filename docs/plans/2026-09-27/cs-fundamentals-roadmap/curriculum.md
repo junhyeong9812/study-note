@@ -281,7 +281,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 쓰이는 곳 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 02-asymptotic-analysis | 빅오·최악/평균·분할상환 | 01, math/06-recurrences-and-asymptotics | 테스트 데이터(100건)에선 빠른 O(n²)가 운영(100만 건)에서 타임아웃 | 모든 선택의 기준 | CLRS 3·17 | 필수 | 신규 (기초: algorithm/01-algorithm-basics) |
-| 03-recursion | 재귀 = 귀납의 코드. 기저·축소·꼬리 재귀 | data-structure/01-data-structures-basics, 02, math/02-induction-and-invariants | 기저 누락 → `StackOverflowError`; 중복 부분문제 → 지수 시간 | DFS, 파서, 분할정복 | CLRS 2.3 · 4 | 필수 | 신규 (기초: data-structure/01-data-structures-basics) |
+| 03-recursion | 재귀 = 귀납의 코드. 기저·축소·꼬리 재귀 | data-structure/01-data-structures-basics, 02, math/02-induction-and-invariants | 기저 누락 → `StackOverflowError`; 중복 부분문제가 지수적으로 쌓이면 지수 시간 | DFS, 파서, 분할정복 | CLRS 2.3 · 4 | 필수 | 신규 (기초: data-structure/01-data-structures-basics) |
 
 ### 3.2 정렬·탐색
 
@@ -578,7 +578,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 01-layer-map-osi-tcpip | OSI 7 vs TCP/IP 4계층, 계층별 프로토콜·PDU(세그먼트/패킷/프레임) | — | 증상의 계층을 못 짚음 → "네트워크 문제"로 뭉뚱그려 진단 지연 | 계층 = 인터페이스 스택 | K&R 1.5 · RFC 1122 | 필수 | 신규 |
-| 02-encapsulation | 헤더가 붙고 벗겨지는 과정, 계층별 헤더 필드 | 01 | 터널·VPN 헤더 오버헤드로 MTU 초과 → 큰 패킷만 실패(12로 이어짐) | 헤더 = 고정 오프셋 레코드 | K&R 1.5.2 | 필수 | 신규 |
+| 02-encapsulation | 헤더가 붙고 벗겨지는 과정, 계층별 헤더 필드 | 01 | 터널·VPN 헤더 오버헤드로 MTU 초과 → 큰 패킷만 실패(10으로 이어짐) | 헤더 = 고정 오프셋 레코드 | K&R 1.5.2 | 필수 | 신규 |
 | 03-latency-bandwidth-bdp | 지연 4요소(처리·큐잉·전송·전파), 대역폭 vs 지연, BDP | 02 | 고BDP(대륙 간) 링크에서 윈도 부족 → 대역폭 놔두고 느림; 큐잉 지연 = bufferbloat | 큐(math/10) | K&R 1.4 · HPBN "Primer on Latency and Bandwidth" | 필수 | 신규 |
 
 ### 7.1 링크 계층
@@ -667,7 +667,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 41-range-requests-and-resume | `Range`·206·`If-Range`·다중 범위, 이어받기 | 34, 40 | 파일이 바뀐 뒤 `If-Range` 없이 이어받기 → 두 버전이 섞인 손상 파일; 압축 표현에 Range → 바이트 오프셋 기준 혼동 | 구간 연산 | RFC 9110 §14 | 필수 | 신규 |
 | 42-large-file-upload-patterns | multipart/form-data·청크 업로드·재개 가능 업로드(tus)·멀티파트 업로드·presigned URL·청크 체크섬, 전송 경로(sendfile·zero-copy) | 41, os/33-data-integrity-checksums, os/34-zero-copy-and-io-uring | 단일 요청 대용량 → LB 타임아웃·`413 Payload Too Large`; 중단 후 처음부터 재전송; 완료 안 된 멀티파트 조각 누적 → 스토리지 비용; 체크섬 없이 조립 → 조용한 손상; 파일을 힙에 통째로 적재 → OOM | 청크 분할, 수신 청크 비트맵, 부분 해시·머클 트리 | RFC 7578 · tus 1.0 프로토콜 · S3 Multipart Upload 문서 | 필수 | 신규 |
 | 45-adaptive-media-streaming | HLS·DASH, 세그먼트·매니페스트, 적응형 비트레이트(ABR) | 40, 47 | 세그먼트 캐시 미스 → 리버퍼링; 매니페스트 TTL 과다 → 라이브 지연 증가; 화질 진동 | 처리량 추정(EWMA) + 버퍼 기반 제어 | RFC 8216(HLS) · ISO/IEC 23009-1(DASH) | 심화 | 신규 |
-| 44-websocket-compression | permessage-deflate, 컨텍스트 유지 여부 | 38, 39 | 연결마다 압축 컨텍스트(슬라이딩 윈도) 유지 → 동시 연결 많을 때 메모리 폭증; 비밀 반영 메시지 압축 → 47의 사이드채널 | 슬라이딩 윈도 딕셔너리 | RFC 7692 | 권장 | 신규 (연결: `languages/web-api/33-websocket`) |
+| 44-websocket-compression | permessage-deflate, 컨텍스트 유지 여부 | 38, 39 | 연결마다 압축 컨텍스트(슬라이딩 윈도) 유지 → 동시 연결 많을 때 메모리 폭증; 비밀 반영 메시지 압축 → 43의 사이드채널 | 슬라이딩 윈도 딕셔너리 | RFC 7692 | 권장 | 신규 (연결: `languages/web-api/33-websocket`) |
 
 ### 7.9 인프라·종합
 
@@ -1185,7 +1185,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 55-design-symptom-index | 역색인: "작은 변경에 파일 N개", "테스트 작성 불가", "배포를 같이 해야 함", "이 클래스는 아무도 못 건드림" → 원인 스멜·원칙. 추가: 공통 함수 인자만 계속 늘어남(11), 테스트에 DB·mock 도배(25·26), 기능 하나에 폴더 4개(40), 리팩터링 어디부터?(53), 플래그·죽은 코드 누적(54), 불법 상태 행(24), NPE(18), switch 복제(28), `@Transactional` 미적용(33), 미들웨어 순서 역전(34) | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 56-design-incidents | 실사건: Therac-25(1985–87, 재사용 코드의 하드웨어 인터록 가정 + 경쟁 조건) · Healthcare.gov 출시 장애(2013, 통합·아키텍처) | 55 | — | — | Leveson–Turner IEEE Computer 1993 · 미 GAO-14-694 [?] | 권장 | 신규 |
+| 56-design-incidents | 실사건: Therac-25(1985–87, 재사용 코드의 하드웨어 인터록 가정 + 경쟁 조건) · Healthcare.gov 출시 장애(2013, 통합·아키텍처) | 55 | — | — | Leveson–Turner IEEE Computer 1993 · 미 GAO-14-694 | 권장 | 신규 |
 
 ---
 
@@ -1254,7 +1254,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 27-dm-symptom-index | 역색인: 불법 상태 데이터, 1원 정산 차이, 같은 규칙 N벌, 거대 트랜잭션 락, 팀 간 모델 충돌, 미래 예약 1시간 어긋남·DST 알람 누락/중복, 1원 배분 소실, 과거 금액 재계산 불일치, 잔액 원인 불명, 504인데 결제됨(대사) | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 28-dm-incidents | 실사건: Mars Climate Orbiter 단위 불일치(1999, 파운드·초 vs 뉴턴·초) · 영국 Post Office Horizon 회계 불일치(1999~) | 27 | — | — | NASA MCO 사고조사보고서 1999 · Bates v Post Office [2019] EWHC 3408 (QB) | 권장 | 신규 |
+| 28-dm-incidents | 실사건: Mars Climate Orbiter 단위 불일치(1999, 파운드·초 vs 뉴턴·초) · 영국 Post Office Horizon 회계 불일치(2000~) | 27 | — | — | NASA MCO 사고조사보고서 1999 · Bates v Post Office [2019] EWHC 3408 (QB) | 권장 | 신규 |
 
 ---
 
@@ -1370,7 +1370,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 03-event-loop | 태스크·마이크로태스크·렌더링 기회·rAF | 02, os/27-event-based-concurrency | 긴 태스크 → 입력 지연(INP 악화); 마이크로태스크 무한 연쇄 → 렌더 영구 정지 | 태스크 큐, 마이크로태스크 큐 | HTML 표준 "Event loops" 절 | 필수 | 신규 (연결: `languages/web-api/38-request-animation-frame`, `39-idle-scheduling`) |
 | 04-dom-and-event-model | DOM 트리·이벤트 전파(캡처/버블)·위임 | 03 | 리스너 누수 → 메모리 증가; `stopPropagation` 남용 → 위임 핸들러 무력화 | 트리 순회 | WHATWG DOM 표준 | 필수 | 신규 (연결: `languages/web-api/01·15~18·20`) |
 | 05-fetch-from-browser | fetch 수명·스트리밍·중단·자격 증명 | 04, network/33-http-semantics | **fetch는 4xx/5xx에 reject하지 않음** → 에러를 성공으로 처리; 타임아웃 기본값 없음 | — | WHATWG Fetch | 필수 | 신규 (연결: `languages/web-api/25~30`) |
-| 06-browser-storage | 쿠키·localStorage·IndexedDB·쿼터·축출 | 05, security/11-sessions-and-cookie-security | localStorage에 토큰 → XSS 한 번에 탈취; Safari ITP 7일 제한으로 저장소 삭제 [?]; 쿼터 초과 `QuotaExceededError` | 키-값 저장소, B-트리(IndexedDB 구현) | WHATWG Storage · W3C IndexedDB | 권장 | 신규 |
+| 06-browser-storage | 쿠키·localStorage·IndexedDB·쿼터·축출 | 05, security/11-sessions-and-cookie-security | localStorage에 토큰 → XSS 한 번에 탈취; Safari ITP 7일 제한으로 저장소 삭제 [?]; 쿼터 초과 `QuotaExceededError` | 키-값 저장소, IndexedDB 구현은 브라우저마다(Chromium LevelDB→SQLite 이행) | WHATWG Storage · W3C IndexedDB | 권장 | 신규 |
 | 07-service-workers-and-offline | 서비스 워커 수명·캐시 전략 | 06, network/34-http-caching | SW 캐시 고착 → 배포해도 구 버전이 계속 뜸 | 캐시 저장소 | W3C Service Workers | 권장 | 신규 |
 | 09-js-modules-and-bundling | 모듈 체계·번들링·코드 분할·트리 셰이킹 | 05, language/19-modules-and-dependency-resolution | 번들 비대 → 초기 로드 지연; 청크 해시 불일치 → 배포 직후 `ChunkLoadError` | 모듈 의존 그래프, 도달성 분석(트리 셰이킹) | ECMA-262 Modules 절 · 번들러 문서 | 권장 | 신규 |
 | 10-rendering-strategies | CSR·SSR·SSG·스트리밍·하이드레이션 | 02, 09 | 서버/클라이언트 렌더 결과 불일치 → hydration mismatch 경고·깜빡임; SSR에서 사용자별 데이터 캐시 → 교차 노출 | — | web.dev "Rendering on the Web" | 권장 | 신규 |
