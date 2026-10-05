@@ -2,7 +2,7 @@
 
 > **생성 문서** — `docs/plans/2026-09-27/cs-fundamentals-roadmap/curriculum.md` §3에서 `docs/plans/2026-09-28/cs-restructure/gen_area_readme.py`로 만든다. 직접 고치지 말고 커리큘럼을 고친 뒤 재실행한다.
 > 번호 = 권장 학습 순서. 상태: `미작성` · `원고 있음` · `초안(Claude)` · `검수 완료`. ⚠ 깨지면·🔧·📚 세부는 커리큘럼 본문에 있다.
-> 현황: 미작성 12 · 원고 있음 1 · 초안(Claude) 30 · 검수 완료 0
+> 현황: 미작성 0 · 원고 있음 0 · 초안(Claude) 43 · 검수 완료 0
 
 > **번호 = 권장 학습 순서**(2026-09-28 재번호). 기존 노트 폴더(`algorithm/01~30`)는 원래 번호 그대로 — 노트 링크 칸이 대응. 🔧 칸 = "쓰이는 곳".
 
@@ -10,14 +10,14 @@
 
 | # | 주제 | 요지 | 등급 | 상태 | 노트 |
 |---|---|---|---|---|---|
-| 01 | `algorithm-basics` | 알고리즘 기초판 — 빅오·분할 상환, 선형/이진 탐색, 버블·퀵 정렬을 한 편에 | 필수 | 원고 있음 | [../foundations/algorithm-basics](../foundations/algorithm-basics/) |
+| 01 | `algorithm-basics` | 알고리즘 기초판 — 빅오·분할 상환, 선형/이진 탐색, 버블·퀵 정렬을 한 편에 | 필수 | 초안(Claude) | [01-algorithm-basics](01-algorithm-basics/) · [../foundations/algorithm-basics](../foundations/algorithm-basics/) |
 
 ## 3.1 분석·기초
 
 | # | 주제 | 요지 | 등급 | 상태 | 노트 |
 |---|---|---|---|---|---|
-| 02 | `asymptotic-analysis` | 빅오·최악/평균·분할상환 | 필수 | 미작성 | — |
-| 03 | `recursion` | 재귀 = 귀납의 코드. 기저·축소·꼬리 재귀 | 필수 | 미작성 | — |
+| 02 | `asymptotic-analysis` | 빅오·최악/평균·분할상환 | 필수 | 초안(Claude) | [02-asymptotic-analysis](02-asymptotic-analysis/) |
+| 03 | `recursion` | 재귀 = 귀납의 코드. 기저·축소·꼬리 재귀 | 필수 | 초안(Claude) | [03-recursion](03-recursion/) |
 
 ## 3.2 정렬·탐색
 
@@ -28,10 +28,10 @@
 | 06 | `merge-sort` | 분할정복·안정 정렬 | 필수 | 초안(Claude) | [02-merge-sort](02-merge-sort/) |
 | 07 | `quick-sort` | 분할·피벗 | 필수 | 초안(Claude) | [03-quick-sort](03-quick-sort/) |
 | 08 | `heap-sort` | 제자리 O(n log n) | 권장 | 초안(Claude) | [04-heap-sort](04-heap-sort/) |
-| 09 | `sorting-in-practice` | 안정성·비교자 계약·TimSort·다중 키 | 필수 | 미작성 | — |
+| 09 | `sorting-in-practice` | 안정성·비교자 계약·TimSort·다중 키 | 필수 | 초안(Claude) | [09-sorting-in-practice](09-sorting-in-practice/) |
 | 10 | `non-comparison-sort` | 계수·기수 정렬 | 권장 | 초안(Claude) | [05-non-comparison-sort](05-non-comparison-sort/) |
-| 11 | `external-sort-and-k-way-merge` | 메모리보다 큰 데이터 정렬, k-way 병합 | 권장 | 미작성 | — |
-| 12 | `hash-functions` | 좋은 해시의 조건·유니버설 해싱·SipHash, 암호/비암호 구분 | 권장 | 미작성 | — |
+| 11 | `external-sort-and-k-way-merge` | 메모리보다 큰 데이터 정렬, k-way 병합 | 권장 | 초안(Claude) | [11-external-sort-and-k-way-merge](11-external-sort-and-k-way-merge/) |
+| 12 | `hash-functions` | 좋은 해시의 조건·유니버설 해싱·SipHash, 암호/비암호 구분 | 권장 | 초안(Claude) | [12-hash-functions](12-hash-functions/) |
 
 ## 3.3 기법
 
@@ -76,20 +76,20 @@
 
 | # | 주제 | 요지 | 등급 | 상태 | 노트 |
 |---|---|---|---|---|---|
-| 39 | `randomized-algorithms` | 라스베이거스·몬테카를로, 기대 복잡도 | 심화 | 미작성 | — |
-| 40 | `complexity-p-np` | P·NP·NP완전·환원·근사 | 권장 | 미작성 | — |
-| 41 | `computability-and-halting` | 정지 문제·라이스 정리 | 심화 | 미작성 | — |
+| 39 | `randomized-algorithms` | 라스베이거스·몬테카를로, 기대 복잡도 | 심화 | 초안(Claude) | [39-randomized-algorithms](39-randomized-algorithms/) |
+| 40 | `complexity-p-np` | P·NP·NP완전·환원·근사 | 권장 | 초안(Claude) | [40-complexity-p-np](40-complexity-p-np/) |
+| 41 | `computability-and-halting` | 정지 문제·라이스 정리 | 심화 | 초안(Claude) | [41-computability-and-halting](41-computability-and-halting/) |
 
 ## 3.6b 압축 알고리즘 (2026-09-28 추가)
 
 | # | 주제 | 요지 | 등급 | 상태 | 노트 |
 |---|---|---|---|---|---|
-| 33 | `lossless-compression-lz77-huffman` | LZ77(슬라이딩 윈도 역참조) + 허프만 부호 = DEFLATE, 압축 한계 | 필수 | 미작성 | — |
-| 34 | `modern-codecs-lz4-zstd-brotli` | 속도↔비율 절충, 딕셔너리 압축, 엔트로피 부호(ANS/FSE), 프레임·스트리밍 압축 | 권장 | 미작성 | — |
+| 33 | `lossless-compression-lz77-huffman` | LZ77(슬라이딩 윈도 역참조) + 허프만 부호 = DEFLATE, 압축 한계 | 필수 | 초안(Claude) | [33-lossless-compression-lz77-huffman](33-lossless-compression-lz77-huffman/) |
+| 34 | `modern-codecs-lz4-zstd-brotli` | 속도↔비율 절충, 딕셔너리 압축, 엔트로피 부호(ANS/FSE), 프레임·스트리밍 압축 | 권장 | 초안(Claude) | [34-modern-codecs-lz4-zstd-brotli](34-modern-codecs-lz4-zstd-brotli/) |
 
 ## 3.7 영역 마감
 
 | # | 주제 | 요지 | 등급 | 상태 | 노트 |
 |---|---|---|---|---|---|
-| 42 | `alg-symptom-index` | 역색인: 데이터 늘자 타임아웃(복잡도), 정렬 계약 예외, 재귀 스택 오버플로, 정규식 CPU 100%, 이진 탐색 무한 루프 | 필수 | 미작성 | — |
-| 43 | `alg-incidents` | 실사건: JDK 이진 탐색 오버플로(Bloch 2006) · Stack Overflow 정규식 장애(2016-07-20) · Cloudflare WAF 정규식 백트래킹 전역 CPU 100%(2019-07-02) | 권장 | 미작성 | — |
+| 42 | `alg-symptom-index` | 역색인: 데이터 늘자 타임아웃(복잡도), 정렬 계약 예외, 재귀 스택 오버플로, 정규식 CPU 100%, 이진 탐색 무한 루프 | 필수 | 초안(Claude) | [42-alg-symptom-index](42-alg-symptom-index/) |
+| 43 | `alg-incidents` | 실사건: JDK 이진 탐색 오버플로(Bloch 2006) · Stack Overflow 정규식 장애(2016-07-20) · Cloudflare WAF 정규식 백트래킹 전역 CPU 100%(2019-07-02) | 권장 | 초안(Claude) | [43-alg-incidents](43-alg-incidents/) |
