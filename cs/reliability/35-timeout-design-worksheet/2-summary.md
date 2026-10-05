@@ -301,7 +301,7 @@ curl -s localhost:9901/stats | grep -E 'cluster.service_a.upstream_rq_(timeout|p
   - [07-timeout-taxonomy-by-layer](../07-timeout-taxonomy-by-layer/2-summary.md) · [08-time-budget-allocation](../08-time-budget-allocation/2-summary.md) · [09-cancellation-propagation](../09-cancellation-propagation/2-summary.md)
   - [10-circuit-breaker](../10-circuit-breaker/2-summary.md)
   - [05-timeouts-and-deadline-propagation](../05-timeouts-and-deadline-propagation/2-summary.md)
-  - api-design 05 `idempotency-keys` — 미작성, [api-design 커리큘럼](../../api-design/curriculum.md) · [13-idempotency](../13-idempotency/2-summary.md) · 원본 [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md)
+  - [api-design/05-idempotency-keys](../../api-design/05-idempotency-keys/2-summary.md) · [13-idempotency](../13-idempotency/2-summary.md) · 원본 [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md)
 - 연결
   - [distributed/03-partial-failure-and-timeouts](../../distributed/03-partial-failure-and-timeouts/2-summary.md) — 타임아웃 뒤 "모름"과 결제
   - [06-retry-backoff-jitter](../06-retry-backoff-jitter/2-summary.md) — 재시도 예산

@@ -264,7 +264,7 @@ A 3/1~3/3, B 3/2~3/4:
 - 같은 규약 — [08-meeting-slot](../08-meeting-slot/2-summary.md): 시간 구간판(끝 미포함·맞닿음 = 안 겹침). [06-subscription](../06-subscription/2-summary.md): 해지일 미포함.
 - 기법 — [algorithm/30-sweeping](../../../algorithm/30-sweeping/2-summary.md): 이벤트 정렬과 동률 처리. [data-structure/30-interval-tree](../../../data-structure/30-interval-tree/2-summary.md): 겹치는 구간 검색.
 - 심화판 — [advanced/12-seat-hold](../../advanced/12-seat-hold/2-summary.md): 동시 요청과 잡아두기.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · `13-instant-vs-local-time-and-tz-rules`(체크인·체크아웃 시각까지 다룰 때 — 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · [13-instant-vs-local-time-and-tz-rules](../../13-instant-vs-local-time-and-tz-rules/2-summary.md)(체크인·체크아웃 시각까지 다룰 때).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/04-hotel-booking/` (README.md · impl/com/domain/booking/Bookings.java · src/main/java/com/domain/booking/Stay.java).
 
 ### 관련 자료

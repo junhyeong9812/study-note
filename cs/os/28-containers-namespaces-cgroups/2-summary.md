@@ -352,7 +352,7 @@ dmesg | grep -i 'killed process'             # 권한이 있으면 커널 로그
   - [35-virtualization-hypervisor](../35-virtualization-hypervisor/2-summary.md) — 커널까지 나누는 격리와의 비교
   - [31-os-observability-tools](../31-os-observability-tools/2-summary.md) — 컨테이너 안에서 `top`이 보여 주는 것과 한계
   - [29-linking-and-loading](../29-linking-and-loading/2-summary.md) — alpine(musl) 이미지에서 glibc 바이너리가 안 도는 이유
-  - [engineering-practice/README](../../engineering-practice/README.md) — `08-container-image-optimization`. 미작성
+  - [engineering-practice/08-container-image-optimization](../../engineering-practice/08-container-image-optimization/2-summary.md)
 - Linux man-pages
   - namespaces(7) — 종류 표, `/proc/<pid>/ns` <https://man7.org/linux/man-pages/man7/namespaces.7.html>
   - pid_namespaces(7) — init의 고아 입양, 핸들러 있는 시그널만, 조상의 SIGKILL/SIGSTOP 강제 전달, init 종료 시 SIGKILL, 중첩 깊이 32(3.7+) <https://man7.org/linux/man-pages/man7/pid_namespaces.7.html>

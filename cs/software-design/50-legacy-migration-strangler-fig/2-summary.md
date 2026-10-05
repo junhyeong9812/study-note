@@ -232,7 +232,7 @@ final class RoutingDiscount implements DiscountPolicy {     // 퍼사드(branch 
 - 현상: 전환 다음 달, 고객 일부가 "할인액이 1원 적다"고 문의한다.
 - 보이는 형태: 단위 테스트 전부 통과. 정산 합계가 구 시스템 시절보다 조금씩 작다. 실험 A에서 v1은 10만 건 중 1.29%가 1원 작았다.
 - 원인: 구 시스템의 반올림 규칙(`Math.round`)은 아무 문서에도 없었다. 새 구현은 다른 규칙을 골랐고, 테스트는 .5원 경계를 다루지 않았다. 정렬 순서(동점 처리), 공백 처리, 시간대도 같은 유형이다.
-- 대처: 전환 전에 운영 입력으로 병행 실행해 불일치를 0 또는 "설명된 차이"로 만든다. 불일치 샘플에서 찾은 규칙은 특성 테스트로 고정한다([testing](../../testing/README.md) 17 characterization-tests-legacy — 미작성).
+- 대처: 전환 전에 운영 입력으로 병행 실행해 불일치를 0 또는 "설명된 차이"로 만든다. 불일치 샘플에서 찾은 규칙은 특성 테스트로 고정한다([testing/17-characterization-tests-legacy](../../testing/17-characterization-tests-legacy/2-summary.md)).
 
 ### 4. 라우팅 전환 후 구 경로를 지우지 않음 → 두 시스템 영구 병존 (⚠ 커리큘럼)
 
@@ -260,8 +260,8 @@ final class RoutingDiscount implements DiscountPolicy {     // 퍼사드(branch 
 
 - 선행
   - [45-monolith-vs-microservices](../45-monolith-vs-microservices/2-summary.md)
-  - [testing](../../testing/README.md) 17 characterization-tests-legacy — 미작성
-  - [domain-modeling/curriculum](../../domain-modeling/curriculum.md) 19 anti-corruption-layer — 미작성
+  - [testing/17-characterization-tests-legacy](../../testing/17-characterization-tests-legacy/2-summary.md)
+  - [domain-modeling/19-anti-corruption-layer](../../domain-modeling/19-anti-corruption-layer/2-summary.md)
 - 후속·연결
   - 51 legacy-change-techniques(코드 수준의 seam·parallel change) — [51 노트](../51-legacy-change-techniques/2-summary.md)
   - 54 designing-for-deletion(구 경로 제거) — [54 노트](../54-designing-for-deletion/2-summary.md)

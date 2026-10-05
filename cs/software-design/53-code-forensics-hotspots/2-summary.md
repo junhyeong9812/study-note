@@ -203,7 +203,7 @@ git log --after=2025-10-01 --format=format: --name-only | grep -v '^$' | sort | 
  순서 = 이자(변경 빈도) 큰 것부터. 크기·나이·"보기 싫음"은 순서 기준이 아니다.
 ```
 
-- 이 판단은 [engineering-practice](../../engineering-practice/README.md) 10 technical-debt(미작성)의 상환 순서로 이어진다.
+- 이 판단은 [engineering-practice/10-technical-debt](../../engineering-practice/10-technical-debt/2-summary.md)의 상환 순서로 이어진다.
 
 ## 장애 시나리오와 대처
 
@@ -254,7 +254,7 @@ git log --after=2025-10-01 --format=format: --name-only | grep -v '^$' | sort | 
 
 - 선행
   - [52-complexity-metrics](../52-complexity-metrics/2-summary.md)
-  - [engineering-practice](../../engineering-practice/README.md) 03 version-control-and-git-internals · 10 technical-debt — 미작성
+  - [engineering-practice/03-version-control-and-git-internals](../../engineering-practice/03-version-control-and-git-internals/2-summary.md) · [engineering-practice/10-technical-debt](../../engineering-practice/10-technical-debt/2-summary.md)
 - 후속·연결
   - [51-legacy-change-techniques](../51-legacy-change-techniques/2-summary.md) — 핫스팟을 고칠 때의 안전한 변경 기법
   - [54-designing-for-deletion](../54-designing-for-deletion/2-summary.md) — 변경 0인 코드가 죽은 코드인지 확인하는 법

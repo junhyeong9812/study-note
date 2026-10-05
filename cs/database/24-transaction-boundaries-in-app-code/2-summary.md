@@ -198,7 +198,7 @@ public void placeOrder(Order o) {
 - 주의 둘(`TransactionSynchronization.afterCommit` javadoc):
   - 커밋은 끝났지만 트랜잭션 자원이 아직 묶여 있다. 여기서 DB에 쓰면 원래 트랜잭션에 "참여"하고 **커밋이 따라오지 않는다**. 쓰기가 필요하면 `REQUIRES_NEW`를 쓰라고 적는다.
   - 여기서 던진 RuntimeException은 호출자에게 전파된다. 하지만 DB 커밋은 이미 끝났다.
-- 커밋 후 훅은 **메모리 안의 약속**이다. 커밋 직후 프로세스가 죽으면 훅은 실행되지 않는다. "커밋되면 반드시 발행"이 필요하면 같은 트랜잭션에 발행할 메시지를 행으로 넣는 outbox를 쓴다(distributed/16-outbox-and-dual-write — 미작성, [distributed 영역 표](../../distributed/README.md)).
+- 커밋 후 훅은 **메모리 안의 약속**이다. 커밋 직후 프로세스가 죽으면 훅은 실행되지 않는다. "커밋되면 반드시 발행"이 필요하면 같은 트랜잭션에 발행할 메시지를 행으로 넣는 outbox를 쓴다([distributed/16-outbox-and-dual-write](../../distributed/16-outbox-and-dual-write/2-summary.md)).
 
 ### 8. 트랜잭션 안에서 외부 호출을 하지 않는 이유
 
@@ -222,7 +222,7 @@ public void placeOrder(Order o) {
 
 ## 쓰이는 자료구조·알고리즘
 
-- **프록시(데코레이터)**: 같은 타입의 대리 객체가 호출을 가로채 앞뒤에 트랜잭션 처리를 끼운다. CGLIB는 서브클래스를, JDK 동적 프록시는 인터페이스 구현을 만든다(software-design/33-aop-and-proxies — 미작성, [software-design 영역 표](../../software-design/README.md)).
+- **프록시(데코레이터)**: 같은 타입의 대리 객체가 호출을 가로채 앞뒤에 트랜잭션 처리를 끼운다. CGLIB는 서브클래스를, JDK 동적 프록시는 인터페이스 구현을 만든다([software-design/33-aop-and-proxies](../../software-design/33-aop-and-proxies/2-summary.md)).
 - **스레드 로컬 맵**: `ThreadLocal<Map<Object, Object>>` 형태로 (DataSource → 커넥션 홀더)를 스레드마다 둔다. 같은 스레드 안의 모든 DAO가 같은 커넥션을 꺼낸다.
 - **보류 스택**: REQUIRES_NEW·NOT_SUPPORTED가 바깥 자원을 떼어 보관했다가 되돌린다. 중첩되면 호출 스택과 같은 모양의 스택이 된다.
 - **세이브포인트**: NESTED는 DB의 `SAVEPOINT`/`ROLLBACK TO SAVEPOINT`로 부분 롤백한다.
@@ -347,13 +347,13 @@ try {
 - 선행
   - [13-transactions-acid](../13-transactions-acid/2-summary.md) — 원자성·격리의 정확한 뜻
   - [21-connection-pooling](../21-connection-pooling/2-summary.md) — 쥔 시간과 풀 크기, 풀 교착
-  - distributed/16-outbox-and-dual-write — 미작성([distributed 영역 표](../../distributed/README.md))
+  - [distributed/16-outbox-and-dual-write](../../distributed/16-outbox-and-dual-write/2-summary.md)
 - 연결
   - [22-database-side-timeouts](../22-database-side-timeouts/2-summary.md) — idle in transaction·lock_timeout
   - [23-orm-and-n-plus-one](../23-orm-and-n-plus-one/2-summary.md) — Session 수명·OSIV·flush
   - [15-two-phase-locking-and-deadlock](../15-two-phase-locking-and-deadlock/2-summary.md) — DB 교착 탐지의 범위
   - 원고 [engineering/data-access](../../engineering/data-access/README.md) — JPA·Spring Data JDBC의 쓰기 경로
-  - software-design/33-aop-and-proxies — 미작성([software-design 영역 표](../../software-design/README.md))
+  - [software-design/33-aop-and-proxies](../../software-design/33-aop-and-proxies/2-summary.md)
 - 문서
   - Spring Framework 문서 "Using @Transactional"(프록시 모드·자기 호출·메서드 가시성) <https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html>
   - Spring Framework 문서 "Rolling Back a Declarative Transaction" <https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/rolling-back.html>

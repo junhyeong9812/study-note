@@ -301,7 +301,7 @@ vmstat 1                       # b 열 = I/O 완료를 기다리는 수(procs_bl
   - [network/23-socket-api](../../network/23-socket-api/2-summary.md) — send/recv의 블로킹·부분 쓰기
   - [network/21-tcp-keepalive-and-user-timeout](../../network/21-tcp-keepalive-and-user-timeout/2-summary.md) — 블로킹 read가 영원히 기다리는 half-open 대처
   - [network/19-tcp-termination-fin-rst-half-open](../../network/19-tcp-termination-fin-rst-half-open/2-summary.md) — EOF(0)와 RST
-  - [reliability/README](../../reliability/README.md) — `39-async-io-gains-and-limits`(비동기가 늘려 주는 것은 처리량). 미작성
+  - [reliability/39-async-io-gains-and-limits](../../reliability/39-async-io-gains-and-limits/2-summary.md)(비동기가 늘려 주는 것은 처리량)
 - 표준·man
   - POSIX.1-2024 XBD 3장 정의 — 3.31 Asynchronous I/O Operation, 3.371 Synchronous I/O Operation, 3.48 Blocking, 3.226 Non-Blocking <https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/V1_chap03.html>
   - read(2) — `EAGAIN`/`EWOULDBLOCK` <https://man7.org/linux/man-pages/man2/read.2.html>

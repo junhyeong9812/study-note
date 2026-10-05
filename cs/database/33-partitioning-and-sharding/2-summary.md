@@ -224,7 +224,7 @@ EXPLAIN SELECT * FROM hp WHERE email = 'c';   -- partitions: p0,p1,p2,p3
   - 이중 쓰기 대신 원본의 **변경 로그(binlog·WAL 논리 복제·CDC)**를 한 순서로 적용한다. 스냅숏 시점의 로그 위치부터 이어 붙인다.
   - 꼭 이중 쓰기라면 행에 버전(또는 갱신 시각)을 두고 "더 새 버전만 쓴다"는 조건부 쓰기를 한다.
   - 전환 전 **행 단위 체크섬 대조**를 필수로 한다. 행 수만 보면 못 잡는다.
-  - 관련: 이중 쓰기 문제 일반은 distributed `16-outbox-and-dual-write`(미작성, [distributed/README](../../distributed/README.md)).
+  - 관련: 이중 쓰기 문제 일반은 [distributed/16-outbox-and-dual-write](../../distributed/16-outbox-and-dual-write/2-summary.md).
 
 ### 4. 파티션이 없어 INSERT 실패
 
@@ -249,7 +249,7 @@ EXPLAIN SELECT * FROM hp WHERE email = 'c';   -- partitions: p0,p1,p2,p3
   - [55-distributed-databases](../55-distributed-databases/2-summary.md) — 크로스 샤드 트랜잭션, 자동 분할하는 분산 DB
   - [data-structure/31-consistent-hashing](../../data-structure/31-consistent-hashing/2-summary.md) · [systems/kafka-why-fast](../../systems/kafka-why-fast/2-summary.md) §4 파티션(같은 핫 파티션·재배치 문제)
   - [08-btree-indexes](../08-btree-indexes/2-summary.md) · [34-large-backfill-and-batch-dml](../34-large-backfill-and-batch-dml/2-summary.md)
-  - distributed `14-two-phase-commit`·`16-outbox-and-dual-write` — 미작성, [distributed/README](../../distributed/README.md) · [ops-patterns/08-saga](../../ops-patterns/08-saga/2-summary.md) · [ops-patterns/13-snowflake](../../ops-patterns/13-snowflake/2-summary.md)(전역 ID)
+  - [distributed/14-two-phase-commit](../../distributed/14-two-phase-commit/2-summary.md)·[distributed/16-outbox-and-dual-write](../../distributed/16-outbox-and-dual-write/2-summary.md) · [ops-patterns/08-saga](../../ops-patterns/08-saga/2-summary.md) · [ops-patterns/13-snowflake](../../ops-patterns/13-snowflake/2-summary.md)(전역 ID)
 - 교재·강의
   - DDIA 1판 6장 Partitioning — 키 범위/키 해시, Skewed Workloads, 보조 인덱스(문서 기준·용어 기준), 재조정 전략, 요청 라우팅
   - CMU 15-445 Fall 2024 Lecture #22 Introduction to Distributed Databases(수평 분할·분할 키, 해시 분할의 재배치 문제와 일관 해싱 1/n) <https://15445.courses.cs.cmu.edu/fall2024/notes/22-distributed.pdf>

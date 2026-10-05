@@ -232,7 +232,7 @@ VatCalculator.invoice(order, 결정 셋) → Invoice(세금계산서 한 장)
 - 발행 후 규칙 변경 — [09-policy-version](../09-policy-version/2-summary.md): "발행 시점의 규칙"에서 그 시점이 무엇인지.
 - 기초판 — [basic/19-tax](../../basic/19-tax/2-summary.md): 세율 계산의 기초. [basic/01-parking-fee](../../basic/01-parking-fee/2-summary.md): 고객 화면에 안 보이는 결정의 같은 자리.
 - 흘려보내기의 탐욕 구조 — [algorithm/23-greedy](../../../algorithm/23-greedy/2-summary.md).
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (선행 `14-money-arithmetic-rounding-allocation` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (선행 [14-money-arithmetic-rounding-allocation](../../14-money-arithmetic-rounding-allocation/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/06-tax/` (README.md · impl/com/domain/tax/VatCalculator.java · src/test/java/com/domain/tax/VatCalculatorTest.java · MeasurementTest.java).
 
 ### 관련 자료

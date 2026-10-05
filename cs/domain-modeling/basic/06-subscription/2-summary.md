@@ -295,7 +295,7 @@ null이면 생성자에서 거부한다("반올림 방식을 정해야 한다").
 - 같은 규약 — [04-hotel-booking](../04-hotel-booking/2-summary.md): 체크아웃 날 = 해지일 미포함. [01-parking-fee](../01-parking-fee/2-summary.md): 방향이 없는 지침("유리하게")의 한계.
 - 같은 바닥 규칙 — [10-payment](../10-payment/2-summary.md): `BigDecimal`·`Money`, 상태를 금액에서 파생.
 - 심화판 — [advanced/03-subscription-change](../../advanced/03-subscription-change/2-summary.md): 이용 중 요금제 변경. [advanced/04-refund](../../advanced/04-refund/2-summary.md): 환불 규칙 확장.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · `14-money-arithmetic-rounding-allocation`(반올림 위치·1원 나머지 배분 — 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · [14-money-arithmetic-rounding-allocation](../../14-money-arithmetic-rounding-allocation/2-summary.md)(반올림 위치·1원 나머지 배분).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/06-subscription/` (README.md · impl/com/domain/subscription/Subscription.java · src/main/java/com/domain/subscription/ProrationPolicy.java).
 
 ### 관련 자료

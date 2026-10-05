@@ -207,7 +207,7 @@ README가 미리 알려준 함정: ①보험 나이는 **마지막 생일**에�
 - 선행 — [04-hotel-booking](../04-hotel-booking/2-summary.md) · [05-attendance](../05-attendance/2-summary.md): 날짜 경계 도메인.
 - 연결 — [14-points](../14-points/2-summary.md) · [15-coupon](../15-coupon/2-summary.md): 갈리는 입력을 안 쓰면 결정이 안 보인다 — 같은 교훈.
 - 심화 — [advanced/09-policy-version](../../advanced/09-policy-version/2-summary.md): 요율표가 바뀔 때 어느 표로 산정했는지를 남기는 문제.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (관련 leaf `13-instant-vs-local-time-and-tz-rules` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (관련 leaf [13-instant-vs-local-time-and-tz-rules](../../13-instant-vs-local-time-and-tz-rules/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/20-insurance/` (README.md · impl/com/domain/insurance/Insurance.java · src/main/.../RateTable.java · src/test/.../MeasurementTest.java).
 
 ### 관련 자료

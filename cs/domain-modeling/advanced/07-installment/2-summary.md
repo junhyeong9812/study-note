@@ -221,7 +221,7 @@ r = 0  →  분모 (1+0)^12 - 1 = 0  →  나누기 폭발
 - 같은 배분 산술 — [06-tax](../06-tax/2-summary.md), [04-refund](../04-refund/2-summary.md), [03-subscription-change](../03-subscription-change/2-summary.md)(곱하기 먼저·반올림 위치).
 - 기초판 — [basic/21-loan-scoring](../../basic/21-loan-scoring/2-summary.md): 대출 심사의 기초. [basic/10-payment](../../basic/10-payment/2-summary.md): 결제 상태의 기초.
 - 불변식을 먼저 못 박는 방식 — [09-policy-version](../09-policy-version/2-summary.md)의 경계 날짜 계약 테스트, [12-seat-hold](../12-seat-hold/2-summary.md)의 all-or-nothing.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (선행 `14-money-arithmetic-rounding-allocation` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (선행 [14-money-arithmetic-rounding-allocation](../../14-money-arithmetic-rounding-allocation/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/07-installment/` (README.md · impl/com/domain/installment/InstallmentPlan.java · src/test/java/com/domain/installment/InstallmentPlanTest.java · MeasurementTest.java).
 
 ### 관련 자료

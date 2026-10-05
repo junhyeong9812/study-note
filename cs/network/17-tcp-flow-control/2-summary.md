@@ -166,7 +166,7 @@ RFC 7323의 Window Scale 옵션이 이 한계를 푼다.
   - 두 포인터(왼쪽 끝·오른쪽 끝)가 한 방향으로만 움직이는 구간이다.
 - **링 버퍼(원형 버퍼)** — 소켓 송수신 버퍼는 개념상 "생산자가 쓰고 소비자가 읽는" 고정 용량 버퍼다.
   - 가득 차면 생산자를 멈추게 하는 정책이 곧 흐름 제어다. 리눅스 구현은 링 버퍼가 아니다. 수신 큐는 sk_buff 연결 리스트(`struct sk_buff_head sk_receive_queue`)이고, 재전송 큐·out-of-order 큐는 레드-블랙 트리(`rb_root`)다(include/net/sock.h, include/linux/tcp.h).
-  - 개념은 data-structure `ring-buffer` — 미작성([영역 표](../../data-structure/curriculum.md)), 큐 일반은 [queue-deque](../../data-structure/04-queue-deque/2-summary.md).
+  - 개념은 [data-structure/25-ring-buffer](../../data-structure/25-ring-buffer/2-summary.md), 큐 일반은 [queue-deque](../../data-structure/04-queue-deque/2-summary.md).
 - **비트 시프트(고정소수점 스케일)** — 16비트 필드에 30비트 값을 싣는 방법. `실제 = 필드 << shift`. 정밀도(2^shift 단위)를 범위와 맞바꾼다(RFC 7323 §2.3).
 - **지수 백오프 타이머** — zero-window probe 간격(SHLD-30).
 

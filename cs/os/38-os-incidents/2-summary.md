@@ -413,7 +413,7 @@ strace -f -e trace=openat,write,fsync,fdatasync,rename,renameat2 <명령>    # O
 - 연결
   - 커널 문서 Documentation/locking/pi-futex.rst — PI futex의 rt-mutex <https://docs.kernel.org/locking/pi-futex.html>
   - [16-locks-and-spinlocks](../16-locks-and-spinlocks/2-summary.md) — futex, PI · [08-cpu-scheduling](../08-cpu-scheduling/2-summary.md) — 우선순위·실시간 정책 · [14-mmap-and-page-cache](../14-mmap-and-page-cache/2-summary.md) — dirty writeback · [33-data-integrity-checksums](../33-data-integrity-checksums/2-summary.md) · [31-os-observability-tools](../31-os-observability-tools/2-summary.md)
-  - 물리 시계·NTP·윤초는 distributed 영역 `04-physical-clocks-and-ntp`(미작성, [영역 표](../../distributed/README.md))
+  - 물리 시계·NTP·윤초는 [distributed/04-physical-clocks-and-ntp](../../distributed/04-physical-clocks-and-ntp/2-summary.md)
 - Mars Pathfinder
   - Mike Jones, "What really happened on Mars?"(1997-12-07) — 착륙 1997-07-04, RTSS 기조 강연 요약, Sha·Rajkumar·Lehoczky 1990 <https://www.cs.cornell.edu/courses/cs614/1999sp/papers/pathfinder.html> · 사본 <http://web.archive.org/web/2010/http://research.microsoft.com/en-us/um/people/mbj/Mars_Pathfinder/Mars_Pathfinder.html>
   - Glenn Reeves(JPL), "What really happened on Mars? — Authoritative Account"(1997-12-15) — 태스크 구조, select 뮤텍스, 18시간 재현, 전역 변수 패치, 교훈 <https://www.cs.unc.edu/~anderson/teach/comp790/papers/mars_pathfinder_long_version.html> · RISKS 게시본 <https://users.cs.duke.edu/~carla/mars.html>

@@ -384,7 +384,7 @@ for (const e of performance.getEntriesByType('resource')) {
 - **대처**
   - 필수 CSS를 줄이거나 인라인한다. 스크립트는 `defer`·`async`로 바꾼다.
   - 꼭 필요한 서드파티 출처에는 `preconnect`를 둔다. 필수가 아니면 첫 화면 경로에서 뺀다.
-  - 원리는 web-platform의 렌더링 파이프라인·크리티컬 패스 주제(미작성)에서 다룬다.
+  - 원리는 web-platform의 렌더링 파이프라인([web-platform/02-rendering-pipeline](../../web-platform/02-rendering-pipeline/2-summary.md))·크리티컬 패스([web-platform/13-critical-path-and-resource-loading](../../web-platform/13-critical-path-and-resource-loading/2-summary.md)) 주제에서 다룬다.
 
 ## 핵심 문장
 
@@ -412,7 +412,7 @@ for (const e of performance.getEntriesByType('resource')) {
   - [39-http-content-encoding](../39-http-content-encoding/2-summary.md) · [40-chunked-and-streaming-responses](../40-chunked-and-streaming-responses/2-summary.md)
   - [47-cdn-and-edge](../47-cdn-and-edge/2-summary.md) · [48-firewalls-and-network-policy](../48-firewalls-and-network-policy/2-summary.md) · [11-nat-and-conntrack](../11-nat-and-conntrack/2-summary.md) · [10-fragmentation-mtu-pmtud](../10-fragmentation-mtu-pmtud/2-summary.md)
   - `46-load-balancers-and-proxies` — 원고: [systems/server-design/02-request-path](../../systems/server-design/02-request-path.md)
-  - 렌더링 구간: web-platform `02-rendering-pipeline`·`13-critical-path-and-resource-loading`·`07-service-workers-and-offline` — 미작성([web-platform 영역 표](../../web-platform/README.md))
+  - 렌더링 구간: [web-platform/02-rendering-pipeline](../../web-platform/02-rendering-pipeline/2-summary.md)·[web-platform/13-critical-path-and-resource-loading](../../web-platform/13-critical-path-and-resource-loading/2-summary.md)·[web-platform/07-service-workers-and-offline](../../web-platform/07-service-workers-and-offline/2-summary.md)
 - 후속
   - [50-network-diagnostics](../50-network-diagnostics/2-summary.md) — 구간별 도구
   - [52-network-symptom-index](../52-network-symptom-index/2-summary.md) — 에러 코드 역색인

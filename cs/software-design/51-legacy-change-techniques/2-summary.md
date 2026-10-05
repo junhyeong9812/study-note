@@ -240,7 +240,7 @@ grep -rln "Billing.charge(" src/ | wc -l         # 파일 수
 2. **테스트 지점을 고른다.** 효과가 관찰되는 가장 가까운 공개 메서드. 없으면 pinch point를 찾는다.
 3. **하네스에 올려 본다.** 생성자를 테스트에서 불러 보고, 실패하면 무엇이 막는지(DB·전역·시계·파일) 적는다.
 4. **가장 작은 의존 끊기를 고른다.** 대개 Parameterize Constructor(옛 생성자 유지) 또는 Extract and Override Factory Method. 이 단계는 테스트 없이 하는 변경이므로 기계적·작게 한다(WELC 머리말: Part III의 의존 끊기 리팩터링은 "테스트를 붙이기 위해, 테스트 없이 하도록 만든 것").
-5. **현재 동작을 특성 테스트로 고정한다.** 기대값을 추측하지 않고 지금 나오는 값을 적는다([testing](../../testing/README.md) 17 characterization-tests-legacy — 미작성).
+5. **현재 동작을 특성 테스트로 고정한다.** 기대값을 추측하지 않고 지금 나오는 값을 적는다([testing/17-characterization-tests-legacy](../../testing/17-characterization-tests-legacy/2-summary.md)).
 6. **새 코드는 sprout/wrap으로 키운다.** 거대한 메서드 한가운데에 직접 쓰지 않는다.
 7. **시그니처를 바꿔야 하면 parallel change.** expand 커밋 → 묶음별 migrate 커밋 → contract 커밋.
 
@@ -309,7 +309,7 @@ public static void charge(long customerId, Money m) { total += m.amount(); }
 ## 관련 주제·근거
 
 - 선행
-  - [testing](../../testing/README.md) 17 characterization-tests-legacy — 미작성
+  - [testing/17-characterization-tests-legacy](../../testing/17-characterization-tests-legacy/2-summary.md)
   - [13-refactoring](../13-refactoring/2-summary.md)
 - 후속·연결
   - [50-legacy-migration-strangler-fig](../50-legacy-migration-strangler-fig/2-summary.md) — 시스템 단위의 같은 생각(추상 뒤 공존 → 전환 → 삭제)

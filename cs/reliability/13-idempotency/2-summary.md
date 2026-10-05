@@ -287,8 +287,8 @@ HAVING count(*) > 1;
   - [distributed/16-outbox-and-dual-write](../../distributed/16-outbox-and-dual-write/2-summary.md) — DB와 다른 시스템에 함께 쓰기
   - [distributed/17-queues-logs-and-delivery-semantics](../../distributed/17-queues-logs-and-delivery-semantics/2-summary.md) · [distributed/18-consumer-failure-handling](../../distributed/18-consumer-failure-handling/2-summary.md) — 소비자 쪽 중복 처리
   - [database/22-database-side-timeouts](../../database/22-database-side-timeouts/2-summary.md) — 락 대기 한도
-  - domain-modeling/25-reconciliation — 미작성([../../domain-modeling/curriculum.md](../../domain-modeling/curriculum.md)) · [31-batch-job-restart-and-checkpoint](../31-batch-job-restart-and-checkpoint/2-summary.md) — 멱등 재실행
-  - api-design/05-idempotency-keys — API 계약 쪽, 미작성([../../api-design/curriculum.md](../../api-design/curriculum.md))
+  - [domain-modeling/25-reconciliation](../../domain-modeling/25-reconciliation/2-summary.md) · [31-batch-job-restart-and-checkpoint](../31-batch-job-restart-and-checkpoint/2-summary.md) — 멱등 재실행
+  - [api-design/05-idempotency-keys](../../api-design/05-idempotency-keys/2-summary.md) — API 계약 쪽
 - 근거
   - Stripe API 문서 "Idempotent requests"(첫 결과의 상태 코드·본문 저장, 500 포함, 24시간 뒤 정리 가능, 255자, 파라미터 비교, 실행 시작 전 실패는 저장 안 함) <https://docs.stripe.com/api/idempotent_requests>
   - Stripe "Advanced error handling"(400·500 캐시, 500은 불확정, 429는 멱등 계층 앞, `Idempotent-Replayed`, 409 Conflict) <https://docs.stripe.com/error-low-level>

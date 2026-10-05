@@ -281,7 +281,7 @@ pmd check -d src/main/java -R category/java/design.xml/GodClass,category/java/de
   - [07-naming](../07-naming/2-summary.md) · [08-function-design](../08-function-design/2-summary.md) · [09-comments-and-conventions](../09-comments-and-conventions/2-summary.md) — 06에서 나눈 가독성 주제
   - [10-code-smells](../10-code-smells/2-summary.md) — 속성이 깨진 모양의 카탈로그
   - E ↔ [20-oop-fundamentals](../20-oop-fundamentals/2-summary.md)(원고: [foundations/oop-basics](../../foundations/oop-basics/README.md)), N ↔ [11-when-to-abstract](../11-when-to-abstract/2-summary.md)
-  - A ↔ domain-modeling 06 anemic-vs-rich-model(미작성, [domain-modeling 커리큘럼](../../domain-modeling/curriculum.md)), [domain-modeling/domain-vs-application-logic](../../domain-modeling/domain-vs-application-logic/)
+  - A ↔ [domain-modeling/06-anemic-vs-rich-model](../../domain-modeling/06-anemic-vs-rich-model/2-summary.md), [domain-modeling/domain-vs-application-logic](../../domain-modeling/domain-vs-application-logic/)
   - [engineering/solid-principles](../../engineering/solid-principles/2-summary.md) — 수단(SOLID) 쪽
 - 글·문서
   - David Scott Bernstein, 『Beyond Legacy Code』(Pragmatic Bookshelf, 2015) Practice 5 「Create CLEAN Code」 — 목차만 확인 <https://pragprog.com/titles/dblegacy/beyond-legacy-code/>

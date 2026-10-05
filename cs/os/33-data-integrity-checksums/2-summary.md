@@ -263,7 +263,7 @@ cat /sys/block/md0/md/mismatch_cnt                 # md 스크럽 불일치 (32�
   - [24-fsync-and-durability](../24-fsync-and-durability/2-summary.md) — lost write와 fsync 오류
   - [data-structure/27-merkle-tree](../../data-structure/27-merkle-tree/2-summary.md) — 체크섬 트리
   - [network/42-large-file-upload-patterns](../../network/42-large-file-upload-patterns/2-summary.md) — 청크 체크섬
-  - [reliability/README](../../reliability/README.md) — `46-disaster-recovery`(RPO/RTO·백업·복구 훈련). 미작성
+  - [reliability/46-disaster-recovery](../../reliability/46-disaster-recovery/2-summary.md)(RPO/RTO·백업·복구 훈련)
 - 교재
   - OSTEP 45장 "Data Integrity and Protection" — 45.1 고장 모드·Figure 45.1, 45.2 LSE, 45.3 체크섬 함수·배치, 45.5 misdirected write, 45.6 lost write·ZFS, 45.7 스크러빙, 45.8 비용 <https://pages.cs.wisc.edu/~remzi/OSTEP/file-integrity.pdf>
   - 원 연구: Bairavasundaram 외, LSE(SIGMETRICS 2007)·데이터 손상(FAST 2008) — OSTEP [B+07], [B+08]로 인용

@@ -232,7 +232,7 @@ PolicyResolver (채우는 것)
 - 발행 후 규칙 변경 — [06-tax](../06-tax/2-summary.md)(세금계산서 발행 뒤 배분 규칙), [01-payroll](../01-payroll/2-summary.md)(야간 시간대 변경), [02-promotion](../02-promotion/2-summary.md)(적용 결과 스냅샷).
 - 계산 근거 기록 — [16-audit-replay](../16-audit-replay/2-summary.md): 처리한 취소에 판 id를 남기는 이유.
 - 쌓는 저장 — [ops-patterns/16-event-sourcing](../../../ops-patterns/16-event-sourcing/2-summary.md), 탐색 — [algorithm/06-binary-search](../../../algorithm/06-binary-search/2-summary.md).
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (이 주제의 본 leaf `23-versioned-rules-and-effective-dating`·`22-decision-log-and-provenance` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (이 주제의 본 leaf [23-versioned-rules-and-effective-dating](../../23-versioned-rules-and-effective-dating/2-summary.md)·[22-decision-log-and-provenance](../../22-decision-log-and-provenance/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/09-policy-version/` (README.md · impl/com/domain/policy/PolicyResolver.java · src/test/java/com/domain/policy/PolicyResolverTest.java · MeasurementTest.java).
 
 ### 관련 자료

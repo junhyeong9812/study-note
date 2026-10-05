@@ -711,7 +711,7 @@ FlatPathFileSystem
 - 선행 — [26-persistent](../26-persistent/2-summary.md): 구조 공유가 안전했던 이유(불변). 가변 `Blob`은 공유하면 안 된다.
 - 후속 — [34-dependency-resolver](../34-dependency-resolver/2-summary.md): 디렉터리 하드 링크를 막았던 이유(고리)가 본론이 된다.
 - 연결 — [27-merkle-tree](../27-merkle-tree/2-summary.md): git이 트리 객체와 내용 블롭을 가르는 방식.
-- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `30-filesystem` (선행 `09`, `35`, 교재 OSTEP 40). os 영역 `22-file-system-implementation`이 블록·비트맵 쪽 후속이다(노트 미작성).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `30-filesystem` (선행 `09`, `35`, 교재 OSTEP 40). os 영역 [22-file-system-implementation](../../os/22-file-system-implementation/2-summary.md)이 블록·비트맵 쪽 후속이다.
 - myway 원본 — `/home/jun/project/myway/data-structure/33-filesystem/` (README.md · impl/Paths.java · impl/TreeFileSystem.java · impl/FlatPathFileSystem.java · impl/Blob.java).
 
 ### 용어 풀이

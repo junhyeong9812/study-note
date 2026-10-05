@@ -360,7 +360,7 @@ server {
   - `36-http2-multiplexing` — 한 연결 안의 다중화. [36번](../36-http2-multiplexing/2-summary.md)
   - [20-time-wait-and-close-wait](../20-time-wait-and-close-wait/2-summary.md)
   - `46-load-balancers-and-proxies` — [systems/server-design/02-request-path.md](../../systems/server-design/02-request-path.md)
-  - `reliability/07-timeout-taxonomy-by-layer` — 미작성([reliability 영역 표](../../reliability/README.md))
+  - [reliability/07-timeout-taxonomy-by-layer](../../reliability/07-timeout-taxonomy-by-layer/2-summary.md)
   - [ops-patterns/01-retry-backoff](../../ops-patterns/01-retry-backoff/2-summary.md) — 재사용 소켓 실패 재시도의 범위
 - RFC 9112 HTTP/1.1 §9 Connection Management <https://www.rfc-editor.org/rfc/rfc9112>
   - §9.2 응답-요청 대응(순서) · §9.3 지속 연결 규칙 · §9.3.1 재시도 · §9.3.2 파이프라이닝 · §9.4 동시 연결 수 · §9.5 실패와 타임아웃(idle close 경합) · §9.6 종료와 TCP reset 문제 · §9.8 TLS 종료

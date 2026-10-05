@@ -232,10 +232,10 @@ sum(rate(flag_evaluations_total{reason="ERROR"}[5m])) / sum(rate(flag_evaluation
 
 - 선행
   - [23-deployment-strategies](../23-deployment-strategies/2-summary.md) — 배포·카나리·롤백
-  - engineering-practice/04-branching-strategies — [../../engineering-practice/README.md](../../engineering-practice/README.md)(이 노트 작성 시점 미작성. 트렁크 기반 개발에서 미완성 코드를 플래그로 숨기는 것과 이어진다)
+  - [engineering-practice/04-branching-strategies](../../engineering-practice/04-branching-strategies/2-summary.md)(트렁크 기반 개발에서 미완성 코드를 플래그로 숨기는 것과 이어진다)
   - 원본 [systems/server-design/08-deployment-ops.md](../../systems/server-design/08-deployment-ops.md) §3 "피처 플래그 운영"(부채·기본값+로컬 캐시·킬 스위치)
 - 후속·연결
-  - engineering-practice/20-practice-incidents — [../../engineering-practice/README.md](../../engineering-practice/README.md)(이 노트 작성 시점 미작성) · [software-design/54-designing-for-deletion](../../software-design/54-designing-for-deletion/2-summary.md)
+  - [engineering-practice/20-practice-incidents](../../engineering-practice/20-practice-incidents/2-summary.md) · [software-design/54-designing-for-deletion](../../software-design/54-designing-for-deletion/2-summary.md)
   - [10-circuit-breaker](../10-circuit-breaker/2-summary.md) — 킬 스위치 = 수동 서킷 브레이커
   - [12-backpressure-and-load-shedding](../12-backpressure-and-load-shedding/2-summary.md) — 부하 때 기능 끄기
   - [51-cells-stamps-and-blast-radius](../51-cells-stamps-and-blast-radius/2-summary.md) — 셀 단위로 켜기

@@ -267,7 +267,7 @@ ss -lnt 'sport = :8080'                          # Recv-Q = accept 큐 길이 (n
 - **대처**
   - 유계 큐 + 거절 정책(빠른 503), 또는 큐 대기 시간 한도(오래 기다린 요청은 버림).
   - 앞단에서 동시 연결·요청 수를 제한한다(Tomcat `maxConnections`·`acceptCount`, LB).
-  - 하류별로 풀을 나눈다(bulkhead, [reliability/README](../../reliability/README.md) — `12-backpressure-and-load-shedding`·`28-bulkhead`. 미작성).
+  - 하류별로 풀을 나눈다(bulkhead, [reliability/12-backpressure-and-load-shedding](../../reliability/12-backpressure-and-load-shedding/2-summary.md)·[reliability/28-bulkhead](../../reliability/28-bulkhead/2-summary.md)).
 
 ### 4. 스레드(또는 가상 스레드)를 늘렸더니 DB 풀이 고갈
 
@@ -298,7 +298,7 @@ ss -lnt 'sport = :8080'                          # Recv-Q = accept 큐 길이 (n
   - [network/15-tcp-handshake-and-backlog](../../network/15-tcp-handshake-and-backlog/2-summary.md) — accept 큐(앞단의 첫 큐)
   - [systems/server-design/06-resilience](../../systems/server-design/06-resilience.md) — 스레드 고갈·벌크헤드
   - [language/README](../../language/README.md) — `14-concurrency-models`(가상 스레드·코루틴). 미작성
-  - [reliability/README](../../reliability/README.md) — `39-async-io-gains-and-limits`, `12-backpressure-and-load-shedding`. 미작성
+  - [reliability/39-async-io-gains-and-limits](../../reliability/39-async-io-gains-and-limits/2-summary.md), [reliability/12-backpressure-and-load-shedding](../../reliability/12-backpressure-and-load-shedding/2-summary.md)
 - 패턴 문헌
   - Schmidt·Stal·Rohnert·Buschmann, 『Pattern-Oriented Software Architecture Vol.2: Patterns for Concurrent and Networked Objects』(POSA2, Wiley 2000) — 17개 패턴 목록(Reactor, Proactor, Acceptor-Connector, Leader/Followers, Half-Sync/Half-Async, Asynchronous Completion Token 등) <https://www.dre.vanderbilt.edu/~schmidt/POSA/POSA2/>
   - Schmidt, "Reactor" <https://www.dre.vanderbilt.edu/~schmidt/PDF/reactor-siemens.pdf>

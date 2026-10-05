@@ -148,7 +148,7 @@ spec-v2: 키 8개, 미사용: discount.stackable discount.max.cap discount.plugi
 - **디스패치 테이블(레지스트리)**: `Map<String, Function<Config, DiscountPolicy>>`로 문자열 → 생성자를 찾는다. 확장점의 흔한 구현이다. 키가 하나뿐이면 테이블 조회가 `if` 하나보다 읽기 어렵다. 조건문 도구 선택은 [28-taming-conditionals](../28-taming-conditionals/2-summary.md).
 - **체인(리스트 순회)**: 둘째 요구 뒤 SIMPLE의 `List<Discount>`는 할인을 순서대로 적용하는 파이프라인이다. 순서가 결과를 바꾼다(1천원 먼저, 5% 나중 → 18,050원).
 - **집합 차집합으로 미사용 설정 찾기**: (정의된 키 집합) − (코드가 참조하는 키 집합) = 아무도 안 읽는 키. 실험의 `measure.sh`가 이 방식이다.
-- **설정 조합 수**: 독립 불리언 설정 n개는 조합 2^n개를 만든다. 키 40개 중 불리언이 20개면 조합 2^20 = 1,048,576개라 전수 테스트가 불가능하다(계산). 테스트 설계 쪽의 쌍 조합은 testing 영역 07 test-design-techniques([testing/README](../../testing/README.md), 미작성).
+- **설정 조합 수**: 독립 불리언 설정 n개는 조합 2^n개를 만든다. 키 40개 중 불리언이 20개면 조합 2^20 = 1,048,576개라 전수 테스트가 불가능하다(계산). 테스트 설계 쪽의 쌍 조합은 [testing/07-test-design-techniques](../../testing/07-test-design-techniques/2-summary.md).
 - **호출 그래프 도달성**: 진입점에서 닿지 않는 클래스·메서드 = 지금 아무도 쓰지 않는 코드. 지우기 쉬운 코드는 [54-designing-for-deletion](../54-designing-for-deletion/2-summary.md).
 
 ## 적용 — 풀어나가는 법

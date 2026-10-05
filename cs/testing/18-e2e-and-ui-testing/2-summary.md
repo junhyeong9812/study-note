@@ -196,7 +196,7 @@ test('로그인 후 주문 목록이 보인다', async ({ page }) => {
 1. 실패 메시지를 분류한다: "요소를 못 찾음"(`null`, `Unable to find`, 타임아웃) vs "찾았는데 값이 다름".
 2. "못 찾음"이 같은 커밋에서 대량이면 마크업 변경이 원인일 가능성이 크다. 그 커밋의 diff가 클래스·구조만 바꿨는지 본다.
 3. 동작이 같다면 테스트 쪽 선택자를 역할·레이블로 바꾼다(앞으로 같은 일이 덜 생긴다).
-4. 레이블·역할로도 못 찾으면, 그 화면은 보조 기술 사용자도 못 찾는다 — 접근성 결함으로 고친다([web-platform 영역 표](../../web-platform/README.md)의 11 accessibility-basics, 미작성).
+4. 레이블·역할로도 못 찾으면, 그 화면은 보조 기술 사용자도 못 찾는다 — 접근성 결함으로 고친다([web-platform/11-accessibility-basics](../../web-platform/11-accessibility-basics/2-summary.md)).
 
 ## 장애 시나리오와 대처
 
@@ -244,7 +244,7 @@ test('로그인 후 주문 목록이 보인다', async ({ page }) => {
 - 후속·연결
   - [19-testing-in-production](../19-testing-in-production/2-summary.md) — 운영에서 도는 E2E(합성 모니터링·prober).
   - [01-why-test-and-pyramid](../01-why-test-and-pyramid/2-summary.md), [02-good-unit-tests](../02-good-unit-tests/2-summary.md)(리팩터링 내성), [09-flaky-tests](../09-flaky-tests/2-summary.md).
-  - web-platform 11 accessibility-basics, 21 component-and-state-patterns — 미작성([web-platform 영역 표](../../web-platform/README.md)).
+  - [web-platform/11-accessibility-basics](../../web-platform/11-accessibility-basics/2-summary.md), [web-platform/21-component-and-state-patterns](../../web-platform/21-component-and-state-patterns/2-summary.md).
 - 교재·글
   - SWE@G 14장 "Larger Testing" — Browser and Device Testing, UI 테스트가 깨지기 쉬운 이유와 UI/API 경계 분리 <https://abseil.io/resources/swe-book/html/ch14.html>
   - Martin Fowler, "TestPyramid", 2012-05-01 — UI 테스트는 "brittle, expensive to write, and time consuming to run", 아이스크림 콘 <https://martinfowler.com/bliki/TestPyramid.html>

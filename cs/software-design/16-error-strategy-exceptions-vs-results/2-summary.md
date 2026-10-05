@@ -305,7 +305,7 @@ grep -rnE '\.(get|orElseThrow|unwrap)\(\)' --include=*.java src/main/ | grep -v 
   - [17-error-messages-and-log-level-policy](../17-error-messages-and-log-level-policy/2-summary.md) — 에러 코드·사용자 메시지·로그 레벨
   - [18-absence-and-null-design](../18-absence-and-null-design/2-summary.md) — Special Case·Null Object 코드
   - [24 types-as-invariants](../24-types-as-invariants/2-summary.md), [26 functional-core-imperative-shell](../26-functional-core-imperative-shell/2-summary.md)
-  - api-design 04 error-format-problem-details — 미작성([api-design 커리큘럼](../../api-design/curriculum.md))
+  - [api-design/04-error-format-problem-details](../../api-design/04-error-format-problem-details/2-summary.md)
   - [reliability/06-retry-backoff-jitter](../../reliability/06-retry-backoff-jitter/2-summary.md) — 무엇을 재시도하나
 - 글·문서
   - Scott Wlaschin, "Railway Oriented Programming"(NDC London 2014 등) <https://fsharpforfunandprofit.com/rop/> · "Against Railway-Oriented Programming"(2019-12-20, 에러 3분류·Result를 쓰지 말아야 할 때) <https://fsharpforfunandprofit.com/posts/against-railway-oriented-programming/>

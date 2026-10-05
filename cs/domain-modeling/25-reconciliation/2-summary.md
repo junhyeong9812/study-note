@@ -229,7 +229,7 @@ UPDATE recon_break b SET state = 'RESOLVED',
 ## 쓰이는 자료구조·알고리즘
 
 - **해시 조인** — 한쪽(보통 작은 쪽)을 키로 해시 테이블에 넣고 다른 쪽을 훑으며 찾는다. 실험의 분류 쿼리를 `EXPLAIN (COSTS OFF)`로 보면 PostgreSQL 17.11은 `Hash Full Join`으로 실행했다. 외부 쪽 주문 단위 접기는 `Sort` + `GroupAggregate`였다 — `string_agg(… ORDER BY line_no)`처럼 정렬이 필요한 집계가 있어서다(해석). `string_agg`를 빼면 같은 데이터에서 `HashAggregate`로 바뀌었다(점검 재실행, ANALYZE 전후 같음). 조인 알고리즘은 [database/11-join-algorithms](../../database/11-join-algorithms/2-summary.md).
-- **정렬 병합 조인** — 양쪽을 키로 정렬한 뒤 두 포인터로 함께 훑는다. 파일이 메모리보다 크면 외부 정렬 + k-way 병합으로 정렬한다([algorithm 11-external-sort-and-k-way-merge](../../algorithm/curriculum.md) — 미작성, 두 포인터는 [algorithm/08-two-pointers](../../algorithm/08-two-pointers/2-summary.md)).
+- **정렬 병합 조인** — 양쪽을 키로 정렬한 뒤 두 포인터로 함께 훑는다. 파일이 메모리보다 크면 외부 정렬 + k-way 병합으로 정렬한다([algorithm/11-external-sort-and-k-way-merge](../../algorithm/11-external-sort-and-k-way-merge/2-summary.md), 두 포인터는 [algorithm/08-two-pointers](../../algorithm/08-two-pointers/2-summary.md)).
 - **두 집합의 차집합** — `A EXCEPT B`, `B EXCEPT A`. 빠른 "차이 있음" 신호. 단, 집합 의미라 중복을 지운다(실험 관찰 1).
 - **group-by 접기 후 조인** — 외부를 키로 `count(*)`·`sum()`으로 접어야 중복이 "2건 이상"으로 보인다. 접지 않고 조인하면 내부 한 줄이 외부 두 줄과 짝지어져 행이 늘어난다.
 - **반열린 시간 구간** — `[시작, 끝)`을 같은 `timestamptz` 경계로. 날짜 문자열로 자르지 않는다.

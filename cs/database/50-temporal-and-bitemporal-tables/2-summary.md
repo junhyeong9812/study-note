@@ -317,7 +317,7 @@ SELECT a.item_id, a.valid_from, b.valid_from FROM price a JOIN price b
   - [data-structure/30-interval-tree](../../data-structure/30-interval-tree/2-summary.md) — 겹치는 구간 질의
   - [domain-modeling/advanced/10-price-history](../../domain-modeling/advanced/10-price-history/2-summary.md) — 유효 시각 + 기록 시각의 도메인 모델, 재발행 vs 재정산
   - [domain-modeling/advanced/16-audit-replay](../../domain-modeling/advanced/16-audit-replay/2-summary.md) — 발생 시각과 수신 시각이 다른 이벤트
-  - domain-modeling `23-versioned-rules-and-effective-dating` — 미작성, [domain-modeling/curriculum](../../domain-modeling/curriculum.md)
+  - [domain-modeling/23-versioned-rules-and-effective-dating](../../domain-modeling/23-versioned-rules-and-effective-dating/2-summary.md)
   - data-engineering `04-slowly-changing-dimensions` — 미작성, [data-engineering/README](../../data-engineering/README.md)
   - [27-temporal-types-and-session-timezone](../27-temporal-types-and-session-timezone/2-summary.md) — `timestamptz`와 세션 시간대
 - 표준·논문·책

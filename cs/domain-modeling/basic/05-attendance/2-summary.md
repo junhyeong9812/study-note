@@ -285,7 +285,7 @@ e1 IN 09:00  e2 IN 10:00  e2 OUT 14:00  e1 OUT 18:00
 - 자료구조 — [data-structure/03-stack](../../../data-structure/03-stack/2-summary.md): 시작/끝 짝짓기의 원형(괄호 매칭).
 - 같은 관측 창 — [12-game-buff](../12-game-buff/2-summary.md) `stored()`: 답이 안 바뀌는 일을 밖에서 보게 하는 수. [11-delivery-tracking](../11-delivery-tracking/2-summary.md): 기기 시각과 수신 시각.
 - 심화판 — [advanced/01-payroll](../../advanced/01-payroll/2-summary.md): 근무 시간에서 급여로.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · `13-instant-vs-local-time-and-tz-rules`(기기 시계·시간대 — 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · [13-instant-vs-local-time-and-tz-rules](../../13-instant-vs-local-time-and-tz-rules/2-summary.md)(기기 시계·시간대).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/05-attendance/` (README.md · impl/com/domain/attendance/Attendance.java · src/main/java/com/domain/attendance/Punch.java).
 
 ### 관련 자료

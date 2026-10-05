@@ -160,7 +160,7 @@ t= 1040ms 중단: TimeoutError The operation was aborted due to timeout
 
 ## 쓰이는 자료구조·알고리즘
 
-- **타이머 힙·타이머 휠** — 연결·요청마다 타이머가 붙는다. 수만 개를 싸게 관리하려고 Netty·커널은 타이머 휠 계열을 쓴다. data-structure 26 `timer-structures`(미작성, [data-structure 커리큘럼](../../data-structure/curriculum.md)), 힙은 [data-structure/07-heap](../../data-structure/07-heap/2-summary.md).
+- **타이머 힙·타이머 휠** — 연결·요청마다 타이머가 붙는다. 수만 개를 싸게 관리하려고 Netty·커널은 타이머 휠 계열을 쓴다. [data-structure/26-timer-structures](../../data-structure/26-timer-structures/2-summary.md), 힙은 [data-structure/07-heap](../../data-structure/07-heap/2-summary.md).
 - **지수 백오프(SYN 재전송)** — 커널의 SYN 재전송은 선형 몇 번 뒤 RTO를 두 배씩 늘린다(실험 A).
 - **커넥션 풀 = 대기 큐 + 자원 집합** — 빌릴 연결이 없으면 대기 큐에 선다. 대기 상한이 ① 타임아웃이다. [network/35-http-connection-management](../../network/35-http-connection-management/2-summary.md) §4.
 - **상태 기계(TCP)** — connect 타임아웃은 SYN-SENT 상태의 체류 상한이다.

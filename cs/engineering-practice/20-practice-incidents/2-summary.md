@@ -27,7 +27,7 @@ Cloudflare에서는 소프트웨어 배포의 단계 배포(DOG → PIG → 카�
 이 노트는 공개 1차 문서로 두 사건을 복원하고, **엔지니어링 실천**(배포 절차·플래그·설정의 리뷰와 테스트·단계 배포)의 빈틈만 본다.
 - **Knight Capital(2012-08-01)**: 1차 출처는 미 SEC 행정 명령 Release No. 34-70694(2013-10-16)와 Knight의 2012-08-02 보도자료.
 - **Cloudflare(2019-07-02)**: 1차 출처는 Cloudflare 블로그 사후 보고서 두 편(2019-07-02 당일 글, 2019-07-12 상세 글).
-- 다른 관점은 다른 노트가 정본이다. 정규식 백트래킹 알고리즘은 algorithm/43 alg-incidents(미작성, [algorithm 영역 표](../../algorithm/curriculum.md))와 [algorithm/13-backtracking](../../algorithm/13-backtracking/2-summary.md). 운영 관점의 Knight는 [reliability/24-feature-flag-lifecycle](../../reliability/24-feature-flag-lifecycle/2-summary.md) 장애 1, [reliability/23-deployment-strategies](../../reliability/23-deployment-strategies/2-summary.md) 장애 3·롤백, [reliability/04-failure-modes-catalog](../../reliability/04-failure-modes-catalog/2-summary.md) F-17. 운영 사건 모음 [reliability/53-reliability-incidents](../../reliability/53-reliability-incidents/2-summary.md)는 두 사건을 다루지 않는다. 이 노트는 겹치는 사실을 짧게만 쓴다.
+- 다른 관점은 다른 노트가 정본이다. 정규식 백트래킹 알고리즘은 [algorithm/43-alg-incidents](../../algorithm/43-alg-incidents/2-summary.md)와 [algorithm/13-backtracking](../../algorithm/13-backtracking/2-summary.md). 운영 관점의 Knight는 [reliability/24-feature-flag-lifecycle](../../reliability/24-feature-flag-lifecycle/2-summary.md) 장애 1, [reliability/23-deployment-strategies](../../reliability/23-deployment-strategies/2-summary.md) 장애 3·롤백, [reliability/04-failure-modes-catalog](../../reliability/04-failure-modes-catalog/2-summary.md) F-17. 운영 사건 모음 [reliability/53-reliability-incidents](../../reliability/53-reliability-incidents/2-summary.md)는 두 사건을 다루지 않는다. 이 노트는 겹치는 사실을 짧게만 쓴다.
 
   - *사후 보고서(postmortem)·행정 명령*: Cloudflare 글은 당사자가 쓴 사후 보고서다. SEC 명령은 규제 당국이 회사의 합의 제안을 받아들여 낸 명령이고, 회사는 사실 인정·부인 없이 합의했다("without admitting or denying the findings"). 둘 다 1차 출처지만 쓴 목적이 다르다.
   - *사실과 해석*: 원문에 있는 사실은 출처·문단 번호와 함께 쓴다. 원문이 말하지 않는 연결은 "해석"이라고 표시한다.
@@ -138,7 +138,7 @@ Cloudflare에서는 소프트웨어 배포의 단계 배포(DOG → PIG → 카�
 
 | # | 원문(요약) | 실천 관점 | leaf |
 |---|---|---|---|
-| 1 | 엔지니어가 크게 백트래킹할 수 있는 정규식을 씀 | 알고리즘 관점 — 이 노트 범위 밖 | algorithm/43(미작성) · [algorithm/13](../../algorithm/13-backtracking/2-summary.md) |
+| 1 | 엔지니어가 크게 백트래킹할 수 있는 정규식을 씀 | 알고리즘 관점 — 이 노트 범위 밖 | [algorithm/43](../../algorithm/43-alg-incidents/2-summary.md) · [algorithm/13](../../algorithm/13-backtracking/2-summary.md) |
 | 2 | 정규식 과다 CPU를 막던 보호 장치가 몇 주 전 WAF 리팩터링(CPU를 덜 쓰게 하려던 작업)에서 실수로 제거됨 | 리팩터링이 안전장치를 지움 — 그 장치를 확인하는 테스트가 없었다(해석) | [05](../05-code-review/2-summary.md) · [14](../14-quality-standards/2-summary.md) |
 | 3 | 정규식 엔진에 복잡도 보장이 없음 | 의존성·엔진 선택(도입 판단) | [13](../13-build-vs-buy-and-adoption/2-summary.md) |
 | 4 | 테스트 묶음에 과다 CPU 사용을 식별할 방법이 없음. 이전 빌드 로그에서도 테스트 실행 시간 증가가 관찰되지 않음 | CI에 성능 예산 테스트 | [06](../06-ci-cd-pipelines/2-summary.md) · 실험 C |
@@ -217,7 +217,7 @@ B3 7대도 옛 판으로 되돌림                   판=[O, O, O, O, O, O, O, O
 
 ### 실험 B: 백트래킹 정규식의 시간 — JDK 21 java.util.regex vs RE2J (선택 실험)
 
-알고리즘 설명은 algorithm/43(미작성)에 맡기고, 여기서는 "테스트 입력이 작으면 안 보이고 입력이 조금만 길어져도 CPU를 태운다"는 **테스트 설계** 관점만 본다. 같은 패턴을 백트래킹 엔진(java.util.regex)과 선형 시간을 보장하는 엔진(RE2J 1.8)으로 `find()` 하고 시간(3회 중앙값)을 쟀다. 입력은 모두 **매칭에 실패하는** 문자열이다.
+알고리즘 설명은 [algorithm/43](../../algorithm/43-alg-incidents/2-summary.md)에 맡기고, 여기서는 "테스트 입력이 작으면 안 보이고 입력이 조금만 길어져도 CPU를 태운다"는 **테스트 설계** 관점만 본다. 같은 패턴을 백트래킹 엔진(java.util.regex)과 선형 시간을 보장하는 엔진(RE2J 1.8)으로 `find()` 하고 시간(3회 중앙값)을 쟀다. 입력은 모두 **매칭에 실패하는** 문자열이다.
 
 ```java
 // Cloudflare 2019-07-12 보고서의 정규식을 Java 문자열로 옮김({} 는 Java에서 \{\} 로 이스케이프)
@@ -304,7 +304,7 @@ exit=1
 
 ## 쓰이는 자료구조·알고리즘
 
-- **백트래킹 vs Thompson NFA 시뮬레이션** — java.util.regex·PCRE는 백트래킹이라 최악에 입력 길이에 대해 다항(패턴에 따라 지수) 시간이 걸린다. RE2·RE2J·Rust regex는 상태 집합을 한 글자씩 옮기는 방식으로 입력 길이에 선형인 시간을 보장한다(Cloudflare 보고서 부록이 Thompson 1968을 들어 설명). 알고리즘 본문은 algorithm/43(미작성)과 [algorithm/13-backtracking](../../algorithm/13-backtracking/2-summary.md).
+- **백트래킹 vs Thompson NFA 시뮬레이션** — java.util.regex·PCRE는 백트래킹이라 최악에 입력 길이에 대해 다항(패턴에 따라 지수) 시간이 걸린다. RE2·RE2J·Rust regex는 상태 집합을 한 글자씩 옮기는 방식으로 입력 길이에 선형인 시간을 보장한다(Cloudflare 보고서 부록이 Thompson 1968을 들어 설명). 알고리즘 본문은 [algorithm/43](../../algorithm/43-alg-incidents/2-summary.md)과 [algorithm/13-backtracking](../../algorithm/13-backtracking/2-summary.md).
 - **콘텐츠 해시로 판 일치 확인** — 서버마다 실행 중인 산출물의 해시를 모아 종류 수를 센다(실험 A의 C, [06-3](../06-ci-cd-pipelines/2-summary.md)). git 객체 모델과 같은 원리다 — [data-structure/27-merkle-tree](../../data-structure/27-merkle-tree/2-summary.md).
 - **플래그 = 이름 → 동작의 사상(map)** — 같은 키를 다른 판의 코드가 다른 의미로 해석하면 사상이 판마다 달라진다. 키를 재사용하지 않으면 모르는 키는 기본값(꺼짐)으로 떨어진다(실험 A의 B).
 - **전역 복제 KV 저장소(Quicksilver)** — 쓰기 하나가 전 세계 기계로 수 초 안에 복제된다(원문: p99 2.29초). 전파 속도 자체가 폭발 반경을 정한다.
@@ -412,7 +412,7 @@ global:
 
 - 선행: [19-practice-symptom-index](../19-practice-symptom-index/2-summary.md)(3절 "배포 공포") · [06-ci-cd-pipelines](../06-ci-cd-pipelines/2-summary.md)(장애 3 수동 배포, 배포 누락 모형) · [04-branching-strategies](../04-branching-strategies/2-summary.md)(장애 4 플래그 부채) · [10-technical-debt](../10-technical-debt/2-summary.md) · [05-code-review](../05-code-review/2-summary.md) · [11-documentation-practices](../11-documentation-practices/2-summary.md)
 - 다른 관점(정본)
-  - 알고리즘: algorithm/43 alg-incidents — 미작성([algorithm 영역 표](../../algorithm/curriculum.md)) · [algorithm/13-backtracking](../../algorithm/13-backtracking/2-summary.md)
+  - 알고리즘: [algorithm/43-alg-incidents](../../algorithm/43-alg-incidents/2-summary.md) · [algorithm/13-backtracking](../../algorithm/13-backtracking/2-summary.md)
   - 운영: [reliability/24-feature-flag-lifecycle](../../reliability/24-feature-flag-lifecycle/2-summary.md) 장애 1 · [reliability/23-deployment-strategies](../../reliability/23-deployment-strategies/2-summary.md) 장애 3·롤백 · [reliability/04-failure-modes-catalog](../../reliability/04-failure-modes-catalog/2-summary.md) F-17 · [reliability/26-incident-response-and-postmortem](../../reliability/26-incident-response-and-postmortem/2-summary.md)
   - 같은 구조의 다른 사건: [testing/21-test-incidents](../../testing/21-test-incidents/2-summary.md)(CrowdStrike 2024 — 설정 콘텐츠의 시험·단계 배포) · [reliability/53-reliability-incidents](../../reliability/53-reliability-incidents/2-summary.md)
 - 1차 출처

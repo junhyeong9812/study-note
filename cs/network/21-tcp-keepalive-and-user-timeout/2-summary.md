@@ -168,7 +168,7 @@ keepalive는 **조용할 때** 확인하고, user timeout은 **보낸 게 확인
 - **타이머** — 연결마다 keepalive 타이머, 재전송 타이머, persist 타이머가 있다.
   - 리눅스는 재전송·persist(zero window probe)를 한 타이머(`icsk_retransmit_timer`)에 용도를 바꿔 가며 걸고, keepalive는 별도 타이머(`icsk_keepalive_timer`)에 건다(`include/net/inet_connection_sock.h`).
   - `ss -o`는 이 중 하나를 골라 `on`·`persist`·`keepalive` 순서의 우선순위로 보여 준다(ss(8), `net/ipv4/inet_diag.c`). 그래서 재전송 중에는 `keepalive`가 아니라 `on`이 보인다.
-  - 수십만 연결의 타이머를 다루는 구조(타이머 휠, 힙)는 data-structure `timer-structures` — 미작성([영역 표](../../data-structure/curriculum.md)). [힙](../../data-structure/07-heap/2-summary.md) 참고.
+  - 수십만 연결의 타이머를 다루는 구조(타이머 휠, 힙)는 [data-structure/26-timer-structures](../../data-structure/26-timer-structures/2-summary.md). [힙](../../data-structure/07-heap/2-summary.md) 참고.
 - **실패 탐지기(failure detector)** — "N번 연속 무응답이면 죽은 것으로 본다"는 규칙이다. 간격 × 횟수가 **탐지 시간**, 한 번의 무응답을 사망으로 보지 않는 것이 **오탐 방지**다(MUST-29).
   - 분산 시스템의 heartbeat 기반 실패 탐지와 같은 트레이드오프다. 빨리 잡으면 오탐이 늘고, 오탐을 줄이면 늦게 잡는다.
 - **상태 기계** — 연결 상태(19번)와 별개로 "idle → probing → dead" 작은 상태 기계가 keepalive를 돈다.

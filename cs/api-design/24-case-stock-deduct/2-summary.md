@@ -282,7 +282,7 @@ UPDATE products
 - 후속 — [06-refund](../27-case-refund/2-summary.md): 재고 복원이 포인트·쿠폰 복원과 함께 다시 나오고, 잠금 순서 축이 재등장한다.
 - 도메인 — [domain-modeling/basic/13-inventory](../../domain-modeling/basic/13-inventory/2-summary.md) · [domain-modeling/advanced/11-stock-reservation](../../domain-modeling/advanced/11-stock-reservation/2-summary.md): 재고 모델과 예약(만료 · 확정 · 회수).
 - 패턴 — [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md): 복원 멱등의 일반형.
-- 영역 표 — [api-design/curriculum.md](../curriculum.md) `24-case-stock-deduct` (선행 `database/18-app-level-concurrency-patterns` — 노트 미작성).
+- 영역 표 — [api-design/curriculum.md](../curriculum.md) `24-case-stock-deduct` (선행 [database/18-app-level-concurrency-patterns](../../database/18-app-level-concurrency-patterns/2-summary.md)).
 - 교재 — DDIA 7장(2단계 잠금 · 데드락) · PostgreSQL 문서 "Explicit Locking"(행 잠금 · `FOR UPDATE`)과 SELECT 문서의 Locking Clause(`SKIP LOCKED`).
 - myway 원본 — `/home/jun/project/myway/api-design/03-stock-deduct/` (REQUIREMENTS.md · NOTES.md · solution/CHECKLIST.md · solution/REFERENCE.md).
 

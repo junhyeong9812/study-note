@@ -268,7 +268,7 @@ redis-cli SLOWLOG GET 10
   - [34-zero-copy-and-io-uring](../34-zero-copy-and-io-uring/2-summary.md) — 완료 큐 기반 루프(프로액터)
   - [36-server-concurrency-architectures](../36-server-concurrency-architectures/2-summary.md) — 멀티 리액터, 반동기/반비동기, 워커 풀
   - [language/README](../../language/README.md) — `14-concurrency-models`(async/await 상태 기계, 가상 스레드). 미작성
-  - [web-platform/README](../../web-platform/README.md) — `03-event-loop`(브라우저 태스크·마이크로태스크). 미작성
+  - [web-platform/03-event-loop](../../web-platform/03-event-loop/2-summary.md)(브라우저 태스크·마이크로태스크)
 - 다른 OS 주제
   - [07-threads-and-context-switch](../07-threads-and-context-switch/2-summary.md)·[15-race-conditions](../15-race-conditions/2-summary.md) — 스레드 방식의 비용
   - [12-swapping-and-page-replacement](../12-swapping-and-page-replacement/2-summary.md) — 페이지 폴트·스왑이 루프를 암묵적으로 막는 이유

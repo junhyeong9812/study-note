@@ -127,7 +127,7 @@ RFC 9110 §17.6은 이 공격군의 뿌리를 "공격자가 통제하는 내용�
 
 ## 쓰이는 자료구조·알고리즘
 
-- **LZ77 슬라이딩 윈도 + 가장 긴 일치 탐색** — 비밀과 추측의 공통 접두사 길이가 출력 길이로 드러나는 핵심이다. [algorithm/09-sliding-window](../../algorithm/09-sliding-window/2-summary.md)의 "창 안에서만 본다" 구조와 같다. LZ77 자체는 `algorithm/33-lossless-compression-lz77-huffman` — 미작성([algorithm 커리큘럼](../../algorithm/curriculum.md)).
+- **LZ77 슬라이딩 윈도 + 가장 긴 일치 탐색** — 비밀과 추측의 공통 접두사 길이가 출력 길이로 드러나는 핵심이다. [algorithm/09-sliding-window](../../algorithm/09-sliding-window/2-summary.md)의 "창 안에서만 본다" 구조와 같다. LZ77 자체는 [algorithm/33-lossless-compression-lz77-huffman](../../algorithm/33-lossless-compression-lz77-huffman/2-summary.md).
   - 구현은 보통 3바이트 해시 체인으로 후보 위치를 찾는다. 이 해시 테이블이 [05-hashmap](../../data-structure/05-hashmap/2-summary.md)과 같은 역할이다.
 - **허프만 부호** — 자주 나오는 기호에 짧은 비트열을 준다. 길이 신호에 비트 단위 잡음을 섞는다. 공격자는 반복 측정으로 이를 걸러 낸다.
 - **적응형 탐색(한 글자씩)** — 추측 공간이 "문자 집합 크기 × 비밀 길이"로 줄어든다. RFC 7541 §7.1은 이를 "지수 시간 공격을 선형 시간 공격으로 바꾼다"고 설명한다.
@@ -298,7 +298,7 @@ openssl s_client -comp -connect legacy.example.com:443 -tls1_2 </dev/null 2>/dev
 - 선행
   - [39-http-content-encoding](../39-http-content-encoding/2-summary.md) — 압축 협상·`Vary`
   - [29-tls-handshake](../29-tls-handshake/2-summary.md) — TLS 1.3에서 사라진 것들
-  - `algorithm/33-lossless-compression-lz77-huffman` — 미작성([algorithm 커리큘럼](../../algorithm/curriculum.md))
+  - [algorithm/33-lossless-compression-lz77-huffman](../../algorithm/33-lossless-compression-lz77-huffman/2-summary.md)
 - 후속·연결
   - [44-websocket-compression](../44-websocket-compression/2-summary.md) — 메시지 압축에서 같은 원리
   - [36-http2-multiplexing](../36-http2-multiplexing/2-summary.md) — HPACK

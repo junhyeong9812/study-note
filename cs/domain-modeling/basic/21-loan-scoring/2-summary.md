@@ -295,7 +295,7 @@ decide(신청자) — 순서가 계약이다
 - 선행 — [09-order-state](../09-order-state/2-summary.md) · [10-payment](../10-payment/2-summary.md): 상태·결과 값을 줄이면 안내가 틀린다.
 - 후속 — [22-settlement](../22-settlement/2-summary.md): 나눗셈·반올림이 잔돈(1원)을 만드는 다음 도메인.
 - 운영 — [ops-patterns/01-retry-backoff](../../../ops-patterns/01-retry-backoff/2-summary.md): 외부 조회 실패를 "없음"으로 오인하지 않기 위한 재시도·타임아웃.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (관련 leaf `22-decision-log-and-provenance` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (관련 leaf [22-decision-log-and-provenance](../../22-decision-log-and-provenance/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/21-loan-scoring/` (README.md · impl/com/domain/loan/Scoring.java · src/main/.../Applicant.java · Decision.java · src/test/.../MeasurementTest.java).
 
 ### 관련 자료

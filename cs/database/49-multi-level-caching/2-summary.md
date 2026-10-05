@@ -294,7 +294,7 @@ void onReconnect()            { l1.invalidateAll(); }   // 놓친 메시지를 �
 
 - 선행
   - [30-caching-with-databases](../30-caching-with-databases/2-summary.md) · 원본 [systems/server-design/04-caching.md](../../systems/server-design/04-caching.md) — 캐시 계층, cache-aside, 삭제 무효화, 스탬피드, 핫키
-  - distributed `32-distributed-cache-consistency` — 미작성, [distributed/README](../../distributed/README.md)
+  - [distributed/32-distributed-cache-consistency](../../distributed/32-distributed-cache-consistency/2-summary.md)
   - data-structure `14-lru-cache` → [data-structure/10-lru-cache](../../data-structure/10-lru-cache/2-summary.md)
 - 연결
   - database [31-cache-key-versioning-and-serialization](../31-cache-key-versioning-and-serialization/2-summary.md)

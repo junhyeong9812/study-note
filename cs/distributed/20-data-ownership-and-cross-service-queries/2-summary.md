@@ -276,7 +276,7 @@ SELECT now() - max(source_event_at) AS view_staleness FROM order_view;
 
 - 선행
   - [16-outbox-and-dual-write](../16-outbox-and-dual-write/2-summary.md) — 뷰·복제본을 유지할 이벤트를 잃지 않고 내보내기
-  - software-design `45-monolith-vs-microservices` — 미작성, [software-design/README](../../software-design/README.md)
+  - [software-design/45-monolith-vs-microservices](../../software-design/45-monolith-vs-microservices/2-summary.md)
   - domain-modeling `21-cqrs` — 원고 [systems/server-design/03-data-layer](../../systems/server-design/03-data-layer.md) 3절 (영역 표 [domain-modeling/curriculum](../../domain-modeling/curriculum.md))
 - 연결
   - reliability `47-server-design-antipatterns` — 원고 [systems/server-design/11-antipatterns](../../systems/server-design/11-antipatterns.md) 3절 "공유 데이터베이스"

@@ -204,7 +204,7 @@ COMMIT;
 ## 쓰이는 자료구조·알고리즘
 
 - **타이머 다중화**: PostgreSQL 백엔드는 여러 타임아웃 사유를 **SIGALRM 하나**로 다중화한다(`src/backend/utils/misc/timeout.c` 머리 주석). 활성 타임아웃을 만료 시각 순 배열(`active_timeouts[]`)로 두고, 가장 이른 것 하나에 타이머를 건다.
-  - 타이머 자료구조 일반(타이머 힙 vs 타이머 휠)은 data-structure/26-timer-structures — 미작성([data-structure 영역 표](../../data-structure/curriculum.md)).
+  - 타이머 자료구조 일반(타이머 힙 vs 타이머 휠)은 [data-structure/26-timer-structures](../../data-structure/26-timer-structures/2-summary.md).
 - **락 대기 큐**: 락 객체마다 대기자 큐가 있다. 깨울 때 "앞선 대기자와 충돌하면 못 깬다" 규칙이 도착 순서를 지킨다. 이 때문에 §3의 DDL 줄서기가 생긴다(PostgreSQL `src/backend/storage/lmgr/README`).
   - 교착 탐지기는 이 큐 순서를 "soft edge"로 wait-for 그래프에 넣고, 필요하면 큐를 재배열한다(같은 README).
 - **취소 요청 프로토콜**: PostgreSQL 클라이언트는 **새 연결**을 열어 CancelRequest를 보낸다. 연결 시작 때 받은 PID·비밀 키가 맞아야 서버가 받아들인다(PostgreSQL 17 문서 53.2.8 "Canceling Requests in Progress"). 원래 연결은 결과를 기다리던 그대로다.
@@ -305,7 +305,7 @@ KILL <id>;         -- 연결
 - 현상: 앱 로그에는 타임아웃 에러만 있는데, DB CPU는 계속 높다. 재시도 폭주가 겹치면 DB가 포화된다.
 - 보이는 형태: 앱 `SocketTimeoutException: Read timed out`(pgjdbc 08006) 또는 `Communications link failure`(08S01). DB에는 같은 쿼리가 `active`로 남아 있다(§2 재현).
 - 원인: 소켓 타임아웃은 서버에 아무것도 알리지 않는다. 서버는 결과를 보내려 할 때까지 끊긴 줄 모른다.
-- 대처: 서버 측 `statement_timeout`을 소켓 타임아웃보다 짧게 둔다. 쿼리 타임아웃(취소 요청)을 쓴다. PostgreSQL이면 `client_connection_check_interval`을 켠다(14+). 레이어별 타임아웃 설계는 reliability/07-timeout-taxonomy-by-layer·09-cancellation-propagation(미작성, [reliability 영역 표](../../reliability/README.md)).
+- 대처: 서버 측 `statement_timeout`을 소켓 타임아웃보다 짧게 둔다. 쿼리 타임아웃(취소 요청)을 쓴다. PostgreSQL이면 `client_connection_check_interval`을 켠다(14+). 레이어별 타임아웃 설계는 [reliability/07-timeout-taxonomy-by-layer](../../reliability/07-timeout-taxonomy-by-layer/2-summary.md)·[09-cancellation-propagation](../../reliability/09-cancellation-propagation/2-summary.md).
 
 ### 6. `maxLifetime`이 중간 장비 idle timeout보다 길다
 
@@ -329,7 +329,7 @@ KILL <id>;         -- 연결
 - 후속·연결
   - [24-transaction-boundaries-in-app-code](../24-transaction-boundaries-in-app-code/2-summary.md) — idle in transaction을 만드는 앱 코드
   - [16-mvcc](../16-mvcc/2-summary.md)(vacuum·bloat) · [26-schema-migration](../26-schema-migration/2-summary.md)
-  - reliability/07-timeout-taxonomy-by-layer · 09-cancellation-propagation — 미작성([reliability 영역 표](../../reliability/README.md))
+  - [reliability/07-timeout-taxonomy-by-layer](../../reliability/07-timeout-taxonomy-by-layer/2-summary.md) · [09-cancellation-propagation](../../reliability/09-cancellation-propagation/2-summary.md)
   - [network/21-tcp-keepalive-and-user-timeout](../../network/21-tcp-keepalive-and-user-timeout/2-summary.md) — 끊긴 연결을 커널이 알아채는 방법
 - 문서
   - PostgreSQL 17 문서 19.11.1 Statement Behavior(`statement_timeout`·`transaction_timeout`·`lock_timeout`·`idle_in_transaction_session_timeout`·`idle_session_timeout`) <https://www.postgresql.org/docs/17/runtime-config-client.html>

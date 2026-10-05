@@ -285,7 +285,7 @@ confirm(id, at, boundary)
 - 기초판 — [basic/13-inventory](../../basic/13-inventory/2-summary.md), [basic/02-seat-reservation](../../basic/02-seat-reservation/2-summary.md), [basic/09-order-state](../../basic/09-order-state/2-summary.md)(상태 기계).
 - API 쪽 — [api-design/03-stock-deduct](../../../api-design/24-case-stock-deduct/2-summary.md): 재고 차감의 동시성(조건부 UPDATE). 이 노트는 그 앞단의 "잡아두기" 의미론.
 - 배치와 큐 — [ops-patterns/10-scheduler](../../../ops-patterns/10-scheduler/2-summary.md), [data-structure/07-heap](../../../data-structure/07-heap/2-summary.md).
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (관련 leaf `11-state-machines-in-domain` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (관련 leaf [11-state-machines-in-domain](../../11-state-machines-in-domain/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/11-stock-reservation/` (README.md · impl/com/domain/stock/InventoryLedger.java · src/test/java/com/domain/stock/InventoryLedgerTest.java · MeasurementTest.java).
 
 ### 관련 자료

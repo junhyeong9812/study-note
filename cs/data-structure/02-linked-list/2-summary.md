@@ -830,7 +830,7 @@ node(int index) : 절반을 넘어가면 tail 쪽에서 거슬러 온다. 최악
 - 후속 — [03-stack](../03-stack/2-summary.md) · [04-queue-deque](../04-queue-deque/2-summary.md): 접근 지점을 양 끝으로 제한하면 배열과 연결 중 무엇이 유리해지는지.
 - 응용 — [05-hashmap](../05-hashmap/2-summary.md)(체이닝 버킷) · [10-lru-cache](../10-lru-cache/2-summary.md)(이중 연결 + 해시맵) · [12-skip-list](../12-skip-list/2-summary.md)(층층이 쌓은 연결 리스트).
 - 기법 — [algorithm/08-two-pointers](../../algorithm/08-two-pointers/2-summary.md): 문제 2의 fast/slow, 문제 3의 두 반복자 병합.
-- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `04-linked-list` (선행 `02-adt-and-cost-contracts` — 노트 미작성).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `04-linked-list` (선행 [02-adt-and-cost-contracts](../02-adt-and-cost-contracts/2-summary.md)).
 - 교재 — CLRS 3판 10.2 연결 리스트.
 - myway 원본 — `/home/jun/project/myway/data-structure/02-linked-list/` (README.md · impl/SinglyLinkedList.java · impl/DoublyLinkedList.java · impl/ListProblems.java).
 

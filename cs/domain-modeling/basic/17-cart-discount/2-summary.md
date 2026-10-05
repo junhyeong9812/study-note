@@ -243,7 +243,7 @@ RUNNING (누적 기준)   1,000 +   900 = 1,900 할인  → 8,100   뒤 할인�
 - 후속 — [18-shipping-fee](../18-shipping-fee/2-summary.md): 이 챕터의 결제 금액이 무료 배송 기준의 입력으로 흘러든다.
 - 후속 — [22-settlement](../22-settlement/2-summary.md): 내역과 합계가 안 맞는 문제·상품별 배분의 잔돈 규칙.
 - 기법 — [algorithm/02-merge-sort](../../../algorithm/02-merge-sort/2-summary.md): 안정 정렬 — 같은 종류 쿠폰의 내역 순서를 지키는 근거.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (선행 `12-time-money-and-units`·`14-money-arithmetic-rounding-allocation` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (선행 [12-time-money-and-units](../../12-time-money-and-units/2-summary.md)·[14-money-arithmetic-rounding-allocation](../../14-money-arithmetic-rounding-allocation/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/17-cart-discount/` (README.md · impl/com/domain/cart/Cart.java · src/main/.../Discount.java · src/test/.../MeasurementTest.java).
 
 ### 관련 자료

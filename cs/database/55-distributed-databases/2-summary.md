@@ -127,8 +127,8 @@
 
 ## 쓰이는 자료구조·알고리즘
 
-- **합의 로그(Raft·Paxos)** — 파티션 사본들이 같은 순서의 로그에 동의한다. 32번 복제 로그에 "과반 확인"을 더한 것이다(distributed 11 consensus-raft, 미작성).
-- **2PC** — 준비·커밋 두 단계의 원자적 커밋 프로토콜(distributed 14 two-phase-commit, 미작성).
+- **합의 로그(Raft·Paxos)** — 파티션 사본들이 같은 순서의 로그에 동의한다. 32번 복제 로그에 "과반 확인"을 더한 것이다([distributed/11-consensus-raft](../../distributed/11-consensus-raft/2-summary.md)).
+- **2PC** — 준비·커밋 두 단계의 원자적 커밋 프로토콜([distributed/14-two-phase-commit](../../distributed/14-two-phase-commit/2-summary.md)).
 - **MVCC + 타임스탬프** — 버전마다 커밋 타임스탬프. "ts T 시점 스냅숏 읽기" = T 이하에서 가장 최신 버전([16-mvcc](../16-mvcc/2-summary.md)).
 - **하이브리드 논리 시계(HLC)·TSO** — 물리 시각과 논리 카운터를 합친 단조 타임스탬프([ops-patterns/14-logical-clock](../../ops-patterns/14-logical-clock/2-summary.md)).
 - **범위 맵(메타 range)** — 키 → range → 노드를 찾는 정렬된 경계 목록. CockroachDB는 이를 meta range로 둔다(Distribution Layer 문서).
@@ -244,11 +244,11 @@ COMMIT PREPARED 'gid';   -- 또는 ROLLBACK PREPARED 'gid'
 
 - 선행
   - [33-partitioning-and-sharding](../33-partitioning-and-sharding/2-summary.md) — 분할·재조정·보조 인덱스
-  - distributed `14-two-phase-commit` — 미작성, [distributed/README](../../distributed/README.md)
+  - [distributed/14-two-phase-commit](../../distributed/14-two-phase-commit/2-summary.md)
 - 연결
   - [32-replication-leader-follower](../32-replication-leader-follower/2-summary.md) — 비동기 복제와 합의 복제의 차이
   - [11-join-algorithms](../11-join-algorithms/2-summary.md) · [16-mvcc](../16-mvcc/2-summary.md) · [24-transaction-boundaries-in-app-code](../24-transaction-boundaries-in-app-code/2-summary.md) · [37-row-vs-column-storage](../37-row-vs-column-storage/2-summary.md)
-  - distributed `04-physical-clocks-and-ntp`·`08-cap-and-pacelc`·`11-consensus-raft`·`26-hybrid-clocks-and-truetime` — 미작성, [distributed/README](../../distributed/README.md)
+  - [distributed/04-physical-clocks-and-ntp](../../distributed/04-physical-clocks-and-ntp/2-summary.md)·[distributed/08-cap-and-pacelc](../../distributed/08-cap-and-pacelc/2-summary.md)·[distributed/11-consensus-raft](../../distributed/11-consensus-raft/2-summary.md)·[distributed/26-hybrid-clocks-and-truetime](../../distributed/26-hybrid-clocks-and-truetime/2-summary.md)
   - [ops-patterns/14-logical-clock](../../ops-patterns/14-logical-clock/2-summary.md) · [ops-patterns/08-saga](../../ops-patterns/08-saga/2-summary.md)
 - 강의
   - CMU 15-445 Fall 2024 L22 Introduction to Distributed Databases(shared-nothing·shared-disk, 분할 목표, 일관 해싱, 중앙·분산 코디네이터) <https://15445.courses.cs.cmu.edu/fall2024/notes/22-distributed.pdf>

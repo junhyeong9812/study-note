@@ -286,7 +286,7 @@ FOR UPDATE는 읽고 검증하고 쓰는 복합 로직이 가능하지만 잠금
 - 후속 — [06-refund](../27-case-refund/2-summary.md): `order_id`가 멱등 키가 **못 되는** 경우(부분 환불)와 외부 불가역 호출.
 - 패턴 — [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md): 멱등 키 저장소의 일반형(키 · 결과 · TTL).
 - 도메인 — [domain-modeling/basic/14-points](../../domain-modeling/basic/14-points/2-summary.md): 포인트 적립·사용·만료의 모델링.
-- 영역 표 — [api-design/curriculum.md](../curriculum.md) `22-case-order-point` (선행 `05-idempotency-keys` · `11-concurrency-control-in-apis` — 노트 미작성).
+- 영역 표 — [api-design/curriculum.md](../curriculum.md) `22-case-order-point` (선행 [05-idempotency-keys](../05-idempotency-keys/2-summary.md) · [11-concurrency-control-in-apis](../11-concurrency-control-in-apis/2-summary.md)).
 - 교재 — DDIA 7장 "갱신 손실 방지"(원자적 쓰기 · 명시적 잠금 · CAS) · Stripe "Idempotent requests" 문서.
 - myway 원본 — `/home/jun/project/myway/api-design/01-order-point/` (REQUIREMENTS.md · NOTES.md · solution/CHECKLIST.md · solution/REFERENCE.md).
 

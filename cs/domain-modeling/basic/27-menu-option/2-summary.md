@@ -257,7 +257,7 @@ Menu (계약 — 다 주어짐)                 OptionSelection (구현 — TODO
 - 연결 — [09-order-state](../09-order-state/2-summary.md): `confirm`은 상태 전이이고 `violations()`는 그 가드다.
 - 후속 — [advanced/09-policy-version](../../advanced/09-policy-version/2-summary.md): 규칙이 바뀐 뒤 옛 장바구니를 어떻게 판정하나.
 - 기법 — [data-structure/05-hashmap](../../../data-structure/05-hashmap/2-summary.md): `LinkedHashSet`·`Set`의 바탕.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (선행 `12-time-money-and-units` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (선행 [12-time-money-and-units](../../12-time-money-and-units/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/27-menu-option/` (README.md · impl/com/domain/menu/OptionSelection.java · src/main/.../Menu.java · src/test/.../MeasurementTest.java).
 
 ### 관련 자료

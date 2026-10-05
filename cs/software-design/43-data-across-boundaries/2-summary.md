@@ -240,7 +240,7 @@ grep 'spring.jpa.open-in-view is enabled by default' app.log
 ## 관련 주제·근거
 
 - 선행
-  - [38-layered-hexagonal-clean](../38-layered-hexagonal-clean/2-summary.md) · api-design/08-schema-and-serialization — 미작성([api-design/curriculum.md](../../api-design/curriculum.md))
+  - [38-layered-hexagonal-clean](../38-layered-hexagonal-clean/2-summary.md) · [api-design/08-schema-and-serialization](../../api-design/08-schema-and-serialization/2-summary.md)
 - 후속·연결
   - [44-architecture-in-code](../44-architecture-in-code/2-summary.md) — 계층마다 매핑하는 비용을 세 스타일로 비교
   - [42-ui-architecture-patterns](../42-ui-architecture-patterns/2-summary.md) — 뷰모델·Presentation Model

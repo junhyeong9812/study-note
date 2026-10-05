@@ -169,7 +169,7 @@ public void save(long id, DocForm form) {
   PUT /docs/1 (If-Match 없음) → 428 Precondition Required (조건부 요청을 강제할 때, RFC 6585)
 ```
 
-- RFC 9110은 `If-Match`를 "lost update" 문제를 막는 수단으로 설명한다(13.1.1). API 설계 쪽은 api-design `11-concurrency-control-in-apis` — 미작성, [api-design/curriculum](../../api-design/curriculum.md).
+- RFC 9110은 `If-Match`를 "lost update" 문제를 막는 수단으로 설명한다(13.1.1). API 설계 쪽은 [api-design/11-concurrency-control-in-apis](../../api-design/11-concurrency-control-in-apis/2-summary.md).
 
 ### 4. 진단
 
@@ -247,9 +247,9 @@ DELETE FROM edit_lock WHERE expires_at < now() - interval '1 day';
 
 - 선행
   - [17-occ-and-timestamp-ordering](../17-occ-and-timestamp-ordering/2-summary.md) — 낙관적 동시성·버전 컬럼
-  - domain-modeling `05-aggregates-and-invariants` — 일관성 경계. 미작성, [domain-modeling/curriculum](../../domain-modeling/curriculum.md)
+  - [domain-modeling/05-aggregates-and-invariants](../../domain-modeling/05-aggregates-and-invariants/2-summary.md) — 일관성 경계.
 - 연결
-  - api-design `11-concurrency-control-in-apis` — ETag·`If-Match`. 미작성, [api-design/curriculum](../../api-design/curriculum.md)
+  - [api-design/11-concurrency-control-in-apis](../../api-design/11-concurrency-control-in-apis/2-summary.md) — ETag·`If-Match`.
   - [18-app-level-concurrency-patterns](../18-app-level-concurrency-patterns/2-summary.md) — 한 트랜잭션 안의 `FOR UPDATE`·조건부 UPDATE
   - [14-isolation-levels-and-anomalies](../14-isolation-levels-and-anomalies/2-summary.md) — lost update의 DB 안 버전
   - [domain-modeling/advanced/12-seat-hold](../../domain-modeling/advanced/12-seat-hold/2-summary.md) — 만료가 있는 좌석 홀드(리스)

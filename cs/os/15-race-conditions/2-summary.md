@@ -283,8 +283,8 @@ SUMMARY: ThreadSanitizer: data race counter.c:12 in worker
   - [27-event-based-concurrency](../27-event-based-concurrency/2-summary.md) — 이벤트 루프(`await` 사이의 경쟁)
   - [19-deadlock](../19-deadlock/2-summary.md), [20-concurrency-bugs](../20-concurrency-bugs/2-summary.md)(원자성 위반·순서 위반)
   - [systems/semaphore](../../systems/semaphore/2-summary.md) — 기존 세마포어 초안
-  - [database/README](../../database/README.md) — `13-transactions-acid`(원자성·격리). 미작성
-  - [testing/README](../../testing/README.md) — `10-testing-time-and-concurrency`. 미작성
+  - [database/13-transactions-acid](../../database/13-transactions-acid/2-summary.md)(원자성·격리)
+  - [testing/10-testing-time-and-concurrency](../../testing/10-testing-time-and-concurrency/2-summary.md)
 - 교재
   - OSTEP 26 "Concurrency: An Introduction" — 26.4 `counter` 기계어와 Figure 26.7, 임계 구역·경쟁 조건·비결정성·상호 배제 정의 <https://pages.cs.wisc.edu/~remzi/OSTEP/threads-intro.pdf>
 - 언어 명세

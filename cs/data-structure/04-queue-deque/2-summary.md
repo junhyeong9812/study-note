@@ -993,7 +993,7 @@ removeLast() : last 를 한 칸 앞으로 당기고, 떼어낸 노드의 prev �
 - 선행 — [01-dynamic-array](../01-dynamic-array/2-summary.md) · [02-linked-list](../02-linked-list/2-summary.md): 배열판의 확장과 연결판의 노드.
 - 후속 — [05-hashmap](../05-hashmap/2-summary.md): 순서 구조의 한계("들어 있는가"가 O(n))가 키로 찾는 구조를 부른다.
 - 응용 — [algorithm/11-bfs](../../algorithm/11-bfs/2-summary.md) · [algorithm/09-sliding-window](../../algorithm/09-sliding-window/2-summary.md) · [ops-patterns/05-backpressure](../../ops-patterns/05-backpressure/2-summary.md) · [ops-patterns/04-rate-limiter](../../ops-patterns/04-rate-limiter/2-summary.md).
-- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `06-queue-deque` (후속 `25-ring-buffer` — 노트 미작성).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `06-queue-deque` (후속 [25-ring-buffer](../25-ring-buffer/2-summary.md)).
 - 교재 — CLRS 3판 10.1 스택과 큐.
 - myway 원본 — `/home/jun/project/myway/data-structure/04-queue-deque/` (README.md · impl/ArrayQueue.java · impl/CircularQueue.java · impl/ArrayDeque.java · impl/LinkedDeque.java · impl/QueueProblems.java · impl/RecentCounter.java).
 

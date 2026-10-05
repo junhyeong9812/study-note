@@ -275,7 +275,7 @@ INSERT ... → 충돌 잡히면 "이미 발급됨"으로 응답
 - 후속 — [03-stock-deduct](../24-case-stock-deduct/2-summary.md): 수량 복원의 멱등성과 여러 행 잠금 순서.
 - 패턴 — [ops-patterns/01-retry-backoff](../../ops-patterns/01-retry-backoff/2-summary.md) · [ops-patterns/09-stampede](../../ops-patterns/09-stampede/2-summary.md): 재시도 예산과 캐시 붕괴의 일반론.
 - 도메인 — [domain-modeling/basic/15-coupon](../../domain-modeling/basic/15-coupon/2-summary.md): 쿠폰 발급·사용·만료 모델.
-- 영역 표 — [api-design/curriculum.md](../curriculum.md) `23-case-coupon-issue` (선행 `05-idempotency-keys` · `database/18-app-level-concurrency-patterns` — 노트 미작성).
+- 영역 표 — [api-design/curriculum.md](../curriculum.md) `23-case-coupon-issue` (선행 [05-idempotency-keys](../05-idempotency-keys/2-summary.md) · [database/18-app-level-concurrency-patterns](../../database/18-app-level-concurrency-patterns/2-summary.md)).
 - 교재 — DDIA 7장(원자적 갱신 · 유일성 제약) · AWS Builders' Library "Timeouts, retries, and backoff with jitter".
 - myway 원본 — `/home/jun/project/myway/api-design/02-coupon-issue/` (REQUIREMENTS.md · NOTES.md · solution/CHECKLIST.md · solution/REFERENCE.md).
 

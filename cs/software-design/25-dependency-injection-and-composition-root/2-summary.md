@@ -301,12 +301,12 @@ grep -rc 'mockStatic(' src/test/java | awk -F: '$2>0'
 
 - 선행
   - [22-solid](../22-solid/2-summary.md) · 원본 [engineering/solid-principles](../../engineering/solid-principles/2-summary.md) 「DIP vs DI(의존성 주입)」: DIP는 소스 의존 방향, DI는 객체를 받는 방식. DI를 써도 DIP를 어길 수 있다.
-  - testing/03-test-doubles — 미작성([testing README](../../testing/README.md))
+  - [testing/03-test-doubles](../../testing/03-test-doubles/2-summary.md)
 - 후속·연결
   - [26-functional-core-imperative-shell](../26-functional-core-imperative-shell/2-summary.md) — 주입 대신 의존을 아예 바깥으로 밀어내기
   - [33-aop-and-proxies](../33-aop-and-proxies/2-summary.md)(프록시·자기 호출), [36-extension-points-and-plugins](../36-extension-points-and-plugins/2-summary.md)(Separated Interface·Plugin·ServiceLoader)
   - [engineering/design-patterns-gof](../../engineering/design-patterns-gof/2-summary.md) 「Spring이 대신 해주는 것」 — Singleton·Factory를 컨테이너가 흡수
-  - testing/10-testing-time-and-concurrency — 미작성([testing README](../../testing/README.md))
+  - [testing/10-testing-time-and-concurrency](../../testing/10-testing-time-and-concurrency/2-summary.md)
 - 글·문서
   - Mark Seemann, Steven van Deursen, 『Dependency Injection Principles, Practices, and Patterns』(Manning, 2019) — 4장 DI patterns(4.1 Composition Root, 4.2 Constructor Injection, 4.3 Method Injection), 5장 DI anti-patterns(5.1~5.4), 6장 Code smells(6.1 Constructor Over-injection, 6.3 cyclic Dependencies), 8장 Object lifetime(8.3 Lifestyle catalog, 8.4.1 Captive Dependencies) — livebook 목차로 절 구성 확인 <https://livebook.manning.com/book/dependency-injection-principles-practices-patterns/chapter-5>
   - Martin Fowler, "Inversion of Control Containers and the Dependency Injection pattern", 2004-01-23 <https://martinfowler.com/articles/injection.html>

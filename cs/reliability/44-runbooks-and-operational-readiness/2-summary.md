@@ -230,7 +230,7 @@ SRE 32장의 Simple PRR 모델은 보통 **이미 출시된 서비스**를 SRE �
   - [43-alerting-and-on-call](../43-alerting-and-on-call/2-summary.md) — 증상 기반 경보, 온콜
 - 후속·연결
   - [45-chaos-and-resilience-testing](../45-chaos-and-resilience-testing/2-summary.md) — 런북을 게임 데이에서 실제로 써 본다
-  - engineering-practice/11 `documentation-practices` — 문서 신선도 (영역 표 [../../engineering-practice/README.md](../../engineering-practice/README.md)에서 "미작성")
+  - [engineering-practice/11-documentation-practices](../../engineering-practice/11-documentation-practices/2-summary.md) — 문서 신선도
   - 원본 [systems/server-design/08-deployment-ops.md](../../systems/server-design/08-deployment-ops.md) — 운영 준비 체크리스트(런북 항목 포함)
   - [engineering/development-standards/operational-standards](../../engineering/development-standards/operational-standards/2-summary.md) 5절 — "새벽 3시에 그대로 따라 할 수 있는" 런북
   - [database/32-replication-leader-follower](../../database/32-replication-leader-follower/2-summary.md) — 실험 런북이 다룬 복제 지연

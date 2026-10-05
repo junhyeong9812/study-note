@@ -74,7 +74,7 @@ DB 앞에 캐시(cache-aside)를 두면 읽기가 빨라진다. 패턴·무효�
 ```
 
 - AWS 글: 형식 불일치를 감지해 캐시를 버리면 **대량 재적재**가 일어나 의존 서비스가 스로틀·브라운아웃될 수 있다. (a)도 같은 위험이다. 배포를 천천히 하거나 미리 데워 둔다.
-- 호환 규칙(필드 추가만, 삭제·의미 변경은 새 버전)은 API 버저닝과 같은 문제다. api-design `07-versioning-and-compatibility`(미작성, [api-design/curriculum](../../api-design/curriculum.md)).
+- 호환 규칙(필드 추가만, 삭제·의미 변경은 새 버전)은 API 버저닝과 같은 문제다. [api-design/07-versioning-and-compatibility](../../api-design/07-versioning-and-compatibility/2-summary.md).
 
 ### 4. null 캐싱 — "없음"도 답이다
 
@@ -253,7 +253,7 @@ redis-cli --scan --pattern 'app:product:v2:*' | head   # 옛 버전 키가 남�
 
 - 선행
   - [30-caching-with-databases](../30-caching-with-databases/2-summary.md) — cache-aside·무효화·3대 사고. 원고: [systems/server-design/04-caching.md](../../systems/server-design/04-caching.md)
-  - api-design `07-versioning-and-compatibility` — 하위 호환 규칙. 미작성, [api-design/curriculum](../../api-design/curriculum.md)
+  - [api-design/07-versioning-and-compatibility](../../api-design/07-versioning-and-compatibility/2-summary.md) — 하위 호환 규칙.
 - 연결
   - reliability `29-cache-stampede` — 원고: [ops-patterns/09-stampede](../../ops-patterns/09-stampede/2-summary.md)
   - [49-multi-level-caching](../49-multi-level-caching/2-summary.md) — 로컬 L1 + Redis L2, 무효화 전파

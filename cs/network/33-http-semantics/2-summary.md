@@ -349,7 +349,7 @@ res.setHeader('Set-Cookie', [
   - `35-http-connection-management` — [35-http-connection-management](../35-http-connection-management/2-summary.md)
   - `36-http2-multiplexing` — [36-http2-multiplexing](../36-http2-multiplexing/2-summary.md)
   - `security/11-sessions-and-cookie-security` — 미작성([security 영역 표](../../security/README.md))
-  - `web-platform/05-fetch-from-browser` — 미작성([web-platform 영역 표](../../web-platform/README.md))
+  - [web-platform/05-fetch-from-browser](../../web-platform/05-fetch-from-browser/2-summary.md)
   - [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md) — 비멱등 요청 재시도의 앱 쪽 방어
 - RFC 9110 HTTP Semantics <https://www.rfc-editor.org/rfc/rfc9110>
   - §5.1 필드 이름(대소문자 무시) · §5.2 결합 값 · §5.3 필드 순서와 `Set-Cookie` 예외

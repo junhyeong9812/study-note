@@ -248,7 +248,7 @@ location /ws/ {
 - **브로드캐스트 팬아웃 = 구독 맵 + 연결별 송신 큐**
   - `topic -> Set<Connection>` 해시 맵으로 "누구에게 보낼지"를 찾는다. [해시맵](../../data-structure/05-hashmap/2-summary.md)
   - 연결마다 **유한 크기 송신 큐**를 둔다. 느린 클라이언트 하나 때문에 전체 브로드캐스트가 막히지 않게 한다.
-  - 큐가 차면 정책을 고른다. 오래된 것 버리기, 최신 상태만 남기기(병합), 그 연결 끊기 중 하나다. [큐·덱](../../data-structure/04-queue-deque/2-summary.md) · 링 버퍼는 미작성([data-structure 영역 표](../../data-structure/curriculum.md))
+  - 큐가 차면 정책을 고른다. 오래된 것 버리기, 최신 상태만 남기기(병합), 그 연결 끊기 중 하나다. [큐·덱](../../data-structure/04-queue-deque/2-summary.md) · 링 버퍼는 [data-structure/25-ring-buffer](../../data-structure/25-ring-buffer/2-summary.md)
 - **재연결 백오프 = 지수 증가 + 무작위 지터**
   - RFC 6455 §7.2.3은 첫 재연결을 무작위로 늦추고(예: 0~5초), 실패하면 절단 이진 지수 백오프로 늘리라고 권한다(SHOULD).
   - [ops-patterns/01-retry-backoff](../../ops-patterns/01-retry-backoff/2-summary.md)

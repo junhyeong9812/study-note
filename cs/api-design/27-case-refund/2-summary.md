@@ -293,7 +293,7 @@ UPDATE orders
 - 선행 — [01-order-point](../22-case-order-point/2-summary.md)(멱등 · 원장 · 조건부 UPDATE) · [03-stock-deduct](../24-case-stock-deduct/2-summary.md)(복원 멱등 · 잠금 순서) · [05-delivery-webhook](../26-case-delivery-webhook/2-summary.md)(PG 통지 수신 · 재시도).
 - 패턴 — [ops-patterns/08-saga](../../ops-patterns/08-saga/2-summary.md) · [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md): 보상 불가 단계가 있는 다단계 트랜잭션과 멱등 키 저장소.
 - 도메인 — [domain-modeling/advanced/04-refund](../../domain-modeling/advanced/04-refund/2-summary.md) · [domain-modeling/basic/10-payment](../../domain-modeling/basic/10-payment/2-summary.md): 환불 · 결제 상태 모델.
-- 영역 표 — [api-design/curriculum.md](../curriculum.md) `27-case-refund` (선행 `05-idempotency-keys` · `distributed/15-saga` — 노트 미작성).
+- 영역 표 — [api-design/curriculum.md](../curriculum.md) `27-case-refund` (선행 [05-idempotency-keys](../05-idempotency-keys/2-summary.md) · [distributed/15-saga](../../distributed/15-saga/2-summary.md)).
 - 교재 — DDIA 7장(원자적 갱신) · 11장(정확히 한 번의 어려움) · Garcia-Molina & Salem "Sagas"(1987) · Stripe "Idempotent requests".
 - myway 원본 — `/home/jun/project/myway/api-design/06-refund/` (REQUIREMENTS.md · NOTES.md · solution/CHECKLIST.md · solution/REFERENCE.md).
 

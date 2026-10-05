@@ -180,7 +180,7 @@ record Money(long won) {
 
 - **호어 삼중항(Hoare triple)** `{P} S {Q}`(지금 쓰는 표기, Hoare 1969 원문은 `P {S} Q`): "P가 참일 때 S를 실행해 **끝난다면** Q가 참". 종료 자체는 따로 증명한다(부분 정확성). 사전조건 = P, 사후조건 = Q. Hoare 1969 "An axiomatic basis for computer programming". Meyer 1992도 클래스 불변식이 Hoare의 data invariant에서 왔다고 적는다.
 - **불변식 검사 = 술어 평가**: `invariant()`는 객체 상태에 대한 불리언 함수. 공개 메서드 끝마다 평가하면 비용은 술어의 복잡도에 비례한다(예: 항목 합 검사는 O(항목 수)). 그래서 운영에서는 끄거나 가벼운 것만 남긴다.
-- **상태 기계의 가드**: 상태 전이의 사전조건이 가드다. "PAID에서만 refund 가능"은 `refund`의 사전조건이자 상태 기계의 전이 가드(domain-modeling 11 state-machines-in-domain — 미작성, [domain-modeling/curriculum](../../domain-modeling/curriculum.md)).
+- **상태 기계의 가드**: 상태 전이의 사전조건이 가드다. "PAID에서만 refund 가능"은 `refund`의 사전조건이자 상태 기계의 전이 가드([domain-modeling/11-state-machines-in-domain](../../domain-modeling/11-state-machines-in-domain/2-summary.md)).
 - **스냅숏(old 값)**: 사후조건 `qty == old(qty) - n`을 검사하려면 호출 전 값을 저장해야 한다. Eiffel `old` 식, 자바는 지역 변수(실험 A의 `int old`). Oracle 문서는 상태를 저장하는 내부 클래스 방법을 보인다.
 
 ## 적용 — 풀어나가는 법

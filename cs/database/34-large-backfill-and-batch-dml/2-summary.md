@@ -132,7 +132,7 @@ UPDATE orders SET amount_krw = amount * 1300;      -- 1억 행 (예시)
 ## 쓰이는 자료구조·알고리즘
 
 - **keyset 범위 스캔** — B+트리 인덱스에서 `id > last_id`의 첫 잎을 찾고 옆으로 1000개를 읽는다. 청크마다 O(log n + 청크). OFFSET은 건너뛸 행을 매번 읽는다. [data-structure/15-b-tree](../../data-structure/15-b-tree/2-summary.md)
-- **체크포인트 커서** — `(job, last_id, done_rows)` 한 행. 커서 전진과 청크 변경을 한 트랜잭션에 묶는다. 배치 잡의 재시작 일반은 reliability `31-batch-job-restart-and-checkpoint`(미작성, [reliability/README](../../reliability/README.md)).
+- **체크포인트 커서** — `(job, last_id, done_rows)` 한 행. 커서 전진과 청크 변경을 한 트랜잭션에 묶는다. 배치 잡의 재시작 일반은 [reliability/31-batch-job-restart-and-checkpoint](../../reliability/31-batch-job-restart-and-checkpoint/2-summary.md).
 - **멱등 변환** — "원본 → 다른 컬럼" 함수이거나, "이미 목표 상태인 행 제외" 조건. reliability `13-idempotency`(원고: [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md))의 키 기반 멱등과 같은 목표다.
 - **피드백 스로틀** — 지연이 임계값을 넘으면 멈추고, 내려오면 재개하는 제어 루프. [ops-patterns/05-backpressure](../../ops-patterns/05-backpressure/2-summary.md)
 - **MVCC 버전 체인** — 옛 버전이 남는 이유(PostgreSQL 힙 튜플, InnoDB undo). [16-mvcc](../16-mvcc/2-summary.md).
@@ -278,7 +278,7 @@ SELECT count(*) FILTER (WHERE won_v2 IS NULL)         AS missing,
 - 후속·연결
   - [35-bulk-file-import-export](../35-bulk-file-import-export/2-summary.md) — 파일에서 대량 적재
   - [44-timeseries-resolution-tiers](../44-timeseries-resolution-tiers/2-summary.md) — 파티션 DROP 보존, 멱등 롤업
-  - reliability `31-batch-job-restart-and-checkpoint` — 배치 잡 재시작 일반. 미작성, [reliability/README](../../reliability/README.md)
+  - [reliability/31-batch-job-restart-and-checkpoint](../../reliability/31-batch-job-restart-and-checkpoint/2-summary.md) — 배치 잡 재시작 일반.
   - data-engineering `08-idempotent-pipelines-and-backfill` — 파티션 덮어쓰기 백필. 미작성, [data-engineering/README](../../data-engineering/README.md)
 - 문서·자료
   - PostgreSQL 17 UPDATE — 대량 UPDATE의 bloat·레플리카 지연·락 경합, 배치 권고, `LIMIT` 없음과 `ctid` CTE 예 <https://www.postgresql.org/docs/17/sql-update.html>

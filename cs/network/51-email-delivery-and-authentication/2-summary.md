@@ -157,7 +157,7 @@ DMARC는 "사용자가 보는 `From:` 도메인"을 기준으로 SPF·DKIM 결�
   - 헤더·본문을 정해진 규칙으로 정규화한다. 그다음 SHA-256으로 해시하고, RSA 또는 Ed25519로 서명한다.
   - 정규화는 "사소한 변형에도 같은 바이트열"을 만드는 함수다. 서명 검증의 결정성을 준다.
 - **조직 도메인 판정** — RFC 7489는 Public Suffix List 조회, RFC 9989는 PSL 대신 DNS Tree Walk(라벨을 하나씩 떼며 `_dmarc` 레코드를 찾는 탐색)를 쓴다(부록 C.3).
-- **억제 목록(suppression list)** — 하드 바운스·수신 거부 주소를 집합(해시 셋)에 넣어 다음 발송에서 뺀다. 연결: `api-design/10-notification-delivery-pipeline`(미작성 — [api-design 영역 표](../../api-design/curriculum.md)).
+- **억제 목록(suppression list)** — 하드 바운스·수신 거부 주소를 집합(해시 셋)에 넣어 다음 발송에서 뺀다. 연결: [api-design/10-notification-delivery-pipeline](../../api-design/10-notification-delivery-pipeline/2-summary.md).
 
 ## 적용 — 풀어나가는 법
 
@@ -312,7 +312,7 @@ ResponseEntity<Void> unsubscribe(@PathVariable String token) {
   - `security/06-public-key-and-signatures` — RSA·Ed25519 서명. 미작성([security 영역 표](../../security/README.md))
   - 해시: [foundations/security/sha256-and-digest.md](../../foundations/security/sha256-and-digest.md)
 - 연결
-  - `api-design/10-notification-delivery-pipeline` — 발송 파이프라인·억제 목록·재시도. 미작성([api-design 영역 표](../../api-design/curriculum.md))
+  - [api-design/10-notification-delivery-pipeline](../../api-design/10-notification-delivery-pipeline/2-summary.md) — 발송 파이프라인·억제 목록·재시도.
   - [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md) — SPF include 재귀 평가
 - RFC 3463 확장 메일 상태 코드 — §3.2 주소(X.1.X) · §3.8 보안·정책(X.7.X) <https://www.rfc-editor.org/rfc/rfc3463>
 - RFC 5321 SMTP — §3.3 트랜잭션 · §4.2.1 응답 코드 · §4.5.4.1 재시도 · §5.1 MX · §6.1 전달 책임 <https://www.rfc-editor.org/rfc/rfc5321>

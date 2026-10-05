@@ -273,7 +273,7 @@ e2fsck -fn j.img                       # Pass 5: Block bitmap differences
   - [24-fsync-and-durability](../24-fsync-and-durability/2-summary.md) — 앱이 크래시 일관성을 만드는 법
   - [33-data-integrity-checksums](../33-data-integrity-checksums/2-summary.md) — 찢어진 페이지·손상 감지
   - [32-raid](../32-raid/2-summary.md) — RAID의 같은 문제(consistent-update, write hole)
-  - [database/README](../../database/README.md) — `19-wal-and-logging`(WAL 규칙·group commit). 미작성
+  - [database/19-wal-and-logging](../../database/19-wal-and-logging/2-summary.md)(WAL 규칙·group commit)
   - [38-os-incidents](../38-os-incidents/2-summary.md)(ext4 0바이트 파일 2009)
 - 교재
   - OSTEP 42장 "Crash Consistency: FSCK and Journaling" — 42.1 시나리오, 42.2 fsck, 42.3 데이터·메타데이터 저널링·512바이트 원자성·revoke, 42.4 Soft Updates·COW·BBC <https://pages.cs.wisc.edu/~remzi/OSTEP/file-journaling.pdf>

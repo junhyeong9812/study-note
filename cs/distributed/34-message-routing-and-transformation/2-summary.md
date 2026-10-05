@@ -308,7 +308,7 @@ kafka-get-offsets.sh --bootstrap-server localhost:9092 --topic orders           
   - [19-message-types-channels-and-endpoints](../19-message-types-channels-and-endpoints/2-summary.md) — 메시지 종류·채널·Sequential Convoy
   - [23-orchestration-vs-choreography](../23-orchestration-vs-choreography/2-summary.md). 기존 원고 [systems/orchestration-choreography](../../systems/orchestration-choreography/2-summary.md)
 - 연결
-  - domain-modeling `18-context-mapping`(Published Language·ACL) — 미작성, [domain-modeling/curriculum](../../domain-modeling/curriculum.md)
+  - [domain-modeling/18-context-mapping](../../domain-modeling/18-context-mapping/2-summary.md)(Published Language·ACL)
   - [18-consumer-failure-handling](../18-consumer-failure-handling/2-summary.md)(DLQ·poison), [30-batch-and-stream-processing](../30-batch-and-stream-processing/2-summary.md)(윈도·워터마크로 모으기)
   - reliability `13-idempotency` → [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md)
   - [data-structure/07-heap](../../data-structure/07-heap/2-summary.md) · [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md)

@@ -301,7 +301,7 @@ SELECT pid, pg_blocking_pids(pid), query FROM pg_stat_activity WHERE wait_event_
   - [18-semaphores](../18-semaphores/2-summary.md) — 락 안에서 개수 세마포어를 기다리는 교착, 식사하는 철학자
   - [17-condition-variables-and-monitors](../17-condition-variables-and-monitors/2-summary.md) — 교착이 아닌 "깨워 줄 사람 없는 대기"(lost wakeup)
   - [20-concurrency-bugs](../20-concurrency-bugs/2-summary.md) — 라이브락·기아·우선순위 역전
-  - database `15-two-phase-locking-and-deadlock` — DB 락 모드와 교착 탐지. 미작성, [database/README](../../database/README.md)
+  - [database/15-two-phase-locking-and-deadlock](../../database/15-two-phase-locking-and-deadlock/2-summary.md) — DB 락 모드와 교착 탐지.
   - [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md) · [algorithm/18-scc](../../algorithm/18-scc/2-summary.md) · [data-structure/08-graph](../../data-structure/08-graph/2-summary.md)
   - [api-design/03-stock-deduct](../../api-design/24-case-stock-deduct/2-summary.md) — 재고 차감의 행 잠금
 - 교재·논문

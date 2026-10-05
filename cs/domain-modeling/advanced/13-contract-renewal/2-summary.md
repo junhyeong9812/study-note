@@ -262,7 +262,7 @@ servesOn(계약, 날짜, GraceState)  ← 유예 중 서비스가 나가나
 - 기간 경계의 이웃 — [08-delay-compensation](../08-delay-compensation/2-summary.md)(약속일 다음 날부터), [04-refund](../04-refund/2-summary.md)(초일 산입), [15-period-close](../15-period-close/2-summary.md)(마감 시각).
 - 유예·만료 — [11-stock-reservation](../11-stock-reservation/2-summary.md)(TTL 경계), [14-mileage-expiry](../14-mileage-expiry/2-summary.md)(소멸일 당일).
 - 기초판 — [basic/06-subscription](../../basic/06-subscription/2-summary.md), [basic/20-insurance](../../basic/20-insurance/2-summary.md)(보험 기간·갱신).
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (관련 leaf `13-instant-vs-local-time-and-tz-rules` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (관련 leaf [13-instant-vs-local-time-and-tz-rules](../../13-instant-vs-local-time-and-tz-rules/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/13-contract-renewal/` (README.md · impl/com/domain/contract/RenewalPolicy.java · src/test/java/com/domain/contract/RenewalPolicyTest.java · MeasurementTest.java).
 
 ### 관련 자료

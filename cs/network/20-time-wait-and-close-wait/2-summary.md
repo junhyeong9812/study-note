@@ -172,8 +172,8 @@ CLOSE-WAIT는 손님은 나갔는데 직원이 계산을 안 끝내 테이블을
 - **해시 테이블(4-튜플 → 연결)** — 커널은 도착 세그먼트를 4-튜플로 찾는다. TIME-WAIT 미니 소켓도 이 테이블에 남아 같은 4-튜플의 새 연결을 막는다.
   - 리눅스는 established·time-wait 연결을 같은 해시 테이블(ehash)로 관리한다(`net/ipv4/inet_timewait_sock.c`가 TIME-WAIT 소켓을 ehash 체인에 넣는다). 개념은 [해시맵](../../data-structure/05-hashmap/2-summary.md).
   - 임시 포트 선택은 "이 4-튜플이 테이블에 없는 포트"를 찾는 탐색이다. 범위가 거의 찰수록 탐색이 길어진다(Bernat가 CPU 비용으로 언급).
-- **타이머 휠** — 수만 개의 TIME-WAIT가 각자 60초 뒤 만료된다. 리눅스는 TIME-WAIT 소켓마다 타이머(`tw_timer`)를 하나씩 건다(`net/ipv4/inet_timewait_sock.c`). 이 타이머들은 커널 공용 구조인 계층형 타이머 휠에 들어가서 싸게 관리된다(`kernel/time/timer.c`). data-structure `timer-structures` — 미작성([영역 표](../../data-structure/curriculum.md)).
-- **fd 테이블** — 프로세스마다 정수 fd → 열린 파일(소켓) 객체의 배열이다. 한도(`RLIMIT_NOFILE`)는 "가장 큰 fd 번호 + 1"이다(getrlimit(2)). os `files-and-descriptors` — 미작성([영역 표](../../os/README.md)).
+- **타이머 휠** — 수만 개의 TIME-WAIT가 각자 60초 뒤 만료된다. 리눅스는 TIME-WAIT 소켓마다 타이머(`tw_timer`)를 하나씩 건다(`net/ipv4/inet_timewait_sock.c`). 이 타이머들은 커널 공용 구조인 계층형 타이머 휠에 들어가서 싸게 관리된다(`kernel/time/timer.c`). [data-structure/26-timer-structures](../../data-structure/26-timer-structures/2-summary.md).
+- **fd 테이블** — 프로세스마다 정수 fd → 열린 파일(소켓) 객체의 배열이다. 한도(`RLIMIT_NOFILE`)는 "가장 큰 fd 번호 + 1"이다(getrlimit(2)). [os/21-files-and-descriptors](../../os/21-files-and-descriptors/2-summary.md).
 - **리소스 수명 관리(RAII·try-with-resources)** — CLOSE-WAIT 누수는 "획득한 자원을 모든 경로에서 해제"하지 못한 버그다.
 
 ## 적용 — 풀어나가는 법

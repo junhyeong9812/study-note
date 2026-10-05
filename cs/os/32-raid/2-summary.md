@@ -264,7 +264,7 @@ smartctl -a /dev/sdX                              # 재할당·보류 섹터 수
   - [33-data-integrity-checksums](../33-data-integrity-checksums/2-summary.md) — RAID가 못 잡는 조용한 손상, 스크러빙
   - [23-crash-consistency-and-journaling](../23-crash-consistency-and-journaling/2-summary.md) — 같은 문제(여러 블록 원자적 갱신)의 파일 시스템 판
   - [systems/striping](../../systems/striping/2-summary.md) — 분산 시스템의 스트라이핑
-  - [distributed/README](../../distributed/README.md) — `06-replication-strategies`(복제). 미작성
+  - [distributed/06-replication-strategies](../../distributed/06-replication-strategies/2-summary.md)(복제)
 - 교재
   - OSTEP 38장 "Redundant Arrays of Inexpensive Disks (RAIDs)" — 38.2 fail-stop, 38.4 RAID0·청크, 38.5 RAID1·consistent-update, 38.6 RAID4·빼기 패리티(식 38.1)·small-write, 38.7 RAID5, Figure 38.8 <https://pages.cs.wisc.edu/~remzi/OSTEP/file-raid.pdf>
   - OSTEP 45장 45.1 LSE 통계, 45.2 재구축 중 LSE와 RAID-DP <https://pages.cs.wisc.edu/~remzi/OSTEP/file-integrity.pdf>

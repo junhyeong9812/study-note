@@ -765,7 +765,7 @@ tf 는 Posting 안(문서 안)에서, df 는 포스팅 리스트 길이(색인 �
 - 기법 — [algorithm/08-two-pointers](../../algorithm/08-two-pointers/2-summary.md) · [algorithm/06-binary-search](../../algorithm/06-binary-search/2-summary.md): 교집합 병합과 정렬 삽입.
 - 후속 — [33-filesystem](../33-filesystem/2-summary.md): "이름 → 노드" 매핑이 경로를 타고 트리가 되는 곳(정답 6번).
 - 연결 — [24-lsm-tree](../24-lsm-tree/2-summary.md): 실제 검색 엔진이 색인을 불변 세그먼트로 쌓고 병합하는 방식은 SSTable·compaction과 같은 모양이다.
-- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `24-inverted-index` (선행 `07`, 교재 Manning 외 『Introduction to Information Retrieval』 1장). database 영역 `46-full-text-search-and-analyzers`가 분석기·BM25 쪽 후속이다(노트 미작성).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `24-inverted-index` (선행 `07`, 교재 Manning 외 『Introduction to Information Retrieval』 1장). database 영역 [46-full-text-search-and-analyzers](../../database/46-full-text-search-and-analyzers/2-summary.md)가 분석기·BM25 쪽 후속이다.
 - myway 원본 — `/home/jun/project/myway/data-structure/32-inverted-index/` (README.md · impl/InvertedIndexEngine.java · impl/LinearScanEngine.java · impl/StandardAnalyzer.java).
 
 ### 용어 풀이

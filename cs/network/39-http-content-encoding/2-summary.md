@@ -143,7 +143,7 @@ nginx 문서는 gzip이 "전송량을 절반 이하로 줄이는 경우가 많�
 - **DEFLATE = LZ77 + 허프만 부호** — gzip과 zlib의 본체다(RFC 9110 §8.4.1.2·§8.4.1.3).
   - *LZ77*: 슬라이딩 창 안에서 앞에 나온 같은 문자열을 찾아 "(거리, 길이)" 역참조로 바꾼다.
   - *허프만 부호*: 자주 나오는 기호에 짧은 비트열을 준다.
-  - 원리는 `algorithm/33-lossless-compression-lz77-huffman`, br·zstd의 절충은 `algorithm/34-modern-codecs-lz4-zstd-brotli` — 둘 다 미작성([algorithm 영역 표](../../algorithm/curriculum.md)). 슬라이딩 창 개념은 [algorithm/09-sliding-window](../../algorithm/09-sliding-window/2-summary.md)와 같다.
+  - 원리는 [algorithm/33-lossless-compression-lz77-huffman](../../algorithm/33-lossless-compression-lz77-huffman/2-summary.md), br·zstd의 절충은 [algorithm/34-modern-codecs-lz4-zstd-brotli](../../algorithm/34-modern-codecs-lz4-zstd-brotli/2-summary.md). 슬라이딩 창 개념은 [algorithm/09-sliding-window](../../algorithm/09-sliding-window/2-summary.md)와 같다.
 - **CRC-32** — gzip 꼬리의 무결성 검사값이다(RFC 1952). 푸는 쪽이 다시 계산해 손상을 잡는다.
 - **q값 우선순위 협상** — 클라이언트 목록을 (q 내림차순)으로 정렬하고, 서버가 가진 코딩과 교집합의 첫 원소를 고르는 과정이다. 0은 제외 집합이다.
 - **캐시 키 확장(Vary)** — 캐시 저장소는 `hash(메서드, URL, Vary로 지정된 요청 헤더 값들)`을 키로 쓰는 해시 맵이다. [해시맵](../../data-structure/05-hashmap/2-summary.md)
@@ -302,7 +302,7 @@ curl -s https://cdn.example.com/app.js | head -c 2 | xxd
 
 - 선행
   - [33-http-semantics](../33-http-semantics/2-summary.md) · [34-http-caching](../34-http-caching/2-summary.md) — 표현·검증자·캐시 키.
-  - `algorithm/33-lossless-compression-lz77-huffman` — 미작성([algorithm 영역 표](../../algorithm/curriculum.md))
+  - [algorithm/33-lossless-compression-lz77-huffman](../../algorithm/33-lossless-compression-lz77-huffman/2-summary.md)
 - 후속·관련
   - [40-chunked-and-streaming-responses](../40-chunked-and-streaming-responses/2-summary.md) — 길이 모르는 압축 결과를 흘리는 법
   - [41-range-requests-and-resume](../41-range-requests-and-resume/2-summary.md) — 압축 표현의 바이트 오프셋·`If-Range`

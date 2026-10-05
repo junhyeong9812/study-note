@@ -215,7 +215,7 @@ S3 한도(S3 문서 "multipart upload limits"):
 - **수신 청크 비트맵** — 조각 i를 받으면 비트 i를 켠다. 모든 비트가 켜지면 조립한다. 빠진 조각 찾기는 "0인 비트 찾기"다. [data-structure/18-bitset](../../data-structure/18-bitset/2-summary.md)
   - 순차 업로드(tus 코어)는 비트맵 대신 **오프셋 정수 하나**로 충분하다. 앞에서부터 빈틈없이 채우기 때문이다.
 - **부분 해시·머클 트리** — 조각마다 해시를 내고, 해시들을 다시 해시해 루트 하나를 만든다. 어느 조각이 틀렸는지 찾을 수 있고, 전체를 다시 읽지 않고 검증할 수 있다. S3 composite 체크섬("checksum of checksums")이 한 단계짜리 예다. [data-structure/27-merkle-tree](../../data-structure/27-merkle-tree/2-summary.md)
-- **체크섬(CRC·SHA)** — CRC는 우연한 손상 검출용으로 빠르다. SHA-256은 같은 해시를 갖는 다른 데이터를 일부러 만들기 어렵다(충돌 저항). 단 변조 방지가 되려면 해시값이 신뢰 경로로 오거나 HMAC·서명을 써야 한다. 공격자는 데이터와 함께 해시도 바꿀 수 있다. `os/33-data-integrity-checksums` — 미작성([os 영역 표](../../os/README.md)).
+- **체크섬(CRC·SHA)** — CRC는 우연한 손상 검출용으로 빠르다. SHA-256은 같은 해시를 갖는 다른 데이터를 일부러 만들기 어렵다(충돌 저항). 단 변조 방지가 되려면 해시값이 신뢰 경로로 오거나 HMAC·서명을 써야 한다. 공격자는 데이터와 함께 해시도 바꿀 수 있다. [os/33-data-integrity-checksums](../../os/33-data-integrity-checksums/2-summary.md).
 
 ## 적용 — 풀어나가는 법
 
@@ -380,7 +380,7 @@ aws s3api list-multipart-uploads --bucket my-bucket
 - 선행
   - [41-range-requests-and-resume](../41-range-requests-and-resume/2-summary.md) — 다운로드 방향의 이어받기
   - [40-chunked-and-streaming-responses](../40-chunked-and-streaming-responses/2-summary.md) — 스트리밍·`proxy_request_buffering`
-  - `os/33-data-integrity-checksums` · `os/34-zero-copy-and-io-uring` — 미작성([os 영역 표](../../os/README.md))
+  - [os/33-data-integrity-checksums](../../os/33-data-integrity-checksums/2-summary.md) · [os/34-zero-copy-and-io-uring](../../os/34-zero-copy-and-io-uring/2-summary.md)
 - 관련
   - [data-structure/18-bitset](../../data-structure/18-bitset/2-summary.md) · [data-structure/27-merkle-tree](../../data-structure/27-merkle-tree/2-summary.md)
   - [languages/web-api/30-request-body-and-content-type](../../../languages/web-api/30-request-body-and-content-type/2-summary.md) — 브라우저 `FormData`와 multipart 경계

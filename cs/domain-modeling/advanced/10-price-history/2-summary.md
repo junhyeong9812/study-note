@@ -234,7 +234,7 @@ Tie.FIRST_RECORD   먼저 기록한 것  → 정정을 무시한다
 - 재현 — [16-audit-replay](../16-audit-replay/2-summary.md): 그때 그 값으로 계산을 다시 돌리기.
 - 쌓는 저장 — [ops-patterns/16-event-sourcing](../../../ops-patterns/16-event-sourcing/2-summary.md), [data-structure/26-persistent](../../../data-structure/26-persistent/2-summary.md).
 - 환율의 시점 — [05-multi-currency](../05-multi-currency/2-summary.md): 환율표에 유효 시각을 붙이면 이 구조가 된다.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (본 leaf `23-versioned-rules-and-effective-dating`, `22-decision-log-and-provenance` — 노트 미작성. SQL:2011 temporal table은 database 영역 [?]).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (본 leaf [23-versioned-rules-and-effective-dating](../../23-versioned-rules-and-effective-dating/2-summary.md), [22-decision-log-and-provenance](../../22-decision-log-and-provenance/2-summary.md). SQL:2011 temporal table은 database 영역 [?]).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/10-price-history/` (README.md · impl/com/domain/price/PriceHistory.java · src/test/java/com/domain/price/PriceHistoryTest.java · MeasurementTest.java).
 
 ### 관련 자료

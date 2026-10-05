@@ -155,7 +155,7 @@ MySQL 8.4 (로컬 재현, 20만 행, `ORDER BY note`, `char(32)`):
 
 ## 쓰이는 자료구조·알고리즘
 
-- **외부 병합 정렬 · k-way 병합** — 런을 만들고 최소 힙으로 병합한다. [algorithm/02-merge-sort](../../algorithm/02-merge-sort/2-summary.md), algorithm `11-external-sort-and-k-way-merge`(미작성, [algorithm/curriculum](../../algorithm/curriculum.md))
+- **외부 병합 정렬 · k-way 병합** — 런을 만들고 최소 힙으로 병합한다. [algorithm/02-merge-sort](../../algorithm/02-merge-sort/2-summary.md), [algorithm/11-external-sort-and-k-way-merge](../../algorithm/11-external-sort-and-k-way-merge/2-summary.md)
 - **힙** — 병합의 "다음 최솟값"은 최소 힙. Top-N의 한정 힙은 반대로 "지금까지의 N개 중 최악"을 루트에 둔다(오름차순이면 최대 힙, `make_bounded_heap`). [data-structure/07-heap](../../data-structure/07-heap/2-summary.md), [algorithm/04-heap-sort](../../algorithm/04-heap-sort/2-summary.md)
 - **퀵소트** — PostgreSQL은 메모리 안 정렬과 런 만들기 모두 퀵소트다(`tuplesort.c`). 예전의 대체 선택(replacement selection, 힙)은 쓰지 않는다.
 - **해시 테이블** — 해시 집계의 {키 → 누적 상태}. [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md)
@@ -274,7 +274,7 @@ SELECT count(*) FROM (SELECT * FROM ev ORDER BY note) x;
 
 - 선행
   - database `07-buffer-pool` — 버퍼와 페이지 → [../07-buffer-pool/2-summary.md](../07-buffer-pool/2-summary.md)
-  - algorithm `11-external-sort-and-k-way-merge` — 미작성, [algorithm/curriculum](../../algorithm/curriculum.md) · 기존 [algorithm/02-merge-sort](../../algorithm/02-merge-sort/2-summary.md)
+  - [algorithm/11-external-sort-and-k-way-merge](../../algorithm/11-external-sort-and-k-way-merge/2-summary.md) · 기존 [algorithm/02-merge-sort](../../algorithm/02-merge-sort/2-summary.md)
 - 후속·연결
   - database `11-join-algorithms` — 병합 조인(정렬 재사용)과 해시 조인(같은 해시 분할) → [../11-join-algorithms/2-summary.md](../11-join-algorithms/2-summary.md)
   - database `12-query-optimizer-and-explain` — 그룹 수 추정과 계획 선택 → [../12-query-optimizer-and-explain/2-summary.md](../12-query-optimizer-and-explain/2-summary.md)

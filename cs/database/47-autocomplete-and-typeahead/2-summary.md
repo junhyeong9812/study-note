@@ -309,7 +309,7 @@ async function fetchSuggest(q: string) {
   - [46-full-text-search-and-analyzers](../46-full-text-search-and-analyzers/2-summary.md) — 분석기, 색인·검색 분석기 일치
   - [data-structure/09-trie](../../data-structure/09-trie/2-summary.md) — 접두사 트리
 - 연결
-  - web-platform `05-fetch-from-browser`(fetch 중단) — 미작성, [web-platform/README](../../web-platform/README.md)
+  - [web-platform/05-fetch-from-browser](../../web-platform/05-fetch-from-browser/2-summary.md)(fetch 중단)
   - [data-structure/07-heap](../../data-structure/07-heap/2-summary.md) — top-k
   - [10-collation-and-text-comparison](../10-collation-and-text-comparison/2-summary.md) — 로케일 정렬과 패턴 연산자 클래스
 - PostgreSQL 17 문서 11.10 Operator Classes and Operator Families(`text_pattern_ops`) <https://www.postgresql.org/docs/17/indexes-opclass.html>

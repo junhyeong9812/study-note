@@ -443,7 +443,7 @@ remove(index) : index 뒤를 전부 한 칸씩 당기고, 마지막 칸 참조�
 - 후속 — [03-stack](../03-stack/2-summary.md) · [04-queue-deque](../04-queue-deque/2-summary.md): 동적 배열 위에 세우는 구조. 링 버퍼는 회전(문제 2)을 O(1)로 만든다.
 - 기법 — [algorithm/06-binary-search](../../algorithm/06-binary-search/2-summary.md): 문제 3의 upper bound 탐색.
 - 기법 — [algorithm/08-two-pointers](../../algorithm/08-two-pointers/2-summary.md): 문제 1·4·5의 read/write 포인터.
-- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `03-dynamic-array` (선행 `02-adt-and-cost-contracts` — 노트 미작성).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `03-dynamic-array` (선행 [02-adt-and-cost-contracts](../02-adt-and-cost-contracts/2-summary.md)).
 - 교재 — CLRS 3판 17.4 동적 테이블(상환 분석).
 - myway 원본 — `/home/jun/project/myway/data-structure/01-dynamic-array/` (README.md · impl/DynamicArray.java · impl/ArrayProblems.java).
 

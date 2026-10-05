@@ -257,7 +257,7 @@ isValid("promo-…") 의 순서
 - 연결 — [13-inventory](../13-inventory/2-summary.md): 발급 수량 제한의 "마지막 하나를 둘이 집는" 경쟁은 재고 차감과 같은 문제다.
 - 기법 — [algorithm/28-number-theory](../../../algorithm/28-number-theory/2-summary.md): 모듈러 산술·소수 — 글자 수가 소수여야 체크섬이 완전한 이유.
 - 실무 — [api-design/02-coupon-issue](../../../api-design/23-case-coupon-issue/2-summary.md): 선착순 발급의 수량 원자성·트래픽.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (선행 `12-time-money-and-units` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (선행 [12-time-money-and-units](../../12-time-money-and-units/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/16-promo-code/` (README.md · impl/com/domain/promo/PromoCode.java · src/test/.../MeasurementTest.java).
 
 ### 관련 자료

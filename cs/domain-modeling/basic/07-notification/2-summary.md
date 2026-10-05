@@ -272,7 +272,7 @@
 
 - 같은 기법 — [11-delivery-tracking](../11-delivery-tracking/2-summary.md): "같은 이벤트"의 키 정하기. [09-order-state](../09-order-state/2-summary.md): 판정 순서가 계약.
 - 운영 패턴 — [ops-patterns/06-idempotency-store](../../../ops-patterns/06-idempotency-store/2-summary.md): 중복 억제 키 저장소. [ops-patterns/05-backpressure](../../../ops-patterns/05-backpressure/2-summary.md): 순간 부하를 지연으로 바꾸기.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · `13-instant-vs-local-time-and-tz-rules`(사용자 시간대 — 미작성) · [api-design/curriculum.md](../../../api-design/curriculum.md) `10-notification-delivery-pipeline`(발송 파이프라인·야간 발송 제한 — 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · [13-instant-vs-local-time-and-tz-rules](../../13-instant-vs-local-time-and-tz-rules/2-summary.md)(사용자 시간대) · [api-design/10-notification-delivery-pipeline](../../../api-design/10-notification-delivery-pipeline/2-summary.md)(발송 파이프라인·야간 발송 제한).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/07-notification/` (README.md · impl/com/domain/notify/Scheduler.java · src/main/java/com/domain/notify/QuietHours.java).
 
 ### 관련 자료

@@ -352,7 +352,7 @@ freed by thread T0 here: ...  exit=1
   - [12-swapping-and-page-replacement](../12-swapping-and-page-replacement/2-summary.md) — 할당된 페이지가 메모리에서 밀려날 때
   - [13-oom-and-memory-limits](../13-oom-and-memory-limits/2-summary.md) — native 메모리·arena 때문에 컨테이너 limit을 넘을 때
   - [language/README](../../language/README.md) — `09-memory-management-models`(원고 있음), `10-garbage-collection`(미작성)
-  - [reliability/README](../../reliability/README.md) — `37-memory-leak-and-heap-analysis`(RSS vs 힙). 미작성
+  - [reliability/37-memory-leak-and-heap-analysis](../../reliability/37-memory-leak-and-heap-analysis/2-summary.md)(RSS vs 힙)
 - 교재
   - OSTEP 14 "Interlude: Memory API", 17 "Free-Space Management"(분할·병합, best/worst/first/next fit, segregated list, slab, buddy) <https://pages.cs.wisc.edu/~remzi/OSTEP/vm-freespace.pdf>
   - CS:APP 3판 9.9 "Dynamic Memory Allocation"

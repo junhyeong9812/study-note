@@ -246,13 +246,13 @@ git bisect start HEAD <마지막으로 확실히 좋던 커밋> && git bisect ru
 
 - 선행
   - [10-code-smells](../10-code-smells/2-summary.md) — 어디를 리팩터링할지 알려 주는 냄새
-  - testing 영역 02 good-unit-tests — 리팩터링 내성이 있는 테스트([testing/README](../../testing/README.md), 미작성)
+  - [testing/02-good-unit-tests](../../testing/02-good-unit-tests/2-summary.md) — 리팩터링 내성이 있는 테스트
 - 후속·판단층
   - [14-tidy-first](../14-tidy-first/2-summary.md) — 구조 변경과 동작 변경 분리, 언제 정리하나
   - [11-when-to-abstract](../11-when-to-abstract/2-summary.md) — 잘못된 추상화를 인라인으로 되돌리기
   - [51-legacy-change-techniques](../51-legacy-change-techniques/2-summary.md) — 테스트 없는 코드의 seam·특성 테스트·parallel change
   - [53-code-forensics-hotspots](../53-code-forensics-hotspots/2-summary.md) — 리팩터링 우선순위
-  - testing 영역 17 characterization-tests-legacy([testing/README](../../testing/README.md), 미작성)
+  - [testing/17-characterization-tests-legacy](../../testing/17-characterization-tests-legacy/2-summary.md)
 - 글·문서
   - Martin Fowler, 『Refactoring: Improving the Design of Existing Code』 2판(Addison-Wesley, 2018) — 1장(작은 단계·테스트·커밋 흐름), 2장(정의·Two Hats·When/Problems), 4장(Building Tests). 출판사 미리보기 PDF로 목차와 1장 일부 본문 확인 <https://api.pageplace.de/preview/DT0400.9780134757698_A35687787/preview-9780134757698_A35687787.pdf>
   - Martin Fowler, "DefinitionOfRefactoring", 2004-09-01 <https://martinfowler.com/bliki/DefinitionOfRefactoring.html>

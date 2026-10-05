@@ -149,7 +149,7 @@ List<String> contract=List.of("sku","price");
 - **방향 그래프(컨텍스트 그래프)** — 노드 = 컨텍스트, 간선 = 상류→하류 + 관계 라벨. 🔧 커리큘럼의 "컨텍스트 그래프"다.
 - **너비 우선 탐색(BFS)으로 영향 범위 계산** — 변경된 노드에서 시작해 "번지는" 간선만 따라간다. 시간 O(V+E). 실험 [1]의 `impact`.
 - **계약 = 필요 필드 집합** — 하류 계약은 "내가 읽는 필드" 집합이고, 검사는 응답 키 집합과의 차집합(`contract − response.keys`)이다. 실험 [2]의 `missing`. 실무 도구(Pact 등)는 형식·값 예시까지 검사한다.
-- **버전 붙은 공개 언어(스키마)** — Published Language는 실무에서 스키마 + 버전 + 호환 규칙(예: 필드 추가만 허용)으로 운영된다. 경계 번역기와 공용 모델 범위는 [distributed/34-message-routing-and-transformation](../../distributed/34-message-routing-and-transformation/2-summary.md), 하위 호환 규칙은 api-design `07-versioning-and-compatibility`(미작성, [api-design/curriculum](../../api-design/curriculum.md)).
+- **버전 붙은 공개 언어(스키마)** — Published Language는 실무에서 스키마 + 버전 + 호환 규칙(예: 필드 추가만 허용)으로 운영된다. 경계 번역기와 공용 모델 범위는 [distributed/34-message-routing-and-transformation](../../distributed/34-message-routing-and-transformation/2-summary.md), 하위 호환 규칙은 [api-design/07-versioning-and-compatibility](../../api-design/07-versioning-and-compatibility/2-summary.md).
 
 ## 적용 — 풀어나가는 법
 

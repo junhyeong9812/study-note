@@ -288,7 +288,7 @@ SELECT ENGINE_TRANSACTION_ID, INDEX_NAME, LOCK_MODE, LOCK_STATUS, LOCK_DATA FROM
   - [ops-patterns/failure-modes](../../ops-patterns/failure-modes/2-summary.md) — F-01 lost update, F-02 데드락, F-05 롱 트랜잭션
   - [languages/sql/syntax/52-upsert](../../../languages/sql/syntax/52-upsert/2-summary.md) · [languages/sql/syntax/57](../../../languages/sql/syntax/57-explicit-locking-and-deadlock/2-summary.md) — upsert·잠금 문법과 재현
   - database [14-isolation-levels-and-anomalies](../14-isolation-levels-and-anomalies/2-summary.md)(write skew), [22-database-side-timeouts](../22-database-side-timeouts/2-summary.md), [24-transaction-boundaries-in-app-code](../24-transaction-boundaries-in-app-code/2-summary.md), [52-offline-concurrency-patterns](../52-offline-concurrency-patterns/2-summary.md)
-  - reliability `04-failure-modes-catalog` — 미작성, [reliability/README](../../reliability/README.md)
+  - [reliability/04-failure-modes-catalog](../../reliability/04-failure-modes-catalog/2-summary.md)
 - 교재
   - Martin Kleppmann, 『Designing Data-Intensive Applications』 1판 7장 — Preventing Lost Updates(원자적 쓰기 연산, 명시적 잠금, 자동 감지, compare-and-set), Write Skew and Phantoms(충돌 구체화)
 - PostgreSQL 17

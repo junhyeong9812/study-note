@@ -209,7 +209,7 @@ GitLab은 백업 절차를 넷 두었다. 사고 당일 바로 쓸 수 있는 �
   - 이는 32번의 대처 "옛 리더의 남은 트랜잭션은 따로 뽑아 사람이 판단한다"와 같다.
 - Orchestrator는 "설정된 대로" 동작했다. 문제는 앱 계층이 **리전 간 주 서버 이동**을 감당하지 못한다는 점이 설정에 반영되지 않은 것이었다. GitHub는 리전 경계를 넘는 승격을 막도록 설정을 바꾸겠다고 적었다.
 - 백업은 "매일 최소 한 번" 복원을 시험하고 있어 복구 시간은 예상 범위였다. 다만 클러스터 **전체**를 백업에서 다시 만든 것은 처음이었다. 이전에는 지연 복제본 같은 다른 전략에 기댔다.
-- 분할·합의(Raft)·페일오버의 분산 관점은 distributed `36-distributed-incidents`에서 다룬다(미작성, [distributed/README](../../distributed/README.md)).
+- 분할·합의(Raft)·페일오버의 분산 관점은 [distributed/36-distributed-incidents](../../distributed/36-distributed-incidents/2-summary.md)에서 다룬다.
 
 #### 밖에서 보인 신호
 
@@ -345,7 +345,7 @@ SELECT @@gtid_executed;        -- 옛 주 서버와 새 주 서버에서 비교
   - [21-connection-pooling](../21-connection-pooling/2-summary.md) — `max_connections` 과대 (GitLab)
   - [33-partitioning-and-sharding](../33-partitioning-and-sharding/2-summary.md) · [55-distributed-databases](../55-distributed-databases/2-summary.md) — 거대 테이블 나누기, 합의·리전 간 지연
 - 다른 영역
-  - distributed `36-distributed-incidents`(GitHub 2018의 분할·합의 관점) — 미작성, [distributed/README](../../distributed/README.md)
+  - [distributed/36-distributed-incidents](../../distributed/36-distributed-incidents/2-summary.md)(GitHub 2018의 분할·합의 관점)
   - [os/38-os-incidents](../../os/38-os-incidents/2-summary.md) — PostgreSQL fsyncgate 등 OS 쪽 실사건
 - 1차 출처
   - GitLab, "Postmortem of database outage of January 31", 2017-02-10 <https://about.gitlab.com/blog/2017/02/10/postmortem-of-database-outage-of-january-31/>

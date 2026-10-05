@@ -732,7 +732,7 @@ mightContain(item) : 앞에서부터 물어보다 하나라도 true 면 즉시 t
 - 후속 — [12-skip-list](../12-skip-list/2-summary.md): 확률에 기대는 두 번째 자료구조. 무작위를 주입받게 만드는 규칙이 검증 가능성을 바꾼다.
 - 후속 — [19-probabilistic-counting](../19-probabilistic-counting/2-summary.md): 같은 거래(정확성 ↔ 메모리)를 개수 세기에 적용. seed 주입으로 `h2 == 0` 방어선이 검증 가능해진다.
 - 응용 — [24-lsm-tree](../24-lsm-tree/2-summary.md) · [systems/lsm-tree](../../systems/lsm-tree/): SSTable 조회 생략.
-- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `20-bloom-filter` (선행 `07-hashmap`, `math/07-probability-and-bayes` — 노트 미작성).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `20-bloom-filter` (선행 `07-hashmap` = 노트 [05-hashmap](../05-hashmap/2-summary.md), `math/07-probability-and-bayes` — 노트 미작성).
 - 원논문 — Bloom 1970 · 이중 해싱은 Kirsch & Mitzenmacher 2006.
 - myway 원본 — `/home/jun/project/myway/data-structure/11-bloom-filter/` (README.md · impl/BloomFilter.java · impl/CountingBloomFilter.java · impl/ScalableBloomFilter.java).
 

@@ -248,7 +248,7 @@ lotsOn(날짜, 스위치 3개) — 그 날까지 사건을 재생(replay)해 남
 - 순서가 답을 바꾸는 이웃 — [01-payroll](../01-payroll/2-summary.md)(누적 판정), [02-promotion](../02-promotion/2-summary.md)(남은 금액).
 - 기초판 — [basic/14-points](../../basic/14-points/2-summary.md): 포인트 적립·사용의 기초.
 - 우선순위 큐·탐욕 — [data-structure/07-heap](../../../data-structure/07-heap/2-summary.md), [algorithm/23-greedy](../../../algorithm/23-greedy/2-summary.md).
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (관련 leaf `24-double-entry-ledger` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (관련 leaf [24-double-entry-ledger](../../24-double-entry-ledger/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/14-mileage-expiry/` (README.md · impl/com/domain/mileage/MileageLedger.java · src/test/java/com/domain/mileage/MileageLedgerTest.java · MeasurementTest.java).
 
 ### 관련 자료

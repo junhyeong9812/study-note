@@ -207,7 +207,7 @@ RTT 측정값 R이 들어올 때마다 두 값을 갱신한다.
   - `new = (1 - α) * old + α * sample`. α가 작을수록 느리게 반응하고 잡음에 강하다.
 - **지수 백오프** — 연속 RTO마다 대기 시간을 두 배로. 앱 수준 재시도의 [재시도·백오프](../../ops-patterns/01-retry-backoff/2-summary.md)와 같은 생각이다. 망이 막혔을 때 모두가 더 세게 두드리지 않게 한다.
 - **구간 집합(interval set)** — SACK 블록은 "받은 바이트 구간" 목록이다. 새 블록이 오면 겹치는 구간을 합친다.
-- **타이머** — 연결마다 재전송·TLP·지연 ACK 타이머가 붙는다. 리눅스는 이를 하나의 "on" 타이머로 보여 준다(ss(8) `-o`). 타이머 구조 일반은 data-structure `timer-structures` — 미작성([영역 표](../../data-structure/curriculum.md)).
+- **타이머** — 연결마다 재전송·TLP·지연 ACK 타이머가 붙는다. 리눅스는 이를 하나의 "on" 타이머로 보여 준다(ss(8) `-o`). 타이머 구조 일반은 [data-structure/26-timer-structures](../../data-structure/26-timer-structures/2-summary.md).
 
 ## 적용 — 풀어나가는 법
 

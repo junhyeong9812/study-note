@@ -196,7 +196,7 @@ ProgressiveTax (구간 목록 — 생성자가 "구간이 이어지는지" 검�
 - 심화 — [advanced/06-tax](../../advanced/06-tax/2-summary.md): 세금 계산의 심화판.
 - 기법 — [algorithm/10-prefix-sum](../../../algorithm/10-prefix-sum/2-summary.md): 하한까지의 세금 누적(누적합)으로 누진 공제액(`하한 × 세율 − 누적`)을 계산한다.
 - 기법 — [algorithm/06-binary-search](../../../algorithm/06-binary-search/2-summary.md): 구간이 많을 때 소득이 든 구간 찾기.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (관련 leaf `23-versioned-rules-and-effective-dating` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (관련 leaf [23-versioned-rules-and-effective-dating](../../23-versioned-rules-and-effective-dating/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/19-tax/` (README.md · impl/com/domain/tax/ProgressiveTax.java · src/main/.../TaxBracket.java · src/test/.../MeasurementTest.java).
 
 ### 관련 자료

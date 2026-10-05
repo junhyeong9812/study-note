@@ -226,7 +226,7 @@ change(cycle, old, new, 바꾼날, basis, owner, rule):
 - 반열림 구간을 쓰는 이웃 — [13-contract-renewal](../13-contract-renewal/2-summary.md), [15-period-close](../15-period-close/2-summary.md), [08-delay-compensation](../08-delay-compensation/2-summary.md).
 - 반올림 위치 — [05-multi-currency](../05-multi-currency/2-summary.md): 줄마다 반올림 vs 묶어서 반올림, 같은 결론(정합 > 정확).
 - 사업 결정이 코드 한 줄로 보이는 자리 — [02-promotion](../02-promotion/2-summary.md)의 `ExclusiveRule`(+4.98%)과 여기의 `DowngradeRule`(+56.4%).
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (선행 `12-time-money-and-units`·`13-instant-vs-local-time-and-tz-rules` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (선행 [12-time-money-and-units](../../12-time-money-and-units/2-summary.md)·[13-instant-vs-local-time-and-tz-rules](../../13-instant-vs-local-time-and-tz-rules/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/03-subscription-change/` (README.md · impl/com/domain/subscription/SubscriptionChange.java · src/test/java/com/domain/subscription/SubscriptionChangeTest.java · MeasurementTest.java).
 
 ### 관련 자료

@@ -218,7 +218,7 @@ class UserProviderPactTest {
 
 ### 4. 계약 테스트가 맞지 않는 곳 (Pact 문서 "What is Pact good for")
 
-- 소비자를 하나하나 알 수 없는 **공개 API** — 계약을 모을 소비자가 없다. 이 경우는 버저닝·하위 호환 규칙([api-design 영역 표](../../api-design/curriculum.md)의 07 versioning-and-compatibility, 미작성)으로 간다.
+- 소비자를 하나하나 알 수 없는 **공개 API** — 계약을 모을 소비자가 없다. 이 경우는 버저닝·하위 호환 규칙([api-design/07-versioning-and-compatibility](../../api-design/07-versioning-and-compatibility/2-summary.md))으로 간다.
 - 제공자 **기능** 테스트 — 그것은 제공자 자신의 테스트 몫이다. 계약은 "모양과 의미의 최소 약속"만 본다.
 - 요청을 검증 없이 하류로 넘기는 pass-through API, 성능·부하 테스트.
 
@@ -272,7 +272,7 @@ class UserProviderPactTest {
 
 - 선행
   - [08-integration-tests-real-dependencies](../08-integration-tests-real-dependencies/2-summary.md) — 실제 의존 하나와의 통합.
-  - api-design 07 versioning-and-compatibility — 미작성([api-design 영역 표](../../api-design/curriculum.md)).
+  - [api-design/07-versioning-and-compatibility](../../api-design/07-versioning-and-compatibility/2-summary.md).
   - [03-test-doubles](../03-test-doubles/2-summary.md). 더블이 낡는 문제.
 - 후속·연결
   - [18-e2e-and-ui-testing](../18-e2e-and-ui-testing/2-summary.md) — 계약으로 줄이는 E2E.

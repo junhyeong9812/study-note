@@ -283,7 +283,7 @@
 
 | 보이는 형태 | 흔한 원인 | 첫 진단 | leaf |
 |---|---|---|---|
-| **사용자는 504를 받았는데 PG에는 승인**. "결제 실패라고 떠서 다시 했더니 두 번 빠짐" | 게이트웨이가 서비스의 결과 확정 전에 끊음 · 보낸 뒤의 호출은 취소 불가 · 타임아웃을 실패로 기록 | 같은 주문의 게이트웨이 504와 PG 승인 시각 | [35-1](../35-timeout-design-worksheet/2-summary.md) · [09-4](../09-cancellation-propagation/2-summary.md) · [35-5](../35-timeout-design-worksheet/2-summary.md) · domain-modeling/25-reconciliation(미작성, [영역 표](../../domain-modeling/curriculum.md)) |
+| **사용자는 504를 받았는데 PG에는 승인**. "결제 실패라고 떠서 다시 했더니 두 번 빠짐" | 게이트웨이가 서비스의 결과 확정 전에 끊음 · 보낸 뒤의 호출은 취소 불가 · 타임아웃을 실패로 기록 | 같은 주문의 게이트웨이 504와 PG 승인 시각 | [35-1](../35-timeout-design-worksheet/2-summary.md) · [09-4](../09-cancellation-propagation/2-summary.md) · [35-5](../35-timeout-design-worksheet/2-summary.md) · [domain-modeling/25-reconciliation](../../domain-modeling/25-reconciliation/2-summary.md) |
 | PG에 같은 주문 승인 두 건, 우리 로그는 첫 시도 타임아웃 + 두 번째 성공 | 멱등 키 없이 재시도 | 재시도가 같은 키를 썼나 | [06-4](../06-retry-backoff-jitter/2-summary.md) · [13-1](../13-idempotency/2-summary.md) |
 | 서버 재시작 직후 PG 이중 청구, 우리 DB에는 한 건 | 외부 호출 뒤 완료 기록 전에 죽음 → 재선점한 재시도가 다시 호출 | 키 행의 `in_progress`·`locked_at` | [13-2](../13-idempotency/2-summary.md) |
 | 금액을 고쳐 다시 결제했는데 이전 금액 응답 | 지문 검사 없이 키만으로 재생 | 응답 금액 vs 요청 금액 | [13-3](../13-idempotency/2-summary.md) |
@@ -618,7 +618,7 @@ java.net.http.HttpTimeoutException: request timed out
 - 후속: [53-reliability-incidents](../53-reliability-incidents/2-summary.md) — 여러 칸에 걸친 실사건(AWS S3 2017, Slack 2021, Roblox 2021, CrowdStrike 2024)
 - 이어받은 원본: [systems/server-design/10-playbook-by-symptom.md](../../systems/server-design/10-playbook-by-symptom.md)(§12에서 대응·참고)
 - 다른 영역 색인: [database/56](../../database/56-db-symptom-index/2-summary.md) · [distributed/35](../../distributed/35-distributed-symptom-index/2-summary.md) · [os/37](../../os/37-os-symptom-index/2-summary.md) · [network/52](../../network/52-network-symptom-index/2-summary.md)
-- 커리큘럼이 이 노트에 이은 다른 영역 leaf: [database/22-database-side-timeouts](../../database/22-database-side-timeouts/2-summary.md) · [database/21-connection-pooling](../../database/21-connection-pooling/2-summary.md) · [distributed/03-partial-failure-and-timeouts](../../distributed/03-partial-failure-and-timeouts/2-summary.md) · language/23-jit-tiered-compilation-and-warmup(미작성, [영역 표](../../language/README.md)) · domain-modeling/25-reconciliation(미작성, [영역 표](../../domain-modeling/curriculum.md))
+- 커리큘럼이 이 노트에 이은 다른 영역 leaf: [database/22-database-side-timeouts](../../database/22-database-side-timeouts/2-summary.md) · [database/21-connection-pooling](../../database/21-connection-pooling/2-summary.md) · [distributed/03-partial-failure-and-timeouts](../../distributed/03-partial-failure-and-timeouts/2-summary.md) · language/23-jit-tiered-compilation-and-warmup(미작성, [영역 표](../../language/README.md)) · [domain-modeling/25-reconciliation](../../domain-modeling/25-reconciliation/2-summary.md)
 - 메시지 원문 출처(이 노트가 직접 대조한 것 — 각 leaf가 실험으로 확인한 문구는 그 leaf가 출처)
   - Envoy v1.35.0 `source/common/router/router.cc`(`upstream request timeout`, `upstream connect error or disconnect/reset before headers. `) <https://github.com/envoyproxy/envoy/blob/v1.35.0/source/common/router/router.cc>
   - Resilience4j v2.4.0 `CallNotPermittedException.java`(`CircuitBreaker '%s' is %s and does not permit further calls`), `BulkheadFullException.java`(`Bulkhead '%s' is full and does not permit further calls`), `RequestNotPermitted.java`(`RateLimiter '%s' does not permit further calls`) <https://github.com/resilience4j/resilience4j/tree/v2.4.0>

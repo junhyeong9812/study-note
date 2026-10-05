@@ -178,7 +178,7 @@ record OrderDeep(String id, List<String> items) { OrderDeep { items = List.copyO
 1. **값**(금액·수량·기간·주소·좌표·ID·이메일)은 불변 값 객체로. 생성 시점에 검증하고 null을 거절한다([18](../18-absence-and-null-design/2-summary.md)).
 2. **공유되는 것**(캐시 값·설정·상수·이벤트·메시지)은 불변으로. 공유하는 순간 별칭이 생긴다.
 3. **해시 키·정렬 키**로 쓰는 것은 불변으로(실험 B).
-4. **엔티티**(식별자가 있고 생애 동안 상태가 바뀌는 것: 주문·회원)는 가변일 수 있다. 대신 상태 변경 메서드로만 바꾸고, 엔티티가 가진 값들은 불변 값 객체로 둔다. 엔티티와 값 객체의 구분은 domain-modeling 04 entities-and-value-objects — 미작성([domain-modeling 커리큘럼](../../domain-modeling/curriculum.md)).
+4. **엔티티**(식별자가 있고 생애 동안 상태가 바뀌는 것: 주문·회원)는 가변일 수 있다. 대신 상태 변경 메서드로만 바꾸고, 엔티티가 가진 값들은 불변 값 객체로 둔다. 엔티티와 값 객체의 구분은 [domain-modeling/04-entities-and-value-objects](../../domain-modeling/04-entities-and-value-objects/2-summary.md).
 
 ### 2. 코드 (Java 21)
 
@@ -285,7 +285,7 @@ grep -rnE 'new Hash(Map|Set)<\w+' --include=*.java src/main/ | head
   - [18-absence-and-null-design](../18-absence-and-null-design/2-summary.md) — 값 객체가 null을 거절한다
   - [data-structure/26-persistent](../../data-structure/26-persistent/2-summary.md) · [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md)
   - [os/16-locks-and-spinlocks](../../os/16-locks-and-spinlocks/2-summary.md)
-  - [24 types-as-invariants](../24-types-as-invariants/2-summary.md) · domain-modeling 04 entities-and-value-objects — 미작성([domain-modeling 커리큘럼](../../domain-modeling/curriculum.md))
+  - [24 types-as-invariants](../24-types-as-invariants/2-summary.md) · [domain-modeling/04-entities-and-value-objects](../../domain-modeling/04-entities-and-value-objects/2-summary.md)
 - 글·문서
   - Joshua Bloch, 『Effective Java』 3판 Item 17 "Minimize mutability", Item 50 "Make defensive copies when needed" — 제목은 Pearson 목차, 예제(`Complex` 81~82쪽, `Period`·`Attacks` 231~233쪽)는 저자 GitHub에서 확인, 본문 미열람 <https://github.com/jbloch/effective-java-3e-source-code>
   - Oracle Java Tutorial "A Strategy for Defining Immutable Objects" <https://docs.oracle.com/javase/tutorial/essential/concurrency/imstrat.html>

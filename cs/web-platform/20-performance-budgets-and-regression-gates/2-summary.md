@@ -289,7 +289,7 @@ process.exit(fail ? 1 : 0);
 - 선행
   - [08-web-performance-vitals](../08-web-performance-vitals/2-summary.md) — LCP·INP·CLS, 랩 vs RUM
   - [09-js-modules-and-bundling](../09-js-modules-and-bundling/2-summary.md) — 트리 셰이킹·코드 분할
-  - [engineering-practice/06-ci-cd-pipelines](../../engineering-practice/README.md) — CI 파이프라인(미작성, 영역 표)
+  - [engineering-practice/06-ci-cd-pipelines](../../engineering-practice/06-ci-cd-pipelines/2-summary.md) — CI 파이프라인
 - 후속·연결
   - [13-critical-path-and-resource-loading](../13-critical-path-and-resource-loading/2-summary.md) — 동기 스크립트가 첫 렌더를 막는 이유
   - [16-long-tasks-and-web-workers](../16-long-tasks-and-web-workers/2-summary.md) — TBT·긴 태스크

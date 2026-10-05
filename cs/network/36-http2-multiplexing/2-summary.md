@@ -355,7 +355,7 @@ for (const p of ['/a', '/b', '/c']) {
   - `37-http3-quic` — 스트림 독립으로 TCP HoL 해소. [37번](../37-http3-quic/2-summary.md)
   - [16-tcp-reliability-retransmission](../16-tcp-reliability-retransmission/2-summary.md) · [18-tcp-congestion-control](../18-tcp-congestion-control/2-summary.md) · [03-latency-bandwidth-bdp](../03-latency-bandwidth-bdp/2-summary.md)
   - [40-chunked-and-streaming-responses](../40-chunked-and-streaming-responses/2-summary.md) — HTTP/2 DATA 프레임 스트리밍
-  - `api-design/15-rpc-and-grpc` — 미작성([api-design 커리큘럼](../../api-design/curriculum.md))
+  - [api-design/15-rpc-and-grpc](../../api-design/15-rpc-and-grpc/2-summary.md)
 - RFC 9113 HTTP/2 <https://www.rfc-editor.org/rfc/rfc9113>
   - §3.1 `h2`·`h2c` 폐기 · §3.2~§3.4 시작과 preface · §4.1 프레임 형식 · §5.1 스트림 상태 · §5.1.1 스트림 ID · §5.1.2 동시성
   - §5.2 흐름 제어(원칙·교착·성능) · §5.3 우선순위(7540 체계 폐기) · §6.5.2 SETTINGS 초기값 · §6.8 GOAWAY · §6.9 WINDOW_UPDATE

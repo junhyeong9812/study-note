@@ -205,7 +205,7 @@ b
 
 ## 쓰이는 자료구조·알고리즘
 
-- **버퍼 + 크기·시간 트리거 flush**: 위 배처. 고정 크기라면 링 버퍼(→ [data-structure 커리큘럼 25-ring-buffer](../../data-structure/curriculum.md), 미작성)로 구현해 할당을 줄인다. 시간 트리거는 타이머 하나(첫 항목 기준).
+- **버퍼 + 크기·시간 트리거 flush**: 위 배처. 고정 크기라면 링 버퍼(→ [data-structure/25-ring-buffer](../../data-structure/25-ring-buffer/2-summary.md))로 구현해 할당을 줄인다. 시간 트리거는 타이머 하나(첫 항목 기준).
 - **키 중복 제거·순서 맞추기**: DataLoader식 모으기는 키를 모아 중복을 없애고(`Set`/`Map`), 결과를 입력 키 순서로 다시 맞춘다(키 → 인덱스 맵).
 - **청크 분할**: N개를 B개씩 자르기. 크기 한도(패킷·파라미터 수)를 넘지 않게 B를 정한다.
 - **파이프라인 = 순서 있는 큐 두 개**: 보낸 요청 순서대로 응답이 온다(Redis·HTTP/1.1 파이프라이닝). 응답을 i번째 요청과 짝지을 때 FIFO 큐를 쓴다. HTTP/2는 스트림 ID로 짝지어 순서가 달라도 된다(→ [network/36-http2-multiplexing](../../network/36-http2-multiplexing/2-summary.md)).

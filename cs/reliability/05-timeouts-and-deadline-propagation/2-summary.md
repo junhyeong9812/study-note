@@ -174,7 +174,7 @@ t= 5017ms 결과: C가 한 단계 9개 중 클라이언트 포기 뒤 단계 1�
 - **남은 예산 계산** — `remaining = deadline - now()`. 차감만 하고 늘리지 않는다. Go `context.WithDeadline`은 부모보다 늦은 데드라인을 주면 부모와 같게 본다(Go `context` 문서). 자식이 부모보다 오래 살 수 없다.
 - **단조 시계** — 경과 시간은 벽시계가 아니라 단조 시계로 잰다. Java `System.nanoTime()`은 경과 시간 측정용이고 벽시계와 관계가 없다(Java SE API). 벽시계는 NTP 조정으로 뒤로 갈 수 있다([distributed/04-physical-clocks-and-ntp](../../distributed/04-physical-clocks-and-ntp/2-summary.md)). 이 노트의 실험은 출력 편의로 `currentTimeMillis`를 썼다.
 - **호출 트리** — 요청 하나가 만드는 RPC는 트리다. SRE 22장: 트리의 모든 RPC가 **같은 절대 데드라인**을 갖는다. 각 간선에는 그 시점의 남은 시간이 실린다.
-- **타이머** — 타임아웃마다 타이머가 하나 걸린다. 많은 타이머를 싸게 관리하는 구조(타이머 힙·계층형 타이머 휠)는 data-structure 26 `timer-structures`(미작성, [data-structure 커리큘럼](../../data-structure/curriculum.md)). 힙은 [data-structure/07-heap](../../data-structure/07-heap/2-summary.md).
+- **타이머** — 타임아웃마다 타이머가 하나 걸린다. 많은 타이머를 싸게 관리하는 구조(타이머 힙·계층형 타이머 휠)는 [data-structure/26-timer-structures](../../data-structure/26-timer-structures/2-summary.md). 힙은 [data-structure/07-heap](../../data-structure/07-heap/2-summary.md).
 
 ## 적용 — 풀어나가는 법
 

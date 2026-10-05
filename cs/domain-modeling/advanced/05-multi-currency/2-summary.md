@@ -238,7 +238,7 @@ JPY 111 × 9.05 = 1,004.55        JPY 10 × 9.05 = 90.50 (정확히 0.5)
 - 배분과 마지막 몫 — [06-tax](../06-tax/2-summary.md)(마지막 몫은 빼기로), [04-refund](../04-refund/2-summary.md)(부분 환불의 비례배분).
 - 환율의 시점 — [10-price-history](../10-price-history/2-summary.md), [09-policy-version](../09-policy-version/2-summary.md): "언제 것 기준인가"(장애 4).
 - 그래프로서의 환율표 — [data-structure/08-graph](../../../data-structure/08-graph/2-summary.md).
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (선행 `12-time-money-and-units`·`14-money-arithmetic-rounding-allocation` — 노트 미작성. 그 leaf가 이 노트를 가리킨다).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (선행 [12-time-money-and-units](../../12-time-money-and-units/2-summary.md)·[14-money-arithmetic-rounding-allocation](../../14-money-arithmetic-rounding-allocation/2-summary.md) — 그 leaf가 이 노트를 가리킨다).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/05-multi-currency/` (README.md · impl/com/domain/money/MoneyConverter.java · src/test/java/com/domain/money/MoneyConverterTest.java · MeasurementTest.java).
 
 ### 관련 자료

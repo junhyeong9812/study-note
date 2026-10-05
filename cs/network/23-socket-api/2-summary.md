@@ -329,7 +329,7 @@ sysctl net.core.somaxconn net.core.wmem_max net.core.rmem_max
 
 - 선행
   - [15-tcp-handshake-and-backlog](../15-tcp-handshake-and-backlog/2-summary.md) — SYN 큐·accept 큐 상세.
-  - `os/21-files-and-descriptors` — fd·open/close 의미. 미작성([os 영역 표](../../os/README.md))
+  - [os/21-files-and-descriptors](../../os/21-files-and-descriptors/2-summary.md) — fd·open/close 의미.
 - 후속·연결
   - `24-application-protocol-framing` — 바이트 스트림에서 메시지 경계 찾기. 초안: [systems/resp-protocol](../../systems/resp-protocol/2-summary.md)
   - [25-kernel-network-stack](../25-kernel-network-stack/2-summary.md) — `send()` 뒤 커널 안에서 벌어지는 일

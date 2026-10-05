@@ -159,7 +159,7 @@ NIC 링 버퍼가 차면 NIC가 버리고, 한 CPU 코어만 수신 처리를 �
   - 생산자와 소비자가 서로 다른 인덱스를 들고 돈다.
   - RX: 생산자는 NIC, 소비자는 드라이버다. 가득 차면 NIC는 기다리지 못하고 **버린다**.
   - TX: 생산자는 드라이버, 소비자는 NIC다. 링이 차기 전에 드라이버가 송신 큐를 멈추고, 완료 처리로 자리가 나면 다시 깨운다(kernel docs "Softnet Driver Issues"). 그래서 패킷은 위(qdisc)에서 기다린다.
-  - 원형 버퍼 일반론은 `data-structure/25-ring-buffer`의 몫이다. 미작성([data-structure 영역 표](../../data-structure/curriculum.md)).
+  - 원형 버퍼 일반론은 [data-structure/25-ring-buffer](../../data-structure/25-ring-buffer/2-summary.md)의 몫이다.
 - **`sk_buff` 연결 리스트** — 커널 패킷 객체 `struct sk_buff`는 `next`·`prev` 포인터를 가진다. 큐 머리 `sk_buff_head`는 `next`·`prev`·`qlen`·`lock`으로 된 이중 연결 리스트다(`include/linux/skbuff.h`).
   - 헤더를 붙이고 벗길 때 보통 데이터를 복사하지 않는다. 고정된 `head`·`end` 안에서 `data`·`tail` 포인터만 옮긴다.
   - 앞 공간(headroom)이 모자라거나 버퍼를 다른 skb와 공유하면 새로 할당·복사한다(`skb_cow_head`, `pskb_expand_head`, kernel docs Networking API).

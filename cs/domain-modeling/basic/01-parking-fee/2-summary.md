@@ -268,7 +268,7 @@ capPerCalendarDay = false → 지금부터 24시간 뒤 (입차 시각 기준)
 
 - 후속 — [04-hotel-booking](../04-hotel-booking/2-summary.md): 반열린 구간·경계 포함 문제의 날짜판. [06-subscription](../06-subscription/2-summary.md): "손님에게 유리하게" 지침이 방향을 못 정하는 같은 모양.
 - 같은 기법 — [05-attendance](../05-attendance/2-summary.md): 자정 분할 루프(자정마다 한 칸씩).
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (이 컬렉션) · `13-instant-vs-local-time-and-tz-rules`(시간대·서머타임 — 미작성) · `23-versioned-rules-and-effective-dating`(요율 버전 — 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (이 컬렉션) · [13-instant-vs-local-time-and-tz-rules](../../13-instant-vs-local-time-and-tz-rules/2-summary.md)(시간대·서머타임) · [23-versioned-rules-and-effective-dating](../../23-versioned-rules-and-effective-dating/2-summary.md)(요율 버전).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/01-parking-fee/` (README.md · impl/com/domain/parking/ParkingFee.java · src/main/java/com/domain/parking/FeePolicy.java).
 
 ### 관련 자료

@@ -107,7 +107,7 @@ class OrderMapper {                                // SQL과 매핑은 여기만
   - JPA Criteria API(Jakarta Persistence 3.1 6장), Spring Data JPA `Specification`, QueryDSL이 이 모양이다.
 
 **Repository** — "도메인과 데이터 매핑 층 사이를 중재하며, 메모리 안 도메인 객체 컬렉션처럼 동작한다." 클라이언트는 쿼리 명세를 선언적으로 만들어 넘긴다. 객체를 컬렉션처럼 더하고 뺀다. 도메인 층과 데이터 매핑 층을 깨끗이 분리하고, **한 방향 의존**을 만든다(Fowler 카탈로그).
-  - Fowler는 이 패턴의 좋은 설명이 『Domain-Driven Design』에도 있다고 덧붙인다(카탈로그 Note). DDD 쪽 설명은 domain-modeling/10-repositories-and-factories(미작성, [domain-modeling 영역 표](../../domain-modeling/curriculum.md)).
+  - Fowler는 이 패턴의 좋은 설명이 『Domain-Driven Design』에도 있다고 덧붙인다(카탈로그 Note). DDD 쪽 설명은 [domain-modeling/10-repositories-and-factories](../../domain-modeling/10-repositories-and-factories/2-summary.md).
 
 ### 3. "누가 SQL을 아는가"로 다시 보기
 
@@ -268,7 +268,7 @@ await orders.save(o);
 
 - 선행
   - [23-orm-and-n-plus-one](../23-orm-and-n-plus-one/2-summary.md) — Identity Map·Unit of Work·Lazy Load가 실제로 도는 모습
-  - domain-modeling/10-repositories-and-factories — 미작성([domain-modeling 영역 표](../../domain-modeling/curriculum.md))
+  - [domain-modeling/10-repositories-and-factories](../../domain-modeling/10-repositories-and-factories/2-summary.md)
 - 연결
   - 원고 [engineering/data-access/comparison.md](../../engineering/data-access/comparison.md) — Data Mapper 계열 두 도구의 선택 기준(원고에 "Data Mapper 절"이 따로 있지는 않고, Data Mapper 정의는 [jpa.md](../../engineering/data-access/jpa.md) §1에 있다)
   - [24-transaction-boundaries-in-app-code](../24-transaction-boundaries-in-app-code/2-summary.md) — 리포지토리 호출을 감싸는 트랜잭션 경계

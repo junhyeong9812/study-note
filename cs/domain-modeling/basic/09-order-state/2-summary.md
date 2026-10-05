@@ -289,7 +289,7 @@ IGNORED를 APPLIED로 뭉개면 중복 이벤트가 후처리를 두 번 돌리�
 - 자료구조·알고리즘 — [data-structure/08-graph](../../../data-structure/08-graph/2-summary.md): 전이 표 = 인접 리스트. [algorithm/11-bfs](../../../algorithm/11-bfs/2-summary.md): `reachableFrom`이 그대로 쓰는 탐색.
 - 같은 자리 — [10-payment](../10-payment/2-summary.md): 3갈래 결과·파생 상태의 돈 버전. [11-delivery-tracking](../11-delivery-tracking/2-summary.md): 남이 찍은 이벤트를 사후 해석하는 단조 진행.
 - 운영 패턴 — [ops-patterns/06-idempotency-store](../../../ops-patterns/06-idempotency-store/2-summary.md): 중복 이벤트를 "이미 됐음"으로 답하기. [ops-patterns/08-saga](../../../ops-patterns/08-saga/2-summary.md): 여러 서비스에 걸친 상태 전이와 보상.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · `11-state-machines-in-domain`(상태·전이·가드 — 미작성, 이 노트를 연결).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · [11-state-machines-in-domain](../../11-state-machines-in-domain/2-summary.md)(상태·전이·가드, 이 노트를 연결).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/09-order-state/` (README.md · impl/com/domain/order/OrderStateMachine.java · src/main/java/com/domain/order/OrderState.java · TransitionResult.java).
 
 ### 관련 자료

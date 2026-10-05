@@ -208,7 +208,7 @@ reset link -> a@example.com
 
 - **합 타입 = 태그드 유니온**: 값 + "어느 경우인지" 태그. JVM에서 `sealed` 계층은 클래스(태그 = 실제 클래스)로 표현되고, 패턴 매칭 `switch`가 태그로 분기한다. 컴파일러는 `permits` 목록으로 망라성을 검사한다.
 - **newtype + 스마트 생성자**: 값 하나를 감싼 래퍼 + 생성 시 술어 검사. 만들 수 있는 값은 술어를 통과한 값뿐이다(정제 타입이 컴파일 때 증명하는 것을 실행 시점 검사로 흉내 낸다).
-- **타입 상태 = 상태 기계를 타입으로**: 상태 = 타입, 전이 = 한 타입을 받아 다른 타입을 돌려주는 메서드(`verify: Unverified → Verified`). 허용되지 않은 전이는 메서드가 없어서 호출할 수 없다. 상태 기계 기초는 domain-modeling 11 `state-machines-in-domain` — 미작성([domain-modeling/curriculum](../../domain-modeling/curriculum.md)).
+- **타입 상태 = 상태 기계를 타입으로**: 상태 = 타입, 전이 = 한 타입을 받아 다른 타입을 돌려주는 메서드(`verify: Unverified → Verified`). 허용되지 않은 전이는 메서드가 없어서 호출할 수 없다. 상태 기계 기초는 [domain-modeling/11-state-machines-in-domain](../../domain-modeling/11-state-machines-in-domain/2-summary.md).
 - **파서(parser)**: 덜 구조화된 입력(문자열·바이트)을 구조화된 값으로 바꾸는 부분 함수. 실패 가능하므로 `Optional`/`Result`/예외로 실패를 표현한다(실패 표현 선택은 [16-error-strategy-exceptions-vs-results](../16-error-strategy-exceptions-vs-results/2-summary.md)).
 
 ## 적용 — 풀어나가는 법
@@ -334,7 +334,7 @@ ERROR:  check constraint "c1" of relation "o" is violated by some row
 - 후속·연결
   - [18-absence-and-null-design](../18-absence-and-null-design/2-summary.md) — null을 타입으로 다루기
   - [16-error-strategy-exceptions-vs-results](../16-error-strategy-exceptions-vs-results/2-summary.md) — parse 실패를 무엇으로 돌려주나
-  - domain-modeling 04 `entities-and-value-objects`·05 `aggregates-and-invariants`·11 `state-machines-in-domain` — 미작성([domain-modeling/curriculum](../../domain-modeling/curriculum.md))
+  - [domain-modeling/04-entities-and-value-objects](../../domain-modeling/04-entities-and-value-objects/2-summary.md)·[domain-modeling/05-aggregates-and-invariants](../../domain-modeling/05-aggregates-and-invariants/2-summary.md)·[domain-modeling/11-state-machines-in-domain](../../domain-modeling/11-state-machines-in-domain/2-summary.md)
   - [22-solid](../22-solid/2-summary.md) — switch 식 망라성(OCP 실험)
 - 글·문서
   - Alexis King, "Parse, don't validate", 2019-11-05 <https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/>

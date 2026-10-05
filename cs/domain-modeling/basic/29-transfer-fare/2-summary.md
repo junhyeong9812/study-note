@@ -210,7 +210,7 @@ totalFare = 여정별 요금의 합
 - 연결 — [27-menu-option](../27-menu-option/2-summary.md): 명세가 뭉뚱그린 갈림을 enum으로 끌어올린 같은 구도 — 여기는 축이 셋이다.
 - 후속 — [advanced/09-policy-version](../../advanced/09-policy-version/2-summary.md): 요금표에 유효기간을 붙여 과거 여정을 그때 규칙으로 계산한다.
 - 기법 — [algorithm/30-sweeping](../../../algorithm/30-sweeping/2-summary.md): 시각 순 한 방향 스캔으로 구간을 묶는 방식.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (선행 `12-time-money-and-units` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (선행 [12-time-money-and-units](../../12-time-money-and-units/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/29-transfer-fare/` (README.md · impl/com/domain/transit/TransferFare.java · src/main/.../Ride.java · FareRule.java · src/test/.../MeasurementTest.java).
 
 ### 관련 자료

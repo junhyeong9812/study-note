@@ -253,7 +253,7 @@ Shift도 같은 문제를 가진다: 끝 시각이 시작보다 빠르면(22:00�
 - 규칙의 시점 — [09-policy-version](../09-policy-version/2-summary.md): 규칙이 바뀌면 어느 날짜 기준으로 판을 고르나(장애 2).
 - 기초판 — [basic/05-attendance](../../basic/05-attendance/2-summary.md): 근무 시간 집계의 기초. [basic/01-parking-fee](../../basic/01-parking-fee/2-summary.md): "하루"의 기준을 값으로 올린 같은 수법.
 - 반올림·고정 소수 — [05-multi-currency](../05-multi-currency/2-summary.md), [07-installment](../07-installment/2-summary.md).
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (선행 `12-time-money-and-units`·`14-money-arithmetic-rounding-allocation` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` (선행 [12-time-money-and-units](../../12-time-money-and-units/2-summary.md)·[14-money-arithmetic-rounding-allocation](../../14-money-arithmetic-rounding-allocation/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/01-payroll/` (README.md · impl/com/domain/payroll/Payroll.java · src/test/java/com/domain/payroll/PayrollTest.java · MeasurementTest.java).
 
 ### 관련 자료

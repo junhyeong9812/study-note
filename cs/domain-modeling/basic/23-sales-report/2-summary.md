@@ -246,7 +246,7 @@ changedPastDays(earlier, later) = 두 기준일로 각각 뽑았을 때 값이 �
 - 후속 — [advanced/15-period-close](../../advanced/15-period-close/2-summary.md): 마감 — 소급 반영과 정면으로 충돌하는 개념을 어떻게 표현하나.
 - 기법 — [data-structure/06-binary-search-tree](../../../data-structure/06-binary-search-tree/2-summary.md): `TreeMap`이 날짜 순 보고서를 만드는 원리.
 - 실무 — [ops-patterns/16-event-sourcing](../../../ops-patterns/16-event-sourcing/2-summary.md): 당일 반영은 사건을 그대로 적는 방식, 소급은 상태를 덮어쓰는 방식.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (관련 leaf `13-instant-vs-local-time-and-tz-rules` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (관련 leaf [13-instant-vs-local-time-and-tz-rules](../../13-instant-vs-local-time-and-tz-rules/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/23-sales-report/` (README.md · impl/com/domain/sales/SalesReport.java · src/test/.../MeasurementTest.java).
 
 ### 관련 자료

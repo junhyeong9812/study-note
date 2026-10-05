@@ -252,7 +252,7 @@ curl -s "$HOST/orders/does-not-exist" | grep -Ei 'sql|exception|stack|at [a-z]+\
 - 선행
   - [15-error-handling-design](../15-error-handling-design/2-summary.md) — 경계에서 한 번 기록
   - [reliability/15-logging](../../reliability/15-logging/2-summary.md) — 구조화 로그·상관 ID·레벨 비용
-  - api-design 04 error-format-problem-details — 미작성([api-design 커리큘럼](../../api-design/curriculum.md))
+  - [api-design/04-error-format-problem-details](../../api-design/04-error-format-problem-details/2-summary.md)
 - 후속·연결
   - [16-error-strategy-exceptions-vs-results](../16-error-strategy-exceptions-vs-results/2-summary.md) — 실패 종류 → HTTP 상태
   - [reliability/43-alerting-and-on-call](../../reliability/43-alerting-and-on-call/2-summary.md) — 알람 피로

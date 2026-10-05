@@ -287,7 +287,7 @@ setInterval(() => {
 - 선행
   - [38-websocket-sse-long-lived](../38-websocket-sse-long-lived/2-summary.md) — WebSocket 연결 수명. 저장소의 언어 노트 [languages/web-api/33-websocket](../../../languages/web-api/33-websocket/2-summary.md)
   - [39-http-content-encoding](../39-http-content-encoding/2-summary.md) — HTTP 압축 협상
-  - `algorithm/33-lossless-compression-lz77-huffman` — 미작성([algorithm 커리큘럼](../../algorithm/curriculum.md))
+  - [algorithm/33-lossless-compression-lz77-huffman](../../algorithm/33-lossless-compression-lz77-huffman/2-summary.md)
 - 연결
   - [43-compression-side-channels](../43-compression-side-channels/2-summary.md) — 압축 사이드채널 원리
 - RFC 7692 Compression Extensions for WebSocket <https://www.rfc-editor.org/rfc/rfc7692>

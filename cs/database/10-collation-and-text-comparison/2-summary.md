@@ -252,7 +252,7 @@ names.sort(c);
   - `ci`·`ai` collation은 서로 다른 문자열을 **같은 값**으로 본다. 유일하지 않은 정렬 키로 커서를 만들면 동점 무리가 통째로 건너뛰어진다.
   - 앱 정렬(`String.compareTo`)과 DB `ORDER BY`의 규칙이 다르면, 앱이 만든 커서가 DB의 순서와 어긋난다.
   - 정렬은 검색 엔진, 커서 비교는 DB처럼 **두 시스템**에 나뉘어도 같은 일이 난다.
-- **대처**: 유일한 보조 키(`id`)를 정렬과 커서에 넣는다. 정렬·비교는 한 시스템, 한 collation에서 한다. 페이지네이션 기초는 api-design `06-pagination` — 미작성, [api-design/curriculum](../../api-design/curriculum.md).
+- **대처**: 유일한 보조 키(`id`)를 정렬과 커서에 넣는다. 정렬·비교는 한 시스템, 한 collation에서 한다. 페이지네이션 기초는 [api-design/06-pagination](../../api-design/06-pagination/2-summary.md).
 
 ### 3. glibc 업그레이드 뒤 PostgreSQL 인덱스가 조용히 손상
 
@@ -311,7 +311,7 @@ names.sort(c);
   - [09-index-design](../09-index-design/2-summary.md) — 인덱스 설계
   - architecture `04-character-encoding-unicode` — 원고: [foundations/data-representation](../../foundations/data-representation/README.md)
 - 연결
-  - api-design `06-pagination` — 커서 페이지네이션. 미작성, [api-design/curriculum](../../api-design/curriculum.md)
+  - [api-design/06-pagination](../../api-design/06-pagination/2-summary.md) — 커서 페이지네이션.
   - [data-structure/15-b-tree](../../data-structure/15-b-tree/2-summary.md) — B-tree 불변식
   - [08-btree-indexes](../08-btree-indexes/2-summary.md) · [20-backup-and-pitr](../20-backup-and-pitr/2-summary.md) — B+Tree 인덱스, 물리 백업 복원에서의 collation 문제
   - database `32-replication-leader-follower` — 복제본의 locale 불일치. 원고: [systems/server-design/03-data-layer.md](../../systems/server-design/03-data-layer.md)

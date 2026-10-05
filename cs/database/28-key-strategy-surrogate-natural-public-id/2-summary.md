@@ -240,14 +240,14 @@ WHERE table_schema = DATABASE();
 - 선행
   - [08-btree-indexes](../08-btree-indexes/2-summary.md) — B+Tree 분할, 클러스터드 vs 보조
   - `security/16-identifiers-and-enumeration` — 미작성, [security/README](../../security/README.md)
-  - `distributed/13-distributed-id-generation` — 미작성, [distributed/README](../../distributed/README.md)
+  - [distributed/13-distributed-id-generation](../../distributed/13-distributed-id-generation/2-summary.md)
 - 연결
   - [02-keys-and-constraints](../02-keys-and-constraints/2-summary.md) — PK·FK·UNIQUE
   - [07-buffer-pool](../07-buffer-pool/2-summary.md) — 적중률
   - [26-schema-migration](../26-schema-migration/2-summary.md) — PK 교체 마이그레이션
   - [51-object-relational-structural-mapping](../51-object-relational-structural-mapping/2-summary.md) — Identity Field
   - [ops-patterns/13-snowflake](../../ops-patterns/13-snowflake/2-summary.md) — 64비트 시간순 ID
-  - `api-design/08-schema-and-serialization` — 미작성, [api-design/curriculum](../../api-design/curriculum.md)
+  - [api-design/08-schema-and-serialization](../../api-design/08-schema-and-serialization/2-summary.md)
 - 표준·문서
   - RFC 9562 "Universally Unique IDentifiers (UUIDs)" — §2.1(v4의 인덱스 지역성 문제), §5.4 v4, §5.7 v7 비트 배치, §6.2 단조성, §6.11 정렬, §6.13 DBMS 고려(이진 저장, 이름 기반 UUID PK 비권장), §8 보안 <https://www.rfc-editor.org/rfc/rfc9562>
   - PostgreSQL 17 5.3 Identity Columns(identity 열은 유일성을 보장하지 않음 — PK·UNIQUE로) <https://www.postgresql.org/docs/17/ddl-identity-columns.html>

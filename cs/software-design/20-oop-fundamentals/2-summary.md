@@ -279,7 +279,7 @@ grep -rnE 'public (List|Set|Map)<.*> get\w*\(\) *\{ *return \w+; *\}' src/main/j
   - [23-design-by-contract](../23-design-by-contract/2-summary.md) — 불변식을 계약으로 명시
   - [19-immutability-and-value-objects](../19-immutability-and-value-objects/2-summary.md) — 불변 객체로 공유 문제 없애기
   - language/17 `dispatch-and-polymorphism-mechanics`(vtable·인라인 캐시) — 미작성([language/README](../../language/README.md))
-  - domain-modeling 04 `entities-and-value-objects`·05 `aggregates-and-invariants` — 미작성([domain-modeling/curriculum](../../domain-modeling/curriculum.md))
+  - [domain-modeling/04-entities-and-value-objects](../../domain-modeling/04-entities-and-value-objects/2-summary.md)·[domain-modeling/05-aggregates-and-invariants](../../domain-modeling/05-aggregates-and-invariants/2-summary.md)
 - 글·문서
   - GoF 1장 두 원칙 — Erich Gamma 인터뷰, Bill Venners, "Design Principles from Design Patterns", Artima, 2005-06-06 <https://www.artima.com/articles/design-principles-from-design-patterns>
   - Robert C. Martin, 『Clean Architecture』(2017) 5장 "Object-Oriented Programming" — 절 제목만 출판사 목차로 확인 <https://www.informit.com/store/clean-architecture-a-craftsmans-guide-to-software-structure-9780134494166>

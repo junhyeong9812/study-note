@@ -256,7 +256,7 @@ after   30,000 + [취소]  = 30,000 < 50,000   → 배송비 3,000
 - 연결 — [09-order-state](../09-order-state/2-summary.md): 부분 취소는 주문 상태 전이의 하나 — 차액 계산이 그 전이에 붙는다.
 - 기법 — [data-structure/05-hashmap](../../../data-structure/05-hashmap/2-summary.md): 판매자별 묶음(group by)의 자료구조.
 - 기초 — [pojo](../../pojo/2-summary.md): 정책을 불변 값 객체로 두는 이유.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (선행 `12-time-money-and-units` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (선행 [12-time-money-and-units](../../12-time-money-and-units/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/18-shipping-fee/` (README.md · impl/com/domain/shipping/Shipping.java · src/main/.../ShippingPolicy.java · src/test/.../MeasurementTest.java).
 
 ### 관련 자료

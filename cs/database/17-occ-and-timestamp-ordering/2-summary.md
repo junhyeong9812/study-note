@@ -234,7 +234,7 @@ for (int attempt = 1; ; attempt++) {
 - 후속·연결
   - [18-app-level-concurrency-patterns](../18-app-level-concurrency-patterns/2-summary.md) — 조건부 UPDATE·`FOR UPDATE`·upsert
   - database [52-offline-concurrency-patterns](../52-offline-concurrency-patterns/2-summary.md)(여러 요청에 걸친 버전·aggregate 버전)
-  - api-design `11-concurrency-control-in-apis`(ETag·`If-Match`·412) — 미작성, [api-design/curriculum](../../api-design/curriculum.md)
+  - [api-design/11-concurrency-control-in-apis](../../api-design/11-concurrency-control-in-apis/2-summary.md)(ETag·`If-Match`·412)
   - [ops-patterns/14-logical-clock](../../ops-patterns/14-logical-clock/2-summary.md) — 논리 시계
   - [api-design/03-stock-deduct](../../api-design/24-case-stock-deduct/2-summary.md) — 재고 차감의 방식 비교
 - 논문·강의

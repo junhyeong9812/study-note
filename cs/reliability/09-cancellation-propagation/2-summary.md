@@ -152,7 +152,7 @@ t= 2501ms 단계 수: /ignore=20, /check=4
 - 그래서 둘로 나눈다.
   - 보내기 **전**: 남은 예산이 상대의 p99.x보다 작으면 보내지 않는다(08의 최소치 규칙).
   - 보낸 **뒤**: 취소 신호가 와도 그 호출만은 자기 타임아웃까지 기다려 결과를 확정하려 한다. 확정 못 하면 "모름" 상태로 기록하고 사후 확인 경로로 넘긴다.
-- *대사(reconciliation)*: 우리 기록과 상대(PG)의 기록을 나중에 대조해 어긋난 것을 찾아 고치는 절차. domain-modeling 25 `reconciliation`(미작성, [domain-modeling 커리큘럼](../../domain-modeling/curriculum.md)).
+- *대사(reconciliation)*: 우리 기록과 상대(PG)의 기록을 나중에 대조해 어긋난 것을 찾아 고치는 절차. [domain-modeling/25-reconciliation](../../domain-modeling/25-reconciliation/2-summary.md).
 
 ## 쓰이는 자료구조·알고리즘
 
@@ -293,7 +293,7 @@ psql -c "select pid, now()-query_start as running, state, left(query,60) from pg
   - [database/22-database-side-timeouts](../../database/22-database-side-timeouts/2-summary.md) — DB 쿼리 취소 실험
   - [35-timeout-design-worksheet](../35-timeout-design-worksheet/2-summary.md) — Resilience4j 순서와 취소
   - [14-graceful-shutdown](../14-graceful-shutdown/2-summary.md) — 종료 때의 취소 · 원본 [ops-patterns/19-graceful-shutdown](../../ops-patterns/19-graceful-shutdown/2-summary.md)
-  - domain-modeling 25 `reconciliation` — 미작성, [domain-modeling 커리큘럼](../../domain-modeling/curriculum.md)
+  - [domain-modeling/25-reconciliation](../../domain-modeling/25-reconciliation/2-summary.md)
 - 문서·소스
   - Go `context` 패키지 문서(`WithDeadline`, `Done`) — `go doc context.WithDeadline`(go1.23.12)
   - JDK 21 API `CompletableFuture.cancel` — "mayInterruptIfRunning - this value has no effect in this implementation because interrupts are not used to control processing"

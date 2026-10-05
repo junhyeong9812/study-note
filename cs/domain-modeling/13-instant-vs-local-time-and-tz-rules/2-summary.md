@@ -342,7 +342,7 @@ WHERE start_utc > now() AND start_utc <> (local_start AT TIME ZONE tz_id);
   - [database/27-temporal-types-and-session-timezone](../../database/27-temporal-types-and-session-timezone/2-summary.md) — `timestamp`/`timestamptz`, 세션 시간대, 9시간 밀림, 날짜 경계
   - [database/50-temporal-and-bitemporal-tables](../../database/50-temporal-and-bitemporal-tables/2-summary.md) — 유효 시간·기록 시간
   - [languages/java/syntax/51-java-time-types](../../../languages/java/syntax/51-java-time-types/2-summary.md) — 타입·공백·중복·tzdb 판 실측 · [52-duration-period-formatter](../../../languages/java/syntax/52-duration-period-formatter/2-summary.md) — `Duration`·`Period`·포매터
-  - `testing/10-testing-time-and-concurrency` — 미작성, [testing/README](../../testing/README.md)
+  - [testing/10-testing-time-and-concurrency](../../testing/10-testing-time-and-concurrency/2-summary.md)
   - [23-versioned-rules-and-effective-dating](../23-versioned-rules-and-effective-dating/2-summary.md) — 발효 시각도 "어느 지역의 자정인가"를 정해야 한다
 - 근거
   - Jon Skeet, "Storing UTC is not a silver bullet"(2019-03-27) <https://codeblog.jonskeet.uk/2019/03/27/storing-utc-is-not-a-silver-bullet/>

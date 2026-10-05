@@ -404,7 +404,7 @@ kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic orders --fro
   - [18-consumer-failure-handling](../18-consumer-failure-handling/2-summary.md)(재시도·DLQ·poison pill). 기존 원고 [server-design/07-async-messaging](../../systems/server-design/07-async-messaging.md) · [systems/kafka-consumer-failure](../../systems/kafka-consumer-failure/2-summary.md)
 - 후속·연결
   - [34-message-routing-and-transformation](../34-message-routing-and-transformation/2-summary.md)(라우터·Aggregator·Resequencer) · [23-orchestration-vs-choreography](../23-orchestration-vs-choreography/2-summary.md)(명령 vs 이벤트 연쇄) · [21-kafka-internals](../21-kafka-internals/2-summary.md). 기존 원고 [systems/orchestration-choreography](../../systems/orchestration-choreography/2-summary.md)
-  - api-design `20-messaging-protocols`(AMQP·MQTT·Kafka 프로토콜) — 미작성, [api-design/curriculum](../../api-design/curriculum.md)
+  - [api-design/20-messaging-protocols](../../api-design/20-messaging-protocols/2-summary.md)(AMQP·MQTT·Kafka 프로토콜)
   - reliability `13-idempotency` → [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md)
   - [data-structure/04-queue-deque](../../data-structure/04-queue-deque/2-summary.md) · [data-structure/07-heap](../../data-structure/07-heap/2-summary.md) · [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md) · [data-structure/31-consistent-hashing](../../data-structure/31-consistent-hashing/2-summary.md)
 - 책·패턴 문서

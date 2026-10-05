@@ -230,7 +230,7 @@ README가 미리 알려준 함정: ①만료일에는 이미 없다("1월 31일�
 - 같은 규약 — [12-game-buff](../12-game-buff/2-summary.md): 만료 미포함 경계·관측 창. [15-coupon](../15-coupon/2-summary.md): 종료일 미포함.
 - 같은 자리 — [10-payment](../10-payment/2-summary.md): 멱등키(spendId)·파생 잔액·전부 아니면 전무. [03-waiting-queue](../03-waiting-queue/2-summary.md)·[11-delivery-tracking](../11-delivery-tracking/2-summary.md): 동점 처리로 결정적 결과.
 - 심화판 — [advanced/14-mileage-expiry](../../advanced/14-mileage-expiry/2-summary.md): 만료 배치와 알림.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · `24-double-entry-ledger`(덩어리별 장부의 원장판 — 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · [24-double-entry-ledger](../../24-double-entry-ledger/2-summary.md)(덩어리별 장부의 원장판).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/14-points/` (README.md · impl/com/domain/points/PointWallet.java · src/main/java/com/domain/points/PointLot.java).
 
 ### 관련 자료

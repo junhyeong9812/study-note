@@ -199,7 +199,7 @@ Fee.java:4:	NPathComplexity:	The method 'fee(boolean, boolean)' has an NPath com
 - **기저 경로 집합(선형대수)**: 경로를 간선 사용 횟수 벡터로 보면, 모든 경로는 v(G)개의 독립 경로 벡터의 선형 결합이다(McCabe의 Theorem 1 응용). 기저 경로 테스트는 기준 경로에서 결정을 하나씩 뒤집어 만든다(실험 d의 FF → TF, FT).
 - **NPath 재귀 계산**: 순차 문장은 곱, 분기는 합으로 AST를 재귀 평가한다. `if`가 나란히 k개면 2^k로 커진다.
 - **중첩 카운터를 든 AST 순회(인지 복잡도)**: 트리를 내려가며 중첩 깊이를 들고 다니다가, 흐름을 끊는 노드에서 1 + 깊이를 더한다. 람다·중첩 메서드는 깊이만 올린다.
-- 경로 조합 테스트 설계는 testing 영역 07 test-design-techniques([testing/README](../../testing/README.md), 미작성).
+- 경로 조합 테스트 설계는 [testing/07-test-design-techniques](../../testing/07-test-design-techniques/2-summary.md).
 
 ## 적용 — 풀어나가는 법
 
@@ -267,9 +267,9 @@ pmd check -d src/main/java -R ruleset.xml -f text      # PMD 7 CLI (위반이 �
 
 - 선행
   - [06-clean-code](../06-clean-code/2-summary.md) — 좋은 코드의 속성
-  - testing 영역 07 test-design-techniques — 경계값·결정 테이블([testing/README](../../testing/README.md), 미작성)
+  - [testing/07-test-design-techniques](../../testing/07-test-design-techniques/2-summary.md) — 경계값·결정 테이블
 - 후속·연결
-  - testing 영역 16 coverage-and-its-limits — 분기·조건 커버리지의 한계([testing/README](../../testing/README.md), 미작성)
+  - [testing/16-coverage-and-its-limits](../../testing/16-coverage-and-its-limits/2-summary.md) — 분기·조건 커버리지의 한계
   - [53-code-forensics-hotspots](../53-code-forensics-hotspots/2-summary.md) — 핫스팟 = 변경 빈도 × 복잡도
   - [28-taming-conditionals](../28-taming-conditionals/2-summary.md) — 조건문을 줄이는 도구
   - [11-when-to-abstract](../11-when-to-abstract/2-summary.md) — 플래그 매개변수가 늘리는 경로

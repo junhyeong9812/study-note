@@ -204,7 +204,7 @@ assign(orders, drivers, Strategy, OrderPriority)
 - 후속 — [advanced/23-warehouse-pick](../../advanced/23-warehouse-pick/2-summary.md): 작업 할당의 심화판.
 - 기법 — [algorithm/23-greedy](../../../algorithm/23-greedy/2-summary.md) · [algorithm/19-network-flow](../../../algorithm/19-network-flow/2-summary.md): 탐욕 할당과 전체 최적(매칭)의 거리.
 - 기법 — [data-structure/07-heap](../../../data-structure/07-heap/2-summary.md) · [data-structure/25-spatial-index](../../../data-structure/25-spatial-index/2-summary.md): 규모가 커졌을 때 최단 짝을 찾는 도구.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (선행 `12-time-money-and-units` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (선행 [12-time-money-and-units](../../12-time-money-and-units/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/30-dispatch/` (README.md · impl/com/domain/dispatch/Dispatch.java · src/main/.../Order.java · Driver.java · src/test/.../MeasurementTest.java).
 
 ### 관련 자료

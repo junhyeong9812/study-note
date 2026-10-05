@@ -74,4 +74,4 @@ src/auth/TokenStore.java,dev-e,10,12,0.83        ← main-dev-by-revs(커밋 수
 
 - 52: 핫스팟의 "복잡도" 축을 공급한다(순환·인지 복잡도, 줄 수). 핫스팟은 지표에 "얼마나 자주"를 곱해 지표의 맥락 부족을 메운다.
 - 51: 핫스팟으로 고른 곳은 대개 테스트가 부족한 레거시다. 고칠 때 seam·sprout·parallel change를 쓴다.
-- engineering-practice/10(미작성): 기술 부채 상환 순서를 이자(변경 빈도) 기준으로 정하는 데이터가 된다.
+- [engineering-practice/10](../../engineering-practice/10-technical-debt/2-summary.md): 기술 부채 상환 순서를 이자(변경 빈도) 기준으로 정하는 데이터가 된다.

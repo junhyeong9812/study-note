@@ -289,7 +289,7 @@ server {
 - 현상: 한 회사 사용자 수백 명이 동시에 429를 받는다.
 - 보이는 형태: 429가 한 IP에 몰리고, 그 IP 뒤에 서로 다른 계정이 수백 개.
 - 원인: 제한 키가 IP. NAT 뒤에서 IP 하나를 나눠 쓴다.
-- 대처: 인증된 요청은 계정·API 키·테넌트 단위로. IP 한도는 미인증 보호용으로 넉넉하게 따로. 계약 쪽 자세한 내용은 api-design/14-rate-limit-and-quota-contracts(미작성, [api-design/curriculum.md](../../api-design/curriculum.md)).
+- 대처: 인증된 요청은 계정·API 키·테넌트 단위로. IP 한도는 미인증 보호용으로 넉넉하게 따로. 계약 쪽 자세한 내용은 [api-design/14-rate-limit-and-quota-contracts](../../api-design/14-rate-limit-and-quota-contracts/2-summary.md).
 
 ### 5. 리미터가 고장 나서 전부 막는다 / 리미터 앞에서 스레드가 기다린다
 
@@ -326,7 +326,7 @@ server {
   - [10-circuit-breaker](../10-circuit-breaker/2-summary.md) — 같은 슬라이딩 창으로 결과를 센다
   - [28-bulkhead](../28-bulkhead/2-summary.md) — 이미 들어온 요청의 자원을 나눈다
   - [12-backpressure-and-load-shedding](../12-backpressure-and-load-shedding/2-summary.md) — 리키 버킷의 줄이 무제한일 때, 우선순위 셰딩
-  - api-design/14-rate-limit-and-quota-contracts — 미작성([api-design/curriculum.md](../../api-design/curriculum.md))
+  - [api-design/14-rate-limit-and-quota-contracts](../../api-design/14-rate-limit-and-quota-contracts/2-summary.md)
   - [distributed/12-coordination-and-fencing](../../distributed/12-coordination-and-fencing/2-summary.md) — Redis 원자 연산·스크립트의 다른 쓰임(락)
 - 표준·글·문서
   - RFC 6585 §4 "429 Too Many Requests"(Retry-After MAY, 사용자 식별·계수 방법은 정하지 않음) <https://www.rfc-editor.org/rfc/rfc6585>

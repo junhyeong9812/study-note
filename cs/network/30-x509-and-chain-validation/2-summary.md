@@ -308,7 +308,7 @@ sock.on('error', (e) => console.error(e.code)); // UNABLE_TO_GET_ISSUER_CERT_LOC
   - 시계가 notBefore보다 이르면 실패한다.
   - 반대로 시계가 미래로 가 있으면 멀쩡한 인증서가 "만료"로 보인다.
 - **대처**
-  - NTP 동기화를 부팅 초기에 보장한다(`distributed/04-physical-clocks-and-ntp`, 미작성 — [distributed 영역 표](../../distributed/README.md)).
+  - NTP 동기화를 부팅 초기에 보장한다([distributed/04-physical-clocks-and-ntp](../../distributed/04-physical-clocks-and-ntp/2-summary.md)).
   - 인증서 발급 직후 즉시 배포할 때는 클라이언트 시계 편차를 고려한다.
 
 ### 4. 호스트명 불일치

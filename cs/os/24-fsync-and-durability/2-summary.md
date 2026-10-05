@@ -138,7 +138,7 @@ write 32MiB: 10.2 ms | fsync: 12.8 ms | Dirty kB: before=16584 afterWrite=49352 
 
 - **더러운 페이지 추적(페이지 캐시)** — 어떤 페이지가 디스크와 다른지 표시하고 나중에 모아 쓴다(14번).
 - **오류 시퀀스 카운터(`errseq_t`)** — 32비트 하나에 오류 코드(하위 비트) + 카운터(상위 비트) + "표본을 떴나" 플래그 1비트를 담는다. 구독자(fd)는 값을 표본으로 떠 두었다가 바뀌었는지로 새 오류를 안다(lib/errseq.c 주석).
-- **group commit** — 여러 트랜잭션의 커밋을 fsync 한 번으로 묶어 fsync당 비용을 나눈다. 내구성 비용(로컬 재현에서 한 번 약 5 ms)을 줄이는 표준 기법이다. [database/README](../../database/README.md) `19-wal-and-logging`(미작성)
+- **group commit** — 여러 트랜잭션의 커밋을 fsync 한 번으로 묶어 fsync당 비용을 나눈다. 내구성 비용(로컬 재현에서 한 번 약 5 ms)을 줄이는 표준 기법이다. [database/19-wal-and-logging](../../database/19-wal-and-logging/2-summary.md)
 - **임시 파일 + rename = 섀도 복사** — 새 버전을 옆에 완성하고 포인터(이름) 하나를 원자적으로 바꾼다. COW 트리의 루트 교체와 같은 발상이다(23번).
 
 ## 적용 — 풀어나가는 법
@@ -271,7 +271,7 @@ dmesg -T | grep -iE 'I/O error|blk_update_request|EXT4-fs (error|warning)'   # w
   - [21-files-and-descriptors](../21-files-and-descriptors/2-summary.md) — close ≠ 디스크, OFD
   - [22-file-system-implementation](../22-file-system-implementation/2-summary.md) — 디렉터리 = 이름 → inode 표
   - [33-data-integrity-checksums](../33-data-integrity-checksums/2-summary.md) — lost write·조용한 손상
-  - [database/README](../../database/README.md) — `19-wal-and-logging`(WAL·group commit). 미작성
+  - [database/19-wal-and-logging](../../database/19-wal-and-logging/2-summary.md)(WAL·group commit)
   - [14-mmap-and-page-cache](../14-mmap-and-page-cache/2-summary.md) — 페이지 캐시·dirty writeback
   - [38-os-incidents](../38-os-incidents/2-summary.md)(fsyncgate 2018)
 - Linux man-pages

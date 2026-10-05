@@ -312,7 +312,7 @@ step은 정밀도가 아니라 관례(회의를 몇 분 단위 시각에 시작�
 - 같은 규약 — [04-hotel-booking](../04-hotel-booking/2-summary.md): 날짜판 반열린 구간·스위핑. [06-subscription](../06-subscription/2-summary.md): 끝 미포함.
 - 기법 — [algorithm/30-sweeping](../../../algorithm/30-sweeping/2-summary.md): 정렬 후 한 번 훑기, 끝 덮어쓰기 실수. [algorithm/10-prefix-sum](../../../algorithm/10-prefix-sum/2-summary.md): 누적 합의 같은 실수 자리.
 - 같은 교훈 — [02-seat-reservation](../02-seat-reservation/2-summary.md): 합계 지표가 못 보는 조각남(고아 좌석).
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · `13-instant-vs-local-time-and-tz-rules`(참석자별 시간대 — 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` · [13-instant-vs-local-time-and-tz-rules](../../13-instant-vs-local-time-and-tz-rules/2-summary.md)(참석자별 시간대).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/08-meeting-slot/` (README.md · impl/com/domain/meeting/MeetingFinder.java · src/main/java/com/domain/meeting/TimeSlot.java).
 
 ### 관련 자료

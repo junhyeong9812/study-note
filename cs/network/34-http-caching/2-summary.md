@@ -330,7 +330,7 @@ app.get('/me', (req, res) => {
   - [39-http-content-encoding](../39-http-content-encoding/2-summary.md) — `Accept-Encoding`과 `Vary`
   - [41-range-requests-and-resume](../41-range-requests-and-resume/2-summary.md) — `If-Range`·206
   - [47-cdn-and-edge](../47-cdn-and-edge/2-summary.md) — CDN 캐시 계층·무효화
-  - `web-platform/07-service-workers-and-offline` — 서비스 워커 캐시 고착. 미작성([web-platform 영역 표](../../web-platform/README.md))
+  - [web-platform/07-service-workers-and-offline](../../web-platform/07-service-workers-and-offline/2-summary.md) — 서비스 워커 캐시 고착.
   - [ops-patterns/09-stampede](../../ops-patterns/09-stampede/2-summary.md) — 캐시 만료 순간의 몰림
 - RFC 9111 HTTP Caching <https://www.rfc-editor.org/rfc/rfc9111>
   - §3 저장 조건 · §3.5 Authorization 요청 · §4 저장본 재사용 조건·요청 합치기 · §4.1 Vary와 캐시 키

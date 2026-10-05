@@ -282,7 +282,7 @@ Outcome charge(Order order) {
 - 기존 노트(이어받음)
   - [ops-patterns/failure-at-scale](../../ops-patterns/failure-at-scale/2-summary.md) — 양상 1 부분 실패의 상시화, 양상 2 재시도 증폭
 - 후속·연결
-  - reliability 영역 `05-timeouts-and-deadline-propagation`·`07-timeout-taxonomy-by-layer`·`08-time-budget-allocation`·`13-idempotency` — [reliability/README](../../reliability/README.md). 05·13은 아래 ops-patterns 노트로 이어지고, 07·08은 미작성
+  - reliability 영역 [05-timeouts-and-deadline-propagation](../../reliability/05-timeouts-and-deadline-propagation/2-summary.md)·[07-timeout-taxonomy-by-layer](../../reliability/07-timeout-taxonomy-by-layer/2-summary.md)·[08-time-budget-allocation](../../reliability/08-time-budget-allocation/2-summary.md)·[13-idempotency](../../reliability/13-idempotency/2-summary.md). 05·13은 아래 ops-patterns 노트로 이어진다
   - [ops-patterns/deadline-propagation](../../ops-patterns/deadline-propagation/2-summary.md) · [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md) · [ops-patterns/01-retry-backoff](../../ops-patterns/01-retry-backoff/2-summary.md) · [ops-patterns/failure-modes](../../ops-patterns/failure-modes/2-summary.md)(F-16 타임아웃 계층 역전, F-20 이중 결제)
   - [network/16-tcp-reliability-retransmission](../../network/16-tcp-reliability-retransmission/2-summary.md) — RTT를 재서 재전송 타이머를 맞추는 같은 생각
   - [database/22-database-side-timeouts](../../database/22-database-side-timeouts/2-summary.md)

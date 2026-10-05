@@ -163,7 +163,7 @@ git stash && <정리> && git commit -m "정리 ..." && git stash pop
 ```
 
 4. **리뷰를 돕는 옵션**: `git diff -M`(이름 변경 짝짓기), `git diff --color-moved`(이동만 한 줄), `git diff -w`(공백만 바뀐 줄 무시)로 정리 커밋이 정말 정리뿐인지 빠르게 본다.
-5. **PR 크기**: 정리 PR은 작게 여러 개(Beck은 정리 PR에 정리를 가능한 적게 넣으라고 권한다 — 독자 노트 인용 [?]). 리뷰 정책은 engineering-practice 05 code-review([engineering-practice/README](../../engineering-practice/README.md), 미작성).
+5. **PR 크기**: 정리 PR은 작게 여러 개(Beck은 정리 PR에 정리를 가능한 적게 넣으라고 권한다 — 독자 노트 인용 [?]). 리뷰 정책은 [engineering-practice/05-code-review](../../engineering-practice/05-code-review/2-summary.md).
 6. **정리에 시간을 상한한다.** 정리가 기능 PR을 며칠씩 막으면 "나중에 따로"로 넘기고 목록에 남긴다.
 
 ## 장애 시나리오와 대처
@@ -208,7 +208,7 @@ git stash && <정리> && git commit -m "정리 ..." && git stash pop
 
 - 선행
   - [13-refactoring](../13-refactoring/2-summary.md) — 동작 보존 변환, 작은 단계, 특성 테스트
-  - engineering-practice 05 code-review — 리뷰의 목적·크기([engineering-practice/README](../../engineering-practice/README.md), 미작성)
+  - [engineering-practice/05-code-review](../../engineering-practice/05-code-review/2-summary.md) — 리뷰의 목적·크기
 - 후속·연결
   - [02-modularity-coupling-cohesion](../02-modularity-coupling-cohesion/2-summary.md) — 결합·응집 기초
   - [11-when-to-abstract](../11-when-to-abstract/2-summary.md) — 정리의 하나인 도우미 추출을 언제 하나

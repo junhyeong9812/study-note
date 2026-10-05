@@ -236,12 +236,12 @@ SELECT DATE(sold_at) AS kst_day, SUM(amount) FROM sales GROUP BY kst_day;
 - 선행
   - [13-transactions-acid](../13-transactions-acid/2-summary.md)
   - [04-sql-joins-and-aggregation](../04-sql-joins-and-aggregation/2-summary.md) — GROUP BY와 집계
-  - `distributed/04-physical-clocks-and-ntp` — 벽시계와 NTP. 미작성, [distributed/README](../../distributed/README.md)
+  - [distributed/04-physical-clocks-and-ntp](../../distributed/04-physical-clocks-and-ntp/2-summary.md) — 벽시계와 NTP.
 - 연결
   - [09-index-design](../09-index-design/2-summary.md) — 컬럼에 함수를 씌우면 인덱스를 못 타는 이유, 표현식 인덱스
   - [26-schema-migration](../26-schema-migration/2-summary.md) — 타입 변경은 재작성(MySQL COPY)
   - [50-temporal-and-bitemporal-tables](../50-temporal-and-bitemporal-tables/2-summary.md) — 유효 시간·기록 시간
-  - `domain-modeling/13-instant-vs-local-time-and-tz-rules` — 미작성, [domain-modeling/curriculum](../../domain-modeling/curriculum.md)
+  - [domain-modeling/13-instant-vs-local-time-and-tz-rules](../../domain-modeling/13-instant-vs-local-time-and-tz-rules/2-summary.md)
   - `data-analysis/18-data-cleaning-and-quality` — 미작성, [data-analysis/README](../../data-analysis/README.md)
 - PostgreSQL 17 문서
   - 14.1 Using EXPLAIN(인덱스가 있어도 순차 스캔을 고르는 예) <https://www.postgresql.org/docs/17/using-explain.html>

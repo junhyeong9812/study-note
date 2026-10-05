@@ -44,7 +44,7 @@
 - *변환 부호화*: 화소 값을 주파수 성분으로 바꾼 뒤, 눈에 덜 띄는 고주파 성분을 거칠게 양자화해 버리는 손실 압축. JPEG의 DCT가 대표다(ITU-T T.81).
 - WebP 손실 모드는 VP8 키프레임처럼 예측 부호화를 쓴다. Google은 같은 SSIM에서 JPEG보다 25~34% 작다고 밝힌다(developers.google.com/speed/webp).
 - AVIF는 "AV1 이미지를 HEIF에 담는 형식"이다(AOMedia AVIF 명세).
-- 무손실 압축(LZ77·허프만 계열, [algorithm 영역](../../algorithm/curriculum.md) 33·34 미작성)과 달리, 이미지 손실 압축은 "버릴 정보"를 사람 눈 기준으로 고른다는 점이 다르다.
+- 무손실 압축(LZ77·허프만 계열, [algorithm/33](../../algorithm/33-lossless-compression-lz77-huffman/2-summary.md)·[34](../../algorithm/34-modern-codecs-lz4-zstd-brotli/2-summary.md))과 달리, 이미지 손실 압축은 "버릴 정보"를 사람 눈 기준으로 고른다는 점이 다르다.
 
 ### 2. 반응형 이미지 — 브라우저가 후보를 고른다
 
@@ -152,7 +152,7 @@ jpeg  q90   89.8KB PSNR 44.02dB      webp  q90   65.3KB PSNR 43.74dB      avif  
 ## 쓰이는 자료구조·알고리즘
 
 - **해상도 후보 선택**: 후보를 폭(w)으로 정렬해 두고, 목표 = 슬롯 폭 × DPR 이상인 첫 후보를 찾는다. 정렬 배열의 하한 탐색(이분 탐색, [algorithm/06](../../algorithm/06-binary-search/2-summary.md))과 같은 모양이다. 브라우저는 여기에 망·캐시 고려를 더할 수 있다(명세상 재량).
-- **변환 부호화(손실 압축)**: 블록 → 주파수 변환(DCT 등) → 양자화(정보 버림) → 엔트로피 부호화. 무손실 단계(엔트로피 부호화)는 [algorithm 영역](../../algorithm/curriculum.md)의 33 무손실 압축·34 현대 코덱(미작성)과 이어진다.
+- **변환 부호화(손실 압축)**: 블록 → 주파수 변환(DCT 등) → 양자화(정보 버림) → 엔트로피 부호화. 무손실 단계(엔트로피 부호화)는 [algorithm/33 무손실 압축](../../algorithm/33-lossless-compression-lz77-huffman/2-summary.md)·[34 현대 코덱](../../algorithm/34-modern-codecs-lz4-zstd-brotli/2-summary.md)과 이어진다.
 - **내용 협상(content negotiation)**: 서버·CDN이 `Accept: image/avif,image/webp,…` 헤더를 보고 포맷을 고르는 방식. 같은 URL이 다른 바이트를 내므로 캐시 키에 `Accept`를 넣어야 한다(`Vary: Accept`, [network/34 HTTP 캐시](../../network/34-http-caching/2-summary.md)).
 - **교차 판정(lazy)**: 뷰포트를 임계 거리만큼 넓힌 사각형과 이미지 사각형의 교차 검사 — IntersectionObserver의 `rootMargin`과 같은 구조.
 
@@ -255,7 +255,7 @@ export async function buildVariants(src: string, outBase: string) {
 - 후속·연결
   - [15 웹 폰트 로딩](../15-web-font-loading/2-summary.md), [17 목록 가상화](../17-list-virtualization/2-summary.md), [20 성능 예산](../20-performance-budgets-and-regression-gates/2-summary.md)
   - [network/34 HTTP 캐시](../../network/34-http-caching/2-summary.md)(Vary), [network/39 콘텐츠 인코딩](../../network/39-http-content-encoding/2-summary.md)(이미지는 이미 압축되어 있다 — 1600w JPEG 39,300B에 gzip −2.3%·brotli −3.7%, AVIF 12,913B에 −0.4%, `out14gzip.txt`), [network/47 CDN과 엣지](../../network/47-cdn-and-edge/2-summary.md)
-  - [algorithm/06 이분 탐색](../../algorithm/06-binary-search/2-summary.md), [algorithm 영역](../../algorithm/curriculum.md)(33 무손실 압축·34 현대 코덱 — 미작성)
+  - [algorithm/06 이분 탐색](../../algorithm/06-binary-search/2-summary.md), [algorithm/33 무손실 압축](../../algorithm/33-lossless-compression-lz77-huffman/2-summary.md), [algorithm/34 현대 코덱](../../algorithm/34-modern-codecs-lz4-zstd-brotli/2-summary.md)
 - 문법·API: [html/34 img 크기와 로딩](../../../languages/html/syntax/34-img-alt-size-and-loading/2-summary.md), [html/35 srcset·sizes](../../../languages/html/syntax/35-srcset-and-sizes/2-summary.md), [html/36 picture](../../../languages/html/syntax/36-picture-art-direction-and-format/2-summary.md), [css/31 aspect-ratio](../../../languages/css/syntax/31-intrinsic-sizing-and-aspect-ratio/2-summary.md), [css/44 배경과 object-fit](../../../languages/css/syntax/44-backgrounds-and-object-fit/2-summary.md), [web-api/35 IntersectionObserver](../../../languages/web-api/35-intersection-observer/2-summary.md)
 - 근거
   - HTML 표준 "Images" https://html.spec.whatwg.org/multipage/images.html — source set 선택의 구현 재량(implementation-defined), `sizes`의 `auto`(lazy 이미지 한정)

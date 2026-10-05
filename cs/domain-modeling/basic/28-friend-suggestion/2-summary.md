@@ -223,7 +223,7 @@ FriendSuggestion (구현)
 - 연결 — [27-menu-option](../27-menu-option/2-summary.md): 명세가 뭉뚱그린 갈림을 enum으로 끌어올려 부르는 쪽이 고르게 한 같은 구도.
 - 기법 — [algorithm/11-bfs](../../../algorithm/11-bfs/2-summary.md) · [data-structure/08-graph](../../../data-structure/08-graph/2-summary.md): 깊이 2로 고정한 그래프 탐색.
 - 기법 — [data-structure/05-hashmap](../../../data-structure/05-hashmap/2-summary.md) · [data-structure/07-heap](../../../data-structure/07-heap/2-summary.md): 공통 친구 카운팅·상위 k.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (선행 `12-time-money-and-units` — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `15-basic-modeling-exercises` (선행 [12-time-money-and-units](../../12-time-money-and-units/2-summary.md)).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-basic/28-friend-suggestion/` (README.md · impl/com/domain/social/FriendSuggestion.java · src/main/.../Social.java · src/test/.../MeasurementTest.java).
 
 ### 관련 자료
