@@ -221,7 +221,7 @@ Toil인 것                                Toil이 아닌 것
 
 ## 6. 선행 주제 연결
 
-[straggler](../../straggler/)의 tail latency — 평균이 아니라 p99가 사용자 경험을 지배한다는 결론은 **SLI를 평균이 아닌 퍼센타일로 정의해야 하는 이유**다. 규모가 커질수록(fan-out) SLO는 하위 서비스에 더 엄격한 꼬리를 요구한다.
+[straggler](../../../systems/straggler/2-summary.md)의 tail latency — 평균이 아니라 p99가 사용자 경험을 지배한다는 결론은 **SLI를 평균이 아닌 퍼센타일로 정의해야 하는 이유**다. 규모가 커질수록(fan-out) SLO는 하위 서비스에 더 엄격한 꼬리를 요구한다.
 
 ## 핵심 문장
 

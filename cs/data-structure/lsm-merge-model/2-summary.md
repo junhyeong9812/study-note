@@ -136,9 +136,12 @@ CPU                머지 · 압축(compression) · 체크섬
 ```text
 전략                          쓰기 증폭   읽기 증폭             공간 증폭
 ─────────────────────────────────────────────────────────────────
-Leveled (예: RocksDB 기본)     높음        낮음(레벨당 파일 1개)   낮음
+Leveled (예: RocksDB 기본)     높음        낮음(레벨당 run 1개*)   낮음
 Tiered / Size-tiered          낮음        높음(겹치는 파일 다수)   높음
  (예: Cassandra)
+
+* 레벨당 파일 1개가 아니라 sorted run 1개다. L1 이상은 키 범위로 나뉜 파일 여러 개가
+  run 하나를 이루고, L0는 서로 겹치는 파일 여러 개다(RocksDB wiki Leveled Compaction).
 ```
 
 읽기 증폭을 줄이는 보조 장치는 둘이다.
@@ -261,7 +264,7 @@ Lucene 세그먼트 기반 엔진               컬럼형 분석 엔진(파트 �
 
 - **RUM Conjecture.** LSM의 트레이드오프를 이론으로 묶은 것이 RUM 추측이다 — **R**ead(읽기)·**U**pdate(쓰기)·**M**emory(공간) 세 비용 중 둘을 좋게 하면 나머지 하나가 나빠진다. 위 "세 가지 증폭"이 바로 이 삼각형의 실체다. 쓰기 많으면 LSM, 읽기 중심이면 B-Tree라는 선택이 여기서 나온다.
 - **compaction 트리거.** 병합을 언제 돌릴지는 보통 "레벨별 파일 수·크기가 임계를 넘으면"으로 정해진다. 그래서 병합은 쓰기가 몰릴 때 같이 몰리고, 그 순간 조회 p99가 튄다 — 위 계측 항목의 마지막이 이 현상을 잡는다.
-- **read-modify-write가 없다는 점.** B-Tree는 페이지를 읽어 고쳐 다시 쓰지만(random write), LSM은 무조건 새로 append한다. 이 append-only + 불변이라는 발상은 SSD 내부의 FTL(Flash Translation Layer)과 정확히 같다 — 제자리 덮어쓰기가 비싼 매체에서 반복해 나오는 패턴이다.
+- **read-modify-write가 없다는 점.** B-Tree는 페이지를 읽어 고쳐 다시 쓰지만(random write), LSM은 무조건 새로 append한다. 이 append-only + 불변이라는 발상은 SSD 내부의 FTL(Flash Translation Layer)과 같은 발상이다 — 제자리 덮어쓰기가 비싼 매체에서 반복해 나오는 패턴이다. 다만 구조까지 같지는 않다. FTL은 페이지·블록 단위 주소 변환과 지우기 단위 제약을 다루고, 키 정렬·병합은 하지 않는다([systems/nand-flash](../../systems/nand-flash/2-summary.md)).
 </content>
 </invoke>
 

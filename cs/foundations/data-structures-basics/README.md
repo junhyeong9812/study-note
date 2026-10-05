@@ -488,6 +488,7 @@ class Queue:
 
 배열은 데이터의 추가나 삭제보다 탐색이 잦을 때,
 연결 리스트는 탐색보다는 데이터의 추가나 삭제가 빈번할 때 사용한다.
+(정정: 삽입·삭제할 위치의 노드를 이미 쥐고 있을 때만 맞다. 위치를 인덱스나 값으로 찾아야 하면 찾는 데 O(n)이 들어 배열과 같은 급이 된다.)
 하지만 실제 프로그램을 개발할 때는 여러 가지 상황을 고려해 자료구조를 결정해야 한다.
 
 실제 게임을 개발한다고 했을 때,
@@ -530,6 +531,7 @@ class Queue:
 
 위와 같이 설계하면 재귀 함수가 계속해서 자기 자신을 호출하기 때문에 스택 프레임이 계속 생성되고
 스택 오버플로가 발생한다.
+(정정: CPython은 실제 스택이 넘치기 전에 재귀 한도(기본 1000, `sys.getrecursionlimit()`)에서 `RecursionError: maximum recursion depth exceeded`를 낸다.)
 이러한 사태를 막으려면 탈출 조건이 필요하고, 탈출 조건이란 함수 호출을 멈추는 조건이다.
 
 ```python
@@ -682,6 +684,7 @@ B, C가 자식 노드
 
 포화 이진 트리(Full Binary Tree)는 모든 레벨이 빈틈없이 꽉 찬 트리이다.
 모든 노드가 자식을 0개 또는 2개 가지고, 리프 노드가 전부 같은 레벨에 있다.
+(용어 주의: 교재마다 다르다. NIST DADS는 full binary tree를 "모든 노드의 자식이 0개 또는 2개"로만 정의하고, 모든 레벨이 꽉 찬 트리는 perfect binary tree로 부른다. 여기 그림·식은 perfect 뜻이다.)
 
 ```
          1
@@ -777,7 +780,7 @@ class BinaryTree:
         # 왼쪽 서브 트리 순회
         self.postorder_traverse(cur.left, func)
         # 오른쪽 서브 트리 순회
-        self.preorder_traverse(cur.right, func)
+        self.postorder_traverse(cur.right, func)
         # 왼쪽 서브 트리와 오른쪽 서브 트리를 모두 순회한 후
         # 마지막으로 방문 노드의 데이터를 인자로 함수 호출
         func(cur.data)
@@ -915,8 +918,11 @@ def insert(self, data):
     while True:
         # parent는 현재 순회중인 노드의 부모 노드를 가리킴
         parent = cur
+        # 같은 데이터가 이미 있으면 삽입하지 않는다(중복 불가)
+        if data == cur.data:
+            return
         # 삽입할 데이터가 현재 노드 데이터보다 작을 때
-        if data < cur.data:
+        elif data < cur.data:
             cur = cur.left
             # 왼쪽 서브 트리가 None이면 새 노드를 위치시킨다.
             if not cur:
@@ -967,6 +973,10 @@ def remove(self, target):
     # 루트 노드의 변경 가능성이 있으므로
     # 루트를 업데이트해야 된다.
     self.root, removed_node = self.__remove_recursion(self.root, target)
+
+    # 대상 데이터가 없으면 None을 반환
+    if removed_node is None:
+        return None
 
     # 삭제된 노드의 자식 노드를 None으로 만든다.
     removed_node.left = removed_node.right = None
@@ -1035,7 +1045,9 @@ def insert_node(self, node):
     while True:
         parent = cur
         # insert() 메서드와 다른 점: data -> node.data
-        if node.data < cur.data:
+        if node.data == cur.data:
+            return
+        elif node.data < cur.data:
             cur = cur.left
             if not cur:
                 parent.left = node

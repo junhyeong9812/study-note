@@ -256,7 +256,7 @@ SELECT conname, pg_get_constraintdef(oid) FROM pg_constraint WHERE conrelid = 'i
 
 - 현상: 배포 시간대에 판정이 엇갈린 거래가 나온다.
 - 보이는 형태: 같은 시각 같은 입력인데 인스턴스(버전)마다 결과가 다르다.
-- 원인: 구·신 버전 공존 — 롤링 도중의 일시 공존, 또는 배포 누락으로 남은 공존. Knight Capital(2012-08-01)은 뒤쪽이다(7월 27일부터 며칠에 걸친 단계 배포에서 한 대가 빠졌다 — SEC 명령서 15항): 기술자가 SMARS 서버 8대 중 1대에 새 코드를 복사하지 않았고, 재사용된 플래그가 그 서버에서 옛 기능(Power Peg)을 깨웠다. 약 45분 동안 4억 6천만 달러 넘게 손실(SEC 명령서 34-70694). 이후 다른 7대에서 새 코드를 되돌리자 그 서버들에서도 옛 코드가 돌았다(같은 문서).
+- 원인: 구·신 버전 공존 — 롤링 도중의 일시 공존, 또는 배포 누락으로 남은 공존. Knight Capital(2012-08-01)은 뒤쪽이다(7월 27일부터 며칠에 걸친 단계 배포에서 한 대가 빠졌다 — SEC 명령서 15항): 기술자가 SMARS 서버 8대 중 1대에 새 코드를 복사하지 않았고, 재사용된 플래그가 그 서버에서 옛 기능(Power Peg)을 깨웠다. 약 45분 동안 주문이 시장에 나갔고, 그때 쌓인 포지션에서 결국 4억 6천만 달러 넘게 손실을 봤다(SEC 명령서 34-70694 1항·17항). 이후 다른 7대에서 새 코드를 되돌리자 그 서버들에서도 옛 코드가 돌았다(같은 문서).
 - 대처: 판단이 바뀌는 변경은 기능 플래그 뒤에, 플래그 이름은 재사용하지 않는다, 스키마는 expand-contract, 배포 완료(전 인스턴스 버전 일치)를 확인하는 장치.
 
 ### 5. 카탈로그가 "안다"로 끝나고 장치가 없다 (F-24·F-25의 문서판)
@@ -285,7 +285,7 @@ SELECT conname, pg_get_constraintdef(oid) FROM pg_constraint WHERE conrelid = 'i
   - [52-reliability-symptom-index](../52-reliability-symptom-index/2-summary.md)
 - 문서·사고 보고서
   - Jepsen, "MySQL 8.0.34", 2023-12 — RR에서 lost update, 9,048 트랜잭션 중 446개가 198건에 관여 <https://jepsen.io/analyses/mysql-8.0.34>
-  - SEC Administrative Proceeding 34-70694 (Knight Capital, 2013) — 8대 중 1대 미배포, Power Peg, 약 45분, 4억 6천만 달러 초과 손실 <https://www.sec.gov/litigation/admin/2013/34-70694.pdf>
+  - SEC Administrative Proceeding 34-70694 (Knight Capital, 2013) — 8대 중 1대 미배포, Power Peg, 약 45분간 주문 송출, 그 포지션에서 결국 4억 6천만 달러 초과 손실(1항·17항) <https://www.sec.gov/litigation/admin/2013/34-70694.pdf>
   - GitHub, "October 21 post-incident analysis", 2018 — 연결 43초 단절 → 24시간 11분 저하, "data integrity over site usability". 참고: 원본 F-18의 "954건 미복제"는 원문에서 "가장 바쁜 클러스터 하나에서 954건"이다 <https://github.blog/news-insights/company-news/oct21-post-incident-analysis/>
   - Kubernetes 문서 "CronJob" — 실행 시점마다 Job을 "대략 한 번" 만들며 둘이 만들어지거나 하나도 안 만들어질 수 있으므로 Job은 멱등해야 한다(F-15) <https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/>
   - 원본의 다른 실사건(우아한형제들·Airbnb·Percona·PlanetScale·Toss·Santander·카카오페이·Revolut·Bank of Ireland·Chase·Citi/Revlon·Deutsche Bank·삼성증권·Stripe·Twilio)은 이 노트에서 다시 확인하지 않았다. 원본도 F-15·F-25의 연도에 "확인 필요"를 달았다 `[?]`

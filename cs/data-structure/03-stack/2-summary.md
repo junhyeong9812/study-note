@@ -526,7 +526,7 @@ LinkedStack — 맨 앞(head)이 스택의 top 이다. 배열도 용량도 확�
 **1. 재귀가 깊어져 호출 스택이 넘친다**
 
 - 현상: 깊은 재귀(트리·그래프·연결 리스트 순회)가 어느 입력 크기부터 갑자기 죽는다.
-- 보이는 형태: Java `StackOverflowError`(스택 트레이스에 같은 메서드가 수천 줄 반복), C·C++이면 SIGSEGV. 작은 입력에서는 멀쩡하다.
+- 보이는 형태: Java `StackOverflowError`(스택 트레이스에 같은 메서드가 반복되는데, HotSpot은 기본 `MaxJavaStackTraceDepth`=1024에서 잘라 최대 1,024줄만 보인다 — 재귀 시작점이 안 보일 수 있다. `java X.java` 소스 실행기로 돌리면 실행기 프레임만큼 더 적다. [algorithm/03-recursion](../../algorithm/03-recursion/2-summary.md)), C·C++이면 SIGSEGV. 작은 입력에서는 멀쩡하다.
   - *스택 프레임(stack frame)*: 함수 호출 한 번의 지역 변수·돌아갈 주소를 담은 덩어리. 호출마다 하나씩 쌓인다.
 - 원인: 호출 스택은 크기가 정해져 있다(64비트 Linux의 HotSpot 기본 1MB — `-Xss`/`-XX:ThreadStackSize`로 바꾸며, 플랫폼마다 다르다). 재귀 깊이가 입력 크기에 비례하면 그 한계를 넘는다.
 - 대처: 재귀를 명시적 스택(`ArrayStack`·`ArrayDeque`)을 쓰는 반복문으로 바꾼다 — 힙에 쌓이므로 상한이 메모리 전체가 된다. 스레드 스택 크기(`-Xss`)를 키우는 것은 한계를 미루는 것뿐이다.

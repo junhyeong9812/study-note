@@ -242,7 +242,7 @@ strace -c -f -p <pid>                    # 호출 수·시간 요약 (Ctrl-C로 
   - [28-containers-namespaces-cgroups](../28-containers-namespaces-cgroups/2-summary.md) — cgroup 지표, throttling
   - [35-virtualization-hypervisor](../35-virtualization-hypervisor/2-summary.md) — steal time
   - [37-os-symptom-index](../37-os-symptom-index/2-summary.md) — "load 높은데 CPU 낮음" 역색인.
-  - [engineering-practice/README](../../engineering-practice/README.md) — `36-profiling`, `20-performance-method-and-amdahl`. 미작성
+  - [reliability/36-profiling](../../reliability/36-profiling/2-summary.md), [reliability/20-performance-method-and-amdahl](../../reliability/20-performance-method-and-amdahl/2-summary.md)
 - 교재·글
   - Brendan Gregg, 『Systems Performance』 2판 — 2장 Methodologies(USE 등), 4장 Observability Tools, 6장 CPUs, 9장 Disks <https://www.brendangregg.com/systems-performance-2nd-edition-book.html>
   - Gregg, "The USE Method" <https://www.brendangregg.com/usemethod.html>
