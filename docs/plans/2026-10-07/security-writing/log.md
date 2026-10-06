@@ -36,6 +36,7 @@
 | 2026-10-07 | 메인 반영: 웹 불일치 2 — 23 Log4Shell 제외 판 '보안 수정판 2.12.2+·2.3.1+'(4곳+정답)·266행 NVD 문장 2.12.3 포함 · 27 SP 800-122 기준 문장 원문대로 · check 30 PASS · 링크 1,374 깨짐 0 · 정리 확인(sn-sec 컨테이너 0·네트워크 0·dangling 26·루트 새 파일 0) · 영역 표 재생성(초안 30, security README만 변경) | 커밋 준비 |
 | 2026-10-07 | 커밋: f743425e(보안 30편+영역 표) · 4e2f4c49(영역 밖 링크 48줄) | 완료 |
 | 2026-10-07 | 사용자 확인 "main 병합 + push" → 로컬 main ff는 됐으나 **push 거부(non-fast-forward)** — origin/main이 1bf8a642로 앞서 있음(10-06 issue 카드 커밋 6개, 다른 작업). 통합 방식 사용자 확인 대기 | push 미완 |
+| 2026-10-07 | 사용자 확인 "rebase 후 push" → 로컬 커밋 4개를 origin/main(1bf8a642, 10-06 issue 카드 6개) 위로 rebase(겹치는 파일 없음, errata log 커밋 b65834ab는 이미 upstream이라 건너뜀) → check 30 PASS → push 1bf8a642..064707b6 | origin/main = 064707b6 |
 
 ## 리뷰 ledger
 
