@@ -324,7 +324,7 @@ tcpdump -ni any -K udp port 8125
   - [10-fragmentation-mtu-pmtud](../10-fragmentation-mtu-pmtud/2-summary.md) — 큰 데이터그램과 단편화.
   - [17-tcp-flow-control](../17-tcp-flow-control/2-summary.md) — UDP에 없는 흐름 제어.
   - [27-dns-resolution](../27-dns-resolution/2-summary.md) — UDP의 대표 사용처.
-  - [security/README](../../security/README.md) — `28-dos-and-abuse`(반사·증폭 공격). 미작성
+  - [security/28-dos-and-abuse](../../security/28-dos-and-abuse/2-summary.md) — 반사·증폭 공격
 - RFC
   - RFC 768 User Datagram Protocol — 헤더 형식, 가짜 헤더, 체크섬 0 = 안 씀 <https://www.rfc-editor.org/rfc/rfc768>
   - RFC 1122 §4.1.3.1 Port Unreachable(SHOULD) · §4.1.3.4 체크섬 기본 켜짐·틀리면 조용히 버림(MUST) <https://www.rfc-editor.org/rfc/rfc1122>

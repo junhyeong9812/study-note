@@ -191,7 +191,7 @@ RFC 5280 §6.1은 "주어진 경로를 검증하는 법"만 정한다. 인증서
 - **신뢰 앵커 집합** — 루트 스토어는 "이 키면 멈춰도 된다"를 판정하는 집합이다.
 - **경로 검증 = 상태를 들고 가는 선형 순회** — 작업 공개키, 작업 발급자 이름, 남은 경로 길이(max_path_length)를 상태로 들고 인증서를 하나씩 처리한다(RFC 5280 §6.1.2 초기화 → §6.1.3·6.1.4 반복 → §6.1.5 마무리).
 - **DER = TLV 중첩** — 길이를 먼저 적는 프레이밍이다. 파서 버그(길이 넘침)가 인증서 처리의 고전적 취약점 원천이다.
-- **전자서명 검증** — 발급자 공개키로 tbsCertificate의 서명을 확인한다(`security/06-public-key-and-signatures`, 미작성 — [security 영역 표](../../security/README.md)).
+- **전자서명 검증** — 발급자 공개키로 tbsCertificate의 서명을 확인한다([security/06-public-key-and-signatures](../../security/06-public-key-and-signatures/2-summary.md)).
 
 ## 적용 — 풀어나가는 법
 
@@ -353,7 +353,7 @@ sock.on('error', (e) => console.error(e.code)); // UNABLE_TO_GET_ISSUER_CERT_LOC
 
 - 선행
   - [29-tls-handshake](../29-tls-handshake/2-summary.md) — Certificate·CertificateVerify 메시지, 인증서 관련 alert
-  - `security/06-public-key-and-signatures` — 전자서명. 미작성([security 영역 표](../../security/README.md))
+  - [security/06-public-key-and-signatures](../../security/06-public-key-and-signatures/2-summary.md) — 전자서명.
 - 후속
   - [31-revocation-ocsp-ct](../31-revocation-ocsp-ct/2-summary.md) — 체인 검증의 "폐기되지 않았나" 단계, CT
   - [32-mtls-and-cert-operations](../32-mtls-and-cert-operations/2-summary.md) — 클라이언트 인증서, 자동 갱신, 만료 감시

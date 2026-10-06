@@ -257,7 +257,7 @@ SELECT seq + 1 AS gap_start FROM audit_log a WHERE NOT EXISTS (SELECT 1 FROM aud
 - 선행
   - [15-logging](../15-logging/2-summary.md) — 운영 로그의 드롭·샘플링·비동기 큐
   - [17-distributed-tracing](../17-distributed-tracing/2-summary.md) — head 샘플링
-  - security/26-security-logging-and-audit — [security 영역 표](../../security/README.md)(미작성)
+  - [security/26-security-logging-and-audit](../../security/26-security-logging-and-audit/2-summary.md)
 - 후속·연결
   - [16-metrics-and-golden-signals](../16-metrics-and-golden-signals/2-summary.md)
   - [distributed/16-outbox-and-dual-write](../../distributed/16-outbox-and-dual-write/2-summary.md) · [database/13-transactions-acid](../../database/13-transactions-acid/2-summary.md) · [database/50-temporal-and-bitemporal-tables](../../database/50-temporal-and-bitemporal-tables/2-summary.md)(변경 이력 보존)

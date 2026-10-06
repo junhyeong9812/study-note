@@ -309,7 +309,7 @@ ResponseEntity<Void> unsubscribe(@PathVariable String token) {
 - 선행
   - [27-dns-resolution](../27-dns-resolution/2-summary.md) — MX·TXT 레코드
   - [28-dns-caching-and-ttl](../28-dns-caching-and-ttl/2-summary.md) — 레코드 변경의 전파 시간
-  - `security/06-public-key-and-signatures` — RSA·Ed25519 서명. 미작성([security 영역 표](../../security/README.md))
+  - [security/06-public-key-and-signatures](../../security/06-public-key-and-signatures/2-summary.md) — RSA·Ed25519 서명.
   - 해시: [foundations/security/sha256-and-digest.md](../../foundations/security/sha256-and-digest.md)
 - 연결
   - [api-design/10-notification-delivery-pipeline](../../api-design/10-notification-delivery-pipeline/2-summary.md) — 발송 파이프라인·억제 목록·재시도.

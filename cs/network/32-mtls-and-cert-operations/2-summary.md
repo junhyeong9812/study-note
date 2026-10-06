@@ -346,7 +346,7 @@ echo | openssl s_client -connect api.example.com:443 -servername api.example.com
 - 연결
   - [31-revocation-ocsp-ct](../31-revocation-ocsp-ct/2-summary.md) — 수명 단축(SC-081), CT로 인벤토리 수집
   - [28-dns-caching-and-ttl](../28-dns-caching-and-ttl/2-summary.md) — dns-01 TXT 전파
-  - `security/09-randomness-and-key-management` — 키 수명·회전. 미작성([security 영역 표](../../security/README.md))
+  - [security/09-randomness-and-key-management](../../security/09-randomness-and-key-management/2-summary.md) — 키 수명·회전.
   - [data-structure/07-heap](../../data-structure/07-heap/2-summary.md) — 만료 타이머
 - RFC 8446 (TLS 1.3) <https://www.rfc-editor.org/rfc/rfc8446>
   - §4.3.2 CertificateRequest · §4.4.2 Certificate(빈 목록 규칙) · §4.4.2.3 클라이언트 인증서 선택 · §4.4.2.4 수신 처리(`certificate_required`)

@@ -197,7 +197,7 @@ C id 중복 제거 + seq 비교 최종 = SHIPPED (적용 1, 중복 1, 오래됨 
 
 ## 쓰이는 자료구조·알고리즘
 
-- **HMAC-SHA256 서명 + 상수 시간 비교** — JDK 21 `MessageDigest.isEqual`의 @implNote: 첫 인자의 모든 바이트를 검사하고, 걸리는 시간은 첫 인자 길이에만 달려 있다(내용과 무관). `String.equals`는 처음 다른 글자에서 멈춘다. 서명 원리는 security 영역 05-mac-and-hmac(미작성, [security/README](../../security/README.md)).
+- **HMAC-SHA256 서명 + 상수 시간 비교** — JDK 21 `MessageDigest.isEqual`의 @implNote: 첫 인자의 모든 바이트를 검사하고, 걸리는 시간은 첫 인자 길이에만 달려 있다(내용과 무관). `String.equals`는 처음 다른 글자에서 멈춘다. 서명 원리는 security 영역 [05-mac-and-hmac](../../security/05-mac-and-hmac/2-summary.md).
 - **재전송 일정 = 다음 시도 시각 순 우선순위 큐** — 실패한 전달을 `next_attempt_at`으로 정렬해 꺼낸다(최소 힙 또는 DB 인덱스) → [data-structure/07-heap](../../data-structure/07-heap/2-summary.md). 간격은 지수 백오프 + 지터 → [reliability/06-retry-backoff-jitter](../../reliability/06-retry-backoff-jitter/2-summary.md).
 - **중복 억제 집합(TTL)** — webhook-id → 처리 결과. 해시 셋 + 만료. 보관 기간 ≥ 타임스탬프 허용 창 전체 폭(±오차라서 오차 × 2), 그리고 받는 쪽이 원하면 재전송 기간까지 → [reliability/13-idempotency](../../reliability/13-idempotency/2-summary.md).
 - **단조 버전 비교** — 저장된 `version`보다 큰 이벤트만 반영. DB에서는 조건부 UPDATE(`WHERE version < :v`) 한 줄.
@@ -361,7 +361,7 @@ curl -i -X POST http://localhost:8080/hooks/acme -H "webhook-id: $ID" -H "webhoo
 
 - 선행
   - [05-idempotency-keys](../05-idempotency-keys/2-summary.md) — 멱등 키(이 노트의 webhook-id가 받는 쪽의 멱등 키).
-  - security 05-mac-and-hmac — 미작성([security/README](../../security/README.md))
+  - [security 05-mac-and-hmac](../../security/05-mac-and-hmac/2-summary.md)
   - [reliability/13-idempotency](../../reliability/13-idempotency/2-summary.md) — 키 저장소·결과 재생
 - 사례
   - [26-case-delivery-webhook](../26-case-delivery-webhook/2-summary.md) — 받는 쪽 사례: dedup 트랜잭션, 상태 전이 표, 200의 뜻, 저빈도 폴링 보정

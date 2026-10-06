@@ -353,7 +353,7 @@ EXPLAIN (ANALYZE, BUFFERS) SELECT ... WHERE ... ORDER BY ... LIMIT 20;
 - **현상**: "최신순"을 골라도 목록 순서가 안 바뀐다. 에러는 없다.
 - **보이는 형태**: SQL 로그에 `ORDER BY $1`. 계획에 Sort 노드가 없다(실험 C).
 - **원인**: 식별자는 바인딩할 수 없다. 값으로 바인딩하면 상수 정렬이 된다.
-- **대처**: 허용 목록 → 고정 문자열로 SQL 조립. 이를 피하려고 사용자 문자열을 이어 붙이면 인젝션이 된다(security 18-injection, [security/README.md](../../security/README.md) 미작성).
+- **대처**: 허용 목록 → 고정 문자열로 SQL 조립. 이를 피하려고 사용자 문자열을 이어 붙이면 인젝션이 된다([security 18-injection](../../security/18-injection/2-summary.md)).
 
 ### 4. 부분 문자열 검색 → 풀스캔
 
@@ -386,7 +386,7 @@ EXPLAIN (ANALYZE, BUFFERS) SELECT ... WHERE ... ORDER BY ... LIMIT 20;
   - [database/12-query-optimizer-and-explain](../../database/12-query-optimizer-and-explain/2-summary.md) · [database/41-sorting-and-aggregation](../../database/41-sorting-and-aggregation/2-summary.md) · [database/46-full-text-search-and-analyzers](../../database/46-full-text-search-and-analyzers/2-summary.md) · [database/22-database-side-timeouts](../../database/22-database-side-timeouts/2-summary.md)
   - [14-rate-limit-and-quota-contracts](../14-rate-limit-and-quota-contracts/2-summary.md) — 비싼 엔드포인트 보호
   - [17-graphql](../17-graphql/2-summary.md) — 클라이언트가 쿼리 모양을 고르는 극단, 쿼리 비용 제한
-  - [security/README.md](../../security/README.md) — 18-injection 미작성
+  - [security/18-injection](../../security/18-injection/2-summary.md)
 - 근거
   - Google AIP-132 Standard methods: List(`order_by` 문법·`" desc"`·공백 무시·`.` 하위 필드, `filter` 필드) <https://google.aip.dev/132>
   - Google AIP-160 Filtering(비교·논리·부정·탐색 should, `:` must, 잘못된 필터 `INVALID_ARGUMENT`, 필드 존재·타입 must, 대상 필드 문서화 must, queries of death 제한 may) <https://google.aip.dev/160>

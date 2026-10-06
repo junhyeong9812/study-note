@@ -342,7 +342,7 @@ Legacy.class
 - 현상: 릴리스 jar를 다시 빌드하면 해시가 다르다.
 - 보이는 형태: 위 실험의 `bf0b98…` / `aeeff6…`. diffoscope로 보면 엔트리 시각·파일 순서·빌드 경로 차이.
 - 원인: 현재 시각, 파일 시스템 나열 순서, 빌드 경로, JDK 메이저 버전 차이.
-- 대처: `project.build.outputTimestamp`/`SOURCE_DATE_EPOCH`, 플러그인 버전 고정, 같은 JDK 메이저, `artifact:compare`를 CI에 넣는다. 의미: 재현되면 "이 바이너리가 이 소스에서 나왔다"를 제3자가 확인할 수 있다 → [security](../../security/README.md)(25 supply-chain-security 미작성).
+- 대처: `project.build.outputTimestamp`/`SOURCE_DATE_EPOCH`, 플러그인 버전 고정, 같은 JDK 메이저, `artifact:compare`를 CI에 넣는다. 의미: 재현되면 "이 바이너리가 이 소스에서 나왔다"를 제3자가 확인할 수 있다 → [security/25-supply-chain-security](../../security/25-supply-chain-security/2-summary.md).
 
 ### 4. 순환 의존으로 빌드 불가
 
@@ -377,7 +377,7 @@ Legacy.class
   - [08-container-image-optimization](../08-container-image-optimization/2-summary.md) — 이미지 레이어 캐시(내용 해시, mtime 무시)
   - [data-structure/27-merkle-tree](../../data-structure/27-merkle-tree/2-summary.md) · [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md) · [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md)
   - [testing/09-flaky-tests](../../testing/09-flaky-tests/2-summary.md) — 환경 의존 테스트
-  - security 25 supply-chain-security — [security 영역](../../security/README.md)(미작성)
+  - [security 25 supply-chain-security](../../security/25-supply-chain-security/2-summary.md)
 - 근거
   - SWE@G 18장 "Build Systems and Build Philosophy"(Erik Kuefler) — task-based(Ant·Maven·Gradle·Grunt·Rake) vs artifact-based(Blaze/Bazel·Pants·Buck), 타임스탬프 등 비결정 요소, 도구를 의존으로, 샌드박스, 원격 캐시 키(target + 입력 해시), "same set of inputs … exactly the same output", One-Version Rule <https://abseil.io/resources/swe-book/html/ch18.html>
   - reproducible-builds.org — Definition <https://reproducible-builds.org/docs/definition/> · SOURCE_DATE_EPOCH(정의·`git log -1 --pretty=%ct` 예) <https://reproducible-builds.org/docs/source-date-epoch/> · spec <https://reproducible-builds.org/specs/source-date-epoch/>

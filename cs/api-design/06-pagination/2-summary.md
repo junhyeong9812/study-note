@@ -293,7 +293,7 @@ EXPLAIN (ANALYZE, BUFFERS) SELECT ... ORDER BY created_at DESC, id DESC LIMIT 20
   - [01-api-as-contract](../01-api-as-contract/2-summary.md) — 토큰 형식에 대한 의존(Hyrum)
   - 사례 [25-case-settlement-report](../25-case-settlement-report/2-summary.md) — 대용량 조회
   - [database/12-query-optimizer-and-explain](../../database/12-query-optimizer-and-explain/2-summary.md) — EXPLAIN 읽기
-  - [security/README.md](../../security/README.md) — 16-identifiers-and-enumeration 미작성(토큰·ID 열거)
+  - [security/16-identifiers-and-enumeration](../../security/16-identifiers-and-enumeration/2-summary.md) — 토큰·ID 열거
 - 근거
   - Google AIP-158 Pagination(`page_size`·`page_token`·`next_page_token`, 상한으로 깎기, 음수 `INVALID_ARGUMENT`, 다른 인자 변경 시 `INVALID_ARGUMENT`, 불투명·URL 안전·해석 불가, 권한 부여 금지, 만료 가능, `total_size`, `skip`) <https://google.aip.dev/158>
   - Markus Winand, "Paging Through Results", Use The Index, Luke!(offset의 두 단점: 페이지 drift·깊을수록 느림, seek method, 결정적 정렬, 행 값, 임의 페이지 불가) <https://use-the-index-luke.com/sql/partial-results/fetch-next-page>

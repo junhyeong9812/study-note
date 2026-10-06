@@ -302,7 +302,7 @@ openssl s_client -comp -connect legacy.example.com:443 -tls1_2 </dev/null 2>/dev
 - 후속·연결
   - [44-websocket-compression](../44-websocket-compression/2-summary.md) — 메시지 압축에서 같은 원리
   - [36-http2-multiplexing](../36-http2-multiplexing/2-summary.md) — HPACK
-  - `security/20-csrf-and-samesite` — 미작성([security 영역 표](../../security/README.md))
+  - [security/20-csrf-and-samesite](../../security/20-csrf-and-samesite/2-summary.md)
 - RFC 7457 §2.6 Compression Attacks: CRIME, TIME, and BREACH <https://www.rfc-editor.org/rfc/rfc7457>
 - RFC 8446 §1.2(압축 제거) · §4.1.2(`legacy_compression_methods`) <https://www.rfc-editor.org/rfc/rfc8446>
 - RFC 9110 §17.6 Attacks Using Shared-Dictionary Compression <https://www.rfc-editor.org/rfc/rfc9110>

@@ -89,7 +89,7 @@
   - *ACAO*: `Access-Control-Allow-Origin` 응답 헤더. *ACAC*: `Access-Control-Allow-Credentials`.
 - `include`일 때 `ACAO: *`는 거부된다(§3.3.5). 쿠키가 실린 응답을 아무 출처에나 보여주지 않으려는 규칙이다.
 - 쿠키는 **포트로 나뉘지 않는다**(RFC 6265 §8.5). 출처는 포트까지 보지만 쿠키는 포트를 구분하지 않는다(쿠키 범위는 도메인·경로·`Secure` 등으로 정한다). 아래 실험에서 A(포트 a)가 받은 쿠키가 B(포트 b)로 갔다.
-- 쿠키의 `SameSite`·서드 파티 쿠키 정책은 이와 별개의 계층이다. 세션 쿠키 설계는 [security](../../security/README.md)의 11번(미작성)에서 다룬다.
+- 쿠키의 `SameSite`·서드 파티 쿠키 정책은 이와 별개의 계층이다. 세션 쿠키 설계는 [security 11번](../../security/11-sessions-and-cookie-security/2-summary.md)에서 다룬다.
 
 ### 4. 중단과 시간 제한
 
@@ -306,7 +306,7 @@ async function onInput(q: string) {
 - 후속·연결
   - [06-browser-storage](../06-browser-storage/2-summary.md) — 쿠키·토큰을 어디에 두나
   - [07-service-workers-and-offline](../07-service-workers-and-offline/2-summary.md) — fetch를 가로채는 프록시
-  - security 11(세션·쿠키 보안)·21(SOP/CORS 본문) — 미작성, [security 영역 표](../../security/README.md)
+  - security [11](../../security/11-sessions-and-cookie-security/2-summary.md)(세션·쿠키 보안)·[21](../../security/21-same-origin-and-cors/2-summary.md)(SOP/CORS 본문)
   - [network/34-http-caching](../../network/34-http-caching/2-summary.md) · [network/35-http-connection-management](../../network/35-http-connection-management/2-summary.md) · [network/40-chunked-and-streaming-responses](../../network/40-chunked-and-streaming-responses/2-summary.md)
   - [reliability/05-timeouts-and-deadline-propagation](../../reliability/05-timeouts-and-deadline-propagation/2-summary.md) · [reliability/09-cancellation-propagation](../../reliability/09-cancellation-propagation/2-summary.md) · [reliability/13-idempotency](../../reliability/13-idempotency/2-summary.md)
   - Web API 문법·재현: [web-api/25 fetch·Request·Response](../../../languages/web-api/25-fetch-request-response/2-summary.md) · [26 본문 스트리밍](../../../languages/web-api/26-response-body-streaming/2-summary.md) · [27 중단·타임아웃](../../../languages/web-api/27-abort-and-timeout/2-summary.md) · [28 CORS 단순·프리플라이트](../../../languages/web-api/28-cors-simple-and-preflight/2-summary.md) · [29 credentials·쿠키](../../../languages/web-api/29-credentials-and-cookies/2-summary.md) · [30 요청 본문·Content-Type](../../../languages/web-api/30-request-body-and-content-type/2-summary.md) · [34 sendBeacon·keepalive](../../../languages/web-api/34-send-beacon-and-keepalive/2-summary.md)

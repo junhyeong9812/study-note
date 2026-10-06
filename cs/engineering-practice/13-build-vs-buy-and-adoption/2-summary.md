@@ -88,7 +88,7 @@ Fowler "UtilityVsStrategicDichotomy"(2010-07-29)의 주장이다.
 - 집계 점수 = 항목 점수의 **위험 가중 평균**이다. Critical 10, High 7.5, Medium 5, Low 2.5(README "Aggregate Score").
 - README "Project Non-Goals"가 스스로 밝히는 한계: 점검은 휴리스틱이라 거짓 양성·거짓 음성이 있다. 특히 집계 점수는 그 저장소가 **무엇을 하고 무엇을 안 하는지 알려 주지 않는다.** 같은 점수에 이르는 길이 여럿이다.
 - Maintained 문서도 덧붙인다: 짝수 판정 같은 작은 유틸리티는 활동이 없어도 문제가 아닐 수 있다. 낮은 점수는 "더 조사하라"는 신호다.
-- 공급망 위험 전반(SBOM·서명·재현 빌드)은 security/25 supply-chain-security([security 영역 표](../../security/README.md), 미작성).
+- 공급망 위험 전반(SBOM·서명·재현 빌드)은 [security/25 supply-chain-security](../../security/25-supply-chain-security/2-summary.md).
 
 **라이선스 변경.** OSS가 계속 같은 조건이라는 보장은 없다.
 
@@ -316,7 +316,7 @@ curl -s https://api.github.com/repos/<owner>/<repo> | grep -E '"archived"|"pushe
 - 선행
   - [12-estimation-and-planning](../12-estimation-and-planning/2-summary.md) — 비용 추정의 불확실성
   - [domain-modeling/17-subdomains](../../domain-modeling/17-subdomains/2-summary.md) — 핵심·지원·일반 분류
-  - security/25-supply-chain-security — [security 영역 표](../../security/README.md), 미작성
+  - [security/25-supply-chain-security](../../security/25-supply-chain-security/2-summary.md)
 - 후속·연결
   - [domain-modeling/19-anti-corruption-layer](../../domain-modeling/19-anti-corruption-layer/2-summary.md) — 벤더 모델 번역 계층
   - [software-design/47-architecture-decision-records](../../software-design/47-architecture-decision-records/2-summary.md) — 결정과 재검토 조건 기록

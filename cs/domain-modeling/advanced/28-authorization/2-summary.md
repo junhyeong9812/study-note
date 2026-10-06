@@ -125,7 +125,7 @@ chain("사원") = [사원, 운영자, 관리자]   ← 가까운 것부터
 - **가중 점수 + 최댓값 좁히기** — `specificity` = 대상 비별표 2 + 행위 비별표 1. `decide`는 맞은 줄을 한 번 훑어 최고점을 구하고 다시 훑어 그 점수만 남긴다(두 패스). 가중치가 2·1이라 별표 조합이 다른 두 줄은 점수가 겹치지 않는다.
 - **우선 효과 첫 매치 탐색** — 후보에서 이기는 효과(DENY 또는 ALLOW)를 가진 첫 줄을 찾아 `decidedBy`로 돌려준다. 동률에 거부가 하나라도 있으면 거부 — 방화벽의 첫 매치 규칙과 닮았지만 여기서는 순서가 아니라 효과가 기준이다.
 - **근거를 담는 결과 레코드** — `Decision(allowed, decidedBy, matched)`. boolean 하나가 아니라 이긴 줄과 맞은 줄 전부를 값으로 남겨 "왜"에 답한다.
-- **접근 제어 모델** — 이 챕터는 역할 기반(RBAC)에 역할 계층·거부 규칙을 얹은 형태다. 대상 인스턴스의 소유 관계까지 보는 ReBAC(관계 그래프 탐색 — Zanzibar류)는 [security/README.md](../../../security/README.md) `15-access-control-models`의 자리(노트 미작성).
+- **접근 제어 모델** — 이 챕터는 역할 기반(RBAC)에 역할 계층·거부 규칙을 얹은 형태다. 대상 인스턴스의 소유 관계까지 보는 ReBAC(관계 그래프 탐색 — Zanzibar류)는 [security/15-access-control-models](../../../security/15-access-control-models/2-summary.md)의 자리.
   - *RBAC / ReBAC*: 역할 기반 접근 제어 / 관계 기반 접근 제어. 전자는 "역할이 무엇을 할 수 있나", 후자는 "이 사용자와 이 객체가 어떤 관계인가"로 판정한다.
 
 ## 적용 — 풀어나가는 법
@@ -254,7 +254,7 @@ README가 먼저 못 박는 장면은 이것이다.
 - 같은 구조 — [26-photocard-set](../26-photocard-set/2-summary.md) · [27-ab-assign](../27-ab-assign/2-summary.md): 한 설정이 다른 설정을 조용히 무력화하는 자리(중복 금지 vs 보장, 비율 0/100 vs 씨앗).
 - 후속 — [29-customs-clearance](../29-customs-clearance/2-summary.md): 거부가 없으면 상속 축이 죽듯, 운임이 0이면 CIF 축이 죽는 "잠자던 설정".
 - 탐색 장치 — [algorithm/12-dfs](../../../algorithm/12-dfs/2-summary.md) · [data-structure/08-graph](../../../data-structure/08-graph/2-summary.md): 방문 집합으로 고리를 끊는 상향 탐색.
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` · [security/README.md](../../../security/README.md) `15-access-control-models`(이 노트를 연결 — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` · [security/15-access-control-models](../../../security/15-access-control-models/2-summary.md)(이 노트를 연결).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/28-authorization/` (README.md · impl/com/domain/authz/Authorizer.java · src/main/java/com/domain/authz/Rule.java).
 
 ### 관련 자료

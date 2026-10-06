@@ -275,7 +275,7 @@ async function osvScan(deps) {
 - 현상: 운영 중인 서비스가 공개된 취약점이 있는 버전을 몇 달째 쓰고 있다.
 - 보이는 형태: 실험 B의 log4j-core 2.25.2처럼, 출시 때 깨끗하던 버전에 이후 권고가 붙는다. 외부(고객·보안 연구자)가 먼저 알려 준다.
 - 원인: SCA를 PR 시점에만 돌렸다. 취약점 데이터베이스는 계속 갱신된다.
-- 대처: 배포된 버전 목록으로 정기 재질의하고, 새 권고를 경보로 받는다. 업데이트 운영(자동 PR 도구·EOL 런타임 정리)은 security/25-supply-chain-security — 미작성([보안 영역 표](../../security/README.md)).
+- 대처: 배포된 버전 목록으로 정기 재질의하고, 새 권고를 경보로 받는다. 업데이트 운영(자동 PR 도구·EOL 런타임 정리)은 [security/25-supply-chain-security](../../security/25-supply-chain-security/2-summary.md).
 
 ### 4. 전이 의존성을 못 봄
 
@@ -302,12 +302,12 @@ async function osvScan(deps) {
 ## 관련 주제·근거
 
 - 원본(기초): [engineering/development-standards/security-standards](../../engineering/development-standards/security-standards/2-summary.md) — Top 10:2025 항목별 공격·방어, ASVS 5.0 수준, SSDF 네 그룹, 세 기준의 연결
-- 선행: security/01-security-principles — 미작성([보안 영역 표](../../security/README.md))
+- 선행: [security/01-security-principles](../../security/01-security-principles/2-summary.md)
 - 후속·연결
   - [14-quality-standards](../14-quality-standards/2-summary.md) — 기준 → 자동 검사 구조, 기준선·래칫
   - [16-operational-standards](../16-operational-standards/2-summary.md) — 보안 로그·경보(A09)와 운영 표준
   - [17-legal-standards](../17-legal-standards/2-summary.md) — 안전성 확보조치(법적 의무)와 의존성 라이선스
-  - security 18-injection · 22-ssrf · 25-supply-chain-security · 26-security-logging-and-audit — 미작성([보안 영역 표](../../security/README.md))
+  - security [18-injection](../../security/18-injection/2-summary.md) · [22-ssrf](../../security/22-ssrf/2-summary.md) · [25-supply-chain-security](../../security/25-supply-chain-security/2-summary.md) · [26-security-logging-and-audit](../../security/26-security-logging-and-audit/2-summary.md)
   - [reliability/18-logs-traces-audit-roles](../../reliability/18-logs-traces-audit-roles/2-summary.md) — 감사 기록과 보안 로그의 역할
 - 근거
   - OWASP Top 10:2025 <https://top10.owasp.org/2025/>

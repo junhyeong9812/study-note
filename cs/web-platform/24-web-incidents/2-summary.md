@@ -220,7 +220,7 @@ const sri = s => 'sha384-' + crypto.createHash('sha384').update(s).digest('base6
 
 ## 쓰이는 자료구조·알고리즘
 
-- **암호 해시(SHA-256/384/512)로 내용 식별**: SRI는 본문의 해시를 기대값과 비교한다. 한 바이트만 달라도 값이 달라진다(실험 3·6번). 같은 원리가 빌드 산출물의 해시 파일명(09)에 쓰이고, 일부 ETag 구현도 콘텐츠 해시로 만든다(ETag 자체는 불투명한 검증자라 리비전 번호 등으로도 만든다 — RFC 9110 §8.8.3, network/34). → [security 영역 표](../../security/README.md)(암호 해시 — 미작성)
+- **암호 해시(SHA-256/384/512)로 내용 식별**: SRI는 본문의 해시를 기대값과 비교한다. 한 바이트만 달라도 값이 달라진다(실험 3·6번). 같은 원리가 빌드 산출물의 해시 파일명(09)에 쓰이고, 일부 ETag 구현도 콘텐츠 해시로 만든다(ETag 자체는 불투명한 검증자라 리비전 번호 등으로도 만든다 — RFC 9110 §8.8.3, network/34). → [security/04-hash-functions-and-digests](../../security/04-hash-functions-and-digests/2-summary.md)(암호 해시)
 - **변경 감지 = 이전 스냅숏과의 비교(diff)**: ICO가 든 file integrity monitoring과 RiskIQ의 크롤링 방식은 "파일별 해시를 저장해 두고 바뀐 것만 본다"로 요약된다. 해시 맵(경로 → 해시)과 주기적 비교다.
 - **허용 목록(집합 소속 판정)**: CSP는 지시어별 출처 집합에 요청 URL이 속하는지 본다. 지시어(또는 대체 지시어 `default-src`)를 설정한 종류는 목록에 없으면 막는다. 그래서 목록이 짧을수록 공격 면이 작다. 둘 다 없는 종류는 CSP가 제한하지 않으므로, 기본 거부로 시작하려면 `default-src 'none'` 등을 명시한다.
 - **캐시 키 합성**: Steam 사건은 캐시 키(URL)에 응답을 바꾸는 입력(인증 쿠키·언어)이 빠진 것이다. 키에는 응답을 바꾸는 입력이 빠짐없이 들어가야 하고, 그게 불가능한 응답(개인화)은 공유 캐시에 넣지 않는다([10-2](../10-rendering-strategies/2-summary.md), [network/34](../../network/34-http-caching/2-summary.md)).
@@ -313,7 +313,7 @@ addEventListener('securitypolicyviolation', e => {
 
 - 선행: [23 증상 색인](../23-web-symptom-index/2-summary.md) — §11(교차 노출·토큰 유출)·장애 시나리오 3(재현 안 됨)
 - 이 영역 leaf: [01 브라우저 아키텍처](../01-browser-architecture/2-summary.md)(출처·사이트 격리) · [05 fetch](../05-fetch-from-browser/2-summary.md)(CORS) · [06 저장소](../06-browser-storage/2-summary.md)(06-1 토큰 탈취) · [07 서비스 워커](../07-service-workers-and-offline/2-summary.md)(캐시 고착) · [09 모듈·번들링](../09-js-modules-and-bundling/2-summary.md)(자체 호스팅·해시 파일명) · [10 렌더링 전략](../10-rendering-strategies/2-summary.md)(10-2 Steam) · [12 국제화](../12-internationalization-and-localization/2-summary.md)(언어별 응답) · [14 이미지](../14-image-optimization/2-summary.md)(14-4 `Vary`) · [15 웹 폰트](../15-web-font-loading/2-summary.md)(15-4 `crossorigin`)
-- 다른 영역: security 19 `xss-and-csp`·21 `same-origin-and-cors`·25 `supply-chain-security` — 미작성, [security 영역 표](../../security/README.md) · [network/34 HTTP 캐시](../../network/34-http-caching/2-summary.md) · [reliability/26 사고 대응·포스트모템](../../reliability/26-incident-response-and-postmortem/2-summary.md) · 같은 형식의 다른 영역 사건 노트 [api-design/29](../../api-design/29-api-incidents/2-summary.md)
+- 다른 영역: security [19 xss-and-csp](../../security/19-xss-and-csp/2-summary.md)·[21 same-origin-and-cors](../../security/21-same-origin-and-cors/2-summary.md)·[25 supply-chain-security](../../security/25-supply-chain-security/2-summary.md) · [network/34 HTTP 캐시](../../network/34-http-caching/2-summary.md) · [reliability/26 사고 대응·포스트모템](../../reliability/26-incident-response-and-postmortem/2-summary.md) · 같은 형식의 다른 영역 사건 노트 [api-design/29](../../api-design/29-api-incidents/2-summary.md)
 - Web API 문법(읽기 전용): [web-api/28 CORS](../../../languages/web-api/28-cors-simple-and-preflight/) · [web-api/29 credentials](../../../languages/web-api/29-credentials-and-cookies/)
 - 사건 출처
   - ICO, Penalty Notice — British Airways plc, 2020-10-16 <https://ico.org.uk/media2/migrated/2618421/ba-penalty-20201016.pdf> — 1.2, 3.4~3.29, 4.1, 5.2~5.3, 6.92~6.93, 1.7

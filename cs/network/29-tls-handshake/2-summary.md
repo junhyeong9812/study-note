@@ -499,8 +499,8 @@ sock.on('error', (e) => console.error(e.code, e.message));
 
 - 선행
   - [23-socket-api](../23-socket-api/2-summary.md)
-  - `security/07-key-exchange-forward-secrecy` — 미작성([security 영역 표](../../security/README.md))
-  - `security/03-symmetric-encryption-and-aead` — 미작성([security 영역 표](../../security/README.md))
+  - [security/07-key-exchange-forward-secrecy](../../security/07-key-exchange-forward-secrecy/2-summary.md)
+  - [security/03-symmetric-encryption-and-aead](../../security/03-symmetric-encryption-and-aead/2-summary.md)
   - security/05 HMAC — [foundations/security/hmac.md](../../foundations/security/hmac.md)
 - 후속
   - [30-x509-and-chain-validation](../30-x509-and-chain-validation/2-summary.md) — 인증서 체인·호스트명 검증.

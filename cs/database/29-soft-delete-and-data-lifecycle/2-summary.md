@@ -253,7 +253,7 @@ SELECT count(*) FROM users WHERE deleted_at < now() - interval '30 days';
   - [34-large-backfill-and-batch-dml](../34-large-backfill-and-batch-dml/2-summary.md) — 하드 삭제 배치의 청크·스로틀
   - `33-partitioning-and-sharding` — 초안 [systems/partitioning-vs-sharding](../../systems/partitioning-vs-sharding/)
   - [43-row-level-security](../43-row-level-security/2-summary.md) — 원고 [systems/postgres-rls](../../systems/postgres-rls/)
-  - `security/27-pii-classification-masking-retention` — 미작성, [security/README](../../security/README.md)
+  - [security/27-pii-classification-masking-retention](../../security/27-pii-classification-masking-retention/2-summary.md)
 - 글·문서
   - Brandur Leach, "Soft deletion probably isn't worth it", 2022-07-19 <https://brandur.org/soft-deletion>
   - PostgreSQL 17 문서 13.2.1 Read Committed(경합 행 재평가) <https://www.postgresql.org/docs/17/transaction-iso.html> · 24.1 Routine Vacuuming <https://www.postgresql.org/docs/17/routine-vacuuming.html> · 5.5.5 Foreign Keys(참조 동작) <https://www.postgresql.org/docs/17/ddl-constraints.html>

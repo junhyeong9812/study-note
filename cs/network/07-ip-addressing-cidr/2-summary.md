@@ -297,7 +297,7 @@ docker network inspect bridge --format '{{json .IPAM.Config}}'   # 도커 기본
   - [11-nat-and-conntrack](../11-nat-and-conntrack/2-summary.md) — 사설 주소가 인터넷으로 나가는 법, 겹친 대역을 NAT로 잇기
   - [12-dhcp](../12-dhcp/2-summary.md) — 주소 자동 할당, 실패 시 `169.254.x.x`
   - [06-switching-and-vlan](../06-switching-and-vlan/2-summary.md) — VLAN 하나에 서브넷 하나
-  - security 영역 `22-ssrf` — 내부 주소 판정. 미작성([security 영역 표](../../security/README.md))
+  - security 영역 [22-ssrf](../../security/22-ssrf/2-summary.md) — 내부 주소 판정.
   - [algorithm/29-bit-manipulation](../../algorithm/29-bit-manipulation/2-summary.md) · [data-structure/20-radix-trie](../../data-structure/20-radix-trie/2-summary.md)
 - RFC
   - RFC 791 — IPv4 <https://www.rfc-editor.org/rfc/rfc791>

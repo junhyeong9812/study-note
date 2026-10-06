@@ -346,7 +346,7 @@ ls: /lib64: No such file or directory
   - [06-ci-cd-pipelines](../06-ci-cd-pipelines/2-summary.md) — 이미지를 한 번 빌드해 승격
   - [reliability/23-deployment-strategies](../../reliability/23-deployment-strategies/2-summary.md) — 롤백 시간
   - [data-structure/27-merkle-tree](../../data-structure/27-merkle-tree/2-summary.md) · [data-structure/09-trie](../../data-structure/09-trie/2-summary.md) · [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md)
-  - security 25 supply-chain-security — [security 영역](../../security/README.md)(미작성)
+  - [security 25 supply-chain-security](../../security/25-supply-chain-security/2-summary.md)
 - 근거
   - Docker Docs — "Multi-stage builds"(BuildKit vs 레거시의 스테이지 선택) <https://docs.docker.com/build/building/multi-stage/> · "Build cache invalidation"(무효화 전파, COPY/ADD 체크섬·mtime 제외, RUN 캐시, ARG, secret) <https://docs.docker.com/build/cache/invalidation/> · "Optimize cache usage"(순서, `.dockerignore`, 캐시 마운트, 외부 캐시) <https://docs.docker.com/build/cache/optimize/> · "Build context"(`.dockerignore` 위치·문법·Dockerfile 전용 ignore) <https://docs.docker.com/build/concepts/context/> · "BuildKit"(기본 빌더) <https://docs.docker.com/build/buildkit/>
   - GoogleContainerTools/distroless README — 구성, 크기 비교, java21-debian13, `:debug` <https://github.com/GoogleContainerTools/distroless>

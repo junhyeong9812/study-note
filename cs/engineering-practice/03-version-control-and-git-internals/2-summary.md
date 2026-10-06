@@ -212,7 +212,7 @@ Already up to date.
 |---|---|---|
 | Merkle DAG·콘텐츠 주소 | 커밋 → 트리 → 블롭, 해시가 곧 이름 | [data-structure/27-merkle-tree](../../data-structure/27-merkle-tree/2-summary.md) |
 | 영속 자료구조(경로 복사) | 바뀐 경로의 트리만 새로 만들고 나머지 공유 | [data-structure/26-persistent](../../data-structure/26-persistent/2-summary.md) |
-| 암호 해시(SHA-1·SHA-256) | 객체 ID, 무결성 확인 | security 영역 [README](../../security/README.md)(관련 주제 미작성) |
+| 암호 해시(SHA-1·SHA-256) | 객체 ID, 무결성 확인 | [security/04-hash-functions-and-digests](../../security/04-hash-functions-and-digests/2-summary.md) |
 | 최소 공통 조상(LCA) | `git merge-base` — 3-way 병합의 base | — |
 | 최장 공통 부분수열 / Myers diff | `git diff`, 병합의 줄 단위 비교 | [algorithm/21-dp-basics](../../algorithm/21-dp-basics/2-summary.md) |
 | 추가 전용 로그 | reflog — 참조 이동 기록 | — |

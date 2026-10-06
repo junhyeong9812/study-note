@@ -352,7 +352,7 @@ sysctl net.core.somaxconn net.ipv4.tcp_max_syn_backlog net.ipv4.tcp_syncookies \
   - [19-tcp-termination-fin-rst-half-open](../19-tcp-termination-fin-rst-half-open/2-summary.md) — 여는 것의 반대편, RST 생성 규칙
   - [23-socket-api](../23-socket-api/2-summary.md) — listen·accept·connect 시스템 콜.
   - [13-routing-protocols-ospf-bgp](../13-routing-protocols-ospf-bgp/2-summary.md) — BGP 세션도 TCP 179 위의 핸드셰이크로 시작한다
-  - [security/README](../../security/README.md) — `28-dos-and-abuse`(SYN flood). 미작성
+  - [security/28-dos-and-abuse](../../security/28-dos-and-abuse/2-summary.md) — SYN flood
   - [reliability/07-timeout-taxonomy-by-layer](../../reliability/07-timeout-taxonomy-by-layer/2-summary.md)(connect 타임아웃의 자리)
 - RFC
   - RFC 9293 TCP <https://www.rfc-editor.org/rfc/rfc9293>

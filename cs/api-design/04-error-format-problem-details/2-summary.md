@@ -351,7 +351,7 @@ curl -s https://staging.example.com/v1/boom | grep -E -o '"trace"|Exception|\.ja
   - [software-design/17-error-messages-and-log-level-policy](../../software-design/17-error-messages-and-log-level-policy/2-summary.md) — 사용자용·개발자용 메시지 분리, SQL 에러 원문 노출 실험
   - [software-design/15-error-handling-design](../../software-design/15-error-handling-design/2-summary.md) — 예외 경계 한 곳에서 번역
   - [reliability/17-distributed-tracing](../../reliability/17-distributed-tracing/2-summary.md) — 발생 id와 트레이스 연결
-  - security 영역 — 미작성, [security/README](../../security/README.md)
+  - security 영역 — [security/README](../../security/README.md)
 - 근거
   - RFC 9457 Problem Details for HTTP APIs(2023-07, RFC 7807 대체) — §3(예시·여러 문제), §3.1.1~§3.1.5(멤버와 소비자 규칙), §3.2(확장 무시 MUST), §4(정의 시 MUST 세 가지, 디버깅 도구 아님), §4.2(등록소, `about:blank`), §5(보안), 부록 D(7807 대비 변경) <https://www.rfc-editor.org/rfc/rfc9457>
   - RFC 6901 JSON Pointer

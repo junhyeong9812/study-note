@@ -265,7 +265,7 @@ SELECT relname, reloptions FROM pg_class WHERE relkind = 'v';
 
 - 선행
   - [02-keys-and-constraints](../02-keys-and-constraints/2-summary.md) — 유니크·FK 검사가 RLS를 우회하는 이유의 바탕
-  - security `15-access-control-models` — 객체 수준 인가. 미작성, [security/README](../../security/README.md)
+  - [security/15-access-control-models](../../security/15-access-control-models/2-summary.md) — 객체 수준 인가.
 - 원고·연결
   - [systems/postgres-rls](../../systems/postgres-rls/2-summary.md) — 기초(USING/WITH CHECK, 풀 함정, ORM 이중 방어, 체크리스트)
   - [systems/multi-tenancy](../../systems/multi-tenancy/2-summary.md) — 격리 모델, 권한 누수 L1~L8

@@ -186,7 +186,7 @@ SQLite 헤더: Default/WebStorage/QuotaManager
 | 목록·초안·오프라인 데이터 | IndexedDB | 비동기·대용량·인덱스·트랜잭션 |
 | 오프라인 응답 사본 | Cache Storage(07번) | Request→Response 그대로 |
 
-- localStorage에 토큰을 두지 않는다. XSS 한 번으로 탈취된다(실험 1). 토큰 회전·저장 위치 설계는 security 17번(미작성, [security 영역 표](../../security/README.md)).
+- localStorage에 토큰을 두지 않는다. XSS 한 번으로 탈취된다(실험 1). 토큰 회전·저장 위치 설계는 [security 17번](../../security/17-refresh-token-rotation-and-revocation/2-summary.md).
 
 ### 2. 쓰기 실패를 예상하고 짠다
 
@@ -278,10 +278,10 @@ const { usage, quota } = await navigator.storage.estimate();   // 추정치
 
 - 선행
   - [05-fetch-from-browser](../05-fetch-from-browser/2-summary.md) — credentials 모드와 쿠키 전송
-  - security 11 `sessions-and-cookie-security` — 미작성, [security 영역 표](../../security/README.md)
+  - [security 11 sessions-and-cookie-security](../../security/11-sessions-and-cookie-security/2-summary.md)
 - 후속·연결
   - [07-service-workers-and-offline](../07-service-workers-and-offline/2-summary.md) — Cache Storage와 오프라인
-  - security 17 `refresh-token-rotation-and-revocation` — 미작성, [security 영역 표](../../security/README.md)
+  - [security 17 refresh-token-rotation-and-revocation](../../security/17-refresh-token-rotation-and-revocation/2-summary.md)
   - [16-long-tasks-and-web-workers](../16-long-tasks-and-web-workers/2-summary.md) — 메인 스레드 밖으로 직렬화·저장 넘기기
   - [03-event-loop](../03-event-loop/2-summary.md) — 동기 `setItem`이 막는 메인 스레드 태스크
   - [data-structure/15-b-tree](../../data-structure/15-b-tree/2-summary.md) · [data-structure/24-lsm-tree](../../data-structure/24-lsm-tree/2-summary.md) · [data-structure/10-lru-cache](../../data-structure/10-lru-cache/2-summary.md) · [database/38-lsm-storage-engine](../../database/38-lsm-storage-engine/2-summary.md)

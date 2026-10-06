@@ -79,7 +79,7 @@
   - *eTLD(effective TLD, public suffix)*: `.com`, `.co.kr`, `github.io`처럼 그 아래에 남이 등록할 수 있는 접미사. Public Suffix List(PSL)가 목록이다.
   - *eTLD+1*: eTLD에 라벨 하나를 더한 것 = 등록 도메인.
 - 그래서 **같은 사이트·다른 출처**가 생긴다. `127.0.0.1:P1`과 `127.0.0.1:P2`는 포트가 달라 출처는 다르지만 사이트는 같다.
-  - 출처는 보안 정책(SOP·CORS)의 단위다. → security/21 `same-origin-and-cors`(미작성, [security README](../../security/README.md))
+  - 출처는 보안 정책(SOP·CORS)의 단위다. → [security/21 same-origin-and-cors](../../security/21-same-origin-and-cors/2-summary.md)
   - 사이트는 Chromium이 **프로세스를 나누는** 단위다. Site Isolation 문서가 든 이유는 호환성이다. "`document.domain`을 바꿔 한 사이트의 여러 서브도메인끼리 통신하는 기존 페이지를 깨지 않으려고" 출처 대신 사이트를 쓴다.
 
 ### 3. 사이트 격리 — 다른 사이트 문서는 다른 프로세스로
@@ -230,7 +230,7 @@ window.open('https://pay.example/checkout', '_blank', 'noopener');
   - [03-event-loop](../03-event-loop/2-summary.md) — 메인 스레드가 일을 고르는 규칙
   - [04-dom-and-event-model](../04-dom-and-event-model/2-summary.md)
   - [16 `long-tasks-and-web-workers`](../16-long-tasks-and-web-workers/2-summary.md)
-  - security 21 `same-origin-and-cors`, 24 `memory-safety-exploits` — 미작성, [security README](../../security/README.md)
+  - security [21 same-origin-and-cors](../../security/21-same-origin-and-cors/2-summary.md), [24 memory-safety-exploits](../../security/24-memory-safety-exploits/2-summary.md)
   - [languages/web-api/24-document-lifecycle-events](../../../languages/web-api/24-document-lifecycle-events/2-summary.md) — 문서 수명 이벤트 문법
 - 문서·소스
   - Chromium, "Multi-process Architecture" <https://www.chromium.org/developers/design-documents/multi-process-architecture/> — 동기, 브라우저/렌더러 역할, Mojo IPC, 충돌 감지·sad tab, 샌드박스, Sharing the renderer process(opener 창은 같은 출처면 프로세스 공유)

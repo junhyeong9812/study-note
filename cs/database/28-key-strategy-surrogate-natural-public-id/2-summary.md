@@ -239,7 +239,7 @@ WHERE table_schema = DATABASE();
 
 - 선행
   - [08-btree-indexes](../08-btree-indexes/2-summary.md) — B+Tree 분할, 클러스터드 vs 보조
-  - `security/16-identifiers-and-enumeration` — 미작성, [security/README](../../security/README.md)
+  - [security/16-identifiers-and-enumeration](../../security/16-identifiers-and-enumeration/2-summary.md)
   - [distributed/13-distributed-id-generation](../../distributed/13-distributed-id-generation/2-summary.md)
 - 연결
   - [02-keys-and-constraints](../02-keys-and-constraints/2-summary.md) — PK·FK·UNIQUE

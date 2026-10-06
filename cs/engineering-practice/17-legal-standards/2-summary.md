@@ -200,7 +200,7 @@ diff("대조군 법 제21조", quoted(md, "개인정보 보호법 제21조"), cu
 - **정책 = 판정 함수 + 기본값 실패**: 라이선스 ID → {허용, 검토, 거부} 함수. 모르는 입력의 기본값을 "거부"로 둔다(fail-closed).
 - **단어 LCS diff**: 실험 B의 조문 비교. 두 단어 열의 최장 공통 부분열을 동적 계획법(O(n·m) 표)으로 구하고, 공통 부분열 밖의 단어를 삭제·추가로 출력한다.
 - **보존 기한 = 유형별 TTL 표 + 만료 인덱스**: 기록마다 `retain_until`을 저장하고 그 칼럼에 인덱스를 두면, 파기 배치는 `retain_until < now()` 범위 조회 한 번으로 대상을 찾는다.
-- 연결: 삭제 전파(백업·로그·파생 복제본)와 키 폐기 삭제(crypto-shredding)는 data-engineering/12-data-retention-and-erasure — 미작성([데이터 엔지니어링 영역 표](../../data-engineering/README.md)). 로그 속 개인정보 마스킹은 security/27 — 미작성([보안 영역 표](../../security/README.md)).
+- 연결: 삭제 전파(백업·로그·파생 복제본)와 키 폐기 삭제(crypto-shredding)는 data-engineering/12-data-retention-and-erasure — 미작성([데이터 엔지니어링 영역 표](../../data-engineering/README.md)). 로그 속 개인정보 마스킹은 [security/27](../../security/27-pii-classification-masking-retention/2-summary.md).
 
 ## 적용 — 풀어나가는 법
 
@@ -325,7 +325,7 @@ public void destroyExpired() {
   - [15-security-standards](../15-security-standards/2-summary.md) — 같은 의존성 목록으로 SCA, 안전성 확보조치와 보안 기준의 겹침
   - [16-operational-standards](../16-operational-standards/2-summary.md) — 로그 표준의 개인정보 금지 필드, 접속기록 보관
   - [reliability/18-logs-traces-audit-roles](../../reliability/18-logs-traces-audit-roles/2-summary.md) — 로그 속 개인정보와 삭제 범위, 감사 기록
-  - security 27-pii-classification-masking-retention — 미작성([보안 영역 표](../../security/README.md)) · data-engineering 12-data-retention-and-erasure — 미작성([데이터 엔지니어링 영역 표](../../data-engineering/README.md))
+  - [security 27-pii-classification-masking-retention](../../security/27-pii-classification-masking-retention/2-summary.md) · data-engineering 12-data-retention-and-erasure — 미작성([데이터 엔지니어링 영역 표](../../data-engineering/README.md))
   - [13-build-vs-buy-and-adoption](../13-build-vs-buy-and-adoption/2-summary.md) — OSS 도입 판단(유지보수자·라이선스 건강도)
 - 근거 — 법령(law.go.kr 현행 원문, 2026-10-05 조회)
   - 개인정보 보호법(법률 제21445호, 2026-03-10 공포, 2026-09-11 시행) 제21조·제30조의3·제32조의2·제34조·제64조의2·부칙 제1조 <https://www.law.go.kr/법령/개인정보보호법>

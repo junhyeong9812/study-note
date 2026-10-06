@@ -482,7 +482,7 @@ static Stream<Arguments> forgedInputs() throws Exception {
 - 다른 영역
   - [reliability/53-reliability-incidents](../../reliability/53-reliability-incidents/2-summary.md) — CrowdStrike 운영 관점(영향 규모·복구·단계 배포), [reliability/23-deployment-strategies](../../reliability/23-deployment-strategies/2-summary.md)
   - [network/29-tls-handshake](../../network/29-tls-handshake/2-summary.md) — TLS 핸드셰이크와 ServerKeyExchange의 자리
-  - 공개키 서명 — security 06 public-key-and-signatures, 24 memory-safety-exploits는 미작성([security 영역 표](../../security/README.md))
+  - 공개키 서명 — security [06 public-key-and-signatures](../../security/06-public-key-and-signatures/2-summary.md), [24 memory-safety-exploits](../../security/24-memory-safety-exploits/2-summary.md)
   - [software-design/56-design-incidents](../../software-design/56-design-incidents/2-summary.md) — 설계 관점 사건(Therac-25 등)
 - 1차 출처
   - Apple, "Apple security updates (2014)" <https://support.apple.com/kb/HT205762> — iOS 7.0.6·iOS 6.1.6·Apple TV 6.0.2(2014-02-21), OS X Mavericks 10.9.2 및 Security Update 2014-001(2014-02-25)
