@@ -2,11 +2,11 @@
 
 ## 기준
 
-- 마지막 갱신: 2026-10-07 security-writing 완료(보안 30편, 원본 6편 보강) · 직전: errata-fixes(push 8121ff99) · 작업 폴더: `docs/plans/2026-10-07/security-writing/` · 브랜치: `docs/security-writing`
+- 마지막 갱신: 2026-10-07 math-writing 완료(CS 수학 17편) · 직전: security-writing(30편, push 064707b6) · 작업 폴더: `docs/plans/2026-10-07/math-writing/` · 브랜치: `docs/math-writing`
 
 ## 다음 작업 후보 (우선순위순)
 
-### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28·테스트 21(10-03)·API 설계 23·웹 플랫폼 24(10-04)·엔지니어링 실천 20·자료구조·알고리즘 잔여 21(10-05)·보안 30(10-07) 완료, 남은 영역(112편): 데이터 분석 28·언어 27·아키텍처 22·수학 17·데이터 공학 17·네트워크 원고 1
+### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28·테스트 21(10-03)·API 설계 23·웹 플랫폼 24(10-04)·엔지니어링 실천 20·자료구조·알고리즘 잔여 21(10-05)·보안 30·수학 17(10-07) 완료, 남은 영역(95편): 데이터 분석 28·언어 27·아키텍처 22·데이터 공학 17·네트워크 원고 1
 
 - **재사용 도구**: `docs/plans/2026-09-30/os-writing/`의 briefing(§3-1 교훈·§4 원고 이어받기·§5 로컬 재현)·factcheck·adjudicate 브리핑, network-writing의 check_new.py, 생성기(gen_area_readme.py — 새 leaf 폴더 우선 인식).
 - **관측(두 영역 실측)**: 1차 Opus 점검 뒤에도 codex가 편당 7~12건(OS)·9~11건(네트워크)을 더 찾았고 판정 기각은 거의 0 → **2차 리뷰는 필수**. Opus 대체 리뷰는 편당 ~1.6건으로 codex보다 적게 찾는다 — codex 한도가 병목.
@@ -32,6 +32,13 @@
 ### N0-p. 작성 규칙 ↔ 검사기 정비 — 우선순위: 중간 (근거 `docs/plans/2026-10-05/engineering-practice-writing/rules-vs-checker.md`)
 
 - ① `cs/README.md` §3을 7절로 고치고 브리핑에만 있는 형식 규칙을 「작성 규칙」으로 올려 정본 단일화(문서) ② 위반 0인 기계 규칙(언어 태그·제목 형식·metadata 날짜·생성 문서 `--check`)을 check_new error로 ③ warning 후보 ④ 검사기를 작업 폴더에서 고정 위치로 옮기고 훅·CI 자동 실행 여부 결정. ②·④는 L1(spec부터).
+
+### N0-u. CS 수학 17편 검수 · 영역 밖 오류 — 우선순위: 중간
+
+- 검수: metadata `초안`. `[?]` 잔여: CLRS 3판 번호(Lemma 22.13·Thm 4.1·5.4.1·B.4/B.5 — 기억으로 쓴 것을 낮춤)·Strang·Higham·HB·Kleinrock 장 번호·Knuth 3.4.2·CAV 2015 본문·TimSort 스택 40의 계산 과정 등.
+- 영역 밖 오류(고치지 않음 — 원고·다른 영역): `cs/reliability/21-scaling-principles/2-summary.md:52` "λ=1,000·W=0.2 → 스레드 200개"(정확히 200이면 이용률 1로 발산 — 원고 `systems/server-design/01-scaling-principles.md` §2도 같고, 같은 절 식당 예 "초당 2명 × 30분 = 60명" 단위 오류) · `cs/foundations/data-representation/README.md:98` epsilon 정의("1.0+ε != 1.0인 가장 작은 값" — 반 ulp 근처 값도 성립) · `cs/algorithm/33-…/2-summary.md:179`("헤더만큼 커진다" — 무작위 1MB +328B)·`:417`(재압축 팽창 단정 — 멀티멤버 gz 반례).
+- 커리큘럼 반영 후보: §1 머리 "MCS 장 번호 `[?]`" → 2018-06-06판으로 확인됨(장 번호 표기 가능) · §1 06행 ⚠ "지수 점화 → 입력 30만 타임아웃"은 규모상 이차형(해석, 노트에 표시).
+- 관측: WebSearch 세션 한도(200) 소진 — 이후 영역은 curl/WebFetch 전제로 브리핑. 같은 셸에서 판정·정합이 동시에 같은 leaf를 고칠 때 종합 노트 인용 수치가 낡음 → 종합 정합을 마지막에 한 번 더.
 
 ### N0-t. 보안 30편 검수 · 후속 — 우선순위: 중간
 
