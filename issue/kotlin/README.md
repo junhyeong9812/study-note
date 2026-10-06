@@ -17,7 +17,7 @@ Kotlin 언어와 그 위 Spring 계층에 뿌리내린 패턴이다.\
 
 | 폴더 | 카드 수 | 무엇 |
 |------|---------|------|
-| [spring/](spring/) | 5 | Spring·Jackson·아키텍처 |
+| [spring/](spring/) | 6 | Spring·Jackson·아키텍처 |
 
 ## 패턴 카드 (이 폴더 직속)
 

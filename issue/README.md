@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 160개.
+현재 카드 161개.
 
 ## 분류 두 축
 
@@ -27,7 +27,7 @@
 | [`identity`](#identity) | 같은 대상인가 — 식별자·정체성 판정 | 1 |
 | [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 | 2 |
 
-태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(58개)는 폴더 축으로만 분류한다.
+태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(59개)는 폴더 축으로만 분류한다.
 
 ## 포맷
 
@@ -42,7 +42,7 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (160)
+issue/  (161)
 ├─ cross-cutting/               116
 │  ├─ concurrency/               10
 │  ├─ data/                      18
@@ -60,8 +60,8 @@ issue/  (160)
 ├─ java/                          3
 │  ├─ spring/                     1
 │  └─ (언어 레벨 카드)            2
-├─ kotlin/                        7
-│  ├─ spring/                     5
+├─ kotlin/                        8
+│  ├─ spring/                     6
 │  └─ (언어 레벨 카드)            2
 ├─ python/                        6
 │  ├─ fastapi/                    4
@@ -255,6 +255,7 @@ issue/  (160)
 
 #### [kotlin/spring/](kotlin/spring/) — Spring·Jackson·아키텍처
 
+- [default-argument-evaluated-on-proxy](kotlin/spring/default-argument-evaluated-on-proxy/) — Kotlin 기본 인자는 호출 쪽 `$default` 합성 함수에서 호출자가 가진 참조를 수신자로 계산된다 — 그 참조가 클래스 기반 프록시면 주입되지 않은 프록시의 필드(null)를 읽어 NPE, 상태를 읽는 기본값은 null로 두고 본문에서 해소한다.
 - [dip-port-ownership](kotlin/spring/dip-port-ownership/) — 도메인이 포트를 소유하고(DIP) 모듈 의존 방향을 지키며, 리팩토링은 특성 테스트 안전망 위에서 한다.
 - [graceful-degradation-fault-isolation](kotlin/spring/graceful-degradation-fault-isolation/) — 보조 기능(헬스 집계·통계·네이티브 라이브러리)의 장애가 핵심 경로를 인질로 잡지 못하게 격리·강등한다.
 - [jpa-save-merge-copy](kotlin/spring/jpa-save-merge-copy/) — 영속 애그리거트에 save() → merge가 새 자식의 복사본을 영속화, 원본 id null → flush (실험 랩)

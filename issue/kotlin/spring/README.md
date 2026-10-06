@@ -15,6 +15,7 @@ Spring·Jackson과 모듈 구조에서 나오는 패턴이다.\
 
 ## 패턴 카드
 
+- [default-argument-evaluated-on-proxy](default-argument-evaluated-on-proxy/) — Kotlin 기본 인자는 호출 쪽에서 호출자가 가진 참조(프록시)를 수신자로 계산된다 — 프록시의 빈 필드를 읽지 않게 상태를 읽는 기본값은 null로 두고 본문에서 해소한다.
 - [dip-port-ownership](dip-port-ownership/) — 도메인이 포트를 소유하고(DIP) 모듈 의존 방향을 지키며, 리팩토링은 특성 테스트 안전망 위에서 한다.
 - [graceful-degradation-fault-isolation](graceful-degradation-fault-isolation/) — 보조 기능(헬스 집계·통계·네이티브 라이브러리)의 장애가 핵심 경로를 인질로 잡지 못하게 격리·강등한다.
 - [jpa-save-merge-copy](jpa-save-merge-copy/) — 영속 애그리거트에 `save()` → merge가 새 자식의 복사본을 영속화, 원본 참조는 id null → save 없이 flush
