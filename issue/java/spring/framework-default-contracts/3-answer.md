@@ -221,3 +221,47 @@ new InputStreamResource(in) {
 
 ## 검증 기록
 - 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
+
+## 방안 비교 — 단방향 일대다의 외래키는 별도 UPDATE로 쓰인다
+
+같은 원리(변형 D — JPA 매핑의 기본 동작이 코드의 가정과 다르고, 오류 없이 지나간다)가 **쓰기 문장 수**로 나타난 사례.\
+애그리거트 루트가 자식 컬렉션을 단방향 `@OneToMany` + `@JoinColumn(nullable = false)`로 소유하고 cascade로 저장했다. 자식 엔티티에는 부모 참조가 없다.\
+테스트를 SQL 로그를 켜고 돌려 실제 문장을 대조하자, flush 한 번에 문장이 셋이었다 — 자식 INSERT(외래키 열 포함), 부모 UPDATE(변경 감지가 전체 열을 씀), 그리고 **자식 외래키 UPDATE 한 번 더**.\
+INSERT에 이미 외래키 값이 들어 있는데도 UPDATE가 따로 나갔다. 결과는 틀리지 않으므로 기능 테스트는 전부 통과했고, 이 사례에서는 매핑을 바꾸지 않고 "자식 하나 추가 = 쓰기 3문장"을 비용으로 기록했다.
+
+```sql
+insert into child (parent_id, a, b) values (?, ?, ?)
+update parent set c1=?, c2=?, c3=?, status=? where id=?
+update child set parent_id=? where id=?            -- 단방향 일대다: 관계의 주인이 부모 쪽 컬렉션
+```
+
+### 방안 1 — 단방향 유지: 부모가 관계의 주인 (이 사례의 현 상태)
+```kotlin
+@Entity class Parent {
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(name = "parent_id", nullable = false)
+    private val children: MutableList<Child> = mutableListOf()   // 자식은 부모를 모른다
+}
+@Entity class Child(val a: Long, val b: Instant) { @Id @GeneratedValue var id: Long? = null }
+```
+
+### 방안 2 — 자식이 외래키를 소유 (일반 원리 — 이 사례에서 적용·측정하지 않음)
+```kotlin
+@Entity class Parent {
+    @OneToMany(mappedBy = "parent", cascade = [CascadeType.ALL], orphanRemoval = true)
+    private val children: MutableList<Child> = mutableListOf()
+    fun add(c: Child) { children += c }                          // 양쪽 참조를 함께 맞춘다
+}
+@Entity class Child(@ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "parent_id") val parent: Parent /* ... */)
+// 외래키는 자식 INSERT 한 문장으로 쓰인다 — 관계의 주인이 외래키가 있는 테이블 쪽
+```
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 1. 단방향 일대다 | 자식이 부모를 몰라도 된다(루트만 진입점) | 자식 추가마다 외래키 UPDATE 1문장 추가 | 비용이 기능 테스트에 안 보인다 — 쓰기 수·락 보유 시간이 결론에 들어가는 측정에서 조용히 섞인다 | 자식 추가가 드물거나 쓰기 비용이 결론과 무관할 때 |
+| 2. 자식이 소유(mappedBy) | 자식에서 부모로의 참조를 허용한다 | 양방향 참조 동기화 코드, 자식→부모 의존이 생김 | 한쪽만 설정하면 외래키가 비거나 컬렉션과 DB가 어긋난다 | 자식 추가가 잦은 쓰기 경로, 문장 수가 성능 지표에 들어갈 때 |
+
+**결론**: 둘 다 결과는 같으므로 테스트로는 갈리지 않는다 — 갈리는 것은 **쓰기 문장 수와 그 문장들이 쥐는 락 시간**이다.\
+쓰기 경로의 성능을 재거나 비교한다면, 먼저 **실제로 나가는 SQL을 로그로 확인**하고 매핑이 만드는 추가 문장을 측정 해석에 넣는다(이 사례는 문서에 "확인 전"으로 표시해 둔 SQL을 측정이 끝난 뒤 실측 로그로 바꾸다 발견했다).\
+애그리거트 경계를 위해 단방향을 택했다면 그 대가(추가 UPDATE)를 기록해 두고, 쓰기 비용이 결론을 좌우하게 되면 방안 2를 검토한다.\
+검증 기록: 2026-10-06 사건 기록 대조·추상화(Claude 초안) — 방안 2는 일반 원리(사건에서 적용·측정하지 않음).
