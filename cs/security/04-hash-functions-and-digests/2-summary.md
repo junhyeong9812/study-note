@@ -96,7 +96,7 @@
 
 - **Merkle–Damgård 구조**: 고정 크기 압축 함수 f를 체인으로 반복. 길이를 패딩에 넣어(MD 강화) 길이가 다른 입력이 같은 블록열이 되지 않게 한다.
 - **스펀지 구조(SHA-3)**: 상태를 rate(입출력)·capacity(숨김)로 나눠 흡수 → 짜내기.
-- **생일 문제 = 해시 집합으로 충돌 찾기**: 실험 [C]는 지금까지 본 값을 `HashMap`에 넣고 처음 겹칠 때 멈춘다. 메모리 O(√N)([data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md), 계산은 math 영역 `05-counting-and-birthday-bound` — 미작성([math 영역 표](../../math/README.md))).
+- **생일 문제 = 해시 집합으로 충돌 찾기**: 실험 [C]는 지금까지 본 값을 `HashMap`에 넣고 처음 겹칠 때 멈춘다. 메모리 O(√N)([data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md), 계산은 [math 영역 05-counting-and-birthday-bound](../../math/05-counting-and-birthday-bound/2-summary.md)).
 - **머클 트리**: 블록별 해시를 트리로 묶어 부분 검증([data-structure/27-merkle-tree](../../data-structure/27-merkle-tree/2-summary.md)).
 - 암호 해시 vs 비암호 해시(해시 테이블·SipHash)의 구분은 [algorithm/12-hash-functions](../../algorithm/12-hash-functions/2-summary.md).
 

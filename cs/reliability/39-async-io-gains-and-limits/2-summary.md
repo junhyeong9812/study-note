@@ -156,7 +156,7 @@ ex.submit(() -> {
 
 ## 쓰이는 자료구조·알고리즘
 
-- **Little's Law(L = λW)** — 동시성·처리량·지연의 관계. [21-scaling-principles](../21-scaling-principles/2-summary.md), [math/10-queueing-and-littles-law](../../math/README.md)(미작성).
+- **Little's Law(L = λW)** — 동시성·처리량·지연의 관계. [21-scaling-principles](../21-scaling-principles/2-summary.md), [math/10-queueing-and-littles-law](../../math/10-queueing-and-littles-law/2-summary.md).
 - **유계 큐·세마포어** — 동시 작업 수의 상한(백프레셔). JEP 444가 권하는 동시성 제한 도구. [os/18-semaphores](../../os/18-semaphores/2-summary.md), [12-backpressure-and-load-shedding](../12-backpressure-and-load-shedding/2-summary.md).
 - **작업 훔치기(work-stealing) ForkJoinPool** — JDK 가상 스레드 스케줄러. FIFO 모드로 돌고, 병렬도 기본값은 사용 가능한 프로세서 수다(`jdk.virtualThreadScheduler.parallelism`으로 조정 — JEP 444).
 - **연속(continuation)과 힙의 스택 조각** — 가상 스레드의 스택은 GC 힙에 stack chunk 객체로 저장되고, 실행에 따라 늘고 준다(JEP 444). 그래서 기다리는 동안 OS 스레드를 반납할 수 있다. 대신 기다리는 동안의 지역 변수도 힙 메모리다(실험 4).
@@ -270,7 +270,7 @@ hikaricp_connections_pending
 - 선행
   - [language/14-concurrency-models](../../language/README.md) — 미작성(스레드·async/await·가상 스레드 일반)
   - [os/25-io-models](../../os/25-io-models/2-summary.md) — 블로킹·논블로킹·비동기 I/O 구분
-  - [math/10-queueing-and-littles-law](../../math/README.md) — 미작성(Little's Law는 [21-scaling-principles](../21-scaling-principles/2-summary.md))
+  - [math/10-queueing-and-littles-law](../../math/10-queueing-and-littles-law/2-summary.md) (Little's Law는 [21-scaling-principles](../21-scaling-principles/2-summary.md))
   - [database/21-connection-pooling](../../database/21-connection-pooling/2-summary.md) — 풀 크기·획득 타임아웃
 - 후속·연결
   - [os/26-io-multiplexing-epoll](../../os/26-io-multiplexing-epoll/2-summary.md), [os/27-event-based-concurrency](../../os/27-event-based-concurrency/2-summary.md), [os/36-server-concurrency-architectures](../../os/36-server-concurrency-architectures/2-summary.md)

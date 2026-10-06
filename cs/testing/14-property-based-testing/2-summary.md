@@ -168,7 +168,7 @@ empty..............17.60%
 
 ## 쓰이는 자료구조·알고리즘
 
-- **의사난수 생성기 + 시드**: 같은 시드 → 같은 입력 열. 재현의 근거다(→ math 12-randomness-and-prng, [math 영역 표](../../math/README.md)).
+- **의사난수 생성기 + 시드**: 같은 시드 → 같은 입력 열. 재현의 근거다(→ [math 12-randomness-and-prng](../../math/12-randomness-and-prng/2-summary.md)).
 - **생성기 조합자**: `map`(변환), `tuple`(곱), `array`(반복), `constantFrom`(선택). 도메인 값은 작은 생성기의 합성으로 만든다. 분포는 조합 방식이 정한다(위 실험의 A vs B).
 - **이진 탐색식 축소**: 정수 축소는 목표까지의 거리를 반씩 줄이는 [이진 탐색](../../algorithm/06-binary-search/2-summary.md) 모양이다.
 - **탐욕적 국소 탐색**: 축소는 "실패를 유지하는 첫 후보로 이동"을 반복한다([탐욕법](../../algorithm/23-greedy/2-summary.md)). 그래서 국소 최소에서 멈춘다.
@@ -281,7 +281,7 @@ class DedupProperties {
   - testing [16-coverage-and-its-limits](../16-coverage-and-its-limits/2-summary.md)
   - testing [09-flaky-tests](../09-flaky-tests/2-summary.md) — 시드 없는 무작위 테스트가 불안정 테스트로 오인되는 경로
   - testing [17-characterization-tests-legacy](../17-characterization-tests-legacy/2-summary.md) — 옛 구현을 기준 구현(오라클)으로 쓰는 경우
-  - math 12-randomness-and-prng(미작성, [math 영역 표](../../math/README.md)) · [algorithm/06-binary-search](../../algorithm/06-binary-search/2-summary.md) · [algorithm/23-greedy](../../algorithm/23-greedy/2-summary.md)
+  - [math 12-randomness-and-prng](../../math/12-randomness-and-prng/2-summary.md) · [algorithm/06-binary-search](../../algorithm/06-binary-search/2-summary.md) · [algorithm/23-greedy](../../algorithm/23-greedy/2-summary.md)
 - 논문
   - Koen Claessen, John Hughes. "QuickCheck: A Lightweight Tool for Random Testing of Haskell Programs." ICFP 2000, pp. 268–279 — 성질·생성기·`classify`/`collect`(2.4절, 43% trivial 예), `OK, passed 100 tests.` 출력, 사례 절의 `smaller` 확장(Gill) <https://www.cs.tufts.edu/~nr/cs257/archive/john-hughes/quick.pdf>
 - 문서·소스

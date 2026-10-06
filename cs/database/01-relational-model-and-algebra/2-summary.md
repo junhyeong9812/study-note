@@ -164,7 +164,7 @@ PostgreSQL 17 문서(7.5 Sorting Rows): 정렬을 고르지 않으면 행은 **�
 - **집합 연산 = 중복 제거 문제**: `UNION`·`INTERSECT`·`EXCEPT`·`DISTINCT`는 "같은 튜플인가"를 가려야 한다. 해시 테이블에 넣어 보거나([data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md)), 정렬한 뒤 이웃끼리 비교한다([algorithm/02-merge-sort](../../algorithm/02-merge-sort/2-summary.md)). 로컬 재현의 `UNION` 계획은 `Append` → `HashAggregate`였다(해시로 중복 제거).
 - **연산자 트리**: 관계 대수식은 트리(또는 DAG)다. 실행 계획도 트리이고, 각 노드는 자식이 내준 튜플을 받아 가공한다(실행 모델은 [54-query-execution-models](../54-query-execution-models/2-summary.md)).
 - **동치 규칙(rewrite rules)**: `σ_p(R ⋈ S) = R ⋈ σ_p(S)`(p가 S 속성만 쓸 때), `R ⋈ S = S ⋈ R` 같은 규칙으로 트리를 바꿔 가며 싼 것을 찾는다([12-query-optimizer-and-explain](../12-query-optimizer-and-explain/2-summary.md)).
-- **집합·관계의 수학**: 릴레이션은 도메인들의 데카르트 곱의 부분집합이다(Codd 1970 §1.3). 수학 선행 노트 `math/03-sets-relations-orders`는 미작성이다([math/README](../../math/README.md)).
+- **집합·관계의 수학**: 릴레이션은 도메인들의 데카르트 곱의 부분집합이다(Codd 1970 §1.3). 수학 선행 노트는 [math/03-sets-relations-orders](../../math/03-sets-relations-orders/2-summary.md)다.
 
 ## 적용 — 풀어나가는 법
 
@@ -267,7 +267,7 @@ EXPLAIN FORMAT=TREE SELECT id FROM item LIMIT 20;
 
 ## 관련 주제·근거
 
-- 선행: `math/03-sets-relations-orders` — 미작성, [math/README](../../math/README.md)
+- 선행: [math/03-sets-relations-orders](../../math/03-sets-relations-orders/2-summary.md)
 - 후속
   - [02-keys-and-constraints](../02-keys-and-constraints/2-summary.md) — 튜플을 구별하는 키, 무결성
   - [04-sql-joins-and-aggregation](../04-sql-joins-and-aggregation/2-summary.md) — 조인·집계·NULL 3치 논리

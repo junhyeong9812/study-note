@@ -167,7 +167,7 @@ REAL      79.2   71.1   71.2   71.4 |    865.7 |  20.24
 
 - **피드백 제어 루프**: 회고는 "측정 → 목표와 비교 → 조정"을 도는 폐루프다. 측정(효과 확인)이 빠지면 열린 루프가 되어, 조정이 맞았는지 모른다(위 끊김 ⑤).
 - **우선순위 큐에 가까운 목록**: 스크럼 가이드 2020은 제품 백로그를 "순서가 매겨진 목록(ordered list)"이라고만 쓴다. 순서의 기준을 우선순위 하나로 정하지 않는다. 스프린트 계획에서는 개발자가 PO와 논의해 항목을 고른다. 맨 앞부터 기계적으로 꺼내는 규칙은 없다. 비슷한 자료구조는 [data-structure/07-heap](../../data-structure/07-heap/) 참고. 실무에서는 사람이 다시 정렬하므로 힙보다 "정렬된 목록 + 재정렬"에 가깝다.
-- **큐와 리틀의 법칙**: 칸반 보드는 단계마다 WIP 상한을 둔 큐다. 정상 상태에서 평균 리드 타임 = 평균 WIP ÷ 평균 처리율(L=λW). 처리율이 같으면 WIP를 줄일수록 리드 타임이 준다. 수식과 조건은 [reliability/21-scaling-principles](../../reliability/21-scaling-principles/2-summary.md)와 [math 영역 표 10 queueing-and-littles-law](../../math/README.md)(원고 있음) 참고.
+- **큐와 리틀의 법칙**: 칸반 보드는 단계마다 WIP 상한을 둔 큐다. 정상 상태에서 평균 리드 타임 = 평균 WIP ÷ 평균 처리율(L=λW). 처리율이 같으면 WIP를 줄일수록 리드 타임이 준다. 수식과 조건은 [reliability/21-scaling-principles](../../reliability/21-scaling-principles/2-summary.md)와 [math/10-queueing-and-littles-law](../../math/10-queueing-and-littles-law/2-summary.md) 참고.
 - **시뮬레이션(몬테카를로)**: 위 실험은 난수로 같은 과정을 여러 번 돌려 평균을 낸다. 추정에 쓰는 법은 [12-estimation-and-planning](../12-estimation-and-planning/2-summary.md)에서 다룬다.
 
 ## 적용 — 풀어나가는 법

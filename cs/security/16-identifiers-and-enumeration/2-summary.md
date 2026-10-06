@@ -144,7 +144,7 @@ v7=01a113a8-ec00-7e57-9adf-61b05cb504d8 version=7  decoded time=2026-10-07T00:00
 ## 쓰이는 자료구조·알고리즘
 
 - **UUIDv4 / UUIDv7 / ULID**: 위 비트 배치. v7·ULID는 "시각 상위 + 랜덤 하위" 비트 필드다. v7 하위 74비트는 RFC 9562 §5.7상 밀리초 미만 시각·카운터를 섞을 수도 있다(MAY)([distributed/13-distributed-id-generation](../../distributed/13-distributed-id-generation/2-summary.md)).
-- **생일 경계**: 충돌 확률 1 − exp(−k²/2N). 수학 영역 05 `counting-and-birthday-bound`는 미작성 — [math 영역 표](../../math/README.md).
+- **생일 경계**: 충돌 확률 1 − exp(−k²/2N). 수학 영역 [05-counting-and-birthday-bound](../../math/05-counting-and-birthday-bound/2-summary.md).
 - **해시 집합**: 실험의 적중 판정·충돌 계수. DB에서는 `UNIQUE` 제약 인덱스가 같은 역할을 하며 충돌을 오류로 드러낸다([data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md)).
 - **Crockford base32·base64url 인코딩**: 비트를 짧은 문자열로. base32는 I·L·O·U를 빼 사람이 옮겨 적을 때 혼동을 줄인다(ULID 명세). base64url은 6비트/자.
 - **토큰 버킷**: 열거 속도를 늦추는 주체별 요청 상한([reliability/11-rate-limiter](../../reliability/11-rate-limiter/2-summary.md)).
@@ -257,7 +257,7 @@ SELECT * FROM orders WHERE public_id = ? AND owner_id = ?;
   - [15-access-control-models](../15-access-control-models/2-summary.md) — 객체 수준 인가(첫째 층)
   - [security 09 randomness-and-key-management](../09-randomness-and-key-management/2-summary.md)(CSPRNG)
   - [17-refresh-token-rotation-and-revocation](../17-refresh-token-rotation-and-revocation/2-summary.md) — 토큰도 추측 불가 값이어야 한다(RFC 6749 §10.4)
-  - math 05 `counting-and-birthday-bound` — 미작성, [math 영역 표](../../math/README.md)
+  - [math 05 counting-and-birthday-bound](../../math/05-counting-and-birthday-bound/2-summary.md)
 - 연결
   - [database/28-key-strategy-surrogate-natural-public-id](../../database/28-key-strategy-surrogate-natural-public-id/2-summary.md) — 대리키·공개 ID, v4/v7 인덱스 실측
   - [distributed/13-distributed-id-generation](../../distributed/13-distributed-id-generation/2-summary.md) — Snowflake·UUIDv7 생성

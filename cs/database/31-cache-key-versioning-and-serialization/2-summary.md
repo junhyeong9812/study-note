@@ -130,7 +130,7 @@ DB 앞에 캐시(cache-aside)를 두면 읽기가 빨라진다. 패턴·무효�
 
 - **해시 기반 키** — 가변·긴 입력(검색 조건 등)을 정규화(정렬·기본값 채우기)한 뒤 SHA-256 같은 해시로 줄인다. 앞부분은 사람이 읽을 수 있게 둔다: `app:search:v2:t42:` + `sha256(정규화된 조건)`. [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md)
 - **해시 슬롯·해시 태그** — Redis 클러스터는 키 해시로 슬롯을 고른다. `{…}` 안의 부분만 해시에 쓰면 여러 키를 같은 슬롯에 모을 수 있다(Redis keyspace 문서). 노드 간 분산 일반은 [data-structure/31-consistent-hashing](../../data-structure/31-consistent-hashing/2-summary.md).
-- **난수 지터** — `ttl × U(0.9, 1.1)`. 균등 분포로 만료 시각을 흩는다. math `12-randomness-and-prng`(미작성, [math/README](../../math/README.md)).
+- **난수 지터** — `ttl × U(0.9, 1.1)`. 균등 분포로 만료 시각을 흩는다. [math/12-randomness-and-prng](../../math/12-randomness-and-prng/2-summary.md).
 - **lease 토큰** — 키에 묶인 64비트 토큰으로 set을 조건부로 만든다. 논문은 load-link/store-conditional에 비유한다.
 - **축출 정책** — LRU·LFU. Redis의 LFU는 Morris 카운터로 빈도를 센다(Redis eviction 문서). `redis-cli --hotkeys`는 `maxmemory-policy`가 `*lfu`일 때만 동작한다. [data-structure/10-lru-cache](../../data-structure/10-lru-cache/2-summary.md), [data-structure/19-probabilistic-counting](../../data-structure/19-probabilistic-counting/2-summary.md)
 

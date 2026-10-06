@@ -158,7 +158,7 @@ Kegel의 "The C10K problem"(연결 1만 개를 동시에)은 이 질문을 I/O �
 - **준비 이벤트 디멀티플렉싱** — epoll의 관심 목록(레드블랙 트리) + 준비 목록(리스트)(26번).
 - **완료 큐** — io_uring CQ는 커널→앱 단일 생산자·단일 소비자 링이다(34번). IOCP 완료 포트는 링이 아니라 여러 스레드가 함께 기다리는 커널 큐다. 완료 패킷은 FIFO로 쌓이고, 기다리는 스레드는 LIFO로 깨우며, 동시 실행 스레드 수 한도(concurrency value)가 있다(Microsoft Learn "I/O Completion Ports").
 - **핸드오프 큐(유계 블로킹 큐)** — HS/HA의 큐잉 층. 생산자·소비자 문제 그 자체다(18번 세마포어). 크기 한도와 넘칠 때 정책(거절·호출자 실행·버림)이 설계의 핵심이다. [data-structure/04-queue-deque](../../data-structure/04-queue-deque/2-summary.md)
-- **리틀의 법칙 L = λW** — 필요한 동시성(스레드·연결) = 도착률 × 체류 시간. JEP 444 예: 지연 50ms, 초당 200건이면 동시 10건. 초당 2000건이면 100건. [math/README](../../math/README.md) — `10-queueing-and-littles-law`. 미작성
+- **리틀의 법칙 L = λW** — 필요한 동시성(스레드·연결) = 도착률 × 체류 시간. JEP 444 예: 지연 50ms, 초당 200건이면 동시 10건. 초당 2000건이면 100건. [math/10-queueing-and-littles-law](../../math/10-queueing-and-littles-law/2-summary.md)
 - **라운드 로빈 배정** — main reactor가 새 연결을 sub reactor에 돌려 가며 붙인다. `SO_REUSEPORT`는 라운드 로빈이 아니다. 커널이 패킷의 해시로 그룹 안 리슨 소켓 하나를 고른다. BPF 프로그램을 붙이면 그 결과를 쓴다(`net/core/sock_reuseport.c`의 `reuseport_select_sock`).
 
 ## 적용 — 풀어나가는 법

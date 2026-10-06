@@ -49,7 +49,7 @@
     - 흔한 오해: "재귀 호출이 어떻게 도는지 끝까지 따라가 봐야 맞는지 안다." — 귀납 가정 덕분에 한 단계만 확인하면 된다. 끝까지 따라가는 것은 디버깅 도구지 증명 방법이 아니다.
   - *기저 사례(base case)*: 더 쪼개지 않고 바로 답하는 입력.
   - *축소 단계(reduction step)*: 문제를 더 작은 같은 문제로 바꾸는 단계.
-- 귀납 자체(강한 귀납, 루프 불변식)는 math 영역 02-induction-and-invariants 주제다(아직 미작성 — [math 커리큘럼](../../math/README.md)).
+- 귀납 자체(강한 귀납, 루프 불변식)는 [math 영역 02-induction-and-invariants](../../math/02-induction-and-invariants/2-summary.md) 주제다.
 
 ### 2. 호출 스택 — 재귀가 실제로 쓰는 메모리
 
@@ -401,7 +401,7 @@ Exception in thread "main" java.lang.StackOverflowError
 - 선행
   - 원본 기초 [foundations/data-structures-basics §7 재귀 함수](../../foundations/data-structures-basics/README.md) — 팩토리얼·피보나치·탈출 조건
   - 커리큘럼 선행 — [data-structure/01-data-structures-basics](../../data-structure/01-data-structures-basics/2-summary.md) · [02-asymptotic-analysis](../02-asymptotic-analysis/2-summary.md)(점화식 비용)
-  - math 02-induction-and-invariants(미작성) — [math 커리큘럼](../../math/README.md)
+  - [math 02-induction-and-invariants](../../math/02-induction-and-invariants/2-summary.md)
 - 후속·연결
   - [algorithm/24-divide-conquer](../24-divide-conquer/2-summary.md) — 재귀 + 마스터 정리
   - [algorithm/12-dfs](../12-dfs/2-summary.md) — 재귀 DFS의 깊이 문제와 반복판

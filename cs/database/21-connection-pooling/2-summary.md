@@ -178,7 +178,7 @@ DB 커넥션 하나를 새로 여는 일은 비싸다.
   - *CAS(compare-and-set)*: "값이 아직 X면 Y로 바꿔라"를 원자적으로 하는 CPU 명령. 락 없이 한 커넥션을 두 스레드가 동시에 가져가지 못하게 한다.
   - 커넥션마다 상태 값 4개: `NOT_IN_USE`(0)·`IN_USE`(1)·`REMOVED`(-1)·`RESERVED`(-2).
 - **지연 작업 큐(타이머)**: `maxLifetime`·`keepaliveTime`·누수 탐지는 커넥션마다 걸어 두는 예약 작업이다. HikariCP는 `ScheduledExecutorService`에 맡긴다(`HikariPool.java`, `ProxyLeakTask.java`). JDK의 `ScheduledThreadPoolExecutor`는 만료 시각 순 힙(`DelayedWorkQueue`)을 쓴다.
-- **리틀의 법칙**: 풀 크기 추정([math 영역](../../math/README.md)의 10-queueing-and-littles-law — 미작성).
+- **리틀의 법칙**: 풀 크기 추정([math/10-queueing-and-littles-law](../../math/10-queueing-and-littles-law/2-summary.md)).
 
 ## 적용 — 풀어나가는 법
 
@@ -306,7 +306,7 @@ SHOW PROCESSLIST;                                  -- Command = Sleep 은 유휴
 
 - 선행
   - [13-transactions-acid](../13-transactions-acid/2-summary.md)
-  - math/10-queueing-and-littles-law — 미작성([math 영역 표](../../math/README.md))
+  - [math/10-queueing-and-littles-law](../../math/10-queueing-and-littles-law/2-summary.md)
 - 후속·연결
   - [22-database-side-timeouts](../22-database-side-timeouts/2-summary.md) — 서버 측 시간 한도와 풀 설정의 정렬
   - [24-transaction-boundaries-in-app-code](../24-transaction-boundaries-in-app-code/2-summary.md) — 트랜잭션 안 외부 호출·`REQUIRES_NEW`가 풀을 말리는 경로

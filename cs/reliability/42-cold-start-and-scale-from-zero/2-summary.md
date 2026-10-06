@@ -144,7 +144,7 @@ s.createContext("/order", ex -> {
 - *provisioned concurrency*(Lambda): 미리 초기화된 실행 환경 수. 요청에 바로 응답하도록 준비돼 있고 추가 요금이 든다(Lambda 문서). 설정 수를 넘는 요청은 일반(on-demand) 동시성으로 넘어가 콜드 스타트를 낸다(Application Auto Scaling 절).
 - 몇 개를 예열하나 — Little's Law다.
   - Lambda 문서: 동시성 = 평균 초당 요청 × 평균 요청 시간(초). 예: 100 req/s × 0.5초 = 50.
-  - 예열 풀이 이 값보다 작으면 넘치는 몫이 콜드 스타트를 낸다. 컨테이너·VM 웜 풀도 같다. 새 인스턴스가 필요한 비율 × 준비 시간 = 준비 중인 인스턴스 수다([math/10-queueing-and-littles-law](../../math/README.md) — 미작성, [21-scaling-principles](../21-scaling-principles/2-summary.md)).
+  - 예열 풀이 이 값보다 작으면 넘치는 몫이 콜드 스타트를 낸다. 컨테이너·VM 웜 풀도 같다. 새 인스턴스가 필요한 비율 × 준비 시간 = 준비 중인 인스턴스 수다([math/10-queueing-and-littles-law](../../math/10-queueing-and-littles-law/2-summary.md), [21-scaling-principles](../21-scaling-principles/2-summary.md)).
 - *SnapStart*(Lambda): 버전을 발행할 때 Init을 하고, 초기화된 실행 환경의 메모리·디스크를 Firecracker microVM 스냅숏으로 떠서 암호화해 캐시한다. 이후 콜드 호출은 처음부터 초기화하지 않고 스냅숏에서 재개한다(Lambda 문서).
   - 지원 런타임: Java 11 이상, Python 3.12 이상, .NET 8 이상(문서 열람일 기준).
   - after-restore 훅은 10초 안에 끝나야 한다. 아니면 `SnapStartTimeoutException`.

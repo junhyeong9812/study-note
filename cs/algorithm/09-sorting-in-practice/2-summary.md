@@ -50,7 +50,7 @@
   ③ 0의 일관성:    compare(x, y) == 0 이면 모든 z에 대해 sgn(compare(x, z)) == sgn(compare(y, z))
 ```
 
-- 이 세 조건을 지키는 비교자는 원소들 위에 *전순서*(같음은 동치류로 묶은 순서, 엄밀히는 total preorder)를 준다. 순서 관계의 정의는 math 영역 03-sets-relations-orders(미작성 — [math 커리큘럼](../../math/README.md)).
+- 이 세 조건을 지키는 비교자는 원소들 위에 *전순서*(같음은 동치류로 묶은 순서, 엄밀히는 total preorder)를 준다. 순서 관계의 정의는 [math 영역 03-sets-relations-orders](../../math/03-sets-relations-orders/2-summary.md).
 - 흔히 깨지는 모양 세 가지:
 
 ```java
@@ -322,7 +322,7 @@ name, id:    3 [User[id=1, name=kim], User[id=3, name=kim], User[id=2, name=lee]
 
 - 선행
   - [algorithm/02-merge-sort](../02-merge-sort/2-summary.md) — 병합과 안정성의 원리(커리큘럼 선행 06)
-  - math 03-sets-relations-orders(미작성) — 부분·전순서 → [math 커리큘럼](../../math/README.md)
+  - [math 03-sets-relations-orders](../../math/03-sets-relations-orders/2-summary.md) — 부분·전순서
 - 후속·연결
   - [algorithm/05-non-comparison-sort](../05-non-comparison-sort/2-summary.md) — LSD 기수 정렬도 안정성에 기댄다(커리큘럼 10)
   - [algorithm/11-external-sort-and-k-way-merge](../11-external-sort-and-k-way-merge/2-summary.md) — 메모리보다 큰 정렬

@@ -353,7 +353,7 @@ jcmd <pid> Thread.print | grep -A3 'pool-'
 
 - 선행
   - [11-rate-limiter](../11-rate-limiter/2-summary.md) — 들어오는 속도 막기(토큰 버킷). 셰딩은 "지금 내 상태"로, 레이트 리미터는 "약속한 몫"으로 판단한다.
-  - math/10-queueing-and-littles-law — 미작성([../../math/README.md](../../math/README.md) 영역 표). 원고: [systems/server-design/01-scaling-principles.md](../../systems/server-design/01-scaling-principles.md).
+  - [math/10-queueing-and-littles-law](../../math/10-queueing-and-littles-law/2-summary.md). 원고: [systems/server-design/01-scaling-principles.md](../../systems/server-design/01-scaling-principles.md).
   - 원본 [ops-patterns/05-backpressure](../../ops-patterns/05-backpressure/2-summary.md) — 오버플로 정책 네 가지와 구현 함정. 원본의 "정원 50과 100의 최대 대기가 같다" 측정은 원본 시뮬레이션이 소비를 주기 단위로 돌린 데서 나온 결과다. 큐가 늘 차 있는 연속 처리 서버라면 리틀의 법칙대로 대기 ≈ 정원 / 처리율이다(이 노트 실험의 유계 40: 40 / 195.5/s ≈ 205ms, 측정 p99 212ms에는 처리 10ms가 더해져 있다).
   - 원본 [systems/server-design/06-resilience.md](../../systems/server-design/06-resilience.md) §6
 - 후속·연결

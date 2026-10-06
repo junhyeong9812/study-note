@@ -419,7 +419,7 @@ read bad crc -> java.util.zip.ZipException: Corrupt GZIP trailer
 ## 관련 주제·근거
 
 선행·후속:
-- 선행: math/14-information-theory-basics(엔트로피 — 미작성, [math 영역](../../math/README.md)) · [algorithm/23-greedy](../23-greedy/2-summary.md)(허프만의 탐욕·교환 논증) · [data-structure/07-heap](../../data-structure/07-heap/2-summary.md)(커리큘럼 ds 10)
+- 선행: [math/14-information-theory-basics](../../math/14-information-theory-basics/2-summary.md)(엔트로피) · [algorithm/23-greedy](../23-greedy/2-summary.md)(허프만의 탐욕·교환 논증) · [data-structure/07-heap](../../data-structure/07-heap/2-summary.md)(커리큘럼 ds 10)
 - 후속: [algorithm/34-modern-codecs-lz4-zstd-brotli](../34-modern-codecs-lz4-zstd-brotli/2-summary.md)
 - 관련: [algorithm/09-sliding-window](../09-sliding-window/2-summary.md) · [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md) · [network/39-http-content-encoding](../../network/39-http-content-encoding/2-summary.md) · [network/43-compression-side-channels](../../network/43-compression-side-channels/2-summary.md) · [network/44-websocket-compression](../../network/44-websocket-compression/2-summary.md) · [database/37-row-vs-column-storage](../../database/37-row-vs-column-storage/2-summary.md) · [algorithm 영역 표](../curriculum.md)
 

@@ -163,7 +163,7 @@ toy RSA n=3233 phi=3120 d=2753 sig=h^d mod n=588, sig^e mod n=65
 
 ## 쓰이는 자료구조·알고리즘
 
-- **모듈러 거듭제곱(제곱-곱셈)**, **확장 유클리드로 역원** — RSA의 d = e⁻¹ mod φ, 서명·검증의 h^d·σ^e. [algorithm/28-number-theory](../../algorithm/28-number-theory/2-summary.md). 수학 배경은 math/11-modular-arithmetic(미작성, [math/README](../../math/README.md)).
+- **모듈러 거듭제곱(제곱-곱셈)**, **확장 유클리드로 역원** — RSA의 d = e⁻¹ mod φ, 서명·검증의 h^d·σ^e. [algorithm/28-number-theory](../../algorithm/28-number-theory/2-summary.md). 수학 배경은 [math/11-modular-arithmetic](../../math/11-modular-arithmetic/2-summary.md).
 - **타원곡선 군 연산** — 점 덧셈, 2배, 스칼라 곱(double-and-add). 이진 거듭제곱과 같은 구조를 곱셈 대신 점 덧셈으로 한다.
 - **암호 해시** — 서명 전 메시지 축약(SHA-256), Ed25519 내부 SHA-512, RFC 6979의 HMAC_DRBG. [algorithm/12-hash-functions](../../algorithm/12-hash-functions/2-summary.md), [원고 hmac](../../foundations/security/hmac.md).
 - **DER(ASN.1) 인코딩** — ECDSA 서명 (r, s)를 정수 두 개로 감싼다. 정수를 최소 바이트로 적고 앞자리 0 바이트를 붙이기도 해서 길이가 흔히 70~72바이트로 흔들린다(실험 출력, 그보다 짧은 서명도 가능).
@@ -289,7 +289,7 @@ Verification failure                  ← ECDSA도 1비트 변경 거부
 
 - 선행
   - [security/04-hash-functions-and-digests](../04-hash-functions-and-digests/2-summary.md) — 서명 전 해시, 충돌 저항성(기초: [원고 sha256-and-digest](../../foundations/security/sha256-and-digest.md))
-  - math/11-modular-arithmetic(미작성, [math/README](../../math/README.md)) · [algorithm/28-number-theory](../../algorithm/28-number-theory/2-summary.md) — 모듈러 거듭제곱·역원
+  - [math/11-modular-arithmetic](../../math/11-modular-arithmetic/2-summary.md) · [algorithm/28-number-theory](../../algorithm/28-number-theory/2-summary.md) — 모듈러 거듭제곱·역원
 - 후속·연결
   - [07-key-exchange-forward-secrecy](../07-key-exchange-forward-secrecy/2-summary.md) — 공개키로 키를 합의하기
   - [09-randomness-and-key-management](../09-randomness-and-key-management/2-summary.md) — k와 키 생성의 난수, 키 수명

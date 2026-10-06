@@ -158,7 +158,7 @@ O(n^2) 모든 쌍 비교         n=10000         45.09ms         n=20000        
 
 ## 쓰이는 자료구조·알고리즘
 
-- 이 주제가 쓰는 도구: 점화식·급수(분할정복 비용 T(n) = 2T(n/2) + n 등) — CS 수학 06 recurrences-and-asymptotics([math/README.md](../../math/README.md), 아직 작성 전), 마스터 정리 — [24-divide-conquer](../24-divide-conquer/2-summary.md)
+- 이 주제가 쓰는 도구: 점화식·급수(분할정복 비용 T(n) = 2T(n/2) + n 등) — [CS 수학 06 recurrences-and-asymptotics](../../math/06-recurrences-and-asymptotics/2-summary.md), 마스터 정리 — [24-divide-conquer](../24-divide-conquer/2-summary.md)
 - 분할상환이 쓰이는 자료구조: 동적 배열 [data-structure/01-dynamic-array](../../data-structure/01-dynamic-array/2-summary.md), 스택 [data-structure/03-stack](../../data-structure/03-stack/2-summary.md), 덱 [data-structure/04-queue-deque](../../data-structure/04-queue-deque/2-summary.md), 유니온 파인드 [data-structure/14-union-find](../../data-structure/14-union-find/2-summary.md), 스플레이 트리 [data-structure/23-splay-tree](../../data-structure/23-splay-tree/2-summary.md)
 - 이 주제를 쓰는 곳(🔧 모든 선택의 기준): 컬렉션 비용 계약 읽기 [data-structure/02-adt-and-cost-contracts](../../data-structure/02-adt-and-cost-contracts/2-summary.md), 정렬 선택 [01-elementary-sort](../01-elementary-sort/2-summary.md)·[02-merge-sort](../02-merge-sort/2-summary.md)·[03-quick-sort](../03-quick-sort/2-summary.md), DB 조인 알고리즘 비용 [database/11-join-algorithms](../../database/11-join-algorithms/2-summary.md)
 
@@ -273,7 +273,7 @@ add 30,000,000번: 평균 119.1 ns/회 (nanoTime 오버헤드 포함)
 
 ## 관련 주제·근거
 
-- 선행: [01-algorithm-basics](../01-algorithm-basics/2-summary.md) · CS 수학 06 recurrences-and-asymptotics([math/README.md](../../math/README.md), 아직 작성 전) · 원본 [foundations/algorithm-basics](../../foundations/algorithm-basics/README.md) §1·§2
+- 선행: [01-algorithm-basics](../01-algorithm-basics/2-summary.md) · [CS 수학 06 recurrences-and-asymptotics](../../math/06-recurrences-and-asymptotics/2-summary.md) · 원본 [foundations/algorithm-basics](../../foundations/algorithm-basics/README.md) §1·§2
 - 후속·연결: [03-recursion](../03-recursion/2-summary.md) · [39-randomized-algorithms](../39-randomized-algorithms/2-summary.md) · [24-divide-conquer](../24-divide-conquer/2-summary.md) · [03-quick-sort](../03-quick-sort/2-summary.md) · [data-structure/01-dynamic-array](../../data-structure/01-dynamic-array/2-summary.md) · [data-structure/02-adt-and-cost-contracts](../../data-structure/02-adt-and-cost-contracts/2-summary.md)
 - 다른 영역: [reliability/22-capacity-and-load-testing](../../reliability/22-capacity-and-load-testing/2-summary.md) · [reliability/34-tail-latency-and-stragglers](../../reliability/34-tail-latency-and-stragglers/2-summary.md) · [reliability/38-microbenchmarking](../../reliability/38-microbenchmarking/2-summary.md) · [database/11-join-algorithms](../../database/11-join-algorithms/2-summary.md)
 - 교재

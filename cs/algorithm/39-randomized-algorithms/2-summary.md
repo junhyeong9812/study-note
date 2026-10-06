@@ -58,7 +58,7 @@
 - *확률적 분석(probabilistic analysis)*: 입력이 어떤 분포를 따른다고 가정하고 실행 시간의 평균을 구하는 분석(CLRS 5장).
 - *기대 실행 시간(expected running time)*: 알고리즘 자신의 난수에 대한 기대값. 입력은 최악으로 골라도 된다.
   - 흔한 오해: "퀵정렬은 평균 O(n log n)이니 괜찮다." 결정적 피벗이면 그 "평균"은 입력 분포 가정 위에 있다. 정렬된 입력처럼 분포 가정이 깨진 데이터에서 O(n²)이 된다(아래 실험 A).
-- 분석 도구: *지시 확률 변수(indicator random variable)*와 기댓값의 선형성(CLRS 5.2). 무작위 퀵정렬에서 i번째·j번째로 작은 원소가 비교될 확률은 `2/(j-i+1)`이고, 이를 전부 더하면 O(n log n)이다(CLRS 7.4.2 — 원소가 서로 다르다는 전제). 아래 Lomuto 코드는 `<`로만 왼쪽에 보내므로 키가 전부 같으면 시드와 무관하게 `n(n-1)/2`번 비교한다. 중복 키가 많으면 3방향 분할을 쓴다(Sedgewick 4판 2.3). 꼬리 부등식은 수학 영역 ([math 커리큘럼](../../math/README.md) 08)에서 다룬다.
+- 분석 도구: *지시 확률 변수(indicator random variable)*와 기댓값의 선형성(CLRS 5.2). 무작위 퀵정렬에서 i번째·j번째로 작은 원소가 비교될 확률은 `2/(j-i+1)`이고, 이를 전부 더하면 O(n log n)이다(CLRS 7.4.2 — 원소가 서로 다르다는 전제). 아래 Lomuto 코드는 `<`로만 왼쪽에 보내므로 키가 전부 같으면 시드와 무관하게 `n(n-1)/2`번 비교한다. 중복 키가 많으면 3방향 분할을 쓴다(Sedgewick 4판 2.3). 꼬리 부등식은 수학 영역 [08-expectation-variance-tails](../../math/08-expectation-variance-tails/2-summary.md)에서 다룬다.
 
 ### 3. 무작위 피벗 퀵정렬
 
@@ -217,7 +217,7 @@ qs(idx, 0, n - 1, adv, new Random(42));         // 시드 42로 한 번 돌려 �
 
 이 주제가 쓰는 하위 구조:
 - 의사난수 생성기(`Random`, `ThreadLocalRandom`, `SecureRandom`).
-- 기대값·꼬리 부등식(수학 영역 08, [math 커리큘럼](../../math/README.md)).
+- 기대값·꼬리 부등식(수학 영역 [08-expectation-variance-tails](../../math/08-expectation-variance-tails/2-summary.md)).
 - 분할(퀵정렬, [03-quick-sort](../03-quick-sort/2-summary.md)), 모듈러 거듭제곱([28-number-theory](../28-number-theory/2-summary.md)).
 
 이 주제를 쓰는 곳(🔧):
@@ -323,7 +323,7 @@ Random rnd = new Random(seed);
 ## 관련 주제·근거
 
 선행·후속:
-- 선행: 기대값·분산·꼬리(수학 영역 08 — 아직 노트 없음, [math 커리큘럼](../../math/README.md)), 퀵정렬([03-quick-sort](../03-quick-sort/2-summary.md)).
+- 선행: 기대값·분산·꼬리(수학 영역 [08-expectation-variance-tails](../../math/08-expectation-variance-tails/2-summary.md)), 퀵정렬([03-quick-sort](../03-quick-sort/2-summary.md)).
 - 함께: 해시 함수·유니버설 해싱([12-hash-functions](../12-hash-functions/2-summary.md)), 스킵 리스트([12-skip-list](../../data-structure/12-skip-list/2-summary.md)), 확률적 카운팅([19-probabilistic-counting](../../data-structure/19-probabilistic-counting/2-summary.md)).
 - 후속: 복잡도 이론([40-complexity-p-np](../40-complexity-p-np/2-summary.md)) — 근사·휴리스틱이 "정확하지만 느린" 대신 무엇을 내주는지. 커리큘럼 표는 [../curriculum.md](../curriculum.md).
 

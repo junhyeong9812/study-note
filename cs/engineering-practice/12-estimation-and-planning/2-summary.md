@@ -255,7 +255,7 @@ Arrays.sort(total);   // 정렬한 뒤 백분위를 읽는다
 
 - 선행: [02-requirements-engineering](../02-requirements-engineering/2-summary.md)(요구가 정해져야 원뿔이 좁아진다) · [01-lifecycle-and-agile](../01-lifecycle-and-agile/2-summary.md).
 - 후속: [13-build-vs-buy-and-adoption](../13-build-vs-buy-and-adoption/2-summary.md)(총소유비용 추정).
-- 연결: [algorithm/12-dfs](../../algorithm/12-dfs/)(위상정렬 → 임계 경로) · [math 영역 표](../../math/README.md)(07 probability-and-bayes·08 expectation-variance-tails, 미작성) · [reliability/22-capacity-and-load-testing](../../reliability/22-capacity-and-load-testing/2-summary.md)(백분위로 말하기).
+- 연결: [algorithm/12-dfs](../../algorithm/12-dfs/)(위상정렬 → 임계 경로) · [math/07-probability-and-bayes](../../math/07-probability-and-bayes/2-summary.md) · [math/08-expectation-variance-tails](../../math/08-expectation-variance-tails/2-summary.md) · [reliability/22-capacity-and-load-testing](../../reliability/22-capacity-and-load-testing/2-summary.md)(백분위로 말하기).
 - 근거
   - Steve McConnell, 『Software Estimation: Demystifying the Black Art』(Microsoft Press, 2006) — 1장 본문(1.1~1.4)은 출판사 공개 견본으로 읽음: https://ptgmedia.pearsoncmg.com/images/9780735605350/samplepages/9780735605350.pdf · 4.2 Cone of Uncertainty, 7장, 8장, 9장 식 1·2, 10.1·10.3, 12.3·12.4, 22장은 같은 견본의 목차로 확인(본문 `[?]`).
   - McConnell, "Software Development's Cone of Uncertainty", Construx 백서 v1, 2010-01(책 내용을 옮긴 것): https://www.construx.com/wp-content/uploads/2019/02/CxWhitePaper_ConeOfUncertainty.pdf

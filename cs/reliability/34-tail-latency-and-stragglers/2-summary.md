@@ -149,7 +149,7 @@ tied@1ms   rate=600/s n=3601  p50=   6.3ms p95=  67.6ms p99=  89.2ms p99.9=  113
 ## 쓰이는 자료구조·알고리즘
 
 - **백분위 추정**: hedge 지연 d를 "최근 p95"로 잡으려면 분위수를 온라인으로 추정해야 한다. HdrHistogram·t-digest·슬라이딩 윈도 히스토그램(→ [19-performance-measurement](../19-performance-measurement/2-summary.md) 「쓰이는 자료구조」).
-- **최댓값 분포**: N개 독립 지연의 최댓값의 CDF = F(x)^N. 위 1 − (1 − q)^N은 그 특수한 경우다. 꼬리 부등식은 [math/08-expectation-variance-tails](../../math/README.md)(미작성).
+- **최댓값 분포**: N개 독립 지연의 최댓값의 CDF = F(x)^N. 위 1 − (1 − q)^N은 그 특수한 경우다. 꼬리 부등식은 [math/08-expectation-variance-tails](../../math/08-expectation-variance-tails/2-summary.md).
 - **타이머 휠·지연 큐**: 요청마다 "d ms 뒤 hedge" 타이머를 단다. 실험은 `ScheduledExecutorService`(내부 지연 큐 = 힙)로 구현했다.
 - **취소 가능한 future**: 첫 응답에서 나머지를 `cancel` — 큐에 남은 작업은 꺼낼 때 건너뛴다(`FutureTask`가 취소 상태면 실행하지 않는다). 실행 중인 작업은 협조적 취소가 필요하다(→ [09-cancellation-propagation](../09-cancellation-propagation/2-summary.md)).
 - **CAS 플래그**: tied request의 "누가 먼저 시작했나"는 `compareAndSet` 하나로 정한다. 서버 간이면 취소 메시지로 대신한다.
@@ -252,7 +252,7 @@ static <T> CompletableFuture<T> hedged(Supplier<CompletableFuture<T>> primary,
 ## 관련 주제·근거
 
 - 선행
-  - [math/08-expectation-variance-tails](../../math/README.md) — 미작성(영역 표 링크)
+  - [math/08-expectation-variance-tails](../../math/08-expectation-variance-tails/2-summary.md)
   - 원본 [systems/straggler](../../systems/straggler/2-summary.md) — straggler 정의·원인·quorum·speculative execution
   - [19-performance-measurement](../19-performance-measurement/2-summary.md) — 분위수와 측정
 - 후속·연결

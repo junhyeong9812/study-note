@@ -129,7 +129,7 @@ Netflix 글 "Linux Performance Analysis in 60,000 Milliseconds"(Gregg)의 순서
 - **누적 카운터 + 차분** — `/proc` 값은 대부분 단조 증가 카운터다. 두 시점을 빼 기간으로 나눠 속도로 만든다. Prometheus의 `rate()`와 같은 방식이다.
 - **샘플링 프로파일러 = 스택 표본의 빈도 집계** — 표본 스택을 경로별로 세어 트리(트라이)로 합치면 플레임 그래프가 된다 → [data-structure/09-trie](../../data-structure/09-trie/2-summary.md).
 - **링 버퍼** — perf는 커널과 공유하는 mmap 링 버퍼로 샘플을 받는다(perf_event_open(2)) → [data-structure/04-queue-deque](../../data-structure/04-queue-deque/2-summary.md).
-- **대기열 = 포화의 정체** — 실행 큐(r), 장치 큐(aqu-sz), 소켓 큐. 사용률이 1에 가까워질수록 대기 시간이 급증한다 → [math/README](../../math/README.md) `10-queueing-and-littles-law`(미작성).
+- **대기열 = 포화의 정체** — 실행 큐(r), 장치 큐(aqu-sz), 소켓 큐. 사용률이 1에 가까워질수록 대기 시간이 급증한다 → [math/10-queueing-and-littles-law](../../math/10-queueing-and-littles-law/2-summary.md).
 
 ## 적용 — 풀어나가는 법
 

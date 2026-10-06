@@ -201,7 +201,7 @@ Reno식 선형 증가는 고BDP 망에서 느리다.\
 - **지수 탐색** — slow start는 "용량을 모를 때 두 배씩 키워 상한을 찾는" 탐색이다. 갤로핑 탐색과 같은 생각이다.
 - **3차 함수 보간** — CUBIC은 직전 상한(W_max)을 기억하고 그 근처에서는 천천히, 멀어지면 빠르게 움직인다.
 - **윈도 최소·최대 필터** — BBR은 최근 구간의 최대 전달률과 최소 RTT를 추적한다. 리눅스는 최소 RTT 추적에 윈도 최소 필터를 쓴다(`tcp_min_rtt_wlen` 기본 300초, ip-sysctl).
-- **큐** — 병목 라우터의 FIFO 큐가 문제의 무대다. 큐잉 이론 일반은 math `queueing-and-littles-law`([영역 표](../../math/README.md)).
+- **큐** — 병목 라우터의 FIFO 큐가 문제의 무대다. 큐잉 이론 일반은 [math/10-queueing-and-littles-law](../../math/10-queueing-and-littles-law/2-summary.md).
 
 ## 적용 — 풀어나가는 법
 

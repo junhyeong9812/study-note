@@ -158,7 +158,7 @@ DB 컬럼·파일·메시지를 **키가 있는 쪽만 읽게** 하고(기밀성
 - **GHASH = GF(2^128) 위 다항식 평가.** 블록 X1..Xm을 계수로 `((X1·H ⊕ X2)·H ⊕ ...)·H`, 호너 방법. H와 그 nonce로 만든 유효한 (암호문, 태그) 하나를 알면 `E_K(J₀) = T ⊕ GHASH`가 나와, 같은 nonce로 임의 메시지의 태그를 계산할 수 있다. 그래서 nonce 재사용이 위조로 이어진다(SP 800-38D §7.1·부록 A).
 - **Poly1305 = 소수 2^130−5 위 다항식 평가.** 메시지마다 ChaCha20에서 일회용 키를 뽑는다(RFC 8439).
 - **패딩(PKCS#7/PKCS5Padding).** 남은 칸 수 n을 값 n으로 n바이트 채운다. 블록 경계에 맞으면 한 블록을 통째로 더한다. 이 "검사 가능한 구조"가 패딩 오라클의 발판이다.
-- 정보 이론 쪽 배경(완전 비밀성·엔트로피)은 math 영역 `14-information-theory-basics` — 미작성([math 영역 표](../../math/README.md)).
+- 정보 이론 쪽 배경(완전 비밀성·엔트로피)은 [math 영역 14-information-theory-basics](../../math/14-information-theory-basics/2-summary.md).
 
 ## 적용 — 풀어나가는 법
 
@@ -264,7 +264,7 @@ xxd -p -c 16 data.enc | sort | uniq -d | wc -l
 
 ## 관련 주제·근거
 
-- 선행: [01-security-principles](../01-security-principles/2-summary.md) — 기밀성·무결성. math `14-information-theory-basics` — 미작성([math 영역 표](../../math/README.md))
+- 선행: [01-security-principles](../01-security-principles/2-summary.md) — 기밀성·무결성. [math/14-information-theory-basics](../../math/14-information-theory-basics/2-summary.md)
 - 후속(같은 영역 — [영역 표](../README.md))
   - [04-hash-functions-and-digests](../04-hash-functions-and-digests/2-summary.md), [05-mac-and-hmac](../05-mac-and-hmac/2-summary.md) — 무결성 부품, Encrypt-then-MAC
   - [security/07-key-exchange-forward-secrecy](../07-key-exchange-forward-secrecy/2-summary.md) — 이 대칭 키를 어떻게 합의하나

@@ -203,7 +203,7 @@ Finagle식은 단순화했다(요청마다 0.2 적립, 재시도마다 1 인출,
 ## 쓰이는 자료구조·알고리즘
 
 - **지수 백오프** — `min(cap, base × 2^n)`. 곱하기 전에 넘침을 막는 시프트 구현은 원본 [ops-patterns/01-retry-backoff](../../ops-patterns/01-retry-backoff/2-summary.md) 「쓰이는 자료구조」와 [algorithm/29-bit-manipulation](../../algorithm/29-bit-manipulation/2-summary.md).
-- **의사 난수(PRNG)** — 지터의 재료. 시드를 주입하면 테스트가 결정적이 된다. 의사 난수 일반은 math/12-randomness-and-prng(미작성, [math/README.md](../../math/README.md)).
+- **의사 난수(PRNG)** — 지터의 재료. 시드를 주입하면 테스트가 결정적이 된다. 의사 난수 일반은 [math/12-randomness-and-prng](../../math/12-randomness-and-prng/2-summary.md).
   - AWS Builders' Library는 주기 작업의 지터를 호스트마다 **같은 값이 나오는 방식**(예시: 호스트 ID 해시 — 글은 "같은 호스트에서 매번 같은 수를 내는 일관된 방법"이라고만 적는다)으로 고른다고 적는다. 과부하가 나도 같은 패턴으로 나서 원인을 찾기 쉽다는 이유다.
 - **토큰 버킷(재시도 예산)** — 요청·성공이 채우고 재시도·실패가 꺼낸다. 들어오는 요청을 묶는 토큰 버킷은 [11-rate-limiter](../11-rate-limiter/2-summary.md).
 - **우선순위 큐(이산 사건 시뮬레이션)** — 실험 A는 사건을 도착 시각 순 힙에서 꺼내 처리한다. AWS 원본 시뮬레이터도 `heapq`를 쓴다.
@@ -349,7 +349,7 @@ sum(rate(client_requests_total{attempt!="1"}[5m])) / sum(rate(client_requests_to
 
 - 선행
   - [05-timeouts-and-deadline-propagation](../05-timeouts-and-deadline-propagation/2-summary.md). 기초는 [ops-patterns/deadline-propagation](../../ops-patterns/deadline-propagation/2-summary.md)
-  - math/12-randomness-and-prng — 미작성([math/README.md](../../math/README.md))
+  - [math/12-randomness-and-prng](../../math/12-randomness-and-prng/2-summary.md)
   - [distributed/03-partial-failure-and-timeouts](../../distributed/03-partial-failure-and-timeouts/2-summary.md) — 타임아웃 = 모름, 재시도와 중복
 - 원본
   - [ops-patterns/01-retry-backoff](../../ops-patterns/01-retry-backoff/2-summary.md) — Ticker·대기 정책·Retryer·RetryBudget 구현. 참고: 원본은 `RetryBudget`이 "Hystrix, 구글 SRE 책, gRPC retry throttling이 전부 이 모양"이라고 적는다. gRPC는 요청이 아니라 **성공**이 tokenRatio만큼 채우고 **실패**가 1을 빼며, 토큰이 0이 아니라 **maxTokens/2 이하**에서 멈춘다(gRFC A6). 모양은 토큰 버킷이지만 규칙이 다르다.

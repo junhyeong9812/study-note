@@ -176,7 +176,7 @@ while (System.nanoTime() < end) {
 
 ## 쓰이는 자료구조·알고리즘
 
-- **큐(대기열)** — Little's Law의 "시스템". 처리 중 + 대기 중을 합친 것이 L이다. 이용률이 1에 가까우면 대기가 비선형으로 는다(M/M/1에서 시스템 안 평균 건수 = ρ/(1−ρ) — 표준 대기행렬 결과). 수학 기초는 [math/10-queueing-and-littles-law](../../math/README.md)(미작성 — 원본은 [server-design/01](../../systems/server-design/01-scaling-principles.md) §2).
+- **큐(대기열)** — Little's Law의 "시스템". 처리 중 + 대기 중을 합친 것이 L이다. 이용률이 1에 가까우면 대기가 비선형으로 는다(M/M/1에서 시스템 안 평균 건수 = ρ/(1−ρ) — 표준 대기행렬 결과). 수학 기초는 [math/10-queueing-and-littles-law](../../math/10-queueing-and-littles-law/2-summary.md)(원본은 [server-design/01](../../systems/server-design/01-scaling-principles.md) §2).
 - **USL 적합 = 최소제곱 회귀** — 식을 N/C(N) − 1 = α(N−1) + βN(N−1)로 바꾸면 α·β에 대해 선형이다. 측정 점 4~6개로 두 계수를 푼다(실험 코드의 `fit`).
 - **락·직렬 구간** — α의 실체. [os/16-locks-and-spinlocks](../../os/16-locks-and-spinlocks/2-summary.md).
 - **해시 파티셔닝** — 조율이 필요 없게 데이터를 나눠 β를 없앤다. [database/33-partitioning-and-sharding](../../database/33-partitioning-and-sharding/2-summary.md).
@@ -274,7 +274,7 @@ double nMax = Math.sqrt((1 - alpha) / beta);
 ## 관련 주제·근거
 
 - 선행
-  - [math/10-queueing-and-littles-law](../../math/README.md) — 미작성(원본 [server-design/01](../../systems/server-design/01-scaling-principles.md) §2가 Little's Law 절)
+  - [math/10-queueing-and-littles-law](../../math/10-queueing-and-littles-law/2-summary.md) (원본 [server-design/01](../../systems/server-design/01-scaling-principles.md) §2가 Little's Law 절)
   - 원본 [server-design/01-scaling-principles](../../systems/server-design/01-scaling-principles.md) — 병목 후보 순서, 무상태화 체크리스트, 확장 전에 할 일, 확장성을 말하는 방식
 - 후속·연결
   - [22-capacity-and-load-testing](../22-capacity-and-load-testing/2-summary.md) — 이 원리로 사이징하고 부하 테스트로 확인

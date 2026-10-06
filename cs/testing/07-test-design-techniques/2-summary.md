@@ -320,7 +320,7 @@ expected: 3000
 
 - 선행
   - testing [02-good-unit-tests](../02-good-unit-tests/2-summary.md) — 좋은 테스트의 기준
-  - math 02-induction-and-invariants — 루프 불변식과 경계 조건(미작성, [math 영역 표](../../math/README.md))
+  - [math 02-induction-and-invariants](../../math/02-induction-and-invariants/2-summary.md) — 루프 불변식과 경계 조건
 - 후속·연결
   - testing [14-property-based-testing](../14-property-based-testing/2-summary.md) — 사람이 고른 예제 대신 생성기로 입력을 뽑는다
   - testing [15-mutation-testing](../15-mutation-testing/2-summary.md) — 경계 변이(`<` → `<=`)가 살아남으면 경계 테스트가 빠진 것이다

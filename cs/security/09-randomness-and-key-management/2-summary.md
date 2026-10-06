@@ -154,7 +154,7 @@ unwrap v1-wrapped DEK with kek-v2 -> InvalidKeyException
 
 ## 쓰이는 자료구조·알고리즘
 
-- **선형 합동 생성기(LCG)** — `java.util.Random`의 48비트 상태. 상태가 작고 갱신이 선형이라 예측 가능하다. [algorithm/39-randomized-algorithms](../../algorithm/39-randomized-algorithms/2-summary.md), 수학 배경 math/12-randomness-and-prng(미작성, [math/README](../../math/README.md)).
+- **선형 합동 생성기(LCG)** — `java.util.Random`의 48비트 상태. 상태가 작고 갱신이 선형이라 예측 가능하다. [algorithm/39-randomized-algorithms](../../algorithm/39-randomized-algorithms/2-summary.md), 수학 배경 [math/12-randomness-and-prng](../../math/12-randomness-and-prng/2-summary.md).
 - **DRBG(HMAC_DRBG 등)** — 해시·HMAC·블록 암호로 상태를 갱신하는 결정적 생성기. RFC 6979의 결정적 ECDSA k도 HMAC_DRBG다([06](../06-public-key-and-signatures/2-summary.md)).
 - **키 계층 트리(봉투 암호화)** — 루트(KMS 키) → KEK → DEK → 데이터. 회전은 한 층만 다시 포장한다.
 - **버전 붙은 키 맵** — `{kid/버전 → 키}`. 쓰기는 현재 버전, 읽기는 저장된 버전으로 찾는다. JWT의 `kid`([security/13-jwks-and-key-rotation](../13-jwks-and-key-rotation/2-summary.md), 기초 [원고 jwks](../../foundations/security/jwks.md))와 같은 구조다.
@@ -260,7 +260,7 @@ payment:
 
 - 선행
   - [security/03-symmetric-encryption-and-aead](../03-symmetric-encryption-and-aead/2-summary.md) — DEK가 쓰는 AES-GCM, nonce 재사용 문제
-  - math/12-randomness-and-prng(미작성, [math/README](../../math/README.md)) · [algorithm/39-randomized-algorithms](../../algorithm/39-randomized-algorithms/2-summary.md) — PRNG·시드
+  - [math/12-randomness-and-prng](../../math/12-randomness-and-prng/2-summary.md) · [algorithm/39-randomized-algorithms](../../algorithm/39-randomized-algorithms/2-summary.md) — PRNG·시드
 - 후속·연결
   - [06-public-key-and-signatures](../06-public-key-and-signatures/2-summary.md) — ECDSA k와 난수 품질
   - [07-key-exchange-forward-secrecy](../07-key-exchange-forward-secrecy/2-summary.md) — 임시 키의 수명

@@ -632,7 +632,7 @@ neighbors(0) : 그 행 전체를 훑어 NO_EDGE 가 아닌 칸의 번호를 모�
 - 후속 — [14-union-find](../14-union-find/2-summary.md): "연결되어 있나"만 물을 때 탐색 없이 답하는 구조.
 - 응용 — [34-dependency-resolver](../34-dependency-resolver/2-summary.md): 문제 3(위상 정렬)이 실제 시스템이 되는 자리.
 - 기법 — [algorithm/11-bfs](../../algorithm/11-bfs/2-summary.md) · [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md) · [algorithm/14-dijkstra](../../algorithm/14-dijkstra/2-summary.md).
-- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `11-graph` (선행 `math/04-graph-theory-basics` — 노트 미작성).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `11-graph` (선행 `math/04-graph-theory-basics` = 노트 [math/04-graph-theory-basics](../../math/04-graph-theory-basics/2-summary.md)).
 - 교재 — CLRS 3판 22.1 그래프의 표현 · 22.2 BFS · 22.3 DFS · 22.4 위상 정렬 · 24.3 다익스트라.
 - myway 원본 — `/home/jun/project/myway/data-structure/08-graph/` (README.md · impl/AdjacencyListGraph.java · impl/AdjacencyMatrixGraph.java · impl/GraphProblems.java).
 
