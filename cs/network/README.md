@@ -2,7 +2,7 @@
 
 > **생성 문서** — `docs/plans/2026-09-27/cs-fundamentals-roadmap/curriculum.md` §7에서 `docs/plans/2026-09-28/cs-restructure/gen_area_readme.py`로 만든다. 직접 고치지 말고 커리큘럼을 고친 뒤 재실행한다.
 > 번호 = 권장 학습 순서. 상태: `미작성` · `원고 있음` · `초안(Claude)` · `검수 완료`. ⚠ 깨지면·🔧·📚 세부는 커리큘럼 본문에 있다.
-> 현황: 미작성 0 · 원고 있음 1 · 초안(Claude) 52 · 검수 완료 0
+> 현황: 미작성 0 · 원고 있음 0 · 초안(Claude) 53 · 검수 완료 0
 
 > **프로세스 → 소켓 → 커널 스택 → NIC → 스위치(MAC) → 라우터(IP) → … → 역방향 디캡슐화**. 지도(계층·캡슐화)를 먼저 그리고 아래 계층부터 올라온 뒤, 소켓·커널 경로로 "내 프로세스"와 잇고, DNS·TLS·HTTP로 올라가 종합한다.
 > 장애의 중심은 TCP(15~22). "TCP 통신 도중 끊기면?"의 본체가 19·20·21이다.
@@ -108,7 +108,7 @@
 
 | # | 주제 | 요지 | 등급 | 상태 | 노트 |
 |---|---|---|---|---|---|
-| 46 | `load-balancers-and-proxies` | L4 vs L7, 리버스 프록시, 헬스체크, 연결 드레이닝 | 필수 | 원고 있음 | [../systems/server-design/02-request-path.md](../systems/server-design/02-request-path.md) |
+| 46 | `load-balancers-and-proxies` | L4 vs L7, 리버스 프록시, 헬스체크, 연결 드레이닝 | 필수 | 초안(Claude) | [46-load-balancers-and-proxies](46-load-balancers-and-proxies/) · [../systems/server-design/02-request-path.md](../systems/server-design/02-request-path.md) |
 | 47 | `cdn-and-edge` | CDN 캐시 계층·원점 보호·무효화 | 권장 | 초안(Claude) | [47-cdn-and-edge](47-cdn-and-edge/) |
 | 48 | `firewalls-and-network-policy` | 상태 방화벽·보안 그룹·iptables/nftables | 권장 | 초안(Claude) | [48-firewalls-and-network-policy](48-firewalls-and-network-policy/) |
 | 49 | `what-happens-when-url` | 종합: URL 입력 → DNS → TCP → TLS → HTTP → 렌더링 | 필수 | 초안(Claude) | [49-what-happens-when-url](49-what-happens-when-url/) |
