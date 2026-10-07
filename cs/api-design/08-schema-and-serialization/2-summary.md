@@ -202,7 +202,7 @@ JSON(Jackson, 모르는 필드 무시) 왕복 -> {"id":7,"amount":5000,"status":
   - reader에만 있는 필드는 기본값을 쓰고, 기본값이 없으면 오류다.
   - 승격: int → long·float·double, long → float·double, float → double, string ↔ bytes.
   - enum: writer의 기호가 reader에 없으면 reader의 enum 기본값, 없으면 오류.
-- 바이트에 태그가 없으니 **쓴 쪽 스키마 없이는 한 바이트도 못 읽는다**. 그래서 Avro 파일은 헤더에 스키마를 싣고, 메시지 시스템은 스키마 레지스트리에 스키마를 두고 ID만 싣는 방식을 쓴다(레지스트리 상세는 data-engineering/09 — 미작성).
+- 바이트에 태그가 없으니 **쓴 쪽 스키마 없이는 한 바이트도 못 읽는다**. 그래서 Avro 파일은 헤더에 스키마를 싣고, 메시지 시스템은 스키마 레지스트리에 스키마를 두고 ID만 싣는 방식을 쓴다(레지스트리 상세는 [data-engineering/09](../../data-engineering/09-data-contracts-and-schema-registry/2-summary.md)).
 
 (실험, Avro 1.12.0 `GenericDatumReader(writer, reader)`)
 
@@ -326,7 +326,7 @@ curl -s https://api.example.com/orders | grep -oE '"[a-z_]*id":[0-9]{16,}'
 ## 관련 주제·근거
 
 - 선행: [07-versioning-and-compatibility](../07-versioning-and-compatibility/2-summary.md)
-- 후속·연결: [15-rpc-and-grpc](../15-rpc-and-grpc/2-summary.md), [database/28-key-strategy-surrogate-natural-public-id](../../database/28-key-strategy-surrogate-natural-public-id/2-summary.md)(64비트 ID·외부 ID), [testing/13-contract-testing](../../testing/13-contract-testing/2-summary.md), data-engineering/09-data-contracts-and-schema-registry(미작성 — [data-engineering 영역](../../data-engineering/README.md)), [distributed/17-queues-logs-and-delivery-semantics](../../distributed/17-queues-logs-and-delivery-semantics/2-summary.md)
+- 후속·연결: [15-rpc-and-grpc](../15-rpc-and-grpc/2-summary.md), [database/28-key-strategy-surrogate-natural-public-id](../../database/28-key-strategy-surrogate-natural-public-id/2-summary.md)(64비트 ID·외부 ID), [testing/13-contract-testing](../../testing/13-contract-testing/2-summary.md), [data-engineering/09-data-contracts-and-schema-registry](../../data-engineering/09-data-contracts-and-schema-registry/2-summary.md), [distributed/17-queues-logs-and-delivery-semantics](../../distributed/17-queues-logs-and-delivery-semantics/2-summary.md)
 - 근거
   - RFC 8259 The JSON Data Interchange Format(2017-12) §4·§6 — https://www.rfc-editor.org/rfc/rfc8259
   - Protobuf Language Guide (proto3) — https://protobuf.dev/programming-guides/proto3/ (reserved, 필드 번호 범위, unknown fields, enum, 호환 타입)

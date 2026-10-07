@@ -315,7 +315,7 @@ FROM pg_replication_slots WHERE slot_type = 'logical';
   - [46-full-text-search-and-analyzers](../46-full-text-search-and-analyzers/2-summary.md) — 분석기 변경 = 재색인
   - distributed `16-outbox-and-dual-write` → [ops-patterns/07-outbox](../../ops-patterns/07-outbox/2-summary.md)
 - 연결
-  - data-engineering `05-change-data-capture`(초기 스냅숏·증분 스냅숏·DDL) — 미작성, [data-engineering/README](../../data-engineering/README.md)
+  - [data-engineering/05-change-data-capture](../../data-engineering/05-change-data-capture/2-summary.md)(초기 스냅숏·증분 스냅숏·DDL)
   - [47-autocomplete-and-typeahead](../47-autocomplete-and-typeahead/2-summary.md) — completion weight 갱신 = 재색인
   - [systems/outbox-vs-dispatch-log](../../systems/outbox-vs-dispatch-log/2-summary.md)
   - [34-large-backfill-and-batch-dml](../34-large-backfill-and-batch-dml/2-summary.md) — 전체 재색인의 청크·스로틀

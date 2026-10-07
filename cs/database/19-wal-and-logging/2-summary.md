@@ -259,7 +259,7 @@ SELECT pg_size_pretty(sum(size)) FROM pg_ls_waldir();
 - 연결
   - [os/23-crash-consistency-and-journaling](../../os/23-crash-consistency-and-journaling/2-summary.md) — 파일시스템 저널링
   - database [07-buffer-pool](../07-buffer-pool/2-summary.md)(dirty 페이지·교체), [20-backup-and-pitr](../20-backup-and-pitr/2-summary.md)(WAL 아카이브·PITR), [32-replication-leader-follower](../32-replication-leader-follower/2-summary.md)(WAL 전송), [42-recovery-aries-checkpoints](../42-recovery-aries-checkpoints/2-summary.md)(ARIES)
-  - data-engineering `05-change-data-capture` — WAL·binlog 구독과 슬롯 방치. 미작성
+  - [data-engineering/05-change-data-capture](../../data-engineering/05-change-data-capture/2-summary.md) — WAL·binlog 구독과 슬롯 방치
   - [ops-patterns/16-event-sourcing](../../ops-patterns/16-event-sourcing/2-summary.md) · [data-structure/24-lsm-tree](../../data-structure/24-lsm-tree/2-summary.md)
 - 강의
   - CMU 15-445/645 Fall 2024 Lecture #20 Database Logging — UNDO·REDO, STEAL/FORCE 정책, shadow paging, WAL 구현·group commit, 물리·논리·physiological 로깅, 체크포인트 <https://15445.courses.cs.cmu.edu/fall2024/notes/20-logging.pdf>

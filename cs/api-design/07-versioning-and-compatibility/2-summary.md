@@ -197,7 +197,7 @@ GET /v2/orders/1 -> 200 {"id":1,"amount":{"value":5000,"currency":"KRW"}}
 
 ## 쓰이는 자료구조·알고리즘
 
-- **필드 집합 비교** — 응답 스키마 변경이 하위 호환인지 = "옛 필드 집합 ⊆ 새 필드 집합, 그리고 공통 필드의 타입이 같다". OpenAPI diff 도구나 스키마 레지스트리의 호환성 검사가 이 비교를 자동화한다(data-engineering/09-data-contracts-and-schema-registry 미작성 — [data-engineering 영역](../../data-engineering/README.md)).
+- **필드 집합 비교** — 응답 스키마 변경이 하위 호환인지 = "옛 필드 집합 ⊆ 새 필드 집합, 그리고 공통 필드의 타입이 같다". OpenAPI diff 도구나 스키마 레지스트리의 호환성 검사가 이 비교를 자동화한다([data-engineering/09-data-contracts-and-schema-registry](../../data-engineering/09-data-contracts-and-schema-registry/2-summary.md)).
 - **변환 체인(역순 적용)** — Stripe식 날짜 버전. 날짜순으로 정렬된 변환 목록에서 "요청 버전보다 새로운 것"만 골라 최신 → 옛 순서로 적용한다.
 
 ```java

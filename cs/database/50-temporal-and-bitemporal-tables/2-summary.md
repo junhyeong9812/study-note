@@ -318,7 +318,7 @@ SELECT a.item_id, a.valid_from, b.valid_from FROM price a JOIN price b
   - [domain-modeling/advanced/10-price-history](../../domain-modeling/advanced/10-price-history/2-summary.md) — 유효 시각 + 기록 시각의 도메인 모델, 재발행 vs 재정산
   - [domain-modeling/advanced/16-audit-replay](../../domain-modeling/advanced/16-audit-replay/2-summary.md) — 발생 시각과 수신 시각이 다른 이벤트
   - [domain-modeling/23-versioned-rules-and-effective-dating](../../domain-modeling/23-versioned-rules-and-effective-dating/2-summary.md)
-  - data-engineering `04-slowly-changing-dimensions` — 미작성, [data-engineering/README](../../data-engineering/README.md)
+  - [data-engineering/04-slowly-changing-dimensions](../../data-engineering/04-slowly-changing-dimensions/2-summary.md)
   - [27-temporal-types-and-session-timezone](../27-temporal-types-and-session-timezone/2-summary.md) — `timestamptz`와 세션 시간대
 - 표준·논문·책
   - K. Kulkarni, J.-E. Michels, "Temporal features in SQL:2011", SIGMOD Record 41(3), 2012 — `PERIOD FOR`, closed-open 모델, `FOR PORTION OF`의 행 분할, `WITH SYSTEM VERSIONING`, 트랜잭션 타임스탬프 고정, `FOR SYSTEM_TIME AS OF / FROM…TO / BETWEEN`, 바이템포럴 예 <https://cs.ulb.ac.be/public/_media/teaching/infoh415/tempfeaturessql2011.pdf>

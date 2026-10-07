@@ -155,7 +155,7 @@ consumer at runtime: java.lang.IllegalStateException: name missing: {"id":1,"ful
 - **계약 = 예제 집합** — 상호작용(요청 → 응답) 목록. 각 응답은 JSON 트리 + JSONPath 키(`$.id`)로 가리키는 매처 표다.
 - **트리 비교(부분 일치)** — 기대 트리의 각 경로가 실제 트리에 있고 규칙을 만족하는지 본다. 실제 쪽의 추가 경로는 응답에서는 무시한다. 결과 메시지 `Actual map is missing the following keys`가 이 비교의 산물이다.
 - **검증 행렬(matrix)** — Pact Broker는 "소비자 판 × 제공자 판 → 검증 결과" 표를 둔다. `can-i-deploy`는 배포하려는 판과 대상 환경에 이미 있는 상대 판들 사이에 성공한 검증이 있는지 이 표에서 찾는다(Pact 문서).
-- 스키마 호환성 검사(데이터 계약)와의 차이: 스키마 레지스트리는 **필드 집합 비교**로 호환 모드를 판정한다. 소비자 주도 계약은 **실제로 쓰는 예제**만 본다. 데이터 쪽은 [data-engineering 영역 표](../../data-engineering/README.md)의 09 data-contracts(미작성).
+- 스키마 호환성 검사(데이터 계약)와의 차이: 스키마 레지스트리는 **필드 집합 비교**로 호환 모드를 판정한다. 소비자 주도 계약은 **실제로 쓰는 예제**만 본다. 데이터 쪽은 [data-engineering/09-data-contracts-and-schema-registry](../../data-engineering/09-data-contracts-and-schema-registry/2-summary.md).
 
 ## 적용 — 풀어나가는 법
 
@@ -278,7 +278,7 @@ class UserProviderPactTest {
   - [18-e2e-and-ui-testing](../18-e2e-and-ui-testing/2-summary.md) — 계약으로 줄이는 E2E.
   - [19-testing-in-production](../19-testing-in-production/2-summary.md) — 배포 뒤 검증.
   - [reliability/23-deployment-strategies](../../reliability/23-deployment-strategies/2-summary.md) — 신·구 공존 구간과 확장 배포.
-  - data-engineering 09 data-contracts-and-schema-registry — 미작성([data-engineering 영역 표](../../data-engineering/README.md)).
+  - [data-engineering/09-data-contracts-and-schema-registry](../../data-engineering/09-data-contracts-and-schema-registry/2-summary.md).
 - 문서·글
   - Pact 문서 — How Pact works <https://docs.pact.io/getting_started/how_pact_works>, What is Pact good for <https://docs.pact.io/getting_started/what_is_pact_good_for>, Matching(Postel의 법칙) <https://docs.pact.io/getting_started/matching>, Can I Deploy <https://docs.pact.io/pact_broker/can_i_deploy>, Pending pacts <https://docs.pact.io/pact_broker/advanced_topics/pending_pacts>
   - Ian Robinson, "Consumer-Driven Contracts: A Service Evolution Pattern", 2006-06-12 <https://martinfowler.com/articles/consumerDrivenContracts.html>

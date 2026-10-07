@@ -100,7 +100,7 @@ HMAC 가명: 287958b90d3b5597 / 다시: 287958b90d3b5597   (같은 입력 → �
 ```
 
 - 관찰: 사용자 키를 지우자, 백업에 남아 있는 암호문(31바이트)은 평문으로 되돌릴 수 없게 됐다. **백업 테이프를 일일이 찾아 지우지 않아도** 키 파기로 "읽을 수 없게" 만든다. 단 실험은 암호문 하나로 확인한 것이다. 그 키의 백업·에스크로 사본이나 이미 메모리에 풀린 키가 남아 있으면 다른 곳의 암호문은 여전히 복호된다 — 관련 키 사본을 모두 쓸 수 없게 해야 성립한다(NIST SP 800-88 Cryptographic Erase).
-- *crypto-shredding(암호 삭제)*: 데이터가 아니라 **키를 파기**해 실질적 삭제를 이루는 기법. 백업·파생본처럼 선택 삭제가 어려운 곳에서 특히 쓸모 있다(data-engineering/12-data-retention-and-erasure).
+- *crypto-shredding(암호 삭제)*: 데이터가 아니라 **키를 파기**해 실질적 삭제를 이루는 기법. 백업·파생본처럼 선택 삭제가 어려운 곳에서 특히 쓸모 있다([data-engineering/12-data-retention-and-erasure](../../data-engineering/12-data-retention-and-erasure/2-summary.md)).
   - 한계: 암호 자체가 뒤에 깨지면 과거 암호문이 복원될 수 있다. 법·규정이 "물리적 삭제"를 요구하면 이것만으로는 부족할 수 있다(해석).
 
 ### 5. 보존과 파기 — 두 방향의 실수
@@ -235,7 +235,7 @@ psql staging -c "select count(*) from users where email not like '%@example.com'
 - 연결
   - [security 03-symmetric-encryption-and-aead](../03-symmetric-encryption-and-aead/2-summary.md) · [05-mac-and-hmac](../05-mac-and-hmac/2-summary.md) · [16-identifiers-and-enumeration](../16-identifiers-and-enumeration/2-summary.md)
   - [reliability/18-logs-traces-audit-roles](../../reliability/18-logs-traces-audit-roles/2-summary.md) §6 — 로그 PII와 삭제 범위
-  - data-engineering 12-data-retention-and-erasure(미작성 — [data-engineering README](../../data-engineering/README.md)) — 보존·삭제 전파·crypto-shredding
+  - [data-engineering/12-data-retention-and-erasure](../../data-engineering/12-data-retention-and-erasure/2-summary.md) — 보존·삭제 전파·crypto-shredding
   - [engineering-practice/17-legal-standards](../../engineering-practice/17-legal-standards/2-summary.md) — 법적 의무·보존
   - security 29-security-symptom-index · 30-security-incidents
 - 1차 출처

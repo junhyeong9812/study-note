@@ -138,7 +138,7 @@ SELECT pg_size_pretty(pg_relation_size('wide'));   -- 52 MB
 EXPLAIN ANALYZE SELECT SUM(v) FROM wide;          -- Table scan on wide
 ```
 
-**3) 분석은 분석 저장소로 보낸다.** 운영 DB → CDC·배치 → 컬럼 저장(ClickHouse 테이블, Parquet 파일). 설계는 data-engineering/02가 다룬다.
+**3) 분석은 분석 저장소로 보낸다.** 운영 DB → CDC·배치 → 컬럼 저장(ClickHouse 테이블, Parquet 파일). 설계는 [data-engineering/02](../../data-engineering/02-oltp-olap-and-warehouse/2-summary.md)가 다룬다.
 
 ```sql
 -- ClickHouse: 정렬 키로 압축과 범위 건너뛰기를 함께 얻는다
@@ -209,7 +209,7 @@ const rows = await rs.json();
   - [clickhouse-mergetree](../../systems/clickhouse-mergetree/2-summary.md) — 컬럼 저장 + 병합 트리 엔진, 파트·정렬 키 (curriculum 45번)
   - [38-lsm-storage-engine](../38-lsm-storage-engine/2-summary.md) — 불변 파일 + 배경 병합이라는 같은 발상
   - database [54-query-execution-models](../54-query-execution-models/2-summary.md) — 벡터화 실행.
-  - data-engineering `02-oltp-olap-and-warehouse` — 운영 DB와 분석 저장소 분리. 미작성, [data-engineering/README](../../data-engineering/README.md)
+  - [data-engineering/02-oltp-olap-and-warehouse](../../data-engineering/02-oltp-olap-and-warehouse/2-summary.md) — 운영 DB와 분석 저장소 분리
 - 강의·교재
   - CMU 15-445 Fall 2024 L5 Storage Models & Compression(NSM·DSM·PAX, 행 재조립, RLE·비트 패킹·비트맵·델타·딕셔너리, 순서 보존 인코딩)
   - DDIA 1판 3장 "Column-Oriented Storage"(칼럼 압축·비트맵, 정렬 순서) — 이 노트의 수치는 인용하지 않았다

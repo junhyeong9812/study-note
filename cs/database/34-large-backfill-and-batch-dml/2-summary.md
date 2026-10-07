@@ -279,7 +279,7 @@ SELECT count(*) FILTER (WHERE won_v2 IS NULL)         AS missing,
   - [35-bulk-file-import-export](../35-bulk-file-import-export/2-summary.md) — 파일에서 대량 적재
   - [44-timeseries-resolution-tiers](../44-timeseries-resolution-tiers/2-summary.md) — 파티션 DROP 보존, 멱등 롤업
   - [reliability/31-batch-job-restart-and-checkpoint](../../reliability/31-batch-job-restart-and-checkpoint/2-summary.md) — 배치 잡 재시작 일반.
-  - data-engineering `08-idempotent-pipelines-and-backfill` — 파티션 덮어쓰기 백필. 미작성, [data-engineering/README](../../data-engineering/README.md)
+  - [data-engineering/08-idempotent-pipelines-and-backfill](../../data-engineering/08-idempotent-pipelines-and-backfill/2-summary.md) — 파티션 덮어쓰기 백필
 - 문서·자료
   - PostgreSQL 17 UPDATE — 대량 UPDATE의 bloat·레플리카 지연·락 경합, 배치 권고, `LIMIT` 없음과 `ctid` CTE 예 <https://www.postgresql.org/docs/17/sql-update.html>
   - PostgreSQL 17 24.1 Routine Vacuuming · 27.2 `pg_stat_replication`(`replay_lag`) · 19.11 `lock_timeout` <https://www.postgresql.org/docs/17/routine-vacuuming.html>

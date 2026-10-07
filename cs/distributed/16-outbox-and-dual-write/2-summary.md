@@ -134,7 +134,7 @@ DB orders 200, outbox 200, 미발행 200
 ```
 
 - microservices.io "Transaction log tailing": outbox에 들어간 메시지를 DB 트랜잭션 로그(MySQL binlog, Postgres WAL, DynamoDB streams)에서 읽어 발행한다. 단점 중 하나가 "중복 발행을 피하기 까다롭다"이다 — 즉 CDC도 at-least-once다.
-- 상세(초기 스냅샷, 슬롯 운영, DDL 변경)는 data-engineering `05-change-data-capture`에서 다룬다(미작성, [data-engineering/README](../../data-engineering/README.md)).
+- 상세(초기 스냅샷, 슬롯 운영, DDL 변경)는 [data-engineering/05-change-data-capture](../../data-engineering/05-change-data-capture/2-summary.md)에서 다룬다.
 
 (실험, PostgreSQL 17.11 전용 컨테이너, `wal_level=logical`, `test_decoding` 플러그인, 2026-10-01)
 
@@ -280,7 +280,7 @@ kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group or
 - 후속·연결
   - [17-queues-logs-and-delivery-semantics](../17-queues-logs-and-delivery-semantics/2-summary.md) · [18-consumer-failure-handling](../18-consumer-failure-handling/2-summary.md) — at-least-once와 소비자 멱등
   - [29-outbox-vs-dispatch-log](../29-outbox-vs-dispatch-log/2-summary.md) — 발행 시점에 기록하는 방식과의 경계, 대조 배치 실험
-  - data-engineering `05-change-data-capture` — 스냅샷·복제 슬롯·DDL. 미작성, [data-engineering/README](../../data-engineering/README.md)
+  - [data-engineering/05-change-data-capture](../../data-engineering/05-change-data-capture/2-summary.md) — 스냅샷·복제 슬롯·DDL
   - [database/19-wal-and-logging](../../database/19-wal-and-logging/2-summary.md) — WAL
   - [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md) · [ops-patterns/12-leader-election](../../ops-patterns/12-leader-election/2-summary.md)(릴레이 하나 유지)
   - [systems/outbox-vs-dispatch-log](../../systems/outbox-vs-dispatch-log/2-summary.md) — 폴링 vs CDC 비교표

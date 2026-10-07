@@ -319,7 +319,7 @@ find /data/out -name '*.tmp-*' -mmin +60
   - [08-time-budget-allocation](../08-time-budget-allocation/2-summary.md) — 한도를 분포에서 정하기
   - [30-scheduler-and-cron-ha](../30-scheduler-and-cron-ha/2-summary.md) · 원본 [ops-patterns/10-scheduler](../../ops-patterns/10-scheduler/2-summary.md)
   - [31-batch-job-restart-and-checkpoint](../31-batch-job-restart-and-checkpoint/2-summary.md) — 체크포인트·재시작 설계 본문
-  - data-engineering 08 `idempotent-pipelines-and-backfill` — 미작성, [data-engineering 영역](../../data-engineering/README.md)
+  - [data-engineering/08-idempotent-pipelines-and-backfill](../../data-engineering/08-idempotent-pipelines-and-backfill/2-summary.md)
 - 연결
   - [distributed/12-coordination-and-fencing](../../distributed/12-coordination-and-fencing/2-summary.md) — lease·fencing token
   - [09-cancellation-propagation](../09-cancellation-propagation/2-summary.md) — 타임아웃 뒤 실제로 멈추기

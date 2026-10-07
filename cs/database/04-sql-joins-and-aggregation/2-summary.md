@@ -261,7 +261,7 @@ EXPLAIN ANALYZE SELECT …;                       -- MySQL 8.4 (FORMAT=TREE)
   - [05-window-functions-and-cte](../05-window-functions-and-cte/2-summary.md) — 행을 접지 않는 집계
   - [02-keys-and-constraints](../02-keys-and-constraints/2-summary.md) — NOT NULL로 3치 논리 함정 줄이기
   - [11-join-algorithms](../11-join-algorithms/2-summary.md) · [12-query-optimizer-and-explain](../12-query-optimizer-and-explain/2-summary.md) · [41-sorting-and-aggregation](../41-sorting-and-aggregation/2-summary.md)
-  - data-engineering `03-dimensional-modeling`(grain 선언, 팬아웃으로 합계 2배) — 미작성, [data-engineering/README](../../data-engineering/README.md)
+  - [data-engineering/03-dimensional-modeling](../../data-engineering/03-dimensional-modeling/2-summary.md)(grain 선언, 팬아웃으로 합계 2배)
 - 문법 세부(languages/sql): [sql/01](../../../languages/sql/syntax/01-logical-query-processing-order/2-summary.md) · [sql/04](../../../languages/sql/syntax/04-null-three-valued-logic/2-summary.md) · [sql/15](../../../languages/sql/syntax/15-on-vs-where-in-outer-join/2-summary.md) · [sql/19](../../../languages/sql/syntax/19-semi-anti-join/2-summary.md) · [sql/25](../../../languages/sql/syntax/25-join-fan-out/2-summary.md)
 - 교재: CMU 15-445 Fall 2024 Lecture #02 "Modern SQL" 노트 — SQL은 백 기반, 집계, GROUP BY·HAVING(HAVING에서 별칭 참조는 표준 아님), 중첩 쿼리(IN = ANY, EXISTS), LATERAL <https://15445.courses.cs.cmu.edu/fall2024/notes/02-modernsql.pdf>
 - PostgreSQL 17
