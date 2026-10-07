@@ -56,7 +56,7 @@ HTML·CSS는 글자다. 화면은 픽셀이다. 그 사이를 매번 처음부�
  <link rel=stylesheet> ─▶ 파싱은 계속, 대신 렌더링(첫 페인트)이 CSS를 기다림 = 렌더 차단
 ```
 
-- HTML 표준 13.2(Parsing HTML documents)는 파서를 **토큰화 단계(상태 기계)** 와 **트리 구성 단계**로 정의한다. 문법 오류도 정해진 규칙으로 복구한다. → [language/03 파싱·문법·AST](../../language/README.md)
+- HTML 표준 13.2(Parsing HTML documents)는 파서를 **토큰화 단계(상태 기계)** 와 **트리 구성 단계**로 정의한다. 문법 오류도 정해진 규칙으로 복구한다. → [language/03 파싱·문법·AST](../../language/03-parsing-grammars-ast/2-summary.md)
   - *DOM*: 문서를 노드 트리로 표현한 것이자 그 트리를 다루는 API. → [04](../04-dom-and-event-model/2-summary.md)
   - *CSSOM*: 스타일시트를 규칙 객체로 표현한 것.
 - 동기 `<script>`는 파서를 멈춘다(스크립트가 `document.write`로 문서를 바꿀 수 있어서다). CSS는 파서를 멈추지 않지만 첫 렌더링을 막는다. 단 HTML 표준에서 렌더링·스크립트를 막는 것은 조건을 채운 스타일시트다(예: 파서가 넣은 것, `media`가 현재 환경과 맞는 것, 비활성화되지 않은 것). `media="print"` 같은 시트는 화면 렌더링을 막지 않는다(HTML "Interactions of styling and scripting", `link rel=stylesheet` 처리). 이 둘과 preload 스캐너·`async`/`defer`는 [13 `critical-path-and-resource-loading`](../13-critical-path-and-resource-loading/2-summary.md)이 본문이다.
@@ -250,7 +250,7 @@ rows.forEach((r, i) => { r.style.height = hs[i] + 'px'; });
 
 - 선행
   - [01-browser-architecture](../01-browser-architecture/2-summary.md) — 렌더러의 메인·컴포지터 스레드, Viz
-  - language 03 `parsing-grammars-ast` — [language README](../../language/README.md)(원고: foundations/compiler-pipeline)
+  - [language/03-parsing-grammars-ast](../../language/03-parsing-grammars-ast/2-summary.md)(원고: foundations/compiler-pipeline)
 - 후속·연결
   - [03-event-loop](../03-event-loop/2-summary.md) — 렌더링 업데이트가 이벤트 루프의 어디서 도나
   - [04-dom-and-event-model](../04-dom-and-event-model/2-summary.md)

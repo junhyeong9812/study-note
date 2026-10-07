@@ -170,7 +170,7 @@ laughs 문서 크기 = 641 바이트
 - **허용 목록 = 집합 소속 판정** — 클래스 이름이 허용 집합에 있나. 거부 목록과 달리 "모르는 것은 거부"가 기본이다(fail-safe 기본값, [security/01-security-principles](../01-security-principles/2-summary.md)).
 - **지수적 확장** — 엔티티 폭탄은 깊이 d, 단계마다 k배면 k^d. 위 실험은 10^10. 방어는 확장 횟수 카운터(JDK 64,000)나 DTD 금지다.
 - **재귀 치환** — Log4j lookup은 `${...}`를 찾아 바꾼 결과를 다시 훑는다. 자기 참조 lookup의 무한 재귀(uncontrolled recursion)로 서비스 거부를 낸 CVE-2021-45105가 그 부작용이다(NVD·Apache Log4j 보안 페이지, CVSS 3.1 5.9).
-- 파서와 문법 일반은 language 영역 03-parsing-grammars-ast(원고: [language README](../../language/README.md)).
+- 파서와 문법 일반은 [language/03-parsing-grammars-ast](../../language/03-parsing-grammars-ast/2-summary.md).
 
 ## 적용 — 풀어나가는 법
 

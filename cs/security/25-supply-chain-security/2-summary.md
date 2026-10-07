@@ -39,7 +39,7 @@
 ```
 
 - *manifest*: `package.json`·`pom.xml`처럼 **원하는 범위**를 적는 파일(`^1.0.0`).
-- *락파일*: `package-lock.json`·`Cargo.lock`처럼 범위를 푼 **정확한 버전 + 무결성 해시**를 박제한 파일. 그래서 어제 CI와 오늘 CI, 내 PC와 서버가 해시가 기록된 패키지에 대해 같은 바이트를 받는다. 다만 심볼릭 링크 항목처럼 해시가 없는 항목이 있고(npm `package-lock.json` 문서), `npm ci`도 기본으로 설치 스크립트를 돌리며 플랫폼별 선택 의존성이 있으므로 설치 결과 전체가 같다는 보장은 아니다(language/19-modules-and-dependency-resolution, [language README](../../language/README.md)).
+- *락파일*: `package-lock.json`·`Cargo.lock`처럼 범위를 푼 **정확한 버전 + 무결성 해시**를 박제한 파일. 그래서 어제 CI와 오늘 CI, 내 PC와 서버가 해시가 기록된 패키지에 대해 같은 바이트를 받는다. 다만 심볼릭 링크 항목처럼 해시가 없는 항목이 있고(npm `package-lock.json` 문서), `npm ci`도 기본으로 설치 스크립트를 돌리며 플랫폼별 선택 의존성이 있으므로 설치 결과 전체가 같다는 보장은 아니다([language/19-modules-and-dependency-resolution](../../language/19-modules-and-dependency-resolution/2-summary.md)).
 - *semver*: `주.부.수(major.minor.patch)`. `^1.2.3`은 major 고정, minor·patch 허용.
   - 흔한 오해: "락파일이 있으면 새 취약점도 자동으로 막힌다." 락파일은 **바이트 고정**이다. 고정된 그 버전이 뒤늦게 취약으로 밝혀지면, 누가 올려 주기 전까지 취약한 채 고정돼 있다(바꿔치기 탐지(④의 일부)와 미패치(①)는 다른 문제).
 
@@ -237,7 +237,7 @@ unzip -l app.jar | grep -i 'log4j-core'
 ## 관련 주제·근거
 
 - 선행
-  - language 19-modules-and-dependency-resolution(원고 [language README](../../language/README.md)) — semver·락파일·해소
+  - [language/19-modules-and-dependency-resolution](../../language/19-modules-and-dependency-resolution/2-summary.md) — semver·락파일·해소
 - 후속·연결
   - [security 06-public-key-and-signatures](../06-public-key-and-signatures/2-summary.md) · [09-randomness-and-key-management](../09-randomness-and-key-management/2-summary.md) — 서명·CI 비밀
   - [23-deserialization-and-parser-attacks](../23-deserialization-and-parser-attacks/2-summary.md) — 깊이 박힌 취약 라이브러리(Log4Shell)

@@ -516,7 +516,7 @@ order.size() == graph.size() 이므로 순환이 없다.  결과 [a, b, c, d]
 - 선행 — [07-heap](../07-heap/2-summary.md): 사전순 최소를 고정하는 `PriorityQueue`.
 - 선행 — [33-filesystem](../33-filesystem/2-summary.md): 디렉터리 하드 링크를 막아 고리를 피했던 자리. 여기서는 고리 찾기가 본론이다.
 - 후속 — [35-allocator](../35-allocator/2-summary.md): "무엇을 먼저"가 정해진 뒤 남는 "어디에 놓을 것인가".
-- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `32-dependency-resolver` (선행 `11`, `algorithm/18-dfs`, 교재 CLRS 22.4). language 영역 `19-modules-and-dependency-resolution`이 semver·락파일 쪽 후속이다(노트 미작성).
+- 영역 표 — [data-structure/curriculum.md](../curriculum.md) `32-dependency-resolver` (선행 `11`, `algorithm/18-dfs`, 교재 CLRS 22.4). language 영역 [19-modules-and-dependency-resolution](../../language/19-modules-and-dependency-resolution/2-summary.md)이 semver·락파일 쪽 후속이다.
 - myway 원본 — `/home/jun/project/myway/data-structure/34-dependency-resolver/` (README.md · impl/DependencyGraph.java · impl/KahnResolver.java · impl/DfsResolver.java).
 
 ### 용어 풀이

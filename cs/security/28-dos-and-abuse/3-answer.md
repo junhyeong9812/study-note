@@ -45,7 +45,7 @@
 ### 6. 복잡도 공격
 
 - 공통 구조: 작은 입력이 서버 일을 지수·제곱으로 키운다 — 엔티티 폭탄(641B→10^10, 23번), ReDoS(백트래킹 정규식 지수 시간), 해시 충돌(연산당 O(1)→O(n), n개 삽입 전체 O(n²)).
-- 공통 방어: 입력 크기·깊이·시간 상한, 선형 시간 정규식 엔진, 무작위 해시 시드. 연결: 23번(파서), data-structure/05-hashmap, language 02(정규식).
+- 공통 방어: 입력 크기·깊이·시간 상한, 선형 시간 정규식 엔진, 무작위 해시 시드. 연결: 23번(파서), data-structure/05-hashmap, [language 02](../../language/02-lexing-and-regular-languages/2-summary.md)(정규식).
 
 ### 7. SYN flood vs slowloris
 

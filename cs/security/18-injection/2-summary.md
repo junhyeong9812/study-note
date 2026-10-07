@@ -37,7 +37,7 @@
                                     값 $1 = '...'(별도 필드)   ──▶ Bind ──▶ 계획(보통 이때)·값으로만 대입
 ```
 
-- 해석기는 문자열을 토큰으로 자르고 문법 트리를 만든다(파싱, [language 영역](../../language/README.md)의 03 `parsing-grammars-ast` — 미작성).
+- 해석기는 문자열을 토큰으로 자르고 문법 트리를 만든다(파싱, [language/03-parsing-grammars-ast](../../language/03-parsing-grammars-ast/2-summary.md)).
   - *토큰(token)*: 파서가 자른 최소 단위. 따옴표는 "문자열 리터럴 끝"이라는 토큰 경계다.
 - 문자열 연결은 입력을 **파싱 전에** 섞는다. 입력의 따옴표가 리터럴을 닫고, 뒤따르는 글자가 새 문법 요소가 된다.
 - 바인딩은 쿼리 틀만 파싱하고, 값은 **파싱이 끝난 뒤** 자리표시자(`?`, `$1`)에 들어간다. 값이 무엇이든 문법 트리는 바뀌지 않는다.
@@ -232,7 +232,7 @@ new ProcessBuilder("ls", "--", "/tmp/files/" + input).start();
 
 - 선행
   - [01-security-principles](../01-security-principles/2-summary.md) — 최소 권한·심층 방어
-  - language 03 `parsing-grammars-ast` — 미작성([language 영역 표](../../language/README.md))
+  - [language/03-parsing-grammars-ast](../../language/03-parsing-grammars-ast/2-summary.md)
 - 후속·연결
   - [19-xss-and-csp](../19-xss-and-csp/2-summary.md) — 같은 문제의 HTML·JS 판(문맥별 인코딩)
   - [23-deserialization-and-parser-attacks](../23-deserialization-and-parser-attacks/2-summary.md) — 문자열 lookup 기능(Log4Shell)

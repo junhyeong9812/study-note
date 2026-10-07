@@ -399,7 +399,7 @@ javac -XprintRounds -processorpath ... App.java                   # 라운드별
 - 현상: JVM에서는 되는데 GraalVM 네이티브 이미지에서 특정 기능만 실패한다.
 - 보이는 형태: `--exact-reachability-metadata`로 빌드한 엄격 모드에서는 등록되지 않은 리플렉션 접근에 `MissingReflectionRegistrationError`가 난다(GraalVM latest 문서 "Reachability Metadata" — `java.lang.Error`의 하위 타입이다). 같은 문서는 이 모드가 아직 옵션이고 앞으로 기본값이 된다고 한다. 옵션 없는 기본 모드에서 보이는 형태는 확인 못 함 [?]. 이 노트에서는 네이티브 빌드를 돌리지 않았다.
 - 원인: GraalVM 문서 — 리플렉션으로 접근할 요소는 정적 분석으로 알 수 없어 reachability metadata로 알려 줘야 한다. 설정에서 빠진 요소는 바이너리에 포함되지 않는다.
-- 대처: 메타데이터 수집 에이전트로 설정 생성, 프레임워크 AOT(Spring `RuntimeHints`)로 힌트 등록, 가능한 곳은 컴파일 타임 생성 코드로 바꾼다. 상세는 language/24 aot-native-image-and-startup(미작성, [language README](../../language/README.md)).
+- 대처: 메타데이터 수집 에이전트로 설정 생성, 프레임워크 AOT(Spring `RuntimeHints`)로 힌트 등록, 가능한 곳은 컴파일 타임 생성 코드로 바꾼다. 상세는 [language/24-aot-native-image-and-startup](../../language/24-aot-native-image-and-startup/2-summary.md).
 
 ### 5. 처리기 순서·설정으로 생성 코드가 틀린다
 
@@ -424,7 +424,7 @@ javac -XprintRounds -processorpath ... App.java                   # 라운드별
 - 후속·연결
   - [36-extension-points-and-plugins](../36-extension-points-and-plugins/2-summary.md) — 처리기도 `META-INF/services`로 찾는 플러그인이다
   - [reliability/42-cold-start-and-scale-from-zero](../../reliability/42-cold-start-and-scale-from-zero/2-summary.md) — 기동 시간이 운영에 미치는 영향
-  - language/24 aot-native-image-and-startup — 미작성([language README](../../language/README.md))
+  - [language/24-aot-native-image-and-startup](../../language/24-aot-native-image-and-startup/2-summary.md)
 - 문서·소스
   - JDK 21 `java.lang.annotation.Retention`·`RetentionPolicy`(기본 CLASS, 각 정책의 정의) <https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/annotation/RetentionPolicy.html>
   - JDK 21 `javax.annotation.processing.Processor`(라운드)·`Filer`(새 파일 생성, 기존 파일 덮어쓰기 금지, 데코레이터식 API Note) <https://docs.oracle.com/en/java/javase/21/docs/api/java.compiler/javax/annotation/processing/Filer.html>

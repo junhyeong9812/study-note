@@ -330,7 +330,7 @@ ERROR:  check constraint "c1" of relation "o" is violated by some row
 - 선행
   - [19-immutability-and-value-objects](../19-immutability-and-value-objects/2-summary.md) — 값 객체·불변
   - [23-design-by-contract](../23-design-by-contract/2-summary.md) — 계약(누가 검사하나), record 간결 생성자
-  - language/05 `type-systems`, language/08 `error-handling-models` — 미작성([language/README](../../language/README.md))
+  - [language/05-type-systems](../../language/05-type-systems/2-summary.md), [language/08-error-handling-models](../../language/08-error-handling-models/2-summary.md)
 - 후속·연결
   - [18-absence-and-null-design](../18-absence-and-null-design/2-summary.md) — null을 타입으로 다루기
   - [16-error-strategy-exceptions-vs-results](../16-error-strategy-exceptions-vs-results/2-summary.md) — parse 실패를 무엇으로 돌려주나

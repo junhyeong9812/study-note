@@ -104,7 +104,7 @@
 - **토큰 버킷 / 리키 버킷** — 남용 제한의 기본. [reliability/11-rate-limiter](../../reliability/11-rate-limiter/2-summary.md)
 - **상태 테이블(연결 추적)** — SYN 큐·conntrack. 프로토콜형이 채우는 대상. [network/15-tcp-handshake-and-backlog](../../network/15-tcp-handshake-and-backlog/2-summary.md) · [network/11-nat-and-conntrack](../../network/11-nat-and-conntrack/2-summary.md)
 - **해시맵 최악 복잡도** — 충돌 공격이 O(1)을 O(n)으로. 무작위 시드로 방어. [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md)
-- **백트래킹 vs 오토마타 정규식** — ReDoS. 선형 시간 엔진(RE2류)이 방어. (language 02-lexing-and-regular-languages)
+- **백트래킹 vs 오토마타 정규식** — ReDoS. 선형 시간 엔진(RE2류)이 방어. ([language/02-lexing-and-regular-languages](../../language/02-lexing-and-regular-languages/2-summary.md))
 - **지수 백오프 + 지터** — 429 뒤 재시도. [reliability/06-retry-backoff-jitter](../../reliability/06-retry-backoff-jitter/2-summary.md)
 
 ## 적용 — 풀어나가는 법

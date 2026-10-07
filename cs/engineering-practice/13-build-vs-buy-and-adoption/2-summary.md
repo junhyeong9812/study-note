@@ -209,7 +209,7 @@ for (const c of r.checks) if (c.score >= 0) {                    // -1 = 판정 
 - **가중합(weighted sum)과 민감도 분석** — 기준별 점수 × 가중치의 합. 가중치를 훑어 1위가 바뀌는 지점을 찾는다(실험 A의 차별화 가중치 1·3·5).
 - **손익분기 탐색** — 비용 함수 두 개가 교차하는 매개변수(구독료 인상률)를 찾는다. 실험은 1%씩 올리는 선형 탐색을 썼다. 단조 함수라 이분 탐색도 된다.
 - **위험 가중 평균** — Scorecard 집계 점수. 판정 불가(−1) 항목은 분자·분모 모두에서 뺀다.
-- **의존성 그래프** — 하나를 도입하면 그것의 전이 의존성까지 들어온다. 건강도·라이선스는 그래프 전체에 대해 봐야 한다(의존성 해석은 language/19-modules-and-dependency-resolution — [language 영역 표](../../language/README.md), 미작성).
+- **의존성 그래프** — 하나를 도입하면 그것의 전이 의존성까지 들어온다. 건강도·라이선스는 그래프 전체에 대해 봐야 한다(의존성 해석은 [language/19-modules-and-dependency-resolution](../../language/19-modules-and-dependency-resolution/2-summary.md)).
 
 ## 적용 — 풀어나가는 법
 

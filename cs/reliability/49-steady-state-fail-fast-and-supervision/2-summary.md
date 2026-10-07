@@ -338,7 +338,7 @@ ORDER BY pg_total_relation_size(relid) DESC LIMIT 10;
   - [10-circuit-breaker](../10-circuit-breaker/2-summary.md) · [28-bulkhead](../28-bulkhead/2-summary.md) · [05-timeouts-and-deadline-propagation](../05-timeouts-and-deadline-propagation/2-summary.md) · [08-time-budget-allocation](../08-time-budget-allocation/2-summary.md) · [11-rate-limiter](../11-rate-limiter/2-summary.md)
   - [distributed/18-consumer-failure-handling](../../distributed/18-consumer-failure-handling/2-summary.md) — poison pill, DLQ
   - [database/29-soft-delete-and-data-lifecycle](../../database/29-soft-delete-and-data-lifecycle/2-summary.md) — 보존·삭제
-  - language/14-concurrency-models(액터) — 영역 표 [../../language/README.md](../../language/README.md)(미작성)
+  - [language/14-concurrency-models](../../language/14-concurrency-models/2-summary.md)(액터)
 - 책·논문·문서
   - Nygard, 『Release It!』 2판(2018) 5장 "Stability Patterns" — 항목 목록은 pragprog.com 목차로 확인, 본문 미열람 `[?]` <https://pragprog.com/titles/mnee2/release-it-second-edition/>
   - Armstrong, "Making reliable distributed systems in the presence of software errors", 박사 논문, KTH, 2003 — 4.3.1 "Let some other process fix the error", 4.4 "Let it crash", 감독 트리 <https://erlang.org/download/armstrong_thesis_2003.pdf>

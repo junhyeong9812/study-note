@@ -159,7 +159,7 @@ t= 2501ms 단계 수: /ignore=20, /check=4
 - **취소 트리** — 부모 → 자식으로만 전파되는 트리. Go `context` 문서상 동작: 부모의 `Done`이 닫히면 자식의 `Done`도 닫힌다(자식 취소는 부모에 영향 없음). 내부 자료구조는 이번에 소스로 확인하지 않았다.
 - **인터럽트 플래그** — 스레드마다 불리언 하나. 블로킹 메서드가 이를 보고 `InterruptedException`을 던지며 플래그를 지운다. 그래서 잡은 쪽이 다시 세우거나(`Thread.currentThread().interrupt()`) 위로 던져야 신호가 이어진다.
 - **확인 지점(checkpoint)** — 루프·단계 경계에서 신호를 보는 자리. 확인 간격 = 멈추는 데 걸리는 최대 시간(3절 관찰 4).
-- **구조적 동시성 = 스코프가 하위 작업의 수명을 소유** — 스코프를 벗어날 때 남은 하위 작업을 정리한다. 동시성 모델은 language 14 `concurrency-models`(미작성, [language 영역](../../language/README.md)). 유닉스 시그널과의 비교는 [os/06-signals](../../os/06-signals/2-summary.md).
+- **구조적 동시성 = 스코프가 하위 작업의 수명을 소유** — 스코프를 벗어날 때 남은 하위 작업을 정리한다. 동시성 모델은 [language/14-concurrency-models](../../language/14-concurrency-models/2-summary.md). 유닉스 시그널과의 비교는 [os/06-signals](../../os/06-signals/2-summary.md).
 
 ## 적용 — 풀어나가는 법
 
@@ -286,7 +286,7 @@ psql -c "select pid, now()-query_start as running, state, left(query,60) from pg
 - 선행
   - [08-time-budget-allocation](../08-time-budget-allocation/2-summary.md) — 예산과 최소치 규칙
   - [05-timeouts-and-deadline-propagation](../05-timeouts-and-deadline-propagation/2-summary.md) — 서버는 취소를 확인할 책임이 있다
-  - language 14 `concurrency-models` — 미작성, [language 영역](../../language/README.md)
+  - [language/14-concurrency-models](../../language/14-concurrency-models/2-summary.md)
   - [os/06-signals](../../os/06-signals/2-summary.md) — 프로세스 수준의 "그만해" 신호
   - 원본 [ops-patterns/deadline-propagation](../../ops-patterns/deadline-propagation/2-summary.md) §2·§3-2·§4
 - 후속·연결

@@ -326,7 +326,7 @@ private static volatile Service instance;
 - 후속·연결
   - [20-multicore-and-numa](../20-multicore-and-numa/2-summary.md) · [19-out-of-order-and-speculation](../19-out-of-order-and-speculation/2-summary.md)
   - [os/15-race-conditions](../../os/15-race-conditions/2-summary.md) · [os/16-locks-and-spinlocks](../../os/16-locks-and-spinlocks/2-summary.md) · [os/20-concurrency-bugs](../../os/20-concurrency-bugs/2-summary.md)
-  - language "언어 메모리 모델"(미작성, [language/README](../../language/README.md)) · [languages/java/syntax/33-synchronized-and-volatile](../../../languages/java/syntax/33-synchronized-and-volatile/2-summary.md)
+  - language "언어 메모리 모델"([language/13-language-memory-model](../../language/13-language-memory-model/2-summary.md)) · [languages/java/syntax/33-synchronized-and-volatile](../../../languages/java/syntax/33-synchronized-and-volatile/2-summary.md)
   - [data-structure/25-ring-buffer](../../data-structure/25-ring-buffer/2-summary.md) · [data-structure/29-concurrent-data-structures](../../data-structure/29-concurrent-data-structures/2-summary.md)
   - [distributed/07-consistency-models](../../distributed/07-consistency-models/2-summary.md) — 같은 질문의 분산판
   - [reliability/14-graceful-shutdown](../../reliability/14-graceful-shutdown/2-summary.md)

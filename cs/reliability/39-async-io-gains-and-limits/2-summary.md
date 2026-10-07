@@ -268,7 +268,7 @@ hikaricp_connections_pending
 ## 관련 주제·근거
 
 - 선행
-  - [language/14-concurrency-models](../../language/README.md) — 미작성(스레드·async/await·가상 스레드 일반)
+  - [language/14-concurrency-models](../../language/14-concurrency-models/2-summary.md) — 스레드·async/await·가상 스레드 일반
   - [os/25-io-models](../../os/25-io-models/2-summary.md) — 블로킹·논블로킹·비동기 I/O 구분
   - [math/10-queueing-and-littles-law](../../math/10-queueing-and-littles-law/2-summary.md) (Little's Law는 [21-scaling-principles](../21-scaling-principles/2-summary.md))
   - [database/21-connection-pooling](../../database/21-connection-pooling/2-summary.md) — 풀 크기·획득 타임아웃

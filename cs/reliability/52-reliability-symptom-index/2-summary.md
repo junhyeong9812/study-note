@@ -111,7 +111,7 @@
 
 | 보이는 형태 | 흔한 원인 | 첫 진단 | leaf |
 |---|---|---|---|
-| 배포·스케일아웃 직후 몇 분간 p99만 튐, 평균은 멀쩡. 새 파드만 느림 | JIT 워밍업·캐시 채우기를 트래픽을 받으며 함. readiness가 "포트 열림"만 봄 | 파드별 지연, 첫 N건의 지연 계단 | [42-2](../42-cold-start-and-scale-from-zero/2-summary.md) · [19-4](../19-performance-measurement/2-summary.md) · language/23-jit-tiered-compilation-and-warmup(미작성, [영역 표](../../language/README.md)) |
+| 배포·스케일아웃 직후 몇 분간 p99만 튐, 평균은 멀쩡. 새 파드만 느림 | JIT 워밍업·캐시 채우기를 트래픽을 받으며 함. readiness가 "포트 열림"만 봄 | 파드별 지연, 첫 N건의 지연 계단 | [42-2](../42-cold-start-and-scale-from-zero/2-summary.md) · [19-4](../19-performance-measurement/2-summary.md) · [language/23-jit-tiered-compilation-and-warmup](../../language/23-jit-tiered-compilation-and-warmup/2-summary.md) |
 | 새 인스턴스 쪽에만 타임아웃, `curl -w`의 `time_appconnect`가 큼 | 타임아웃 값이 재사용 연결 기준 — 새 연결의 TLS가 넘음 | 새 연결과 재사용 연결의 시간 분해 | [07-4](../07-timeout-taxonomy-by-layer/2-summary.md) |
 | 한동안 호출이 없던 함수의 첫 요청만 타임아웃. `REPORT` 줄에 `Init Duration` | 서버리스 Init(패키지·정적 초기화·JVM 시작) | Init Duration 분포, 호출자 타임아웃 | [42-1](../42-cold-start-and-scale-from-zero/2-summary.md) |
 | provisioned concurrency를 켰는데 피크에만 지연 | 예열 수 < 피크 동시성(피크 초당 요청 × 실행 시간) | 동시 실행 수가 설정을 넘는 구간 | [42-4](../42-cold-start-and-scale-from-zero/2-summary.md) |
@@ -618,7 +618,7 @@ java.net.http.HttpTimeoutException: request timed out
 - 후속: [53-reliability-incidents](../53-reliability-incidents/2-summary.md) — 여러 칸에 걸친 실사건(AWS S3 2017, Slack 2021, Roblox 2021, CrowdStrike 2024)
 - 이어받은 원본: [systems/server-design/10-playbook-by-symptom.md](../../systems/server-design/10-playbook-by-symptom.md)(§12에서 대응·참고)
 - 다른 영역 색인: [database/56](../../database/56-db-symptom-index/2-summary.md) · [distributed/35](../../distributed/35-distributed-symptom-index/2-summary.md) · [os/37](../../os/37-os-symptom-index/2-summary.md) · [network/52](../../network/52-network-symptom-index/2-summary.md)
-- 커리큘럼이 이 노트에 이은 다른 영역 leaf: [database/22-database-side-timeouts](../../database/22-database-side-timeouts/2-summary.md) · [database/21-connection-pooling](../../database/21-connection-pooling/2-summary.md) · [distributed/03-partial-failure-and-timeouts](../../distributed/03-partial-failure-and-timeouts/2-summary.md) · language/23-jit-tiered-compilation-and-warmup(미작성, [영역 표](../../language/README.md)) · [domain-modeling/25-reconciliation](../../domain-modeling/25-reconciliation/2-summary.md)
+- 커리큘럼이 이 노트에 이은 다른 영역 leaf: [database/22-database-side-timeouts](../../database/22-database-side-timeouts/2-summary.md) · [database/21-connection-pooling](../../database/21-connection-pooling/2-summary.md) · [distributed/03-partial-failure-and-timeouts](../../distributed/03-partial-failure-and-timeouts/2-summary.md) · [language/23-jit-tiered-compilation-and-warmup](../../language/23-jit-tiered-compilation-and-warmup/2-summary.md) · [domain-modeling/25-reconciliation](../../domain-modeling/25-reconciliation/2-summary.md)
 - 메시지 원문 출처(이 노트가 직접 대조한 것 — 각 leaf가 실험으로 확인한 문구는 그 leaf가 출처)
   - Envoy v1.35.0 `source/common/router/router.cc`(`upstream request timeout`, `upstream connect error or disconnect/reset before headers. `) <https://github.com/envoyproxy/envoy/blob/v1.35.0/source/common/router/router.cc>
   - Resilience4j v2.4.0 `CallNotPermittedException.java`(`CircuitBreaker '%s' is %s and does not permit further calls`), `BulkheadFullException.java`(`Bulkhead '%s' is full and does not permit further calls`), `RequestNotPermitted.java`(`RateLimiter '%s' does not permit further calls`) <https://github.com/resilience4j/resilience4j/tree/v2.4.0>

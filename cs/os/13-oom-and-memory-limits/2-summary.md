@@ -276,7 +276,7 @@ close(fd);
   - [06-signals](../06-signals/2-summary.md) — SIGKILL·exit 137
   - [07-threads-and-context-switch](../07-threads-and-context-switch/2-summary.md) — `unable to create native thread`
   - [28-containers-namespaces-cgroups](../28-containers-namespaces-cgroups/2-summary.md) — cgroup 전반
-  - [language/README](../../language/README.md) — `11-gc-tuning-and-gc-logs`(`MaxRAMPercentage`). 미작성
+  - [language/11-gc-tuning-and-gc-logs](../../language/11-gc-tuning-and-gc-logs/2-summary.md)(`MaxRAMPercentage`)
   - [reliability/37-memory-leak-and-heap-analysis](../../reliability/37-memory-leak-and-heap-analysis/2-summary.md)(힙 밖 누수·NMT)
 - 커널 문서·소스
   - Overcommit Accounting — 모드 0/1/2, `CommitLimit`·`Committed_AS`, 매핑별 비용 <https://docs.kernel.org/mm/overcommit-accounting.html>

@@ -32,7 +32,7 @@ JVM은 실행 중에 코드를 계속 바꾼다(인터프리터 → JIT 컴파�
  ③ 프로파일   JIT는 "지금까지 본 타입·분기"로 최적화 → 앞서 돈 벤치마크가 뒤 벤치마크의 코드를 바꾼다
 ```
 
-- *JIT(Just-In-Time) 컴파일*: 자주 실행되는 메서드를 실행 중에 기계어로 컴파일하는 것. HotSpot은 빠른 C1과 최적화를 많이 하는 C2를 단계적으로 쓴다(세부는 [language/22-ir-and-optimization](../../language/README.md), 미작성).
+- *JIT(Just-In-Time) 컴파일*: 자주 실행되는 메서드를 실행 중에 기계어로 컴파일하는 것. HotSpot은 빠른 C1과 최적화를 많이 하는 C2를 단계적으로 쓴다(세부는 [language/22-ir-and-optimization](../../language/22-ir-and-optimization/2-summary.md)).
 - *OSR(On-Stack Replacement)*: 오래 도는 루프를 실행 도중 컴파일된 버전으로 바꾸는 것. 손으로 짠 `for` 루프 측정은 OSR 버전을 재게 되는데, 이것은 일반 호출 경로와 다르게 최적화될 수 있다.
 - *DCE(Dead-Code Elimination)*: 결과가 어디에도 쓰이지 않는 계산을 지우는 최적화.
 - *constant folding(상수 접기)*: 입력이 컴파일 시점에 알려진 상수면 결과를 미리 계산해 넣는 최적화.
@@ -251,7 +251,7 @@ public class JsonBench {
 
 - 선행
   - [19-performance-measurement](../19-performance-measurement/2-summary.md) — 측정 일반, 분위수
-  - [language/22-ir-and-optimization](../../language/README.md) — 미작성(영역 표 링크): IR·인라이닝·DCE
+  - [language/22-ir-and-optimization](../../language/22-ir-and-optimization/2-summary.md) — IR·인라이닝·DCE
   - [data-analysis/08-confidence-intervals](../../data-analysis/README.md) — 미작성(영역 표 링크)
 - 후속·연결
   - [20-performance-method-and-amdahl](../20-performance-method-and-amdahl/2-summary.md) — 마이크로 개선이 전체에 주는 몫

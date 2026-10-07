@@ -317,7 +317,7 @@ try { CTX.set(ctx); handle(); } finally { CTX.remove(); }
 
 - 선행
   - [36-profiling](../36-profiling/2-summary.md) — 할당 프로파일(`alloc`), `nativemem`
-  - language/10 `garbage-collection` — mark-sweep·세대·G1 (영역 표 [../../language/README.md](../../language/README.md)에서 "미작성")
+  - [language/10-garbage-collection](../../language/10-garbage-collection/2-summary.md) — mark-sweep·세대·G1
   - [os/13-oom-and-memory-limits](../../os/13-oom-and-memory-limits/2-summary.md) — cgroup 한도, OOM killer, JVM 힙 < limit인데 죽는 이유(5절), NMT
 - 후속·연결
   - [52-reliability-symptom-index](../52-reliability-symptom-index/2-summary.md)의 "RSS만 우상향"

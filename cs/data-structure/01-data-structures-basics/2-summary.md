@@ -199,7 +199,7 @@ n=2000: 정렬 순서 삽입 높이=2000, 무작위 순서 높이=24
 
 - 예: "들어온 순서대로 처리, 앞에서 꺼냄" → 큐. Java는 `ArrayDeque`, 파이썬은 `collections.deque`. `ArrayList.remove(0)`·`list.pop(0)`은 피한다.
 - 예: "키로 찾고, 정렬 순서로도 훑음" → 균형 트리(`TreeMap`). 직접 만든 비균형 BST는 정렬된 입력에서 한 줄이 된다.
-- 예: 원본 §6의 비행기 게임 — 최대 개수(100)가 정해져 있으면 고정 배열 + 객체 풀로 생성·삭제를 없앤다. 다만 JVM에서 객체 풀은 오래 사는 객체를 늘려 GC에 불리할 수 있다(언어 영역 커리큘럼 "객체 풀링 반패턴" 항목, [language/README.md](../../language/README.md)). 풀이 필요한지는 할당률 측정으로 정한다.
+- 예: 원본 §6의 비행기 게임 — 최대 개수(100)가 정해져 있으면 고정 배열 + 객체 풀로 생성·삭제를 없앤다. 다만 JVM에서 객체 풀은 오래 사는 객체를 늘려 GC에 불리할 수 있다(언어 영역 커리큘럼 "객체 풀링 반패턴" 항목, [language/12-object-layout-and-allocation-reduction](../../language/12-object-layout-and-allocation-reduction/2-summary.md)). 풀이 필요한지는 할당률 측정으로 정한다.
 
 ### 2. Java로 옮기면
 

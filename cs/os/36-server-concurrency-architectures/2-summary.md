@@ -297,7 +297,7 @@ ss -lnt 'sport = :8080'                          # Recv-Q = accept 큐 길이 (n
 - 다른 영역
   - [network/15-tcp-handshake-and-backlog](../../network/15-tcp-handshake-and-backlog/2-summary.md) — accept 큐(앞단의 첫 큐)
   - [systems/server-design/06-resilience](../../systems/server-design/06-resilience.md) — 스레드 고갈·벌크헤드
-  - [language/README](../../language/README.md) — `14-concurrency-models`(가상 스레드·코루틴). 미작성
+  - [language/14-concurrency-models](../../language/14-concurrency-models/2-summary.md)(가상 스레드·코루틴)
   - [reliability/39-async-io-gains-and-limits](../../reliability/39-async-io-gains-and-limits/2-summary.md), [reliability/12-backpressure-and-load-shedding](../../reliability/12-backpressure-and-load-shedding/2-summary.md)
 - 패턴 문헌
   - Schmidt·Stal·Rohnert·Buschmann, 『Pattern-Oriented Software Architecture Vol.2: Patterns for Concurrent and Networked Objects』(POSA2, Wiley 2000) — 17개 패턴 목록(Reactor, Proactor, Acceptor-Connector, Leader/Followers, Half-Sync/Half-Async, Asynchronous Completion Token 등) <https://www.dre.vanderbilt.edu/~schmidt/POSA/POSA2/>

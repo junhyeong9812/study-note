@@ -300,7 +300,7 @@ int (*add)(int, int) = (int (*)(int, int))dlsym(h, "add");
   - [14-mmap-and-page-cache](../14-mmap-and-page-cache/2-summary.md) — 로더가 라이브러리를 mmap으로 올린다
   - [05-fork-exec-wait](../05-fork-exec-wait/2-summary.md) — `execve`
   - [28-containers-namespaces-cgroups](../28-containers-namespaces-cgroups/2-summary.md) — 이미지 베이스(musl·glibc) 선택
-  - [language/README](../../language/README.md) — `24-aot-native-image-and-startup`, `25-lto-pgo-and-binary-size`. 미작성
+  - [language/24-aot-native-image-and-startup](../../language/24-aot-native-image-and-startup/2-summary.md), [language/25-lto-pgo-and-binary-size](../../language/25-lto-pgo-and-binary-size/2-summary.md)
 - 교재: CS:APP 3판 7장 — 7.5 심볼과 심볼 테이블, 7.6 심볼 해석(7.6.3 정적 라이브러리로 참조 풀기), 7.7 재배치, 7.9 실행 파일 로딩, 7.10 공유 라이브러리 동적 링킹, 7.11 애플리케이션에서 공유 라이브러리 로딩, 7.12 PIC, 7.13 라이브러리 인터포지셔닝
 - Linux man-pages
   - ld.so(8) — 탐색 순서(RPATH·LD_LIBRARY_PATH·RUNPATH·캐시·기본 경로), `LD_DEBUG`, `LD_PRELOAD`, `LD_BIND_NOW` <https://man7.org/linux/man-pages/man8/ld.so.8.html>. "DT_RPATH는 deprecated" 문장은 작성 환경의 로컬 ld.so(8)에 있고 man7.org 최신판에는 없다

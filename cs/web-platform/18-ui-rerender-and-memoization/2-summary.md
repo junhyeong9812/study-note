@@ -63,7 +63,7 @@
            Object.is(#1, #2) = false  → "props가 바뀌었다" → 재렌더
 ```
 
-- *참조 동일성*: 두 값이 **같은 객체**인가. 내용이 같아도 새로 만든 객체는 다르다 — [language/06 값·참조·전달](../../language/README.md)(원고: [foundations/variables-and-memory](../../foundations/variables-and-memory/README.md)).
+- *참조 동일성*: 두 값이 **같은 객체**인가. 내용이 같아도 새로 만든 객체는 다르다 — [language/06 값·참조·전달](../../language/06-values-references-passing/2-summary.md)(원고: [foundations/variables-and-memory](../../foundations/variables-and-memory/README.md)).
 - 렌더 중에 만든 객체·배열·함수는 매번 새것이다. react.dev는 이런 prop을 받는 컴포넌트에 memo가 "완전히 쓸모없다"고 적는다.
 - 그래서 짝으로 쓰는 도구가 있다.
   - `useCallback(fn, deps)`: deps가 같으면 같은 함수 객체를 돌려준다.
@@ -208,7 +208,7 @@ function Layout({ children }) { const [open, setOpen] = useState(false); return 
 
 - 선행: [04 DOM과 이벤트 모델](../04-dom-and-event-model/2-summary.md), [16 긴 태스크와 웹 워커](../16-long-tasks-and-web-workers/2-summary.md)
 - 후속: [17 목록 가상화](../17-list-virtualization/2-summary.md), [19 하이드레이션 비용](../19-hydration-cost-and-partial-hydration/2-summary.md), [21 컴포넌트와 상태 패턴](../21-component-and-state-patterns/2-summary.md), [23 증상 색인](../23-web-symptom-index/2-summary.md)
-- 다른 영역: [language/06 값·참조·전달](../../language/README.md)(원고: [foundations/variables-and-memory](../../foundations/variables-and-memory/README.md)), [algorithm/21 DP 기초](../../algorithm/21-dp-basics/2-summary.md), [software-design/42 UI 아키텍처 패턴](../../software-design/42-ui-architecture-patterns/2-summary.md)
+- 다른 영역: [language/06 값·참조·전달](../../language/06-values-references-passing/2-summary.md)(원고: [foundations/variables-and-memory](../../foundations/variables-and-memory/README.md)), [algorithm/21 DP 기초](../../algorithm/21-dp-basics/2-summary.md), [software-design/42 UI 아키텍처 패턴](../../software-design/42-ui-architecture-patterns/2-summary.md)
 - 근거
   - react.dev "memo" https://react.dev/reference/react/memo — `Object.is` 얕은 비교, "not a guarantee", 매번 다른 props면 무용, 상태 지역화·children 권고, React Compiler
   - react.dev "useMemo" https://react.dev/reference/react/useMemo — deps `Object.is`, 성능 최적화로만 의존, 1ms 기준

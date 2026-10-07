@@ -371,7 +371,7 @@ Legacy.class
 
 - 선행
   - [03-version-control-and-git-internals](../03-version-control-and-git-internals/2-summary.md) — 콘텐츠 주소·해시
-  - language/19 modules-and-dependency-resolution — [language 영역](../../language/README.md)(미작성)
+  - [language/19-modules-and-dependency-resolution](../../language/19-modules-and-dependency-resolution/2-summary.md)
 - 후속·연결
   - [06-ci-cd-pipelines](../06-ci-cd-pipelines/2-summary.md) — 한 번 빌드한 산출물을 파이프라인으로 승격
   - [08-container-image-optimization](../08-container-image-optimization/2-summary.md) — 이미지 레이어 캐시(내용 해시, mtime 무시)

@@ -257,7 +257,7 @@ for (int i = 0; i < rows; i++) for (int j = 0; j < cols; j++) sum += grid[i][j];
 
 - **현상**: 1천만 건 ID 목록을 `List<Long>`으로 들고 집계하니 느리고 힙도 크다.
 - **보이는 형태**: `GC.class_histogram`에 `java.lang.Long` 수백만 개. 순회 시간이 `long[]`의 10~40배(실험 3의 `Integer` 결과와 같은 모양).
-- **원인**: 원소마다 객체 헤더가 붙고, 참조를 한 번 더 따라가는 간접 참조가 된다(객체가 흩어져 있으면 라인마다 미스). 객체 배치 세부는 language 영역 "객체 레이아웃과 할당 줄이기"(미작성, [language/README](../../language/README.md))에서 다룬다.
+- **원인**: 원소마다 객체 헤더가 붙고, 참조를 한 번 더 따라가는 간접 참조가 된다(객체가 흩어져 있으면 라인마다 미스). 객체 배치 세부는 language 영역 "객체 레이아웃과 할당 줄이기"([language/12-object-layout-and-allocation-reduction](../../language/12-object-layout-and-allocation-reduction/2-summary.md))에서 다룬다.
 - **대처**: `long[]`, 원시형 특화 컬렉션, 정렬된 원시 배열 + 이진 탐색으로 바꾼다.
 
 ### 4. 같은 서비스, 인스턴스마다 다른 지연 (하이브리드 CPU)

@@ -183,7 +183,7 @@ AbstractNew.java:3: error: Shape is abstract; cannot be instantiated
 ```
 
   - HotSpot(JDK 21) 소스에 `src/hotspot/share/oops/klassVtable.hpp`가 있고, 주석이 "variable-length vtable that is embedded in InstanceKlass"라고 설명한다. 같은 파일에 `klassItable`도 있다. 실제 JIT은 인라인 캐시(`src/hotspot/share/code/compiledIC.*`) 등으로 표 조회를 더 줄인다 — 세부 동작은 이 노트 범위 밖이다.
-  - 디스패치 메커니즘 심화는 language/17 `dispatch-and-polymorphism-mechanics` — 미작성([language/README](../../language/README.md)).
+  - 디스패치 메커니즘 심화는 [language/17-dispatch-and-polymorphism-mechanics](../../language/17-dispatch-and-polymorphism-mechanics/2-summary.md).
 - **객체 그래프**: HAS-A 관계가 이루는 방향 그래프. 합성은 대개 트리(부품이 한 주인에게만)다. 통합은 한 부품을 여러 주인이 공유할 수 있고 서로를 참조하는 순환도 생길 수 있어 일반 방향 그래프가 된다. 직렬화·복사·삭제 범위가 이 그래프를 따라간다.
 - **클래스 계층 = 트리(자바 클래스) / DAG(인터페이스 다중 구현)**: 자바는 클래스 단일 상속이라 클래스 계층이 트리, 인터페이스까지 넣으면 DAG다.
 
@@ -278,7 +278,7 @@ grep -rnE 'public (List|Set|Map)<.*> get\w*\(\) *\{ *return \w+; *\}' src/main/j
   - [22-solid](../22-solid/2-summary.md) — LSP(IS-A의 행동 기준), DIP(다형성으로 의존 방향 뒤집기)
   - [23-design-by-contract](../23-design-by-contract/2-summary.md) — 불변식을 계약으로 명시
   - [19-immutability-and-value-objects](../19-immutability-and-value-objects/2-summary.md) — 불변 객체로 공유 문제 없애기
-  - language/17 `dispatch-and-polymorphism-mechanics`(vtable·인라인 캐시) — 미작성([language/README](../../language/README.md))
+  - [language/17-dispatch-and-polymorphism-mechanics](../../language/17-dispatch-and-polymorphism-mechanics/2-summary.md)(vtable·인라인 캐시)
   - [domain-modeling/04-entities-and-value-objects](../../domain-modeling/04-entities-and-value-objects/2-summary.md)·[domain-modeling/05-aggregates-and-invariants](../../domain-modeling/05-aggregates-and-invariants/2-summary.md)
 - 글·문서
   - GoF 1장 두 원칙 — Erich Gamma 인터뷰, Bill Venners, "Design Principles from Design Patterns", Artima, 2005-06-06 <https://www.artima.com/articles/design-principles-from-design-patterns>

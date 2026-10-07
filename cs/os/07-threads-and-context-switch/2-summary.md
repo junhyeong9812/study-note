@@ -280,7 +280,7 @@ jstack <pid> | grep -c '^"'
   - [15-race-conditions](../15-race-conditions/2-summary.md)·[16-locks-and-spinlocks](../16-locks-and-spinlocks/2-summary.md) — 락 경합과 자발적 스위치.
   - [25-io-models](../25-io-models/2-summary.md)·[27-event-based-concurrency](../27-event-based-concurrency/2-summary.md) — 스레드 대신 이벤트.
   - [36-server-concurrency-architectures](../36-server-concurrency-architectures/2-summary.md) — 연결당 스레드 vs 리액터.
-  - [language/README](../../language/README.md) — `14-concurrency-models`(가상 스레드·코루틴). 미작성.
+  - [language/14-concurrency-models](../../language/14-concurrency-models/2-summary.md)(가상 스레드·코루틴).
 - 소스
   - glibc 2.39 `sysdeps/unix/sysv/linux/clone-internal.c` `__clone_internal()` — `clone3` 우선, `ENOSYS`면 `clone` 폴백
   - glibc 2.39 `nptl/pthread_create.c` — `clone_flags = CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SYSVSEM | CLONE_SIGHAND | CLONE_THREAD | CLONE_SETTLS | CLONE_PARENT_SETTID | CLONE_CHILD_CLEARTID`

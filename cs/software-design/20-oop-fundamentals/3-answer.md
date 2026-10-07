@@ -61,7 +61,7 @@ a.kind()  = Animal.kind
 
 - 클래스마다 "메서드 슬롯 번호 → 구현" 표(vtable)를 둔다. HotSpot(JDK 21) 소스 `klassVtable.hpp`가 "variable-length vtable that is embedded in InstanceKlass"라고 설명하고, 인터페이스용 `klassItable`도 있다.
 - 하위 클래스는 재정의한 메서드의 슬롯만 자기 구현으로 바꾼다. 그래서 호출부는 "그 객체 클래스의 vtable[k]"로만 점프하면 되고, 새 하위 클래스가 생겨도 호출부 코드는 바뀌지 않는다.
-- JIT은 인라인 캐시(`compiledIC`) 등으로 표 조회를 더 줄인다 — 세부는 language/17(미작성).
+- JIT은 인라인 캐시(`compiledIC`) 등으로 표 조회를 더 줄인다 — 세부는 [language/17](../../language/17-dispatch-and-polymorphism-mechanics/2-summary.md).
 
 ### 8. 합계 불일치, 에러 로그 없음
 

@@ -49,7 +49,7 @@
   - ECMA-262의 링크·평가 알고리즘은 깊이 우선 탐색으로 그래프를 돌며 `[[DFSIndex]]`·`[[DFSAncestorIndex]]`로 순환(강연결 요소)을 묶어 처리한다. [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md) · [algorithm/18-scc](../../algorithm/18-scc/2-summary.md)
   - *살아 있는 바인딩*: 내보낸 쪽이 변수를 바꾸면 가져온 쪽에서도 바뀐 값이 보인다.
 - HTML 표준: `<script type="module">`은 기본이 지연(defer) 실행이다. 같은 문서(환경)에서 같은 URL·모듈 타입 조합은 *모듈 맵*에 한 번만 적재된다(모듈 맵 키 = (URL, 모듈 타입) — HTML 표준 "module map"). `import()`는 Promise를 돌려주는 동적 적재다.
-- 모듈 해석(`'react'` 같은 bare specifier → 실제 경로)은 브라우저에서는 import map, Node·번들러는 `node_modules` 탐색 규칙이다. 의존 해석 일반론은 language 19번(미작성, [language 영역 표](../../language/README.md))과 [data-structure/34-dependency-resolver](../../data-structure/34-dependency-resolver/2-summary.md).
+- 모듈 해석(`'react'` 같은 bare specifier → 실제 경로)은 브라우저에서는 import map, Node·번들러는 `node_modules` 탐색 규칙이다. 의존 해석 일반론은 [language 19번](../../language/19-modules-and-dependency-resolution/2-summary.md)과 [data-structure/34-dependency-resolver](../../data-structure/34-dependency-resolver/2-summary.md).
 
 ### 2. 번들 안 한 ES 모듈의 폭포(waterfall)
 
@@ -288,7 +288,7 @@ function reloadOnce() {
 
 - 선행
   - [05-fetch-from-browser](../05-fetch-from-browser/2-summary.md) — 자원 요청 수명
-  - language 19 `modules-and-dependency-resolution` — 미작성, [language 영역 표](../../language/README.md)
+  - [language/19-modules-and-dependency-resolution](../../language/19-modules-and-dependency-resolution/2-summary.md)
 - 후속·연결
   - [07-service-workers-and-offline](../07-service-workers-and-offline/2-summary.md) — 캐시된 옛 HTML과 청크 불일치
   - [20-performance-budgets-and-regression-gates](../20-performance-budgets-and-regression-gates/2-summary.md) — 번들 크기 예산

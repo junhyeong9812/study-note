@@ -300,7 +300,7 @@ grep -rnE '\.(get|orElseThrow|unwrap)\(\)' --include=*.java src/main/ | grep -v 
 
 - 선행
   - [15-error-handling-design](../15-error-handling-design/2-summary.md) — 던지는 곳·잡는 곳, 한 번만 기록
-  - language/08 error-handling-models — 미작성([language README](../../language/README.md))
+  - [language/08-error-handling-models](../../language/08-error-handling-models/2-summary.md)
 - 후속·연결
   - [17-error-messages-and-log-level-policy](../17-error-messages-and-log-level-policy/2-summary.md) — 에러 코드·사용자 메시지·로그 레벨
   - [18-absence-and-null-design](../18-absence-and-null-design/2-summary.md) — Special Case·Null Object 코드

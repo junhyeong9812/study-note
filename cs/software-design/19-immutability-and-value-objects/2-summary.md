@@ -279,7 +279,7 @@ grep -rnE 'new Hash(Map|Set)<\w+' --include=*.java src/main/ | head
 
 - 선행
   - [15-error-handling-design](../15-error-handling-design/2-summary.md) — 생성 시점 fail-fast
-  - language/06 values-references-passing — 원고 [foundations/variables-and-memory](../../foundations/variables-and-memory/README.md)(값/참조, 얕은/깊은 복사)
+  - [language/06-values-references-passing](../../language/06-values-references-passing/2-summary.md) — 원고 [foundations/variables-and-memory](../../foundations/variables-and-memory/README.md)(값/참조, 얕은/깊은 복사)
 - 연결
   - [java/syntax/59-immutable-objects](../../../languages/java/syntax/59-immutable-objects/2-summary.md) — 불변 클래스 문법·방어 복사·record·뷰 vs 복사·안전 공개
   - [18-absence-and-null-design](../18-absence-and-null-design/2-summary.md) — 값 객체가 null을 거절한다

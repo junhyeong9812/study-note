@@ -268,7 +268,7 @@ grep -rnE '\.get\(\)' --include=*.java src/main/ | grep -i optional
 - 선행
   - [15-error-handling-design](../15-error-handling-design/2-summary.md) — fail-fast, 에러를 정의로 없애기
   - [16-error-strategy-exceptions-vs-results](../16-error-strategy-exceptions-vs-results/2-summary.md) — 결과 타입, Special Case
-  - language/08 error-handling-models — 미작성([language README](../../language/README.md))
+  - [language/08-error-handling-models](../../language/08-error-handling-models/2-summary.md)
 - 후속·연결
   - [19-immutability-and-value-objects](../19-immutability-and-value-objects/2-summary.md) — 값 객체가 생성 시점에 null을 거절한다
   - [24 types-as-invariants](../24-types-as-invariants/2-summary.md), [29 refactoring-to-patterns](../29-refactoring-to-patterns/2-summary.md)(Introduce Null Object)

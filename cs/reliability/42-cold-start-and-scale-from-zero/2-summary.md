@@ -124,7 +124,7 @@ s.createContext("/order", ex -> {
 - 관찰 1 — 첫 요청: 기본 설정(JDK 21·25, 각 2회)에서 첫 요청의 서버 처리는 74~93ms, 1,001번째 이후는 약 0.4ms다. 약 180~240배.
   - 사실 점검 재실행(JDK 21 기본 2회, 같은 조건 — 공유 호스트가 더 바빴다): 첫 요청 70·115ms, 1,001번째 이후 0.51·0.55ms. 배수는 약 130~225배로, 실행마다 폭이 크다. 모양(첫 요청 수십~백여 ms → 수 ms → 1ms 미만)은 같다.
 - 관찰 2 — 첫 요청 비용의 대부분은 JIT가 아니다. JIT를 끈 `-Xint`에서도 첫 요청은 90ms(사실 점검 재실행 82ms)이고 두 번째부터 약 13~15ms다. 첫 요청에 붙은 약 75ms는 그 경로를 처음 지날 때 드는 일회성 비용이다(클래스 로딩·링크, 람다·`String.format` 부트스트랩 — 해석).
-- 관찰 3 — 워밍업은 JIT다. `-Xint`는 끝까지 약 13ms에 머물렀고, 기본 설정은 2~10번 약 3ms → 11~100번 약 1.1ms → 1,001번 이후 약 0.4ms로 내려갔다. C1만 쓰면 0.69ms에서 멈춘다. 마지막 단계의 이득이 C2다(계층 컴파일 — language/23).
+- 관찰 3 — 워밍업은 JIT다. `-Xint`는 끝까지 약 13ms에 머물렀고, 기본 설정은 2~10번 약 3ms → 11~100번 약 1.1ms → 1,001번 이후 약 0.4ms로 내려갔다. C1만 쓰면 0.69ms에서 멈춘다. 마지막 단계의 이득이 C2다(계층 컴파일 — [language/23](../../language/23-jit-tiered-compilation-and-warmup/2-summary.md)).
 - 관찰 4 — 시작 시간 단축
   - JDK 21 AppCDS: READY 205·252ms(기본 242·295ms), 첫 응답 432·449ms(기본 512·556ms), 첫 요청 60~62ms(기본 74~79ms). 개선 폭이 작다.
   - 사실 점검 재실행: AppCDS READY 198·222ms(기본 275·285ms), 첫 응답 381·423ms(기본 488·617ms), 첫 요청 66·70ms(기본 70·115ms). 같은 경향이다.
@@ -154,8 +154,8 @@ s.createContext("/order", ex -> {
 ## 쓰이는 자료구조·알고리즘
 
 - **인스턴스 풀(예열 풀)** — 미리 만든 객체를 빌려 주는 풀 패턴의 인프라판. 크기는 Little's Law(동시성 = 도착률 × 체류 시간)로 정한다.
-- **계층 컴파일 + 프로파일** — 인터프리터가 호출 횟수·분기 빈도를 세고, 문턱을 넘으면 C1 → C2로 컴파일한다. 실험의 2~10 / 11~100 / 1,001+ 계단이 그 흔적이다. 기초는 [language/23-jit-tiered-compilation-and-warmup](../../language/README.md)(미작성).
-- **클래스 데이터 공유(CDS)·AOT 캐시** — 클래스 파일을 미리 읽고 파싱한 결과를 파일로 저장해 다음 실행에서 매핑한다(CDS: JEP 310 AppCDS, JEP 350 동적 아카이브). JEP 483 AOT 캐시는 여기에 클래스를 로드·링크한 상태를, JEP 515는 메서드 프로파일을 더한다(JEP 514는 만드는 절차를 줄인다). AOT 네이티브 이미지와의 비교는 [language/24-aot-native-image-and-startup](../../language/README.md)(미작성).
+- **계층 컴파일 + 프로파일** — 인터프리터가 호출 횟수·분기 빈도를 세고, 문턱을 넘으면 C1 → C2로 컴파일한다. 실험의 2~10 / 11~100 / 1,001+ 계단이 그 흔적이다. 기초는 [language/23-jit-tiered-compilation-and-warmup](../../language/23-jit-tiered-compilation-and-warmup/2-summary.md).
+- **클래스 데이터 공유(CDS)·AOT 캐시** — 클래스 파일을 미리 읽고 파싱한 결과를 파일로 저장해 다음 실행에서 매핑한다(CDS: JEP 310 AppCDS, JEP 350 동적 아카이브). JEP 483 AOT 캐시는 여기에 클래스를 로드·링크한 상태를, JEP 515는 메서드 프로파일을 더한다(JEP 514는 만드는 절차를 줄인다). AOT 네이티브 이미지와의 비교는 [language/24-aot-native-image-and-startup](../../language/24-aot-native-image-and-startup/2-summary.md).
 - **스냅숏(체크포인트/복원)** — 프로세스 메모리·디스크 상태를 통째로 저장하고 재개한다. 복원은 복사이므로 "한 번만 만들어야 할 값"이 깨진다.
 - **상태 기계** — 컨테이너의 시작 → startup 통과 → ready → (트래픽) 전이. readiness는 이 기계의 "트래픽 받음" 상태로 가는 문이다.
 
@@ -282,9 +282,9 @@ kubectl get pod <pod> -o jsonpath='{.status.conditions}'                        
 
 - 선행
   - [41-autoscaling](../41-autoscaling/2-summary.md) — 확장 반응 시간의 한 구간이 콜드 스타트
-  - [language/24-aot-native-image-and-startup](../../language/README.md) — 미작성
+  - [language/24-aot-native-image-and-startup](../../language/24-aot-native-image-and-startup/2-summary.md)
   - [os/28-containers-namespaces-cgroups](../../os/28-containers-namespaces-cgroups/2-summary.md) — 컨테이너 시작의 실체
-  - 연결: [language/23-jit-tiered-compilation-and-warmup](../../language/README.md) — 미작성
+  - 연결: [language/23-jit-tiered-compilation-and-warmup](../../language/23-jit-tiered-compilation-and-warmup/2-summary.md)
 - 후속·연결
   - [22-capacity-and-load-testing](../22-capacity-and-load-testing/2-summary.md) — 콜드 캐시 시나리오
   - [21-scaling-principles](../21-scaling-principles/2-summary.md) — Little's Law

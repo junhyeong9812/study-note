@@ -117,7 +117,7 @@ rc = write(sd, buffer, size);        /* 깨어나면 sd가 스택에 그대로 �
 
 - OSTEP은 이것을 Adya 외의 말로 **manual stack management**라 부르고, 해법으로 **continuation**(남은 일을 기록해 두었다가 이벤트가 오면 이어 가기)을 든다(33.7).
   - *continuation*: "이 일이 끝나면 이어서 할 나머지 계산"을 값으로 들고 다니는 것이다. 콜백 함수와 그 클로저가 흔한 구현이다.
-- JS의 Promise·`async/await`는 이 continuation을 언어가 대신 만들어 준다. 컴파일러가 함수를 상태 기계로 바꾼다(language/14).
+- JS의 Promise·`async/await`는 이 continuation을 언어가 대신 만들어 준다. 컴파일러가 함수를 상태 기계로 바꾼다([language/14](../../language/14-concurrency-models/2-summary.md)).
 
 ### 이벤트 방식에도 남는 어려움 (OSTEP 33.8)
 
@@ -267,7 +267,7 @@ redis-cli SLOWLOG GET 10
 - 후속
   - [34-zero-copy-and-io-uring](../34-zero-copy-and-io-uring/2-summary.md) — 완료 큐 기반 루프(프로액터)
   - [36-server-concurrency-architectures](../36-server-concurrency-architectures/2-summary.md) — 멀티 리액터, 반동기/반비동기, 워커 풀
-  - [language/README](../../language/README.md) — `14-concurrency-models`(async/await 상태 기계, 가상 스레드). 미작성
+  - [language/14-concurrency-models](../../language/14-concurrency-models/2-summary.md)(async/await 상태 기계, 가상 스레드)
   - [web-platform/03-event-loop](../../web-platform/03-event-loop/2-summary.md)(브라우저 태스크·마이크로태스크)
 - 다른 OS 주제
   - [07-threads-and-context-switch](../07-threads-and-context-switch/2-summary.md)·[15-race-conditions](../15-race-conditions/2-summary.md) — 스레드 방식의 비용

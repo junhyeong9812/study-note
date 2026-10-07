@@ -256,7 +256,7 @@ grep -nE 'Repository|Repo\.' -A3 src/main/java/**/CheckoutService.java | grep -n
 - 선행
   - [25-dependency-injection-and-composition-root](../25-dependency-injection-and-composition-root/2-summary.md) — 의존을 받는 법. 이 주제는 결정 코드에서 의존을 없애는 법
   - [24-types-as-invariants](../24-types-as-invariants/2-summary.md)
-  - language/18-functional-concepts — 미작성([language README](../../language/README.md))
+  - [language/18-functional-concepts](../../language/18-functional-concepts/2-summary.md)
 - 후속·연결
   - [testing/10-testing-time-and-concurrency](../../testing/10-testing-time-and-concurrency/2-summary.md)
   - [19-immutability-and-value-objects](../19-immutability-and-value-objects/2-summary.md), [41-architecture-fitness-rules](../41-architecture-fitness-rules/2-summary.md), [12-simple-design-and-yagni](../12-simple-design-and-yagni/2-summary.md)

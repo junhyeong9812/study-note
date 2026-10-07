@@ -21,7 +21,7 @@
 똑같은 구조다.\
 실무 예: 주문 저장이 DB 연결 끊김으로 실패했다. 계층마다 잡아서 로그를 찍고 다시 던지면 ERROR 4건이 쌓이고 알람이 네 번 운다. 반대로 저장 메서드가 예외를 삼키면 주문은 "접수 완료" 화면을 보여 주고 DB에는 없다.
 
-이 노트는 **어디서 실패시키고, 어디서 잡고, 어떤 에러는 아예 없애나**를 다룬다. 예외냐 결과 타입이냐는 [16](../16-error-strategy-exceptions-vs-results/2-summary.md), 로그 레벨과 메시지는 [17](../17-error-messages-and-log-level-policy/2-summary.md), "없음"은 [18](../18-absence-and-null-design/2-summary.md)에서 다룬다. 언어별 에러 모델(checked/unchecked, 에러 값, panic)은 language/08 error-handling-models — 미작성([language README](../../language/README.md)).
+이 노트는 **어디서 실패시키고, 어디서 잡고, 어떤 에러는 아예 없애나**를 다룬다. 예외냐 결과 타입이냐는 [16](../16-error-strategy-exceptions-vs-results/2-summary.md), 로그 레벨과 메시지는 [17](../17-error-messages-and-log-level-policy/2-summary.md), "없음"은 [18](../18-absence-and-null-design/2-summary.md)에서 다룬다. 언어별 에러 모델(checked/unchecked, 에러 값, panic)은 [language/08-error-handling-models](../../language/08-error-handling-models/2-summary.md).
 
 ## 동작·원리
 
@@ -254,7 +254,7 @@ grep -rnE 'throw new \w+\([a-z]+\.getMessage\(\)\)' --include=*.java src/
 ## 관련 주제·근거
 
 - 선행
-  - language/08 error-handling-models — 미작성([language README](../../language/README.md))
+  - [language/08-error-handling-models](../../language/08-error-handling-models/2-summary.md)
   - [01-complexity](../01-complexity/2-summary.md) — 복잡도의 증상. 에러 처리는 unknown unknowns의 큰 원천
 - 후속
   - [16-error-strategy-exceptions-vs-results](../16-error-strategy-exceptions-vs-results/2-summary.md) — 예외 vs 결과 타입, 트랜잭션 롤백 규칙
