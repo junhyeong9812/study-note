@@ -65,7 +65,7 @@ void lock(void)   { while (__atomic_exchange_n(&flag, 1, __ATOMIC_ACQUIRE)) ; /*
 void unlock(void) { __atomic_store_n(&flag, 0, __ATOMIC_RELEASE); }
 ```
 
-- `ACQUIRE`·`RELEASE`는 메모리 순서 지시다. 임계 구역 안의 읽기·쓰기가 락 밖으로 새지 않게 한다(자세한 것은 선행 architecture/14).
+- `ACQUIRE`·`RELEASE`는 메모리 순서 지시다. 임계 구역 안의 읽기·쓰기가 락 밖으로 새지 않게 한다(자세한 것은 선행 [architecture/14](../../architecture/14-cache-coherence-and-memory-ordering/2-summary.md)).
 
 ### 3. 스핀락의 평가 — 옳지만 공정하지 않다
 
@@ -302,7 +302,7 @@ jstack <pid> | grep -A3 'BLOCKED\|parking to wait'
 
 - 선행
   - [15-race-conditions](../15-race-conditions/2-summary.md) — 임계 구역·원자성. 기초는 원고 [process-thread §10~11](../../foundations/process-thread/README.md)
-  - architecture `14-cache-coherence-and-memory-ordering` — MESI·배리어·CAS. 미작성, [architecture/README](../../architecture/README.md)
+  - [architecture/14-cache-coherence-and-memory-ordering](../../architecture/14-cache-coherence-and-memory-ordering/2-summary.md) — MESI·배리어·CAS
 - 후속
   - [17-condition-variables-and-monitors](../17-condition-variables-and-monitors/2-summary.md) — 락 위에 "조건이 될 때까지 잠들기"를 얹는다
   - [19-deadlock](../19-deadlock/2-summary.md), [20-concurrency-bugs](../20-concurrency-bugs/2-summary.md)(우선순위 역전·PI futex)

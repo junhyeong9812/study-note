@@ -292,7 +292,7 @@ int (*add)(int, int) = (int (*)(int, int))dlsym(h, "add");
 ## 관련 주제·근거
 
 - 선행
-  - [architecture/README](../../architecture/README.md) — `09-isa-and-machine-code`(기계어·주소 지정). 미작성
+  - [architecture/09-isa-and-machine-code](../../architecture/09-isa-and-machine-code/2-summary.md)(기계어·주소 지정)
   - 원고 [foundations/compiler-pipeline §4](../../foundations/compiler-pipeline/README.md) — 컴파일 전체 흐름과 링커
 - 연결
   - [c/syntax/44 헤더와 분할 컴파일](../../../languages/c/syntax/44-headers-and-separate-compilation/2-summary.md) · [c/syntax/45 번역 단위와 링크 에러 읽기](../../../languages/c/syntax/45-translation-units-and-reading-link-errors/2-summary.md)

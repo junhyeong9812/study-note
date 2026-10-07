@@ -292,7 +292,7 @@ while (true) {
 
 - 선행
   - [23-socket-api](../23-socket-api/2-summary.md) — `send()`·`recv()`와 소켓 버퍼
-  - `architecture/15-io-devices-interrupts-dma` — 인터럽트·DMA 기초. 미작성([architecture 영역 표](../../architecture/README.md))
+  - [architecture/15-io-devices-interrupts-dma](../../architecture/15-io-devices-interrupts-dma/2-summary.md) — 인터럽트·DMA 기초
 - 후속·연결
   - [26-packet-journey](../26-packet-journey/2-summary.md) — 이 노트의 경로를 호스트 밖까지 이어 한 장으로
   - [17-tcp-flow-control](../17-tcp-flow-control/2-summary.md) — 수신 버퍼가 차면 윈도가 줄어드는 이야기.

@@ -132,7 +132,7 @@ C 아주 긴 문서(딴 주제)  v=[2.0, 0.0, 12.0]  |v|= 12.17  q·v=  2.0  cos
   - Java `double[][]`은 "행 배열의 배열"이다. 행 하나는 연속이지만 행끼리는 따로 할당된 객체다. 그래서 열 방향 순회는 행마다 다른 객체로 뛴다.
 - *캐시 라인*: CPU가 메모리에서 한 번에 가져오는 단위. 이 실험 호스트는 64바이트(`getconf LEVEL1_DCACHE_LINESIZE` = 64)다.
 - 열 우선 순회는 라인 하나에서 8바이트만 쓰고 넘어간다. 다음 열에서 그 라인을 다시 쓰려면 행마다 라인 하나씩(행 수 × 64 B)을 캐시에 붙잡아 두어야 한다. 행이 많아 그 묶음이 캐시를 넘으면 다음에 그 라인이 필요할 때 이미 밀려나 있다(행렬 전체 크기만으로 정해지지는 않는다).
-- 메모리 계층과 캐시 동작은 [architecture](../../architecture/README.md) 영역(캐시 단원 미작성)과 원고 [foundations/memory-management](../../foundations/memory-management/README.md) "행렬 순회 방향" 항목, 페이지 단위 번역 캐시는 [os/10-paging-and-tlb](../../os/10-paging-and-tlb/2-summary.md)에 있다.
+- 메모리 계층과 캐시 동작은 architecture 영역([11 메모리 계층](../../architecture/11-memory-hierarchy-and-locality/2-summary.md)·[12 캐시 구성](../../architecture/12-cache-organization/2-summary.md))과 원고 [foundations/memory-management](../../foundations/memory-management/README.md) "행렬 순회 방향" 항목, 페이지 단위 번역 캐시는 [os/10-paging-and-tlb](../../os/10-paging-and-tlb/2-summary.md)에 있다.
 
 ### 4. 행렬곱과 루프 순서
 
@@ -322,7 +322,7 @@ SELECT min(vector_norm(embedding)), avg(vector_norm(embedding)), max(vector_norm
   - [data-structure/07-heap](../../data-structure/07-heap/2-summary.md) — top-k
   - [algorithm/24-divide-conquer](../../algorithm/24-divide-conquer/2-summary.md) — 행렬 거듭제곱
   - [os/10-paging-and-tlb](../../os/10-paging-and-tlb/2-summary.md) — 큰 배열 접근과 TLB
-  - [architecture](../../architecture/README.md) — 메모리 계층·캐시(미작성), 원고 [foundations/memory-management](../../foundations/memory-management/README.md)
+  - architecture — [메모리 계층](../../architecture/11-memory-hierarchy-and-locality/2-summary.md)·[캐시](../../architecture/12-cache-organization/2-summary.md), 원고 [foundations/memory-management](../../foundations/memory-management/README.md)
   - [reliability/38-microbenchmarking](../../reliability/38-microbenchmarking/2-summary.md) · [reliability/36-profiling](../../reliability/36-profiling/2-summary.md)
 - 근거
   - MIT OCW 18.06 Linear Algebra(Spring 2010, Gilbert Strang) <https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/> — 벡터·내적·행렬곱. 교재 『Introduction to Linear Algebra』의 장 번호는 확인하지 못했다 `[?]`

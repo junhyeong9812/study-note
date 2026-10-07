@@ -259,7 +259,7 @@ smartctl -a /dev/sdX                              # 재할당·보류 섹터 수
 
 ## 관련 주제·근거
 
-- 선행: [architecture/16-storage-media-workload](../../systems/storage-media-workload/2-summary.md) — 디스크 IOPS·순차/랜덤
+- 선행: [architecture/16-storage-media-workload](../../architecture/16-storage-media-workload/2-summary.md) — 디스크 IOPS·순차/랜덤
 - 후속·연결
   - [33-data-integrity-checksums](../33-data-integrity-checksums/2-summary.md) — RAID가 못 잡는 조용한 손상, 스크러빙
   - [23-crash-consistency-and-journaling](../23-crash-consistency-and-journaling/2-summary.md) — 같은 문제(여러 블록 원자적 갱신)의 파일 시스템 판

@@ -287,7 +287,7 @@ List<OrderRow> rows = em.createQuery(
 
 - 선행
   - [01-relational-model-and-algebra](../01-relational-model-and-algebra/2-summary.md) — 릴레이션·튜플
-  - [architecture/16 storage-media-workload](../../systems/storage-media-workload/2-summary.md) — 블록 단위 I/O, 순차/랜덤
+  - [architecture/16 storage-media-workload](../../architecture/16-storage-media-workload/2-summary.md) — 블록 단위 I/O, 순차/랜덤
 - 후속·연결
   - [07-buffer-pool](../07-buffer-pool/2-summary.md) — 페이지를 메모리에 올리는 층
   - [08-btree-indexes](../08-btree-indexes/2-summary.md) — InnoDB 클러스터드 인덱스, 인덱스가 가리키는 행 주소

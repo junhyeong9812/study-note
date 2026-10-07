@@ -170,7 +170,7 @@
 ## 쓰이는 자료구조·알고리즘
 
 - **기수 트리(radix tree) = 다단계 페이지 테이블** — 주소 비트를 9비트씩 끊어 각 단계의 인덱스로 쓴다. 비교 없이 비트로 길을 찾는 트라이다. 빈 서브트리는 만들지 않아 희소한 키 공간에 맞다. [data-structure/20-radix-trie](../../data-structure/20-radix-trie/2-summary.md) · [data-structure/09-trie](../../data-structure/09-trie/2-summary.md)
-- **연관 캐시(TLB)** — 가상 페이지 번호를 키로 여러 칸을 동시에 비교하는 하드웨어 캐시다. 캐시 조직(집합 연관·교체)은 [architecture/README](../../architecture/README.md)의 `12-cache-organization`(미작성)에서 다룬다.
+- **연관 캐시(TLB)** — 가상 페이지 번호를 키로 여러 칸을 동시에 비교하는 하드웨어 캐시다. 캐시 조직(집합 연관·교체)은 [architecture/12-cache-organization](../../architecture/12-cache-organization/2-summary.md)에서 다룬다.
 - **LRU 근사** — TLB·페이지 교체 모두 "최근에 안 쓴 것"을 내보내려 한다. PTE의 Accessed 비트가 근사 LRU의 재료다(12번). [data-structure/10-lru-cache](../../data-structure/10-lru-cache/2-summary.md)
 - **해시 테이블(역 페이지 테이블)** — 물리 프레임마다 한 칸을 두고 (프로세스, 가상 페이지)로 해시 검색하는 방식도 있다(OSTEP 20 "Inverted Page Tables"). [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md)
 
@@ -279,7 +279,7 @@ perf stat -e dTLB-load-misses,dTLB-loads ./app
 
 ## 관련 주제·근거
 
-- 선행: [09-address-space](../09-address-space/2-summary.md) — VMA와 SIGSEGV 판정. [architecture/README](../../architecture/README.md) — `12-cache-organization`(연관 캐시), 미작성.
+- 선행: [09-address-space](../09-address-space/2-summary.md) — VMA와 SIGSEGV 판정. [architecture/12-cache-organization](../../architecture/12-cache-organization/2-summary.md)(연관 캐시).
 - 후속·연결
   - [07-threads-and-context-switch](../07-threads-and-context-switch/2-summary.md) — CR3 교체와 PCID.
   - [03-interrupts-traps-faults](../03-interrupts-traps-faults/2-summary.md) — 페이지 폴트 경로(minor·major).

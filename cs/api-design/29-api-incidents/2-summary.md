@@ -211,7 +211,7 @@ authz      샌 ID 50개로 조회 → 200 0건
 ## 쓰이는 자료구조·알고리즘
 
 - **비트 필드 압축(Snowflake)**: 시각·위치·순번을 시프트와 OR로 정수 하나에 담는다. 시각이 상위 비트라 정수 비교 = 대략 시간 비교가 된다. 그래서 `since_id` 같은 "이 ID 이후" 조회가 가능하다(README).
-- **binary64**: 가수 52비트 + 숨은 비트 1개. 2^53 이상의 정수는 2^(비트길이-53) 간격으로만 표현된다. 61비트 ID면 간격 256 → 영역 표 [architecture](../../architecture/README.md)(03-floating-point-ieee754, 미작성).
+- **binary64**: 가수 52비트 + 숨은 비트 1개. 2^53 이상의 정수는 2^(비트길이-53) 간격으로만 표현된다. 61비트 ID면 간격 256 → [architecture/03-floating-point-ieee754](../../architecture/03-floating-point-ieee754/2-summary.md).
 - **열거 공간 크기**: 순번 ID의 추측 성공률은 (존재하는 ID 수 / 추측 범위) ≈ 1에 가깝다. UUIDv4는 무작위 비트 122개라 추측 성공률이 사실상 0이다. 단 샌 ID에는 아무 효과가 없다(실험 B).
 - **객체 단위 인가**: 요청마다 (주체, 동작, 자원) 세 쌍을 정책에 묻는 검사 → [security/15-access-control-models](../../security/15-access-control-models/2-summary.md).
 
@@ -304,7 +304,7 @@ void otherUsersResourceIsNotReadable(String pathTemplate) throws Exception {
 
 - 선행: [28-api-symptom-index](../28-api-symptom-index/2-summary.md)(4절 ID 끝자리 변형, 10절 노출)
 - leaf: [08-schema-and-serialization](../08-schema-and-serialization/2-summary.md)(64비트 ID·JS 정밀도) · [07-versioning-and-compatibility](../07-versioning-and-compatibility/2-summary.md)(필드 추가·폐기 절차) · [01-api-as-contract](../01-api-as-contract/2-summary.md)(문서에 없는 성질 의존) · [13-long-running-operations](../13-long-running-operations/2-summary.md)(13-6 순번 작업 ID) · [03-status-codes-for-apis](../03-status-codes-for-apis/2-summary.md)(03-4 존재 노출) · [14-rate-limit-and-quota-contracts](../14-rate-limit-and-quota-contracts/2-summary.md)(제한 키) · [19-api-gateway-and-bff](../19-api-gateway-and-bff/2-summary.md)(노출 경로 관리)
-- 다른 영역: [security/15-access-control-models](../../security/15-access-control-models/2-summary.md)(IDOR/BOLA) · [architecture](../../architecture/README.md)(03-floating-point-ieee754, 미작성) · 실사건 형식 참고 [testing/21-test-incidents](../../testing/21-test-incidents/2-summary.md) · [reliability/53-reliability-incidents](../../reliability/53-reliability-incidents/2-summary.md)
+- 다른 영역: [security/15-access-control-models](../../security/15-access-control-models/2-summary.md)(IDOR/BOLA) · [architecture/03-floating-point-ieee754](../../architecture/03-floating-point-ieee754/2-summary.md) · 실사건 형식 참고 [testing/21-test-incidents](../../testing/21-test-incidents/2-summary.md) · [reliability/53-reliability-incidents](../../reliability/53-reliability-incidents/2-summary.md)
 - 근거 문서
   - Matt Harris, "Status IDs are changing on 21st September", twitter-development-talk, 2010-08-24 <https://groups.google.com/g/twitter-development-talk/c/eYLjsDfu75U>
   - Matt Harris, "Snowflake: An update and some very important information", twitter-development-talk, 2010-10-19 <https://groups.google.com/g/twitter-development-talk/c/ahbvo3VTIYI>

@@ -309,7 +309,7 @@ names.sort(c);
 
 - 선행
   - [09-index-design](../09-index-design/2-summary.md) — 인덱스 설계
-  - architecture `04-character-encoding-unicode` — 원고: [foundations/data-representation](../../foundations/data-representation/README.md)
+  - [architecture/04-character-encoding-unicode](../../architecture/04-character-encoding-unicode/2-summary.md) — 원고: [foundations/data-representation](../../foundations/data-representation/README.md)
 - 연결
   - [api-design/06-pagination](../../api-design/06-pagination/2-summary.md) — 커서 페이지네이션.
   - [data-structure/15-b-tree](../../data-structure/15-b-tree/2-summary.md) — B-tree 불변식

@@ -280,7 +280,7 @@ HAVING sum(l.discount) <> o.discount_total;
 
 - 선행
   - [12-time-money-and-units](../12-time-money-and-units/2-summary.md) — 개관
-  - 부동소수점: `architecture/03-floating-point-ieee754`([architecture/README](../../architecture/README.md)), 원고 [foundations/data-representation](../../foundations/data-representation/README.md)
+  - 부동소수점: [architecture/03-floating-point-ieee754](../../architecture/03-floating-point-ieee754/2-summary.md), 원고 [foundations/data-representation](../../foundations/data-representation/README.md)
 - 연결
   - [advanced/05-multi-currency](../advanced/05-multi-currency/2-summary.md) — 다통화 반올림 순서·경유 환산·반올림 모드 측정
   - [advanced/06-tax](../advanced/06-tax/2-summary.md)(마지막 몫은 빼기로) · [advanced/04-refund](../advanced/04-refund/2-summary.md)(부분 환불 비례 배분) · [advanced/03-subscription-change](../advanced/03-subscription-change/2-summary.md)(반올림 위치)

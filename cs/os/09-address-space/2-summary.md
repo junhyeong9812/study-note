@@ -255,7 +255,7 @@ int main(void) {
   - [11-heap-allocation](../11-heap-allocation/2-summary.md) — malloc·mmap 문턱, free list.
   - [14-mmap-and-page-cache](../14-mmap-and-page-cache/2-summary.md) — 파일 매핑.
   - [29-linking-and-loading](../29-linking-and-loading/2-summary.md) — ELF 적재·PIE.
-  - [architecture/README](../../architecture/README.md) — `10-calling-convention-and-stack-frame`.
+  - [architecture/10-calling-convention-and-stack-frame](../../architecture/10-calling-convention-and-stack-frame/2-summary.md).
 - Kernel 문서·소스
   - Documentation/arch/x86/x86_64/mm.rst — 4단계 유저 공간 `0000000000000000 - 00007fffffffefff` ~128 TB, 비정규 구멍 `0000800000000000 - ffff7fffffffffff`, 5단계(57비트) ~64 PB
   - security/commoncap.c `cap_mmap_addr()` — `mmap_min_addr` 아래는 `CAP_SYS_RAWIO` 필요 · Documentation/admin-guide/sysctl/vm.rst `mmap_min_addr` <https://docs.kernel.org/arch/x86/x86_64/mm.html>

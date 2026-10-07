@@ -268,7 +268,7 @@ static void h(int sig, siginfo_t *info, void *uc) {
 
 ## 관련 주제·근거
 
-- 선행: architecture/09-isa-and-machine-code — 원고 [foundations/hardware-basics](../../foundations/hardware-basics/README.md) §3 CPU 내부 구조·§9 인스트럭션 세트. 영역 표 [architecture/README](../../architecture/README.md)
+- 선행: [architecture/09-isa-and-machine-code](../../architecture/09-isa-and-machine-code/2-summary.md) — 원고 [foundations/hardware-basics](../../foundations/hardware-basics/README.md) §3 CPU 내부 구조·§9 인스트럭션 세트
 - 후속
   - [02-system-calls](../02-system-calls/2-summary.md) — 첫 번째 문: 시스템 콜 경로와 비용
   - [03-interrupts-traps-faults](../03-interrupts-traps-faults/2-summary.md) — 세 문의 차이, 예외 벡터

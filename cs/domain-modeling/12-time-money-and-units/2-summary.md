@@ -152,7 +152,7 @@ long once = BigDecimal.valueOf(sum).multiply(rate).setScale(0, RoundingMode.HALF
 - **은행가 반올림(HALF_EVEN)**: 절반에서 짝수 쪽. 모드별 표는 14번 노트.
 - **tz 전이 테이블**: 지역마다 "이 순간부터 오프셋이 몇이다"의 정렬된 배열 + 반복 규칙. JDK 21 `ZoneRules`는 마지막 저장 전이 이전(과거) 시각을 이 배열에서 `Arrays.binarySearch`로 찾고, 그 이후 시각은 반복 규칙으로 그해 전이를 만들어 비교한다(13번 노트).
 - **환산 비율 표**: 단위(또는 통화) 짝 → 비율. 통화 환율표가 방향 있는 그래프라는 점은 [advanced/05-multi-currency](../advanced/05-multi-currency/2-summary.md) 참고.
-- 부동소수점이 왜 0.1을 못 드는지: 원고 [foundations/data-representation](../../foundations/data-representation/README.md)(architecture/03-floating-point-ieee754 — 원고 있음, [architecture/README](../../architecture/README.md)).
+- 부동소수점이 왜 0.1을 못 드는지: 원고 [foundations/data-representation](../../foundations/data-representation/README.md)([architecture/03-floating-point-ieee754](../../architecture/03-floating-point-ieee754/2-summary.md)).
 
 ## 적용 — 풀어나가는 법
 
@@ -241,7 +241,7 @@ grep -rnE 'LocalDateTime\.now\(\)|new Date\(\)' src/
 
 - 선행
   - [04-entities-and-value-objects](../04-entities-and-value-objects/2-summary.md) — 값 객체의 동등성·불변성
-  - 부동소수점: [foundations/data-representation](../../foundations/data-representation/README.md) 원고, `architecture/03-floating-point-ieee754`([architecture/README](../../architecture/README.md))
+  - 부동소수점: [foundations/data-representation](../../foundations/data-representation/README.md) 원고, [architecture/03-floating-point-ieee754](../../architecture/03-floating-point-ieee754/2-summary.md)
 - 후속
   - [13-instant-vs-local-time-and-tz-rules](../13-instant-vs-local-time-and-tz-rules/2-summary.md) — 시간 심화
   - [14-money-arithmetic-rounding-allocation](../14-money-arithmetic-rounding-allocation/2-summary.md) — 금액 심화

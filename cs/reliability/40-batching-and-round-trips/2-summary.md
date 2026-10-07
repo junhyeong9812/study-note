@@ -338,7 +338,7 @@ const userLoader = new DataLoader<number, User>(async (ids) => {
 ## 관련 주제·근거
 
 - 선행
-  - [architecture/13-latency-numbers](../../architecture/README.md) — 미작성(영역 표 링크): 지연 자릿수 감각
+  - [architecture/13-latency-numbers](../../architecture/13-latency-numbers/2-summary.md) — 지연 자릿수 감각
   - [database/23-orm-and-n-plus-one](../../database/23-orm-and-n-plus-one/2-summary.md) — N+1 쿼리
   - [network/22-nagle-and-delayed-ack](../../network/22-nagle-and-delayed-ack/2-summary.md) — TCP 수준의 모으기
   - [network/03-latency-bandwidth-bdp](../../network/03-latency-bandwidth-bdp/2-summary.md) — RTT와 대역폭

@@ -305,7 +305,7 @@ SHOW WARNINGS;          -- IGNORE를 썼다면 반드시 확인
 
 - 선행
   - [34-large-backfill-and-batch-dml](../34-large-backfill-and-batch-dml/2-summary.md) — 배치 적재·체크포인트
-  - architecture `04-character-encoding-unicode` — UTF-8·BOM·코드 포인트. 원고: [foundations/data-representation](../../foundations/data-representation/README.md)
+  - [architecture/04-character-encoding-unicode](../../architecture/04-character-encoding-unicode/2-summary.md) — UTF-8·BOM·코드 포인트. 원고: [foundations/data-representation](../../foundations/data-representation/README.md)
   - [network/40-chunked-and-streaming-responses](../../network/40-chunked-and-streaming-responses/2-summary.md) — 스트리밍 응답
 - 연결
   - [network/42-large-file-upload-patterns](../../network/42-large-file-upload-patterns/2-summary.md) — 업로드 경로

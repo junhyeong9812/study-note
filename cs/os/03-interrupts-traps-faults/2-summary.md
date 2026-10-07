@@ -285,7 +285,7 @@ Java — HotSpot `-XX:+AlwaysPreTouch`는 힙을 커밋할 때 모든 페이지�
   - [04-process-and-lifecycle](../04-process-and-lifecycle/2-summary.md) — major fault 동안의 `D` 상태
   - [06-signals](../06-signals/2-summary.md) — 폴트가 바뀐 시그널을 받는 쪽.
   - [10-paging-and-tlb](../10-paging-and-tlb/2-summary.md) · [12-swapping-and-page-replacement](../12-swapping-and-page-replacement/2-summary.md) · [14-mmap-and-page-cache](../14-mmap-and-page-cache/2-summary.md) — 페이지 테이블·스왑·페이지 캐시.
-  - architecture/15-io-devices-interrupts-dma — 폴링 vs 인터럽트, DMA. 미작성, 영역 표 [architecture/README](../../architecture/README.md)
+  - [architecture/15-io-devices-interrupts-dma](../../architecture/15-io-devices-interrupts-dma/2-summary.md) — 폴링 vs 인터럽트, DMA
   - [network/25-kernel-network-stack](../../network/25-kernel-network-stack/2-summary.md) — IRQ → NAPI → softirq
   - 원고 [foundations/memory-management](../../foundations/memory-management/README.md) §10 요구 페이징·§11 페이지 폴트
 - 교재

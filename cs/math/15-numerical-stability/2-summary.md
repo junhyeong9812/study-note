@@ -22,7 +22,7 @@
 - 같은 데이터로 병렬 집계를 돌렸는데 코어 수·병렬도 설정을 바꾸자 마지막 자리가 바뀌어 스냅샷 테스트가 깨진다.
 - `E[X²] − E[X]²`로 분산을 구했더니 음수가 나와 표준편차가 `NaN`이 된다.
 
-부동소수 형식(부호·지수·가수, 특수값)은 [architecture](../../architecture/README.md) 영역의 03-floating-point-ieee754(미작성 — 원고 [foundations/data-representation](../../foundations/data-representation/README.md) §2)에 있다. 돈 계산의 반올림 규칙은 [domain-modeling/14-money-arithmetic-rounding-allocation](../../domain-modeling/14-money-arithmetic-rounding-allocation/2-summary.md)에 있다. 여기서는 **오차가 어떻게 자라고 어떻게 막는지**를 다룬다.
+부동소수 형식(부호·지수·가수, 특수값)은 architecture 영역의 [03-floating-point-ieee754](../../architecture/03-floating-point-ieee754/2-summary.md)(원고 [foundations/data-representation](../../foundations/data-representation/README.md) §2)에 있다. 돈 계산의 반올림 규칙은 [domain-modeling/14-money-arithmetic-rounding-allocation](../../domain-modeling/14-money-arithmetic-rounding-allocation/2-summary.md)에 있다. 여기서는 **오차가 어떻게 자라고 어떻게 막는지**를 다룬다.
 
 ## 동작·원리
 
@@ -353,7 +353,7 @@ static long sumCents(long[] cents) {
 ## 관련 주제·근거
 
 - 선행
-  - architecture/03-floating-point-ieee754 — [architecture 영역 표](../../architecture/README.md)(미작성). 원고 [foundations/data-representation](../../foundations/data-representation/README.md) §2(부동소수점·엡실론·0.1+0.2)
+  - [architecture/03-floating-point-ieee754](../../architecture/03-floating-point-ieee754/2-summary.md). 원고 [foundations/data-representation](../../foundations/data-representation/README.md) §2(부동소수점·엡실론·0.1+0.2)
 - 같은 영역·연결
   - [13-linear-algebra-essentials](../13-linear-algebra-essentials/2-summary.md) — 내적·행렬곱의 덧셈 순서
   - [08-expectation-variance-tails](../08-expectation-variance-tails/2-summary.md) — 분산의 정의

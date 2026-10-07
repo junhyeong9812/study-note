@@ -279,7 +279,7 @@ filefrag -v <파일>                    # 실제 파일의 extent 목록
 - 후속·연결
   - [23-crash-consistency-and-journaling](../23-crash-consistency-and-journaling/2-summary.md) — 여러 블록을 고치는 도중 전원이 나가면
   - [24-fsync-and-durability](../24-fsync-and-durability/2-summary.md) — 디렉터리 항목까지 디스크에 남기기
-  - [architecture/16-storage-media-workload](../../systems/storage-media-workload/2-summary.md) — HDD 탐색 비용이 FFS 설계의 이유
+  - [architecture/16-storage-media-workload](../../architecture/16-storage-media-workload/2-summary.md) — HDD 탐색 비용이 FFS 설계의 이유
   - [10-paging-and-tlb](../10-paging-and-tlb/2-summary.md) — 다단계 페이지 테이블(다단계 인덱스와 같은 발상)
   - [14-mmap-and-page-cache](../14-mmap-and-page-cache/2-summary.md) — 페이지 캐시
 - 교재

@@ -114,7 +114,7 @@ one {{1 item.}}
 
 - *논리 속성(CSS Logical Properties)*: `margin-inline-start`, `padding-inline-end`, `inset-inline-start`처럼 "왼쪽·오른쪽" 대신 "시작·끝"으로 쓰는 속성. `dir`에 따라 실제 방향이 정해진다.
 - 번역문은 길이가 다르다. 같은 "변경 사항 저장"이 독일어 "Änderungen speichern"이 되면 고정 폭 버튼을 넘친다(실험).
-- 문자열 `length`는 UTF-16 코드 단위 수다. 사용자가 보는 "글자"(grapheme)와 다르다(실험 9). [architecture/04-character-encoding-unicode](../../architecture/README.md)
+- 문자열 `length`는 UTF-16 코드 단위 수다. 사용자가 보는 "글자"(grapheme)와 다르다(실험 9). [architecture/04-character-encoding-unicode](../../architecture/04-character-encoding-unicode/2-summary.md)
 
 ### 실험: Intl 출력·로캘 협상·레이아웃을 실제로 잰다
 
@@ -391,7 +391,7 @@ button { min-inline-size: 120px; }                                      /* 고�
 
 - 선행
   - [05-fetch-from-browser](../05-fetch-from-browser/2-summary.md) — 요청 헤더·자격 증명
-  - [architecture/04-character-encoding-unicode](../../architecture/README.md) — 코드 포인트·UTF-16·정규화(영역 표, 원고는 foundations/data-representation)
+  - [architecture/04-character-encoding-unicode](../../architecture/04-character-encoding-unicode/2-summary.md) — 코드 포인트·UTF-16·정규화(원고는 foundations/data-representation)
   - [network/33-http-semantics](../../network/33-http-semantics/2-summary.md) — 내용 협상, `Vary`
 - 후속·연결
   - [11-accessibility-basics](../11-accessibility-basics/2-summary.md) — `lang` 속성, 스크린리더 발음
