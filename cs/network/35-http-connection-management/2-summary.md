@@ -359,7 +359,7 @@ server {
 - 후속
   - `36-http2-multiplexing` — 한 연결 안의 다중화. [36번](../36-http2-multiplexing/2-summary.md)
   - [20-time-wait-and-close-wait](../20-time-wait-and-close-wait/2-summary.md)
-  - `46-load-balancers-and-proxies` — [systems/server-design/02-request-path.md](../../systems/server-design/02-request-path.md)
+  - [46-load-balancers-and-proxies](../46-load-balancers-and-proxies/2-summary.md)
   - [reliability/07-timeout-taxonomy-by-layer](../../reliability/07-timeout-taxonomy-by-layer/2-summary.md)
   - [ops-patterns/01-retry-backoff](../../ops-patterns/01-retry-backoff/2-summary.md) — 재사용 소켓 실패 재시도의 범위
 - RFC 9112 HTTP/1.1 §9 Connection Management <https://www.rfc-editor.org/rfc/rfc9112>

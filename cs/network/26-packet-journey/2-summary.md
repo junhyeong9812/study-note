@@ -150,7 +150,7 @@
            -> (데이터면) 소켓 수신 버퍼 -> 앱 recv()
 ```
 
-- 서버 앞에 L4 로드밸런서가 있으면 dst IP·포트가 바뀔 수 있다(DNAT). L7 프록시면 TCP 연결 자체가 둘로 나뉜다(46번).
+- 서버 앞에 L4 로드밸런서가 있으면 dst IP·포트가 바뀔 수 있다(DNAT). L7 프록시면 TCP 연결 자체가 둘로 나뉜다([46번](../46-load-balancers-and-proxies/2-summary.md)).
 - 서버 커널은 4-튜플로 연결 소켓을 찾는다. 없으면 RST로 답한다(19번).
 - 응답은 같은 길을 거꾸로 간다. 이때 NAT 표·방화벽 상태 표에 **왕복 기록**이 남아 있어야 돌아온다.
 
@@ -329,7 +329,7 @@ const res = await fetch('https://example.com/', { signal: AbortSignal.timeout(10
   - [23-socket-api](../23-socket-api/2-summary.md) — 구간 1·10의 시스템콜
   - [27-dns-resolution](../27-dns-resolution/2-summary.md) — 구간 1의 이름 해석
   - [29-tls-handshake](../29-tls-handshake/2-summary.md) — 연결 뒤 암호 채널
-  - `46-load-balancers-and-proxies` — 원고: [systems/server-design/02-request-path](../../systems/server-design/02-request-path.md)
+  - [46-load-balancers-and-proxies](../46-load-balancers-and-proxies/2-summary.md)
   - [49-what-happens-when-url](../49-what-happens-when-url/2-summary.md) · [50-network-diagnostics](../50-network-diagnostics/2-summary.md)
 - RFC
   - RFC 1812 §5.3.1 — 라우터의 TTL 감소(MUST)·Time Exceeded <https://www.rfc-editor.org/rfc/rfc1812>

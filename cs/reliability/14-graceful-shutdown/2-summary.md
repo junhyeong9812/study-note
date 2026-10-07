@@ -320,7 +320,7 @@ ss -tan state established '( sport = :8080 )' | wc -l
 
 - 선행
   - [os/06-signals](../../os/06-signals/2-summary.md) — SIGTERM·SIGKILL, 종료 코드 128+N, PID 1과 핸들러
-  - network/46-load-balancers-and-proxies — 노트는 원고 [systems/server-design/02-request-path.md](../../systems/server-design/02-request-path.md)(헬스체크·연결 드레이닝)
+  - [network/46-load-balancers-and-proxies](../../network/46-load-balancers-and-proxies/2-summary.md) — 헬스체크·연결 드레이닝
   - [network/35-http-connection-management](../../network/35-http-connection-management/2-summary.md) — keep-alive, `Connection: close`
 - 원본(이어받음)
   - [ops-patterns/19-graceful-shutdown](../../ops-patterns/19-graceful-shutdown/2-summary.md) — 상태 기계·기한·버린 건수 보고

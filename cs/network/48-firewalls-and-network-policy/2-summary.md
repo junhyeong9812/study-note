@@ -335,7 +335,7 @@ try (Socket s = new Socket()) {
 - 연결
   - [15-tcp-handshake-and-backlog](../15-tcp-handshake-and-backlog/2-summary.md) — SYN 재전송·connect.
   - [50-network-diagnostics](../50-network-diagnostics/2-summary.md) — `tcpdump`·`ss`·`mtr`.
-  - 46 로드밸런서·프록시 — [systems/server-design/02-request-path.md](../../systems/server-design/02-request-path.md)
+  - [46 로드밸런서·프록시](../46-load-balancers-and-proxies/2-summary.md)
 - `iptables(8)` — TARGETS, TABLES, `-L`·`-v`·`--line-numbers` <https://man7.org/linux/man-pages/man8/iptables.8.html>
 - `iptables-extensions(8)` — conntrack(`--ctstate`), set(`--match-set`), REJECT(`--reject-with`, INVALID 경고) <https://man7.org/linux/man-pages/man8/iptables-extensions.8.html>
 - `nft(8)` — 체인 정책, SETS·MAPS, REJECT STATEMENT, `meta nftrace`·`monitor trace` <https://manpages.debian.org/bookworm/nftables/nft.8.en.html>

@@ -319,7 +319,7 @@ grpcurl -plaintext -max-time 0.5 -d '{"id":"ord_123"}' localhost:50051 shop.Orde
 ## 관련 주제·근거
 
 - 선행: [08-schema-and-serialization](../08-schema-and-serialization/2-summary.md), [network/36-http2-multiplexing](../../network/36-http2-multiplexing/2-summary.md)
-- 후속·연결: [16-grpc-streaming-modes](../16-grpc-streaming-modes/2-summary.md), [reliability/05-timeouts-and-deadline-propagation](../../reliability/05-timeouts-and-deadline-propagation/2-summary.md), [reliability/09-cancellation-propagation](../../reliability/09-cancellation-propagation/2-summary.md), [reliability/06-retry-backoff-jitter](../../reliability/06-retry-backoff-jitter/2-summary.md), [reliability/13-idempotency](../../reliability/13-idempotency/2-summary.md), [18-api-style-selection](../18-api-style-selection/2-summary.md), network/46-load-balancers-and-proxies(새 형식 노트 없음, 원고 [systems/server-design/02-request-path](../../systems/server-design/02-request-path.md) — [network 영역](../../network/README.md))
+- 후속·연결: [16-grpc-streaming-modes](../16-grpc-streaming-modes/2-summary.md), [reliability/05-timeouts-and-deadline-propagation](../../reliability/05-timeouts-and-deadline-propagation/2-summary.md), [reliability/09-cancellation-propagation](../../reliability/09-cancellation-propagation/2-summary.md), [reliability/06-retry-backoff-jitter](../../reliability/06-retry-backoff-jitter/2-summary.md), [reliability/13-idempotency](../../reliability/13-idempotency/2-summary.md), [18-api-style-selection](../18-api-style-selection/2-summary.md), [network/46-load-balancers-and-proxies](../../network/46-load-balancers-and-proxies/2-summary.md)
 - 근거
   - gRPC Core concepts — https://grpc.io/docs/what-is-grpc/core-concepts/
   - gRPC Deadlines — https://grpc.io/docs/guides/deadlines/

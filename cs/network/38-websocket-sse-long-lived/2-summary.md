@@ -421,7 +421,7 @@ ss -tnH state established '( sport = :443 )' | wc -l   # -H: 헤더 줄 빼고 �
 - 후속·관련
   - [40-chunked-and-streaming-responses](../40-chunked-and-streaming-responses/2-summary.md) — 스트리밍 응답·프록시 버퍼링·역압
   - [36-http2-multiplexing](../36-http2-multiplexing/2-summary.md) · [44-websocket-compression](../44-websocket-compression/2-summary.md)
-  - `46-load-balancers-and-proxies` — [systems/server-design/02-request-path.md](../../systems/server-design/02-request-path.md)
+  - [46-load-balancers-and-proxies](../46-load-balancers-and-proxies/2-summary.md)
   - [languages/web-api/32-server-sent-events](../../../languages/web-api/32-server-sent-events/2-summary.md) — 브라우저 `EventSource` 실측
   - [languages/web-api/33-websocket](../../../languages/web-api/33-websocket/2-summary.md) — 브라우저 `WebSocket` 핸드셰이크·프레임 실측
   - [issue/cross-cutting/network/half-open-liveness-watchdog](../../../issue/cross-cutting/network/half-open-liveness-watchdog/2-summary.md)

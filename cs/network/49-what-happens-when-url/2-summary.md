@@ -411,7 +411,7 @@ for (const e of performance.getEntriesByType('resource')) {
   - [34-http-caching](../34-http-caching/2-summary.md) · [35-http-connection-management](../35-http-connection-management/2-summary.md) · [36-http2-multiplexing](../36-http2-multiplexing/2-summary.md) · [37-http3-quic](../37-http3-quic/2-summary.md)
   - [39-http-content-encoding](../39-http-content-encoding/2-summary.md) · [40-chunked-and-streaming-responses](../40-chunked-and-streaming-responses/2-summary.md)
   - [47-cdn-and-edge](../47-cdn-and-edge/2-summary.md) · [48-firewalls-and-network-policy](../48-firewalls-and-network-policy/2-summary.md) · [11-nat-and-conntrack](../11-nat-and-conntrack/2-summary.md) · [10-fragmentation-mtu-pmtud](../10-fragmentation-mtu-pmtud/2-summary.md)
-  - `46-load-balancers-and-proxies` — 원고: [systems/server-design/02-request-path](../../systems/server-design/02-request-path.md)
+  - [46-load-balancers-and-proxies](../46-load-balancers-and-proxies/2-summary.md)
   - 렌더링 구간: [web-platform/02-rendering-pipeline](../../web-platform/02-rendering-pipeline/2-summary.md)·[web-platform/13-critical-path-and-resource-loading](../../web-platform/13-critical-path-and-resource-loading/2-summary.md)·[web-platform/07-service-workers-and-offline](../../web-platform/07-service-workers-and-offline/2-summary.md)
 - 후속
   - [50-network-diagnostics](../50-network-diagnostics/2-summary.md) — 구간별 도구

@@ -227,7 +227,7 @@ C 병렬, 호출별 300ms 예산 :   307 ms  {profile={"name":"kim"}, orders=["o
 
 - 선행
   - [18-api-style-selection](../18-api-style-selection/2-summary.md) — 스타일별 경계
-  - network 46-load-balancers-and-proxies — 미작성, [network README](../../network/README.md)에서 상태 확인
+  - [network/46-load-balancers-and-proxies](../../network/46-load-balancers-and-proxies/2-summary.md)
 - 후속·연결
   - [14-rate-limit-and-quota-contracts](../14-rate-limit-and-quota-contracts/2-summary.md) · [17-graphql](../17-graphql/2-summary.md) — 영역 표: [curriculum](../curriculum.md)
   - reliability [05-timeouts-and-deadline-propagation](../../reliability/05-timeouts-and-deadline-propagation/2-summary.md) · [10-circuit-breaker](../../reliability/10-circuit-breaker/2-summary.md) · [11-rate-limiter](../../reliability/11-rate-limiter/2-summary.md) · [28-bulkhead](../../reliability/28-bulkhead/2-summary.md) · [50-sidecar-ambassador-and-service-mesh](../../reliability/50-sidecar-ambassador-and-service-mesh/2-summary.md) · [51-cells-stamps-and-blast-radius](../../reliability/51-cells-stamps-and-blast-radius/2-summary.md)

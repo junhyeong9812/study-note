@@ -334,7 +334,7 @@ kubectl get endpointslices -l kubernetes.io/service-name=<svc> -o wide
 ## 관련 주제·근거
 
 - 선행
-  - network/46-load-balancers-and-proxies — 노트는 원고 [systems/server-design/02-request-path.md](../../systems/server-design/02-request-path.md)
+  - [network/46-load-balancers-and-proxies](../../network/46-load-balancers-and-proxies/2-summary.md)
   - [os/28-containers-namespaces-cgroups](../../os/28-containers-namespaces-cgroups/2-summary.md) — 네트워크 네임스페이스 공유
   - [06-retry-backoff-jitter](../06-retry-backoff-jitter/2-summary.md) — 계층 재시도·재시도 예산
 - 연결

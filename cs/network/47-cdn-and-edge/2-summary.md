@@ -277,7 +277,7 @@ curl -s -b 'session=B' https://www.example.com/account | sha256sum
 
 - 선행
   - [34-http-caching](../34-http-caching/2-summary.md) — `Cache-Control`·`ETag`·`Vary`
-  - 46 로드밸런서·프록시 — 기존 노트 [systems/server-design/02-request-path.md](../../systems/server-design/02-request-path.md) (「CDN / 엣지」 절 포함)
+  - [46 로드밸런서·프록시](../46-load-balancers-and-proxies/2-summary.md) — 원고 [systems/server-design/02-request-path.md](../../systems/server-design/02-request-path.md) (「CDN / 엣지」 절 포함)
 - 후속·연결
   - [45-adaptive-media-streaming](../45-adaptive-media-streaming/2-summary.md) — 세그먼트 전달
   - [systems/server-design/04-caching.md](../../systems/server-design/04-caching.md) — 캐시 계층·스탬피드

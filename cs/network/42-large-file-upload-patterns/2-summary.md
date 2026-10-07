@@ -386,7 +386,7 @@ aws s3api list-multipart-uploads --bucket my-bucket
   - [languages/web-api/30-request-body-and-content-type](../../../languages/web-api/30-request-body-and-content-type/2-summary.md) — 브라우저 `FormData`와 multipart 경계
   - [languages/web-api/31-blob-file-and-object-url](../../../languages/web-api/31-blob-file-and-object-url/2-summary.md) — `Blob`·`File`·`slice`
   - [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md) — 완료 콜백 중복 처리
-  - `46-load-balancers-and-proxies` — [systems/server-design/02-request-path.md](../../systems/server-design/02-request-path.md)
+  - [46-load-balancers-and-proxies](../46-load-balancers-and-proxies/2-summary.md)
 - RFC 7578 multipart/form-data(§4.1 경계 · §4.2 Content-Disposition·filename · §4.3 다중 파일 · §4.4 부분 Content-Type · §7 보안) <https://www.rfc-editor.org/rfc/rfc7578>
 - RFC 9110 §10.1.1 Expect/100-continue · §15.5.14 413 Content Too Large <https://www.rfc-editor.org/rfc/rfc9110>
 - tus 재개 가능 업로드 프로토콜 1.0(코어·creation·expiration·checksum·termination·concatenation) <https://tus.io/protocols/resumable-upload>

@@ -259,7 +259,7 @@
 | 502 + nginx `connect() failed (111: Connection refused) while connecting to upstream` | 상류 프로세스 다운·재시작·포트 틀림 | 상류에서 `ss -ltnp` | [33](../33-http-semantics/2-summary.md) · [15](../15-tcp-handshake-and-backlog/2-summary.md) |
 | 502 + `upstream prematurely closed connection` / `recv() failed (104: Connection reset by peer)` | 상류가 keep-alive를 LB보다 먼저 닫음(idle close 경합), 상류 크래시 | 구간별 idle timeout 표 | [35](../35-http-connection-management/2-summary.md) · [19](../19-tcp-termination-fin-rst-half-open/2-summary.md) |
 | 502 + `no live upstreams` | 모든 상류가 실패로 표시됨 | 헬스체크·`max_fails` | [33](../33-http-semantics/2-summary.md) |
-| 503 | 앱이 스스로 과부하·점검 응답, LB에 건강한 대상 없음 | LB 대상 상태, 헬스체크 로그 | [33](../33-http-semantics/2-summary.md) · [LB 원고](../../systems/server-design/02-request-path.md) |
+| 503 | 앱이 스스로 과부하·점검 응답, LB에 건강한 대상 없음 | LB 대상 상태, 헬스체크 로그 | [33](../33-http-semantics/2-summary.md) · [46](../46-load-balancers-and-proxies/2-summary.md) |
 | 504 + `upstream timed out (110: Connection timed out) while reading response header from upstream` | 상류 처리가 느림(느린 쿼리·외부 호출), 타임아웃 값 불일치 | 상류 처리 시간 vs `proxy_read_timeout` | [33](../33-http-semantics/2-summary.md) · [35](../35-http-connection-management/2-summary.md) |
 | CDN 502/504 급증 직후 원점 부하 폭증 | 전체 퍼지·동시 만료로 원점 스탬피드 | CDN 미스율, 원점 요청 수 | [47](../47-cdn-and-edge/2-summary.md) |
 | 200인데 본문이 잘림, curl `(18)` | 헤더를 보낸 뒤 서버 오류(상태 코드는 이미 확정) | 액세스 로그의 보낸 바이트 | [40](../40-chunked-and-streaming-responses/2-summary.md) |
