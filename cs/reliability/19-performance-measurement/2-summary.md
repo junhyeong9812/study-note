@@ -22,7 +22,7 @@
 
 똑같은 구조다.\
 실무 예: 부하 테스트 리포트의 p99, SLO의 지연 목표, 배포 전후 비교, 용량 산정. 모두 "제대로 잰 분포"가 있어야 판단할 수 있다.\
-백분위의 수학(병합·보간)은 [data-analysis/05](../../data-analysis/README.md)(미작성)에서 다룬다. 이 노트는 **측정 방법**이 숫자를 어떻게 왜곡하는지에 집중한다.
+백분위의 수학(병합·보간)은 [data-analysis/05](../../data-analysis/05-percentiles-and-latency-distributions/2-summary.md)에서 다룬다. 이 노트는 **측정 방법**이 숫자를 어떻게 왜곡하는지에 집중한다.
 
 ## 동작·원리
 
@@ -233,7 +233,7 @@ histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket[5
 ## 관련 주제·근거
 
 - 선행
-  - [data-analysis/05-percentiles-and-latency-distributions](../../data-analysis/README.md) — 미작성(영역 표 링크)
+  - [data-analysis/05-percentiles-and-latency-distributions](../../data-analysis/05-percentiles-and-latency-distributions/2-summary.md)
   - 원본 [engineering-axes/performance.md](../../engineering/engineering-axes/performance.md) — 「대원칙 ① 꼬리를 본다」, 「성능 작업의 함정」
   - [02-slo-sli-error-budget](../02-slo-sli-error-budget/2-summary.md) — 지연 SLI
 - 후속·연결

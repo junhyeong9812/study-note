@@ -283,7 +283,7 @@ Gauge.builder("dq_null_ratio", this, s -> s.rowsLoaded.get() == 0 ? Double.NaN  
 
 - 선행
   - [09-data-contracts-and-schema-registry](../09-data-contracts-and-schema-registry/2-summary.md) — 계약의 품질·SLA 칸
-  - data-analysis/18-data-cleaning-and-quality — 분석 쪽 품질 검사(미작성 — [data-analysis 영역 표](../../data-analysis/README.md))
+  - [data-analysis/18-data-cleaning-and-quality](../../data-analysis/18-data-cleaning-and-quality/2-summary.md) — 분석 쪽 품질 검사
   - [reliability/16-metrics-and-golden-signals](../../reliability/16-metrics-and-golden-signals/2-summary.md) — 지표 형, 카디널리티
 - 후속·연결
   - [11-data-lineage](../11-data-lineage/2-summary.md) — 관측 5축의 계보, 원인 추적과 영향 범위

@@ -242,7 +242,7 @@ SELECT DATE(sold_at) AS kst_day, SUM(amount) FROM sales GROUP BY kst_day;
   - [26-schema-migration](../26-schema-migration/2-summary.md) — 타입 변경은 재작성(MySQL COPY)
   - [50-temporal-and-bitemporal-tables](../50-temporal-and-bitemporal-tables/2-summary.md) — 유효 시간·기록 시간
   - [domain-modeling/13-instant-vs-local-time-and-tz-rules](../../domain-modeling/13-instant-vs-local-time-and-tz-rules/2-summary.md)
-  - `data-analysis/18-data-cleaning-and-quality` — 미작성, [data-analysis/README](../../data-analysis/README.md)
+  - [data-analysis/18-data-cleaning-and-quality](../../data-analysis/18-data-cleaning-and-quality/2-summary.md)
 - PostgreSQL 17 문서
   - 14.1 Using EXPLAIN(인덱스가 있어도 순차 스캔을 고르는 예) <https://www.postgresql.org/docs/17/using-explain.html>
   - 소스 `src/include/datatype/timestamp.h`(REL_17_STABLE) — `POSTGRES_EPOCH_JDATE` = 2000-01-01

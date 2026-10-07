@@ -297,7 +297,7 @@ SELECT /*+ MAX_EXECUTION_TIME(1000) */ …;
   - [01-relational-model-and-algebra](../01-relational-model-and-algebra/2-summary.md) — 유일 정렬 키
   - [36-data-models-document-graph](../36-data-models-document-graph/2-summary.md) — 재귀 CTE로 그래프 질의
   - [22-database-side-timeouts](../22-database-side-timeouts/2-summary.md) · [41-sorting-and-aggregation](../41-sorting-and-aggregation/2-summary.md)
-  - data-analysis `17-sql-for-analysis`(코호트·퍼널·세션화) — 미작성, [data-analysis/README](../../data-analysis/README.md)
+  - [data-analysis/17-sql-for-analysis](../../data-analysis/17-sql-for-analysis/2-summary.md)(코호트·퍼널·세션화)
 - 문법 세부(languages/sql): [sql/26](../../../languages/sql/syntax/26-window-functions-vs-aggregates/2-summary.md) · [sql/28](../../../languages/sql/syntax/28-window-frames-rows-range-groups/2-summary.md) · [sql/29](../../../languages/sql/syntax/29-ranking-functions/2-summary.md) · [sql/31](../../../languages/sql/syntax/31-window-evaluation-timing/2-summary.md) · [sql/32](../../../languages/sql/syntax/32-cte-with-clause/2-summary.md) · [sql/33](../../../languages/sql/syntax/33-recursive-cte/2-summary.md)
 - 교재: CMU 15-445 Fall 2024 Lecture #02 "Modern SQL" §9 Window Functions(개념적 실행 4단계), §12 CTE(재귀 CTE로 SQL은 튜링 완전) <https://15445.courses.cs.cmu.edu/fall2024/notes/02-modernsql.pdf> · Silberschatz 7판 5장 슬라이드 "Recursive Queries"
 - PostgreSQL 17

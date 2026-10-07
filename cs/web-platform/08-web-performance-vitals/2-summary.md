@@ -219,7 +219,7 @@ slow     LCP ms 7920 7916 7904 7952 7940  범위 7904~7952
 ## 쓰이는 자료구조·알고리즘
 
 - **백분위(p75)**: 정렬 후 순위로 고르는 방법(nearest-rank). 실험 코드의 `pct()`가 이 방식이다. 대량 RUM에서는 히스토그램 버킷으로 근사한다 — CrUX는 좋음·개선 필요·나쁨 구간 비율과 p75를 낸다.
-  - 주의: 페이지별 p75를 평균 내면 전체 p75가 아니다. 백분위는 원자료(또는 히스토그램)를 합친 뒤 다시 구한다. 기술통계·백분위 노트는 [data-analysis](../../data-analysis/README.md)(04·05 미작성).
+  - 주의: 페이지별 p75를 평균 내면 전체 p75가 아니다. 백분위는 원자료(또는 히스토그램)를 합친 뒤 다시 구한다. 기술통계·백분위 노트는 [data-analysis/04](../../data-analysis/04-descriptive-statistics/2-summary.md)·[05](../../data-analysis/05-percentiles-and-latency-distributions/2-summary.md).
 - **세션 창 묶기(CLS)**: 시간순 이동을 "직전과 1초 미만 & 창 시작과 5초 미만"이면 같은 창에 더하고, 아니면 새 창을 연다. 한 번 훑기 O(n). `web-vitals`의 `LayoutShiftManager`가 이 두 조건(`< 1000`, `< 5000`)을 그대로 쓴다.
 - **상위 k개 유지(INP)**: `web-vitals`의 `InteractionManager`는 가장 긴 상호작용 최대 10개만 정렬해 둔다. INP 후보 인덱스 = `min(목록 길이 − 1, floor(상호작용 수 / 50))` — "50번마다 1개 무시"를 제한된 후보로 **근사**한 구현이다. 목록이 10개뿐이라 상호작용 500번 이상이면 인덱스가 9에 묶여 10번째로 느린 값을 고른다(정의대로면 11번째). 작은 고정 크기 상위 k 목록은 [힙](../../data-structure/07-heap/2-summary.md) 대신 정렬 배열로도 충분하다.
 - **누적 최댓값(LCP)**: 새 후보가 더 크면 갱신하고, 입력이 오면 멈추는 단순 상태 기계.
@@ -334,7 +334,7 @@ new PerformanceObserver(l => l.getEntries().forEach(e => e.interactionId && cons
   - [20 성능 예산과 회귀 게이트](../20-performance-budgets-and-regression-gates/2-summary.md) — 랩 측정 노이즈, CI 게이트
   - [23 증상 색인](../23-web-symptom-index/2-summary.md)
 - 문법·API: [web-api/34 sendBeacon](../../../languages/web-api/34-send-beacon-and-keepalive/2-summary.md), [web-api/24 문서 수명 이벤트](../../../languages/web-api/24-document-lifecycle-events/2-summary.md), [web-api/38 requestAnimationFrame](../../../languages/web-api/38-request-animation-frame/2-summary.md)
-- 다른 영역: [data-analysis](../../data-analysis/README.md)(04 기술통계·05 백분위 — 미작성), [data-structure/07 힙](../../data-structure/07-heap/2-summary.md), [network/03 지연·대역폭](../../network/03-latency-bandwidth-bdp/2-summary.md)
+- 다른 영역: [data-analysis/04 기술통계](../../data-analysis/04-descriptive-statistics/2-summary.md)·[05 백분위](../../data-analysis/05-percentiles-and-latency-distributions/2-summary.md), [data-structure/07 힙](../../data-structure/07-heap/2-summary.md), [network/03 지연·대역폭](../../network/03-latency-bandwidth-bdp/2-summary.md)
 - 근거
   - web.dev "Web Vitals" https://web.dev/articles/vitals — 세 지표, 임계값, p75·모바일/데스크톱 분리, 단계(stable), INP 2023 pending → 2024 stable, 필드·랩 도구
   - web.dev "Largest Contentful Paint (LCP)" https://web.dev/articles/lcp — 후보 요소, 크기 계산, 제외 휴리스틱, 입력 시 중단, bfcache·백그라운드 탭

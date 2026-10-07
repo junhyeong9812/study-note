@@ -169,7 +169,7 @@ P(시도>8 | 시도>3) = 0.1687 (이론 0.7^5 = 0.1681) ← 무기억성
     "p99 ≈ μ + 2.326σ" = 133.5ms        실제 p99 = 204.8ms   (1.5배 과소)
 ```
 
-- 독립·동일 분포이고 분산이 유한한 값 여럿의 합(표본 평균)은 정규에 가까워진다 — 중심극한정리(분산이 무한하면 성립하지 않는다). 자세히는 data-analysis 07([data-analysis README](../../data-analysis/README.md)).
+- 독립·동일 분포이고 분산이 유한한 값 여럿의 합(표본 평균)은 정규에 가까워진다 — 중심극한정리(분산이 무한하면 성립하지 않는다). 자세히는 [data-analysis/07-sampling-distributions-and-clt](../../data-analysis/07-sampling-distributions-and-clt/2-summary.md).
 - 지연·파일 크기처럼 오른쪽 꼬리가 긴 값 자체는 정규가 아니다. 평균+표준편차로 p99를 어림하면 과소평가한다(위 계산, 로그정규 공식에서 해석적으로 구한 값).
 
 ### 5. 멱법칙(Zipf) — 인기 키
@@ -312,7 +312,7 @@ static void dispersion(long[] tsMillis) {
 선행·후속:
 - 선행: [08-expectation-variance-tails](../08-expectation-variance-tails/2-summary.md)(기댓값·분산·꼬리), [07-probability-and-bayes](../07-probability-and-bayes/2-summary.md).
 - 후속: [12-randomness-and-prng](../12-randomness-and-prng/2-summary.md)(분포에서 표본을 뽑는 난수), 큐잉과 Little 법칙([수학 10](../10-queueing-and-littles-law/2-summary.md) — 포아송 도착·지수 서비스의 M/M/1). 원고의 큐잉 절: [systems/server-design/01-scaling-principles.md](../../systems/server-design/01-scaling-principles.md).
-- 다른 영역: [reliability/22-capacity-and-load-testing](../../reliability/22-capacity-and-load-testing/2-summary.md), [reliability/06-retry-backoff-jitter](../../reliability/06-retry-backoff-jitter/2-summary.md), [data-structure/10-lru-cache](../../data-structure/10-lru-cache/2-summary.md), [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md). 표본 분포·중심극한정리(data-analysis 07)는 [data-analysis README](../../data-analysis/README.md).
+- 다른 영역: [reliability/22-capacity-and-load-testing](../../reliability/22-capacity-and-load-testing/2-summary.md), [reliability/06-retry-backoff-jitter](../../reliability/06-retry-backoff-jitter/2-summary.md), [data-structure/10-lru-cache](../../data-structure/10-lru-cache/2-summary.md), [data-structure/05-hashmap](../../data-structure/05-hashmap/2-summary.md). 표본 분포·중심극한정리는 [data-analysis/07-sampling-distributions-and-clt](../../data-analysis/07-sampling-distributions-and-clt/2-summary.md).
 
 근거:
 - OpenIntro Statistics 4장 Distributions of random variables(4.1 Normal, 4.2 Geometric, 4.3 Binomial, 4.4 Negative binomial, 4.5 Poisson) — https://www.openintro.org/book/os/ 목차(2026-10-07 열람). 68-95-99.7 규칙은 4.1.

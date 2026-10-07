@@ -170,7 +170,7 @@ shadow side effects NOT stubbed: {"requests":10000,"diff":591,"mails":20000,"sam
 
 ## 쓰이는 자료구조·알고리즘
 
-- **두 표본 검정** — 카나리 vs 기준의 오류율 차이가 우연인지 본다. 비율이면 z-검정, 분포를 가정하지 않으려면 Mann-Whitney U(순위 합). 표본 크기와 검출력(나쁜 판을 잡을 확률)의 관계가 실험 3의 표다. 통계 기초는 data-analysis 09 hypothesis-testing·10 power-and-sample-size — 미작성([data-analysis 영역 표](../../data-analysis/README.md)).
+- **두 표본 검정** — 카나리 vs 기준의 오류율 차이가 우연인지 본다. 비율이면 z-검정, 분포를 가정하지 않으려면 Mann-Whitney U(순위 합). 표본 크기와 검출력(나쁜 판을 잡을 확률)의 관계가 실험 3의 표다. 통계 기초는 [data-analysis/09-hypothesis-testing](../../data-analysis/09-hypothesis-testing/2-summary.md)·[10-power-and-sample-size](../../data-analysis/10-power-and-sample-size/2-summary.md).
 - **차등 비교(diff)** — 같은 입력에 대한 두 출력을 비교한다. 출력에 시각·난수·ID처럼 원래 다른 필드가 있으면 비교 전에 걸러야 한다(정규화).
 - **주기 실행 + 임계값** — 합성 점검은 스케줄러가 돌리는 결정적 스크립트다. 단언 결과를 지표(체크 성공률)로 모으고 임계값으로 알림을 낸다.
 - **트래픽 분할** — 가중치 라우팅(카나리), 요청 복제(섀도). [reliability/23-deployment-strategies](../../reliability/23-deployment-strategies/2-summary.md)의 가중 라운드로빈.

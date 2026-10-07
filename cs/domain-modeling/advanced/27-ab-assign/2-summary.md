@@ -258,7 +258,7 @@ README가 먼저 못 박는 장면은 이것이다.
 - 같은 구조 — [data-structure/31-consistent-hashing](../../../data-structure/31-consistent-hashing/2-summary.md): 칸을 늘릴 때 이동을 최소화하는 문제(EXTEND와 같은 관심사).
 - 같은 구조 — [ops-patterns/04-rate-limiter](../../../ops-patterns/04-rate-limiter/2-summary.md): 열쇠를 해시해 칸에 넣는 구조와 열쇠 선택의 함정.
 - 해상도 결정 — [basic/01-parking-fee](../../basic/01-parking-fee/2-summary.md): 단위를 굵게 잡으면 그보다 작은 정책을 표현할 수 없다(만분율 칸의 같은 결정).
-- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` · [data-analysis/README.md](../../../data-analysis/README.md) `14-ab-testing-design`(이 노트를 연결 — 노트 미작성).
+- 영역 표 — [domain-modeling/curriculum.md](../../curriculum.md) `26-advanced-modeling-exercises` · [data-analysis/14-ab-testing-design](../../../data-analysis/14-ab-testing-design/2-summary.md)(이 노트를 연결).
 - myway 원본 — `/home/jun/project/myway/domain-modeling-advanced/27-ab-assign/` (README.md · impl/com/domain/ab/Assigner.java · src/main/java/com/domain/ab/Visitor.java).
 
 ### 관련 자료

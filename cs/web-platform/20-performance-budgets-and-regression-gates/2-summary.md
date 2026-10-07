@@ -179,7 +179,7 @@ noisy  n=15 min=476 median=500 max=544 spread=68ms  [524,484,476,504,516,480,500
 ## 쓰이는 자료구조·알고리즘
 
 - **임계값 비교** — `측정값 ≤ 예산`(고정값) 또는 `측정값 ≤ 기준선 × (1 + 허용)`(상대값). 고정값 예산은 목표를, 상대 예산은 "나빠지지 않기"를 지킨다.
-- **중앙값(반복 측정의 대푯값)** — 평균은 튀는 값 하나에 끌려가고 중앙값은 덜 끌려간다. N개를 정렬해 가운데를 고르거나 선택 알고리즘(quickselect, 평균 O(N))으로 구한다. [algorithm/03-quick-sort](../../algorithm/03-quick-sort/2-summary.md), [data-analysis/04-descriptive-statistics](../../data-analysis/README.md)(미작성, 영역 표)
+- **중앙값(반복 측정의 대푯값)** — 평균은 튀는 값 하나에 끌려가고 중앙값은 덜 끌려간다. N개를 정렬해 가운데를 고르거나 선택 알고리즘(quickselect, 평균 O(N))으로 구한다. [algorithm/03-quick-sort](../../algorithm/03-quick-sort/2-summary.md), [data-analysis/04-descriptive-statistics](../../data-analysis/04-descriptive-statistics/2-summary.md)
 - **백분위(p75) 집계** — 현장 지표는 페이지 조회(page views)의 75번째 백분위로 판정한다(사용자 수 기준이 아니다). 스트림에서 근사 백분위를 구하려면 히스토그램·스케치를 쓴다. [data-structure/19-probabilistic-counting](../../data-structure/19-probabilistic-counting/2-summary.md)
 - **모듈 의존 그래프와 도달성** — 번들 크기는 진입점에서 도달 가능한 모듈의 합이다. 트리 셰이킹은 쓰지 않는 export를 그래프에서 잘라 낸다. esbuild `metafile`이 입력별 기여 바이트를 준다. [data-structure/08-graph](../../data-structure/08-graph/2-summary.md)
 
@@ -293,7 +293,7 @@ process.exit(fail ? 1 : 0);
 - 후속·연결
   - [13-critical-path-and-resource-loading](../13-critical-path-and-resource-loading/2-summary.md) — 동기 스크립트가 첫 렌더를 막는 이유
   - [16-long-tasks-and-web-workers](../16-long-tasks-and-web-workers/2-summary.md) — TBT·긴 태스크
-  - [data-analysis/04-descriptive-statistics](../../data-analysis/README.md) — 중앙값·분위수(미작성, 영역 표)
+  - [data-analysis/04-descriptive-statistics](../../data-analysis/04-descriptive-statistics/2-summary.md) — 중앙값·분위수
   - [algorithm/03-quick-sort](../../algorithm/03-quick-sort/2-summary.md), [data-structure/19-probabilistic-counting](../../data-structure/19-probabilistic-counting/2-summary.md), [data-structure/08-graph](../../data-structure/08-graph/2-summary.md)
 - 문서
   - web.dev "Performance budgets 101" — 양·시점·규칙 예산, TTI 5 s·170 KB 기준 <https://web.dev/articles/performance-budgets-101>

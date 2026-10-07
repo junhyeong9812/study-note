@@ -158,7 +158,7 @@ Forking.measure_5_forked_c2  avgt    5  4.096 ± 0.382  ns/op
 
 - Georges, Buytaert, Eeckhout(OOPSLA 2007): JIT·GC·스레드 스케줄 때문에 자바 실행 시간은 실행마다 다르다. 평균만, 최고값만 보고하는 흔한 방법이 잘못된 결론으로 이어질 수 있다. 시작 성능은 여러 번의 JVM 실행 각각의 1회 실행 시간으로, 정상 상태 성능은 여러 JVM 실행에서 정상 상태 반복들의 값으로 신뢰구간을 계산하라고 권한다.
 - JMH의 Error는 정규분포를 가정한 99.9% 신뢰구간이다. 포크가 여러 개면 포크 간 변동이 반영된다.
-- *신뢰구간(confidence interval)*: "같은 방식으로 다시 재면 참값이 이 범위에 들 것"이라는 구간 추정. 계산과 해석은 [data-analysis/08-confidence-intervals](../../data-analysis/README.md)(미작성).
+- *신뢰구간(confidence interval)*: "같은 방식으로 다시 재면 참값이 이 범위에 들 것"이라는 구간 추정. 계산과 해석은 [data-analysis/08-confidence-intervals](../../data-analysis/08-confidence-intervals/2-summary.md).
 - 차이가 작으면 반복·포크를 늘려 구간을 좁힌 뒤 판단한다. 그래도 겹치면 "차이를 확인하지 못했다"가 결론이다.
 
 ## 쓰이는 자료구조·알고리즘
@@ -252,7 +252,7 @@ public class JsonBench {
 - 선행
   - [19-performance-measurement](../19-performance-measurement/2-summary.md) — 측정 일반, 분위수
   - [language/22-ir-and-optimization](../../language/22-ir-and-optimization/2-summary.md) — IR·인라이닝·DCE
-  - [data-analysis/08-confidence-intervals](../../data-analysis/README.md) — 미작성(영역 표 링크)
+  - [data-analysis/08-confidence-intervals](../../data-analysis/08-confidence-intervals/2-summary.md)
 - 후속·연결
   - [20-performance-method-and-amdahl](../20-performance-method-and-amdahl/2-summary.md) — 마이크로 개선이 전체에 주는 몫
   - [36-profiling](../36-profiling/2-summary.md) — 서비스 안에서 핫 코드 찾기

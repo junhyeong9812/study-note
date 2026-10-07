@@ -131,7 +131,7 @@ per-try 없음(=예산), 최대 3회                       99.492    1.000      
 ## 쓰이는 자료구조·알고리즘
 
 - **예산 차감** — `remaining = deadline - now`. 단계를 지날수록 줄기만 한다. 직렬은 합, 병렬은 최댓값.
-- **백분위 추정** — 타임아웃 근거가 되는 p99·p99.9는 정렬 배열(실험), 운영에서는 히스토그램(Prometheus `histogram_quantile`, HdrHistogram)·t-digest로 근사한다. 버킷 경계 밖의 값은 근사가 거칠다. 백분위의 성질은 data-analysis 05 `percentiles-and-latency-distributions`(미작성, [data-analysis 영역](../../data-analysis/README.md)), 측정 방법은 [19-performance-measurement](../19-performance-measurement/2-summary.md).
+- **백분위 추정** — 타임아웃 근거가 되는 p99·p99.9는 정렬 배열(실험), 운영에서는 히스토그램(Prometheus `histogram_quantile`, HdrHistogram)·t-digest로 근사한다. 버킷 경계 밖의 값은 근사가 거칠다. 백분위의 성질은 [data-analysis/05-percentiles-and-latency-distributions](../../data-analysis/05-percentiles-and-latency-distributions/2-summary.md), 측정 방법은 [19-performance-measurement](../19-performance-measurement/2-summary.md).
 - **예산표 = 호출 트리의 경로 합** — 트리의 각 루트→잎 경로에서 직렬 구간의 합이 예산 이하여야 한다. 35에서 표로 연습한다.
 
 ## 적용 — 풀어나가는 법
@@ -239,7 +239,7 @@ route:
   - [07-timeout-taxonomy-by-layer](../07-timeout-taxonomy-by-layer/2-summary.md) — 나눌 대상인 구간 타임아웃
   - [06-retry-backoff-jitter](../06-retry-backoff-jitter/2-summary.md) — 재시도·백오프·재시도 예산
   - [02-slo-sli-error-budget](../02-slo-sli-error-budget/2-summary.md) — 총 예산의 출발점
-  - data-analysis 05 `percentiles-and-latency-distributions` — 미작성, [data-analysis 영역](../../data-analysis/README.md)
+  - [data-analysis/05-percentiles-and-latency-distributions](../../data-analysis/05-percentiles-and-latency-distributions/2-summary.md)
   - [05-timeouts-and-deadline-propagation](../05-timeouts-and-deadline-propagation/2-summary.md) — 남은 예산 전파(여기서 심화)
 - 후속
   - [09-cancellation-propagation](../09-cancellation-propagation/2-summary.md) — 예산이 끝나면 실제로 멈추기

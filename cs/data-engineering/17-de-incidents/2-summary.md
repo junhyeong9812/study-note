@@ -35,7 +35,7 @@
 - 영국 하원 의사록(Hansard) 2020-10-05 "Covid-19 Update", 보건장관 Matt Hancock 발언 — hansard.parliament.uk 웹 페이지는 2026-10-07에 접근 차단(Cloudflare 확인 페이지)이라 의회 Hansard API(`hansard-api.parliament.uk/search/contributions/Spoken.json`, 토론 ID `3DFBFED6-4B2E-4E70-9658-9D66EFB1E5DF`)로 발언 원문을 읽었다.
 - 2차 출처: BBC News, Leo Kelion, "Excel: Why using Microsoft's tool caused Covid-19 results to be lost", 2020-10-05 <https://www.bbc.com/news/technology-54423988>. XLS 형식에 관한 내용은 이 보도에만 있고 위 두 공식 자료에는 없다.
 - 형식 한도: Microsoft Support, "What to do if a data set is too large for the Excel grid" — ".xls file format has a limit of 65,536 rows in each sheet, while the .xlsx file format has a limit of 1,048,576 rows per sheet" <https://support.microsoft.com/en-us/office/what-to-do-if-a-data-set-is-too-large-for-the-excel-grid-976e6a34-9756-48f4-828c-ca80b3d0e15c>(2026-10-07 열람).
-- 이 사건의 데이터 분석 쪽(표·스프레드시트 관점)은 data-analysis 영역의 사건 노트(커리큘럼 `28-da-incidents`)가 맡을 예정이다(아직 미작성 — [data-analysis 영역 표](../../data-analysis/README.md)). 여기서는 파이프라인 관점만 다룬다.
+- 이 사건의 데이터 분석 쪽(표·스프레드시트 관점)은 data-analysis 영역의 사건 노트 [data-analysis/28-da-incidents](../../data-analysis/28-da-incidents/2-summary.md)가 맡는다. 여기서는 파이프라인 관점만 다룬다.
 
 #### 사실 (원문)
 
@@ -346,7 +346,7 @@ static int score(int utilPct, int months, boolean bug) {
 - 선행: [16](../16-de-symptom-index/2-summary.md)(증상 역색인)
 - 사건별 leaf: [01](../01-system-of-record-and-derived-data/2-summary.md) · [02](../02-oltp-olap-and-warehouse/2-summary.md) · [06](../06-event-data-modeling/2-summary.md) · [07](../07-batch-stream-architectures/2-summary.md) · [08](../08-idempotent-pipelines-and-backfill/2-summary.md) · [09](../09-data-contracts-and-schema-registry/2-summary.md) · [10](../10-data-quality-and-data-observability/2-summary.md) · [11](../11-data-lineage/2-summary.md)
 - 다른 영역 사건: [security/30-security-incidents](../../security/30-security-incidents/2-summary.md)(Equifax 2017 침해 — 이 노트와 다른 사건) · [database/57-db-incidents](../../database/57-db-incidents/2-summary.md) · [distributed/36-distributed-incidents](../../distributed/36-distributed-incidents/2-summary.md) · [reliability/53-reliability-incidents](../../reliability/53-reliability-incidents/2-summary.md) · [architecture/23-arch-incidents](../../architecture/23-arch-incidents/2-summary.md)
-- 데이터 분석 쪽(PHE 사건의 표·스프레드시트 관점): [data-analysis 영역 표](../../data-analysis/README.md)(사건 노트 미작성)
+- 데이터 분석 쪽(PHE 사건의 표·스프레드시트 관점): [data-analysis/28-da-incidents](../../data-analysis/28-da-incidents/2-summary.md) 사건 4
 - 1차 출처
   - PHE, "PHE statement on delayed reporting of COVID-19 cases", GOV.UK 2020-10-04(10-05 갱신) — 본문·배경 정보 절·날짜별 표 <https://www.gov.uk/government/news/phe-statement-on-delayed-reporting-of-covid-19-cases>
   - UK Parliament Hansard, House of Commons 2020-10-05 "Covid-19 Update"(Matt Hancock) — Hansard API 검색 결과의 발언 원문(토론 ID `3DFBFED6-4B2E-4E70-9658-9D66EFB1E5DF`)
