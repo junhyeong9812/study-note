@@ -30,6 +30,7 @@
 | 2026-10-07 | codex(high) 2차 회수 22·23 → 판정(22·23) + 정합 패스(V4: 22 색인 재대조·노트 간 정합·영역 안 링크·영역 밖 '미작성' 링크 교정·02 Ariane 'large correction') 발사 | 회수 대기 |
 | 2026-10-07 | 판정·정합 회수: 22·23 지적 16(채택 13·부분 3·기각 0, 표 합계 일치) · 22 색인 재대조 8곳 반영 · 02 Ariane 'large correction'(3.1 h)·'full nozzle deflections'(2.1) 병기 · 노트 간 모순 0(9주제) · 영역 안 링크 20 · **영역 밖 링크 교정 27곳/20파일**(링크·'미작성' 표기만 — git word-diff로 확인, os/32·os/22·database/06은 architecture/16 라벨이 systems 원고를 가리키던 것을 실제 leaf로) · 링크 1,251개 깨짐 0 · 22 PASS + B4 20 PASS · 남은 영역 밖: systems/nand-flash:145 출처 없음, security/24:247 CS:APP 3.10.3–4 [?] 해제 가능(→ NEXT) | 22 PASS |
 | 2026-10-07 | 웹 독립 교차 표본 회수: **90건 일치 90·불일치 0·확인 불가 0**(22편 모두 2건+, 403은 IA 사본) → web-cross-sample.md 저장 · 관찰 1(11 Intel DDP 문서 출처 목록 누락) 반영 — 출처 줄 1행 추가 · 관찰 2(12 RAID [?] 유지) · README 재생성(architecture만 변경, 초안(Claude) 21+17) · 정리: sn-arch 컨테이너 0, dangling 26, 리프 md만 | 22 PASS |
+| 2026-10-07 | 사용자 확인('main 병합 + push') → main fast-forward 92ad836a, push 성공(f5c89c5a..92ad836a) | push |
 
 ## 리뷰 ledger
 
