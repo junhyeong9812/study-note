@@ -2,7 +2,7 @@
 
 상위: [MySQL 아키텍처 지도](../../README.md)
 
-`SELECT ... FOR UPDATE`, `UPDATE`, `DELETE` 가 레코드 하나에 잠금을 걸고, **충돌하면 대기 큐에 들어가 잠들었다가, 풀리거나 교착 희생자로 뽑히거나 시간이 다 돼서 깨어날 때까지**의 흐름이다. INSERT 쪽 입구([08] insert intention)도 같은 큐로 들어온다. 이 흐름에는 **스레드 경계가 둘** 있다. 잠금을 요청하고 잠드는 것은 사용자 스레드이고, 교착 탐지와 타임아웃은 백그라운드 스레드 `lock_wait_timeout_thread` 가 하며, 잠든 스레드를 깨우는 것은 잠금을 푸는 다른 트랜잭션의 스레드다. 흐름은 [09] 에서 사용자 스레드가 깨어나 `row_search_mvcc` 로 돌아가 같은 레코드를 다시 찾는 데서 끝난다.
+`SELECT ... FOR UPDATE`, `UPDATE`, `DELETE` 가 레코드 하나에 잠금을 걸고, **충돌하면 대기 큐에 들어가 잠들었다가, 풀리거나 교착 희생자로 뽑히거나 시간이 다 돼서 깨어날 때까지**의 흐름이다. INSERT 쪽 입구(insert intention, [B+Tree 삽입과 분할](../btree-insert/README.md)의 04)도 같은 큐로 들어온다. 이 흐름에는 **스레드 경계가 둘** 있다. 잠금을 요청하고 잠드는 것은 사용자 스레드이고, 교착 탐지와 타임아웃은 백그라운드 스레드 `lock_wait_timeout_thread` 가 하며, 잠든 스레드를 깨우는 것은 잠금을 푸는 다른 트랜잭션의 스레드다. 흐름은 [08] 에서 사용자 스레드가 깨어나 `row_search_mvcc` 로 돌아가 같은 레코드를 다시 찾는 데서 끝난다.
 
 기준 태그: mysql-9.7.2 [`008e09c283`](https://github.com/mysql/mysql-server/tree/008e09c2834b98143a8c067d4d225c90953050cf). 모든 줄 번호는 이 태그 기준이다.
 
@@ -27,15 +27,15 @@
                               +-- 충돌 -> [07] RecLock::add_to_waitq   L1825  LOCK_WAIT 잠금 + wait-for 간선
                                           DB_LOCK_WAIT 를 돌려준다
 
- INSERT 쪽 입구
+ INSERT 쪽 입구 ([B+Tree 삽입] 04 가 다룬다)
  btr_cur_ins_lock_and_undo                           btr0cur.cc L2597
-      +-- [08] lock_rec_insert_check_and_lock        lock0lock.cc L5050
-            다음 레코드에 X|GAP|INSERT_INTENTION 으로 [06] -> 충돌이면 [07]
+      +-- lock_rec_insert_check_and_lock             lock0lock.cc L5050
+            다음 레코드에 X|GAP|INSERT_INTENTION 으로 [06] -> 충돌이면 [07]  (L5106-L5122)
 
  DB_LOCK_WAIT 가 올라오면
  row_search_mvcc lock_table_wait:                    row0sel.cc L5927  mtr_commit (페이지 래치를 푼다)
       +-- row_mysql_handle_errors                    row0mysql.cc L653
-            +-- [09] lock_wait_suspend_thread        row0mysql.cc L711
+            +-- [08] lock_wait_suspend_thread        row0mysql.cc L711
                   slot 을 잡고 os_event_wait 로 잠든다   lock0wait.cc L297
  ------------------------------------------------------------------
         스레드 경계 1 (slot->event 를 누가 set 하는가)
@@ -48,11 +48,13 @@
         스레드 경계 2
  ------------------------------------------------------------------
  백그라운드 스레드 (srv0start.cc L1998 에서 생성)
- [10] lock_wait_timeout_thread                       lock0wait.cc L1432
+ [09] lock_wait_timeout_thread                       lock0wait.cc L1432
       +-- 1 초마다 lock_wait_check_slots_for_timeouts    L1448  타임아웃이면 DB_LOCK_WAIT_TIMEOUT
       +-- 매번 lock_wait_update_schedule_and_check_for_deadlocks  L1451
-            wait-for 그래프를 만들고 순환을 찾아 희생자를 고른다
-            희생자 A 에 was_chosen_as_deadlock_victim, 잠금 취소, os_event_set
+            슬롯 스냅샷으로 wait-for 그래프를 만든다
+            +-- [10] lock_wait_find_and_handle_deadlocks   L1425
+                  순환을 찾아 희생자를 고른다
+                  희생자 A 에 was_chosen_as_deadlock_victim, 잠금 취소, os_event_set
 ```
 
 잠금 하나는 "페이지 하나 + 비트맵"이다. 같은 트랜잭션이 같은 페이지에 같은 모드로 잡는 잠금은 `lock_t` 하나를 공유하고 heap_no 비트만 켠다.
@@ -82,7 +84,7 @@
  type_mode 비트 (lock0lock.h L949-L987)
 
  값     이름                    뜻
- 0-3    LOCK_IS/IX/S/X/AUTO_INC 모드 (LOCK_MODE_MASK 0xF)
+ 0-4    LOCK_IS/IX/S/X/AUTO_INC 모드 (LOCK_MODE_MASK 0xF)
  16     LOCK_TABLE
  32     LOCK_REC
  256    LOCK_WAIT               아직 부여되지 않고 큐에서 기다리는 중
@@ -92,13 +94,27 @@
  2048   LOCK_INSERT_INTENTION   gap 에 넣으려고 기다리는 표시 (LOCK_GAP 과 함께 쓴다)
 ```
 
+이 비트들의 조합이 서로를 막는 규칙은 [06] 에 있다. 요약하면 gap 잠금끼리는 막지 않고, gap 잠금이 막는 것은 insert intention 뿐이다.
+
+```text
+ 레코드 잠금 호환 행렬 요약 (모드가 S-X, X-S, X-X 로 충돌할 때, lock0lock.cc L564-L644)
+
+ 요청 \ 큐에 있는   GAP   REC_NOT_GAP   ORDINARY   INSERT_INTENTION
+ GAP                .     .             .          .
+ REC_NOT_GAP        .     W             W          .
+ ORDINARY           .     W             W          .
+ INSERT_INTENTION   W     .             W          .
+
+ W = 기다린다. S 와 S 는 정밀 모드와 무관하게 언제나 통과한다
+```
+
 ## 어디에서 쓰이는가
 
 ```text
  [일관 읽기(MVCC)]      잠금 읽기(FOR UPDATE, FOR SHARE)와 UPDATE/DELETE 의 행 찾기가
                         row_search_mvcc 에서 [01] 을 부른다. 일반 SELECT 는 잠금 없이 ReadView 로 읽는다
  [행 쓰기]              UPDATE/DELETE 가 고칠 행을 찾는 스캔이 여기를 지난다
- [B+Tree 삽입과 분할]   btr_cur_ins_lock_and_undo 가 [08] 을 부른다
+ [B+Tree 삽입과 분할]   btr_cur_ins_lock_and_undo -> lock_rec_insert_check_and_lock 이 [06] [07] 을 쓴다
  [커밋과 binlog 2PC]    trx_release_impl_and_expl_locks -> lock_trx_release_locks (trx0trx.cc L1931)
                         이 잠금을 한꺼번에 풀고 [11] 로 기다리던 트랜잭션을 깨운다
 ```
@@ -115,7 +131,7 @@
  잠금 단위
    MySQL      레코드(heap_no) + gap. 페이지당 lock_t 하나에 비트맵
               테이블에는 IS/IX 의도 잠금을 먼저 건다 (lock_rec_lock 의 ut_ad L1869-L1872)
-   db-engine  자원 이름 문자열(테이블 이름). holders: Map<String, MutableList<Holder>>
+   db-engine  자원 이름 문자열(테이블 이름). holders: MutableMap<String, MutableList<Holder>>
 
  모드
    MySQL      S/X x (ORDINARY, GAP, REC_NOT_GAP, INSERT_INTENTION)
@@ -133,7 +149,7 @@
    db-engine  TransactionWithLock.commit / abort 가 releaseAll(txId)
 ```
 
-db-engine impl 문서는 "대기를 넣는 순간 교착이 생기고 교착 탐지는 그 자체로 한 단계짜리 주제"라며 즉시 실패를 골랐고, 대기 모델에 필요한 것으로 타임아웃, 대기 그래프 순환 탐지, 잠금 순서 강제를 적어 두었다. InnoDB 는 앞의 둘을 모두 가진다([10] 이 둘을 한 스레드에서 돈다). 또 impl 문서가 행 단위 잠금의 한계로 든 "아직 존재하지 않는 행은 잠글 수 없다(팬텀)"를 InnoDB 는 gap 잠금과 insert intention 으로 푼다. 챕터: [09-01-lock-manager](../../../../../project/db-engine/09-01-lock-manager/), [09-02-transaction-lock-integration](../../../../../project/db-engine/09-02-transaction-lock-integration/).
+db-engine impl 문서는 "대기를 넣는 순간 교착이 생기고 교착 탐지는 그 자체로 한 단계짜리 주제"라며 즉시 실패를 골랐고, 대기 모델에 필요한 것으로 타임아웃, 대기 그래프 순환 탐지, 잠금 순서 강제를 적어 두었다. InnoDB 는 앞의 둘을 모두 가진다([09] 의 한 스레드가 둘을 돌고, 순환 처리는 [10] 이다). 또 impl 문서가 행 단위 잠금의 한계로 든 "아직 존재하지 않는 행은 잠글 수 없다(팬텀)"를 InnoDB 는 gap 잠금과 insert intention 으로 푼다. 챕터: [09-01-lock-manager](../../../../../project/db-engine/09-01-lock-manager/), [09-02-transaction-lock-integration](../../../../../project/db-engine/09-02-transaction-lock-integration/).
 
 ## 단계
 
@@ -144,10 +160,12 @@ db-engine impl 문서는 "대기를 넣는 순간 교착이 생기고 교착 탐
 5. [lock_rec_lock_slow](05_lock_rec_lock_slow/README.md)가 이미 가진 잠금, 충돌, 대기 여부를 판정한다.
 6. [lock_rec_other_has_conflicting](06_lock_rec_other_has_conflicting/README.md)이 큐를 훑어 기다려야 할 잠금을 찾는다(호환 행렬).
 7. [RecLock.add_to_waitq](07_RecLock.add_to_waitq/README.md)가 기다리는 잠금을 큐에 넣고 wait-for 간선을 만든다.
-8. [lock_rec_insert_check_and_lock](08_lock_rec_insert_check_and_lock/README.md)이 INSERT 가 들어갈 gap 을 검사한다.
-9. [lock_wait_suspend_thread](09_lock_wait_suspend_thread/README.md)가 사용자 스레드를 재운다.
-10. [lock_wait_timeout_thread](10_lock_wait_timeout_thread/README.md)가 타임아웃과 교착을 찾아 푼다.
+8. [lock_wait_suspend_thread](08_lock_wait_suspend_thread/README.md)가 사용자 스레드를 재우고, 깨어난 이유를 가른다.
+9. [lock_wait_timeout_thread](09_lock_wait_timeout_thread/README.md)가 타임아웃을 처리하고 wait-for 그래프를 만든다.
+10. [lock_wait_find_and_handle_deadlocks](10_lock_wait_find_and_handle_deadlocks/README.md)가 그래프의 순환을 찾아 희생자를 롤백시킨다.
 11. [lock_rec_grant_by_heap_no](11_lock_rec_grant_by_heap_no/README.md)가 풀린 자리에 기다리던 잠금을 부여하고 깨운다.
+
+INSERT 가 gap 을 검사하는 `lock_rec_insert_check_and_lock` 은 [B+Tree 삽입과 분할의 btr_cur_ins_lock_and_undo](../btree-insert/04_btr_cur_ins_lock_and_undo/README.md)에서 다룬다. 이 흐름의 [06] 과 [07] 을 그대로 부른다.
 
 ## 결과가 쓰이는 곳
 
@@ -157,7 +175,7 @@ db-engine impl 문서는 "대기를 넣는 순간 교착이 생기고 교착 탐
           조건에 안 맞는 행을 나중에 풀 수 있도록 new_rec_lock 에 표시한다 (row0sel.cc L5258-L5263)
 
  DB_LOCK_WAIT
-      --> [09] 에서 잠들었다가 깨어나 lock_state 를 되돌리고 같은 자리부터 다시 찾는다
+      --> [08] 에서 잠들었다가 깨어나 lock_state 를 되돌리고 같은 자리부터 다시 찾는다
 
  DB_DEADLOCK
       --> row_mysql_handle_errors 가 trx_rollback_to_savepoint(trx, nullptr) 로
@@ -183,7 +201,7 @@ db-engine impl 문서는 "대기를 넣는 순간 교착이 생기고 교착 탐
 - [05 lock_rec_lock_slow](05_lock_rec_lock_slow/README.md)
 - [06 lock_rec_other_has_conflicting](06_lock_rec_other_has_conflicting/README.md)
 - [07 RecLock.add_to_waitq](07_RecLock.add_to_waitq/README.md)
-- [08 lock_rec_insert_check_and_lock](08_lock_rec_insert_check_and_lock/README.md)
-- [09 lock_wait_suspend_thread](09_lock_wait_suspend_thread/README.md)
-- [10 lock_wait_timeout_thread](10_lock_wait_timeout_thread/README.md)
+- [08 lock_wait_suspend_thread](08_lock_wait_suspend_thread/README.md)
+- [09 lock_wait_timeout_thread](09_lock_wait_timeout_thread/README.md)
+- [10 lock_wait_find_and_handle_deadlocks](10_lock_wait_find_and_handle_deadlocks/README.md)
 - [11 lock_rec_grant_by_heap_no](11_lock_rec_grant_by_heap_no/README.md)

@@ -6,19 +6,138 @@
 
 ## 위치
 
-@@loc storage/innobase/lock/lock0lock.cc 5420 5470@@
+`storage` / `innobase` / `lock` / `lock0lock.cc` L5420-L5470 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/lock/lock0lock.cc#L5420-L5470))
 
 ## 실제 코드
 
-@@code storage/innobase/lock/lock0lock.cc 5420 5470@@
+`storage` / `innobase` / `lock` / `lock0lock.cc` L5420-L5470 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/lock/lock0lock.cc#L5420-L5470))
+
+```cpp
+// lock0lock.cc L5420-L5470
+dberr_t lock_clust_rec_read_check_and_lock(
+    const lock_duration_t duration, const buf_block_t *block, const rec_t *rec,
+    dict_index_t *index, const ulint *offsets, const select_mode sel_mode,
+    const lock_mode mode, const ulint gap_mode, que_thr_t *thr) {
+  dberr_t err;
+  ulint heap_no;
+  DEBUG_SYNC_C("before_lock_clust_rec_read_check_and_lock");
+  ut_ad(index->is_clustered());
+  ut_ad(block->frame == page_align(rec));
+  ut_ad(page_rec_is_user_rec(rec) || page_rec_is_supremum(rec));
+  ut_ad(gap_mode == LOCK_ORDINARY || gap_mode == LOCK_GAP ||
+        gap_mode == LOCK_REC_NOT_GAP);
+  ut_ad(rec_offs_validate(rec, index, offsets));
+
+  if (srv_read_only_mode || index->table->is_temporary()) {
+    return (DB_SUCCESS);
+  }
+
+  heap_no = page_rec_get_heap_no(rec);
+
+  if (heap_no != PAGE_HEAP_NO_SUPREMUM) {
+    lock_rec_convert_impl_to_expl(block, rec, index, offsets);
+  }
+
+  DEBUG_SYNC_C("after_lock_clust_rec_read_check_and_lock_impl_to_expl");
+  {
+    locksys::Shard_latch_guard guard{UT_LOCATION_HERE, block->get_page_id()};
+
+    if (duration == lock_duration_t::AT_LEAST_STATEMENT) {
+      lock_protect_locks_till_statement_end(thr);
+    }
+
+    ut_ad(mode != LOCK_X ||
+          lock_table_has(thr_get_trx(thr), index->table, LOCK_IX));
+    ut_ad(mode != LOCK_S ||
+          lock_table_has(thr_get_trx(thr), index->table, LOCK_IS));
+
+    err = lock_rec_lock(false, sel_mode, mode | gap_mode, block, heap_no, index,
+                        thr);
+
+    MONITOR_INC(MONITOR_NUM_RECLOCK_REQ);
+  }
+  DEBUG_SYNC_C("after_lock_clust_rec_read_check_and_lock");
+
+  ut_d(locksys::rec_queue_latch_and_validate(block, rec, index, offsets));
+
+  ut_ad(err == DB_SUCCESS || err == DB_SUCCESS_LOCKED_REC ||
+        err == DB_LOCK_WAIT || err == DB_DEADLOCK || err == DB_SKIP_LOCKED ||
+        err == DB_LOCK_NOWAIT);
+  return (err);
+}
+```
 
 암묵 잠금의 주인을 찾는 쪽이다. 클러스터드 인덱스는 레코드의 trx_id 가 아직 활성인지 본다.
 
-@@code storage/innobase/lock/lock0lock.cc 5212 5252@@
+`storage` / `innobase` / `lock` / `lock0lock.cc` L5212-L5252 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/lock/lock0lock.cc#L5212-L5252))
+
+```cpp
+// lock0lock.cc L5212-L5252
+void lock_rec_convert_impl_to_expl(const buf_block_t *block, const rec_t *rec,
+                                   dict_index_t *index, const ulint *offsets) {
+  trx_t *trx;
+
+  ut_ad(!locksys::owns_exclusive_global_latch());
+  ut_ad(page_rec_is_user_rec(rec));
+  ut_ad(rec_offs_validate(rec, index, offsets));
+  ut_ad(!page_rec_is_comp(rec) == !rec_offs_comp(offsets));
+
+  DEBUG_SYNC_C("lock_rec_convert_impl_to_expl");
+
+  if (index->is_clustered()) {
+    trx_id_t trx_id;
+
+    trx_id = lock_clust_rec_some_has_impl(rec, index, offsets);
+
+    trx = trx_rw_is_active(trx_id, true);
+  } else {
+    ut_ad(!dict_index_is_online_ddl(index));
+
+    trx = lock_sec_rec_some_has_impl(rec, index, offsets);
+    if (trx) {
+      DEBUG_SYNC_C("lock_rec_convert_impl_to_expl_will_validate");
+      ut_ad(!lock_rec_other_trx_holds_expl(LOCK_S | LOCK_REC_NOT_GAP, trx, rec,
+                                           block));
+    }
+  }
+
+  if (trx != nullptr) {
+    ulint heap_no = page_rec_get_heap_no(rec);
+
+    ut_ad(trx_is_referenced(trx));
+
+    /* If the transaction is still active and has no
+    explicit x-lock set on the record, set one for it.
+    trx cannot be committed until the ref count is zero. */
+
+    lock_rec_convert_impl_to_expl_for_trx(block, rec, index, offsets, trx,
+                                          heap_no);
+  }
+}
+```
 
 주인이 아직 살아 있고 명시 잠금이 없으면 그 트랜잭션 이름으로 `X | REC_NOT_GAP` 잠금을 만든다.
 
-@@code storage/innobase/lock/lock0lock.cc 5194 5202@@
+`storage` / `innobase` / `lock` / `lock0lock.cc` L5193-L5207 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/lock/lock0lock.cc#L5193-L5207))
+
+```cpp
+// lock0lock.cc L5193-L5207
+    ut_ad(!trx_state_eq(trx, TRX_STATE_NOT_STARTED));
+
+    if (!trx_state_eq(trx, TRX_STATE_COMMITTED_IN_MEMORY) &&
+        !lock_rec_has_expl(LOCK_X | LOCK_REC_NOT_GAP, block, heap_no, trx)) {
+      ulint type_mode;
+
+      type_mode = (LOCK_REC | LOCK_X | LOCK_REC_NOT_GAP);
+
+      lock_rec_add_to_queue(type_mode, block, heap_no, index, trx, true);
+    }
+
+    trx_mutex_exit(trx);
+  }
+
+  trx_release_reference(trx);
+```
 
 ## 동작 흐름
 
@@ -56,7 +175,7 @@
                                         [03] lock_rec_lock(X|REC_NOT_GAP)
                                           A 와 충돌 -> B 의 X WAIT 를 큐 뒤에
                                           (큐: A granted, B waiting)
-                                        --> [09] 잠든다
+                                        --> [08] 잠든다
  COMMIT
    lock_trx_release_locks 가 A 의 lock_t 를 치운다
    --> [11] B 에 부여, B 를 깨운다
@@ -67,7 +186,7 @@
 
  trx_rw_is_active(trx_id, true) 가 A 를 돌려준 순간부터
  lock_rec_convert_impl_to_expl_for_trx 가 끝날 때까지 A 는 참조 중이다
- A 의 커밋은 lock_trx_release_locks 에서 참조가 0 이 될 때까지 돈다 (lock0lock.cc L5824-L5834)
+ A 의 커밋은 lock_trx_release_locks 에서 참조가 0 이 될 때까지 돈다 (lock0lock.cc L5825-L5836)
  그래서 "A 가 활성인 것을 봤는데 잠금을 만드는 사이 A 가 사라지는" 일이 없다
 ```
 
@@ -76,7 +195,7 @@
 ```text
  명시 잠금으로 바뀐 A 의 lock_t
       --> [06] 이 B 의 요청과 충돌을 판정할 대상이 된다
-      --> [10] 의 wait-for 그래프에서 B -> A 간선의 끝이 된다
+      --> [09] 가 만드는 wait-for 그래프에서 B -> A 간선의 끝이 된다
  반환값
       --> [01] sel_set_rec_lock 을 거쳐 row_search_mvcc 로 그대로 올라간다
 ```

@@ -6,19 +6,134 @@
 
 ## 위치
 
-@@loc storage/innobase/row/row0sel.cc 1138 1180@@
+`storage` / `innobase` / `row` / `row0sel.cc` L1138-L1180 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/row/row0sel.cc#L1138-L1180))
 
 ## 실제 코드
 
-@@code storage/innobase/row/row0sel.cc 1138 1180@@
+`storage` / `innobase` / `row` / `row0sel.cc` L1138-L1180 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/row/row0sel.cc#L1138-L1180))
+
+```cpp
+// row0sel.cc L1138-L1180
+static inline dberr_t sel_set_rec_lock(btr_pcur_t *pcur, const rec_t *rec,
+                                       dict_index_t *index,
+                                       const ulint *offsets,
+                                       select_mode sel_mode, ulint mode,
+                                       ulint type, que_thr_t *thr, mtr_t *mtr) {
+  trx_t *trx;
+  dberr_t err = DB_SUCCESS;
+  const buf_block_t *block;
+
+  block = pcur->get_block();
+
+  trx = thr_get_trx(thr);
+  ut_ad(trx_can_be_handled_by_current_thread(trx));
+
+  if (UT_LIST_GET_LEN(trx->lock.trx_locks) > 10000) {
+    if (buf_LRU_buf_pool_running_out()) {
+      return (DB_LOCK_TABLE_FULL);
+    }
+  }
+
+  if (index->is_clustered()) {
+    err = lock_clust_rec_read_check_and_lock(
+        lock_duration_t::REGULAR, block, rec, index, offsets, sel_mode,
+        static_cast<lock_mode>(mode), type, thr);
+  } else {
+    if (dict_index_is_spatial(index)) {
+      if (type == LOCK_GAP || type == LOCK_ORDINARY) {
+        ib::error(ER_IB_MSG_1026) << "Incorrectly request GAP lock "
+                                     "on RTree";
+        ut_d(ut_error);
+        ut_o(return (DB_SUCCESS));
+      }
+      err = sel_set_rtr_rec_lock(pcur, rec, index, offsets, sel_mode, mode,
+                                 type, thr, mtr);
+    } else {
+      err = lock_sec_rec_read_check_and_lock(
+          lock_duration_t::REGULAR, block, rec, index, offsets, sel_mode,
+          static_cast<lock_mode>(mode), type, thr);
+    }
+  }
+
+  return (err);
+}
+```
 
 호출하는 쪽이다. 레코드가 검색 범위에 들 수 있는지, 레코드 앞 gap 이 범위와 겹치는지 두 질문으로 잠금 종류를 정한다.
 
-@@code storage/innobase/row/row0sel.cc 5226 5254@@
+`storage` / `innobase` / `row` / `row0sel.cc` L5226-L5254 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/row/row0sel.cc#L5226-L5254))
+
+```cpp
+// row0sel.cc L5226-L5254
+  if (prebuilt->select_lock_type != LOCK_NONE) {
+    auto row_to_range_relation = row_compare_row_to_range(
+        set_also_gap_locks, trx, unique_search, index, clust_index, rec, comp,
+        mode, direction, search_tuple, offsets, moves_up, prebuilt);
+
+    ulint lock_type;
+    if (row_to_range_relation.row_can_be_in_range) {
+      if (row_to_range_relation.gap_can_intersect_range) {
+        lock_type = LOCK_ORDINARY;
+      } else {
+        lock_type = LOCK_REC_NOT_GAP;
+      }
+    } else {
+      if (row_to_range_relation.gap_can_intersect_range) {
+        lock_type = LOCK_GAP;
+      } else {
+        err = DB_RECORD_NOT_FOUND;
+        goto normal_return;
+      }
+    }
+    /* in case of semi-consistent read, we use SELECT_SKIP_LOCKED, so we don't
+    waste time on creating a WAITING lock, as we won't wait on it anyway */
+    const bool use_semi_consistent =
+        prebuilt->row_read_type == ROW_READ_TRY_SEMI_CONSISTENT &&
+        !unique_search && index == clust_index && !trx_is_high_priority(trx);
+    err = sel_set_rec_lock(
+        pcur, rec, index, offsets,
+        use_semi_consistent ? SELECT_SKIP_LOCKED : prebuilt->select_mode,
+        prebuilt->select_lock_type, lock_type, thr, &mtr);
+```
 
 잠금을 기다려야 하면 `row_search_mvcc` 는 mtr 를 커밋해 페이지 래치를 놓은 뒤에 재운다.
 
-@@code storage/innobase/row/row0sel.cc 5926 5944@@
+`storage` / `innobase` / `row` / `row0sel.cc` L5914-L5944 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/row/row0sel.cc#L5914-L5944))
+
+```cpp
+// row0sel.cc L5914-L5944
+lock_wait_or_error:
+  /* Reset the old and new "did semi-consistent read" flags. */
+  if (UNIV_UNLIKELY(prebuilt->row_read_type == ROW_READ_DID_SEMI_CONSISTENT)) {
+    prebuilt->row_read_type = ROW_READ_TRY_SEMI_CONSISTENT;
+  }
+  did_semi_consistent_read = false;
+
+  /*-------------------------------------------------------------*/
+  if (!dict_index_is_spatial(index)) {
+    pcur->store_position(&mtr);
+  }
+
+lock_table_wait:
+  mtr_commit(&mtr);
+  mtr_has_extra_clust_latch = false;
+
+  trx->error_state = err;
+
+  /* The following is a patch for MySQL */
+
+  if (thr->is_active) {
+    que_thr_stop_for_mysql(thr);
+  }
+
+  thr->lock_state = QUE_THR_LOCK_ROW;
+
+  if (row_mysql_handle_errors(&err, trx, thr, nullptr)) {
+    /* It was a lock wait, and it ended */
+
+    thr->lock_state = QUE_THR_LOCK_NOLOCK;
+    mtr_start(&mtr);
+```
 
 ## 동작 흐름
 
@@ -53,7 +168,7 @@
 ```
 
 ```text
- sel_mode (L1253)
+ sel_mode (row0sel.cc L5248-L5253)
 
  prebuilt->select_mode        SKIP LOCKED / NOWAIT / 보통
  semi-consistent 읽기이면     SELECT_SKIP_LOCKED 로 바꿔 넘긴다 (L5248-L5253)
@@ -67,8 +182,8 @@
  DB_SUCCESS_LOCKED_REC  새 잠금을 만들었다. RC 에서는 new_rec_lock 표시 -> 조건 불일치면 나중에 푼다
  DB_SUCCESS             이미 가진 잠금으로 충분했다
  DB_SKIP_LOCKED         SKIP LOCKED 면 다음 레코드로, semi-consistent 면 커밋된 옛 버전을 만든다
- DB_LOCK_WAIT           lock_wait_or_error -> L5927 mtr_commit -> L5940 row_mysql_handle_errors
-                        --> [09] 에서 잠든다
+ DB_LOCK_WAIT           L5306 goto lock_wait_or_error -> L5927 mtr_commit -> L5940 row_mysql_handle_errors
+                        --> [08] 에서 잠든다
 ```
 
 ## 결과가 쓰이는 곳
