@@ -105,7 +105,7 @@ db-engine 은 같은 문제(캐시 적중, 교체 대상 고르기, 쓰는 중 �
 
  적중
    MySQL      buf_block_fix 로 buf_fix_count++, 래치는 따로 mtr_add_page 에서
-   db-engine  cached.pin() 후 반환. 래치 없음 (동시성은 단계 9로 미룸)
+   db-engine  cached.pin() 후 반환. 래치 없음 (단일 스레드 가정)
 
  미적중
    MySQL      free list 에서 frame -> page hash 에 먼저 등록(IO_READ) -> 읽기

@@ -2,7 +2,7 @@
 
 상위: [버퍼 풀 페이지 획득](../README.md)
 
-**적중한 페이지를 LRU 머리로 올릴지 정하는 함수다.** 몸체는 `buf_page_peek_if_too_old` 가 참이면 `buf_page_make_young` 을 부르는 두 줄이고, 판정이 전부 `peek_if_too_old` 에 있다. 판정은 세 갈래다. 아직 한 장도 쫓겨난 적이 없으면 아무것도 옮기지 않는다. old 구간의 페이지는 **첫 접근에서 `innodb_old_blocks_time` 이 지난 뒤에만** 올린다. young 구간의 페이지는 머리에서 충분히 멀어졌을 때만 올린다. 매 적중마다 LRU 뮤텍스를 잡지 않으려는 장치다.
+**적중한 페이지를 LRU 머리로 올릴지 정하는 함수다.** 몸체는 `buf_page_peek_if_too_old` 가 참이면 `buf_page_make_young` 을 부르는 두 줄이고, 판정이 전부 `peek_if_too_old` 에 있다. 판정은 세 갈래다. 아직 한 장도 쫓겨난 적이 없으면 아무것도 옮기지 않는다. old 구간의 페이지는 **첫 접근에서 `innodb_old_blocks_time` 이 지난 뒤에만** 올린다. young 구간의 페이지는 머리에서 충분히 멀어졌을 때만 올린다. 판정은 LRU 뮤텍스 없이 하고(buf0buf.ic L177 의 NOTE), 옮기기로 정했을 때만 `buf_page_make_young` 이 `LRU_list_mutex` 를 잡는다(L3187).
 
 ## 위치
 

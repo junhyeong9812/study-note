@@ -271,4 +271,4 @@ static_assert(BUF_LRU_NON_OLD_MIN_LEN < BUF_LRU_OLD_MIN_LEN,
 
 ## 다루지 않는 것
 
-`buf_LRU_remove_block` 이 LRU_old 를 옮기는 경우, unzip_LRU 의 별도 규칙, `innodb_old_blocks_pct` 를 바꿀 때의 `buf_LRU_old_ratio_update` 는 이 함수의 곁가지라 요약만 했다. 버퍼 풀 전체 자료구조(`buf_pool_t` 의 LRU, free, flush_list)는 [메모리 구조](../../structure/memory-structures/README.md)에서 다룬다.
+`buf_LRU_remove_block` 이 LRU_old 를 옮기는 경우, unzip_LRU 의 별도 규칙, `innodb_old_blocks_pct` 를 바꿀 때의 `buf_LRU_old_ratio_update` 는 이 함수의 곁가지라 요약만 했다. 버퍼 풀 전체 자료구조(`buf_pool_t` 의 LRU, free, flush_list)는 [메모리 구조](../../../structure/memory-structures/README.md)에서 다룬다.

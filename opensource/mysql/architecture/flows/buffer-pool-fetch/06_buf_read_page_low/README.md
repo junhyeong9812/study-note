@@ -107,7 +107,8 @@ ulint buf_read_page_low(dberr_t *err, bool sync, ulint type, ulint mode,
 ```text
  L73   시스템 테이블스페이스의 구식 doublewrite 영역이면 에러, 0
  L81   ibuf bitmap 페이지나 trx sys 헤더면 sync = true 로 강제
-         (주석: 래치 순서가 낮아 비동기 완료에 맡기지 않는다)
+         (주석: trx sys 헤더는 래치 순서가 낮아서, ibuf bitmap 은
+          스레드 교착을 피하려고 비동기 완료에 맡기지 않는다)
  L95   bpage = [07] buf_page_init_for_read(mode, page_id, page_size, unzip)
  L99     nullptr -> 0   이미 있거나, 공간이 없거나 드롭 중
          이 순간부터 블록은 page hash 에 있고 io_fix = BUF_IO_READ

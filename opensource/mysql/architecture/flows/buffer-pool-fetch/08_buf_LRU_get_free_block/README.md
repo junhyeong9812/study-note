@@ -303,7 +303,7 @@ buf_block_t *buf_LRU_get_free_only(buf_pool_t *buf_pool) {
  L1371    freed 면 goto loop
  L1375    20 바퀴가 넘으면 경고, InnoDB 모니터 켬
  L1405    buf_flush_event 를 set                페이지 클리너에게 LRU 배치를 재촉
- L1408    두 번째 바퀴 이상이면 10ms sleep
+ L1408    n_iterations > 1, 곧 셋째 바퀴부터 10ms sleep
  L1424    buf_flush_single_page_from_LRU        꼬리의 dirty 한 장을 이 스레드가 쓴다
  L1429    Innodb_buffer_pool_wait_free += n_iterations
  L1431    n_iterations++
@@ -330,7 +330,8 @@ LRU 스캔이 무엇을 풀 수 있는지는 블록 상태로 정해진다. dirt
  LRU 꼬리 블록 하나의 판정 (buf_LRU_free_from_common_LRU_list L1094)
 
  L1116  stale                              buf_page_free_stale 로 바로 치운다
- L1121  buf_flush_ready_for_replace        buf-fix 도 io-fix 도 없어야 (buf0flu.cc L470)
+ L1121  buf_flush_ready_for_replace        fix 가 없고 (buf0flu.cc L470) dirty 가 아니어야 (L477)
+                                           stale 블록은 dirty 여도 참 (L474)
  L1122    buf_LRU_free_page(bpage, true)   dirty 면 false (L1772-L1778)
             성공: page_hash 와 LRU 에서 빼고 freed_page_clock++ (L2104), free list 로
  L1130  접근 기록 없이 풀렸으면 n_ra_pages_evicted++   read-ahead 가 헛읽은 페이지
