@@ -197,3 +197,58 @@ if err := conn.QueryRowContext(ctx, "SELECT @ok").Scan(&ok); err != nil { return
 
 결론: 방안 1 은 "무엇이 다른가"를 찾아내는 수단이고, 방안 2 는 찾아낸 차이 중 코드 구조로 봉인할 수 있는 것(세션 귀속)을 봉인하는 수단이다.\
 세션 변수 문제는 풀의 커넥션 배정이 비결정적이라 방안 1 의 테스트로도 재현이 불안정할 수 있으므로, 해당 구간은 방안 2 로 구조를 고정하는 편이 확실하다 — 이 사례도 사고 발생 전 배선 단계에서 방안 2 를 택했다.
+
+## 방안 비교 — "아무것도 안 할 수 있는" 문장도 행 락을 기다린다 (PostgreSQL)
+
+같은 원리(변형 F — SQL 문면에 안 보이는 엔진 의미가 결과를 바꾼다)가 **잠금 대기**로 나타난 사례.\
+사용자별 한도 행을 "없으면 만든다"로 보장하려고, 본 트랜잭션 밖 준비 단계에서 매 요청 `INSERT … ON CONFLICT DO NOTHING`을 실행했다.\
+행이 이미 있으면 아무것도 하지 않으니 즉시 끝날 것 같지만, PostgreSQL에서는 다른 트랜잭션이 그 행을 **UPDATE하고 아직 커밋하지 않았으면** 충돌 검사가 그 트랜잭션이 끝날 때까지 기다린다.\
+같은 행에 `SELECT … FOR UPDATE`로 잠금만 걸린 경우에는 기다리지 않았다.\
+그래서 한도 카운터를 UPDATE하는 방식에서는, 같은 사용자의 대기가 본 트랜잭션·측정 타이머 안이 아니라 **트랜잭션 밖 준비 단계로 새어** 지연·커넥션 해석이 틀어질 뻔했다.\
+코드 리뷰가 지적했고, 실제 엔진에서 특성 테스트로 동작을 확인했다.
+
+```
+트랜잭션 T1: UPDATE quota SET cnt = cnt + 1 WHERE key = K   (커밋 전 — 행 K 의 쓰기 락)
+요청 R2 준비:  INSERT INTO quota (key) VALUES (K) ON CONFLICT DO NOTHING
+                └─ 충돌 행 K 가 T1 의 미커밋 갱신 대상 ──▶ T1 이 끝날 때까지 대기   ← 타이머·트랜잭션 밖
+요청 R2 준비:  SELECT 1 FROM quota WHERE key = K       ──▶ 대기 없이 "있음"         ← 고친 것
+```
+
+### 방안 3 — 특성 테스트로 엔진 동작을 고정 + 기다리지 않는 문장 먼저 (이 사례의 선택)
+```kotlin
+// ① 문제: 매 요청 upsert-nothing — 갱신 중인 행이면 대기
+fun ensureRow(k: Key) = jdbc.update("INSERT INTO quota (k1, k2) VALUES (?, ?) ON CONFLICT DO NOTHING", k.a, k.b)
+
+// ② 고친 코드: 일반 SELECT(대기 없음)로 먼저 보고, 없을 때만 INSERT
+fun ensureRow(k: Key) {
+    if (jdbc.queryForList("SELECT 1 FROM quota WHERE k1 = ? AND k2 = ?", k.a, k.b).isNotEmpty()) return
+    jdbc.update("INSERT INTO quota (k1, k2) VALUES (?, ?) ON CONFLICT DO NOTHING", k.a, k.b)   // 첫 요청만, 자동 커밋
+}
+
+// 특성 테스트: 엔진 동작이 바뀌면 "근거를 다시 보라"며 실패한다
+tx.execute { status ->
+    incrementCounter(k)                                              // 같은 행 UPDATE — 커밋 전
+    val upsert = pool.submit<Int> { jdbc.update("INSERT … ON CONFLICT DO NOTHING", k.a, k.b) }
+    assertThrows<TimeoutException> { upsert.get(1, SECONDS) }        // 기다린다
+    pool.submit { ensureRow(k) }.get(1, SECONDS)                     // SELECT 먼저는 기다리지 않는다
+    status.setRollbackOnly()
+    upsert
+}!!.let { assertEquals(0, it.get(5, SECONDS)) }                     // 롤백 뒤 풀려나 "이미 있음"(0행)으로 끝난다
+```
+행 생성 자체를 본 트랜잭션 밖(자동 커밋)에 둔 이유도 같은 계열이다 — 트랜잭션 안의 `INSERT … ON CONFLICT`는 아직 커밋 안 된 같은 키 행을 만나면 그 트랜잭션의 끝을 기다린다.
+
+### 방안 4 — 준비 단계를 없애고 판정을 트랜잭션 안 한 문장으로 (원 기록의 후속 후보 — 미구현·미측정)
+```sql
+INSERT INTO quota (k1, k2, cnt) VALUES (?, ?, 1)
+ON CONFLICT (k1, k2) DO UPDATE SET cnt = quota.cnt + 1 WHERE quota.cnt + 1 <= :max;
+-- 영향 행 0 = 한도 초과. 같은 키의 대기는 본 트랜잭션 안(측정 구간 안)에서 일어난다
+```
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 3. 특성 테스트 + SELECT 먼저 | 대기가 생기는 문장을 엔진에서 확인했다 | 매 요청 트랜잭션 밖 조회 1회(+첫 요청 INSERT) — 이 사례에서 새 사용자 요청은 커넥션을 1회가 아니라 3회 빌렸고 처리량 회귀의 원인으로 지목됐다 | 준비 단계와 본 트랜잭션 사이 틈이 남는다(그 사이 상태는 본 트랜잭션이 다시 판정해야 한다) | 판정 로직을 바꾸지 않고 대기 위치만 바로잡을 때 |
+| 4. 한 문장 upsert 판정 | 한도 판정을 한 행의 조건부 갱신으로 표현할 수 있다 | 판정 의미가 SQL 한 문장에 묶인다 | 조건식이 틀리면 한도가 조용히 어긋난다 — 정합 검사(카운터 대 실제 건수)가 필요 | 요청마다 새 키가 많아 추가 왕복 비용이 결론을 좌우할 때 |
+
+**결론**: "충돌이면 아무것도 안 한다"와 "기다리지 않는다"는 다른 말이다 — 대기 여부는 엔진의 잠금 규칙이 정하므로, 대기가 측정·타이머·커넥션 해석에 들어가는 경로라면 그 규칙을 **특성 테스트로 고정**한다(방안 1의 실제 엔진 검증을 일회성 확인이 아니라 회귀 테스트로 남기는 형태).\
+대기를 피하려고 준비 단계를 따로 두면 그 단계의 왕복 비용이 새로 생긴다 — 이 사례는 그 비용이 처리량 결과에 섞여, 판정을 한 문장으로 합치는 방안 4를 다음 비교 대상으로 남겼다.\
+검증 기록: 2026-10-09 사건 기록 대조·추상화(Claude 초안) — 대기 동작은 실제 PostgreSQL 특성 테스트로 확인, 방안 4는 후속 후보(미구현·미측정).
