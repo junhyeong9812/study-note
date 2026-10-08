@@ -301,10 +301,12 @@ func_exit:
 
 순차 삽입을 알아채는 규칙이다. 직전 삽입 바로 뒤에 또 넣으면 오른쪽으로 자라는 중이라고 본다.
 
-`storage` / `innobase` / `btr` / `btr0btr.cc` L1705-L1749 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/btr/btr0btr.cc#L1705-L1749))
+`storage` / `innobase` / `btr` / `btr0btr.cc` L1703-L1749 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/storage/innobase/btr/btr0btr.cc#L1703-L1749))
 
 ```cpp
-// btr0btr.cc L1705-L1749
+// btr0btr.cc L1703-L1749
+bool btr_page_get_split_rec_to_right(
+    btr_cur_t *cursor, /*!< in: cursor at which to insert */
     rec_t **split_rec) /*!< out: if split recommended,
                     the first record on upper half page,
                     or NULL if tuple to be inserted should
@@ -485,16 +487,18 @@ func_exit:
  L2675  MONITOR_INC(MONITOR_INDEX_SPLIT)
 ```
 
-분할 지점을 고르는 세 규칙이 트리 모양을 결정한다. 순차 삽입에서 가운데를 자르면 왼쪽 절반은 영영 반만 찬 채로 남는다. 그래서 새 레코드 자리에서 자른다.
+분할 지점을 고르는 세 규칙이 트리 모양을 결정한다. 순차 삽입이면 가운데가 아니라 새 레코드 근처에서 자른다. 소스 주석은 오른쪽 규칙을 "직전 삽입 바로 뒤에 넣으면 순차 삽입 패턴으로 보는 eager heuristics"라 하고(L1716-L1718), 왼쪽 규칙에서 수렴점 바로 앞 레코드까지 윗쪽으로 보내는 이유를 "수렴점보다 작은 레코드를 페이지에서 페이지로 되풀이해 옮기지 않기 위해서"라고 적는다(L1683-L1686).
 
 ```text
  (가) 가운데 분할 (무작위 삽입)          page_get_middle_rec (L2415)
 
    [10 20 30 40 50 60]  + 35
-   ->  [10 20 30 35]  [40 50 60]         (자르는 자리는 예시)
+   middle = (n_recs 6 + PAGE_HEAP_NO_USER_LOW 2) / 2 = 4  (page0page.ic L442)
+   -> infimum 다음 네 번째 레코드 40 이 split_rec (짝수면 윗쪽 절반의 첫 레코드)
+   ->  [10 20 30 35]  [40 50 60]         35 < 40 이라 insert_left, 원래 페이지에 들어간다
         원래 페이지    새 페이지 (FSP_UP)
 
- (나) 오른쪽 순차 삽입                   split_rec_to_right (L1705)
+ (나) 오른쪽 순차 삽입                   split_rec_to_right (L1703)
       PAGE_LAST_INSERT == 커서 레코드이고, 뒤로 사용자 레코드가 1개 이하
 
    [1 2 3 4 5 6]  + 7   (6 이 직전 삽입)
@@ -506,7 +510,7 @@ func_exit:
    ->  [1 2 3 4 5 6 8]  [9]              next_next_rec 부터 옮긴다. 하나는 남겨 둔다
                                           (주석: 남은 하나로 AHI 가 다음 순차 삽입을 확인한다)
 
- (다) 왼쪽 순차 삽입 (키가 줄어드는 방향) split_rec_to_left (L1668)
+ (다) 왼쪽 순차 삽입 (키가 줄어드는 방향) split_rec_to_left (L1665)
       PAGE_LAST_INSERT == 커서 다음 레코드
    FSP_DOWN: 새 페이지가 왼쪽에 생기고, 원래 페이지의 앞쪽 레코드가 그리로 간다
 ```

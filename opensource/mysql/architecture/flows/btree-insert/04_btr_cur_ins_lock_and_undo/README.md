@@ -298,7 +298,9 @@ inline roll_ptr_t trx_undo_build_roll_ptr(bool is_insert, space_id_t space_id,
             L5106    type_mode = LOCK_X | LOCK_GAP | LOCK_INSERT_INTENTION
             L5108    lock_rec_other_has_conflicting                --> [레코드 잠금과 교착]
             L5117    충돌하면 RecLock::add_to_waitq -> DB_LOCK_WAIT
-            L5134  세컨더리이고 inherit 였으면 page_update_max_trx_id
+            L5134  세컨더리이고 호출자가 넘긴 *inherit 가 true 였으면 (inherit_in, L5074)
+                     page_update_max_trx_id. [03] 은 true (btr0cur.cc L2691), [07] 은 false (L2954) 로 넘기고
+                     [07] 은 삽입 뒤 btr0cur.cc L3042 에서 따로 올린다
 
  L2602  잠금이 실패했거나, 세컨더리거나, change buffer 트리면 여기서 끝   (세컨더리는 undo 없음)
  L2607  trx_undo_report_row_operation(flags, TRX_UNDO_INSERT_OP, ...)   trx0rec.cc L2116

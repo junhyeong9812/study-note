@@ -358,12 +358,13 @@ page directory 의 슬롯은 연결 리스트의 몇몇 레코드("owner")를 �
 ```
 
 ```text
- PAGE_DIRECTION 이 쓰이는 곳
+ PAGE_LAST_INSERT 와 PAGE_DIRECTION 이 쓰이는 곳
 
- [06] L1360-L1385  삽입할 때마다 방향과 연속 횟수를 적는다
+ [06] L1360-L1385  삽입할 때마다 방향과 연속 횟수를 적는다 (L1387 PAGE_LAST_INSERT = 새 레코드)
  [03] L2789 / [08] btr_page_get_split_rec_to_right / _left
-                    PAGE_LAST_INSERT 로 순차 삽입을 알아채고
-                    분할 지점을 "새 레코드 자리"로 고른다
+                    PAGE_LAST_INSERT 만 읽어 순차 삽입을 알아채고 분할 지점을 고른다
+ PAGE_DIRECTION, PAGE_N_DIRECTION 은 이 태그에서 다음 삽입의 [06] L1370, L1376 과
+ page_header_print (page0page.cc L1649) 만 읽는다. 분할 판정은 이 값을 보지 않는다
 ```
 
 ## 결과가 쓰이는 곳

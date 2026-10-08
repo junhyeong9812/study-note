@@ -100,7 +100,8 @@
    db-engine  isFull() 이면 바로 splitLeafAndInsert (03-02). 래치 개념이 없다
 
  분할 지점
-   MySQL      직전 삽입 위치(PAGE_LAST_INSERT)로 순차 삽입을 알아채면 새 레코드 자리에서 자른다
+   MySQL      직전 삽입 위치(PAGE_LAST_INSERT)로 순차 삽입을 알아채면 새 레코드 근처에서 자른다
+              (오른쪽 순차면 새 레코드 자리, 뒤에 2개 이상 남았으면 하나만 남기고 그다음, [08])
               아니면 가운데 레코드 (page_get_middle_rec)
    db-engine  moveHalfTo 가 언제나 keyCount / 2 에서 자른다
 
