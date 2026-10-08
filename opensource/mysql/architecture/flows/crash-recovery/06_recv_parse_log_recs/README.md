@@ -2,7 +2,7 @@
 
 상위: [크래시 복구](../README.md)
 
-**파싱 버퍼의 바이트를 mtr 단위로 잘라 페이지별 해시에 넣는 함수다.** 첫 바이트의 `MLOG_SINGLE_REC_FLAG` 로 mtr 이 레코드 하나짜리인지 여럿짜리인지 가르고, 여럿짜리는 `MLOG_MULTI_REC_END` 까지 **전부 버퍼에 들어와 있을 때만** 해시에 넣는다. mtr 이 원자 단위라는 성질이 여기서 지켜진다. 끝이 잘린 mtr 은 한 레코드도 해시에 들어가지 않는다. 해시에 넣는 일은 `recv_add_to_hash_table` 이 하며, 레코드 본문을 페이지별 목록 끝에 붙이고 그 mtr 의 시작, 끝 LSN 을 함께 적는다.
+**파싱 버퍼의 바이트를 mtr 단위로 잘라 페이지별 해시에 넣는 함수다.** 첫 바이트의 `MLOG_SINGLE_REC_FLAG` 로 mtr 이 레코드 하나짜리인지 여럿짜리인지 가르고, 여럿짜리는 `MLOG_MULTI_REC_END` 까지 **전부 버퍼에 들어와 있을 때만** 해시에 넣는다. mtr 이 원자 단위라는 성질이 여기서 지켜진다. 끝이 잘린 mtr 은 한 레코드도 해시에 들어가지 않는다. 해시에 넣는 일은 `recv_add_to_hash_table` 이 하며, 레코드 본문을 페이지별 목록 끝에 붙이고 **그 레코드의 시작 LSN 과 mtr 의 끝 LSN** 을 함께 적는다(L2944, L3122. 함수 주석은 "start lsn of the mtr" 라고 적지만 다중 레코드 mtr 에서는 레코드마다의 `old_lsn` 이 넘어간다).
 
 ## 위치
 
@@ -477,6 +477,8 @@ static void recv_add_to_hash_table(mlog_id_t type, space_id_t space_id,
 
  RECV_NOT_PROCESSED  --(recv_read_in_area 가 읽기 요청)-->  RECV_BEING_READ
  RECV_BEING_READ     --([09] 시작)-->                       RECV_BEING_PROCESSED
+ RECV_NOT_PROCESSED  --([09] 시작, 다른 경로로 읽힌 페이지)--> RECV_BEING_PROCESSED
+                     ([09] L2448 은 BEING_PROCESSED, PROCESSED 만 돌려보낸다)
  RECV_BEING_PROCESSED --([09] 끝)-->                        RECV_PROCESSED
  RECV_NOT_PROCESSED  --(테이블스페이스가 없음, [08])-->     RECV_DISCARDED
 ```
@@ -495,4 +497,4 @@ static void recv_add_to_hash_table(mlog_id_t type, space_id_t space_id,
 
 ## 다루지 않는 것
 
-`recv_parse_or_apply_log_rec_body` 의 mlog 타입별 분기(수백 줄), `mlog_parse_initial_log_record` 의 가변 길이 정수 인코딩, `MLOG_FILE_CREATE/RENAME/DELETE/EXTEND` 가 파싱 단계에서 곧바로 처리되는 방식, 손상 보고(`recv_report_corrupt_log`), `save_rec`/`get_saved_rec` 캐시는 이 함수의 곁가지라 요약만 했다. mlog 타입 목록은 [redo 로그 파일과 mlog 타입](../../structure/redo-log-files/README.md)에 있다.
+`recv_parse_or_apply_log_rec_body` 의 mlog 타입별 분기(수백 줄), `mlog_parse_initial_log_record` 의 가변 길이 정수 인코딩, `MLOG_FILE_CREATE/RENAME/DELETE/EXTEND` 가 파싱 단계에서 곧바로 처리되는 방식, 손상 보고(`recv_report_corrupt_log`), `save_rec`/`get_saved_rec` 캐시는 이 함수의 곁가지라 요약만 했다. mlog 타입 목록은 [redo 로그 파일과 mlog 타입](../../../structure/redo-log-files/README.md)에 있다.

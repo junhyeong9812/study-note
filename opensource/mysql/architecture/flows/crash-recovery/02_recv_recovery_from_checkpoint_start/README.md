@@ -253,4 +253,4 @@ dberr_t recv_recovery_from_checkpoint_start(log_t &log, lsn_t flush_lsn) {
 
 ## 다루지 않는 것
 
-`log_files_for_each` 와 redo 파일 목록(`log.m_files`), 체크포인트 헤더의 바이트 배치([redo 로그 파일과 mlog 타입](../../structure/redo-log-files/README.md)), 읽기 전용 모드에서 로그가 남아 있을 때의 처리, `log_start` 가 log buffer 와 LSN 을 초기화하는 세부는 이 함수의 곁가지라 요약만 했다.
+`log_files_for_each` 와 redo 파일 목록(`log.m_files`), 체크포인트 헤더의 바이트 배치([redo 로그 파일과 mlog 타입](../../../structure/redo-log-files/README.md)), 읽기 전용 모드에서 로그가 남아 있을 때의 처리, `log_start` 가 log buffer 와 LSN 을 초기화하는 세부는 이 함수의 곁가지라 요약만 했다.

@@ -2,7 +2,7 @@
 
 상위: [크래시 복구](../README.md)
 
-**페이지 하나에 쌓인 redo 레코드를 적용하는 함수다.** 페이지의 LSN 을 읽고, 레코드 목록을 앞에서부터 보며 **그 레코드를 만든 mtr 의 시작 LSN 이 page LSN 이상인 것만** 적용한다. 이미 디스크에 반영된 변경은 건너뛰므로 같은 페이지에 몇 번을 돌려도 결과가 같다. 적용은 redo 를 쓰지 않는 mtr(`MTR_LOG_NONE`) 안에서 하고, 끝나면 `buf_flush_note_modification` 으로 페이지를 dirty 로 만들어 flush list 에 붙인다. 대부분은 I/O 핸들러 스레드가 페이지를 막 읽어 들인 순간 `buf_page_io_complete` 에서 부른다.
+**페이지 하나에 쌓인 redo 레코드를 적용하는 함수다.** 페이지의 LSN 을 읽고, 레코드 목록을 앞에서부터 보며 **레코드의 시작 LSN(`recv->start_lsn`) 이 page LSN 이상인 것만** 적용한다. 이미 디스크에 반영된 변경은 건너뛰므로 같은 페이지에 몇 번을 돌려도 결과가 같다. 적용은 redo 를 쓰지 않는 mtr(`MTR_LOG_NONE`) 안에서 하고, 끝나면 `buf_flush_note_modification` 으로 페이지를 dirty 로 만들어 flush list 에 붙인다. 대부분은 I/O 핸들러 스레드가 페이지를 막 읽어 들인 순간 `buf_page_io_complete` 에서 부른다.
 
 ## 위치
 
@@ -288,7 +288,7 @@ X 래치를 넘겨받고 page LSN 을 읽는다.
  L2709  state = RECV_PROCESSED, L2710 남은 페이지 수 -1
 ```
 
-비교에 쓰는 값이 레코드 자신의 LSN 이 아니라 **그 레코드를 만든 mtr 의 시작 LSN** 이라는 점이 요점이다. mtr 은 페이지를 한꺼번에 바꾸고 page LSN 에는 mtr 의 끝 LSN 이 적힌다. 그래서 "이 mtr 이 시작된 뒤의 LSN 이 페이지에 적혀 있으면" 그 mtr 전체가 이미 반영된 것이다.
+비교하는 `recv->start_lsn` 은 **그 레코드가 로그에서 시작하는 LSN** 이다. 레코드 하나짜리 mtr 이면 mtr 의 시작과 같고, 여럿짜리 mtr 이면 레코드마다 다르다([06] recv_multi_rec 가 레코드마다 `old_lsn` 을 넘긴다, log0recv.cc L3122). 그래도 판정은 mtr 단위로 맞아떨어진다. page LSN 에는 그 페이지를 마지막으로 바꾼 mtr 의 끝 LSN 이 적히므로(newest_modification = end_lsn, buf0flu.ic L76), 그 mtr 의 레코드는 모두 시작 LSN 이 page LSN 보다 작아 건너뛰고, 그 뒤 mtr 의 레코드는 모두 page LSN 이상이라 적용된다.
 
 ```text
  mtr 과 page LSN 의 관계

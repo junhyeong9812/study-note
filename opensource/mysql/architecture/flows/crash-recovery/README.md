@@ -2,7 +2,7 @@
 
 상위: [MySQL 아키텍처 지도](../../README.md)
 
-서버가 비정상 종료된 뒤 다시 켜질 때, **데이터 파일을 마지막 커밋 상태로 되돌려 놓기까지**의 흐름이다. 세 층이 차례로 일한다. 먼저 InnoDB 가 마지막 체크포인트부터 redo 를 읽어 페이지별로 모으고, doublewrite 로 찢어진 페이지를 고친 뒤, 페이지마다 page LSN 보다 새로운 redo 만 적용한다. 다음으로 undo 에서 되살린 미완 트랜잭션 가운데 **PREPARED 가 아닌 것**을 되돌린다. 마지막으로 서버 쪽 `Binlog_recovery` 가 binlog 에 끝까지 적힌 XID 목록을 만들어, PREPARED 트랜잭션 각각을 커밋할지 롤백할지 InnoDB 에 알려 준다. 흐름은 백그라운드 롤백 스레드가 남은 ACTIVE 트랜잭션을 모두 되돌리는 데서 끝난다. 스레드 경계가 여럿 있다. redo 적용은 페이지 읽기의 완료 처리(`buf_page_io_complete`) 안에서 일어난다. [08] 이 거는 복구용 읽기는 비동기라(buf0rea.cc L697, sync=false) 그 완료는 **I/O 핸들러 스레드**가 하고, 동기로 읽힌 페이지는 읽은 스레드가 같은 함수를 직접 부르며 적용한다(buf0rea.cc L145). 이미 버퍼 풀에 있는 페이지는 [08] 의 `recv_apply_log_rec` 가 시작 스레드에서 `recv_recover_page(false, block)` 를 부른다(log0recv.cc L1161). 또 복구 중 dirty 페이지는 **recv_writer** 스레드가 페이지 클리너에게 쓰기를 시키며, 사용자 트랜잭션 롤백은 **trx_recovery_rollback** 스레드가 한다.
+서버가 비정상 종료된 뒤 다시 켜질 때, **데이터 파일을 마지막 커밋 상태로 되돌려 놓기까지**의 흐름이다. 세 층이 차례로 일한다. 먼저 InnoDB 가 마지막 체크포인트부터 redo 를 읽어 페이지별로 모으고, doublewrite 로 찢어진 페이지를 고친 뒤, 페이지마다 page LSN 보다 새로운 redo 만 적용한다. 다음으로 undo 에서 트랜잭션을 되살리고, 데이터 사전을 다시 열 때 그 가운데 **DDL 트랜잭션만** 먼저 되돌린다. 이어서 서버 쪽 `Binlog_recovery` 가 binlog 에 끝까지 적힌 XID 목록을 만들어, PREPARED 트랜잭션 각각을 커밋할지 롤백할지 InnoDB 에 알려 준다. 흐름은 백그라운드 롤백 스레드가 **PREPARED 가 아닌** 남은 ACTIVE 트랜잭션을 모두 되돌리는 데서 끝난다. 스레드 경계가 여럿 있다. redo 적용은 페이지 읽기의 완료 처리(`buf_page_io_complete`) 안에서 일어난다. [08] 이 거는 복구용 읽기는 비동기라(buf0rea.cc L697, sync=false) 그 완료는 **I/O 핸들러 스레드**가 하고, 동기로 읽힌 페이지는 읽은 스레드가 같은 함수를 직접 부르며 적용한다(buf0rea.cc L145). 이미 버퍼 풀에 있는 페이지는 [08] 의 `recv_apply_log_rec` 가 시작 스레드에서 `recv_recover_page(false, block)` 를 부르지만(log0recv.cc L1161), 소스 주석(L1143-L1154)은 그런 페이지도 읽힐 때 I/O 완료 쪽이 이미 적용했다고 보고, [09] 는 상태가 RECV_PROCESSED 면 곧바로 돌아간다(L2448-L2449). 또 복구 중 dirty 페이지는 **recv_writer** 스레드가 페이지 클리너에게 쓰기를 시키며, 사용자 트랜잭션 롤백은 **trx_recovery_rollback** 스레드가 한다.
 
 기준 태그: mysql-9.7.2 [`008e09c283`](https://github.com/mysql/mysql-server/tree/008e09c2834b98143a8c067d4d225c90953050cf). 모든 줄 번호는 이 태그 기준이다.
 
@@ -43,10 +43,11 @@
       +-- DDSE_dict_recover(thd, DICT_RECOVERY_RESTART_SERVER, ...)  bootstrapper.cc L943
             정의 L84. InnoDB handlerton 을 찾아                     L88
             ddse->dict_recover(mode, version) 로 부른다              L91
-      +-- innobase_dict_recover                               ha_innodb.cc L4037
-            (handlerton 등록: innobase_hton->dict_recover = innobase_dict_recover, L5429)
-      +-- srv_dict_recover_on_restart                         ha_innodb.cc L4103
-            +-- [12] trx_rollback_or_clean_recovered(false)   srv0start.cc L2119  DDL 트랜잭션만
+            +-- innobase_dict_recover                         ha_innodb.cc L4037
+                  (handlerton 등록: innobase_hton->dict_recover = innobase_dict_recover, L5429)
+                  +-- srv_dict_recover_on_restart             ha_innodb.cc L4103
+                        +-- [12] trx_rollback_or_clean_recovered(false)
+                                                              srv0start.cc L2119  DDL 트랜잭션만
  tc_log->open -> MYSQL_BIN_LOG::open_binlog                   mysqld.cc L8849
       +-- [11] Binlog_recovery::recover                       binlog.cc L6963
             +-- ha_recover -> innobase_commit_by_xid / innobase_rollback_by_xid
@@ -66,7 +67,7 @@
  checkpoint  [03] 가장 큰 checkpoint_lsn -> redo 의 시작점
  dblwr       [07] 체크섬이 깨진 페이지를 dblwr 사본으로 -> 찢어진 페이지
  scan/parse  [05] [06] checkpoint 부터 로그 끝까지 -> 페이지별 redo 목록
- apply       [08] [09] page LSN 이후 mtr 의 레코드만 적용 -> 페이지가 크래시 직전 상태로
+ apply       [08] [09] 시작 LSN >= page LSN 인 레코드만 적용 -> 페이지가 크래시 직전 상태로
  finish      [10] recv_writer 종료, 복구 자료 해제
  resurrect   trx_sys_init_at_db_start -> ACTIVE / PREPARED / COMMITTED 로 되살림
  dd-undo     [12] all=false -> 미완 DDL 트랜잭션 롤백
@@ -77,7 +78,7 @@
  (log0recv.cc L3918 주석 "transaction rollbacks can be run in background")
 ```
 
-redo 적용의 판정은 페이지 하나 단위로 이루어진다. 한 페이지에 쌓인 레코드 목록을 앞에서부터 보며 **page LSN 이상에서 시작한 mtr 의 레코드만** 적용한다.
+redo 적용의 판정은 페이지 하나 단위로 이루어진다. 한 페이지에 쌓인 레코드 목록을 앞에서부터 보며 **레코드의 시작 LSN 이 page LSN 이상인 것만** 적용한다. page LSN 은 그 페이지를 마지막으로 바꾼 mtr 의 끝 LSN 이므로, 결과적으로 mtr 단위로 통째로 건너뛰거나 통째로 적용된다.
 
 ```text
  페이지 하나의 적용 판정 ([09] recv_recover_page_func)

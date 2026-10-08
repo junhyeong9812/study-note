@@ -2,7 +2,7 @@
 
 상위: [크래시 복구](../README.md)
 
-**undo 에서 되살린 트랜잭션을 상태별로 정리하는 함수다.** 같은 함수가 두 번 불린다. 첫 번째(`all=false`)는 데이터 사전을 열기 위해 기동 스레드가 부르며 **DDL 트랜잭션만** 롤백한다. 두 번째(`all=true`)는 binlog 복구가 끝난 뒤 백그라운드 스레드가 부르며 **PREPARED 가 아닌 ACTIVE 전부**를 롤백한다. COMMITTED 로 되살아난 것은 두 번 모두 정리만 한다. PREPARED 는 절대 건드리지 않는다. 그 운명은 [11] 이 binlog 로 정하거나, 외부 XA 면 사용자가 XA COMMIT/ROLLBACK 으로 정한다.
+**undo 에서 되살린 트랜잭션을 상태별로 정리하는 함수다.** 같은 함수가 두 번 불린다. 첫 번째(`all=false`)는 데이터 사전을 다시 열 때 DD 부트스트랩 스레드가 `srv_dict_recover_on_restart` 에서 부르며 **DDL 트랜잭션만** 롤백한다. 두 번째(`all=true`)는 binlog 복구가 끝난 뒤 백그라운드 스레드가 부르며 **PREPARED 가 아닌 ACTIVE 전부**를 롤백한다. COMMITTED 로 되살아난 것은 두 번 모두 정리만 한다. PREPARED 는 절대 건드리지 않는다. 그 운명은 [11] 이 binlog 로 정하거나, 외부 XA 면 사용자가 XA COMMIT/ROLLBACK 으로 정한다.
 
 ## 위치
 
@@ -348,4 +348,4 @@ void trx_recovery_rollback_thread() {
 
 ## 다루지 않는 것
 
-`trx_rollback_active` 가 롤백 그래프(`roll_node_t`, `que_run_threads`)로 undo 레코드를 거꾸로 적용하는 과정, `trx_resurrect_locks` 가 undo 에서 테이블 잠금을 되살리는 방식, `trx_sys_init_at_db_start` 가 undo 세그먼트를 훑어 트랜잭션을 만드는 과정([undo 테이블스페이스와 롤백 세그먼트](../../structure/undo-segments/README.md)), 종료 단계 `SRV_SHUTDOWN_RECOVERY_ROLLBACK` 과의 상호작용은 이 함수의 곁가지라 요약만 했다.
+`trx_rollback_active` 가 롤백 그래프(`roll_node_t`, `que_run_threads`)로 undo 레코드를 거꾸로 적용하는 과정, `trx_resurrect_locks` 가 undo 에서 테이블 잠금을 되살리는 방식, `trx_sys_init_at_db_start` 가 undo 세그먼트를 훑어 트랜잭션을 만드는 과정([undo 테이블스페이스와 롤백 세그먼트](../../../structure/undo-segments/README.md)), 종료 단계 `SRV_SHUTDOWN_RECOVERY_ROLLBACK` 과의 상호작용은 이 함수의 곁가지라 요약만 했다.

@@ -351,4 +351,4 @@ static void recv_read_in_area(const page_id_t &requested_page_id,
 
 ## 다루지 않는 것
 
-`RECV_READ_AHEAD_AREA` 의 값과 `buf_read_recv_pages` 가 인스턴스별 frame 여유를 기다리는 방식, 진행률 로그(ER_IB_MSG_708, 709), `fil_tablespace_open_for_recovery` 가 파일을 찾는 과정, undo 테이블스페이스 truncate 중의 예외, `recv_writer` 와 페이지 클리너 사이의 이벤트(`flush_start`, `flush_end`) 세부는 이 함수의 곁가지라 요약만 했다.
+`buf_read_recv_pages` 가 인스턴스별 frame 여유를 기다리는 방식, 진행률 로그(ER_IB_MSG_708, 709), `fil_tablespace_open_for_recovery` 가 파일을 찾는 과정, undo 테이블스페이스 truncate 중의 예외, `recv_writer` 와 페이지 클리너 사이의 이벤트(`flush_start`, `flush_end`) 세부는 이 함수의 곁가지라 요약만 했다.

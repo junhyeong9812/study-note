@@ -276,4 +276,4 @@ bool meb_scan_log_recs(
 
 ## 다루지 않는 것
 
-`recv_sys_add_to_parsing_buf` 가 헤더와 트레일러를 떼어 내는 계산, 파싱 버퍼 크기 조정(`recv_sys_resize_buf`), MEB 백업용 `meb_scan_log_recs` 판, ASAN 디버그의 byte-by-byte 파싱, 블록 헤더의 바이트 배치([redo 로그 파일과 mlog 타입](../../structure/redo-log-files/README.md))는 이 함수의 곁가지라 요약만 했다.
+`recv_sys_add_to_parsing_buf` 가 헤더와 트레일러를 떼어 내는 계산, 파싱 버퍼 크기 조정(`recv_sys_resize_buf`), MEB 백업용 `meb_scan_log_recs` 판, ASAN 디버그의 byte-by-byte 파싱, 블록 헤더의 바이트 배치([redo 로그 파일과 mlog 타입](../../../structure/redo-log-files/README.md))는 이 함수의 곁가지라 요약만 했다.
