@@ -239,6 +239,7 @@ print(diff_ci(100, 1000, 135, 1000))
   - [10-power-and-sample-size](../10-power-and-sample-size/2-summary.md) — 원하는 폭을 얻는 n
   - [20-categorical-inference](../20-categorical-inference/2-summary.md) · [21-numerical-inference-t-anova](../21-numerical-inference-t-anova/2-summary.md) — 비율·평균 추론 확장
   - [reliability/38-microbenchmarking](../../reliability/38-microbenchmarking/2-summary.md) — 벤치마크 결과의 구간
+- 후속(AI 엔지니어링): [ai-engineering/19-llm-evaluation](../../ai-engineering/19-llm-evaluation/2-summary.md) — LLM 평가 점수의 신뢰구간·짝지은 비교
 - 교재·문서
   - OpenIntro Statistics 4판 5.2 Confidence intervals for a proportion — 5.2.2 `p̂ ± 1.96·SE`와 "많은 표본에서 약 95%가 덮는다", 그림 5.6(25개 중 24개), 5.2.3 신뢰수준 변경, 5.2.5 해석(확률 해석은 흔한 오류, 모수에 대한 것, 표집 오차만) <https://www.openintro.org/book/os/>
   - OpenIntro 7.1 t 분포와 한 표본 평균, 부록 C.2 t-Probability Table(df 4: 2.78, df 9: 2.26, df 29: 2.05)

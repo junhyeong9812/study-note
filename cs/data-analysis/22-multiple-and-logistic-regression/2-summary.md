@@ -281,6 +281,7 @@ GROUP BY c.user_id;
 - 선행: [13 linear-regression](../13-linear-regression/2-summary.md).
 - 같은 영역: [12 correlation-vs-causation](../12-correlation-vs-causation/2-summary.md), [25 causal-inference-basics](../25-causal-inference-basics/2-summary.md)(회귀 계수 ≠ 인과 효과), [26 bayesian-thinking](../26-bayesian-thinking/2-summary.md), [11 multiple-comparisons](../11-multiple-comparisons/2-summary.md)(변수 선택과 다중 비교).
 - 다른 영역: [math/13-linear-algebra-essentials](../../math/13-linear-algebra-essentials/2-summary.md), [math/15-numerical-stability](../../math/15-numerical-stability/2-summary.md), [algorithm/23-greedy](../../algorithm/23-greedy/2-summary.md).
+- 후속(AI 엔지니어링): [ai-engineering/01-ml-in-one-page](../../ai-engineering/01-ml-in-one-page/2-summary.md) — 학습·검증·시험 분리와 데이터 누설 · [ai-engineering/02-gradient-descent-and-backprop](../../ai-engineering/02-gradient-descent-and-backprop/2-summary.md) — 역전파와 학습률 발산(신경망의 경사 하강)
 
 근거:
 - OpenIntro Statistics 4판(https://www.openintro.org/book/os/ 무료 PDF) 9장 Multiple and logistic regression: 9.1.1(지시 변수), 9.1.2(예 9.12의 대출 금리 모형에서 파산 이력 계수 0.74 → 0.39, 공선성 서술), 9.1.3(수정 R² 식, 범주 p수준 = p−1 변수), 9.2.2·9.2.3(후진 제거·전진 선택, p값 접근), 9.5.2(logit 변환, 그림 9.22). PDF 본문에서 확인.

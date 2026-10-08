@@ -288,6 +288,7 @@ perf stat -e dTLB-load-misses,dTLB-loads ./app
   - [14-mmap-and-page-cache](../14-mmap-and-page-cache/2-summary.md) — 파일 매핑.
   - [35-virtualization-hypervisor](../35-virtualization-hypervisor/2-summary.md) — 중첩 페이지 테이블.
   - [systems/thrashing](../../systems/thrashing/2-summary.md) — 작업 집합이 메모리를 넘을 때.
+- 후속(AI 엔지니어링): [ai-engineering/09-inference-serving-and-batching](../../ai-engineering/09-inference-serving-and-batching/2-summary.md) — 페이지드 KV 캐시(블록 테이블 = 페이지 테이블)
 - Kernel 문서·소스
   - Documentation/mm/page_tables.rst — PGD·P4D·PUD·PMD·PTE, 접기(folding), PFN, 다단계의 이유 <https://docs.kernel.org/mm/page_tables.html>
   - arch/x86/include/asm/pgtable_types.h — `_PAGE_BIT_PRESENT 0` … `_PAGE_BIT_GLOBAL 8`, `_PAGE_BIT_NX 63`

@@ -392,6 +392,7 @@ try (PreparedStatement ps = conn.prepareStatement(sql)) {
   - [47-autocomplete-and-typeahead](../47-autocomplete-and-typeahead/2-summary.md) — 접두사 완성, edge n-gram, 한글 자모
   - [48-search-index-sync-and-reindexing](../48-search-index-sync-and-reindexing/2-summary.md) — DB → 검색 인덱스 동기화, 별칭 교체 재색인
   - [10-collation-and-text-comparison](../10-collation-and-text-comparison/2-summary.md)
+- 후속(AI 엔지니어링): [ai-engineering/04-tokenization-and-token-cost](../../ai-engineering/04-tokenization-and-token-cost/2-summary.md) — LLM 토크나이저(BPE)와 검색 분석기 토큰화의 차이 · [ai-engineering/17-hybrid-search-and-reranking](../../ai-engineering/17-hybrid-search-and-reranking/2-summary.md) — BM25 + 벡터 검색의 RRF 합성·재순위
 - PostgreSQL 17 문서
   - 12.3 Controlling Text Search — `to_tsvector`, `websearch_to_tsquery`, `ts_rank`·`ts_rank_cd`("do not use any global information"), `ts_headline` XSS 경고 <https://www.postgresql.org/docs/17/textsearch-controls.html>
   - 12.6 Dictionaries — 12.6.4 Thesaurus("changes … require reindexing") <https://www.postgresql.org/docs/17/textsearch-dictionaries.html>

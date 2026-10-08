@@ -348,6 +348,7 @@ const userLoader = new DataLoader<number, User>(async (ids) => {
   - [distributed/17-queues-logs-and-delivery-semantics](../../distributed/17-queues-logs-and-delivery-semantics/2-summary.md) — 프로듀서 배칭
   - [39-async-io-gains-and-limits](../39-async-io-gains-and-limits/2-summary.md) — 동시성 vs 지연
   - [48-performance-and-stability-antipatterns-in-code](../48-performance-and-stability-antipatterns-in-code/2-summary.md) — Chatty I/O
+- 후속(AI 엔지니어링): [ai-engineering/09-inference-serving-and-batching](../../ai-engineering/09-inference-serving-and-batching/2-summary.md) — LLM 서빙의 연속 배칭
 - 문서·소스
   - Redis 문서 "Redis pipelining"(RTT 250ms 예, 시스템 콜 감소, 1만 개씩 끊어 보내기) <https://redis.io/docs/latest/develop/using-commands/pipelining/>
   - PostgreSQL 17 문서 14.4 "Populating a Database"(자동 커밋 끄기, COPY) <https://www.postgresql.org/docs/17/populate.html>

@@ -232,6 +232,7 @@ print(two_prop_test(100_000, 1_000_000, 101_000, 1_000_000))   # 실험 C 첫 �
   - [11-multiple-comparisons](../11-multiple-comparisons/2-summary.md) · [14-ab-testing-design](../14-ab-testing-design/2-summary.md) · [15-ab-pitfalls-srm-peeking](../15-ab-pitfalls-srm-peeking/2-summary.md) · [20-categorical-inference](../20-categorical-inference/2-summary.md) · [21-numerical-inference-t-anova](../21-numerical-inference-t-anova/2-summary.md) · [26-bayesian-thinking](../26-bayesian-thinking/2-summary.md)
   - [testing/19-testing-in-production](../../testing/19-testing-in-production/2-summary.md) — 카나리 판정의 두 표본 검정
   - [reliability/43-alerting-and-on-call](../../reliability/43-alerting-and-on-call/2-summary.md) — 알람의 거짓 양성·거짓 음성
+- 후속(AI 엔지니어링): [ai-engineering/19-llm-evaluation](../../ai-engineering/19-llm-evaluation/2-summary.md) — 모델 교체 회귀 게이트
 - 교재·문서
   - OpenIntro Statistics 4판 5.3 Hypothesis testing for a proportion — 5.3.1 틀, 5.3.2 구간으로 검정, 5.3.3 결정 오류(법정 예), 5.3.4 p값 정의·"기각할 충분한 증거가 없다", 5.3.5 유의수준 선택, 5.3.6 통계적 vs 실질적 유의, 5.3.7 단측 검정 <https://www.openintro.org/book/os/>
   - OpenIntro 6.2.3 두 비율 차이의 검정 — 합동 비율로 조건 확인·SE 계산

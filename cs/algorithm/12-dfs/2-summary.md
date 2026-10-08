@@ -374,6 +374,7 @@ DFS 다섯 함수를 직접 구현하되, 스택 판이 재귀 판과 **정확�
 - 선행 — [11-bfs](../11-bfs/2-summary.md): 같은 그래프의 너비 우선 대조군(방문 표시 시점이 정반대).
 - 후속 — [13-backtracking](../13-backtracking/2-summary.md)(되돌리기가 있는 DFS) · [16-euler-path](../16-euler-path/2-summary.md) · [18-scc](../18-scc/2-summary.md)(진입·종료 시각의 응용).
 - 자료구조 — [data-structure/03-stack](../../data-structure/03-stack/2-summary.md)(명시적 스택) · [data-structure/08-graph](../../data-structure/08-graph/2-summary.md) · [data-structure/14-union-find](../../data-structure/14-union-find/2-summary.md)(연결 요소를 동적으로 유지하는 다른 길).
+- 후속(AI 엔지니어링): [ai-engineering/02-gradient-descent-and-backprop](../../ai-engineering/02-gradient-descent-and-backprop/2-summary.md) — 역전파 = 계산 그래프 위상 정렬의 역순 순회
 - 영역 표 — [algorithm/curriculum.md](../curriculum.md) `18-dfs`.
 - 교재 — CLRS 3판 22.3(깊이 우선 탐색 — 괄호 정리·흰/회/검 3색), 22.4(위상 정렬).
 - myway 원본 — `/home/jun/project/myway/algorithm/12-dfs/` (README.md · impl/com/algo/dfs/ · src/test/java/com/algo/dfs/MeasurementTest.java).

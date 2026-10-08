@@ -285,6 +285,7 @@ kubectl logs deploy/order | jq -r 'select(.traceId=="4bf92f3577b34da6a3ce929d0e0
   - [distributed/03-partial-failure-and-timeouts](../../distributed/03-partial-failure-and-timeouts/2-summary.md)
   - [05-timeouts-and-deadline-propagation](../05-timeouts-and-deadline-propagation/2-summary.md) — 같은 헤더 전파 경로로 데드라인도 간다
   - [34-tail-latency-and-stragglers](../34-tail-latency-and-stragglers/2-summary.md) · [50-sidecar-ambassador-and-service-mesh](../50-sidecar-ambassador-and-service-mesh/2-summary.md)
+- 후속(AI 엔지니어링): [ai-engineering/23-llm-observability-and-cost](../../ai-engineering/23-llm-observability-and-cost/2-summary.md) — OTel GenAI 스팬과 LLM 호출 추적
 - 명세·논문
   - W3C Trace Context (Recommendation 2021-11-23) — `traceparent` 형식, sampled 플래그 <https://www.w3.org/TR/trace-context/>
   - W3C Trace Context Level 2 (Candidate Recommendation Draft 2024-03-28) — random trace-id flag <https://www.w3.org/TR/trace-context-2/>

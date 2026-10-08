@@ -228,6 +228,7 @@ http.headers(h -> h.contentSecurityPolicy(csp ->
   - [11-sessions-and-cookie-security](../11-sessions-and-cookie-security/2-summary.md)(HttpOnly·Secure), [17-refresh-token-rotation-and-revocation](../17-refresh-token-rotation-and-revocation/2-summary.md)(토큰 저장 위치)
   - [web-api/04-textcontent-innerhtml-innertext](../../../languages/web-api/04-textcontent-innerhtml-innertext/2-summary.md) — innerHTML·textContent·innerText의 파싱과 XSS
   - [web-platform/06-browser-storage](../../web-platform/06-browser-storage/2-summary.md) — 토큰을 localStorage에 두면 XSS로 탈취
+- 후속(AI 엔지니어링): [ai-engineering/22-prompt-injection-and-llm-security](../../ai-engineering/22-prompt-injection-and-llm-security/2-summary.md) — 모델 출력을 HTML에 넣을 때의 출력 처리
 - 1차 출처
   - OWASP Top 10 2021 A03 Injection — XSS(CWE-79) 포함 <https://top10.owasp.org/2021/A03_2021-Injection/>
   - OWASP XSS Prevention Cheat Sheet — 문맥별 출력 인코딩, 속성 따옴표, URL 스킴 <https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html> · DOM based XSS Prevention Cheat Sheet <https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html>

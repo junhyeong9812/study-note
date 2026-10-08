@@ -300,6 +300,7 @@ void onReconnect()            { l1.invalidateAll(); }   // 놓친 메시지를 �
   - database [31-cache-key-versioning-and-serialization](../31-cache-key-versioning-and-serialization/2-summary.md)
   - [48-search-index-sync-and-reindexing](../48-search-index-sync-and-reindexing/2-summary.md) — 커밋 후 전달, outbox·CDC로 무효화 이벤트 만들기
   - [data-structure/19-probabilistic-counting](../../data-structure/19-probabilistic-counting/2-summary.md) — Count-Min Sketch
+- 후속(AI 엔지니어링): [ai-engineering/12-prompt-and-semantic-caching](../../ai-engineering/12-prompt-and-semantic-caching/2-summary.md) — LLM 응답 의미 캐시
 - Redis 문서
   - Spring Framework `@Transactional` 메서드 가시성(인터페이스 프록시는 public만, 6.0+ 클래스 프록시는 protected·package-visible도) <https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html>
   - Client-side caching reference — 추적·BCAST·OPTIN·NOLOOP, 무효화 테이블, RESP2 REDIRECT, 경쟁 상태와 자리표시자, 연결 끊김 시 비우기, 캐시할 키 고르기 <https://redis.io/docs/latest/develop/reference/client-side-caching/>

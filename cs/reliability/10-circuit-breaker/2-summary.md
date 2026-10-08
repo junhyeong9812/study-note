@@ -287,6 +287,7 @@ changes(resilience4j_circuitbreaker_state{name="recommendation",state="open"}[10
   - [11-rate-limiter](../11-rate-limiter/2-summary.md) — 같은 슬라이딩 창으로 요청 수를 센다
   - [33-hysteresis-and-flapping](../33-hysteresis-and-flapping/2-summary.md), [35-timeout-design-worksheet](../35-timeout-design-worksheet/2-summary.md)(데코레이터 순서). 히스테리시스 기초는 [systems/Hysteresis](../../systems/Hysteresis/2-summary.md)
   - [distributed/03-partial-failure-and-timeouts](../../distributed/03-partial-failure-and-timeouts/2-summary.md) — 느림과 죽음을 구분할 수 없다
+- 후속(AI 엔지니어링): [ai-engineering/13-model-routing-and-fallback](../../ai-engineering/13-model-routing-and-fallback/2-summary.md) — LLM 제공자·모델 폴백과 서킷
 - 글·문서
   - Michael Nygard, 『Release It!』 2판(Pragmatic, 2018) 「Stability Patterns」 장의 Circuit Breaker 절 — pragprog 목차로 절 위치만 확인, 본문은 열람하지 못했다 [?] <https://pragprog.com/titles/mnee2/release-it-second-edition/>
   - Martin Fowler, "CircuitBreaker", 2014-03-06 — Nygard가 대중화, 실패 임계·half open 시험 호출 <https://martinfowler.com/bliki/CircuitBreaker.html>

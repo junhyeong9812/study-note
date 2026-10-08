@@ -339,6 +339,7 @@ static double h0(byte[] b) {
   - [algorithm/12-hash-functions](../../algorithm/12-hash-functions/2-summary.md) — CRC 선형성
   - [os/33-data-integrity-checksums](../../os/33-data-integrity-checksums/2-summary.md) — 저장 계층 체크섬·종단 간 검증
   - [security/03-symmetric-encryption-and-aead](../../security/03-symmetric-encryption-and-aead/2-summary.md) · [security/05-mac-and-hmac](../../security/05-mac-and-hmac/2-summary.md) · [security/09-randomness-and-key-management](../../security/09-randomness-and-key-management/2-summary.md)
+- 후속(AI 엔지니어링): [ai-engineering/03-cross-entropy-and-perplexity](../../ai-engineering/03-cross-entropy-and-perplexity/2-summary.md) — 교차 엔트로피·perplexity(언어 모델의 손실)
 - 근거
   - C. E. Shannon, "A Mathematical Theory of Communication", Bell System Technical Journal 27, pp. 379–423, 623–656, 1948 — 엔트로피, 원천 부호화 정리
   - R. W. Hamming, "Error Detecting and Error Correcting Codes", Bell System Technical Journal 29(2), pp. 147–160, 1950 <https://doi.org/10.1002/j.1538-7305.1950.tb00463.x>

@@ -327,6 +327,7 @@ curl -s https://api.example.com/orders | grep -oE '"[a-z_]*id":[0-9]{16,}'
 
 - 선행: [07-versioning-and-compatibility](../07-versioning-and-compatibility/2-summary.md)
 - 후속·연결: [15-rpc-and-grpc](../15-rpc-and-grpc/2-summary.md), [database/28-key-strategy-surrogate-natural-public-id](../../database/28-key-strategy-surrogate-natural-public-id/2-summary.md)(64비트 ID·외부 ID), [testing/13-contract-testing](../../testing/13-contract-testing/2-summary.md), [data-engineering/09-data-contracts-and-schema-registry](../../data-engineering/09-data-contracts-and-schema-registry/2-summary.md), [distributed/17-queues-logs-and-delivery-semantics](../../distributed/17-queues-logs-and-delivery-semantics/2-summary.md)
+- 후속(AI 엔지니어링): [ai-engineering/14-structured-output-and-tool-calling](../../ai-engineering/14-structured-output-and-tool-calling/2-summary.md) — LLM 구조화 출력·도구 인자 스키마
 - 근거
   - RFC 8259 The JSON Data Interchange Format(2017-12) §4·§6 — https://www.rfc-editor.org/rfc/rfc8259
   - Protobuf Language Guide (proto3) — https://protobuf.dev/programming-guides/proto3/ (reserved, 필드 번호 범위, unknown fields, enum, 호환 타입)

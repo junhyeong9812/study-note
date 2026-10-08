@@ -276,6 +276,7 @@ psql -c "SELECT query, count(*) FROM pg_stat_activity WHERE state='active' GROUP
   - [12-backpressure-and-load-shedding](../12-backpressure-and-load-shedding/2-summary.md) — 몰린 DB 부하를 셰딩으로 버티기
   - [30-scheduler-and-cron-ha](../30-scheduler-and-cron-ha/2-summary.md) — 읽기와 무관하게 중앙에서 미리 채우기
   - [06-retry-backoff-jitter](../06-retry-backoff-jitter/2-summary.md) — 지터의 같은 발상
+- 후속(AI 엔지니어링): [ai-engineering/12-prompt-and-semantic-caching](../../ai-engineering/12-prompt-and-semantic-caching/2-summary.md) — 의미 캐시 놓침이 몰릴 때 요청 합치기
 - 근거
   - Vattani, Chierichetti, Lowenstein, "Optimal Probabilistic Cache Stampede Prevention", PVLDB 8(8), 2015 — Figure 3 XFetch 의사코드, §5 구현 노트(Δ 저장, `−Δβ log(rand())`) <https://www.vldb.org/pvldb/vol8/p886-vattani.pdf>
   - Nishtala 외, "Scaling Memcache at Facebook", NSDI 2013 §3.2.1 Leases(키당 10초에 토큰 하나 — 갱신자 수가 아니라 발급률 제한, 17K/s → 1.3K/s) <https://www.usenix.org/system/files/conference/nsdi13/nsdi13-final170_update.pdf>

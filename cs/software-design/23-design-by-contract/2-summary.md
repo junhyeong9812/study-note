@@ -274,6 +274,7 @@ grep -rhoE 'if \([a-zA-Z.()]+ ?[<>]=? ?[0-9]+\)' src/main/java | sort | uniq -c 
   - [15-error-handling-design](../15-error-handling-design/2-summary.md) — 계약 위반을 어떤 오류로 알리나
   - [20-oop-fundamentals](../20-oop-fundamentals/2-summary.md) — 캡슐화(불변식을 지킬 문을 좁히기)
   - [engineering/solid-principles](../../engineering/solid-principles/2-summary.md) 「L — 계약 관점의 정확한 규칙」
+- 후속(AI 엔지니어링): [ai-engineering/14-structured-output-and-tool-calling](../../ai-engineering/14-structured-output-and-tool-calling/2-summary.md) — 도구 호출 인자 검증(사전 조건)
 - 글·문서
   - Bertrand Meyer, "Applying 'Design by Contract'", IEEE Computer 25(10):40–51, 1992-10. doi:10.1109/2.161279 · 저자 PDF <https://se.inf.ethz.ch/~meyer/publications/computer/contract.pdf>
   - Eiffel 문서 "Design by Contract and Assertions"(불변식 시점, 책임 소재, `require else`·`ensure then`) <https://www.eiffel.org/doc/solutions/Design_by_Contract_and_Assertions>

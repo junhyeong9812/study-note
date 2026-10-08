@@ -297,6 +297,7 @@ topk(10, count by (__name__) ({__name__=~".+"}))
   - [19-performance-measurement](../19-performance-measurement/2-summary.md) — 분위수·coordinated omission
   - [34-tail-latency-and-stragglers](../34-tail-latency-and-stragglers/2-summary.md) · [41-autoscaling](../41-autoscaling/2-summary.md)
   - [database/44-timeseries-resolution-tiers](../../database/44-timeseries-resolution-tiers/2-summary.md) · [database/21-connection-pooling](../../database/21-connection-pooling/2-summary.md)
+- 후속(AI 엔지니어링): [ai-engineering/23-llm-observability-and-cost](../../ai-engineering/23-llm-observability-and-cost/2-summary.md) — LLM 토큰·비용·지연 지표
 - 책·논문·글
   - Google SRE 책 6장 "Monitoring Distributed Systems" — The Four Golden Signals, Worrying About Your Tail(평균 100ms·1% 5초, 지수 버킷) <https://sre.google/sre-book/monitoring-distributed-systems/>
   - Brendan Gregg, "The USE Method" <https://www.brendangregg.com/usemethod.html>

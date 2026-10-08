@@ -99,7 +99,7 @@
 
 ### 6. 구조 — 영역 README + 기존 컬렉션 (2026-09-28)
 
-- **19개 영역**(커리큘럼 기준): `math · data-structure · algorithm · architecture · os · language · network · security · database · distributed · reliability · software-design · domain-modeling · testing · api-design · web-platform · engineering-practice · data-engineering · data-analysis`.
+- **20개 영역**(커리큘럼 기준): `math · data-structure · algorithm · architecture · os · language · network · security · database · distributed · reliability · software-design · domain-modeling · testing · api-design · web-platform · engineering-practice · data-engineering · data-analysis · ai-engineering`.
 - 영역마다 **생성 문서** 하나가 전체 주제 표(번호 = 권장 학습 순서 · 상태 · 노트 링크)를 가진다 — `cs/<영역>/README.md`, 기존 컬렉션과 이름이 겹치는 영역(algorithm·data-structure·domain-modeling·api-design)은 `cs/<영역>/curriculum.md`.
   정본은 [curriculum.md](../docs/plans/2026-09-27/cs-fundamentals-roadmap/curriculum.md)이고 표는 [scripts/notes/gen_area_readme.py](../scripts/notes/gen_area_readme.py)로 만든다 — **표를 직접 고치지 않는다.** **[E]**(`--check`)
 - **기존 노트는 제자리에 둔다** — myway 컬렉션(algorithm·data-structure·domain-modeling basic/advanced·ops-patterns·api-design)은 원래 번호 그대로, foundations·systems·engineering 노트도 그대로. 영역 표의 노트 링크가 커리큘럼 주제와 기존 노트를 잇는다.

@@ -306,6 +306,7 @@ jq -r 'select(.path|startswith("/v1/")) | .api_key_id' access.log | sort | uniq 
 
 - 선행: [01-api-as-contract](../01-api-as-contract/2-summary.md), [software-design/23-design-by-contract](../../software-design/23-design-by-contract/2-summary.md)
 - 후속·연결: [08-schema-and-serialization](../08-schema-and-serialization/2-summary.md)(Protobuf·Avro의 진화 규칙), [testing/13-contract-testing](../../testing/13-contract-testing/2-summary.md), [database/26-schema-migration](../../database/26-schema-migration/2-summary.md)(expand/contract), [21-api-documentation-openapi](../21-api-documentation-openapi/2-summary.md), 사례 [26-case-delivery-webhook](../26-case-delivery-webhook/)
+- 후속(AI 엔지니어링): [ai-engineering/21-mcp-protocol](../../ai-engineering/21-mcp-protocol/2-summary.md) — MCP 프로토콜 버전 협상·판 사이 호환
 - 근거
   - Google AIP-180 Backwards compatibility — https://google.aip.dev/180
   - Google AIP-185 API Versioning — https://google.aip.dev/185

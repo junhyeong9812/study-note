@@ -291,6 +291,7 @@ for (int i = 0; i < rows; i++) for (int j = 0; j < cols; j++) sum += grid[i][j];
   - [data-structure/01-dynamic-array](../../data-structure/01-dynamic-array/2-summary.md) · [02-linked-list](../../data-structure/02-linked-list/2-summary.md) · [15-b-tree](../../data-structure/15-b-tree/2-summary.md) · [10-lru-cache](../../data-structure/10-lru-cache/2-summary.md)
   - [database/07-buffer-pool](../../database/07-buffer-pool/2-summary.md) · [database/37-row-vs-column-storage](../../database/37-row-vs-column-storage/2-summary.md)
   - [math/13-linear-algebra-essentials](../../math/13-linear-algebra-essentials/2-summary.md) — 행렬 순회
+- 후속(AI 엔지니어링): [ai-engineering/08-kv-cache-and-inference-memory](../../ai-engineering/08-kv-cache-and-inference-memory/2-summary.md) — KV 캐시와 추론 메모리
 - 교재·문서
   - CS:APP 3판 6.1 Storage Technologies · 6.2 Locality · 6.3 The Memory Hierarchy · 6.5 Writing Cache-Friendly Code · 6.6 Putting It Together: The Impact of Caches on Program Performance(6.6.1 Memory Mountain, 6.6.2 Rearranging Loops) — 절 번호·제목은 저자 사이트 목차 PDF로 확인 <https://csapp.cs.cmu.edu/3e/pieces/preface3e.pdf>, 본문은 열지 못했다
   - U. Drepper, "What Every Programmer Should Know About Memory", 2007 — §3.3.2 Measurements of Cache Effects(순차·무작위 접근 그래프, 그림 3.10·3.11·3.15), §6.3.1 Hardware Prefetching <https://people.freebsd.org/~lstewart/articles/cpumemory.pdf>

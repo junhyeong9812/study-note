@@ -360,6 +360,7 @@ sum(rate(client_requests_total{attempt!="1"}[5m])) / sum(rate(client_requests_to
   - [12-backpressure-and-load-shedding](../12-backpressure-and-load-shedding/2-summary.md) — 과부하 때 재시도 대신 거절·셰딩
   - [13-idempotency](../13-idempotency/2-summary.md), [34-tail-latency-and-stragglers](../34-tail-latency-and-stragglers/2-summary.md)(hedged request), [50-sidecar-ambassador-and-service-mesh](../50-sidecar-ambassador-and-service-mesh/2-summary.md)
   - [distributed/18-consumer-failure-handling](../../distributed/18-consumer-failure-handling/2-summary.md) — 메시지 소비 쪽 재시도·DLT
+- 후속(AI 엔지니어링): [ai-engineering/13-model-routing-and-fallback](../../ai-engineering/13-model-routing-and-fallback/2-summary.md) — LLM 호출의 SDK·앱·게이트웨이 재시도 중첩
 - 글·문서
   - Marc Brooker, "Exponential Backoff And Jitter", AWS Architecture Blog, 2015-03-04 <https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/> · 시뮬레이터 <https://github.com/aws-samples/aws-arch-backoff-simulator> `src/backoff_simulator.py`
   - Marc Brooker, "Timeouts, retries, and backoff with jitter", Amazon Builders' Library — selfish retries, 5단 × 3 = 243배, single point, SDK 토큰 버킷(2016), 주기 작업 지터 <https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/>

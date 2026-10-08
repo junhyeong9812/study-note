@@ -409,6 +409,7 @@ grep -h "Flakes" target/surefire-reports/*.txt
   - [os/15-race-conditions](../../os/15-race-conditions/2-summary.md) — `count++`가 왜 깨지나
   - [reliability/06-retry-backoff-jitter](../../reliability/06-retry-backoff-jitter/2-summary.md) — 재시도는 일시적 장애용이다. 결정적 결함에는 효과가 없다
   - [software-design/25-dependency-injection-and-composition-root](../../software-design/25-dependency-injection-and-composition-root/2-summary.md) — 숨은 입력(시계·난수)을 주입으로 드러내기
+- 후속(AI 엔지니어링): [ai-engineering/07-decoding-and-nondeterminism](../../ai-engineering/07-decoding-and-nondeterminism/2-summary.md) — temperature 0 스냅샷 테스트의 간헐 실패
 - 논문·문서
   - Qingzhou Luo, Farah Hariri, Lamyaa Eloussi, Darko Marinov, "An Empirical Analysis of Flaky Tests", FSE 2014 — 표 1(발견 F.1~F.12), 3.1절(161건 분류), 3.2절(도입 시점), 4.2.3절(순서 의존 출처), 5.1.1절(수정 방식) <https://mir.cs.illinois.edu/lamyaa/publications/fse14.pdf>
   - John Micco, "Flaky Tests at Google and How We Mitigate Them", Google Testing Blog, 2016-05-27 <https://testing.googleblog.com/2016/05/flaky-tests-at-google-and-how-we.html>

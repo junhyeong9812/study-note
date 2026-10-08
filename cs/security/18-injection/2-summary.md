@@ -238,6 +238,7 @@ new ProcessBuilder("ls", "--", "/tmp/files/" + input).start();
   - [23-deserialization-and-parser-attacks](../23-deserialization-and-parser-attacks/2-summary.md) — 문자열 lookup 기능(Log4Shell)
   - [engineering-practice/15-security-standards](../../engineering-practice/15-security-standards/2-summary.md) — SAST로 `SQL_INJECTION_JDBC` 검출 실험
   - [database/24-transaction-boundaries-in-app-code](../../database/24-transaction-boundaries-in-app-code/2-summary.md) — JDBC·JPA 쓰는 자리
+- 후속(AI 엔지니어링): [ai-engineering/22-prompt-injection-and-llm-security](../../ai-engineering/22-prompt-injection-and-llm-security/2-summary.md) — 프롬프트 인젝션 — 지시와 데이터가 한 채널
 - 1차 출처
   - OWASP Top 10 2021 A03 Injection — 포함 CWE(79·89·77/78·90), 예방(안전한 API, 양성 입력 검증은 완전한 방어 아님, 구조 이름 이스케이프 불가) <https://top10.owasp.org/2021/A03_2021-Injection/>
   - OWASP Top 10 2025 — A05 Injection <https://top10.owasp.org/2025>

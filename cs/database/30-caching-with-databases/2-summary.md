@@ -241,6 +241,7 @@ public Product get(long id) {
   - [ops-patterns/09-stampede](../../ops-patterns/09-stampede/2-summary.md) — reliability/29-cache-stampede의 노트
   - [data-structure/11-bloom-filter](../../data-structure/11-bloom-filter/2-summary.md)
   - 원고 [server-design/04-caching](../../systems/server-design/04-caching.md) — 계층·패턴·무효화·3대 사고·핫키·지표·체크리스트
+- 후속(AI 엔지니어링): [ai-engineering/12-prompt-and-semantic-caching](../../ai-engineering/12-prompt-and-semantic-caching/2-summary.md) — LLM 프롬프트(프리픽스) 캐시와 의미 캐시
 - 논문·문서
   - R. Nishtala 외, "Scaling Memcache at Facebook", NSDI 2013 — §2 look-aside·삭제(멱등), §3.2 Reducing Load의 Leases(stale set·thundering herd, 64비트 토큰, 키당 10초, 17K/s → 1.3K/s), §4.1 Regional Invalidations — mcsqueal(커밋 후 무효화), §5 remote marker <https://www.usenix.org/conference/nsdi13/technical-sessions/presentation/nishtala>
   - Spring Framework Reference — Data Access › Transaction Management › Transaction-bound Events(`@TransactionalEventListener`, 기본 `AFTER_COMMIT`) <https://docs.spring.io/spring-framework/reference/data-access/transaction/event.html>

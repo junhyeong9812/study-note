@@ -285,6 +285,7 @@ jcmd <pid> Thread.print | grep -A5 -E 'Net.connect|SocketDispatcher.read|NioSock
   - [08-time-budget-allocation](../08-time-budget-allocation/2-summary.md) — 구간 값을 예산에서 나누기
   - [database/22-database-side-timeouts](../../database/22-database-side-timeouts/2-summary.md) — DB 쪽 층별 타임아웃 지도
   - [35-timeout-design-worksheet](../35-timeout-design-worksheet/2-summary.md) — Envoy 설정으로 옮기기
+- 후속(AI 엔지니어링): [ai-engineering/11-llm-api-client-contract](../../ai-engineering/11-llm-api-client-contract/2-summary.md) — LLM 스트리밍의 첫 토큰·토큰 사이·전체 타임아웃
 - 문서·소스
   - Envoy FAQ "How do I configure timeouts?" — connect_timeout 기본 5 s·상류 TLS 포함, route timeout 기본 15 s·요청을 다 받은 뒤 시작, stream_idle_timeout 5 min, HTTP idle_timeout 1 h, max_connection_duration 0 <https://www.envoyproxy.io/docs/envoy/latest/faq/configuration/timeouts>
   - JDK 21 API `java.net.http.HttpClient.Builder.connectTimeout`(재사용 연결엔 효과 없음), `HttpClient.connectTimeout()`(미설정 시 빈 Optional), `HttpRequest.Builder.timeout`(미설정 = 무한)

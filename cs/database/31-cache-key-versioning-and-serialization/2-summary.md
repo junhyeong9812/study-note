@@ -258,6 +258,7 @@ redis-cli --scan --pattern 'app:product:v2:*' | head   # 옛 버전 키가 남�
   - reliability `29-cache-stampede` — 원고: [ops-patterns/09-stampede](../../ops-patterns/09-stampede/2-summary.md)
   - [49-multi-level-caching](../49-multi-level-caching/2-summary.md) — 로컬 L1 + Redis L2, 무효화 전파
   - [43-row-level-security](../43-row-level-security/2-summary.md) — 테넌트 격리를 DB에서 강제. 캐시는 그 강제 밖이라 키로 격리해야 한다
+- 후속(AI 엔지니어링): [ai-engineering/12-prompt-and-semantic-caching](../../ai-engineering/12-prompt-and-semantic-caching/2-summary.md) — 의미 캐시 키에 모델·프롬프트 버전·테넌트 넣기
 - 문서·논문
   - AWS Builders' Library, "Caching challenges and strategies" — 캐시 데이터를 영속 저장소처럼, 형식 호환과 poison pill, 대량 재적재 위험, negative cache, soft/hard TTL, request coalescing, thundering herd <https://aws.amazon.com/builders-library/caching-challenges-and-strategies/>
   - R. Nishtala 외, "Scaling Memcache at Facebook", NSDI 2013 — demand-filled look-aside, 쓰기 시 delete(멱등), lease(stale set·thundering herd, 키당 10초, 17K/s → 1.3K/s), Gutter <https://www.usenix.org/system/files/conference/nsdi13/nsdi13-final170_update.pdf>

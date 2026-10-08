@@ -824,6 +824,7 @@ SkipListSet — 상속이 아니라 포함이다. SkipListMap 의 값 자리에 
 - 후속 — [16-red-black-tree](../16-red-black-tree/2-summary.md): 같은 문제를 회전으로 보장하는 쪽.
 - 후속 — [13-segment-tree](../13-segment-tree/2-summary.md): "구간에 대한 질문"을 O(log n)으로 — 스킵 리스트의 범위 조회가 O(k)인 자리에서 출발한다.
 - 응용 — [24-lsm-tree](../24-lsm-tree/2-summary.md)(memtable) · [32-inverted-index](../32-inverted-index/2-summary.md)(skip pointer).
+- 후속(AI 엔지니어링): [ai-engineering/16-vector-index-ann](../../ai-engineering/16-vector-index-ann/2-summary.md) — HNSW의 층 배정(스킵 리스트와 닮은 구조)
 - 영역 표 — [data-structure/curriculum.md](../curriculum.md) `22-skip-list` (선행 `04-linked-list`).
 - 원논문 — Pugh 1990, "Skip Lists: A Probabilistic Alternative to Balanced Trees".
 - myway 원본 — `/home/jun/project/myway/data-structure/12-skip-list/` (README.md · impl/SkipList.java · impl/SkipListMap.java · impl/SkipListSet.java).

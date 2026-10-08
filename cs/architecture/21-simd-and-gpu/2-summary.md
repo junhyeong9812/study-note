@@ -270,6 +270,7 @@ for (int i = 0; i < n; i++) out[i] = Math.max(a[i], 0);
   - database [54-query-execution-models](../../database/54-query-execution-models/2-summary.md) · [37-row-vs-column-storage](../../database/37-row-vs-column-storage/2-summary.md) — 벡터화 실행, 컬럼 저장
   - os [03-interrupts-traps-faults](../../os/03-interrupts-traps-faults/2-summary.md) — 정의되지 않은 명령 → SIGILL
   - data-structure [18-bitset](../../data-structure/18-bitset/2-summary.md)
+- 후속(AI 엔지니어링): [ai-engineering/06-transformer-and-attention](../../ai-engineering/06-transformer-and-attention/2-summary.md) — 어텐션 연산과 FlashAttention 타일링
 - 교재·문서
   - P&H 『Computer Organization and Design』 6장(병렬 프로세서, SIMD·GPU) `[?]` — 장 번호는 커리큘럼 표기, 이번에 목차를 열지 못했다
   - CS:APP 3판 5장 Optimizing Program Performance(5.9 Enhancing Parallelism 등 — 3판 목차로 절 번호 확인, SIMD 관련 내용 위치는 `[?]`) <https://csapp.cs.cmu.edu/3e/pieces/preface3e.pdf>

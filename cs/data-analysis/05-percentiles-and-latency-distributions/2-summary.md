@@ -286,6 +286,7 @@ SELECT 2 * power(1.02, min(b)) / (1.02 + 1) AS p99 FROM cum WHERE acc >= 0.99 * 
   - [reliability/02-slo-sli-error-budget](../../reliability/02-slo-sli-error-budget/2-summary.md) · [reliability/08-time-budget-allocation](../../reliability/08-time-budget-allocation/2-summary.md)
   - [web-platform/08-web-performance-vitals](../../web-platform/08-web-performance-vitals/2-summary.md) — 페이지별 p75를 평균 내지 않기
   - [database/05-window-functions-and-cte](../../database/05-window-functions-and-cte/2-summary.md)
+- 후속(AI 엔지니어링): [ai-engineering/10-inference-latency-metrics](../../ai-engineering/10-inference-latency-metrics/2-summary.md) — TTFT·TPOT·ITL 분위 집계
 - 문서·논문
   - Dunning, Ertl, "Computing Extremely Accurate Quantiles Using t-Digests", arXiv 1902.04023 — 초록: 꼬리에서 높은 정확도, `max(q, 1−q)`에 상대적인 정확도, 따로 계산한 요약을 손실 없이 결합 <https://arxiv.org/abs/1902.04023>
   - HdrHistogram 소개 페이지 — 유효 숫자 3자리 = 0.1% 양자화, 고정 메모리·고정 기록 비용 <https://hdrhistogram.github.io/HdrHistogram/> · Java API `AbstractHistogram.add`, `getValueAtPercentile` <https://hdrhistogram.github.io/HdrHistogram/JavaDoc/org/HdrHistogram/AbstractHistogram.html>

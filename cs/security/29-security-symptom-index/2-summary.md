@@ -430,6 +430,7 @@ catch (Exception e) {
 - 후속: [30-security-incidents](../30-security-incidents/2-summary.md) — 이 색인의 증상이 실제 사고에서 어떻게 보였나
 - 다른 영역 색인: [network/52-network-symptom-index](../../network/52-network-symptom-index/2-summary.md)(TLS alert 정본) · [web-platform/23-web-symptom-index](../../web-platform/23-web-symptom-index/2-summary.md)(CORS 콘솔) · [api-design/28-api-symptom-index](../../api-design/28-api-symptom-index/2-summary.md) · [reliability/52-reliability-symptom-index](../../reliability/52-reliability-symptom-index/2-summary.md)
 - 상태 코드 선택: [api-design/03-status-codes-for-apis](../../api-design/03-status-codes-for-apis/2-summary.md)
+- 후속(AI 엔지니어링): [ai-engineering/25-ai-symptom-index](../../ai-engineering/25-ai-symptom-index/2-summary.md) — LLM 증상 색인(모델이 문서 속 지시를 따름 등)
 - 1차 출처
   - RFC 9110 HTTP Semantics §15.5.2(401 — `WWW-Authenticate` MUST)·§15.5.4(403, 존재를 숨기려면 404 MAY)·§15.5.5(404) <https://www.rfc-editor.org/rfc/rfc9110>
   - RFC 6750 Bearer Token Usage §3.1 — `invalid_token`(401 SHOULD)·`insufficient_scope`(403 SHOULD)·인증 정보가 없으면 오류 코드 넣지 않음(SHOULD NOT) <https://www.rfc-editor.org/rfc/rfc6750>

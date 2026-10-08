@@ -301,6 +301,7 @@ static boolean fitsUtf8mb3(String s) {          // MySQL utf8mb3 컬럼에 들�
   - [web-platform/12-internationalization-and-localization](../../web-platform/12-internationalization-and-localization/2-summary.md) — 브라우저 쪽 길이·로캘
   - [languages/js/syntax/04-strings-and-utf16](../../../languages/js/syntax/04-strings-and-utf16/2-summary.md) · [languages/go/syntax/10-strings-bytes-runes-and-utf8-iteration](../../../languages/go/syntax/10-strings-bytes-runes-and-utf8-iteration/2-summary.md) — 언어별 문자열 표현
   - [security/18-injection](../../security/18-injection/2-summary.md) · [security/19-xss-and-csp](../../security/19-xss-and-csp/2-summary.md) — 검사 전 정규화, 문맥별 인코딩
+- 후속(AI 엔지니어링): [ai-engineering/04-tokenization-and-token-cost](../../ai-engineering/04-tokenization-and-token-cost/2-summary.md) — UTF-8 바이트 수와 LLM 토큰 수
 - 근거
   - RFC 3629 "UTF-8, a transformation format of ISO 10646"(2003) — §1 성질, §3 바이트 틀·서로게이트 금지·과잉 길이, §6 BOM, §10 보안 <https://www.rfc-editor.org/rfc/rfc3629.txt>
   - The Unicode Standard 18.0 핵심 명세 — 2장(코드 공간 1,114,112, 평면), 3장 D9·D71~D75·§3.9 D90~D92·C10·표 3-7·U+FFFD 대체 <https://www.unicode.org/versions/latest/core-spec/chapter-3/>. 커리큘럼 칸의 "Unicode Standard 2·3장"은 이 두 장이다.

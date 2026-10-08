@@ -328,6 +328,7 @@ server {
   - [12-backpressure-and-load-shedding](../12-backpressure-and-load-shedding/2-summary.md) — 리키 버킷의 줄이 무제한일 때, 우선순위 셰딩
   - [api-design/14-rate-limit-and-quota-contracts](../../api-design/14-rate-limit-and-quota-contracts/2-summary.md)
   - [distributed/12-coordination-and-fencing](../../distributed/12-coordination-and-fencing/2-summary.md) — Redis 원자 연산·스크립트의 다른 쓰임(락)
+- 후속(AI 엔지니어링): [ai-engineering/11-llm-api-client-contract](../../ai-engineering/11-llm-api-client-contract/2-summary.md) — LLM 제공자 한도(429·retry-after)와 클라이언트 쪽 조절
 - 표준·글·문서
   - RFC 6585 §4 "429 Too Many Requests"(Retry-After MAY, 사용자 식별·계수 방법은 정하지 않음) <https://www.rfc-editor.org/rfc/rfc6585>
   - RFC 9110 §10.2.3 Retry-After(HTTP-date 또는 초) <https://www.rfc-editor.org/rfc/rfc9110>

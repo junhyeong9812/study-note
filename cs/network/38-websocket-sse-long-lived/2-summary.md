@@ -426,6 +426,7 @@ ss -tnH state established '( sport = :443 )' | wc -l   # -H: 헤더 줄 빼고 �
   - [languages/web-api/33-websocket](../../../languages/web-api/33-websocket/2-summary.md) — 브라우저 `WebSocket` 핸드셰이크·프레임 실측
   - [issue/cross-cutting/network/half-open-liveness-watchdog](../../../issue/cross-cutting/network/half-open-liveness-watchdog/2-summary.md)
   - [ops-patterns/01-retry-backoff](../../ops-patterns/01-retry-backoff/2-summary.md) · [ops-patterns/19-graceful-shutdown](../../ops-patterns/19-graceful-shutdown/2-summary.md)
+- 후속(AI 엔지니어링): [ai-engineering/11-llm-api-client-contract](../../ai-engineering/11-llm-api-client-contract/2-summary.md) — LLM 스트리밍 응답(SSE) 클라이언트 계약
 - RFC 6455 The WebSocket Protocol <https://www.rfc-editor.org/rfc/rfc6455>
   - §1.3·§4 핸드셰이크(GUID, `Sec-WebSocket-Accept`) · §5.1 마스킹 MUST · §5.2 프레임 · §5.5 제어 프레임(125바이트) · §5.5.2 ping/pong
   - §7.1.1 TCP 종료 · §7.2.3 비정상 종료 후 재연결 백오프 · §7.4.1 close 코드 · §10.2 Origin · §10.3 마스킹 이유

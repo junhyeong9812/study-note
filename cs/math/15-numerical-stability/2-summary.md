@@ -360,6 +360,7 @@ static long sumCents(long[] cents) {
   - [domain-modeling/14-money-arithmetic-rounding-allocation](../../domain-modeling/14-money-arithmetic-rounding-allocation/2-summary.md) — 금액 반올림·배분, `BigDecimal`
   - [algorithm/24-divide-conquer](../../algorithm/24-divide-conquer/2-summary.md) · [algorithm/09-sorting-in-practice](../../algorithm/09-sorting-in-practice/2-summary.md)
   - [testing/09-flaky-tests](../../testing/09-flaky-tests/2-summary.md) — 환경에 따라 흔들리는 테스트
+- 후속(AI 엔지니어링): [ai-engineering/03-cross-entropy-and-perplexity](../../ai-engineering/03-cross-entropy-and-perplexity/2-summary.md) — log-sum-exp로 안정한 log-softmax · [ai-engineering/07-decoding-and-nondeterminism](../../ai-engineering/07-decoding-and-nondeterminism/2-summary.md) — 부동소수 연산 순서가 만드는 LLM 출력 비결정성
 - 근거
   - D. Goldberg, "What Every Computer Scientist Should Know About Floating-Point Arithmetic", ACM Computing Surveys, 1991년 3월 — "Cancellation"(파국적·양성 상쇄, 이차방정식 70 ulp 예, 식 (5)), 정리 8(Kahan 합산 공식 `|δⱼ| ≤ 2ε`)과 그 바로 뒤의 단순 합 비교 `|δⱼ| < (n − j)ε`, 재결합 최적화 경고 <https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html>
   - W. Kahan, "Further remarks on reducing truncation errors", Communications of the ACM 8(1), p. 40, 1965 — 보상 합

@@ -332,6 +332,7 @@ static int poolSize(double lambda, double meanService, double targetWqSec) {
   - [reliability/12-backpressure-and-load-shedding](../../reliability/12-backpressure-and-load-shedding/2-summary.md) · [reliability/28-bulkhead](../../reliability/28-bulkhead/2-summary.md) · [reliability/34-tail-latency-and-stragglers](../../reliability/34-tail-latency-and-stragglers/2-summary.md) · [reliability/39-async-io-gains-and-limits](../../reliability/39-async-io-gains-and-limits/2-summary.md)
   - [database/21-connection-pooling](../../database/21-connection-pooling/2-summary.md) — 풀 고갈 오류, 풀 크기
   - [data-structure/04-queue-deque](../../data-structure/04-queue-deque/2-summary.md) · [data-structure/07-heap](../../data-structure/07-heap/2-summary.md)
+- 후속(AI 엔지니어링): [ai-engineering/09-inference-serving-and-batching](../../ai-engineering/09-inference-serving-and-batching/2-summary.md) — LLM 서빙의 대기열과 KV 메모리 어림(리틀 법칙)
 - 근거
   - J. D. C. Little, "A Proof for the Queuing Formula: L = λW", Operations Research 9(3), pp. 383–387, 1961 — 조건: 세 평균 유한, 강정상, 도착 과정의 에르고딕성 <https://pubsonline.informs.org/doi/10.1287/opre.9.3.383> (원문은 열지 못했다 — 조건은 아래 2011 회고의 1961 증명 서술로 대조)
   - J. D. C. Little, "Little's Law as Viewed on Its 50th Anniversary", Operations Research 59(3), pp. 536–549, 2011 <https://doi.org/10.1287/opre.1110.0940> — 표본 경로 판(λ·W 극한이 존재·유한하면 L = λW), 유한 구간 판은 비정상 도착에서도 성립

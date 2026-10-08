@@ -458,6 +458,7 @@ groups:
 
 - 선행: [29-security-symptom-index](../29-security-symptom-index/2-summary.md) · [24-memory-safety-exploits](../24-memory-safety-exploits/2-summary.md) · [25-supply-chain-security](../25-supply-chain-security/2-summary.md) · [22-ssrf](../22-ssrf/2-summary.md) · [23-deserialization-and-parser-attacks](../23-deserialization-and-parser-attacks/2-summary.md) · [26-security-logging-and-audit](../26-security-logging-and-audit/2-summary.md) · [01-security-principles](../01-security-principles/2-summary.md)
 - 다른 영역 실사건: [network/53-network-incidents](../../network/53-network-incidents/2-summary.md) · [engineering-practice/20-practice-incidents](../../engineering-practice/20-practice-incidents/2-summary.md) · [data-structure/44-ds-incidents](../../data-structure/44-ds-incidents/2-summary.md) · 사고 대응: [reliability/26-incident-response-and-postmortem](../../reliability/26-incident-response-and-postmortem/2-summary.md)
+- 후속(AI 엔지니어링): [ai-engineering/26-ai-incidents](../../ai-engineering/26-ai-incidents/2-summary.md) — LLM 실사건(간접 프롬프트 인젝션 시연 등)
 - 1차 출처
   - NVD CVE-2014-0160 · CVE-2017-5638 · CVE-2021-44228 · CVE-2021-44832 · CVE-2024-3094 — NVD API 2.0으로 2026-10-07 조회(게시일·CVSS 3.1·CISA KEV 등재일) <https://nvd.nist.gov/>
   - OpenSSL Security Advisory [07 Apr 2014] <https://www.openssl.org/news/secadv/20140407.txt> · heartbleed.com <https://heartbleed.com/>

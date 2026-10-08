@@ -319,6 +319,7 @@ FROM pg_replication_slots WHERE slot_type = 'logical';
   - [47-autocomplete-and-typeahead](../47-autocomplete-and-typeahead/2-summary.md) — completion weight 갱신 = 재색인
   - [systems/outbox-vs-dispatch-log](../../systems/outbox-vs-dispatch-log/2-summary.md)
   - [34-large-backfill-and-batch-dml](../34-large-backfill-and-batch-dml/2-summary.md) — 전체 재색인의 청크·스로틀
+- 후속(AI 엔지니어링): [ai-engineering/18-index-freshness-and-reembedding](../../ai-engineering/18-index-freshness-and-reembedding/2-summary.md) — 벡터 인덱스 신선도·재임베딩·별칭 전환
 - Elasticsearch 문서·스펙
   - Aliases — "multiple actions in a single atomic operation", `is_write_index` <https://www.elastic.co/guide/en/elasticsearch/reference/current/aliases.html>
   - Reindex API — `_source` 필요, 대상 매핑 사전 생성, `version_type`·`op_type`·`conflicts`, `slices`별 스냅숏 <https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-reindex.html> · elasticsearch-specification `specification/_global/reindex/ReindexRequest.ts`

@@ -340,6 +340,7 @@ curl -i -X POST https://api.example.com/payments \
   - 사례 [22-case-order-point](../22-case-order-point/2-summary.md)(업무 키가 멱등 키) · [23-case-coupon-issue](../23-case-coupon-issue/2-summary.md) · [27-case-refund](../27-case-refund/2-summary.md)
   - [reliability/06-retry-backoff-jitter](../../reliability/06-retry-backoff-jitter/2-summary.md) · [database/18-app-level-concurrency-patterns](../../database/18-app-level-concurrency-patterns/2-summary.md)(유니크 제약) · [distributed/16-outbox-and-dual-write](../../distributed/16-outbox-and-dual-write/2-summary.md)
   - 원본 [ops-patterns/06-idempotency-store](../../ops-patterns/06-idempotency-store/2-summary.md)
+- 후속(AI 엔지니어링): [ai-engineering/20-agent-loop-and-tool-safety](../../ai-engineering/20-agent-loop-and-tool-safety/2-summary.md) — 에이전트 도구 재시도의 중복 부작용
 - 근거
   - RFC 9110 §9.2.1 Safe Methods, §9.2.2 Idempotent Methods(정의, 자동 재시도 SHOULD NOT) <https://www.rfc-editor.org/rfc/rfc9110#section-9.2.2>
   - IETF draft-ietf-httpapi-idempotency-key-header-07(2025-10-15 게시, 2026-04-18 만료 — RFC 아님): §2.1 Item Structured Header String, §2.2 유일성·UUID, §2.3 만료 정책 공개, §2.4 지문, §2.6 재생·409, §2.7 400·422·409, §5 저엔트로피 키·복합 키 <https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/>

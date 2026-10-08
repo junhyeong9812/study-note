@@ -2,9 +2,14 @@
 
 ## 기준
 
-- 마지막 갱신: 2026-10-08 errata-fixes-2(영역 밖 노트·원고·커리큘럼 오류 정정, 커밋 03c58a44 — push 대기) · 다음: 옛 형식 컬렉션 전환(data-structure 35·domain-modeling/advanced 30) · 작업 폴더: `docs/plans/2026-10-08/errata-fixes-2/`
+- 마지막 갱신: 2026-10-08 ai-engineering-writing(§22 AI 엔지니어링 26편) · 직전: rules-checker(검사기 scripts/notes·CI) · 작업 폴더: `docs/plans/2026-10-08/ai-engineering-writing/` · 브랜치: `docs/ai-engineering-writing`(docs/rules-checker 위, 둘 다 push 대기)
 
 ## 다음 작업 후보 (우선순위순)
+
+### N0-ad. AI 엔지니어링 26편 검수 · 후속 — 우선순위: 중간
+
+- 검수: metadata `초안`. 빠르게 바뀌는 사실(벤더 API 동작·가격·TTL·MCP·OTel 이름)은 노트마다 2026-10-08 확인 표기 — 검수 때 날짜가 오래됐으면 재확인. `[?]` 잔여: 16 HNSW TPAMI 학술지판·알고리즘 세부·IVF 이름 유래, 18 DDIA 장 번호, 09 Orca selective batching 세부, 11 OpenAI Chat Completions 스트림 안 오류 형식·끊긴 스트림 과금, 04 BPE 라이브러리 힙 구현, 05 MRL 게재처.
+- 관측: 판정 합계를 처음 102로 오기(실제 82) → 판정 워커 6개 표 재계수로 정정. 사실 점검이 중대 1(11 지출 상한 429 판별)을 잡음 — 벤더 문서 기반 노트는 점검 비용 대비 효과가 큼. codex는 `</dev/null` 없이 `exec`에 프롬프트를 넘기면 stdin 대기로 멈춤(rules-checker에서 1회).
 
 ### N0-my. MySQL·PostgreSQL 아키텍처 지도 — 완료(2026-10-08)
 
@@ -114,7 +119,7 @@
 - 관측: 폴더 번호 = 커리큘럼 번호 규칙으로 myway 폴더와 접두가 겹친다(02-linked-list / 02-adt-…) — 링크는 slug까지 써야 안전. codex 21/21 가용, 지적 94 기각 0. `java X.java` 소스 실행기는 스택 트레이스 끝을 실행기 프레임만큼 자른다(1019 vs 1024) — 실험 해석 주의.
 - 메인 실수 1: 지시문을 따옴표 없는 heredoc으로 생성 → 백틱 확장(부작용 없음). 지시문은 Write 또는 `<<'EOF'`.
 
-### N0-q. AI 엔지니어링 영역 후보 (AIEFS 분석) — 우선순위: 낮음~중간
+### N0-q. AI 엔지니어링 영역 — **집필 완료(10-08 ai-engineering-writing, 26편 초안)** · 후속은 N0-ad
 
 - 근거 `docs/plans/2026-10-04/aie-analysis/report.md` §5b(26 leaf 안, 백엔드 우선 순서) · §6. 공부 우선순위상 reliability·api-design 검수 뒤에 열 것(링크 실재).
 - **결정 대기**: ANN 벡터 인덱스 leaf — math/13 🔧이 가리키나 받을 leaf 없음. 로컬에 pgvector 이미지 없음 → 이미지 받기 허용 또는 Java 단일 파일 HNSW 실험(사용자가 "나중에 정하기"로 보류, 10-05).

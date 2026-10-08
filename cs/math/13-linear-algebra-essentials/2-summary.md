@@ -193,7 +193,7 @@ ijk  13769.3 ms   ikj   1788.1 ms   비율 7.7x   두 결과 최대 차이 0.000
   - pgvector README: 기본은 정확한 최근접 탐색(완벽한 재현율)이다. 근사 인덱스를 추가하면 "재현율 일부를 속도와 맞바꾸고", 인덱스 추가 뒤 질의 결과가 달라질 수 있다.
   - *재현율(recall)*: 진짜 top-k 중 결과에 들어온 비율.
 - 저차원 공간 인덱스(KD 트리 등)가 수십 차원 이상에서 무너지는 이유(차원의 저주)는 [data-structure/25-spatial-index](../../data-structure/25-spatial-index/2-summary.md)에 있다.
-- 이 노트는 ANN 인덱스의 **원리만** 다룬다. 제품·파라미터 선택은 정하지 않는다(결정 보류).
+- 이 노트는 ANN 인덱스의 **원리만** 다룬다. 제품·파라미터 선택은 정하지 않는다(결정 보류). → [ai-engineering/16-vector-index-ann](../../ai-engineering/16-vector-index-ann/2-summary.md)
 
 #### 실험: 무차별 최근접 1건의 시간
 
@@ -324,6 +324,7 @@ SELECT min(vector_norm(embedding)), avg(vector_norm(embedding)), max(vector_norm
   - [os/10-paging-and-tlb](../../os/10-paging-and-tlb/2-summary.md) — 큰 배열 접근과 TLB
   - architecture — [메모리 계층](../../architecture/11-memory-hierarchy-and-locality/2-summary.md)·[캐시](../../architecture/12-cache-organization/2-summary.md), 원고 [foundations/memory-management](../../foundations/memory-management/README.md)
   - [reliability/38-microbenchmarking](../../reliability/38-microbenchmarking/2-summary.md) · [reliability/36-profiling](../../reliability/36-profiling/2-summary.md)
+- 후속(AI 엔지니어링): [ai-engineering/05-embeddings-and-similarity](../../ai-engineering/05-embeddings-and-similarity/2-summary.md) — 임베딩 유사도·정규화·임베딩 공간 혼합 · [ai-engineering/16-vector-index-ann](../../ai-engineering/16-vector-index-ann/2-summary.md) — ANN(HNSW·IVFFlat) 파라미터와 recall–지연 실측(pgvector)
 - 근거
   - MIT OCW 18.06 Linear Algebra(Spring 2010, Gilbert Strang) <https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/> — 벡터·내적·행렬곱. 교재 『Introduction to Linear Algebra』의 장 번호는 확인하지 못했다 `[?]`
   - pgvector README — 거리 연산자 `<->`·`<#>`·`<=>`, 정규화된 벡터는 내적 권장, 기본 정확 탐색과 근사 인덱스(HNSW·IVFFlat)의 재현율 트레이드오프 <https://github.com/pgvector/pgvector>

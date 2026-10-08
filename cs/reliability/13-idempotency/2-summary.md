@@ -289,6 +289,7 @@ HAVING count(*) > 1;
   - [database/22-database-side-timeouts](../../database/22-database-side-timeouts/2-summary.md) — 락 대기 한도
   - [domain-modeling/25-reconciliation](../../domain-modeling/25-reconciliation/2-summary.md) · [31-batch-job-restart-and-checkpoint](../31-batch-job-restart-and-checkpoint/2-summary.md) — 멱등 재실행
   - [api-design/05-idempotency-keys](../../api-design/05-idempotency-keys/2-summary.md) — API 계약 쪽
+- 후속(AI 엔지니어링): [ai-engineering/20-agent-loop-and-tool-safety](../../ai-engineering/20-agent-loop-and-tool-safety/2-summary.md) — 에이전트 부작용 도구의 멱등 키
 - 근거
   - Stripe API 문서 "Idempotent requests"(첫 결과의 상태 코드·본문 저장, 500 포함, 24시간 뒤 정리 가능, 255자, 파라미터 비교, 실행 시작 전 실패는 저장 안 함) <https://docs.stripe.com/api/idempotent_requests>
   - Stripe "Advanced error handling"(400·500 캐시, 500은 불확정, 429는 멱등 계층 앞, `Idempotent-Replayed`, 409 Conflict) <https://docs.stripe.com/error-low-level>
