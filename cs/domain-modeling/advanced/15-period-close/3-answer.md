@@ -1,4 +1,4 @@
-# domain-modeling-advanced/15-period-close — 정답
+# domain-modeling/advanced/15-period-close — 정답
 
 ## 정답
 

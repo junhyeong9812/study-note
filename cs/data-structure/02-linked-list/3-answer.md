@@ -31,7 +31,7 @@ for (int i = list.size() - 1; i >= 0; i--) {
 return removed;
 ```
 
-```
+```text
 list = [1,2,3,4,5,6], 조건 = 짝수. i 가 5 에서 0 까지 내려온다
 
 head -> [1|o]-> [2|o]-> [3|o]-> [4|o]-> [5|o]-> [6|/]  <- tail
@@ -88,7 +88,7 @@ for (E e : keep) list.add(e);
 return removed;
 ```
 
-```
+```text
 list = [1,2,3,4], 조건 = 짝수
 
  1단계 : 한 번 훑으며 살릴 것만 새 사슬에 쌓는다 (add 는 tail 이 있어 O(1))
@@ -166,7 +166,7 @@ public void remove() {
 }
 ```
 
-```
+```text
 removeAllIf([1,2,3,4], v -> v % 2 == 0)  —  SinglyLinkedList 의 반복자로 추적
 
 before  head -> [1|o]-> [2|o]-> [3|o]-> [4|/]  <- tail
@@ -292,7 +292,7 @@ if (list.size() == 0) throw new NoSuchElementException("비어 있다");
 return list.get(list.size() / 2);
 ```
 
-```
+```text
 list = [1,2,3,4],  size() = 4  ->  get(4 / 2) = get(2) = 3
 
 head -> [1|o]-> [2|o]-> [3|o]-> [4|/]
@@ -329,7 +329,7 @@ if (buf.isEmpty()) throw new NoSuchElementException("비어 있다");
 return buf.get(buf.size() / 2);
 ```
 
-```
+```text
 list = [1,2,3,4,5]
 
  한 번 훑으며 버퍼에 복사
@@ -375,7 +375,7 @@ public static <E> E findMiddle(List<E> list) {
 }
 ```
 
-```
+```text
 [1,2,3,4,5] (홀수 5개) — s = slow 가 방금 돌려받은 자리, f = fast 가 방금 돌려받은 자리
 
 시작    head -> [1|o]-> [2|o]-> [3|o]-> [4|o]-> [5|/]
@@ -401,7 +401,7 @@ return middle = 3     <- 5개의 가운데. 맞다
            fast 가 끝(n)에 닿는 순간 slow 는 n/2 에 있다.
 ```
 
-```
+```text
 [1,2,3,4] (짝수 4개) — 짝수면 왜 "뒤쪽"이 나오는지
 
 시작    head -> [1|o]-> [2|o]-> [3|o]-> [4|/]
@@ -426,7 +426,7 @@ return middle = 3     <- [1,2,3,4] 의 "뒤쪽 가운데". 테스트가 요구�
                순서를 바꿔 slow 를 먼저 올리면 2가 나온다 — 짝수 규칙이 뒤집힌다.
 ```
 
-```
+```text
 경계 [9] (1개) 와 [] (0개)
 
 [9]  : slow.hasNext() 참 -> middle = slow.next() = 9
@@ -519,7 +519,7 @@ for (Integer y : b) result.add(y);
 sort(result);   // 연결 리스트를 인덱스로 정렬하면 비교마다 탐색이 O(n)
 ```
 
-```
+```text
 a = [1,3,5], b = [2,3,6]
 
  이어 붙이기
@@ -553,7 +553,7 @@ while (i < a.size()) result.add(a.get(i++));
 while (j < b.size()) result.add(b.get(j++));
 ```
 
-```
+```text
 a = [1,3,5], b = [2,3,6]
 
  i=0, j=0 : a.get(0) -> head 에서 0 걸음
@@ -615,7 +615,7 @@ public static void mergeSorted(List<Integer> a, List<Integer> b, List<Integer> r
 }
 ```
 
-```
+```text
 a = [1,3,5], b = [2,3,6]   ->  기대 결과 [1,2,3,3,5,6]
 
 준비    a: head -> [1|o]-> [3|o]-> [5|/]      손에 든 값 x = 1  (ia 는 [3] 앞에 서 있다)
@@ -654,7 +654,7 @@ step5   x=5, y=6  ->  5 <= 6  ->  x 를 쓴다
         a 는 ia 로 n 번, b 는 ib 로 m 번 — 각 노드를 딱 한 번씩 지나간다 -> O(n+m)
 ```
 
-```
+```text
 한쪽이 비어 있을 때 (테스트 handlesEmptySide)
 
 a = [], b = [1,2]
@@ -754,7 +754,7 @@ a = [], b = [1,2]
   이 비용은 원소가 크든 작든 개수에 비례해 그대로 든다.\
   연결 리스트에서는 `head = new Node<>(element, head)` 한 줄, 즉 참조 대입 두 번이면 끝난다.
 
-```
+```text
 맨 앞 삽입 — 같은 일을 두 구조가 어떻게 하는가
 
 배열      before  [ A ][ B ][ C ][ D ][   ]
@@ -811,7 +811,7 @@ a = [], b = [1,2]
   그걸 루프 안에서 부르면 전체가 O(n²) 이 된다 — 문제 1의 함정이 정확히 이것이다.\
   게다가 걸음 하나하나가 포인터 추격이라, 걸음 수가 같아도 배열보다 실제 시간이 더 든다.
 
-```
+```text
 같은 "n개 순회"의 총비용 — 인덱스로 vs 반복자로
 
 인덱스     get(0) : 0 걸음
@@ -877,7 +877,7 @@ public void addFirst(E element) {
   연결 리스트는 위치가 흩어져 있어 계산할 식이 없고, 다음 주소를 **읽어서** 알아내야 한다.\
   같은 뿌리에서 반대 결과도 나온다 — 연속이라서 배열은 중간을 고칠 때 뒤를 전부 밀어야 하고, 연속이 아니라서 리스트는 화살표만 고치면 된다.
 
-```
+```text
 왜 한쪽은 계산이고 한쪽은 걷기인가
 
 배열 (연속)     주소 = base + index * 원소크기
@@ -926,7 +926,7 @@ tail = pred;
 bumpSize(-1);
 ```
 
-```
+```text
 removeLast() 를 단계로 — [A,B,C] 에서 C 를 뺀다
 
 before   head -> [A|o]-> [B|o]-> [C|/]  <- tail
@@ -997,7 +997,7 @@ public void addLast(E element) {
   n 번 모아도 총 n 걸음 → **O(n)**.\
   되돌아가는 일이 한 번도 없다는 것이 차이의 전부다.
 
-```
+```text
 n = 100,000 일 때 (테스트 mustBeLinear 의 규모)
 
 인덱스 순회 : 계산상 약 5 x 10^9 걸음   -> 5초 제한을 못 넘긴다
@@ -1111,7 +1111,7 @@ head = tail;
 tail = oldHead;
 ```
 
-```
+```text
 reverse 한 노드에서 벌어지는 일
 
 단일     before   ... [B|o]-> [C|o]-> [D|/]
@@ -1146,7 +1146,7 @@ reverse 한 노드에서 벌어지는 일
   `Iterator.remove()` 는 지울 노드의 앞 노드를 알아야 하는데, 단일 연결에서는 지우고 나서는 그 앞으로 돌아갈 수 없다.\
   해법도 같다 — **필요해지기 전에 미리 변수에 담아 둔다**(`next` 를 먼저 잡기 / `beforeLastReturned` 를 미리 들고 다니기).
 
-```
+```text
 같은 실수, 같은 해법
 
 reverse 에서 순서를 틀리면
@@ -1223,7 +1223,7 @@ private void linkBefore(E element, Node<E> succ) {
 > **메모리 누수(memory leak)** — 더 이상 쓰지 않는데도 참조가 남아 있어 회수되지 않는 메모리.\
 > 예: 리스트에서 뗀 노드의 `next` 를 안 끊으면, 그 노드를 들고 있는 코드 한 곳 때문에 사슬 전체가 회수되지 않는다.
 
-```
+```text
 떼어낸 노드의 링크를 안 끊으면 — [A,B,C,D] 에서 B 를 뺀 뒤
 
 끊지 않은 경우
@@ -1285,7 +1285,7 @@ public void clear() {
 }
 ```
 
-```
+```text
 clear() 를 head/tail 만 null 로 했을 때
 
    리스트 객체   head = null,  tail = null,  size = 0     <- 비어 보인다
@@ -1322,7 +1322,7 @@ clear() 가 사슬을 끊었을 때
   큐도 `enqueue`/`dequeue`/`peek` 뿐이다.\
   없는 연산은 느릴 수가 없다 — 연결 리스트의 유일한 약점이 계약에서 사라지므로 약점이 아니게 된다.
 
-```
+```text
 계약이 접근 지점을 제한하면 비용 표가 이렇게 줄어든다
 
 리스트(02)                     스택(03)

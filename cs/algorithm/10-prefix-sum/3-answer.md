@@ -30,7 +30,7 @@ public long rangeSum(int from, int to) {
 }
 ```
 
-```
+```text
 처리 과정 : [1, 2, 3, 4, 5] 에 누계를 쌓고 rangeSum(1, 3) 을 묻는다 (PrefixTest 의 예)
 
     원본  idx    0    1    2    3    4
@@ -48,7 +48,7 @@ public long rangeSum(int from, int to) {
     rangeSum(0, 2) = sums[3] - sums[0] =  6 - 0 = 6    왼쪽 끝 구간도 특별 취급이 없다
 ```
 
-```
+```text
 손익분기 (MeasurementTest 의 측정, n = 10,000) :
 
     질의 1번 (길이 101 구간)     준비 10,000 읽기  vs  직접 101 읽기   → 90배 손해
@@ -151,7 +151,7 @@ public long rangeSum(int r1, int c1, int r2, int c2) {
 }
 ```
 
-```
+```text
 처리 과정 : 3x3 격자에서 rangeSum(1, 1, 2, 2) = 5+6+8+9 = 28 (PrefixTest 의 격자)
 
     grid   1  2  3       sums (한 칸씩 밀려 있다)
@@ -251,7 +251,7 @@ public long[] materialize() {
 }
 ```
 
-```
+```text
 처리 과정 : 길이 5 배열의 [1, 3] 에 10 을 더한다 (PrefixTest 의 예)
 
     diff  idx    0    1    2    3    4    5     (길이 n+1 = 6)
@@ -264,7 +264,7 @@ public long[] materialize() {
                                                    [1, 3] 에만 10 이 살아 있다
 ```
 
-```
+```text
 -10 을 to+1 이 아니라 to(=3) 에 잘못 놓으면 :
 
     diff      |  0 |+10 |  0 |-10 |  0 |  0 |
@@ -355,7 +355,7 @@ public static long countWithSum(CountedArray a, long k) {
 }
 ```
 
-```
+```text
 처리 과정 : [3, 4] 에서 k = 3 (TODO 9 의 예 — 앞에서 시작하는 구간)
 
     누적 합 :  0    3    7
@@ -368,7 +368,7 @@ public static long countWithSum(CountedArray a, long k) {
     답 : 1     seen.put(0,1) 이 없었다면 i=0 에서 0 을 못 찾아 답이 0 이 됐다
 ```
 
-```
+```text
 순서를 바꾸면 (넣고 나서 세면) : [1, 2, 3] 에서 k = 0
 
     i=0 : running=1 을 먼저 seen 에 넣고, 1-0=1 을 찾으면 → 방금 넣은 자기 자신이 잡힌다

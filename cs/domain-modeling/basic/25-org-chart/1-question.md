@@ -1,4 +1,4 @@
-# domain-modeling-basic/25-org-chart — 질문
+# domain-modeling/basic/25-org-chart — 질문
 
 ## 질문
 

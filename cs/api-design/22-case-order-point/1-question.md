@@ -1,4 +1,4 @@
-# api-design/01-order-point — 질문
+# api-design/22-case-order-point — 질문
 
 ## 질문
 

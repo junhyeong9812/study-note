@@ -1,4 +1,4 @@
-# domain-modeling-basic/16-promo-code — 정답
+# domain-modeling/basic/16-promo-code — 정답
 
 ## 정답
 

@@ -47,7 +47,7 @@ public static long leftToRightCost(int[] dims) {
 }
 ```
 
-```
+```text
 상태 = "구간 [i, j] 를 행렬 하나로 합치는 최소 비용"
 
 [i ......... j] 를 마지막에 k 에서 자른다:
@@ -178,7 +178,7 @@ private static long solve(long[][] cost, int mask, int at, int n, CountedTable t
 }
 ```
 
-```
+```text
 mask = 이진수 한 자리가 도시 하나
   도시:     3 2 1 0
   mask  = 0b1 0 1 1  = 11   <- 0, 1, 3 방문함, 2 아직
@@ -303,7 +303,7 @@ private static void visit(Tree tree, int v, int parent, CountedTable table) {
 }
 ```
 
-```
+```text
 표 = 정점마다 두 칸
   table[v*2]   = v 를 안 고를 때, v 서브트리의 최대 가중치 합
   table[v*2+1] = v 를 고를 때,   v 서브트리의 최대 가중치 합

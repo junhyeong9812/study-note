@@ -1,4 +1,4 @@
-# domain-modeling-advanced/13-contract-renewal — 질문
+# domain-modeling/advanced/13-contract-renewal — 질문
 
 ## 질문
 

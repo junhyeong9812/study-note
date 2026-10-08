@@ -1,4 +1,4 @@
-# domain-modeling-basic/27-menu-option — 정답
+# domain-modeling/basic/27-menu-option — 정답
 
 ## 정답
 

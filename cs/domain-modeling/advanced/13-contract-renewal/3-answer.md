@@ -1,4 +1,4 @@
-# domain-modeling-advanced/13-contract-renewal — 정답
+# domain-modeling/advanced/13-contract-renewal — 정답
 
 ## 정답
 

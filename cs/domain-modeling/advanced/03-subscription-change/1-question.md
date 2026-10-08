@@ -1,4 +1,4 @@
-# domain-modeling-advanced/03-subscription-change — 질문
+# domain-modeling/advanced/03-subscription-change — 질문
 
 ## 질문
 

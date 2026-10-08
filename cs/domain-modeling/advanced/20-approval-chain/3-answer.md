@@ -1,4 +1,4 @@
-# domain-modeling-advanced/20-approval-chain — 정답
+# domain-modeling/advanced/20-approval-chain — 정답
 
 ## 정답
 

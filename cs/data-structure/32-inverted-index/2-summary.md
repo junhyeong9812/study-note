@@ -116,7 +116,7 @@
   - *토큰(token)*: 텍스트를 잘라 만든 조각(대개 단어 하나).
   - *buf(버퍼)*: 글자를 모아 두는 임시 그릇. 경계를 만나면 비우면서 토큰 하나를 내보낸다.
 
-```
+```text
 tokenize(text) : Character.isLetterOrDigit(c) 가 true 면 buf 에 쌓고, false 면 경계로 보고 끊는다
                  (자르기만 한다. 소문자화도 불용어 제거도 여기서는 안 한다)
 
@@ -163,7 +163,7 @@ tokenize(text) : Character.isLetterOrDigit(c) 가 true 면 buf 에 쌓고, false
 
 #### 구조
 
-```
+```text
 StandardAnalyzer
 +-------------------------------------------------------------------------+
 | tokenizer : Tokenizer = SimpleTokenizer         (자르기를 위임)           |
@@ -182,7 +182,7 @@ StandardAnalyzer
   - *불용어(stopword)*: "the", "그리고"처럼 너무 흔해서 검색에 도움이 안 되는 말. 색인에서 아예 뺀다.
   - *로케일(Locale)*: 나라·언어별 문자 규칙. `Locale.ROOT`는 어느 나라 규칙도 안 따르는 중립 설정이다.
 
-```
+```text
 세 단계의 순서가 계약이다 :  자르기 -> 소문자화 -> 불용어 제거
 
   text  "The Cat and The DOG"
@@ -250,7 +250,7 @@ StandardAnalyzer
   - *idf*: df의 역수에 로그(ln)를 씌운 것. "드문 말에 큰 가중치"를 수식으로 만든 것.
   - *ln(자연로그)*: 곱셈의 크기를 완만한 덧셈 크기로 눌러 주는 함수. ln(1) = 0이라 "모든 문서에 있는 말"은 0점이 된다.
 
-```
+```text
 score(termFrequency, documentFrequency, documentCount) = tf * ln(N / df)
     셋 중 하나라도 0 이하면 0.0 을 준다 (예외가 아니다)
 
@@ -333,7 +333,7 @@ score(termFrequency, documentFrequency, documentCount) = tf * ln(N / df)
 
 #### 구조
 
-```
+```text
 LinearScanEngine   (전수 조사 기준선 - 색인을 아예 안 만든다)
 +---------------------------------------------------------------------+
 | indexAnalyzer / queryAnalyzer : Analyzer  (따로 줄 수 있다 - 이 박스의 함정) |
@@ -360,7 +360,7 @@ LinearScanEngine   (전수 조사 기준선 - 색인을 아예 안 만든다)
 
   - *전수 조사(linear scan)*: 지름길 없이 처음부터 끝까지 다 보는 방식. 느리지만 틀리기 어렵다.
 
-```
+```text
 search("cat dog", k) : 질의마다 전 문서를 열어 다시 분석한다. 한 번만 훑는다.
 
    +-----+---------------------+  analyze ->            counts[cat,dog]   전부 있나
@@ -444,7 +444,7 @@ search("cat dog", k) : 질의마다 전 문서를 열어 다시 분석한다. �
 
 #### 구조
 
-```
+```text
 정방향 색인   문서 -> 그 안의 항들        (문서를 보여줄 때 쓴다)
 역색인        항  -> 그 항이 있는 문서들   (검색할 때 쓴다)     <- 방향을 뒤집은 것이 전부다
 
@@ -490,7 +490,7 @@ index (HashMap)         Posting = { docId , positions }   frequency() = position
   - *computeIfAbsent*: 맵에 키가 없으면 새 값을 만들어 넣고, 있으면 그것을 돌려주는 자바 맵 연산.
   - *이분 탐색(binary search)*: 정렬된 목록에서 절반씩 잘라가며 자리를 찾는 방법.
 
-```
+```text
 index(docId, text)
 
   text "cat dog cat"  (docId = 3)
@@ -528,7 +528,7 @@ index(docId, text)
   - *교집합(intersection)*: 두 목록에 공통으로 들어 있는 것만 모은 것.
   - *두 포인터(two pointers)*: 두 목록에 각각 현재 위치 표시를 두고 동시에 전진시키는 기법. 정렬돼 있어야만 쓸 수 있다.
 
-```
+```text
 intersect(terms) : 질의어를 전부 가진 문서 번호를 오름차순으로
 
 [1] 항마다 포스팅 리스트를 꺼낸다. 하나라도 없으면 즉시 공집합이다 (AND 니까)
@@ -567,7 +567,7 @@ intersect(terms) : 질의어를 전부 가진 문서 번호를 오름차순으�
 
   - *부동소수점(floating point)*: 컴퓨터가 소수를 저장하는 방식. 더하는 순서가 바뀌면 마지막 자리 비트가 달라질 수 있다.
 
-```
+```text
 search(query, k) 의 채점 단계
 
   terms      = SearchEngine.distinctTerms(queryAnalyzer.analyze(query)) = [ "cat" , "dog" ]

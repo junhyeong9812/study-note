@@ -38,7 +38,7 @@ public static long lastTrue(long lo, long hi, LongPredicate feasible) {
 }
 ```
 
-```
+```text
 처리 과정 : firstTrue(0, 10, x -> x >= 5)
             루프 구간은 [lo, end) — end = hi + 1 = 11 에서 시작
 
@@ -55,7 +55,7 @@ public static long lastTrue(long lo, long hi, LongPredicate feasible) {
           -> 둘이 만나는 자리가 경계다
 ```
 
-```
+```text
 lastTrue 의 파생 : lastTrue(lo, hi, p) = firstTrue(lo, hi, not p) - 1
 
  후보    0   1   2   3   4   5   6   7   8   9  10
@@ -154,7 +154,7 @@ public static int maxHeight(int[] trees, long need) {
 }
 ```
 
-```
+```text
 처리 과정 : 나무 [20, 15, 10, 17], need = 7
 
  높이
@@ -270,7 +270,7 @@ public static int maxMinGap(int[] positions, int routers) {
 }
 ```
 
-```
+```text
 처리 과정 : 집 [1, 2, 4, 8, 9], 공유기 3대. span = 9 - 1 = 8
 
  위치:  1  2  3  4  5  6  7  8  9
@@ -378,7 +378,7 @@ public static long minMaxSum(int[] a, int groups) {
 }
 ```
 
-```
+```text
 처리 과정 : [7, 2, 5, 10, 8] 을 2조각으로. lo = 10(최대 원소), hi = 32(전체 합)
 
  판정(합 한도 x): groupsNeeded(x) <= 2 ?   x 가 클수록 조각 수가 줄어 F...F T...T
@@ -479,7 +479,7 @@ public static long minMaxSum(int[] a, int groups) {
 
 ### 6. 파생 질문 (서머리 기반)
 
-```
+```text
 06번과 07번의 관계
 
  06 binary-search :  정렬된 배열   에서  인덱스  를 이분  (firstTrue(lo, hi, p))

@@ -1,4 +1,4 @@
-# engineering/design-patterns — 정리 (힌트)
+# engineering/design-patterns-gof — 정리 (힌트)
 
 ## 해결하는 문제
 

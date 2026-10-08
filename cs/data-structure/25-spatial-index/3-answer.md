@@ -146,7 +146,7 @@ private void rangeFrom(Node node, Rectangle area, int depth, List<Point2D> out) 
 }
 ```
 
-```
+```text
             분할선 split                  세 가지 경우
 
   (1) area 가 선의 왼쪽에만 있다
@@ -232,7 +232,7 @@ private Point2D nearestFrom(Node node, Point2D target, int depth, Point2D best) 
 }
 ```
 
-```
+```text
   133줄이 묻는 것 : "반지름 r 인 원이 분할선을 넘는가"
 
   [자른다]  gap*gap >= r
@@ -351,7 +351,7 @@ assertEquals(expected, sorted(got), label + ": " + names.get(i) + " 의 " + area
   그런데 모든 분할선은 원 안쪽(좌표 절댓값 100만 이하)에 있으므로 `gap * gap`이 그 값을 넘을 수가 없다.\
   즉 조건이 **모든 노드에서 참**이 되어 `far`를 한 번도 못 자른다.
 
-```
+```text
                      *  *  *
                  *              *        원 위의 점은 중심 T 에서 전부 같은 거리 R
               *                    *
@@ -440,7 +440,7 @@ KdTree built = KdTree.build(diagonal);
 assertEquals(10, built.height(), "중앙값으로 일괄 구축하면 10층이다. log2(1000) 이 약 10이다");
 ```
 
-```
+```text
   insert((0,0)) (1,1) (2,2) (3,3) ... 을 순서대로
   (오른쪽 아래로 이어지는 +-- 는 전부 "오른쪽 자식" 이다)
 
@@ -561,7 +561,7 @@ assertEquals(10, built.height(), "중앙값으로 일괄 구축하면 10층이�
   KD-트리에서 같은 일을 하려면 후속자가 **같은 축의** 최솟값이어야 하고, 그 후속자는 자기 자리에서 또 다른 축의 분할선이었다.\
   끌어올리는 순간 그 아래 서브트리 전체가 잘못된 축으로 갈린 상태가 되므로, 사실상 서브트리를 다시 지어야 한다.
 
-```
+```text
   06번 BST 의 삭제                        KD-트리의 삭제
 
     (5)  <- 지운다                         (5,5)  <- 지운다 (깊이 0, x 로 가르던 선)
@@ -625,7 +625,7 @@ assertEquals(10, built.height(), "중앙값으로 일괄 구축하면 10층이�
   경험칙으로는 **n이 2^k보다 훨씬 크지 않으면 KD-트리가 전수 조사보다 낫지 않다**고 알려져 있다 — 20차원이면 점이 100만 개는 있어야 트리가 의미를 갖기 시작한다.\
   (2^k 경험칙은 널리 인용되는 기준이고 원본 README에는 없다 — 내 추론.)
 
-```
+```text
   2차원                                 20차원
 
   gap = 한 축의 차이                    gap = 여전히 한 축의 차이

@@ -98,7 +98,7 @@ Java의 `HashMap`, Python의 `dict`가 이렇게 동작한다.
 
 #### 구조
 
-```
+```text
 ChainingHashMap — 버킷 배열 하나 + 버킷마다 매달린 노드 사슬
 +-----------------------------------------------------+
 | size = 4                                            |
@@ -151,7 +151,7 @@ ChainingHashMap — 버킷 배열 하나 + 버킷마다 매달린 노드 사슬
 
 #### 동작 — 조회
 
-```
+```text
 get(key) / containsKey(key) : 칸을 계산하고, 그 칸의 사슬만 훑는다
     get("J")
         (1) bucketOf("J", 8) = 1
@@ -174,7 +174,7 @@ get(key) / containsKey(key) : 칸을 계산하고, 그 칸의 사슬만 훑는�
 
 #### 동작 — 추가
 
-```
+```text
 [1] 이미 있는 키 : 사슬에 새로 매달지 않고 값만 바꾼다. size 불변
         [ "B":2 ] -> [ "J":10 ] -> null      put("B", 9)
              ^ value 만 9 로 교체
@@ -218,7 +218,7 @@ get(key) / containsKey(key) : 칸을 계산하고, 그 칸의 사슬만 훑는�
 
 #### 동작 — 삭제
 
-```
+```text
 remove(key) : 사슬을 훑으며 prev 를 들고 있다가, 찾으면 앞뒤를 직접 잇는다
     remove("B")
     before  buckets[1] -> [ "X" ] -> [ "B" ] -> [ "J" ] -> null
@@ -330,7 +330,7 @@ remove(key) : 사슬을 훑으며 prev 를 들고 있다가, 찾으면 앞뒤를
 
 #### 구조
 
-```
+```text
 LinearProbingHashMap — 사슬이 없다. 자리가 차 있으면 옆 칸으로 밀려난다
 +-----------------------------------------------------+
 | size = 3    (OCCUPIED 칸 수 = 실제 원소 수)          |
@@ -368,7 +368,7 @@ LinearProbingHashMap — 사슬이 없다. 자리가 차 있으면 옆 칸으로
 
 #### 동작 — 조회
 
-```
+```text
 indexOf(key) : 제 칸부터 오른쪽으로 훑는다. EMPTY 를 만나면 없는 것이다
     get("C") — bucketOf("C") = 1 이라고 하자
     idx        1         2         3         4         5
@@ -396,7 +396,7 @@ indexOf(key) : 제 칸부터 오른쪽으로 훑는다. EMPTY 를 만나면 없�
 
 #### 동작 — 추가
 
-```
+```text
 put(key, value)
     (0) 먼저 리사이즈 검사:  used + 1 > keys.length * 0.5  이면 resize()
         기준이 size 가 아니라 used 다 — 무덤도 탐사를 길게 만드는 "쓰인 자리"이기 때문
@@ -427,7 +427,7 @@ put(key, value)
 
 #### 동작 — 삭제
 
-```
+```text
 remove(key) : 칸을 비우되 EMPTY 가 아니라 TOMBSTONE 으로 표시한다
     출발 상태 — "B", "C" 는 모두 칸 1 에서 밀려 온 것들이다
     idx        1         2         3         4
@@ -457,7 +457,7 @@ remove(key) : 칸을 비우되 EMPTY 가 아니라 TOMBSTONE 으로 표시한다
 
 #### 동작 — 리사이즈
 
-```
+```text
 resize() : 새 용량이 항상 2배는 아니다. 무덤 청소용 재구축이라는 두 번째 얼굴이 있다
     capacity = (size > oldLength * LOAD_FACTOR / 2) ? oldLength * 2 : oldLength
              = (size > oldLength / 4)               ? 2배           : 같은 크기 재구축
@@ -579,7 +579,7 @@ resize() : 새 용량이 항상 2배는 아니다. 무덤 청소용 재구축이
 
 #### 구조
 
-```
+```text
 LinkedHashMap — ChainingHashMap 을 상속하고, "삽입 순서"를 담는 리스트를 옆에 하나 더 둔다
     부모(ChainingHashMap) : 키 -> 값. 버킷 사슬. keys() 가 버킷 순서로 나온다
     자식이 더하는 것      : 키만 담은 이중 연결 리스트 + 그 리스트를 O(1) 로 찾기 위한 색인
@@ -611,7 +611,7 @@ null <-+ prev  |<--------+ prev  |<--------+ prev  |
 
 #### 동작 — 훅으로 갈아끼우기
 
-```
+```text
 부모의 put / remove / clear 본체는 그대로 쓰고, 비어 있던 훅 세 개만 재정의한다
 
     put(key, value)  ---- 부모가 버킷 사슬을 처리 ----> afterPut(key, isNewKey)

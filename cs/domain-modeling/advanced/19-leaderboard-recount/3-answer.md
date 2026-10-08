@@ -1,4 +1,4 @@
-# domain-modeling-advanced/19-leaderboard-recount — 정답
+# domain-modeling/advanced/19-leaderboard-recount — 정답
 
 ## 정답
 

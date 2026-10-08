@@ -1,4 +1,4 @@
-# domain-modeling-advanced/16-audit-replay — 정답
+# domain-modeling/advanced/16-audit-replay — 정답
 
 ## 정답
 

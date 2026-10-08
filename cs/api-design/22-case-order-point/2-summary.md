@@ -1,4 +1,4 @@
-# api-design/01-order-point — 정리 (힌트)
+# api-design/22-case-order-point — 정리 (힌트)
 
 ## 해결하는 문제
 

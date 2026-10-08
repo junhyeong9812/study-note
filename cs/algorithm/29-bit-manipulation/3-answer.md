@@ -32,7 +32,7 @@ public static List<Integer> setBits(int x, CountedBits bits) {
 }
 ```
 
-```
+```text
 x = 1 0 1 1 0 0
 x-1 = 1 0 1 0 1 1     1 을 빼면: 가장 낮은 1 이 0 이 되고, 그 아래가 전부 1
 x&(x-1) = 1 0 1 0 0 0  -> 가장 낮은 1 만 꺼졌다
@@ -111,7 +111,7 @@ public static List<Integer> subsetsOf(int mask, CountedBits bits) {
 }
 ```
 
-```
+```text
 mask = 1 0 1 1 (= 11) 의 부분집합 순회:
 
   1011 -> 1010 -> 1001 -> 1000 -> 0011 -> 0010 -> 0001 -> 0000 -> (멈춤)

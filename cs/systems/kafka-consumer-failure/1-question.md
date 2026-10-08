@@ -1,4 +1,4 @@
-# Kafka 소비 측 실패 처리 — 질문
+# systems/kafka-consumer-failure — Kafka 소비 측 실패 처리 — 질문
 
 ## 질문
 

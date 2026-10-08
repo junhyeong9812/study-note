@@ -27,7 +27,7 @@
 
 ### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28·테스트 21(10-03)·API 설계 23·웹 플랫폼 24(10-04)·엔지니어링 실천 20·자료구조·알고리즘 잔여 21(10-05)·보안 30·수학 17·아키텍처 22·데이터 공학 17(10-07) 완료, 네트워크 원고 1(10-07)·언어 27·데이터 분석 28(10-08) 완료 → **커리큘럼 미작성 0편** (데이터 공학~데이터 분석 4개 영역 커밋은 push 대기 — 사용자 확인 후)(이 순서로 연속 진행 중, push는 끝에 한 번 — 사용자 합의 10-07)
 
-- **재사용 도구**: `docs/plans/2026-09-30/os-writing/`의 briefing(§3-1 교훈·§4 원고 이어받기·§5 로컬 재현)·factcheck·adjudicate 브리핑, network-writing의 check_new.py, 생성기(gen_area_readme.py — 새 leaf 폴더 우선 인식).
+- **재사용 도구**: `docs/plans/2026-09-30/os-writing/`의 briefing(§3-1 교훈·§4 원고 이어받기·§5 로컬 재현)·factcheck·adjudicate 브리핑, 검사기 `scripts/notes/check_notes.py --all`·생성기 `scripts/notes/gen_area_readme.py`(`--check`)(10-08 이동).
 - **관측(두 영역 실측)**: 1차 Opus 점검 뒤에도 codex가 편당 7~12건(OS)·9~11건(네트워크)을 더 찾았고 판정 기각은 거의 0 → **2차 리뷰는 필수**. Opus 대체 리뷰는 편당 ~1.6건으로 codex보다 적게 찾는다 — codex 한도가 병목.
 - **권장**: codex 한도를 먼저 확인하고, 한도가 부족하면 영역을 나눠 codex 몫을 배분(예: 하루 한 묶음). 워커 브리핑에 **작업 디렉토리 절대 경로·루트에 파일 금지**를 명시(OS에서 루트 유출 2회). 무거운 벤치 금지 문구를 수치로(스레드·CPU초 상한).
 - **발생 가능한 문제**: man 페이지가 최신 커널보다 뒤처짐(두 영역 공통) — 기본값은 커널 문서·소스로. WebSearch 세션 한도(200) 소진 — curl·로컬 man으로 대체 가능.
@@ -48,7 +48,7 @@
 - ~~Knight 축약 "45분에 4.6억": reliability/04 2-summary 288·3-answer 55, ops-patterns/failure-modes 317 → SEC ¶1·¶17(45분 = 주문 송출, 4.6억 = 결국 실현된 손실; 보도자료 4.4억).~~ → **해소(10-05 errata-fixes)**
 - 관측: codex 20/20 가용, 지적 80 중 기각 1 — codex가 있으면 전량 codex 유지. 이미지 빌드 실험은 legacy builder + `--pull=false`/`--pull never`로 새 pull 없이 가능(08 워커가 실수 pull 시도 1회 — 실패, 받은 것 없음).
 
-### N0-p. 작성 규칙 ↔ 검사기 정비 — 우선순위: 중간 (근거 `docs/plans/2026-10-05/engineering-practice-writing/rules-vs-checker.md`)
+### N0-p. 작성 규칙 ↔ 검사기 정비 — **해소(10-08 rules-checker)** · 우선순위: — (근거 `docs/plans/2026-10-05/engineering-practice-writing/rules-vs-checker.md`)
 
 - ① `cs/README.md` §3을 7절로 고치고 브리핑에만 있는 형식 규칙을 「작성 규칙」으로 올려 정본 단일화(문서) ② 위반 0인 기계 규칙(언어 태그·제목 형식·metadata 날짜·생성 문서 `--check`)을 check_new error로 ③ warning 후보 ④ 검사기를 작업 폴더에서 고정 위치로 옮기고 훅·CI 자동 실행 여부 결정. ②·④는 L1(spec부터).
 
@@ -154,7 +154,7 @@
 - 2차 리뷰가 전부 Opus 대체 — codex 표본 재리뷰로 누락률 측정 가능. `[?]` 잔여: 29(8)·07(1)·05(2).
 - ~~영역 밖 후속(관측): 다른 영역 노트 20줄이 이제 실재하는 api-design 01~21을 "미작성"으로 가리킴 — network/36·51, distributed/19, reliability/11·13·35, database/10·17·28·31·52, software-design/16·17·43, domain-modeling/18·basic/07, testing/13. 사례 22·23·26·27의 "노트 미작성" 4줄(사례는 이번에 읽기만). `grep -rn "api-design.*미작성" cs/`로 재추출.~~ → **해소(10-05 errata-fixes)**
 - database/31:60 "FAIL_ON_UNKNOWN_PROPERTIES 기본 true"는 Jackson 2.x 한정 필요(3.0 기본 false).
-- 사례 22~27은 옛 형식(질문 A./B. 절)이라 check_new 불통과 · 제목 줄이 옛 번호(01~06) — 통일 골격 이관 여부는 사용자 결정. 커리큘럼 29행 "Optus 무인증 API 열거 [?]"는 원문 근거 약함(노트는 "인가 없는 API로 대량 조회").
+- (10-08 해소: 사례 22~27 과제 이식 형식 전환·제목 정정) 커리큘럼 29행 "Optus 무인증 API 열거 [?]"는 원문 근거 약함(노트는 "인가 없는 API로 대량 조회").
 
 ### N0-l. 테스트 21편 사용자 검수 + codex 재리뷰(선택) · 영역 밖 낡은 링크 — 우선순위: 중간
 

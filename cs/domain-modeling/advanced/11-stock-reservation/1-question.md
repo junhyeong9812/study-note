@@ -1,4 +1,4 @@
-# domain-modeling-advanced/11-stock-reservation — 질문
+# domain-modeling/advanced/11-stock-reservation — 질문
 
 ## 질문
 

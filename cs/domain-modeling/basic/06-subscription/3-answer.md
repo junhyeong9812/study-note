@@ -1,4 +1,4 @@
-# domain-modeling-basic/06-subscription — 정답
+# domain-modeling/basic/06-subscription — 정답
 
 ## 정답
 

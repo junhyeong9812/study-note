@@ -1,4 +1,4 @@
-# cs/nand-flash — NAND 플래시와 SSD 내부 — 정답
+# systems/nand-flash — NAND 플래시와 SSD 내부 — 정답
 
 ## 정답
 

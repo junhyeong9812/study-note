@@ -1,4 +1,4 @@
-# api-design/03-stock-deduct — 정리 (힌트)
+# api-design/24-case-stock-deduct — 정리 (힌트)
 
 ## 해결하는 문제
 

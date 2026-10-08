@@ -1,4 +1,4 @@
-# 오케스트레이션 vs 코레오그래피 — 질문
+# systems/orchestration-choreography — 오케스트레이션 vs 코레오그래피 — 질문
 
 ## 질문
 

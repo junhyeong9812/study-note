@@ -1,4 +1,4 @@
-# domain-modeling-basic/11-delivery-tracking — 정리 (힌트)
+# domain-modeling/basic/11-delivery-tracking — 정리 (힌트)
 
 ## 해결하는 문제
 

@@ -39,7 +39,7 @@ public long roll(long hash, char outgoing, char incoming, long topPower) {
 }
 ```
 
-```
+```text
 "abc" -> "bcd"  (BASE = B, 창 길이 3)
 
   h = 'a'*B^2 + 'b'*B + 'c'
@@ -256,7 +256,7 @@ static String duplicateOfLength(String s, int length, long mod, CountedHasher ha
 }
 ```
 
-```
+```text
 단조성:  길이 L 짜리 중복이 있으면 그 일부인 L-1 짜리도 반드시 있다
 
   가능    가능    가능    불가    불가

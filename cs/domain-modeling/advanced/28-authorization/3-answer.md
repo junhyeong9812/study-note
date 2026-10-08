@@ -1,4 +1,4 @@
-# domain-modeling-advanced/28-authorization — 정답
+# domain-modeling/advanced/28-authorization — 정답
 
 ## 정답
 

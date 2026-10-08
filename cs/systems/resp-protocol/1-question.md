@@ -1,4 +1,4 @@
-# cs/resp-protocol — RESP: Redis 유선 프로토콜 — 질문
+# systems/resp-protocol — RESP: Redis 유선 프로토콜 — 질문
 
 ## 질문
 

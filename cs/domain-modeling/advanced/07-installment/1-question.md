@@ -1,4 +1,4 @@
-# domain-modeling-advanced/07-installment — 질문
+# domain-modeling/advanced/07-installment — 질문
 
 ## 질문
 

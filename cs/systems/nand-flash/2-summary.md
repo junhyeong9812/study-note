@@ -1,4 +1,4 @@
-# cs/nand-flash — NAND 플래시와 SSD 내부 (FTL · GC · Write Amplification) — 정리 (힌트)
+# systems/nand-flash — NAND 플래시와 SSD 내부 (FTL · GC · Write Amplification) — 정리 (힌트)
 
 ## 해결하는 문제
 

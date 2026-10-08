@@ -34,7 +34,7 @@ sum(l, r) = prefix[r+1] - prefix[l]
 
 누적합의 갱신이 왜 O(n) 인지 그림으로 보면 이렇다.
 
-```
+```text
 a = [3, 1, 4, 1, 5, 9, 2, 6]
                                     a[2] 를 4 -> 10 으로 고치면
 
@@ -319,7 +319,7 @@ public class MinSegmentTree extends SegmentTree {
 
 `query(2, 6)` 을 n = 8 트리에서 깊이별로 세어 보면 그대로 보인다.
 
-```
+```text
 values = [3, 1, 4, 1, 5, 9, 2, 6],  질문 [2..6]
 경계는 두 곳뿐:  1|2  (왼쪽)        6|7  (오른쪽)
 
@@ -379,7 +379,7 @@ values = [3, 1, 4, 1, 5, 9, 2, 6],  질문 [2..6]
   n = 8 에서는 `[1..6]` 이 그 모양이다 — 왼쪽 경계 0|1 과 오른쪽 경계 6|7 이 둘 다 리프 바로 위까지 간다.\
   방문 11개, 덮는 데 쓰인 노드 4개다.
 
-```
+```text
 values = [3, 1, 4, 1, 5, 9, 2, 6]
 
 최악  query(1, 6)  -- 양 끝이 다 어긋난다
@@ -479,7 +479,7 @@ values = [3, 1, 4, 1, 5, 9, 2, 6]
 
 같은 트리에 같은 갱신을 넣고, 그 한 줄이 있을 때와 없을 때를 나란히 두면 이렇다.
 
-```
+```text
 values = [1, 2, 3, 4] 의 합 트리.  update(1, 20) 을 한다.
 
  before                          정상(combine 있음)            버그(combine 없음)
@@ -518,7 +518,7 @@ t4=1 t5=2 t6=3 t7=4            t4=1 t5=20 t6=3 t7=4         t4=1 t5=20 t6=3 t7=4
 
 `query(1, 3)` 한 번으로 그 일이 일어나는 자리를 보면 이렇다.
 
-```
+```text
 values = [5, 7, 9, 11, 13, 17, 19, 23]  (전부 양수, 0 이 하나도 없다)
 MinSegmentTree 로 query(1, 3) -- 정답은 min(7, 9, 11) = 7
 
@@ -610,7 +610,7 @@ MinSegmentTree 로 query(1, 3) -- 정답은 min(7, 9, 11) = 7
 
 두 클래스의 골격을 나란히 놓으면 차이가 두 줄뿐이다.
 
-```
+```text
   SegmentTree (상속)                        GenericSegmentTree<T> (주입)
   +-------------------------------+         +------------------------------------+
   | protected final long[] tree   |         | private final Object[] tree        |
@@ -666,7 +666,7 @@ MinSegmentTree 로 query(1, 3) -- 정답은 min(7, 9, 11) = 7
   대신 `long[]` 이 `MinMax[]` 가 되어 노드마다 객체 참조가 한 번 더 끼고, `merge` 가 호출될 때마다 새 `MinMax` 를 하나씩 만든다.\
   `agreesWithSeparateTrees` 가 난수 500 스텝으로 "`MinSegmentTree` 를 따로 돌린 것과 min 값이 같다"를 확인한다 — 즉 정확성 면에서는 완전히 교환 가능하다.
 
-```
+```text
         두 트리를 따로                       하나로 묶어서
   MinSegmentTree   MaxSegmentTree           MinMaxSegmentTree
      long[] tree      long[] tree              MinMax[] tree
@@ -744,7 +744,7 @@ MinSegmentTree 로 query(1, 3) -- 정답은 min(7, 9, 11) = 7
 
 테스트 두 개가 "미룬다"와 "제때 내린다"를 각각 못박는다. 그 두 순간을 그림으로 보면 이렇다.
 
-```
+```text
 n = 4, 전부 0.  rangeAdd(0, 3, 5) -> rangeSum(0, 1) 순서
 
 [1] rangeAdd(0, 3, 5) : 뿌리가 완전 포함이라 apply 하고 즉시 멈춘다
@@ -831,7 +831,7 @@ n = 4, 전부 0.  rangeAdd(0, 3, 5) -> rangeSum(0, 1) 순서
   세그먼트 트리는 뺄셈 없이 덩어리를 **주워 담기만** 하므로 모노이드면 무엇이든 올라간다 — 그 범용성이 정확히 코드 길이의 대가다.\
   (펜윅의 내부 구현은 이 코드베이스에 없다. 17번 주제의 내용이고, 여기서는 일반 지식으로 적는다.)
 
-```
+```text
 같은 O(log n) 인데 무엇이 다른가
 
   세그먼트 트리                          펜윅 트리(17번)

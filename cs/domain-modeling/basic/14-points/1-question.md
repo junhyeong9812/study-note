@@ -1,4 +1,4 @@
-# domain-modeling-basic/14-points — 질문
+# domain-modeling/basic/14-points — 질문
 
 ## 질문
 

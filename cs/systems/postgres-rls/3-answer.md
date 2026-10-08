@@ -1,4 +1,4 @@
-# PostgreSQL RLS — 정답
+# systems/postgres-rls — PostgreSQL RLS — 정답
 
 ## 답변
 

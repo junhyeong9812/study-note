@@ -1,4 +1,4 @@
-# domain-modeling-advanced/02-promotion — 정답
+# domain-modeling/advanced/02-promotion — 정답
 
 ## 정답
 

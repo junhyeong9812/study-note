@@ -1,4 +1,4 @@
-# api-design/02-coupon-issue — 질문
+# api-design/23-case-coupon-issue — 질문
 
 ## 질문
 

@@ -1,4 +1,4 @@
-# 애자일과 스쿼드 방식 — 질문
+# engineering/agile-and-squad — 애자일과 스쿼드 방식 — 질문
 
 ## 질문
 

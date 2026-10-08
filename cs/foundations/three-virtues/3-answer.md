@@ -1,4 +1,4 @@
-# 프로그래머의 세 미덕 — 정답
+# foundations/three-virtues — 프로그래머의 세 미덕 — 정답
 
 ## 정답
 

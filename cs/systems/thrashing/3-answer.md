@@ -1,4 +1,4 @@
-# cs/thrashing — thrashing(스레싱) — 정답
+# systems/thrashing — thrashing(스레싱) — 정답
 
 ## 정답
 

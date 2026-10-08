@@ -1,4 +1,4 @@
-# cs/kafka-why-fast — Kafka가 빠른 이유 — 질문
+# systems/kafka-why-fast — Kafka가 빠른 이유 — 질문
 
 ## 질문
 

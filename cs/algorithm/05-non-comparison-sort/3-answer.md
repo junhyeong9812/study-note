@@ -55,7 +55,7 @@ public boolean handlesWideRange() {
 }
 ```
 
-```
+```text
 처리 과정 : 키 [5, 2a, 8, 2b, 9, 1, 4]   (2a·2b = 키가 같은 서로 다른 원소)
 
  1) 세기 (min=1, max=9 -> 9칸)
@@ -204,7 +204,7 @@ private static int bucket(int key, int shift, int pass) {
 > **핑퐁(ping-pong)** — 원본↔버퍼를 통과마다 번갈아 읽기/쓰기 대상으로 바꾸는 것.\
 > 예: `tmp = src; src = dst; dst = tmp;` 한 줄이 그 맞바꿈이다.
 
-```
+```text
 안정성이 전제인 이유 : [52, 25, 94, 21, 13, 45, 22]
 
  1통과 (일의 자리)
@@ -314,7 +314,7 @@ private <T> void sort(CountedArray<T> a, CountedArray<T> buffer, int lo, int hi,
 }
 ```
 
-```
+```text
 MSD 가 아끼는 자리 : [52, 25, 94, 21, 13, 45, 22]  (십의 자리부터)
 
  [ 13 | 25, 21, 22 | 45 | 52 | 94 ]
@@ -429,7 +429,7 @@ MSD 가 아끼는 자리 : [52, 25, 94, 21, 13, 45, 22]  (십의 자리부터)
 
 ### 5. 파생 질문 (서머리 기반)
 
-```
+```text
 하한을 우회하는 한 줄
 
   비교 정렬   :  "둘 중 누가 크냐?" 를 반복   -> 최악 log2(n!) 번 (n=1000 이면 8,530)

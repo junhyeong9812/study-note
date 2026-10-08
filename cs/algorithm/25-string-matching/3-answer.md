@@ -39,7 +39,7 @@ public static List<Integer> findAll(CountedText text, String pattern) {
 }
 ```
 
-```
+```text
 본문: a a a a a a      패턴: a a b
 
 start=0:  a a b        맞고 맞고 어긋남 -> 본문 2 칸 갔다가 1 로 되돌아감
@@ -130,7 +130,7 @@ public static int[] failureFunction(String pattern, long[] comparisons) {
 }
 ```
 
-```
+```text
 패턴     a  a  b  a  a  b  a  a  a
 failure  0  1  0  1  2  3  4  5  2
                                  ^ 마지막 'a': length 5 에서 어긋남 (pattern[5]='b')
@@ -242,7 +242,7 @@ public static List<Integer> findAll(CountedText text, String pattern, long[] pat
 }
 ```
 
-```
+```text
 본문:  a b a b a b c        패턴: a b a b c      failure = [0,0,1,2,0]
 
        a b a b a b c

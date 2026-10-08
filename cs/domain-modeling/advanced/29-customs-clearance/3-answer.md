@@ -1,4 +1,4 @@
-# domain-modeling-advanced/29-customs-clearance — 정답
+# domain-modeling/advanced/29-customs-clearance — 정답
 
 ## 정답
 

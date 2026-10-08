@@ -1,4 +1,4 @@
-# 시계열 해상도 계층 설계 — 질문
+# systems/timeseries-resolution-tiers — 시계열 해상도 계층 설계 — 질문
 
 ## 질문
 

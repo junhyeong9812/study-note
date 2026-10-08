@@ -1,4 +1,4 @@
-# api-design/01-order-point — 정답
+# api-design/22-case-order-point — 정답
 
 ## 정답
 

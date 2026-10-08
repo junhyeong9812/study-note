@@ -1,4 +1,4 @@
-# domain-modeling-advanced/07-installment — 정답
+# domain-modeling/advanced/07-installment — 정답
 
 ## 정답
 

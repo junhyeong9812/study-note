@@ -102,7 +102,7 @@
 
 #### 구조
 
-```
+```text
 MapTrie — 글자 하나가 간선이고, 뿌리에서 여기까지 온 "경로"가 곧 문자열이다
 +---------------------------+
 | root ---+                 |
@@ -156,7 +156,7 @@ MapTrie — 글자 하나가 간선이고, 뿌리에서 여기까지 온 "경로
 **언제 쓰나** — 단어를 등록할 때(insert).\
 "글자 따라 내려가며 없는 길만 새로 깐다".
 
-```
+```text
 insert(word) : 글자마다 내려가며 없으면 만들고, 지나는 노드마다 wordsBelow 를 올린다
     insert("card")  — cat, car 가 이미 있는 상태
 
@@ -201,7 +201,7 @@ insert(word) : 글자마다 내려가며 없으면 만들고, 지나는 노드�
 
 **언제 쓰나** — "이 단어 있어?"(contains), "이걸로 시작하는 단어 있어/몇 개/전부?"(startsWith, countWithPrefix, keysWithPrefix).
 
-```
+```text
 findNode(s) : root 에서 글자마다 children 을 따라 내려간다. 중간에 길이 없으면 null
 
     contains("car")     -> 노드 도달 + end == true      -> 참
@@ -250,7 +250,7 @@ findNode(s) : root 에서 글자마다 children 을 따라 내려간다. 중간�
 **언제 쓰나** — 단어 하나를 지울 때(remove).\
 남들과 같이 쓰는 길은 남기고, 나 혼자 쓰던 길만 끊는 게 요점이다.
 
-```
+```text
 remove(word) : 지나는 노드마다 wordsBelow 를 내리고, 0 이 되는 첫 노드에서 가지를 끊는다
 
 [1] 나 혼자 쓰던 길이 있는 경우 — remove("card") (cat, car, card 가 있는 상태)
@@ -369,7 +369,7 @@ remove(word) : 지나는 노드마다 wordsBelow 를 내리고, 0 이 되는 첫
 
 #### 구조 — children 이 맵에서 배열로
 
-```
+```text
 ArrayTrie — Node 의 필드 이름도 규약(end, wordsBelow)도 MapTrie 와 같다.
             달라지는 것은 자식을 어디에 담느냐 하나다
     Node { Node[] children = new Node[ALPHABET];  boolean end;  int wordsBelow; }   ALPHABET = 26
@@ -495,7 +495,7 @@ ArrayTrie — Node 의 필드 이름도 규약(end, wordsBelow)도 MapTrie 와 �
 > **와일드카드(wildcard)** — 아무 글자와도 맞는 만능 문자.\
 > 예: 여기서는 `.` 하나가 글자 하나를 대신해서, "ca." 는 car 와도 cat 과도 맞는다.
 
-```
+```text
 WordDictionary — 트라이를 새로 만들지 않는다. MapTrie 하나를 감싸고 search 만 더한다
     addWord(w) = trie.insert(w),   size() = trie.size()
 

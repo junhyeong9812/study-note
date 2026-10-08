@@ -32,7 +32,7 @@ if (best == null) throw new NoSuchElementException("비어 있다");
 return best;
 ```
 
-```
+```text
 처리 과정 : map = {1, 5, 9}, target = 7
             of(1, 5, 9) 는 1 -> 5 -> 9 순서로 넣으므로 오른쪽으로만 늘어진 트리다
 
@@ -83,7 +83,7 @@ Integer upper = (ins < sorted.size()) ? sorted.get(ins) : null;
 // 이하 접근 3 과 같은 비교
 ```
 
-```
+```text
 처리 과정 : {1, 5, 9} 를 배열로 펴 놓고 target = 7 을 이진 탐색
 
     idx      0     1     2
@@ -137,7 +137,7 @@ public static Integer closestKey(SortedMap<Integer, ?> map, int target) {
 }
 ```
 
-```
+```text
 처리 과정 : map = {1, 5, 9}, target = 7
 
   floorKey(7) : "7 이하 중 가장 큰 키". 후보(best)를 들고 내려간다
@@ -266,7 +266,7 @@ for (int key : map.keys()) {          // n 개 전부 받아온다
 return sum;
 ```
 
-```
+```text
 처리 과정 : 균형 잡힌 트리에서 from = 35, to = 65 를 구할 때
             (손으로 만든 예시 트리 — 테스트의 트리가 아니다)
 
@@ -331,7 +331,7 @@ private void collectRange(Node<K, V> node, K from, K to, java.util.List<K> out) 
 }
 ```
 
-```
+```text
 처리 과정 : 같은 트리, 같은 범위 [35, 65]. 이번에는 가지를 통째로 버린다
 
                     50         cmpFrom: 50 > 35 -> 왼쪽 재귀 O
@@ -459,7 +459,7 @@ public static Integer kthSmallest(SortedMap<Integer, ?> map, int k) {
 }
 ```
 
-```
+```text
 처리 과정 : of(5, 3, 8, 2, 9) 에 k = 2
             넣은 순서 5 -> 3 -> 8 -> 2 -> 9 가 만드는 트리
 
@@ -521,7 +521,7 @@ while (cur != null) {
 }
 ```
 
-```
+```text
 처리 과정 : 각 노드에 (count) 를 적어 둔 트리. 같은 트리에 k = 4
 
                   5 (5)
@@ -696,7 +696,7 @@ while (cur != null) {
   즉 비교 한 번 = 후보 집합을 둘로 자르고 한쪽을 통째로 버리는 일이다.\
   균형 잡힌 트리면 두 쪽의 크기가 비슷하므로 매번 후보가 절반이 되고, n 을 1로 만들려면 절반 나누기를 log2(n) 번 해야 한다.
 
-```
+```text
 비교 한 번이 버리는 양 : get(40) 을 찾을 때
 
                     50            40 < 50 -> 왼쪽으로
@@ -783,7 +783,7 @@ while (cur != null) {
 return best;
 ```
 
-```
+```text
 처리 과정 : floorKey(45) — "45 이하 중 가장 큰 키"
 
                     50
@@ -831,7 +831,7 @@ return best;
   코드로는 `if (cmp < 0)` 이 `if (cmp > 0)` 으로, `cur = cur.left` 와 `cur = cur.right` 가 서로 바뀐 것뿐이다.\
   나머지(`cmp == 0` 즉시 반환, `best` 를 들고 내려가기, 끝나면 `best` 반환, 없으면 null)는 완전히 같다.
 
-```
+```text
 대칭 : ceilingKey(45) — "45 이상 중 가장 작은 키"
 
                     50
@@ -877,7 +877,7 @@ private void inOrder(Node<K, V> node, java.util.List<K> out) {
 }
 ```
 
-```
+```text
 왜 이 순서인가 : 세 덩어리의 대소 관계가 이미 정해져 있다
 
                     50
@@ -924,7 +924,7 @@ private void inOrder(Node<K, V> node, java.util.List<K> out) {
   ③ 두 경로 사이에 통째로 들어가는 서브트리들 — 여기 있는 노드는 전부 결과에 담기므로 k 개다.\
   ①②가 O(높이) = 균형이면 O(log n), ③이 O(k) 이므로 합이 O(log n + k) 다.
 
-```
+```text
 방문 노드의 세 종류 : [35, 65] 를 뽑을 때
 
                     50   <- 두 경로가 아직 겹쳐 있는 구간
@@ -967,7 +967,7 @@ private void inOrder(Node<K, V> node, java.util.List<K> out) {
   아무 데나 붙이면 "왼쪽 전부 < 나 < 오른쪽 전부"가 무너지고, 그냥 버리면 노드가 사라져 `size` 와 실제 노드 수가 어긋난다.\
   `BinarySearchTreeTest` 의 `assertSound` 가 그 둘을 각각 잡는다 — `assertBstProperty`(순서)와 `countNodes(root) == size`(개수).
 
-```
+```text
 깨지는 방식 1 : 왼쪽 자식을 올리고 오른쪽 서브트리를 그 왼쪽에 붙인다
 
   before                                   잘못된 after
@@ -1003,7 +1003,7 @@ private void inOrder(Node<K, V> node, java.util.List<K> out) {
   바로 앞 = 왼쪽 서브트리의 최대(선행자), 바로 뒤 = 오른쪽 서브트리의 최소(후속자)다.\
   그보다 더 앞의 키를 올리면 왼쪽 서브트리에 그보다 큰 키가 남아 불변식이 깨지고, 더 뒤의 키를 올리면 오른쪽 서브트리에 그보다 작은 키가 남아 깨진다.
 
-```
+```text
 왜 둘뿐인가 : 정렬된 줄로 펴 보면 자명하다
 
     20   30   35   40   45   50   60   70   80
@@ -1050,7 +1050,7 @@ else if (parent.left == cur) parent.left = child;
 else parent.right = child;
 ```
 
-```
+```text
 처리 과정 : BinarySearchTreeTest 의 트리에서 remove(30)
             tree(50, 30, 70, 20, 40, 60, 80, 35, 45)
 
@@ -1092,7 +1092,7 @@ else parent.right = child;
            35 의 왼쪽 20 < 35 < 오른쪽 40, 45  -> 불변식 OK
 ```
 
-```
+```text
 이어서 remove(50) — 뿌리를 지우는 경우
 
   before                      후속자 찾기
@@ -1142,7 +1142,7 @@ else parent.right = child;
   버려지는 후보가 한 번도 없다 — 비교 한 번이 절반을 버리기는커녕 한 개만 버린다.\
   역순(내림차순) 입력도 방향만 반대일 뿐 똑같이 최악이다.
 
-```
+```text
 편향 트리 : put(0), put(1), put(2), ... put(999)
 
     [0]
@@ -1187,7 +1187,7 @@ else parent.right = child;
   n 이 커질수록 격차가 벌어진다 — n = 100만이면 균형은 약 2 × 10^7, 편향은 약 5 × 10^11 로 계산상 2만 배가 넘는다.\
   게다가 트리를 만드는 `put` 1000번의 비용도 편향에서는 `1 + 2 + ... + 999` ≈ 5 × 10^5 회로 이미 O(n^2) 이다.
 
-```
+```text
 같은 1000개, 다른 순서로 넣었을 뿐인데
 
   정렬 순서로 넣기                흩어서 넣기 ((i * 617) % 1000)
@@ -1239,7 +1239,7 @@ public void clear() {
 }
 ```
 
-```
+```text
 왜 한 줄로 충분한가 : 도달 경로가 하나뿐이다
 
   before                          after (root = null 한 줄)
@@ -1265,7 +1265,7 @@ public void clear() {
   그래서 `clear()` 에서 칸마다 null 을 넣어 줘야 했다.\
   트리는 다르다 — 원소를 붙잡는 주체가 컬렉션의 배열이 아니라 **다른 노드**이고, 그 노드들도 함께 버려지므로 위에서 한 번 끊으면 아래가 전부 같이 떨어진다.
 
-```
+```text
 구조가 다르면 정리 방법도 다르다
 
   동적 배열 : 컬렉션이 원소를 직접 붙잡는다
@@ -1315,7 +1315,7 @@ public void clear() {
   그러면 최대는 언제나 루트에 있으므로 조회가 O(1) 이고, 넣고 빼는 것은 한 경로만 타고 오르내리면 되므로 O(log n) 이다.\
   대신 포기하는 것이 명확하다 — 정렬 순회도, 범위 조회도, floor/ceiling 도 못 한다.
 
-```
+```text
 같은 7개 키, 두 구조가 유지하는 것의 차이
 
   BST — 전체 순서                     힙 — 부분 순서 (최대 힙)

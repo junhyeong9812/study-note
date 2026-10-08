@@ -95,7 +95,7 @@
 
 #### 구조
 
-```
+```text
 DependencyGraph
 +-------------------------------------------------------------------------+
 | edges    : TreeMap<이름, TreeSet<이름>>                                 |
@@ -134,7 +134,7 @@ DependencyGraph
   - *진입 차수(in-degree)*: 어떤 점으로 들어오는 화살표의 수 = "내가 기다려야 하는 일의 개수".
   - *TreeSet*: 중복을 거부하고 항상 정렬을 유지하는 집합. `add`가 false를 주면 "이미 있다"는 뜻이다.
 
-```
+```text
 dependsOn("d", "b")  :  d 가 b 에 기댄다  ->  간선 b -> d
 
   before                                after
@@ -214,7 +214,7 @@ dependsOn("d", "b")  :  d 가 b 에 기댄다  ->  간선 b -> d
   - *ready(대기열)*: 진입 차수가 0이 된 = 당장 시작해도 되는 일들의 줄.
   - *PriorityQueue(우선순위 큐)*: 넣은 순서가 아니라 "가장 작은 것"부터 꺼내는 줄. 여기서는 사전순으로 이른 이름부터 — 답을 하나로 고정하기 위해서다.
 
-```
+```text
 같은 그래프                a          진입 차수  a:0  b:1  c:1  d:2
                           / \         간선      a->b  a->c  b->d  c->d
                          v   v
@@ -260,7 +260,7 @@ order.size() == graph.size() 이므로 순환이 없다.  결과 [a, b, c, d]
   - *순환(cycle)*: 화살표를 따라가다 제자리로 돌아오는 고리(a→b→c→a). 이 안의 일들은 영원히 시작 못 한다.
   - *CycleException*: "순환이라 순서를 못 만든다"를 알리는 이 프로젝트의 예외. 절반짜리 결과 대신 이것을 던진다.
 
-```
+```text
 순환 그래프 : dependsOn(b,a)  dependsOn(c,b)  dependsOn(a,c)  dependsOn(e,c)
 
         a ---> b                진입 차수  a:1  b:1  c:1  e:1
@@ -333,7 +333,7 @@ order.size() == graph.size() 이므로 순환이 없다.  결과 [a, b, c, d]
   - *back edge*: 지금 내려온 길(GRAY) 위의 점으로 되돌아가는 화살표 = 순환의 증거.
   - *재귀 스택*: 함수가 자기를 부를 때마다 쌓이는 호출 기록. path가 곧 그 길이다.
 
-```
+```text
 색은 Map<String, Integer> color 하나에 int 상수로 담는다 (enum 도 Set 도 아니다)
     WHITE = 0   아직 안 봤다
     GRAY  = 1   지금 내려가는 중이다 (path 에 있다 = 재귀 스택 위)

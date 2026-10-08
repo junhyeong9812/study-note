@@ -1,4 +1,4 @@
-# domain-modeling-basic/20-insurance — 정답
+# domain-modeling/basic/20-insurance — 정답
 
 ## 정답
 

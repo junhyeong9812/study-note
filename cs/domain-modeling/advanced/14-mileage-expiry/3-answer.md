@@ -1,4 +1,4 @@
-# domain-modeling-advanced/14-mileage-expiry — 정답
+# domain-modeling/advanced/14-mileage-expiry — 정답
 
 ## 정답
 

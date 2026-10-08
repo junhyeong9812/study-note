@@ -1,4 +1,4 @@
-# domain-modeling-advanced/03-subscription-change — 정답
+# domain-modeling/advanced/03-subscription-change — 정답
 
 ## 정답
 

@@ -1,4 +1,4 @@
-# GoF 디자인 패턴 — 질문
+# engineering/design-patterns-gof — GoF 디자인 패턴 — 질문
 
 ## 질문
 

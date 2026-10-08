@@ -1,4 +1,4 @@
-# domain-modeling-basic/15-coupon — 정답
+# domain-modeling/basic/15-coupon — 정답
 
 ## 정답
 

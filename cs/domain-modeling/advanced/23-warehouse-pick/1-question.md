@@ -1,4 +1,4 @@
-# domain-modeling-advanced/23-warehouse-pick — 질문
+# domain-modeling/advanced/23-warehouse-pick — 질문
 
 ## 질문
 

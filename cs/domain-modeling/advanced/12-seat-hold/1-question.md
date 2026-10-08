@@ -1,4 +1,4 @@
-# domain-modeling-advanced/12-seat-hold — 질문
+# domain-modeling/advanced/12-seat-hold — 질문
 
 ## 질문
 

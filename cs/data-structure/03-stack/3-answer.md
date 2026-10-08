@@ -24,7 +24,7 @@ for (char c : input.toCharArray()) {
 return paren == 0 && bracket == 0 && brace == 0;
 ```
 
-```
+```text
 입력 "([)]" 를 왼쪽부터 처리 — 카운터 3개만 들고 간다
 
   문자     paren   bracket   판정
@@ -69,7 +69,7 @@ while (true) {
 return s.isEmpty();
 ```
 
-```
+```text
 입력 "(a[b])" -> 괄호만 남기면 "([])"
 
   1회차   ( [ ] )      "[]" 를 지운다
@@ -135,7 +135,7 @@ public static boolean isBalanced(String input, Stack<Character> buffer) {
 }
 ```
 
-```
+```text
 입력 "(a[b])" 를 왼쪽부터 한 글자씩 소비한다 — 매 단계의 스택 전체를 그린다
 
  '(' -> push               'a' -> 괄호 아님, 무시      '[' -> push
@@ -258,7 +258,7 @@ int right = buffer.pop();
 buffer.push(apply(left, right, token));
 ```
 
-```
+```text
 입력 "3 4 -" 를 토큰 단위로 소비한다
 
  "3" -> push               "4" -> push                 "-" -> pop 두 번
@@ -308,7 +308,7 @@ while (t.size() > 1) {
 return Integer.parseInt(t.get(0));
 ```
 
-```
+```text
 입력 "5 1 2 + 4 * + 3 -"
 
   idx      0    1    2    3    4    5    6    7    8
@@ -378,7 +378,7 @@ public static int evaluatePostfix(String expression, Stack<Integer> buffer) {
 }
 ```
 
-```
+```text
 입력 "5 1 2 + 4 * + 3 -" (= 5 + (1+2)*4 - 3 = 14) — 토큰마다 스택 전체를 그린다
 
  "5"                "1"                "2"                "+"  right=2 left=1
@@ -485,7 +485,7 @@ for (int i = 0; i < values.length; i++) {
 return result;
 ```
 
-```
+```text
 입력 [1, 3, 2, 4]
 
   i=0 (1) : j=1 -> 3 > 1  찾음         result[0] = 3   (1회 비교)
@@ -540,7 +540,7 @@ public static int[] nextGreater(int[] values, Stack<Integer> buffer) {
 > **단조 스택(monotonic stack)** — 스택 안의 값이 항상 한 방향(여기서는 아래→위로 감소)으로 정렬된 상태를 유지하는 기법.\
 > 예: 새 값이 그 정렬을 깨는 순간, 깨진 것들의 답이 한꺼번에 정해지고 전부 꺼내진다.
 
-```
+```text
 입력 [1, 3, 2, 4] — 스택에는 "인덱스"를 담고, 괄호 안은 그 인덱스의 값이다
 
  i=0 (값1)                   스택이 비어 있다 -> 그냥 push
@@ -593,7 +593,7 @@ public static int[] nextGreater(int[] values, Stack<Integer> buffer) {
 > **상환 분석(amortized analysis)** — 한 번의 비용이 아니라 **n번의 총비용**을 보고 1회 평균을 말하는 분석법.\
 > 예: 안쪽 `while` 이 한 번에 100번 돌아도, 그 100개는 앞에서 push된 것들이라 전체 pop은 n을 못 넘는다.
 
-```
+```text
 같은 값은 왜 "더 큰" 값이 아닌가 — 입력 [5, 5, 5]
 
  조건이 values[peek] < values[i] 라 등호가 빠져 있다
@@ -654,7 +654,7 @@ for (int i = n - 1; i >= 0; i--) {
 }
 ```
 
-```
+```text
 입력 [1, 3, 2, 4] 를 오른쪽부터 처리한다
 
  i=3 (값4) : 스택이 비었다 -> result[3] = -1, push 3
@@ -747,7 +747,7 @@ Arrays.sort(tmp);
 for (int v : tmp) stack.push(v);   // 작은 것부터 넣으면 큰 것이 top 에 온다
 ```
 
-```
+```text
 입력 스택 (바닥 -> top) : 3, 1, 2
 
   전부 꺼내 배열로            정렬                   작은 것부터 다시 push
@@ -789,7 +789,7 @@ public static void sortAscending(Stack<Integer> stack, Stack<Integer> helper) {
 }
 ```
 
-```
+```text
 입력 stack (바닥 -> top) : 3, 1, 2    helper : 비어 있음
 불변식 : helper 는 "top 이 가장 작은" 상태 (아래로 갈수록 큰 값)
 
@@ -906,7 +906,7 @@ static void insert(Stack<Integer> s, int v) {
 }
 ```
 
-```
+```text
 [3, 1, 2] (top=2) 를 재귀로
 
   sort  : pop 2 -> sort([3,1]) -> pop 1 -> sort([3]) -> pop 3 -> sort([]) 반환
@@ -986,7 +986,7 @@ for (String token : expression.trim().split("\\s+")) {
 while (!buffer.isEmpty()) out.append(buffer.pop()).append(' ');   // 남은 연산자 전부
 ```
 
-```
+```text
 입력 "3 + 4 * 2"  (정답은 "3 4 2 * +")
 
  "3" -> 출력      out = "3"
@@ -1044,7 +1044,7 @@ Node factor() { if (peek == '(') { next(); Node n = expr(); expect(')'); return 
 // 만든 트리를 후위 순회하면 곧 후위 표기다
 ```
 
-```
+```text
 "3 + 4 * 2" 의 트리
 
                  ( + )
@@ -1129,7 +1129,7 @@ private static int precedence(char operator) {
 > **shunting yard(입환장) 알고리즘** — 연산자를 스택이라는 "대기 선로"에 세워뒀다가 우선순위 순서로 내보내 중위식을 후위식으로 바꾸는 방법.\
 > 예: 기차역에서 차량을 곁선로에 잠깐 세워뒀다 순서를 바꿔 내보내는 것과 같다.
 
-```
+```text
 입력 "3 + 4 * 2"  ->  기대 "3 4 2 * +"
 
  토큰 "3"  숫자 -> 즉시 출력      out = "3"
@@ -1168,7 +1168,7 @@ private static int precedence(char operator) {
  -> "3 4 2 * +"  (테스트 respectsPrecedence 의 기대값)
 ```
 
-```
+```text
 왜 "같거나 높은" 이어야 하는가 — "3 - 4 - 5" 를 두 조건으로 나란히 돌려본다
 정답은 "3 4 - 5 -" ( = (3-4)-5 = -6 )
 
@@ -1217,7 +1217,7 @@ private static int precedence(char operator) {
 > **왼쪽 결합(left-associative)** — 우선순위가 같은 연산자가 나란히 오면 왼쪽부터 묶이는 성질.\
 > 예: `3 - 4 - 5` 는 `(3-4)-5` 이지 `3-(4-5)` 가 아니다.
 
-```
+```text
 괄호는 어떻게 처리되나 — "( 3 + 4 ) * 2"  ->  기대 "3 4 + 2 *"
 
  "("  -> 그냥 push (벽 역할)        out = ""
@@ -1260,7 +1260,7 @@ private static int precedence(char operator) {
                   그래서 괄호가 우선순위를 뒤집을 수 있다
 ```
 
-```
+```text
 괄호 불일치가 잡히는 두 시점
 
 [시점 1] 닫는 괄호를 만났는데 여는 괄호가 안 나온 채 스택이 비었다 — "3 + 4 )"
@@ -1494,7 +1494,7 @@ private static int precedence(char operator) {
   테스트 `mustBeLinear` 가 만드는 상황이 정확히 이것이다 — 내림차순 20만 건이면 `nextGreater` 의 스택이 한 번도 안 줄고 20만까지 쌓인다.\
   덧붙이면 `ArrayStack` 에는 **축소가 없으므로** 01번의 thrashing(경계에서 늘렸다 줄였다)은 일어나지 않는다.
 
-```
+```text
 용량 4에서 시작해 계속 push 할 때 무슨 일이 일어나는가
 
  push 1~4  : 빈 칸에 쓰기만 한다. 각 O(1)
@@ -1618,7 +1618,7 @@ private static int precedence(char operator) {
   `pop` 은 `top = popped.next` 로 한 칸 내려가면 끝이다 — 위로 거슬러 올라갈 일이 없다.\
   `prev` 는 "위로 가기"를 위한 링크인데, 스택에는 위로 갈 상황이 없다.
 
-```
+```text
 push / pop 에서 실제로 고치는 링크가 몇 개인가
 
  push(E)   before   top -> [D] -> [B] -> [A] -> null
@@ -1673,7 +1673,7 @@ push / pop 에서 실제로 고치는 링크가 몇 개인가
   배열 자체는 살아 있으므로 그 참조가 객체를 붙잡는다.\
   impl 은 `E value = (E) elements[--top]; elements[top] = null;` 로 읽고 곧바로 비운다.
 
-```
+```text
 pop 에서 null 을 안 넣으면
 
  정상 (impl)                          잘못된 구현
@@ -1694,7 +1694,7 @@ pop 에서 null 을 안 넣으면
   원소 하나가 새는 배열 쪽과 달리 여기서는 **스택 전체가 통째로** 새는 것이 차이다.\
   impl 은 `popped.item = null; popped.next = null;` 로 두 링크를 다 끊는다.
 
-```
+```text
 next 를 안 끊으면 — 새는 양이 다르다
 
  정상 (impl)
@@ -1805,7 +1805,7 @@ next 를 안 끊으면 — 새는 양이 다르다
   큐는 뒤에서 넣고 앞에서 꺼내므로, 0번 칸을 꺼낸 뒤 순서를 유지하려면 뒤의 n-1개를 전부 한 칸씩 당겨야 한다.\
   8번에서 "스택에는 아예 나타나지 않는다"고 했던 **앞쪽 시프트가 되돌아온다.**
 
-```
+```text
 배열 큐를 순진하게 만들면 — 앞에서 꺼낼 때마다 전체를 당긴다
 
  enqueue A, B, C  (뒤에 넣는다)
@@ -1835,7 +1835,7 @@ next 를 안 끊으면 — 새는 양이 다르다
   그러다 `rear` 가 배열 끝에 닿으면, 앞에 빈 칸이 잔뜩 있는데도 "꽉 찼다"며 확장하게 된다.\
   넣고 빼기를 반복하는 큐는 원소 수가 늘지 않아도 배열이 무한히 자란다.
 
-```
+```text
 front 만 전진시키면 — 앞쪽이 버려진다
 
  A,B,C 를 넣고 A,B 를 꺼낸 상태
@@ -1865,7 +1865,7 @@ front 만 전진시키면 — 앞쪽이 버려진다
 > **원형 버퍼(circular buffer, ring buffer)** — 배열의 끝과 시작을 이어 붙인 것처럼 인덱스를 나머지 연산으로 감싸 쓰는 구조.\
 > 예: 길이 4 배열에서 `rear` 가 3 다음에 0으로 돌아와, 앞서 비워진 칸을 다시 쓴다.
 
-```
+```text
 원형으로 감싸면
 
    idx   0    1    2    3

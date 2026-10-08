@@ -1,4 +1,4 @@
-# domain-modeling-advanced/02-promotion — 질문
+# domain-modeling/advanced/02-promotion — 질문
 
 ## 질문
 

@@ -1,4 +1,4 @@
-# domain-modeling-basic/27-menu-option — 질문
+# domain-modeling/basic/27-menu-option — 질문
 
 ## 질문
 

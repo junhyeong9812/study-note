@@ -1,4 +1,4 @@
-# api-design/02-coupon-issue — 정답
+# api-design/23-case-coupon-issue — 정답
 
 ## 정답
 

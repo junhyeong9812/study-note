@@ -45,7 +45,7 @@ public static int rankOf(int[] table, int value, CountedSweep sweep) {
 }
 ```
 
-```
+```text
 원래 값   10   1,000,000,000   10   50        범위 10 억 -> 배열을 못 만든다
 
 [1] 정렬 + 중복 제거   [10, 50, 1000000000]    <- 등수 표
@@ -161,7 +161,7 @@ public static int maxOverlap(List<Interval> intervals, boolean closedEnd, Counte
 }
 ```
 
-```
+```text
 수직선    1  2  3  4  5  6  7  8  9
 [1,3]    +--+--+
 [2,6]       +--+--+--+--+
@@ -302,7 +302,7 @@ public static List<Interval> merge(List<Interval> intervals, boolean touching, C
 }
 ```
 
-```
+```text
 전:  [1,3] [2,6] [8,10]     (정렬 먼저! 시작 순으로)
 
 [1]  [1,3] 을 잡는다                       start=1, end=3

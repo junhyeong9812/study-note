@@ -1,4 +1,4 @@
-# domain-modeling-basic/04-hotel-booking — 질문
+# domain-modeling/basic/04-hotel-booking — 질문
 
 ## 질문
 

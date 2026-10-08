@@ -1,4 +1,4 @@
-# domain-modeling-advanced/01-payroll — 정답
+# domain-modeling/advanced/01-payroll — 정답
 
 ## 정답
 

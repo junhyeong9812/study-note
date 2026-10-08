@@ -1,4 +1,4 @@
-# domain-modeling-basic/08-meeting-slot — 질문
+# domain-modeling/basic/08-meeting-slot — 질문
 
 ## 질문
 

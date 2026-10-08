@@ -1,4 +1,4 @@
-# domain-modeling-advanced/04-refund — 질문
+# domain-modeling/advanced/04-refund — 질문
 
 ## 질문
 

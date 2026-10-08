@@ -1,4 +1,4 @@
-# domain-modeling-basic/17-cart-discount — 정답
+# domain-modeling/basic/17-cart-discount — 정답
 
 ## 정답
 

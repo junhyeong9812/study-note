@@ -1,4 +1,4 @@
-# api-design/02-coupon-issue — 정리 (힌트)
+# api-design/23-case-coupon-issue — 정리 (힌트)
 
 ## 해결하는 문제
 

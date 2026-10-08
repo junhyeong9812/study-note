@@ -1,4 +1,4 @@
-# domain-modeling-advanced/24-shift-roster — 질문
+# domain-modeling/advanced/24-shift-roster — 질문
 
 ## 질문
 

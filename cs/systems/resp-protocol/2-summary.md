@@ -1,4 +1,4 @@
-# cs/resp-protocol — RESP: Redis 유선 프로토콜 — 정리 (힌트)
+# systems/resp-protocol — RESP: Redis 유선 프로토콜 — 정리 (힌트)
 
 ## 해결하는 문제
 
@@ -16,7 +16,7 @@ ci-cd 서버(Go)가 로그 규약(XADD 한 명령)을 지키려는데, 그 하�
 
 ### 형태 — 다섯 가지 타입, 첫 글자가 타입표시
 
-```
+```text
 +OK\r\n                단순 문자열 (성공 응답)
 -ERR unknown\r\n       에러
 :42\r\n                정수
@@ -26,7 +26,7 @@ $5\r\nhello\r\n        벌크 문자열 — $길이 먼저, 그 다음 내용 (�
 
 **명령 = 문자열 배열**이다. `XADD logs * level info line hi`는:
 
-```
+```text
 *8\r\n                 ← 요소 8개짜리 배열
 $4\r\nXADD\r\n         ← 각 요소는 $길이 + 내용
 $4\r\nlogs\r\n

@@ -1,4 +1,4 @@
-# cs/development-standards/security-standards — 보안 기준 (OWASP Top 10 · NIST SSDF · OWASP ASVS) — 질문
+# engineering/development-standards/security-standards — 보안 기준 (OWASP Top 10 · NIST SSDF · OWASP ASVS) — 질문
 
 ## 질문
 

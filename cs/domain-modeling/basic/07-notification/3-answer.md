@@ -1,4 +1,4 @@
-# domain-modeling-basic/07-notification — 정답
+# domain-modeling/basic/07-notification — 정답
 
 ## 정답
 

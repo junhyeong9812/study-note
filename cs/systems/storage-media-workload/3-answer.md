@@ -1,4 +1,4 @@
-# cs/storage-media-workload — 저장 매체와 워크로드 — 정답
+# systems/storage-media-workload — 저장 매체와 워크로드 — 정답
 
 ## 정답
 

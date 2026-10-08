@@ -26,7 +26,7 @@ public static int shortestDistance(...) {
 }
 ```
 
-```
+```text
 허용 가능(admissible) = 어림이 실제 남은 거리를 절대 넘지 않는다
 
   실제 남은 거리 :  ############### 15
@@ -136,7 +136,7 @@ while (!heap.isEmpty()) {
 }
 ```
 
-```
+```text
 목표를 꺼낸 순간 멈춰도 되는 논증
 
  목표 G 를 우선순위 f = g(G) + h(G) 로 꺼냈다. h(G) = 0 이므로 f = 실제 거리 g(G).
@@ -234,7 +234,7 @@ Collections.reverse(path);                                // 되짚은 결과는
 return path;
 ```
 
-```
+```text
 되짚기 : cameFrom 만 있으면 된다
 
   cameFrom:  G <- d <- c <- b <- S        S 의 cameFrom 은 -1 (멈추는 표시)
@@ -282,7 +282,7 @@ return path;
 
 ### 4. 측정 (README "측정이 알려준 것")
 
-```
+```text
 100x100 격자에서 펼친 칸 수
 
   빈 격자, ZERO       10,000  ####################################  (전부)
@@ -389,7 +389,7 @@ return path;
 
 ### 6. 파생 질문 (서머리 기반)
 
-```
+```text
 11 -> 14 -> 20 : 힙에 넣는 값 하나만 바뀐다
 
   11 BFS      : 큐, 우선순위 없음      (모든 간선 비용이 같다)

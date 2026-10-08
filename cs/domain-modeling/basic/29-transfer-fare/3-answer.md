@@ -1,4 +1,4 @@
-# domain-modeling-basic/29-transfer-fare — 정답
+# domain-modeling/basic/29-transfer-fare — 정답
 
 ## 정답
 

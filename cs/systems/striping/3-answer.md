@@ -1,4 +1,4 @@
-# cs/striping — Striping (BookKeeper) — 정답
+# systems/striping — Striping (BookKeeper) — 정답
 
 ## 정답
 

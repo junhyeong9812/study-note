@@ -1,4 +1,4 @@
-# domain-modeling-basic/25-org-chart — 정답
+# domain-modeling/basic/25-org-chart — 정답
 
 ## 정답
 

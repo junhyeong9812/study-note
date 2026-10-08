@@ -1,4 +1,4 @@
-# cs/lsm-tree — LSM-Tree와 RUM Conjecture — 질문
+# systems/lsm-tree — LSM-Tree와 RUM Conjecture — 질문
 
 ## 질문
 

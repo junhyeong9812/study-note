@@ -1,4 +1,4 @@
-# foundations/agile-and-squad — 정리 (힌트)
+# engineering/agile-and-squad — 정리 (힌트)
 
 ## 해결하는 문제
 

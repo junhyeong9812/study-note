@@ -1,4 +1,4 @@
-# api-design/05-delivery-webhook — 정답
+# api-design/26-case-delivery-webhook — 정답
 
 ## 정답
 

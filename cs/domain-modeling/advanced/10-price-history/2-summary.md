@@ -1,4 +1,4 @@
-# domain-modeling-advanced/10-price-history — 정리 (힌트)
+# domain-modeling/advanced/10-price-history — 정리 (힌트)
 
 ## 해결하는 문제
 

@@ -1,4 +1,4 @@
-# domain-modeling-advanced/10-price-history — 질문
+# domain-modeling/advanced/10-price-history — 질문
 
 ## 질문
 

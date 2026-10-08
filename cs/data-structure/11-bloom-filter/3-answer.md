@@ -12,7 +12,7 @@
 
 **해시 집합이 쓰는 메모리**
 
-```
+```text
  HashSet<Integer> 에 100만 개를 담으면 무엇이 저장되는가
 
    원소 자체        Integer 객체 (헤더 12~16바이트 + int 4바이트)
@@ -48,7 +48,7 @@ void bitsPerElement() {
 }
 ```
 
-```
+```text
  비트 수 m = optimalBits(1,000,000, 0.01) = 9,585,059    (테스트 assert 값)
  바이트로  = 9,585,059 / 8 ≈ 1,198,132 바이트 ≈ 1.2MB
 
@@ -62,7 +62,7 @@ void bitsPerElement() {
 
 **무엇을 포기해서 이 차이가 생기는가**
 
-```
+```text
  블룸 필터에는 원소가 '없다'
 
    add(x) 가 하는 일 = x 의 해시로 정해지는 k 개 자리의 비트를 켠다
@@ -105,7 +105,7 @@ public boolean mightContain(T item) {
 }
 ```
 
-```
+```text
    mightContain 이 false  ->  확실히 없다.  오답이 아예 불가능하다
    mightContain 이 true   ->  아마 있다.    없는데 있다고 할 수 있다
 
@@ -152,7 +152,7 @@ public boolean mightContain(T item) {
 
 **앞단 필터가 성립하는 조건**
 
-```
+```text
  구조
 
    질의 x
@@ -205,7 +205,7 @@ public boolean mightContain(T item) {
 
 **"정확한 답이 필요할 때 왜 무너지는가"의 정확한 의미**
 
-```
+```text
  블룸 필터가 줄 수 있는 답
 
    false  -> "없다"           확정.  이 답은 증명된다
@@ -276,7 +276,7 @@ public boolean mightContain(T item) {
 
 **누락이 불가능한 증명**
 
-```
+```text
  주장 : add(x) 를 부른 적이 있으면 mightContain(x) 는 반드시 true 다
 
  증명
@@ -298,7 +298,7 @@ public boolean mightContain(T item) {
    => 누락(넣었는데 false)이 발생할 방법이 없다.  구조적으로 불가능하다
 ```
 
-```
+```text
  비트의 일생 (단조 증가)
 
    0 ---- add 로 켜짐 ----> 1 ---- (끄는 연산이 없다) ----> 1 ----> 1 ...
@@ -314,7 +314,7 @@ public boolean mightContain(T item) {
 
 **오탐은 왜 생기는가**
 
-```
+```text
  비트는 '누가 켰는지'를 기억하지 않는다
 
    원소 A 의 자리 : 3, 17, 42
@@ -337,7 +337,7 @@ public boolean mightContain(T item) {
 
 **비대칭이 한쪽으로만 향하는 이유**
 
-```
+```text
  가능한 오답 두 가지
 
    누락 : "넣었는데 없다고 한다"
@@ -415,7 +415,7 @@ static int optimalHashCount(int m, int n) {
 
 **공식의 유도**
 
-```
+```text
  기호 : m = 비트 수,  n = 넣은 원소 수,  k = 해시 개수,  p = 오탐률
 
  1단계. 특정 비트 하나가 '아직 0' 일 확률
@@ -443,7 +443,7 @@ public double expectedFalsePositiveRate() {
 //                                    k         n        m     -- 위 식 그대로다
 ```
 
-```
+```text
  3단계. p 를 최소로 만드는 k
 
      t = e^(-kn/m) 로 두면 p = (1-t)^k
@@ -473,7 +473,7 @@ this.hashCount = optimalHashCount(bits, expectedInsertions);
 
 **숫자로 확인** (테스트 `Sizing`)
 
-```
+```text
  optimalBits(1000, 0.01)
     ln(0.01) = -4.60517
     -1000 x (-4.60517) = 4605.17
@@ -528,7 +528,7 @@ void hashCount() {
 
 **왜 원소 크기와 무관한가**
 
-```
+```text
  공식에 등장하는 변수를 다시 보면
 
      m = -n ln(p) / (ln2)^2
@@ -562,7 +562,7 @@ void hashCount() {
 
 **k 를 더 키우면 왜 오탐이 오히려 늘어나는가**
 
-```
+```text
  k 가 커질 때 반대 방향으로 작용하는 두 힘
 
    힘 A (좋아짐) : 검사할 자리가 늘어난다
@@ -580,7 +580,7 @@ void hashCount() {
    -> 사이 어딘가에 최소점(골짜기)이 있다.  그 위치가 정확히 k* = (m/n) ln2
 ```
 
-```
+```text
  m/n = 9.586 (1% 설계) 일 때 k 를 바꿔 가며 p 를 계산하면 (원본에 근거 없음 -- 내 추론)
 
    k = 1  :  (1 - e^(-1/9.586))^1   = (1-0.9006)^1  ≈ 0.0994   (9.9%)
@@ -667,7 +667,7 @@ int[] indexes(T item) {
 
 **함정 1 — 음수 인덱스**
 
-```
+```text
  h1 + i * h2 는 int 연산이다
 
    h1 도 h2 도 32비트 int 이므로 음수일 수 있다
@@ -712,7 +712,7 @@ void countAndRange() {
 
 **함정 2 — 해시를 안 섞으면 몰린다**
 
-```
+```text
  자바의 Integer.hashCode() 는 '값 그대로' 다
 
     (42).hashCode() == 42
@@ -764,7 +764,7 @@ void spreadsSequentialKeys() {
 
 **함정 3 — `h2 == 0`**
 
-```
+```text
  h2 가 0 이면 어떻게 되는가
 
     idx_i = h1 + i * 0 = h1        모든 i 에 대해 같다
@@ -801,7 +801,7 @@ void notAllSame() {
 
 **왜 이 설계에서는 어떤 테스트로도 못 잡는가**
 
-```
+```text
  테스트가 통제할 수 있는 입력 = 원소 item 하나뿐이다
 
     indexes(item) 의 h2 = (int)(mix64(item.hashCode()) >>> 32)
@@ -831,7 +831,7 @@ void notAllSame() {
 
 **19번에서는 왜 잡을 수 있게 되는가**
 
-```
+```text
  README 가 그 차이를 적어 뒀다
 
    "19번에서는 해시가 seed 를 주입받아 입력이 (원소, seed) 쌍이 되고,
@@ -850,7 +850,7 @@ void notAllSame() {
 
 **"테스트가 못 잡는다"가 설계의 성질이라는 말**
 
-```
+```text
  같은 방어선, 같은 코드 한 줄
 
      if (h2 == 0) { h2 = 1; }
@@ -951,7 +951,7 @@ void overloadDegrades() {
 }
 ```
 
-```
+```text
  공식 : p = (1 - e^(-k n' / m))^k       (n' = 실제로 넣은 개수)
 
  설계 : n=1000, p=0.01  ->  m=9586, k=7
@@ -1004,7 +1004,7 @@ void plainFilterCollapses() {
 
 **왜 그 시점에 이미 늦었는가**
 
-```
+```text
  1. 조용히 나빠진다
       누락은 여전히 0이다 (3번) -> 계약은 안 깨진다
       예외도 로그도 없다
@@ -1021,7 +1021,7 @@ void plainFilterCollapses() {
 
 **05번 해시맵은 리사이즈로 복구했는데 왜 여기서는 못 하는가**
 
-```
+```text
  05-hash-map 의 리사이즈
 
     버킷이 붐비면 -> 두 배 배열을 만들고 -> '저장된 엔트리를 전부 꺼내' 다시 배치한다
@@ -1057,7 +1057,7 @@ void plainFilterCollapses() {
 
 **최선의 경우**
 
-```
+```text
  실제로 넣은 개수 n' 이 설계 용량 n 보다 '작을' 때
 
    p = (1 - e^(-k n'/m))^k 에서 n' 이 작으면 p 가 급격히 작아진다
@@ -1109,7 +1109,7 @@ void plainFilterCollapses() {
 
 **기본형이 삭제를 못 하는 이유**
 
-```
+```text
  원소 A 의 자리 : 3, 17, 42
  원소 B 의 자리 : 3, 55, 91           <- 3번 비트를 A 와 공유한다
 
@@ -1184,7 +1184,7 @@ public boolean mightContain(T item) {
 }
 ```
 
-```
+```text
  비트 대신 계수기를 둔다
 
    A 넣기 : counters[3]++ counters[17]++ counters[42]++     3번 = 1
@@ -1235,7 +1235,7 @@ void eightTimesLarger() {
 }
 ```
 
-```
+```text
  같은 자리 수 m 에
 
    기본형   : 자리 하나 = 1비트     -> m 비트
@@ -1269,7 +1269,7 @@ void saturatedSlotsAreStuck() {
 }
 ```
 
-```
+```text
  왜 255 에서 멈추는가
     계수기가 1바이트라 256 이상을 담을 수 없다
     257 번째 add 에서 올리면 오버플로로 0 이 되어버린다 -> 즉시 누락이 생긴다
@@ -1301,7 +1301,7 @@ void saturatedSlotsAreStuck() {
 
 **치르는 값 3 — 오탐인 원소를 지우면 "누락 없음"이 깨진다**
 
-```
+```text
  시나리오
 
    x 는 넣은 적이 없다. 그런데 x 의 자리 k 개가 남들 때문에 전부 켜져 있다 (오탐)
@@ -1354,7 +1354,7 @@ void falseNegativeAppears() {
 }
 ```
 
-```
+```text
  테스트가 조건을 일부러 만든다
 
    counting(200, 0.5)
@@ -1467,7 +1467,7 @@ public boolean mightContain(T item) {
 }
 ```
 
-```
+```text
  구조
 
    필터 0 : 용량 n,   오탐률 p       <- 처음 n 개가 여기
@@ -1485,7 +1485,7 @@ public boolean mightContain(T item) {
 
 **왜 용량을 2배로 키우는가**
 
-```
+```text
  이유 1 : 필터 개수를 로그로 묶기 위해
 
    용량이 n, 2n, 4n, 8n, ... 으로 커지면
@@ -1506,7 +1506,7 @@ public boolean mightContain(T item) {
 
 **왜 오탐률을 절반으로 조이는가**
 
-```
+```text
  mightContain 은 '하나라도 true 면 true' 다
    -> 필터가 늘어날수록 오탐이 날 기회도 늘어난다
    -> 필터마다 p 를 그대로 두면 전체 오탐률이 계속 올라가 1 에 수렴한다
@@ -1529,7 +1529,7 @@ public boolean mightContain(T item) {
 
 **왜 2p 를 넘지 않는가**
 
-```
+```text
  전체 오탐률 = 1 - (전부 false 라고 할 확률)
              = 1 - (1-p)(1-p/2)(1-p/4)(1-p/8)...
 
@@ -1599,7 +1599,7 @@ void notASum() {
 }
 ```
 
-```
+```text
  계산 확인
 
    필터 0 : 용량 100, p=0.5   -> 100개 담김 -> 예상 오탐률 약 0.498
@@ -1637,7 +1637,7 @@ void lookupCostsGrow() {
 }
 ```
 
-```
+```text
  기본형    : mightContain 이 k 번 비트 검사 -> O(k), 상수
  Scalable : 필터 t 개를 전부 물어본다      -> O(t x k)
 
@@ -1673,7 +1673,7 @@ void measuredStaysBounded() {
 }
 ```
 
-```
+```text
  같은 조건(초기 용량 1000, p=0.01, 원소 10만 개 = 100배 과부하)
 
    BloomFilter      실측 오탐률 > 90%    (plainFilterCollapses)
@@ -1727,7 +1727,7 @@ void measuredStaysBounded() {
 
 **확률이 두 챕터에서 맡는 역할이 다르다**
 
-```
+```text
  11-bloom-filter
      확률이 '답' 에 들어간다
         mightContain 의 true 가 확률적으로 틀린다
@@ -1750,7 +1750,7 @@ void measuredStaysBounded() {
 
 **BST가 정렬 입력에서 무너진 문제**
 
-```
+```text
  06-binary-search-tree
 
    1, 2, 3, 4, 5 를 순서대로 넣으면
@@ -1777,7 +1777,7 @@ void measuredStaysBounded() {
 
 **스킵 리스트가 회전 없이 푸는 방법**
 
-```
+```text
  정렬된 연결 리스트에 '고속도로 층' 을 얹는다
 
    층 3:  head ------------------------------> 9
@@ -1810,7 +1810,7 @@ void measuredStaysBounded() {
 
 **무작위를 주입받게 만드는 규칙**
 
-```
+```text
  나쁜 설계 : 클래스 안에서 new Random() 을 한다
 
      class SkipList<E> {
@@ -1846,7 +1846,7 @@ void measuredStaysBounded() {
 
 **5번 질문과 어떻게 이어지는가**
 
-```
+```text
  11번의 h2 == 0 방어선
 
    해시 입력 = item 하나뿐

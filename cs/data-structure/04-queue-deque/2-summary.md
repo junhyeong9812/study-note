@@ -109,7 +109,7 @@
 
 #### 구조
 
-```
+```text
 ArrayQueue — 되감지 않는 나이브 버전. head 는 오른쪽으로만 간다
 +-------------------------------------------------+
 | head = 2     (첫 원소의 인덱스)                   |
@@ -133,7 +133,7 @@ FIFO — 한쪽 끝(head)에서 빼고 반대쪽 끝(head+size)에서 넣는다.
 
 #### 동작 — 추가
 
-```
+```text
 enqueue(F) : 뒤쪽 빈 칸에 쓰기만 한다. O(1)
         +-----+-----+-----+-----+-----+-----+        +-----+-----+-----+-----+-----+-----+
         |null |null |  C  |  D  |  E  |     |   ->   |null |null |  C  |  D  |  E  |  F  |
@@ -151,7 +151,7 @@ enqueue(F) : 뒤쪽 빈 칸에 쓰기만 한다. O(1)
 
 #### 동작 — 삭제
 
-```
+```text
 [1] dequeue() : 앞 칸을 비우고 head 를 오른쪽으로 한 칸. 원소를 당기지 않으므로 O(1)
     before  idx  0     1     2     3     4
                 +-----+-----+-----+-----+-----+
@@ -269,7 +269,7 @@ enqueue(F) : 뒤쪽 빈 칸에 쓰기만 한다. O(1)
 
 #### 구조
 
-```
+```text
 CircularQueue — 배열의 끝과 처음을 이어 원처럼 쓴다. 필드는 ArrayQueue 와 똑같다
 +-------------------------------------------------+
 | head = 3     (첫 원소의 인덱스)                   |
@@ -311,7 +311,7 @@ tail 인덱스 필드를 두지 않는 이유
 
 #### 동작 — 추가
 
-```
+```text
 enqueue(F) : "다음에 쓸 칸"을 필드로 들고 있지 않고 그때그때 계산해 쓴다. O(1)
     ensureCapacity(size + 1);         <- 배열 길이가 바뀔 수 있으므로 indexOf 보다 반드시 먼저
     elements[indexOf(size)] = F;  size++;
@@ -333,7 +333,7 @@ enqueue(F) : "다음에 쓸 칸"을 필드로 들고 있지 않고 그때그때 
 
 #### 동작 — 삭제
 
-```
+```text
 dequeue() : 앞 칸을 비우고 head 를 되감아 한 칸 옮긴다. O(1)
     head = (head + 1) % elements.length;      <- 끝(4)에 닿으면 0 으로 돌아온다
 
@@ -353,7 +353,7 @@ dequeue() : 앞 칸을 비우고 head 를 되감아 한 칸 옮긴다. O(1)
 
 #### 동작 — 확장
 
-```
+```text
 꽉 참 -> 2배 확장. 여기서는 Arrays.copyOf 로 통복사하면 안 된다
     감긴 상태  capacity = 5, head = 3, size = 5
         idx    0     1     2     3     4
@@ -458,7 +458,7 @@ clear() 도 같은 이유로 indexOf(i) 를 따라 논리 순서로 지운 뒤 h
 
 #### 구조
 
-```
+```text
 ArrayDeque — CircularQueue 와 같은 (head + size) % length 구조에 "앞쪽 끝" 연산을 더한 것
     필드(elements, head, size)도 ensureCapacity 도 CircularQueue 와 동일하다.
     Queue 쪽 메서드는 위임한다:  enqueue = addLast,  dequeue = removeFirst,  peek = peekFirst
@@ -477,7 +477,7 @@ ArrayDeque — CircularQueue 와 같은 (head + size) % length 구조에 "앞쪽
 
 #### 동작 — 앞쪽 끝
 
-```
+```text
 [1] addFirst(B) : head 를 왼쪽으로 되감고 그 칸에 쓴다. O(1)
     head = (head - 1 + elements.length) % elements.length;   <- 그냥 (head-1) 이면 -1 이 된다
     elements[head] = B;  size++;
@@ -508,7 +508,7 @@ ArrayDeque — CircularQueue 와 같은 (head + size) % length 구조에 "앞쪽
 
 #### 동작 — 뒤쪽 끝
 
-```
+```text
 [3] addLast(F) : elements[indexOf(size)] = F. CircularQueue.enqueue 와 같다
 
 [4] removeLast() : head 는 움직이지 않는다. 뒤쪽 끝 칸만 비우고 size 를 줄인다. O(1)
@@ -638,7 +638,7 @@ ArrayDeque — CircularQueue 와 같은 (head + size) % length 구조에 "앞쪽
 
 #### 구조
 
-```
+```text
 LinkedDeque — 용량도 되감기도 % 연산도 없다. 양 끝 노드를 직접 들고 있다
 +---------------------------------------------------+
 | first ---+                                        |
@@ -659,7 +659,7 @@ Queue 쪽은 위임한다: enqueue = addLast, dequeue = removeFirst, peek = peek
 
 #### 동작 — 추가
 
-```
+```text
 addFirst(B) : 새 노드를 앞에 매달고 옛 first 의 prev 를 채운다. O(1)
     oldFirst = first;
     node = new Node(null, B, oldFirst);        <- prev 는 null, next 는 옛 first
@@ -687,7 +687,7 @@ addLast(Y) 는 완전 대칭 (new Node(oldLast, Y, null), last 갱신, oldLast.n
 
 #### 동작 — 삭제
 
-```
+```text
 removeLast() : last 를 한 칸 앞으로 당기고, 떼어낸 노드의 prev 만 끊는다. O(1)
     removed = last;
     value = removed.item;

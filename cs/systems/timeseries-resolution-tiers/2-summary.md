@@ -1,4 +1,4 @@
-# systems/timeseries-tiers — 정리 (힌트)
+# systems/timeseries-resolution-tiers — 정리 (힌트)
 
 ## 해결하는 문제
 

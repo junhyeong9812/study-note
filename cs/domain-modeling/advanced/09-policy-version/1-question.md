@@ -1,4 +1,4 @@
-# domain-modeling-advanced/09-policy-version — 질문
+# domain-modeling/advanced/09-policy-version — 질문
 
 ## 질문
 

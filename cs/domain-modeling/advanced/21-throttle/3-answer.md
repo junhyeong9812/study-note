@@ -1,4 +1,4 @@
-# domain-modeling-advanced/21-throttle — 정답
+# domain-modeling/advanced/21-throttle — 정답
 
 ## 정답
 

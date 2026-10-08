@@ -1,4 +1,4 @@
-# domain-modeling-advanced/26-photocard-set — 질문
+# domain-modeling/advanced/26-photocard-set — 질문
 
 ## 질문
 

@@ -1,4 +1,4 @@
-# domain-modeling-basic/02-seat-reservation — 정답
+# domain-modeling/basic/02-seat-reservation — 정답
 
 ## 정답
 

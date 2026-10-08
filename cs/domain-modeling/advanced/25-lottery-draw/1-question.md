@@ -1,4 +1,4 @@
-# domain-modeling-advanced/25-lottery-draw — 질문
+# domain-modeling/advanced/25-lottery-draw — 질문
 
 ## 질문
 

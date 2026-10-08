@@ -39,7 +39,7 @@ public static String longestCommonPrefix(String[] words) {
 
 **손으로 추적** — `["flower", "flow", "flight"]` → `"fl"`
 
-```
+```text
 트라이 (넣고 나면)
 
    (root)
@@ -65,7 +65,7 @@ public static String longestCommonPrefix(String[] words) {
 
 **두 가지 멈춤 조건**
 
-```
+```text
 while (cur.children.size() == 1 && !cur.end)
         ^^^^^^^^^^^^^^^^^^^^^^^     ^^^^^^^^
         조건 A: 갈림길이면 멈춤      조건 B: 여기서 끝나는 단어가 있으면 멈춤
@@ -79,7 +79,7 @@ while (cur.children.size() == 1 && !cur.end)
 
 **`["a", "ab"]` 의 답이 `"a"` 인 이유** (`oneIsPrefixOfOther` 테스트)
 
-```
+```text
 트라이
 
    (root)
@@ -107,7 +107,7 @@ while (cur.children.size() == 1 && !cur.end)
 
 **경계 케이스**
 
-```
+```text
  words = null  또는 길이 0     -> 앞의 if 로 "" 반환
  words = [""]                  -> insert("") 가 root.end = true 로 만든다
                                   -> 조건 B 로 루프가 한 번도 안 돈다 -> ""
@@ -193,7 +193,7 @@ private static void collectUpTo(MapTrie.Node node, StringBuilder path, List<Stri
 
 **왜 재귀 순서가 사전순인가**
 
-```
+```text
 MapTrie 의 자식 컨테이너가 TreeMap 이다 -> 키(문자) 오름차순으로 순회된다
 
  collect 의 순서
@@ -230,7 +230,7 @@ void stopsEarly() {
 }
 ```
 
-```
+```text
 접두사 "a" 에 걸린 단어 = 10만 개.  k = 10.  질의 횟수 = 10만 번
 
  (A) keysWithPrefix(p).subList(0, k)
@@ -265,7 +265,7 @@ void stopsEarly() {
 
 **왜 `Trie` 가 아니라 `MapTrie` 를 받는가**
 
-```
+```text
 Trie 인터페이스가 주는 것 (계약)
     insert / contains / startsWith / remove / size / isEmpty / clear
     keysWithPrefix(prefix)   <- 전부 모아서 List 로 준다
@@ -352,7 +352,7 @@ public static int countDistinctSubstrings(String s) {
 
 **핵심 등식 — 노드 하나 = 서로 다른 부분 문자열 하나**
 
-```
+```text
 모든 부분 문자열 s[i..j] 는
     '접미사 s[i..] 의 접두사' 다
 
@@ -390,7 +390,7 @@ if (next == null) {
 cur = next;
 ```
 
-```
+```text
 "aaa" 로 확인 (기대값 3)
 
  i=0 : "aaa"
@@ -441,7 +441,7 @@ cur = next;
 
 **왜 n 이 커지면 무너지는가**
 
-```
+```text
 노드 수 상한 = 부분 문자열의 최대 개수 = n(n+1)/2
 
   n =     100  ->     5,050
@@ -516,7 +516,7 @@ void quadraticGrowth() {
 
 **해시맵 — 해싱이 접두사 관계를 파괴한다**
 
-```
+```text
 좋은 해시 함수의 목표 = '고르게 흩뿌리기' (충돌을 줄이려면 그래야 한다)
 
     hash("car")  -> 버킷 12
@@ -538,7 +538,7 @@ void quadraticGrowth() {
 
 **BST — 순서는 살아 있지만 비교가 비싸다**
 
-```
+```text
 BST 는 사전순으로 정렬해 둔다 -> 같은 접두사를 가진 키는 연속 구간에 모인다
 
     ... "cap", "car", "card", "care", "careful", "cars", "cat", ...
@@ -582,7 +582,7 @@ BST 는 사전순으로 정렬해 둔다 -> 같은 접두사를 가진 키는 �
 
 **트라이의 핵심 한 문장**
 
-```
+```text
 "키를 통째로 저장하지 않는다. 한 글자가 간선 하나이고, 경로가 곧 키다."
 
   해시맵 : 버킷 어딘가에 "card" 라는 String 객체가 통째로 들어 있다
@@ -640,7 +640,7 @@ BST 는 사전순으로 정렬해 둔다 -> 같은 접두사를 가진 키는 �
 
 **`contains` 만 필요한 워크로드에서 트라이를 쓰면**
 
-```
+```text
  무엇을 더 내는가
 
  (1) 메모리
@@ -722,7 +722,7 @@ public boolean contains(String word) {
 
 **왜 n이 비용에 안 나타나는가**
 
-```
+```text
 비교 : 선형 탐색 / BST / 트라이에서 "card" 를 찾는 비용
 
  선형 탐색 (배열)
@@ -743,7 +743,7 @@ public boolean contains(String word) {
         트라이는 좁힐 후보가 없다. 글자가 곧 주소다
 ```
 
-```
+```text
  트라이 한 걸음의 그림
 
      현재 노드
@@ -817,7 +817,7 @@ public boolean contains(String word) {
 
 **노드의 존재 ≠ 단어의 존재**
 
-```
+```text
 "apple" 만 넣은 트라이
 
    (root)
@@ -853,7 +853,7 @@ void prefixIsNotWord() {
 
 **"app" 과 "apple" 이 둘 다 있을 때**
 
-```
+```text
 둘 다 넣으면
 
    (root) - a - p - p* - l - e*
@@ -889,7 +889,7 @@ public boolean startsWith(String prefix) {
 }
 ```
 
-```
+```text
  빈 트라이 (아무것도 안 넣음)
 
     Node root = new Node();     <- 뿌리는 생성자에서 이미 만들어진다
@@ -956,7 +956,7 @@ public int countWithPrefix(String prefix) {
 }
 ```
 
-```
+```text
  저장할 것인가 계산할 것인가
 
  (A) 계산 : 부분 트리를 훑어 end 를 센다
@@ -1018,7 +1018,7 @@ public boolean remove(String word) {
 
 **"app" 과 "apple" 이 있을 때 `remove("apple")`**
 
-```
+```text
  시작 상태 ( "app", "apple" 두 단어 )
 
    (root)          wordsBelow = 2
@@ -1072,7 +1072,7 @@ public boolean remove(String word) {
 
 **05번 tombstone 과 같은 계열인 이유**
 
-```
+```text
  05-hash-map (개방 주소법)에서의 삭제
 
    키를 지운 자리를 그냥 비우면(null) 탐사(probe) 사슬이 끊긴다
@@ -1171,7 +1171,7 @@ void backtracksProperly() {
 }
 ```
 
-```
+```text
  트라이 ( "ab", "ac", "ad" )
 
    (root) - a - b*
@@ -1217,7 +1217,7 @@ void backtracksProperly() {
 
 **왜 매번 새 문자열을 만들지 않는가**
 
-```
+```text
  (A) 버퍼 하나를 공유하며 붙였다 떼기 (impl)
 
      path 객체 = 1개
@@ -1314,7 +1314,7 @@ WordDictionary d = dict("abx", "cby");
 assertTrue(d.search(".by"), "첫 갈래에서 막혔다고 false 를 반환하면 여기서 틀린다");
 ```
 
-```
+```text
  트라이
 
    (root) - a - b - x*
@@ -1341,7 +1341,7 @@ assertTrue(d.search(".by"), "첫 갈래에서 막혔다고 false 를 반환하�
 
 **비용 분석**
 
-```
+```text
  문자 집합 크기 Σ, 패턴 길이 L, 단어 수 n
 
  (A) 최선 : 점이 하나도 없다  ("apple")
@@ -1387,7 +1387,7 @@ void fixedPrefixIsCheap() {
 
 **왜 앞쪽부터 점이면 가지치기가 안 되는가**
 
-```
+```text
  가지치기(pruning) = "이쪽에는 답이 없다"를 알아서 갈래를 버리는 것
 
  고정 글자는 가지를 Σ 분의 1 로 줄인다
@@ -1415,7 +1415,7 @@ void fixedPrefixIsCheap() {
 
 **`"....e"` 를 빠르게 하려면**
 
-```
+```text
  문제 : 끝 글자만 고정이면 앞에서 못 거른다
 
  해법 : 뒤집은 문자열로 트라이를 하나 더 만든다 (역방향 트라이)
@@ -1523,7 +1523,7 @@ static void collect(Node node, StringBuilder path, List<String> out) {
 }
 ```
 
-```
+```text
  인덱스 i 와 문자 사이의 관계
 
      i = 0  <-> 'a'
@@ -1575,7 +1575,7 @@ void allocatesTwentySixRegardlessOfChildren() {
 }
 ```
 
-```
+```text
  작은 예 : "abcdefghij" 한 단어 (10글자)
 
    노드 10개 (뿌리 제외) -- 외길이므로 노드마다 자식이 최대 하나
@@ -1639,7 +1639,7 @@ public void insert(String word) {
 }
 ```
 
-```
+```text
  변경 연산 (insert / remove) -> 예외
 
    "Apple" 을 넣어 달라는 요청은 '들어줄 수 없는 요청'이다
@@ -1684,7 +1684,7 @@ void allOrNothing() {
 }
 ```
 
-```
+```text
  검사를 '넣으면서' 하면 (틀린 구현)
 
    'a','p','p','l','e' 까지 노드를 만들고 wordsBelow 를 올린다
@@ -1741,7 +1741,7 @@ void allOrNothing() {
 
 **01\~09의 암묵적 전제**
 
-```
+```text
  01 ~ 09 가 공통으로 깔고 있던 전제
 
      "넣은 것은 전부 들어 있다"
@@ -1770,7 +1770,7 @@ void allOrNothing() {
 
 **05번 `LinkedHashMap` 과 이어지는 지점**
 
-```
+```text
  05-hash-map 에서 본 것
 
    HashMap       : 키 -> 값. 순서가 없다
@@ -1792,7 +1792,7 @@ void allOrNothing() {
     "이미 있는 두 구조(해시맵 + 이중 연결 리스트)를 겹치고 정책을 얹은 것"이다
 ```
 
-```
+```text
  왜 두 구조를 겹쳐야 하는가 (10번의 핵심)
 
    해시맵만 : "이 키가 어디 있나" O(1)  /  "가장 오래된 것이 뭔가" O(n)

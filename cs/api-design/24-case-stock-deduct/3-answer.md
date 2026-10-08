@@ -1,4 +1,4 @@
-# api-design/03-stock-deduct — 정답
+# api-design/24-case-stock-deduct — 정답
 
 ## 정답
 

@@ -1,4 +1,4 @@
-# SOLID 원칙 — 질문
+# engineering/solid-principles — SOLID 원칙 — 질문
 
 ## 질문
 

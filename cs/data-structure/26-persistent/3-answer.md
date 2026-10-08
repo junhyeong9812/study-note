@@ -28,7 +28,7 @@ for (String[] command : commands) {
 }
 ```
 
-```
+```text
 명령 4개 : put a 1 / put b 2 / remove a / put b 9
 
   시점 0    {}                  복사본 크기 0
@@ -74,7 +74,7 @@ Map<String, Integer> snapshotAt(int t) {
 }
 ```
 
-```
+```text
 보관하는 것 : 명령 m 개뿐
 
   조회 요청 : "시점 3 을 보여줘"
@@ -136,7 +136,7 @@ public static List<PersistentMap<String, Integer>> replay(List<String[]> command
 }
 ```
 
-```
+```text
 명령 4개 : put a 1 / put b 2 / remove a / put b 9
 
   snapshots  [0]      [1]       [2]        [3]       [4]
@@ -251,7 +251,7 @@ long countByValue(Node a, Node b) {
 }
 ```
 
-```
+```text
 따로 지은 두 트리 a, b (내용도 모양도 완전히 같다)
 
    a:        50              b:        50          두 트리는 노드를 하나도 공유하지 않는다
@@ -291,7 +291,7 @@ long count(Node node) {
 }
 ```
 
-```
+```text
 before (1023개) 를 전부 집합에 담는다   -> 집합 크기 1023
 
 after 를 훑는다 (1024개 전부 방문)
@@ -339,7 +339,7 @@ private static <K, V> long countShared(
 }
 ```
 
-```
+```text
 1023개짜리 균형 트리에 키 하나를 넣은 뒤 (README·테스트의 그 수치)
 
   after 를 훑는다. 방문하는 것은 "새로 만든 경로 + 그 옆가지의 뿌리" 뿐이다
@@ -507,7 +507,7 @@ private static <K, V> long countShared(
   즉 이 구조가 만드는 노드 수는 두 경우 모두 `11 x 버전 수` 로 똑같다.\
   바뀌는 것은 "그 11개 중 몇 개가 실제로 쓸모가 있느냐"뿐이고, 그 답은 자료구조가 아니라 워크로드가 정한다.
 
-```
+```text
 같은 1023개 맵 · 같은 put 1000번 / 100번. 영속이 만드는 노드 수는 언제나 버전당 11개다.
 
   워크로드 A : 버전이 필요 없다 (마지막 상태만 본다)
@@ -579,7 +579,7 @@ private Node<K, V> put(Node<K, V> node, K key, V value, int[] created) {
 }
 ```
 
-```
+```text
 put(45, "x") : 높이 3짜리 트리. 새로 만든 것은 * 표시.
 
   전 버전 (v1)                            새 경로 + 공유 부분트리 (v2)
@@ -673,7 +673,7 @@ put(45, "x") : 높이 3짜리 트리. 새로 만든 것은 * 표시.
   테스트가 그 값을 그대로 단언한다 — `assertEquals(500_500L, created, "n(n+1)/2 개를 만들었다")`.\
   균형이 잡혀 있었다면 같은 크기에서 `put` 하나가 11개다(같은 테스트가 `balanced(1000)` 으로 대조한다) — 약 91배 차이다.
 
-```
+```text
 정렬 입력 0, 1, 2, ..., 999 를 순서대로 넣는다
 
   put(0)   (0)                                    새 노드 1 개
@@ -741,7 +741,7 @@ put(45, "x") : 높이 3짜리 트리. 새로 만든 것은 * 표시.
   대신 목록은 인덱스 접근이 O(i), 키 조회가 O(n) 이다 — `ConsList.get(index)` 가 `tail` 을 i 번 타는 반복문이다.\
   트리는 어느 키든 O(높이) 에 찾고 `keys()` 가 정렬된 순서로 나온다.
 
-```
+```text
 ConsList.prepend : 셀 1 개만 새로 만든다. 나머지는 옛 목록 그 자체를 가리킨다
 
   v1 -->  (B) --> (C) --> EMPTY
@@ -869,7 +869,7 @@ append(뒤에 붙이기) 가 있다면 : n 개를 전부 새로 만들어야 한
   둘을 합치면 하나의 메커니즘이 된다 — 부분트리의 이름이 곧 내용 해시이므로, "이 디렉터리를 공유한다"와 "이 디렉터리가 그대로다"가 **같은 문장**이 된다.\
   README 가 "git 이 둘을 한꺼번에 쓰는 물건입니다"라고만 적었고, 아래의 git 내부 구조(blob·tree·commit 객체가 전부 내용 해시로 주소 지정된다는 점) 설명은 여기서 덧붙인 것이다(원본에 근거 없음 — 내 추론).
 
-```
+```text
 26번 : 참조로 공유                      27번 : 해시로 요약
 
   v1.root ---+                           v1.root  hash = a3f...

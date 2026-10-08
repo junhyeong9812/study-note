@@ -1,4 +1,4 @@
-# domain-modeling-basic/09-order-state — 정답
+# domain-modeling/basic/09-order-state — 정답
 
 ## 정답
 

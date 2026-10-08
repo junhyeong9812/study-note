@@ -38,7 +38,7 @@ public static double hitRatio(int capacity, int[] accesses) {
 
 **손으로 추적** — `hitRatio(2, {1, 2, 1, 3, 1, 2})` → `2/6` (테스트 `classic`)
 
-```
+```text
 용량 2. 줄은 [오래됨 ... 최근] 순서
 
  접근 1 : get(1) -> null (miss 1)      put(1)          줄 [1]
@@ -58,7 +58,7 @@ public static double hitRatio(int capacity, int[] accesses) {
 
 **왜 직접 세지 않고 `hits()` 에 맡기는가**
 
-```
+```text
  (A) 직접 세기
 
      int hits = 0;
@@ -95,7 +95,7 @@ return (double) cache.hits() / accesses.length;
 //     ^^^^^^^^ 이 캐스팅이 없으면
 ```
 
-```
+```text
  cache.hits()      -> long   (2)
  accesses.length   -> int    (6)
 
@@ -211,7 +211,7 @@ public static double optimalHitRatio(int capacity, int[] accesses) {
 
 **핵심 발상**
 
-```
+```text
  축출 후보가 여럿일 때 누구를 버리는 것이 최선인가?
 
    "앞으로 가장 나중에 쓰일 것"을 버린다
@@ -237,7 +237,7 @@ for (int i = accesses.length - 1; i >= 0; i--) {
 }
 ```
 
-```
+```text
  accesses = [1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5]
  인덱스      0  1  2  3  4  5  6  7  8  9 10 11
 
@@ -272,7 +272,7 @@ for (int i = accesses.length - 1; i >= 0; i--) {
 
 **손으로 추적** — `optimalHitRatio(2, {1, 2, 3, 1, 2, 3})` → `2/6` (테스트 `beatsLruOnScan`)
 
-```
+```text
  nextUse : 1=[0,3]  2=[1,4]  3=[2,5]   용량 2
 
  i=0 key=1 : pollFirst -> 1=[3]
@@ -303,7 +303,7 @@ for (int i = accesses.length - 1; i >= 0; i--) {
 
 **쓸 수 없는 알고리즘을 구현하는 이유 — 상한선**
 
-```
+```text
  "LRU 적중률이 60% 다" 만으로는 아무 판단도 못 한다
 
    최적이 95% 라면  -> 정책이 나쁘다. LFU·ARC·스캔 저항 같은 것을 검토할 여지가 크다
@@ -399,7 +399,7 @@ public static List<Integer> deduplicateStream(int capacity, int[] stream) {
 
 **손으로 추적** — `deduplicateStream(3, {1, 2, 3, 1, 4, 1, 2})` → `[1, 2, 3, 4, 2]`
 
-```
+```text
  용량 3. 줄은 [오래됨 ... 최근]
 
  x=1 : get(1)=null  -> 처음  out=[1]           put(1)   줄 [1]
@@ -418,7 +418,7 @@ public static List<Integer> deduplicateStream(int capacity, int[] stream) {
 
 **`containsKey` 를 쓰면 결과가 달라진다**
 
-```
+```text
  계약 (Cache.java)
      get(key)         : 값을 꺼낸다. 꺼내는 순간 그 키가 '가장 최근'으로 올라간다
      containsKey(key) : 있는지만 본다. 순서를 바꾸지 않고 통계에도 안 잡힌다
@@ -513,7 +513,7 @@ void exactlyAtCapacity() {
 
 **필요한 연산 두 가지**
 
-```
+```text
  캐시가 매 접근마다 답해야 하는 것
 
    (1) "이 키가 캐시에 있나? 있으면 값은?"       -> 조회
@@ -525,7 +525,7 @@ void exactlyAtCapacity() {
 
 **해시맵만으로는**
 
-```
+```text
  HashMap<K, V>
 
    key -> 해시 -> 버킷 번호     내용으로 찾기가 O(1)
@@ -542,7 +542,7 @@ void exactlyAtCapacity() {
 
 **이중 연결 리스트만으로는**
 
-```
+```text
  DoublyLinkedList<K>
 
    [오래됨] A <-> B <-> C <-> D [최근]
@@ -564,7 +564,7 @@ void exactlyAtCapacity() {
 
 **왜 겹치면 정확히 메워지는가**
 
-```
+```text
  두 구조가 못 하는 것이 서로 '정반대'다
 
    해시맵     : 내용 -> 위치     (O(1))   /  순서 -> 위치  (없음)
@@ -643,7 +643,7 @@ final Node<K, V> tail = new Node<>();
 
 **"가정이지 정리가 아니다"의 뜻**
 
-```
+```text
  정리(theorem) : 전제가 참이면 반드시 참이다. 반례가 존재할 수 없다
                  예) "완전 이진 트리의 높이는 floor(log2 n) 이다"
                      -- 이것은 구조에서 증명된다
@@ -763,7 +763,7 @@ private void linkLast(Node<K, V> node) {
 
 **`get` 의 세 단계가 전부 O(1)**
 
-```
+```text
  (1) index.get(key)      -> 해시 계산 + 버킷 접근        O(1) 평균
  (2) unlink(node)        -> 링크 4개 대입                O(1)
  (3) linkLast(node)      -> 링크 4개 대입                O(1)
@@ -815,7 +815,7 @@ if (index.size() == capacity) {
 
 **맵의 값이 `V` 가 아니라 `Node` 여야 하는 이유**
 
-```
+```text
  (A) Map<K, V> 를 쓴다면
 
      get(key) -> 값은 O(1)에 나온다
@@ -848,7 +848,7 @@ static final class Node<K, V> {
 
 **02번의 "노드를 알면 O(1), 인덱스로 찾으면 O(n)"과 같은 이야기인 이유**
 
-```
+```text
  02-linked-list 에서 배운 것
 
    list.remove(index)      -> index 번째 노드를 찾아가야 한다      O(n)
@@ -919,7 +919,7 @@ public LRUCache(int capacity) {
 }
 ```
 
-```
+```text
  빈 캐시                    [head] <-> [tail]          <- 둘이 서로를 가리킨다
 
  원소 하나                  [head] <-> A <-> [tail]
@@ -937,7 +937,7 @@ public LRUCache(int capacity) {
 
 **센티넬이 없애 주는 검사**
 
-```
+```text
  센티넬이 없다면 (head/tail 이 '첫 노드/마지막 노드'를 직접 가리키는 방식)
 
  unlink(node) 에 붙어야 하는 것
@@ -998,7 +998,7 @@ public void clear() {
 
 **02번에서는 왜 안 썼고 여기서는 왜 값을 하는가**
 
-```
+```text
  02-linked-list 의 연산       : add(index), remove(index), get(index) ...
    -> 인덱스로 접근한다. 매번 앞에서부터 훑어 간다
    -> 경계 검사(빈 리스트, 첫/마지막)가 '훑는 로직 안'에 어차피 섞인다
@@ -1109,7 +1109,7 @@ public V remove(K key) {
 
 **한쪽만 지우면**
 
-```
+```text
  (A) 줄에서만 떼고 맵에 남기면
 
      index : {1 -> N1, 2 -> N2, 3 -> N3}        <- 3개
@@ -1157,7 +1157,7 @@ public V remove(K key) {
 
 **왜 이 버그는 조용한가**
 
-```
+```text
  1. 예외가 안 난다 (대부분의 경우)
       맵도 줄도 각자 '자기 안에서는' 멀쩡하다
       맵을 읽는 연산은 맵의 답을, 줄을 읽는 연산은 줄의 답을 준다
@@ -1308,7 +1308,7 @@ public V get(K key) {
 }
 ```
 
-```
+```text
  이름은 get 인데 실제로 바뀌는 것
 
    통계 카운터 (hits 또는 misses)
@@ -1342,7 +1342,7 @@ public V get(K key) {
 }
 ```
 
-```
+```text
  ReadWriteLock 의 전제
    읽기끼리는 서로 방해하지 않는다 -> 여러 스레드가 동시에 통과시켜도 안전하다
    그 전제는 '읽기가 상태를 안 바꾼다' 위에 서 있다
@@ -1390,7 +1390,7 @@ public V get(K key) {
 
 **왜 손상이 다음 순회에서야 드러나는가**
 
-```
+```text
  손상이 일어난 순간
    linkLast 가 끝난다. 예외도 안 난다. 반환값(node.value)도 정상이다
    -> get 을 부른 쪽은 아무것도 눈치채지 못한다
@@ -1452,7 +1452,7 @@ public put(K key, V value) {
 }
 ```
 
-```
+```text
  LRUCache.put 은 null 키/값에 IllegalArgumentException 을 던진다
 
    lock.lock()          -> 잠금 획득
@@ -1558,7 +1558,7 @@ void sequentialScanDefeatsLru() {
 
 **왜 정확히 0%인가**
 
-```
+```text
  용량 3, 접근 순서 0,1,2,3,0,1,2,3,0,1,2,3, ...
 
  줄은 [오래됨 ... 최근]
@@ -1586,7 +1586,7 @@ void sequentialScanDefeatsLru() {
    -> 우연히 맞는 경우조차 없다
 ```
 
-```
+```text
  그림으로
 
    순환 순서 :  0 -> 1 -> 2 -> 3 -> 0 -> 1 -> ...
@@ -1607,7 +1607,7 @@ void sequentialScanDefeatsLru() {
 
 **최적(Belady)이 66%를 내는 이유**
 
-```
+```text
  같은 입력에서 OPT 를 돌려보면
 
  i=0  key 0 : miss  {0}
@@ -1646,7 +1646,7 @@ void sequentialScanDefeatsLru() {
 
 **버그가 아니라 무엇인가**
 
-```
+```text
  버그란 : 명세와 구현이 다른 것
           이 코드는 "가장 오래 안 쓴 것을 버린다"를 정확히 하고 있다 -> 버그가 아니다
 
@@ -1715,7 +1715,7 @@ this.map = new LinkedHashMap<>(16, 0.75f, true) {
 };
 ```
 
-```
+```text
  생성자 인자 세 개
    16     초기 버킷 수
    0.75f  적재율(load factor)
@@ -1726,7 +1726,7 @@ this.map = new LinkedHashMap<>(16, 0.75f, true) {
 
 **`accessOrder = true` 가 켜는 것**
 
-```
+```text
  LinkedHashMap 은 HashMap 에 이중 연결 리스트를 얹은 것이다 (구조가 LRUCache 와 같다)
  그 줄의 '순서 규칙'을 생성자 인자가 정한다
 
@@ -1761,7 +1761,7 @@ void accessOrderMatters() {
 
 **`removeEldestEntry` 가 켜는 것**
 
-```
+```text
  LinkedHashMap 은 put 이 끝난 뒤에 이 메서드를 부른다
    true 를 반환하면 -> 줄 맨 앞(가장 오래된 엔트리)을 지운다
    false 를 반환하면 -> 아무 일도 안 한다
@@ -1777,7 +1777,7 @@ void accessOrderMatters() {
 
 **`>` 와 `>=` 의 차이**
 
-```
+```text
  호출 시점이 중요하다 : removeEldestEntry 는 put 이 '끝난 뒤' 불린다
  따라서 그 시점의 size() 는 방금 넣은 것까지 포함한 값이다
 
@@ -1837,7 +1837,7 @@ if (index.size() == capacity) {      // put '전에' 검사한다
 
 **직접 만드는 이유**
 
-```
+```text
  1. 안을 알아야 밖을 쓸 수 있다
       removeEldestEntry 의 부호를 정하려면 '언제 불리는지'를 알아야 한다
       accessOrder 가 무엇을 하는지 알려면 '안에 줄이 있다'는 것을 알아야 한다
@@ -1923,7 +1923,7 @@ public ThreadSafeLRUCache(Cache<K, V> delegate) {
 
 **메모리를 줄이는 세 단계**
 
-```
+```text
  09-trie 까지 : 전부 담는다
      "넣은 것은 전부, 정확하게 들어 있다"
      메모리 = 데이터 크기에 비례
@@ -1949,7 +1949,7 @@ public ThreadSafeLRUCache(Cache<K, V> delegate) {
 
 **"일부러 잊는 것"과 "틀릴 수도 있는 것"의 연결**
 
-```
+```text
  공통점 : 둘 다 '완전함'을 포기해 메모리를 상수로 묶는다
 
    LRU   : 완전한 '보관'을 포기한다   -> 없는 것은 정말 없다 (거짓말은 안 한다)
@@ -1973,7 +1973,7 @@ public ThreadSafeLRUCache(Cache<K, V> delegate) {
    비싼 조회를 '확실히 필요 없을 때' 건너뛰게 해 준다
 ```
 
-```
+```text
  같은 문제(중복 제거)를 세 챕터가 어떻게 푸는가
 
    09 트라이/해시셋 : 본 것을 전부 저장 -> 정확하다.  메모리 O(서로 다른 키 수)

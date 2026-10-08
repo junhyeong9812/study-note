@@ -1,4 +1,4 @@
-# cs/kafka-why-fast — Kafka가 빠른 이유 — 정리 (힌트)
+# systems/kafka-why-fast — Kafka가 빠른 이유 — 정리 (힌트)
 
 ## 해결하는 문제
 

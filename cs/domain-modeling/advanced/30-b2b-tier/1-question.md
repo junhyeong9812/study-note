@@ -1,4 +1,4 @@
-# domain-modeling-advanced/30-b2b-tier — 질문
+# domain-modeling/advanced/30-b2b-tier — 질문
 
 ## 질문
 

@@ -1,4 +1,4 @@
-# domain-modeling-basic/03-waiting-queue — 정답
+# domain-modeling/basic/03-waiting-queue — 정답
 
 ## 정답
 

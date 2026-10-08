@@ -1,4 +1,4 @@
-# api-design/04-settlement-report — 질문
+# api-design/25-case-settlement-report — 질문
 
 ## 질문
 

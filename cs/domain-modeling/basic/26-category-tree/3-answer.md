@@ -1,4 +1,4 @@
-# domain-modeling-basic/26-category-tree — 정답
+# domain-modeling/basic/26-category-tree — 정답
 
 ## 정답
 

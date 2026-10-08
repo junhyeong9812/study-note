@@ -1,4 +1,4 @@
-# 도메인 로직 vs 애플리케이션 로직 — 질문
+# domain-modeling/domain-vs-application-logic — 도메인 로직 vs 애플리케이션 로직 — 질문
 
 ## 질문
 

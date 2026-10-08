@@ -33,7 +33,7 @@ public static List<Activity> select(List<Activity> activities, CountedChoices ch
 // selectByStart 는 정렬 기준만 a.start() 비교로 바꾼 것 — 틀리는 반례용
 ```
 
-```
+```text
 끝이 이른 것부터:                시작이 이른 것부터 (틀림):
 
 |--A--|                          |---------긴 활동---------|

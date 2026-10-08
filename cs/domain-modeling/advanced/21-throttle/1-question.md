@@ -1,4 +1,4 @@
-# domain-modeling-advanced/21-throttle — 질문
+# domain-modeling/advanced/21-throttle — 질문
 
 ## 질문
 

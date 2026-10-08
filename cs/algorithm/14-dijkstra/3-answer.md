@@ -53,7 +53,7 @@ public static long[] distances(CountedGraph g, int start, CountedHeap heap) {
 }
 ```
 
-```
+```text
 처리 과정 : 0->1(2) 0->2(5) 1->3(1) 3->5(9) 2->4(2) 4->5(1)
 
         0
@@ -200,7 +200,7 @@ public static long[] distances(CountedGraph g, int start, long[] scans) {
 }
 ```
 
-```
+```text
 두 판의 차이는 "다음 정점 고르기" 한 곳뿐이다
 
   힙 판    : heap.pop()            -> log V
@@ -270,7 +270,7 @@ public static long[] distances(CountedGraph g, int start, long[] scans) {
 
 ### 3. 측정 (README "측정이 알려준 것")
 
-```
+```text
 V=300 완전 그래프 (E = 89,700) 에서 세어본 것
 
   간선 조회   89,700   ############################################
@@ -352,7 +352,7 @@ V=300 완전 그래프 (E = 89,700) 에서 세어본 것
 
 ### 5. 파생 질문 (서머리 기반)
 
-```
+```text
 11 BFS  -> 14 다익스트라 -> 20 A*
 
   BFS        : 큐(넣은 순서)        모든 간선 비용이 같을 때

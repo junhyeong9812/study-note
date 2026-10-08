@@ -1,4 +1,4 @@
-# domain-modeling-advanced/04-refund — 정답
+# domain-modeling/advanced/04-refund — 정답
 
 ## 정답
 

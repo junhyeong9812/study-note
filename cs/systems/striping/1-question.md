@@ -1,4 +1,4 @@
-# cs/striping — Striping (BookKeeper) — 질문
+# systems/striping — Striping (BookKeeper) — 질문
 
 ## 질문
 

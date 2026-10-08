@@ -1,4 +1,4 @@
-# domain-modeling-basic/12-game-buff — 질문
+# domain-modeling/basic/12-game-buff — 질문
 
 ## 질문
 

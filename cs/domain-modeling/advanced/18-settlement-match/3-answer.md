@@ -1,4 +1,4 @@
-# domain-modeling-advanced/18-settlement-match — 정답
+# domain-modeling/advanced/18-settlement-match — 정답
 
 ## 정답
 

@@ -1,4 +1,4 @@
-# ClickHouse MergeTree 기초 — 정답
+# systems/clickhouse-mergetree — ClickHouse MergeTree 기초 — 정답
 
 ## 답변
 

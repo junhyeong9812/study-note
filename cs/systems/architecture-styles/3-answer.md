@@ -1,4 +1,4 @@
-# 아키텍처 스타일과 패턴 — 정답
+# systems/architecture-styles — 아키텍처 스타일과 패턴 — 정답
 
 ---
 

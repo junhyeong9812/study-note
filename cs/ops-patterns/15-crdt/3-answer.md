@@ -35,7 +35,7 @@ public NaiveCounter merge(NaiveCounter other) {
 
 - **그물에서 A의 1이 B에서 2?** →
 
-```
+```text
       A(1)
      /    \
     B       C          A 의 상태 1 이 B 로도 직접 오고, C 를 거쳐서도 온다
@@ -168,7 +168,7 @@ public OrSet<T> merge(OrSet<T> other) {   // TODO 8
 }
 ```
 
-```
+```text
 관찰한 것만 지운다 : 동시 넣기/빼기에서 넣기가 이기는 이유
 
   A 가 사과를 넣는다        added:   사과 {A:1}

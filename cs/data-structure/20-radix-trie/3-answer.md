@@ -1953,7 +1953,7 @@ static int verify(RadixTrie.Node<String> node, String path, boolean isRoot) {
 
 `/home/jun/project/myway/data-structure/21-suffix-array/README.md`
 
-```
+```text
 접미사를 사전순으로 정렬하되 남기는 것은 **시작 위치 숫자뿐**입니다.
 문자열은 하나도 새로 만들지 않습니다. O(n) 공간의 정체입니다.
 ```

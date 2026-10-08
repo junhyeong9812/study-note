@@ -1,4 +1,4 @@
-# domain-modeling-basic/13-inventory — 정답
+# domain-modeling/basic/13-inventory — 정답
 
 ## 정답
 

@@ -1,4 +1,4 @@
-# domain-modeling-basic/14-points — 정답
+# domain-modeling/basic/14-points — 정답
 
 ## 정답
 

@@ -1,4 +1,4 @@
-# domain-modeling-advanced/27-ab-assign — 정답
+# domain-modeling/advanced/27-ab-assign — 정답
 
 ## 정답
 

@@ -1,4 +1,4 @@
-# api-design/04-settlement-report — 정리 (힌트)
+# api-design/25-case-settlement-report — 정리 (힌트)
 
 ## 해결하는 문제
 

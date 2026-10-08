@@ -1,4 +1,4 @@
-# domain-modeling-basic/16-promo-code — 질문
+# domain-modeling/basic/16-promo-code — 질문
 
 ## 질문
 

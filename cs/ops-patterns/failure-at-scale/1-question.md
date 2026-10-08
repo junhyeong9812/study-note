@@ -1,4 +1,4 @@
-# 대규모에서 달라지는 것 — 질문
+# ops-patterns/failure-at-scale — 대규모에서 달라지는 것 — 질문
 
 ## 질문
 

@@ -100,7 +100,7 @@ k1: A->D  k2: B->A  k3: C->B  ...        B 가 죽으면 k 만 C 로 밀린다
 
 #### 구조
 
-```
+```text
 ModuloSharding
 +------------------------------------------------------------+
 | nodes : List<String> = ArrayList   (들고 있는 것은 이름 목록뿐) |
@@ -122,7 +122,7 @@ ModuloSharding
   - *모듈로(%)*: 나눗셈의 나머지. 키의 해시값을 노드 수로 나눈 나머지가 담당 노드 번호가 된다.
   - *해시(bucketHash)*: 문자열을 큰 숫자 하나로 바꾸는 함수. 같은 입력이면 늘 같은 숫자.
 
-```
+```text
 n 이 3 -> 4 로 바뀐다 = 나눗셈의 분모가 바뀐다 = 모든 몫이 바뀐다
 
   before  n = 3                       after  n = 4  (D 를 추가)
@@ -179,7 +179,7 @@ n 이 3 -> 4 로 바뀐다 = 나눗셈의 분모가 바뀐다 = 모든 몫이 �
 
 #### 구조
 
-```
+```text
 ConsistentHashRing
 +---------------------------------------------------------------------+
 | DEFAULT_VIRTUAL_NODES = 100  (노드 하나를 원 위 몇 곳에 올릴지의 기본값) |
@@ -223,7 +223,7 @@ ring 안의 실제 모습 (TreeMap - 자리 오름차순 정렬 그 자체가 �
   - *TreeMap*: 자리(숫자)를 항상 정렬된 순서로 보관하는 자바의 맵. 링 그 자체다.
   - *ceilingEntry(x)*: 그 맵에서 "x 이상 중 가장 작은 항목"을 찾는 연산 = 시계방향으로 처음 만나는 자리.
 
-```
+```text
 getNode(key) : ring.ceilingEntry(hash.position(key)) 가 있으면 그 값,
                null 이면 ring.firstEntry() 의 값  (한 바퀴 되감기)
 
@@ -260,7 +260,7 @@ getNode(key) : ring.ceilingEntry(hash.position(key)) 가 있으면 그 값,
 
   - *구간*: 원 위에서 어떤 자리와 그 반시계(왼쪽) 이웃 자리 사이의 범위. 그 자리의 노드가 그 구간의 키를 전부 맡는다.
 
-```
+```text
 [1] addNode("D") -> addSlots("D", virtualNodes)
       i = 0 .. count-1 : ring.put(hash.position(virtualName("D", i)), "D")
       마지막에 placed.put("D", count)      <- virtualNodes 가 아니라 count 를 넣어야 한다
@@ -306,7 +306,7 @@ getNode(key) : ring.ceilingEntry(hash.position(key)) 가 있으면 그 값,
 
   - *가상 노드(virtual node)*: 진짜 서버는 하나인데 원 위에는 여러 점으로 존재하는 것. 이름 끝에 `#번호`를 붙여 만든다.
 
-```
+```text
 virtualName(node, i) = node + "#" + i        i 는 0 부터 count-1 까지
   이 규칙이 계약이다. removeNode 가 같은 이름을 다시 만들어 자리를 찾기 때문이다.
   addNode 는 count = virtualNodes 로 부른다 (기본 DEFAULT_VIRTUAL_NODES = 100)
@@ -401,7 +401,7 @@ virtualName(node, i) = node + "#" + i        i 는 0 부터 count-1 까지
 
   - *가중치(weight)*: 그 노드가 받을 몫의 배수. 가상 노드 수에 곱해져서 점 개수가 된다.
 
-```
+```text
 부모 ConsistentHashRing 과 다른 것은 addNode(node, weight) 한 줄뿐이다.
 링 구조도(TreeMap), 배정 규칙도(시계방향 첫 노드) 그대로다.
 
@@ -459,7 +459,7 @@ virtualNodes = 3 일 때
   - *LCG(선형 합동 생성기)*: `key = key * 큰수 + 1`만으로 다음 난수를 만드는 생성기. 같은 키면 늘 같은 난수열 — 그래서 아무것도 저장할 필요가 없다.
   - *논리 시프트(`>>>`)*: 비트를 오른쪽으로 밀며 빈자리를 0으로 채우는 연산. `>>`를 쓰면 음수가 유지되어 무한 루프가 된다.
 
-```
+```text
 링도 자리도 가상 노드도 없다. 들고 있는 것은 nodes 목록 하나뿐이고 slotCount() 는 늘 0 이다.
 
   ConsistentHashRing : TreeMap 에 자리 (노드 수 x virtualNodes) 개  -> 메모리 O(n*v)

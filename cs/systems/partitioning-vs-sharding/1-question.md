@@ -1,4 +1,4 @@
-# cs/partitioning-vs-sharding — Partitioning vs Sharding — 질문
+# systems/partitioning-vs-sharding — Partitioning vs Sharding — 질문
 
 ## 질문
 

@@ -1,4 +1,4 @@
-# domain-modeling-basic/12-game-buff — 정답
+# domain-modeling/basic/12-game-buff — 정답
 
 ## 정답
 

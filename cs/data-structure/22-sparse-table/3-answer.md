@@ -21,7 +21,7 @@ for (int i = 0; i < out.length; i++) {
 return out;
 ```
 
-```
+```text
 처리 과정 : values = [1, 3, -1, -3, 5, 3, 6, 7], k = 3
 
   i=0   [ 1   3  -1]  -3   5   3   6   7     세 칸을 전부 비교 -> -1
@@ -60,7 +60,7 @@ for (int i = 0; i < n; i++) {
 }
 ```
 
-```
+```text
 처리 과정 : 덱에는 "아직 최솟값이 될 수 있는 후보"의 인덱스만 값 오름차순으로 남는다
 
   i=2  창 [1, 3, -1]      -1 이 들어오며 1 과 3 을 뒤에서 몰아냈다
@@ -121,7 +121,7 @@ public static int[] slidingWindowMin(int[] values, int k) {
 }
 ```
 
-```
+```text
 처리 과정 : 표를 한 번 짓고, 창마다 query 를 한 번씩만 부른다
 
   1단계 (루프 밖)  MinSparseTable 을 한 번 짓는다      O(n log n)
@@ -219,7 +219,7 @@ for (int i = 0; i < queries.length; i++) {
 }
 ```
 
-```
+```text
 처리 과정 : values = [12, 18, 24, 9, 27, 6, 15, 45], query = [2, 6]
 
   idx   0    1    2    3    4    5    6    7
@@ -245,7 +245,7 @@ for (int i = 0; i < queries.length; i++) {
 
 **접근 2 — 세그먼트 트리(13번)** (갱신도 되는 대신 질의가 O(log n))
 
-```
+```text
 처리 과정 : 구간을 "정확히 덮는" 노드들을 모아 접는다 - 겹치면 안 되므로 조각이 여러 개다
 
               [0..7]
@@ -297,7 +297,7 @@ public static long[] rangeGcdQueries(int[] values, int[][] queries) {
 }
 ```
 
-```
+```text
 처리 과정 : 표 한 번 -> 질의 q 번, 각 combine 1회
 
   전처리 (한 번)                        질의 (q 번)
@@ -327,7 +327,7 @@ public static long[] rangeGcdQueries(int[] values, int[][] queries) {
 
 **접근 4(변종) — 전처리를 루프 안에 둔 경우** (컴파일도 되고 답도 맞는데 못 쓴다)
 
-```
+```text
 질의마다 표를 새로 짓는 그림
 
   q=1 : [표 짓기 40,974] + [질의 1]
@@ -418,7 +418,7 @@ public static long[] rangeGcdQueries(int[] values, int[][] queries) {
   갱신이 없고 질의도 적으면 전처리를 못 갚으므로 세그먼트 트리나 그냥 훑기가 낫다.\
   연산이 합처럼 역연산을 가지면 17번이 같은 O(log n) 을 훨씬 작은 상수와 코드로 해낸다.
 
-```
+```text
 세 구조의 자리 (README 표를 코드로 확인한 것)
 
           조회      갱신       전처리      메모리        요구 조건
@@ -452,7 +452,7 @@ public static long[] rangeGcdQueries(int[] values, int[][] queries) {
   두 조각 모두 `2^k <= len` 이라 `[from, to]` 를 벗어나지도 않는다 — **밖의 값이 섞이지도 않는다.**\
   `2^k > len/2` 이므로 각 조각이 구간의 절반을 넘게 덮고, 그래서 둘이면 충분하다.
 
-```
+```text
 왜 두 조각이면 덮이는가 (len = 6, k = log[6] = 2, 2^k = 4)
 
   idx     0    1    2    3    4    5    6    7
@@ -524,7 +524,7 @@ public static long[] rangeGcdQueries(int[] values, int[][] queries) {
 > **역원(inverse)** — `a` 를 되돌리는 값이 있어 `prefix(r) - prefix(l-1)` 처럼 빼서 가운데를 얻을 수 있는 성질.\
 > 예: 합에는 뺄셈이 있어 펜윅 트리가 쓰지만, min 이나 gcd 에는 그런 뺄셈이 없다.
 
-```
+```text
 세 조건의 포함 관계 (원본 README 의 표를 코드로 확인한 것)
 
   연산       결합법칙(13)  역연산(17)  멱등성(22)
@@ -561,7 +561,7 @@ public static long[] rangeGcdQueries(int[] values, int[][] queries) {
   A: `query(0,0)` 은 **2**, `query(1,2)` 는 **10** 이다(`IdempotenceTest.everyRangeOfThree`).\
   손계산으로 따라가면 이렇다.
 
-```
+```text
 합으로 만든 표 : values = [1, 2, 3], n = 3
    log[2] = 1, log[3] = 1  ->  levels = log[3] + 1 = 2
 
@@ -631,7 +631,7 @@ for (int level = 0; level < levels; level++) {
 }
 ```
 
-```
+```text
 query(1, 6) 의 그림 (values = [5,2,9,1,7,4,6,3], 합)
 
   1 = 001, 6 = 110  ->  1 ^ 6 = 111  ->  최상위 1 은 2번 자리  ->  level = 2
@@ -747,7 +747,7 @@ public long query(int from, int to) {
   즉 같은 배열에 2,300번 넘게 물어보기 시작해야 희소 테이블이 본전을 넘는다.\
   q 가 그보다 작으면 희소 테이블은 **더 많은 메모리를 쓰고 더 느린** 구조다.
 
-```
+```text
 손익분기 그림 (n = 4096, 위 테스트가 잰 값으로 그린 것)
 
   combine 호출 수
@@ -814,7 +814,7 @@ public long query(int from, int to) {
   인자 쪽은 새 연산에 클래스가 필요 없고 테스트에서 임의의 연산을 꽂아 넣을 수 있다 — `DisjointSparseTableTest` 가 곱, min, 비가환 연산을 전부 람다로 넣는 것이 그 이득이다.\
   13번 README 는 같은 대비가 05번 `LinkedHashMap`(상속)과 12번 `SkipListSet`(포함)에도 있다고 이어 붙인다.
 
-```
+```text
 같은 뼈대, 다른 결정 시점
 
   상속 (SparseTable)                   인자 (DisjointSparseTable)
@@ -930,7 +930,7 @@ static int[] buildLogTable(int n) {
   차이는 조각을 덮는 방식이다 — 희소 테이블은 겹쳐도 되는 두 조각이고, 이진 점프는 목표 깊이 차이를 이진법으로 분해해 **겹치지 않는 여러 점프**를 한다(그래서 O(1) 이 아니라 O(log n) 이다).\
   (이 비교의 뒷부분은 원본 repo 에 LCA 구현이 없어 코드로 확인하지 못했다 — `원본에 근거 없음 — 내 추론`.)
 
-```
+```text
 같은 배증, 다른 대상 (LCA 쪽은 개념 설명 - 원본에 코드가 없다)
 
   희소 테이블                           이진 점프(LCA)

@@ -1,4 +1,4 @@
-# domain-modeling-advanced/06-tax — 정답
+# domain-modeling/advanced/06-tax — 정답
 
 ## 정답
 

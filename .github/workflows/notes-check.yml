@@ -1,0 +1,18 @@
+name: notes-check
+# cs 노트 형식 검사 + 생성 문서(영역 표) 드리프트 검사 — 실패는 빨간불(머지 차단 설정 없음)
+# 규칙: cs/README.md 「작성 규칙」 · 도구: scripts/notes/ (2026-10-08 rules-checker)
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: check notes (error = 실패, warning = 출력만)
+        run: python3 scripts/notes/check_notes.py --all
+      - name: generated area READMEs match generator
+        if: ${{ !cancelled() }}
+        run: python3 scripts/notes/gen_area_readme.py --check

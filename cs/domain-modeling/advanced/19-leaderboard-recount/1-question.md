@@ -1,4 +1,4 @@
-# domain-modeling-advanced/19-leaderboard-recount — 질문
+# domain-modeling/advanced/19-leaderboard-recount — 질문
 
 ## 질문
 

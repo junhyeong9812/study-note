@@ -1,4 +1,4 @@
-# 트랜잭셔널 아웃박스 vs 발송 로그 — 질문
+# systems/outbox-vs-dispatch-log — 트랜잭셔널 아웃박스 vs 발송 로그 — 질문
 
 ## 질문
 

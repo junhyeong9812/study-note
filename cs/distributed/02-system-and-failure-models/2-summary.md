@@ -263,7 +263,7 @@ class FencedStore {
 
 (실험, etcd 3.6.5 3노드 전용 컨테이너 `sn-dw-wcons-e1~3`, e3를 멈추고 `etcdctl member remove` → e3 다시 시작, 2026-10-01 — 시각은 실행마다 다르다)
 
-```
+```json
 {"level":"warn","ts":"2026-10-01T06:04:31.247984Z","caller":"etcdserver/server.go:860","msg":"server error","error":"the member has been permanently removed from the cluster"}
 {"level":"warn","ts":"2026-10-01T06:04:31.248114Z","caller":"etcdserver/server.go:861","msg":"data-dir used by this member must be removed"}
 ```

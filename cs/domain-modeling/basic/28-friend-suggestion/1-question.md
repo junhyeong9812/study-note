@@ -1,4 +1,4 @@
-# domain-modeling-basic/28-friend-suggestion — 질문
+# domain-modeling/basic/28-friend-suggestion — 질문
 
 ## 질문
 

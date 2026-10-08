@@ -1,4 +1,4 @@
-# domain-modeling-basic/28-friend-suggestion — 정답
+# domain-modeling/basic/28-friend-suggestion — 정답
 
 ## 정답
 

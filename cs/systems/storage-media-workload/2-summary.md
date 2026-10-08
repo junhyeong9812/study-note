@@ -1,4 +1,4 @@
-# cs/storage-media-workload - 저장 매체와 워크로드 (HDD, SSD의 동작 방식과 데이터 특성별 선택 기준) - 정리 (힌트)
+# systems/storage-media-workload — 저장 매체와 워크로드 (HDD, SSD의 동작 방식과 데이터 특성별 선택 기준) — 정리 (힌트)
 
 ## 해결하는 문제
 

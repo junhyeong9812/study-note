@@ -50,7 +50,7 @@ public static int[] bfsDistances(Graph graph, int start) {
 
 **왜 너비 우선이어야 최단인가**
 
-```
+```text
 큐의 내용을 시간 순으로 보면 거리가 '층'으로 묶여 나온다
 
   큐 : [ 시작점(0) ]                                <- 거리 0 층
@@ -72,7 +72,7 @@ public static int[] bfsDistances(Graph graph, int start) {
 
 **깊이 우선이면 왜 틀리는가** (`shortestEvenWhenLongPathExploredFirst`)
 
-```
+```text
 방향 그래프 6개 정점. 간선 : 0->1, 0->2, 1->5, 2->3, 3->4, 4->5
 
               0
@@ -113,7 +113,7 @@ public static int[] bfsDistances(Graph graph, int start) {
 
 **방문 표시를 넣을 때 하느냐 꺼낼 때 하느냐**
 
-```
+```text
  (A) 넣을 때 표시 (impl 이 택한 방식)
 
      for (next : neighbors) {
@@ -217,7 +217,7 @@ public static int[] dfsOrder(Graph graph, int start) {
 
 **왜 DFS는 꺼낼 때 표시하는가**
 
-```
+```text
 BFS 처럼 '넣을 때 표시' 하면 DFS 순서가 망가진다
 
   0 의 이웃이 [1, 2] 이고 1 -> 2 간선도 있다고 하자
@@ -256,7 +256,7 @@ void handlesDeepGraph() {
 }
 ```
 
-```
+```text
 그래프 모양 : 0 -> 1 -> 2 -> 3 -> ... -> 99999   (한 줄로 10만 개)
 
  재귀 구현
@@ -299,7 +299,7 @@ for (int i = next.size() - 1; i >= 0; i--) {
 }
 ```
 
-```
+```text
 0 의 이웃 목록이 [1, 2, 3] 인 경우
 
  재귀라면 : dfs(1) 을 먼저 부른다 -> 방문 순서 0, 1, ...
@@ -408,7 +408,7 @@ public static int[] topologicalSort(Graph graph) {
 
 **핵심 발상 — "지금 당장 해도 되는 것"**
 
-```
+```text
 진입 차수 = "내가 기다려야 하는 선행 작업의 개수"
 
 진입 차수 0  =  기다릴 것이 없다  =  지금 당장 해도 된다
@@ -424,7 +424,7 @@ public static int[] topologicalSort(Graph graph) {
 
 **손으로 추적** (`sortsDag`: 4개 정점, 0→1, 0→2, 1→3, 2→3)
 
-```
+```text
 그래프                진입 차수 초기값
       0                inDegree = [0, 1, 1, 2]
      / \                          v0 v1 v2 v3
@@ -466,7 +466,7 @@ if (filled != n) {
 }
 ```
 
-```
+```text
 순환이 있는 그래프 : 0 -> 1 -> 2 -> 0
 
       0 ---> 1
@@ -509,7 +509,7 @@ if (!graph.isDirected()) {
 }
 ```
 
-```
+```text
 이유 1 (의미) : 위상 정렬의 정의가 '간선 u->v 이면 u 가 v 보다 앞'이다
                 무방향 간선 u-v 는 방향이 없다 -> "누가 앞인가"를 물을 수 없다
                 애초에 답이 정의되지 않는 질문이다
@@ -618,7 +618,7 @@ Graph g = build(f, 4, true,
 assertArrayEquals(new long[]{0, 1, 2, 3}, GraphProblems.shortestPaths(g, 0));
 ```
 
-```
+```text
         (100)
    0 ------------> 3
    |               ^
@@ -652,7 +652,7 @@ assertArrayEquals(new long[]{0, 1, 2, 3}, GraphProblems.shortestPaths(g, 0));
 if (top[1] > best[current]) continue;      // 낡은 항목이다
 ```
 
-```
+```text
 왜 같은 정점이 큐에 여러 번 들어가는가
 
   best[v] 가 갱신될 때마다 (v, 새 거리) 를 큐에 새로 넣는다
@@ -686,7 +686,7 @@ if (top[1] > best[current]) continue;      // 낡은 항목이다
 
 **왜 음수 간선이 전제를 깨는가**
 
-```
+```text
 다익스트라의 전제 (탐욕 선택 속성)
 
   "아직 확정 안 된 것 중 거리가 가장 작은 정점은,
@@ -760,7 +760,7 @@ if (weight < 0) {
 
 **질문**: 01\~07의 자료구조로는 무엇이 안 되는가 — "원소를 담는 것"과 "원소 사이의 관계를 담는 것"의 차이는 무엇인가.
 
-```
+```text
 01 ~ 07 : "원소를 어떻게 담을까"
 
    자료구조가 원소들 사이에 정해 주는 관계는 딱 하나 -- '순서'였다
@@ -830,7 +830,7 @@ if (weight < 0) {
 
 **두 표현의 저장 방식**
 
-```
+```text
 같은 그래프 : 정점 4개, 무방향 간선 0-1, 1-2, 0-3
 
  인접 리스트 (AdjacencyListGraph)          인접 행렬 (AdjacencyMatrixGraph)
@@ -848,7 +848,7 @@ if (weight < 0) {
 
 **밀도가 왜 선택을 정하는가**
 
-```
+```text
 밀도(density) = E / V^2   (방향 그래프 기준, 0 ~ 1)
 
  밀집 : E ≈ V^2   ->  O(V + E) 와 O(V^2) 이 같은 크기다
@@ -942,7 +942,7 @@ public boolean hasEdge(int from, int to) {
 }
 ```
 
-```
+```text
  인접 리스트 : "u 의 이웃 목록 어딘가에 v 가 있나?"
      adjacency[0] = [ (1,w), (3,w), (7,w), (9,w) ]
                        ^      ^      ^      ^
@@ -991,7 +991,7 @@ public Iterable<Integer> neighbors(int from) {
 }
 ```
 
-```
+```text
  인접 리스트 : 이웃이 '이미 모여 있다'
      adjacency[v] 를 그대로 훑으면 끝. 훑는 횟수 = 실제 이웃 수
      => O(deg(v))
@@ -1039,7 +1039,7 @@ public Iterable<Integer> neighbors(int from) {
 
 **메모리 계산**
 
-```
+```text
 V = 100,000,  E = 200,000
 
  인접 행렬
@@ -1086,7 +1086,7 @@ void allocatesSquareRegardlessOfEdges() {
 
 **BFS/DFS 전체 비용**
 
-```
+```text
 BFS/DFS 의 뼈대
     각 정점을 한 번씩 꺼낸다             -> V 번
     꺼낼 때마다 neighbors(v) 를 훑는다   -> 여기가 표현에 따라 갈린다
@@ -1110,7 +1110,7 @@ BFS/DFS 의 뼈대
   `Graph` 인터페이스만 보고 짜여 있기 때문이다.
 - 논리: 즉 "어떤 구현을 넘겼는가"가 **호출 코드 바깥에서** 비용을 20,000배 바꾼다.
 
-```
+```text
  시간 감각 (초당 10^9 회 연산 가정, 원본에 근거 없음 -- 내 추론)
    인접 리스트 : 5 x 10^5 회   -> 1밀리초 미만
    인접 행렬   : 10^10 회      -> 약 10초
@@ -1157,7 +1157,7 @@ BFS/DFS 의 뼈대
 
 **왜 `GraphProblems` 코드가 그대로인가**
 
-```
+```text
 GraphProblems 의 모든 함수 시그니처
 
     public static int[] bfsDistances(Graph graph, int start)
@@ -1245,7 +1245,7 @@ if (!directed && from != to) {
 edges++;
 ```
 
-```
+```text
 무방향 간선 0-1 하나를 저장하면
 
   adjacency[0] = [ (1, w) ]      <- 0 에서 1 을 볼 수 있어야 한다
@@ -1295,7 +1295,7 @@ if (!directed && from != to) {
 }
 ```
 
-```
+```text
 간선 1-1 (자기 자신으로) 을 무방향으로 추가한다면
 
  (A) from != to 검사가 있을 때 (impl)
@@ -1390,7 +1390,7 @@ if (!directed && from != to) {
 edges++;
 ```
 
-```
+```text
  addEdge(0, 1, 5) 이후
      adjacency[0] = [ Edge(to=1, w=5) ]
      adjacency[1] = [ Edge(to=0, w=5) ]
@@ -1431,7 +1431,7 @@ if (!directed) {
 }
 ```
 
-```
+```text
  간선 (0,1) 의 자리는 언제나 matrix[0][1] 한 칸이다
      "이미 있나?"  = 그 칸이 NO_EDGE 인가를 읽는다      -> O(1)
      "덮어쓰기"    = 그 칸에 새 값을 쓴다               -> O(1)
@@ -1514,7 +1514,7 @@ void neighborsIsDefensive() {
 
 **내부 목록을 그대로 주면**
 
-```
+```text
  (A) 복사본을 주는 경우 (impl)
 
     그래프 내부                     호출자
@@ -1551,7 +1551,7 @@ void neighborsIsDefensive() {
 
 **01번 `toArray` 와 같은 문제인 이유**
 
-```
+```text
 01-dynamic-array 의 toArray
 
    잘못된 구현 : return elements;          <- 내부 배열을 그대로 준다
@@ -1603,7 +1603,7 @@ void neighborsIsDefensive() {
 
 **해시맵이 못 하는 이유 (05번의 거래)**
 
-```
+```text
 해시맵 : 키를 해시 함수에 넣어 나온 숫자로 버킷을 정한다
 
    hash("car")     = 9382...  ->  버킷 12
@@ -1623,7 +1623,7 @@ void neighborsIsDefensive() {
 
 **BST가 흉내는 내지만 비싼 이유**
 
-```
+```text
 BST : 키를 대소 순으로 정렬해 둔다. 문자열이면 사전순이다
 
    "car" 로 시작하는 키들은 사전순으로 연속 구간에 모여 있다
@@ -1650,7 +1650,7 @@ BST : 키를 대소 순으로 정렬해 둔다. 문자열이면 사전순이다
 
 **관계를 잇는 구조 vs 접두사를 공유하는 구조**
 
-```
+```text
 08-graph : 관계를 '명시적으로' 잇는다
 
     addEdge(u, v) 를 호출해야 관계가 생긴다

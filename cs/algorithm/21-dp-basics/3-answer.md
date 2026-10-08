@@ -44,7 +44,7 @@ public static long tabulated(int n, CountedTable table) {
 }
 ```
 
-```
+```text
 naive(5) 의 호출 트리 (일부)          memoized(5) 는 각 n 을 한 번만 계산
         5                                     5
       /   \                                 /   \
@@ -259,7 +259,7 @@ for (int value : a) {
 // 길이가 need 인 자리를 만나면 잡고 need 를 1 줄인다 (값 비교는 없다 — 증명으로 지웠다)
 ```
 
-```
+```text
 a    =  3   1   4   1   5   9   2   6
 표   =  1   1   2   1   3   4   2   4     <- "그 자리로 끝나는" 최장 길이
 답   =  전체 최댓값 4 (마지막 칸 아님)

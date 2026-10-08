@@ -36,7 +36,7 @@ public static void heapSort(int[] values, Heap<Integer> heap) {
 
 **왜 정렬된 순서로 나오는가**
 
-```
+```text
 힙의 계약  : poll 은 "지금 힙 안에 남아 있는 것 중 가장 앞선 것"을 준다
              (전체에서 가장 앞선 것이 아니라 '남아 있는 것 중' 이다)
 
@@ -58,7 +58,7 @@ public static void heapSort(int[] values, Heap<Integer> heap) {
 
 **손으로 추적** — `sorted(5, 3, 9, 1, 2)` (테스트 `HeapProblemsTest.sortsAscending`)
 
-```
+```text
 넣기 단계 : 최소 힙(BinaryHeap + naturalOrder)에 5,3,9,1,2 를 차례로 insert
 
 insert 5  [5]
@@ -163,7 +163,7 @@ poll 5  [9]         -> top=9, values[4] = 9
 
 **형제 노드에 대해 정확히 무엇을 뜻하는가**
 
-```
+```text
 최소 힙 (규칙: 부모 <= 자식, 이것뿐)
 
               [ 1 ]
@@ -267,7 +267,7 @@ void siftUp(int index) {
 
 **왜 임의의 키 찾기가 O(n) 인가**
 
-```
+```text
 최소 힙에서 "5 가 어디 있나?" 를 묻는다
 
               [ 1 ]
@@ -349,7 +349,7 @@ public E peek() {
 
 **왜 배열 하나로 표현되는가**
 
-```
+```text
 완전 이진 트리 = 위에서 아래로, 같은 층에서는 왼쪽부터 빈틈없이 채운 트리
 
               [0]
@@ -390,7 +390,7 @@ static int leftOf(int index)   { return 2 * index + 1; }
 static int rightOf(int index)  { return 2 * index + 2; }
 ```
 
-```
+```text
 02-linked-list                        07-heap
 ------------------------------        ------------------------------
 class Node {                          Object[] elements;
@@ -417,7 +417,7 @@ class Node {                          Object[] elements;
 
 **왜 sift 횟수가 트리 높이로 묶이는가**
 
-```
+```text
 층별 노드 수 (완전 이진 트리)
 
 층 0 :  1 개      누적  1        <- 뿌리
@@ -515,7 +515,7 @@ long expected = (long) n * (n - 1) / 2;           // = 499,500
 assertTrue(heap.moves >= expected * 9 / 10, ...); // 449,550 이상이면 통과
 ```
 
-```
+```text
 배열 유지 규칙 : 뒤로 갈수록 앞선다(= 작다). 그래서 앞쪽이 큰 값, 뒤쪽이 작은 값.
 
 오름차순 입력 1,2,3,... 은 "매번 지금까지의 최댓값"이 들어오는 것이다
@@ -547,7 +547,7 @@ n 이 10배(10,000)가 되면 = 10000 x 9999 / 2 = 49,995,000  <- 100배
 
 **넣기와 빼기가 뒤섞이는 워크로드**
 
-```
+```text
 워크로드 : 힙 크기가 대략 n 으로 유지되는 상태에서 insert / poll 을 각각 n 번씩 번갈아 한다
            (작업 큐, 이벤트 스케줄러, 다익스트라가 전부 이 모양이다)
 
@@ -585,7 +585,7 @@ void reverseOrderCostsNothing() {
 }
 ```
 
-```
+```text
 역순 입력 1000, 999, ..., 1 은 "매번 지금까지의 최솟값"이 들어오는 것이다
 배열은 뒤로 갈수록 앞선(작은) 것이므로 새 값의 자리가 늘 맨 뒤다
 
@@ -686,7 +686,7 @@ int compare(int a, int b) {
 }
 ```
 
-```
+```text
 BinaryHeap 안에서 "무엇이 앞서는가"를 판단하는 곳
 
   siftUp   : if (compare(index, parent) >= 0) break;     <- compare 호출
@@ -748,7 +748,7 @@ comparator 는 생성자에서 밖에서 주입받는다
 
 **두 가지를 동시에 지키는 전략**
 
-```
+```text
 지켜야 할 것 두 가지
 
  (A) 모양 : 완전 이진 트리 -- 빈틈이 없어야 배열 인덱스 산수가 성립한다
@@ -793,7 +793,7 @@ void siftDown(int index) {
 }
 ```
 
-```
+```text
 최소 힙에서 뿌리 9 를 내려야 하는 상황.  배열 [9, 2, 5]
 
  전 상태
@@ -846,7 +846,7 @@ public E poll() {
 }
 ```
 
-```
+```text
 배열 [1, 2, 9, 5, 3], size=5.  poll 로 1 을 뺀다
 
  전 상태
@@ -940,7 +940,7 @@ public int add(int value) {
 
 **왜 뒤집혀 보이고, 왜 그게 맞는가**
 
-```
+```text
 목표 : 지금까지 본 값들 중 k 번째로 "큰" 값
 
 발상의 전환 : k 번째로 큰 값 = "상위 k 개" 중에서 가장 작은 것
@@ -966,7 +966,7 @@ public int add(int value) {
 
 **최대 힙을 쓰면 왜 안 되는가**
 
-```
+```text
 최대 힙으로 같은 일을 시도한다면
 
    peek  = 가장 큰 값(1등)  -> 알고 싶은 것은 k 등인데 1등만 알려준다
@@ -987,7 +987,7 @@ public int add(int value) {
 
 **손으로 추적** — `KthLargestTest.tracksKthLargest`, `k = 3`
 
-```
+```text
 힙은 MinHeap<Integer>, k = 3
 
 add(4) : insert 4    -> 힙 {4}         size 1 <= 3, 버리지 않음
@@ -1092,7 +1092,7 @@ if (!heap.isEmpty()) {
 
 **왜 전체 순서가 필요 없는가**
 
-```
+```text
 값 9개를 크기 순으로 늘어놓았다고 상상하면
 
     [ 1 ][ 2 ][ 3 ][ 4 ] [ 5 ] [ 6 ][ 7 ][ 8 ][ 9 ]
@@ -1125,7 +1125,7 @@ private final Heap<Integer> upper;   // 최소 힙: 큰 절반 중 가장 작은
 private int count;
 ```
 
-```
+```text
              lower (최대 힙)                 upper (최소 힙)
              작은 절반                        큰 절반
                   4     <- 꼭대기                  5     <- 꼭대기
@@ -1146,7 +1146,7 @@ private int count;
 
 **지켜야 할 두 조건**
 
-```
+```text
 조건 1 (순서) : lower 의 어떤 값도 upper 의 어떤 값보다 크지 않다
                 max(lower) <= min(upper)
                 -> 깨지면 "작은 절반/큰 절반"이라는 분할 자체가 거짓이 된다
@@ -1174,7 +1174,7 @@ public void add(int value) {
 }
 ```
 
-```
+```text
 소박한 방법 : "새 값이 어느 쪽에 속하나"를 직접 판단한다
     if (value <= lower.peek()) lower.insert(value); else upper.insert(value);
     -> lower 가 비었을 때 peek 가 예외를 던진다
@@ -1216,7 +1216,7 @@ impl 의 방법 : 무조건 lower 에 넣고, lower 의 꼭대기를 upper 로 �
 
 **손으로 추적** — `MedianFinderTest.tracksMedian`
 
-```
+```text
 lower = MaxHeap, upper = MinHeap
 
 add(1)
@@ -1264,7 +1264,7 @@ public double median() {
 }
 ```
 
-```
+```text
 lower.peek() = 1, upper.peek() = 2   (값 1, 2 두 개가 들어간 상태)
 
  (A) / 2.0  :  (1 + 2) / 2.0
@@ -1332,7 +1332,7 @@ if (!lower.isEmpty() || !upper.isEmpty()) {
 
 **01\~07 과 08 의 단절**
 
-```
+```text
 01-dynamic-array ~ 07-heap
     관심사 : "원소를 어떻게 담고 어떻게 꺼낼 것인가"
     구조   : 원소들 사이의 관계는 '순서' 하나뿐이었다
@@ -1349,7 +1349,7 @@ if (!lower.isEmpty() || !upper.isEmpty()) {
 
 **다익스트라가 힙에게 요구하는 것**
 
-```
+```text
 다익스트라의 한 걸음
 
   1) 아직 확정 안 된 정점 중 "출발점에서 가장 가까운" 것 하나를 고른다
@@ -1372,7 +1372,7 @@ if (!lower.isEmpty() || !upper.isEmpty()) {
 
 **한계가 실제로 스치는 지점과 그 우회**
 
-```
+```text
 다익스트라에서 유일하게 힙의 한계가 걸리는 곳
 
   "v 까지의 거리가 더 짧아졌다" -> 힙 안의 v 를 찾아 우선순위를 낮춰야 한다 (decrease-key)
@@ -1406,7 +1406,7 @@ if (!lower.isEmpty() || !upper.isEmpty()) {
 - 논리: 즉 "가장 급한 것 하나"라는 힙의 계약은 그래프 탐색에서 **탐색 순서를 정하는 정책**으로 쓰인다.\
   큐를 쓰면 BFS, 스택을 쓰면 DFS, 힙을 쓰면 다익스트라/A* 다 — 뼈대는 같고 꺼내는 규칙만 다르다.
 
-```
+```text
 같은 뼈대, 다른 꺼내기 규칙
 
   컨테이너에 시작점을 넣는다

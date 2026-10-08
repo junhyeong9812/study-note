@@ -1,4 +1,4 @@
-# 프로그래머의 세 미덕 — 질문
+# foundations/three-virtues — 프로그래머의 세 미덕 — 질문
 
 ## 질문
 

@@ -1,4 +1,4 @@
-# LSM 병합 모델 — 정답
+# data-structure/lsm-merge-model — LSM 병합 모델 — 정답
 
 ## 답변
 

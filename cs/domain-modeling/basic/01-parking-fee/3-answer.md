@@ -1,4 +1,4 @@
-# domain-modeling-basic/01-parking-fee — 정답
+# domain-modeling/basic/01-parking-fee — 정답
 
 ## 정답
 

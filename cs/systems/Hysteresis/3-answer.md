@@ -1,4 +1,4 @@
-# cs/Hysteresis — 히스테리시스(Hysteresis) — 정답
+# systems/Hysteresis — 히스테리시스(Hysteresis) — 정답
 
 ## 정답
 

@@ -1,4 +1,4 @@
-# domain-modeling-basic/22-settlement — 질문
+# domain-modeling/basic/22-settlement — 질문
 
 ## 질문
 

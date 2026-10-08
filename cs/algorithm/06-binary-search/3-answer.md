@@ -39,7 +39,7 @@ public <T> int lowerBound(CountedArray<T> a, T key) {
 
 upperBound 는 위 코드에서 `< 0` 이 `<= 0` 으로 바뀐 것뿐이다(부등호 하나).
 
-```
+```text
 처리 과정 : [10, 20, 20, 20, 30, 40, 50], lowerBound(20) — 반열린 [lo, hi)
 
     idx    0    1    2    3    4    5    6
@@ -79,7 +79,7 @@ public <T> int lowerBound(CountedArray<T> a, T key) {
 }
 ```
 
-```
+```text
 처리 과정 : 같은 배열, lowerBound(20) — 닫힌 [lo, hi]
 
  시작       : lo=0, hi=6, answer=7(size)   루프 조건 lo <= hi
@@ -187,7 +187,7 @@ public <T> int find(CountedArray<T> a, T key) {
 }
 ```
 
-```
+```text
 처리 과정 : [0, 2, 4, 6, 8, 10, 12] (짝수 배열) 에서 find(6)
 
  직접 찾기(닫힌 판):
@@ -269,7 +269,7 @@ public int firstTrue(int lo, int hi, IntPredicate p) {
 구조는 lowerBound 와 똑같다 — `a.compareTo(mid, key) < 0` 자리에 `!p.test(mid)` 가 들어갔을 뿐이다.\
 (닫힌 판은 `answer = hi + 1` 로 시작해 참이면 `answer = mid; hi = mid - 1`.)
 
-```
+```text
 처리 과정 : firstTrue(0, 6, i -> i >= 4) — 술어가 F F F F T T T 로 단조
 
  idx     0    1    2    3    4    5    6
@@ -285,7 +285,7 @@ public int firstTrue(int lo, int hi, IntPredicate p) {
 > **단조(monotonic)** — 거짓...거짓, 참...참처럼 한 번 바뀌면 되돌아오지 않는 성질. 이진 탐색의 전제.\
 > 예: 위 그림의 `F F F F T T T` 는 단조지만, 중간에 T 가 다시 F 로 돌아가면 아니다.
 
-```
+```text
 넘침(오버플로) : int 최대는 약 21.47억 (2,147,483,647)
 
  mid = (lo + hi) / 2        lo=10억, hi=20억 → 합 30억 > 21.47억 → 음수로 뒤집힘
@@ -373,7 +373,7 @@ public int firstTrue(int lo, int hi, IntPredicate p) {
 
 ### 5. 파생 질문 (서머리 기반)
 
-```
+```text
 삽입 위치·개수·구간이 전부 경계 두 개에서 나온다:
 
     [10, 20, 20, 20, 30, 40, 50], key = 20

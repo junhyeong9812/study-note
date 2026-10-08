@@ -1,4 +1,4 @@
-# domain-modeling-advanced/22-parcel-split — 정답
+# domain-modeling/advanced/22-parcel-split — 정답
 
 ## 정답
 

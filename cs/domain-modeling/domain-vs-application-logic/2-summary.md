@@ -1,4 +1,4 @@
-# domain-modeling/도메인 로직 vs 애플리케이션 로직 — 정리 (힌트)
+# domain-modeling/domain-vs-application-logic — 도메인 로직 vs 애플리케이션 로직 — 정리 (힌트)
 
 ## 해결하는 문제
 

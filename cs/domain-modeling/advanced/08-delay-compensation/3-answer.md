@@ -1,4 +1,4 @@
-# domain-modeling-advanced/08-delay-compensation — 정답
+# domain-modeling/advanced/08-delay-compensation — 정답
 
 ## 정답
 

@@ -1,4 +1,4 @@
-# domain-modeling-basic/20-insurance — 질문
+# domain-modeling/basic/20-insurance — 질문
 
 ## 질문
 

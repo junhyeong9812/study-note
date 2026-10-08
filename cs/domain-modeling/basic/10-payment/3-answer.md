@@ -1,4 +1,4 @@
-# domain-modeling-basic/10-payment — 정답
+# domain-modeling/basic/10-payment — 정답
 
 ## 정답
 

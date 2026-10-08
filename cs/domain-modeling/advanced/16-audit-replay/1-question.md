@@ -1,4 +1,4 @@
-# domain-modeling-advanced/16-audit-replay — 질문
+# domain-modeling/advanced/16-audit-replay — 질문
 
 ## 질문
 

@@ -1,4 +1,4 @@
-# domain-modeling-basic/24-leaderboard — 정답
+# domain-modeling/basic/24-leaderboard — 정답
 
 ## 정답
 

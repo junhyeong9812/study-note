@@ -1,4 +1,4 @@
-# domain-modeling-advanced/05-multi-currency — 질문
+# domain-modeling/advanced/05-multi-currency — 질문
 
 ## 질문
 

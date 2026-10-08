@@ -1,4 +1,4 @@
-# cs/semaphore — 세마포어: 동시에 몇 명까지 — 정답
+# systems/semaphore — 세마포어: 동시에 몇 명까지 — 정답
 
 ## 정답
 

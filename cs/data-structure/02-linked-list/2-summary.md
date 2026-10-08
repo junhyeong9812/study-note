@@ -105,7 +105,7 @@ Java의 `LinkedList`가 이렇게 동작한다.
 
 #### 구조
 
-```
+```text
 SinglyLinkedList — 원소가 이웃해 있지 않다. "다음이 어디냐"는 next 참조에만 적혀 있다
 +-------------------------------------------------+
 | head ---+                                       |
@@ -126,7 +126,7 @@ tail 을 들고 있어 addLast 는 O(1). 그런데 tail 의 "앞" 노드는 아�
 
 #### 동작 — 추가
 
-```
+```text
 [1] addFirst(X) : 새 노드가 옛 head 를 가리키게 하고 head 를 옮긴다. O(1)
     before  head -> +---+      +---+
                     | A +----> | B +----> null
@@ -172,7 +172,7 @@ tail 을 들고 있어 addLast 는 O(1). 그런데 tail 의 "앞" 노드는 아�
 
 #### 동작 — 삭제
 
-```
+```text
 [1] removeFirst() : head 를 한 칸 옮기고, 떼어낸 노드의 참조를 끊는다. O(1)
     before  head -> +---+      +---+      +---+
                     | A +----> | B +----> | C +----> null
@@ -218,7 +218,7 @@ tail 을 들고 있어 addLast 는 O(1). 그런데 tail 의 "앞" 노드는 아�
 
 #### 동작 — 뒤집기
 
-```
+```text
 reverse() : 값을 옮기지 않고 next 가 가리키는 방향만 반대로 돌린다. O(n), 추가 메모리 O(1)
     prev = null   cur = head
        |            |
@@ -388,7 +388,7 @@ reverse() : 값을 옮기지 않고 next 가 가리키는 방향만 반대로 �
 
 #### 구조
 
-```
+```text
 DoublyLinkedList — 노드마다 prev 와 next 를 둘 다 가진다. 더미(sentinel) 노드는 쓰지 않는다
 +---------------------------------------------------+
 | head ---+                                         |
@@ -421,7 +421,7 @@ null <-+ prev  |<--------+ prev  |<--------+ prev  |
 
 #### 동작 — 추가
 
-```
+```text
 [1] linkLast(Y) : 끝에 붙이면서 반대편 참조도 같이 채운다. O(1)
     before   ... +-------+ <- tail        after   ... +-------+         +-------+ <- tail
                  | item C|                            | item C+-------->| item Y|
@@ -461,7 +461,7 @@ null <-+ prev  |<--------+ prev  |<--------+ prev  |
 
 #### 동작 — 삭제
 
-```
+```text
 unlink(node) : 앞뒤를 서로 직접 잇고, 떼어낸 노드의 참조를 끊는다. 노드를 알면 O(1)
     unlink(B)
     before   +-------+     +-------+     +-------+
@@ -492,7 +492,7 @@ removeFirst() = unlink(head),  removeLast() = unlink(tail)
 
 #### 동작 — 인덱스 접근
 
-```
+```text
 node(int index) : 절반을 넘어가면 tail 쪽에서 거슬러 온다. 최악은 여전히 O(n), 평균 이동은 절반
         idx     0     1     2     3     4     5
                 A     B     C     D     E     F      size = 6

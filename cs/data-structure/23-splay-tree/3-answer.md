@@ -186,7 +186,7 @@ return rotateRight(h);                         // (2) 할아버지
 
 **[1] zig — 목표가 뿌리 바로 아래. 두 클래스가 같다**
 
-```
+```text
   before                         after
       (30)                          (20)
       /   \          ->            /    \ 
@@ -200,7 +200,7 @@ return rotateRight(h);                         // (2) 할아버지
 
 **[2] zig-zig — 할아버지 먼저(정답)**
 
-```
+```text
   before                (1) rotateRight(30)            (2) rotateRight(20) = after
       (30)                   (20)                          (10)
       /   \                  /    \                        /   \ 
@@ -216,7 +216,7 @@ return rotateRight(h);                         // (2) 할아버지
 
 **[3] zig-zig — 부모 먼저(MoveToRootTree, 잘못된 순서)**
 
-```
+```text
   before                (1) rotateRight(20)            (2) rotateRight(30) = after
       (30)                   (30)                          (10)
       /   \                  /   \                        /   \ 
@@ -232,7 +232,7 @@ return rotateRight(h);                         // (2) 할아버지
 
 **[4] zig-zag — 부모 먼저(두 클래스가 같다)**
 
-```
+```text
   before                (1) rotateLeft(10)             (2) rotateRight(30) = after
       (30)                   (30)                          (20)
       /   \                  /   \                        /    \ 
@@ -262,7 +262,7 @@ return rotateRight(h);                         // (2) 할아버지
   move-to-root 는 목표만 뽑아 올리고 나머지 경로는 순서 그대로 한 줄로 남긴다.\
   impl 코드를 그대로 옮겨 7개짜리 한 줄 트리에서 `get(0)` 을 돌려 보면 이렇게 갈린다(회전 수는 둘 다 6회로 같다).
 
-```
+```text
    before  height 7        splay 후  height 5            move-to-root 후  height 7
       (6)                       (0)                            (0)
       /                            \                              \ 
@@ -291,7 +291,7 @@ return rotateRight(h);                         // (2) 할아버지
   0 을 꺼내면 0 만 뿌리로 오고 1..999 는 여전히 한 줄로 남는다 — 그래서 1 을 꺼낼 때 또 999칸을 내려간다.\
   impl 코드를 그대로 옮겨 n=16 에서 조회당 회전 수를 세어 보면 규칙이 바로 보인다.
 
-```
+```text
   n = 16, 0..15 를 차례로 조회했을 때 조회 한 번당 회전 수
 
   move-to-root : 15, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1   합 135
@@ -410,7 +410,7 @@ public V get(K key) {
   나머지 99,900개는 그 아래 어딘가에 매달려 있지만 조회 경로가 거기까지 내려가지 않는다.\
   `AmortizedCostTest.hotKeysStayNearTheRoot` 가 그 값을 단언한다.
 
-```
+```text
   10만 개를 섞어 넣고(초기 높이 59), 100개만 100번씩 돌아가며 조회
 
   스플레이 트리   방문 노드  59,653   조회당  5.96
@@ -483,7 +483,7 @@ public V get(K key) {
 - Q: 정렬 입력을 넣은 직후 높이가 1000 이었다가 조회 몇 번으로 접히는 과정을 설명해 보라.\
   A: `AmortizedCostTest.accessesFoldThePath` 가 세 번의 조회를 단계별로 단언한다.
 
-```
+```text
   0..999 를 정렬 순서로 put 한 직후
 
     height 1000 · depthOf(0) = 999 · rotations = 0
@@ -631,7 +631,7 @@ public V remove(K key) {
   최댓값이므로 올라온 뒤에도 오른쪽 자식은 null 이다 — `left.right = right` 가 아무것도 덮어쓰지 않는 이유가 이것이다.\
   `key` 가 아니라 `left` 안에 없는 더 큰 아무 값으로 splay 해도 결과는 같지만, 이미 손에 있는 `key` 를 쓰는 것이 짧다.
 
-```
+```text
   remove(40) : 40 이 이미 뿌리에 올라와 있는 상태에서 시작한다
 
   (1) splay(root, 40) 뒤              (2) 뿌리를 뗀다                (3) splay(left, 40)
@@ -696,7 +696,7 @@ public V remove(K key) {
   A: 갈리는 것은 `AmortizedCostTest` 의 다섯 개뿐이고, 갈리는 내용은 전부 **걸음 수**(회전 수 · 높이 · 방문 노드 수)다.\
   impl 코드를 그대로 옮겨 zig-zig 순서만 뒤집고 이 파일의 테스트들을 하나씩 재현해 보면 이렇게 나온다.
 
-```
+```text
   AmortizedCostTest 의 일곱 개를 변종(zig-zig 순서를 뒤집은 SplayTree)으로 돌리면
 
   buildIsAStraightLine              통과   height 1000 · depthOf(0) 999 · rotations 0 (그대로)
@@ -839,7 +839,7 @@ public interface SortedTree<K extends Comparable<K>, V> {
   둘째 **누가 내는가** — 읽는 쪽인가 쓰는 쪽인가, 아니면 백그라운드인가.\
   셋째 **어떻게 내는가** — 매번 조금씩(분산)인가 가끔 한꺼번에(배치)인가.
 
-```
+```text
   세 구조를 같은 축에 올려 보면
 
                언제 내나        누가 내나           어떻게 내나        튀는 곳

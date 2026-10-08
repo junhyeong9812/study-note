@@ -1,4 +1,4 @@
-# domain-modeling-basic/29-transfer-fare — 정리 (힌트)
+# domain-modeling/basic/29-transfer-fare — 정리 (힌트)
 
 ## 해결하는 문제
 

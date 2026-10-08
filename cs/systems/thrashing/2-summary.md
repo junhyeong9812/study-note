@@ -1,4 +1,4 @@
-# cs/thrashing — thrashing(스레싱) — 정리 (힌트)
+# systems/thrashing — thrashing(스레싱) — 정리 (힌트)
 
 ## 해결하는 문제
 

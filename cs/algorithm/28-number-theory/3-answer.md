@@ -62,7 +62,7 @@ public static List<Integer> factorize(int x, int[] spf, CountedArith arith) {
 }
 ```
 
-```
+```text
 체 (n=30, i=5 차례):     5 의 배수 지우기를 25 부터 시작한다
   10 = 5*2  -> 2 가 이미 지움        i 보다 작은 소수 k 에 대해
   15 = 5*3  -> 3 이 이미 지움        i*k 는 k 의 배수이기도 하다
@@ -179,7 +179,7 @@ public static long modInverse(long a, long m, CountedArith arith) {
 }
 ```
 
-```
+```text
 gcd(102334155, 63245986)  = gcd(F40, F39) — 최악 배치
 
   F40 mod F39 = F38,  F39 mod F38 = F37, ...   매번 피보나치 한 칸씩만 내려간다
@@ -267,7 +267,7 @@ public static long power(long a, long e, long m, CountedArith arith) {
 }
 ```
 
-```
+```text
 a^13,  13 = 1101(2)
 
   비트   1     0     1     1      (아래 자리부터 읽는다)

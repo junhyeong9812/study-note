@@ -1,4 +1,4 @@
-# domain-modeling-advanced/01-payroll — 질문
+# domain-modeling/advanced/01-payroll — 질문
 
 ## 질문
 

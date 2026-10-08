@@ -46,7 +46,7 @@ public static long naivePow(long base, long exponent, long mod, CountedOps ops) 
 }
 ```
 
-```
+```text
 a^13 (13 = 1101(2))
 
 한 번씩 곱하기:  a x a x a x ... x a        곱셈 13 번 (지수만큼)
@@ -185,7 +185,7 @@ public static long fibonacci(long n, long mod, CountedOps ops) {
 }
 ```
 
-```
+```text
 [ F(n+1) ]   [ 1 1 ]   [ F(n)   ]
 [ F(n)   ] = [ 1 0 ] x [ F(n-1) ]      한 번 곱하면 한 칸 전진
 
@@ -325,7 +325,7 @@ private static int[] carry(int[] raw) {
 }
 ```
 
-```
+```text
 x = a·B + b,  y = c·B + d      (B = 10^(n/2))
 
 그대로   : ac, ad, bc, bd            곱셈 4 번 -> T(n) = 4T(n/2) + O(n) -> O(n^2)

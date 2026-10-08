@@ -1,4 +1,4 @@
-# domain-modeling-basic/11-delivery-tracking — 정답
+# domain-modeling/basic/11-delivery-tracking — 정답
 
 ## 정답
 

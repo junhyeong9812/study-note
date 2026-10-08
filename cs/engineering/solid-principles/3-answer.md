@@ -1,4 +1,4 @@
-# SOLID 원칙 — 정답
+# engineering/solid-principles — SOLID 원칙 — 정답
 
 ## 정답
 

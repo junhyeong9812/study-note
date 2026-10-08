@@ -1,4 +1,4 @@
-# domain-modeling-advanced/13-contract-renewal — 정리 (힌트)
+# domain-modeling/advanced/13-contract-renewal — 정리 (힌트)
 
 ## 해결하는 문제
 

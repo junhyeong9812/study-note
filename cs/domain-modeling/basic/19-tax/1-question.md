@@ -1,4 +1,4 @@
-# domain-modeling-basic/19-tax — 질문
+# domain-modeling/basic/19-tax — 질문
 
 ## 질문
 

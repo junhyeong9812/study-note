@@ -1,4 +1,4 @@
-# domain-modeling-basic/07-notification — 질문
+# domain-modeling/basic/07-notification — 질문
 
 ## 질문
 

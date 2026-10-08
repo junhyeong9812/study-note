@@ -1,4 +1,4 @@
-# cs/development-standards/operational-standards — 운영 기준 (ISO/IEC 20000-1 · Google SRE) — 질문
+# engineering/development-standards/operational-standards — 운영 기준 (ISO/IEC 20000-1 · Google SRE) — 질문
 
 ## 질문
 

@@ -1,4 +1,4 @@
-# domain-modeling-basic/30-dispatch — 정답
+# domain-modeling/basic/30-dispatch — 정답
 
 ## 정답
 

@@ -28,7 +28,7 @@ public static CountedAutomaton build(List<String> patterns, CountedAutomaton aut
 }
 ```
 
-```
+```text
 처리 과정 : 패턴 he, she, his, hers 를 순서대로 심는다
 
             (뿌리 0)
@@ -131,7 +131,7 @@ private static void linkFailures(CountedAutomaton automaton) {
 }
 ```
 
-```
+```text
 내 실패 링크 = "부모의 실패 링크에서 같은 글자로 간 곳"
 
     부모 node ──(글자 c)──> child
@@ -229,7 +229,7 @@ public static List<Match> findAll(CountedAutomaton automaton, String text) {
 }
 ```
 
-```
+```text
 본문 "ushers" (패턴 he=0, she=1, his=2, hers=3)
 
   글자   u        s      h       e             r        s

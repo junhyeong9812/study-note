@@ -1,4 +1,4 @@
-# domain-modeling-basic/29-transfer-fare — 질문
+# domain-modeling/basic/29-transfer-fare — 질문
 
 ## 질문
 

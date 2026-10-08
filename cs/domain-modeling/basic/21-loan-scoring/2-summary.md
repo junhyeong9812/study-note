@@ -1,4 +1,4 @@
-# domain-modeling-basic/21-loan-scoring — 정리 (힌트)
+# domain-modeling/basic/21-loan-scoring — 정리 (힌트)
 
 ## 해결하는 문제
 

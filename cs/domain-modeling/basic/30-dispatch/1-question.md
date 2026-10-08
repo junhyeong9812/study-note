@@ -1,4 +1,4 @@
-# domain-modeling-basic/30-dispatch — 질문
+# domain-modeling/basic/30-dispatch — 질문
 
 ## 질문
 

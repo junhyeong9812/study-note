@@ -1,4 +1,4 @@
-# domain-modeling-advanced/09-policy-version — 정리 (힌트)
+# domain-modeling/advanced/09-policy-version — 정리 (힌트)
 
 ## 해결하는 문제
 

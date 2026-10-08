@@ -1,4 +1,4 @@
-# domain-modeling-advanced/28-authorization — 질문
+# domain-modeling/advanced/28-authorization — 질문
 
 ## 질문
 

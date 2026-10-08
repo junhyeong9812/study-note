@@ -62,7 +62,7 @@ private static void collect(MerkleTree local, MerkleTree remote, int level, int 
 }
 ```
 
-```
+```text
 1024블록 중 {17, 600, 1023} 이 다를 때 · 뿌리에서 내려간다
 
   10층                     [뿌리]                  다르다 -> 자식 둘로
@@ -91,7 +91,7 @@ private static void collect(MerkleTree local, MerkleTree remote, int level, int 
 
 **비교 횟수 55번은 어디서 나오는가 (손계산)**
 
-```
+```text
 1024잎 · 다른 블록 {17, 600, 1023} · 각 층에서 "다른 노드"가 몇 개인가
 (잎 인덱스를 층 수만큼 2로 나누면 그 층의 조상 번호다)
 
@@ -224,7 +224,7 @@ return true;
 
 **배치로 묶으면 무엇이 줄고 무엇이 안 줄어드는가**
 
-```
+```text
 증명 8개를 검증한다 (잎 64개짜리 트리, 높이 6)
 
   하나씩 8번 부를 때        배치로 한 번에 부를 때
@@ -301,7 +301,7 @@ assertTrue(MerkleProblems.verifyBatch(root, List.of(), List.of()));   // MerkleP
   둘째, **블록 하나만 증명할 수 없다** — "3번 블록이 이 파일에 있다"를 보이려면 파일 전체를 해시해 봐야 하므로 파일을 통째로 들고 있어야 한다.\
   README 의 표가 그 둘을 나란히 적어뒀다.
 
-```
+```text
   질문                    해시 하나        머클 트리
   ---------------------   -------------    ------------------------
   같은지 안다             된다             된다
@@ -357,7 +357,7 @@ while (current.length > 1) {
   내용이 하나도 안 변한 블록들의 인덱스가 달라지므로 같은 자리끼리의 비교가 전부 어긋나고, 트리는 처음부터 다시 지어야 한다(한계 3).\
   `withLeafReplaced` 는 **갈아끼우기**만 있고 삽입·삭제가 없는 것이 그 사실의 코드 쪽 표현이다.
 
-```
+```text
   갈아끼우기 (있다)                     끼워 넣기 (없다)
   [b0][b1][b2][b3]                      [b0][b1][b2][b3]
         |                                     |
@@ -417,7 +417,7 @@ public int findFirstDifference(MerkleTree other) {
 }
 ```
 
-```
+```text
 1024잎, 777번이 다르다 · 비교 11번
 
   10층  뿌리          다르다(비교 1)
@@ -461,7 +461,7 @@ public MerkleProof proofFor(int leafIndex) {
 }
 ```
 
-```
+```text
 잎 4개 · 1번 잎의 증명
 
         뿌리 = node(h01, h23)
@@ -501,7 +501,7 @@ current = step.siblingIsLeft()
   잎 하나를 갈면 그 잎의 부모, 그 부모의 부모… 뿌리까지 10개가 바뀌고, 옆가지는 입력이 하나도 안 바뀌었으므로 값도 그대로다.\
   그래서 다시 계산할 것이 `잎 1 + 경로 10 = 11` 개다.
 
-```
+```text
 1024잎 트리를 처음부터 지을 때 vs 잎 하나를 갈 때
 
   처음부터 짓기            잎 하나 갈기 (withLeafReplaced)
@@ -555,7 +555,7 @@ copy[0][index] = hashing.leafHash(newBlock);
 - Q: 64블록이 전부 다르면 총 비용이 어떻게 되는가?\
   A: 노드 127개를 전부 본다 — 즉 비교 127번이다.
 
-```
+```text
 64잎 트리의 노드 수 = 64 + 32 + 16 + 8 + 4 + 2 + 1 = 127
 
   전부 다르면 "같다"로 잘리는 가지가 하나도 없다
@@ -574,7 +574,7 @@ copy[0][index] = hashing.leafHash(newBlock);
 - Q: 최선은 어떤 경우인가?\
   A: **두 벌이 완전히 같을 때**다 — 뿌리 비교 한 번으로 끝난다.
 
-```
+```text
   DiffTest.identicalTreesCostOneComparison
       assertEquals(-1, local.findFirstDifference(remote));
       assertEquals(1, local.comparisons(), "블록 1024개가 같다는 것을 뿌리 비교 한 번으로 답한다")
@@ -593,7 +593,7 @@ copy[0][index] = hashing.leafHash(newBlock);
 hash({1, 2}) == hash({2, 1}) == hash({3, 0})
 ```
 
-```
+```text
 local  = [ {1,2}, {7} ]          remote = [ {2,1}, {7} ]
               ^ 다른 블록                       ^
 
@@ -651,7 +651,7 @@ return function.hash(left ++ right);          // nodeHash
 - Q: 접두사가 없으면 무엇이 성립하는가?\
   A: `leafHash(x || y) == nodeHash(x, y)` 가 성립한다 — 잎과 내부 노드가 **같은 값 공간에 산다**.
 
-```
+```text
 정직한 파일 (블록 4개, 접두사 없음)
 
         뿌리 = H( H(h0||h1) || H(h2||h3) )
@@ -684,7 +684,7 @@ return function.hash(left ++ right);          // nodeHash
   README 가 변종으로 확인해 적어뒀다 — 잎 접두사만 지워도 두 공간이 아직 갈라져 있어 공격이 안 되고, **둘을 같은 값으로 만드는 순간** 성립한다.\
   즉 막아주는 것은 "0x00 이라는 바이트"가 아니라 **두 해시 공간의 분리**다.
 
-```
+```text
   잎 접두사   내부 접두사   두 공간이 겹치나   공격
   ---------   -----------   ----------------   -----
   0x00        0x01          아니다             안 된다   <- PrefixedHashing
@@ -712,7 +712,7 @@ byte[] right = i + 1 < level.size() ? level.get(i + 1) : left;
 next.add(hashing.nodeHash(left, right));
 ```
 
-```
+```text
 잎이 3개일 때 두 규칙
 
   승격 (이 구현)                        자기 자신과 짝짓기 (비트코인)
@@ -739,7 +739,7 @@ next.add(hashing.nodeHash(left, right));
   잎 3개짜리 트리에서 높이는 2인데 2번 잎의 증명은 걸음이 1개뿐이다 — 0층에 형제가 없기 때문이다.\
   그래서 증명의 길이만 봐도 "이건 마지막 승격된 잎이다"를 알 수 있다.
 
-```
+```text
   OddLeafCountTest.promotionShortensTheProof
       assertEquals(2, tree.height());
       assertEquals(2, tree.proofFor(0).size());
@@ -760,7 +760,7 @@ next.add(hashing.nodeHash(left, right));
 
 **접근 비교**
 
-```
+```text
   규칙                    서로 다른 목록이 같은 뿌리를 낼 수 있나   증명 길이가 일정한가
   ---------------------   ---------------------------------------   --------------------
   승격 (이 구현)          아니다                                   아니다 (마지막이 짧다)
@@ -801,7 +801,7 @@ next.add(hashing.nodeHash(left, right));
   26번과 27번은 잎의 **값**만 갈고 자리(구조)는 그대로다 — 그래서 경로 위의 노드만 다시 만들면 되고 옆가지는 옛 객체를 그대로 가리킨다.\
   28번 로프에서는 잎을 **자르고 붙인다** — 길이가 달라지므로 그 위 내부 노드들이 들고 있는 `weight`(왼쪽 부분트리의 길이)가 바뀌고, 트리의 **모양 자체**가 달라진다.
 
-```
+```text
   27번 머클 트리 — 잎을 갈면 경로만 다시 만든다
      [b0][b1][b2][b3]  ->  [b0][b1'][b2][b3]
      노드 7개 중 3개(잎1 + 경로2)만 새로 만든다. 자리·개수는 그대로다.

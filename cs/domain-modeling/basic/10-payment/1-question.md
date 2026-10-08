@@ -1,4 +1,4 @@
-# domain-modeling-basic/10-payment — 질문
+# domain-modeling/basic/10-payment — 질문
 
 ## 질문
 

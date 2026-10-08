@@ -59,7 +59,7 @@ public static CharSequenceStore applyEdits(CharSequenceStore doc, List<Edit> edi
 
 **편집 m 개를 n 자 문서에 적용할 때 총 복사량**
 
-```
+```text
 같은 편집 1000번을 두 저장소에 똑같이 준다 (4096자 문서, leafMax 32, 흩뿌린 자리)
 
   StringBuilderStore   4,595,500 글자
@@ -184,7 +184,7 @@ if (offA == bufA.length() && offB == bufB.length()
 
 **33 글자만 비교하는 근거와 그 33의 정체**
 
-```
+```text
 base = 4096자, leafMax 32 -> 잎 128개짜리 완전 이진 트리 (노드 255개, 깊이 7)
 tailA = base.insert(4096, "1")      tailB = base.insert(4096, "2")
 
@@ -215,7 +215,7 @@ tailA = base.insert(4096, "1")      tailB = base.insert(4096, "2")
 
 **그 근거가 성립하지 않는 입력**
 
-```
+```text
   같은 내용, 따로 만든 두 로프
       Rope a = new Rope(body + "1", 32);
       Rope b = new Rope(body + "2", 32);
@@ -263,7 +263,7 @@ tailA = base.insert(4096, "1")      tailB = base.insert(4096, "2")
   그리고 그것이 **타자 한 번마다** 일어난다.\
   (10MB 규모를 직접 재는 테스트는 없다 — 테스트의 최대 규모는 10만 자다. 위 셋 중 테스트로 확인되는 것은 로프 쪽의 "잎 하나"이고 `assertEquals(32, rope.charsCopiedTotal())` 이 그 값이다.)
 
-```
+```text
 문서: [ ............ 10,000,000 글자 ............ ]
                         ^ 여기에 'x' 한 글자
 
@@ -308,7 +308,7 @@ tailA = base.insert(4096, "1")      tailB = base.insert(4096, "2")
   A: **트리를 유지하는 값이 이득보다 크기 때문**이다.\
   10글자 문서에서 세 글자를 지우면 로프는 잎 둘을 쪼개느라 8글자를 옮기고, 기준선은 7글자만 옮긴다.
 
-```
+```text
   "abcdefghij" (leafMax 4) -> 잎 ["abcd"]["efgh"]["ij"]
   delete(3, 6) 을 시킨다
 
@@ -356,7 +356,7 @@ while (!node.isLeaf()) {
 }
 ```
 
-```
+```text
 "Hello_World_of_the_Rope" 를 잎 넷으로 담은 로프에서 charAt(14)
 
                 (weight=12, len=23)
@@ -392,7 +392,7 @@ static Node concatNodes(Node a, Node b) {
   누군가 그 노드를 고칠 수 있으면 한쪽을 고쳤을 때 다른 쪽 문서가 조용히 바뀐다 — 그 순간 "양쪽 다 안 바뀐다"는 `concat` 의 계약이 깨진다.\
   `Node` 의 여섯 필드가 전부 `final` 이고 로프가 `final class` 인 것이 그 계약의 코드 쪽 표현이고, 26번 영속 자료구조가 서 있던 바로 그 자리다.
 
-```
+```text
 4096자 문서(leafMax 32, 노드 255개) 를 한 번 고친다
 
   Rope edited = base.insert(2050, "X");
@@ -435,7 +435,7 @@ for (int i = 0; i < 1000; i++) {
 // assertEquals(1000, rope.leafCount()); assertEquals(1999, rope.nodeCount());
 ```
 
-```
+```text
   한쪽으로만 붙이면 트리가 한 줄이 된다
 
       (new)                          이어붙이기 한 번 = 뿌리 하나 추가 = 깊이 +1
@@ -474,7 +474,7 @@ public Rope rebalance() {
 }
 ```
 
-```
+```text
   깊이 999 짜리 로프를 rebalance 하면
 
       깊이      999  ->  10          (잎 1000개의 균형 트리 높이)
@@ -511,7 +511,7 @@ public Rope rebalance() {
 - Q: 1 / 4 / 32 / 256 / 4096 에서 노드 수·조회 방문 노드·편집 복사량이 어떻게 움직이는가?\
   A: 아래 표가 전부다 — **작으면 노드가 폭발하고 크면 복사가 폭발한다**.
 
-```
+```text
 4096자 문서를 짓고, 전체를 한 번 훑고(4096번 조회), 정해진 자리 200곳에 한 글자씩 넣는다
 
   leafMax   깊이   노드 수   4096번 조회의 방문 노드   편집 200번이 옮긴 글자
@@ -557,7 +557,7 @@ public Rope rebalance() {
 
 **접근 비교**
 
-```
+```text
   선택                    조회         편집 복사       메모리(노드)      쓸 자리
   ---------------------   ----------   ------------   --------------   -------------------
   leafMax 아주 작게       비싸다       0에 가깝다     폭발한다         편집만 극단적으로 많을 때
@@ -582,7 +582,7 @@ public Rope rebalance() {
 - Q: 01번은 연속으로 놓아 조회를 샀고 28번은 트리에 흩어 놓아 편집을 샀다 — 이 말을 지금까지의 구조들로 어떻게 정리할 수 있는가?\
   A: **자료구조는 데이터를 바꾸는 것이 아니라 데이터를 놓는 방식을 고르는 것**이고, 그 선택은 언제나 "무엇을 싸게 하고 무엇을 비싸게 할 것인가"의 교환이다.
 
-```
+```text
   같은 데이터, 다른 배치, 다른 워크로드
 
   배치                       산 것                   내준 것              대표

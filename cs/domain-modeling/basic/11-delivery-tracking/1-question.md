@@ -1,4 +1,4 @@
-# domain-modeling-basic/11-delivery-tracking — 질문
+# domain-modeling/basic/11-delivery-tracking — 질문
 
 ## 질문
 

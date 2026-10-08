@@ -13,7 +13,7 @@
   즉 파일 끝에 이어 쓰는 것이 아니라 파일 중간의 특정 위치를 고치는 것이고, 그것이 임의 쓰기다.\
   잎이 꽉 차 있으면 분할이 일어나 부모 페이지까지 같이 고쳐야 하므로 고쳐 쓰는 자리가 더 늘어난다.
 
-```
+```text
 15번 B+트리에 키 하나 넣기 : 자리를 찾아가 그 자리를 고친다
 
     [ 루트 ]                   1. 루트 페이지 읽기
@@ -40,7 +40,7 @@
   그래서 "페이지 한 장을 제자리에서 고친다"는 요청이 실제로는 블록 전체를 다른 곳으로 옮겨 쓰고 옛 블록을 지우는 일이 된다.\
   순차로 쭉 쓰면 빈 블록을 앞에서부터 채우기만 하므로 옮길 것도 지울 것도 없다.
 
-```
+```text
 SSD 에서 "제자리를 고친다" 가 실제로 하는 일
 
     블록 (지우기 단위 = 페이지 여러 장 묶음)
@@ -189,7 +189,7 @@ public void put(K key, V value) {
   같은 값 하나에 두 가지 뜻을 얹으면, 받는 쪽은 둘을 갈라낼 정보가 없다.\
   그래서 삭제 표식은 `null` 이 **아닌** 다른 무엇이어야 하고, 그 자리가 `Tombstone.MARKER` 다.
 
-```
+```text
 값 자리에 올 수 있는 것 세 가지와 그 뜻
 
     "old"      살아 있는 값                 -> 이 값을 답으로 삼고 멈춘다
@@ -303,7 +303,7 @@ return null;                            // 없는 키는 여기까지 온다
   A: 키가 사는 층의 깊이만큼만 내려가기 때문이고, 그 깊이가 100개씩 균등하게 퍼져 있기 때문이다.\
   손으로 계산해 보면 그대로 5500 이 나온다.
 
-```
+```text
 설정 : new LsmTree<>(100, false) 에 키 0..999 를 순서대로 put
        (ReadAmplificationTest.tenTables — 블룸을 꺼서 순수한 층 비용만 본다)
 
@@ -379,7 +379,7 @@ put 100 번마다 flush 가 일어나고, 새 장은 항상 sstables.add(0, froz
   A: 장마다 블룸 필터가 하나씩 붙어 있고, "확실히 없다"고 답한 장은 이진 탐색조차 하지 않아 `diskReads` 가 오르지 않는다.\
   그래서 실제로 디스크를 읽는 횟수는 **블룸이 통과시킨 횟수**와 같고, 없는 키에 대해 통과되는 것은 전부 오탐이다.
 
-```
+```text
 블룸 필터가 있을 때 없는 키 조회
 (ReadAmplificationTest.BloomFilterEffect.absentKeysWithAndWithoutBloom)
 
@@ -428,7 +428,7 @@ static long mix64(long z) {
 - Q: 그런데 **있는 키에는 왜 별로 못 줄이는가**?\
   A: 있는 키의 비용은 두 부분으로 쪼개지는데, 블룸이 지울 수 있는 것은 그중 한쪽뿐이기 때문이다.
 
-```
+```text
 있는 키 1000 개를 전부 조회하면
 (ReadAmplificationTest.BloomFilterEffect.presentKeysGainLess)
 
@@ -515,7 +515,7 @@ public double spaceAmplification() {
 - Q: 같은 키를 100번 갱신하면 공간 증폭이 얼마인가?\
   A: **100배**다.
 
-```
+```text
 같은 키를 100 번 갱신 (SpaceAmplificationTest.hundredVersionsOfOneKey)
 
     LsmTree<Integer,String> t = new LsmTree<>(100);
@@ -543,7 +543,7 @@ public double spaceAmplification() {
   A: compaction 이 **살아 있는 것 전부를 매번 다시 쓰기** 때문이다.\
   라운드가 뒤로 갈수록 다시 쓸 양이 누적되어 커지고, 그 누적치의 합이 원래 쓴 양을 훌쩍 넘는다.
 
-```
+```text
 100 개마다 합치면 순차 쓰기가 얼마나 늘어나는가
 (SpaceAmplificationTest.compactionCostsWrites — 키 0..999, 임계 100, 블룸 끔)
 
@@ -582,7 +582,7 @@ public double spaceAmplification() {
   반대로 안 합치면 쓰기는 딱 한 번씩만 하지만 층이 쌓여 읽기와 공간이 나빠진다.\
   같은 테스트 안에서 두 나무가 정확히 반대 방향으로 값을 내는 것이 이 결론의 실측 근거다.
 
-```
+```text
 증폭 삼각형 — 손잡이는 하나뿐인데 세 꼭짓점이 동시에 움직인다
 
                       +-------------------+
@@ -620,7 +620,7 @@ public double spaceAmplification() {
   그 상태에서 가리개를 버리면 가려지던 옛 값은 그대로 남은 채 가리개만 사라진다.\
   그러면 조회가 합쳐진 장에서 아무것도 못 찾고 아래로 내려가, 죽었어야 할 값을 답으로 물어온다.
 
-```
+```text
 TombstoneTest.Resurrection.threeLayers() 가 만드는 상태
 
     t.put(7, "old"); t.flush();
@@ -749,7 +749,7 @@ out.add(SSTable.cell(best, value));
   세 곳이 전부 "앞이 최신"이라는 같은 약속 위에 서 있고, 하나만 어겨도 옛 판본이 답으로 올라온다.\
   TreeMap 은 제자리 갱신을 하는 정상 맵이므로 항상 최신 값을 들고 있고, 두 답을 스텝마다 비교하면 즉시 어긋난다.
 
-```
+```text
 impl 에서 "앞이 최신" 이 걸려 있는 자리 셋
 
   LsmTree.get           for (SSTable<K,V> table : sstables)
@@ -792,7 +792,7 @@ for (SSTable<K, V> table : sstables) {                   // index 0 부터, 즉 
   장이 하나뿐이면 어느 방향으로 훑든 결과가 같아서 어떤 구현이든 통과한다.\
   그래서 대조 테스트는 그 조건을 **강제로** 만든다.
 
-```
+```text
 LsmTreeCrossCheckTest.matchesTreeMap 이 조건을 만드는 방법
 
     임계치 4 종 {1, 3, 16, 128}  x  각 2 만 스텝
@@ -926,7 +926,7 @@ public List<K> keys() {
   대신 메모리를 더 오래 더 많이 붙잡고, WAL 이 없는 이 구현에서는 잃을 수 있는 데이터의 양이 그만큼 커진다.\
   줄이면 반대다 — 메모리는 적게 쓰고 유실 창도 짧지만 층이 폭발해 읽기가 나빠진다.
 
-```
+```text
 임계치가 만드는 차이 (전부 테스트에 assert 된 값이다)
 
     임계 4    + 키 12 개    ->  SSTable 3 장,   flushCount 3,   136 바이트
@@ -985,7 +985,7 @@ public List<K> keys() {
 - Q: 실무 LSM 과 다른 점 셋이 각각 무엇을 못 하게 하는가?\
   A: README 가 드는 셋은 **평평한 층 · WAL 없음 · TreeMap memtable** 이다.
 
-```
+```text
 1. 평평한 층 (leveled compaction 이 없다)
 
     여기 : SSTable 이 그냥 한 줄로 쌓인다. 크기 제한도 층 개념도 없다
@@ -1127,7 +1127,7 @@ int[] indexes(Object item) {
   그래서 이 검사를 지우면 2개가 무너진다 — `rejectsUnsorted`(3 다음에 1) 와 `rejectsDuplicates`(같은 키 두 번).\
   README 의 표현대로 "정상 경로에서는 도달할 수 없지만" 이쪽은 테스트가 잡고 `h2 == 0` 은 못 잡는다.
 
-```
+```text
 두 방어의 차이
 
                       정상 경로에서 도달?   테스트가 그 입력을 만들 수 있나?   지우면
@@ -1162,7 +1162,7 @@ int[] indexes(Object item) {
   어느 쪽도 총비용을 줄이지 않았다 — **비용을 내는 시점과 주체만 바꿨다.**\
   그래서 "무엇이 더 빠른가"라는 질문은 성립하지 않고, "내 워크로드에서 어느 쪽 계정이 싼가"만 성립한다.
 
-```
+```text
 같은 데이터, 같은 답, 다른 계산서
 
     15번 B+트리                        24번 LSM 트리
@@ -1196,7 +1196,7 @@ int[] indexes(Object item) {
   그 미룬 일이 층으로 쌓여 읽기와 공간을 무겁게 만들고, compaction 이 돌 때 한꺼번에 청구된다.\
   한쪽은 비용을 **앞당겨** 지역성을 사고, 다른 쪽은 **미뤄서** 쓰기 처리량을 산다.
 
-```
+```text
 비용을 언제 내는가
 
     23번 스플레이 트리                   24번 LSM 트리

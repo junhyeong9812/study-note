@@ -1,4 +1,4 @@
-# cs/striping — Striping: 하나의 ledger를 여러 Bookie에 담자 (BookKeeper) — 정리 (힌트)
+# systems/striping — Striping: 하나의 ledger를 여러 Bookie에 담자 (BookKeeper) — 정리 (힌트)
 
 ## 해결하는 문제
 

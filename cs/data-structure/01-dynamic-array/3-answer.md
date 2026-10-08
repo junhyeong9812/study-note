@@ -21,7 +21,7 @@ for (int i = 0; i < array.size(); i++) {
 return result.size();
 ```
 
-```
+```text
 처리 과정 : [1,1,2,2,2,3] -> 새 배열 result 에 살릴 것만 쌓는다
 
     원본 array (get 만 한다 -> 끝나도 그대로 남는다)
@@ -68,7 +68,7 @@ public static int removeDuplicatesSorted(DynamicArray<Integer> array) {
 }
 ```
 
-```
+```text
 처리 과정 : [1,1,2,2,2,3], i 가 5 에서 0 까지 내려온다
             조건 = i != 0 && get(i) == get(i-1) 이면 remove(i)
 
@@ -153,7 +153,7 @@ public static int removeDuplicatesSorted(DynamicArray<Integer> array) {
 }
 ```
 
-```
+```text
 처리 과정 : [1,1,2,2,2,3], read 는 매 칸 전진 / writePlace 는 살릴 때만 전진
             판정 = get(read) 가 get(writePlace - 1) (마지막으로 살린 값) 과 다른가
 
@@ -321,7 +321,7 @@ for (int i = 0; i < n; i++) tmp[(i + shift) % n] = array.get(i);
 for (int i = 0; i < n; i++) array.set(i, (E) tmp[i]);
 ```
 
-```
+```text
 처리 과정 : [1,2,3,4,5], k=2 -> shift = ((2 % 5) + 5) % 5 = 2
 
     원본 array
@@ -386,7 +386,7 @@ private static <E> void reverse(DynamicArray<E> array, int from, int to) {
 }
 ```
 
-```
+```text
 처리 과정 : [1,2,3,4,5], k=2   (n = 5)
 
     [0] 정규화 : shift = ((k % n) + n) % n
@@ -425,7 +425,7 @@ private static <E> void reverse(DynamicArray<E> array, int from, int to) {
 - 논리: 정규화가 먼저다 — k 가 n 보다 클 수 있고 음수일 수도 있다.
 - 논리: `n == 0` 이면 `%` 가 ArithmeticException 이므로 빈 배열을 가장 먼저 막는다.
 - 논리: 손으로 따라가면 이렇다.
-  ```
+  ```text
   [1,2,3,4,5] k=2
   전체 뒤집기     -> [5,4,3,2,1]
   앞 k 개 뒤집기   -> [4,5,3,2,1]
@@ -444,7 +444,7 @@ private static <E> void reverse(DynamicArray<E> array, int from, int to) {
 for (int i = 0; i < k; i++) array.add(array.remove(0));
 ```
 
-```
+```text
 처리 과정 : [1,2,3,4,5] 에 k=2 로 그대로 돌려본다
 
     1회차 : remove(0) 으로 1 을 떼고, 뗀 1 을 맨 뒤에 add
@@ -550,7 +550,7 @@ array.add(i, value);
 return i;
 ```
 
-```
+```text
 처리 과정 : [1,3,5] 에 4 삽입 -> 같은 값이 있는 경우로 [1,3,3,5] 에 3 삽입
 
     idx    0     1     2     3
@@ -607,7 +607,7 @@ public static int insertSorted(DynamicArray<Integer> array, int value) {
 }
 ```
 
-```
+```text
 처리 과정 : [1,3,3,5] 에 3 삽입 — 찾는 것은 "3 보다 큰 첫 위치"(upper bound)
 
     lo = 0, hi = array.size() = 4     (hi 를 size 로 잡아 "맨 뒤"도 답이 될 수 있게 한다)
@@ -671,7 +671,7 @@ array.add(value);
 sort(array);   // 삽입 위치는 따로 찾아야 한다
 ```
 
-```
+```text
 처리 과정 : [1,3,3,5] 에 3 삽입
 
     맨 뒤에 붙이고
@@ -770,7 +770,7 @@ for (int i = array.size() - 1; i >= 0; i--) {
 return removed;
 ```
 
-```
+```text
 처리 과정 : [1,2,3,4,5,6] 에서 짝수를 제거 — 만날 때마다 remove(i) 를 부른다
 
     idx    0     1     2     3     4     5
@@ -838,7 +838,7 @@ private static void truncate(DynamicArray<?> array, int newSize) {
 }
 ```
 
-```
+```text
 처리 과정 : [1,2,3,4,5,6] 에서 짝수 제거 — 지우지 않고 "살릴 것만 앞으로" 모은다
             predicate.test(value) 가 true 면 그 칸은 그냥 건너뛴다 (n = 6 을 먼저 고정)
 
@@ -912,7 +912,7 @@ for (int i = 0; i < array.size(); i++)
 // 원본을 kept 로 되채운다
 ```
 
-```
+```text
 처리 과정 : [1,2,3,4,5,6] 에서 짝수 제거 — 살릴 것만 새 배열 kept 에 담는다
 
     원본 array
@@ -1020,7 +1020,7 @@ for (int j = 0; j < b.size(); j++) result.add(b.get(j));
 sort(result);
 ```
 
-```
+```text
 처리 과정 : [1,3,5] + [2,3,6] — 정렬되어 있다는 사실을 쓰지 않는다
 
     a                                b
@@ -1076,7 +1076,7 @@ public static DynamicArray<Integer> merge(DynamicArray<Integer> a, DynamicArray<
 }
 ```
 
-```
+```text
 처리 과정 : [1,3,5] + [2,3,6] — 양쪽 맨 앞만 비교해 작은 쪽을 담는다
             result 는 a.size() + b.size() = 6 칸을 미리 잡고 시작한다 (확장 0회)
 
@@ -1128,7 +1128,7 @@ DynamicArray<Integer> result = copyOf(a);
 for (int j = 0; j < b.size(); j++) insertSorted(result, b.get(j));
 ```
 
-```
+```text
 처리 과정 : result = copyOf(a) = [1,3,5] 에 b 의 원소를 하나씩 밀어넣는다
 
     insertSorted(result, 2) : 자리 1 -> 뒤의 3, 5 를 한 칸씩 민다 (복사 2회)

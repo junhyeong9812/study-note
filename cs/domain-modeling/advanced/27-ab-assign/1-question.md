@@ -1,4 +1,4 @@
-# domain-modeling-advanced/27-ab-assign — 질문
+# domain-modeling/advanced/27-ab-assign — 질문
 
 ## 질문
 

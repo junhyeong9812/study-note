@@ -1,4 +1,4 @@
-# cs/straggler — Straggler와 Tail Latency — 질문
+# systems/straggler — Straggler와 Tail Latency — 질문
 
 ## 질문
 

@@ -1,4 +1,4 @@
-# 이벤트 소싱 — 질문
+# systems/event-sourcing — 이벤트 소싱 — 질문
 
 ## 질문
 

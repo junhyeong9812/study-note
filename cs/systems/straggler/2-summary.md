@@ -1,4 +1,4 @@
-# cs/straggler — Straggler와 Tail Latency — 정리 (힌트)
+# systems/straggler — Straggler와 Tail Latency — 정리 (힌트)
 
 ## 해결하는 문제
 

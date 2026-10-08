@@ -1,4 +1,4 @@
-# api-design/05-delivery-webhook — 질문
+# api-design/26-case-delivery-webhook — 질문
 
 ## 질문
 

@@ -29,7 +29,7 @@ public Ordering compare(Long a, Long b) {
 }
 ```
 
-```
+```text
 receive 의 세 갈래 : A(값 3)가 B(값 0)에게 보낸다
 
   정답  max(0, 3) + 1 = 4     보낸 3 < 받은 4   — 인과가 값 순서로 남는다
@@ -95,7 +95,7 @@ public Ordering compare(VersionVector a, VersionVector b) {   // TODO 6
 }
 ```
 
-```
+```text
 receive 순서가 갈리는 곳 : 재기동한 A(빈 벡터 {})가 B 에게서
                           자기 옛 값이 든 {A=5, B=2} 를 되받는다
 

@@ -1,4 +1,4 @@
-# domain-modeling-basic/15-coupon — 정리 (힌트)
+# domain-modeling/basic/15-coupon — 정리 (힌트)
 
 ## 해결하는 문제
 

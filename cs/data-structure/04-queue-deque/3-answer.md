@@ -24,7 +24,7 @@ while (q.size() > 1) {
 return true;
 ```
 
-```
+```text
 "abba" 를 큐에 담았다 (앞 <- 나간다,  들어온다 -> 뒤)
 
     q :  앞 [ a | b | b | a ] 뒤        size = 4
@@ -72,7 +72,7 @@ while (l < r) {
 return true;
 ```
 
-```
+```text
 "race a car"  (공백은 건너뛴다)
 
     idx   0   1   2   3   4   5   6   7   8   9
@@ -116,7 +116,7 @@ public static boolean isPalindrome(String input, Deque<Character> buffer) {
 }
 ```
 
-```
+```text
 [1] 담기 : 영숫자만 골라 소문자로 바꿔 뒤에 붙인다 (addLast)
     "A man, a plan, a canal: Panama"  ->  amanaplanacanalpanama   (21자)
     걸러진 것 : 공백, 쉼표, 콜론
@@ -216,7 +216,7 @@ for (int s = 0; s + k <= n; s++) {          // 창의 시작 위치
 }
 ```
 
-```
+```text
 [1, 3, -1, -3, 5, 3, 6, 7], k = 3
 
   창 0   [ 1   3  -1 ] -3   5   3   6   7      3개를 훑어 max = 3
@@ -258,7 +258,7 @@ for (int s = 1; s + k <= n; s++) {
 }
 ```
 
-```
+```text
 최악 입력 = 내림차순  [7, 6, 5, 4, 3, 2, 1], k = 3
     (mustBeLinear 가 values[i] = n - i 로 만드는 바로 그 모양이다)
 
@@ -311,7 +311,7 @@ public static int[] slidingWindowMax(int[] values, int k, Deque<Integer> buffer)
 }
 ```
 
-```
+```text
 values = [1, 3, -1, -3, 5, 3, 6, 7],  k = 3
 데크에는 "값"이 아니라 "인덱스"를 담는다. 괄호 안은 그 인덱스의 값이다
 
@@ -356,7 +356,7 @@ values = [1, 3, -1, -3, 5, 3, 6, 7],  k = 3
        ^앞: 지금 답            ^뒤: 지금은 아니지만 앞의 것들이 창을 벗어나면 답이 될 후보
 ```
 
-```
+```text
 창을 벗어난 후보가 "앞쪽 끝"에서 빠지는 이유
 
     버퍼에 담긴 인덱스는 항상 증가 순서다 (i 가 커지는 순서로만 addLast 하니까)
@@ -454,7 +454,7 @@ for (int i = 0; i < input.length(); i++) {
 }
 ```
 
-```
+```text
 "abcabc" 의 i = 3 시점 ("abca" 까지 읽었다)
 
     a 를 후보로 -> 0..3 을 훑어 'a' 개수 = 2  -> 탈락
@@ -492,7 +492,7 @@ for (int i = 0; i < input.length(); i++) {
 }
 ```
 
-```
+```text
 "abcabc" 의 i = 4 시점 ("abcab" 까지)
 
     counts    a:2  b:2  c:1   나머지 0
@@ -533,7 +533,7 @@ public static String firstUniqueStream(String input, Queue<Character> buffer) {
 }
 ```
 
-```
+```text
 "abcabc" 전체 추적   (버퍼는 앞 [ ... ] 뒤)
 
  i=0 'a'  counts a:1                버퍼 [ a ]
@@ -630,7 +630,7 @@ reverse(a, 0, shift - 1);
 reverse(a, shift, n - 1);
 ```
 
-```
+```text
 [1,2,3,4,5], k=2 -> shift=2
 
     전체 뒤집기      5 4 3 2 1
@@ -656,7 +656,7 @@ for (int i = 0; i < k; i++) {       // k 를 그대로 쓴다
 }
 ```
 
-```
+```text
 [1,2,3], k = 3,000,000  (테스트 handlesLargeAndNegativeK 의 실제 값)
 
     n = 3 이므로 3번 돌면 제자리로 돌아온다
@@ -689,7 +689,7 @@ public static <E> void rotate(Deque<E> deque, int k) {
 }
 ```
 
-```
+```text
 [1] 기본 예 : [1,2,3,4,5], k = 2 -> shift = ((2 % 5) + 5) % 5 = 2
 
     시작        앞 [ 1 | 2 | 3 | 4 | 5 ] 뒤
@@ -789,7 +789,7 @@ public static <E> void rotate(Deque<E> deque, int k) {
 - Q: "먼저 온 것이 먼저 나가야 하는" 문제를 스택으로 흉내내면 무슨 대가를 치르는가.\
   A: 대표적으로 **스택 두 개**를 쓴다 — `in` 스택에 넣고, `out` 스택이 비었을 때만 `in` 을 전부 쏟아 옮긴 뒤 `out` 에서 꺼낸다.
 
-```
+```text
 스택 두 개로 큐 흉내내기
 
     enqueue(1,2,3)                     dequeue() 호출
@@ -861,7 +861,7 @@ public static <E> void rotate(Deque<E> deque, int k) {
   `enqueue` 도 마찬가지로 "다음에 쓸 칸"을 계산해 한 칸 쓰는 것이 전부다.\
   즉 비용의 정체는 자료의 이동량이고, head 표지는 그 이동을 없애기 위한 장치다.
 
-```
+```text
 head 를 두지 않았다면 (dequeue 마다 앞당김)
         +-----+-----+-----+-----+-----+
         |  C  |  D  |  E  |     |     |
@@ -885,7 +885,7 @@ head 를 두면 (impl)
   `% elements.length` 하나를 붙이면 인덱스가 끝을 넘는 순간 0으로 되감겨 그 칸이 되살아난다.\
   impl 에서는 그 계산이 `int indexOf(int i) { return (head + i) % elements.length; }` 한 메서드로 모여 있고, `enqueue`·`peek`·`toString`·`clear`·확장이 전부 이것 하나를 통해 자리를 정한다.
 
-```
+```text
 capacity 5, head = 3, size = 3   ->  인덱스 3, 4, 0 에 감겨 있다
 
   idx   0     1     2     3     4
@@ -934,7 +934,7 @@ capacity 5, head = 3, size = 3   ->  인덱스 3, 4, 0 에 감겨 있다
   A: 두 테스트는 초기 용량 4로 시작해 `enqueue` → `dequeue` 를 1,000번 반복하는 **완전히 같은 시나리오**다.\
   갈리는 지점은 `ensureCapacity` 에 넘기는 값이다.
 
-```
+```text
 ArrayQueue.enqueue :  ensureCapacity(head + size + 1)      <- head 왼쪽 죽은 칸까지 포함해 센다
 CircularQueue.enqueue : ensureCapacity(size + 1)           <- 살아 있는 개수만 센다
 
@@ -987,7 +987,7 @@ CircularQueue.enqueue : ensureCapacity(size + 1)           <- 살아 있는 개�
 - Q: `head == tail` 이 왜 모호한가.\
   A: 원형 배열에서는 "한 바퀴 돌아 제자리"와 "처음부터 제자리"가 같은 그림이기 때문이다.
 
-```
+```text
 capacity 4, tail = "다음에 쓸 칸" 이라고 두면
 
   [A] 비었다                          [B] 꽉 찼다
@@ -1031,7 +1031,7 @@ capacity 4, tail = "다음에 쓸 칸" 이라고 두면
   A: 감긴 상태에서는 **배열에 저장된 순서(물리 순서)와 줄 선 순서(논리 순서)가 다르기** 때문이다.\
   통째 복사는 물리 순서를 그대로 옮기므로 논리 순서가 깨진다.
 
-```
+```text
 감긴 상태 : capacity = 5, head = 3, size = 5   (논리 순서는 C D E F G)
 
   idx    0     1     2     3     4
@@ -1077,7 +1077,7 @@ capacity 4, tail = "다음에 쓸 칸" 이라고 두면
   더 나쁜 것은 자바의 `%` 가 음수를 그대로 음수로 돌려준다는 점이다 — `(0 - 1) % 5 = -1` 이라 모듈러를 붙여도 안 고쳐진다.\
   그래서 `ArrayDeque.addFirst` 는 빼기 전에 배열 길이를 더한다.
 
-```
+```text
 addFirst 의 되감기 :  head = (head - 1 + elements.length) % elements.length;
 
   capacity 4, head = 0, size = 2 에서 addFirst(0)
@@ -1108,7 +1108,7 @@ addFirst 의 되감기 :  head = (head - 1 + elements.length) % elements.length;
 - Q: `ArrayQueue` 에 `enqueue`/`dequeue` 를 번갈아 n 번 하면 배열 길이와 총 비용이 어떻게 되는가.\
   A: 담긴 개수는 늘 0~1개인데 배열 길이는 **n 이상이 되는 가장 작은 2의 거듭제곱**까지 자란다.
 
-```
+```text
 enqueue/dequeue 를 번갈아 n = 1,000 번 (초기 용량 4) — wastesSpace 의 시나리오
 
   i 번째 enqueue 시점 : head = i, size = 0  ->  ensureCapacity(i + 1)
@@ -1231,7 +1231,7 @@ enqueue/dequeue 를 번갈아 n = 1,000 번 (초기 용량 4) — wastesSpace �
   `Queue` 에는 `enqueue`/`dequeue`/`peek`/`size`/`isEmpty`/`clear` 뿐이라, 안을 보려면 `dequeue` 로 전부 꺼냈다가 다시 넣어야 한다(1번 문제의 접근 1과 같은 회전).\
   즉 **조회 한 번이 자료구조를 파괴하고 원상복구까지 O(n)** 이다.
 
-```
+```text
 "값 42 가 큐에 있나?" 를 Queue 계약만으로 묻기
 
   q : 앞 [ 7 | 42 | 13 | 9 ] 뒤

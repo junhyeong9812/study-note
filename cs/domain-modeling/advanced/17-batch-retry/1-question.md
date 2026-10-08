@@ -1,4 +1,4 @@
-# domain-modeling-advanced/17-batch-retry — 질문
+# domain-modeling/advanced/17-batch-retry — 질문
 
 ## 질문
 

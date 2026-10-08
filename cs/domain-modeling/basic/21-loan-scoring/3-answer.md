@@ -1,4 +1,4 @@
-# domain-modeling-basic/21-loan-scoring — 정답
+# domain-modeling/basic/21-loan-scoring — 정답
 
 ## 정답
 

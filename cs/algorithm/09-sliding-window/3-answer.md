@@ -36,7 +36,7 @@ public static long maxSum(CountedArray a, int k) {
 
 `sums`는 같은 뼈대에서 최댓값 갱신 대신 `out[0] = 첫 창의 합`, 이후 `out[i - k + 1] = sum`으로 전부 모은다. 결과 배열 길이는 `n - k + 1`.
 
-```
+```text
 처리 과정 : [1, 2, 3, 4, 5], k = 2 (WindowTest.maxSum 의 입력)
 
     idx    0     1     2     3     4
@@ -169,7 +169,7 @@ public static int longestDistinct(CountedArray a) {
 }
 ```
 
-```
+```text
 처리 과정 1 : shortestAtLeast([2, 3, 1, 2, 4, 3], target = 7)
 
     idx    0     1     2     3     4     5
@@ -190,7 +190,7 @@ public static int longestDistinct(CountedArray a) {
  길이는 당기기 전(조건이 아직 참일 때) 잰다. hi 도 lo 도 되돌아가지 않는다.
 ```
 
-```
+```text
 처리 과정 2 : longestDistinct([1, 2, 1, 3]) — lo 가 되돌아가면 안 되는 판
 
     idx    0     1     2     3
@@ -314,7 +314,7 @@ public static int[] maxOfEachWindow(CountedArray a, int k, CountedDeque deque) {
 }
 ```
 
-```
+```text
 처리 과정 : [1, 3, -1, -3, 5, 3, 6, 7], k = 3 (WindowTest 의 입력)
             덱 표기 [인덱스(값)] — 값이 아니라 인덱스를 담는다
 

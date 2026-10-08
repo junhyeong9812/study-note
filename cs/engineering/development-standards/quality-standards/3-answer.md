@@ -1,4 +1,4 @@
-# cs/development-standards/quality-standards — 품질 기준 (ISO/IEC 25010:2023) — 정답
+# engineering/development-standards/quality-standards — 품질 기준 (ISO/IEC 25010:2023) — 정답
 
 ## 정답
 

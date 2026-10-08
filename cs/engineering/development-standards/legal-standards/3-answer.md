@@ -1,4 +1,4 @@
-# cs/development-standards/legal-standards — 법률 기준 (개인정보보호법 + 관련 법령) — 정답
+# engineering/development-standards/legal-standards — 법률 기준 (개인정보보호법 + 관련 법령) — 정답
 
 ## 정답
 

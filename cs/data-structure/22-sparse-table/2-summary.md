@@ -83,7 +83,7 @@
 
 #### 구조
 
-```
+```text
 table[k][i] = i 에서 시작하는 길이 2^k 구간 [i, i + 2^k - 1] 의 답 (0-base, 양끝 포함)
 
 SparseTable (n = 8, min 을 예로)
@@ -142,7 +142,7 @@ SparseTable (n = 8, min 을 예로)
 
 **언제 쓰나** — 표를 처음 지을 때 한 번. 아래층(짧은 묶음)의 답 두 개를 붙여 위층(2배 긴 묶음)의 답을 만든다.
 
-```
+```text
 build() : 아래층 칸 두 개를 이어 붙여 위층 칸 하나를 만든다 (배증, doubling)
 
   table[k][i] = combine( table[k-1][i],  table[k-1][i + half] ),   half = 1 << (k-1)
@@ -181,7 +181,7 @@ build() : 아래층 칸 두 개를 이어 붙여 위층 칸 하나를 만든다 
 
 **언제 쓰나** — 표가 다 지어진 뒤, 아무 구간 [from, to]의 답을 물을 때. 표 두 칸만 본다.
 
-```
+```text
 query(from, to) : 길이 len = to - from + 1,  k = log[len] = floor(log2 len)
     [from, from + 2^k - 1] 과 [to - 2^k + 1, to] 두 칸을 combine 한다. O(1)
 
@@ -304,7 +304,7 @@ query(from, to) : 길이 len = to - from + 1,  k = log[len] = floor(log2 len)
 
 #### 구조
 
-```
+```text
 gcd 도 멱등이라 SparseTable 의 "겹쳐도 되는" 조회를 그대로 쓴다 (별도 구조가 필요 없다)
 
      gcd(a, a) = a     -> 두 번 세도 답이 그대로   (min / max 와 같은 이유)
@@ -346,7 +346,7 @@ gcd 도 멱등이라 SparseTable 의 "겹쳐도 되는" 조회를 그대로 쓴�
 
 #### 구조
 
-```
+```text
 구간을 겹치지 않게 두 조각으로 나눈다 - 그래서 합처럼 멱등하지 않은 연산도 O(1)
 
 DisjointSparseTable (n = 8, 기본 combine = 합, identity = 0)
@@ -405,7 +405,7 @@ DisjointSparseTable (n = 8, 기본 combine = 합, identity = 0)
 - XOR(^)은 두 수의 비트를 자리별로 비교해 "다르면 1"을 놓는 연산. 1 ^ 6 = 111.
 - 그래서 from ^ to 의 가장 높은 1 자리 = **두 수가 처음으로 갈라지는 자리**다.
 
-```
+```text
 query(from, to) : from 과 to 가 처음으로 갈라지는 비트 자리가 곧 층 번호다
     level = 31 - numberOfLeadingZeros(from ^ to)     (= floor(log2(from ^ to)))
     답 = combine( table[level][from],  table[level][to] )        칸 두 개, O(1)

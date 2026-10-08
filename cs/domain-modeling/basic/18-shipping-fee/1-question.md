@@ -1,4 +1,4 @@
-# domain-modeling-basic/18-shipping-fee — 질문
+# domain-modeling/basic/18-shipping-fee — 질문
 
 ## 질문
 

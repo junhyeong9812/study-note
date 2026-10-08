@@ -1,4 +1,4 @@
-# cs/thrashing — thrashing(스레싱) — 질문
+# systems/thrashing — thrashing(스레싱) — 질문
 
 ## 질문
 

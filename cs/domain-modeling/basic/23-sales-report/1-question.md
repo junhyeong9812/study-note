@@ -1,4 +1,4 @@
-# domain-modeling-basic/23-sales-report — 질문
+# domain-modeling/basic/23-sales-report — 질문
 
 ## 질문
 

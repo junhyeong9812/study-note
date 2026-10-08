@@ -96,7 +96,7 @@ LRU 캐시는 해시맵(어디 있나)과 이중 연결 리스트(언제 썼나)
 
 #### 구조
 
-```
+```text
 LRUCache — "어디 있나"(해시맵)와 "언제 썼나"(이중 연결 리스트)를 붙여 만든다
 +---------------------------------------------------------------+
 | capacity = 3                                                  |
@@ -140,7 +140,7 @@ LRUCache — "어디 있나"(해시맵)와 "언제 썼나"(이중 연결 리스�
 **언제 쓰나** — "그 키의 값 줘"(get).\
 값을 주는 것에 더해, 그 항목을 "방금 씀" 자리로 옮기는 일까지 한다.
 
-```
+```text
 get(key)
     index.get(key) == null   ->  misses++, null 반환. 리스트는 건드리지 않는다
     있으면                    ->  hits++, unlink(node) 하고 linkLast(node), value 반환
@@ -194,7 +194,7 @@ get(key)
 > **축출(eviction)** — 캐시가 자리를 만들려고 스스로 항목을 버리는 것.\
 > 예: 사용자가 직접 부르는 remove와는 다른 사건이라, evictions 통계에 따로 센다.
 
-```
+```text
 put(key, value) 세 갈래
     [1] 이미 있는 키    : 값을 갈아끼우고 맨 뒤로 옮긴다. 축출도 통계 변화도 없다
     [2] 새 키, 자리 있음 : 새 노드를 linkLast 하고 index 에 등록
@@ -349,7 +349,7 @@ clear() : index.clear() 하고 head.next = tail, tail.prev = head 로 되돌린�
 > **accessOrder / removeEldestEntry** — LinkedHashMap의 스위치 두 개: 최근 사용 순 유지 / put 후 가장 오래된 항목 자동 삭제 여부.\
 > 예: `accessOrder = true` 가 직접 짠 unlink + linkLast와 같은 일을, `removeEldestEntry` 가 head.next 축출과 같은 일을 대신한다.
 
-```
+```text
 LinkedHashMapLRU — 리스트를 직접 만들지 않고 java.util.LinkedHashMap 에 맡긴다
 
     new LinkedHashMap<>(16, 0.75f, true)
@@ -482,7 +482,7 @@ LinkedHashMapLRU — 리스트를 직접 만들지 않고 java.util.LinkedHashMa
 > **데코레이터 패턴(decorator)** — 원본 객체를 바꾸지 않고 감싸서 기능(여기서는 잠금)만 덧붙이는 설계 방식.\
 > 예: 감쌀 대상을 생성자로 받으므로 LRUCache든 LinkedHashMapLRU든 그대로 끼울 수 있다.
 
-```
+```text
 ThreadSafeLRUCache — 캐시를 새로 만들지 않는다. 다른 Cache 를 감싸고 락만 두른다
     +---------------------------------+
     | delegate ----> LRUCache (또는   |

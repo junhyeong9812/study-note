@@ -20,7 +20,7 @@ for (int v : values) {
 }
 ```
 
-```
+```text
 처리 과정 : [1,2,2,3,3,3] — 값 하나를 셀 때마다 배열 전체를 다시 읽는다
 
     입력 values
@@ -62,7 +62,7 @@ for (int v : values) count[v]++;
 for (int v = 0; v < M; v++) if (count[v] > 0) counts.put(v, count[v]);
 ```
 
-```
+```text
 처리 과정 : [1,2,2,3,3,3], M = 4 로 가정
 
     count 배열 (값 자체가 인덱스다 — 해시 함수가 "그대로 쓰기"인 셈)
@@ -108,7 +108,7 @@ public static void countFrequencies(int[] values, Map<Integer, Integer> counts) 
 }
 ```
 
-```
+```text
 처리 과정 : [1,2,2,3,3,3] — 원본을 딱 한 번만 훑는다
             판정 = counts.containsKey(v) 한 번 (O(1))
 
@@ -203,7 +203,7 @@ for (int i = 0; i < values.length; i++) {
 return new int[0];
 ```
 
-```
+```text
 처리 과정 : [2,7,11,15], target=9 — i 를 고정하고 j 를 끝까지 민다
 
     idx    0     1     2     3
@@ -244,7 +244,7 @@ while (lo < hi) {
 }
 ```
 
-```
+```text
 처리 과정 : [3,2,4], target=6 -> 정렬하면 [2,3,4]
 
     원본      idx  0    1    2        정렬 후   idx  0    1    2
@@ -284,7 +284,7 @@ public static int[] twoSum(int[] values, int target, Map<Integer, Integer> seen)
 }
 ```
 
-```
+```text
 처리 과정 : [3,2,4], target=6 — 한 번만 훑는다
             seen 은 "값 -> 그 값이 처음 나온 인덱스"
 
@@ -314,7 +314,7 @@ public static int[] twoSum(int[] values, int target, Map<Integer, Integer> seen)
         "확인하고 나서 담는다"가 자기 짝짓기를 막는다.
 ```
 
-```
+```text
 같은 값이 두 번 나오는 경우 : [3,3], target=6
 
   i=0  v=3  need = 3
@@ -405,7 +405,7 @@ for (int i = 0; i < input.length(); i++) {
 return -1;
 ```
 
-```
+```text
 처리 과정 : "abac"
 
     idx   0    1    2    3
@@ -440,7 +440,7 @@ for (char c : stream) {
 }
 ```
 
-```
+```text
 처리 과정 : "abac" 를 한 글자씩 흘려보낸다
 
   'a' 들어옴 : count{a=1}      큐 [a]           지금의 답 = a
@@ -485,7 +485,7 @@ public static int firstUniqueChar(String input, Map<Character, Integer> counts) 
 }
 ```
 
-```
+```text
 처리 과정 : "loveleetcode" (테스트 findsIndex 가 2 를 기대한다)
 
     idx    0   1   2   3   4   5   6   7   8   9  10  11
@@ -673,7 +673,7 @@ int bucketOf(Object key, int capacity) {
   계산으로 가는 구조는 원소가 100만 개든 10개든 계산 한 번으로 버킷 하나를 짚고, 그 버킷 안만 본다.\
   즉 **n 이 늘어도 봐야 할 칸의 수가 늘지 않게** 만든 것이 이 구조의 전부다.
 
-```
+```text
 같은 질문 "9 가 있나?" 를 두 구조에서
 
   동적 배열 (세면서 간다)               해시맵 (계산해서 간다)
@@ -733,7 +733,7 @@ if (used + 1 > keys.length * LOAD_FACTOR) {
   α = 0.5 면 그 값이 약 1.5 회지만 α = 0.9 면 약 5.5 회, α = 0.99 면 약 50 회다 — 같은 0.25 만큼 올려도 체이닝과 달리 비용이 폭발한다.\
   impl 의 주석이 그 차이를 그대로 적어 두었다 — 체이닝은 "시간과 공간의 흔한 절충점", 선형 탐사는 "꽉 찰수록 급격히 느려지므로 체이닝보다 낮게 잡는다".
 
-```
+```text
 부하율 α 가 올라갈 때 조회 비용이 자라는 모양 (개형 비교)
 
   비용
@@ -791,7 +791,7 @@ int bucketOf(Object key, int capacity) {
 > **비트 마스크(bit mask)** — 특정 비트만 남기거나 지우려고 `&`/`|` 로 씌우는 상수.\
 > 예: `0x7fffffff` 와 `&` 하면 맨 앞 부호 비트만 0이 되어 어떤 정수든 0 이상이 된다.
 
-```
+```text
 32비트 정수에서 무슨 일이 일어나는가
 
   h = -1
@@ -815,7 +815,7 @@ int bucketOf(Object key, int capacity) {
   그 값을 `buckets[-1]` 로 쓰면 `ArrayIndexOutOfBoundsException` 으로 그 자리에서 터진다.\
   계약 테스트 `handlesNegativeHash` 가 `Integer.MIN_VALUE`, `-1`, `0` 을 넣고 전부 되찾을 수 있는지 검사하며 주석에 "음수를 그대로 % 하면 인덱스가 음수가 되어 여기서 터진다"고 적어 두었다.
 
-```
+```text
 그대로 % 하는 경우 : 키 -1, capacity 8
 
     h = -1
@@ -841,7 +841,7 @@ int bucketOf(Object key, int capacity) {
   용량을 소수로 잡는 흔한 변형(예: 7)으로 바꾸는 순간 `-2147483648 % 7 = -2` 가 되어 그대로 터진다.\
   impl 주석이 그 성질을 "우연에 기대는 코드다"라고 명시했고, `& 0x7fffffff` 는 용량이 무엇이든 성립하므로 우연에 기대지 않는다.
 
-```
+```text
 Math.abs 로 막았다고 가정하고, 용량만 바꿔 보면
 
   키 = Integer.MIN_VALUE, h = Math.abs(h) = -2147483648 (그대로다)
@@ -895,7 +895,7 @@ void resize() {
 > **재해시(rehash)** — 용량이 바뀐 뒤 모든 키의 버킷 번호를 새 용량 기준으로 다시 계산해 재배치하는 것.\
 > 예: capacity 8 에서 같은 버킷이던 1, 9, 17 이 capacity 16 에서는 1, 9, 1 로 갈라진다.
 
-```
+```text
 재계산 전/후 : 키 1, 9, 17, 3, 5, 7 이 들어 있고 7번째로 25 를 넣어 리사이즈가 걸린 순간
               (테스트 resizesWhenLoaded: DEFAULT_CAPACITY 8, LOAD_FACTOR 0.75
                -> 6개까지는 그대로, 7번째에서 두 배)
@@ -941,7 +941,7 @@ void resize() {
   그런데 `get(9)` 는 새 용량으로 `bucketOf(9, 16) = 9` 를 계산해 9번 칸을 열고, 거기가 비어 있으니 `null` 을 반환한다.\
   데이터는 살아 있는데 영원히 도달할 수 없는 조용한 실패이고, 테스트 `rehashesOnResize` 가 20개를 넣은 뒤 "키가 계산된 버킷에 없다. 재해시를 안 했다"로 이걸 잡는다.
 
-```
+```text
 통째 복사가 만드는 조용한 실패
 
   옛 배열 (cap 8)                      새 배열 (cap 16) — 인덱스만 그대로 옮긴 경우
@@ -977,7 +977,7 @@ void resize() {
   그래서 `Node<K,V> next = n.next;` 로 다음을 먼저 붙잡아 두고, 그 노드의 `next` 를 새 버킷의 머리에 다시 이어 붙인다.\
   다음 노드를 먼저 저장하는 이 순서가 중요하다 — `n.next` 를 먼저 덮어쓰면 남은 사슬을 잃어버린다.
 
-```
+```text
 사슬 재연결의 순서 (노드는 재사용, next 만 다시 잇는다)
 
    n = [9] 이고 [9].next = [1] 인 상태에서 [9] 를 새 버킷 9번으로 옮긴다
@@ -1015,7 +1015,7 @@ void resize() {
   조회도 같은 규칙으로 홈(3번)부터 걸어오는데, 3번이 `EMPTY` 이면 "여기가 비었으니 더 갈 필요 없다"며 멈춘다.\
   B 는 4번에 멀쩡히 있는데 못 찾게 되고, 테스트 `deleteKeepsProbeChain` 이 정확히 이 상황을 재현한다.
 
-```
+```text
 같은 키 집합 {1, 9, 17} 을 두 방식에 나란히 넣기 (capacity 8)
     bucketOf(1,8) = 1, bucketOf(9,8) = 1, bucketOf(17,8) = 1  -> 셋 다 홈이 1번이다
 
@@ -1038,7 +1038,7 @@ void resize() {
   아무 영향이 없다.                          그 경로가 끊긴다.
 ```
 
-```
+```text
 지운 자리를 EMPTY 로 만들면 : remove(1) 뒤 get(9)
 
   [ 잘못된 방식 : EMPTY ]                    [ 올바른 방식 : TOMBSTONE ]
@@ -1132,7 +1132,7 @@ for (int steps = 0; steps < capacity; steps++) {
 }
 ```
 
-```
+```text
 재사용 전 확인이 없으면 : put(1), put(9), remove(1) 뒤 put(9, "B")
                         (테스트 doesNotDuplicateWhenReusingTombstone)
 
@@ -1183,7 +1183,7 @@ size--;                     // used 는 줄지 않는다. 자리는 여전히 �
   `size` 를 기준으로 삼으면 0 이라 영원히 리사이즈가 안 걸리고, 결국 `EMPTY` 가 하나도 없는 배열에서 모든 조회가 한 바퀴를 다 도는 O(capacity) 가 된다.\
   테스트 `survivesChurn` 이 2,000 라운드를 돌린 뒤에도 정상인지 확인하며 주석에 "tombstone 만 쌓이면 탐사가 길어진다. 그래서 리사이즈 판단에 used 를 쓴다"고 적어 두었다.
 
-```
+```text
 넣고 지우기만 반복할 때 (capacity 8, LOAD_FACTOR 0.5 -> used+1 > 4 면 리사이즈)
 
   라운드   연산                     size   used   상태
@@ -1216,7 +1216,7 @@ size--;                     // used 는 줄지 않는다. 자리는 여전히 �
 int capacity = (size > oldKeys.length * LOAD_FACTOR / 2) ? oldKeys.length * 2 : oldKeys.length;
 ```
 
-```
+```text
 판정식 : size > capacity * 0.5 / 2  =  size > capacity * 0.25
 
   capacity 8 기준 문턱 = 2
@@ -1268,7 +1268,7 @@ while (map.states[i] == LinearProbingHashMap.OCCUPIED && run <= capacity) {
 assertTrue(run >= 1_000, ...);
 ```
 
-```
+```text
 연속 키 0..999 를 넣은 뒤 (LOAD_FACTOR 0.5 이므로 capacity 는 2048)
 
    slot   0    1    2    3   ...        998  999  1000 1001 ...   2047
@@ -1310,7 +1310,7 @@ assertTrue(run >= 1_000, ...);
   덩어리가 길수록 그 안으로 떨어지는 새 키가 더 많아지고, 그 키들이 덩어리 끝에 붙어 덩어리를 더 키운다 — 눈덩이 구조다.\
   테스트 주석도 "이건 버그가 아니라 이 방식의 성질이다. 올바른 구현에서도 그대로 나온다"라고 먼저 밝힌다.
 
-```
+```text
 눈덩이가 굴러가는 모양
 
    [A][B][ ][ ][ ]      덩어리 길이 2 -> 새 키가 여기 떨어질 확률 2/5
@@ -1335,7 +1335,7 @@ assertTrue(run >= 1_000, ...);
 > **비트 섞기(bit mixing)** — 해시값의 비트를 시프트·XOR 등으로 뒤섞어 규칙성을 없애는 후처리.\
 > 예: 자바 `HashMap` 은 `h ^ (h >>> 16)` 으로 상위 16비트를 하위로 내려 섞는다.
 
-```
+```text
 섞기 전후 : 연속 키 0,1,2,3 이 어디로 가는가 (capacity 8, 개념 예시)
 
   [ 섞지 않음 ]  h = k                      [ 섞음 ]  h = mix(k) (값은 예시)
@@ -1392,7 +1392,7 @@ assertTrue(run >= 1_000, ...);
 > **캐시 지역성(cache locality)** — 쓸 데이터가 메모리에서 서로 붙어 있어 CPU 가 한 덩어리로 미리 가져와 쓰게 되는 성질.\
 > 예: 선형 탐사는 옆 칸을 보므로 이미 캐시에 올라온 줄을 그대로 쓰지만, 체이닝의 사슬은 노드마다 흩어진 주소를 새로 가져와야 한다.
 
-```
+```text
 메모리에 실제로 놓이는 모양 (같은 3개 원소)
 
   [ 체이닝 ]                                [ 선형 탐사 ]
@@ -1459,7 +1459,7 @@ protected void afterPut(K key, boolean isNewKey) {
 }
 ```
 
-```
+```text
 부모가 정한 뼈대와 자식이 끼어드는 지점
 
    ChainingHashMap.put(key, value)
@@ -1497,7 +1497,7 @@ protected void afterPut(K key, boolean isNewKey) {
 private final ChainingHashMap<K, Entry<K>> order = new ChainingHashMap<>();
 ```
 
-```
+```text
 remove("b") 일 때 무슨 일이 일어나는가 (넣은 순서 a, b, c)
 
   순서 사슬 (이중 연결 리스트)
@@ -1527,7 +1527,7 @@ remove("b") 일 때 무슨 일이 일어나는가 (넣은 순서 a, b, c)
   `put`/`remove` 마다 훅에서 맵 연산이 한 번씩 더 일어나므로 상수 배가 붙는다(복잡도는 그대로 평균 O(1)).\
   대신 얻는 것은 `keys()` 가 **넣은 순서**를 준다는 계약이고, 테스트 `keepsInsertionOrder`·`keepsOrderAfterResize` 가 그 계약을 지킨다 — 특히 후자는 리사이즈가 일어나도 순서가 흔들리지 않음을 확인한다.
 
-```
+```text
 원소 하나를 담는 데 드는 것
 
   ChainingHashMap                     LinkedHashMap
@@ -1575,7 +1575,7 @@ remove("b") 일 때 무슨 일이 일어나는가 (넣은 순서 a, b, c)
   | 최소/최대 | 전체 스캔 O(n) | **O(log n)** 왼쪽/오른쪽 끝 |
   | 다음 키 | 불가능(전체 스캔) | **O(log n)** |
 
-```
+```text
 같은 질문 "10 이상 20 이하인 키를 다오"
 
   [ 해시맵 ]                     [ 이진 탐색 트리 ] (왼쪽 < 자기 < 오른쪽)
@@ -1602,7 +1602,7 @@ remove("b") 일 때 무슨 일이 일어나는가 (넣은 순서 a, b, c)
 > **불변식(invariant)** — 자료구조가 언제 확인해도 참이어야 하는 조건.\
 > 예: 이진 탐색 트리의 불변식은 "어떤 노드의 왼쪽 부분트리는 전부 그 노드보다 작고, 오른쪽은 전부 크다"이다.
 
-```
+```text
 설계의 뿌리가 갈리는 지점
 
   해시맵 : 자리 = f(키를 섞은 값)            트리 : 자리 = 키를 크기로 비교한 결과

@@ -1,4 +1,4 @@
-# domain-modeling-advanced/05-multi-currency — 정답
+# domain-modeling/advanced/05-multi-currency — 정답
 
 ## 정답
 

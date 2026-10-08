@@ -1,4 +1,4 @@
-# domain-modeling-advanced/11-stock-reservation — 정답
+# domain-modeling/advanced/11-stock-reservation — 정답
 
 ## 정답
 

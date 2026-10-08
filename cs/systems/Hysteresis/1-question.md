@@ -1,4 +1,4 @@
-# cs/Hysteresis — 히스테리시스(Hysteresis) — 질문
+# systems/Hysteresis — 히스테리시스(Hysteresis) — 질문
 
 ## 질문
 
