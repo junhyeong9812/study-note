@@ -124,7 +124,7 @@ bomFormat CycloneDX 1.5
 
 ## 쓰이는 자료구조·알고리즘
 
-- **의존성 그래프(DAG) + 위상정렬** — 어느 버전을 설치할지 푸는 것은 제약을 만족하는 그래프 해소다. 빌드 순서도 위상정렬이다. [data-structure/08-graph](../../data-structure/08-graph/2-summary.md) · [engineering-practice/07-build-systems-and-reproducibility](../../engineering-practice/07-build-systems-and-reproducibility/2-summary.md)
+- **의존성 그래프(유향 그래프) + 위상정렬** — 어느 버전을 설치할지 푸는 것은 제약을 만족하는 그래프 해소다. 빌드 순서도 위상정렬인데, 위상정렬은 순환이 없을 때(DAG)만 된다. 패키지 요구 그래프는 순환할 수 있다(Go 모듈 — Cox "Minimal Version Selection": "must not assume the module requirement graph is acyclic" <https://research.swtch.com/vgo-mvs>). [data-structure/08-graph](../../data-structure/08-graph/2-summary.md) · [engineering-practice/07-build-systems-and-reproducibility](../../engineering-practice/07-build-systems-and-reproducibility/2-summary.md) · [language/19-modules-and-dependency-resolution](../../language/19-modules-and-dependency-resolution/2-summary.md)
 - **암호 해시** — 락파일 integrity·SBOM 해시·재현 빌드 대조가 전부 충돌 저항 해시다. 약한 해시면 바꿔치기를 못 잡는다(04번, [algorithm/12-hash-functions](../../algorithm/12-hash-functions/2-summary.md)).
 - **머클 트리 / 투명성 로그** — Sigstore Rekor·CT가 append-only 로그의 변조를 머클 트리로 **검증 가능하게** 만든다(포함·일관성 증명을 누군가 확인하고 감시할 때 드러난다). [data-structure/27-merkle-tree](../../data-structure/27-merkle-tree/2-summary.md) · [network/31-revocation-ocsp-ct](../../network/31-revocation-ocsp-ct/2-summary.md)
 - **전자서명** — 출처+무결성. [security 06-public-key-and-signatures](../06-public-key-and-signatures/2-summary.md)

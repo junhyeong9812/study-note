@@ -100,13 +100,14 @@ Cache-Control: public, max-age=60, s-maxage=300, stale-while-revalidate=86400
 | 알고리즘 | 적합한 상황 | 함정 |
 |---|---|---|
 | **Round Robin** | 요청 비용이 균일 | 무거운 요청이 한 서버에 몰릴 수 있음 |
-| **Least Connections** | 요청 처리 시간이 제각각 | **일반적으로 가장 무난한 기본값** |
-| **EWMA / 최소 응답시간** | 인스턴스 성능 편차 | 느려진 인스턴스를 자동 회피 |
+| **Least Connections** | 요청 처리 시간이 제각각 | 새로 뜬 서버로 쏠림(아래) · 짧은 HTTP 세션엔 잘 맞지 않음(HAProxy 문서) · 동시 처리 수가 적으면 차이를 못 냄 |
+| **EWMA / 최소 응답시간** | 인스턴스 성능 편차 — 느려진 인스턴스를 자동 회피 | 과거 지연을 평균하므로 변화 반영이 늦음 · 롱 폴링처럼 원래 느린 요청이 섞이면 판단이 틀어짐(Finagle 문서) |
 | **Consistent Hashing** | 캐시 지역성 필요 | 노드 변동 시 일부만 재배치 |
 | **Random 2-choice** | 대규모 | 2개 뽑아 덜 바쁜 쪽 — 단순한데 효과 좋음 |
 
 > **Least Connections의 함정**: 방금 재시작해서 커넥션이 0인 서버로 트래픽이 한꺼번에 몰린다(콜드 스타트 폭탄).\
-> → **슬로우 스타트(ramp-up)** 설정 필요.
+> → **슬로우 스타트(ramp-up)** 설정 필요.\
+> 참고: nginx·ALB 등 주요 LB의 기본값은 라운드로빈이다 — [network/46 §4](../../network/46-load-balancers-and-proxies/2-summary.md).
 
 ### 헬스체크 — 3종 구분
 

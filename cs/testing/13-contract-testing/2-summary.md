@@ -155,7 +155,7 @@ consumer at runtime: java.lang.IllegalStateException: name missing: {"id":1,"ful
 - **계약 = 예제 집합** — 상호작용(요청 → 응답) 목록. 각 응답은 JSON 트리 + JSONPath 키(`$.id`)로 가리키는 매처 표다.
 - **트리 비교(부분 일치)** — 기대 트리의 각 경로가 실제 트리에 있고 규칙을 만족하는지 본다. 실제 쪽의 추가 경로는 응답에서는 무시한다. 결과 메시지 `Actual map is missing the following keys`가 이 비교의 산물이다.
 - **검증 행렬(matrix)** — Pact Broker는 "소비자 판 × 제공자 판 → 검증 결과" 표를 둔다. `can-i-deploy`는 배포하려는 판과 대상 환경에 이미 있는 상대 판들 사이에 성공한 검증이 있는지 이 표에서 찾는다(Pact 문서).
-- 스키마 호환성 검사(데이터 계약)와의 차이: 스키마 레지스트리는 **필드 집합 비교**로 호환 모드를 판정한다. 소비자 주도 계약은 **실제로 쓰는 예제**만 본다. 데이터 쪽은 [data-engineering/09-data-contracts-and-schema-registry](../../data-engineering/09-data-contracts-and-schema-registry/2-summary.md).
+- 스키마 호환성 검사(데이터 계약)와의 차이: 스키마 레지스트리는 포맷(Avro·Protobuf·JSON Schema)마다 다른 **해석·호환 규칙**으로, 호환 모드가 정한 방향(새 스키마로 옛 데이터를 읽나 등)을 판정한다(Confluent "Schema Evolution and Compatibility"). 소비자 주도 계약은 **실제로 쓰는 예제**만 본다. 데이터 쪽은 [data-engineering/09-data-contracts-and-schema-registry](../../data-engineering/09-data-contracts-and-schema-registry/2-summary.md).
 
 ## 적용 — 풀어나가는 법
 

@@ -68,4 +68,4 @@
 | # | 주제 | 요지 | 등급 | 상태 | 노트 |
 |---|---|---|---|---|---|
 | 27 | `da-symptom-index` | 역색인: 실험 비율 틀어짐(SRM), 합계가 안 맞음, 너무 좋은 결과, 부분군 반전, 날짜 경계 어긋남, 백분위 병합 오류 | 필수 | 초안(Claude) | [27-da-symptom-index](27-da-symptom-index/) |
-| 28 | `da-incidents` | 실사건: Literary Digest 표본 편향(1936) · Google Flu Trends 과대 추정(2013) · Reinhart–Rogoff 엑셀 범위 오류(2013) · 영국 COVID 확진 약 16,000건 누락 — 구형 XLS 행 제한(2020) | 권장 | 초안(Claude) | [28-da-incidents](28-da-incidents/) |
+| 28 | `da-incidents` | 실사건: Literary Digest 표본 편향(1936) · Google Flu Trends 과대 추정(2011-08~2013-09, 보도 2013-02) · Reinhart–Rogoff 엑셀 범위 오류(2013) · 영국 COVID 확진 15,841건 누락 — 구형 XLS 행 제한(2020) | 권장 | 초안(Claude) | [28-da-incidents](28-da-incidents/) |

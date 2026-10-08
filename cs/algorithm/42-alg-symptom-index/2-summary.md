@@ -185,7 +185,7 @@ HashSet  | n=10,000      1.61 ms | n=20,000      3.54 ms (x2.2) | n=40,000      
 ```text
   요청 하나가 CPU를 다 씀, 덤프가 java.util.regex.Pattern 안
      │
-     ├─ 중첩 수량자 (a+)+$ 꼴, 입력 한 글자마다 시간 두 배 ─────────────▶ 지수 백트래킹(ReDoS)        backtracking 1
+     ├─ 중첩 수량자 + 역참조 (a+)+$|(b)\2 꼴, 한 글자마다 약 두 배 ───▶ 지수 백트래킹(ReDoS)        backtracking 1
      ├─ \s+$ 꼴, 매칭 실패하는 긴 공백 ───────────────────────────────▶ 시작 위치마다 끝까지 → O(n²)  43-alg-incidents (Stack Overflow 2016)
      ├─ .*.*=.* 꼴, = 없는 긴 입력 ───────────────────────────────────▶ 겹치는 .* → 다항(두 배에 약 8배)  43-alg-incidents (Cloudflare 2019)
      └─ 정규식이 아니라 직접 짠 문자열 검색 ─────────────────────────────▶ 나이브 검색 최악            string-matching 1
@@ -193,7 +193,7 @@ HashSet  | n=10,000      1.61 ms | n=20,000      3.54 ms (x2.2) | n=40,000      
 
 | 보이는 것 (메시지·수치·도구 판) | 흔한 원인 | 첫 진단 | leaf |
 |---|---|---|---|
-| 스레드 덤프 맨 위가 `java.util.regex.Pattern$…`, 입력 길이가 한 글자 늘 때 시간 두 배 | `(a+)+$` 같은 중첩 수량자 + 끝이 안 맞는 입력 | 패턴에 중첩·겹치는 수량자가 있나 | [backtracking 1](../13-backtracking/2-summary.md) |
+| 스레드 덤프 맨 위가 `java.util.regex.Pattern$…`, 입력 길이가 한 글자 늘 때 시간 약 두 배 | `(a+)+$\|(b)\2`처럼 역참조가 섞인 중첩 수량자 + 끝이 안 맞는 입력(JDK 21은 `(a+)+$` 자체는 내부 메모이제이션으로 평평했다 — [language/02](../../language/02-lexing-and-regular-languages/2-summary.md) 실험) | 패턴에 중첩·겹치는 수량자가 있나 | [backtracking 1](../13-backtracking/2-summary.md) |
 | `\s+$`: 공백 2만 개 + 다른 문자 하나에 약 4초, 4만 개에 약 15초(OpenJDK 21.0.12, `--cpus=2`) | 실패한 시작 위치마다 공백 끝까지 다시 확인 | 입력의 최장 공백·반복 구간 길이 | [43-alg-incidents](../43-alg-incidents/2-summary.md) 사건 2 |
 | `.*.*=.*`: 매칭 실패 입력 2,000자에 약 19초(OpenJDK 21.0.12, `--cpus=1`) | 겹치는 `.*` 셋이 분할 방법을 전부 시도 | 패턴에 `.*`가 둘 이상 이어지나 | [43-alg-incidents](../43-alg-incidents/2-summary.md) 사건 3 · [engineering-practice/20](../../engineering-practice/20-practice-incidents/2-summary.md) 실험 B |
 

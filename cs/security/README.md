@@ -5,7 +5,7 @@
 > 현황: 미작성 0 · 원고 있음 0 · 초안(Claude) 30 · 검수 완료 0
 
 > 원리 → 암호 기초 → 인증·인가 → 웹/앱 공격 → 공급망·운영. **TLS/PKI 본문은 network/29~32에만** 둔다(단일 출처) — 여기선 암호 부품과 신뢰 모델까지.
-> 뼈대: OSTEP 53~57(Security 파트), K&R 8장, OWASP Top 10 2021, Aumasson 『Serious Cryptography』 [?], RFC.
+> 뼈대: OSTEP 53~57(Security 파트), K&R 8장, OWASP Top 10 2021·2025, Aumasson 『Serious Cryptography』 [?], RFC.
 
 ## 8.1 원리
 

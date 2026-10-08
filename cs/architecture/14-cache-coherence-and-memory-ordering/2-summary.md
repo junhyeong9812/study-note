@@ -241,7 +241,7 @@ public static Singleton get() {
 ```
 
 - DCL 선언문("The 'Double-Checked Locking is Broken' Declaration", Bacon·Bloch·Lea·Pugh 외 서명): 생성자 안의 쓰기와 참조 공개를 컴파일러가 바꿀 수 있고, 바꾸지 않아도 멀티프로세서에서는 프로세서·메모리 시스템이 바꿀 수 있다. 실제 Symantec JIT가 그렇게 컴파일한 예를 든다.
-- 고치는 법(같은 선언문 "Under the new Java Memory Model"): JDK5 이후에는 `instance`를 `volatile`로 선언하면 동작한다. JDK4 이하에서는 안 된다. 모든 필드가 `final`인 불변 객체라면 `volatile` 없이도 된다(선언문 "Double-Checked Locking Immutable Objects", JLS §17.5 final 필드 의미). 단 락 밖에서 `instance`를 **한 번만 읽어 지역 변수로 반환**해야 한다. 위 코드처럼 ①과 `return`에서 두 번 읽으면, 두 경쟁 읽기는 JMM상 따로 값을 고를 수 있어 ①이 참조를 봐도 `return`이 초기값 `null`을 볼 수 있다(JLS §17.4.4 기본값 쓰기·§17.4.5 happens-before 일관성).
+- 고치는 법(같은 선언문 "Under the new Java Memory Model"): JDK5 이후에는 `instance`를 `volatile`로 선언하면 동작한다. JDK4 이하에서는 안 된다. 모든 필드가 `final`인 불변 객체라면 `volatile` 없이도 된다(선언문 "Double-Checked Locking Immutable Objects", JLS §17.5 final 필드 의미). 이 보장은 생성자 실행 중 `this`가 다른 스레드가 볼 수 있는 곳으로 유출되지 않을 때만 선다(JLS §17.5 "do not write a reference to the object being constructed in a place where another thread can see it before the object's constructor is finished"). 단 락 밖에서 `instance`를 **한 번만 읽어 지역 변수로 반환**해야 한다. 위 코드처럼 ①과 `return`에서 두 번 읽으면, 두 경쟁 읽기는 JMM상 따로 값을 고를 수 있어 ①이 참조를 봐도 `return`이 초기값 `null`을 볼 수 있다(JLS §17.4.4 기본값 쓰기·§17.4.5 happens-before 일관성).
 - **이 호스트에서는 재현하지 못했다(시도하지 않음).** x86(TSO)은 쓰기끼리의 순서를 하드웨어가 바꾸지 않아, 남는 것은 컴파일러 재정렬뿐이다. 실패 증거는 위 선언문과 JLS로 대신한다. ARM 같은 약한 순서 CPU에서는 하드웨어도 바꿀 수 있다(Cookbook 표).
 
 ## 쓰이는 자료구조·알고리즘

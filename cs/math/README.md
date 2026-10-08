@@ -5,7 +5,7 @@
 > 현황: 미작성 0 · 원고 있음 0 · 초안(Claude) 17 · 검수 완료 0
 
 > 백엔드에서 수학이 "틀리면" 보이는 곳: 정렬 예외, 음수 샤드 인덱스, ID 충돌, 부동소수 합계 불일치, 이용률 80% 절벽. 증명보다 **불변식·확률·큐잉**을 우선한다.
-> 뼈대: MIT 6.042 『Mathematics for Computer Science』(Lehman·Leighton·Meyer, 이하 MCS — 장 번호 `[?]`), CLRS 3판 부록, OpenIntro 3·4장(확률 부분).
+> 뼈대: MIT 6.042 『Mathematics for Computer Science』(Lehman·Leighton·Meyer, 이하 MCS — 장 번호는 2018-06-06 개정판 PDF 기준), CLRS 3판 부록, OpenIntro 3·4장(확률 부분).
 
 ## 1.1 논리·증명·관계
 

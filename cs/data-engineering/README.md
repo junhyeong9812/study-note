@@ -6,7 +6,7 @@
 
 > **번호 메모**: 기존 §18(data-analysis)과 §19~§21 번호를 유지하려고 18a로 끼웠다. 읽는 순서는 **18a → 18**이다 — 만든 데이터를 옮기고 관리한 뒤 판단한다.
 > 흐름: 원천과 파생 → 분석 저장소와 모델 → 옮기기(CDC·배치·스트림) → 안전하게 다시 돌리기 → 계약·품질·계보 → 보존·삭제 → 조직. 이 영역의 "깨지면"은 크래시로 보이지 않는다. **파이프라인은 초록인데 숫자가 틀린** 모양으로 보인다 — ⚠ 칸에는 가능한 한 "어느 숫자가 어떻게 어긋나 보이나"를 적었다. 엔진 기능에 가까운 temporal 테이블(database/50)과 DB 서버 타임아웃(database/22)은 database에 둔다.
-> 뼈대: DDIA 1판 3장(OLTP vs 분석·스타 스키마)·10장(배치 출력의 철학)·11장(CDC·이벤트 소싱)·12장(파생 데이터·감사 가능성, 절 제목 `[?]`), Kimball Group "Dimensional Modeling Techniques"(『The Data Warehouse Toolkit』 3판 장 번호 `[?]`), Armbrust 외 CIDR 2021 "Lakehouse", Kreps 2014 "Questioning the Lambda Architecture", Beauchemin "Functional Data Engineering"(연도 `[?]`), Reis–Housley 『Fundamentals of Data Engineering』(2022) `[?]`.
+> 뼈대: DDIA 1판 3장(OLTP vs 분석·스타 스키마)·10장(배치 출력의 철학)·11장(CDC·이벤트 소싱)·12장(파생 데이터·감사 가능성, 절 제목 `[?]`), Kimball Group "Dimensional Modeling Techniques"(『The Data Warehouse Toolkit』 3판 장 번호 `[?]`), Armbrust 외 CIDR 2021 "Lakehouse", Kreps 2014 "Questioning the Lambda Architecture", Beauchemin "Functional Data Engineering"(2018), Reis–Housley 『Fundamentals of Data Engineering』(2022) `[?]`.
 
 ## 18a.1 원천·파생과 분석 저장소
 
@@ -53,4 +53,4 @@
 | # | 주제 | 요지 | 등급 | 상태 | 노트 |
 |---|---|---|---|---|---|
 | 16 | `de-symptom-index` | 역색인: 잡은 성공했는데 0행, 합계가 2배, 과거 리포트가 바뀜, 대시보드마다 다른 숫자, 컬럼이 갑자기 NULL, WAL 디스크 풀(복제 슬롯), 삭제했는데 남아 있음, 재처리 불가 | 필수 | 초안(Claude) | [16-de-symptom-index](16-de-symptom-index/) |
-| 17 | `de-incidents` | 실사건 후보: Unity Audience Pinpointer 불량 데이터 적재(2022, 매출 영향 공시) [?] · Equifax 신용점수 오류(2022, 레거시 서버의 "coding issue") [?] · 영국 PHE XLS 행 제한(2020 — `data-analysis/28-da-incidents`와 공유, 여기서는 파이프라인 관점) | 권장 | 초안(Claude) | [17-de-incidents](17-de-incidents/) |
+| 17 | `de-incidents` | 실사건 후보: Unity 2022의 두 문제 — 플랫폼 결함 → Audience Pinpointer 정확도 저하, 대형 고객의 불량 데이터 적재 → 학습 데이터 가치 일부 상실(매출 영향 공시) · Equifax 신용점수 오류(2022, 레거시 서버의 "coding issue") · 영국 PHE XLS 행 제한(2020 — `data-analysis/28-da-incidents`와 공유, 여기서는 파이프라인 관점) | 권장 | 초안(Claude) | [17-de-incidents](17-de-incidents/) |

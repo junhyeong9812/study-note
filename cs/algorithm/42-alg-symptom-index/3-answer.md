@@ -53,7 +53,7 @@
 
 ### 6. 정규식 세 모양
 
-- `(a+)+$` + 끝이 안 맞는 입력: 한 글자 늘 때마다 시간이 약 두 배 — 지수([backtracking 1](../13-backtracking/2-summary.md)).
+- `(a+)+$` + 끝이 안 맞는 입력: 백트래킹 엔진에서 한 글자 늘 때마다 시간이 약 두 배 — 지수([backtracking 1](../13-backtracking/2-summary.md)). JDK 21은 이 모양만 내부 메모이제이션으로 막아 평평했고, `(a+)+$|(b)\2`처럼 역참조를 섞으면 지수였다([language/02](../../language/02-lexing-and-regular-languages/2-summary.md) 실험).
 - `\s+$` + 공백 n개 뒤 다른 문자: 두 배에 약 4배 — O(n²). 실험: 2만 개 약 4초 → 4만 개 약 15초([43-alg-incidents](../43-alg-incidents/2-summary.md) 실험 E).
 - `.*.*=.*` + `=` 없는 입력: 두 배에 약 7~8배 — O(n³) 쪽(해석). 실험: 1,000자 약 2.5초 → 2,000자 약 19초([engineering-practice/20](../../engineering-practice/20-practice-incidents/2-summary.md) 실험 B, `--cpus=1`).
 - 테스트가 통과시키는 이유: 위 입력은 모두 매칭 실패(`false`)로 결과가 정상이다. 정상·공격 요청 모음으로 "맞게 막고 맞게 통과시키나"만 보면 시간 결함은 보이지 않는다. 적대적 입력에서 **시간 예산**을 재야 한다.

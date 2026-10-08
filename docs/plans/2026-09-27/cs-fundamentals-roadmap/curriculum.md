@@ -123,7 +123,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 ## 1. CS 수학 (`math/`)
 
 > 백엔드에서 수학이 "틀리면" 보이는 곳: 정렬 예외, 음수 샤드 인덱스, ID 충돌, 부동소수 합계 불일치, 이용률 80% 절벽. 증명보다 **불변식·확률·큐잉**을 우선한다.
-> 뼈대: MIT 6.042 『Mathematics for Computer Science』(Lehman·Leighton·Meyer, 이하 MCS — 장 번호 `[?]`), CLRS 3판 부록, OpenIntro 3·4장(확률 부분).
+> 뼈대: MIT 6.042 『Mathematics for Computer Science』(Lehman·Leighton·Meyer, 이하 MCS — 장 번호는 2018-06-06 개정판 PDF 기준), CLRS 3판 부록, OpenIntro 3·4장(확률 부분).
 
 **권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → (11 · 12 · 13 · 14 · 15 필요 시) → 16 → 17
 
@@ -142,7 +142,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 04-graph-theory-basics | 그래프·트리·DAG·연결성·사이클의 정의와 성질 | 03 | 순환 의존(DAG 가정 위반) → 무한 재귀 `StackOverflowError`, 빌드/마이그레이션 순서 교착 | 인접 리스트·위상정렬·사이클 탐지(DFS 색칠) | MCS 그래프 장 [?] · CLRS 부록 B.4 | 필수 | 신규 |
 | 05-counting-and-birthday-bound | 경우의 수·비둘기집·이항계수·생일 한계 | 03 | 32비트 랜덤 ID는 약 7.7만 개에서 충돌 확률 50% → 간헐 PK 중복 `duplicate key`; 짧은 해시 prefix 충돌 | 해시 충돌 확률, UUID/Snowflake 비트 설계 | MCS 세기 장 [?] · CLRS 5.4.1(생일 역설) | 필수 | 신규 |
 | 11-modular-arithmetic | 모듈러·GCD·소수·모듈러 역원·빠른 거듭제곱 | 05 | `-7 % 3` 이 언어마다 다름(Java −1 / Python 2) → 음수 샤드 인덱스 `ArrayIndexOutOfBounds`; `Math.abs(Integer.MIN_VALUE)` 음수 | 유클리드 호제법·빠른 거듭제곱 → RSA·해시 | CLRS 31장 | 권장 | 신규 (연결: `algorithm/28-number-theory`) |
-| 06-recurrences-and-asymptotics | 점화식·급수·로그 — 마스터 정리까지 | 02 | 선형 재귀 깊이 → 스택 오버플로; 지수 점화 → 입력 30만 넘자 타임아웃 | 분할정복 분석·재귀 트리 | CLRS 3·4장 | 필수 | 신규 |
+| 06-recurrences-and-asymptotics | 점화식·급수·로그 — 마스터 정리까지 | 02 | 선형 재귀 깊이 → 스택 오버플로; 숨은 선형 일(T(n)=T(n−1)+n, 이차) → 입력 20만~30만에서 초 단위 지연·타임아웃; 지수 점화 → n이 수십일 때 이미 타임아웃 | 분할정복 분석·재귀 트리 | CLRS 3·4장 | 필수 | 신규 |
 
 ### 1.3 확률
 
@@ -396,7 +396,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 11-memory-hierarchy-and-locality | 레지스터→캐시→DRAM→SSD, 시간·공간 지역성 | 09 | 열 우선 순회·포인터 추적 → 캐시 미스로 수~수십 배 느림 | 배열 vs 연결 리스트 선택 근거 | CS:APP 6.1–6.3 | 필수 | `foundations/memory-management` (분할 — 메모리 계층·캐시 지역성 절) |
 | 12-cache-organization | 라인·집합 연관·쓰기 정책·교체 | 11 | **false sharing** → 멀티스레드 카운터가 단일보다 느림; 2의 거듭제곱 stride 충돌 미스 | 의사 LRU, 인덱스 비트 해싱 | CS:APP 6.4–6.6 | 필수 | 신규 |
 | 13-latency-numbers | 지연 자릿수 감각·AMAT | 11 | "네트워크 1회 ≈ 메모리 접근 수십만 회"를 무시한 루프 내 원격 호출(N+1) | AMAT 계산 | Dean "Latency Numbers" · CS:APP 6.1 | 필수 | 신규 |
-| 14-cache-coherence-and-memory-ordering | MESI·저장 버퍼·재정렬·배리어·CAS | 12 | 가시성 결여 → 플래그 대기 무한 루프; 재정렬로 DCL 싱글턴 반쯤 초기화된 객체 노출 | MESI 상태 기계, CAS | Sorin·Hill·Wood 『A Primer on Memory Consistency and Cache Coherence』 [?] · CS:APP 12.5 [?] | 필수 | 신규 |
+| 14-cache-coherence-and-memory-ordering | MESI·저장 버퍼·재정렬·배리어·CAS | 12 | 가시성 결여 → 플래그 대기 무한 루프; 재정렬로 DCL 싱글턴 반쯤 초기화된 객체 노출 | MESI 상태 기계, CAS | Sorin·Hill·Wood 『A Primer on Memory Consistency and Cache Coherence』 [?] · Drepper 2007 §3.3.4 · Sewell 외 "x86-TSO" CACM 2010 · JLS SE21 17장 | 필수 | 신규 |
 
 ### 4.4 I/O·저장장치·병렬
 
@@ -552,7 +552,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 19-modules-and-dependency-resolution | 모듈·패키지·semver·락파일 | data-structure/32-dependency-resolver | 다이아몬드 의존 → `NoSuchMethodError`/`ClassNotFoundException`; 락파일 없는 빌드 비재현 | **위상정렬**, 버전 해결 = SAT | semver.org · Cox "Minimal Version Selection" 2018 | 필수 | 신규 (연결: `data-structure/34-dependency-resolver`) |
+| 19-modules-and-dependency-resolution | 모듈·패키지·semver·락파일 | data-structure/34-dependency-resolver | 다이아몬드 의존 → `NoSuchMethodError`/`ClassNotFoundException`; 락파일 없는 빌드 비재현 | **위상정렬**, 버전 해결 = SAT | semver.org · Cox "Minimal Version Selection" 2018 | 필수 | 신규 (연결: `data-structure/34-dependency-resolver`) |
 | 20-undefined-behavior-and-memory-safety | UB·경계 검사·메모리 안전 | 09 | 버퍼 오버런이 크래시 대신 **다른 요청의 데이터 누출**(Cloudbleed·Heartbleed) | — | C 표준 부록 J [?] · CISA 메모리 안전 로드맵 2023 [?] | 권장 | `languages/c-cpp-csharp.md` (분할) |
 | 21-language-choice-tradeoffs | "틀렸을 때 어떻게 틀리는가"로 언어 고르기 | 20, 10 | 조용한 실패를 허용하는 언어·관례 선택 → 정합성 사고 | — | 기존 노트 원고 | 권장 | `languages/README.md` 축① + `languages/c-cpp-csharp.md` + `languages/go/언어-특성/` · `languages/java/언어-특성/` · `languages/kotlin/언어-특성/` · `languages/rust/언어-특성/` (병합) |
 
@@ -691,7 +691,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 ## 8. 보안 (`security/`)
 
 > 원리 → 암호 기초 → 인증·인가 → 웹/앱 공격 → 공급망·운영. **TLS/PKI 본문은 network/29~32에만** 둔다(단일 출처) — 여기선 암호 부품과 신뢰 모델까지.
-> 뼈대: OSTEP 53~57(Security 파트), K&R 8장, OWASP Top 10 2021, Aumasson 『Serious Cryptography』 [?], RFC.
+> 뼈대: OSTEP 53~57(Security 파트), K&R 8장, OWASP Top 10 2021·2025, Aumasson 『Serious Cryptography』 [?], RFC.
 
 **권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → (network/29~32) → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 27 → 28 → 29 → 30
 
@@ -725,7 +725,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 14-oauth2-and-oidc | 위임 인가·인가 코드+PKCE·ID 토큰 | 12 | `redirect_uri` 느슨한 검증 → 코드 탈취; `state` 누락 → 로그인 CSRF; access token을 인증으로 오용 | — | RFC 6749 · 7636 · OIDC Core 1.0 | 필수 | `foundations/security/oidc.md` |
 | 15-access-control-models | ACL·RBAC·ABAC·ReBAC, 객체 수준 인가 | 01 | **IDOR/BOLA** — ID만 바꾸면 남의 데이터(OWASP A01); 수평·수직 권한 상승 | 역할 그래프, 관계 그래프 탐색(Zanzibar) | OSTEP 55 · OWASP A01 · Pang 외 USENIX ATC 2019 | 필수 | 신규 (연결: `domain-modeling/advanced/28-authorization`) |
 | 16-identifiers-and-enumeration | 순차 ID vs 랜덤·불투명 식별자 | 15, math/05-counting-and-birthday-bound | 순차 ID 열거로 대량 수집(Optus 2022 [?]); 짧은 랜덤 ID 충돌 | UUIDv4/v7, ULID | RFC 9562 | 권장 | `foundations/security/identity-and-ids.md` |
-| 17-refresh-token-rotation-and-revocation | access·refresh 수명 설계, refresh 회전과 재사용 탐지, 동시 갱신 경합, 전체 로그아웃·강제 만료, 브라우저 저장 위치와 BFF | 12-tokens-and-jwt, 11-sessions-and-cookie-security | 탭 여러 개가 동시에 refresh → 회전된 토큰 재사용으로 판정돼 **정상 사용자 전원 로그아웃**. 비밀번호 변경 후에도 기존 refresh 토큰 유효. 긴 수명 access 토큰 탈취 → 만료까지 무방비. localStorage 저장 → XSS 한 번에 탈취 | 토큰 패밀리(체인) 추적, 폐기 목록(TTL 해시) | RFC 9700 (OAuth 2.0 Security BCP, 2025) · RFC 6749 §6 · IETF draft "OAuth 2.0 for Browser-Based Applications" [?] | 필수 | 신규 (연결: `web-platform/06-browser-storage`) |
+| 17-refresh-token-rotation-and-revocation | access·refresh 수명 설계, refresh 회전과 재사용 탐지, 동시 갱신 경합, 전체 로그아웃·강제 만료, 브라우저 저장 위치와 BFF | 12-tokens-and-jwt, 11-sessions-and-cookie-security | 탭 여러 개가 동시에 refresh → 회전된 토큰 재사용으로 판정돼 **정상 사용자 전원 로그아웃**. 비밀번호 변경 후에도 기존 refresh 토큰 유효. 긴 수명 access 토큰 탈취 → 만료까지 무방비. localStorage 저장 → XSS 한 번에 탈취 | 토큰 패밀리(체인) 추적, 폐기 목록(TTL 해시) | RFC 9700 (OAuth 2.0 Security BCP, 2025) · RFC 6749 §6 · RFC 10017 "OAuth 2.0 for Browser-Based Applications"(BCP 212, 2026-08) | 필수 | 신규 (연결: `web-platform/06-browser-storage`) |
 
 ### 8.4 웹·애플리케이션 공격
 
@@ -1445,7 +1445,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 
 > **번호 메모**: 기존 §18(data-analysis)과 §19~§21 번호를 유지하려고 18a로 끼웠다. 읽는 순서는 **18a → 18**이다 — 만든 데이터를 옮기고 관리한 뒤 판단한다.
 > 흐름: 원천과 파생 → 분석 저장소와 모델 → 옮기기(CDC·배치·스트림) → 안전하게 다시 돌리기 → 계약·품질·계보 → 보존·삭제 → 조직. 이 영역의 "깨지면"은 크래시로 보이지 않는다. **파이프라인은 초록인데 숫자가 틀린** 모양으로 보인다 — ⚠ 칸에는 가능한 한 "어느 숫자가 어떻게 어긋나 보이나"를 적었다. 엔진 기능에 가까운 temporal 테이블(database/50)과 DB 서버 타임아웃(database/22)은 database에 둔다.
-> 뼈대: DDIA 1판 3장(OLTP vs 분석·스타 스키마)·10장(배치 출력의 철학)·11장(CDC·이벤트 소싱)·12장(파생 데이터·감사 가능성, 절 제목 `[?]`), Kimball Group "Dimensional Modeling Techniques"(『The Data Warehouse Toolkit』 3판 장 번호 `[?]`), Armbrust 외 CIDR 2021 "Lakehouse", Kreps 2014 "Questioning the Lambda Architecture", Beauchemin "Functional Data Engineering"(연도 `[?]`), Reis–Housley 『Fundamentals of Data Engineering』(2022) `[?]`.
+> 뼈대: DDIA 1판 3장(OLTP vs 분석·스타 스키마)·10장(배치 출력의 철학)·11장(CDC·이벤트 소싱)·12장(파생 데이터·감사 가능성, 절 제목 `[?]`), Kimball Group "Dimensional Modeling Techniques"(『The Data Warehouse Toolkit』 3판 장 번호 `[?]`), Armbrust 외 CIDR 2021 "Lakehouse", Kreps 2014 "Questioning the Lambda Architecture", Beauchemin "Functional Data Engineering"(2018), Reis–Housley 『Fundamentals of Data Engineering』(2022) `[?]`.
 
 **권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → (13 · 14 · 15 권장·심화) → 16 → 17
 
@@ -1463,16 +1463,16 @@ Part 6  판단하는 법             data-engineering → data-analysis
 |---|---|---|---|---|---|---|---|
 | 03-dimensional-modeling | 팩트·차원·**grain(한 행의 뜻) 선언**, 스타 vs 스노우플레이크, 가산·반가산·비가산 지표, 공통 차원(conformed) | 02, database/04-sql-joins-and-aggregation | grain이 섞인 팩트 테이블 → 주문 합계가 2배로 나온다. 차원 키 매칭 실패 + inner join → 팩트 행이 빠져 매출 합계가 줄어든다(에러 없음). 비율 지표를 `SUM` → 의미 없는 숫자 | 스타 조인 = 해시 조인 + 비트맵 | Kimball Group "Dimensional Modeling Techniques" · DDIA 1판 3장 "Stars and Snowflakes" | 필수 | 신규 |
 | 04-slowly-changing-dimensions | SCD Type 0~3(+4·6·7), 대리 키와 내구 키, 유효 기간 컬럼 | 03 | Type 1 덮어쓰기 → **과거 리포트 숫자가 소급해서 바뀐다**("지난달 지역별 매출이 달라졌어요"). Type 2의 유효 기간이 겹치거나 빈다 → 기간 조인에서 행이 중복되거나 누락된다. 현재 행 플래그가 둘인 멤버 | 구간 비교(`data-structure/42-interval-tree`) | Kimball Group "Type 2: Add New Row" · Design Tip #152 (Types 0,4,5,6,7) | 필수 | 신규 (연결: `database/50-temporal-and-bitemporal-tables`) |
-| 13-data-vault | Hub(비즈니스 키)·Link(관계)·Satellite(시점별 속성), 적재 이력 보존형 통합 모델 | 04 | 비즈니스 키 정규화 누락(공백·대소문자) → 같은 고객의 Hub 행이 둘이 된다. Satellite가 폭증한다 → 리포트 쿼리 하나에 조인 수십 개. 모델만 도입하고 마트를 두지 않는다 → 분석가가 쓸 수 없다 | 해시 키(`algorithm/12-hash-functions`) | Linstedt–Olschimke 『Building a Scalable Data Warehouse with Data Vault 2.0』 [?] | 심화 | 신규 |
+| 13-data-vault | Hub(비즈니스 키)·Link(관계)·Satellite(시점별 속성), 적재 이력 보존형 통합 모델 | 04 | 비즈니스 키 정규화 누락(공백·대소문자) → 같은 고객의 Hub 행이 둘이 된다. Satellite가 폭증한다 → 리포트 쿼리 하나에 조인 수십 개. 모델만 도입하고 마트를 두지 않는다 → 분석가가 쓸 수 없다 | 해시 키(`algorithm/12-hash-functions`) | Linstedt–Olschimke 『Building a Scalable Data Warehouse with Data Vault 2.0』(2015) | 심화 | 신규 |
 
 ### 18a.3 옮기기와 다시 돌리기
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 05-change-data-capture | 로그 기반 CDC(WAL·binlog 구독), 초기 스냅샷 + 스트리밍, 증분 스냅샷, 삭제 tombstone, DDL 변경 | 01, database/19-wal-and-logging, distributed/16-outbox-and-dual-write | 커넥터가 멈춘 사이 복제 슬롯이 WAL을 붙잡는다 → PG 디스크가 가득 찬다(`pg_replication_slots`에 inactive 슬롯). binlog 보존 기간이 지난다 → 전체 재스냅샷이 필요하다. 스냅샷과 스트림 경계에서 중복이 생긴다. 삭제 이벤트를 처리하지 않는다 → 하류에 지운 행이 남는다 | append-only 로그 오프셋, 체크포인트 | Debezium 문서 "Features"·PostgreSQL connector · Debezium 블로그 2021-10-07 "Incremental Snapshots" | 필수 | 신규 (흡수: `distributed/16`의 CDC 한 줄) |
-| 06-event-data-modeling | 이벤트 스키마 설계: 이벤트 시각 vs 수집 시각 vs 처리 시각, 봉투(envelope: id·type·version·source·subject), 상태 스냅샷 vs 변경 이벤트 | 05, distributed/04-physical-clocks-and-ntp, distributed/22-event-sourcing | 처리 시각으로 일별 집계 → 자정 경계에서 수치가 어긋난다. 이벤트 ID가 없다 → 중복을 제거할 수 없다. 클라이언트 시계를 믿는다 → "미래" 이벤트가 생긴다. 상태 스냅샷만 보낸다 → 무엇이 왜 바뀌었는지 모른다 | 워터마크, 해시 기반 중복 제거 | CloudEvents 1.0 명세 [?] · DDIA 1판 11장 | 필수 | 신규 |
+| 06-event-data-modeling | 이벤트 스키마 설계: 이벤트 시각 vs 수집 시각 vs 처리 시각, 봉투(envelope: id·type·version·source·subject), 상태 스냅샷 vs 변경 이벤트 | 05, distributed/04-physical-clocks-and-ntp, distributed/22-event-sourcing | 처리 시각으로 일별 집계 → 자정 경계에서 수치가 어긋난다. 이벤트 ID가 없다 → 중복을 제거할 수 없다. 클라이언트 시계를 믿는다 → "미래" 이벤트가 생긴다. 상태 스냅샷만 보낸다 → 무엇이 왜 바뀌었는지 모른다 | 워터마크, 해시 기반 중복 제거 | CloudEvents 1.0(1.0.2) 명세 · DDIA 1판 11장 | 필수 | 신규 |
 | 07-batch-stream-architectures | Lambda(배치 + 속도 계층) vs Kappa(재생 가능한 로그 하나로 스트림 재처리), 재처리 전략 | 05, distributed/30-batch-and-stream-processing, distributed/21-kafka-internals | 배치 경로와 스트림 경로의 결과가 다르다 → 같은 지표가 대시보드마다 다르다. 로그 보존 기간이 재처리 구간보다 짧다 → 과거를 다시 돌릴 수 없다. 재처리 잡이 운영 출력 토픽에 쓴다 → 하류에 이중으로 반영된다 | 세그먼트 로그 재생, 윈도 | Kreps 2014 "Questioning the Lambda Architecture" (O'Reilly Radar) · Marz 2011 "How to beat the CAP theorem" [?] | 권장 | 신규 |
-| 08-idempotent-pipelines-and-backfill | 파티션 단위 **덮어쓰기**로 멱등하게 만들기, 순수한 태스크, 백필 = 파티션 재선택, 늦게 온 데이터의 재계산, 시점별 규칙 적용 | 07, reliability/13-idempotency | append 방식 잡을 다시 돌린다 → 행이 2배가 된다. 백필이 **현재 규칙으로 과거를 계산**한다 → 확정된 과거 수치가 바뀐다. 대량 백필 → 운영 DB·클러스터 지연. 늦게 온 이벤트가 속한 파티션을 재계산하지 않는다 → 영구 누락 | 파티션 DAG(`algorithm/18-dfs` 위상정렬) | Beauchemin "Functional Data Engineering — a modern paradigm for batch data processing" · DDIA 1판 10장 [?] | 필수 | 신규 (연결: `database/26-schema-migration` 백필, `database/34-large-backfill-and-batch-dml`) |
+| 08-idempotent-pipelines-and-backfill | 파티션 단위 **덮어쓰기**로 멱등하게 만들기, 순수한 태스크, 백필 = 파티션 재선택, 늦게 온 데이터의 재계산, 시점별 규칙 적용 | 07, reliability/13-idempotency | append 방식 잡을 다시 돌린다 → 행이 2배가 된다. 백필이 **현재 규칙으로 과거를 계산**한다 → 확정된 과거 수치가 바뀐다. 대량 백필 → 운영 DB·클러스터 지연. 늦게 온 이벤트가 속한 파티션을 재계산하지 않는다 → 영구 누락 | 파티션 DAG(`algorithm/18-dfs` 위상정렬) | Beauchemin "Functional Data Engineering — a modern paradigm for batch data processing"(2018) · DDIA 1판 10장 | 필수 | 신규 (연결: `database/26-schema-migration` 백필, `database/34-large-backfill-and-batch-dml`) |
 
 ### 18a.4 계약·품질·계보·보존
 
@@ -1487,14 +1487,14 @@ Part 6  판단하는 법             data-engineering → data-analysis
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
-| 15-data-mesh-and-data-products | 도메인 소유·데이터를 제품으로·셀프서비스 플랫폼·연합 계산 거버넌스 — 중앙 데이터팀 병목의 대안과 비용 | 09, 11, domain-modeling/16-bounded-contexts | 중앙 팀이 병목이 된다 → 요청이 수주씩 대기한다. 도메인마다 "활성 사용자" 정의가 다르다 → 경영 보고 숫자가 서로 다르다. 거버넌스 없이 분산한다 → 아무도 소유하지 않는 테이블이 쌓인다 | — | Dehghani 『Data Mesh』(2022) [?] · Dehghani 2019 "How to Move Beyond a Monolithic Data Lake" [?] | 심화 | 신규 |
+| 15-data-mesh-and-data-products | 도메인 소유·데이터를 제품으로·셀프서비스 플랫폼·연합 계산 거버넌스 — 중앙 데이터팀 병목의 대안과 비용 | 09, 11, domain-modeling/16-bounded-contexts | 중앙 팀이 병목이 된다 → 요청이 수주씩 대기한다. 도메인마다 "활성 사용자" 정의가 다르다 → 경영 보고 숫자가 서로 다르다. 거버넌스 없이 분산한다 → 아무도 소유하지 않는 테이블이 쌓인다 | — | Dehghani 『Data Mesh』(2022) · Dehghani 2019 "How to Move Beyond a Monolithic Data Lake"(2019-05-20) | 심화 | 신규 |
 
 ### 18a.6 영역 마감
 
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 16-de-symptom-index | 역색인: 잡은 성공했는데 0행, 합계가 2배, 과거 리포트가 바뀜, 대시보드마다 다른 숫자, 컬럼이 갑자기 NULL, WAL 디스크 풀(복제 슬롯), 삭제했는데 남아 있음, 재처리 불가 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 17-de-incidents | 실사건 후보: Unity Audience Pinpointer 불량 데이터 적재(2022, 매출 영향 공시) [?] · Equifax 신용점수 오류(2022, 레거시 서버의 "coding issue") [?] · 영국 PHE XLS 행 제한(2020 — `data-analysis/28-da-incidents`와 공유, 여기서는 파이프라인 관점) | 16 | — | — | Unity 2022 Q1 실적 발표 [?] · Equifax 2022-08 발표 [?] · 영국 PHE 2020-10 | 권장 | 신규 |
+| 17-de-incidents | 실사건 후보: Unity 2022의 두 문제 — 플랫폼 결함 → Audience Pinpointer 정확도 저하, 대형 고객의 불량 데이터 적재 → 학습 데이터 가치 일부 상실(매출 영향 공시) · Equifax 신용점수 오류(2022, 레거시 서버의 "coding issue") · 영국 PHE XLS 행 제한(2020 — `data-analysis/28-da-incidents`와 공유, 여기서는 파이프라인 관점) | 16 | — | — | Unity Q1 2022 Prepared Remarks·10-Q · Equifax 2022-08-02 발표 · 영국 PHE 2020-10-04 발표 | 권장 | 신규 |
 
 ---
 
@@ -1518,7 +1518,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 04-descriptive-statistics | 중심(평균·중앙값)·산포(분산·IQR)·분위수·이상치 | 01, math/08-expectation-variance-tails | 치우친 분포(소득·지연)에 평균 보고 → 대부분의 경험과 괴리 | 선택 알고리즘(중앙값 O(n)) | OpenIntro 2.1–2.2 | 필수 | 신규 |
-| 06-exploratory-data-analysis | EDA — 분포·관계 먼저 보기 | 04 | 요약 통계만 보고 모델링 → Anscombe 콰르텟 함정 | 히스토그램·박스플롯 | Tukey 1977 · OpenIntro 2.3 | 권장 | 신규 |
+| 06-exploratory-data-analysis | EDA — 분포·관계 먼저 보기 | 04 | 요약 통계만 보고 모델링 → Anscombe 콰르텟 함정 | 히스토그램·박스플롯 | Tukey 1977 · OpenIntro 2.1·2.2 | 권장 | 신규 |
 | 05-percentiles-and-latency-distributions | 백분위 계산·병합·히스토그램, 긴 꼬리 | 04 | **백분위를 평균 내기**(인스턴스 p99의 평균 ≠ 전체 p99); 버킷 해상도 부족 | HdrHistogram, t-digest, 분위 스케치 | Dunning–Ertl 2019 (t-digest) | 필수 | 신규 |
 
 ### 18.3 추론 (확률 기초는 math/07~09)
@@ -1529,7 +1529,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | 08-confidence-intervals | 신뢰구간 해석과 계산 | 07 | "참값이 95% 확률로 구간 안" 오해석 | — | OpenIntro 5.2 | 필수 | 신규 |
 | 09-hypothesis-testing | 귀무·대립·p-value·1종/2종 오류 | 08 | p < 0.05 = "효과가 크다" 오해; 통계적 유의 ≠ 실질적 유의 | — | OpenIntro 5.3 | 필수 | 신규 |
 | 10-power-and-sample-size | 검정력·최소 탐지 효과·표본 크기 | 09 | 검정력 부족 실험 → "효과 없음" 오결론; 너무 작은 효과 추적 → 영원히 안 끝나는 실험 | — | OpenIntro 7.4 | 권장 | 신규 |
-| 11-multiple-comparisons | 다중 비교·p-hacking·보정 | 09 | 지표 20개 중 1개 유의 → 우연을 발견으로 발표 | Bonferroni·BH 절차 | OpenIntro 7.5C · Ioannidis 2005 | 필수 | 신규 |
+| 11-multiple-comparisons | 다중 비교·p-hacking·보정 | 09 | 지표 20개 중 1개 유의 → 우연을 발견으로 발표 | Bonferroni·BH 절차 | OpenIntro 7.5.6 · Ioannidis 2005 | 필수 | 신규 |
 | 20-categorical-inference | 비율 추론·카이제곱 적합도·독립성 | 09 | 기대 빈도 작은 칸에 카이제곱 → 부정확 | 분할표 | OpenIntro 6장 | 권장 | 신규 |
 | 21-numerical-inference-t-anova | t 분포·대응 표본·두 평균 차·ANOVA | 09 | 대응 데이터를 독립 표본으로 검정 → 검정력 낭비 | — | OpenIntro 7장 | 권장 | 신규 |
 
@@ -1566,7 +1566,7 @@ Part 6  판단하는 법             data-engineering → data-analysis
 | slug | 요지 | 선행 | ⚠ 깨지면 | 🔧 | 📚 | 등급 | 기존 |
 |---|---|---|---|---|---|---|---|
 | 27-da-symptom-index | 역색인: 실험 비율 틀어짐(SRM), 합계가 안 맞음, 너무 좋은 결과, 부분군 반전, 날짜 경계 어긋남, 백분위 병합 오류 | 전체 | — | — | 이 영역 leaf | 필수 | 신규 |
-| 28-da-incidents | 실사건: Literary Digest 표본 편향(1936) · Google Flu Trends 과대 추정(2013) · Reinhart–Rogoff 엑셀 범위 오류(2013) · 영국 COVID 확진 약 16,000건 누락 — 구형 XLS 행 제한(2020) | 27 | — | — | Squire 1988 · Lazer 외 Science 2014 · Herndon 외 2013 · 영국 PHE 발표 2020-10 | 권장 | 신규 |
+| 28-da-incidents | 실사건: Literary Digest 표본 편향(1936) · Google Flu Trends 과대 추정(2011-08~2013-09, 보도 2013-02) · Reinhart–Rogoff 엑셀 범위 오류(2013) · 영국 COVID 확진 15,841건 누락 — 구형 XLS 행 제한(2020) | 27 | — | — | Squire 1988 · Lazer 외 Science 2014 · Herndon 외 2013 · 영국 PHE 발표 2020-10 | 권장 | 신규 |
 
 ---
 

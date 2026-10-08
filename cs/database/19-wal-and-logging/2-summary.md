@@ -196,7 +196,7 @@ FROM pg_replication_slots;
 SELECT pg_size_pretty(sum(size)) FROM pg_ls_waldir();
 ```
 
-- `max_slot_wal_keep_size`(PostgreSQL 17 기본 −1 = 무제한)를 정하면 슬롯이 붙잡을 수 있는 WAL에 상한이 생긴다. 넘으면 그 슬롯을 쓰는 대기 서버·CDC가 복제를 이어 갈 수 없게 될 수 있다(19.6). 디스크 풀과 복제 끊김 중 무엇을 택할지 정하는 설정이다.
+- `max_slot_wal_keep_size`(PostgreSQL 17 기본 −1 = 무제한)를 정하면 슬롯이 붙잡을 수 있는 WAL에 상한이 생긴다. 넘으면 그 슬롯을 쓰는 대기 서버·CDC가 복제를 이어 갈 수 없게 될 수 있다(19.6). 소비자가 상한 안에서 따라잡으면 끊기지 않는다. 상한을 넘을 만큼 뒤처졌을 때만 체크포인트가 WAL을 지우고 슬롯이 무효화된다(`wal_status = lost`) — 디스크를 지키는 대신 뒤처진 슬롯을 포기하는 설정이다. 실험: [data-engineering/05-change-data-capture](../../data-engineering/05-change-data-capture/2-summary.md) 실험 E.
 - 아카이브(`archive_command`) 실패도 WAL을 쌓는다.
 
 ## 장애 시나리오와 대처
