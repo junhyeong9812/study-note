@@ -734,7 +734,7 @@ SkipListSet — 상속이 아니라 포함이다. SkipListMap 의 값 자리에 
 - 논리:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **Redis 정렬 집합(ZSET)** — 점수 순 랭킹·리더보드를 스킵 리스트 + 해시로 유지한다(원소가 적을 때는 연속 메모리 인코딩 listpack을 쓰다가 커지면 바꾼다). `ZRANGEBYSCORE`가 곧 `keysInRange`다.
 - **LSM 저장소의 memtable** — LevelDB·RocksDB는 디스크에 쓰기 전 메모리에 정렬 상태로 모아 두는 memtable을 스킵 리스트로 만든다. [24-lsm-tree](../24-lsm-tree/2-summary.md) · [systems/lsm-tree](../../systems/lsm-tree/).

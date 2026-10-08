@@ -605,7 +605,7 @@ compaction : 가리개와 그 아래 옛 값을 함께 없앤다
 - 하는 일:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **RocksDB · LevelDB** — memtable + SSTable + compaction 그대로. 이 노트와 달리 층이 여러 레벨이고(기본 leveled compaction — RocksDB는 universal·FIFO도 고를 수 있다) WAL이 붙는다. `Put`이 옛 값을 돌려주지 않는 것도 같다(정답 3번 참고).
 - **Cassandra · HBase · ScyllaDB** — 분산 저장소의 노드 하나하나가 LSM이다. "삭제했는데 디스크가 안 줄어든다"는 운영 질문이 tombstone과 compaction 때문에 나온다.

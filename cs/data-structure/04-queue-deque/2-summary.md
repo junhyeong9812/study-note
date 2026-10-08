@@ -830,7 +830,7 @@ removeLast() : last 를 한 칸 앞으로 당기고, 떼어낸 노드의 prev �
 - 논리:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **Java `ArrayDeque`** — 원형 배열 하나로 `Deque`를 구현한다. JDK가 큐와 스택 양쪽에 권하는 클래스이고, 이 노트의 `ArrayDeque`가 그 축소판이다.
 - **작업 큐·메시지 큐** — 요청을 들어온 순서로 워커에 넘긴다. 큐가 무한히 자라는 것을 막는 장치가 [ops-patterns/05-backpressure](../../ops-patterns/05-backpressure/2-summary.md)다.

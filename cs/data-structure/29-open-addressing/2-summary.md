@@ -759,7 +759,7 @@ put(D) : 새 항목은 언제나 1번 테이블의 자기 자리부터 본다 (t
 - 논리:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **CPython `dict`** — 개방 주소법. 해시 상위 비트를 섞어 넣는 변형 탐사(perturbation)로 군집화를 피하고, 삭제 자리에는 더미 표시(= tombstone)를 남긴다(CPython `Objects/dictobject.c` — 언어 명세가 아니라 구현 세부).
 - **Google SwissTable(abseil `flat_hash_map`)·Rust `HashMap`(hashbrown)** — 개방 주소법에 칸마다 짧은 해시를 담은 메타데이터 바이트 배열을 붙이고, 그 바이트들을 SIMD로 한 번에 비교해 후보 칸을 좁힌 뒤 실제 키를 `equals`로 확인한다(abseil SwissTable 설계 문서). 이 노트의 `states` 배열이 그 축소판이다. Rust 표준 `HashMap`은 1.36(2019)부터 hashbrown 기반이고, 그 전에는 로빈후드 계열이었다(Rust 1.36 릴리스 노트).

@@ -680,7 +680,7 @@ order 가 없다면 afterRemove 가 리스트를 처음부터 훑어야 해서 O
 - 논리:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **Java `HashMap`** — 체이닝. 한 버킷의 사슬이 8개를 넘고(`TREEIFY_THRESHOLD = 8`) 테이블이 64칸 이상이면(`MIN_TREEIFY_CAPACITY = 64`) 그 버킷을 레드블랙 트리로 바꿔 최악을 O(log n)으로 막는다. 테이블이 64칸 미만이면 트리화 대신 리사이즈한다(JDK 8+ `HashMap` 소스·JEP 180). 이 노트의 `ChainingHashMap`이 그 축소판이다.
 - **Java `LinkedHashMap`** — `HashMap` + 이중 연결 리스트로 삽입·접근 순서를 기억한다. 이 노트의 `LinkedHashMap`과 같은 설계이고, 접근 순서로 두면 [10-lru-cache](../10-lru-cache/2-summary.md)가 된다.

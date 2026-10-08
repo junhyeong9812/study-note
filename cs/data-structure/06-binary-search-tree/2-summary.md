@@ -432,7 +432,7 @@ remove(key) : 자식 수에 따라 세 갈래다. parent 를 손에 들고 내�
 - 논리:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **Java `TreeMap` · `TreeSet`** — `SortedMap` 계약의 실무판. 내부는 균형을 유지하는 레드-블랙 트리([16-red-black-tree](../16-red-black-tree/2-summary.md))이지만, `floorKey`·`ceilingKey`·`subMap`·`firstKey`는 이 노트의 연산 그대로다.
 - **DB 인덱스** — `WHERE k BETWEEN a AND b`, `ORDER BY k`를 정렬 유지 트리가 한 갈래로 내려가 처리한다. 디스크에 맞게 다분기로 바꾼 것이 [15-b-tree](../15-b-tree/2-summary.md)다.

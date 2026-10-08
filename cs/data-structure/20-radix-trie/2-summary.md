@@ -403,7 +403,7 @@ lookup("10.1.2.3") : longestPrefixOf 로 "값이 있는, 가장 깊이 도달한
 - 하는 일:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **리눅스 커널 IPv4 라우팅 테이블(`net/ipv4/fib_trie.c`)** — 목적지 IP의 최장 접두사 일치를 LC-trie(경로 압축 + 레벨 압축 트라이, Nilsson–Karlsson)로 한다. 이 노트의 `RoutingTable`은 그중 경로 압축만 한 축소판이다.
 - **HTTP 라우터** — `/users/:id/posts` 같은 경로 패턴을 radix tree에 넣고 요청 경로를 한 번 내려가며 매칭한다. Go의 httprouter(README: "compact prefix tree (or just Radix tree)")와 그 트리를 가져온 gin이 이 방식이다. 간선은 문자 단위 조각이고, `:id` 같은 파라미터 자리만 세그먼트 단위로 맞춘다.

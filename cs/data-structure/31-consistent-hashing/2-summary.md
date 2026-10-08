@@ -545,7 +545,7 @@ jumpHash(key, numBuckets) : 지역 변수 둘과 반복문 하나. 자료구조�
 - 논리:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **Memcached 클라이언트의 서버 선택(ketama)** — 서버 목록을 링에 올리고 키마다 시계 방향 첫 서버로 보낸다. 서버 한 대가 빠져도 그 서버 몫의 캐시만 미스가 난다(libketama — 서버마다 MD5로 여러 점을 찍는 continuum, 즉 이 노트의 가상 노드와 같은 방식).
 - **Amazon Dynamo · Cassandra의 토큰 링** — 노드마다 여러 토큰(가상 노드, vnodes)을 링에 찍고, 키의 토큰에서 시계 방향으로 복제본을 둔다. 이 노트의 `ConsistentHashRing` + 가상 노드가 그 원형이다(원전 Karger 외 1997 · DeCandia 외 Dynamo 2007 · Cassandra `num_tokens` 설정). 실제 복제본 배치는 랙·데이터센터 인식 전략에 따라 달라진다.

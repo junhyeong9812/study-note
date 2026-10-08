@@ -460,7 +460,7 @@ rangeSum(r1, c1, r2, c2) = A - B - C + D  (포함-배제)
 - 하는 일:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **온라인 순위표·백분위 집계** — 점수별 빈도를 펜윅 트리에 두면 "내 점수 아래에 몇 명"(`prefixSum`)과 "k등의 점수"(`findPrefixIndex`)가 둘 다 O(log n)이다. 중앙값 추적도 같은 모양이다.
 - **역전 쌍 세기(inversion count)** — 값을 순서대로 넣으며 "지금까지 나온 것 중 나보다 큰 것"을 `prefixSum`으로 세면 O(n log n)이다. [algorithm/02-merge-sort](../../algorithm/02-merge-sort/2-summary.md)의 병합 세기와 같은 답을 다른 길로 낸다.

@@ -514,7 +514,7 @@ insert = splitNode 한 번 + concatNodes 두 번.   delete = splitNode 두 번 +
 - 논리:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **텍스트 에디터의 문서 버퍼** — Xi 에디터·CodeMirror 6·Zed가 로프를 쓴다(원본 README). VS Code는 piece table의 조각들을 레드블랙 트리로 묶은 piece tree를 쓴다(VS Code 블로그 「Text Buffer Reimplementation」 2018) — 로프는 아니지만 "조각 + 트리 + 옮긴 글자 최소화"라는 발상은 같다.
 - **협업 편집기·CRDT 문서** — 여러 사용자의 삽입·삭제가 문서 곳곳에 흩어져 들어온다. 편집마다 전체 복사는 불가능하므로 조각 트리 위에 얹는다. [ops-patterns/15-crdt](../../ops-patterns/15-crdt/2-summary.md)의 시퀀스 CRDT가 그 위층이다.

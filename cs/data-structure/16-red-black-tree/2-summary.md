@@ -497,7 +497,7 @@ TODO 없는 어댑터. 일은 전부 `RedBlackTree` 에 있고 여기는 `Sorted
 - 하는 일:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **Java `TreeMap` · `TreeSet`** — 정렬된 맵·집합의 표준 구현이 레드블랙 트리다. `floorKey`·`ceilingKey`·`subMap` 같은 순서 연산이 O(log n)이다.
 - **Java 8 `HashMap`의 트리화** — 한 버킷의 사슬이 8개를 넘고(`TREEIFY_THRESHOLD = 8`) 테이블이 64칸 이상이면(`MIN_TREEIFY_CAPACITY = 64`) 그 연결 리스트를 레드블랙 트리로 바꿔 충돌 공격(HashDoS) 때 O(n)이 O(log n)이 되게 한다. 테이블이 64칸 미만이면 트리화 대신 리사이즈한다(JDK 8+ `HashMap` 소스·JEP 180). [05-hashmap](../05-hashmap/2-summary.md)의 체이닝이 여기로 이어진다.

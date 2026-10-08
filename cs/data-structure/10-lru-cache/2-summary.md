@@ -603,7 +603,7 @@ ThreadSafeLRUCache — 캐시를 새로 만들지 않는다. 다른 Cache 를 �
 - 논리:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **Java `LinkedHashMap(cap, 0.75f, true)` + `removeEldestEntry`** — 표준 라이브러리가 같은 조합을 이미 갖고 있다. 이 노트의 `LinkedHashMapLRU`가 그 4줄이다.
 - **Redis `maxmemory-policy allkeys-lru` / `volatile-lru`** — 메모리 상한에 닿으면 LRU로 키를 버린다. 정확한 줄 대신 표본 몇 개(`maxmemory-samples`, 기본 5) 중 가장 오래된 것을 고르는 근사 LRU다(Redis 문서 "Key eviction").

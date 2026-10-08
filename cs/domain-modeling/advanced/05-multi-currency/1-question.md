@@ -8,7 +8,7 @@
 
 ### A. 과제
 
-#### 0. 시작 계산 (원본 README)
+0. 시작 계산 (원본 README)
 
 ```text
   JPY 111, 222, 333 을 원화로
@@ -23,7 +23,7 @@
 - 그런데 왜 더 정확한 쪽을 그냥 못 쓰는가?
 - "정확한 합계"와 "맞는 세로 합"을 둘 다 가질 수 있는가?
 
-#### 1. 금액 표현 — 최소 단위 정수 (`Money`, `Currency` — 주어진 계약)
+1. 금액 표현 — 최소 단위 정수 (`Money`, `Currency` — 주어진 계약)
 
 ```java
 /**
@@ -44,7 +44,7 @@ public record Money(long minorUnits, Currency currency) { ... }
 - `plus` 가 같은 통화끼리만 되는 이유는 무엇인가?
 - "원 + 달러"를 타입으로 막으면 무엇을 얻는가?
 
-#### 2. TODO 1 — convert (금액 하나를 환산한다)
+2. TODO 1 — convert (금액 하나를 환산한다)
 
 ```java
 /**
@@ -66,7 +66,7 @@ public Money convert(Money money, Currency target, Path path) {
 - 자릿수가 줄어드는 환산(BHD 3자리 → USD 2자리)에서는 무엇이 사라지는가?
 - 반올림은 계산의 어느 시점에 한 번 하는가?
 
-#### 3. 환율 — 역수가 아니다 (`RateTable` — 주어진 계약)
+3. 환율 — 역수가 아니다 (`RateTable` — 주어진 계약)
 
 ```text
   USD -> KRW  1350.25      KRW -> USD  0.00073
@@ -81,7 +81,7 @@ public Money convert(Money money, Currency target, Path path) {
 - 역수로 반대 방향을 계산하면 무엇을 지우는 것인가?
 - `RateTable` 이 생성 시점에 막는 것 셋은 무엇인가?
 
-#### 4. TODO 2 — viaUsd (USD 를 거치는 환율)
+4. TODO 2 — viaUsd (USD 를 거치는 환율)
 
 ```java
 /**
@@ -109,7 +109,7 @@ private BigDecimal viaUsd(Currency from, Currency to) {
 - BHD → KRW 는 직접 길에서 어떻게 되는가?
 - 환율이 없을 때 조용히 0을 돌려주면 무슨 사고가 나는가?
 
-#### 5. TODO 3 — total (합계)
+5. TODO 3 — total (합계)
 
 ```java
 /**
@@ -131,7 +131,7 @@ public Money total(List<Money> monies, Currency target, SumOrder order, Path pat
 - 왜 "합한 뒤 환산"이 사실은 "같은 통화끼리 먼저 묶기"를 뜻하는가?
 - 빈 목록은 어떻게 되는가?
 
-#### 6. TODO 4 — reconciliationGap (정합)
+6. TODO 4 — reconciliationGap (정합)
 
 ```java
 /**
@@ -149,7 +149,7 @@ public long reconciliationGap(List<Money> monies, Currency target, SumOrder orde
 - JPY 111/222/333 예제에서 두 순서의 gap은 각각 얼마인가?
 - gap이 0이 아닌 영수증을 고객이 보면 무엇을 묻는가?
 
-#### 7. 반올림 방식 (`RoundingMode` 주입)
+7. 반올림 방식 (`RoundingMode` 주입)
 
 ```text
   JPY 111 x 9.05 = 1,004.55        JPY 10 x 9.05 = 90.50
@@ -164,7 +164,7 @@ public long reconciliationGap(List<Money> monies, Currency target, SumOrder orde
 
 ### B. 개념
 
-#### 8. 측정 — 어긋남의 크기 (원본 README "측정이 알려준 것")
+8. 측정 — 어긋남의 크기 (원본 README "측정이 알려준 것")
 
 - 바구니 5,000개 중 세로 합이 안 맞는 바구니는 몇 개인가?
 - 차이 합·한 건 최대·총액 차는 각각 얼마인가?
@@ -179,20 +179,20 @@ public long reconciliationGap(List<Money> monies, Currency target, SumOrder orde
 - 원화만 있는 바구니면 아홉 조합이 어떻게 되는가?
 - "개발 자료는 대개 국내 주문"이 왜 경고인가?
 
-#### 9. 함정 (원본 README "함정")
+9. 함정 (원본 README "함정")
 
 - README가 꼽은 함정 다섯은 각각 무엇인가?
 - 그중 **100배 틀리는데 예외가 안 나는** 것은 어느 것인가?
 - 그중 **결제가 0원이 되는** 것은 어느 것인가?
 
-#### 10. 생각해볼 것 (원본 README 이관)
+10. 생각해볼 것 (원본 README 이관)
 
 - 환율이 언제 것인가 — 주문 시점인가 결제 시점인가 정산 시점인가?
 - 세로 합이 안 맞는 영수증을 고객이 물으면 뭐라고 답하나?
 - 부분 환불에서 환율이 바뀌었으면 어느 환율로 돌려주나?
 - 통화 하나를 더 지원하면 환율표에 몇 줄이 필요한가 — 열 개면?
 
-#### 11. 연결
+11. 연결
 
 - "언제 반올림하나"는 03-subscription-change 의 어느 자리와 같은 구조인가?
 - "죽은 분기를 지우고 지워도 되는 이유를 테스트로 남긴다"는 03의 어느 이야기와 같은가?
@@ -200,12 +200,12 @@ public long reconciliationGap(List<Money> monies, Currency target, SumOrder orde
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 다통화 금액 계산에서 따로따로 관리해야 할 세 가지 위험은 무엇인가?
-- C2. `RateTable`을 그래프로 보면 간선은 무엇이고, 통화 n개를 전부 잇는 표와 USD 허브형 표의 간선 수는 각각 얼마인가?
-- C3. 다통화에서 "갈리는 입력" 네 요소는 무엇이고, enum을 고르기 전에 먼저 고정해야 하는 것은?
-- C4. 영수증 세로 합이 합계와 다른 장애는 왜 모니터링에 안 잡히고, 대처 두 갈래는?
-- C5. 새 통화를 열었더니 결제가 0원으로 나간 장애의 원인과, 새 통화 추가 체크리스트에 넣을 최소 항목은?
-- C6. 환불 금액이 결제 금액과 1원 다른 장애는 무엇을 저장하지 않고 무엇으로 다시 계산해서이고, 어느 노트가 그 해법을 다루나?
+12. (C1) 다통화 금액 계산에서 따로따로 관리해야 할 세 가지 위험은 무엇인가?
+13. (C2) `RateTable`을 그래프로 보면 간선은 무엇이고, 통화 n개를 전부 잇는 표와 USD 허브형 표의 간선 수는 각각 얼마인가?
+14. (C3) 다통화에서 "갈리는 입력" 네 요소는 무엇이고, enum을 고르기 전에 먼저 고정해야 하는 것은?
+15. (C4) 영수증 세로 합이 합계와 다른 장애는 왜 모니터링에 안 잡히고, 대처 두 갈래는?
+16. (C5) 새 통화를 열었더니 결제가 0원으로 나간 장애의 원인과, 새 통화 추가 체크리스트에 넣을 최소 항목은?
+17. (C6) 환불 금액이 결제 금액과 1원 다른 장애는 무엇을 저장하지 않고 무엇으로 다시 계산해서이고, 어느 노트가 그 해법을 다루나?
 
 ## 복습 기록
 

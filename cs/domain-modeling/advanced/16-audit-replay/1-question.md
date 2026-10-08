@@ -8,7 +8,7 @@
 
 ### A. 과제
 
-#### 0. 규칙 한 줄 (원본 README)
+0. 규칙 한 줄 (원본 README)
 
 ```text
   "로그를 처음부터 다시 돌리면 지금 잔액이 나온다"
@@ -29,7 +29,7 @@
 - 그 순서 무관함을 깨뜨리는 한 줄은 정확히 무엇인가?
 - 안 정해진 세 자리를 코드 안에 숨기지 않고 enum 세 개로 올리면 무엇을 할 수 있게 되는가?
 
-#### 1. AuditEvent — 다 주어진 계약
+1. AuditEvent — 다 주어진 계약
 
 ```java
 /**
@@ -59,7 +59,7 @@ public record AuditEvent(
 - 이 멱등 키가 **구별하지 못하는** 두 상황은 무엇인가?
 - `AuditEvent` 를 "계약이라 다 주어져 있다"고 못 박은 것은 무엇을 고정한 것인가?
 
-#### 2. TODO 1 — ordered (무엇으로 줄 세우나)
+2. TODO 1 — ordered (무엇으로 줄 세우나)
 
 ```java
 /**
@@ -87,7 +87,7 @@ public List<AuditEvent> ordered(List<AuditEvent> events, Ordering ordering) {
    3      +20         +20
 ```
 
-#### 3. TODO 2 — deduplicate (중복을 거른다)
+3. TODO 2 — deduplicate (중복을 거른다)
 
 ```java
 /**
@@ -117,7 +117,7 @@ public List<AuditEvent> deduplicate(List<AuditEvent> ordered, DuplicateRule rule
 - 이 버그가 테스트 18개를 다 통과하고도 살아남았던 이유는 무엇인가?
 - 그 변종을 잡으려면 어떤 입력을 테스트에 넣어야 했는가?
 
-#### 4. TODO 3 — replay (재생해 잔액을 만든다)
+4. TODO 3 — replay (재생해 잔액을 만든다)
 
 ```java
 /**
@@ -148,7 +148,7 @@ public Replay replay(
 - `Replay` 가 잔액 Map 말고도 `applied`·`rejected`·`duplicatesDropped` 를 같이 내놓는 이유는 무엇인가?
 - 결과에서 `rejected` 를 빼면 무엇이 조용해지는가?
 
-#### 5. TODO 4 — reconcile (대사)
+5. TODO 4 — reconcile (대사)
 
 ```java
 /**
@@ -171,7 +171,7 @@ public Reconciliation reconcile(Replay replay, Map<String, Long> actual) {
 
 ### B. 개념
 
-#### 6. 측정 하나 — 지연과 세 순서 (원본 README "측정이 알려준 것")
+6. 측정 하나 — 지연과 세 순서 (원본 README "측정이 알려준 것")
 
 ```text
   계정 50, 사건 2,000, 100 회
@@ -189,14 +189,14 @@ public Reconciliation reconcile(Replay replay, Map<String, Long> actual) {
 - 이 사실이 "개발 환경에서는 어느 기준으로 짜두든 테스트가 통과한다"로 이어지는 이유는 무엇인가?
 - 그러면 테스트에 무엇을 섞어야 이 갈림이 잡히는가?
 
-#### 7. 측정 둘 — 거부가 없으면 순서가 상관없다
+7. 측정 둘 — 거부가 없으면 순서가 상관없다
 
 - 차감 사건을 아예 안 섞으면 지연 50 퍼센트에서 갈린 시행은 몇 번인가?
 - 순서가 문제가 되는 진짜 원인은 "시각이 흔들려서"인가 "어떤 사건이 거부될 수 있어서"인가?
 - "잔액 부족이면 거부"를 **나중에** 넣으면 왜 위험한가?
 - 이 측정이 앞 측정(16,200원 차)과 짝을 이뤄 증명하는 명제는 무엇인가?
 
-#### 8. 측정 셋 — 중복 0퍼센트 로그에서 9건
+8. 측정 셋 — 중복 0퍼센트 로그에서 9건
 
 ```text
   재시도 비율 | 다 반영      | 거르기       | 걸러낸 건수
@@ -213,7 +213,7 @@ public Reconciliation reconcile(Replay replay, Map<String, Long> actual) {
 - 20만 건 중 9건이라 대사에서 안 보인다 — 그러면 이 사고는 언제 드러나는가?
 - 거르는 쪽과 안 거르는 쪽은 각각 어느 방향으로 틀리는가?
 
-#### 9. 측정 넷 — 되돌리기 두 규칙
+9. 측정 넷 — 되돌리기 두 규칙
 
 ```text
   되돌리기 | 갈린 시행 | 원본 지우기 총액 | 반대 더하기 총액
@@ -228,20 +228,20 @@ public Reconciliation reconcile(Replay replay, Map<String, Long> actual) {
 - 거부가 그 방향으로 움직이는 이유는 무엇인가?
 - 되돌리기가 0퍼센트일 때 두 규칙의 총액이 똑같은 것은 왜 당연한가?
 
-#### 10. 측정 다섯 — 조용한 거부
+10. 측정 다섯 — 조용한 거부
 
 - 지연 20퍼센트 · 되돌리기 5퍼센트 조건에서 반영 건수와 거부 건수는 각각 몇 건인가?
 - 거부 비율은 몇 퍼센트인가?
 - 거부된 사건이 "조용하다"고 말하는 근거는 무엇인가?
 - 이 5퍼센트를 보이게 만드는 설계 선택은 무엇인가?
 
-#### 11. 함정 (원본 README "함정")
+11. 함정 (원본 README "함정")
 
 - README가 꼽은 함정 넷은 각각 무엇인가?
 - 네 함정 중 **테스트가 다 통과해도 살아남는** 것은 어느 것인가?
 - 함정 하나하나가 실무에서 어떤 장애로 나타나는가?
 
-#### 12. 생각해볼 것 (원본 README 이관)
+12. 생각해볼 것 (원본 README 이관)
 
 - 거부된 사건은 다시 넣는가 버리는가?
 - 다시 넣는다면 언제 넣는가?
@@ -249,7 +249,7 @@ public Reconciliation reconcile(Replay replay, Map<String, Long> actual) {
 - 재생 구간을 끊으면 구간 밖의 되돌리기는 어떻게 되는가?
 - 대사가 안 맞을 때 실제와 재생 중 어느 쪽을 믿는가?
 
-#### 13. 연결
+13. 연결
 
 - 이 챕터의 세 enum 은 01-parking-fee 의 `FeePolicy` 와 같은 일을 하는가?
 - 이 트랙이 세는 것("답이 갈리는 시행 수")은 알고리즘 트랙이 세던 것과 무엇이 다른가?
@@ -258,12 +258,12 @@ public Reconciliation reconcile(Replay replay, Map<String, Long> actual) {
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 현재 잔액 숫자 하나만 저장하는 방식 대신 사건 로그를 남기면 무엇을 얻고, 그 대신 "다시 더할 때" 답해야 하는 물음 셋은 무엇인가?
-- C2. `ordered`의 비교자에서 `thenComparingLong(seq)`를 빼면 어떤 자료구조·알고리즘의 어떤 성질 때문에 답이 입력 순서에 따라 달라지는가?
-- C3. `deduplicate`가 20만 건을 한 번 훑고 끝나는 것은 어떤 자료구조 덕분이고, 거기서 중복 판정은 어느 한 줄에서 일어나는가?
-- C4. 대사 결과 `differences`에 양수만 찍혀 있다면 원인은 어느 방향이고, 로그를 지우지 않고 어떻게 고치는가?
-- C5. 전체 재생이 느려 최근 구간만 재생하면 어떤 사건이 두 되돌리기 규칙에서 다른 잔액을 내고, 구간 경계에 어떤 규칙을 더해야 하는가?
-- C6. 이 챕터의 `Ordering`·`DuplicateRule`이 실무 패턴으로 커진 것은 ops-patterns의 어느 두 노트인가?
+14. (C1) 현재 잔액 숫자 하나만 저장하는 방식 대신 사건 로그를 남기면 무엇을 얻고, 그 대신 "다시 더할 때" 답해야 하는 물음 셋은 무엇인가?
+15. (C2) `ordered`의 비교자에서 `thenComparingLong(seq)`를 빼면 어떤 자료구조·알고리즘의 어떤 성질 때문에 답이 입력 순서에 따라 달라지는가?
+16. (C3) `deduplicate`가 20만 건을 한 번 훑고 끝나는 것은 어떤 자료구조 덕분이고, 거기서 중복 판정은 어느 한 줄에서 일어나는가?
+17. (C4) 대사 결과 `differences`에 양수만 찍혀 있다면 원인은 어느 방향이고, 로그를 지우지 않고 어떻게 고치는가?
+18. (C5) 전체 재생이 느려 최근 구간만 재생하면 어떤 사건이 두 되돌리기 규칙에서 다른 잔액을 내고, 구간 경계에 어떤 규칙을 더해야 하는가?
+19. (C6) 이 챕터의 `Ordering`·`DuplicateRule`이 실무 패턴으로 커진 것은 ops-patterns의 어느 두 노트인가?
 
 ## 복습 기록
 

@@ -384,7 +384,7 @@ LinkedStack — 맨 앞(head)이 스택의 top 이다. 배열도 용량도 확�
 - 논리:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **함수 호출 스택** — 각 호출의 지역 변수·돌아갈 주소를 프레임으로 쌓는다. 재귀가 깊어지면 이것이 넘친다([systems/call-stack](../../systems/call-stack/README.md)).
 - **Java `ArrayDeque`** — JDK가 스택으로 권하는 클래스. `java.util.Stack`의 문서 자체가 `Deque`(예: `ArrayDeque`)를 우선 쓰라고 적는다 — 옛 `Stack`은 `Vector`를 상속해 모든 메서드에 동기화가 붙고 중간 접근도 열려 있다.

@@ -643,7 +643,7 @@ mightContain(item) : 앞에서부터 물어보다 하나라도 true 면 즉시 t
 - 논리:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **LSM 저장소의 SSTable 조회 생략** — Cassandra·HBase·RocksDB는 SSTable 파일마다 블룸 필터를 붙여, 키가 "확실히 없는" 파일은 디스크를 읽지 않는다. [24-lsm-tree](../24-lsm-tree/2-summary.md) · [systems/lsm-tree](../../systems/lsm-tree/).
 - **캐시 관통 방어** — 존재하지 않는 키를 반복 조회하는 요청이 DB까지 내려가지 않게, 캐시 앞에 "있는 키의 필터"를 둔다. 없는 키는 필터에서 끝난다.

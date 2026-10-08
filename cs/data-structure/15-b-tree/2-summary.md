@@ -632,7 +632,7 @@ keys() 도 같은 원리다 -- firstLeaf() 하나 잡고 next 를 끝까지 따�
 - 하는 일:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **관계형 DB 인덱스** — MySQL InnoDB·PostgreSQL의 기본 인덱스가 B+트리 계열이다. `WHERE age BETWEEN`·`ORDER BY`·페이지네이션이 잎 사슬 걷기로 풀린다. InnoDB는 클러스터드 인덱스가 행 데이터 자체를 저장한다(MySQL 문서 "Clustered and Secondary Indexes"). SQLite는 테이블 B-tree(데이터를 잎에만)와 인덱스 B-tree(내부 페이지에도 키)를 구분한다(SQLite 파일 형식 문서).
 - **파일시스템 디렉터리·메타데이터** — Btrfs는 이름 그대로 B-트리(copy-on-write)로 메타데이터를 둔다. NTFS의 디렉터리 인덱스도 B-트리 계열이다 [?]. ext4의 대용량 디렉터리(HTree)는 파일 이름의 **해시**를 키로 쓰는 얕은 트리라서, 이름 순서로 범위를 걷는 구조가 아니다(커널 ext4 디렉터리 문서).

@@ -675,7 +675,7 @@ tf 는 Posting 안(문서 안)에서, df 는 포스팅 리스트 길이(색인 �
 - 논리:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **Lucene / Elasticsearch / OpenSearch** — 역색인 그 자체. 색인 시 분석기(analyzer)가 문자 필터 → 토크나이저(자르기) → 토큰 필터(소문자화·불용어 제거 등) 순서로 항을 만든다 — 이 노트의 `StandardAnalyzer`와 같은 뼈대다. 단 Elasticsearch의 기본 `standard` 분석기는 자르기 + 소문자화까지이고 불용어 제거는 기본으로 꺼져 있다(Elastic 문서). 한국어는 형태소 분석기(nori)를 끼운다. 색인·질의 분석기 불일치가 조용한 누락을 만드는 것도 같다.
 - **PostgreSQL 전문 검색(`tsvector` + GIN 인덱스)** — 문서를 항 목록(`tsvector`)으로 바꾸고 GIN이 "항 → 행 목록"을 든다. `to_tsquery`가 질의 쪽 분석기다(PostgreSQL 문서 「Full Text Search」 — 두 쪽이 같은 text search configuration을 써야 맞는 것도 같다).

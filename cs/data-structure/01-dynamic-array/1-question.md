@@ -8,7 +8,7 @@
 
 ### A. 문제 (ArrayProblems)
 
-#### 1. 정렬된 배열에서 중복 제거 (제자리)
+1. 정렬된 배열에서 중복 제거 (제자리)
 
 ```java
 /**
@@ -38,7 +38,7 @@ public static int removeDuplicatesSorted(DynamicArray<Integer> array)
 - 비교 대상이 "다음 값"이 아니라 "마지막으로 쓴 값"이어야 하는 이유는?
 - 데이터가 100만 건이면 두 풀이 중 어느 쪽이 살아남는가?
 
-#### 2. k 칸 오른쪽으로 회전
+2. k 칸 오른쪽으로 회전
 
 ```java
 /**
@@ -62,7 +62,7 @@ public static <E> void rotate(DynamicArray<E> array, int k)
 - `remove(0)` 을 k 번 부르고 뒤에 붙이는 풀이는 왜 안 되는가?
 - 데이터가 커지면 두 풀이 중 어느 쪽이 먼저 한계에 닿는가?
 
-#### 3. 정렬을 유지하며 삽입
+3. 정렬을 유지하며 삽입
 
 ```java
 /**
@@ -87,7 +87,7 @@ public static int insertSorted(DynamicArray<Integer> array, int value)
 - 그래도 이진 탐색이 무의미하지 않은 이유는?
 - 정렬 삽입이 계속 반복되는 워크로드라면 동적 배열이 맞는 선택인가?
 
-#### 4. 조건에 맞는 원소를 모두 제거 (이 문제집의 핵심)
+4. 조건에 맞는 원소를 모두 제거 (이 문제집의 핵심)
 
 ```java
 /**
@@ -113,7 +113,7 @@ public static <E> int removeAllIf(DynamicArray<E> array, Predicate<? super E> pr
 - 꼬리를 앞에서부터 지우면 어떻게 되는가?
 - `Predicate<? super E>` 로 받는 이유는 무엇인가?
 
-#### 5. 정렬된 두 배열 병합
+5. 정렬된 두 배열 병합
 
 ```java
 /**
@@ -141,14 +141,14 @@ public static DynamicArray<Integer> merge(DynamicArray<Integer> a, DynamicArray<
 
 ### B. 자료구조의 특성
 
-#### 6. 동적 배열은 왜 필요한가
+6. 동적 배열은 왜 필요한가
 
 - 고정 길이 배열의 어떤 한계를 메우는가?
 - 내부에서 실제로 무슨 일을 해서 "늘어나는 것처럼" 보이게 하는가?
 - `size` 와 `capacity` 를 분리해서 갖는 것이 그 한계 극복에서 하는 역할은 무엇인가?
 - 둘이 항상 같다면 add 의 비용은 어떻게 되는가?
 
-#### 7. 어떤 데이터·접근 패턴에 적합한가
+7. 어떤 데이터·접근 패턴에 적합한가
 
 - 어떤 접근 패턴에서 동적 배열이 유리한가?
 - 어떤 접근 패턴에서 불리한가?
@@ -157,7 +157,7 @@ public static DynamicArray<Integer> merge(DynamicArray<Integer> a, DynamicArray<
 - 그 교환의 뿌리가 되는 설계 선택 한 가지는 무엇인가?
 - 데이터가 수천만 건이 되면 연속 저장이 어떤 문제를 만드는가?
 
-#### 8. 확장할 때 왜 2배로 키우는가
+8. 확장할 때 왜 2배로 키우는가
 
 - 1씩 키우면 add 를 n 번 할 때 총 복사량은 얼마인가(식으로)?
 - 2배로 키우면 확장은 몇 번 일어나고 총 복사량은 얼마인가(식으로)?
@@ -167,7 +167,7 @@ public static DynamicArray<Integer> merge(DynamicArray<Integer> a, DynamicArray<
 - 2배가 아니라 1.5배나 3배면 무엇이 달라지는가?
 - 응답 지연이 중요한 시스템에서 "가끔 튀는 O(n)" 은 왜 문제가 되는가?
 
-#### 9. 왜 1/4 이하에서 절반으로 줄이는가
+9. 왜 1/4 이하에서 절반으로 줄이는가
 
 - 늘리기만 하고 줄이지 않으면 무엇이 문제인가?
 - 1/2 에서 줄이면 무슨 일이 생기는가(thrashing)?
@@ -175,7 +175,7 @@ public static DynamicArray<Integer> merge(DynamicArray<Integer> a, DynamicArray<
 - 축소에 하한(최소 용량)을 두지 않으면 어떤 일이 벌어지는가?
 - 축소 정책이 구현 재량이 아니라 계약이 된 이유는?
 
-#### 10. `remove(index)` 의 비용이 자리마다 다른 이유
+10. `remove(index)` 의 비용이 자리마다 다른 이유
 
 - `remove` 가 실제로 하는 일은 무엇인가?
 - 맨 뒤를 지울 때 O(1) 인 이유는?
@@ -183,14 +183,14 @@ public static DynamicArray<Integer> merge(DynamicArray<Integer> a, DynamicArray<
 - 이 사실은 "여러 개를 지워야 할 때" 어떤 전략을 시사하는가?
 - `remove(int)` 와 `remove(Object)` 는 왜 헷갈리고, `DynamicArray<Integer>` 에서 무엇이 문제인가?
 
-#### 11. 최악 입력을 직접 만들어보라
+11. 최악 입력을 직접 만들어보라
 
 - `add(0, x)` 를 n 번 하면 총 복사량은 얼마인가?
 - 중간 `remove` 를 n/2 번 반복하면 총 복사량은 얼마인가?
 - 반대로 총비용이 선형에 머무는 최선의 사용 패턴은 무엇인가?
 - 최악 패턴이 실제 워크로드라면 무엇을 바꿔야 하는가?
 
-#### 12. 지운 자리의 참조와 `toArray` 의 복사본
+12. 지운 자리의 참조와 `toArray` 의 복사본
 
 - `remove` 뒤에 마지막 칸의 참조를 왜 끊어야 하는가?
 - 끊지 않으면 구체적으로 무슨 일이 생기는가?
@@ -200,7 +200,7 @@ public static DynamicArray<Integer> merge(DynamicArray<Integer> a, DynamicArray<
 - 그래서 무엇이 "계약의 일부"가 되었는가?
 - `toArray()` 가 내부 배열이 아니라 복사본을 주는 이유는(두 가지)?
 
-#### 13. 루프 횟수가 아니라 루프 안 비용을 곱해야 하는 이유
+13. 루프 횟수가 아니라 루프 안 비용을 곱해야 하는 이유
 
 - 총비용을 셀 때 루프 횟수만 보면 무엇을 놓치는가?
 - `2n` 은 왜 O(n) 인가?
@@ -211,12 +211,12 @@ public static DynamicArray<Integer> merge(DynamicArray<Integer> a, DynamicArray<
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 고정 길이 배열만 있을 때 "몇 개가 올지 모르는" 데이터를 담으려면 어떤 두 선택지밖에 없고, 동적 배열은 그 사이에서 무엇을 없애는가?
-- C2. Go 슬라이스의 `len`·`cap`, C++ `vector`의 `size()`·`capacity()`는 이 노트의 어떤 두 필드에 대응하는가?
-- C3. 동적 배열 문제를 받았을 때 가장 먼저 세어야 할 것은 무엇이고, 루프 안에 그것이 있으면 어떤 기법으로 O(n)으로 되돌리는가?
-- C4. 평소 빠른 `add`가 가끔 튀는 현상은 프로파일에서 무엇으로 알아보고, 최종 크기를 미리 알 때의 대처는 무엇인가?
-- C5. 순회하면서 `remove`를 부를 때 Java `ArrayList`와 이 노트의 `DynamicArray`는 각각 어떻게 다르게 실패하는가, 안전한 방법 두 가지는?
-- C6. 이 노트의 문제 1·3·4·5는 algorithm 영역의 어떤 두 노트로 이어지는가?
+14. (C1) 고정 길이 배열만 있을 때 "몇 개가 올지 모르는" 데이터를 담으려면 어떤 두 선택지밖에 없고, 동적 배열은 그 사이에서 무엇을 없애는가?
+15. (C2) Go 슬라이스의 `len`·`cap`, C++ `vector`의 `size()`·`capacity()`는 이 노트의 어떤 두 필드에 대응하는가?
+16. (C3) 동적 배열 문제를 받았을 때 가장 먼저 세어야 할 것은 무엇이고, 루프 안에 그것이 있으면 어떤 기법으로 O(n)으로 되돌리는가?
+17. (C4) 평소 빠른 `add`가 가끔 튀는 현상은 프로파일에서 무엇으로 알아보고, 최종 크기를 미리 알 때의 대처는 무엇인가?
+18. (C5) 순회하면서 `remove`를 부를 때 Java `ArrayList`와 이 노트의 `DynamicArray`는 각각 어떻게 다르게 실패하는가, 안전한 방법 두 가지는?
+19. (C6) 이 노트의 문제 1·3·4·5는 algorithm 영역의 어떤 두 노트로 이어지는가?
 
 ## 복습 기록
 

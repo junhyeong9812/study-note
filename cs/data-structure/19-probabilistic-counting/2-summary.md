@@ -516,7 +516,7 @@ estimate() = 작은 값 구간 보정
 - 하는 일:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **Redis `PFADD` / `PFCOUNT` / `PFMERGE`** — 키 하나가 HyperLogLog다. 샤드별로 세고 `PFMERGE`로 합치는 것이 이 노트의 `merge`(레지스터별 max) 그대로다.
 - **RedisBloom의 `CMS.INCRBY` / `CMS.QUERY`** — Count-Min 스케치를 명령어로 노출한다. `CMS.INITBYPROB`가 오차율·확률로 표 크기를 역산하는 것은 `widthFor`·`depthFor`와 같은 발상이다. 다만 공식은 다르다 — RedisBloom은 `width = ceil(2/error)`, `depth = ceil(log2(1/prob))`이고 이 노트는 `ceil(e/epsilon)`, `ceil(ln(1/delta))`다(redis.io `CMS.INITBYPROB` 문서 · `impl/CountMinSketch.java` 35·46행).

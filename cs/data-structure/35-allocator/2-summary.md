@@ -755,7 +755,7 @@ free(0) :  떼어준 크기 16 에서 지수를 되찾는다 (numberOfTrailingZe
 - 논리:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **C `malloc` / `free`(glibc 등)** — 자유 목록 + 분할·병합이 본체다. glibc `malloc`은 크기별 목록(bin — fast·small·large·unsorted)을 여러 개 두어 고르기를 빠르게 하고, 해제 때 이웃 청크와 합친다(glibc malloc 내부 문서). 이것이 이 노트의 "크기순 vs 주소순" 긴장을 푸는 실무 답이다.
 - **리눅스 커널 페이지 할당자** — 버디 방식이다. 페이지 블록을 2의 거듭제곱 단위로 쪼개고 짝을 합친다. `/proc/buddyinfo`가 영역(zone)별·층(order)별 자유 블록 수, 곧 이 노트의 `freeByLevel`의 크기다(커널 문서).

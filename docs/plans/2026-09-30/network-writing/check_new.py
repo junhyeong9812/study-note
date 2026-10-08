@@ -64,10 +64,13 @@ def check(folder):
         errs.append(f'2-summary 최상위 헤딩 {top} != {SK}')
     # 2026-10-01 header-cleanup: 상태는 metadata.md, 제목 아래 인용문 머리말 금지
     mp = os.path.join(folder, 'metadata.md')
+    legacy = False
     if not os.path.exists(mp):
         errs.append('metadata.md 없음')
     else:
-        rows = re.findall(r'^\| 단계 \| (\S+) \|', open(mp, encoding='utf-8').read(), flags=re.M)   # 생성기와 같은 파서
+        mt = open(mp, encoding='utf-8').read()
+        legacy = bool(re.search(r'^\| 형식 \| 과제 이식 \|', mt, flags=re.M))
+        rows = re.findall(r'^\| 단계 \| (\S+) \|', mt, flags=re.M)   # 생성기와 같은 파서
         if len(rows) != 1 or rows[0] not in ('원고', '초안', '검수', '학습'):
             errs.append(f'metadata.md: 단계 칸은 원고·초안·검수·학습 중 정확히 하나 ({rows})')
     for f, t in files.items():
@@ -96,7 +99,7 @@ def check(folder):
     a = [int(m) for m in re.findall(r'^### (\d+)\. ', files['3-answer.md'], flags=re.M)]
     if q != a:
         errs.append(f'Q/A 번호 불일치 q={q} a={a}')
-    elif not (6 <= len(q) <= 10):
+    elif not (6 <= len(q) and (len(q) <= 10 or legacy)):   # 2026-10-08: metadata `형식 | 과제 이식`(과제·질문 무손실 이식 컬렉션)은 상한만 면제
         errs.append(f'질문 수 {len(q)} (6~10)')
     return errs
 

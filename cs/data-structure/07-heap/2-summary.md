@@ -600,7 +600,7 @@ peek() = elements[size-1], O(1)
 - 논리:
 - 비용(왜):
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **Java `PriorityQueue`** — 배열 기반 이진 힙. `offer`·`poll`이 이 노트의 `insert`·`poll`이고, 생성자에 `Comparator`를 끼우는 방식도 같다.
 - **[algorithm/14-dijkstra](../../algorithm/14-dijkstra/2-summary.md)** — "아직 확정 안 된 정점 중 거리가 가장 짧은 것"을 매번 꺼낸다. 최소 힙이 그 부품이다.
