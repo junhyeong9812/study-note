@@ -16,6 +16,7 @@
 | 2026-10-08 | g2 12편 완료: check 11/1(domain-vs-application-logic HEAD부터 깨진 `../clean-code/`) · contain 47 OK + failure-at-scale T3 줄 예외 · 보충 질문 resp-protocol·semaphore 6번 · postgres-rls 함정 ②(평가 비용)를 자료구조 절로(순서 ②→① — 메인 유지) | 12편 |
 | 2026-10-08 | 메인: 찌꺼기 줄 `</content>`·`</invoke>` 5편 11줄 삭제(사용자 지시) · dva 링크 → `../../engineering/clean-code/`, '형제 주제' → '관련 주제(engineering 영역)' | 정리 |
 | 2026-10-08 | 최종: 전체 leaf **756 PASS / 0 FAIL** · verify 85/85 · contain 36편 FAIL 12파일 = 전부 의도한 삭제(찌꺼기 11줄·링크 2줄) · 생성기 TOTAL 초안 644 불변·생성 문서 변화 0 · 보이는 보충 표식 52곳/36파일 | 통과 |
+| 2026-10-08 | 사용자 "main 병합 + push" → main ff 병합·push 0ee6675d..12e8db8b | 완료 |
 
 ## 리뷰 ledger
 
