@@ -8,7 +8,7 @@
 
 ### A. 문제 (구현 대상: EventStore TODO 1\~2 · AccountProjection TODO 3\~4 · AccountService TODO 5\~7)
 
-#### 1. EventStore — append / readFrom (TODO 1\~2)
+1. EventStore — append / readFrom (TODO 1\~2)
 
 ```java
 // EventStore.java (src/main) — 채울 것
@@ -39,7 +39,7 @@ public synchronized List<AccountEvent> readFrom(String streamId, int fromVersion
 - readFrom 의 경계를 한 칸 틀리면 어떤 사고가 어디서 드러나는가?
 - versionOf 가 "사건 개수"를 버전으로 쓰는 것은 어떤 성질 덕에 성립하는가?
 
-#### 2. AccountProjection — replay / apply (TODO 3\~4, 검증하면 안 되는 자리)
+2. AccountProjection — replay / apply (TODO 3\~4, 검증하면 안 되는 자리)
 
 ```java
 // AccountProjection.java (src/main) — 채울 것
@@ -68,7 +68,7 @@ public AccountState apply(AccountState state, AccountEvent event) {
 - 모르는 사건을 만나면 왜 조용히 무시하지 않고 던져야 하는가?
 - replayFrom 은 무엇을 위해 있고, replay 와 결과가 같으려면 무엇이 지켜져야 하는가?
 
-#### 3. AccountService — open / deposit / withdraw (TODO 5\~7, 검증이 있는 유일한 자리)
+3. AccountService — open / deposit / withdraw (TODO 5\~7, 검증이 있는 유일한 자리)
 
 ```java
 // AccountService.java (src/main) — 채울 것
@@ -101,28 +101,28 @@ public void withdraw(String accountId, long amount) {
 
 ### B. 개념
 
-#### 4. 명령과 사건 — 이 상자의 핵심 구별
+4. 명령과 사건 — 이 상자의 핵심 구별
 
 - 명령과 사건의 차이를 한 줄씩으로 말하면?
 - 사건 이름이 과거형("출금되었다")인 것이 왜 계약인가?
 - 검증은 언제 한 번만 하는가?
 - 규칙이 바뀌었을 때(마이너스 통장 폐지) 이 구별이 없으면 무슨 일이 생기는가?
 
-#### 5. 지우지 않고 붙인다
+5. 지우지 않고 붙인다
 
 - 실수로 입금을 두 번 눌렀으면 어떻게 고치는가?
 - 그 결과 사건 개수는 줄어드는가 늘어나는가?
 - 이 방식은 08번 사가의 무엇과 같은 모양인가?
 - "실수가 있었다"가 기록에 남는 것은 장점인가 단점인가, 왜인가?
 
-#### 6. 낙관적 잠금 — 락과의 비교
+6. 낙관적 잠금 — 락과의 비교
 
 - 낙관적 잠금은 11번 분산 락의 펜싱 토큰과 무엇이 같고 무엇이 다른가?
 - 스레드 8개가 50번씩 붙일 때 성공·충돌 건수는 얼마였고, 그 숫자는 무엇을 보여주는가?
 - 충돌로 거절당한 쪽은 무엇을 하면 되는가?
 - 어떤 조건에서 락보다 낙관적 잠금이 싸고, 반대는 언제인가?
 
-#### 7. 한계와 연결
+7. 한계와 연결
 
 - 읽을 때마다 전부 접는 비용은 사건 수에 따라 어떻게 자라고, 무엇으로 줄이는가? (출처: README 생각해볼 것 6)
 - 스냅샷이 "원래 문제를 조금 되가져온다"는 말은 무슨 뜻이고, 그래서 지켜야 할 원칙은 무엇인가?
@@ -132,12 +132,12 @@ public void withdraw(String accountId, long amount) {
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. git의 커밋·워킹 트리·`revert`는 이 노트의 무엇에 각각 대응하고, `git reset --hard`로 지우는 것이 이 패턴에서 금지되는 이유는?
-- C2. `apply`가 순수 함수여야 한다는 것은 무엇을 금지하는 것이고, 어기면 어떤 증상이 나는가?
-- C3. 이벤트 소싱을 실제 시스템에 붙일 때 택하는 순간 같이 오는 세 가지 숙제는 무엇인가?
-- C4. 사건에 필드 하나를 추가했더니 모든 조회가 실패한다면 무엇이 빠진 것이고, 스키마 진화 규칙은 무엇인가?
-- C5. 외화 계좌의 원화 잔액이 조회할 때마다 달라진다면 사건에 무엇을 담았어야 하는가?
-- C6. 공용 계좌 하나에 쓰기가 몰려 버전 충돌이 폭증할 때 낙관적 잠금의 어떤 전제가 깨진 것이고, 대처는?
+8. (C1) git의 커밋·워킹 트리·`revert`는 이 노트의 무엇에 각각 대응하고, `git reset --hard`로 지우는 것이 이 패턴에서 금지되는 이유는?
+9. (C2) `apply`가 순수 함수여야 한다는 것은 무엇을 금지하는 것이고, 어기면 어떤 증상이 나는가?
+10. (C3) 이벤트 소싱을 실제 시스템에 붙일 때 택하는 순간 같이 오는 세 가지 숙제는 무엇인가?
+11. (C4) 사건에 필드 하나를 추가했더니 모든 조회가 실패한다면 무엇이 빠진 것이고, 스키마 진화 규칙은 무엇인가?
+12. (C5) 외화 계좌의 원화 잔액이 조회할 때마다 달라진다면 사건에 무엇을 담았어야 하는가?
+13. (C6) 공용 계좌 하나에 쓰기가 몰려 버전 충돌이 폭증할 때 낙관적 잠금의 어떤 전제가 깨진 것이고, 대처는?
 
 ## 복습 기록
 

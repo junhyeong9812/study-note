@@ -255,7 +255,7 @@ width=4: [2a,2b,5,8]+[1,4,9]         -> [1,2a,2b,4,5,8,9]
 **비용**: 여전히 O(n log n)·안정 O·aux 1개.\
 상수만 달라진다.
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **팀소트(TimSort)** — 자바 `Arrays.sort(Object[])`·`Collections.sort`, 파이썬 `sorted`. 정렬된 조각(run)을 찾아 병합하는 병합 정렬 계열이고, 이 챕터의 "손본것"(컷오프·병합 건너뛰기)이 같은 발상의 작은 판이다(팀소트는 run 탐지·갤로핑 등을 더 얹는다).
 - **외부 정렬 · DB `ORDER BY`** — 많은 DB(예: PostgreSQL은 `work_mem`을 넘으면 external merge)가 정렬 메모리를 넘는 결과는 조각을 디스크에 정렬해 두고 k개 조각을 동시에 병합한다(k-way merge). 이 챕터의 `merge`가 2-way의 원형이다.

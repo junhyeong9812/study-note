@@ -204,7 +204,7 @@ x·y = ac·B² + (ad + bc)·B + bd     <- ac, ad, bc, bd : 곱셈 4 번
 > **floorDiv / floorMod** — 자바에서 음수에도 "내림" 방향으로 일관된 몫/나머지를 주는 함수.\
 > 예: `/`·`%` 는 음수에서 0 쪽으로 잘라 `-3/10=0`, `-3%10=-3` — 자릿값이 음수로 남는다.
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **공개키 암호** — RSA·디피헬만의 `a^e mod n`이 빠른 거듭제곱이다. 지수가 수백 자리여도 곱셈 수천 번으로 끝난다. [28-number-theory](../28-number-theory/2-summary.md)의 `ModPow`가 같은 코드다.
 - **큰 정수 라이브러리** — Java `BigInteger`(Java 8+)는 두 수가 모두 일정 문턱을 넘으면 카라추바로, 더 크면 Toom-Cook 3분할로 갈아탄다(소스의 `KARATSUBA_THRESHOLD` = 80 int, `TOOM_COOK_THRESHOLD` = 240 int).

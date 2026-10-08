@@ -8,7 +8,7 @@
 
 ### A. 문제 (src/main 의 TODO 1~7)
 
-#### 1. 나이브 검색 (`NaiveSearch` — TODO 1~2)
+1. 나이브 검색 (`NaiveSearch` — TODO 1~2)
 
 ```java
 /** 패턴이 나타나는 모든 시작 위치. */
@@ -36,7 +36,7 @@ public static List<Integer> findAll(CountedText text, String pattern) {
 - 그 최악에서 비교 횟수가 `n × m` 에 가까워지는 이유는?
 - 보통 입력에서 나이브가 사실상 O(n) 인 이유는?
 
-#### 2. 실패 함수 (`Kmp.failureFunction` — TODO 3~4)
+2. 실패 함수 (`Kmp.failureFunction` — TODO 3~4)
 
 ```java
 /**
@@ -71,7 +71,7 @@ public static int[] failureFunction(String pattern, long[] comparisons) {
 - 안쪽 `while` 이 있는데도 만들기가 O(m) 인 이유는 — 되돌리기 총량이 `m` 을 못 넘는 논증은? (원본 측정 다섯)
 - 그 논증은 09번 슬라이딩 윈도우의 무엇과 같은 것인가?
 
-#### 3. KMP 검색 (`Kmp.findAll` — TODO 5~7)
+3. KMP 검색 (`Kmp.findAll` — TODO 5~7)
 
 ```java
 /** 패턴이 나타나는 모든 시작 위치. */
@@ -124,11 +124,11 @@ public static List<Integer> findAll(CountedText text, String pattern, long[] pat
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 나이브 검색이 최악에서 n×m이 되는 이유와, KMP가 "하나"로 그것을 없앤다는 그 하나는 무엇인가?
-- C2. `String.indexOf`류가 나이브 계열인데도 실무에서 충분한 이유를 원본 측정으로 설명하면?
-- C3. 새 문제에 KMP를 쓸지 정할 때 먼저 확인하는 두 가지는?
-- C4. 반복 문자가 많은 로그에서만 검색이 타임아웃 난다 — 원인과, 입력을 남이 고를 수 있을 때 이것이 왜 위험한가?
-- C5. `"aaaa"`에서 `"aa"`가 2개만 나온다 — 어느 줄이 문제인가?
+4. (C1) 나이브 검색이 최악에서 n×m이 되는 이유와, KMP가 "하나"로 그것을 없앤다는 그 하나는 무엇인가?
+5. (C2) `String.indexOf`류가 나이브 계열인데도 실무에서 충분한 이유를 원본 측정으로 설명하면?
+6. (C3) 새 문제에 KMP를 쓸지 정할 때 먼저 확인하는 두 가지는?
+7. (C4) 반복 문자가 많은 로그에서만 검색이 타임아웃 난다 — 원인과, 입력을 남이 고를 수 있을 때 이것이 왜 위험한가?
+8. (C5) `"aaaa"`에서 `"aa"`가 2개만 나온다 — 어느 줄이 문제인가?
 
 ## 복습 기록
 

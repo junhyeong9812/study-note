@@ -7,7 +7,7 @@
 
 ### A. 과제 (구현 대상 — src/main TODO 1~9)
 
-#### 1. 고정 폭 — FixedWindow (TODO 1~4)
+1. 고정 폭 — FixedWindow (TODO 1~4)
 
 ```java
 /** 폭 k 인 구간의 최대 합. k 가 잘못됐으면 IllegalArgumentException. */
@@ -33,7 +33,7 @@ public static long[] sums(CountedArray a, int k);
 - 결과 배열(sums)의 길이가 왜 n-k+1인가?
 - 폭을 10에서 1,000으로 100배 넓혔는데 읽기가 19,990에서 19,000으로 오히려 준 이유는?
 
-#### 2. 가변 폭 — VariableWindow (TODO 5~6)
+2. 가변 폭 — VariableWindow (TODO 5~6)
 
 ```java
 /**
@@ -64,7 +64,7 @@ public static int longestDistinct(CountedArray a);
 - 다시 만난 값의 자리가 이미 창 밖이면 왜 lo를 옮기면 안 되는가?
 - longestDistinct의 읽기가 2n이 아니라 정확히 n(측정 10,000)인 이유는?
 
-#### 3. 단조 덱 — SlidingMax (TODO 7~9)
+3. 단조 덱 — SlidingMax (TODO 7~9)
 
 ```java
 /**
@@ -96,14 +96,14 @@ public static int[] maxOfEachWindow(CountedArray a, int k, CountedDeque deque);
 
 ### B. 개념
 
-#### 4. 생각해볼 것 (원본 README 이관)
+4. 생각해볼 것 (원본 README 이관)
 
 - 창이 두 칸씩 움직이는 문제라면 어디가 깨지나 — `if`로 쓴 자리가 있다?
 - 각 창의 **중앙값**을 구하려면 — 덱으로 되나, 안 되면 무엇이 필요한가?
 - 가변 폭에 음수를 허용하려면 무엇으로 바꿔야 하나(10번 누적 합이 힌트다)?
 - `longestDistinct`의 해시맵을 배열로 바꿀 수 있나, 그 조건이 무엇인가?
 
-#### 5. 파생 질문 (서머리 기반)
+5. 파생 질문 (서머리 기반)
 
 - 슬라이딩 윈도우의 본질("창 안을 다시 계산하지 않는다")을 일상 예 하나로 설명하면?
 - 세 가지 모양(고정 폭·가변 폭·단조 덱)의 창 움직임은 각각 어떻게 다른가?
@@ -116,11 +116,11 @@ public static int[] maxOfEachWindow(CountedArray a, int k, CountedDeque deque);
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 창을 매번 다시 계산하는 대신 슬라이딩 윈도우가 하는 일은 무엇이고, 왜 창 폭과 무관하게 O(n)인가?
-- C2. 요청 속도 제한기와 TCP 흐름 제어는 이 챕터의 무엇인가?
-- C3. 창 문제를 받았을 때 정하는 네 가지는?
-- C4. 첫 창은 맞고 두 번째 창부터 한 칸 어긋나는 현상의 원인과 대처는?
-- C5. 속도 제한기가 안 풀리거나 경계에서 두 배가 통과하는 두 사고의 원인과 대처는?
+6. (C1) 창을 매번 다시 계산하는 대신 슬라이딩 윈도우가 하는 일은 무엇이고, 왜 창 폭과 무관하게 O(n)인가?
+7. (C2) 요청 속도 제한기와 TCP 흐름 제어는 이 챕터의 무엇인가?
+8. (C3) 창 문제를 받았을 때 정하는 네 가지는?
+9. (C4) 첫 창은 맞고 두 번째 창부터 한 칸 어긋나는 현상의 원인과 대처는?
+10. (C5) 속도 제한기가 안 풀리거나 경계에서 두 배가 통과하는 두 사고의 원인과 대처는?
 
 ## 복습 기록
 

@@ -8,7 +8,7 @@
 
 ### A. 문제 (NaiveCache · SingleFlightCache · RefreshAheadCache 의 TODO)
 
-#### 1. TODO 1 — NaiveCache.get (기준선: 막지 않는다)
+1. TODO 1 — NaiveCache.get (기준선: 막지 않는다)
 
 ```java
 public V get(String key) throws Exception {
@@ -29,7 +29,7 @@ public V get(String key) throws Exception {
 - miss 수만 세면 이 사고가 왜 아예 안 보이는가?
 - 이 상자의 자(측정 지표)는 무엇인가?
 
-#### 2. TODO 2 — SingleFlightCache.get (본체)
+2. TODO 2 — SingleFlightCache.get (본체)
 
 ```java
 // TODO 2: 같은 키는 하나만 계산하고 나머지는 그 결과를 기다린다.
@@ -62,7 +62,7 @@ public V get(String key) throws Exception {
 - 실패한 약속을 inFlight 에 남겨두면 무슨 일이 벌어지는가?
 - 자리 비우기는 코드의 어느 블록에서 해야 안전한가?
 
-#### 3. TODO 3 — RefreshAheadCache.get (읽는 김에 갱신)
+3. TODO 3 — RefreshAheadCache.get (읽는 김에 갱신)
 
 ```java
 // TODO 3: 값이 유효하면 그대로 주되, **갱신 시작점을 지났으면 뒤에서 갱신을 건다.**
@@ -79,7 +79,7 @@ public V get(String key) throws Exception {
 - 만료 뒤에는 왜 기다릴 수밖에 없는가?
 - 갱신 시작점 판정에 쓰는 "나이(age)"는 무엇에서 무엇을 뺀 값인가?
 
-#### 4. TODO 4 — RefreshAheadCache.triggerRefresh (갱신도 하나만)
+4. TODO 4 — RefreshAheadCache.triggerRefresh (갱신도 하나만)
 
 ```java
 // TODO 4: 갱신을 건다. 이미 돌고 있으면 아무것도 안 한다.
@@ -99,39 +99,39 @@ public V get(String key) throws Exception {
 
 ### B. 개념
 
-#### 5. 스탬피드는 왜 "캐시가 있어서 죽는가" (원본 README 도입)
+5. 스탬피드는 왜 "캐시가 있어서 죽는가" (원본 README 도입)
 
 - 캐시 만료 순간 DB 호출이 1회에서 100회로 뛰는 과정을 설명하면?
 - "캐시가 없었으면 안 죽었다"는 말은 어떤 설계 전제를 가리키는가?
 - DB가 느려지면 왜 폭주가 더 커지는가(되먹임)?
 
-#### 6. 적중률만 보면 안 보인다
+6. 적중률만 보면 안 보인다
 
 - NaiveCache 와 SingleFlightCache 의 miss 수는 왜 똑같은가?
 - 두 구현을 구별하려면 무엇을 세야 하는가?
 - peakConcurrentLoads 가 "이 상자의 자"인 이유는 무엇인가?
 
-#### 7. 값이 아니라 약속을 담는다
+7. 값이 아니라 약속을 담는다
 
 - 자리를 잡는 시점에 값 대신 CompletableFuture 를 담는 이유는 무엇인가?
 - 잠금(synchronized)으로 loader 호출 전체를 감싸는 방식과 비교해 무엇이 나은가?
 - 06번 NonAtomicStore 의 결함과 여기의 "보기/표시 분리" 결함은 무엇이 같은가?
 
-#### 8. 정상 경로를 통과하는 결함들 (원본 README 생각해볼 것 1·2·3·8)
+8. 정상 경로를 통과하는 결함들 (원본 README 생각해볼 것 1·2·3·8)
 
 - "값을 캐시에 안 담는다"는 변종이 스탬피드 테스트를 통과하는 이유는 무엇인가?
 - 그 변종을 잡으려면 어떤 테스트가 따로 필요한가?
 - "실패를 캐시하는" 사고는 왜 이 상자에서 제일 조용하고 제일 오래 가는가?
 - 변종 9개 중 셋이 처음에 살아남았다 — 그 셋의 공통점은 무엇인가?
 
-#### 9. 미리 갱신이 파는 것 (원본 README 생각해볼 것 4·5·6·7)
+9. 미리 갱신이 파는 것 (원본 README 생각해볼 것 4·5·6·7)
 
 - 싱글플라이트가 못 없앤 것(미리 갱신이 없앤 것)은 무엇인가?
 - 미리 갱신은 그 대가로 무엇을 파는가(수명 1000ms·refreshAt 0.8 기준 수치로)?
 - 재고 수량에 RefreshAheadCache 를 쓰면 안 되는 이유는?
 - "미리 갱신"이 아니라 "읽는 김에 갱신"인 이유는, 진짜 미리 하려면 무엇이 필요한가?
 
-#### 10. 연결
+10. 연결
 
 - 자리 잡기의 원자성은 어느 챕터와 정확히 같은 자리인가?
 - "읽는 김에"의 한계를 해결하는 다음 챕터는 무엇을 더하는가?
@@ -139,12 +139,12 @@ public V get(String key) throws Exception {
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 스탬피드는 관통·눈사태와 각각 어떻게 다르고, 왜 셋을 구분해야 하는가?
-- C2. Go의 `singleflight`와 Caffeine의 `refreshAfterWrite`는 각각 이 노트의 어느 구현에 해당하고, 둘의 공통 재료는 무엇인가?
-- C3. 스탬피드 방지를 실제 시스템에 붙일 때 가장 먼저 바꿔야 하는 것은 코드가 아니라 무엇이고, 그 다음 순서는?
-- C4. 싱글플라이트를 넣었는데도 TTL 주기마다 DB 부하가 튀는 것은 왜이고, 대처는 무엇인가?
-- C5. 적중률이 낮은데 조회 결과 대부분이 "없음"인 상황의 원인은 무엇이고, 두 가지 대처는?
-- C6. 서버 20대에서 `peakConcurrentLoads`가 1인데 DB에 같은 쿼리가 20개 동시에 들어오는 이유와 선택지는 무엇인가?
+11. (C1) 스탬피드는 관통·눈사태와 각각 어떻게 다르고, 왜 셋을 구분해야 하는가?
+12. (C2) Go의 `singleflight`와 Caffeine의 `refreshAfterWrite`는 각각 이 노트의 어느 구현에 해당하고, 둘의 공통 재료는 무엇인가?
+13. (C3) 스탬피드 방지를 실제 시스템에 붙일 때 가장 먼저 바꿔야 하는 것은 코드가 아니라 무엇이고, 그 다음 순서는?
+14. (C4) 싱글플라이트를 넣었는데도 TTL 주기마다 DB 부하가 튀는 것은 왜이고, 대처는 무엇인가?
+15. (C5) 적중률이 낮은데 조회 결과 대부분이 "없음"인 상황의 원인은 무엇이고, 두 가지 대처는?
+16. (C6) 서버 20대에서 `peakConcurrentLoads`가 1인데 DB에 같은 쿼리가 20개 동시에 들어오는 이유와 선택지는 무엇인가?
 
 ## 복습 기록
 

@@ -8,7 +8,7 @@
 
 ### A. 문제 (구현 대상: HashChain TODO 1\~4 · ProofOfWorkChain TODO 5\~6)
 
-#### 1. HashChain — append / createBlock (TODO 1\~2)
+1. HashChain — append / createBlock (TODO 1\~2)
 
 ```java
 // HashChain.java (src/main) — 채울 것
@@ -32,7 +32,7 @@ protected Block createBlock(int index, String previousHash, List<String> transac
 - 해시를 자체 제작하지 않고 SHA-256 을 가져다 쓰는 이유는? (출처: README 생각해볼 것 4)
 - 05번 해시맵의 해시와 여기 해시는 요구 성질이 어떻게 다른가?
 
-#### 2. HashChain — verify / rebuildFrom (TODO 3\~4, verify 가 본체)
+2. HashChain — verify / rebuildFrom (TODO 3\~4, verify 가 본체)
 
 ```java
 // HashChain.java (src/main) — 채울 것
@@ -64,7 +64,7 @@ public int rebuildFrom(int index) {
 - 1000칸 사슬에서 500번부터 위조하는 데 해시 몇 회가 들고, 그것이 보여주는 이 구조의 한계는 무엇인가?
 - "고치면 티가 난다"와 "못 고친다"는 어떻게 다른 말인가?
 
-#### 3. ProofOfWorkChain — createBlock / meetsDifficulty (TODO 5\~6)
+3. ProofOfWorkChain — createBlock / meetsDifficulty (TODO 5\~6)
 
 ```java
 // ProofOfWorkChain.java (src/main) — 채울 것
@@ -100,7 +100,7 @@ protected boolean meetsDifficulty(Block block) {
 
 ### B. 개념
 
-#### 4. 무엇을 지키고 무엇을 못 지키는가
+4. 무엇을 지키고 무엇을 못 지키는가
 
 - 이 구조가 지키는 것을 한 문장으로 말하면?
 - 해시 사슬만으로는 왜 1초 만에 위조가 끝나는가?
@@ -109,7 +109,7 @@ protected boolean meetsDifficulty(Block block) {
 - 작업 증명이 있어도 "못 바꾸는 것은 아니다" — 그럼 실제 방어는 무엇인가?
 - 사슬이 한 곳에만 있으면 왜 소용없는가? (출처: README 생각해볼 것 6)
 
-#### 5. 연결 — 앞뒤 챕터와의 다리
+5. 연결 — 앞뒤 챕터와의 다리
 
 - 16번 이벤트 소싱의 "지우지 않고 붙인다"와 이 챕터의 차이를 규칙/구조로 설명하면?
 - 27번 머클 트리와 같은 자리라고 한 것은 무엇인가?
@@ -118,12 +118,12 @@ protected boolean meetsDifficulty(Block block) {
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. git의 커밋 해시는 왜 이 노트의 해시 사슬이고, `force push`는 이 노트의 어떤 동작에 해당하며 무엇으로 막는가?
-- C2. 해시 사슬과 머클 트리는 각각 무엇의 무결성을 지키고, Certificate Transparency는 둘을 어떻게 같이 쓰는가?
-- C3. 해시 사슬을 실제 시스템에 붙일 때 설계에 해당하는 두 단계와, 없으면 구조가 소용없는 한 단계는 무엇인가?
-- C4. Java로 만든 사슬을 JavaScript 검사기가 "깨짐"이라 한다면 무엇이 빠진 것이고, 어떻게 고치는가?
-- C5. 몇 달 뒤 전체 검사에서 "#500부터 깨짐"인데 그 위에 정직한 칸 수천 개가 있다면 어느 시점의 무엇을 안 한 것인가?
-- C6. 난이도를 코드 상수로 두면 시간이 지나 어떤 두 문제가 생기고, 칸에 무엇을 기록해야 하는가?
+6. (C1) git의 커밋 해시는 왜 이 노트의 해시 사슬이고, `force push`는 이 노트의 어떤 동작에 해당하며 무엇으로 막는가?
+7. (C2) 해시 사슬과 머클 트리는 각각 무엇의 무결성을 지키고, Certificate Transparency는 둘을 어떻게 같이 쓰는가?
+8. (C3) 해시 사슬을 실제 시스템에 붙일 때 설계에 해당하는 두 단계와, 없으면 구조가 소용없는 한 단계는 무엇인가?
+9. (C4) Java로 만든 사슬을 JavaScript 검사기가 "깨짐"이라 한다면 무엇이 빠진 것이고, 어떻게 고치는가?
+10. (C5) 몇 달 뒤 전체 검사에서 "#500부터 깨짐"인데 그 위에 정직한 칸 수천 개가 있다면 어느 시점의 무엇을 안 한 것인가?
+11. (C6) 난이도를 코드 상수로 두면 시간이 지나 어떤 두 문제가 생기고, 칸에 무엇을 기록해야 하는가?
 
 ## 복습 기록
 

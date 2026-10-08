@@ -8,11 +8,14 @@ SK = ['해결하는 문제', '동작·원리', '쓰이는 자료구조·알고�
 
 def strip_fences(text):
     """코드 펜스 안 줄은 빈 줄로(줄 번호 유지) — `# 주석`을 헤딩으로 오인하지 않게."""
-    out, inside = [], False
+    out, fence = [], None   # 2026-10-08: 닫는 펜스는 여는 펜스와 같은 문자·길이 이상, 뒤에 정보 문자열 없음(CommonMark)
     for l in text.split('\n'):
-        if re.match(r'^\s*(```|~~~)', l):
-            inside = not inside; out.append(l); continue
-        out.append('' if inside else l)
+        m = re.match(r'^\s*(`{3,}|~{3,})(.*)$', l)
+        if m and fence is None:
+            fence = m.group(1); out.append(l); continue
+        if m and m.group(1)[0] == fence[0] and len(m.group(1)) >= len(fence) and not m.group(2).strip():
+            fence = None; out.append(l); continue
+        out.append('' if fence else l)
     return '\n'.join(out)
 
 def empty_sections(text):
@@ -69,7 +72,7 @@ def check(folder):
         errs.append('metadata.md 없음')
     else:
         mt = open(mp, encoding='utf-8').read()
-        legacy = bool(re.search(r'^\| 형식 \| 과제 이식 \|', mt, flags=re.M))
+        legacy = bool(re.search(r'^\| 형식 \| (과제 이식|원고 이관) \|', mt, flags=re.M))
         rows = re.findall(r'^\| 단계 \| (\S+) \|', mt, flags=re.M)   # 생성기와 같은 파서
         if len(rows) != 1 or rows[0] not in ('원고', '초안', '검수', '학습'):
             errs.append(f'metadata.md: 단계 칸은 원고·초안·검수·학습 중 정확히 하나 ({rows})')
@@ -99,7 +102,7 @@ def check(folder):
     a = [int(m) for m in re.findall(r'^### (\d+)\. ', files['3-answer.md'], flags=re.M)]
     if q != a:
         errs.append(f'Q/A 번호 불일치 q={q} a={a}')
-    elif not (6 <= len(q) and (len(q) <= 10 or legacy)):   # 2026-10-08: metadata `형식 | 과제 이식`(과제·질문 무손실 이식 컬렉션)은 상한만 면제
+    elif not (6 <= len(q) and (len(q) <= 10 or legacy)):   # 2026-10-08: metadata `형식 | 과제 이식`·`원고 이관`(질문 무손실 이관)은 상한만 면제
         errs.append(f'질문 수 {len(q)} (6~10)')
     return errs
 

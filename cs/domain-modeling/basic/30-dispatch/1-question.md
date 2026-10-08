@@ -8,7 +8,7 @@
 
 ### A. 과제 (Dispatch.java 의 TODO 1~3)
 
-#### 0. 한 줄 요구사항 — "가장 가까운 기사를 준다"
+0. 한 줄 요구사항 — "가장 가까운 기사를 준다"
 
 ```text
   주문 A 와 B, 기사 1 과 2
@@ -28,7 +28,7 @@
 - 그 순서는 무엇 하나로 바뀔 수 있는가?
 - 이 한 줄에 안 들어 있는 결정을 셋 이상 꼽으면?
 
-#### 1. 계약 — Order 와 Driver (전부 주어진다)
+1. 계약 — Order 와 Driver (전부 주어진다)
 
 ```java
 /** 이 기사까지의 거리. 격자를 따라 재는 거리다. */
@@ -51,7 +51,7 @@ public int distanceTo(Driver driver) {
 - `Order`와 `Driver` 생성자가 막는 것은 각각 무엇인가?
 - `waitedSeconds`는 무엇을 위해 들고 있는 값인가?
 
-#### 2. TODO 1 — orderFirst (주문을 돌며 기사를 고른다)
+2. TODO 1 — orderFirst (주문을 돌며 기사를 고른다)
 
 ```java
 private List<Assignment> orderFirst(
@@ -74,7 +74,7 @@ public enum OrderPriority {
 - 그 동점 기준이 없으면 무엇이 답을 정하는가?
 - 거리 제한에 걸린 주문은 어떻게 되는가 — 다음으로 가까운 기사를 다시 찾는가?
 
-#### 3. TODO 2 — driverFirst (기사를 돌며 주문을 고른다)
+3. TODO 2 — driverFirst (기사를 돌며 주문을 고른다)
 
 ```java
 private List<Assignment> driverFirst(List<Order> orders, List<Driver> drivers) {
@@ -88,7 +88,7 @@ private List<Assignment> driverFirst(List<Order> orders, List<Driver> drivers) {
 - 주문이 기사보다 적으면 무슨 일이 일어나는가?
 - 네 칸짜리 예제에서 기사 순은 어떤 배차를 내는가?
 
-#### 4. TODO 3 — globalNearest (남은 짝 중 가장 짧은 것부터)
+4. TODO 3 — globalNearest (남은 짝 중 가장 짧은 것부터)
 
 ```java
 /**
@@ -110,7 +110,7 @@ private List<Assignment> globalNearest(List<Order> orders, List<Driver> drivers)
 - 네 칸짜리 예제에서 이 방식이 지는 이유를 손계산으로 보이면?
 - "제일 똑똑해 보이는 방식이 진다"가 탐욕에 대해 말하는 것은 무엇인가?
 
-#### 5. 지표 — 무엇을 재는가
+5. 지표 — 무엇을 재는가
 
 ```java
 public int totalDistance(List<Assignment> assignments)
@@ -132,7 +132,7 @@ public int worstWaitLeftBehind(List<Order> orders, List<String> unassignedIds)
 - 기사 하나에 주문 셋일 때 번호 순과 대기 순은 남는 사람이 어떻게 갈리는가?
 - 그때 미배차자의 최장 대기는 각각 몇 초인가?
 
-#### 6. 거리 제한 (maxDistance)
+6. 거리 제한 (maxDistance)
 
 - 제한이 0 이하면 무슨 뜻인가?
 - "제한 없음"을 0으로 적으면 무엇과 헷갈리는가?
@@ -142,7 +142,7 @@ public int worstWaitLeftBehind(List<Order> orders, List<String> unassignedIds)
 
 ### B. 개념
 
-#### 7. 측정 — 총 거리를 줄이면 최악이 나빠진다
+7. 측정 — 총 거리를 줄이면 최악이 나빠진다
 
 ```text
   주문 20, 기사 20, 200 회
@@ -159,7 +159,7 @@ public int worstWaitLeftBehind(List<Order> orders, List<String> unassignedIds)
 - 보고서에는 무엇이 올라가고 무엇이 안 올라가는가?
 - 짧은 짝부터가 총 거리조차 지는 경우는 200회 중 몇 회인가?
 
-#### 8. 측정 — 네 방식이 같은 배차를 낸 적이 한 번도 없다
+8. 측정 — 네 방식이 같은 배차를 낸 적이 한 번도 없다
 
 ```text
   200 회 중 네 방식이 일치한 횟수   0
@@ -170,7 +170,7 @@ public int worstWaitLeftBehind(List<Order> orders, List<String> unassignedIds)
 - 그 선택은 200번 중 몇 번 눈에 보이는 차이를 만드는가?
 - 이 측정이 "전략은 구현 세부"라는 생각을 어떻게 반박하는가?
 
-#### 9. 측정 — 사람이 많으면 공정함이 거의 공짜다
+9. 측정 — 사람이 많으면 공정함이 거의 공짜다
 
 ```text
   주문 20, 기사 8
@@ -184,7 +184,7 @@ public int worstWaitLeftBehind(List<Order> orders, List<String> unassignedIds)
 - 두 수가 이렇게 다른 이유는 무엇인가?
 - "작은 예제로 트레이드오프를 결론 내리면 안 된다"를 자기 말로 바꾸면?
 
-#### 10. 측정 — 제한을 걸면 지표가 좋아지고 42퍼센트가 버려진다
+10. 측정 — 제한을 걸면 지표가 좋아지고 42퍼센트가 버려진다
 
 ```text
   거리 제한   미배차          총 거리
@@ -200,7 +200,7 @@ public int worstWaitLeftBehind(List<Order> orders, List<String> unassignedIds)
 - "지표에서 빠진 것이 지표를 좋게 만든다"를 이 표로 설명하면?
 - 그래서 어떤 지표를 반드시 같이 재야 하는가?
 
-#### 11. 변종 검증 — 지워도 통과한 줄이 있었다
+11. 변종 검증 — 지워도 통과한 줄이 있었다
 
 - 지워도 테스트가 통과한 것은 어떤 코드였는가?
 - 그것이 안 잡힌 이유는 테스트가 어떤 자료로만 돌고 있었기 때문인가?
@@ -208,14 +208,14 @@ public int worstWaitLeftBehind(List<Order> orders, List<String> unassignedIds)
 - 이 자리는 14번·24번의 무엇과 같은가?
 - "동점 규칙은 동점인 자료로만 검증된다"를 자기 말로 바꾸면?
 
-#### 12. 생각해볼 것 (원본 README)
+12. 생각해볼 것 (원본 README)
 
 - 배차를 미루면 더 좋은 짝이 올 수도 있다 — 얼마나 기다려야 하나?
 - 기사가 거절하면 어떻게 하나, 거절한 기사에게 다시 주나?
 - 최악을 재는 지표를 만들면 그 지표도 다른 무언가를 감춘다 — 무엇인가?
 - 기사마다 이동 속도가 다르면 거리가 아니라 시간으로 재야 한다 — 무엇이 바뀌나?
 
-#### 13. 연결
+13. 연결
 
 - 24번 순위표·14번 포인트와 여기의 동점 규칙은 무엇이 같은가?
 - 25번 조직도의 "순서를 안 정하면 부를 때마다 다르다"와는 무엇이 같고 무엇이 다른가?
@@ -225,12 +225,12 @@ public int worstWaitLeftBehind(List<Order> orders, List<String> unassignedIds)
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. "가장 가까운 기사를 준다"만으로 답이 안 정해지는 이유는 무엇이고, 그 사실을 보여주는 측정은 무엇인가?
-- C2. `globalNearest`는 어떤 알고리즘이고 전체 최적과 어떻게 다르며, 규모가 커지면 비용이 어떻게 되는가?
-- C3. 배타적 자원을 나누는 새 도메인(상담원 배정)을 만들 때 결정을 어떤 순서로 내리는가?
-- C4. 코드를 안 바꿨는데 배차 결과가 달라진 장애의 원인과 대처는?
-- C5. 배차 서버를 두 대로 늘리자 기사 하나가 주문 둘을 받는 장애의 원인과 대처는?
-- C6. 주문·기사가 수천이 되어 배차 주기가 초를 넘길 때 무엇을 바꾸고, 바꾼 뒤 무엇을 같이 봐야 하는가?
+14. (C1) "가장 가까운 기사를 준다"만으로 답이 안 정해지는 이유는 무엇이고, 그 사실을 보여주는 측정은 무엇인가?
+15. (C2) `globalNearest`는 어떤 알고리즘이고 전체 최적과 어떻게 다르며, 규모가 커지면 비용이 어떻게 되는가?
+16. (C3) 배타적 자원을 나누는 새 도메인(상담원 배정)을 만들 때 결정을 어떤 순서로 내리는가?
+17. (C4) 코드를 안 바꿨는데 배차 결과가 달라진 장애의 원인과 대처는?
+18. (C5) 배차 서버를 두 대로 늘리자 기사 하나가 주문 둘을 받는 장애의 원인과 대처는?
+19. (C6) 주문·기사가 수천이 되어 배차 주기가 초를 넘길 때 무엇을 바꾸고, 바꾼 뒤 무엇을 같이 봐야 하는가?
 
 ## 복습 기록
 

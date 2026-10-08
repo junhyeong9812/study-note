@@ -8,7 +8,7 @@
 
 ### A. 과제 (OrderStateMachine.java 의 TODO 1~4)
 
-#### 0. 요구사항 — 그림 한 장
+0. 요구사항 — 그림 한 장
 
 ```text
   결제완료 -> 준비중 -> 배송중 -> 배송완료 -> 반품요청 -> 환불됨
@@ -26,7 +26,7 @@
 - "배송 완료 후 취소"는 취소인가 반품인가 — 그림은 답하는가?
 - 이 그림이 안 정해준 결정 셋을 꼽으면?
 
-#### 1. TODO 1 — standard (전이 표)
+1. TODO 1 — standard (전이 표)
 
 ```java
 /**
@@ -46,7 +46,7 @@ public static OrderStateMachine standard(boolean sameStateIsIdempotent) {
 - 표를 `EnumMap`·`EnumSet` 으로 만드는 이유는 무엇인가?
 - `of(...)` 가 넘어온 표를 그대로 안 쓰고 복사하는 이유는?
 
-#### 2. TODO 2 — apply (전이 시도)
+2. TODO 2 — apply (전이 시도)
 
 ```java
 /**
@@ -73,7 +73,7 @@ public static OrderStateMachine standard(boolean sameStateIsIdempotent) {
 - 멱등을 끈 기계에서 자기 전이가 표에 없으면 결과는 무엇인가?
 - 거부와 무시는 결과에 어떤 상태를 담아 돌려줘야 하는가?
 
-#### 3. TODO 3 — applyAll (이벤트 목록)
+3. TODO 3 — applyAll (이벤트 목록)
 
 ```java
 /**
@@ -95,7 +95,7 @@ public static OrderStateMachine standard(boolean sameStateIsIdempotent) {
 - 그 "아무 일도 안 하는 조건"을 지우면 무엇이 좋아지는가?
 - 그 조건을 지울 수 있게 해주는 불변식은 무엇이고 누가 지키는가?
 
-#### 4. TODO 4 — reachableFrom (닿을 수 있는 상태)
+4. TODO 4 — reachableFrom (닿을 수 있는 상태)
 
 ```java
 /**
@@ -115,7 +115,7 @@ public static OrderStateMachine standard(boolean sameStateIsIdempotent) {
 
 ### B. 개념
 
-#### 5. 측정이 알려준 것 (원본 README 측정 절)
+5. 측정이 알려준 것 (원본 README 측정 절)
 
 - 표의 빈칸 비율은 얼마이고 채워진 전이는 몇 개(몇 퍼센트)인가?
 - 무작위 이벤트 10,000건의 적용·무시·거부 건수는 각각 얼마인가?
@@ -127,7 +127,7 @@ public static OrderStateMachine standard(boolean sameStateIsIdempotent) {
 - PREPARING → SHIPPED 한 걸음에 무엇이 통째로 사라지는가?
 - 표를 눈으로 읽는 대신 이 수를 보면 무엇이 보이는가?
 
-#### 6. 변종 검증에서 고친 것 (원본 README)
+6. 변종 검증에서 고친 것 (원본 README)
 
 - `applyAll` 에서 무엇을 무엇으로 바꿨는가?
 - 그 조건이 아무 일도 안 하고 있던 이유는 무엇인가?
@@ -135,14 +135,14 @@ public static OrderStateMachine standard(boolean sameStateIsIdempotent) {
 - 거부가 시도한 상태를 담게 바꾸는 변종은 테스트 몇 개가 잡는가?
 - 08번 회의 시간의 "겹치는 방어 둘"과 이 변경은 무엇이 같고 무엇이 다른가?
 
-#### 7. 생각해볼 것 (원본 README)
+7. 생각해볼 것 (원본 README)
 
 - 전이에 조건이 붙으면(금액이 0이면 결제 없이 확정) 표만으로 표현할 수 있는가?
 - 전이할 때 하는 일(알림·적립)을 표에 붙이는가 부르는 쪽에 두는가?
 - 상태 이력을 남기려면 무엇이 더 필요하고, 지금 상태만으로는 못 답하는 질문은 무엇인가?
 - 관리자가 강제로 상태를 바꿔야 하면 표를 우회하는 문을 만드는가?
 
-#### 8. 연결
+8. 연결
 
 - "끝났다"를 별도 필드로 두면 무엇이 어긋나는가?
 - 07번 알림의 "순서가 계약"과 여기의 "순서가 계약"은 무엇이 같은가?
@@ -151,12 +151,12 @@ public static OrderStateMachine standard(boolean sameStateIsIdempotent) {
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 상태 그림(화살표 9개)이 다 그린 것처럼 보이는데도 표(64칸)를 그려야 하는 이유는 무엇인가?
-- C2. 전이 표는 어떤 자료구조이고, 그 위에서 도는 알고리즘은 무엇을 찾는가?
-- C3. 수명 주기가 있는 개체를 모델링할 때 이 챕터가 제안하는 5단계는 무엇인가?
-- C4. 결제완료 재전송에 포인트가 두 번 적립됐다 — 결과 타입의 어떤 설계 실수이고 후처리는 무엇을 봐야 하는가?
-- C5. 장애가 아닌데 전이 실패 경보가 잦다 — 원인과 경보·응답의 기준을 어떻게 나누는가?
-- C6. 표에 화살표 하나를 빠뜨렸는데 컴파일도 테스트도 통과한다 — 무엇으로 잡는가?
+9. (C1) 상태 그림(화살표 9개)이 다 그린 것처럼 보이는데도 표(64칸)를 그려야 하는 이유는 무엇인가?
+10. (C2) 전이 표는 어떤 자료구조이고, 그 위에서 도는 알고리즘은 무엇을 찾는가?
+11. (C3) 수명 주기가 있는 개체를 모델링할 때 이 챕터가 제안하는 5단계는 무엇인가?
+12. (C4) 결제완료 재전송에 포인트가 두 번 적립됐다 — 결과 타입의 어떤 설계 실수이고 후처리는 무엇을 봐야 하는가?
+13. (C5) 장애가 아닌데 전이 실패 경보가 잦다 — 원인과 경보·응답의 기준을 어떻게 나누는가?
+14. (C6) 표에 화살표 하나를 빠뜨렸는데 컴파일도 테스트도 통과한다 — 무엇으로 잡는가?
 
 ## 복습 기록
 

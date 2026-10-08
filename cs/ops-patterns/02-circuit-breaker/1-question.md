@@ -8,7 +8,7 @@
 
 ### A. 문제 (구현 대상 TODO — `src/main/java/com/ops/breaker/`)
 
-#### 1. CountBasedWindow — 최근 N개 (링 버퍼)
+1. CountBasedWindow — 최근 N개 (링 버퍼)
 
 ```java
 @Override
@@ -32,7 +32,7 @@ public void record(boolean success) {
 - `failureRate()` 에서 size가 0일 때 0.0을 바로 돌려주는 이유는(NaN이 무엇을 일으키는가)?
 - 이 창이 보는 "시간 길이"가 트래픽에 따라 달라진다는 것은 무슨 뜻인가?
 
-#### 2. TimeBasedWindow — 최근 T밀리초 (시간 버킷)
+2. TimeBasedWindow — 최근 T밀리초 (시간 버킷)
 
 ```java
 private void expire() {
@@ -64,7 +64,7 @@ public void record(boolean success) {
 - 만료를 record에서만 하고 읽기(totalCalls·failureRate)에서 안 하면 어떤 시나리오가 터지는가?
 - 생성자가 창 길이가 버킷 개수로 나누어떨어지지 않으면 아예 예외를 던지는 이유는?
 
-#### 3. CircuitBreaker.currentState — 조회가 상태를 바꾼다 (TODO 1)
+3. CircuitBreaker.currentState — 조회가 상태를 바꾼다 (TODO 1)
 
 ```java
 /** 락을 잡은 상태에서만 부른다. */
@@ -85,7 +85,7 @@ private State currentState() {
 - 시각 비교를 덧셈으로 쓰면 어떤 조건에서 무엇이 조용히 사라지는가?
 - 상태를 바꿀 때 직접 대입하지 않고 transitionTo를 거쳐야 하는 이유는?
 
-#### 4. CircuitBreaker.acquirePermission — 통과냐 거절이냐 (TODO 2)
+4. CircuitBreaker.acquirePermission — 통과냐 거절이냐 (TODO 2)
 
 ```java
 private void acquirePermission() {
@@ -108,7 +108,7 @@ private void acquirePermission() {
 - HALF_OPEN에서 정원이 없어 거절할 때 남은 대기 시간을 0으로 주는 이유는?
 - CircuitBreakerOpenException이 "실패했다"가 아니라 "시도조차 안 했다"인 것이 호출자에게 왜 중요한가?
 
-#### 5. CircuitBreaker.onSuccess / onError — 결과 반영 (TODO 3·4)
+5. CircuitBreaker.onSuccess / onError — 결과 반영 (TODO 3·4)
 
 ```java
 private void onSuccess() {
@@ -133,7 +133,7 @@ private void onError(Throwable error) {
 - HALF_OPEN에서 무시할 예외를 만났을 때 정원을 돌려주지 않으면 어떤 상태에 갇히는가?
 - HALF_OPEN에서 실패 하나에 즉시 OPEN으로 가는 이유는?
 
-#### 6. CircuitBreaker.evaluate — 열 것인가 (TODO 5)
+6. CircuitBreaker.evaluate — 열 것인가 (TODO 5)
 
 ```java
 private void evaluate() {
@@ -153,7 +153,7 @@ private void evaluate() {
 
 ### B. 개념
 
-#### 7. 왜 차단하는가, 무엇을 내주는가
+7. 왜 차단하는가, 무엇을 내주는가
 
 - 상대가 확실히 죽었을 때 재시도를 계속하면 잃는 것 셋은 무엇인가?
 - 핵심 측정에서 브레이커가 1000건을 29건으로 줄였는데, 29건의 내역은 무엇인가?
@@ -161,48 +161,48 @@ private void evaluate() {
 - 실패율 50%로 회로가 열리면 멀쩡했던 나머지 절반은 어떻게 되는가 — 이 거래가 맞는 조건은?
 - 브레이커 상태가 프로세스마다 따로라는 것은 서버 20대에서 무엇을 의미하는가?
 
-#### 8. 비율은 표본 수가 있어야 뜻이 있다 (출처: README「특히 생각해볼 것」1)
+8. 비율은 표본 수가 있어야 뜻이 있다 (출처: README「특히 생각해볼 것」1)
 
 - minimumCalls가 없으면 첫 호출 하나가 회로를 여는 이유는? (출처: README 1)
 - "비율은 표본 수가 있어야 뜻이 있다"를 실패율 계산식으로 설명하면?
 
-#### 9. 이 실패가 누구 탓인가 (출처: README「특히 생각해볼 것」2)
+9. 이 실패가 누구 탓인가 (출처: README「특히 생각해볼 것」2)
 
 - PermanentFailureException(400류)을 실패로 세면 안 되는 이유는? (출처: README 2)
 - CircuitBreakerOpenException을 실패로 세면 어떤 되먹임이 생기는가? (출처: README 2)
 - 이 판단이 01번의 어떤 판단과 "정확히 같은 자리"인가? (출처: README 2)
 
-#### 10. 읽기처럼 생긴 것이 쓰기다 (출처: README「특히 생각해볼 것」3·4)
+10. 읽기처럼 생긴 것이 쓰기다 (출처: README「특히 생각해볼 것」3·4)
 
 - "조회가 상태를 바꾼다"가 동시성을 까다롭게 만드는 이유는? (출처: README 3)
 - execute 전체를 synchronized로 감싸면 무엇이 무엇의 원인이 되는가? (출처: README 4)
 - 락 안에서 할 일과 락 밖에서 할 일은 각각 무엇인가?
 
-#### 11. 경계는 한쪽으로 정하고 못 박는다 (출처: README「특히 생각해볼 것」5)
+11. 경계는 한쪽으로 정하고 못 박는다 (출처: README「특히 생각해볼 것」5)
 
 - 시각 비교를 덧셈으로 쓰면 "차단이 사실상 사라지는데 상태 이름은 멀쩡하다"는 것은 어떤 상황인가? (출처: README 5)
 - 이 함정은 01번의 어느 계산과 같은 것인가? (출처: README 5)
 
-#### 12. 겹쳐 쓰기와 한계 (출처: README「특히 생각해볼 것」6 + 한계)
+12. 겹쳐 쓰기와 한계 (출처: README「특히 생각해볼 것」6 + 한계)
 
 - 브레이커 안쪽에 재시도를 두면 회로가 왜 세 배 빨리 열리는가? (출처: README 6)
 - minimumCalls가 창 크기보다 크면 회로에 무슨 일이 생기고, 왜 생성자가 못 막는가? (출처: README 한계)
 - TimeBasedWindow의 창 길이가 정확히 T가 아니라는 것은 무슨 뜻이고, 무엇과 맞바꾸는가? (출처: README 한계)
 - 변종 검증에서 안 잡힌 두 줄(M20·M08)은 왜 지우지 않고 남겼는가? (출처: README 한계)
 
-#### 13. 다음 챕터로의 다리
+13. 다음 챕터로의 다리
 
 - 회로는 상대별로 끊는데 못 막는 것은 무엇인가?
 - ResilienceStrategy 인터페이스가 03-bulkhead에서 하는 역할은?
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 누전 차단기 비유에서 "전기를 끊는다"와 "나중에 한 번 올려본다"는 각각 어느 상태이고, 후자가 없으면 무슨 일이 생기는가?
-- C2. `CountBasedWindow`와 `TimeBasedWindow`는 각각 어떤 자료구조 위에 서 있고, 어느 쪽을 고를지는 무엇으로 정하는가?
-- C3. 브레이커를 실제 시스템에 붙일 때 정하는 네 가지의 순서는 무엇이고, 왜 숫자가 마지막인가?
-- C4. 회로가 초 단위로 열렸다 닫혔다 하는 플래핑은 로그에서 어떻게 보이고, 원인과 대처는 무엇인가?
-- C5. 브레이커를 넣었는데 에러율이 오히려 100%로 보이는 것은 무엇이 빠진 것이고, 어떻게 채우는가?
-- C6. 상대가 죽지 않고 느려지기만 하면 회로가 왜 안 열리고, 안쪽에 무엇을 두어야 하는가?
+14. (C1) 누전 차단기 비유에서 "전기를 끊는다"와 "나중에 한 번 올려본다"는 각각 어느 상태이고, 후자가 없으면 무슨 일이 생기는가?
+15. (C2) `CountBasedWindow`와 `TimeBasedWindow`는 각각 어떤 자료구조 위에 서 있고, 어느 쪽을 고를지는 무엇으로 정하는가?
+16. (C3) 브레이커를 실제 시스템에 붙일 때 정하는 네 가지의 순서는 무엇이고, 왜 숫자가 마지막인가?
+17. (C4) 회로가 초 단위로 열렸다 닫혔다 하는 플래핑은 로그에서 어떻게 보이고, 원인과 대처는 무엇인가?
+18. (C5) 브레이커를 넣었는데 에러율이 오히려 100%로 보이는 것은 무엇이 빠진 것이고, 어떻게 채우는가?
+19. (C6) 상대가 죽지 않고 느려지기만 하면 회로가 왜 안 열리고, 안쪽에 무엇을 두어야 하는가?
 
 ## 복습 기록
 

@@ -8,7 +8,7 @@
 
 ### A. 과제 (RollingHash·RabinKarp·DuplicateSubstring — TODO 1~6)
 
-#### 1. 롤링 해시 (`RollingHash` — TODO 1~3)
+1. 롤링 해시 (`RollingHash` — TODO 1~3)
 
 ```java
 /**
@@ -44,7 +44,7 @@ public long roll(long hash, char outgoing, char incoming, long topPower)
 - 굴리기가 창 길이를 비용에서 없앤다는 말은 무슨 뜻인가?
 - 이 구조는 10 번 누적 합의 무엇과 같은가?
 
-#### 2. 라빈 카프 (`RabinKarp.findAll` — TODO 4)
+2. 라빈 카프 (`RabinKarp.findAll` — TODO 4)
 
 ```java
 /**
@@ -68,7 +68,7 @@ public static List<Integer> findAll(String text, String pattern, long mod, Count
 - 입력을 남이 고를 수 있는 상황에서 확률 이야기가 의미 없는 이유는?
 - KMP(25 번)와 비교해 라빈 카프는 무엇을 내주고 무엇을 얻는가?
 
-#### 3. 가장 긴 중복 부분 문자열 (`DuplicateSubstring` — TODO 5~6)
+3. 가장 긴 중복 부분 문자열 (`DuplicateSubstring` — TODO 5~6)
 
 ```java
 /**
@@ -97,13 +97,13 @@ static String duplicateOfLength(String s, int length, long mod, CountedHasher ha
 
 ### B. 개념
 
-#### 4. 생각해볼 것 (원본 README 이관)
+4. 생각해볼 것 (원본 README 이관)
 
 - 법을 두 개 써서 둘 다 같을 때만 후보로 치면 무엇이 좋아지나, 확인은 여전히 필요한가? (원본 README)
 - `BASE` 를 알파벳 크기보다 작게 잡으면 무엇이 깨지나? (원본 README)
 - 이 방식으로 접미사 배열을 만들 수 있나, 26 번의 트라이와 무엇이 다른가? (원본 README)
 
-#### 5. 파생 — 왜 그렇게 생겼는가
+5. 파생 — 왜 그렇게 생겼는가
 
 - 25·26 번의 "정확한" 알고리즘과 해싱의 근본적 차이는 무엇인가?
 - "틀릴 수 있는 판정을 싸게 만들고 틀린 것만 걸러낸다" 는 구조가 성립하려면 확인이 무엇이어야 하는가?
@@ -114,11 +114,11 @@ static String duplicateOfLength(String s, int length, long mod, CountedHasher ha
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 창마다 다시 계산하는 것과 굴리기의 비용 차이는 어디서 나고, 그 대가로 무엇이 새로 필요해지는가?
-- C2. rsync가 이 챕터의 구조를 어떻게 쓰는가?
-- C3. 새 문제에 문자열 해싱을 붙일 때 정해야 할 값 둘과, 절대 빼면 안 되는 단계는?
-- C4. 정답이 0개인 입력에서 발견 위치가 나온다 — 원인과, 법을 10억으로 올리면 해결되는가?
-- C5. 굴린 해시와 처음부터 계산한 해시가 안 맞는다 — 의심할 두 곳은?
+6. (C1) 창마다 다시 계산하는 것과 굴리기의 비용 차이는 어디서 나고, 그 대가로 무엇이 새로 필요해지는가?
+7. (C2) rsync가 이 챕터의 구조를 어떻게 쓰는가?
+8. (C3) 새 문제에 문자열 해싱을 붙일 때 정해야 할 값 둘과, 절대 빼면 안 되는 단계는?
+9. (C4) 정답이 0개인 입력에서 발견 위치가 나온다 — 원인과, 법을 10억으로 올리면 해결되는가?
+10. (C5) 굴린 해시와 처음부터 계산한 해시가 안 맞는다 — 의심할 두 곳은?
 
 ## 복습 기록
 

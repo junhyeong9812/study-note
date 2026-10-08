@@ -7,7 +7,7 @@
 
 ### A. 과제 (구현 대상 — src/main TODO 1~8)
 
-#### 1. firstTrue / lastTrue (`ParametricSearch` — TODO 1·2)
+1. firstTrue / lastTrue (`ParametricSearch` — TODO 1·2)
 
 ```java
 /**
@@ -39,7 +39,7 @@ long lastTrue(long lo, long hi, LongPredicate feasible);
 - 판정을 뒤집어 lastTrue로 풀어도 판정 횟수(비용)는 같은가(측정치)?
 - 10^18 크기의 후보 구간은 판정 몇 번이면 좁혀지는가(측정치)?
 
-#### 2. 나무 자르기 (`WoodCutter` — TODO 3·4)
+2. 나무 자르기 (`WoodCutter` — TODO 3·4)
 
 ```java
 /** 높이 h 로 잘랐을 때 얻는 나무의 총합. */
@@ -68,7 +68,7 @@ int maxHeight(int[] trees, long need);
 - `t > h` 를 `t >= h` 로 바꿔도 결과가 같은 이유는?
 - 어떤 높이로도 need를 못 채우면 lastTrue가 무엇을 주고, maxHeight는 그것을 어떻게 -1로 만드는가?
 
-#### 3. 공유기 설치 (`RouterPlacement` — TODO 5·6)
+3. 공유기 설치 (`RouterPlacement` — TODO 5·6)
 
 ```java
 /**
@@ -98,7 +98,7 @@ int maxMinGap(int[] positions, int routers);
 - 그 결함은 어떤 입력에서 드러났고, 어떤 테스트가 잡았는가?
 - routers가 2 미만이거나 집 수보다 많으면 -1인 이유는?
 
-#### 4. 배열 분할 (`ArraySplit` — TODO 7·8)
+4. 배열 분할 (`ArraySplit` — TODO 7·8)
 
 ```java
 /**
@@ -128,14 +128,14 @@ long minMaxSum(int[] a, int groups);
 
 ### B. 개념
 
-#### 5. 생각해볼 것 (원본 README 이관)
+5. 생각해볼 것 (원본 README 이관)
 
 - 답이 실수(소수점)면 이분 탐색을 몇 번 돌려야 끝나나 — 종료 조건이 무엇이 되나?
 - 판정 함수가 그리디인 문제가 많다(공유기, 배열 분할) — 그 그리디가 최적이라는 것을 어떻게 아나?
 - 판정이 확률적이면(예: 시뮬레이션) 이분 탐색을 쓸 수 있나?
 - groupsNeeded는 구간 수를 세지만 실제 분할을 알려주지는 않는다 — 답을 알고 나면 어떻게 복원하나?
 
-#### 6. 파생 질문 (서머리 기반)
+6. 파생 질문 (서머리 기반)
 
 - "답을 이분한다"는 말은 06번 이진 탐색의 무엇이 무엇으로 바뀐 것인가?
 - ParametricSearch가 데이터를 아예 모른다는 것이 왜 이 기법의 핵심인가?
@@ -149,11 +149,11 @@ long minMaxSum(int[] a, int groups);
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 답 공식이 없는 문제를 매개변수 탐색으로 풀 수 있는 조건 두 가지와, 완전 탐색 대비 이득은?
-- C2. 용량 산정 역산이 매개변수 탐색인 이유와, 그때 log C라는 숫자가 갖는 뜻은?
-- C3. 매개변수 탐색 문제에서 firstTrue와 lastTrue 중 무엇을 쓸지 어떻게 정하나?
-- C4. 손으로 만든 테스트는 다 통과하는데 무작위 대조 테스트에서 가끔 답이 다른 원인과 대처는?
-- C5. 답이 0이나 -1처럼 이상하게 나오는 경계값 사고의 원인과 대처는?
+7. (C1) 답 공식이 없는 문제를 매개변수 탐색으로 풀 수 있는 조건 두 가지와, 완전 탐색 대비 이득은?
+8. (C2) 용량 산정 역산이 매개변수 탐색인 이유와, 그때 log C라는 숫자가 갖는 뜻은?
+9. (C3) 매개변수 탐색 문제에서 firstTrue와 lastTrue 중 무엇을 쓸지 어떻게 정하나?
+10. (C4) 손으로 만든 테스트는 다 통과하는데 무작위 대조 테스트에서 가끔 답이 다른 원인과 대처는?
+11. (C5) 답이 0이나 -1처럼 이상하게 나오는 경계값 사고의 원인과 대처는?
 
 ## 복습 기록
 

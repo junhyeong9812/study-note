@@ -8,7 +8,7 @@
 
 ### A. 과제 (Subsets·TravellingSalesman — TODO 1~4)
 
-#### 1. 켜진 비트 골라내기 (`Subsets.enumerate`, `setBits` — TODO 1~2)
+1. 켜진 비트 골라내기 (`Subsets.enumerate`, `setBits` — TODO 1~2)
 
 ```java
 /** TODO 1. 0 부터 2^n - 1 까지 모든 부분집합. 마스크 자체가 부분집합이다. */
@@ -30,7 +30,7 @@ public static List<Integer> setBits(int x, CountedBits bits)
 - `(x & (1 << i)) > 0` 이 `i=31` 에서 틀리는 이유는? (원본 함정)
 - `1 << 40` 이 `1 << 8` 이 되는 이유는? (원본 함정)
 
-#### 2. mask 의 부분집합만 돌기 (`Subsets.subsetsOf` — TODO 3)
+2. mask 의 부분집합만 돌기 (`Subsets.subsetsOf` — TODO 3)
 
 ```java
 /**
@@ -54,7 +54,7 @@ public static List<Integer> subsetsOf(int mask, CountedBits bits)
 - 이 트릭은 차수를 바꾸는 트릭인가, 상수를 줄이는 트릭인가?
 - 전체를 돌고 거르는 대조 구현과의 실측 차이(n=15 에서 74 배)는 어디서 오는가?
 
-#### 3. 비트마스크 DP — 외판원 (`TravellingSalesman.shortestTour` — TODO 4)
+3. 비트마스크 DP — 외판원 (`TravellingSalesman.shortestTour` — TODO 4)
 
 ```java
 /**
@@ -82,13 +82,13 @@ public static int shortestTour(int[][] dist, CountedBits bits)
 
 ### B. 개념
 
-#### 4. 생각해볼 것 (원본 README 이관)
+4. 생각해볼 것 (원본 README 이관)
 
 - 부분집합을 크기 순서로 돌려면 — `(mask - 1) & mask` 로는 왜 안 되고 무엇이 필요한가? (원본 README)
 - 외판원 DP 의 메모리가 2^n × n 인데 n=20 이면 몇 MB 이고, 줄일 수 있나? (원본 README)
 - 켜진 비트 개수가 같은 마스크만 돌려면 무엇이 필요한가? (원본 README)
 
-#### 5. 파생 — 왜 그렇게 생겼는가
+5. 파생 — 왜 그렇게 생겼는가
 
 - "짧은 것과 적게 하는 것은 다르다" 를 이 챕터의 두 측정으로 설명하면?
 - 3^n 이 나오는 "원소마다 세 가지 경우" 는 무엇 무엇인가?
@@ -99,11 +99,11 @@ public static int shortestTour(int[][] dist, CountedBits bits)
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 집합을 `Set` 객체가 아니라 정수 하나로 두면 무엇이 가능해지고, 그것이 왜 비트마스크 DP의 전부인가?
-- C2. 파일 권한 `rwx`와 펜윅 트리의 `i & -i`는 이 챕터의 어떤 트릭을 각각 쓰는가?
-- C3. 새 문제에 비트 트릭을 붙일 때 먼저 구별해야 할 두 종류의 트릭과 그 판정 기준은?
-- C4. 31번 비트가 켜진 원소만 항상 누락된다 — 원인 한 줄과 고치는 법은?
-- C5. `subsetsOf`가 끝나지 않는다 — 어디서 되돌아가는가?
+6. (C1) 집합을 `Set` 객체가 아니라 정수 하나로 두면 무엇이 가능해지고, 그것이 왜 비트마스크 DP의 전부인가?
+7. (C2) 파일 권한 `rwx`와 펜윅 트리의 `i & -i`는 이 챕터의 어떤 트릭을 각각 쓰는가?
+8. (C3) 새 문제에 비트 트릭을 붙일 때 먼저 구별해야 할 두 종류의 트릭과 그 판정 기준은?
+9. (C4) 31번 비트가 켜진 원소만 항상 누락된다 — 원인 한 줄과 고치는 법은?
+10. (C5) `subsetsOf`가 끝나지 않는다 — 어디서 되돌아가는가?
 
 ## 복습 기록
 

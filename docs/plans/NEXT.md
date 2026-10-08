@@ -6,6 +6,10 @@
 
 ## 다음 작업 후보 (우선순위순)
 
+### N0-ac. 형식 통일 완료 후속 — 우선순위: 낮음
+
+- legacy-format-conversion-2로 전체 leaf 756편 check PASS. 후속: 단독 노트 36편 재구성으로 원문의 위치 지시("다음 절"·"아래")가 일부 어긋남(multi-tenancy 격리 모델 → 권한 누수 등 — 문장 불변 규칙상 미수정, 검수 때 확인) · 보충 52곳(`Claude 보충 — 노트 본문 요약`)은 검수 대상 · 검사기는 여전히 작업 폴더에 있음(N0-p ④).
+
 ### N0-ab. 옛 형식 잔여 — 우선순위: 낮음
 
 - legacy-format-conversion으로 data-structure·domain-modeling/advanced 65편 전환(64 PASS). ds/17 검사기 펜스 오탐도 수정(65/65 PASS). 남은 것: 다른 옛 형식 leaf(전체 122 FAIL 중 algorithm/13-backtracking·systems/nand-flash 등)는 범위 밖.
@@ -13,7 +17,7 @@
 ### N0-aa. errata-fixes-2 후속 — 우선순위: 낮음
 
 - N0-u~N0-z·보안 항목의 '영역 밖 오류'·'원고 후속'·'커리큘럼 반영 후보'는 errata-fixes-2에서 정정됨(아래 각 항목의 해당 줄은 이력).
-- 남은 것: 원고 `systems/server-design/02-request-path.md` §3 표 Consistent Hashing '함정' 칸("노드 변동 시 일부만 재배치")도 장점 · `algorithm/33:176` RFC 1951 최악 팽창(32K 블록당 5B)과 실측 raw deflate +310B(1MB)의 관계 미판정 · EWMA '빠른 실패 인스턴스로 몰림'은 출처 확보 시 추가.
+- (10-08 legacy-format-conversion-2에서 Consistent Hashing 칸·algorithm/33 팽창 관계 해소) 남은 것: EWMA '빠른 실패 인스턴스로 몰림'은 출처 확보 시 추가.
 
 ### N0-c. 커리큘럼 미작성 leaf 집필 — 우선순위: 높음 · 네트워크 51·OS 38·DB 57·분산 36·신뢰성 53·설계 56·도메인 모델링 28·테스트 21(10-03)·API 설계 23·웹 플랫폼 24(10-04)·엔지니어링 실천 20·자료구조·알고리즘 잔여 21(10-05)·보안 30·수학 17·아키텍처 22·데이터 공학 17(10-07) 완료, 네트워크 원고 1(10-07)·언어 27·데이터 분석 28(10-08) 완료 → **커리큘럼 미작성 0편** (데이터 공학~데이터 분석 4개 영역 커밋은 push 대기 — 사용자 확인 후)(이 순서로 연속 진행 중, push는 끝에 한 번 — 사용자 합의 10-07)
 

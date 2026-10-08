@@ -8,7 +8,7 @@
 
 ### A. 과제 (구현 대상 — src TODO 1~8)
 
-#### 1. `Bfs.distances` / `Bfs.multiSource` (TODO 1~3)
+1. `Bfs.distances` / `Bfs.multiSource` (TODO 1~3)
 
 ```java
 /** start 에서 각 정점까지의 최단 거리. 못 가면 UNREACHABLE. */
@@ -39,7 +39,7 @@ public static int[] multiSource(CountedGraph g, int[] starts, CountedDeque queue
 - 직선 그래프에서는 두 방식의 차이가 왜 아예 없는가?
 - `if (dist[to] == UNREACHABLE)`에 `|| dist[v] + 1 < dist[to]`를 붙이면 무엇이 달라지는가?
 
-#### 2. `Bfs.levels` (TODO 4)
+2. `Bfs.levels` (TODO 4)
 
 ```java
 /** 거리별로 묶은 정점 목록. levels.get(d) 는 거리가 d 인 정점들이다. */
@@ -53,7 +53,7 @@ public static List<List<Integer>> levels(CountedGraph g, int start, CountedDeque
 - 층 크기는 언제 재야 하고, 안쪽 루프를 돌면서 재면 무슨 일이 생기는가?
 - 거리 배열(`distances`)로도 층을 만들 수 있는데 두 방법의 차이는 무엇인가?
 
-#### 3. `ZeroOneBfs.distances` (TODO 5~8)
+3. `ZeroOneBfs.distances` (TODO 5~8)
 
 ```java
 /**
@@ -79,14 +79,14 @@ public static int[] distances(CountedGraph g, int start, CountedDeque deque)
 
 ### B. 개념
 
-#### 4. 원본 README "생각해볼 것" (이관)
+4. 원본 README "생각해볼 것" (이관)
 
 - 최단 거리뿐 아니라 경로 자체가 필요하면 무엇을 더 기억해야 하는가?
 - 최단 경로가 몇 개인지 세려면 거리 배열 하나로 되는가?
 - 양쪽에서 동시에 BFS 하면(양방향 탐색) 왜 빨라지고, 얼마나 빨라지는가?
 - 0-1 BFS의 가중치가 0, 1, 2 세 종류면 어떻게 되고, 어디까지 이 방법이 통하는가?
 
-#### 5. 파생 질문 (서머리 기반)
+5. 파생 질문 (서머리 기반)
 
 - BFS의 핵심 불변식을 한 문장으로 말하면 무엇인가?
 - BFS의 비용이 O(V+E)인 이유를 정점과 간선 각각으로 설명하면?
@@ -98,11 +98,11 @@ public static int[] distances(CountedGraph g, int start, CountedDeque deque)
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 그래프를 아무 순서로 훑으면 최단 거리가 틀리는 이유와, BFS가 그것을 어떻게 막는가?
-- C2. GC 마킹·크롤러·거리 변환은 각각 BFS의 어느 모양인가?
-- C3. BFS 문제를 받았을 때 확인하는 네 가지는?
-- C4. 결과는 맞는데 촘촘한 그래프에서 큐가 폭증해 OOM이 나는 원인과, 왜 개발 중에 안 보였는가?
-- C5. 환승 시간이 다른 노선에 BFS를 쓰면 무슨 일이 생기고, 크롤러가 같은 페이지를 무한히 도는 원인은?
+6. (C1) 그래프를 아무 순서로 훑으면 최단 거리가 틀리는 이유와, BFS가 그것을 어떻게 막는가?
+7. (C2) GC 마킹·크롤러·거리 변환은 각각 BFS의 어느 모양인가?
+8. (C3) BFS 문제를 받았을 때 확인하는 네 가지는?
+9. (C4) 결과는 맞는데 촘촘한 그래프에서 큐가 폭증해 OOM이 나는 원인과, 왜 개발 중에 안 보였는가?
+10. (C5) 환승 시간이 다른 노선에 BFS를 쓰면 무슨 일이 생기고, 크롤러가 같은 페이지를 무한히 도는 원인은?
 
 ## 복습 기록
 

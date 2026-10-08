@@ -8,7 +8,7 @@
 
 ### A. 문제 (구현 대상 TODO — `src/main/java/com/ops/idempotency/`)
 
-#### 1. NonAtomicStore.tryBegin — 일부러 틀리게 쓴다 (TODO 1)
+1. NonAtomicStore.tryBegin — 일부러 틀리게 쓴다 (TODO 1)
 
 ```java
 @Override
@@ -36,7 +36,7 @@ public boolean tryBegin(IdempotencyKey key, String fingerprint, long expiresAtMi
 - 틀린 코드를 남이 써준 것으로 보지 않고 직접 쓰게 하는 이유는?
 - 이 클래스의 `complete`·`fail` 은 이미 `computeIfPresent` 로 원자적인데, 그럼에도 저장소 전체가 안전하지 않은 이유는?
 
-#### 2. InMemoryIdempotencyStore.tryBegin — 이 문제의 전부 (TODO 2)
+2. InMemoryIdempotencyStore.tryBegin — 이 문제의 전부 (TODO 2)
 
 ```java
 // TODO 2: 자리를 잡는다. **이 메서드 하나가 이 문제의 전부다.**
@@ -64,7 +64,7 @@ public boolean tryBegin(IdempotencyKey key, String fingerprint, long expiresAtMi
 - 운영에서 이 자리에 Redis 나 RDB 가 올 때 요구되는 성질은 무엇 하나인가?
 - `now` 를 람다 밖에서 읽든 안에서 읽든 결과가 같은 이유는?
 
-#### 3. InMemoryIdempotencyStore.find — 만료는 없는 것으로 (TODO 3)
+3. InMemoryIdempotencyStore.find — 만료는 없는 것으로 (TODO 3)
 
 ```java
 // TODO 3: 기록을 준다. 단 **만료된 것은 없는 것으로 본다.**
@@ -78,7 +78,7 @@ public boolean tryBegin(IdempotencyKey key, String fingerprint, long expiresAtMi
 - 만료 판정이 `>` 가 아니라 `>=` 인 이유는?
 - 그 경계를 어느 쪽으로 정하든 된다면, 그래도 정해야 하는 이유는?
 
-#### 4. InMemoryIdempotencyStore.purgeExpired — 청소가 정확성을 깨면 안 된다 (TODO 4)
+4. InMemoryIdempotencyStore.purgeExpired — 청소가 정확성을 깨면 안 된다 (TODO 4)
 
 ```java
 // TODO 4: 만료된 기록을 실제로 지우고 지운 개수를 반환한다.
@@ -98,7 +98,7 @@ public boolean tryBegin(IdempotencyKey key, String fingerprint, long expiresAtMi
 - "청소는 메모리 얘기지 계약 얘기가 아니다"는 무슨 뜻인가?
 - 이 결함이 `tryBegin` 의 원자성 결함과 구조적으로 같은 점은?
 
-#### 5. IdempotentExecutor.execute — 네 갈래 판정 (TODO 5)
+5. IdempotentExecutor.execute — 네 갈래 판정 (TODO 5)
 
 ```java
 // TODO 5: 자리를 노리고, 잡으면 실행하고, 못 잡으면 기존 기록을 보고 판정한다.
@@ -132,14 +132,14 @@ public boolean tryBegin(IdempotencyKey key, String fingerprint, long expiresAtMi
 
 ### B. 개념
 
-#### 6. 재시도의 말하지 않은 전제
+6. 재시도의 말하지 않은 전제
 
 - "응답을 못 받았다 ≠ 실행이 안 됐다"를 결제 예로 설명하면?
 - `AtLeastOnceTest` 가 보여주는 숫자는 무엇이고 왜 그 숫자인가?
 - 네트워크가 줄 수 있는 보장은 어디까지이고, exactly-once 는 누가 만드는가?
 - 01번(재시도)과 06번은 어떤 관계인가?
 
-#### 7. 키를 누가 만드는가 (출처: README「질문 1」)
+7. 키를 누가 만드는가 (출처: README「질문 1」)
 
 - 키를 서버가 만들면 왜 저장소와 원자적 선점이 다 있어도 두 번 실행되는가? (출처: README 질문 1)
 - 그때 측정 숫자(실행 횟수·재생 횟수)는 어떻게 나오는가? (출처: README 질문 1)
@@ -148,21 +148,21 @@ public boolean tryBegin(IdempotencyKey key, String fingerprint, long expiresAtMi
 - `IdempotencyKey` 를 `String` 이 아니라 값 객체로 만든 이유 두 가지는?
 - 키 길이 상한 255가 필요한 이유는(상한이 없으면 무엇이 공짜가 되는가)?
 
-#### 8. 기록에는 다섯 조각이 다 필요하다
+8. 기록에는 다섯 조각이 다 필요하다
 
 - `IdempotencyRecord` 의 다섯 조각과 각각의 역할은?
 - `response` 를 빼먹는 설계가 흔한데, 그러면 클라이언트는 무엇을 끝내 모르는가?
 - 상태가 IN_PROGRESS·COMPLETED·FAILED 셋인 이유는 — 셋째가 아니라 첫째가 왜 필요한가?
 - 기록을 불변 객체로 두고 통째로 갈아끼우는 이유는?
 
-#### 9. 처리 중일 때 또 오면 (출처: README「질문 3」)
+9. 처리 중일 때 또 오면 (출처: README「질문 3」)
 
 - 기다리기와 즉시 알리기 중 이 구현이 고른 쪽과 그 이유는? (출처: README 질문 3)
 - 대기가 자원을 잡는다는 말이 몰릴 때 무엇이 되는가?
 - 스트라이프가 주는 응답 코드는 무엇인가? (출처: README 질문 3)
 - 이 선택이 05번 FAIL 정책·03번 BulkheadFullException 과 무엇이 같은가?
 
-#### 10. 기억의 대가 — TTL과 청소
+10. 기억의 대가 — TTL과 청소
 
 - 청소를 안 하면 요청 1만 건에서 보관량과 유효 기록은 각각 몇 개인가?
 - TTL + 주기적 청소를 하면 그 숫자는 어떻게 바뀌는가?
@@ -170,20 +170,20 @@ public boolean tryBegin(IdempotencyKey key, String fingerprint, long expiresAtMi
 - 스트라이프의 24시간이 "계산이 아니라 선택"인 이유는?
 - TTL이 길 때와 짧을 때 각각 무엇을 잃는가?
 
-#### 11. 세 가지 함정 (출처: README「특히 생각해볼 것」1·2·3)
+11. 세 가지 함정 (출처: README「특히 생각해볼 것」1·2·3)
 
 - 지문 검사를 상태 판정 뒤에 두면 어떤 사고가 나고, 왜 로그도 안 남는가? (출처: README 1)
 - FAILED 를 영구 기록으로 두면 무엇이 무엇으로 승격되는가? (출처: README 2)
 - 그 재선점 판정은 어느 계층의 책임인가(저장소인가 실행기인가)? (출처: README 2)
 - 청소가 정확성을 깨는 순간은 언제이고 재현률은 얼마인가? (출처: README 3)
 
-#### 12. 고칠 수 없는 것 (출처: README「한계」)
+12. 고칠 수 없는 것 (출처: README「한계」)
 
 - 소유권 토큰이 없어서 생기는 사고는 무엇이고, 무엇이 필요한가? (출처: README 한계 1)
 - 응답 저장과 실제 작업이 원자적이지 않다는 것은 어떤 장면인가? (출처: README 한계 2)
 - 안 잡힌 변종 2개는 무엇이었고, 왜 "구별할 필요도 없다"인가? (출처: README 한계 3)
 
-#### 13. 연결
+13. 연결
 
 - 스트라이프·토스페이먼츠·GoCardless·AWS가 같은 계약에 도달한 것이 우연이 아닌 이유는?
 - `debugging/02-toctou-idempotency` 와 이 챕터는 같은 주제를 어떻게 다르게 보는가?
@@ -191,12 +191,12 @@ public boolean tryBegin(IdempotencyKey key, String fingerprint, long expiresAtMi
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 멱등성 저장소가 있으면 재시도에서 무엇은 그대로 두 번 일어나고 무엇은 한 번만 일어나는가?
-- C2. Redis의 `SET key value NX EX ttl` 한 줄은 이 노트의 어떤 두 조각을 한 번에 대신하는가?
-- C3. 멱등성을 실제 API에 붙일 때 가장 먼저 정하는 것은 무엇이고, 그것을 빼먹으면 어떤 사고가 나는가?
-- C4. 정상 재시도가 전부 `KeyReuseException`으로 거절되는 것은 지문의 무엇이 잘못된 것이고, 어떻게 고치는가?
-- C5. 같은 키가 TTL 내내 409만 받는 좀비 상태는 왜 생기고, 두 가지 대처는 무엇인가?
-- C6. 07-outbox와 11-distributed-lock은 이 노트의 어느 한계를 각각 이어받는가?
+14. (C1) 멱등성 저장소가 있으면 재시도에서 무엇은 그대로 두 번 일어나고 무엇은 한 번만 일어나는가?
+15. (C2) Redis의 `SET key value NX EX ttl` 한 줄은 이 노트의 어떤 두 조각을 한 번에 대신하는가?
+16. (C3) 멱등성을 실제 API에 붙일 때 가장 먼저 정하는 것은 무엇이고, 그것을 빼먹으면 어떤 사고가 나는가?
+17. (C4) 정상 재시도가 전부 `KeyReuseException`으로 거절되는 것은 지문의 무엇이 잘못된 것이고, 어떻게 고치는가?
+18. (C5) 같은 키가 TTL 내내 409만 받는 좀비 상태는 왜 생기고, 두 가지 대처는 무엇인가?
+19. (C6) 07-outbox와 11-distributed-lock은 이 노트의 어느 한계를 각각 이어받는가?
 
 ## 복습 기록
 

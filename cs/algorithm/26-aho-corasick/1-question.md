@@ -8,7 +8,7 @@
 
 ### A. 과제 (AhoCorasick — TODO 1~7)
 
-#### 1. 트라이 만들기 (`build` — TODO 1)
+1. 트라이 만들기 (`build` — TODO 1)
 
 ```java
 /** 패턴들을 넣은 오토마톤을 만든다. */
@@ -32,7 +32,7 @@ public static CountedAutomaton build(List<String> patterns, CountedAutomaton aut
 - `he` 와 `hers` 는 트라이에서 무엇을 공유하는가?
 - 트라이 만들기의 비용은 무엇에 비례하는가?
 
-#### 2. 실패 링크 걸기 (`linkFailures` — TODO 3~6)
+2. 실패 링크 걸기 (`linkFailures` — TODO 3~6)
 
 ```java
 /** 실패 링크를 건다. */
@@ -69,7 +69,7 @@ private static void linkFailures(CountedAutomaton automaton) {
 - 출력 물려받기는 왜 그 노드의 실패 링크가 정해진 뒤에 해야 하는가? (원본 TODO 6)
 - `she` 의 `e` 노드의 실패 링크는 어디로 가는가, 그 이유는?
 
-#### 3. 본문 훑기 (`findAll` — TODO 7)
+3. 본문 훑기 (`findAll` — TODO 7)
 
 ```java
 /**
@@ -95,14 +95,14 @@ public static List<Match> findAll(CountedAutomaton automaton, String text) {
 
 ### B. 개념
 
-#### 4. 생각해볼 것 (원본 README 이관)
+4. 생각해볼 것 (원본 README 이관)
 
 - 출력 링크를 물려받는 대신 찾을 때 실패 링크를 따라 올라가면 무엇이 달라지나, 어느 쪽이 나은가? (원본 README)
 - 알파벳이 유니코드면 노드마다 배열 26 개로 안 된다 — 무엇으로 바꿔야 하나? (원본 README)
 - 패턴을 나중에 하나 더 넣으려면 오토마톤을 통째로 다시 만들어야 하나? (원본 README)
 - 겹치지 않는 매칭만 원하면(가장 긴 것 우선) 무엇을 바꿔야 하나? (원본 README)
 
-#### 5. 파생 — 왜 그렇게 생겼는가
+5. 파생 — 왜 그렇게 생겼는가
 
 - 아호 코라식은 25 번 KMP 의 무엇을 어디로 올린 것인가?
 - 패턴별로 KMP 를 k 번 돌리는 것과 비교해 시간에서 사라진 k 는 어디로 갔는가?
@@ -115,11 +115,11 @@ public static List<Match> findAll(CountedAutomaton automaton, String text) {
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 패턴 1,000개를 KMP로 하나씩 찾는 것과 아호 코라식의 비용 차이는 어디서 나고, 사라진 k는 어디로 갔는가?
-- C2. WAF 시그니처 검사와 URL 차단 목록이 아호 코라식에 특히 잘 맞는 이유는?
-- C3. 패턴 하나·패턴 집합 고정·패턴이 계속 바뀜 — 각각 어느 알고리즘을 고르는가?
-- C4. `"ushers"`에서 `she`는 나오는데 같은 자리의 `he`가 빠진다 — 무엇이 없는 것인가?
-- C5. 유니코드 패턴 수만 개에서 OOM이 난다 — 원인이 된 거래와 대처는?
+6. (C1) 패턴 1,000개를 KMP로 하나씩 찾는 것과 아호 코라식의 비용 차이는 어디서 나고, 사라진 k는 어디로 갔는가?
+7. (C2) WAF 시그니처 검사와 URL 차단 목록이 아호 코라식에 특히 잘 맞는 이유는?
+8. (C3) 패턴 하나·패턴 집합 고정·패턴이 계속 바뀜 — 각각 어느 알고리즘을 고르는가?
+9. (C4) `"ushers"`에서 `she`는 나오는데 같은 자리의 `he`가 빠진다 — 무엇이 없는 것인가?
+10. (C5) 유니코드 패턴 수만 개에서 OOM이 난다 — 원인이 된 거래와 대처는?
 
 ## 복습 기록
 

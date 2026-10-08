@@ -8,7 +8,7 @@
 
 ### A. 과제 (FriendSuggestion.java 의 TODO 1~5)
 
-#### 0. 한 줄 요구사항 — "친구의 친구 중 공통 친구가 많은 순"
+0. 한 줄 요구사항 — "친구의 친구 중 공통 친구가 많은 순"
 
 ```text
   나 자신           당연히 뺀다
@@ -26,7 +26,7 @@
 - 위의 셋은 왜 아무도 안 빠뜨리는가?
 - 아래의 둘이 갈리는 이유는 무엇인가?
 
-#### 1. 관계 3종의 성질 (Social — 계약)
+1. 관계 3종의 성질 (Social — 계약)
 
 ```java
 /**
@@ -45,7 +45,7 @@
 - 세 관계 모두 "자기 자신과의 관계"를 막는 이유는?
 - `joinOrder`는 무엇에 쓰이는 값인가?
 
-#### 2. TODO 1 — `candidates(me)`
+2. TODO 1 — `candidates(me)`
 
 ```java
 /**
@@ -62,7 +62,7 @@ private Map<String, Integer> candidates(String me)
 - 어떤 후보가 공통 친구 2가 되려면 무슨 일이 있어야 하는가?
 - `LinkedHashMap`을 쓴 이유는 무엇이고, 그 순서에 의존하면 왜 위험한가?
 
-#### 3. TODO 4 — `excluded(me, candidate, blockRule)`
+3. TODO 4 — `excluded(me, candidate, blockRule)`
 
 ```java
 /** 이 사람을 빼야 하나. */
@@ -81,7 +81,7 @@ public enum BlockRule {
 - "차단이 반쪽만 작동한다"를 두 사람의 화면으로 설명하면?
 - 이 결함이 테스트로도 QA로도 안 잡히는 이유는?
 
-#### 4. TODO 2·3 — `suggest` / `tieKey`
+4. TODO 2·3 — `suggest` / `tieKey`
 
 ```java
 /**
@@ -105,7 +105,7 @@ private String tieKey(String personId, TieRule rule)
 - `limit`을 자르는 것이 `subList`인데 주의할 점은 무엇인가?
 - `limit`이 0 이하면 어떻게 하는가?
 
-#### 5. TODO 5 — `excludedCounts(me, blockRule)`
+5. TODO 5 — `excludedCounts(me, blockRule)`
 
 ```java
 /**
@@ -125,7 +125,7 @@ public Excluded excludedCounts(String me, BlockRule blockRule)
 
 ### B. 개념
 
-#### 6. 측정 — 차단 방향을 틀려도 상위 10에서는 거의 안 드러난다
+6. 측정 — 차단 방향을 틀려도 상위 10에서는 거의 안 드러난다
 
 ```text
 200 명 기준
@@ -138,7 +138,7 @@ public Excluded excludedCounts(String me, BlockRule blockRule)
 - 이 결함이 잡히는 유일한 경로는 무엇인가?
 - 이 표가 "QA를 더 열심히 하면 된다"를 어떻게 반박하는가?
 
-#### 7. 측정 — 전체 목록으로 보면 74%가 갈린다
+7. 측정 — 전체 목록으로 보면 74%가 갈린다
 
 ```text
   전체 목록으로 비교   148 / 200   (74 %)
@@ -149,7 +149,7 @@ public Excluded excludedCounts(String me, BlockRule blockRule)
 - "재현이 잘 안 되네요"라는 말이 여기서 나오는 과정은?
 - 결함의 크기를 재려면 어디를 봐야 하는가?
 
-#### 8. 측정 — 공통 친구 1명이 80%
+8. 측정 — 공통 친구 1명이 80%
 
 ```text
   1 명       10,962   80 %
@@ -162,7 +162,7 @@ public Excluded excludedCounts(String me, BlockRule blockRule)
 - 나머지 80%의 순서는 무엇이 정하는가?
 - 이 분포가 추천의 품질에 대해 말하는 것은?
 
-#### 9. 측정 — 동점 규칙을 바꾸면 186명의 명단이 바뀐다
+9. 측정 — 동점 규칙을 바꾸면 186명의 명단이 바뀐다
 
 ```text
   순서가 다른 사람              200 / 200
@@ -173,7 +173,7 @@ public Excluded excludedCounts(String me, BlockRule blockRule)
 - 명단이 달라지는 것은 어떤 연산 때문인가?
 - "그 규칙은 대개 코드에 없다. 정렬의 부작용으로 존재한다"는 무슨 뜻인가?
 
-#### 10. 측정 — 제외 규칙이 후보의 6%만 걸러낸다
+10. 측정 — 제외 규칙이 후보의 6%만 걸러낸다
 
 ```text
   후보 14,498 명
@@ -187,7 +187,7 @@ public Excluded excludedCounts(String me, BlockRule blockRule)
 - 규칙 하나를 빼먹어도 목록이 멀쩡해 보이는 이유는?
 - 제외 규칙의 정확성을 검증하려면 무엇을 봐야 하는가?
 
-#### 11. 측정 — 한 단만 더 가면 전원이 후보
+11. 측정 — 한 단만 더 가면 전원이 후보
 
 ```text
   200 명 관계망에서
@@ -199,14 +199,14 @@ public Excluded excludedCounts(String me, BlockRule blockRule)
 - 두 단에서 끊는 것은 자연법칙인가 규칙인가?
 - 세 단이 전원이 되면 추천은 무엇이 되는가?
 
-#### 12. 생각해볼 것 (원본 README)
+12. 생각해볼 것 (원본 README)
 
 - 나를 차단한 사람을 빼면, 그 사실을 상대가 눈치챌 수 있나?
 - 추천에서 지운 사람은 영원히 안 뜨나 — 1년 뒤에도?
 - 공통 친구가 1명뿐인 추천이 80%면 그 추천은 쓸모가 있나?
 - 친구가 5,000명인 사람의 후보는 몇 명이고, 그 사람의 추천은 어떻게 계산하나?
 
-#### 13. 연결
+13. 연결
 
 - "변종 16개가 전부 잡혔다"는 이 챕터의 테스트 설계 덕인데, 무엇을 어떻게 했기 때문인가?
 - 동점 규칙이 없을 때 "읽는 순서가 답이 된다"는 것은 다른 어떤 주제와 같은 문제인가?
@@ -214,12 +214,12 @@ public Excluded excludedCounts(String me, BlockRule blockRule)
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. "친구의 친구 중 공통 친구가 많은 순"만 구현하면 목록이 어느 두 군데서 무너지는가?
-- C2. `candidates`는 어떤 그래프 탐색이고, 공통 친구 수는 어떤 자료구조로 세며, 깊이를 2로 고정한 근거는 무엇인가?
-- C3. 후보를 모아 걸러 정렬해 자르는 새 기능(예: 팔로우 추천)을 만들 때 결정을 어떤 순서로 내리는가?
-- C4. 친구가 5,000명인 사용자의 추천만 느린 장애는 어떻게 보이고, 원인과 대처는 무엇인가?
-- C5. 새로고침마다 추천 명단이 바뀌는 장애의 원인은 무엇이고 어떻게 고치는가?
-- C6. `excludedCounts`를 사용자 응답에 그대로 내보내면 무엇이 새는가?
+14. (C1) "친구의 친구 중 공통 친구가 많은 순"만 구현하면 목록이 어느 두 군데서 무너지는가?
+15. (C2) `candidates`는 어떤 그래프 탐색이고, 공통 친구 수는 어떤 자료구조로 세며, 깊이를 2로 고정한 근거는 무엇인가?
+16. (C3) 후보를 모아 걸러 정렬해 자르는 새 기능(예: 팔로우 추천)을 만들 때 결정을 어떤 순서로 내리는가?
+17. (C4) 친구가 5,000명인 사용자의 추천만 느린 장애는 어떻게 보이고, 원인과 대처는 무엇인가?
+18. (C5) 새로고침마다 추천 명단이 바뀌는 장애의 원인은 무엇이고 어떻게 고치는가?
+19. (C6) `excludedCounts`를 사용자 응답에 그대로 내보내면 무엇이 새는가?
 
 ## 복습 기록
 

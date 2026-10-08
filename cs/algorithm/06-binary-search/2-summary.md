@@ -227,7 +227,7 @@ mid = lo + (hi - lo) / 2  ← 차이(10억)는 안전. 이렇게 써야 한다
 
 **비용**: O(log(hi-lo)) — 후보 구간이 절반씩 준다.
 
-## 쓰이는 곳
+## 쓰이는 자료구조·알고리즘
 
 - **`Arrays.binarySearch` · `Collections.binarySearch`(자바)** — 못 찾으면 `-(삽입 위치) - 1`을 돌려준다. 삽입 위치가 곧 lowerBound다.
 - **C++ `std::lower_bound`/`upper_bound`, 파이썬 `bisect`** — C++은 이 챕터의 lowerBound/upperBound와 이름까지 같고, 파이썬 `bisect_left`/`bisect_right`가 같은 두 연산이다.

@@ -8,7 +8,7 @@
 
 ### A. 과제 (구현 대상 — src TODO 1~6)
 
-#### 1. `NQueens.countWithPruning` / `countByFiltering` (TODO 1~2)
+1. `NQueens.countWithPruning` / `countByFiltering` (TODO 1~2)
 
 ```java
 /** 가지치기를 하는 판. 놓을 수 있는 자리만 내려간다. */
@@ -37,7 +37,7 @@ public static long countByFiltering(int n, CountedBoard board)
 - 계약 테스트는 되돌리기 누락을 어떤 두 조건으로 잡는가?
 - n=0의 답이 1인 이유는 무엇이고, 0이라고 답하면 무엇을 잘못 잡은 것인가?
 
-#### 2. `NQueens.solutions` (TODO 3)
+2. `NQueens.solutions` (TODO 3)
 
 ```java
 /** 가지치기 판으로 실제 배치를 전부 모은다. 각 배치는 행마다의 열 번호다. */
@@ -50,7 +50,7 @@ public static List<int[]> solutions(int n, CountedBoard board)
 - 결과에 사본을 뜨지 않고 작업용 배열을 그대로 넣으면 무슨 일이 생기는가?
 - `snapshot()`이 계수기(placements 등)를 올리지 않는 이유는 무엇인가?
 
-#### 3. `Generate.permutations` (TODO 4)
+3. `Generate.permutations` (TODO 4)
 
 ```java
 /** [0, n) 의 모든 순열. 사전순으로 나온다. */
@@ -68,7 +68,7 @@ public static List<int[]> permutations(int n)
 - n=0이면 순열이 0개인가 1개인가, 왜 그런가?
 - 순열이 사전순으로 나오는 것은 코드의 무엇이 보장하는가?
 
-#### 4. `Generate.combinations` (TODO 5~6)
+4. `Generate.combinations` (TODO 5~6)
 
 ```java
 /** [0, n) 에서 k 개를 고르는 모든 조합. 오름차순으로, 사전순으로 나온다. */
@@ -91,14 +91,14 @@ public static List<int[]> combinations(int n, int k)
 
 ### B. 개념
 
-#### 5. 원본 README "생각해볼 것" (이관)
+5. 원본 README "생각해볼 것" (이관)
 
 - 열과 대각선을 `boolean[]` 세 개로 기억하면 충돌 검사가 O(1)이 되는데(지금은 O(n)), 왜 안 했을까?
 - N퀸의 해는 좌우 대칭이 짝을 이루는데, 절반만 찾고 두 배 하면 되는가, 언제 안 되는가?
 - 순열을 재귀 없이 만들 수 있는가(다음 순열 알고리즘), 그러면 무엇이 좋아지는가?
 - 가지치기를 더 세게 하면(예: 남은 행에 놓을 자리가 없으면 즉시 중단) 얼마나 더 줄까?
 
-#### 6. 파생 질문 (서머리 기반)
+6. 파생 질문 (서머리 기반)
 
 - 백트래킹의 비용은 왜 자료구조에 안 남고, 그래서 계측기는 무엇을 세는가?
 - 백트래킹과 12번 DFS는 무슨 관계인가?
@@ -110,11 +110,11 @@ public static List<int[]> combinations(int n, int k)
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. 제약 만족 문제에서 후보를 전부 만드는 대신 백트래킹이 하는 일은 무엇이고, 12번 DFS와 무엇이 다른가?
-- C2. 정규식 엔진과 스케줄링은 백트래킹의 어느 면을 쓰고, 정규식에서는 왜 위험해지는가?
-- C3. 백트래킹 문제를 받았을 때 먼저 적는 세 가지와 그 뒤 확인 두 가지는?
-- C4. 정규식 하나가 CPU 100%를 만드는 사고는 어떻게 보이고, 어떻게 대처하나?
-- C5. 답의 개수가 적게 나오고 두 번 부르면 결과가 다른 사고의 원인과 대처는?
+7. (C1) 제약 만족 문제에서 후보를 전부 만드는 대신 백트래킹이 하는 일은 무엇이고, 12번 DFS와 무엇이 다른가?
+8. (C2) 정규식 엔진과 스케줄링은 백트래킹의 어느 면을 쓰고, 정규식에서는 왜 위험해지는가?
+9. (C3) 백트래킹 문제를 받았을 때 먼저 적는 세 가지와 그 뒤 확인 두 가지는?
+10. (C4) 정규식 하나가 CPU 100%를 만드는 사고는 어떻게 보이고, 어떻게 대처하나?
+11. (C5) 답의 개수가 적게 나오고 두 번 부르면 결과가 다른 사고의 원인과 대처는?
 
 ## 복습 기록
 

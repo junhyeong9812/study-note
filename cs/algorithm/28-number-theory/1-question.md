@@ -8,7 +8,7 @@
 
 ### A. 과제 (Sieve·Euclid·ModPow — TODO 1~7)
 
-#### 1. 체와 최소 소인수 표 (`Sieve` — TODO 1~3)
+1. 체와 최소 소인수 표 (`Sieve` — TODO 1~3)
 
 ```java
 /**
@@ -43,7 +43,7 @@ public static List<Integer> factorize(int x, int[] spf, CountedArith arith)
 - 소수(예: 999,983)가 시행 나눗셈 소인수분해의 최악인 이유는?
 - "쓰기 수" 로는 최소 소인수 표가 체보다 싸 보이는데 "순회 수" 로는 비싼 이유는? (원본 측정 둘)
 
-#### 2. 유클리드 호제법과 역원 (`Euclid` — TODO 4~6)
+2. 유클리드 호제법과 역원 (`Euclid` — TODO 4~6)
 
 ```java
 /** TODO 4. 최대공약수. 항상 0 이상을 준다. */
@@ -73,7 +73,7 @@ public static long modInverse(long a, long m, CountedArith arith)
 - 역원이 존재하는 조건은 무엇이고, 없을 때 impl 은 무엇을 주는가?
 - 확장 유클리드가 준 x 를 왜 `Math.floorMod(x, m)` 으로 접어야 하는가?
 
-#### 3. 이진 거듭제곱 (`ModPow.power` — TODO 7)
+3. 이진 거듭제곱 (`ModPow.power` — TODO 7)
 
 ```java
 /**
@@ -99,14 +99,14 @@ public static long power(long a, long e, long m, CountedArith arith)
 
 ### B. 개념
 
-#### 4. 생각해볼 것 (원본 README 이관)
+4. 생각해볼 것 (원본 README 이관)
 
 - 체를 홀수만 담으면 메모리가 절반이 된다 — 인덱스 계산은 어떻게 되나? (원본 README)
 - 최소 소인수 표를 1 억까지 만들면 메모리가 얼마인가, 그때도 이 거래가 유리한가? (원본 README)
 - 확장 유클리드의 x 가 여러 개인데 어느 것을 주는 게 좋은가? (원본 README)
 - `a*b mod m` 에서 m 이 long 의 절반을 넘으면 어떻게 하나? (원본 README)
 
-#### 5. 파생 — 왜 그렇게 생겼는가
+5. 파생 — 왜 그렇게 생겼는가
 
 - "같은 답을 얻는데 쓰는 연산 자체가 다르다" 는 이 챕터의 주제를 체 대 시행 나눗셈으로 설명하면?
 - 최소 소인수 표는 어떤 종류의 거래인가 — 10 번 누적 합과 무엇이 같은가?
@@ -117,11 +117,11 @@ public static long power(long a, long e, long m, CountedArith arith)
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. "수마다 나누어지나 묻기"와 "소수마다 내 배수를 지우기"는 답이 같은데 무엇이 다르고, 그 차이가 왜 32배 비용 차이가 되는가?
-- C2. RSA 한 번의 암복호화에 이 챕터의 어떤 도구들이 들어가는가?
-- C3. 나머지 세계에서 나눗셈이 필요할 때 두 역원 방법 중 무엇을 고르는 기준은?
-- C4. 역원을 썼는데 결과가 틀리고 예외도 없다 — 무엇을 의심하고 어떤 검산을 두는가?
-- C5. 해시코드를 슬롯 수로 나눈 인덱스에서 `ArrayIndexOutOfBoundsException`이 난다 — 원인과 한 줄 대처는?
+6. (C1) "수마다 나누어지나 묻기"와 "소수마다 내 배수를 지우기"는 답이 같은데 무엇이 다르고, 그 차이가 왜 32배 비용 차이가 되는가?
+7. (C2) RSA 한 번의 암복호화에 이 챕터의 어떤 도구들이 들어가는가?
+8. (C3) 나머지 세계에서 나눗셈이 필요할 때 두 역원 방법 중 무엇을 고르는 기준은?
+9. (C4) 역원을 썼는데 결과가 틀리고 예외도 없다 — 무엇을 의심하고 어떤 검산을 두는가?
+10. (C5) 해시코드를 슬롯 수로 나눈 인덱스에서 `ArrayIndexOutOfBoundsException`이 난다 — 원인과 한 줄 대처는?
 
 ## 복습 기록
 

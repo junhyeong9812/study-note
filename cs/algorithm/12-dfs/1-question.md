@@ -8,7 +8,7 @@
 
 ### A. 과제 (구현 대상 — src TODO 1~9)
 
-#### 1. `Dfs.recursiveOrder` / `Dfs.iterativeOrder` (TODO 1~3)
+1. `Dfs.recursiveOrder` / `Dfs.iterativeOrder` (TODO 1~3)
 
 ```java
 /** 재귀로 방문한 순서. 이웃은 인접 리스트에 넣은 순서대로 본다. */
@@ -39,7 +39,7 @@ public static List<Integer> iterativeOrder(CountedGraph g, int start, CountedSta
 - 재귀 깊이는 O(V)인데 순진한 명시적 스택은 왜 O(E)인가?
 - "어느 쪽이 빠른가"가 잘못된 질문인 이유는 무엇인가?
 
-#### 2. `Dfs.times` (TODO 4)
+2. `Dfs.times` (TODO 4)
 
 ```java
 /** 방문 시각과 종료 시각. times[v][0] 이 진입, times[v][1] 이 종료다. */
@@ -54,7 +54,7 @@ public static int[][] times(CountedGraph g, int start)
 - 안 간 정점의 시각을 0으로 두면 왜 안 되고, 대신 무엇으로 두는가?
 - 진입·종료 시각이 "괄호 구조"를 이룬다는 말은 무슨 뜻인가?
 
-#### 3. `CycleDetector` (TODO 5~7)
+3. `CycleDetector` (TODO 5~7)
 
 ```java
 /** 방향 그래프에 사이클이 있나. 모든 정점에서 시작해 본다. */
@@ -84,7 +84,7 @@ public static boolean hasUndirectedCycle(CountedGraph g)
 - 자기 자신으로 가는 간선 검사(`if (to == v)`)는 왜 필요 없었는가?
 - 사이클을 찾으면 그 자리에서 멈춘다는 것이 실측에서 어떻게 나타났는가?
 
-#### 4. `Components` (TODO 8~9)
+4. `Components` (TODO 8~9)
 
 ```java
 /** 각 정점이 속한 덩어리 번호. 번호는 0 부터 발견 순서대로다. */
@@ -104,14 +104,14 @@ public static int count(CountedGraph g)
 
 ### B. 개념
 
-#### 5. 원본 README "생각해볼 것" (이관)
+5. 원본 README "생각해볼 것" (이관)
 
 - 반복 판에서 "정점과 이웃 번호"를 스택에 넣으면 메모리가 어떻게 되고, 코드는 얼마나 복잡해지는가?
 - 진입/종료 시각으로 무엇을 알 수 있고, 두 정점이 조상 관계인지 O(1)로 판정할 수 있는가?
 - 방향 그래프의 연결 요소는 무엇이고, 무방향과 왜 다른가(18번 강연결 요소)?
 - 사이클을 찾는 것과 사이클 자체를 돌려주는 것은 무엇이 다른가?
 
-#### 6. 파생 질문 (서머리 기반)
+6. 파생 질문 (서머리 기반)
 
 - DFS의 시간 비용이 BFS와 같은 O(V+E)인 이유는 무엇인가?
 - 같은 그래프에서 DFS와 BFS의 방문 순서가 달라지는 근본 원인은 무엇인가(자료구조 기준)?
@@ -123,11 +123,11 @@ public static int count(CountedGraph g)
 
 ### C. 통일 골격 (Claude 초안 2026-09-28)
 
-- C1. BFS로도 닿는지는 알 수 있는데 DFS가 따로 필요한 이유는?
-- C2. 데드락 탐지·의존성 순서·직렬화 순환 참조는 각각 DFS의 무엇인가?
-- C3. DFS 문제를 받았을 때 판을 정하는 네 가지는?
-- C4. 운영 데이터에서 `StackOverflowError`가 나는 원인과, 명시적 스택으로 바꿀 때의 함정은?
-- C5. 순환 의존이 있는데 빌드가 통과하거나, 없는데 오류가 나는 원인과 대처는?
+7. (C1) BFS로도 닿는지는 알 수 있는데 DFS가 따로 필요한 이유는?
+8. (C2) 데드락 탐지·의존성 순서·직렬화 순환 참조는 각각 DFS의 무엇인가?
+9. (C3) DFS 문제를 받았을 때 판을 정하는 네 가지는?
+10. (C4) 운영 데이터에서 `StackOverflowError`가 나는 원인과, 명시적 스택으로 바꿀 때의 함정은?
+11. (C5) 순환 의존이 있는데 빌드가 통과하거나, 없는데 오류가 나는 원인과 대처는?
 
 ## 복습 기록
 
