@@ -247,7 +247,7 @@ que_thr_t *pars_complete_graph_for_exec(que_node_t *node, trx_t *trx,
    L1090  prebuilt->trx_id = table->def_trx_id   이 그래프가 만들어진 테이블 정의 버전
 ```
 
-그래프가 만들어진 뒤의 모양이다. 엔트리 틀의 필드는 행 틀의 필드를 가리키므로, 행에 값을 채우면 [09] 에서 인덱스별 엔트리를 따로 복사하지 않고 값만 연결한다.
+그래프가 만들어진 뒤의 모양이다. 엔트리 틀은 처음에 비어 있고, 행마다 [09] 의 `row_ins_index_entry_set_vals` 가 엔트리 필드의 데이터 포인터를 행 틀의 같은 열 데이터로 맞춘다(`dfield_set_data`, row0ins.cc L3468). 그래서 인덱스별로 값을 복사하지 않고 포인터만 연결한다.
 
 ```text
  m_prebuilt 에 붙는 insert 그래프

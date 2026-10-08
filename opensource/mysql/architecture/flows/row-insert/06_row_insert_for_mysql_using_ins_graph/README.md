@@ -245,6 +245,7 @@ handle_new_error:
  L1613  FTS 인덱스가 있으면 문서 ID 검사와 fts_trx_add_op
  L1676  que_thr_stop_for_mysql_no_error
  L1681  srv_stats.n_rows_inserted++      상태 변수 rows_inserted (ha_innodb.cc L1286)
+        (L1679 시스템 테이블이면 n_system_rows_inserted 쪽)
  L1688  dict_table_n_rows_inc           통계용 행 수 추정치
  L1690  row_update_statistics_if_needed  바뀐 행이 많으면 통계 재계산 예약
 ```

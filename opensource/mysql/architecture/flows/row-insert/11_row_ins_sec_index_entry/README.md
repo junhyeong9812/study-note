@@ -223,7 +223,8 @@ and return. don't execute actual insert. */
  L2957  cursor.flag == BTR_CUR_INSERT_TO_IBUF  -> 페이지를 읽지 않고 끝
  L2975  유니크 인덱스이고 같은 키 후보가 있으면
  L2977    mtr_commit
- L2986    row_ins_scan_sec_index_for_duplicate   다른 mtr 에서 S 잠금을 걸며 중복 검사
+ L2986    row_ins_scan_sec_index_for_duplicate   다른 mtr 에서 같은 키 레코드에 잠금을 걸며 중복 검사
+          (보통 LOCK_S L2047, REPLACE / ON DUPLICATE KEY UPDATE 면 LOCK_X L2015)
  L3035    다시 탐색 (BTR_INSERT, BTR_IGNORE_SEC_UNIQUE 는 뺀다)
  L3045  row_ins_must_modify_rec          같은 값의 delete-mark 레코드가 있으면 되살린다
  L3070  LEAF   btr_cur_optimistic_insert                     --> [B+Tree 03]
@@ -250,7 +251,8 @@ change buffer 는 세컨더리 리프를 디스크에서 읽는 대신 변경을
  ibuf_should_try 가 거짓인 경우 (ibuf0ibuf.ic L123-L129)
    innodb_change_buffering = none, 클러스터드, 공간 인덱스, 내림차순 인덱스,
    유니크 인덱스인데 유니크 검사를 무시하지 않을 때 (L128),
-   그 밖에 시스템 테이블스페이스의 DD 인덱스, quiesce 중, 높은 innodb_force_recovery
+   그 밖에 change buffer 최대 크기 0, DD 테이블스페이스(s_dict_space_id)의 인덱스,
+   quiesce 중, 높은 innodb_force_recovery
 ```
 
 ```text
@@ -259,10 +261,11 @@ change buffer 는 세컨더리 리프를 디스크에서 읽는 대신 변경을
  undo 기록
    클러스터드  btr_cur_ins_lock_and_undo 가 trx_undo_report_row_operation 을 부른다
    세컨더리    같은 함수가 !index->is_clustered() 면 잠금 검사만 하고 돌아간다 (btr0cur.cc L2602)
-               세컨더리 엔트리를 되돌리는 정보가 없다는 뜻은 아니다. 롤백 때 row_undo_ins 는
-               클러스터드용 insert undo 레코드 한 건에서 행을 다시 만들고, 세컨더리마다
-               row_build_index_entry 로 엔트리를 재구성해 지운 뒤 (row0uins.cc L427, L492)
-               마지막에 클러스터드 레코드를 지운다 (row0uins.cc L499)
+               세컨더리 엔트리를 되돌릴 방법이 없다는 뜻은 아니다. 롤백 때 row_undo_ins 는
+               insert undo 레코드에서 클러스터드 키(row ref)만 읽고 (row0uins.cc L346)
+               그 키로 찾은 클러스터드 레코드에서 행 전체를 다시 만든다 (row0undo.cc L222).
+               그 행으로 세컨더리마다 row_build_index_entry 로 엔트리를 재구성해 지운 뒤
+               (row0uins.cc L427, L492) 마지막에 클러스터드 레코드를 지운다 (row0uins.cc L499)
  change buffer
    클러스터드  불가 (btr0cur.cc L747 assert)
    세컨더리    가능 (위 그림)
@@ -270,8 +273,9 @@ change buffer 는 세컨더리 리프를 디스크에서 읽는 대신 변경을
    클러스터드  같은 mtr 안에서 row_ins_duplicate_error_in_clust
    세컨더리    유니크면 mtr 을 끊고 row_ins_scan_sec_index_for_duplicate 로 따로
  페이지 최대 trx id
-   세컨더리    잠금 검사가 통과하면 lock_rec_insert_check_and_lock 안에서 (lock0lock.cc L5139),
-               pessimistic 삽입 뒤 커서가 옮겨 간 페이지에 다시 (btr0cur.cc L3042)
+   세컨더리    optimistic 삽입이면 잠금 검사가 통과한 뒤 lock_rec_insert_check_and_lock 안에서
+               (lock0lock.cc L5139), pessimistic 삽입이면 삽입 뒤 커서가 옮겨 간 페이지에
+               (btr0cur.cc L3042)
                page_update_max_trx_id 로 올린다
 ```
 

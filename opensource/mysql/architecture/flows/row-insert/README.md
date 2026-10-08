@@ -90,8 +90,8 @@ InnoDB 안쪽에서 한 행이 지나는 상태는 `ins_node_t::state` 세 값�
 ## 어디에서 쓰이는가
 
 ```text
- [명령 디스패치]        Sql_cmd_dml::execute_inner 가 [01] 을 부른다.
-                        그 전에 lock_tables -> ha_innobase::external_lock 이 InnoDB 트랜잭션을 등록해 둔다
+ [명령 디스패치]        Sql_cmd_dml::execute 가 가상 함수 execute_inner 로 [01] 을 부른다 (sql_select.cc L798).
+                        그 전에 lock_tables (L794) -> ha_innobase::external_lock 이 InnoDB 트랜잭션을 등록해 둔다
  [B+Tree 삽입과 분할]   [10] [11] 이 부르는 row_ins_clust_index_entry_low / row_ins_sec_index_entry_low
  [레코드 잠금과 교착]   DB_LOCK_WAIT 를 받은 [06] 이 row_mysql_handle_errors -> lock_wait_suspend_thread 로 잠든다
  [커밋과 binlog 2PC]    [03] 의 binlog_log_row 가 쌓은 행 이벤트가 커밋 때 binlog 로 나간다
