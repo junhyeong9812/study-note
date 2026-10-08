@@ -6,7 +6,7 @@ r"""아키텍처 지도 문서의 코드 블록이 **고정한 태그의 소스�
 MySQL 지도(코드 블록 598개)를 쓸 때 이 검사가 작성 직후·검증 직후·병합 전마다 돌았고,
 동명 파일(plugin/x 아래의 같은 헤더)을 잘못 고른 블록을 잡았다.
 
-계약 — 코드 펜스(cpp·c·h·java)의 **첫 줄이 `// <파일> L<시작>-L<끝>`** 이면 그 범위와 대조한다.
+계약 — 코드 펜스(cpp·c·h·java·sql)의 **첫 줄이 `// <파일> L<시작>-L<끝>`**(sql 은 `--`)이면 그 범위와 대조한다.
 
     ```cpp
     // connection_handler_per_thread.cc L246-L250
@@ -32,10 +32,10 @@ import re
 import subprocess
 import sys
 
-FENCE = re.compile(r"^```(cpp|c|h|java)\s*$")
-HEADER = re.compile(r"^//\s*(\S+)\s+L(\d+)(?:-L?(\d+))?")
+FENCE = re.compile(r"^```(cpp|c|h|java|sql)\s*$")
+HEADER = re.compile(r"^(?://|--)\s*(\S+)\s+L(\d+)(?:-L?(\d+))?")
 LINKED = re.compile(r"github\.com/[^/\s]+/[^/\s]+/blob/[0-9a-f]+/([^#)\s]+)")
-ELIDED = re.compile(r"^\s*//\s*\.\.\.")
+ELIDED = re.compile(r"^\s*(?://|--)\s*\.\.\.")
 
 
 def main(argv):
