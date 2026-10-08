@@ -10,10 +10,12 @@
 
 ```text
  이 표는 SQLCOM_ 명령과 시스템 변수를 전부 담지 않는다
- 흐름 열두 편이 실제로 덮는 길만 적었다
+ 흐름 열세 편이 실제로 덮는 길만 적었다
 
  안 덮는 API 도 아래에 따로 적어 두었다 - 없는 것을 있는 척하지 않으려고
 ```
+
+표의 흐름 이름은 [지도의 흐름 표](README.md#흐름-열세-편)에서 각 흐름 문서로 이어진다.
 
 ## 모든 SQL 이 공유하는 앞단
 
@@ -76,7 +78,7 @@ case 줄은 모두 `sql/sql_parse.cc` 기준이다.
 
 | SQL | case 줄 | 다음 단계 | 뒤이어 지나는 흐름 |
 |---|---|---|---|
-| `ALTER TABLE` | L4668 | `Sql_cmd_alter_table::execute` (sql/sql_alter.cc L220) -> `mysql_inplace_alter_table` (sql/sql_table.cc L14394) | 온라인 DDL(열세 번째 후보) -> redo |
+| `ALTER TABLE` | L4668 | `Sql_cmd_alter_table::execute` (sql/sql_alter.cc L220) -> `mysql_inplace_alter_table` (sql/sql_table.cc L14394) | [온라인 DDL](flows/online-ddl/README.md) -> redo |
 | `CREATE INDEX` / `DROP INDEX` | L3796 / L3797 | `mysql_alter_table` 로 합류 | 〃 |
 
 ## 시스템 변수
