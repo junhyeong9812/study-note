@@ -42,6 +42,7 @@
 | 2026-10-08 | 판정 단계 종료: codex 지적 합계 82(14+15+22+12+12+7) → 채택 63·부분 19·기각 0 · 정합 워커 시작 | — |
 | 2026-10-08 | 정합 완료: 영역 안 텍스트 참조 72줄 → 링크(13→26 복원), 노트 간 대조 9항목 모순 0, 커리큘럼 §22 10칸 정정(TACL 2024·05 ⚠ 조건·09 vLLM §4.4·Sarathi OSDI 2024·10 goodput·11 ⚠ 429/400·26 Moffatt `[?]` 해소·03 🔧·04 GPT-2 §2.2) + sources.md 갱신(브리핑의 #58 번호 오기 → 실제 #65에 반영), 영역 밖 44파일 링크 50(삭제 0, 역방향 링크 실재 쌍만) | 정합 |
 | 2026-10-08 | 메인 검증: check --all 782 PASS/0 FAIL·WARN 290(ai-engineering 0, 기존 단정어) · gen --check 0 · 영역 밖 diff 삭제 줄 0 · sn-ai 컨테이너 0 · 웹 교차 표본 78 | 통과 |
+| 2026-10-08 | 사용자 "main 병합 + push" → 다른 세션의 main 커밋 32개(아키텍처 지도)와 갈라져 ff 불가 → 미push 커밋 2개를 main 위로 rebase(충돌 NEXT·measurement-log — 양쪽 보존) → check 782 PASS·--check 0 재확인 → push 3a1505e1..09826f2e · GitHub Actions notes-check 첫 실행 success(17s) | 완료 |
 
 ## 리뷰 ledger
 
