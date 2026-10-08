@@ -8,7 +8,7 @@
 
 ### N0-ab. 옛 형식 잔여 — 우선순위: 낮음
 
-- legacy-format-conversion으로 data-structure·domain-modeling/advanced 65편 전환(64 PASS). 남은 것: `data-structure/17-fenwick-tree` 검사기 오탐(펜스 안 `[7..7]` — `links(folder, strip_fences(t))` 한 줄, 판정 변화 0 확인됨, 사용자 확인 대기) · 다른 옛 형식 leaf(전체 122 FAIL 중 algorithm/13-backtracking·systems/nand-flash 등)는 범위 밖.
+- legacy-format-conversion으로 data-structure·domain-modeling/advanced 65편 전환(64 PASS). ds/17 검사기 펜스 오탐도 수정(65/65 PASS). 남은 것: 다른 옛 형식 leaf(전체 122 FAIL 중 algorithm/13-backtracking·systems/nand-flash 등)는 범위 밖.
 
 ### N0-aa. errata-fixes-2 후속 — 우선순위: 낮음
 

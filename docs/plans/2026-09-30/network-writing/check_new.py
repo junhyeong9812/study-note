@@ -92,7 +92,7 @@ def check(folder):
             errs.append(f'{f}: 빈 절 {e[:3]}')
         if re.search(r'^\s*-\s*$', t, flags=re.M):
             errs.append(f'{f}: 빈 불릿')
-        bl = links(folder, t)
+        bl = links(folder, strip_fences(t))   # 2026-10-08: 코드 펜스 안 `[a..b]` 오탐 제외
         if bl:
             errs.append(f'{f}: 깨진 링크 {bl[:3]}')
     q = [int(m) for m in re.findall(r'^(\d+)\. ', files['1-question.md'].split('## 복습 기록')[0], flags=re.M)]
