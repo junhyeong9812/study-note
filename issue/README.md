@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 161개.
+현재 카드 162개.
 
 ## 분류 두 축
 
@@ -15,7 +15,7 @@
 | 태그 | 뜻 | 카드 수 |
 |------|----|---------|
 | [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 27 |
-| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 22 |
+| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 23 |
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 3 |
 | [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 10 |
@@ -42,15 +42,15 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (161)
-├─ cross-cutting/               116
+issue/  (162)
+├─ cross-cutting/               117
 │  ├─ concurrency/               10
 │  ├─ data/                      18
 │  ├─ database/                   3
 │  ├─ distributed/                2
 │  ├─ document-rendering/         2
 │  ├─ gui-platform/               2
-│  ├─ infra/                     11
+│  ├─ infra/                     12
 │  ├─ network/                   11
 │  ├─ os/                         8
 │  ├─ reliability/               24
@@ -145,6 +145,7 @@ issue/  (161)
 - [client-api-version-floor](cross-cutting/infra/client-api-version-floor/) — 고정 API 버전 클라이언트 × 데몬의 최소 버전 상향 → 코드 변경 없이 거부, 폴백 요약 메시지가 원인을 가림 (실험 랩)
 - [compose-variable-resolution-timing](cross-cutting/infra/compose-variable-resolution-timing/) — compose의 변수·설정은 파싱 채널과 런타임 채널, 명령별 로드 범위가 다르다 — 값이 어느 채널로 누구에게 도달하는지 확인해야 한다.
 - [dependency-and-toolchain-compat](cross-cutting/infra/dependency-and-toolchain-compat/) — 의존성·툴체인은 선언·버전·런타임 호환(JDK·Node·Docker API·shade·peer deps·전이 의존)이 맞아야 동작한다 — 게시된 메타데이터·실제 해석 트리·대상 런타임으로 확인한다.
+- [deploy-artifact-scope](cross-cutting/infra/deploy-artifact-scope/) — 배포 단위를 저장소 전체로 정의하면 커밋된 데이터(측정 결과 등)가 버전별 사본마다 복제돼 공유 디스크를 고갈시킨다 — 페이로드는 실행에 필요한 것만, 버전 사본에는 보존 상한을 둔다.
 - [effective-uid-file-access](cross-cutting/infra/effective-uid-file-access/) — 파일 접근 권한은 실제로 여는 주체(컨테이너 uid·리다이렉트를 여는 셸·기동 시 확정된 보조 그룹)의 것이다 — "존재"가 아니라 그 주체의 읽기·쓰기 가능성으로 판단한다.
 - [firewall-and-network-policy-layers](cross-cutting/infra/firewall-and-network-policy-layers/) — 패킷 필터·MAC·클라우드 보안목록·Docker 체인은 계층마다 따로 동작한다 — 한 계층(ufw)의 설정이 다른 계층(Docker publish·SELinux)을 보장하지 않는다.
 - [git-pitfalls](cross-cutting/infra/git-pitfalls/) — git은 인덱스·ref·시퀀서 상태·출력 인용·소유권·ignore 규칙을 암묵 입력으로 쓰므로, 이름에서 떠올리는 직관과 실제 정의가 다른 지점을 명시적으로 다뤄야 한다.
@@ -370,7 +371,7 @@ issue/  (161)
 
 ### resource-bounding
 
-입력에 비례해 커지는 자원의 상한 — 22개
+입력에 비례해 커지는 자원의 상한 — 23개
 
 - [cancellation-reachability](cross-cutting/concurrency/cancellation-reachability/) · `cross-cutting/concurrency`
 - [event-loop-head-of-line-blocking](cross-cutting/concurrency/event-loop-head-of-line-blocking/) · `cross-cutting/concurrency`
@@ -378,6 +379,7 @@ issue/  (161)
 - [graph-traversal-invariants](cross-cutting/data/graph-traversal-invariants/) · `cross-cutting/data`
 - [lookup-cost-and-indexing](cross-cutting/data/lookup-cost-and-indexing/) · `cross-cutting/data`
 - [bottleneck-identification](cross-cutting/infra/bottleneck-identification/) · `cross-cutting/infra`
+- [deploy-artifact-scope](cross-cutting/infra/deploy-artifact-scope/) · `cross-cutting/infra`
 - [llm-serving-vram-and-backend](cross-cutting/infra/llm-serving-vram-and-backend/) · `cross-cutting/infra`
 - [payload-transfer-cost](cross-cutting/network/payload-transfer-cost/) · `cross-cutting/network`
 - [process-group-and-tree-termination](cross-cutting/os/process-group-and-tree-termination/) · `cross-cutting/os`
