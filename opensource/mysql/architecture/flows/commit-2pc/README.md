@@ -53,7 +53,7 @@
  A  [03] prepare 직후. prepare 기록은 log buffer 에만
       redo    디스크에 있다는 보장 없음
       binlog  없음
-      ->      롤백 (ACTIVE 면 trx0roll.cc L688-L694, PREPARED 여도 XID 가 없다)
+      ->      롤백 (ACTIVE 면 trx0roll.cc L689-L695, PREPARED 여도 XID 가 없다)
  B  [06] ha_flush_logs 뒤, binlog 쓰기 전
       redo    PREPARED
       binlog  없음
@@ -61,7 +61,8 @@
  C  [06] binlog write 뒤, [07] fsync 전
       redo    PREPARED
       binlog  OS 캐시에만
-      ->      OS 가 살아 있으면 커밋, 전원이 나가면 롤백
+      ->      mysqld 만 죽었으면 OS 캐시의 binlog 가 남아 커밋
+              OS 나 전원이 나가 그 부분이 디스크에 못 닿았으면 롤백
  D  [07] fsync 뒤, [08] 엔진 커밋 전
       redo    PREPARED
       binlog  있음
@@ -81,25 +82,37 @@
  innodb_flush_log_at_trx_commit x sync_binlog (binlog 를 켠 경우)
 
  innodb_flush_log_at_trx_commit  ->  [06] innobase_flush_logs (ha_innodb.cc L5848)
-   0   (L5859)                        아무것도 안 한다. redo 는 백그라운드가 1초마다 (주석 L5860-L5861)
-   1   log_write_up_to(lsn, true)     write + fsync
+   0   (L5859)                        아무것도 안 한다 (주석 L5860-L5861 "once per second")
+   1   log_write_up_to(lsn, true)     write + fsync  (L5881 log_buffer_flush_to_disk)
    2   log_write_up_to(lsn, false)    write 만, fsync 없음
+
+   어느 값이든 백그라운드의 log_writer 는 log buffer 를 요청 없이 계속 파일에 쓰고
+   (log0write.cc L2264), log_flusher 는 1 이 아니면 innodb_flush_log_at_timeout(기본 1초)
+   간격으로 fsync 한다 (log0write.cc L2573-L2592). 그래서 0 과 2 에서 크래시 순간에
+   무엇이 파일과 디스크에 있었는지는 이 두 스레드의 타이밍에 달렸다
 
  sync_binlog  ->  [07] sync_binlog_file (binlog.cc L7700)
    0                                  fsync 안 한다. OS 에 맡긴다
    1                                  그룹마다 fsync
    N   sync_counter                   N 번째 그룹마다 fsync
 
- 1 / 1   : 위 크래시 창 표 그대로. 커밋 OK 를 받은 트랜잭션은 전원이 나가도 남는다
- 1 / 0   : 전원이 나가면 binlog 끝부분이 사라질 수 있다
-           redo 에 PREPARED 로 남은 트랜잭션은 XID 가 없어 롤백 (OK 를 받은 것도)
-           커밋 redo 까지 내려간 트랜잭션은 InnoDB 에만 있고 binlog 에는 없다
- 0 / 1   : binlog 는 fsync 됐는데 redo 에 prepare 기록이 없을 수 있다
-           -> InnoDB 에서는 롤백되고 binlog 에만 남는다. binlog 가 엔진보다 앞선다
- 2 / 1   : redo 는 write 까지 했으므로 mysqld 만 죽으면 OS 캐시의 redo 가 살아 1 / 1 과 같고
-           OS 나 전원이 나가면 0 / 1 과 같다
+ 아래는 코드 경로에서 따라 나오는 가능성이다. 실제로 몇 개를 잃는지는 크래시 시점에 달렸다
+ 복구 규칙: PREPARED 트랜잭션만 XID 로 판정한다 (xa/recovery.cc L245, 없으면 rollback_by_xid)
+            ACTIVE 로 남은 것은 롤백한다 (trx0roll.cc L689-L695)
+            커밋 기록이 디스크에 있는 트랜잭션은 판정 대상이 아니다
 
- 어느 조합이든 [09] 커밋 시점에는 redo 를 내리지 않는다
+ 1 / 1   : 위 크래시 창 표 그대로. 커밋 OK 를 받은 트랜잭션은 prepare redo 와 binlog XID 가
+           둘 다 fsync 된 뒤라 전원이 나가도 커밋으로 복원된다
+ 1 / 0   : OS 나 전원이 나가면 fsync 안 된 binlog 끝부분이 사라질 수 있다. 사라진 경우
+           그 XID 의 트랜잭션이 redo 에 PREPARED 로 남았다면 롤백된다 (OK 를 받았어도)
+           커밋 기록까지 디스크에 있었다면 InnoDB 에는 커밋, binlog 에는 없다
+ 0 / 1   : FLUSH 가 redo 를 내리지 않으므로 binlog 는 fsync 됐는데 prepare 기록이 아직
+           디스크에 없을 수 있다. 그런 트랜잭션은 InnoDB 에서 ACTIVE 로 롤백되거나 아예 없고
+           binlog 에만 남는다. binlog 가 엔진보다 앞선다
+ 2 / 1   : FLUSH 에서 redo 를 write 까지 했으므로 mysqld 만 죽으면 OS 캐시의 redo 가 남아
+           1 / 1 과 같다. OS 나 전원이 나가면 아직 fsync 안 된 redo 가 사라져 0 / 1 처럼 될 수 있다
+
+ 어느 조합이든 [09] 커밋 시점에는 redo 를 내리지 않는다 (DDL 트랜잭션은 예외, ddl_must_flush)
    binlog 경로에서는 HA_IGNORE_DURABILITY 라 trx_commit_complete_for_mysql 이 그냥 돌아간다 (trx0trx.cc L2472)
 ```
 

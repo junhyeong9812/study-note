@@ -288,7 +288,11 @@ void trx_commit_complete_for_mysql(trx_t *trx) /*!< in/out: transaction */
  binlog 켬 (MYSQL_BIN_LOG, 2PC)
    prepare 기록   [06] FLUSH 스테이지의 ha_flush_logs 가 내린다
    commit 기록    이 함수에서는 안 내린다 (HA_IGNORE_DURABILITY)
-                  뒤 트랜잭션의 FLUSH 나 log 스레드가 내린다
+                  log_writer 가 log buffer 에 준비된 만큼을 요청 없이 파일에 쓰고
+                    (log0write.cc L2264, L2299), log_flusher 가 write_lsn 이 앞서 있으면
+                    fsync 한다 (L2538). 이 설정(=1)이면 곧바로, 다른 값이면
+                    innodb_flush_log_at_timeout 간격으로 (L2573, L2592).
+                    뒤 그룹의 FLUSH 스테이지 log_write_up_to 도 이 lsn 을 넘겨 내린다
    크래시 후      PREPARED + binlog XID 로 커밋이 복원된다
 
  binlog 끔 (TC_LOG_DUMMY)

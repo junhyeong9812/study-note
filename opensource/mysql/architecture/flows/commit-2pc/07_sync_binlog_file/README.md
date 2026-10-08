@@ -136,9 +136,13 @@ static Sys_var_uint Sys_sync_binlog_period(
  0            -      -      -      -      OS 가 아직 안 쓴 끝부분 전부 (OS 가 죽을 때)
 
  mysqld 만 죽고 OS 가 살아 있으면 write 한 부분(flush_cache_to_file)은 남는다
- binlog 를 잃은 트랜잭션은 InnoDB 에 무엇이 남았느냐로 갈린다
-   PREPARED 로 남았으면  XID 가 없어 롤백된다. 이미 OK 를 받았다면 커밋 응답이 사라진 것이다
-   커밋 redo 까지 디스크에 있었으면  InnoDB 에만 커밋되어 있고 binlog 에는 없다
+ binlog 를 잃은 트랜잭션은 InnoDB 에 무엇이 남았느냐로 갈린다 (코드 경로상의 가능성)
+   PREPARED 로 남았으면  XID 가 없어 rollback_by_xid 로 롤백된다 (xa/recovery.cc L245)
+                         이미 OK 를 받았다면 커밋 응답이 사라진 것이다
+   커밋 기록까지 디스크에 있었으면  복구는 PREPARED 만 판정하므로 손대지 않는다
+                         InnoDB 에만 커밋되어 있고 binlog 에는 없다
+   커밋 기록은 [09] 에서 내리지 않고 log_writer, log_flusher 가 뒤따라 내리므로
+   둘 중 어느 쪽이 되는지는 크래시 시점에 달렸다
 ```
 
 ```text
