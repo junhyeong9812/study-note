@@ -6,10 +6,11 @@
 
 ## 다음 작업 후보 (우선순위순)
 
-### N0-my. MySQL 아키텍처 지도 완성 후속 — 우선순위: 중간
+### N0-my. MySQL·PostgreSQL 아키텍처 지도 — 완료(2026-10-08)
 
-- 브랜치 `docs/mysql-architecture-finish`(13커밋, push 전): 흐름 13·함수 문서 129·구조 6, 코드 블록 598개 소스 대조 bad=0, 전 흐름 작성자와 다른 워커가 검증. 병합 시 main 의 record-lock 01·02 미치환 `@@` 자리표시자(1133083a)도 함께 해소된다.
-- 후속 ①PostgreSQL 지도 vacuum 행의 db-engine 문구 정정 — "10-01·10-03 이 '다음 한계'로 예고" 는 사실이 아님(실제 근거: 10-01 과제 3 답 L267 "정리 기능이 아예 없다", 10-03 MVCCTableHeap 주석 L58 "vacuum 없음"). MySQL 지도는 이번에 고쳤다 ②`opensource/index.md` 의 mysql 행 "골격(2026-09-25)" 상태 문구 갱신(이번 범위 밖 파일) ③PostgreSQL 지도 본문 작성 시 같은 작성·검증 분리 절차 재사용(브리핑·check_blocks 는 세션 임시 폴더라 소실됨 — 레포 tools/ 로 올릴지 결정).
+- MySQL(main 반영·push 24dba712): 흐름 13·함수 129·구조 6. PostgreSQL(브랜치 `docs/postgres-architecture-body`): 흐름 13·함수 137·구조 6 + pgvector 흐름 5·함수 42. 전 묶음 작성≠검증 분리, 코드 블록 MySQL 598·PG 550·pgvector 104 bad 0.
+- 이전 후속 ①PG vacuum 문구 ②opensource/index.md 상태 ③대조 도구 레포화(reference/tools/arch-map/) 모두 해소.
+- 다음 후보: 같은 도구로 Redis·Nginx·Keycloak 지도(골격만 있음 — 로드맵 1절). 지도 간 교차 링크(로드맵 개념 교차표의 칸 채우기)는 아직 0.
 
 ### N0-ac. 형식 통일 완료 후속 — 우선순위: 낮음
 
