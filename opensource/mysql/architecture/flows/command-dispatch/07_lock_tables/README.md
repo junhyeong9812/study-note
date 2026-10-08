@@ -268,7 +268,11 @@ static int lock_external(THD *thd, TABLE **tables, uint count) {
 
  insert_lock_default 는 TL_WRITE_CONCURRENT_INSERT, update_lock_default 는 TL_WRITE 이다
    (low_priority_updates 면 둘 다 TL_WRITE_LOW_PRIORITY, sql_class.cc L1181-L1185)
- SELECT 의 테이블이 TL_READ_NO_INSERT 가 되는 것은 binlog 가 STATEMENT 형식이고 갱신 문장 안의 읽기인 경우 등이다 (L4426 read_lock_type_for_table)
+ SELECT 의 테이블이 TL_READ_NO_INSERT 가 되는 것은 binlog 가 켜져 있고 형식이 ROW 가 아니며(STATEMENT, MIXED)
+   갱신 문장 안의 읽기인 경우 등이다 (L4426 read_lock_type_for_table)
+ 파서 쪽 근거: 테이블의 기본값 TL_READ_DEFAULT 는 Yacc_state 초기화(sql_lex.h L4948), FOR SHARE / FOR UPDATE 는
+   PT_query_block_locking_clause::set_lock_for_tables (parse_tree_nodes.cc L2713) 가 get_lock_descriptor 값으로,
+   INSERT / UPDATE 는 Query_block::set_lock_for_tables (sql_parse.cc L6478) 가 문법의 lock 옵션 값으로 덮어쓴다
  다중 테이블 UPDATE 는 읽기만 하는 테이블의 잠금을 prepare_inner 에서 낮춘다 (parse_tree_nodes.cc L1315-L1319 주석)
 ```
 
@@ -279,9 +283,9 @@ static int lock_external(THD *thd, TABLE **tables, uint count) {
    1. lock_external  -> ha_external_lock(F_*)     엔진이 문장 시작을 안다
    2. thr_multi_lock                               서버 테이블 잠금 (thr_lock)
 
- 푸는 곳 (문장 끝, [05] L5002 close_thread_tables)
-   1. ha_external_lock(F_UNLCK)
-   2. mysql_unlock_tables
+ 푸는 곳 (문장 끝, [05] L5002 close_thread_tables -> sql_base.cc L1731 mysql_unlock_tables)
+   1. thr_multi_unlock                             lock.cc L414  서버 테이블 잠금을 먼저 푼다
+   2. unlock_external -> ha_external_lock(F_UNLCK) lock.cc L416  그다음 엔진에 문장 끝을 알린다
 
  2 가 실패하면 lock.cc L358 unlock_external 이 1 을 되돌린다
  1 이 중간에 실패하면 lock.cc L397-L401 이 앞서 성공한 테이블을 F_UNLCK 으로 푼다

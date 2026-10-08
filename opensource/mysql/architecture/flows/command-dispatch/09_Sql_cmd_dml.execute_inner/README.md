@@ -135,7 +135,8 @@ bool Sql_cmd_dml::execute_inner(THD *thd) {
  unit->execute 의 결과 행
       --> Query_result (보통 Query_result_send) 가 클라이언트로 행 패킷을 보낸다
  set_exec_completed
-      --> [05] finish: 이후 정리 단계가 실행 완료를 전제로 움직인다
+      --> [02] 의 보조 엔진 재시도(check_secondary_engine_statement, sql_parse.cc L1585)가
+          실행이 시작된 문장은 결과를 이미 보냈을 수 있어 다시 돌리지 않는다
  행 단위 handler 호출
       --> [일관 읽기(MVCC)] ha_innobase::index_read (ha_innodb.cc L10430)
       --> [행 쓰기] ha_innobase::write_row (ha_innodb.cc L9256)

@@ -107,7 +107,7 @@ DDL 처럼 암묵 커밋을 일으키는 문장은 실행 전에 열린 트랜�
     }
 ```
 
-`finish:` 의 앞쪽이다. 서버 계층에서 오류가 났으면 문장 롤백, 아니면 문장 커밋을 한다.
+`finish:` 의 앞쪽이다. 진단 영역에 오류가 있으면 문장 롤백, 아니면 문장 커밋을 한다.
 
 `sql` / `sql_parse.cc` L4917-L4984 ([GitHub](https://github.com/mysql/mysql-server/blob/008e09c2834b98143a8c067d4d225c90953050cf/sql/sql_parse.cc#L4917-L4984))
 
@@ -346,9 +346,10 @@ bool stmt_causes_implicit_commit(const THD *thd, uint mask) {
  오류가 났을 때의 갈래 (finish: 이후)
 
  L 줄    호출                      조건과 범위
- L4969   trans_rollback_stmt       thd->is_error() (서버 계층 오류). 문장만 되돌린다
+ L4969   trans_rollback_stmt       thd->is_error() (엔진 오류를 포함한 진단 영역의 오류). 문장만 롤백
  L5018   trans_rollback_implicit   transaction_rollback_request. 트랜잭션 전체
-                                   (교착이나 잠금 대기 시간 초과로 엔진이 롤백을 요청한 경우)
+                                   (교착, 또는 innodb_rollback_on_timeout=ON 일 때의 잠금 대기
+                                    시간 초과로 엔진이 롤백을 요청한 경우. ha_innodb.cc L2178)
  L5026   trans_commit_implicit     CF_IMPLICIT_COMMIT_END 문장 (DDL). 문장 뒤 한 번 더 커밋
 
  DDL 은 앞(L3369)과 뒤(L5026) 두 번 커밋해서 자기만의 트랜잭션에 갇힌다 (주석 L3346-L3351)
