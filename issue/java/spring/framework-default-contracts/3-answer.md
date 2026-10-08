@@ -265,3 +265,62 @@ update child set parent_id=? where id=?            -- 단방향 일대다: 관�
 쓰기 경로의 성능을 재거나 비교한다면, 먼저 **실제로 나가는 SQL을 로그로 확인**하고 매핑이 만드는 추가 문장을 측정 해석에 넣는다(이 사례는 문서에 "확인 전"으로 표시해 둔 SQL을 측정이 끝난 뒤 실측 로그로 바꾸다 발견했다).\
 애그리거트 경계를 위해 단방향을 택했다면 그 대가(추가 UPDATE)를 기록해 두고, 쓰기 비용이 결론을 좌우하게 되면 방안 2를 검토한다.\
 검증 기록: 2026-10-06 사건 기록 대조·추상화(Claude 초안) — 방안 2는 일반 원리(사건에서 적용·측정하지 않음).
+
+## 방안 비교 — 같은 SQLState가 접근 계층마다 다른 예외 타입이 된다
+
+같은 원리(명시하지 않은 기본 동작을 코드가 다르게 가정했다)가 **DB 예외 번역**에서 나타난 사례.\
+PostgreSQL에서 `SELECT … FOR UPDATE NOWAIT`가 잠긴 행을 만나면 SQLState `55P03`(lock_not_available) 오류를 낸다.\
+같은 애플리케이션의 다른 경로(JPA로 실행하는 비관적 락)에서는 이 오류가 `PessimisticLockingFailureException`으로 왔으므로, 새 경로도 그 타입을 잡도록 썼다.\
+새 경로는 같은 문장을 `JdbcTemplate`으로 실행했는데, 여기서는 `UncategorizedSQLException`으로 번역되어 catch를 지나쳐 500이 됐다 — 같은 사용자가 동시에 요청하는 경합 테스트가 잡았다.
+
+왜 갈렸나(Spring JDBC 6.2.10에서 확인):
+- `JdbcTemplate`은 클래스패스 루트에 사용자 `sql-error-codes.xml`이 없으면 기본 번역기로 `SQLExceptionSubclassTranslator`를 쓰고, 여기서 분류되지 않은 것은 SQLState 기반 번역기(`SQLStateSQLExceptionTranslator`)로 넘어간다.\
+- SQLState 번역기는 개별 코드(`23505`·`23000`·`40001`·`57014` 등)와 클래스(`40`·`08`·`53` 등)만 알고 `55P03`은 모른다 → 미분류 예외 `UncategorizedSQLException`.\
+- 반면 Spring이 함께 싣는 에러 코드 표(`sql-error-codes.xml`)의 PostgreSQL 항목에는 `55P03`이 락 획득 실패 코드(`cannotAcquireLockCodes`)로 들어 있다 — 그 표를 쓰는 번역기를 거쳤다면 `CannotAcquireLockException`(`PessimisticLockingFailureException`의 하위)이 됐다.\
+- JPA 경로는 Hibernate 방언이 이 SQLState를 락 실패로 분류해 `PessimisticLockingFailureException`이 됐다.
+
+> **예외 번역(exception translation)** — 드라이버의 `SQLException`을 Spring의 `DataAccessException` 계층으로 바꾸는 단계. 어느 번역기를 거치느냐에 따라 같은 DB 오류가 다른 타입이 된다.
+
+```
+같은 DB 오류 55P03
+  ├─ JPA 경로 ──▶ Hibernate 방언 ──────────────▶ PessimisticLockingFailureException   ← catch 됨
+  └─ JdbcTemplate ─▶ 기본 번역기(표 없음) ─▶ SQLState 번역기 ─▶ UncategorizedSQLException ← catch 통과 → 500
+                    (표 기반 번역기였다면 ─▶ CannotAcquireLockException — 위 타입의 하위)
+```
+
+### 방안 1 — SQLState로 판별 (이 사례의 선택)
+```kotlin
+// ① 문제: 예외 타입으로 판별 — 타입은 번역 경로의 산물이다
+try { jdbc.queryForList("SELECT ... FOR UPDATE NOWAIT", key) }
+catch (e: PessimisticLockingFailureException) { return false }      // JdbcTemplate 경로에선 다른 타입 → 500
+
+// ② 고친 코드: 원인 체인의 SQLException에서 SQLState를 꺼내 판별
+fun sqlStateOf(e: Throwable): String? =
+    generateSequence(e) { it.cause }.filterIsInstance<SQLException>().firstNotNullOfOrNull { it.sqlState }
+
+try { jdbc.queryForList("SELECT ... FOR UPDATE NOWAIT", key) }
+catch (e: DataAccessException) {
+    if (sqlStateOf(e) != "55P03") throw e                           // 모르는 오류는 그대로 던진다
+    return false
+}
+```
+이후 이 경로는 다른 이유(오류가 트랜잭션을 버린다)로 NOWAIT 대신 오류를 내지 않는 형태로 바뀌어 `55P03` 판별 자체가 없어졌고, 같은 판별 방식은 직렬화 실패(`40001`) 재시도 판단에 남았다.
+
+### 방안 2 — 모든 경로를 표 기반 번역기로 맞춘다 (일반 원리 — 이 사례에서 적용하지 않음)
+```kotlin
+jdbcTemplate.exceptionTranslator = SQLErrorCodeSQLExceptionTranslator(dataSource)   // 번들 표: PostgreSQL 55P03 → CannotAcquireLockException
+// 또는 클래스패스 루트에 sql-error-codes.xml 을 둔다 — 있으면 JdbcTemplate 이 표 기반 번역기를 쓴다
+
+try { jdbcTemplate.queryForList("SELECT ... FOR UPDATE NOWAIT", key) }
+catch (e: PessimisticLockingFailureException) { return false }      // JPA 경로와 같은 상위 타입으로 잡힌다
+```
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 1. SQLState 판별 | 대상 DB가 고정이고, 가를 오류의 SQLState를 안다 | DB 고유 코드가 코드에 박힌다(이식성 낮음) | 중간 래핑이 원인 체인을 끊으면 SQLState를 못 찾는다 — 이때 다시 던지므로 조용히 삼키지는 않는다 | 접근 계층(JPA·JDBC)이 섞인 코드에서 소수의 특정 오류만 가를 때 |
+| 2. 번역기 통일 | 모든 접근 경로가 같은 번역기를 거치게 할 수 있다, 표가 그 코드를 그 의미로 분류한다 | 설정 한 곳, 표·프레임워크 버전에 의존 | 설정을 안 탄 인스턴스·다른 계층이 생기면 다시 갈린다, 표에 없는 코드는 여전히 미분류 | 여러 DB를 지원하거나 예외 계층으로 의미를 다루는 코드베이스 |
+
+**결론**: 예외 **타입**은 번역 경로가 붙인 이름이고 SQLState는 DB가 낸 사실이다 — 경로가 섞이는 코드에서 특정 DB 오류를 가를 때는 경로에 무관한 SQLState 판별(방안 1)이 확실하다.\
+모든 경로를 한 번역기에 묶을 수 있으면 방안 2가 예외 계층의 이식성을 지킨다 — 단 "다른 경로에서 이 타입으로 왔다"는 관찰은 새 경로의 근거가 되지 못한다.\
+어느 쪽이든 판별 코드는 실제 DB에서 그 오류를 일으키는 테스트(이 사례는 경합 테스트)로 확인한다.\
+검증 기록: 2026-10-09 사건 기록 대조·추상화(Claude 초안) — 번역 경로는 Spring JDBC 6.2.10 바이트코드로 확인, 방안 2는 일반 원리(사건에서 적용하지 않음).
