@@ -24,7 +24,7 @@
 | 폴더 | 카드 수 | 무엇 |
 |------|---------|------|
 | [concurrency/](concurrency/) | 10 | 순서·공유·취소 |
-| [data/](data/) | 18 | 값의 표현·해석·키 |
+| [data/](data/) | 19 | 값의 표현·해석·키 |
 | [database/](database/) | 4 | 스키마 이력·방언·트랜잭션 |
 | [distributed/](distributed/) | 2 | 원격 결과와 권리의 단조성 |
 | [document-rendering/](document-rendering/) | 2 | 텍스트·인쇄 레이아웃 |
@@ -37,4 +37,4 @@
 | [security/](security/) | 12 | 비밀·권한·신뢰 경계 |
 | [testing/](testing/) | 5 | 초록불의 증거력 |
 
-> 이 폴더의 메타 태그: `silent-failure`(24) · `resource-bounding`(19) · `least-privilege`(12) · `fail-closed`(3) · `race-condition`(8) · `contract-drift`(1) · `test-reliability`(5) · `parser-differential`(2) · `environment-drift`(6) · `encoding`(2) · `identity`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `silent-failure`(25) · `resource-bounding`(19) · `least-privilege`(12) · `fail-closed`(3) · `race-condition`(8) · `contract-drift`(1) · `test-reliability`(5) · `parser-differential`(2) · `environment-drift`(6) · `encoding`(2) · `identity`(1) · `single-source-of-truth`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).

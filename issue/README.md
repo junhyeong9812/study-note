@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 164개.
+현재 카드 165개.
 
 ## 분류 두 축
 
@@ -14,7 +14,7 @@
 
 | 태그 | 뜻 | 카드 수 |
 |------|----|---------|
-| [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 27 |
+| [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 28 |
 | [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 24 |
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 3 |
@@ -25,7 +25,7 @@
 | [`environment-drift`](#environment-drift) | 실행 환경·채널마다 값·동작이 달라짐 | 6 |
 | [`encoding`](#encoding) | 바이트·문자·인코딩 경계 | 3 |
 | [`identity`](#identity) | 같은 대상인가 — 식별자·정체성 판정 | 1 |
-| [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 | 2 |
+| [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 | 3 |
 
 태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(59개)는 폴더 축으로만 분류한다.
 
@@ -42,10 +42,10 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (164)
-├─ cross-cutting/               119
+issue/  (165)
+├─ cross-cutting/               120
 │  ├─ concurrency/               10
-│  ├─ data/                      18
+│  ├─ data/                      19
 │  ├─ database/                   4
 │  ├─ distributed/                2
 │  ├─ document-rendering/         2
@@ -105,6 +105,7 @@ issue/  (164)
 - [append-only-over-snapshot](cross-cutting/data/append-only-over-snapshot/) — 시간축 없는 현재값을 복사·재전송하는 대신 append-only 이동 기록을 적재하고 소비 단계에서 합산·최신 선택하면 순서·재전송에 무관하게 구성적이다.
 - [boundary-arithmetic](cross-cutting/data/boundary-arithmetic/) — 오프셋·길이·0 분모·정수 overflow·비교 경계(==의 방향)·인덱스 좌표계 혼용은 대부분 입력에서 정상이다가 경계에서만 터진다 — 경계 산술을 명시 계산·검증한다.
 - [byte-stream-framing](cross-cutting/data/byte-stream-framing/) — 스트림·파일 읽기 경계는 줄·문자·이스케이프 시퀀스 경계와 무관하다 — 완성된 프레임만 디코드하고 상한 절단도 프레임 경계에서 한다.
+- [denormalized-counter-drift](cross-cutting/data/denormalized-counter-drift/) — 비정규화 카운터(원본 행 수의 사본)는 어긋나도 일부만 오류로 드러난다 — 행 없음·음수는 넓은 배치를 매 틱 롤백시켜 전역 정지를 만들고, 나머지는 조용히 한도를 틀리게 하므로 원본 재계산과의 별도 대조가 필요하며, 전환은 cutover + 감소 시점에 맞춘 정의로 백필한다.
 - [discriminator-not-shape](cross-cutting/data/discriminator-not-shape/) — 다형 레코드는 모양(shape)이 아니라 명시적 판별자(role·type·층)로 해석해야 한다 — 같은 모양의 다른 의미를 오분류한다.
 - [float-nan-semantics](cross-cutting/data/float-nan-semantics/) — IEEE-754 NaN은 자기 자신과 같지 않아 전동치(Eq)·== 탐지·리터럴 생성 가정을 깨뜨린다.
 - [graph-traversal-invariants](cross-cutting/data/graph-traversal-invariants/) — 외부 데이터로 만든 그래프·트리는 자기참조·사이클·부재 노드가 있을 수 있다 — visited 가드·깊이/개수 예산·레인 중복 방지 없이 순회·배치하면 무한 재귀·오배치가 난다.
@@ -341,13 +342,14 @@ issue/  (164)
 
 ### silent-failure
 
-성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 — 27개
+성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 — 28개
 
 - [nested-sandbox-capability](cross-cutting/os/nested-sandbox-capability/) · `cross-cutting/os`
 - [single-slot-handoff-loss](cross-cutting/concurrency/single-slot-handoff-loss/) · `cross-cutting/concurrency`
 - [absent-vs-empty](cross-cutting/data/absent-vs-empty/) · `cross-cutting/data`
 - [ad-hoc-parsing-of-structured-text](cross-cutting/data/ad-hoc-parsing-of-structured-text/) · `cross-cutting/data`
 - [aggregation-semantics](cross-cutting/data/aggregation-semantics/) · `cross-cutting/data`
+- [denormalized-counter-drift](cross-cutting/data/denormalized-counter-drift/) · `cross-cutting/data`
 - [in-band-signaling-collision](cross-cutting/data/in-band-signaling-collision/) · `cross-cutting/data`
 - [input-format-detection](cross-cutting/data/input-format-detection/) · `cross-cutting/data`
 - [key-normalization-consistency](cross-cutting/data/key-normalization-consistency/) · `cross-cutting/data`
@@ -499,7 +501,8 @@ issue/  (164)
 
 ### single-source-of-truth
 
-같은 사실은 한 곳에서 파생 — 2개
+같은 사실은 한 곳에서 파생 — 3개
 
+- [denormalized-counter-drift](cross-cutting/data/denormalized-counter-drift/) · `cross-cutting/data`
 - [single-source-of-truth-routing](typescript/next/single-source-of-truth-routing/) · `typescript/next`
 - [theming-token-reach](typescript/react/theming-token-reach/) · `typescript/react`
