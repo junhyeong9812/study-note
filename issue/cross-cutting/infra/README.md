@@ -30,5 +30,6 @@
 - [nginx-broadband-defense-friendly-fire](nginx-broadband-defense-friendly-fire/) — 출처를 구분하지 않는 광역 방어(UA 차단·단일 버킷 레이트리밋)는 자기 자동화·검증 트래픽·정상 사용자를 오사한다 — allowlist·정확한 키로 범위를 좁힌다.
 - [path-derived-key-on-move](path-derived-key-on-move/) — 가변 속성(절대 경로)에서 파생한 키·캐시는 폴더 이동 순간 고아가 된다 — 이동은 키 재계산·캐시 무효화를 동반해야 한다.
 - [state-drift-delete-propagation](state-drift-delete-propagation/) — 같은 사실의 사본(설정·배포본·파생 상태·인덱스)은 삭제·변경이 전파되지 않으면 원본과 어긋난다 — 정본 단일 채널과 명시적 삭제(tombstone)로 수렴시킨다.
+- [sustained-sync-write-degradation](sustained-sync-write-degradation/) — 저장 경로의 쓰기 성능은 정상 상태가 아니다 — 지속 동기화 쓰기는 일정량 뒤 flush 지연이 커지며 꺾이고, 모든 비교 대상이 같은 벽에 닿으면 처리량 비교가 가려진다 — 상관·단독 재현·층 제거로 원인 층을 확정하고 flush 수·지연으로 판정한다.
 
-> 이 폴더의 메타 태그: `silent-failure`(1) · `resource-bounding`(3) · `least-privilege`(2) · `environment-drift`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `silent-failure`(1) · `resource-bounding`(3) · `least-privilege`(2) · `environment-drift`(2) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).

@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 163개.
+현재 카드 164개.
 
 ## 분류 두 축
 
@@ -22,7 +22,7 @@
 | [`contract-drift`](#contract-drift) | 선언한 계약과 실제 동작의 어긋남 | 5 |
 | [`test-reliability`](#test-reliability) | 초록불이 결함 유무를 말해 주는가 | 7 |
 | [`parser-differential`](#parser-differential) | 검사하는 쪽과 실행하는 쪽의 해석 차이 | 3 |
-| [`environment-drift`](#environment-drift) | 실행 환경·채널마다 값·동작이 달라짐 | 5 |
+| [`environment-drift`](#environment-drift) | 실행 환경·채널마다 값·동작이 달라짐 | 6 |
 | [`encoding`](#encoding) | 바이트·문자·인코딩 경계 | 3 |
 | [`identity`](#identity) | 같은 대상인가 — 식별자·정체성 판정 | 1 |
 | [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 | 2 |
@@ -42,15 +42,15 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (163)
-├─ cross-cutting/               118
+issue/  (164)
+├─ cross-cutting/               119
 │  ├─ concurrency/               10
 │  ├─ data/                      18
 │  ├─ database/                   4
 │  ├─ distributed/                2
 │  ├─ document-rendering/         2
 │  ├─ gui-platform/               2
-│  ├─ infra/                     12
+│  ├─ infra/                     13
 │  ├─ network/                   11
 │  ├─ os/                         8
 │  ├─ reliability/               24
@@ -154,6 +154,7 @@ issue/  (163)
 - [nginx-broadband-defense-friendly-fire](cross-cutting/infra/nginx-broadband-defense-friendly-fire/) — 출처를 구분하지 않는 광역 방어(UA 차단·단일 버킷 레이트리밋)는 자기 자동화·검증 트래픽·정상 사용자를 오사한다 — allowlist·정확한 키로 범위를 좁힌다.
 - [path-derived-key-on-move](cross-cutting/infra/path-derived-key-on-move/) — 가변 속성(절대 경로)에서 파생한 키·캐시는 폴더 이동 순간 고아가 된다 — 이동은 키 재계산·캐시 무효화를 동반해야 한다.
 - [state-drift-delete-propagation](cross-cutting/infra/state-drift-delete-propagation/) — 같은 사실의 사본(설정·배포본·파생 상태·인덱스)은 삭제·변경이 전파되지 않으면 원본과 어긋난다 — 정본 단일 채널과 명시적 삭제(tombstone)로 수렴시킨다.
+- [sustained-sync-write-degradation](cross-cutting/infra/sustained-sync-write-degradation/) — 저장 경로의 쓰기 성능은 정상 상태가 아니다 — 지속 동기화 쓰기는 일정량 뒤 flush 지연이 커지며 꺾이고, 모든 비교 대상이 같은 벽에 닿으면 처리량 비교가 가려진다 — 상관·단독 재현·층 제거로 원인 층을 확정하고 flush 수·지연으로 판정한다.
 
 #### [cross-cutting/network/](cross-cutting/network/) — 프로토콜·연결·프록시
 
@@ -473,9 +474,10 @@ issue/  (163)
 
 ### environment-drift
 
-실행 환경·채널마다 값·동작이 달라짐 — 5개
+실행 환경·채널마다 값·동작이 달라짐 — 6개
 
 - [compose-variable-resolution-timing](cross-cutting/infra/compose-variable-resolution-timing/) · `cross-cutting/infra`
+- [sustained-sync-write-degradation](cross-cutting/infra/sustained-sync-write-degradation/) · `cross-cutting/infra`
 - [execution-context-inheritance](cross-cutting/os/execution-context-inheritance/) · `cross-cutting/os`
 - [job-lifetime-bound-to-user-session](cross-cutting/os/job-lifetime-bound-to-user-session/) · `cross-cutting/os`
 - [nested-sandbox-capability](cross-cutting/os/nested-sandbox-capability/) · `cross-cutting/os`
