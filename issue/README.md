@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 165개.
+현재 카드 166개.
 
 ## 분류 두 축
 
@@ -22,7 +22,7 @@
 | [`contract-drift`](#contract-drift) | 선언한 계약과 실제 동작의 어긋남 | 5 |
 | [`test-reliability`](#test-reliability) | 초록불이 결함 유무를 말해 주는가 | 7 |
 | [`parser-differential`](#parser-differential) | 검사하는 쪽과 실행하는 쪽의 해석 차이 | 3 |
-| [`environment-drift`](#environment-drift) | 실행 환경·채널마다 값·동작이 달라짐 | 6 |
+| [`environment-drift`](#environment-drift) | 실행 환경·채널마다 값·동작이 달라짐 | 7 |
 | [`encoding`](#encoding) | 바이트·문자·인코딩 경계 | 3 |
 | [`identity`](#identity) | 같은 대상인가 — 식별자·정체성 판정 | 1 |
 | [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 | 3 |
@@ -42,7 +42,7 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (165)
+issue/  (166)
 ├─ cross-cutting/               120
 │  ├─ concurrency/               10
 │  ├─ data/                      19
@@ -57,9 +57,9 @@ issue/  (165)
 │  ├─ search-engine/              8
 │  ├─ security/                  12
 │  └─ testing/                    5
-├─ java/                          3
+├─ java/                          4
 │  ├─ spring/                     1
-│  └─ (언어 레벨 카드)            2
+│  └─ (언어 레벨 카드)            3
 ├─ kotlin/                        8
 │  ├─ spring/                     6
 │  └─ (언어 레벨 카드)            2
@@ -245,6 +245,7 @@ issue/  (165)
 
 ### [java/](java/) — Java 언어·JVM·Spring
 
+- [container-gc-ergonomics](java/container-gc-ergonomics/) — 수집기를 지정하지 않은 JVM은 실행 환경(컨테이너 한도)을 보고 수집기를 고른다 — 메모리 한도가 서버급 기준 아래면 Serial이 골라져 주기적 Full GC가 고정 도착률 부하의 꼬리 지연이 된다, 수집기를 명시하고 실제 적용값을 회차마다 대조한다.
 - [language-semantics-traps](java/language-semantics-traps/) — Java 언어 규칙(Error≠Exception·정적 초기화 순서·제네릭 불변성·소거·오버로드 모호성·주석 렉싱·인자 평가 순서)이 직관과 달라 컴파일은 통과하고 런타임에서 틀린다.
 - [serializable-capture-contract](java/serializable-capture-contract/) — Serializable을 선언한 객체·람다가 비직렬화 객체(리플렉션 타입·TypeVariable)를 캡처하면 직렬화 계약이 조용히 깨진다.
 
@@ -476,7 +477,7 @@ issue/  (165)
 
 ### environment-drift
 
-실행 환경·채널마다 값·동작이 달라짐 — 6개
+실행 환경·채널마다 값·동작이 달라짐 — 7개
 
 - [compose-variable-resolution-timing](cross-cutting/infra/compose-variable-resolution-timing/) · `cross-cutting/infra`
 - [sustained-sync-write-degradation](cross-cutting/infra/sustained-sync-write-degradation/) · `cross-cutting/infra`
@@ -484,6 +485,7 @@ issue/  (165)
 - [job-lifetime-bound-to-user-session](cross-cutting/os/job-lifetime-bound-to-user-session/) · `cross-cutting/os`
 - [nested-sandbox-capability](cross-cutting/os/nested-sandbox-capability/) · `cross-cutting/os`
 - [value-binding-time](cross-cutting/reliability/value-binding-time/) · `cross-cutting/reliability`
+- [container-gc-ergonomics](java/container-gc-ergonomics/) · `java`
 
 ### encoding
 

@@ -24,7 +24,8 @@ Java 언어 규칙과 JVM 위 프레임워크(Spring·JPA)에 뿌리내린 패�
 
 ## 패턴 카드 (이 폴더 직속)
 
+- [container-gc-ergonomics](container-gc-ergonomics/) — 수집기를 지정하지 않은 JVM은 실행 환경(컨테이너 한도)을 보고 수집기를 고른다 — 메모리 한도가 서버급 기준 아래면 Serial이 골라져 주기적 Full GC가 고정 도착률 부하의 꼬리 지연이 된다, 수집기를 명시하고 실제 적용값을 회차마다 대조한다.
 - [language-semantics-traps](language-semantics-traps/) — Java 언어 규칙(Error≠Exception·정적 초기화 순서·제네릭 불변성·소거·오버로드 모호성·주석 렉싱·인자 평가 순서)이 직관과 달라 컴파일은 통과하고 런타임에서 틀린다.
 - [serializable-capture-contract](serializable-capture-contract/) — Serializable을 선언한 객체·람다가 비직렬화 객체(리플렉션 타입·TypeVariable)를 캡처하면 직렬화 계약이 조용히 깨진다.
 
-> 이 폴더의 메타 태그: `contract-drift`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `contract-drift`(1) · `environment-drift`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).
