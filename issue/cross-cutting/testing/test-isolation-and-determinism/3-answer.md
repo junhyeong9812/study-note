@@ -158,3 +158,53 @@ def client():
 
 ## 검증 기록
 - 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
+
+## 방안 비교 — 여러 스레드가 함께 쓰는 테스트 시계: 가시성과 두 필드의 원자성
+
+같은 원리(4번 — 쓰기와 읽기 사이에 happens-before가 없으면 테스트 결과가 스케줄링에 달린다)가 **테스트 더블 자체**에 있었던 사례.\
+DB 잠금 경합 테스트에서 보조 스레드(정리 트랜잭션)가 커밋 직전에 테스트 시계를 옮기고, 본 스레드(복구 경로)가 그 시계를 읽어 판정했다.\
+시계는 "현재 시각" 필드와 "다음 한 번 읽은 뒤 바뀔 시각" 필드 둘을 가졌는데, 앞 필드는 일반 필드(volatile 아님)였고 읽기는 "값 읽기 → 예약이 있으면 두 필드를 차례로 바꿈"으로 나뉘어 있었다.\
+리뷰 재점검에서 "보조 스레드가 옮긴 시각이 본 스레드에 보인다는 보장이 없다"는 지적을 받아 고쳤다(관측된 실패가 아니라 리뷰가 찾은 결함).
+
+```text
+보조 스레드: clock.now = closedAt   (일반 필드 쓰기)
+본 스레드:   clock.instant()  →  옛 값을 읽어도 언어 규칙상 허용   → 판정이 "열림"
+읽기 중:    read now ─┐ 사이에 set()이 끼면
+            now = next ┘ 방금 옮긴 값을 예약값이 덮는다
+```
+
+### 방안 1 — 실행을 한 스레드로 직렬화 (위 변형 C)
+스레드 생성 지점을 테스트 seam으로 바꿔 작업을 캡처한 뒤 테스트 스레드에서 직접 실행한다 — 공유 자체가 사라진다.
+
+### 방안 2 — 공유 테스트 더블을 불변 상태 하나 + 원자 참조로 (이 사례에서 적용)
+```kotlin
+// ① 문제
+class TestClock(private var now: Instant) : Clock() {
+    @Volatile private var afterNextRead: Instant? = null
+    fun set(t: Instant) { now = t }
+    override fun instant(): Instant { val r = now; afterNextRead?.let { now = it; afterNextRead = null }; return r }
+}
+
+// ② 고친 코드
+class TestClock(now: Instant) : Clock() {
+    private data class State(val now: Instant, val afterNextRead: Instant? = null)
+    private val state = AtomicReference(State(now))
+    fun set(t: Instant) = state.set(State(t))
+    fun advance(d: Duration) { state.updateAndGet { State(it.now.plus(d)) } }
+    fun setForOneRead(first: Instant, then: Instant) = state.set(State(first, then))
+    override fun instant(): Instant =
+        state.getAndUpdate { s -> s.afterNextRead?.let { State(it) } ?: s }.now   // 읽기 + 예약 소비를 한 번에
+}
+```
+> **원자 참조로 묶기** — 함께 바뀌어야 하는 필드들을 불변 객체 하나로 만들고 그 참조만 원자적으로 바꾸면, 가시성과 "두 필드가 엇갈린 중간 상태"를 함께 없앤다. `getAndUpdate`의 람다는 경합 시 다시 실행될 수 있으므로 부수효과가 없어야 한다(일반론).
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 1. 한 스레드로 직렬화 | 동시성이 테스트 목적이 아니다 | seam 오버라이드 | 실제 동시성(DB 잠금 대기 등)을 검증할 수 없게 된다 | 순서만 고정하면 되는 취소·종료 테스트 |
+| 2. 더블을 스레드 안전하게 | 공유 대상이 작고 상태를 불변 객체로 묶을 수 있다 | 더블 재작성 | 더블 밖의 공유 변수(보조 스레드가 쓰는 플래그 등)는 따로 동기화해야 한다 | 실제 경합을 일으켜야 하는 테스트 |
+
+**결론**: 테스트의 목적이 **실제 경합**(DB 잠금 대기처럼 두 실행 흐름이 겹쳐야 드러나는 것)이면 실행을 직렬화(1)할 수 없으므로, 스레드가 함께 만지는 테스트 더블을 운영 코드와 같은 기준으로 스레드 안전하게 만든다(2).\
+동시성이 부수적이면 1이 더 단순하고 결정적이다.\
+어느 쪽이든 "테스트 도구도 동시성 코드다" — 운영 코드만 리뷰하고 더블을 빼면 그린의 근거가 스케줄러 운이 된다.
+
+검증 기록: 2026-10-15 사건 기록·코드(수정 전후) 대조·추상화(Claude 초안).
