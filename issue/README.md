@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 167개.
+현재 카드 168개.
 
 ## 분류 두 축
 
@@ -15,7 +15,7 @@
 | 태그 | 뜻 | 카드 수 |
 |------|----|---------|
 | [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 28 |
-| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 25 |
+| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 26 |
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 3 |
 | [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 10 |
@@ -42,11 +42,11 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (167)
-├─ cross-cutting/               121
+issue/  (168)
+├─ cross-cutting/               122
 │  ├─ concurrency/               10
 │  ├─ data/                      19
-│  ├─ database/                   5
+│  ├─ database/                   6
 │  ├─ distributed/                2
 │  ├─ document-rendering/         2
 │  ├─ gui-platform/               2
@@ -122,6 +122,7 @@ issue/  (167)
 #### [cross-cutting/database/](cross-cutting/database/) — 스키마 이력·방언·트랜잭션
 
 - [migration-discipline](cross-cutting/database/migration-discipline/) — 마이그레이션은 적용된 순간 불변(append-only) 이력이며 순번은 공유 번호공간이다 — 제자리 수정·병렬 브랜치 채번·빌드 산출물 잔존·미생성 리비전이 기동 실패와 누락을 만든다.
+- [periodic-full-scan-cost-growth](cross-cutting/database/periodic-full-scan-cost-growth/) — 매 바퀴 전체를 훑는 주기 작업(대조·정리)의 비용은 누적 행 수에 비례해 자라고, fixed delay 스케줄에서는 점유 비율도 함께 커진다 — 짧은 측정은 이를 숨기므로 목표 규모에서 켜고 끄기로 재며, 대처는 풀 분리로 병목을 가른 뒤 증분 대조(+ 드문 전체 훑기)·복제본 탐지·CDC 순으로 고른다.
 - [rolled-back-write-cost](cross-cutting/database/rolled-back-write-cost/) — 롤백은 결과만 되돌리고 비용은 되돌리지 않는다(로그·죽은 행) — 시도 대부분이 지는 흐름에서는 쓰기 전에 싼 거절(잠금 없는 선조회)을 두고 최종 판정은 원자 연산에 남기며, 감소만 하는 행에는 정리 주체를 둔다.
 - [sql-dialect-and-driver-traps](cross-cutting/database/sql-dialect-and-driver-traps/) — SQL 방언·드라이버·엔진 설정(NULL 유니크·세션 변수·패킷 상한·collation·MDL·SQLite 단일 writer)은 실 DB에서만 드러난다 — 대체 DB·ORM 추정이 아니라 실제 엔진으로 검증한다.
 - [temp-spill-on-bounded-storage](cross-cutting/database/temp-spill-on-bounded-storage/) — DB 데이터 디렉터리의 고정 상한은 데이터 크기가 아니라 데이터 + 로그 + 가장 큰 쿼리의 정렬·해시 임시 파일을 담아야 한다 — 임시 파일은 쿼리 동안만 있어 큰 작업 뒤에 공간을 재고, 메모리 파일시스템이면 메모리 한도도 함께 키우며, 요청 크기와 적용 크기를 대조한다.
@@ -377,13 +378,14 @@ issue/  (167)
 
 ### resource-bounding
 
-입력에 비례해 커지는 자원의 상한 — 25개
+입력에 비례해 커지는 자원의 상한 — 26개
 
 - [cancellation-reachability](cross-cutting/concurrency/cancellation-reachability/) · `cross-cutting/concurrency`
 - [event-loop-head-of-line-blocking](cross-cutting/concurrency/event-loop-head-of-line-blocking/) · `cross-cutting/concurrency`
 - [byte-stream-framing](cross-cutting/data/byte-stream-framing/) · `cross-cutting/data`
 - [graph-traversal-invariants](cross-cutting/data/graph-traversal-invariants/) · `cross-cutting/data`
 - [lookup-cost-and-indexing](cross-cutting/data/lookup-cost-and-indexing/) · `cross-cutting/data`
+- [periodic-full-scan-cost-growth](cross-cutting/database/periodic-full-scan-cost-growth/) · `cross-cutting/database`
 - [rolled-back-write-cost](cross-cutting/database/rolled-back-write-cost/) · `cross-cutting/database`
 - [temp-spill-on-bounded-storage](cross-cutting/database/temp-spill-on-bounded-storage/) · `cross-cutting/database`
 - [bottleneck-identification](cross-cutting/infra/bottleneck-identification/) · `cross-cutting/infra`
