@@ -34,3 +34,4 @@ PR별 주제 폴더 목록이다. 상태는 2026-09-08 이전 시점 기준이�
 | [37259-mutiny-uni-empty-value](37259-mutiny-uni-empty-value/) | 머지(2026-09-09, 7.0.x+main) | Mutiny Uni empty-value가 완료하지 않는 Uni - 응답 행 |
 | [37268-lru-cache-double-decrement](37268-lru-cache-double-decrement/) | 머지(2026-09-14, 7.0.x+main) | ConcurrentLruCache 이중 size 감산 — capacity 영구 초과 |
 | [37351-lcim-computeifabsent-phantom-key](37351-lcim-computeifabsent-phantom-key/) | 머지(2026-09-30, 1b4955e49f0, 7.0.x+main) | LinkedCaseInsensitiveMap computeIfAbsent 선등록 팬텀 키 — 등록 시점을 값 확보 직후·삽입 직전으로 |
+| [37514-urlresource-basic-auth-base64](37514-urlresource-basic-auth-base64/) | 리뷰 대기(2026-10-19 제출, d40f67bb08f, main) | UrlResource Basic 인증 URL-safe Base64 회귀 — RFC 7617 표준 알파벳 복원 |
