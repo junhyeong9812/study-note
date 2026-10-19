@@ -35,3 +35,4 @@ PR별 주제 폴더 목록이다. 상태는 2026-09-08 이전 시점 기준이�
 | [37268-lru-cache-double-decrement](37268-lru-cache-double-decrement/) | 머지(2026-09-14, 7.0.x+main) | ConcurrentLruCache 이중 size 감산 — capacity 영구 초과 |
 | [37351-lcim-computeifabsent-phantom-key](37351-lcim-computeifabsent-phantom-key/) | 머지(2026-09-30, 1b4955e49f0, 7.0.x+main) | LinkedCaseInsensitiveMap computeIfAbsent 선등록 팬텀 키 — 등록 시점을 값 확보 직후·삽입 직전으로 |
 | [37514-urlresource-basic-auth-base64](37514-urlresource-basic-auth-base64/) | 리뷰 대기(2026-10-19 제출, d40f67bb08f, main) | UrlResource Basic 인증 URL-safe Base64 회귀 — RFC 7617 표준 알파벳 복원 |
+| [37523-embedded-db-destroy-shutdown](37523-embedded-db-destroy-shutdown/) | 리뷰 대기(2026-10-20 제출, 23d42a988ae, main) | EmbeddedDatabaseFactoryBean destroy cleaner 실패 시 shutdown 누락 — try/finally로 종료 보장, 예외 전파 유지 |
