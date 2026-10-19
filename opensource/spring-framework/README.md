@@ -45,5 +45,6 @@
 | prs/37235-sqlerrorcodes-sort-duplicate-keys | 머지(2026-09-05, 7.0.x+main) | duplicateKeyCodes 정렬 누락 — binarySearch 전제 |
 | prs/37259-mutiny-uni-empty-value | 머지(2026-09-09, 7.0.x+main) | Mutiny Uni empty-value가 완료하지 않는 Uni - 응답 행 |
 | prs/37268-lru-cache-double-decrement | 머지(2026-09-14, 7.0.x+main) | ConcurrentLruCache 이중 size 감산 — capacity 영구 초과 |
+| prs/37351-lcim-computeifabsent-phantom-key | 머지(2026-09-30, 1b4955e49f0, 7.0.x+main) | LinkedCaseInsensitiveMap computeIfAbsent 선등록 팬텀 키 — 등록 시점을 값 확보 직후·삽입 직전으로 |
 
 상태는 2026-09-08 이전 시점 기준이다. 이후 변동은 각 폴더 README와 이 표를 함께 갱신한다.
