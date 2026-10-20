@@ -501,7 +501,7 @@ Part 7  AI를 의존성으로 쓰는 법  ai-engineering
 > **언어 중립 원리**만 둔다(문법 레퍼런스는 CS 밖 — §19 판정). 코드가 실행되기까지(어휘→구문→의미→코드), 타입, 메모리 관리, 동시성 모델, 의존성.
 > 뼈대: Aho 외 『Compilers』(Dragon Book, 장 번호 `[?]`), Pierce 『TAPL』 [?], Jones 외 『The Garbage Collection Handbook』 [?], JSR-133(JMM), CS2023 FPL.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → (22 심화) → 23 → 24 → (25 심화) → 26 → 27
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → (22 심화) → 23 → 24 → (25 심화) → (28 심화) → 26 → 27
 
 ### 6.1 실행 모델과 컴파일 파이프라인
 
@@ -512,6 +512,7 @@ Part 7  AI를 의존성으로 쓰는 법  ai-engineering
 | 03-parsing-grammars-ast | BNF·CFG·재귀 하강·AST | 02, data-structure/05-stack | 두 구성 요소의 파서 불일치 → HTTP request smuggling; 깊은 중첩 입력 → 파서 스택 오버플로(JSON bomb) | 재귀 하강, 푸시다운(스택), 트리 | Dragon Book 4장 [?] | 필수 | `foundations/compiler-pipeline` (분할 — BNF·파스 트리·AST 절) |
 | 04-semantic-analysis-and-scopes | 심벌 테이블·스코프·바인딩 | 03 | 섀도잉 버그; JS `var` 루프 클로저가 마지막 값만 캡처 | **스코프 체인 = 해시 테이블 스택** | Dragon Book 2.7·6장 [?] | 권장 | `foundations/compiler-pipeline` (분할 — 심벌 테이블 절) · `foundations/variables-and-memory` (분할 — 스코프 절) |
 | 22-ir-and-optimization | IR·SSA·인라이닝·데드 코드 제거·레지스터 할당 | 04 | 최적화가 UB 코드의 null 검사를 삭제; 마이크로벤치마크 결과가 DCE로 0ns | 제어 흐름 그래프, 데이터 흐름 분석, 그래프 컬러링 | Dragon Book 8·9장 [?] | 심화 | 신규 |
+| 28-bytecode-reading-and-asm | 바이트코드 읽기·쓰기(ASM): 클래스 파일 구조, 로드 없이 읽기(ClassReader·ClassVisitor·ClassWriter, 이벤트 vs 트리 API) vs 리플렉션, Class 속성 = 이름 문자열과 ClassLoader 선택, 클래스 파일 버전 따라잡기, Class-File API(JEP 484) | 01, os/29-linking-and-loading, software-design/35-annotation-and-metadata-programming | 새 JDK 클래스 → `Unsupported class file major version N`; 메타 어노테이션 재매핑 시 로더 미전달 → `TypeNotPresentException`·`Cannot cast X to X`; 스캔 전에 로드 → 선택 의존성 없는 클래스 `NoClassDefFoundError` | 방문자 패턴, 상수 풀(번호 심벌 테이블), 해시 중복 제거(SymbolTable), 스택 맵 프레임 = 데이터 흐름 분석 | asm.ow2.io(developer guide·versions) · JVMS SE 25 4장 · JEP 484 · Spring `org.springframework.asm`·`core.type.classreading` 소스 | 심화 | 신규 |
 
 ### 6.2 타입·값·추상화
 
@@ -1713,7 +1714,7 @@ study-note/
 | 3 | 알고리즘 | 43 | +1 | 12 | 31 | 19 | 16 | 8 |
 | 4 | 컴퓨터 구조 | 23 | +1 | 12 | 11 | 14 | 5 | 4 |
 | 5 | 운영체제 | 38 | +1 | 30 | 8 | 28 | 9 | 1 |
-| 6 | 프로그래밍 언어·컴파일러 | 27 | +6 | 17 | 10 | 12 | 13 | 2 |
+| 6 | 프로그래밍 언어·컴파일러 | 28 | +7 | 18 | 10 | 12 | 13 | 3 |
 | 7 | 네트워크 | 53 | +1 | 51 | 2 | 36 | 16 | 1 |
 | 8 | 보안 | 30 | +2 | 24 | 6 | 20 | 10 | 0 |
 | 9 | 데이터베이스 | 57 | +17 | 48 | 9 | 34 | 19 | 4 |
@@ -1728,7 +1729,7 @@ study-note/
 | 18a | 데이터 공학 | 17 | +17 | 17 | 0 | 12 | 3 | 2 |
 | 18 | 데이터 분석·통계 | 28 | 0 | 28 | 0 | 17 | 9 | 2 |
 | 22 | AI 엔지니어링 | 26 | +26 | 26 | 0 | 13 | 11 | 2 |
-| | **합계** | **670** | **+153** | **490** | **180** | **364** | **260** | **46** |
+| | **합계** | **671** | **+154** | **491** | **180** | **364** | **260** | **47** |
 
 - 영역마다 역색인 1 + 실사건 1 = **40 leaf**가 마감용이다(역색인은 전부 필수, 실사건은 전부 권장).
 - **연습 컬렉션은 leaf 1개로 셌다**: domain-modeling basic 30편·advanced 30편(각 leaf 15·26), server-design 11편은 분할해 여러 leaf에 분산.
@@ -1738,6 +1739,7 @@ study-note/
   - 통합: ① DI·Composition Root(디자인 패턴 #3 + 유지보수성 32 → software-design/25) ② functional core(#6 + 33 → software-design/26) ③ 불법 상태 차단(#5 + 43 → software-design/24-types-as-invariants) ④ 패키지 구조(#2 + 35 → software-design/40-codebase-structure, 아키텍처 테스트 부분은 41) ⑤ Strangler(실무 25 + 디자인 패턴 #8 → software-design/50) ⑥ 원장·대사(실무 제안 #24(gap-practical) → domain-modeling/24·25로 흡수, 등급은 더 구체적인 쪽의 필수).
   - 기존 leaf 수정(행 수 불변): software-design/06 요지를 원고(CLEAN 5속성)에 맞추고 이름·함수·주석을 07~09로 분리, 역색인 5개(software-design/55·reliability/52·database/56·domain-modeling/27·web-platform/23) 증상 보강, 절 추가(reliability/05·06·19·36·22·17, database/21, web-platform/02, security/25, software-design/02·10·13·45, testing/17, distributed/16 등).
 - 2026-09-28 cs 재편: 기초 leaf 2(data-structure/01·algorithm/01) 독립 + **전 영역 번호 = 권장 학습 순서로 재번호**(옛→새: `docs/plans/2026-09-28/cs-restructure/slug-map.tsv`).
+- 2026-10-20 language/28-bytecode-reading-and-asm(심화, 신규) 1 leaf 추가 반영(6.1, 권장 학습 순서에서 25 다음).
 - 필수만 따라가면 364 leaf(2026-10-08 §22 +13 반영). 신규 필수는 영역별로 네트워크(34)·DB(29)·소프트웨어 설계(25)·OS(20)·보안(17)·데이터 분석(17) 순으로 많다.
 - `[?]` 표기: 문서 전체 261개(범례·출처 설명 포함) 중 **leaf 행 안 240개(185행)** — 주로 장 번호 미확인 교재(P&H·Dragon Book·TAPL·Sipser·GC Handbook·Kohavi·SRE 일부 장·Stevens 15·16장·POSA·Release It!·Clean Architecture 장 번호)와 수치·세부 사건 기록.
 

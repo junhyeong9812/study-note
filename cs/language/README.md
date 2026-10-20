@@ -2,7 +2,7 @@
 
 > **생성 문서** — `docs/plans/2026-09-27/cs-fundamentals-roadmap/curriculum.md` §6에서 `scripts/notes/gen_area_readme.py`로 만든다. 직접 고치지 말고 커리큘럼을 고친 뒤 재실행한다.
 > 번호 = 권장 학습 순서. 상태: `미작성` · `원고 있음` · `초안(Claude)` · `검수 완료`. ⚠ 깨지면·🔧·📚 세부는 커리큘럼 본문에 있다.
-> 현황: 미작성 0 · 원고 있음 0 · 초안(Claude) 27 · 검수 완료 0
+> 현황: 미작성 0 · 원고 있음 0 · 초안(Claude) 28 · 검수 완료 0
 
 > **언어 중립 원리**만 둔다(문법 레퍼런스는 CS 밖 — §19 판정). 코드가 실행되기까지(어휘→구문→의미→코드), 타입, 메모리 관리, 동시성 모델, 의존성.
 > 뼈대: Aho 외 『Compilers』(Dragon Book, 장 번호 `[?]`), Pierce 『TAPL』 [?], Jones 외 『The Garbage Collection Handbook』 [?], JSR-133(JMM), CS2023 FPL.
@@ -16,6 +16,7 @@
 | 03 | `parsing-grammars-ast` | BNF·CFG·재귀 하강·AST | 필수 | 초안(Claude) | [03-parsing-grammars-ast](03-parsing-grammars-ast/) · [../foundations/compiler-pipeline](../foundations/compiler-pipeline/) |
 | 04 | `semantic-analysis-and-scopes` | 심벌 테이블·스코프·바인딩 | 권장 | 초안(Claude) | [04-semantic-analysis-and-scopes](04-semantic-analysis-and-scopes/) · [../foundations/compiler-pipeline](../foundations/compiler-pipeline/) · [../foundations/variables-and-memory](../foundations/variables-and-memory/) |
 | 22 | `ir-and-optimization` | IR·SSA·인라이닝·데드 코드 제거·레지스터 할당 | 심화 | 초안(Claude) | [22-ir-and-optimization](22-ir-and-optimization/) |
+| 28 | `bytecode-reading-and-asm` | 바이트코드 읽기·쓰기(ASM): 클래스 파일 구조, 로드 없이 읽기(ClassReader·ClassVisitor·ClassWriter, 이벤트 vs 트리 API) vs 리플렉션, Class 속성 = 이름 문자열과 ClassLoader 선택, 클래스 파일 버전 따라잡기, Class-File API(JEP 484) | 심화 | 초안(Claude) | [28-bytecode-reading-and-asm](28-bytecode-reading-and-asm/) |
 
 ## 6.2 타입·값·추상화
 
