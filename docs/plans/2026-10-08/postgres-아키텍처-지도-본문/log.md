@@ -59,3 +59,4 @@
 - PostgreSQL: 흐름 13편(함수 문서 137편)·구조 6편·지도·api-index 완성. pgvector(v0.8.7): 흐름 5편(함수 문서 42편)·지도·api-index.
 - 후속 처리: ①PG vacuum 행 db-engine 문구 정정 ②opensource/index.md mysql·postgres 행 '완성' ③reference/tools/arch-map/(대조 스크립트 sql 확장·브리핑 2·절차 README).
 - 진행 중 규칙 추가: 하위 워커 금지(작성 워커가 fork 를 띄워 동시 상한 초과 위험).
+| 10-08 17:36 | main fast-forward 병합(24dba712..3a1505e1) + push 완료 | - |
