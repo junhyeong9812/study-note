@@ -21,5 +21,6 @@ Spring·Jackson과 모듈 구조에서 나오는 패턴이다.\
 - [jpa-save-merge-copy](jpa-save-merge-copy/) — 영속 애그리거트에 `save()` → merge가 새 자식의 복사본을 영속화, 원본 참조는 id null → save 없이 flush
 - [path-traversal-and-data-reality](path-traversal-and-data-reality/) — 외부 입력을 경로로 결합하면 트래버설로 경계를 벗어난다(검증은 canonical 경로·단일 검증 함수로) — 그리고 버그의 절반은 코드가 아니라 데이터 실태다.
 - [serialization-contract-leak](serialization-contract-leak/) — 내부 필드명·네이밍 전략·디버그 표현이 직렬화를 통해 외부 계약이 된다 — 와이어 이름을 명시 매핑하고 양쪽 실제 직렬화 결과로 교차 검증한다.
+- [validate-before-migrate](validate-before-migrate/) — Spring Boot의 Flyway 마이그레이션은 컨텍스트 초기화 중에, `ApplicationRunner`는 그 뒤에 돈다 — Runner의 기동 거부는 이미 적용된 DDL을 막지 못해 고친 설정으로도 같은 DB에 다시 뜨지 못하므로, 거부 검사는 `FlywayMigrationStrategy`에서 `migrate()` 앞에 두고(뒤 스키마는 예측) Flyway가 꺼진 경로를 위해 뒤 검사도 남긴다.
 
 > 이 폴더의 메타 태그: `least-privilege`(1) · `contract-drift`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).

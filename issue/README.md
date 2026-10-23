@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 170개.
+현재 카드 171개.
 
 ## 분류 두 축
 
@@ -27,7 +27,7 @@
 | [`identity`](#identity) | 같은 대상인가 — 식별자·정체성 판정 | 2 |
 | [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 | 3 |
 
-태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(59개)는 폴더 축으로만 분류한다.
+태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(60개)는 폴더 축으로만 분류한다.
 
 ## 포맷
 
@@ -42,7 +42,7 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (170)
+issue/  (171)
 ├─ cross-cutting/               122
 │  ├─ concurrency/               10
 │  ├─ data/                      19
@@ -60,8 +60,8 @@ issue/  (170)
 ├─ java/                          5
 │  ├─ spring/                     1
 │  └─ (언어 레벨 카드)            4
-├─ kotlin/                        8
-│  ├─ spring/                     6
+├─ kotlin/                        9
+│  ├─ spring/                     7
 │  └─ (언어 레벨 카드)            2
 ├─ python/                        6
 │  ├─ fastapi/                    4
@@ -269,6 +269,7 @@ issue/  (170)
 - [jpa-save-merge-copy](kotlin/spring/jpa-save-merge-copy/) — 영속 애그리거트에 save() → merge가 새 자식의 복사본을 영속화, 원본 id null → flush (실험 랩)
 - [path-traversal-and-data-reality](kotlin/spring/path-traversal-and-data-reality/) — 외부 입력을 경로로 결합하면 트래버설로 경계를 벗어난다(검증은 canonical 경로·단일 검증 함수로) — 그리고 버그의 절반은 코드가 아니라 데이터 실태다.
 - [serialization-contract-leak](kotlin/spring/serialization-contract-leak/) — 내부 필드명·네이밍 전략·디버그 표현이 직렬화를 통해 외부 계약이 된다 — 와이어 이름을 명시 매핑하고 양쪽 실제 직렬화 결과로 교차 검증한다.
+- [validate-before-migrate](kotlin/spring/validate-before-migrate/) — Spring Boot의 Flyway 마이그레이션은 컨텍스트 초기화 중에, `ApplicationRunner`는 그 뒤에 돈다 — Runner의 기동 거부는 이미 적용된 DDL을 막지 못해 고친 설정으로도 같은 DB에 다시 뜨지 못하므로, 거부 검사는 `FlywayMigrationStrategy`에서 `migrate()` 앞에 두고(뒤 스키마는 예측) Flyway가 꺼진 경로를 위해 뒤 검사도 남긴다.
 
 ### [python/](python/) — Python 언어·FastAPI
 
