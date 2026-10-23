@@ -17,8 +17,9 @@
 
 ## 패턴 카드
 
+- [argument-size-limit](argument-size-limit/) — 명령행 인수에는 커널 상한(인수 하나 128KB·전체 ARG_MAX)이 있어 자라는 데이터를 `--argjson`·`$(cat …)`로 넘기면 어느 날 `execve`가 거부한다 — 리다이렉트가 만든 빈 파일과 먼저 써 둔 "ok" 상태가 실패를 숨기므로, 데이터는 파일로 넘기고(`--slurpfile`) 임시 파일 검증 뒤 교체하며 상태는 산출물 뒤에 쓴다.
 - [exit-status-semantics](exit-status-semantics/) — 파이프라인·그룹 리다이렉트·`&&`의 종료 코드는 마지막 명령의 것이고 errexit·명령별 비0 의미(grep 1·iconv)가 계약을 흔든다 — pipefail과 단계별 rc를 명시한다.
 - [quoting-expansion-layers](quoting-expansion-layers/) — 셸은 텍스트를 인용·확장·word-split·glob·heredoc 계층마다 다시 해석한다 — 중첩 인용·dotenv source·빈 매칭 glob·heredoc 종료 태그가 의도와 다른 명령을 만든다.
 - [script-modified-while-running](script-modified-while-running/) — bash는 스크립트를 실행하면서 읽는다 — 실행 중 제자리 편집은 어긋난 바이트 위치에서 다음 명령을 읽게 해 문법 오류·정리 누락을 만든다, 진입점·입력 전체를 동결 사본으로 실행하고 실행 코드 = 기록 커밋을 시작 시 한 번 확인한다.
 
-> 이 폴더의 메타 태그: `silent-failure`(1) · `race-condition`(1) · `parser-differential`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `silent-failure`(2) · `resource-bounding`(1) · `race-condition`(1) · `parser-differential`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).
