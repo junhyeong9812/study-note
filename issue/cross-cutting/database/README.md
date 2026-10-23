@@ -17,6 +17,7 @@
 
 ## 패턴 카드
 
+- [hot-update-and-indexed-columns](hot-update-and-indexed-columns/) — HOT 갱신은 인덱스 열이 안 바뀐 UPDATE에만 일어난다 — 갱신마다 바뀌는 변경 추적 열(updated_at)에 B-tree 인덱스를 걸면 HOT이 사실상 0이 되어 갱신마다 모든 인덱스에 새 항목이 생기고, 제자리 갱신 테이블에서는 BRIN이 최근 창을 거르지 못하므로, 비용을 측정 부하에서 재어 판정하고 운영 위험으로 기록한다.
 - [migration-discipline](migration-discipline/) — 마이그레이션은 적용된 순간 불변(append-only) 이력이며 순번은 공유 번호공간이다 — 제자리 수정·병렬 브랜치 채번·빌드 산출물 잔존·미생성 리비전이 기동 실패와 누락을 만든다.
 - [periodic-full-scan-cost-growth](periodic-full-scan-cost-growth/) — 매 바퀴 전체를 훑는 주기 작업(대조·정리)의 비용은 누적 행 수에 비례해 자라고, fixed delay 스케줄에서는 점유 비율도 함께 커진다 — 짧은 측정은 이를 숨기므로 목표 규모에서 켜고 끄기로 재며, 대처는 풀 분리로 병목을 가른 뒤 증분 대조(+ 드문 전체 훑기)·복제본 탐지·CDC 순으로 고른다.
 - [rolled-back-write-cost](rolled-back-write-cost/) — 롤백은 결과만 되돌리고 비용은 되돌리지 않는다(로그·죽은 행) — 시도 대부분이 지는 흐름에서는 쓰기 전에 싼 거절(잠금 없는 선조회)을 두고 최종 판정은 원자 연산에 남기며, 감소만 하는 행에는 정리 주체를 둔다.

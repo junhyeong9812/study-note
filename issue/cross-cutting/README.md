@@ -25,7 +25,7 @@
 |------|---------|------|
 | [concurrency/](concurrency/) | 10 | 순서·공유·취소 |
 | [data/](data/) | 19 | 값의 표현·해석·키 |
-| [database/](database/) | 6 | 스키마 이력·방언·트랜잭션 |
+| [database/](database/) | 7 | 스키마 이력·방언·트랜잭션 |
 | [distributed/](distributed/) | 2 | 원격 결과와 권리의 단조성 |
 | [document-rendering/](document-rendering/) | 2 | 텍스트·인쇄 레이아웃 |
 | [gui-platform/](gui-platform/) | 2 | 좌표계·웹뷰 엔진 |
