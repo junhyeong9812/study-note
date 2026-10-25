@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 173개.
+현재 카드 174개.
 
 ## 분류 두 축
 
@@ -15,7 +15,7 @@
 | 태그 | 뜻 | 카드 수 |
 |------|----|---------|
 | [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 31 |
-| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 27 |
+| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 28 |
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 4 |
 | [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 10 |
@@ -42,11 +42,11 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (173)
-├─ cross-cutting/               124
+issue/  (174)
+├─ cross-cutting/               125
 │  ├─ concurrency/               10
 │  ├─ data/                      19
-│  ├─ database/                   8
+│  ├─ database/                   9
 │  ├─ distributed/                2
 │  ├─ document-rendering/         2
 │  ├─ gui-platform/               2
@@ -121,6 +121,7 @@ issue/  (173)
 
 #### [cross-cutting/database/](cross-cutting/database/) — 스키마 이력·방언·트랜잭션
 
+- [add-column-default-shared-value](cross-cutting/database/add-column-default-shared-value/) — 비휘발 DEFAULT로 더한 열(빠른 기본값)은 기존 행 전부에 같은 값(열을 더한 트랜잭션의 now())을 준다 — 그 열로 "하한 뒤 바뀐 행"을 찾는 증분은 첫 창이 열 추가 시각을 덮으면 오류 없이 기존 행 전부를 읽으므로, 기동 때 카탈로그 값을 읽어 그 값 앞뒤 두 인덱스 범위로 빼고 키셋 페이지로 틱 비용을 묶는다(단일 열 인덱스의 같은 값 묶음은 예외).
 - [catalog-presence-vs-enabled](cross-cutting/database/catalog-presence-vs-enabled/) — 카탈로그 행은 존재를 말할 뿐 효력을 말하지 않는다 — 트리거 존재를 이름으로만 세면 `DISABLE TRIGGER`로 꺼진 트리거도 통과해 그 트리거를 전제로 한 기능이 조용히 유실하므로, "있어야 한다"는 `tgenabled` 허용 목록(O·A)으로, "없어야 한다"는 존재로 판정하고 거부 메시지에 관측 상태와 고치는 문장을 넣는다.
 - [hot-update-and-indexed-columns](cross-cutting/database/hot-update-and-indexed-columns/) — HOT 갱신은 인덱스 열이 안 바뀐 UPDATE에만 일어난다 — 갱신마다 바뀌는 변경 추적 열(updated_at)에 B-tree 인덱스를 걸면 HOT이 사실상 0이 되어 갱신마다 모든 인덱스에 새 항목이 생기고, 제자리 갱신 테이블에서는 BRIN이 최근 창을 거르지 못하므로, 비용을 측정 부하에서 재어 판정하고 운영 위험으로 기록한다.
 - [migration-discipline](cross-cutting/database/migration-discipline/) — 마이그레이션은 적용된 순간 불변(append-only) 이력이며 순번은 공유 번호공간이다 — 제자리 수정·병렬 브랜치 채번·빌드 산출물 잔존·미생성 리비전이 기동 실패와 누락을 만든다.
@@ -386,13 +387,14 @@ issue/  (173)
 
 ### resource-bounding
 
-입력에 비례해 커지는 자원의 상한 — 27개
+입력에 비례해 커지는 자원의 상한 — 28개
 
 - [cancellation-reachability](cross-cutting/concurrency/cancellation-reachability/) · `cross-cutting/concurrency`
 - [event-loop-head-of-line-blocking](cross-cutting/concurrency/event-loop-head-of-line-blocking/) · `cross-cutting/concurrency`
 - [byte-stream-framing](cross-cutting/data/byte-stream-framing/) · `cross-cutting/data`
 - [graph-traversal-invariants](cross-cutting/data/graph-traversal-invariants/) · `cross-cutting/data`
 - [lookup-cost-and-indexing](cross-cutting/data/lookup-cost-and-indexing/) · `cross-cutting/data`
+- [add-column-default-shared-value](cross-cutting/database/add-column-default-shared-value/) · `cross-cutting/database`
 - [periodic-full-scan-cost-growth](cross-cutting/database/periodic-full-scan-cost-growth/) · `cross-cutting/database`
 - [rolled-back-write-cost](cross-cutting/database/rolled-back-write-cost/) · `cross-cutting/database`
 - [temp-spill-on-bounded-storage](cross-cutting/database/temp-spill-on-bounded-storage/) · `cross-cutting/database`

@@ -17,6 +17,7 @@
 
 ## 패턴 카드
 
+- [add-column-default-shared-value](add-column-default-shared-value/) — 비휘발 DEFAULT로 더한 열(빠른 기본값)은 기존 행 전부에 같은 값(열을 더한 트랜잭션의 now())을 준다 — 그 열로 "하한 뒤 바뀐 행"을 찾는 증분은 첫 창이 열 추가 시각을 덮으면 오류 없이 기존 행 전부를 읽으므로, 기동 때 카탈로그 값을 읽어 그 값 앞뒤 두 인덱스 범위로 빼고 키셋 페이지로 틱 비용을 묶는다(단일 열 인덱스의 같은 값 묶음은 예외).
 - [catalog-presence-vs-enabled](catalog-presence-vs-enabled/) — 카탈로그 행은 존재를 말할 뿐 효력을 말하지 않는다 — 트리거 존재를 이름으로만 세면 `DISABLE TRIGGER`로 꺼진 트리거도 통과해 그 트리거를 전제로 한 기능이 조용히 유실하므로, "있어야 한다"는 `tgenabled` 허용 목록(O·A)으로, "없어야 한다"는 존재로 판정하고 거부 메시지에 관측 상태와 고치는 문장을 넣는다.
 - [hot-update-and-indexed-columns](hot-update-and-indexed-columns/) — HOT 갱신은 인덱스 열이 안 바뀐 UPDATE에만 일어난다 — 갱신마다 바뀌는 변경 추적 열(updated_at)에 B-tree 인덱스를 걸면 HOT이 사실상 0이 되어 갱신마다 모든 인덱스에 새 항목이 생기고, 제자리 갱신 테이블에서는 BRIN이 최근 창을 거르지 못하므로, 비용을 측정 부하에서 재어 판정하고 운영 위험으로 기록한다.
 - [migration-discipline](migration-discipline/) — 마이그레이션은 적용된 순간 불변(append-only) 이력이며 순번은 공유 번호공간이다 — 제자리 수정·병렬 브랜치 채번·빌드 산출물 잔존·미생성 리비전이 기동 실패와 누락을 만든다.
