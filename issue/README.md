@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 175개.
+현재 카드 176개.
 
 ## 분류 두 축
 
@@ -15,7 +15,7 @@
 | 태그 | 뜻 | 카드 수 |
 |------|----|---------|
 | [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 31 |
-| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 29 |
+| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 30 |
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 4 |
 | [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 10 |
@@ -42,15 +42,15 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (175)
-├─ cross-cutting/               126
+issue/  (176)
+├─ cross-cutting/               127
 │  ├─ concurrency/               10
 │  ├─ data/                      19
 │  ├─ database/                  10
 │  ├─ distributed/                2
 │  ├─ document-rendering/         2
 │  ├─ gui-platform/               2
-│  ├─ infra/                     13
+│  ├─ infra/                     14
 │  ├─ network/                   11
 │  ├─ os/                         8
 │  ├─ reliability/               24
@@ -158,6 +158,7 @@ issue/  (175)
 - [firewall-and-network-policy-layers](cross-cutting/infra/firewall-and-network-policy-layers/) — 패킷 필터·MAC·클라우드 보안목록·Docker 체인은 계층마다 따로 동작한다 — 한 계층(ufw)의 설정이 다른 계층(Docker publish·SELinux)을 보장하지 않는다.
 - [git-pitfalls](cross-cutting/infra/git-pitfalls/) — git은 인덱스·ref·시퀀서 상태·출력 인용·소유권·ignore 규칙을 암묵 입력으로 쓰므로, 이름에서 떠올리는 직관과 실제 정의가 다른 지점을 명시적으로 다뤄야 한다.
 - [llm-serving-vram-and-backend](cross-cutting/infra/llm-serving-vram-and-backend/) — LLM 서빙은 VRAM 예산(가중치+KV cache×동시 시퀀스)과 GPU 아키텍처별 백엔드 지원이 결정한다 — 기동 성공은 추론 성공을 보장하지 않는다.
+- [load-balancer-defaults-in-backend-switch](cross-cutting/infra/load-balancer-defaults-in-backend-switch/) — 로드밸런서는 전환 경로의 일부다 — 작업자 기술자 한도(컨테이너 soft 1024) < worker_connections면 백엔드가 느려지는 순간 앱에 닿지도 못한 500이, 기본 수동 장애 판정(max_fails=1 · 10초)은 구성원 1대 구간에서 전면 502가, reload는 닫히는 keepalive 연결 위 요청의 연결 오류가 생기므로, 한도를 올리고 판정은 끄고 생존을 구성원 관리로 옮기며 고칠 수 없는 reload 몫은 보낸 시각 기준 창으로 따로 센다.
 - [nginx-broadband-defense-friendly-fire](cross-cutting/infra/nginx-broadband-defense-friendly-fire/) — 출처를 구분하지 않는 광역 방어(UA 차단·단일 버킷 레이트리밋)는 자기 자동화·검증 트래픽·정상 사용자를 오사한다 — allowlist·정확한 키로 범위를 좁힌다.
 - [path-derived-key-on-move](cross-cutting/infra/path-derived-key-on-move/) — 가변 속성(절대 경로)에서 파생한 키·캐시는 폴더 이동 순간 고아가 된다 — 이동은 키 재계산·캐시 무효화를 동반해야 한다.
 - [state-drift-delete-propagation](cross-cutting/infra/state-drift-delete-propagation/) — 같은 사실의 사본(설정·배포본·파생 상태·인덱스)은 삭제·변경이 전파되지 않으면 원본과 어긋난다 — 정본 단일 채널과 명시적 삭제(tombstone)로 수렴시킨다.
@@ -388,7 +389,7 @@ issue/  (175)
 
 ### resource-bounding
 
-입력에 비례해 커지는 자원의 상한 — 29개
+입력에 비례해 커지는 자원의 상한 — 30개
 
 - [cancellation-reachability](cross-cutting/concurrency/cancellation-reachability/) · `cross-cutting/concurrency`
 - [event-loop-head-of-line-blocking](cross-cutting/concurrency/event-loop-head-of-line-blocking/) · `cross-cutting/concurrency`
@@ -403,6 +404,7 @@ issue/  (175)
 - [bottleneck-identification](cross-cutting/infra/bottleneck-identification/) · `cross-cutting/infra`
 - [deploy-artifact-scope](cross-cutting/infra/deploy-artifact-scope/) · `cross-cutting/infra`
 - [llm-serving-vram-and-backend](cross-cutting/infra/llm-serving-vram-and-backend/) · `cross-cutting/infra`
+- [load-balancer-defaults-in-backend-switch](cross-cutting/infra/load-balancer-defaults-in-backend-switch/) · `cross-cutting/infra`
 - [payload-transfer-cost](cross-cutting/network/payload-transfer-cost/) · `cross-cutting/network`
 - [process-group-and-tree-termination](cross-cutting/os/process-group-and-tree-termination/) · `cross-cutting/os`
 - [subprocess-lifecycle-and-pipes](cross-cutting/os/subprocess-lifecycle-and-pipes/) · `cross-cutting/os`
