@@ -149,3 +149,117 @@ export function getPageData() {
 
 **결론**: 상태를 **인스턴스가 소유해야 하는** 경우(UI 인스턴스·창)는 키·가드·구독을 인스턴스 스코프로 내리고, 전수 조사가 어렵거나 "둘"이 의미 없으면 구조적으로 금지한다.\
 공유 객체가 **읽기 전용 원본**이어야 하는 경우(서버 모듈의 기본 데이터)는 스코프를 나눌 대상이 요청이므로, 변형 전에 복제하는 쪽이 작고 확실한 편이다(복제 비용이 크면 원본을 동결해 변형 경로를 드러내고 변형 없는 조립으로 바꾸는 방법도 있다).
+
+## 방안 비교 — 물리적으로 하나뿐인 전역은 인스턴스 스코프로 내릴 수 없다
+
+기본 방안은 "상태를 인스턴스 스코프로 내리거나, primary 하나만 소비하게 한다"이다.\
+그런데 **문서의 키 입력**이나 **body의 스타일 값**처럼 자원 자체가 문서에 하나뿐이면 내릴 곳이 없다.\
+같은 "전역 = 내 것" 가정(각 인스턴스가 "이 전역은 나 하나만 쓴다"고 행동)에서 대화상자를 겹쳐 열었을 때 두 결함이 나왔다:\
+① ESC 한 번에 겹친 대화상자가 **전부** 닫힘 ② 위 대화상자만 닫았는데 **배경 스크롤 잠금이 풀림**.
+
+### 방안 2 — 인스턴스별 전역 리스너 대신 공유 리스너 1개 + 스택(맨 위만 처리)
+① 문제 코드
+```js
+function openDialog() {
+  const dialog = createDialog();
+  const handleKey = (e) => {                                  // 인스턴스마다 새 클로저 — 자기 대화상자만 안다
+    if (e.key === 'Escape') dialog.close('escape');       // "내가 맨 위인가?" 확인 없음
+  };
+  document.addEventListener('keydown', handleKey, true);
+  dialog.onCleanup(() => document.removeEventListener('keydown', handleKey, true));
+  return dialog;
+}
+```
+```
+document keydown 리스너: [handleKey#1, handleKey#2]   — 같은 노드의 리스너는 등록 순서대로 하나씩 실행
+
+(가) #2가 #1 안에서 열림(논리 자식)          (나) #1, #2가 형제
+  handleKey#1 → #1 close                          handleKey#1 → #1 close
+    └ 부모 정리가 자식부터 → #2도 정리          handleKey#2 → #2 close
+      (#2의 리스너도 이때 해제)                 → 전부 닫힘
+  handleKey#2 → 이미 해제 → 호출 안 됨
+  → 맨 위가 아닌 #1이 반응해 자식까지 휩쓺
+원인은 하나: 맨 위 확인 없음 (캡처·버블과 무관)
+```
+② 고친 코드
+```js
+const layers = [];                                         // 모듈에 하나
+const top = () => layers[layers.length - 1];
+
+function handleKey(e) {                                       // 리스너도 하나
+  const dialog = top();
+  if (!dialog) return;
+  if (e.key === 'Escape') { e.preventDefault(); dialog.close('escape'); }   // 맨 위 하나만
+  else if (e.key === 'Tab') trapFocus(e, dialog);         // 가장자리에서만 preventDefault + 반대쪽 끝으로
+}
+
+function openDialog() {
+  const dialog = createDialog();
+  layers.push(dialog);
+  if (layers.length === 1) document.addEventListener('keydown', handleKey, true);    // 0 → 1
+  dialog.onCleanup(() => {
+    layers.splice(layers.indexOf(dialog), 1);
+    if (layers.length === 0) document.removeEventListener('keydown', handleKey, true); // 1 → 0
+  });
+  return dialog;
+}
+```
+무엇이 깨졌나: 각 리스너가 자기 인스턴스만 알아 "누가 맨 위인가"라는 **전체에 대한 사실**을 판정할 곳이 없었다.\
+같은 자리의 Tab 가두기: 포커스 이동은 브라우저 기본(DOM 순서)에 맡기고, **마지막에서 Tab·처음에서 Shift+Tab일 때만** 기본 이동을 취소하고 반대쪽 끝으로 보낸다 — `preventDefault`가 없으면 우리가 옮긴 직후 브라우저가 원래 이동을 마저 해 한 칸 더 간다.\
+테스트: 두 개를 열고 ESC 한 번에 1개 남고, 두 번째에 0개.
+
+### 방안 3 — 공유 자원 참조 카운트: 0↔1 경계에서만 실제로 바꾸고, 원래 값은 한 번만 저장
+① 문제 코드
+```js
+// 열 때                                  // 닫을 때
+body.style.overflow = 'hidden';           body.style.overflow = '';      // 무조건 해제 + 원래 값 대신 빈 값
+```
+```
+#1 열기  'hidden' 🔒
+#2 열기  'hidden' 🔒
+#2 닫기  ''       🔓  ← #1이 아직 열려 있는데 풀림 ✗
+#1 닫기  ''       🔓  ← 페이지가 원래 갖던 인라인 값도 지워짐 ✗
+```
+② 고친 코드
+```js
+let holders = 0;
+let saved = '';
+
+function acquireLock() {
+  if (holders++ === 0) {                  // 증가 전 0 = 내가 첫 번째 → 실제 잠금
+    saved = body.style.overflow;          //   원래 값은 이때 한 번만 기억
+    body.style.overflow = 'hidden';
+  }
+}
+function releaseLock() {
+  if (--holders === 0) body.style.overflow = saved;   // 감소 후 0 = 내가 마지막 → 원래 값으로
+}
+
+function openDialog() {
+  const dialog = createDialog();
+  acquireLock();
+  dialog.onCleanup(releaseLock);          // close() 안이 아니라 정리 경로에 — 부모 파괴로 연쇄 정리돼도 감소
+  return dialog;                          // close()는 closed 플래그로 1회만 정리 → 이중 감소 없음
+}
+```
+```
+#1 열기  holders 0→1  'hidden' (원래 값 기억)  🔒
+#2 열기  holders 1→2  (변경 없음)              🔒
+#2 닫기  holders 2→1  (변경 없음)              🔒 ✓
+#1 닫기  holders 1→0  원래 값 복원             🔓 ✓
+```
+무엇이 깨졌나: 각 인스턴스가 "내가 잠갔으니 내가 푼다"고만 생각했다 — 잠금이 아직 필요한 다른 보유자를 몰랐고, 해제 값도 자기가 본 적 없는 원래 상태를 덮었다.\
+테스트: 원래 인라인 값 `scroll` → 둘 열고 위를 닫아도 `hidden` 유지 → 마지막을 닫으면 `scroll` 복원. 카운트를 빼면 실패(변이 점검).\
+해제를 정리 경로에 두는 이유는 [cleanup-on-every-exit-path](../../../cross-cutting/reliability/cleanup-on-every-exit-path/)와 같다 — 종료 경로(직접 닫기·부모 파괴)가 여럿이다.
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 기본: 인스턴스 스코프화 / primary만 소비 | 상태를 인스턴스별로 나눌 수 있다 | 전역 지점 전수 조사 | 한 지점이라도 놓치면 누출 | 인스턴스가 각자 상태를 가질 수 있는 UI |
+| 2. 공유 리스너 1개 + 스택 | 이벤트는 하나지만 처리할 대상은 "맨 위" 하나다 | 모듈 스택 관리 · 스택 정리를 모든 종료 경로에 | 스택에서 빠지지 않은 인스턴스가 남으면 맨 위 판정이 틀림 | 문서 단위 키 입력·바깥 클릭을 겹친 레이어가 나눠 쓸 때 |
+| 3. 참조 카운트 (0↔1 경계 + 원래 값 1회 저장) | 자원은 하나고 "누군가 필요로 하는 동안" 켜져 있어야 한다 | 카운터 + 저장값 | 해제 누락 → 영구 잠금 · 이중 해제 → 음수·조기 해제 | body 스타일·전역 리스너 부착·로딩 표시처럼 켜고 끄는 공유 자원 |
+
+**결론**: 상태를 **나눌 수 있으면** 인스턴스 스코프로 내린다(기본).\
+자원이 **물리적으로 하나**면 나눌 수 없으므로, 인스턴스가 전역을 직접 만지지 않게 하고 **한 곳이 전체를 보고 결정**하게 한다 — "누가 처리하나"가 문제면 스택(2), "언제 켜고 끄나"가 문제면 참조 카운트(3).\
+두 방안 모두 정확성은 **해제가 모든 종료 경로에서 정확히 한 번** 일어나는 데 달려 있다 — 획득 옆에서 정리를 예약하고, 닫기는 멱등으로 둔다.
+
+- 2026-11-04: 사건 기록 대조·추상화(Claude 초안)
