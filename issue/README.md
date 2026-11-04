@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 179개.
+현재 카드 180개.
 
 ## 분류 두 축
 
@@ -27,7 +27,7 @@
 | [`identity`](#identity) | 같은 대상인가 — 식별자·정체성 판정 | 2 |
 | [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 | 3 |
 
-태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(61개)는 폴더 축으로만 분류한다.
+태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(62개)는 폴더 축으로만 분류한다.
 
 ## 포맷
 
@@ -42,8 +42,8 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (179)
-├─ cross-cutting/               130
+issue/  (180)
+├─ cross-cutting/               131
 │  ├─ concurrency/               10
 │  ├─ data/                      19
 │  ├─ database/                  11
@@ -52,7 +52,7 @@ issue/  (179)
 │  ├─ gui-platform/               2
 │  ├─ infra/                     14
 │  ├─ network/                   13
-│  ├─ os/                         8
+│  ├─ os/                         9
 │  ├─ reliability/               24
 │  ├─ search-engine/              8
 │  ├─ security/                  12
@@ -183,6 +183,7 @@ issue/  (179)
 
 #### [cross-cutting/os/](cross-cutting/os/) — 프로세스·경로·터미널
 
+- [device-op-reversibility](cross-cutting/os/device-op-reversibility/) — 장치 조작은 되돌릴 수 있는 정도가 다르다 — 링크가 없을 때 드라이버 재로드는 전원 관리 중인 장치를 D3cold에서 깨우지 못하게 만들 수 있고 PCI remove는 위쪽 포트가 절전이면 rescan으로 되찾지 못해 콜드 부팅만 남으므로, 읽기(링크·협상·커널 로그·전원 상태)로 원인 층을 먼저 좁히고, 공유 호스트에서는 돌고 있는 작업과 최악 결과를 먼저 말해 확인받고, 되돌림 경로(다른 접속·재부팅 허용)를 확보한 뒤 되돌리기 쉬운 조작부터 한다.
 - [execution-context-inheritance](cross-cutting/os/execution-context-inheritance/) — 자식 프로세스·서비스·훅은 실행 방식(셸·GUI 런처·systemd·영속 cd·플랫폼 주입)에 따라 env·PATH·cwd·TERM을 다르게 물려받는다 — 필요한 실행 문맥을 명시적으로 결정·정화한다.
 - [job-lifetime-bound-to-user-session](cross-cutting/os/job-lifetime-bound-to-user-session/) — 장기 작업의 수명·자원 단위는 띄운 곳의 cgroup·사용자 서비스 매니저에 묶인다 — oomd는 cgroup째 죽이고(setsid로 못 피함), 사용자 유닛은 linger 없이 로그아웃과 함께 정지한다, 별도 유닛·linger·Restart+멱등 재개로 떼어 낸다.
 - [nested-sandbox-capability](cross-cutting/os/nested-sandbox-capability/) — 샌드박스 안에서 자체 격리를 켜는 도구를 띄우면 상속된 실행 문맥이 내부 격리 초기화(루프백 설정 등)를 거부할 수 있다 — 파일 읽기 전면 실패가 exit 0 결과물로 포장되거나 호출마다 지연이 붙는다, 읽기 의존은 입력 인라인으로 우회하고 완료는 종료 코드·산출물·본문을 함께 보고 판정
