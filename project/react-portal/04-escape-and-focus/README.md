@@ -1,6 +1,6 @@
 # 04 — ESC는 맨 위만, Tab은 모달 안에서만
 
-- 커밋: [`8623f68`](https://github.com/junhyeong9812/react-portal/commit/8623f68) (createModal) · [`f6386cb`](https://github.com/junhyeong9812/react-portal/commit/f6386cb) (재현 토글 N3) · [PR #2](https://github.com/junhyeong9812/react-portal/pull/2)
+- 커밋: [`8623f68`](https://github.com/junhyeong9812/react-portal-lab/commit/8623f68) (createModal) · [`f6386cb`](https://github.com/junhyeong9812/react-portal-lab/commit/f6386cb) (재현 토글 N3) · [PR #2](https://github.com/junhyeong9812/react-portal-lab/pull/2)
 - 학습 노트: [archive/learning/modal/n3-escape-top-only.md](../archive/learning/modal/n3-escape-top-only.md) · [n3-tab-trap.md](../archive/learning/modal/n3-tab-trap.md)
 
 ---
@@ -123,7 +123,7 @@ function attachDocument() {
 
 **알려진 한계였던 것(`ponytail:` 주석 — 아래에서 해소).** 모달 안에서 연 메뉴(portal)의 버튼은 DOM상 dialog 밖이라 Tab 순환에 포함되지 않는다.
 
-**해소 — 메뉴 키보드 (2026-11-04, 커밋 [`c77eca7`](https://github.com/junhyeong9812/react-portal/commit/c77eca7)).**\
+**해소 — 메뉴 키보드 (2026-11-04, 커밋 [`c77eca7`](https://github.com/junhyeong9812/react-portal-lab/commit/c77eca7)).**\
 Tab 순환에 메뉴를 끼워 넣는 안(A — 논리 자손 portal의 요소까지 모아 순서를 직접 정함)은 "메뉴를 어느 버튼 다음에 끼울지" 규칙을 새로 만들어야 해서 고르지 않았다.\
 대신 실무 방식(B)으로, **메뉴가 열리면 포커스를 메뉴 안으로** 옮기고 메뉴가 ↑↓·ESC·Tab을 직접 처리한다.\
 충돌(모달의 document 캡처 리스너가 메뉴보다 먼저 키를 받음)은 **모달 스택을 오버레이 스택으로 일반화**해서 풀었다 — 모달·메뉴가 같은 스택에 쌓이고, 리스너 하나가 맨 위에게만 넘긴다. ESC "맨 위만"과 같은 원리의 확장이다.

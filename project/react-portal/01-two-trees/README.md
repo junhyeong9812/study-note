@@ -1,6 +1,6 @@
 # 01 — 두 트리: 논리 부모와 DOM 부모를 따로 들기
 
-- 커밋: [`d76cf08`](https://github.com/junhyeong9812/react-portal/commit/d76cf08) (노드·portal·레이어) · [PR #1](https://github.com/junhyeong9812/react-portal/pull/1)
+- 커밋: [`d76cf08`](https://github.com/junhyeong9812/react-portal-lab/commit/d76cf08) (노드·portal·레이어) · [PR #1](https://github.com/junhyeong9812/react-portal-lab/pull/1)
 - 학습 노트: [archive/learning/pr1/01-my-understanding.md](../archive/learning/pr1/01-my-understanding.md)
 
 ---
@@ -120,7 +120,7 @@ export function createPortal(parent, target = document.body, { on } = {}) {
 **데모가 "갇힘"을 재현하지 못했다.**\
 처음 데모 카드는 `overflow: hidden`만 있었는데, 모달 오버레이가 `position: fixed`라 **잘리지 않았다.**\
 fixed 요소의 기준 상자는 보통 뷰포트라서, 조상의 overflow 클리핑을 받지 않는다.\
-카드에 `transform: translateZ(0)`을 추가하자 fixed의 기준이 카드가 되어 잘렸다(커밋 [`e4ee6e5`](https://github.com/junhyeong9812/react-portal/commit/e4ee6e5)).\
+카드에 `transform: translateZ(0)`을 추가하자 fixed의 기준이 카드가 되어 잘렸다(커밋 [`e4ee6e5`](https://github.com/junhyeong9812/react-portal-lab/commit/e4ee6e5)).\
 → 실무에서 흔한 함정(애니메이션·GPU 가속용 transform)을 그대로 재현하는 데모가 됐다.
 
 > **containing block** — 요소의 위치·% 크기를 계산하는 기준 상자. fixed는 보통 뷰포트지만, 조상에 transform 등이 있으면 그 조상이 된다.

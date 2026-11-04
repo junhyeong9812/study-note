@@ -1,6 +1,6 @@
 # PR #1 학습 노트 — 순수 JS 미니 Portal
 
-> 대상: [PR #1](https://github.com/junhyeong9812/react-portal/pull/1) (`feat/mini-portal`) · 작성: 2026-11-03
+> 대상: [PR #1](https://github.com/junhyeong9812/react-portal-lab/pull/1) (`feat/mini-portal`) · 작성: 2026-11-03
 > 코드를 읽으며 대화로 정리한 내용. 줄 번호는 PR #1 시점 기준.
 
 | 문서 | 내용 | 언제 읽나 |

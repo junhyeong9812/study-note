@@ -1,6 +1,6 @@
 # 07 — 문제 재현 토글: 해결된 코드에서 문제를 다시 "겪게" 만들기
 
-- 커밋: [`f6386cb`](https://github.com/junhyeong9812/react-portal/commit/f6386cb) · [PR #2](https://github.com/junhyeong9812/react-portal/pull/2)
+- 커밋: [`f6386cb`](https://github.com/junhyeong9812/react-portal-lab/commit/f6386cb) · [PR #2](https://github.com/junhyeong9812/react-portal-lab/pull/2)
 - 학습 노트: [archive/learning/modal/README.md](../archive/learning/modal/README.md) 「직접 겪어 보기」
 
 ---

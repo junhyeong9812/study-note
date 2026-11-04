@@ -3,9 +3,9 @@
 React `createPortal`이 **어떻게 동작하는지** 이해하려고, 의존성 없이 순수 JavaScript로 그 원리를 다시 만든 학습 프로젝트의 기록이다.\
 코드는 저장소에 있으니 여기서는 **결정의 이유와 안 고른 후보**, 그리고 공부하며 정리한 문서를 남긴다.
 
-- 저장소: https://github.com/junhyeong9812/react-portal · 기간 2026-11-03 ~ 2026-11-04 · 상태: 완료(main `27d95e9`)
+- 저장소: https://github.com/junhyeong9812/react-portal-lab · 기간 2026-11-03 ~ 2026-11-04 · 상태: 완료(main `27d95e9`)
 - 스택: 순수 JavaScript(ES 모듈) · Vite 8 · Vitest 4 + jsdom · (비교용) React 19.3.1
-- PR: [#1 미니 Portal](https://github.com/junhyeong9812/react-portal/pull/1) · [#2 모달 실무 기능 + 문제 재현 토글](https://github.com/junhyeong9812/react-portal/pull/2) · [#3 React 비교](https://github.com/junhyeong9812/react-portal/pull/3)
+- PR: [#1 미니 Portal](https://github.com/junhyeong9812/react-portal-lab/pull/1) · [#2 모달 실무 기능 + 문제 재현 토글](https://github.com/junhyeong9812/react-portal-lab/pull/2) · [#3 React 비교](https://github.com/junhyeong9812/react-portal-lab/pull/3)
 - 최종: 테스트 38개(Portal 17 · 모달 15 · React 6), 데모 페이지 2개(`/` 미니 Portal·모달, `/react.html` React 비교)
 
 ## 전체 구조 한눈에
@@ -60,4 +60,4 @@ root                                 body
 ## 남은 것
 
 - 모달 click-through(바깥 `pointerdown`으로 오버레이가 사라진 뒤 같은 클릭의 click이 뒤 요소로 가는지) — 실브라우저 미검증.
-- ~~모달 Tab 순환에 모달 안에서 연 portal(메뉴)의 버튼이 포함되지 않음~~ → 2026-11-04 해소: 메뉴가 포커스를 받고 ↑↓·ESC·Tab을 직접 처리(`createMenu` + 오버레이 스택, [커밋 `c77eca7`](https://github.com/junhyeong9812/react-portal/commit/c77eca7) · [04](04-escape-and-focus/README.md) 「해소」).
+- ~~모달 Tab 순환에 모달 안에서 연 portal(메뉴)의 버튼이 포함되지 않음~~ → 2026-11-04 해소: 메뉴가 포커스를 받고 ↑↓·ESC·Tab을 직접 처리(`createMenu` + 오버레이 스택, [커밋 `c77eca7`](https://github.com/junhyeong9812/react-portal-lab/commit/c77eca7) · [04](04-escape-and-focus/README.md) 「해소」).

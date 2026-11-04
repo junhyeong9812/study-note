@@ -1,6 +1,6 @@
 # 05 — 배경 스크롤 잠금: 스위치가 아니라 숫자로
 
-- 커밋: [`8623f68`](https://github.com/junhyeong9812/react-portal/commit/8623f68) (createModal) · [`f6386cb`](https://github.com/junhyeong9812/react-portal/commit/f6386cb) (재현 토글 N4 + 스크롤 확인용 영역) · [PR #2](https://github.com/junhyeong9812/react-portal/pull/2)
+- 커밋: [`8623f68`](https://github.com/junhyeong9812/react-portal-lab/commit/8623f68) (createModal) · [`f6386cb`](https://github.com/junhyeong9812/react-portal-lab/commit/f6386cb) (재현 토글 N4 + 스크롤 확인용 영역) · [PR #2](https://github.com/junhyeong9812/react-portal-lab/pull/2)
 - 학습 노트: [archive/learning/modal/n4-scroll-lock-refcount.md](../archive/learning/modal/n4-scroll-lock-refcount.md) · [archive/frontend/overflow.md](../archive/frontend/overflow.md)
 
 ---

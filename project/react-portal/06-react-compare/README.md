@@ -1,6 +1,6 @@
 # 06 — React와 대조: 진짜 portal vs 별도 루트로 렌더한 가짜 portal
 
-- 커밋: [`a0780a4`](https://github.com/junhyeong9812/react-portal/commit/a0780a4) (React 의존성·멀티 페이지) · [`7f601d5`](https://github.com/junhyeong9812/react-portal/commit/7f601d5) (비교 페이지·테스트) · [PR #3](https://github.com/junhyeong9812/react-portal/pull/3)
+- 커밋: [`a0780a4`](https://github.com/junhyeong9812/react-portal-lab/commit/a0780a4) (React 의존성·멀티 페이지) · [`7f601d5`](https://github.com/junhyeong9812/react-portal-lab/commit/7f601d5) (비교 페이지·테스트) · [PR #3](https://github.com/junhyeong9812/react-portal-lab/pull/3)
 - 학습 노트: [archive/learning/react-compare/README.md](../archive/learning/react-compare/README.md)
 
 ---

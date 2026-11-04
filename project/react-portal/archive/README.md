@@ -1,7 +1,7 @@
 # archive — 원 저장소 docs의 학습 문서
 
 react-portal 저장소의 `docs/learning/`과 `docs/frontend/`를 그대로 옮긴 사본이다(2026-11-04).\
-원본: https://github.com/junhyeong9812/react-portal/tree/main/docs
+원본: https://github.com/junhyeong9812/react-portal-lab/tree/main/docs
 
 - 문서 안의 `src/…`·`demo/…` 경로와 줄 번호는 **원 저장소 기준**이다(main `27d95e9`).
 - 문서끼리의 상대 링크(learning ↔ frontend)는 이 폴더 안에서 그대로 동작한다.

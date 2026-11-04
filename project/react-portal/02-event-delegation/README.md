@@ -1,6 +1,6 @@
 # 02 — 이벤트 위임: 브라우저는 DOM으로 잡고, 핸들러는 논리 트리로 돈다
 
-- 커밋: [`3a7d496`](https://github.com/junhyeong9812/react-portal/commit/3a7d496) (위임·논리 버블링·Context) · [`dcbb229`](https://github.com/junhyeong9812/react-portal/commit/dcbb229) (미지원 타입 경고) · [PR #1](https://github.com/junhyeong9812/react-portal/pull/1)
+- 커밋: [`3a7d496`](https://github.com/junhyeong9812/react-portal-lab/commit/3a7d496) (위임·논리 버블링·Context) · [`dcbb229`](https://github.com/junhyeong9812/react-portal-lab/commit/dcbb229) (미지원 타입 경고) · [PR #1](https://github.com/junhyeong9812/react-portal-lab/pull/1)
 - 학습 노트: [archive/learning/pr1/03-internals-qa.md](../archive/learning/pr1/03-internals-qa.md) Q12~Q21 · [04-remaining-code.md](../archive/learning/pr1/04-remaining-code.md)
 
 ---

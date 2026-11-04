@@ -1,6 +1,6 @@
 # 03 — 바깥 클릭으로 닫기: 어느 트리에 묻고, 어느 이벤트로 듣나
 
-- 커밋: [`8623f68`](https://github.com/junhyeong9812/react-portal/commit/8623f68) (createModal) · [`f6386cb`](https://github.com/junhyeong9812/react-portal/commit/f6386cb) (문제 재현 토글 N1·N2) · [PR #2](https://github.com/junhyeong9812/react-portal/pull/2)
+- 커밋: [`8623f68`](https://github.com/junhyeong9812/react-portal-lab/commit/8623f68) (createModal) · [`f6386cb`](https://github.com/junhyeong9812/react-portal-lab/commit/f6386cb) (문제 재현 토글 N1·N2) · [PR #2](https://github.com/junhyeong9812/react-portal-lab/pull/2)
 - 학습 노트: [archive/learning/modal/n1-outside-click.md](../archive/learning/modal/n1-outside-click.md) · [n2-open-close-same-click.md](../archive/learning/modal/n2-open-close-same-click.md)
 
 ---
