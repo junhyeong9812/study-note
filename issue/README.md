@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 176개.
+현재 카드 180개.
 
 ## 분류 두 축
 
@@ -15,10 +15,10 @@
 | 태그 | 뜻 | 카드 수 |
 |------|----|---------|
 | [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 31 |
-| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 30 |
+| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 31 |
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 4 |
-| [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 10 |
+| [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 12 |
 | [`contract-drift`](#contract-drift) | 선언한 계약과 실제 동작의 어긋남 | 5 |
 | [`test-reliability`](#test-reliability) | 초록불이 결함 유무를 말해 주는가 | 7 |
 | [`parser-differential`](#parser-differential) | 검사하는 쪽과 실행하는 쪽의 해석 차이 | 3 |
@@ -27,7 +27,7 @@
 | [`identity`](#identity) | 같은 대상인가 — 식별자·정체성 판정 | 2 |
 | [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 | 3 |
 
-태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(61개)는 폴더 축으로만 분류한다.
+태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(62개)는 폴더 축으로만 분류한다.
 
 ## 포맷
 
@@ -42,17 +42,17 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (176)
-├─ cross-cutting/               127
+issue/  (180)
+├─ cross-cutting/               131
 │  ├─ concurrency/               10
 │  ├─ data/                      19
-│  ├─ database/                  10
+│  ├─ database/                  11
 │  ├─ distributed/                2
 │  ├─ document-rendering/         2
 │  ├─ gui-platform/               2
 │  ├─ infra/                     14
-│  ├─ network/                   11
-│  ├─ os/                         8
+│  ├─ network/                   13
+│  ├─ os/                         9
 │  ├─ reliability/               24
 │  ├─ search-engine/              8
 │  ├─ security/                  12
@@ -124,6 +124,7 @@ issue/  (176)
 - [add-column-default-shared-value](cross-cutting/database/add-column-default-shared-value/) — 비휘발 DEFAULT로 더한 열(빠른 기본값)은 기존 행 전부에 같은 값(열을 더한 트랜잭션의 now())을 준다 — 그 열로 "하한 뒤 바뀐 행"을 찾는 증분은 첫 창이 열 추가 시각을 덮으면 오류 없이 기존 행 전부를 읽으므로, 기동 때 카탈로그 값을 읽어 그 값 앞뒤 두 인덱스 범위로 빼고 키셋 페이지로 틱 비용을 묶는다(단일 열 인덱스의 같은 값 묶음은 예외).
 - [catalog-presence-vs-enabled](cross-cutting/database/catalog-presence-vs-enabled/) — 카탈로그 행은 존재를 말할 뿐 효력을 말하지 않는다 — 트리거 존재를 이름으로만 세면 `DISABLE TRIGGER`로 꺼진 트리거도 통과해 그 트리거를 전제로 한 기능이 조용히 유실하므로, "있어야 한다"는 `tgenabled` 허용 목록(O·A)으로, "없어야 한다"는 존재로 판정하고 거부 메시지에 관측 상태와 고치는 문장을 넣는다.
 - [ddl-lock-held-to-transaction-end](cross-cutting/database/ddl-lock-held-to-transaction-end/) — 테이블 락은 문장이 아니라 트랜잭션이 끝날 때 풀린다 — 파일 하나를 트랜잭션 하나로 돌리는 마이그레이션에서 열 추가의 ACCESS EXCLUSIVE가 같은 파일의 인덱스 생성이 끝날 때까지 읽기까지 막으므로, 막힘을 운영 크기 사본에서 재고 길면 도구 밖 단계 적용(SET LOCAL lock_timeout + 재시도 · RESET 뒤 CONCURRENTLY · 유효 확인 · 동치 확인 뒤 이력 기록)으로 나눈다.
+- [hidden-lock-wait-edges](cross-cutting/database/hidden-lock-wait-edges/) — 교착 고리는 코드에 적힌 잠금만으로 닫히지 않는다 — 부모 행을 배타 잠금한 정리 작업의 DELETE가 사용자 트랜잭션이 쥔 자식 행을 기다리면, 그 트랜잭션의 INSERT 외래 키 검사(FOR KEY SHARE)가 정리를 기다려 40P01이 되므로, 정리·배치는 SKIP LOCKED로 기다리지 않고 건너뛴 것은 새 문장 재확인 뒤 다음 실행에 미루며, SKIP LOCKED + 고정 LIMIT의 진행 막힘은 진행형 커서(틱 상한이면 다음 틱에 이월)로 풀고, 고리 없음은 고치기 전 형태의 40P01 대조 테스트와 함께 확인한다.
 - [hot-update-and-indexed-columns](cross-cutting/database/hot-update-and-indexed-columns/) — HOT 갱신은 인덱스 열이 안 바뀐 UPDATE에만 일어난다 — 갱신마다 바뀌는 변경 추적 열(updated_at)에 B-tree 인덱스를 걸면 HOT이 사실상 0이 되어 갱신마다 모든 인덱스에 새 항목이 생기고, 제자리 갱신 테이블에서는 BRIN이 최근 창을 거르지 못하므로, 비용을 측정 부하에서 재어 판정하고 운영 위험으로 기록한다.
 - [migration-discipline](cross-cutting/database/migration-discipline/) — 마이그레이션은 적용된 순간 불변(append-only) 이력이며 순번은 공유 번호공간이다 — 제자리 수정·병렬 브랜치 채번·빌드 산출물 잔존·미생성 리비전이 기동 실패와 누락을 만든다.
 - [periodic-full-scan-cost-growth](cross-cutting/database/periodic-full-scan-cost-growth/) — 매 바퀴 전체를 훑는 주기 작업(대조·정리)의 비용은 누적 행 수에 비례해 자라고, fixed delay 스케줄에서는 점유 비율도 함께 커진다 — 짧은 측정은 이를 숨기므로 목표 규모에서 켜고 끄기로 재며, 대처는 풀 분리로 병목을 가른 뒤 증분 대조(+ 드문 전체 훑기)·복제본 탐지·CDC 순으로 고른다.
@@ -173,13 +174,16 @@ issue/  (176)
 - [half-open-liveness-watchdog](cross-cutting/network/half-open-liveness-watchdog/) — 출력 전용·장기 스트리밍 연결은 상대가 사라져도 TCP 에러가 오지 않는다 — liveness는 앱이 의미 단위(완성 프레임·하트비트) 도착 시각으로 판정한다.
 - [http-cache-policy](cross-cutting/network/http-cache-policy/) — immutable·장기 캐시는 콘텐츠 주소화된 URL에만 쓰고, 상태 엔드포인트·버전 없는 정적 자원에는 캐시 정책을 명시해야 배포와 클라이언트가 어긋나지 않는다.
 - [http-streaming-status-locked](cross-cutting/network/http-streaming-status-locked/) — 응답 헤더가 커밋되는 순간 status는 확정되므로, 최종 상태를 보려면 커밋 이후가 아니라 가장 바깥 계층에서 확정 시점을 기준으로 관측해야 한다.
+- [keep-alive-idle-close-race](cross-cutting/network/keep-alive-idle-close-race/) — keep-alive 연결은 서버가 혼자 닫는다 — 서버 유휴 한도(기본 60초 · 검사 약 1초 간격)보다 클라이언트 휴지가 길 수 있고 클라이언트에 유휴 한도가 없으면, 막 닫히는 연결에 실린 비멱등 POST가 재시도 없이 EOF가 되므로, 홉마다 "다시 쓰는 쪽의 유휴 한도 < 닫는 쪽"을 맞추고, 못 맞추면 긴 휴지 앞 요청을 Connection: close로 보내며, 멱등 키 재시도는 서버 중복 제거가 있을 때만 쓴다.
 - [payload-transfer-cost](cross-cutting/network/payload-transfer-cost/) — 전송 비용은 크기×빈도다 — 바뀌지 않는 대형 본문을 매 틱 재전송하거나 필터 없이 통째로 반환하면 메모리·지연이 누적되므로 메타만 싣고 본문은 요청 시 회수한다.
 - [proxy-passthrough](cross-cutting/network/proxy-passthrough/) — 프록시·BFF 계층마다 헤더(XFF·쿠키·prefix·상관 ID)·status·스트림을 명시적으로 왕복시켜야 하며, 전달받은 헤더는 신뢰 홉 기준으로만 믿는다.
 - [reverse-tunnel-nat-traversal](cross-cutting/network/reverse-tunnel-nat-traversal/) — NAT·서브넷 단절로 inbound가 불가하면 연결 방향을 역전(outbound 유지형 역터널·브로커)한다.
+- [server-connection-ceiling](cross-cutting/network/server-connection-ceiling/) — 서버의 연결 상한(내장 서블릿 서버 기본 8,192)은 열린 연결 수를 세고 쉬는 keep-alive 연결도 자리를 쥔다 — 동시 연결 ≈ 도착률 × 보유 시간이라 세션이 긴 시나리오는 같은 도착률에서도 상한을 넘어 서버 안 측정기까지 코드 0을 받으므로, 칸마다 동시 연결 어림을 알려진 상한과 대조하고, 상한을 올릴 때는 기술자 한도를 함께 올리고 실행 중 적용값을 회차마다 대조하며, 측정에서만 올린 상한은 결과의 해석 주의로 남긴다.
 - [uri-encoding-rules](cross-cutting/network/uri-encoding-rules/) — URI는 ASCII와 예약문자 규칙을 따른다 — 비ASCII·경로 속 슬래시·표준 Base64·이중 인코딩은 도구·컨테이너마다 다르게 처리되므로 경계에서 올바르게 인코딩한다.
 
 #### [cross-cutting/os/](cross-cutting/os/) — 프로세스·경로·터미널
 
+- [device-op-reversibility](cross-cutting/os/device-op-reversibility/) — 장치 조작은 되돌릴 수 있는 정도가 다르다 — 링크가 없을 때 드라이버 재로드는 전원 관리 중인 장치를 D3cold에서 깨우지 못하게 만들 수 있고 PCI remove는 위쪽 포트가 절전이면 rescan으로 되찾지 못해 콜드 부팅만 남으므로, 읽기(링크·협상·커널 로그·전원 상태)로 원인 층을 먼저 좁히고, 공유 호스트에서는 돌고 있는 작업과 최악 결과를 먼저 말해 확인받고, 되돌림 경로(다른 접속·재부팅 허용)를 확보한 뒤 되돌리기 쉬운 조작부터 한다.
 - [execution-context-inheritance](cross-cutting/os/execution-context-inheritance/) — 자식 프로세스·서비스·훅은 실행 방식(셸·GUI 런처·systemd·영속 cd·플랫폼 주입)에 따라 env·PATH·cwd·TERM을 다르게 물려받는다 — 필요한 실행 문맥을 명시적으로 결정·정화한다.
 - [job-lifetime-bound-to-user-session](cross-cutting/os/job-lifetime-bound-to-user-session/) — 장기 작업의 수명·자원 단위는 띄운 곳의 cgroup·사용자 서비스 매니저에 묶인다 — oomd는 cgroup째 죽이고(setsid로 못 피함), 사용자 유닛은 linger 없이 로그아웃과 함께 정지한다, 별도 유닛·linger·Restart+멱등 재개로 떼어 낸다.
 - [nested-sandbox-capability](cross-cutting/os/nested-sandbox-capability/) — 샌드박스 안에서 자체 격리를 켜는 도구를 띄우면 상속된 실행 문맥이 내부 격리 초기화(루프백 설정 등)를 거부할 수 있다 — 파일 읽기 전면 실패가 exit 0 결과물로 포장되거나 호출마다 지연이 붙는다, 읽기 의존은 입력 인라인으로 우회하고 완료는 종료 코드·산출물·본문을 함께 보고 판정
@@ -389,7 +393,7 @@ issue/  (176)
 
 ### resource-bounding
 
-입력에 비례해 커지는 자원의 상한 — 30개
+입력에 비례해 커지는 자원의 상한 — 31개
 
 - [cancellation-reachability](cross-cutting/concurrency/cancellation-reachability/) · `cross-cutting/concurrency`
 - [event-loop-head-of-line-blocking](cross-cutting/concurrency/event-loop-head-of-line-blocking/) · `cross-cutting/concurrency`
@@ -406,6 +410,7 @@ issue/  (176)
 - [llm-serving-vram-and-backend](cross-cutting/infra/llm-serving-vram-and-backend/) · `cross-cutting/infra`
 - [load-balancer-defaults-in-backend-switch](cross-cutting/infra/load-balancer-defaults-in-backend-switch/) · `cross-cutting/infra`
 - [payload-transfer-cost](cross-cutting/network/payload-transfer-cost/) · `cross-cutting/network`
+- [server-connection-ceiling](cross-cutting/network/server-connection-ceiling/) · `cross-cutting/network`
 - [process-group-and-tree-termination](cross-cutting/os/process-group-and-tree-termination/) · `cross-cutting/os`
 - [subprocess-lifecycle-and-pipes](cross-cutting/os/subprocess-lifecycle-and-pipes/) · `cross-cutting/os`
 - [abandoned-request-late-processing](cross-cutting/reliability/abandoned-request-late-processing/) · `cross-cutting/reliability`
@@ -452,7 +457,7 @@ issue/  (176)
 
 ### race-condition
 
-순서·동시성에 따라 결과가 달라짐 — 10개
+순서·동시성에 따라 결과가 달라짐 — 12개
 
 - [aba-reusable-identifier](cross-cutting/concurrency/aba-reusable-identifier/) · `cross-cutting/concurrency`
 - [capture-context-at-request-time](cross-cutting/concurrency/capture-context-at-request-time/) · `cross-cutting/concurrency`
@@ -461,7 +466,9 @@ issue/  (176)
 - [single-writer-ownership](cross-cutting/concurrency/single-writer-ownership/) · `cross-cutting/concurrency`
 - [snapshot-stream-cursor](cross-cutting/concurrency/snapshot-stream-cursor/) · `cross-cutting/concurrency`
 - [thread-affine-object-confinement](cross-cutting/concurrency/thread-affine-object-confinement/) · `cross-cutting/concurrency`
+- [hidden-lock-wait-edges](cross-cutting/database/hidden-lock-wait-edges/) · `cross-cutting/database`
 - [monotonic-fencing](cross-cutting/distributed/monotonic-fencing/) · `cross-cutting/distributed`
+- [keep-alive-idle-close-race](cross-cutting/network/keep-alive-idle-close-race/) · `cross-cutting/network`
 - [script-modified-while-running](shell/script-modified-while-running/) · `shell`
 - [stale-render-state](typescript/react/stale-render-state/) · `typescript/react`
 

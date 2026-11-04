@@ -25,16 +25,16 @@
 |------|---------|------|
 | [concurrency/](concurrency/) | 10 | 순서·공유·취소 |
 | [data/](data/) | 19 | 값의 표현·해석·키 |
-| [database/](database/) | 10 | 스키마 이력·방언·트랜잭션 |
+| [database/](database/) | 11 | 스키마 이력·방언·트랜잭션 |
 | [distributed/](distributed/) | 2 | 원격 결과와 권리의 단조성 |
 | [document-rendering/](document-rendering/) | 2 | 텍스트·인쇄 레이아웃 |
 | [gui-platform/](gui-platform/) | 2 | 좌표계·웹뷰 엔진 |
 | [infra/](infra/) | 14 | 플랫폼·툴·배포 |
-| [network/](network/) | 11 | 프로토콜·연결·프록시 |
-| [os/](os/) | 8 | 프로세스·경로·터미널 |
+| [network/](network/) | 13 | 프로토콜·연결·프록시 |
+| [os/](os/) | 9 | 프로세스·경로·터미널 |
 | [reliability/](reliability/) | 24 | 실패가 삼켜지는 곳 |
 | [search-engine/](search-engine/) | 8 | 색인·쿼리·점수 |
 | [security/](security/) | 12 | 비밀·권한·신뢰 경계 |
 | [testing/](testing/) | 5 | 초록불의 증거력 |
 
-> 이 폴더의 메타 태그: `silent-failure`(26) · `resource-bounding`(24) · `least-privilege`(12) · `fail-closed`(4) · `race-condition`(8) · `contract-drift`(1) · `test-reliability`(5) · `parser-differential`(2) · `environment-drift`(6) · `encoding`(2) · `identity`(1) · `single-source-of-truth`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `silent-failure`(26) · `resource-bounding`(25) · `least-privilege`(12) · `fail-closed`(4) · `race-condition`(10) · `contract-drift`(1) · `test-reliability`(5) · `parser-differential`(2) · `environment-drift`(6) · `encoding`(2) · `identity`(1) · `single-source-of-truth`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).
