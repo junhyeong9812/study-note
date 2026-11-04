@@ -139,3 +139,78 @@ test("중첩 포털 팝오버 클릭은 부모 메뉴를 닫지 않는다", ...)
 
 ## 검증 기록
 - 2026-09-24: 사건 기록 대조·추상화(Claude 초안)
+
+## 방안 비교 — 포털 안 클릭의 "안쪽" 판정: DOM 영역을 나열하나, 논리 트리를 거슬러 오르나
+
+변형 D의 고친 코드는 "DOM 판정에 알려진 포털 영역(`popRef`)을 더한다"는 방안이다.\
+같은 원리(**"안쪽인가"는 관계 질문인데 DOM 위치로 답하면 포털 경계에서 틀린다**)에 다른 방안이 쓰인 사례: 대화상자 안에서 연 메뉴(포털 — DOM은 body 끝)의 항목을 누르자 대화상자가 "바깥 클릭"으로 닫혔다(메뉴도 대화상자의 논리 자식이라 함께 사라짐).
+
+```
+DOM 트리 (물리)                     논리 트리 (관계)
+body                               card
+├ portal ─ overlay ─ dialog         └ portal ─ overlay ─ dialog
+│            └ [메뉴 열기]                         └ [메뉴 열기]
+└ portal ─ menu                                         └ menu (portal)
+             └ [메뉴 항목] ← 클릭                           └ [메뉴 항목] ← 클릭
+dialog.contains(항목) = false → "바깥" ✗     항목 → … → dialog 도달 → "안쪽" ✓
+```
+
+### 방안 1 — DOM 판정 + 알려진 포털 영역 나열 (변형 D)
+```js
+if (!dialogEl.contains(t) && !popEl?.contains(t)) close();   // 포털이 하나 늘 때마다 영역을 더 나열
+```
+
+### 방안 2 — 클릭된 요소의 논리 노드에서 parent를 따라 올라가 묻기
+① 문제 코드
+```js
+document.addEventListener('pointerdown', (e) => {
+  if (!dialog.el.contains(e.target)) dialog.close('outside');   // 포털 메뉴 항목 = DOM상 바깥
+}, true);
+```
+② 고친 코드
+```js
+const elToNode = new WeakMap();                // 노드를 만들 때 자기 루트 DOM을 등록
+
+function nodeFor(el) {                         // 물리 → 논리로 건너가기: 출발 노드를 정할 때만 DOM을 탄다
+  for (let cur = el; cur; cur = cur.parentNode) {
+    const node = elToNode.get(cur);
+    if (node) return node;
+  }
+  return null;                                 // 어느 노드에도 속하지 않음 → 바깥
+}
+
+function isUnder(node, ancestor) {             // 그다음은 논리 트리만 (포털 노드의 parent = 연 쪽)
+  for (let n = node; n; n = n.parent) if (n === ancestor) return true;
+  return false;
+}
+
+document.addEventListener('pointerdown', (e) => {
+  const top = layers.at(-1);
+  if (!top) return;
+  if (isUnder(nodeFor(e.target), top.dialog)) return;   // 포털 중첩 깊이와 무관
+  top.close('outside');
+}, true);
+```
+무엇이 깨졌나: "이 클릭이 대화상자에 속하나"라는 관계 질문을 물리 포함(`contains`)으로 답했다.\
+테스트: 같은 요소에 대해 "DOM `contains`는 false"와 "닫히지 않음"을 함께 단언 — 판정을 `contains`로 되돌리면 실패함을 변이 점검으로 확인.
+
+### 반례 — 같은 대화상자의 Tab 가두기는 DOM에 묻는 게 맞다
+Tab의 다음 요소는 브라우저가 **DOM 순서**로 고른다 — 위치·순서 질문이므로 포커스 후보는 대화상자의 DOM 서브트리에서 모은다.\
+대가(알려진 상한): 논리 자손이지만 DOM이 다른 포털(메뉴 항목)은 Tab 순환에 들어가지 않는다 — 메뉴 항목에서 Tab하면 "밖"으로 보고 첫 요소로 돌린다.\
+확장 경로: 논리 자손 포털의 DOM까지 모아 순서 규칙(어느 요소 다음에 끼울지)을 정의하거나, 메뉴가 열리면 포커스를 메뉴로 옮기고 메뉴가 자기 키보드를 처리한다.
+
+| 질문 | 성격 | 묻는 트리 |
+|------|------|-----------|
+| 이 클릭이 대화상자에 속하나 · 이벤트를 누가 받나 · Context는 어디서 오나 | 관계 | 논리 |
+| 어디 그려지나 · 무엇에 잘리나 · Tab이 다음에 어디로 가나 | 위치·순서 | DOM |
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 1. DOM + 포털 영역 나열 | 포털이 적고 미리 알려져 있다 | 영역 ref 배선 | 새 (중첩) 포털을 나열에서 빠뜨리면 같은 결함 재발 | 논리 트리를 직접 조회할 수단이 없는 앱 코드 |
+| 2. 논리 트리 역주행 | 요소→논리 노드 매핑과 parent 포인터가 있다 | 등록 레지스트리 · 클릭마다 깊이만큼 순회 | 등록되지 않은 DOM(외부 위젯이 body에 직접 붙인 요소)은 바깥으로 판정 | 포털 계층을 직접 소유한 라이브러리·프레임워크 계층 |
+
+**결론**: 논리 트리를 조회할 수 있으면 관계 판정은 그 트리에서 하는 쪽(2)이 중첩 깊이에 상관없이 성립한다 — 나열(1)은 포털이 늘 때마다 같은 결함이 되살아날 자리를 만든다.\
+논리 트리가 손에 없으면(1)이 현실적이지만, 그때는 중첩 포털 시나리오 테스트가 나열 누락을 잡는 유일한 장치다.\
+어느 쪽이든 질문마다 "관계인가, 위치인가"를 먼저 갈라 묻는 트리를 정한다 — Tab 순서처럼 브라우저가 DOM으로 정하는 것은 DOM에 묻는다.
+
+- 2026-11-04: 사건 기록 대조·추상화(Claude 초안)
