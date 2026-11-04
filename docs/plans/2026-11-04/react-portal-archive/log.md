@@ -28,3 +28,4 @@
 - **issue 3카드 방안 비교**(4건 매칭, 신규 카드 0 — 모두 기존 원리와 같고 해결 방안이 다름).
 - **project/react-portal** README(저장소·PR·커밋 링크) + 이슈 01~07(§2-B, 스니펫 전 줄 커밋 원문 대조) + archive(learning·frontend 26파일).
 - 남은 것: main 병합·push 사용자 확인 대기. `[?]` 잔여: 25(2) 26(1) 27(10→8).
+| 2026-11-04 | 후속: react-portal 메뉴 키보드(PR #4)로 Tab 한계 해소 → project 04·README·archive 동기화, issue 카드 tree-position-semantics에 `## 정정` append(노출 스캔 0) | 커밋 7c6bd683 · 619b4660 |
