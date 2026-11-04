@@ -79,7 +79,7 @@ Tab 순서는 **DOM 순서**를 따른다. 모달은 body 끝에 붙어 있어�
 
 - **가장자리에서만 개입**: 중간 이동은 브라우저 기본 Tab 동작에 맡긴다.
 - **왜 microtask인가**: `createModal`은 dialog만 만들고 돌려준다. 호출한 쪽이 **같은 동기 흐름에서** 버튼들을 붙인 뒤에 포커스를 옮겨야 첫 버튼을 찾을 수 있다. microtask는 현재 동기 코드가 끝난 직후에 실행된다.
-- **알려진 한계**(`ponytail:` 주석): Tab 순환 범위는 dialog의 DOM 서브트리뿐 → 모달 안 드롭다운 메뉴의 버튼은 Tab 순환에 안 들어간다.
+- **알려진 한계**(`ponytail:` 주석): Tab 순환 범위는 dialog의 DOM 서브트리뿐 → 모달 안 드롭다운 메뉴의 버튼은 Tab 순환에 안 들어간다. → **2026-11-04 해소**: 메뉴가 열리면 포커스가 메뉴로 가고 ↑↓·ESC·Tab을 메뉴가 처리(`createMenu` + 오버레이 스택, [n3-tab-trap](n3-tab-trap.md) 「해소」).
 - `role="dialog"`, `aria-modal="true"`: 스크린 리더에 "모달 대화상자"임을 알린다. 기준: WAI-ARIA Authoring Practices의 Dialog(Modal) 패턴.
 
 ---

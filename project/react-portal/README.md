@@ -60,4 +60,4 @@ root                                 body
 ## 남은 것
 
 - 모달 click-through(바깥 `pointerdown`으로 오버레이가 사라진 뒤 같은 클릭의 click이 뒤 요소로 가는지) — 실브라우저 미검증.
-- 모달 Tab 순환에 모달 안에서 연 portal(메뉴)의 버튼이 포함되지 않음 — 알려진 한계.
+- ~~모달 Tab 순환에 모달 안에서 연 portal(메뉴)의 버튼이 포함되지 않음~~ → 2026-11-04 해소: 메뉴가 포커스를 받고 ↑↓·ESC·Tab을 직접 처리(`createMenu` + 오버레이 스택, [커밋 `c77eca7`](https://github.com/junhyeong9812/react-portal/commit/c77eca7) · [04](04-escape-and-focus/README.md) 「해소」).
