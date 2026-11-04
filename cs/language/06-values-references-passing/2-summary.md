@@ -12,6 +12,7 @@
 
 - *값(value)*: 변수 칸에 직접 든 데이터. Java의 `int`, C의 구조체.
 - *참조(reference)*: 힙에 있는 객체를 가리키는 값. 변수 칸에는 주소 같은 "가리킴"만 든다.
+  - 흔한 오해: "객체를 변수·컬렉션·클로저에 넣으면 데이터가 복사되어 들어간다". 들어가는 것은 참조다. 그래서 담긴 쪽에서 고치거나 닫으면 원래 그 객체가 바뀐다. 복사는 `{...o}`·`[...a]`·`copy.copy` 같은 연산을 직접 부를 때만 일어나고, 그것도 얕다(§3).
 
 쉬운 예: 공유 문서다.
 - 링크를 보내면 받은 사람이 고친 내용이 내 화면에도 보인다 → 참조 공유.
@@ -46,6 +47,17 @@
 - Java: 기본형(`int`·`long`·`double` …)은 칸에 값, 그 밖은 참조(JLS 4.1의 두 종류 타입).
 - Python: 모든 값이 객체이고, 변수는 객체를 가리키는 이름이다(원고 §1).
 - C: 구조체·배열 원소도 칸에 값으로 들어간다. 참조가 필요하면 포인터를 명시한다.
+- JS: 원시값(`string`·`number`·`boolean`·`undefined`·`null`·`symbol`·`bigint`)은 값처럼 동작하고, 나머지(객체·배열·함수·DOM 노드)는 참조다(ECMAScript 2024 6.1 ECMAScript Language Types). 원시값은 바꿀 수 없으므로, 읽어 둔 원시값은 원래 자리가 나중에 바뀌어도 그대로다 — "저장했다가 복원"이 이 성질에 기댄다.
+
+```text
+  saved = el.style.overflow     saved ──▶ 'scroll'   (문자열 값, 독립)
+  el.style.overflow = 'hidden'  el.style.overflow ──▶ 'hidden'
+  saved                         여전히 'scroll'  → el.style.overflow = saved 로 복원
+
+  savedStyle = el.style         savedStyle ──▶ CSSStyleDeclaration ◀── el.style   (같은 객체)
+  el.style.overflow = 'hidden'  savedStyle.overflow도 'hidden'  → 복원용으로 쓸 수 없다
+```
+
 - Go: 구조체는 값이다. 슬라이스·맵은 내부 저장소를 가리키는 헤더라서 복사해도 저장소를 공유한다([languages/go/syntax/05](../../../languages/go/syntax/05-arrays-vs-slices-value-and-header/2-summary.md)).
 
 ### 2. 전달 방식 — 무엇이 복사되나

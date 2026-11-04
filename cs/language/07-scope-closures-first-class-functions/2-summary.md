@@ -13,6 +13,7 @@
 
 - *1급 함수(first-class function)*: 함수를 변수에 담고, 인자로 넘기고, 반환할 수 있는 성질.
 - *클로저(closure)*: 함수 코드 + 그 함수가 만들어질 때의 **환경(변수 묶음)** 에 대한 참조.
+  - 흔한 오해: "클로저는 만들 때 바깥 데이터를 복사해 넣어 둔다". JS·Python 클로저는 변수 자체를 가리킨다(§2 표). 변수에 객체가 들어 있으면 그 참조를 따라 **원래 객체**를 쓴다. 값 복사는 Java 람다처럼 언어가 그렇게 정한 경우다.
 - *람다(lambda)*: 이름 없는 함수 식. 클로저를 만드는 흔한 문법이다.
 
 쉬운 예: 레시피 카드와 냉장고다.
@@ -47,6 +48,19 @@
 - *환경 레코드(environment record)*: 이름 → 값 칸의 묶음. 함수 호출·블록마다 생긴다(ECMAScript 2024 9.1 "Environment Records").
 - *스코프 체인*: 환경 레코드가 바깥 환경을 가리키는 사슬.
 - 클로저는 만들어질 때의 환경을 가리킨다. 그래서 호출이 끝나도 그 환경은 힙에 남는다.
+- 같은 호출에서 만든 클로저들은 **같은 환경**을 가리킨다. 한 클로저가 바꾼 변수를 다른 클로저가 본다.
+
+```text
+  function dispatch(e) {                 dispatch() 호출 환경 { stopped: false → true }
+    let stopped = false;                       ▲ [[Environment]]          ▲
+    const ev = { stop: () => { stopped = true; } };   ev.stop 클로저       루프 본문
+    for (const h of handlers) {                (쓴다)                     (읽는다)
+      h(ev);
+      if (stopped) break;                ev.stop()이 칸을 바꾸면 → 루프가 다음 검사에서 true를 본다
+    }                                    복사였다면 루프는 계속 false를 봤을 것이다
+  }
+```
+
 - SICP 3.2 "The Environment Model of Evaluation"이 이 모델을 프레임과 환경으로 설명한다(절 번호는 MIT Press 공개 HTML 목차로 확인).
 
 ### 실험 A: 호출마다 새 환경, 반복마다 새 환경

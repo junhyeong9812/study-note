@@ -101,3 +101,24 @@ document.addEventListener('click', (e) => {
 ```
 
 - 내부에서 "이미 처리됨"을 알리고 싶으면 `preventDefault()` + 상위에서 `e.defaultPrevented` 확인처럼 전파를 끊지 않는 신호를 쓴다. 단, `preventDefault()`는 그 이벤트의 기본 동작(링크 이동·체크박스 토글 등)도 취소하므로, 기본 동작이 필요한 요소에서는 쓰지 않는다.
+
+### 10. 같은 클릭은 같은 객체
+
+(실험, jsdom 29.1.1 · vitest 4.1.12 · Node 20.19.6, 2026-11-04)
+
+```text
+클릭 1:
+  inner: 처리 (target=BUTTON, currentTarget=inner)
+  outer: 같은 이벤트 객체 → 건너뜀
+  inner·outer가 받은 객체 같음? true  document까지 감? true
+클릭 2:
+  inner: 처리 (target=BUTTON, currentTarget=inner)
+  outer: 같은 이벤트 객체 → 건너뜀
+  클릭1 객체 === 클릭2 객체? false
+처리 횟수(클릭 2번)=2  document 리스너 호출 수=2
+```
+
+- 처리 2번, `document` 리스너 2번.
+- 한 클릭의 경로 위 리스너들은 같은 이벤트 객체 하나를 받는다. 그래서 `WeakSet`(객체 동일성)으로 "같은 클릭이 두 번째 리스너에 도착"을 거를 수 있다.
+- 사용자가 두 번 누르면 브라우저가 이벤트 객체를 둘 만든다(`false`). 표시는 객체마다라 두 클릭 모두 처리된다. 연타를 하나로 줄이려면 시간 기준의 디바운스·스로틀이 필요하다.
+- `inner`가 처리해도 `document` 리스너는 불렸다. 전파는 `stopPropagation()`·`stopImmediatePropagation()`을 부를 때만 멈춘다.

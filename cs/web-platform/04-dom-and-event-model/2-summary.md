@@ -18,6 +18,7 @@
 - DOM은 문서를 **트리**로 두고, 이벤트를 **트리 경로를 따라 전파**한다. 위에서 내려오며(캡처) 대상에 닿고 다시 올라가며(버블) 조상들이 같은 이벤트를 본다.
   - *DOM(Document Object Model)*: 문서를 노드 트리로 나타낸 것과 그것을 다루는 API. WHATWG DOM 표준이 정한다.
   - *이벤트 전파*: 이벤트 하나가 경로 위 여러 노드의 리스너를 차례로 부르는 것.
+    - 흔한 오해: "어느 리스너가 처리했으면 전파가 거기서 멈춘다". 전파를 멈추는 것은 `stopPropagation()`·`stopImmediatePropagation()` 호출뿐이다. 처리했는지와 무관하게 경로 끝까지 간다(§4 실험: 안쪽 리스너가 처리한 클릭도 `document` 리스너까지 갔다).
 - 그래서 조상 하나가 자손 전체의 이벤트를 받는 **위임(delegation)** 이 가능해진다.
 
 쉬운 예: 아파트 단지 택배다.
@@ -50,6 +51,17 @@
 
 - DOM 표준은 노드 트리와 **트리 순서**(전위 깊이 우선)를 정의한다. `querySelectorAll`의 결과 순서, `compareDocumentPosition`이 이 순서를 따른다. → [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md), [web-api/01 문서와 노드 트리](../../../languages/web-api/01-document-and-node-tree/2-summary.md)
 - 노드 종류: Document, Element, Text, Comment, DocumentFragment(그림자 루트 포함) 등. 이벤트를 받을 수 있는 것은 `EventTarget`을 구현한 객체다 — 노드뿐 아니라 `window`, `AbortSignal`, `XMLHttpRequest`도 그렇다.
+- 노드를 만드는 것과 트리에 넣는 것은 별개의 연산이다.
+
+```text
+  document.createElement('div')        appendChild / append / insertBefore
+   └─▶ [div]  parentNode = null    ──────────────────────────────▶  body ─ … ─ [div]
+       isConnected = false                                          isConnected = true
+       화면에 없음, 이벤트 경로 = 자기 조상까지만                      화면에 그려짐, 경로가 Window까지
+```
+
+  - *분리된 노드(detached node)*: 문서 트리에 연결되지 않은 노드. `isConnected`가 false다.
+    - 흔한 오해: "`createElement`로 만들면 문서 어딘가에 등록된다". 만든 노드는 소유 문서(`ownerDocument`)만 알 뿐 트리에는 없다. 삽입 연산을 불러야 들어간다. 그래서 같은 방식으로 만든 노드를 어느 부모에든(카드 안에든 `body` 직속에든) 붙일 수 있다(§4 실험: 붙이지 않은 `div`를 클릭해도 `document` 리스너는 0번 불렸다).
 
 ### 2. 이벤트 디스패치 — 경로를 먼저 정하고, 거꾸로 한 번·바로 한 번
 
@@ -132,6 +144,48 @@ b.click()  : L1 → L2 → click() 반환 → micro
 
 - 버블 단계 위임은 버블링하는 이벤트(`click`, `input`, `keydown`, `focusin` 등)에만 된다. 버블하지 않는 이벤트도 조상의 캡처 리스너로는 받을 수 있다. `focus`·`blur`·`mouseenter`·`load`(요소)는 버블하지 않는다 — 각각 `focusin`/`focusout`, `mouseover`를 쓰거나 캡처 리스너로 받는다. → [web-api/18 이벤트 위임](../../../languages/web-api/18-event-delegation/2-summary.md)
 - `e.target`은 항목 안의 아이콘·텍스트일 수 있다. 그래서 `closest()`로 항목까지 올라가고, 그 항목이 위임 조상 안에 있는지 확인한다.
+- 위임에서는 "누가 무엇을 하나"가 두 단계로 나뉜다.
+
+```text
+  처음 그림                                 실제 — 두 단계
+  브라우저가 DOM을 따라 올라가며             [1] 브라우저: 경로(DOM 조상 체인)를 따라
+  "이 버튼의 처리 방법"을 찾는다                 addEventListener된 리스너를 호출할 뿐이다
+                                                 (버튼에는 리스너가 없고 ul#list에 하나)
+                                                        │ 리스너 = 위임 함수(디스패처)
+                                                        ▼
+                                            [2] 디스패처(앱 코드): e.target에서 항목을 되찾고
+                                                 앱이 정한 표(data-action·핸들러 맵)로 처리를 고른다
+```
+
+- 브라우저는 처리 방법을 고르지 않는다. 처리 방법은 2단계의 앱 코드가 정한다. 프레임워크 이벤트 시스템도 같은 모양이다 — React 17 블로그 "React v17.0": "it will attach them to the root DOM container into which your React tree is rendered".
+- 경로 위 리스너들이 받는 것은 **같은 이벤트 객체 하나**다. 리스너를 두 곳(중첩 컨테이너)에 달면 한 클릭이 두 번 도착한다. 사용자가 두 번 누르면 이벤트 객체도 둘이다.
+
+### 실험: 같은 클릭은 같은 객체, 두 번 누르면 두 객체
+
+환경: vitest 4.1.12 + jsdom 29.1.1, Node 20.19.6. `div.outer > div.inner > button`. `inner`·`outer`에 같은 리스너(이미 본 이벤트 객체면 `WeakSet`으로 건너뜀)를, `document`에 호출 수 카운터를 달고 `btn.click()`을 두 번 불렀다. 앞서 붙이지 않은 `div`를 클릭해 `document` 카운터도 봤다. 출력 첫 줄의 `button`은 아직 문서에 붙이지 않은 `div.inner` 안에 넣은 상태다.
+
+(실험, jsdom 29.1.1 · vitest 4.1.12 · Node 20.19.6, 2026-11-04)
+
+```text
+createElement 직후: parentNode=inner isConnected=false
+붙이지 않은 div: parentNode=null isConnected=false
+붙이지 않은 div 클릭 → document 리스너 호출 수=0
+appendChild 뒤: btn.isConnected=true
+클릭 1:
+  inner: 처리 (target=BUTTON, currentTarget=inner)
+  outer: 같은 이벤트 객체 → 건너뜀
+  inner·outer가 받은 객체 같음? true  document까지 감? true
+클릭 2:
+  inner: 처리 (target=BUTTON, currentTarget=inner)
+  outer: 같은 이벤트 객체 → 건너뜀
+  클릭1 객체 === 클릭2 객체? false
+처리 횟수(클릭 2번)=2  document 리스너 호출 수=2
+```
+
+- 한 클릭의 `inner`·`outer` 리스너는 같은 객체를 받았다(`true`). 그래서 객체 동일성으로 "이 클릭은 이미 처리함"을 표시할 수 있다.
+- 두 클릭은 다른 객체였다(`false`). 이 표시는 중복 **도착**을 막을 뿐, 사용자의 연타를 하나로 줄이지 않는다(처리 2회). 연타 줄이기는 타이머 기반의 디바운스·스로틀이다.
+- `inner`가 처리했어도 `document` 리스너는 클릭마다 불렸다. 처리 여부는 전파를 멈추지 않는다.
+- 분리된 노드의 클릭은 `document`에 닿지 않았다(0). 경로가 그 노드의 조상까지만 만들어지기 때문이다(§2).
 
 ### 실험: 위임 vs 개별 리스너, 그리고 `stopPropagation`
 
@@ -272,7 +326,10 @@ class Widget {
   - 문법: [web-api/01](../../../languages/web-api/01-document-and-node-tree/2-summary.md), [web-api/02 라이브 컬렉션](../../../languages/web-api/02-element-queries-and-live-collections/2-summary.md), [web-api/15 리스너 등록](../../../languages/web-api/15-listener-registration/2-summary.md), [web-api/16](../../../languages/web-api/16-event-propagation-phases/2-summary.md), [web-api/17](../../../languages/web-api/17-stoppropagation-vs-preventdefault/2-summary.md), [web-api/18](../../../languages/web-api/18-event-delegation/2-summary.md), [web-api/19](../../../languages/web-api/19-passive-and-scroll/2-summary.md), [web-api/20](../../../languages/web-api/20-listener-lifetime/2-summary.md), [web-api/21 사용자 정의 이벤트](../../../languages/web-api/21-custom-events/2-summary.md)
   - 자료구조: [algorithm/12-dfs](../../algorithm/12-dfs/2-summary.md), [data-structure/08-graph](../../data-structure/08-graph/2-summary.md)
 - 문서
+  - React 블로그 "React v17.0"(2020-10-20, Changes to Event Delegation) <https://legacy.reactjs.org/blog/2020/10/20/react-v17.html>
   - WHATWG DOM 표준 <https://dom.spec.whatwg.org/> — 2.7 Interface EventTarget(event listener: type·callback·capture·passive·once·signal·removed, default passive value), 2.2 Interface Event(eventPhase 상수, stopPropagation·stopImmediatePropagation 단계), 2.9 Dispatching events(경로 역순 capturing·정순 bubbling, bubbles=false 건너뜀, inner invoke의 capture 필터, 리스너 목록 복제), 1.1 Trees("tree order is preorder, depth-first traversal"), 4.2 Node tree(노드 종류)
 - 실험 목록(headless Chrome 151.0.7922.173, Playwright `playwright-core`, Node 20, 127.0.0.1 로컬 페이지, 스로틀 없음, 2026-10-04)
   - `e04-events.js` (a) 실제 클릭 전파 순서·eventPhase (b) 개별 vs 위임 리스너 1,000개의 `JSEventListeners`, 기존·추가·`stopPropagation` 항목 처리 여부 (c) mount·unmount 100·200·300회 후 GC 뒤 `Nodes`·`JSEventListeners`(해제 안 함 vs AbortController) — 3회 같은 출력
   - `e04b-micro-between.js`: 리스너 두 개 사이의 마이크로태스크 — 실제 클릭 vs `el.click()`
+- 실험 목록(vitest 4.1.12 + jsdom 29.1.1, Node 20.19.6, 2026-11-04)
+  - 중첩 컨테이너 두 리스너가 받는 이벤트 객체의 동일성, 클릭 2회의 객체 구분, `WeakSet` 중복 표시의 처리 횟수, 분리된 노드 클릭의 `document` 도달 여부

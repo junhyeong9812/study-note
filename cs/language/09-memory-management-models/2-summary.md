@@ -130,6 +130,18 @@ for i in range(1000):
 - "추적 GC면 누수가 없다"는 틀렸다. 루트에서 **닿는데 다시 안 쓰는** 객체(지우지 않는 static 캐시)는 영원히 산다. 진단은 [reliability/37-memory-leak-and-heap-analysis](../../reliability/37-memory-leak-and-heap-analysis/2-summary.md).
   - 흔한 오해: "GC 언어에는 메모리 누수가 없다." GC가 지우는 것은 도달 불가 객체뿐이다. 도달 가능하지만 쓸모없는 객체가 쌓이는 누수는 그대로 생긴다(JVMS §2.5.3은 GC 방식을 정하지 않고 "objects are never explicitly deallocated"만 말한다).
 
+- 추적 GC가 회수하는 것은 **메모리**다. 회수할 때 앱의 정리 코드를 불러 주지 않는다.
+
+```text
+  처음 그림                                  실제
+  객체가 안 쓰임 ─▶ 정리 코드 자동 실행        객체가 안 쓰임 ─▶ (언젠가) GC가 메모리만 회수
+  (리스너 해제·파일 닫기·타이머 취소)          정리 코드는 close()/dispose()를 명시 호출할 때만 돈다
+                                             └ 게다가 리스너·타이머가 객체를 붙잡고 있으면 회수도 안 된다
+```
+
+  - *소멸자(destructor)*: 객체가 해제될 때 정해진 시점에 실행되는 정리 코드. C++ 소멸자·Rust `Drop`이 그 예다(6절).
+    - 흔한 오해: "GC 언어도 객체가 사라지면 정리 코드가 자동으로 돈다". Java의 `finalize`는 JDK 18에서 제거 예정(deprecated for removal)이 되었다(JEP 421). JS의 `FinalizationRegistry` 콜백은 불린다는 보장이 없다(MDN: "not required to call cleanup callbacks"). 결정적 정리는 `try-with-resources`·`close()`·`dispose()`처럼 코드가 직접 부르는 경로로 한다.
+
 ### 실험 2: 같은 순환을 추적 GC는 회수한다 (Java 21)
 
 ```java
@@ -205,6 +217,19 @@ printf("dangling a->user=%s balance=%d\n", a->user, a->balance);   /* UB */
 - Rust 책 4.1 "Ownership Rules": 값마다 소유자가 있다. 소유자는 한 번에 하나다. 소유자가 스코프를 벗어나면 값이 drop된다.
 - 소유자가 하나뿐이니 "누가 해제하나"가 정적으로 정해진다. 안전한(safe) Rust 코드에서는 double free·use-after-free가 컴파일 단계에서 거부된다. `unsafe` 블록 안의 원시 포인터 접근은 이 검사를 받지 않아, 그 안전성은 작성자가 책임진다(Rust 책 20.1 "Unsafe Rust").
 - drop은 "보통" 스코프 끝에서 한 번 일어난다. `mem::forget`·`ManuallyDrop`은 소멸자 실행을 막으며, 이것도 safe다(Rust Reference "Not running destructors").
+- 정리 순서는 **획득의 역순**(LIFO)이다. 나중에 얻은 자원이 먼저 얻은 자원에 기댈 수 있기 때문이다.
+
+```text
+  획득 순서            해제 순서 (스택처럼)
+  ① 연결 열기          ③ 결과 집합 닫기
+  ② 문장 준비          ② 문장 닫기
+  ③ 결과 집합 열기     ① 연결 닫기      ← ①을 먼저 닫으면 ②③이 죽은 연결을 쓴다
+```
+
+  - Rust: 지역 변수는 선언의 역순으로 drop된다(Rust Reference "Destructors": "dropped in reverse order of declaration").
+  - Java: `try-with-resources`는 초기화한 역순으로 닫는다(JLS 14.20.3: "closed in the reverse order from that in which they were initialized").
+  - Go: `defer`한 함수는 등록의 역순으로 실행된다(Go 명세 "Defer statements").
+  - 추적 GC 언어에서 이 순서를 지키려면 정리 함수를 목록에 쌓아 두었다가 거꾸로 부르는 코드를 직접 쓴다. 자식이 있는 객체라면 자식을 먼저 정리(재귀)한 뒤 자기 목록을 거꾸로 돈다 — 결과적으로 가장 깊은 것부터 끝난다.
 - 공유가 필요하면 *빌림(borrow)*(`&T`·`&mut T`)이나 `Rc<T>`를 쓴다. 빌림 규칙(공유 읽기 여럿 또는 쓰기 하나)은 [languages/rust/언어-특성 §2~4](../../../languages/rust/언어-특성/README.md).
 - 한계: `Rc` 순환은 Rust에서도 샌다. Rust 책 15.6: "Preventing memory leaks entirely is not one of Rust's guarantees, meaning memory leaks are memory safe in Rust". 누수는 메모리 안전 위반이 아니다.
 - 이 노트의 실험 환경에서는 Rust 컴파일러를 쓰지 않았다(호스트 도구 제한). 오류 `E0382`의 문구와 예제는 Rust 오류 코드 색인에서 확인했다.
@@ -344,6 +369,8 @@ gcc -Wall -Wextra -O2 -c app.c                                   # -Wuse-after-f
   - google/sanitizers 위키 AddressSanitizerFlags(`quarantine_size_mb` 기본 256) <https://github.com/google/sanitizers/wiki/AddressSanitizerFlags>
   - PEP 683 "Immortal Objects, Using a Fixed Refcount"(Python 3.12, Final) <https://peps.python.org/pep-0683/>
   - The Rust Programming Language 4.1 "What is Ownership?"(Ownership Rules) <https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html>, 15.6 "Reference Cycles Can Leak Memory" <https://doc.rust-lang.org/book/ch15-06-reference-cycles.html>, 오류 색인 E0382 <https://doc.rust-lang.org/error_codes/E0382.html>
+  - Rust Reference "Destructors"(지역 변수 drop 순서) <https://doc.rust-lang.org/reference/destructors.html> · JLS SE21 14.20.3 try-with-resources <https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html> · Go 명세 "Defer statements" <https://go.dev/ref/spec#Defer_statements>
+  - JEP 421 "Deprecate Finalization for Removal"(JDK 18) <https://openjdk.org/jeps/421> · MDN `FinalizationRegistry` <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/FinalizationRegistry>
   - JVMS SE21 §2.5.3 Heap <https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-2.html>
   - GCC 13 `-Wuse-after-free`, `-fsanitize=address` — 실행으로 확인
 - 실험(호스트 i7-13700HX, 컨테이너 `--cpus=2 --network none`)

@@ -47,6 +47,30 @@
 - 비용: mark는 **살아 있는** 객체 수에, sweep은 **힙 전체** 크기에 비례한다.
 - 약점: 객체를 옮기지 않으므로 빈칸이 흩어진다(단편화 — [os/11 §3](../../os/11-heap-allocation/2-summary.md)).
 
+- mark가 따라가는 것은 **강한 참조**다. 약한 참조(Java `WeakReference`, JS `WeakRef`·`WeakSet`·`WeakMap`)는 따라가지 않는다.
+
+```text
+  루트 ──강한──▶ Set ──강한──▶ [a]           a: 강한 경로가 있다 → 검정 → 산다
+  루트 ──강한──▶ WeakSet ┄┄약한┄┄▶ [b]       b: 약한 경로뿐 → 흰색 → 회수, WeakSet에서도 빠진다
+```
+
+  - *약한 참조(weak reference)*: 도달 판정에 세지 않는 참조. 대상이 다른 강한 경로로 살아 있을 때만 쓸 수 있다.
+    - 흔한 오해: "WeakSet·WeakMap은 객체를 복사해 넣는다" 또는 "넣어 두면 붙잡아 준다". 둘 다 아니다. 넣는 것은 그 객체를 가리키는 약한 참조이고, `has`는 같은 객체인지(동일성)로 판정한다. 객체에 "표시"만 붙이고 수명은 건드리지 않을 때 쓴다. Java `java.lang.ref` 패키지 문서는 "neither strongly nor softly reachable but can be reached by traversing a weak reference"를 weakly reachable로 정의하고, 그 약한 참조들이 비워지면 객체가 "eligible for finalization"이 된다고 적는다(이어서 회수 단계로 간다).
+
+### 실험: 강한 참조 vs 약한 참조만 남은 객체 (Node)
+
+`Set`에 `a`를, `WeakSet`에 `b`를 넣고 지역 변수를 `null`로 끊은 뒤, 다음 태스크에서 `gc()`를 부르고 또 다음 태스크에서 `WeakRef.deref()`로 살아 있는지 봤다. `WeakRef`는 만든 작업(job) 동안 대상을 붙잡으므로 태스크를 넘겨 확인했다.
+
+(실험, Node 20.19.6 `node --expose-gc`(vitest 4.1.12 테스트에서 자식 프로세스로 실행), 2026-11-04 — 3회 같은 출력)
+
+```text
+Set에 강하게 담긴 a  : 살아 있음
+WeakSet에만 담긴 b   : 회수됨
+```
+
+- `Set`의 강한 참조는 루트에서 닿는 경로라 `a`가 살았다. `WeakSet`의 약한 참조는 경로로 치지 않아 `b`가 회수됐다.
+- `gc()` 호출로 수집을 강제한 관찰이다. 강제하지 않으면 언제 회수될지는 엔진이 정한다.
+
 ### 2. 복사·압축 — 산 것만 옮겨 빈칸을 한데 모은다
 
 ```text
@@ -269,6 +293,9 @@ for (;; i++) {
   - `java` 도구 문서(JDK 21) — `-XX:+UseGCOverheadLimit`(98%·2%), `-XX:MaxGCPauseMillis`(G1 기본 200ms), `-XX:+UseZGC` <https://docs.oracle.com/en/java/javase/21/docs/specs/man/java.html>
   - OpenJDK jdk21u 소스 — `src/hotspot/share/gc/g1/g1CollectedHeap.cpp`(`update_gc_overhead_counter`, 로그 "GC Overhead Limit exceeded too often"), `src/hotspot/share/gc/shared/gc_globals.hpp`(`GCTimeLimit` 98, `GCHeapFreeLimit` 2, `GCOverheadLimitThreshold` 5), `src/hotspot/share/runtime/os.cpp`(`is_server_class_machine`), `src/hotspot/share/gc/shared/gcConfig.cpp`(`select_gc_ergonomically`)
   - JVMS SE21 §2.5.3 Heap <https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-2.html>
+  - Java SE 21 API `java.lang.ref` 패키지(reachability: strongly·weakly reachable) <https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/ref/package-summary.html> · ECMAScript 2024 `WeakRef`·`WeakSet`(KeepDuringJob, liveness) <https://262.ecma-international.org/15.0/>
+- 실험(Node 20.19.6 `--expose-gc`, vitest 4.1.12 테스트의 자식 프로세스, 2026-11-04)
+  - 강한 참조(`Set`) vs 약한 참조(`WeakSet`)만 남은 객체의 회수 여부 — `WeakRef.deref()`로 확인, 3회 같은 출력
 - 실험(호스트 i7-13700HX, `eclipse-temurin:21-jdk` 21.0.12, `--cpus=2 --network none`)
   - 실험 1: 수집기 4종 같은 부하 — `--memory=1g`, `-Xms512m -Xmx512m`, 산 데이터 200MB + 할당 8GB, sleep(1) 지연 관찰 스레드, 각 3회 + 사실 점검 재실행 2회(호스트 부하 높음). ZGC STW는 `-Xlog:gc,gc+phases`로 별도 2회.
   - 실험 2: static 연결 리스트 누수 — `-Xmx64m`, Parallel·G1 각 2회 + 재실행 1회, OOM 메시지·Full GC 횟수·STW 합계
