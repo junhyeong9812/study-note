@@ -170,3 +170,78 @@ el.addEventListener("drop", e => { const zone = zoneAt(e.clientX, e.clientY); /*
 **결론**: 입력이 **아예 없으면** 환경 계층(1)을, **오긴 오는데 이상하면** 이벤트 계층(기본)을 먼저 본다.\
 종료 방식이 여러 개인 상호작용은 로컬 이벤트로 정리를 보장할 수 없으므로 창 단위 백스톱(2)을 기본 장치로 둔다.\
 어느 경우든 추측이 반복 실패하면 이벤트 순서를 계측해 사실부터 확정한다.
+
+## 방안 비교 — 여는 click이 방금 단 닫기 리스너에도 걸린다
+
+같은 원리(**입력 이벤트는 "처리됐다"고 멈추지 않고 정해진 경로를 끝까지 흐른다** — 변형 C)의 다른 사례: 버튼의 click 핸들러가 대화상자를 열면서 document에 "바깥 클릭 시 닫기" 리스너(`click`, 버블)를 달았더니 대화상자가 열리자마자 닫혔다.\
+"바깥을 누른 두 번째 click"이 있는 게 아니다 — **여는 click 하나가 닫기 판정에도 쓰였다.**
+
+```
+클릭 한 번 = pointerdown → mousedown → pointerup → mouseup → click
+
+click (target = 여는 버튼) — 버블 경로
+  button → … → 앱 루트  ◀ 여는 핸들러: 대화상자 생성 + document.addEventListener('click', onOutside)
+                           (이 click은 아직 올라가는 중)
+  … → body → html → document  ◀ 방금 단 onOutside 실행
+                                  target = 여는 버튼 = 대화상자 밖 → close('outside')  ✗
+```
+
+> **디스패치 중 등록** — 이벤트 경로(타깃→조상)는 디스패치 시작 때 정해지지만, 각 노드의 리스너 목록은 **그 노드 차례가 올 때** 읽는다. 그래서 아직 도달하지 않은 조상에 방금 단 같은 타입 리스너는 지금 이벤트에도 실행된다.
+
+① 문제 코드
+```js
+openButton.addEventListener('click', () => {
+  const dialog = openDialog();
+  document.addEventListener('click', (e) => {            // 같은 타입 + 버블 + 아직 도달 전인 document
+    if (!isInside(e.target, dialog)) dialog.close('outside');
+  });
+});
+```
+
+### 방안 1 — 여는 쪽에서 `stopPropagation` (선택하지 않은 방법)
+```js
+openButton.addEventListener('click', (e) => { e.stopPropagation(); openDialog(); });
+```
+여는 click이 document에 도달하지 못해 증상이 **가려질** 뿐이다.\
+여는 지점마다 호출 여부에 따라 "이 버튼으로 열면 되고 저 버튼으로 열면 바로 닫히는" 결함이 되고, 고칠 자리가 닫기 장치가 아니라 모든 여는 쪽으로 흩어진다.\
+그래서 재현 환경에서는 여는 쪽의 `stopPropagation`을 일부러 빼서 결함을 드러냈다.
+
+### 방안 2 — 닫기 감지를 이미 끝난 다른 이벤트(`pointerdown`, 캡처)에 건다
+② 고친 코드
+```js
+function onPressOutside(e) {
+  const top = layers.at(-1);
+  if (!top || isInside(e.target, top)) return;
+  top.close('outside');
+}
+function openDialog() {
+  // ...
+  layers.push(dialog);
+  if (layers.length === 1) document.addEventListener('pointerdown', onPressOutside, true);
+}
+```
+```
+시간 →   pointerdown ── mousedown ── pointerup ── mouseup ── click
+                                                              └ 여는 핸들러: 닫기 리스너 등록
+'click' 리스너:        ─────────────────────────────── 같은 click을 받음 → 닫힘 ✗
+'pointerdown' 리스너:  이번 pointerdown은 이미 지나감 → 다음 누를 때부터 감지 ✓
+```
+무엇이 깨졌나: 여는 이벤트와 닫는 이벤트를 같은 종류로 두어, 한 번의 입력이 둘 다에 쓰일 수 있었다.\
+검증: click 핸들러 안에서 document에 단 버블 click 리스너가 같은 click에 실행됨을 착수 스모크로 먼저 확인하고, 결함 토글을 켜면 "열기 직후 대화상자 0개", 끄면 1개임을 확인.
+
+### 참고 — `click`을 캡처로 들으면?
+document의 캡처 단계는 여는 핸들러보다 **먼저** 지나가므로, 그 뒤에 단 캡처 리스너는 이번 click을 받지 않는다 — "열자마자 닫힘"은 생기지 않는다.\
+그래도 `pointerdown`을 고른 이유: 판정이 누르는 순간 끝나고, 안에서 누르고 밖에서 뗀 드래그(입력창 텍스트 선택 등)에서 click은 두 지점의 공통 조상에서 발생해 "바깥"으로 오판되기 쉽다 — pointerdown은 누른 지점 하나로만 판정한다.\
+캡처 자체는 이 결함과 별개 이유다 — 앱 코드가 버블 단계에서 `stopPropagation`해도 바깥 감지가 막히지 않게 한다.
+
+| 방안 | 전제 | 비용 | 실패 모드 | 맞는 조건 |
+|------|------|------|-----------|-----------|
+| 1. 여는 쪽 `stopPropagation` | 모든 여는 지점이 규칙을 지킨다 | 여는 지점마다 한 줄 | 한 곳이라도 빠지면 그 경로만 즉시 닫힘 · 다른 document 리스너도 click을 못 받음 | 선택하지 않은 방법 |
+| 2. `pointerdown` 캡처로 감지 | 여는 동작이 click(입력 시퀀스의 마지막)에서 일어난다 | 없음 (이벤트 종류만 바꿈) | 누른 지점만 본다 — 누른 뒤의 이동·취소는 판정에 반영되지 않는다 | 바깥 클릭 닫기 일반 |
+| (참고) `click` 캡처 | 같음 | 없음 | 드래그 해제 지점이 바깥이면 오판 | 드래그가 없는 단순 UI |
+
+**결론**: 여는 이벤트와 닫는 이벤트를 **입력 시퀀스상 서로 다른 이벤트**로 분리하는 쪽(2)이 여는 쪽의 협조 없이 성립한다.\
+여는 쪽 차단(1)은 닫기 장치의 결함을 각 호출자에게 떠넘기고, 차단하지 않는 호출자가 하나만 생겨도 같은 결함이 되살아난다.\
+일반화: 이벤트 처리 도중 리스너를 다는 코드는 "지금 이 이벤트가 아직 그 노드에 도달하지 않았는가"를 먼저 따진다.
+
+- 2026-11-04: 사건 기록 대조·추상화(Claude 초안)
