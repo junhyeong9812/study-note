@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 177개.
+현재 카드 178개.
 
 ## 분류 두 축
 
@@ -15,7 +15,7 @@
 | 태그 | 뜻 | 카드 수 |
 |------|----|---------|
 | [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 31 |
-| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 30 |
+| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 31 |
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 4 |
 | [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 11 |
@@ -42,8 +42,8 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (177)
-├─ cross-cutting/               128
+issue/  (178)
+├─ cross-cutting/               129
 │  ├─ concurrency/               10
 │  ├─ data/                      19
 │  ├─ database/                  10
@@ -51,7 +51,7 @@ issue/  (177)
 │  ├─ document-rendering/         2
 │  ├─ gui-platform/               2
 │  ├─ infra/                     14
-│  ├─ network/                   12
+│  ├─ network/                   13
 │  ├─ os/                         8
 │  ├─ reliability/               24
 │  ├─ search-engine/              8
@@ -177,6 +177,7 @@ issue/  (177)
 - [payload-transfer-cost](cross-cutting/network/payload-transfer-cost/) — 전송 비용은 크기×빈도다 — 바뀌지 않는 대형 본문을 매 틱 재전송하거나 필터 없이 통째로 반환하면 메모리·지연이 누적되므로 메타만 싣고 본문은 요청 시 회수한다.
 - [proxy-passthrough](cross-cutting/network/proxy-passthrough/) — 프록시·BFF 계층마다 헤더(XFF·쿠키·prefix·상관 ID)·status·스트림을 명시적으로 왕복시켜야 하며, 전달받은 헤더는 신뢰 홉 기준으로만 믿는다.
 - [reverse-tunnel-nat-traversal](cross-cutting/network/reverse-tunnel-nat-traversal/) — NAT·서브넷 단절로 inbound가 불가하면 연결 방향을 역전(outbound 유지형 역터널·브로커)한다.
+- [server-connection-ceiling](cross-cutting/network/server-connection-ceiling/) — 서버의 연결 상한(내장 서블릿 서버 기본 8,192)은 열린 연결 수를 세고 쉬는 keep-alive 연결도 자리를 쥔다 — 동시 연결 ≈ 도착률 × 보유 시간이라 세션이 긴 시나리오는 같은 도착률에서도 상한을 넘어 서버 안 측정기까지 코드 0을 받으므로, 칸마다 동시 연결 어림을 알려진 상한과 대조하고, 상한을 올릴 때는 기술자 한도를 함께 올리고 실행 중 적용값을 회차마다 대조하며, 측정에서만 올린 상한은 결과의 해석 주의로 남긴다.
 - [uri-encoding-rules](cross-cutting/network/uri-encoding-rules/) — URI는 ASCII와 예약문자 규칙을 따른다 — 비ASCII·경로 속 슬래시·표준 Base64·이중 인코딩은 도구·컨테이너마다 다르게 처리되므로 경계에서 올바르게 인코딩한다.
 
 #### [cross-cutting/os/](cross-cutting/os/) — 프로세스·경로·터미널
@@ -390,7 +391,7 @@ issue/  (177)
 
 ### resource-bounding
 
-입력에 비례해 커지는 자원의 상한 — 30개
+입력에 비례해 커지는 자원의 상한 — 31개
 
 - [cancellation-reachability](cross-cutting/concurrency/cancellation-reachability/) · `cross-cutting/concurrency`
 - [event-loop-head-of-line-blocking](cross-cutting/concurrency/event-loop-head-of-line-blocking/) · `cross-cutting/concurrency`
@@ -407,6 +408,7 @@ issue/  (177)
 - [llm-serving-vram-and-backend](cross-cutting/infra/llm-serving-vram-and-backend/) · `cross-cutting/infra`
 - [load-balancer-defaults-in-backend-switch](cross-cutting/infra/load-balancer-defaults-in-backend-switch/) · `cross-cutting/infra`
 - [payload-transfer-cost](cross-cutting/network/payload-transfer-cost/) · `cross-cutting/network`
+- [server-connection-ceiling](cross-cutting/network/server-connection-ceiling/) · `cross-cutting/network`
 - [process-group-and-tree-termination](cross-cutting/os/process-group-and-tree-termination/) · `cross-cutting/os`
 - [subprocess-lifecycle-and-pipes](cross-cutting/os/subprocess-lifecycle-and-pipes/) · `cross-cutting/os`
 - [abandoned-request-late-processing](cross-cutting/reliability/abandoned-request-late-processing/) · `cross-cutting/reliability`

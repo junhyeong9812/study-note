@@ -29,6 +29,7 @@ HTTP·TCP의 경계와 중간 장치(프록시·터널·컨테이너 네트워�
 - [payload-transfer-cost](payload-transfer-cost/) — 전송 비용은 크기×빈도다 — 바뀌지 않는 대형 본문을 매 틱 재전송하거나 필터 없이 통째로 반환하면 메모리·지연이 누적되므로 메타만 싣고 본문은 요청 시 회수한다.
 - [proxy-passthrough](proxy-passthrough/) — 프록시·BFF 계층마다 헤더(XFF·쿠키·prefix·상관 ID)·status·스트림을 명시적으로 왕복시켜야 하며, 전달받은 헤더는 신뢰 홉 기준으로만 믿는다.
 - [reverse-tunnel-nat-traversal](reverse-tunnel-nat-traversal/) — NAT·서브넷 단절로 inbound가 불가하면 연결 방향을 역전(outbound 유지형 역터널·브로커)한다.
+- [server-connection-ceiling](server-connection-ceiling/) — 서버의 연결 상한(내장 서블릿 서버 기본 8,192)은 열린 연결 수를 세고 쉬는 keep-alive 연결도 자리를 쥔다 — 동시 연결 ≈ 도착률 × 보유 시간이라 세션이 긴 시나리오는 같은 도착률에서도 상한을 넘어 서버 안 측정기까지 코드 0을 받으므로, 칸마다 동시 연결 어림을 알려진 상한과 대조하고, 상한을 올릴 때는 기술자 한도를 함께 올리고 실행 중 적용값을 회차마다 대조하며, 측정에서만 올린 상한은 결과의 해석 주의로 남긴다.
 - [uri-encoding-rules](uri-encoding-rules/) — URI는 ASCII와 예약문자 규칙을 따른다 — 비ASCII·경로 속 슬래시·표준 Base64·이중 인코딩은 도구·컨테이너마다 다르게 처리되므로 경계에서 올바르게 인코딩한다.
 
-> 이 폴더의 메타 태그: `silent-failure`(3) · `resource-bounding`(1) · `least-privilege`(1) · `fail-closed`(1) · `race-condition`(1) · `contract-drift`(1) · `encoding`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `silent-failure`(3) · `resource-bounding`(2) · `least-privilege`(1) · `fail-closed`(1) · `race-condition`(1) · `contract-drift`(1) · `encoding`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).
