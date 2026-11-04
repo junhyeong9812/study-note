@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 176개.
+현재 카드 177개.
 
 ## 분류 두 축
 
@@ -18,7 +18,7 @@
 | [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 30 |
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 4 |
-| [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 10 |
+| [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 11 |
 | [`contract-drift`](#contract-drift) | 선언한 계약과 실제 동작의 어긋남 | 5 |
 | [`test-reliability`](#test-reliability) | 초록불이 결함 유무를 말해 주는가 | 7 |
 | [`parser-differential`](#parser-differential) | 검사하는 쪽과 실행하는 쪽의 해석 차이 | 3 |
@@ -42,8 +42,8 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (176)
-├─ cross-cutting/               127
+issue/  (177)
+├─ cross-cutting/               128
 │  ├─ concurrency/               10
 │  ├─ data/                      19
 │  ├─ database/                  10
@@ -51,7 +51,7 @@ issue/  (176)
 │  ├─ document-rendering/         2
 │  ├─ gui-platform/               2
 │  ├─ infra/                     14
-│  ├─ network/                   11
+│  ├─ network/                   12
 │  ├─ os/                         8
 │  ├─ reliability/               24
 │  ├─ search-engine/              8
@@ -173,6 +173,7 @@ issue/  (176)
 - [half-open-liveness-watchdog](cross-cutting/network/half-open-liveness-watchdog/) — 출력 전용·장기 스트리밍 연결은 상대가 사라져도 TCP 에러가 오지 않는다 — liveness는 앱이 의미 단위(완성 프레임·하트비트) 도착 시각으로 판정한다.
 - [http-cache-policy](cross-cutting/network/http-cache-policy/) — immutable·장기 캐시는 콘텐츠 주소화된 URL에만 쓰고, 상태 엔드포인트·버전 없는 정적 자원에는 캐시 정책을 명시해야 배포와 클라이언트가 어긋나지 않는다.
 - [http-streaming-status-locked](cross-cutting/network/http-streaming-status-locked/) — 응답 헤더가 커밋되는 순간 status는 확정되므로, 최종 상태를 보려면 커밋 이후가 아니라 가장 바깥 계층에서 확정 시점을 기준으로 관측해야 한다.
+- [keep-alive-idle-close-race](cross-cutting/network/keep-alive-idle-close-race/) — keep-alive 연결은 서버가 혼자 닫는다 — 서버 유휴 한도(기본 60초 · 검사 약 1초 간격)보다 클라이언트 휴지가 길 수 있고 클라이언트에 유휴 한도가 없으면, 막 닫히는 연결에 실린 비멱등 POST가 재시도 없이 EOF가 되므로, 홉마다 "다시 쓰는 쪽의 유휴 한도 < 닫는 쪽"을 맞추고, 못 맞추면 긴 휴지 앞 요청을 Connection: close로 보내며, 멱등 키 재시도는 서버 중복 제거가 있을 때만 쓴다.
 - [payload-transfer-cost](cross-cutting/network/payload-transfer-cost/) — 전송 비용은 크기×빈도다 — 바뀌지 않는 대형 본문을 매 틱 재전송하거나 필터 없이 통째로 반환하면 메모리·지연이 누적되므로 메타만 싣고 본문은 요청 시 회수한다.
 - [proxy-passthrough](cross-cutting/network/proxy-passthrough/) — 프록시·BFF 계층마다 헤더(XFF·쿠키·prefix·상관 ID)·status·스트림을 명시적으로 왕복시켜야 하며, 전달받은 헤더는 신뢰 홉 기준으로만 믿는다.
 - [reverse-tunnel-nat-traversal](cross-cutting/network/reverse-tunnel-nat-traversal/) — NAT·서브넷 단절로 inbound가 불가하면 연결 방향을 역전(outbound 유지형 역터널·브로커)한다.
@@ -452,7 +453,7 @@ issue/  (176)
 
 ### race-condition
 
-순서·동시성에 따라 결과가 달라짐 — 10개
+순서·동시성에 따라 결과가 달라짐 — 11개
 
 - [aba-reusable-identifier](cross-cutting/concurrency/aba-reusable-identifier/) · `cross-cutting/concurrency`
 - [capture-context-at-request-time](cross-cutting/concurrency/capture-context-at-request-time/) · `cross-cutting/concurrency`
@@ -462,6 +463,7 @@ issue/  (176)
 - [snapshot-stream-cursor](cross-cutting/concurrency/snapshot-stream-cursor/) · `cross-cutting/concurrency`
 - [thread-affine-object-confinement](cross-cutting/concurrency/thread-affine-object-confinement/) · `cross-cutting/concurrency`
 - [monotonic-fencing](cross-cutting/distributed/monotonic-fencing/) · `cross-cutting/distributed`
+- [keep-alive-idle-close-race](cross-cutting/network/keep-alive-idle-close-race/) · `cross-cutting/network`
 - [script-modified-while-running](shell/script-modified-while-running/) · `shell`
 - [stale-render-state](typescript/react/stale-render-state/) · `typescript/react`
 

@@ -30,11 +30,11 @@
 | [document-rendering/](document-rendering/) | 2 | 텍스트·인쇄 레이아웃 |
 | [gui-platform/](gui-platform/) | 2 | 좌표계·웹뷰 엔진 |
 | [infra/](infra/) | 14 | 플랫폼·툴·배포 |
-| [network/](network/) | 11 | 프로토콜·연결·프록시 |
+| [network/](network/) | 12 | 프로토콜·연결·프록시 |
 | [os/](os/) | 8 | 프로세스·경로·터미널 |
 | [reliability/](reliability/) | 24 | 실패가 삼켜지는 곳 |
 | [search-engine/](search-engine/) | 8 | 색인·쿼리·점수 |
 | [security/](security/) | 12 | 비밀·권한·신뢰 경계 |
 | [testing/](testing/) | 5 | 초록불의 증거력 |
 
-> 이 폴더의 메타 태그: `silent-failure`(26) · `resource-bounding`(24) · `least-privilege`(12) · `fail-closed`(4) · `race-condition`(8) · `contract-drift`(1) · `test-reliability`(5) · `parser-differential`(2) · `environment-drift`(6) · `encoding`(2) · `identity`(1) · `single-source-of-truth`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `silent-failure`(26) · `resource-bounding`(24) · `least-privilege`(12) · `fail-closed`(4) · `race-condition`(9) · `contract-drift`(1) · `test-reliability`(5) · `parser-differential`(2) · `environment-drift`(6) · `encoding`(2) · `identity`(1) · `single-source-of-truth`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).

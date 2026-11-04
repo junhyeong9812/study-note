@@ -25,9 +25,10 @@ HTTP·TCP의 경계와 중간 장치(프록시·터널·컨테이너 네트워�
 - [half-open-liveness-watchdog](half-open-liveness-watchdog/) — 출력 전용·장기 스트리밍 연결은 상대가 사라져도 TCP 에러가 오지 않는다 — liveness는 앱이 의미 단위(완성 프레임·하트비트) 도착 시각으로 판정한다.
 - [http-cache-policy](http-cache-policy/) — immutable·장기 캐시는 콘텐츠 주소화된 URL에만 쓰고, 상태 엔드포인트·버전 없는 정적 자원에는 캐시 정책을 명시해야 배포와 클라이언트가 어긋나지 않는다.
 - [http-streaming-status-locked](http-streaming-status-locked/) — 응답 헤더가 커밋되는 순간 status는 확정되므로, 최종 상태를 보려면 커밋 이후가 아니라 가장 바깥 계층에서 확정 시점을 기준으로 관측해야 한다.
+- [keep-alive-idle-close-race](keep-alive-idle-close-race/) — keep-alive 연결은 서버가 혼자 닫는다 — 서버 유휴 한도(기본 60초 · 검사 약 1초 간격)보다 클라이언트 휴지가 길 수 있고 클라이언트에 유휴 한도가 없으면, 막 닫히는 연결에 실린 비멱등 POST가 재시도 없이 EOF가 되므로, 홉마다 "다시 쓰는 쪽의 유휴 한도 < 닫는 쪽"을 맞추고, 못 맞추면 긴 휴지 앞 요청을 Connection: close로 보내며, 멱등 키 재시도는 서버 중복 제거가 있을 때만 쓴다.
 - [payload-transfer-cost](payload-transfer-cost/) — 전송 비용은 크기×빈도다 — 바뀌지 않는 대형 본문을 매 틱 재전송하거나 필터 없이 통째로 반환하면 메모리·지연이 누적되므로 메타만 싣고 본문은 요청 시 회수한다.
 - [proxy-passthrough](proxy-passthrough/) — 프록시·BFF 계층마다 헤더(XFF·쿠키·prefix·상관 ID)·status·스트림을 명시적으로 왕복시켜야 하며, 전달받은 헤더는 신뢰 홉 기준으로만 믿는다.
 - [reverse-tunnel-nat-traversal](reverse-tunnel-nat-traversal/) — NAT·서브넷 단절로 inbound가 불가하면 연결 방향을 역전(outbound 유지형 역터널·브로커)한다.
 - [uri-encoding-rules](uri-encoding-rules/) — URI는 ASCII와 예약문자 규칙을 따른다 — 비ASCII·경로 속 슬래시·표준 Base64·이중 인코딩은 도구·컨테이너마다 다르게 처리되므로 경계에서 올바르게 인코딩한다.
 
-> 이 폴더의 메타 태그: `silent-failure`(3) · `resource-bounding`(1) · `least-privilege`(1) · `fail-closed`(1) · `contract-drift`(1) · `encoding`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `silent-failure`(3) · `resource-bounding`(1) · `least-privilege`(1) · `fail-closed`(1) · `race-condition`(1) · `contract-drift`(1) · `encoding`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).
