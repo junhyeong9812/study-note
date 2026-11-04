@@ -6,7 +6,7 @@
 
 ## 다음 작업 후보 (우선순위순)
 
-### N0-rp. react-portal 아카이브 검수 — 우선순위: 중간
+### N0-rp. react-portal 아카이브 검수 — 우선순위: 중간 · 목록: [docs/review-queue.md](../review-queue.md)
 
 - 검수: cs/web-platform/25~27 metadata `초안`. `[?]` 잔여: 25 flex/grid z-index 절 번호·iOS Safari 터치 스크롤, 26 React 17 릴리스 노트 URL·날짜, 27 UI/Pointer Events 절 번호·드래그 click 대상·click-through·`preventDefault` 없는 `first.focus()` 동작 등 8. 작업 폴더 `docs/plans/2026-11-04/react-portal-archive/`, 브랜치 `archive/2026-11-04-react-portal`(main 병합·push 대기).
 - 관측: 27의 실브라우저 이벤트 순서·click-through는 jsdom·headless로 측정 불가 — 실브라우저 수동 확인 필요.

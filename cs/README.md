@@ -121,3 +121,4 @@
 ## 주제 현황
 
 영역별 상태는 각 영역 README(생성 문서)가 정본이다. 기존 컬렉션 목록과 이관 이력은 [index.md](index.md)에 있다.
+우선 검수할 노트(직접 공부하며 만든 초안)는 [docs/review-queue.md](../docs/review-queue.md)에 올린다.
