@@ -1362,7 +1362,7 @@ Part 7  AI를 의존성으로 쓰는 법  ai-engineering
 > 브라우저라는 **실행 환경의 원리**(렌더링 파이프라인·이벤트 루프·출처 모델·저장소·캐시)에서 출발해 **성능 최적화**(로딩 순서·이미지·폰트·긴 태스크·가상화·재렌더·하이드레이션·성능 예산)와 **프론트엔드 설계**(컴포넌트·상태·Islands·마이크로 프론트엔드)까지 다룬다. 특정 프레임워크(React 등)는 원리의 예시로만 든다. DOM API 118파일 레퍼런스(`languages/web-api`)와 프레임워크 API 레퍼런스는 CS 밖(§19) — 여기서 실습 근거로 링크한다. SOP/CORS 본문은 security/21, HTTP 캐시 본문은 network/34, 전송 압축은 network/39.
 > 뼈대: WHATWG HTML 표준(Event loops 절·Rendering 절), WHATWG Fetch, web.dev "Rendering performance"·Core Web Vitals·learn/performance, W3C Service Workers, patterns.dev.
 
-**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24
+**권장 학습 순서**: 01 → 02 → 03 → 04 → 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → (25 · 26 · 27 권장) → 23 → 24
 
 ### 16.1 원리
 
@@ -1400,6 +1400,9 @@ Part 7  AI를 의존성으로 쓰는 법  ai-engineering
 |---|---|---|---|---|---|---|---|
 | 21-component-and-state-patterns | 컴포넌트 합성(Compound·Container/Presentational → 커스텀 훅·Render props), 제어/비제어 컴포넌트, 단방향 데이터 흐름(Flux/Redux/Elm), 상태 위치 선정(로컬·끌어올리기·전역), **서버 상태 캐시 vs 클라이언트 상태**, 파생 상태 | 04-dom-and-event-model, 03-event-loop, 18, software-design/42-ui-architecture-patterns | 서버 데이터를 전역 스토어에 복사 → 오래된 값·수동 무효화 누락; props를 state로 복사(파생 상태) → 부모 변경이 반영 안 됨; 전역 스토어 하나 변경에 전 트리 리렌더 → 입력 지연(INP — 재렌더 비용은 18); prop drilling 10단계 | 불변 상태 트리 + 리듀서(폴드), 구조 공유(data-structure/40), 키 기반 캐시 + stale-while-revalidate | patterns.dev (Container/Presentational·Hooks·Compound) · Flux 문서 · Redux 문서 "Three Principles" [?] | 권장 | 신규 |
 | 22-islands-and-micro-frontends | Islands(서버 HTML + 부분 하이드레이션 — 비용 측면은 19), Micro-frontends(빌드 타임 vs 런타임 통합 — iframe·Web Components·Module Federation), 서버·클라이언트 측 UI 조합 | 10-rendering-strategies, 09-js-modules-and-bundling, 19, 21 | 마이크로 프론트엔드마다 React 사본 → 번들 중복·**싱글턴 라이브러리 두 벌**(훅 오류); 팀 간 CSS 충돌; 공유 상태를 전역 객체로 주고받음 → 숨은 결합; 섬 사이 통신 부재 → 같은 데이터 이중 fetch | 모듈 그래프 공유(dedupe), 이벤트 버스 | Miller "Islands Architecture" 2020 · Jackson "Micro Frontends" (martinfowler.com) 2019 · microservices.io Client-side UI composition | 심화 | 신규 |
+| 25-stacking-context-and-containing-block | 쌓임 맥락(z-index가 비교되는 범위·쌓임 맥락을 만드는 속성), containing block(position별 기준 상자, 조상 `transform`이 fixed의 기준을 바꿈), `overflow` 클리핑과 뷰포트 스크롤(body → 뷰포트 전파) | 02-rendering-pipeline | 자식에 `z-index: 9999`를 줘도 부모 층 밖의 헤더(`z-index: 2`)를 못 이김. 조상의 `transform` 하나로 `position: fixed` 모달이 카드 안에 갇혀 잘림. `position` 없는 요소의 z-index는 무시됨 | 층 단위 정렬(트리 순회 + 층 안 정렬) | CSS 2.2 Appendix E "Elaborate description of Stacking Contexts" · CSS Positioned Layout Level 3 · CSS Overflow Level 3 · MDN "Stacking context" | 권장 | 신규 |
+| 26-portals-and-two-trees | 컴포넌트(논리) 트리와 DOM 트리의 분리 — Portal(DOM은 다른 컨테이너, 이벤트·Context·수명은 논리 부모), 이벤트 위임과 논리 트리 버블링, 질문의 성격(위치 vs 관계)에 따라 어느 트리에 물을지 고르기 | 25, 04-dom-and-event-model, 18-ui-rerender-and-memoization | 별도 루트로 렌더한 "가짜 portal" → Context가 기본값으로 읽히고 부모 onClick에 이벤트가 닿지 않음. portal 안 클릭이 프레임워크 부모 핸들러까지 버블해 의도치 않은 동작. DOM `contains`로 "안쪽"을 판정 → portal로 띄운 위젯 클릭을 바깥으로 오인 | 두 트리 노드 매핑(WeakMap 역참조), 부모 포인터 상향 탐색 | react.dev "createPortal" · WHATWG DOM 표준 "Dispatching events" | 권장 | 신규 |
+| 27-modal-dialog-behavior | 모달의 상호작용 계약: 바깥 클릭(논리 트리 판정 + `pointerdown` 캡처 — 여는 클릭과 다른 이벤트로 분리), ESC는 맨 위 모달만(모달 스택), 포커스 가두기·복귀(Tab은 DOM 순서를 따름), 배경 스크롤 잠금(참조 카운트·원래 값 복원) | 26, 11-accessibility-basics, 04-dom-and-event-model | 여는 click이 방금 붙인 document 닫기 리스너에 걸려 열자마자 닫힘. ESC 한 번에 중첩 모달이 전부 닫힘. Tab이 모달 뒤 페이지로 빠져 보이지 않는 버튼이 눌림. 위 모달만 닫아도 배경 스크롤이 풀림 | 스택(LIFO), 참조 카운트, 부모 포인터 상향 탐색 | WAI-ARIA APG "Dialog (Modal) Pattern" · WHATWG DOM 표준 "Dispatching events" · WHATWG HTML 표준 "focus" 절 [?] | 권장 | 신규 |
 
 ### 16.4 영역 마감
 
@@ -1740,6 +1743,7 @@ study-note/
   - 기존 leaf 수정(행 수 불변): software-design/06 요지를 원고(CLEAN 5속성)에 맞추고 이름·함수·주석을 07~09로 분리, 역색인 5개(software-design/55·reliability/52·database/56·domain-modeling/27·web-platform/23) 증상 보강, 절 추가(reliability/05·06·19·36·22·17, database/21, web-platform/02, security/25, software-design/02·10·13·45, testing/17, distributed/16 등).
 - 2026-09-28 cs 재편: 기초 leaf 2(data-structure/01·algorithm/01) 독립 + **전 영역 번호 = 권장 학습 순서로 재번호**(옛→새: `docs/plans/2026-09-28/cs-restructure/slug-map.tsv`).
 - 2026-10-20 language/28-bytecode-reading-and-asm(심화, 신규) 1 leaf 추가 반영(6.1, 권장 학습 순서에서 25 다음).
+- 2026-11-04 web-platform/25~27(권장, 신규) 3 leaf 추가 — stacking context·containing block, portal과 두 트리, 모달 상호작용 계약(16.3, 권장 학습 순서에서 22 다음·23 앞). 근거: `docs/plans/2026-11-04/react-portal-archive/`.
 - 필수만 따라가면 364 leaf(2026-10-08 §22 +13 반영). 신규 필수는 영역별로 네트워크(34)·DB(29)·소프트웨어 설계(25)·OS(20)·보안(17)·데이터 분석(17) 순으로 많다.
 - `[?]` 표기: 문서 전체 261개(범례·출처 설명 포함) 중 **leaf 행 안 240개(185행)** — 주로 장 번호 미확인 교재(P&H·Dragon Book·TAPL·Sipser·GC Handbook·Kohavi·SRE 일부 장·Stevens 15·16장·POSA·Release It!·Clean Architecture 장 번호)와 수치·세부 사건 기록.
 

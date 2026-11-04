@@ -2,7 +2,7 @@
 
 > **생성 문서** — `docs/plans/2026-09-27/cs-fundamentals-roadmap/curriculum.md` §16에서 `scripts/notes/gen_area_readme.py`로 만든다. 직접 고치지 말고 커리큘럼을 고친 뒤 재실행한다.
 > 번호 = 권장 학습 순서. 상태: `미작성` · `원고 있음` · `초안(Claude)` · `검수 완료`. ⚠ 깨지면·🔧·📚 세부는 커리큘럼 본문에 있다.
-> 현황: 미작성 0 · 원고 있음 0 · 초안(Claude) 24 · 검수 완료 0
+> 현황: 미작성 0 · 원고 있음 0 · 초안(Claude) 27 · 검수 완료 0
 
 > 브라우저라는 **실행 환경의 원리**(렌더링 파이프라인·이벤트 루프·출처 모델·저장소·캐시)에서 출발해 **성능 최적화**(로딩 순서·이미지·폰트·긴 태스크·가상화·재렌더·하이드레이션·성능 예산)와 **프론트엔드 설계**(컴포넌트·상태·Islands·마이크로 프론트엔드)까지 다룬다. 특정 프레임워크(React 등)는 원리의 예시로만 든다. DOM API 118파일 레퍼런스(`languages/web-api`)와 프레임워크 API 레퍼런스는 CS 밖(§19) — 여기서 실습 근거로 링크한다. SOP/CORS 본문은 security/21, HTTP 캐시 본문은 network/34, 전송 압축은 network/39.
 > 뼈대: WHATWG HTML 표준(Event loops 절·Rendering 절), WHATWG Fetch, web.dev "Rendering performance"·Core Web Vitals·learn/performance, W3C Service Workers, patterns.dev.
@@ -43,6 +43,9 @@
 |---|---|---|---|---|---|
 | 21 | `component-and-state-patterns` | 컴포넌트 합성(Compound·Container/Presentational → 커스텀 훅·Render props), 제어/비제어 컴포넌트, 단방향 데이터 흐름(Flux/Redux/Elm), 상태 위치 선정(로컬·끌어올리기·전역), **서버 상태 캐시 vs 클라이언트 상태**, 파생 상태 | 권장 | 초안(Claude) | [21-component-and-state-patterns](21-component-and-state-patterns/) |
 | 22 | `islands-and-micro-frontends` | Islands(서버 HTML + 부분 하이드레이션 — 비용 측면은 19), Micro-frontends(빌드 타임 vs 런타임 통합 — iframe·Web Components·Module Federation), 서버·클라이언트 측 UI 조합 | 심화 | 초안(Claude) | [22-islands-and-micro-frontends](22-islands-and-micro-frontends/) |
+| 25 | `stacking-context-and-containing-block` | 쌓임 맥락(z-index가 비교되는 범위·쌓임 맥락을 만드는 속성), containing block(position별 기준 상자, 조상 `transform`이 fixed의 기준을 바꿈), `overflow` 클리핑과 뷰포트 스크롤(body → 뷰포트 전파) | 권장 | 초안(Claude) | [25-stacking-context-and-containing-block](25-stacking-context-and-containing-block/) |
+| 26 | `portals-and-two-trees` | 컴포넌트(논리) 트리와 DOM 트리의 분리 — Portal(DOM은 다른 컨테이너, 이벤트·Context·수명은 논리 부모), 이벤트 위임과 논리 트리 버블링, 질문의 성격(위치 vs 관계)에 따라 어느 트리에 물을지 고르기 | 권장 | 초안(Claude) | [26-portals-and-two-trees](26-portals-and-two-trees/) |
+| 27 | `modal-dialog-behavior` | 모달의 상호작용 계약: 바깥 클릭(논리 트리 판정 + `pointerdown` 캡처 — 여는 클릭과 다른 이벤트로 분리), ESC는 맨 위 모달만(모달 스택), 포커스 가두기·복귀(Tab은 DOM 순서를 따름), 배경 스크롤 잠금(참조 카운트·원래 값 복원) | 권장 | 초안(Claude) | [27-modal-dialog-behavior](27-modal-dialog-behavior/) |
 
 ## 16.4 영역 마감
 
