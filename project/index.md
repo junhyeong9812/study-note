@@ -8,3 +8,4 @@
 | [study-note-deploy-system/](study-note-deploy-system/) | 이 저장소의 배포 시스템 — backend·front·ci-cd·llm 이슈 해설 |
 | [jun-bank/](jun-bank/) | 카드+뱅킹 시스템 — 배포 파이프라인·분산 배포·인프라 이슈 해설 (infra·core·gateway·settlement·ledger) |
 | [myway/](myway/) | 연습 프로젝트(`/home/jun/project/myway`) ↔ cs 노트 1:1 대응표와 진도 — algorithm·data-structure·domain-modeling·ops-patterns·api-design |
+| [react-portal/](react-portal/) | React Portal을 순수 JS로 흉내 낸 학습 프로젝트 — 두 트리·이벤트 위임·모달(바깥 클릭·ESC·Tab·스크롤 잠금)·React 대조 이슈 해설 + 학습 문서 아카이브 |
