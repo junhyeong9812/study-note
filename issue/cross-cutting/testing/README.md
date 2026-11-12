@@ -20,8 +20,9 @@
 
 - [green-masking](green-masking/) — 초록불은 테스트가 실패할 수 있었을 때만 증거다 — 무단언·약한 단언·수집 누락·캐시된 결과·표현 못 하는 픽스처·버그를 고정한 기대값은 결함을 통과시키므로 뮤테이션·대조군으로 이빨을 확인한다.
 - [performance-measurement-validity](performance-measurement-validity/) — 측정값이 유효하려면 생존자 편향·JIT 워밍업·수렴 전 캐시·생성기 자체의 자원 한계·데이터 부재를 배제해야 한다.
+- [property-test-cost-budget](property-test-cost-budget/) — 무작위·속성 테스트 비용은 케이스 × 단계 × 단계당 검사(+ 실패 뒤 축소)의 곱이고 구조 크기는 매개변수가 정한다 — 비싼 극단값은 결정적 단위 테스트로 옮기고 무거운 스모크는 release로, 축소는 실패할 때만 지불하는 비용임을 안다.
 - [test-isolation-and-determinism](test-isolation-and-determinism/) — 테스트 결과가 코드가 아니라 환경(공유 상태 디렉토리·재사용 컨테이너·시드 상수·스레드 스케줄링)에 좌우되지 않게 격리하고 happens-before를 보장한다.
 - [test-tool-default-semantics](test-tool-default-semantics/) — 테스트 도구의 기본 의미(비선점 타임아웃·중첩 클래스 섀도잉·mock 패치 경로·호이스팅·lifespan 미실행·로거 비활성화)는 직관과 달라 테스트가 소실·무한 대기·무효화된다.
 - [verification-environment-parity](verification-environment-parity/) — 검증 환경(헤드리스 모드·jsdom·H2·standalone MockMvc·빌드 스테이지·curl)이 실행 환경을 재현하지 않으면 테스트는 결함 유무와 무관한 결과를 낸다 — 실제 경로·실 DB로 검증한다.
 
-> 이 폴더의 메타 태그: `test-reliability`(5) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `resource-bounding`(1) · `test-reliability`(5) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).

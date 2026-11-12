@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 178개.
+현재 카드 179개.
 
 ## 분류 두 축
 
@@ -15,7 +15,7 @@
 | 태그 | 뜻 | 카드 수 |
 |------|----|---------|
 | [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 31 |
-| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 30 |
+| [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 31 |
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 4 |
 | [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 10 |
@@ -42,8 +42,8 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (178)
-├─ cross-cutting/               127
+issue/  (179)
+├─ cross-cutting/               128
 │  ├─ concurrency/               10
 │  ├─ data/                      19
 │  ├─ database/                  10
@@ -56,7 +56,7 @@ issue/  (178)
 │  ├─ reliability/               24
 │  ├─ search-engine/              8
 │  ├─ security/                  12
-│  └─ testing/                    5
+│  └─ testing/                    6
 ├─ java/                          5
 │  ├─ spring/                     1
 │  └─ (언어 레벨 카드)            4
@@ -246,6 +246,7 @@ issue/  (178)
 
 - [green-masking](cross-cutting/testing/green-masking/) — 초록불은 테스트가 실패할 수 있었을 때만 증거다 — 무단언·약한 단언·수집 누락·캐시된 결과·표현 못 하는 픽스처·버그를 고정한 기대값은 결함을 통과시키므로 뮤테이션·대조군으로 이빨을 확인한다.
 - [performance-measurement-validity](cross-cutting/testing/performance-measurement-validity/) — 측정값이 유효하려면 생존자 편향·JIT 워밍업·수렴 전 캐시·생성기 자체의 자원 한계·데이터 부재를 배제해야 한다.
+- [property-test-cost-budget](cross-cutting/testing/property-test-cost-budget/) — 무작위·속성 테스트 비용은 케이스 × 단계 × 단계당 검사(+ 실패 뒤 축소)의 곱이고 구조 크기는 매개변수가 정한다 — 비싼 극단값은 결정적 단위 테스트로 옮기고 무거운 스모크는 release로, 축소는 실패할 때만 지불하는 비용(기본 4 × 케이스, 시간 무제한)임을 안다.
 - [test-isolation-and-determinism](cross-cutting/testing/test-isolation-and-determinism/) — 테스트 결과가 코드가 아니라 환경(공유 상태 디렉토리·재사용 컨테이너·시드 상수·스레드 스케줄링)에 좌우되지 않게 격리하고 happens-before를 보장한다.
 - [test-tool-default-semantics](cross-cutting/testing/test-tool-default-semantics/) — 테스트 도구의 기본 의미(비선점 타임아웃·중첩 클래스 섀도잉·mock 패치 경로·호이스팅·lifespan 미실행·로거 비활성화)는 직관과 달라 테스트가 소실·무한 대기·무효화된다.
 - [verification-environment-parity](cross-cutting/testing/verification-environment-parity/) — 검증 환경(헤드리스 모드·jsdom·H2·standalone MockMvc·빌드 스테이지·curl)이 실행 환경을 재현하지 않으면 테스트는 결함 유무와 무관한 결과를 낸다 — 실제 경로·실 DB로 검증한다.
@@ -391,7 +392,7 @@ issue/  (178)
 
 ### resource-bounding
 
-입력에 비례해 커지는 자원의 상한 — 30개
+입력에 비례해 커지는 자원의 상한 — 31개
 
 - [cancellation-reachability](cross-cutting/concurrency/cancellation-reachability/) · `cross-cutting/concurrency`
 - [event-loop-head-of-line-blocking](cross-cutting/concurrency/event-loop-head-of-line-blocking/) · `cross-cutting/concurrency`
@@ -417,6 +418,7 @@ issue/  (178)
 - [self-feedback-loop](cross-cutting/reliability/self-feedback-loop/) · `cross-cutting/reliability`
 - [shutdown-backstop-independence](cross-cutting/reliability/shutdown-backstop-independence/) · `cross-cutting/reliability`
 - [query-and-index-cost-limits](cross-cutting/search-engine/query-and-index-cost-limits/) · `cross-cutting/search-engine`
+- [property-test-cost-budget](cross-cutting/testing/property-test-cost-budget/) · `cross-cutting/testing`
 - [handler-execution-model](python/fastapi/handler-execution-model/) · `python/fastapi`
 - [command-boundary-execution-model](rust/tauri/command-boundary-execution-model/) · `rust/tauri`
 - [select-loop-semantics](rust/tokio/select-loop-semantics/) · `rust/tokio`
