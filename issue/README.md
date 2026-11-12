@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 176개.
+현재 카드 177개.
 
 ## 분류 두 축
 
@@ -27,7 +27,7 @@
 | [`identity`](#identity) | 같은 대상인가 — 식별자·정체성 판정 | 2 |
 | [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 | 3 |
 
-태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(61개)는 폴더 축으로만 분류한다.
+태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(62개)는 폴더 축으로만 분류한다.
 
 ## 포맷
 
@@ -42,7 +42,7 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (176)
+issue/  (177)
 ├─ cross-cutting/               127
 │  ├─ concurrency/               10
 │  ├─ data/                      19
@@ -66,12 +66,12 @@ issue/  (176)
 ├─ python/                        6
 │  ├─ fastapi/                    4
 │  └─ (언어 레벨 카드)            2
-├─ rust/                          6
+├─ rust/                          7
 │  ├─ cargo/                      1
 │  ├─ serde/                      1
 │  ├─ tauri/                      2
 │  ├─ tokio/                      1
-│  └─ (언어 레벨 카드)            1
+│  └─ (언어 레벨 카드)            2
 ├─ shell/                         4
 └─ typescript/                   19
    ├─ browser/                    1
@@ -290,6 +290,7 @@ issue/  (176)
 
 ### [rust/](rust/) — Rust 언어·크레이트 생태계
 
+- [borrow-check-evaluation-order](rust/borrow-check-evaluation-order/) — `&mut a[i(&self)]`는 IndexMut 수신자의 가변 빌림이 인덱스 식보다 먼저 잡히고 2단계 빌림 대상도 아니라 E0502가 난다 — 빌림 검사는 메서드 시그니처(&self = self 전체)로 판단하므로 인덱스를 먼저 값으로 계산한다.
 - [language-semantics-traps](rust/language-semantics-traps/) — Rust 표준 동작(랜덤 시드 해셔·debug panic/release wrap·eager `or`·임시값 수명의 MutexGuard·take 1회 취득)이 직관과 달라 영속 키·교착·오버플로를 만든다.
 
 #### [rust/cargo/](rust/cargo/) — 크레이트·모듈 경계
