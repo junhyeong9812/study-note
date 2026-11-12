@@ -28,6 +28,7 @@ Rust 언어 규칙과 주요 크레이트(cargo·serde·tauri·tokio)에 뿌리�
 ## 패턴 카드 (이 폴더 직속)
 
 - [borrow-check-evaluation-order](borrow-check-evaluation-order/) — `&mut a[i(&self)]`는 IndexMut 수신자의 가변 빌림이 인덱스 식보다 먼저 잡히고 2단계 빌림 대상도 아니라 E0502가 난다 — 인덱스를 먼저 값으로 계산한다.
+- [dyn-compatibility-guard](dyn-compatibility-guard/) — dyn 호환성은 trait 선언에 적히지 않는 계약이라 깨짐이 먼 dyn 사용처에서야 E0038로 드러난다 — 정의 옆 `const _: Option<&dyn Trait> = None;`로 단언한다.
 - [language-semantics-traps](language-semantics-traps/) — Rust 표준 동작(랜덤 시드 해셔·debug panic/release wrap·eager `or`·임시값 수명의 MutexGuard·take 1회 취득)이 직관과 달라 영속 키·교착·오버플로를 만든다.
 
-> 이 폴더의 메타 태그: `silent-failure`(1) · `resource-bounding`(2) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `silent-failure`(1) · `resource-bounding`(2) · `contract-drift`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).

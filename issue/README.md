@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 177개.
+현재 카드 178개.
 
 ## 분류 두 축
 
@@ -19,7 +19,7 @@
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 4 |
 | [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 10 |
-| [`contract-drift`](#contract-drift) | 선언한 계약과 실제 동작의 어긋남 | 5 |
+| [`contract-drift`](#contract-drift) | 선언한 계약과 실제 동작의 어긋남 | 6 |
 | [`test-reliability`](#test-reliability) | 초록불이 결함 유무를 말해 주는가 | 7 |
 | [`parser-differential`](#parser-differential) | 검사하는 쪽과 실행하는 쪽의 해석 차이 | 3 |
 | [`environment-drift`](#environment-drift) | 실행 환경·채널마다 값·동작이 달라짐 | 8 |
@@ -42,7 +42,7 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (177)
+issue/  (178)
 ├─ cross-cutting/               127
 │  ├─ concurrency/               10
 │  ├─ data/                      19
@@ -66,12 +66,12 @@ issue/  (177)
 ├─ python/                        6
 │  ├─ fastapi/                    4
 │  └─ (언어 레벨 카드)            2
-├─ rust/                          7
+├─ rust/                          8
 │  ├─ cargo/                      1
 │  ├─ serde/                      1
 │  ├─ tauri/                      2
 │  ├─ tokio/                      1
-│  └─ (언어 레벨 카드)            2
+│  └─ (언어 레벨 카드)            3
 ├─ shell/                         4
 └─ typescript/                   19
    ├─ browser/                    1
@@ -291,6 +291,7 @@ issue/  (177)
 ### [rust/](rust/) — Rust 언어·크레이트 생태계
 
 - [borrow-check-evaluation-order](rust/borrow-check-evaluation-order/) — `&mut a[i(&self)]`는 IndexMut 수신자의 가변 빌림이 인덱스 식보다 먼저 잡히고 2단계 빌림 대상도 아니라 E0502가 난다 — 빌림 검사는 메서드 시그니처(&self = self 전체)로 판단하므로 인덱스를 먼저 값으로 계산한다.
+- [dyn-compatibility-guard](rust/dyn-compatibility-guard/) — dyn 호환성은 trait 선언에 적히지 않는 계약이라 제네릭 메서드 추가가 먼 dyn 사용처에서야 E0038로 깨진다 — 정의 옆 `const _: Option<&dyn Trait> = None;`로 단언하고 변이로 가드를 확인한다.
 - [language-semantics-traps](rust/language-semantics-traps/) — Rust 표준 동작(랜덤 시드 해셔·debug panic/release wrap·eager `or`·임시값 수명의 MutexGuard·take 1회 취득)이 직관과 달라 영속 키·교착·오버플로를 만든다.
 
 #### [rust/cargo/](rust/cargo/) — 크레이트·모듈 경계
@@ -468,13 +469,14 @@ issue/  (177)
 
 ### contract-drift
 
-선언한 계약과 실제 동작의 어긋남 — 5개
+선언한 계약과 실제 동작의 어긋남 — 6개
 
 - [api-contract-evolution](cross-cutting/network/api-contract-evolution/) · `cross-cutting/network`
 - [serializable-capture-contract](java/serializable-capture-contract/) · `java`
 - [serialization-contract-leak](kotlin/spring/serialization-contract-leak/) · `kotlin/spring`
 - [response-normalization-framework-boundary](python/fastapi/response-normalization-framework-boundary/) · `python/fastapi`
 - [websocket-api-contract](python/fastapi/websocket-api-contract/) · `python/fastapi`
+- [dyn-compatibility-guard](rust/dyn-compatibility-guard/) · `rust`
 
 ### test-reliability
 
