@@ -13,3 +13,4 @@
 | [thread-comparison](thread-comparison/) | sleep 루프 vs ScheduledExecutor | ScheduledExecutorService 표준편차 0.00ms vs Manual +0.8ms 누적 드리프트 — 주기 작업엔 Scheduled | 완료(1케이스) |
 | [redis-atomicity-lab](redis-atomicity-lab/) | Redis 원자성(Lua/WATCH/Redisson) | 설계·인프라·시나리오 4종 완성, **실험 미실행 — 모든 수치는 예상값** | 설계만 |
 | [backend-labs](backend-labs/) | 정합성·동시성(01~09) · 멀티테넌시·인증(10~17) API 구현 실험 17종 | — | 예정 |
+| [storage-labs](storage-labs/) | 스토리지 엔진 직접 구현 — index-lab(B+tree vs Extendible Hash, 페이지 I/O로 인덱스 선택 실측) | — (1단계 정확성 검증만, 측정 전) | 부분 |
