@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 179개.
+현재 카드 180개.
 
 ## 분류 두 축
 
@@ -20,7 +20,7 @@
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 4 |
 | [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 10 |
 | [`contract-drift`](#contract-drift) | 선언한 계약과 실제 동작의 어긋남 | 6 |
-| [`test-reliability`](#test-reliability) | 초록불이 결함 유무를 말해 주는가 | 7 |
+| [`test-reliability`](#test-reliability) | 초록불이 결함 유무를 말해 주는가 | 8 |
 | [`parser-differential`](#parser-differential) | 검사하는 쪽과 실행하는 쪽의 해석 차이 | 3 |
 | [`environment-drift`](#environment-drift) | 실행 환경·채널마다 값·동작이 달라짐 | 8 |
 | [`encoding`](#encoding) | 바이트·문자·인코딩 경계 | 3 |
@@ -42,7 +42,7 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (179)
+issue/  (180)
 ├─ cross-cutting/               128
 │  ├─ concurrency/               10
 │  ├─ data/                      19
@@ -66,12 +66,12 @@ issue/  (179)
 ├─ python/                        6
 │  ├─ fastapi/                    4
 │  └─ (언어 레벨 카드)            2
-├─ rust/                          8
+├─ rust/                          9
 │  ├─ cargo/                      1
 │  ├─ serde/                      1
 │  ├─ tauri/                      2
 │  ├─ tokio/                      1
-│  └─ (언어 레벨 카드)            3
+│  └─ (언어 레벨 카드)            4
 ├─ shell/                         4
 └─ typescript/                   19
    ├─ browser/                    1
@@ -292,6 +292,7 @@ issue/  (179)
 ### [rust/](rust/) — Rust 언어·크레이트 생태계
 
 - [borrow-check-evaluation-order](rust/borrow-check-evaluation-order/) — `&mut a[i(&self)]`는 IndexMut 수신자의 가변 빌림이 인덱스 식보다 먼저 잡히고 2단계 빌림 대상도 아니라 E0502가 난다 — 빌림 검사는 메서드 시그니처(&self = self 전체)로 판단하므로 인덱스를 먼저 값으로 계산한다.
+- [drop-panic-during-unwinding](rust/drop-panic-during-unwinding/) — 되감기 중 `Drop` 안에서 또 패닉하면 Rust는 abort하고 `catch_unwind`도 못 잡아 테스트 실행 전체가 사라진다 — 가드의 불변식 검사는 `std::thread::panicking()`일 때 건너뛰고 카운터는 `saturating_sub`로 내린다.
 - [dyn-compatibility-guard](rust/dyn-compatibility-guard/) — dyn 호환성은 trait 선언에 적히지 않는 계약이라 제네릭 메서드 추가가 먼 dyn 사용처에서야 E0038로 깨진다 — 정의 옆 `const _: Option<&dyn Trait> = None;`로 단언하고 변이로 가드를 확인한다.
 - [language-semantics-traps](rust/language-semantics-traps/) — Rust 표준 동작(랜덤 시드 해셔·debug panic/release wrap·eager `or`·임시값 수명의 MutexGuard·take 1회 취득)이 직관과 달라 영속 키·교착·오버플로를 만든다.
 
@@ -482,7 +483,7 @@ issue/  (179)
 
 ### test-reliability
 
-초록불이 결함 유무를 말해 주는가 — 7개
+초록불이 결함 유무를 말해 주는가 — 8개
 
 - [green-masking](cross-cutting/testing/green-masking/) · `cross-cutting/testing`
 - [performance-measurement-validity](cross-cutting/testing/performance-measurement-validity/) · `cross-cutting/testing`
@@ -490,6 +491,7 @@ issue/  (179)
 - [test-tool-default-semantics](cross-cutting/testing/test-tool-default-semantics/) · `cross-cutting/testing`
 - [verification-environment-parity](cross-cutting/testing/verification-environment-parity/) · `cross-cutting/testing`
 - [module-resolution-and-accidental-pass](python/module-resolution-and-accidental-pass/) · `python`
+- [drop-panic-during-unwinding](rust/drop-panic-during-unwinding/) · `rust`
 - [tree-position-semantics](typescript/react/tree-position-semantics/) · `typescript/react`
 
 ### parser-differential
