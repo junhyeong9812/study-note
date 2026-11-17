@@ -27,6 +27,7 @@
 - [byte-stream-framing](byte-stream-framing/) — 스트림·파일 읽기 경계는 줄·문자·이스케이프 시퀀스 경계와 무관하다 — 완성된 프레임만 디코드하고 상한 절단도 프레임 경계에서 한다.
 - [denormalized-counter-drift](denormalized-counter-drift/) — 비정규화 카운터(원본 행 수의 사본)는 어긋나도 일부만 오류로 드러난다 — 행 없음·음수는 넓은 배치를 매 틱 롤백시켜 전역 정지를 만들고, 나머지는 조용히 한도를 틀리게 하므로 원본 재계산과의 별도 대조가 필요하며, 전환은 cutover + 감소 시점에 맞춘 정의로 백필한다.
 - [discriminator-not-shape](discriminator-not-shape/) — 다형 레코드는 모양(shape)이 아니라 명시적 판별자(role·type·층)로 해석해야 한다 — 같은 모양의 다른 의미를 오분류한다.
+- [extendible-hash-directory-aliasing](extendible-hash-directory-aliasing/) — 확장 해싱 디렉터리는 칸 여러 개(`2^(전역−지역)`)가 버킷 하나를 가리키고 그 배수를 지역 깊이가 기술한다 — 분할에서 지역 깊이를 올리지 않으면 같은 비트로 무한 분할하며 빈 버킷만 쌓이고, 칸을 훑어 모으면 같은 버킷의 키가 중복돼 결과가 틀리므로(정렬은 중복을 못 지운다) 쓰는 칸의 버킷 번호를 중복 제거해 버킷마다 한 번 읽는다.
 - [float-nan-semantics](float-nan-semantics/) — IEEE-754 NaN은 자기 자신과 같지 않아 전동치(Eq)·== 탐지·리터럴 생성 가정을 깨뜨린다.
 - [graph-traversal-invariants](graph-traversal-invariants/) — 외부 데이터로 만든 그래프·트리는 자기참조·사이클·부재 노드가 있을 수 있다 — visited 가드·깊이/개수 예산·레인 중복 방지 없이 순회·배치하면 무한 재귀·오배치가 난다.
 - [heuristic-matching-false-positive](heuristic-matching-false-positive/) — 부분 문자열·접두어·이름 관례·부수 신호(ps 출력·포트)로 의미를 추정하는 휴리스틱은 경계가 없어 오탐한다 — 정확 일치·구조적 신호·영속 상태로 판정한다.
@@ -39,4 +40,4 @@
 - [pagination-cursor-integrity](pagination-cursor-integrity/) — 커서 페이징은 이어받기 쿼리가 첫 쿼리와 같은 집합을 가리키고 종료·전진이 스캔한 키 윈도우에서 나와야 한다 — 아니면 가지·꼬리가 무음 유실된다.
 - [time-semantics](time-semantics/) — 벽시계는 단조 ID가 아니고 날짜는 타임존에 종속되며 구간 경계는 반열린이어야 한다 — 서로 다른 시계·타임존·해상도를 섞으면 조용히 틀린다.
 
-> 이 폴더의 메타 태그: `silent-failure`(8) · `resource-bounding`(3) · `identity`(1) · `single-source-of-truth`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).
+> 이 폴더의 메타 태그: `silent-failure`(9) · `resource-bounding`(3) · `identity`(1) · `single-source-of-truth`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../../README.md#태그-역인덱스).

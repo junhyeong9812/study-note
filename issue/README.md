@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 182개.
+현재 카드 183개.
 
 ## 분류 두 축
 
@@ -14,7 +14,7 @@
 
 | 태그 | 뜻 | 카드 수 |
 |------|----|---------|
-| [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 31 |
+| [`silent-failure`](#silent-failure) | 성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 | 32 |
 | [`resource-bounding`](#resource-bounding) | 입력에 비례해 커지는 자원의 상한 | 31 |
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 4 |
@@ -42,10 +42,10 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (182)
-├─ cross-cutting/               129
+issue/  (183)
+├─ cross-cutting/               130
 │  ├─ concurrency/               10
-│  ├─ data/                      19
+│  ├─ data/                      20
 │  ├─ database/                  11
 │  ├─ distributed/                2
 │  ├─ document-rendering/         2
@@ -107,6 +107,7 @@ issue/  (182)
 - [byte-stream-framing](cross-cutting/data/byte-stream-framing/) — 스트림·파일 읽기 경계는 줄·문자·이스케이프 시퀀스 경계와 무관하다 — 완성된 프레임만 디코드하고 상한 절단도 프레임 경계에서 한다.
 - [denormalized-counter-drift](cross-cutting/data/denormalized-counter-drift/) — 비정규화 카운터(원본 행 수의 사본)는 어긋나도 일부만 오류로 드러난다 — 행 없음·음수는 넓은 배치를 매 틱 롤백시켜 전역 정지를 만들고, 나머지는 조용히 한도를 틀리게 하므로 원본 재계산과의 별도 대조가 필요하며, 전환은 cutover + 감소 시점에 맞춘 정의로 백필한다.
 - [discriminator-not-shape](cross-cutting/data/discriminator-not-shape/) — 다형 레코드는 모양(shape)이 아니라 명시적 판별자(role·type·층)로 해석해야 한다 — 같은 모양의 다른 의미를 오분류한다.
+- [extendible-hash-directory-aliasing](cross-cutting/data/extendible-hash-directory-aliasing/) — 확장 해싱 디렉터리는 칸 여러 개(`2^(전역−지역)`)가 버킷 하나를 가리키고 그 배수를 지역 깊이가 기술한다 — 분할에서 지역 깊이를 올리지 않으면 같은 비트로 무한 분할하며 빈 버킷만 쌓이고, 칸을 훑어 모으면 같은 버킷의 키가 중복돼 결과가 틀리므로(정렬은 중복을 못 지운다) 쓰는 칸의 버킷 번호를 중복 제거해 버킷마다 한 번 읽는다.
 - [float-nan-semantics](cross-cutting/data/float-nan-semantics/) — IEEE-754 NaN은 자기 자신과 같지 않아 전동치(Eq)·== 탐지·리터럴 생성 가정을 깨뜨린다.
 - [graph-traversal-invariants](cross-cutting/data/graph-traversal-invariants/) — 외부 데이터로 만든 그래프·트리는 자기참조·사이클·부재 노드가 있을 수 있다 — visited 가드·깊이/개수 예산·레인 중복 방지 없이 순회·배치하면 무한 재귀·오배치가 난다.
 - [heuristic-matching-false-positive](cross-cutting/data/heuristic-matching-false-positive/) — 부분 문자열·접두어·이름 관례·부수 신호(ps 출력·포트)로 의미를 추정하는 휴리스틱은 경계가 없어 오탐한다 — 정확 일치·구조적 신호·영속 상태로 판정한다.
@@ -359,7 +360,7 @@ issue/  (182)
 
 ### silent-failure
 
-성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 — 31개
+성공 표시 ≠ 산출물 — 실패가 정상처럼 보인다 — 32개
 
 - [nested-sandbox-capability](cross-cutting/os/nested-sandbox-capability/) · `cross-cutting/os`
 - [single-slot-handoff-loss](cross-cutting/concurrency/single-slot-handoff-loss/) · `cross-cutting/concurrency`
@@ -367,6 +368,7 @@ issue/  (182)
 - [ad-hoc-parsing-of-structured-text](cross-cutting/data/ad-hoc-parsing-of-structured-text/) · `cross-cutting/data`
 - [aggregation-semantics](cross-cutting/data/aggregation-semantics/) · `cross-cutting/data`
 - [denormalized-counter-drift](cross-cutting/data/denormalized-counter-drift/) · `cross-cutting/data`
+- [extendible-hash-directory-aliasing](cross-cutting/data/extendible-hash-directory-aliasing/) · `cross-cutting/data`
 - [in-band-signaling-collision](cross-cutting/data/in-band-signaling-collision/) · `cross-cutting/data`
 - [input-format-detection](cross-cutting/data/input-format-detection/) · `cross-cutting/data`
 - [key-normalization-consistency](cross-cutting/data/key-normalization-consistency/) · `cross-cutting/data`
