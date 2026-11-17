@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 181개.
+현재 카드 182개.
 
 ## 분류 두 축
 
@@ -19,7 +19,7 @@
 | [`least-privilege`](#least-privilege) | 최소 권한·최소 노출·비밀 관리 | 14 |
 | [`fail-closed`](#fail-closed) | 판정 불가·조회 실패를 거부로 처리 | 4 |
 | [`race-condition`](#race-condition) | 순서·동시성에 따라 결과가 달라짐 | 10 |
-| [`contract-drift`](#contract-drift) | 선언한 계약과 실제 동작의 어긋남 | 6 |
+| [`contract-drift`](#contract-drift) | 선언한 계약과 실제 동작의 어긋남 | 7 |
 | [`test-reliability`](#test-reliability) | 초록불이 결함 유무를 말해 주는가 | 8 |
 | [`parser-differential`](#parser-differential) | 검사하는 쪽과 실행하는 쪽의 해석 차이 | 3 |
 | [`environment-drift`](#environment-drift) | 실행 환경·채널마다 값·동작이 달라짐 | 8 |
@@ -42,11 +42,11 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (181)
-├─ cross-cutting/               128
+issue/  (182)
+├─ cross-cutting/               129
 │  ├─ concurrency/               10
 │  ├─ data/                      19
-│  ├─ database/                  10
+│  ├─ database/                  11
 │  ├─ distributed/                2
 │  ├─ document-rendering/         2
 │  ├─ gui-platform/               2
@@ -131,6 +131,7 @@ issue/  (181)
 - [sql-dialect-and-driver-traps](cross-cutting/database/sql-dialect-and-driver-traps/) — SQL 방언·드라이버·엔진 설정(NULL 유니크·세션 변수·패킷 상한·collation·MDL·SQLite 단일 writer)은 실 DB에서만 드러난다 — 대체 DB·ORM 추정이 아니라 실제 엔진으로 검증한다.
 - [temp-spill-on-bounded-storage](cross-cutting/database/temp-spill-on-bounded-storage/) — DB 데이터 디렉터리의 고정 상한은 데이터 크기가 아니라 데이터 + 로그 + 가장 큰 쿼리의 정렬·해시 임시 파일을 담아야 한다 — 임시 파일은 쿼리 동안만 있어 큰 작업 뒤에 공간을 재고, 메모리 파일시스템이면 메모리 한도도 함께 키우며, 요청 크기와 적용 크기를 대조한다.
 - [transaction-boundary-scope](cross-cutting/database/transaction-boundary-scope/) — 트랜잭션 경계가 곧 원자성 단위다 — 너무 넓으면 한 건 실패가 전부를 되돌리고, 쪼개면 부분 성공이 생기며, 트랜잭션 밖 부수효과(캐시·발행)는 커밋 결과와 따로 논다.
+- [write-back-out-of-order-eviction](cross-cutting/database/write-back-out-of-order-eviction/) — write-back 버퍼 풀이 디스크에 쓰는 순서는 할당 순서가 아니라 교체 정책이 정한다 — "끝에만 붙이기(구멍 금지)" 저장소 계약은 먼저 할당된 페이지보다 나중 페이지가 먼저 내보내질 때 깨지므로, 저장소는 끝 뒤 쓰기를 0으로 채워 성장시키고 할당 여부는 할당기가 따로 막는다.
 
 #### [cross-cutting/distributed/](cross-cutting/distributed/) — 원격 결과와 권리의 단조성
 
@@ -473,8 +474,9 @@ issue/  (181)
 
 ### contract-drift
 
-선언한 계약과 실제 동작의 어긋남 — 6개
+선언한 계약과 실제 동작의 어긋남 — 7개
 
+- [write-back-out-of-order-eviction](cross-cutting/database/write-back-out-of-order-eviction/) · `cross-cutting/database`
 - [api-contract-evolution](cross-cutting/network/api-contract-evolution/) · `cross-cutting/network`
 - [serializable-capture-contract](java/serializable-capture-contract/) · `java`
 - [serialization-contract-leak](kotlin/spring/serialization-contract-leak/) · `kotlin/spring`

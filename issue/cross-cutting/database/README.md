@@ -27,3 +27,4 @@
 - [sql-dialect-and-driver-traps](sql-dialect-and-driver-traps/) — SQL 방언·드라이버·엔진 설정(NULL 유니크·세션 변수·패킷 상한·collation·MDL·SQLite 단일 writer)은 실 DB에서만 드러난다 — 대체 DB·ORM 추정이 아니라 실제 엔진으로 검증한다.
 - [temp-spill-on-bounded-storage](temp-spill-on-bounded-storage/) — DB 데이터 디렉터리의 고정 상한은 데이터 크기가 아니라 데이터 + 로그 + 가장 큰 쿼리의 정렬·해시 임시 파일을 담아야 한다 — 임시 파일은 쿼리 동안만 있어 큰 작업 뒤에 공간을 재고, 메모리 파일시스템이면 메모리 한도도 함께 키우며, 요청 크기와 적용 크기를 대조한다.
 - [transaction-boundary-scope](transaction-boundary-scope/) — 트랜잭션 경계가 곧 원자성 단위다 — 너무 넓으면 한 건 실패가 전부를 되돌리고, 쪼개면 부분 성공이 생기며, 트랜잭션 밖 부수효과(캐시·발행)는 커밋 결과와 따로 논다.
+- [write-back-out-of-order-eviction](write-back-out-of-order-eviction/) — write-back 버퍼 풀이 디스크에 쓰는 순서는 할당 순서가 아니라 교체 정책이 정한다 — "끝에만 붙이기(구멍 금지)" 저장소 계약은 먼저 할당된 페이지보다 나중 페이지가 먼저 내보내질 때 깨지므로, 저장소는 끝 뒤 쓰기를 0으로 채워 성장시키고 할당 여부는 할당기가 따로 막는다.
