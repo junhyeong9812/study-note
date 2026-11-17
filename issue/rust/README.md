@@ -11,6 +11,7 @@ Rust 언어 규칙과 주요 크레이트(cargo·serde·tauri·tokio)에 뿌리�
       │              ├─ 해셔 랜덤 시드     → 영속 키 불안정
       │              ├─ debug panic / release wrap
       │              ├─ Drop 안 2차 패닉 → abort
+      │              ├─ 바이트→구조체 캐스트 정렬 → 주소 따라 간헐 실패
       │              ├─ 임시값 수명의 락   → 교착
       │              └─ 선언 ↔ 사용 불일치 → 런타임 throw
       ▼
@@ -32,5 +33,6 @@ Rust 언어 규칙과 주요 크레이트(cargo·serde·tauri·tokio)에 뿌리�
 - [drop-panic-during-unwinding](drop-panic-during-unwinding/) — 되감기 중 `Drop` 안의 2차 패닉은 abort라 `catch_unwind`로도 못 잡는다 — 가드 검사는 `panicking()`일 때 건너뛴다.
 - [dyn-compatibility-guard](dyn-compatibility-guard/) — dyn 호환성은 trait 선언에 적히지 않는 계약이라 깨짐이 먼 dyn 사용처에서야 E0038로 드러난다 — 정의 옆 `const _: Option<&dyn Trait> = None;`로 단언한다.
 - [language-semantics-traps](language-semantics-traps/) — Rust 표준 동작(랜덤 시드 해셔·debug panic/release wrap·eager `or`·임시값 수명의 MutexGuard·take 1회 취득)이 직관과 달라 영속 키·교착·오버플로를 만든다.
+- [zero-copy-cast-alignment](zero-copy-cast-alignment/) — 바이트 버퍼를 구조체로 재해석하면 주소 정렬이 계약이 된다 — 정렬 1인 버퍼는 가끔만 실패하므로 `#[repr(C, align(N))]`로 정렬을 타입에 박는다.
 
 > 이 폴더의 메타 태그: `silent-failure`(1) · `resource-bounding`(2) · `contract-drift`(1) · `test-reliability`(1) — 태그별 전체 목록은 [issue 태그 역인덱스](../README.md#태그-역인덱스).

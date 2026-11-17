@@ -3,7 +3,7 @@
 여러 프로젝트에서 실제로 겪은 이슈를 **원리 단위로 추상화**해 모은 곳이다.\
 이슈 하나가 카드 하나가 아니다 — 같은 근본원인·같은 대응을 공유하는 이슈들을 **패턴 카드 하나**로 묶고, 각 사건 유형은 카드 안에서 **추상화 코드**(일반 이름·축약 로직)로 보인다.\
 카드에는 출처(프로젝트명·파일·라인)를 적지 않는다 — 문제 코드의 구조 자체가 문서에 드러나므로 그것으로 충분하다.\
-현재 카드 180개.
+현재 카드 181개.
 
 ## 분류 두 축
 
@@ -27,7 +27,7 @@
 | [`identity`](#identity) | 같은 대상인가 — 식별자·정체성 판정 | 2 |
 | [`single-source-of-truth`](#single-source-of-truth) | 같은 사실은 한 곳에서 파생 | 3 |
 
-태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(62개)는 폴더 축으로만 분류한다.
+태그는 선택이다 — 12종 어느 주제에도 해당하지 않는 카드(63개)는 폴더 축으로만 분류한다.
 
 ## 포맷
 
@@ -42,7 +42,7 @@
 숫자 = 그 폴더 아래 패턴 카드 수.
 
 ```
-issue/  (180)
+issue/  (181)
 ├─ cross-cutting/               128
 │  ├─ concurrency/               10
 │  ├─ data/                      19
@@ -66,12 +66,12 @@ issue/  (180)
 ├─ python/                        6
 │  ├─ fastapi/                    4
 │  └─ (언어 레벨 카드)            2
-├─ rust/                          9
+├─ rust/                         10
 │  ├─ cargo/                      1
 │  ├─ serde/                      1
 │  ├─ tauri/                      2
 │  ├─ tokio/                      1
-│  └─ (언어 레벨 카드)            4
+│  └─ (언어 레벨 카드)            5
 ├─ shell/                         4
 └─ typescript/                   19
    ├─ browser/                    1
@@ -295,6 +295,7 @@ issue/  (180)
 - [drop-panic-during-unwinding](rust/drop-panic-during-unwinding/) — 되감기 중 `Drop` 안에서 또 패닉하면 Rust는 abort하고 `catch_unwind`도 못 잡아 테스트 실행 전체가 사라진다 — 가드의 불변식 검사는 `std::thread::panicking()`일 때 건너뛰고 카운터는 `saturating_sub`로 내린다.
 - [dyn-compatibility-guard](rust/dyn-compatibility-guard/) — dyn 호환성은 trait 선언에 적히지 않는 계약이라 제네릭 메서드 추가가 먼 dyn 사용처에서야 E0038로 깨진다 — 정의 옆 `const _: Option<&dyn Trait> = None;`로 단언하고 변이로 가드를 확인한다.
 - [language-semantics-traps](rust/language-semantics-traps/) — Rust 표준 동작(랜덤 시드 해셔·debug panic/release wrap·eager `or`·임시값 수명의 MutexGuard·take 1회 취득)이 직관과 달라 영속 키·교착·오버플로를 만든다.
+- [zero-copy-cast-alignment](rust/zero-copy-cast-alignment/) — 바이트 버퍼를 구조체로 제로 카피 캐스트하려면 비트 유효성·패딩 없음·크기·주소 정렬이 모두 맞아야 한다 — 정렬 1인 버퍼는 주소 운에 따라 가끔만 실패하므로 `#[repr(C, align(N))]`로 정렬을 타입에 박고, 크기는 const 단언으로, 임의 길이 배열 impl은 기능 플래그로 확보한다.
 
 #### [rust/cargo/](rust/cargo/) — 크레이트·모듈 경계
 
